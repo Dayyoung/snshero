@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<% include head_view %>
+
+	<script>
+		var idx_user = <%=idx_user%>;
+		var idx_board = <%=idx_board%>;
+		var m_name = '<%=m_name%>';
+	</script>
+
+	<script src="/board_item_control.js"/></script>
+
+</head>
+<body>
+
+	<!-- Home -->
+	<div data-role="page" id="contentPage" style="min-height: 500px;">
+		<div data-theme="a" data-role="header" style="padding:10px">
+			<a data-role="button" id="editBtn" data-theme="a" data-icon="gear" data-iconpos="left"
+			class="ui-btn-right" style="margin:5px">
+			<%=__("edit")%>
+		</a>
+		<a data-role="button" id="backBoardBtn" data-theme="a" data-icon="arrow-l" data-iconpos="left"
+		class="ui-btn-left" style="margin:5px">            
+		<%=__("back")%>
+	</a>
+	<h3>            
+		<%=__("post")%>
+	</h3>
+</div>
+<div data-role="content"  
+
+	<input id ="idx_tip_board" type="hidden" value="0">
+
+	<h3 id='m_title' style="margin:0"></h3>
+
+	<p id='subTitle'></p>
+
+
+	<div data-role="navbar" style="">			
+		<ul>					
+			<li><a data-role="button" class="nextBtn ui-btn ui-shadow ui-icon-arrow-l ui-btn-icon-left"><%=__("previous_post")%></a></li>	
+			<li><a data-role="button" class="allBtn ui-btn ui-shadow ui-icon-bullets ui-btn-icon-left"><%=__("back_to_wall")%></a></li>
+			<li><a data-role="button" class="preBtn ui-btn ui-shadow ui-icon-arrow-r ui-btn-icon-right"><%=__("next_post")%></a></li>				
+		</ul>
+	</div><!-- /navbar --> 
+	<br>
+	<img id ="m_image" style="width: 100%; display:none" src="http://codiqa.com/static/images/v2/image.png" ><img> 
+
+
+	<video id="videoPlayer" style="width: 100%; display:none" controls>
+		<source id ="videoSource" src="http://www.w3schools.com/html/movie.mp4" type="video/mp4">
+		</video>
+
+
+		<center>
+
+			<a data-theme="b" data-role="button" id ="boardBtn" style="width: 100%;display:none" ><%=__("play_video")%></a> 
+			<a data-theme="a" data-role="button" id ="m_file" style="width: 90%;display:none" >file</a> 	 
+		</center>
+
+		<pre  id='m_content' style="font-size: 20px; width: 100% ; white-space: pre-line;">
+
+		</pre>
+
+		<h3  id='m_rate'>
+
+		</h3>
+
+		<center>
+			<div data-role="fieldcontain" style="width: 95%;">
+				<select id="selectReply" name="">
+					<option selected = "true" value="0">
+						<%=__("comment_go_rate")%>
+					</option>                    	
+					<option value="1">
+						★
+					</option>
+					<option value="2">
+						★★
+					</option>
+					<option value="3">
+						★★★
+					</option>
+					<option value="4">
+						★★★★
+					</option>
+					<option value="5">
+						★★★★★
+					</option>                                         
+				</select>
+			</div>
+
+			<a data-theme="a" data-role="button" id="replyBtn" style="width: 90%;" >
+				<%=__("write_reply")%>
+			</a>
+
+		</center>
+
+		<br>
+		<div data-role="navbar">			
+			<ul>					
+				<li><a data-role="button" class="nextBtn ui-btn ui-shadow ui-icon-arrow-l ui-btn-icon-left"><%=__("previous_post")%></a></li>	
+				<li><a data-role="button" class="allBtn ui-btn ui-shadow ui-icon-bullets ui-btn-icon-left"><%=__("back_to_wall")%></a></li>
+				<li><a data-role="button" class="preBtn ui-btn ui-shadow ui-icon-arrow-r ui-btn-icon-right"><%=__("next_post")%></a></li>				
+			</ul>
+		</div><!-- /navbar -->    
+
+	</div>
+	<br>
+	<div id="adapter">
+	</div>
+	<!--REPLY ITEM-->
+	<ul id="item" data-role="listview" data-divider-theme="c" data-inset="false" style="display:none;margin-top: 0px">
+
+		<li data-role="list-divider" role="heading" data-theme="a" style="font-size: 0.7em">
+			L <span id='m_name'></span> | <span  id='m_update_time'></span>	                
+		</li>
+
+		<li data-theme="b">
+		<p id='m_content' style="white-space:normal;"></p>   
+		</li>           
+
+		<li data-theme="b">
+			<p  id='YN'></p>		            
+			<span id='yes' class="ui-li-count" style="margin-right: 55px">yes</span>
+			<span id='no' class="ui-li-count">no</span>
+		</li>	
+
+		<li data-role="list-divider" role="heading" style="background:white ;height:2px">  
+
+		</li>	
+	</ul>
+</div>
+
+<!-- Home -->
+<div data-role="page" id="replyDialog">
+	<div data-theme="a" data-role="header">
+		<h3>
+			<%=__("write_reply")%>
+		</h3>
+	</div>
+	<div data-role="content">
+
+		<div data-role="fieldcontain" id = "m_name_form">
+			<label for="m_name_reply">
+				<%=__("writer")%>:
+			</label>
+			<input name="m_name_reply" id="m_name_reply" placeholder="" value="" type="text">
+		</div>
+
+		<div data-role="fieldcontain" id = "m_temp_user_form">
+			<label for="m_temp_user">
+				<%=__("nickname")%>:
+			</label>
+			<input name="m_temp_user" id="m_temp_user" placeholder="" value="" type="text">
+		</div>
+
+		<div data-role="fieldcontain" id = "m_temp_pw_form">
+			<label for="m_temp_pw">
+				<%=__("password")%>:
+			</label>
+			<input name="m_temp_pw" id="m_temp_pw" placeholder="" value="" type="password">
+		</div>
+
+		<div data-role="fieldcontain">
+			<label for="m_content_reply">
+				<%=__("reply_content")%>:
+			</label>
+			<textarea name="m_content_reply" id="m_content_reply" placeholder=""></textarea>
+		</div>
+
+		<a data-theme="a" data-role="button" id="replyOkBtn" >
+			<%=__("write")%>
+		</a>
+
+		<a data-theme="a" data-role="button" href="#contentPage">
+			<%=__("cancel")%>
+		</a>
+	</div>
+
+</div>
+
+<!-- Home -->
+<div data-role="page" id="editDialog">
+
+
+	<div data-theme="a" data-role="header">
+		<h3>
+			<%=__("edit_and_delete")%>
+		</h3>
+	</div>
+	<div data-role="content">
+		<ul data-role="listview" data-divider-theme="b" data-inset="true">
+			<li data-theme="a">
+				<a href="#page1" id="editBtn_dialog" data-transition="slide">
+					<%=__("edit_post")%>
+				</a>
+			</li>
+			<li data-theme="a">
+				<a href="#page1" id="delBtn_dialog" data-transition="slide">
+					<%=__("delete_post")%>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,313 @@
+
+$(function() {
+
+	setUpperButton(m_category);
+
+	getBoardList(m_category,m_page);
+
+	if(idx_user!=0)
+	{
+		$('.sideMenu1').html('<%=__('logout')%>');
+	}
+	else
+	{
+		$('.sideMenu1').html('<%=__('login')%>');
+	}
+
+	$('.sideMenu1').off('click').click(function()
+	{	
+		if(idx_user!=0)
+		{
+			logoutUser();
+		}
+		else
+		{
+			$.mobile.changePage( "#loginDialog", { role: "dialog" } );
+		}
+	    return;
+	});
+
+	$('.sideMenu2').off('click').click(function()
+	{	
+		$('.sideCloseBtn').click();
+		goTo('/board/1/1'); 
+	    return;
+	});
+	$('.sideMenu3').off('click').click(function()
+	{	
+		$('.sideCloseBtn').click();
+		goTo('/board/2/1'); 
+	    return;
+	});
+	$('.sideMenu4').off('click').click(function()
+	{	
+		$('.sideCloseBtn').click();
+		goTo('/board/3/1'); 
+	    return;
+	});
+
+	$("#loginBtn").off('click').click(function()
+	{
+		loginUser();
+	});
+
+});
+
+function loginUser()
+{	
+	var request = {};
+	request.action = "loginUser";	
+	request.m_email = $("#m_email").val();
+	request.m_password = $("#m_password").val();
+	
+	var response = postJson(request);
+
+	if(response.isSuccess)		
+	{	
+		toast(response.isSuccess);
+		goRecentlyBoard();
+	}
+	else
+	{
+		toast(response.errorMsg);
+	}
+	return;
+};    
+
+function logoutUser()
+{
+	var request = {};
+	request.action = "logoutUser";	
+	
+	var response = postJson(request);
+
+	if(response.isSuccess)		
+	{	
+		toast(response.isSuccess);
+		goRecentlyBoard();
+	}
+	else
+	{
+		toast(response.errorMsg);
+	}
+	return;
+}
+function getBoardList(m_category , m_page)
+{
+	setCookie('m_page', m_page);
+	setCookie('m_category', m_category);
+
+	var request = {};
+	request.action = "getBoardList";	
+	request.m_page = m_page;
+	request.m_category = m_category;
+
+	var response = postJson(request);
+	
+	if(response.isSuccess)		
+		setBoardList(response);
+	else
+		toast(response.errorMsg);
+
+	return;
+}
+
+function setBoardList(result)
+{
+	var item = $('#item').clone();
+
+	item.show();
+
+	var adapter = $('#adapter').empty();
+
+	var boardList = result.boardList;
+
+	$(boardList).each(function(i)
+	{
+		var item = $('#item').clone();
+		item.show();
+
+		var itemData = boardList[i];
+
+
+		item.find('#idx_board').html(itemData.idx_board);
+
+		item.find('#m_hit').html('  <%=__("post_count")%>: ' + itemData.m_hit);
+
+		item.find('#m_title').html(itemData.m_title);					
+
+		if(itemData.idx_user!=0)
+			item.find('#m_name').html('<%=__("post_writer")%>: '+itemData.m_name);
+		else
+			item.find('#m_name').html('<%=__("post_writer")%>: '+itemData.m_temp_user);
+	
+
+		var star = parseInt(Math.round(itemData.m_rate));
+
+		var displayStart = '☆';
+
+		switch (star)
+		{
+			case 1:
+			displayStart = '★';
+			break;
+			case 2:
+			displayStart = '★★';
+			break;
+			case 3:
+			displayStart = '★★★';
+			break;
+			case 4:
+			displayStart = '★★★★';
+			break;
+			case 5:
+			displayStart = '★★★★★';
+			break;
+		}
+
+		item.find('#m_rate').html('<%=__("post_rate")%>: '+ displayStart);
+
+		if(itemData.m_reply==0)
+			item.find('#m_reply').hide();
+
+		item.find('#m_reply').html(itemData.m_reply);
+
+		var formattedDate = moment(itemData.m_update_time).format("YYYY-MM-DD HH:mm");
+
+		item.find('#m_update_time').html(formattedDate);
+
+		item.click(function(){
+			goTo("/board/item/"+itemData.idx_board);
+		});
+
+		adapter.append(item);					
+	});
+
+setBottomButton(result);
+
+$('html, body').animate( {scrollTop:0} );
+
+}	
+
+function setUpperButton(m_category)
+{
+	var type = 0;
+
+	type = parseInt(m_category);
+
+	switch(type)
+	{
+		case 1:       
+		$('#category1').buttonMarkup({theme: 'a'});
+		break;                                    
+		case 2:       
+		$('#category2').buttonMarkup({theme: 'a'});   
+		break; 
+		case 3:
+		$('#category3').buttonMarkup({theme: 'a'});     
+		break;                          
+	}  	
+
+	$('#category1').click(function()
+	{
+		goTo('/board/1/1'); 		
+	});
+	$('#category2').click(function()
+	{
+		goTo('/board/2/1'); 		
+	});
+	$('#category3').click(function()
+	{	
+		goTo('/board/3/1'); 		 
+	});
+}
+
+function setBottomButton(result)
+{
+	var currentpage = parseInt(m_page);
+
+	var page = $("#page").clone();
+
+	var indicator = $("#indicator").empty();
+
+	indicator.show();
+
+	var start_page = result.start_page;		
+	var total_page = result.total_page;		
+	var now_block = result.now_block;		
+	var total_block = result.total_block;			
+	var sector = result.sector;	
+//var start_page = header.start_page;
+
+var prev = page.clone();	
+
+prev.html('<<');
+
+prev.off('click').click(function(){
+//alert("pre!");
+if(now_block != 1)
+{
+   currentpage = start_page-1 ;    
+   //currentpage = (now_block-2) * sector +1 ;    
+}
+
+//getBoardList(currentpage , 1);
+
+goTo('/board/'+m_category+"/"+currentpage);
+
+});
+
+if(start_page!=1)
+{		
+	prev.buttonMarkup({theme: 'b'});
+	indicator.append(prev);		
+}
+
+for (var i = 0; i < sector; i++) {
+	var page1 = page.clone();	
+	var dispage = start_page + i;
+
+	page1.html(dispage);
+
+	page1.off('click').click(function(){
+	var page = parseInt($(this).html());
+
+	//getBoardList(page , 1);
+
+	goTo('/board/'+m_category+"/"+page);
+
+});
+
+	if(dispage>total_page)
+		return false;
+
+	if((i+start_page)==currentpage)
+	{
+		page1.buttonMarkup({theme: 'a'});
+	}
+	else
+	{
+		page1.buttonMarkup({theme: 'b'});
+	}
+
+	indicator.append(page1);					
+}
+
+var next = page.clone();	
+next.html('>>');
+
+next.off('click').click(function(){
+
+	//alert("next!");
+	
+	currentpage = (now_block*3)+1;
+
+	goTo('/board/'+m_category+"/"+currentpage);
+		
+});
+
+next.buttonMarkup({theme: 'b'});
+
+if(total_block!=now_block)
+	indicator.append(next);
+}

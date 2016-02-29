@@ -1,0 +1,91 @@
+
+$(function() {
+
+    if(idx_board != 0 )
+    {
+      $("#idx_board").val(idx_board); 
+      getBoardItem(idx_board);
+    }
+    $("#idx_user").val(idx_user);
+    $("#m_name").val(m_name);
+
+	if(idx_user==0)
+	{
+		$("#m_temp_user_form").show();
+		$("#m_temp_pw_form").show();
+		$("#m_name_form").hide();
+	}
+	else
+	{
+		$("#m_temp_user_form").hide();
+		$("#m_temp_pw_form").hide();
+		$("#m_name_form").show();
+	}
+
+	$("#m_file").off('click').click(function(){
+		if (confirm("<%=__('comment_delete_attach_file')%>")){
+			$("#m_file").val('');
+			$("#attachDiv").hide();
+			$("#fileDiv").show();
+		}
+	});
+
+	$('#myform').ajaxForm({
+		success : function(data) {
+
+			if(data.result.isSuccess)
+			{
+				toast(data.result.isSuccess); 
+				goBoardCategory($("#m_category").val());    
+			}
+			else{
+				toast(data.result.errorMsg);
+			}
+		}
+	});
+
+});
+
+function getBoardItem(idx_board)
+{
+	var request = {};
+	request.action = "getBoardItem";	
+	request.idx_board = idx_board;
+
+	var response = postJson(request);
+	
+	if(response.isSuccess)		
+		setBoardItem(response);
+	else
+		toast(response.errorMsg);
+
+	return;
+}
+
+function setBoardItem(response)
+{
+	var boardItem = response.boardItem;
+
+	if(boardItem.idx_user==0)
+	{
+		$("#m_temp_user").val(boardItem.m_temp_user);
+		$("#m_temp_pw").val(boardItem.m_temp_pw);
+		//very critical bug :)
+	}
+	else
+	{		
+		$("#m_name").val(boardItem.m_name);
+	}
+
+	$("#m_title").val(boardItem.m_title);
+	$("#m_category").val(boardItem.m_category);
+	$("#m_content").val(boardItem.m_content);
+
+	if(boardItem.m_file !='')
+	{
+		$("#attachDiv").show();
+		$("#fileDiv").hide();
+		$("#m_file").val(boardItem.m_file);
+	}
+	return;
+}

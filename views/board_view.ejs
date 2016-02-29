@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<% include head_view %>
+
+	<script>
+		var idx_user = <%=idx_user%>;
+		var m_name = '<%=m_name%>';
+
+		var m_category = <%=m_category%>;
+		var m_page = <%=m_page%>;
+	</script>
+
+	<script src="/board_control.js"/></script>
+
+</head>
+
+<body> 
+	<!-- Home -->
+	<div data-role="page" id="boardPage" style="min-height: 500px;">
+
+		<div data-role="header" data-position="inline">
+			<center>
+				<a id='homeBtn'><img id='title'  width='50%' src='/img/title_<%=__("LOCALE")%>.png' style="margin:2px;"></img></a>
+			</center>
+
+			<a id="leftMenuBtn" data-icon="bars" data-iconpos="left" style="margin:5px"><%=__("menu")%></a>
+			<a id="writeBtn" data-icon="plus" data-iconpos="left" style="margin:5px"><%=__("write_post")%></a>
+
+			<div data-role="navbar">
+				<ul>					
+					<li><a data-theme="b" id="category1"><%=__("free_board")%></a></li>
+					<li><a data-theme="b"  id="category2"><%=__("best_board")%></a></li>
+					<li><a data-theme="b"  id="category3"><%=__("notice_board")%></a></li>
+				</ul>
+			</div>
+
+		</div>
+
+		<div data-role="content" id="adapter">  
+
+		</div>
+
+		<div data-role="content" style="margin-bottom: 0px;display:none;">  
+
+			<ul id="item" data-role="listview" data-divider-theme="a" data-inset="true">
+
+				<li data-role="list-divider" role="heading">  
+					<span id='idx_board'></span>&nbsp; |&nbsp;
+					<span  id='m_update_time'></span>
+					<span id='m_hit' class="ui-li-count"></span>	
+				</li>
+
+				<li  data-theme="b" >
+					<a href="#boardPage" data-transition="slide">
+						<span  id='m_title'></span>
+						<p id='m_name'></p>               		
+						<p  id='m_rate'></p>
+						<span id='m_reply' class="ui-li-count"></span>
+					</a>
+				</li>
+			</ul>
+
+		</div>
+
+		<div align='center' id='indicator' style="margin-top:0px;display:none;">
+			<a data-role="button" data-inline="true" id = 'page' href="" style="width:20px; height:20px; font-size: 12px" data-transition="fade" >
+			</a>            
+		</div>
+		<br>
+
+		<div data-role="panel" id="sideMenu" data-position="left" data-display="overlay" data-dismissible="false">
+			<div class="ui-panel-inner">
+
+				<ul data-role="listview" data-theme="b" class="nav-search ui-listview ui-group-theme-a">
+
+					<li data-role="list-divider" data-theme="a" role="heading" class="ui-li-divider ui-bar-inherit" >
+						<div class="ui-block-a ui-bar-a root" style="width:100%;">
+							<center>▷ Snshero.com ◁</center> 
+						</div>
+					</li>
+
+					<li data-role="list-divider" role="heading" class="ui-li-divider ui-bar-inherit"  style="background:black"><font color="white"><%=__('menu1')%></font></li>
+					<li><a class="sideMenu1 ui-btn profile ui-btn ui-btn-icon-right ui-icon-carat-r"><%=__('login')%></a></li>
+					<li  data-icon="delete" class="ui-first-child"><a href="#" data-rel="close" class="sideCloseBtn ui-btn ui-btn-icon-right ui-icon-delete"><font color="red"><%=__('close')%></font></a></li>
+
+				</ul>
+
+			</div>
+		</div>
+		<!--panel-->
+	</div>
+
+	<!-- Home -->
+	<div data-role="page" id="loginDialog">
+
+		<div data-theme="a" data-role="header">
+			<h3>
+				<%=__("login")%>
+			</h3>
+		</div>
+
+		<div data-role="content">
+
+			<div data-role="fieldcontain" id = "m_email_form">
+				<label for="m_email">
+					<%=__("email")%>:
+				</label>
+				<input name="m_email" id="m_email" placeholder="" value="" type="text">
+			</div>
+
+			<div data-role="fieldcontain" id = "m_password_form">
+				<label for="m_password">
+					<%=__("password")%>:
+				</label>
+				<input name="m_password" id="m_password" placeholder="" value="" type="password">
+			</div>
+
+			<a data-theme="a" data-role="button" id="loginBtn" >
+				<%=__("login")%>
+			</a>
+
+			<a data-theme="a" data-role="button" href="#boardPage">
+				<%=__("cancel")%>
+			</a>
+		</div>
+
+	</div>
+
+</div>
+
+</body>
+</html>

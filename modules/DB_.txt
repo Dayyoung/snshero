@@ -1,0 +1,86 @@
+
+/* DATA BASE INFO */
+
+CREATE TABLE `t_board` (
+    `idx_board` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `idx_user` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+    `m_category` TINYINT(3) UNSIGNED NOT NULL DEFAULT '1',
+    `m_reply` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+    `m_hit` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+    `m_rate` FLOAT UNSIGNED NOT NULL DEFAULT '0',
+    `m_title` VARCHAR(201) NOT NULL COLLATE 'utf8_unicode_ci',
+    `m_content` VARCHAR(4001) NOT NULL COLLATE 'utf8_unicode_ci',
+    `m_file` VARCHAR(400) NOT NULL COLLATE 'utf8_unicode_ci',
+    `m_temp_user` VARCHAR(10) NOT NULL COLLATE 'utf8_unicode_ci',
+    `m_temp_pw` INT(4) UNSIGNED NOT NULL,
+    `m_delete` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+    `m_update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`idx_board`)
+)
+COLLATE='utf8_unicode_ci'
+ENGINE=InnoDB
+ROW_FORMAT=COMPACT
+AUTO_INCREMENT=1
+;
+
+CREATE TABLE `t_board_check` (
+    `idx_board_check` INT(10) NOT NULL AUTO_INCREMENT,
+    `idx_board` INT(10) NOT NULL DEFAULT '0',
+    `idx_user` INT(10) NOT NULL DEFAULT '0',
+    `m_rate` FLOAT NOT NULL DEFAULT '0',
+    `m_update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`idx_board_check`)
+)
+COLLATE='utf8_unicode_ci'
+ENGINE=MyISAM
+ROW_FORMAT=FIXED
+AUTO_INCREMENT=1
+;
+
+CREATE TABLE `t_reply` (
+    `idx_reply` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `idx_board` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+    `idx_user` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+    `m_temp_user` VARCHAR(11) NOT NULL COLLATE 'utf8_unicode_ci',
+    `m_temp_pw` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+    `m_yes` INT(3) UNSIGNED NOT NULL DEFAULT '0',
+    `m_no` INT(3) UNSIGNED NOT NULL DEFAULT '0',
+    `m_content` VARCHAR(201) NOT NULL COLLATE 'utf8_unicode_ci',
+    `m_delete` INT(3) UNSIGNED NOT NULL DEFAULT '0',
+    `m_update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`idx_reply`)
+)
+COLLATE='utf8_unicode_ci'
+ENGINE=InnoDB
+ROW_FORMAT=COMPACT
+AUTO_INCREMENT=1
+;
+CREATE TABLE `t_reply_check` (
+    `idx_reply_check` INT(10) NOT NULL AUTO_INCREMENT,
+    `idx_reply` INT(10) NOT NULL DEFAULT '0',
+    `idx_user` INT(10) NOT NULL DEFAULT '0',
+    `m_yes` INT(10) NOT NULL DEFAULT '0',
+    `m_no` INT(10) NOT NULL DEFAULT '0',
+    `m_update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`idx_reply_check`)
+)
+COLLATE='utf8_unicode_ci'
+ENGINE=MyISAM
+ROW_FORMAT=FIXED
+AUTO_INCREMENT=1
+;
+
+CREATE TABLE `t_user` (
+    `idx_user` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT ,
+    `m_email` VARCHAR(30) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+    `m_password` VARCHAR(30) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+    `m_name` VARCHAR(30) NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+    `m_reg_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+    `m_delete` TINYINT(4) UNSIGNED NOT NULL DEFAULT '0' ,
+    PRIMARY KEY (`idx_user`)
+)
+COLLATE='utf8_unicode_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=1
+;
+

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <% include head_view %>
+
+  <script type="text/javascript">
+    var idx_board = <%=idx_board%>;
+    var idx_user = <%=idx_user%>;
+    var m_name = '<%=m_name%>';
+  </script>
+
+  <script src="/board_write_control.js"></script>
+  <script src="/js/jquery.form.js"></script>
+</head>
+
+<body>
+
+  <!-- Home -->
+  <div data-role="page" id="page1">
+
+    <div data-theme="a" data-role="header" style="padding:10px">
+      <a data-role="button" data-theme="a" id="backBtn" data-icon="arrow-l" data-iconpos="left"
+      class="ui-btn-left" style="margin:5px">
+      <%=__("back")%>
+    </a>
+    <h3>
+      <%=__("write")%>
+    </h3>
+  </div>
+
+  <div data-role="content">
+
+    <form id="myform" method="post" enctype="multipart/form-data" action="/API/insertBoardItem">
+
+      <input name="idx_board" id ="idx_board" type="hidden" value="0">
+      <input name="idx_user" id ="idx_user" type="hidden" value="0">
+
+      <div data-role="fieldcontain" id="m_name_form">
+        <label for="m_name">
+          <%=__("writer")%>:
+        </label>
+        <input name="m_name" id="m_name" placeholder="" value="" type="text" readonly>
+      </div>
+
+      <div data-role="fieldcontain" id="m_temp_user_form">
+        <label for="m_name">
+          <%=__("nickname")%>:
+        </label>
+        <input name="m_temp_user" id="m_temp_user" placeholder="" value="" type="text" >
+      </div>
+
+      <div data-role="fieldcontain" id="m_temp_pw_form">
+        <label for="m_name">
+          <%=__("password")%>:
+        </label>
+        <input name="m_temp_pw" id="m_temp_pw" placeholder="" value="" type="password" >
+      </div>
+
+      <div data-role="fieldcontain" style="width: 100%;">
+
+        <label for="m_category">
+          <%=__("board")%>:
+        </label>
+        <select id="m_category" name="m_category">                 
+          <option value="1">
+            <%=__("free_board")%>
+          </option>
+          <option value="2">
+            <%=__("best_board")%>
+          </option>                       
+        </select>
+      </div>
+
+      <div data-role="fieldcontain">
+        <label for="m_title">
+          <%=__("post_title")%>:
+        </label>
+        <input name="m_title" id="m_title" placeholder="" value="" type="text">
+      </div>
+      <div data-role="fieldcontain">
+        <label for="m_content">
+          <%=__("post_content")%>:
+        </label>
+        <textarea name="m_content" id="m_content" placeholder=""></textarea>
+      </div>
+
+      <div data-role="fieldcontain" id="attachDiv" style="display:none">
+        <label for="m_content">
+          <%=__("file")%>:
+        </label>
+        <input name="m_file" id="m_file" placeholder="" value="" type="text">
+      </div>
+
+      <div data-role="fieldcontain" id="fileDiv">
+        <label for="m_title">
+          <%=__("attach_file")%>:
+        </label>
+        <input type="file" id="FileBox" name="thumbnail">
+      </div>
+
+      <input data-theme="a" type="submit" value="<%=__('write_post')%>" />
+
+      <input data-theme="a" type="button" id='cancelBtn' value="<%=__('cancel')%>" />
+
+    </form>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,11 @@
+# ignore list
+
+# all ignore (folder,file)
+public/uploads/ 
+node_modules/ 
+
+# file ignore (file)
+public/uploads/*.*
+
+# file ignore (sub folder)
+modules/common.js

@@ -1,0 +1,486 @@
+
+$(function() {
+
+	getBoardItem(idx_board);
+
+	$("#replyBtn").click(function()
+	{
+		if(idx_user==0)
+		{
+			$('#m_name_form').hide();
+			$('#m_temp_user_form').show();
+			$('#m_temp_pw_form').show();
+
+			$('#m_name_reply').val('');	
+			$('#m_temp_user').val('');
+			$('#m_temp_pw').val('');			
+			$('#m_content_reply').val('');
+		}
+		else
+		{
+			$('#m_name_form').show();
+			$('#m_temp_user_form').hide();
+			$('#m_temp_pw_form').hide();
+
+			$('#m_name_reply').val(m_name);	
+			$('#m_temp_user').val('');
+			$('#m_temp_pw').val('');			
+			$('#m_content_reply').val('');
+		}
+		$.mobile.changePage( "#replyDialog", { role: "dialog" } );
+	});
+
+	$("#replyOkBtn").click(function()
+	{
+		if(idx_user==0)
+			insertTempReplyItem();
+		else
+			insertReplyItem();
+	});
+
+	$("#editBtn").click(function()
+	{
+		$.mobile.changePage( "#editDialog", { role: "dialog" } );
+	});	
+
+	$("#editBtn_dialog").click(function()
+	{	
+		if(idx_user==0)
+		{
+			var ynPrompt=prompt("<%=__('comment_edit_post')%>");
+			if (ynPrompt)
+			{
+				editTempItem(ynPrompt);
+			}
+			else
+			{
+				refreshScreen();      	
+			}
+		}
+		else
+		{
+			editBoardItem();
+		}
+	});	
+
+	$("#delBtn_dialog").click(function()
+	{
+		if(idx_user==0)
+		{
+			var ynPrompt=prompt("<%=__('comment_delete_post')%>");
+			if (ynPrompt)
+			{
+				deleteTempItem(ynPrompt);
+			}
+			else
+			{
+				refreshScreen();      	
+			}
+		}
+		else
+		{
+			deleteBoardItem();
+		}
+	});	
+
+	$(".allBtn").click(function()
+	{
+		goRecentlyBoard();
+	});	
+
+	$(".preBtn").click(function()
+	{
+		getPreIdx();
+	});	
+
+	$(".nextBtn").click(function()
+	{
+		getNextIdx();
+	});	
+
+	$('#selectReply').change(function(){
+		rateBoardItem();
+	});
+
+	hitBoardItem();
+
+});
+
+function getBoardItem(idx_board)
+{
+	var request = {};
+	request.action = "getBoardItem";	
+	request.idx_board = idx_board;
+
+	var response = postJson(request);
+
+	if(response.isSuccess)		
+		setBoardItem(response);
+	else
+		toast(response.errorMsg);
+
+	return;
+}
+
+function setBoardItem(response)
+{	
+	$.mobile.changePage("#contentPage");	
+
+	var adapter = $('#adapter').empty();
+
+	var boardItem = response.boardItem;
+
+	var replyList = response.replyList;
+
+	$(replyList).each(function(i)
+	{
+		var item = $("#item").clone().show();
+
+		var itemreplyList = replyList[i];
+		item.find('#idx_reply').html(itemreplyList.idx_reply);
+
+		if(itemreplyList.idx_user!=0)
+			item.find('#m_name').html(itemreplyList.m_name);
+		else
+			item.find('#m_name').html(itemreplyList.m_temp_user);
+
+		var content = itemreplyList.m_content;
+		content = content.replace(/\r\n/g, '<br />');
+		content = content.replace(/\r/g, '<br />');
+		content = content.replace(/\n/g, '<br />');
+
+		item.find('#m_content').html(content);										
+
+		var formattedDate = moment(itemreplyList.m_update_time).format("YYYY-MM-DD HH:mm");
+
+		item.find('#m_update_time').html(formattedDate);
+
+		item.find('#yes').html('Yes: '+itemreplyList.m_yes);
+		item.find('#no').html('No: '+itemreplyList.m_no);
+
+		item.find('#yes').off('click').click(function(){
+			voteReplyItem(itemreplyList.idx_reply , 1);
+		});
+
+		item.find('#no').off('click').click(function(){
+			voteReplyItem(itemreplyList.idx_reply , 2);
+		});
+		adapter.append(item);					
+	});
+
+	var formattedDate = moment(boardItem.m_update_time).format("YYYY-MM-DD HH:mm");
+
+	$('#idx_board').val(boardItem.idx_board);	
+	$('#m_title').html("  <%=__('post_title')%>: "+boardItem.m_title);
+
+	if(boardItem.idx_user!=0)
+		var userName = boardItem.m_name;
+	else		
+		var userName = boardItem.m_temp_user;
+
+	$('#subTitle').html("<%=__('post_writer')%>: "+userName
+		+ "<br>" 		 
+		+ "  <%=__('post_date')%>: "+formattedDate
+		+ "<br>" 		 
+		+ "  <%=__('post_count')%>: "+boardItem.m_hit
+		+ "  <%=__('post_reply')%>: "+boardItem.m_reply);
+
+	if(isImageFile(boardItem.m_file))
+	{
+		$("#m_image").show();
+		$("#m_image").attr("src","/uploads/board/"+boardItem.m_file);    	
+	}    
+	else if(isVideoFile(boardItem.m_file))
+	{
+		$("#videoSource").parent().show();		
+
+		if (boardItem.m_file.indexOf("http://") != -1) 
+		{
+			$("#videoSource").parent().attr("src", boardItem.m_file);
+
+			$('#m_file').show();		   
+			$("#m_file").html("Play");     
+			$('#m_file').click(function(e) {
+				window.location.href = boardItem.m_file;
+			});
+		}
+		else
+		{
+			$("#videoSource").parent().attr("src","/uploads/board/"+boardItem.m_file);
+			var videoPlayer = $("#videoSource").parent().get(0);
+			videoPlayer.load();
+			videoPlayer.play();
+
+			$('#m_file').show();		   
+			$("#m_file").html("Play");     
+			$('#m_file').click(function(e) {
+				window.location.href = "/redirect.html?destination=uploads/board/"+boardItem.m_file
+			});
+		}
+
+	}    
+	else if(boardItem.m_file!="")
+	{
+		$("#m_file").show();
+		$("#m_file").html(boardItem.m_file.substring(13,boardItem.m_file.length));
+		$('#m_file').click(function(e) {
+			e.preventDefault();  
+			window.location.href = "/redirect.html?destination=uploads/board/"+boardItem.m_file;
+		});
+
+	}		
+
+	var content = boardItem.m_content;
+	content = content.replace(/\r\n/g, '<br />');
+	content = content.replace(/\r/g, '<br />');
+	content = content.replace(/\n/g, '<br />');
+
+	$('#m_content').html(content);
+	$('#m_rate').html('<%=__("post_rate")%>: '+boardItem.m_rate);
+} 
+
+function voteReplyItem(idx_reply , type)
+{
+	var request = {};
+	request.action = "voteReplyItem";	
+	request.idx_reply = idx_reply;	
+	request.idx_user = idx_user;
+
+	if(parseInt(type)==1)
+	{
+		request.m_yes = 1;
+		request.m_no = 0;
+	}
+	else
+	{			
+		request.m_yes = 0;
+		request.m_no = 1;
+	}
+
+	var response = postJson(request);
+
+	if(response.isSuccess)		
+	{	
+		getBoardItem(idx_board);
+	}
+	else
+	{
+		toast(response.errorMsg);
+	}
+	return;
+}
+
+
+function insertReplyItem()
+{	
+	var request = {};
+	request.action = "insertReplyItem";	
+	request.idx_board = idx_board;	
+	request.idx_user = idx_user;
+	request.m_content = $("#m_content_reply").val();
+
+	var response = postJson(request);
+
+	if(response.isSuccess)		
+	{	
+		getBoardItem(idx_board);
+	}
+	else
+	{
+		toast(response.errorMsg);
+	}
+
+	return;
+};    
+
+function insertTempReplyItem()
+{	
+	var request = {};
+	request.action = "insertReplyItem";	
+	request.idx_board = idx_board;	
+	request.idx_user = idx_user;
+	request.m_temp_pw = $("#m_temp_pw").val();
+	request.m_temp_user = $("#m_temp_pw").val();
+	request.m_content = $("#m_content_reply").val();
+
+	var response = postJson(request);
+
+	if(response.isSuccess)		
+	{	
+		getBoardItem(idx_board);
+	}
+	else
+	{
+		toast(response.errorMsg);
+	}
+
+	return;
+};    
+
+function rateBoardItem()
+{	
+	var request = {};
+	request.action = "rateBoardItem";	
+	request.idx_board = idx_board;	
+	request.idx_user = idx_user;
+	request.m_rate = $('#selectReply').val();
+
+	var response = postJson(request);
+
+	if(response.isSuccess)		
+	{	
+		toast(response.isSuccess);
+		getBoardItem(idx_board);
+	}
+	else
+	{
+		toast(response.errorMsg); 
+	}
+
+	return;
+};    
+
+function hitBoardItem()
+{	
+	var request = {};
+	request.action = "hitBoardItem";	
+	request.idx_board = idx_board;
+
+	var response = postJson(request);
+
+	if(response.isSuccess)		
+	{	
+		toast(response.isSuccess);
+	}
+	else
+	{
+		toast(response.errorMsg);
+	}
+	return;
+};    
+
+function getPreIdx()
+{	
+	var request = {};
+	request.action = "getNextBoardItem";	
+	request.idx_board = idx_board;
+
+	var response = postJson(request);
+
+	if(response.isSuccess)		
+	{	
+		goTo('/board/item/'+response.idx_board);
+	}
+	else
+	{
+		toast(response.errorMsg);
+	}
+
+	return;
+};    
+
+function getNextIdx()
+{	
+	var request = {};
+	request.action = "getNextBoardItem";	
+	request.idx_board = idx_board;
+	request.order = true;
+
+	var response = postJson(request);
+
+	if(response.isSuccess)		
+	{	
+		goTo('/board/item/'+response.idx_board);
+	}
+	else
+	{
+		toast(response.errorMsg);
+	}
+
+	return;
+};    
+
+function editBoardItem(m_temp_pw)
+{	
+	var request = {};
+	request.action = "updateBoardItem";	
+	request.idx_board = idx_board;
+	request.idx_user = idx_user;
+
+	var response = postJson(request);
+
+	if(response.isSuccess)		
+	{	
+		goEditItem(idx_board);
+	}
+	else
+	{
+		toast(response.errorMsg);
+	}
+	return;
+};    
+
+function deleteBoardItem(m_temp_pw)
+{	
+	var request = {};
+	request.action = "updateBoardItem";	
+	request.idx_board = idx_board;
+	request.idx_user = idx_user;
+	request.m_delete = 1;
+
+	var response = postJson(request);
+
+	if(response.isSuccess)		
+	{	
+		goRecentlyBoard();
+	}
+	else
+	{
+		toast(response.errorMsg);
+	}
+	return;
+};    
+
+function editTempItem(m_temp_pw)
+{	
+	var request = {};
+	request.action = "updateBoardItem";	
+	request.idx_board = idx_board;
+	request.idx_user = idx_user;
+	request.m_temp_pw = m_temp_pw;
+
+	var response = postJson(request);
+
+	if(response.isSuccess)		
+	{	
+		goEditItem(idx_board);
+	}
+	else
+	{
+		toast(response.errorMsg);
+	}
+
+	return;
+};    
+
+function deleteTempItem(m_temp_pw)
+{	
+	var request = {};
+	request.action = "updateBoardItem";	
+	request.idx_board = idx_board;
+	request.idx_user = idx_user;
+	request.m_temp_pw = m_temp_pw;
+	request.m_delete = 1;
+
+	var response = postJson(request);
+
+	if(response.isSuccess)		
+	{	
+		goRecentlyBoard();
+	}
+	else
+	{
+		toast(response.errorMsg);
+	}
+	return;
+};    

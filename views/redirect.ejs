@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <% include head_view %>
+
+<script type="text/javascript">
+  var destination = '<%= destination %>';
+
+var timer = setInterval(function () {
+        //alert('Timer Start');
+        if(destination!='undefined')
+        	var url = "../"+destination;   
+        else
+        	var url = "../";   
+        
+        window.location.replace(url);
+        clearInterval(timer);
+        }, 1000);
+
+</script>
+</head>
+
+<body>
+      <center>
+        Redirect to snshero.com ...
+      </center>
+</body>
+
+</html>
