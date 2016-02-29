@@ -12,10 +12,10 @@ SNSHERO - Asia style open community source project - Nodejs / Express / Mysql
 6. excute _DB.txt on your DB.
 
 ## Usage
-https://raw.githubusercontent.com/Dayyoung/snshero/master/1.png
-https://raw.githubusercontent.com/Dayyoung/snshero/master/1.png
-https://raw.githubusercontent.com/Dayyoung/snshero/master/1.png
-https://raw.githubusercontent.com/Dayyoung/snshero/master/1.png
+![alt tag](https://raw.githubusercontent.com/Dayyoung/snshero/master/1.png)
+![alt tag](https://raw.githubusercontent.com/Dayyoung/snshero/master/2.png)
+![alt tag](https://raw.githubusercontent.com/Dayyoung/snshero/master/3.png)
+![alt tag](https://raw.githubusercontent.com/Dayyoung/snshero/master/4.png)
 
 ## Features
 
