@@ -6,10 +6,10 @@ SNSHERO - Asia style open community source project - Nodejs / Express / Mysql
 
 1. git clone https://github.com/Dayyoung/snshero.git
 2. go to the folder. (cd snshero)
-3. install node modules (npm install) 
-4. put your db inform to _common.js (module/common.js)
-5. rename _common.js > common.js
-6. excute _DB.txt on your DB.
+3. install node modules. (npm install) 
+4. put your db inform to _common.js (module/_common.js)
+5. edit configuration file. (_common.js > common.js)
+6. excute db query. (module/_DB.txt)
 
 ## Usage
 
@@ -25,7 +25,9 @@ SNSHERO - Asia style open community source project - Nodejs / Express / Mysql
 
 ## Features
 
-http://board.snshero.com
+- quick simple installation.
+- support international language. (korea/china/japan)
+- visit http://snshero.com
 
 ## License
 
