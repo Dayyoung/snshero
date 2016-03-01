@@ -26,6 +26,8 @@ SNSHERO - Asia style open community source project - Nodejs / Express / Mysql
 ## Features
 
 - quick simple installation.
+- support all format imgage,video. (jpg/png/gif/mp4)
+- support html5 browser. (chrome/ie/safari/firefox) 
 - support international language. (korea/china/japan)
 - visit http://snshero.com
 
