@@ -30,6 +30,11 @@ SNSHERO - Asia style open community source project - Nodejs / Express / Mysql
 - support html5 browser. (chrome/ie/safari/firefox) 
 - support international language. (korea/china/japan)
 - visit http://snshero.com
+- 
+## wiki (korean only)
+
+- SNSHERO WIKI - http://wiki.snshero.com/wiki 
+- SNSHERO JSON API - http://wiki.snshero.com/wiki/index.php/SNSHERO_JSON_API
 
 ## License
 
