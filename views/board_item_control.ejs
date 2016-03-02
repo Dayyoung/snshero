@@ -304,7 +304,7 @@ function insertTempReplyItem()
 	request.idx_board = idx_board;	
 	request.idx_user = idx_user;
 	request.m_temp_pw = $("#m_temp_pw").val();
-	request.m_temp_user = $("#m_temp_pw").val();
+	request.m_temp_user = $("#m_temp_user").val();
 	request.m_content = $("#m_content_reply").val();
 
 	var response = postJson(request);
