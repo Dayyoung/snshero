@@ -426,7 +426,7 @@ module.exports = {
       }
       if (result.length==0) 
       {
-        COMMON.makePasswordError(res,responseData,connection , 1);
+        COMMON.makeNotFoundError(res,responseData,connection , 1);
         return;
       }
 

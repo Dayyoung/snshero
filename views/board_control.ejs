@@ -169,6 +169,8 @@ function setBoardList(result)
 
 		if(itemData.m_reply==0)
 			item.find('#m_reply').hide();
+		else			
+			item.find('#m_reply').show();
 
 		item.find('#m_reply').html(itemData.m_reply);
 

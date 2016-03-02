@@ -1,4 +1,3 @@
-
 var COMMON = require('./common');
 
 function define(name, value) {
@@ -12,10 +11,10 @@ var DEBUG_MODE = true;
 define("DEBUG_MODE", DEBUG_MODE);
 define("DEBUG",  true);
 
-define("UNEXPECTED_ERROR", {"errorCode": 1001, "errorMsg":"An unexpected error occurred." });
-define("NOT_FOUND_DATA", {"errorCode": 1002, "errorMsg":"Can not find data." });
-define("NOT_PARAM", {"errorCode": 1003, "errorMsg":"Can not find parameter." });
-define("DB_ERROR", {"errorCode": 1004, "errorMsg":"DB error occurred." });
+define("NOT_PARAM", {"errorCode": 1001, "errorMsg":"Can not find parameter." });
+define("DB_ERROR", {"errorCode": 1002, "errorMsg":"DB error occurred." });
+define("UNEXPECTED_ERROR", {"errorCode": 1003, "errorMsg":"An unexpected error occurred." });
+define("NOT_FOUND_DATA", {"errorCode": 1004, "errorMsg":"Can not find data." });
 define("UPLOAD_ERROR", {"errorCode": 1005, "errorMsg":"UPLOAD error occurred." });
 define("PASSWORD_ERROR", {"errorCode": 1006, "errorMsg":"Password error occurred." });
 define("EMAIL_ERROR", {"errorCode": 1007, "errorMsg":"Invalid email address." });
@@ -61,15 +60,17 @@ module.exports = {
         responseData.result.errorMsg = COMMON.DB_ERROR.errorMsg + " Line : " + debug;        
         responseData.result.errorCode = COMMON.DB_ERROR.errorCode;
         res.json(responseData);
-        connection.end();
+        if(connection)
+            connection.end();
         return;         
     },
     makeNotFoundError : function (res,responseData,connection,debug)
     {    
         responseData.result.errorMsg = COMMON.NOT_FOUND_DATA.errorMsg + " Line : " + debug;        
         responseData.result.errorCode = COMMON.NOT_FOUND_DATA.errorCode;
-        res.json(responseData);
-        connection.end();
+        res.json(responseData);        
+        if(connection)
+            connection.end();
         return;         
     },
     makeUnexpectedError : function (res,responseData,connection,debug)
@@ -77,31 +78,35 @@ module.exports = {
         responseData.result.errorMsg = COMMON.UNEXPECTED_ERROR.errorMsg + " Line : " + debug;        
         responseData.result.errorCode = COMMON.UNEXPECTED_ERROR.errorCode;
         res.json(responseData);
-        connection.end();
+        if(connection)
+            connection.end();
         return;         
     },
     makeUploadError : function (res,responseData,connection,debug)
     {    
         responseData.result.errorMsg = COMMON.UPLOAD_ERROR.errorMsg + " Line : " + debug;        
         responseData.result.errorCode = COMMON.UPLOAD_ERROR.errorCode;
-        res.json(responseData);
-        connection.end();
+        res.json(responseData);        
+        if(connection)
+            connection.end();
         return;         
     },
     makePasswordError : function (res,responseData,connection,debug)
     {    
         responseData.result.errorMsg = COMMON.PASSWORD_ERROR.errorMsg + " Line : " + debug;        
         responseData.result.errorCode = COMMON.PASSWORD_ERROR.errorCode;
-        res.json(responseData);        
-        connection.end();
+        res.json(responseData);   
+        if(connection)
+            connection.end();
         return;         
     },
     makeEmailError : function (res,responseData,connection,debug)
     {    
         responseData.result.errorMsg = COMMON.EMAIL_ERROR.errorMsg + " Line : " + debug;        
         responseData.result.errorCode = COMMON.EMAIL_ERROR.errorCode;
-        res.json(responseData);        
-        connection.end();
+        res.json(responseData); 
+        if(connection)
+            connection.end();
         return;         
     },
     log : function (msg)
@@ -116,4 +121,5 @@ module.exports = {
     return re.test(email);
     }
 }
+
 

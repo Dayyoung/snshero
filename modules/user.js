@@ -99,13 +99,16 @@ module.exports = {
 
         COMMON.makeHeader(action,requestData,responseData);
 
-        responseData.result.isSuccess = true;
-
         req.session.destroy(function(err) {
-        // cannot access session here
-        console.log("BYE BYE!");
+        // cannot access session here        
+        if(err)
+        {
+            COMMON.makeUnexpectedError(res,responseData, undefined , 1);
+        }
+            responseData.result.isSuccess = true;
+            console.log("BYE BYE!");
+            res.json(responseData);
+            return;   
         });         
-        res.json(responseData);
-        return;     
     }
 }

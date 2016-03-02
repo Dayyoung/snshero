@@ -188,7 +188,11 @@ function setBoardItem(response)
 	if(isImageFile(boardItem.m_file))
 	{
 		$("#m_image").show();
-		$("#m_image").attr("src","/uploads/board/"+boardItem.m_file);    	
+
+		if (boardItem.m_file.indexOf("http://") != -1) 
+			$("#m_image").attr("src", boardItem.m_file);   
+		else 
+			$("#m_image").attr("src","/uploads/board/"+boardItem.m_file);    	
 	}    
 	else if(isVideoFile(boardItem.m_file))
 	{
