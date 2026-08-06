@@ -155,7 +155,7 @@ const MissionCharacterPortrait: React.FC<{ cardId?: number; name: string; classN
         <img
           src={`/character/${String(safeCardId).padStart(3, '0')}.png`}
           alt={name}
-          className="relative z-10 h-full w-full object-contain object-center drop-shadow-[0_12px_18px_rgba(15,23,42,0.24)]"
+          className="relative z-10 h-full w-full object-contain object-top scale-[1.25] origin-top drop-shadow-[0_10px_16px_rgba(15,23,42,0.35)] transition-transform duration-500 group-hover:scale-[1.35]"
           loading="lazy"
           onError={() => setShowCharacterImage(false)}
         />
@@ -8200,9 +8200,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       aria-label={m.title}
                     >
                       {/* Character card top area — upper body crop */}
-                      <div className={cn('flex-1 flex items-center justify-center p-0 relative overflow-hidden', `bg-gradient-to-br ${m.color}`)}>
+                      <div className={cn('flex-1 flex items-center justify-center p-0 relative overflow-hidden h-44 sm:h-48 min-h-[160px]', `bg-gradient-to-br ${m.color}`)}>
                         {charCard ? (
-                          <MissionCharacterPortrait cardId={charCard.id} name={charName} className="h-[160px] p-2" />
+                          <MissionCharacterPortrait cardId={charCard.id} name={charName} className="h-full w-full pt-3 pb-1 px-2" />
                         ) : (
                           <IconComp size={48} className="text-white/80 drop-shadow-lg my-6" />
                         )}
