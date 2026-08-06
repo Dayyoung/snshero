@@ -72,7 +72,9 @@ import {
   Zap, 
   Sparkles, 
   Navigation, 
-  Swords 
+  Swords,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 
 import { Meta } from './components/Meta';
@@ -119,6 +121,7 @@ const SimulationOverlay = lazy(() => import('./components/SimulationOverlay').th
 const QrReward = lazy(() => import('./components/QrReward').then(module => ({ default: module.QrReward })));
 const PolicyCenterView = lazy(() => import('./views/PolicyCenterView').then(module => ({ default: module.PolicyCenterView })));
 const NovelView = lazy(() => import('./views/NovelView').then(module => ({ default: module.NovelView })));
+const AnimeView = lazy(() => import('./views/AnimeView').then(module => ({ default: module.AnimeView })));
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -443,6 +446,7 @@ function AppContent() {
     return '';
   });
   const [playGameState, setPlayGameState] = useState<string>('lobby');
+  const [playInitialMode, setPlayInitialMode] = useState<string>('modeSelect');
   const [isAutoBattle, setIsAutoBattle] = useState(() => {
     const setting = localStorage.getItem('hero_auto_battle_setting');
     if (setting !== null) return JSON.parse(setting) === true;
@@ -1637,6 +1641,7 @@ function AppContent() {
   useEffect(() => {
     if (view !== 'play' && playGameState !== 'lobby') {
       setPlayGameState('lobby');
+      setPlayInitialMode('modeSelect');
     }
   }, [view, playGameState]);
 
@@ -4543,6 +4548,20 @@ function AppContent() {
     localStorage.setItem('hero_sfx_volume', sfxVolume.toString());
   }, [bgmEnabled, sfxEnabled, bgmVolume, sfxVolume]);
 
+  const isAudioMuted = !bgmEnabled && !sfxEnabled;
+
+  const toggleAudioMute = useCallback(() => {
+    const nextMuteState = !isAudioMuted;
+    setBgmEnabled(!nextMuteState);
+    setSfxEnabled(!nextMuteState);
+    if (!nextMuteState) {
+      if (!audioStarted) {
+        startAudio();
+      }
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    }
+  }, [isAudioMuted, audioStarted, startAudio, playSfx]);
+
 
   const handleResetSkills = useCallback(() => {
     const isFree = true;
@@ -4972,6 +4991,17 @@ function AppContent() {
               setView('home'); // Ensure we are on home for Step 1
             }}
             isTutorialCompleted={getSeasonItem('hero_tutorial_completed', currentSeason) === 'true'}
+            isTutorialMode={isTutorialMode}
+            tutorialStep={tutorialStep}
+            onStartPlayNow={() => {
+              if (isTutorialMode || (tutorialStep > 0 && tutorialStep < 14)) {
+                setAutoStartPvp(true);
+                setView('ranking');
+              } else {
+                setPlayInitialMode('story');
+                setView('play');
+              }
+            }}
           />
         );
       case 'main':
@@ -5319,6 +5349,7 @@ function AppContent() {
       case 'play':
         return (
           <PlayGameView 
+            initialMode={playInitialMode}
             calculatedTotalPower={calculatedBattlePower}
             playerDeck={isPlaygroundMode ? playgroundDeck : currentDeck} 
             onBack={onBackFromGame} 
@@ -5664,6 +5695,17 @@ function AppContent() {
             </button>
           </div>
         );
+      case 'anime':
+        return (
+          <AnimeView
+            language={language}
+            onNavigate={setView}
+            playSfx={playSfx}
+            currentSeason={currentSeason}
+            updateSns={updateSns}
+            showCustomAlert={showCustomAlert}
+          />
+        );
       case 'novel':
       case 'webtoon':
       case 'cartoonBook' as any:
@@ -5697,6 +5739,17 @@ function AppContent() {
             startAudio={startAudio}
             handleLogin={handleLogin}
             handleLogout={handleLogout}
+            isTutorialMode={isTutorialMode}
+            tutorialStep={tutorialStep}
+            onStartPlayNow={() => {
+              if (isTutorialMode || (tutorialStep > 0 && tutorialStep < 14)) {
+                setAutoStartPvp(true);
+                setView('ranking');
+              } else {
+                setPlayInitialMode('story');
+                setView('play');
+              }
+            }}
           />
         );
     }
@@ -5733,7 +5786,7 @@ function AppContent() {
     );
   }
 
-    const showNavbar = (view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon') && (view !== 'play' || playGameState === 'modeSelect') && !isGlobalPopupOpen;
+    const showNavbar = (view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime') && (view !== 'play' || playGameState === 'modeSelect') && !isGlobalPopupOpen;
     
     return (
       <div className={cn(
@@ -5786,27 +5839,57 @@ function AppContent() {
           (view === 'play' && playGameState === 'playing') ? "h-full overflow-hidden" : "min-h-screen"
         )}>
           {view !== 'landing' && (
-            <button
-              onClick={() => {
-                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                setIsMenuOpen(true);
-              }}
-              className={cn(
-                "fixed right-4 min-[1024px]:right-[calc(50vw-496px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center touch-target",
-                (theme === 'dark' || theme === 'metal')
-                  ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
-                  : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
-              )}
-              style={{
-                // 광고 배너 바로 아래에 버튼 배치
-                top: adBannerHeight > 0
-                  ? `${adBannerHeight + 4}px`
-                  : '10px'
-              }}
-              title={t('menu_title', language)}
-            >
-              <Menu size={20} />
-            </button>
+            <>
+              {/* Dedicated HUD Quick Audio Mute / Unmute Button */}
+              <button
+                onClick={toggleAudioMute}
+                id="hud-audio-toggle"
+                className={cn(
+                  "fixed right-[3.75rem] min-[1024px]:right-[calc(50vw-444px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center touch-target",
+                  isAudioMuted
+                    ? "bg-rose-500/10 border border-rose-500/50 text-rose-500 hover:bg-rose-500/20"
+                    : (theme === 'dark' || theme === 'metal')
+                    ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
+                    : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
+                )}
+                style={{
+                  top: adBannerHeight > 0
+                    ? `${adBannerHeight + 4}px`
+                    : '10px'
+                }}
+                title={isAudioMuted ? t('hud_audio_unmute', language) : t('hud_audio_mute', language)}
+                aria-label={isAudioMuted ? t('hud_audio_unmute', language) : t('hud_audio_mute', language)}
+              >
+                {isAudioMuted ? (
+                  <VolumeX size={20} className="text-rose-500 animate-pulse" />
+                ) : (
+                  <Volume2 size={20} />
+                )}
+              </button>
+
+              {/* HUD Main Hamburger Menu Button */}
+              <button
+                onClick={() => {
+                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                  setIsMenuOpen(true);
+                }}
+                className={cn(
+                  "fixed right-4 min-[1024px]:right-[calc(50vw-496px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center touch-target",
+                  (theme === 'dark' || theme === 'metal')
+                    ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
+                    : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
+                )}
+                style={{
+                  // 광고 배너 바로 아래에 버튼 배치
+                  top: adBannerHeight > 0
+                    ? `${adBannerHeight + 4}px`
+                    : '10px'
+                }}
+                title={t('menu_title', language)}
+              >
+                <Menu size={20} />
+              </button>
+            </>
           )}
 
           {view !== 'landing' && view !== 'home' && (

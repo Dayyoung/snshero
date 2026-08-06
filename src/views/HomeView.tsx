@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { t } from "../lib/i18n";
 import { cn } from "../lib/utils";
@@ -44,6 +44,9 @@ interface HomeViewProps {
   showRulesBtn?: boolean;
   onStartTutorial?: () => void;
   isTutorialCompleted?: boolean;
+  onStartPlayNow?: () => void;
+  isTutorialMode?: boolean;
+  tutorialStep?: number;
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({
@@ -55,6 +58,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
   user,
   handleLogin,
   handleLogout,
+  onStartPlayNow,
+  isTutorialMode,
+  tutorialStep,
 }) => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [showPdf, setShowPdf] = useState(false);
@@ -254,13 +260,23 @@ export const HomeView: React.FC<HomeViewProps> = ({
           {...buttonMotionProps}
           onClick={() => {
             playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-            onNavigate("ranking");
+            if (onStartPlayNow) {
+              onStartPlayNow();
+            } else {
+              if (isTutorialMode || (tutorialStep && tutorialStep > 0)) {
+                onNavigate("ranking");
+              } else {
+                onNavigate("play");
+              }
+            }
           }}
-          className="w-full h-14 sm:h-16 bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-white font-bold text-base sm:text-lg rounded-sm hover:from-indigo-700 hover:to-fuchsia-700 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-3 touch-target"
+          className="w-full h-14 sm:h-16 px-5 sm:px-6 bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-white font-bold text-base sm:text-lg rounded-sm hover:from-indigo-700 hover:to-fuchsia-700 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-between touch-target shadow-md group"
         >
-          <Play size={22} className="shrink-0" />
-          <span>{t("home_play_now", language)}</span>
-          <ArrowRight size={18} className="shrink-0 opacity-60" />
+          <div className="flex items-center gap-3">
+            <Play size={22} className="shrink-0" />
+            <span>{t("home_play_now", language)}</span>
+          </div>
+          <ArrowRight size={20} className="shrink-0 opacity-70 group-hover:translate-x-1 transition-transform" />
         </motion.button>
 
         {/* ── Official Web Novel (big CTA) ── */}
@@ -270,11 +286,29 @@ export const HomeView: React.FC<HomeViewProps> = ({
             playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
             onNavigate("novel");
           }}
-          className="w-full h-14 sm:h-16 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold text-base sm:text-lg rounded-sm hover:from-blue-700 hover:to-blue-600 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-3 touch-target"
+          className="w-full h-14 sm:h-16 px-5 sm:px-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold text-base sm:text-lg rounded-sm hover:from-blue-700 hover:to-blue-600 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-between touch-target shadow-md group"
         >
-          <BookOpen size={22} className="shrink-0" />
-          <span>{language === 'ko' ? "소설 읽기" : "Read Novel"}</span>
-          <ArrowRight size={18} className="shrink-0 opacity-60" />
+          <div className="flex items-center gap-3">
+            <BookOpen size={22} className="shrink-0" />
+            <span>{language === 'ko' ? "소설 읽기" : "Read Novel"}</span>
+          </div>
+          <ArrowRight size={20} className="shrink-0 opacity-70 group-hover:translate-x-1 transition-transform" />
+        </motion.button>
+
+        {/* ── Official Anime 40-Episode Series (big CTA) ── */}
+        <motion.button
+          {...buttonMotionProps}
+          onClick={() => {
+            playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+            onNavigate("anime");
+          }}
+          className="w-full h-14 sm:h-16 px-5 sm:px-6 bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 text-white font-bold text-base sm:text-lg rounded-sm hover:from-purple-700 hover:to-pink-700 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-between touch-target shadow-md group"
+        >
+          <div className="flex items-center gap-3">
+            <Tv size={22} className="shrink-0 animate-pulse" />
+            <span>{language === 'ko' ? "애니메이션 보기" : "Watch Anime"}</span>
+          </div>
+          <ArrowRight size={20} className="shrink-0 opacity-70 group-hover:translate-x-1 transition-transform" />
         </motion.button>
       </header>
 

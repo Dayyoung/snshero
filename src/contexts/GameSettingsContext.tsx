@@ -55,7 +55,7 @@ export function GameSettingsProvider({ children }: { children: React.ReactNode }
       return normalizeCardSkinTheme(localStorage.getItem(CARD_SKIN_THEME_STORAGE_KEY));
     }
 
-    return 'default';
+    return 'original_mecha';
   });
 
   const handleSetLanguage = useCallback((lang: Language) => {

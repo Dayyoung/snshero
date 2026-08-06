@@ -141,7 +141,6 @@ export const SettingView: React.FC<SettingViewProps> = ({
   }, []);
 
   const canAccessThumbnailDiagnostics = testMode || isAdminAuthenticated;
-  const originalMechaPromptCount = getCardSkinThemePromptCount('original_mecha');
 
   const pushChannelFeedback = (message: string) => {
     setSystemNotice(message);
@@ -657,60 +656,6 @@ export const SettingView: React.FC<SettingViewProps> = ({
                   )}
                 >
                   ⚙️ {language === 'ko' ? '메탈' : 'Metal'}
-                </button>
-              </div>
-            </div>
-
-            <div className="bg-white p-6 border-t border-slate-50 space-y-4">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <Sword size={24} className="text-slate-700" />
-                  <div>
-                    <p className="font-bold text-sm tracking-tight uppercase text-slate-800">{t('card_skin_theme', language)}</p>
-                    <p className="text-[10px] text-slate-400 font-semibold tracking-widest uppercase">{t('card_skin_theme_desc', language)}</p>
-                  </div>
-                </div>
-                <div className="rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-indigo-700">
-                  {originalMechaPromptCount} PROMPTS
-                </div>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs leading-5 text-slate-600">
-                {t('card_skin_theme_live_preview', language)}
-              </div>
-              <div className="grid gap-2 pt-2 sm:grid-cols-2">
-                <button
-                  onClick={() => {
-                    setCardSkinTheme('default');
-                    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-                  }}
-                  className={cn(
-                    "min-h-[44px] rounded-2xl border px-4 py-3 text-left transition-all cursor-pointer",
-                    cardSkinTheme === 'default'
-                      ? "border-slate-900 bg-slate-900 text-white shadow-md"
-                      : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
-                  )}
-                >
-                  <p className="text-sm font-black uppercase tracking-tight">{t('card_skin_theme_default', language)}</p>
-                  <p className={cn("mt-1 text-[11px] leading-5", cardSkinTheme === 'default' ? 'text-slate-200' : 'text-slate-500')}>
-                    {t('card_skin_theme_default_desc', language)}
-                  </p>
-                </button>
-                <button
-                  onClick={() => {
-                    setCardSkinTheme('original_mecha');
-                    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-                  }}
-                  className={cn(
-                    "min-h-[44px] rounded-2xl border px-4 py-3 text-left transition-all cursor-pointer",
-                    cardSkinTheme === 'original_mecha'
-                      ? "border-cyan-400 bg-slate-950 text-white shadow-[0_0_20px_rgba(34,211,238,0.18)]"
-                      : "border-slate-200 bg-white text-slate-600 hover:border-cyan-200 hover:bg-cyan-50/40"
-                  )}
-                >
-                  <p className="text-sm font-black uppercase tracking-tight">{t('card_skin_theme_original_mecha', language)}</p>
-                  <p className={cn("mt-1 text-[11px] leading-5", cardSkinTheme === 'original_mecha' ? 'text-slate-200' : 'text-slate-500')}>
-                    {t('card_skin_theme_original_mecha_desc', language)}
-                  </p>
                 </button>
               </div>
             </div>

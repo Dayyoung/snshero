@@ -3349,7 +3349,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 id={`shop-pack-${pack.rarity}`}
                 whileHover={lowSpecMode ? undefined : { y: -4 }}
                 className={cn(
-                  'relative flex flex-col gap-4 overflow-hidden rounded-2xl border bg-white p-5 shadow-sm transition-all group sm:p-6 md:p-7',
+                  'relative flex flex-col justify-between gap-4 overflow-hidden rounded-2xl border bg-white p-5 shadow-sm transition-all group sm:p-6 md:p-7 h-full',
                   packTheme.cardBorder,
                 )}
               >
@@ -3361,40 +3361,42 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   className="pointer-events-none absolute left-4 top-14 z-0 h-16 w-16 object-contain opacity-25 transition-all duration-500 group-hover:scale-105 group-hover:opacity-45 sm:h-20 sm:w-20"
                 />
 
-                <div className="relative z-10 flex items-start justify-between gap-3">
-                  <div className={cn('rounded-lg px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest sm:text-[10px]', packTheme.badge)}>
-                    {pack.title}
+                <div className="relative z-10 flex flex-col gap-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className={cn('rounded-lg px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest sm:text-[10px]', packTheme.badge)}>
+                      {pack.title}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setPackGuideState({ packRarity: pack.rarity, step: 0 })}
+                      className={getGuideButtonClassName()}
+                      aria-label={t('shop_pack_guide_open', language)}
+                      title={t('shop_pack_guide_open', language)}
+                    >
+                      <HelpCircle size={16} />
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setPackGuideState({ packRarity: pack.rarity, step: 0 })}
-                    className={getGuideButtonClassName()}
-                    aria-label={t('shop_pack_guide_open', language)}
-                    title={t('shop_pack_guide_open', language)}
-                  >
-                    <HelpCircle size={16} />
-                  </button>
+
+                  <div className="pl-14 sm:pl-16">
+                    <h3 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">{pack.label}</h3>
+                  </div>
                 </div>
 
-                <div className="relative z-10 pl-14 sm:pl-16">
-                  <h3 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">{pack.label}</h3>
-                </div>
-
-                <div className="relative z-10">
+                <div className="relative z-10 mt-auto pt-2 w-full">
                   <button
                     id={`shop-pack-${pack.rarity}-btn`}
                     onClick={() => buyPack(pack.cost, pack.rarity)}
                     className={cn(
-                      'min-h-12 w-full rounded-xl border px-4 py-3 text-left text-white shadow-sm transition-all active:scale-95 touch-target',
+                      'h-13 sm:h-14 w-full rounded-xl border px-4 py-3 text-left text-white shadow-sm transition-all active:scale-95 touch-target flex items-center justify-between',
                       packTheme.primaryButton,
                     )}
                   >
                     <span className="flex w-full items-center justify-between gap-3">
                       <span className="min-w-0 leading-tight">
                         <span className="block text-[9px] uppercase tracking-[0.18em] text-white/70 sm:text-[10px]">{pack.label}</span>
-                        <span className="mt-1 block text-sm font-black uppercase sm:text-base">{t('buy', language)}</span>
+                        <span className="mt-0.5 block text-sm font-black uppercase sm:text-base leading-none">{t('buy', language)}</span>
                       </span>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 shrink-0">
                         <span className="text-sm font-black sm:text-base">{pack.cost} SNS</span>
                         <ArrowRight size={16} className="shrink-0 opacity-80" />
                       </div>
@@ -3409,111 +3411,119 @@ export const ShopView: React.FC<ShopViewProps> = ({
             {/* Item Pack */}
             <motion.div
               whileHover={lowSpecMode ? undefined : { y: -4 }}
-              className="relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-purple-100 bg-white p-5 shadow-sm transition-all group sm:p-6 md:p-7"
+              className="relative flex flex-col justify-between gap-4 overflow-hidden rounded-2xl border border-purple-100 bg-white p-5 shadow-sm transition-all group sm:p-6 md:p-7 h-full"
             >
               <div className="absolute -left-10 top-8 h-28 w-28 rounded-full bg-purple-500/10 blur-3xl transition-all duration-500 group-hover:bg-purple-500/20" />
               <Package className="pointer-events-none absolute left-4 top-14 z-0 h-16 w-16 text-purple-200 opacity-80 sm:h-20 sm:w-20" aria-hidden="true" />
 
-              <div className="relative z-10 flex items-start justify-between gap-3">
-                <div className="rounded-lg bg-purple-600 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-white sm:text-[10px]">
-                  {t('item_pack', language)}
+              <div className="relative z-10 flex flex-col gap-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="rounded-lg bg-purple-600 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-white sm:text-[10px]">
+                    {t('item_pack', language)}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setFeatureGuideState({ feature: 'item-pack', step: 0 })}
+                    className={cn(getGuideButtonClassName(), 'border-purple-200 bg-white/90 text-purple-700 hover:border-purple-300 hover:bg-purple-50')}
+                    aria-label={t('shop_feature_item_pack_guide_open', language)}
+                    title={t('shop_feature_item_pack_guide_open', language)}
+                  >
+                    <HelpCircle size={16} />
+                  </button>
                 </div>
+
+                <div className="pl-14 sm:pl-16">
+                  <h3 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">{t('buy_item_pack', language)}</h3>
+                </div>
+              </div>
+
+              <div className="relative z-10 mt-auto pt-2 w-full">
                 <button
-                  type="button"
-                  onClick={() => setFeatureGuideState({ feature: 'item-pack', step: 0 })}
-                  className={cn(getGuideButtonClassName(), 'border-purple-200 bg-white/90 text-purple-700 hover:border-purple-300 hover:bg-purple-50')}
-                  aria-label={t('shop_feature_item_pack_guide_open', language)}
-                  title={t('shop_feature_item_pack_guide_open', language)}
+                  id="shop-pack-item-btn"
+                  onClick={buyItemPack}
+                  className="h-13 sm:h-14 w-full rounded-xl border border-purple-700 bg-purple-700 px-4 py-3 text-left text-white shadow-sm transition-all hover:border-purple-600 hover:bg-purple-600 active:scale-95 touch-target flex items-center justify-between"
                 >
-                  <HelpCircle size={16} />
+                  <span className="flex w-full items-center justify-between gap-3">
+                    <span className="min-w-0 leading-tight">
+                      <span className="block text-[9px] uppercase tracking-[0.18em] text-white/70 sm:text-[10px]">{t('item_pack', language)}</span>
+                      <span className="mt-0.5 block text-sm font-black uppercase sm:text-base leading-none">{t('buy', language)}</span>
+                    </span>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-sm font-black sm:text-base">{itemPackCost} SNS</span>
+                      <ArrowRight size={16} className="shrink-0 opacity-80" />
+                    </div>
+                  </span>
                 </button>
               </div>
-
-              <div className="relative z-10 pl-14 sm:pl-16">
-                <h3 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">{t('buy_item_pack', language)}</h3>
-              </div>
-
-              <button
-                id="shop-pack-item-btn"
-                onClick={buyItemPack}
-                className="relative z-10 min-h-12 w-full rounded-xl border border-purple-700 bg-purple-700 px-4 py-3 text-left text-white shadow-sm transition-all hover:border-purple-600 hover:bg-purple-600 active:scale-95 touch-target"
-              >
-                <span className="flex w-full items-center justify-between gap-3">
-                  <span className="min-w-0 leading-tight">
-                    <span className="block text-[9px] uppercase tracking-[0.18em] text-white/70 sm:text-[10px]">{t('item_pack', language)}</span>
-                    <span className="mt-1 block text-sm font-black uppercase sm:text-base">{t('buy', language)}</span>
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-black sm:text-base">{itemPackCost} SNS</span>
-                    <ArrowRight size={16} className="shrink-0 opacity-80" />
-                  </div>
-                </span>
-              </button>
             </motion.div>
 
             {/* Remove Ads Pack */}
             <motion.div
               whileHover={lowSpecMode ? undefined : { y: -4 }}
-              className="relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-blue-100 bg-white p-5 shadow-sm transition-all group sm:p-6 md:p-7"
+              className="relative flex flex-col justify-between gap-4 overflow-hidden rounded-2xl border border-blue-100 bg-white p-5 shadow-sm transition-all group sm:p-6 md:p-7 h-full"
             >
               <div className="absolute -left-10 top-8 h-28 w-28 rounded-full bg-blue-500/10 blur-3xl transition-all duration-500 group-hover:bg-blue-500/20" />
               <ShieldAlert className="pointer-events-none absolute left-4 top-14 z-0 h-16 w-16 text-blue-200 opacity-80 sm:h-20 sm:w-20" aria-hidden="true" />
 
-              <div className="relative z-10 flex items-start justify-between gap-3">
-                <div className="rounded-lg bg-blue-600 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-white sm:text-[10px]">
-                  {language === 'ko' ? '광고 제거' : 'REMOVE ADS'}
+              <div className="relative z-10 flex flex-col gap-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="rounded-lg bg-blue-600 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-white sm:text-[10px]">
+                    {language === 'ko' ? '광고 제거' : 'REMOVE ADS'}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setFeatureGuideState({ feature: 'ad-removal', step: 0 })}
+                    className={cn(getGuideButtonClassName(), 'border-blue-200 bg-white/90 text-blue-700 hover:border-blue-300 hover:bg-blue-50')}
+                    aria-label={t('shop_feature_ad_removal_guide_open', language)}
+                    title={t('shop_feature_ad_removal_guide_open', language)}
+                  >
+                    <HelpCircle size={16} />
+                  </button>
                 </div>
+
+                <div className="pl-14 sm:pl-16">
+                  <h3 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">{language === 'ko' ? '광고 제거 패키지' : 'Ad-Free Package'}</h3>
+                </div>
+              </div>
+
+              <div className="relative z-10 mt-auto pt-2 w-full">
                 <button
-                  type="button"
-                  onClick={() => setFeatureGuideState({ feature: 'ad-removal', step: 0 })}
-                  className={cn(getGuideButtonClassName(), 'border-blue-200 bg-white/90 text-blue-700 hover:border-blue-300 hover:bg-blue-50')}
-                  aria-label={t('shop_feature_ad_removal_guide_open', language)}
-                  title={t('shop_feature_ad_removal_guide_open', language)}
+                  id="shop-pack-remove-ads-btn"
+                  disabled={isAdRemoved}
+                  onClick={() => {
+                    if (sns >= adRemovalCost) {
+                      updateSns(-adRemovalCost, 'ad_removal_purchase');
+                      if (setIsAdRemoved) setIsAdRemoved(true);
+                      playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+                      setSuccessVisible({ isAdRemoval: true });
+                    } else {
+                      setErrorVisible(true);
+                      playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+                    }
+                  }}
+                  className={cn(
+                    'h-13 sm:h-14 w-full rounded-xl border px-4 py-3 text-left shadow-sm transition-all touch-target flex items-center justify-between',
+                    isAdRemoved
+                      ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400'
+                      : 'border-blue-600 bg-blue-600 text-white hover:border-blue-500 hover:bg-blue-500 active:scale-95'
+                  )}
                 >
-                  <HelpCircle size={16} />
+                  <span className="flex w-full items-center justify-between gap-3">
+                    <span className="min-w-0 leading-tight">
+                      <span className={cn('block text-[9px] uppercase tracking-[0.18em] sm:text-[10px]', isAdRemoved ? 'text-slate-400' : 'text-white/70')}>
+                        {language === 'ko' ? '광고 제거' : 'Ad-Free'}
+                      </span>
+                      <span className="mt-0.5 block text-sm font-black uppercase sm:text-base leading-none">
+                        {isAdRemoved ? (language === 'ko' ? '구매 완료' : 'Owned') : t('buy', language)}
+                      </span>
+                    </span>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-sm font-black sm:text-base">{isAdRemoved ? '✓' : `${adRemovalCost.toLocaleString()} SNS`}</span>
+                      {!isAdRemoved && <ArrowRight size={16} className="shrink-0 opacity-80" />}
+                    </div>
+                  </span>
                 </button>
               </div>
-
-              <div className="relative z-10 pl-14 sm:pl-16">
-                <h3 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">{language === 'ko' ? '광고 제거 패키지' : 'Ad-Free Package'}</h3>
-              </div>
-
-              <button
-                id="shop-pack-remove-ads-btn"
-                disabled={isAdRemoved}
-                onClick={() => {
-                  if (sns >= adRemovalCost) {
-                    updateSns(-adRemovalCost, 'ad_removal_purchase');
-                    if (setIsAdRemoved) setIsAdRemoved(true);
-                    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-                    setSuccessVisible({ isAdRemoval: true });
-                  } else {
-                    setErrorVisible(true);
-                    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-                  }
-                }}
-                className={cn(
-                  'relative z-10 min-h-12 w-full rounded-xl border px-4 py-3 text-left shadow-sm transition-all touch-target',
-                  isAdRemoved
-                    ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400'
-                    : 'border-blue-600 bg-blue-600 text-white hover:border-blue-500 hover:bg-blue-500 active:scale-95'
-                )}
-              >
-                <span className="flex w-full items-center justify-between gap-3">
-                  <span className="min-w-0 leading-tight">
-                    <span className={cn('block text-[9px] uppercase tracking-[0.18em] sm:text-[10px]', isAdRemoved ? 'text-slate-400' : 'text-white/70')}>
-                      {language === 'ko' ? '광고 제거' : 'Ad-Free'}
-                    </span>
-                    <span className="mt-1 block text-sm font-black uppercase sm:text-base">
-                      {isAdRemoved ? (language === 'ko' ? '구매 완료' : 'Owned') : t('buy', language)}
-                    </span>
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-black sm:text-base">{isAdRemoved ? '✓' : `${adRemovalCost.toLocaleString()} SNS`}</span>
-                    {!isAdRemoved && <ArrowRight size={16} className="shrink-0 opacity-80" />}
-                  </div>
-                </span>
-              </button>
             </motion.div>
 
 
@@ -3536,27 +3546,29 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 { amount: 50000, price: "100.00", krwPrice: "140000", label: "50,000 P (SNS)", sku: "snshero_points_50000" },
                 { amount: 0, price: "2.99", krwPrice: "4000", label: language === 'ko' ? "광고 제거 패키지" : "Ad Removal Package", isAdRemoval: true, sku: "ad_removal" },
               ].map((item: any) => (
-                <div key={item.label} className="bg-white p-5 sm:p-6 md:p-8 flex flex-col gap-5 sm:gap-6 md:gap-8 border border-slate-100 hover:border-slate-200 transition-all shadow-sm hover:shadow-md rounded-2xl">
-                  <div className="flex justify-between items-start">
-                    <Zap size={20} className="sm:w-6 sm:h-6 text-yellow-500 animate-pulse" />
-                    <div className="text-right">
-                      <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-1">
-                        {t('unit_price', language)}
+                <div key={item.label} className="bg-white p-5 sm:p-6 md:p-8 flex flex-col justify-between gap-5 sm:gap-6 md:gap-8 border border-slate-100 hover:border-slate-200 transition-all shadow-sm hover:shadow-md rounded-2xl h-full">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex justify-between items-start">
+                      <Zap size={20} className="sm:w-6 sm:h-6 text-yellow-500 animate-pulse" />
+                      <div className="text-right">
+                        <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-1">
+                          {t('unit_price', language)}
+                        </p>
+                        <p className="text-xl sm:text-2xl font-bold tracking-tighter text-slate-800">${item.price} USD</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-base sm:text-lg tracking-tight text-slate-800">{item.label}</h4>
+                      <p className="text-[9px] sm:text-[10px] text-slate-500 font-semibold tracking-widest uppercase whitespace-pre-line leading-relaxed">
+                        {item.isAdRemoval 
+                          ? (language === 'ko' ? '광고 영구 제거 패키지' : 'PERMANENT AD REMOVAL')
+                          : `${item.amount.toLocaleString()} ${t('sns_unit_recharge', language)} ${item.bonus ? `(+${item.bonus}%)` : ""}`}
                       </p>
-                      <p className="text-xl sm:text-2xl font-bold tracking-tighter text-slate-800">${item.price} USD</p>
                     </div>
                   </div>
 
-                  <div className="space-y-1">
-                    <h4 className="font-bold text-base sm:text-lg tracking-tight text-slate-800">{item.label}</h4>
-                    <p className="text-[9px] sm:text-[10px] text-slate-500 font-semibold tracking-widest uppercase whitespace-pre-line leading-relaxed">
-                      {item.isAdRemoval 
-                        ? (language === 'ko' ? '광고 영구 제거 패키지' : 'PERMANENT AD REMOVAL')
-                        : `${item.amount.toLocaleString()} ${t('sns_unit_recharge', language)} ${item.bonus ? `(+${item.bonus}%)` : ""}`}
-                    </p>
-                  </div>
-
-                  <div className="relative z-10 w-full flex flex-col gap-2">
+                  <div className="relative z-10 w-full flex flex-col gap-2 mt-auto pt-2">
                     <button
                       onClick={() => {
                         setSelectedPackage(item);
@@ -3565,7 +3577,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                       }}
                       className={cn(
-                        "w-full bg-slate-900 text-white font-bold uppercase tracking-wider text-sm hover:bg-slate-800 transition-all font-sans h-10 sm:h-12 rounded-xl flex items-center justify-center cursor-pointer shadow-xs active:scale-95 touch-target"
+                        "w-full bg-slate-900 text-white font-bold uppercase tracking-wider text-sm hover:bg-slate-800 transition-all font-sans h-13 sm:h-14 rounded-xl flex items-center justify-center cursor-pointer shadow-xs active:scale-95 touch-target"
                       )}
                     >
                       {t('buy', language)}

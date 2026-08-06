@@ -102,6 +102,7 @@ interface PlayGameViewProps {
   showRewardSelection?: boolean;
   onShowRewardSelectionChange?: (show: boolean) => void;
   currentSeason?: string;
+  initialMode?: string;
 }
 
 interface QteMatchSummary {
@@ -305,11 +306,22 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   setShowDefenseTestConsole,
   randomPlayTrigger = 0,
   preselectedGameId = null,
-  currentSeason
+  currentSeason,
+  initialMode
 }) => {
   const { language, lowSpecMode } = useGameSettings();
   const perf = usePerformanceMode();
-  const [gameState, setGameState] = useState<GameState>('modeSelect');
+  const [gameState, setGameState] = useState<GameState>(() => {
+    if (initialMode === 'story') return 'story';
+    return 'modeSelect';
+  });
+
+  useEffect(() => {
+    if (initialMode === 'story') {
+      setIsStoryActive(true);
+      setGameState('story');
+    }
+  }, [initialMode]);
   const [showConstructionModal, setShowConstructionModal] = useState(false);
   const [selectedConstructionMode, setSelectedConstructionMode] = useState<string>('');
   const [guideMode, setGuideMode] = useState<any>(null);

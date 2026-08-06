@@ -90,7 +90,8 @@ export const ORIGINAL_MECHA_CARD_THEME_VISUALS: Record<number, CardSkinThemeVisu
 );
 
 export function normalizeCardSkinTheme(theme: string | null | undefined): CardSkinThemeId {
-  return theme === 'original_mecha' ? 'original_mecha' : 'default';
+  if (theme === 'default') return 'original_mecha';
+  return 'original_mecha';
 }
 
 export function getCardSkinThemeVisual(themeId: CardSkinThemeId, cardId: number): CardSkinThemeVisual | null {
