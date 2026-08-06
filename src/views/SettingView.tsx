@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Volume2, LogOut, Terminal, Activity, Sliders, BarChart2, User, Play, Loader2, Database, AlertTriangle, CheckCircle2, CloudOff, Info, ArrowRight, Save, X, MessageSquare, Send, Sword, HelpCircle, Palette, Eye, ExternalLink, Copy, ShieldAlert, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Volume2, LogOut, Terminal, Activity, Sliders, BarChart2, User, Play, Loader2, Database, AlertTriangle, CheckCircle2, CloudOff, Info, ArrowRight, Save, X, MessageSquare, Send, Sword, HelpCircle, Palette, Eye, ExternalLink, Copy, ShieldAlert, ChevronLeft, ChevronRight, FileSpreadsheet, Download, Upload } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { t, LANGUAGES } from '../lib/i18n';
 import { cn, sanitizeForFirestore } from '../lib/utils';
@@ -20,6 +20,7 @@ import { getCardSkinThemePromptCount } from '../content/cardSkinThemes';
 import type { LocalAiCapabilityStatus } from '../lib/localAi';
 import { usePerformanceMode } from '../hooks/usePerformanceMode';
 import { BackupRestoreModal } from '../components/BackupRestoreModal';
+import { GoogleSheetsSyncModal } from '../components/GoogleSheetsSyncModal';
 
 interface SettingViewProps {
   bgmEnabled: boolean;
@@ -109,6 +110,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [backupRestoreMode, setBackupRestoreMode] = useState<'backup' | 'restore' | null>(null);
+  const [isGoogleSheetsModalOpen, setIsGoogleSheetsModalOpen] = useState(false);
   // Dispatch global popup events so bottom nav hides while help is open
   useEffect(() => {
     if (showHelp) {
@@ -370,44 +372,6 @@ export const SettingView: React.FC<SettingViewProps> = ({
           </div>
           
           <div className="grid grid-cols-1 gap-0 border border-slate-200 rounded-lg overflow-hidden bg-white shadow-sm divide-y divide-slate-100">
-            {/* 데이터 백업 & 복원 (QR코드) */}
-            <div className="bg-white p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <Database size={24} className="text-slate-700" />
-                  <div>
-                    <p className="font-bold text-sm tracking-tight uppercase text-slate-800">
-                      {t('backup_data', language)} / {t('restore_data', language)}
-                    </p>
-                    <p className="text-[10px] text-slate-400 font-semibold tracking-widest uppercase">
-                      Save Data Backup & Camera Restore (QR)
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                <button
-                  onClick={() => {
-                    playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
-                    setBackupRestoreMode('backup');
-                  }}
-                  className="flex-1 py-3 px-4 bg-slate-900 text-white rounded-lg font-mono text-xs font-bold hover:bg-slate-800 transition-colors flex items-center justify-center gap-2"
-                >
-                  [+] {t('backup_data', language)}
-                </button>
-                <button
-                  onClick={() => {
-                    playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
-                    setBackupRestoreMode('restore');
-                  }}
-                  className="flex-1 py-3 px-4 bg-emerald-700 text-white rounded-lg font-mono text-xs font-bold hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2"
-                >
-                  [+] {t('restore_data', language)}
-                </button>
-              </div>
-            </div>
-
             <div className="bg-white p-6 space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -753,40 +717,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
           </div>
         </section>
 
-        <section className="space-y-6">
-          <div className="flex items-center gap-4">
-            <ShieldAlert size={18} className="opacity-40" />
-            <h3 className="text-sm font-bold tracking-normal text-slate-800">{t('local_ai_settings_title', language)}</h3>
-          </div>
 
-          <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm space-y-4">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div className="space-y-1.5">
-                <p className="text-sm font-bold uppercase tracking-tight text-slate-800">{t('local_ai_settings_title', language)}</p>
-                <p className="text-xs leading-5 text-slate-500">{t('local_ai_settings_desc', language)}</p>
-              </div>
-              <div className={cn('inline-flex items-center rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-widest', localAiStatusTone)}>
-                {localAiStateLabel}
-              </div>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">{t('local_ai_support_label', language)}</p>
-                <p className="mt-1 text-sm font-bold text-slate-800">{localAiStatus?.supported ? t('local_ai_support_yes', language) : t('local_ai_support_no', language)}</p>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">{t('local_ai_provider_label', language)}</p>
-                <p className="mt-1 text-sm font-bold text-slate-800">{localAiStatus?.provider === 'chrome-built-in-ai' ? t('local_ai_provider_chrome', language) : t('local_ai_provider_fallback', language)}</p>
-              </div>
-            </div>
-
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50/80 px-4 py-3 text-xs leading-5 text-slate-600 space-y-2">
-              <p>{t('local_ai_privacy_notice', language)}</p>
-              <p>{t('local_ai_privacy_caution', language)}</p>
-            </div>
-          </div>
-        </section>
 
         <section className="space-y-6">
           <div className="flex items-center gap-4">
@@ -1065,55 +996,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
           </div>
         </section>
 
-        <section className="space-y-6">
-          <div className="flex items-center gap-4">
-             <Database size={18} className="opacity-40" />
-             <h3 className="text-sm font-bold tracking-normal uppercase text-slate-800">{language === 'ko' ? '서버 상태' : 'SERVER STATUS'}</h3>
-          </div>
-          <div className="border border-slate-200 p-6 bg-slate-50/50 rounded-3xl space-y-4 shadow-sm">
-             <div className="flex justify-between items-center text-[10px] font-bold">
-                <span className="opacity-50 uppercase tracking-widest text-slate-500">PROJECT_ID</span>
-                <span className="font-black text-blue-600 bg-white px-2 py-1 rounded-lg border border-slate-100 shadow-xs">{(db as any)._databaseId?.projectId || (db as any).app?.options?.projectId || 'UNKNOWN'}</span>
-             </div>
-             <div className="flex justify-between items-center text-[10px] font-bold">
-                <span className="opacity-50 uppercase tracking-widest text-slate-500">DATABASE_ID</span>
-                <span className="font-black text-purple-600 bg-white px-2 py-1 rounded-lg border border-slate-100 shadow-xs">{databaseId}</span>
-             </div>
-             <div className="flex justify-between items-center text-[10px] font-bold">
-                <span className="opacity-50 uppercase tracking-widest text-slate-500">HOST</span>
-                <span className="font-black opacity-45 italic">{window.location.hostname}</span>
-             </div>
-             <div className="pt-4 border-t border-slate-200 space-y-3">
-                <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                   {t('db_mode', language)}
-                </div>
-                <div className="flex gap-2">
-                   <button
-                     onClick={() => handleDbModeChange('local')}
-                     className={cn(
-                       "flex-1 py-2.5 px-3 text-[10px] font-bold uppercase tracking-widest border transition-all rounded-xl active:scale-[0.98]",
-                       currentDbMode === 'local'
-                         ? "bg-amber-500 text-white border-amber-500 shadow-xs"
-                         : "bg-white text-slate-400 border-slate-200 hover:bg-slate-50 hover:text-slate-650"
-                     )}
-                   >
-                     {t('db_mode_local', language)}
-                   </button>
-                   <button
-                     onClick={() => handleDbModeChange('production')}
-                     className={cn(
-                       "flex-1 py-2.5 px-3 text-[10px] font-bold uppercase tracking-widest border transition-all rounded-xl active:scale-[0.98]",
-                       currentDbMode === 'production'
-                         ? "bg-indigo-600 text-white border-indigo-600 shadow-xs"
-                         : "bg-white text-slate-400 border-slate-200 hover:bg-slate-50 hover:text-slate-650"
-                     )}
-                   >
-                     {t('db_mode_production', language)}
-                   </button>
-                </div>
-             </div>
-          </div>
-        </section>
+
 
         <section className="space-y-4 pt-4 border-t border-slate-200">
           <div className="flex items-center gap-4 mb-2">
@@ -1196,6 +1079,8 @@ export const SettingView: React.FC<SettingViewProps> = ({
 
           </section>
 
+
+
           {/* ─── Silhouette Debug (testMode/admin only) ─── */}
           {canAccessThumbnailDiagnostics && (
             <section className="space-y-6">
@@ -1276,122 +1161,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
             </section>
           )}
 
-        {/* ─── Official Community Channels (doc/26) ─── */}
-        <section className="space-y-6">
-          <div className="flex items-center gap-4">
-            <ExternalLink size={18} className="opacity-40" />
-            <div className="space-y-1">
-              <h3 className="text-sm font-bold tracking-normal text-slate-800">{t('official_channels_title', language)}</h3>
-              <p className="text-[11px] text-slate-500 leading-relaxed">{t('official_channels_desc', language)}</p>
-            </div>
-          </div>
 
-          <div className="bg-amber-50/50 border border-amber-200 rounded-2xl p-4 text-[10px] font-bold text-amber-900 leading-relaxed flex items-start gap-2">
-            <AlertCircle size={14} className="shrink-0 mt-0.5" />
-            <p>{t('official_channels_notice', language)}</p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-3">
-            {OFFICIAL_COMMUNITY_CHANNELS.map((channel) => {
-              const icon = getChannelIcon(channel.platform);
-              const purposeKey = getChannelPurposeKey(channel.purpose);
-              const hasClicked = (channelClickCounts[channel.id] ?? 0) > 0;
-              const isAvailable = isChannelAvailable(channel);
-
-              return (
-                <div
-                  key={channel.id}
-                  className="border border-slate-200 bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-all flex flex-col gap-3"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-xl shrink-0 w-10 h-10 flex items-center justify-center bg-slate-100 rounded-xl">
-                      {icon}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="text-xs font-bold text-slate-800 leading-tight truncate">
-                          {t(channel.nameKey, language)}
-                        </h4>
-                        {!isAvailable && (
-                          <span className="text-[9px] font-bold px-1.5 py-0.5 bg-slate-100 text-slate-400 rounded-md uppercase">
-                            COMING SOON
-                          </span>
-                        )}
-                        {hasClicked && (
-                          <span className="text-[9px] font-bold px-1.5 py-0.5 bg-emerald-50 text-emerald-600 rounded-md">
-                            {t('official_channels_visited', language)}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[10px] text-slate-500 mt-1 line-clamp-2">
-                        {t(channel.descKey, language)}
-                      </p>
-                    </div>
-                  </div>
-
-                  {purposeKey && (
-                    <div className="flex flex-wrap gap-1.5">
-                      <span className="text-[9px] font-bold px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-md uppercase tracking-wider">
-                        {t(purposeKey, language)}
-                      </span>
-                      {channel.languages.map((lang) => (
-                        <span key={lang} className="text-[9px] font-bold px-2 py-0.5 bg-slate-100 text-slate-400 rounded-md uppercase">
-                          {lang.toUpperCase()}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="flex gap-2 pt-1">
-                    <button
-                      onClick={() => {
-                        void handleOpenChannel(channel);
-                      }}
-                      disabled={!isAvailable}
-                      className={cn(
-                        "flex-1 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 touch-target",
-                        !isAvailable
-                          ? "bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200"
-                          : "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm border border-indigo-600"
-                      )}
-                    >
-                      <ExternalLink size={12} />
-                      {t('official_channels_open_link', language)}
-                    </button>
-                    <button
-                      onClick={() => {
-                        void handleCopyChannelLink(channel);
-                      }}
-                      disabled={!isAvailable || !navigator.clipboard}
-                      className={cn(
-                        "px-4 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all active:scale-95 cursor-pointer touch-target flex items-center justify-center gap-1.5",
-                        !isAvailable || !navigator.clipboard
-                          ? "bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200"
-                          : "bg-white text-slate-700 hover:bg-slate-50 border border-slate-200"
-                      )}
-                    >
-                      <Copy size={12} />
-                      {t('official_channels_copy_link', language)}
-                    </button>
-                  </div>
-
-                  <div className="flex items-center justify-between text-[9px]">
-                    <span className="font-bold text-amber-600 flex items-center gap-1">
-                      <Info size={10} />
-                      {t('official_channels_reward_pending', language)}
-                    </span>
-                    {isAvailable && (
-                      <span className="font-bold text-slate-400 uppercase flex items-center gap-1">
-                        {t('official_channels_external_warning', language)}
-                        <ArrowRight size={10} />
-                      </span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
 
         {/* ─── Policy & Trust Center (doc/29) ─── */}
         <section className="space-y-6">
@@ -1413,6 +1183,55 @@ export const SettingView: React.FC<SettingViewProps> = ({
             </div>
             <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
           </button>
+        </section>
+
+        {/* ─── Account Data Backup & Restore (Bottom) ─── */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-4">
+            <Database size={18} className="opacity-40" />
+            <h3 className="text-sm font-bold tracking-normal uppercase text-slate-800">
+              {language === 'ko' ? '계정 데이터 백업 / 복원' : 'ACCOUNT DATA BACKUP & RESTORE'}
+            </h3>
+          </div>
+
+          <div className="border border-slate-200 rounded-3xl p-6 bg-white space-y-4 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <Database size={24} className="text-slate-700" />
+                <div>
+                  <p className="font-bold text-sm tracking-tight uppercase text-slate-800">
+                    {t('backup_data', language)} / {t('restore_data', language)}
+                  </p>
+                  <p className="text-[10px] text-slate-400 font-semibold tracking-widest uppercase">
+                    Save Data Backup (QR) & Camera Restore (Scan)
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+                  setBackupRestoreMode('backup');
+                }}
+                className="flex-1 py-3 px-4 bg-slate-900 text-white rounded-xl font-mono text-xs font-bold hover:bg-slate-800 transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-98 shadow-sm"
+              >
+                [+] {t('backup_data', language)} (QR코드)
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+                  setBackupRestoreMode('restore');
+                }}
+                className="flex-1 py-3 px-4 bg-emerald-700 text-white rounded-xl font-mono text-xs font-bold hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-98 shadow-sm"
+              >
+                [+] {t('restore_data', language)} (카메라 스캔)
+              </button>
+            </div>
+          </div>
         </section>
 
           </div>
@@ -1663,6 +1482,13 @@ export const SettingView: React.FC<SettingViewProps> = ({
         mode={backupRestoreMode}
         onClose={() => setBackupRestoreMode(null)}
         lang={language}
+      />
+
+      <GoogleSheetsSyncModal
+        isOpen={isGoogleSheetsModalOpen}
+        onClose={() => setIsGoogleSheetsModalOpen(false)}
+        language={language}
+        season={currentSeason}
       />
     </div>
   );

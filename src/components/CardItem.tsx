@@ -670,7 +670,55 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
               }}
             />
           )}
-          {isOriginalMechaTheme && themeVisual ? (
+          {(currentImageSource || resolvedImage.source) ? (
+            <div className="relative h-full w-full flex items-center justify-center overflow-hidden">
+              {isOriginalMechaTheme && themeVisual && (
+                <>
+                  {/* Super Robot Wars Cyber Grid & Reactor Glow Background */}
+                  <div
+                    className="pointer-events-none absolute inset-[5%] rounded-xl border border-cyan-400/40 opacity-90 z-0"
+                    style={{
+                      background: `radial-gradient(circle at 50% 45%, ${themeVisual.fallbackAccentColor}66 0%, transparent 68%), linear-gradient(160deg, ${themeVisual.fallbackPrimaryColor}44 0%, rgba(15,23,42,0.92) 85%)`,
+                      boxShadow: `inset 0 0 24px ${themeVisual.fallbackAccentColor}44, 0 0 28px ${themeVisual.fallbackPrimaryColor}33`,
+                    }}
+                  />
+                  {/* Tactical HUD Corner Markers */}
+                  <div className="pointer-events-none absolute top-2 left-2 text-[8cqw] font-mono text-cyan-400/90 font-bold z-20 drop-shadow-sm">
+                    [SRW-UNIT]
+                  </div>
+                  <div className="pointer-events-none absolute top-2 right-2 text-[8cqw] font-mono text-amber-400/90 font-bold z-20 drop-shadow-sm">
+                    {themeVisual.serialCode}
+                  </div>
+                  <div className="pointer-events-none absolute bottom-2 left-2 text-[7cqw] font-mono text-emerald-400/90 font-bold z-20 drop-shadow-sm">
+                    MECHA CORE
+                  </div>
+                  {/* Target Reticle HUD Ring */}
+                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center z-0 opacity-40">
+                    <div className="w-[70%] h-[70%] rounded-full border border-dashed border-cyan-300 animate-spin" style={{ animationDuration: '25s' }} />
+                  </div>
+                </>
+              )}
+              {!isSpriteSheet(currentImageSource || resolvedImage.source || '') ? (
+                <img
+                  src={(currentImageSource || resolvedImage.source) as string}
+                  alt={displayCardName}
+                  className={cn(
+                    "relative z-10 h-full w-full object-contain drop-shadow-[0_6px_12px_rgba(0,0,0,0.55)] scale-[2.0]",
+                    !performanceMode && !isOnBoard && "transition-transform duration-500",
+                    !performanceMode && !isOnBoard && "group-hover/card:scale-[1.84]",
+                    isOriginalMechaTheme && "filter drop-shadow-[0_0_10px_rgba(56,189,248,0.6)]"
+                  )}
+                  referrerPolicy="no-referrer"
+                  onError={() => {
+                    setImageSourceIndex((currentIndex) => {
+                      const lastIndex = Math.max(imageSources.length - 1, 0);
+                      return currentIndex < lastIndex ? currentIndex + 1 : currentIndex;
+                    });
+                  }}
+                />
+              ) : null}
+            </div>
+          ) : isOriginalMechaTheme && themeVisual ? (
             <div className="relative z-10 flex h-full w-full flex-col items-center justify-center gap-[1.8cqw] overflow-hidden px-[6cqw] text-center">
               <div
                 className="pointer-events-none absolute inset-[9%] rounded-[24%] border border-white/20 opacity-90"
@@ -710,25 +758,6 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
                 </div>
               </div>
             </div>
-          ) : currentImageSource ? (
-            !isSpriteSheet(currentImageSource) ? (
-              <img
-                src={currentImageSource}
-                alt={displayCardName}
-                className={cn(
-                  "relative z-10 h-full w-full object-contain drop-shadow-[0_6px_12px_rgba(0,0,0,0.55)] scale-[2.0]",
-                  !performanceMode && !isOnBoard && "transition-transform duration-500",
-                  !performanceMode && !isOnBoard && "group-hover/card:scale-[1.84]",
-                )}
-                referrerPolicy="no-referrer"
-                onError={() => {
-                  setImageSourceIndex((currentIndex) => {
-                    const lastIndex = Math.max(imageSources.length - 1, 0);
-                    return currentIndex < lastIndex ? currentIndex + 1 : currentIndex;
-                  });
-                }}
-              />
-            ) : null
           ) : (
             <div className="relative z-10 flex h-full w-full flex-col items-center justify-center gap-[1.8cqw] overflow-hidden px-[6cqw] text-center">
               <div
