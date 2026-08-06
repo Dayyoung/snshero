@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 19,
+  "episodeTitleEn": "Three Trials",
+  "episodeTitleKo": "세 가지 시험",
+  "sourceSentenceCount": 54,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_19/scene_01.jpeg",
+      "sourceImageFile": "Aeolus_tests_Kadan_island_202607260802.jpeg",
+      "narrationEn": "Aeolus said he would test Kadan before leaving the island. I had no intention of granting my daughter's heart like an object, but I had to check if she was someone who would become an enemy of the island while holding the codex piece.",
+      "narrationKo": "에올루스는 섬을 빠져나가기 전에 카단을 시험하겠다고 했다. 딸의 마음을 물건처럼 허락할 생각은 없지만, 코덱스 조각을 지닌 채 섬의 적이 될 사람인지 확인해야 했다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.6761
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_19/scene_02.jpeg",
+      "sourceImageFile": "Celia_objected_to_Kadan_202607260802.jpeg",
+      "narrationEn": "Celia objected, saying that his choice should not be tested. “It is not my marriage that is being tested, but my judgment. ” Kadan said.",
+      "narrationKo": "실리아는 자신의 선택에 시험을 붙이지 말라고 반발했다. “시험받는 것은 혼인이 아니라 내 판단이다.” 카단이 말했다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.4712
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_19/scene_03.jpeg",
+      "sourceImageFile": "Aeolus_plays_flute_in_garden_202607260802.jpeg",
+      "narrationEn": "“I already heard your choice. ” The first test began in the acoustic garden. As Aeolus played the flute, resonant waves like invisible blades rushed in from all directions.",
+      "narrationKo": "“네 선택은 이미 들었어.” 첫 시험은 음향 정원에서 시작되었다. 에올루스가 피리를 불자 보이지 않는 칼날 같은 공명파가 사방에서 밀려왔다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 0.6338
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_19/scene_04.jpeg",
+      "sourceImageFile": "Kadan_listens_to_ground_tremors_202607260802.jpeg",
+      "narrationEn": "Kadan did not stop his ears and listened to the tremors of the ground as he had learned from Gawain. Instead of spreading the shield wide, it split the waves by floating small snow crystals at each node of the sound.",
+      "narrationKo": "카단은 귀를 막지 않고 가웨인에게 배운 대로 땅의 떨림을 들었다. 방패를 크게 펼치는 대신 소리의 마디마다 작은 눈결정을 띄워 파동을 갈라 냈다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 0.5123
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_19/scene_05.jpeg",
+      "sourceImageFile": "Aeolus_mixes_lullaby_for_Celia_202607260802.jpeg",
+      "narrationEn": "Aeolus mixed the lullaby that Celia used to sing when he was young when he couldn't sleep between the attack sounds. The reason why Kadan's concentration was shaken was not because of the power of the sound, but because he heard Celia stop breathing next to him. Instead of continuing the test, he lowered his shield for a moment to check Celia.",
+      "narrationKo": "에올루스는 실리아가 어릴 때 잠들지 못하면 불던 자장가를 공격음 사이에 섞었다. 카단의 집중이 흔들린 것은 음의 힘 때문이 아니라 옆에서 실리아가 숨을 멈춘 것을 들었기 때문이다. 그는 시험을 계속하는 대신 잠시 방패를 내려 실리아를 확인했다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 0.4883
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_19/scene_06.jpeg",
+      "sourceImageFile": "Aeolus_and_Ignis_trials_202607260802.jpeg",
+      "narrationEn": "Aeolus did not count that choice as a failure. The opponent for the second test was Ignis. Aeolus said that the person who protects the codex fragments needs the ability to stop the force.",
+      "narrationKo": "에올루스는 그 선택을 실패로 세지 않았다. 두 번째 시험의 상대는 이그니스였다. 에올루스는 코덱스 조각을 지킬 사람에게 힘을 멈출 능력이 필요하다고 했다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 0.5711
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_19/scene_07.jpeg",
+      "sourceImageFile": "Kadan_and_Ignis_faced_each_202607260802.jpeg",
+      "narrationEn": "Kadan and Ignis faced each other in the temple ring. Ignis used smaller flames than before.",
+      "narrationKo": "카단과 이그니스는 성전 원형대에서 맞섰다. 이그니스는 이전보다 불꽃을 작게 썼다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 0.3258
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_19/scene_08.jpeg",
+      "sourceImageFile": "Kadan_dual_division_defense_attack_202607260802.jpeg",
+      "narrationEn": "After starting to return the power of the forbidden technique, my body became weaker, but my control became more sophisticated. Kadan deployed both defense and attack simultaneously through dual division. Even though snow and fire hit it dozens of times, not a single flower outside the circular platform was burned.",
+      "narrationKo": "금지술의 힘을 돌려보내기 시작한 뒤라 몸은 약해졌지만 제어는 정교해졌다. 카단은 쌍성 분할로 방어와 공격을 동시에 펼쳤다. 눈과 불이 수십 번 부딪쳐도 원형대 밖의 꽃 한 송이 타지 않았다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 0.4305
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_19/scene_09.jpeg",
+      "sourceImageFile": "Two_men_fighting_in_duel_202607260802.jpeg",
+      "narrationEn": "The two men did not shout out the names of the attacks and there were no spectators. Because of this, we were able to see each other's faces in more detail than at the first duel table. Ignis noticed that Kadan protected his left knee, and Kadan noticed that Ignis continued to reduce the spark near his heart.",
+      "narrationKo": "두 사람은 공격 이름을 외치지 않았고 관중도 없었다. 그 때문에 처음 결투대에서보다 서로의 얼굴을 더 자세히 볼 수 있었다. 이그니스는 카단이 왼쪽 무릎을 보호한다는 것을, 카단은 이그니스가 심장 쪽 불꽃을 계속 줄인다는 것을 알아챘다.",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 0.6218
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_19/scene_10.jpeg",
+      "sourceImageFile": "Fantasy_RPG_characters_in_match_202607260802.jpeg",
+      "narrationEn": "The match ended with Kadan's fist stopping in front of Ignis's chest, and Ignis's flame stopping in front of Kadan's neck at the same time. Aeolus has not decided on a winner. The two people who stopped said they both passed the test.",
+      "narrationKo": "승부는 카단의 주먹이 이그니스의 가슴 앞에서, 이그니스의 불꽃이 카단의 목 앞에서 동시에 멎으며 끝났다. 에올루스는 승자를 정하지 않았다. 멈춘 두 사람이 모두 시험을 통과했다고 했다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 0.4902
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_19/scene_11.jpeg",
+      "sourceImageFile": "Kadan_remembers_codex_sentences_…_202607260802.jpeg",
+      "narrationEn": "The final test was to remember a thousand random sentences from the codex and restore them backwards. Kadan had a slow reading speed.",
+      "narrationKo": "마지막 시험은 코덱스의 무작위 문장 천 개를 기억해 거꾸로 복원하는 일이었다. 카단은 글을 읽는 속도가 느렸다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 0.3711
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_19/scene_12.jpeg",
+      "sourceImageFile": "Ignis_Celia_Kadan_Gandar_scene_202607260802.jpeg",
+      "narrationEn": "Ignis rarely forgot a rune once he saw it, and even Celia thought that Kadan was at a disadvantage this time. Gandar taught Kadan a shortcut. It was a method of physically remembering the movement of a sentence rather than memorizing its meaning.",
+      "narrationKo": "이그니스는 한 번 본 룬을 거의 잊지 않았고, 실리아조차 이번에는 카단이 불리하다고 생각했다. 간다르는 카단에게 편법을 가르쳐 주었다. 뜻을 외우지 말고 문장의 움직임을 몸으로 기억하는 방법이었다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 0.4286
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_19/scene_13.jpeg",
+      "sourceImageFile": "Kadan_links_runes_sword_steps_202607260802.jpeg",
+      "narrationEn": "Kadan linked each rune to the movements of the six teachers, the northern constellations, and the wind path created by Celia. When giving the correct answer, he did not recite the sentence, but drew it on the temple floor with his sword and his steps. When he couldn't remember the last sentence, Celia didn't give a hint.",
+      "narrationKo": "카단은 각 룬을 여섯 스승의 동작, 북쪽의 별자리, 실리아가 만든 바람길과 연결했다. 정답을 말할 때 그는 문장을 읊지 않고 검과 발걸음으로 성전 바닥에 그렸다. 마지막 문장 하나가 기억나지 않았을 때 실리아는 힌트를 주지 않았다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 0.5844
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_19/scene_14.jpeg",
+      "sourceImageFile": "Kadan_soup_bowl_recalled_rune_202607260802.jpeg",
+      "narrationEn": "Instead, the bowl of soup that the two of them had initially shared at the market was placed on the floor. Kadan recalled the rotating rune missing from the edge of the round bowl.",
+      "narrationKo": "대신 처음 시장에서 둘이 나눴던 수프 그릇을 바닥에 놓았다. 카단은 둥근 그릇 가장자리에서 누락된 회전 룬을 떠올렸다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 0.4675
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_19/scene_15.jpeg",
+      "sourceImageFile": "Aeolus_confirms_knowledge,_calls…_202607260802.jpeg",
+      "narrationEn": "Aeolus confirmed the answer that knowledge does not exist separately from people. After the three exams, Aeolus tried to call Kadan his son-in-law. Celia immediately cut him off.",
+      "narrationKo": "에올루스는 지식이 사람과 분리되어 존재하지 않는다는 답을 확인했다. 에올루스는 세 시험이 끝난 뒤 카단을 사위라 부르려 했다. 실리아가 곧장 그의 말을 잘랐다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 0.4283
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_19/scene_16.jpeg",
+      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_7.jpeg",
+      "narrationEn": "“It’s not the name your father would give you. We still have work to do, and we’ll decide on marriage later. ” Kadan also nodded.",
+      "narrationKo": "“아버지가 붙일 이름이 아니에요. 우리는 아직 해야 할 일이 있고, 혼인은 그다음에 우리가 결정해요.” 카단도 고개를 끄덕였다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 43,
+      "alignmentScore": 0.3513
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_19/scene_17.jpeg",
+      "sourceImageFile": "Aeolus_smiled_bitterly_said_older_202607260802.jpeg",
+      "narrationEn": "Aeolus smiled bitterly and said that he would learn the difference between a command and a blessing only when he got older. At that time, the sea-side barrier collapsed.",
+      "narrationKo": "에올루스는 쓴웃음을 지으며 자신이 늙어서야 명령과 축복의 차이를 배운다고 했다. 그때 바다 쪽 결계가 무너졌다.",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 0.4171
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_19/scene_18.jpeg",
+      "sourceImageFile": "Fleet_and_dragon_ship_entered_202607260802.jpeg",
+      "narrationEn": "Lucian's fleet and Belphegor's poisonous dragon ship entered the island at the same time. Magitech Golem was paving the way by replicating the sound of Aeolus's flute. Ignis reached out to Kadan.",
+      "narrationKo": "루시안의 함대와 벨페고르의 독룡선이 동시에 섬으로 들어왔다. 마기테크 골렘들은 에올루스의 피리 소리를 복제해 길을 열고 있었다. 이그니스는 카단에게 손을 내밀었다.",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 0.4739
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_19/scene_19.jpeg",
+      "sourceImageFile": "Celia_keeps_oath_in_palace_202607260802.jpeg",
+      "narrationEn": "“The time has come to keep my oath. If I fight the court’s way again, drag me out. ” Celia connected all wind towers on the island.",
+      "narrationKo": "“서약을 지킬 때가 왔다. 내가 다시 궁정의 방식으로 싸우면 끌어내.” 실리아는 섬의 모든 바람탑을 연결했다.",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 51,
+      "alignmentScore": 0.339
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_19/scene_20.jpeg",
+      "sourceImageFile": "Celia_moves_coastal_cliffs_maze_202607260802.jpeg",
+      "narrationEn": "At her command, the forest path moved and the coastal cliffs folded into a huge maze. She was no longer a daughter who ran away from home, nor was she a successor following in her father's footsteps. The people of the island began to follow her voice.",
+      "narrationKo": "그녀의 명령에 숲길이 움직이고 해안 절벽이 거대한 미로로 접혔다. 더는 가출한 딸도, 아버지의 뒤를 따르는 후계자도 아니었다. 섬의 사람들이 그녀의 목소리를 따라 움직이기 시작했다.",
+      "sourceSentenceStart": 52,
+      "sourceSentenceEnd": 54,
+      "alignmentScore": 0.7098
+    }
+  ]
+}

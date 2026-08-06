@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 3,
+  "episodeTitleEn": "Blood on the Mist Cliff",
+  "episodeTitleKo": "안개 절벽의 피",
+  "sourceSentenceCount": 56,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_03/scene_01.jpeg",
+      "sourceImageFile": "Seven_pursuers_lost_at_cliffs_202607260802.jpeg",
+      "narrationEn": "The seven pursuers heading north got lost at Mistfall Cliffs. Even though it was midday, the fog had risen from my ankles to my shoulders, and there were unfamiliar handprints on each rock.",
+      "narrationKo": "북쪽으로 향하던 일곱 추적자는 미스트폴 절벽에서 길을 잃었다. 한낮인데도 안개가 발목에서 어깨까지 차올랐고, 바위마다 낯선 손자국이 찍혀 있었다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.5844
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_03/scene_02.jpeg",
+      "sourceImageFile": "Eliana_drops_medicine,_silver_po…_202607260802.jpeg",
+      "narrationEn": "When Eliana dropped the medicine on the handprint, silver powder arose. It was a trace of a forbidden art that took mana out of the body and hardened it like a corpse. That night, two people appeared at the abandoned temple on the cliff.",
+      "narrationKo": "엘리아나가 손자국에 약액을 떨어뜨리자 은빛 가루가 일어났다. 마나를 몸 밖으로 뽑아 시체처럼 굳히는 금지술의 흔적이었다. 그날 밤, 절벽 위 폐신전에 두 사람이 나타났다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.4338
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_03/scene_03.jpeg",
+      "sourceImageFile": "Medusa_Gorgo_blindfolded_Belpheg…_202607260802.jpeg",
+      "narrationEn": "Medusa Gorgo was blindfolded and moved by sound, while Belphegor had black crystal armor covering its skin. They were once students learning runes from the Wind Sage Aeolus, but after stealing part of the Nine Shadows Codex from their teacher's temple, they were using people's life force as experimental material. Gawain tapped the floor three times with the iron staff.",
+      "narrationKo": "메두사 고르고는 눈을 가린 채 소리로 움직였고, 벨페고르는 피부에 검은 결정 갑옷을 두르고 있었다. 한때 바람의 현자 에올루스에게 룬을 배우던 제자들이었지만, 스승의 성전에서 나인섀도우 코덱스 일부를 훔친 뒤 사람의 생명력을 실험 재료로 쓰고 있었다. 가웨인이 쇠지팡이로 바닥을 세 번 두드렸다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 0.5554
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_03/scene_04.jpeg",
+      "sourceImageFile": "Belphegor_falls_splitting_floor_202607260802.jpeg",
+      "narrationEn": "There were eight echoes that returned, but there were seven in their group. “It’s the ceiling! ” Belphegor fell and split the temple floor.",
+      "narrationKo": "돌아온 울림은 여덟 개였지만 그들 일행은 일곱이었다. “천장이다!” 벨페고르가 내려꽂히며 신전 바닥을 갈랐다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 0.171
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_03/scene_05.jpeg",
+      "sourceImageFile": "Grimli_hammer_Aila_crossbow_fog_202607260802.jpeg",
+      "narrationEn": "Grimli caught it with his hammer, and Aila the Demon Hunter's crossbow pierced the fog. However, Medusa Gorgo first heard the vibration of the arrow flying and twisted its body. Black threads stretched from the tips of her fingernails, sewing Robinyard's shadow to the wall.",
+      "narrationKo": "그림리가 망치로 받아 냈고, 에일라의 쇠뇌가 안개를 꿰뚫었다. 그러나 메두사 고르고는 화살이 날아오는 진동을 먼저 듣고 몸을 비틀었다. 그녀의 손톱 끝에서 검은 실이 뻗어 로비냐드의 그림자를 벽에 꿰매 버렸다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 0.6512
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_03/scene_06.jpeg",
+      "sourceImageFile": "Two_men_in_tavern_202607260802.jpeg",
+      "narrationEn": "Although each of the seven men was outstanding, it had not been long since they fought together. The knife thrown by Kaze got caught in Rondol's oar, and Grimli's hammer wind blocked Aila the Demon Hunter's vision.",
+      "narrationKo": "일곱 사람은 각자 뛰어났지만 함께 싸운 지 얼마 되지 않았다. 카제가 던진 칼은 론돌의 노에 걸렸고, 그림리의 망치바람은 에일라의 시야를 막았다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 0.478
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_03/scene_07.jpeg",
+      "sourceImageFile": "Medusa_Gorgo_did_not_miss_202607260802.jpeg",
+      "narrationEn": "Medusa Gorgo did not miss the opportunity. The poisonous fog spread and one by one they fell to their knees. The first to stand up again was Robinyard, who was usually the quietest.",
+      "narrationKo": "메두사 고르고는 그 틈을 놓치지 않았다. 독안개가 번지며 하나씩 무릎을 꿇었다. 가장 먼저 다시 일어선 이는 평소 가장 말이 적던 로비냐드였다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 0.5122
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_03/scene_08.jpeg",
+      "sourceImageFile": "Robinyard_cuts_shadow,_blocks_Me…_202607260802.jpeg",
+      "narrationEn": "He cut off his own shadow with a sword and blocked Medusa Gorgo's path. Belphegor's crystal arm pierced his chest, but Robinyard held on to his enemy with both arms even as he fell. “Now.",
+      "narrationKo": "그는 자신의 그림자를 칼로 잘라 낸 뒤 메두사 고르고의 앞을 막았다. 벨페고르의 결정 팔이 그의 가슴을 꿰뚫었지만, 로비냐드는 쓰러지면서도 두 팔로 적을 붙잡았다. “지금이야.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 0.4264
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_03/scene_09.jpeg",
+      "sourceImageFile": "Fantasy_coast_with_dark_waves_202607260802.jpeg",
+      "narrationEn": "This time, let’s look at each other and move. ” Based on the sound of Gawain's staff, Aila the Demon Hunter took three steps and shot an arrow to the left. Kaze deflected the arrow with his blade, and Rondol's wave rune doubled its speed.",
+      "narrationKo": "이번에는 서로를 보고 움직여.” 가웨인의 지팡이 소리를 기준으로 에일라가 세 걸음 왼쪽에 화살을 쏘았다. 카제가 칼날로 화살의 방향을 꺾고, 론돌의 물결 룬이 속도를 두 배로 밀었다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 0.5032
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_03/scene_10.jpeg",
+      "sourceImageFile": "Grimli_hammer_breaks_armor_202607260802.jpeg",
+      "narrationEn": "The moment Grimli's hammer broke Belphegor's armor, Eliana's purifying agent seeped into the crack. As Belphegor's crystal melted, the names of the people engraved within it were revealed. There was evidence that the life force stolen through the experiment had been used as armor material.",
+      "narrationKo": "그림리의 망치가 벨페고르의 갑옷을 부순 순간 엘리아나의 정화제가 균열 속으로 스며들었다. 벨페고르의 결정이 녹자 그 안에 새겨진 사람 이름들이 드러났다. 실험으로 빼앗은 생명력을 갑옷 재료로 쓴 흔적이었다.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 0.4792
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_03/scene_11.jpeg",
+      "sourceImageFile": "Eliana_and_Belphegor_scene_11_202607260802.jpeg",
+      "narrationEn": "Eliana couldn't pour more purifier and his hands were shaking. Belphegor saw that expression and for the first time looked at his arm like it was a monster.",
+      "narrationKo": "엘리아나는 정화제를 더 붓지 못하고 손을 떨었다. 벨페고르는 그 표정을 보고 처음으로 자기 팔을 괴물처럼 바라봤다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 0.583
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_03/scene_12.jpeg",
+      "sourceImageFile": "Medusa_and_Belphegor_flee_fog_202607260802.jpeg",
+      "narrationEn": "Medusa Gorgo and Belphegor took the codex pieces and fled beneath the fog. They were able to give chase, but the seven people stayed by Robinyard. Every time he breathed, small bubbles of blood formed around his mouth.",
+      "narrationKo": "메두사 고르고와 벨페고르는 코덱스 조각을 챙겨 안개 아래로 달아났다. 추격할 수 있었지만 일곱 사람은 로비냐드 곁에 남았다. 그는 숨을 쉴 때마다 입가에 작은 피거품을 만들었다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 0.4093
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_03/scene_13.jpeg",
+      "sourceImageFile": "Robinyard_finds_child_on_cliff_202607260802.jpeg",
+      "narrationEn": "“Tell me when you find the child. The world needed at least one fool who wouldn’t run away. ” As the dawn bell rang in the distance, Robinyard's hands grew cold.",
+      "narrationKo": "“아이를 찾으면 말해 줘. 세상에는 도망치지 않는 바보가 한 명쯤 필요했다고.” 새벽 종이 멀리서 울릴 때 로비냐드의 손이 식었다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 0.5953
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_03/scene_14.jpeg",
+      "sourceImageFile": "Six_people_did_not_build_202607260802.jpeg",
+      "narrationEn": "The six people did not build a grave on the cliff. This is because the prohibitionists were able to find the body. Instead, he melted his acrobatic silver bells and attached them little by little to each of his six weapons.",
+      "narrationKo": "여섯 사람은 절벽에 무덤을 만들지 않았다. 금지술사들이 시신을 찾아낼 수 있었기 때문이다. 대신 그의 곡예용 은방울을 녹여 여섯 무기에 조금씩 나누어 붙였다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 0.4897
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_03/scene_15.jpeg",
+      "sourceImageFile": "Grimli_broke_hammer_cremating_body_202607260802.jpeg",
+      "narrationEn": "Grimli broke the handle of the hammer while chopping firewood to cremate the body. Aila the Demon Hunter did not put down a single arrow until the funeral lights were extinguished. Kaze, who always changed the mood with words, couldn't tell any jokes.",
+      "narrationKo": "그림리는 시신을 화장할 장작을 패다가 망치 손잡이를 부러뜨렸다. 에일라는 장례 불이 꺼질 때까지 단 한 발의 화살도 내려놓지 않았다. 늘 말로 분위기를 바꾸던 카제는 아무 농담도 하지 못했다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 0.4945
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_03/scene_16.jpeg",
+      "sourceImageFile": "Eliana_divides_ashes_into_bottles_202607260802.jpeg",
+      "narrationEn": "For the first time, the seven people realized how big the silence was for the six of them. Eliana divided the ashes into seven small glass bottles.",
+      "narrationKo": "일곱 사람은 처음으로 여섯 사람 몫의 침묵이 얼마나 큰지 알았다. 엘리아나는 재를 작은 유리병 일곱 개에 나눴다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 0.6515
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_03/scene_17.jpeg",
+      "sourceImageFile": "Six_people_give_bottle_to_202607260802.jpeg",
+      "narrationEn": "Each of the six people took one bottle and decided to give the last bottle to Kadan. It was not to impose a debt on the child he had not yet met for his dead teacher, but to let him know that there was someone waiting for him. Returning to Seven Bridges, they rented the highest floor of the separate bell tower.",
+      "narrationKo": "여섯 사람은 하나씩 가졌고 마지막 병은 카단에게 주기로 했다. 아직 만나지 못한 아이에게 죽은 스승을 빚처럼 지우려는 것이 아니라, 자신을 기다린 사람이 있었다는 사실을 알려 주기 위해서였다. 세븐브리지로 돌아온 그들은 별취한 종탑의 가장 높은 층을 빌렸다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 0.4537
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_03/scene_18.jpeg",
+      "sourceImageFile": "Grimli_writes_letter_to_Hercul_202607260802.jpeg",
+      "narrationEn": "It was a meeting place eighteen years later. There were seven glasses on the table, but no one touched one. Grimli wrote a letter to Hercul.",
+      "narrationKo": "열여덟 해 뒤의 약속 장소였다. 탁자에는 일곱 잔이 놓였으나 한 잔은 누구도 손대지 않았다. 그림리는 헤르쿨에게 보낼 편지를 썼다.",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 50,
+      "alignmentScore": 0.2109
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_03/scene_19.jpeg",
+      "sourceImageFile": "Kadan's_life_resonance_found_202607260802.jpeg",
+      "narrationEn": "I found Kadan's life resonance in the north, and I will definitely bring him back to teach him. The writing was poor and the ink was smeared here and there, but the last sentence was straight. We lost one person.",
+      "narrationKo": "북쪽에서 카단의 생명 공명을 찾았으며, 그를 반드시 데려와 가르치겠다고. 글씨는 서툴렀고 곳곳에 잉크가 번졌지만 마지막 문장만은 반듯했다. 우리는 한 사람을 잃었다.",
+      "sourceSentenceStart": 51,
+      "sourceSentenceEnd": 53,
+      "alignmentScore": 0.4819
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_03/scene_20.jpeg",
+      "sourceImageFile": "Kadan_held_silver_bell_202607260802.jpeg",
+      "narrationEn": "Therefore, I will teach my child how to survive and protect before how to kill. The morning sun rising outside the bell tower illuminated the seven cups one after another. The sound of silver bells was heard even in the empty drinking glass.",
+      "narrationKo": "그러므로 아이에게 죽이는 법보다 살아남아 지키는 법을 먼저 가르치겠다. 종탑 밖으로 떠오른 아침 해가 일곱 잔을 차례로 비췄다. 빈자리의 술잔에서도 은방울 소리가 났다.",
+      "sourceSentenceStart": 54,
+      "sourceSentenceEnd": 56,
+      "alignmentScore": 0.3934
+    }
+  ]
+}

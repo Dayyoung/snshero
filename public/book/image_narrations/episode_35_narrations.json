@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 35,
+  "episodeTitleEn": "Mistaken in the Fog",
+  "episodeTitleKo": "안개 속의 오인",
+  "sourceSentenceCount": 55,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_35/scene_01.jpeg",
+      "sourceImageFile": "Kadan_followed_Aeolus_to_bell_202607260802.jpeg",
+      "narrationEn": "Kadan followed Aeolus and headed to the separate bell tower. It was the place Hercul and the seven pursuers promised eighteen years ago.",
+      "narrationKo": "카단은 에올루스를 쫓아 별취한 종탑으로 향했다. 열여덟 해 전 헤르쿨과 일곱 추적자가 약속한 곳이었다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.2356
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_35/scene_02.jpeg",
+      "sourceImageFile": "Hercul_waiting_on_bell_tower_202607260802.jpeg",
+      "narrationEn": "Nine drinking tables were set up on the bell tower, and Hercul was waiting, emptying the glasses of his dead comrades. “Your teachers were planning to have you compete with Ignis here today. ” Hercul said.",
+      "narrationKo": "종탑 위에는 아홉 개의 술상이 차려져 있었고, 헤르쿨은 죽은 동료들의 잔을 비워 둔 채 기다리고 있었다. “네 스승들은 오늘 여기서 너를 이그니스와 겨루게 할 생각이었다.” 헤르쿨이 말했다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.4351
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_35/scene_03.jpeg",
+      "sourceImageFile": "Hercul_Grimli_Aila_Kaze_scene_202607260802.jpeg",
+      "narrationEn": "“Not to see who is stronger, but to see what remains of the promise we started with. ” Hercul even prepared a small scoreboard for the two of them. There was a note attached that Grimli was to be in charge of power, Aila the Demon Hunter would be in charge of judgment, and Kaze would be in charge of trickery.",
+      "narrationKo": "“누가 더 강한지가 아니라, 우리가 시작한 약속이 무엇을 남겼는지 보려고.” 헤르쿨은 두 사람 몫의 작은 점수판까지 준비해 두었다. 그림리는 힘, 에일라는 판단, 카제는 속임수 항목을 맡기로 했다는 메모가 붙어 있었다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 0.4143
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_35/scene_04.jpeg",
+      "sourceImageFile": "Robinyard_Kadan_Ignis_Hercul_scene_202607260802.jpeg",
+      "narrationEn": "The last line had Robinyard written on it, saying that there was one point on the side that laughed during the fight. Kadan announced the death of Ignis and placed a glass ember next to the empty glass. Hercul admitted that he treated his two children as if they were solutions to his resentment.",
+      "narrationKo": "마지막 줄에는 로비냐드의 글씨로 싸우다 웃는 쪽에 한 점이라고 적혀 있었다. 카단은 이그니스의 죽음을 알리고 유리 불씨를 빈 잔 옆에 놓았다. 헤르쿨은 자신이 두 아이를 원한의 해결책처럼 다뤘음을 인정했다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 0.3616
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_35/scene_05.jpeg",
+      "sourceImageFile": "Aeolus_surrounded_by_knights_202607260802.jpeg",
+      "narrationEn": "Even good intentions can turn a person into a plan. As Aeolus appeared beneath the bell tower, the Knights of the Star Sanctuary surrounded him.",
+      "narrationKo": "선한 의도도 사람을 계획의 말로 만들 수 있었다. 에올루스가 종탑 아래에 나타나자 별의 성소 기사들이 포위했다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 0.4715
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_35/scene_06.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_sent_evidence_202607260802.jpeg",
+      "narrationEn": "Death Knight Artus also sent evidence to Hercul that Aeolus killed their teachers. Kadan thought of the silver bell's off-beat beat, but was not sure. Fog suddenly rolled in from the lake.",
+      "narrationKo": "데스나이트 아르투스는 헤르쿨에게도 에올루스가 스승들을 죽였다는 증거를 보냈다. 카단은 은방울의 어긋난 박자를 떠올렸지만 확신하지 못했다. 안개가 갑자기 호수에서 밀려왔다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 0.3455
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_35/scene_07.jpeg",
+      "sourceImageFile": "Hercul_spread_palms_instead_answ…_202607260802_2.jpeg",
+      "narrationEn": "People couldn't even recognize the face one step in front of them. The sounds of flutes, silver bells, and armor overlapped from all directions. When someone attacks, someone else's weapon returns.",
+      "narrationKo": "사람들은 한 걸음 앞의 얼굴도 알아볼 수 없었다. 피리 소리와 은방울, 갑옷 소리가 사방에서 겹쳤다. 누군가 공격하면 다른 누군가의 무기가 돌아왔다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 0.6266
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_35/scene_08.jpeg",
+      "sourceImageFile": "Kadan_rushes_towards_shadow_202607260802.jpeg",
+      "narrationEn": "Kadan saw Aeolus's shadow and rushed towards him. The moment the Dragon Breaker hit, the figure dissipated into black smoke. Death Knight Artus was an empty armor with the appearance of Aeolus.",
+      "narrationKo": "카단은 에올루스의 그림자를 보고 달려들었다. 드래곤 브레이커가 적중한 순간 형체가 검은 연기로 흩어졌다. 데스나이트 아르투스가 에올루스의 외형을 입힌 빈 갑옷이었다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 0.5439
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_35/scene_09.jpeg",
+      "sourceImageFile": "Aeolus_blocking_clone_attacking_…_202607260802.jpeg",
+      "narrationEn": "The real Aeolus was blocking another clone from attacking Hercul. The two exchanged weapons several times, mistaking each other for enemies.",
+      "narrationKo": "진짜 에올루스는 헤르쿨을 공격하는 또 다른 복제품을 막고 있었다. 두 사람은 서로를 적으로 오인한 채 몇 번이나 무기를 맞댔다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 0.3155
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_35/scene_10.jpeg",
+      "sourceImageFile": "Celia_sticks_staff,_fog_clears_202607260802.jpeg",
+      "narrationEn": "When Celia stuck the green jade staff into the base of the bell tower, the wind rose upward and cleared away the fog. “Everyone, lower your weapons. Look at the choices, not the sounds!",
+      "narrationKo": "실리아가 녹옥 지팡이를 종탑 바닥에 꽂자 바람이 위로 솟으며 안개를 걷어 냈다. “모두 무기를 내려요. 소리가 아니라 선택을 보세요!”",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 0.4944
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_35/scene_11.jpeg",
+      "sourceImageFile": "Death_Knight_clone_imitated_skills_202607260802.jpeg",
+      "narrationEn": "” Death Knight Artus's clone imitated a person's face and skills, but could not imitate the choice to protect someone. Whenever danger came, he looked for a figure that avoided himself, and the fake was revealed. Instead of asking people for their names, Celia asked people to tell them the location of someone close to them.",
+      "narrationKo": "데스나이트 아르투스의 복제품은 사람의 얼굴과 기술을 흉내 냈지만 누군가를 지키는 선택은 따라 하지 못했다. 위험이 닥칠 때마다 자신부터 피하는 형체를 찾자 가짜가 드러났다. 실리아는 사람들에게 이름을 묻는 대신 가까운 사람의 위치를 말하게 했다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 0.5773
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_35/scene_12.jpeg",
+      "sourceImageFile": "Fake_read_memory_answered_name_202607260802.jpeg",
+      "narrationEn": "The fake read the memory and answered the name, but did not know which direction they ran to when someone was injured. Relationships were codes that were harder to replicate than information. Kadan lowered his sword in front of Aeolus.",
+      "narrationKo": "가짜는 기억을 읽어 이름은 대답했지만, 누가 다쳤을 때 어느 쪽으로 달려갔는지는 알지 못했다. 관계는 정보보다 복제하기 어려운 암호였다. 카단은 에올루스 앞에서 검을 내렸다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 0.6702
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_35/scene_13.jpeg",
+      "sourceImageFile": "Aeolus_and_Medusa_fighting_202607260802.jpeg",
+      "narrationEn": "Apologies didn't make the fight go away. Instead of saying he would forgive, Aeolus told him to reveal the death of his teachers until the end.",
+      "narrationKo": "사과는 전투를 시작한 일을 없애지 못했다. 에올루스는 용서한다는 말 대신 스승들의 죽음을 끝까지 밝히라고 했다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 0.2202
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_35/scene_14.jpeg",
+      "sourceImageFile": "Death_Knight_revealed_main_body_202607260802.jpeg",
+      "narrationEn": "Death Knight Artus revealed its main body at the top of the bell tower. He absorbed some of the souls of the six teachers into his armor and used their skills. Grimli's hammer impact and Aila the Demon Hunter's arrow trajectory rained down on Kadan at the same time.",
+      "narrationKo": "데스나이트 아르투스는 종탑 꼭대기에서 본체를 드러냈다. 그는 여섯 스승의 영혼 일부를 갑옷에 흡수해 그들의 기술을 사용했다. 그림리의 망치 충격과 에일라의 화살 궤도가 카단에게 동시에 쏟아졌다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 0.6686
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_35/scene_15.jpeg",
+      "sourceImageFile": "Kadan_unable_to_fight_Celia_202607260802.jpeg",
+      "narrationEn": "Kadan was unable to fight back. Breaking the teachers' movements felt like killing them twice. Celia slapped him.",
+      "narrationKo": "카단은 반격할 수 없었다. 스승들의 움직임을 부수는 일이 그들을 두 번 죽이는 것처럼 느껴졌다. 실리아가 그의 뺨을 때렸다.",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 0.3011
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_35/scene_16.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_Kadan_sword_202607260802.jpeg",
+      "narrationEn": "The silver bells inside the shield shook. The masters' techniques produced different sounds, but when Death Knight Artus unfolded, they all ended in the same metallic sound. Kadan picked up the sword only after hearing that there was a difference between remembering technology and remembering people.",
+      "narrationKo": "방패 안쪽의 은방울들이 흔들렸다. 스승들의 기술은 서로 다른 소리를 냈지만 데스나이트 아르투스가 펼치면 모두 같은 금속음으로 끝났다. 카단은 기술을 기억하는 것과 사람을 기억하는 일이 다르다는 것을 듣고서야 검을 들었다.",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 0.6039
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_35/scene_17.jpeg",
+      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_13.jpeg",
+      "narrationEn": "“Those are not teachers. Remember why they taught you.",
+      "narrationKo": "“저건 스승들이 아니야. 그분들이 네게 가르친 이유를 기억해.”",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 0.254
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_35/scene_18.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_Kadan_scene_202607260802_2.jpeg",
+      "narrationEn": "” Kadan closed his eyes and held up the silver bell. The clone of Death Knight Artus only had technology and no beats to fill in each other's gaps. He split the attack with binary splitting, revealing the soul storage core in the center of the armor.",
+      "narrationKo": "카단은 눈을 감고 은방울을 들었다. 데스나이트 아르투스의 복제품에는 기술만 있고 서로의 빈틈을 메우던 박자가 없었다. 그는 쌍성 분할로 공격을 갈라 내고 갑옷 중앙의 영혼 저장핵을 드러냈다.",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 0.3983
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_35/scene_19.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_abandoned_sou…_202607260802.jpeg",
+      "narrationEn": "Death Knight Artus abandoned the storage core and ran away. Six rays of light were released, circling the empty drinking table one at a time. The old glasses in the bell tower made a clear sound at the same time.",
+      "narrationKo": "데스나이트 아르투스는 저장핵을 버리고 도망쳤다. 풀려난 빛 여섯 줄기가 빈 술상 위를 한 번씩 돌았다. 종탑의 오래된 잔들이 동시에 맑은 소리를 냈다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 52,
+      "alignmentScore": 0.386
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_35/scene_20.jpeg",
+      "sourceImageFile": "Kadan_Celia_looked_at_each_202607260802.jpeg",
+      "narrationEn": "Kadan and Celia looked at each other, but did not immediately reconcile. I had to verbally deal with the hurt of not being believed and the choice to leave alone. They first filled the cups of the dead with alcohol.",
+      "narrationKo": "카단과 실리아는 서로를 바라보았지만 곧장 화해하지 않았다. 믿지 못한 상처와 혼자 떠난 선택을 말로 다뤄야 했다. 그들은 먼저 죽은 이들의 잔에 술을 채웠다.",
+      "sourceSentenceStart": 53,
+      "sourceSentenceEnd": 55,
+      "alignmentScore": 0.5635
+    }
+  ]
+}

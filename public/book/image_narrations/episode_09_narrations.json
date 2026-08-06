@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 9,
+  "episodeTitleEn": "Wind in Beggars Clothes",
+  "episodeTitleKo": "거지 옷의 바람",
+  "sourceSentenceCount": 63,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_09/scene_01.jpeg",
+      "sourceImageFile": "Kadan_Ignis_duel_rune_stone_202607260802.jpeg",
+      "narrationEn": "When Kadan's snow crystal shield and Ignis's white flame collided, the duel's rune stone split in half. Ignis's technique was fast and flashy, but the bigger the attack, the more gaps appeared in the next move. Kadan survived the gap by connecting different beats learned from six teachers.",
+      "narrationKo": "카단의 눈결정 방패와 이그니스의 백색 화염이 충돌하자 결투대의 룬석이 반으로 갈라졌다. 이그니스의 기술은 빠르고 화려했지만 공격이 클수록 다음 동작에 빈틈이 생겼다. 카단은 여섯 스승에게 배운 서로 다른 박자를 이어 붙여 그 틈을 버텼다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 3,
+      "alignmentScore": 0.5422
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_09/scene_02.jpeg",
+      "sourceImageFile": "Ignis_raises_fingers_like_hooks_202607260802.jpeg",
+      "narrationEn": "As the game dragged on, Ignis raised his fingers like hooks. It was a life force extraction rune passed down by Medusa Gorgo. Kadan remembered the sign of the silver whip he had seen in the cave and turned his body, but his shoulder was deeply torn.",
+      "narrationKo": "승부가 길어지자 이그니스는 손가락을 갈고리처럼 세웠다. 메두사 고르고가 전수한 생명력 추출 룬이었다. 카단은 동굴에서 본 은빛 채찍의 기척을 떠올리고 몸을 틀었지만 어깨가 깊게 찢어졌다.",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 6,
+      "alignmentScore": 0.6055
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_09/scene_03.jpeg",
+      "sourceImageFile": "Kadan_blood_glows_red_symbol_202607260802.jpeg",
+      "narrationEn": "As Kadan's blood fell on the floor of the duel table, the hidden tracking symbol glowed red. It was a device that recorded the participants' mana so that the royal army could later find it. Celia sent wind down the stands, breaking the lines of the pattern one by one.",
+      "narrationKo": "카단의 피가 결투대 바닥에 떨어지자 숨겨진 추적 문양이 붉게 빛났다. 참가자의 마나를 기록해 훗날 궁정군이 찾아낼 수 있게 만든 장치였다. 실리아는 관중석 아래로 바람을 보내 문양의 선을 하나씩 끊었다.",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 9,
+      "alignmentScore": 0.4924
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_09/scene_04.jpeg",
+      "sourceImageFile": "Kadan_fighting_duel_stopped_by_202607260802.jpeg",
+      "narrationEn": "While Kadan was fighting, she first noticed that the purpose of the duel was not winning or losing. It was the paladin Walker who stopped the duel. He set up a blue barrier between the two and grabbed Ignis's wrist.",
+      "narrationKo": "그녀는 카단이 싸우는 동안 결투의 목적이 승패가 아님을 먼저 알아챘다. 결투를 멈춘 것은 성기사 워커였다. 그는 두 사람 사이에 푸른 방호벽을 세우고 이그니스의 손목을 붙잡았다.",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 0.582
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_09/scene_05.jpeg",
+      "sourceImageFile": "Walker_astonished_by_Ignis's_arts_202607260802.jpeg",
+      "narrationEn": "Walker, a member of the same Star Sanctuary as Hercul, was astonished to see Ignis using both the Light Sword and Forbidden Arts that he had learned from his disciple. “Who taught you to do that? ” Ignis did not reply.",
+      "narrationKo": "헤르쿨과 같은 별의 성소 소속인 워커는 이그니스가 자신의 제자에게 배운 빛의 검식과 금지술을 함께 쓰는 것을 보고 경악했다. “누가 네게 그 손을 가르쳤지?” 이그니스는 답하지 않았다.",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 0.3618
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_09/scene_06.jpeg",
+      "sourceImageFile": "Kadan_Balbo_Eliana_duel_scene_202607260802.jpeg",
+      "narrationEn": "As the palace guards approached, he left the duel, saying only that he would not forget the insult. Kadan supported Balbo and Eliana, who had fallen. At that time, he heard six teachers calling out to him from among the crowd, but the moment he turned around, the people had already dispersed.",
+      "narrationKo": "궁정 호위대가 몰려오자 그는 모욕을 잊지 않겠다는 말만 남기고 결투대를 떠났다. 카단은 쓰러진 발보와 엘리아나를 부축했다. 그때 관중 사이에서 여섯 스승이 자신을 부르는 소리를 들었지만, 돌아보는 순간 사람들은 이미 흩어지고 없었다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 0.4164
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_09/scene_07.jpeg",
+      "sourceImageFile": "Walker_poisoned_by_Ignis_attack_202607260802.jpeg",
+      "narrationEn": "Walker was poisoned by Ignis's attack. The moon leaves needed for treatment were only found in the palace apothecary. When Kadan said he was going to enter the front door, Celia sighed. “Why is the only part of your plan that involves breaking down the door?",
+      "narrationKo": "워커는 이그니스의 공격에 독을 입었다. 치료에 필요한 달빛잎은 궁정 약제고에만 있었다. 카단이 정문으로 들어가겠다고 하자 실리아는 한숨을 쉬었다. “네 계획에는 왜 늘 문을 부수는 부분밖에 없어?”",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 0.4836
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_09/scene_08.jpeg",
+      "sourceImageFile": "Celia_takes_off_beggar_clothes_202607260802.jpeg",
+      "narrationEn": "” That night, Celia took off his old beggar clothes. Long, pointed elf ears were revealed from beneath her matted hair, and as she dusted off the lining of her cloak, her silver-blue dress unfolded like the wind. What she hid was not her name but her identity.",
+      "narrationKo": "그날 밤, 실리아는 낡은 거지 옷을 벗었다. 헝클어진 머리 아래에서 길고 뾰족한 엘프의 귀가 드러났고, 망토 안감의 먼지를 털자 은청색 드레스가 바람처럼 펼쳐졌다. 그녀가 숨긴 것은 이름이 아니라 신분이었다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 0.8487
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_09/scene_09.jpeg",
+      "sourceImageFile": "Celia_Aeolus_Kadan_Pegasus_scene_202607260802.jpeg",
+      "narrationEn": "Celia was the daughter of Aeolus, who ruled Whisper of the Wind Island. Celia has prepared many situations in which Kadan will get angry. He first revealed how he hid his identity, tested his words, and even joked about asking for Pegasus.",
+      "narrationKo": "실리아는 바람의 속삭임 섬을 다스리는 에올루스의 딸이었다. 실리아는 카단이 화를 낼 상황을 여러 가지로 준비해 두었다. 신분을 숨긴 일, 그의 말을 시험한 일, 페가수스를 달라고 농담한 일까지 먼저 털어놓았다.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 0.3424
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_09/scene_10.jpeg",
+      "sourceImageFile": "Kadan_heard_horse_name_202607260802.jpeg",
+      "narrationEn": "Kadan tilted his head when he heard the horse's name. “Pegasus is not something I give you. If you want to ride, ask Pegasus.",
+      "narrationKo": "카단은 말의 이름을 듣자 고개를 갸웃했다. “페가수스는 내가 주는 물건이 아니야. 네가 타고 싶으면 페가수스에게 물어봐.”",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 0.5256
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_09/scene_11.jpeg",
+      "sourceImageFile": "Celia_and_Kadan_scene_09_202607260802.jpeg",
+      "narrationEn": "” Celia didn't get any of the apples he expected. The simplicity of Kadan has sometimes most easily broken down a clever person's defenses. Kadan forgot what to say for a while.",
+      "narrationKo": "실리아는 예상했던 사과 중 어느 것도 꺼내지 못했다. 카단의 단순함은 때때로 영리한 사람의 방어를 가장 쉽게 무너뜨렸다. 카단은 한동안 말을 잊었다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 0.4644
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_09/scene_12.jpeg",
+      "sourceImageFile": "Celia_raised_eyebrows_opened_mouth_202607260802.jpeg",
+      "narrationEn": "Celia raised his eyebrows and barely opened his mouth. “You must have been cold in those clothes. ” Celia laughed and wiped the corners of his eyes.",
+      "narrationKo": "실리아가 눈썹을 치켜세우자 겨우 입을 열었다. “그 옷으로 추웠겠다.” 실리아는 웃다가 눈가를 훔쳤다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 0.2856
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_09/scene_13.jpeg",
+      "sourceImageFile": "Kadan_in_fantasy_RPG_scene_202607260802.jpeg",
+      "narrationEn": "That answer was more like Kadan than saying I was beautiful or deceived. From a young age, she received the vigilance and admiration of everyone on her father's island. He had just run away because he wanted to see how someone treated him when his identity was unknown.",
+      "narrationKo": "아름답다거나 속았다는 말보다 그 대답이 더 카단다웠다. 그녀는 어릴 때부터 아버지의 섬에서 모든 사람의 경계와 찬사를 받았다. 누가 신분을 모를 때 자신을 어떻게 대하는지 보고 싶어 도망쳐 나온 참이었다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 0.4518
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_09/scene_14.jpeg",
+      "sourceImageFile": "Two_sneaked_into_pharmacy_202607260802.jpeg",
+      "narrationEn": "The two sneaked into the pharmacy. Celia sent wind into the vent to eavesdrop on the guard's conversation, and Kadan stopped the vibration of the alarm rune with a thin film of ice. As I was about to turn around to look for the moon leaves, a fragrant bag slipped down the shelf. In the pharmacy, confiscated herbs were piled up like a mountain and rotting.",
+      "narrationKo": "두 사람은 약제고로 잠입했다. 실리아는 통풍구에 바람을 보내 경비의 대화를 훔쳐 듣고, 카단은 얇은 얼음막으로 경보 룬의 진동을 멈췄다. 달빛잎을 찾아 돌아서려던 순간, 향기로운 봉투 하나가 선반 아래로 미끄러졌다. 약제고에는 압수한 약초가 산처럼 쌓여 썩고 있었다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 0.4636
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_09/scene_15.jpeg",
+      "sourceImageFile": "Celia_takes_moonlight_leaves_202607260802.jpeg",
+      "narrationEn": "City doctors send patients away because they cannot find even a single antipyretic herb, but the palace keeps them in a warehouse to raise the price. Celia changed his plan to take only the moonlight leaves. I unsealed all the boxes and threw a note with the location written on it out the window.",
+      "narrationKo": "도시의 의원들은 해열초 하나 구하지 못해 환자를 돌려보내는데 궁정은 가격을 올리려고 창고에 묶어 둔 것이다. 실리아는 달빛잎만 가져가자는 계획을 바꿨다. 모든 상자의 봉인을 풀고 위치를 적은 바람 쪽지를 창밖으로 날렸다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 0.3204
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_09/scene_16.jpeg",
+      "sourceImageFile": "Citizens_gather_at_warehouse_202607260802.jpeg",
+      "narrationEn": "When the citizens gathered in front of the warehouse at dawn the next day, the court could not hide the herbs. Kadan was amazed at how Celia could move through the city without breaking down the door. The letter was sent from Lucian to Ignis.",
+      "narrationKo": "다음 날 새벽 시민들이 창고 앞에 모이면 궁정은 약초를 숨길 수 없었다. 카단은 실리아가 문을 부수지 않고도 도시 전체를 움직이는 방식을 보며 감탄했다. 편지는 루시안이 이그니스에게 보낸 것이었다.",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 50,
+      "alignmentScore": 0.5023
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_09/scene_17.jpeg",
+      "sourceImageFile": "Instructions_to_poison_Walker_202607260802.jpeg",
+      "narrationEn": "Instructions were written to poison Walker, capture Kadan, and eliminate Balbo before his identity is revealed. At the end of the letter, there was also an order to keep a woman named Ysela confined in the villa. Kadan didn't know the name, but had a hunch that it could be Ignis's mother.",
+      "narrationKo": "워커를 독살하고, 카단을 생포하며, 발보의 정체가 드러나기 전에 제거하라는 지시가 적혀 있었다. 편지 끝에는 이셀라라는 여인을 계속 별궁에 가두라는 명령도 있었다. 카단은 그 이름을 알지 못했지만 이그니스의 어머니일 수 있다고 직감했다.",
+      "sourceSentenceStart": 51,
+      "sourceSentenceEnd": 53,
+      "alignmentScore": 0.4461
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_09/scene_18.jpeg",
+      "sourceImageFile": "Celia_took_letter,_set_alarm_202607260802.jpeg",
+      "narrationEn": "Celia took the letter and set off a false fire alarm in the pharmacy. While the guards ran with buckets of water, the two escaped across the roof. Walker survived with the moonleaf, but the poison was not completely removed.",
+      "narrationKo": "실리아는 편지를 챙기고 약제고에 거짓 화재 경보를 일으켰다. 경비들이 물통을 들고 뛰어가는 사이 두 사람은 지붕을 건너 빠져나왔다. 워커는 달빛잎으로 목숨을 건졌지만 독은 완전히 빠지지 않았다.",
+      "sourceSentenceStart": 54,
+      "sourceSentenceEnd": 56,
+      "alignmentScore": 0.3024
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_09/scene_19.jpeg",
+      "sourceImageFile": "He_learned_runes_from_Hercul_202607260802.jpeg",
+      "narrationEn": "He said that he briefly learned runes from Hercul when Ignis was a baby, and that one day the court cut off visits between the child and his mother. The guilt of not being able to protect the child he taught silenced him for a long time. The wind outside the window flipped the letter.",
+      "narrationKo": "그는 이그니스가 아기였을 때 헤르쿨에게 잠시 룬을 배웠으며, 어느 날 궁정이 아이와 어머니의 면회를 끊었다고 말했다. 자신이 가르친 아이를 지키지 못했다는 죄책감이 오랫동안 그를 침묵시켰다. 창밖에서 바람이 편지를 뒤집었다.",
+      "sourceSentenceStart": 57,
+      "sourceSentenceEnd": 59,
+      "alignmentScore": 0.6387
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_09/scene_20.jpeg",
+      "sourceImageFile": "Ignis_Celia_Kadan_abandoned_child_202607260802.jpeg",
+      "narrationEn": "Inside the envelope was a short sentence secretly written by Ignis. If my mother is alive, why has she never looked for me? Celia showed the sentence to Kadan. For the first time, the two saw that behind Ignis's arrogance was the face of an abandoned child.",
+      "narrationKo": "봉투 안쪽에는 이그니스가 몰래 적은 짧은 문장이 있었다. 어머니가 살아 있다면, 왜 단 한 번도 나를 찾지 않았습니까? 실리아는 그 문장을 카단에게 보여 주었다. 두 사람은 처음으로 이그니스의 오만함 뒤에 버려진 아이의 얼굴이 숨어 있음을 보았다.",
+      "sourceSentenceStart": 60,
+      "sourceSentenceEnd": 63,
+      "alignmentScore": 0.5292
+    }
+  ]
+}

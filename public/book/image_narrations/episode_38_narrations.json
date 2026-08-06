@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 38,
+  "episodeTitleEn": "Three Silk Seals",
+  "episodeTitleKo": "세 개의 비단 봉인",
+  "sourceSentenceCount": 57,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_38/scene_01.jpeg",
+      "sourceImageFile": "Hercul_arrived_at_Wildland_camp_202607260802.jpeg",
+      "narrationEn": "Hercul arrived at the Wildland military camp. He disguised himself as an envoy congratulating Fenrir's victory, but in reality he came to deliver the three seals left behind by Kadan's teachers.",
+      "narrationKo": "헤르쿨이 와일드랜드 군영에 도착했다. 그는 펜릴의 승전을 축하하는 사절로 위장했지만, 실제로는 카단의 스승들이 남긴 세 개의 봉인을 전하러 왔다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.3828
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_38/scene_02.jpeg",
+      "sourceImageFile": "Grimli_Gawain_Hercul_Ironforge_s…_202607260802.jpeg",
+      "narrationEn": "Grimli and Gawain each left one seal before their deaths, and the last one was Hercul's own. The first seal contained a method to neutralize the southern invasion route of the Ironforge strategic core. Instead of bursting a river or collapsing a castle, the plan was to shift the date of the supply rune by one day and the large army would stop on its own.",
+      "narrationKo": "그림리와 가웨인이 죽기 전 각각 한 봉인씩 맡겼고, 마지막 것은 헤르쿨 자신의 것이었다. 첫 봉인에는 아이언포지 전략 코어의 남부 침공로를 무력화하는 방법이 들어 있었다. 강을 터뜨리거나 성을 무너뜨리는 대신 보급 룬의 날짜를 하루씩 어긋나게 하면 대군이 스스로 멈춘다는 계획이었다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.5409
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_38/scene_03.jpeg",
+      "sourceImageFile": "Kaze_and_Kadan_in_scene_202607260802.jpeg",
+      "narrationEn": "Kaze was a unique trick. In the corner of the note, there was a joke written by Kaze that heroes fall most easily in front of food tables. Kadan choked up while trying to laugh.",
+      "narrationKo": "카제 특유의 속임수였다. 메모 구석에는 영웅은 식량표 앞에서 가장 잘 넘어진다는 카제의 농담이 적혀 있었다. 카단은 웃으려다 목이 메었다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 0.4582
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_38/scene_04.jpeg",
+      "sourceImageFile": "Characters_Fenrir_Lucian_Aila_202607260802.jpeg",
+      "narrationEn": "The voice of the dead teacher came back more clearly in one crooked line than in a grand will. The second seal displayed a list of Fenrir's close associates and the generals who had been bribed by Lucian. Aila the Demon Hunter has been tracking the Black Arrow within the northern camp for a long time.",
+      "narrationKo": "죽은 스승의 목소리가 거창한 유언보다 삐딱한 한 줄에서 더 선명하게 돌아왔다. 두 번째 봉인에는 펜릴의 측근 명단과 루시안에게 매수된 장수들이 표시되어 있었다. 에일라는 오래전부터 북방 진영 안의 검은 화살을 추적해 왔다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 0.4308
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_38/scene_05.jpeg",
+      "sourceImageFile": "Fenrir_Lucian_Aila_battlefield_202607260802.jpeg",
+      "narrationEn": "Fenrir's desire to conquer was his, but the hand that rushed the southern expedition was Lucian. The list also included the names of generals who were not purchased. Aila the Demon Hunter knew that if suspicion was only spread, the army would collapse on its own.",
+      "narrationKo": "펜릴의 정복욕은 그의 것이지만, 남부 원정을 서두르게 만든 손은 루시안이었다. 명단에는 매수되지 않은 장수의 이름도 함께 있었다. 의심만 퍼뜨리면 군대가 스스로 무너진다는 것을 에일라는 알았다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 0.3278
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_38/scene_06.jpeg",
+      "sourceImageFile": "Hercul_asked_Kadan_to_choose_202607260802.jpeg",
+      "narrationEn": "Establishing who you can trust was as important as finding the traitor. The third seal was empty. Hercul asked Kadan to choose what to write directly.",
+      "narrationKo": "누구를 믿어도 되는지 남기는 일은 배신자를 찾는 일만큼 중요했다. 세 번째 봉인은 비어 있었다. 헤르쿨은 카단에게 직접 쓸 내용을 고르라고 했다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 0.3697
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_38/scene_07.jpeg",
+      "sourceImageFile": "Kadan_writes_on_silk_202607260802.jpeg",
+      "narrationEn": "The reason the teachers did not leave the correct answer was because if they replaced the last choice, they would once again be making the child an instrument of promise. Kadan wrote two sentences on the third silk.",
+      "narrationKo": "스승들이 정답을 남기지 않은 이유는 마지막 선택까지 대신하면 또다시 아이를 약속의 도구로 만드는 셈이기 때문이었다. 카단은 세 번째 비단에 두 문장을 썼다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 0.5651
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_38/scene_08.jpeg",
+      "sourceImageFile": "Fenrir_delivering_name_to_mother_202607260802.jpeg",
+      "narrationEn": "Does not participate in the southern expedition. I leave with my mother. He wrote down his name and delivered it directly to Fenrir.",
+      "narrationKo": "남부 원정에 참여하지 않는다. 어머니와 함께 떠난다. 그는 자신의 이름을 적고 펜릴에게 직접 전했다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 0.6331
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_38/scene_09.jpeg",
+      "sourceImageFile": "Fenrir_makes_Elwin_stay_202607260802.jpeg",
+      "narrationEn": "After reading the silk, Fenrir made Elwin stay in the military tent. It was under the pretext of protecting guests, but in reality, they were hostages. He told Kadan that he would send his mother home if he became the vanguard of the southern expedition.",
+      "narrationKo": "펜릴은 비단을 읽은 뒤 엘윈을 군막 안에 머물게 했다. 손님을 보호한다는 명목이었으나 사실상 인질이었다. 카단에게는 남부 원정의 선봉이 되면 어머니를 고향으로 보내 주겠다고 했다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 0.424
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_38/scene_10.jpeg",
+      "sourceImageFile": "Titania_points_knife_at_father_202607260802.jpeg",
+      "narrationEn": "Titania pointed the knife at his father. “You gave me as a treasure, but now you use my mother as a chain? ” Fenrir imprisoned his daughter.",
+      "narrationKo": "티타니아는 아버지에게 칼을 겨눴다. “저를 보물로 주더니 이제는 어머니를 사슬로 쓰십니까?” 펜릴은 딸을 감금했다.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 0.4636
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_38/scene_11.jpeg",
+      "sourceImageFile": "Gilgamesh_stripped_of_authority_202607260802.jpeg",
+      "narrationEn": "Gilgamesh was stripped of his military authority while trying to free his sister. The Conqueror, who was trying to unite his family, was making enemies of those closest to him. Celia proposed a plan to Kadan to secretly steal Elwin.",
+      "narrationKo": "길가메시는 누이를 풀어 주려다 군권을 박탈당했다. 가족을 하나로 묶으려던 정복왕은 가장 가까운 사람부터 적으로 만들고 있었다. 실리아는 카단에게 엘윈을 몰래 빼내는 계획을 제시했다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 0.3888
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_38/scene_12.jpeg",
+      "sourceImageFile": "Kadan_hesitates_expeditionary_fo…_202607260802.jpeg",
+      "narrationEn": "Kadan hesitated whether the expeditionary force should set off while rescuing his mother. Elwin heard the conversation between the two and called his son. “Your father gave up his life to send me.",
+      "narrationKo": "카단은 어머니를 구하는 동안 원정군이 출발할까 망설였다. 엘윈은 두 사람의 대화를 듣고 아들을 불렀다. “네 아버지는 자기 목숨을 내놓고 나를 보냈다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 0.3804
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_38/scene_13.jpeg",
+      "sourceImageFile": "Elwin_adds_emblem_to_seal_202607260802.jpeg",
+      "narrationEn": "I am grateful for that choice, but I have also been trapped in that day for the rest of my life. If you abandon so many people just because you saved me, I end up paying for someone else’s life. ” Elwin added his own emblem to the back of the third seal.",
+      "narrationKo": "나는 그 선택을 고맙게 여기지만, 평생 그날에 갇혀 살기도 했단다. 나를 구한다는 이유로 네가 수많은 사람을 버리면 나는 또 누군가의 목숨값이 된다.” 엘윈은 세 번째 봉인 뒷면에 자신의 문장을 덧붙였다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 0.3124
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_38/scene_14.jpeg",
+      "sourceImageFile": "Characters_share_roles_night_202607260802.jpeg",
+      "narrationEn": "I do not buy my son’s judgment with my life. That night, Hercul, Celia, Titania, and Gilgamesh shared roles.",
+      "narrationKo": "내 생명으로 아들의 판단을 사지 않는다. 그날 밤 헤르쿨, 실리아, 티타니아, 길가메시는 역할을 나누었다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 0.6342
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_38/scene_15.jpeg",
+      "sourceImageFile": "Child_raised_in_wastes_202607260802.jpeg",
+      "narrationEn": "It was decided to change the supply rune, notify the southern tribes of the invasion, and open Elwin's detention barracks. Kadan attended Fenrir's meeting and wasted time. The plan was almost successful, but the buyer of Lucian discovered Elwin.",
+      "narrationKo": "보급 룬을 바꾸고, 남부 부족에 침공 사실을 알리며, 엘윈의 감금 막사를 열기로 했다. 카단은 펜릴의 회의에 참석해 시간을 끌었다. 계획은 거의 성공했지만 루시안의 매수 장수가 엘윈을 발견했다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 0.4338
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_38/scene_16.jpeg",
+      "sourceImageFile": "Elwin_village_blizzard_scene_202607260802_4.jpeg",
+      "narrationEn": "He put a knife to his mother's throat to force Kadan into submission. Elwin trembled with fear but held onto the blade himself. “Kadan, don’t make your decision based on me.",
+      "narrationKo": "그는 카단을 굴복시키려 어머니의 목에 칼을 댔다. 엘윈은 두려움에 떨면서도 칼날을 스스로 붙잡았다. “카단, 나를 보고 결정하지 마라.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 0.4473
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_38/scene_17.jpeg",
+      "sourceImageFile": "Elwin_village_blizzard_scene_202607260802_5.jpeg",
+      "narrationEn": "Look at the people you said you would protect. ” She pulled the soldier's sword to her chest. When Kadan came running, Elwin was already in Celia's arms.",
+      "narrationKo": "네가 지키겠다고 한 사람들을 보렴.” 그녀는 병사의 칼을 가슴으로 끌어당겼다. 카단이 달려왔을 때 엘윈은 이미 실리아의 품에 안겨 있었다.",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 0.3653
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_38/scene_18.jpeg",
+      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_14.jpeg",
+      "narrationEn": "Finally, he stroked his son's face and thanked him for being the one who chose truth over revenge. Kadan tried to freeze the wound, but Elwin blocked his hand. He told me not to use my remaining strength on myself, but to freeze the alarm tower to give myself time to escape.",
+      "narrationKo": "마지막으로 아들의 얼굴을 쓰다듬으며, 복수가 아니라 진실을 선택한 사람이 되어 고맙다고 말했다. 카단은 상처를 얼리려 했지만 엘윈이 손을 막았다. 남은 힘을 자신에게 쓰지 말고 경보탑을 얼려 도망칠 시간을 벌라고 했다.",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 51,
+      "alignmentScore": 0.6151
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_38/scene_19.jpeg",
+      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_15.jpeg",
+      "narrationEn": "Kadan did not want to accept the last request as a tactic, but Celia turned his hand towards the alarm tower. While ice covered the tower, Elwin thanked Titania for taking care of his son in the north, and asked Celia to always tell Kadan when he was wrong in the future. It was not a way to choose a woman to stay by his son's side, but a farewell that respected both people's choices.",
+      "narrationKo": "카단은 마지막 부탁까지 전술로 받아들이고 싶지 않았으나, 실리아가 그의 손을 경보탑 쪽으로 돌렸다. 얼음이 탑을 덮는 동안 엘윈은 티타니아에게 북쪽에서 아들을 돌봐 주어 고맙다고, 실리아에게는 앞으로도 카단이 틀렸을 때 반드시 말해 달라고 부탁했다. 아들의 곁에 남을 여자를 고르는 말이 아니라, 두 사람의 선택을 존중하는 작별이었다.",
+      "sourceSentenceStart": 52,
+      "sourceSentenceEnd": 54,
+      "alignmentScore": 0.4585
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_38/scene_20.jpeg",
+      "sourceImageFile": "Kadan_in_sealed_chamber_202607260802.jpeg",
+      "narrationEn": "The military camp alarm went off. Kadan didn't even get time to hug her mother and cry. He had to escape to the south with the three seals in his arms.",
+      "narrationKo": "군영의 경보가 울렸다. 카단은 어머니를 안고 울 시간조차 얻지 못했다. 세 개의 봉인을 품에 넣은 채 남쪽으로 탈출해야 했다.",
+      "sourceSentenceStart": 55,
+      "sourceSentenceEnd": 57,
+      "alignmentScore": 0.4221
+    }
+  ]
+}

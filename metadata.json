@@ -1,0 +1,6 @@
+{
+  "name": "SNS히어로 (SNSHero)",
+  "description": "원클릭 AI 웹 카드 배틀 게임 (SNSHero Revolution)",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

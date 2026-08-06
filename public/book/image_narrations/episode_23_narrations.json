@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 23,
+  "episodeTitleEn": "The Record Sleeping in the Cave",
+  "episodeTitleKo": "동굴 속 잠든 기록",
+  "sourceSentenceCount": 52,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_23/scene_01.jpeg",
+      "sourceImageFile": "Elwin_village_blizzard_scene_202607260802_3.jpeg",
+      "narrationEn": "Elwin The village was frozen as it was the day it was burned. Underneath the collapsed tavern, there was an underground passage that neither Aleksandar nor Balian knew about.",
+      "narrationKo": "엘윈 마을은 불탄 날의 모습으로 얼어붙어 있었다. 무너진 선술집 아래에는 알렉산다르와 발리안도 몰랐던 지하 통로가 있었다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.5969
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_23/scene_02.jpeg",
+      "sourceImageFile": "Lucian_and_Artus_dig_ruins_202607260802.jpeg",
+      "narrationEn": "Lucian and Death Knight Artus were digging through the ruins to find the strategic core left behind by the kingdom's war hero, Ironforge. The core of Ironforge recorded not only the tactics of protecting a single castle wall, but also the continent's ley lines, supply routes, and a refuge network for moving civilians. If Lucian got his hands on it, he could destroy Wildland and Lighthaven at the same time.",
+      "narrationKo": "루시안과 데스나이트 아르투스는 왕국의 전쟁 영웅 아이언포지가 남긴 전략 코어를 찾기 위해 폐허 전체를 파헤치고 있었다. 아이언포지의 코어에는 성벽 하나를 지키는 전술만이 아니라 대륙의 지맥과 보급로, 민간인을 이동시키는 피난망까지 기록되어 있었다. 루시안이 손에 넣으면 와일드랜드와 라이트헤븐을 동시에 무너뜨릴 수 있었다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.6118
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_23/scene_03.jpeg",
+      "sourceImageFile": "Residents_believe_treasure_is_gold_202607260802.jpeg",
+      "narrationEn": "Residents of the ruins believed the treasure was gold or weapons. Kadan wondered if telling the truth would put people in more danger, but Celia said the residents needed to know what was beneath their village.",
+      "narrationKo": "폐허 주민들은 그 보물이 금이나 무기라고 믿었다. 카단은 진실을 알리면 사람들이 더 위험해질까 고민했지만, 실리아는 자기 마을 아래 무엇이 있는지 주민들이 알아야 한다고 했다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 7,
+      "alignmentScore": 0.6372
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_23/scene_04.jpeg",
+      "sourceImageFile": "Kadan_Orihalcon_enter_cave_202607260802.jpeg",
+      "narrationEn": "Before entering the cave, they held a village meeting to explain the risks and options. Instead of running away, residents took over guarding the exit. Kadan and the party entered the cave with Orihalcon as their guide.",
+      "narrationKo": "그들은 동굴에 들어가기 전 마을 회의를 열어 위험과 선택지를 설명했다. 주민들은 도망치지 않고 출구 감시를 맡았다. 카단 일행은 오리하르콘을 길잡이로 삼아 동굴에 들어갔다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 0.603
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_23/scene_05.jpeg",
+      "sourceImageFile": "Celia_created_magnetic_device_en…_202607260802.jpeg",
+      "narrationEn": "A long time ago, while working as a royal engineer, he created a magnetic device for the entrance. Celia knew he would cheat again, so he put wind marks on both sleeves. When the heart beats faster while lying, the sign makes a whistle.",
+      "narrationKo": "그는 오래전 궁정 기술자로 일하며 입구의 자석 장치를 만든 적이 있었다. 실리아는 그가 또 속임수를 쓸 것을 알고 양쪽 소매에 바람표식을 붙였다. 거짓말을 할 때 심장 박자가 빨라지면 표식이 휘파람을 내도록 했다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 0.2822
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_23/scene_06.jpeg",
+      "sourceImageFile": "Cave_mock_battlefield_stone_sold…_202607260802.jpeg",
+      "narrationEn": "The inside of the cave was not a tomb, but a huge mock battlefield. Thousands of stone soldiers moved according to the invaders' choices.",
+      "narrationKo": "동굴 안쪽은 무덤이 아니라 거대한 모의전장이었다. 돌로 만든 병사 수천 개가 침입자의 선택에 따라 움직였다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 0.4364
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_23/scene_07.jpeg",
+      "sourceImageFile": "Kadan_attacking_refugee_model_fell_202607260802.jpeg",
+      "narrationEn": "Every time Kadan chose to attack head-on, the refugee model fell first. In the first mock battle, Kadan was declared defeated even after defeating the enemy commander. This is because one stone child was left behind in the evacuation procession.",
+      "narrationKo": "카단이 정면 돌파를 택할 때마다 피난민 모형이 먼저 쓰러졌다. 첫 모의전에서 카단은 적 지휘관을 쓰러뜨리고도 패배 판정을 받았다. 돌로 된 아이 하나가 대피 행렬에서 뒤처졌기 때문이다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 0.3356
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_23/scene_08.jpeg",
+      "sourceImageFile": "Celia_puts_condition_on_it_202607260802.jpeg",
+      "narrationEn": "The second time, we lost our supply route while waiting for everyone. Celia found small letters on the edge of the device, saying he had to read the victory conditions themselves.",
+      "narrationKo": "두 번째에는 모두를 기다리다 보급로를 잃었다. 실리아는 승리 조건 자체를 읽어야 한다며 장치 가장자리의 작은 글자를 찾아냈다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 0.4839
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_23/scene_09.jpeg",
+      "sourceImageFile": "Dragons_fighting_in_river_valley_202607260802.jpeg",
+      "narrationEn": "“This is not a test to find a strong commander. ” Celia said. “It’s a test to find a way to get someone out without a fight.",
+      "narrationKo": "“이건 강한 지휘관을 찾는 시험이 아니야.” 실리아가 말했다. “싸우지 않고 사람을 빼낼 길을 찾는 시험이야.”",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 0.339
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_23/scene_10.jpeg",
+      "sourceImageFile": "Fantasy_battlefield_scene_with_c…_202607260802.jpeg",
+      "narrationEn": "” She opened the old aqueduct and sent an alarm to the other side with the wind. Kadan drew back the stone soldier's attack with his shield, and Leonar marked the retreat route with his green jade staff. When the three people divided up their roles, the door to the mock battlefield opened for the first time.",
+      "narrationKo": "그녀는 오래된 수로를 열고 바람으로 경보를 반대편에 보냈다. 카단은 돌병사의 공격을 방패로 끌어당겼고 레오나르는 녹옥 지팡이로 후퇴로를 표시했다. 세 사람이 역할을 나누자 모의전장의 문이 처음으로 열렸다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 0.5427
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_23/scene_11.jpeg",
+      "sourceImageFile": "Black_stone_box_in_center_202607260802.jpeg",
+      "narrationEn": "There was a black stone box in the center. The lid was engraved with the phrase, “Count those who survive before you win.",
+      "narrationKo": "중앙에는 검은 석함이 놓여 있었다. 뚜껑에는 승리보다 먼저 살아남을 사람을 세어라라는 문장이 새겨져 있었다.",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 0.4177
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_23/scene_12.jpeg",
+      "sourceImageFile": "Kadan_touches_dagger_chest_reson…_202607260802.jpeg",
+      "narrationEn": "” When Kadan touched it, his father's dagger and stone chest resonated. Aleksandar was one of the people who hid Ironforge's last messenger. The strategic core inside the stone box was not a crystal sphere but hundreds of thin metal leaves.",
+      "narrationKo": "카단이 손을 대자 아버지의 단검과 석함이 공명했다. 알렉산다르는 아이언포지의 마지막 전령을 숨겨 준 사람 중 하나였다. 석함 안의 전략 코어는 수정 구체가 아니라 수백 장의 얇은 금속잎이었다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 0.3754
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_23/scene_13.jpeg",
+      "sourceImageFile": "Celia_argues_for_codex_distribution_202607260802.jpeg",
+      "narrationEn": "Each chapter contained memories from a different region, so removing one changed the entire strategy. Celia argued that it should be distributed and stored like a codex.",
+      "narrationKo": "각 장은 서로 다른 지역의 기억을 담고 있어 하나를 떼면 전체 전략이 바뀌었다. 실리아는 코덱스처럼 분산 보관해야 한다고 주장했다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 0.342
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_23/scene_14.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_came_through_202607260802.jpeg",
+      "narrationEn": "Death Knight Artus came through the wall. A black wind swirled through his empty armor. Kadan's attack passed through without finding the body, and Leonar's barrier was cut off by the soul sword.",
+      "narrationKo": "데스나이트 아르투스가 벽을 뚫고 들어왔다. 그의 빈 갑옷 사이로 검은 바람이 회오리쳤다. 카단의 공격은 몸을 찾지 못하고 통과했고, 레오나르의 결계는 영혼검에 잘려 나갔다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 0.5376
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_23/scene_15.jpeg",
+      "sourceImageFile": "Orihalcon_and_Death_Knight_Artus_202607260802.jpeg",
+      "narrationEn": "Orihalcon was able to escape, but activated the stone box's magnetic device. Death Knight Artus's armor stuck to the wall and its movement stopped. He laughed and said he had become a hero, but he knew better than anyone else that the device would not last long.",
+      "narrationKo": "오리하르콘은 도망칠 수 있었지만 석함의 자석 장치를 작동시켰다. 데스나이트 아르투스의 갑옷이 벽에 붙어 움직임이 멎었다. 그는 자신이 영웅이 되었다며 웃었지만 장치가 오래 버티지 못한다는 것을 누구보다 잘 알았다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 0.4102
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_23/scene_16.jpeg",
+      "sourceImageFile": "Kadan_Orihalcon_swear_harshly_202607260802.jpeg",
+      "narrationEn": "When Kadan tried to stay together, Orihalcon was the first to swear harshly. “If you want to brag about saving me for the rest of your life, don’t die here with me.",
+      "narrationKo": "카단이 함께 남으려 하자 오리하르콘은 처음으로 거친 욕을 했다. “날 구한 일을 평생 자랑하려면 여기서 같이 죽지 마.”",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 0.2687
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_23/scene_17.jpeg",
+      "sourceImageFile": "Celia_drags_Kadan_into_aisle_202607260802.jpeg",
+      "narrationEn": "” Celia grabbed Kadan by the collar and dragged him into the aisle. It was a face that did not want to make anyone's sacrifice a romantic ending. Celia divided the metal leaves into three bundles.",
+      "narrationKo": "실리아는 카단의 옷깃을 잡아 통로로 끌었다. 누구의 희생도 낭만적인 결말로 만들지 않으려는 얼굴이었다. 실리아는 금속잎을 세 묶음으로 나누었다.",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 0.4489
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_23/scene_18.jpeg",
+      "sourceImageFile": "Orihalcon_escapes,_activates_device_202607260802.jpeg",
+      "narrationEn": "Leonar was in charge of the refuge net, Kadan was in charge of defensive tactics, and he was in charge of the ley line map. The last one was handed to Orihalcon.",
+      "narrationKo": "레오나르는 피난망을, 카단은 방어전술을, 자신은 지맥 지도를 맡았다. 마지막 한 장은 오리하르콘에게 건넸다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 0.3052
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_23/scene_19.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_in_palace_202607260802.jpeg",
+      "narrationEn": "“You protect it as proof that this choice was not a trick. ” Those words silenced Orihalcon's bravado. He placed the metal leaf inside the armor and held onto Death Knight Artus's magnetic device until the end.",
+      "narrationKo": "“이번 선택이 속임수가 아니었다는 증거로 네가 지켜.” 그 말은 오리하르콘의 허세를 잠재웠다. 그는 금속잎을 갑옷 안쪽에 넣고 데스나이트 아르투스의 자석 장치를 끝까지 붙들었다.",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 0.4616
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_23/scene_20.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_Kadan_cave_202607260802.jpeg",
+      "narrationEn": "The moment everyone exited the passage, the device exploded and half the cave collapsed. Death Knight Artus rose from the rubble but was unable to obtain the entire strategic core. Outside the ruins, Kadan realized that what his father was trying to protect was not a family or revenge, but an escape route for ordinary people.",
+      "narrationKo": "모두가 통로를 빠져나온 순간 장치가 터졌고 동굴 절반이 무너졌다. 데스나이트 아르투스는 잔해 속에서 다시 일어났지만 전략 코어 전체를 얻지는 못했다. 카단은 폐허 바깥에서 아버지가 지키려 했던 것이 가문도 복수도 아니라 평범한 사람들의 도망갈 길이었다는 것을 깨달았다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 52,
+      "alignmentScore": 0.5165
+    }
+  ]
+}

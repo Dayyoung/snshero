@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 29,
+  "episodeTitleEn": "Queen of the Wind",
+  "episodeTitleKo": "바람의 여왕",
+  "sourceSentenceCount": 49,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_29/scene_01.jpeg",
+      "sourceImageFile": "Freedmen's_League_congress_after…_202607260802.jpeg",
+      "narrationEn": "The day after Ignis's death, the Freedmen's League held another congress. Celia did not prepare black robes or a memorial speech.",
+      "narrationKo": "이그니스의 죽음 다음 날, 자유민 연맹은 다시 의회를 열었다. 실리아는 검은 예복도 추도 연설도 준비하지 않았다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.2505
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_29/scene_02.jpeg",
+      "sourceImageFile": "Man_with_jade_staff_evaluating_202607260802.jpeg",
+      "narrationEn": "Instead, I started by reading the names of those who had been injured the day before, the medicine needed, and the amount of food lost. The representatives entrusted the position of leader to her, who held a green jade staff.",
+      "narrationKo": "대신 전날 다친 사람들의 이름과 필요한 약, 잃어버린 식량 수량부터 읽었다. 대표들은 녹옥 지팡이를 든 그녀에게 수장 자리를 맡겼다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 4,
+      "alignmentScore": 0.418
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_29/scene_03.jpeg",
+      "sourceImageFile": "Fantasy_RPG_characters_plan_inva…_202607260802.jpeg",
+      "narrationEn": "Celia put a condition on it. The conditions were that the head would not be inherited by blood, that he would step down immediately if three or more regions voted against him, and that an evacuation plan must be attached to every wartime order. Representatives objected, saying it would weaken their authority too much.",
+      "narrationKo": "실리아는 조건을 걸었다. 수장은 혈통으로 계승하지 않으며, 세 지역 이상이 불신임하면 즉시 물러나고, 모든 전시 명령에는 피난 계획이 먼저 붙어야 한다는 조건이었다. 대표들은 권한이 너무 약해진다며 반발했다.",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 7,
+      "alignmentScore": 0.295
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_29/scene_04.jpeg",
+      "sourceImageFile": "Celia_reminds_Ignis_about_organi…_202607260802.jpeg",
+      "narrationEn": "Celia reminded Ignis that an organization where one person can make decisions quickly put Ignis on the stage. Both the costs of slow agreement and the costs of fast dictatorship had to be put on the books.",
+      "narrationKo": "실리아는 한 사람이 빠르게 결정할 수 있는 조직이 이그니스를 단상에 세웠다는 사실을 상기시켰다. 느린 합의의 비용과 빠른 독재의 비용을 둘 다 장부에 올려야 했다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 9,
+      "alignmentScore": 0.5216
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_29/scene_05.jpeg",
+      "sourceImageFile": "Queen_of_Wind_fantasy_palace_202607260802.jpeg",
+      "narrationEn": "“Don’t call me queen, because the wind doesn’t sit on the throne. ” Nevertheless, people called her the Queen of the Winds. A name mixed with respect and expectations was sometimes heavier than shackles.",
+      "narrationKo": "“나를 여왕이라 부르지 마세요. 바람은 왕좌에 앉지 않으니까.” 그럼에도 사람들은 그녀를 바람의 여왕이라 불렀다. 존경과 기대가 섞인 이름은 때로 족쇄보다 무거웠다.",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 0.6423
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_29/scene_06.jpeg",
+      "sourceImageFile": "Lucian_finds_traitors_in_Federation_202607260802.jpeg",
+      "narrationEn": "The first mission was to find traitors within the Federation. Lucian's gold was flowing to various representatives, and fake orders were leading refugees into a dead-end valley in the Iron Palm Mountains.",
+      "narrationKo": "첫 임무는 연맹 내부의 배신자를 찾는 일이었다. 루시안의 금이 여러 대표에게 흘러들었고, 가짜 명령서가 피난민을 아이언팜 산맥의 막다른 계곡으로 유도하고 있었다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 0.3288
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_29/scene_07.jpeg",
+      "sourceImageFile": "Celia_takes_off_chief's_attire_202607260802.jpeg",
+      "narrationEn": "Celia took off his chief's attire and put on the clothes of a beggar from Zhangjiagou Market again. Kadan pretended not to recognize her, just like when they first met, but he couldn't hide his smile.",
+      "narrationKo": "실리아는 수장 복장을 벗고 다시 장가구 시장의 거지 옷을 입었다. 카단은 처음 만났을 때처럼 그녀를 알아보지 못하는 척했지만 웃음을 숨기지 못했다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 0.5834
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_29/scene_08.jpeg",
+      "sourceImageFile": "Kadan_Ignis_refugee_procession_c…_202607260802.jpeg",
+      "narrationEn": "The two joined the refugee procession and chased after the fake guides. The traitors spread a rumor that Kadan killed Ignis. Angry refugees surrounded Kadan.",
+      "narrationKo": "둘은 난민 행렬에 섞여 가짜 안내자들을 뒤쫓았다. 배신자들은 카단이 이그니스를 죽였다는 소문을 퍼뜨렸다. 분노한 피난민들이 카단을 둘러쌌다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 0.4483
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_29/scene_09.jpeg",
+      "sourceImageFile": "Ignis_told_about_battle_202607260802.jpeg",
+      "narrationEn": "He did not draw his sword and told exactly what he had done in the last battle. I stopped Ignis, tried to save him, and failed.",
+      "narrationKo": "그는 검을 뽑지 않고 자신이 마지막 전투에서 무엇을 했는지 그대로 말했다. 이그니스를 막았으며, 살리려 했고, 실패했다고.",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 0.3352
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_29/scene_10.jpeg",
+      "sourceImageFile": "Woman_child_survived_on_food_202607260802.jpeg",
+      "narrationEn": "One woman said her child survived on food released by Ignis. Another man lost his brother to Prohibition. Kadan did not refute any of the memories.",
+      "narrationKo": "한 여인은 이그니스가 풀어 준 식량으로 아이가 살았다고 말했다. 다른 남자는 그의 금지술에 형제를 잃었다. 카단은 어느 기억도 반박하지 않았다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 0.2852
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_29/scene_11.jpeg",
+      "sourceImageFile": "Celia_shows_field_record_crystal…_202607260802.jpeg",
+      "narrationEn": "Loving or hating a person did not erase the other consequences he left behind. Instead of defending Kadan, Celia showed the field record crystal ball.",
+      "narrationKo": "한 사람을 사랑하거나 미워하는 일이 그가 남긴 다른 결과를 지우지는 못했다. 실리아는 카단을 변호하는 대신 현장 기록 수정구를 보여 주었다.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 0.4496
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_29/scene_12.jpeg",
+      "sourceImageFile": "Crowd_judges_facts_returned_202607260802.jpeg",
+      "narrationEn": "The right to judge the facts was returned to the crowd. After being silent for a long time, people opened the way.",
+      "narrationKo": "사실을 판단할 권리를 군중에게 돌려준 것이다. 사람들은 오래 침묵한 끝에 길을 열었다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 0.5083
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_29/scene_13.jpeg",
+      "sourceImageFile": "Traitor_home_base_abandoned_smelter_202607260802.jpeg",
+      "narrationEn": "The traitors' home base was an abandoned smelter midway up the mountain range. A fake elder claiming to be Orihalcon's older brother gathered followers by demonstrating the miracle of melting steel with his bare hands. Celia found a firestone pipe hidden under the heat source.",
+      "narrationKo": "배신자들의 본거지는 산맥 중턱의 폐제련소였다. 오리하르콘의 형을 자처하는 가짜 대장로가 강철을 맨손으로 녹이는 기적을 선보이며 추종자를 모았다. 실리아는 열원 아래 숨긴 화염석 배관을 찾아냈다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 0.4997
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_29/scene_14.jpeg",
+      "sourceImageFile": "Fake_Grand_Elder_uses_Iron_202607260802.jpeg",
+      "narrationEn": "When his identity was revealed, the fake Grand Elder used the real Iron Palm shock technique. His compression wave hit Celia's back, shattering his windscale armor from the inside.",
+      "narrationKo": "정체가 드러나자 가짜 대장로는 진짜 아이언팜 충격술을 사용했다. 그의 압축파가 실리아의 등을 때렸고, 바람비늘 갑옷이 안쪽에서 부서졌다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 0.4296
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_29/scene_15.jpeg",
+      "sourceImageFile": "Woman_opens_escape_passage_staff_202607260802.jpeg",
+      "narrationEn": "Even as she fell, she opened an escape passage with her green jade staff. Kadan did not chase the enemy, but carried Celia. If he were his old self, he would have tried not to miss the villain.",
+      "narrationKo": "그녀는 쓰러지면서도 녹옥 지팡이로 피난 통로를 열었다. 카단은 적을 쫓지 않고 실리아를 업었다. 예전의 자신이라면 악당을 놓치지 않으려 했을 것이다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 0.4888
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_29/scene_16.jpeg",
+      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_11.jpeg",
+      "narrationEn": "Now I know that it is my responsibility to decide who to save first and deal with the consequences. Before Celia lost consciousness, he ordered the fake Grand Elder to be let go.",
+      "narrationKo": "지금은 누구를 먼저 구할지 결정하고 그 결과를 감당하는 것이 책임임을 알았다. 실리아는 정신을 잃기 전 가짜 대장로를 놓치라고 명령했다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 0.3913
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_29/scene_17.jpeg",
+      "sourceImageFile": "Kadan_following_orders_record_202607260802.jpeg",
+      "narrationEn": "Kadan also told me not to pretend to be my own judgement and to leave a record of following orders. This was meant to ensure that the path of responsibility does not disappear even if the leader falls.",
+      "narrationKo": "카단이 자기 판단인 척하지 말고 명령을 따른 기록을 남기라고도 했다. 수장이 쓰러져도 책임의 경로가 사라지지 않게 하려는 말이었다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 0.3907
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_29/scene_18.jpeg",
+      "sourceImageFile": "Celia_stole_map_from_Elder_202607260802.jpeg",
+      "narrationEn": "Celia stole the map from the fake Grand Elder's waist before losing consciousness. The map showed four gateways across the mountain range and the sanctuary of Aqualord hidden at the end of them. He who manipulated life mana could repair the broken wind core.",
+      "narrationKo": "실리아는 의식을 잃기 전에 가짜 대장로의 허리에서 지도를 훔쳤다. 지도에는 산맥 너머 네 개의 관문과 그 끝에 숨은 아쿠아로드의 성소가 표시되어 있었다. 생명 마나를 다루는 그라면 부서진 바람 코어를 고칠 수 있었다.",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 0.4843
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_29/scene_19.jpeg",
+      "sourceImageFile": "Kadan_picks_up_Celia_202607260802.jpeg",
+      "narrationEn": "Kadan tied the green jade staff to his back and picked up Celia. Federation representatives followed suit, saying they would protect the leader, but he only allowed the minimum number of people.",
+      "narrationKo": "카단은 녹옥 지팡이를 등에 묶고 실리아를 안아 올렸다. 연맹 대표들은 수장을 지키겠다며 따라나섰지만 그는 최소 인원만 허락했다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 0.3779
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_29/scene_20.jpeg",
+      "sourceImageFile": "Army_irritated_gateway_at_night_202607260802.jpeg",
+      "narrationEn": "A large army only irritated the gateway. That night, Ignis's glass spark shined once in Kadan's pocket. A thin flame tilted toward the south, as if indicating the remaining path.",
+      "narrationKo": "대규모 병력은 관문을 자극할 뿐이었다. 그날 밤 이그니스의 유리 불씨가 카단의 주머니에서 한 번 빛났다. 마치 남은 길을 가리키는 듯 남쪽을 향해 가느다란 불꽃이 기울었다.",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 0.4326
+    }
+  ]
+}

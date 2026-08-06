@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Home -->
+  <url>
+    <loc>https://snshero.com/</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://snshero.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://snshero.com/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://snshero.com/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://snshero.com/?lang=zh-CN"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://snshero.com/?lang=zh-TW"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://snshero.com/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://snshero.com/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://snshero.com/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://snshero.com/?lang=id"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://snshero.com/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="th" href="https://snshero.com/?lang=th"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://snshero.com/?lang=vi"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://snshero.com/"/>
+    <image:image>
+      <image:loc>https://snshero.com/og-image.png</image:loc>
+      <image:title>SNS히어로 메인 이미지</image:title>
+      <image:caption>SNS히어로 원클릭 AI 웹 카드 게임 메인 화면</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://snshero.com/card100.png</image:loc>
+      <image:title>100회 물방구 뽑기 이벤트</image:title>
+      <image:caption>SNS히어로 100회 물방구 뽑기 이벤트 배너</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://snshero.com/110card.png</image:loc>
+      <image:title>110종 물방구 카드</image:title>
+      <image:caption>SNS히어로 110종 귀여운 물방구 일러스트 카드</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Home/Lobby -->
+  <url>
+    <loc>https://snshero.com/home</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://snshero.com/home"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://snshero.com/home?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://snshero.com/home?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://snshero.com/home?lang=zh-CN"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://snshero.com/home?lang=zh-TW"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://snshero.com/home?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://snshero.com/home?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://snshero.com/home?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://snshero.com/home?lang=id"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://snshero.com/home?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="th" href="https://snshero.com/home?lang=th"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://snshero.com/home?lang=vi"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://snshero.com/home"/>
+  </url>
+
+  <!-- Deck -->
+  <url>
+    <loc>https://snshero.com/deck</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://snshero.com/deck"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://snshero.com/deck?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://snshero.com/deck?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://snshero.com/deck?lang=zh-CN"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://snshero.com/deck?lang=zh-TW"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://snshero.com/deck?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://snshero.com/deck?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://snshero.com/deck?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://snshero.com/deck?lang=id"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://snshero.com/deck?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="th" href="https://snshero.com/deck?lang=th"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://snshero.com/deck?lang=vi"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://snshero.com/deck"/>
+  </url>
+
+  <!-- Play -->
+  <url>
+    <loc>https://snshero.com/play</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://snshero.com/play"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://snshero.com/play?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://snshero.com/play?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://snshero.com/play?lang=zh-CN"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://snshero.com/play?lang=zh-TW"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://snshero.com/play?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://snshero.com/play?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://snshero.com/play?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://snshero.com/play?lang=id"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://snshero.com/play?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="th" href="https://snshero.com/play?lang=th"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://snshero.com/play?lang=vi"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://snshero.com/play"/>
+  </url>
+
+  <!-- Shop -->
+  <url>
+    <loc>https://snshero.com/shop</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://snshero.com/shop"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://snshero.com/shop?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://snshero.com/shop?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://snshero.com/shop?lang=zh-CN"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://snshero.com/shop?lang=zh-TW"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://snshero.com/shop?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://snshero.com/shop?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://snshero.com/shop?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://snshero.com/shop?lang=id"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://snshero.com/shop?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="th" href="https://snshero.com/shop?lang=th"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://snshero.com/shop?lang=vi"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://snshero.com/shop"/>
+  </url>
+
+  <!-- Wiki -->
+  <url>
+    <loc>https://snshero.com/wiki</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://snshero.com/wiki"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://snshero.com/wiki?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://snshero.com/wiki?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://snshero.com/wiki?lang=zh-CN"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://snshero.com/wiki?lang=zh-TW"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://snshero.com/wiki?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://snshero.com/wiki?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://snshero.com/wiki?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://snshero.com/wiki?lang=id"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://snshero.com/wiki?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="th" href="https://snshero.com/wiki?lang=th"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://snshero.com/wiki?lang=vi"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://snshero.com/wiki"/>
+  </url>
+
+  <!-- Wiki - Card Encyclopedia -->
+  <url>
+    <loc>https://snshero.com/wiki/card</loc>
+    <lastmod>2026-07-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://snshero.com/wiki/card"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://snshero.com/wiki/card?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://snshero.com/wiki/card?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://snshero.com/wiki/card?lang=zh-CN"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://snshero.com/wiki/card?lang=zh-TW"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://snshero.com/wiki/card?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://snshero.com/wiki/card?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://snshero.com/wiki/card?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://snshero.com/wiki/card?lang=id"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://snshero.com/wiki/card?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="th" href="https://snshero.com/wiki/card?lang=th"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://snshero.com/wiki/card?lang=vi"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://snshero.com/wiki/card"/>
+  </url>
+
+  <!-- Wiki - How to Play -->
+  <url>
+    <loc>https://snshero.com/wiki/howtoplay</loc>
+    <lastmod>2026-07-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://snshero.com/wiki/howtoplay"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://snshero.com/wiki/howtoplay?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://snshero.com/wiki/howtoplay?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://snshero.com/wiki/howtoplay?lang=zh-CN"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://snshero.com/wiki/howtoplay?lang=zh-TW"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://snshero.com/wiki/howtoplay?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://snshero.com/wiki/howtoplay?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://snshero.com/wiki/howtoplay?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://snshero.com/wiki/howtoplay?lang=id"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://snshero.com/wiki/howtoplay?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="th" href="https://snshero.com/wiki/howtoplay?lang=th"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://snshero.com/wiki/howtoplay?lang=vi"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://snshero.com/wiki/howtoplay"/>
+  </url>
+
+  <!-- Wiki - Tips & Strategies -->
+  <url>
+    <loc>https://snshero.com/wiki/tip</loc>
+    <lastmod>2026-07-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://snshero.com/wiki/tip"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://snshero.com/wiki/tip?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://snshero.com/wiki/tip?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://snshero.com/wiki/tip?lang=zh-CN"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://snshero.com/wiki/tip?lang=zh-TW"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://snshero.com/wiki/tip?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://snshero.com/wiki/tip?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://snshero.com/wiki/tip?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://snshero.com/wiki/tip?lang=id"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://snshero.com/wiki/tip?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="th" href="https://snshero.com/wiki/tip?lang=th"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://snshero.com/wiki/tip?lang=vi"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://snshero.com/wiki/tip"/>
+  </url>
+
+</urlset>

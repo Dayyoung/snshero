@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 34,
+  "episodeTitleEn": "The Fallen Wind Isle",
+  "episodeTitleKo": "무너진 바람섬",
+  "sourceSentenceCount": 54,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_34/scene_01.jpeg",
+      "sourceImageFile": "Kadan_in_enchanted_forest_202607260802.jpeg",
+      "narrationEn": "Whisper of the Wind Island no longer hides behind the fog. All the barrier towers had collapsed and the forest was burned black.",
+      "narrationKo": "바람의 속삭임 섬은 더 이상 안개 뒤에 숨지 않았다. 결계탑이 모두 쓰러지고 숲은 검게 타 있었다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.5359
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_34/scene_02.jpeg",
+      "sourceImageFile": "Celia_runs_on_beach_202607260802.jpeg",
+      "narrationEn": "The trail, which was always changing, became straight like a dead snake. As soon as Celia landed on the beach, he ran, calling people's names. Instead of answering, only the broken wind chime bell rang.",
+      "narrationKo": "늘 길을 바꾸던 오솔길도 죽은 뱀처럼 곧게 굳었다. 실리아는 해변에 내리자마자 사람들의 이름을 부르며 달렸다. 대답 대신 부서진 풍경종만 울렸다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.4706
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_34/scene_03.jpeg",
+      "sourceImageFile": "Kadan_finds_Grimli's_hammer_202607260802.jpeg",
+      "narrationEn": "Most of the island's residents retreated to underground shelters, but traces of those who guarded the barrier remained everywhere. In the central garden, Kadan found Grimli's hammer. The silver bell of Robinyard was still attached to the handle.",
+      "narrationKo": "섬 주민 대부분은 지하 피난처로 빠졌지만, 결계를 지킨 사람들의 흔적이 곳곳에 남아 있었다. 중앙 정원에서 카단은 그림리의 망치를 발견했다. 손잡이에는 로비냐드의 은방울이 그대로 달려 있었다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 0.4492
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_34/scene_04.jpeg",
+      "sourceImageFile": "Demon_Hunter_crossbow_sword_oar_202607260802.jpeg",
+      "narrationEn": "Going a little further, Aila the Demon Hunter's crossbow, Kaze's sword, and Rondol's oar were laid out one after another. The weapons weren't dropped randomly.",
+      "narrationKo": "조금 더 가자 에일라의 쇠뇌, 카제의 칼, 론돌의 노가 차례로 놓여 있었다. 무기들은 아무렇게나 떨어진 것이 아니었다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 0.4287
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_34/scene_05.jpeg",
+      "sourceImageFile": "Grimli_hammer_supports_shelter_e…_202607260802.jpeg",
+      "narrationEn": "Grimli's hammer was supporting the entrance to the shelter, and Aila the Demon Hunter's last arrow pointed in the opposite direction from where the children fled. Kaze's knife was stuck with the alarm cord cut. Teachers created someone's path until the moment they died.",
+      "narrationKo": "그림리의 망치는 피난처 입구를 받치고 있었고, 에일라의 마지막 화살은 아이들이 달아난 방향과 반대를 가리켰다. 카제의 칼은 경보줄을 끊은 채 박혀 있었다. 스승들은 죽는 순간까지 누군가의 길을 만들었다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 0.5759
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_34/scene_06.jpeg",
+      "sourceImageFile": "Six_masters_arrived_island_chasi…_202607260802.jpeg",
+      "narrationEn": "The six masters arrived on the island first, chasing Death Knight Artus's army. Only Gawain survived with fatal injuries. He heard Kadan's footsteps with his invisible eyes and stretched out his hand.",
+      "narrationKo": "여섯 스승은 데스나이트 아르투스의 군대를 쫓아 섬에 먼저 도착했다. 가웨인만 치명상을 입은 채 살아 있었다. 그는 보이지 않는 눈으로 카단의 발소리를 듣고 손을 뻗었다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 0.6721
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_34/scene_07.jpeg",
+      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_12.jpeg",
+      "narrationEn": "“It’s not too late. We just got here first.",
+      "narrationKo": "“늦지 않았다. 우리가 먼저 왔을 뿐이다.”",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 0.3952
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_34/scene_08.jpeg",
+      "sourceImageFile": "Gawain_said_attacker_used_Aeolus…_202607260802.jpeg",
+      "narrationEn": "” Gawain said the attacker used Aeolus's flute sound. In the black fog, it was impossible to tell who was real, and the comrades fell one by one while protecting each other. At the last moment, I even saw the figure of Aeolus directly wielding the soul sword.",
+      "narrationKo": "가웨인은 공격자가 에올루스의 피리 소리를 사용했다고 말했다. 검은 안개 속에서 누가 진짜인지 구분할 수 없었고, 동료들은 서로를 지키다 하나씩 쓰러졌다. 마지막 순간에는 에올루스의 형체가 직접 영혼검을 휘두르는 모습까지 보았다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 0.6516
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_34/scene_09.jpeg",
+      "sourceImageFile": "Grimli_raises_shield_imitating_K…_202607260802.jpeg",
+      "narrationEn": "He said that Grimli raised his shield at the end, imitating Kadan's posture. He was a person who always found his student's defense frustrating. Aila the Demon Hunter used his crossbow like a club after running out of arrows, and even at the last moment, Kaze left funny graffiti on the enemy's armor.",
+      "narrationKo": "그는 그림리가 마지막에 카단의 자세를 흉내 내며 방패를 들었다고 전했다. 늘 제자의 방어가 답답하다던 사람이었다. 에일라는 화살이 다 떨어진 뒤 쇠뇌를 몽둥이처럼 썼고, 카제는 마지막 순간에도 적의 갑옷에 우스운 낙서를 남겼다.",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 0.43
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_34/scene_10.jpeg",
+      "sourceImageFile": "Kadan_knelt_before_weapons_202607260802.jpeg",
+      "narrationEn": "Kadan knelt before the weapons of his teachers. No tears came out. All I could think about was what kind of curse Grimli would have sworn at the end and how many shots Aila the Demon Hunter had left.",
+      "narrationKo": "카단은 스승들의 무기 앞에서 무릎을 꿇었다. 눈물이 나오지 않았다. 그림리가 마지막에 어떤 욕을 했을지, 에일라가 몇 발을 남겼을지 사소한 생각만 떠올랐다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 0.3538
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_34/scene_11.jpeg",
+      "sourceImageFile": "Aeolus_emerged_from_temple_ruins_202607260802.jpeg",
+      "narrationEn": "Aeolus emerged from the ruins of the temple. There was blood on the clothes and the flute.",
+      "narrationKo": "에올루스는 성전 폐허에서 나타났다. 옷과 피리에 피가 묻어 있었다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 0.6024
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_34/scene_12.jpeg",
+      "sourceImageFile": "Kadan_Gawain_Celia_fantasy_scene_202607260802.jpeg",
+      "narrationEn": "He said everyone was already passed out when he arrived. Kadan wanted to believe it, but Gawain's testimony and traces of the flute were right in front of him. Celia approached his father and asked for the flute.",
+      "narrationKo": "그는 자신이 도착했을 때 이미 모두 쓰러져 있었다고 말했다. 카단은 믿고 싶었으나 가웨인의 증언과 피리의 흔적이 눈앞에 있었다. 실리아는 아버지에게 다가가 피리를 달라고 했다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 0.5981
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_34/scene_13.jpeg",
+      "sourceImageFile": "Aeolus_hesitated,_Kadan_accused_202607260802.jpeg",
+      "narrationEn": "The moment Aeolus hesitated for a moment, Kadan accepted the movement as evidence of guilt. The impact of the Dragon Breaker split the garden floor. Aeolus did not counterattack, but instead attacked with a flute.",
+      "narrationKo": "에올루스가 잠시 망설이는 순간 카단이 그 움직임을 죄의 증거로 받아들였다. 드래곤 브레이커의 충격이 정원 바닥을 갈랐다. 에올루스는 반격하지 않고 피리로 공격을 흘렸다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 0.5729
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_34/scene_14.jpeg",
+      "sourceImageFile": "Chibi_fantasy_RPG_illustration_K…_202607260802.jpeg",
+      "narrationEn": "“There is no room for any answers to questions asked in anger. ” “Then why do you avoid it?",
+      "narrationKo": "“분노한 채 묻는 질문에는 어떤 대답도 들어갈 자리가 없다.” “그럼 왜 피하지?”",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 0.3118
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_34/scene_15.jpeg",
+      "sourceImageFile": "Celia_Kadan_war-torn_battlefield_202607260802.jpeg",
+      "narrationEn": "” “Because if you kill me now, Celia will collapse twice. ” Those words made Kadan even more angry. When the battle between the two began, Celia could not get in between them.",
+      "narrationKo": "“네가 지금 나를 죽이면 실리아가 두 번 무너지기 때문이다.” 그 말은 카단을 더 화나게 했다. 두 사람의 전투가 시작되자 실리아는 사이에 들어가지 못했다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 0.5649
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_34/scene_16.jpeg",
+      "sourceImageFile": "Kadan_sadness_teachers_bodies_202607260802.jpeg",
+      "narrationEn": "Kadan's sadness at seeing the bodies of his teachers and his desire to believe that his father was not the culprit were all real. Gawain rang a silver bell with his last breath. The sound was slightly out of sync with Aeolus's flute.",
+      "narrationKo": "스승들의 시신을 본 카단의 슬픔도, 아버지가 범인이 아니라고 믿고 싶은 자신의 마음도 모두 진짜였다. 가웨인은 마지막 숨으로 은방울을 울렸다. 소리가 에올루스의 피리와 미세하게 어긋났다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 43,
+      "alignmentScore": 0.4281
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_34/scene_17.jpeg",
+      "sourceImageFile": "Gawain's_hand_fell_202607260802.jpeg",
+      "narrationEn": "This meant that the flute heard during the attack was not a perfect replica, but was half a beat late. Before he could say that, Gawain's hand fell.",
+      "narrationKo": "공격 때 들었던 피리는 완벽한 복제품이 아니라 반 박자 늦었다는 뜻이었다. 그 사실을 말하기 전에 가웨인의 손이 떨어졌다.",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 0.4676
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_34/scene_18.jpeg",
+      "sourceImageFile": "Kadan_held_silver_bell_202607260802_2.jpeg",
+      "narrationEn": "Kadan held the silver bell, but did not immediately understand its meaning. Aeolus retreated into the black fog, saying that if he fought any longer, the truth would disappear forever. Celia did not follow Kadan.",
+      "narrationKo": "카단은 은방울을 쥐었지만 의미를 곧바로 이해하지 못했다. 에올루스는 더 싸우면 진실이 영원히 사라진다며 검은 안개 속으로 물러났다. 실리아는 카단을 따라가지 않았다.",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 0.4526
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_34/scene_19.jpeg",
+      "sourceImageFile": "Celia_holding_funerals_and_rescu…_202607260802.jpeg",
+      "narrationEn": "The first priority was to hold the funerals of teachers and rescue refugees. For the first time, the two people chose different paths in the face of the same grief. Celia did not light the funeral fire all at once.",
+      "narrationKo": "스승들의 장례를 치르고 피난민을 구하는 일이 먼저였다. 두 사람은 처음으로 같은 슬픔 앞에서 서로 다른 길을 골랐다. 실리아는 장례 불을 한꺼번에 피우지 않았다.",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 51,
+      "alignmentScore": 0.4301
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_34/scene_20.jpeg",
+      "sourceImageFile": "Refugees_tell_teachers_memories_202607260802.jpeg",
+      "narrationEn": "The refugees were asked to tell each teacher what they remembered. Some people talked about the pot that Grimli fixed, and some people talked about the knot that Aila the Demon Hunter taught them. It was a funeral that did not reduce the death of a hero to a single battle scene.",
+      "narrationKo": "피난민들에게 스승 한 사람씩 기억나는 일을 말해 달라고 했다. 누군가는 그림리가 고쳐 준 냄비를, 누군가는 에일라가 가르친 매듭을 이야기했다. 영웅의 죽음이 전투 장면 하나로 줄어들지 않게 하는 장례였다.",
+      "sourceSentenceStart": 52,
+      "sourceSentenceEnd": 54,
+      "alignmentScore": 0.2344
+    }
+  ]
+}

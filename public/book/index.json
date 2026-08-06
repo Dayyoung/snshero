@@ -1,0 +1,1046 @@
+{
+  "seriesId": "nunhero-book-v1",
+  "titleKo": "눈히어로",
+  "episodeCount": 40,
+  "totalCharacters": 79981,
+  "protagonists": [
+    {
+      "novelName": "카단",
+      "cardId": 41,
+      "cardName": "카단"
+    },
+    {
+      "novelName": "실리아",
+      "cardId": 62,
+      "cardName": "실리아"
+    },
+    {
+      "novelName": "이그니스",
+      "cardId": 11,
+      "cardName": "이그니스"
+    }
+  ],
+  "characters": [
+    {
+      "cardId": 1,
+      "cardName": "아쿠아리스",
+      "image": "/character/001.png",
+      "episodeNumbers": [
+        31,
+        32,
+        33
+      ],
+      "mentionCount": 22
+    },
+    {
+      "cardId": 2,
+      "cardName": "나이아드",
+      "image": "/character/002.png",
+      "episodeNumbers": [
+        31,
+        32,
+        33,
+        40
+      ],
+      "mentionCount": 30
+    },
+    {
+      "cardId": 5,
+      "cardName": "아쿠아로드",
+      "image": "/character/005.png",
+      "episodeNumbers": [
+        29,
+        30,
+        31,
+        32,
+        33,
+        39,
+        40
+      ],
+      "mentionCount": 30
+    },
+    {
+      "cardId": 11,
+      "cardName": "이그니스",
+      "image": "/character/011.png",
+      "episodeNumbers": [
+        1,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16,
+        17,
+        18,
+        19,
+        20,
+        22,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        35,
+        37,
+        39,
+        40
+      ],
+      "mentionCount": 188
+    },
+    {
+      "cardId": 13,
+      "cardName": "벨페고르",
+      "image": "/character/013.png",
+      "episodeNumbers": [
+        3,
+        4,
+        5,
+        11,
+        14,
+        15,
+        16,
+        19,
+        20,
+        26
+      ],
+      "mentionCount": 39
+    },
+    {
+      "cardId": 23,
+      "cardName": "실피드",
+      "image": "/character/023.png",
+      "episodeNumbers": [
+        16,
+        17,
+        18,
+        31
+      ],
+      "mentionCount": 6
+    },
+    {
+      "cardId": 25,
+      "cardName": "에올루스",
+      "image": "/character/025.png",
+      "episodeNumbers": [
+        3,
+        5,
+        9,
+        11,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        26,
+        32,
+        33,
+        34,
+        35,
+        36,
+        39,
+        40
+      ],
+      "mentionCount": 78
+    },
+    {
+      "cardId": 38,
+      "cardName": "오리하르콘",
+      "image": "/character/038.png",
+      "episodeNumbers": [
+        15,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        29,
+        36
+      ],
+      "mentionCount": 34
+    },
+    {
+      "cardId": 41,
+      "cardName": "카단",
+      "image": "/character/041.png",
+      "episodeNumbers": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40
+      ],
+      "mentionCount": 434
+    },
+    {
+      "cardId": 42,
+      "cardName": "엘윈",
+      "image": "/character/042.png",
+      "episodeNumbers": [
+        1,
+        2,
+        4,
+        6,
+        7,
+        10,
+        12,
+        17,
+        22,
+        23,
+        24,
+        25,
+        37,
+        38,
+        39,
+        40
+      ],
+      "mentionCount": 38
+    },
+    {
+      "cardId": 43,
+      "cardName": "발리안",
+      "image": "/character/043.png",
+      "episodeNumbers": [
+        1,
+        6,
+        7,
+        10,
+        11,
+        12,
+        16,
+        23,
+        24,
+        40
+      ],
+      "mentionCount": 44
+    },
+    {
+      "cardId": 44,
+      "cardName": "카제",
+      "image": "/character/044.png",
+      "episodeNumbers": [
+        2,
+        3,
+        5,
+        6,
+        14,
+        25,
+        34,
+        35,
+        38
+      ],
+      "mentionCount": 19
+    },
+    {
+      "cardId": 45,
+      "cardName": "가웨인",
+      "image": "/character/045.png",
+      "episodeNumbers": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        11,
+        19,
+        34,
+        36,
+        38
+      ],
+      "mentionCount": 24
+    },
+    {
+      "cardId": 46,
+      "cardName": "론돌",
+      "image": "/character/046.png",
+      "episodeNumbers": [
+        2,
+        3,
+        5,
+        6,
+        14,
+        15,
+        16,
+        17,
+        24,
+        25,
+        34
+      ],
+      "mentionCount": 29
+    },
+    {
+      "cardId": 47,
+      "cardName": "길가메시",
+      "image": "/character/047.png",
+      "episodeNumbers": [
+        4,
+        7,
+        24,
+        25,
+        27,
+        36,
+        37,
+        38,
+        40
+      ],
+      "mentionCount": 17
+    },
+    {
+      "cardId": 48,
+      "cardName": "로비냐드",
+      "image": "/character/048.png",
+      "episodeNumbers": [
+        2,
+        3,
+        4,
+        11,
+        34,
+        35
+      ],
+      "mentionCount": 14
+    },
+    {
+      "cardId": 49,
+      "cardName": "헤르쿨",
+      "image": "/character/049.png",
+      "episodeNumbers": [
+        1,
+        2,
+        3,
+        6,
+        9,
+        12,
+        24,
+        26,
+        35,
+        38,
+        39,
+        40
+      ],
+      "mentionCount": 45
+    },
+    {
+      "cardId": 50,
+      "cardName": "알렉산다르",
+      "image": "/character/050.png",
+      "episodeNumbers": [
+        1,
+        2,
+        4,
+        10,
+        11,
+        23,
+        24
+      ],
+      "mentionCount": 21
+    },
+    {
+      "cardId": 51,
+      "cardName": "워커",
+      "image": "/character/051.png",
+      "episodeNumbers": [
+        9,
+        10,
+        12
+      ],
+      "mentionCount": 7
+    },
+    {
+      "cardId": 52,
+      "cardName": "구울",
+      "image": "/character/052.png",
+      "episodeNumbers": [
+        1
+      ],
+      "mentionCount": 1
+    },
+    {
+      "cardId": 60,
+      "cardName": "데스나이트 아르투스",
+      "image": "/character/060.png",
+      "episodeNumbers": [
+        1,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        39
+      ],
+      "mentionCount": 49
+    },
+    {
+      "cardId": 61,
+      "cardName": "루시안",
+      "image": "/character/061.png",
+      "episodeNumbers": [
+        1,
+        2,
+        7,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        32,
+        36,
+        37,
+        38,
+        39
+      ],
+      "mentionCount": 72
+    },
+    {
+      "cardId": 62,
+      "cardName": "실리아",
+      "image": "/character/062.png",
+      "episodeNumbers": [
+        5,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40
+      ],
+      "mentionCount": 265
+    },
+    {
+      "cardId": 63,
+      "cardName": "엘리아나",
+      "image": "/character/063.png",
+      "episodeNumbers": [
+        2,
+        3,
+        5,
+        8,
+        9,
+        10,
+        24,
+        25
+      ],
+      "mentionCount": 20
+    },
+    {
+      "cardId": 64,
+      "cardName": "티타니아",
+      "image": "/character/064.png",
+      "episodeNumbers": [
+        4,
+        6,
+        7,
+        17,
+        18,
+        22,
+        27,
+        36,
+        37,
+        38,
+        39,
+        40
+      ],
+      "mentionCount": 40
+    },
+    {
+      "cardId": 65,
+      "cardName": "실바니아",
+      "image": "/character/065.png",
+      "episodeNumbers": [
+        30,
+        31
+      ],
+      "mentionCount": 3
+    },
+    {
+      "cardId": 66,
+      "cardName": "말퓨온",
+      "image": "/character/066.png",
+      "episodeNumbers": [
+        6,
+        7,
+        30
+      ],
+      "mentionCount": 13
+    },
+    {
+      "cardId": 69,
+      "cardName": "간다르",
+      "image": "/character/069.png",
+      "episodeNumbers": [
+        18,
+        19,
+        20,
+        31,
+        32,
+        33,
+        39,
+        40
+      ],
+      "mentionCount": 28
+    },
+    {
+      "cardId": 70,
+      "cardName": "에일라",
+      "image": "/character/070.png",
+      "episodeNumbers": [
+        2,
+        3,
+        5,
+        6,
+        34,
+        35,
+        38
+      ],
+      "mentionCount": 21
+    },
+    {
+      "cardId": 71,
+      "cardName": "발보",
+      "image": "/character/071.png",
+      "episodeNumbers": [
+        8,
+        9
+      ],
+      "mentionCount": 4
+    },
+    {
+      "cardId": 74,
+      "cardName": "그림리",
+      "image": "/character/074.png",
+      "episodeNumbers": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        11,
+        12,
+        24,
+        25,
+        34,
+        35,
+        38
+      ],
+      "mentionCount": 37
+    },
+    {
+      "cardId": 80,
+      "cardName": "아이언포지",
+      "image": "/character/080.png",
+      "episodeNumbers": [
+        23,
+        25,
+        26,
+        37,
+        38,
+        39,
+        40
+      ],
+      "mentionCount": 10
+    },
+    {
+      "cardId": 81,
+      "cardName": "펜릴",
+      "image": "/character/081.png",
+      "episodeNumbers": [
+        4,
+        7,
+        17,
+        27,
+        36,
+        37,
+        38,
+        39,
+        40
+      ],
+      "mentionCount": 47
+    },
+    {
+      "cardId": 84,
+      "cardName": "그리폰",
+      "image": "/character/084.png",
+      "episodeNumbers": [
+        6,
+        17,
+        22,
+        27,
+        36,
+        37
+      ],
+      "mentionCount": 8
+    },
+    {
+      "cardId": 86,
+      "cardName": "레오나르",
+      "image": "/character/086.png",
+      "episodeNumbers": [
+        13,
+        21,
+        22,
+        23,
+        24,
+        28,
+        39
+      ],
+      "mentionCount": 40
+    },
+    {
+      "cardId": 87,
+      "cardName": "바르가스트",
+      "image": "/character/087.png",
+      "episodeNumbers": [
+        7
+      ],
+      "mentionCount": 8
+    },
+    {
+      "cardId": 88,
+      "cardName": "우르삭",
+      "image": "/character/088.png",
+      "episodeNumbers": [
+        7
+      ],
+      "mentionCount": 1
+    },
+    {
+      "cardId": 89,
+      "cardName": "메두사 고르고",
+      "image": "/character/089.png",
+      "episodeNumbers": [
+        3,
+        4,
+        5,
+        7,
+        9,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        20,
+        26
+      ],
+      "mentionCount": 57
+    },
+    {
+      "cardId": 90,
+      "cardName": "페가수스",
+      "image": "/character/090.png",
+      "episodeNumbers": [
+        8,
+        9,
+        13,
+        20,
+        40
+      ],
+      "mentionCount": 9
+    },
+    {
+      "cardId": 99,
+      "cardName": "마기테크 골렘",
+      "image": "/character/099.png",
+      "episodeNumbers": [
+        12,
+        18,
+        19
+      ],
+      "mentionCount": 4
+    },
+    {
+      "cardId": 107,
+      "cardName": "이셀라",
+      "image": "/character/107.png",
+      "episodeNumbers": [
+        1,
+        2,
+        9,
+        10,
+        11,
+        12,
+        16,
+        40
+      ],
+      "mentionCount": 32
+    }
+  ],
+  "episodes": [
+    {
+      "episodeNumber": 1,
+      "titleKo": "눈보라 아래 두 서약",
+      "sourceRange": "제1장-제2장",
+      "file": "/book/episode_01.md",
+      "characterCount": 2421
+    },
+    {
+      "episodeNumber": 2,
+      "titleKo": "일곱 추적자의 맹세",
+      "sourceRange": "제3장-제4장",
+      "file": "/book/episode_02.md",
+      "characterCount": 2281
+    },
+    {
+      "episodeNumber": 3,
+      "titleKo": "안개 절벽의 피",
+      "sourceRange": "제5장-제6장",
+      "file": "/book/episode_03.md",
+      "characterCount": 1976
+    },
+    {
+      "episodeNumber": 4,
+      "titleKo": "황야에서 자란 아이",
+      "sourceRange": "제7장-제8장",
+      "file": "/book/episode_04.md",
+      "characterCount": 1875
+    },
+    {
+      "episodeNumber": 5,
+      "titleKo": "폭우 속의 유령",
+      "sourceRange": "제9장-제10장",
+      "file": "/book/episode_05.md",
+      "characterCount": 2112
+    },
+    {
+      "episodeNumber": 6,
+      "titleKo": "별을 호흡하는 법",
+      "sourceRange": "제11장-제12장",
+      "file": "/book/episode_06.md",
+      "characterCount": 2306
+    },
+    {
+      "episodeNumber": 7,
+      "titleKo": "배신자들의 천막",
+      "sourceRange": "제13장-제14장",
+      "file": "/book/episode_07.md",
+      "characterCount": 2288
+    },
+    {
+      "episodeNumber": 8,
+      "titleKo": "붉은 갈기의 기수",
+      "sourceRange": "제15장-제16장",
+      "file": "/book/episode_08.md",
+      "characterCount": 2184
+    },
+    {
+      "episodeNumber": 9,
+      "titleKo": "거지 옷의 바람",
+      "sourceRange": "제17장-제18장",
+      "file": "/book/episode_09.md",
+      "characterCount": 2319
+    },
+    {
+      "episodeNumber": 10,
+      "titleKo": "불꽃 궁정의 포로",
+      "sourceRange": "제19장-제20장",
+      "file": "/book/episode_10.md",
+      "characterCount": 2411
+    },
+    {
+      "episodeNumber": 11,
+      "titleKo": "기억을 깨우는 단검",
+      "sourceRange": "제21장-제22장",
+      "file": "/book/episode_11.md",
+      "characterCount": 2174
+    },
+    {
+      "episodeNumber": 12,
+      "titleKo": "두 무덤 사이의 봄",
+      "sourceRange": "제23장-제24장",
+      "file": "/book/episode_12.md",
+      "characterCount": 2053
+    },
+    {
+      "episodeNumber": 13,
+      "titleKo": "녹옥 지팡이의 주인",
+      "sourceRange": "제25장-제26장",
+      "file": "/book/episode_13.md",
+      "characterCount": 1864
+    },
+    {
+      "episodeNumber": 14,
+      "titleKo": "안개 호수의 손님들",
+      "sourceRange": "제27장-제28장",
+      "file": "/book/episode_14.md",
+      "characterCount": 1934
+    },
+    {
+      "episodeNumber": 15,
+      "titleKo": "독사와 사자의 밤",
+      "sourceRange": "제29장-제30장",
+      "file": "/book/episode_15.md",
+      "characterCount": 1999
+    },
+    {
+      "episodeNumber": 16,
+      "titleKo": "폐허 앞의 형제",
+      "sourceRange": "제31장-제32장",
+      "file": "/book/episode_16.md",
+      "characterCount": 2057
+    },
+    {
+      "episodeNumber": 17,
+      "titleKo": "바람섬의 초대장",
+      "sourceRange": "제33장-제34장",
+      "file": "/book/episode_17.md",
+      "characterCount": 1912
+    },
+    {
+      "episodeNumber": 18,
+      "titleKo": "검은 성전의 비밀",
+      "sourceRange": "제35장-제36장",
+      "file": "/book/episode_18.md",
+      "characterCount": 2044
+    },
+    {
+      "episodeNumber": 19,
+      "titleKo": "세 가지 시험",
+      "sourceRange": "제37장-제38장",
+      "file": "/book/episode_19.md",
+      "characterCount": 1844
+    },
+    {
+      "episodeNumber": 20,
+      "titleKo": "꽃배를 삼킨 파도",
+      "sourceRange": "제39장-제40장",
+      "file": "/book/episode_20.md",
+      "characterCount": 1919
+    },
+    {
+      "episodeNumber": 21,
+      "titleKo": "불타는 배의 배신",
+      "sourceRange": "제41장-제42장",
+      "file": "/book/episode_21.md",
+      "characterCount": 1932
+    },
+    {
+      "episodeNumber": 22,
+      "titleKo": "무인도의 네 사람",
+      "sourceRange": "제43장-제44장",
+      "file": "/book/episode_22.md",
+      "characterCount": 1887
+    },
+    {
+      "episodeNumber": 23,
+      "titleKo": "동굴 속 잠든 기록",
+      "sourceRange": "제45장-제46장",
+      "file": "/book/episode_23.md",
+      "characterCount": 1963
+    },
+    {
+      "episodeNumber": 24,
+      "titleKo": "봉인실의 일곱 밤",
+      "sourceRange": "제47장-제48장",
+      "file": "/book/episode_24.md",
+      "characterCount": 1960
+    },
+    {
+      "episodeNumber": 25,
+      "titleKo": "거짓 혼례의 밤",
+      "sourceRange": "제49장-제50장",
+      "file": "/book/episode_25.md",
+      "characterCount": 1895
+    },
+    {
+      "episodeNumber": 26,
+      "titleKo": "열린 문, 닫힌 마음",
+      "sourceRange": "제51장-제52장",
+      "file": "/book/episode_26.md",
+      "characterCount": 1802
+    },
+    {
+      "episodeNumber": 27,
+      "titleKo": "두 약속 사이",
+      "sourceRange": "제53장-제54장",
+      "file": "/book/episode_27.md",
+      "characterCount": 1967
+    },
+    {
+      "episodeNumber": 28,
+      "titleKo": "녹옥 의회의 반란",
+      "sourceRange": "제55장-제56장",
+      "file": "/book/episode_28.md",
+      "characterCount": 2035
+    },
+    {
+      "episodeNumber": 29,
+      "titleKo": "바람의 여왕",
+      "sourceRange": "제5권 제1장-제2장",
+      "file": "/book/episode_29.md",
+      "characterCount": 1743
+    },
+    {
+      "episodeNumber": 30,
+      "titleKo": "네 관문의 독",
+      "sourceRange": "제5권 제3장-제4장",
+      "file": "/book/episode_30.md",
+      "characterCount": 1861
+    },
+    {
+      "episodeNumber": 31,
+      "titleKo": "모든 것을 건 손",
+      "sourceRange": "제5권 제5장-제6장",
+      "file": "/book/episode_31.md",
+      "characterCount": 1807
+    },
+    {
+      "episodeNumber": 32,
+      "titleKo": "첫사랑의 잔향",
+      "sourceRange": "제5권 제7장-제8장",
+      "file": "/book/episode_32.md",
+      "characterCount": 1869
+    },
+    {
+      "episodeNumber": 33,
+      "titleKo": "검은 늪의 원한",
+      "sourceRange": "제5권 제9장-제10장",
+      "file": "/book/episode_33.md",
+      "characterCount": 1740
+    },
+    {
+      "episodeNumber": 34,
+      "titleKo": "무너진 바람섬",
+      "sourceRange": "제5권 제11장-제12장",
+      "file": "/book/episode_34.md",
+      "characterCount": 1795
+    },
+    {
+      "episodeNumber": 35,
+      "titleKo": "안개 속의 오인",
+      "sourceRange": "제6권 제1장-제2장",
+      "file": "/book/episode_35.md",
+      "characterCount": 1872
+    },
+    {
+      "episodeNumber": 36,
+      "titleKo": "십자 성흔의 지도",
+      "sourceRange": "제6권 제3장-제4장",
+      "file": "/book/episode_36.md",
+      "characterCount": 1780
+    },
+    {
+      "episodeNumber": 37,
+      "titleKo": "정복왕의 전쟁",
+      "sourceRange": "제6권 제5장-제6장",
+      "file": "/book/episode_37.md",
+      "characterCount": 1821
+    },
+    {
+      "episodeNumber": 38,
+      "titleKo": "세 개의 비단 봉인",
+      "sourceRange": "제6권 제7장-제8장",
+      "file": "/book/episode_38.md",
+      "characterCount": 2025
+    },
+    {
+      "episodeNumber": 39,
+      "titleKo": "지켜야 할 세계",
+      "sourceRange": "제6권 제9장-제10장",
+      "file": "/book/episode_39.md",
+      "characterCount": 1967
+    },
+    {
+      "episodeNumber": 40,
+      "titleKo": "영웅이라 불리지 않는 자",
+      "sourceRange": "제6권 제11장",
+      "file": "/book/episode_40.md",
+      "characterCount": 2287
+    }
+  ]
+}

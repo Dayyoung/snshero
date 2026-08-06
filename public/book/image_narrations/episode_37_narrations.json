@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 37,
+  "episodeTitleEn": "War of the Conqueror King",
+  "episodeTitleKo": "정복왕의 전쟁",
+  "sourceSentenceCount": 52,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_37/scene_01.jpeg",
+      "sourceImageFile": "Fenrir_treated_Kadan_like_son_202607260802.jpeg",
+      "narrationEn": "Fenrir treated Kadan like his own son. He united several tribes and was destroying the Northern Citadel of the Shadow Realm one by one.",
+      "narrationKo": "펜릴은 카단을 친아들처럼 맞았다. 그는 여러 부족을 하나로 묶은 뒤 섀도우렐름의 북부 성채를 차례로 무너뜨리고 있었다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.3205
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_37/scene_02.jpeg",
+      "sourceImageFile": "Kadan_hangs_strategy_on_wall_202607260802.jpeg",
+      "narrationEn": "It was believed that decades of oppression could be ended if only the last capital was captured. Kadan took the lead using the defensive tactics of the Ironforge strategic core. Before destroying the walls, he evacuated the inhabitants through underground waterways and froze the supply depot, forcing the garrison to surrender.",
+      "narrationKo": "마지막 수도만 점령하면 수십 년의 압박을 끝낼 수 있다고 믿었다. 카단은 아이언포지 전략 코어의 방어전술을 사용해 선봉을 맡았다. 그는 성벽을 부수기 전에 지하 수로로 주민을 빼내고, 보급 창고만 얼려 수비대가 항복하도록 만들었다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.4008
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_37/scene_03.jpeg",
+      "sourceImageFile": "Characters_move_in_battle_202607260802.jpeg",
+      "narrationEn": "The victory was slow, but fewer than half as many people died as in previous battles. At the end of each battle, he wrote down the number of enemy and friendly wounded in the same ledger.",
+      "narrationKo": "승리는 느렸지만 죽는 사람은 이전 전투의 절반도 되지 않았다. 그는 매일 전투가 끝나면 적군과 아군의 부상자 수를 같은 장부에 적었다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 7,
+      "alignmentScore": 0.5933
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_37/scene_04.jpeg",
+      "sourceImageFile": "Generals_complained_about_enemies_202607260802.jpeg",
+      "narrationEn": "Generals complained about the need to count the number of enemies. Kadan answered that it is not a ledger that calculates the strength to fight the next day, but a ledger that remembers the reasons why he could not stop today. The generals of Fenrir were frustrated.",
+      "narrationKo": "장수들은 적의 숫자까지 셀 필요가 있느냐고 불평했다. 카단은 다음 날 싸울 힘을 계산하는 장부가 아니라 오늘 멈추지 못한 이유를 기억하는 장부라고 답했다. 펜릴의 장수들은 답답해했다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 0.4941
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_37/scene_05.jpeg",
+      "sourceImageFile": "Fenrir_in_War_of_Conqueror_202607260802.jpeg",
+      "narrationEn": "He claimed that if he left his enemy alive, he would raise his sword again. Fenrir initially accepted Kadan's method, but as the war dragged on, he wanted a faster victory. During the siege of the capital, Lucian chained the residents to the walls.",
+      "narrationKo": "적을 살려 두면 다시 칼을 든다고 주장했다. 펜릴은 처음에는 카단의 방식을 허락했으나 전쟁이 길어질수록 더 빠른 승리를 원했다. 수도 공성전에서 루시안은 주민들을 성벽 위에 묶었다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 0.4024
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_37/scene_06.jpeg",
+      "sourceImageFile": "Kadan_cannot_attack_Celia_202607260802.jpeg",
+      "narrationEn": "He knew that Kadan would not be able to attack. Celia was a mobile sound tower that simultaneously sent messages to people in the city.",
+      "narrationKo": "카단이 공격하지 못할 것을 안 것이다. 실리아는 이동 음향탑으로 도시 안의 사람들에게 동시에 메시지를 보냈다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 0.355
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_37/scene_07.jpeg",
+      "sourceImageFile": "Titania_Griffon_cavalry_occupies…_202607260802.jpeg",
+      "narrationEn": "It was a short instruction to hide in the cellar when the bell rang three times. Titania's Griffon cavalry occupied the bell tower, and Gilgamesh opened the aqueduct gate. Kadan pulled out Death Knight Artus's soul army from the front.",
+      "narrationKo": "종이 세 번 울리면 지하 저장고로 숨으라는 짧은 안내였다. 티타니아의 그리폰 기병이 종탑을 점령하고, 길가메시가 수로 문을 열었다. 카단은 정면에서 데스나이트 아르투스의 영혼군대를 끌어냈다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 0.4881
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_37/scene_08.jpeg",
+      "sourceImageFile": "Ignis_spark_stops_dead_souls_202607260802.jpeg",
+      "narrationEn": "When Ignis's spark was placed in the center of the shield, the dead souls inside the armor stopped moving for a moment. The name of Ignis spread among the palace soldiers who saw the white light.",
+      "narrationKo": "이그니스의 불씨를 방패 중앙에 꽂자 죽은 갑옷 속 영혼들이 잠시 움직임을 멈췄다. 백색 빛을 본 궁정 병사들 사이에서 이그니스의 이름이 퍼졌다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 0.6275
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_37/scene_09.jpeg",
+      "sourceImageFile": "Kadan_traitor_last_prince_202607260802.jpeg",
+      "narrationEn": "Some called him a traitor, others called him the last prince. Kadan did not correct either. What the embers were doing now was not to determine a person's honor, but to give the trapped soul time to stop.",
+      "narrationKo": "어떤 이는 배신자라 했고 어떤 이는 마지막 황자라 불렀다. 카단은 어느 쪽도 바로잡지 않았다. 지금 불씨가 하는 일은 한 사람의 명예를 정하는 것이 아니라 갇힌 영혼에게 멈출 시간을 주는 일이었다.",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 0.3459
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_37/scene_10.jpeg",
+      "sourceImageFile": "Celia_spreads_runes,_Artus_retreats_202607260802.jpeg",
+      "narrationEn": "In the meantime, Celia spread the codex's liberation runes throughout the city. The lights trapped in each piece of armor emerged into the night sky. Death Knight Artus pulled in more souls to maintain its body, but instead lost its balance and retreated.",
+      "narrationKo": "그 틈에 실리아가 코덱스의 해방 룬을 도시 전체로 퍼뜨렸다. 갑옷마다 갇혀 있던 빛들이 밤하늘로 떠올랐다. 데스나이트 아르투스는 몸을 유지하려 더 많은 영혼을 끌어당기다 오히려 균형을 잃고 퇴각했다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 0.4426
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_37/scene_11.jpeg",
+      "sourceImageFile": "Fenrir_offers_Kadan_title_202607260802.jpeg",
+      "narrationEn": "The capital has fallen. Fenrir offered to give Kadan the title of King of the North and territory in the South.",
+      "narrationKo": "수도는 함락되었다. 펜릴은 카단에게 북부 왕의 칭호와 남쪽 영지를 주겠다고 했다. 카단은 거절했다.",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 0.2783
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_37/scene_12.jpeg",
+      "sourceImageFile": "Kadan_declined,_Celia_discovered…_202607260802.jpeg",
+      "narrationEn": "Kadan declined. He asked that victory not be declared until the refugees returned. That night, Celia discovered the second invasion map in Fenrir's military camp.",
+      "narrationKo": "피난민들이 돌아오기 전까지 승리를 선언하지 말자고 청했다. 그날 밤 실리아는 펜릴의 군막에서 두 번째 침공 지도를 발견했다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 0.4666
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_37/scene_13.jpeg",
+      "sourceImageFile": "Fenrir_believes_war_ends_unifica…_202607260802.jpeg",
+      "narrationEn": "The arrow did not stop at the Shadow Realm capital, but continued all the way to Lighthaven and the cities of the Free People's League. Fenrir believed that war would end only when all continents were unified under one law.",
+      "narrationKo": "화살은 섀도우렐름 수도에서 멈추지 않고 라이트헤븐과 자유민 연맹의 도시까지 이어져 있었다. 펜릴은 모든 대륙을 하나의 법 아래 통일해야 전쟁이 끝난다고 믿었다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 0.4116
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_37/scene_14.jpeg",
+      "sourceImageFile": "Kadan_took_map_went_Fenrir_202607260802.jpeg",
+      "narrationEn": "Kadan took the map and went to Fenrir. “Weren’t we fighting to prevent an invasion? ” “If you leave the weak kingdom as is, the next Lucian will emerge.",
+      "narrationKo": "카단은 지도를 들고 펜릴을 찾아갔다. “우리가 침략을 막기 위해 싸운 것이 아니었습니까?” “약한 왕국을 그대로 두면 다음 루시안이 나온다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 0.4862
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_37/scene_15.jpeg",
+      "sourceImageFile": "War_of_Conqueror_King_scene_202607260802_2.jpeg",
+      "narrationEn": "I will make it one first. ” “Unification without protecting people is a war with a long name. ” Fenrir was not angry.",
+      "narrationKo": "내가 먼저 하나로 만들겠다.” “사람을 지키지 않는 통일이라면 이름만 긴 전쟁입니다.” 펜릴은 분노하지 않았다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 0.3558
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_37/scene_16.jpeg",
+      "sourceImageFile": "Kadan_entrusted_southern_expedit…_202607260802.jpeg",
+      "narrationEn": "Rather, he said he would entrust the southern expeditionary force to Kadan. The logic was that damage could be reduced if it was taken over by someone they trusted.",
+      "narrationKo": "오히려 카단에게 남부 원정군을 맡기겠다고 했다. 자신이 믿는 사람의 손으로 점령하면 피해를 줄일 수 있다는 논리였다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 0.6816
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_37/scene_17.jpeg",
+      "sourceImageFile": "Kadan_threatened_by_general_202607260802.jpeg",
+      "narrationEn": "He also added a threat that if he refused, another general would attack him more brutally. Kadan noticed that the logic was similar to what he had said in the past. Moments when you overcame the opposition of someone close to you because something worse would happen if you didn't save them.",
+      "narrationKo": "거절하면 다른 장수가 더 잔인하게 공격할 거라는 협박도 덧붙였다. 카단은 그 논리가 자신이 과거에 했던 말과 닮았다는 것을 알아차렸다. 자신이 구하지 않으면 더 나쁜 일이 생긴다는 이유로 가까운 사람의 반대를 넘겼던 순간들.",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 0.4723
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_37/scene_18.jpeg",
+      "sourceImageFile": "Kadan_avoided_direct_answer_202607260802.jpeg",
+      "narrationEn": "The saying that invasion is less bad when a good person leads it was a cloth covering the invasion itself. Kadan avoided giving a direct answer.",
+      "narrationKo": "선한 사람이 지휘하면 침략도 덜 나쁘다는 말은 침략 자체를 가리는 천이었다. 카단은 즉답을 피했다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 0.643
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_37/scene_19.jpeg",
+      "sourceImageFile": "Elwin_treating_northerners_outsi…_202607260802.jpeg",
+      "narrationEn": "Outside the military camp, Elwin was treating northerners. Fenrir knew that Kadan could not leave his mother and hometown behind. Celia bought time for evacuation by changing the orders in the military camp one by one, as if playing hide and seek.",
+      "narrationKo": "군막 밖에서 엘윈이 북방 사람들을 치료하고 있었다. 펜릴은 카단이 어머니와 고향을 두고 떠나지 못할 것을 알고 있었다. 실리아는 숨바꼭질하듯 군영 안의 명령서를 하나씩 바꿔 피난 시간을 벌었다.",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 0.4218
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_37/scene_20.jpeg",
+      "sourceImageFile": "Fenrir_arresting_soldiers,_Kadan…_202607260802.jpeg",
+      "narrationEn": "But I couldn't fake it for long. Fenrir's SS began arresting Freemen's League liaison soldiers. On the day the war was won, Kadan had to find a way to escape again from the country where he grew up.",
+      "narrationKo": "그러나 오래 속일 수는 없었다. 펜릴의 친위대가 자유민 연맹 연락병을 체포하기 시작했다. 전쟁을 이긴 날, 카단은 자신이 자란 나라에서 다시 도망칠 길을 찾아야 했다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 52,
+      "alignmentScore": 0.4976
+    }
+  ]
+}

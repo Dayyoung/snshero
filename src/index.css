@@ -1,0 +1,645 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --animate-spin-slow: spin 3s linear infinite;
+  --animate-pulse-slow: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-bounce-subtle: bounce-subtle 2s infinite;
+  --animate-shimmer: shimmer 2s infinite linear;
+
+  --color-yellow-450: #fbbf24;
+  --color-yellow-455: #f59e0b;
+}
+
+@keyframes bounce-subtle {
+  0%, 100% { transform: translateY(-5%); animation-timing-function: cubic-bezier(0.8,0,1,1); }
+  50% { transform: none; animation-timing-function: cubic-bezier(0,0,0.2,1); }
+}
+
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+@layer base {
+  body {
+    @apply bg-[#fdfcfc] text-[#201d1d] font-mono antialiased selection:bg-[#f1eeee];
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* 강제 전역 버튼 스타일 통일 (OpenCode 규격) */
+  button,
+  .btn,
+  .button,
+  [role="button"] {
+    font-family: "JetBrains Mono", monospace !important;
+  }
+
+  .btn-primary,
+  .ollama-button-primary {
+    background-color: #201d1d !important;
+    color: #fdfcfc !important;
+    border: 1px solid rgba(15,0,0,0.12) !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+    background-image: none !important;
+  }
+
+  .btn-primary:hover,
+  .ollama-button-primary:hover {
+    background-color: #0f0000 !important;
+  }
+
+  .btn-secondary,
+  .ollama-button-secondary {
+    background-color: #fdfcfc !important;
+    color: #201d1d !important;
+    border: 1px solid #646262 !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+    background-image: none !important;
+  }
+
+  .btn-secondary:hover,
+  .ollama-button-secondary:hover {
+    background-color: #f8f7f7 !important;
+  }
+
+  /* Input fields radius 강제 통일 */
+  input, textarea, select {
+    border-radius: 4px !important;
+    box-shadow: none !important;
+  }
+}
+
+@layer components {
+  .app-bg {
+    @apply bg-[#fdfcfc] min-h-screen text-[#201d1d] font-mono antialiased;
+  }
+
+  .ollama-panel {
+    @apply bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm p-4 sm:p-6 transition-all;
+    box-shadow: none !important;
+  }
+
+  .ollama-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-sm text-[10px] sm:text-xs font-mono font-bold bg-[#f1eeee] text-[#646262] tracking-wide uppercase select-none;
+  }
+
+  .ollama-button-primary {
+    @apply bg-[#201d1d] text-[#fdfcfc] px-5 py-2.5 rounded-sm font-mono font-bold text-sm hover:bg-[#0f0000] active:scale-[0.98] transition-all cursor-pointer;
+    box-shadow: none !important;
+  }
+
+  .ollama-button-secondary {
+    @apply bg-[#fdfcfc] text-[#201d1d] border border-[#646262] px-5 py-2.5 rounded-sm font-mono font-bold text-sm hover:bg-[#f8f7f7] active:scale-[0.98] transition-all cursor-pointer;
+  }
+
+  .ollama-card {
+    @apply bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm p-4 sm:p-5 font-mono transition-all;
+    box-shadow: none !important;
+  }
+
+  .ollama-input {
+    @apply w-full bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm p-3.5 font-mono text-sm focus:outline-none focus:bg-[#fdfcfc] focus:border-[#201d1d] transition-all;
+  }
+
+  .neon-blue {
+    @apply ring-1 ring-[#007aff]/10 bg-[#007aff]/5;
+    box-shadow: none !important;
+  }
+
+  .neon-red {
+    @apply ring-1 ring-[#ff3b30]/10 bg-[#ff3b30]/5;
+    box-shadow: none !important;
+  }
+
+  .animated-rainbow {
+    background-size: 200% 200%;
+    animation: rainbow-shift 3s linear infinite;
+  }
+
+  /* Modern Styling Utilities */
+  .modern-shadow-sm {
+    box-shadow: none !important;
+  }
+  .modern-shadow-md {
+    box-shadow: none !important;
+  }
+  .modern-shadow-lg {
+    box-shadow: none !important;
+  }
+  .modern-border {
+    @apply border border-[rgba(15,0,0,0.12)];
+  }
+  .modern-card {
+    @apply bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm p-4 transition-all;
+    box-shadow: none !important;
+  }
+  .gradient-primary {
+    @apply bg-[#201d1d] text-[#fdfcfc];
+  }
+
+  /* Touch-friendly interactive elements */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Responsive card grid helpers */
+  .card-grid {
+    @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4;
+  }
+
+  /* Section spacing */
+  .section-gap {
+    @apply space-y-4 sm:space-y-6 md:space-y-8;
+  }
+
+  /* Mobile-optimized typography */
+  .heading-xl {
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight font-mono;
+  }
+
+  .heading-lg {
+    @apply text-xl sm:text-2xl md:text-3xl font-bold tracking-tight font-mono;
+  }
+
+  .body-sm {
+    @apply text-xs sm:text-sm font-medium leading-relaxed font-mono;
+  }
+
+  .label-xs {
+    @apply text-[10px] sm:text-xs font-bold uppercase tracking-wider font-mono;
+  }
+}
+
+@keyframes rainbow-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #E5E7EB;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #D1D5DB;
+}
+
+/* Hide Firebase Emulator Warning Banner */
+.firebase-emulator-warning {
+  display: none !important;
+}
+
+/* Card Flip 3D Styles */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Battle Roar Flame Animations */
+@keyframes roar-glow {
+  0%, 100% {
+    box-shadow: 0 0 15px 3px rgba(239, 68, 68, 0.6), 0 0 30px 8px rgba(245, 158, 11, 0.4), inset 0 0 15px rgba(239, 68, 68, 0.4);
+    transform: scale(1.02);
+  }
+  50% {
+    box-shadow: 0 0 25px 8px rgba(239, 68, 68, 0.9), 0 0 45px 15px rgba(245, 158, 11, 0.7), inset 0 0 25px rgba(245, 158, 11, 0.6);
+    transform: scale(1.06);
+  }
+}
+
+@keyframes text-fire-glow {
+  0%, 100% {
+    text-shadow: 0 0 4px #ef4444, 0 0 8px #f59e0b;
+    color: #fff;
+  }
+  50% {
+    text-shadow: 0 0 8px #ef4444, 0 0 16px #f59e0b, 0 0 24px #ffedd5;
+    color: #ffedd5;
+  }
+}
+
+.roar-flame-active {
+  animation: roar-glow 0.8s ease-in-out infinite;
+  border-color: #f59e0b !important;
+  z-index: 100 !important;
+}
+
+.text-fire-active {
+  animation: text-fire-glow 0.8s ease-in-out infinite;
+}
+
+/* Battle Roar Circle Wave Ripple */
+.animate-roar-ripple {
+  animation: roar-ripple 1.5s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+}
+
+@keyframes roar-ripple {
+  0% {
+    transform: scale(0.1);
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(8);
+    opacity: 0;
+  }
+}
+
+/* Custom Fire and Water Glow card stats */
+@keyframes fire-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px #ef4444, 0 0 20px #f59e0b, inset 0 0 10px #ef4444;
+    transform: scale(1.02);
+  }
+  50% {
+    box-shadow: 0 0 20px #ef4444, 0 0 35px #f59e0b, inset 0 0 20px #f59e0b;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes water-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px #3b82f6, 0 0 20px #06b6d4, inset 0 0 10px #3b82f6;
+    transform: scale(1.02);
+  }
+  50% {
+    box-shadow: 0 0 20px #3b82f6, 0 0 35px #06b6d4, inset 0 0 20px #06b6d4;
+    transform: scale(1.05);
+  }
+}
+
+.fire-glow-card {
+  animation: fire-glow-pulse 1s ease-in-out infinite;
+  border-color: #f97316 !important;
+}
+
+.fire-glow-card div[class*="bg-white/60"],
+.fire-glow-card div[class*="bg-white/80"] {
+  background: linear-gradient(135deg, #f97316, #ef4444) !important;
+  border-color: #ffedd5 !important;
+}
+
+.fire-glow-card div[class*="bg-white/60"] span,
+.fire-glow-card div[class*="bg-white/80"] span {
+  color: #ffffff !important;
+  text-shadow: 0 0 4px #ef4444, 0 0 8px #f59e0b !important;
+}
+
+.water-glow-card {
+  animation: water-glow-pulse 1s ease-in-out infinite;
+  border-color: #0ea5e9 !important;
+}
+
+.water-glow-card div[class*="bg-white/60"],
+.water-glow-card div[class*="bg-white/80"] {
+  background: linear-gradient(135deg, #0ea5e9, #3b82f6) !important;
+  border-color: #e0f2fe !important;
+}
+
+.water-glow-card div[class*="bg-white/60"] span,
+.water-glow-card div[class*="bg-white/80"] span {
+  color: #ffffff !important;
+  text-shadow: 0 0 4px #3b82f6, 0 0 8px #06b6d4 !important;
+}
+
+/* ==========================================
+   Dark Theme Overrides (Dark Cyber Theme)
+   ========================================== */
+.theme-dark {
+  background-color: #201d1d !important;
+  color: #fdfcfc !important;
+  font-family: "JetBrains Mono", monospace !important;
+}
+
+/* Override app-bg when theme-dark is active */
+.theme-dark.app-bg,
+.theme-dark .app-bg {
+  background-color: #201d1d !important;
+  color: #fdfcfc !important;
+}
+
+/* Panels (ollama-panel) overrides */
+.theme-dark .ollama-panel {
+  background-color: #302c2c !important;
+  border-color: rgba(253, 252, 252, 0.12) !important;
+  color: #fdfcfc !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+.theme-dark .ollama-panel:hover {
+  border-color: rgba(253, 252, 252, 0.2) !important;
+}
+
+/* Cards (ollama-card, modern-card) overrides */
+.theme-dark .ollama-card,
+.theme-dark .modern-card {
+  background-color: #302c2c !important;
+  border-color: rgba(253, 252, 252, 0.12) !important;
+  color: #fdfcfc !important;
+  box-shadow: none !important;
+}
+.theme-dark .ollama-card:hover,
+.theme-dark .modern-card:hover {
+  border-color: rgba(253, 252, 252, 0.25) !important;
+  background-color: #302c2c !important;
+}
+
+/* Secondary Button overrides */
+.theme-dark .ollama-button-secondary {
+  background-color: #201d1d !important;
+  color: #fdfcfc !important;
+  border-color: #9a9898 !important;
+}
+.theme-dark .ollama-button-secondary:hover {
+  background-color: #302c2c !important;
+  border-color: #fdfcfc !important;
+}
+
+/* Input overrides */
+.theme-dark .ollama-input {
+  background-color: #302c2c !important;
+  border-color: rgba(253, 252, 252, 0.12) !important;
+  color: #fdfcfc !important;
+}
+
+/* Badges overrides */
+.theme-dark .ollama-badge {
+  background-color: #302c2c !important;
+  color: #9a9898 !important;
+  border-color: rgba(253, 252, 252, 0.12) !important;
+}
+.theme-dark .ollama-badge:hover {
+  background-color: #201d1d !important;
+}
+
+/* Adapt light elements to the dark cyber theme */
+.theme-dark h1,
+.theme-dark h2,
+.theme-dark h3,
+.theme-dark h4,
+.theme-dark p,
+.theme-dark span,
+.theme-dark label,
+.theme-dark a {
+  color: inherit;
+}
+
+.theme-dark .text-slate-850,
+.theme-dark .text-slate-800,
+.theme-dark .text-gray-900,
+.theme-dark .text-slate-700,
+.theme-dark .text-slate-650,
+.theme-dark .text-slate-600,
+.theme-dark .text-slate-500 {
+  color: #cbd5e1 !important;
+}
+
+.theme-dark .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+.theme-dark .text-slate-300 {
+  color: #64748b !important;
+}
+
+.theme-dark .bg-white {
+  background-color: #302c2c !important;
+  color: #fdfcfc !important;
+  border-color: rgba(253, 252, 252, 0.12) !important;
+}
+
+.theme-dark .border-slate-200,
+.theme-dark .border-slate-100 {
+  border-color: rgba(253, 252, 252, 0.12) !important;
+}
+
+.theme-dark .bg-slate-100,
+.theme-dark .bg-slate-50,
+.theme-dark .bg-slate-50\/50,
+.theme-dark .bg-slate-50\/30 {
+  background-color: #201d1d !important;
+}
+
+/* Nav header and footer border details */
+.theme-dark .border-slate-200\/40,
+.theme-dark .border-slate-100\/40,
+.theme-dark .border-t {
+  border-color: rgba(253, 252, 252, 0.12) !important;
+}
+
+/* Custom card flip container overrides */
+.theme-dark .card-grid {
+  background: transparent !important;
+}
+
+/* PageHeader dark mode overrides */
+.theme-dark .sticky.top-0,
+.theme-dark [id="wiki-nav"] + div,
+.theme-dark [id="leaderboard"] + div {
+  background-color: #201d1d !important;
+  border-color: rgba(253, 252, 252, 0.15) !important;
+  color: #ffffff !important;
+}
+
+.theme-dark .sticky.top-0 h1,
+.theme-dark [id="wiki-nav"] + div h1,
+.theme-dark [id="leaderboard"] + div h1 {
+  color: #ffffff !important;
+}
+
+/* ================================================================
+   METAL THEME - Gray-toned metallic design
+   ================================================================ */
+.theme-metal {
+  color-scheme: dark;
+}
+
+.theme-metal.app-bg,
+.theme-metal .app-bg {
+  background: linear-gradient(145deg, #1a1c22 0%, #22242e 40%, #1c1e26 100%) !important;
+}
+
+.theme-metal .ollama-panel {
+  background: linear-gradient(145deg, #2a2c35 0%, #353845 100%) !important;
+  border-color: #444650 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 4px 12px rgba(0,0,0,0.4) !important;
+}
+
+.theme-metal .bg-white {
+  background: linear-gradient(145deg, #282a34 0%, #30333e 100%) !important;
+  border-color: #404350 !important;
+  color: #d8d8e0 !important;
+}
+
+.theme-metal h1, .theme-metal h2, .theme-metal h3, .theme-metal h4,
+.theme-metal h5, .theme-metal h6 {
+  color: #e8e8f0 !important;
+}
+
+.theme-metal .text-slate-800, .theme-metal .text-slate-700 { color: #e8e8f0 !important; }
+.theme-metal .text-slate-600, .theme-metal .text-slate-650 { color: #d8d8e0 !important; }
+.theme-metal .text-slate-500 { color: #c8c8d0 !important; }
+.theme-metal .text-slate-400 { color: #a0a0b0 !important; }
+.theme-metal .text-slate-300 { color: #888898 !important; }
+.theme-metal .text-slate-200 { color: #787888 !important; }
+
+.theme-metal .sticky.top-0 h1,
+.theme-metal [id="wiki-nav"] + div h1,
+.theme-metal [id="leaderboard"] + div h1,
+.theme-metal .sticky.top-0 span,
+.theme-metal .sticky.top-0 p,
+.theme-metal .sticky.top-0 button,
+.theme-metal #community-dashboard span,
+.theme-metal #community-dashboard p,
+.theme-metal #community-dashboard h4 {
+  color: #0f172a !important;
+}
+
+/* Ensure active navbar button text remains white */
+.theme-metal nav button.text-white,
+.theme-metal nav button.text-white span,
+.theme-metal nav button.text-white svg {
+  color: #ffffff !important;
+}
+
+.theme-metal .text-white { color: #f0f0f5 !important; }
+
+/* Make semi-transparent black text bright under metal theme (e.g. for card status labels in mydeck) */
+.theme-metal .text-black\/40,
+.theme-metal .text-black\/50,
+.theme-metal .text-black\/60,
+.theme-metal [class*="text-black/"] {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.theme-metal .border-slate-200, .theme-metal .border-slate-100 {
+  border-color: #4a4a55 !important;
+}
+
+
+
+.theme-metal .bg-slate-100, .theme-metal .bg-slate-50,
+.theme-metal .bg-slate-50\/50, .theme-metal .bg-slate-50\/30 {
+  background: linear-gradient(135deg, #2a2a32 0%, #32323c 100%) !important;
+}
+
+.theme-metal button.bg-black {
+  background: linear-gradient(145deg, #4a4a55 0%, #3a3a44 100%) !important;
+  border-color: #5a5a65 !important;
+}
+
+.theme-metal .border-black {
+  border-color: #5a5a68 !important;
+}
+
+.theme-metal .shadow-md {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03) !important;
+}
+
+.theme-metal .rounded-3xl {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 4px 16px rgba(0,0,0,0.35) !important;
+}
+
+/* =========================================================================
+   [OPENCODE.AI DESIGN SYSTEM - GLOBAL OVERRIDES]
+   ========================================================================= */
+
+/* 1. border-radius 강제 통일 (인터랙티브 요소 4px, 그 외 컨테이너 0px) */
+.rounded-xl,
+.rounded-2xl,
+.rounded-3xl,
+.rounded-lg,
+.rounded-md {
+  border-radius: 4px !important;
+}
+
+.rounded-none {
+  border-radius: 0px !important;
+}
+
+/* 2. 그림자(shadow) 완전 배제 (평면 플랫 디자인 보장) */
+.shadow,
+.shadow-sm,
+.shadow-md,
+.shadow-lg,
+.shadow-xl,
+.shadow-2xl,
+.shadow-inner,
+[class*="shadow-"] {
+  box-shadow: none !important;
+}
+
+/* 3. 배경색 웜 크림 수렴 ( colors.canvas - #fdfcfc ) */
+/* 단, 다크 테마 및 특정 어두운 영역은 배제 */
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-white,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-slate-50,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-gray-50,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-slate-50\/50,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-slate-50\/30 {
+  background-color: #fdfcfc !important;
+}
+
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-slate-100,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-gray-100,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-slate-200/50,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-slate-200/30 {
+  background-color: #f1eeee !important; /* surface-card */
+}
+
+/* 4. 텍스트 및 경계선 잉크 톤 통일 */
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-slate-900,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-slate-800,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-gray-900,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-slate-700 {
+  color: #201d1d !important;
+}
+
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-slate-650,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-slate-600,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-slate-500,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-gray-600,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-gray-500 {
+  color: #646262 !important;
+}
+
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-slate-400,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-gray-400 {
+  color: #9a9898 !important;
+}
+
+/* 1px solid hairline 경계선 매핑 */
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .border-slate-100,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .border-slate-200,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .border-gray-150,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .border-slate-200/50,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .border-slate-200/70 {
+  border-color: rgba(15, 0, 0, 0.12) !important;
+}
+

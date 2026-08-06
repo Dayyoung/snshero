@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 21,
+  "episodeTitleEn": "Betrayal Aboard the Burning Ship",
+  "episodeTitleKo": "불타는 배의 배신",
+  "sourceSentenceCount": 58,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_21/scene_01.jpeg",
+      "sourceImageFile": "Leonar_searches_for_Kadan_Celia_202607260802.jpeg",
+      "narrationEn": "The footprints on the beach belonged to Leonar. He rescued a refuge ship and searched for Kadan and Celia, but was pushed by a storm and ended up on the same island.",
+      "narrationKo": "해변의 발자국은 레오나르의 것이었다. 그는 피난선 한 척을 구해 카단과 실리아를 찾다가 폭풍에 밀려 같은 섬에 닿았다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.5346
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_21/scene_02.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_wounds_Leonar_202607260802.jpeg",
+      "narrationEn": "There was a deep black wound on one shoulder. It was a trace of a fight with Death Knight Artus. Leonar climbed onto Lucian's command ship to rescue refugees, but fell into a trap.",
+      "narrationKo": "한쪽 어깨에는 검은 창상이 깊게 패여 있었다. 데스나이트 아르투스와 싸운 흔적이었다. 레오나르는 피난민을 구하려고 루시안의 지휘선에 올랐다가 함정에 빠졌다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.5074
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_21/scene_03.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_attacks_commu…_202607260802.jpeg",
+      "narrationEn": "Death Knight Artus was an undead knight with no body inside his armor. After channeling the opponent's attack into the empty armor, it left a direct wound on the soul. Even the barrier of the green jade staff could not completely block his sword.",
+      "narrationKo": "데스나이트 아르투스는 갑옷 안에 몸이 없는 언데드 기사였다. 상대의 공격을 빈 갑옷 속으로 흘린 뒤 영혼에 직접 상처를 남겼다. 녹옥 지팡이의 결계도 그의 검을 완전히 막지 못했다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 0.623
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_21/scene_04.jpeg",
+      "sourceImageFile": "Leonar_hid_wounds_bragging_202607260802.jpeg",
+      "narrationEn": "Leonar hid his wounds as if he were bragging. When Celia tried to cut the armor, he found the meat, saying it was fine, and collapsed after one step. As Kadan carried him to the cave on his back, he realized that he too had behaved the same way in the face of danger.",
+      "narrationKo": "레오나르는 상처를 자랑처럼 숨겼다. 실리아가 갑옷을 자르려 하자 멀쩡하다며 고기를 찾았고, 한 걸음 뒤에 쓰러졌다. 카단은 그를 업어 동굴로 옮기며 자신도 위험 앞에서 똑같이 굴었다는 것을 깨달았다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 0.3649
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_21/scene_05.jpeg",
+      "sourceImageFile": "Celia_Kadan_coastal_cave_scene_202607260802.jpeg",
+      "narrationEn": "Celia glared at the two people alternately and asked, “Is the common technique of strong men hindering treatment? ” The three people made their home in a coastal cave. Celia washed the wound with herbs and sea salt, and Kadan collected rainwater and dug an ice cellar.",
+      "narrationKo": "실리아는 두 사람을 번갈아 노려보며 “강한 남자들의 공통 기술은 치료 방해냐”고 물었다. 세 사람은 해안 동굴에 거처를 만들었다. 실리아는 약초와 바닷소금으로 상처를 씻고, 카단은 빗물을 모아 얼음 저장고를 팠다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 0.6033
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_21/scene_06.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_Orihalcon_Kadan_202607260802.jpeg",
+      "narrationEn": "It was peaceful during the day, but every night the sound of metal dragging in the forest grew closer. Death Knight Artus was on the island with Orihalcon. They targeted Kadan's codex pieces.",
+      "narrationKo": "낮에는 평화로웠지만 밤마다 숲에서 금속 끌리는 소리가 가까워졌다. 데스나이트 아르투스는 오리하르콘과 함께 섬에 와 있었다. 그들은 카단이 가진 코덱스 조각을 노렸다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 0.5101
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_21/scene_07.jpeg",
+      "sourceImageFile": "Orihalcon_lied_offered_deal_202607260802.jpeg",
+      "narrationEn": "Orihalcon lied and offered a deal, saying he had seen a rescue ship. The condition was that he would take everyone with him if he read the codex. When Kadan refused, Death Knight Artus awakened the soul fragment planted in Leonar's wound.",
+      "narrationKo": "오리하르콘은 구조선을 보았다고 거짓말하며 거래를 제안했다. 코덱스를 읽어 주면 모두를 데려가겠다는 조건이었다. 카단이 거절하자 데스나이트 아르투스는 레오나르의 상처에 심어 둔 영혼 조각을 깨웠다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 0.3719
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_21/scene_08.jpeg",
+      "sourceImageFile": "Black_crack_spread_to_heart_202607260802.jpeg",
+      "narrationEn": "A black crack spread to my heart. To save Leonar, the sealing key held by Death Knight Artus was needed. Kadan bought time by pretending to transcribe the codex.",
+      "narrationKo": "검은 균열이 심장으로 번졌다. 레오나르를 살리려면 데스나이트 아르투스가 가진 봉인 열쇠가 필요했다. 카단은 코덱스를 옮겨 적는 척하며 시간을 벌었다.",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 0.3425
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_21/scene_09.jpeg",
+      "sourceImageFile": "Celia_Kadan_burning_ship_scene_202607260802.jpeg",
+      "narrationEn": "He arranged the sentences in reverse order but hid minor errors so as not to overwhelm them immediately after reading them. Celia adjusted the drying speed of the ink with the wind to create different densities between real and fake runes. Kadan's handwriting was slow, so he almost got caught cheating.",
+      "narrationKo": "그는 문장을 반대 순서로 배열하되 읽는 즉시 폭주하지 않도록 미세한 오류를 숨겼다. 실리아가 바람으로 먹물의 마르는 속도를 조절해 진짜와 가짜 룬의 농도를 다르게 만들었다. 카단은 글씨가 느려 속임수를 들킬 뻔했다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 0.3048
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_21/scene_10.jpeg",
+      "sourceImageFile": "Celia_argued_with_Orihalcon_202607260802.jpeg",
+      "narrationEn": "Celia deliberately argued with Orihalcon to attract attention. Every time he boasted about his wisdom, he asked a more difficult question and kept people talking all night long. Buying time by fueling the enemy's vanity was a battle that Celia could not imitate.",
+      "narrationKo": "실리아는 일부러 오리하르콘과 말다툼을 벌여 시선을 끌었다. 그가 자기 지혜를 자랑할 때마다 더 어려운 질문을 던져 밤새 떠들게 했다. 적의 허영을 연료로 시간을 버는 일은 카단이 흉내 낼 수 없는 실리아의 전투였다.",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 0.3442
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_21/scene_11.jpeg",
+      "sourceImageFile": "Orihalcon_pushes_Kadan's_raft_202607260802.jpeg",
+      "narrationEn": "Orihalcon pushed Kadan's raft into the sea at night to leave Celia alone. It was a twisted calculation that if he was trapped on the island forever, he would rely on himself.",
+      "narrationKo": "오리하르콘은 실리아를 혼자 남기려고 카단의 뗏목을 밤중에 바다로 밀어냈다. 섬에 영원히 갇히면 자신에게 의지하리라는 비뚤어진 계산이었다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 0.4061
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_21/scene_12.jpeg",
+      "sourceImageFile": "Celia_traps_Orihalcon_below_cliff_202607260802.jpeg",
+      "narrationEn": "When he returned, Celia pretended not to know anything and asked about the rescue boat. She lured Orihalcon into a trap below the cliff. A pocket of wind hidden between the rocks burst and the ground collapsed, and a huge stone crushed his legs.",
+      "narrationKo": "실리아는 그가 돌아오자 아무것도 모르는 척 구조선 이야기를 물었다. 그녀는 오리하르콘을 절벽 아래의 함정으로 유인했다. 바위 사이에 감춰 둔 바람주머니가 터지며 지반이 무너졌고, 거대한 돌이 그의 두 다리를 눌렀다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 0.517
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_21/scene_13.jpeg",
+      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_8.jpeg",
+      "narrationEn": "The tide began to rise. “Leave that person behind. ” Celia said.",
+      "narrationKo": "밀물이 차오르기 시작했다. “저 사람을 두고 가.” 실리아가 말했다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 0.1657
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_21/scene_14.jpeg",
+      "sourceImageFile": "Man_destroyed_raft_with_killers_202607260802.jpeg",
+      "narrationEn": "“He destroyed the raft. He is with the same people who killed Leonar. ” Kadan said he would save Orihalcon.",
+      "narrationKo": "“그가 뗏목을 없앴어. 레오나르를 죽게 만든 자들과 한패고.” 카단은 오리하르콘을 구하겠다고 했다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 0.2484
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_21/scene_15.jpeg",
+      "sourceImageFile": "Celia's_face_stiffened_202607260802.jpeg",
+      "narrationEn": "Celia's face stiffened. “Does your goodness always come before our lives? ” The tide rose even as the two men argued.",
+      "narrationKo": "실리아의 얼굴이 굳었다. “네 선함이 언제나 우리 목숨보다 먼저야?” 밀물은 두 사람이 논쟁하는 동안에도 차올랐다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 43,
+      "alignmentScore": 0.2674
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_21/scene_16.jpeg",
+      "sourceImageFile": "Kadan_finds_father's_name_202607260802.jpeg",
+      "narrationEn": "Celia did not wait for Kadan to find the right thing to say. I got angry as I hung a rope on a rock and calculated the rescue angle. Kadan felt even more sorry because he was a person who could separate emotions from what needed to be done.",
+      "narrationKo": "실리아는 카단이 옳은 말을 찾을 때까지 기다려 주지 않았다. 바위에 밧줄을 걸고 구조 각도를 계산하면서 화를 냈다. 감정과 해야 할 일을 분리할 수 있는 사람이어서 카단은 더 미안했다.",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 0.588
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_21/scene_17.jpeg",
+      "sourceImageFile": "Kadan_Celia_mist_lake_202607260802.jpeg",
+      "narrationEn": "Kadan could not answer that question right away. Behind my conviction that I was doing the right thing, there were moments when I refused to see the price paid by those close to me. He said, holding Celia's hand.",
+      "narrationKo": "그 질문에 카단은 곧장 답하지 못했다. 옳은 일을 한다는 확신 뒤에, 가까운 사람이 치르는 대가를 보지 않으려 했던 순간들이 있었다. 그는 실리아의 손을 잡고 말했다.",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 0.5161
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_21/scene_18.jpeg",
+      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_9.jpeg",
+      "narrationEn": "“I will not take lightly the reason you are against it. Still, if you abandon someone who could have been saved right before my eyes, I might blame you for that choice for the rest of my life. I don’t want to be that person.",
+      "narrationKo": "“네가 반대하는 이유를 가볍게 보지 않을게. 그래도 살릴 수 있는 사람을 눈앞에서 버리면 나는 그 선택을 평생 너 때문이라고 원망할지도 몰라. 그런 사람이 되고 싶지 않아.”",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 52,
+      "alignmentScore": 0.486
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_21/scene_19.jpeg",
+      "sourceImageFile": "Celia_Leonar_Orihalcon_lift_rock_202607260802.jpeg",
+      "narrationEn": "” Celia looked at the cracks in the rock without losing his anger. The two used Leonar's staff as a lever and pushed snow and wind into the gap to lift the rock. Orihalcon survived, but had difficulty regaining use of his legs.",
+      "narrationKo": "실리아는 화가 풀리지 않은 채 바위의 균열을 살폈다. 둘은 레오나르의 지팡이를 지렛대로 쓰고, 눈과 바람을 틈에 밀어 넣어 바위를 들어 올렸다. 오리하르콘은 목숨을 건졌지만 두 다리는 다시 쓰기 어려웠다.",
+      "sourceSentenceStart": 53,
+      "sourceSentenceEnd": 55,
+      "alignmentScore": 0.3295
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_21/scene_20.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_leaves_island_202607260802.jpeg",
+      "narrationEn": "Meanwhile, Death Knight Artus left the island with a copy of the codex and the sealing key. Leonar's breathing became shallow. On the horizon was a single burning sail receding away.",
+      "narrationKo": "데스나이트 아르투스는 그 사이 코덱스 사본과 봉인 열쇠를 들고 섬을 떠났다. 레오나르의 숨이 가늘어졌다. 수평선에는 불타는 돛 하나만 멀어지고 있었다.",
+      "sourceSentenceStart": 56,
+      "sourceSentenceEnd": 58,
+      "alignmentScore": 0.4491
+    }
+  ]
+}

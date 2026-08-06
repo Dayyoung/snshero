@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 17,
+  "episodeTitleEn": "Invitation to the Wind Isle",
+  "episodeTitleKo": "바람섬의 초대장",
+  "sourceSentenceCount": 57,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_17/scene_01.jpeg",
+      "sourceImageFile": "Griffon_follows_ship_with_letter_202607260802.jpeg",
+      "narrationEn": "On the second day of sailing, a Griffon followed the ship from the north. A red letter of Titania was tied to her ankle.",
+      "narrationKo": "출항 이틀째, 북쪽에서 그리폰 한 마리가 배를 따라왔다. 발목에는 티타니아의 붉은 편지가 묶여 있었다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.3437
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_17/scene_02.jpeg",
+      "sourceImageFile": "Fenrir_announces_marriage_to_Kadan_202607260802.jpeg",
+      "narrationEn": "Fenrir officially announced her marriage to Kadan, and Wildland warriors were preparing to come down to the south. Kadan read the letter several times. I never forgot my promise to Titania.",
+      "narrationKo": "펜릴이 카단과의 혼인을 공식 발표했고, 와일드랜드 전사들이 남쪽으로 내려올 준비를 한다는 내용이었다. 카단은 편지를 몇 번이나 읽었다. 티타니아와의 약속을 잊은 적은 없었다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.312
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_17/scene_03.jpeg",
+      "sourceImageFile": "War_of_Conqueror_King_scene_202607260802.jpeg",
+      "narrationEn": "However, the words they said to return to each other when they were young and the marriage announced by the Conqueror were not the same thing. Celia pretended to be okay and just looked at the route. Celia marked and erased the same constellation on the map three times.",
+      "narrationKo": "그러나 어린 날 서로 돌아오자고 한 말과 정복왕이 선포한 혼인은 같은 것이 아니었다. 실리아는 괜찮은 척 항로만 살폈다. 실리아는 같은 별자리를 세 번이나 지도에 표시했다가 지웠다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 0.4399
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_17/scene_04.jpeg",
+      "sourceImageFile": "Ignis_marks_route_on_map_202607260802.jpeg",
+      "narrationEn": "Ignis silently marked a dot on the correct route. Although the two did not like each other, they both agreed on the fact that Celia was hurting alone while Kadan was delaying the answer. Ignis broke the silence first.",
+      "narrationKo": "이그니스는 말없이 정확한 항로에 점 하나를 찍었다. 두 사람은 서로를 좋아하지 않았지만 카단이 대답을 미루는 동안 실리아가 혼자 상처받고 있다는 사실에는 의견이 같았다. 이그니스가 먼저 침묵을 깨뜨렸다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 0.3528
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_17/scene_05.jpeg",
+      "sourceImageFile": "Fantasy_palace_court_scene_202607260802_3.jpeg",
+      "narrationEn": "“If you postpone a decision because you don’t want to lose both of them, you end up passing the cost of the decision on to both of them. ” Kadan knew that those words were also Ignis's own story. He delayed too long choosing between the court and his parents.",
+      "narrationKo": "“두 사람 모두를 잃기 싫어 결정을 미루면, 결국 두 사람에게 결정의 값을 떠넘기게 된다.” 카단은 그 말이 이그니스 자신의 이야기이기도 하다는 것을 알았다. 그는 궁정과 부모 사이에서 너무 오래 선택을 미뤘다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 0.4577
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_17/scene_06.jpeg",
+      "sourceImageFile": "Aeolus_in_fog_scene_202607260802.jpeg",
+      "narrationEn": "Whisper of the Wind Island was not where it was marked on the map. As the sun set, the sound of Aeolus's flute spread over the sea, and the fog parted like stairs. The forest surrounding the island had leaves of different colors depending on the season, and the location of the road changed every time you looked back.",
+      "narrationKo": "바람의 속삭임 섬은 지도에 표시된 자리에 없었다. 해가 질 때 에올루스의 피리 소리가 바다 위로 번지자 안개가 계단처럼 갈라졌다. 섬을 둘러싼 숲은 계절마다 다른 색의 잎을 달고 있었고, 길은 뒤를 돌아볼 때마다 위치가 바뀌었다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 0.6315
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_17/scene_07.jpeg",
+      "sourceImageFile": "Three_people_dispersed_at_entrance_202607260802.jpeg",
+      "narrationEn": "The three people dispersed at the entrance. Kadan fell into the forest that swallows up sound, Celia fell into the mansion of my childhood, and Ignis fell into the garden where flames do not burn.",
+      "narrationKo": "입구에서 세 사람은 흩어졌다. 카단은 소리를 삼키는 숲에, 실리아는 어린 시절의 저택에, 이그니스는 불꽃이 타지 않는 정원에 떨어졌다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 0.6981
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_17/scene_08.jpeg",
+      "sourceImageFile": "Elwin_village_blizzard_scene_202607260802_2.jpeg",
+      "narrationEn": "The barrier trapped the intruder's strongest regrets by turning them into a path. Kadan saw himself returning to the north in a vision. It was a life of forming a peaceful family with Titania and serving Elwin.",
+      "narrationKo": "결계는 침입자의 가장 강한 미련을 길로 만들어 가두었다. 카단은 환영 속에서 북쪽으로 돌아간 자신을 보았다. 티타니아와 평온한 가정을 이루고 엘윈을 모시는 삶이었다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 0.4146
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_17/scene_09.jpeg",
+      "sourceImageFile": "Characters_on_Arcane_continent_road_202607260802.jpeg",
+      "narrationEn": "There was neither Celia nor Ignis on that road. It was a cruel welcome because he seemed happy. Welcome Titania didn't ask any questions, and Elwin praised all of his son's choices.",
+      "narrationKo": "그 길에는 실리아도 이그니스도 없었다. 행복해 보였기에 더 잔인한 환영이었다. 환영의 티타니아는 아무 질문도 하지 않았고, 엘윈은 아들의 모든 선택을 칭찬했다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 0.7066
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_17/scene_10.jpeg",
+      "sourceImageFile": "Kadan_realizes_love_is_resistance_202607260802.jpeg",
+      "narrationEn": "Only then did Kadan realize that what he was seeing was not love, but rest without resistance. He cut the bread in half on the table, but there was no smell or warmth inside. In Celia's vision, his mother Sylphid was alive.",
+      "narrationKo": "카단은 그제야 자신이 보고 있는 것이 사랑이 아니라 저항 없는 안식임을 알았다. 그는 식탁 위 빵을 반으로 갈랐지만 안쪽에는 냄새도 온기도 없었다. 실리아의 환영에서는 어머니 실피드가 살아 있었다.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 0.5289
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_17/scene_11.jpeg",
+      "sourceImageFile": "Aeolus_Medusa_Rondol_Celia_island_202607260802.jpeg",
+      "narrationEn": "Aeolus was friendly, and Medusa Gorgo and Rondol also did not leave the island. When the young Celia held out his hand, the current Celia wanted to hold it. But in perfect memory, no one ever said anything about their mistakes.",
+      "narrationKo": "에올루스는 다정했고, 메두사 고르고와 론돌도 섬을 떠나지 않았다. 어린 실리아가 손을 내밀자 현재의 실리아는 그 손을 잡고 싶었다. 그러나 완벽한 기억 속에는 누구도 자신의 잘못을 말하지 않았다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 0.5216
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_17/scene_12.jpeg",
+      "sourceImageFile": "Ignis_cuts_Kadan's_chains_202607260802.jpeg",
+      "narrationEn": "She opened the window and let a welcome breeze flow outside. Ignis was sitting on the throne. Lucian was on his knees and Kadan was chained, defeated.",
+      "narrationKo": "그녀는 창문을 열어 환영의 바람을 밖으로 흘려보냈다. 이그니스는 왕좌에 앉아 있었다. 루시안은 무릎을 꿇고 카단은 패배한 채 사슬에 묶여 있었다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 0.4139
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_17/scene_13.jpeg",
+      "sourceImageFile": "Ignis_melted_crown_revealed_names_202607260802.jpeg",
+      "narrationEn": "It had all the power and recognition he wanted, but the flame was cold and smellless. Ignis melted the crown to create a road. As the crown melted, numerous names were revealed beneath the throne.",
+      "narrationKo": "그가 원했던 힘과 인정이 모두 있었지만, 불꽃은 차갑고 아무 냄새도 나지 않았다. 이그니스는 왕관을 녹여 길을 만들었다. 왕관이 녹자 왕좌 아래 수많은 이름이 드러났다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 0.4743
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_17/scene_14.jpeg",
+      "sourceImageFile": "Prisoner_of_Flame_Court_scene_202607260802.jpeg",
+      "narrationEn": "These were the names of mine prisoners, war orphans, and people he had insulted in duels. When Ignis saw that he was sitting on the seat erected above them, he cut off Kadan's chains in the illusion.",
+      "narrationKo": "광산 죄수와 전쟁고아, 자신이 결투대에서 모욕한 사람들의 이름이었다. 이그니스는 그들 위에 세워진 자리에 앉아 있었다는 사실을 보고 환영 속 카단의 사슬부터 끊었다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 0.5678
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_17/scene_15.jpeg",
+      "sourceImageFile": "Medusa_Gorgo_attacks_Aeolus_202607260802.jpeg",
+      "narrationEn": "The three met again in the sound garden in the center of the island. Aeolus's flute and Medusa Gorgo's whip were clashing together. The sound of the flute turned people's senses upside down, and Medusa Gorgo survived with the vibration of the ground instead of snow.",
+      "narrationKo": "세 사람은 섬 중앙의 음향 정원에서 다시 만났다. 에올루스의 피리와 메두사 고르고의 채찍이 맞부딪치고 있었다. 피리 소리는 사람의 감각을 뒤집었고, 메두사 고르고는 눈 대신 땅의 진동으로 버텼다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 0.6729
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_17/scene_16.jpeg",
+      "sourceImageFile": "Celia_separates_voices_with_wind_202607260802.jpeg",
+      "narrationEn": "Celia stepped into the fight and separated the voices of the two with the wind. “Where is the codex? ” Aeolus answered that it was sealed in the underground temple.",
+      "narrationKo": "실리아는 싸움 사이로 들어가 두 사람의 소리를 바람으로 분리했다. “코덱스는 어디 있어요?” 에올루스는 지하 성전에 봉인했다고 답했다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 0.3394
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_17/scene_17.jpeg",
+      "sourceImageFile": "Celia_Aeolus_temple_door_open_202607260802.jpeg",
+      "narrationEn": "But the temple door was already open from the inside. Someone had entered the island's barrier ahead of time. White flame marks remained on the floor.",
+      "narrationKo": "그러나 성전 문은 이미 안쪽에서 열려 있었다. 누군가 섬의 결계보다 먼저 들어온 것이다. 바닥에는 백색 화염 자국이 남아 있었다.",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 0.4594
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_17/scene_18.jpeg",
+      "sourceImageFile": "Ignis_declared_not_his_spark_202607260802.jpeg",
+      "narrationEn": "Ignis declared that it was not his spark. It was an artificial flame created from the blood and runes that Lucian had collected to clone him. Celia returned Titania's letter to Kadan.",
+      "narrationKo": "이그니스는 자신의 불꽃이 아니라고 단언했다. 루시안이 그를 복제하기 위해 모은 피와 룬으로 만든 인공 화염이었다. 실리아는 카단에게 티타니아의 편지를 돌려주었다.",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 51,
+      "alignmentScore": 0.4294
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_17/scene_19.jpeg",
+      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_6.jpeg",
+      "narrationEn": "“Write the answer before you leave the island. Don’t leave hope as bait to anyone. ” Kadan nodded.",
+      "narrationKo": "“답은 섬을 나가기 전에 써. 누구에게도 희망을 미끼로 남겨 두지 마.” 카단은 고개를 끄덕였다.",
+      "sourceSentenceStart": 52,
+      "sourceSentenceEnd": 54,
+      "alignmentScore": 0.5524
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_17/scene_20.jpeg",
+      "sourceImageFile": "Celia_and_Ignis_in_palace_202607260802.jpeg",
+      "narrationEn": "He tried to hold Celia's hand for the first time and stopped. Celia grabbed his finger first. It was a brief contact, but Ignis pretended not to see and walked ahead.",
+      "narrationKo": "그는 처음으로 실리아의 손을 잡으려다 멈췄다. 실리아가 먼저 그의 손가락을 잡았다. 짧은 접촉이었지만 이그니스는 못 본 척 앞서 걸었다.",
+      "sourceSentenceStart": 55,
+      "sourceSentenceEnd": 57,
+      "alignmentScore": 0.6224
+    }
+  ]
+}

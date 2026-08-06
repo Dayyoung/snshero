@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.dryudryu.snshero",
+      "sha256_cert_fingerprints": [
+        "14:6D:E9:1F:B5:1C:18:1C:36:C6:A0:D4:6F:04:78:E8:13:B6:76:CD:0B:4D:45:DF:11:82:1C:4F:9E:0D:3F:8D"
+      ]
+    }
+  }
+]

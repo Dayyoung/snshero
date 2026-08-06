@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 25,
+  "episodeTitleEn": "Night of the False Wedding",
+  "episodeTitleKo": "거짓 혼례의 밤",
+  "sourceSentenceCount": 55,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_25/scene_01.jpeg",
+      "sourceImageFile": "Unexpected_wedding_in_ruins_202607260802.jpeg",
+      "narrationEn": "While Kadan was recovering, an unexpected wedding was held in the ruins of Elwin. Rondol of the Cloud Return Mansion knew that his son Kaze and the pharmacist Eliana had been in love for a long time, so he allowed the two to unite.",
+      "narrationKo": "카단이 회복하는 동안 엘윈 폐허에는 뜻밖의 혼례가 열렸다. 구름귀환 저택의 론돌은 아들 카제와 약제사 엘리아나가 오래 마음을 품어 왔다는 사실을 알고 두 사람의 결합을 허락했다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.306
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_25/scene_02.jpeg",
+      "sourceImageFile": "Tavern_scene_with_Celia_and_202607260802.jpeg",
+      "narrationEn": "The feast began with raising the beams of the collapsed tavern. Celia hung a wind lamp on the ruins, and Gilgamesh opened the northern barrel. Kadan was kicked out three times while carrying a chair with his waist bandaged.",
+      "narrationKo": "잔치는 무너진 선술집의 들보를 세우는 일부터 시작되었다. 실리아는 폐허에 바람등을 걸고, 길가메시는 북쪽 술통을 열었다. 카단은 허리에 붕대를 감은 채 의자를 나르다가 세 번이나 쫓겨났다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.5237
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_25/scene_03.jpeg",
+      "sourceImageFile": "Eliana_wears_pharmacist_apron_202607260802.jpeg",
+      "narrationEn": "Everyone devoted themselves to work with the intention of enjoying ordinary joy, even if only for a moment. Eliana wore a pharmacist's apron instead of a wedding gown. The reason was that if an injury occurs, it must be treated immediately.",
+      "narrationKo": "잠깐이라도 평범한 기쁨을 누리자는 마음으로 모두가 일에 매달렸다. 엘리아나는 혼례복 대신 약제사 앞치마를 입었다. 부상자가 생기면 바로 치료해야 한다는 이유였다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 0.3936
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_25/scene_04.jpeg",
+      "sourceImageFile": "Kaze_lost_ring_searched_well_202607260802.jpeg",
+      "narrationEn": "Kaze lost the ring and searched the kitchen and the well until just before the ceremony. Grimli had tied the ring to his beard as a joke. Ignis kept the fire outside the feast.",
+      "narrationKo": "카제는 반지를 잃어버려 식 직전까지 부엌과 우물가를 뒤졌다. 반지는 그림리가 장난으로 자기 수염에 묶어 두고 있었다. 이그니스는 잔치 밖에서 불을 지켰다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 0.5484
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_25/scene_05.jpeg",
+      "sourceImageFile": "Kadan_approaches_with_wine_202607260802.jpeg",
+      "narrationEn": "People were wary of him and children hid when they saw the white flames. When Kadan approached him with a glass of wine, he said that he had no right to smile after his parents' funeral.",
+      "narrationKo": "사람들은 그를 경계했고 아이들은 백색 화염을 보고 숨었다. 카단이 술잔을 들고 다가오자 그는 부모의 장례 뒤 웃을 자격이 없다고 말했다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 0.4385
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_25/scene_06.jpeg",
+      "sourceImageFile": "Child_approaches_campfire_Ignis_202607260802.jpeg",
+      "narrationEn": "A child came close to the campfire because of the cold. Ignis lowered the color of the white flame to orange so that the child would not be scared. The fire stirred clumsily, but it was warm.",
+      "narrationKo": "한 아이가 추위 때문에 모닥불 가까이 다가왔다. 이그니스는 아이가 겁먹지 않게 백색 불꽃의 색을 주황빛으로 낮췄다. 불은 서툴게 흔들렸지만 따뜻했다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 0.4012
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_25/scene_07.jpeg",
+      "sourceImageFile": "Ignis_realizes_he_cannot_make_202607260802.jpeg",
+      "narrationEn": "After the child warmed his hands and returned, Ignis paused for a long time, realizing that he had never learned how to make such a small fire. “If you needed qualifications to smile, all the banquets in the world would be empty. ” Kadan left the drink next to him and went back.",
+      "narrationKo": "아이가 손을 녹이고 돌아간 뒤 이그니스는 자신이 그런 작은 불을 만드는 법을 배운 적이 없다는 사실에 오래 멈춰 있었다. “웃는 데 자격이 필요하면 세상 잔치는 다 비어 있겠지.” 카단은 술잔을 옆에 놓고 돌아갔다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 0.4128
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_25/scene_08.jpeg",
+      "sourceImageFile": "Ignis_emptied_glass_alone_202607260802.jpeg",
+      "narrationEn": "After a while, Ignis emptied his glass alone. The night after the wedding, Orihalcon appeared in front of the secret sealing room. Since he could not use his legs, he was supporting his body with a metal brace.",
+      "narrationKo": "이그니스는 한참 뒤 혼자 잔을 비웠다. 혼례가 끝난 밤, 오리하르콘이 비밀 봉인실 앞에 나타났다. 두 다리를 쓰지 못해 금속 보조구로 몸을 지탱하고 있었다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 0.5288
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_25/scene_09.jpeg",
+      "sourceImageFile": "Man_claimed_he_never_stole_202607260802.jpeg",
+      "narrationEn": "He claimed that he never stole the Strategic Core and that Lucian cut his memories. Celia checked his wind signature.",
+      "narrationKo": "그는 전략 코어를 훔친 적이 없으며, 루시안이 자신의 기억을 잘라 갔다고 주장했다. 실리아는 그의 바람표식을 확인했다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 0.4261
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_25/scene_10.jpeg",
+      "sourceImageFile": "Orihalcon_discovers_crystal_bug_202607260802.jpeg",
+      "narrationEn": "The heart beat was fast, but the whistle of lies did not sound. Someone had changed the memory itself to hide the truth while telling the truth. A small crystal bug was discovered inside Orihalcon's auxiliary sphere.",
+      "narrationKo": "심장 박자는 빨랐지만 거짓말의 휘파람은 울리지 않았다. 누군가 사실을 말하면서도 진실을 숨기도록 기억 자체를 바꾼 것이었다. 오리하르콘의 보조구 안에서 작은 수정벌레가 발견되었다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 0.4014
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_25/scene_11.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_surveillance_…_202607260802.jpeg",
+      "narrationEn": "It was a surveillance device made from fragments of Death Knight Artus's armor. As Ignis melted the shell with flames, the crystal bug played Lucian's voice. Orihalcon described the feeling of having an empty room in his memory.",
+      "narrationKo": "데스나이트 아르투스의 갑옷 파편으로 만든 감시 장치였다. 이그니스가 불꽃으로 껍질을 녹이자 수정벌레가 루시안의 목소리를 재생했다. 오리하르콘은 자기 기억에 빈 방이 생긴 느낌을 설명했다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 0.6179
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_25/scene_12.jpeg",
+      "sourceImageFile": "Celia_slips_away_from_door_202607260802.jpeg",
+      "narrationEn": "When I thought of a certain name, it seemed to go to the door and then slip away. Celia did not force the memories open with the wind. Forcibly recovering memories for which one was not prepared was another intrusion.",
+      "narrationKo": "어떤 이름을 떠올리면 문 앞까지 갔다가 미끄러지는 듯했다. 실리아는 바람으로 기억을 억지로 열지 않았다. 본인이 준비되지 않은 기억을 강제로 복구하는 것도 또 하나의 침입이었다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 0.5139
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_25/scene_13.jpeg",
+      "sourceImageFile": "Kadan_heads_to_palace_202607260802.jpeg",
+      "narrationEn": "After the wedding, Kadan and the party will head to the southern imperial palace. Let them get the last chapter of the core themselves.",
+      "narrationKo": "혼례가 끝나면 카단 일행은 남쪽 황궁으로 향할 것이다. 코어의 마지막 장은 그들이 스스로 가져오게 두어라.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 0.4012
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_25/scene_14.jpeg",
+      "sourceImageFile": "Metal_leaf_key_opens_palace_202607260802.jpeg",
+      "narrationEn": "The missing metal leaf was not a map but a key. When all the remaining cores are stacked, the Ironforge tactical room in the basement of the imperial palace opens, where the original device that moves the ley lines of the entire continent lies dormant. Kadan said they had to go to the imperial palace even though they knew that Lucian was leading them.",
+      "narrationKo": "사라진 금속잎은 지도가 아니라 열쇠였다. 나머지 코어를 모두 포개면 황궁 지하의 아이언포지 전술실이 열리고, 그곳에는 대륙 전체의 지맥을 움직이는 원본 장치가 잠들어 있었다. 카단은 루시안이 자신들을 유도하고 있다는 사실을 알면서도 황궁으로 가야 한다고 했다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 0.6514
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_25/scene_15.jpeg",
+      "sourceImageFile": "Celia_Ignis_false_defection_palace_202607260802.jpeg",
+      "narrationEn": "If the original device was left untouched, the Court of Red Glass would find it someday. Celia said to go into the trap but not to move in the order the opponent expected. Ignis proposed that he would return to the palace first and commit a false defection.",
+      "narrationKo": "원본 장치를 그대로 두면 붉은 유리 궁정이 언젠가 찾아낼 터였다. 실리아는 함정 속으로 들어가되 상대가 예상한 순서로 움직이지 말자고 했다. 이그니스는 자신이 먼저 궁정으로 돌아가 거짓 귀순을 하겠다고 제안했다.",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 0.3928
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_25/scene_16.jpeg",
+      "sourceImageFile": "Lucian_wants_throne_Grimli_opposes_202607260802.jpeg",
+      "narrationEn": "Lucian still believes he wants the throne. The calculation was that the security network could be changed from within. Grimli opposed.",
+      "narrationKo": "루시안은 여전히 그가 왕좌를 원한다고 믿는다. 내부에서 경비망을 바꿀 수 있다는 계산이었다. 그림리는 반대했다.",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 0.4113
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_25/scene_17.jpeg",
+      "sourceImageFile": "Ignis_not_angry_betrayal_spies_202607260802.jpeg",
+      "narrationEn": "“He who is best at betrayal is also the best at spies. ” Ignis was not angry.",
+      "narrationKo": "“배신을 가장 잘하는 자가 첩자도 가장 잘하지.” 이그니스는 화내지 않았다. “맞는 말이다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 0.2751
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_25/scene_18.jpeg",
+      "sourceImageFile": "Celia_plants_wind_mark_Ignis_202607260802.jpeg",
+      "narrationEn": "“That’s true. That’s why we need to decide how to monitor me as well. ” Celia planted a wind mark on Ignis's flame.",
+      "narrationKo": "그래서 나를 감시할 방법도 함께 정해야 한다.” 실리아는 이그니스의 불꽃에 바람표식을 심었다.",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 0.2302
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_25/scene_19.jpeg",
+      "sourceImageFile": "Betrayal_aboard_burning_ship_202607260802.jpeg",
+      "narrationEn": "If he voluntarily harms someone to Lucian, the mark will turn off and the crystal held by Kadan will be broken. Instead of demanding trust in words, the cost of betrayal was made visible. The next day, the three people took different paths to the imperial palace.",
+      "narrationKo": "그가 루시안에게 자발적으로 사람을 해치면 표식이 꺼지고, 카단이 가진 수정이 깨진다. 신뢰를 말로 요구하는 대신 배신의 대가를 눈에 보이게 만든 것이다. 다음 날 세 사람은 서로 다른 길로 황궁을 향했다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 52,
+      "alignmentScore": 0.4975
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_25/scene_20.jpeg",
+      "sourceImageFile": "Kadan_joined_refugee_caravan_202607260802.jpeg",
+      "narrationEn": "Kadan joined the refugee caravan with his six teachers, and Celia rode the Freemen's League's contact network. Ignis put on his red glass cloak again. The wedding wind lamps were going out one by one in the daylight.",
+      "narrationKo": "카단은 여섯 스승과 난민 행렬에 섞였고, 실리아는 자유민 연맹의 연락망을 탔다. 이그니스는 붉은 유리 망토를 다시 걸쳤다. 혼례의 바람등이 낮빛 속에서 하나씩 꺼지고 있었다.",
+      "sourceSentenceStart": 53,
+      "sourceSentenceEnd": 55,
+      "alignmentScore": 0.391
+    }
+  ]
+}

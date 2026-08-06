@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 7,
+  "episodeTitleEn": "The Traitors Camp",
+  "episodeTitleKo": "배신자들의 천막",
+  "sourceSentenceCount": 62,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_07/scene_01.jpeg",
+      "sourceImageFile": "Kadan_followed_Medusa_traces_202607260802.jpeg",
+      "narrationEn": "On the last night before leaving, Kadan followed Medusa Gorgo's traces with Malfuon. She was practicing the forbidden runes of the Nine Shadows Codex in an abandoned mine near Fenrir's camp. Every time the silver chain whip wrapped around the rock, the mana in the stone dried up.",
+      "narrationKo": "떠나기 전 마지막 밤, 카단은 말퓨온과 함께 메두사 고르고의 흔적을 좇았다. 그녀는 펜릴의 숙영지 가까운 폐광에서 나인섀도우 코덱스의 금지된 룬을 연습하고 있었다. 은빛 사슬채찍이 바위를 감을 때마다 돌 속의 마나가 말라붙었다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 3,
+      "alignmentScore": 0.4641
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_07/scene_02.jpeg",
+      "sourceImageFile": "Two_people_discover_conspiracy_202607260802.jpeg",
+      "narrationEn": "The two people who followed Medusa Gorgo discovered a bigger conspiracy. Fenrir's sworn brother, Barghest, was secretly meeting with Lucian, an emissary of the Red Glass Court. They planned to lure Fenrir to the conference hall, kill him, and hand over the Wildlands' tribes to the Shadow Realm.",
+      "narrationKo": "메두사 고르고를 따라간 두 사람은 더 큰 음모를 발견했다. 펜릴의 의형제 바르가스트가 붉은 유리 궁정의 사절 루시안과 비밀리에 만나고 있었다. 그들은 펜릴을 회담장으로 유인해 죽이고 와일드랜드의 부족들을 섀도우렐름에 넘길 계획이었다.",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 6,
+      "alignmentScore": 0.4619
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_07/scene_03.jpeg",
+      "sourceImageFile": "Kadan_ran_to_camp_202607260802.jpeg",
+      "narrationEn": "Kadan ran straight to the camp. However, Fenrir only believed the words of the young warrior and could not doubt his old sworn brother. Rather, Malfuon, who came with him, was framed and bound as a spy for the palace.",
+      "narrationKo": "카단은 곧장 숙영지로 달렸다. 그러나 펜릴은 어린 전사의 말만 믿고 오랜 의형제를 의심할 수 없었다. 오히려 함께 온 말퓨온이 궁정의 첩자라는 누명을 쓰고 결박되었다.",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 9,
+      "alignmentScore": 0.416
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_07/scene_04.jpeg",
+      "sourceImageFile": "Barghest_troops_surround_camp_202607260802.jpeg",
+      "narrationEn": "Barghest's troops had already surrounded the camp in layers. Fenrir asked Kadan for evidence. Kadan repeated the conversation he heard in the tent, but people laughed at him, asking if his memory was evidence.",
+      "narrationKo": "바르가스트의 병력이 이미 야영지를 여러 겹 에워싸고 있었다. 펜릴은 카단에게 증거를 요구했다. 카단은 천막에서 들은 대화를 그대로 반복했지만 사람들은 기억이 증거냐며 비웃었다.",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 0.4354
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_07/scene_05.jpeg",
+      "sourceImageFile": "Malfuon_tied_up,_Kadan_observes_202607260802.jpeg",
+      "narrationEn": "Malfuon was tied up and said nothing. I wanted to see if Kadan would explain his own observation to the end, rather than relying on someone else's authority. The clue was in the boots of the murdered messenger.",
+      "narrationKo": "말퓨온은 결박된 채 아무 말도 하지 않았다. 카단이 남의 권위가 아니라 자기 관찰을 끝까지 설명하는지 보고 싶었던 것이다. 실마리는 살해된 전령의 장화에 있었다.",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 0.3295
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_07/scene_06.jpeg",
+      "sourceImageFile": "Titania_finds_glass_dust_on_202607260802.jpeg",
+      "narrationEn": "It wasn't Wildland dirt, but red glass dust. Titania found the same powder in the saddle of envoy Barghest. Fenrir then ordered alert, but it was already too late.",
+      "narrationKo": "와일드랜드 흙이 아니라 붉은 유리 가루가 묻어 있었다. 티타니아는 같은 가루를 바르가스트 사절의 말안장에서 찾아냈다. 펜릴은 그제야 경계를 명했지만 이미 늦었다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 0.3735
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_07/scene_07.jpeg",
+      "sourceImageFile": "Barghest_climbs_hill_alone_202607260802.jpeg",
+      "narrationEn": "As the sun set, Barghest climbed the hill alone. He returned the canine necklace he had exchanged with Fenrir long ago and encouraged him to surrender. “We just have to live within the boundaries set by our ancestors.",
+      "narrationKo": "해가 지자 바르가스트가 혼자 언덕을 올랐다. 그는 펜릴에게 옛날 주고받은 송곳니 목걸이를 돌려주며 항복을 권했다. “우리는 조상들이 정한 경계 안에서 살면 된다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 0.4745
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_07/scene_08.jpeg",
+      "sourceImageFile": "Fenrir_buries_necklace_in_ground_202607260802.jpeg",
+      "narrationEn": "Why do you want to unite all the tribes? ” Fenrir buried the necklace in the ground. “We want to end children dying in the same well every year.",
+      "narrationKo": "왜 모든 부족을 하나로 묶으려 하나?” 펜릴은 목걸이를 땅에 묻었다. “아이들이 해마다 같은 우물을 놓고 죽는 것을 끝내려는 거다.",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 0.3359
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_07/scene_09.jpeg",
+      "sourceImageFile": "Rune_knights_attack_fantasy_palace_202607260802.jpeg",
+      "narrationEn": "If tradition is an excuse to increase the number of graves, we need to change it. ” The attack began at dawn. Four rune knights from the court climbed the hill, and the arrows did not pierce their protective clothing.",
+      "narrationKo": "전통이 무덤 수를 늘리는 핑계라면 바꿔야지.” 새벽에 공격이 시작되었다. 궁정에서 온 룬 기사 넷이 언덕을 기어올랐고, 화살은 그들의 방호복을 뚫지 못했다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 0.5578
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_07/scene_10.jpeg",
+      "sourceImageFile": "Kadan_combines_movements_and_bre…_202607260802.jpeg",
+      "narrationEn": "For the first time, Kadan combined the movements learned from his six teachers and Malfuon's breathing on the battlefield. Rather than receiving the enemy's sword head-on, he slightly tilted his snow crystal shield and let it go through its orbit. Kadan was embarrassed by the fact that he was much slower on the battlefield than on the practice field. There was a person lying on the floor and children crying behind them.",
+      "narrationKo": "카단은 여섯 스승에게 배운 동작과 말퓨온의 호흡을 처음으로 전장에서 하나로 엮었다. 적의 검을 정면으로 받지 않고 눈결정 방패를 얇게 기울여 궤도를 흘렸다. 카단은 자신이 연습장에서보다 전장에서 훨씬 느리다는 사실에 당황했다. 바닥에는 쓰러진 사람이 있었고 뒤에서는 아이들이 울었다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 0.5612
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_07/scene_11.jpeg",
+      "sourceImageFile": "Tavern_scene_with_golden_shield_202607260802_2.jpeg",
+      "narrationEn": "Every time I swung my sword, I had to think about who would get hurt next. The perfect posture I had learned in training collapsed after just two attempts, and all that was left was breathing and choice. He captured Ursoc, the son of enemy general Barghest, and instead of using him as a shield, he treated the wounded and sent him back.",
+      "narrationKo": "검을 한 번 휘두를 때마다 그 다음에 누가 다칠지 생각해야 했다. 훈련에서 배운 완벽한 자세는 두 번 만에 무너졌고, 남은 것은 호흡과 선택뿐이었다. 그는 적장 바르가스트의 아들 우르삭을 생포해 방패로 삼지 않고, 부상자를 치료한 뒤 돌려보냈다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 0.5063
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_07/scene_12.jpeg",
+      "sourceImageFile": "Soldiers_shaken_by_choice_202607260802.jpeg",
+      "narrationEn": "Because of that choice, the young soldiers in the enemy camp were shaken. This is because the mercy he saw before his eyes was more persuasive than his father's orders. Gilgamesh and Titania gathered the young warriors and tied dry bushes to the tails of their horses.",
+      "narrationKo": "그 선택 때문에 적진의 젊은 병사들이 흔들렸다. 아버지들의 명령보다 눈앞에서 본 자비가 더 설득력 있었기 때문이다. 길가메시와 티타니아는 어린 전사들을 모아 말꼬리에 마른 덤불을 매달았다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 0.7254
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_07/scene_13.jpeg",
+      "sourceImageFile": "Fenrir_escapes,_raids_headquarters_202607260802.jpeg",
+      "narrationEn": "As hundreds of aircraft ran through the wilderness, dust pillars rose like thousands of armies. The besieging army changed its formation, thinking that reinforcements were coming, and Fenrir took advantage of that moment and escaped. Three days later, Fenrir made a night raid on Barghest's headquarters again.",
+      "narrationKo": "수백 기가 황야를 달리자 먼지기둥이 수천 군대처럼 솟았다. 포위군은 원군이 온 줄 알고 진형을 바꾸었고, 펜릴은 그 한순간의 틈을 찢고 빠져나왔다. 사흘 뒤 펜릴은 되레 바르가스트의 본진을 야습했다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 0.3111
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_07/scene_14.jpeg",
+      "sourceImageFile": "Brothers_before_ruins_scene_202607260802.jpeg",
+      "narrationEn": "After capturing his sworn brother, he punished the traitorous guard and allowed Barghest to die without shedding blood. Even amid the shouts of victory, Fenrir's face was not happy. What was buried that day was not just a necklace, but my entire childhood.",
+      "narrationKo": "의형제를 사로잡은 그는 배신한 호위병부터 처벌하고, 바르가스트에게는 피 흘리지 않는 죽음을 허락했다. 승리의 함성 속에서도 펜릴의 얼굴은 기쁘지 않았다. 그날 묻은 것은 목걸이 하나가 아니라 어린 시절 전체였다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 43,
+      "alignmentScore": 0.345
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_07/scene_15.jpeg",
+      "sourceImageFile": "Fenrir_shows_Kadan_treasure_202607260802.jpeg",
+      "narrationEn": "Several tribes in the Wildlands elected Fenrir as the conquering king. He showed the gold and dragon bone weapons from the treasure trove to Kadan, who had contributed, and told him to choose whichever he wanted. Kadan chose to organize the list of fallen soldiers rather than celebrate.",
+      "narrationKo": "와일드랜드의 여러 부족은 펜릴을 정복왕으로 추대했다. 그는 공을 세운 카단에게 보물 창고의 황금과 드래곤 뼈 무기를 보여 주며 원하는 것을 고르라 했다. 카단은 축하연보다 전사자 명단을 정리하는 일을 택했다.",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 0.3514
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_07/scene_16.jpeg",
+      "sourceImageFile": "Barghest_Fenrir_Kadan_on_board_202607260802.jpeg",
+      "narrationEn": "The names of young people who fought on the Barghest side were also written on the same board. When one of Fenrir's generals asked why he was honoring a traitor, Kadan replied that there was no need to kill someone who died due to a wrong order. “Give me the most precious thing.",
+      "narrationKo": "바르가스트 편에서 싸운 젊은이들의 이름도 같은 판에 적었다. 펜릴의 장수 하나가 반역자를 왜 기리느냐고 묻자, 카단은 잘못된 명령에 죽은 사람을 기록에서까지 죽일 필요는 없다고 답했다. “내게 가장 귀한 것을 주마.”",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 0.4157
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_07/scene_17.jpeg",
+      "sourceImageFile": "Fenrir_hands_Titania's_hand_Kadan_202607260802.jpeg",
+      "narrationEn": "” Fenrir handed Titania's hand to Kadan. It was a declaration that the two would get married when they became adults. The crowd cheered, but Kadan and Titania couldn't see each other's faces.",
+      "narrationKo": "펜릴은 티타니아의 손을 카단에게 건넸다. 두 사람이 성인이 되면 혼인시키겠다는 선언이었다. 군중은 환호했지만 카단과 티타니아는 서로의 얼굴을 제대로 보지 못했다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 52,
+      "alignmentScore": 0.6202
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_07/scene_18.jpeg",
+      "sourceImageFile": "Elwin_Balian_childhood_promise_p…_202607260802.jpeg",
+      "narrationEn": "A childhood promise suddenly became tribal politics. Elwin first revealed that her husband had promised to marry Balian and their children. Since Balian's child was a son, the marriage marriage disappeared, but the promise that the descendants of the two families should meet remained.",
+      "narrationKo": "어린 날의 약속이 갑자기 부족 전체의 정치가 되어 버렸다. 엘윈은 남편이 발리안과 자식들의 혼사를 약속했던 일을 처음 털어놓았다. 발리안의 아이는 아들이었으므로 혼약은 사라졌지만, 두 집안의 후예가 만나야 한다는 약속은 남아 있었다.",
+      "sourceSentenceStart": 53,
+      "sourceSentenceEnd": 55,
+      "alignmentScore": 0.4735
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_07/scene_19.jpeg",
+      "sourceImageFile": "Kadan_Ignis_Titania_fantasy_scene_202607260802.jpeg",
+      "narrationEn": "Kadan said he would return after finding Ignis and confirming the truth about his fathers. Titania hid his disappointment and tightened the knot of the red string. “I am not a treasure, Kadan.",
+      "narrationKo": "카단은 이그니스를 찾아 아버지들의 진실을 확인한 뒤 돌아오겠다고 했다. 티타니아는 섭섭함을 감추고 붉은 끈의 매듭을 조였다. “나는 보물이 아니야, 카단.",
+      "sourceSentenceStart": 56,
+      "sourceSentenceEnd": 58,
+      "alignmentScore": 0.4566
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_07/scene_20.jpeg",
+      "sourceImageFile": "Kadan_Fenrir_Lucian_map_exchange_202607260802.jpeg",
+      "narrationEn": "When you come back, ask me again if I will choose you then. ” Kadan replied that that was correct. He left south with his six teachers, and Fenrir gave him a map in exchange for an order to bring Lucian's head. The map showed a secret supply route prepared by the Shadow Realm to invade the southern kingdom.",
+      "narrationKo": "네가 돌아오면 그때 내가 너를 선택할지 다시 물어.” 카단은 그 말이 옳다고 답했다. 그는 여섯 스승과 함께 남쪽으로 떠났고, 펜릴은 루시안의 목을 가져오라는 명령 대신 한 장의 지도를 주었다. 지도에는 섀도우렐름이 남쪽 왕국을 침공하기 위해 준비한 비밀 보급로가 표시되어 있었다.",
+      "sourceSentenceStart": 59,
+      "sourceSentenceEnd": 62,
+      "alignmentScore": 0.6049
+    }
+  ]
+}

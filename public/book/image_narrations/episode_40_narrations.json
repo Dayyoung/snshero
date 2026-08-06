@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 40,
+  "episodeTitleEn": "One Who Is Not Called a Hero",
+  "episodeTitleKo": "영웅이라 불리지 않는 자",
+  "sourceSentenceCount": 69,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_40/scene_01.jpeg",
+      "sourceImageFile": "Kadan_Celia_return_Wildland_snow_202607260802.jpeg",
+      "narrationEn": "When Kadan and Celia returned to Wildland, the first snow was falling on the grasslands. The Conqueror's huge tent had been pulled down, and Fenrir was lying in the small tent that Kadan had frequented as a child. Titania and Gilgamesh stayed by their father's side.",
+      "narrationKo": "카단과 실리아가 와일드랜드로 돌아왔을 때 초원에는 첫눈이 내리고 있었다. 정복왕의 거대한 군막은 걷혀 있었고, 펜릴은 어린 시절 카단이 드나들던 작은 천막에 누워 있었다. 티타니아와 길가메시는 아버지 곁을 지켰다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 3,
+      "alignmentScore": 0.4609
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_40/scene_02.jpeg",
+      "sourceImageFile": "Fenrir's_empire_succession_struggle_202607260802.jpeg",
+      "narrationEn": "The southern expedition had stopped, but the empire founded by Fenrir was already shaken by the succession struggle. His final orders were to send refugees from occupied territories back to their homes and for each tribe to hold a new council. “The land I acquired all my life was scattered in a matter of days.",
+      "narrationKo": "남부 원정은 멈췄지만 펜릴이 세운 제국은 이미 후계 다툼으로 흔들리고 있었다. 그는 마지막 명령으로 점령지의 피난민을 고향으로 돌려보내고, 각 부족이 새 의회를 열게 했다. “내가 평생 얻은 땅을 며칠 만에 흩어 놓았구나.”",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 6,
+      "alignmentScore": 0.4681
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_40/scene_03.jpeg",
+      "sourceImageFile": "Fenrir_laughed_Kadan_answered_202607260802.jpeg",
+      "narrationEn": "” Fenrir laughed. “Do you think I failed? ” Kadan did not give an easy answer. Fenrir bound together the tribes that were killing each other and ended the oppression of the Shadow Realm.",
+      "narrationKo": "펜릴이 웃었다. “너는 내가 실패했다고 생각하느냐?” 카단은 쉽게 답하지 않았다. 펜릴은 서로 죽이던 부족을 묶고 섀도우렐름의 억압을 끝냈다.",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 0.3854
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_40/scene_04.jpeg",
+      "sourceImageFile": "Characters_take_away_hometowns_202607260802.jpeg",
+      "narrationEn": "At the same time, they tried to take away other people's hometowns for greater unification. Two truths existed together in one person. “You have saved many lives, and you have placed many in fear.",
+      "narrationKo": "동시에 더 큰 통일을 위해 다른 사람의 고향을 빼앗으려 했다. 한 사람 안에 두 진실이 함께 있었다. “왕께서는 많은 사람을 살렸고, 많은 사람을 두려움 속에 두었습니다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 0.5275
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_40/scene_05.jpeg",
+      "sourceImageFile": "Fenrir_asked_what_hero_202607260802.jpeg",
+      "narrationEn": "One cannot erase the other. ” Fenrir seemed not to like the answer, closed his eyes and asked again. “Then what is a hero? If it is not the person who acquired the largest land or the person who defeated the strongest enemy.",
+      "narrationKo": "하나로 다른 하나를 지울 수는 없습니다.” 펜릴은 그 대답이 마음에 들지 않는 듯 눈을 감았다가 다시 물었다. “그럼 영웅은 무엇이냐? 가장 넓은 땅을 얻은 사람도, 가장 강한 적을 꺾은 사람도 아니라면.”",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 0.5997
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_40/scene_06.jpeg",
+      "sourceImageFile": "Kadan_looked_outside_tent_202607260802.jpeg",
+      "narrationEn": "” Kadan looked outside the tent. Celia was recording the names of war orphans, and Titania was distributing food to soldiers who were about to be dispersed going home. Gilgamesh sent away the generals who wanted to erect a statue of his father.",
+      "narrationKo": "카단은 천막 밖을 보았다. 실리아가 전쟁고아들의 이름을 기록하고, 티타니아는 해산할 병사들에게 집으로 가는 식량을 나누고 있었다. 길가메시는 아버지의 동상을 세우자는 장수들을 돌려보냈다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 0.3715
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_40/scene_07.jpeg",
+      "sourceImageFile": "Fenrir_laughs_and_coughs_202607260802.jpeg",
+      "narrationEn": "“I think he is a person who uses his own power to expand the space for others to live in. Even if his name remains, that space remains. ” Fenrir laughed for a while and then coughed. “Then I’d be half hero and half disaster.",
+      "narrationKo": "“자기 힘으로 다른 사람이 살아갈 자리를 넓히는 사람이라고 생각합니다. 이름이 남지 않아도 그 자리가 남는다면요.” 펜릴은 한참 웃다가 기침을 했다. “그렇다면 나는 절반쯤 영웅이고 절반쯤 재앙이겠군.”",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 0.2716
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_40/scene_08.jpeg",
+      "sourceImageFile": "Fenrir_asked_Kadan_biography_202607260802.jpeg",
+      "narrationEn": "” “A person does not end with one name. ” Fenrir asked Kadan to write his biography honestly. He burned the royal officer's scroll that recorded only his victories, and asked him to leave behind the tribes he killed and the promises he broke.",
+      "narrationKo": "“사람은 하나의 이름으로 끝나지 않습니다.” 펜릴은 카단에게 자신의 전기를 정직하게 쓰라고 부탁했다. 승리만 기록하는 궁정 사관의 두루마리를 불태우고, 자신이 죽인 부족과 깨뜨린 약속도 남겨 달라고 했다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 0.4646
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_40/scene_09.jpeg",
+      "sourceImageFile": "Titania_Gilgamesh_memorial_ground_202607260802.jpeg",
+      "narrationEn": "Titania said he would take charge of the record. The Conqueror died that night. I didn't look for the crown until the end, and took Titania's and Gilgamesh's hands on one side each. Instead of a fancy grave, the funeral was held in a small pile of stones in the middle of a meadow.",
+      "narrationKo": "티타니아는 그 기록을 자신이 맡겠다고 했다. 정복왕은 그날 밤 숨을 거두었다. 마지막까지 왕관을 찾지 않았고, 티타니아와 길가메시의 손을 한쪽씩 잡았다. 장례는 화려한 무덤 대신 초원 한가운데 작은 돌무더기로 치러졌다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 0.556
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_40/scene_10.jpeg",
+      "sourceImageFile": "Kadan_rejected_generals'_requests_202607260802.jpeg",
+      "narrationEn": "Kadan rejected the generals' requests to take the throne. Celia also rejected a proposal to transform the Freemen's League into a kingdom. The two entrusted the Ironforge strategic core to archives in several cities, and the Nine Shadows Codex separated healing records and forbidden arts so that anyone could monitor them.",
+      "narrationKo": "카단은 왕위를 권하는 장수들의 요청을 거절했다. 실리아도 자유민 연맹을 왕국으로 바꾸자는 제안을 물리쳤다. 두 사람은 아이언포지 전략 코어를 여러 도시의 기록관에 나누어 맡기고, 나인섀도우 코덱스는 치유 기록과 금지술을 분리해 누구나 감시할 수 있게 했다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 0.5229
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_40/scene_11.jpeg",
+      "sourceImageFile": "Ignis_ember_returned_to_Astra_202607260802.jpeg",
+      "narrationEn": "Ignis's glass ember returned all of its power from the Astra Rod, leaving only a transparent piece behind. Kadan buried it between the graves of Balian and Ysela. While not disobeying Ignis's last request that he would not lie down next to his parents because he did not qualify, I wanted to leave a place for him to return to if he got lost.",
+      "narrationKo": "이그니스의 유리 불씨는 아스트라 봉에서 힘을 모두 돌려보낸 뒤 투명한 조각만 남았다. 카단은 그것을 발리안과 이셀라의 무덤 사이에 묻었다. 자격을 얻지 못해 부모 곁에 눕지 않겠다던 이그니스의 마지막 부탁을 어기지 않으면서도, 길을 잃으면 돌아올 곳은 남겨 주고 싶었다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 0.4754
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_40/scene_12.jpeg",
+      "sourceImageFile": "Wooden_horse_buried_tombstone_Ignis_202607260802.jpeg",
+      "narrationEn": "The wooden horse was also buried together. This time, one wheel turned fine. Kadan did not engrave the words \"prince\" or \"traitor\" on the tombstone, but wrote only one name. Ignis.",
+      "narrationKo": "나무 말도 함께 묻었다. 이번에는 한쪽 바퀴가 잘 돌아갔다. 카단은 비석에 왕자나 배신자라는 말을 새기지 않고 이름 하나만 적었다. 이그니스.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 0.4438
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_40/scene_13.jpeg",
+      "sourceImageFile": "Aeolus_and_Celia_on_island_202607260802.jpeg",
+      "narrationEn": "I hoped he would not be reduced to one evaluation in the end. Celia entrusted the reconstruction of Baram Island to the residents' council. Aeolus remained a recorder to advise the council when called, rather than a monarch to command.",
+      "narrationKo": "그가 끝내 하나의 평가로 줄어들지 않기를 바랐다. 실리아는 바람섬 재건을 주민 의회에 맡겼다. 에올루스는 명령하는 군주가 아니라 의회가 부를 때 조언하는 기록관으로 남았다.",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 0.4318
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_40/scene_14.jpeg",
+      "sourceImageFile": "Two_men_in_tavern_202607260802_2.jpeg",
+      "narrationEn": "For the first time, he asked his daughter where she was going and did not tell her when she would return. The two men rebuilt the tavern in Elwin village. The customers who opened on the first day were Hercul, Gandar, Naiad, and Aqualord. On the empty table, the teachers of Kadan and the glasses of Ignis and Elwin were placed.",
+      "narrationKo": "그는 처음으로 딸에게 어디로 가느냐고 묻고, 언제 돌아오라는 말은 하지 않았다. 두 사람은 엘윈 마을의 선술집을 다시 세웠다. 첫날 문을 연 손님은 헤르쿨과 간다르, 나이아드, 아쿠아로드였다. 빈 탁자에는 카단의 스승들과 이그니스, 엘윈의 잔이 놓였다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 0.4546
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_40/scene_15.jpeg",
+      "sourceImageFile": "Kadan_leads_Ironforge_strategy_202607260802.jpeg",
+      "narrationEn": "No one cleaned the cup away. Kadan hung the first sentence of the Ironforge strategy core on the tavern wall. Count those who survive before you win.",
+      "narrationKo": "누구도 그 잔을 치우지 않았다. 카단은 선술집 벽에 아이언포지 전략 코어의 첫 문장을 걸었다. 승리보다 먼저 살아남을 사람을 세어라.",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 51,
+      "alignmentScore": 0.4086
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_40/scene_16.jpeg",
+      "sourceImageFile": "Celia_Gandar_Naiad_Aqualord_Hercul_202607260802.jpeg",
+      "narrationEn": "Celia added small text below it. And ask those people what they want. As the night fell, Gandar tried to steal an empty glass and drink, but was hit on the back of the hand by Naiad. Aqualord stirred the soup pot with his weak hands, and Hercul hung the door upside down and took it off again.",
+      "narrationKo": "실리아는 그 아래에 작은 글씨를 덧붙였다. 그리고 그 사람들에게 무엇을 원하는지 물어라. 밤이 깊자 간다르는 빈 잔을 훔쳐 마시려다 나이아드에게 손등을 맞았다. 아쿠아로드는 힘을 잃은 손으로도 수프 냄비를 저었고, 헤르쿨은 문짝을 거꾸로 달아 다시 떼어 냈다.",
+      "sourceSentenceStart": 52,
+      "sourceSentenceEnd": 55,
+      "alignmentScore": 0.5246
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_40/scene_17.jpeg",
+      "sourceImageFile": "Characters_loading_Pegasus_at_dawn_202607260802.jpeg",
+      "narrationEn": "The characters in the legend lived in their new home, making not-so-great mistakes. At dawn, Kadan and Celia loaded Pegasus. There was more than one place to protect, and the end of the war did not mean the end of the wounds.",
+      "narrationKo": "전설 속 인물들은 새 집에서 대단하지 않은 실수를 하며 살아 있었다. 새벽이 되자 카단과 실리아는 페가수스에 짐을 실었다. 지켜야 할 곳이 한 군데가 아니었고, 전쟁이 끝났다고 상처까지 끝난 것은 아니었다.",
+      "sourceSentenceStart": 56,
+      "sourceSentenceEnd": 58,
+      "alignmentScore": 0.5005
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_40/scene_18.jpeg",
+      "sourceImageFile": "Celia_Kadan_news_Northern_Refuge…_202607260802.jpeg",
+      "narrationEn": "News from the Northern Refugee Camp had arrived from the Free People's League. “Do you have a plan to not break down the door this time? ” Celia asked. Kadan thought for a moment.",
+      "narrationKo": "자유민 연맹에서 북부 난민촌의 소식이 도착해 있었다. “이번에는 문을 부수지 않는 계획이 있어?” 실리아가 물었다. 카단은 잠시 생각했다.",
+      "sourceSentenceStart": 59,
+      "sourceSentenceEnd": 62,
+      "alignmentScore": 0.4243
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_40/scene_19.jpeg",
+      "sourceImageFile": "Tavern_scene_with_characters_Elw…_202607260802.jpeg",
+      "narrationEn": "“Ask first at the door. ” “There has been progress. ” After the two people left the snow, the silver bells on the eaves of the tavern rang.",
+      "narrationKo": "“문 앞에서 먼저 물어본다.” “발전했네.” 두 사람이 눈길을 떠난 뒤 선술집 처마의 은방울이 울렸다.",
+      "sourceSentenceStart": 63,
+      "sourceSentenceEnd": 65,
+      "alignmentScore": 0.4924
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_40/scene_20.jpeg",
+      "sourceImageFile": "Snow_Hero_Episode_40_scene_202607260802.jpeg",
+      "narrationEn": "There were no trumpets calling the names of heroes or royal processions. However, each path they passed left one door for people to choose for themselves. That's how the first story of Snow Hero ended. The snow covered the footprints, but did not cover the road.",
+      "narrationKo": "영웅의 이름을 부르는 나팔도, 왕의 행렬도 없었다. 다만 그들이 지나간 길마다 사람들이 스스로 선택할 수 있는 문이 하나씩 남았다. 눈히어로의 첫 번째 이야기는 그렇게 끝났다. 눈은 발자국을 덮었지만, 길까지 없애지는 못했다.",
+      "sourceSentenceStart": 66,
+      "sourceSentenceEnd": 69,
+      "alignmentScore": 0.5153
+    }
+  ]
+}

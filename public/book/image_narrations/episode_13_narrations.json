@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 13,
+  "episodeTitleEn": "Master of the Jade Staff",
+  "episodeTitleKo": "녹옥 지팡이의 주인",
+  "sourceSentenceCount": 52,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_13/scene_01.jpeg",
+      "sourceImageFile": "Kadan_and_Celia_in_forest_202607260802.jpeg",
+      "narrationEn": "Heading south, Kadan and Celia smelled grilling meat on the forest road. The owner of the scent was Leonar, an old warrior with a huge lion's mane.",
+      "narrationKo": "남쪽으로 향한 카단과 실리아는 숲길에서 고기 굽는 냄새를 맡았다. 냄새의 주인은 거대한 사자 갈기를 지닌 노전사 레오나르였다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.6344
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_13/scene_02.jpeg",
+      "sourceImageFile": "Celia_looks_at_map_202607260802.jpeg",
+      "narrationEn": "He lay down with his green jade staff as a pillow and freely evaluated the meal the two had prepared. Instead of getting angry, Celia looked at the remaining ingredients. There were only dried mushrooms, tough boar meat, and sour berries, but the wind divided the temperature of the fire and let the herbal scent seep into the meat.",
+      "narrationKo": "그는 녹옥 지팡이를 베개 삼아 누운 채 두 사람이 준비한 식사를 제멋대로 평가했다. 실리아는 화를 내는 대신 남은 식재료를 살폈다. 마른 버섯, 질긴 멧돼지 고기, 시큼한 열매뿐이었지만 바람으로 불의 온도를 나누고 약초 향을 고기에 스며들게 했다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.5692
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_13/scene_03.jpeg",
+      "sourceImageFile": "Leonar_takes_first_bite_202607260802.jpeg",
+      "narrationEn": "Leonar took his first bite and opened his eyes wide. Leonar did not say that it was delicious, but criticized the cooking of the meat and the amount of salt.",
+      "narrationKo": "레오나르는 첫 입을 먹고 눈을 크게 떴다. 레오나르는 맛있다는 말을 하지 않고 고기의 굽기와 소금 양을 흠잡았다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 7,
+      "alignmentScore": 0.5981
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_13/scene_04.jpeg",
+      "sourceImageFile": "Celia_Kadan_Leonar_teacher_disciple_202607260802.jpeg",
+      "narrationEn": "When Celia tried to snatch the plate away, he swallowed the last piece whole. Kadan laughed when he saw that, but even his share was taken away by Leonar. The teacher-disciple relationship between the three began across the dining table.",
+      "narrationKo": "실리아가 접시를 빼앗으려 하자 그는 마지막 조각을 통째로 삼켰다. 카단은 그 모습을 보고 웃다가 자신 몫까지 레오나르에게 빼앗겼다. 세 사람의 스승과 제자 관계는 식탁을 사이에 두고 시작되었다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 0.5341
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_13/scene_05.jpeg",
+      "sourceImageFile": "Kadan_and_Celia_discuss_attack_202607260802.jpeg",
+      "narrationEn": "“What is the price? ” “Teach my friend an attack technique other than a shield. ” Kadan was surprised that Celia asked for something before him.",
+      "narrationKo": "“대가는 무엇이냐?” “내 친구에게 방패 말고 공격할 기술을 가르쳐 주세요.” 카단은 자신보다 실리아가 먼저 요구한 일에 놀랐다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 0.3749
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_13/scene_06.jpeg",
+      "sourceImageFile": "Leonar_comments_on_Kadan's_strength_202607260802.jpeg",
+      "narrationEn": "Leonar looked at Kadan's shoulders and feet and commented that he had enough strength but did not know where to stop his strength. What he taught was the first of the eighteen Dragon Breaker seals.",
+      "narrationKo": "레오나르는 카단의 어깨와 발을 훑어본 뒤, 힘은 충분하지만 힘을 어디서 멈춰야 하는지 모른다고 평했다. 그가 가르친 것은 드래곤 브레이커 열여덟 인장 가운데 첫 인장이었다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 0.5274
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_13/scene_07.jpeg",
+      "sourceImageFile": "Kadan_and_Aeolus_scene_04_202607260802.jpeg",
+      "narrationEn": "It was not a technique that caused a large explosion of mana. It was a method of accurately delivering a single impact while leaving the force to move back. Kadan couldn't shake a single tree for three days.",
+      "narrationKo": "마나를 크게 폭발시키는 기술이 아니었다. 뒤로 물러날 힘을 남겨 둔 채 한 번의 충격을 정확히 전달하는 방식이었다. 카단은 사흘 동안 나무 한 그루 흔들지 못했다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 0.566
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_13/scene_08.jpeg",
+      "sourceImageFile": "Leonar_learns_first_seal_202607260802.jpeg",
+      "narrationEn": "The leaves fell off on the 10th day, and after a month, only the rotted parts inside the trunk were pushed out without breaking the tree. Leonar admitted that he had finally learned his first seal.",
+      "narrationKo": "열흘째에는 잎이 떨어졌고, 한 달 뒤에는 나무를 부러뜨리지 않은 채 줄기 안쪽의 썩은 부분만 밀어냈다. 레오나르는 그제야 첫 인장을 익혔다고 인정했다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 0.3645
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_13/scene_09.jpeg",
+      "sourceImageFile": "Celia_Kadan_betrayal_burning_ship_202607260802.jpeg",
+      "narrationEn": "Celia did not just watch the water lilies. The point at which Kadan's mana leaks is indicated by the temperature of the wind. At first, there were too many instructions, which made Kadan's movements more complicated, but the two reduced the signals to three.",
+      "narrationKo": "실리아는 수련을 구경만 하지 않았다. 카단의 마나가 어느 지점에서 새는지 바람의 온도로 표시했다. 처음에는 지시가 너무 많아 카단의 동작이 더 꼬였지만, 둘은 신호를 세 개로 줄였다.",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 0.4312
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_13/scene_10.jpeg",
+      "sourceImageFile": "Medusa_snake_spirits_in_forest_202607260802.jpeg",
+      "narrationEn": "Left, pause, breath. It was a language that would later be used faster than hundreds of words on the battlefield. A swarm of Medusa Gorgo snake spirits flocked to that forest.",
+      "narrationKo": "왼쪽, 멈춤, 숨. 훗날 전장에서 수백 마디보다 빠르게 통할 언어였다. 그 숲에 메두사 고르고의 뱀 정령 떼가 몰려왔다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 0.5432
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_13/scene_11.jpeg",
+      "sourceImageFile": "Trainers_use_flutes,_Leonar_draw…_202607260802.jpeg",
+      "narrationEn": "The spirits swelled by sucking the mana of living beasts, and the white-cloaked trainers used flutes to change direction. Leonar drew a line on the ground with a green jade staff, creating a barrier that snakes could not cross.",
+      "narrationKo": "정령들은 살아 있는 짐승의 마나를 빨아 배를 불렸고, 흰 망토의 조련사들이 피리로 방향을 바꾸었다. 레오나르는 녹옥 지팡이로 땅을 그어 뱀들이 넘지 못하는 결계를 만들었다.",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 0.3018
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_13/scene_12.jpeg",
+      "sourceImageFile": "Celia_bitten_by_snakes_202607260802.jpeg",
+      "narrationEn": "Celia was bitten by two small snakes, but the windscale armor he wore under his clothes repelled his teeth. Kadan tried to freeze the snake swarm with his frost mana, which was immune to poison. Leonar stopped him.",
+      "narrationKo": "실리아는 작은 뱀 두 마리에게 물렸지만 옷 안에 입은 바람비늘 갑옷이 이빨을 튕겼다. 카단은 독에 면역이 있는 자신의 서리 마나로 뱀떼를 얼리려 했다. 레오나르는 그를 막았다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 0.5052
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_13/scene_13.jpeg",
+      "sourceImageFile": "Fantasy_RPG_characters_training_…_202607260802.jpeg",
+      "narrationEn": "“If you kill everyone because they are easy to kill, you will fight in a way determined by the enemy. ” The three found the frequency of the training flute and turned it over with the wind.",
+      "narrationKo": "“죽이기 쉽다고 모두 죽이면, 너는 적이 정해 주는 방식으로 싸우게 된다.” 세 사람은 조련 피리의 주파수를 찾아 바람으로 뒤집었다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 0.5995
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_13/scene_14.jpeg",
+      "sourceImageFile": "Snake_spirits_turn_towards_owners_202607260802.jpeg",
+      "narrationEn": "The snake spirits turned towards their owners and the trainers ran away. Although Medusa Gorgo did not appear, a revenge emblem directed at Aeolus was scratched on the tree bark. Leonar was a wandering leader of the Freemen's League.",
+      "narrationKo": "뱀 정령들은 주인을 향해 돌아섰고 조련사들은 도망쳤다. 메두사 고르고가 모습을 드러내지는 않았지만, 나무껍질에는 에올루스를 향한 복수의 문장이 긁혀 있었다. 레오나르는 자유민 연맹을 이끄는 방랑 수장이었다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 0.6267
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_13/scene_15.jpeg",
+      "sourceImageFile": "Wanderers_feed_each_other_organi…_202607260802.jpeg",
+      "narrationEn": "An organization where wanderers and refugees, not kings or nobles, feed each other. The green jade staff was the key to proving the leader. He looked at Celia's judgment and Kadan's restraint.",
+      "narrationKo": "왕도 귀족도 아닌 떠돌이와 난민들이 서로를 먹여 살리는 조직. 녹옥 지팡이는 그 수장을 증명하는 열쇠였다. 그는 실리아의 판단력과 카단의 절제를 눈여겨보았다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 0.4265
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_13/scene_16.jpeg",
+      "sourceImageFile": "Leonar_promised_Kadan_seals_202607260802.jpeg",
+      "narrationEn": "On the day of leaving, Leonar promised to teach Kadan the remaining seventeen seals in the future. The conditions were not grand.",
+      "narrationKo": "떠나는 날 레오나르는 카단에게 남은 열일곱 인장을 훗날 가르치겠다고 약속했다. 조건은 거창하지 않았다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 0.5164
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_13/scene_17.jpeg",
+      "sourceImageFile": "Leonar_sits_with_hungry_people_202607260802.jpeg",
+      "narrationEn": "Even after gaining strength, sit at the same table as hungry people. Leonar never revealed the name of the first seal. The reason was that if you learn the name first, people will imitate the legend rather than the movement.",
+      "narrationKo": "힘을 얻은 뒤에도 배고픈 사람과 같은 식탁에 앉을 것. 레오나르는 첫 인장의 이름을 끝내 알려 주지 않았다. 이름을 먼저 배우면 사람은 동작보다 전설을 흉내 낸다는 이유였다.",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 0.3559
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_13/scene_18.jpeg",
+      "sourceImageFile": "Kadan_and_Leonar_scene_18_202607260802.jpeg",
+      "narrationEn": "Kadan called it the hand that leaves behind the strength to return the way it was created. Leonar laughed and said it was tacky, but did not change it.",
+      "narrationKo": "카단은 자신이 만든 방식대로 돌아올 힘을 남기는 손이라고 불렀다. 레오나르는 촌스럽다며 웃었지만 고치지는 않았다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 0.2554
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_13/scene_19.jpeg",
+      "sourceImageFile": "Man_leaves_words_for_Celia_202607260802.jpeg",
+      "narrationEn": "He left heavier words for Celia. “Daughter of the Wind Island, the day will never come when you become a leader because of your bloodline. But if people trust your judgment and hand you a staff, do not run away.",
+      "narrationKo": "실리아에게는 더 무거운 말을 남겼다. “바람섬의 딸아, 네가 혈통 때문에 지도자가 되는 날은 오지 않을 거다. 하지만 사람들이 네 판단을 믿어 지팡이를 건넨다면 도망치지 마라.”",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 0.6337
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_13/scene_20.jpeg",
+      "sourceImageFile": "Kadan_Celia_Pegasus_in_forest_202607260802.jpeg",
+      "narrationEn": "” Kadan did not ask why Celia suddenly became silent. Instead, Pegasus slowed down and walked side by side with her. At the end of the forest, a huge lake of fog spread out in silver light under the sunlight.",
+      "narrationKo": "카단은 실리아가 왜 갑자기 말이 없어졌는지 묻지 않았다. 대신 페가수스의 속도를 늦춰 그녀와 나란히 걸었다. 숲이 끝나는 곳에서 거대한 안개 호수가 햇빛을 받아 은빛으로 펼쳐졌다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 52,
+      "alignmentScore": 0.4475
+    }
+  ]
+}

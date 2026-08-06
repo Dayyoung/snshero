@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 33,
+  "episodeTitleEn": "Grudge of the Black Marsh",
+  "episodeTitleKo": "검은 늪의 원한",
+  "sourceSentenceCount": 52,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_33/scene_01.jpeg",
+      "sourceImageFile": "Naiad_did_not_give_up_202607260802.jpeg",
+      "narrationEn": "Naiad did not give up on revenge. However, the target has changed.",
+      "narrationKo": "나이아드는 복수를 포기하지 않았다. 다만 대상이 달라졌다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.4998
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_33/scene_02.jpeg",
+      "sourceImageFile": "Aqualord_finds_Death_Knight_Artus_202607260802.jpeg",
+      "narrationEn": "Instead of killing Aqualord, he went deep into the black swamp to find Death Knight Artus, who had taken Aquaris's life force. Gandar followed her without saying a word. Kadan and Celia also went together.",
+      "narrationKo": "아쿠아로드를 죽이는 대신 아쿠아리스의 생명력을 빼앗은 데스나이트 아르투스를 찾아 검은 늪 깊숙이 들어갔다. 간다르는 말없이 그녀의 뒤를 따랐다. 카단과 실리아도 함께 갔다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.5172
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_33/scene_03.jpeg",
+      "sourceImageFile": "Death_Knight_injecting_souls_armor_202607260802.jpeg",
+      "narrationEn": "Death Knight Artus was injecting artificial souls into armor in a lung laboratory beneath the swamp. On the wall, the mana waveforms of Aquaris, Ignis, and numerous nameless test subjects were hung like samples.",
+      "narrationKo": "데스나이트 아르투스는 늪 아래 폐연구소에서 인공 영혼을 갑옷에 주입하고 있었다. 벽에는 아쿠아리스와 이그니스, 수많은 이름 없는 실험체의 마나 파형이 표본처럼 걸려 있었다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 7,
+      "alignmentScore": 0.6741
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_33/scene_04.jpeg",
+      "sourceImageFile": "Celia_gave_specimens_temporary_n…_202607260802.jpeg",
+      "narrationEn": "Celia gave each specimen a temporary name. The name was created based on the rooms and the order in which they were discovered, but the intention was not to leave them as numbers. Kadan took off the metal plates one by one and put them into his backpack.",
+      "narrationKo": "실리아는 표본마다 임시 이름을 붙였다. 발견된 방과 순서만으로 만든 이름이었지만, 숫자로 남겨 두지는 않겠다는 뜻이었다. 카단은 금속판을 하나씩 떼어 배낭에 넣었다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 0.426
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_33/scene_05.jpeg",
+      "sourceImageFile": "Naiad_sees_Aquaris_waveform_202607260802.jpeg",
+      "narrationEn": "Even after the enemy was defeated, it remained to reveal who had been sacrificed. When Naiad saw Aquaris's waveform, he forgot all calculations and rushed forward.",
+      "narrationKo": "적을 무너뜨린 뒤에도 누가 희생되었는지 밝힐 일이 남아 있었다. 나이아드는 아쿠아리스의 파형을 보자 모든 계산을 잊고 달려들었다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 0.4001
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_33/scene_06.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_waited_for_202607260802.jpeg",
+      "narrationEn": "Death Knight Artus waited for that anger. The soul sword used strong emotions as a conduit to invade the opponent's memories. Naiad ended up seeing the night Aquaris died over and over again.",
+      "narrationKo": "데스나이트 아르투스는 그 분노를 기다렸다. 영혼검은 강한 감정을 통로로 삼아 상대의 기억 속으로 침입했다. 나이아드는 아쿠아리스가 죽던 밤을 끝없이 반복해 보게 되었다.",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 0.3591
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_33/scene_07.jpeg",
+      "sourceImageFile": "Gandar_trapped_in_memory_202607260802.jpeg",
+      "narrationEn": "Gandar tried to pull her away, but he was also trapped in the same memory. The possibility that things would have been different if he had not left, the life that Aquaris might have called his father unfolded as an illusion.",
+      "narrationKo": "간다르는 그녀를 끌어내려 했지만 자신도 같은 기억에 갇혔다. 그가 떠나지 않았다면 달라졌을 가능성, 아쿠아리스가 자신을 아버지라 불렀을지도 모르는 삶이 환영으로 펼쳐졌다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 0.563
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_33/scene_08.jpeg",
+      "sourceImageFile": "Celia_severs_Death_Knight_Artus'…_202607260802.jpeg",
+      "narrationEn": "Celia used the green jade staff to sever the connection between the two people's emotions and Death Knight Artus. Instead of attacking the armor, Kadan destroyed the soul storage tube on the lab floor. Nameless lights came out all at once and went up to the swamp.",
+      "narrationKo": "실리아는 녹옥 지팡이로 두 사람의 감정과 데스나이트 아르투스 사이의 연결을 끊었다. 카단은 갑옷을 공격하는 대신 연구소 바닥의 영혼 저장관을 부쉈다. 이름 없는 빛들이 한꺼번에 빠져나와 늪 위로 올라갔다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 0.5979
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_33/scene_09.jpeg",
+      "sourceImageFile": "Death_Knight_armor_emptying_202607260802.jpeg",
+      "narrationEn": "Death Knight Artus's armor began to empty. He has maintained his body through hundreds of souls.",
+      "narrationKo": "데스나이트 아르투스의 갑옷이 비기 시작했다. 그는 수백 영혼을 겹쳐 몸을 유지해 왔다.",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 0.5206
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_33/scene_10.jpeg",
+      "sourceImageFile": "Kadan_releases_them_one_by_202607260802.jpeg",
+      "narrationEn": "As Kadan released them one by one, the movement became slower. In the last storage tube, there was a resonance left by Aquaris. She tried to put it into her body.",
+      "narrationKo": "카단이 하나씩 풀어 줄수록 움직임이 느려졌다. 마지막 저장관에는 아쿠아리스가 남긴 공명이 있었다. 그녀는 그것을 자신의 몸에 넣으려 했다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 0.6309
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_33/scene_11.jpeg",
+      "sourceImageFile": "Aqualord_Aquaris_Naiad_scene_202607260802.jpeg",
+      "narrationEn": "If Aqualord said it, Aquaris's voice could be heard even for a moment. The reservoir was ready to produce the voice that Naiad most wanted to hear. It was not a real memory, but a device that simulated sadness.",
+      "narrationKo": "아쿠아로드가 말한 대로라면 잠시라도 아쿠아리스의 목소리를 들을 수 있었다. 저장관은 나이아드가 가장 듣고 싶은 목소리를 만들어 낼 준비가 되어 있었다. 진짜 기억이 아니라 슬픔을 흉내 내는 장치였다.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 0.5372
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_33/scene_12.jpeg",
+      "sourceImageFile": "Celia_Naiad_Black_Marsh_scene_202607260802.jpeg",
+      "narrationEn": "Even if Celia found out about it, he did not immediately destroy it. In order not to lose the choice, I explained the structure to Naiad and waited.",
+      "narrationKo": "실리아는 그 사실을 알아도 곧장 부수지 않았다. 선택을 빼앗지 않기 위해 나이아드에게 구조를 설명하고 기다렸다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 0.3619
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_33/scene_13.jpeg",
+      "sourceImageFile": "Gandar_held_Aquaris_hand_202607260802.jpeg",
+      "narrationEn": "Gandar held his hand. “Don’t lock Aquaris inside you again just because we want to see you. ” Naiad held the storage tube in his arms for a long time and then opened the lid.",
+      "narrationKo": "간다르가 손을 잡았다. “아쿠아리스를 다시 네 안에 가두지 마. 우리가 보고 싶다는 이유로.” 나이아드는 오랫동안 저장관을 품에 안고 있다가 뚜껑을 열었다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 0.4212
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_33/scene_14.jpeg",
+      "sourceImageFile": "Water_resonance_rising_around_two_202607260802.jpeg",
+      "narrationEn": "The water-colored resonance rose into the sky and circled around the two. There were no words or faces, but a warm presence touched the back of my hand for a moment.",
+      "narrationKo": "물빛 공명이 하늘로 떠오르며 두 사람 주위를 한 바퀴 돌았다. 말도 얼굴도 없었지만 따뜻한 기척이 잠시 손등에 닿았다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 0.481
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_33/scene_15.jpeg",
+      "sourceImageFile": "Death_Knight_escaped_flooded_lab…_202607260802.jpeg",
+      "narrationEn": "Death Knight Artus escaped and flooded the laboratory. Celia created wind bubbles to protect everyone's breath, and Kadan escaped carrying the last storage tubes on his shoulder. I could have finished it by pursuing the enemy, but I saved the trapped soul first.",
+      "narrationKo": "데스나이트 아르투스는 도망치며 연구소를 침수시켰다. 실리아는 바람방울을 만들어 모두의 숨을 지켰고, 카단은 마지막 저장관들을 어깨에 메고 빠져나왔다. 적을 추격하면 끝낼 수 있었지만 갇힌 영혼을 먼저 구했다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 0.5197
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_33/scene_16.jpeg",
+      "sourceImageFile": "Naiad_wrote_letter_to_Aqualord_202607260802.jpeg",
+      "narrationEn": "Outside the swamp, Naiad wrote a letter to Aqualord. There was no word of forgiveness.",
+      "narrationKo": "늪 밖에서 나이아드는 아쿠아로드에게 보낼 편지를 썼다. 용서한다는 말은 없었다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 0.5017
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_33/scene_17.jpeg",
+      "sourceImageFile": "Aquaris_poisoned_himself_revenge_202607260802.jpeg",
+      "narrationEn": "It was said that he had poisoned himself and that he would stay alive and see what he did. At the end of the letter, the name Aquaris was written for the first time. During my revenge, I hid my name out of fear that I would become weak if I spoke of it.",
+      "narrationKo": "자신이 독을 넣었으며, 그가 살아서 무엇을 하는지 지켜보겠다는 내용이었다. 편지 끝에는 아쿠아리스의 이름을 처음으로 썼다. 복수하는 동안에는 이름을 입 밖에 내면 약해질까 숨겨 왔다.",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 0.3585
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_33/scene_18.jpeg",
+      "sourceImageFile": "Gandar_folded_letter_Naiad_spoke_202607260802.jpeg",
+      "narrationEn": "Gandar folded the letter without reading the name out loud. I decided to wait until Naiad spoke.",
+      "narrationKo": "간다르는 그 이름을 소리 내 읽지 않고 편지를 접었다. 나이아드가 말할 때까지 기다리기로 했다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 0.674
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_33/scene_19.jpeg",
+      "sourceImageFile": "Gandar_Naiad_walk_together_202607260802.jpeg",
+      "narrationEn": "Gandar did not declare that he would remain by her side. I just asked if I wanted to walk together the next day. Instead of answering, Naiad put half of his luggage on his back.",
+      "narrationKo": "간다르는 그녀 곁에 남겠다고 선언하지 않았다. 다음 날도 같이 걷고 싶다고만 물었다. 나이아드는 대답 대신 자신의 짐 절반을 그의 등에 얹었다.",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 0.4694
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_33/scene_20.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_Kadan_scene_202607260802.jpeg",
+      "narrationEn": "The records obtained from the research center indicated that the next attack target was Whisper of the Wind Island. Death Knight Artus attempted to take over the entire continent's communication network using Aeolus's sound runes. Kadan and Celia headed toward the eastern sea without any time to recover.",
+      "narrationKo": "연구소에서 구한 기록에는 다음 공격 목표가 바람의 속삭임 섬으로 적혀 있었다. 데스나이트 아르투스는 에올루스의 음향 룬을 이용해 대륙 전체의 통신망을 장악하려 했다. 카단과 실리아는 회복할 틈 없이 동쪽 바다로 향했다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 52,
+      "alignmentScore": 0.4993
+    }
+  ]
+}

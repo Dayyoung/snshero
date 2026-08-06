@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 5,
+  "episodeTitleEn": "Phantom in the Downpour",
+  "episodeTitleKo": "폭우 속의 유령",
+  "sourceSentenceCount": 66,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_05/scene_01.jpeg",
+      "sourceImageFile": "Medusa_Gorgo_calls_Belphegor_202607260802.jpeg",
+      "narrationEn": "The chains in the cave were a trap. The moment Kadan approached Belphegor, the runes on the ceiling flipped over and black fog poured out. Medusa Gorgo avoided Kadan's eyes and burrowed into his shadow.",
+      "narrationKo": "동굴의 쇠사슬은 함정이었다. 카단이 벨페고르에게 다가서는 순간 천장의 룬이 뒤집히며 검은 안개가 쏟아졌다. 메두사 고르고는 카단의 눈을 피해 그의 그림자 안으로 파고들었다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 3,
+      "alignmentScore": 0.6265
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_05/scene_02.jpeg",
+      "sourceImageFile": "Gawain's_cane_splits_floor_202607260802.jpeg",
+      "narrationEn": "Just before the cold nails touched the nape of the neck, Gawain's cane split the floor. “Don’t believe your eyes, Kadan. That woman is not where you look.",
+      "narrationKo": "차가운 손톱이 목덜미에 닿기 직전, 가웨인의 지팡이가 바닥을 갈랐다. “눈을 믿지 마라, 카단. 저 여자는 네가 보는 곳에 없다.”",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 6,
+      "alignmentScore": 0.8019
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_05/scene_03.jpeg",
+      "sourceImageFile": "Kadan_closed_his_eyes_202607260802.jpeg",
+      "narrationEn": "” Kadan closed his eyes. I heard the stone dust falling like raindrops, Grimli's heavy breathing, and the direction in which the chain was being dragged. And then he swung the dagger at an empty spot that made no sound.",
+      "narrationKo": "카단은 눈을 감았다. 빗방울처럼 떨어지는 돌가루, 그림리의 거친 숨, 쇠사슬이 끌리는 방향을 들었다. 그리고 아무 소리도 내지 않는 빈자리로 단검을 휘둘렀다.",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 9,
+      "alignmentScore": 0.5489
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_05/scene_04.jpeg",
+      "sourceImageFile": "Knife_tears_Medusa_sleeve_202607260802.jpeg",
+      "narrationEn": "The tip of the knife tore Medusa Gorgo's sleeve. The six teachers spread out their formation without any time to be surprised. Aila the Demon Hunter's arrows blocked the retreat, and Rondol raised groundwater to wash away the fog. Kaze wrapped Belphegor's chain around the pillar.",
+      "narrationKo": "칼끝이 메두사 고르고의 소매를 찢었다. 여섯 스승은 놀랄 틈도 없이 진형을 펼쳤다. 에일라의 화살이 퇴로를 막고, 론돌이 지하수를 끌어올려 안개를 씻었다. 카제는 벨페고르의 쇠사슬을 도리어 기둥에 감았다.",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 0.4472
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_05/scene_05.jpeg",
+      "sourceImageFile": "Eliana_extracts_poison_from_Kadan_202607260802.jpeg",
+      "narrationEn": "Eliana extracted the poison that had begun to spread on Kadan's neck using a crystal syringe instead of a silver needle. Belphegor broke the restraints and rushed at Kadan. When Grimli's hammer and crystal arm collided, the cave wall collapsed.",
+      "narrationKo": "엘리아나는 카단의 목에 번지기 시작한 독을 은침 대신 수정 주사기로 뽑아냈다. 벨페고르는 속박을 부수고 카단에게 달려들었다. 그림리의 망치와 결정 팔이 맞부딪치자 동굴 벽이 무너졌다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 0.4386
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_05/scene_06.jpeg",
+      "sourceImageFile": "Medusa_Gorgo_saved_lover,_Gawain…_202607260802.jpeg",
+      "narrationEn": "Medusa Gorgo turned to save her lover, and at that moment, Gawain broke her hearing rune. Kadan aimed a dagger at the chest of the fallen Belphegor. He might have been connected to the attacker who killed his father.",
+      "narrationKo": "메두사 고르고는 연인을 구하려 몸을 돌렸고, 그 찰나 가웨인이 그녀의 청각 룬을 깨뜨렸다. 카단은 쓰러진 벨페고르의 가슴에 단검을 겨눴다. 아버지를 죽인 습격자와 이어진 자일지도 몰랐다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 0.4604
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_05/scene_07.jpeg",
+      "sourceImageFile": "Belphegor_Aeolus_necklace_scene_202607260802.jpeg",
+      "narrationEn": "It seemed like if I put my hand down just once, some of my long-standing questions would end in blood. However, an old necklace could be seen between Belphegor's armor. Inside was a small welcome stone with two people smiling with their teacher Aeolus. It was proof that the monster was not a monster from the beginning.",
+      "narrationKo": "한 번만 손을 내리면 오랜 질문 일부가 피와 함께 끝날 것 같았다. 그러나 벨페고르의 갑옷 틈에서 낡은 목걸이가 보였다. 안에는 두 사람이 스승 에올루스와 함께 웃는 작은 환영석이 들어 있었다. 괴물도 처음부터 괴물은 아니었다는 증거였다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 0.6793
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_05/scene_08.jpeg",
+      "sourceImageFile": "Medusa_Gorgo_drags_Belphegor_202607260802.jpeg",
+      "narrationEn": "Medusa Gorgo did not miss Kadan's hesitation. She disappeared down the collapsed chasm, dragging Belphegor with her. In the welcome stone, Medusa Gorgo's eyes were not covered, and Belphegor's arms were also human.",
+      "narrationKo": "카단의 망설임을 메두사 고르고는 놓치지 않았다. 그녀는 벨페고르를 끌고 붕괴한 틈 아래로 사라졌다. 환영석 속 메두사 고르고는 눈을 가리지 않았고 벨페고르의 팔도 인간의 것이었다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 0.5978
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_05/scene_09.jpeg",
+      "sourceImageFile": "Celia_throwing_flower_petals_lau…_202607260802.jpeg",
+      "narrationEn": "Between the two, young Celia was throwing flower petals and laughing. Kadan couldn't look at those faces for long. The fact that a past unknown to oneself was still alive in the enemy's body was more difficult to handle than the sword.",
+      "narrationKo": "둘 사이에는 어린 실리아가 꽃잎을 던지며 웃고 있었다. 카단은 그 얼굴들을 오래 볼 수 없었다. 자신이 모르는 과거가 적의 몸 안에도 살아 있다는 사실은 검보다 다루기 어려웠다.",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 0.7137
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_05/scene_10.jpeg",
+      "sourceImageFile": "Grimli_furious_at_Kadan_202607260802.jpeg",
+      "narrationEn": "Grimli was furious. “If you let the enemy live and you die, who will remember that mercy? ” Kadan could not answer. I couldn't tell whether it was mercy or fear.",
+      "narrationKo": "그림리는 격분했다. “적을 살려 보내고 네가 죽으면, 그 자비를 누가 기억해 주지?” 카단은 대답하지 못했다. 자비였는지 두려움이었는지 스스로도 알 수 없었다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 0.3659
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_05/scene_11.jpeg",
+      "sourceImageFile": "Gawain_did_not_give_answer_202607260802.jpeg",
+      "narrationEn": "Gawain did not give him the correct answer. However, he said not to forget the weight of choice. The cave collapsed and even the snow layer of the mountain cracked.",
+      "narrationKo": "가웨인은 그에게 정답을 주지 않았다. 다만 선택의 무게를 잊지 말라고 했다. 동굴이 무너지며 산의 눈층까지 갈라졌다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 0.6743
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_05/scene_12.jpeg",
+      "sourceImageFile": "Kadan_grabbed_by_wrist_202607260802.jpeg",
+      "narrationEn": "Outside, unseasonable rain fell. The group was scattered by the rapids, and Kadan clung alone to a crevice in the rocks. As his fingers slipped one by one, someone grabbed his wrist.",
+      "narrationKo": "바깥에서는 계절에 맞지 않는 폭우가 쏟아졌다. 일행은 급류에 흩어졌고 카단은 혼자 바위틈에 매달렸다. 손가락이 하나씩 미끄러질 때, 누군가 그의 손목을 붙잡았다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 0.4683
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_05/scene_13.jpeg",
+      "sourceImageFile": "Teachers_looking_for_each_other_202607260802.jpeg",
+      "narrationEn": "Above the rapids, the six teachers were also looking for each other. Gawain distinguished the trembling of silver bells in the sound of water and pinpointed the locations of his colleagues. Rondol diverted the water and Grimli turned a fallen pine tree into a bridge.",
+      "narrationKo": "급류 위쪽에서는 여섯 스승도 서로를 찾고 있었다. 가웨인은 물소리 속에서 은방울의 떨림을 구분해 동료들의 위치를 짚었다. 론돌이 물의 방향을 바꾸고 그림리가 쓰러진 소나무를 다리로 만들었다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 0.5937
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_05/scene_14.jpeg",
+      "sourceImageFile": "Belphegor_hugging_Medusa_Gorgo_202607260802.jpeg",
+      "narrationEn": "The cooperation they were trying to teach Kadan first saved their lives that day. It was Belphegor. He was hugging Medusa Gorgo with his other hand. “No debt left behind.",
+      "narrationKo": "그들이 카단에게 가르치려던 협동은 그날 먼저 자신들의 목숨을 구했다. 벨페고르였다. 그는 다른 손으로 메두사 고르고를 끌어안고 있었다. “빚은 남기지 않는다.” 그가 카단을 바위 위로 던져 올렸다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 0.3268
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_05/scene_15.jpeg",
+      "sourceImageFile": "He_threw_Kadan_onto_rock_202607260802.jpeg",
+      "narrationEn": "” He threw Kadan onto the rock. “Next time we meet, don’t hesitate. ” The torrent swallowed the two people.",
+      "narrationKo": "“다음에 만나면 망설이지 마라.” 급류가 두 사람을 삼켰다.",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 0.6608
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_05/scene_16.jpeg",
+      "sourceImageFile": "Kadan_Grimli_Medusa_Gorgo_scene_202607260802.jpeg",
+      "narrationEn": "Kadan tried to run after him, but Grimli grabbed his waist. On the black water, Medusa Gorgo's silver hair appeared for a moment and then disappeared. After the heavy rain stopped, the six teachers decided to teach Kadan their respective techniques.",
+      "narrationKo": "카단은 뒤따라 뛰려 했지만 그림리가 그의 허리를 붙들었다. 검은 물 위에는 메두사 고르고의 은빛 머리카락이 잠깐 보였다가 사라졌다. 폭우가 그친 뒤 여섯 스승은 카단에게 각자의 기술을 가르치기로 했다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 52,
+      "alignmentScore": 0.511
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_05/scene_17.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_Gawain_Kadan_202607260802.jpeg",
+      "narrationEn": "Before, they thought the child was too dull, but he was faster than anyone else in terms of reading sounds and looking out for others in times of danger. Gawain was in charge of how to listen to the terrain, Aila the Demon Hunter was in charge of how to wait, and Grimli was in charge of how to shock. Unlike the heroic story, the training was boring. Kadan guessed the sound of falling stones all day, and the next day he walked up and down the hill without spilling a bowl of water.",
+      "narrationKo": "이전까지 그들은 아이가 너무 둔하다고 생각했지만, 위험 속에서 소리를 읽고 타인을 먼저 살피는 감각만큼은 누구보다 빨랐다. 가웨인은 지형을 듣는 법을, 에일라는 기다리는 법을, 그림리는 충격을 흘리는 법을 맡았다. 수련은 영웅담과 달리 지루했다. 카단은 하루 종일 돌이 떨어지는 소리만 맞혔고, 다음 날에는 물 한 그릇을 쏟지 않고 언덕을 오르내렸다.",
+      "sourceSentenceStart": 53,
+      "sourceSentenceEnd": 56,
+      "alignmentScore": 0.5005
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_05/scene_18.jpeg",
+      "sourceImageFile": "Feast_begins_raising_tavern_beams_202607260802.jpeg",
+      "narrationEn": "Every time you make a mistake, Kaze counts again from the beginning. Kadan was surprised that it took longer to mop the floor and maintain equipment than to swing a sword. Eliana treated his hands every night.",
+      "narrationKo": "잘못할 때마다 카제는 처음부터 다시 세었다. 카단은 검을 휘두르는 시간보다 바닥을 닦고 장비를 손질하는 시간이 더 길다는 데 놀랐다. 엘리아나는 매일 밤 그의 손을 치료했다.",
+      "sourceSentenceStart": 57,
+      "sourceSentenceEnd": 59,
+      "alignmentScore": 0.5337
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_05/scene_19.jpeg",
+      "sourceImageFile": "Kadan_buries_crystal_in_cave_202607260802.jpeg",
+      "narrationEn": "“There is a difference between enduring a wound and neglecting a wound. ” Kadan learned to apply that phrase to the mind rather than the body much later. Kadan buried a small piece of crystal that fell from Belphegor's necklace at the entrance of the collapsed cave.",
+      "narrationKo": "“상처를 참는 것과 상처를 방치하는 건 달라.” 카단은 그 말을 몸보다 마음에 적용하는 법은 훨씬 나중에 배웠다. 카단은 무너진 동굴 입구에 벨페고르의 목걸이에서 떨어진 작은 수정 조각을 묻었다.",
+      "sourceSentenceStart": 60,
+      "sourceSentenceEnd": 62,
+      "alignmentScore": 0.6498
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_05/scene_20.jpeg",
+      "sourceImageFile": "Chibi_characters_in_rune-lit_cavern_202607260802.jpeg",
+      "narrationEn": "Because they could not decide whether they were enemies or benefactors, no graves or monuments were built. That night, for the first time, he awakened Rune from his father's dagger. A speck of frost bloomed on the blade. Although it was small and imperfect, it was a snowflake that did not melt even in heavy rain.",
+      "narrationKo": "적인지 은인인지 결정하지 못했기에 무덤도 기념비도 세우지 않았다. 그날 밤 그는 처음으로 아버지의 단검에 잠든 룬을 깨웠다. 칼날 위로 서리 한 점이 피었다. 작고 불완전했지만 폭우에도 녹지 않는 눈송이였다.",
+      "sourceSentenceStart": 63,
+      "sourceSentenceEnd": 66,
+      "alignmentScore": 0.5893
+    }
+  ]
+}

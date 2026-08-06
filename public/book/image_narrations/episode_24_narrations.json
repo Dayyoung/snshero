@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 24,
+  "episodeTitleEn": "Seven Nights in the Sealed Chamber",
+  "episodeTitleKo": "봉인실의 일곱 밤",
+  "sourceSentenceCount": 56,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_24/scene_01.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_pierces_Kadan_202607260802.jpeg",
+      "narrationEn": "When the cave collapsed, Death Knight Artus's soul sword pierced Kadan's waist. It was a small wound on the outside, but black cold spread into the mana core.",
+      "narrationKo": "동굴이 무너질 때 데스나이트 아르투스의 영혼검이 카단의 허리를 꿰뚫었다. 겉으로는 작은 상처였지만 검은 냉기가 마나 코어로 번졌다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.4521
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_24/scene_02.jpeg",
+      "sourceImageFile": "Tavern_characters_try_to_remove_202607260802.jpeg",
+      "narrationEn": "Neither Leonar's detoxification nor Celia's wind healing could remove the blade lodged in the soul. Celia found a secret sealed room in the kitchen of a collapsed tavern. In the past, it was a space where Aleksandar hid messengers.",
+      "narrationKo": "레오나르의 해독술도, 실리아의 바람 치유도 영혼에 박힌 칼날을 꺼내지 못했다. 실리아는 무너진 선술집 부엌에서 비밀 봉인실을 찾았다. 과거 알렉산다르가 전령을 숨기던 공간이었다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.4246
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_24/scene_03.jpeg",
+      "sourceImageFile": "Death_Knight_swings_soul_sword_202607260802.jpeg",
+      "narrationEn": "Inside, there remained a star rune that blocked external mana. Kadan was able to force the soul sword to push itself away without allowing it to consume the new power. Conditions were harsh.",
+      "narrationKo": "안쪽에는 외부 마나를 차단하는 별의 룬이 남아 있었다. 영혼검이 새로운 힘을 먹지 못하게 한 채 카단 스스로 밀어내게 할 수 있었다. 조건은 가혹했다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 0.4394
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_24/scene_04.jpeg",
+      "sourceImageFile": "Celia_closes_seal_door_202607260802.jpeg",
+      "narrationEn": "For seven nights, the two people had to hold their palms together and not cut off the flow of mana. If it falls even once, the blade moves to the heart. Celia closed the seal door without hesitation.",
+      "narrationKo": "일곱 밤 동안 두 사람의 손바닥을 맞대 마나 흐름을 끊지 않아야 했다. 한 번이라도 떨어지면 칼날이 심장으로 이동한다. 실리아는 망설이지 않고 봉인문을 닫았다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 0.5614
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_24/scene_05.jpeg",
+      "sourceImageFile": "Kadan,_Balian,_Ignis_in_chamber_202607260802.jpeg",
+      "narrationEn": "On the first day, Kadan was excited and called out the names of his father and Balian. On the second day, he laughed and told Ignis that he was a better son. The arrogance hidden beneath consciousness flowed out along with venom.",
+      "narrationKo": "첫날 카단은 열에 들떠 아버지와 발리안의 이름을 불렀다. 둘째 날에는 이그니스에게 자신이 더 나은 아들이었다고 말하며 웃었다. 의식 아래 숨겨 둔 오만이 독과 함께 흘러나왔다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 0.4881
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_24/scene_06.jpeg",
+      "sourceImageFile": "Celia_wrote_in_notebook_202607260802.jpeg",
+      "narrationEn": "Celia wrote in a small notebook what Kadan would normally have hidden. I muttered that it was to tease him later, but in reality, I was afraid he wouldn't remember any of his fears after the fever passed.",
+      "narrationKo": "실리아는 카단이 평소라면 숨겼을 말을 작은 수첩에 적었다. 나중에 놀리기 위해서라고 중얼거렸지만, 사실은 열이 지나간 뒤 그가 어떤 두려움을 기억하지 못할까 봐서였다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 0.522
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_24/scene_07.jpeg",
+      "sourceImageFile": "Kadan_apologized_in_sleep_202607260802.jpeg",
+      "narrationEn": "Kadan apologized countless times in his sleep for disappointing his teachers. Celia did not cover it with pleasant words. “You weren’t always right.",
+      "narrationKo": "카단은 잠결에 스승들을 실망시켰다고 수없이 사과했다. 실리아는 듣기 좋은 말로 덮지 않았다. “네가 언제나 옳았던 건 아니야.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 0.3109
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_24/scene_08.jpeg",
+      "sourceImageFile": "Kadan's_pulse_stopped_apology_202607260802.jpeg",
+      "narrationEn": "There were times when you ignored my choices in the name of saving people. So, come back to life and apologize in person. ” On the third day, Kadan's pulse stopped.",
+      "narrationKo": "사람을 살린다는 이유로 내 선택을 무시한 적도 있어. 그러니까 살아나서 직접 사과해.” 셋째 날 카단의 맥박이 멎었다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 0.5178
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_24/scene_09.jpeg",
+      "sourceImageFile": "Celia_connects_wind_core_chest_202607260802.jpeg",
+      "narrationEn": "Celia forcibly connected his wind core to his chest. As the two people's memories were mixed, Kadan saw the night Celia was eating alone in an empty mansion as a child, and Celia saw Kadan crying on a cliff because he could not live up to his teachers' expectations. Memories do not only select beautiful scenes.",
+      "narrationKo": "실리아는 자신의 바람 코어를 강제로 그의 가슴에 연결했다. 두 사람의 기억이 뒤섞이며 카단은 실리아가 어린 시절 빈 저택에서 혼자 식사하던 밤을 보았고, 실리아는 카단이 스승들의 기대를 따라가지 못해 절벽에서 울던 모습을 보았다. 기억은 아름다운 장면만 고르지 않았다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 0.4741
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_24/scene_10.jpeg",
+      "sourceImageFile": "Celia_ignored_Kadan's_simplicity_202607260802.jpeg",
+      "narrationEn": "Celia saw a moment when he secretly ignored Kadan's simplicity, and a time when Kadan relied on Celia's plan but accepted the ball as if it were his own choice. In a room where they couldn't let go of each other, the two faced each other, both the ways they loved each other and the ways they turned away from each other. People gathered outside.",
+      "narrationKo": "실리아는 자신이 카단의 단순함을 속으로 무시했던 순간을 보았고, 카단은 실리아의 계획에 의지하면서도 공을 자기 선택처럼 받아들인 때를 보았다. 손을 놓을 수 없는 방 안에서 두 사람은 서로가 사랑한 모습과 외면한 모습을 함께 마주했다. 밖에는 사람들이 모여들었다.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 0.4186
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_24/scene_11.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_Hercul_Aeolus…_202607260802.jpeg",
+      "narrationEn": "Ignis came to the ruins in pursuit of Death Knight Artus, and the six teachers and Hercul also heard the news of Kadan. Rondol and Eliana from the Cloud Return Mansion, and Gilgamesh from the north arrived at Elwin by different routes.",
+      "narrationKo": "이그니스가 데스나이트 아르투스를 추적해 폐허에 왔고, 여섯 스승과 헤르쿨도 카단의 소식을 들었다. 구름귀환 저택의 론돌과 엘리아나, 북쪽에서 온 길가메시까지 각기 다른 길로 엘윈에 도착했다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 0.4497
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_24/scene_12.jpeg",
+      "sourceImageFile": "Conflict_between_untrusting_people_202607260802.jpeg",
+      "narrationEn": "The first conflict occurred between people who did not trust each other. Grimli tried to keep Ignis away from the sealing room, and Ignis countered that only the flashback rune he brought could save Kadan. Hercul stood between the two and reminded Balian's last request.",
+      "narrationKo": "서로를 믿지 못하는 사람들 사이에서 첫 충돌이 일어났다. 그림리는 이그니스를 봉인실에서 멀리 떼어 놓으려 했고, 이그니스는 자신이 가져온 역화 룬만이 카단을 살릴 수 있다고 맞섰다. 헤르쿨은 둘 사이에 서서 발리안의 마지막 부탁을 상기시켰다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 0.6035
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_24/scene_13.jpeg",
+      "sourceImageFile": "Celia_sends_air_to_Kadan_202607260802.jpeg",
+      "narrationEn": "On the fifth night, the air in the sealing room ran out. Instead of opening the door, Celia shaped the remaining wind into a thin tube and sent it to Kadan first. He took a short breath and came to his senses.",
+      "narrationKo": "다섯째 밤, 봉인실의 공기가 부족해졌다. 실리아는 문을 열지 않고 남은 바람을 가느다란 관처럼 만들어 카단에게 먼저 보냈다. 자신은 짧게 숨 쉬며 정신을 붙들었다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 0.3463
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_24/scene_14.jpeg",
+      "sourceImageFile": "Ignis_activates_backfire_rune_202607260802.jpeg",
+      "narrationEn": "On the sixth night, Ignis activated the backfire rune outside the door. Using the forbidden liquor left in his core as bait, he pulled out Death Knight Artus's soul fragment from Kadan. Black cold passed through the sealed door and attached to Ignis's arm.",
+      "narrationKo": "여섯째 밤 이그니스가 문 바깥에서 역화 룬을 작동시켰다. 자신의 코어에 남은 금지술을 미끼로 삼아 데스나이트 아르투스의 영혼 조각을 카단에게서 끌어냈다. 검은 냉기가 봉인문을 지나 이그니스의 팔로 옮겨붙었다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 0.3658
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_24/scene_15.jpeg",
+      "sourceImageFile": "Grimli_shared_mana_Ignis_202607260802.jpeg",
+      "narrationEn": "Grimli held Ignis's shoulders and shared mana. He was the person who usually didn't trust him the most. “This does not make past mistakes go away.",
+      "narrationKo": "그림리는 이그니스의 어깨를 붙들어 마나를 나눴다. 평소 그를 가장 믿지 않던 사람이었다. “이 일로 지난 잘못이 없어지는 건 아니다.”",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 0.3264
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_24/scene_16.jpeg",
+      "sourceImageFile": "Ignis_gritted_teeth_answered_202607260802.jpeg",
+      "narrationEn": "” Ignis gritted his teeth and answered that he knew. “But do what you have to do now.",
+      "narrationKo": "이그니스는 이를 악문 채 알고 있다고 답했다. “그래도 지금 할 일은 하게.”",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 0.3616
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_24/scene_17.jpeg",
+      "sourceImageFile": "Grimli_Celia_Kadan_in_chamber_202607260802.jpeg",
+      "narrationEn": "” Hearing Grimli's words, the rest of the teachers also placed their hands. Celia called his name from inside. “Stop, if you die, do you think Kadan will accept this as salvation?",
+      "narrationKo": "그림리의 말에 나머지 스승들도 손을 얹었다. 실리아는 안에서 그의 이름을 불렀다. “멈춰, 네가 죽으면 카단이 이걸 구원이라고 받아들일 것 같아?”",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 0.6383
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_24/scene_18.jpeg",
+      "sourceImageFile": "Ignis_reduced_power_Hercul_shared_202607260802.jpeg",
+      "narrationEn": "” Ignis reduced power. Instead of the easy ending of dying for everyone, I chose the difficult path of sharing the pain and surviving. Hercul and the six masters shared the rest of Rune's burden.",
+      "narrationKo": "이그니스는 힘을 줄였다. 모두를 위해 죽는 쉬운 결말 대신, 고통을 나누고 살아남는 어려운 쪽을 택했다. 헤르쿨과 여섯 스승이 룬의 나머지 부담을 분담했다.",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 50,
+      "alignmentScore": 0.4606
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_24/scene_19.jpeg",
+      "sourceImageFile": "Kadan_opened_his_eyes_202607260802.jpeg",
+      "narrationEn": "On the seventh dawn, Kadan opened his eyes. The first thing he said was that Celia's hands were cold. Celia couldn't laugh or cry and hit his forehead.",
+      "narrationKo": "일곱째 새벽, 카단이 눈을 떴다. 첫마디는 실리아의 손이 차갑다는 말이었다. 실리아는 웃지도 울지도 못하고 그의 이마를 들이받았다.",
+      "sourceSentenceStart": 51,
+      "sourceSentenceEnd": 53,
+      "alignmentScore": 0.5132
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_24/scene_20.jpeg",
+      "sourceImageFile": "People_exhaled_in_ruins_202607260802.jpeg",
+      "narrationEn": "When the sealed door opened, the people gathered in the ruins exhaled at the same time. But the joy was short-lived. A piece of the strategic core protected by Orihalcon disappeared, and a piece of Lucian's red glass fell on the floor.",
+      "narrationKo": "봉인문이 열리자 폐허에 모인 사람들이 동시에 숨을 내쉬었다. 그러나 기쁨은 짧았다. 오리하르콘이 지키던 전략 코어 한 장이 사라졌고, 바닥에는 루시안의 붉은 유리 조각이 떨어져 있었다.",
+      "sourceSentenceStart": 54,
+      "sourceSentenceEnd": 56,
+      "alignmentScore": 0.5918
+    }
+  ]
+}

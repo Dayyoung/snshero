@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 22,
+  "episodeTitleEn": "Four on a Deserted Island",
+  "episodeTitleKo": "무인도의 네 사람",
+  "sourceSentenceCount": 55,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_22/scene_01.jpeg",
+      "sourceImageFile": "Two_wounded_exhausted_people_202607260802.jpeg",
+      "narrationEn": "Only two wounded and two exhausted people remained on the island. Orihalcon laughed at Kadan who saved him.",
+      "narrationKo": "섬에는 부상자 둘과 지친 사람 둘만 남았다. 오리하르콘은 자신을 구한 카단을 비웃었다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.3895
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_22/scene_02.jpeg",
+      "sourceImageFile": "Characters_holding_scorpion_key_202607260802.jpeg",
+      "narrationEn": "He said that since the key was taken away, Leonar would die, and since there was no raft, everyone would lie in the same grave. Celia did not respond to his taunts and collected the broken wood. The ebony trees that withstood the wind for a long time were lighter than water, and the spider vines inside the island could be used as ropes.",
+      "narrationKo": "열쇠를 빼앗긴 이상 레오나르는 죽을 것이고, 뗏목도 없으니 모두 같은 무덤에 누울 거라고 했다. 실리아는 그의 조롱에 답하지 않고 부서진 나무를 모았다. 바람에 오래 견딘 흑단나무는 물보다 가벼웠고, 섬 안쪽의 거미덩굴은 밧줄로 쓸 수 있었다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.5005
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_22/scene_03.jpeg",
+      "sourceImageFile": "Kadan_and_Celia_build_raft_202607260802.jpeg",
+      "narrationEn": "While Kadan was carrying logs, she recorded the movements of birds and stars. Kadan tried to make the raft square, and Celia said that a long shape to cut through the waves would be better. The two tied the tree three times and then untied it.",
+      "narrationKo": "카단이 통나무를 나르는 동안 그녀는 조류와 별의 움직임을 기록했다. 카단은 뗏목을 정사각형으로 만들려 했고 실리아는 파도를 가를 긴 형태가 낫다고 했다. 둘은 나무를 세 번 묶었다가 풀었다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 0.4681
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_22/scene_04.jpeg",
+      "sourceImageFile": "Leonar_gives_staff_to_Celia_202607260802.jpeg",
+      "narrationEn": "Leonar was lying down and listening to the two people's argument, and muttered that things made together would only last long if both sides showed a reasonable amount of stubbornness. Before Leonar lost consciousness, he handed the green jade staff to Celia. The method of lifting the barrier, known only to the leader of the Free People's League, was also shared.",
+      "narrationKo": "레오나르는 누운 채 두 사람의 다툼을 듣다가, 함께 만든 물건에는 양쪽의 고집이 적당히 남아야 오래 간다고 중얼거렸다. 레오나르는 의식을 잃기 전 녹옥 지팡이를 실리아에게 건넸다. 자유민 연맹의 수장만 아는 결계 해제법도 함께 전했다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 0.3361
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_22/scene_05.jpeg",
+      "sourceImageFile": "Celia_decides_who_to_save_202607260802.jpeg",
+      "narrationEn": "“A leader is not someone who saves everyone. It is someone who decides who to save first and does not run away from that decision.",
+      "narrationKo": "“지도자는 모두를 구하는 사람이 아니다. 누구를 먼저 구할지 결정하고, 그 결정에서 도망치지 않는 사람이다.”",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 0.6719
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_22/scene_06.jpeg",
+      "sourceImageFile": "Celia_accepts_cane_from_Leonar_202607260802.jpeg",
+      "narrationEn": "” Celia would not accept the cane. Leonar did not let go. In the end, when she accepted it with both hands, a wind pattern bloomed on the surface of the green jade.",
+      "narrationKo": "실리아는 지팡이를 받지 않으려 했다. 레오나르는 손을 놓지 않았다. 결국 그녀가 양손으로 받아 들자 녹옥 표면에 바람 문양이 피어났다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 0.4214
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_22/scene_07.jpeg",
+      "sourceImageFile": "Orihalcon_unties_raft_rope_202607260802.jpeg",
+      "narrationEn": "Three days later the raft was completed. Orihalcon crawled alone in the middle of the night and untied the rope. Kadan caught him, but the tide dragged the raft away.",
+      "narrationKo": "사흘 뒤 뗏목이 완성되었다. 오리하르콘은 한밤중 혼자 기어가 밧줄을 풀었다. 카단이 그를 붙잡았지만 밀물이 뗏목을 끌고 나갔다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 0.3653
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_22/scene_08.jpeg",
+      "sourceImageFile": "Fantasy_RPG_characters_on_coast_202607260802.jpeg",
+      "narrationEn": "Celia bent the springy trees on the coast back and made them into giant catapults. “Shoot me. ” When Kadan hesitated, she smiled.",
+      "narrationKo": "실리아는 해안의 탄력 있는 나무를 뒤로 휘어 거대한 투석기처럼 만들었다. “나를 쏴.” 카단이 망설이자 그녀는 웃었다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 0.4695
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_22/scene_09.jpeg",
+      "sourceImageFile": "Celia_falls_into_sea_202607260802.jpeg",
+      "narrationEn": "“This time it’s my plan, not your recklessness. ” Celia flew up from the bent tree and fell into the sea next to the raft.",
+      "narrationKo": "“이번에는 네 무모함이 아니라 내 계획이야.” 실리아는 휘어진 나무에서 날아올라 뗏목 옆 바다로 떨어졌다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 0.7559
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_22/scene_10.jpeg",
+      "sourceImageFile": "Orihalcon_washes_up_on_shore_202607260802.jpeg",
+      "narrationEn": "After diving under the water and loosening a few ropes, he swam back to the island without Orihalcon knowing. When the raft went out to sea, it lost its direction and had to ride the current to return. As expected, the next morning, the nearly broken raft and Orihalcon washed up on the opposite shore.",
+      "narrationKo": "물 아래로 잠수해 밧줄 몇 군데를 느슨하게 만든 뒤 오리하르콘이 모르게 다시 섬으로 헤엄쳐 왔다. 뗏목은 먼바다에 나가면 스스로 방향을 잃고 조류를 타고 돌아오게 되어 있었다. 예상대로 다음 날 아침, 부서지기 직전의 뗏목과 오리하르콘이 반대편 해안에 떠밀려 왔다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 0.3671
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_22/scene_11.jpeg",
+      "sourceImageFile": "Celia_in_fantasy_palace_court_202607260802.jpeg",
+      "narrationEn": "He was afraid of Celia for the first time. Kadan brought him back to life, but this time tied him to the center of the raft. Orihalcon could not endure hunger and told a story about the time when he worked at the royal court.",
+      "narrationKo": "그는 처음으로 실리아를 두려워했다. 카단은 그를 다시 살렸지만 이번에는 뗏목의 중앙에 묶었다. 오리하르콘은 굶주림을 견디지 못하고 자기가 궁정에서 일하던 시절의 이야기를 털어놓았다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 0.4919
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_22/scene_12.jpeg",
+      "sourceImageFile": "Lucian_and_Orihalcon_on_island_202607260802.jpeg",
+      "narrationEn": "Lucian required technicians to record failures before finished products. It was a habit of trying to find out how a device that saves people could kill them. Orihalcon took the money and pretended not to know the danger.",
+      "narrationKo": "루시안은 기술자에게 완성품보다 실패 기록을 먼저 요구했다. 사람을 살리는 장치가 어떤 방식으로 사람을 죽일 수 있는지 알아내려는 습관이었다. 오리하르콘은 돈을 받고 그 위험을 모른 척했다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 0.4515
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_22/scene_13.jpeg",
+      "sourceImageFile": "Griffon,_Titania,_Kadan_on_coast_202607260802.jpeg",
+      "narrationEn": "Just before departure, two Griffon came down from the sky. The birds sent by Titania delivered Kadan's letter and searched the sea without returning.",
+      "narrationKo": "출항 직전 하늘에서 두 그리폰이 내려왔다. 티타니아가 보낸 새들이 카단의 편지를 전달하고 돌아가지 않은 채 바다를 수색한 것이었다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 0.5467
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_22/scene_14.jpeg",
+      "sourceImageFile": "Ignis_pursues_Death_Knight_Artus_202607260802.jpeg",
+      "narrationEn": "One of them was holding a short scorpion from Ignis along with a sealing key. I chased down Death Knight Artus and recovered the key. Pay off a debt.",
+      "narrationKo": "한 마리는 봉인 열쇠와 함께 이그니스의 짧은 전갈을 물고 있었다. 데스나이트 아르투스를 추격해 열쇠를 되찾았다. 빚 하나를 갚는다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 0.4612
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_22/scene_15.jpeg",
+      "sourceImageFile": "Kadan_Celia_smell_meat_Leonar_202607260802.jpeg",
+      "narrationEn": "When the key was placed on Leonar's wound, a piece of black soul came out. Kadan trapped the pieces with snow crystals, and Celia blew them away out to sea with the wind. Leonar woke up from a long sleep and the first thing he said was to look for something to eat.",
+      "narrationKo": "열쇠를 레오나르의 상처에 대자 검은 영혼 조각이 빠져나왔다. 카단은 눈결정으로 조각을 가두고, 실리아는 바람으로 바다 멀리 날려 보냈다. 레오나르는 긴 잠에서 깨어나 첫마디로 먹을 것을 찾았다.",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 0.5801
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_22/scene_16.jpeg",
+      "sourceImageFile": "Four_boarded_small_raft_202607260802.jpeg",
+      "narrationEn": "The four people boarded a small raft. Orihalcon was a prisoner and Leonar could not move. There was only enough drinking water for five days.",
+      "narrationKo": "네 사람은 작은 뗏목에 올랐다. 오리하르콘은 포로였고 레오나르는 움직일 수 없었다.",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 43,
+      "alignmentScore": 0.3819
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_22/scene_17.jpeg",
+      "sourceImageFile": "Leonar_gives_alcohol_to_Orihalcon_202607260802.jpeg",
+      "narrationEn": "Nevertheless, Leonar took out alcohol made from fermented coconut and gave everyone a sip. A glass of wine also went to Orihalcon.",
+      "narrationKo": "식수는 닷새분뿐이었다. 그런데도 레오나르는 야자 열매에 발효시킨 술을 꺼내 모두에게 한 모금씩 돌렸다. 오리하르콘에게도 술잔이 갔다.",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 0.2864
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_22/scene_18.jpeg",
+      "sourceImageFile": "Celia_Leonar_Orihalcon_Kadan_int…_202607260802.jpeg",
+      "narrationEn": "Celia was against it, but Leonar said that if you do not treat prisoners like human beings, the words you hear during interrogation will not be human words. Even after Orihalcon took the glass, he could not put it to his mouth for a while. Celia said to Kadan that he was still angry.",
+      "narrationKo": "실리아는 반대했지만 레오나르는 포로를 사람으로 대하지 않으면 심문에서 듣는 말도 사람의 말이 아니게 된다고 했다. 오리하르콘은 잔을 받아 들고도 한동안 입에 대지 못했다. 실리아는 카단에게 아직 화가 남아 있다고 말했다.",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 0.4023
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_22/scene_19.jpeg",
+      "sourceImageFile": "Kadan_rowing_on_island_202607260802.jpeg",
+      "narrationEn": "Kadan did not urge him to let go of his anger. The two grabbed the same oar without fully understanding each other's choices. Every time a wave came, the backs of our hands hit each other, and at some point, we started rowing at the same beat, no matter who went first.",
+      "narrationKo": "카단은 화를 풀라고 재촉하지 않았다. 둘은 서로의 선택을 완전히 이해하지 못한 채 같은 노를 잡았다. 파도가 밀려올 때마다 손등이 부딪쳤고, 어느 순간부터 누가 먼저랄 것 없이 같은 박자로 노를 저었다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 52,
+      "alignmentScore": 0.5179
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_22/scene_20.jpeg",
+      "sourceImageFile": "Fantasy_characters_on_coast_202607260802.jpeg",
+      "narrationEn": "On the evening of the third day, lights on land appeared. That was the coast of Elwin village, where all the tragedy began. Death Knight Artus's artificial flames were flashing beneath the ruins.",
+      "narrationKo": "사흘째 저녁, 육지의 불빛이 나타났다. 그곳은 모든 비극이 시작된 엘윈 마을의 해안이었다. 폐허 아래에서 데스나이트 아르투스의 인공 화염이 번쩍이고 있었다.",
+      "sourceSentenceStart": 53,
+      "sourceSentenceEnd": 55,
+      "alignmentScore": 0.61
+    }
+  ]
+}

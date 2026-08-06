@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 14,
+  "episodeTitleEn": "Guests of the Mist Lake",
+  "episodeTitleKo": "안개 호수의 손님들",
+  "sourceSentenceCount": 57,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_14/scene_01.jpeg",
+      "sourceImageFile": "Fantasy_coast_storm_clouds_Kadan_202607260802.jpeg",
+      "narrationEn": "The fog lake was as wide as the sea. Instead of the horizon, seventy-two stone island islands supported the clouds, and the towers of an old underwater city were submerged beneath the water.",
+      "narrationKo": "안개 호수는 바다처럼 넓었다. 수평선 대신 솟은 일흔두 개의 돌기둥 섬이 구름을 떠받쳤고, 물 아래에는 오래된 수중 도시의 탑들이 잠겨 있었다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.3855
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_14/scene_02.jpeg",
+      "sourceImageFile": "Kadan_Celia_boat_lake_fog_202607260802.jpeg",
+      "narrationEn": "Kadan and Celia rented a small boat and entered the center of the lake. A singing voice was heard in the fog. It was a wind lullaby that Celia learned from Aeolus when he was young.",
+      "narrationKo": "카단과 실리아는 작은 배를 빌려 호수 중심으로 들어갔다. 안개 속에서 노랫소리가 들렸다. 실리아가 어릴 때 에올루스에게 배운 바람의 자장가였다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.5963
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_14/scene_03.jpeg",
+      "sourceImageFile": "One-legged_ship_owner_appeared_202607260802.jpeg",
+      "narrationEn": "As she sang the next verse, the one-legged ship owner Rondol appeared. He was once a disciple of Aeolus, but after losing his leg and being driven off the island, he was guarding a refuge for refugees here. Rondol did not bow even after recognizing who Celia was.",
+      "narrationKo": "그녀가 다음 소절을 부르자 외다리 선주 론돌이 모습을 드러냈다. 그는 한때 에올루스의 제자였으나 다리를 잃고 섬에서 쫓겨난 뒤 이곳 난민들의 피난처를 지키고 있었다. 론돌은 실리아가 누구인지 알아보고도 절하지 않았다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 0.5758
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_14/scene_04.jpeg",
+      "sourceImageFile": "Celia_angry_at_ruins_202607260802.jpeg",
+      "narrationEn": "“The child who ran away is back on his feet. ” Celia also did not call him teacher. The two took the oars one by one without telling each other why they were angry.",
+      "narrationKo": "“도망친 아이가 제 발로 돌아왔군.” 실리아도 스승이라 부르지 않았다. 두 사람은 서로에게 화가 난 이유를 다 말하지 않은 채 노를 하나씩 잡았다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 0.4671
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_14/scene_05.jpeg",
+      "sourceImageFile": "Kadan_looked_at_waves_202607260802.jpeg",
+      "narrationEn": "Kadan just looked at the waves in the meantime. Rondol took the two people to the Cloud Return Mansion. On the wall were hanging mana circuits and ancient maps that looked like paintings.",
+      "narrationKo": "카단은 그 사이에서 괜히 물결만 바라봤다. 론돌은 두 사람을 구름귀환 저택으로 데려갔다. 벽에는 그림처럼 보이는 마나 회로와 고대 지도들이 걸려 있었다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 0.4603
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_14/scene_06.jpeg",
+      "sourceImageFile": "Celia_rowing_on_lake_202607260802.jpeg",
+      "narrationEn": "Kadan didn't read much, but he noticed that the strokes of the circuit resembled the movement of a sword. Celia laughed as he saw him slashing the air with his fingers in front of the painting. The peace on the lake did not last long.",
+      "narrationKo": "카단은 글을 많이 읽지 못했지만 회로의 획이 검의 이동과 닮았다는 사실을 알아보았다. 실리아는 그가 그림 앞에서 손가락으로 허공을 베는 모습을 보고 웃었다. 호수의 평화는 오래가지 않았다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 0.4812
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_14/scene_07.jpeg",
+      "sourceImageFile": "Fantasy_palace_court_scene_202607260802_2.jpeg",
+      "narrationEn": "The Red Glass Court's warship plundered the fishing village under the pretext of paying taxes, and at the head of it was Ignis, who was chained up. After leaving the palace after the death of his parents, he was captured and was forced to wear a control device that tightened the flame core whenever he refused orders from Lucian.",
+      "narrationKo": "붉은 유리 궁정의 군선이 세금을 핑계로 어촌을 약탈했고, 그 선두에는 사슬에 묶인 이그니스가 있었다. 부모의 죽음 뒤 궁정을 떠났다가 붙잡힌 그는 루시안의 명령을 거부할 때마다 화염 코어를 조이는 제어구를 차야 했다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 0.4152
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_14/scene_08.jpeg",
+      "sourceImageFile": "Kaze_attacked_ship_took_Ignis_202607260802.jpeg",
+      "narrationEn": "Rondol's son, Kaze, attacked the military ship and took Ignis prisoner. The people in the mansion wanted to execute him immediately, but Kadan stopped them. Ignis refused help and attempted to melt the chains himself.",
+      "narrationKo": "론돌의 아들 카제는 군선을 습격해 이그니스를 포로로 잡았다. 저택의 사람들은 그를 즉시 처형하자고 했지만 카단이 막았다. 이그니스는 도움을 거부하며 사슬을 스스로 녹이려 했다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 0.4686
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_14/scene_09.jpeg",
+      "sourceImageFile": "Celia_cuts_rune_line_Ignis_202607260802.jpeg",
+      "narrationEn": "As the control sphere burned the heart, Celia only cut the rune line with the wind knife. In the prisoner's room, Ignis asked Kadan about his parents' last appearance. When Kadan tried to tell the truth, he was immediately stopped.",
+      "narrationKo": "제어구가 심장을 태우자 실리아가 바람칼로 룬선만 끊었다. 포로실에서 이그니스는 카단에게 부모의 마지막 모습을 물었다. 카단이 사실대로 말하려 하자 곧 말을 막았다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 0.2477
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_14/scene_10.jpeg",
+      "sourceImageFile": "Kadan's_story_grave_location_202607260802.jpeg",
+      "narrationEn": "I asked because I wanted to hear it, but I couldn't bear to hear Kadan's story about a time when I wasn't there. Kadan only provided the location of the grave. “You can go later when you’re ready.",
+      "narrationKo": "듣고 싶어서 물었지만, 자신이 없던 시간의 이야기를 카단의 입으로 듣는 일이 견딜 수 없었다. 카단은 무덤의 위치만 알려 주었다. “나중에 네가 준비되면 가.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 0.383
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_14/scene_11.jpeg",
+      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_4.jpeg",
+      "narrationEn": "There are things there that I don’t need to explain. ” “Don’t pity me. ” Ignis said.",
+      "narrationKo": "내가 설명하지 않아도 되는 것들이 거기 있어.” “동정하지 마.” 이그니스가 말했다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 0.1566
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_14/scene_12.jpeg",
+      "sourceImageFile": "Celia_and_Lucian_fight_202607260802.jpeg",
+      "narrationEn": "“Don’t get me wrong. I saved you because Lucian would be happy if you died. ” At Celia's answer, Ignis couldn't find anything to say to be more angry.",
+      "narrationKo": "“착각하지 마. 네가 죽으면 루시안이 좋아할 테니까 살린 거야.” 실리아의 대답에 이그니스는 더 화를 낼 말을 찾지 못했다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 0.4019
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_14/scene_13.jpeg",
+      "sourceImageFile": "Nobleman_with_fan_appeared_mansion_202607260802.jpeg",
+      "narrationEn": "That night, Belphegor, a nobleman holding a metal fan, appeared at the mansion. After surviving the rapids, he separated from Medusa Gorgo and led the Western Poison Dragon. Every time the fan was opened, poisonous needles and small snake spirits poured out.",
+      "narrationKo": "그날 밤 금속 부채를 든 귀족 벨페고르가 저택에 나타났다. 급류에서 살아남은 그는 메두사 고르고와 헤어진 뒤 서부 독룡단을 이끌고 있었다. 부채가 펼쳐질 때마다 독침과 작은 뱀 정령이 쏟아졌다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 0.5774
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_14/scene_14.jpeg",
+      "sourceImageFile": "Ignis_Kadan_snowbound_Lighthaven…_202607260802.jpeg",
+      "narrationEn": "He took Ignis and tried to use it to decipher Medusa Gorgo's codex. While Kadan and Belphegor were fighting, Celia activated the mansion's picture circuit.",
+      "narrationKo": "그는 이그니스를 데려가 메두사 고르고의 코덱스 해독에 쓰려 했다. 카단과 벨페고르가 맞붙는 동안 실리아는 저택의 그림 회로를 작동시켰다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 0.3976
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_14/scene_15.jpeg",
+      "sourceImageFile": "Ignis_in_mist_lake_202607260802.jpeg",
+      "narrationEn": "The fog created a different exit for each room, and the Gunseon and Poison Dragons fought each other, mistaking each other for enemies. Rondol turned the water wheel on his wheelchair and turned the lake water into a wall. Ignis had a chance to escape.",
+      "narrationKo": "안개가 방마다 다른 출구를 만들고, 군선과 독룡단은 서로를 적으로 오인해 싸웠다. 론돌은 휠체어의 수차를 돌려 호수 물을 벽처럼 세웠다. 이그니스는 달아날 기회를 얻고도 남았다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 0.4995
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_14/scene_16.jpeg",
+      "sourceImageFile": "Belphegor_fan_burns_Kadan_202607260802.jpeg",
+      "narrationEn": "However, when Belphegor's fan aimed at Kadan's back, the stinger burned with white flames. “Your life is a debt I must repay. I will not hand it over to anyone else.",
+      "narrationKo": "그러나 벨페고르의 부채가 카단의 등을 노리자 백색 화염으로 독침을 태웠다. “네 목숨은 내가 갚아야 할 빚이다. 다른 자에게 넘기지 않겠다.”",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 0.2627
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_14/scene_17.jpeg",
+      "sourceImageFile": "Ignis_poisoned_by_needle_202607260802.jpeg",
+      "narrationEn": "” A poisonous needle stuck in Ignis's shoulder. When Celia tried to pull it out, he slapped his hand away, but his knees soon buckled. While Kadan held him, Celia slowed the flow of poison into the wind.",
+      "narrationKo": "독침 하나가 이그니스의 어깨에 박혔다. 실리아가 뽑아 주려 하자 그는 손을 쳐 냈지만 곧 무릎이 꺾였다. 카단이 그를 붙드는 동안 실리아는 독의 흐름을 바람으로 늦췄다.",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 0.3469
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_14/scene_18.jpeg",
+      "sourceImageFile": "Three_characters_acting_as_one_202607260802.jpeg",
+      "narrationEn": "It was the first moment when the three acted as one body without trusting each other. Belphegor retreated and informed Celia that Medusa Gorgo was heading to Wind Island. Aeolus was trying to retrieve the hidden original codex and his own past.",
+      "narrationKo": "세 사람이 서로를 신뢰하지 않으면서도 한 몸처럼 움직인 첫 순간이었다. 벨페고르는 물러나며 실리아에게 메두사 고르고가 바람섬으로 향하고 있다고 알렸다. 에올루스가 숨긴 코덱스 원본과 자신의 과거를 되찾으려는 것이었다.",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 51,
+      "alignmentScore": 0.4062
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_14/scene_19.jpeg",
+      "sourceImageFile": "Rondol_released_Ignis_chains_202607260802.jpeg",
+      "narrationEn": "The people in the mansion tried to lock up Ignis, but Rondol released the chains. “Master kicked me off the island, but he couldn’t take away my right to choose. You don’t have to be the person the court decides.",
+      "narrationKo": "저택 사람들은 이그니스를 가두려 했지만 론돌이 사슬을 풀어 주었다. “스승은 나를 섬에서 내쫓았지만 선택할 권리까지 빼앗지는 못했네. 자네도 궁정이 정한 사람이 될 필요는 없어.”",
+      "sourceSentenceStart": 52,
+      "sourceSentenceEnd": 54,
+      "alignmentScore": 0.3536
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_14/scene_20.jpeg",
+      "sourceImageFile": "Ignis_left_for_lake_202607260802.jpeg",
+      "narrationEn": "” Ignis left for the other side of the lake. Kadan and Celia didn't know which side he would be on. In the early morning fog, the three boats headed in different directions, but their destination was Whisper of the Wind Island.",
+      "narrationKo": "이그니스는 호수 반대편으로 떠났다. 카단과 실리아는 그가 어느 편에 설지 알 수 없었다. 새벽 안개 속에서 세 사람의 배는 서로 다른 방향을 향했지만, 목적지는 모두 바람의 속삭임 섬이었다.",
+      "sourceSentenceStart": 55,
+      "sourceSentenceEnd": 57,
+      "alignmentScore": 0.6129
+    }
+  ]
+}

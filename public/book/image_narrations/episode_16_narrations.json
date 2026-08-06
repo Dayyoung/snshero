@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 16,
+  "episodeTitleEn": "Brothers Before the Ruins",
+  "episodeTitleKo": "폐허 앞의 형제",
+  "sourceSentenceCount": 63,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_16/scene_01.jpeg",
+      "sourceImageFile": "Aeolus_walking_on_water_202607260802.jpeg",
+      "narrationEn": "The day before leaving for Whisper of the Wind Island, the fog at Cloud Return Mansion parted for a moment. Aeolus holding a black flute walked in on the water. The wind supported his feet but made no sound.",
+      "narrationKo": "바람의 속삭임 섬으로 떠나기 전날, 구름귀환 저택의 안개가 한순간 갈라졌다. 검은 피리를 든 에올루스가 물 위를 걸어 들어왔다. 바람은 그의 발을 받치면서도 소리를 내지 못했다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 3,
+      "alignmentScore": 0.5375
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_16/scene_02.jpeg",
+      "sourceImageFile": "Rondol_loses_leg_Medusa_Gorgo_202607260802.jpeg",
+      "narrationEn": "When Celia saw his father, he felt more angry than happy. He asked all at once the order to kill Medusa Gorgo, the banishment of Rondol, and the silence that had closed all doors after his mother's death. Instead of explaining, Aeolus looked at his daughter's face and wounds.",
+      "narrationKo": "실리아는 아버지를 보자 반가움보다 분노가 먼저 솟았다. 메두사 고르고를 죽이라는 명령, 론돌의 추방, 어머니가 죽은 뒤 모든 문을 닫아 버린 침묵을 한꺼번에 물었다. 에올루스는 해명 대신 딸의 얼굴과 상처를 살폈다.",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 6,
+      "alignmentScore": 0.5253
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_16/scene_03.jpeg",
+      "sourceImageFile": "Celia_in_cave_scene_202607260802.jpeg",
+      "narrationEn": "He raised his hand and lowered it when he saw that the way Celia had tied his hair when he was young had changed. He didn't know if he still had the right to tidy up his tangled hair like before. Celia became angrier when he saw that small hesitation, and at the same time, he could not pour out any more words.",
+      "narrationKo": "그는 실리아가 어릴 적 머리를 묶던 방식이 달라진 것을 보고 손을 들었다가 내렸다. 예전처럼 헝클어진 머리카락을 정리할 권리가 아직 자신에게 있는지 알 수 없었다. 실리아는 그 작은 망설임을 보고 더 화가 났고, 동시에 더 이상 말을 쏟아낼 수 없었다.",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 9,
+      "alignmentScore": 0.7832
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_16/scene_04.jpeg",
+      "sourceImageFile": "Celia_confronted_at_palace_court_202607260802.jpeg",
+      "narrationEn": "“You’re alive. ” That one word made Celia more angry. “Did you think all you had to do was stay alive?",
+      "narrationKo": "“살아 있었구나.” 그 한마디가 실리아의 분노를 더 키웠다. “살아 있기만 하면 되는 줄 알았어요?",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 0.1367
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_16/scene_05.jpeg",
+      "sourceImageFile": "Ignis_chained_in_palace_court_202607260802.jpeg",
+      "narrationEn": "Did the people your father abandoned think the same way? ” Medusa Gorgo came down from the roof. She aimed the chain whip at Aeolus's back, but Aeolus didn't even turn around.",
+      "narrationKo": "아버지가 버린 사람들도 그렇게 생각했을까요?” 메두사 고르고가 지붕 위에서 내려왔다. 그녀는 에올루스의 등에 사슬채찍을 겨눴지만, 에올루스는 돌아보지도 않았다.",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 0.656
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_16/scene_06.jpeg",
+      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_5.jpeg",
+      "narrationEn": "The past orders were not forged. He believed that tens of thousands of people would be sacrificed if the Codex fell to the Shadow Realm, and he chose to abandon several of his disciples. Rondol showed the leg he lost because of that choice.",
+      "narrationKo": "과거의 명령서는 위조가 아니었다. 코덱스가 섀도우렐름에 넘어가면 수만 명이 희생된다고 믿었고, 제자 몇 사람을 버리는 선택을 했다. 론돌은 그 선택 때문에 잃은 다리를 보여 주었다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 0.2715
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_16/scene_07.jpeg",
+      "sourceImageFile": "Characters_deciphering_codex_fig…_202607260802.jpeg",
+      "narrationEn": "Medusa Gorgo called the name of the dead Belphegor. This was the first time Celia heard that his mother, Sylphid, lost her life while deciphering the codex. The world that Aeolus tried to protect was always bigger than specific people. Kadan did not intend to be a judge.",
+      "narrationKo": "메두사 고르고는 죽은 벨페고르의 이름을 불렀다. 실리아는 어머니 실피드가 코덱스를 해독하다 생명을 잃었다는 사실을 처음 들었다. 에올루스가 지키려 했던 세계는 언제나 구체적인 사람보다 컸다. 카단은 심판자가 되려 하지 않았다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 0.4173
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_16/scene_08.jpeg",
+      "sourceImageFile": "Aeolus_asked_Brothers_Ruins_202607260802.jpeg",
+      "narrationEn": "However, I asked Aeolus. “Would you do that again if the same situation came up? ” There was no answer for a long time.",
+      "narrationKo": "다만 에올루스에게 물었다. “같은 상황이 오면 또 그렇게 하겠습니까?” 오랫동안 대답이 없었다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 0.5478
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_16/scene_09.jpeg",
+      "sourceImageFile": "Aeolus_playing_flute_on_coast_202607260802.jpeg",
+      "narrationEn": "Finally, Aeolus put down the flute. “If it were me in the past, I would have done that. I don’t know now.",
+      "narrationKo": "마침내 에올루스는 피리를 내려놓았다. “예전의 나라면 그랬을 것이다. 지금은 모르겠다.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 0.3653
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_16/scene_10.jpeg",
+      "sourceImageFile": "Rondol_reveals_missing_leg_202607260802.jpeg",
+      "narrationEn": "I lost too many people to admit that I don’t know. ” Rondol lifted the blanket on his knees to reveal his missing leg. “If I had heard the answer back then that I didn’t know, I might have stayed.",
+      "narrationKo": "그 모름을 인정하기까지 너무 많은 사람을 잃었구나.” 론돌은 무릎 위에 놓인 담요를 걷어 잃은 다리를 드러냈다. “모른다는 답을 그때 들었다면 나는 남았을지도 모릅니다.”",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 0.4348
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_16/scene_11.jpeg",
+      "sourceImageFile": "Aeolus_and_Medusa_Gorgo_202607260802.jpeg",
+      "narrationEn": "” Aeolus did not see the wound and lowered his head. Realizing that being silent because of the late apology was another escape, he eventually called out his student's name and said that he had made a mistake. Medusa Gorgo didn't kill him.",
+      "narrationKo": "에올루스는 상처를 보지 못하고 고개를 숙였다. 사과가 늦었다는 사실 때문에 침묵하는 것은 또 다른 도피라는 것을 깨닫고, 결국 제자의 이름을 부르며 잘못했다고 말했다. 메두사 고르고는 그를 죽이지 않았다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 0.5988
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_16/scene_12.jpeg",
+      "sourceImageFile": "Celia_finds_letters_in_cave_202607260802.jpeg",
+      "narrationEn": "Not because I forgave him, but because I didn't want to end the answer with death. She headed to Wind Island, saying she would first find the original codex. Aeolus did not order Celia to return.",
+      "narrationKo": "용서해서가 아니라, 죽음으로 답을 끝내 주고 싶지 않았기 때문이다. 그녀는 코덱스 원본을 먼저 찾겠다며 바람섬으로 향했다. 에올루스는 실리아에게 돌아오라고 명령하지 않았다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 0.5044
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_16/scene_13.jpeg",
+      "sourceImageFile": "Ignis_appeared_in_palace_court_202607260802.jpeg",
+      "narrationEn": "Instead, it was announced that the island's barrier was collapsing, and that the Western Poisonous Dragons and the Red Glass Court were approaching at the same time. Celia said he would go back not for the island, but for the people living on it. The moment I was about to leave the mansion, Ignis appeared.",
+      "narrationKo": "대신 섬의 결계가 무너지고 있으며, 서부의 독룡단과 붉은 유리 궁정이 동시에 접근 중이라고 알렸다. 실리아는 섬을 위해서가 아니라 그 안에 사는 사람들을 위해 돌아가겠다고 했다. 저택을 떠나려던 순간 이그니스가 나타났다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 0.4815
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_16/scene_14.jpeg",
+      "sourceImageFile": "Balian_Ysela_die_together_202607260802.jpeg",
+      "narrationEn": "He was putting a handful of dirt from the graves of Balian and Ysela into a small glass jar. While chasing Lucian, I had just discovered that the palace fleet was heading to Wind Island. Kadan took Ignis to the grave. In front of the tombstone, the two people placed the silver daggers left behind by their fathers side by side.",
+      "narrationKo": "그는 발리안과 이셀라의 무덤에서 가져온 흙 한 줌을 작은 유리병에 담고 있었다. 루시안을 쫓다가 궁정의 함대가 바람섬으로 향한다는 것을 알아낸 참이었다. 카단은 이그니스를 무덤으로 데려갔다. 비석 앞에서 두 사람은 아버지들이 남긴 은빛 단검을 나란히 놓았다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 0.5288
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_16/scene_15.jpeg",
+      "sourceImageFile": "Ignis_ignores_father,_takes_horse_202607260802.jpeg",
+      "narrationEn": "Ignis said that he did not deserve to be a brother because he ignored his biological father. Ignis took the wooden horse out of the dirt again. It was wet from the rain and the colors were smudged, but one wheel still turned.",
+      "narrationKo": "이그니스는 친부를 외면한 자신에게 형제의 자격이 없다고 말했다. 이그니스는 흙 속에서 나무 말을 다시 꺼냈다. 비에 젖어 색이 번졌지만 한쪽 바퀴는 여전히 돌아갔다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 0.4546
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_16/scene_16.jpeg",
+      "sourceImageFile": "Seven_pursuers_make_promise_202607260802.jpeg",
+      "narrationEn": "Kadan did not offer to fix it. Ignis was next to hand over a small knife and a dry cloth until he cleaned it himself. “It’s not a promise you make because you’re qualified.",
+      "narrationKo": "카단은 그것을 고쳐 주겠다고 하지 않았다. 이그니스가 직접 손질할 때까지 옆에서 작은 칼과 마른 천만 건넸다. “자격이 있어서 맺는 약속이 아니야.”",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 50,
+      "alignmentScore": 0.2937
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_16/scene_17.jpeg",
+      "sourceImageFile": "Kadan_Ignis_held_out_hand_202607260802.jpeg",
+      "narrationEn": "” Kadan held out his hand. “We make a deal to pull each other out the next time we go down the wrong path. ” Ignis held hands after a while.",
+      "narrationKo": "카단이 손을 내밀었다. “다음에 잘못된 길로 가면 서로 끌어내려고 맺는 거지.” 이그니스는 한참 뒤 손을 잡았다.",
+      "sourceSentenceStart": 51,
+      "sourceSentenceEnd": 53,
+      "alignmentScore": 0.5303
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_16/scene_18.jpeg",
+      "sourceImageFile": "Two_men_make_vows_202607260802.jpeg",
+      "narrationEn": "The two were not brothers with the same parents, nor were they colleagues who covered each other's sins. They ended up promising to tell the truth that the other person didn't want to hear. Celia became anxious as he watched the two people make their vows.",
+      "narrationKo": "두 사람은 같은 부모를 둔 형제도, 서로의 죄를 덮어 주는 동료도 아니었다. 그들은 상대가 듣기 싫어하는 진실을 말하겠다는 약속으로 이어졌다. 실리아는 두 사람의 서약을 지켜보며 불안해졌다.",
+      "sourceSentenceStart": 54,
+      "sourceSentenceEnd": 56,
+      "alignmentScore": 0.5185
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_16/scene_19.jpeg",
+      "sourceImageFile": "Ignis_Kadan_Celia_scene_202607260802.jpeg",
+      "narrationEn": "Kadan's good intentions could have saved Ignis, and could have been used for his own ambitions. Ignis also read Celia's eyes. “You don’t have to trust me.",
+      "narrationKo": "카단의 선의는 이그니스를 구할 수도 있었고, 그의 야심에 이용될 수도 있었다. 이그니스 역시 실리아의 눈빛을 읽었다. “날 믿지 않아도 된다.”",
+      "sourceSentenceStart": 57,
+      "sourceSentenceEnd": 59,
+      "alignmentScore": 0.3799
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_16/scene_20.jpeg",
+      "sourceImageFile": "Celia_confronts_father_over_Medusa_202607260802.jpeg",
+      "narrationEn": "” “That is not permitted. ” Celia answered. The three people boarded the same boat, but headed to Wind Island for different reasons. Kadan to keep his father's promise, Celia to confront his father's choices, and Ignis to prove that his spark is no one's command.",
+      "narrationKo": "“그건 허락받을 일이 아니야.” 실리아가 답했다. 세 사람은 같은 배에 올랐지만 서로 다른 이유로 바람섬을 향했다. 카단은 아버지의 약속을 지키기 위해, 실리아는 아버지의 선택과 맞서기 위해, 이그니스는 자신의 불꽃이 누구의 명령도 아니라는 것을 증명하기 위해.",
+      "sourceSentenceStart": 60,
+      "sourceSentenceEnd": 63,
+      "alignmentScore": 0.5549
+    }
+  ]
+}

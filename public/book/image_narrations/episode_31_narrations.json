@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 31,
+  "episodeTitleEn": "The Hand That Wagered Everything",
+  "episodeTitleKo": "모든 것을 건 손",
+  "sourceSentenceCount": 47,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_31/scene_01.jpeg",
+      "sourceImageFile": "Aqualord_examines_broken_wind_core_202607260802.jpeg",
+      "narrationEn": "Aqualord placed his hand on Celia's chest and examined the broken wind core. He said he could be saved, but at a high cost.",
+      "narrationKo": "아쿠아로드는 실리아의 가슴 위에 손을 얹고 부서진 바람 코어를 살폈다. 살릴 수는 있지만 대가가 크다고 했다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.4457
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_31/scene_02.jpeg",
+      "sourceImageFile": "Kadan_gives_up_mana_202607260802.jpeg",
+      "narrationEn": "If you transfer half of your life mana, you will not be able to use healing arts for at least five years, and if enemies from long ago come to visit you, you will lose the power to protect the sanctuary. Kadan said he would give up mana instead.",
+      "narrationKo": "자신의 생명 마나 절반을 옮기면 최소 다섯 해 동안 치유술을 쓸 수 없고, 오래전 원수들이 찾아오면 성소를 지킬 힘도 사라진다. 카단은 자신이 대신 마나를 내놓겠다고 했다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 4,
+      "alignmentScore": 0.3369
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_31/scene_03.jpeg",
+      "sourceImageFile": "Aqualord_shook_his_head_202607260802.jpeg",
+      "narrationEn": "Aqualord shook his head. Even though Kadan's frost core could suture wounds, it could not revive the beat of the wind.",
+      "narrationKo": "아쿠아로드는 고개를 저었다. 카단의 서리 코어는 상처를 봉합할 수 있어도 바람의 박자를 되살릴 수 없었다.",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 6,
+      "alignmentScore": 0.5387
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_31/scene_04.jpeg",
+      "sourceImageFile": "Aqualord_Kadan_watch_healing_202607260802.jpeg",
+      "narrationEn": "Aqualord had Kadan watch the healing. It meant breaking the habit of saying that you would sacrifice yourself to avoid seeing your loved one suffer. Every time Kadan's fingers trembled, Kadan stood up and sat down again.",
+      "narrationKo": "아쿠아로드는 카단에게 치유를 지켜보게 했다. 사랑하는 사람의 고통을 보지 않으려고 대신 희생하겠다는 말부터 하는 버릇을 고치라는 뜻이었다. 카단은 실리아의 손가락이 떨릴 때마다 몸을 일으켰다가 다시 앉았다.",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 9,
+      "alignmentScore": 0.4035
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_31/scene_05.jpeg",
+      "sourceImageFile": "Chibi_RPG_illustration_cavern_scene_202607260802.jpeg",
+      "narrationEn": "“Paying the price for a choice is not always a sacrifice. Sometimes it also means taking away the other person’s right to decide.",
+      "narrationKo": "“선택의 대가를 대신 내겠다는 말이 언제나 희생은 아니다. 때로는 상대가 결정할 권리를 빼앗는 일이기도 하지.”",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 0.3129
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_31/scene_06.jpeg",
+      "sourceImageFile": "Aqualord_woke_Celia_asked_202607260802.jpeg",
+      "narrationEn": "” Aqualord woke up Celia, who was faintly conscious, and asked him directly. After surviving, will he return to the Freemen's League's war and his own responsibilities, or will he stop here without suffering?",
+      "narrationKo": "아쿠아로드는 의식이 희미한 실리아를 깨워 직접 물었다. 살아난 뒤 자유민 연맹의 전쟁과 자신의 책임으로 돌아갈 것인지, 고통 없이 여기서 멈출 것인지.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 0.5366
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_31/scene_07.jpeg",
+      "sourceImageFile": "Celia_barely_moved_lips_202607260802.jpeg",
+      "narrationEn": "Celia barely moved his lips. “I haven’t been able to return the wand yet. ” The healing began at sunset and lasted until noon the next day.",
+      "narrationKo": "실리아는 입술을 겨우 움직였다. “아직... 지팡이를 돌려주지 못했어요.” 치유는 해가 질 때 시작해 다음 날 정오까지 이어졌다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 0.6377
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_31/scene_08.jpeg",
+      "sourceImageFile": "Aqualord_Celia_Kadan_ley_line_202607260802.jpeg",
+      "narrationEn": "From Aqualord's fingertips, a watery pattern flowed along Celia's veins, while Kadan held onto the ley line with the four gate guardians outside. In Celia's memories, the wind swirled around the sanctuary.",
+      "narrationKo": "아쿠아로드의 손끝에서 물빛 문양이 실리아의 혈관을 따라 흘렀고, 카단은 바깥에서 네 관문 수호자들과 함께 지맥을 붙들었다. 실리아의 기억 속 바람이 성소를 휘돌았다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 0.293
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_31/scene_09.jpeg",
+      "sourceImageFile": "Aqualord_appears,_sees_Ignis_ember_202607260802.jpeg",
+      "narrationEn": "The smell of bread from Janggagu Market, the song of Sylphid heard on Wind Island, and the hot ashes left by Ignis shook the doors and windows one after another. Aqualord did not cut out any memories and let the core find its own beat.",
+      "narrationKo": "장가구 시장의 빵 냄새, 바람섬에서 듣던 실피드의 노래, 이그니스가 남긴 뜨거운 재가 차례로 문과 창을 흔들었다. 아쿠아로드는 어느 기억도 잘라 내지 않고 코어가 스스로 박자를 찾게 했다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 0.5748
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_31/scene_10.jpeg",
+      "sourceImageFile": "Celia's_core_beats,_Aqualord_col…_202607260802.jpeg",
+      "narrationEn": "The moment Celia's core started beating again, Aqualord vomited blood and collapsed. His hair became as white as snow. As soon as Celia opened his eyes, he realized that a person had lost years of life because of him.",
+      "narrationKo": "실리아의 코어가 다시 뛰는 순간 아쿠아로드는 피를 토하고 쓰러졌다. 그의 머리카락이 눈처럼 희어졌다. 실리아는 눈을 뜨자마자 자신 때문에 한 사람이 수년의 생명을 잃었다는 사실을 알아차렸다.",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 0.5153
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_31/scene_11.jpeg",
+      "sourceImageFile": "Aqualord_smiled_fantasy_scene_202607260802.jpeg",
+      "narrationEn": "“Don’t end with just saying thank you. ” Aqualord smiled.",
+      "narrationKo": "“감사하다는 말로 끝내지 마십시오.” 아쿠아로드가 미소 지었다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 0.1987
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_31/scene_12.jpeg",
+      "sourceImageFile": "Aqualord_in_sanctuary_with_poison_202607260802.jpeg",
+      "narrationEn": "“If you want to make my choice valuable, next time you ask and listen to someone else’s choice. ” That night, poison was found in a vial in the sanctuary.",
+      "narrationKo": "“내 선택을 값지게 만들고 싶다면, 다음에 당신도 누군가의 선택을 묻고 들으시오.” 그날 밤 성소의 약병에서 독이 발견되었다.",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 0.4271
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_31/scene_13.jpeg",
+      "sourceImageFile": "Naiad_places_poison_on_Sylvania_202607260802.jpeg",
+      "narrationEn": "It was placed by a woman named Naiad in the pocket of Sylvania, who guided the four gateways. The poison was not aimed at Celia, but at Aqualord, which had completed healing.",
+      "narrationKo": "네 관문을 안내한 실바니아의 주머니에 나이아드라는 여인이 넣어 둔 것이었다. 독은 실리아가 아니라 치유를 마친 아쿠아로드를 노렸다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 0.3813
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_31/scene_14.jpeg",
+      "sourceImageFile": "Naiad_read_stars_for_Aqualord_202607260802.jpeg",
+      "narrationEn": "Naiad was a court mage who read the stars in the kingdom of Aqualord a long time ago. She fell in love with Gandar and gave birth to Aquaris, but Aqualord, fearing for the kingdom's reputation, separated them. Even when Aquaris was mortally wounded in an attack by Death Knight Artus, he refused to be healed for fear of breaking his neutrality in the war.",
+      "narrationKo": "나이아드는 오래전 아쿠아로드의 왕국에서 별을 읽던 궁정 마도사였다. 그녀는 간다르와 사랑에 빠져 아쿠아리스를 낳았지만, 왕국의 체면을 두려워한 아쿠아로드가 둘을 갈라놓았다. 아쿠아리스가 데스나이트 아르투스의 습격으로 치명상을 입었을 때에도 그는 전쟁 중립이 깨질까 치유를 거부했다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 0.5704
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_31/scene_15.jpeg",
+      "sourceImageFile": "Aqualord_drank_poison,_Naiad_lured_202607260802.jpeg",
+      "narrationEn": "Even after Aqualord drank the poison, he did not look for an antidote first. It was only when he heard that Naiad had used Celia's life to lure him here that his face shook.",
+      "narrationKo": "아쿠아로드는 독을 마신 뒤에도 해독제를 먼저 찾지 않았다. 나이아드가 자신을 여기까지 유인하기 위해 실리아의 목숨을 이용했다는 사실을 듣고서야 얼굴이 흔들렸다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 0.4471
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_31/scene_16.jpeg",
+      "sourceImageFile": "Aqualord_made_no_excuses_202607260802.jpeg",
+      "narrationEn": "He said she needed to know that her revenge had made others the same victims. Aqualord made no excuses.",
+      "narrationKo": "자기 복수가 다른 사람을 같은 희생양으로 만들었음을 그녀가 알아야 한다고 했다. 아쿠아로드는 변명하지 않았다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 0.4442
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_31/scene_17.jpeg",
+      "sourceImageFile": "Queen_of_Wind_scene_02_202607260802.jpeg",
+      "narrationEn": "In the name of protecting a country, he ignored Aquaris's life, and from that day on, he abandoned the throne. Naiad believed that punishing himself was not enough. Celia separated the components of the poison with wind.",
+      "narrationKo": "한 나라를 지킨다는 명분으로 아쿠아리스의 목숨을 외면했고, 그날 이후 왕좌를 버렸다. 나이아드는 그가 스스로를 벌하는 것으로는 부족하다고 믿었다. 실리아는 독약의 성분을 바람으로 분리했다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 0.3571
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_31/scene_18.jpeg",
+      "sourceImageFile": "Saving_Aqualord,_tracing_Naiad_202607260802.jpeg",
+      "narrationEn": "While saving Aqualord, it left behind a scent that could trace Naiad's whereabouts. Kadan said that the cycle of revenge must be prevented from starting again.",
+      "narrationKo": "아쿠아로드를 살리면서도 나이아드의 행방을 추적할 수 있는 향을 남겼다. 카단은 복수의 고리가 또 시작되는 것을 막아야 한다고 했다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 0.5196
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_31/scene_19.jpeg",
+      "sourceImageFile": "Aqualord_looks_at_Ignis's_spark_202607260802.jpeg",
+      "narrationEn": "Aqualord looked at Ignis's spark and found out that other life mana was mixed within it. Some of the power that Ignis sent back at the end could not find its owner and remained in the embers.",
+      "narrationKo": "아쿠아로드는 이그니스의 불씨를 보고 그 안에 다른 생명 마나가 뒤섞였음을 알아냈다. 이그니스가 마지막에 돌려보낸 힘 가운데 일부가 주인을 찾지 못하고 불씨에 남아 있었다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 0.6217
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_31/scene_20.jpeg",
+      "sourceImageFile": "Kadan_squeezing_embers_202607260802.jpeg",
+      "narrationEn": "That power was later able to hold the core of a dying person once. When Kadan heard those words, he squeezed the embers harder. The fact that I had to decide when and on whom to use the power left behind after my friend died added another layer of weight.",
+      "narrationKo": "그 힘은 훗날 한 번, 죽어 가는 사람의 코어를 붙들 수 있었다. 카단은 그 말을 듣고 불씨를 더 세게 쥐었다. 친구가 죽고 남긴 힘을 언제 누구에게 쓸지 결정해야 한다는 사실이 또 하나의 무게로 더해졌다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 0.4518
+    }
+  ]
+}

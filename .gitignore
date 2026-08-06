@@ -1,0 +1,10 @@
+node_modules/
+app/dist/
+coverage/
+.DS_Store
+*.log
+.env
+.env.local
+functions/.env
+.env.example
+tmp/image_narrations_translation_cache.json

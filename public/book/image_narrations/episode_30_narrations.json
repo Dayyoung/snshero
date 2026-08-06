@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 30,
+  "episodeTitleEn": "Poison at the Four Gates",
+  "episodeTitleKo": "네 관문의 독",
+  "sourceSentenceCount": 51,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_30/scene_01.jpeg",
+      "sourceImageFile": "Aqualord_at_four_gates_202607260802.jpeg",
+      "narrationEn": "There were four gates on the way to the sanctuary of Aqualord. The first was guarded by a fisherman below the waterfall.",
+      "narrationKo": "아쿠아로드의 성소로 가는 길에는 네 관문이 있었다. 첫 번째는 폭포 아래의 어부가 지켰다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.6067
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_30/scene_02.jpeg",
+      "sourceImageFile": "Kadan_blocked_passage_scaring_fish_202607260802.jpeg",
+      "narrationEn": "He blocked the passage of Kadan for scaring the golden scale fish. As time passed, Celia's breathing became shallower. Kadan did not snatch the fishing rod by force.",
+      "narrationKo": "그는 황금비늘 물고기를 놀라게 했다는 이유로 카단의 통행을 막았다. 시간이 흐를수록 실리아의 숨은 얕아졌다. 카단은 힘으로 낚싯대를 빼앗지 않았다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.3821
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_30/scene_03.jpeg",
+      "sourceImageFile": "Fisherman_releasing_fish_opening…_202607260802.jpeg",
+      "narrationEn": "By using ice to slow down just one line of water, we helped the fish take the bait on their own. The fisherman released the fish he had caught and opened the way.",
+      "narrationKo": "얼음으로 물살 한 줄만 느리게 만들어 물고기가 스스로 미끼를 물도록 도왔다. 어부는 잡은 물고기를 다시 놓아주며 길을 열었다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 7,
+      "alignmentScore": 0.3889
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_30/scene_04.jpeg",
+      "sourceImageFile": "Celia_Kadan_waiting_fever_rose_202607260802.jpeg",
+      "narrationEn": "“People who are in a hurry tend to stir the water more, but you know how to wait. ” While waiting, Celia's fever rose even more. Kadan thought about ignoring the gateway test several times.",
+      "narrationKo": "“급한 사람일수록 물을 더 휘젓는 법인데, 너는 기다릴 줄 아는군.” 기다리는 동안 실리아의 열은 더 올랐다. 카단은 관문 시험을 무시하고 지나갈 생각을 여러 번 했다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 0.31
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_30/scene_05.jpeg",
+      "sourceImageFile": "Celia_grabbed_collar_and_muttered_202607260802.jpeg",
+      "narrationEn": "Celia grabbed his collar while unconscious and muttered, “If you start by pointing a knife into someone else’s sanctuary, I will wake up and scold you. ” At the second gate, a woodcutter was moving a large fallen tree by himself.",
+      "narrationKo": "실리아가 의식 사이로 그의 옷깃을 잡고 “남의 성소에 칼부터 들이대면 깨어나서 혼낼 거야”라고 중얼거렸다. 두 번째 관문에서는 나무꾼이 쓰러진 거목을 혼자 옮기고 있었다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 0.3481
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_30/scene_06.jpeg",
+      "sourceImageFile": "Celia_makes_giant_catapults_202607260802.jpeg",
+      "narrationEn": "When Kadan tried to help, the woodcutter refused to help. The problem was not strength, but pulling out the young spirit trapped under the giant tree without harming it. Celia announced the position of the wind in a faint voice, and Kadan split the binary star to support the weight of each side differently.",
+      "narrationKo": "카단이 들어 주려 하자 나무꾼은 도움을 거절했다. 문제는 힘이 아니라 거목 아래 깔린 어린 정령을 다치지 않게 꺼내는 일이었다. 실리아가 희미한 목소리로 바람의 위치를 알려 주었고, 카단은 쌍성 분할로 양쪽 무게를 다르게 받쳤다.",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 0.4252
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_30/scene_07.jpeg",
+      "sourceImageFile": "Celia_chooses_between_sweeping_p…_202607260802.jpeg",
+      "narrationEn": "The farmer at the third gate showed a dry field and asked Celia to choose whether to sweep or pour a bottle of water onto the field. Kadan did not split the bottle in half.",
+      "narrationKo": "세 번째 관문의 농부는 메마른 밭을 보여 주며 물 한 병을 실리아에게 쓸지 밭에 부을지 선택하라고 했다. 카단은 병을 반으로 나누지 않았다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 0.4883
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_30/scene_08.jpeg",
+      "sourceImageFile": "Celia_Kadan_pouring_water_seeds_202607260802.jpeg",
+      "narrationEn": "After just wetting Celia's lips, I poured the remaining water into the seeds. When the farmer tapped the ground with his foot, groundwater rose and both of them quenched their thirst. Kadan began to see that the test was to see whether people doubted the conditions in front of them rather than their goodness.",
+      "narrationKo": "실리아의 입술만 적신 뒤 남은 물을 씨앗에 부었다. 농부가 발로 땅을 두드리자 지하수가 솟아 두 사람 모두 목을 축였다. 카단은 시험이 사람의 선함보다 눈앞의 조건을 의심하는지 보려는 것임을 알기 시작했다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 0.4931
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_30/scene_09.jpeg",
+      "sourceImageFile": "Snowbound_Lighthaven_frontier_bl…_202607260802.jpeg",
+      "narrationEn": "No one said there was only one bottle of water. He first checked the moisture in the field and the underground noise.",
+      "narrationKo": "물 한 병밖에 없다고 말한 사람은 없었다. 그는 밭의 습기와 지하의 울림을 먼저 확인했다.",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 0.251
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_30/scene_10.jpeg",
+      "sourceImageFile": "Scholar_Sylvania_waits_at_gate_202607260802.jpeg",
+      "narrationEn": "The senses taught by the teachers were more useful in moments like this than in fighting. Scholar Sylvania waited at the final gate. He asked what was heavier: one life or a thousand people.",
+      "narrationKo": "스승들이 가르친 감각은 싸움보다 이런 순간에 더 쓸모 있었다. 마지막 관문에는 학자 실바니아가 기다렸다. 그는 생명 하나와 천 명 중 무엇이 무거운지 물었다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 0.4855
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_30/scene_11.jpeg",
+      "sourceImageFile": "Kadan_did_not_embellish_answer_202607260802.jpeg",
+      "narrationEn": "Kadan did not embellish his answer. “Right now, the one person on my back is the heaviest.",
+      "narrationKo": "카단은 답을 꾸미지 않았다. “지금 내 등에 있는 한 사람이 가장 무겁습니다.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 0.4949
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_30/scene_12.jpeg",
+      "sourceImageFile": "Sylvania_opening_the_way_202607260802.jpeg",
+      "narrationEn": "But I will not choose to put a thousand people in danger to save that person. If there is someone who created a situation where I have to compare the two, I will break that false condition first. ” Sylvania warned while opening the way.",
+      "narrationKo": "하지만 그 사람을 살리려고 천 명을 위험에 빠뜨리는 선택은 하지 않겠습니다. 둘을 비교해야 하는 상황을 만든 사람이 있다면 먼저 그 거짓 조건부터 부수겠습니다.” 실바니아는 길을 열면서도 경고했다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 0.5501
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_30/scene_13.jpeg",
+      "sourceImageFile": "Aqualord_abandoned_throne_to_pre…_202607260802.jpeg",
+      "narrationEn": "Aqualord was once a king and was able to save a child, but he turned away and abandoned the throne to prevent war. He said that even now he does not meet anyone who asks for healing.",
+      "narrationKo": "아쿠아로드는 과거 왕이었고, 한 아이를 살릴 수 있었으나 전쟁을 막기 위해 외면한 뒤 왕좌를 버렸다. 지금도 치유를 청하는 사람을 만나지 않는다고 했다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 0.4362
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_30/scene_14.jpeg",
+      "sourceImageFile": "Fantasy_palace_court_scene_202607260802_4.jpeg",
+      "narrationEn": "A maze of poisonous fog spread out in the forest just before the sanctuary. The pursuers sent by the fake Grand Elder blocked the road and demanded that Celia be handed over. They said that if the leader died, the League of Freemen would deal with the court again.",
+      "narrationKo": "성소 직전의 숲에는 독안개 미로가 펼쳐졌다. 가짜 대장로가 보낸 추격자들이 길을 막고 실리아를 넘기라고 요구했다. 그들은 수장이 죽으면 자유민 연맹이 다시 궁정과 거래할 거라고 말했다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 0.3791
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_30/scene_15.jpeg",
+      "sourceImageFile": "Kadan_fought_with_Celia_202607260802.jpeg",
+      "narrationEn": "Kadan fought without putting down Celia. The enemy's position was changed by stepping rather than attacking, and the poisonous fog was carried by the wind and guided back towards the pursuer.",
+      "narrationKo": "카단은 실리아를 내려놓지 않은 채 싸웠다. 공격보다 발걸음으로 적의 위치를 바꾸고, 독안개가 바람을 타고 추격자 쪽으로 돌아가게 유도했다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 0.315
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_30/scene_16.jpeg",
+      "sourceImageFile": "Celia_points_direction_unconscious_202607260802.jpeg",
+      "narrationEn": "Even though Celia was unconscious, he pointed in the direction three times with his finger. After the last enemy retreated, Kadan's knees buckled. He drank too much poison, but with the star breathing he learned from Malfuon, he only had air left around his heart.",
+      "narrationKo": "실리아는 의식이 흐린 가운데도 손가락으로 세 번 방향을 가리켰다. 마지막 적이 물러난 뒤 카단의 무릎이 꺾였다. 그는 독을 너무 많이 마셨지만 말퓨온에게 배운 별의 호흡으로 심장 주변에만 공기를 남겼다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 0.6137
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_30/scene_17.jpeg",
+      "sourceImageFile": "Fantasy_characters_on_deserted_i…_202607260802_3.jpeg",
+      "narrationEn": "The white door of the sanctuary was right in front. The door didn't open.",
+      "narrationKo": "성소의 흰 문이 바로 앞에 있었다. 문은 열리지 않았다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 0.6705
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_30/scene_18.jpeg",
+      "sourceImageFile": "Kadan_laid_Celia_at_door_202607260802.jpeg",
+      "narrationEn": "Kadan laid Celia in front of the door without knocking or breaking it, and then sat down next to him. He talked to Celia at the door about the past until night fell. From the day we first shared soup to the last flame of Ignis, he did not ask the unconscious person for answers, but only made his voice heard.",
+      "narrationKo": "카단은 두드리거나 부수지 않고 실리아를 문 앞에 눕힌 뒤 자신도 옆에 앉았다. 밤이 내려앉을 때까지 그는 문 앞에서 실리아에게 지난 일을 이야기했다. 처음 수프를 나눠 먹던 날부터 이그니스의 마지막 불꽃까지, 의식이 없는 사람에게 답을 요구하지 않고 자신의 목소리만 들려주었다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 0.548
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_30/scene_19.jpeg",
+      "sourceImageFile": "Celia's_fingers_moved_once_202607260802.jpeg",
+      "narrationEn": "Celia's fingers moved once, but his eyes did not open. “If you’ve heard why we’ve come here, judge for yourself, but if you’re going to say no, say it to my face, not keep silent behind closed doors.",
+      "narrationKo": "실리아의 손가락이 한 번 움직였지만 눈은 뜨지 않았다. “우리가 여기까지 온 이유를 들으셨다면 판단하십시오. 하지만 거절할 거라면 문 뒤에서 침묵하지 말고 얼굴을 보고 말해 주십시오.”",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 0.5258
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_30/scene_20.jpeg",
+      "sourceImageFile": "Ignis_Kadan_fantasy_scene_202607260802.jpeg",
+      "narrationEn": "” After a long time, the sound of flowing water changed. The white door opened inward, and Aqualord wearing a blue robe appeared. His first gaze was not on Celia, but on the glowing ember of Ignis in Kadan's pocket.",
+      "narrationKo": "긴 시간이 지난 뒤 물 흐르는 소리가 바뀌었다. 흰 문이 안쪽으로 열리고, 푸른 로브를 입은 아쿠아로드가 나타났다. 그의 첫 시선은 실리아가 아니라 카단의 주머니에서 빛나는 이그니스의 불씨에 머물렀다.",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 51,
+      "alignmentScore": 0.6974
+    }
+  ]
+}

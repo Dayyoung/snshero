@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 36,
+  "episodeTitleEn": "Map of the Cross-Shaped Scar",
+  "episodeTitleKo": "십자 성흔의 지도",
+  "sourceSentenceCount": 47,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_36/scene_01.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_abandoned_sto…_202607260802.jpeg",
+      "narrationEn": "There was a cross-shaped crack in the soul storage core that Death Knight Artus had abandoned. Celia found the same marks on his teachers' weapons.",
+      "narrationKo": "데스나이트 아르투스가 버리고 간 영혼 저장핵에는 십자 모양의 균열이 있었다. 실리아는 같은 자국을 스승들의 무기에서도 찾아냈다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.3178
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_36/scene_02.jpeg",
+      "sourceImageFile": "Aeolus_puts_down_flute_202607260802.jpeg",
+      "narrationEn": "After making it look like he was dead with Aeolus's flute, the final wound was inflicted with the four-way blade of the soul sword. The half beat of the silver bell left by Gawain also served as evidence.",
+      "narrationKo": "에올루스의 피리로 죽은 것처럼 보이게 만든 뒤, 영혼검의 네 방향 날로 마지막 상처를 겹친 흔적이었다. 가웨인이 남긴 은방울의 반 박자도 증거가 되었다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 4,
+      "alignmentScore": 0.4832
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_36/scene_03.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_Kadan_Aeolus_202607260802.jpeg",
+      "narrationEn": "Death Knight Artus copied the technique and tone, but could not imitate the moment a living person changed the beat to match the other person's movements. Kadan collected the surviving records and went to the garden where his teachers were buried. He knelt in front of Aeolus.",
+      "narrationKo": "데스나이트 아르투스는 기술과 음색을 복제했지만, 살아 있는 사람이 상대의 움직임에 맞춰 박자를 바꾸는 순간까지 흉내 내지는 못했다. 카단은 살아남은 기록을 모아 스승들이 묻힌 정원으로 갔다. 그는 에올루스 앞에 무릎을 꿇었다.",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 7,
+      "alignmentScore": 0.5782
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_36/scene_04.jpeg",
+      "sourceImageFile": "Aeolus_Kadan_fantasy_scene_202607260802.jpeg",
+      "narrationEn": "Instead of asking for forgiveness, he said he had put his anger ahead of the truth. Kadan also provided a record detailing the sequence of attacks he made and the injuries suffered by Aeolus.",
+      "narrationKo": "용서를 요구하지 않고 자신이 분노를 진실보다 앞세웠다고 말했다. 카단은 자신이 가한 공격의 순서와 에올루스가 입은 상처를 빠짐없이 적은 기록도 내밀었다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 9,
+      "alignmentScore": 0.3591
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_36/scene_05.jpeg",
+      "sourceImageFile": "Celia_advises_Aeolus_on_recovery_202607260802.jpeg",
+      "narrationEn": "This was Celia's advice to not end the apology with emotion, but to leave it as a responsibility necessary for treatment and recovery. Aeolus did not wake him up.",
+      "narrationKo": "사과를 감정으로 끝내지 않고 치료와 복구에 필요한 책임으로 남기려는 실리아의 조언이었다. 에올루스는 그를 일으키지 않았다.",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 0.5951
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_36/scene_06.jpeg",
+      "sourceImageFile": "Celia_Kadan_fantasy_scene_202607260802.jpeg",
+      "narrationEn": "“I’m not the only one who accepts your apology. Ask Celia too. ” Celia held onto the fact that Kadan decided to grieve alone and left longer than the fact that Kadan did not trust him.",
+      "narrationKo": "“네 사과를 받아들이는 사람은 나 하나가 아니다. 실리아에게도 물어라.” 실리아는 카단이 자신을 믿지 않은 일보다 슬픔을 혼자 결정하고 떠난 일을 더 오래 품고 있었다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 0.3467
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_36/scene_07.jpeg",
+      "sourceImageFile": "Kadan_did_not_explain_202607260802.jpeg",
+      "narrationEn": "Kadan did not try to explain right and wrong. We promised that next time we would not take away the opportunity to grieve together.",
+      "narrationKo": "카단은 옳고 그름을 설명하려 하지 않았다. 다음에는 함께 슬퍼할 기회를 빼앗지 않겠다고 약속했다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 0.6455
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_36/scene_08.jpeg",
+      "sourceImageFile": "Reconciliation_after_funeral_and…_202607260802.jpeg",
+      "narrationEn": "Their reconciliation did not end with just a hug. After finishing the funeral of our teachers, organizing the list of refugees, and rebuilding our broken house, we continued to have awkward conversations for several days.",
+      "narrationKo": "둘의 화해는 포옹 하나로 끝나지 않았다. 스승들의 장례를 마치고, 피난민의 명부를 정리하고, 부서진 집을 세우는 며칠 동안 서툰 대화를 계속했다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 0.4674
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_36/scene_09.jpeg",
+      "sourceImageFile": "Kadan_and_Celia_fixing_roof_202607260802.jpeg",
+      "narrationEn": "The wound did not disappear, but it no longer changed shape in silence. Kadan handed Celia a nail when he was fixing the roof, and Celia corrected a misspelling when Kadan wrote down his name. One day, after an argument, we slept in different tents, and the next day we returned to the same workstation.",
+      "narrationKo": "상처는 사라지지 않았지만 더는 침묵 속에서 모양을 바꾸지 않았다. 카단은 실리아가 지붕을 고칠 때 못을 건네고, 실리아는 카단이 이름을 기록할 때 틀린 글자를 바로잡았다. 어느 날은 말다툼 끝에 서로 다른 천막에서 잤고 다음 날 다시 같은 작업대로 돌아왔다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 0.4761
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_36/scene_10.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_on_ship_202607260802.jpeg",
+      "narrationEn": "Long-lasting relationships are built on habits of returning rather than moments of reconciliation. The movement path of Death Knight Artus also remained in the storage core.",
+      "narrationKo": "오래 가는 관계는 화해한 순간보다 돌아오는 습관으로 만들어졌다. 저장핵 안에는 데스나이트 아르투스의 이동 경로도 남아 있었다.",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 0.4769
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_36/scene_11.jpeg",
+      "sourceImageFile": "Chibi_fantasy_RPG_palace_scene_202607260802.jpeg",
+      "narrationEn": "The four ends of the stigmata of the cross pointed to the Wildlands, Lighthaven Imperial Palace, Iron Palm Mountains, and Astra Peak. By connecting the four ley lines, he could infuse souls into an entire army of dead.",
+      "narrationKo": "십자 성흔의 네 끝은 와일드랜드, 라이트헤븐 황궁, 아이언팜 산맥, 아스트라 봉을 가리켰다. 네 지맥을 연결하면 죽은 군대 전체에 영혼을 주입할 수 있었다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 0.2414
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_36/scene_12.jpeg",
+      "sourceImageFile": "Fenrir_gathering_troops_Lucian_p…_202607260802.jpeg",
+      "narrationEn": "The first target was Wildland. Fenrir was already gathering troops to attack the capital of the Shadow Realm. Lucian was planning to instigate a war behind the scenes and engulf both sides with his spirit army after the two forces were exhausted.",
+      "narrationKo": "첫 번째 목표는 와일드랜드였다. 펜릴은 이미 섀도우렐름의 수도를 공격하기 위해 병력을 모으고 있었다. 루시안이 뒤에서 전쟁을 부추겨 두 세력이 소진된 뒤 영혼군대로 양쪽을 삼킬 계획이었다.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 0.4707
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_36/scene_13.jpeg",
+      "sourceImageFile": "Kadan_returns_north_with_Celia_202607260802.jpeg",
+      "narrationEn": "Kadan had to return north. Celia said he would lead the Freemen's League and go together.",
+      "narrationKo": "카단은 북쪽으로 돌아가야 했다. 실리아는 자유민 연맹을 이끌고 함께 가겠다고 했다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 0.4806
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_36/scene_14.jpeg",
+      "sourceImageFile": "Aeolus_entrusts_island_reconstru…_202607260802.jpeg",
+      "narrationEn": "Aeolus entrusted the reconstruction of the island to the residents' council and handed over the mobile core of the sound tower. It was a device that could connect distant units even on the battlefield.",
+      "narrationKo": "에올루스는 섬 재건을 주민 의회에 맡기고 음향탑의 이동 코어를 건넸다. 전장에서도 멀리 떨어진 부대를 연결할 수 있는 장치였다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 0.5966
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_36/scene_15.jpeg",
+      "sourceImageFile": "Orihalcon_asked_to_take_him_202607260802.jpeg",
+      "narrationEn": "Orihalcon asked me to take him too. This was because he felt guilty that the magnetic device that killed his teachers was of his own design. Instead of trying to atone with his life, Celia entrusted him with building a mobile barrier.",
+      "narrationKo": "오리하르콘은 자신도 데려가 달라고 했다. 스승들을 죽인 자석 장치가 자신의 설계에서 나왔다는 죄책감 때문이었다. 실리아는 속죄를 목숨값으로 치르려 하지 말고 이동식 방벽을 만들라고 맡겼다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 0.229
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_36/scene_16.jpeg",
+      "sourceImageFile": "Orihalcon_and_Celia_on_wall_202607260802.jpeg",
+      "narrationEn": "Orihalcon engraved his name in large letters on the first wall he built, but was told by Celia to erase it. Instead, he wrote down the names of both the blacksmith and the transport worker who created the device.",
+      "narrationKo": "오리하르콘은 처음 만든 방벽에 자기 이름을 크게 새겼다가 실리아에게 지우라는 말을 들었다. 대신 장치를 함께 만든 대장장이와 운반 인부의 이름을 모두 적었다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 0.3829
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_36/scene_17.jpeg",
+      "sourceImageFile": "Kadan_learning_to_share_credit_202607260802.jpeg",
+      "narrationEn": "The desire to be a hero never went away, but I started learning how to share the credit. Before leaving, Kadan took silver bells from each of his teachers' weapons and placed them on the inside of his shield.",
+      "narrationKo": "영웅이 되고 싶은 욕망은 사라지지 않았지만, 공을 나누는 법부터 배우기 시작했다. 출발 전 카단은 스승들의 무기에서 은방울을 하나씩 떼어 자신의 방패 안쪽에 달았다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 0.3231
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_36/scene_18.jpeg",
+      "sourceImageFile": "Griffon_cavalry_led_by_Gilgamesh_202607260802.jpeg",
+      "narrationEn": "Every time I walked, different sounds collided, creating a clumsy harmony. Griffon cavalry, led by Gilgamesh, was waiting at the southern gate. Titania said that his father was planning to appoint Kadan as Marshal of War.",
+      "narrationKo": "걸을 때마다 서로 다른 소리가 부딪쳐 어설픈 화음을 냈다. 길가메시가 이끄는 그리폰 기병이 남쪽 관문에서 기다리고 있었다. 티타니아는 아버지가 카단을 전쟁 원수로 임명하려 한다고 전했다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 0.5717
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_36/scene_19.jpeg",
+      "sourceImageFile": "Kadan_looks_at_northern_grasslands_202607260802.jpeg",
+      "narrationEn": "“Whose promise did you return this time? ” Kadan looked at the northern grasslands.",
+      "narrationKo": "“이번에는 누구의 약속으로 돌아온 거야?” 카단은 북쪽 초원을 바라보았다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 0.7488
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_36/scene_20.jpeg",
+      "sourceImageFile": "Titania_opens_the_way_202607260802.jpeg",
+      "narrationEn": "“So that the people where I grew up don’t become instruments of war. ” Titania heard the answer and opened the way. A bow with a red string swayed in the north wind.",
+      "narrationKo": "“내가 자란 곳의 사람들이 전쟁 도구가 되지 않게 하려고.” 티타니아는 그 대답을 듣고 길을 열었다. 붉은 끈을 단 활이 북쪽 바람에 흔들렸다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 0.5719
+    }
+  ]
+}

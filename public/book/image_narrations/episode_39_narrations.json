@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 39,
+  "episodeTitleEn": "The World Worth Protecting",
+  "episodeTitleKo": "지켜야 할 세계",
+  "sourceSentenceCount": 55,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_39/scene_01.jpeg",
+      "sourceImageFile": "Kadan_exited_Wildland_202607260802.jpeg",
+      "narrationEn": "Kadan The party neutralized the supply rune and exited Wildland. The expeditionary force set out but stopped at the border, heading to different rendezvous points for food carts and mana fuel.",
+      "narrationKo": "카단 일행은 보급 룬을 무력화하고 와일드랜드를 빠져나왔다. 원정군은 출발했지만 식량 수레와 마나 연료가 서로 다른 집결지로 향해 국경에서 멈췄다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.5969
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_39/scene_02.jpeg",
+      "sourceImageFile": "Elwin_Kadan_tombstone_scene_202607260802.jpeg",
+      "narrationEn": "It was three days that saved tens of thousands of lives. Elwin was buried on a hill overlooking the North Star. Kadan untied the red string from his father's dagger and tied it to the tombstone.",
+      "narrationKo": "수만 명의 목숨을 번 사흘이었다. 엘윈은 북쪽 별이 보이는 언덕에 묻혔다. 카단은 아버지의 단검에서 붉은 끈을 풀어 비석에 묶었다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.425
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_39/scene_03.jpeg",
+      "sourceImageFile": "Titania_made_knot_alongside_string_202607260802.jpeg",
+      "narrationEn": "Titania made a knot alongside the string that was returned a long time ago. Celia was by Kadan's side throughout the funeral, but did not cry or speak on his behalf. After the funeral, Kadan cried out loud in front of Celia for the first time.",
+      "narrationKo": "티타니아가 오래전 돌려받은 끈과 나란히 매듭을 만들었다. 실리아는 장례 내내 카단의 곁에 있었지만 그를 대신해 울거나 말하지 않았다. 장례가 끝난 뒤 카단은 처음으로 실리아 앞에서 소리 내 울었다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 0.5264
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_39/scene_04.jpeg",
+      "sourceImageFile": "Celia_Death_Knight_Artus_Lucian_202607260802.jpeg",
+      "narrationEn": "It was a cry that I endured even when my teachers died. Celia didn't say it would be okay and just sat in the same spot while his back was shaking. Death Knight Artus and Lucian headed to Astra Peak, where the last ley line gathered.",
+      "narrationKo": "스승들이 죽었을 때조차 참았던 울음이었다. 실리아는 괜찮아질 거라고 하지 않고 그의 등이 떨리는 동안 같은 자리에 앉아 있었다. 데스나이트 아르투스와 루시안은 마지막 지맥이 모이는 아스트라 봉으로 향했다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 0.3292
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_39/scene_05.jpeg",
+      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_16.jpeg",
+      "narrationEn": "By connecting the four points and awakening the spirit army, it was possible to wipe out the stopped expeditionary force and the southern city all at once. At the top of the mountain was an old dueling arena.",
+      "narrationKo": "네 지점을 연결해 영혼군대를 깨우면 멈춘 원정군과 남부 도시를 한꺼번에 쓸어 버릴 수 있었다. 산 정상에는 오래된 결투장이 있었다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 0.5163
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_39/scene_06.jpeg",
+      "sourceImageFile": "Characters_go_their_separate_ways_202607260802.jpeg",
+      "narrationEn": "Aeolus, Leonar, Aqualord, who lost their power, and Gandar all went their separate ways. They were once greats who competed against the strongest on the continent, but no one said their rankings. What mattered now was not the strength of one person.",
+      "narrationKo": "에올루스, 레오나르, 힘을 잃은 아쿠아로드, 간다르까지 각자의 길로 모였다. 한때 대륙 최강을 겨루던 거장들이었지만, 누구도 순위를 말하지 않았다. 지금 중요한 것은 한 사람의 강함이 아니었다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 0.4857
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_39/scene_07.jpeg",
+      "sourceImageFile": "Lucian_inserts_core,_Artus_swells_202607260802.jpeg",
+      "narrationEn": "Lucian inserted the last piece of the Ironforge strategic core into the ley device. Death Knight Artus drew thousands of souls into his armor and swelled into a gigantic black knight. He sequentially copied Aeolus's flute, Leonar's seal, and Hercul's protective circle.",
+      "narrationKo": "루시안은 아이언포지 전략 코어의 마지막 장을 지맥 장치에 꽂았다. 데스나이트 아르투스는 수천 영혼을 갑옷에 끌어들여 거대한 검은 기사로 부풀었다. 그는 에올루스의 피리, 레오나르의 인장, 헤르쿨의 방호진을 차례로 복제했다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 0.5062
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_39/scene_08.jpeg",
+      "sourceImageFile": "Masters_pushed_aside_by_skills_202607260802.jpeg",
+      "narrationEn": "The masters were pushed aside by their own skills. The clones were bigger and faster, but I didn't know why the technology was created. Aeolus's sound only caused one to get lost, Leonar's seal only destroyed it, and Hercul's shield only covered its own body.",
+      "narrationKo": "거장들은 자신의 기술에 밀렸다. 복제품은 더 크고 빨랐지만 기술이 생겨난 이유를 몰랐다. 에올루스의 소리는 길을 잃게만 했고, 레오나르의 인장은 파괴만 했으며, 헤르쿨의 방패는 자기 몸만 가렸다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 0.3412
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_39/scene_09.jpeg",
+      "sourceImageFile": "Leonar_remembers_boasting_power_202607260802.jpeg",
+      "narrationEn": "When Leonar saw his seal shattering a mountain, he remembered how he had once boasted of its power. Aeolus heard that the sound of the flute was only used to break people's hearts.",
+      "narrationKo": "레오나르는 자기 인장이 산을 부수는 모습을 보고 한때 저 힘을 자랑했던 일을 떠올렸다. 에올루스는 피리 소리가 사람의 마음을 꺾는 데만 쓰이는 것을 들었다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 0.4434
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_39/scene_10.jpeg",
+      "sourceImageFile": "Kadan_and_Celia_delve_differences_202607260802.jpeg",
+      "narrationEn": "Each has seen in the enemy what his skills have been like when they have gone awry. Kadan and Celia delved into the differences. When Kadan was shocked in front of people, Celia released its power into the empty sky.",
+      "narrationKo": "각자는 적에게서 자신의 기술이 잘못 자랐을 때의 모습을 보았다. 카단과 실리아는 그 차이를 파고들었다. 카단이 사람들 앞에서 충격을 받아 내면 실리아가 그 힘을 빈 하늘로 흘렸다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 0.3402
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_39/scene_11.jpeg",
+      "sourceImageFile": "Gandar_mixes_Artus_commands_202607260802.jpeg",
+      "narrationEn": "Gandar mixed Death Knight Artus's left and right commands, and Aqualord called out the name of the trapped soul with the remaining life mana. Lucian tried to run away but was caught by Death Knight Artus. The more souls it consumed, the more the armor forgot whose orders it was following, and even saw its creator as fuel.",
+      "narrationKo": "간다르는 데스나이트 아르투스의 좌우 명령을 엇갈리게 만들고, 아쿠아로드는 남은 생명 마나로 갇힌 영혼의 이름을 불렀다. 루시안은 도망치려다 데스나이트 아르투스에게 붙잡혔다. 영혼을 먹을수록 누구의 명령을 따르는지 잊은 갑옷은 자신의 창조자마저 연료로 보았다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 0.6153
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_39/scene_12.jpeg",
+      "sourceImageFile": "Lucian_cried_out_to_Kadan_202607260802.jpeg",
+      "narrationEn": "Lucian cried out to Kadan to save him. Kadan moved to save him. Celia was surprised but did not stop.",
+      "narrationKo": "루시안은 카단에게 살려 달라고 외쳤다. 카단은 그를 구하려 움직였다. 실리아는 놀랐지만 막지 않았다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 0.3441
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_39/scene_13.jpeg",
+      "sourceImageFile": "Kadan_asked_her_judgment_202607260802.jpeg",
+      "narrationEn": "This time, Kadan also asked her judgment. “If you save me, I’ll betray you again.",
+      "narrationKo": "이번에는 카단도 그녀의 판단을 물었다. “구하면 또 배신할 거야.”",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 0.4116
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_39/scene_14.jpeg",
+      "sourceImageFile": "Celia,_Artus,_Lucian_on_ridge_202607260802.jpeg",
+      "narrationEn": "” Celia said. “Still, I don’t want to let that armor decide who to eat. ” Together, the two took out Lucian.",
+      "narrationKo": "실리아가 말했다. “그래도 저 갑옷이 누구를 먹을지 정하게 두고 싶지는 않아.” 두 사람은 함께 루시안을 빼냈다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 0.5537
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_39/scene_15.jpeg",
+      "sourceImageFile": "Lucian_activates_ley_line_device_202607260802.jpeg",
+      "narrationEn": "However, as soon as Lucian was free, it activated the ley line device. Ignis's artificial flame spread down the mountain. Kadan felt the shame that he was wrong rise before the anger of being betrayed.",
+      "narrationKo": "그러나 루시안은 자유로워지자마자 지맥 장치를 작동시켰다. 이그니스의 인공 화염이 산 아래로 번졌다. 카단은 배신당했다는 분노보다 자신이 틀렸다는 수치가 먼저 올라오는 것을 느꼈다.",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 0.4524
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_39/scene_16.jpeg",
+      "sourceImageFile": "Celia_turns_flames,_Kadan_places…_202607260802.jpeg",
+      "narrationEn": "Celia shouted, “Regret now, later,” and turned the direction of the flames. Because we made the decision together, the responsibility for failure was not placed on just one person. Kadan placed a glass ember in the center of the device.",
+      "narrationKo": "실리아는 “지금 후회는 나중에 해”라고 외치며 불길의 방향을 돌렸다. 함께 결정했기에 실패의 책임도 한 사람에게만 던지지 않았다. 카단은 유리 불씨를 장치 중앙에 넣었다.",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 0.6403
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_39/scene_17.jpeg",
+      "sourceImageFile": "Ignis_resonates_with_replica_flame_202607260802.jpeg",
+      "narrationEn": "The life mana that Ignis sent back at the end resonated with the replica flame. Ignis's voice was not heard through the flames.",
+      "narrationKo": "이그니스가 마지막에 돌려보낸 생명 마나가 모조 화염과 공명했다. 불길 속에서 이그니스의 목소리가 들린 것은 아니었다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 0.5898
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_39/scene_18.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_Lucian_bound_202607260802.jpeg",
+      "narrationEn": "However, the final choice to return what was taken was repeated once again. The ley line device was reversed and the trapped souls were released. Death Knight Artus's armor collapsed into empty steel plates, and Lucian was bound by the control runes he had created.",
+      "narrationKo": "다만 빼앗은 것을 돌려주겠다는 마지막 선택이 다시 한 번 반복되었다. 지맥 장치가 역전되며 갇힌 영혼들이 풀려났다. 데스나이트 아르투스의 갑옷은 텅 빈 철판으로 무너졌고, 루시안은 자신이 만든 제어 룬에 묶였다.",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 0.48
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_39/scene_19.jpeg",
+      "sourceImageFile": "Kadan_hands_over_Gandar_202607260802.jpeg",
+      "narrationEn": "Kadan did not kill him, but handed him over to the Freemen's League for trial. Astra Bong masters gave different answers to Gandar's question about who was the strongest. Kadan did not reply.",
+      "narrationKo": "카단은 그를 죽이지 않고 자유민 연맹의 재판에 넘겼다. 아스트라 봉의 거장들은 누가 가장 강한지 묻는 간다르에게 서로 다른 답을 했다. 카단은 아무 답도 하지 않았다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 52,
+      "alignmentScore": 0.3572
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_39/scene_20.jpeg",
+      "sourceImageFile": "Wildland_messenger_brings_news_202607260802.jpeg",
+      "narrationEn": "I knew that even at the moment when I had the strongest technique, I would not have been able to stop the ley line device if I were alone. A Wildland messenger arrived from below the mountain. There was news that Fenrir had halted the southern expedition, and that old wounds from the battlefield were worsening and that Kadan was being called for the last time.",
+      "narrationKo": "가장 강한 기술을 가진 순간에도 혼자였다면 지맥 장치를 멈추지 못했을 것을 알고 있었다. 산 아래에서 와일드랜드 전령이 도착했다. 펜릴이 남부 원정을 중지시켰으며, 전장에서 얻은 오래된 상처가 악화되어 카단을 마지막으로 부른다는 소식이었다.",
+      "sourceSentenceStart": 53,
+      "sourceSentenceEnd": 55,
+      "alignmentScore": 0.404
+    }
+  ]
+}

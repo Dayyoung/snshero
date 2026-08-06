@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 2,
+  "episodeTitleEn": "Oath of the Seven Pursuers",
+  "episodeTitleKo": "일곱 추적자의 맹세",
+  "sourceSentenceCount": 65,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_02/scene_01.jpeg",
+      "sourceImageFile": "Hercul_arrives_at_Elwin_ruins_202607260802.jpeg",
+      "narrationEn": "When Hercul arrived at the ruins of Elwin village, all that remained were blackened rafters and blood stains on the bridge. He found Aleksandar's broken sword in the snow. The blade had jagged marks that were not found on the official weapons of the Shadow Realm.",
+      "narrationKo": "헤르쿨이 엘윈 마을의 폐허에 도착했을 때 남은 것은 검게 언 서까래와 다리 위의 핏자국뿐이었다. 그는 알렉산다르의 부러진 검을 눈 속에서 찾아냈다. 검면에는 섀도우렐름의 공식 병기에는 없는 톱니 자국이 남아 있었다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 3,
+      "alignmentScore": 0.5254
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_02/scene_02.jpeg",
+      "sourceImageFile": "Hercul_encounters_seven_people_202607260802.jpeg",
+      "narrationEn": "It was evidence that someone inside the kingdom had designed the attack. Hercul followed the traces into the Seven Bridges of the southern port and ran into seven unexpected people. Blacksmith Grimli, Crossbowman Aila the Demon Hunter, Apothecary Eliana, Blind Stalker Gawain, Gambler Kaze, Boatman Rondol, Acrobat Robinyard.",
+      "narrationKo": "왕국 안쪽의 누군가가 공격을 설계했다는 증거였다. 그 흔적을 좇아 남쪽 항구 세븐브리지에 들어간 헤르쿨은 뜻밖의 일곱 사람과 부딪쳤다. 대장장이 그림리, 쇠뇌 사수 에일라, 약제사 엘리아나, 맹인 추적자 가웨인, 도박사 카제, 뱃사공 론돌, 곡예사 로비냐드.",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 6,
+      "alignmentScore": 0.4004
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_02/scene_03.jpeg",
+      "sourceImageFile": "Paladin_meets_rescue_team_202607260802.jpeg",
+      "narrationEn": "They came from different backgrounds and had different accents, and were an unofficial rescue team that took in war orphans. The first meeting wasn't good. Hercul believed the report that they were kidnappers, and the seven saw him dressed as a paladin as a stooge of the court.",
+      "narrationKo": "출신도 말투도 제각각인 그들은 전쟁고아를 빼돌려 온 비공식 구조대였다. 첫 만남은 좋지 않았다. 헤르쿨은 그들이 유괴범이라는 밀고를 믿었고, 일곱 사람은 성기사 복장을 한 그를 궁정의 앞잡이로 보았다.",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 9,
+      "alignmentScore": 0.5021
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_02/scene_04.jpeg",
+      "sourceImageFile": "Market_tent_torn_apart_fish_202607260802.jpeg",
+      "narrationEn": "The market's tent was torn apart and boxes of fish flew through the air. Every time Grimli's hammer hit the guard, golden ripples spread to the bell tower. Gawain could not hear Hercul's footsteps, but there was no time to stop his colleagues. Kaze scattered seven coins from his pocket to find weak spots in the protective formation, while Aila the Demon Hunter selected only the coins that bounced and shot them with his crossbow.",
+      "narrationKo": "시장의 천막이 뜯겨 나가고 생선 상자가 공중을 날았다. 그림리의 망치가 방호진을 때릴 때마다 금빛 파문이 종탑까지 번졌다. 가웨인은 헤르쿨의 발소리에서 살기를 듣지 못했지만 동료들을 멈추게 할 틈이 없었다. 카제는 주머니에서 동전 일곱 개를 뿌려 방호진의 약한 곳을 찾았고, 에일라는 튕겨 나오는 동전만 골라 쇠뇌를 쐈다.",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 0.363
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_02/scene_05.jpeg",
+      "sourceImageFile": "Hercul_blocks_arrows,_Rondol_use…_202607260802.jpeg",
+      "narrationEn": "Hercul blocked the arrows and turned the angle of his shield to prevent shrapnel from hitting the people in the market. Rondol raised the water from the canal and tied Hercul's feet. As he tried to evaporate the water with golden mana, Eliana mixed the herb powder.",
+      "narrationKo": "헤르쿨은 화살을 막으면서도 시장 사람들에게 파편이 가지 않도록 방패 각도를 돌렸다. 론돌은 수로의 물을 끌어올려 헤르쿨의 발을 묶었다. 그가 황금 마나로 물을 증발시키려 하자 엘리아나가 허브 가루를 섞었다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 0.5235
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_02/scene_06.jpeg",
+      "sourceImageFile": "Paladin_coughing_fish_Robinyard_…_202607260802.jpeg",
+      "narrationEn": "The hot herbal steam stung my eyes. As the legendary paladin coughed and collapsed on a pile of fish, Robinyard couldn't help but laugh even during the fight. It was only one child who stopped the fight.",
+      "narrationKo": "뜨거운 약초 증기가 눈을 따갑게 만들었다. 전설적인 성기사가 기침하며 생선 더미에 주저앉자 로비냐드는 싸움 중에도 웃음을 참지 못했다. 싸움을 멈춘 것은 아이 하나였다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 0.4571
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_02/scene_07.jpeg",
+      "sourceImageFile": "Child_grabs_clothes,_speaks_202607260802.jpeg",
+      "narrationEn": "The child hiding behind Aila the Demon Hunter's back grabbed the hem of Hercul's clothes and said. “Those people didn’t sell us, they saved us from being sold. ” Hercul put down his mace.",
+      "narrationKo": "에일라의 등 뒤에 숨어 있던 아이가 헤르쿨의 옷자락을 잡고 말했다. “저 사람들은 우리를 판 게 아니라, 팔려 가던 우리를 구했어요.” 헤르쿨은 철퇴를 내렸다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 0.5432
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_02/scene_08.jpeg",
+      "sourceImageFile": "Seven_pursuers_put_up_weapons_202607260802.jpeg",
+      "narrationEn": "The seven also put up their weapons, but only Grimli snorted instead of apologizing. The ledger of the human trafficking ship they were chasing also had the signature of Lucian. It was like discovering the same enemy on different paths. The night he was checking the ledgers in the port warehouse, Robinyard threw seven liquor jars onto the roof.",
+      "narrationKo": "일곱 사람도 무기를 거두었지만 그림리만은 사과 대신 콧방귀를 뀌었다. 그들이 뒤쫓던 인신매매선의 장부에도 루시안의 서명이 있었다. 서로 다른 길에서 같은 적을 발견한 셈이었다. 항구 창고에서 장부를 살피던 밤, 로비냐드가 술항아리 일곱 개를 지붕으로 던졌다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 0.4286
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_02/scene_09.jpeg",
+      "sourceImageFile": "Jar_stops_in_air_202607260802.jpeg",
+      "narrationEn": "The jar did not break, but stopped in the air and spun in a circle. It was not alcohol, but a floating compass that revealed the mana route of the smuggling ship. Each time the blue liquid tilted, a new ray of light appeared on the floor map.",
+      "narrationKo": "항아리는 깨지지 않고 허공에 멈춰 원을 그리며 돌았다. 술이 아니라 밀수선의 마나 항로를 드러내는 부유식 나침반이었다. 푸른 액체가 기울 때마다 바닥 지도에 새로운 빛줄기가 생겼다.",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 0.4556
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_02/scene_10.jpeg",
+      "sourceImageFile": "Eliana_rewrites_child_names_ledger_202607260802.jpeg",
+      "narrationEn": "In the ledger, instead of the children's names, their height, weight, and mana attributes were written down. Eliana rewrote the name of each rescued child next to it. Hercul also silently picked up the pen.",
+      "narrationKo": "장부에는 아이들의 이름 대신 키와 몸무게, 마나 속성이 적혀 있었다. 엘리아나는 구조한 아이 한 명 한 명의 이름을 그 옆에 다시 써 넣었다. 헤르쿨도 말없이 펜을 들었다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 0.6613
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_02/scene_11.jpeg",
+      "sourceImageFile": "Characters_return_calculation_sheet_202607260802.jpeg",
+      "narrationEn": "They have been working for a while to return the calculation sheet to human records. One line headed to the northern Wildlands, and the other line headed to the Red Glass Court. Hercul noticed that Elwin and Ysela were pulled in opposite directions.",
+      "narrationKo": "그들은 한참 동안 계산표를 사람의 기록으로 되돌리는 일부터 했다. 한 줄은 북쪽 와일드랜드로, 다른 한 줄은 붉은 유리 궁정으로 향했다. 엘윈과 이셀라가 서로 반대쪽으로 끌려갔음을 헤르쿨은 알아차렸다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 0.1533
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_02/scene_12.jpeg",
+      "sourceImageFile": "Children_going_to_palace_202607260802.jpeg",
+      "narrationEn": "The two unborn children were also probably somewhere along the way. “I am going to the palace. ” Hercul said. “You guys take charge of the north.",
+      "narrationKo": "아직 태어나지 않은 두 아이도 그 길 어딘가에 있을 터였다. “내가 궁정으로 간다.” 헤르쿨이 말했다. “그대들은 북쪽을 맡아 줘.”",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 0.3506
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_02/scene_13.jpeg",
+      "sourceImageFile": "Grimli_crossed_arms_Hercul_dagger_202607260802.jpeg",
+      "narrationEn": "” Grimli crossed his arms. “Why should we keep your promise instead? ” Hercul took out Aleksandar's broken sword and a silver dagger to give to the child.",
+      "narrationKo": "그림리는 팔짱을 꼈다. “우리가 왜 당신의 약속을 대신 지켜야 하지?” 헤르쿨은 알렉산다르의 부러진 검과 아이에게 줄 은빛 단검을 꺼냈다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 0.5038
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_02/scene_14.jpeg",
+      "sourceImageFile": "Gawain_hears_dagger_vibration_202607260802.jpeg",
+      "narrationEn": "“It’s not because it’s a request from a dead person. It’s because we can’t just leave a world where living children inherit their parents’ crimes. ” Gawain heard the vibration of the dagger with his invisible eyes.",
+      "narrationKo": "“죽은 사람의 부탁이라서가 아니다. 살아 있는 아이가 부모의 죄목까지 물려받는 세상을 그냥 둘 수 없어서다.” 가웨인은 보이지 않는 눈으로 단검의 진동을 들었다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 0.6399
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_02/scene_15.jpeg",
+      "sourceImageFile": "Chibi_characters_in_fantasy_scene_202607260802.jpeg",
+      "narrationEn": "A faint but clear resonance of life was answering from the north. He was the first to nod. The remaining six also grumbled or sighed and agreed in their own way.",
+      "narrationKo": "미약하지만 또렷한 생명의 공명이 북쪽에서 답하고 있었다. 그는 가장 먼저 고개를 끄덕였다. 나머지 여섯도 투덜거리거나 한숨을 쉬면서 각자의 방식으로 동의했다.",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 0.4457
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_02/scene_16.jpeg",
+      "sourceImageFile": "Oath_of_Seven_Pursuers_scene_202607260802.jpeg",
+      "narrationEn": "That day, the seven pursuers gathered at the top of the bell tower and made a promise. Whoever finds the child first takes him as his disciple and teaches him the power to protect himself. Eighteen years later, the two children meet under the bell of Seven Bridges, truly ending the tragedy of their parents' generation. Opinions were divided on how to record promises.",
+      "narrationKo": "그날 일곱 추적자는 종탑 꼭대기에 모여 약속했다. 아이를 먼저 찾는 쪽이 그를 제자로 삼아 스스로를 지킬 힘을 가르친다. 열여덟 해 뒤 세븐브리지의 종 아래에서 두 아이를 만나게 해, 부모 세대의 비극을 진실로 끝맺게 한다. 약속을 기록하는 방식부터 의견이 갈렸다.",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 52,
+      "alignmentScore": 0.4396
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_02/scene_17.jpeg",
+      "sourceImageFile": "Grimli_Kaze_Robinyard_handprints…_202607260802.jpeg",
+      "narrationEn": "Grimli was intended to be engraved on a steel plate, and Kaze was to be left as a password so as not to be discovered by the enemy. Robinyard stamped the handprints of seven people on the inside of the bell. It was a way to ensure that even if one person changed their mind, the others would remember.",
+      "narrationKo": "그림리는 강철판에 새기자 했고, 카제는 적에게 들키지 않도록 암호로 남기자 했다. 로비냐드는 종 안쪽에 일곱 사람의 손도장을 찍었다. 누구 하나 마음을 바꾸더라도 나머지가 기억하게 하는 방법이었다.",
+      "sourceSentenceStart": 53,
+      "sourceSentenceEnd": 55,
+      "alignmentScore": 0.3361
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_02/scene_18.jpeg",
+      "sourceImageFile": "Hercul_added_one_condition_202607260802.jpeg",
+      "narrationEn": "Hercul added one condition. “Don’t make them each other’s enemies. You can make them compete to see who is stronger, but you shouldn’t make them compete to see who they hate more.",
+      "narrationKo": "헤르쿨은 조건을 하나 덧붙였다. “둘을 서로의 원수로 키우지 마라. 누가 더 강한지 겨루게 할 수는 있어도, 누가 더 증오하는지 겨루게 해서는 안 된다.”",
+      "sourceSentenceStart": 56,
+      "sourceSentenceEnd": 58,
+      "alignmentScore": 0.3534
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_02/scene_19.jpeg",
+      "sourceImageFile": "Black_arrow_pierces_warehouse_roof_202607260802.jpeg",
+      "narrationEn": "” Before the words were finished, a black arrow pierced the roof of the warehouse. They were court assassins who sensed their pursuit. The seven jars shattered at the same time, spreading a blue curtain, and Hercul's protective guard covered it.",
+      "narrationKo": "그 말이 끝나기도 전에 창고 지붕을 검은 화살이 뚫었다. 추적을 눈치챈 궁정 암살자들이었다. 일곱 항아리가 동시에 깨지며 푸른 장막을 펼쳤고, 헤르쿨의 방호진이 그 위를 덮었다.",
+      "sourceSentenceStart": 59,
+      "sourceSentenceEnd": 61,
+      "alignmentScore": 0.3865
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_02/scene_20.jpeg",
+      "sourceImageFile": "Eight_men_fought_joint_battle_202607260802.jpeg",
+      "narrationEn": "The eight men fought their first joint battle, back to back. At dawn, Hercul departed south. The seven pursuers headed toward the northern gateway. On the snow, eight different types of footprints continued side by side for a moment, then split into two.",
+      "narrationKo": "여덟 사람은 등을 맞댄 채 첫 공동 전투를 치렀다. 동이 틀 무렵, 헤르쿨은 남쪽으로 떠났다. 일곱 추적자는 북쪽 관문을 향했다. 눈 위에는 서로 다른 여덟 종류의 발자국이 잠시 나란히 이어지다가 두 갈래로 갈라졌다.",
+      "sourceSentenceStart": 62,
+      "sourceSentenceEnd": 65,
+      "alignmentScore": 0.5444
+    }
+  ]
+}

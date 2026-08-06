@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 4,
+  "episodeTitleEn": "The Child Raised in the Wastes",
+  "episodeTitleKo": "황야에서 자란 아이",
+  "sourceSentenceCount": 56,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_04/scene_01.jpeg",
+      "sourceImageFile": "Elwin_raised_son_nomads_202607260802.jpeg",
+      "narrationEn": "Six years have passed. Elwin raised his son among the tents of Wildland nomads.",
+      "narrationKo": "여섯 해가 흘렀다. 엘윈은 와일드랜드 유목민들의 천막 사이에서 아들을 키웠다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.167
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_04/scene_02.jpeg",
+      "sourceImageFile": "Kadan_invited_to_Wind_Isle_202607260802.jpeg",
+      "narrationEn": "The child was strong, but he spoke late and could not properly light a spark of mana. While his peers had fire and wind at their fingertips, Kadan carried buckets and mended fences. People called him Kadan.",
+      "narrationKo": "아이는 튼튼했지만 말이 늦었고 마나 불꽃 하나 제대로 밝히지 못했다. 또래들이 손끝에 불과 바람을 띄울 때 카단은 양동이를 나르고 울타리를 고쳤다. 사람들은 그를 카단이라 불렀다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.3699
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_04/scene_03.jpeg",
+      "sourceImageFile": "Aleksandar_chose_name_before_death_202607260802.jpeg",
+      "narrationEn": "This was the name Aleksandar chose before he died. Kadan thought that who called him was more important than the meaning of his name. One day, Gilgamesh, a boy in the wilderness, was surrounded by assassins from a hostile tribe.",
+      "narrationKo": "알렉산다르가 죽기 전 골라 둔 이름이었다. 카단은 이름의 뜻보다 누가 자신을 부르는지가 더 중요하다고 생각했다. 어느 날 황야의 소년 길가메시가 적대 부족의 암살자들에게 포위되었다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 0.4712
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_04/scene_04.jpeg",
+      "sourceImageFile": "Kadan_carrying_Gilgamesh_river_202607260802.jpeg",
+      "narrationEn": "Kadan jumped into the snow without a hunting bow. He threw a chunk of ice to blind the horse and ran towards the frozen river, carrying the fallen Gilgamesh on his back. The thin ice cracked, but he spread his weight and crawled out.",
+      "narrationKo": "카단은 사냥용 활도 없이 눈밭으로 뛰어들었다. 얼음 덩어리를 던져 말의 눈을 가리고, 쓰러진 길가메시를 등에 업은 채 얼어붙은 강으로 달렸다. 얇은 얼음이 갈라졌지만 그는 몸무게를 넓게 흩어 기어서 빠져나왔다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 0.453
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_04/scene_05.jpeg",
+      "sourceImageFile": "Gilgamesh_and_Kadan_by_river_202607260802.jpeg",
+      "narrationEn": "Even after arriving across the river, Gilgamesh could not speak for a while. He couldn't understand why the child he saw for the first time had fallen into the ice water. Kadan took off his wet boots and stood by the fire, saying that if he had been alone, he would have wanted someone to come.",
+      "narrationKo": "강 건너에 도착한 뒤에도 길가메시는 한동안 말을 하지 못했다. 자신을 위해 처음 본 아이가 얼음물에 빠진 것이 이해되지 않았다. 카단은 젖은 장화를 벗어 불가에 세우며, 혼자였다면 자기도 누군가가 와 주길 바랐을 거라고 말했다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 0.3348
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_04/scene_06.jpeg",
+      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802.jpeg",
+      "narrationEn": "“You could still die. ” “That’s why you’re alive.",
+      "narrationKo": "“그래도 죽을 수 있었잖아.” “그래서 네가 살아 있잖아.”",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 0.4701
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_04/scene_07.jpeg",
+      "sourceImageFile": "Gilgamesh_never_forgot_answer_202607260802.jpeg",
+      "narrationEn": "” Gilgamesh never forgot that simple answer for the rest of his life. Gilgamesh's father, Fenrir, was a war leader who attempted to unite the various tribes of the Wildlands. He offered to give him gold or horses in return for saving his son, but Kadan only asked for leather to fix the roof of Elwin's tent.",
+      "narrationKo": "길가메시는 그 단순한 대답을 평생 잊지 못했다. 길가메시의 아버지 펜릴은 와일드랜드의 여러 부족을 통합하려는 전쟁 지도자였다. 그는 아들을 구한 대가로 금이나 말을 주겠다고 했지만 카단은 엘윈의 천막 지붕을 고칠 가죽만 청했다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 0.5152
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_04/scene_08.jpeg",
+      "sourceImageFile": "Fenrir_sat_Kadan_down_202607260802.jpeg",
+      "narrationEn": "Fenrir laughed out loud and sat Kadan down at the family table. There, Kadan made a brotherly pledge with Gilgamesh and also became close to Fenrir's daughter, Titania. Titania shot a bow better than Kadan and was more outspoken.",
+      "narrationKo": "펜릴은 크게 웃고 카단을 가족의 식탁에 앉혔다. 그곳에서 카단은 길가메시와 형제의 서약을 맺고, 펜릴의 딸 티타니아와도 가까워졌다. 티타니아는 카단보다 활을 잘 쐈고 말도 거침없었다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 0.4541
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_04/scene_09.jpeg",
+      "sourceImageFile": "Titania_teaches_Kadan_writing_202607260802.jpeg",
+      "narrationEn": "Every time she smiled, her long red hairband blew in the wind. Titania taught letters to Kadan. Kadan missed the middle stroke every time he wrote his name, and Titania made him rewrite it dozens of times with a stick over his eyes.",
+      "narrationKo": "그녀는 웃을 때마다 붉은 머리끈이 바람에 길게 날렸다. 티타니아는 카단에게 글자를 가르쳤다. 카단은 자기 이름을 쓸 때마다 가운데 획을 빠뜨렸고, 티타니아는 눈 위에 막대기로 수십 번 다시 써 보게 했다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 0.5186
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_04/scene_10.jpeg",
+      "sourceImageFile": "Kadan_kept_name_tag_winter_202607260802.jpeg",
+      "narrationEn": "It was because of that winter that Kadan later kept his first name tag, which he wrote clumsily, for a long time. “Are you going to go south when you grow up? ” “My mother told me to find the truth.",
+      "narrationKo": "카단이 훗날 서툴게 쓴 첫 이름표를 오래 간직한 것은 그 겨울 때문이었다. “네가 어른이 되면 남쪽으로 갈 거지?” “어머니가 진실을 찾으라고 했어.”",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 0.386
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_04/scene_11.jpeg",
+      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_2.jpeg",
+      "narrationEn": "” “Then promise to return. Anyone who only promises to leave is a coward.",
+      "narrationKo": "“그럼 돌아올 약속도 해. 떠나는 약속만 하는 사람은 겁쟁이야.”",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 0.4169
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_04/scene_12.jpeg",
+      "sourceImageFile": "Kadan_ties_red_string_wrist_202607260802.jpeg",
+      "narrationEn": "” Kadan tied the red string she held out to her wrist. At the time, I didn't know how long a promise could hold a person's heart. Meanwhile, the six pursuers had been wandering the Wildlands for six years.",
+      "narrationKo": "카단은 그녀가 내민 붉은 끈을 손목에 묶었다. 그때는 약속이 사람의 마음을 얼마나 오래 붙잡을 수 있는지 알지 못했다. 한편 여섯 추적자는 와일드랜드를 헤맨 지 여섯 해째였다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 0.3908
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_04/scene_13.jpeg",
+      "sourceImageFile": "Gawain_Kadan_pulling_wolf_cub_202607260802.jpeg",
+      "narrationEn": "Without knowing the child's name or face, I followed only the faint resonance of the silver dagger. One night, Gawain heard the sound of metal crying on a distant rocky mountain. Kadan was pulling out a wolf cub trapped in the ice with his father's dagger.",
+      "narrationKo": "아이의 이름도 얼굴도 모른 채 은빛 단검의 희미한 공명만 좇았다. 어느 밤, 가웨인은 멀리 떨어진 바위산에서 금속이 우는 소리를 들었다. 카단이 아버지의 단검으로 얼음에 갇힌 새끼 늑대를 꺼내고 있었다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 0.5993
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_04/scene_14.jpeg",
+      "sourceImageFile": "Grimli_tests_child_with_hammer_202607260802.jpeg",
+      "narrationEn": "Grimli tested the child as soon as he saw him. He suddenly swung the hammer and broke the ice under his feet. Instead of rushing towards the attacker, Kadan first pushed two nearby children to safety.",
+      "narrationKo": "그림리는 아이를 보자마자 시험했다. 다짜고짜 망치를 휘둘러 발밑의 얼음을 깨뜨린 것이다. 카단은 공격자를 향해 달려드는 대신 근처의 어린아이 둘을 먼저 안전한 곳으로 밀어 냈다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 0.5061
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_04/scene_15.jpeg",
+      "sourceImageFile": "Elwin_does_not_let_go_202607260802.jpeg",
+      "narrationEn": "Even though he fell into the water up to his waist, he did not let go of his dagger. Elwin did not believe the six people who suddenly appeared. Even after checking the glass bottle containing Robinyard's ashes and Aleksandar's broken sword, he did not hand over his son.",
+      "narrationKo": "자신은 허리까지 물에 빠지고도 단검을 놓지 않았다. 엘윈은 갑자기 나타난 여섯 사람을 믿지 않았다. 로비냐드의 재가 든 유리병과 알렉산다르의 부러진 검을 확인하고도 아들을 넘기지 않았다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 0.6536
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_04/scene_16.jpeg",
+      "sourceImageFile": "Gawain_taps_cane_to_song_202607260802.jpeg",
+      "narrationEn": "Every day, Gawain sat outside the tent and tapped his cane to Aleksandar's favorite song. A week later, Elwin opened the door first and served warm tea.",
+      "narrationKo": "가웨인은 매일 천막 밖에 앉아 알렉산다르가 좋아하던 노래를 지팡이로 두드렸다. 일주일 뒤 엘윈이 먼저 문을 열어 따뜻한 차를 내왔다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 0.5374
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_04/scene_17.jpeg",
+      "sourceImageFile": "Grimli_Gawain_fighting_basics_202607260802.jpeg",
+      "narrationEn": "“You’re slow, you’re dull, and you don’t even know the basics of fighting. ” Grimli said. Gawain smiled faintly.",
+      "narrationKo": "“느리고, 둔하고, 싸움의 기본도 모르는군.” 그림리가 말했다. 가웨인은 희미하게 웃었다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 0.6557
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_04/scene_18.jpeg",
+      "sourceImageFile": "Characters_in_cave_scene_202607260802.jpeg",
+      "narrationEn": "“Still, he’s the kid we were looking for. ” The joy of reunion did not last long. That night, in the cave where Kadan went to draw water, he heard a person's moaning.",
+      "narrationKo": "“그래도 우리가 찾던 아이다.” 재회의 기쁨은 오래가지 않았다. 그날 밤 카단이 물을 길으러 간 동굴에서 사람의 신음이 들렸다.",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 50,
+      "alignmentScore": 0.7605
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_04/scene_19.jpeg",
+      "sourceImageFile": "Belphegor_lying_in_chains_202607260802.jpeg",
+      "narrationEn": "Inside, Belphegor was lying in chains. When he saw his pursuers, he laughed and held out his hand to Kadan as if he had been waiting for a long time. “Aren’t you curious about the face of the person who killed your father?",
+      "narrationKo": "안쪽에는 벨페고르가 쇠사슬에 묶인 채 쓰러져 있었다. 그는 추격자들을 보자 비웃었고, 카단에게는 마치 오래 기다렸다는 듯 손을 내밀었다. “네 아버지를 죽인 자의 얼굴이 궁금하지 않나?”",
+      "sourceSentenceStart": 51,
+      "sourceSentenceEnd": 53,
+      "alignmentScore": 0.456
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_04/scene_20.jpeg",
+      "sourceImageFile": "Kadan_drew_dagger,_did_not_202607260802.jpeg",
+      "narrationEn": "” Kadan drew the dagger but did not stab. Medusa Gorgo's fingernails flashed in the darkness behind Belphegor's back. The chase, which had not ended for six years, was now catching up with the child's life.",
+      "narrationKo": "카단은 단검을 뽑았지만 찌르지 않았다. 벨페고르의 등 뒤 어둠에서 메두사 고르고의 손톱이 번뜩였다. 여섯 해 동안 끝나지 않은 추적이 이제 아이의 삶까지 따라잡고 있었다.",
+      "sourceSentenceStart": 54,
+      "sourceSentenceEnd": 56,
+      "alignmentScore": 0.5289
+    }
+  ]
+}

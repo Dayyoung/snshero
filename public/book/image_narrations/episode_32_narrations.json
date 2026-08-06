@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 32,
+  "episodeTitleEn": "Echo of First Love",
+  "episodeTitleKo": "첫사랑의 잔향",
+  "sourceSentenceCount": 53,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_32/scene_01.jpeg",
+      "sourceImageFile": "Naiad_in_house_black_swamp_202607260802.jpeg",
+      "narrationEn": "The place where I found Naiad was a small house at the edge of the black swamp. The walls were filled with constellations and water flows calculated over decades, and letters that had never been sent were piled up on the table.",
+      "narrationKo": "나이아드를 찾은 곳은 검은 늪 가장자리의 작은 집이었다. 벽에는 수십 년 동안 계산한 별자리와 물의 흐름이 빼곡했고, 탁자 위에는 한 번도 보내지 못한 편지들이 쌓여 있었다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.5966
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_32/scene_02.jpeg",
+      "sourceImageFile": "Gandar_poisoned_Kadan_Celia_202607260802.jpeg",
+      "narrationEn": "All letters were addressed to Gandar. When she saw Kadan and Celia, she admitted that she had poisoned them. Knowing that Aqualord would lose his strength if he treated Celia, he deliberately sent two people to the sanctuary.",
+      "narrationKo": "모든 편지의 수신인은 간다르였다. 그녀는 카단과 실리아를 보자 순순히 독을 넣었다고 인정했다. 아쿠아로드가 실리아를 치료하면 힘을 잃을 것을 알고 일부러 두 사람을 성소로 보냈다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.4554
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_32/scene_03.jpeg",
+      "sourceImageFile": "Celia_revenge_calculation_Naiad_202607260802.jpeg",
+      "narrationEn": "It was as if Celia's life was put into the calculation for revenge. Naiad did not apologize.",
+      "narrationKo": "복수를 위해 실리아의 생명까지 계산에 넣은 셈이었다. 나이아드는 사과하지 않았다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 7,
+      "alignmentScore": 0.4496
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_32/scene_04.jpeg",
+      "sourceImageFile": "Aqualord_tells_story_of_pain_202607260802.jpeg",
+      "narrationEn": "Instead of forcing an apology, Aqualord accurately told the story of the pain he had experienced and the strength Aqualord had lost during the healing process. It was a choice to make people see the human body hidden behind abstract revenge. Celia was angry, but before condemning Naiad, he asked about Aquaris's death.",
+      "narrationKo": "실리아는 사과를 강요하는 대신 치유 과정에서 아쿠아로드가 잃은 힘과 자신이 겪은 고통을 정확히 들려주었다. 추상적인 복수 뒤에 가려진 사람의 몸을 보게 하려는 선택이었다. 실리아는 분노했지만 나이아드를 단죄하기 전에 아쿠아리스의 죽음에 관해 물었다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 0.45
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_32/scene_05.jpeg",
+      "sourceImageFile": "Naiad_took_out_old_cloth_202607260802.jpeg",
+      "narrationEn": "Naiad took out a piece of old cloth. Blood stains remained under the embroidery of two water birds flying side by side. Gandar stayed in the sanctuary when he was young and met Naiad.",
+      "narrationKo": "나이아드는 낡은 천 조각을 꺼냈다. 두 마리 물새가 나란히 날아가는 자수 아래에 핏자국이 남아 있었다. 간다르는 젊은 시절 성소에 머물다 나이아드를 만났다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 0.7182
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_32/scene_06.jpeg",
+      "sourceImageFile": "Naiad_gives_birth_to_Aquaris_202607260802.jpeg",
+      "narrationEn": "He only loved pranks and running away, so he left the kingdom because he was afraid that he was in love with someone. Naiad gave birth to Aquaris alone, and ran to Aqualord holding Aquaris, who had been injured by Death Knight Artus's soul sword.",
+      "narrationKo": "장난과 도망만 좋아하던 그는 자신이 누군가를 사랑한다는 사실이 두려워 왕국을 떠났다. 나이아드는 아쿠아리스를 혼자 낳았고, 데스나이트 아르투스의 영혼검에 다친 아쿠아리스를 안고 아쿠아로드에게 달려갔다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 0.5622
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_32/scene_07.jpeg",
+      "sourceImageFile": "Aqualord_refused_saving_Aquaris_202607260802.jpeg",
+      "narrationEn": "Aqualord refused on the grounds that if Aquaris was saved, the kingdom's ley defenses would be turned off for a day. Thousands of people could die that day. He thought he had made the right decision as king, but after Aquaris passed away, he realized that neither life should be left as a number.",
+      "narrationKo": "아쿠아로드는 아쿠아리스를 살리면 왕국의 지맥 방어가 하루 동안 꺼진다는 이유로 거절했다. 그 하루에 수천 명이 죽을 수 있었다. 그는 왕으로서 옳은 결정을 내렸다고 생각했지만, 아쿠아리스가 숨을 거둔 뒤 어느 쪽 생명도 숫자로 남겨서는 안 된다는 것을 깨달았다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 0.6272
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_32/scene_08.jpeg",
+      "sourceImageFile": "Naiad_asked_about_Aquaris_202607260802.jpeg",
+      "narrationEn": "“If you realize it, will my Aquaris come back? ” Naiad asked.",
+      "narrationKo": "“깨달았으면 내 아쿠아리스가 돌아오나?” 나이아드가 물었다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 0.2161
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_32/scene_09.jpeg",
+      "sourceImageFile": "Celia_answers_in_fantasy_location_202607260802.jpeg",
+      "narrationEn": "“No. ” Celia answered. “So you don’t have to forgive, but if you put someone else in the same calculation, you’re repeating the choices you hated.",
+      "narrationKo": "“아니요.” 실리아가 답했다. “그래서 용서할 필요도 없어요. 하지만 다른 사람을 같은 계산에 넣으면 당신이 미워한 선택을 되풀이하는 거예요.”",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 0.4385
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_32/scene_10.jpeg",
+      "sourceImageFile": "Naiad_saw_light_in_Celia's_202607260802.jpeg",
+      "narrationEn": "” Naiad saw a familiar light in Celia's eyes. When I was young, I believed in my own judgment rather than someone else's orders. The years of revenge only dimmed that light.",
+      "narrationKo": "나이아드는 실리아의 눈에서 낯익은 빛을 보았다. 젊은 시절 자신도 누군가의 명령보다 자신의 판단을 믿었다. 복수만 남긴 세월이 그 빛을 흐리게 했을 뿐이었다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 0.383
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_32/scene_11.jpeg",
+      "sourceImageFile": "Gandar_showed_up_home_late_202607260802.jpeg",
+      "narrationEn": "Gandar showed up at home late. After being released from Aeolus's temple, I was looking for Naiad, but I couldn't come in at the door.",
+      "narrationKo": "간다르는 뒤늦게 집에 나타났다. 에올루스의 성전에서 풀려난 뒤 나이아드를 찾고 있었지만, 막상 문 앞에서는 들어오지 못했다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 0.4273
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_32/scene_12.jpeg",
+      "sourceImageFile": "Kadan_fell_into_room_202607260802.jpeg",
+      "narrationEn": "When Kadan pushed his back, he fell like a child and entered the room. Gandar took out half of the piece of cloth he had received a long time ago. I lied and said I threw it away the day I ran away, but I kept it sewn into my sleeve for decades.",
+      "narrationKo": "카단이 등을 밀자 그는 아이처럼 넘어져 방 안에 들어갔다. 간다르는 오래전 받은 천 조각의 반쪽을 꺼냈다. 도망치던 날 버렸다고 거짓말했지만 수십 년 동안 소매 안에 꿰매 두었다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 0.3764
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_32/scene_13.jpeg",
+      "sourceImageFile": "Gandar_in_Black_Sanctum_202607260802.jpeg",
+      "narrationEn": "Naiad said that keeping records is not evidence of fulfillment of responsibility. For the first time, Gandar did not pass it off as a joke and nodded.",
+      "narrationKo": "나이아드는 정표를 간직한 일이 책임을 다한 증거는 아니라고 말했다. 간다르는 처음으로 장난으로 넘기지 않고 고개를 끄덕였다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 0.4517
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_32/scene_14.jpeg",
+      "sourceImageFile": "Naiad_and_Gandar_talking_202607260802.jpeg",
+      "narrationEn": "Naiad neither hit him nor hugged him. The first question was why did you leave? Gandar admitted that he ran away not because he loved freedom, but because he was not confident in taking responsibility.",
+      "narrationKo": "나이아드는 그를 때리지도 껴안지도 않았다. 첫 질문은 왜 떠났느냐는 것이었다. 간다르는 자유를 사랑해서가 아니라 책임질 자신이 없어 도망쳤다고 인정했다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 0.6097
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_32/scene_15.jpeg",
+      "sourceImageFile": "Naiad_and_Gandar_talking_202607260802_2.jpeg",
+      "narrationEn": "Underneath the mask of being a funny old man, there was the most cowardly memory. The two talked all night. The time lost was not made up and my first love did not return to its former self.",
+      "narrationKo": "재미있는 노인이라는 가면 아래 가장 비겁한 기억이 있었다. 두 사람은 밤새 이야기를 나눴다. 잃은 시간은 메워지지 않았고 첫사랑도 예전 모습으로 돌아오지 않았다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 0.6689
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_32/scene_16.jpeg",
+      "sourceImageFile": "Naiad_hands_letters_to_Gandar_202607260802.jpeg",
+      "narrationEn": "When dawn came, Naiad handed the pile of letters to Gandar without burning them. The responsibility for reading has been returned.",
+      "narrationKo": "새벽이 되었을 때 나이아드는 편지 더미를 불태우지 않고 간다르에게 건넸다. 읽을 책임을 돌려준 것이다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 0.4765
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_32/scene_17.jpeg",
+      "sourceImageFile": "Gandar_reads_letter_Naiad_makes_202607260802.jpeg",
+      "narrationEn": "It took Gandar an hour to read the first letter. I looked out the window every time as if I wanted to run away, but I didn't leave. Naiad made new cups of tea, one cup at a time, until he finished reading.",
+      "narrationKo": "간다르는 첫 편지를 읽는 데 한 시간이 걸렸다. 중간마다 도망치고 싶은 듯 창밖을 봤지만 자리를 뜨지 않았다. 나이아드는 그가 다 읽을 때까지 차를 한 잔씩 새로 끓였다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 0.3633
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_32/scene_18.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_attacked_Aquaris_202607260802.jpeg",
+      "narrationEn": "Something slower and less beautiful than reconciliation began between them. The real reason why Death Knight Artus attacked Aquaris was also revealed.",
+      "narrationKo": "화해보다 느리고 덜 아름다운 일이 두 사람 사이에서 시작되었다. 데스나이트 아르투스가 아쿠아리스를 공격한 진짜 이유도 드러났다.",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 0.7416
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_32/scene_19.jpeg",
+      "sourceImageFile": "Aquaris_Lucian_Ignis_Kadan_scene_202607260802.jpeg",
+      "narrationEn": "Aquaris's bloodline had a rare resonance that stabilized ley lines, and Lucian later stole that power to create artificial flames. The forbidden arts implanted in Ignis also began with that research. The glass embers throbbed hotly in Kadan's hands.",
+      "narrationKo": "아쿠아리스의 혈통에는 지맥을 안정시키는 희귀한 공명이 있었고, 루시안은 훗날 인공 화염을 만들기 위해 그 힘을 빼앗았다. 이그니스에게 심어진 금지술도 그 연구에서 시작되었다. 카단의 손안에서 유리 불씨가 뜨겁게 뛰었다.",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 50,
+      "alignmentScore": 0.4428
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_32/scene_20.jpeg",
+      "sourceImageFile": "Prisoner_of_Flame_Court_scene_202607260802_2.jpeg",
+      "narrationEn": "Ignis's tragedy was planned on top of Aquaris's death even before birth. Naiad touched the embers and sang Aquaris's favorite star song. A tiny bit of water flickered once in the flame.",
+      "narrationKo": "이그니스의 비극은 태어나기 전부터 아쿠아리스의 죽음 위에 설계되어 있었다. 나이아드는 불씨를 만지며 아쿠아리스가 좋아하던 별 노래를 불렀다. 불꽃 속에서 아주 작은 물빛이 한 번 깜박였다.",
+      "sourceSentenceStart": 51,
+      "sourceSentenceEnd": 53,
+      "alignmentScore": 0.5034
+    }
+  ]
+}

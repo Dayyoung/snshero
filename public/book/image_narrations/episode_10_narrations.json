@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 10,
+  "episodeTitleEn": "Prisoner of the Flame Court",
+  "episodeTitleKo": "불꽃 궁정의 포로",
+  "sourceSentenceCount": 70,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_10/scene_01.jpeg",
+      "sourceImageFile": "Kadan_and_Celia_on_ship_202607260802.jpeg",
+      "narrationEn": "The red glass palace was as bright at night as during the day. A lava channel flowed inside the ceiling, and flame spirits floated in every hallway instead of lanterns. Kadan and Celia hung under the medicine cart and entered the villa.",
+      "narrationKo": "붉은 유리 궁정은 밤에도 낮처럼 밝았다. 천장 안쪽으로 용암 수로가 흐르고, 복도마다 화염 정령이 등불 대신 떠다녔다. 카단과 실리아는 약재 운반 수레 아래에 매달려 별궁까지 들어갔다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 3,
+      "alignmentScore": 0.3934
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_10/scene_02.jpeg",
+      "sourceImageFile": "Ysela_turns_from_Lucian_202607260802.jpeg",
+      "narrationEn": "Ysela lived alone in the old house at the end of the garden. Thatched roofs, old spinning wheels, and dirt-covered farm tools that did not match the splendid palace were laid out like a piece of home. Lucian placed a memory seal on her to make her forget the past, and tricked her into thinking that she was her dead husband's benefactor. Ysela turned the potter's wheel at the same time every day and placed two teacups in the same place.",
+      "narrationKo": "정원 끝의 낡은 집에는 이셀라가 혼자 살고 있었다. 화려한 궁정과 어울리지 않는 초가 지붕, 오래된 물레, 흙 묻은 농기구가 고향의 한 조각처럼 놓여 있었다. 루시안은 그녀가 과거를 잊도록 기억 봉인을 걸고, 자신이 죽은 남편의 은인이라고 속여 왔다. 이셀라는 매일 같은 시간에 물레를 돌리고 같은 자리에 찻잔 두 개를 놓았다.",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 7,
+      "alignmentScore": 0.5456
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_10/scene_03.jpeg",
+      "sourceImageFile": "Kadan_rescues_Balian_from_dungeon_202607260802.jpeg",
+      "narrationEn": "I couldn't remember who I was waiting for. When Kadan said Balian's name, his hand first went to the empty teacup. Even though the head was forgotten, the body could not erase the person's place.",
+      "narrationKo": "누구를 기다리는지는 기억하지 못했다. 카단이 발리안의 이름을 말하자 손이 먼저 빈 찻잔으로 향했다. 머리는 잊었어도 몸은 한 사람의 자리를 지우지 못했다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 0.4825
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_10/scene_04.jpeg",
+      "sourceImageFile": "Celia_lifts_seal,_Ysela_sees_202607260802.jpeg",
+      "narrationEn": "When Celia lifted the seal, Ysela saw the snowstorm from eighteen years ago again. Balian falling from a cliff, the black soldiers dragging him, the crying of a newborn baby. She sat down when she heard that Ignis was alive. “You think I abandoned that child.",
+      "narrationKo": "실리아가 봉인을 해제하자 이셀라는 열여덟 해 전의 눈보라를 다시 보았다. 절벽에서 떨어지는 발리안, 자신을 끌고 가던 검은 병사들, 갓난아이의 울음. 그녀는 이그니스가 살아 있다는 말에 주저앉았다. “그 아이는 내가 버린 줄 알겠구나.”",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 0.4291
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_10/scene_05.jpeg",
+      "sourceImageFile": "Ignis_heading_to_villa_202607260802.jpeg",
+      "narrationEn": "” At the same time, Ignis was heading to the villa after receiving orders from Lucian. It was an order to personally capture the intruders of the pharmacy and prove their loyalty. He heard Kadan's voice and Ysela's crying at the door.",
+      "narrationKo": "같은 시각, 이그니스는 루시안의 명령을 받고 별궁으로 향하고 있었다. 약제고 침입자를 직접 잡아 충성을 증명하라는 명령이었다. 그는 문 앞에서 카단의 목소리와 이셀라의 울음을 함께 들었다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 0.5591
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_10/scene_06.jpeg",
+      "sourceImageFile": "Ignis_opens_door_white_flames_202607260802.jpeg",
+      "narrationEn": "When Ignis opened the door, white flames filled the room. Kadan spread his shield but did not fight back. Celia also took the blow and let Ysela step forward. Ysela did not retreat even in the flames.",
+      "narrationKo": "이그니스가 문을 열자 백색 불꽃이 방을 가득 채웠다. 카단은 방패를 펼쳤지만 반격하지 않았다. 실리아도 칼바람을 거두고 이셀라가 앞으로 나서게 했다. 이셀라는 불길 속에서도 물러나지 않았다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 0.4792
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_10/scene_07.jpeg",
+      "sourceImageFile": "Carrying_newborn_out_of_tent_202607260802.jpeg",
+      "narrationEn": "The feeling of carrying Ignis out of a tent on fire as a newborn made me move my feet. When she stretched out her hand, Ignis's flames only circled around her finger. “Please don’t come closer.",
+      "narrationKo": "갓난아이 때 불이 붙은 천막에서 이그니스를 안고 나왔던 감각이 발을 움직였다. 그녀가 손을 뻗자 이그니스의 불꽃이 손가락 주위만 둥글게 비켜 갔다. “다가오지 마십시오.”",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 0.3795
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_10/scene_08.jpeg",
+      "sourceImageFile": "Ignis_and_Ysela_in_scene_202607260802.jpeg",
+      "narrationEn": "” Ignis's voice cracked. “Don’t stop if you don’t want to. This time, I don’t want to listen to your wishes and get taken away. ” Ysela stopped on the spot.",
+      "narrationKo": "이그니스의 목소리가 갈라졌다. “싫다면 멈추마. 이번에는 네 의사를 듣지 않고 빼앗기고 싶지 않구나.” 이셀라는 그 자리에서 멈췄다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 0.3808
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_10/scene_09.jpeg",
+      "sourceImageFile": "Ysela_chooses_son's_option_202607260802.jpeg",
+      "narrationEn": "Instead of running to hug him, I left the option for my son to choose. “You have a crescent-shaped scar on your right shoulder. ” Ysela said.",
+      "narrationKo": "달려가 안는 대신 아들이 선택할 거리를 남겨 두었다. “네 오른쪽 어깨에 초승달 모양의 흉터가 있지.” 이셀라가 말했다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 0.5312
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_10/scene_10.jpeg",
+      "sourceImageFile": "Ignis's_fire_wavered_scar_202607260802.jpeg",
+      "narrationEn": "“The fire was so hot when it was born that I put an ice towel on it and the marks were made. ” Ignis's fire wavered. It was a scar that I had never shown to anyone. He took a step forward and then took a step back.",
+      "narrationKo": "“태어날 때 불꽃이 너무 뜨거워 내가 얼음수건을 얹어 주다가 생긴 자국이란다.” 이그니스의 불이 흔들렸다. 누구에게도 보여 준 적 없는 흉터였다. 그는 한 걸음 다가갔다가 다시 물러났다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 0.4372
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_10/scene_11.jpeg",
+      "sourceImageFile": "Lucian_activates_destruction_rune_202607260802.jpeg",
+      "narrationEn": "The life he had built up at the court, hating his mother as a traitor his entire life, could not be destroyed with a single sentence. Lucian was already watching everything from the roof. He activated the destruction rune hidden in Ysela's memory seal.",
+      "narrationKo": "평생 어머니를 배신자로 미워하며 쌓은 궁정의 삶이 한 문장으로 무너질 수는 없었다. 루시안은 이미 지붕 위에서 모든 것을 보고 있었다. 그는 이셀라의 기억 봉인에 숨겨 둔 파괴 룬을 작동시켰다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 0.4094
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_10/scene_12.jpeg",
+      "sourceImageFile": "Ignis_hugged_mother,_Kadan_Ysela_202607260802.jpeg",
+      "narrationEn": "As the black flame penetrated her heart, Ignis instinctively hugged her mother. The cold of Kadan and the flame of Ignis enveloped the rune at the same time, and the opposing forces were balanced for a moment. Kadan felt that if the ice was even a little strong, Ysela's heart would stop. Ignis was also able to burn the memories along with the seal by turning up the heat.",
+      "narrationKo": "검은 불꽃이 그녀의 심장으로 파고들자 이그니스가 본능적으로 어머니를 안았다. 카단의 냉기와 이그니스의 불꽃이 동시에 룬을 감쌌고, 상반된 힘이 잠시 균형을 이루었다. 카단은 얼음이 조금만 강하면 이셀라의 심장까지 멈춘다는 것을 느꼈다. 이그니스도 불을 높이면 봉인과 함께 기억을 태울 수 있었다.",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 0.5578
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_10/scene_13.jpeg",
+      "sourceImageFile": "Brothers_before_ruins_scene_202607260802_2.jpeg",
+      "narrationEn": "The two, unaware of each other's breathing, increased their strength as much as the other person backed away, and immediately lowered it when the other person faltered. The first cooperation was born not of trust but of a common fear of saving one person. “Now you have become a useful brother.",
+      "narrationKo": "두 사람은 서로의 호흡을 모른 채 상대가 물러나는 만큼 힘을 더하고, 상대가 흔들리면 즉시 낮췄다. 첫 협동은 신뢰가 아니라 한 사람을 살려야 한다는 공통의 두려움에서 태어났다. “이제야 쓸모 있는 형제가 되었군.”",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 0.3642
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_10/scene_14.jpeg",
+      "sourceImageFile": "Lucian_takes_Ysela_hostage_202607260802.jpeg",
+      "narrationEn": "” Lucian came down with the palace guards. After hearing that he had plotted his father's death, Kadan drew his dagger. However, Lucian took Ysela hostage and said that Balian was still alive. He was a nameless prisoner in a labor prison beneath the palace.",
+      "narrationKo": "루시안이 궁정 경비대를 이끌고 내려왔다. 그가 아버지들의 죽음을 꾸몄다는 사실을 듣고 카단은 단검을 뽑았다. 그러나 루시안은 이셀라를 인질로 잡고, 발리안이 아직 살아 있다는 말을 던졌다. 궁정 지하의 노동 감옥에서 이름 없는 죄수로 지낸다는 것이었다.",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 0.371
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_10/scene_15.jpeg",
+      "sourceImageFile": "Ignis_failed_to_aim_sword_202607260802.jpeg",
+      "narrationEn": "Ignis failed to aim his sword at Lucian. The man raised him as a prince, gave him power and technology, and at the same time took away his biological parents. Neither memory was a lie.",
+      "narrationKo": "이그니스는 루시안에게 검을 겨누지 못했다. 그 남자는 자신을 황자로 키웠고, 권력과 기술을 주었으며, 동시에 친부모를 빼앗았다. 어느 쪽 기억도 거짓만은 아니었다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 52,
+      "alignmentScore": 0.4327
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_10/scene_16.jpeg",
+      "sourceImageFile": "Celia_bursts_glass_wall_202607260802.jpeg",
+      "narrationEn": "While he was hesitating, security guards poured into the room. Celia gathered the wind from the garden and burst the glass wall. Kadan carried Ysela and ran outside, and the carriage prepared by Walker and Eliana waited under the fence. Ignis received orders to chase, but deliberately set fire to the opposite corridor to block the guard's path.",
+      "narrationKo": "망설이는 사이 경비대가 방 안으로 쏟아졌다. 실리아가 정원의 바람을 한데 끌어모아 유리벽을 터뜨렸다. 카단은 이셀라를 업고 바깥으로 뛰었고, 워커와 엘리아나가 준비한 마차가 담장 아래에서 기다렸다. 이그니스는 추격 명령을 받았지만 일부러 반대편 회랑에 불을 질러 경비의 길을 막았다.",
+      "sourceSentenceStart": 53,
+      "sourceSentenceEnd": 56,
+      "alignmentScore": 0.3719
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_10/scene_17.jpeg",
+      "sourceImageFile": "Lucian_meets_mother_in_prison_202607260802.jpeg",
+      "narrationEn": "Lucian did not miss the action. “How does it feel to meet your mother? ” “I haven’t yet confirmed if that woman is my mother.",
+      "narrationKo": "루시안은 그 행동을 놓치지 않았다. “어머니를 만난 기분이 어떠냐?” “저 여자가 내 어머니인지 아직 확인하지 못했습니다.”",
+      "sourceSentenceStart": 57,
+      "sourceSentenceEnd": 59,
+      "alignmentScore": 0.5738
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_10/scene_18.jpeg",
+      "sourceImageFile": "Balian_Ignis_Lucian_Aleksandar_E…_202607260802.jpeg",
+      "narrationEn": "” Ignis's voice was cold, but the flames inside his fist were burning the blood. Ysela, who left the palace, saw Kadan's dagger and recognized Aleksandar. She described the last moment when Balian pushed her away to avoid Lucian's pursuit. For the first time, the tragedies of two families were connected in one memory.",
+      "narrationKo": "이그니스의 목소리는 차가웠으나 주먹 안에서 불꽃이 피를 태우고 있었다. 궁정을 빠져나온 이셀라는 카단의 단검을 보고 알렉산다르를 알아보았다. 그녀는 발리안이 루시안의 추격을 피하려 자신을 밀쳐 낸 마지막 순간을 이야기했다. 두 집안의 비극이 처음으로 하나의 기억 속에서 이어졌다.",
+      "sourceSentenceStart": 60,
+      "sourceSentenceEnd": 63,
+      "alignmentScore": 0.4788
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_10/scene_19.jpeg",
+      "sourceImageFile": "Ysela_looks_at_Kadan's_face_202607260802.jpeg",
+      "narrationEn": "Inside the carriage, Ysela looked at Kadan's face several times. His eyebrows resembled his father's, and his habit of slightly tilting his head when listening to people was similar to Elwin. Kadan pieced together the memories of his father, whom he had never met, from other people's memories.",
+      "narrationKo": "마차 안에서 이셀라는 카단의 얼굴을 몇 번이나 살폈다. 눈썹은 아버지를 닮았고, 사람의 말을 들을 때 고개를 조금 기울이는 버릇은 엘윈과 같았다. 카단은 한 번도 만나지 못한 아버지를 타인의 기억으로 조금씩 조립했다.",
+      "sourceSentenceStart": 64,
+      "sourceSentenceEnd": 66,
+      "alignmentScore": 0.5377
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_10/scene_20.jpeg",
+      "sourceImageFile": "Balian,_Celia,_Kadan_in_prison_202607260802.jpeg",
+      "narrationEn": "Kadan said he would go back to the dungeon and rescue Balian. Celia did not stop him and unfolded the palace drainage map. Ignis was looking at them from the top of the red glass tower in the distance. Between the flame and the snow now lay a path not only toward hatred but toward the same truth.",
+      "narrationKo": "카단은 지하 감옥으로 돌아가 발리안을 구하겠다고 했다. 실리아는 말리지 않고 궁정 배수로 지도를 펼쳤다. 멀리 붉은 유리탑의 꼭대기에서 이그니스가 그들을 바라보고 있었다. 불꽃과 눈 사이에는 이제 증오만이 아니라 같은 진실을 향한 길이 놓여 있었다.",
+      "sourceSentenceStart": 67,
+      "sourceSentenceEnd": 70,
+      "alignmentScore": 0.5944
+    }
+  ]
+}

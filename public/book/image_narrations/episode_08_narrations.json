@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 8,
+  "episodeTitleEn": "Rider of the Crimson Mane",
+  "episodeTitleKo": "붉은 갈기의 기수",
+  "sourceSentenceCount": 64,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_08/scene_01.jpeg",
+      "sourceImageFile": "Kadan_encounters_wild_horse_202607260802.jpeg",
+      "narrationEn": "Upon entering the southern plains, Kadan encountered a wild horse with a dark red mane. Instead of carrying a man on its back, the horse kicked and dented the armor of a soldier who came close. The auctioneers prepared tranquilizing arrows, but Kadan entered the fence empty-handed.",
+      "narrationKo": "남쪽 평원에 들어서자 카단은 검붉은 갈기의 야생마를 만났다. 말은 등에 사람을 태우기는커녕 가까이 온 병사의 갑옷을 걷어차 찌그러뜨렸다. 경매상들은 마취 화살을 준비했지만, 카단은 울타리 안으로 빈손으로 들어갔다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 3,
+      "alignmentScore": 0.5305
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_08/scene_02.jpeg",
+      "sourceImageFile": "Man_and_horse_at_sunset_202607260802.jpeg",
+      "narrationEn": "He didn't try to take the reins. He ran the same distance until the horse got tired, and when he stopped, he stopped too. As the sun was setting, the wild horse first touched the tip of its nose to his shoulder.",
+      "narrationKo": "그는 고삐를 잡으려 하지 않았다. 말이 지칠 때까지 같은 거리를 두고 달렸고, 멈추면 자신도 멈췄다. 해가 기울 무렵 야생마가 먼저 코끝을 그의 어깨에 댔다.",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 6,
+      "alignmentScore": 0.5753
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_08/scene_03.jpeg",
+      "sourceImageFile": "Kadan_called_Pegasus_horse_202607260802.jpeg",
+      "narrationEn": "Kadan called the horse Pegasus. This is because red frost crystals were scattered through its mane as it ran. The auctioneer presented a contract and asked for the price of the horse.",
+      "narrationKo": "카단은 그 말을 페가수스라 불렀다. 달릴 때 갈기 사이로 붉은 서리 결정이 흩어졌기 때문이다. 경매상은 계약서를 내밀며 말값을 요구했다.",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 9,
+      "alignmentScore": 0.3815
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_08/scene_04.jpeg",
+      "sourceImageFile": "Kadan_asked_about_wild_horse_202607260802.jpeg",
+      "narrationEn": "Kadan asked why the person who locked up the wild horse was the owner. Pegasus, who was watching the scuffle, broke down the fence and stood next to Kadan. The merchant retreated amid jeers from the crowd, who said even the choice of horse was priceless.",
+      "narrationKo": "카단은 야생마를 가둬 둔 사람이 어째서 주인이냐고 물었다. 실랑이를 지켜보던 페가수스가 울타리를 부수고 카단 옆에 섰다. 상인은 말의 선택까지 값을 매길 수 없다는 군중의 야유 속에 물러났다.",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 0.4027
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_08/scene_05.jpeg",
+      "sourceImageFile": "Beggar_accused_of_stealing_bread_202607260802.jpeg",
+      "narrationEn": "At the Janggagu Market on the outskirts of the capital, he saw a small beggar wearing a shabby cloak. The beggar was falsely accused of stealing bread and was surrounded by merchants, but instead of being frightened, he pointed out the flour stains on the soles of the thieves' shoes. As the real thief ran away, she kicked a rock with her toe, hitting the wheel axle exactly. Kadan bought bread and warm soup from the beggar.",
+      "narrationKo": "도성 외곽의 장가구 시장에서 그는 남루한 망토를 걸친 작은 거지를 보았다. 거지는 빵을 훔쳤다는 누명을 쓰고 상인들에게 둘러싸여 있었지만 겁먹기는커녕 훔친 사람의 신발 바닥에 묻은 밀가루 자국을 지적했다. 진짜 도둑이 달아나자 그녀는 발끝으로 돌을 차 바퀴 축을 정확히 맞혔다. 카단은 거지에게 빵과 따뜻한 수프를 샀다.",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 0.6413
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_08/scene_06.jpeg",
+      "sourceImageFile": "Kadan_gives_fur_coat_202607260802.jpeg",
+      "narrationEn": "Although his six teachers told him to use his old money sparingly, he even took off his fur coat to someone he met for the first time. The beggar did not eat the soup in a hurry. First, I smelled the scent and stirred the floor once with a spoon.",
+      "narrationKo": "여섯 스승이 노잣돈을 아껴 쓰라 했지만, 그는 처음 만난 사람에게 모피 외투까지 벗어 주었다. 거지는 수프를 허겁지겁 먹지 않았다. 먼저 향을 맡고 숟가락으로 바닥을 한 번 저었다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 0.4236
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_08/scene_07.jpeg",
+      "sourceImageFile": "Kadan_eats_soup_from_bowl_202607260802.jpeg",
+      "narrationEn": "This is because I found out that there was a store that stole customers' money by putting sleeping vinegar in cheap soup. Kadan ate from his bowl first, and only then did he put a spoonful in his mouth. “Aren’t you trusting strangers too much?",
+      "narrationKo": "값싼 국물에 수면초를 넣어 손님의 돈을 훔치는 가게가 있다는 것을 알았기 때문이다. 카단이 자기 그릇을 먼저 떠먹자 그제야 한 숟갈을 입에 넣었다. “낯선 사람을 너무 믿는 거 아니야?” “너는 아무도 안 믿는 것 같은데.”",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 0.5207
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_08/scene_08.jpeg",
+      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_3.jpeg",
+      "narrationEn": "” “You don’t seem to trust anyone. ” The two looked at each other for a moment and then laughed at the same time. It was the first greeting from people facing the same problem in opposite directions.",
+      "narrationKo": "두 사람은 잠시 서로를 보다가 동시에 웃었다. 같은 문제를 정반대 방향에서 안고 있는 사람들의 첫 인사였다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 0.563
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_08/scene_09.jpeg",
+      "sourceImageFile": "Beggar_asks_southerners_fooled_202607260802.jpeg",
+      "narrationEn": "“Are all southerners so easily fooled? ” the beggar asked. “Anyone who pretends to be hungry to get soup must be really hungry.",
+      "narrationKo": "“남쪽 사람은 전부 이렇게 쉽게 속아?” 거지가 물었다. “배고픈 척까지 하면서 수프를 얻으려는 사람이라면 정말 배가 고픈 거겠지.”",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 0.3235
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_08/scene_10.jpeg",
+      "sourceImageFile": "Beggar_laughed_Celia_asked_Kadan_202607260802.jpeg",
+      "narrationEn": "” The beggar laughed as if he were dumbfounded. She introduced herself as Celia and asked where Kadan was going and who she was looking for. Kadan didn't know how to hide it, and Celia changed its expression three times while listening. When the name Ignis came up, the laughter completely disappeared.",
+      "narrationKo": "거지는 어이가 없다는 듯 웃었다. 자신을 실리아라고 소개한 그녀는 카단이 어디로 가는지, 누구를 찾는지 꼬치꼬치 물었다. 카단은 숨길 줄 몰랐고, 실리아는 듣는 동안 세 번 표정을 바꾸었다. 이그니스라는 이름이 나왔을 때에는 웃음이 완전히 사라졌다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 0.5732
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_08/scene_11.jpeg",
+      "sourceImageFile": "Hunters_block_path_market_202607260802.jpeg",
+      "narrationEn": "As the two people left the market, hunters who were trying to steal Pegasus blocked their path. Before Kadan drew his sword, Celia snapped his fingers. The wind spread the alley's awnings at once, blocking the hunters' view, and fruit crates rolled like wheels and hit their ankles.",
+      "narrationKo": "두 사람이 시장을 빠져나오자 페가수스를 훔치려던 사냥꾼들이 길을 막았다. 카단이 검을 뽑기 전에 실리아가 손가락을 튕겼다. 바람이 골목의 차양을 한꺼번에 펼쳐 사냥꾼들의 시야를 가렸고, 과일 상자가 바퀴처럼 굴러 발목을 쳤다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 0.5923
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_08/scene_12.jpeg",
+      "sourceImageFile": "Pegasus_Kadan_Celia_heading_capital_202607260802.jpeg",
+      "narrationEn": "“You are not an ordinary beggar. ” “You’re not an ordinary idiot either. ” They headed to the capital together.",
+      "narrationKo": "“너, 평범한 거지는 아니구나.” “너도 평범한 바보는 아니네.” 그들은 함께 도성으로 향했다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 0.4603
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_08/scene_13.jpeg",
+      "sourceImageFile": "Knight_holding_duel_for_daughter_202607260802.jpeg",
+      "narrationEn": "A large duel stand was erected in the square in front of the castle gate. Wandering knight Balbo was holding a public sparring to find a spouse for his adopted daughter Eliana. There was only one condition: the person who pushed Eliana out of the duel without a weapon would be eligible to marry.",
+      "narrationKo": "성문 앞 광장에는 커다란 결투대가 세워져 있었다. 떠돌이 기사 발보가 양녀 엘리아나의 배우자를 찾겠다며 공개 대련을 열고 있었다. 조건은 단 하나, 엘리아나를 무기 없이 결투대 밖으로 밀어내는 사람이 혼인 자격을 얻는다는 것이었다.",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 0.4669
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_08/scene_14.jpeg",
+      "sourceImageFile": "Eliana_fighting_challengers_in_s…_202607260802.jpeg",
+      "narrationEn": "Eliana was not a weak product. Using the crystal bow and vine runes alternately, he quickly kicked out the challengers. However, when the young man in golden armor came up, the air in the square became hot.",
+      "narrationKo": "엘리아나는 약한 상품이 아니었다. 수정 활과 덩굴 룬을 번갈아 사용해 도전자들을 단숨에 내쫓았다. 그러나 금빛 갑옷을 입은 청년이 올라오자 광장의 공기가 달아올랐다.",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 0.4477
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_08/scene_15.jpeg",
+      "sourceImageFile": "Ignis_reducing_vines_to_ash_202607260802.jpeg",
+      "narrationEn": "White flames bloomed from his hands and reduced the vines to ash. Ignis checked the crowd's cheers before entering the duel. Each time a hand was raised, a flag with the royal emblem on it was unfurled. He did not come because he wanted to get married, but to test whether he was seen as a future king in the people's eyes.",
+      "narrationKo": "그의 손에서 피어난 백색 화염이 덩굴을 재로 만들었다. 이그니스는 결투대에 오르기 전 관중의 환호를 확인했다. 한 번 손을 들 때마다 궁정의 문장이 새겨진 깃발이 펼쳐졌다. 그는 혼인을 원해서 온 것이 아니라 사람들의 눈에 자신이 미래의 왕으로 보이는지 시험하러 온 것이었다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 0.5148
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_08/scene_16.jpeg",
+      "sourceImageFile": "Eliana_shoots_bow_at_Ignis_202607260802.jpeg",
+      "narrationEn": "Eliana avoided the flames and shot his bow three times. Ignis burned the first arrow and captured the second, but the third arrow pierced the crown decoration. The audience's brief laughter touched his pride.",
+      "narrationKo": "엘리아나는 불길을 피해 활을 세 번 쐈다. 이그니스는 첫 화살을 태우고 둘째를 잡았지만, 셋째 화살이 왕관 장식을 꿰뚫었다. 관중의 짧은 웃음이 그의 자존심을 건드렸다.",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 51,
+      "alignmentScore": 0.4276
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_08/scene_17.jpeg",
+      "sourceImageFile": "Ignis_becomes_cruel_prince_202607260802.jpeg",
+      "narrationEn": "It was from that moment that Ignis became more cruel than necessary. “I am Ignis, the prince of the Red Glass Court. ” Celia's voice lowered.",
+      "narrationKo": "이그니스가 필요 이상으로 잔인해진 것은 그 순간부터였다. “붉은 유리 궁정의 황자 이그니스다.” 실리아의 목소리가 낮아졌다.",
+      "sourceSentenceStart": 52,
+      "sourceSentenceEnd": 54,
+      "alignmentScore": 0.6402
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_08/scene_18.jpeg",
+      "sourceImageFile": "Ignis_defeats_Eliana_Balbo_202607260802.jpeg",
+      "narrationEn": "Ignis did not raise his hand even after defeating Eliana. She threw her shoe into the audience, saying that marriage was just a game for low-class people. When Balbo protested, the flame whip burned the back of the old man's hand.",
+      "narrationKo": "이그니스는 엘리아나를 이기고도 손을 잡아 일으키지 않았다. 혼인은 천민들의 놀이일 뿐이라며 그녀의 신발을 관중석으로 던졌다. 발보가 항의하자 화염 채찍이 노인의 손등을 태웠다.",
+      "sourceSentenceStart": 55,
+      "sourceSentenceEnd": 57,
+      "alignmentScore": 0.473
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_08/scene_19.jpeg",
+      "sourceImageFile": "Kadan_entered_duel_202607260802.jpeg",
+      "narrationEn": "Kadan entered the duel. Although his teachers told him not to interfere in other people's business, he picked up the shoes that fell in front of Ignis and returned them to Eliana. “If you won, you have nothing more to prove.",
+      "narrationKo": "카단이 결투대에 올랐다. 스승들은 남의 일에 끼어들지 말라고 했지만, 그는 이그니스 앞에 떨어진 신발을 주워 엘리아나에게 돌려주었다. “이겼다면 더 이상 증명할 게 없잖아. 왜 모욕하지?”",
+      "sourceSentenceStart": 58,
+      "sourceSentenceEnd": 61,
+      "alignmentScore": 0.4811
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_08/scene_20.jpeg",
+      "sourceImageFile": "Kadan_Ignis_fantasy_scene_202607260802.jpeg",
+      "narrationEn": "Why insult me? ” Ignis saw the red string and old runes attached to Kadan's dagger. An unexplainable feeling of discomfort welled up in my chest. The children, connected by the promise of their two fathers, created snow and fire without even knowing each other's names.",
+      "narrationKo": "이그니스는 카단의 단검에 달린 붉은 끈과 오래된 룬을 보았다. 이유를 알 수 없는 불쾌감이 가슴에서 치밀었다. 두 아버지의 약속으로 이어진 아이들이, 서로의 이름도 모른 채 눈과 불을 일으켰다.",
+      "sourceSentenceStart": 62,
+      "sourceSentenceEnd": 64,
+      "alignmentScore": 0.4917
+    }
+  ]
+}

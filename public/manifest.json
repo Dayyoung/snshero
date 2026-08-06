@@ -1,0 +1,80 @@
+{
+  "name": "SNSHero.com",
+  "short_name": "SNSHero",
+  "description": "복잡한 설치나 가입 없이 클릭 한 번으로 즐기는 인공지능(AI) 웹 카드 게임 SNS히어로. 110여 종의 귀여운 히어로 카드를 수집하고 박진감 넘치는 배틀을 벌여보세요.",
+  "categories": ["games", "entertainment", "card games", "strategy games"],
+  "lang": "ko",
+  "dir": "ltr",
+  "id": "/",
+  "scope": "/",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "related_applications": [],
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "홈 로비 (Lobby)",
+      "short_name": "홈",
+      "description": "SNS히어로 메인 홈 로비로 이동",
+      "url": "/home",
+      "icons": [{ "src": "/icon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "마이덱 (My Deck)",
+      "short_name": "마이덱",
+      "description": "수집한 카드 관리 및 덱 구성",
+      "url": "/deck",
+      "icons": [{ "src": "/icon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "배틀 대전 (Battle)",
+      "short_name": "배틀",
+      "description": "실시간 자동 카드 배틀 입장",
+      "url": "/play",
+      "icons": [{ "src": "/icon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "상점 (Shop)",
+      "short_name": "상점",
+      "description": "카드 뽑기 및 스킨 아이템 구매",
+      "url": "/shop",
+      "icons": [{ "src": "/icon.png", "sizes": "192x192" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/card100.png",
+      "sizes": "900x700",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "SNSHero 100 Free Pull Event"
+    },
+    {
+      "src": "/110card.png",
+      "sizes": "900x700",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "SNSHero Cute Illustration Cards"
+    }
+  ]
+}

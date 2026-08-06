@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 20,
+  "episodeTitleEn": "The Wave That Swallowed the Flower Ship",
+  "episodeTitleKo": "꽃배를 삼킨 파도",
+  "sourceSentenceCount": 57,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_20/scene_01.jpeg",
+      "sourceImageFile": "Celia_on_burning_ship_202607260802.jpeg",
+      "narrationEn": "There were no war ships in the port of Wind Island. Celia created an evacuation boat by connecting flower boats used during festivals.",
+      "narrationKo": "바람섬의 항구에는 전쟁용 배가 없었다. 실리아는 축제 때 쓰는 꽃배들을 이어 피난선을 만들었다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.3339
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_20/scene_02.jpeg",
+      "sourceImageFile": "Children_and_elderly_in_cabin_202607260802.jpeg",
+      "narrationEn": "The children and the elderly were placed in the central cabin, and the fog passage was opened with Aeolus's flute. The colorful flower decorations were a target in the night sea, but there was no time to take them off. Instead of tearing down the flower decorations, the islanders hung empty cloth bags under the flowers.",
+      "narrationKo": "아이와 노인을 중앙 선실에 태우고, 에올루스의 피리로 안개 항로를 열었다. 화려한 꽃장식은 밤바다에서 표적이 되었지만 떼어 낼 시간이 없었다. 섬 주민들은 꽃장식을 뜯는 대신 빈 천 주머니를 꽃 아래 매달았다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.5203
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_20/scene_03.jpeg",
+      "sourceImageFile": "Celia_forming_shield_from_arrow_202607260802.jpeg",
+      "narrationEn": "It had a structure that caught the wind when an arrow flew, forming a small shield. The tailors preparing for the festival repaired the sails faster than the war engineers. Rather than giving orders, Celia connected each person's skills to where they were needed.",
+      "narrationKo": "화살이 날아오면 바람을 머금어 작은 방패가 되는 구조였다. 축제를 준비하던 재봉사들이 전쟁 기술자보다 빠르게 돛을 고쳤다. 실리아는 명령을 내리기보다 각자가 가진 기술이 어디에 필요한지 연결했다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 0.3598
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_20/scene_04.jpeg",
+      "sourceImageFile": "Fleet_bombarded_island_artificia…_202607260802.jpeg",
+      "narrationEn": "Lucian's fleet bombarded the island. The artificial white flame did not go out even on the water and followed the evacuation ship. Ignis stood on the bow and read the structure of the same flame.",
+      "narrationKo": "루시안의 함대가 섬을 포격했다. 인공 백색 화염은 물 위에서도 꺼지지 않고 피난선을 따라왔다. 이그니스는 뱃머리에 서서 같은 불꽃의 구조를 읽었다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 0.6269
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_20/scene_05.jpeg",
+      "sourceImageFile": "Kadan_and_Ignis_in_ruins_202607260802.jpeg",
+      "narrationEn": "It was a replica made of his blood, but it was designed to react to fear and anger. “The more I shake, the stronger that fire becomes. ” Kadan did not erect a shield in front of Ignis.",
+      "narrationKo": "그것은 그의 피로 만든 모조품이지만 두려움과 분노에 반응하도록 설계되어 있었다. “내가 흔들릴수록 저 불이 강해진다.” 카단은 이그니스의 앞에 방패를 세우지 않았다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 0.5426
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_20/scene_06.jpeg",
+      "sourceImageFile": "Ignis_hiding_fear_scene_202607260802.jpeg",
+      "narrationEn": "“Then shake it. Instead, don’t hold on alone. ” For the first time, Ignis did not hide his fear.",
+      "narrationKo": "“그럼 흔들려. 대신 혼자 버티지 마.” 이그니스는 처음으로 두려움을 숨기지 않았다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 0.682
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_20/scene_07.jpeg",
+      "sourceImageFile": "Lucian_speaking_fear_throne_202607260802.jpeg",
+      "narrationEn": "The death of his parents, the voice of Lucian, and the fear of losing his throne were spoken one by one. Emotions expressed in words were no longer prey to fake flames.",
+      "narrationKo": "부모의 죽음, 루시안의 목소리, 왕좌를 잃는 공포를 하나씩 입 밖에 냈다. 말로 드러난 감정은 더 이상 모조 화염의 먹이가 되지 못했다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 0.4199
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_20/scene_08.jpeg",
+      "sourceImageFile": "Celia_turns_wind_against_fleet_202607260802.jpeg",
+      "narrationEn": "The moment the flames abated, Celia turned the wind and sent it back to the enemy fleet. His confession wasn't cool. Sentences were often interrupted, he said the same thing twice, and when he admitted to being jealous of Kadan, the flames flew again.",
+      "narrationKo": "불길이 약해지는 순간 실리아가 바람을 뒤집어 적 함대로 돌려보냈다. 그의 고백은 멋있지 않았다. 문장은 자주 끊겼고, 같은 말을 두 번 했으며, 카단을 질투했다고 인정할 때에는 불꽃이 다시 치솟았다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 0.3678
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_20/scene_09.jpeg",
+      "sourceImageFile": "Kadan_waited_for_words_202607260802.jpeg",
+      "narrationEn": "Kadan did not give advice and waited for the next words. When Ignis finally said, “I still want to be king,” the mock flame shook the most and then went out. In Poison Dragon Ship, Belphegor called Medusa Gorgo.",
+      "narrationKo": "카단은 충고하지 않고 다음 말을 기다렸다. 이그니스가 마지막으로 “아직도 왕이 되고 싶다”고 말했을 때 모조 화염이 가장 크게 흔들렸다가 꺼졌다. 독룡선에서는 벨페고르가 메두사 고르고를 불렀다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 0.462
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_20/scene_10.jpeg",
+      "sourceImageFile": "Medusa_Gorgo_cuts_fan_202607260802.jpeg",
+      "narrationEn": "He said that if you turn over the codex piece, you can go back to the past. Medusa Gorgo cut his fan in two with a chain whip. “There is no past we can go back to.",
+      "narrationKo": "그는 코덱스 조각을 넘기면 과거로 돌아갈 수 있다고 했다. 메두사 고르고는 사슬채찍으로 그의 부채를 두 동강 냈다. “우리가 돌아갈 과거는 없어.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 0.5754
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_20/scene_11.jpeg",
+      "sourceImageFile": "Belphegor_causes_ship_to_explode_202607260802.jpeg",
+      "narrationEn": "So make the right choice at least next time. ” Belphegor was furious and caused the Poison Dragon Ship's heart path to explode. The crew members trapped inside the ship were in danger of dying together.",
+      "narrationKo": "그러니 다음 선택이라도 제대로 해.” 벨페고르는 분노해 독룡선의 심장로를 폭주시켰다. 배 안에 갇힌 선원들까지 함께 죽을 상황이었다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 0.3898
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_20/scene_12.jpeg",
+      "sourceImageFile": "Kadan_freed_crew_Ignis_drew_202607260802.jpeg",
+      "narrationEn": "Kadan crossed over to the enemy ship and freed the crew, while Ignis drew the heat from the heart into its core. The pain of returning the power that had been taken away through the forbidden liquor tore through my entire body. Celia cut off all the sails on the flower boat and turned them into a huge wind net.",
+      "narrationKo": "카단은 적선으로 건너가 선원들을 풀었고, 이그니스는 심장로의 열을 자신의 코어로 끌어들였다. 금지술로 빼앗은 힘을 돌려보내는 고통이 전신을 찢었다. 실리아는 꽃배의 돛을 모두 끊어 거대한 바람그물로 만들었다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 0.3706
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_20/scene_13.jpeg",
+      "sourceImageFile": "Belphegor_holds_rudder,_Medusa_h…_202607260802.jpeg",
+      "narrationEn": "I tried to push the poisonous dragon ship that was about to explode into the empty sea, but Belphegor held the rudder and did not let go. Medusa Gorgo held his hand for the last time. “Don’t ask me to go with you.",
+      "narrationKo": "폭발 직전의 독룡선을 빈 바다로 밀어내려 했지만, 벨페고르가 키를 고정한 채 놓지 않았다. 메두사 고르고가 마지막으로 그의 손을 잡았다. “같이 가자고 하지 마.”",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 0.6623
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_20/scene_14.jpeg",
+      "sourceImageFile": "Belphegor_said_next_choice_202607260802.jpeg",
+      "narrationEn": "” Belphegor said. “At least one person has to make the next choice.",
+      "narrationKo": "벨페고르가 말했다. “적어도 한 사람은 다음 선택을 해야지.”",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 0.637
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_20/scene_15.jpeg",
+      "sourceImageFile": "Medusa_Gorgo_pushed_into_sea_202607260802.jpeg",
+      "narrationEn": "” He pushed Medusa Gorgo into the sea. The poisonous dragon ship exploded and a pillar of black fire rose. The shock wave broke the connection of the flower boat and scattered the refuge ships in all directions.",
+      "narrationKo": "그는 메두사 고르고를 바다로 밀어냈다. 독룡선이 폭발하며 검은 불기둥이 솟았다. 충격파가 꽃배의 연결부를 끊고 피난선들을 사방으로 흩뜨렸다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 0.5721
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_20/scene_16.jpeg",
+      "sourceImageFile": "Kadan_jumps_into_water_202607260802.jpeg",
+      "narrationEn": "Kadan jumped into the water to find Celia, who had fallen into the water. They caught the hem of her silver-blue dress beneath the waves, but the whirlpool dragged them both away from the ship. The red mane of Pegasus and the light of Ignis were briefly visible above the water and then obscured by heavy rain.",
+      "narrationKo": "카단은 물에 빠진 실리아를 찾아 뛰어들었다. 파도 아래에서 그녀의 은청색 옷자락을 붙잡았지만 소용돌이가 두 사람을 배에서 멀리 끌고 갔다. 페가수스의 붉은 갈기와 이그니스의 불빛이 수면 위로 잠깐 보이다가 폭우에 가려졌다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 0.452
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_20/scene_17.jpeg",
+      "sourceImageFile": "Celia_unconscious_with_staff_202607260802.jpeg",
+      "narrationEn": "In the water, Celia was unconscious and did not let go of the green jade staff. Kadan knew that if he threw away the wand, two people could come to mind, but he also knew that it was not Celia's personal belongings, but the trust of the refugees. He first unwrapped his armor and his father's empty sword scabbard and released them into the sea.",
+      "narrationKo": "물속에서 실리아는 의식을 잃은 채 녹옥 지팡이를 놓지 않았다. 카단은 지팡이를 버리면 두 사람이 떠오를 수 있다는 것을 알았지만, 그것이 실리아 개인의 물건이 아니라 피난민들의 신뢰라는 것도 알았다. 그는 자기 갑옷과 아버지의 빈 검집을 먼저 풀어 바다에 놓아 주었다.",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 0.6411
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_20/scene_18.jpeg",
+      "sourceImageFile": "Aeolus_sends_rescue_signal_flute_202607260802.jpeg",
+      "narrationEn": "Aeolus sent a rescue signal with a flute. Ignis was lying on the deck with its core burned out. Medusa Gorgo could have killed him or taken the codex piece, but instead, he drew a reverse rune that calmed the flame.",
+      "narrationKo": "에올루스는 피리로 구조 신호를 보냈다. 이그니스는 코어가 타 버린 채 갑판에 쓰러져 있었다. 메두사 고르고는 그를 죽일 수도, 코덱스 조각을 빼앗을 수도 있었으나 대신 불꽃을 진정시키는 역순 룬을 그렸다.",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 51,
+      "alignmentScore": 0.5955
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_20/scene_19.jpeg",
+      "sourceImageFile": "Dawn_breaks_calm_sea_202607260802.jpeg",
+      "narrationEn": "As dawn broke, the sea became calm as if it were a lie. The remains of the flower boat covered the water surface like flower petals. Kadan and Celia were nowhere to be seen.",
+      "narrationKo": "동이 틀 무렵 바다는 거짓말처럼 잔잔해졌다. 꽃배의 잔해가 꽃잎처럼 수면을 덮었다. 카단과 실리아의 모습은 어디에도 없었다.",
+      "sourceSentenceStart": 52,
+      "sourceSentenceEnd": 54,
+      "alignmentScore": 0.5153
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_20/scene_20.jpeg",
+      "sourceImageFile": "Kadan_opens_eyes_on_beach_202607260802.jpeg",
+      "narrationEn": "Kadan opened his eyes on the beach of an unnamed island far away. One hand was holding Celia's wrist, and the other hand was holding a piece of the codex entrusted by Gandar. I heard someone stepping on wet sand from inside the forest.",
+      "narrationKo": "멀리 이름 없는 섬의 해변에서 카단이 눈을 떴다. 한 손은 실리아의 손목을 붙들고 있었고, 다른 손에는 간다르가 맡긴 코덱스 조각이 쥐어져 있었다. 숲 안쪽에서 누군가 젖은 모래를 밟는 소리가 들렸다.",
+      "sourceSentenceStart": 55,
+      "sourceSentenceEnd": 57,
+      "alignmentScore": 0.6315
+    }
+  ]
+}

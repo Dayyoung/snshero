@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 26,
+  "episodeTitleEn": "Open Door, Closed Heart",
+  "episodeTitleKo": "열린 문, 닫힌 마음",
+  "sourceSentenceCount": 52,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_26/scene_01.jpeg",
+      "sourceImageFile": "Ignis_knelt_before_Lucian_202607260802.jpeg",
+      "narrationEn": "Ignis returned to the Red Glass Court and knelt before Lucian. Although he was momentarily shaken by the death of his parents, he eventually lied and said that the position of prince suited him.",
+      "narrationKo": "이그니스는 붉은 유리 궁정으로 돌아가 루시안 앞에 무릎을 꿇었다. 부모의 죽음으로 잠시 흔들렸지만 결국 황자의 자리가 자신에게 어울린다는 거짓말을 했다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 0.472
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_26/scene_02.jpeg",
+      "sourceImageFile": "Lucian_accepted_Ignis_skepticism_202607260802.jpeg",
+      "narrationEn": "Lucian accepted him even though he was skeptical. This is because a symbol that deals with white flames was needed for the court ahead of war. For the first few days, Ignis went as planned.",
+      "narrationKo": "루시안은 의심하면서도 그를 받아들였다. 백색 화염을 다루는 상징이 전쟁을 앞둔 궁정에 필요했기 때문이다. 처음 며칠 동안 이그니스는 계획대로 움직였다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 0.6118
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_26/scene_03.jpeg",
+      "sourceImageFile": "Celia_told_about_secret_passage_202607260802.jpeg",
+      "narrationEn": "Changed the underground guard's shift time and told Celia about the secret passage. However, the old rooms, formal clothes, and people bowing to themselves brought back a sense of the past faster than expected.",
+      "narrationKo": "지하 경비의 교대 시간을 바꾸고, 실리아에게 비밀 통로를 전했다. 그러나 오래된 방과 예복, 자신에게 고개 숙이는 사람들은 생각보다 빠르게 과거의 감각을 되살렸다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 7,
+      "alignmentScore": 0.4284
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_26/scene_04.jpeg",
+      "sourceImageFile": "Servants_cleaned_room_Ignis_gone_202607260802.jpeg",
+      "narrationEn": "The servants said that they cleaned the room every day even while Ignis was gone. In the closet, new formal clothes were prepared for each season. Although it seemed like Lucian's consideration, it was actually a quiet order to return at any time and wear the same role.",
+      "narrationKo": "시종들은 이그니스가 떠난 동안에도 방을 매일 청소했다고 말했다. 옷장에는 새 예복이 계절별로 준비되어 있었다. 루시안의 배려처럼 보였지만, 사실은 언제든 돌아와 같은 역할을 입으라는 조용한 명령이었다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 0.5728
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_26/scene_05.jpeg",
+      "sourceImageFile": "Ignis_smooths_collar,_Lucian_whi…_202607260802.jpeg",
+      "narrationEn": "Ignis was unable to burn his robes and only smoothed the collar with his fingertips. Lucian did not promise to put him on the throne. Instead, he whispered, “If Kadan saves the world, people will make him king.",
+      "narrationKo": "이그니스는 예복을 태우지 못하고 손끝으로 옷깃만 매만졌다. 루시안은 왕좌에 앉혀 주겠다고 약속하지 않았다. 대신 “카단이 세상을 구하면 사람들은 그를 왕으로 세울 것”이라고 속삭였다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 0.4251
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_26/scene_06.jpeg",
+      "sourceImageFile": "Ignis_feared_possibility,_Kadan_…_202607260802.jpeg",
+      "narrationEn": "” It was the possibility that Ignis feared the most but could not admit. Meanwhile, Kadan arrived in front of the Ironforge tactical room in the basement of the imperial palace.",
+      "narrationKo": "이그니스가 가장 두려워하면서도 인정하지 못한 가능성이었다. 한편 카단은 황궁 지하의 아이언포지 전술실 앞에 도착했다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 0.6266
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_26/scene_07.jpeg",
+      "sourceImageFile": "Metal_leaves_on_door_202607260802.jpeg",
+      "narrationEn": "When three bundles of metal leaves were placed on top of the door, a complex ley line map appeared. But the last key was missing. The missing chapter from Orihalcon was needed.",
+      "narrationKo": "세 묶음의 금속잎을 문에 포개자 복잡한 지맥 지도가 나타났다. 그러나 마지막 열쇠가 없었다. 오리하르콘에게서 사라진 장이 필요했다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 0.4656
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_26/scene_08.jpeg",
+      "sourceImageFile": "Celia_reads_dust_around_door_202607260802.jpeg",
+      "narrationEn": "Celia read the dust in the wind around the door. There were signs that someone had already opened and closed the door from the inside.",
+      "narrationKo": "실리아는 문 주위 바람의 먼지를 읽었다. 누군가 이미 안쪽에서 문을 열었다 닫은 흔적이 있었다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 0.5373
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_26/scene_09.jpeg",
+      "sourceImageFile": "Ignis_stole_key,_not_Lucian_202607260802.jpeg",
+      "narrationEn": "The person who stole the key was most likely Ignis, not Lucian. Ignis's characteristic right foot drag remained on the floor. It was a habit I had after injuring my ankle during flame training when I was young.",
+      "narrationKo": "열쇠를 훔친 사람은 루시안이 아니라 이그니스일 가능성이 컸다. 바닥에는 이그니스 특유의 오른발 끌림도 남아 있었다. 어릴 때 화염 훈련으로 발목을 다친 습관이었다.",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 0.4993
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_26/scene_10.jpeg",
+      "sourceImageFile": "Kadan_squatted_in_front_of_202607260802.jpeg",
+      "narrationEn": "Kadan squatted in front of the trace and was silent for a while. I tried to stop the habit of trying to erase something between the words I believe and the evidence I can see. Kadan did not immediately suspect him.",
+      "narrationKo": "카단은 흔적 앞에 쪼그려 앉아 한참 말이 없었다. 믿는다는 말과 보이는 증거 사이에서 어느 하나를 지우려는 버릇을 멈추려 했다. 카단은 곧장 그를 의심하지 않았다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 0.3954
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_26/scene_11.jpeg",
+      "sourceImageFile": "Celia_anxious_about_attitude_202607260802.jpeg",
+      "narrationEn": "That attitude actually made Celia anxious. “Trust is not about not seeing the evidence.",
+      "narrationKo": "그 태도가 오히려 실리아를 불안하게 했다. “신뢰는 증거를 보지 않는 일이 아니야.”",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 0.5531
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_26/scene_12.jpeg",
+      "sourceImageFile": "Knights_and_Aeolus_encounter_und…_202607260802.jpeg",
+      "narrationEn": "” At that time, the Star Sanctuary knights and Aeolus encountered each other in the underground passage. Death Knight Artus sent different secret messages to both sides to induce battle. Hercul believed that Aeolus had kidnapped Kadan, and Aeolus thought that the Holy Knights had come to steal the codex.",
+      "narrationKo": "그때 별의 성소 기사들과 에올루스가 지하 통로에서 맞닥뜨렸다. 데스나이트 아르투스가 양쪽에 서로 다른 밀서를 보내 전투를 유도한 것이었다. 헤르쿨은 에올루스가 카단을 납치했다고 믿었고, 에올루스는 성기사단이 코덱스를 빼앗으러 왔다고 생각했다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 0.6671
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_26/scene_13.jpeg",
+      "sourceImageFile": "Death_Knight_Artus_on_Arcane_202607260802.jpeg",
+      "narrationEn": "Death Knight Artus swung his soul sword in the darkness. The attack was aimed at Aeolus's back, but Medusa Gorgo was hit instead.",
+      "narrationKo": "데스나이트 아르투스가 어둠 속에서 영혼검을 휘둘렀다. 공격은 에올루스의 등을 노렸지만 메두사 고르고가 대신 맞았다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 0.6984
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_26/scene_14.jpeg",
+      "sourceImageFile": "Aeolus_hugged_fallen_disciple_202607260802.jpeg",
+      "narrationEn": "The body damaged by the forbidden liquor quickly collapsed in the black light. Aeolus hugged his fallen disciple. Medusa Gorgo neither asked for nor forgave.",
+      "narrationKo": "금지술로 망가진 몸이 검은 빛에 빠르게 무너졌다. 에올루스는 쓰러진 제자를 안았다. 메두사 고르고는 용서를 구하지도, 용서하지도 않았다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 0.4904
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_26/scene_15.jpeg",
+      "sourceImageFile": "Belphegor_Medusa_Aeolus_scene_202607260802.jpeg",
+      "narrationEn": "However, he said that Belphegor sent him alive at the end, and told his teacher to live to see the next story of his mistakes. When Medusa Gorgo touched Aeolus's hand, he initially pushed it away. But at the end, he grabbed his sleeve and asked where Belphegor was buried.",
+      "narrationKo": "다만 벨페고르가 마지막에 자신을 살려 보냈다고 말하며, 스승도 살아서 잘못의 다음을 보라고 했다. 메두사 고르고는 에올루스의 손이 닿자 처음에는 밀어냈다. 그러나 마지막에는 그의 소매를 붙들고 벨페고르가 어디에 묻혔는지 물었다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 0.4134
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_26/scene_16.jpeg",
+      "sourceImageFile": "Brothers_placing_daggers_at_grave_202607260802.jpeg",
+      "narrationEn": "After hearing the answer that there was no exact grave, he asked them to scatter the pieces of the welcome stone where the two laughed in the same sea. The misunderstanding was resolved before her death.",
+      "narrationKo": "정확한 무덤이 없다는 대답을 듣고, 둘이 웃던 환영석 조각을 같은 바다에 뿌려 달라고 했다. 그녀의 죽음 앞에서 오해가 풀렸다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 0.5016
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_26/scene_17.jpeg",
+      "sourceImageFile": "Hercul_Aeolus_attacked_Artus_202607260802.jpeg",
+      "narrationEn": "Hercul and Aeolus attacked Death Knight Artus, but the empty armor disappeared into the dark passage. The last metal leaf and the flame mark of Ignis remained on the floor. When the tactical room door opened, the ley line device inside was awakened.",
+      "narrationKo": "헤르쿨과 에올루스는 데스나이트 아르투스를 협공했지만 빈 갑옷은 어둠 통로로 사라졌다. 바닥에는 마지막 금속잎과 이그니스의 불꽃 표식이 남아 있었다. 전술실 문이 열리자 내부의 지맥 장치가 깨어났다.",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 0.5928
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_26/scene_18.jpeg",
+      "sourceImageFile": "Lucian_on_mountain_ridge_202607260802.jpeg",
+      "narrationEn": "The mountain ranges and rivers of the continent emerged as miniature models of light. Lucian had already replicated the northern invasion route, but the core of the civilian refuge network was still safe.",
+      "narrationKo": "대륙의 산맥과 강이 빛의 축소 모형으로 떠올랐다. 루시안은 이미 북쪽 침공로를 복제해 갔지만, 민간 피난망의 핵심은 아직 안전했다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 0.4316
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_26/scene_19.jpeg",
+      "sourceImageFile": "Celia's_crystal_cracked_202607260802.jpeg",
+      "narrationEn": "The crystal of Celia was slightly cracked. It meant that Ignis had harmed someone. Since it wasn't completely broken, it didn't take his life.",
+      "narrationKo": "실리아의 수정이 미세하게 금이 갔다. 이그니스가 누군가를 해쳤다는 뜻이었다. 완전히 깨지지는 않았기에 목숨을 빼앗지는 않았다.",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 0.2446
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_26/scene_20.jpeg",
+      "sourceImageFile": "Kadan_looked_up_palace_202607260802.jpeg",
+      "narrationEn": "Kadan looked up above the palace. Ignis's closed mind was more dangerous than the open tactical room. He has now accepted that trusting his friend and preventing his friend from making mistakes are equal responsibilities.",
+      "narrationKo": "카단은 궁정 위쪽을 올려다보았다. 열린 전술실보다 닫혀 가는 이그니스의 마음이 더 위험했다. 그는 친구를 믿는 일과 친구의 잘못을 막는 일이 같은 책임이라는 것을 이제야 받아들였다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 52,
+      "alignmentScore": 0.4001
+    }
+  ]
+}

@@ -1,0 +1,209 @@
+{
+  "episodeNumber": 1,
+  "episodeTitleEn": "Two Vows Beneath the Blizzard",
+  "episodeTitleKo": "눈보라 아래 두 서약",
+  "sourceSentenceCount": 65,
+  "sceneCount": 20,
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imageFile": "episode_01/scene_01.jpeg",
+      "sourceImageFile": "Elwin_village_blizzard_scene_202607260802.jpeg",
+      "narrationEn": "Winter arrived first in Elwin village, at the southern end of the Kingdom of Lighthaven. The snow covered the castle walls starting during the day, and as the sun set, it even engulfed the boundaries of the roads and roofs. People lined their windows with thick parchment and turned off their lights early.",
+      "narrationKo": "라이트헤븐 왕국의 남쪽 끝, 엘윈 마을에는 겨울이 먼저 도착했다. 눈발은 낮부터 성벽을 지우더니 해가 지자 길과 지붕의 경계마저 삼켜 버렸다. 사람들은 창문에 두꺼운 양피지를 덧대고 일찍 등불을 껐다.",
+      "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 3,
+      "alignmentScore": 0.4861
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_01/scene_02.jpeg",
+      "sourceImageFile": "Aleksandar_and_Balian_on_bridge_202607260802.jpeg",
+      "narrationEn": "It was because of the rumor that the Shadow Realm cavalry that had taken over the north had crossed the border. That night, Aleksandar and Balian were sitting across from each other in the small tavern behind the blacksmith shop. Aleksandar was a quiet hunter who used dual swords, and Balian was a man who pierced the eyes of a wolf in a blizzard with an arcane spear.",
+      "narrationKo": "북쪽을 빼앗은 섀도우렐름의 기병이 국경을 넘었다는 소문 때문이었다. 그날 밤에도 알렉산다르와 발리안은 대장간 뒤편의 작은 선술집에 마주 앉아 있었다. 알렉산다르는 쌍검을 쓰는 과묵한 사냥꾼이었고, 발리안은 아케인 창으로 눈보라 속 늑대의 눈을 꿰뚫는 남자였다.",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 6,
+      "alignmentScore": 0.6378
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_01/scene_03.jpeg",
+      "sourceImageFile": "Two_men_hiding_Holy_Knights_202607260802.jpeg",
+      "narrationEn": "The two men lived by plowing fields and pounding iron, hiding the fact that they were descendants of the fallen Holy Knights. The only hope that could endure the night of a defeated nation was that their wives would soon give birth to children. When the door opened, the smell of blood came in before the wind.",
+      "narrationKo": "두 사람은 몰락한 성기사단의 후예라는 사실을 숨긴 채 밭을 갈고 쇠를 두드리며 살았다. 아내들이 곧 아이를 낳는다는 것만이 패전국의 밤을 견디게 하는 희망이었다. 문이 열리자 바람보다 먼저 피 냄새가 들어왔다.",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 9,
+      "alignmentScore": 0.5981
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_01/scene_04.jpeg",
+      "sourceImageFile": "Hercul_Balian_Aleksandar_scene_04_202607260802.jpeg",
+      "narrationEn": "Hercul, wearing tattered pilgrimage clothes, stood at the threshold. The broken seal of the Holy Knights was hanging on his waist, and the golden mana leaking through his gloves drew a thin pattern on the wet floor. The tip of Balian's spear touched his neck. Aleksandar's sword was already blocking the escape route behind his back.",
+      "narrationKo": "해진 순례복을 걸친 헤르쿨이 문턱에 섰다. 허리에는 성기사단의 부서진 인장이 매달려 있었고, 장갑 사이로 새어 나오는 황금 마나가 젖은 바닥에 가느다란 문양을 그렸다. 발리안의 창끝이 그의 목에 닿았다. 알렉산다르의 검은 이미 등 뒤의 퇴로를 막고 있었다.",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 0.3968
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_01/scene_05.jpeg",
+      "sourceImageFile": "Hercul_spread_palms_instead_answ…_202607260802.jpeg",
+      "narrationEn": "“If you are a hunting dog from the Shadow Realm, it would be a waste of time to reveal your name. ” Hercul spread his palms instead of answering. The two men's weapons stopped as if they had hit an invisible wall.",
+      "narrationKo": "“섀도우렐름의 사냥개라면 이름을 밝힐 시간도 아깝겠지.” 헤르쿨은 대답 대신 손바닥을 펼쳤다. 두 사람의 무기가 보이지 않는 벽에 부딪친 듯 멎었다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 0.5465
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_01/scene_06.jpeg",
+      "sourceImageFile": "Two_men_hiding_Holy_Knights_202607260802_2.jpeg",
+      "narrationEn": "As the golden protective shield surrounded the tavern, the liquor bottles on the shelves cried all at once. But he didn't fight back. He simply placed the belongings of the executed Holy Knight Commander Ake on the table.",
+      "narrationKo": "황금빛 방호진이 선술집을 둥글게 감싸자 선반의 술병들이 한꺼번에 울었다. 그러나 그는 반격하지 않았다. 탁자 위에 처형된 아케 성기사단장의 유품을 내려놓았을 뿐이었다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 0.4172
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_01/scene_07.jpeg",
+      "sourceImageFile": "Hercul_and_Artus_discuss_kingdom_202607260802.jpeg",
+      "narrationEn": "After the misunderstanding was resolved, the three discussed the state of the kingdom until dawn. The royal family hung on to banquets and tax books, and border towns took it upon themselves to keep monsters and marauders at bay. Hercul was chasing a list of court nobles who had connections with the Shadow Realm. At the top of the list was Death Knight Artus, Regent of the Court of Red Glass.",
+      "narrationKo": "오해가 풀린 뒤 세 사람은 새벽까지 왕국의 형편을 논했다. 왕실은 연회와 세금 장부에 매달렸고, 국경 마을은 스스로 괴물과 약탈자를 막고 있었다. 헤르쿨은 섀도우렐름과 내통한 궁정 귀족의 명단을 쫓고 있었다. 그 명단 맨 위에는 붉은 유리 궁정의 섭정, 데스나이트 아르투스가 있었다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 0.4984
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_01/scene_08.jpeg",
+      "sourceImageFile": "Hercul_took_out_two_daggers_202607260802.jpeg",
+      "narrationEn": "Before leaving, Hercul took out two silver daggers. Inside the handle, an unnamed rune was still sleeping. “Give each child one when they are born.",
+      "narrationKo": "헤르쿨은 떠나기 전 은빛 단검 두 자루를 꺼냈다. 손잡이 안에는 아직 이름 없는 룬이 잠들어 있었다. “아이들이 태어나면 하나씩 주게.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 0.4806
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_01/scene_09.jpeg",
+      "sourceImageFile": "Tavern_scene_with_golden_shield_202607260802.jpeg",
+      "narrationEn": "This does not mean that they should pass on their parents’ grudges. It means that they do not forget the truth until they decide for themselves who is their friend and who is their enemy. ” Aleksandar said he would give his son the name Kadan, which means a shield that endures to the end in an old northern language.",
+      "narrationKo": "부모의 원한을 떠넘기라는 뜻이 아니야. 누가 아군이고 누가 적인지 스스로 판단할 때까지, 진실을 잊지 않게 하라는 뜻이지.” 알렉산다르는 아들에게 북방의 옛말로 끝까지 버티는 방패를 뜻하는 카단이라는 이름을 주겠다고 했다.",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 0.4179
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_01/scene_10.jpeg",
+      "sourceImageFile": "Elwin_Aleksandar_Balian_tavern_p…_202607260802.jpeg",
+      "narrationEn": "Balian said he would call the child Ignis to mean not to get lost even in the fire. Instead of alcohol, the three men filled their glasses with melted snow and prayed for the safety of their two unborn children. A few days later, on a snow-covered road, young nobleman Lucian met Aleksandar's wife, Elwin. He was dressed like an injured traveler, but hidden within his cloak was the coat of arms of the Red Glass Court.",
+      "narrationKo": "발리안은 불길 속에서도 길을 잃지 말라는 뜻으로 아이를 이그니스라 부르겠다고 했다. 세 남자는 술 대신 녹인 눈을 잔에 채워 아직 태어나지 않은 두 아이의 무사함을 빌었다. 며칠 뒤, 눈 덮인 길에서 젊은 귀족 루시안이 알렉산다르의 아내 엘윈을 만났다. 그는 다친 여행객처럼 꾸미고 있었지만 망토 안에는 붉은 유리 궁정의 문장이 숨겨져 있었다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 0.6612
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_01/scene_11.jpeg",
+      "sourceImageFile": "Elwin_Lucian_soup_awakened_desire_202607260802.jpeg",
+      "narrationEn": "A bowl of warm soup and a few kind words from Elwin awakened Lucian's desire. He turned the entire town into a den of traitors to take her over. At dawn, soldiers in black armor surrounded the village.",
+      "narrationKo": "엘윈이 내민 따뜻한 수프 한 그릇과 친절한 말 몇 마디는 루시안의 욕망을 일깨웠다. 그는 그녀를 차지하려고 마을 전체를 반역자의 소굴로 꾸몄다. 새벽녘 검은 갑옷의 병사들이 마을을 포위했다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 0.5053
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_01/scene_12.jpeg",
+      "sourceImageFile": "Hercul_Balian_Aleksandar_scene_04_202607260802_2.jpeg",
+      "narrationEn": "Aleksandar sent his wife out to the north canal and stood on the bridge alone. Balian lifted his spear after putting his pregnant wife, Ysela, in the carriage. The two tore through the siege dozens of times, but the enemy even used the local residents as shields.",
+      "narrationKo": "알렉산다르는 아내를 북쪽 수로로 내보내고 혼자 다리 위에 섰다. 발리안은 임신한 아내 이셀라를 마차에 태운 뒤 창을 들었다. 두 사람은 수십 번이나 포위망을 찢었지만, 적은 주민들까지 방패로 세웠다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 0.583
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_01/scene_13.jpeg",
+      "sourceImageFile": "Aleksandar_strikes_soldier's_wrist_202607260802.jpeg",
+      "narrationEn": "Aleksandar chose the line where the resident was standing and struck the soldier's wrist with the back of his sword. The wounds on my shoulders and thighs increased as I was doing things that would have been quick to cut. Balian lifted up the fallen soldier's spear and threw it at the residents.",
+      "narrationKo": "알렉산다르는 주민이 선 줄만 골라 검등으로 병사의 손목을 쳤다. 베면 빠를 일을 돌아가느라 어깨와 허벅지에 창상이 늘었다. 발리안은 쓰러진 병사의 창을 발로 걷어 올려 주민들에게 던졌다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 0.4505
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_01/scene_14.jpeg",
+      "sourceImageFile": "Baker_carpenter_on_bridge_202607260802.jpeg",
+      "narrationEn": "The baker and carpenter, who had never held a weapon in their lives, stood on the railing of the bridge, sending their family behind them. Lucian looked down on the battle from high above. He shouted to Aleksandar that he would guarantee Elwin's life if he admitted to treason. Instead of answering, Aleksandar cut one of the ropes on the bridge.",
+      "narrationKo": "평생 무기를 잡지 않던 제빵사와 목수가 가족을 뒤로 보내며 다리 난간에 섰다. 루시안은 높은 곳에서 전투를 내려다봤다. 그는 알렉산다르에게 반역을 인정하면 엘윈의 목숨을 보장하겠다고 외쳤다. 알렉산다르는 대답 대신 다리의 밧줄 하나를 끊었다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 0.4904
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_01/scene_15.jpeg",
+      "sourceImageFile": "Soldiers_falling_into_icy_water_202607260802.jpeg",
+      "narrationEn": "The wooden board the soldiers were standing on tilted and fell into the icy water. “Your wife’s life is not guaranteed by your words. ” Balian's carriage was intercepted by the court cavalry at the end of the alley.",
+      "narrationKo": "병사들이 서 있던 나무판이 기울어 얼음물로 떨어졌다. “아내의 목숨은 네 입에서 보장되는 것이 아니다.” 발리안의 마차는 골목 끝에서 궁정 기병에게 가로막혔다.",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 0.3945
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_01/scene_16.jpeg",
+      "sourceImageFile": "Ysela_Lucian_Balian_carriage_scene_202607260802.jpeg",
+      "narrationEn": "Ysela crawled under the carriage, covering its stomach, but Lucian personally grabbed the reins and stopped it. She grabbed some mud and threw it in his face. Because of that short resistance, Balian thought his wife had run away and lured the enemy towards the cliff.",
+      "narrationKo": "이셀라는 배를 감싼 채 마차 밑으로 기어들어 갔지만, 루시안이 직접 고삐를 잡아 세웠다. 그녀는 진흙을 움켜쥐어 그의 얼굴에 던졌다. 그 짧은 저항 때문에 발리안은 아내가 도망친 줄로만 알고 절벽 쪽으로 적을 유인했다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 52,
+      "alignmentScore": 0.5326
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_01/scene_17.jpeg",
+      "sourceImageFile": "Aleksandar_did_not_back_down_202607260802.jpeg",
+      "narrationEn": "Aleksandar did not back down from the bridge until the end. By the time his sword broke, Elwin had already disappeared beyond the blizzard. Balian fell into the rapids at the bottom of the cliff while trying to protect Ysela, and Lucian kidnapped Ysela in the confusion and took him to the palace. Arriving in the northern wilderness, Elwin kneeled toward the burned village.",
+      "narrationKo": "알렉산다르는 마지막까지 다리에서 물러서지 않았다. 그의 검이 부러졌을 때 엘윈은 이미 눈보라 너머로 사라진 뒤였다. 발리안은 이셀라를 지키려다 절벽 아래 급류로 떨어졌고, 루시안은 혼란 속에서 이셀라를 납치해 궁정으로 데려갔다. 북쪽 황야에 도착한 엘윈은 불탄 마을 쪽을 향해 무릎을 꿇었다.",
+      "sourceSentenceStart": 53,
+      "sourceSentenceEnd": 56,
+      "alignmentScore": 0.6156
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_01/scene_18.jpeg",
+      "sourceImageFile": "Child_kicks_from_inside_dagger_202607260802.jpeg",
+      "narrationEn": "The dagger in my arms trembled slightly. A child who had not yet come into the world kicked his foot from the inside. The refugees who followed late could not say that Aleksandar was dead.",
+      "narrationKo": "품 안의 단검이 미세하게 떨렸다. 아직 세상에 나오지 않은 아이가 안쪽에서 발을 찼다. 뒤늦게 따라온 피난민들은 알렉산다르가 죽었다고 말하지 못했다.",
+      "sourceSentenceStart": 57,
+      "sourceSentenceEnd": 59,
+      "alignmentScore": 0.5604
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_01/scene_19.jpeg",
+      "sourceImageFile": "Elwin_buries_wheat_seeds_202607260802.jpeg",
+      "narrationEn": "Elwin didn't even ask. He put the broken sword sheath that someone had given him into his bosom, and buried the wheat seeds he had brought from the village under his eyes. Even if I couldn't come back, I hoped that someone would be able to eat bread again on the spot.",
+      "narrationKo": "엘윈도 묻지 않았다. 누군가 건네준 부러진 검집을 품에 넣고, 마을에서 가져온 밀 씨앗을 눈 아래 묻었다. 돌아오지 못하더라도 누군가는 그 자리에서 다시 빵을 구울 수 있기를 바랐다.",
+      "sourceSentenceStart": 60,
+      "sourceSentenceEnd": 62,
+      "alignmentScore": 0.5411
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_01/scene_20.jpeg",
+      "sourceImageFile": "Elwin_wipes_tears_walks_again_202607260802.jpeg",
+      "narrationEn": "“You were not born for revenge. ” Elwin wiped his tears and walked again. “Just be someone who doesn’t bow your head in the face of lies. ”",
+      "narrationKo": "“너는 복수 때문에 태어나는 게 아니란다.” 엘윈은 눈물을 닦고 다시 걸었다. “다만 거짓말 앞에서 고개를 숙이지 않는 사람이 되어 다오.”",
+      "sourceSentenceStart": 63,
+      "sourceSentenceEnd": 65,
+      "alignmentScore": 0.4843
+    }
+  ]
+}
