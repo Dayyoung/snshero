@@ -10,7 +10,7 @@ export default defineConfig(({mode}) => {
       react(), 
       tailwindcss(),
     ],
-    base: process.env.VITE_BASE_PATH || '/',
+    base: process.env.VITE_BASE_PATH || './',
     build: {
       outDir: 'dist',
       assetsDir: 'assets',
