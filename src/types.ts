@@ -602,4 +602,6 @@ export interface FriendEntry {
   battleCount: number;
   /** 현재 온라인 추정 */
   isOnline: boolean;
+  /** 마지막 접속 시각 (Item 69) */
+  lastActiveAt?: number | null;
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, HelpCircle, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, HelpCircle, X, ChevronLeft, ChevronRight, Trophy } from "lucide-react";
 import { getFormattedCardName } from "../lib/utils";
 import { Language, CardData, InventoryRecord, DatabaseCard, ViewType } from "../types";
 import { CARD_DATABASE } from "../cardDatabase";
@@ -149,6 +149,23 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
     }
     return a.id - b.id;
   });
+
+  // Collection Progress Calculation (Item 62, 69)
+  const totalDatabaseCards = Object.keys(CARD_DATABASE).length || 110;
+  const ownedCount = Object.keys(inventory).length > 0 ? Object.keys(inventory).length : ownedCards.length;
+  const collectionPercent = Math.min(100, Math.round((ownedCount / totalDatabaseCards) * 100));
+
+  const elementStats = React.useMemo(() => {
+    const stats: Record<string, number> = { WATER: 0, FIRE: 0, EARTH: 0, WIND: 0, HOLY: 0, DARK: 0 };
+    Object.values(inventory).forEach((inv: any) => {
+      const card = CARD_DATABASE[inv?.cardId as number];
+      if (card) {
+        const el = String(card.element || 'WATER').toUpperCase();
+        if (stats[el] !== undefined) stats[el]++;
+      }
+    });
+    return stats;
+  }, [inventory]);
 
   const getWikiCardData = (card: DatabaseCard): CardData => ({
     id: `wiki-print-${card.id}`,
@@ -434,6 +451,49 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
     <div className="min-h-screen app-bg text-slate-800 font-sans pb-32 overflow-x-hidden">
       <div className="max-w-4xl mx-auto px-6">
         <PageHeader title={t('wiki_card_title', language)} onBack={() => onNavigate('home')} />
+
+        {/* ── Item 62 / 69: Card Collection Progress Bar & Element Breakdown ── */}
+        <div className="mt-4 mb-6 p-4 rounded-xl border border-slate-200 bg-white/90 shadow-sm space-y-3">
+          <div className="flex items-center justify-between font-mono text-xs font-bold">
+            <span className="text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+              <Trophy size={16} className="text-amber-500" />
+              {language === 'ko' ? '도감 수집 진행률' : 'Codex Collection Progress'}
+            </span>
+            <span className="text-indigo-600 font-extrabold text-sm">
+              {ownedCount} / {totalDatabaseCards} ({collectionPercent}%)
+            </span>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200 p-0.5">
+            <div
+              className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-amber-500 rounded-full transition-all duration-500"
+              style={{ width: `${collectionPercent}%` }}
+            />
+          </div>
+
+          {/* Element Badges */}
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 pt-1 text-[10px] font-mono font-bold">
+            <div className="p-1.5 rounded-lg bg-cyan-50 border border-cyan-200 text-cyan-800 text-center">
+              💧 {language === 'ko' ? '수' : 'Water'}: {elementStats.WATER}
+            </div>
+            <div className="p-1.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-center">
+              🔥 {language === 'ko' ? '화' : 'Fire'}: {elementStats.FIRE}
+            </div>
+            <div className="p-1.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-center">
+              ⛰️ {language === 'ko' ? '지' : 'Earth'}: {elementStats.EARTH}
+            </div>
+            <div className="p-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-center">
+              🌪️ {language === 'ko' ? '풍' : 'Wind'}: {elementStats.WIND}
+            </div>
+            <div className="p-1.5 rounded-lg bg-purple-50 border border-purple-200 text-purple-800 text-center">
+              ✨ {language === 'ko' ? '신' : 'Holy'}: {elementStats.HOLY}
+            </div>
+            <div className="p-1.5 rounded-lg bg-slate-100 border border-slate-300 text-slate-800 text-center">
+              🌑 {language === 'ko' ? '암' : 'Dark'}: {elementStats.DARK}
+            </div>
+          </div>
+        </div>
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 mt-6">
           <div className="flex items-center gap-3">
             <h1 className="text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-slate-900">
@@ -518,6 +578,7 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {sortedCards.map((card) => {
+            const isOwned = Boolean(inventory[card.id] || ownedCards.some(c => c.imageIndex === card.id));
             const displayCard = {
               id: `wiki_${card.id}`,
               power: card.power,
@@ -540,22 +601,38 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
               <div 
                 key={card.id} 
                 onClick={() => openCardDetail(card)}
-                className="group relative flex gap-4 p-4 rounded-lg border border-slate-100 bg-white shadow-sm hover:shadow-md hover:border-slate-200/85 transition-all duration-300 overflow-hidden cursor-pointer active:scale-98"
+                className={`group relative flex gap-4 p-4 rounded-lg border bg-white shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden cursor-pointer active:scale-98 ${
+                  isOwned ? 'border-slate-100' : 'border-slate-200/60 bg-slate-50/50'
+                }`}
               >
-                <div className="w-20 sm:w-24 shrink-0 relative z-10">
+                <div className={`w-20 sm:w-24 shrink-0 relative z-10 ${!isOwned ? 'filter grayscale opacity-60' : ''}`}>
                   <CardItem
                     card={displayCard}
                     className="w-full aspect-[5/7] shadow-lg"
-                    isLocked={false}
+                    isLocked={!isOwned}
                     lowSpecMode={true}
                     ignoreBonuses={true}
                   />
                 </div>
 
                 <div className="flex-1 min-w-0 flex flex-col justify-center relative z-10">
-                  <h3 className="text-base font-bold text-slate-800 tracking-tight uppercase leading-tight mb-2 truncate">
-                    {getFormattedCardName(card, language)}
-                  </h3>
+                  <div className="flex items-center justify-between gap-1 mb-1">
+                    <h3 className="text-base font-bold text-slate-800 tracking-tight uppercase leading-tight truncate">
+                      {getFormattedCardName(card, language)}
+                    </h3>
+                    <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                      isOwned ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500 border border-slate-200'
+                    }`}>
+                      {isOwned ? (language === 'ko' ? '보유중' : 'OWNED') : (language === 'ko' ? '미획득' : 'LOCKED')}
+                    </span>
+                  </div>
+
+                  {/* Acquisition source for locked cards (Item 62, 69) */}
+                  {!isOwned && (
+                    <p className="text-[9px] font-mono text-indigo-600 font-semibold mb-1.5">
+                      💡 {language === 'ko' ? '획득처: 카드 소환 / 스토리 탐색' : 'Source: Gacha / Story'}
+                    </p>
+                  )}
 
                   <div className="flex gap-1.5">
                     {['N', 'E', 'S', 'W'].map((dir, i) => (

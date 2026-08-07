@@ -21,6 +21,9 @@ import type { LocalAiCapabilityStatus } from '../lib/localAi';
 import { usePerformanceMode } from '../hooks/usePerformanceMode';
 import { BackupRestoreModal } from '../components/BackupRestoreModal';
 import { GoogleSheetsSyncModal } from '../components/GoogleSheetsSyncModal';
+import { BgmJukeboxModal } from '../components/BgmJukeboxModal';
+import { triggerHaptic } from '../lib/haptic';
+import { Smartphone, Music } from 'lucide-react';
 
 interface SettingViewProps {
   bgmEnabled: boolean;
@@ -93,7 +96,8 @@ export const SettingView: React.FC<SettingViewProps> = ({
   testMode = false,
   localAiStatus
 }) => {
-  const { language, setLanguage, lowSpecMode, setLowSpecMode, theme, setTheme, cardSkinTheme, setCardSkinTheme, targetFps, setTargetFps, batterySaver, setBatterySaver } = useGameSettings();
+  const { language, setLanguage, lowSpecMode, setLowSpecMode, theme, setTheme, cardSkinTheme, setCardSkinTheme, targetFps, setTargetFps, batterySaver, setBatterySaver, hapticEnabled, setHapticEnabled } = useGameSettings();
+  const [isJukeboxOpen, setIsJukeboxOpen] = useState(false);
   const perf = usePerformanceMode();
   const [simResults, setSimResults] = useState<any[]>([]);
   const [isSimulating, setIsSimulating] = useState(false);
@@ -415,22 +419,24 @@ export const SettingView: React.FC<SettingViewProps> = ({
                     />
                   </div>
 
-                  {/* BGM Track Selector */}
+                  {/* BGM Track Selector & Jukebox */}
                   <div className="pt-4 border-t border-dashed border-slate-200 space-y-3">
                     <div className="flex justify-between items-center">
                       <div>
                         <p className="text-[10px] font-bold uppercase tracking-widest opacity-40">{t('bgm_track_select', language)}</p>
                         <p className="text-[9px] text-slate-400 font-semibold tracking-widest uppercase">{t('bgm_track_desc', language)}</p>
                       </div>
+                      <button
+                        type="button"
+                        onClick={() => setIsJukeboxOpen(true)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-indigo-600 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-[10px] font-mono font-bold uppercase tracking-wider transition-all"
+                      >
+                        <Music size={12} />
+                        {language === 'ko' ? '주크박스 열기' : 'Open Jukebox'}
+                      </button>
                     </div>
                     {(() => {
                       const currentTrack = BGM_TRACKS.find(t => t.id === bgmTrackId) || BGM_TRACKS[0];
-                      const handleCycleBgm = () => {
-                        const currentIndex = BGM_TRACKS.findIndex(t => t.id === bgmTrackId);
-                        const nextIndex = (currentIndex + 1) % BGM_TRACKS.length;
-                        setBgmTrackId(BGM_TRACKS[nextIndex].id);
-                        playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-                      };
                       return (
                         <div className="w-full rounded-lg border border-slate-200 bg-slate-50/50 p-4 transition-all hover:border-slate-300 hover:bg-slate-50">
                           <div className="flex items-center justify-between gap-3">
@@ -444,7 +450,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                             </div>
                             <button
                               type="button"
-                              onClick={handleCycleBgm}
+                              onClick={() => setIsJukeboxOpen(true)}
                               className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg border border-slate-900 bg-slate-900 px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-white shadow-sm transition-all hover:bg-slate-800 active:scale-[0.98] touch-target"
                             >
                               {t('change', language)}
@@ -504,6 +510,37 @@ export const SettingView: React.FC<SettingViewProps> = ({
                   />
                 </div>
               )}
+            </div>
+
+            {/* Haptic Feedback Option (ID 65) */}
+            <div className="bg-white p-6 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <Smartphone size={24} className={cn("transition-opacity text-slate-700", hapticEnabled ? "opacity-100" : "opacity-20")} />
+                <div>
+                  <p className="font-bold text-sm tracking-tight uppercase text-slate-800">
+                    {language === 'ko' ? '모바일 햅틱 진동' : 'Haptic Feedback'}
+                  </p>
+                  <p className="text-[10px] text-slate-400 font-semibold tracking-widest uppercase">
+                    {language === 'ko' ? '카드 뒤집기 및 전투 스킬 터치 진동 피드백' : 'Touch vibration response on battle actions'}
+                  </p>
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  const next = !hapticEnabled;
+                  setHapticEnabled(next);
+                  if (next) triggerHaptic('medium');
+                }}
+                className={cn(
+                  "min-w-[44px] min-h-[44px] w-12 h-6 rounded-full transition-all relative flex items-center p-0.5",
+                  hapticEnabled ? 'bg-indigo-600' : 'bg-slate-200'
+                )}
+              >
+                <div className={cn(
+                  "w-5 h-5 rounded-full transition-all transform bg-white shadow-sm",
+                  hapticEnabled ? 'translate-x-6' : 'translate-x-0'
+                )} />
+              </button>
             </div>
 
             <div className="bg-white p-6 flex items-center justify-between">
@@ -1507,6 +1544,17 @@ export const SettingView: React.FC<SettingViewProps> = ({
         onClose={() => setIsGoogleSheetsModalOpen(false)}
         language={language}
         season={currentSeason}
+      />
+
+      <BgmJukeboxModal
+        isOpen={isJukeboxOpen}
+        onClose={() => setIsJukeboxOpen(false)}
+        currentTrackId={bgmTrackId}
+        onSelectTrack={(trackId) => {
+          setBgmTrackId(trackId);
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+        }}
+        language={language}
       />
     </div>
   );

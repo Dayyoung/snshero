@@ -40,6 +40,9 @@ import { useCardSkins } from '../hooks/useCardSkins';
 import { StoryBattleBanner } from '../components/StoryBattleBanner';
 import { StoryBattleResult } from '../components/StoryBattleResult';
 import { ShareTemplateCard } from '../components/ShareTemplateCard';
+import { StoryStageSelectModal } from '../components/StoryStageSelectModal';
+import { SkillActivationOverlay, SkillEvent } from '../components/SkillActivationOverlay';
+import { PingIndicator } from '../components/PingIndicator';
 
 interface PlayGameViewProps {
   effectiveUser?: UserInfo;
@@ -492,6 +495,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const currentStoryRewardClaimed = currentStoryBattleContext
     ? hasClaimedStoryBattleReward(currentStoryBattleContext.rewardId)
     : false;
+
+  // Story Stage Select Modal (Item 56, 60, 68) & Skill Activation Overlay (Item 54)
+  const [isStoryStageModalOpen, setIsStoryStageModalOpen] = useState(false);
+  const [activeSkillEvent, setActiveSkillEvent] = useState<SkillEvent | null>(null);
 
   // =========================================================================
   // BOSS MODE (10-HOUR COOLDOWN BOSS RAID) STATES & HELPER FUNCTIONS
@@ -2592,6 +2599,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [operatorLogs, setOperatorLogs] = useState<string[]>([]);
   const [aiSimulatedTotalPower, setAiSimulatedTotalPower] = useState<number>(0);
   const [capturePreview, setCapturePreview] = useState<number[]>([]);
+  const [hoveredCellIdx, setHoveredCellIdx] = useState<number | null>(null);
   const [gameLogs, setGameLogs] = useState<{ id: string, timestamp: number, text: string, type: 'info' | 'capture' | 'system' | 'victory' | 'defeat' }[]>(() => {
     const saved = localStorage.getItem('hero_game_logs');
     return saved ? JSON.parse(saved) : [];
@@ -4686,6 +4694,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   };
 
   const handleMouseEnterCell = (idx: number) => {
+    setHoveredCellIdx(idx);
     if (turn !== 'player' || gameOver || board[idx] || selectedCardIdx === null) {
       setCapturePreview([]);
       return;
@@ -4701,6 +4710,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   };
 
   const handleMouseLeaveCell = () => {
+    setHoveredCellIdx(null);
     setCapturePreview([]);
   };
 
@@ -5095,18 +5105,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
   // AI Turn Logic (Cards 1-8)
   useEffect(() => {
-    if (gameState === 'playing' && turn === 'ai' && !gameOver && !isEvaluating && !activeTrapMode && (battleType === 'robot' || battleType === 'pvp_attack' || isShadowMatch || battleType === 'matgo')) {
+    if (gameState === 'playing' && turn === 'ai' && !gameOver && !isEvaluating && !activeTrapMode) {
       const isMatgo = battleType === 'matgo';
       const filledCount = board.filter(c => c !== null).length;
       const canPlay = isMatgo ? (opponentHand.length > 0) : (filledCount < 9);
       if (canPlay) {
+        const delay = lowSpecMode ? 300 : Math.max(400, 1200 * speedMultiplier);
         const timer = setTimeout(() => {
           handleAiTurn(false);
-        }, 1600 * speedMultiplier);
+        }, delay);
         return () => clearTimeout(timer);
       }
     }
-  }, [gameState, turn, board, gameOver, isEvaluating, battleType, isShadowMatch, opponentHand, activeTrapMode]);
+  }, [gameState, turn, board, gameOver, isEvaluating, battleType, isShadowMatch, opponentHand, activeTrapMode, lowSpecMode, speedMultiplier]);
 
   // Game Over Safety Net: Monitor board fullness
   useEffect(() => {
@@ -5223,6 +5234,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     if (!isPlayerAuto) setIsAiThinking(true);
 
     // Start with "Analyzing" phase
+    const initialDelay = lowSpecMode ? 100 : Math.max(300, 800 * speedMultiplier);
     setTimeout(() => {
       if (battleType === 'matgo') {
         let chosenCardIdx = -1;
@@ -5270,6 +5282,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
         setAiReasoning({ text: 'matgo_thinking' as any, cardIdx: chosenCardIdx, boardIdx: chosenBoardIdx, isPlayer: isPlayerAuto });
         
+        const matgoApplyDelay = lowSpecMode ? 200 : Math.max(400, 800 * speedMultiplier);
         setTimeout(() => {
           isProcessingRef.current = false;
           if (isPlayerAuto) {
@@ -5279,12 +5292,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           }
           setIsEvaluating(false);
           setIsAiThinking(false);
-        }, 1000 * speedMultiplier);
+        }, matgoApplyDelay);
         return;
       }
 
       const multiplier = isPlayerAuto ? (pendingQteMultiplier ?? 1) : 1;
-      const effectiveDifficulty = (aiDifficulty as AiDifficulty) || 'medium';
+      const effectiveDifficulty = lowSpecMode ? 'easy' : ((aiDifficulty as AiDifficulty) || 'medium');
       let effectiveHand = [...hand];
       if (isPlayerAuto && strategyToUse === 'aggressive') {
         effectiveHand = hand.map(c => ({
@@ -5315,6 +5328,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       setAiReasoning({ text: move.reason, cardIdx: move.cardIdx, boardIdx: move.boardIdx, isPlayer: isPlayerAuto });
       if (!isPlayerAuto) addLog(t('log_ai_tactic', language, { reason: t(move.reason as any, language) }), 'system');
       
+      const applyDelay = lowSpecMode ? 250 : Math.max(400, 800 * speedMultiplier);
       // Wait a bit more to show the reasoning, then apply
       setTimeout(() => {
         isProcessingRef.current = false; // Reset just before apply
@@ -5325,8 +5339,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         }
         setIsEvaluating(false);
         setIsAiThinking(false);
-      }, 1000 * speedMultiplier);
-    }, 1000 * speedMultiplier);
+      }, applyDelay);
+    }, initialDelay);
   };
 
   const applyAiMove = (cardIdx: number, boardIdx: number) => {
@@ -8721,7 +8735,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     {t('world_open_webtoon', language)}
                   </button>
                   <button
-                    onClick={() => setView?.('story')}
+                    onClick={() => setIsStoryStageModalOpen(true)}
                     className="flex-1 min-h-11 rounded-2xl border border-indigo-400/30 bg-indigo-500/10 text-indigo-200 font-black uppercase tracking-wider text-[11px] px-4 py-3 hover:bg-indigo-500/20 transition-all cursor-pointer"
                   >
                     {t('story_title', language)}
@@ -9606,18 +9620,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         <Terminal size={20} />
       </button>
 
-      {/* Help / Rules Button */}
+      {/* Help / Rules Button & Ping Indicator */}
       {gameState === 'playing' && !gameOver && (
-        <button
-          onClick={() => {
-            setShowInGameRules(true);
-            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-          }}
-          className="fixed right-4 z-[9999] p-3 border rounded-2xl shadow-md cursor-pointer flex items-center justify-center pointer-events-auto transition-all duration-200 bg-slate-900/90 border-slate-800 text-indigo-400 hover:text-white hover:bg-indigo-600 hover:border-indigo-500"
-          style={{ top: '10px' }}
-        >
-          <HelpCircle size={20} />
-        </button>
+        <div className="fixed right-4 top-[10px] z-[9999] flex items-center gap-2 pointer-events-auto">
+          <PingIndicator language={language} />
+          <button
+            onClick={() => {
+              setShowInGameRules(true);
+              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            }}
+            className="p-3 border rounded-2xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 bg-slate-900/90 border-slate-800 text-indigo-400 hover:text-white hover:bg-indigo-600 hover:border-indigo-500"
+          >
+            <HelpCircle size={20} />
+          </button>
+        </div>
       )}
       
       {/* Mobile Logs Drawer */}
@@ -10024,6 +10040,72 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           </motion.div>
                         </div>
                       )}
+
+                      {/* Item 74: Stat Comparison Lightning Pulse FX Overlay */}
+                      {Object.keys(combatHighlights).length > 0 && (
+                        <svg className="absolute inset-0 z-[180] w-full h-full pointer-events-none overflow-visible">
+                          <defs>
+                            <linearGradient id="lightningPulseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                              <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.9" />
+                              <stop offset="50%" stopColor="#38bdf8" stopOpacity="1" />
+                              <stop offset="100%" stopColor="#ef4444" stopOpacity="0.9" />
+                            </linearGradient>
+                            <filter id="lightningGlow" x="-20%" y="-20%" width="140%" height="140%">
+                              <feGaussianBlur stdDeviation="3" result="blur" />
+                              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                            </filter>
+                          </defs>
+                          {Object.entries(combatHighlights).map(([srcIdxStr, dirs]) => {
+                            const srcIdx = Number(srcIdxStr);
+                            const srcRow = Math.floor(srcIdx / 3);
+                            const srcCol = srcIdx % 3;
+                            const x1 = `${(srcCol + 0.5) * 33.333}%`;
+                            const y1 = `${(srcRow + 0.5) * 33.333}%`;
+
+                            return (dirs as number[]).map((dir) => {
+                              let tgtIdx = -1;
+                              if (dir === 0 && srcRow > 0) tgtIdx = srcIdx - 3;
+                              else if (dir === 1 && srcCol < 2) tgtIdx = srcIdx + 1;
+                              else if (dir === 2 && srcRow < 2) tgtIdx = srcIdx + 3;
+                              else if (dir === 3 && srcCol > 0) tgtIdx = srcIdx - 1;
+
+                              if (tgtIdx < 0) return null;
+
+                              const tgtRow = Math.floor(tgtIdx / 3);
+                              const tgtCol = tgtIdx % 3;
+                              const x2 = `${(tgtCol + 0.5) * 33.333}%`;
+                              const y2 = `${(tgtRow + 0.5) * 33.333}%`;
+
+                              return (
+                                <g key={`${srcIdx}-${tgtIdx}-${dir}`}>
+                                  <line
+                                    x1={x1}
+                                    y1={y1}
+                                    x2={x2}
+                                    y2={y2}
+                                    stroke="url(#lightningPulseGrad)"
+                                    strokeWidth="6"
+                                    strokeLinecap="round"
+                                    filter="url(#lightningGlow)"
+                                    className="animate-pulse"
+                                  />
+                                  <line
+                                    x1={x1}
+                                    y1={y1}
+                                    x2={x2}
+                                    y2={y2}
+                                    stroke="#ffffff"
+                                    strokeWidth="2"
+                                    strokeDasharray="6 3"
+                                    strokeLinecap="round"
+                                    className="animate-ping opacity-80"
+                                  />
+                                </g>
+                              );
+                            });
+                          })}
+                        </svg>
+                      )}
                       {board.map((card, idx) => {
                         if (battleType === 'matgo' && idx === 4) {
                           return (
@@ -10111,16 +10193,28 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                 </div>
                               </div>
                             )}
+                            {/* Live Battle Calculation Preview Overlay (Item 70) */}
+                            {hoveredCellIdx === idx && selectedCardIdx !== null && !card && (
+                              <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-[160] pointer-events-none whitespace-nowrap bg-indigo-950/95 text-amber-300 border border-amber-400 text-[10px] font-mono font-black px-2.5 py-0.5 rounded-full shadow-2xl animate-bounce">
+                                ⚡ {capturePreview.length > 0 
+                                  ? (language === 'ko' ? `미리보기: ${capturePreview.length}장 캡처!` : `PREVIEW: FLIP +${capturePreview.length}`) 
+                                  : (language === 'ko' ? '카드 배치 가능' : 'PLACE CARD')}
+                              </div>
+                            )}
+
                             {/* Capture Preview Highlight */}
                             {capturePreview.includes(idx) && (
-                              <div className="absolute inset-0 z-[120] pointer-events-none rounded-lg flex items-center justify-center">
-                                <div className="absolute inset-0 border-4 border-red-500 animate-pulse rounded-lg bg-red-600/20" />
+                              <div className="absolute inset-0 z-[120] pointer-events-none rounded-lg flex flex-col items-center justify-center">
+                                <div className="absolute inset-0 border-4 border-amber-400 animate-pulse rounded-lg bg-amber-500/30" />
                                 <motion.div
                                   initial={{ scale: 0 }}
-                                  animate={{ scale: 1 }}
-                                  className="relative z-10"
+                                  animate={{ scale: [0.8, 1.1, 1] }}
+                                  className="relative z-10 flex flex-col items-center bg-slate-900/95 text-amber-300 border border-amber-400 px-2 py-0.5 rounded-md shadow-xl"
                                 >
-                                  <Swords size={24} className="text-white drop-shadow-[0_0_8px_rgba(220,38,38,1)]" />
+                                  <Swords size={18} className="text-amber-400 animate-bounce" />
+                                  <span className="text-[8px] font-mono font-extrabold text-amber-300 whitespace-nowrap">
+                                    {language === 'ko' ? '뒤집힘 예상' : 'FLIP TARGET'}
+                                  </span>
                                 </motion.div>
                               </div>
                             )}
@@ -10422,7 +10516,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           )}
         </div>
         
-        <div className="w-full max-w-6xl mx-auto flex items-center justify-center gap-1 md:gap-2 h-full pb-4 overflow-visible -translate-y-2 md:-translate-y-4 relative z-10">
+        <div className={cn(
+          "w-full max-w-6xl mx-auto flex items-center gap-1 md:gap-2 h-full pb-4 overflow-x-auto overflow-y-visible scrollbar-hide px-4 touch-pan-x relative z-10",
+          playerHand.length > 5 ? "justify-start md:justify-center" : "justify-center"
+        )}>
 
 
           <AnimatePresence>
@@ -11334,6 +11431,32 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         </div>
       )}
       {renderCustomAlertModal()}
+
+      {/* Skill Activation Overlay Banner (Item 54) */}
+      <SkillActivationOverlay
+        event={activeSkillEvent}
+        language={language}
+        onComplete={() => setActiveSkillEvent(null)}
+      />
+
+      {/* Story Stage Select & Sweep Modal (Item 56, 60, 68) */}
+      <StoryStageSelectModal
+        isOpen={isStoryStageModalOpen}
+        onClose={() => setIsStoryStageModalOpen(false)}
+        language={language}
+        currentProgress={storyProgressCount}
+        onStartBattle={(epId) => {
+          setIsStoryStageModalOpen(false);
+          setIsStoryActive(true);
+          setGameState('single');
+        }}
+        onSweepStage={(epId) => {
+          // Add Sweep rewards to gold
+          const currentGold = Number(localStorage.getItem('hero_gold') || 0);
+          localStorage.setItem('hero_gold', String(currentGold + 600));
+          window.dispatchEvent(new Event('snshero_gold_updated'));
+        }}
+      />
     </div>
   );
 };

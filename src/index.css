@@ -25,6 +25,13 @@
 }
 
 @layer base {
+  html, body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern", "liga", "clig", "calt";
+  }
+
   body {
     @apply bg-[#fdfcfc] text-[#201d1d] font-mono antialiased selection:bg-[#f1eeee];
     -webkit-tap-highlight-color: transparent;

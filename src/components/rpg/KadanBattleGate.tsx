@@ -149,20 +149,25 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
     }, 1500);
   };
 
+  const encounterIdRef = React.useRef(encounter.id);
   useEffect(() => {
-    setState(createInitialKadanBattleState(playerHand, aiHand));
-    setSelectedCardIndex(0);
-    setHasReported(false);
-    setShowBattleLog(false);
-  }, [aiHand, playerHand, encounter.id]);
+    if (encounterIdRef.current !== encounter.id) {
+      encounterIdRef.current = encounter.id;
+      setState(createInitialKadanBattleState(playerHand, aiHand));
+      setSelectedCardIndex(0);
+      setHasReported(false);
+      setShowBattleLog(false);
+    }
+  }, [encounter.id, playerHand, aiHand]);
 
   useEffect(() => {
     if (state.result || state.turn !== 'ai') return;
     const timer = window.setTimeout(() => {
       const move = chooseKadanAutoMove(state, 'ai', encounter.difficulty);
-      if (!move) return;
-      setState((previous) => placeKadanBattleCard(previous, 'ai', move.cardIndex, move.boardIndex, language));
-    }, lowSpecMode ? 700 : 1500);
+      if (move) {
+        setState((previous) => placeKadanBattleCard(previous, 'ai', move.cardIndex, move.boardIndex, language));
+      }
+    }, lowSpecMode ? 350 : 500);
     return () => window.clearTimeout(timer);
   }, [encounter.difficulty, language, lowSpecMode, state]);
 
@@ -170,9 +175,10 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
     if (!autoBattle || state.result || state.turn !== 'player') return;
     const timer = window.setTimeout(() => {
       const move = chooseKadanAutoMove(state, 'player', encounter.difficulty);
-      if (!move) return;
-      setState((previous) => placeKadanBattleCard(previous, 'player', move.cardIndex, move.boardIndex, language));
-    }, lowSpecMode ? 800 : 1700);
+      if (move) {
+        setState((previous) => placeKadanBattleCard(previous, 'player', move.cardIndex, move.boardIndex, language));
+      }
+    }, lowSpecMode ? 400 : 600);
     return () => window.clearTimeout(timer);
   }, [autoBattle, encounter.difficulty, language, lowSpecMode, state]);
 
@@ -182,7 +188,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
     const timer = window.setTimeout(() => {
       setHasReported(true);
       onComplete(result);
-    }, lowSpecMode ? 1800 : 3200);
+    }, lowSpecMode ? 1000 : 1500);
     return () => window.clearTimeout(timer);
   }, [autoBattle, hasReported, lowSpecMode, onComplete, state.result]);
 

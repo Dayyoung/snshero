@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
-import { Camera, BookOpen, ChevronDown, ChevronUp, Copy, Download, Image as ImageIcon, Info, Palette, Printer, QrCode, Quote, Share2, Shirt, ShoppingBag, Sparkles, Users, X, Swords, Lock, Unlock } from 'lucide-react';
+import { Camera, BookOpen, ChevronDown, ChevronUp, Copy, Download, Image as ImageIcon, Info, Palette, Printer, QrCode, Quote, Share2, Shirt, ShoppingBag, Sparkles, Users, X, Swords, Lock, Unlock, MapPin, ExternalLink } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { useCardLock } from '../hooks/useCardLock';
@@ -415,6 +415,68 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
               </div>
 
               <div className="space-y-4">
+                {/* Item 77: Acquisition Source Guide & Go Now Button */}
+                <div className="overflow-hidden rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50/60 to-white shadow-sm p-4 space-y-3">
+                  <div className="flex items-center justify-between border-b border-indigo-100 pb-2">
+                    <div className="flex items-center gap-2">
+                      <MapPin size={16} className="text-indigo-600" />
+                      <h3 className="text-xs font-black uppercase tracking-wider text-indigo-900">
+                        {language === 'ko' ? '📍 카드 획득처 정보' : '📍 Acquisition Source'}
+                      </h3>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 text-xs">
+                    {/* Story Stage Location */}
+                    <div className="flex items-center justify-between p-2.5 rounded-2xl border border-slate-200 bg-white shadow-2xs">
+                      <div>
+                        <span className="font-bold text-slate-800 block">
+                          {language === 'ko' ? `스토리 모드 Act 0${(selectedCard.id % 3) + 1} Step 0${(selectedCard.id % 5) + 1}` : `Story Mode Act 0${(selectedCard.id % 3) + 1} Step 0${(selectedCard.id % 5) + 1}`}
+                        </span>
+                        <span className="text-[10px] text-slate-500 font-mono">
+                          {language === 'ko' ? '클리어 시 일정 확률로 드랍' : 'Random drop upon stage clear'}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onClose();
+                          onNavigate('play');
+                        }}
+                        className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-mono font-bold text-[10px] rounded-xl flex items-center gap-1 transition-all active:scale-95 cursor-pointer shadow-xs"
+                      >
+                        <span>{language === 'ko' ? '스토리 바로가기' : 'Go to Story'}</span>
+                        <ExternalLink size={12} />
+                      </button>
+                    </div>
+
+                    {/* Shop Pack Location */}
+                    <div className="flex items-center justify-between p-2.5 rounded-2xl border border-slate-200 bg-white shadow-2xs">
+                      <div>
+                        <span className="font-bold text-slate-800 block">
+                          {selectedCard.rarity === 'legendary' || selectedCard.rarity === 'gold'
+                            ? (language === 'ko' ? '상점 > 프리미엄 스페셜 카드팩' : 'Shop > Premium Card Pack')
+                            : (language === 'ko' ? '상점 > 스탠다드 카드 소환' : 'Shop > Standard Card Summon')}
+                        </span>
+                        <span className="text-[10px] text-slate-500 font-mono">
+                          {language === 'ko' ? '가차 소환 풀에 포함' : 'Included in Gacha summon pool'}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onClose();
+                          onNavigate('shop');
+                        }}
+                        className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-mono font-black text-[10px] rounded-xl flex items-center gap-1 transition-all active:scale-95 cursor-pointer shadow-xs"
+                      >
+                        <span>{language === 'ko' ? '상점 바로가기' : 'Go to Shop'}</span>
+                        <ExternalLink size={12} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
                   <div className="border-b border-slate-100 px-4 py-3">
                     <h3 className="text-xs font-black uppercase tracking-[0.28em] text-slate-500">

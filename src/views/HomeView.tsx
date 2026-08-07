@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Volume2, VolumeX } from "lucide-react";
+import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX } from "lucide-react";
+import { NotificationCenterModal } from "../components/NotificationCenterModal";
+import { getUnreadCount } from "../lib/notificationHelper";
 import { motion, AnimatePresence } from "motion/react";
 import { t } from "../lib/i18n";
 import { cn } from "../lib/utils";
@@ -12,6 +14,9 @@ import { usePerformanceMode } from "../hooks/usePerformanceMode";
 import { MainLobbyBannerCarousel } from "../components/MainLobbyBannerCarousel";
 import { MailboxModal, getMailboxItems } from "../components/MailboxModal";
 import { BeginnerRoadmap } from "../components/BeginnerRoadmap";
+import { NoticeModal } from "../components/NoticeModal";
+import { AfkPatrolModal } from "../components/AfkPatrolModal";
+import { PingIndicator } from "../components/PingIndicator";
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -69,16 +74,19 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [showPdf, setShowPdf] = useState(false);
   const [isMailboxOpen, setIsMailboxOpen] = useState(false);
   const [unreadMailCount, setUnreadMailCount] = useState(0);
+  const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
+  const [unreadNotifCount, setUnreadNotifCount] = useState(0);
 
   useEffect(() => {
     const updateUnread = () => {
       const items = getMailboxItems();
       setUnreadMailCount(items.filter(m => !m.isRead).length);
+      setUnreadNotifCount(getUnreadCount());
     };
     updateUnread();
     window.addEventListener('hero_mailbox_changed', updateUnread);
     return () => window.removeEventListener('hero_mailbox_changed', updateUnread);
-  }, []);
+  }, [isNotifModalOpen]);
 
   const { lowSpecMode } = useGameSettings();
   const perf = usePerformanceMode();
@@ -295,6 +303,23 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </button>
 
                 <button
+                  onClick={() => {
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    setIsNotifModalOpen(true);
+                  }}
+                  className="ml-1 inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white text-indigo-600 hover:text-indigo-800 hover:border-indigo-300 transition shrink-0 relative cursor-pointer"
+                  aria-label={language === 'ko' ? '알림 센터' : 'Notification Center'}
+                  title={language === 'ko' ? '통합 시스템 알림 센터' : 'Notification Center'}
+                >
+                  <Bell size={14} />
+                  {unreadNotifCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-amber-500 text-white rounded-full text-[8px] font-black flex items-center justify-center animate-pulse">
+                      {unreadNotifCount}
+                    </span>
+                  )}
+                </button>
+
+                <button
                   onClick={toggleQuickMute}
                   className="ml-1 inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:border-slate-300 transition shrink-0 cursor-pointer shadow-sm"
                   title={isAudioMuted ? (language === 'ko' ? '음소거 해제' : 'Unmute Audio') : (language === 'ko' ? '퀵 음소거' : 'Mute Audio')}
@@ -302,6 +327,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 >
                   {isAudioMuted ? <VolumeX size={14} className="text-rose-600" /> : <Volume2 size={14} className="text-emerald-600" />}
                 </button>
+
+                <PingIndicator language={language} className="ml-1" />
 
                 <button
                   onClick={() => { setHelpOpen(true); setHelpStep(0); }}
@@ -614,6 +641,18 @@ export const HomeView: React.FC<HomeViewProps> = ({
         playSfx={playSfx}
       />
 
+      {/* Notice Modal (Item 55) */}
+      <NoticeModal language={language} onNavigate={onNavigate} />
+
+      {/* AFK Patrol Rewards Modal (Item 64) */}
+      <AfkPatrolModal language={language} />
+
+      {/* Notification Center Modal (Item 71) */}
+      <NotificationCenterModal
+        isOpen={isNotifModalOpen}
+        onClose={() => setIsNotifModalOpen(false)}
+        language={language}
+      />
     </div>
   );
 };

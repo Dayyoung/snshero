@@ -10,6 +10,8 @@ import { Language } from '../types';
 import { getBrowserLanguage } from '../lib/i18n';
 import { CARD_SKIN_THEME_STORAGE_KEY, normalizeCardSkinTheme, type CardSkinThemeId } from '../content/cardSkinThemes';
 
+import { isHapticEnabled, setHapticEnabled as saveHapticSetting } from '../lib/haptic';
+
 export type ThemeMode = 'light' | 'dark' | 'metal';
 export type TargetFps = '30' | '60';
 
@@ -26,6 +28,8 @@ interface GameSettings {
   setTargetFps: (fps: TargetFps) => void;
   batterySaver: boolean;
   setBatterySaver: (val: boolean) => void;
+  hapticEnabled: boolean;
+  setHapticEnabled: (val: boolean) => void;
 }
 
 const GameSettingsContext = createContext<GameSettings | null>(null);
@@ -77,6 +81,10 @@ export function GameSettingsProvider({ children }: { children: React.ReactNode }
       : false;
   });
 
+  const [hapticEnabled, setHapticEnabledState] = useState<boolean>(() => {
+    return isHapticEnabled();
+  });
+
   const handleSetLanguage = useCallback((lang: Language) => {
     localStorage.setItem('hero_language', lang);
     setLanguage(lang);
@@ -107,6 +115,11 @@ export function GameSettingsProvider({ children }: { children: React.ReactNode }
     setBatterySaverState(val);
   }, []);
 
+  const handleSetHapticEnabled = useCallback((val: boolean) => {
+    saveHapticSetting(val);
+    setHapticEnabledState(val);
+  }, []);
+
   const value = useMemo(() => ({
     language,
     setLanguage: handleSetLanguage,
@@ -120,7 +133,9 @@ export function GameSettingsProvider({ children }: { children: React.ReactNode }
     setTargetFps: handleSetTargetFps,
     batterySaver,
     setBatterySaver: handleSetBatterySaver,
-  }), [language, lowSpecMode, theme, cardSkinTheme, targetFps, batterySaver, handleSetLanguage, handleSetLowSpecMode, handleSetTheme, handleSetCardSkinTheme, handleSetTargetFps, handleSetBatterySaver]);
+    hapticEnabled,
+    setHapticEnabled: handleSetHapticEnabled,
+  }), [language, lowSpecMode, theme, cardSkinTheme, targetFps, batterySaver, hapticEnabled, handleSetLanguage, handleSetLowSpecMode, handleSetTheme, handleSetCardSkinTheme, handleSetTargetFps, handleSetBatterySaver, handleSetHapticEnabled]);
 
   return (
     <GameSettingsContext.Provider value={value}>

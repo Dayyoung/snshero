@@ -74,7 +74,8 @@ import {
   Navigation, 
   Swords,
   Volume2,
-  VolumeX
+  VolumeX,
+  RotateCw
 } from 'lucide-react';
 
 import { Meta } from './components/Meta';
@@ -599,28 +600,34 @@ function AppContent() {
   const [authInitialized, setAuthInitialized] = useState(false);
   const [authProgress, setAuthProgress] = useState(0);
   const [targetProgress, setTargetProgress] = useState(0);
+  const loadStartTimeRef = useRef(Date.now());
 
   useEffect(() => {
     let timer: any;
     const updateProgress = () => {
       setAuthProgress((prev) => {
         if (prev < targetProgress) {
-          const next = prev + Math.max(8, Math.ceil((targetProgress - prev) * 0.65));
+          const step = Math.max(1, Math.ceil((targetProgress - prev) * 0.15));
+          const next = prev + step;
           return next >= targetProgress ? targetProgress : next;
         }
         return prev;
       });
-      timer = setTimeout(updateProgress, 16);
+      timer = setTimeout(updateProgress, 30);
     };
-    timer = setTimeout(updateProgress, 16);
+    timer = setTimeout(updateProgress, 30);
     return () => clearTimeout(timer);
   }, [targetProgress]);
 
   useEffect(() => {
     if (authProgress === 100) {
+      const elapsed = Date.now() - loadStartTimeRef.current;
+      const minDisplayTime = 2000; // Minimum 2 seconds loading screen display time
+      const remainingTime = Math.max(300, minDisplayTime - elapsed);
+
       const t = setTimeout(() => {
         setAuthInitialized(true);
-      }, 300);
+      }, remainingTime);
       return () => clearTimeout(t);
     }
   }, [authProgress]);
@@ -5748,29 +5755,38 @@ function AppContent() {
   if (!authInitialized) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-8 text-center font-sans">
-        <div className="w-12 h-12 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin mb-5" />
+        <div className="w-12 h-12 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin mb-5 shadow-sm" />
         <h1 className="text-lg font-bold text-slate-800 mb-1 tracking-tight">{t('syncing_identity', language)}</h1>
         <p className="text-xs text-slate-400 mb-2">{t('connecting_database', language)}</p>
         
         {/* 진행률(%) 및 게이지바 */}
-        <div className="w-64 bg-slate-200 h-2.5 rounded-full overflow-hidden mb-8 shadow-inner">
+        <div className="w-64 bg-slate-200 h-2.5 rounded-full overflow-hidden mb-2 shadow-inner">
           <div 
-            className="bg-indigo-600 h-full rounded-full" 
+            className="bg-indigo-600 h-full rounded-full transition-all duration-300" 
             style={{ width: `${authProgress}%` }}
           />
         </div>
-        <p className="text-sm font-black text-indigo-600 mb-6">{authProgress}%</p>
+        <p className="text-sm font-black text-indigo-600 mb-6 font-mono">{authProgress}%</p>
         
-        <div className="mt-4 flex flex-col items-center gap-4">
+        <div className="mt-2 flex flex-col items-center gap-3">
           <p className="text-[11px] text-slate-400 max-w-xs leading-relaxed">
             {t('session_corrupted_notice', language)}
           </p>
-          <button
-            onClick={() => window.location.href = '/logout'}
-            className="px-5 py-2.5 bg-white text-slate-700 text-xs font-semibold rounded-xl border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-indigo-600 transition-all cursor-pointer"
-          >
-            {t('force_reset_session', language)}
-          </button>
+          <div className="flex flex-wrap items-center justify-center gap-2.5">
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-md transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
+            >
+              <RotateCw size={14} className="animate-spin-slow" />
+              {language === 'ko' ? '🔄 강제 새로고침' : '🔄 Force Refresh'}
+            </button>
+            <button
+              onClick={() => window.location.href = '/logout'}
+              className="px-4 py-2.5 bg-white text-slate-700 hover:text-rose-600 text-xs font-semibold rounded-xl border border-slate-200 shadow-sm hover:bg-slate-50 transition-all cursor-pointer"
+            >
+              {t('force_reset_session', language)}
+            </button>
+          </div>
         </div>
       </div>
     );

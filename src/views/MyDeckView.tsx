@@ -723,7 +723,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     setSelectingIndex(null);
   };
 
-  const [sortBy, setSortBy] = useState<'index' | 'level' | 'power' | 'name' | 'rarity' | 'stats_total'>('index');
+  const [sortBy, setSortBy] = useState<'index' | 'level' | 'power' | 'name' | 'rarity' | 'stats_total' | 'recent'>('recent');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [showOwnedOnly, setShowOwnedOnly] = useState(true);
   const [cardSearchQuery, setCardSearchQuery] = useState('');
@@ -803,6 +803,10 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         const cardB = b.card;
         
         switch (sortBy) {
+          case 'recent':
+            // Higher index or inventory acquired timestamp
+            comparison = b.idx - a.idx;
+            break;
           case 'level':
             comparison = cardA.level - cardB.level;
             break;
@@ -1533,6 +1537,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
                   <div className="flex bg-gray-100 p-1 rounded-lg gap-1 overflow-x-auto scrollbar-hide">
                     {[
+                      { id: 'recent', label: language === 'ko' ? '최근' : 'NEW' },
                       { id: 'index', label: 'ID' },
                       { id: 'level', label: 'LV' },
                       { id: 'power', label: 'POW' },

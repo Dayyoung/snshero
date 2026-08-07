@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Gift, CheckCircle2, Circle, Sparkles } from 'lucide-react';
+import { Gift, CheckCircle2, Circle, Sparkles, Clock } from 'lucide-react';
 import { motion } from 'motion/react';
 import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
@@ -21,6 +21,26 @@ export const DailyMissions: React.FC = () => {
   const { addSns, addCompanionXp } = useSns();
   const [missionData, setMissionData] = useState<DailyMissionProgress>(loadDailyMissions);
   const [claimingId, setClaimingId] = useState<string | null>(null);
+  const [timeLeft, setTimeLeft] = useState('');
+
+  // Live Reset Countdown Timer (Item 63)
+  useEffect(() => {
+    const updateTimer = () => {
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setHours(24, 0, 0, 0);
+      const diff = Math.max(0, Math.floor((tomorrow.getTime() - now.getTime()) / 1000));
+
+      const hours = String(Math.floor(diff / 3600)).padStart(2, '0');
+      const minutes = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+      const seconds = String(diff % 60).padStart(2, '0');
+      setTimeLeft(`${hours}:${minutes}:${seconds}`);
+    };
+
+    updateTimer();
+    const timer = setInterval(updateTimer, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   // 주기적으로 데이터 리프레시 (다른 탭에서 변경될 수 있음)
   useEffect(() => {
@@ -80,8 +100,17 @@ export const DailyMissions: React.FC = () => {
         <h3 className="text-xs sm:text-sm font-black text-slate-800 uppercase tracking-wider">
           {t('daily_missions_title', language)}
         </h3>
+
+        {/* Live Countdown Badge (Item 63) */}
+        {timeLeft && (
+          <span className="ml-auto inline-flex items-center gap-1 text-[10px] font-mono font-bold text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
+            <Clock size={11} className="animate-spin-slow" />
+            <span>{language === 'ko' ? `초기화: ${timeLeft}` : `Resets in ${timeLeft}`}</span>
+          </span>
+        )}
+
         {claimableCount > 0 && (
-          <span className="text-[10px] font-bold bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded-full ml-auto">
+          <span className="text-[10px] font-bold bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded-full">
             {claimableCount}
           </span>
         )}

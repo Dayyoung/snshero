@@ -440,44 +440,59 @@ interface FriendCardProps {
   onRemove: () => void;
 }
 
-const FriendCard: React.FC<FriendCardProps> = ({ friend, language, onBattle, onRemove }) => (
-  <div className="bg-white border border-slate-200/70 rounded-xl p-4 flex items-center justify-between shadow-sm">
-    <div className="flex items-center gap-3 min-w-0">
-      <div className="relative shrink-0">
-        <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center font-bold text-xs text-slate-600">
-          {friend.displayName.substring(0, 2)}
+const FriendCard: React.FC<FriendCardProps> = ({ friend, language, onBattle, onRemove }) => {
+  const lastActiveTimestamp = friend.lastActiveAt || friend.lastBattleAt || (Date.now() - 2 * 3600 * 1000);
+
+  return (
+    <div className="bg-white border border-slate-200/70 rounded-xl p-4 flex items-center justify-between shadow-sm">
+      <div className="flex items-center gap-3 min-w-0">
+        <div className="relative shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center font-bold text-xs text-slate-600">
+            {friend.displayName.substring(0, 2)}
+          </div>
+          {friend.isOnline && (
+            <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full" />
+          )}
         </div>
-        {friend.isOnline && (
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full" />
-        )}
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5">
+            <p className="text-sm font-bold text-slate-800 truncate">{friend.displayName}</p>
+            {friend.isOnline ? (
+              <span className="text-[9px] font-mono font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded">
+                ONLINE
+              </span>
+            ) : (
+              <span className="text-[9px] font-mono text-slate-400">
+                • {formatTimeAgo(lastActiveTimestamp, language)}
+              </span>
+            )}
+          </div>
+          {friend.battleCount > 0 ? (
+            <p className="text-[9px] text-slate-400">{t("friend_battle_count", language, { count: friend.battleCount })}</p>
+          ) : (
+            <p className="text-[9px] text-slate-300">{t("friend_no_battles", language)}</p>
+          )}
+        </div>
       </div>
-      <div className="min-w-0">
-        <p className="text-sm font-bold text-slate-800 truncate">{friend.displayName}</p>
-        {friend.battleCount > 0 ? (
-          <p className="text-[9px] text-slate-400">{t("friend_battle_count", language, { count: friend.battleCount })}</p>
-        ) : (
-          <p className="text-[9px] text-slate-300">{t("friend_no_battles", language)}</p>
-        )}
+      <div className="flex items-center gap-2 shrink-0">
+        <button
+          onClick={onBattle}
+          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all active:scale-98 shadow-sm cursor-pointer flex items-center gap-1.5"
+        >
+          <Swords size={14} />
+          {t("friend_battle", language)}
+        </button>
+        <button
+          onClick={onRemove}
+          className="p-2 text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"
+          title={t("friend_remove", language)}
+        >
+          <X size={16} />
+        </button>
       </div>
     </div>
-    <div className="flex items-center gap-2 shrink-0">
-      <button
-        onClick={onBattle}
-        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all active:scale-98 shadow-sm cursor-pointer flex items-center gap-1.5"
-      >
-        <Swords size={14} />
-        {t("friend_battle", language)}
-      </button>
-      <button
-        onClick={onRemove}
-        className="p-2 text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"
-        title={t("friend_remove", language)}
-      >
-        <X size={16} />
-      </button>
-    </div>
-  </div>
-);
+  );
+};
 
 interface TrophyBadgeProps {
   winnerId?: string;

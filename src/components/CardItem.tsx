@@ -430,7 +430,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
         {statDirections[index]}
       </span>
       <span className={cn(
-        "relative z-10 text-[12cqw] font-black leading-none tabular-nums",
+        "relative z-10 text-[12cqw] font-mono font-black leading-none tabular-nums tracking-tight subpixel-antialiased drop-shadow-[0_1px_1px_rgba(255,255,255,0.8)]",
         getStatTextClass(index),
         combatHighlights?.includes(index) && "text-red-700"
       )}>

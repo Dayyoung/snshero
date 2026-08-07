@@ -56,22 +56,30 @@ export const buildPlayerRpgHand = (currentDeck: Array<CardData | null>): CardDat
   const deckCards = currentDeck
     .filter((card): card is CardData => Boolean(card))
     .slice(0, 5)
-    .map((card) => ({
-      ...card,
-      owner: undefined,
-      // Give player cards a +1 stat boost in RPG story mode so combat is accessible
-      stats: card.stats.map((stat) => Math.min(10, stat + 1)) as [number, number, number, number],
-    }));
+    .map((card, idx) => {
+      const baseStats = Array.isArray(card.stats) && card.stats.length === 4 ? card.stats : [1, 1, 1, 1];
+      return {
+        ...card,
+        id: card.id ? `kadan-deck-${card.id}-${idx}` : `kadan-deck-${idx}`,
+        owner: undefined,
+        // Give player cards a +1 stat boost in RPG story mode so combat is accessible
+        stats: baseStats.map((stat) => Math.min(10, Math.max(1, (Number(stat) || 1) + 1))) as [number, number, number, number],
+      };
+    });
 
   if (deckCards.length >= 5) return deckCards;
 
   const fallbackCards = fallbackPlayerCardIds
     .map(cardFromDatabase)
     .filter((card): card is CardData => Boolean(card))
-    .map((card) => ({
-      ...card,
-      stats: card.stats.map((stat) => Math.min(10, stat + 1)) as [number, number, number, number],
-    }));
+    .map((card, idx) => {
+      const baseStats = Array.isArray(card.stats) && card.stats.length === 4 ? card.stats : [1, 1, 1, 1];
+      return {
+        ...card,
+        id: `kadan-fallback-${card.id}-${idx}`,
+        stats: baseStats.map((stat) => Math.min(10, Math.max(1, (Number(stat) || 1) + 1))) as [number, number, number, number],
+      };
+    });
 
   return [...deckCards, ...fallbackCards].slice(0, 5);
 };
@@ -94,11 +102,15 @@ export const buildOpponentRpgHand = (
     .map(cardFromDatabase)
     .filter((card): card is CardData => Boolean(card))
     .slice(0, 5)
-    .map((card) => ({
-      ...card,
-      stats: card.stats.map((stat) => Math.max(1, Math.min(10, stat + statBonus))) as [number, number, number, number],
-      power: (card.power || 0) + statBonus * 4,
-    }));
+    .map((card, idx) => {
+      const baseStats = Array.isArray(card.stats) && card.stats.length === 4 ? card.stats : [1, 1, 1, 1];
+      return {
+        ...card,
+        id: `kadan-opp-${card.id}-${idx}`,
+        stats: baseStats.map((stat) => Math.max(1, Math.min(10, (Number(stat) || 1) + statBonus))) as [number, number, number, number],
+        power: (card.power || 0) + statBonus * 4,
+      };
+    });
 };
 
 export const createInitialKadanBattleState = (
@@ -138,17 +150,33 @@ export const placeKadanBattleCard = (
   boardIndex: number,
   language: string,
 ): KadanBattleState => {
-  if (state.result || state.turn !== side || state.board[boardIndex]) return state;
+  if (state.result || state.turn !== side) return state;
 
   const hand = side === 'player' ? state.playerHand : state.aiHand;
-  const card = hand[cardIndex];
+  let targetCardIdx = cardIndex;
+  let card = hand[targetCardIdx];
+
+  // Fallback to first available card if specified index is invalid
+  if (!card && hand.length > 0) {
+    targetCardIdx = hand.findIndex((c) => Boolean(c));
+    if (targetCardIdx >= 0) {
+      card = hand[targetCardIdx];
+    }
+  }
   if (!card) return state;
+
+  let targetBoardIdx = boardIndex;
+  // Fallback to first empty slot if specified slot is occupied or invalid
+  if (targetBoardIdx < 0 || targetBoardIdx >= 9 || state.board[targetBoardIdx] !== null) {
+    targetBoardIdx = state.board.findIndex((c) => c === null);
+  }
+  if (targetBoardIdx < 0) return state;
 
   const cardInstance = { ...card, owner: side };
   const nextBoard = [...state.board];
-  nextBoard[boardIndex] = cardInstance;
+  nextBoard[targetBoardIdx] = cardInstance;
   const scoreBefore = countBattleScore(state.board);
-  const flippedBoard = checkFlips(nextBoard, boardIndex);
+  const flippedBoard = checkFlips(nextBoard, targetBoardIdx);
   const flippedIndices = flippedBoard.reduce<number[]>((indices, boardCard, index) => {
     const previousOwner = nextBoard[index]?.owner;
     if (boardCard && previousOwner && boardCard.owner !== previousOwner) {
@@ -157,10 +185,10 @@ export const placeKadanBattleCard = (
     return indices;
   }, []);
   const nextPlayerHand = side === 'player'
-    ? state.playerHand.filter((_, index) => index !== cardIndex)
+    ? state.playerHand.filter((_, index) => index !== targetCardIdx)
     : state.playerHand;
   const nextAiHand = side === 'ai'
-    ? state.aiHand.filter((_, index) => index !== cardIndex)
+    ? state.aiHand.filter((_, index) => index !== targetCardIdx)
     : state.aiHand;
   const nextTurn: KadanBattleSide = side === 'player' ? 'ai' : 'player';
   const nextState: KadanBattleState = {
@@ -172,15 +200,15 @@ export const placeKadanBattleCard = (
     lastMove: {
       side,
       card,
-      boardIndex,
+      boardIndex: targetBoardIdx,
       flippedIndices,
       scoreBefore,
       scoreAfter: countBattleScore(flippedBoard),
     },
     log: [
       language === 'ko'
-        ? `${side === 'player' ? '카단' : '상대'}: ${getCardDisplayName(card, language)} ${boardIndex + 1}번 배치${flippedIndices.length > 0 ? `, ${flippedIndices.map((index) => index + 1).join(', ')}번 뒤집음` : ', 뒤집힘 없음'}`
-        : `${side === 'player' ? 'Kadan' : 'Echo'} placed ${getCardDisplayName(card, language)} on ${boardIndex + 1}${flippedIndices.length > 0 ? ` and flipped ${flippedIndices.map((index) => index + 1).join(', ')}` : ' with no flips'}`,
+        ? `${side === 'player' ? '카단' : '상대'}: ${getCardDisplayName(card, language)} ${targetBoardIdx + 1}번 배치${flippedIndices.length > 0 ? `, ${flippedIndices.map((index) => index + 1).join(', ')}번 뒤집음` : ', 뒤집힘 없음'}`
+        : `${side === 'player' ? 'Kadan' : 'Echo'} placed ${getCardDisplayName(card, language)} on ${targetBoardIdx + 1}${flippedIndices.length > 0 ? ` and flipped ${flippedIndices.map((index) => index + 1).join(', ')}` : ' with no flips'}`,
       ...state.log,
     ].slice(0, 8),
   };
@@ -201,23 +229,34 @@ export const chooseKadanAutoMove = (
   difficulty: KadanRpgDifficulty,
 ): { cardIndex: number; boardIndex: number } | null => {
   const hand = side === 'player' ? state.playerHand : state.aiHand;
-  if (hand.length === 0) return null;
+  if (!hand || hand.length === 0) return null;
 
-  const aiDifficulty = difficulty === 'easy' ? 'easy' : difficulty === 'normal' ? 'medium' : 'hard';
-  const move = findBestMove(
-    state.board,
-    hand,
-    side === 'player' ? 'balanced' : difficulty === 'boss' ? 'aggressive' : 'balanced',
-    side,
-    1,
-    [],
-    aiDifficulty,
-  );
+  try {
+    const aiDifficulty = difficulty === 'easy' ? 'easy' : difficulty === 'normal' ? 'medium' : 'hard';
+    const move = findBestMove(
+      state.board,
+      hand,
+      side === 'player' ? 'balanced' : difficulty === 'boss' ? 'aggressive' : 'balanced',
+      side,
+      1,
+      [],
+      aiDifficulty,
+    );
 
-  if (move) {
-    return { cardIndex: move.cardIdx, boardIndex: move.boardIdx };
+    if (move && move.cardIdx >= 0 && move.cardIdx < hand.length && hand[move.cardIdx] && move.boardIdx >= 0 && state.board[move.boardIdx] === null) {
+      return { cardIndex: move.cardIdx, boardIndex: move.boardIdx };
+    }
+  } catch (e) {
+    console.warn("chooseKadanAutoMove error:", e);
   }
 
-  const boardIndex = state.board.findIndex((card) => card === null);
-  return boardIndex >= 0 ? { cardIndex: 0, boardIndex } : null;
+  // Fail-safe fallback: pick first available card in hand and first empty board slot
+  const validCardIndex = hand.findIndex((c) => Boolean(c));
+  const emptyBoardIndex = state.board.findIndex((card) => card === null);
+
+  if (validCardIndex >= 0 && emptyBoardIndex >= 0) {
+    return { cardIndex: validCardIndex, boardIndex: emptyBoardIndex };
+  }
+
+  return null;
 };
