@@ -146,7 +146,7 @@ export const BeginnerRoadmap: React.FC<BeginnerRoadmapProps> = ({
     }
   });
 
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('hero_beginner_roadmap_claimed', JSON.stringify(claimedSteps));
