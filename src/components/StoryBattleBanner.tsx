@@ -33,8 +33,9 @@ export const StoryBattleBanner: React.FC<StoryBattleBannerProps> = ({
 
   const contextTitle = t('story_battle_context_title', language);
   const descTemplate = t('story_battle_context_desc', language);
-  const defaultEpisode = episodeTitle || (language === 'ko' ? '현재 에피소드' : 'Current Episode');
-  const description = descTemplate.replace('{episode}', defaultEpisode);
+  const rawEpisode = episodeTitle || (language === 'ko' ? '현재 에피소드' : 'Current Episode');
+  const formattedEpisode = rawEpisode.startsWith('webtoon_ep_') ? t(rawEpisode, language) : rawEpisode;
+  const description = descTemplate.replace('{episode}', formattedEpisode);
 
   return (
     <div
@@ -62,7 +63,7 @@ export const StoryBattleBanner: React.FC<StoryBattleBannerProps> = ({
           </span>
           {episodeTitle && (
             <span className="rounded-full border border-indigo-200/60 bg-indigo-100/50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-indigo-600">
-              {t('story_battle_context_episode', language).replace('{episode}', episodeTitle)}
+              {t('story_battle_context_episode', language).replace('{episode}', formattedEpisode)}
             </span>
           )}
         </div>

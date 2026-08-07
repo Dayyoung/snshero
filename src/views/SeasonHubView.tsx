@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowLeft,
   BookOpen,
@@ -120,7 +120,7 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
   const hubStateSeasonRef = useRef(currentSeason);
   const config = useMemo(() => getCurrentSeasonConfig(currentSeason), [currentSeason]);
   const daysLeft = useMemo(() => getSeasonDaysLeft(currentSeason), [currentSeason]);
-  const progress = useMemo(() => getSeasonProgress(currentSeason), [currentSeason]);
+  const progress = useMemo(() => Math.min(100, Math.max(0, getSeasonProgress(currentSeason))), [currentSeason]);
   const timeline = useMemo(() => getSeasonTimeline(currentSeason), [currentSeason]);
   const currentWeek = useMemo(() => getCurrentWeekInfo(currentSeason), [currentSeason]);
 
@@ -141,6 +141,7 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
   const [hubState, setHubState] = useState<SeasonHubState>(() => loadHubState(currentSeason));
   const [activeTab, setActiveTab] = useState<'overview' | 'missions' | 'rewards'>('overview');
   const [showSeasonShareTemplate, setShowSeasonShareTemplate] = useState(false);
+  const [claimingIds, setClaimingIds] = useState<string[]>([]);
   const [helpOpen, setHelpOpen] = useState(false);
   // Dispatch global popup events so bottom nav hides while help is open
   useEffect(() => {
@@ -221,8 +222,12 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
   // Claim reward tier
   const claimRewardTier = useCallback(
     (tier: SeasonRewardTier) => {
+      const idKey = `tier_${tier.tier}`;
+      if (claimingIds.includes(idKey)) return;
       if (hubState.claimedRewardTiers.includes(tier.tier)) return;
       if (tier.pointsRequired > hubState.seasonPoints) return;
+
+      setClaimingIds((prev) => [...prev, idKey]);
       playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
       setHubState((prev) => ({
         ...prev,
@@ -231,14 +236,21 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
       if (updateSns) {
         updateSns(tier.rewardSns, t('season_reward_claimed', language));
       }
+      setTimeout(() => {
+        setClaimingIds((prev) => prev.filter((id) => id !== idKey));
+      }, 500);
     },
-    [hubState.claimedRewardTiers, hubState.seasonPoints, playSfx, updateSns, language],
+    [claimingIds, hubState.claimedRewardTiers, hubState.seasonPoints, playSfx, updateSns, language],
   );
 
   // Mark mission as completed
   const completeMission = useCallback(
     (mission: SeasonEventMission) => {
+      const idKey = `mission_${mission.id}`;
+      if (claimingIds.includes(idKey)) return;
       if (hubState.completedMissionIds.includes(mission.id)) return;
+
+      setClaimingIds((prev) => [...prev, idKey]);
       playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
       setHubState((prev) => ({
         ...prev,
@@ -248,10 +260,12 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
       if (updateSns) {
         updateSns(mission.rewardSns, t('season_mission_complete', language));
       }
-      // Analytics: track season mission completion (fire-and-forget)
       trackAnalytics({ event: AnalyticsEvent.SEASON_MISSION_COMPLETE, payload: { missionId: mission.id, missionTitle: t(mission.titleKey, language), rewardSns: mission.rewardSns } });
+      setTimeout(() => {
+        setClaimingIds((prev) => prev.filter((id) => id !== idKey));
+      }, 500);
     },
-    [hubState.completedMissionIds, playSfx, updateSns, language],
+    [claimingIds, hubState.completedMissionIds, playSfx, updateSns, language],
   );
 
   const isToday = (dateStr: string) => {
@@ -340,12 +354,15 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
           const profile = getCharacterIpProfile(card.id);
           const isInterested = hubState.interestedCharacters.includes(card.id);
           return (
-            <button
+            <motion.button
               key={card.id}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.95 }}
+              animate={isInterested ? { scale: [1, 1.08, 1] } : { scale: 1 }}
+              transition={{ duration: 0.2 }}
               onClick={() => toggleCharacterInterest(card.id)}
               className={cn(
-                'relative group rounded-xl border p-3 flex flex-col items-center gap-2 transition-all duration-200 touch-target',
-                'hover:shadow-md active:scale-[0.98]',
+                'relative group rounded-xl border p-3 flex flex-col items-center gap-2 transition-all duration-200 touch-target cursor-pointer',
                 isInterested
                   ? 'border-indigo-400 bg-indigo-50 shadow-sm shadow-indigo-200/30'
                   : 'border-slate-200 bg-white hover:border-slate-300',
@@ -378,7 +395,7 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
               )}>
                 {isInterested && <CheckCircle2 size={12} />}
               </div>
-            </button>
+            </motion.button>
           );
         })}
       </div>
@@ -626,7 +643,10 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
                     <CheckCircle2 size={16} className="text-emerald-500" />
                   ) : status === 'completed' ? (
                     <button
+                      disabled={claimingIds.includes(mission.id)}
                       onClick={() => {
+                        if (claimingIds.includes(mission.id)) return;
+                        setClaimingIds((prev) => [...prev, mission.id]);
                         const result = claimMissionReward(mission.id);
                         if (result) {
                           if (result.skinUnlockKey) {
@@ -638,8 +658,11 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
                             trackAnalytics({ event: AnalyticsEvent.SEASON_MISSION_COMPLETE, payload: { missionId: mission.id, missionTitle: t(mission.titleKey, language), rewardSns: result.sns } });
                           }
                         }
+                        setTimeout(() => {
+                          setClaimingIds((prev) => prev.filter((id) => id !== mission.id));
+                        }, 500);
                       }}
-                      className="px-2.5 py-1 bg-indigo-600 text-white text-[9px] font-bold rounded-md hover:bg-indigo-700 active:scale-95 transition-all touch-target"
+                      className="px-2.5 py-1 bg-indigo-600 text-white text-[9px] font-bold rounded-md hover:bg-indigo-700 active:scale-95 transition-all touch-target disabled:opacity-50"
                     >
                       {t('claim_reward', language)}
                     </button>
@@ -796,7 +819,7 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
       <button
         onClick={() => {
           playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-          onNavigate('play');
+          onNavigate('main');
         }}
         className="flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-200 hover:bg-red-100 active:scale-[0.98] transition-all touch-target"
       >

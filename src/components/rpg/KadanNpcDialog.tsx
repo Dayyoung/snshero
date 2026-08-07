@@ -150,42 +150,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
 
   return (
     <div className="absolute inset-x-3 bottom-3 z-30 mx-auto max-w-3xl">
-      {/* ─── 텍스트 박스 상단 전신 캐릭터 일러스트 (Visual Novel Full-Body Stand Portrait) ─── */}
-      <div
-        key={`standing-portrait-${currentLine.cardId}-${lineIndex}`}
-        className={cn(
-          "absolute bottom-[calc(100%-12px)] pointer-events-none flex items-end select-none z-10 transition-all duration-300 transform animate-in fade-in slide-in-from-bottom-4",
-          isKadan ? "left-4 sm:left-10 origin-bottom-left" : "right-4 sm:right-10 origin-bottom-right"
-        )}
-      >
-        {/* 캐릭터 배경 판타지 후광 (Glow Ring & Aura) */}
-        <div
-          className="absolute inset-0 rounded-full blur-2xl opacity-60 scale-110 -z-10"
-          style={{
-            background: isKadan
-              ? 'radial-gradient(circle, rgba(99,102,241,0.5) 0%, rgba(168,85,247,0.2) 60%, transparent 80%)'
-              : 'radial-gradient(circle, rgba(244,63,94,0.5) 0%, rgba(251,146,60,0.2) 60%, transparent 80%)'
-          }}
-        />
-
-        {/* 캐릭터 전신 수묵/사이버 그리드 그림자 패드 */}
-        <div className="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-slate-950/80 to-transparent blur-md -z-10" />
-
-        <img
-          src={getCharacterPortraitUrl(currentLine.cardId)}
-          alt={currentLine.name}
-          className="h-56 sm:h-72 md:h-84 w-auto max-w-[220px] sm:max-w-[320px] object-contain drop-shadow-[0_16px_28px_rgba(0,0,0,0.6)] filter brightness-105 contrast-105"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            if (!target.dataset.failedOnce) {
-              target.dataset.failedOnce = 'true';
-              target.src = getAssetUrl('/character/041.png');
-            }
-          }}
-        />
-      </div>
-
-      {/* ─── 대사 텍스트 박스 ─── */}
+      {/* ─── 대사 텍스트 박스 (팝업 모달) ─── */}
       <div className="relative z-20 overflow-hidden rounded-xl border-2 border-slate-900/90 bg-slate-950/95 text-white shadow-2xl backdrop-blur-md">
         {/* 상단 오버레이 헤더 (화자 뱃지 & 에피소드 태그) */}
         <div className="flex items-center justify-between border-b border-slate-800/80 bg-slate-900/80 px-4 py-2.5">
@@ -209,32 +174,76 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
           </span>
         </div>
 
-        {/* 대사 본문 */}
-        <div className="p-4 sm:p-5">
-          <p className="min-h-[3.5rem] whitespace-pre-line break-words font-mono text-sm sm:text-base font-semibold leading-relaxed text-slate-100 drop-shadow-sm">
-            {currentLine.text}
-          </p>
-
-          {/* 프로그레스 인디케이터 게이지 */}
-          <div className="mt-4 flex gap-1.5">
-            {conversationLines.map((line, index) => (
-              <span
-                key={`${line.speaker}-${index}`}
-                className={cn(
-                  'h-1.5 flex-1 rounded-full transition-all duration-300',
-                  index <= lineIndex ? 'bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.8)]' : 'bg-slate-800'
-                )}
+        {/* 대사 본문 & 팝업 내부 캐릭터 포트레이트 */}
+        <div className="p-3.5 sm:p-5">
+          <div
+            className={cn(
+              "flex items-start gap-3 sm:gap-4.5",
+              isKadan ? "flex-row" : "flex-row-reverse"
+            )}
+          >
+            {/* ─── 팝업 내부 캐릭터 전신/상반신 포트레이트 프레임 ─── */}
+            <div
+              key={`standing-portrait-${currentLine.cardId}-${lineIndex}`}
+              className={cn(
+                "relative shrink-0 w-24 sm:w-36 md:w-40 h-32 sm:h-44 md:h-48 rounded-xl overflow-hidden border-2 border-slate-700/80 bg-gradient-to-b from-slate-900 to-slate-950 shadow-xl flex items-center justify-center select-none transition-all duration-300 transform animate-in fade-in scale-95"
+              )}
+            >
+              {/* 캐릭터 배경 후광 (Glow Ring & Aura) */}
+              <div
+                className="absolute inset-0 rounded-full blur-2xl opacity-65 scale-150 -z-10 pointer-events-none"
+                style={{
+                  background: isKadan
+                    ? 'radial-gradient(circle, rgba(99,102,241,0.7) 0%, rgba(168,85,247,0.3) 60%, transparent 80%)'
+                    : 'radial-gradient(circle, rgba(244,63,94,0.7) 0%, rgba(251,146,60,0.3) 60%, transparent 80%)'
+                }}
               />
-            ))}
-          </div>
 
-          <div className="mt-2.5 flex items-center justify-between text-xs font-bold text-slate-400">
-            <span>
-              {autoMode ? t('kadan_rpg_auto_dialog_hint', language) : t(event.objectiveKey, language)}
-            </span>
-            <span className="font-mono text-[11px] text-indigo-300">
-              {lineIndex + 1} / {conversationLines.length}
-            </span>
+              {/* 캐릭터 이미지 (여백 축소 & 케릭터 확대) */}
+              <img
+                src={getCharacterPortraitUrl(currentLine.cardId)}
+                alt={currentLine.name}
+                className="w-full h-full object-contain object-bottom scale-125 transition-transform duration-300 drop-shadow-[0_6px_16px_rgba(0,0,0,0.8)] filter brightness-105 contrast-105"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  if (!target.dataset.failedOnce) {
+                    target.dataset.failedOnce = 'true';
+                    target.src = getAssetUrl('/character/041.png');
+                  }
+                }}
+              />
+            </div>
+
+            {/* ─── 대사 텍스트 및 진행도 게이지 ─── */}
+            <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch">
+              <p className="min-h-[3.5rem] whitespace-pre-line break-words font-mono text-xs sm:text-base font-semibold leading-relaxed text-slate-100 drop-shadow-sm">
+                {currentLine.text}
+              </p>
+
+              <div>
+                {/* 프로그레스 인디케이터 게이지 */}
+                <div className="mt-3 flex gap-1.5">
+                  {conversationLines.map((line, index) => (
+                    <span
+                      key={`${line.speaker}-${index}`}
+                      className={cn(
+                        'h-1.5 flex-1 rounded-full transition-all duration-300',
+                        index <= lineIndex ? 'bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.8)]' : 'bg-slate-800'
+                      )}
+                    />
+                  ))}
+                </div>
+
+                <div className="mt-2 flex items-center justify-between text-[11px] sm:text-xs font-bold text-slate-400">
+                  <span className="truncate pr-2">
+                    {autoMode ? t('kadan_rpg_auto_dialog_hint', language) : t(event.objectiveKey, language)}
+                  </span>
+                  <span className="font-mono text-[11px] text-indigo-300 shrink-0">
+                    {lineIndex + 1} / {conversationLines.length}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

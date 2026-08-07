@@ -50,11 +50,10 @@ export function useFanEventVotes(season: string): UseFanEventVotesReturn {
 
   const castVote = useCallback(
     (eventId: string, optionId: string): boolean => {
-      if (votes[eventId]) return false;
       setVotes(prev => ({ ...prev, [eventId]: optionId }));
       return true;
     },
-    [votes],
+    [],
   );
 
   return { votes, hasVoted, getVote, castVote };

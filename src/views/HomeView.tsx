@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv } from "lucide-react";
+import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Volume2, VolumeX } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { t } from "../lib/i18n";
 import { cn } from "../lib/utils";
@@ -9,6 +9,9 @@ import { CardItem } from "../components/CardItem";
 import { INITIAL_SKILLS } from "../constants";
 import { useGameSettings } from "../contexts/GameSettingsContext";
 import { usePerformanceMode } from "../hooks/usePerformanceMode";
+import { MainLobbyBannerCarousel } from "../components/MainLobbyBannerCarousel";
+import { MailboxModal, getMailboxItems } from "../components/MailboxModal";
+import { BeginnerRoadmap } from "../components/BeginnerRoadmap";
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -64,8 +67,39 @@ export const HomeView: React.FC<HomeViewProps> = ({
 }) => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [showPdf, setShowPdf] = useState(false);
+  const [isMailboxOpen, setIsMailboxOpen] = useState(false);
+  const [unreadMailCount, setUnreadMailCount] = useState(0);
+
+  useEffect(() => {
+    const updateUnread = () => {
+      const items = getMailboxItems();
+      setUnreadMailCount(items.filter(m => !m.isRead).length);
+    };
+    updateUnread();
+    window.addEventListener('hero_mailbox_changed', updateUnread);
+    return () => window.removeEventListener('hero_mailbox_changed', updateUnread);
+  }, []);
+
   const { lowSpecMode } = useGameSettings();
   const perf = usePerformanceMode();
+
+  // Quick mute toggle state (Item 47)
+  const [isAudioMuted, setIsAudioMuted] = useState<boolean>(() => {
+    return typeof window !== 'undefined' ? localStorage.getItem('hero_sfx') === 'false' : false;
+  });
+
+  const toggleQuickMute = () => {
+    const next = !isAudioMuted;
+    setIsAudioMuted(next);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('hero_sfx', next ? 'false' : 'true');
+      localStorage.setItem('hero_bgm', next ? 'false' : 'true');
+      window.dispatchEvent(new Event('audio_mute_toggle'));
+    }
+    if (!next) {
+      playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+    }
+  };
 
   // Help popup state
   const [helpOpen, setHelpOpen] = useState(false);
@@ -244,8 +278,34 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </span>
                 <span className="text-slate-900 text-base sm:text-xl not-italic">.com</span>
                 <button
+                  onClick={() => {
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    setIsMailboxOpen(true);
+                  }}
+                  className="ml-2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white text-indigo-600 hover:text-indigo-800 hover:border-indigo-300 transition shrink-0 relative cursor-pointer"
+                  aria-label={language === 'ko' ? '우편함' : 'Mailbox'}
+                  title={language === 'ko' ? '시스템 우편함' : 'Mailbox'}
+                >
+                  <Mail size={14} />
+                  {unreadMailCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-600 text-white rounded-full text-[8px] font-black flex items-center justify-center animate-pulse">
+                      {unreadMailCount}
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  onClick={toggleQuickMute}
+                  className="ml-1 inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:border-slate-300 transition shrink-0 cursor-pointer shadow-sm"
+                  title={isAudioMuted ? (language === 'ko' ? '음소거 해제' : 'Unmute Audio') : (language === 'ko' ? '퀵 음소거' : 'Mute Audio')}
+                  aria-label="Quick Mute"
+                >
+                  {isAudioMuted ? <VolumeX size={14} className="text-rose-600" /> : <Volume2 size={14} className="text-emerald-600" />}
+                </button>
+
+                <button
                   onClick={() => { setHelpOpen(true); setHelpStep(0); }}
-                  className="ml-2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 hover:text-slate-700 hover:border-slate-300 transition shrink-0"
+                  className="ml-1 inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 hover:text-slate-700 hover:border-slate-300 transition shrink-0 cursor-pointer"
                   aria-label={language === 'ko' ? '도움말' : 'Help'}
                 >
                   <HelpCircle size={14} />
@@ -255,6 +315,28 @@ export const HomeView: React.FC<HomeViewProps> = ({
           </div>
         </div>
 
+        {/* ── Main Lobby Event Banner Carousel (Item 33) ── */}
+        <MainLobbyBannerCarousel
+          language={language}
+          onNavigate={onNavigate}
+          playSfx={playSfx}
+        />
+
+        {/* ── Beginner Onboarding Quest Roadmap Widget (Item 49) ── */}
+        <BeginnerRoadmap
+          language={language}
+          onNavigate={onNavigate}
+          updateSns={(amt, reason) => {
+            // Retrieve updateSns helper or localStorage
+            try {
+              const currentSns = Number(localStorage.getItem('hero_sns_points') || 1000);
+              localStorage.setItem('hero_sns_points', String(currentSns + amt));
+              window.dispatchEvent(new Event('sns_updated'));
+            } catch {}
+          }}
+          playSfx={playSfx}
+        />
+
         {/* ── Quick Play CTA ── */}
         <motion.button
           {...buttonMotionProps}
@@ -263,11 +345,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             if (onStartPlayNow) {
               onStartPlayNow();
             } else {
-              if (isTutorialMode || (tutorialStep && tutorialStep > 0)) {
-                onNavigate("ranking");
-              } else {
-                onNavigate("play");
-              }
+              onNavigate("main");
             }
           }}
           className="w-full h-14 sm:h-16 px-5 sm:px-6 bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-white font-bold text-base sm:text-lg rounded-sm hover:from-indigo-700 hover:to-fuchsia-700 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-between touch-target shadow-md group"
@@ -522,6 +600,20 @@ export const HomeView: React.FC<HomeViewProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
+      {/* Mailbox Modal (Item 29) */}
+      <MailboxModal
+        isOpen={isMailboxOpen}
+        onClose={() => setIsMailboxOpen(false)}
+        language={language}
+        onClaimReward={(snsAmount, packType) => {
+          // Update SNS points in localStorage
+          const currentSns = Number(localStorage.getItem('hero_sns') || 0);
+          localStorage.setItem('hero_sns', String(currentSns + snsAmount));
+          window.dispatchEvent(new Event('snshero_sns_updated'));
+        }}
+        playSfx={playSfx}
+      />
+
     </div>
   );
 };

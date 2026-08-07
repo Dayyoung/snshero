@@ -11,6 +11,7 @@ import { getBrowserLanguage } from '../lib/i18n';
 import { CARD_SKIN_THEME_STORAGE_KEY, normalizeCardSkinTheme, type CardSkinThemeId } from '../content/cardSkinThemes';
 
 export type ThemeMode = 'light' | 'dark' | 'metal';
+export type TargetFps = '30' | '60';
 
 interface GameSettings {
   language: Language;
@@ -21,6 +22,10 @@ interface GameSettings {
   setTheme: (val: ThemeMode) => void;
   cardSkinTheme: CardSkinThemeId;
   setCardSkinTheme: (val: CardSkinThemeId) => void;
+  targetFps: TargetFps;
+  setTargetFps: (fps: TargetFps) => void;
+  batterySaver: boolean;
+  setBatterySaver: (val: boolean) => void;
 }
 
 const GameSettingsContext = createContext<GameSettings | null>(null);
@@ -58,6 +63,20 @@ export function GameSettingsProvider({ children }: { children: React.ReactNode }
     return 'original_mecha';
   });
 
+  const [targetFps, setTargetFpsState] = useState<TargetFps>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('hero_target_fps');
+      if (saved === '30' || saved === '60') return saved;
+    }
+    return '60';
+  });
+
+  const [batterySaver, setBatterySaverState] = useState<boolean>(() => {
+    return typeof window !== 'undefined'
+      ? localStorage.getItem('hero_battery_saver') === 'true'
+      : false;
+  });
+
   const handleSetLanguage = useCallback((lang: Language) => {
     localStorage.setItem('hero_language', lang);
     setLanguage(lang);
@@ -78,6 +97,16 @@ export function GameSettingsProvider({ children }: { children: React.ReactNode }
     setCardSkinThemeState(val);
   }, []);
 
+  const handleSetTargetFps = useCallback((fps: TargetFps) => {
+    localStorage.setItem('hero_target_fps', fps);
+    setTargetFpsState(fps);
+  }, []);
+
+  const handleSetBatterySaver = useCallback((val: boolean) => {
+    localStorage.setItem('hero_battery_saver', String(val));
+    setBatterySaverState(val);
+  }, []);
+
   const value = useMemo(() => ({
     language,
     setLanguage: handleSetLanguage,
@@ -87,7 +116,11 @@ export function GameSettingsProvider({ children }: { children: React.ReactNode }
     setTheme: handleSetTheme,
     cardSkinTheme,
     setCardSkinTheme: handleSetCardSkinTheme,
-  }), [language, lowSpecMode, theme, cardSkinTheme, handleSetLanguage, handleSetLowSpecMode, handleSetTheme, handleSetCardSkinTheme]);
+    targetFps,
+    setTargetFps: handleSetTargetFps,
+    batterySaver,
+    setBatterySaver: handleSetBatterySaver,
+  }), [language, lowSpecMode, theme, cardSkinTheme, targetFps, batterySaver, handleSetLanguage, handleSetLowSpecMode, handleSetTheme, handleSetCardSkinTheme, handleSetTargetFps, handleSetBatterySaver]);
 
   return (
     <GameSettingsContext.Provider value={value}>

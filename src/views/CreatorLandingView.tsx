@@ -104,7 +104,7 @@ export function CreatorLandingView({
     if (campaign && availability === 'active') {
       trackCreatorEvent('first_play', campaign.code);
     }
-    onNavigate('play');
+    onNavigate('main');
   };
 
   const handleGoHome = () => {

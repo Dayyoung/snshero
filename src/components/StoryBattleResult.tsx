@@ -90,7 +90,7 @@ export const StoryBattleResult: React.FC<StoryBattleResultProps> = ({
             </p>
             {episodeTitle && (
               <p className="text-[10px] font-semibold text-slate-500 mt-0.5">
-                {episodeTitle}
+                {episodeTitle.startsWith('webtoon_ep_') ? t(episodeTitle, language) : episodeTitle}
               </p>
             )}
           </div>

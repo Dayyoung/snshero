@@ -4994,13 +4994,8 @@ function AppContent() {
             isTutorialMode={isTutorialMode}
             tutorialStep={tutorialStep}
             onStartPlayNow={() => {
-              if (isTutorialMode || (tutorialStep > 0 && tutorialStep < 14)) {
-                setAutoStartPvp(true);
-                setView('ranking');
-              } else {
-                setPlayInitialMode('story');
-                setView('play');
-              }
+              setSeasonItem('hero_kadan_rpg_auto_mode', currentSeason, 'true');
+              setView('main');
             }}
           />
         );
@@ -5742,13 +5737,8 @@ function AppContent() {
             isTutorialMode={isTutorialMode}
             tutorialStep={tutorialStep}
             onStartPlayNow={() => {
-              if (isTutorialMode || (tutorialStep > 0 && tutorialStep < 14)) {
-                setAutoStartPvp(true);
-                setView('ranking');
-              } else {
-                setPlayInitialMode('story');
-                setView('play');
-              }
+              setSeasonItem('hero_kadan_rpg_auto_mode', currentSeason, 'true');
+              setView('main');
             }}
           />
         );

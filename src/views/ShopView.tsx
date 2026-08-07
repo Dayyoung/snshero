@@ -1459,14 +1459,18 @@ export const ShopView: React.FC<ShopViewProps> = ({
       window.history.replaceState({}, '', url.toString());
     }
 
-    const script = document.createElement('script');
-    script.src = "https://lite.payapp.kr/public/api/v2/payapp-lite.js";
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
+    const scriptId = 'payapp-lite-script';
+    let script = document.getElementById(scriptId) as HTMLScriptElement | null;
+    if (!script) {
+      script = document.createElement('script');
+      script.id = scriptId;
+      script.src = "https://lite.payapp.kr/public/api/v2/payapp-lite.js";
+      script.async = true;
+      script.onerror = (e) => {
+        console.warn('Payapp lite script failed to load:', e);
+      };
+      document.body.appendChild(script);
+    }
   }, []);
 
   useEffect(() => {
@@ -1808,6 +1812,42 @@ export const ShopView: React.FC<ShopViewProps> = ({
       if (tutorialStep === 9 && setTutorialStep) {
         setTutorialStep(10);
       }
+
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2012/2012-preview.mp3');
+    } else {
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+      setErrorVisible(true);
+      setTimeout(() => setErrorVisible(false), 5000);
+    }
+  };
+
+  const buy10xPack = (singleCost: number, packRarity: GachaPackRarity) => {
+    const discountedCost = Math.floor(singleCost * 10 * 0.9);
+    const finalCost = (tutorialStep === 9) ? 0 : discountedCost;
+    if (sns >= finalCost) {
+      stopAutoDraw();
+      if (finalCost > 0) {
+        updateSns(-finalCost, '10x_pack_purchase', `${getPackPurchaseLabel(packRarity)} 10연차 소환`);
+      }
+
+      let set1 = createPackCards(packRarity);
+      let set2 = createPackCards(packRarity);
+      let combined = [...set1, ...set2];
+
+      const hasSrPlus = combined.some(c => ['gold', 'rare', 'epic', 'legendary', 'platinum'].includes((c.rarity || '').toLowerCase()));
+      if (!hasSrPlus) {
+        combined[0] = { ...combined[0], rarity: 'gold' };
+      }
+
+      recordGachaPity(packRarity, combined.map(card => card.rarity));
+
+      setGachaState({
+        isActive: true,
+        step: 0,
+        packType: packRarity,
+        isRevealed: false,
+        cards: combined.slice(0, 5)
+      });
 
       playSfx('https://assets.mixkit.co/active_storage/sfx/2012/2012-preview.mp3');
     } else {
@@ -3366,15 +3406,30 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <div className={cn('rounded-lg px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest sm:text-[10px]', packTheme.badge)}>
                       {pack.title}
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setPackGuideState({ packRarity: pack.rarity, step: 0 })}
-                      className={getGuideButtonClassName()}
-                      aria-label={t('shop_pack_guide_open', language)}
-                      title={t('shop_pack_guide_open', language)}
-                    >
-                      <HelpCircle size={16} />
-                    </button>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedProbabilityPack(pack.rarity);
+                          setProbabilityModalOpen(true);
+                        }}
+                        className="flex items-center gap-1 rounded-md border border-amber-300/80 bg-amber-50/90 px-2 py-1 text-[10px] font-extrabold text-amber-900 hover:bg-amber-100 hover:border-amber-400 transition-colors shadow-2xs cursor-pointer"
+                        aria-label={t('shop_drop_rates_btn', language)}
+                        title={t('shop_drop_rates_btn', language)}
+                      >
+                        <Activity size={12} className="text-amber-700 shrink-0" />
+                        <span>{t('shop_drop_rates_btn', language)}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPackGuideState({ packRarity: pack.rarity, step: 0 })}
+                        className={getGuideButtonClassName()}
+                        aria-label={t('shop_pack_guide_open', language)}
+                        title={t('shop_pack_guide_open', language)}
+                      >
+                        <HelpCircle size={16} />
+                      </button>
+                    </div>
                   </div>
 
                   <div className="pl-14 sm:pl-16">
@@ -3382,26 +3437,38 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   </div>
                 </div>
 
-                <div className="relative z-10 mt-auto pt-2 w-full">
-                  <button
-                    id={`shop-pack-${pack.rarity}-btn`}
-                    onClick={() => buyPack(pack.cost, pack.rarity)}
-                    className={cn(
-                      'h-13 sm:h-14 w-full rounded-xl border px-4 py-3 text-left text-white shadow-sm transition-all active:scale-95 touch-target flex items-center justify-between',
-                      packTheme.primaryButton,
-                    )}
-                  >
-                    <span className="flex w-full items-center justify-between gap-3">
+                <div className="relative z-10 mt-auto pt-2 w-full flex flex-col gap-2">
+                  <div className="flex gap-2">
+                    <button
+                      id={`shop-pack-${pack.rarity}-btn`}
+                      onClick={() => buyPack(pack.cost, pack.rarity)}
+                      className={cn(
+                        'h-11 flex-1 rounded-xl border px-3 py-2 text-left text-white shadow-sm transition-all active:scale-95 touch-target flex items-center justify-between',
+                        packTheme.primaryButton,
+                      )}
+                    >
                       <span className="min-w-0 leading-tight">
-                        <span className="block text-[9px] uppercase tracking-[0.18em] text-white/70 sm:text-[10px]">{pack.label}</span>
-                        <span className="mt-0.5 block text-sm font-black uppercase sm:text-base leading-none">{t('buy', language)}</span>
+                        <span className="block text-[8px] uppercase tracking-[0.1em] text-white/70">{language === 'ko' ? '1회 소환' : '1x Draw'}</span>
+                        <span className="text-xs font-black">{pack.cost} SNS</span>
                       </span>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-sm font-black sm:text-base">{pack.cost} SNS</span>
-                        <ArrowRight size={16} className="shrink-0 opacity-80" />
-                      </div>
-                    </span>
-                  </button>
+                      <ArrowRight size={14} className="shrink-0 opacity-80" />
+                    </button>
+
+                    <button
+                      id={`shop-pack-${pack.rarity}-10x-btn`}
+                      onClick={() => buy10xPack(pack.cost, pack.rarity)}
+                      className="h-11 flex-1 rounded-xl border border-rose-500 bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 px-3 py-2 text-left text-white shadow-md transition-all active:scale-95 touch-target flex items-center justify-between relative overflow-hidden"
+                    >
+                      <span className="min-w-0 leading-tight">
+                        <span className="block text-[8px] font-black uppercase tracking-[0.05em] text-amber-200">{language === 'ko' ? '10연차 (10% 할인)' : '10x Draw (10% OFF)'}</span>
+                        <span className="text-xs font-black">{Math.floor(pack.cost * 10 * 0.9)} SNS</span>
+                      </span>
+                      <Sparkles size={14} className="shrink-0 text-amber-300 animate-pulse" />
+                    </button>
+                  </div>
+                  <p className="text-[9px] text-center text-amber-700 font-bold bg-amber-50 rounded border border-amber-200/60 py-0.5">
+                    {language === 'ko' ? '★ 10연차 시 SR 등급 이상 1장 확정!' : '★ Guaranteed SR+ in 10x Draw!'}
+                  </p>
                 </div>
 
               </motion.div>

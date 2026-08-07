@@ -949,7 +949,6 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
 }, (prev, next) => (
   areCardsVisuallyEqual(prev.card, next.card) &&
   prev.className === next.className &&
-  prev.onClick === next.onClick &&
   prev.isLocked === next.isLocked &&
   prev.isSelected === next.isSelected &&
   prev.isDragging === next.isDragging &&

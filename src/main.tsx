@@ -13,6 +13,8 @@ if (typeof window !== 'undefined') {
     const isChunkError = 
       errorMsg.includes('Failed to fetch dynamically imported module') ||
       errorMsg.includes('Expected a JavaScript-or-Wasm module script') ||
+      errorMsg.includes('is not a valid JavaScript MIME type') ||
+      errorMsg.includes('MIME type') ||
       errorMsg.includes('ChunkLoadError');
       
     if (isChunkError) {

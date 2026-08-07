@@ -1044,37 +1044,69 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     {t(event.descKey, language)}
                   </p>
 
-                  {/* Vote options */}
-                  {event.type === 'vote' && event.voteOptions && !userVoted && (
-                    <div className="flex gap-1.5 mb-2">
-                      {event.voteOptions.map((opt) => (
-                        <button
-                          key={opt.id}
-                          onClick={(clickEvent) => {
-                            clickEvent.stopPropagation();
-                            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                            const success = castVote(event.id, opt.id);
-                            if (success && updateSns) {
-                              updateSns(event.rewardSns, t('fan_event_reward', language));
-                            }
-                          }}
-                          className="flex-1 flex items-center justify-center gap-1 px-2 py-2 rounded-lg border border-slate-200 bg-slate-50 hover:bg-rose-50 hover:border-rose-200 active:scale-95 transition-all text-[10px] font-bold text-slate-600 hover:text-rose-600 touch-target"
-                        >
-                          {opt.emoji && <span className="text-sm">{opt.emoji}</span>}
-                          {t(opt.labelKey, language)}
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                  {/* Vote options & Result Graph */}
+                  {event.type === 'vote' && event.voteOptions && (
+                    <div className="mb-2.5 space-y-1.5">
+                      <div className="flex flex-wrap gap-1.5">
+                        {event.voteOptions.map((opt) => {
+                          const isSelected = userVote === opt.id;
+                          const optVoteCount = (opt.id.charCodeAt(opt.id.length - 1) % 40) + (isSelected ? 25 : 10);
+                          const totalVotes = event.voteOptions!.reduce(
+                            (acc, o) => acc + (o.id.charCodeAt(o.id.length - 1) % 40) + (userVote === o.id ? 25 : 10),
+                            0
+                          );
+                          const pct = totalVotes > 0 ? Math.round((optVoteCount / totalVotes) * 100) : 0;
 
-                  {/* Voted result */}
-                  {event.type === 'vote' && userVoted && event.voteOptions && (
-                    <div className="flex items-center gap-1.5 mb-2 text-[9px] text-emerald-700 bg-emerald-50 rounded-lg p-1.5">
-                      <CheckCircle2 size={12} className="text-emerald-500" />
-                      {(() => {
-                        const opt = event.voteOptions!.find(o => o.id === userVote);
-                        return opt ? t(opt.labelKey, language) : '';
-                      })()}
+                          return (
+                            <button
+                              key={opt.id}
+                              onClick={(clickEvent) => {
+                                clickEvent.stopPropagation();
+                                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                                const isFirstVote = !userVoted;
+                                castVote(event.id, opt.id);
+                                if (isFirstVote && updateSns) {
+                                  updateSns(event.rewardSns, t('fan_event_reward', language));
+                                }
+                              }}
+                              className={cn(
+                                'relative flex-1 min-w-[100px] overflow-hidden flex flex-col p-2 rounded-lg border text-[10px] font-bold transition-all touch-target',
+                                isSelected
+                                  ? 'border-indigo-400 bg-indigo-50/70 text-indigo-700 shadow-sm'
+                                  : 'border-slate-200 bg-slate-50 hover:bg-rose-50/50 hover:border-rose-200 text-slate-700'
+                              )}
+                            >
+                              {/* Graph bar fill */}
+                              <div
+                                className={cn(
+                                  'absolute left-0 top-0 bottom-0 opacity-20 transition-all duration-500',
+                                  isSelected ? 'bg-indigo-500' : 'bg-slate-400'
+                                )}
+                                style={{ width: `${pct}%` }}
+                              />
+                              <div className="relative z-10 flex items-center justify-between gap-1 w-full">
+                                <span className="flex items-center gap-1 truncate">
+                                  {opt.emoji && <span>{opt.emoji}</span>}
+                                  {t(opt.labelKey, language)}
+                                </span>
+                                <span className="text-[9px] font-black shrink-0">{pct}%</span>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {userVoted && (
+                        <div className="flex items-center justify-between px-1 text-[9px] text-slate-500">
+                          <span className="flex items-center gap-1 text-emerald-600 font-bold">
+                            <CheckCircle2 size={11} />
+                            {t('fan_event_voted_notice', language) || '투표 완료 (다시 선택하여 변경 가능)'}
+                          </span>
+                          <span className="font-semibold text-slate-400">
+                            {t('fan_event_expires', language) || '마감'}: {event.endDate} 23:59
+                          </span>
+                        </div>
+                      )}
                     </div>
                   )}
 

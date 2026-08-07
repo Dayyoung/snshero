@@ -51,9 +51,27 @@ const iconMap: Record<string, React.ComponentType<any>> = {
 };
 
 const HELP_STEPS = [
-  { titleKey: 'skill_help_upgrade', descKey: 'skill_help_upgrade_desc' },
-  { titleKey: 'skill_help_reset', descKey: 'skill_help_reset_desc' },
-  { titleKey: 'skill_help_points', descKey: 'skill_help_points_desc' },
+  {
+    title: { ko: '스킬 강화', en: 'Skill Upgrade' },
+    desc: {
+      ko: '소지한 SNS 포인트를 소모하여 스킬을 강화할 수 있습니다. 레벨이 오를수록 효과 수치가 증가합니다.',
+      en: 'Spend SNS points to upgrade skills. Higher levels provide stronger stat boosts.',
+    },
+  },
+  {
+    title: { ko: '스킬 초기화', en: 'Reset Skills' },
+    desc: {
+      ko: '스킬 초기화 진행 시 투자했던 모든 스킬 포인트가 반환되며, 스킬이 초기 상태로 되돌아갑니다.',
+      en: 'Resetting skills returns all invested points and resets skills to initial levels.',
+    },
+  },
+  {
+    title: { ko: '티어 및 조건', en: 'Tiers & Requirements' },
+    desc: {
+      ko: '동반자(Companion) 레벨 조건에 따라 차례대로 고티어 스킬이 해금됩니다.',
+      en: 'Higher tier skills unlock as your Companion level increases.',
+    },
+  },
 ];
 
 const cleanSkillName = (name: string) => name.replace(/\s+[IVX]+$/, '');
@@ -91,6 +109,8 @@ export const SkillView: React.FC<SkillViewProps> = ({
   const totalSkillLevels = skills.reduce((acc, s) => acc + (s.level || 0), 0);
   const currentTier = getSkillTier(totalSkillLevels);
 
+  const handleBack = onBack || (() => onNavigate('mydeck'));
+
   const handleResetConfirm = () => {
     onResetSkills();
     setShowResetConfirm(false);
@@ -100,7 +120,7 @@ export const SkillView: React.FC<SkillViewProps> = ({
     <div id="skill-tree" className="p-4 md:p-8 pb-32 max-w-4xl mx-auto min-h-screen text-slate-800 font-sans">
       <PageHeader
         title={t('skills', language)}
-        onBack={onBack}
+        onBack={handleBack}
         rightAction={
           <button
             type="button"
@@ -108,7 +128,7 @@ export const SkillView: React.FC<SkillViewProps> = ({
               setHelpOpen(true);
               setHelpStep(0);
             }}
-            className="w-9 h-9 rounded-full border border-slate-300 bg-white shadow-xs flex items-center justify-center text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            className="w-9 h-9 rounded-full border border-slate-300 bg-white shadow-xs flex items-center justify-center text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer"
           >
             <HelpCircle size={18} />
           </button>
@@ -138,6 +158,11 @@ export const SkillView: React.FC<SkillViewProps> = ({
                 </span>
                 <span className="text-xs font-semibold text-slate-400">
                   ({skills.length} {language === 'ko' ? '개 스킬 보유' : 'skills active'})
+                </span>
+              </div>
+              <div className="mt-1.5 flex items-center gap-1.5 text-[10px] text-amber-300 font-bold">
+                <span className="px-1.5 py-0.5 rounded bg-amber-500/20 border border-amber-400/30">
+                  {language === 'ko' ? '적용 대상: 전체 덱 & 동반자 히어로' : 'Target: All Deck Cards & Companion'}
                 </span>
               </div>
             </div>
@@ -409,10 +434,10 @@ export const SkillView: React.FC<SkillViewProps> = ({
               <div className="text-center mb-5">
                 <HelpCircle size={24} className="mx-auto text-indigo-500 mb-2" />
                 <h3 className="text-sm font-black text-slate-900">
-                  {t(HELP_STEPS[helpStep].titleKey, language)}
+                  {language === 'ko' ? HELP_STEPS[helpStep].title.ko : HELP_STEPS[helpStep].title.en}
                 </h3>
                 <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
-                  {t(HELP_STEPS[helpStep].descKey, language)}
+                  {language === 'ko' ? HELP_STEPS[helpStep].desc.ko : HELP_STEPS[helpStep].desc.en}
                 </p>
               </div>
 

@@ -50,6 +50,10 @@ export const WikiSkillView: React.FC<WikiSkillViewProps> = ({
   onNavigate,
   language,
 }) => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const [showHelp, setShowHelp] = useState(false);
   // Dispatch global popup events so bottom nav hides while help is open
   useEffect(() => {

@@ -23,7 +23,9 @@ import { CSS } from '@dnd-kit/utilities';
 import { CardItem } from '../components/CardItem';
 import { ArDeckViewer } from '../components/ArDeckViewer';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ChevronLeft, ChevronRight, HelpCircle, Trophy, Info, Zap, Package, Shield, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Gift, Star as StarIcon, Edit2, Plus, Gem, Footprints, Sparkles, Share2, Camera, BookOpen, Users, PawPrint } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, HelpCircle, Trophy, Info, Zap, Package, Shield, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Gift, Star as StarIcon, Edit2, Plus, Gem, Footprints, Sparkles, Share2, Camera, BookOpen, Users, PawPrint, Trash2, Layers, Lock, Search } from 'lucide-react';
+import { CardDisassembleModal } from '../components/CardDisassembleModal';
+import { useCardLock } from '../hooks/useCardLock';
 import { cn, getFormattedCardName } from '../lib/utils';
 import { CARD_DATABASE } from '../cardDatabase';
 import { t } from '../lib/i18n';
@@ -270,20 +272,62 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   const [isAchievementsModalOpen, setIsAchievementsModalOpen] = useState(false);
   const [isCombineModalOpen, setIsCombineModalOpen] = useState(false);
   const [is3DDeckViewerOpen, setIs3DDeckViewerOpen] = useState(false);
+  const [isDisassembleModalOpen, setIsDisassembleModalOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
-  // Dispatch global popup events so bottom nav hides while help is open
-  useEffect(() => {
-    if (isHelpOpen) {
-      window.dispatchEvent(new Event('snshero-help-popup-open'));
-    } else {
-      window.dispatchEvent(new Event('snshero-help-popup-close'));
-    }
-  }, [isHelpOpen]);
-
   const [helpStep, setHelpStep] = useState(0);
+  const { isLocked } = useCardLock();
 
-  // Skin system
   const season = currentSeason || 'season1';
+
+  // Multi-Deck Presets State (Item 31)
+  const [activeDeckPreset, setActiveDeckPreset] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(`hero_active_deck_preset_${season}`);
+      return saved ? Number(saved) || 1 : 1;
+    }
+    return 1;
+  });
+
+  const handleSwitchDeckPreset = (targetPreset: number) => {
+    if (targetPreset === activeDeckPreset) return;
+    
+    // Save current deck cards to active preset key
+    const currentCardIds = currentDeck.map(c => c.imageIndex || Number(c.id) || 0);
+    localStorage.setItem(`hero_deck_preset_${activeDeckPreset}_${season}`, JSON.stringify(currentCardIds));
+
+    // Load target preset cards
+    const rawTarget = localStorage.getItem(`hero_deck_preset_${targetPreset}_${season}`);
+    let targetIds: number[] = rawTarget ? JSON.parse(rawTarget) : [];
+
+    if (!targetIds || targetIds.length === 0) {
+      targetIds = currentCardIds;
+      localStorage.setItem(`hero_deck_preset_${targetPreset}_${season}`, JSON.stringify(targetIds));
+    }
+
+    const loadedDeck = targetIds.map(imgIdx => {
+      const dbCard = CARD_DATABASE[imgIdx];
+      if (!dbCard) return null;
+      const invData = inventory[imgIdx];
+      return syncCardWithDatabase({
+        ...dbCard,
+        id: `card-${imgIdx}-${Date.now()}`,
+        imageIndex: imgIdx,
+        owner: null,
+        growth: invData?.growth || 0,
+        hunger: invData?.hunger || 100,
+        happiness: invData?.happiness || 100,
+        lastInteraction: invData?.lastInteraction,
+      }, inventory);
+    }).filter((c): c is CardData => Boolean(c));
+
+    if (loadedDeck.length > 0) {
+      updateDeck(loadedDeck);
+    }
+
+    setActiveDeckPreset(targetPreset);
+    localStorage.setItem(`hero_active_deck_preset_${season}`, String(targetPreset));
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+  };
   const cardSkins = useCardSkins(season);
   const { getCareState, getRewardStatus, performAction, claimReward } = useHeroCare({
     season,
@@ -682,6 +726,8 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   const [sortBy, setSortBy] = useState<'index' | 'level' | 'power' | 'name' | 'rarity' | 'stats_total'>('index');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [showOwnedOnly, setShowOwnedOnly] = useState(true);
+  const [cardSearchQuery, setCardSearchQuery] = useState('');
+  const [selectedElementFilter, setSelectedElementFilter] = useState<'ALL' | 'WATER' | 'FIRE' | 'EARTH' | 'WIND' | 'HOLY' | 'DARK'>('ALL');
 
   const processedCards = React.useMemo(() => {
     // For Upgrade/Equipment, show the actual cards in the deck
@@ -729,19 +775,29 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         } else {
           if (showOwnedOnly && !item.isOwned) return false;
         }
+
+        // Element Filter (Item 44)
+        if (selectedElementFilter !== 'ALL') {
+          const dbCard = CARD_DATABASE[item.idx];
+          const el = String((item.card as any).element || dbCard?.element || '').toUpperCase();
+          if (!el.includes(selectedElementFilter)) return false;
+        }
+
+        // Search Query Filter (Item 44)
+        if (cardSearchQuery.trim() !== '') {
+          const q = cardSearchQuery.toLowerCase();
+          const dbCard = CARD_DATABASE[item.idx];
+          const nameKo = String(item.card.title_dis || dbCard?.title_dis || '').toLowerCase();
+          const nameEn = String((item.card as any).title_en || dbCard?.title_en || '').toLowerCase();
+          const lore = String((item.card as any).lore_ko || dbCard?.lore_ko || '').toLowerCase();
+          if (!nameKo.includes(q) && !nameEn.includes(q) && !lore.includes(q)) {
+            return false;
+          }
+        }
+
         return true;
       })
       .sort((a, b) => {
-        // [CRITICAL FEAT] 덱에 장착된 카드는 덱의 실제 슬롯 장착 순서(0~4)대로 항상 리스트 최상단에 최우선 정렬!
-        if (a.isInDeck && b.isInDeck) {
-          const idxA = currentDeck.findIndex(c => c && c.imageIndex === a.idx);
-          const idxB = currentDeck.findIndex(c => c && c.imageIndex === b.idx);
-          return idxA - idxB; // 덱 장착 순서 고정 (오름차순)
-        }
-        if (a.isInDeck) return -1; // 덱 장착 카드가 무조건 앞으로
-        if (b.isInDeck) return 1;  // 덱 장착 카드가 무조건 앞으로
-
-        // 덱에 없는 나머지 카드들은 사용자가 선택한 정렬 조건에 맞춰 정렬!
         let comparison = 0;
         const cardA = a.card;
         const cardB = b.card;
@@ -770,9 +826,16 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             break;
         }
 
-        return sortOrder === 'asc' ? comparison : -comparison;
+        if (comparison !== 0) {
+          return sortOrder === 'asc' ? comparison : -comparison;
+        }
+
+        if (a.isInDeck !== b.isInDeck) {
+          return a.isInDeck ? -1 : 1;
+        }
+        return a.idx - b.idx;
       });
-  }, [showOwnedOnly, ownedCards, inventory, sortBy, sortOrder, language, selectionContext, currentDeck]);
+  }, [showOwnedOnly, ownedCards, inventory, sortBy, sortOrder, language, selectionContext, currentDeck, selectedElementFilter, cardSearchQuery]);
 
   const iconMap: Record<string, any> = {
     Zap,
@@ -823,6 +886,48 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             <Camera size={14} className="shrink-0" />
             <span className="text-[10px] font-bold uppercase">{language === 'ko' ? '3D' : '3D'}</span>
           </button>
+
+          <button
+            onClick={() => {
+              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              setIsDisassembleModalOpen(true);
+            }}
+            className="min-h-11 px-3 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg active:scale-95 transition-all cursor-pointer shadow-md flex items-center gap-1.5 touch-target"
+            title={language === 'ko' ? '카드 분해/환급' : 'Card Disassemble'}
+          >
+            <Trash2 size={14} className="shrink-0" />
+            <span className="text-[10px] font-bold uppercase">{language === 'ko' ? '분해' : 'SCRAP'}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Multi-Deck Presets Control Bar (Item 31) */}
+      <div className="bg-slate-900 text-white p-3 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-lg">
+        <div className="flex items-center gap-2">
+          <Layers size={18} className="text-indigo-400 shrink-0" />
+          <span className="text-xs font-black uppercase tracking-wider text-slate-200">
+            {language === 'ko' ? '멀티 덱 프리셋' : 'Deck Presets'}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-1.5 bg-slate-800 p-1 rounded-xl">
+          {[1, 2, 3].map((presetNum) => (
+            <button
+              key={presetNum}
+              onClick={() => handleSwitchDeckPreset(presetNum)}
+              className={cn(
+                "px-3 py-1.5 rounded-lg text-xs font-black uppercase transition-all flex items-center gap-1 cursor-pointer",
+                activeDeckPreset === presetNum
+                  ? "bg-indigo-600 text-white shadow-xs"
+                  : "text-slate-400 hover:text-white hover:bg-slate-700"
+              )}
+            >
+              <span>DECK {presetNum}</span>
+              {activeDeckPreset === presetNum && (
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              )}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -1458,6 +1563,56 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                 </div>
               </div>
 
+              {/* ── Item 44: Card Search Bar & Element Filter Chips ── */}
+              <div className="px-4 sm:px-6 pt-2 pb-2 space-y-2 border-b border-gray-100 bg-gray-50/50">
+                <div className="flex flex-col sm:flex-row items-center gap-2">
+                  <div className="relative flex-1 w-full">
+                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="text"
+                      value={cardSearchQuery}
+                      onChange={(e) => setCardSearchQuery(e.target.value)}
+                      placeholder={language === 'ko' ? '카드 이름 또는 설명 검색...' : 'Search card name or lore...'}
+                      className="w-full pl-8 pr-8 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-bold text-gray-800 focus:outline-none focus:border-black transition-colors"
+                    />
+                    {cardSearchQuery && (
+                      <button
+                        onClick={() => setCardSearchQuery('')}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        <X size={14} />
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Element Chips */}
+                  <div className="flex items-center gap-1 overflow-x-auto w-full sm:w-auto scrollbar-hide py-0.5">
+                    {[
+                      { id: 'ALL', labelKo: '전체', labelEn: 'ALL', color: 'bg-slate-800 text-white border-slate-700' },
+                      { id: 'WATER', labelKo: '수(水)', labelEn: 'Water', color: 'bg-blue-500 text-white border-blue-600' },
+                      { id: 'FIRE', labelKo: '화(火)', labelEn: 'Fire', color: 'bg-rose-500 text-white border-rose-600' },
+                      { id: 'EARTH', labelKo: '지(地)', labelEn: 'Earth', color: 'bg-emerald-600 text-white border-emerald-700' },
+                      { id: 'WIND', labelKo: '풍(風)', labelEn: 'Wind', color: 'bg-teal-500 text-white border-teal-600' },
+                      { id: 'HOLY', labelKo: '빛(聖)', labelEn: 'Holy', color: 'bg-amber-400 text-amber-950 border-amber-500' },
+                      { id: 'DARK', labelKo: '암(闇)', labelEn: 'Dark', color: 'bg-purple-900 text-purple-100 border-purple-800' }
+                    ].map(chip => (
+                      <button
+                        key={chip.id}
+                        onClick={() => setSelectedElementFilter(chip.id as any)}
+                        className={cn(
+                          "px-2.5 py-1 text-[10px] font-black rounded-md border transition-all whitespace-nowrap shadow-xs cursor-pointer",
+                          selectedElementFilter === chip.id
+                            ? `${chip.color} ring-2 ring-black/20 scale-105`
+                            : "bg-white text-gray-600 border-gray-200 hover:bg-gray-100"
+                        )}
+                      >
+                        {language === 'ko' ? chip.labelKo : chip.labelEn}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
               <div className="flex-1 overflow-y-auto p-4 sm:p-6 scrollbar-thin scrollbar-thumb-black">
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-4 justify-items-center">
                   {processedCards.map((item) => {
@@ -1641,47 +1796,106 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             onClick={e => e.stopPropagation()}
             className="bg-white w-full max-w-sm rounded-lg shadow-2xl p-6 border border-gray-200"
           >
-            <div className="flex justify-between items-center mb-4 pb-2 border-b">
-              <h3 className="font-bold text-lg">{t('deck_power', language)} {t('details', language)}</h3>
+            <div className="flex justify-between items-center mb-3 pb-2 border-b">
+              <h3 className="font-bold text-lg flex items-center gap-2">
+                <Trophy size={18} className="text-amber-500" />
+                {t('deck_power', language)} {t('details', language)}
+              </h3>
               <button onClick={() => setShowDeckPowerDetails(false)} className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"><X size={20}/></button>
             </div>
-            <p className="text-sm text-gray-500 mb-4">* {t('deck_tp_guide', language)}</p>
-            <div className="space-y-2 mb-4 max-h-[50vh] overflow-y-auto">
-              {currentDeck.map((card, i) => {
-                const total = getCardPower(card);
+
+            {(() => {
+              let totalBase = 0;
+              let totalSkill = 0;
+              let totalEquip = 0;
+
+              currentDeck.forEach(card => {
+                if (!card) return;
                 const dbCard = CARD_DATABASE[card.imageIndex || 0];
-                const basePower = dbCard?.power || 0;
-                const bonus = getSkillPointBonus(card);
-                
-                let ep = 0;
+                totalBase += dbCard?.power || 0;
+                totalSkill += getSkillPointBonus(card);
                 if (card.equipment) {
                   Object.values(card.equipment).forEach((item: any) => {
-                    if (item?.stats) ep += item.stats.reduce((a:number,b:number)=>a+b,0);
+                    if (item?.stats) totalEquip += item.stats.reduce((a:number,b:number)=>a+b,0);
                   });
                 }
-                
-                return (
-                  <div key={i} className="flex justify-between items-center text-sm p-3 bg-gray-50 border border-gray-100 rounded-lg shadow-sm">
-                    <div className="flex flex-col">
-                      <span className="truncate font-black text-gray-800">{i+1}. {getFormattedCardName({ ...card, imageIndex: card.imageIndex || 0 }, language)}</span>
-                      <div className="flex flex-wrap gap-1 mt-0.5">
-                        <span className="text-[10px] text-gray-500 font-bold bg-gray-100 px-1 rounded-sm">{t('base', language)} {basePower}</span>
-                        {bonus > 0 && <span className="text-[10px] text-green-600 font-bold bg-green-50 px-1 rounded-sm">+{bonus}</span>}
-                        {ep > 0 && (
-                          <span className="text-[10px] text-blue-600 font-bold bg-blue-50 px-1 rounded-sm">+{ep}</span>
-                        )}
-                      </div>
+              });
+
+              // Element Synergy Check (Item 52)
+              const elements = currentDeck.map(c => String((c as any)?.element || CARD_DATABASE[c?.imageIndex || 0]?.element || 'WATER').toUpperCase());
+              const elementCounts: Record<string, number> = {};
+              elements.forEach(e => { elementCounts[e] = (elementCounts[e] || 0) + 1; });
+              const maxSharedElementCount = Math.max(...Object.values(elementCounts), 0);
+              const hasSynergy = maxSharedElementCount >= 3;
+              const synergyBonus = hasSynergy ? Math.floor((totalBase + totalSkill + totalEquip) * 0.1) : 0;
+              const grandTotalTP = totalBase + totalSkill + totalEquip + synergyBonus;
+
+              return (
+                <>
+                  {/* Category Summary Bars */}
+                  <div className="p-3 bg-slate-900 text-white rounded-xl mb-3 space-y-2 text-xs font-mono shadow-inner">
+                    <div className="flex justify-between items-center border-b border-slate-700/60 pb-1.5">
+                      <span className="text-slate-300">{language === 'ko' ? '카드 기본 스탯 합' : 'Base Stats Sum'}</span>
+                      <span className="font-black text-amber-400">{totalBase.toLocaleString()}</span>
                     </div>
-                    <span className="font-black text-blue-600 text-lg">+{total}</span>
+                    <div className="flex justify-between items-center border-b border-slate-700/60 pb-1.5">
+                      <span className="text-slate-300">{language === 'ko' ? '스킬 강화 보너스' : 'Skill Node Bonus'}</span>
+                      <span className="font-black text-emerald-400">+{totalSkill.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-center border-b border-slate-700/60 pb-1.5">
+                      <span className="text-slate-300">{language === 'ko' ? '장비 아이템 보너스' : 'Equipment Bonus'}</span>
+                      <span className="font-black text-blue-400">+{totalEquip.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-300 flex items-center gap-1">
+                        <Sparkles size={12} className="text-purple-400" />
+                        {language === 'ko' ? '동일 속성 시너지 (3장+)' : 'Mono-Element Synergy (+10%)'}
+                      </span>
+                      <span className={cn("font-black", hasSynergy ? "text-purple-300" : "text-slate-500")}>
+                        {hasSynergy ? `+${synergyBonus}` : (language === 'ko' ? '미적용' : 'Inactive')}
+                      </span>
+                    </div>
                   </div>
 
-                );
-              })}
-            </div>
-            <div className="flex justify-between items-center pt-2 border-t font-bold text-lg">
-              <span>TOTAL:</span>
-              <span>{deckPower.toLocaleString()}</span>
-            </div>
+                  <div className="space-y-2 mb-4 max-h-[35vh] overflow-y-auto pr-1">
+                    {currentDeck.map((card, i) => {
+                      const total = getCardPower(card);
+                      const dbCard = CARD_DATABASE[card.imageIndex || 0];
+                      const basePower = dbCard?.power || 0;
+                      const bonus = getSkillPointBonus(card);
+                      
+                      let ep = 0;
+                      if (card.equipment) {
+                        Object.values(card.equipment).forEach((item: any) => {
+                          if (item?.stats) ep += item.stats.reduce((a:number,b:number)=>a+b,0);
+                        });
+                      }
+                      
+                      return (
+                        <div key={i} className="flex justify-between items-center text-xs p-2.5 bg-gray-50 border border-gray-200 rounded-lg shadow-2xs">
+                          <div className="flex flex-col min-w-0 pr-2">
+                            <span className="truncate font-black text-gray-800">{i+1}. {getFormattedCardName({ ...card, imageIndex: card.imageIndex || 0 }, language)}</span>
+                            <div className="flex flex-wrap gap-1 mt-0.5">
+                              <span className="text-[9px] text-gray-500 font-bold bg-gray-100 px-1 rounded-xs">{t('base', language)} {basePower}</span>
+                              {bonus > 0 && <span className="text-[9px] text-green-600 font-bold bg-green-50 px-1 rounded-xs">+{bonus}</span>}
+                              {ep > 0 && (
+                                <span className="text-[9px] text-blue-600 font-bold bg-blue-50 px-1 rounded-xs">+{ep}</span>
+                              )}
+                            </div>
+                          </div>
+                          <span className="font-black text-blue-600 text-sm shrink-0">+{total}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="flex justify-between items-center pt-3 border-t-2 border-slate-900 font-black text-base text-slate-900">
+                    <span>{language === 'ko' ? '총 전투력 (Grand TP)' : 'Grand Total TP'}:</span>
+                    <span className="text-xl text-blue-600">{grandTotalTP.toLocaleString()}</span>
+                  </div>
+                </>
+              );
+            })()}
           </motion.div>
         </motion.div>
       )}
@@ -2383,6 +2597,25 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Card Disassemble / Scrap Modal (Item 32) */}
+      <CardDisassembleModal
+        isOpen={isDisassembleModalOpen}
+        onClose={() => setIsDisassembleModalOpen(false)}
+        ownedCards={ownedCards}
+        currentDeckCardIds={currentDeck.map(c => c.imageIndex || Number(c.id) || 0)}
+        language={language}
+        onConfirmDisassemble={(selectedIds, totalRefundSns) => {
+          updateSns(totalRefundSns, 'card-disassemble-refund');
+          showCustomAlert?.(
+            language === 'ko' ? '카드 분해 완료' : 'Disassemble Complete',
+            language === 'ko' 
+              ? `${selectedIds.length}장의 카드가 분해되어 +${totalRefundSns.toLocaleString()} SNS 포인트를 획득했습니다!`
+              : `${selectedIds.length} cards disassembled for +${totalRefundSns.toLocaleString()} SNS Points!`
+          );
+        }}
+        playSfx={playSfx}
+      />
 
     </div>
   );

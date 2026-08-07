@@ -34,11 +34,19 @@ export const ArCardViewer: React.FC<ArCardViewerProps> = ({
   const [cardBackUrl, setCardBackUrl] = useState<string>('/background-bronze.png');
   const [aframeLoaded, setAframeLoaded] = useState(false);
 
-  // 3D rotation angle state (controlled via mouse/touch drag on overlay)
+  // 3D rotation angle & zoom scale state
   const [rotationY, setRotationY] = useState(0);
   const [rotationX, setRotationX] = useState(0);
+  const [cardScale, setCardScale] = useState(1.0);
   const isDragging = useRef(false);
   const previousMousePosition = useRef({ x: 0, y: 0 });
+  const touchDistanceRef = useRef<number | null>(null);
+
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    const zoomDelta = e.deltaY > 0 ? -0.1 : 0.1;
+    setCardScale(prev => Math.max(0.5, Math.min(2.5, prev + zoomDelta)));
+  };
 
   // Get distinct owned card categories or just list distinct owned cards
   const distinctOwnedCards = React.useMemo(() => {
@@ -89,19 +97,35 @@ export const ArCardViewer: React.FC<ArCardViewerProps> = ({
     };
   }, [isOpen, selectedCard, showCameraPreview]);
 
-  // Load A-Frame check helper
+  // Load A-Frame check & dynamic load helper
   useEffect(() => {
-    if (typeof window !== 'undefined' && (window as any).AFRAME) {
+    if (typeof window === 'undefined') return;
+    if ((window as any).AFRAME) {
       setAframeLoaded(true);
-    } else {
-      const checkInterval = setInterval(() => {
-        if ((window as any).AFRAME) {
-          setAframeLoaded(true);
-          clearInterval(checkInterval);
-        }
-      }, 200);
-      return () => clearInterval(checkInterval);
+      return;
     }
+
+    const scriptId = 'aframe-script-cdn';
+    let script = document.getElementById(scriptId) as HTMLScriptElement | null;
+    if (!script) {
+      script = document.createElement('script');
+      script.id = scriptId;
+      script.src = 'https://aframe.io/releases/1.4.0/aframe.min.js';
+      script.async = true;
+      script.onerror = (e) => {
+        console.warn('A-Frame CDN script failed to load:', e);
+      };
+      document.head.appendChild(script);
+    }
+
+    const checkInterval = setInterval(() => {
+      if ((window as any).AFRAME) {
+        setAframeLoaded(true);
+        clearInterval(checkInterval);
+      }
+    }, 200);
+
+    return () => clearInterval(checkInterval);
   }, []);
 
   const drawStatCircle = (ctx: CanvasRenderingContext2D, x: number, y: number, value: number) => {
@@ -383,24 +407,47 @@ export const ArCardViewer: React.FC<ArCardViewerProps> = ({
   // Drag interaction math on absolute overlay to rotate 3D Card smoothly
   const handleTouchStart = (e: React.TouchEvent) => {
     isDragging.current = true;
-    const touch = e.touches[0];
-    previousMousePosition.current = { x: touch.clientX, y: touch.clientY };
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      touchDistanceRef.current = Math.hypot(dx, dy);
+    } else if (e.touches.length === 1) {
+      const touch = e.touches[0];
+      previousMousePosition.current = { x: touch.clientX, y: touch.clientY };
+    }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDragging.current) return;
-    const touch = e.touches[0];
-    const deltaX = touch.clientX - previousMousePosition.current.x;
-    const deltaY = touch.clientY - previousMousePosition.current.y;
+    if (e.touches.length === 2 && touchDistanceRef.current !== null) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.hypot(dx, dy);
+      const diff = dist - touchDistanceRef.current;
+      setCardScale(prev => Math.max(0.5, Math.min(2.5, prev + diff * 0.008)));
+      touchDistanceRef.current = dist;
+      return;
+    }
 
-    setRotationY(prev => prev + deltaX * 0.85);
-    setRotationX(prev => Math.max(-60, Math.min(60, prev + deltaY * 0.85)));
+    if (e.touches.length === 1) {
+      const touch = e.touches[0];
+      const rawDeltaX = touch.clientX - previousMousePosition.current.x;
+      const rawDeltaY = touch.clientY - previousMousePosition.current.y;
+      
+      // Clamp delta to prevent sudden touch jumps on mobile screens
+      const deltaX = Math.max(-20, Math.min(20, rawDeltaX));
+      const deltaY = Math.max(-20, Math.min(20, rawDeltaY));
 
-    previousMousePosition.current = { x: touch.clientX, y: touch.clientY };
+      setRotationY(prev => prev + deltaX * 0.75);
+      setRotationX(prev => Math.max(-60, Math.min(60, prev + deltaY * 0.75)));
+
+      previousMousePosition.current = { x: touch.clientX, y: touch.clientY };
+    }
   };
 
   const handleTouchEnd = () => {
     isDragging.current = false;
+    touchDistanceRef.current = null;
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -514,7 +561,7 @@ export const ArCardViewer: React.FC<ArCardViewerProps> = ({
                   <a-entity 
                     id="ar-card-model" 
                     rotation={`${rotationX} ${rotationY} 0`}
-                    scale="1 1 1"
+                    scale={`${cardScale} ${cardScale} ${cardScale}`}
                   >
                     {/* Front side of Card: standard shader with reduced metalness to prevent dark shadows */}
                     <a-plane 
@@ -553,6 +600,7 @@ export const ArCardViewer: React.FC<ArCardViewerProps> = ({
             {/* Gesture capture absolute transparent layer on top of A-Frame for custom drag rotation */}
             <div 
               className="absolute inset-0 z-20 cursor-grab active:cursor-grabbing"
+              onWheel={handleWheel}
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}

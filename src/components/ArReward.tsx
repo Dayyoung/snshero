@@ -8,9 +8,14 @@ import { t } from '../lib/i18n';
 
 // TFJS 동적 import — 카메라 시작 시에만 로드하여 초기 번들 크기 -1.5MB
 let _tfModule: typeof import('@tensorflow/tfjs') | null = null;
-async function loadTf(): Promise<typeof import('@tensorflow/tfjs')> {
+async function loadTf(): Promise<typeof import('@tensorflow/tfjs') | null> {
   if (!_tfModule) {
-    _tfModule = await import('@tensorflow/tfjs');
+    try {
+      _tfModule = await import('@tensorflow/tfjs');
+    } catch (e) {
+      console.warn('Failed to load TensorFlow.js module:', e);
+      return null;
+    }
   }
   return _tfModule;
 }

@@ -103,6 +103,12 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
   const hasReward = Boolean(rewardEvent && activeReward);
 
   useEffect(() => {
+    if (!progress.autoMode) {
+      setAutoMode(true);
+    }
+  }, []);
+
+  useEffect(() => {
     const region = getKadanRpgRegion(nextEvent?.regionId ?? progress.currentRegionId);
     setHeroTile(clampTile(progress.lastTile, region.width, region.height));
     setTargetTile(nextEvent?.tile ?? null);

@@ -5,7 +5,7 @@ import { CardData, AiStrategy, AiDifficulty, Language, PlayerPatterns, Item, Ski
 import { CardItem } from '../components/CardItem';
 import { cn, getFormattedCardName } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2, UserPlus, ShoppingBag } from 'lucide-react';
 import { generateCard, INITIAL_CARDS, generateUniqueDeck, getCardStatWithBonus, generateAiName, syncCardWithDatabase, INITIAL_SKILLS, getCardPower, getNormalizedElement } from '../constants';
 import { CARD_DATABASE } from '../cardDatabase';
 import { ITEM_DATABASE } from '../constants/itemDatabase';
@@ -309,7 +309,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   currentSeason,
   initialMode
 }) => {
-  const { language, lowSpecMode } = useGameSettings();
+  const { language, lowSpecMode, targetFps, batterySaver } = useGameSettings();
+  const isLowPerformance = lowSpecMode || batterySaver || targetFps === '30';
   const perf = usePerformanceMode();
   const [gameState, setGameState] = useState<GameState>(() => {
     if (initialMode === 'story') return 'story';
@@ -401,6 +402,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [showStoryResultModal, setShowStoryResultModal] = useState<boolean>(false);
   const [storyBonusItem, setStoryBonusItem] = useState<any | null>(null);
   const [isStoryFinished, setIsStoryFinished] = useState<boolean>(false);
+  const [isStoryAutoPlay, setIsStoryAutoPlay] = useState<boolean>(false);
 
   const {
     storyState,
@@ -1728,6 +1730,57 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
   };
 
+  useEffect(() => {
+    if (gameState !== 'story' || !isStoryAutoPlay) return;
+    const timer = setTimeout(() => {
+      if (storyStep === 0) {
+        const nextStep = 1;
+        setStoryStep(nextStep);
+        saveStoryProgress(storyAct, nextStep, true);
+      } else if (storyStep === 1 || storyStep === 2) {
+        const actInfo = storyActData[storyAct];
+        if (actInfo) {
+          const bossId = storyStep === 1 ? actInfo.midBossId : actInfo.finalBossId;
+          startStoryMatch(bossId, storyStep === 2);
+        }
+      } else if (storyStep === 3) {
+        if (storyAct === 3) {
+          setIsStoryFinished(true);
+        } else {
+          const nextAct = storyAct + 1;
+          setStoryAct(nextAct);
+          setStoryStep(0);
+          saveStoryProgress(nextAct, 0, true);
+        }
+      }
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, [gameState, isStoryAutoPlay, storyAct, storyStep]);
+
+  const handleSkipStory = () => {
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    if (storyStep === 0) {
+      const nextStep = 1;
+      setStoryStep(nextStep);
+      saveStoryProgress(storyAct, nextStep, true);
+    } else if (storyStep === 1 || storyStep === 2) {
+      const actInfo = storyActData[storyAct];
+      if (actInfo) {
+        const bossId = storyStep === 1 ? actInfo.midBossId : actInfo.finalBossId;
+        startStoryMatch(bossId, storyStep === 2);
+      }
+    } else if (storyStep === 3) {
+      if (storyAct === 3) {
+        setIsStoryFinished(true);
+      } else {
+        const nextAct = storyAct + 1;
+        setStoryAct(nextAct);
+        setStoryStep(0);
+        saveStoryProgress(nextAct, 0, true);
+      }
+    }
+  };
+
   const runStoryOutcome = (playerWon: boolean) => {
     if (!isStoryActive) return;
 
@@ -2057,6 +2110,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   
   // Trap states per board cell
   const [boardTraps, setBoardTraps] = useState<Record<number, 'purple' | 'red'>>({});
+  // Hand card long press / zoom preview (Item 51)
+  const [previewHandCard, setPreviewHandCard] = useState<CardData | null>(null);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -2277,7 +2332,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
   // Override auto-battle for tutorial or active auto-battle setting
   const isAutoBattle = (isTutorialMode && tutorialStep > 0 && tutorialStep < 3) || !!propIsAutoBattle;
-  const speedMultiplier = isAutoBattle ? 0.5 : 1;
+  const speedMultiplier = isAutoBattle ? 0.4 : (isLowPerformance ? 0.5 : 1);
   const [showInGameRules, setShowInGameRules] = useState(false);
 
   useEffect(() => {
@@ -2614,6 +2669,25 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [lastPlacedIdx, setLastPlacedIdx] = useState<number | null>(null);
   const [hitPulseState, setHitPulseState] = useState<number[]>([]);
   const [combatHighlights, setCombatHighlights] = useState<Record<number, number[]>>({});
+  const [floatingStatFX, setFloatingStatFX] = useState<Record<number, { text: string; isPositive: boolean; id: number }>>({});
+
+  const triggerStatFX = useCallback((cellIdx: number, text: string, isPositive: boolean) => {
+    const fxId = Date.now() + Math.random();
+    setFloatingStatFX(prev => ({
+      ...prev,
+      [cellIdx]: { text, isPositive, id: fxId }
+    }));
+    setTimeout(() => {
+      setFloatingStatFX(prev => {
+        if (prev[cellIdx]?.id === fxId) {
+          const next = { ...prev };
+          delete next[cellIdx];
+          return next;
+        }
+        return prev;
+      });
+    }, 1600);
+  }, []);
   const [checkingIdx, setCheckingIdx] = useState<number>(-1);
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [battleHighlights, setBattleHighlights] = useState<Record<number, number[]>>({});
@@ -4107,6 +4181,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       boardState.forEach((cell, idx) => {
         if (cell && cell.owner === card.owner) {
           boardState[idx] = { ...cell, stats: cell.stats.map(s => s + card.ability!.value) as [number, number, number, number] };
+          triggerStatFX(idx, `+${card.ability!.value}`, true);
         }
       });
       activationText = t('log_omniboost_activated', language, { value: card.ability.value }) || `Rally! Allies gained +${card.ability.value}`;;
@@ -4128,6 +4203,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
         if (card.ability?.type === 'POWER_BOOST' && neighbor.owner === card.owner) {
           boardState[ni] = { ...neighbor, stats: neighbor.stats.map(s => s + card.ability!.value) as [number, number, number, number] };
+          triggerStatFX(ni, `+${card.ability!.value}`, true);
           activationText = t('log_power_boost_activated', language, { value: card.ability.value });
         } else if (card.ability?.type === 'WEAKEN' && neighbor.owner !== card.owner) {
           if (neighbor.ability?.type === 'IMMUNITY') {
@@ -4136,10 +4212,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
              return;
           }
           boardState[ni] = { ...neighbor, stats: neighbor.stats.map(s => Math.max(0, s - card.ability!.value)) as [number, number, number, number] };
+          triggerStatFX(ni, `-${card.ability!.value}`, false);
           activationText = t('log_weaken_activated', language, { value: card.ability.value });
         } else if (card.ability?.type === 'REINFORCE' && neighbor.owner === card.owner) {
           const currentSelf = boardState[index]!;
           boardState[index] = { ...currentSelf, stats: currentSelf.stats.map(s => s + card.ability!.value) as [number, number, number, number] };
+          triggerStatFX(index, `+${card.ability!.value}`, true);
           activationText = t('log_reinforce_activated', language, { value: card.ability.value });
         } else if (card.ability?.type === 'WALL') {
           activationText = t('log_wall_activated', language);
@@ -4179,12 +4257,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             ...card,
             stats: card.stats.map(s => Math.max(0, s - 1)) as [number, number, number, number]
           };
+          triggerStatFX(index, '-1 TRAP', false);
           addLog(t('log_weaken_trap', language, { unit: getFormattedCardName(card, language) }), 'system');
         } else if (trapType === 'red') {
           newBoard[index] = {
             ...card,
             stats: card.stats.map(s => s + 1) as [number, number, number, number]
           };
+          triggerStatFX(index, '+1 TRAP', true);
           addLog(t('log_reinforce_trap', language, { unit: getFormattedCardName(card, language) }), 'system');
         }
       }
@@ -4196,6 +4276,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     }
 
     const placedCard = newBoard[index]!;
+
+    // Check elemental tile bonus/malus FX
+    if (elementalBoard[index]) {
+      const cardEl = getNormalizedElement(placedCard);
+      const tileEl = getNormalizedElement({ element: elementalBoard[index] } as any);
+      if (cardEl && tileEl) {
+        if (cardEl === tileEl) {
+          triggerStatFX(index, '+1 ELEM', true);
+        } else {
+          triggerStatFX(index, '-1 ELEM', false);
+        }
+      }
+    }
 
     // Ability trigger BEFORE flips calculation (for things like WEAKEN/REINFORCE)
     triggerCardAbility(newBoard, index);
@@ -4288,10 +4381,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   };
 
   const recommendedPlayerMove = useMemo(() => {
-    if (gameState !== 'playing' || gameOver || turn !== 'player' || isAutoBattle || playerHand.length === 0 || isEvaluating) return null;
+    if (gameState !== 'playing' || gameOver || turn !== 'player' || isAutoBattle || playerHand.length === 0 || isEvaluating || isLowPerformance) return null;
     const multiplier = pendingQteMultiplier ?? 1;
     return findBestMove(board, playerHand, aiStrategy as AiStrategy, 'player', multiplier, elementalBoard as any);
-  }, [gameState, gameOver, turn, isAutoBattle, playerHand, board, aiStrategy, isEvaluating, elementalBoard, pendingQteMultiplier]);
+  }, [gameState, gameOver, turn, isAutoBattle, playerHand, board, aiStrategy, isEvaluating, elementalBoard, pendingQteMultiplier, isLowPerformance]);
 
   const handleCardClick = (idx: number, side: 'player' | 'ai' = 'player') => {
     if (gameOver) return;
@@ -7266,12 +7359,44 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           <div className="w-10" />
         </header>
 
-        {/* Narrative Banner */}
-        <div className="shrink-0 bg-slate-950/40 text-indigo-400 py-3.5 px-6 text-center font-black italic uppercase tracking-widest text-xs border-b border-white/10 flex justify-between items-center shadow-md backdrop-blur-md z-10">
-          <span>{t('story_act_prefix', language).replace('{act}', String(storyAct + 1))}</span>
-          <span className="bg-indigo-600 text-white px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider shadow-sm">
-            {isIntro ? t('story_step_intro', language) : isClimax ? t('story_step_climax', language) : "BOSS FIGHT"}
-          </span>
+        {/* Narrative Banner with Skip and Auto Controls */}
+        <div className="shrink-0 bg-slate-950/60 text-indigo-400 py-2.5 px-4 sm:px-6 text-center font-black italic uppercase tracking-widest text-xs border-b border-white/10 flex justify-between items-center shadow-md backdrop-blur-md z-10 gap-2">
+          <div className="flex items-center gap-2">
+            <span>{t('story_act_prefix', language).replace('{act}', String(storyAct + 1))}</span>
+            <span className="bg-indigo-600 text-white px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider shadow-sm">
+              {isIntro ? t('story_step_intro', language) : isClimax ? t('story_step_climax', language) : "BOSS FIGHT"}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {/* Auto Play Toggle */}
+            <button
+              type="button"
+              onClick={() => {
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                setIsStoryAutoPlay(!isStoryAutoPlay);
+              }}
+              className={cn(
+                "flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase transition-all cursor-pointer border touch-target",
+                isStoryAutoPlay
+                  ? "bg-amber-500 text-black border-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.5)] animate-pulse"
+                  : "bg-slate-800/80 text-slate-300 border-slate-700 hover:bg-slate-700"
+              )}
+            >
+              <Play size={12} className={cn(isStoryAutoPlay && "fill-black")} />
+              <span>{isStoryAutoPlay ? t('story_btn_auto_stop', language) : t('story_btn_auto', language)}</span>
+            </button>
+
+            {/* Skip Button */}
+            <button
+              type="button"
+              onClick={handleSkipStory}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase bg-indigo-600/90 hover:bg-indigo-500 text-white border border-indigo-400 shadow-sm transition-all cursor-pointer active:scale-95 touch-target"
+            >
+              <FastForward size={12} />
+              <span>{t('story_btn_skip', language)}</span>
+            </button>
+          </div>
         </div>
 
         {/* Main Content Area */}
@@ -9779,11 +9904,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             )}
 
           <div className={cn(
-            "relative p-1 md:p-2 border-4 rounded-3xl bg-[#090d16]/90 border-slate-800 shadow-[0_0_50px_rgba(0,0,0,0.8)] transition-all duration-700",
+            "relative p-1 md:p-2 border-4 rounded-3xl bg-[#090d16]/90 border-slate-800 transition-all duration-300",
+            !isLowPerformance && "shadow-[0_0_50px_rgba(0,0,0,0.8)]",
             !gameOver && gameState === 'playing' ? (
               turn === 'player' 
-                ? "border-blue-500/50 shadow-[0_0_60px_rgba(59,130,246,0.25)] scale-[1.01]" 
-                : "border-red-500/50 shadow-[0_0_60px_rgba(239,68,68,0.25)] scale-[1.01]"
+                ? (isLowPerformance ? "border-blue-500" : "border-blue-500/50 shadow-[0_0_60px_rgba(59,130,246,0.25)] scale-[1.01]")
+                : (isLowPerformance ? "border-red-500" : "border-red-500/50 shadow-[0_0_60px_rgba(239,68,68,0.25)] scale-[1.01]")
             ) : "border-slate-700 shadow-2xl"
           )}>
             {/* Floating Combo Text */}
@@ -9929,7 +10055,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             onMouseEnter={() => handleMouseEnterCell(idx)}
                             onMouseLeave={handleMouseLeaveCell}
                             className={cn(
-                              "grid-cell w-[22vw] max-w-[66px] sm:max-w-[76px] md:w-[11vh] md:max-w-[85px] aspect-[5/7] flex items-center justify-center relative border transition-all cursor-pointer overflow-visible rounded-lg shadow-inner",
+                              "grid-cell group w-[22vw] max-w-[66px] sm:max-w-[76px] md:w-[11vh] md:max-w-[85px] aspect-[5/7] flex items-center justify-center relative border transition-all cursor-pointer overflow-visible rounded-lg shadow-inner",
                               card ? "border-slate-550/40" : (
                                 turn === 'player'
                                   ? "bg-blue-950/20 border-blue-500/30 hover:bg-blue-900/30 hover:border-blue-450/70 shadow-[inset_0_2px_8px_rgba(59,130,246,0.1)]"
@@ -9960,7 +10086,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                 "from-slate-400/30 to-slate-300/30 border-slate-350/50"
                               )}>
                                 <motion.div
-                                  animate={!lowSpecMode ? { scale: [1, 1.05, 1], opacity: [0.65, 0.85, 0.65] } : {}}
+                                  animate={!isLowPerformance ? { scale: [1, 1.05, 1], opacity: [0.65, 0.85, 0.65] } : {}}
                                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                                   className="flex items-center justify-center text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)]"
                                 >
@@ -9976,6 +10102,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                   {elementalBoard[idx] === 'robot' && <Bot size={30} className="text-slate-200/80" />}
                                   {elementalBoard[idx] === 'dragon' && <Zap size={30} className="text-rose-200/80" />}
                                 </motion.div>
+
+                                {/* Terrain Bonus Tooltip Badge on Hover */}
+                                <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 z-[150] opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap bg-slate-900/95 text-amber-300 border border-amber-500/40 text-[9px] font-bold px-2 py-0.5 rounded shadow-xl backdrop-blur-xs">
+                                  {language === 'ko' 
+                                    ? `${elementalBoard[idx].toUpperCase()} 속성 +2 PWR` 
+                                    : `${elementalBoard[idx].toUpperCase()} +2 PWR`}
+                                </div>
                               </div>
                             )}
                             {/* Capture Preview Highlight */}
@@ -10097,6 +10230,26 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                     cellElement={elementalBoard[idx]}
                                     isMatgo={false}
                                   />
+                                  {/* Floating Stat Change FX Overlay (Item 38) */}
+                                  <AnimatePresence>
+                                    {floatingStatFX[idx] && (
+                                      <motion.div
+                                        key={`stat-fx-${floatingStatFX[idx].id}`}
+                                        initial={{ opacity: 0, y: 12, scale: 0.7 }}
+                                        animate={{ opacity: 1, y: -20, scale: 1.15 }}
+                                        exit={{ opacity: 0, y: -36, scale: 0.8 }}
+                                        transition={{ duration: 1.0, ease: "easeOut" }}
+                                        className={cn(
+                                          "absolute -top-3 left-1/2 -translate-x-1/2 z-[120] px-2.5 py-0.5 rounded-full border-2 font-black text-xs tracking-wider shadow-2xl pointer-events-none whitespace-nowrap flex items-center gap-1 font-mono",
+                                          floatingStatFX[idx].isPositive
+                                            ? "bg-emerald-600 border-emerald-300 text-white shadow-[0_0_18px_rgba(16,185,129,0.9)]"
+                                            : "bg-rose-600 border-rose-300 text-white shadow-[0_0_18px_rgba(244,63,94,0.9)]"
+                                        )}
+                                      >
+                                        <span>{floatingStatFX[idx].text}</span>
+                                      </motion.div>
+                                    )}
+                                  </AnimatePresence>
                                   {/* Matgo stack badge */}
                                   {battleType === 'matgo' && matgoBoardStacks[idx] && matgoBoardStacks[idx].length > 1 && (
                                     <div className="absolute -top-1.5 -left-1.5 z-[70] bg-amber-600 border-2 border-white text-white font-black text-[10px] w-6 h-6 rounded-full flex items-center justify-center shadow-lg animate-pulse">
@@ -10607,20 +10760,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   <div className="flex justify-between text-[10px] font-bold text-slate-300">
                     <span className="opacity-60 uppercase">Power_Balance:</span>
                     <span className="font-bold">
-                      {matchInfo?.playerPower || 0} VS {matchInfo?.opponentPower || 0}
+                      {boardScore.player} PTS ({Math.round((boardScore.player / Math.max(1, boardScore.player + boardScore.ai)) * 100)}%) VS {boardScore.ai} PTS ({Math.round((boardScore.ai / Math.max(1, boardScore.player + boardScore.ai)) * 100)}%)
                     </span>
                   </div>
                   <div className="relative w-full h-4 bg-slate-950 rounded-full overflow-hidden flex border border-slate-850">
                     <motion.div 
                       initial={{ width: 0 }}
-                      animate={{ width: `${((matchInfo?.playerPower || 0) / ((matchInfo?.playerPower || 0) + (matchInfo?.opponentPower || 1))) * 100}%` }}
+                      animate={{ width: `${(boardScore.player / Math.max(1, boardScore.player + boardScore.ai)) * 100}%` }}
                       className="h-full bg-indigo-500 flex items-center justify-end px-2"
                     >
                       <span className="text-[7px] text-white font-bold italic">YOU</span>
                     </motion.div>
                     <motion.div 
                       initial={{ width: 0 }}
-                      animate={{ width: `${((matchInfo?.opponentPower || 0) / ((matchInfo?.playerPower || 0) + (matchInfo?.opponentPower || 1))) * 100}%` }}
+                      animate={{ width: `${(boardScore.ai / Math.max(1, boardScore.player + boardScore.ai)) * 100}%` }}
                       className="h-full bg-rose-500 flex items-center justify-start px-2"
                     >
                       <span className="text-[7px] text-white font-bold italic text-right w-full">AI</span>
@@ -10805,13 +10958,81 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 />
               )}
 
-              <div className="flex flex-col gap-3 pt-4">
+              {/* Item 53: 상대방 유저 친구 신청 & 프로필 조회 퀵 버튼 */}
+              <div className="flex items-center justify-center gap-2 pt-2 border-t border-slate-800/80">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const oppName = pvpOpponent?.name || 'Opponent Hero';
+                    const oppUid = pvpOpponent?.id || 'opp-' + Date.now();
+                    try {
+                      const raw = localStorage.getItem('hero_friends');
+                      const friendsList = raw ? JSON.parse(raw) : [];
+                      if (!friendsList.some((f: any) => f.uid === oppUid)) {
+                        friendsList.push({
+                          uid: oppUid,
+                          name: oppName,
+                          battleCount: 1,
+                          lastBattleTime: Date.now(),
+                          avatar: ''
+                        });
+                        localStorage.setItem('hero_friends', JSON.stringify(friendsList));
+                      }
+                      triggerAlert(
+                        language === 'ko' ? `${oppName}님에게 친구 신청을 보냈습니다!` : `Sent friend request to ${oppName}!`,
+                        language === 'ko' ? '친구 신청 완료' : 'Friend Request Sent'
+                      );
+                    } catch (e) {
+                      console.error(e);
+                    }
+                  }}
+                  className="px-3 py-2 bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border border-indigo-500/40 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
+                >
+                  <UserPlus size={14} />
+                  {language === 'ko' ? '친구 신청' : 'Add Friend'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const oppName = pvpOpponent?.name || 'Opponent Hero';
+                    const oppPower = opponentTotalPower || pvpOpponent?.totalPower || 1280;
+                    triggerAlert(
+                      language === 'ko'
+                        ? `[상대 프로필 요약]\n닉네임: ${oppName}\n전투력: ${oppPower.toLocaleString()} PW\n대표 카단/전력: Level 12 (SR+)\n시즌 성적: 24승 5패 (승률 82.7%)\n소속 길드: [S] 혁명단`
+                        : `[Opponent Profile Summary]\nName: ${oppName}\nPower: ${oppPower.toLocaleString()} PW\nLeader Card: Level 12 (SR+)\nSeason Record: 24W 5L (82.7% Win Rate)\nGuild: [S] Revolution`,
+                      language === 'ko' ? '상대 프로필 조회' : 'Inspect Profile'
+                    );
+                  }}
+                  className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
+                >
+                  <Eye size={14} />
+                  {language === 'ko' ? '프로필 조회' : 'Inspect Profile'}
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-2.5 pt-2">
+                {/* Item 42: 전투 승리 화면 내 '다음 스테이지 바로 진행 (Next Stage)' 연속 플레이 버튼 */}
+                {winner === 'player' && (
+                  <button 
+                    onClick={() => {
+                      setShowBattleShareTemplate(false);
+                      setShowOverwhelmingEffect(false);
+                      setShowStreakEffect(false);
+                      handleRematch();
+                    }}
+                    className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black uppercase tracking-wider active:scale-95 transition-all rounded-2xl shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 cursor-pointer border border-emerald-400/30"
+                  >
+                    <Play size={18} fill="currentColor" />
+                    {language === 'ko' ? '▶ 다음 스테이지 바로 진행 (Next Stage)' : '▶ Proceed to Next Stage'}
+                  </button>
+                )}
+
                 <button
                   type="button"
                   onClick={() => setShowBattleShareTemplate(true)}
-                  className="w-full py-3.5 font-bold uppercase tracking-wider active:scale-95 transition-all rounded-2xl flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/15 border border-white/10 shadow-lg shadow-black/20"
+                  className="w-full py-3 font-bold uppercase tracking-wider active:scale-95 transition-all rounded-2xl flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/15 border border-white/10 shadow-lg shadow-black/20 text-xs"
                 >
-                  <Share2 size={18} />
+                  <Share2 size={16} />
                   {t('share_template_battle_result', language)}
                 </button>
                 <button 
@@ -10822,22 +11043,22 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     setShowStreakEffect(false);
                     setCurrentWinStreakDisplay(0);
                   }}
-                  className="w-full py-3.5 font-bold uppercase tracking-wider active:scale-95 transition-all rounded-2xl flex items-center justify-center gap-2 bg-slate-950 text-white hover:bg-slate-900 border border-slate-850 shadow-lg shadow-black/30"
+                  className="w-full py-3 font-bold uppercase tracking-wider active:scale-95 transition-all rounded-2xl flex items-center justify-center gap-2 bg-slate-950 text-white hover:bg-slate-900 border border-slate-850 shadow-lg shadow-black/30 text-xs"
                 >
-                  <ChevronLeft size={18} />
+                  <ChevronLeft size={16} />
                   {battleType === 'pvp_attack' 
                     ? (pvpExitCountdown !== null 
                         ? `${t('exit_battle', language)} (${pvpExitCountdown}s)` 
                         : t('exit_battle', language)) 
                     : t('back_to_lobby', language)}
                 </button>
-                {!isBossActive && !isStoryActive && !isDungeonActive && !isTournamentActive && (
+                {!isBossActive && !isStoryActive && !isDungeonActive && !isTournamentActive && winner !== 'player' && (
                   <button 
                      onClick={() => {
                        setShowBattleShareTemplate(false);
                        handleRematch();
                      }}
-                     className="w-full bg-indigo-600 text-white py-3.5 font-bold uppercase tracking-wider hover:bg-indigo-700 active:scale-95 transition-all rounded-2xl shadow-lg shadow-indigo-600/20"
+                     className="w-full bg-indigo-600 text-white py-3 font-bold uppercase tracking-wider hover:bg-indigo-700 active:scale-95 transition-all rounded-2xl shadow-lg shadow-indigo-600/20 text-xs"
                   >
                     {rematchCountdown !== null
                       ? t('rematch_countdown', language)
@@ -10995,6 +11216,112 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   {language === 'ko' ? '확인' : 'Confirm'}
                 </button>
               </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Item 43: Insufficient Currency Alert Modal with Shop/Top-Up Link */}
+      <AnimatePresence>
+        {showInsufficientPopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/85 backdrop-blur-md z-[9999] flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-slate-950 rounded-3xl p-6 max-w-sm w-full border border-slate-800 shadow-2xl text-center space-y-6 font-sans text-white"
+            >
+              <div className="w-16 h-16 bg-red-950/30 rounded-full mx-auto flex items-center justify-center border border-red-500/30 shadow-md">
+                <ShieldAlert size={32} className="text-red-500 animate-pulse" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-lg font-black uppercase tracking-tight text-slate-100">
+                  {language === 'ko' ? '재화(SNS) 부족' : 'INSUFFICIENT SNS'}
+                </h3>
+                <p className="text-xs font-semibold text-slate-400">
+                  {t('not_enough_sns', language)}
+                </p>
+              </div>
+              <div className="flex flex-col gap-2 pt-2">
+                <button 
+                  onClick={() => {
+                    setShowInsufficientPopup(false);
+                    handleExitMatch(false);
+                    setView?.('shop');
+                  }}
+                  className="w-full bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-slate-950 font-black py-3.5 uppercase tracking-wider text-xs rounded-xl shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <ShoppingBag size={16} />
+                  {language === 'ko' ? '상점/충전소 이동 (Go to Shop)' : 'Go to Shop / Top-Up'}
+                </button>
+                <button 
+                  onClick={() => setShowInsufficientPopup(false)}
+                  className="w-full bg-slate-900 hover:bg-slate-800 text-slate-300 py-2.5 font-bold uppercase tracking-wider text-xs rounded-xl cursor-pointer border border-white/5"
+                >
+                  {language === 'ko' ? '닫기' : 'Close'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Item 51: Hand Card Zoom Preview Modal */}
+      <AnimatePresence>
+        {previewHandCard && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-md z-[9999] flex items-center justify-center p-4"
+            onClick={() => setPreviewHandCard(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.85, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.85, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-sm w-full shadow-2xl text-white flex flex-col items-center gap-4 relative"
+            >
+              <button
+                onClick={() => setPreviewHandCard(null)}
+                className="absolute top-4 right-4 w-8 h-8 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-slate-400 hover:text-white"
+              >
+                <X size={18} />
+              </button>
+
+              <div className="w-[180px] aspect-[5/7] shadow-2xl rounded-xl overflow-hidden border-2 border-amber-500/50">
+                <CardItem card={previewHandCard} isLocked={false} customImage={customCardImage} />
+              </div>
+
+              <div className="w-full space-y-2 text-center">
+                <h3 className="text-lg font-black text-amber-400">
+                  {getFormattedCardName(previewHandCard, language)}
+                </h3>
+                <div className="flex justify-center gap-2 text-xs font-mono">
+                  <span className="bg-slate-800 px-2 py-0.5 rounded text-indigo-300">
+                    Element: {String((previewHandCard as any).element || 'WATER').toUpperCase()}
+                  </span>
+                  <span className="bg-slate-800 px-2 py-0.5 rounded text-amber-300">
+                    Rarity: {previewHandCard.rarity}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 italic px-2 pt-2 border-t border-slate-800">
+                  {(previewHandCard as any).lore_ko || (previewHandCard as any).lore || '고대의 힘이 깃든 카드입니다.'}
+                </p>
+              </div>
+
+              <button
+                onClick={() => setPreviewHandCard(null)}
+                className="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors text-xs"
+              >
+                {language === 'ko' ? '확인' : 'Confirm'}
+              </button>
             </motion.div>
           </motion.div>
         )}

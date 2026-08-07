@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
-import { Camera, BookOpen, ChevronDown, ChevronUp, Copy, Download, Image as ImageIcon, Info, Palette, Printer, QrCode, Quote, Share2, Shirt, ShoppingBag, Sparkles, Users, X, Swords } from 'lucide-react';
+import { Camera, BookOpen, ChevronDown, ChevronUp, Copy, Download, Image as ImageIcon, Info, Palette, Printer, QrCode, Quote, Share2, Shirt, ShoppingBag, Sparkles, Users, X, Swords, Lock, Unlock } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { CARD_DATABASE } from '../cardDatabase';
+import { useCardLock } from '../hooks/useCardLock';
 import { buildCardShareTemplate } from '../content/cardShare';
 import { getCharacterArtPrompt } from '../content/characterArtPrompts';
 import { getCharacterIpProfile, getFactionDef, getRelatedCharacters, getAllyIds, getRivalIds } from '../content/characterIpUtils';
@@ -146,6 +147,9 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
     () => relatedIds.map((id) => CARD_DATABASE[id]).filter((card): card is DatabaseCard => Boolean(card)),
     [relatedIds],
   );
+  const { isLocked, toggleLock } = useCardLock();
+  const locked = isLocked(selectedCard.id);
+
   const merchRecommendations = useMemo(
     () => getRecommendedIpMerchProducts(selectedCard.id, season).slice(0, 3),
     [season, selectedCard.id],
@@ -256,6 +260,27 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                const nowLocked = toggleLock(selectedCard.id);
+                setToastMessage(nowLocked 
+                  ? (language === 'ko' ? '카드 잠금 설정 완료! (분해/재료 보호)' : 'Card Locked! (Protected from disassemble)')
+                  : (language === 'ko' ? '카드 잠금 해제' : 'Card Unlocked')
+                );
+              }}
+              className={cn(
+                "inline-flex h-11 px-3.5 items-center justify-center gap-1.5 rounded-full border text-xs font-black uppercase tracking-wider transition-all active:scale-95",
+                locked 
+                  ? "border-amber-400 bg-amber-400/20 text-amber-300 shadow-sm"
+                  : "border-white/15 bg-white/10 text-white/70 hover:bg-white/15"
+              )}
+              title={locked ? "Unlock Card" : "Lock Card"}
+            >
+              {locked ? <Lock size={15} className="text-amber-300" /> : <Unlock size={15} />}
+              <span>{locked ? (language === 'ko' ? '잠김' : 'LOCKED') : (language === 'ko' ? '잠금' : 'LOCK')}</span>
+            </button>
+
             <button
               type="button"
               onClick={() => onNavigate('webtoon')}
@@ -490,7 +515,7 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
               <div className="flex gap-3 pt-2">
                 <button
                   type="button"
-                  onClick={() => onNavigate('play')}
+                  onClick={() => onNavigate('main')}
                   className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full border border-indigo-300 bg-indigo-600 px-4 py-2 text-xs font-black uppercase tracking-[0.24em] text-white shadow-md shadow-indigo-200 transition-all hover:bg-indigo-500 active:scale-95"
                 >
                   <Swords size={14} />
@@ -800,7 +825,7 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
               </button>
               <button
                 type="button"
-                onClick={() => onNavigate('play')}
+                onClick={() => onNavigate('main')}
                 className="inline-flex min-h-11 items-center justify-center rounded-full border border-amber-200 bg-amber-500 px-4 py-2.5 text-xs font-black uppercase tracking-[0.22em] text-slate-950 transition-all hover:bg-amber-400 active:scale-95"
               >
                 <Sparkles size={14} />

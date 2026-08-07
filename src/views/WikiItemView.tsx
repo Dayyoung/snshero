@@ -37,6 +37,10 @@ export const WikiItemView: React.FC<WikiItemViewProps> = ({
   onNavigate,
   language,
 }) => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [showHelp, setShowHelp] = useState(false);
   // Dispatch global popup events so bottom nav hides while help is open

@@ -47,6 +47,11 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
   const printableCardRef = useRef<HTMLDivElement>(null);
   const [shareTemplateCardId, setShareTemplateCardId] = useState<number | null>(null);
   const [showHelp, setShowHelp] = useState(false);
+
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   // Dispatch global popup events so bottom nav hides while help is open
   useEffect(() => {
     if (showHelp) {
@@ -93,15 +98,23 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
+    let parsedCardId: number | null = null;
     const cardIdParam = new URLSearchParams(window.location.search).get('cardId');
-    if (!cardIdParam) return;
+    if (cardIdParam) {
+      parsedCardId = Number(cardIdParam);
+    } else {
+      const storedId = sessionStorage.getItem('hero_wiki_target_card_id');
+      if (storedId) {
+        parsedCardId = Number(storedId);
+        sessionStorage.removeItem('hero_wiki_target_card_id');
+      }
+    }
 
-    const parsedCardId = Number(cardIdParam);
-    if (!Number.isFinite(parsedCardId)) return;
-
-    const targetCard = CARD_DATABASE[parsedCardId];
-    if (targetCard) {
-      setSelectedCard(targetCard);
+    if (parsedCardId && Number.isFinite(parsedCardId)) {
+      const targetCard = CARD_DATABASE[parsedCardId];
+      if (targetCard) {
+        setSelectedCard(targetCard);
+      }
     }
   }, []);
 
@@ -218,8 +231,12 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
               min-height: 100%;
               background: #ffffff;
               color: #0f172a;
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            * {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
             }
             body {
               display: flex;
@@ -376,6 +393,7 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
           cacheBust: false,
           skipFonts: true,
           pixelRatio: 2,
+          backgroundColor: '#0f172a',
           style: {
             transform: 'scale(1)',
             transformOrigin: 'top left'
@@ -450,8 +468,18 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
                 placeholder={t('wiki_search_cards', language)}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200/85 rounded-lg text-xs font-medium placeholder:opacity-50 focus:outline-none focus:border-indigo-500 shadow-sm focus:shadow-md transition-all"
+                className="w-full pl-10 pr-9 py-2.5 bg-white border border-slate-200/85 rounded-lg text-xs font-medium placeholder:opacity-50 focus:outline-none focus:border-indigo-500 shadow-sm focus:shadow-md transition-all"
               />
+              {searchTerm && (
+                <button
+                  type="button"
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 rounded-full hover:bg-slate-100 transition-colors cursor-pointer"
+                  aria-label="Clear search"
+                >
+                  <X size={14} />
+                </button>
+              )}
             </div>
           </div>
         </div>

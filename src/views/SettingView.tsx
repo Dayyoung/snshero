@@ -93,7 +93,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
   testMode = false,
   localAiStatus
 }) => {
-  const { language, setLanguage, lowSpecMode, setLowSpecMode, theme, setTheme, cardSkinTheme, setCardSkinTheme } = useGameSettings();
+  const { language, setLanguage, lowSpecMode, setLowSpecMode, theme, setTheme, cardSkinTheme, setCardSkinTheme, targetFps, setTargetFps, batterySaver, setBatterySaver } = useGameSettings();
   const perf = usePerformanceMode();
   const [simResults, setSimResults] = useState<any[]>([]);
   const [isSimulating, setIsSimulating] = useState(false);
@@ -552,6 +552,79 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 </div>
               </div>
             )}
+
+            {/* Battery Saver & Frame Rate Settings (Item 37) */}
+            <div className="bg-white p-6 border-t border-slate-100 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <Activity size={24} className={cn("transition-opacity text-slate-700", batterySaver ? "opacity-100 text-emerald-600" : "opacity-30")} />
+                <div>
+                  <p className="font-bold text-sm tracking-tight uppercase text-slate-800">
+                    {language === 'ko' ? '절전 모드 (Battery Saver)' : 'Battery Saver Mode'}
+                  </p>
+                  <p className="text-[10px] text-slate-400 font-semibold tracking-widest uppercase">
+                    {language === 'ko' ? '발열 및 배터리 소모 감소' : 'Reduce Heat & Battery Consumption'}
+                  </p>
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  setBatterySaver(!batterySaver);
+                  playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+                }}
+                className={cn(
+                  "min-w-[44px] min-h-[44px] w-12 h-6 rounded-full transition-all relative flex items-center p-0.5",
+                  batterySaver ? 'bg-emerald-600' : 'bg-slate-200'
+                )}
+              >
+                <div className={cn(
+                  "w-5 h-5 rounded-full transition-all transform bg-white shadow-sm",
+                  batterySaver ? 'translate-x-6' : 'translate-x-0'
+                )} />
+              </button>
+            </div>
+
+            <div className="bg-white p-6 border-t border-slate-100 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <BarChart2 size={24} className="text-slate-700 opacity-60" />
+                <div>
+                  <p className="font-bold text-sm tracking-tight uppercase text-slate-800">
+                    {language === 'ko' ? '목표 프레임 (Frame Rate)' : 'Target Frame Rate'}
+                  </p>
+                  <p className="text-[10px] text-slate-400 font-semibold tracking-widest uppercase">
+                    {targetFps === '60' 
+                      ? (language === 'ko' ? '60 FPS (고성능 부드러운 연출)' : '60 FPS (Performance)')
+                      : (language === 'ko' ? '30 FPS (절전 및 안정적 프레임)' : '30 FPS (Battery Saver)')
+                    }
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-1.5 bg-slate-100 p-1 rounded-xl">
+                <button
+                  onClick={() => {
+                    setTargetFps('60');
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+                  }}
+                  className={cn(
+                    "px-3 py-1.5 rounded-lg text-xs font-black uppercase transition-all",
+                    targetFps === '60' ? "bg-indigo-600 text-white shadow-xs" : "text-slate-500 hover:text-slate-800"
+                  )}
+                >
+                  60 FPS
+                </button>
+                <button
+                  onClick={() => {
+                    setTargetFps('30');
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+                  }}
+                  className={cn(
+                    "px-3 py-1.5 rounded-lg text-xs font-black uppercase transition-all",
+                    targetFps === '30' ? "bg-amber-500 text-slate-950 shadow-xs" : "text-slate-500 hover:text-slate-800"
+                  )}
+                >
+                  30 FPS
+                </button>
+              </div>
+            </div>
 
             <div className="bg-white p-6 flex items-center justify-between">
               <div className="flex items-center gap-4">

@@ -155,6 +155,10 @@ const HELP_SLIDES = [
 ];
 
 export const WikiTipView: React.FC<WikiTipViewProps> = ({ onNavigate, language }) => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [showHelp, setShowHelp] = useState(false);
   // Dispatch global popup events so bottom nav hides while help is open
@@ -186,13 +190,16 @@ export const WikiTipView: React.FC<WikiTipViewProps> = ({ onNavigate, language }
   }, [language, searchTerm]);
 
   const openCardDeepLink = (cardId: number) => {
-    if (typeof window !== 'undefined') {
-      const url = new URL('/wiki/card', window.location.origin);
-      url.searchParams.set('cardId', String(cardId));
-      window.history.pushState({}, '', `${url.pathname}${url.search}`);
-      window.dispatchEvent(new Event('snshero:meta-refresh'));
+    try {
+      sessionStorage.setItem('hero_wiki_target_card_id', String(cardId));
+      if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href);
+        url.searchParams.set('cardId', String(cardId));
+        window.history.pushState({}, '', url.toString());
+      }
+    } catch (e) {
+      console.error(e);
     }
-
     window.scrollTo(0, 0);
     onNavigate('wiki-card');
   };

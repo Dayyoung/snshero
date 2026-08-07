@@ -67,10 +67,23 @@ export type TranslationKey = keyof typeof ko;
 // Simplified sync t function for static strings
 export const t = (key: string, lang: Language, params?: Record<string, any>): string => {
   let text = (staticTranslations[lang] as any)?.[key] || 
-             (staticTranslations['en'] as any)?.[key] || 
-             (key as string);
+             (staticTranslations['en'] as any)?.[key];
   
-  if (params) {
+  if (!text) {
+    if (typeof key === 'string') {
+      const epMatch = key.match(/^webtoon_ep_(\d+)_title$/);
+      if (epMatch) {
+        const epNum = parseInt(epMatch[1], 10);
+        text = lang === 'ko' ? `에피소드 ${epNum}` : `Episode ${epNum}`;
+      } else {
+        text = key;
+      }
+    } else {
+      text = '';
+    }
+  }
+  
+  if (params && text) {
     Object.entries(params).forEach(([k, v]) => {
       text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v));
     });

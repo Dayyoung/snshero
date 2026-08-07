@@ -139,14 +139,30 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
 
   const handleSelectFaction = (faction: CharacterFaction) => {
     setSelectedFaction(faction);
-    const representativeCard = factionSummaries.find((entry) => entry.faction === faction)?.representativeCard;
-    if (representativeCard) {
-      setSelectedCardId(representativeCard.id);
+    const summary = factionSummaries.find((entry) => entry.faction === faction);
+    if (summary) {
+      // If currently selected card belongs to this faction, keep it
+      const currentInFaction = summary.cards.find((c) => c.id === selectedCardId);
+      if (!currentInFaction && summary.representativeCard) {
+        setSelectedCardId(summary.representativeCard.id);
+      }
     }
   };
 
-  const openWorldCard = (_cardId?: number) => onNavigate('wiki-card');
-  const openWorldWebtoon = (_cardId?: number) => onNavigate('webtoon');
+  const openWorldCard = (cardId?: number) => {
+    if (cardId) {
+      sessionStorage.setItem('hero_wiki_target_card_id', String(cardId));
+    }
+    onNavigate('wiki-card');
+  };
+
+  const openWorldWebtoon = (cardId?: number) => {
+    const targetId = cardId || selectedCardId;
+    if (targetId) {
+      sessionStorage.setItem('hero_webtoon_target_card_id', String(targetId));
+    }
+    onNavigate('webtoon');
+  };
   const lowSpecCardClass = lowSpecMode ? '' : 'transition-all hover:-translate-y-0.5';
 
   return (

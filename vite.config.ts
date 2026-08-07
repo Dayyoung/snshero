@@ -28,7 +28,10 @@ export default defineConfig(({mode}) => {
                   maxAgeSeconds: 60 * 60 * 24 * 30
                 },
                 cacheableResponse: {
-                  statuses: [0, 200]
+                  statuses: [200],
+                  headers: {
+                    'content-type': 'application/javascript'
+                  }
                 }
               }
             },
@@ -93,7 +96,7 @@ export default defineConfig(({mode}) => {
         manifest: false // using our own manifest.json
       })
     ],
-    base: process.env.VITE_BASE_PATH || './',
+    base: process.env.VITE_BASE_PATH || '/',
     build: {
       outDir: 'dist',
       assetsDir: 'assets',

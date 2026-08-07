@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Trophy, ArrowUp, ArrowDown, Users, Gift, ShieldAlert, Swords, X, Bell, List, AlertCircle, Wifi, Bluetooth, Compass, Zap, Clock, HelpCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Trophy, ArrowUp, ArrowDown, Users, Gift, ShieldAlert, Swords, X, Bell, List, AlertCircle, Wifi, Bluetooth, Compass, Zap, Clock, HelpCircle, ChevronLeft, ChevronRight, Crown, Sparkles, ShoppingBag } from 'lucide-react';
+import { RankRewardsModal } from '../components/RankRewardsModal';
+import { MatchHistoryModal } from '../components/MatchHistoryModal';
 import { Language } from '../types';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
@@ -32,6 +34,7 @@ interface RankingUser {
 
 interface RankingViewProps {
   onBack: () => void;
+  setView?: (view: string) => void;
   playSfx: (url: string) => void;
   language: Language;
   user?: any;
@@ -110,7 +113,7 @@ const DEFAULT_DUMMY_RANKING_USERS: (RankingUser & { deck?: any[] })[] = [
   { id: 'rank-bot-12', name: 'BitConqueror', wins: 45, losses: 55, draws: 1, totalPower: 4100, winRate: 44.6, sns: 3100, language: 'en' },
 ];
 
-export const RankingView: React.FC<RankingViewProps> = ({ onBack, playSfx, language, user, onAttackUser, sns, onLogin, setIsGlobalLoading, currentSeason, isAutoBattle, autoStartPvp, onClearAutoStartPvp }) => {
+export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playSfx, language, user, onAttackUser, sns, onLogin, setIsGlobalLoading, currentSeason, isAutoBattle, autoStartPvp, onClearAutoStartPvp }) => {
   const { theme } = useGameSettings();
   const [rawUsers, setRawUsers] = useState<(RankingUser & { deck?: any[] })[]>([]);
   
@@ -211,6 +214,24 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, playSfx, langu
     return fetchedUsers;
   }, [rawUsers, rankingType, sortBy, selectedLangFilter]);
 
+  const [showRankRewardsModal, setShowRankRewardsModal] = useState(false);
+  const [showMatchHistoryModal, setShowMatchHistoryModal] = useState(false);
+
+  // Live Season Countdown Calculation
+  const [timeLeft, setTimeLeft] = useState({ days: 14, hours: 8, minutes: 32, seconds: 45 });
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
+        if (prev.minutes > 0) return { ...prev, minutes: 59, seconds: 59 };
+        if (prev.hours > 0) return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
+        if (prev.days > 0) return { ...prev, days: prev.days - 1, hours: 23, minutes: 59, seconds: 59 };
+        return prev;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   const myRanks = React.useMemo(() => {
     if (!user || user.uid === 'guest-id' || rawUsers.length === 0) {
       return { global: null, weekly: null, monthly: null, currentUserData: null };
@@ -256,7 +277,7 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, playSfx, langu
     const myData = myIdx !== -1 ? basePool[myIdx] : null;
 
     return { global, weekly, monthly, currentUserData: myData };
-  }, [rawUsers, user?.uid, sortBy, selectedLangFilter]);
+  }, [rawUsers, user, sortBy, selectedLangFilter]);
 
   const { global: myGlobalRank, weekly: myWeeklyRank, monthly: myMonthlyRank, currentUserData } = myRanks;
 
@@ -904,6 +925,42 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, playSfx, langu
         }
       />
 
+      {/* Season 1 Leaderboard Countdown & Rank Rewards Banner (Item 28) */}
+      <div className="mb-4 p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 border border-amber-400/30 backdrop-blur-xs flex flex-wrap items-center justify-between gap-3 shadow-md">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center shrink-0 shadow-sm">
+            <Clock size={22} className="animate-pulse" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-black uppercase text-amber-500 tracking-wider">
+                {language === 'ko' ? '시즌 1 라이브 랭킹' : 'SEASON 1 LIVE LEADERBOARD'}
+              </span>
+              <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 border border-amber-400/30">
+                OFFICIAL
+              </span>
+            </div>
+            <p className="text-sm font-black text-slate-900 dark:text-amber-100 flex items-center gap-1.5 mt-0.5">
+              <span>{language === 'ko' ? '시즌 종료까지:' : 'Season Ends In:'}</span>
+              <span className="font-mono text-amber-600 dark:text-amber-300 tracking-tight">
+                {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
+              </span>
+            </p>
+          </div>
+        </div>
+
+        <button
+          onClick={() => {
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            setShowRankRewardsModal(true);
+          }}
+          className="px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black rounded-xl text-xs shadow-md shadow-amber-500/20 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+        >
+          <Crown size={15} />
+          <span>{language === 'ko' ? '시즌 보상 안내' : 'Rank Rewards'}</span>
+        </button>
+      </div>
+
       {/* Matching Controls */}
       <div className="mb-6 font-sans space-y-3">
         {/* 실시간 PvP 대전 — 메인 CTA */}
@@ -1399,15 +1456,28 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, playSfx, langu
                   {t('not_enough_sns', language)}
                 </p>
               </div>
-              <button 
-                onClick={() => {
-                  playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-                  setShowInsufficientPopup(false);
-                }}
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 font-bold uppercase tracking-wider text-xs rounded-xl shadow-md active:scale-95 transition-all cursor-pointer border border-white/5"
-              >
-                {t('yes_accept', language) || "Confirm"}
-              </button>
+              <div className="flex flex-col gap-2 pt-2">
+                <button 
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+                    setShowInsufficientPopup(false);
+                    setView?.('shop');
+                  }}
+                  className="w-full bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-slate-950 font-black py-3.5 uppercase tracking-wider text-xs rounded-xl shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <ShoppingBag size={16} />
+                  {language === 'ko' ? '상점/충전소 이동 (Go to Shop)' : 'Go to Shop / Top-Up'}
+                </button>
+                <button 
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+                    setShowInsufficientPopup(false);
+                  }}
+                  className="w-full bg-slate-900 hover:bg-slate-800 text-slate-300 py-2.5 font-bold uppercase tracking-wider text-xs rounded-xl cursor-pointer border border-white/5"
+                >
+                  {t('yes_accept', language) || "Confirm"}
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}
@@ -2012,6 +2082,20 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, playSfx, langu
           </motion.div>
         )}
       </AnimatePresence>
+      {/* Rank Rewards Preview Modal (Item 28) */}
+      <RankRewardsModal
+        isOpen={showRankRewardsModal}
+        onClose={() => setShowRankRewardsModal(false)}
+        language={language}
+      />
+
+      {/* Match History Modal (Item 35) */}
+      <MatchHistoryModal
+        isOpen={showHistoryModal}
+        onClose={() => setShowHistoryModal(false)}
+        language={language}
+      />
+
     </div>
   );
 };

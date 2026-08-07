@@ -98,17 +98,33 @@ export const ChallengeEventSection: React.FC<ChallengeEventSectionProps> = ({
     }).catch(() => {});
   };
 
+  const isValidUrl = (urlStr: string): boolean => {
+    if (!urlStr.trim()) return false;
+    try {
+      const formatted = urlStr.startsWith('http') ? urlStr : `https://${urlStr}`;
+      const parsed = new URL(formatted);
+      return Boolean(parsed.hostname && parsed.hostname.includes('.'));
+    } catch {
+      return false;
+    }
+  };
+
   const handleSubmit = (challenge: SnsChallenge) => {
     const draft = drafts[challenge.id];
     const snsLink = draft?.snsLink ?? '';
     const screenshotUrl = draft?.screenshotUrl ?? '';
 
-    if (!snsLink.trim()) return;
+    if (!isValidUrl(snsLink)) return;
+
+    const formattedLink = snsLink.startsWith('http') ? snsLink.trim() : `https://${snsLink.trim()}`;
+    const formattedScreenshot = screenshotUrl.trim()
+      ? (screenshotUrl.startsWith('http') ? screenshotUrl.trim() : `https://${screenshotUrl.trim()}`)
+      : '';
 
     const submission: SnsChallengeSubmission = {
       challengeId: challenge.id,
-      snsLink: snsLink.trim(),
-      screenshotUrl: screenshotUrl.trim(),
+      snsLink: formattedLink,
+      screenshotUrl: formattedScreenshot,
       status: 'pendingReview',
       submittedAt: Date.now(),
     };
@@ -289,8 +305,19 @@ export const ChallengeEventSection: React.FC<ChallengeEventSectionProps> = ({
                         value={draft.snsLink}
                         onChange={(event) => updateDraft(challenge.id, { snsLink: event.target.value })}
                         placeholder={t('sns_challenge_link_placeholder', language)}
-                        className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-[11px] font-semibold text-slate-800 outline-none transition-colors placeholder:text-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
+                        className={cn(
+                          'w-full rounded-lg border bg-white px-3 py-2 text-[11px] font-semibold text-slate-800 outline-none transition-colors placeholder:text-slate-400 focus:ring-1',
+                          draft.snsLink && !isValidUrl(draft.snsLink)
+                            ? 'border-red-300 focus:border-red-400 focus:ring-red-400'
+                            : 'border-slate-200 focus:border-amber-400 focus:ring-amber-400'
+                        )}
                       />
+                      {draft.snsLink && !isValidUrl(draft.snsLink) && (
+                        <p className="text-[9px] font-bold text-red-500">
+                          {t('sns_challenge_invalid_url', language) || '유효한 SNS 게시물 URL을 입력해주세요 (예: https://instagram.com/p/...)'}
+                        </p>
+                      )}
+
                       <label className="mt-2 block text-[9px] font-bold uppercase text-slate-500">
                         <Image size={10} className="mr-1 inline" />
                         {t('sns_challenge_screenshot_label', language)}
@@ -302,12 +329,37 @@ export const ChallengeEventSection: React.FC<ChallengeEventSectionProps> = ({
                         placeholder={t('sns_challenge_screenshot_placeholder', language)}
                         className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-[11px] font-semibold text-slate-800 outline-none transition-colors placeholder:text-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
                       />
+
+                      {/* Screenshot Thumbnail Preview with fallback */}
+                      {draft.screenshotUrl.trim() && (
+                        <div className="mt-1.5 flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 p-2">
+                          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-slate-200 flex items-center justify-center">
+                            <img
+                              src={draft.screenshotUrl.trim()}
+                              alt="Thumbnail preview"
+                              className="h-full w-full object-cover"
+                              onError={(e) => {
+                                (e.target as HTMLElement).style.display = 'none';
+                                const parent = (e.target as HTMLElement).parentElement;
+                                if (parent) {
+                                  parent.classList.add('bg-amber-100');
+                                  parent.innerHTML = '<span class="text-[9px] font-bold text-amber-700">미리보기</span>';
+                                }
+                              }}
+                            />
+                          </div>
+                          <span className="text-[9px] font-semibold text-slate-600 truncate">
+                            {t('sns_challenge_preview_ready', language) || '스크린샷 첨부됨'}
+                          </span>
+                        </div>
+                      )}
+
                       <button
                         onClick={() => handleSubmit(challenge)}
-                        disabled={!draft.snsLink.trim()}
+                        disabled={!isValidUrl(draft.snsLink)}
                         className={cn(
                           'touch-target flex w-full items-center justify-center gap-1.5 rounded-lg py-2.5 text-[10px] font-bold uppercase tracking-wider transition-all active:scale-[0.98]',
-                          draft.snsLink.trim()
+                          isValidUrl(draft.snsLink)
                             ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-orange-500/10 hover:from-amber-600 hover:to-orange-600'
                             : 'cursor-not-allowed border border-slate-200 bg-slate-100 text-slate-400',
                         )}
@@ -318,13 +370,15 @@ export const ChallengeEventSection: React.FC<ChallengeEventSectionProps> = ({
                     </div>
                   ) : (
                     <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50/80 p-3">
-                      <Clock size={14} className="shrink-0 text-emerald-600" />
+                      <CheckCircle2 size={16} className="shrink-0 text-emerald-600" />
                       <div>
                         <p className="text-[10px] font-bold text-emerald-700">
                           {t('sns_challenge_submitted_title', language)}
                         </p>
                         <p className="text-[9px] font-semibold text-emerald-600">
-                          {t('sns_challenge_submitted_desc', language)}
+                          {submission.status === 'approved'
+                            ? (t('sns_challenge_status_approved', language) || '검토 완료! 보상이 지급되었습니다.')
+                            : (t('sns_challenge_submitted_desc', language) || '담당자가 제출 내역을 검토 중입니다.')}
                         </p>
                       </div>
                     </div>
