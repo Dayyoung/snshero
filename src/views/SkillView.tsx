@@ -194,8 +194,46 @@ export const SkillView: React.FC<SkillViewProps> = ({
         </div>
       </div>
 
-      {/* ─── 스킬 카드 그리드 (Skill Cards Grid) ─── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* ─── 스킬 트리 연결선 SVG (Skill Tree Connector Lines - ID 85) ─── */}
+      <div className="relative mb-6">
+        <svg className="w-full h-12 overflow-visible hidden md:block">
+          <defs>
+            <linearGradient id="unlockedLineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#f59e0b" />
+              <stop offset="50%" stopColor="#fbbf24" />
+              <stop offset="100%" stopColor="#eab308" />
+            </linearGradient>
+          </defs>
+          {skills.slice(0, -1).map((sk, idx) => {
+            const isUnlocked = (sk.level || 0) > 0;
+            const startX = `${((idx + 0.5) / skills.length) * 100}%`;
+            const endX = `${((idx + 1.5) / skills.length) * 100}%`;
+            return (
+              <g key={`conn-${idx}`}>
+                <line
+                  x1={startX}
+                  y1="24"
+                  x2={endX}
+                  y2="24"
+                  stroke={isUnlocked ? "url(#unlockedLineGrad)" : "#e2e8f0"}
+                  strokeWidth={isUnlocked ? "4" : "2"}
+                  strokeDasharray={isUnlocked ? "none" : "6 4"}
+                  className={isUnlocked ? "animate-pulse drop-shadow-[0_0_8px_rgba(245,158,11,0.8)]" : ""}
+                />
+                <circle
+                  cx={startX}
+                  cy="24"
+                  r="5"
+                  fill={isUnlocked ? "#f59e0b" : "#cbd5e1"}
+                  className={isUnlocked ? "animate-ping opacity-75" : ""}
+                />
+              </g>
+            );
+          })}
+        </svg>
+
+        {/* ─── 스킬 카드 그리드 (Skill Cards Grid) ─── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {skills.map((skill) => {
           const baseSkill = INITIAL_SKILLS.find((s) => s.id === skill.id) || skill;
           const maxLvl = baseSkill.maxLevel || 5;
@@ -360,6 +398,7 @@ export const SkillView: React.FC<SkillViewProps> = ({
             </div>
           );
         })}
+        </div>
       </div>
 
       {/* ─── 스킬 초기화 확인 모달 ─── */}

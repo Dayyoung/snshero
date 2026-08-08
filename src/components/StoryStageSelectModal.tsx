@@ -206,18 +206,18 @@ export const StoryStageSelectModal: React.FC<StoryStageSelectModalProps> = ({
                           )}
                         </div>
 
-                        {/* Item 72: First Clear Bonus Badge & Repeatable Drops */}
+                        {/* Item 72 & ID 97: Grouped Reward Chest Preview Badge */}
                         <div className="flex flex-col gap-0.5 mt-1">
                           <div className="flex items-center gap-1.5">
                             {isCleared ? (
-                              <span className="inline-flex items-center gap-1 text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-950/60 border border-emerald-500/40 text-emerald-400">
-                                <Gift size={10} />
-                                {language === 'ko' ? '최초 보상: 수령 완료' : 'First Clear: Claimed'}
+                              <span className="inline-flex items-center gap-1 text-[9px] font-mono font-bold px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">
+                                <Gift size={11} className="text-amber-400" />
+                                {language === 'ko' ? '📦 클리어 보상 상자' : '📦 Clear Reward Chest'}
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/20 border border-amber-400 text-amber-300 shadow-sm animate-pulse">
-                                <Gift size={10} className="text-amber-400" />
-                                {language === 'ko' ? '🎁 최초 보너스: SSR 뽑기권 x1 + 1,000G' : '🎁 First Clear: 1x SSR Ticket + 1,000G'}
+                              <span className="inline-flex items-center gap-1 text-[9px] font-mono font-bold px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400 text-amber-300 shadow-sm animate-pulse">
+                                <Gift size={11} className="text-amber-400" />
+                                {language === 'ko' ? '🎁 최초 보관함: SSR 뽑기권 + 1,000G' : '🎁 First Clear: SSR Ticket + 1,000G'}
                               </span>
                             )}
                           </div>
@@ -228,7 +228,25 @@ export const StoryStageSelectModal: React.FC<StoryStageSelectModalProps> = ({
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
+                      {/* ID 80: Story mode recommended clear deck load button */}
+                      {isCleared && (
+                        <button
+                          onClick={() => {
+                            // Auto load recommended deck for stage
+                            const recDeck = [1, 11, 21, 31, 101];
+                            localStorage.setItem('hero_playground_deck', JSON.stringify(recDeck));
+                            window.dispatchEvent(new Event('snshero_deck_updated'));
+                            alert(language === 'ko' ? '⚡ Stage 추천 덱이 자동으로 장착되었습니다!' : '⚡ Recommended Stage Deck loaded!');
+                          }}
+                          className="px-2 py-1 rounded bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-mono font-bold flex items-center gap-1 transition-all active:scale-95 cursor-pointer"
+                          title={language === 'ko' ? '추천 클리어 덱 즉시 불러오기' : 'Load Recommended Clear Deck'}
+                        >
+                          <Zap size={11} className="text-amber-400" />
+                          <span>{language === 'ko' ? '추천 덱' : 'Rec Deck'}</span>
+                        </button>
+                      )}
+
                       {/* ── Item 68: Instant Sweep Button for 3-Star Cleared Stages ── */}
                       {isThreeStar && (
                         <button

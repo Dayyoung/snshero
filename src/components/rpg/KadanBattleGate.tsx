@@ -236,9 +236,9 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:40px_40px]" />
       </div>
 
-      <div className="relative flex flex-col justify-between w-full h-full max-w-5xl rounded-2xl sm:rounded-3xl border border-slate-800 bg-[#090d16]/95 text-white shadow-2xl p-2 sm:p-4 md:p-6 z-10 overflow-hidden">
+      <div className="relative flex flex-col justify-between w-full h-full max-w-5xl rounded-2xl sm:rounded-3xl border border-slate-800 bg-[#090d16]/95 text-white shadow-2xl p-2 sm:p-3 md:p-4 z-10 overflow-hidden">
         {/* Header */}
-        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 pb-3 md:pb-4">
+        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 pb-2 md:pb-3">
           <div className="flex items-center gap-3">
             {/* 뒤로가기 버튼 */}
             <button
@@ -321,13 +321,13 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
         </div>
 
         {/* Top: Opponent Hand (Back face cards) */}
-        <div className="w-full flex justify-center h-20 md:h-28 overflow-visible relative z-10 my-2">
+        <div className="w-full flex justify-center h-16 sm:h-20 md:h-22 overflow-visible relative z-10 my-1 shrink-0">
           <div className="flex items-center justify-center gap-1 md:gap-1.5">
             {state.aiHand.map((card, idx) => {
               const mid = (state.aiHand.length - 1) / 2;
               const dist = idx - mid;
               const rotation = dist * 3;
-              const yOffset = Math.abs(dist) * 4;
+              const yOffset = Math.abs(dist) * 3;
 
               return (
                 <motion.div
@@ -340,7 +340,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
                     opacity: 1
                   }}
                   transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                  className="w-[15vw] max-w-[60px] md:w-[8vh] md:max-w-[85px] aspect-[5/7] flex-shrink-0 relative rounded-lg border border-red-900/30 overflow-hidden shadow-[0_4px_10px_rgba(0,0,0,0.5)]"
+                  className="w-[14vw] max-w-[52px] sm:max-w-[62px] md:w-[7.5vh] md:max-w-[72px] aspect-[5/7] flex-shrink-0 relative rounded-lg border border-red-900/30 overflow-hidden shadow-[0_4px_10px_rgba(0,0,0,0.5)]"
                 >
                   <CardItem
                     card={card}
@@ -357,7 +357,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
         </div>
 
         {/* Middle Area: Logs, Score, Turn indicator, Board */}
-        <div className="flex-1 flex flex-col justify-center items-center gap-2 md:gap-4 min-h-0 overflow-y-auto w-full">
+        <div className="flex-1 flex flex-col justify-center items-center gap-1 md:gap-2 min-h-0 overflow-hidden w-full">
           {/* Mobile Top Score Chip */}
           <div className="md:hidden flex items-center justify-between w-full max-w-[280px] sm:max-w-xs px-3 py-1 bg-slate-950/90 border border-slate-800 rounded-full shadow-lg text-xs font-black z-20 mb-0.5 backdrop-blur-md">
             <div className="flex items-center gap-1.5 text-indigo-400">
@@ -385,10 +385,10 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
           </div>
 
           {/* Main Battle Field */}
-          <div className="flex items-center justify-center gap-4 md:gap-8 min-h-0 relative">
+          <div className="flex items-center justify-center gap-3 md:gap-6 min-h-0 relative">
             
             {/* Left Scoreboard Flanking (Desktop Only) */}
-            <div className="hidden md:flex flex-col items-center gap-3 z-20">
+            <div className="hidden md:flex flex-col items-center gap-2 z-20">
               {/* Turn Indicator */}
               <AnimatePresence mode="wait">
                 <motion.div
@@ -396,19 +396,19 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   className={cn(
-                    "px-2 py-4 rounded-full border font-bold uppercase text-[9px] md:text-xs tracking-[0.2em] shadow-lg flex flex-col items-center gap-3 [writing-mode:vertical-lr]",
+                    "px-2 py-3 rounded-full border font-bold uppercase text-[9px] md:text-xs tracking-[0.2em] shadow-lg flex flex-col items-center gap-2 [writing-mode:vertical-lr]",
                     state.turn === 'player'
                       ? "bg-gradient-to-b from-indigo-600 to-indigo-900 border-indigo-400/40 text-white shadow-[0_0_15px_rgba(99,102,241,0.5)]"
                       : "bg-gradient-to-b from-rose-600 to-rose-900 border-rose-400/40 text-white shadow-[0_0_15px_rgba(244,63,94,0.5)]"
                   )}
                 >
                   {state.turn === 'player' ? (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <Zap size={12} className="animate-pulse text-yellow-350" />
                       <span>{t('kadan_rpg_player_turn', language)}</span>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <Cpu size={12} className="animate-spin text-red-350" />
                       <span>{t('kadan_rpg_enemy_turn', language)}</span>
                     </div>
@@ -417,11 +417,11 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
               </AnimatePresence>
 
               {/* Score Board */}
-              <div className="flex flex-col gap-1.5 items-center bg-slate-950/80 rounded-2xl p-1.5 border border-slate-800 shadow-inner shadow-black/60 backdrop-blur-sm">
+              <div className="flex flex-col gap-1 items-center bg-slate-950/80 rounded-2xl p-1.5 border border-slate-800 shadow-inner shadow-black/60 backdrop-blur-sm">
                 {/* AI Score */}
-                <div className="flex flex-col items-center gap-1 p-1 bg-rose-500/5 rounded-full border border-rose-900/20">
+                <div className="flex flex-col items-center gap-0.5 p-1 bg-rose-500/5 rounded-full border border-rose-900/20">
                   <span className="text-[6px] md:text-[8px] font-black uppercase text-rose-400">ENY</span>
-                  <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-[10px] md:text-sm font-extrabold text-rose-500 font-mono">
+                  <div className="w-6 h-6 md:w-7 md:h-7 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-[10px] md:text-xs font-extrabold text-rose-500 font-mono">
                     {score.ai}
                   </div>
                 </div>
@@ -432,8 +432,8 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
                 </div>
 
                 {/* Player Score */}
-                <div className="flex flex-col items-center gap-1 p-1 bg-indigo-500/5 rounded-full border border-indigo-900/20">
-                  <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-[10px] md:text-sm font-extrabold text-indigo-400 font-mono">
+                <div className="flex flex-col items-center gap-0.5 p-1 bg-indigo-500/5 rounded-full border border-indigo-900/20">
+                  <div className="w-6 h-6 md:w-7 md:h-7 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-[10px] md:text-xs font-extrabold text-indigo-400 font-mono">
                     {score.player}
                   </div>
                   <span className="text-[6px] md:text-[8px] font-black uppercase text-indigo-400">KAD</span>
@@ -443,7 +443,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
 
             {/* Board */}
             <div className={cn(
-              "relative p-1 sm:p-1.5 border-2 sm:border-4 rounded-2xl sm:rounded-3xl bg-[#090d16]/95 transition-all duration-700 shadow-2xl",
+              "relative p-1 sm:p-1.5 border-2 sm:border-3 rounded-2xl md:rounded-3xl bg-[#090d16]/95 transition-all duration-700 shadow-2xl",
               state.turn === 'player'
                 ? "border-blue-500/40 shadow-[0_0_40px_rgba(59,130,246,0.15)]"
                 : "border-red-500/40 shadow-[0_0_40px_rgba(239,68,68,0.15)]"
@@ -459,7 +459,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
                       disabled={Boolean(card) || autoBattle || !isPlayerTurn || Boolean(state.result)}
                       onClick={() => placePlayerCard(idx)}
                       className={cn(
-                        "grid-cell w-[21vw] max-w-[62px] sm:max-w-[76px] md:w-[13vh] md:max-w-[110px] aspect-[5/7] flex items-center justify-center relative border transition-all cursor-pointer overflow-visible rounded-lg shadow-inner",
+                        "grid-cell w-[20vw] max-w-[62px] sm:max-w-[72px] md:w-[8.5vh] md:max-w-[78px] lg:w-[9.5vh] lg:max-w-[84px] aspect-[5/7] flex items-center justify-center relative border transition-all cursor-pointer overflow-visible rounded-lg shadow-inner",
                         card ? "border-slate-700/40" : (
                           isPlayerTurn
                             ? "bg-blue-950/20 border-blue-500/30 hover:bg-blue-900/30 hover:border-blue-450/70 shadow-[inset_0_2px_8px_rgba(59,130,246,0.1)]"
@@ -506,17 +506,17 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
         </div>
 
         {/* Bottom: Player Hand */}
-        <div className="w-full flex flex-col items-center gap-2 overflow-visible relative z-15 mt-3 shrink-0">
+        <div className="w-full flex flex-col items-center gap-1 overflow-visible relative z-15 mt-1 shrink-0">
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">{t('kadan_rpg_player_hand', language)}</p>
           
-          <div className="flex items-center justify-center gap-1 md:gap-1.5 h-24 md:h-32 overflow-visible relative">
+          <div className="flex items-center justify-center gap-1 md:gap-1.5 h-20 sm:h-24 md:h-26 overflow-visible relative">
             <AnimatePresence mode="popLayout">
               {state.playerHand.map((card, idx) => {
                 const isSelected = selectedCardIndex === idx;
                 const mid = (state.playerHand.length - 1) / 2;
                 const dist = idx - mid;
                 const rotation = dist * 4;
-                const yOffset = Math.abs(dist) * 5;
+                const yOffset = Math.abs(dist) * 4;
 
                 return (
                   <motion.div
@@ -526,11 +526,11 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
                       setSelectedCardIndex(idx);
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                     }}
-                    initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
                     animate={{
                       opacity: 1,
-                      y: isSelected ? -30 : yOffset,
-                      scale: isSelected ? 1.15 : 1,
+                      y: isSelected ? -20 : yOffset,
+                      scale: isSelected ? 1.12 : 1,
                       rotate: isSelected ? 0 : rotation
                     }}
                     exit={{ opacity: 0, scale: 0.8, y: -20, transition: { duration: 0.2 } }}
@@ -543,14 +543,14 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
                       opacity: { duration: 0.3 }
                     }}
                     whileHover={{
-                      y: isSelected ? -40 : yOffset - 15,
-                      scale: isSelected ? 1.2 : 1.08,
+                      y: isSelected ? -30 : yOffset - 10,
+                      scale: isSelected ? 1.15 : 1.06,
                       rotate: 0,
                       zIndex: 100
                     }}
                     whileTap={{ scale: 0.95 }}
                     className={cn(
-                      "w-[16vw] max-w-[58px] sm:max-w-[72px] md:w-[11vh] md:max-w-[105px] aspect-[5/7] cursor-pointer transition-all flex-shrink-0 relative rounded-lg border border-slate-700 shadow-md",
+                      "w-[15vw] max-w-[56px] sm:max-w-[66px] md:w-[8.5vh] md:max-w-[78px] aspect-[5/7] cursor-pointer transition-all flex-shrink-0 relative rounded-lg border border-slate-700 shadow-md",
                       isSelected && "z-50 border-indigo-400/60 shadow-[0_0_15px_rgba(99,102,241,0.5)]"
                     )}
                   >
@@ -580,12 +580,12 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
         </div>
 
         {/* Footer Controls */}
-        <div className="flex shrink-0 justify-end gap-2 border-t border-white/10 pt-3 md:pt-4 mt-3">
+        <div className="flex shrink-0 justify-end gap-2 border-t border-white/10 pt-2 md:pt-3 mt-1">
           {state.result && (
             <button
               type="button"
               onClick={() => onComplete(state.result!)}
-              className="min-h-11 rounded-xl bg-indigo-650 px-6 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-indigo-600/10 transition-all hover:bg-indigo-600 active:scale-95 cursor-pointer"
+              className="min-h-10 rounded-xl bg-indigo-650 px-6 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-indigo-600/10 transition-all hover:bg-indigo-600 active:scale-95 cursor-pointer"
             >
               {t('kadan_rpg_continue', language)}
             </button>

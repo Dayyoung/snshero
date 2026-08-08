@@ -7,7 +7,7 @@
 
 export interface DailyMission {
   id: string;
-  type: 'play_ai_battle' | 'play_minigame' | 'score_snake' | 'score_2048' | 'win_ai_battle';
+  type: 'play_ai_battle' | 'play_minigame' | 'score_snake' | 'score_2048' | 'win_ai_battle' | 'collect_cards' | 'earn_sns' | 'play_pvp_battle';
   title_ko: string;
   title_en: string;
   target: number;
@@ -46,40 +46,49 @@ export const DAILY_MISSIONS: DailyMission[] = [
     reward_xp: 25,
   },
   {
-    id: 'ai_battle_3',
-    type: 'play_ai_battle',
-    title_ko: 'AI 대전 3회 플레이',
-    title_en: 'Play 3 AI Battles',
+    id: 'win_ai_battle_3',
+    type: 'win_ai_battle',
+    title_ko: 'AI 대전 3회 승리',
+    title_en: 'Win 3 AI Battles',
     target: 3,
+    reward_sns: 150,
+    reward_xp: 75,
+  },
+  {
+    id: 'collect_cards_5',
+    type: 'collect_cards',
+    title_ko: '카드 5장 수집',
+    title_en: 'Collect 5 Cards',
+    target: 5,
+    reward_sns: 120,
+    reward_xp: 60,
+  },
+  {
+    id: 'earn_sns_500',
+    type: 'earn_sns',
+    title_ko: '500 SNS 포인트 획득',
+    title_en: 'Earn 500 SNS Points',
+    target: 500,
     reward_sns: 100,
     reward_xp: 50,
   },
   {
     id: 'minigame_3',
     type: 'play_minigame',
-    title_ko: '아무 미니게임 3회 플레이',
+    title_ko: '미니게임 3회 플레이',
     title_en: 'Play 3 Minigames',
     target: 3,
     reward_sns: 80,
     reward_xp: 40,
   },
   {
-    id: 'snake_score_100',
-    type: 'score_snake',
-    title_ko: '스네이크 100점 달성',
-    title_en: 'Score 100 in Snake',
-    target: 100,
+    id: 'pvp_battle_1',
+    type: 'play_pvp_battle',
+    title_ko: 'PVP 대전 1회 플레이',
+    title_en: 'Play 1 PVP Battle',
+    target: 1,
     reward_sns: 100,
     reward_xp: 50,
-  },
-  {
-    id: 'win_ai_battle_1',
-    type: 'win_ai_battle',
-    title_ko: 'AI 대전 1회 승리',
-    title_en: 'Win 1 AI Battle',
-    target: 1,
-    reward_sns: 80,
-    reward_xp: 40,
   },
 ];
 
@@ -91,7 +100,15 @@ export function loadDailyMissions(): DailyMissionProgress {
     if (saved) {
       const data: DailyMissionProgress = JSON.parse(saved);
       // 날짜가 바뀌었으면 초기화
-      if (data.date === today) return data;
+      if (data.date === today) {
+        // 새로 추가된 미션 키가 없으면 채워 넣음
+        DAILY_MISSIONS.forEach(m => {
+          if (!data.missions[m.id]) {
+            data.missions[m.id] = { progress: 0, completed: false, claimed: false };
+          }
+        });
+        return data;
+      }
     }
   } catch (e) {
     // 저장 데이터 파손 시 초기화

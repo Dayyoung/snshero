@@ -5,7 +5,7 @@ import { CardData, AiStrategy, AiDifficulty, Language, PlayerPatterns, Item, Ski
 import { CardItem } from '../components/CardItem';
 import { cn, getFormattedCardName } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2, UserPlus, ShoppingBag } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2, UserPlus, ShoppingBag, XCircle } from 'lucide-react';
 import { generateCard, INITIAL_CARDS, generateUniqueDeck, getCardStatWithBonus, generateAiName, syncCardWithDatabase, INITIAL_SKILLS, getCardPower, getNormalizedElement } from '../constants';
 import { CARD_DATABASE } from '../cardDatabase';
 import { ITEM_DATABASE } from '../constants/itemDatabase';
@@ -35,6 +35,8 @@ import { NativeAd } from '../components/NativeAd';
 import SkillTimingButton from '../components/SkillTimingButton';
 import { getEquipmentSetBonus, calculateBattleSynergy, FACTION_ADVANTAGE_COLORS, FACTION_ADVANTAGE_ICONS, EQUIPMENT_SET_ICONS } from '../lib/battleSynergy';
 import { incrementMissionProgress } from '../lib/dailyMissions';
+import { DailyMissions as DailyMissionsComponent } from '../components/DailyMissions';
+import { BattleResultPanel, LeveledUpCardInfo } from '../components/BattleResultPanel';
 import { useStoryProgress } from '../hooks/useStoryProgress';
 import { useCardSkins } from '../hooks/useCardSkins';
 import { StoryBattleBanner } from '../components/StoryBattleBanner';
@@ -2120,6 +2122,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   // Hand card long press / zoom preview (Item 51)
   const [previewHandCard, setPreviewHandCard] = useState<CardData | null>(null);
 
+  // Battle Result Summary Metrics
+  const [totalDamageDealt, setTotalDamageDealt] = useState<number>(0);
+  const [leveledUpCards, setLeveledUpCards] = useState<LeveledUpCardInfo[]>([]);
+  const [allDeckCardsProgress, setAllDeckCardsProgress] = useState<LeveledUpCardInfo[]>([]);
+
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3000);
@@ -2339,7 +2346,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
   // Override auto-battle for tutorial or active auto-battle setting
   const isAutoBattle = (isTutorialMode && tutorialStep > 0 && tutorialStep < 3) || !!propIsAutoBattle;
-  const speedMultiplier = isAutoBattle ? 0.4 : (isLowPerformance ? 0.5 : 1);
+  const speedMultiplier = isAutoBattle ? 0.95 : (isLowPerformance ? 0.5 : 1);
   const [showInGameRules, setShowInGameRules] = useState(false);
 
   useEffect(() => {
@@ -4337,6 +4344,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         addLog(t('log_critical_capture', language, { count: flippedIndices.length }), 'system');
         setLastCombo({ count: flippedIndices.length, timestamp: Date.now() });
       }
+    } else {
+      // Defense Success SFX & log (ID 82)
+      setTimeout(() => {
+        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+      }, 150);
+      addLog(language === 'ko' ? '방어 성공! 카드가 원래 소유권을 유지했습니다.' : 'DEFENSE SUCCESS! Position held.', 'system');
     }
     flippedIndices.forEach(ni => {
       if (newBoard[ni]) {
@@ -4943,15 +4956,42 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   hasRecordedRef.current = true;
                   try {
                     const matchRecord = {
+                      id: `match_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
                       userId: 'local-player',
                       player1Id: 'player',
                       player2Id: lastOpponent?.id || 'SYSTEM_BOT',
+                      opponentName: lastOpponent?.name || (battleType === 'robot' ? 'AI Hero Bot' : 'Opponent Hero'),
+                      result: finalWinner === 'player' ? 'win' : (finalWinner === 'ai' ? 'loss' : 'draw'),
                       winner: finalWinner,
                       timestamp: Date.now(),
                       isAiMatch: true,
                       rewardSns: myFinalReward,
+                      snsEarned: myFinalReward,
                       isAutoBattle: isAutoBattle,
-                      score: `${pScore}-${aScore}`
+                      score: `${pScore}-${aScore}`,
+                      myScore: pScore,
+                      opponentScore: aScore,
+                      deckCardIds: playerDeck.map(c => c.imageIndex ?? 1),
+                      opponentCardIds: opponentHand.map(c => c.imageIndex ?? 2),
+                      myCards: playerDeck.map(c => ({
+                        imageIndex: c.imageIndex ?? 1,
+                        title: c.title,
+                        title_dis: c.title_dis,
+                        title_en: c.title_en,
+                        stats: c.stats || [1, 1, 1, 1],
+                        level: c.level || 1,
+                        rarity: c.rarity || 'common'
+                      })),
+                      opponentCards: opponentHand.map(c => ({
+                        imageIndex: c.imageIndex ?? 2,
+                        title: c.title,
+                        title_dis: c.title_dis,
+                        title_en: c.title_en,
+                        stats: c.stats || [1, 1, 1, 1],
+                        level: c.level || 1,
+                        rarity: c.rarity || 'common'
+                      })),
+                      mode: battleType === 'pvp_attack' ? 'PVP Rank Match' : battleType === 'robot' ? 'AI Battle' : 'Card Battle'
                     };
 
                     // Save to LocalStorage Match History
@@ -4988,6 +5028,54 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               };
 
               const handleZeroSumAndRecord = (myResult: 'win' | 'loss' | 'draw') => {
+                // Battle Result Summary calculations
+                const calculatedDamage = finalBoard
+                  .filter(cell => cell && cell.owner === 'player')
+                  .reduce((sum, cell) => {
+                    if (!cell) return sum;
+                    const statsSum = cell.stats?.reduce((a, b) => a + b, 0) || 0;
+                    const bonus = cell.bonusPower || 0;
+                    const lvl = cell.level || 1;
+                    return sum + statsSum + bonus + (lvl * 15);
+                  }, 0) + (myResult === 'win' ? 350 : myResult === 'draw' ? 180 : 90);
+
+                setTotalDamageDealt(calculatedDamage);
+
+                const xpGained = myResult === 'win' ? 60 : myResult === 'draw' ? 30 : 15;
+                const deckToEvaluate = (playerDeck && playerDeck.length > 0) ? playerDeck : INITIAL_CARDS;
+
+                const lvlUpList: LeveledUpCardInfo[] = [];
+                const allProgList: LeveledUpCardInfo[] = [];
+
+                deckToEvaluate.forEach((card, idx) => {
+                  const oldLevel = card.level || 1;
+                  const oldXp = card.xp || card.exp || 0;
+                  const nextLevelXp = oldLevel * 100;
+                  const totalXp = oldXp + xpGained;
+                  const didLevelUp = totalXp >= nextLevelXp || (myResult === 'win' && idx === 0);
+                  const newLevel = didLevelUp ? oldLevel + 1 : oldLevel;
+                  const currentXp = totalXp % (newLevel * 100);
+
+                  const cardInfo: LeveledUpCardInfo = {
+                    card,
+                    oldLevel,
+                    newLevel,
+                    xpGained,
+                    currentXp,
+                    nextLevelXp: newLevel * 100,
+                    statBoost: didLevelUp ? 2 : 0
+                  };
+
+                  allProgList.push(cardInfo);
+                  if (didLevelUp) {
+                    lvlUpList.push(cardInfo);
+                  }
+                });
+
+                setLeveledUpCards(lvlUpList);
+                setAllDeckCardsProgress(allProgList);
+                onEarnXp?.(xpGained);
+
                 // AI 대전(robot)일 때는 상대방 AI 유저 오브젝트 전적이나 SNS를 건드리지 않음
                 if (battleType !== 'robot') {
                   setLastOpponent(prev => prev ? {
@@ -8316,6 +8404,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             </div>
           </button>
 
+          {/* Daily Missions Component */}
+          <DailyMissionsComponent />
+
           {/* Mode List Grid - shortcut style */}
           <main className="flex-1 px-0 pb-4 md:pb-8 pt-0 flex flex-col justify-start items-center w-full gap-4 md:gap-6 overflow-y-visible">
             <div className="grid grid-cols-2 gap-3 md:gap-4 w-full py-4 items-stretch">
@@ -9755,7 +9846,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         </div>
       </div>
 
-      <div className="shrink-0 flex flex-col items-center justify-center p-0.5 md:p-2 bg-[#060a14] relative overflow-visible py-2 sm:py-4 md:py-8 shadow-[inset_0_0_120px_rgba(0,0,0,0.9)] border border-slate-800 rounded-3xl mx-1 md:mx-2 my-1">
+      <div className="shrink-0 flex flex-col items-center justify-center p-0.5 md:p-1 bg-[#060a14] relative overflow-visible py-1 sm:py-2 md:py-2 shadow-[inset_0_0_120px_rgba(0,0,0,0.9)] border border-slate-800 rounded-2xl md:rounded-3xl mx-1 md:mx-2 my-0.5">
         {/* Background layers */}
         <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/topography.png')] opacity-[0.06]" />
@@ -9857,10 +9948,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         )}
 
         {/* Main Board Area with Turn Indicator and Score flanking it */}
-        <div className="relative flex flex-col items-center justify-center w-full max-w-6xl md:px-2 min-h-0 gap-2 md:gap-8 mt-0.5 md:mt-2">
+        <div className="relative flex flex-col items-center justify-center w-full max-w-6xl md:px-2 min-h-0 gap-1 md:gap-2 mt-0.5">
           
 
-          <div className="relative flex items-center justify-center w-full min-h-[310px] sm:min-h-[360px] gap-2 md:gap-6">
+          <div className="relative flex items-center justify-center w-full min-h-[250px] sm:min-h-[290px] md:min-h-[300px] gap-2 md:gap-4">
             {/* DESKTOP LEFT SIDEBAR: SCOREBOARD & TURN INDICATOR (lg:flex ONLY) */}
             {!gameOver && gameState === 'playing' && (
               <div className="hidden lg:flex absolute left-2 md:left-4 top-1/2 -translate-y-1/2 flex-col items-center gap-4 z-20">
@@ -10111,7 +10202,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           return (
                             <div
                               key={idx}
-                              className="grid-cell w-[20vw] max-w-[70px] md:w-[11vh] md:max-w-[85px] aspect-[5/7] flex items-center justify-center relative border border-amber-500 bg-amber-950/20 rounded-lg shadow-md overflow-visible cursor-default"
+                              className="grid-cell w-[20vw] max-w-[64px] sm:max-w-[70px] md:w-[8.5vh] md:max-w-[76px] lg:w-[9.5vh] lg:max-w-[82px] aspect-[5/7] flex items-center justify-center relative border border-amber-500 bg-amber-950/20 rounded-lg shadow-md overflow-visible cursor-default"
                             >
                               <div className="absolute inset-0 p-0.5 rounded-lg overflow-hidden flex items-center justify-center bg-[#1e293b]/70 border border-slate-700">
                                 <img
@@ -10137,7 +10228,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             onMouseEnter={() => handleMouseEnterCell(idx)}
                             onMouseLeave={handleMouseLeaveCell}
                             className={cn(
-                              "grid-cell group w-[22vw] max-w-[66px] sm:max-w-[76px] md:w-[11vh] md:max-w-[85px] aspect-[5/7] flex items-center justify-center relative border transition-all cursor-pointer overflow-visible rounded-lg shadow-inner",
+                              "grid-cell group w-[22vw] max-w-[66px] sm:max-w-[76px] md:w-[8.5vh] md:max-w-[76px] lg:w-[9.5vh] lg:max-w-[82px] aspect-[5/7] flex items-center justify-center relative border transition-all cursor-pointer overflow-visible rounded-lg shadow-inner",
                               card ? "border-slate-550/40" : (
                                 turn === 'player'
                                   ? "bg-blue-950/20 border-blue-500/30 hover:bg-blue-900/30 hover:border-blue-450/70 shadow-[inset_0_2px_8px_rgba(59,130,246,0.1)]"
@@ -10202,7 +10293,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                               </div>
                             )}
 
-                            {/* Capture Preview Highlight */}
+                            {/* Invalid Drop Target Shading / Prohibition Overlay (ID 78) */}
+                            {card && selectedCardIdx !== null && selectedCardSide === 'player' && (
+                              <div className="absolute inset-0 z-[140] bg-red-950/80 backdrop-blur-[1px] border-2 border-red-500 rounded-lg flex flex-col items-center justify-center text-red-400 font-mono text-[9px] font-black cursor-not-allowed pointer-events-none shadow-inner">
+                                <XCircle size={20} className="text-red-500 animate-pulse mb-0.5" />
+                                <span className="uppercase tracking-tighter">[X] {language === 'ko' ? '배치 불가' : 'OCCUPIED'}</span>
+                              </div>
+                            )}
                             {capturePreview.includes(idx) && (
                               <div className="absolute inset-0 z-[120] pointer-events-none rounded-lg flex flex-col items-center justify-center">
                                 <div className="absolute inset-0 border-4 border-amber-400 animate-pulse rounded-lg bg-amber-500/30" />
@@ -10831,6 +10928,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   </div>
                 </div>
               </div>
+
+              {/* Battle Result Summary Panel (SNS points gained, Total damage dealt, Cards leveled up) */}
+              <BattleResultPanel
+                result={winner === 'player' ? 'win' : winner === 'ai' ? 'loss' : 'draw'}
+                snsEarned={rewardEarned}
+                totalDamageDealt={totalDamageDealt > 0 ? totalDamageDealt : (boardScore.player * 85 + (winner === 'player' ? 320 : 120))}
+                leveledUpCards={leveledUpCards}
+                allDeckCardsProgress={allDeckCardsProgress}
+                battleType={battleType}
+                language={language}
+              />
 
               {/* Match Analysis Section */}
               {battleType !== 'matgo' && (

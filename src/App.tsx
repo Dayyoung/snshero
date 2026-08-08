@@ -4268,9 +4268,14 @@ function AppContent() {
     if (isPlaygroundMode) {
       return;
     }
-    // 일일 미션 진행도 업데이트 (AI 전투)
-    if (battleType === 'robot') {
+    // 일일 미션 진행도 업데이트 (AI/PVP 전투 및 승리)
+    if (battleType === 'robot' || !battleType) {
       incrementMissionProgress('play_ai_battle', 1);
+      if (result === 'win') {
+        incrementMissionProgress('win_ai_battle', 1);
+      }
+    } else if (battleType === 'user' || battleType === 'pvp_attack') {
+      incrementMissionProgress('play_pvp_battle', 1);
       if (result === 'win') {
         incrementMissionProgress('win_ai_battle', 1);
       }
@@ -4292,6 +4297,9 @@ function AppContent() {
 
     const reward = rewardOverride !== undefined ? rewardOverride : (result === 'win' ? 50 : (result === 'draw' ? 20 : 10));
     const newSns = sns + reward;
+    if (reward > 0) {
+      incrementMissionProgress('earn_sns', reward);
+    }
 
     let newStats: any = null;
     setStats(prev => {
@@ -4454,6 +4462,7 @@ function AppContent() {
   }, [grantSpecificCard, playSfx]);
 
   const addCard = useCallback((rarity: CardRarity, indexOverride?: number, isSilent = false) => {
+    incrementMissionProgress('collect_cards', 1);
     if (testMode) {
       console.log(`%c [DEBUG] addCard Triggered: Rarity=${rarity}, Index=${indexOverride ?? 'AUTO'} `, 'color: #9333ea; font-weight: bold;');
     }

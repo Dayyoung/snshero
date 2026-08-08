@@ -110,9 +110,19 @@ export const DailyMissions: React.FC = () => {
         )}
 
         {claimableCount > 0 && (
-          <span className="text-[10px] font-bold bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded-full">
-            {claimableCount}
-          </span>
+          <button
+            onClick={() => {
+              DAILY_MISSIONS.forEach(m => {
+                const st = missionData.missions[m.id];
+                if (st && st.completed && !st.claimed) {
+                  handleClaim(m.id);
+                }
+              });
+            }}
+            className="text-[10px] font-bold bg-indigo-600 hover:bg-indigo-700 text-white px-2 py-0.5 rounded-full shadow-xs cursor-pointer transition-all active:scale-95"
+          >
+            {language === 'ko' ? `일괄 수령 (${claimableCount})` : `Claim All (${claimableCount})`}
+          </button>
         )}
       </div>
 

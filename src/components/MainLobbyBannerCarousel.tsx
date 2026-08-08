@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, ChevronRight, Pause, Play, Sparkles, Gift, Crown, ExternalLink } from 'lucide-react';
 import { Language, ViewType } from '../types';
 import { cn } from '../lib/utils';
+import { useSwipeGesture } from '../hooks/useSwipeGesture';
 
 interface BannerSlide {
   id: string;
@@ -28,7 +29,6 @@ export const MainLobbyBannerCarousel: React.FC<MainLobbyBannerCarouselProps> = (
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
   const banners: BannerSlide[] = [
     {
@@ -72,6 +72,16 @@ export const MainLobbyBannerCarousel: React.FC<MainLobbyBannerCarouselProps> = (
     return () => clearInterval(interval);
   }, [isPaused, banners.length]);
 
+  const swipeHandlers = useSwipeGesture({
+    threshold: 30,
+    onSwipeLeft: () => {
+      setCurrentIndex(prev => (prev + 1) % banners.length);
+    },
+    onSwipeRight: () => {
+      setCurrentIndex(prev => (prev - 1 + banners.length) % banners.length);
+    },
+  });
+
   // Touch & Drag Swipe Gesture Handling using Motion & Touch Events
   const handleDragEnd = (_: any, info: { offset: { x: number }; velocity: { x: number } }) => {
     const swipeThreshold = 40;
@@ -85,25 +95,12 @@ export const MainLobbyBannerCarousel: React.FC<MainLobbyBannerCarouselProps> = (
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStartX(e.touches[0].clientX);
     setIsPaused(true);
+    swipeHandlers.onTouchStart(e);
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartX === null) return;
-    const touchEndX = e.changedTouches[0].clientX;
-    const diffX = touchStartX - touchEndX;
-
-    if (Math.abs(diffX) > 35) {
-      if (diffX > 0) {
-        // Swipe Left -> Next
-        setCurrentIndex(prev => (prev + 1) % banners.length);
-      } else {
-        // Swipe Right -> Prev
-        setCurrentIndex(prev => (prev - 1 + banners.length) % banners.length);
-      }
-    }
-    setTouchStartX(null);
+    swipeHandlers.onTouchEnd(e);
     setIsPaused(false);
   };
 

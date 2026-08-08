@@ -44,6 +44,16 @@ export const StoryBattleResult: React.FC<StoryBattleResultProps> = ({
     setRewardClaimedLocal(initialRewardClaimed);
   }, [initialRewardClaimed]);
 
+  // ID 84: Auto-trigger Webtoon Episode Modal upon clearing chapter final episode stage
+  useEffect(() => {
+    if (result === 'win' && onNavigateWebtoon && storyProgressCount > 0) {
+      const timer = setTimeout(() => {
+        onNavigateWebtoon();
+      }, 1200);
+      return () => clearTimeout(timer);
+    }
+  }, [result, onNavigateWebtoon, storyProgressCount]);
+
   const handleClaimReward = useCallback(() => {
     if (rewardClaimedLocal || !onClaimReward) return;
     onClaimReward();

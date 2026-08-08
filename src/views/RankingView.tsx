@@ -903,25 +903,23 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
         title={t('ranking', language)}
         description=""
         actionButton={
-          user && user.uid !== 'guest-id' ? (
-            <button
-              onClick={() => {
-                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                loadHistory();
-                setShowHistoryModal(true);
-              }}
-              className={cn(
-                "min-h-11 w-full sm:w-auto px-3 py-2.5 rounded-xl active:scale-95 transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 border touch-target",
-                (theme === 'dark' || theme === 'metal')
-                  ? "bg-white/10 hover:bg-white/20 text-white border-white/10"
-                  : "bg-white hover:bg-slate-50 text-slate-800 border-slate-200"
-              )}
-              title="Battle Records"
-            >
-              <List size={14} className="shrink-0" />
-              <span className="min-w-0 truncate text-[10px] font-bold uppercase">{t('battle_record', language)}</span>
-            </button>
-          ) : undefined
+          <button
+            onClick={() => {
+              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              loadHistory();
+              setShowHistoryModal(true);
+            }}
+            className={cn(
+              "min-h-11 w-full sm:w-auto px-3.5 py-2.5 rounded-xl active:scale-95 transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 border touch-target",
+              (theme === 'dark' || theme === 'metal')
+                ? "bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border-indigo-400/40"
+                : "bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border-indigo-200 font-extrabold"
+            )}
+            title="Battle Records"
+          >
+            <List size={15} className="shrink-0 text-indigo-500" />
+            <span className="min-w-0 truncate text-xs font-black uppercase">{t('battle_record', language)}</span>
+          </button>
         }
       />
 

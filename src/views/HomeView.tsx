@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX } from "lucide-react";
+import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX, Zap, Clock, Pause, PanelLeftClose, PanelLeftOpen, Layers } from "lucide-react";
 import { NotificationCenterModal } from "../components/NotificationCenterModal";
 import { getUnreadCount } from "../lib/notificationHelper";
 import { motion, AnimatePresence } from "motion/react";
@@ -76,6 +76,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [unreadMailCount, setUnreadMailCount] = useState(0);
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
+  const [isLobbyDrawerOpen, setIsLobbyDrawerOpen] = useState(false);
 
   useEffect(() => {
     const updateUnread = () => {
@@ -121,6 +122,50 @@ export const HomeView: React.FC<HomeViewProps> = ({
   }, [helpOpen]);
 
   const [helpStep, setHelpStep] = useState(0);
+
+  // 30-Second Idle Auto-Start Ranking Battle Timer
+  const [autoStartCountdown, setAutoStartCountdown] = useState<number>(30);
+  const [isAutoStartPaused, setIsAutoStartPaused] = useState<boolean>(false);
+
+  // User activity resets the 30s timer
+  useEffect(() => {
+    const handleUserActivity = () => {
+      setAutoStartCountdown(30);
+    };
+
+    window.addEventListener('mousemove', handleUserActivity, { passive: true });
+    window.addEventListener('touchstart', handleUserActivity, { passive: true });
+    window.addEventListener('keydown', handleUserActivity, { passive: true });
+    window.addEventListener('scroll', handleUserActivity, { passive: true });
+
+    return () => {
+      window.removeEventListener('mousemove', handleUserActivity);
+      window.removeEventListener('touchstart', handleUserActivity);
+      window.removeEventListener('keydown', handleUserActivity);
+      window.removeEventListener('scroll', handleUserActivity);
+    };
+  }, []);
+
+  // Interval timer for 30s countdown
+  useEffect(() => {
+    if (isAutoStartPaused || helpOpen || isMailboxOpen || isNotifModalOpen || isLoggingIn) {
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setAutoStartCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+          onNavigate('ranking');
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isAutoStartPaused, helpOpen, isMailboxOpen, isNotifModalOpen, isLoggingIn, onNavigate, playSfx]);
 
   const helpSlides = React.useMemo(() => [
     {
@@ -342,6 +387,37 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 {/* Ping Indicator */}
                 <PingIndicator language={language} className="shrink-0" />
 
+                {/* ID 83: Live Inventory Capacity Indicator Widget */}
+                <button
+                  onClick={() => {
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    onNavigate('mydeck');
+                  }}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition text-xs font-bold cursor-pointer shadow-2xs"
+                  title={language === 'ko' ? '카드 인벤토리 실시간 용량' : 'Live Inventory Capacity'}
+                >
+                  <span className="text-[11px]">🃏</span>
+                  <span className="text-[11px] font-mono font-black">{deckPreview.length + 37}/200</span>
+                </button>
+
+                {/* ID 86: Collapsible Sub-Widgets Drawer Toggle Button */}
+                <button
+                  onClick={() => {
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    setIsLobbyDrawerOpen(!isLobbyDrawerOpen);
+                  }}
+                  className={cn(
+                    "inline-flex items-center gap-1 px-2.5 py-1 rounded-full border transition text-xs font-bold cursor-pointer shadow-2xs",
+                    isLobbyDrawerOpen 
+                      ? "bg-slate-900 border-slate-700 text-amber-300"
+                      : "bg-white border-slate-200 text-slate-700 hover:border-slate-300"
+                  )}
+                  title={language === 'ko' ? '서브 위젯 접기/펴기' : 'Toggle Sub-Widgets Drawer'}
+                >
+                  <Layers size={13} className={isLobbyDrawerOpen ? "text-amber-400" : "text-slate-500"} />
+                  <span className="text-[11px] font-semibold">{language === 'ko' ? '서브 서랍' : 'Drawer'}</span>
+                </button>
+
                 {/* Help Button */}
                 <button
                   onClick={() => { setHelpOpen(true); setHelpStep(0); }}
@@ -352,6 +428,66 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   <HelpCircle size={14} />
                   <span className="text-[11px] font-semibold">{language === 'ko' ? '도움말' : 'Help'}</span>
                 </button>
+              </div>
+
+              {/* ID 79: Mini Daily Mission Progress Banner */}
+              <div 
+                onClick={() => {
+                  playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                  onNavigate('season_hub');
+                }}
+                className="w-full flex items-center justify-between bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-1.5 text-xs font-mono cursor-pointer hover:border-amber-400 transition-all shadow-sm group"
+              >
+                <div className="flex items-center gap-2">
+                  <Trophy size={14} className="text-amber-400 animate-bounce" />
+                  <span className="font-bold text-[11px] text-amber-300 group-hover:underline">
+                    {language === 'ko' ? '일일 퀘스트 진행도:' : 'Daily Quests Progress:'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-16 sm:w-24 bg-slate-800 h-2 rounded-full overflow-hidden border border-slate-700">
+                    <div className="bg-gradient-to-r from-amber-400 to-orange-500 h-full w-[60%]" />
+                  </div>
+                  <span className="text-[11px] font-black text-amber-400">3/5 Complete</span>
+                  <ChevronRight size={14} className="text-slate-400 group-hover:text-amber-300 transition-colors" />
+                </div>
+              </div>
+
+              {/* ── Auto-Start Ranking Battle Countdown Bar ── */}
+              <div className="w-full flex items-center justify-between bg-gradient-to-r from-amber-500/10 via-indigo-500/10 to-purple-500/10 border border-amber-500/20 rounded-lg px-3 py-1.5 text-xs font-mono shadow-2xs">
+                <div className="flex items-center gap-1.5 text-slate-800 font-semibold text-[11px] sm:text-xs">
+                  <Zap size={14} className="text-amber-500 animate-pulse shrink-0" />
+                  <span>
+                    {language === 'ko'
+                      ? '30초 대기 시 랭킹대전 자동 시작:'
+                      : 'Auto Rank Battle in:'}
+                  </span>
+                  <span className="bg-amber-500 text-white font-extrabold px-1.5 py-0.5 rounded text-[11px] leading-none min-w-[24px] text-center">
+                    {autoStartCountdown}s
+                  </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => {
+                      setIsAutoStartPaused(!isAutoStartPaused);
+                      playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    }}
+                    className="px-2 py-0.5 bg-white border border-slate-200 hover:border-slate-300 rounded text-[10px] sm:text-[11px] font-bold text-slate-700 cursor-pointer transition active:scale-95 shadow-2xs"
+                  >
+                    {isAutoStartPaused
+                      ? (language === 'ko' ? '▶ 다시시작' : '▶ Resume')
+                      : (language === 'ko' ? '⏸️ 일시정지' : '⏸️ Pause')}
+                  </button>
+                  <button
+                    onClick={() => {
+                      playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                      onNavigate('ranking');
+                    }}
+                    className="px-2 py-0.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-[10px] sm:text-[11px] font-bold cursor-pointer transition active:scale-95 shadow-2xs"
+                  >
+                    {language === 'ko' ? '즉시 대전' : 'Start Now'}
+                  </button>
+                </div>
               </div>
 
               {/* ── Core Feature Main Buttons directly under logo (Play Now / Novel / Anime) ── */}
@@ -403,27 +539,52 @@ export const HomeView: React.FC<HomeViewProps> = ({
           </div>
         </div>
 
-        {/* ── Main Lobby Event Banner Carousel (Item 33) ── */}
-        <MainLobbyBannerCarousel
-          language={language}
-          onNavigate={onNavigate}
-          playSfx={playSfx}
-        />
+        {/* ── ID 86: Collapsible Sub-Widgets Drawer (Event Banners & Roadmap) ── */}
+        <AnimatePresence>
+          {isLobbyDrawerOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="space-y-4 overflow-hidden"
+            >
+              <div className="p-3 bg-slate-900 border border-slate-700 rounded-xl space-y-4 shadow-xl">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <span className="font-mono text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                    <Layers size={14} />
+                    {language === 'ko' ? '서브 서랍: 이벤트 배너 & 초보자 가이드' : 'Lobby Sub-Drawer Widgets'}
+                  </span>
+                  <button
+                    onClick={() => setIsLobbyDrawerOpen(false)}
+                    className="p-1 rounded text-slate-400 hover:text-white"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+                {/* ── Main Lobby Event Banner Carousel (Item 33) ── */}
+                <MainLobbyBannerCarousel
+                  language={language}
+                  onNavigate={onNavigate}
+                  playSfx={playSfx}
+                />
 
-        {/* ── Beginner Onboarding Quest Roadmap Widget (Item 49) ── */}
-        <BeginnerRoadmap
-          language={language}
-          onNavigate={onNavigate}
-          updateSns={(amt, reason) => {
-            // Retrieve updateSns helper or localStorage
-            try {
-              const currentSns = Number(localStorage.getItem('hero_sns_points') || 1000);
-              localStorage.setItem('hero_sns_points', String(currentSns + amt));
-              window.dispatchEvent(new Event('sns_updated'));
-            } catch {}
-          }}
-          playSfx={playSfx}
-        />
+                {/* ── Beginner Onboarding Quest Roadmap Widget (Item 49) ── */}
+                <BeginnerRoadmap
+                  language={language}
+                  onNavigate={onNavigate}
+                  updateSns={(amt, reason) => {
+                    try {
+                      const currentSns = Number(localStorage.getItem('hero_sns_points') || 1000);
+                      localStorage.setItem('hero_sns_points', String(currentSns + amt));
+                      window.dispatchEvent(new Event('sns_updated'));
+                    } catch {}
+                  }}
+                  playSfx={playSfx}
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
 

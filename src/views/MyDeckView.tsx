@@ -153,7 +153,7 @@ const SortableCardItem: React.FC<SortableCardItemProps> = ({
         <CardItem 
           card={card} 
           onClick={() => handleCardClick(idx)} 
-          className="w-20 h-28 sm:w-24 sm:h-32 md:w-32 md:h-44 cursor-grab active:cursor-grabbing hover:ring-4 hover:ring-blue-500 transition-all rounded-xl"
+          className="w-[17.2vw] min-w-[3.4rem] max-w-[5.2rem] h-[24.5vw] min-h-[4.9rem] max-h-[7.5rem] sm:w-24 sm:h-32 md:w-32 md:h-44 cursor-grab active:cursor-grabbing hover:ring-4 hover:ring-blue-500 transition-all rounded-xl"
           customImage={customCardImage}
           />
         {representativeCardId === (card.imageIndex ?? null) && representativePetCardId ? (
@@ -261,6 +261,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   sns,
   showCustomAlert,
 }) => {
+  const [cardDetailTab, setCardDetailTab] = useState<'stats' | 'skills' | 'lore'>('stats');
   const [selectedCardForDetail, setSelectedCardForDetail] = useState<CardData | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
@@ -852,8 +853,8 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   };
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 pb-48 flex flex-col gap-6 md:gap-10 max-w-4xl mx-auto min-h-screen app-bg text-slate-800 font-sans">
-      <div className="flex items-center justify-between gap-3 mb-2">
+    <div className="p-3 sm:p-6 md:p-8 pb-48 flex flex-col gap-5 sm:gap-6 md:gap-10 max-w-4xl mx-auto min-h-screen w-full overflow-x-hidden app-bg text-slate-800 font-sans">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-2 w-full">
         <div className="flex items-center gap-2">
           <PageHeader title={t('mydeck', language)} />
           <button
@@ -864,7 +865,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             <HelpCircle size={16} className="text-slate-500" />
           </button>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
           <button
             onClick={() => {
               playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
@@ -873,7 +874,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               window.history.pushState({}, '', `/share?id=${encodeURIComponent(nickname)}&card1=${cardIndices[0]||0}&card2=${cardIndices[1]||0}&card3=${cardIndices[2]||0}&card4=${cardIndices[3]||0}&card5=${cardIndices[4]||0}`);
               onNavigate('share');
             }}
-            className="min-h-11 px-3 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg active:scale-95 transition-all cursor-pointer shadow-sm flex items-center gap-1.5 touch-target"
+            className="min-h-10 sm:min-h-11 px-2.5 sm:px-3 py-2 sm:py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg active:scale-95 transition-all cursor-pointer shadow-sm flex items-center gap-1.5 touch-target"
             title={t('share', language)}
           >
             <Share2 size={14} className="shrink-0" />
@@ -884,7 +885,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               setIs3DDeckViewerOpen(true);
             }}
-            className="min-h-11 px-3 py-2.5 bg-teal-500 hover:bg-teal-600 text-white rounded-lg active:scale-95 transition-all cursor-pointer shadow-md flex items-center gap-1.5 touch-target"
+            className="min-h-10 sm:min-h-11 px-2.5 sm:px-3 py-2 sm:py-2.5 bg-teal-500 hover:bg-teal-600 text-white rounded-lg active:scale-95 transition-all cursor-pointer shadow-md flex items-center gap-1.5 touch-target"
             title={language === 'ko' ? '덱 3D 감상' : '3D DECK VIEW'}
           >
             <Camera size={14} className="shrink-0" />
@@ -896,7 +897,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               setIsDisassembleModalOpen(true);
             }}
-            className="min-h-11 px-3 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg active:scale-95 transition-all cursor-pointer shadow-md flex items-center gap-1.5 touch-target"
+            className="min-h-10 sm:min-h-11 px-2.5 sm:px-3 py-2 sm:py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg active:scale-95 transition-all cursor-pointer shadow-md flex items-center gap-1.5 touch-target"
             title={language === 'ko' ? '카드 분해/환급' : 'Card Disassemble'}
           >
             <Trash2 size={14} className="shrink-0" />
@@ -906,7 +907,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       </div>
 
       {/* Multi-Deck Presets Control Bar (Item 31) */}
-      <div className="bg-slate-900 text-white p-3 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-lg">
+      <div className="bg-slate-900 text-white p-2.5 sm:p-3 rounded-2xl flex flex-wrap items-center justify-between gap-2 sm:gap-3 shadow-lg">
         <div className="flex items-center gap-2">
           <Layers size={18} className="text-indigo-400 shrink-0" />
           <span className="text-xs font-black uppercase tracking-wider text-slate-200">
@@ -914,13 +915,13 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           </span>
         </div>
 
-        <div className="flex items-center gap-1.5 bg-slate-800 p-1 rounded-xl">
+        <div className="flex items-center gap-1 bg-slate-800 p-1 rounded-xl">
           {[1, 2, 3].map((presetNum) => (
             <button
               key={presetNum}
               onClick={() => handleSwitchDeckPreset(presetNum)}
               className={cn(
-                "px-3 py-1.5 rounded-lg text-xs font-black uppercase transition-all flex items-center gap-1 cursor-pointer",
+                "px-2.5 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-black uppercase transition-all flex items-center gap-1 cursor-pointer",
                 activeDeckPreset === presetNum
                   ? "bg-indigo-600 text-white shadow-xs"
                   : "text-slate-400 hover:text-white hover:bg-slate-700"
@@ -936,9 +937,9 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       </div>
 
 
-      <div className="flex flex-wrap items-center justify-end gap-3 mt-4 mb-2 pb-4 border-b border-slate-200/60 font-sans">
+      <div className="flex flex-wrap items-center justify-end gap-3 mt-3 sm:mt-4 mb-2 pb-3 sm:pb-4 border-b border-slate-200/60 font-sans">
         
-        <div className="flex flex-wrap sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full md:w-auto mt-3 md:mt-0">
+        <div className="grid grid-cols-3 gap-1.5 sm:flex sm:flex-wrap sm:items-center sm:justify-end sm:gap-3 w-full md:w-auto">
           <button
             onClick={() => {
               if (selectionContext === 'upgrade') {
@@ -951,14 +952,14 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             }}
             id="hero-nurture-btn"
             className={cn(
-              "px-4 sm:px-6 py-2.5 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 border touch-target active:scale-[0.98] shadow-sm cursor-pointer",
+              "px-2 sm:px-6 py-2.5 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 sm:gap-2 border touch-target active:scale-[0.98] shadow-sm cursor-pointer",
               selectionContext === 'upgrade' 
                 ? "bg-white text-purple-600 border-purple-200" 
                 : "bg-purple-600 text-white hover:bg-purple-500 border-purple-500 shadow-purple-500/10"
             )}
           >
-            <StarIcon size={14} className="sm:w-4 sm:h-4" />
-            {t('hero_nurture', language)}
+            <StarIcon size={14} className="shrink-0 sm:w-4 sm:h-4" />
+            <span className="truncate">{t('hero_nurture', language)}</span>
           </button>
           <button 
             onClick={() => {
@@ -972,23 +973,23 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             }}
             id="inventory-btn"
             className={cn(
-              "px-4 sm:px-6 py-2.5 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 border touch-target active:scale-[0.98] shadow-sm cursor-pointer",
+              "px-2 sm:px-6 py-2.5 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 sm:gap-2 border touch-target active:scale-[0.98] shadow-sm cursor-pointer",
               selectionContext === 'equipment' 
                 ? "bg-white text-blue-600 border-blue-200" 
                 : "bg-slate-900 text-white hover:bg-slate-800 border-slate-900 shadow-slate-900/10"
             )}
           >
-            <Package size={14} className="sm:w-4 sm:h-4" />
-            {t('inventory', language)}
+            <Package size={14} className="shrink-0 sm:w-4 sm:h-4" />
+            <span className="truncate">{t('inventory', language)}</span>
           </button>
           <button 
             onClick={() => {
               setIsAchievementsModalOpen(true);
               playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
             }}
-            className="bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-900 px-4 sm:px-6 py-2.5 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-all flex items-center justify-center gap-2 border border-amber-300 touch-target active:scale-[0.98] shadow-sm shadow-amber-400/10 cursor-pointer"
+            className="bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-900 px-2 sm:px-6 py-2.5 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-all flex items-center justify-center gap-1 sm:gap-2 border border-amber-300 touch-target active:scale-[0.98] shadow-sm shadow-amber-400/10 cursor-pointer"
           >
-            <Trophy size={14} className="sm:w-4 sm:h-4" />
+            <Trophy size={14} className="shrink-0 sm:w-4 sm:h-4" />
             <span className="hidden sm:inline">{t('my_achievements', language)}</span>
             <span className="sm:hidden">{Math.round((unlockedAchievements.length / ALL_ACHIEVEMENTS.length) * 100)}%</span>
             <span className="hidden sm:inline">({Math.round((unlockedAchievements.length / ALL_ACHIEVEMENTS.length) * 100)}%)</span>
@@ -997,8 +998,8 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       </div>
 
       <div className="flex flex-col gap-6 md:gap-8">
-        <div className="flex flex-col items-center gap-3 sm:gap-4">
-          <div id="deck-list" className="mx-auto flex w-full max-w-[20rem] flex-wrap justify-center gap-2 sm:max-w-none sm:gap-4 md:gap-6">
+        <div className="flex flex-col items-center gap-3 sm:gap-4 w-full">
+          <div id="deck-list" className="mx-auto flex w-full max-w-full flex-nowrap sm:flex-wrap justify-center items-center gap-1 xs:gap-2 sm:gap-4 md:gap-6 px-0.5 sm:px-1">
           <DndContext 
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -2123,169 +2124,221 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                 </div>
               </div>
 
-              {/* Right Side: Skills & Equipment & Buttons */}
+              {/* Right Side: Tabified Content (ID 88) */}
               <div className="w-full md:w-1/2 p-6 flex flex-col min-h-0 bg-white">
-                 <div className="flex-1 overflow-y-auto space-y-6 pr-1 custom-scrollbar">
-                    {/* Skills */}
-                    <div className="space-y-3">
-                       <h4 className="text-xs font-black uppercase tracking-widest opacity-40 border-b border-slate-100 pb-1 flex items-center gap-1">
-                         <Zap size={12} fill="currentColor" /> {t('skills', language)}
-                       </h4>
-                       <div className="space-y-2">
-                          {(!selectedCardForDetail.skills || selectedCardForDetail.skills.filter((s: any) => s.level > 0).length === 0) ? (
-                            <p className="text-[10px] font-bold opacity-30 italic">{t('no_skills_available', language) || 'No abilities discovered yet'}</p>
-                          ) : (
-                            selectedCardForDetail.skills.filter((s: any) => s.level > 0).map((skill: any) => {
-                              const baseSkill = INITIAL_SKILLS.find(s => s.id === skill.id) || skill;
-                              const Icon = iconMap[baseSkill.icon] || Zap;
-                              return (
-                                <div key={skill.id} className="flex gap-3 p-3 bg-gray-50 rounded-xl border border-slate-100">
-                                   <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
-                                      <Icon size={16} />
-                                   </div>
-                                   <div className="min-w-0">
-                                      <div className="flex justify-between items-center mb-0.5">
-                                         <span className="text-[11px] font-black italic uppercase leading-none">{language === 'ko' ? baseSkill.name : baseSkill.name_en}</span>
-                                         <span className="text-[9px] font-black text-blue-600 bg-blue-50 px-1 rounded">Lv.{skill.level}</span>
-                                      </div>
-                                      <p className="text-[10px] font-bold opacity-50 leading-tight">
-                                        {language === 'ko' ? baseSkill.description : baseSkill.description_en}
-                                      </p>
-                                   </div>
-                                </div>
-                              )
-                            })
-                          )}
-                       </div>
-                    </div>
+                 {/* Segmented Tab Navigation Bar */}
+                 <div className="flex border-b border-slate-200 mb-4 pb-1 gap-1">
+                   <button
+                     onClick={() => setCardDetailTab('stats')}
+                     className={cn(
+                       "flex-1 py-1.5 text-center text-xs font-black uppercase transition-all rounded-t-lg border-b-2 cursor-pointer",
+                       cardDetailTab === 'stats' 
+                         ? "border-indigo-600 text-indigo-600 bg-indigo-50/50" 
+                         : "border-transparent text-slate-400 hover:text-slate-600"
+                     )}
+                   >
+                     {language === 'ko' ? '스탯 & 장비' : 'Stats & Gear'}
+                   </button>
+                   <button
+                     onClick={() => setCardDetailTab('skills')}
+                     className={cn(
+                       "flex-1 py-1.5 text-center text-xs font-black uppercase transition-all rounded-t-lg border-b-2 cursor-pointer",
+                       cardDetailTab === 'skills' 
+                         ? "border-indigo-600 text-indigo-600 bg-indigo-50/50" 
+                         : "border-transparent text-slate-400 hover:text-slate-600"
+                     )}
+                   >
+                     {language === 'ko' ? '스킬 & 노드' : 'Skills & Nodes'}
+                   </button>
+                   <button
+                     onClick={() => setCardDetailTab('lore')}
+                     className={cn(
+                       "flex-1 py-1.5 text-center text-xs font-black uppercase transition-all rounded-t-lg border-b-2 cursor-pointer",
+                       cardDetailTab === 'lore' 
+                         ? "border-indigo-600 text-indigo-600 bg-indigo-50/50" 
+                         : "border-transparent text-slate-400 hover:text-slate-600"
+                     )}
+                   >
+                     {language === 'ko' ? '스토리 & 아트' : 'Lore & Art'}
+                   </button>
+                 </div>
 
-                    {/* Character Lore */}
-                    {(() => {
-                      const dbCard = selectedCardForDetail.imageIndex !== undefined ? CARD_DATABASE[selectedCardForDetail.imageIndex] : null;
-                      const loreText = language === 'ko' ? dbCard?.lore_ko : dbCard?.lore_en;
-                      if (!loreText) return null;
-                      return (
-                        <div className="space-y-3">
+                 <div className="flex-1 overflow-y-auto space-y-6 pr-1 custom-scrollbar">
+                    {/* TAB 1: STATS, EQUIPMENT, PET, HERO CARE */}
+                    {cardDetailTab === 'stats' && (
+                      <div className="space-y-5">
+                        {/* Equipment */}
+                        <div className="space-y-3 pb-2">
                           <h4 className="text-xs font-black uppercase tracking-widest opacity-40 border-b border-slate-100 pb-1 flex items-center gap-1">
-                            <BookOpen size={12} /> {t('card_lore_title', language) || 'Card Lore'}
+                            <Package size={12} /> {t('equipment', language)}
                           </h4>
-                          <div className="p-4 bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl border border-amber-200/50 shadow-inner">
-                            <p className="text-[11px] leading-relaxed font-medium text-amber-950/80 italic">
-                              "{loreText}"
-                            </p>
+                          <div className="grid grid-cols-4 gap-2">
+                             {(['necklace', 'ring1', 'ring2', 'boots'] as const).map(slot => {
+                               const item = selectedCardForDetail.equipment?.[slot];
+                               return (
+                                 <div key={slot} className="flex flex-col items-center gap-1">
+                                    <div className={cn(
+                                      "w-12 h-12 rounded-xl flex items-center justify-center border transition-all",
+                                      item ? (
+                                        item.rarity === 'rare' ? "bg-yellow-50 border-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.2)]" :
+                                        item.rarity === 'magic' ? "bg-blue-50 border-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.2)]" :
+                                        "bg-white border-slate-200 shadow-sm"
+                                      ) : "bg-slate-50 border-slate-200 border-dashed border-2"
+                                    )}>
+                                      {slot === 'necklace' ? (
+                                        <Package size={20} className={item ? (item.rarity === 'rare' ? 'text-yellow-600' : item.rarity === 'magic' ? 'text-blue-600' : 'text-slate-800') : 'opacity-10'} />
+                                      ) : slot === 'boots' ? (
+                                        <Footprints size={20} className={item ? (item.rarity === 'rare' ? 'text-yellow-600' : item.rarity === 'magic' ? 'text-blue-600' : 'text-slate-800') : 'opacity-10'} />
+                                      ) : (
+                                        <Gem size={20} className={item ? (item.rarity === 'rare' ? 'text-yellow-600' : item.rarity === 'magic' ? 'text-blue-600' : 'text-slate-800') : 'opacity-10'} />
+                                      )}
+                                    </div>
+                                    <span className="text-[8px] font-bold uppercase text-slate-400">{slot}</span>
+                                 </div>
+                               )
+                             })}
                           </div>
                         </div>
-                      );
-                    })()}
 
-                    {/* Equipment */}
-                    <div className="space-y-3 pb-4">
-                      <h4 className="text-xs font-black uppercase tracking-widest opacity-40 border-b border-slate-100 pb-1 flex items-center gap-1">
-                        <Package size={12} /> {t('equipment', language)}
-                      </h4>
-                      <div className="grid grid-cols-3 gap-2">
-                         {(['necklace', 'ring1', 'ring2', 'boots'] as const).map(slot => {
-                           const item = selectedCardForDetail.equipment?.[slot];
-                           return (
-                             <div key={slot} className="flex flex-col items-center gap-1">
-                                <div className={cn(
-                                  "w-12 h-12 rounded-xl flex items-center justify-center border transition-all",
-                                  item ? (
-                                    item.rarity === 'rare' ? "bg-yellow-50 border-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.2)]" :
-                                    item.rarity === 'magic' ? "bg-blue-50 border-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.2)]" :
-                                    "bg-white border-slate-200 shadow-sm"
-                                  ) : "bg-slate-50 border-slate-200 border-dashed border-2"
-                                )}>
-                                  {slot === 'necklace' ? (
-                                    <Package size={20} className={item ? (item.rarity === 'rare' ? 'text-yellow-600' : item.rarity === 'magic' ? 'text-blue-600' : 'text-slate-800') : 'opacity-10'} />
-                                  ) : slot === 'boots' ? (
-                                    <Footprints size={20} className={item ? (item.rarity === 'rare' ? 'text-yellow-600' : item.rarity === 'magic' ? 'text-blue-600' : 'text-slate-800') : 'opacity-10'} />
-                                  ) : (
-                                    <Gem size={20} className={item ? (item.rarity === 'rare' ? 'text-yellow-600' : item.rarity === 'magic' ? 'text-blue-600' : 'text-slate-800') : 'opacity-10'} />
-                                  )}
-                                </div>
-                                <span className="text-[8px] font-bold uppercase text-slate-400">{slot}</span>
-                             </div>
-                           )
-                         })}
-                      </div>
-                    </div>
-
-                    <div className="space-y-3 rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4">
-                      <div className="flex items-center justify-between gap-3">
-                        <div>
-                          <h4 className="text-xs font-black uppercase tracking-widest text-emerald-700 flex items-center gap-2">
-                            <PawPrint size={12} />
-                            {t('monster_pet_section_title', language)}
-                          </h4>
-                          <p className="mt-1 text-[11px] font-semibold text-slate-600 leading-relaxed">
-                            {t('monster_pet_section_desc', language)}
-                          </p>
+                        {/* Monster Pet */}
+                        <div className="space-y-3 rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4">
+                          <div className="flex items-center justify-between gap-3">
+                            <div>
+                              <h4 className="text-xs font-black uppercase tracking-widest text-emerald-700 flex items-center gap-2">
+                                <PawPrint size={12} />
+                                {t('monster_pet_section_title', language)}
+                              </h4>
+                              <p className="mt-1 text-[11px] font-semibold text-slate-600 leading-relaxed">
+                                {t('monster_pet_section_desc', language)}
+                              </p>
+                            </div>
+                            {representativePetCardId ? (
+                              <MonsterPetBadge
+                                cardId={representativePetCardId}
+                                imageClassName="h-7 w-7"
+                                label={t('monster_pet_badge', language)}
+                              />
+                            ) : null}
+                          </div>
+                          <div className="flex flex-wrap items-center gap-2 text-[10px] font-bold">
+                            <span className={cn(
+                              'rounded-full border px-2.5 py-1 uppercase tracking-wider',
+                              isSelectedCardMonsterPetCandidate
+                                ? 'border-emerald-200 bg-white text-emerald-700'
+                                : 'border-slate-200 bg-white text-slate-500'
+                            )}>
+                              {isSelectedCardMonsterPetCandidate
+                                ? t(`monster_pet_candidate_${selectedMonsterPetGroup ?? 'monster'}`, language)
+                                : t('monster_pet_candidate_none', language)}
+                            </span>
+                            <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-slate-500">
+                              {representativeCardId
+                                ? t('monster_pet_hint_target_ready', language)
+                                : t('monster_pet_hint_profile_avatar', language)}
+                            </span>
+                          </div>
+                          <div className="rounded-xl border border-white/80 bg-white/90 p-3 text-[11px] font-semibold text-slate-600 leading-relaxed">
+                            {isSelectedCardPetEquipped
+                              ? t('monster_pet_target_ready', language, { pet: getFormattedCardName(selectedCardForDetail, language) })
+                              : isSelectedCardMonsterPetCandidate
+                                ? t('monster_pet_hint_eligible', language)
+                                : t('monster_pet_hint_ineligible', language)}
+                          </div>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <button
+                              type="button"
+                              onClick={handleSetMonsterPet}
+                              disabled={!isSelectedCardMonsterPetCandidate || !representativeCardId || !selectedCardPetId || representativeCardId === selectedCardPetId}
+                              className="flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-[11px] font-black uppercase tracking-wider text-white shadow-sm transition-all active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-300"
+                            >
+                              <PawPrint size={14} />
+                              {t('monster_pet_action_set', language)}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={handleClearMonsterPet}
+                              disabled={!representativePetCardId}
+                              className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-[11px] font-black uppercase tracking-wider text-slate-700 shadow-sm transition-all active:scale-95 disabled:cursor-not-allowed disabled:text-slate-350"
+                            >
+                              <X size={14} />
+                              {t('monster_pet_action_clear', language)}
+                            </button>
+                          </div>
                         </div>
-                        {representativePetCardId ? (
-                          <MonsterPetBadge
-                            cardId={representativePetCardId}
-                            imageClassName="h-7 w-7"
-                            label={t('monster_pet_badge', language)}
-                          />
-                        ) : null}
-                      </div>
-                      <div className="flex flex-wrap items-center gap-2 text-[10px] font-bold">
-                        <span className={cn(
-                          'rounded-full border px-2.5 py-1 uppercase tracking-wider',
-                          isSelectedCardMonsterPetCandidate
-                            ? 'border-emerald-200 bg-white text-emerald-700'
-                            : 'border-slate-200 bg-white text-slate-500'
-                        )}>
-                          {isSelectedCardMonsterPetCandidate
-                            ? t(`monster_pet_candidate_${selectedMonsterPetGroup ?? 'monster'}`, language)
-                            : t('monster_pet_candidate_none', language)}
-                        </span>
-                        <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-slate-500">
-                          {representativeCardId
-                            ? t('monster_pet_hint_target_ready', language)
-                            : t('monster_pet_hint_profile_avatar', language)}
-                        </span>
-                      </div>
-                      <div className="rounded-xl border border-white/80 bg-white/90 p-3 text-[11px] font-semibold text-slate-600 leading-relaxed">
-                        {isSelectedCardPetEquipped
-                          ? t('monster_pet_target_ready', language, { pet: getFormattedCardName(selectedCardForDetail, language) })
-                          : isSelectedCardMonsterPetCandidate
-                            ? t('monster_pet_hint_eligible', language)
-                            : t('monster_pet_hint_ineligible', language)}
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <button
-                          type="button"
-                          onClick={handleSetMonsterPet}
-                          disabled={!isSelectedCardMonsterPetCandidate || !representativeCardId || !selectedCardPetId || representativeCardId === selectedCardPetId}
-                          className="flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-[11px] font-black uppercase tracking-wider text-white shadow-sm transition-all active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-300"
-                        >
-                          <PawPrint size={14} />
-                          {t('monster_pet_action_set', language)}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={handleClearMonsterPet}
-                          disabled={!representativePetCardId}
-                          className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-[11px] font-black uppercase tracking-wider text-slate-700 shadow-sm transition-all active:scale-95 disabled:cursor-not-allowed disabled:text-slate-350"
-                        >
-                          <X size={14} />
-                          {t('monster_pet_action_clear', language)}
-                        </button>
-                      </div>
-                    </div>
 
-                    {selectedHeroCareState && selectedHeroCareRewardStatus && (
-                      <HeroCarePanel
-                        card={selectedCardForDetail}
-                        careState={selectedHeroCareState}
-                        rewardStatus={selectedHeroCareRewardStatus}
-                        language={language}
-                        lowSpecMode={lowSpecMode}
-                        onAction={handleHeroCareAction}
-                        onClaimReward={handleHeroCareRewardClaim}
-                      />
+                        {selectedHeroCareState && selectedHeroCareRewardStatus && (
+                          <HeroCarePanel
+                            card={selectedCardForDetail}
+                            careState={selectedHeroCareState}
+                            rewardStatus={selectedHeroCareRewardStatus}
+                            language={language}
+                            lowSpecMode={lowSpecMode}
+                            onAction={handleHeroCareAction}
+                            onClaimReward={handleHeroCareRewardClaim}
+                          />
+                        )}
+                      </div>
+                    )}
+
+                    {/* TAB 2: SKILLS & ABILITIES */}
+                    {cardDetailTab === 'skills' && (
+                      <div className="space-y-3">
+                         <h4 className="text-xs font-black uppercase tracking-widest opacity-40 border-b border-slate-100 pb-1 flex items-center gap-1">
+                           <Zap size={12} fill="currentColor" /> {t('skills', language)}
+                         </h4>
+                         <div className="space-y-2">
+                            {(!selectedCardForDetail.skills || selectedCardForDetail.skills.filter((s: any) => s.level > 0).length === 0) ? (
+                              <p className="text-[10px] font-bold opacity-30 italic">{t('no_skills_available', language) || 'No abilities discovered yet'}</p>
+                            ) : (
+                              selectedCardForDetail.skills.filter((s: any) => s.level > 0).map((skill: any) => {
+                                const baseSkill = INITIAL_SKILLS.find(s => s.id === skill.id) || skill;
+                                const Icon = iconMap[baseSkill.icon] || Zap;
+                                return (
+                                  <div key={skill.id} className="flex gap-3 p-3 bg-gray-50 rounded-xl border border-slate-100">
+                                     <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
+                                        <Icon size={16} />
+                                     </div>
+                                     <div className="min-w-0">
+                                        <div className="flex justify-between items-center mb-0.5">
+                                           <span className="text-[11px] font-black italic uppercase leading-none">{language === 'ko' ? baseSkill.name : baseSkill.name_en}</span>
+                                           <span className="text-[9px] font-black text-blue-600 bg-blue-50 px-1 rounded">Lv.{skill.level}</span>
+                                        </div>
+                                        <p className="text-[10px] font-bold opacity-50 leading-tight">
+                                          {language === 'ko' ? baseSkill.description : baseSkill.description_en}
+                                        </p>
+                                     </div>
+                                  </div>
+                                )
+                              })
+                            )}
+                         </div>
+                      </div>
+                    )}
+
+                    {/* TAB 3: LORE & ARTWORK */}
+                    {cardDetailTab === 'lore' && (
+                      <div className="space-y-4">
+                        {(() => {
+                          const dbCard = selectedCardForDetail.imageIndex !== undefined ? CARD_DATABASE[selectedCardForDetail.imageIndex] : null;
+                          const loreText = language === 'ko' ? dbCard?.lore_ko : dbCard?.lore_en;
+                          return (
+                            <div className="space-y-3">
+                              <h4 className="text-xs font-black uppercase tracking-widest opacity-40 border-b border-slate-100 pb-1 flex items-center gap-1">
+                                <BookOpen size={12} /> {t('card_lore_title', language) || 'Card Lore & Story'}
+                              </h4>
+                              {loreText ? (
+                                <div className="p-4 bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl border border-amber-200/50 shadow-inner">
+                                  <p className="text-[11px] leading-relaxed font-medium text-amber-950/80 italic whitespace-pre-line">
+                                    "{loreText}"
+                                  </p>
+                                </div>
+                              ) : (
+                                <p className="text-[10px] font-bold opacity-30 italic">No lore record found for this card.</p>
+                              )}
+                            </div>
+                          );
+                        })()}
+                      </div>
                     )}
                  </div>
 
