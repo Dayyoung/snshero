@@ -32,6 +32,9 @@ const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   };
 };
 
+const BUILD_VERSION = "v2026.08.09-20:51";
+const LAST_BUILD_TIME = "2026.08.09 20:51:22";
+
 interface HomeViewProps {
   playSfx: (url: string) => void;
   bgmStarted: boolean;
@@ -705,6 +708,22 @@ export const HomeView: React.FC<HomeViewProps> = ({
           )}
         </div>
       </section>
+
+      {/* ── Footer: Build Version & Last Build Time ── */}
+      <footer className="w-full mt-4 pt-4 border-t border-[rgba(15,0,0,0.12)] flex flex-col sm:flex-row items-center justify-between text-[11px] font-mono text-[#646262] gap-2 select-none">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="font-bold text-[#201d1d]">SNSHero Revolution</span>
+        </div>
+        <div className="flex items-center gap-2 flex-wrap justify-center">
+          <span className="bg-[#201d1d] text-[#fdfcfc] px-2 py-0.5 rounded-sm text-[10px] font-bold font-mono">
+            {BUILD_VERSION}
+          </span>
+          <span className="text-[#646262] text-[10px] font-mono">
+            ({language === 'ko' ? '마지막 빌드 시각: ' : 'Build Time: '}{LAST_BUILD_TIME})
+          </span>
+        </div>
+      </footer>
 
       {showPdf && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-sm p-0 md:p-6 animate-in fade-in duration-200">
