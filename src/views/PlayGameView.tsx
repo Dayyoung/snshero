@@ -355,11 +355,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   // 화면 전환 시(gameState 변경 시) 스크롤 위치를 0으로 리셋
   useEffect(() => {
     window.scrollTo(0, 0);
-    requestAnimationFrame(() => {
-      const scrollContainers = document.querySelectorAll('.overflow-y-auto');
-      scrollContainers.forEach(container => {
-        container.scrollTop = 0;
-      });
+    const scrollContainers = document.querySelectorAll('.overflow-y-auto');
+    scrollContainers.forEach(container => {
+      container.scrollTop = 0;
     });
   }, [gameState]);
 
@@ -4148,6 +4146,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     // Track stats for the placed card
     const myHighlights: number[] = [];
 
+    const flipDetails: { index: number; attacker: CardData; victim: CardData; myStat: number; oppStat: number; damageDiff: number }[] = [];
+
     const directions = [
       { r: -1, c: 0, m: 0, o: 2 },
       { r: 0, c: 1, m: 1, o: 3 },
@@ -4202,6 +4202,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             if (owner === 'player') myStat *= activeQteMultiplier;
             if (myStat > oppStat) {
               flippedIndices.push(ni);
+              flipDetails.push({ index: ni, attacker: placedCard, victim: neighbor, myStat, oppStat, damageDiff: myStat - oppStat });
               myHighlights.push(dir.m);
               if (!highlights[ni]) highlights[ni] = [];
               if (!highlights[ni].includes(dir.o)) highlights[ni].push(dir.o);
@@ -4252,13 +4253,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       addLog(t('log_combo_activated', language), 'capture');
     }
 
-    return { indices: Array.from(new Set(flippedIndices)), highlights, counterTargetOwner };
+    return { indices: Array.from(new Set(flippedIndices)), flipDetails, highlights, counterTargetOwner };
   };
 
   const triggerCardAbility = (boardState: (CardData | null)[], index: number) => {
     const card = boardState[index];
     if (!card || !card.ability) return;
 
+    const cardTitle = getFormattedCardName(card, language);
     let activationText = "";
 
     if (card.ability.type === 'OMNIBOOST') {
@@ -4268,9 +4270,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           triggerStatFX(idx, `+${card.ability!.value}`, true);
         }
       });
-      activationText = t('log_omniboost_activated', language, { value: card.ability.value }) || `Rally! Allies gained +${card.ability.value}`;;
+      activationText = language === 'ko'
+        ? `✨ [스킬 발동] [${cardTitle}]의 '전체 고양': 아군 카드 스탯 +${card.ability.value} 버프!`
+        : `✨ [SKILL] [${cardTitle}]'s 'Omniboost': All ally cards +${card.ability.value} stats!`;
     } else if (card.ability.type === 'TIME_WARP') {
-      activationText = t('log_timewarp_activated', language) || "Time Warp! Opponent's turn skipped!";
+      activationText = language === 'ko'
+        ? `✨ [스킬 발동] [${cardTitle}]의 '시간 왜곡': 상대방 다음 턴 스킵!`
+        : `✨ [SKILL] [${cardTitle}]'s 'Time Warp': Opponent's next turn skipped!`;
     }
 
     const row = Math.floor(index / 3);
@@ -4285,28 +4291,42 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         const neighbor = boardState[ni];
         if (!neighbor) return;
 
+        const neighborTitle = getFormattedCardName(neighbor, language);
+
         if (card.ability?.type === 'POWER_BOOST' && neighbor.owner === card.owner) {
           boardState[ni] = { ...neighbor, stats: neighbor.stats.map(s => s + card.ability!.value) as [number, number, number, number] };
           triggerStatFX(ni, `+${card.ability!.value}`, true);
-          activationText = t('log_power_boost_activated', language, { value: card.ability.value });
+          activationText = language === 'ko'
+            ? `✨ [스킬 발동] [${cardTitle}]의 '파워 증폭': [${neighborTitle}] 스탯 +${card.ability.value}`
+            : `✨ [SKILL] [${cardTitle}]'s 'Power Boost': [${neighborTitle}] +${card.ability.value} stats`;
         } else if (card.ability?.type === 'WEAKEN' && neighbor.owner !== card.owner) {
           if (neighbor.ability?.type === 'IMMUNITY') {
              // IMMUNITY blocks Weaken
-             addLog(t('log_immunity_blocked', language, { unit: neighbor.title_en || neighbor.title }) || `${neighbor.title_en || neighbor.title} resisted Weaken!`, 'info');
+             addLog(language === 'ko'
+               ? `🛡️ [스킬 방어] [${neighborTitle}]의 '면역': 약화 디버프 무효화!`
+               : `🛡️ [SKILL BLOCK] [${neighborTitle}]'s 'Immunity': Weaken resisted!`, 'info');
              return;
           }
           boardState[ni] = { ...neighbor, stats: neighbor.stats.map(s => Math.max(0, s - card.ability!.value)) as [number, number, number, number] };
           triggerStatFX(ni, `-${card.ability!.value}`, false);
-          activationText = t('log_weaken_activated', language, { value: card.ability.value });
+          activationText = language === 'ko'
+            ? `✨ [스킬 발동] [${cardTitle}]의 '약화 디버프': [${neighborTitle}] 스탯 -${card.ability.value}`
+            : `✨ [SKILL] [${cardTitle}]'s 'Weaken': [${neighborTitle}] -${card.ability.value} stats`;
         } else if (card.ability?.type === 'REINFORCE' && neighbor.owner === card.owner) {
           const currentSelf = boardState[index]!;
           boardState[index] = { ...currentSelf, stats: currentSelf.stats.map(s => s + card.ability!.value) as [number, number, number, number] };
           triggerStatFX(index, `+${card.ability!.value}`, true);
-          activationText = t('log_reinforce_activated', language, { value: card.ability.value });
+          activationText = language === 'ko'
+            ? `✨ [스킬 발동] [${cardTitle}]의 '자체 강화': 스탯 +${card.ability.value}`
+            : `✨ [SKILL] [${cardTitle}]'s 'Reinforce': Self stat +${card.ability.value}`;
         } else if (card.ability?.type === 'WALL') {
-          activationText = t('log_wall_activated', language);
+          activationText = language === 'ko'
+            ? `🛡️ [스킬 효과] [${cardTitle}]의 '철벽 방어': 물리 공격 차단 태세`
+            : `🛡️ [SKILL] [${cardTitle}]'s 'Wall': Block stance active`;
         } else if (card.ability?.type === 'PIERCE') {
-          activationText = t('log_pierce_activated', language);
+          activationText = language === 'ko'
+            ? `⚡ [스킬 효과] [${cardTitle}]의 '관통': 상대방 방어 태세 무시`
+            : `⚡ [SKILL] [${cardTitle}]'s 'Pierce': Ignores enemy shields`;
         }
       }
     });
@@ -4377,7 +4397,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     // Ability trigger BEFORE flips calculation (for things like WEAKEN/REINFORCE)
     triggerCardAbility(newBoard, index);
 
-    const { indices: flippedIndices, highlights, counterTargetOwner } = getFlips(
+    const { indices: flippedIndices, flipDetails, highlights, counterTargetOwner } = getFlips(
       newBoard,
       index,
       placedCard,
@@ -4397,16 +4417,34 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3'); // Capture/Flip Sound
       }, 150);
       
-      flippedIndices.forEach(ni => {
-        const capturedCard = newBoard[ni];
-        if (capturedCard) {
-          addLog(t('log_captured', language, { 
-            owner: placedCard.owner === 'player' ? t('you', language) : t('system_ai', language), 
-            unit: getFormattedCardName(capturedCard, language), 
-            sector: ni + 1 
-          }), 'capture');
-        }
-      });
+      if (flipDetails && flipDetails.length > 0) {
+        flipDetails.forEach(detail => {
+          const attackerOwner = placedCard.owner === 'player' ? (language === 'ko' ? '플레이어' : 'Player') : (language === 'ko' ? 'AI' : 'AI');
+          const attackerTitle = getFormattedCardName(detail.attacker, language);
+          const victimTitle = getFormattedCardName(detail.victim, language);
+          const pwrAtk = Math.round(detail.myStat);
+          const pwrDef = Math.round(detail.oppStat);
+          const diff = Math.round(detail.damageDiff);
+          const sec = detail.index + 1;
+
+          if (language === 'ko') {
+            addLog(`⚔️ [전투] ${attackerOwner}의 [${attackerTitle}](파워 ${pwrAtk})가 ${sec}번 구역 [${victimTitle}](파워 ${pwrDef}) 공격! (대미지 차이: +${diff}) → ${victimTitle} 캡처!`, 'capture');
+          } else {
+            addLog(`⚔️ [COMBAT] ${attackerOwner}'s [${attackerTitle}](PWR ${pwrAtk}) attacked Sector ${sec} [${victimTitle}](PWR ${pwrDef})! (Diff: +${diff}) → ${victimTitle} Captured!`, 'capture');
+          }
+        });
+      } else {
+        flippedIndices.forEach(ni => {
+          const capturedCard = newBoard[ni];
+          if (capturedCard) {
+            addLog(t('log_captured', language, { 
+              owner: placedCard.owner === 'player' ? t('you', language) : t('system_ai', language), 
+              unit: getFormattedCardName(capturedCard, language), 
+              sector: ni + 1 
+            }), 'capture');
+          }
+        });
+      }
 
       if (flippedIndices.length >= 2) {
         playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3'); // Critical capture sound
@@ -9806,14 +9844,22 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               }}
               className={cn(
-                "p-2 border rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 lg:hidden",
+                "px-3 py-2 border rounded-xl shadow-md cursor-pointer flex items-center gap-1.5 transition-all duration-200 active:scale-95",
                 showMobileLogs 
-                  ? "bg-indigo-650 border-indigo-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.4)]" 
-                  : "bg-slate-900/90 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800"
+                  ? "bg-amber-500/20 border-amber-500 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.3)]" 
+                  : "bg-slate-900/90 border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800"
               )}
-              title="Battle Log"
+              title={language === 'ko' ? '전투 로그' : 'Battle Log'}
             >
-              <Terminal size={16} />
+              <Terminal size={16} className="text-amber-400" />
+              <span className="font-bold text-[11px] uppercase tracking-wider hidden sm:inline">
+                {language === 'ko' ? '전투 로그' : 'Battle Log'}
+              </span>
+              {gameLogs.length > 0 && (
+                <span className="px-1.5 py-0.2 bg-amber-500/20 border border-amber-500/40 rounded-full text-[9px] font-black text-amber-300">
+                  {gameLogs.length}
+                </span>
+              )}
             </button>
           </div>
 
@@ -9943,40 +9989,107 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         )}
       </AnimatePresence>
       
-      {/* Mobile Logs Drawer */}
+      {/* Tactical Battle Log Modal / Panel */}
       <AnimatePresence>
         {showMobileLogs && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute top-20 left-4 right-4 bottom-24 z-[90] lg:hidden bg-slate-900/95 border border-slate-800 backdrop-blur-xl rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-4 flex flex-col pointer-events-auto overflow-hidden text-white"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[350] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 pointer-events-auto font-mono"
           >
-            <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-4 border-b border-slate-800 pb-2">
-              <Terminal size={14} /> TACTICAL_LOG
-            </div>
-            <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
-               <AnimatePresence initial={false}>
-                 {visibleGameLogs.map((log) => (
-                   <motion.div
-                     key={log.id}
-                     initial={{ opacity: 0, x: -20 }}
-                     animate={{ opacity: 1, x: 0 }}
-                     className={cn(
-                       "text-[10px] sm:text-xs leading-tight font-black uppercase tracking-tighter p-2 rounded-lg border-l-2 shadow-sm",
-                       log.type === 'capture' 
-                         ? "bg-red-950/40 border-red-500/80 text-red-200" 
-                         : log.type === 'system' 
-                           ? "bg-yellow-950/40 border-yellow-500/80 text-yellow-200" 
-                           : "bg-slate-950/40 border-slate-800 text-slate-300"
-                     )}
-                   >
-                     <span className="opacity-45 mr-2 text-[10px] font-mono">[{new Date(log.timestamp).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}]</span>
-                     {log.text}
-                   </motion.div>
-                 ))}
-               </AnimatePresence>
-            </div>
+            <motion.div
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              className="bg-slate-900/95 border border-slate-700/80 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.8)] max-w-2xl w-full h-[80vh] max-h-[600px] flex flex-col overflow-hidden text-white border-amber-500/30"
+            >
+              {/* Header */}
+              <div className="px-5 py-4 bg-slate-950/90 border-b border-slate-800 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-2xl text-amber-400">
+                    <Terminal size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-black text-sm tracking-wider uppercase text-slate-100 flex items-center gap-2">
+                      <span>{language === 'ko' ? '전투 상황 로그창' : 'TACTICAL BATTLE LOG'}</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-black border border-amber-500/30">
+                        {gameLogs.length} {language === 'ko' ? '건' : 'LOGS'}
+                      </span>
+                    </h3>
+                    <p className="text-[10px] text-slate-400 font-medium mt-0.5">
+                      {language === 'ko' ? '턴별 스킬 발동, 대미지 차이 및 카드 점령 상황 기록' : 'Turn-by-turn skill triggers, damage diffs, and card captures'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      setGameLogs([]);
+                      localStorage.removeItem('hero_game_logs');
+                    }}
+                    className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl text-[10px] font-bold uppercase transition-colors cursor-pointer"
+                  >
+                    {language === 'ko' ? '로그 초기화' : 'Clear'}
+                  </button>
+                  <button
+                    onClick={() => setShowMobileLogs(false)}
+                    className="p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Log List */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-2.5 custom-scrollbar bg-slate-950/40">
+                {gameLogs.length === 0 ? (
+                  <div className="h-full flex flex-col items-center justify-center text-slate-500 gap-2">
+                    <Activity size={32} className="opacity-40" />
+                    <span className="text-xs font-bold uppercase">
+                      {language === 'ko' ? '기록된 전투 로그가 없습니다.' : 'No battle logs recorded yet.'}
+                    </span>
+                  </div>
+                ) : (
+                  gameLogs.map((log) => (
+                    <div
+                      key={log.id}
+                      className={cn(
+                        "p-3 rounded-2xl border text-xs leading-relaxed font-semibold transition-all shadow-md flex items-start gap-2.5",
+                        log.type === 'capture' 
+                          ? "bg-gradient-to-r from-red-950/60 to-rose-950/40 border-red-500/60 text-red-100 shadow-[0_0_12px_rgba(239,68,68,0.15)]" 
+                          : log.type === 'system' 
+                            ? "bg-gradient-to-r from-amber-950/60 to-yellow-950/40 border-amber-500/60 text-amber-100 shadow-[0_0_12px_rgba(245,158,11,0.15)]" 
+                            : log.type === 'victory'
+                              ? "bg-gradient-to-r from-emerald-950/60 to-teal-950/40 border-emerald-500/60 text-emerald-100"
+                              : log.type === 'defeat'
+                                ? "bg-gradient-to-r from-purple-950/60 to-indigo-950/40 border-purple-500/60 text-purple-100"
+                                : "bg-slate-900/80 border-slate-800 text-slate-200"
+                      )}
+                    >
+                      <span className="text-[10px] font-mono opacity-50 shrink-0 pt-0.5">
+                        [{new Date(log.timestamp).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}]
+                      </span>
+                      <div className="flex-1 break-words">
+                        {log.text}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Footer */}
+              <div className="px-5 py-3 bg-slate-950 border-t border-slate-800 flex items-center justify-between text-[11px] font-bold text-slate-400">
+                <span>SNSHero Battle Engine v4.2</span>
+                <button
+                  onClick={() => setShowMobileLogs(false)}
+                  className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-black uppercase transition-all shadow-md cursor-pointer"
+                >
+                  {language === 'ko' ? '닫기' : 'Close'}
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

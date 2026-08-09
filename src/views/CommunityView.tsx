@@ -474,11 +474,9 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
   // 카테고리 또는 게시물이 변경될 때 스크롤 오프셋을 0으로 리셋
   useEffect(() => {
     window.scrollTo(0, 0);
-    requestAnimationFrame(() => {
-      const scrollContainers = document.querySelectorAll('.overflow-y-auto');
-      scrollContainers.forEach(container => {
-        container.scrollTop = 0;
-      });
+    const scrollContainers = document.querySelectorAll('.overflow-y-auto');
+    scrollContainers.forEach(container => {
+      container.scrollTop = 0;
     });
   }, [selectedCategory, selectedPost]);
 

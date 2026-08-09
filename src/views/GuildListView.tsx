@@ -72,11 +72,9 @@ export const GuildListView: React.FC<GuildListViewProps> = ({
   // 화면 마운트 시 스크롤 위치를 0으로 리셋
   useEffect(() => {
     window.scrollTo(0, 0);
-    requestAnimationFrame(() => {
-      const scrollContainers = document.querySelectorAll('.overflow-y-auto');
-      scrollContainers.forEach(container => {
-        container.scrollTop = 0;
-      });
+    const scrollContainers = document.querySelectorAll('.overflow-y-auto');
+    scrollContainers.forEach(container => {
+      container.scrollTop = 0;
     });
   }, []);
 
