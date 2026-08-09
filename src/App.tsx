@@ -599,7 +599,7 @@ function AppContent() {
   const [user, setUser] = useState<any | null>(() => getStoredGuestProfile());
   const [authInitialized, setAuthInitialized] = useState(false);
   const [authProgress, setAuthProgress] = useState(0);
-  const [targetProgress, setTargetProgress] = useState(0);
+  const [targetProgress, setTargetProgress] = useState(10);
   const loadStartTimeRef = useRef(Date.now());
 
   useEffect(() => {
@@ -607,23 +607,23 @@ function AppContent() {
     const updateProgress = () => {
       setAuthProgress((prev) => {
         if (prev < targetProgress) {
-          const step = Math.max(1, Math.ceil((targetProgress - prev) * 0.15));
+          const step = Math.max(2, Math.ceil((targetProgress - prev) * 0.25));
           const next = prev + step;
           return next >= targetProgress ? targetProgress : next;
         }
         return prev;
       });
-      timer = setTimeout(updateProgress, 30);
+      timer = setTimeout(updateProgress, 16);
     };
-    timer = setTimeout(updateProgress, 30);
+    timer = setTimeout(updateProgress, 16);
     return () => clearTimeout(timer);
   }, [targetProgress]);
 
   useEffect(() => {
     if (authProgress === 100) {
       const elapsed = Date.now() - loadStartTimeRef.current;
-      const minDisplayTime = 2000; // Minimum 2 seconds loading screen display time
-      const remainingTime = Math.max(300, minDisplayTime - elapsed);
+      const minDisplayTime = 100; // Fast loading: transition as soon as assets are ready
+      const remainingTime = Math.max(50, minDisplayTime - elapsed);
 
       const t = setTimeout(() => {
         setAuthInitialized(true);
@@ -5762,39 +5762,65 @@ function AppContent() {
   };
 
   if (!authInitialized) {
+    const stageMessage = authProgress < 25
+      ? (language === 'ko' ? '[01/04] 게임 엔진 및 세션 동기화 중...' : '[01/04] Initializing engine & session...')
+      : authProgress < 55
+      ? (language === 'ko' ? '[02/04] 시즌 데이터 & 카드 정보 로드 중...' : '[02/04] Loading season data & cards...')
+      : authProgress < 85
+      ? (language === 'ko' ? '[03/04] 사용자 프로필 & 클라우드 상태 확인 중...' : '[03/04] Checking user profile & cloud state...')
+      : authProgress < 100
+      ? (language === 'ko' ? '[04/04] 로비 인터페이스 & 리소스 세팅 중...' : '[04/04] Finalizing UI & assets...')
+      : (language === 'ko' ? '[100%] 준비 완료! 게임 화면으로 진입합니다.' : '[100%] Game Ready! Entering game...');
+
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-8 text-center font-sans">
-        <div className="w-12 h-12 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin mb-5 shadow-sm" />
-        <h1 className="text-lg font-bold text-slate-800 mb-1 tracking-tight">{t('syncing_identity', language)}</h1>
-        <p className="text-xs text-slate-400 mb-2">{t('connecting_database', language)}</p>
-        
-        {/* 진행률(%) 및 게이지바 */}
-        <div className="w-64 bg-slate-200 h-2.5 rounded-full overflow-hidden mb-2 shadow-inner">
-          <div 
-            className="bg-indigo-600 h-full rounded-full transition-all duration-300" 
-            style={{ width: `${authProgress}%` }}
-          />
-        </div>
-        <p className="text-sm font-black text-indigo-600 mb-6 font-mono">{authProgress}%</p>
-        
-        <div className="mt-2 flex flex-col items-center gap-3">
-          <p className="text-[11px] text-slate-400 max-w-xs leading-relaxed">
-            {t('session_corrupted_notice', language)}
+      <div className="fixed inset-0 z-[999999] bg-[#fdfcfc] text-[#201d1d] font-mono flex flex-col items-center justify-center p-6 text-center select-none">
+        <div className="w-full max-w-sm bg-white border border-[#201d1d]/15 rounded-sm p-6 sm:p-8 shadow-sm">
+          {/* Header Badge */}
+          <div className="inline-block text-[11px] font-bold tracking-widest uppercase bg-[#201d1d] text-[#fdfcfc] px-2.5 py-1 rounded-sm mb-4">
+            [FAST LAUNCH]
+          </div>
+          
+          <h1 className="text-base sm:text-lg font-black tracking-tight text-[#201d1d] mb-1">
+            SNSHERO REVOLUTION
+          </h1>
+          <p className="text-xs text-[#201d1d]/60 mb-6 font-sans">
+            {language === 'ko' ? '원클릭 AI 카드 게임 시스템' : 'One-Click AI Card Game System'}
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-2.5">
-            <button
-              onClick={() => window.location.reload()}
-              className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-md transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
-            >
-              <RotateCw size={14} className="animate-spin-slow" />
-              {language === 'ko' ? '🔄 강제 새로고침' : '🔄 Force Refresh'}
-            </button>
-            <button
-              onClick={() => window.location.href = '/logout'}
-              className="px-4 py-2.5 bg-white text-slate-700 hover:text-rose-600 text-xs font-semibold rounded-xl border border-slate-200 shadow-sm hover:bg-slate-50 transition-all cursor-pointer"
-            >
-              {t('force_reset_session', language)}
-            </button>
+
+          {/* Progress Bar Container */}
+          <div className="w-full bg-[#f0eded] h-3 rounded-sm border border-[#201d1d]/12 overflow-hidden mb-3 relative">
+            <div 
+              className="bg-[#201d1d] h-full rounded-none transition-all duration-150 ease-out" 
+              style={{ width: `${Math.max(5, authProgress)}%` }}
+            />
+          </div>
+
+          {/* Progress Percent & Stage text */}
+          <div className="flex items-center justify-between text-xs font-bold text-[#201d1d] mb-4">
+            <span className="text-[11px] text-[#201d1d]/70 font-mono tracking-tight">{stageMessage}</span>
+            <span className="font-mono font-black text-sm">{authProgress}%</span>
+          </div>
+
+          {/* Notice & Force Reset */}
+          <div className="mt-4 pt-4 border-t border-[#201d1d]/10 flex flex-col items-center gap-2">
+            <p className="text-[10px] text-[#201d1d]/50 leading-relaxed max-w-xs">
+              {t('session_corrupted_notice', language)}
+            </p>
+            <div className="flex items-center justify-center gap-2 mt-1">
+              <button
+                onClick={() => window.location.reload()}
+                className="px-3 py-1.5 bg-[#201d1d] hover:bg-black text-[#fdfcfc] text-[11px] font-bold rounded-sm transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
+              >
+                <RotateCw size={12} className="animate-spin-slow" />
+                {language === 'ko' ? '새로고침' : 'Refresh'}
+              </button>
+              <button
+                onClick={() => window.location.href = '/logout'}
+                className="px-3 py-1.5 bg-white text-[#201d1d] hover:bg-[#f0eded] text-[11px] font-bold rounded-sm border border-[#201d1d]/20 transition-all cursor-pointer"
+              >
+                {t('force_reset_session', language)}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -6210,11 +6236,13 @@ function AppContent() {
               >
                 <Suspense
                   fallback={
-                    <div className="flex min-h-[50vh] flex-1 items-center justify-center px-6 text-center font-sans">
-                      <div className="flex flex-col items-center gap-3 text-slate-500">
-                        <div className="h-9 w-9 animate-spin rounded-full border-2 border-slate-200 border-t-slate-900" />
-                        <span className="text-xs font-bold uppercase tracking-widest">
-                          {t('loading', language)}
+                    <div className="flex min-h-[40vh] flex-1 items-center justify-center p-6 text-center font-mono">
+                      <div className="flex flex-col items-center gap-2.5 bg-white/80 border border-[#201d1d]/12 px-6 py-5 rounded-sm shadow-xs max-w-xs w-full">
+                        <div className="w-full bg-[#f0eded] h-2 rounded-none border border-[#201d1d]/10 overflow-hidden relative">
+                          <div className="bg-[#201d1d] h-full w-2/3 animate-pulse" />
+                        </div>
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#201d1d]">
+                          [{t('loading', language)}]
                         </span>
                       </div>
                     </div>
@@ -6238,12 +6266,7 @@ function AppContent() {
                 setView(target);
                 setIsChatOpen(false);
               }} 
-               setIsAutoBattle={(val) => {
-                // Prevent forcing auto-battle ON for users who have completed the tutorial
-                const isTutorialDone = getSeasonItem('hero_tutorial_completed', currentSeason) === 'true';
-                if (isTutorialDone && val === true) return;
-                setIsAutoBattle(val);
-              }}
+               setIsAutoBattle={(val) => setIsAutoBattle(val)}
               playSfx={playSfx} 
               language={language}
               onRandomPlay={() => {

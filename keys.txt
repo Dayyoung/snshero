@@ -1,0 +1,347 @@
+src/components/CardTapGame.tsx:390:                key={i}
+src/components/CardTapGame.tsx:436:                key={i}
+src/components/CardBatchLevelUpModal.tsx:160:                    key={matCard.id}
+src/components/admin/ContentCalendarPanel.tsx:291:                key={i}
+src/components/admin/ContentCalendarPanel.tsx:349:                <div key={entry.id} className="flex items-center justify-between bg-slate-900/50 p-3 rounded-xl border border-slate-800/50">
+src/components/admin/ContentCalendarPanel.tsx:377:                key={w.week}
+src/components/admin/ContentCalendarPanel.tsx:414:                  key={entry.id}
+src/components/admin/ContentCalendarPanel.tsx:459:                        <span key={ch} className="text-[8px] px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 font-bold uppercase">
+src/components/admin/ContentCalendarPanel.tsx:488:                              <span key={id} className="px-2 py-0.5 bg-indigo-500/10 border border-indigo-500/20 rounded-lg text-[9px] font-bold text-indigo-400">
+src/components/admin/ContentCalendarPanel.tsx:518:                              <div key={i} className="flex items-center gap-2 text-[10px]">
+src/components/admin/AdminAnalyticsDashboard.tsx:121:            <g key={frac}>
+src/components/admin/AdminAnalyticsDashboard.tsx:137:            <g key={point.date}>
+src/components/admin/AdminAnalyticsDashboard.tsx:235:            <div key={step.label}>
+src/components/admin/AdminAnalyticsDashboard.tsx:302:            key={preset.days}
+src/components/admin/ScaleupGateBoard.tsx:125:                <div key={m.key} className="flex flex-col gap-1">
+src/components/admin/ScaleupGateBoard.tsx:198:                <div key={i} className="flex items-center gap-2 text-[10px] text-slate-500">
+src/components/admin/ScaleupGateBoard.tsx:259:              key={st}
+src/components/admin/ScaleupGateBoard.tsx:300:            key={track.id}
+src/components/StoryStageSelectModal.tsx:150:                      key={item.stars}
+src/components/StoryStageSelectModal.tsx:184:                    key={ep}
+src/components/CardItem.tsx:831:              key={i} 
+src/components/rpg/KadanNpcDialog.tsx:187:              key={`standing-portrait-${currentLine.cardId}-${lineIndex}`}
+src/components/rpg/KadanNpcDialog.tsx:228:                      key={`${line.speaker}-${index}`}
+src/components/rpg/KadanBattleGate.tsx:340:                  key={card.id || idx}
+src/components/rpg/KadanBattleGate.tsx:400:                  key={state.turn}
+src/components/rpg/KadanBattleGate.tsx:463:                      key={idx}
+src/components/rpg/KadanBattleGate.tsx:529:                    key={card.id || idx}
+src/components/rpg/KadanBattleGate.tsx:617:                    <p key={`${line}-${index}`} className="rounded-xl bg-white/5 border border-white/10 p-4 text-xs font-semibold leading-relaxed text-slate-350">
+src/components/rpg/KadanWorldMap.tsx:112:              key={key}
+src/components/Slide2048Game.tsx:511:              <div key={i} className="rounded-xl bg-slate-800/40" />
+src/components/Slide2048Game.tsx:527:                    <div key={`${r}-${c}`} className="relative">
+src/components/CardSorceryGame.tsx:399:              key={i}
+src/components/CardSorceryGame.tsx:563:                    key={i}
+src/components/CardSlotGame.tsx:493:                        key={`${r}-${c}`}
+src/components/CardSlotGame.tsx:543:                        key={i}
+src/components/TestingDashboard.tsx:227:            key={tab.id}
+src/components/TestingDashboard.tsx:245:                key={test.id}
+src/components/TestingDashboard.tsx:332:                        <div key={idx} className="opacity-80 flex gap-2">
+src/components/TestingDashboard.tsx:350:                   <div key={i} className="flex items-center justify-between text-[11px] text-red-400 border-b border-white/5 pb-2">
+src/components/TestingDashboard.tsx:368:              <div key={i} className={cn(
+src/components/PatchNoteList.tsx:96:                  key={cat}
+src/components/PatchNoteList.tsx:123:                key={week.id}
+src/components/PatchNoteList.tsx:147:                          key={cat}
+src/components/ArDeckViewer.tsx:393:                    <a-entity key={card.id} position={`${pos.x} ${pos.y} ${pos.z}`}>
+src/components/MatchHistoryModal.tsx:247:                    key={item.id || idx}
+src/components/MatchHistoryModal.tsx:379:                                      key={`my-${cIdx}`}
+src/components/MatchHistoryModal.tsx:438:                                      key={`opp-${cIdx}`}
+src/components/LuckyRoulette.tsx:260:                    key={p.id}
+src/components/LuckyRoulette.tsx:284:                  key={i}
+src/components/LuckyRoulette.tsx:355:                <div key={p.id} className="flex items-center justify-between text-[9px] font-bold">
+src/components/CardSlidePuzzleGame.tsx:357:                key={idx}
+src/components/BgmJukeboxModal.tsx:67:                  key={track.id}
+src/components/CardThumbnailDebugGrid.tsx:81:              key={s}
+src/components/CardThumbnailDebugGrid.tsx:250:              key={cardId}
+src/components/ArCardViewer.tsx:502:                  key={card.id}
+src/components/PaymentMethodSelector.tsx:99:            key={type}
+src/components/PaymentMethodSelector.tsx:279:          key={notice.key}
+src/components/PaymentMethodSelector.tsx:377:          key={activeTab}
+src/components/PaymentMethodSelector.tsx:392:              <React.Fragment key={gateway.id}>
+src/components/BreakoutGame.tsx:476:          <Heart key={i} size={16} className={i < hudLives ? 'text-rose-500 fill-rose-500' : 'text-slate-600'} />
+src/components/SimulationOverlay.tsx:479:                  key={log + i}
+src/components/DailyMissions.tsx:157:              key={mission.id}
+src/components/ProbabilityModal.tsx:86:                    key={packRarity}
+src/components/ProbabilityModal.tsx:130:                      key={row.rarity}
+src/components/ProbabilityModal.tsx:172:                      key={group.rarity}
+src/components/ProbabilityModal.tsx:186:                              key={card.id}
+src/components/GuildRaidPanel.tsx:379:                  key={contrib.uid}
+src/components/BattleResultPanel.tsx:139:                    key={item.card.id || `lvl-${idx}`}
+src/components/BattleResultPanel.tsx:193:                      <div key={item.card.id || `card-prog-${idx}`} className="bg-slate-950/60 border border-slate-800 rounded p-2 text-[10px]">
+src/components/DefenseGame.tsx:480:                key={`lane-line-${i}`} 
+src/components/DefenseGame.tsx:497:              key={p.id}
+src/components/DefenseGame.tsx:522:                key={monster.id}
+src/components/DefenseGame.tsx:589:                key={`ally-lane-${ally.lane}`}
+src/components/DefenseGame.tsx:718:                key={`heart-${idx}`} 
+src/components/InBattleEmoteModal.tsx:74:                key={emote.id}
+src/components/BeginnerRoadmap.tsx:229:                key={step.id}
+src/components/CardSkeleton.tsx:16:          key={idx}
+src/components/ClawMachine.tsx:366:                      key={caughtPrize.id}
+src/components/ClawMachine.tsx:397:                  key={prize.id}
+src/components/RankRewardsModal.tsx:123:                key={idx}
+src/components/ChallengeEventSection.tsx:190:              key={challenge.id}
+src/components/ChallengeEventSection.tsx:398:                            key={entry.id}
+src/components/CardFlipGame.tsx:243:              key={tile.id}
+src/components/WikiCardDetailModal.tsx:206:        key={`${relation}-${card.id}`}
+src/components/WikiCardDetailModal.tsx:324:                  key={tabKey}
+src/components/WikiCardDetailModal.tsx:488:                      <span key={tag} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.24em] text-slate-600">
+src/components/WikiCardDetailModal.tsx:509:                            key={product.id}
+src/components/WikiCardDetailModal.tsx:556:                <div key={entry.title} className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+src/components/WikiCardDetailModal.tsx:790:                    <span key={tag} className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-[0.24em] text-slate-600">
+src/components/PatchNoteDetail.tsx:120:              key={cat}
+src/components/PatchNoteDetail.tsx:158:                      key={entry.id}
+src/components/MailboxModal.tsx:243:                    key={item.id}
+src/components/FriendBattlePanel.tsx:284:                key={friend.uid}
+src/components/FriendBattlePanel.tsx:303:                <div key={request.id} className="bg-white border border-amber-200/70 rounded-xl p-4 mb-2 shadow-sm">
+src/components/FriendBattlePanel.tsx:342:                <div key={request.id} className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-2">
+src/components/FriendBattlePanel.tsx:361:                <div key={request.id} className="bg-white border border-slate-200 rounded-xl p-4 mb-2">
+src/components/FriendBattlePanel.tsx:410:              <div key={suggestion.uid} className="bg-white border border-slate-200/70 rounded-xl p-4 flex items-center justify-between shadow-sm">
+src/components/MainLobbyBannerCarousel.tsx:119:          key={currentBanner.id}
+src/components/MainLobbyBannerCarousel.tsx:164:                  key={idx}
+src/components/CardHeistGame.tsx:461:                key={`${row}-${col}`}
+src/components/CompanionMiniView.tsx:91:                <div key={skill.id} className="relative group/skill">
+src/components/MemoryMatchGame.tsx:331:              key={tile.id}
+src/components/HeroCarePanel.tsx:127:          <div key={stat.key} className="rounded-2xl border border-white/70 bg-white/85 p-3 shadow-xs">
+src/components/HeroCarePanel.tsx:167:                  key={`${entry.action}-${entry.createdAt}`}
+src/components/HeroCarePanel.tsx:181:            key={action}
+src/components/HeroCarePanel.tsx:248:                  key={cosmeticKey}
+src/components/DeckUpgradeModal.tsx:141:                key={idx}
+src/components/Navbar.tsx:59:            key={item.id}
+src/components/SkinSelector.tsx:111:                key={skin.skinKey}
+src/components/GoogleSheetsSyncModal.tsx:448:                    <tr key={rIdx} className="border-b border-slate-200 hover:bg-slate-50">
+src/components/GoogleSheetsSyncModal.tsx:450:                        <td key={cIdx} className="p-1 border-r border-slate-200 truncate max-w-[100px]">
+src/components/CardDisassembleModal.tsx:158:                  key={r}
+src/components/CardDisassembleModal.tsx:211:                      key={idStr}
+src/components/StoryWorldMapModal.tsx:144:                  key={actInfo.act}
+src/components/StoryWorldMapModal.tsx:188:                            key={step}
+src/components/CardRushGame.tsx:577:                    key={`${rowIndex}-${colIndex}`}
+src/components/CardRushGame.tsx:677:                  <div key={cardId} className="aspect-square rounded-xl overflow-hidden border border-white/10 bg-slate-950/40">
+src/components/CharacterRelationshipMap.tsx:147:                key={`ally-${card.id}`}
+src/components/CharacterRelationshipMap.tsx:226:                key={`rival-${card.id}`}
+src/components/CharacterRelationshipMap.tsx:250:              key={`related-${card.id}`}
+src/components/CortanaCommandButton.tsx:333:                    key={command.key}
+src/components/NotificationCenterModal.tsx:185:                  key={item.id}
+src/components/ShareTemplateCard.tsx:305:              key={key}
+src/components/ShareTemplateCard.tsx:545:              <div key={card.id || i} className="flex flex-col items-center gap-0.5">
+src/components/SnakeBattleGame.tsx:341:      key={`${segment.x}-${segment.y}-${segment.cardId}-${idx}`}
+src/components/SnakeBattleGame.tsx:527:              {aiSnakes.map(ai => <div key={ai.id} className="flex justify-between"><span>{ai.name}</span><span>{ai.segments.length}</span></div>)}
+src/components/SnakeBattleGame.tsx:528:              {(Object.values(peers) as PeerSnake[]).map(peer => <div key={peer.id} className="flex justify-between text-emerald-300"><span>{peer.name}</span><span>{peer.segments.length}</span></div>)}
+src/components/CardCombineModal.tsx:327:                    key={slotIdx}
+src/components/CardCombineModal.tsx:385:                      key={item.id}
+src/components/GachaRevealSequence.tsx:282:      key="shop-gacha-reveal-sequence"
+src/components/GachaRevealSequence.tsx:399:                  key="gacha-sealed-stage"
+src/components/GachaRevealSequence.tsx:453:                  key="gacha-tearing-stage"
+src/components/GachaRevealSequence.tsx:475:                <motion.div key="gacha-spread-stage" {...stageMotion} className="my-auto space-y-6 z-10 py-2">
+src/components/GachaRevealSequence.tsx:484:                        <div key={card.id ?? `${card.imageIndex}-${index}`} className="flex flex-col items-center gap-2">
+src/components/GachaRevealSequence.tsx:645:                  <div key={`${packRarity}-${rate.rarity}`} className="flex items-center justify-between rounded-xl border border-white/8 bg-slate-950/60 px-3 py-2 text-xs">
+src/views/ProfileView.tsx:262:                  key={cardId}
+src/views/ProfileView.tsx:320:                  key={titleOption.key}
+src/views/ProfileView.tsx:354:                  key={emoticon.key}
+src/views/ProfileView.tsx:391:                  key={badgeOption.key}
+src/views/CompanionView.tsx:233:            key={idx}
+src/views/CompanionView.tsx:254:              key={isInteracting || growth}
+src/views/CompanionView.tsx:278:                    key={fx.id}
+src/views/CompanionView.tsx:441:                        <div key={slot} className="flex flex-col items-center gap-1.5">
+src/views/CompanionView.tsx:471:                        <div key={item.id} className={cn(
+src/views/CompanionView.tsx:633:                      key={i}
+src/views/SeasonHubView.tsx:358:              key={card.id}
+src/views/SeasonHubView.tsx:420:              key={week.weekNumber}
+src/views/SeasonHubView.tsx:528:              key={mission.id}
+src/views/SeasonHubView.tsx:604:                key={mission.id}
+src/views/SeasonHubView.tsx:720:              key={tier.tier}
+src/views/SeasonHubView.tsx:909:              key={tab}
+src/views/SeasonHubView.tsx:956:                      key={cardId}
+src/views/WikiCardView.tsx:571:                <option key={f} value={f}>
+src/views/WikiCardView.tsx:602:                key={card.id} 
+src/views/WikiCardView.tsx:639:                      <div key={dir} className="flex flex-col items-center">
+src/views/NovelView.tsx:473:                key={size}
+src/views/NovelView.tsx:541:                  key={epNum}
+src/views/NovelView.tsx:609:                        key={char.cardId}
+src/views/NovelView.tsx:725:                    <p key={sc.sceneNumber} className="border-l-2 border-amber-400 pl-3">
+src/views/NovelView.tsx:743:                    <div key={sc.sceneNumber} className="border border-stone-200 p-4 rounded-sm bg-stone-50/50 hover:border-amber-400 transition-colors">
+src/views/NovelView.tsx:777:                    key={index}
+src/views/CardMarketplaceView.tsx:544:                      key={filter}
+src/views/CardMarketplaceView.tsx:559:                      key={filter}
+src/views/CardMarketplaceView.tsx:591:                    <div key={listing.id} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+src/views/CardMarketplaceView.tsx:636:                  <option key={entry.cardId} value={entry.cardId}>
+src/views/CardMarketplaceView.tsx:679:                <div key={listing.id} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+src/views/CardMarketplaceView.tsx:720:                <div key={offer.id} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+src/views/CardMarketplaceView.tsx:791:                      key={i}
+src/views/EventView.tsx:471:                  key={link.id}
+src/views/KadanRpgView.tsx:511:                  <div key={`${line.name}-${index}`} className="rounded-lg bg-white p-3 shadow-sm">
+src/views/CommunityView.tsx:1004:                  key={event.id}
+src/views/CommunityView.tsx:1062:                              key={opt.id}
+src/views/CommunityView.tsx:1161:                key={mode}
+src/views/CommunityView.tsx:1385:                  <div key={card.id || idx} className="w-[100px] sm:w-[125px] aspect-[3/4] flex flex-col items-center gap-1 shadow-lg rounded-lg hover:scale-[1.02] transition-all">
+src/views/CommunityView.tsx:1459:                              key={dotIdx}
+src/views/CommunityView.tsx:1606:                  <div key={comment.id} className="flex flex-col gap-2">
+src/views/CommunityView.tsx:1691:                          <div key={reply.id} className="flex gap-2.5 items-start text-[11px]">
+src/views/CommunityView.tsx:1950:                    key={cat.id}
+src/views/CommunityView.tsx:2042:                    key={post.id}
+src/views/CommunityView.tsx:2055:                          <div key={card.id || idx} className="w-[18%] max-w-[55px] aspect-[3/4] flex items-center justify-center scale-95 shadow-sm rounded">
+src/views/CommunityView.tsx:2305:                key={channel.id}
+src/views/CommunityView.tsx:2429:                      <option key={flair} value={flair}>
+src/views/CommunityView.tsx:2481:                      <div key={index} className="aspect-square border border-slate-150 rounded-xl overflow-hidden relative bg-slate-950 flex items-center justify-center">
+src/views/CommunityView.tsx:2632:                      key={reason}
+src/views/WikiTipView.tsx:262:                  key={chapter.id}
+src/views/WikiTipView.tsx:274:                      <div key={key} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+src/views/WikiTipView.tsx:291:                          key={`${chapter.id}-${link.labelKey}`}
+src/views/ShareView.tsx:310:              <div key={card.id} className="w-full flex flex-col items-center">
+src/views/ShareView.tsx:321:                key={type}
+src/views/PredictionMarketView.tsx:426:                key={tab.id}
+src/views/PredictionMarketView.tsx:461:                  key={market.id}
+src/views/PredictionMarketView.tsx:551:                    key={bet.betId}
+src/views/PredictionMarketView.tsx:767:                        key={val}
+src/views/PredictionMarketView.tsx:887:                        <div key={competitor.id || idx} className={cn("flex flex-col items-center text-center gap-2", idx === 0 ? "order-1" : "order-3")}>
+src/views/PredictionMarketView.tsx:907:                        key={tab}
+src/views/PredictionMarketView.tsx:942:                              <span key={key} className="text-[10px] font-bold px-2 py-1 rounded-lg bg-slate-800 text-slate-300 border border-white/5">
+src/views/PredictionMarketView.tsx:955:                            <div key={team.team?.id || idx} className="bg-slate-900 border border-white/10 rounded-2xl p-4">
+src/views/PredictionMarketView.tsx:959:                                  <div key={stat.name || stat.label} className="bg-slate-950 rounded-xl p-2 border border-white/5">
+src/views/PredictionMarketView.tsx:977:                            <div key={play.id || idx} className="bg-slate-900 border border-white/10 rounded-2xl p-3 flex gap-3">
+src/views/PredictionMarketView.tsx:1039:                      <div key={bet.betId} className="bg-slate-50 border border-slate-100 rounded-2xl p-3.5 space-y-2">
+src/views/GuildListView.tsx:250:                    if (idx >= top3.length) return <div key={idx} className="flex-1" />;
+src/views/GuildListView.tsx:255:                        key={g.id}
+src/views/GuildListView.tsx:289:                        key={g.id}
+src/views/GuildListView.tsx:351:                      key={guild.id}
+src/views/GuildListView.tsx:450:                      key={mark}
+src/views/GuildListView.tsx:471:                      <option key={opt.code} value={opt.code}>
+src/views/WikiSkillView.tsx:100:                key={skill.id}
+src/views/HomeView.tsx:266:                  key={isDatabaseId ? id : (item as CardData).id}
+src/views/HomeView.tsx:283:                          <div key={dir} className="flex flex-col items-center rounded bg-slate-50 px-0.5 py-0.5 ring-1 ring-slate-200">
+src/views/HomeView.tsx:297:                          key={slot}
+src/views/HomeView.tsx:313:                          key={baseSkill.id}
+src/views/StockMarketView.tsx:407:                    key={card.id}
+src/views/StockMarketView.tsx:514:                            key={tf}
+src/views/StockMarketView.tsx:575:                      key={m}
+src/views/GuildDetailView.tsx:308:              <div key={member.uid} className="py-3.5 flex items-center justify-between">
+src/views/GuildDetailView.tsx:356:                    key={amt}
+src/views/GuildDetailView.tsx:497:                    <div key={idx}>{line}</div>
+src/views/BoostView.tsx:145:              <div key={idx} className="flex items-center justify-between py-3 px-4 rounded-xl hover:bg-slate-50 transition-colors">
+src/views/MyDeckView.tsx:172:              <div key={dir} className="flex flex-col items-center rounded bg-slate-50 px-0.5 py-0.5 ring-1 ring-slate-200">
+src/views/MyDeckView.tsx:185:            key={slot}
+src/views/MyDeckView.tsx:204:            <div key={baseSkill.id} className="relative group/skill">
+src/views/MyDeckView.tsx:922:              key={presetNum}
+src/views/MyDeckView.tsx:1016:                  key={card.id}
+src/views/MyDeckView.tsx:1314:                    key={slot}
+src/views/MyDeckView.tsx:1357:                        <span key={i} className={cn(
+src/views/MyDeckView.tsx:1436:                                    key={group.ids[0]}
+src/views/MyDeckView.tsx:1551:                        key={opt.id}
+src/views/MyDeckView.tsx:1607:                        key={chip.id}
+src/views/MyDeckView.tsx:1630:                      <div key={idx} className={cn("flex flex-col items-center gap-1 transition-all group/card", !isOwned && "opacity-20 grayscale")}>
+src/views/MyDeckView.tsx:1773:                          <div key={idx} className={cn(
+src/views/MyDeckView.tsx:1896:                        <div key={i} className="flex justify-between items-center text-xs p-2.5 bg-gray-50 border border-gray-200 rounded-lg shadow-2xs">
+src/views/MyDeckView.tsx:1969:                  <div key={idx} className="flex justify-between items-center text-sm p-3 bg-slate-50 border border-slate-100 rounded-xl shadow-sm">
+src/views/MyDeckView.tsx:2194:                                 <div key={slot} className="flex flex-col items-center gap-1">
+src/views/MyDeckView.tsx:2312:                                  <div key={skill.id} className="flex gap-3 p-3 bg-gray-50 rounded-xl border border-slate-100">
+src/views/MyDeckView.tsx:2489:                    key={cat}
+src/views/MyDeckView.tsx:2509:                      key={achievement.id}
+src/views/PlayGameView.tsx:6441:                        <div key={idx} className="w-8 h-8 border border-white/20 bg-slate-800 rounded flex items-center justify-center text-[10px] font-black uppercase text-white">
+src/views/PlayGameView.tsx:6699:                        key={item.id}
+src/views/PlayGameView.tsx:6742:                              key={pop.id}
+src/views/PlayGameView.tsx:6785:                        key={item.id}
+src/views/PlayGameView.tsx:6828:                              key={pop.id}
+src/views/PlayGameView.tsx:7014:                  <div key={`dungeon-lobby-grid-${i}`} className="border border-gray-800" />
+src/views/PlayGameView.tsx:7023:                  key={char.id}
+src/views/PlayGameView.tsx:7294:                key={monster.id}
+src/views/PlayGameView.tsx:7487:              <BossCardItem key={boss.id} boss={boss} />
+src/views/PlayGameView.tsx:7578:                key={`story-narration-${storyAct}-${storyStep}`}
+src/views/PlayGameView.tsx:7642:                key={`story-taunt-${storyAct}-${storyStep}`}
+src/views/PlayGameView.tsx:7932:                key={rIdx}
+src/views/PlayGameView.tsx:7984:                  key={roundIdx} 
+src/views/PlayGameView.tsx:8014:                          key={`match-${roundIdx}-${idx}`}
+src/views/PlayGameView.tsx:8488:                    key={m.id}
+src/views/PlayGameView.tsx:8599:                          key={i}
+src/views/PlayGameView.tsx:8935:                          <div key={idx} className="w-[18%] max-w-[80px] shrink-0 aspect-[5/7]">
+src/views/PlayGameView.tsx:9012:                        <div key={num} className="bg-slate-900/50 p-3 rounded-xl border border-slate-800/80">
+src/views/PlayGameView.tsx:9030:                          <div key={type} className="flex gap-3 bg-slate-900/50 p-3 rounded-xl border border-slate-800/80 items-center">
+src/views/PlayGameView.tsx:9176:                <div key={`grid-${i}`} className="border border-gray-800" />
+src/views/PlayGameView.tsx:9252:                key={char.id}
+src/views/PlayGameView.tsx:9468:                    <motion.div key="waiting" className="space-y-1">
+src/views/PlayGameView.tsx:9531:                        <div key={idx} className="w-16 md:w-20 shrink-0 first:ml-0 last:mr-0 aspect-[5/7]">
+src/views/PlayGameView.tsx:9656:                  <div key={skillId} className="relative group flex items-center justify-center">
+src/views/PlayGameView.tsx:9962:                     key={log.id}
+src/views/PlayGameView.tsx:10018:                key={card.id} 
+src/views/PlayGameView.tsx:10166:                    key={turn}
+src/views/PlayGameView.tsx:10229:                  key={lastCombo.timestamp}
+src/views/PlayGameView.tsx:10254:                      key={gameLogs[0].id}
+src/views/PlayGameView.tsx:10374:                                <g key={`${srcIdx}-${tgtIdx}-${dir}`}>
+src/views/PlayGameView.tsx:10407:                              key={idx}
+src/views/PlayGameView.tsx:10429:                            key={idx}
+src/views/PlayGameView.tsx:10547:                                    key={`tooltip-${idx}`}
+src/views/PlayGameView.tsx:10579:                                  key={`${card.id}`}
+src/views/PlayGameView.tsx:10618:                                        key={`stat-fx-${floatingStatFX[idx].id}`}
+src/views/PlayGameView.tsx:10695:                                <div key={`empty-${idx}`} className="opacity-5 font-bold text-sm">{idx}</div>
+src/views/PlayGameView.tsx:10718:                              key={log.id}
+src/views/PlayGameView.tsx:10819:                key={card.id}
+src/views/PlayGameView.tsx:10982:                    <div key={idx} className={cn("text-[8.5px] font-semibold leading-normal flex items-start gap-1", idx === 0 ? "text-indigo-300" : "text-slate-600")}>
+src/views/PlayGameView.tsx:11008:                          key={oIdx}
+src/views/PlayGameView.tsx:11028:            key="game-over-summary-overlay"
+src/views/PlayGameView.tsx:11268:                        key={`rp-${i}`}
+src/views/PlayGameView.tsx:11286:                    key={rewardEarned}
+src/views/PlayGameView.tsx:11474:            key="deck-preview-overlay"
+src/views/PlayGameView.tsx:11506:                      key={`preview-${card.id}-${i}`}
+src/views/PlayGameView.tsx:11520:                  key={`countdown-${previewCountdown}`}
+src/views/SettingView.tsx:786:                key={diff}
+src/views/SettingView.tsx:823:                  key={strat.id}
+src/views/SettingView.tsx:930:                <option key={lang.code} value={lang.code} className="text-black">
+src/views/SettingView.tsx:965:                  key={season} 
+src/views/SettingView.tsx:1001:                         key={type}
+src/views/SettingView.tsx:1351:                        <div key={i} className="border border-slate-100 rounded-3xl p-5 bg-white shadow-md flex flex-col gap-3">
+src/views/RankingView.tsx:1037:            key={type}
+src/views/RankingView.tsx:1137:                key={rankUser.id}
+src/views/RankingView.tsx:1335:                      key={idx}
+src/views/RankingView.tsx:1939:                        key={opp.id}
+src/views/RankingView.tsx:2005:                        key={opp.id}
+src/views/ShopView.tsx:839:        key={product.id}
+src/views/ShopView.tsx:2229:                          <tr key={item.id || idx} className="hover:bg-slate-50/50">
+src/views/ShopView.tsx:2317:                key="shop-error-popup"
+src/views/ShopView.tsx:2340:                key="shop-success-popup"
+src/views/ShopView.tsx:2429:                key="shop-gacha-popup"
+src/views/ShopView.tsx:2507:                              key={`shop-gacha-top-${idx}`}
+src/views/ShopView.tsx:2552:                                              <span key={i} className="text-[7px] font-bold text-green-400 bg-green-400/10 px-1 rounded whitespace-nowrap border border-green-400/20">
+src/views/ShopView.tsx:2622:                              key={`shop-gacha-bottom-${idx}`}
+src/views/ShopView.tsx:2667:                                              <span key={i} className="text-[7px] font-bold text-green-400 bg-green-400/10 px-1 rounded whitespace-nowrap border border-green-400/20">
+src/views/ShopView.tsx:3229:                        key={rarity}
+src/views/ShopView.tsx:3388:                key={pack.title}
+src/views/ShopView.tsx:3616:                <div key={item.label} className="bg-white p-5 sm:p-6 md:p-8 flex flex-col justify-between gap-5 sm:gap-6 md:gap-8 border border-slate-100 hover:border-slate-200 transition-all shadow-sm hover:shadow-md rounded-2xl h-full">
+src/views/ShopView.tsx:3782:                              key={size}
+src/views/ShopView.tsx:3874:                            key={`select-goods-card-${idx}`}
+src/views/ShopView.tsx:4190:                          key={country.code}
+src/views/ShopView.tsx:4531:                        <option key={reason} value={reason}>
+src/views/ShopView.tsx:4628:                    <div key={order.orderId} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm flex flex-col gap-4">
+src/views/ReferralView.tsx:303:                key={`${invitee.name}-${invitee.timestamp}`}
+src/views/CreatorLandingView.tsx:401:                key={benefitKey}
+src/views/AnimeView.tsx:284:          key={currentEpisodeNum}
+src/views/AnimeView.tsx:407:                key={epNum}
+src/views/AnimeView.tsx:479:                      key={epNum}
+src/views/AdminView.tsx:574:                            key={u.uid}
+src/views/AdminView.tsx:794:                                  key={idx}
+src/views/AdminView.tsx:830:                                      key={dbId}
+src/views/AdminView.tsx:911:                              <tr key={p.id || idx} className="hover:bg-slate-900/40 text-slate-300">
+src/views/PolicyCenterView.tsx:162:                key={section.id}
+src/views/PolicyCenterView.tsx:182:            <div key={section.id}>
+src/views/PlaygroundView.tsx:252:                  key={card.id || idx}
+src/views/PlaygroundView.tsx:346:                    key={card.id}
+src/views/WorldCodexView.tsx:219:                  key={summary.faction}
+src/views/WorldCodexView.tsx:236:                      <span key={card.id} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-slate-500">
+src/views/WorldCodexView.tsx:254:                  key={`${pair.left}-${pair.right}`}
+src/views/WorldCodexView.tsx:297:                  key={card.id}
+src/views/SkillView.tsx:213:              <g key={`conn-${idx}`}>
+src/views/SkillView.tsx:275:              key={skill.id}
+src/views/SkillView.tsx:329:                      key={idx}
+src/views/SkillView.tsx:514:                      key={i}
+src/views/StatusView.tsx:178:                <div key={card.index} className="flex items-center gap-3">
+src/views/StatusView.tsx:202:                <div key={lang.language} className="flex items-center gap-3">
+src/views/GodView.tsx:306:                key={idx}
+src/views/GodView.tsx:327:                    key={dbId}
+src/views/GodView.tsx:346:                  key={invCard.cardIndex}
+src/views/GodView.tsx:407:                      <div key={slot} className="bg-slate-950 border border-slate-800/80 rounded-xl p-3">
+src/views/GodView.tsx:438:                              return <option key={dbIdx} value={dbIdx.toString()}>{item.name_en}</option>;
+src/views/WikiItemView.tsx:99:              key={idx}
+src/App.tsx:6230:                key={view}
+src/App.tsx:6364:                           key="unread-badge"
+src/App.tsx:6433:                      key={role}
+src/App.tsx:6458:                        <div key={msg.id || `chat-msg-${idx}`} className={cn(
+src/App.tsx:6510:                                      <div key={item.key} className="rounded-2xl border border-red-200/80 bg-white px-3 py-3 text-left text-slate-900 shadow-sm">
+src/App.tsx:6651:            key={`sim-${isSimulationActive}`}
+src/App.tsx:6880:                <div key={idx} className="truncate">
+src/App.tsx:6945:                <div key={idx} className="truncate">

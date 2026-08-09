@@ -198,13 +198,20 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
     setSelectedCardIndex(0);
   };
 
+  const audioCache = React.useRef<Map<string, HTMLAudioElement>>(new Map());
   const playSfx = (url: string) => {
     try {
-      const audio = new Audio(url);
-      audio.volume = 0.5;
+      let audio = audioCache.current.get(url);
+      if (!audio) {
+        audio = new Audio(url);
+        audio.volume = 0.5;
+        audioCache.current.set(url, audio);
+      } else {
+        audio.currentTime = 0;
+      }
       audio.play().catch(() => {});
     } catch (e) {
-      console.warn("Audio play blocked", e);
+      // ignore
     }
   };
 
@@ -230,7 +237,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
     : moveSummary;
 
   return (
-    <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-950/90 p-1 sm:p-3 md:p-6 backdrop-blur-md overflow-hidden text-slate-100 select-none">
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-950/95 p-1 sm:p-3 md:p-6 overflow-hidden text-slate-100 select-none">
       {/* Grid Background */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-20">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:40px_40px]" />
@@ -326,21 +333,19 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
             {state.aiHand.map((card, idx) => {
               const mid = (state.aiHand.length - 1) / 2;
               const dist = idx - mid;
-              const rotation = dist * 3;
-              const yOffset = Math.abs(dist) * 3;
+              const yOffset = Math.abs(dist) * 2;
 
               return (
                 <motion.div
-                  key={card.id || idx}
-                  initial={{ opacity: 0, scale: 0.9, y: -20 }}
+                  key={`ai-hand-${card.id || 'card'}-${idx}`}
+                  initial={{ opacity: 0, scale: 0.9, y: -10 }}
                   animate={{
                     y: yOffset,
                     scale: 1,
-                    rotate: rotation,
                     opacity: 1
                   }}
-                  transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                  className="w-[14vw] max-w-[52px] sm:max-w-[62px] md:w-[7.5vh] md:max-w-[72px] aspect-[5/7] flex-shrink-0 relative rounded-lg border border-red-900/30 overflow-hidden shadow-[0_4px_10px_rgba(0,0,0,0.5)]"
+                  transition={{ duration: 0.15 }}
+                  className="w-[14vw] max-w-[52px] sm:max-w-[62px] md:w-[7.5vh] md:max-w-[72px] aspect-[5/7] flex-shrink-0 relative rounded-lg border border-red-900/30 overflow-hidden shadow-md"
                 >
                   <CardItem
                     card={card}
@@ -359,7 +364,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
         {/* Middle Area: Logs, Score, Turn indicator, Board */}
         <div className="flex-1 flex flex-col justify-center items-center gap-1 md:gap-2 min-h-0 overflow-hidden w-full">
           {/* Mobile Top Score Chip */}
-          <div className="md:hidden flex items-center justify-between w-full max-w-[280px] sm:max-w-xs px-3 py-1 bg-slate-950/90 border border-slate-800 rounded-full shadow-lg text-xs font-black z-20 mb-0.5 backdrop-blur-md">
+          <div className="md:hidden flex items-center justify-between w-full max-w-[280px] sm:max-w-xs px-3 py-1 bg-slate-950/90 border border-slate-800 rounded-full shadow-lg text-xs font-black z-20 mb-0.5">
             <div className="flex items-center gap-1.5 text-indigo-400">
               <span className="text-[10px] opacity-70">KAD</span>
               <span className="w-5 h-5 rounded-full bg-indigo-950 border border-indigo-500/50 flex items-center justify-center font-mono text-[11px] font-black text-indigo-300">
@@ -368,12 +373,12 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
             </div>
             <div className={cn(
               "px-2.5 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-extrabold flex items-center gap-1 shadow-sm",
-              state.turn === 'player' ? "bg-indigo-600 text-white animate-pulse" : "bg-rose-600 text-white animate-pulse"
+              state.turn === 'player' ? "bg-indigo-600 text-white" : "bg-rose-600 text-white"
             )}>
               {state.turn === 'player' ? (
                 <><Zap size={10} className="text-yellow-300" /> YOUR TURN</>
               ) : (
-                <><Cpu size={10} className="text-red-300 animate-spin" /> ENEMY TURN</>
+                <><Cpu size={10} className="text-red-300" /> ENEMY TURN</>
               )}
             </div>
             <div className="flex items-center gap-1.5 text-rose-400">
@@ -393,23 +398,24 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
               <AnimatePresence mode="wait">
                 <motion.div
                   key={state.turn}
-                  initial={{ opacity: 0, scale: 0.8 }}
+                  initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.15 }}
                   className={cn(
                     "px-2 py-3 rounded-full border font-bold uppercase text-[9px] md:text-xs tracking-[0.2em] shadow-lg flex flex-col items-center gap-2 [writing-mode:vertical-lr]",
                     state.turn === 'player'
-                      ? "bg-gradient-to-b from-indigo-600 to-indigo-900 border-indigo-400/40 text-white shadow-[0_0_15px_rgba(99,102,241,0.5)]"
-                      : "bg-gradient-to-b from-rose-600 to-rose-900 border-rose-400/40 text-white shadow-[0_0_15px_rgba(244,63,94,0.5)]"
+                      ? "bg-gradient-to-b from-indigo-600 to-indigo-900 border-indigo-400/40 text-white"
+                      : "bg-gradient-to-b from-rose-600 to-rose-900 border-rose-400/40 text-white"
                   )}
                 >
                   {state.turn === 'player' ? (
                     <div className="flex items-center gap-1.5">
-                      <Zap size={12} className="animate-pulse text-yellow-350" />
+                      <Zap size={12} className="text-yellow-350" />
                       <span>{t('kadan_rpg_player_turn', language)}</span>
                     </div>
                   ) : (
                     <div className="flex items-center gap-1.5">
-                      <Cpu size={12} className="animate-spin text-red-350" />
+                      <Cpu size={12} className="text-red-350" />
                       <span>{t('kadan_rpg_enemy_turn', language)}</span>
                     </div>
                   )}
@@ -417,7 +423,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
               </AnimatePresence>
 
               {/* Score Board */}
-              <div className="flex flex-col gap-1 items-center bg-slate-950/80 rounded-2xl p-1.5 border border-slate-800 shadow-inner shadow-black/60 backdrop-blur-sm">
+              <div className="flex flex-col gap-1 items-center bg-slate-950/90 rounded-2xl p-1.5 border border-slate-800 shadow-inner shadow-black/60">
                 {/* AI Score */}
                 <div className="flex flex-col items-center gap-0.5 p-1 bg-rose-500/5 rounded-full border border-rose-900/20">
                   <span className="text-[6px] md:text-[8px] font-black uppercase text-rose-400">ENY</span>
@@ -443,10 +449,10 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
 
             {/* Board */}
             <div className={cn(
-              "relative p-1 sm:p-1.5 border-2 sm:border-3 rounded-2xl md:rounded-3xl bg-[#090d16]/95 transition-all duration-700 shadow-2xl",
+              "relative p-1 sm:p-1.5 border-2 sm:border-3 rounded-2xl md:rounded-3xl bg-[#090d16]/95 transition-all duration-300 shadow-2xl",
               state.turn === 'player'
-                ? "border-blue-500/40 shadow-[0_0_40px_rgba(59,130,246,0.15)]"
-                : "border-red-500/40 shadow-[0_0_40px_rgba(239,68,68,0.15)]"
+                ? "border-blue-500/40"
+                : "border-red-500/40"
             )}>
               <div className="grid grid-cols-3 gap-1 sm:gap-1.5 w-fit">
                 {state.board.map((card, idx) => {
@@ -465,7 +471,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
                             ? "bg-blue-950/20 border-blue-500/30 hover:bg-blue-900/30 hover:border-blue-450/70 shadow-[inset_0_2px_8px_rgba(59,130,246,0.1)]"
                             : "bg-red-950/20 border-red-500/30 hover:bg-red-900/30 hover:border-red-450/70 shadow-[inset_0_2px_8px_rgba(239,68,68,0.1)]"
                         ),
-                        !card && selectedCardIndex !== null && isPlayerTurn && "bg-blue-600/20 border-blue-450 border-2 animate-pulse",
+                        !card && selectedCardIndex !== null && isPlayerTurn && "bg-blue-600/20 border-blue-450 border-2",
                         state.lastMove?.boardIndex === idx && "ring-2 ring-amber-300",
                         state.lastMove?.flippedIndices.includes(idx) && "ring-2 ring-cyan-300"
                       )}
@@ -473,8 +479,9 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
                       {card ? (
                         <>
                           <motion.div
-                            initial={{ scale: 0.8, rotateY: card.owner === 'player' ? 180 : -180, opacity: 0 }}
-                            animate={{ scale: 1, rotateY: 0, opacity: 1 }}
+                            initial={{ scale: 0.85, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ duration: 0.15 }}
                             className="absolute inset-0 p-0.5 rounded-lg overflow-hidden"
                           >
                             <CardItem
@@ -515,52 +522,32 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
                 const isSelected = selectedCardIndex === idx;
                 const mid = (state.playerHand.length - 1) / 2;
                 const dist = idx - mid;
-                const rotation = dist * 4;
-                const yOffset = Math.abs(dist) * 4;
+                const yOffset = Math.abs(dist) * 2;
 
                 return (
                   <motion.div
-                    key={card.id || idx}
+                    key={`player-hand-${card.id || 'card'}-${idx}`}
                     onClick={() => {
                       if (autoBattle || state.turn !== 'player' || state.result) return;
                       setSelectedCardIndex(idx);
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                     }}
-                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                    initial={{ opacity: 0, scale: 0.9, y: 10 }}
                     animate={{
                       opacity: 1,
-                      y: isSelected ? -20 : yOffset,
-                      scale: isSelected ? 1.12 : 1,
-                      rotate: isSelected ? 0 : rotation
+                      y: isSelected ? -16 : yOffset,
+                      scale: isSelected ? 1.08 : 1,
                     }}
-                    exit={{ opacity: 0, scale: 0.8, y: -20, transition: { duration: 0.2 } }}
-                    transition={{
-                      scale: { type: "spring", stiffness: 350, damping: 20 },
-                      y: isSelected
-                        ? { type: "spring", stiffness: 450, damping: 15 }
-                        : { type: "spring", stiffness: 300, damping: 25 },
-                      rotate: { type: "spring", stiffness: 350, damping: 20 },
-                      opacity: { duration: 0.3 }
-                    }}
-                    whileHover={{
-                      y: isSelected ? -30 : yOffset - 10,
-                      scale: isSelected ? 1.15 : 1.06,
-                      rotate: 0,
-                      zIndex: 100
-                    }}
+                    exit={{ opacity: 0, scale: 0.8, y: -10, transition: { duration: 0.15 } }}
+                    transition={{ duration: 0.15 }}
                     whileTap={{ scale: 0.95 }}
                     className={cn(
                       "w-[15vw] max-w-[56px] sm:max-w-[66px] md:w-[8.5vh] md:max-w-[78px] aspect-[5/7] cursor-pointer transition-all flex-shrink-0 relative rounded-lg border border-slate-700 shadow-md",
-                      isSelected && "z-50 border-indigo-400/60 shadow-[0_0_15px_rgba(99,102,241,0.5)]"
+                      isSelected && "z-50 border-indigo-400/60 shadow-lg"
                     )}
                   >
                     {isSelected && (
-                      <motion.div
-                        layoutId="selected-card-glow-kadan"
-                        className="absolute -inset-1.5 bg-indigo-500/25 blur-lg rounded-2xl z-0"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                      />
+                      <div className="absolute -inset-1 bg-indigo-500/30 rounded-xl z-0 pointer-events-none ring-2 ring-indigo-400" />
                     )}
                     
                     <CardItem
@@ -600,7 +587,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-50 flex items-end justify-center bg-slate-950/70 p-3 backdrop-blur-xs md:items-center"
+            className="absolute inset-0 z-50 flex items-end justify-center bg-slate-950/85 p-3 md:items-center"
           >
             <motion.div
               initial={{ scale: 0.95, y: 15 }}
@@ -666,10 +653,10 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -20, opacity: 0 }}
               className={cn(
-                "relative z-10 px-8 py-4 rounded-2xl border-2 backdrop-blur-md shadow-2xl flex items-center gap-4",
-                activeSkillEffect.color === 'red' && "bg-gradient-to-r from-red-950/90 via-red-900/90 to-amber-950/90 border-red-500 text-red-100 shadow-red-900/50",
-                activeSkillEffect.color === 'purple' && "bg-gradient-to-r from-purple-950/90 via-purple-900/90 to-fuchsia-950/90 border-purple-500 text-purple-100 shadow-purple-900/50",
-                activeSkillEffect.color === 'green' && "bg-gradient-to-r from-emerald-950/90 via-teal-900/90 to-green-950/90 border-emerald-500 text-emerald-100 shadow-emerald-900/50"
+                "relative z-10 px-8 py-4 rounded-2xl border-2 shadow-2xl flex items-center gap-4",
+                activeSkillEffect.color === 'red' && "bg-gradient-to-r from-red-950 via-red-900 to-amber-950 border-red-500 text-red-100 shadow-red-900/50",
+                activeSkillEffect.color === 'purple' && "bg-gradient-to-r from-purple-950 via-purple-900 to-fuchsia-950 border-purple-500 text-purple-100 shadow-purple-900/50",
+                activeSkillEffect.color === 'green' && "bg-gradient-to-r from-emerald-950 via-teal-900 to-green-950 border-emerald-500 text-emerald-100 shadow-emerald-900/50"
               )}
             >
               <activeSkillEffect.icon size={36} className="animate-bounce shrink-0" />
@@ -688,7 +675,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
 
       {/* Floating Active Skills UI */}
       {!state.result && (
-        <div className="fixed bottom-60 right-4 z-[150] pointer-events-auto flex flex-col gap-2">
+        <div className="fixed bottom-28 right-3 sm:right-4 z-[150] pointer-events-auto flex flex-col items-end gap-2">
           {/* 강화 함성 */}
           <div className="relative group">
             <button
@@ -706,7 +693,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
                 <span className="absolute text-[11px] font-black text-white">{skillCooldowns[1]}</span>
               )}
             </button>
-            <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 bg-black/90 backdrop-blur-md text-white px-2.5 py-1 text-[10px] font-black italic opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-lg uppercase tracking-widest z-[200] shadow-xl">
+            <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 bg-black/95 text-white px-2.5 py-1 text-[10px] font-black italic opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-lg uppercase tracking-widest z-[200] shadow-xl">
               {language === 'ko' ? '강화 함성' : 'Rallying Roar'}
             </div>
           </div>
@@ -728,7 +715,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
                 <span className="absolute text-[11px] font-black text-white">{skillCooldowns[5]}</span>
               )}
             </button>
-            <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 bg-black/90 backdrop-blur-md text-white px-2.5 py-1 text-[10px] font-black italic opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-lg uppercase tracking-widest z-[200] shadow-xl">
+            <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 bg-black/95 text-white px-2.5 py-1 text-[10px] font-black italic opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-lg uppercase tracking-widest z-[200] shadow-xl">
               {language === 'ko' ? '약화 함정' : 'Weaken Trap'}
             </div>
           </div>
@@ -750,7 +737,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
                 <span className="absolute text-[11px] font-black text-white">{skillCooldowns[8]}</span>
               )}
             </button>
-            <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 bg-black/90 backdrop-blur-md text-white px-2.5 py-1 text-[10px] font-black italic opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-lg uppercase tracking-widest z-[200] shadow-xl">
+            <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 bg-black/95 text-white px-2.5 py-1 text-[10px] font-black italic opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-lg uppercase tracking-widest z-[200] shadow-xl">
               {language === 'ko' ? '체인지 내카드' : 'Swap Self'}
             </div>
           </div>

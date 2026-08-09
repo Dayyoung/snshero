@@ -536,6 +536,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   const [editName, setEditName] = useState('');
   const [editNotes, setEditNotes] = useState('');
 
+  const [visibleCardLimit, setVisibleCardLimit] = useState(40);
   const [activeCategory, setActiveCategory] = useState<'all' | 'battle' | 'collection' | 'growth' | 'special' | 'social'>('all');
 
   // Sync popup state to App.tsx
@@ -1621,7 +1622,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
               <div className="flex-1 overflow-y-auto p-4 sm:p-6 scrollbar-thin scrollbar-thumb-black">
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-4 justify-items-center">
-                  {processedCards.map((item) => {
+                  {processedCards.slice(0, visibleCardLimit).map((item) => {
                     const { idx, card, power, isOwned, isInDeck } = item;
                     const previewCard = card;
 
@@ -1727,6 +1728,20 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                     );
                   })}
                 </div>
+
+                {/* ID 110: Virtualized Load More Cards Button for DOM Optimization */}
+                {processedCards.length > visibleCardLimit && (
+                  <div className="mt-6 flex justify-center">
+                    <button
+                      onClick={() => setVisibleCardLimit(prev => prev + 40)}
+                      className="px-6 py-2.5 rounded-full bg-slate-900 border border-slate-700 text-amber-300 font-mono text-xs font-bold hover:bg-slate-800 hover:border-amber-400 transition-all shadow-lg cursor-pointer"
+                    >
+                      {language === 'ko' 
+                        ? `카드 더 보기 (+40개) [${visibleCardLimit}/${processedCards.length}]` 
+                        : `Load More Cards (+40) [${visibleCardLimit}/${processedCards.length}]`}
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Customization mode footer/info */}

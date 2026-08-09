@@ -90,6 +90,7 @@ export const SkillView: React.FC<SkillViewProps> = ({
 }) => {
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [upgradingSkillId, setUpgradingSkillId] = useState<string | null>(null);
 
   // Dispatch global popup events so bottom nav hides while help is open
   useEffect(() => {
@@ -362,11 +363,29 @@ export const SkillView: React.FC<SkillViewProps> = ({
                 </div>
               </div>
 
+              {/* ID 103/107/115: Glow & Sparkle FX Overlay on Skill Node Upgrade */}
+              {upgradingSkillId === skill.id && (
+                <div className="absolute inset-0 z-50 rounded-xl pointer-events-none overflow-hidden flex flex-col items-center justify-center bg-amber-400/20 backdrop-blur-[1px] animate-pulse">
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 blur-md animate-ping opacity-80" />
+                  <div className="absolute flex items-center justify-center gap-1 bg-amber-500 text-slate-950 font-mono font-black text-xs px-3 py-1 rounded-full shadow-2xl border border-white">
+                    <Sparkles size={16} className="text-white animate-spin" />
+                    <span>UPGRADE SUCCESS!</span>
+                  </div>
+                </div>
+              )}
+
               {/* 강화 액션 버튼 */}
               <div className="mt-5">
                 <button
                   disabled={isMaxLevel || isLocked || (!canAfford && !isImpersonating)}
-                  onClick={() => onUpgradeSkill(skill.id)}
+                  onClick={() => {
+                    onUpgradeSkill(skill.id);
+                    setUpgradingSkillId(skill.id);
+                    try {
+                      new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3').play().catch(() => {});
+                    } catch {}
+                    setTimeout(() => setUpgradingSkillId(null), 1000);
+                  }}
                   id={`skill-upgrade-${skill.id}`}
                   className={cn(
                     'w-full min-h-11 rounded-xl font-mono text-xs font-black uppercase tracking-wider transition-all active:scale-95 shadow-md flex items-center justify-center gap-2 cursor-pointer',

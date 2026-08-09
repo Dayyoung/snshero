@@ -5,7 +5,7 @@ import { CardData, AiStrategy, AiDifficulty, Language, PlayerPatterns, Item, Ski
 import { CardItem } from '../components/CardItem';
 import { cn, getFormattedCardName } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2, UserPlus, ShoppingBag, XCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2, UserPlus, ShoppingBag, XCircle, Menu } from 'lucide-react';
 import { generateCard, INITIAL_CARDS, generateUniqueDeck, getCardStatWithBonus, generateAiName, syncCardWithDatabase, INITIAL_SKILLS, getCardPower, getNormalizedElement } from '../constants';
 import { CARD_DATABASE } from '../cardDatabase';
 import { ITEM_DATABASE } from '../constants/itemDatabase';
@@ -319,8 +319,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const perf = usePerformanceMode();
   const [gameState, setGameState] = useState<GameState>(() => {
     if (initialMode === 'story') return 'story';
+    if (pvpOpponent || initialMode === 'card') return 'searching';
     return 'modeSelect';
   });
+
+  // Texture Pre-caching state for low-spec device optimization
+  const [isTextureCaching, setIsTextureCaching] = useState(false);
+  const [textureCacheProgress, setTextureCacheProgress] = useState(0);
 
   useEffect(() => {
     if (initialMode === 'story') {
@@ -2077,6 +2082,81 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     }
   }, [gameOver]);
 
+  // Card Image & Texture Pre-caching for Low-Spec Performance (Non-blocking background warm-up)
+  const cachedSourcesRef = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    // Only pre-cache when entering match searching or preMatch, never repeatedly during active 'playing' turn updates
+    if (gameState === 'searching' || gameState === 'preMatch') {
+      const imageSources = new Set<string>();
+      imageSources.add('/card100.png');
+
+      (playerDeck || []).forEach((card) => {
+        if (card && card.imageIndex) {
+          const safeId = CARD_DATABASE[card.imageIndex] ? card.imageIndex : 41;
+          imageSources.add(`/character/${String(safeId).padStart(3, '0')}.png`);
+        }
+      });
+
+      if (selectedOpponent && selectedOpponent.deck) {
+        selectedOpponent.deck.forEach((card) => {
+          if (card && card.imageIndex) {
+            const safeId = CARD_DATABASE[card.imageIndex] ? card.imageIndex : 41;
+            imageSources.add(`/character/${String(safeId).padStart(3, '0')}.png`);
+          }
+        });
+      }
+
+      // Filter already cached images
+      const uncachedSources = Array.from(imageSources).filter(src => !cachedSourcesRef.current.has(src));
+      
+      if (uncachedSources.length === 0) {
+        setIsTextureCaching(false);
+        return;
+      }
+
+      setIsTextureCaching(true);
+      setTextureCacheProgress(20);
+
+      let loadedCount = 0;
+      const totalCount = uncachedSources.length;
+      let isMounted = true;
+
+      const handleSingleLoaded = (src: string) => {
+        cachedSourcesRef.current.add(src);
+        if (!isMounted) return;
+        loadedCount++;
+        const progress = Math.min(100, Math.round((loadedCount / totalCount) * 100));
+        setTextureCacheProgress(progress);
+        if (loadedCount >= totalCount) {
+          if (isMounted) setIsTextureCaching(false);
+        }
+      };
+
+      uncachedSources.forEach((src) => {
+        const img = new Image();
+        img.onload = () => handleSingleLoaded(src);
+        img.onerror = () => handleSingleLoaded(src);
+        img.src = src;
+      });
+
+      // Ultra-fast safety timeout (300ms max) to ensure UI never freezes
+      const timeout = setTimeout(() => {
+        if (isMounted) {
+          uncachedSources.forEach(src => cachedSourcesRef.current.add(src));
+          setIsTextureCaching(false);
+        }
+      }, 300);
+
+      return () => {
+        isMounted = false;
+        clearTimeout(timeout);
+      };
+    } else {
+      setIsTextureCaching(false);
+    }
+  }, [gameState, playerDeck, selectedOpponent]);
+
   // 전투 완료 → 현재 스토리 컨텍스트 기준으로 1회만 진행도 갱신
   useEffect(() => {
     if (!gameOver || winner !== 'player' || !currentStoryBattleContext) return;
@@ -2349,14 +2429,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const speedMultiplier = isAutoBattle ? 0.95 : (isLowPerformance ? 0.5 : 1);
   const [showInGameRules, setShowInGameRules] = useState(false);
 
-  useEffect(() => {
-    return () => {
-      if (setIsAutoBattle) {
-        setIsAutoBattle(false);
-      }
-    };
-  }, [setIsAutoBattle]);
-  
+
   const [isCoinFlipping, setIsCoinFlipping] = useState(false);
   const [coinWinner, setCoinWinner] = useState<'player' | 'ai' | null>(null);
 
@@ -2705,6 +2778,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   }, []);
   const [checkingIdx, setCheckingIdx] = useState<number>(-1);
   const [isEvaluating, setIsEvaluating] = useState(false);
+  const [showInGameMenu, setShowInGameMenu] = useState(false);
   const [battleHighlights, setBattleHighlights] = useState<Record<number, number[]>>({});
   const isProcessingRef = useRef(false);
   const [isShadowMatch, setIsShadowMatch] = useState(false);
@@ -2808,7 +2882,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     }
   }, [gameState, initialChallengeTarget, chars, onChallengeHandled]);
 
-  // Handle PVP Attack from Ranking View
+  // Handle PVP Attack from Ranking View / RPG View
   useEffect(() => {
     if (!pvpOpponent) return;
 
@@ -2818,12 +2892,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         language === 'ko' ? '알림' : 'NOTICE'
       );
       onClearPvpOpponent?.();
-      setGameState('lobby');
-      return;
-    }
-
-    // If not in lobby, switch to lobby first
-    if (gameState !== 'lobby') {
       setGameState('lobby');
       return;
     }
@@ -2848,7 +2916,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     setSelectedOpponent(oppChar);
     startRobotMatch(oppChar);
     onClearPvpOpponent?.();
-  }, [gameState, pvpOpponent, effectiveUser?.uid, onClearPvpOpponent]);
+  }, [pvpOpponent, effectiveUser?.uid, onClearPvpOpponent]);
 
 
   // Presense update removed (standalone mode)
@@ -3849,6 +3917,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     try {
       setCheckingIdx(-1);
       setIsEvaluating(false);
+      isProcessingRef.current = false;
       let oppDeck: CardData[];
       
       const effectiveOpponent = opponent || lastOpponent;
@@ -4105,7 +4174,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             sameMatched.push(ni);
             myHighlights.push(dir.m);
             if (!highlights[ni]) highlights[ni] = [];
-            highlights[ni].push(dir.o);
+            if (!highlights[ni].includes(dir.o)) highlights[ni].push(dir.o);
           }
           
           // PLUS rule
@@ -4135,7 +4204,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               flippedIndices.push(ni);
               myHighlights.push(dir.m);
               if (!highlights[ni]) highlights[ni] = [];
-              highlights[ni].push(dir.o);
+              if (!highlights[ni].includes(dir.o)) highlights[ni].push(dir.o);
             } else if (neighbor.ability?.type === 'COUNTER' && placedCard.ability?.type !== 'IMMUNITY') {
               counterTargetOwner = neighbor.owner as 'player' | 'ai';
             }
@@ -4168,7 +4237,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               if (row + d.r === niRow && col + d.c === niCol) {
                 myHighlights.push(d.m);
                 if (!highlights[ni]) highlights[ni] = [];
-                highlights[ni].push(d.o);
+                if (!highlights[ni].includes(d.o)) highlights[ni].push(d.o);
               }
             });
           }
@@ -4624,7 +4693,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   };
 
   const applyPlayerMove = async (cardIdx: number, boardIdx: number) => {
-    if (gameOver || (battleType !== 'matgo' && board[boardIdx]) || isEvaluating || isProcessingRef.current) return;
+    if (gameOver || (battleType !== 'matgo' && board[boardIdx])) return;
     
     if (battleType === 'matgo') {
       executeMatgoTurn(cardIdx, boardIdx, 'player');
@@ -5191,104 +5260,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     }, 200); // end setTimeout
   };
 
-  // AI Turn Logic (Cards 1-8)
-  useEffect(() => {
-    if (gameState === 'playing' && turn === 'ai' && !gameOver && !isEvaluating && !activeTrapMode) {
-      const isMatgo = battleType === 'matgo';
-      const filledCount = board.filter(c => c !== null).length;
-      const canPlay = isMatgo ? (opponentHand.length > 0) : (filledCount < 9);
-      if (canPlay) {
-        const delay = lowSpecMode ? 300 : Math.max(400, 1200 * speedMultiplier);
-        const timer = setTimeout(() => {
-          handleAiTurn(false);
-        }, delay);
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [gameState, turn, board, gameOver, isEvaluating, battleType, isShadowMatch, opponentHand, activeTrapMode, lowSpecMode, speedMultiplier]);
-
-  // Game Over Safety Net: Monitor board fullness
-  useEffect(() => {
-    if (gameState === 'playing' && !gameOver && !isEvaluating) {
-      const filledCount = board.filter(cell => cell !== null).length;
-      if (filledCount === 9) {
-        // Only trigger if no one else has triggered evaluation yet
-        const timer = setTimeout(() => {
-          if (!gameOver && !isEvaluating) {
-             addLog(t('log_matrix_capacity', language), 'system');
-             evaluateGame(board, turn === 'player' ? 'ai' : 'player');
-          }
-        }, 500); // Slight delay to ensure UI updates
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [board, gameState, gameOver, isEvaluating, turn]);
-
-  // Player Auto-Battle Logic & Auto-Skip
-  useEffect(() => {
-    if (gameState === 'playing' && turn === 'player' && !gameOver && !isEvaluating && !activeTrapMode) {
-      const isMatgo = battleType === 'matgo';
-      if (playerHand.length === 0) {
-        // Auto skip if player has no cards
-        const timer = setTimeout(() => {
-           addLog(t('log_player_passed', language), 'system');
-           handleSkipTurn();
-        }, 1600 * speedMultiplier);
-        return () => clearTimeout(timer);
-      } else if (isAutoBattle) {
-        const filledCount = board.filter(c => c !== null).length;
-        const canPlay = isMatgo ? (playerHand.length > 0) : (filledCount < 9);
-        if (canPlay) {
-          const timer = setTimeout(() => {
-            handleAiTurn(true);
-          }, 1600 * speedMultiplier);
-          return () => clearTimeout(timer);
-        }
-      }
-    }
-  }, [gameState, turn, board, gameOver, isEvaluating, isAutoBattle, playerHand, activeTrapMode, battleType]);
-
-  // Matgo deadlock/full board handler
-  useEffect(() => {
-    if (gameState === 'playing' && battleType === 'matgo' && !gameOver && !isEvaluating) {
-      const currentHand = turn === 'player' ? playerHand : opponentHand;
-      
-      // 1. Check if there are any empty slots (excluding center index 4)
-      let hasEmptySlot = false;
-      for (let i = 0; i < 9; i++) {
-        if (i === 4) continue;
-        if (!board[i]) {
-          hasEmptySlot = true;
-          break;
-        }
-      }
-      
-      // 2. Check if player has any card that elements match with cards on the board (stackable)
-      let hasMatchingTribe = false;
-      for (const card of currentHand) {
-        const tribe = getNormalizedElement(card);
-        for (let i = 0; i < 9; i++) {
-          if (i === 4) continue;
-          if (board[i] && getNormalizedElement(board[i]) === tribe) {
-            hasMatchingTribe = true;
-            break;
-          }
-        }
-        if (hasMatchingTribe) break;
-      }
-      
-      // If no empty slot, no matching elements, and current player still has cards -> Deadlock
-      if (!hasEmptySlot && !hasMatchingTribe && currentHand.length > 0) {
-        const timer = setTimeout(() => {
-          terminateMatgoGame(matgoScores.player, matgoScores.ai);
-        }, 1000);
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [gameState, battleType, board, turn, playerHand, opponentHand, gameOver, isEvaluating, matgoScores]);
-
   const handleAiTurn = (isPlayerAuto: boolean = false) => {
-    if (gameOver || isEvaluating || isProcessingRef.current) return;
+    if (gameOver) return;
+    if (isEvaluating || isProcessingRef.current) return;
     
     // Analytical sound
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
@@ -5322,7 +5296,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     if (!isPlayerAuto) setIsAiThinking(true);
 
     // Start with "Analyzing" phase
-    const initialDelay = lowSpecMode ? 100 : Math.max(300, 800 * speedMultiplier);
+    const initialDelay = lowSpecMode ? 100 : Math.max(200, 500 * speedMultiplier);
     setTimeout(() => {
       if (battleType === 'matgo') {
         let chosenCardIdx = -1;
@@ -5370,16 +5344,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
         setAiReasoning({ text: 'matgo_thinking' as any, cardIdx: chosenCardIdx, boardIdx: chosenBoardIdx, isPlayer: isPlayerAuto });
         
-        const matgoApplyDelay = lowSpecMode ? 200 : Math.max(400, 800 * speedMultiplier);
+        const matgoApplyDelay = lowSpecMode ? 200 : Math.max(300, 600 * speedMultiplier);
         setTimeout(() => {
           isProcessingRef.current = false;
+          setIsAiThinking(false);
           if (isPlayerAuto) {
             applyPlayerMove(chosenCardIdx, chosenBoardIdx);
           } else {
             applyAiMove(chosenCardIdx, chosenBoardIdx);
           }
-          setIsEvaluating(false);
-          setIsAiThinking(false);
         }, matgoApplyDelay);
         return;
       }
@@ -5416,20 +5389,116 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       setAiReasoning({ text: move.reason, cardIdx: move.cardIdx, boardIdx: move.boardIdx, isPlayer: isPlayerAuto });
       if (!isPlayerAuto) addLog(t('log_ai_tactic', language, { reason: t(move.reason as any, language) }), 'system');
       
-      const applyDelay = lowSpecMode ? 250 : Math.max(400, 800 * speedMultiplier);
+      const applyDelay = lowSpecMode ? 200 : Math.max(300, 600 * speedMultiplier);
       // Wait a bit more to show the reasoning, then apply
       setTimeout(() => {
         isProcessingRef.current = false; // Reset just before apply
+        setIsAiThinking(false);
         if (isPlayerAuto) {
           applyPlayerMove(move.cardIdx, move.boardIdx);
         } else {
           applyAiMove(move.cardIdx, move.boardIdx);
         }
-        setIsEvaluating(false);
-        setIsAiThinking(false);
       }, applyDelay);
     }, initialDelay);
   };
+
+  // AI Turn Logic (Cards 1-8)
+  useEffect(() => {
+    if (gameState === 'playing' && turn === 'ai' && !gameOver && !isEvaluating && !activeTrapMode) {
+      const isMatgo = battleType === 'matgo';
+      const filledCount = board.filter(c => c !== null).length;
+      const canPlay = isMatgo ? (opponentHand.length > 0) : (filledCount < 9);
+      if (canPlay) {
+        const delay = lowSpecMode ? 300 : Math.max(400, 1200 * speedMultiplier);
+        const timer = setTimeout(() => {
+          handleAiTurn(false);
+        }, delay);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [gameState, turn, board, gameOver, isEvaluating, battleType, isShadowMatch, opponentHand, activeTrapMode, lowSpecMode, speedMultiplier]);
+
+  // Game Over Safety Net: Monitor board fullness
+  useEffect(() => {
+    if (gameState === 'playing' && !gameOver && !isEvaluating) {
+      const filledCount = board.filter(cell => cell !== null).length;
+      if (filledCount === 9) {
+        // Only trigger if no one else has triggered evaluation yet
+        const timer = setTimeout(() => {
+          if (!gameOver && !isEvaluating) {
+             addLog(t('log_matrix_capacity', language), 'system');
+             evaluateGame(board, turn === 'player' ? 'ai' : 'player');
+          }
+        }, 500); // Slight delay to ensure UI updates
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [board, gameState, gameOver, isEvaluating, turn]);
+
+  // Player Auto-Battle Logic & Auto-Skip
+  useEffect(() => {
+    if (gameState === 'playing' && turn === 'player' && !gameOver && !isEvaluating && !activeTrapMode) {
+      const isMatgo = battleType === 'matgo';
+      if (playerHand.length === 0) {
+        // Auto skip if player has no cards
+        const timer = setTimeout(() => {
+           addLog(t('log_player_passed', language), 'system');
+           handleSkipTurn();
+        }, 800 * speedMultiplier);
+        return () => clearTimeout(timer);
+      } else if (isAutoBattle) {
+        const filledCount = board.filter(c => c !== null).length;
+        const canPlay = isMatgo ? (playerHand.length > 0) : (filledCount < 9);
+        if (canPlay) {
+          const delay = lowSpecMode ? 200 : Math.max(300, 600 * speedMultiplier);
+          const timer = setTimeout(() => {
+            handleAiTurn(true);
+          }, delay);
+          return () => clearTimeout(timer);
+        }
+      }
+    }
+  }, [gameState, turn, board, gameOver, isEvaluating, isAutoBattle, playerHand, activeTrapMode, battleType, speedMultiplier, lowSpecMode]);
+
+  // Matgo deadlock/full board handler
+  useEffect(() => {
+    if (gameState === 'playing' && battleType === 'matgo' && !gameOver && !isEvaluating) {
+      const currentHand = turn === 'player' ? playerHand : opponentHand;
+      
+      // 1. Check if there are any empty slots (excluding center index 4)
+      let hasEmptySlot = false;
+      for (let i = 0; i < 9; i++) {
+        if (i === 4) continue;
+        if (!board[i]) {
+          hasEmptySlot = true;
+          break;
+        }
+      }
+      
+      // 2. Check if player has any card that elements match with cards on the board (stackable)
+      let hasMatchingTribe = false;
+      for (const card of currentHand) {
+        const tribe = getNormalizedElement(card);
+        for (let i = 0; i < 9; i++) {
+          if (i === 4) continue;
+          if (board[i] && getNormalizedElement(board[i]) === tribe) {
+            hasMatchingTribe = true;
+            break;
+          }
+        }
+        if (hasMatchingTribe) break;
+      }
+      
+      // If no empty slot, no matching elements, and current player still has cards -> Deadlock
+      if (!hasEmptySlot && !hasMatchingTribe && currentHand.length > 0) {
+        const timer = setTimeout(() => {
+          terminateMatgoGame(matgoScores.player, matgoScores.ai);
+        }, 1000);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [gameState, battleType, board, turn, playerHand, opponentHand, gameOver, isEvaluating, matgoScores]);
 
   const applyAiMove = (cardIdx: number, boardIdx: number) => {
     if (gameOver || (battleType !== 'matgo' && board[boardIdx]) || isProcessingRef.current) return;
@@ -9523,7 +9592,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         if (availableSkills.length === 0) return null;
 
         return (
-          <div className="fixed top-16 right-3 lg:top-auto lg:bottom-60 lg:right-4 z-[150] pointer-events-auto flex flex-col gap-2">
+          <div className="fixed bottom-28 right-3 sm:right-4 z-[150] pointer-events-auto flex flex-col items-end gap-2">
               {availableSkills.map(skillId => {
                 let skillNameKo = '';
                 let skillNameEn = '';
@@ -9584,9 +9653,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 const displayName = language === 'ko' ? skillNameKo : skillNameEn;
 
                 return (
-                  <div key={skillId} className="relative group">
+                  <div key={skillId} className="relative group flex items-center justify-center">
                     {(skillCooldowns[skillId] || 0) > 0 ? (
-                      <div className="w-12 h-12 rounded-full border-2 border-gray-600 bg-gray-800 text-gray-400 flex items-center justify-center font-black text-xs shadow-lg">
+                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 border-gray-600 bg-gray-800 text-gray-400 flex items-center justify-center font-black text-xs shadow-lg">
                         <span>{skillCooldowns[skillId]}s</span>
                       </div>
                     ) : (
@@ -9594,7 +9663,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         onClick={() => handleExecuteSkill(skillId)}
                         disabled={isRoarActive}
                         className={cn(
-                          "w-12 h-12 rounded-full border-2 shadow-lg flex items-center justify-center transition-all active:scale-95 cursor-pointer bg-black",
+                          "w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 shadow-lg flex items-center justify-center transition-all active:scale-95 cursor-pointer bg-black/90",
                           !isRoarActive
                             ? colorClass
                             : "bg-gray-800 border-gray-700 text-gray-500 cursor-not-allowed"
@@ -9604,7 +9673,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         <Icon size={18} className={cn(!isRoarActive && skillId === 1 && "animate-pulse")} />
                       </button>
                     )}
-                    <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 bg-black/90 backdrop-blur-md text-white px-2.5 py-1 text-[10px] font-black italic opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-lg uppercase tracking-widest z-[200] shadow-xl">
+                    <div className="absolute right-full mr-2.5 top-1/2 -translate-y-1/2 bg-black/95 backdrop-blur-md text-white px-2.5 py-1 text-[10px] font-black italic opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-md uppercase tracking-wider z-[200] shadow-xl">
                       {displayName}
                     </div>
                   </div>
@@ -9694,38 +9763,185 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         )}
       </AnimatePresence>
 
-      {/* Floating Logs Button (Mobile only) */}
-      <button
-        onClick={() => {
-          setShowMobileLogs(!showMobileLogs);
-          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-        }}
-        className={cn(
-          "fixed left-16 z-[9999] lg:hidden p-3 border rounded-2xl shadow-md cursor-pointer flex items-center justify-center pointer-events-auto transition-all duration-200",
-          showMobileLogs 
-            ? "bg-indigo-650 border-indigo-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.4)]" 
-            : "bg-slate-900/90 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800"
-        )}
-        style={{ top: '10px' }}
-      >
-        <Terminal size={20} />
-      </button>
+      {/* Top Controls Bar: Back/Exit, Menu, Auto Toggle, Rules, Ping */}
+      {gameState === 'playing' && (
+        <div className="fixed top-2.5 left-3 right-3 z-[9999] flex items-center justify-between pointer-events-auto font-mono text-xs">
+          {/* Left side: Exit/Back, Menu, Mobile Logs */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                if (!gameOver) {
+                  setShowForfeitConfirm(true);
+                } else {
+                  handleExitMatch(false);
+                }
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              }}
+              className="px-3 py-2 bg-slate-900/90 border border-slate-800 hover:border-red-500/50 text-slate-200 hover:text-white rounded-xl shadow-md cursor-pointer flex items-center gap-1.5 transition-all duration-200 active:scale-95"
+              title={language === 'ko' ? '나가기' : 'Exit'}
+            >
+              <ArrowLeft size={16} className="text-red-400" />
+              <span className="font-bold text-[11px] uppercase tracking-wider">
+                {language === 'ko' ? '나가기' : 'Exit'}
+              </span>
+            </button>
 
-      {/* Help / Rules Button & Ping Indicator */}
-      {gameState === 'playing' && !gameOver && (
-        <div className="fixed right-4 top-[10px] z-[9999] flex items-center gap-2 pointer-events-auto">
-          <PingIndicator language={language} />
-          <button
-            onClick={() => {
-              setShowInGameRules(true);
-              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-            }}
-            className="p-3 border rounded-2xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 bg-slate-900/90 border-slate-800 text-indigo-400 hover:text-white hover:bg-indigo-600 hover:border-indigo-500"
-          >
-            <HelpCircle size={20} />
-          </button>
+            <button
+              onClick={() => {
+                setShowInGameMenu(true);
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              }}
+              className="px-3 py-2 bg-slate-900/90 border border-slate-800 hover:border-indigo-500/50 text-slate-200 hover:text-white rounded-xl shadow-md cursor-pointer flex items-center gap-1.5 transition-all duration-200 active:scale-95"
+              title={language === 'ko' ? '메뉴' : 'Menu'}
+            >
+              <Menu size={16} className="text-indigo-400" />
+              <span className="font-bold text-[11px] uppercase tracking-wider">
+                {language === 'ko' ? '메뉴' : 'Menu'}
+              </span>
+            </button>
+
+            <button
+              onClick={() => {
+                setShowMobileLogs(!showMobileLogs);
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              }}
+              className={cn(
+                "p-2 border rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 lg:hidden",
+                showMobileLogs 
+                  ? "bg-indigo-650 border-indigo-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.4)]" 
+                  : "bg-slate-900/90 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800"
+              )}
+              title="Battle Log"
+            >
+              <Terminal size={16} />
+            </button>
+          </div>
+
+          {/* Right side: Auto Toggle, Rules, Ping */}
+          <div className="flex items-center gap-2">
+            {onToggleAutoBattle && (
+              <button
+                onClick={() => {
+                  onToggleAutoBattle();
+                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                }}
+                className={cn(
+                  "px-3 py-2 border rounded-xl shadow-md cursor-pointer flex items-center gap-1.5 transition-all duration-200 text-[11px] font-extrabold uppercase tracking-wider active:scale-95",
+                  isAutoBattle
+                    ? "bg-gradient-to-r from-amber-500 to-yellow-500 border-amber-400 text-black shadow-[0_0_12px_rgba(245,158,11,0.4)]"
+                    : "bg-slate-900/90 border-slate-800 text-slate-400 hover:text-white"
+                )}
+              >
+                <Bot size={15} className={cn(isAutoBattle ? "animate-spin text-black" : "text-slate-400")} />
+                <span>{isAutoBattle ? "AUTO ON" : "AUTO OFF"}</span>
+              </button>
+            )}
+
+            <PingIndicator language={language} />
+
+            <button
+              onClick={() => {
+                setShowInGameRules(true);
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              }}
+              className="p-2 border rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 bg-slate-900/90 border-slate-800 text-indigo-400 hover:text-white hover:bg-indigo-600 hover:border-indigo-500"
+              title="Help & Rules"
+            >
+              <HelpCircle size={16} />
+            </button>
+          </div>
         </div>
       )}
+
+      {/* In-Game Menu Modal */}
+      <AnimatePresence>
+        {showInGameMenu && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[350] flex items-center justify-center p-4 font-mono pointer-events-auto"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-slate-900/95 border border-slate-800 backdrop-blur-xl rounded-2xl p-5 max-w-xs w-full shadow-2xl text-white space-y-4"
+            >
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div className="flex items-center gap-2">
+                  <Menu size={18} className="text-indigo-400" />
+                  <h3 className="font-bold text-sm tracking-wider uppercase">
+                    {language === 'ko' ? '메뉴' : 'IN-GAME MENU'}
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setShowInGameMenu(false)}
+                  className="p-1 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition-colors cursor-pointer"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="space-y-2.5">
+                {onToggleAutoBattle && (
+                  <button
+                    onClick={() => {
+                      onToggleAutoBattle();
+                      playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    }}
+                    className={cn(
+                      "w-full py-2.5 px-4 rounded-xl border flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer",
+                      isAutoBattle
+                        ? "bg-amber-500/20 border-amber-500/40 text-amber-300"
+                        : "bg-slate-950/60 border-slate-800 text-slate-300 hover:bg-slate-800"
+                    )}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Bot size={16} />
+                      <span>{language === 'ko' ? '자동 전투' : 'Auto Battle'}</span>
+                    </div>
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-black/40 font-black">
+                      {isAutoBattle ? 'ON' : 'OFF'}
+                    </span>
+                  </button>
+                )}
+
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setShowInGameRules(true);
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                  }}
+                  className="w-full py-2.5 px-4 bg-slate-950/60 border border-slate-800 hover:bg-slate-800 text-slate-300 rounded-xl flex items-center gap-2 font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <HelpCircle size={16} className="text-indigo-400" />
+                  <span>{language === 'ko' ? '게임 규칙 및 설명' : 'Game Rules'}</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setShowForfeitConfirm(true);
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                  }}
+                  className="w-full py-2.5 px-4 bg-red-950/40 border border-red-800/40 hover:bg-red-900/60 text-red-300 rounded-xl flex items-center gap-2 font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <ShieldAlert size={16} className="text-red-400" />
+                  <span>{language === 'ko' ? '경기 포기 / 나가기' : 'Forfeit / Exit Match'}</span>
+                </button>
+              </div>
+
+              <button
+                onClick={() => setShowInGameMenu(false)}
+                className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold text-xs uppercase transition-colors cursor-pointer"
+              >
+                {language === 'ko' ? '닫기' : 'Close'}
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       {/* Mobile Logs Drawer */}
       <AnimatePresence>
@@ -9769,8 +9985,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       <div className="absolute left-2 md:left-4 top-[55%] md:top-[60%] -translate-y-1/2 flex flex-col gap-2 z-[60]">
       </div>
       <div className={cn(
-        "flex-1 min-h-[90px] relative flex items-center justify-center px-1 overflow-visible w-full transition-all duration-700 bg-[#0f172a]/95 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm backdrop-blur-md",
-        turn === 'ai' && !gameOver ? "border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.25),inset_0_0_20px_rgba(239,68,68,0.05)] z-20" : "border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.05)] z-10"
+        "flex-1 min-h-[90px] relative flex items-center justify-center px-1 overflow-visible w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm",
+        turn === 'ai' && !gameOver ? "border-red-500/50 z-20" : "border-red-500/20 z-10"
       )}>
         
         {/* 상대 상세 정보 (이름, ID, 전적, PW, SNS) */}
@@ -9795,40 +10011,27 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         <div className="w-full max-w-6xl mx-auto flex items-center justify-center gap-1 md:gap-2 h-full translate-y-[9px] relative z-10">
           <AnimatePresence mode="popLayout">
             {opponentHand.map((card, idx) => {
-              const mid = (opponentHand.length - 1) / 2;
-              const dist = idx - mid;
-              const rotation = dist * 4; 
-              const yOffset = Math.abs(dist) * 6; 
+              const isSelected = selectedCardIdx === idx && selectedCardSide === 'ai';
               
               return (
               <motion.div 
                 key={card.id} 
                 className={cn(
-                  "w-[16vw] max-w-[58px] sm:max-w-[72px] md:max-w-[99px] lg:max-w-[108px] aspect-[5/7] cursor-pointer transition-all flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg",
-                  (selectedCardIdx === idx && selectedCardSide === 'ai') && "z-50"
+                  "w-[16vw] max-w-[58px] sm:max-w-[72px] md:max-w-[99px] lg:max-w-[108px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg",
+                  isSelected && "z-50"
                 )}
                 onClick={() => handleCardClick(idx, 'ai')}
-                initial={{ opacity: 0, scale: 0.9, y: -40 }}
+                initial={{ opacity: 0, scale: 0.9, y: -20 }}
                 animate={{ 
-                  y: (selectedCardIdx === idx && selectedCardSide === 'ai') ? 40 : yOffset,
-                  scale: (selectedCardIdx === idx && selectedCardSide === 'ai') ? 1.15 : 1,
-                  rotate: (selectedCardIdx === idx && selectedCardSide === 'ai') ? 0 : rotation,
+                  y: isSelected ? 20 : 0,
+                  scale: isSelected ? 1.08 : 1,
                   opacity: 1
                 }}
-                exit={{ opacity: 0, scale: 0.5, y: -50, transition: { duration: 0.2 } }}
-                transition={{
-                  scale: { type: "spring", stiffness: 300, damping: 25 },
-                  y: (selectedCardIdx === idx && selectedCardSide === 'ai')
-                    ? { type: "spring", stiffness: 400, damping: 20 }
-                    : { type: "spring", stiffness: 300, damping: 25 },
-                  rotate: { type: "spring", stiffness: 200, damping: 15 },
-                  opacity: { duration: 0.3 }
-                }}
+                exit={{ opacity: 0, scale: 0.8, y: -20, transition: { duration: 0.15 } }}
+                transition={{ duration: 0.15 }}
                 whileHover={{
-                  y: (selectedCardIdx === idx && selectedCardSide === 'ai') ? 50 : yOffset + 20,
-                  scale: 1.1,
-                  rotate: 0,
-                  zIndex: 60
+                  y: isSelected ? 28 : 10,
+                  scale: isSelected ? 1.1 : 1.05
                 }}
               >
                 <CardItem 
@@ -10085,7 +10288,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         card={matgoMiddleCard}
                         isLocked={true}
                         isOnBoard={true}
-                        lowSpecMode={true}
+                        lowSpecMode={lowSpecMode}
                         isMatgo={battleType === 'matgo'}
                         className="w-full h-full"
                       />
@@ -10153,7 +10356,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             const x1 = `${(srcCol + 0.5) * 33.333}%`;
                             const y1 = `${(srcRow + 0.5) * 33.333}%`;
 
-                            return (dirs as number[]).map((dir) => {
+                            return (dirs as number[]).map((dir, dIdx) => {
                               let tgtIdx = -1;
                               if (dir === 0 && srcRow > 0) tgtIdx = srcIdx - 3;
                               else if (dir === 1 && srcCol < 2) tgtIdx = srcIdx + 1;
@@ -10168,7 +10371,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                               const y2 = `${(tgtRow + 0.5) * 33.333}%`;
 
                               return (
-                                <g key={`${srcIdx}-${tgtIdx}-${dir}`}>
+                                <g key={`combat-hl-${srcIdx}-${tgtIdx}-${dir}-${dIdx}`}>
                                   <line
                                     x1={x1}
                                     y1={y1}
@@ -10258,11 +10461,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                 elementalBoard[idx] === 'dragon' ? "from-rose-700/35 to-red-800/35 border-rose-500/50 shadow-[0_0_12px_rgba(225,29,72,0.3)]" :
                                 "from-slate-400/30 to-slate-300/30 border-slate-350/50"
                               )}>
-                                <motion.div
-                                  animate={!isLowPerformance ? { scale: [1, 1.05, 1], opacity: [0.65, 0.85, 0.65] } : {}}
-                                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                                  className="flex items-center justify-center text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)]"
-                                >
+                                <div className="flex items-center justify-center text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] opacity-75">
                                   {elementalBoard[idx] === 'water' && <Waves size={30} className="text-blue-200/80" />}
                                   {elementalBoard[idx] === 'fire' && <Flame size={30} className="text-red-200/80" />}
                                   {(elementalBoard[idx] === 'wind' || elementalBoard[idx] === 'air') && <Wind size={30} className="text-emerald-200/80" />}
@@ -10274,7 +10473,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                   {elementalBoard[idx] === 'monster' && <Ghost size={30} className="text-orange-200/80" />}
                                   {elementalBoard[idx] === 'robot' && <Bot size={30} className="text-slate-200/80" />}
                                   {elementalBoard[idx] === 'dragon' && <Zap size={30} className="text-rose-200/80" />}
-                                </motion.div>
+                                </div>
 
                                 {/* Terrain Bonus Tooltip Badge on Hover */}
                                 <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 z-[150] opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap bg-slate-900/95 text-amber-300 border border-amber-500/40 text-[9px] font-bold px-2 py-0.5 rounded shadow-xl backdrop-blur-xs">
@@ -10318,21 +10517,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             {/* AI Targeting Icon */}
                             {!card && turn === 'ai' && aiReasoning?.boardIdx === idx && (
                               <motion.div
-                                initial={{ opacity: 0, scale: 0.5 }}
-                                animate={!lowSpecMode ? { opacity: [0.4, 1, 0.4], scale: [0.8, 1.2, 0.8] } : { opacity: 1, scale: 1 }}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 0.8, scale: 1 }}
                                 className="absolute inset-0 z-[120] flex items-center justify-center pointer-events-none"
                               >
-                                <TargetIcon size={32} className="text-red-500 opacity-50 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
+                                <TargetIcon size={32} className="text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
                               </motion.div>
                             )}
                             {/* Recommended Targeting Icon */}
                             {!card && turn === 'player' && selectedCardIdx !== null && selectedCardSide === 'player' && recommendedPlayerMove?.cardIdx === selectedCardIdx && recommendedPlayerMove?.boardIdx === idx && (
                               <motion.div
-                                initial={{ opacity: 0, scale: 0.5 }}
-                                animate={{ opacity: [0.6, 1, 0.6], scale: [0.9, 1.1, 0.9] }}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 0.9, scale: 1 }}
                                 className="absolute inset-0 z-[120] flex items-center justify-center pointer-events-none"
                               >
-                                <TargetIcon size={32} className="text-blue-500 opacity-70 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+                                <TargetIcon size={32} className="text-blue-500 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
                               </motion.div>
                             )}
                             {/* AI & Recommended Reasoning Tooltip */}
@@ -10379,29 +10578,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                 <motion.div
                                   key={`${card.id}`}
                                   initial={{ 
-                                    scale: 0.5, 
-                                    rotateY: card.owner === 'player' ? 180 : -180, 
-                                    opacity: 0,
-                                    y: 0 
+                                    scale: 0.8, 
+                                    opacity: 0
                                   }}
                                   animate={{ 
                                     scale: 1,
-                                    rotateY: 0,
                                     opacity: 1,
-                                    y: 0,
-                                    x: lastPlacedIdx === idx ? [0, -12, 12, -12, 12, 0] : 0,
-                                    rotate: lastPlacedIdx === idx ? [0, -4, 4, -4, 4, 0] : 0,
-                                    filter: "brightness(1)",
+                                    x: lastPlacedIdx === idx ? [0, -6, 6, -6, 6, 0] : 0,
                                     zIndex: 20
                                   }}
                                   transition={{
-                                    scale: { type: "tween", duration: 0.2 },
-                                    rotateY: { type: "spring", stiffness: 250, damping: 30 },
-                                    opacity: { duration: 0.2 },
-                                    x: { duration: 0.4, ease: "easeInOut" },
-                                    rotate: { duration: 0.4, ease: "easeInOut" }
+                                    scale: { duration: 0.15 },
+                                    opacity: { duration: 0.15 },
+                                    x: { duration: 0.3 }
                                   }}
-                                  style={{ transformStyle: 'preserve-3d' }}
                                   className={cn("absolute inset-0", isRoarActive && "roar-flame-active")}
                                 >
                                   <CardItem 
@@ -10417,7 +10607,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                     customImage={customCardImage}
                                     processedImage={processedImageForCell}
                                     combatHighlights={combatHighlights[idx]}
-                                    lowSpecMode={true}
+                                    lowSpecMode={lowSpecMode}
                                     cellElement={elementalBoard[idx]}
                                     isMatgo={false}
                                   />
@@ -10590,8 +10780,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       <div 
         id="player-hand-container"
         className={cn(
-        "flex-1 min-h-[90px] relative overflow-visible flex flex-col items-center justify-center px-1 w-full transition-all duration-700 bg-[#0f172a]/95 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm backdrop-blur-md",
-        turn === 'player' && !gameOver ? "border-indigo-500/50 shadow-[0_0_30px_rgba(99,102,241,0.25),inset_0_0_20px_rgba(99,102,241,0.05)] z-20" : "border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.05)] z-10"
+        "flex-1 min-h-[90px] relative overflow-visible flex flex-col items-center justify-center px-1 w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm",
+        turn === 'player' && !gameOver ? "border-indigo-500/50 z-20" : "border-blue-500/20 z-10"
       )}>
         
         {/* 내 상세 정보 (이름, ID, 전적, PW, SNS) */}
@@ -10612,7 +10802,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             </div>
           )}
         </div>
-        
+
         <div className={cn(
           "w-full max-w-6xl mx-auto flex items-center gap-1 md:gap-2 h-full pb-4 overflow-x-auto overflow-y-visible scrollbar-hide px-4 touch-pan-x relative z-10",
           playerHand.length > 5 ? "justify-start md:justify-center" : "justify-center"
@@ -10622,10 +10812,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           <AnimatePresence>
             {playerHand.map((card, idx) => {
               const isRecommended = recommendedPlayerMove?.cardIdx === idx;
-              const mid = (playerHand.length - 1) / 2;
-              const dist = idx - mid;
-              const rotation = dist * 4; 
-              const yOffset = Math.abs(dist) * 6; 
+              const isSelected = selectedCardIdx === idx && selectedCardSide === 'player';
               
               return (
               <motion.div
@@ -10634,29 +10821,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 initial={{ opacity: 0, scale: 0.9, y: 0 }}
                 animate={{ 
                   opacity: 1,
-                  y: (selectedCardIdx === idx && selectedCardSide === 'player') ? -32 : yOffset,
-                  scale: (selectedCardIdx === idx && selectedCardSide === 'player') ? 1.15 : (isRecommended ? 1.05 : 1),
-                  rotate: (selectedCardIdx === idx && selectedCardSide === 'player') ? 0 : rotation
+                  y: isSelected ? -20 : 0,
+                  scale: isSelected ? 1.08 : (isRecommended ? 1.03 : 1)
                 }}
-                exit={{ opacity: 0, scale: 0.8, y: -20, transition: { duration: 0.2 } }}
-                transition={{
-                  scale: { type: "spring", stiffness: 350, damping: 20 },
-                  y: (selectedCardIdx === idx && selectedCardSide === 'player') 
-                    ? { type: "spring", stiffness: 450, damping: 15 } 
-                    : { type: "spring", stiffness: 300, damping: 25 },
-                  rotate: { type: "spring", stiffness: 350, damping: 20 },
-                  opacity: { duration: 0.3 }
-                }}
+                exit={{ opacity: 0, scale: 0.8, y: -10, transition: { duration: 0.15 } }}
+                transition={{ duration: 0.15 }}
                 whileHover={{ 
-                  y: (selectedCardIdx === idx && selectedCardSide === 'player') ? -50 : yOffset - 25,
-                  scale: (selectedCardIdx === idx && selectedCardSide === 'player') ? 1.2 : 1.1,
-                  rotate: 0,
-                  zIndex: 100
+                  y: isSelected ? -28 : -10,
+                  scale: isSelected ? 1.1 : 1.05
                 }}
                 whileTap={{ scale: 0.95 }}
                 className={cn(
-                  "w-[16vw] max-w-[58px] sm:max-w-[72px] md:max-w-[99px] lg:max-w-[108px] aspect-[5/7] cursor-pointer transition-all flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg",
-                  (selectedCardIdx === idx && selectedCardSide === 'player') && "z-50"
+                  "w-[16vw] max-w-[58px] sm:max-w-[72px] md:max-w-[99px] lg:max-w-[108px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg",
+                  isSelected && "z-50"
                 )}
               >
                 {isRecommended && (
@@ -10669,16 +10846,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   </motion.div>
                 )}
                 {isRecommended && (
-                   <div className="absolute inset-[-4px] bg-blue-500/50 blur-[8px] rounded z-[-1] animate-pulse"></div>
+                   <div className="absolute inset-[-2px] bg-blue-500/40 rounded z-[-1]"></div>
                 )}
                 {/* Highlight Glow for Selected Card */}
                 {selectedCardIdx === idx && selectedCardSide === 'player' && (
-                  <motion.div
-                    layoutId="selected-card-glow"
-                    className="absolute -inset-2 bg-blue-500/30 blur-xl rounded-2xl z-0"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                  />
+                  <div className="absolute -inset-1 bg-indigo-500/40 rounded-xl z-0 pointer-events-none ring-2 ring-indigo-400" />
                 )}
                 
                 <CardItem 
@@ -11546,6 +11718,44 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         language={language}
         onComplete={() => setActiveSkillEvent(null)}
       />
+
+      {/* Texture Pre-Caching Loading Screen for Low-Spec Performance Optimization */}
+      {isTextureCaching && (
+        <div className="fixed inset-0 z-[999999] bg-[#fdfcfc] text-[#201d1d] font-mono flex flex-col items-center justify-center p-6 text-center select-none">
+          <div className="w-full max-w-sm bg-white border border-[#201d1d]/15 rounded-sm p-6 sm:p-8 shadow-sm">
+            <div className="inline-block text-[11px] font-bold tracking-widest uppercase bg-[#201d1d] text-[#fdfcfc] px-2.5 py-1 rounded-sm mb-3">
+              [GRAPHICS PRE-CACHE]
+            </div>
+            <h2 className="text-sm sm:text-base font-extrabold text-[#201d1d] mb-1">
+              {language === 'ko' ? '카드 이미지 메모리 캐싱 중...' : 'Pre-caching Card Graphics...'}
+            </h2>
+            <p className="text-[11px] text-[#201d1d]/60 mb-5 font-sans">
+              {language === 'ko' ? '저성능 기기 프레임 드롭 및 끊김 방지 최적화' : 'Optimizing for smooth 60FPS playback'}
+            </p>
+
+            <div className="w-full bg-[#f0eded] h-3 rounded-sm border border-[#201d1d]/12 overflow-hidden mb-2 relative">
+              <div
+                className="bg-[#201d1d] h-full transition-all duration-150 ease-out"
+                style={{ width: `${Math.max(8, textureCacheProgress)}%` }}
+              />
+            </div>
+
+            <div className="flex items-center justify-between text-xs font-bold text-[#201d1d] mb-3">
+              <span className="text-[10px] text-[#201d1d]/70 font-mono tracking-tight">
+                {language === 'ko' ? '[LOAD] 텍스처 데이터 변환 중' : '[LOAD] Processing textures'}
+              </span>
+              <span className="font-mono font-black">{textureCacheProgress}%</span>
+            </div>
+
+            <button
+              onClick={() => setIsTextureCaching(false)}
+              className="w-full mt-2 py-1.5 bg-[#201d1d] hover:bg-black text-[#fdfcfc] text-[11px] font-bold rounded-sm transition-all cursor-pointer"
+            >
+              {language === 'ko' ? '▶ 바로 시작하기' : '▶ Start Immediately'}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Story Stage Select & Sweep Modal (Item 56, 60, 68) */}
       <StoryStageSelectModal

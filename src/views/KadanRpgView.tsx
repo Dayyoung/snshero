@@ -17,7 +17,9 @@ import { useKadanRpgAutoRunner } from '../hooks/useKadanRpgAutoRunner';
 import { KadanWorldMap } from '../components/rpg/KadanWorldMap';
 import { KadanNpcDialog } from '../components/rpg/KadanNpcDialog';
 import { KadanRewardModal } from '../components/rpg/KadanRewardModal';
-import { KadanBattleGate } from '../components/rpg/KadanBattleGate';
+import { PlayGameView } from './PlayGameView';
+import { CARD_DATABASE } from '../cardDatabase';
+import { INITIAL_CARDS, getCardPower } from '../constants';
 import type { KadanBattleResult } from '../lib/kadanRpgBattle';
 import { KADAN_RPG_NOVEL_SCRIPTS } from '../content/kadanRpgNovelScript';
 
@@ -96,6 +98,46 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
 
   const activeEncounter = battleEvent?.encounterId ? getKadanRpgEncounter(battleEvent.encounterId) : undefined;
   const activeReward = rewardEvent?.rewardId ? getKadanRpgReward(rewardEvent.rewardId) : undefined;
+
+  const rpgOpponent = useMemo(() => {
+    if (!activeEncounter) return null;
+    const oppCards: CardData[] = activeEncounter.opponentCardIds.map((cardId) => {
+      const base = CARD_DATABASE[cardId];
+      if (!base) return INITIAL_CARDS[0];
+      const categoryToElement = (cat: number): any => {
+        switch (cat) {
+          case 1: return 'water';
+          case 2: return 'fire';
+          case 3: return 'wind';
+          case 4: return 'land';
+          case 5: return 'human';
+          case 6: return 'undead';
+          case 7: return 'elf';
+          case 8: return 'dragon';
+          default: return 'fire';
+        }
+      };
+      const card: CardData = {
+        id: `kadan-card-${cardId}-${Math.random().toString(36).substring(2, 6)}`,
+        title: base.title,
+        title_en: base.title_en,
+        title_dis: base.title,
+        stats: [base.top, base.right, base.bottom, base.left],
+        element: categoryToElement(base.category),
+        rarity: (base.level >= 5 ? 'UR' : base.level >= 4 ? 'SSR' : base.level >= 3 ? 'SR' : base.level >= 2 ? 'R' : 'N'),
+        power: base.power,
+        imageIndex: base.id,
+        level: base.level,
+      };
+      return card;
+    });
+    return {
+      id: `kadan-${activeEncounter.id}`,
+      name: t(activeEncounter.opponentNameKey, language),
+      deck: oppCards,
+      totalPower: oppCards.reduce((acc, c) => acc + (c.power || 0), 0),
+    };
+  }, [activeEncounter, language]);
   const isComplete = !nextEvent;
   const isAtTarget = sameTile(heroTile, nextEvent?.tile ?? null);
   const hasDialog = Boolean(activeEvent && !battleEvent && !rewardEvent);
@@ -363,21 +405,34 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
             />
           )}
 
-          {activeEncounter && battleEvent && (
-            <KadanBattleGate
-              encounter={activeEncounter}
-              currentDeck={currentDeck}
-              language={language}
-              autoBattle={progress.autoMode}
-              onToggleAutoBattle={() => setAutoMode(!progress.autoMode)}
-              lowSpecMode={lowSpecMode}
-              rebirthLevel={progress.rebirthLevel}
-              onComplete={handleBattleComplete}
-              onClose={() => {
-                setBattleEvent(null);
-                if (progress.autoMode) setAutoMode(false);
-              }}
-            />
+          {activeEncounter && battleEvent && rpgOpponent && (
+            <div className="fixed inset-0 z-[10000] bg-slate-950 flex flex-col overflow-hidden">
+              <PlayGameView
+                playerDeck={currentDeck.filter((c): c is CardData => Boolean(c))}
+                pvpOpponent={rpgOpponent}
+                initialMode="card"
+                language={language}
+                isAutoBattle={progress.autoMode}
+                onToggleAutoBattle={() => setAutoMode(!progress.autoMode)}
+                setIsAutoBattle={(val) => setAutoMode(val)}
+                onBack={() => {
+                  setBattleEvent(null);
+                  if (progress.autoMode) setAutoMode(false);
+                }}
+                recordMatchResult={(result) => {
+                  handleBattleComplete(result);
+                }}
+                playSfx={(url) => {
+                  try {
+                    const audio = new Audio(url);
+                    audio.volume = 0.5;
+                    audio.play().catch(() => {});
+                  } catch (e) {}
+                }}
+                sns={sns}
+                updateSns={updateSns}
+              />
+            </div>
           )}
 
           {activeReward && rewardEvent && (

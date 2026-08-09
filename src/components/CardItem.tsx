@@ -441,28 +441,15 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
 
   return (
     <motion.div
-      animate={performanceMode ? undefined : isFlipping ? {
-        rotateY: [0, 180, 360],
-        filter: ['brightness(1)', 'brightness(1.5)', 'brightness(1)'],
-      } : { rotateY: 0, scale: 1, filter: 'brightness(1)', zIndex: 1 }}
-      transition={performanceMode ? undefined : {
-        duration: 0.4, 
-        ease: "linear"
-      }}
-      whileHover={!performanceMode ? {
-        rotateY: 10, 
-        rotateX: -5, 
-        boxShadow: "0 10px 30px -5px rgba(0, 0, 0, 0.3)",
-        z: 50
-      } : {}}
-      style={performanceMode ? undefined : { perspective: 1000 }}
-      whileTap={(!isLocked && !performanceMode) ? { scale: 0.95, rotateY: 0, rotateX: 0 } : {}}
+      animate={isFlipping ? { scale: [1, 1.05, 1] } : { scale: 1 }}
+      transition={{ duration: 0.2 }}
+      whileHover={(!isLocked && !performanceMode) ? { scale: 1.03 } : {}}
+      whileTap={(!isLocked && !performanceMode) ? { scale: 0.97 } : {}}
       className={cn(
-        "group/card group @container relative flex flex-col items-center justify-center font-sans transform-gpu",
-        !performanceMode && "transition-all duration-300",
+        "group/card group @container relative flex flex-col items-center justify-center font-sans select-none",
         !className?.includes('w-') && !className?.includes('h-') && "w-20 h-28 sm:w-24 sm:h-32 md:w-32 md:h-44",
         !className?.includes('rounded-') && "rounded-xl",
-        (!isLocked || onClick) && "cursor-pointer hover:ring-1 hover:ring-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10",
+        (!isLocked || onClick) && "cursor-pointer hover:ring-1 hover:ring-indigo-500/50",
         className
       )}
       onClick={onClick}
@@ -521,7 +508,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
       {/* Halo effects restored for skills */}
       {hasPowerHalo && !isOnBoard && (
         <div 
-          className="absolute inset-[-10%] z-[-1] bg-yellow-400/50 blur-xl rounded-[20%] pointer-events-none"
+          className="absolute inset-[-10%] z-[-1] bg-yellow-400/40 rounded-[20%] pointer-events-none"
         />
       )}
       
@@ -569,20 +556,20 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
       
       {!isOnBoard && (
         <div className="absolute bottom-[10cqw] left-1/2 z-30 flex max-w-[62%] -translate-x-1/2 flex-col items-center gap-[0.9cqw]">
-          <div className="w-full text-center rounded-full border border-white/20 bg-slate-950/75 px-[2.8cqw] py-[0.9cqw] text-[7.1cqw] font-black leading-none tracking-tight text-white shadow-[0_8px_20px_rgba(15,23,42,0.35)] backdrop-blur-sm">
+          <div className="w-full text-center rounded-full border border-white/20 bg-slate-950/90 px-[2.8cqw] py-[0.9cqw] text-[7.1cqw] font-black leading-none tracking-tight text-white shadow-md">
             {displayCardName}
           </div>
           {factionDef && (
             <div
               className={cn(
-                "flex items-center justify-center gap-[1cqw] w-full rounded-full border px-[2.1cqw] py-[0.7cqw] text-[4.9cqw] font-black uppercase tracking-[0.18em] shadow-md backdrop-blur-sm",
+                "flex items-center justify-center gap-[1cqw] w-full rounded-full border px-[2.1cqw] py-[0.7cqw] text-[4.9cqw] font-black uppercase tracking-[0.18em] shadow-md",
                 !performanceMode && "transition-all duration-300",
-                rarityTier === 'diamond' && "border-cyan-100/50 bg-slate-950/80 text-cyan-50",
-                rarityTier === 'platinum' && "border-sky-100/45 bg-slate-950/75 text-slate-50",
-                rarityTier === 'legendary' && "border-violet-200/40 bg-violet-950/70 text-violet-50",
-                rarityTier === 'gold' && "border-amber-200/40 bg-amber-950/75 text-amber-50",
-                rarityTier === 'silver' && "border-slate-200/50 bg-slate-950/75 text-slate-50",
-                rarityTier === 'bronze' && "border-orange-200/30 bg-orange-950/70 text-orange-50",
+                rarityTier === 'diamond' && "border-cyan-100/50 bg-slate-950/90 text-cyan-50",
+                rarityTier === 'platinum' && "border-sky-100/45 bg-slate-950/90 text-slate-50",
+                rarityTier === 'legendary' && "border-violet-200/40 bg-violet-950/90 text-violet-50",
+                rarityTier === 'gold' && "border-amber-200/40 bg-amber-950/90 text-amber-50",
+                rarityTier === 'silver' && "border-slate-200/50 bg-slate-950/90 text-slate-50",
+                rarityTier === 'bronze' && "border-orange-200/30 bg-orange-950/90 text-orange-50",
               )}
               aria-label={`${t(factionDef.nameKey, language)} ${t(`rarity_${rarityTier}`, language)}`}
             >
@@ -597,14 +584,14 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
         {!isOnBoard && factionDef ? (
           <div
             className={cn(
-              "flex items-center gap-[1.1cqw] rounded-full border px-[2.2cqw] py-[1.1cqw] shadow-lg backdrop-blur-sm",
+              "flex items-center gap-[1.1cqw] rounded-full border px-[2.2cqw] py-[1.1cqw] shadow-md",
               !performanceMode && "transition-all duration-300",
-              rarityTier === 'diamond' && "border-cyan-100/50 bg-slate-950/80 text-cyan-50",
-              rarityTier === 'platinum' && "border-sky-100/45 bg-slate-950/75 text-slate-50",
-              rarityTier === 'legendary' && "border-violet-200/40 bg-violet-950/70 text-violet-50",
-              rarityTier === 'gold' && "border-amber-200/40 bg-amber-950/75 text-amber-50",
-              rarityTier === 'silver' && "border-slate-200/50 bg-slate-950/75 text-slate-50",
-              rarityTier === 'bronze' && "border-orange-200/30 bg-orange-950/70 text-orange-50",
+              rarityTier === 'diamond' && "border-cyan-100/50 bg-slate-950/90 text-cyan-50",
+              rarityTier === 'platinum' && "border-sky-100/45 bg-slate-950/90 text-slate-50",
+              rarityTier === 'legendary' && "border-violet-200/40 bg-violet-950/90 text-violet-50",
+              rarityTier === 'gold' && "border-amber-200/40 bg-amber-950/90 text-amber-50",
+              rarityTier === 'silver' && "border-slate-200/50 bg-slate-950/90 text-slate-50",
+              rarityTier === 'bronze' && "border-orange-200/30 bg-orange-950/90 text-orange-50",
             )}
             aria-label={t(`rarity_${rarityTier}`, language)}
           >
