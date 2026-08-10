@@ -1,0 +1,100 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schema/mcp.json",
+  "name": "SNSHero Revolution WebMCP Server",
+  "description": "Browser-native WebMCP agent interface for SNSHero Revolution web card game.",
+  "version": "2.1.0",
+  "homepage": "https://snshero.com",
+  "llmsTxt": "https://snshero.com/llms.txt",
+  "llmsFullTxt": "https://snshero.com/llms-full.txt",
+  "capabilities": {
+    "tools": true,
+    "prompts": true,
+    "resources": true
+  },
+  "tools": [
+    {
+      "name": "get_game_overview",
+      "description": "Get current player profile, SNS points balance, level, and season information.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "query_hero_cards",
+      "description": "Search owned or codex hero cards by element, rarity, or keyword.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "element": {
+            "type": "string",
+            "enum": ["fire", "water", "earth", "wind", "human", "mecha"],
+            "description": "Filter by card elemental faction"
+          },
+          "rarity": {
+            "type": "string",
+            "enum": ["N", "R", "SR", "SSR"],
+            "description": "Filter by card rarity tier"
+          },
+          "keyword": {
+            "type": "string",
+            "description": "Keyword to search card names or skills"
+          }
+        }
+      }
+    },
+    {
+      "name": "start_quick_battle",
+      "description": "Run an instant simulated card battle against an AI rival.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "difficulty": {
+            "type": "string",
+            "enum": ["easy", "medium", "hard"],
+            "default": "medium",
+            "description": "AI opponent skill level"
+          }
+        }
+      }
+    },
+    {
+      "name": "draw_card_pack",
+      "description": "Simulate drawing a card pack using SNS Points or free daily draw.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "packType": {
+            "type": "string",
+            "default": "water_hero_pack",
+            "description": "Type of card pack to draw"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_season_missions",
+      "description": "Fetch active daily, weekly, and seasonal missions with progress.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "kadan_rpg_status",
+      "description": "Get Kadan RPG mode location, chapter, auto-hunt state, and map events.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_ai_strategy_guide",
+      "description": "Get strategic recommendations for deck building, card synergies, and leveling.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ]
+}

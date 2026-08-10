@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { ShoppingBag, ArrowRight, Zap, Terminal, Sparkles, AlertCircle, X, Package, Activity, ShieldAlert, History, Clock, Lock, HelpCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ShoppingBag, ArrowRight, Zap, Terminal, Sparkles, AlertCircle, X, Package, Activity, ShieldAlert, History, Clock, Lock, HelpCircle, ChevronLeft, ChevronRight, BookOpen, Film, Download, Play } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { PayPalScriptProvider, PayPalButtons, usePayPalScriptReducer, FUNDING } from "@paypal/react-paypal-js";
 import { QRCodeSVG } from 'qrcode.react';
@@ -3587,6 +3587,127 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <div className="flex items-center gap-2 shrink-0">
                       <span className="text-sm font-black sm:text-base">{isAdRemoved ? '✓' : `${adRemovalCost.toLocaleString()} SNS`}</span>
                       {!isAdRemoved && <ArrowRight size={16} className="shrink-0 opacity-80" />}
+                    </div>
+                  </span>
+                </button>
+              </div>
+            </motion.div>
+
+            {/* Full Novel Download Pack */}
+            <motion.div
+              whileHover={lowSpecMode ? undefined : { y: -4 }}
+              className="relative flex flex-col justify-between gap-4 overflow-hidden rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm transition-all group sm:p-6 md:p-7 h-full"
+            >
+              <div className="absolute -left-10 top-8 h-28 w-28 rounded-full bg-emerald-500/10 blur-3xl transition-all duration-500 group-hover:bg-emerald-500/20" />
+              <BookOpen className="pointer-events-none absolute left-4 top-14 z-0 h-16 w-16 text-emerald-200 opacity-80 sm:h-20 sm:w-20" aria-hidden="true" />
+
+              <div className="relative z-10 flex flex-col gap-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="rounded-lg bg-emerald-600 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-white sm:text-[10px]">
+                    {language === 'ko' ? '공식 소설' : 'OFFICIAL NOVEL'}
+                  </div>
+                  <span className="rounded-md border border-emerald-300 bg-emerald-50 px-2 py-0.5 text-[10px] font-black text-emerald-800">
+                    {language === 'ko' ? '무료' : 'FREE'}
+                  </span>
+                </div>
+
+                <div className="pl-14 sm:pl-16">
+                  <h3 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">
+                    {language === 'ko' ? '전체 소설 다운로드' : 'Full Novel Download'}
+                  </h3>
+                  <p className="mt-1 text-xs text-slate-500 font-mono">
+                    {language === 'ko' ? 'SNS히어로 파트1 PDF (143p)' : 'SNSHero Part 1 PDF Edition'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="relative z-10 mt-auto pt-2 w-full">
+                <button
+                  id="shop-pack-download-novel-btn"
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+                    const pdfFileName = language === 'ko' ? 'snshero_part1_ko.pdf' : 'snshero_part1.pdf';
+                    const pdfUrl = `/${pdfFileName}`;
+                    const link = document.createElement('a');
+                    link.href = pdfUrl;
+                    link.download = pdfFileName;
+                    link.target = '_blank';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  }}
+                  className="h-13 sm:h-14 w-full rounded-xl border border-emerald-700 bg-emerald-700 px-4 py-3 text-left text-white shadow-sm transition-all hover:border-emerald-600 hover:bg-emerald-600 active:scale-95 touch-target flex items-center justify-between cursor-pointer"
+                >
+                  <span className="flex w-full items-center justify-between gap-3">
+                    <span className="min-w-0 leading-tight">
+                      <span className="block text-[9px] uppercase tracking-[0.18em] text-white/70 sm:text-[10px]">PDF DOWNLOAD</span>
+                      <span className="mt-0.5 block text-sm font-black uppercase sm:text-base leading-none">
+                        {language === 'ko' ? '다운로드' : 'Download'}
+                      </span>
+                    </span>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-xs font-black bg-emerald-800/80 px-2 py-0.5 rounded text-emerald-100">
+                        {language === 'ko' ? '무료' : 'FREE'}
+                      </span>
+                      <Download size={16} className="shrink-0 opacity-90" />
+                    </div>
+                  </span>
+                </button>
+              </div>
+            </motion.div>
+
+            {/* Watch Full Video Pack */}
+            <motion.div
+              whileHover={lowSpecMode ? undefined : { y: -4 }}
+              className="relative flex flex-col justify-between gap-4 overflow-hidden rounded-2xl border border-red-100 bg-white p-5 shadow-sm transition-all group sm:p-6 md:p-7 h-full"
+            >
+              <div className="absolute -left-10 top-8 h-28 w-28 rounded-full bg-red-500/10 blur-3xl transition-all duration-500 group-hover:bg-red-500/20" />
+              <Film className="pointer-events-none absolute left-4 top-14 z-0 h-16 w-16 text-red-200 opacity-80 sm:h-20 sm:w-20" aria-hidden="true" />
+
+              <div className="relative z-10 flex flex-col gap-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="rounded-lg bg-red-600 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-white sm:text-[10px]">
+                    {language === 'ko' ? '공식 영상' : 'OFFICIAL VIDEO'}
+                  </div>
+                  <span className="rounded-md border border-red-300 bg-red-50 px-2 py-0.5 text-[10px] font-black text-red-800">
+                    {language === 'ko' ? '무료' : 'FREE'}
+                  </span>
+                </div>
+
+                <div className="pl-14 sm:pl-16">
+                  <h3 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">
+                    {language === 'ko' ? '동영상 전체보기' : 'Watch Full Video'}
+                  </h3>
+                  <p className="mt-1 text-xs text-slate-500 font-mono">
+                    {language === 'ko' ? 'YouTube 공식 플레이 영상' : 'Official YouTube Video'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="relative z-10 mt-auto pt-2 w-full">
+                <button
+                  id="shop-pack-watch-video-btn"
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+                    const videoUrl = language === 'ko'
+                      ? 'https://www.youtube.com/watch?v=zs5Fotw6mM8'
+                      : 'https://www.youtube.com/watch?v=TA1klx1DSGs';
+                    window.open(videoUrl, '_blank', 'noopener,noreferrer');
+                  }}
+                  className="h-13 sm:h-14 w-full rounded-xl border border-red-700 bg-red-700 px-4 py-3 text-left text-white shadow-sm transition-all hover:border-red-600 hover:bg-red-600 active:scale-95 touch-target flex items-center justify-between cursor-pointer"
+                >
+                  <span className="flex w-full items-center justify-between gap-3">
+                    <span className="min-w-0 leading-tight">
+                      <span className="block text-[9px] uppercase tracking-[0.18em] text-white/70 sm:text-[10px]">YOUTUBE</span>
+                      <span className="mt-0.5 block text-sm font-black uppercase sm:text-base leading-none">
+                        {language === 'ko' ? '새창에서 열기' : 'Open Video'}
+                      </span>
+                    </span>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-xs font-black bg-red-800/80 px-2 py-0.5 rounded text-red-100">
+                        {language === 'ko' ? '무료' : 'FREE'}
+                      </span>
+                      <Play size={16} className="shrink-0 opacity-90 fill-current" />
                     </div>
                   </span>
                 </button>

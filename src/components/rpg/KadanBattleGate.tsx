@@ -328,7 +328,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
         </div>
 
         {/* Top: Opponent Hand (Back face cards) */}
-        <div className="w-full flex justify-center h-16 sm:h-20 md:h-22 overflow-visible relative z-10 my-1 shrink-0">
+        <div className="w-full flex justify-center min-h-[90px] sm:min-h-[110px] md:min-h-[120px] py-1 overflow-visible relative z-10 my-1 shrink-0">
           <div className="flex items-center justify-center gap-1 md:gap-1.5">
             {state.aiHand.map((card, idx) => {
               const mid = (state.aiHand.length - 1) / 2;
@@ -516,7 +516,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
         <div className="w-full flex flex-col items-center gap-1 overflow-visible relative z-15 mt-1 shrink-0">
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">{t('kadan_rpg_player_hand', language)}</p>
           
-          <div className="flex items-center justify-center gap-1 md:gap-1.5 h-20 sm:h-24 md:h-26 overflow-visible relative">
+          <div className="flex items-center justify-center gap-1 md:gap-1.5 min-h-[120px] sm:min-h-[150px] md:min-h-[175px] py-2 overflow-visible relative">
             <AnimatePresence mode="popLayout">
               {state.playerHand.map((card, idx) => {
                 const isSelected = selectedCardIndex === idx;

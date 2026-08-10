@@ -187,10 +187,22 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
     }
   }, [markChestOpened, markNpcMet]);
 
+  useEffect(() => {
+    if (isMoving || activeEvent || battleEvent || rewardEvent || !targetTile) return;
+    if (!sameTile(heroTile, targetTile)) return;
+
+    const arrivedEvent = regionEvents.find((event) => sameTile(event.tile, targetTile));
+    if (arrivedEvent) {
+      openEvent(arrivedEvent);
+      setTargetTile(null);
+    }
+  }, [activeEvent, battleEvent, heroTile, isMoving, openEvent, regionEvents, rewardEvent, targetTile]);
+
   const handleEventPress = useCallback((event: KadanRpgEvent) => {
     pauseForManualInput();
     if (sameTile(heroTile, event.tile)) {
       openEvent(event);
+      setTargetTile(null);
     } else {
       setTargetTile(event.tile);
     }

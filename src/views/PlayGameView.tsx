@@ -10190,7 +10190,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       <div className="absolute left-2 md:left-4 top-[55%] md:top-[60%] -translate-y-1/2 flex flex-col gap-2 z-[60]">
       </div>
       <div className={cn(
-        "flex-1 min-h-[90px] relative flex items-center justify-center px-1 overflow-visible w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm",
+        "flex-1 min-h-[140px] sm:min-h-[170px] md:min-h-[200px] py-4 relative flex items-center justify-center px-1 overflow-visible w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm",
         turn === 'ai' && !gameOver ? "border-red-500/50 z-20" : "border-red-500/20 z-10"
       )}>
         
@@ -10985,7 +10985,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       <div 
         id="player-hand-container"
         className={cn(
-        "flex-1 min-h-[120px] relative overflow-visible flex flex-col items-center justify-center px-1 w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm pt-8 pb-2",
+        "flex-1 min-h-[160px] sm:min-h-[200px] md:min-h-[230px] relative overflow-visible flex flex-col items-center justify-center px-1 w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm pt-8 pb-4",
         turn === 'player' && !gameOver ? "border-indigo-500/50 z-20" : "border-blue-500/20 z-10"
       )}>
         

@@ -1,0 +1,103 @@
+# SNSHero Revolution (SNS히어로) - Complete AI Knowledge Base & WebMCP Specification
+
+Welcome to the full AI Knowledge Base for **SNSHero Revolution** (`https://snshero.com`). This document is optimized for Generative Engine Optimization (GEO), Answer Engine Optimization (AEO), and AI Search Engines (Perplexity, ChatGPT, Claude, Gemini, SearchGPT).
+
+---
+
+## 1. Game Overview
+- **Name**: SNS히어로 (SNSHero Revolution)
+- **Genre**: One-Click AI Web Card Game / Collectible Card Game (CCG) / Tactical RPG
+- **Platform**: Web Browser (Chrome, Edge, Safari, Firefox), Mobile Web, PWA (Progressive Web App)
+- **URL**: https://snshero.com
+- **Core Value**: Zero installation, zero mandatory sign-up, instant play, high-contrast monospace & retro UI, Web3 & Crypto support (BTC, ETH, USDC), WebMCP browser AI automation.
+
+---
+
+## 2. Key Gameplay Systems
+
+### A. Card Battles (3x3 Grid Battle)
+- Players place cards on a 3x3 grid against AI or rival players.
+- Each card possesses four directional values (North, East, South, West).
+- When a placed card's directional number exceeds adjacent cards, the opponent's card flips to the player's side.
+- Elemental Synergies:
+  - **Fire**: Boosts offensive flip power.
+  - **Water**: Enhances defense against enemy flips.
+  - **Earth**: Increases HP and tile stability.
+  - **Wind**: Speed and chain flip bonus.
+  - **Human**: Increases synergy when combined with equipment.
+  - **Mecha**: Shield and damage mitigation.
+
+### B. Kadan RPG & Arcane Echoes
+- Single-player story campaign featuring character Kadan traversing various maps.
+- Mini-map features interactive tiles including Monster Battles, Treasure Chests, NPCs, and Boss Raids.
+- Supports Auto-Runner mode for background farming and automatic route navigation.
+
+### C. Card Collection & Gacha (Water Faction & Hero Packs)
+- 110+ Cards ranging from Normal (N), Rare (R), Super Rare (SR), to Super Special Rare (SSR).
+- Pity system guarantees higher rarity cards after consecutive pulls.
+- My Deck Tamagotchi care system: feed, train, and bond with representative hero cards for bonus stats.
+
+---
+
+## 3. WebMCP (Web Model Context Protocol) Specification
+
+SNSHero natively implements the W3C / Chrome WebMCP standard (`navigator.modelContext` / `window.WebMCP`).
+
+### Available MCP Tools & JSON Schema
+
+#### 1. `get_game_overview`
+- **Description**: Returns current player profile, level, SNS points, total owned cards, and current season.
+- **Output Schema**: `{ username: string, level: number, snsPoints: number, ownedCardsCount: number, season: string }`
+
+#### 2. `query_hero_cards`
+- **Description**: Search owned cards or global codex.
+- **Input Parameters**:
+  - `element` (optional): `"fire" | "water" | "earth" | "wind" | "human" | "mecha"`
+  - `rarity` (optional): `"N" | "R" | "SR" | "SSR"`
+  - `keyword` (optional): Search string for hero name
+- **Output Schema**: Array of matching hero card objects.
+
+#### 3. `start_quick_battle`
+- **Description**: Simulates a quick 3x3 card battle against an AI opponent.
+- **Input Parameters**:
+  - `difficulty` (optional): `"easy" | "medium" | "hard"`
+- **Output Schema**: `{ winner: "player" | "ai", score: { player: number, ai: number }, battleLog: string[] }`
+
+#### 4. `draw_card_pack`
+- **Description**: Opens a card pack using available SNS points or free daily draw.
+- **Output Schema**: `{ card: CardObject, pityProgress: number, isNew: boolean }`
+
+#### 5. `get_season_missions`
+- **Description**: Fetches active daily, weekly, and seasonal quests with completion progress.
+- **Output Schema**: Array of mission objects with rewards and status.
+
+#### 6. `kadan_rpg_status`
+- **Description**: Returns RPG mode location, current chapter, active map events, and auto-hunt state.
+- **Output Schema**: `{ chapter: number, heroTile: [x,y], autoMode: boolean, nearbyEventsCount: number }`
+
+#### 7. `get_ai_strategy_guide`
+- **Description**: Recommends optimal deck synergy, card placement tips, and level-up priorities for the user's collection.
+
+---
+
+## 4. Frequently Asked Questions (FAQ)
+
+### Q: Is SNSHero free to play?
+A: Yes! SNSHero is completely free to play in any web browser. New users receive 1,000 SNS Points and up to 100 free card pack draws.
+
+### Q: Does SNSHero require installation or app store download?
+A: No. It runs directly in web browsers and supports PWA (Progressive Web App) "Add to Home Screen" for native-like offline mobile play.
+
+### Q: Which cryptocurrencies are supported?
+A: Users can optional purchase card packs and goods using Bitcoin (BTC), Ethereum (ETH), and USDC.
+
+### Q: How do AI Agents interact with SNSHero?
+A: AI Agents can use Chrome WebMCP (`navigator.modelContext`) or read `/.well-known/mcp.json` to inspect game data, execute card pulls, simulate battles, and provide personalized game advice.
+
+---
+
+## 5. Official Contact & Metadata
+- **Website**: https://snshero.com
+- **Developer**: SNSHero Revolution Dev Team
+- **MCP Manifest**: https://snshero.com/.well-known/mcp.json
+- **LLM Summary**: https://snshero.com/llms.txt

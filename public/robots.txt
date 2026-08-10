@@ -69,6 +69,9 @@ User-agent: YouBot
 Allow: /
 
 # ------------------
-# Sitemaps
+# Sitemaps & LLM Meta
 # ------------------
 Sitemap: https://snshero.com/sitemap.xml
+Allow: /llms.txt
+Allow: /llms-full.txt
+Allow: /.well-known/mcp.json

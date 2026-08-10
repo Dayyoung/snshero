@@ -2,8 +2,8 @@
 # SNS히어로 에이전트 지침서 (AGENTS.md)
 
 ## 스프레드시트 개선 작업 진행 상태
-- **마지막 수정 완료 항목 ID**: `시트 161개 전체 검토 및 반영 완료` (Google Sheets ID: `1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s` 총 1~161번 항목 전체 검토 및 코드베이스 최적화 검증 완료)
-- **최종 업데이트 일시**: 2026-08-09 13:51
+- **마지막 수정 완료 항목 ID**: `시트 177개 전체 검토 및 반영 완료` (Google Sheets ID: `1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s` 총 1~177번 항목 전체 검토 및 코드베이스 최적화 검증 완료)
+- **최종 업데이트 일시**: 2026-08-10 05:28
 
 ## 프로젝트 개요
 - **이름**: SNS히어로 (SNSHero Revolution)

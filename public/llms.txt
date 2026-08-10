@@ -1,0 +1,28 @@
+# SNSHero Revolution (SNS히어로) - AI Agent & LLM Integration Guide
+
+> SNSHero is a one-click AI web card game playable directly in web browsers without installation or sign-up.
+
+## Key Features & Capabilities
+- **One-Click Play**: Instant browser access via Google Sign-In or Guest Mode with 1,000 SNS Points welcome bonus.
+- **Card Collection**: 110+ unique animated pixel/illustration hero cards categorized into elements (Fire, Water, Earth, Wind, Human, Mecha).
+- **AI Battle System**: Strategic 3x3 grid card battles with auto-play simulation and AI opponent matchmaking.
+- **Kadan RPG & Echoes**: Story campaign mode with mini-map exploration, auto-hunting, boss raids, and treasure chests.
+- **WebMCP Integration**: Native browser WebMCP (Web Model Context Protocol) support for AI agents to inspect game state, simulate battles, and query card codex.
+- **Multi-Crypto & Points**: Supports SNS Points, BTC, ETH, and USDC for card packs and in-game items.
+- **12 Languages Supported**: Korean (ko), English (en), Japanese (ja), Chinese (zh-CN, zh-TW), German (de), Spanish (es), French (fr), Indonesian (id), Russian (ru), Thai (th), Vietnamese (vi).
+
+## WebMCP Tools Available for AI Agents
+When visiting `https://snshero.com`, AI agents can invoke the following WebMCP browser tools:
+1. `get_game_overview`: Fetch player stats, level, SNS points, card count, and season progress.
+2. `query_hero_cards`: Search card database by element, rarity (N, R, SR, SSR), or name.
+3. `start_quick_battle`: Run a simulated card battle against an AI rival and get battle logs.
+4. `draw_card_pack`: Simulate a card pack gacha opening.
+5. `get_season_missions`: Retrieve daily, weekly, and seasonal quests with completion state.
+6. `kadan_rpg_status`: Check current RPG chapter, hero location, auto-hunt status, and map events.
+7. `get_ai_strategy_guide`: Generate deck-building and synergy recommendations based on owned cards.
+
+## Documentation Links
+- Full Technical & Game Spec: [llms-full.txt](https://snshero.com/llms-full.txt)
+- WebMCP Manifest: [mcp.json](https://snshero.com/.well-known/mcp.json)
+- Sitemap: [sitemap.xml](https://snshero.com/sitemap.xml)
+- Interactive Wiki: [wiki](https://snshero.com/wiki)

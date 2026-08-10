@@ -2,7 +2,17 @@ import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
 import ErrorBoundary from './components/ErrorBoundary.tsx';
+import { initWebMcpService } from './lib/webMcpService.ts';
 import './index.css';
+
+// Initialize WebMCP (Web Model Context Protocol) for AI Agent interaction
+if (typeof window !== 'undefined') {
+  try {
+    initWebMcpService();
+  } catch (e) {
+    console.warn('[WebMCP] Initialization warning:', e);
+  }
+}
 
 // Chunk Load Error 전역 감지 및 자동 새로고침 & 최신 소스 반영 로직
 if (typeof window !== 'undefined') {
