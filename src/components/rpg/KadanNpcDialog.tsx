@@ -152,9 +152,9 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
     : t('kadan_rpg_continue', language);
 
   return (
-    <div className="absolute inset-x-3 bottom-3 z-30 mx-auto max-w-3xl">
-      {/* ─── 대사 텍스트 박스 (팝업 모달) ─── */}
-      <div className="relative z-20 overflow-hidden rounded-xl border-2 border-slate-900/90 bg-slate-950/95 text-white shadow-2xl backdrop-blur-md">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+      {/* ─── 대사 텍스트 박스 (중앙 팝업 모달) ─── */}
+      <div className="relative z-20 w-full max-w-2xl sm:max-w-3xl overflow-hidden rounded-xl border-2 border-slate-900/90 bg-slate-950/95 text-white shadow-2xl backdrop-blur-md">
         {/* 상단 오버레이 헤더 (화자 뱃지 & 에피소드 태그) */}
         <div className="flex items-center justify-between border-b border-slate-800/80 bg-slate-900/80 px-4 py-2.5">
           <div className="flex items-center gap-2 flex-wrap">
@@ -181,15 +181,15 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
         <div className="p-3.5 sm:p-5">
           <div
             className={cn(
-              "flex items-start gap-3 sm:gap-4.5",
+              "flex items-center gap-3 sm:gap-4.5",
               isKadan ? "flex-row" : "flex-row-reverse"
             )}
           >
-            {/* ─── 팝업 내부 캐릭터 전신/상반신 포트레이트 프레임 ─── */}
+            {/* ─── 팝업 내부 캐릭터 정중앙 포트레이트 프레임 ─── */}
             <div
               key={`standing-portrait-${currentLine.cardId}-${lineIndex}`}
               className={cn(
-                "relative shrink-0 w-24 sm:w-36 md:w-40 h-32 sm:h-44 md:h-48 rounded-xl overflow-hidden border-2 border-slate-700/80 bg-gradient-to-b from-slate-900 to-slate-950 shadow-xl flex items-center justify-center select-none transition-all duration-300 transform animate-in fade-in scale-95"
+                "relative shrink-0 w-24 sm:w-32 md:w-36 h-28 sm:h-38 md:h-42 rounded-xl overflow-hidden border-2 border-slate-700/80 bg-gradient-to-b from-slate-900 to-slate-950 shadow-xl flex items-center justify-center select-none transition-all duration-300 transform animate-in fade-in scale-95"
               )}
             >
               {/* 캐릭터 배경 후광 (Glow Ring & Aura) */}
@@ -202,10 +202,10 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
                 }}
               />
 
-              {/* 캐릭터 이미지 (스프라이트 그리드 디스플레이) */}
-              <div className="w-full h-full p-2 flex items-center justify-center">
+              {/* 캐릭터 이미지 (정중앙 정렬) */}
+              <div className="w-full h-full p-1.5 flex items-center justify-center overflow-hidden">
                 <div
-                  className="w-full h-full rounded-lg scale-125 transition-transform duration-300 drop-shadow-[0_6px_16px_rgba(0,0,0,0.8)] filter brightness-105 contrast-105"
+                  className="w-full h-full rounded-lg transition-transform duration-300 drop-shadow-[0_6px_16px_rgba(0,0,0,0.8)] filter brightness-105 contrast-105 bg-center bg-no-repeat"
                   style={getCharacterPortraitStyle(currentLine.cardId)}
                 />
               </div>

@@ -89,6 +89,29 @@ export const GomokuGame: React.FC<GomokuGameProps> = ({
     const img = new Image(); img.src = '/card100.png'; cardImgRef.current = img;
   }, []);
 
+  const [defeatCountdown, setDefeatCountdown] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (phase === 'ended' && winner === 'W') {
+      setDefeatCountdown(5);
+    } else {
+      setDefeatCountdown(null);
+    }
+  }, [phase, winner]);
+
+  useEffect(() => {
+    if (defeatCountdown === null) return;
+    if (defeatCountdown <= 0) {
+      setDefeatCountdown(null);
+      onExit();
+      return;
+    }
+    const timer = setTimeout(() => {
+      setDefeatCountdown(prev => (prev !== null ? prev - 1 : null));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [defeatCountdown, onExit]);
+
   useEffect(() => {
     if (phase !== 'ended' || rewardedRef.current) return;
     rewardedRef.current = true;
@@ -539,7 +562,9 @@ export const GomokuGame: React.FC<GomokuGameProps> = ({
                 onClick={onExit}
                 className="w-full py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200/85 text-slate-700 font-semibold rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer"
               >
-                {language === 'ko' ? '종료' : 'Exit'}
+                {language === 'ko' 
+                  ? `종료${defeatCountdown !== null ? ` (${defeatCountdown}초)` : ''}` 
+                  : `Exit${defeatCountdown !== null ? ` (${defeatCountdown}s)` : ''}`}
               </button>
             </div>
           </div>

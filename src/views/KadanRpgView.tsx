@@ -144,12 +144,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
   const hasBattle = Boolean(activeEvent?.encounterId && !battleEvent && !rewardEvent);
   const hasReward = Boolean(rewardEvent && activeReward);
 
-  useEffect(() => {
-    if (!progress.autoMode) {
-      setAutoMode(true);
-    }
-  }, []);
-
+  // Auto mode setting is persisted in local storage and managed by user toggle
   useEffect(() => {
     const region = getKadanRpgRegion(nextEvent?.regionId ?? progress.currentRegionId);
     setHeroTile(clampTile(progress.lastTile, region.width, region.height));
@@ -192,20 +187,13 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
     }
   }, [markChestOpened, markNpcMet]);
 
-  useEffect(() => {
-    if (progress.autoMode || isMoving || activeEvent || battleEvent || rewardEvent || !targetTile) return;
-    if (!sameTile(heroTile, targetTile)) return;
-
-    const arrivedEvent = regionEvents.find((event) => sameTile(event.tile, targetTile));
-    if (arrivedEvent) {
-      openEvent(arrivedEvent);
-    }
-  }, [activeEvent, battleEvent, heroTile, isMoving, openEvent, progress.autoMode, regionEvents, rewardEvent, targetTile]);
-
   const handleEventPress = useCallback((event: KadanRpgEvent) => {
     pauseForManualInput();
-    setTargetTile(event.tile);
-    if (sameTile(heroTile, event.tile)) openEvent(event);
+    if (sameTile(heroTile, event.tile)) {
+      openEvent(event);
+    } else {
+      setTargetTile(event.tile);
+    }
   }, [heroTile, openEvent, pauseForManualInput]);
 
   const handleTilePress = useCallback((tile: KadanRpgTile) => {
@@ -375,7 +363,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
         </div>
       </header>
 
-      <main className="mx-auto grid w-full max-w-6xl flex-1 gap-4 overflow-y-auto p-4 pb-24 md:grid-cols-[1fr_280px] md:p-6">
+      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-4 overflow-y-auto p-4 pb-24 md:p-6">
         <div className="relative">
           <KadanWorldMap
             region={currentRegion}
@@ -448,45 +436,44 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
           )}
         </div>
 
-        <aside className="space-y-4">
-          <section className="rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-4">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex-1 min-w-0">
-                <div className="mb-2 flex items-center justify-between text-xs font-bold text-[#646262]">
-                  <span>{t('kadan_rpg_progress', language)}</span>
-                  <span>{completionPercent}%</span>
-                </div>
-                <div className="h-2 overflow-hidden rounded-sm bg-[#f1eeee]">
-                  <div className="h-full bg-[#201d1d] transition-all" style={{ width: `${completionPercent}%` }} />
-                </div>
-                <p className="mt-2 truncate text-xs font-bold text-[#201d1d]">
-                  {formatStageTitle(nextEvent, language)}
-                </p>
-                <p className="mt-0.5 truncate text-[10px] font-semibold text-[#646262]">{currentObjective}</p>
+        {/* ─── 맵 바로 아래 배치된 진행도(Progress) 카드 ─── */}
+        <section className="w-full rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-4 shadow-xs">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex-1 min-w-0">
+              <div className="mb-2 flex items-center justify-between text-xs font-bold text-[#646262]">
+                <span>{t('kadan_rpg_progress', language)}</span>
+                <span>{completionPercent}%</span>
               </div>
-              <div className={cn(
-                "relative inline-flex items-center justify-center overflow-hidden rounded-sm transition-all shrink-0",
-                progress.autoMode ? "p-[2px] shadow-[0_0_10px_rgba(59,130,246,0.5)]" : ""
-              )}>
-                {progress.autoMode && (
-                  <div className="absolute -inset-[180%] animate-[spin_2.5s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_180deg,#1d4ed8_270deg,#60a5fa_330deg,#93c5fd_360deg)]" />
-                )}
-                <button
-                  type="button"
-                  onClick={() => setAutoMode(!progress.autoMode)}
-                  className={`relative z-10 flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-[2px] px-3 text-xs font-bold transition-all cursor-pointer ${
-                    progress.autoMode
-                      ? 'bg-[#201d1d] text-[#fdfcfc]'
-                      : 'bg-[#fdfcfc] text-[#201d1d] border border-[#646262] hover:bg-[#f8f7f7]'
-                  }`}
-                >
-                  {progress.autoMode ? <Pause size={14} className="text-blue-400" /> : <Play size={14} />}
-                  <span>{progress.autoMode ? t('kadan_rpg_auto_on', language) : t('kadan_rpg_auto_off', language)}</span>
-                </button>
+              <div className="h-2 overflow-hidden rounded-sm bg-[#f1eeee]">
+                <div className="h-full bg-[#201d1d] transition-all" style={{ width: `${completionPercent}%` }} />
               </div>
+              <p className="mt-2 truncate text-xs font-bold text-[#201d1d]">
+                {formatStageTitle(nextEvent, language)}
+              </p>
+              <p className="mt-0.5 truncate text-[10px] font-semibold text-[#646262]">{currentObjective}</p>
             </div>
-          </section>
-        </aside>
+            <div className={cn(
+              "relative inline-flex items-center justify-center overflow-hidden rounded-sm transition-all shrink-0",
+              progress.autoMode ? "p-[2px] shadow-[0_0_10px_rgba(59,130,246,0.5)]" : ""
+            )}>
+              {progress.autoMode && (
+                <div className="absolute -inset-[180%] animate-[spin_2.5s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_180deg,#1d4ed8_270deg,#60a5fa_330deg,#93c5fd_360deg)]" />
+              )}
+              <button
+                type="button"
+                onClick={() => setAutoMode(!progress.autoMode)}
+                className={`relative z-10 flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-[2px] px-3 text-xs font-bold transition-all cursor-pointer ${
+                  progress.autoMode
+                    ? 'bg-[#201d1d] text-[#fdfcfc]'
+                    : 'bg-[#fdfcfc] text-[#201d1d] border border-[#646262] hover:bg-[#f8f7f7]'
+                }`}
+              >
+                {progress.autoMode ? <Pause size={14} className="text-blue-400" /> : <Play size={14} />}
+                <span>{progress.autoMode ? t('kadan_rpg_auto_on', language) : t('kadan_rpg_auto_off', language)}</span>
+              </button>
+            </div>
+          </div>
+        </section>
       </main>
 
       {isComplete && (

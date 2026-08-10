@@ -54,11 +54,13 @@ const isSpriteSheet = (source?: string | null): boolean => {
 
 const getSpritePosition = (cardIndex: number, spriteSource: string): React.CSSProperties => {
   if (!cardIndex) return {};
-  const x = ((cardIndex - 1) % 10) * (100 / 9);
-  const y = Math.floor((cardIndex - 1) / 10) * (100 / 10);
+  const rows = 11;
+  const cols = 10;
+  const x = ((cardIndex - 1) % cols) * (100 / (cols - 1));
+  const y = Math.floor((cardIndex - 1) / cols) * (100 / (rows - 1));
   return {
     backgroundImage: `url('${getAssetUrl(spriteSource)}')`,
-    backgroundSize: '1000% 1100%',
+    backgroundSize: `${cols * 100}% ${rows * 100}%`,
     backgroundPosition: `${x}% ${y}%`,
     backgroundRepeat: 'no-repeat',
     imageRendering: 'pixelated' as const,

@@ -2166,6 +2166,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   ]);
 
   const [rematchCountdown, setRematchCountdown] = useState<number | null>(null);
+  const [defeatExitCountdown, setDefeatExitCountdown] = useState<number | null>(null);
+  const [dungeonDefeatCountdown, setDungeonDefeatCountdown] = useState<number | null>(null);
   const [rewardEarned, setRewardEarned] = useState<number>(0);
   const [battleType, setBattleType] = useState<'robot' | 'user' | 'pvp_attack' | 'matgo'>('robot');
   const [matgoDeck, setMatgoDeck] = useState<CardData[]>([]);
@@ -3331,23 +3333,75 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
   // removed duplicate auto-battle player turn effect
 
-  // 랭킹 PvP 등에서 재대결 버튼이 노출되었을 때 (gameOver === true) 3초 카운트다운 후 자동 재대결
+  // 전투 패배 (winner === 'ai') 5초 카운트다운 후 자동 닫힘 (로비로 퇴장)
   useEffect(() => {
     if (gameOver) {
-      if (isBossActive || isStoryActive || isDungeonActive || isTournamentActive) {
+      if (winner === 'ai') {
+        setDefeatExitCountdown(5);
+        setRematchCountdown(null);
+      } else if (isBossActive || isStoryActive || isDungeonActive || isTournamentActive) {
+        setDefeatExitCountdown(null);
         setRematchCountdown(null);
       } else if (battleType === 'pvp_attack' && hasExhausted) {
+        setDefeatExitCountdown(null);
         setRematchCountdown(null);
         setShowInsufficientPopup(true);
       } else if (isAutoBattle && battleType !== 'pvp_attack') {
+        setDefeatExitCountdown(null);
         setRematchCountdown(null);
       } else {
+        setDefeatExitCountdown(null);
         setRematchCountdown(3);
       }
     } else {
+      setDefeatExitCountdown(null);
       setRematchCountdown(null);
     }
-  }, [gameOver, hasExhausted, battleType, isBossActive, isStoryActive, isDungeonActive, isTournamentActive, isAutoBattle]);
+  }, [gameOver, winner, hasExhausted, battleType, isBossActive, isStoryActive, isDungeonActive, isTournamentActive, isAutoBattle]);
+
+  // 패배 팝업 5초 자동 닫힘 타이머
+  useEffect(() => {
+    if (defeatExitCountdown === null) return;
+    if (defeatExitCountdown <= 0) {
+      setDefeatExitCountdown(null);
+      handleExitMatch(false);
+      setShowBattleShareTemplate(false);
+      setShowOverwhelmingEffect(false);
+      setShowStreakEffect(false);
+      setCurrentWinStreakDisplay(0);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setDefeatExitCountdown(prev => (prev !== null ? prev - 1 : null));
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [defeatExitCountdown]);
+
+  // 던전 전투 패배 5초 자동 닫힘 타이머
+  useEffect(() => {
+    if (dungeonBattleWinner === 'ai') {
+      setDungeonDefeatCountdown(5);
+    } else {
+      setDungeonDefeatCountdown(null);
+    }
+  }, [dungeonBattleWinner]);
+
+  useEffect(() => {
+    if (dungeonDefeatCountdown === null) return;
+    if (dungeonDefeatCountdown <= 0) {
+      setDungeonDefeatCountdown(null);
+      closeDungeonBattleResult();
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setDungeonDefeatCountdown(prev => (prev !== null ? prev - 1 : null));
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [dungeonDefeatCountdown]);
 
   useEffect(() => {
     if (rematchCountdown === null) return;
@@ -6958,6 +7012,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       {dungeonBattleWinner === 'player' ? "필드 전투 승리!" : "전투에서 패배했습니다."}
                     </h3>
 
+                    {dungeonBattleWinner === 'ai' && dungeonDefeatCountdown !== null && (
+                      <div className="text-xs font-bold text-rose-300 bg-rose-950/80 border border-rose-500/40 px-3 py-1.5 rounded-xl animate-pulse inline-block">
+                        {language === 'ko' ? `${dungeonDefeatCountdown}초 후 자동으로 닫힙니다...` : `Auto closing in ${dungeonDefeatCountdown}s...`}
+                      </div>
+                    )}
+
                     {dungeonBattleWinner === 'player' && (
                       <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl shadow-inner inline-block">
                         <span className="text-xs font-black uppercase opacity-60 block mb-1">REWARD</span>
@@ -6969,6 +7029,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   <div className="p-5 border-t border-slate-800 bg-slate-950 flex justify-center">
                     <button
                       onClick={() => {
+                        setDungeonDefeatCountdown(null);
                         playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                         closeDungeonBattleResult();
                       }}
@@ -6977,7 +7038,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         dungeonBattleWinner === 'player' ? "bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-450 hover:to-yellow-450 text-slate-900 shadow-yellow-500/10" : "bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-650 hover:to-slate-750"
                       )}
                     >
-                      {t('tournament_confirm_btn', language)}
+                      {dungeonBattleWinner === 'ai' && dungeonDefeatCountdown !== null
+                        ? (language === 'ko' ? `확인 (${dungeonDefeatCountdown}초)` : `Confirm (${dungeonDefeatCountdown}s)`)
+                        : t('tournament_confirm_btn', language)}
                     </button>
                   </div>
                 </motion.div>
@@ -9640,7 +9703,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
 
   return (
-    <div id="game-board" className="flex-1 flex flex-col w-full bg-[#060a14] text-slate-100 pb-0 overflow-y-auto relative min-h-0">
+    <div id="game-board" className="flex-1 flex flex-col w-full bg-[#060a14] text-slate-100 pb-0 pt-11 sm:pt-12 overflow-y-auto relative min-h-0">
       {/* Battle Roar Wave Ripple Effect Overlay */}
       <AnimatePresence>
         {isRoarActive && (
@@ -9836,9 +9899,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
       {/* Top Controls Bar: Back/Exit, Menu, Auto Toggle, Rules, Ping */}
       {gameState === 'playing' && (
-        <div className="fixed top-2.5 left-3 right-3 z-[9999] flex items-center justify-between pointer-events-auto font-mono text-xs">
+        <div className="fixed top-2 left-3 right-3 z-[9999] flex items-center justify-between pointer-events-auto font-mono text-xs select-none">
           {/* Left side: Exit/Back, Menu, Mobile Logs */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <button
               onClick={() => {
                 if (!gameOver) {
@@ -9848,13 +9911,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 }
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               }}
-              className="px-3 py-2 bg-slate-900/90 border border-slate-800 hover:border-red-500/50 text-slate-200 hover:text-white rounded-xl shadow-md cursor-pointer flex items-center gap-1.5 transition-all duration-200 active:scale-95"
+              className="h-8 w-8 bg-slate-900/90 border border-slate-800 hover:border-red-500/50 text-slate-200 hover:text-white rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0"
               title={language === 'ko' ? '나가기' : 'Exit'}
+              aria-label={language === 'ko' ? '나가기' : 'Exit'}
             >
-              <ArrowLeft size={16} className="text-red-400" />
-              <span className="font-bold text-[11px] uppercase tracking-wider">
-                {language === 'ko' ? '나가기' : 'Exit'}
-              </span>
+              <ArrowLeft size={15} className="text-red-400" />
             </button>
 
             <button
@@ -9862,13 +9923,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 setShowInGameMenu(true);
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               }}
-              className="px-3 py-2 bg-slate-900/90 border border-slate-800 hover:border-indigo-500/50 text-slate-200 hover:text-white rounded-xl shadow-md cursor-pointer flex items-center gap-1.5 transition-all duration-200 active:scale-95"
+              className="h-8 w-8 bg-slate-900/90 border border-slate-800 hover:border-indigo-500/50 text-slate-200 hover:text-white rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0"
               title={language === 'ko' ? '메뉴' : 'Menu'}
+              aria-label={language === 'ko' ? '메뉴' : 'Menu'}
             >
-              <Menu size={16} className="text-indigo-400" />
-              <span className="font-bold text-[11px] uppercase tracking-wider">
-                {language === 'ko' ? '메뉴' : 'Menu'}
-              </span>
+              <Menu size={15} className="text-indigo-400" />
             </button>
 
             <button
@@ -9877,27 +9936,25 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               }}
               className={cn(
-                "px-3 py-2 border rounded-xl shadow-md cursor-pointer flex items-center gap-1.5 transition-all duration-200 active:scale-95",
+                "h-8 w-8 border rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-95 relative shrink-0",
                 showMobileLogs 
-                  ? "bg-amber-500/20 border-amber-500 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.3)]" 
+                  ? "bg-amber-500/20 border-amber-500 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.3)]" 
                   : "bg-slate-900/90 border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800"
               )}
               title={language === 'ko' ? '전투 로그' : 'Battle Log'}
+              aria-label={language === 'ko' ? '전투 로그' : 'Battle Log'}
             >
-              <Terminal size={16} className="text-amber-400" />
-              <span className="font-bold text-[11px] uppercase tracking-wider hidden sm:inline">
-                {language === 'ko' ? '전투 로그' : 'Battle Log'}
-              </span>
+              <Terminal size={15} className="text-amber-400" />
               {gameLogs.length > 0 && (
-                <span className="px-1.5 py-0.2 bg-amber-500/20 border border-amber-500/40 rounded-full text-[9px] font-black text-amber-300">
-                  {gameLogs.length}
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 border border-amber-300 rounded-full text-[8px] font-black text-black flex items-center justify-center shadow-xs">
+                  {gameLogs.length > 99 ? '99+' : gameLogs.length}
                 </span>
               )}
             </button>
           </div>
 
-          {/* Right side: Auto Toggle, Rules, Ping */}
-          <div className="flex items-center gap-2">
+          {/* Right side: Auto Toggle, Ping, Rules */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
             {onToggleAutoBattle && (
               <button
                 onClick={() => {
@@ -9905,28 +9962,30 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                 }}
                 className={cn(
-                  "px-3 py-2 border rounded-xl shadow-md cursor-pointer flex items-center gap-1.5 transition-all duration-200 text-[11px] font-extrabold uppercase tracking-wider active:scale-95",
+                  "h-8 w-8 border rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0",
                   isAutoBattle
-                    ? "bg-gradient-to-r from-amber-500 to-yellow-500 border-amber-400 text-black shadow-[0_0_12px_rgba(245,158,11,0.4)]"
+                    ? "bg-amber-500/20 border-amber-500/80 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.3)]"
                     : "bg-slate-900/90 border-slate-800 text-slate-400 hover:text-white"
                 )}
+                title={isAutoBattle ? (language === 'ko' ? '자동전투 ON (클릭 시 끄기)' : 'AUTO ON') : (language === 'ko' ? '자동전투 OFF (클릭 시 켜기)' : 'AUTO OFF')}
+                aria-label="Auto Battle Toggle"
               >
-                <Bot size={15} className={cn(isAutoBattle ? "animate-pulse text-black" : "text-slate-400")} />
-                <span>{isAutoBattle ? "AUTO ON" : "AUTO OFF"}</span>
+                <Bot size={15} className={cn(isAutoBattle ? "animate-pulse text-amber-300" : "text-slate-400")} />
               </button>
             )}
 
-            <PingIndicator language={language} />
+            <PingIndicator language={language} className="shrink-0" />
 
             <button
               onClick={() => {
                 setShowInGameRules(true);
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               }}
-              className="p-2 border rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 bg-slate-900/90 border-slate-800 text-indigo-400 hover:text-white hover:bg-indigo-600 hover:border-indigo-500"
-              title="Help & Rules"
+              className="h-8 w-8 border rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 bg-slate-900/90 border-slate-800 text-indigo-400 hover:text-white hover:bg-indigo-600 hover:border-indigo-500 shrink-0"
+              title={language === 'ko' ? '도움말 및 규칙' : 'Help & Rules'}
+              aria-label={language === 'ko' ? '도움말 및 규칙' : 'Help & Rules'}
             >
-              <HelpCircle size={16} />
+              <HelpCircle size={15} />
             </button>
           </div>
         </div>
@@ -11202,6 +11261,25 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 </motion.div>
                 <p className="text-[9px] font-bold opacity-30 tracking-[0.3em] uppercase">Combat_Session_Terminal</p>
                 
+                {/* 전투 패배 5초 자동 닫힘 안내 뱃지 */}
+                {winner === 'ai' && defeatExitCountdown !== null && (
+                  <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="mt-2 py-1.5 px-4 bg-rose-950/80 border border-rose-500/50 rounded-xl text-rose-200 text-xs font-black uppercase tracking-wider animate-pulse flex items-center justify-center gap-2 shadow-md"
+                  >
+                    <span>
+                      {language === 'ko'
+                        ? (isStoryActive || isBossActive || isDungeonActive || isTournamentActive
+                            ? `${defeatExitCountdown}초 후 자동으로 이전 화면으로 돌아갑니다...`
+                            : `${defeatExitCountdown}초 후 자동으로 로비로 이동합니다...`)
+                        : (isStoryActive || isBossActive || isDungeonActive || isTournamentActive
+                            ? `Auto closing in ${defeatExitCountdown}s...`
+                            : `Auto returning to lobby in ${defeatExitCountdown}s...`)}
+                    </span>
+                  </motion.div>
+                )}
+                
                 {/* 압도적 승리 및 연승 뱃지 노출 영역 */}
                 {winner === 'player' && (showOverwhelmingEffect || showStreakEffect) && (
                   <div className="flex flex-col gap-2 items-center justify-center mt-2 relative z-10">
@@ -11561,20 +11639,29 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 </button>
                 <button 
                   onClick={() => {
+                    setDefeatExitCountdown(null);
                     handleExitMatch(false);
                     setShowBattleShareTemplate(false);
                     setShowOverwhelmingEffect(false);
                     setShowStreakEffect(false);
                     setCurrentWinStreakDisplay(0);
                   }}
-                  className="w-full py-3 font-bold uppercase tracking-wider active:scale-95 transition-all rounded-2xl flex items-center justify-center gap-2 bg-slate-950 text-white hover:bg-slate-900 border border-slate-850 shadow-lg shadow-black/30 text-xs"
+                  className="w-full py-3 font-bold uppercase tracking-wider active:scale-95 transition-all rounded-2xl flex items-center justify-center gap-2 bg-slate-950 text-white hover:bg-slate-900 border border-slate-850 shadow-lg shadow-black/30 text-xs cursor-pointer"
                 >
                   <ChevronLeft size={16} />
-                  {battleType === 'pvp_attack' 
-                    ? (pvpExitCountdown !== null 
-                        ? `${t('exit_battle', language)} (${pvpExitCountdown}s)` 
-                        : t('exit_battle', language)) 
-                    : t('back_to_lobby', language)}
+                  {winner === 'ai' && defeatExitCountdown !== null
+                    ? (language === 'ko'
+                        ? (isStoryActive || isBossActive || isDungeonActive || isTournamentActive
+                            ? `돌아가기 (${defeatExitCountdown}초)`
+                            : `로비로 돌아가기 (${defeatExitCountdown}초)`)
+                        : (isStoryActive || isBossActive || isDungeonActive || isTournamentActive
+                            ? `Back (${defeatExitCountdown}s)`
+                            : `Back to Lobby (${defeatExitCountdown}s)`))
+                    : (battleType === 'pvp_attack' 
+                        ? (pvpExitCountdown !== null 
+                            ? `${t('exit_battle', language)} (${pvpExitCountdown}s)` 
+                            : t('exit_battle', language)) 
+                        : t('back_to_lobby', language))}
                 </button>
                 {!isBossActive && !isStoryActive && !isDungeonActive && !isTournamentActive && winner !== 'player' && (
                   <button 

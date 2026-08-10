@@ -59,6 +59,28 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
 
   const [hudGameOver, setHudGameOver] = useState(false);
   const [hudWinner, setHudWinner] = useState<CellValue>('');
+  const [defeatCountdown, setDefeatCountdown] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (hudGameOver && hudWinner === 'O') {
+      setDefeatCountdown(5);
+    } else {
+      setDefeatCountdown(null);
+    }
+  }, [hudGameOver, hudWinner]);
+
+  useEffect(() => {
+    if (defeatCountdown === null) return;
+    if (defeatCountdown <= 0) {
+      setDefeatCountdown(null);
+      onExit();
+      return;
+    }
+    const timer = setTimeout(() => {
+      setDefeatCountdown(prev => (prev !== null ? prev - 1 : null));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [defeatCountdown, onExit]);
   const animTimerRef = useRef(0);
 
   useEffect(() => {
@@ -511,7 +533,7 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
                   {language === 'ko' ? '재시작' : 'Restart'}
                 </button>
                 <button onClick={onExit} className="flex-1 py-3 bg-slate-900 text-white rounded-2xl font-black cursor-pointer">
-                  {t('home', language)}
+                  {t('home', language)}{defeatCountdown !== null ? ` (${defeatCountdown}s)` : ''}
                 </button>
               </div>
             </div>

@@ -375,8 +375,8 @@ export const Slide2048Game: React.FC<Slide2048GameProps> = ({
     const cardIndex = cardId % 110; // use a deterministic offset based on card ID
     const spriteCol = (cardIndex % 10);
     const spriteRow = Math.floor(cardIndex / 10);
-    const bgX = Math.min(spriteCol * 11.11, 100);
-    const bgY = Math.min(spriteRow * 11.11, 100);
+    const bgX = Math.min(spriteCol * (100 / 9), 100);
+    const bgY = Math.min(spriteRow * 10, 100);
 
     const className = cn(
       'absolute inset-0 flex items-center justify-center rounded-xl font-extrabold select-none transition-all',
@@ -435,7 +435,7 @@ export const Slide2048Game: React.FC<Slide2048GameProps> = ({
             style={{
               backgroundImage: `url('/card100.png')`,
               backgroundSize: '1000% 1100%',
-              backgroundPosition: `${((cardId - 1) % 10) * (100 / 9)}% ${Math.floor((cardId - 1) / 10) * 10}%`,
+              backgroundPosition: `${((cardId - 1) % 10) * (100 / 9)}% ${Math.floor((cardId - 1) / 10) * (100 / 10)}%`,
               imageRendering: 'pixelated',
             }}
           />
@@ -459,7 +459,7 @@ export const Slide2048Game: React.FC<Slide2048GameProps> = ({
             style={{
               backgroundImage: `url('/card100.png')`,
               backgroundSize: '1000% 1100%',
-              backgroundPosition: `${((cardId - 1) % 10) * (100 / 9)}% ${Math.floor((cardId - 1) / 10) * 10}%`,
+              backgroundPosition: `${((cardId - 1) % 10) * (100 / 9)}% ${Math.floor((cardId - 1) / 10) * (100 / 10)}%`,
               imageRendering: 'pixelated',
             }}
           />

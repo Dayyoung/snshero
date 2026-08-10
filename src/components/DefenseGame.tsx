@@ -101,7 +101,30 @@ export const DefenseGame: React.FC<DefenseGameProps> = ({
   const [isDefenseIntermission, setIsDefenseIntermission] = useState<boolean>(false);
   const [defenseUpgradeMsg, setDefenseUpgradeMsg] = useState<string>('');
   const [showDefenseGameOverModal, setShowDefenseGameOverModal] = useState<boolean>(false);
+  const [defenseDefeatCountdown, setDefenseDefeatCountdown] = useState<number | null>(null);
   const [showDefenseVictoryModal, setShowDefenseVictoryModal] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (showDefenseGameOverModal) {
+      setDefenseDefeatCountdown(5);
+    } else {
+      setDefenseDefeatCountdown(null);
+    }
+  }, [showDefenseGameOverModal]);
+
+  useEffect(() => {
+    if (defenseDefeatCountdown === null) return;
+    if (defenseDefeatCountdown <= 0) {
+      setDefenseDefeatCountdown(null);
+      setShowDefenseGameOverModal(false);
+      onExit();
+      return;
+    }
+    const timer = setTimeout(() => {
+      setDefenseDefeatCountdown(prev => (prev !== null ? prev - 1 : null));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [defenseDefeatCountdown, onExit]);
   const [defenseEarnedSns, setDefenseEarnedSns] = useState<number>(0);
   const [spawnedCount, setSpawnedCount] = useState<number>(0);
 
@@ -870,9 +893,15 @@ export const DefenseGame: React.FC<DefenseGameProps> = ({
               <h2 className="text-xl font-bold text-slate-800 mb-1">
                 {t('defense_gameover', language)}
               </h2>
-              <p className="text-xs font-semibold text-slate-500 mb-4 uppercase tracking-wide">
+              <p className="text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">
                 {t('defense_all_allies_defeated', language)}
               </p>
+
+              {defenseDefeatCountdown !== null && (
+                <div className="text-[11px] font-bold text-rose-600 bg-rose-50 border border-rose-200 py-1 px-3 rounded-lg animate-pulse mb-4">
+                  {language === 'ko' ? `${defenseDefeatCountdown}초 후 자동으로 닫힙니다...` : `Auto closing in ${defenseDefeatCountdown}s...`}
+                </div>
+              )}
 
               <div className="border border-slate-100 bg-slate-50 p-4 rounded-xl mb-6 shadow-xs text-left font-sans">
                 <div className="flex justify-between items-center mb-2">
@@ -887,14 +916,19 @@ export const DefenseGame: React.FC<DefenseGameProps> = ({
 
               <button 
                 onClick={() => {
+                  setDefenseDefeatCountdown(null);
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                   setShowDefenseGameOverModal(false);
                   onExit();
                 }}
-                className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold active:scale-95 transition-all shadow-md shadow-indigo-600/10 hover:shadow-lg cursor-pointer flex items-center justify-center gap-1.5 font-sans"
+                className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold active:scale-95 transition-all shadow-md shadow-indigo-600/10 hover:shadow-lg cursor-pointer flex items-center justify-center gap-1.5 font-sans text-xs"
               >
                 <RotateCcw size={14} />
-                <span>CONFIRM & RETURN</span>
+                <span>
+                  {language === 'ko'
+                    ? `확인 및 돌아가기 ${defenseDefeatCountdown !== null ? `(${defenseDefeatCountdown}초)` : ''}`
+                    : `CONFIRM & RETURN ${defenseDefeatCountdown !== null ? `(${defenseDefeatCountdown}s)` : ''}`}
+                </span>
               </button>
             </motion.div>
           </div>

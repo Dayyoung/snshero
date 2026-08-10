@@ -17,6 +17,9 @@ export default defineConfig(({mode}) => {
       emptyOutDir: true,
       rollupOptions: {
         output: {
+          entryFileNames: `assets/[name]-[hash]-v${Date.now()}.js`,
+          chunkFileNames: `assets/[name]-[hash]-v${Date.now()}.js`,
+          assetFileNames: `assets/[name]-[hash]-v${Date.now()}[extname]`,
           manualChunks(id) {
             if (!id.includes('node_modules')) return undefined;
             if (id.includes('/@tensorflow/') || id.includes('/seedrandom/')) return 'vendor-tensorflow';
@@ -33,13 +36,7 @@ export default defineConfig(({mode}) => {
       },
     },
     define: {
-      '__BUILD_TIME__': JSON.stringify((() => {
-        const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
-        const mm = String(now.getMonth() + 1).padStart(2, '0');
-        const dd = String(now.getDate()).padStart(2, '0');
-        const yyyy = now.getFullYear();
-        return `${mm}.${dd}.${yyyy}`;
-      })()),
+      '__BUILD_TIME__': JSON.stringify(Date.now().toString()),
     },
     resolve: {
       alias: {

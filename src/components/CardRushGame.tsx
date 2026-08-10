@@ -107,6 +107,28 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
   const [isWin, setIsWin] = useState(false);
   const [swipeHint, setSwipeHint] = useState<Direction | null>(null);
   const [statusText, setStatusText] = useState<string>('');
+  const [defeatCountdown, setDefeatCountdown] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (isGameOver && !isWin) {
+      setDefeatCountdown(5);
+    } else {
+      setDefeatCountdown(null);
+    }
+  }, [isGameOver, isWin]);
+
+  useEffect(() => {
+    if (defeatCountdown === null) return;
+    if (defeatCountdown <= 0) {
+      setDefeatCountdown(null);
+      onExit();
+      return;
+    }
+    const timer = setTimeout(() => {
+      setDefeatCountdown(prev => (prev !== null ? prev - 1 : null));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [defeatCountdown, onExit]);
 
   const rewardedRef = useRef(false);
   const boardRef = useRef<Cell[][]>([]);
@@ -696,13 +718,23 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
                     ? (language === 'ko' ? '보상을 획득했습니다.' : 'You earned the SNS reward.')
                     : (language === 'ko' ? '적 카드에게 포획되었습니다.' : 'The rogue cards caught you.')}
                 </div>
-                <button
-                  onClick={restartGame}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-indigo-600 hover:bg-indigo-500 px-4 py-3 text-xs font-extrabold tracking-wider uppercase shadow-xl shadow-indigo-900/20 transition-colors"
-                >
-                  <RotateCcw size={16} />
-                  {language === 'ko' ? '다시하기' : 'Play Again'}
-                </button>
+                <div className="flex items-center justify-center gap-2">
+                  <button
+                    onClick={restartGame}
+                    className="inline-flex items-center gap-2 rounded-2xl bg-indigo-600 hover:bg-indigo-500 px-4 py-3 text-xs font-extrabold tracking-wider uppercase shadow-xl shadow-indigo-900/20 transition-colors cursor-pointer"
+                  >
+                    <RotateCcw size={16} />
+                    {language === 'ko' ? '다시하기' : 'Play Again'}
+                  </button>
+                  <button
+                    onClick={onExit}
+                    className="inline-flex items-center gap-2 rounded-2xl bg-slate-800 hover:bg-slate-700 px-4 py-3 text-xs font-extrabold tracking-wider uppercase shadow-xl transition-colors text-slate-200 cursor-pointer"
+                  >
+                    {language === 'ko' 
+                      ? `나가기${defeatCountdown !== null ? ` (${defeatCountdown}초)` : ''}` 
+                      : `Exit${defeatCountdown !== null ? ` (${defeatCountdown}s)` : ''}`}
+                  </button>
+                </div>
               </div>
             )}
           </div>

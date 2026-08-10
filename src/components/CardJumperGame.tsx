@@ -682,7 +682,7 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
             style={{
               backgroundImage: `url('/card100.png')`,
               backgroundSize: '1000% 1100%',
-              backgroundPosition: `${((validPlayerCardId - 1) % 10) * (100 / 9)}% ${Math.floor((validPlayerCardId - 1) / 10) * 10}%`,
+              backgroundPosition: `${((validPlayerCardId - 1) % 10) * (100 / 9)}% ${Math.floor((validPlayerCardId - 1) / 10) * (100 / 10)}%`,
               imageRendering: 'pixelated',
             }}
           />

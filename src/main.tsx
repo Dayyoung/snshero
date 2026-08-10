@@ -4,27 +4,43 @@ import App from './App.tsx';
 import ErrorBoundary from './components/ErrorBoundary.tsx';
 import './index.css';
 
-// Chunk Load Error 전역 감지 및 자동 새로고침 로직
+// Chunk Load Error 전역 감지 및 자동 새로고침 & 최신 소스 반영 로직
 if (typeof window !== 'undefined') {
+  // Build Version Check & Automatic Purge
+  try {
+    const currentBuild = typeof __BUILD_TIME__ !== 'undefined' ? String(__BUILD_TIME__) : String(Date.now());
+    const storedBuild = localStorage.getItem('hero_build_version');
+    if (storedBuild && storedBuild !== currentBuild) {
+      console.log(`[BuildUpdate] New version detected (${storedBuild} -> ${currentBuild}). Purging stale browser caches.`);
+      if ('caches' in window) {
+        caches.keys().then((names) => {
+          names.forEach(name => caches.delete(name));
+        });
+      }
+    }
+    localStorage.setItem('hero_build_version', currentBuild);
+  } catch (e) {
+    console.warn('[BuildUpdate] Failed to sync build version:', e);
+  }
+
   const handleChunkError = (error: any) => {
-    const errorMsg = error?.message || error?.stack || '';
+    const errorMsg = error?.message || error?.stack || String(error || '');
     const isChunkError = 
       errorMsg.includes('Failed to fetch dynamically imported module') ||
       errorMsg.includes('Expected a JavaScript-or-Wasm module script') ||
       errorMsg.includes('is not a valid JavaScript MIME type') ||
       errorMsg.includes('MIME type') ||
-      errorMsg.includes('ChunkLoadError');
+      errorMsg.includes('ChunkLoadError') ||
+      errorMsg.includes('Loading chunk');
       
     if (isChunkError) {
-      console.warn("[ChunkError] Detected dynamic import failure. Attempting to reload the page to load the latest bundle...");
+      console.warn("[ChunkError] Detected dynamic import failure. Forcing page reload for latest bundle...");
       const lastReload = sessionStorage.getItem('last_chunk_reload');
       const now = Date.now();
       
-      if (!lastReload || now - parseInt(lastReload, 10) > 10000) {
+      if (!lastReload || now - parseInt(lastReload, 10) > 4000) {
         sessionStorage.setItem('last_chunk_reload', now.toString());
         window.location.reload();
-      } else {
-        console.error("[ChunkError] Reload was already attempted recently. Avoiding infinite loop.");
       }
     }
   };
