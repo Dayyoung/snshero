@@ -77,14 +77,14 @@ export function getCharacterAssetManifestEntry(cardId: number): CharacterAssetMa
     cardNameEn: getCardNameEn(cardId),
     faction: profile?.faction ?? 'human',
     rarityTier,
-    targetAssetPath: frontAssetPath,
-    frontAssetPath,
+    targetAssetPath: LEGACY_CARD_SPRITE,
+    frontAssetPath: LEGACY_CARD_SPRITE,
     backAssetPath: SHARED_BACK_ASSET,
     thumbnailAssetPath: `${ASSET_ROOT}/thumbs/card-${paddedId}.webp`,
     webtoonAssetPath: `${ASSET_ROOT}/webtoon/card-${paddedId}-cover.webp`,
     animationAssetPath: `${ASSET_ROOT}/animations/card-${paddedId}.webp`,
-    fallbackAssetPath: RARITY_FALLBACK_ASSETS[rarityTier],
-    lowSpecFallbackAssetPath: RARITY_LOW_SPEC_ASSETS[rarityTier],
+    fallbackAssetPath: LEGACY_CARD_SPRITE,
+    lowSpecFallbackAssetPath: LEGACY_CARD_SPRITE,
     legacySpritePath: LEGACY_CARD_SPRITE,
   };
 }

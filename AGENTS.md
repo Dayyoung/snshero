@@ -2,8 +2,8 @@
 # SNS히어로 에이전트 지침서 (AGENTS.md)
 
 ## 스프레드시트 개선 작업 진행 상태
-- **마지막 수정 완료 항목 ID**: `160` (구글 시트 총 160개 전체 항목 반영, IndexedDB 오셋/카드 Caching, rAF 배치 DOM 렌더링 최적화, CTA 버튼 위계 분리, 결과 화면 contain:paint 레이어 격리, 모달 팝오버 디자인 토큰 등 #1~#160 전체 구현 완료)
-- **최종 업데이트 일시**: 2026-08-08 20:12
+- **마지막 수정 완료 항목 ID**: `시트 161개 전체 검토 및 반영 완료` (Google Sheets ID: `1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s` 총 1~161번 항목 전체 검토 및 코드베이스 최적화 검증 완료)
+- **최종 업데이트 일시**: 2026-08-09 13:51
 
 ## 프로젝트 개요
 - **이름**: SNS히어로 (SNSHero Revolution)

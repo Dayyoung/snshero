@@ -611,13 +611,14 @@ export const NovelView: React.FC<NovelViewProps> = ({
                         className="flex items-center gap-1 px-2 py-1 border border-stone-300 rounded-sm bg-white/80 hover:bg-amber-100/60 transition-all cursor-pointer text-xs font-bold"
                         title={language === 'ko' ? `${char.cardName} 카드 위키 보기` : `View Card Wiki for ${char.cardName}`}
                       >
-                        <img
-                          src={imgUrl}
-                          alt={char.cardName}
-                          className="w-4 h-4 object-cover rounded-full border border-stone-400 shrink-0"
-                          onError={(e) => {
-                            // Fallback to cardDatabase avatar
-                            (e.target as HTMLImageElement).src = getAssetUrl(`/assets/cards/card-${paddedId}.webp`);
+                        <div
+                          className="w-4 h-4 rounded-full border border-stone-400 shrink-0 overflow-hidden"
+                          style={{
+                            backgroundImage: `url('${getAssetUrl('/card100.png')}')`,
+                            backgroundSize: '1000% 1100%',
+                            backgroundPosition: `${((char.cardId - 1) % 10) * (100 / 9)}% ${Math.floor((char.cardId - 1) / 10) * (100 / 10)}%`,
+                            backgroundRepeat: 'no-repeat',
+                            imageRendering: 'pixelated',
                           }}
                         />
                         <span>{char.cardName}</span>

@@ -32,8 +32,8 @@ const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   };
 };
 
-const BUILD_VERSION = "v2026.08.09-20:51";
-const LAST_BUILD_TIME = "2026.08.09 20:51:22";
+const BUILD_VERSION = "v2026.08.09-13:51";
+const LAST_BUILD_TIME = "2026.08.09 13:51:00";
 
 interface HomeViewProps {
   playSfx: (url: string) => void;

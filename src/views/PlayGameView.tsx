@@ -153,23 +153,12 @@ const MissionCharacterPortrait: React.FC<{ cardId?: number; name: string; classN
   className
 }) => {
   const safeCardId = CARD_DATABASE[cardId] ? cardId : 41;
-  const [showCharacterImage, setShowCharacterImage] = useState(true);
 
   return (
-    <div className={cn('relative flex h-full w-full items-center justify-center overflow-hidden', className)}>
-      {showCharacterImage ? (
-        <img
-          src={`/character/${String(safeCardId).padStart(3, '0')}.png`}
-          alt={name}
-          className="relative z-10 h-full w-full object-contain object-top scale-[1.25] origin-top drop-shadow-[0_10px_16px_rgba(15,23,42,0.35)] transition-transform duration-500 group-hover:scale-[1.35]"
-          loading="lazy"
-          onError={() => setShowCharacterImage(false)}
-        />
-      ) : (
-        <div className="relative z-10 aspect-[5/7] h-[86%] rounded-lg border border-white/35 bg-slate-950 shadow-xl shadow-slate-950/25">
-          <div className="h-full w-full rounded-[7px]" style={getMissionCardSpriteStyle(safeCardId)} />
-        </div>
-      )}
+    <div className={cn('relative flex h-full w-full items-center justify-center overflow-hidden', className)} title={name}>
+      <div className="relative z-10 aspect-[5/7] h-[86%] rounded-lg border border-white/35 bg-slate-950 shadow-xl shadow-slate-950/25">
+        <div className="h-full w-full rounded-[7px]" style={getMissionCardSpriteStyle(safeCardId)} />
+      </div>
     </div>
   );
 };
@@ -315,7 +304,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   initialMode
 }) => {
   const { language, lowSpecMode, targetFps, batterySaver } = useGameSettings();
-  const isLowPerformance = lowSpecMode || batterySaver || targetFps === '30';
+  const isIOSDevice = useMemo(() => {
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') return false;
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }, []);
+  const isLowPerformance = lowSpecMode || batterySaver || targetFps === '30' || isIOSDevice;
   const perf = usePerformanceMode();
   const [gameState, setGameState] = useState<GameState>(() => {
     if (initialMode === 'story') return 'story';
@@ -2424,6 +2418,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
   // Override auto-battle for tutorial or active auto-battle setting
   const isAutoBattle = (isTutorialMode && tutorialStep > 0 && tutorialStep < 3) || !!propIsAutoBattle;
+  const isAutoBattleRef = useRef(isAutoBattle);
+  useEffect(() => {
+    isAutoBattleRef.current = isAutoBattle;
+  }, [isAutoBattle]);
+
   const speedMultiplier = isAutoBattle ? 0.95 : (isLowPerformance ? 0.5 : 1);
   const [showInGameRules, setShowInGameRules] = useState(false);
 
@@ -2687,9 +2686,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [showDeckPreview, setShowDeckPreview] = useState(false);
   const [showMobileLogs, setShowMobileLogs] = useState(false);
 
-  // Sync gameLogs to localStorage
+  // Sync gameLogs to localStorage with Debounce to eliminate main-thread I/O jank
   useEffect(() => {
-    localStorage.setItem('hero_game_logs', JSON.stringify(gameLogs));
+    const timer = setTimeout(() => {
+      try {
+        localStorage.setItem('hero_game_logs', JSON.stringify(gameLogs));
+      } catch (e) {
+        // Safe catch
+      }
+    }, 500);
+    return () => clearTimeout(timer);
   }, [gameLogs]);
 
 
@@ -5301,6 +5307,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const handleAiTurn = (isPlayerAuto: boolean = false) => {
     if (gameOver) return;
     if (isEvaluating || isProcessingRef.current) return;
+    if (isPlayerAuto && !isAutoBattleRef.current) return;
     
     // Analytical sound
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
@@ -5333,9 +5340,23 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     isProcessingRef.current = true;
     if (!isPlayerAuto) setIsAiThinking(true);
 
-    // Start with "Analyzing" phase
-    const initialDelay = lowSpecMode ? 100 : Math.max(200, 500 * speedMultiplier);
+    // Initial Analyzing delay - ensure minimum idle window for UI/touch responsiveness
+    const initialDelay = lowSpecMode ? 250 : Math.max(350, 550 * speedMultiplier);
     setTimeout(() => {
+      // Re-verify cancellation inside async timer
+      if (isPlayerAuto && !isAutoBattleRef.current) {
+        setIsEvaluating(false);
+        isProcessingRef.current = false;
+        setIsAiThinking(false);
+        return;
+      }
+      if (gameOver) {
+        setIsEvaluating(false);
+        isProcessingRef.current = false;
+        setIsAiThinking(false);
+        return;
+      }
+
       if (battleType === 'matgo') {
         let chosenCardIdx = -1;
         let chosenBoardIdx = -1;
@@ -5382,8 +5403,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
         setAiReasoning({ text: 'matgo_thinking' as any, cardIdx: chosenCardIdx, boardIdx: chosenBoardIdx, isPlayer: isPlayerAuto });
         
-        const matgoApplyDelay = lowSpecMode ? 200 : Math.max(300, 600 * speedMultiplier);
+        const matgoApplyDelay = lowSpecMode ? 300 : Math.max(400, 650 * speedMultiplier);
         setTimeout(() => {
+          if (isPlayerAuto && !isAutoBattleRef.current) {
+            setIsEvaluating(false);
+            isProcessingRef.current = false;
+            setIsAiThinking(false);
+            return;
+          }
           isProcessingRef.current = false;
           setIsAiThinking(false);
           if (isPlayerAuto) {
@@ -5427,9 +5454,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       setAiReasoning({ text: move.reason, cardIdx: move.cardIdx, boardIdx: move.boardIdx, isPlayer: isPlayerAuto });
       if (!isPlayerAuto) addLog(t('log_ai_tactic', language, { reason: t(move.reason as any, language) }), 'system');
       
-      const applyDelay = lowSpecMode ? 200 : Math.max(300, 600 * speedMultiplier);
+      const applyDelay = lowSpecMode ? 300 : Math.max(400, 650 * speedMultiplier);
       // Wait a bit more to show the reasoning, then apply
       setTimeout(() => {
+        if (isPlayerAuto && !isAutoBattleRef.current) {
+          setIsEvaluating(false);
+          isProcessingRef.current = false;
+          setIsAiThinking(false);
+          return;
+        }
         isProcessingRef.current = false; // Reset just before apply
         setIsAiThinking(false);
         if (isPlayerAuto) {
@@ -5448,7 +5481,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       const filledCount = board.filter(c => c !== null).length;
       const canPlay = isMatgo ? (opponentHand.length > 0) : (filledCount < 9);
       if (canPlay) {
-        const delay = lowSpecMode ? 300 : Math.max(400, 1200 * speedMultiplier);
+        const delay = lowSpecMode ? 350 : Math.max(450, 1100 * speedMultiplier);
         const timer = setTimeout(() => {
           handleAiTurn(false);
         }, delay);
@@ -5489,7 +5522,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         const filledCount = board.filter(c => c !== null).length;
         const canPlay = isMatgo ? (playerHand.length > 0) : (filledCount < 9);
         if (canPlay) {
-          const delay = lowSpecMode ? 200 : Math.max(300, 600 * speedMultiplier);
+          const delay = lowSpecMode ? 350 : Math.max(450, 750 * speedMultiplier);
           const timer = setTimeout(() => {
             handleAiTurn(true);
           }, delay);
@@ -9878,7 +9911,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     : "bg-slate-900/90 border-slate-800 text-slate-400 hover:text-white"
                 )}
               >
-                <Bot size={15} className={cn(isAutoBattle ? "animate-spin text-black" : "text-slate-400")} />
+                <Bot size={15} className={cn(isAutoBattle ? "animate-pulse text-black" : "text-slate-400")} />
                 <span>{isAutoBattle ? "AUTO ON" : "AUTO OFF"}</span>
               </button>
             )}
@@ -10607,7 +10640,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
                             {/* Invalid Drop Target Shading / Prohibition Overlay (ID 78) */}
                             {card && selectedCardIdx !== null && selectedCardSide === 'player' && (
-                              <div className="absolute inset-0 z-[140] bg-red-950/80 backdrop-blur-[1px] border-2 border-red-500 rounded-lg flex flex-col items-center justify-center text-red-400 font-mono text-[9px] font-black cursor-not-allowed pointer-events-none shadow-inner">
+                              <div className="absolute inset-0 z-[140] bg-red-950/90 border-2 border-red-500 rounded-lg flex flex-col items-center justify-center text-red-400 font-mono text-[9px] font-black cursor-not-allowed pointer-events-none shadow-inner">
                                 <XCircle size={20} className="text-red-500 animate-pulse mb-0.5" />
                                 <span className="uppercase tracking-tighter">[X] {language === 'ko' ? '배치 불가' : 'OCCUPIED'}</span>
                               </div>
@@ -10893,7 +10926,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       <div 
         id="player-hand-container"
         className={cn(
-        "flex-1 min-h-[90px] relative overflow-visible flex flex-col items-center justify-center px-1 w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm",
+        "flex-1 min-h-[120px] relative overflow-visible flex flex-col items-center justify-center px-1 w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm pt-8 pb-2",
         turn === 'player' && !gameOver ? "border-indigo-500/50 z-20" : "border-blue-500/20 z-10"
       )}>
         
@@ -10917,7 +10950,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         </div>
 
         <div className={cn(
-          "w-full max-w-6xl mx-auto flex items-center gap-1 md:gap-2 h-full pb-4 overflow-x-auto overflow-y-visible scrollbar-hide px-4 touch-pan-x relative z-10",
+          "w-full max-w-6xl mx-auto flex items-center gap-1 md:gap-2 h-full pt-10 pb-3 overflow-x-auto overflow-y-visible scrollbar-hide px-4 touch-pan-x relative z-10",
           playerHand.length > 5 ? "justify-start md:justify-center" : "justify-center"
         )}>
 
@@ -10975,6 +11008,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     isRecommended && "shadow-[0_0_15px_rgba(96,165,250,0.5)]"
                   )} 
                   customImage={customCardImage}
+                  lowSpecMode={isLowPerformance}
                   isMatgo={false}
                 />
               </motion.div>

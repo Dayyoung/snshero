@@ -141,7 +141,13 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
   const { cardSkinTheme } = useGameSettings();
   // Use the card directly so we don't overwrite in-game state modifications (like WEAKEN/REINFORCE)
   const activeCard = card;
-  const performanceMode = lowSpecMode || isOnBoard;
+  const isIOSDevice = useMemo(() => {
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') return false;
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }, []);
+
+  const performanceMode = lowSpecMode || isOnBoard || isIOSDevice;
   const shouldHideBg = hideBackground || !!downloadMode;
   
   const [isFlipping, setIsFlipping] = useState(false);
@@ -413,11 +419,11 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
   const renderStatBadge = (index: number, positionClass: string) => (
     <div
       className={cn(
-        "absolute z-40 flex h-[20cqw] w-[20cqw] items-center justify-center rounded-lg border-[0.7cqw] border-slate-950/70 bg-white/70 backdrop-blur-[1px] font-sans shadow-[0_2px_8px_rgba(0,0,0,0.25)] ring-[0.8cqw] ring-slate-950/20",
+        "absolute z-40 flex h-[20cqw] w-[20cqw] items-center justify-center rounded-lg border-[0.7cqw] border-slate-950/70 bg-white/95 font-sans shadow-[0_2px_8px_rgba(0,0,0,0.25)] ring-[0.8cqw] ring-slate-950/20",
         !performanceMode && "transition-all duration-300",
         positionClass,
-        isOnBoard && "bg-white/75 ring-slate-950/25 shadow-[0_1px_5px_rgba(0,0,0,0.25)]",
-        statHalos[index] && !isOnBoard && "border-yellow-500/80 bg-gradient-to-br from-yellow-300/60 to-yellow-500/60 backdrop-blur-[1px] ring-yellow-100/70 shadow-[0_0_12px_rgba(250,204,21,0.5)]",
+        isOnBoard && "bg-white/85 ring-slate-950/25 shadow-[0_1px_5px_rgba(0,0,0,0.25)]",
+        statHalos[index] && !isOnBoard && "border-yellow-500/80 bg-gradient-to-br from-yellow-300/90 to-yellow-500/90 ring-yellow-100/70 shadow-[0_0_12px_rgba(250,204,21,0.5)]",
         combatHighlights?.includes(index) && "scale-[1.55] border-red-500 bg-amber-400 text-red-700 ring-red-300/80 shadow-[0_0_16px_rgba(239,68,68,0.7)] z-[100]"
       )}
       title={`${statDirections[index]} ${statChanges[index].total}`}
@@ -680,9 +686,11 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
                     MECHA CORE
                   </div>
                   {/* Target Reticle HUD Ring */}
-                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center z-0 opacity-40">
-                    <div className="w-[70%] h-[70%] rounded-full border border-dashed border-cyan-300 animate-spin" style={{ animationDuration: '25s' }} />
-                  </div>
+                  {!performanceMode && (
+                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center z-0 opacity-40">
+                      <div className="w-[70%] h-[70%] rounded-full border border-dashed border-cyan-300 animate-spin" style={{ animationDuration: '25s' }} />
+                    </div>
+                  )}
                 </>
               )}
               {!isSpriteSheet(currentImageSource || resolvedImage.source || '') ? (
@@ -690,9 +698,9 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
                   src={(currentImageSource || resolvedImage.source) as string}
                   alt={displayCardName}
                   className={cn(
-                    "relative z-10 h-full w-full object-contain drop-shadow-[0_6px_12px_rgba(0,0,0,0.55)] scale-[2.0]",
+                    "relative z-10 h-full w-full object-contain drop-shadow-[0_6px_12px_rgba(0,0,0,0.55)] scale-[1.3]",
                     !performanceMode && !isOnBoard && "transition-transform duration-500",
-                    !performanceMode && !isOnBoard && "group-hover/card:scale-[1.84]",
+                    !performanceMode && !isOnBoard && "group-hover/card:scale-[1.38]",
                     isOriginalMechaTheme && "filter drop-shadow-[0_0_10px_rgba(56,189,248,0.6)]"
                   )}
                   referrerPolicy="no-referrer"
@@ -755,7 +763,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
               </div>
               <div
                 className={cn(
-                  "relative flex aspect-square w-[46%] items-center justify-center rounded-full border border-white/20 text-white/85 shadow-[0_8px_24px_rgba(0,0,0,0.28)] backdrop-blur-sm",
+                  "relative flex aspect-square w-[46%] items-center justify-center rounded-full border border-white/20 text-white/85 shadow-[0_8px_24px_rgba(0,0,0,0.28)] bg-slate-900/80",
                   !performanceMode && "transition-transform duration-300",
                 )}
                 style={{
@@ -797,8 +805,8 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
       {currentImageSource && isSpriteSheet(currentImageSource) && visualCardId && (
         <div
           className={cn(
-            "absolute z-[27] pointer-events-none rounded-[inherit] overflow-hidden",
-            !performanceMode && !isOnBoard && "transition-transform duration-500 group-hover/card:scale-[0.92]",
+            "absolute z-[27] pointer-events-none rounded-[inherit] overflow-hidden scale-[1.3]",
+            !performanceMode && !isOnBoard && "transition-transform duration-500 group-hover/card:scale-[1.38]",
           )}
           style={{
             ...getSpritePosition(visualCardId, currentImageSource),
@@ -842,7 +850,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
       {activeCard.ability && !isOnBoard && (
         <div className="absolute bottom-[3cqw] right-[3cqw] z-50 group/ability">
           <div
-            className="w-[12cqw] h-[12cqw] bg-black/80 rounded-full border-[1px] border-white/50 flex items-center justify-center text-white p-[2cqw] shadow-[0_2px_5px_rgba(0,0,0,0.5)] backdrop-blur-sm relative"
+            className="w-[12cqw] h-[12cqw] bg-black/95 rounded-full border-[1px] border-white/50 flex items-center justify-center text-white p-[2cqw] shadow-[0_2px_5px_rgba(0,0,0,0.5)] relative"
             role="img"
             aria-label={activeCard.ability ? `${activeCard.ability.type} ${language === 'ko' ? activeCard.ability.description_ko : activeCard.ability.description_en}` : undefined}
             title={activeCard.ability ? (language === 'ko' ? activeCard.ability.description_ko : activeCard.ability.description_en) : undefined}

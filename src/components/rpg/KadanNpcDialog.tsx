@@ -29,14 +29,17 @@ const iconByType = {
   story: Sparkles,
 };
 
-const getCharacterPortraitUrl = (cardId?: number): string => {
+const getCharacterPortraitStyle = (cardId?: number): React.CSSProperties => {
   const safeId = cardId && CARD_DATABASE[cardId] ? cardId : 41;
-  const manifest = getCharacterAssetManifestEntry(safeId);
-  if (manifest?.targetAssetPath) {
-    return manifest.targetAssetPath;
-  }
-  const paddedId = String(safeId).padStart(3, '0');
-  return getAssetUrl(`/character/${paddedId}.png`);
+  const x = ((safeId - 1) % 10) * (100 / 9);
+  const y = Math.floor((safeId - 1) / 10) * (100 / 10);
+  return {
+    backgroundImage: `url('${getAssetUrl('/card100.png')}')`,
+    backgroundSize: '1000% 1100%',
+    backgroundPosition: `${x}% ${y}%`,
+    backgroundRepeat: 'no-repeat',
+    imageRendering: 'pixelated',
+  };
 };
 
 export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
@@ -199,19 +202,13 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
                 }}
               />
 
-              {/* 캐릭터 이미지 (여백 축소 & 케릭터 확대) */}
-              <img
-                src={getCharacterPortraitUrl(currentLine.cardId)}
-                alt={currentLine.name}
-                className="w-full h-full object-contain object-bottom scale-125 transition-transform duration-300 drop-shadow-[0_6px_16px_rgba(0,0,0,0.8)] filter brightness-105 contrast-105"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  if (!target.dataset.failedOnce) {
-                    target.dataset.failedOnce = 'true';
-                    target.src = getAssetUrl('/character/041.png');
-                  }
-                }}
-              />
+              {/* 캐릭터 이미지 (스프라이트 그리드 디스플레이) */}
+              <div className="w-full h-full p-2 flex items-center justify-center">
+                <div
+                  className="w-full h-full rounded-lg scale-125 transition-transform duration-300 drop-shadow-[0_6px_16px_rgba(0,0,0,0.8)] filter brightness-105 contrast-105"
+                  style={getCharacterPortraitStyle(currentLine.cardId)}
+                />
+              </div>
             </div>
 
             {/* ─── 대사 텍스트 및 진행도 게이지 ─── */}
