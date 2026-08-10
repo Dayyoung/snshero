@@ -1225,6 +1225,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
     playSfx('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
     try {
       const newSns = sns + unclaimed;
+      const currentSeason = localStorage.getItem('hero_current_season') || 'season1';
+      localStorage.setItem('hero_sns', String(newSns));
+      localStorage.setItem(`hero_sns_${currentSeason}`, String(newSns));
+      window.dispatchEvent(new Event('snshero_sns_updated'));
       
       if (syncUserData) {
         await syncUserData({

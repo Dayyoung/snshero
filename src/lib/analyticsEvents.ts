@@ -98,9 +98,10 @@ export function trackAnalytics(entry: AnalyticsPayload): void {
           console.debug('[analytics]', entry.event, entry.payload);
         }
 
-        // Future PostHog integration point:
-        // import posthog from 'posthog-js';
-        // posthog.capture(entry.event, entry.payload);
+        // Send event to Google Analytics (gtag.js) if available
+        if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+          (window as any).gtag('event', entry.event, entry.payload);
+        }
       } catch {
         // Silently ignore — analytics must never disrupt the UX
       }

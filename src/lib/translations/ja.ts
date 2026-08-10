@@ -902,7 +902,7 @@ export const ja = {
   overwhelming_victory: '圧倒的勝利',
   streak_victory_bonus: '{streak}連勝ボーナス！',
   ranking_battle: 'ランキング',
-  training_ground: 'ミッションゲーム',
+  training_ground: 'MISSION',
   mode_select_title: 'ミッションゲーム',
   mode_ai_battle: 'AI対戦',
   mode_tournament: 'トーナメント戦',

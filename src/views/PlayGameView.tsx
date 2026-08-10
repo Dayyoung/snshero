@@ -3,7 +3,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { CardData, AiStrategy, AiDifficulty, Language, PlayerPatterns, Item, Skill, UserStats, UserInfo } from '../types';
 import { CardItem } from '../components/CardItem';
-import { cn, getFormattedCardName } from '../lib/utils';
+import { cn, getFormattedCardName, getAssetUrl } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2, UserPlus, ShoppingBag, XCircle, Menu } from 'lucide-react';
 import { generateCard, INITIAL_CARDS, generateUniqueDeck, getCardStatWithBonus, generateAiName, syncCardWithDatabase, INITIAL_SKILLS, getCardPower, getNormalizedElement } from '../constants';
@@ -139,7 +139,7 @@ const getMissionCardSpriteStyle = (cardId: number): React.CSSProperties => {
   const x = ((safeCardId - 1) % 10) * (100 / 9);
   const y = Math.floor((safeCardId - 1) / 10) * (100 / 10);
   return {
-    backgroundImage: "url('/card100.png')",
+    backgroundImage: `url('${getAssetUrl('/card100.png')}')`,
     backgroundSize: '1000% 1100%',
     backgroundPosition: `${x}% ${y}%`,
     backgroundRepeat: 'no-repeat',
@@ -153,11 +153,25 @@ const MissionCharacterPortrait: React.FC<{ cardId?: number; name: string; classN
   className
 }) => {
   const safeCardId = CARD_DATABASE[cardId] ? cardId : 41;
+  const card = CARD_DATABASE[safeCardId];
+  const paddedId = String(safeCardId).padStart(3, '0');
+  const primaryImgUrl = card?.imageUrl || getAssetUrl(`/character/${paddedId}.png`);
+  const [imgFailed, setImgFailed] = useState(false);
 
   return (
     <div className={cn('relative flex h-full w-full items-center justify-center overflow-hidden', className)} title={name}>
-      <div className="relative z-10 aspect-[5/7] h-[86%] rounded-lg border border-white/35 bg-slate-950 shadow-xl shadow-slate-950/25">
-        <div className="h-full w-full rounded-[7px]" style={getMissionCardSpriteStyle(safeCardId)} />
+      <div className="relative z-10 w-full h-full bg-transparent overflow-hidden flex items-end justify-center">
+        {!imgFailed && primaryImgUrl ? (
+          <img
+            src={primaryImgUrl}
+            alt={name}
+            className="h-[110%] w-[110%] object-contain object-bottom filter drop-shadow-md transition-transform group-hover:scale-110"
+            referrerPolicy="no-referrer"
+            onError={() => setImgFailed(true)}
+          />
+        ) : (
+          <div className="h-[105%] w-[105%] rounded-md transform scale-110" style={getMissionCardSpriteStyle(safeCardId)} />
+        )}
       </div>
     </div>
   );
@@ -10985,7 +10999,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       <div 
         id="player-hand-container"
         className={cn(
-        "flex-1 min-h-[160px] sm:min-h-[200px] md:min-h-[230px] relative overflow-visible flex flex-col items-center justify-center px-1 w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm pt-8 pb-4",
+        "flex-1 min-h-[160px] sm:min-h-[200px] md:min-h-[230px] relative overflow-visible flex flex-col items-center justify-center p-2 sm:p-3 w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm",
         turn === 'player' && !gameOver ? "border-indigo-500/50 z-20" : "border-blue-500/20 z-10"
       )}>
         
@@ -11009,7 +11023,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         </div>
 
         <div className={cn(
-          "w-full max-w-6xl mx-auto flex items-center gap-1 md:gap-2 h-full pt-10 pb-3 overflow-x-auto overflow-y-visible scrollbar-hide px-4 touch-pan-x relative z-10",
+          "w-full max-w-6xl mx-auto flex items-center gap-1 md:gap-2 h-full py-2 overflow-x-auto overflow-y-visible scrollbar-hide px-4 touch-pan-x relative z-10 my-auto",
           playerHand.length > 5 ? "justify-start md:justify-center" : "justify-center"
         )}>
 

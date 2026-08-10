@@ -1001,7 +1001,7 @@ export const ko = {
   overwhelming_victory: '압도적 승리',
   streak_victory_bonus: '{streak}연승 보너스!',
   ranking_battle: '랭킹대전',
-  training_ground: '미션게임',
+  training_ground: '미션',
   mode_select_title: '미션게임',
   mode_ai_battle: 'AI대전',
   mode_tournament: '토너먼트대전',

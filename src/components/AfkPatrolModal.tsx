@@ -14,7 +14,6 @@ const AFK_LAST_CLAIM_KEY = 'hero_afk_patrol_last_claim';
 export const AfkPatrolModal: React.FC<AfkPatrolModalProps> = ({ language, onClaim }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [elapsedHours, setElapsedHours] = useState(0);
-  const [earnedGold, setEarnedGold] = useState(0);
   const [earnedSns, setEarnedSns] = useState(0);
 
   useEffect(() => {
@@ -25,8 +24,7 @@ export const AfkPatrolModal: React.FC<AfkPatrolModalProps> = ({ language, onClai
       // First time initialization (assume 2 hours accumulated)
       localStorage.setItem(AFK_LAST_CLAIM_KEY, (now - 2 * 60 * 60 * 1000).toString());
       setElapsedHours(2);
-      setEarnedGold(2000);
-      setEarnedSns(150);
+      setEarnedSns(300);
       setIsOpen(true);
       return;
     }
@@ -36,10 +34,8 @@ export const AfkPatrolModal: React.FC<AfkPatrolModalProps> = ({ language, onClai
     const diffHours = Math.min(12, Math.floor(diffMs / (1000 * 60 * 60)));
 
     if (diffHours >= 1) {
-      const gold = diffHours * 1000;
-      const sns = diffHours * 75;
+      const sns = diffHours * 150;
       setElapsedHours(diffHours);
-      setEarnedGold(gold);
       setEarnedSns(sns);
       setIsOpen(true);
     }
@@ -49,7 +45,7 @@ export const AfkPatrolModal: React.FC<AfkPatrolModalProps> = ({ language, onClai
     triggerHaptic('victory');
     localStorage.setItem(AFK_LAST_CLAIM_KEY, Date.now().toString());
     if (onClaim) {
-      onClaim(earnedGold, earnedSns);
+      onClaim(0, earnedSns);
     }
     setIsOpen(false);
   };
@@ -58,38 +54,35 @@ export const AfkPatrolModal: React.FC<AfkPatrolModalProps> = ({ language, onClai
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs font-mono">
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          className="relative w-full max-w-sm rounded-2xl border-2 border-indigo-500/40 bg-slate-900 p-5 text-white shadow-2xl text-center overflow-hidden"
+          exit={{ opacity: 0, scale: 0.95 }}
+          className="relative w-full max-w-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-5 text-[#201d1d] shadow-2xl text-center rounded-none overflow-hidden"
         >
-          {/* Background Aura */}
-          <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-40 h-40 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
-
           {/* Close Button */}
           <button
             onClick={() => setIsOpen(false)}
-            className="absolute top-3 right-3 p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+            className="absolute top-3 right-3 p-1.5 text-[#646262] hover:text-[#201d1d] rounded-sm hover:bg-[#f8f7f7] transition-colors cursor-pointer"
           >
             <X size={18} />
           </button>
 
           {/* Icon Header */}
-          <div className="mx-auto w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30 mb-3 border border-indigo-400/40">
-            <Gift size={28} className="animate-pulse" />
+          <div className="mx-auto w-12 h-12 rounded-sm bg-[#201d1d] flex items-center justify-center text-[#fdfcfc] shadow-sm mb-3">
+            <Gift size={24} />
           </div>
 
-          <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-indigo-400">
-            {language === 'ko' ? '오프라인 자동 탐색 보상' : 'AFK PATROL REWARD'}
+          <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#646262]">
+            {language === 'ko' ? '[오프라인 자동 탐색 보상]' : '[AFK PATROL REWARD]'}
           </span>
-          <h3 className="font-mono text-lg font-extrabold text-white mt-0.5 mb-1">
+          <h3 className="font-mono text-base font-extrabold text-[#201d1d] mt-1 mb-1">
             {language === 'ko' ? '탐색 완료 보상 수령' : 'Collect Exploration Loot'}
           </h3>
 
-          <p className="text-xs font-mono text-slate-400 mb-4 flex items-center justify-center gap-1.5">
-            <Clock size={14} className="text-indigo-400" />
+          <p className="text-xs font-mono text-[#646262] mb-4 flex items-center justify-center gap-1.5">
+            <Clock size={14} className="text-[#201d1d]" />
             <span>
               {language === 'ko'
                 ? `오프라인 방치 시간: ${elapsedHours}시간 (최대 12시간)`
@@ -98,28 +91,20 @@ export const AfkPatrolModal: React.FC<AfkPatrolModalProps> = ({ language, onClai
           </p>
 
           {/* Rewards Box */}
-          <div className="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-slate-950/80 border border-slate-800 mb-5">
-            <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 flex flex-col items-center">
-              <span className="text-[10px] font-mono text-slate-400 uppercase font-bold">{language === 'ko' ? '골드 획득' : 'GOLD'}</span>
-              <span className="font-mono text-base font-black text-amber-400 flex items-center gap-1 mt-0.5">
-                <Coins size={14} />
-                +{earnedGold.toLocaleString()}
-              </span>
-            </div>
-
-            <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 flex flex-col items-center">
-              <span className="text-[10px] font-mono text-slate-400 uppercase font-bold">{language === 'ko' ? 'SNS 포인트' : 'SNS PTS'}</span>
-              <span className="font-mono text-base font-black text-cyan-400 flex items-center gap-1 mt-0.5">
-                <Sparkles size={14} />
-                +{earnedSns.toLocaleString()}
-              </span>
-            </div>
+          <div className="p-3.5 rounded-sm bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] mb-5 flex flex-col items-center">
+            <span className="text-[10px] font-mono text-[#646262] uppercase font-bold tracking-wider">
+              {language === 'ko' ? '획득 보상 (SNS 포인트)' : 'EARNED SNS POINTS'}
+            </span>
+            <span className="font-mono text-xl font-black text-[#201d1d] flex items-center gap-1.5 mt-1">
+              <Sparkles size={18} className="text-indigo-600" />
+              +{earnedSns.toLocaleString()} PTS
+            </span>
           </div>
 
           {/* Claim Button */}
           <button
             onClick={handleClaim}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-600 to-indigo-600 hover:from-indigo-600 hover:to-purple-700 text-white font-mono text-sm font-extrabold shadow-lg shadow-indigo-500/25 transition-all active:scale-95 flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-sm bg-[#201d1d] hover:bg-[#383333] text-[#fdfcfc] font-mono text-sm font-extrabold transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-[0.98]"
           >
             <ShieldCheck size={18} />
             <span>{language === 'ko' ? '보상 일괄 수령' : 'Collect All Rewards'}</span>

@@ -895,7 +895,7 @@ export const vi = {
   overwhelming_victory: 'Chiến thắng áp đảo',
   streak_victory_bonus: 'Thưởng {streak} trận thắng liên tiếp!',
   ranking_battle: 'XẾP HẠNG',
-  training_ground: 'GAME NHIỆM VỤ',
+  training_ground: 'MISSION',
   mode_select_title: 'GAME NHIỆM VỤ',
   mode_ai_battle: 'Đấu với AI',
   mode_tournament: 'Đấu giải đấu',

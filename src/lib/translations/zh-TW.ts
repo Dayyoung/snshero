@@ -895,7 +895,7 @@ export const zhTW = {
   overwhelming_victory: '壓倒性勝利',
   streak_victory_bonus: '{streak}連勝獎勵！',
   ranking_battle: '排位賽',
-  training_ground: '任務遊戲',
+  training_ground: 'MISSION',
   mode_select_title: '任務遊戲',
   mode_ai_battle: 'AI對戰',
   mode_tournament: '錦標賽對戰',

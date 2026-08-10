@@ -890,7 +890,7 @@ export const th = {
   overwhelming_victory: 'ชัยชนะอย่างเด็ดขาด',
   streak_victory_bonus: 'โบนัสชนะต่อเนื่อง {streak} ครั้ง!',
   ranking_battle: 'จัดอันดับ',
-  training_ground: 'เกมภารกิจ',
+  training_ground: 'MISSION',
   mode_select_title: 'เกมภารกิจ',
   mode_ai_battle: 'ต่อสู้กับ AI',
   mode_tournament: 'การต่อสู้ทัวร์นาเมนต์',

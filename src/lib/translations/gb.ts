@@ -895,7 +895,7 @@ export const gb = {
   overwhelming_victory: 'Overwhelming Victory',
   streak_victory_bonus: '{streak} Win Streak Bonus!',
   ranking_battle: 'RANKING',
-  training_ground: 'MISSION GAMES',
+  training_ground: 'MISSION',
   mode_select_title: 'MISSION GAMES',
   mode_ai_battle: 'AI Battle',
   mode_tournament: 'Tournament Battle',

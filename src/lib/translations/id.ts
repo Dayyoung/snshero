@@ -895,7 +895,7 @@ export const id = {
   overwhelming_victory: 'Kemenangan Telak',
   streak_victory_bonus: 'Bonus {streak} Kemenangan Beruntun!',
   ranking_battle: 'PERINGKAT',
-  training_ground: 'MISI GAME',
+  training_ground: 'MISSION',
   mode_select_title: 'MISI GAME',
   mode_ai_battle: 'Pertandingan AI',
   mode_tournament: 'Pertandingan Turnamen',

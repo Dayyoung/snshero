@@ -895,7 +895,7 @@ export const es = {
   overwhelming_victory: 'Victoria Abrumadora',
   streak_victory_bonus: '¡Bono de racha de {streak} victorias!',
   ranking_battle: 'RANKING',
-  training_ground: 'JUEGOS DE MISIÓN',
+  training_ground: 'MISSION',
   mode_select_title: 'JUEGOS DE MISIÓN',
   mode_ai_battle: 'Batalla de IA',
   mode_tournament: 'Batalla de Torneo',

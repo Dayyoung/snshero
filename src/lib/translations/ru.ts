@@ -890,7 +890,7 @@ export const ru = {
   overwhelming_victory: 'Подавляющая победа',
   streak_victory_bonus: 'Бонус за серию из {streak} побед!',
   ranking_battle: 'РЕЙТИНГ',
-  training_ground: 'МИССИИ-ИГРЫ',
+  training_ground: 'MISSION',
   mode_select_title: 'МИССИИ-ИГРЫ',
   mode_ai_battle: 'Бой с ИИ',
   mode_tournament: 'Турнирный бой',

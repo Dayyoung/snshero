@@ -45,7 +45,7 @@ export const StoryStageSelectModal: React.FC<StoryStageSelectModalProps> = ({
   // Assume total 12 episodes, each has max 3 stars (Total 36 stars possible)
   const totalStars = currentProgress * 3; // Simplified star calculation for progress
 
-  const handleClaimStarReward = (starThreshold: number, rewardGold: number) => {
+  const handleClaimStarReward = (starThreshold: number, rewardSns: number) => {
     if (totalStars < starThreshold) return;
     if (claimedRewards.includes(starThreshold)) return;
 
@@ -54,19 +54,31 @@ export const StoryStageSelectModal: React.FC<StoryStageSelectModalProps> = ({
     setClaimedRewards(updated);
     localStorage.setItem(STAR_REWARDS_KEY, JSON.stringify(updated));
 
-    // Update gold
-    const currentGold = Number(localStorage.getItem('hero_gold') || 0);
-    localStorage.setItem('hero_gold', String(currentGold + rewardGold));
-    window.dispatchEvent(new Event('snshero_gold_updated'));
+    // Update SNS points
+    const season = localStorage.getItem('hero_current_season') || 'season1';
+    const currentSns = Number(localStorage.getItem(`hero_sns_${season}`) || localStorage.getItem('hero_sns') || 1000);
+    const newSns = currentSns + rewardSns;
+    localStorage.setItem(`hero_sns_${season}`, String(newSns));
+    localStorage.setItem('hero_sns', String(newSns));
+    window.dispatchEvent(new Event('snshero_sns_updated'));
   };
 
   const handleSweep = (epId: number) => {
     triggerHaptic('heavy');
     onSweepStage(epId);
+
+    // Give SNS points for sweep
+    const season = localStorage.getItem('hero_current_season') || 'season1';
+    const currentSns = Number(localStorage.getItem(`hero_sns_${season}`) || localStorage.getItem('hero_sns') || 1000);
+    const newSns = currentSns + 300;
+    localStorage.setItem(`hero_sns_${season}`, String(newSns));
+    localStorage.setItem('hero_sns', String(newSns));
+    window.dispatchEvent(new Event('snshero_sns_updated'));
+
     setSweepResult({
-      gold: 600,
+      gold: 300,
       exp: 150,
-      item: language === 'ko' ? '초급 카드 강화석 x2' : 'Basic Upgrade Stone x2',
+      item: language === 'ko' ? '초급 카드 강화석 x2 (+300 SNS PTS)' : 'Basic Upgrade Stone x2 (+300 SNS PTS)',
     });
   };
 
@@ -139,9 +151,9 @@ export const StoryStageSelectModal: React.FC<StoryStageSelectModalProps> = ({
 
               <div className="grid grid-cols-3 gap-2">
                 {[
-                  { stars: 6, gold: 3000 },
-                  { stars: 12, gold: 8000 },
-                  { stars: 18, gold: 15000 },
+                  { stars: 6, sns: 1000 },
+                  { stars: 12, sns: 2500 },
+                  { stars: 18, sns: 5000 },
                 ].map((item) => {
                   const isClaimed = claimedRewards.includes(item.stars);
                   const canClaim = totalStars >= item.stars && !isClaimed;
@@ -149,7 +161,7 @@ export const StoryStageSelectModal: React.FC<StoryStageSelectModalProps> = ({
                     <button
                       key={item.stars}
                       disabled={!canClaim && !isClaimed}
-                      onClick={() => handleClaimStarReward(item.stars, item.gold)}
+                      onClick={() => handleClaimStarReward(item.stars, item.sns)}
                       className={`p-2 rounded-lg border text-center transition-all flex flex-col items-center justify-between ${
                         isClaimed
                           ? 'bg-slate-900/50 border-slate-800 text-slate-500 opacity-60'
@@ -161,7 +173,7 @@ export const StoryStageSelectModal: React.FC<StoryStageSelectModalProps> = ({
                       <span className="text-[10px] font-mono font-bold">{item.stars}★ 달성</span>
                       <Gift size={16} className={`my-1 ${canClaim ? 'text-amber-400' : 'text-slate-500'}`} />
                       <span className="text-[9px] font-mono font-bold">
-                        {isClaimed ? (language === 'ko' ? '수령완료' : 'Claimed') : `+${item.gold}G`}
+                        {isClaimed ? (language === 'ko' ? '수령완료' : 'Claimed') : `+${item.sns} PTS`}
                       </span>
                     </button>
                   );

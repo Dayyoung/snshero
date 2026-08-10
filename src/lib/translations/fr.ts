@@ -895,7 +895,7 @@ export const fr = {
   overwhelming_victory: 'Victoire Écrasante',
   streak_victory_bonus: 'Bonus de série de {streak} victoires !',
   ranking_battle: 'CLASSEMENT',
-  training_ground: 'JEUX DE MISSION',
+  training_ground: 'MISSION',
   mode_select_title: 'JEUX DE MISSION',
   mode_ai_battle: "Combat d'IA",
   mode_tournament: 'Combat de Tournoi',

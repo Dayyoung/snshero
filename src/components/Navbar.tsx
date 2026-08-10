@@ -51,8 +51,9 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
   ];
 
   return (
-    <nav className="fixed bottom-[calc(env(safe-area-inset-bottom)+0.75rem)] left-1/2 -translate-x-1/2 w-[calc(100%-1.5rem)] h-16 sm:h-[68px] flex rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] z-[9999] pointer-events-auto max-w-[1024px] overflow-hidden font-mono">
-      {items.map((item) => {
+    <nav className="fixed bottom-0 left-0 right-0 w-full bg-[#fdfcfc] border-t border-[rgba(15,0,0,0.12)] shadow-xl z-[9999] pointer-events-auto pb-[env(safe-area-inset-bottom)] font-mono">
+      <div className="max-w-[1024px] mx-auto w-full h-16 sm:h-[72px] flex items-stretch">
+        {items.map((item) => {
         const isActive = currentView === item.id;
         return (
           <button
@@ -70,7 +71,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
               playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
             }}
             className={cn(
-              "flex-1 flex flex-col items-center justify-center gap-1 sm:gap-1.5 transition-all relative group touch-target cursor-pointer",
+              "flex-1 h-full flex flex-col items-center justify-center gap-1 sm:gap-1.5 py-1 px-0.5 transition-all relative group cursor-pointer select-none",
               isActive 
                 ? "text-[#fdfcfc]" 
                 : "text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7]"
@@ -80,14 +81,14 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
             {isActive && (
               <motion.div
                 layoutId="navbar-active"
-                className="absolute inset-x-1.5 inset-y-1.5 bg-[#201d1d] rounded-sm"
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                className="absolute inset-x-1 inset-y-1 bg-[#201d1d] rounded-sm"
+                transition={{ type: "spring", stiffness: 350, damping: 30 }}
               />
             )}
             
             <div className="relative">
               <item.icon 
-                size={18} 
+                size={20} 
                 strokeWidth={isActive ? 2.5 : 2}
                 className="relative z-10 transition-transform duration-200"
               />
@@ -98,12 +99,13 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
                 </span>
               )}
             </div>
-            <span className="max-w-full truncate px-0.5 text-[9px] sm:text-[10px] font-black tracking-wider uppercase relative z-10 font-mono">
+            <span className="max-w-full truncate px-0.5 text-[10px] sm:text-[11px] font-black tracking-wide uppercase relative z-10 font-mono leading-none">
               {item.label}
             </span>
           </button>
         );
       })}
+      </div>
     </nav>
   );
 };

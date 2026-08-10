@@ -895,7 +895,7 @@ export const zhCN = {
   overwhelming_victory: '压倒性胜利',
   streak_victory_bonus: '{streak}连胜奖励！',
   ranking_battle: '排位赛',
-  training_ground: '任务游戏',
+  training_ground: 'MISSION',
   mode_select_title: '任务游戏',
   mode_ai_battle: 'AI对战',
   mode_tournament: '锦标赛对战',

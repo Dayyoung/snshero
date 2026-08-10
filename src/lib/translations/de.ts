@@ -895,7 +895,7 @@ export const de = {
   overwhelming_victory: 'Überwältigender Sieg',
   streak_victory_bonus: '{streak}er-Siegesserie-Bonus!',
   ranking_battle: 'RANGLISTE',
-  training_ground: 'MISSIONS-SPIELE',
+  training_ground: 'MISSION',
   mode_select_title: 'MISSIONS-SPIELE',
   mode_ai_battle: 'AI-Kampf',
   mode_tournament: 'Turnierkampf',

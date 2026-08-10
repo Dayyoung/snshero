@@ -65,7 +65,7 @@ export const BGM_TRACKS: BgmTrack[] = [
       th: '게임เวิลด์บีท',
       vi: 'Nhịp điệu thế giới game'
     },
-    url: 'https://assets.mixkit.co/music/466/466.mp3',
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
     author: 'Bernardo R.'
   }
 ];

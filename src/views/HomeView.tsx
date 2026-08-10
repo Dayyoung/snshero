@@ -823,8 +823,16 @@ export const HomeView: React.FC<HomeViewProps> = ({
         language={language}
         onClaimReward={(snsAmount, packType) => {
           // Update SNS points in localStorage
-          const currentSns = Number(localStorage.getItem('hero_sns') || 0);
-          localStorage.setItem('hero_sns', String(currentSns + snsAmount));
+          const season = localStorage.getItem('hero_current_season') || 'season1';
+          const savedSnsStr = localStorage.getItem(`hero_sns_${season}`) || localStorage.getItem('hero_sns') || '1000';
+          const currentSns = Number(savedSnsStr) || 0;
+          const newSns = currentSns + snsAmount;
+          localStorage.setItem(`hero_sns_${season}`, String(newSns));
+          localStorage.setItem('hero_sns', String(newSns));
+          
+          const currentEarned = Number(localStorage.getItem('hero_earned_sns') || '1000');
+          localStorage.setItem('hero_earned_sns', String(currentEarned + snsAmount));
+
           window.dispatchEvent(new Event('snshero_sns_updated'));
         }}
         playSfx={playSfx}
@@ -834,7 +842,22 @@ export const HomeView: React.FC<HomeViewProps> = ({
       <NoticeModal language={language} onNavigate={onNavigate} />
 
       {/* AFK Patrol Rewards Modal (Item 64) */}
-      <AfkPatrolModal language={language} />
+      <AfkPatrolModal
+        language={language}
+        onClaim={(gold, sns) => {
+          const season = localStorage.getItem('hero_current_season') || 'season1';
+          const savedSnsStr = localStorage.getItem(`hero_sns_${season}`) || localStorage.getItem('hero_sns') || '1000';
+          const currentSns = Number(savedSnsStr) || 0;
+          const newSns = currentSns + sns;
+          localStorage.setItem(`hero_sns_${season}`, String(newSns));
+          localStorage.setItem('hero_sns', String(newSns));
+          
+          const currentEarned = Number(localStorage.getItem('hero_earned_sns') || '1000');
+          localStorage.setItem('hero_earned_sns', String(currentEarned + sns));
+          
+          window.dispatchEvent(new Event('snshero_sns_updated'));
+        }}
+      />
 
       {/* Notification Center Modal (Item 71) */}
       <NotificationCenterModal

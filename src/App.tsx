@@ -3314,14 +3314,21 @@ function AppContent() {
 
   const [bgmTrackId, setBgmTrackId] = useState(() => {
     const saved = localStorage.getItem('hero_bgm_track');
-    return saved || 'worldbeat';
+    return saved || 'helix-1';
   });
 
   const [bgmAudio] = useState(() => {
-    const savedTrackId = localStorage.getItem('hero_bgm_track') || 'worldbeat';
+    const savedTrackId = localStorage.getItem('hero_bgm_track') || 'helix-1';
     const track = BGM_TRACKS.find(t => t.id === savedTrackId) || BGM_TRACKS[0];
     const audio = new Audio(track.url);
     audio.loop = true;
+    audio.onerror = () => {
+      console.warn("BGM audio load error, falling back to default track");
+      if (audio.src !== BGM_TRACKS[0].url) {
+        audio.src = BGM_TRACKS[0].url;
+        audio.load();
+      }
+    };
     return audio;
   });
 
