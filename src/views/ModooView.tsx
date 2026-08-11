@@ -25,7 +25,7 @@ const DEPARTMENTS = [
     nameKo: '기획팀', 
     nameEn: 'Product Planning', 
     roleTitle: '서비스 기획자 PM',
-    emoji: '📋', 
+    emoji: '👨‍💼', 
     avatarBg: 'bg-amber-100 text-amber-900 border-amber-400',
     deskItems: ['☕️ 아메리카노', '📝 와이어프레임', '💡 아이디어 노트'],
     statusEmotes: ['💭 생각 중...', '📄 기획서 수립!', '☕ 커피 충전'],
@@ -35,7 +35,7 @@ const DEPARTMENTS = [
     nameKo: '개발팀', 
     nameEn: 'Software Engineering', 
     roleTitle: '수석 풀스택 개발자',
-    emoji: '💻', 
+    emoji: '👨‍💻', 
     avatarBg: 'bg-emerald-100 text-emerald-900 border-emerald-400',
     deskItems: ['🎧 헤드폰', '⌨️ 기계식 키보드', '⚡️ 몬스터 에너시'],
     statusEmotes: ['🔥 빌드 수정 중', '🚀 구글 폼 연동!', '🐛 버그 박멸'],
@@ -45,7 +45,7 @@ const DEPARTMENTS = [
     nameKo: '디자인팀', 
     nameEn: 'UI/UX Design', 
     roleTitle: '비주얼 아트 디자이너',
-    emoji: '🎨', 
+    emoji: '👩‍🎨', 
     avatarBg: 'bg-purple-100 text-purple-900 border-purple-400',
     deskItems: ['📐 피그마 가이드', '🪴 미니 화분', '🖌️ 타블릿 펜'],
     statusEmotes: ['✨ 픽셀 정렬 중', '🎨 웜크림 컬러픽', '👁️ 눈높이 맞춤'],
@@ -210,13 +210,44 @@ export const ModooView: React.FC<ModooViewProps> = ({ language, onNavigate }) =>
     );
   };
 
-  // 통계 계산
-  const totalCount = rows.length;
-  const completedCount = rows.filter(r => r.status.includes('완료')).length;
-  const inProgressCount = rows.filter(r => r.status.includes('중') || r.status.includes('진행')).length;
-  const pendingCount = rows.filter(r => r.status.includes('전') || r.status.includes('대기')).length;
+  // 동일 작업명에 대해 [작업완료 > 작업중 > 작업전] 순으로 단일 대표 상태만 유지
+  const deduplicatedRows = React.useMemo(() => {
+    const taskMap = new Map<string, StatusRow>();
 
-  const filteredRows = [...rows]
+    const getPriority = (statusStr: string): number => {
+      if (statusStr.includes('완료')) return 3; // 최우선 (작업완료)
+      if (statusStr.includes('중') || statusStr.includes('진행')) return 2; // 작업중
+      return 1; // 작업전/대기
+    };
+
+    rows.forEach(row => {
+      const normalizedKey = `${row.department.trim()}::${row.taskName.trim().replace(/\s+/g, ' ')}`;
+      const existing = taskMap.get(normalizedKey);
+
+      if (!existing) {
+        taskMap.set(normalizedKey, row);
+      } else {
+        const existingPriority = getPriority(existing.status);
+        const currentPriority = getPriority(row.status);
+
+        if (currentPriority > existingPriority) {
+          taskMap.set(normalizedKey, row);
+        } else if (currentPriority === existingPriority) {
+          taskMap.set(normalizedKey, row);
+        }
+      }
+    });
+
+    return Array.from(taskMap.values());
+  }, [rows]);
+
+  // 통계 계산 (중복 제거된 대표 상태 기준)
+  const totalCount = deduplicatedRows.length;
+  const completedCount = deduplicatedRows.filter(r => r.status.includes('완료')).length;
+  const inProgressCount = deduplicatedRows.filter(r => r.status.includes('중') || r.status.includes('진행')).length;
+  const pendingCount = deduplicatedRows.filter(r => r.status.includes('전') || r.status.includes('대기')).length;
+
+  const filteredRows = [...deduplicatedRows]
     .filter(r => {
       const matchTab = activeTab === 'all' || r.department.includes(activeTab) || activeTab.includes(r.department);
       const query = searchQuery.trim().toLowerCase();
