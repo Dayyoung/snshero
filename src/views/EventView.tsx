@@ -15,12 +15,12 @@ import { useSeasonMissions } from '../hooks/useSeasonMissions';
 import { DAILY_MISSIONS, MISSION_TYPE_META } from '../content/seasonMissions';
 import { getSpendShortfall, SNS_ECONOMY_COSTS, SNS_ECONOMY_EARNINGS } from '../content/snsEconomy';
 
-const LuckyRoulette = lazy(() => import('../components/LuckyRoulette').then(module => ({ default: module.LuckyRoulette })));
-const ClawMachine = lazy(() => import('../components/ClawMachine').then(module => ({ default: module.ClawMachine })));
-const QrReward = lazy(() => import('../components/QrReward').then(module => ({ default: module.QrReward })));
-const ArReward = lazy(() => import('../components/ArReward').then(module => ({ default: module.ArReward })));
-const ArCardViewer = lazy(() => import('../components/ArCardViewer').then(module => ({ default: module.ArCardViewer })));
-const PatchNoteList = lazy(() => import('../components/PatchNoteList').then(module => ({ default: module.PatchNoteList })));
+import { LuckyRoulette } from '../components/LuckyRoulette';
+import { ClawMachine } from '../components/ClawMachine';
+import { QrReward } from '../components/QrReward';
+import { ArReward } from '../components/ArReward';
+import { ArCardViewer } from '../components/ArCardViewer';
+import { PatchNoteList } from '../components/PatchNoteList';
 
 interface EventViewProps {
   language: Language;

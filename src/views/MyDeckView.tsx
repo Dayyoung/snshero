@@ -974,14 +974,14 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             }}
             id="inventory-btn"
             className={cn(
-              "px-2 sm:px-6 py-2.5 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 sm:gap-2 border touch-target active:scale-[0.98] shadow-sm cursor-pointer",
+              "px-2 sm:px-4 py-2.5 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-tight transition-all flex items-center justify-center gap-1 sm:gap-2 border touch-target active:scale-[0.98] shadow-sm cursor-pointer shrink-0",
               selectionContext === 'equipment' 
                 ? "bg-white text-blue-600 border-blue-200" 
                 : "bg-slate-900 text-white hover:bg-slate-800 border-slate-900 shadow-slate-900/10"
             )}
           >
             <Package size={14} className="shrink-0 sm:w-4 sm:h-4" />
-            <span className="truncate">{t('inventory', language)}</span>
+            <span className="whitespace-nowrap">{t('inventory', language)}</span>
           </button>
           <button 
             onClick={() => {

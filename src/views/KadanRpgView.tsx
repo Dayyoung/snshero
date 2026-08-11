@@ -327,6 +327,12 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
       { name: t('kadan_rpg_ending_epilogue_title', language), text: t('kadan_rpg_ending_epilogue_3', language) },
     ];
 
+  const handleCloseDialog = useCallback(() => {
+    setActiveEvent(null);
+    setTargetTile(null);
+    setAutoMode(false);
+  }, [setAutoMode]);
+
   const handleReincarnate = useCallback(() => {
     setActiveEvent(null);
     setBattleEvent(null);
@@ -375,7 +381,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
         </div>
       </header>
 
-      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-4 overflow-y-auto p-4 pb-24 md:p-6">
+      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-4 overflow-y-auto p-3 sm:p-4 md:p-6 pb-[calc(env(safe-area-inset-bottom)+5rem)]">
         <div className="relative">
           <KadanWorldMap
             region={currentRegion}
@@ -401,7 +407,8 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
               onStartBattle={() => setBattleEvent(activeEvent)}
               onClaimReward={() => setRewardEvent(activeEvent)}
               onComplete={() => completeActiveEvent(activeEvent)}
-              onClose={() => setActiveEvent(null)}
+              onClose={handleCloseDialog}
+              onToggleAutoMode={() => setAutoMode(!progress.autoMode)}
             />
           )}
 
@@ -449,7 +456,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
         </div>
 
         {/* ─── 맵 바로 아래 배치된 진행도(Progress) 카드 ─── */}
-        <section className="w-full rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-4 shadow-xs">
+        <section className="w-full rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-4 mb-20 pb-6 shadow-xs">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex-1 min-w-0">
               <div className="mb-2 flex items-center justify-between text-xs font-bold text-[#646262]">

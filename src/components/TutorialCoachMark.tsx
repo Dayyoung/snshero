@@ -22,8 +22,8 @@ interface TutorialCoachMarkProps {
 
 const placementClasses: Record<ContextualTutorialPlacement, string> = {
   'top-center': 'items-start justify-center pt-20',
-  'bottom-center': 'items-end justify-center pb-24',
-  'bottom-right': 'items-end justify-end pb-24 pr-4 sm:pr-6',
+  'bottom-center': 'items-end justify-center pb-28 sm:pb-24',
+  'bottom-right': 'items-end justify-end pb-28 sm:pb-24 pr-4 sm:pr-6',
 };
 
 export const TutorialCoachMark: React.FC<TutorialCoachMarkProps> = ({
@@ -56,6 +56,8 @@ export const TutorialCoachMark: React.FC<TutorialCoachMarkProps> = ({
           <motion.aside
             {...motionProps}
             className="pointer-events-auto w-full max-w-md rounded-[24px] border border-slate-200/80 bg-white/95 p-5 shadow-[0_18px_48px_rgba(15,23,42,0.18)] backdrop-blur-xl"
+            role="dialog"
+            aria-modal="true"
             aria-live="polite"
             aria-label={t('contextual_tutorial_badge', language)}
           >

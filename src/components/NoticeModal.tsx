@@ -47,12 +47,15 @@ export const NoticeModal: React.FC<NoticeModalProps> = ({ language, onNavigate, 
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+      <div className="fixed inset-0 z-[10050] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           className="relative w-full max-w-md rounded-2xl border-2 border-amber-500/30 bg-slate-900 p-5 text-white shadow-2xl overflow-hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label={t('season_notice_title', language) || 'Notice'}
         >
           {/* Top Banner Accent */}
           <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500" />

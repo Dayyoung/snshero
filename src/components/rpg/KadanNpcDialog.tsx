@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Box, CheckCircle2, MessageCircle, Sparkles, Swords } from 'lucide-react';
+import { Bot, Box, CheckCircle2, MessageCircle, Pause, Sparkles, Swords } from 'lucide-react';
 import { cn, getAssetUrl } from '../../lib/utils';
 import { t } from '../../lib/i18n';
 import { CARD_DATABASE } from '../../cardDatabase';
 import type { Language } from '../../types';
 import type { KadanRpgEvent } from '../../content/kadanRpgStory';
 import { KADAN_RPG_NOVEL_SCRIPTS } from '../../content/kadanRpgNovelScript';
-import { getCharacterAssetManifestEntry } from '../../content/characterAssetManifest';
 
 interface KadanNpcDialogProps {
   event: KadanRpgEvent;
@@ -19,6 +18,7 @@ interface KadanNpcDialogProps {
   onClaimReward: () => void;
   onComplete: () => void;
   onClose: () => void;
+  onToggleAutoMode?: () => void;
 }
 
 const iconByType = {
@@ -53,6 +53,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
   onClaimReward,
   onComplete,
   onClose,
+  onToggleAutoMode,
 }) => {
   const Icon = iconByType[event.nodeType];
   const card = CARD_DATABASE[event.speakerCardId];
@@ -152,7 +153,12 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
     : t('kadan_rpg_continue', language);
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <div
+      className="fixed inset-0 z-[10010] flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
+      role="dialog"
+      aria-modal="true"
+      aria-label={t(event.chapterTitleKey, language) || 'Dialogue'}
+    >
       {/* ─── 대사 텍스트 박스 (중앙 팝업 모달) ─── */}
       <div className="relative z-20 w-full max-w-2xl sm:max-w-3xl overflow-hidden rounded-xl border-2 border-slate-900/90 bg-slate-950/95 text-white shadow-2xl backdrop-blur-md">
         {/* 상단 오버레이 헤더 (화자 뱃지 & 에피소드 태그) */}
@@ -245,30 +251,48 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
         </div>
 
         {/* 액션 버튼 바 */}
-        <div className="flex flex-wrap items-center justify-end gap-2 border-t border-slate-800/80 bg-slate-900/60 p-3">
-          <button
-            type="button"
-            onClick={onClose}
-            className="min-h-10 rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-xs font-bold text-slate-300 transition-all hover:bg-slate-700 active:scale-95 cursor-pointer"
-          >
-            {t('kadan_rpg_close', language)}
-          </button>
-          <button
-            type="button"
-            onClick={advanceConversation}
-            className={cn(
-              'min-h-10 rounded-lg px-5 py-2 text-xs font-bold text-white shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-1.5',
-              isFinalLine && canStartBattle
-                ? 'bg-rose-600 hover:bg-rose-500 shadow-rose-600/30'
-                : isFinalLine && canClaimReward
-                  ? 'bg-amber-500 hover:bg-amber-400 shadow-amber-500/30'
-                  : event.isEnding
-                    ? 'bg-violet-600 hover:bg-violet-500 shadow-violet-600/30'
-                    : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/30',
-            )}
-          >
-            <span>{primaryLabel}</span>
-          </button>
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-800/80 bg-slate-900/60 p-3">
+          {onToggleAutoMode ? (
+            <button
+              type="button"
+              onClick={onToggleAutoMode}
+              className={cn(
+                "min-h-10 rounded-lg px-3 py-2 text-xs font-bold transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 border",
+                autoMode
+                  ? "bg-indigo-600/90 border-indigo-500 text-white shadow-sm"
+                  : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
+              )}
+            >
+              {autoMode ? <Bot size={14} className="animate-pulse text-cyan-200" /> : <Pause size={14} />}
+              <span>{autoMode ? t('kadan_rpg_auto_on', language) : t('kadan_rpg_auto_off', language)}</span>
+            </button>
+          ) : <div />}
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="min-h-10 rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-xs font-bold text-slate-300 transition-all hover:bg-slate-700 active:scale-95 cursor-pointer"
+            >
+              {t('kadan_rpg_close', language)}
+            </button>
+            <button
+              type="button"
+              onClick={advanceConversation}
+              className={cn(
+                'min-h-10 rounded-lg px-5 py-2 text-xs font-bold text-white shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-1.5',
+                isFinalLine && canStartBattle
+                  ? 'bg-rose-600 hover:bg-rose-500 shadow-rose-600/30'
+                  : isFinalLine && canClaimReward
+                    ? 'bg-amber-500 hover:bg-amber-400 shadow-amber-500/30'
+                    : event.isEnding
+                      ? 'bg-violet-600 hover:bg-violet-500 shadow-violet-600/30'
+                      : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/30',
+              )}
+            >
+              <span>{primaryLabel}</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

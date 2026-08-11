@@ -39,6 +39,8 @@ interface CardItemProps {
   downloadMode?: 'ally' | 'enemy' | null;
   /** 적용된 카드 스킨 */
   activeSkin?: CardSkin | null;
+  /** 전투 대미지/피격 상태 여부 (쉐이크 및 레드 플래시 애니메이션) */
+  isDamaged?: boolean;
 }
 
 const areNumberArraysEqual = (left?: number[], right?: number[]) => {
@@ -139,7 +141,7 @@ const getFactionIcon = (faction?: CharacterFaction) => {
   }
 };
 
-export const CardItem = React.memo(({ card, className, onClick, isLocked, isSelected, isDragging, hideBackground, isOnBoard, customImage, combatHighlights, lowSpecMode, processedImage, language = 'en',cellElement, hideStats, isMatgo, ignoreBonuses, downloadMode, activeSkin }: CardItemProps) => {
+export const CardItem = React.memo(({ card, className, onClick, isLocked, isSelected, isDragging, hideBackground, isOnBoard, customImage, combatHighlights, lowSpecMode, processedImage, language = 'en',cellElement, hideStats, isMatgo, ignoreBonuses, downloadMode, activeSkin, isDamaged }: CardItemProps) => {
   const { cardSkinTheme } = useGameSettings();
   // Use the card directly so we don't overwrite in-game state modifications (like WEAKEN/REINFORCE)
   const activeCard = card;
@@ -156,13 +158,13 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
   const prevOwnerRef = useRef(activeCard.owner);
 
   useEffect(() => {
-    if (!performanceMode && prevOwnerRef.current !== undefined && prevOwnerRef.current !== null && prevOwnerRef.current !== activeCard.owner) {
+    if (prevOwnerRef.current !== undefined && prevOwnerRef.current !== null && prevOwnerRef.current !== activeCard.owner) {
       setIsFlipping(true);
       const timer = setTimeout(() => setIsFlipping(false), 500);
       return () => clearTimeout(timer);
     }
     prevOwnerRef.current = activeCard.owner;
-  }, [activeCard.owner, performanceMode]);
+  }, [activeCard.owner]);
 
   const visualCardId = useMemo(() => getVisualCardId(activeCard), [activeCard]);
   const ipProfile = useMemo(() => (
@@ -455,6 +457,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
       whileTap={(!isLocked && !performanceMode) ? { scale: 0.97 } : {}}
       className={cn(
         "group/card group @container relative flex flex-col items-center justify-center font-sans select-none",
+        (isDamaged || isFlipping) && "animate-damage-shake",
         !className?.includes('w-') && !className?.includes('h-') && "w-20 h-28 sm:w-24 sm:h-32 md:w-32 md:h-44",
         !className?.includes('rounded-') && "rounded-xl",
         (!isLocked || onClick) && "cursor-pointer hover:ring-1 hover:ring-indigo-500/50",
@@ -941,9 +944,17 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
         />
       )}
 
+      {/* Damage Shake & Red Flash Overlay */}
+      {(isDamaged || isFlipping) && (
+        <div className="absolute inset-0 z-[120] pointer-events-none rounded-[inherit] overflow-hidden animate-red-flash border-2 border-red-500/90 flex items-center justify-center">
+          <div className="absolute inset-0 bg-red-600/40 mix-blend-overlay" />
+        </div>
+      )}
+
     </motion.div>
   );
 }, (prev, next) => (
+  prev.isDamaged === next.isDamaged &&
   areCardsVisuallyEqual(prev.card, next.card) &&
   prev.className === next.className &&
   prev.isLocked === next.isLocked &&

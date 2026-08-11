@@ -83,12 +83,12 @@ export function GoogleAd({
           />
 
           {/* Text Overlay for Horizontal Layout */}
-          <div className="absolute inset-0 bg-slate-950/50 backdrop-blur-[1px] group-hover:bg-slate-950/30 transition-colors duration-300 flex items-center justify-center px-4 py-2">
-            <div className="text-center transform translate-y-0 group-hover:-translate-y-0.5 transition-transform duration-300">
-              <span className="text-[10px] md:text-xs text-yellow-400 font-black tracking-widest uppercase block mb-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] animate-pulse">
+          <div className="absolute inset-0 bg-slate-950/50 backdrop-blur-[1px] group-hover:bg-slate-950/30 transition-colors duration-300 flex items-center justify-center pl-3 pr-12 md:px-4 py-1.5">
+            <div className="text-center transform translate-y-0 group-hover:-translate-y-0.5 transition-transform duration-300 max-w-[calc(100%-2rem)]">
+              <span className="text-[9px] md:text-xs text-yellow-400 font-black tracking-wider uppercase block mb-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] animate-pulse">
                 ★ OFFICIAL MERCHANDISE SHOP ★
               </span>
-              <span className="text-[11px] md:text-sm text-white font-extrabold tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] line-clamp-1">
+              <span className="text-[10px] md:text-sm text-white font-extrabold tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] line-clamp-1">
                 {t('shop_banner_text', language)}
               </span>
             </div>

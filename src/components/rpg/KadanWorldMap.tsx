@@ -127,7 +127,11 @@ export const KadanWorldMap: React.FC<KadanWorldMapProps> = ({
                 isTarget && 'ring-2 ring-amber-400',
                 activeEventId === event?.id && 'ring-2 ring-indigo-500',
               )}
-              aria-label={event ? t(event.chapterTitleKey, language) : t('kadan_rpg_move_tile', language)}
+              aria-label={
+                event
+                  ? `${t(event.chapterTitleKey, language)} (${isCompleted ? t('kadan_rpg_completed', language) : t('kadan_rpg_active_event', language) || 'Active Event'})`
+                  : `${t('kadan_rpg_move_tile', language) || 'Move'} (${tile.x + 1}, ${tile.y + 1})${isBlocked ? ' - Blocked' : ''}`
+              }
             >
               {isTarget && !lowSpecMode && (
                 <span className="absolute inset-1 rounded-md border border-amber-400/80" />

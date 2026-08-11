@@ -2778,8 +2778,24 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [hitPulseState, setHitPulseState] = useState<number[]>([]);
   const [combatHighlights, setCombatHighlights] = useState<Record<number, number[]>>({});
   const [floatingStatFX, setFloatingStatFX] = useState<Record<number, { text: string; isPositive: boolean; id: number }>>({});
+  const [damagedCells, setDamagedCells] = useState<Record<number, boolean>>({});
+
+  const triggerCellDamage = useCallback((cellIdx: number) => {
+    setDamagedCells(prev => ({ ...prev, [cellIdx]: true }));
+    setTimeout(() => {
+      setDamagedCells(prev => {
+        if (!prev[cellIdx]) return prev;
+        const next = { ...prev };
+        delete next[cellIdx];
+        return next;
+      });
+    }, 650);
+  }, []);
 
   const triggerStatFX = useCallback((cellIdx: number, text: string, isPositive: boolean) => {
+    if (!isPositive) {
+      triggerCellDamage(cellIdx);
+    }
     const fxId = Date.now() + Math.random();
     setFloatingStatFX(prev => ({
       ...prev,
@@ -2795,7 +2811,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         return prev;
       });
     }, 1600);
-  }, []);
+  }, [triggerCellDamage]);
   const [checkingIdx, setCheckingIdx] = useState<number>(-1);
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [showInGameMenu, setShowInGameMenu] = useState(false);
@@ -4487,12 +4503,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     }
 
     if (flippedIndices.length > 0) {
+      flippedIndices.forEach(ni => triggerCellDamage(ni));
       setTimeout(() => {
         playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3'); // Capture/Flip Sound
       }, 150);
       
       if (flipDetails && flipDetails.length > 0) {
         flipDetails.forEach(detail => {
+          triggerCellDamage(detail.index);
           const attackerOwner = placedCard.owner === 'player' ? (language === 'ko' ? '플레이어' : 'Player') : (language === 'ko' ? 'AI' : 'AI');
           const attackerTitle = getFormattedCardName(detail.attacker, language);
           const victimTitle = getFormattedCardName(detail.victim, language);
@@ -10203,9 +10221,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       {/* Game Overlays */}
       <div className="absolute left-2 md:left-4 top-[55%] md:top-[60%] -translate-y-1/2 flex flex-col gap-2 z-[60]">
       </div>
-      {/* 1. 상대 덱/패 영역 (상대덱 높이 비율 25% 고정) */}
+      {/* 1. 상대 덱/패 영역 (카드 높이에 맞춰 컴팩트 조정) */}
       <div id="opponent-hand-container" className={cn(
-        "h-[25vh] max-h-[25%] flex-[25_25_0%] min-h-[110px] py-2 relative flex items-center justify-center px-1 overflow-visible w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm shrink-0",
+        "h-auto py-1.5 sm:py-2 md:py-2.5 relative flex items-center justify-center px-1 overflow-visible w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm shrink-0",
         turn === 'ai' && !gameOver ? "border-red-500/50 z-20" : "border-red-500/20 z-10"
       )}>
         
@@ -10228,7 +10246,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           )}
         </div>
         
-        <div className="w-full max-w-6xl mx-auto flex items-center justify-center gap-1 md:gap-2 h-full translate-y-[9px] relative z-10">
+        <div className="w-full max-w-6xl mx-auto flex items-center justify-center gap-1 md:gap-2 h-auto my-auto relative z-10 py-1">
           <AnimatePresence mode="popLayout">
             {opponentHand.map((card, idx) => {
               const isSelected = selectedCardIdx === idx && selectedCardSide === 'ai';
@@ -10269,8 +10287,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         </div>
       </div>
 
-      {/* 2. 가운데 카드판 영역 (가운데 카드판 높이 비율 50% 고정) */}
-      <div className="h-[50vh] max-h-[50%] flex-[50_50_0%] min-h-[240px] flex flex-col items-center justify-center p-0.5 md:p-1 bg-[#060a14] relative overflow-visible py-1 sm:py-2 md:py-2 shadow-[inset_0_0_120px_rgba(0,0,0,0.9)] border border-slate-800 rounded-2xl md:rounded-3xl mx-1 md:mx-2 my-0.5 shrink-0">
+      {/* 2. 가운데 카드판 영역 (유연하게 공간 확장) */}
+      <div className="flex-1 min-h-[220px] sm:min-h-[250px] flex flex-col items-center justify-center p-0.5 md:p-1 bg-[#060a14] relative overflow-visible py-1 sm:py-2 md:py-2 shadow-[inset_0_0_120px_rgba(0,0,0,0.9)] border border-slate-800 rounded-2xl md:rounded-3xl mx-1 md:mx-2 my-0.5 shrink-0">
         {/* Background layers */}
         <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/topography.png')] opacity-[0.06]" />
@@ -10819,6 +10837,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                     card={card} 
                                     isLocked={true} 
                                     isOnBoard={true}
+                                    isDamaged={Boolean(damagedCells[idx])}
                                     className={cn(
                                       "w-full h-full z-10 rounded-lg", 
                                       isRoarActive && "text-fire-active",
@@ -10997,11 +11016,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
     </div>
 
-      {/* 3. 내 덱/패 영역 (내덱 높이 비율 25% 고정) */}
+      {/* 3. 내 덱/패 영역 (카드 높이에 맞춰 컴팩트 조정) */}
       <div 
         id="player-hand-container"
         className={cn(
-        "h-[25vh] max-h-[25%] flex-[25_25_0%] min-h-[110px] relative overflow-visible flex flex-col items-center justify-center p-1 sm:p-2 w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm shrink-0",
+        "h-auto py-1.5 sm:py-2 md:py-2.5 relative overflow-visible flex flex-col items-center justify-center p-1 sm:p-2 w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm shrink-0",
         turn === 'player' && !gameOver ? "border-indigo-500/50 z-20" : "border-blue-500/20 z-10"
       )}>
         
@@ -11025,7 +11044,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         </div>
 
         <div className={cn(
-          "w-full max-w-6xl mx-auto flex items-center gap-1 md:gap-2 h-full py-2 overflow-x-auto overflow-y-visible scrollbar-hide px-4 touch-pan-x relative z-10 my-auto",
+          "w-full max-w-6xl mx-auto flex items-center gap-1 md:gap-2 h-auto py-1 md:py-1.5 overflow-x-auto overflow-y-visible scrollbar-hide px-4 touch-pan-x relative z-10 my-auto",
           playerHand.length > 5 ? "justify-start md:justify-center" : "justify-center"
         )}>
 
@@ -11178,7 +11197,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-[9px] font-black text-slate-300 truncate">{getFormattedCardName(threatTarget, language)}</div>
-                    <div className="text-[7px] text-slate-500 truncate">{threatTarget.ability ? `Ability: ${threatTarget.ability}` : 'Standard Threat Class'}</div>
+                    <div className="text-[7px] text-slate-500 truncate">
+                      {threatTarget.ability 
+                        ? (typeof threatTarget.ability === 'object' 
+                            ? `Ability: ${language === 'ko' ? (threatTarget.ability.description_ko || threatTarget.ability.type) : (threatTarget.ability.description_en || threatTarget.ability.type)}`
+                            : `Ability: ${threatTarget.ability}`)
+                        : 'Standard Threat Class'}
+                    </div>
                   </div>
                   <span className="text-[7px] font-black text-rose-400 animate-pulse bg-rose-950/50 px-1.5 py-0.5 rounded border border-rose-500/30">LOCKED</span>
                 </div>
