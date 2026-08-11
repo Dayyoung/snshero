@@ -2,8 +2,8 @@
 # SNS히어로 에이전트 지침서 (AGENTS.md)
 
 ## 스프레드시트 개선 작업 진행 상태
-- **마지막 수정 완료 항목 ID**: `/modoo 화면 상태 중복 제거(작업완료>작업중>작업전) 및 부서별 사람 이모지 변경 완료` (Google Sheets ID: `1nX6BFBJR4fTrv3PMqG8UamwSbqY2tJt_VvJoGAPItu8`, 동일 작업명 상태 중복 표시 방지 및 기획/개발/디자인팀 사람 이모티콘 👨‍💼/👨‍💻/👩‍🎨 적용 완료)
-- **최종 업데이트 일시**: 2026-08-11 11:36
+- **마지막 수정 완료 항목 ID**: `웹소설 프롬프트 모드 등장 캐릭터 이미지 생성 프롬프트 및 원클릭 복사 기능 추가 완료` (NovelView.tsx & characterArtPrompts.ts 연동, tsc/vite build 검증 완료)
+- **최종 업데이트 일시**: 2026-08-11 14:05
 
 ## 프로젝트 개요
 - **이름**: SNS히어로 (SNSHero Revolution)

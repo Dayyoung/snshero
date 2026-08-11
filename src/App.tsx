@@ -2689,13 +2689,13 @@ function AppContent() {
     trackCreatorEvent('tutorial_completed');
     createPendingReferralReward();
 
-    // Grant Welcome Card (ID 0)
+    // Grant Welcome Card (ID 1)
     setInventory(prev => {
       const newInv = {
         ...prev,
-        0: {
-          cardIndex: 0,
-          quantity: 1,
+        1: {
+          cardIndex: 1,
+          quantity: Math.max(1, (prev[1]?.quantity || 0) + 1),
           rarity: 'gold'
         }
       };

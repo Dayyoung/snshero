@@ -8,11 +8,12 @@ import { triggerHaptic } from '../lib/haptic';
 interface NoticeModalProps {
   language: Language;
   onNavigate?: (view: any) => void;
+  onClose?: () => void;
 }
 
 const NOTICE_DISMISSED_KEY = 'snshero_notice_dismissed_at';
 
-export const NoticeModal: React.FC<NoticeModalProps> = ({ language, onNavigate }) => {
+export const NoticeModal: React.FC<NoticeModalProps> = ({ language, onNavigate, onClose }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [doNotShowToday, setDoNotShowToday] = useState(false);
 
@@ -22,13 +23,14 @@ export const NoticeModal: React.FC<NoticeModalProps> = ({ language, onNavigate }
       const timePassed = Date.now() - parseInt(dismissedAt, 10);
       const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
       if (timePassed < TWENTY_FOUR_HOURS) {
+        onClose?.();
         return; // Suppress notice for 24 hours
       }
     }
     // Auto trigger on initial load if not dismissed
     const timer = setTimeout(() => {
       setIsOpen(true);
-    }, 600);
+    }, 300);
     return () => clearTimeout(timer);
   }, []);
 
@@ -38,6 +40,7 @@ export const NoticeModal: React.FC<NoticeModalProps> = ({ language, onNavigate }
       localStorage.setItem(NOTICE_DISMISSED_KEY, Date.now().toString());
     }
     setIsOpen(false);
+    onClose?.();
   };
 
   if (!isOpen) return null;

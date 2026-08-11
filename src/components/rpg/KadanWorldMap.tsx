@@ -1,6 +1,6 @@
 import React from 'react';
 import { MapPin, MessageCircle } from 'lucide-react';
-import { cn } from '../../lib/utils';
+import { cn, getAssetUrl } from '../../lib/utils';
 import { t } from '../../lib/i18n';
 import type { Language } from '../../types';
 import type { KadanRpgEvent, KadanRpgRegion, KadanRpgTile } from '../../content/kadanRpgStory';
@@ -166,7 +166,7 @@ export const KadanWorldMap: React.FC<KadanWorldMapProps> = ({
                   'absolute left-1/2 top-1/2 z-20 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-slate-950 shadow-lg',
                   !lowSpecMode && 'transition-transform duration-300',
                 )}>
-                  <img src="/rpg/kadan-map/hero-kadan.png" alt="Kadan" className="h-full w-full rounded-full object-cover" draggable={false} />
+                  <img src={getAssetUrl('/rpg/kadan-map/hero-kadan.png')} alt="Kadan" className="h-full w-full rounded-full object-cover" draggable={false} />
                 </span>
               )}
             </button>

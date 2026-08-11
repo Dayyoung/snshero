@@ -22,26 +22,27 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   return (
     <div
       className={cn(
-        "sticky top-0 z-50 px-4 py-3 flex items-center gap-3 shrink-0 bg-white/88 backdrop-blur-xl border-b border-slate-200/70 shadow-[0_1px_0_rgba(15,23,42,0.03)]",
-        dark && "bg-slate-900/85 border-b border-slate-800 text-white",
+        "sticky top-0 z-50 px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-2 shrink-0 bg-[#fdfcfc] border-b border-[#201d1d]/15 font-mono text-[#201d1d]",
+        dark && "bg-[#201d1d] text-[#fdfcfc] border-b border-stone-800",
         transparent && "bg-transparent border-transparent shadow-none",
         className
       )}
     >
-      <div className="shrink-0 w-10 flex items-center justify-start">
+      <div className="shrink-0 min-w-10 flex items-center justify-start">
         {onBack && (
           <button
             onClick={onBack}
             className={cn(
-              "w-10 h-10 rounded-lg flex items-center justify-center transition-all active:scale-95 touch-target cursor-pointer",
+              "h-8 px-2.5 rounded-sm border flex items-center gap-1 text-xs font-mono font-bold uppercase transition-colors cursor-pointer select-none active:translate-y-[1px]",
               dark
-                ? "text-slate-100 hover:bg-white/10"
-                : "text-slate-700 hover:bg-slate-100"
+                ? "border-stone-700 text-[#fdfcfc] hover:bg-[#fdfcfc] hover:text-[#201d1d]"
+                : "border-[#201d1d]/20 text-[#201d1d] hover:bg-[#201d1d] hover:text-[#fdfcfc]"
             )}
             aria-label="Back"
             type="button"
           >
-            <ArrowLeft size={20} />
+            <ArrowLeft size={16} strokeWidth={2.5} />
+            <span className="hidden sm:inline-block">BACK</span>
           </button>
         )}
       </div>
@@ -49,17 +50,18 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
       {/* Center: Title */}
       <h1
         className={cn(
-          "flex-1 text-sm font-extrabold uppercase tracking-wide text-center truncate text-slate-850",
-          dark && "text-white"
+          "flex-1 text-xs sm:text-sm font-black uppercase tracking-wider text-center truncate font-mono text-[#201d1d]",
+          dark && "text-[#fdfcfc]"
         )}
       >
         {title}
       </h1>
 
       {/* Right: Action or spacer */}
-      <div className="shrink-0 min-w-10 max-w-[45%] flex items-center justify-end overflow-hidden">
+      <div className="shrink-0 min-w-10 max-w-[45%] flex items-center justify-end overflow-hidden font-mono">
         {rightAction || null}
       </div>
     </div>
   );
 };
+

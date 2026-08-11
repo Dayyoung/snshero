@@ -80,6 +80,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
   const [isLobbyDrawerOpen, setIsLobbyDrawerOpen] = useState(false);
+  const [isNoticeClosed, setIsNoticeClosed] = useState(false);
 
   useEffect(() => {
     const updateUnread = () => {
@@ -839,11 +840,16 @@ export const HomeView: React.FC<HomeViewProps> = ({
       />
 
       {/* Notice Modal (Item 55) */}
-      <NoticeModal language={language} onNavigate={onNavigate} />
+      <NoticeModal
+        language={language}
+        onNavigate={onNavigate}
+        onClose={() => setIsNoticeClosed(true)}
+      />
 
       {/* AFK Patrol Rewards Modal (Item 64) */}
       <AfkPatrolModal
         language={language}
+        canShow={isNoticeClosed}
         onClaim={(gold, sns) => {
           const season = localStorage.getItem('hero_current_season') || 'season1';
           const savedSnsStr = localStorage.getItem(`hero_sns_${season}`) || localStorage.getItem('hero_sns') || '1000';

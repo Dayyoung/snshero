@@ -26,9 +26,9 @@ const LEGACY_CARD_SPRITE = getAssetUrl('/card100.png');
 const LEGACY_PIXEL_ART = getAssetUrl('/card100_pixelart.png');
 const LEGACY_NEON = getAssetUrl('/card100_neon.png');
 const LEGACY_GEMINI = getAssetUrl('/card100_gemini.png');
-const LEGACY_GEMINI_ALT = getAssetUrl('/card100_gemini2.png');
-const LEGACY_MASTER_SHEET = getAssetUrl('/110card.png');
-const SHARED_BACK_ASSET = `${ASSET_ROOT}/cards/card-back.webp`;
+const LEGACY_GEMINI_ALT = getAssetUrl('/card100_gemini.png');
+const LEGACY_MASTER_SHEET = getAssetUrl('/card100.png');
+const SHARED_BACK_ASSET = getAssetUrl('/card100.png');
 
 const RARITY_FALLBACK_ASSETS: Record<CharacterRarityTier, string> = {
   bronze: LEGACY_PIXEL_ART,
@@ -53,7 +53,8 @@ function isCharacterRarityTier(value: string): value is CharacterRarityTier {
 }
 
 function formatCardId(cardId: number): string {
-  return String(cardId).padStart(3, '0');
+  const validId = Math.max(1, Math.min(110, cardId || 1));
+  return String(validId).padStart(3, '0');
 }
 
 function getCardNameKo(cardId: number): string {

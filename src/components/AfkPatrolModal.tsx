@@ -7,16 +7,23 @@ import { triggerHaptic } from '../lib/haptic';
 interface AfkPatrolModalProps {
   language: Language;
   onClaim?: (gold: number, sns: number) => void;
+  canShow?: boolean;
+  onClose?: () => void;
 }
 
 const AFK_LAST_CLAIM_KEY = 'hero_afk_patrol_last_claim';
 
-export const AfkPatrolModal: React.FC<AfkPatrolModalProps> = ({ language, onClaim }) => {
+export const AfkPatrolModal: React.FC<AfkPatrolModalProps> = ({ language, onClaim, canShow = true, onClose }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [elapsedHours, setElapsedHours] = useState(0);
   const [earnedSns, setEarnedSns] = useState(0);
 
   useEffect(() => {
+    if (!canShow) {
+      setIsOpen(false);
+      return;
+    }
+
     const lastClaimStr = localStorage.getItem(AFK_LAST_CLAIM_KEY);
     const now = Date.now();
 
@@ -39,7 +46,7 @@ export const AfkPatrolModal: React.FC<AfkPatrolModalProps> = ({ language, onClai
       setEarnedSns(sns);
       setIsOpen(true);
     }
-  }, []);
+  }, [canShow]);
 
   const handleClaim = () => {
     triggerHaptic('victory');
@@ -48,6 +55,12 @@ export const AfkPatrolModal: React.FC<AfkPatrolModalProps> = ({ language, onClai
       onClaim(0, earnedSns);
     }
     setIsOpen(false);
+    if (onClose) onClose();
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+    if (onClose) onClose();
   };
 
   if (!isOpen) return null;
@@ -63,7 +76,7 @@ export const AfkPatrolModal: React.FC<AfkPatrolModalProps> = ({ language, onClai
         >
           {/* Close Button */}
           <button
-            onClick={() => setIsOpen(false)}
+            onClick={handleClose}
             className="absolute top-3 right-3 p-1.5 text-[#646262] hover:text-[#201d1d] rounded-sm hover:bg-[#f8f7f7] transition-colors cursor-pointer"
           >
             <X size={18} />

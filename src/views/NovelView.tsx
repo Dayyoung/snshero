@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   BookOpen, Play, Pause, Square, Volume2, Copy, Sparkles, ChevronLeft, ChevronRight,
-  Check, Settings, Moon, Sun, Gift, ArrowLeft, Bookmark, List, ExternalLink, Award
+  Check, Settings, Moon, Sun, Gift, ArrowLeft, Bookmark, List, ExternalLink, Award, User, Image
 } from 'lucide-react';
 import { Language, ViewType } from '../types';
 import { t } from '../lib/i18n';
@@ -11,6 +11,7 @@ import { getSeasonItem, setSeasonItem } from '../lib/webtoonProgress';
 import { WikiCardDetailModal } from '../components/WikiCardDetailModal';
 import { useGameSettings } from '../contexts/GameSettingsContext';
 import { useCardSkins } from '../hooks/useCardSkins';
+import { getCharacterArtPrompt } from '../content/characterArtPrompts';
 
 interface NovelViewProps {
   language: Language;
@@ -257,6 +258,57 @@ export const NovelView: React.FC<NovelViewProps> = ({
     if (!indexData?.characters) return [];
     return indexData.characters.filter(c => c.episodeNumbers.includes(currentEpisodeNum));
   }, [indexData, currentEpisodeNum]);
+
+  // Full character art prompts for prompt mode
+  const promptCharacters = React.useMemo(() => {
+    if (episodeCharacters.length > 0) {
+      return episodeCharacters.map(char => ({
+        ...char,
+        artPrompt: getCharacterArtPrompt(char.cardId)
+      }));
+    }
+    // Fallback to default protagonists (Kadan: 41, Celia: 62, Ignis: 11)
+    const defaultCardIds = [41, 62, 11];
+    return defaultCardIds.map(cardId => {
+      const card = CARD_DATABASE[cardId];
+      return {
+        cardId,
+        cardName: card ? card.title : `Card #${cardId}`,
+        image: `/character/${String(cardId).padStart(3, '0')}.png`,
+        episodeNumbers: [currentEpisodeNum],
+        mentionCount: 1,
+        artPrompt: getCharacterArtPrompt(cardId)
+      };
+    });
+  }, [episodeCharacters, currentEpisodeNum]);
+
+  // 20 Continuous Pure English Prompts for Video & Character Image Generation
+  const continuous20Prompts = React.useMemo(() => {
+    if (!narrationData?.scenes) return [];
+    const list: string[] = [];
+
+    narrationData.scenes.slice(0, 10).forEach((sc, idx) => {
+      // 1. Scene Video Prompt (EN)
+      list.push(`High quality dark fantasy anime video, dynamic camera motion, cinematic lighting, ${sc.narrationEn}`);
+
+      // 2. Scene Image / Webtoon Panel Prompt (EN)
+      const char = promptCharacters[idx % promptCharacters.length];
+      const charVisual = char ? char.artPrompt.positivePromptEn : 'masterpiece dark fantasy webtoon artwork, epic atmosphere';
+      list.push(`Masterpiece webtoon panel artwork, ${charVisual}, detailed background, 8k resolution`);
+    });
+
+    // Ensure exactly 20 prompts
+    while (list.length < 20) {
+      const char = promptCharacters[list.length % promptCharacters.length];
+      if (char) {
+        list.push(char.artPrompt.positivePromptEn);
+      } else {
+        list.push(`Dark fantasy anime artwork, epic heroic scene, highly detailed digital painting, episode ${currentEpisodeNum}`);
+      }
+    }
+
+    return list.slice(0, 20);
+  }, [narrationData, promptCharacters, currentEpisodeNum]);
 
   // TTS Controls
   const startTtsFromParagraph = (index: number) => {
@@ -731,40 +783,179 @@ export const NovelView: React.FC<NovelViewProps> = ({
                 </div>
               </div>
 
-              {/* Video Prompts List */}
+              {/* Featured Characters Image Generation Prompts Section */}
+              <div className="border border-stone-300 p-5 rounded-sm bg-white/90 space-y-4 shadow-2xs">
+                <div className="flex items-center justify-between border-b border-stone-200 pb-3 flex-wrap gap-2">
+                  <span className="font-bold text-xs uppercase tracking-wider text-amber-900 flex items-center gap-2">
+                    <User size={15} className="text-amber-700" />
+                    [ {language === 'ko' ? '등장 캐릭터 이미지 생성 프롬프트' : 'Featured Characters Image Prompts'} ({promptCharacters.length}) ]
+                  </span>
+                  <button
+                    onClick={() => {
+                      const fullPromptText = promptCharacters.map(c => {
+                        const p = c.artPrompt;
+                        return `[Character: ${p.cardNameKo} (${p.cardNameEn})]\nPositive Prompt (EN): ${p.positivePromptEn}\nPositive Prompt (KO): ${p.positivePromptKo}\nNegative Prompt: ${p.negativePrompt}\nWebtoon Panel: ${p.webtoonPanelPrompt}`;
+                      }).join('\n\n---\n\n');
+                      handleCopyText(fullPromptText, language === 'ko' ? '전체 캐릭터 프롬프트' : 'All Character Prompts');
+                    }}
+                    className="px-2.5 py-1 text-[11px] font-bold border border-amber-400 rounded-sm bg-amber-50 hover:bg-amber-100 text-amber-950 cursor-pointer flex items-center gap-1.5 transition-all shadow-2xs"
+                  >
+                    <Copy size={12} />
+                    <span>{language === 'ko' ? '모든 캐릭터 프롬프트 복사' : 'Copy All Character Prompts'}</span>
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {promptCharacters.map(char => {
+                    const p = char.artPrompt;
+                    const paddedId = String(char.cardId).padStart(3, '0');
+
+                    return (
+                      <div key={char.cardId} className="border border-stone-200 p-4 rounded-sm bg-stone-50/70 hover:border-amber-400 transition-colors">
+                        {/* Character Header */}
+                        <div className="flex items-center justify-between mb-3 border-b border-stone-200/80 pb-2 flex-wrap gap-2">
+                          <div className="flex items-center gap-2">
+                            <div
+                              className="w-7 h-7 rounded-full border border-stone-400 shrink-0 overflow-hidden shadow-xs"
+                              style={{
+                                backgroundImage: `url('${getAssetUrl('/card100.png')}')`,
+                                backgroundSize: '1000% 1100%',
+                                backgroundPosition: `${((char.cardId - 1) % 10) * (100 / 9)}% ${Math.floor((char.cardId - 1) / 10) * (100 / 10)}%`,
+                                backgroundRepeat: 'no-repeat',
+                                imageRendering: 'pixelated',
+                              }}
+                            />
+                            <div>
+                              <span className="font-bold text-xs text-stone-900 mr-2">
+                                {p.cardNameKo} <span className="text-stone-500 font-normal text-[11px]">({p.cardNameEn})</span>
+                              </span>
+                              <span className="text-[10px] font-bold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded-sm uppercase">
+                                #{paddedId} · {p.faction} · {p.rarityTier}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              onClick={() => setSelectedWikiCardId(char.cardId)}
+                              className="px-2 py-0.5 text-[10px] font-bold border border-stone-300 text-stone-700 bg-white hover:bg-stone-100 rounded-sm cursor-pointer flex items-center gap-1"
+                              title={language === 'ko' ? '카드 위키' : 'Card Wiki'}
+                            >
+                              <ExternalLink size={10} />
+                              <span>{language === 'ko' ? '위키' : 'Wiki'}</span>
+                            </button>
+                            <button
+                              onClick={() => {
+                                const singleText = `[Character Art Prompt: ${p.cardNameKo} / ${p.cardNameEn}]\nPrompt: ${p.positivePromptEn}\nNegative: ${p.negativePrompt}\nWebtoon Panel: ${p.webtoonPanelPrompt}`;
+                                handleCopyText(singleText, p.cardNameKo);
+                              }}
+                              className="px-2 py-0.5 text-[10px] font-bold border border-amber-300 text-amber-900 bg-amber-50 hover:bg-amber-100 rounded-sm cursor-pointer flex items-center gap-1"
+                            >
+                              <Copy size={10} />
+                              <span>{language === 'ko' ? '프롬프트 복사' : 'Copy Prompt'}</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Visual Keywords */}
+                        {p.visualKeywords.length > 0 && (
+                          <div className="flex items-center gap-1 flex-wrap mb-2">
+                            <span className="text-[10px] text-stone-400 font-bold mr-1">[KEYWORDS]:</span>
+                            {p.visualKeywords.map((kw, idx) => (
+                              <span key={idx} className="text-[10px] font-mono bg-stone-200/70 text-stone-700 px-1.5 py-0.2 rounded-xs">
+                                #{kw}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Prompts Details Box */}
+                        <div className="space-y-2 text-xs">
+                          {/* Positive Prompt (EN) */}
+                          <div className="bg-white p-2.5 border border-stone-200 rounded-sm font-mono text-stone-800">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-[10px] text-amber-800 font-bold">[POSITIVE IMAGE PROMPT (EN)]:</span>
+                              <button
+                                onClick={() => handleCopyText(p.positivePromptEn, `${p.cardNameKo} (EN Prompt)`)}
+                                className="text-[10px] text-stone-500 hover:text-stone-900 font-bold cursor-pointer"
+                              >
+                                [COPY]
+                              </button>
+                            </div>
+                            <p className="text-[11px] leading-relaxed text-stone-800 selection:bg-amber-200">{p.positivePromptEn}</p>
+                          </div>
+
+                          {/* Positive Prompt (KO) */}
+                          <div className="bg-white/80 p-2 border border-stone-200 rounded-sm font-mono text-stone-700">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-[10px] text-stone-500 font-bold">[이미지 생성 프롬프트 설명 (KO)]:</span>
+                              <button
+                                onClick={() => handleCopyText(p.positivePromptKo, `${p.cardNameKo} (KO Prompt)`)}
+                                className="text-[10px] text-stone-500 hover:text-stone-900 font-bold cursor-pointer"
+                              >
+                                [COPY]
+                              </button>
+                            </div>
+                            <p className="text-[11px] leading-relaxed text-stone-700">{p.positivePromptKo}</p>
+                          </div>
+
+                          {/* Webtoon Panel & Negative Prompt Grid */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                            <div className="bg-stone-100/80 p-2 border border-stone-200 rounded-sm">
+                              <span className="text-[10px] text-stone-500 font-bold block mb-0.5">[WEBTOON PANEL PROMPT]:</span>
+                              <p className="text-stone-700 text-[10px] line-clamp-3">{p.webtoonPanelPrompt}</p>
+                            </div>
+                            <div className="bg-stone-100/80 p-2 border border-stone-200 rounded-sm">
+                              <span className="text-[10px] text-stone-500 font-bold block mb-0.5">[NEGATIVE PROMPT]:</span>
+                              <p className="text-stone-500 text-[10px] truncate">{p.negativePrompt}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Scene & Character AI Prompts (Pure English 20 Continuous Prompts) */}
               <div className="space-y-4">
-                <h3 className="font-bold text-xs uppercase tracking-wider text-stone-700 border-b border-stone-300 pb-2">
-                  [ {language === 'ko' ? '장면별 AI 동영상 및 캐릭터 생성 프롬프트' : 'Scene AI Video & Character Prompts'} ]
-                </h3>
+                <div className="flex items-center justify-between border-b border-stone-300 pb-3 flex-wrap gap-2">
+                  <h3 className="font-bold text-xs uppercase tracking-wider text-stone-800 flex items-center gap-2">
+                    <Sparkles size={14} className="text-amber-700" />
+                    [ {language === 'ko' ? '장면별 AI 동영상 및 캐릭터 생성 프롬프트' : 'Scene AI Video & Character Prompts'} (20) ]
+                  </h3>
+                  <button
+                    onClick={() => {
+                      const full20Text = continuous20Prompts.join('\n\n');
+                      handleCopyText(full20Text, language === 'ko' ? '20개 프롬프트 전체 복사' : 'Copy All 20 Prompts');
+                    }}
+                    className="px-2.5 py-1 text-[11px] font-bold border border-amber-400 rounded-sm bg-amber-50 hover:bg-amber-100 text-amber-950 cursor-pointer flex items-center gap-1.5 transition-all shadow-2xs"
+                  >
+                    <Copy size={12} />
+                    <span>{language === 'ko' ? '20개 프롬프트 한 번에 복사' : 'Copy All 20 Prompts'}</span>
+                  </button>
+                </div>
 
-                {narrationData.scenes.map((sc) => {
-                  const promptText = `Scene ${sc.sceneNumber}: High quality dark fantasy anime artwork, ${sc.narrationEn}`;
-
-                  return (
-                    <div key={sc.sceneNumber} className="border border-stone-200 p-4 rounded-sm bg-stone-50/50 hover:border-amber-400 transition-colors">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-bold text-xs text-amber-800">
-                          {t('novel_prompt_scene_label', language).replace('{sceneNumber}', sc.sceneNumber.toString())}
-                        </span>
-                        <button
-                          onClick={() => handleCopyText(promptText, `Scene ${sc.sceneNumber}`)}
-                          className="px-2 py-0.5 text-[10px] font-bold border border-amber-300 text-amber-900 bg-amber-50 hover:bg-amber-100 rounded-sm cursor-pointer flex items-center gap-1"
-                        >
-                          <Copy size={10} /> {t('novel_prompt_copy_scene', language)}
-                        </button>
-                      </div>
-
-                      <div className="text-xs bg-white p-2.5 border border-stone-200 rounded-sm font-mono text-stone-800 mb-2">
-                        <span className="text-[10px] text-stone-400 font-bold block mb-1">PROMPT:</span>
+                {/* Continuous 20 English Prompts Display Box */}
+                <div className="bg-white border border-stone-300 p-4 rounded-sm font-mono text-xs text-stone-900 leading-relaxed shadow-2xs space-y-3">
+                  {continuous20Prompts.map((promptText, idx) => (
+                    <div key={idx} className="pb-3 border-b border-stone-100 last:border-b-0 last:pb-0 flex items-start gap-2.5">
+                      <span className="text-[10px] text-amber-800 font-bold shrink-0 pt-0.5 select-none">
+                        [{String(idx + 1).padStart(2, '0')}]
+                      </span>
+                      <p className="grow text-stone-800 text-[11px] leading-relaxed selection:bg-amber-200 select-all">
                         {promptText}
-                      </div>
-
-                      <div className="text-xs text-stone-600 italic border-l-2 border-stone-300 pl-3 py-1">
-                        "{language === 'ko' ? sc.narrationKo : sc.narrationEn}"
-                      </div>
+                      </p>
+                      <button
+                        onClick={() => handleCopyText(promptText, `Prompt #${idx + 1}`)}
+                        className="text-[10px] text-stone-400 hover:text-amber-900 font-bold shrink-0 cursor-pointer px-1.5 py-0.5 border border-stone-200 hover:border-amber-300 rounded-xs bg-stone-50 hover:bg-amber-50 transition-colors"
+                        title="Copy single prompt"
+                      >
+                        [COPY]
+                      </button>
                     </div>
-                  );
-                })}
+                  ))}
+                </div>
               </div>
             </div>
           ) : (

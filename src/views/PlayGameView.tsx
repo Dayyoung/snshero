@@ -10630,7 +10630,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             >
                               <div className="absolute inset-0 p-0.5 rounded-lg overflow-hidden flex items-center justify-center bg-[#1e293b]/70 border border-slate-700">
                                 <img
-                                  src="/background-gold.png"
+                                  src={getAssetUrl('/background-gold.png')}
                                   alt="Matgo Deck"
                                   className="w-full h-full object-cover rounded"
                                 />

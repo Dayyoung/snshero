@@ -6,7 +6,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import axios from 'axios';
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardItem } from '../components/CardItem';
-import { cn, getFormattedCardName, getUserCollectionName } from '../lib/utils';
+import { cn, getFormattedCardName, getUserCollectionName, getAssetUrl } from '../lib/utils';
 import { Language, CardData, Item, GoodsOrder, GoodsPaymentMethod, GoodsType, RefundRequestReason, CardRarity } from '../types';
 import { ITEM_DATABASE } from '../constants/itemDatabase';
 import { ProbabilityModal } from '../components/ProbabilityModal';
@@ -3868,7 +3868,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
                   <div className="flex flex-col items-center gap-4">
                     <div className="relative w-36 h-36 flex items-center justify-center bg-slate-50 border border-slate-150 rounded-2xl overflow-hidden shadow-xs">
-                      <img src={selectedGoods === 'mug' ? '/mug100.png' : '/tshirt100.png'} alt="Goods" className="w-full h-full object-contain" />
+                      <img src={selectedGoods === 'mug' ? getAssetUrl('/mug.png') : getAssetUrl('/icon.png')} alt="Goods" className="w-full h-full object-contain" />
                       <div className={cn(
                         "absolute bg-transparent overflow-hidden opacity-90 select-none rounded-xs p-1 flex flex-col justify-between items-center",
                         selectedGoods === 'mug'
