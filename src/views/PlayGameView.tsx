@@ -9717,7 +9717,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
 
   return (
-    <div id="game-board" className="flex-1 flex flex-col w-full bg-[#060a14] text-slate-100 pb-0 pt-11 sm:pt-12 overflow-y-auto relative min-h-0">
+    <div id="game-board" className="flex-1 flex flex-col w-full bg-[#060a14] text-slate-100 pb-0 pt-11 sm:pt-12 overflow-hidden relative min-h-0 h-full justify-between">
       {/* Battle Roar Wave Ripple Effect Overlay */}
       <AnimatePresence>
         {isRoarActive && (
@@ -10203,8 +10203,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       {/* Game Overlays */}
       <div className="absolute left-2 md:left-4 top-[55%] md:top-[60%] -translate-y-1/2 flex flex-col gap-2 z-[60]">
       </div>
-      <div className={cn(
-        "flex-1 min-h-[140px] sm:min-h-[170px] md:min-h-[200px] py-4 relative flex items-center justify-center px-1 overflow-visible w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm",
+      {/* 1. 상대 덱/패 영역 (상대덱 높이 비율 25% 고정) */}
+      <div id="opponent-hand-container" className={cn(
+        "h-[25vh] max-h-[25%] flex-[25_25_0%] min-h-[110px] py-2 relative flex items-center justify-center px-1 overflow-visible w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm shrink-0",
         turn === 'ai' && !gameOver ? "border-red-500/50 z-20" : "border-red-500/20 z-10"
       )}>
         
@@ -10268,7 +10269,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         </div>
       </div>
 
-      <div className="shrink-0 flex flex-col items-center justify-center p-0.5 md:p-1 bg-[#060a14] relative overflow-visible py-1 sm:py-2 md:py-2 shadow-[inset_0_0_120px_rgba(0,0,0,0.9)] border border-slate-800 rounded-2xl md:rounded-3xl mx-1 md:mx-2 my-0.5">
+      {/* 2. 가운데 카드판 영역 (가운데 카드판 높이 비율 50% 고정) */}
+      <div className="h-[50vh] max-h-[50%] flex-[50_50_0%] min-h-[240px] flex flex-col items-center justify-center p-0.5 md:p-1 bg-[#060a14] relative overflow-visible py-1 sm:py-2 md:py-2 shadow-[inset_0_0_120px_rgba(0,0,0,0.9)] border border-slate-800 rounded-2xl md:rounded-3xl mx-1 md:mx-2 my-0.5 shrink-0">
         {/* Background layers */}
         <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/topography.png')] opacity-[0.06]" />
@@ -10995,11 +10997,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
     </div>
 
-      {/* Hand area */}
+      {/* 3. 내 덱/패 영역 (내덱 높이 비율 25% 고정) */}
       <div 
         id="player-hand-container"
         className={cn(
-        "flex-1 min-h-[160px] sm:min-h-[200px] md:min-h-[230px] relative overflow-visible flex flex-col items-center justify-center p-2 sm:p-3 w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm",
+        "h-[25vh] max-h-[25%] flex-[25_25_0%] min-h-[110px] relative overflow-visible flex flex-col items-center justify-center p-1 sm:p-2 w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm shrink-0",
         turn === 'player' && !gameOver ? "border-indigo-500/50 z-20" : "border-blue-500/20 z-10"
       )}>
         

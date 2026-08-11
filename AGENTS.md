@@ -2,8 +2,8 @@
 # SNS히어로 에이전트 지침서 (AGENTS.md)
 
 ## 스프레드시트 개선 작업 진행 상태
-- **마지막 수정 완료 항목 ID**: `/modoo 개발현황 화면 오피스 데스크 & 말풍선 UI 디자인 연출 개선 완료` (Google Sheets ID: `1nX6BFBJR4fTrv3PMqG8UamwSbqY2tJt_VvJoGAPItu8`, /modoo 화면에 부서별 직책 픽셀 아바타, 데스크 소품 뱃지, 실시간 에모지 말풍선 UI 연출 적용 완료)
-- **최종 업데이트 일시**: 2026-08-11 11:08
+- **마지막 수정 완료 항목 ID**: `카드 배틀 화면 높이 비율 25%:50%:25% 레이아웃 개선 완료` (Google Sheets ID: `1nX6BFBJR4fTrv3PMqG8UamwSbqY2tJt_VvJoGAPItu8`, 카드 배틀 화면상 상대 덱 25%, 가운데 카드판 50%, 내 카드 덱 25% 비율 엄격 고정 적용 완료)
+- **최종 업데이트 일시**: 2026-08-11 11:25
 
 ## 프로젝트 개요
 - **이름**: SNS히어로 (SNSHero Revolution)
