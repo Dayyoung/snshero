@@ -296,7 +296,7 @@ export interface RefundRequest {
   details?: string;
 }
 
-export type ViewType = 'game' | 'home' | 'main' | 'mydeck' | 'play' | 'shop' | 'event' | 'setting' | 'ranking' | 'admin' | 'status' | 'companion' | 'profile' | 'skill' | 'wiki' | 'world-codex' | 'wiki-card' | 'wiki-item' | 'wiki-skill' | 'wiki-howtoplay' | 'wiki-tip' | 'god' | 'guild-list' | 'guild-detail' | 'community' | 'playground' | 'stock-market' | 'card-marketplace' | 'reward-qr' | 'reward-ar' | 'share' | 'prediction-market' | 'boost' | 'season-hub' | 'policy-center' | 'web3-landing' | 'referral' | 'creator' | 'webtoon' | 'novel' | 'anime';
+export type ViewType = 'game' | 'home' | 'main' | 'mydeck' | 'play' | 'shop' | 'event' | 'setting' | 'ranking' | 'admin' | 'status' | 'companion' | 'profile' | 'skill' | 'wiki' | 'world-codex' | 'wiki-card' | 'wiki-item' | 'wiki-skill' | 'wiki-howtoplay' | 'wiki-tip' | 'god' | 'guild-list' | 'guild-detail' | 'community' | 'playground' | 'stock-market' | 'card-marketplace' | 'reward-qr' | 'reward-ar' | 'share' | 'prediction-market' | 'boost' | 'season-hub' | 'policy-center' | 'web3-landing' | 'referral' | 'creator' | 'webtoon' | 'novel' | 'anime' | 'modoo';
 
 export interface Skill {
   id: string;

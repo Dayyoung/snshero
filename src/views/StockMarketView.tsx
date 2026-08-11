@@ -351,7 +351,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
             <PageHeader title={t('stock_market', language)} />
             <div className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 border border-indigo-200/80 rounded-full text-indigo-700 text-xs font-bold">
               <span className="text-[10px] text-indigo-400 font-semibold uppercase">{language === 'ko' ? '보유 포인트' : 'Balance'}:</span>
-              <span>{sns.toLocaleString()} PTS</span>
+              <span>{sns.toLocaleString()} SNS</span>
             </div>
           </div>
           <button

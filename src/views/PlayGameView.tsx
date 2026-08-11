@@ -160,17 +160,17 @@ const MissionCharacterPortrait: React.FC<{ cardId?: number; name: string; classN
 
   return (
     <div className={cn('relative flex h-full w-full items-center justify-center overflow-hidden', className)} title={name}>
-      <div className="relative z-10 w-full h-full bg-transparent overflow-hidden flex items-end justify-center">
+      <div className="relative z-10 w-full h-full bg-transparent overflow-hidden flex items-center justify-center">
         {!imgFailed && primaryImgUrl ? (
           <img
             src={primaryImgUrl}
             alt={name}
-            className="h-[110%] w-[110%] object-contain object-bottom filter drop-shadow-md transition-transform group-hover:scale-110"
+            className="w-full h-full object-cover object-top scale-125 group-hover:scale-135 filter drop-shadow-xl transition-transform duration-300 pointer-events-none"
             referrerPolicy="no-referrer"
             onError={() => setImgFailed(true)}
           />
         ) : (
-          <div className="h-[105%] w-[105%] rounded-md transform scale-110" style={getMissionCardSpriteStyle(safeCardId)} />
+          <div className="h-[140%] w-[140%] transform scale-150 flex-shrink-0" style={getMissionCardSpriteStyle(safeCardId)} />
         )}
       </div>
     </div>
@@ -8661,7 +8661,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       {/* Character card top area — upper body crop */}
                       <div className={cn('flex-1 flex items-center justify-center p-0 relative overflow-hidden h-44 sm:h-48 min-h-[160px]', `bg-gradient-to-br ${m.color}`)}>
                         {charCard ? (
-                          <MissionCharacterPortrait cardId={charCard.id} name={charName} className="h-full w-full pt-3 pb-1 px-2" />
+                          <MissionCharacterPortrait cardId={charCard.id} name={charName} className="h-full w-full" />
                         ) : (
                           <IconComp size={48} className="text-white/80 drop-shadow-lg my-6" />
                         )}

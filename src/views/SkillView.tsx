@@ -344,22 +344,50 @@ export const SkillView: React.FC<SkillViewProps> = ({
                   {description}
                 </p>
 
-                {/* 스킬 수치 변화 배너 */}
-                <div className="mt-3 flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-xs">
-                  <span className="font-bold text-slate-500">
-                    {language === 'ko' ? '현재 효과:' : 'Current:'}
-                  </span>
-                  <span className="font-mono font-black text-slate-800">
-                    {currentLvl > 0 ? formatEffectLabel(currentEffectVal) : '0'}
-                  </span>
-                  {!isMaxLevel && (
-                    <>
-                      <span className="text-slate-400">→</span>
-                      <span className="font-mono font-black text-indigo-600">
-                        {formatEffectLabel(nextEffectVal)}
+                {/* 1-Line Consolidated Skill Node Action Control Bar (ID 245) */}
+                <div className="mt-4 flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50/80 p-1.5 pl-3">
+                  <div className="flex items-center gap-2 font-mono text-xs font-bold text-slate-700">
+                    <span className="text-slate-500">Lv.{currentLvl}/{maxLvl}</span>
+                    {!isMaxLevel && !isLocked && (
+                      <span className="rounded bg-indigo-100 px-2 py-0.5 text-[11px] font-extrabold text-indigo-700">
+                        {upgradeCost.toLocaleString()} SNS
                       </span>
-                    </>
-                  )}
+                    )}
+                  </div>
+
+                  <button
+                    disabled={isMaxLevel || isLocked || (!canAfford && !isImpersonating)}
+                    onClick={() => {
+                      onUpgradeSkill(skill.id);
+                      setUpgradingSkillId(skill.id);
+                      try {
+                        new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3').play().catch(() => {});
+                      } catch {}
+                      setTimeout(() => setUpgradingSkillId(null), 1000);
+                    }}
+                    id={`skill-upgrade-${skill.id}`}
+                    className={cn(
+                      'px-3.5 py-2 rounded-md font-mono text-xs font-black uppercase tracking-wider transition-all active:scale-95 shadow-xs flex items-center gap-1.5 cursor-pointer shrink-0',
+                      isMaxLevel
+                        ? 'bg-amber-500 text-white border border-amber-400 cursor-default'
+                        : isLocked
+                        ? 'bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed shadow-none'
+                        : !canAfford
+                        ? 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed shadow-none'
+                        : 'bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-500 shadow-indigo-600/30'
+                    )}
+                  >
+                    {isMaxLevel ? (
+                      <span>{language === 'ko' ? '최대' : 'MAX'}</span>
+                    ) : isLocked ? (
+                      <span>{language === 'ko' ? '잠김' : 'LOCKED'}</span>
+                    ) : (
+                      <>
+                        <Zap size={13} />
+                        <span>{language === 'ko' ? '강화' : 'UPGRADE'}</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
 
@@ -373,47 +401,6 @@ export const SkillView: React.FC<SkillViewProps> = ({
                   </div>
                 </div>
               )}
-
-              {/* 강화 액션 버튼 */}
-              <div className="mt-5">
-                <button
-                  disabled={isMaxLevel || isLocked || (!canAfford && !isImpersonating)}
-                  onClick={() => {
-                    onUpgradeSkill(skill.id);
-                    setUpgradingSkillId(skill.id);
-                    try {
-                      new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3').play().catch(() => {});
-                    } catch {}
-                    setTimeout(() => setUpgradingSkillId(null), 1000);
-                  }}
-                  id={`skill-upgrade-${skill.id}`}
-                  className={cn(
-                    'w-full min-h-11 rounded-xl font-mono text-xs font-black uppercase tracking-wider transition-all active:scale-95 shadow-md flex items-center justify-center gap-2 cursor-pointer',
-                    isMaxLevel
-                      ? 'bg-amber-500 text-white border border-amber-400 cursor-default shadow-amber-500/20'
-                      : isLocked
-                      ? 'bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed shadow-none'
-                      : !canAfford
-                      ? 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed shadow-none'
-                      : 'bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-500 shadow-indigo-600/30'
-                  )}
-                >
-                  {isMaxLevel ? (
-                    <span>{language === 'ko' ? '최대 레벨 달성' : 'MAX LEVEL'}</span>
-                  ) : isLocked ? (
-                    <span>{language === 'ko' ? '잠김 (조건 미달)' : 'LOCKED'}</span>
-                  ) : (
-                    <>
-                      <Zap size={14} />
-                      <span>
-                        {isImpersonating
-                          ? 'ADMIN FORCED UPGRADE'
-                          : `${language === 'ko' ? '스킬 강화' : 'UPGRADE'} (${upgradeCost.toLocaleString()} SNS)`}
-                      </span>
-                    </>
-                  )}
-                </button>
-              </div>
             </div>
           );
         })}

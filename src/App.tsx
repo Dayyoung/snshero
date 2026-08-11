@@ -82,6 +82,7 @@ import { Meta } from './components/Meta';
 import { NativeAd } from './components/NativeAd';
 import { CortanaCommandButton } from './components/CortanaCommandButton';
 import { TutorialCoachMark } from './components/TutorialCoachMark';
+import { AppLoadingGate } from './components/AppLoadingGate';
 
 const HomeView = lazy(() => import('./views/HomeView').then(module => ({ default: module.HomeView })));
 const KadanRpgView = lazy(() => import('./views/KadanRpgView').then(module => ({ default: module.KadanRpgView })));
@@ -123,6 +124,7 @@ const QrReward = lazy(() => import('./components/QrReward').then(module => ({ de
 const PolicyCenterView = lazy(() => import('./views/PolicyCenterView').then(module => ({ default: module.PolicyCenterView })));
 const NovelView = lazy(() => import('./views/NovelView').then(module => ({ default: module.NovelView })));
 const AnimeView = lazy(() => import('./views/AnimeView').then(module => ({ default: module.AnimeView })));
+const ModooView = lazy(() => import('./views/ModooView').then(module => ({ default: module.ModooView })));
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -365,6 +367,58 @@ interface ChatMessage {
   meta?: AdminHelpMessageMeta;
 }
 
+function getViewFromPathAndUrl(): ViewType {
+  if (typeof window === 'undefined') return 'home';
+  const params = new URLSearchParams(window.location.search);
+  const queryView = params.get('view');
+  if (queryView === 'community') return 'community';
+  if (queryView === 'webtoon') return 'novel';
+  if (queryView === 'modoo') return 'modoo';
+
+  const path = window.location.pathname.replace(/\/$/, '').toLowerCase() || '/';
+  if (path === '/book' || path === '/novel' || path.startsWith('/novel/s1-')) return 'novel';
+  if (path === '/admin') return 'admin';
+  if (path === '/status') return 'status';
+  if (path === '/wiki') return 'wiki';
+  if (path === '/world-codex') return 'world-codex';
+  if (path === '/wiki/howtoplay') return 'wiki-howtoplay';
+  if (path === '/wiki/tip') return 'wiki-tip';
+  if (path === '/wiki/card') return 'wiki-card';
+  if (path === '/wiki/item') return 'wiki-item';
+  if (path === '/wiki/skill') return 'wiki-skill';
+  if (path === '/webtoon' || path === '/cartoonbook') return 'novel';
+  if (path === '/home') return 'home';
+  if (path === '/main') return 'main';
+  if (path === '/deck') return 'mydeck';
+  if (path === '/play') return 'play';
+  if (path === '/shop') return 'shop';
+  if (path === '/event') return 'event';
+  if (path === '/setting') return 'setting';
+  if (path === '/ranking') return 'ranking';
+  if (path === '/companion') return 'companion';
+  if (path === '/profile') return 'profile';
+  if (path === '/skill') return 'skill';
+  if (path === '/guild-list') return 'guild-list';
+  if (path === '/playground') return 'playground';
+  if (path === '/stock-market') return 'stock-market';
+  if (path === '/marketplace') return 'card-marketplace';
+  if (path === '/prediction-market') return 'prediction-market';
+  if (path === '/reward' || path === '/reward-qr') return 'reward-qr';
+  if (path === '/reward-ar') return 'reward-ar';
+  if (path === '/share') return 'share';
+  if (path === '/boost') return 'boost';
+  if (path === '/season-hub') return 'season-hub';
+  if (path === '/policy-center') return 'policy-center';
+  if (path === '/web3') return 'web3-landing';
+  if (path === '/referral') return 'referral';
+  if (path === '/modoo') return 'modoo';
+  if (path.startsWith('/creator/')) return 'creator';
+  if (path === '/') return 'home';
+
+  const saved = localStorage.getItem('hero_current_view') as ViewType;
+  return saved || 'home';
+}
+
 function AppContent() {
 
   const [currentSeason, setCurrentSeason] = useState<string>(() => {
@@ -384,58 +438,7 @@ function AppContent() {
   const adBannerRef = React.useRef<HTMLDivElement>(null);
   const [adBannerHeight, setAdBannerHeight] = useState(0);
   const [autoStartPvp, setAutoStartPvp] = useState(false);
-  const [view, setView] = useState<ViewType>(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const queryView = params.get('view');
-      if (queryView === 'community') return 'community';
-      if (queryView === 'webtoon') return 'novel';
-
-      const path = window.location.pathname;
-      if (path === '/book' || path === '/novel' || path.startsWith('/novel/s1-')) return 'novel';
-      if (path === '/admin') return 'admin';
-      if (path === '/status') return 'status';
-      if (path === '/wiki') return 'wiki';
-      if (path === '/world-codex') return 'world-codex';
-      if (path === '/wiki/howtoplay') return 'wiki-howtoplay';
-      if (path === '/wiki/tip') return 'wiki-tip';
-      if (path === '/wiki/card') return 'wiki-card';
-      if (path === '/wiki/item') return 'wiki-item';
-      if (path === '/wiki/skill') return 'wiki-skill';
-      if (path === '/webtoon' || path.toLowerCase() === '/cartoonbook') return 'novel';
-      if (path === '/home') return 'home';
-      if (path === '/main') return 'main';
-      if (path === '/deck') return 'mydeck';
-      if (path === '/play') return 'play';
-      if (path === '/shop') return 'shop';
-      if (path === '/event') return 'event';
-      if (path === '/setting') return 'setting';
-      if (path === '/ranking') return 'ranking';
-      if (path === '/companion') return 'companion';
-      if (path === '/profile') return 'profile';
-      if (path === '/skill') return 'skill';
-      if (path === '/guild-list') return 'guild-list';
-      if (path === '/playground') return 'playground';
-      if (path === '/stock-market') return 'stock-market';
-      if (path === '/marketplace') return 'card-marketplace';
-      if (path === '/prediction-market') return 'prediction-market';
-      if (path === '/reward' || path === '/reward-qr') return 'reward-qr';
-      if (path === '/reward-ar') return 'reward-ar';
-      if (path === '/share') return 'share';
-      if (path === '/boost') return 'boost';
-      if (path === '/season-hub') return 'season-hub';
-      if (path === '/policy-center') return 'policy-center';
-      if (path === '/web3') return 'web3-landing';
-      if (path === '/referral') return 'referral';
-      // creator landing with code
-      if (path.startsWith('/creator/')) return 'creator';
-
-      // Removed auto-redirect to play view at root '/' path
-      if (path === '/') return 'home';
-    }
-    const saved = typeof window !== 'undefined' ? localStorage.getItem('hero_current_view') as ViewType : null;
-    return saved || 'home';
-  });
+  const [view, setView] = useState<ViewType>(() => getViewFromPathAndUrl());
   const [creatorCode, setCreatorCode] = useState<string>(() => {
     if (typeof window !== 'undefined') {
       const path = window.location.pathname;
@@ -464,16 +467,17 @@ function AppContent() {
   const [initialPostId, setInitialPostId] = useState<string | undefined>(undefined);
   const [initialCategory, setInitialCategory] = useState<CommunityCategory | undefined>(undefined);
 
-  // URL Query String 감지
+  // URL 및 브라우저 뒤로가기/직접접속 감지
   useEffect(() => {
     const handleUrlParams = () => {
+      const detectedView = getViewFromPathAndUrl();
+      setView(detectedView);
+
       const params = new URLSearchParams(window.location.search);
-      const viewParam = params.get('view');
       const postIdParam = params.get('id') || params.get('postId');
       const categoryParam = params.get('category');
 
-      if (viewParam === 'community') {
-        setView('community');
+      if (detectedView === 'community') {
         if (postIdParam) {
           setInitialPostId(postIdParam);
         } else {
@@ -492,13 +496,19 @@ function AppContent() {
     return () => window.removeEventListener('popstate', handleUrlParams);
   }, []);
 
-  // view가 변할 때 URL 동기화 및 커뮤니티 파라미터 정리
+  // view가 변할 때 URL 동기화 및 localStorage 저장
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    localStorage.setItem('hero_current_view', view);
+
     const params = new URLSearchParams(window.location.search);
     const viewParam = params.get('view');
-    
-    if (view !== 'community') {
+
+    if (view === 'modoo') {
+      if (window.location.pathname !== '/modoo') {
+        window.history.pushState({}, '', '/modoo');
+      }
+    } else if (view !== 'community') {
       if (viewParam === 'community' || params.has('category') || params.has('postId') || params.has('id')) {
         const url = new URL(window.location.href);
         url.searchParams.delete('view');
@@ -2028,6 +2038,7 @@ function AppContent() {
   // [IN-GAME MACRO RECORDER & PLAYBACK STATE]
   // =========================================================================
   const [showRecordBtn, setShowRecordBtn] = useState(false);
+  const [isBootGateActive, setIsBootGateActive] = useState<boolean>(true);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingActions, setRecordingActions] = useState<{
     x: number;
@@ -5724,6 +5735,13 @@ function AppContent() {
             showCustomAlert={showCustomAlert}
           />
         );
+      case 'modoo':
+        return (
+          <ModooView
+            language={language}
+            onNavigate={setView}
+          />
+        );
       case 'novel':
       case 'webtoon':
       case 'cartoonBook' as any:
@@ -5860,6 +5878,13 @@ function AppContent() {
           </div>
         )}
         <Meta view={view} language={language} />
+
+        {isBootGateActive && (
+          <AppLoadingGate
+            language={language}
+            onComplete={() => setIsBootGateActive(false)}
+          />
+        )}
 
         {/* Desktop Fixed Left Sidebar Ad (xl screens only) — sticky, doesn't scroll away */}
         {!isAdRemoved && (
@@ -6202,9 +6227,17 @@ function AppContent() {
                   <div className="mt-auto pt-4 border-t border-slate-100 shrink-0 flex flex-col space-y-4">
                     {/* Footer / Info */}
                     <div className="text-center pt-2">
-                      <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase">
+                      <button
+                        onClick={() => {
+                          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                          setIsMenuOpen(false);
+                          setView('modoo');
+                        }}
+                        className="text-[10px] font-bold text-slate-400 hover:text-[#201d1d] tracking-wider uppercase transition-colors cursor-pointer"
+                        title="Modoo Work Monitor"
+                      >
                         SNS_HERO v1.0.5
-                      </span>
+                      </button>
                     </div>
                   </div>
                 </motion.div>

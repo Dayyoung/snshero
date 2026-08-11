@@ -78,7 +78,7 @@ export const StoryStageSelectModal: React.FC<StoryStageSelectModalProps> = ({
     setSweepResult({
       gold: 300,
       exp: 150,
-      item: language === 'ko' ? '초급 카드 강화석 x2 (+300 SNS PTS)' : 'Basic Upgrade Stone x2 (+300 SNS PTS)',
+      item: language === 'ko' ? '초급 카드 강화석 x2 (+300 SNS)' : 'Basic Upgrade Stone x2 (+300 SNS)',
     });
   };
 
@@ -173,7 +173,7 @@ export const StoryStageSelectModal: React.FC<StoryStageSelectModalProps> = ({
                       <span className="text-[10px] font-mono font-bold">{item.stars}★ 달성</span>
                       <Gift size={16} className={`my-1 ${canClaim ? 'text-amber-400' : 'text-slate-500'}`} />
                       <span className="text-[9px] font-mono font-bold">
-                        {isClaimed ? (language === 'ko' ? '수령완료' : 'Claimed') : `+${item.sns} PTS`}
+                        {isClaimed ? (language === 'ko' ? '수령완료' : 'Claimed') : `+${item.sns} SNS`}
                       </span>
                     </button>
                   );

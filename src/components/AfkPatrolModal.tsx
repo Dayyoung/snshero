@@ -97,7 +97,7 @@ export const AfkPatrolModal: React.FC<AfkPatrolModalProps> = ({ language, onClai
             </span>
             <span className="font-mono text-xl font-black text-[#201d1d] flex items-center gap-1.5 mt-1">
               <Sparkles size={18} className="text-indigo-600" />
-              +{earnedSns.toLocaleString()} PTS
+              +{earnedSns.toLocaleString()} SNS
             </span>
           </div>
 
