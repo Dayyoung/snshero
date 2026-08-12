@@ -71,10 +71,19 @@ export const t = (key: string, lang: Language, params?: Record<string, any>): st
   
   if (!text) {
     if (typeof key === 'string') {
-      const epMatch = key.match(/^webtoon_ep_(\d+)_title$/);
-      if (epMatch) {
-        const epNum = parseInt(epMatch[1], 10);
+      const epTitleMatch = key.match(/^webtoon_ep_(\d+)_title$/);
+      const epLoglineMatch = key.match(/^webtoon_ep_(\d+)_logline$/);
+      const epCaptionMatch = key.match(/^webtoon_ep_(\d+)_caption(\d+)$/);
+      if (epTitleMatch) {
+        const epNum = parseInt(epTitleMatch[1], 10);
         text = lang === 'ko' ? `에피소드 ${epNum}` : `Episode ${epNum}`;
+      } else if (epLoglineMatch) {
+        const epNum = parseInt(epLoglineMatch[1], 10);
+        text = lang === 'ko' ? `에피소드 ${epNum}의 흥미진진한 스토리를 확인하세요.` : `Check out the exciting story for Episode ${epNum}.`;
+      } else if (epCaptionMatch) {
+        const epNum = parseInt(epCaptionMatch[1], 10);
+        const capNum = parseInt(epCaptionMatch[2], 10);
+        text = lang === 'ko' ? `에피소드 ${epNum} 장면 ${capNum}` : `Episode ${epNum} Scene ${capNum}`;
       } else {
         text = key;
       }
@@ -2262,8 +2271,8 @@ const kadanRpgTranslations: Record<'ko' | 'en', Record<string, string>> = {
     kadan_rpg_status: '상태',
     kadan_rpg_controls: '진행 제어',
     kadan_rpg_auto_step: '자동 단계',
-    kadan_rpg_auto_on: '자동 진행',
-    kadan_rpg_auto_off: '수동',
+    kadan_rpg_auto_on: '자동 진행 [ON]',
+    kadan_rpg_auto_off: '수동 진행 [OFF]',
     kadan_rpg_resume_auto: '자동 진행 재개',
     kadan_rpg_manual_mode: '수동 플레이',
     kadan_rpg_reset: '처음부터',
@@ -2415,8 +2424,8 @@ const kadanRpgTranslations: Record<'ko' | 'en', Record<string, string>> = {
     kadan_rpg_status: 'Status',
     kadan_rpg_controls: 'Controls',
     kadan_rpg_auto_step: 'Auto Step',
-    kadan_rpg_auto_on: 'Auto',
-    kadan_rpg_auto_off: 'Manual',
+    kadan_rpg_auto_on: 'Auto Mode [ON]',
+    kadan_rpg_auto_off: 'Manual Mode [OFF]',
     kadan_rpg_resume_auto: 'Resume Auto',
     kadan_rpg_manual_mode: 'Manual Play',
     kadan_rpg_reset: 'Restart',

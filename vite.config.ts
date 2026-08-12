@@ -9,6 +9,20 @@ export default defineConfig(({mode}) => {
     plugins: [
       react(), 
       tailwindcss(),
+      {
+        name: 'api-health-plugin',
+        configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            if (req.url === '/api/health' || req.url === '/health') {
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ status: 'ok' }));
+              return;
+            }
+            next();
+          });
+        }
+      }
     ],
     base: process.env.VITE_BASE_PATH || './',
     build: {

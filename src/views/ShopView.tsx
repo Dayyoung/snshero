@@ -3447,13 +3447,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       id={`shop-pack-${pack.rarity}-btn`}
                       onClick={() => buyPack(pack.cost, pack.rarity)}
                       className={cn(
-                        'h-11 flex-1 rounded-xl border px-3 py-2 text-left text-white shadow-sm transition-all active:scale-95 touch-target flex items-center justify-between',
+                        'min-h-[44px] h-auto flex-1 rounded-xl border px-2.5 py-2 text-left text-white shadow-sm transition-all active:scale-95 touch-target flex items-center justify-between gap-1',
                         packTheme.primaryButton,
                       )}
                     >
-                      <span className="min-w-0 leading-tight">
-                        <span className="block text-[8px] uppercase tracking-[0.1em] text-white/70">{language === 'ko' ? '1회 소환' : '1x Draw'}</span>
-                        <span className="text-xs font-black">{pack.cost} SNS</span>
+                      <span className="min-w-0 leading-tight flex-1">
+                        <span className="block text-[8px] uppercase tracking-[0.05em] text-white/70 truncate">{language === 'ko' ? '1회 소환' : '1x Draw'}</span>
+                        <span className="text-xs font-black truncate block">{pack.cost} SNS</span>
                       </span>
                       <ArrowRight size={14} className="shrink-0 opacity-80" />
                     </button>
@@ -3461,11 +3461,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <button
                       id={`shop-pack-${pack.rarity}-10x-btn`}
                       onClick={() => buy10xPack(pack.cost, pack.rarity)}
-                      className="h-11 flex-1 rounded-xl border border-rose-500 bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 px-3 py-2 text-left text-white shadow-md transition-all active:scale-95 touch-target flex items-center justify-between relative overflow-hidden"
+                      className="min-h-[44px] h-auto flex-1 rounded-xl border border-rose-500 bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 px-2.5 py-2 text-left text-white shadow-md transition-all active:scale-95 touch-target flex items-center justify-between gap-1 relative overflow-hidden"
                     >
-                      <span className="min-w-0 leading-tight">
-                        <span className="block text-[8px] font-black uppercase tracking-[0.05em] text-amber-200">{language === 'ko' ? '10연차 (10% 할인)' : '10x Draw (10% OFF)'}</span>
-                        <span className="text-xs font-black">{Math.floor(pack.cost * 10 * 0.9)} SNS</span>
+                      <span className="min-w-0 leading-tight flex-1">
+                        <span className="block text-[8px] font-black uppercase tracking-[0.02em] text-amber-200 truncate">{language === 'ko' ? '10연차 (10%할인)' : '10x (10% OFF)'}</span>
+                        <span className="text-xs font-black truncate block">{Math.floor(pack.cost * 10 * 0.9)} SNS</span>
                       </span>
                       <Sparkles size={14} className="shrink-0 text-amber-300 animate-pulse" />
                     </button>
@@ -3512,7 +3512,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 <button
                   id="shop-pack-item-btn"
                   onClick={buyItemPack}
-                  className="h-13 sm:h-14 w-full rounded-xl border border-purple-700 bg-purple-700 px-4 py-3 text-left text-white shadow-sm transition-all hover:border-purple-600 hover:bg-purple-600 active:scale-95 touch-target flex items-center justify-between"
+                  className="min-h-[52px] sm:min-h-[56px] h-auto w-full rounded-xl border border-purple-700 bg-purple-700 px-4 py-3 text-left text-white shadow-sm transition-all hover:border-purple-600 hover:bg-purple-600 active:scale-95 touch-target flex items-center justify-between gap-2"
                 >
                   <span className="flex w-full items-center justify-between gap-3">
                     <span className="min-w-0 leading-tight">
@@ -3573,7 +3573,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     }
                   }}
                   className={cn(
-                    'h-13 sm:h-14 w-full rounded-xl border px-4 py-3 text-left shadow-sm transition-all touch-target flex items-center justify-between',
+                    'min-h-[52px] sm:min-h-[56px] h-auto w-full rounded-xl border px-4 py-3 text-left shadow-sm transition-all touch-target flex items-center justify-between gap-2',
                     isAdRemoved
                       ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400'
                       : 'border-blue-600 bg-blue-600 text-white hover:border-blue-500 hover:bg-blue-500 active:scale-95'
@@ -3656,7 +3656,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     link.click();
                     document.body.removeChild(link);
                   }}
-                  className="h-12 sm:h-13 w-full rounded-xl border border-emerald-700 bg-emerald-700 px-4 py-2.5 text-white shadow-sm transition-all hover:bg-emerald-800 active:scale-95 touch-target flex items-center justify-between cursor-pointer"
+                  className="min-h-[48px] sm:min-h-[52px] h-auto w-full rounded-xl border border-emerald-700 bg-emerald-700 px-4 py-2.5 text-white shadow-sm transition-all hover:bg-emerald-800 active:scale-95 touch-target flex items-center justify-between gap-2 cursor-pointer"
                 >
                   <span className="flex items-center gap-2 font-black text-sm uppercase tracking-wider">
                     <Download size={18} className="shrink-0" />
@@ -3723,7 +3723,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       : 'https://www.youtube.com/watch?v=TA1klx1DSGs';
                     window.open(videoUrl, '_blank', 'noopener,noreferrer');
                   }}
-                  className="h-12 sm:h-13 w-full rounded-xl border border-red-700 bg-red-700 px-4 py-2.5 text-white shadow-sm transition-all hover:bg-red-800 active:scale-95 touch-target flex items-center justify-between cursor-pointer"
+                  className="min-h-[48px] sm:min-h-[52px] h-auto w-full rounded-xl border border-red-700 bg-red-700 px-4 py-2.5 text-white shadow-sm transition-all hover:bg-red-800 active:scale-95 touch-target flex items-center justify-between gap-2 cursor-pointer"
                 >
                   <span className="flex items-center gap-2 font-black text-sm uppercase tracking-wider">
                     <Play size={18} className="shrink-0 fill-current" />
@@ -3787,7 +3787,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                       }}
                       className={cn(
-                        "w-full bg-slate-900 text-white font-bold uppercase tracking-wider text-sm hover:bg-slate-800 transition-all font-sans h-13 sm:h-14 rounded-xl flex items-center justify-center cursor-pointer shadow-xs active:scale-95 touch-target"
+                        "w-full bg-slate-900 text-white font-bold uppercase tracking-wider text-sm hover:bg-slate-800 transition-all font-sans min-h-[52px] sm:min-h-[56px] h-auto py-3 rounded-xl flex items-center justify-center cursor-pointer shadow-xs active:scale-95 touch-target"
                       )}
                     >
                       {t('buy', language)}

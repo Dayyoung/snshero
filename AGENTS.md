@@ -2,8 +2,8 @@
 # SNS히어로 에이전트 지침서 (AGENTS.md)
 
 ## 스프레드시트 개선 작업 진행 상태
-- **마지막 수정 완료 항목 ID**: `구글 시트 내 모든 작업대기(기획/디자인/개발) 항목 검토, 코드 UI/반응형 최적화 반영 및 구글 폼 작업완료 제출 업데이트`
-- **최종 업데이트 일시**: 2026-08-12 07:44
+- **마지막 수정 완료 항목 ID**: `297 (구글 시트 1nX6BFBJR4fTrv3PMqG8UamwSbqY2tJt_VvJoGAPItu8 전체 작업대기 항목 40여건 처리 및 검증 완료)`
+- **최종 업데이트 일시**: 2026-08-12 16:00
 
 ## 프로젝트 개요
 - **이름**: SNS히어로 (SNSHero Revolution)
@@ -122,3 +122,4 @@
 - `hero_referral_pending_rewards`: 튜토리얼 완료 후 서버 검증 대기 중인 리퍼럴 보상 큐 저장
 - `hero_kadan_rpg_progress_{season}`: 카단 & 아케인 에코즈 `/main` RPG 진행도 저장 (현재 챕터/지역, 완료 이벤트, 전투/상자/보상 상태, 마지막 위치, 환생 레벨)
 - `hero_kadan_rpg_auto_mode_{season}`: 카단 RPG 자동 진행/자동전투 토글 상태 저장
+- `hero_daily_missions_history`: 일일 미션 보상 완료 및 수령 히스토리 목록 저장 (획득 보상, 날짜, 시간)

@@ -62,6 +62,7 @@ export function addNotification(notif: Omit<SystemNotification, 'id' | 'timestam
   const updated = [newNotif, ...current].slice(0, 50); // limit to max 50
   if (typeof window !== 'undefined') {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    window.dispatchEvent(new CustomEvent('hero_notification_added', { detail: newNotif }));
   }
   return newNotif;
 }

@@ -460,7 +460,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
         (isDamaged || isFlipping) && "animate-damage-shake",
         !className?.includes('w-') && !className?.includes('h-') && "w-20 h-28 sm:w-24 sm:h-32 md:w-32 md:h-44",
         !className?.includes('rounded-') && "rounded-xl",
-        (!isLocked || onClick) && "cursor-pointer hover:ring-1 hover:ring-indigo-500/50",
+        (!isLocked || onClick) && "cursor-pointer hover:ring-1 hover:ring-[#00E5FF] hover:border-[#00E5FF]",
         className
       )}
       onClick={onClick}

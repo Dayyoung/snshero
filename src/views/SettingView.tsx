@@ -1285,6 +1285,16 @@ export const SettingView: React.FC<SettingViewProps> = ({
               >
                 [+] {t('restore_data', language)} (카메라 스캔)
               </button>
+              <button
+                type="button"
+                onClick={() => {
+                  playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+                  setIsGoogleSheetsModalOpen(true);
+                }}
+                className="flex-1 py-3 px-4 bg-indigo-800 text-white rounded-xl font-mono text-xs font-bold hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-98 shadow-sm"
+              >
+                [+] {language === 'ko' ? 'Google Sheets 연동 & 동기화' : 'Google Sheets Sync'}
+              </button>
             </div>
           </div>
         </section>

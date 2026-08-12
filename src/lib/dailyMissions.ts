@@ -5,6 +5,8 @@
  * 미니게임/전투 완료 시 progress를 업데이트하고 달성 시 보상을 지급한다.
  */
 
+import { addNotification } from './notificationHelper';
+
 export interface DailyMission {
   id: string;
   type: 'play_ai_battle' | 'play_minigame' | 'score_snake' | 'score_2048' | 'win_ai_battle' | 'collect_cards' | 'earn_sns' | 'play_pvp_battle';
@@ -129,6 +131,9 @@ function createFreshMissions(): DailyMissionProgress {
 export function saveDailyMissions(data: DailyMissionProgress): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('hero_daily_missions_updated'));
+    }
   } catch (e) {
     // 저장 실패는 무시 (스토리지 꽉 참 등)
   }
@@ -164,10 +169,28 @@ export function incrementMissionProgress(
       changed = true;
     }
 
-    // 목표 달성 체크
+    // 목표 달성 체크 (100% 달성 시)
     if (newProgress >= mission.target && !data.missions[mission.id].completed) {
       data.missions[mission.id] = { ...data.missions[mission.id], completed: true };
       changed = true;
+
+      addNotification({
+        category: 'reward',
+        title: `일일 미션 달성: ${mission.title_ko}`,
+        message: `[${mission.title_ko}] 미션을 달성하였습니다! 보상 받기 버튼을 눌러 보상을 수령하세요. (+${mission.reward_sns} SNS)`,
+      });
+
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('hero_daily_mission_completed', {
+          detail: {
+            id: mission.id,
+            title_ko: mission.title_ko,
+            title_en: mission.title_en,
+            reward_sns: mission.reward_sns,
+            reward_xp: mission.reward_xp,
+          }
+        }));
+      }
     }
   });
 
@@ -184,11 +207,22 @@ export function claimMissionReward(
   if (!mission) return null;
 
   const state = data.missions[missionId];
-  if (!state || !state.completed || state.claimed) return null;
+  if (!state || (!state.completed && state.progress < mission.target) || state.claimed) return null;
 
   // 보상 수령 마킹
-  data.missions[missionId] = { ...state, claimed: true };
+  data.missions[missionId] = { ...state, completed: true, claimed: true };
   saveDailyMissions(data);
+
+  // 수행 기록 추가
+  addMissionHistoryEntry({
+    missionId: mission.id,
+    title_ko: mission.title_ko,
+    title_en: mission.title_en,
+    reward_sns: mission.reward_sns,
+    reward_xp: mission.reward_xp,
+    claimedAt: new Date().toISOString(),
+    date: data.date || getTodayStr(),
+  });
 
   return {
     sns: mission.reward_sns,
@@ -196,6 +230,66 @@ export function claimMissionReward(
     title_ko: mission.title_ko,
     title_en: mission.title_en,
   };
+}
+
+export interface DailyMissionHistoryEntry {
+  id: string;
+  missionId: string;
+  title_ko: string;
+  title_en: string;
+  reward_sns: number;
+  reward_xp: number;
+  claimedAt: string;
+  date: string;
+}
+
+const HISTORY_STORAGE_KEY = 'hero_daily_missions_history';
+
+export function loadDailyMissionHistory(): DailyMissionHistoryEntry[] {
+  try {
+    const saved = localStorage.getItem(HISTORY_STORAGE_KEY);
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch (e) {
+    // ignore
+  }
+  return [];
+}
+
+export function saveDailyMissionHistory(history: DailyMissionHistoryEntry[]): void {
+  try {
+    localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history));
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('hero_daily_missions_history_updated'));
+    }
+  } catch (e) {
+    // ignore
+  }
+}
+
+export function addMissionHistoryEntry(entry: Omit<DailyMissionHistoryEntry, 'id'>): DailyMissionHistoryEntry {
+  const history = loadDailyMissionHistory();
+  const newEntry: DailyMissionHistoryEntry = {
+    ...entry,
+    id: `mhist_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`
+  };
+  const updated = [newEntry, ...history].slice(0, 100);
+  saveDailyMissionHistory(updated);
+  return newEntry;
+}
+
+export function clearDailyMissionHistory(): void {
+  saveDailyMissionHistory([]);
+}
+
+export function getMissionHistoryStats(): { totalSns: number; totalXp: number; totalCompleted: number } {
+  const history = loadDailyMissionHistory();
+  return history.reduce((acc, curr) => ({
+    totalSns: acc.totalSns + (curr.reward_sns || 0),
+    totalXp: acc.totalXp + (curr.reward_xp || 0),
+    totalCompleted: acc.totalCompleted + 1,
+  }), { totalSns: 0, totalXp: 0, totalCompleted: 0 });
 }
 
 /** 완료되었지만 아직 수령 안 한 미션 개수 */

@@ -9735,7 +9735,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
 
   return (
-    <div id="game-board" className="flex-1 flex flex-col w-full bg-[#060a14] text-slate-100 pb-0 pt-11 sm:pt-12 overflow-hidden relative min-h-0 h-full justify-between">
+    <div id="game-board" className="flex-1 flex flex-col w-full bg-[#060a14] text-slate-100 pb-4 pt-11 sm:pt-12 overflow-y-auto relative min-h-full justify-between">
       {/* Battle Roar Wave Ripple Effect Overlay */}
       <AnimatePresence>
         {isRoarActive && (
@@ -10255,7 +10255,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <motion.div 
                 key={card.id} 
                 className={cn(
-                  "w-[16vw] max-w-[58px] sm:max-w-[72px] md:max-w-[99px] lg:max-w-[108px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg",
+                  "w-[18vw] max-w-[66px] sm:max-w-[76px] md:max-w-[99px] lg:max-w-[108px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg",
                   isSelected && "z-50"
                 )}
                 onClick={() => handleCardClick(idx, 'ai')}
@@ -11072,7 +11072,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 }}
                 whileTap={{ scale: 0.95 }}
                 className={cn(
-                  "w-[16vw] max-w-[58px] sm:max-w-[72px] md:max-w-[99px] lg:max-w-[108px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg",
+                  "w-[18vw] max-w-[66px] sm:max-w-[76px] md:max-w-[99px] lg:max-w-[108px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg",
                   isSelected && "z-50"
                 )}
               >
@@ -11243,7 +11243,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     initial={{ opacity: 0, scale: 0.96, y: 8 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.96, y: 8 }}
-                    className="absolute inset-0 bg-slate-950/95 border border-indigo-400/80 rounded-xl p-2 flex flex-col justify-between z-30 shadow-2xl shadow-indigo-500/30"
+                    className="absolute inset-0 bg-slate-950/95 border border-indigo-400/80 rounded-xl p-2 pr-14 md:pr-2 flex flex-col justify-between z-30 shadow-2xl shadow-indigo-500/30"
                   >
                     <div className="text-[8.5px] font-black text-indigo-200 animate-pulse flex items-center gap-1.5">
                       <Terminal size={9} className="text-indigo-400" />

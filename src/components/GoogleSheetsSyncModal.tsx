@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { X, FileSpreadsheet, Download, Upload, CheckCircle2, AlertCircle, ExternalLink, LogOut, RefreshCw } from 'lucide-react';
 import { googleSignIn, googleSignOut, initGoogleAuth, getAccessToken } from '../lib/googleSheetsAuth';
-import { createGameDataSpreadsheet, createDevelopmentRoadmapSpreadsheet, readSpreadsheetSheetValues, GoogleSheetsExportPayload } from '../lib/googleSheetsService';
+import { createGameDataSpreadsheet, createDevelopmentRoadmapSpreadsheet, readSpreadsheetSheetValues, syncSpreadsheetStatusAllCompleted, GoogleSheetsExportPayload } from '../lib/googleSheetsService';
 import { CARD_DATABASE } from '../cardDatabase';
 import { t } from '../lib/i18n';
 import type { Language } from '../types';
@@ -30,6 +30,13 @@ export const GoogleSheetsSyncModal: React.FC<GoogleSheetsSyncModalProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [confirmExportOpen, setConfirmExportOpen] = useState<boolean>(false);
 
+  // Status Sync fields
+  const [statusSheetId, setStatusSheetId] = useState<string>('1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s');
+  const [syncingStatus, setSyncingStatus] = useState<boolean>(false);
+  const [statusResultMsg, setStatusResultMsg] = useState<string | null>(null);
+  const [statusResultUrl, setStatusResultUrl] = useState<string | null>(null);
+  const [confirmStatusOpen, setConfirmStatusOpen] = useState<boolean>(false);
+
   const handleExportRoadmap = async () => {
     const token = accessToken || getAccessToken();
     if (!token) {
@@ -49,9 +56,36 @@ export const GoogleSheetsSyncModal: React.FC<GoogleSheetsSyncModalProps> = ({
     }
   };
 
+  const handleSyncStatusAllCompleted = async () => {
+    setConfirmStatusOpen(false);
+    const token = accessToken || getAccessToken();
+    if (!token) {
+      setErrorMessage(language === 'ko' ? 'Google 로그인 액세스 토큰이 필요합니다.' : 'Google access token is missing.');
+      return;
+    }
+
+    try {
+      setSyncingStatus(true);
+      setErrorMessage(null);
+      setStatusResultMsg(null);
+      const res = await syncSpreadsheetStatusAllCompleted(token, statusSheetId, '작업완료', 297);
+      setStatusResultUrl(res.spreadsheetUrl);
+      setStatusResultMsg(
+        language === 'ko'
+          ? `성공적으로 ${res.updatedCells}개 항목의 완료여부를 '작업완료'로 시트에 반영했습니다!`
+          : `Successfully updated ${res.updatedCells} status cells to '작업완료'!`
+      );
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Failed to update sheet status.');
+    } finally {
+      setSyncingStatus(false);
+    }
+  };
+
   // Import fields
-  const [importSheetId, setImportSheetId] = useState<string>('');
+  const [importSheetId, setImportSheetId] = useState<string>('1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s');
   const [importedRows, setImportedRows] = useState<string[][] | null>(null);
+
 
   useEffect(() => {
     if (!isOpen) return;
@@ -306,7 +340,74 @@ export const GoogleSheetsSyncModal: React.FC<GoogleSheetsSyncModalProps> = ({
           </div>
         )}
 
-        {/* Section 0: Export Development Roadmap Sheet */}
+        {/* Section 0: Batch Update Completion Status */}
+        <div className="border border-indigo-300 bg-indigo-50/60 p-4 rounded-sm mb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <CheckCircle2 size={16} className="text-indigo-700" />
+            <h3 className="text-sm font-bold text-indigo-950">
+              [+] {language === 'ko' ? '개선 항목 완료여부 구글 시트 반영 ("작업완료")' : 'Sync Sheet Completion Status ("작업완료")'}
+            </h3>
+          </div>
+          <p className="text-xs text-indigo-900 mb-3 leading-relaxed">
+            {language === 'ko'
+              ? '297개 전체 개선 항목의 완료여부(Status) 열을 Google Sheets API를 통해 "작업완료"로 직접 업데이트합니다.'
+              : 'Directly updates the Status column for all 297 improvement items to "작업완료" in your Google Sheet.'}
+          </p>
+
+          <div className="flex flex-col gap-1.5 mb-3">
+            <label className="text-[11px] font-bold text-indigo-950">
+              {language === 'ko' ? '대상 스프레드시트 URL 또는 ID:' : 'Target Spreadsheet URL or ID:'}
+            </label>
+            <input
+              type="text"
+              value={statusSheetId}
+              onChange={(e) => setStatusSheetId(e.target.value)}
+              placeholder="1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s"
+              className="w-full bg-[#fdfcfc] border border-indigo-300 text-[#201d1d] text-xs px-3 py-1.5 rounded-sm focus:outline-none focus:border-indigo-600 font-mono"
+            />
+          </div>
+
+          <button
+            type="button"
+            disabled={!userEmail || syncingStatus}
+            onClick={() => setConfirmStatusOpen(true)}
+            className="w-full flex items-center justify-center gap-2 bg-indigo-700 text-white py-2 px-4 rounded-sm font-bold text-xs hover:bg-indigo-800 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all shadow-sm"
+          >
+            {syncingStatus ? (
+              <>
+                <RefreshCw size={14} className="animate-spin" />
+                <span>{language === 'ko' ? '구글 시트에 반영 중...' : 'Updating Google Sheet...'}</span>
+              </>
+            ) : (
+              <>
+                <CheckCircle2 size={14} />
+                <span>{language === 'ko' ? '전체 297개 항목 "작업완료" 시트 업데이트 실행' : 'Execute Status Update to "작업완료"'}</span>
+              </>
+            )}
+          </button>
+
+          {statusResultMsg && (
+            <div className="mt-3 p-3 bg-white border border-indigo-300 rounded-sm text-xs text-indigo-950">
+              <div className="flex items-center gap-1.5 font-bold mb-1">
+                <CheckCircle2 size={14} className="text-emerald-600" />
+                <span>{statusResultMsg}</span>
+              </div>
+              {statusResultUrl && (
+                <a
+                  href={statusResultUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-indigo-700 underline font-bold hover:text-indigo-900 mt-1"
+                >
+                  <span>{language === 'ko' ? '업데이트된 Google Sheet 바로가기' : 'Open Updated Google Sheet'}</span>
+                  <ExternalLink size={12} />
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Section 0.5: Export Development Roadmap Sheet */}
         <div className="border border-emerald-300 bg-emerald-50/50 p-4 rounded-sm mb-4">
           <div className="flex items-center gap-2 mb-2">
             <FileSpreadsheet size={16} className="text-emerald-700" />
@@ -458,6 +559,38 @@ export const GoogleSheetsSyncModal: React.FC<GoogleSheetsSyncModalProps> = ({
             </div>
           )}
         </div>
+
+        {/* Confirmation Modal overlay for Status Sync */}
+        {confirmStatusOpen && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <div className="w-full max-w-md bg-[#fdfcfc] border border-[#201d1d] p-5 shadow-xl rounded-none font-mono">
+              <h4 className="text-sm font-bold text-[#201d1d] mb-2">
+                {language === 'ko' ? '[확인] 구글 시트 완료여부 "작업완료" 반영' : '[Confirm] Update Google Sheet Status'}
+              </h4>
+              <p className="text-xs text-[#424245] mb-4 leading-relaxed">
+                {language === 'ko'
+                  ? '지정한 구글 스프레드시트의 297개 개선 항목 완료여부 열을 "작업완료" 값으로 업데이트합니다. 진행하시겠습니까?'
+                  : 'This will update the status column for 297 items in the target Google Sheet to "작업완료". Proceed?'}
+              </p>
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setConfirmStatusOpen(false)}
+                  className="px-3 py-1.5 border border-[rgba(15,0,0,0.2)] bg-[#fdfcfc] text-xs font-bold text-[#201d1d] hover:bg-[#f8f7f7] rounded-sm cursor-pointer"
+                >
+                  {language === 'ko' ? '취소' : 'Cancel'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSyncStatusAllCompleted}
+                  className="px-3 py-1.5 bg-indigo-700 text-white text-xs font-bold hover:bg-indigo-800 rounded-sm cursor-pointer"
+                >
+                  {language === 'ko' ? '승인 및 업데이트' : 'Confirm & Update'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Confirmation Modal overlay */}
         {confirmExportOpen && (

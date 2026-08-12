@@ -710,6 +710,11 @@ function AppContent() {
       setTutorialStep(1);
     }
 
+    // Automatically transition from Step 1/2 to 3 if already on Play or Main view
+    if ((view === 'play' || view === 'main') && (tutorialStep === 1 || tutorialStep === 2)) {
+      setTutorialStep(3);
+    }
+
     // Step 1 to 2 to 3 Auto-transition: Home to Map
     if (tutorialStep === 1 && view === 'home') {
       const timer = setTimeout(() => {
@@ -5856,8 +5861,9 @@ function AppContent() {
     
     return (
       <div className={cn(
-        "w-full app-bg text-slate-800 font-sans selection:bg-indigo-500 selection:text-white flex flex-col xl:flex-row min-h-screen bg-slate-50/30",
-        (view === 'play' && playGameState === 'playing') ? "h-screen overflow-hidden" : "min-h-screen",
+        "w-full app-bg text-slate-800 font-sans selection:bg-indigo-500 selection:text-white flex flex-col xl:flex-row min-h-screen",
+        view === 'play' ? "bg-[#060a14] text-slate-100" : "bg-slate-50/30",
+        (view === 'play' && playGameState === 'playing') ? "min-h-screen overflow-y-auto" : "min-h-screen",
         simulationUser ? "pt-[36px]" : "",
         theme === 'dark' ? "theme-dark" : "",
         theme === 'metal' ? "theme-metal" : ""
@@ -5905,11 +5911,13 @@ function AppContent() {
 
         {/* Main Content */}
         <div className={cn(
-          "flex-1 w-full max-w-[1024px] mx-auto relative flex flex-col bg-slate-50/30 shadow-2xl border-x transition-colors duration-200",
-          theme === 'dark' || theme === 'metal'
-            ? "border-slate-800/80"
-            : "border-slate-200/80",
-          (view === 'play' && playGameState === 'playing') ? "h-full overflow-hidden" : "min-h-screen"
+          "flex-1 w-full max-w-[1024px] mx-auto relative flex flex-col shadow-2xl border-x transition-colors duration-200",
+          view === 'play'
+            ? "bg-[#060a14] border-slate-800/80"
+            : (theme === 'dark' || theme === 'metal'
+                ? "bg-slate-900 border-slate-800/80"
+                : "bg-slate-50/30 border-slate-200/80"),
+          (view === 'play' && playGameState === 'playing') ? "min-h-screen overflow-y-auto" : "min-h-screen"
         )}>
           {view !== 'landing' && (
             <>
@@ -6268,10 +6276,10 @@ function AppContent() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={view}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.2 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.1 }}
                 className="flex-1 flex flex-col"
               >
                 <Suspense
@@ -6711,42 +6719,60 @@ function AppContent() {
       )}
       {/* Tutorial Overlay System */}
       <AnimatePresence>
-        {isTutorialMode && [1, 8, 11, 12].includes(tutorialStep) && (
-          <div className="fixed inset-0 z-[1000] pointer-events-none bg-slate-950/45 backdrop-blur-[1px]">
-            {/* Step 1: Home Guide */}
-            {tutorialStep === 1 && (
-              <div className="absolute bottom-32 left-1/2 -translate-x-1/2 w-full max-w-sm p-6 pointer-events-auto">
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }} 
-                  animate={{ opacity: 1, y: 0 }} 
-                  className="bg-slate-900/95 border border-slate-700/50 backdrop-blur-xl p-6 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(59,130,246,0.15)] space-y-4 text-white"
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-12 h-12 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-2xl flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.2)]">
-                      <Zap size={22} className="animate-pulse" />
-                    </div>
-                    <h3 className="font-black italic uppercase tracking-wider text-xl text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-blue-400">
-                      {t('tutorial_start_title', language)}
-                    </h3>
+        {isTutorialMode && (
+          <>
+            {/* Always accessible top/bottom skip button layer */}
+            <div className="fixed top-3 right-3 z-[200000] pointer-events-auto">
+              <button
+                type="button"
+                id="skip-tutorial-main-btn"
+                onClick={handleSkipTutorial}
+                aria-label="SKIP TUTORIAL"
+                data-testid="skip-tutorial-btn"
+                className="bg-slate-900/95 hover:bg-slate-900 text-slate-200 hover:text-white px-3.5 py-2 rounded-xl font-black uppercase tracking-wider text-xs border border-slate-700 shadow-xl transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
+              >
+                SKIP TUTORIAL
+              </button>
+            </div>
+
+            {((tutorialStep === 1 && view === 'home') || (tutorialStep === 8 && view === 'shop') || (tutorialStep === 11 && view === 'mydeck') || tutorialStep === 12) && (
+              <div className="fixed inset-0 z-[1000] pointer-events-none bg-slate-950/45 backdrop-blur-[1px]">
+                {/* Step 1: Home Guide */}
+                {tutorialStep === 1 && view === 'home' && (
+                  <div className="absolute bottom-32 left-1/2 -translate-x-1/2 w-full max-w-sm p-6 pointer-events-auto">
+                    <motion.div 
+                      initial={{ opacity: 0, y: 20 }} 
+                      animate={{ opacity: 1, y: 0 }} 
+                      className="bg-slate-900/95 border border-slate-700/50 backdrop-blur-xl p-6 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(59,130,246,0.15)] space-y-4 text-white"
+                    >
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-12 h-12 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-2xl flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                          <Zap size={22} className="animate-pulse" />
+                        </div>
+                        <h3 className="font-black italic uppercase tracking-wider text-xl text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-blue-400">
+                          {t('tutorial_start_title', language)}
+                        </h3>
+                      </div>
+                      <button 
+                        onClick={() => {
+                          setView('play');
+                          setTutorialStep(3);
+                        }}
+                        className="w-full bg-gradient-to-r from-blue-600 to-indigo-650 hover:from-blue-500 hover:to-indigo-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest transition-all shadow-[0_4px_20px_rgba(59,130,246,0.3)] active:scale-[0.98] border border-blue-500/30 cursor-pointer"
+                      >
+                        {t('tutorial_start_btn', language)}
+                      </button>
+                      <button 
+                        onClick={handleSkipTutorial}
+                        aria-label="Skip tutorial step"
+                        data-testid="skip-tutorial-card-btn"
+                        className="w-full bg-slate-950/80 hover:bg-slate-950 text-slate-400 hover:text-white py-3 rounded-2xl font-black uppercase tracking-widest text-[11px] border border-slate-800 hover:border-slate-700 transition-all active:scale-[0.98] cursor-pointer"
+                      >
+                        {t('skip_tutorial', language)}
+                      </button>
+                    </motion.div>
                   </div>
-                  <button 
-                    onClick={() => {
-                      setView('play');
-                      setTutorialStep(3);
-                    }}
-                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-650 hover:from-blue-500 hover:to-indigo-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest transition-all shadow-[0_4px_20px_rgba(59,130,246,0.3)] active:scale-[0.98] border border-blue-500/30 cursor-pointer"
-                  >
-                    {t('tutorial_start_btn', language)}
-                  </button>
-                  <button 
-                    onClick={handleSkipTutorial}
-                    className="w-full bg-slate-950/80 hover:bg-slate-950 text-slate-400 hover:text-white py-3 rounded-2xl font-black uppercase tracking-widest text-[11px] border border-slate-800 hover:border-slate-700 transition-all active:scale-[0.98] cursor-pointer"
-                  >
-                    {t('skip_tutorial', language)}
-                  </button>
-                </motion.div>
-              </div>
-            )}
+                )}
 
 
             {/* Step 8: Shop Guide */}
@@ -6843,6 +6869,8 @@ function AppContent() {
             )}
           </div>
         )}
+      </>
+    )}
       </AnimatePresence>
       <TutorialCoachMark
         open={isContextualTutorialVisible && Boolean(activeContextualTutorial)}

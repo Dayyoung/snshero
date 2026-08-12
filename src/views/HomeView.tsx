@@ -17,6 +17,7 @@ import { BeginnerRoadmap } from "../components/BeginnerRoadmap";
 import { NoticeModal } from "../components/NoticeModal";
 import { AfkPatrolModal } from "../components/AfkPatrolModal";
 import { PingIndicator } from "../components/PingIndicator";
+import { DailyMissions } from "../components/DailyMissions";
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -160,8 +161,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
       setAutoStartCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-          onNavigate('ranking');
           return 0;
         }
         return prev - 1;
@@ -169,7 +168,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [isAutoStartPaused, helpOpen, isMailboxOpen, isNotifModalOpen, isLoggingIn, onNavigate, playSfx]);
+  }, [isAutoStartPaused, helpOpen, isMailboxOpen, isNotifModalOpen, isLoggingIn]);
+
+  useEffect(() => {
+    if (autoStartCountdown === 0 && !isAutoStartPaused && !helpOpen && !isMailboxOpen && !isNotifModalOpen && !isLoggingIn) {
+      playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+      onNavigate('ranking');
+    }
+  }, [autoStartCountdown, isAutoStartPaused, helpOpen, isMailboxOpen, isNotifModalOpen, isLoggingIn, onNavigate, playSfx]);
 
   const helpSlides = React.useMemo(() => [
     {
@@ -594,6 +600,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
 
       <section className="space-y-4">
+        {/* Daily Missions Component */}
+        <DailyMissions />
+
         <div className="grid grid-cols-1 gap-4">
           {(!user || user.uid === 'guest-id') ? (
             <div className="space-y-3 sm:space-y-4">

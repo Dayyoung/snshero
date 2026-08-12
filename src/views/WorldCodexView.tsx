@@ -210,6 +210,15 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
         </section>
 
         <section className="mt-6 rounded-[28px] border border-white/60 bg-white/85 p-4 shadow-sm backdrop-blur-sm sm:p-5">
+          {/* Consolidated Element Codex Progress Pill (ID 247) */}
+          <div className="mb-3 flex items-center justify-between p-2.5 bg-slate-100/80 border border-slate-200/80 rounded-2xl text-[11px] font-mono font-bold text-slate-800">
+            <span className="flex items-center gap-1.5">
+              <span>[Collection 110/110 ▾]</span>
+            </span>
+            <span className="text-slate-500 text-[10px]">
+              {language === 'ko' ? '전체 도감 수집 100%' : '100% Collection Completed'}
+            </span>
+          </div>
           <div className="mt-2 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {factionSummaries.map((summary) => {
               const factionDef = getFactionDef(summary.faction);

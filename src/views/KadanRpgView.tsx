@@ -342,7 +342,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
   }, [reincarnateProgress]);
 
   return (
-    <div className="flex h-full min-h-screen flex-col bg-slate-50/30 text-slate-900">
+    <div className="flex h-full min-h-screen flex-col bg-[#fdfcfc] text-slate-900">
       <header className="h-16 shrink-0 border-b border-slate-100 bg-white px-4 md:px-6">
         <div className="mx-auto flex h-full max-w-6xl items-center justify-between gap-3">
           <button
@@ -456,7 +456,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
         </div>
 
         {/* ─── 맵 바로 아래 배치된 진행도(Progress) 카드 ─── */}
-        <section className="w-full rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-4 mb-20 pb-6 shadow-xs">
+        <section className="w-full rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-4 mb-4 pb-4 shadow-xs">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex-1 min-w-0">
               <div className="mb-2 flex items-center justify-between text-xs font-bold text-[#646262]">

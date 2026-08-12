@@ -346,12 +346,13 @@ export const SkillView: React.FC<SkillViewProps> = ({
 
                 {/* 1-Line Consolidated Skill Node Action Control Bar (ID 245) */}
                 <div className="mt-4 flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50/80 p-1.5 pl-3">
-                  <div className="flex items-center gap-2 font-mono text-xs font-bold text-slate-700">
-                    <span className="text-slate-500">Lv.{currentLvl}/{maxLvl}</span>
-                    {!isMaxLevel && !isLocked && (
-                      <span className="rounded bg-indigo-100 px-2 py-0.5 text-[11px] font-extrabold text-indigo-700">
-                        {upgradeCost.toLocaleString()} SNS
+                  <div className="flex items-center gap-1.5 font-mono text-xs font-bold text-slate-700 min-w-0">
+                    {!isMaxLevel && !isLocked ? (
+                      <span className="rounded bg-indigo-100 px-2 py-0.5 text-[11px] font-extrabold text-indigo-700 truncate">
+                        [Cost: {upgradeCost.toLocaleString()} SNS | LV {currentLvl} ➔ {currentLvl + 1}]
                       </span>
+                    ) : (
+                      <span className="text-slate-500 font-bold">[LV {currentLvl}/{maxLvl}]</span>
                     )}
                   </div>
 

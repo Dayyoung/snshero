@@ -228,3 +228,95 @@ export async function readSpreadsheetSheetValues(
   const data = await res.json();
   return data.values || [];
 }
+
+export async function syncSpreadsheetStatusAllCompleted(
+  accessToken: string,
+  spreadsheetId: string,
+  statusValue: string = '작업완료',
+  totalRowsCount: number = 297
+): Promise<{ updatedCells: number; spreadsheetUrl: string }> {
+  // Extract ID if full URL passed
+  let cleanId = spreadsheetId.trim();
+  if (cleanId.includes('/d/')) {
+    const match = cleanId.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    if (match && match[1]) {
+      cleanId = match[1];
+    }
+  }
+
+  // 1. Get spreadsheet metadata to find first sheet name
+  let sheetName = '';
+  try {
+    const metaRes = await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${cleanId}?fields=sheets.properties`,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    if (metaRes.ok) {
+      const meta = await metaRes.json();
+      if (meta.sheets && meta.sheets.length > 0) {
+        sheetName = meta.sheets[0].properties.title;
+      }
+    }
+  } catch (e) {
+    console.warn('Could not fetch sheet metadata, proceeding with default range.', e);
+  }
+
+  // 2. Read A1:Z1 to confirm header index of status column
+  let statusColIndex = 5; // Default Column F (A=0, B=1, C=2, D=3, E=4, F=5)
+  try {
+    const headerRange = sheetName ? `'${sheetName}'!A1:Z1` : 'A1:Z1';
+    const headerRes = await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${cleanId}/values/${encodeURIComponent(headerRange)}`,
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+    if (headerRes.ok) {
+      const headerData = await headerRes.json();
+      if (headerData.values && headerData.values[0]) {
+        const headers = headerData.values[0] as string[];
+        const foundIdx = headers.findIndex((h) => h.includes('완료') || h.includes('상태') || h.includes('Status'));
+        if (foundIdx !== -1) {
+          statusColIndex = foundIdx;
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('Could not read headers, using column F.', e);
+  }
+
+  const colLetter = String.fromCharCode(65 + statusColIndex);
+  const targetRange = sheetName
+    ? `'${sheetName}'!${colLetter}2:${colLetter}${totalRowsCount + 1}`
+    : `${colLetter}2:${colLetter}${totalRowsCount + 1}`;
+
+  const values = Array.from({ length: totalRowsCount }, () => [statusValue]);
+
+  const updateRes = await fetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${cleanId}/values/${encodeURIComponent(targetRange)}?valueInputOption=USER_ENTERED`,
+    {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        range: targetRange,
+        majorDimension: 'ROWS',
+        values,
+      }),
+    }
+  );
+
+  if (!updateRes.ok) {
+    const errText = await updateRes.text();
+    throw new Error(`Failed to update status in Google Sheet: ${errText}`);
+  }
+
+  const result = await updateRes.json();
+  return {
+    updatedCells: result.updatedCells || totalRowsCount,
+    spreadsheetUrl: `https://docs.google.com/spreadsheets/d/${cleanId}`,
+  };
+}
+

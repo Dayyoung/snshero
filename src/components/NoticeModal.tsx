@@ -23,7 +23,9 @@ export const NoticeModal: React.FC<NoticeModalProps> = ({ language, onNavigate, 
       const timePassed = Date.now() - parseInt(dismissedAt, 10);
       const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
       if (timePassed < TWENTY_FOUR_HOURS) {
-        onClose?.();
+        setTimeout(() => {
+          onClose?.();
+        }, 0);
         return; // Suppress notice for 24 hours
       }
     }

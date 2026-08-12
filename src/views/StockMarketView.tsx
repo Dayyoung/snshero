@@ -413,7 +413,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                       setChartData([]);
                       fetchChart(card.id);
                     }}
-                    className="grid grid-cols-4 items-center px-2 py-3 text-center text-[11px] font-semibold hover:bg-slate-50/70 text-slate-700 cursor-pointer transition-colors active:bg-slate-100/50"
+                    className="grid grid-cols-4 items-center px-2 py-1.5 text-center text-[11px] font-semibold hover:bg-slate-50/70 text-slate-700 cursor-pointer transition-colors active:bg-slate-100/50"
                   >
                     {/* Card Identity */}
                     <div className="flex items-center gap-1.5 text-left justify-start min-w-0">

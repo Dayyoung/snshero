@@ -15,7 +15,7 @@ export const PingIndicator: React.FC<PingIndicatorProps> = ({ language, classNam
     const checkPing = async () => {
       const start = performance.now();
       try {
-        await fetch('/api/health', { method: 'HEAD', cache: 'no-store' }).catch(() => {});
+        await fetch('/metadata.json', { method: 'HEAD', cache: 'no-store' }).catch(() => {});
         const elapsed = Math.round(performance.now() - start);
         const finalPing = Math.max(12, Math.min(220, elapsed > 0 ? elapsed : Math.floor(20 + Math.random() * 18)));
         setPing(finalPing);

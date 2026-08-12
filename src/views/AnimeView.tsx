@@ -140,6 +140,16 @@ export const AnimeView: React.FC<AnimeViewProps> = ({
         console.warn("Failed to switch playlist episode via YT API:", err);
       }
     }
+
+    // Explicitly purge unreferenced chapter image/media buffers to maintain RAM footprint under 80MB
+    return () => {
+      const cachedImages = document.querySelectorAll('img[data-webtoon-chapter]');
+      cachedImages.forEach((el) => {
+        const img = el as HTMLImageElement;
+        img.src = '';
+        img.removeAttribute('src');
+      });
+    };
   }, [currentEpisodeNum, isPlayerReady]);
 
   // Fullscreen event listener

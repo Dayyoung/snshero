@@ -68,6 +68,14 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
           ? 'kadan_rpg_dialog_portal'
           : 'kadan_rpg_dialog_story';
   const [lineIndex, setLineIndex] = useState(0);
+
+  // Suspend Background BGM Processing during Dialogue Overlay to reduce CPU/audio load
+  useEffect(() => {
+    window.dispatchEvent(new Event('snshero-dialogue-overlay-open'));
+    return () => {
+      window.dispatchEvent(new Event('snshero-dialogue-overlay-close'));
+    };
+  }, []);
   const fallbackSpeakerName = speakerName || t('kadan_rpg_unknown_echo', language);
   const conversationLines = useMemo(() => {
     const novelScript = language === 'ko' ? KADAN_RPG_NOVEL_SCRIPTS[event.chapterNumber] : undefined;

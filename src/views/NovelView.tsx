@@ -12,6 +12,7 @@ import { WikiCardDetailModal } from '../components/WikiCardDetailModal';
 import { useGameSettings } from '../contexts/GameSettingsContext';
 import { useCardSkins } from '../hooks/useCardSkins';
 import { getCharacterArtPrompt } from '../content/characterArtPrompts';
+import { ENGLISH_NOVEL_MAP } from '../content/englishNovelMapping';
 
 interface NovelViewProps {
   language: Language;
@@ -166,7 +167,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
     loadIndex();
   }, []);
 
-  // 2. Fetch episode markdown and narrations whenever currentEpisodeNum changes
+  // 2. Fetch episode content (Korean markdown or English TXT) whenever currentEpisodeNum or language changes
   useEffect(() => {
     let isMounted = true;
     setIsLoading(true);
@@ -176,8 +177,14 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
     const loadEpisodeContent = async () => {
       try {
+        const isKorean = language === 'ko';
+        const enInfo = ENGLISH_NOVEL_MAP[currentEpisodeNum];
+        const textPath = isKorean
+          ? `/book/episode_${epPad}.md`
+          : (enInfo?.fileName ? `/book/image_narrations/english_txt/${enInfo.fileName}` : `/book/episode_${epPad}.md`);
+
         const [mdRes, narrRes] = await Promise.all([
-          fetch(getAssetUrl(`/book/episode_${epPad}.md`)),
+          fetch(getAssetUrl(textPath)),
           fetch(getAssetUrl(`/book/image_narrations/episode_${epPad}_narrations.json`)),
         ]);
 
@@ -205,52 +212,80 @@ export const NovelView: React.FC<NovelViewProps> = ({
       isMounted = false;
       stopTts();
     };
-  }, [currentEpisodeNum]);
+  }, [currentEpisodeNum, language]);
 
-  // Parse markdown content into structured title, source range, and paragraphs
+  // Parse novel content into structured title, source range, and paragraphs
   const parsedContent = React.useMemo(() => {
-    if (!markdownText) return { title: `제 ${currentEpisodeNum}화`, sourceRange: '', paragraphs: [] };
+    if (!markdownText) {
+      const defaultTitle = language === 'ko' ? `제 ${currentEpisodeNum}화` : `Episode ${currentEpisodeNum}`;
+      return { title: defaultTitle, sourceRange: '', paragraphs: [] };
+    }
 
-    const lines = markdownText.split('\n').map(l => l.trim());
-    let title = `제 ${currentEpisodeNum}화`;
-    let sourceRange = '';
-    const bodyParagraphs: string[] = [];
+    if (language === 'ko') {
+      const lines = markdownText.split('\n').map(l => l.trim());
+      let title = `제 ${currentEpisodeNum}화`;
+      let sourceRange = '';
+      const bodyParagraphs: string[] = [];
 
-    // Temporary accumulator for multi-line paragraphs
-    let currentParagraph = '';
+      let currentParagraph = '';
 
-    for (const line of lines) {
-      if (!line) {
-        if (currentParagraph) {
-          bodyParagraphs.push(currentParagraph);
-          currentParagraph = '';
+      for (const line of lines) {
+        if (!line) {
+          if (currentParagraph) {
+            bodyParagraphs.push(currentParagraph);
+            currentParagraph = '';
+          }
+          continue;
         }
-        continue;
-      }
 
-      if (line.startsWith('# ')) {
-        title = line.replace('# ', '').trim();
-      } else if (line.startsWith('> ')) {
-        sourceRange = line.replace('> ', '').trim();
-      } else {
-        if (currentParagraph) {
-          currentParagraph += ' ' + line;
+        if (line.startsWith('# ')) {
+          title = line.replace('# ', '').trim();
+        } else if (line.startsWith('> ')) {
+          sourceRange = line.replace('> ', '').trim();
         } else {
-          currentParagraph = line;
+          if (currentParagraph) {
+            currentParagraph += ' ' + line;
+          } else {
+            currentParagraph = line;
+          }
         }
       }
-    }
 
-    if (currentParagraph) {
-      bodyParagraphs.push(currentParagraph);
-    }
+      if (currentParagraph) {
+        bodyParagraphs.push(currentParagraph);
+      }
 
-    // Replace Korean title if English mode and narrations present
-    if (language !== 'ko' && narrationData?.episodeTitleEn) {
-      title = `Episode ${currentEpisodeNum} - ${narrationData.episodeTitleEn}`;
-    }
+      return { title, sourceRange, paragraphs: bodyParagraphs };
+    } else {
+      // English / Non-Korean language handling
+      const enInfo = ENGLISH_NOVEL_MAP[currentEpisodeNum];
+      const enTitle = narrationData?.episodeTitleEn || enInfo?.titleEn || `Episode ${currentEpisodeNum}`;
+      const title = `Episode ${currentEpisodeNum}: ${enTitle}`;
 
-    return { title, sourceRange, paragraphs: bodyParagraphs };
+      const rawBlocks = markdownText.split(/\n\s*\n/);
+      const bodyParagraphs: string[] = [];
+
+      for (const block of rawBlocks) {
+        let clean = block.replace(/\r/g, '').trim();
+        if (!clean) continue;
+
+        // Skip title headers inside the English TXT file
+        if (clean.startsWith('SNSHero Novel') || clean.startsWith('Episode ')) {
+          continue;
+        }
+
+        // Clean card image references like (042.png) and brackets
+        clean = clean.replace(/\(\d{3}\.png\)/g, '');
+        clean = clean.replace(/\[([^\]]+)\]/g, '$1');
+        clean = clean.replace(/\s+/g, ' ').trim();
+
+        if (clean) {
+          bodyParagraphs.push(clean);
+        }
+      }
+
+      return { title, sourceRange: `Episode ${currentEpisodeNum}`, paragraphs: bodyParagraphs };
+    }
   }, [markdownText, currentEpisodeNum, language, narrationData]);
 
   // Characters appearing in current episode
@@ -610,7 +645,9 @@ export const NovelView: React.FC<NovelViewProps> = ({
                     {isClaimed && <Check size={12} className="text-amber-600" />}
                   </div>
                   <span className="text-[10px] opacity-75 truncate mt-1">
-                    {meta ? meta.titleKo : `Episode ${epNum}`}
+                    {language === 'ko'
+                      ? (meta ? meta.titleKo : `제 ${epNum}화`)
+                      : (ENGLISH_NOVEL_MAP[epNum]?.titleEn || (meta ? meta.titleKo : `Episode ${epNum}`))}
                   </span>
                 </button>
               );
