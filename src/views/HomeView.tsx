@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX, Zap, Clock, Pause, PanelLeftClose, PanelLeftOpen, Layers } from "lucide-react";
+import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX, Zap, Clock, Pause, PanelLeftClose, PanelLeftOpen, Layers, Image, Film } from "lucide-react";
 import { NotificationCenterModal } from "../components/NotificationCenterModal";
 import { getUnreadCount } from "../lib/notificationHelper";
 import { motion, AnimatePresence } from "motion/react";
@@ -500,8 +500,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </div>
               </div>
 
-              {/* ── Core Feature Main Buttons directly under logo (Play Now / Novel / Anime) ── */}
-              <div className="w-full grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 mt-1 mb-1">
+              {/* ── Core Feature Main Buttons directly under logo (Play Now / Novel / Cartoon / Anime / Movie) ── */}
+              <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 mt-1 mb-1">
                 {/* 지금 플레이 */}
                 <motion.button
                   {...buttonMotionProps}
@@ -513,7 +513,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       onNavigate("main");
                     }
                   }}
-                  className="w-full h-12 sm:h-14 px-4 bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-white font-extrabold text-sm sm:text-base rounded-md hover:from-indigo-700 hover:to-fuchsia-700 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2 touch-target shadow-sm group"
+                  className="w-full h-12 sm:h-14 px-3 sm:px-4 bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-white font-extrabold text-xs sm:text-base rounded-md hover:from-indigo-700 hover:to-fuchsia-700 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 touch-target shadow-sm group"
                 >
                   <Play size={18} className="shrink-0 fill-current" />
                   <span>{t("home_play_now", language)}</span>
@@ -526,10 +526,23 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     onNavigate("novel");
                   }}
-                  className="w-full h-12 sm:h-14 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-extrabold text-sm sm:text-base rounded-md hover:from-blue-700 hover:to-indigo-700 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2 touch-target shadow-sm group"
+                  className="w-full h-12 sm:h-14 px-3 sm:px-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-extrabold text-xs sm:text-base rounded-md hover:from-blue-700 hover:to-indigo-700 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 touch-target shadow-sm group"
                 >
                   <BookOpen size={18} className="shrink-0" />
                   <span>{language === 'ko' ? "소설 읽기" : "Read Novel"}</span>
+                </motion.button>
+
+                {/* 카툰 보기 */}
+                <motion.button
+                  {...buttonMotionProps}
+                  onClick={() => {
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    onNavigate("webtoon");
+                  }}
+                  className="w-full h-12 sm:h-14 px-3 sm:px-4 bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 text-white font-extrabold text-xs sm:text-base rounded-md hover:from-amber-700 hover:to-orange-700 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 touch-target shadow-sm group"
+                >
+                  <Image size={18} className="shrink-0" />
+                  <span>{language === 'ko' ? "카툰 보기" : "View Cartoon"}</span>
                 </motion.button>
 
                 {/* 애니메이션 보기 */}
@@ -539,10 +552,23 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     onNavigate("anime");
                   }}
-                  className="w-full h-12 sm:h-14 px-4 bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 text-white font-extrabold text-sm sm:text-base rounded-md hover:from-purple-700 hover:to-pink-700 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2 touch-target shadow-sm group"
+                  className="w-full h-12 sm:h-14 px-3 sm:px-4 bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 text-white font-extrabold text-xs sm:text-base rounded-md hover:from-purple-700 hover:to-pink-700 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 touch-target shadow-sm group"
                 >
                   <Tv size={18} className="shrink-0 animate-pulse" />
                   <span>{language === 'ko' ? "애니메이션 보기" : "Watch Anime"}</span>
+                </motion.button>
+
+                {/* 영화 보기 */}
+                <motion.button
+                  {...buttonMotionProps}
+                  onClick={() => {
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    onNavigate("movie");
+                  }}
+                  className="w-full h-12 sm:h-14 px-3 sm:px-4 bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 text-white font-extrabold text-xs sm:text-base rounded-md hover:from-red-700 hover:to-amber-700 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 touch-target shadow-sm group"
+                >
+                  <Film size={18} className="shrink-0 animate-pulse" />
+                  <span>{language === 'ko' ? "영화 보기" : "Watch Movie"}</span>
                 </motion.button>
               </div>
             </div>

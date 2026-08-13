@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   BookOpen, Play, Pause, Square, Volume2, Copy, Sparkles, ChevronLeft, ChevronRight,
-  Check, Settings, Moon, Sun, Gift, ArrowLeft, Bookmark, List, ExternalLink, Award, User, Image
+  Check, Settings, Moon, Sun, Gift, ArrowLeft, Bookmark, List, ExternalLink, Award, User, Image,
+  Maximize2, X, Eye, Film, Layers, RefreshCw
 } from 'lucide-react';
 import { Language, ViewType } from '../types';
 import { t } from '../lib/i18n';
@@ -71,6 +72,7 @@ interface EpisodeNarrationData {
 const TOTAL_EPISODES = 40;
 
 const pad2 = (n: number) => String(n).padStart(2, '0');
+const pad3 = (n: number) => String(n).padStart(3, '0');
 
 export const NovelView: React.FC<NovelViewProps> = ({
   language,
@@ -92,6 +94,42 @@ export const NovelView: React.FC<NovelViewProps> = ({
   const [isPromptMode, setIsPromptMode] = useState<boolean>(() => {
     return getSeasonItem('hero_novel_prompt_mode', currentSeason) === 'true';
   });
+
+  // Reader Tab mode: 'novel' (소설 읽기) | 'cartoon' (카툰 보기) | 'prompt' (프롬프트 모드)
+  const [readerTab, setReaderTab] = useState<'novel' | 'cartoon' | 'prompt'>(() => {
+    if (typeof window !== 'undefined' && (window.location.pathname.includes('webtoon') || window.location.hash.includes('webtoon'))) {
+      return 'cartoon';
+    }
+    return 'novel';
+  });
+
+  // Cartoon scene image load failover tracking
+  const [sceneImgAttempts, setSceneImgAttempts] = useState<Record<string, number>>({});
+
+  // Lightbox Modal state for cartoon full-screen image viewing
+  const [lightboxSceneIndex, setLightboxSceneIndex] = useState<number | null>(null);
+
+  // Cartoon layout mode: 'scroll' (vertical webtoon strip) or 'slides' (page-by-page carousel)
+  const [cartoonDisplayMode, setCartoonDisplayMode] = useState<'scroll' | 'slides'>('scroll');
+  const [activeSlideIndex, setActiveSlideIndex] = useState<number>(1);
+
+  // Get cartoon scene image URL candidate based on attempt count
+  const getCartoonSceneUrl = (epNum: number, sceneIdx: number, attempt = 0): string => {
+    const epPad = pad2(epNum);
+    const scPad = pad2(sceneIdx);
+    switch (attempt) {
+      case 0:
+        return getAssetUrl(`/cartoon/episode_${epPad}/scene_${scPad}.jpeg`);
+      case 1:
+        return getAssetUrl(`/cartoon/episode_${epPad}/scene_${scPad}.jpg`);
+      case 2:
+        return getAssetUrl(`/cartoon/episode_${epPad}/scene_${scPad}.png`);
+      case 3:
+        return getAssetUrl(`/cartoon/episode_${epNum}/scene_${scPad}.jpeg`);
+      default:
+        return getAssetUrl(`/cartoon/episode_20/scene_${scPad}.jpeg`);
+    }
+  };
 
   // Reader Customization Settings
   const [fontSize, setFontSize] = useState<'sm' | 'base' | 'lg' | 'xl'>('base');
@@ -550,6 +588,63 @@ export const NovelView: React.FC<NovelViewProps> = ({
         </div>
       </header>
 
+      {/* Primary Reader View Mode Tabs (Novel Reader / Cartoon Viewer / Prompt Mode) */}
+      <div className="w-full bg-[#fdfcfc] border-b border-stone-300 py-2.5 px-4 flex items-center justify-center gap-2 font-mono flex-wrap">
+        <button
+          onClick={() => {
+            setReaderTab('novel');
+            setIsPromptMode(false);
+            if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+          }}
+          className={cn(
+            "px-3.5 py-1.5 border rounded-sm font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-all",
+            readerTab === 'novel' && !isPromptMode
+              ? "bg-[#201d1d] text-white border-[#201d1d] shadow-xs"
+              : "bg-white text-stone-700 border-stone-300 hover:bg-stone-100"
+          )}
+        >
+          <BookOpen size={15} />
+          <span>{language === 'ko' ? '📖 소설 읽기' : '📖 Read Novel'}</span>
+        </button>
+
+        <button
+          onClick={() => {
+            setReaderTab('cartoon');
+            setIsPromptMode(false);
+            if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+          }}
+          className={cn(
+            "px-3.5 py-1.5 border rounded-sm font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-all",
+            readerTab === 'cartoon' && !isPromptMode
+              ? "bg-amber-600 text-white border-amber-700 shadow-xs"
+              : "bg-amber-50 text-amber-950 border-amber-300 hover:bg-amber-100"
+          )}
+        >
+          <Image size={15} />
+          <span>{language === 'ko' ? '🎨 카툰 보기' : '🎨 View Cartoon'}</span>
+          <span className="text-[10px] bg-amber-900 text-amber-100 px-1 py-0.2 rounded-xs font-mono ml-0.5">
+            WEBTOON
+          </span>
+        </button>
+
+        <button
+          onClick={() => {
+            setReaderTab('prompt');
+            if (!isPromptMode) handleTogglePromptMode();
+            if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+          }}
+          className={cn(
+            "px-3.5 py-1.5 border rounded-sm font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-all",
+            isPromptMode || readerTab === 'prompt'
+              ? "bg-purple-700 text-white border-purple-800 shadow-xs"
+              : "bg-white text-stone-700 border-stone-300 hover:bg-stone-100"
+          )}
+        >
+          <Sparkles size={15} className={isPromptMode ? "text-amber-300 animate-pulse" : "text-purple-600"} />
+          <span>{language === 'ko' ? '✨ 프롬프트 모드' : '✨ Prompt Mode'}</span>
+        </button>
+      </div>
+
       {/* Reader Settings Dropdown Panel */}
       {showSettings && (
         <div className="w-full border-b border-stone-300 bg-stone-50 p-4 font-mono text-xs flex flex-wrap items-center justify-between gap-4">
@@ -995,6 +1090,224 @@ export const NovelView: React.FC<NovelViewProps> = ({
                 </div>
               </div>
             </div>
+          ) : readerTab === 'cartoon' && !isPromptMode ? (
+            /* ── CARTOON WEBTOON VIEWER (IMAGE SCENE PANELS) ── */
+            <div className="w-full space-y-6 font-mono">
+              {/* Cartoon Subheader & Display Mode Controls */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 border border-stone-300 bg-stone-50 rounded-sm text-xs">
+                <div className="flex items-center gap-2">
+                  <Image size={18} className="text-amber-800" />
+                  <span className="font-bold text-stone-900">
+                    [ {language === 'ko' ? `제 ${currentEpisodeNum}화 카툰 웹툰` : `Episode ${currentEpisodeNum} Webtoon`} ]
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2 self-end sm:self-auto">
+                  <span className="text-[10px] text-stone-500 font-bold hidden sm:inline">[ VIEW MODE ]:</span>
+                  <button
+                    onClick={() => setCartoonDisplayMode('scroll')}
+                    className={cn(
+                      "px-2.5 py-1 text-xs font-bold border rounded-sm transition-all cursor-pointer flex items-center gap-1",
+                      cartoonDisplayMode === 'scroll'
+                        ? "bg-[#201d1d] text-white border-[#201d1d]"
+                        : "bg-white text-stone-700 border-stone-300 hover:bg-stone-100"
+                    )}
+                  >
+                    <Layers size={13} />
+                    <span>{language === 'ko' ? '세로 스크롤' : 'Scroll'}</span>
+                  </button>
+                  <button
+                    onClick={() => setCartoonDisplayMode('slides')}
+                    className={cn(
+                      "px-2.5 py-1 text-xs font-bold border rounded-sm transition-all cursor-pointer flex items-center gap-1",
+                      cartoonDisplayMode === 'slides'
+                        ? "bg-[#201d1d] text-white border-[#201d1d]"
+                        : "bg-white text-stone-700 border-stone-300 hover:bg-stone-100"
+                    )}
+                  >
+                    <Film size={13} />
+                    <span>{language === 'ko' ? '슬라이드' : 'Slides'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Vertical Scroll Webtoon Strip View */}
+              {cartoonDisplayMode === 'scroll' ? (
+                <div className="space-y-6">
+                  {[1, 2, 3, 4, 5].map((scNum) => {
+                    const attempt = sceneImgAttempts[`${currentEpisodeNum}_${scNum}`] || 0;
+                    const isFailedAll = attempt > 10;
+                    const imgUrl = getCartoonSceneUrl(currentEpisodeNum, scNum, attempt);
+
+                    return (
+                      <div key={scNum} className="border border-stone-300 rounded-sm bg-white overflow-hidden shadow-xs hover:border-amber-400 transition-all">
+                        {/* Scene Card Header */}
+                        <div className="bg-stone-100 border-b border-stone-200 px-4 py-2 flex items-center justify-between text-xs font-mono">
+                          <span className="font-bold text-amber-900 flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
+                            SCENE {pad2(scNum)} / 05
+                          </span>
+                          <button
+                            onClick={() => setLightboxSceneIndex(scNum)}
+                            className="px-2 py-0.5 border border-stone-300 rounded-xs bg-white hover:bg-amber-50 text-stone-700 text-[11px] font-bold cursor-pointer flex items-center gap-1"
+                            title={language === 'ko' ? '크게 보기' : 'Fullscreen'}
+                          >
+                            <Maximize2 size={12} />
+                            <span className="hidden sm:inline">{language === 'ko' ? '확대' : 'Zoom'}</span>
+                          </button>
+                        </div>
+
+                        {/* Scene Image Area */}
+                        <div
+                          className="relative w-full bg-stone-900 flex items-center justify-center min-h-[280px] sm:min-h-[420px] group cursor-pointer"
+                          onClick={() => setLightboxSceneIndex(scNum)}
+                        >
+                          {!isFailedAll ? (
+                            <img
+                              src={imgUrl}
+                              alt={`Cartoon Episode ${currentEpisodeNum} Scene ${scNum}`}
+                              loading="lazy"
+                              decoding="async"
+                              referrerPolicy="no-referrer"
+                              onError={() => {
+                                setSceneImgAttempts(prev => ({
+                                  ...prev,
+                                  [`${currentEpisodeNum}_${scNum}`]: (prev[`${currentEpisodeNum}_${scNum}`] || 0) + 1
+                                }));
+                              }}
+                              className="w-full h-auto max-h-[800px] object-contain transition-transform duration-300 group-hover:scale-[1.005]"
+                            />
+                          ) : (
+                            /* Fallback Character Card Panel */
+                            <div className="w-full py-12 px-6 flex flex-col items-center justify-center text-center font-mono bg-stone-900 text-stone-200">
+                              <img
+                                src={getAssetUrl(`/character/${pad3(((currentEpisodeNum * 5 + scNum) % 110) + 1)}.png`)}
+                                alt="Character Scene"
+                                loading="lazy"
+                                decoding="async"
+                                referrerPolicy="no-referrer"
+                                className="w-32 h-32 object-contain mb-3 drop-shadow-md"
+                              />
+                              <span className="text-xs font-bold text-amber-300 uppercase tracking-widest">
+                                [ EPISODE {currentEpisodeNum} · SCENE {pad2(scNum)} ]
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Hover Zoom Prompt Badge */}
+                          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                            <span className="bg-black/80 text-white text-xs px-3 py-1.5 rounded-sm font-bold flex items-center gap-1.5 border border-amber-400/50">
+                              <Maximize2 size={14} />
+                              {language === 'ko' ? '클릭하여 큰 화면으로 감상' : 'Click to View Lightbox'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                /* Single Slide Mode View */
+                <div className="border border-stone-300 rounded-sm bg-white overflow-hidden shadow-xs p-4 sm:p-6 space-y-4">
+                  {(() => {
+                    const scNum = activeSlideIndex;
+                    const attempt = sceneImgAttempts[`${currentEpisodeNum}_${scNum}`] || 0;
+                    const isFailedAll = attempt > 10;
+                    const imgUrl = getCartoonSceneUrl(currentEpisodeNum, scNum, attempt);
+
+                    return (
+                      <div className="space-y-4 font-mono">
+                        {/* Slide Navigation Header */}
+                        <div className="flex items-center justify-between border-b border-stone-200 pb-3 text-xs">
+                          <span className="font-bold text-amber-900">
+                            SCENE {pad2(scNum)} / 05
+                          </span>
+                          <div className="flex items-center gap-1">
+                            {[1, 2, 3, 4, 5].map(n => (
+                              <button
+                                key={n}
+                                onClick={() => setActiveSlideIndex(n)}
+                                className={cn(
+                                  "w-6 h-6 rounded-xs text-[10px] font-bold cursor-pointer transition-all border",
+                                  activeSlideIndex === n
+                                    ? "bg-amber-600 text-white border-amber-700"
+                                    : "bg-stone-100 text-stone-700 border-stone-300 hover:bg-stone-200"
+                                )}
+                              >
+                                {n}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Active Slide Image */}
+                        <div
+                          className="relative w-full bg-stone-900 flex items-center justify-center min-h-[320px] sm:min-h-[480px] cursor-pointer group rounded-sm overflow-hidden"
+                          onClick={() => setLightboxSceneIndex(scNum)}
+                        >
+                          {!isFailedAll ? (
+                            <img
+                              src={imgUrl}
+                              alt={`Cartoon Episode ${currentEpisodeNum} Scene ${scNum}`}
+                              loading="lazy"
+                              decoding="async"
+                              referrerPolicy="no-referrer"
+                              onError={() => {
+                                setSceneImgAttempts(prev => ({
+                                  ...prev,
+                                  [`${currentEpisodeNum}_${scNum}`]: (prev[`${currentEpisodeNum}_${scNum}`] || 0) + 1
+                                }));
+                              }}
+                              className="w-full h-auto max-h-[720px] object-contain"
+                            />
+                          ) : (
+                            <div className="w-full py-16 px-6 flex flex-col items-center justify-center text-center font-mono bg-stone-900 text-stone-200">
+                              <img
+                                src={getAssetUrl(`/character/${pad3(((currentEpisodeNum * 5 + scNum) % 110) + 1)}.png`)}
+                                alt="Character Scene"
+                                loading="lazy"
+                                decoding="async"
+                                referrerPolicy="no-referrer"
+                                className="w-36 h-36 object-contain mb-3 drop-shadow-md"
+                              />
+                              <span className="text-xs font-bold text-amber-300 uppercase tracking-widest">
+                                [ SCENE {pad2(scNum)} ]
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Prev / Next Slide Navigation Buttons */}
+                        <div className="flex items-center justify-between pt-2">
+                          <button
+                            onClick={() => setActiveSlideIndex(prev => Math.max(1, prev - 1))}
+                            disabled={activeSlideIndex <= 1}
+                            className={cn(
+                              "px-3 py-1.5 border rounded-sm font-bold text-xs flex items-center gap-1 cursor-pointer transition-all",
+                              activeSlideIndex <= 1 ? "opacity-50 cursor-not-allowed bg-stone-100" : "bg-white hover:bg-stone-100"
+                            )}
+                          >
+                            <ChevronLeft size={14} />
+                            <span>{language === 'ko' ? '이전 장면' : 'Prev Scene'}</span>
+                          </button>
+                          <button
+                            onClick={() => setActiveSlideIndex(prev => Math.min(5, prev + 1))}
+                            disabled={activeSlideIndex >= 5}
+                            className={cn(
+                              "px-3 py-1.5 border rounded-sm font-bold text-xs flex items-center gap-1 cursor-pointer transition-all",
+                              activeSlideIndex >= 5 ? "opacity-50 cursor-not-allowed bg-stone-100" : "bg-white hover:bg-stone-100"
+                            )}
+                          >
+                            <span>{language === 'ko' ? '다음 장면' : 'Next Scene'}</span>
+                            <ChevronRight size={14} />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+            </div>
           ) : (
             /* ── STANDARD NOVEL READING DISPLAY ── */
             <div className={cn("space-y-6 font-mono text-justify", fontClass)}>
@@ -1115,6 +1428,85 @@ export const NovelView: React.FC<NovelViewProps> = ({
           onApplySkin={applySkin}
           onRemoveSkin={removeSkin}
         />
+      )}
+
+      {/* Lightbox Fullscreen Cartoon Modal */}
+      {lightboxSceneIndex !== null && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xs flex flex-col items-center justify-between p-4 sm:p-6 font-mono select-none animate-fadeIn"
+          onClick={() => setLightboxSceneIndex(null)}
+        >
+          {/* Lightbox Header */}
+          <div className="w-full max-w-5xl flex items-center justify-between text-white border-b border-stone-800 pb-3" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-amber-400 bg-amber-950/80 px-2.5 py-0.5 border border-amber-800/80 rounded-sm uppercase">
+                EPISODE {currentEpisodeNum} · SCENE {pad2(lightboxSceneIndex)} / 05
+              </span>
+              <span className="text-xs text-stone-300 font-bold hidden sm:inline">
+                {parsedContent.title}
+              </span>
+            </div>
+
+            <button
+              onClick={() => setLightboxSceneIndex(null)}
+              className="p-1.5 bg-stone-800 hover:bg-stone-700 text-stone-200 rounded-sm transition-all cursor-pointer flex items-center gap-1 text-xs font-bold border border-stone-700"
+            >
+              <X size={18} />
+              <span>[ CLOSE ]</span>
+            </button>
+          </div>
+
+          {/* Lightbox Image Container */}
+          <div className="relative my-auto max-w-5xl max-h-[80vh] flex items-center justify-center" onClick={e => e.stopPropagation()}>
+            <img
+              src={getCartoonSceneUrl(currentEpisodeNum, lightboxSceneIndex, sceneImgAttempts[`${currentEpisodeNum}_${lightboxSceneIndex}`] || 0)}
+              alt={`Episode ${currentEpisodeNum} Scene ${lightboxSceneIndex}`}
+              loading="lazy"
+              decoding="async"
+              referrerPolicy="no-referrer"
+              className="max-w-full max-h-[75vh] object-contain rounded-sm shadow-2xl border border-stone-800"
+              onError={() => {
+                const key = `${currentEpisodeNum}_${lightboxSceneIndex}`;
+                setSceneImgAttempts(prev => ({
+                  ...prev,
+                  [key]: (prev[key] || 0) + 1
+                }));
+              }}
+            />
+
+            {/* Prev Scene Arrow */}
+            <button
+              onClick={() => setLightboxSceneIndex(prev => (prev && prev > 1 ? prev - 1 : 5))}
+              className="absolute left-2 top-1/2 -translate-y-1/2 p-3 bg-black/70 hover:bg-black/90 text-white rounded-full border border-stone-700 cursor-pointer transition-all hover:scale-105"
+              title="Previous Scene"
+            >
+              <ChevronLeft size={24} />
+            </button>
+
+            {/* Next Scene Arrow */}
+            <button
+              onClick={() => setLightboxSceneIndex(prev => (prev && prev < 5 ? prev + 1 : 1))}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-3 bg-black/70 hover:bg-black/90 text-white rounded-full border border-stone-700 cursor-pointer transition-all hover:scale-105"
+              title="Next Scene"
+            >
+              <ChevronRight size={24} />
+            </button>
+          </div>
+
+          {/* Lightbox Footer Caption */}
+          <div className="w-full max-w-3xl bg-stone-900/90 border border-stone-800 p-3 rounded-sm text-center text-xs text-stone-200 leading-relaxed" onClick={e => e.stopPropagation()}>
+            {narrationData?.scenes?.[lightboxSceneIndex - 1] ? (
+              <p>
+                <span className="text-amber-400 font-bold mr-1">#{lightboxSceneIndex}</span>
+                {language === 'ko'
+                  ? narrationData.scenes[lightboxSceneIndex - 1].narrationKo
+                  : narrationData.scenes[lightboxSceneIndex - 1].narrationEn}
+              </p>
+            ) : (
+              <p>{parsedContent.title} — Scene #{lightboxSceneIndex}</p>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );

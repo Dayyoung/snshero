@@ -10223,7 +10223,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       </div>
       {/* 1. 상대 덱/패 영역 (카드 높이에 맞춰 컴팩트 조정) */}
       <div id="opponent-hand-container" className={cn(
-        "h-auto py-1.5 sm:py-2 md:py-2.5 relative flex items-center justify-center px-1 overflow-visible w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm shrink-0",
+        "h-auto py-0.5 sm:py-1 md:py-1.5 relative flex items-center justify-center px-1 overflow-visible w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm shrink-0",
         turn === 'ai' && !gameOver ? "border-red-500/50 z-20" : "border-red-500/20 z-10"
       )}>
         
@@ -10246,7 +10246,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           )}
         </div>
         
-        <div className="w-full max-w-6xl mx-auto flex items-center justify-center gap-1 md:gap-2 h-auto my-auto relative z-10 py-1">
+        <div className="w-full max-w-6xl mx-auto flex items-center justify-center gap-1 md:gap-2 h-auto my-auto relative z-10 py-0.5">
           <AnimatePresence mode="popLayout">
             {opponentHand.map((card, idx) => {
               const isSelected = selectedCardIdx === idx && selectedCardSide === 'ai';
@@ -10255,7 +10255,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <motion.div 
                 key={card.id} 
                 className={cn(
-                  "w-[18vw] max-w-[66px] sm:max-w-[76px] md:max-w-[99px] lg:max-w-[108px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg",
+                  "w-[15vw] max-w-[54px] sm:max-w-[62px] md:max-w-[82px] lg:max-w-[90px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg",
                   isSelected && "z-50"
                 )}
                 onClick={() => handleCardClick(idx, 'ai')}
@@ -10288,7 +10288,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       </div>
 
       {/* 2. 가운데 카드판 영역 (유연하게 공간 확장) */}
-      <div className="flex-1 min-h-[220px] sm:min-h-[250px] flex flex-col items-center justify-center p-0.5 md:p-1 bg-[#060a14] relative overflow-visible py-1 sm:py-2 md:py-2 shadow-[inset_0_0_120px_rgba(0,0,0,0.9)] border border-slate-800 rounded-2xl md:rounded-3xl mx-1 md:mx-2 my-0.5 shrink-0">
+      <div className="flex-1 min-h-[250px] sm:min-h-[290px] md:min-h-[330px] flex flex-col items-center justify-center p-0.5 md:p-1 bg-[#060a14] relative overflow-visible py-1.5 sm:py-2.5 md:py-3 shadow-[inset_0_0_120px_rgba(0,0,0,0.9)] border border-slate-800 rounded-2xl md:rounded-3xl mx-1 md:mx-2 my-0.5 shrink-0">
         {/* Background layers */}
         <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/topography.png')] opacity-[0.06]" />
@@ -10393,7 +10393,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         <div className="relative flex flex-col items-center justify-center w-full max-w-6xl md:px-2 min-h-0 gap-1 md:gap-2 mt-0.5">
           
 
-          <div className="relative flex items-center justify-center w-full min-h-[250px] sm:min-h-[290px] md:min-h-[300px] gap-2 md:gap-4">
+          <div className="relative flex items-center justify-center w-full min-h-[280px] sm:min-h-[320px] md:min-h-[350px] gap-2 md:gap-4">
             {/* DESKTOP LEFT SIDEBAR: SCOREBOARD & TURN INDICATOR (lg:flex ONLY) */}
             {!gameOver && gameState === 'playing' && (
               <div className="hidden lg:flex absolute left-2 md:left-4 top-1/2 -translate-y-1/2 flex-col items-center gap-4 z-20">
@@ -10644,7 +10644,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           return (
                             <div
                               key={idx}
-                              className="grid-cell w-[20vw] max-w-[64px] sm:max-w-[70px] md:w-[8.5vh] md:max-w-[76px] lg:w-[9.5vh] lg:max-w-[82px] aspect-[5/7] flex items-center justify-center relative border border-amber-500 bg-amber-950/20 rounded-lg shadow-md overflow-visible cursor-default"
+                              className="grid-cell w-[22vw] max-w-[70px] sm:max-w-[80px] md:w-[10vh] md:max-w-[88px] lg:w-[11.5vh] lg:max-w-[98px] aspect-[5/7] flex items-center justify-center relative border border-amber-500 bg-amber-950/20 rounded-lg shadow-md overflow-visible cursor-default"
                             >
                               <div className="absolute inset-0 p-0.5 rounded-lg overflow-hidden flex items-center justify-center bg-[#1e293b]/70 border border-slate-700">
                                 <img
@@ -10670,7 +10670,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             onMouseEnter={() => handleMouseEnterCell(idx)}
                             onMouseLeave={handleMouseLeaveCell}
                             className={cn(
-                              "grid-cell group w-[22vw] max-w-[66px] sm:max-w-[76px] md:w-[8.5vh] md:max-w-[76px] lg:w-[9.5vh] lg:max-w-[82px] aspect-[5/7] flex items-center justify-center relative border transition-all cursor-pointer overflow-visible rounded-lg shadow-inner",
+                              "grid-cell group w-[24vw] max-w-[74px] sm:max-w-[84px] md:w-[10vh] md:max-w-[88px] lg:w-[11.5vh] lg:max-w-[98px] aspect-[5/7] flex items-center justify-center relative border transition-all cursor-pointer overflow-visible rounded-lg shadow-inner",
                               card ? "border-slate-550/40" : (
                                 turn === 'player'
                                   ? "bg-blue-950/20 border-blue-500/30 hover:bg-blue-900/30 hover:border-blue-450/70 shadow-[inset_0_2px_8px_rgba(59,130,246,0.1)]"
@@ -11020,7 +11020,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       <div 
         id="player-hand-container"
         className={cn(
-        "h-auto py-1.5 sm:py-2 md:py-2.5 relative overflow-visible flex flex-col items-center justify-center p-1 sm:p-2 w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm shrink-0",
+        "h-auto py-0.5 sm:py-1 md:py-1.5 relative overflow-visible flex flex-col items-center justify-center p-0.5 sm:p-1 w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm shrink-0",
         turn === 'player' && !gameOver ? "border-indigo-500/50 z-20" : "border-blue-500/20 z-10"
       )}>
         
@@ -11044,7 +11044,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         </div>
 
         <div className={cn(
-          "w-full max-w-6xl mx-auto flex items-center gap-1 md:gap-2 h-auto py-1 md:py-1.5 overflow-x-auto overflow-y-visible scrollbar-hide px-4 touch-pan-x relative z-10 my-auto",
+          "w-full max-w-6xl mx-auto flex items-center gap-1 md:gap-2 h-auto py-0.5 md:py-1 overflow-x-auto overflow-y-visible scrollbar-hide px-4 touch-pan-x relative z-10 my-auto",
           playerHand.length > 5 ? "justify-start md:justify-center" : "justify-center"
         )}>
 
@@ -11072,7 +11072,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 }}
                 whileTap={{ scale: 0.95 }}
                 className={cn(
-                  "w-[18vw] max-w-[66px] sm:max-w-[76px] md:max-w-[99px] lg:max-w-[108px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg",
+                  "w-[15vw] max-w-[54px] sm:max-w-[62px] md:max-w-[82px] lg:max-w-[90px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg",
                   isSelected && "z-50"
                 )}
               >

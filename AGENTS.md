@@ -123,3 +123,6 @@
 - `hero_kadan_rpg_progress_{season}`: 카단 & 아케인 에코즈 `/main` RPG 진행도 저장 (현재 챕터/지역, 완료 이벤트, 전투/상자/보상 상태, 마지막 위치, 환생 레벨)
 - `hero_kadan_rpg_auto_mode_{season}`: 카단 RPG 자동 진행/자동전투 토글 상태 저장
 - `hero_daily_missions_history`: 일일 미션 보상 완료 및 수령 히스토리 목록 저장 (획득 보상, 날짜, 시간)
+- `hero_movie_progress_{season}`: 영화(Movie) 뷰 시청 진행도 저장 (현재 선택된 에피소드 번호)
+- `hero_movie_claimed_episodes_{season}`: 영화(Movie) 회차별 시청 보상 수령 상태 저장
+- `hero_movie_released_count_{season}`: 유튜브 플레이리스트 동적 파싱으로 확인된 공개 영화 회차 개수 저장

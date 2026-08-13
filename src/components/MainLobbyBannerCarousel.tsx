@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight, Pause, Play, Sparkles, Gift, Crown, ExternalLink } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Pause, Play, Sparkles, Gift, Crown, ExternalLink, Image } from 'lucide-react';
 import { Language, ViewType } from '../types';
 import { cn } from '../lib/utils';
 import { useSwipeGesture } from '../hooks/useSwipeGesture';
@@ -60,6 +60,16 @@ export const MainLobbyBannerCarousel: React.FC<MainLobbyBannerCarouselProps> = (
       viewTarget: 'novel',
       actionText: language === 'ko' ? '소설 읽기' : 'Read Novel',
       icon: <Gift size={20} className="text-cyan-300" />
+    },
+    {
+      id: 'banner-cartoon',
+      badge: 'OFFICIAL CARTOON',
+      title: language === 'ko' ? '웹툰 카툰 이미지 에피소드 특별 공개!' : 'Official Cartoon Webtoon Released!',
+      description: language === 'ko' ? '에피소드별 스펙터클한 장면 카툰 이미지를 감상하세요.' : 'View official cartoon episode images and scenes!',
+      bgGradient: 'from-amber-700 via-orange-700 to-amber-900',
+      viewTarget: 'webtoon',
+      actionText: language === 'ko' ? '카툰 보기' : 'View Cartoon',
+      icon: <Image size={20} className="text-amber-300" />
     }
   ];
 

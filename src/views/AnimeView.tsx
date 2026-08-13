@@ -231,8 +231,8 @@ export const AnimeView: React.FC<AnimeViewProps> = ({
 
   const currentRewardClaimed = Boolean(claimedRewards[currentEpisodeNum]);
 
-  // 에피소드 번호 기반 YouTube 임베드 URL (index=0이 1화)
-  const embedUrl = `https://www.youtube-nocookie.com/embed?listType=playlist&list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum - 1}&enablejsapi=1&rel=0`;
+  // 에피소드 번호 기반 YouTube 임베드 URL (index=1이 1화)
+  const embedUrl = `https://www.youtube-nocookie.com/embed?listType=playlist&list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum}&enablejsapi=1&rel=0`;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#fdfcfc] text-[#201d1d] font-sans p-3 sm:p-4 md:p-8 pb-32 max-w-5xl mx-auto w-full overflow-x-hidden">

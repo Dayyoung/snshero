@@ -124,6 +124,7 @@ import { QrReward } from './components/QrReward';
 import { PolicyCenterView } from './views/PolicyCenterView';
 import { NovelView } from './views/NovelView';
 import { AnimeView } from './views/AnimeView';
+import { MovieView } from './views/MovieView';
 import { ModooView } from './views/ModooView';
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
@@ -373,6 +374,8 @@ function getViewFromPathAndUrl(): ViewType {
   const queryView = params.get('view');
   if (queryView === 'community') return 'community';
   if (queryView === 'webtoon') return 'novel';
+  if (queryView === 'anime') return 'anime';
+  if (queryView === 'movie') return 'movie';
   if (queryView === 'modoo') return 'modoo';
 
   const path = window.location.pathname.replace(/\/$/, '').toLowerCase() || '/';
@@ -411,6 +414,8 @@ function getViewFromPathAndUrl(): ViewType {
   if (path === '/policy-center') return 'policy-center';
   if (path === '/web3') return 'web3-landing';
   if (path === '/referral') return 'referral';
+  if (path === '/anime') return 'anime';
+  if (path === '/movie') return 'movie';
   if (path === '/modoo') return 'modoo';
   if (path.startsWith('/creator/')) return 'creator';
   if (path === '/') return 'home';
@@ -1810,6 +1815,14 @@ function AppContent() {
       targetPath = '/creator/' + (creatorCode || '');
       title = t('creator_seo_title', language) || 'SNSHero — Play Now, No Install!';
       description = t('creator_seo_desc', language) || 'Jump into the AI card battle instantly. Use your creator code for exclusive rewards!';
+    } else if (view === 'anime') {
+      targetPath = '/anime';
+      title = `${t('anime_title', language)} - SNS히어로`;
+      description = t('anime_subtitle', language);
+    } else if (view === 'movie') {
+      targetPath = '/movie';
+      title = `${t('movie_title', language)} - SNS히어로`;
+      description = t('movie_subtitle', language);
     } else if (view === 'novel' || view === 'book') {
       targetPath = '/book';
       title = '눈히어로 40부작 웹소설 - 카단과 아케인의 메아리 (/public/book)';
@@ -5740,6 +5753,17 @@ function AppContent() {
             showCustomAlert={showCustomAlert}
           />
         );
+      case 'movie':
+        return (
+          <MovieView
+            language={language}
+            onNavigate={setView}
+            playSfx={playSfx}
+            currentSeason={currentSeason}
+            updateSns={updateSns}
+            showCustomAlert={showCustomAlert}
+          />
+        );
       case 'modoo':
         return (
           <ModooView
@@ -5857,7 +5881,7 @@ function AppContent() {
     );
   }
 
-    const showNavbar = (view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime') && (view !== 'play' || playGameState === 'modeSelect') && !isGlobalPopupOpen;
+    const showNavbar = (view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie') && (view !== 'play' || playGameState === 'modeSelect') && !isGlobalPopupOpen;
     
     return (
       <div className={cn(

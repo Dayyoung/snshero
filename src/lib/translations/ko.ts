@@ -3201,4 +3201,13 @@ export const ko = {
     anime_list: '회차 목록',
     anime_fullscreen: '전체화면 보기',
     anime_exit_fullscreen: '전체화면 종료',
+    movie: '영화',
+    movie_title: 'SNSHero 공식 영화 (극장판)',
+    movie_subtitle: '스펙터클한 SNSHero 극장판 영화 시리즈를 오피셜 플레이리스트로 감상하세요.',
+    movie_watch: '영화 보기',
+    movie_list: '영화 회차 목록',
+    movie_released: '공개 완료',
+    movie_coming_soon: '공개예정',
+    movie_coming_soon_msg: '제 {ep}화는 아직 공개 준비 중입니다! 유튜브 오피셜 채널에서 곧 공개됩니다.',
+    movie_playlist_link: '유튜브 영화 플레이리스트에서 전체보기',
 };
