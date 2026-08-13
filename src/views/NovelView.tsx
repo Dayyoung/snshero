@@ -127,7 +127,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
       case 3:
         return getAssetUrl(`/cartoon/episode_${epNum}/scene_${scPad}.jpeg`);
       default:
-        return getAssetUrl(`/cartoon/episode_20/scene_${scPad}.jpeg`);
+        return getAssetUrl(`/cartoon/episode_02/scene_${scPad}.jpeg`);
     }
   };
 
