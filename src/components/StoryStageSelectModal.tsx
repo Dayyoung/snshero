@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Language } from '../types';
 import { triggerHaptic } from '../lib/haptic';
 import { StoryWorldMapModal } from './StoryWorldMapModal';
+import { useSns } from '../contexts/SnsContext';
 
 interface StoryStageSelectModalProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ export const StoryStageSelectModal: React.FC<StoryStageSelectModalProps> = ({
   onSweepStage,
   currentProgress,
 }) => {
+  const { addSns } = useSns();
   const [selectedEpisode, setSelectedEpisode] = useState<number>(1);
   const [claimedRewards, setClaimedRewards] = useState<number[]>([]);
   const [sweepResult, setSweepResult] = useState<{ gold: number; exp: number; item: string } | null>(null);
@@ -54,26 +56,14 @@ export const StoryStageSelectModal: React.FC<StoryStageSelectModalProps> = ({
     setClaimedRewards(updated);
     localStorage.setItem(STAR_REWARDS_KEY, JSON.stringify(updated));
 
-    // Update SNS points
-    const season = localStorage.getItem('hero_current_season') || 'season1';
-    const currentSns = Number(localStorage.getItem(`hero_sns_${season}`) || localStorage.getItem('hero_sns') || 1000);
-    const newSns = currentSns + rewardSns;
-    localStorage.setItem(`hero_sns_${season}`, String(newSns));
-    localStorage.setItem('hero_sns', String(newSns));
-    window.dispatchEvent(new Event('snshero_sns_updated'));
+    addSns(rewardSns, 'story_star_reward', 'earned');
   };
 
   const handleSweep = (epId: number) => {
     triggerHaptic('heavy');
     onSweepStage(epId);
 
-    // Give SNS points for sweep
-    const season = localStorage.getItem('hero_current_season') || 'season1';
-    const currentSns = Number(localStorage.getItem(`hero_sns_${season}`) || localStorage.getItem('hero_sns') || 1000);
-    const newSns = currentSns + 300;
-    localStorage.setItem(`hero_sns_${season}`, String(newSns));
-    localStorage.setItem('hero_sns', String(newSns));
-    window.dispatchEvent(new Event('snshero_sns_updated'));
+    addSns(300, 'story_stage_sweep', 'earned');
 
     setSweepResult({
       gold: 300,

@@ -284,7 +284,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
                   )}
                   title={language === 'ko' ? '자동 전투 온/오프' : 'Toggle Auto Battle'}
                 >
-                  <Bot size={14} className={cn(autoBattle && "animate-pulse text-blue-400")} />
+                  <Bot size={14} className={cn(autoBattle ? "animate-spin text-blue-400" : "text-slate-400")} />
                   <span>{autoBattle ? (language === 'ko' ? '자동전투 ON' : 'AUTO ON') : (language === 'ko' ? '자동전투 OFF' : 'AUTO OFF')}</span>
                 </button>
               </div>

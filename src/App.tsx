@@ -410,7 +410,7 @@ function getViewFromPathAndUrl(): ViewType {
   if (path === '/reward-ar') return 'reward-ar';
   if (path === '/share') return 'share';
   if (path === '/boost') return 'boost';
-  if (path === '/season-hub') return 'season-hub';
+  if (path === '/season-hub' || path === '/mission' || path === '/missions') return 'season-hub';
   if (path === '/policy-center') return 'policy-center';
   if (path === '/web3') return 'web3-landing';
   if (path === '/referral') return 'referral';
@@ -715,6 +715,12 @@ function AppContent() {
       setTutorialStep(1);
     }
 
+    // Dismiss Home tutorial if navigated to other tabs
+    if (view !== 'home' && view !== 'play' && view !== 'main' && (tutorialStep === 1 || tutorialStep === 2)) {
+      setTutorialStep(0);
+      setIsTutorialMode(false);
+    }
+
     // Automatically transition from Step 1/2 to 3 if already on Play or Main view
     if ((view === 'play' || view === 'main') && (tutorialStep === 1 || tutorialStep === 2)) {
       setTutorialStep(3);
@@ -765,6 +771,12 @@ function AppContent() {
     }
 
 
+
+    // Dismiss step 1 home guide if navigated away from home
+    if (tutorialStep === 1 && view !== 'home') {
+      setTutorialStep(0);
+      setIsTutorialMode(false);
+    }
 
     // Step 10 Confirmation: Move to Step 11 ONLY when MyDeck is visible
     if (tutorialStep === 10 && view === 'mydeck') {
@@ -2056,7 +2068,21 @@ function AppContent() {
   // [IN-GAME MACRO RECORDER & PLAYBACK STATE]
   // =========================================================================
   const [showRecordBtn, setShowRecordBtn] = useState(false);
-  const [isBootGateActive, setIsBootGateActive] = useState<boolean>(true);
+  const [isBootGateActive, setIsBootGateActive] = useState<boolean>(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const path = window.location.pathname.replace(/\/$/, '');
+        const hasView = window.location.search.includes('view=');
+        const shown = sessionStorage.getItem('hero_boot_gate_shown') === 'true';
+        if (shown || hasView || (path !== '' && path !== '/')) {
+          return false;
+        }
+      }
+      return sessionStorage.getItem('hero_boot_gate_shown') !== 'true';
+    } catch {
+      return false;
+    }
+  });
   const [isRecording, setIsRecording] = useState(false);
   const [recordingActions, setRecordingActions] = useState<{
     x: number;
@@ -3456,6 +3482,19 @@ function AppContent() {
     setPurchasedSns(nextPurchased);
     setEarnedSns(nextEarned);
     setSns(newSns);
+
+    // Save to localStorage immediately and notify listeners
+    const season = currentSeason || localStorage.getItem('hero_current_season') || 'season1';
+    try {
+      localStorage.setItem(`hero_sns_${season}`, String(newSns));
+      localStorage.setItem('hero_sns', String(newSns));
+      localStorage.setItem('hero_purchased_sns', String(nextPurchased));
+      localStorage.setItem('hero_earned_sns', String(nextEarned));
+      window.dispatchEvent(new Event('snshero_sns_updated'));
+      window.dispatchEvent(new Event('sns_updated'));
+    } catch (e) {
+      console.error("Failed to update local SNS storage:", e);
+    }
     
     // Write SNS History
     const now = Date.now();
@@ -4571,6 +4610,28 @@ function AppContent() {
       window.removeEventListener('snshero-help-popup-close', handleHelpClose);
     };
   }, []);
+
+  // Listen for global SNS update events
+  useEffect(() => {
+    const handleSnsSync = () => {
+      const season = currentSeason || localStorage.getItem('hero_current_season') || 'season1';
+      const savedPurchased = Number(localStorage.getItem('hero_purchased_sns') || '0');
+      const savedEarned = Number(localStorage.getItem('hero_earned_sns') || '1000');
+      const savedSnsStr = localStorage.getItem(`hero_sns_${season}`) || localStorage.getItem('hero_sns');
+      const savedSns = savedSnsStr ? Number(savedSnsStr) : (savedPurchased + savedEarned);
+      
+      if (!isNaN(savedEarned) && savedEarned !== earnedSns) setEarnedSns(savedEarned);
+      if (!isNaN(savedPurchased) && savedPurchased !== purchasedSns) setPurchasedSns(savedPurchased);
+      if (!isNaN(savedSns) && savedSns !== sns) setSns(savedSns);
+    };
+
+    window.addEventListener('snshero_sns_updated', handleSnsSync);
+    window.addEventListener('sns_updated', handleSnsSync);
+    return () => {
+      window.removeEventListener('snshero_sns_updated', handleSnsSync);
+      window.removeEventListener('sns_updated', handleSnsSync);
+    };
+  }, [currentSeason, earnedSns, purchasedSns, sns]);
 
 
   useEffect(() => {
@@ -6746,7 +6807,7 @@ function AppContent() {
         {isTutorialMode && (
           <>
             {/* Always accessible top/bottom skip button layer */}
-            <div className="fixed top-3 right-3 z-[200000] pointer-events-auto">
+            <div className="fixed top-3 right-3 z-[9999999] pointer-events-auto">
               <button
                 type="button"
                 id="skip-tutorial-main-btn"

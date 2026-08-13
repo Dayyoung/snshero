@@ -9752,102 +9752,154 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         )}
       </AnimatePresence>
 
-      {/* Floating Circular Battle Roar Button / Grid Skills */}
-      {gameState === 'playing' && !gameOver && (() => {
-        const availableSkills = getAvailableSkills();
-        if (availableSkills.length === 0) return null;
+      {/* Floating Circular Robot Auto-Battle Button & Grid Skills */}
+      {gameState === 'playing' && !gameOver && (
+        <div className="fixed bottom-28 right-3 sm:right-4 z-[160] pointer-events-auto flex flex-col items-end gap-2.5">
+          {/* 1. Robot Auto-Battle Toggle (Always prominent above skill buttons) */}
+          {(onToggleAutoBattle || setIsAutoBattle) && (
+            <div className="relative group flex items-center justify-center">
+              <button
+                type="button"
+                onClick={() => {
+                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                  if (onToggleAutoBattle) {
+                    onToggleAutoBattle();
+                  } else if (setIsAutoBattle) {
+                    const nextVal = !isAutoBattle;
+                    setIsAutoBattle(nextVal);
+                    localStorage.setItem('hero_auto_battle_setting', JSON.stringify(nextVal));
+                  }
+                }}
+                className={cn(
+                  "w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 shadow-2xl flex items-center justify-center transition-all duration-300 active:scale-95 cursor-pointer touch-target relative",
+                  isAutoBattle
+                    ? "bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 border-amber-300 text-slate-950 shadow-[0_0_25px_rgba(245,158,11,0.85)] ring-2 ring-amber-300/80"
+                    : "bg-slate-950/90 border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white shadow-xl"
+                )}
+                title={isAutoBattle ? (language === 'ko' ? '자동전투 ON (클릭 시 중단)' : 'AUTO ON (CLICK TO STOP)') : (language === 'ko' ? '자동전투 OFF (클릭 시 시작)' : 'AUTO OFF (CLICK TO START)')}
+                aria-label="Auto Battle Toggle"
+              >
+                <Bot
+                  size={26}
+                  className={cn(
+                    "transition-transform",
+                    isAutoBattle ? "animate-spin text-slate-950 drop-shadow-md" : "text-slate-300"
+                  )}
+                />
+                <span
+                  className={cn(
+                    "absolute -bottom-1 -right-1 font-black text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded-full border shadow-md uppercase tracking-tighter",
+                    isAutoBattle
+                      ? "bg-rose-600 border-rose-300 text-white animate-pulse"
+                      : "bg-slate-800 border-slate-600 text-slate-400"
+                  )}
+                >
+                  {isAutoBattle ? 'AUTO' : 'OFF'}
+                </span>
+              </button>
 
-        return (
-          <div className="fixed bottom-28 right-3 sm:right-4 z-[150] pointer-events-auto flex flex-col items-end gap-2">
-              {availableSkills.map(skillId => {
-                let skillNameKo = '';
-                let skillNameEn = '';
-                let Icon = Flame;
-                let colorClass = '';
+              <div className="absolute right-full mr-2.5 top-1/2 -translate-y-1/2 bg-black/95 backdrop-blur-md text-white px-2.5 py-1 text-[10px] font-black opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-md uppercase tracking-wider z-[200] shadow-xl">
+                {isAutoBattle
+                  ? (language === 'ko' ? '🤖 자동전투 중단하기' : '🤖 STOP AUTO BATTLE')
+                  : (language === 'ko' ? '🤖 자동전투 시작하기' : '🤖 START AUTO BATTLE')}
+              </div>
+            </div>
+          )}
 
-                switch (skillId) {
-                  case 1:
-                    skillNameKo = '강화 함성';
-                    skillNameEn = 'Rallying Roar';
-                    Icon = Flame;
-                    colorClass = 'border-red-500/50 text-red-400 hover:bg-red-600 hover:text-white';
-                    break;
-                  case 2:
-                    skillNameKo = '약화 저주';
-                    skillNameEn = 'Weaken Curse';
-                    Icon = Droplets;
-                    colorClass = 'border-blue-500/50 text-blue-400 hover:bg-blue-600 hover:text-white';
-                    break;
-                  case 3:
-                    skillNameKo = '변화 함성';
-                    skillNameEn = 'Shift Roar';
-                    Icon = Sparkles;
-                    colorClass = 'border-yellow-500/50 text-yellow-400 hover:bg-yellow-600 hover:text-white';
-                    break;
-                  case 4:
-                    skillNameKo = '변화 저주';
-                    skillNameEn = 'Shift Curse';
-                    Icon = ShieldAlert;
-                    colorClass = 'border-purple-500/50 text-purple-400 hover:bg-purple-600 hover:text-white';
-                    break;
-                  case 5:
-                    skillNameKo = '약화 함정';
-                    skillNameEn = 'Weaken Trap';
-                    Icon = TargetIcon;
-                    colorClass = 'border-purple-500/50 text-purple-400 hover:bg-purple-600 hover:text-white';
-                    break;
-                  case 6:
-                    skillNameKo = '강화 함정';
-                    skillNameEn = 'Rally Trap';
-                    Icon = TargetIcon;
-                    colorClass = 'border-red-500/50 text-red-400 hover:bg-red-600 hover:text-white';
-                    break;
-                  case 7:
-                    skillNameKo = '체인지 상대카드';
-                    skillNameEn = 'Swap Enemy';
-                    Icon = RotateCcw;
-                    colorClass = 'border-orange-500/50 text-orange-400 hover:bg-orange-600 hover:text-white';
-                    break;
-                  case 8:
-                    skillNameKo = '체인지 내카드';
-                    skillNameEn = 'Swap Self';
-                    Icon = RotateCcw;
-                    colorClass = 'border-green-500/50 text-green-400 hover:bg-green-600 hover:text-white';
-                    break;
-                }
+          {/* 2. Grid Skills (Rendered directly under the Robot button) */}
+          {(() => {
+            const availableSkills = getAvailableSkills();
+            if (availableSkills.length === 0) return null;
 
-                const displayName = language === 'ko' ? skillNameKo : skillNameEn;
+            return availableSkills.map(skillId => {
+              let skillNameKo = '';
+              let skillNameEn = '';
+              let Icon = Flame;
+              let colorClass = '';
 
-                return (
-                  <div key={skillId} className="relative group flex items-center justify-center">
-                    {(skillCooldowns[skillId] || 0) > 0 ? (
-                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 border-gray-600 bg-gray-800 text-gray-400 flex items-center justify-center font-black text-xs shadow-lg">
-                        <span>{skillCooldowns[skillId]}s</span>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => handleExecuteSkill(skillId)}
-                        disabled={isRoarActive}
-                        className={cn(
-                          "w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 shadow-lg flex items-center justify-center transition-all active:scale-95 cursor-pointer bg-black/90",
-                          !isRoarActive
-                            ? colorClass
-                            : "bg-gray-800 border-gray-700 text-gray-500 cursor-not-allowed"
-                        )}
-                        title={displayName}
-                      >
-                        <Icon size={18} className={cn(!isRoarActive && skillId === 1 && "animate-pulse")} />
-                      </button>
-                    )}
-                    <div className="absolute right-full mr-2.5 top-1/2 -translate-y-1/2 bg-black/95 backdrop-blur-md text-white px-2.5 py-1 text-[10px] font-black italic opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-md uppercase tracking-wider z-[200] shadow-xl">
-                      {displayName}
+              switch (skillId) {
+                case 1:
+                  skillNameKo = '강화 함성';
+                  skillNameEn = 'Rallying Roar';
+                  Icon = Flame;
+                  colorClass = 'border-red-500/50 text-red-400 hover:bg-red-600 hover:text-white';
+                  break;
+                case 2:
+                  skillNameKo = '약화 저주';
+                  skillNameEn = 'Weaken Curse';
+                  Icon = Droplets;
+                  colorClass = 'border-blue-500/50 text-blue-400 hover:bg-blue-600 hover:text-white';
+                  break;
+                case 3:
+                  skillNameKo = '변화 함성';
+                  skillNameEn = 'Shift Roar';
+                  Icon = Sparkles;
+                  colorClass = 'border-yellow-500/50 text-yellow-400 hover:bg-yellow-600 hover:text-white';
+                  break;
+                case 4:
+                  skillNameKo = '변화 저주';
+                  skillNameEn = 'Shift Curse';
+                  Icon = ShieldAlert;
+                  colorClass = 'border-purple-500/50 text-purple-400 hover:bg-purple-600 hover:text-white';
+                  break;
+                case 5:
+                  skillNameKo = '약화 함정';
+                  skillNameEn = 'Weaken Trap';
+                  Icon = TargetIcon;
+                  colorClass = 'border-purple-500/50 text-purple-400 hover:bg-purple-600 hover:text-white';
+                  break;
+                case 6:
+                  skillNameKo = '강화 함정';
+                  skillNameEn = 'Rally Trap';
+                  Icon = TargetIcon;
+                  colorClass = 'border-red-500/50 text-red-400 hover:bg-red-600 hover:text-white';
+                  break;
+                case 7:
+                  skillNameKo = '체인지 상대카드';
+                  skillNameEn = 'Swap Enemy';
+                  Icon = RotateCcw;
+                  colorClass = 'border-orange-500/50 text-orange-400 hover:bg-orange-600 hover:text-white';
+                  break;
+                case 8:
+                  skillNameKo = '체인지 내카드';
+                  skillNameEn = 'Swap Self';
+                  Icon = RotateCcw;
+                  colorClass = 'border-green-500/50 text-green-400 hover:bg-green-600 hover:text-white';
+                  break;
+              }
+
+              const displayName = language === 'ko' ? skillNameKo : skillNameEn;
+
+              return (
+                <div key={skillId} className="relative group flex items-center justify-center">
+                  {(skillCooldowns[skillId] || 0) > 0 ? (
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 border-gray-600 bg-gray-800 text-gray-400 flex items-center justify-center font-black text-xs shadow-lg">
+                      <span>{skillCooldowns[skillId]}s</span>
                     </div>
+                  ) : (
+                    <button
+                      onClick={() => handleExecuteSkill(skillId)}
+                      disabled={isRoarActive}
+                      className={cn(
+                        "w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 shadow-lg flex items-center justify-center transition-all active:scale-95 cursor-pointer bg-black/90",
+                        !isRoarActive
+                          ? colorClass
+                          : "bg-gray-800 border-gray-700 text-gray-500 cursor-not-allowed"
+                      )}
+                      title={displayName}
+                    >
+                      <Icon size={18} className={cn(!isRoarActive && skillId === 1 && "animate-pulse")} />
+                    </button>
+                  )}
+                  <div className="absolute right-full mr-2.5 top-1/2 -translate-y-1/2 bg-black/95 backdrop-blur-md text-white px-2.5 py-1 text-[10px] font-black italic opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-md uppercase tracking-wider z-[200] shadow-xl">
+                    {displayName}
                   </div>
-                );
-              })}
-          </div>
-        );
-      })()}
+                </div>
+              );
+            });
+          })()}
+        </div>
+      )}
 
       {renderRulesPopup()}
 
@@ -10002,7 +10054,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 title={isAutoBattle ? (language === 'ko' ? '자동전투 ON (클릭 시 끄기)' : 'AUTO ON') : (language === 'ko' ? '자동전투 OFF (클릭 시 켜기)' : 'AUTO OFF')}
                 aria-label="Auto Battle Toggle"
               >
-                <Bot size={15} className={cn(isAutoBattle ? "animate-pulse text-amber-300" : "text-slate-400")} />
+                <Bot size={15} className={cn(isAutoBattle ? "animate-spin text-amber-300" : "text-slate-400")} />
               </button>
             )}
 
@@ -11112,12 +11164,22 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         </div>
       </div>
 
+      {/* Cortana HUD Scroll Indicator */}
+      {isAutoBattle && !gameOver && (
+        <div className="w-full text-center py-2 shrink-0 z-10 my-1">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/90 border border-indigo-500/30 text-[9px] font-black text-indigo-300 tracking-wider uppercase shadow-md animate-bounce">
+            <span>▼</span>
+            <span>{language === 'ko' ? '코타나 AI 전술 분석창 (스크롤하여 확인)' : 'CORTANA AI TACTICAL HUD (SCROLL DOWN)'}</span>
+          </span>
+        </div>
+      )}
+
       {/* AI Tactical Cortana Operator HUD */}
       {isAutoBattle && !gameOver && (
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-6xl mx-auto px-4 pb-4 -mt-2 relative z-25"
+          className="w-full max-w-6xl mx-auto px-3 sm:px-4 mt-4 mb-12 shrink-0 relative z-10"
         >
           <div className="bg-slate-950/90 border border-indigo-500/40 rounded-3xl p-4 shadow-[0_0_30px_rgba(99,102,241,0.2)] backdrop-blur-md relative overflow-hidden flex flex-col md:flex-row gap-4">
             

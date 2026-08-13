@@ -2,13 +2,17 @@
 # SNS히어로 에이전트 지침서 (AGENTS.md)
 
 ## 스프레드시트 개선 작업 진행 상태
-- **마지막 수정 완료 항목 ID**: `297 (구글 시트 1nX6BFBJR4fTrv3PMqG8UamwSbqY2tJt_VvJoGAPItu8 전체 작업대기 항목 40여건 처리 및 검증 완료)`
-- **최종 업데이트 일시**: 2026-08-12 16:00
+- **마지막 수정 완료 항목 ID**: `Row 275 (구글 시트 1nX6BFBJR4fTrv3PMqG8UamwSbqY2tJt_VvJoGAPItu8 추가 작업대기 항목 확인, 소스코드 반영, 검증 및 구글폼 완료 보고 제출)`
+- **최종 업데이트 일시**: 2026-08-13 13:10
 
 ## 프로젝트 개요
 - **이름**: SNS히어로 (SNSHero Revolution)
 - **유형**: AI 기반 원클릭 웹 카드 배틀 게임
 - **스택**: React 19 + Vite 6 + TypeScript 5.8 + Tailwind CSS 4.1 + Firebase
+
+## 등록된 커스텀 스킬 및 명령어
+- **`/gemini-ex`**: 구글 스프레드시트 (`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`)의 미작업 항목을 확인하고 소스코드에 반영 및 완료하는 스킬
+- **`/report-ex`**: 구글 스프레드시트 (`1nX6BFBJR4fTrv3PMqG8UamwSbqY2tJt_VvJoGAPItu8`)의 작업대기 항목들을 작업하고 완료 시 구글폼으로 제출 보고하는 스킬
 
 ## 코딩 스타일 및 규칙
 - **TypeScript**: `strict` 모드 준수. `any` 타입 지양. 필요시 `unknown` 후 타입 가드 사용.

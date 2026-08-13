@@ -374,7 +374,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
                   : "border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
               )}
             >
-              {progress.autoMode ? <Bot size={18} className="animate-pulse text-cyan-200" /> : <Pause size={18} />}
+              {progress.autoMode ? <Bot size={18} className="animate-spin text-cyan-200" /> : <Pause size={18} />}
               <span className="hidden sm:inline">{progress.autoMode ? t('kadan_rpg_auto_on', language) : t('kadan_rpg_auto_off', language)}</span>
             </button>
           </div>

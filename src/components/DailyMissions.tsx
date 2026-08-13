@@ -438,10 +438,10 @@ export const DailyMissions: React.FC = () => {
                       >
                         {title}
                       </span>
-                      {/* 보상 표시 */}
-                      <span className="text-[10px] font-bold text-amber-700 shrink-0 flex items-center gap-0.5">
-                        +{mission.reward_sns}
-                        <span className="text-[9px] text-amber-600">SNS</span>
+                      {/* 보상 표시 (Compact Quest Reward Pill Badge - ID 295) */}
+                      <span className="text-[10px] font-black text-amber-800 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded-sm shrink-0 flex items-center gap-1 shadow-2xs">
+                        <span>🎁</span>
+                        <span>+{mission.reward_sns} SNS</span>
                       </span>
                     </div>
 

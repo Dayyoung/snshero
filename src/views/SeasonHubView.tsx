@@ -139,7 +139,12 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
 
   const cardSkins = useCardSkins(currentSeason);
   const [hubState, setHubState] = useState<SeasonHubState>(() => loadHubState(currentSeason));
-  const [activeTab, setActiveTab] = useState<'overview' | 'missions' | 'rewards'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'missions' | 'rewards'>(() => {
+    if (typeof window !== 'undefined' && window.location.pathname.includes('mission')) {
+      return 'missions';
+    }
+    return 'overview';
+  });
   const [showSeasonShareTemplate, setShowSeasonShareTemplate] = useState(false);
   const [claimingIds, setClaimingIds] = useState<string[]>([]);
   const [helpOpen, setHelpOpen] = useState(false);

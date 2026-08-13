@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX, Zap, Clock, Pause, PanelLeftClose, PanelLeftOpen, Layers, Image, Film } from "lucide-react";
+import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX, Zap, Clock, Pause, PanelLeftClose, PanelLeftOpen, Layers, Image, Film, Github, Youtube } from "lucide-react";
 import { NotificationCenterModal } from "../components/NotificationCenterModal";
 import { getUnreadCount } from "../lib/notificationHelper";
 import { motion, AnimatePresence } from "motion/react";
@@ -17,7 +17,7 @@ import { BeginnerRoadmap } from "../components/BeginnerRoadmap";
 import { NoticeModal } from "../components/NoticeModal";
 import { AfkPatrolModal } from "../components/AfkPatrolModal";
 import { PingIndicator } from "../components/PingIndicator";
-import { DailyMissions } from "../components/DailyMissions";
+import { useSns } from "../contexts/SnsContext";
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -74,6 +74,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   isTutorialMode,
   tutorialStep,
 }) => {
+  const { addSns } = useSns();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [showPdf, setShowPdf] = useState(false);
   const [isMailboxOpen, setIsMailboxOpen] = useState(false);
@@ -609,11 +610,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   language={language}
                   onNavigate={onNavigate}
                   updateSns={(amt, reason) => {
-                    try {
-                      const currentSns = Number(localStorage.getItem('hero_sns_points') || 1000);
-                      localStorage.setItem('hero_sns_points', String(currentSns + amt));
-                      window.dispatchEvent(new Event('sns_updated'));
-                    } catch {}
+                    if (amt > 0) {
+                      addSns(amt, reason || 'beginner_roadmap_reward', 'earned');
+                    }
                   }}
                   playSfx={playSfx}
                 />
@@ -626,9 +625,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
 
       <section className="space-y-4">
-        {/* Daily Missions Component */}
-        <DailyMissions />
-
         <div className="grid grid-cols-1 gap-4">
           {(!user || user.uid === 'guest-id') ? (
             <div className="space-y-3 sm:space-y-4">
@@ -743,21 +739,71 @@ export const HomeView: React.FC<HomeViewProps> = ({
             </div>
           )}
         </div>
+
+        {/* ── External Link Buttons: Source Code & Dev Playlist ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 pt-1">
+          <a
+            href="https://github.com/Dayyoung/snshero"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
+            className="w-full p-3.5 sm:p-4 bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-sm flex items-center justify-between transition-all group active:scale-[0.98] cursor-pointer"
+          >
+            <div className="flex items-center gap-3 font-mono">
+              <Github size={20} className="text-[#201d1d] group-hover:scale-110 transition-transform shrink-0" />
+              <div className="text-left">
+                <div className="text-xs sm:text-sm font-bold uppercase tracking-tight">
+                  {language === 'ko' ? '소스코드' : 'Source Code'}
+                </div>
+                <div className="text-[10px] text-[#646262] font-mono">GitHub Repository</div>
+              </div>
+            </div>
+            <span className="text-xs font-mono text-[#646262] group-hover:text-[#201d1d] font-bold">
+              [↗]
+            </span>
+          </a>
+
+          <a
+            href="https://www.youtube.com/playlist?list=PLV8H2-pD9vH0"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
+            className="w-full p-3.5 sm:p-4 bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-sm flex items-center justify-between transition-all group active:scale-[0.98] cursor-pointer"
+          >
+            <div className="flex items-center gap-3 font-mono">
+              <Youtube size={20} className="text-rose-600 group-hover:scale-110 transition-transform shrink-0" />
+              <div className="text-left">
+                <div className="text-xs sm:text-sm font-bold uppercase tracking-tight">
+                  {language === 'ko' ? '개발동영상' : 'Dev Videos'}
+                </div>
+                <div className="text-[10px] text-[#646262] font-mono">YouTube Playlist</div>
+              </div>
+            </div>
+            <span className="text-xs font-mono text-[#646262] group-hover:text-[#201d1d] font-bold">
+              [↗]
+            </span>
+          </a>
+        </div>
       </section>
 
-      {/* ── Footer: Build Version & Last Build Time ── */}
-      <footer className="w-full mt-4 pt-4 border-t border-[rgba(15,0,0,0.12)] flex flex-col sm:flex-row items-center justify-between text-[11px] font-mono text-[#646262] gap-2 select-none">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="font-bold text-[#201d1d]">SNSHero Revolution</span>
+      {/* ── Footer: Build Version & Last Build Time & ModooSoft Copyright ── */}
+      <footer className="w-full mt-4 pt-4 border-t border-[rgba(15,0,0,0.12)] flex flex-col items-center justify-between text-[11px] font-mono text-[#646262] gap-2 select-none">
+        <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="font-bold text-[#201d1d]">SNSHero Revolution</span>
+          </div>
+          <div className="flex items-center gap-2 flex-wrap justify-center">
+            <span className="bg-[#201d1d] text-[#fdfcfc] px-2 py-0.5 rounded-sm text-[10px] font-bold font-mono">
+              {BUILD_VERSION}
+            </span>
+            <span className="text-[#646262] text-[10px] font-mono">
+              ({language === 'ko' ? '마지막 빌드 시각: ' : 'Build Time: '}{LAST_BUILD_TIME})
+            </span>
+          </div>
         </div>
-        <div className="flex items-center gap-2 flex-wrap justify-center">
-          <span className="bg-[#201d1d] text-[#fdfcfc] px-2 py-0.5 rounded-sm text-[10px] font-bold font-mono">
-            {BUILD_VERSION}
-          </span>
-          <span className="text-[#646262] text-[10px] font-mono">
-            ({language === 'ko' ? '마지막 빌드 시각: ' : 'Build Time: '}{LAST_BUILD_TIME})
-          </span>
+        <div className="text-center text-[10px] text-[#646262] font-mono pt-1">
+          © ModooSoft. All rights reserved.
         </div>
       </footer>
 
@@ -857,19 +903,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
         isOpen={isMailboxOpen}
         onClose={() => setIsMailboxOpen(false)}
         language={language}
-        onClaimReward={(snsAmount, packType) => {
-          // Update SNS points in localStorage
-          const season = localStorage.getItem('hero_current_season') || 'season1';
-          const savedSnsStr = localStorage.getItem(`hero_sns_${season}`) || localStorage.getItem('hero_sns') || '1000';
-          const currentSns = Number(savedSnsStr) || 0;
-          const newSns = currentSns + snsAmount;
-          localStorage.setItem(`hero_sns_${season}`, String(newSns));
-          localStorage.setItem('hero_sns', String(newSns));
-          
-          const currentEarned = Number(localStorage.getItem('hero_earned_sns') || '1000');
-          localStorage.setItem('hero_earned_sns', String(currentEarned + snsAmount));
-
-          window.dispatchEvent(new Event('snshero_sns_updated'));
+        onClaimReward={(snsAmount) => {
+          if (snsAmount > 0) {
+            addSns(snsAmount, 'mailbox_reward', 'earned');
+          }
         }}
         playSfx={playSfx}
       />
@@ -886,17 +923,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
         language={language}
         canShow={isNoticeClosed}
         onClaim={(gold, sns) => {
-          const season = localStorage.getItem('hero_current_season') || 'season1';
-          const savedSnsStr = localStorage.getItem(`hero_sns_${season}`) || localStorage.getItem('hero_sns') || '1000';
-          const currentSns = Number(savedSnsStr) || 0;
-          const newSns = currentSns + sns;
-          localStorage.setItem(`hero_sns_${season}`, String(newSns));
-          localStorage.setItem('hero_sns', String(newSns));
-          
-          const currentEarned = Number(localStorage.getItem('hero_earned_sns') || '1000');
-          localStorage.setItem('hero_earned_sns', String(currentEarned + sns));
-          
-          window.dispatchEvent(new Event('snshero_sns_updated'));
+          if (sns > 0) {
+            addSns(sns, 'afk_patrol_reward', 'earned');
+          }
         }}
       />
 

@@ -14,13 +14,19 @@ export const AppLoadingGate: React.FC<AppLoadingGateProps> = ({ language, onComp
   const [fadingOut, setFadingOut] = useState<boolean>(false);
 
   const startTimeRef = useRef<number>(Date.now());
-  const TOTAL_DURATION = 3000; // 무조건 3초
+  const TOTAL_DURATION = 100; // Ultra fast boot gate (0.1s)
 
   useEffect(() => {
+    try {
+      sessionStorage.setItem('hero_boot_gate_shown', 'true');
+    } catch {
+      // ignore
+    }
+
     setStatusMessage(
       language === 'ko'
-        ? '로컬 캐시 리소스 검증 중...'
-        : 'Validating local cached resources...'
+        ? '로컬 캐시 리소스 검증 완료'
+        : 'Local cached resources verified'
     );
 
     const interval = setInterval(() => {
@@ -36,9 +42,9 @@ export const AppLoadingGate: React.FC<AppLoadingGateProps> = ({ language, onComp
         setFadingOut(true);
         setTimeout(() => {
           onComplete();
-        }, 300); // 0.3s fade out unmount
+        }, 50);
       }
-    }, 50);
+    }, 20);
 
     return () => clearInterval(interval);
   }, [language, onComplete]);

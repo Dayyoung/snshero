@@ -281,32 +281,13 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
 
   const { global: myGlobalRank, weekly: myWeeklyRank, monthly: myMonthlyRank, currentUserData } = myRanks;
 
-  // Auto-Battle Countdown
+  // Auto-Battle Countdown (Only when explicitly initiated)
   useEffect(() => {
-    if (!isAutoBattle || loading) {
-      setAutoBattleCountdown(null);
-      return;
-    }
-
-    setAutoBattleCountdown(3);
-
-    const interval = setInterval(() => {
-      setAutoBattleCountdown(prev => {
-        if (prev === null) return null;
-        if (prev <= 1) {
-          clearInterval(interval);
-          handleOptimalBattle();
-          return null;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
+    // Do not auto start countdown on initial ranking page view
     return () => {
-      clearInterval(interval);
       setAutoBattleCountdown(null);
     };
-  }, [isAutoBattle, loading, users, sns, currentUserData, user, onBack]);
+  }, []);
 
   useEffect(() => {
     if (selectedLangFilter) {

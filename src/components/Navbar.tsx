@@ -5,7 +5,7 @@ import { cn } from '../lib/utils';
 import { t } from '../lib/i18n';
 import { motion } from 'framer-motion';
 import { useGameSettings } from '../contexts/GameSettingsContext';
-import { getClaimableCount, getTodayStr } from '../lib/dailyMissions';
+import { getClaimableCount, getTodayStr, hasUnfinishedMissions } from '../lib/dailyMissions';
 
 interface NavbarProps {
   currentView: ViewType;
@@ -18,15 +18,15 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoBattle, playSfx, language }) => {
   const { theme } = useGameSettings();
-  const [hasQuestReward, setHasQuestReward] = useState<boolean>(false);
+  const [hasMissionNotice, setHasMissionNotice] = useState<boolean>(false);
   const [hasShopReward, setHasShopReward] = useState<boolean>(false);
 
   useEffect(() => {
     const checkRedDots = () => {
       try {
-        // Daily Quest claimable count
-        const claimableQuests = getClaimableCount();
-        setHasQuestReward(claimableQuests > 0);
+        // Daily Quest: 플레이하지 않은 미션이 있거나 수령 가능한 보상이 있는 경우 빨간점 표시
+        const hasPending = hasUnfinishedMissions();
+        setHasMissionNotice(hasPending);
 
         // Daily Shop free claim status
         const todayStr = getTodayStr();
@@ -39,14 +39,20 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
 
     checkRedDots();
     const interval = setInterval(checkRedDots, 3000);
-    return () => clearInterval(interval);
+    window.addEventListener('hero_daily_missions_updated', checkRedDots);
+    window.addEventListener('hero_daily_mission_completed', checkRedDots);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('hero_daily_missions_updated', checkRedDots);
+      window.removeEventListener('hero_daily_mission_completed', checkRedDots);
+    };
   }, []);
 
   const items = [
-    { id: 'home', label: t('home', language), icon: Home, hasRedDot: hasQuestReward },
+    { id: 'home', label: t('home', language), icon: Home, hasRedDot: false },
     { id: 'mydeck', label: t('mydeck', language), icon: Library, hasRedDot: false },
     { id: 'main', label: t('kadan_rpg_nav', language), icon: Play, hasRedDot: false },
-    { id: 'play', label: t('training_ground', language), icon: Gamepad2, hasRedDot: false },
+    { id: 'play', label: t('training_ground', language), icon: Gamepad2, hasRedDot: hasMissionNotice },
     { id: 'shop', label: t('shop', language), icon: ShoppingBag, hasRedDot: hasShopReward },
   ];
 

@@ -228,8 +228,14 @@ const SkillTimingButton: React.FC<SkillTimingButtonProps> = ({
     <div className="flex flex-col items-center gap-1">
       {/* QTE 버튼 */}
       <button
+        type="button"
         onClick={handleActivate}
         disabled={disabled || state === 'cooldown'}
+        aria-label={
+          lang === 'ko'
+            ? 'QTE 스킬 타이밍 발동 (충전 후 타이밍 맞춰 클릭)'
+            : 'QTE Skill Timing Activation (charge then time your click)'
+        }
         className={`${getButtonStyle()} flex items-center justify-center font-bold relative overflow-hidden ${
           disabled && state === 'idle' ? 'opacity-50 cursor-not-allowed' : ''
         }`}

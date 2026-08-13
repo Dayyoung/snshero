@@ -1224,17 +1224,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
     playSfx('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
     try {
-      const newSns = sns + unclaimed;
-      const currentSeason = localStorage.getItem('hero_current_season') || 'season1';
-      localStorage.setItem('hero_sns', String(newSns));
-      localStorage.setItem(`hero_sns_${currentSeason}`, String(newSns));
-      window.dispatchEvent(new Event('snshero_sns_updated'));
-      
-      if (syncUserData) {
-        await syncUserData({
-          sns: newSns
-        });
-      }
+      updateSns(unclaimed, 'pedometer_step_reward', 'earned');
 
       localStorage.setItem('hero_steps_claimed_date', today);
       localStorage.setItem('hero_today_claimed_steps', String(totalSteps));
@@ -3442,32 +3432,32 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 </div>
 
                 <div className="relative z-10 mt-auto pt-2 w-full flex flex-col gap-2">
-                  <div className="flex gap-2">
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-2 w-full">
                     <button
                       id={`shop-pack-${pack.rarity}-btn`}
                       onClick={() => buyPack(pack.cost, pack.rarity)}
                       className={cn(
-                        'min-h-[44px] h-auto flex-1 rounded-xl border px-2.5 py-2 text-left text-white shadow-sm transition-all active:scale-95 touch-target flex items-center justify-between gap-1',
+                        'min-h-[44px] h-auto w-full rounded-xl border px-2.5 py-2 text-left text-white shadow-sm transition-all active:scale-95 touch-target flex items-center justify-between gap-1 overflow-hidden',
                         packTheme.primaryButton,
                       )}
                     >
                       <span className="min-w-0 leading-tight flex-1">
-                        <span className="block text-[8px] uppercase tracking-[0.05em] text-white/70 truncate">{language === 'ko' ? '1회 소환' : '1x Draw'}</span>
+                        <span className="block text-[9px] uppercase tracking-[0.05em] text-white/80 truncate">{language === 'ko' ? '1회 소환' : '1x Draw'}</span>
                         <span className="text-xs font-black truncate block">{pack.cost} SNS</span>
                       </span>
-                      <ArrowRight size={14} className="shrink-0 opacity-80" />
+                      <ArrowRight size={14} className="shrink-0 opacity-80 ml-1" />
                     </button>
 
                     <button
                       id={`shop-pack-${pack.rarity}-10x-btn`}
                       onClick={() => buy10xPack(pack.cost, pack.rarity)}
-                      className="min-h-[44px] h-auto flex-1 rounded-xl border border-rose-500 bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 px-2.5 py-2 text-left text-white shadow-md transition-all active:scale-95 touch-target flex items-center justify-between gap-1 relative overflow-hidden"
+                      className="min-h-[44px] h-auto w-full rounded-xl border border-rose-500 bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 px-2.5 py-2 text-left text-white shadow-md transition-all active:scale-95 touch-target flex items-center justify-between gap-1 relative overflow-hidden"
                     >
                       <span className="min-w-0 leading-tight flex-1">
-                        <span className="block text-[8px] font-black uppercase tracking-[0.02em] text-amber-200 truncate">{language === 'ko' ? '10연차 (10%할인)' : '10x (10% OFF)'}</span>
+                        <span className="block text-[9px] font-black uppercase tracking-[0.02em] text-amber-200 truncate">{language === 'ko' ? '10연차 (10%할인)' : '10x (10% OFF)'}</span>
                         <span className="text-xs font-black truncate block">{Math.floor(pack.cost * 10 * 0.9)} SNS</span>
                       </span>
-                      <Sparkles size={14} className="shrink-0 text-amber-300 animate-pulse" />
+                      <Sparkles size={14} className="shrink-0 text-amber-300 animate-pulse ml-1" />
                     </button>
                   </div>
                   <p className="text-[9px] text-center text-amber-700 font-bold bg-amber-50 rounded border border-amber-200/60 py-0.5">

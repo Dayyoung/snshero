@@ -245,12 +245,12 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
                   ))}
                 </div>
 
-                <div className="mt-2 flex items-center justify-between text-[11px] sm:text-xs font-bold text-slate-400">
-                  <span className="truncate pr-2">
-                    {autoMode ? t('kadan_rpg_auto_dialog_hint', language) : t(event.objectiveKey, language)}
+                <div className="mt-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] font-bold text-slate-400 border-t border-slate-800/60 pt-2">
+                  <span className="leading-snug break-words text-slate-300">
+                    {autoMode ? (language === 'ko' ? '⚡️ 자동 진행 중 (클릭 시 수동 전환)' : '⚡️ Auto progression active (Tap to switch manual)') : t(event.objectiveKey, language)}
                   </span>
-                  <span className="font-mono text-[11px] text-indigo-300 shrink-0">
-                    {lineIndex + 1} / {conversationLines.length}
+                  <span className="font-mono text-[11px] text-indigo-300 shrink-0 self-end sm:self-auto">
+                    {language === 'ko' ? '진행 Step' : 'Step'} {lineIndex + 1} / {conversationLines.length}
                   </span>
                 </div>
               </div>
@@ -271,7 +271,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
                   : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
               )}
             >
-              {autoMode ? <Bot size={14} className="animate-pulse text-cyan-200" /> : <Pause size={14} />}
+              {autoMode ? <Bot size={14} className="animate-spin text-cyan-200" /> : <Pause size={14} />}
               <span>{autoMode ? t('kadan_rpg_auto_on', language) : t('kadan_rpg_auto_off', language)}</span>
             </button>
           ) : <div />}
