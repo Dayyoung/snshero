@@ -113,21 +113,22 @@ export const NovelView: React.FC<NovelViewProps> = ({
   const [cartoonDisplayMode, setCartoonDisplayMode] = useState<'scroll' | 'slides'>('scroll');
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(1);
 
-  // Get cartoon scene image URL candidate based on attempt count
+  // Get cartoon scene image URL candidate based on attempt count using external GitHub Pages CDN
   const getCartoonSceneUrl = (epNum: number, sceneIdx: number, attempt = 0): string => {
     const epPad = pad2(epNum);
     const scPad = pad2(sceneIdx);
+    const baseUrl = 'https://dayyoung.github.io/image/cartoon';
     switch (attempt) {
       case 0:
-        return getAssetUrl(`/cartoon/episode_${epPad}/scene_${scPad}.jpeg`);
+        return `${baseUrl}/episode_${epPad}/scene_${scPad}.jpeg`;
       case 1:
-        return getAssetUrl(`/cartoon/episode_${epPad}/scene_${scPad}.jpg`);
+        return `${baseUrl}/episode_${epPad}/scene_${scPad}.jpg`;
       case 2:
-        return getAssetUrl(`/cartoon/episode_${epPad}/scene_${scPad}.png`);
+        return `${baseUrl}/episode_${epPad}/scene_${scPad}.png`;
       case 3:
-        return getAssetUrl(`/cartoon/episode_${epNum}/scene_${scPad}.jpeg`);
+        return `${baseUrl}/episode_${epNum}/scene_${scPad}.jpeg`;
       default:
-        return getAssetUrl(`/cartoon/episode_02/scene_${scPad}.jpeg`);
+        return `${baseUrl}/episode_01/scene_${scPad}.jpeg`;
     }
   };
 
