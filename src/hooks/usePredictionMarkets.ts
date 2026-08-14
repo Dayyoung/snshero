@@ -283,7 +283,7 @@ const getVirtualMarketsWithToday = (): Market[] => {
 };
 
 export const usePredictionMarkets = (currentSeason: string, language: Language) => {
-  const [markets, setMarkets] = useState<Market[]>([]);
+  const [markets, setMarkets] = useState<Market[]>(() => getVirtualMarketsWithToday());
   const [bets, setBets] = useState<PredictionBet[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);

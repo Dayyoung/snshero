@@ -22,32 +22,8 @@ export const AppLoadingGate: React.FC<AppLoadingGateProps> = ({ language, onComp
     } catch {
       // ignore
     }
-
-    setStatusMessage(
-      language === 'ko'
-        ? '로컬 캐시 리소스 검증 완료'
-        : 'Local cached resources verified'
-    );
-
-    const interval = setInterval(() => {
-      const elapsed = Date.now() - startTimeRef.current;
-      const remaining = Math.max(0, (TOTAL_DURATION - elapsed) / 1000);
-      const currentProgress = Math.min(100, (elapsed / TOTAL_DURATION) * 100);
-
-      setTimeLeft(remaining);
-      setProgress(currentProgress);
-
-      if (elapsed >= TOTAL_DURATION) {
-        clearInterval(interval);
-        setFadingOut(true);
-        setTimeout(() => {
-          onComplete();
-        }, 50);
-      }
-    }, 20);
-
-    return () => clearInterval(interval);
-  }, [language, onComplete]);
+    onComplete();
+  }, [onComplete]);
 
   const handleResetCache = () => {
     const result = resetAllCaches();

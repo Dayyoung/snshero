@@ -2,8 +2,8 @@
 # SNS히어로 에이전트 지침서 (AGENTS.md)
 
 ## 스프레드시트 개선 작업 진행 상태
-- **마지막 수정 완료 항목 ID**: `Row 275 (구글 시트 1nX6BFBJR4fTrv3PMqG8UamwSbqY2tJt_VvJoGAPItu8 추가 작업대기 항목 확인, 소스코드 반영, 검증 및 구글폼 완료 보고 제출)`
-- **최종 업데이트 일시**: 2026-08-13 13:10
+- **마지막 수정 완료 항목 ID**: `Row 410 (구글 시트 1nX6BFBJR4fTrv3PMqG8UamwSbqY2tJt_VvJoGAPItu8 전체 135개 작업대기 항목 확인, 소스코드 반영, 390x844 모바일 뷰포트 검증, 린트 및 빌드 검증, 구글폼 완료 보고 일괄 제출 완료)`
+- **최종 업데이트 일시**: 2026-08-14 02:10
 
 ## 프로젝트 개요
 - **이름**: SNS히어로 (SNSHero Revolution)
@@ -47,7 +47,19 @@
 ## 커밋 및 작업 종료 보고 정책
 - 파일이 변경될 때마다 즉시 커밋을 수행합니다.
 - 커밋 메시지는 변경 사항을 명확하게 설명해야 합니다.
-- 모든 작업이 종료되면 전달받은 구글 폼 curl 명령어를 통해 수행 결과를 즉시 보고합니다.
+- 모든 작업이 종료되면 검증 완료된 구글 폼 엔드포인트(`https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse`)로 결과를 즉시 보고합니다.
+  - **단일 보고 (curl)**:
+    ```bash
+    curl -s -X POST "https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse" \
+      -d "entry.1712635414=개발" \
+      -d "entry.1651694192=[작업명]" \
+      -d "entry.1282964596=작업완료" \
+      -d "entry.1982035501=[작업 상세 내용 및 검증 결과]"
+    ```
+  - **일괄 자동 보고 (Python 스크립트)**:
+    ```bash
+    python3 skills/report-ex/scripts/submit_report.py --sync-sheet
+    ```
 
 ## 디자인 지침
 - UI의 일관성과 사용자 경험을 최우선으로 고려합니다.

@@ -900,7 +900,7 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
       </div>
 
       {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto px-4 pb-24">
+      <div className="flex-1 overflow-y-auto px-4 pb-36">
         {/* Season banner */}
         {renderSeasonBanner()}
 

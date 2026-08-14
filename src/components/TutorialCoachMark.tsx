@@ -66,16 +66,26 @@ export const TutorialCoachMark: React.FC<TutorialCoachMarkProps> = ({
                 <Compass size={20} />
               </div>
               <div className="min-w-0 flex-1 space-y-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-bold tracking-wide text-indigo-700">
-                    {t('contextual_tutorial_badge', language)}
-                  </span>
-                  <span className="text-xs font-semibold text-slate-500">
-                    {t('contextual_tutorial_progress', language, {
-                      current: stepIndex + 1,
-                      total: totalSteps,
-                    })}
-                  </span>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-bold tracking-wide text-indigo-700">
+                      {t('contextual_tutorial_badge', language)}
+                    </span>
+                    <span className="text-xs font-semibold text-slate-500">
+                      {t('contextual_tutorial_progress', language, {
+                        current: stepIndex + 1,
+                        total: totalSteps,
+                      })}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={onNeverShow}
+                    className="p-1 text-slate-400 hover:text-slate-700 transition-colors"
+                    aria-label="Close guide"
+                  >
+                    [X]
+                  </button>
                 </div>
                 <div className="space-y-1.5">
                   <h3 className="text-base font-black text-slate-900 sm:text-lg">{title}</h3>

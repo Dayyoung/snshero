@@ -245,13 +245,16 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
                   ))}
                 </div>
 
-                <div className="mt-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] font-bold text-slate-400 border-t border-slate-800/60 pt-2">
+                <div className="mt-2.5 flex flex-col gap-1.5 border-t border-slate-800/60 pt-2 text-[11px] font-bold text-slate-400 sm:flex-row sm:items-center sm:justify-between">
                   <span className="leading-snug break-words text-slate-300">
-                    {autoMode ? (language === 'ko' ? '⚡️ 자동 진행 중 (클릭 시 수동 전환)' : '⚡️ Auto progression active (Tap to switch manual)') : t(event.objectiveKey, language)}
+                    {autoMode ? (language === 'ko' ? '⚡️ 자동 진행 중 (클릭 시 수동 전환)' : '⚡️ Auto progression is running...') : t(event.objectiveKey, language)}
                   </span>
-                  <span className="font-mono text-[11px] text-indigo-300 shrink-0 self-end sm:self-auto">
-                    {language === 'ko' ? '진행 Step' : 'Step'} {lineIndex + 1} / {conversationLines.length}
-                  </span>
+                  <div className="flex items-center gap-1.5 self-start sm:self-auto font-mono text-[11px] text-indigo-300 shrink-0">
+                    <span className="text-slate-400 font-sans">{language === 'ko' ? '진행 단계' : 'Stage'}</span>
+                    <span className="rounded bg-indigo-950/80 px-2 py-0.5 border border-indigo-700/50 text-indigo-200">
+                      {lineIndex + 1} / {conversationLines.length}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

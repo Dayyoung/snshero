@@ -373,7 +373,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
         </div>
 
         {/* Market Cards Table */}
-        <main className="flex-1 p-4 md:p-6 max-w-4xl mx-auto w-full">
+        <main className="flex-1 p-4 md:p-6 max-w-4xl mx-auto w-full pb-28">
           <div className="border border-slate-200/80 rounded-lg overflow-hidden shadow-sm bg-white">
 
             {/* Sort controls — minimal: indicator only, no labels */}
@@ -393,7 +393,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
             </div>
 
             {/* Cards List */}
-            <div className="divide-y divide-slate-100 max-h-[60vh] overflow-y-auto">
+            <div className="divide-y divide-slate-100 max-h-[60vh] overflow-y-auto pb-28">
               {sortedCards.map((card) => {
                 const { symbol } = getCardCoinPair(card.id);
                 const market = prices[symbol];

@@ -62,7 +62,7 @@ export const CONTEXTUAL_TUTORIALS: Record<ContextualTutorialView, ContextualTuto
   },
   'wiki-card': {
     view: 'wiki-card',
-    placement: 'top-center',
+    placement: 'bottom-center',
     steps: [
       {
         id: 'wiki-card-search',

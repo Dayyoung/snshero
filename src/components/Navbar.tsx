@@ -24,8 +24,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
   useEffect(() => {
     const checkRedDots = () => {
       try {
-        // Daily Quest: 플레이하지 않은 미션이 있거나 수령 가능한 보상이 있는 경우 빨간점 표시
-        const hasPending = hasUnfinishedMissions();
+        // Daily Quest: 수령 가능한 미션 보상이 있는 경우에만 빨간점 표시 (보상 수령 완료 시 빨간점 미표시)
+        const hasPending = getClaimableCount() > 0;
         setHasMissionNotice(hasPending);
 
         // Daily Shop free claim status

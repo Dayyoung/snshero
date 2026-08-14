@@ -327,9 +327,8 @@ export function isAllMissionsClaimed(): boolean {
   return Object.values(data.missions).every(s => s.claimed);
 }
 
-/** 아직 완료/수령하지 않은 미션이 있는지 여부 (플레이 유도용) */
+/** 수령 가능한 미션(달성 완료되었으나 보상 미수령)이 있는지 여부 */
 export function hasUnfinishedMissions(): boolean {
-  const data = loadDailyMissions();
-  return Object.values(data.missions).some(s => !s.claimed);
+  return getClaimableCount() > 0;
 }
 

@@ -514,7 +514,7 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
   };
 
   return (
-    <div className="flex-1 bg-slate-50 text-slate-900 font-sans pb-20">
+    <div className="flex-1 bg-slate-50 text-slate-900 font-sans pb-36">
       <PageHeader
         title={t('marketplace_title', language)}
         onBack={() => setView('shop')}

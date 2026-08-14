@@ -2068,21 +2068,7 @@ function AppContent() {
   // [IN-GAME MACRO RECORDER & PLAYBACK STATE]
   // =========================================================================
   const [showRecordBtn, setShowRecordBtn] = useState(false);
-  const [isBootGateActive, setIsBootGateActive] = useState<boolean>(() => {
-    try {
-      if (typeof window !== 'undefined') {
-        const path = window.location.pathname.replace(/\/$/, '');
-        const hasView = window.location.search.includes('view=');
-        const shown = sessionStorage.getItem('hero_boot_gate_shown') === 'true';
-        if (shown || hasView || (path !== '' && path !== '/')) {
-          return false;
-        }
-      }
-      return sessionStorage.getItem('hero_boot_gate_shown') !== 'true';
-    } catch {
-      return false;
-    }
-  });
+  const [isBootGateActive, setIsBootGateActive] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingActions, setRecordingActions] = useState<{
     x: number;
@@ -5969,13 +5955,6 @@ function AppContent() {
           </div>
         )}
         <Meta view={view} language={language} />
-
-        {isBootGateActive && (
-          <AppLoadingGate
-            language={language}
-            onComplete={() => setIsBootGateActive(false)}
-          />
-        )}
 
         {/* Desktop Fixed Left Sidebar Ad (xl screens only) — sticky, doesn't scroll away */}
         {!isAdRemoved && (

@@ -1,4 +1,5 @@
 import type { Language } from '../types';
+import { getAssetUrl } from '../lib/utils';
 
 /** 외부 SNS 인증 챌린지 정의 */
 export interface SnsChallenge {
@@ -111,7 +112,7 @@ export const MOCK_CHALLENGE_GALLERY: ChallengeGalleryEntry[] = [
     id: 'gallery_01',
     challengeId: 's3_sns_instagram_share',
     userName: 'HeroFan_Kim',
-    imageUrl: 'https://picsum.photos/seed/snshero1/400/400',
+    imageUrl: getAssetUrl('/banner/010.png'),
     snsLink: 'https://www.instagram.com/p/example1/',
     approvedAt: '2026-07-03',
   },
@@ -119,7 +120,7 @@ export const MOCK_CHALLENGE_GALLERY: ChallengeGalleryEntry[] = [
     id: 'gallery_02',
     challengeId: 's3_sns_instagram_share',
     userName: 'DarkKnight_Lee',
-    imageUrl: 'https://picsum.photos/seed/snshero2/400/400',
+    imageUrl: getAssetUrl('/banner/020.png'),
     snsLink: 'https://www.instagram.com/p/example2/',
     approvedAt: '2026-07-04',
   },
@@ -127,7 +128,7 @@ export const MOCK_CHALLENGE_GALLERY: ChallengeGalleryEntry[] = [
     id: 'gallery_03',
     challengeId: 's3_sns_tiktok_challenge',
     userName: 'BattleQueen_Park',
-    imageUrl: 'https://picsum.photos/seed/snshero3/400/400',
+    imageUrl: getAssetUrl('/banner/040.png'),
     snsLink: 'https://www.tiktok.com/@user/video/example3',
     approvedAt: '2026-07-10',
   },
@@ -135,7 +136,7 @@ export const MOCK_CHALLENGE_GALLERY: ChallengeGalleryEntry[] = [
     id: 'gallery_04',
     challengeId: 's3_sns_instagram_share',
     userName: 'ShadowWalker_Choi',
-    imageUrl: 'https://picsum.photos/seed/snshero4/400/400',
+    imageUrl: getAssetUrl('/banner/050.png'),
     snsLink: 'https://www.instagram.com/p/example4/',
     approvedAt: '2026-07-05',
   },
@@ -143,7 +144,7 @@ export const MOCK_CHALLENGE_GALLERY: ChallengeGalleryEntry[] = [
     id: 'gallery_05',
     challengeId: 's3_sns_deck_share',
     userName: 'DeckMaster_Jung',
-    imageUrl: 'https://picsum.photos/seed/snshero5/400/400',
+    imageUrl: getAssetUrl('/banner/070.png'),
     snsLink: 'https://www.instagram.com/p/example5/',
     approvedAt: '2026-07-16',
   },
@@ -151,7 +152,7 @@ export const MOCK_CHALLENGE_GALLERY: ChallengeGalleryEntry[] = [
     id: 'gallery_06',
     challengeId: 's3_sns_tiktok_challenge',
     userName: 'FlameWizard_Kang',
-    imageUrl: 'https://picsum.photos/seed/snshero6/400/400',
+    imageUrl: getAssetUrl('/banner/080.png'),
     snsLink: 'https://www.tiktok.com/@user/video/example6',
     approvedAt: '2026-07-11',
   },
