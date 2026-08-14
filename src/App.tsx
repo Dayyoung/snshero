@@ -29,7 +29,7 @@ import { GameSettingsProvider, useGameSettings } from './contexts/GameSettingsCo
 import { SnsProvider } from './contexts/SnsContext';
 import { Navbar } from './components/Navbar';
 import { AnimatePresence, motion } from 'motion/react';
-import { cn, sanitizeForFirestore, getUserCollectionName } from './lib/utils';
+import { cn, sanitizeForFirestore, getUserCollectionName, getCardSpriteStyle } from './lib/utils';
 import { trackAnalytics, AnalyticsEvent } from './lib/analyticsEvents';
 import { buildAdminHelpItems, isAdminSlashInput, parseAdminCommand, type ParsedAdminCommand } from './lib/adminCommands';
 import { getSkillResetCost, getSkillUpgradeCost, SNS_ECONOMY_EARNINGS } from './content/snsEconomy';
@@ -130,15 +130,7 @@ import { ModooView } from './views/ModooView';
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
   const idx = CARD_DATABASE[cardId] ? cardId : 1;
-  const x = ((idx - 1) % 10) * (100 / 9);
-  const y = Math.floor((idx - 1) / 10) * (100 / 10);
-  return {
-    backgroundImage: `url('/card100.png')`,
-    backgroundSize: '1000% 1100%',
-    backgroundPosition: `${x}% ${y}%`,
-    backgroundRepeat: 'no-repeat',
-    imageRendering: 'pixelated'
-  };
+  return getCardSpriteStyle(idx);
 };
 
 const FLAG_MAP: Record<string, string> = {
@@ -425,6 +417,12 @@ function getViewFromPathAndUrl(): ViewType {
 }
 
 function AppContent() {
+  const [showInitialGate, setShowInitialGate] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('hero_boot_gate_shown') !== 'true';
+    }
+    return true;
+  });
 
   const [currentSeason, setCurrentSeason] = useState<string>(() => {
     if (typeof window !== 'undefined') {
@@ -5761,8 +5759,8 @@ function AppContent() {
                   <div 
                     className="w-24 h-24 scale-[1.3] translate-y-[5%]"
                     style={{
-                      backgroundImage: `url('${customCardImage || '/card100.png'}')`,
-                      backgroundSize: `1000% 1100%`,
+                      backgroundImage: `url('${customCardImage || '/cards1.png'}')`,
+                      backgroundSize: `1000% 1000%`,
                       backgroundPosition: '0% 0%',
                       backgroundRepeat: 'no-repeat',
                       imageRendering: 'pixelated'
@@ -7483,6 +7481,13 @@ function AppContent() {
             animation: fade-in 0.3s ease-out;
           }
         `}</style>
+      )}
+
+      {showInitialGate && (
+        <AppLoadingGate
+          language={language}
+          onComplete={() => setShowInitialGate(false)}
+        />
       )}
       </div>
     </div>

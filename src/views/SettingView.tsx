@@ -23,7 +23,9 @@ import { BackupRestoreModal } from '../components/BackupRestoreModal';
 import { GoogleSheetsSyncModal } from '../components/GoogleSheetsSyncModal';
 import { BgmJukeboxModal } from '../components/BgmJukeboxModal';
 import { triggerHaptic } from '../lib/haptic';
-import { Smartphone, Music } from 'lucide-react';
+import { checkAndSyncAppVersion, getLocalAppVersion, forcePurgeAndReload } from '../lib/versionManager';
+import { resetAllCaches, getCacheVersionTimestamp } from '../lib/cacheManager';
+import { Smartphone, Music, RefreshCw, CheckCircle, ShieldCheck } from 'lucide-react';
 
 interface SettingViewProps {
   bgmEnabled: boolean;
@@ -115,6 +117,48 @@ export const SettingView: React.FC<SettingViewProps> = ({
   const [showHelp, setShowHelp] = useState(false);
   const [backupRestoreMode, setBackupRestoreMode] = useState<'backup' | 'restore' | null>(null);
   const [isGoogleSheetsModalOpen, setIsGoogleSheetsModalOpen] = useState(false);
+  const [isCheckingVersion, setIsCheckingVersion] = useState(false);
+  const [versionCheckMsg, setVersionCheckMsg] = useState<string | null>(null);
+  const [appCurrentVersion, setAppCurrentVersion] = useState<string>(() => getLocalAppVersion() || '2.1.0');
+
+  const handleCheckVersion = async () => {
+    setIsCheckingVersion(true);
+    setVersionCheckMsg(language === 'ko' ? '[...] 서버 최신 버전 확인 중...' : '[...] Checking latest version...');
+    try {
+      const result = await checkAndSyncAppVersion();
+      setAppCurrentVersion(result.newVersion);
+      if (result.isUpdated) {
+        setVersionCheckMsg(
+          language === 'ko'
+            ? `[업데이트 완료] 최신 버전 v${result.newVersion} 감지! 캐시 ${result.clearedItemsCount}개 초기화 완료.`
+            : `[UPDATED] New version v${result.newVersion} detected! Purged ${result.clearedItemsCount} stale caches.`
+        );
+      } else {
+        setVersionCheckMsg(
+          language === 'ko'
+            ? `[최신 상태] 현재 최신 버전(v${result.newVersion})을 사용 중입니다.`
+            : `[UP-TO-DATE] Already on the latest version (v${result.newVersion}).`
+        );
+      }
+    } catch {
+      setVersionCheckMsg(
+        language === 'ko'
+          ? '[오류] 버전 확인 실패. 오프라인 모드 유지.'
+          : '[ERROR] Version check failed. Preserving offline cache.'
+      );
+    } finally {
+      setIsCheckingVersion(false);
+    }
+  };
+
+  const handlePurgeAllCaches = () => {
+    const res = resetAllCaches();
+    setVersionCheckMsg(
+      language === 'ko'
+        ? `[초기화 완료] 브라우저 및 로컬 캐시 ${res.clearedCount}개 삭제 완료.`
+        : `[PURGED] Successfully cleared ${res.clearedCount} cached entries.`
+    );
+  };
   // Dispatch global popup events so bottom nav hides while help is open
   useEffect(() => {
     if (showHelp) {
@@ -1299,10 +1343,60 @@ export const SettingView: React.FC<SettingViewProps> = ({
           </div>
         </section>
 
+        {/* ── 버전 관리 & 스마트 캐시 동기화 시스템 ── */}
+        <section className="bg-[#fdfcfc] border border-[#201d1d]/20 rounded-none p-5 text-[#201d1d] font-mono space-y-4">
+          <div className="flex items-center justify-between border-b border-[#201d1d]/10 pb-3">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 bg-[#201d1d] inline-block animate-pulse"></span>
+              <h3 className="text-sm font-bold tracking-tight">
+                {language === 'ko' ? '[시스템] 버전 관리 및 캐시 동기화' : '[SYSTEM] VERSION & CACHE SYNC'}
+              </h3>
+            </div>
+            <span className="text-xs bg-[#201d1d] text-[#fdfcfc] px-2 py-0.5 font-bold">
+              v{appCurrentVersion}
+            </span>
+          </div>
+
+          <p className="text-xs text-[#201d1d]/70 leading-relaxed">
+            {language === 'ko'
+              ? '서버의 최신 버전(/api/version)을 조회하여 새 버전이 배포된 경우 구버전 캐시를 자동으로 안전하게 초기화합니다. 수동으로도 즉시 확인하거나 캐시를 초기화할 수 있습니다.'
+              : 'Verifies /api/version and auto-purges stale browser caches when an update is released. You can also manually check or clear caches here.'
+            }
+          </p>
+
+          {versionCheckMsg && (
+            <div className="p-3 bg-[#201d1d]/5 border border-[#201d1d]/20 text-xs font-mono">
+              <span className="font-bold mr-1">&gt;</span> {versionCheckMsg}
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+            <button
+              type="button"
+              onClick={handleCheckVersion}
+              disabled={isCheckingVersion}
+              className="py-2.5 px-4 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold hover:bg-[#201d1d]/90 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <RefreshCw size={14} className={isCheckingVersion ? "animate-spin" : ""} />
+              {isCheckingVersion
+                ? (language === 'ko' ? '[...] 버전 확인 중' : '[...] Checking...')
+                : (language === 'ko' ? '[+] 최신 버전 확인 (/api/version)' : '[+] Check Latest Version')
+              }
+            </button>
+            <button
+              type="button"
+              onClick={handlePurgeAllCaches}
+              className="py-2.5 px-4 bg-[#fdfcfc] border border-[#201d1d] text-[#201d1d] text-xs font-bold hover:bg-[#201d1d] hover:text-[#fdfcfc] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              [x] {language === 'ko' ? '캐시 전면 초기화 (수동)' : 'Clear All Caches (Manual)'}
+            </button>
+          </div>
+        </section>
+
           </div>
 
           <footer className="pt-20 text-center">
-        <p className="text-sm font-bold tracking-[0.6em] opacity-10">{t('system_version', language)} SNS_HERO_KERNAL v1.0.5.Build</p>
+        <p className="text-sm font-bold tracking-[0.6em] opacity-10">{t('system_version', language)} SNS_HERO_KERNAL v{appCurrentVersion}.Build</p>
       </footer>
 
       <AnimatePresence>

@@ -142,3 +142,7 @@
 - `hero_movie_progress_{season}`: 영화(Movie) 뷰 시청 진행도 저장 (현재 선택된 에피소드 번호)
 - `hero_movie_claimed_episodes_{season}`: 영화(Movie) 회차별 시청 보상 수령 상태 저장
 - `hero_movie_released_count_{season}`: 유튜브 플레이리스트 동적 파싱으로 확인된 공개 영화 회차 개수 저장
+- `hero_app_version`: 클라이언트가 현재 인식 중인 최신 앱 버전 번호 (버전 불일치 시 캐시 초기화 트리거)
+- `hero_build_version`: 빌드 타임스탬프 저장 키
+- `hero_last_version_check`: 마지막 버전 확인 타임스탬프 (ms)
+- `hero_boot_gate_shown`: 세션 내 시스템 시작 게이트/버전 동기화 화면 노출 여부

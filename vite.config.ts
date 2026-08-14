@@ -10,15 +10,34 @@ export default defineConfig(({mode}) => {
       react(), 
       tailwindcss(),
       {
-        name: 'api-health-plugin',
+        name: 'api-endpoints-plugin',
         configureServer(server) {
           server.middlewares.use((req, res, next) => {
             if (req.url === '/api/health' || req.url === '/health') {
               res.statusCode = 200;
               res.setHeader('Content-Type', 'application/json');
-              res.end(JSON.stringify({ status: 'ok' }));
+              res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+              res.end(JSON.stringify({ status: 'ok', timestamp: Date.now() }));
               return;
             }
+
+            if (req.url?.startsWith('/api/version') || req.url === '/version') {
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json');
+              res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+              res.setHeader('Pragma', 'no-cache');
+              res.setHeader('Expires', '0');
+              const versionData = {
+                version: '2.1.0',
+                buildTime: new Date().toISOString(),
+                buildTimestamp: Date.now(),
+                service: 'snshero-revolution',
+                minRequiredVersion: '2.0.0'
+              };
+              res.end(JSON.stringify(versionData));
+              return;
+            }
+
             next();
           });
         }
