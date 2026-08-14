@@ -37,7 +37,7 @@ const compareCards = (left: DatabaseCard, right: DatabaseCard): number => {
   return left.id - right.id;
 };
 
-const storySummaryClass = 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm';
+const storySummaryClass = 'rounded-none border border-[rgba(15,0,0,0.12)] bg-[#201d1d] text-[#fdfcfc] p-4';
 
 export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, language, currentSeason, lowSpecMode }) => {
   const factionOrder = useMemo(() => getAllFactions(), []);
@@ -163,63 +163,63 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
     }
     onNavigate('webtoon');
   };
-  const lowSpecCardClass = lowSpecMode ? '' : 'transition-all hover:-translate-y-0.5';
+  const lowSpecCardClass = lowSpecMode ? '' : 'transition-all';
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.14),transparent_42%),linear-gradient(180deg,#f8fafc_0%,#eef2ff_100%)] text-slate-900">
-      <div className="mx-auto max-w-7xl px-4 pb-20 pt-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen overflow-x-hidden bg-[#fdfcfc] text-[#201d1d] font-mono">
+      <div className="mx-auto max-w-7xl px-3 pb-24 pt-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           <PageHeader title={t('world_codex_title', language)} onBack={() => onNavigate('home')} />
           <button
             type="button"
             onClick={() => { setHelpOpen(true); setHelpStep(0); }}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 hover:text-slate-700 hover:border-slate-300 transition shrink-0"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7] transition shrink-0"
             aria-label={language === 'ko' ? '도움말' : 'Help'}
           >
-            <HelpCircle size={16} />
+            <HelpCircle size={15} />
           </button>
         </div>
 
-        <section className="mt-6">
-          <div className={cn(storySummaryClass, 'flex flex-col justify-between bg-slate-950 text-white')}>
+        <section className="mt-4">
+          <div className={cn(storySummaryClass, 'flex flex-col justify-between')}>
             <div>
-              <h3 className="text-xl font-black tracking-tight">{selectedCard ? getFormattedCardName(selectedCard, language) : t('world_codex_title', language)}</h3>
-              <p className="mt-2 text-sm leading-7 text-white/70">
+              <h3 className="text-base font-black tracking-tight uppercase">[{selectedCard ? getFormattedCardName(selectedCard, language) : t('world_codex_title', language)}]</h3>
+              <p className="mt-1 text-xs leading-relaxed text-[#fdfcfc]/80">
                 {selectedProfile ? t(selectedProfile.webtoonHookKey, language) : t('world_codex_subtitle', language)}
               </p>
             </div>
-            <div className="mt-4 flex flex-wrap gap-2">
+            <div className="mt-3 flex flex-wrap gap-2">
               <button
                 type="button"
                 onClick={openWorldCard}
-                className={cn('inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-white px-4 py-2.5 text-xs font-black uppercase tracking-[0.24em] text-slate-950 shadow-sm', lowSpecCardClass)}
+                className={cn('inline-flex min-h-9 items-center justify-center gap-1.5 rounded-sm bg-[#fdfcfc] px-3 py-1.5 text-xs font-bold uppercase text-[#201d1d] border border-[rgba(15,0,0,0.12)] cursor-pointer hover:bg-[#e2e0e0]', lowSpecCardClass)}
               >
-                <BookOpen size={14} />
-                {t('world_open_card', language)}
+                <BookOpen size={13} />
+                [{t('world_open_card', language)}]
               </button>
               <button
                 type="button"
                 onClick={openWorldWebtoon}
-                className={cn('inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2.5 text-xs font-black uppercase tracking-[0.24em] text-white', lowSpecCardClass)}
+                className={cn('inline-flex min-h-9 items-center justify-center gap-1.5 rounded-sm border border-[rgba(253,252,252,0.3)] bg-transparent px-3 py-1.5 text-xs font-bold uppercase text-[#fdfcfc] cursor-pointer hover:bg-[#333030]', lowSpecCardClass)}
               >
-                <ArrowRight size={14} />
-                {t('world_open_webtoon', language)}
+                <ArrowRight size={13} />
+                [{t('world_open_webtoon', language)}]
               </button>
             </div>
           </div>
         </section>
 
-        <section className="mt-6 rounded-[28px] border border-white/60 bg-white/85 p-4 shadow-sm backdrop-blur-sm sm:p-5">
+        <section className="mt-4 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-3 sm:p-4">
           {/* Consolidated Element Codex Progress Pill (ID 247) */}
-          <div className="mb-3 flex items-center justify-between p-2.5 bg-slate-100/80 border border-slate-200/80 rounded-2xl text-[11px] font-mono font-bold text-slate-800">
+          <div className="mb-3 flex items-center justify-between p-2 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm text-[11px] font-bold text-[#201d1d]">
             <span className="flex items-center gap-1.5">
-              <span>[Collection 110/110 ▾]</span>
+              <span>[Collection 110/110]</span>
             </span>
-            <span className="text-slate-500 text-[10px]">
-              {language === 'ko' ? '전체 도감 수집 100%' : '100% Collection Completed'}
+            <span className="text-[#646262] text-[10px]">
+              {language === 'ko' ? '도감 100% 완료' : '100% Complete'}
             </span>
           </div>
-          <div className="mt-2 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-2 grid gap-2.5 md:grid-cols-2 xl:grid-cols-3">
             {factionSummaries.map((summary) => {
               const factionDef = getFactionDef(summary.faction);
               const isActive = summary.faction === selectedFaction;
@@ -229,20 +229,20 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
                   type="button"
                   onClick={() => handleSelectFaction(summary.faction)}
                   className={cn(
-                    'rounded-3xl border p-4 text-left shadow-sm transition-colors',
-                    isActive ? 'border-indigo-300 bg-indigo-50 shadow-md' : 'border-slate-200 bg-white hover:border-indigo-200 hover:bg-slate-50',
+                    'rounded-sm border p-3 text-left transition-colors cursor-pointer',
+                    isActive ? 'border-[#201d1d] bg-[#f8f7f7]' : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f8f7f7]',
                     lowSpecCardClass,
                   )}
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className={cn('rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.24em]', factionDef ? 'bg-white' : 'bg-slate-50')}>
-                      {factionDef ? t(factionDef.nameKey, language) : summary.faction}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="rounded-xs border border-[rgba(15,0,0,0.12)] px-2 py-0.5 text-[10px] font-bold uppercase bg-[#fdfcfc]">
+                      [{factionDef ? t(factionDef.nameKey, language) : summary.faction}]
                     </div>
-                    <ChevronRight size={14} className={cn('shrink-0', isActive ? 'text-indigo-500' : 'text-slate-300')} />
+                    <ChevronRight size={13} className={cn('shrink-0', isActive ? 'text-[#201d1d]' : 'text-[#646262]')} />
                   </div>
-                  <div className="mt-4 flex flex-wrap gap-2">
+                  <div className="mt-2 flex flex-wrap gap-1.5">
                     {summary.cards.slice(0, 3).map((card) => (
-                      <span key={card.id} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-slate-500">
+                      <span key={card.id} className="rounded-xs border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] px-2 py-0.5 text-[9px] font-bold text-[#646262]">
                         {getFormattedCardName(card, language)}
                       </span>
                     ))}
@@ -253,8 +253,8 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
           </div>
         </section>
 
-        <section className="mt-6 rounded-[28px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-          <div className="mt-2 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <section className="mt-4 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-3 sm:p-4">
+          <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-4">
             {conflictPairs.map((pair) => {
               const leftDef = getFactionDef(pair.left);
               const rightDef = getFactionDef(pair.right);
@@ -263,12 +263,12 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
                   key={`${pair.left}-${pair.right}`}
                   type="button"
                   onClick={() => handleSelectFaction(pair.left)}
-                  className={cn('rounded-3xl border border-slate-200 bg-slate-50 p-4 text-left shadow-sm', lowSpecCardClass)}
+                  className={cn('rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-2.5 text-left cursor-pointer hover:bg-[#e2e0e0]', lowSpecCardClass)}
                 >
-                  <div className="mt-1 flex items-center gap-2">
-                    <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] font-black uppercase tracking-[0.24em] text-slate-700">{leftDef ? t(leftDef.nameKey, language) : pair.left}</span>
-                    <ArrowRight size={14} className="text-slate-300" />
-                    <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] font-black uppercase tracking-[0.24em] text-slate-700">{rightDef ? t(rightDef.nameKey, language) : pair.right}</span>
+                  <div className="flex items-center gap-1.5 text-xs font-bold">
+                    <span className="text-[#201d1d]">{leftDef ? t(leftDef.nameKey, language) : pair.left}</span>
+                    <ArrowRight size={12} className="text-[#646262]" />
+                    <span className="text-[#201d1d]">{rightDef ? t(rightDef.nameKey, language) : pair.right}</span>
                   </div>
                 </button>
               );
@@ -296,8 +296,8 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
           />
         </div>
 
-        <section className="mt-6 rounded-[28px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-          <div className="mt-2 grid gap-3 md:grid-cols-3">
+        <section className="mt-4 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-3 sm:p-4">
+          <div className="grid gap-2.5 md:grid-cols-3">
             {featuredStories.map((card) => {
               const profile = getCharacterIpProfile(card.id);
               const factionDef = profile ? getFactionDef(profile.faction) : undefined;
@@ -306,18 +306,18 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
                   key={card.id}
                   type="button"
                   onClick={() => setSelectedCardId(card.id)}
-                  className={cn('rounded-3xl border border-slate-200 bg-slate-50 p-4 text-left shadow-sm', lowSpecCardClass)}
+                  className={cn('rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-3 text-left transition-colors cursor-pointer hover:bg-[#e2e0e0]', lowSpecCardClass)}
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] font-black uppercase tracking-[0.24em] text-slate-500">
-                      {factionDef ? t(factionDef.nameKey, language) : t('world_factions', language)}
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="rounded-xs border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-2 py-0.5 text-[9px] font-bold uppercase text-[#646262]">
+                      [{factionDef ? t(factionDef.nameKey, language) : t('world_factions', language)}]
                     </div>
-                    <span className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">{String(card.id).padStart(3, '0')}</span>
+                    <span className="text-[9px] font-bold text-[#646262]">#{String(card.id).padStart(3, '0')}</span>
                   </div>
-                  <h4 className="mt-3 text-lg font-black uppercase tracking-tight text-slate-900">
+                  <h4 className="mt-2 text-xs font-black uppercase tracking-tight text-[#201d1d]">
                     {getFormattedCardName(card, language)}
                   </h4>
-                  <div className="mt-4 flex flex-wrap gap-2">
+                  <div className="mt-3 flex flex-wrap gap-1.5">
                     <button
                       type="button"
                       onClick={(event) => {
@@ -325,10 +325,10 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
                         setSelectedCardId(card.id);
                         onNavigate('wiki-card');
                       }}
-                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-slate-950 px-4 py-2.5 text-xs font-black uppercase tracking-[0.24em] text-white"
+                      className="inline-flex min-h-8 items-center justify-center gap-1 rounded-sm bg-[#201d1d] px-2.5 py-1 text-[10px] font-bold uppercase text-[#fdfcfc] cursor-pointer hover:bg-[#333030]"
                     >
-                      <ChevronRight size={14} />
-                      {t('world_open_card', language)}
+                      <ChevronRight size={12} />
+                      [{t('world_open_card', language)}]
                     </button>
                     <button
                       type="button"
@@ -337,9 +337,9 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
                         setSelectedCardId(card.id);
                         onNavigate('webtoon');
                       }}
-                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-xs font-black uppercase tracking-[0.24em] text-slate-700"
+                      className="inline-flex min-h-8 items-center justify-center gap-1 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-2.5 py-1 text-[10px] font-bold uppercase text-[#201d1d] cursor-pointer hover:bg-[#f8f7f7]"
                     >
-                      {t('world_open_webtoon', language)}
+                      [{t('world_open_webtoon', language)}]
                     </button>
                   </div>
                 </button>
@@ -349,24 +349,29 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
         </section>
 
         {/* Season Hub Entry */}
-        <section className="mt-6">
+        <section className="mt-4">
           <button
             type="button"
             onClick={() => onNavigate('season-hub')}
             className={cn(
-              'w-full rounded-3xl border border-indigo-200 bg-gradient-to-r from-indigo-50 to-purple-50 p-5 shadow-sm flex items-center gap-4',
-              lowSpecMode ? '' : 'hover:border-indigo-300 hover:shadow-md active:scale-[0.99] transition-all',
+              'w-full rounded-none border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-3.5 flex items-center justify-between gap-3 text-left cursor-pointer hover:bg-[#e2e0e0] transition-colors',
+              lowSpecMode ? '' : 'active:scale-[0.99]',
             )}
           >
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-md shadow-indigo-500/20">
-              <BookOpen size={22} className="text-white" />
+            <div className="flex items-center gap-2.5">
+              <span className="p-2 bg-[#201d1d] text-[#fdfcfc] rounded-sm text-xs">
+                <BookOpen size={16} />
+              </span>
+              <div>
+                <p className="text-xs font-black uppercase text-[#201d1d]">
+                  [{t('season_hub_entry_title', language)}]
+                </p>
+                <p className="text-[10px] text-[#646262]">
+                  {language === 'ko' ? '시즌 미션 및 랭킹 확인' : 'View Season Missions & Leaderboard'}
+                </p>
+              </div>
             </div>
-            <div className="flex-1 text-left">
-              <p className="text-sm font-black text-slate-800">
-                {t('season_hub_entry_title', language)}
-              </p>
-            </div>
-            <ChevronRight size={20} className="text-indigo-400 flex-shrink-0" />
+            <ChevronRight size={16} className="text-[#646262]" />
           </button>
         </section>
       </div>

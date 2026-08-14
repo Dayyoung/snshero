@@ -343,32 +343,32 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
   const helpSteps = HELP_STEPS(language);
 
   return (
-    <div className="flex-1 flex flex-col w-full bg-slate-50/50 text-slate-800 font-sans overflow-y-auto pb-32">
-      <div className="max-w-4xl mx-auto w-full px-4 flex flex-col gap-6 mt-4">
-        {/* Minimal header: title + ? help button */}
+    <div className="flex-1 flex flex-col w-full bg-[#fdfcfc] text-[#201d1d] font-mono overflow-y-auto pb-32">
+      <div className="max-w-4xl mx-auto w-full px-4 flex flex-col gap-4 mt-3">
+        {/* Minimal header: title + balance + help button */}
         <div className="flex items-center gap-2">
           <div className="flex-1 flex items-center justify-between">
             <PageHeader title={t('stock_market', language)} />
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 border border-indigo-200/80 rounded-full text-indigo-700 text-xs font-bold">
-              <span className="text-[10px] text-indigo-400 font-semibold uppercase">{language === 'ko' ? '보유 포인트' : 'Balance'}:</span>
-              <span>{sns.toLocaleString()} SNS</span>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm text-[#201d1d] text-xs font-bold">
+              <span className="text-[10px] text-[#646262] uppercase">{language === 'ko' ? '포인트' : 'Balance'}:</span>
+              <span>[{sns.toLocaleString()} SNS]</span>
             </div>
           </div>
           <button
             type="button"
             onClick={fetchPrices}
-            className="min-h-11 min-w-11 flex items-center justify-center rounded-full border border-slate-300 bg-white text-slate-600 hover:border-slate-900 hover:bg-slate-50 hover:text-slate-900 active:scale-95 transition-all touch-target cursor-pointer"
+            className="min-h-10 min-w-10 flex items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7] active:scale-95 transition-all touch-target cursor-pointer"
             aria-label={t('refresh', language)}
           >
-            <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
+            <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
           </button>
           <button
             type="button"
             onClick={() => { setShowHelpPopup(true); setHelpStep(0); }}
-            className="min-h-11 min-w-11 flex items-center justify-center rounded-full border border-slate-300 bg-white text-slate-600 hover:border-slate-900 hover:bg-slate-50 hover:text-slate-900 active:scale-95 transition-all touch-target cursor-pointer"
+            className="min-h-10 min-w-10 flex items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7] active:scale-95 transition-all touch-target cursor-pointer"
             aria-label={language === 'ko' ? '도움말' : 'Help'}
           >
-            <HelpCircle size={18} />
+            <HelpCircle size={16} />
           </button>
         </div>
 
@@ -506,9 +506,11 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
 
                 {/* Coin Price Chart */}
                 {selectedCardId !== null && (
-                  <div className="border border-slate-100 rounded-2xl p-3 bg-slate-50/50">
+                  <div className="border border-[rgba(15,0,0,0.12)] rounded-sm p-2.5 bg-[#f8f7f7]">
                     <div className="flex items-center justify-between mb-2">
-                      <div className="flex gap-0.5">
+                      <span className="text-[10px] font-bold text-[#646262] uppercase">[Price Trend]</span>
+                      {/* Segmented Pill Controller (ID 273) */}
+                      <div className="flex border border-[rgba(15,0,0,0.12)] rounded-sm overflow-hidden bg-[#fdfcfc]">
                         {(['24H', '1M', '1Y'] as const).map(tf => (
                           <button
                             key={tf}
@@ -519,8 +521,8 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                               fetchChart(selectedCardId, tf);
                             }}
                             className={cn(
-                              "px-2 py-0.5 rounded-md text-[9px] font-bold transition-all cursor-pointer",
-                              chartTimeframe === tf ? "bg-indigo-500 text-white" : "text-slate-400 hover:bg-slate-100"
+                              "px-2 py-0.5 text-[9px] font-bold transition-all cursor-pointer",
+                              chartTimeframe === tf ? "bg-[#201d1d] text-[#fdfcfc]" : "text-[#646262] hover:bg-[#f8f7f7]"
                             )}
                           >
                             {tf}
@@ -530,18 +532,12 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                     </div>
                     {chartLoading ? (
                       <div className="h-[80px] flex items-center justify-center">
-                        <div className="w-4 h-4 border-2 border-slate-300 border-t-indigo-500 rounded-full animate-spin" />
+                        <div className="w-4 h-4 border-2 border-slate-300 border-t-[#201d1d] rounded-full animate-spin" />
                       </div>
                     ) : chartData.length > 0 ? (
                       <svg viewBox={`0 0 240 80`} className="w-full h-[80px]" preserveAspectRatio="none">
-                        <defs>
-                          <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#6366f1" stopOpacity="0.3" />
-                            <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
-                          </linearGradient>
-                        </defs>
                         <polygon
-                          fill="url(#chartGrad)"
+                          fill="rgba(32, 29, 29, 0.08)"
                           points={(() => {
                             const min = Math.min(...chartData);
                             const max = Math.max(...chartData);
@@ -552,8 +548,8 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                         />
                         <polyline
                           fill="none"
-                          stroke="#6366f1"
-                          strokeWidth="2"
+                          stroke="#201d1d"
+                          strokeWidth="1.5"
                           points={chartData.map((v, i) => {
                             const min = Math.min(...chartData);
                             const max = Math.max(...chartData);
@@ -579,53 +575,53 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                         setTradeAmount(1);
                       }}
                       className={cn(
-                        "flex-1 py-2.5 rounded-xl font-bold uppercase text-xs tracking-wider transition-all active:scale-98 border",
+                        "flex-1 py-2 rounded-sm font-bold uppercase text-xs tracking-wider transition-all active:scale-98 border",
                         tradeMode === m
-                          ? "bg-slate-900 border-slate-900 text-white shadow-md shadow-slate-900/10"
-                          : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50/80"
+                          ? "bg-[#201d1d] border-[#201d1d] text-[#fdfcfc]"
+                          : "bg-[#fdfcfc] border-[rgba(15,0,0,0.12)] text-[#646262] hover:bg-[#f8f7f7]"
                       )}
                     >
-                      {t(m, language)}
+                      [{t(m, language)}]
                     </button>
                   ))}
                 </div>
 
                 {/* Quantity adjuster */}
-                <div className="flex items-center justify-between border border-slate-200/80 rounded-2xl overflow-hidden bg-slate-50/50">
+                <div className="flex items-center justify-between border border-[rgba(15,0,0,0.12)] rounded-sm overflow-hidden bg-[#fdfcfc]">
                   <button
                     onClick={() => {
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                       setTradeAmount(prev => Math.max(1, prev - 1));
                     }}
-                    className="px-5 py-3 bg-white border-r border-slate-200/85 hover:bg-slate-50 font-bold cursor-pointer transition-colors text-slate-600"
+                    className="px-4 py-2 bg-[#f8f7f7] border-r border-[rgba(15,0,0,0.12)] hover:bg-[#e2e0e0] font-bold cursor-pointer transition-colors text-[#201d1d]"
                   >
-                    -
+                    [-]
                   </button>
-                  <span className="font-extrabold text-lg text-slate-800">{tradeAmount}</span>
+                  <span className="font-extrabold text-sm text-[#201d1d]">{tradeAmount}</span>
                   <button
                     onClick={() => {
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                       setTradeAmount(prev => prev + 1);
                     }}
-                    className="px-5 py-3 bg-white border-l border-slate-200/85 hover:bg-slate-50 font-bold cursor-pointer transition-colors text-slate-600"
+                    className="px-4 py-2 bg-[#f8f7f7] border-l border-[rgba(15,0,0,0.12)] hover:bg-[#e2e0e0] font-bold cursor-pointer transition-colors text-[#201d1d]"
                   >
-                    +
+                    [+]
                   </button>
                 </div>
 
-                {/* Pricing summary — minimal: total only */}
-                <div className="flex justify-between items-center border-t border-slate-100 pt-4 text-sm">
-                  <span className="text-slate-400 text-xs">{tradeAmount}×</span>
-                  <span className="text-indigo-600 font-extrabold text-base">
-                    {(getCardSnsPrice(selectedCardId) * tradeAmount).toLocaleString()} SNS
+                {/* Sleek Horizontal 1-line Summary Bar (ID 261, 265, 269) */}
+                <div className="flex justify-between items-center border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] px-3 py-2 rounded-sm text-xs font-mono font-bold">
+                  <span className="text-[#646262]">Qty: {tradeAmount}</span>
+                  <span className="text-[#201d1d]">
+                    Total: {(getCardSnsPrice(selectedCardId) * tradeAmount).toLocaleString()} SNS
                   </span>
                 </div>
 
                 {/* Action feedback */}
                 {alertMsg && (
                   <div className={cn(
-                    "p-3 rounded-2xl border text-xs font-bold text-center shadow-sm",
-                    alertMsg.type === 'success' ? "bg-emerald-50/60 border-emerald-200 text-emerald-800" : "bg-rose-50/60 border-rose-200 text-rose-800"
+                    "p-2 rounded-sm border text-xs font-bold text-center",
+                    alertMsg.type === 'success' ? "bg-emerald-50 border-emerald-300 text-emerald-800" : "bg-rose-50 border-rose-300 text-rose-800"
                   )}>
                     {alertMsg.text}
                   </div>
@@ -634,9 +630,9 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                 {/* Final transaction execution button */}
                 <button
                   onClick={handleTrade}
-                  className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold uppercase rounded-2xl active:scale-98 transition-all text-xs cursor-pointer shadow-lg shadow-indigo-200/40"
+                  className="w-full py-2.5 bg-[#201d1d] hover:bg-[#333030] text-[#fdfcfc] font-bold uppercase rounded-sm active:scale-98 transition-all text-xs cursor-pointer border border-[#201d1d]"
                 >
-                  {t(tradeMode, language)} {tradeAmount} {language === 'ko' ? '개' : ''}
+                  [{t(tradeMode, language)} {tradeAmount} {language === 'ko' ? '개 거래 확정' : 'Confirm Trade'}]
                 </button>
 
               </div>
