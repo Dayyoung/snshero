@@ -3,7 +3,7 @@ import { ArrowLeft, RotateCcw, Trophy, Flag } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardData, Language } from '../types';
 import { t } from '../lib/i18n';
-import { cn } from '../lib/utils';
+import { cn, getAssetUrl } from '../lib/utils';
 
 interface MinesweeperGameProps {
   deck: CardData[];
@@ -41,7 +41,8 @@ export const MinesweeperGame: React.FC<MinesweeperGameProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef(0);
-  const cardImgRef = useRef<HTMLImageElement | null>(null);
+  const cards1ImgRef = useRef<HTMLImageElement | null>(null);
+  const cards2ImgRef = useRef<HTMLImageElement | null>(null);
   const rewardedRef = useRef(false);
 
   const [level, setLevel] = useState(1);
@@ -74,9 +75,8 @@ export const MinesweeperGame: React.FC<MinesweeperGameProps> = ({
   const timerIntervalRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const img = new Image();
-    img.src = '/card100.png';
-    cardImgRef.current = img;
+    const img1 = new Image(); img1.src = getAssetUrl('/cards1.png'); cards1ImgRef.current = img1;
+    const img2 = new Image(); img2.src = getAssetUrl('/cards2.png'); cards2ImgRef.current = img2;
   }, []);
 
   const calculateNumbers = (mines: boolean[][], gs: number): number[][] => {
@@ -297,21 +297,22 @@ export const MinesweeperGame: React.FC<MinesweeperGameProps> = ({
 
     ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-    const img = cardImgRef.current;
     const drawCard = (cardId: number, cx: number, cy: number, size: number) => {
-      if (!img || !img.complete || img.naturalWidth <= 0) {
+      const idx = CARD_DATABASE[cardId] ? cardId : 1;
+      const isCards2 = idx >= 101;
+      const targetImg = isCards2 ? cards2ImgRef.current : cards1ImgRef.current;
+      if (!targetImg || !targetImg.complete || targetImg.naturalWidth <= 0) {
         ctx.fillStyle = '#ef4444';
         ctx.beginPath();
         ctx.arc(cx, cy, size / 3, 0, Math.PI * 2);
         ctx.fill();
         return;
       }
-      const idx = CARD_DATABASE[cardId] ? cardId : 1;
-      const col = (idx - 1) % 10;
-      const row = Math.floor((idx - 1) / 10);
-      const spriteW = img.naturalWidth / 10;
-      const spriteH = img.naturalHeight / 11;
-      ctx.drawImage(img, col * spriteW, row * spriteH, spriteW, spriteH, cx - size / 2, cy - size / 2, size, size);
+      const col = isCards2 ? (idx - 101) % 10 : (idx - 1) % 10;
+      const row = isCards2 ? 0 : Math.floor(((idx - 1) % 100) / 10);
+      const spriteW = targetImg.naturalWidth / 10;
+      const spriteH = targetImg.naturalHeight / 10;
+      ctx.drawImage(targetImg, col * spriteW, row * spriteH, spriteW, spriteH, cx - size / 2, cy - size / 2, size, size);
     };
 
     const numberColors = ['', '#3b82f6', '#22c55e', '#ef4444', '#7c3aed', '#b91c1c', '#0891b2', '#1f2937', '#6b7280'];

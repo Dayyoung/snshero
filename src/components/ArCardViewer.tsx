@@ -4,6 +4,7 @@ import { X, RotateCcw, HelpCircle, Play, Info, Sparkles } from 'lucide-react';
 import { Language, CardData, InventoryRecord } from '../types';
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardItem } from './CardItem';
+import { getAssetUrl, getCardSpriteAsset } from '../lib/utils';
 
 interface ArCardViewerProps {
   isOpen: boolean;
@@ -246,16 +247,17 @@ export const ArCardViewer: React.FC<ArCardViewerProps> = ({
     ctxFront.strokeRect(5, 5, 350, 494);
 
     // Load sprite sheet to extract character art index image
+    const idx = card.imageIndex || 1;
+    const isCards2 = idx >= 101;
     const spriteImg = new Image();
-    spriteImg.src = '/card100.png';
+    spriteImg.src = getAssetUrl(getCardSpriteAsset(idx));
     spriteImg.crossOrigin = 'anonymous';
     spriteImg.onload = () => {
-      const idx = card.imageIndex || 1;
-      const col = (idx - 1) % 10;
-      const row = Math.floor((idx - 1) / 10);
+      const col = isCards2 ? (idx - 101) % 10 : (idx - 1) % 10;
+      const row = isCards2 ? 0 : Math.floor(((idx - 1) % 100) / 10);
       
       const cellWidth = spriteImg.width / 10;
-      const cellHeight = spriteImg.height / 11;
+      const cellHeight = spriteImg.height / 10;
 
       // 이미지 잘림 없이 전체 셀을 그대로 가져옵니다 (100% 맵핑)
       const cropXOffset = 0;

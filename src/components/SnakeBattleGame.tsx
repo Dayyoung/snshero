@@ -3,7 +3,7 @@ import { ArrowLeft, RotateCcw, Trophy, Zap } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardData, Language } from '../types';
 import { t } from '../lib/i18n';
-import { cn } from '../lib/utils';
+import { cn, getCardSpriteStyle } from '../lib/utils';
 
 type Direction = 'up' | 'down' | 'left' | 'right';
 
@@ -52,18 +52,7 @@ const getCardId = (card: CardData | undefined, fallback: number) => {
   return CARD_DATABASE[id] ? id : fallback;
 };
 
-const getCardSpriteStyle = (cardId: number): React.CSSProperties => {
-  const idx = CARD_DATABASE[cardId] ? cardId : 1;
-  const x = ((idx - 1) % 10) * (100 / 9);
-  const y = Math.floor((idx - 1) / 10) * (100 / 10);
-  return {
-    backgroundImage: `url('/card100.png')`,
-    backgroundSize: '1000% 1100%',
-    backgroundPosition: `${x}% ${y}%`,
-    backgroundRepeat: 'no-repeat',
-    imageRendering: 'pixelated'
-  };
-};
+// Uses getCardSpriteStyle from utils
 
 const wrap = (value: number) => {
   if (value < 0) return BOARD_SIZE - 1;

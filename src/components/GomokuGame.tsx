@@ -3,7 +3,7 @@ import { ArrowLeft, RotateCcw, Trophy, ZoomIn, ZoomOut, Move, Zap } from 'lucide
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardData, Language } from '../types';
 import { t } from '../lib/i18n';
-import { cn } from '../lib/utils';
+import { cn, getAssetUrl } from '../lib/utils';
 
 interface GomokuGameProps {
   deck: CardData[];
@@ -32,7 +32,8 @@ export const GomokuGame: React.FC<GomokuGameProps> = ({
   onReward
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const cardImgRef = useRef<HTMLImageElement | null>(null);
+  const cards1ImgRef = useRef<HTMLImageElement | null>(null);
+  const cards2ImgRef = useRef<HTMLImageElement | null>(null);
   const rewardedRef = useRef(false);
 
   const gameRef = useRef({
@@ -86,7 +87,8 @@ export const GomokuGame: React.FC<GomokuGameProps> = ({
 
   useEffect(() => { initGame(); }, [initGame]);
   useEffect(() => {
-    const img = new Image(); img.src = '/card100.png'; cardImgRef.current = img;
+    const img1 = new Image(); img1.src = getAssetUrl('/cards1.png'); cards1ImgRef.current = img1;
+    const img2 = new Image(); img2.src = getAssetUrl('/cards2.png'); cards2ImgRef.current = img2;
   }, []);
 
   const [defeatCountdown, setDefeatCountdown] = useState<number | null>(null);
@@ -219,15 +221,16 @@ export const GomokuGame: React.FC<GomokuGameProps> = ({
     }
 
     // ── Stones with card sprites ──
-    const img = cardImgRef.current;
     const drawCard = (cardId: number, cx2: number, cy2: number, size: number) => {
-      if (!img || !img.complete || img.naturalWidth <= 0) return;
       const idx2 = CARD_DATABASE[cardId] ? cardId : 1;
-      const col = (idx2 - 1) % 10;
-      const row = Math.floor((idx2 - 1) / 10);
-      const sw = img.naturalWidth / 10;
-      const sh = img.naturalHeight / 11;
-      ctx.drawImage(img, col * sw, row * sh, sw, sh, cx2 - size / 2, cy2 - size / 2, size, size);
+      const isCards2 = idx2 >= 101;
+      const targetImg = isCards2 ? cards2ImgRef.current : cards1ImgRef.current;
+      if (!targetImg || !targetImg.complete || targetImg.naturalWidth <= 0) return;
+      const col = isCards2 ? (idx2 - 101) % 10 : (idx2 - 1) % 10;
+      const row = isCards2 ? 0 : Math.floor(((idx2 - 1) % 100) / 10);
+      const sw = targetImg.naturalWidth / 10;
+      const sh = targetImg.naturalHeight / 10;
+      ctx.drawImage(targetImg, col * sw, row * sh, sw, sh, cx2 - size / 2, cy2 - size / 2, size, size);
     };
 
     const stoneRadius = cellSize * 0.42;

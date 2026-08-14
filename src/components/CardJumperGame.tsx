@@ -3,7 +3,7 @@ import { ArrowLeft, RotateCcw, Trophy, Zap } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardData, Language } from '../types';
 import { t } from '../lib/i18n';
-import { cn } from '../lib/utils';
+import { cn, getAssetUrl, getCardSpriteStyle } from '../lib/utils';
 
 interface CardJumperGameProps {
   deck: CardData[];
@@ -61,7 +61,8 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
   onReward
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const cardImgRef = useRef<HTMLImageElement | null>(null);
+  const cards1ImgRef = useRef<HTMLImageElement | null>(null);
+  const cards2ImgRef = useRef<HTMLImageElement | null>(null);
   const animFrameRef = useRef(0);
   const rewardedRef = useRef(false);
 
@@ -105,9 +106,13 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
   const moveRef = useRef(0);
 
   useEffect(() => {
-    const img = new Image();
-    img.src = '/card100.png';
-    cardImgRef.current = img;
+    const img1 = new Image();
+    img1.src = getAssetUrl('/cards1.png');
+    cards1ImgRef.current = img1;
+
+    const img2 = new Image();
+    img2.src = getAssetUrl('/cards2.png');
+    cards2ImgRef.current = img2;
   }, []);
 
   const initPlatforms = useCallback((): Platform[] => {
@@ -513,19 +518,19 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
       }
     }
 
-    const img = cardImgRef.current;
-
     const drawCardSprite = (cardId: number, cx: number, cy: number, size: number, borderGlowColor?: string) => {
-      if (!img || !img.complete || img.naturalWidth <= 0) {
+      const idx = CARD_DATABASE[cardId] ? cardId : 1;
+      const isCards2 = idx >= 101;
+      const targetImg = isCards2 ? cards2ImgRef.current : cards1ImgRef.current;
+      if (!targetImg || !targetImg.complete || targetImg.naturalWidth <= 0) {
         ctx.fillStyle = '#6366f1';
         ctx.fillRect(cx - size / 2, cy - size / 2, size, size);
         return;
       }
-      const idx = CARD_DATABASE[cardId] ? cardId : 1;
-      const col = (idx - 1) % 10;
-      const row = Math.floor((idx - 1) / 10);
-      const spriteW = img.naturalWidth / 10;
-      const spriteH = img.naturalHeight / 11;
+      const col = isCards2 ? (idx - 101) % 10 : (idx - 1) % 10;
+      const row = isCards2 ? 0 : Math.floor(((idx - 1) % 100) / 10);
+      const spriteW = targetImg.naturalWidth / 10;
+      const spriteH = targetImg.naturalHeight / 10;
       
       // Draw glow border if color is set
       if (borderGlowColor && !lowSpecMode) {
@@ -539,7 +544,7 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
       }
 
       ctx.drawImage(
-        img,
+        targetImg,
         col * spriteW, row * spriteH, spriteW, spriteH,
         cx - size / 2, cy - size / 2, size, size
       );
@@ -679,12 +684,7 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
         <div className="w-full bg-white rounded-2xl border border-slate-100 p-3 mb-4 flex items-center gap-3 shadow-xs">
           <div
             className="w-10 h-10 rounded-xl border border-amber-400 bg-cover bg-center shrink-0"
-            style={{
-              backgroundImage: `url('/card100.png')`,
-              backgroundSize: '1000% 1100%',
-              backgroundPosition: `${((validPlayerCardId - 1) % 10) * (100 / 9)}% ${Math.floor((validPlayerCardId - 1) / 10) * (100 / 10)}%`,
-              imageRendering: 'pixelated',
-            }}
+            style={getCardSpriteStyle(validPlayerCardId)}
           />
           <div className="min-w-0 flex-1">
             <p className="text-amber-500 text-[10px] font-bold uppercase tracking-wider">

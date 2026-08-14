@@ -3,7 +3,7 @@ import { ArrowLeft, RotateCcw, Trophy, Zap, Shield, Eye, EyeOff } from 'lucide-r
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardData, Language } from '../types';
 import { t } from '../lib/i18n';
-import { cn } from '../lib/utils';
+import { cn, getCardSpriteStyle } from '../lib/utils';
 
 interface CardHeistGameProps {
   deck: CardData[];
@@ -25,18 +25,7 @@ interface GridCell {
   patrolStep?: number;
 }
 
-const getCardSpriteStyle = (cardId: number): React.CSSProperties => {
-  const idx = CARD_DATABASE[cardId] ? cardId : 1;
-  const x = ((idx - 1) % 10) * (100 / 9);
-  const y = Math.floor((idx - 1) / 10) * (100 / 10);
-  return {
-    backgroundImage: 'url(/card100.png)',
-    backgroundSize: '1000% 1100%',
-    backgroundPosition: `${x}% ${y}%`,
-    backgroundRepeat: 'no-repeat' as const,
-    imageRendering: 'pixelated' as const,
-  };
-};
+// Uses getCardSpriteStyle from utils
 
 export const CardHeistGame: React.FC<CardHeistGameProps> = ({
   deck,

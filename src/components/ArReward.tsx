@@ -5,6 +5,7 @@ import { Language } from '../types';
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardItem } from './CardItem';
 import { t } from '../lib/i18n';
+import { getAssetUrl, getCardSpriteAsset, getCardSpriteStyle } from '../lib/utils';
 
 // TFJS 동적 import — 카메라 시작 시에만 로드하여 초기 번들 크기 -1.5MB
 let _tfModule: typeof import('@tensorflow/tfjs') | null = null;
@@ -53,8 +54,10 @@ export const ArReward: React.FC<ArRewardProps> = ({
   const targetCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
+    const idx = todayArCardId || 1;
+    const isCards2 = idx >= 101;
     const img = new Image();
-    img.src = '/card100.png';
+    img.src = getAssetUrl(getCardSpriteAsset(idx));
     img.crossOrigin = 'anonymous';
     img.onload = () => {
       const canvas = document.createElement('canvas');
@@ -62,13 +65,12 @@ export const ArReward: React.FC<ArRewardProps> = ({
       canvas.height = 64;
       const ctx = canvas.getContext('2d');
       if (ctx) {
-        const idx = todayArCardId || 1;
-        const col = (idx - 1) % 10;
-        const row = Math.floor((idx - 1) / 10);
+        const col = isCards2 ? (idx - 101) % 10 : (idx - 1) % 10;
+        const row = isCards2 ? 0 : Math.floor(((idx - 1) % 100) / 10);
         
         // Calculate sprite sheet layout dimensions
         const cellWidth = img.width / 10;
-        const cellHeight = img.height / 11;
+        const cellHeight = img.height / 10;
         
         // Define cropping coordinates specifically for the character image inside the card frame
         // A standard card sprite has the character concentrated in the upper-middle area (approx 15% offset from edges)
@@ -438,18 +440,7 @@ export const ArReward: React.FC<ArRewardProps> = ({
             ) : (
               <div 
                 className="w-full h-full drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
-                style={{
-                  backgroundImage: `url('/card100.png')`,
-                  backgroundSize: `1000% 1100%`,
-                  backgroundPosition: (() => {
-                    const idx = todayArCardId || 1;
-                    const x = ((idx - 1) % 10) * (100 / 9);
-                    const y = Math.floor((idx - 1) / 10) * (100 / 10);
-                    return `${x}% ${y}%`;
-                  })(),
-                  backgroundRepeat: 'no-repeat',
-                  imageRendering: 'pixelated'
-                }}
+                style={getCardSpriteStyle(todayArCardId || 1)}
               />
             )}
           </div>

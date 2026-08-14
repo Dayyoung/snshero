@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -114,6 +115,105 @@ export function getAssetUrl(path: string | null | undefined): string {
   const normalizedBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
   const cleanPath = path.startsWith('/') ? path.slice(1) : path;
   return `${normalizedBase}${cleanPath}`;
+}
+
+/**
+ * Returns the sprite sheet asset URL for a given card ID.
+ * - ID 1 ~ 100: /cards1.png (10x10 sheet)
+ * - ID 101 ~ 110: /cards2.png (10x10 sheet, top row of 10 cards)
+ */
+export function getCardSpriteAsset(cardId: number): string {
+  const id = Number(cardId) || 1;
+  return id >= 101 ? '/cards2.png' : '/cards1.png';
+}
+
+export interface CardSpriteCoords {
+  assetUrl: string;
+  source: string;
+  col: number;
+  row: number;
+  cols: number;
+  rows: number;
+  xPercent: number;
+  yPercent: number;
+}
+
+export function getCardSpriteCoords(cardId: number, customSource?: string | null): CardSpriteCoords {
+  const id = Number(cardId) || 1;
+  const isCards2 = customSource ? customSource.includes('cards2') : (id >= 101 && id <= 110);
+  const isLegacy110 = customSource && (customSource.includes('card100') || customSource.includes('110card'));
+
+  if (isLegacy110) {
+    const cols = 10;
+    const rows = 11;
+    const validId = Math.max(1, Math.min(110, id));
+    const col = (validId - 1) % cols;
+    const row = Math.floor((validId - 1) / cols);
+    const source = customSource || '/card100.png';
+    return {
+      assetUrl: getAssetUrl(source),
+      source,
+      col,
+      row,
+      cols,
+      rows,
+      xPercent: col * (100 / (cols - 1)),
+      yPercent: row * (100 / (rows - 1)),
+    };
+  }
+
+  if (isCards2) {
+    const cols = 10;
+    const rows = 10;
+    // cards2: 100 slots in 10x10 grid. Cards 101~110 are in the top row (row 0, cols 0..9)
+    const col = id >= 101 ? (id - 101) % 10 : (id - 1) % 10;
+    const row = id >= 101 ? 0 : Math.floor(((id - 1) % 100) / 10);
+    const source = customSource || '/cards2.png';
+    return {
+      assetUrl: getAssetUrl(source),
+      source,
+      col,
+      row,
+      cols,
+      rows,
+      xPercent: col * (100 / (cols - 1)),
+      yPercent: row * (100 / (rows - 1)),
+    };
+  }
+
+  // Default: cards1 (10x10, cards 1..100)
+  const cols = 10;
+  const rows = 10;
+  const validIndex = Math.max(0, Math.min(99, (id - 1) % 100));
+  const col = validIndex % cols;
+  const row = Math.floor(validIndex / cols);
+  const source = customSource || '/cards1.png';
+  return {
+    assetUrl: getAssetUrl(source),
+    source,
+    col,
+    row,
+    cols,
+    rows,
+    xPercent: col * (100 / (cols - 1)),
+    yPercent: row * (100 / (rows - 1)),
+  };
+}
+
+/**
+ * Generates CSS background styling for card sprites.
+ * - ID 1 ~ 100 -> cards1.png (10x10)
+ * - ID 101 ~ 110 -> cards2.png (10x10, row 0)
+ */
+export function getCardSpriteStyle(cardId: number, customSource?: string | null): CSSProperties {
+  const coords = getCardSpriteCoords(cardId, customSource);
+  return {
+    backgroundImage: `url('${coords.assetUrl}')`,
+    backgroundSize: `${coords.cols * 100}% ${coords.rows * 100}%`,
+    backgroundPosition: `${coords.xPercent}% ${coords.yPercent}%`,
+    backgroundRepeat: 'no-repeat',
+    imageRendering: 'pixelated' as const,
+  };
 }
 
 

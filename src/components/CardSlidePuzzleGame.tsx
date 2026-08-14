@@ -3,7 +3,7 @@ import { ArrowLeft, RotateCcw, Trophy, Zap, Move } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardData, Language } from '../types';
 import { t } from '../lib/i18n';
-import { cn } from '../lib/utils';
+import { cn, getCardSpriteStyle } from '../lib/utils';
 
 interface CardSlidePuzzleGameProps {
   deck: CardData[];
@@ -22,18 +22,7 @@ const DIFFICULTY_CONFIG = [
 
 const SWIPE_THRESHOLD = 15;
 
-const getCardSpriteStyle = (cardId: number): React.CSSProperties => {
-  const idx = CARD_DATABASE[cardId] ? cardId : 1;
-  const x = ((idx - 1) % 10) * (100 / 9);
-  const y = Math.floor((idx - 1) / 10) * (100 / 10);
-  return {
-    backgroundImage: 'url(/card100.png)',
-    backgroundSize: '1000% 1100%',
-    backgroundPosition: `${x}% ${y}%`,
-    backgroundRepeat: 'no-repeat',
-    imageRendering: 'pixelated' as const,
-  };
-};
+// Uses getCardSpriteStyle from utils
 
 // Generate shuffled, solvable puzzle
 const shufflePuzzle = (size: number): number[] => {

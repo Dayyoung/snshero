@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowLeft, RotateCcw, Trophy, ArrowUp, ArrowDown, ArrowLeftIcon, ArrowRight, Swords, Zap } from 'lucide-react';
 import { CardData, Language } from '../types';
 import { t } from '../lib/i18n';
-import { cn } from '../lib/utils';
+import { cn, getCardSpriteStyle, getCardSpriteCoords } from '../lib/utils';
 import { CARD_DATABASE } from '../cardDatabase';
 
 interface Slide2048GameProps {
@@ -372,11 +372,7 @@ export const Slide2048Game: React.FC<Slide2048GameProps> = ({
     const isNew = newPositions.has(posKey);
 
     // Card sprite background for non-zero tiles
-    const cardIndex = cardId % 110; // use a deterministic offset based on card ID
-    const spriteCol = (cardIndex % 10);
-    const spriteRow = Math.floor(cardIndex / 10);
-    const bgX = Math.min(spriteCol * (100 / 9), 100);
-    const bgY = Math.min(spriteRow * 10, 100);
+    const spriteCoords = getCardSpriteCoords(cardId);
 
     const className = cn(
       'absolute inset-0 flex items-center justify-center rounded-xl font-extrabold select-none transition-all',
@@ -392,10 +388,12 @@ export const Slide2048Game: React.FC<Slide2048GameProps> = ({
     return {
       className,
       style: value !== 0 ? {
-        backgroundImage: cardImageRef.current ? `url('/card100.png')` : undefined,
-        backgroundSize: '1000% 1100%',
-        backgroundPosition: `${bgX}% ${bgY}%`,
+        backgroundImage: `url('${spriteCoords.assetUrl}')`,
+        backgroundSize: `${spriteCoords.cols * 100}% ${spriteCoords.rows * 100}%`,
+        backgroundPosition: `${spriteCoords.xPercent}% ${spriteCoords.yPercent}%`,
         backgroundBlendMode: 'overlay',
+        backgroundRepeat: 'no-repeat',
+        imageRendering: 'pixelated',
         opacity: 0.95,
       } as React.CSSProperties : undefined,
     };
@@ -432,12 +430,7 @@ export const Slide2048Game: React.FC<Slide2048GameProps> = ({
         <div className="text-center flex items-center gap-2 justify-center">
           <div
             className="w-7 h-7 rounded-lg border border-amber-400 bg-cover bg-center"
-            style={{
-              backgroundImage: `url('/card100.png')`,
-              backgroundSize: '1000% 1100%',
-              backgroundPosition: `${((cardId - 1) % 10) * (100 / 9)}% ${Math.floor((cardId - 1) / 10) * (100 / 10)}%`,
-              imageRendering: 'pixelated',
-            }}
+            style={getCardSpriteStyle(cardId)}
           />
           <h1 className="text-base md:text-lg font-bold text-slate-800 tracking-tight">
             {t('mode_slide2048', language) || '2048'}
@@ -456,12 +449,7 @@ export const Slide2048Game: React.FC<Slide2048GameProps> = ({
         <div className="w-full bg-white rounded-2xl border border-slate-100 p-3 mb-4 flex items-center gap-3 shadow-xs">
           <div
             className="w-10 h-10 rounded-xl border border-amber-400 bg-cover bg-center shrink-0"
-            style={{
-              backgroundImage: `url('/card100.png')`,
-              backgroundSize: '1000% 1100%',
-              backgroundPosition: `${((cardId - 1) % 10) * (100 / 9)}% ${Math.floor((cardId - 1) / 10) * (100 / 10)}%`,
-              imageRendering: 'pixelated',
-            }}
+            style={getCardSpriteStyle(cardId)}
           />
           <div className="min-w-0 flex-1">
             <p className="text-amber-500 text-[10px] font-bold uppercase tracking-wider">
