@@ -116,6 +116,82 @@ if (typeof window !== 'undefined') {
     };
     document.title = "SNSHero API - Health";
     document.body.innerHTML = `<pre style="font-family: monospace; font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-all; padding: 24px; margin: 0; background: #fdfcfc; color: #201d1d;">${JSON.stringify(healthData, null, 2)}</pre>`;
+  } else if (path === '/api/addtask' || path === '/addtask') {
+    isApiRoute = true;
+    const searchParams = new URLSearchParams(window.location.search);
+    const type = searchParams.get('type') || searchParams.get('dept') || '개발';
+    const value = searchParams.get('value') || searchParams.get('task') || searchParams.get('title') || '';
+    const action = searchParams.get('action') || searchParams.get('status') || '작업대기';
+    const detail = searchParams.get('detail') || searchParams.get('desc') || '';
+
+    document.title = "SNSHero API - addTask";
+
+    if (!value) {
+      const errResponse = {
+        success: false,
+        error: "Missing required query parameter: 'value' (task name)",
+        usage: "/api/addTask?type=개발&value=작업내용&action=작업대기&detail=상세내용",
+        parameters: {
+          type: "부서 (예: 개발, 기획, 디자인 - 기본값: 개발)",
+          value: "작업 제목 (필수)",
+          action: "진행 상태 (예: 작업대기, 진행중, 작업완료 - 기본값: 작업대기)",
+          detail: "작업 상세 내용 (선택)"
+        }
+      };
+      document.body.innerHTML = `<pre style="font-family: monospace; font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-all; padding: 24px; margin: 0; background: #fdfcfc; color: #b91c1c;">${JSON.stringify(errResponse, null, 2)}</pre>`;
+    } else {
+      document.body.innerHTML = `<pre id="api-output" style="font-family: monospace; font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-all; padding: 24px; margin: 0; background: #fdfcfc; color: #201d1d;">${JSON.stringify({ status: "submitting", message: "Google Form 에 작업 제출 중...", data: { type, value, action, detail } }, null, 2)}</pre>`;
+
+      // Google Form submission via fetch (no-cors fallback for cross-origin SPA)
+      const formEndpoint = "https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse";
+      const formData = new URLSearchParams();
+      formData.append('entry.1712635414', type);
+      formData.append('entry.1651694192', value);
+      formData.append('entry.1282964596', action);
+      if (detail) {
+        formData.append('entry.1982035501', detail);
+      }
+
+      fetch(formEndpoint, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formData.toString()
+      })
+      .then(() => {
+        const successResponse = {
+          success: true,
+          message: "Google Form 에 작업이 성공적으로 제출되었습니다.",
+          submitted: {
+            type,
+            value,
+            action,
+            detail: detail || null
+          },
+          timestamp: Date.now(),
+          timeString: new Date().toISOString()
+        };
+        const pre = document.getElementById('api-output');
+        if (pre) {
+          pre.textContent = JSON.stringify(successResponse, null, 2);
+          pre.style.color = '#15803d';
+        }
+      })
+      .catch((err) => {
+        const failResponse = {
+          success: false,
+          error: err instanceof Error ? err.message : String(err),
+          submitted: { type, value, action, detail }
+        };
+        const pre = document.getElementById('api-output');
+        if (pre) {
+          pre.textContent = JSON.stringify(failResponse, null, 2);
+          pre.style.color = '#b91c1c';
+        }
+      });
+    }
   }
 }
 

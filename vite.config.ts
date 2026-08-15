@@ -21,6 +21,70 @@ export default defineConfig(({mode}) => {
               return;
             }
 
+            if (req.url?.startsWith('/api/addtask') || req.url?.startsWith('/api/addTask') || req.url?.startsWith('/addtask') || req.url?.startsWith('/addTask')) {
+              const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost:3000'}`);
+              const type = urlObj.searchParams.get('type') || urlObj.searchParams.get('dept') || '개발';
+              const value = urlObj.searchParams.get('value') || urlObj.searchParams.get('task') || urlObj.searchParams.get('title') || '';
+              const action = urlObj.searchParams.get('action') || urlObj.searchParams.get('status') || '작업대기';
+              const detail = urlObj.searchParams.get('detail') || urlObj.searchParams.get('desc') || '';
+
+              if (!value) {
+                res.statusCode = 400;
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify({
+                  success: false,
+                  error: 'Missing required parameter: value (task name)',
+                  usage: '/api/addTask?type=개발&value=작업내용&action=작업대기&detail=상세내용'
+                }));
+                return;
+              }
+
+              // Google Form submission via server-side fetch
+              const formEndpoint = "https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse";
+              const formData = new URLSearchParams();
+              formData.append('entry.1712635414', type);
+              formData.append('entry.1651694192', value);
+              formData.append('entry.1282964596', action);
+              if (detail) {
+                formData.append('entry.1982035501', detail);
+              }
+
+              fetch(formEndpoint, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: formData.toString()
+              })
+              .then(formRes => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+                res.end(JSON.stringify({
+                  success: true,
+                  message: 'Task submitted successfully to Google Form',
+                  submitted: {
+                    type,
+                    value,
+                    action,
+                    detail
+                  },
+                  formStatus: formRes.status,
+                  timestamp: Date.now()
+                }, null, 2));
+              })
+              .catch(err => {
+                res.statusCode = 500;
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify({
+                  success: false,
+                  error: err instanceof Error ? err.message : String(err),
+                  submitted: { type, value, action, detail }
+                }));
+              });
+              return;
+            }
+
             if (req.url?.startsWith('/api/version') || req.url === '/version') {
               res.statusCode = 200;
               res.setHeader('Content-Type', 'application/json');
