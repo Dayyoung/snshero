@@ -91,10 +91,40 @@ if (typeof window !== 'undefined') {
   }
 }
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
-  </StrictMode>,
-);
+// API Path Interceptor (SPA Static Hosting Fallback)
+// 브라우저에서 /api/version, /version.json, /api/health 등으로 직접 접속 시
+// /home으로 리다이렉트되지 않고 JSON 응답을 즉시 화면에 렌더링합니다.
+let isApiRoute = false;
+if (typeof window !== 'undefined') {
+  const path = window.location.pathname.replace(/\/$/, '').toLowerCase();
+  if (path === '/api/version' || path === '/version' || path === '/version.json') {
+    isApiRoute = true;
+    const versionData = {
+      version: "2.1.0",
+      buildTime: "2026-08-15T00:00:00.000Z",
+      buildTimestamp: 1786800000000,
+      service: "snshero-revolution",
+      minRequiredVersion: "2.0.0"
+    };
+    document.title = "SNSHero API - Version (v2.1.0)";
+    document.body.innerHTML = `<pre style="font-family: monospace; font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-all; padding: 24px; margin: 0; background: #fdfcfc; color: #201d1d;">${JSON.stringify(versionData, null, 2)}</pre>`;
+  } else if (path === '/api/health' || path === '/health') {
+    isApiRoute = true;
+    const healthData = {
+      status: "ok",
+      timestamp: Date.now()
+    };
+    document.title = "SNSHero API - Health";
+    document.body.innerHTML = `<pre style="font-family: monospace; font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-all; padding: 24px; margin: 0; background: #fdfcfc; color: #201d1d;">${JSON.stringify(healthData, null, 2)}</pre>`;
+  }
+}
+
+if (!isApiRoute) {
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    </StrictMode>,
+  );
+}
