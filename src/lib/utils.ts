@@ -111,20 +111,37 @@ export function getAssetUrl(path: string | null | undefined): string {
   if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:') || path.startsWith('blob:')) {
     return path;
   }
-  const baseUrl = import.meta.env.BASE_URL || './';
-  const normalizedBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+  const baseUrl = import.meta?.env?.BASE_URL;
   const cleanPath = path.startsWith('/') ? path.slice(1) : path;
-  return `${normalizedBase}${cleanPath}`;
+  if (baseUrl && baseUrl !== './') {
+    const normalizedBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+    return `${normalizedBase}${cleanPath}`;
+  }
+  return `/${cleanPath}`;
+}
+
+/**
+ * Checks if an image source URL or path corresponds to a card sprite sheet.
+ */
+export function isSpriteSheet(source?: string | null): boolean {
+  if (!source) return false;
+  return (
+    source.includes('cards1') ||
+    source.includes('card2') ||
+    source.includes('cards2') ||
+    source.includes('card100') ||
+    source.includes('110card')
+  );
 }
 
 /**
  * Returns the sprite sheet asset URL for a given card ID.
  * - ID 1 ~ 100: /cards1.png (10x10 sheet)
- * - ID 101+: /card2.png (or /cards2.png 10x10 sheet)
+ * - ID 101+: /cards2.png (10x10 sheet)
  */
 export function getCardSpriteAsset(cardId: number): string {
   const id = Number(cardId) || 1;
-  return id >= 101 ? '/card2.png' : '/cards1.png';
+  return id >= 101 ? '/cards2.png' : '/cards1.png';
 }
 
 export interface CardSpriteCoords {
@@ -167,11 +184,11 @@ export function getCardSpriteCoords(cardId: number, customSource?: string | null
   if (isCards2) {
     const cols = 10;
     const rows = 10;
-    // card2 / cards2: 100 slots in 10x10 grid. Cards 101~110 in row 0, 111~120 in row 1, etc.
+    // cards2 / card2: 100 slots in 10x10 grid. Cards 101~110 in row 0, 111~120 in row 1, etc.
     const offsetIndex = id >= 101 ? (id - 101) % 100 : (id - 1) % 100;
     const col = offsetIndex % 10;
     const row = Math.floor(offsetIndex / 10);
-    const source = customSource || (id >= 101 ? '/card2.png' : '/cards2.png');
+    const source = customSource || '/cards2.png';
     return {
       assetUrl: getAssetUrl(source),
       source,
@@ -206,7 +223,7 @@ export function getCardSpriteCoords(cardId: number, customSource?: string | null
 /**
  * Generates CSS background styling for card sprites.
  * - ID 1 ~ 100 -> cards1.png (10x10)
- * - ID 101+ -> card2.png (10x10)
+ * - ID 101+ -> cards2.png (10x10)
  */
 export function getCardSpriteStyle(cardId: number, customSource?: string | null): CSSProperties {
   const coords = getCardSpriteCoords(cardId, customSource);

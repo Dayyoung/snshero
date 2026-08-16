@@ -9,7 +9,7 @@ import { getCharacterArtPrompt } from '../content/characterArtPrompts';
 import { getCharacterIpProfile, getFactionDef, getRelatedCharacters, getAllyIds, getRivalIds } from '../content/characterIpUtils';
 import { getRecommendedIpMerchProducts } from '../content/ipProducts';
 import { t } from '../lib/i18n';
-import { cn, getFormattedCardName, getAssetUrl, getCardSpriteStyle } from '../lib/utils';
+import { cn, getFormattedCardName, getAssetUrl, getCardSpriteStyle, isSpriteSheet } from '../lib/utils';
 import { SkinSelector } from './SkinSelector';
 import { resolveCardImage } from '../content/cardImageVariants';
 import { useGameSettings } from '../contexts/GameSettingsContext';
@@ -650,7 +650,7 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
                         {language === 'ko' ? '일러스트 원본 아트' : 'Full Illustration Art'}
                       </div>
                       <div className="w-full aspect-square rounded-xl bg-slate-950/80 border border-white/10 overflow-hidden flex items-center justify-center p-2">
-                        {resolvedImg.source && !resolvedImg.source.includes('.png') ? (
+                        {resolvedImg.source && !isSpriteSheet(resolvedImg.source) ? (
                           <img
                             src={resolvedImg.source}
                             alt={cardName}
@@ -660,7 +660,7 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
                         ) : (
                           <div
                             className="w-full h-full rounded-lg"
-                            style={getCardSpriteStyle(Number(selectedCard.id))}
+                            style={getCardSpriteStyle(Number(selectedCard.id), resolvedImg.source)}
                           />
                         )}
                       </div>

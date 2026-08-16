@@ -656,57 +656,58 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
   };
 
   return (
-    <div className="h-[100dvh] max-h-[100dvh] flex flex-col items-center justify-between font-sans select-none pb-2 w-full bg-slate-50/30 text-slate-800 overflow-hidden">
+    <div className="h-[100dvh] max-h-[100dvh] flex flex-col items-center justify-between font-mono select-none pb-1 w-full bg-[#fdfcfc] text-[#201d1d] overflow-hidden">
       {/* Header */}
-      <header className="w-full h-14 flex items-center justify-between border-b border-slate-100 px-4 md:px-6 bg-white shrink-0">
+      <header className="w-full h-12 flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] px-3 sm:px-4 bg-[#fdfcfc] shrink-0">
         <button
           onClick={onExit}
-          className="p-2 bg-slate-50 border border-slate-200/60 rounded-xl hover:bg-slate-100 hover:text-indigo-600 transition-colors shadow-sm cursor-pointer text-slate-600 flex items-center justify-center"
+          className="px-2.5 py-1.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm hover:bg-[#f1eeee] text-[#201d1d] transition-colors cursor-pointer flex items-center gap-1 min-h-[44px]"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={16} />
+          <span className="text-xs font-bold">[ESC]</span>
         </button>
         <div className="text-center">
-          <h1 className="text-base md:text-lg font-bold text-slate-800 tracking-tight">
+          <h1 className="text-sm sm:text-base font-bold text-[#201d1d] tracking-tight">
             {t('mode_cardjumper' as any, language)}
           </h1>
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
-            {language === 'ko' ? '카드 점프' : 'CARD JUMP'}
+          <p className="text-[9px] font-bold text-[#6e6e73] uppercase tracking-wider">
+            [ CARD JUMPER ]
           </p>
         </div>
-        <div className="px-3.5 py-1.5 rounded-xl bg-indigo-50 border border-indigo-150 text-indigo-700 font-bold text-xs tabular-nums">
-          {hudScore}
+        <div className="px-3 py-1 rounded-sm bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] text-[#201d1d] font-bold text-xs tabular-nums">
+          SCORE: {hudScore}
         </div>
       </header>
 
-      <div className="w-full max-w-md px-4 flex flex-col items-center flex-1 min-h-0 justify-center">
+      <div className="w-full max-w-md px-3 flex flex-col items-center flex-1 min-h-0 justify-center">
         {/* Companion Card Info */}
-        <div className="w-full bg-white rounded-2xl border border-slate-100 p-2.5 mb-2 flex items-center gap-3 shadow-xs shrink-0">
+        <div className="w-full bg-[#f8f7f7] rounded-none border border-[rgba(15,0,0,0.12)] p-2 mb-1.5 flex items-center gap-2.5 shrink-0">
           <div
-            className="w-8 h-8 rounded-xl border border-amber-400 bg-cover bg-center shrink-0"
+            className="w-7 h-7 rounded-sm border border-[rgba(15,0,0,0.2)] bg-cover bg-center shrink-0"
             style={getCardSpriteStyle(validPlayerCardId)}
           />
           <div className="min-w-0 flex-1">
-            <p className="text-amber-500 text-[9px] font-bold uppercase tracking-wider">
-              {language === 'ko' ? '점프 캐릭터' : 'JUMPER'}
+            <p className="text-[#6e6e73] text-[9px] font-bold uppercase tracking-wider">
+              {language === 'ko' ? '[ 점퍼 카드 ]' : '[ JUMPER CARD ]'}
             </p>
-            <p className="text-slate-850 text-xs font-bold truncate">
+            <p className="text-[#201d1d] text-xs font-bold truncate">
               {CARD_DATABASE[validPlayerCardId]?.title_dis ||
                 CARD_DATABASE[validPlayerCardId]?.title_en ||
                 `Card #${validPlayerCardId}`}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-slate-400 text-[8px] font-bold uppercase">
-              {language === 'ko' ? '최고' : 'BEST'}
+            <p className="text-[#6e6e73] text-[8px] font-bold uppercase">
+              {language === 'ko' ? '최고 기록' : 'BEST'}
             </p>
-            <p className="text-slate-800 text-xs font-extrabold tabular-nums">{hudBest}</p>
+            <p className="text-[#201d1d] text-xs font-bold tabular-nums">TOP {hudBest}</p>
           </div>
         </div>
 
         {/* Responsive Canvas Wrapper */}
         <div
           className={cn(
-            'relative w-full overflow-hidden rounded-3xl border border-slate-950 bg-slate-950 shadow-2xl shadow-indigo-950/20 touch-none max-w-[300px] sm:max-w-[340px] max-h-[52vh] flex-1 min-h-0'
+            'relative w-full overflow-hidden rounded-none border border-[rgba(15,0,0,0.25)] bg-[#0f0000] shadow-none touch-none max-w-[300px] sm:max-w-[340px] max-h-[50vh] flex-1 min-h-0'
           )}
           style={{
             aspectRatio: `${CANVAS_W}/${CANVAS_H}`,
@@ -724,12 +725,12 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
           {/* Start Screen Hint */}
           {!gameRef.current.started && !gameRef.current.isGameOver && !showTutorial && (
             <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
-              <div className="bg-slate-950/75 backdrop-blur-xs rounded-2xl px-6 py-4 text-center border border-white/5 mx-4">
-                <p className="text-white text-sm font-black mb-1">
-                  {language === 'ko' ? '화면 좌/우 터치로 이동!' : 'TAP LEFT/RIGHT TO STEER!'}
+              <div className="bg-[#0f0000]/85 backdrop-blur-none rounded-none px-4 py-3 text-center border border-[rgba(255,255,255,0.2)] mx-4">
+                <p className="text-[#fdfcfc] text-xs font-bold mb-1">
+                  {language === 'ko' ? '[ 화면 좌/우 터치로 조작 ]' : '[ TAP LEFT/RIGHT TO STEER ]'}
                 </p>
-                <p className="text-indigo-300/80 text-[10px] font-bold">
-                  {language === 'ko' ? '터치하면 바로 시작됩니다' : 'Game starts on tap'}
+                <p className="text-[#9a9898] text-[9px] font-bold">
+                  {language === 'ko' ? '터치 시 즉시 게임이 시작됩니다' : 'Game starts on tap'}
                 </p>
               </div>
             </div>
@@ -737,7 +738,7 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
         </div>
 
         {/* Mobile Left / Right steering buttons */}
-        <div className="mt-2 flex items-center justify-center gap-4 w-full max-w-xs sm:hidden select-none shrink-0 px-2">
+        <div className="mt-2 flex items-center justify-center gap-3 w-full max-w-xs sm:hidden select-none shrink-0 px-1">
           <button
             type="button"
             onPointerDown={() => {
@@ -751,9 +752,9 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
             onPointerLeave={() => {
               moveRef.current = 0;
             }}
-            className="flex-1 py-3 rounded-xl bg-slate-200 active:bg-indigo-600 active:text-white border border-slate-300 flex items-center justify-center text-sm font-bold text-slate-800 active:scale-95 shadow-sm touch-manipulation min-h-[44px]"
+            className="flex-1 py-2.5 rounded-sm bg-[#f1eeee] active:bg-[#201d1d] active:text-[#fdfcfc] border border-[rgba(15,0,0,0.18)] flex items-center justify-center text-xs font-bold text-[#201d1d] active:scale-95 touch-manipulation min-h-[44px]"
           >
-            ◀ {language === 'ko' ? '왼쪽' : 'Left'}
+            [◀ {language === 'ko' ? '왼쪽' : 'Left'}]
           </button>
           <button
             type="button"
@@ -768,26 +769,26 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
             onPointerLeave={() => {
               moveRef.current = 0;
             }}
-            className="flex-1 py-3 rounded-xl bg-slate-200 active:bg-indigo-600 active:text-white border border-slate-300 flex items-center justify-center text-sm font-bold text-slate-800 active:scale-95 shadow-sm touch-manipulation min-h-[44px]"
+            className="flex-1 py-2.5 rounded-sm bg-[#f1eeee] active:bg-[#201d1d] active:text-[#fdfcfc] border border-[rgba(15,0,0,0.18)] flex items-center justify-center text-xs font-bold text-[#201d1d] active:scale-95 touch-manipulation min-h-[44px]"
           >
-            {language === 'ko' ? '오른쪽' : 'Right'} ▶
+            [{language === 'ko' ? '오른쪽' : 'Right'} ▶]
           </button>
         </div>
       </div>
 
       {/* Tutorial Modal */}
       {showTutorial && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs px-4">
-          <div className="bg-white text-slate-800 w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl border border-slate-100/80 p-6 animate-in zoom-in-95 duration-200">
-            <div className="flex items-center gap-2.5 mb-3 border-b border-slate-100 pb-3">
-              <span className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg shrink-0">
-                <Zap size={16} />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0f0000]/70 backdrop-blur-none px-4 font-mono">
+          <div className="bg-[#fdfcfc] text-[#201d1d] w-full max-w-sm rounded-none border border-[rgba(15,0,0,0.2)] p-5 animate-none">
+            <div className="flex items-center gap-2 mb-3 border-b border-[rgba(15,0,0,0.12)] pb-2.5">
+              <span className="p-1 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm text-[#201d1d] shrink-0">
+                <Zap size={14} />
               </span>
-              <h3 className="text-base font-bold text-slate-800 uppercase tracking-tight">
-                {t('tutorial_title', language)}
+              <h3 className="text-sm font-bold text-[#201d1d] uppercase tracking-tight">
+                [ {t('tutorial_title', language)} ]
               </h3>
             </div>
-            <p className="text-xs sm:text-sm font-medium text-slate-600 leading-relaxed mb-6 whitespace-pre-line">
+            <p className="text-xs font-medium text-[#424245] leading-relaxed mb-5 whitespace-pre-line">
               {t('tutorial_cardjumper', language)}
             </p>
             <button
@@ -795,9 +796,9 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                 setShowTutorial(false);
               }}
-              className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-md shadow-indigo-600/10 hover:shadow-lg active:scale-95 transition-all cursor-pointer"
+              className="w-full py-2.5 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-xs rounded-sm border border-[#201d1d] active:scale-95 transition-all cursor-pointer min-h-[44px]"
             >
-              {t('tutorial_start_game', language)}
+              [ {t('tutorial_start_game', language)} ]
             </button>
           </div>
         </div>
@@ -805,39 +806,39 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
 
       {/* Game over overlay */}
       {hudGameOver && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-6">
-          <div className="bg-white text-slate-855 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl border border-slate-100/80 animate-in zoom-in-95 duration-200">
-            <Trophy size={42} className="mx-auto text-amber-500 mb-3 animate-bounce" />
-            <h2 className="text-xl font-bold text-slate-800 mb-1">
-              {language === 'ko' ? '게임 오버' : 'GAME OVER'}
+        <div className="fixed inset-0 z-50 bg-[#0f0000]/70 backdrop-blur-none flex items-center justify-center p-4 font-mono">
+          <div className="bg-[#fdfcfc] text-[#201d1d] rounded-none p-5 max-w-xs w-full text-center border border-[rgba(15,0,0,0.2)] animate-none">
+            <Trophy size={36} className="mx-auto text-[#201d1d] mb-2" />
+            <h2 className="text-base font-bold text-[#201d1d] mb-1">
+              {language === 'ko' ? '[ 게임 오버 ]' : '[ GAME OVER ]'}
             </h2>
-            <p className="text-sm font-medium text-slate-500 mb-1">
+            <p className="text-xs font-medium text-[#424245] mb-1">
               {language === 'ko' ? `점수: ${gameRef.current.score}` : `Score: ${gameRef.current.score}`}
             </p>
-            <p className="text-sm font-semibold text-amber-500 mb-4">
+            <p className="text-xs font-bold text-[#646262] mb-3">
               {language === 'ko'
                 ? `최고 높이: ${gameRef.current.bestHeight}`
                 : `Best Height: ${gameRef.current.bestHeight}`}
             </p>
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <span className="text-3xl font-extrabold text-indigo-600">
+            <div className="flex items-center justify-center gap-1.5 mb-4 p-2 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm">
+              <span className="text-2xl font-bold text-[#201d1d]">
                 +{Math.floor(gameRef.current.score / 5)}
               </span>
-              <span className="text-xs font-semibold text-slate-400">SNS</span>
+              <span className="text-xs font-bold text-[#6e6e73]">SNS</span>
             </div>
             <div className="flex flex-col gap-2">
               <button
                 onClick={() => startGame(true)}
-                className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold active:scale-95 transition-all shadow-md shadow-indigo-600/10 hover:shadow-lg cursor-pointer flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] rounded-sm font-bold text-xs active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5 min-h-[44px]"
               >
                 <RotateCcw size={14} />
-                {language === 'ko' ? '재시작' : 'Restart'}
+                {language === 'ko' ? '[ 재시작 ]' : '[ Restart ]'}
               </button>
               <button
                 onClick={onExit}
-                className="w-full py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200/85 text-slate-700 font-semibold rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer"
+                className="w-full py-2.5 bg-[#f8f7f7] hover:bg-[#f1eeee] border border-[rgba(15,0,0,0.18)] text-[#201d1d] font-bold text-xs rounded-sm active:scale-95 transition-all cursor-pointer min-h-[44px]"
               >
-                {language === 'ko' ? '종료' : 'Exit'}
+                {language === 'ko' ? '[ 나가기 ]' : '[ Exit ]'}
               </button>
             </div>
           </div>

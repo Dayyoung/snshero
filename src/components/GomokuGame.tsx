@@ -227,7 +227,7 @@ export const GomokuGame: React.FC<GomokuGameProps> = ({
       const targetImg = isCards2 ? cards2ImgRef.current : cards1ImgRef.current;
       if (!targetImg || !targetImg.complete || targetImg.naturalWidth <= 0) return;
       const col = isCards2 ? (idx2 - 101) % 10 : (idx2 - 1) % 10;
-      const row = isCards2 ? 0 : Math.floor(((idx2 - 1) % 100) / 10);
+      const row = isCards2 ? Math.floor((idx2 - 101) / 10) : Math.floor(((idx2 - 1) % 100) / 10);
       const sw = targetImg.naturalWidth / 10;
       const sh = targetImg.naturalHeight / 10;
       ctx.drawImage(targetImg, col * sw, row * sh, sw, sh, cx2 - size / 2, cy2 - size / 2, size, size);

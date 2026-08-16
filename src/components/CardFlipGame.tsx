@@ -176,21 +176,22 @@ export const CardFlipGame: React.FC<CardFlipGameProps> = ({
   const activeCount = tiles.filter(t => t.active).length;
 
   return (
-    <div className="h-[100dvh] max-h-[100dvh] bg-gradient-to-b from-indigo-950 via-slate-900 to-indigo-950 text-slate-100 flex flex-col items-center font-sans select-none pb-4 w-full overflow-hidden justify-between">
+    <div className="h-[100dvh] max-h-[100dvh] bg-[#fdfcfc] text-[#201d1d] flex flex-col items-center font-mono select-none pb-2 w-full overflow-hidden justify-between">
       {/* Header */}
-      <header className="w-full h-16 flex items-center justify-between border-b border-white/10 px-4 md:px-6 bg-black/20 backdrop-blur-sm shrink-0">
+      <header className="w-full h-12 flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] px-3 sm:px-4 bg-[#fdfcfc] shrink-0">
         <button
           onClick={onExit}
-          className="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:text-amber-400 transition-colors shadow-sm cursor-pointer text-slate-300 flex items-center justify-center"
+          className="px-2.5 py-1.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm hover:bg-[#f1eeee] text-[#201d1d] transition-colors cursor-pointer flex items-center gap-1 min-h-[44px]"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={16} />
+          <span className="text-xs font-bold">[ESC]</span>
         </button>
         <div className="text-center">
-          <h1 className="text-base md:text-lg font-black text-white tracking-wider uppercase">
-            {language === 'ko' ? '카드 플립 퍼즐' : 'Card Flip'}
+          <h1 className="text-sm sm:text-base font-bold text-[#201d1d] tracking-tight">
+            {language === 'ko' ? '카드 플립 퍼즐' : 'CARD FLIP'}
           </h1>
-          <div className="text-[10px] font-bold text-indigo-300/60 uppercase tracking-widest mt-0.5">
-            Lv.{level + 1} ({size}×{size})
+          <div className="text-[9px] font-bold text-[#6e6e73] uppercase tracking-wider">
+            [ LV.{level + 1} · {size}×{size} ]
           </div>
         </div>
         <button
@@ -198,28 +199,29 @@ export const CardFlipGame: React.FC<CardFlipGameProps> = ({
             playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
             initGame(true);
           }}
-          className="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:text-indigo-300 transition-colors shadow-sm cursor-pointer text-slate-300 flex items-center justify-center"
+          className="px-2.5 py-1.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm hover:bg-[#f1eeee] text-[#201d1d] transition-colors cursor-pointer flex items-center gap-1 min-h-[44px]"
         >
-          <RotateCcw size={18} />
+          <RotateCcw size={14} />
+          <span className="text-xs font-bold">[R]</span>
         </button>
       </header>
 
       {/* Info Stats */}
-      <div className="flex items-center gap-4 text-xs font-bold my-4 py-1.5 px-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl shadow-xl">
-        <span className="text-indigo-300/60">
-          {language === 'ko' ? '이동' : 'Moves'}: <span className="text-white">{moves}</span>
+      <div className="flex items-center gap-3 text-xs font-bold my-2 py-1.5 px-4 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm shadow-none shrink-0">
+        <span className="text-[#646262]">
+          {language === 'ko' ? '이동 횟수' : 'MOVES'}: <span className="text-[#201d1d]">{moves}</span>
         </span>
-        <div className="w-px h-3 bg-white/10" />
-        <span className="text-amber-400">
-          <Lightbulb size={12} className="inline mr-1" />
+        <div className="w-px h-3 bg-[rgba(15,0,0,0.12)]" />
+        <span className="text-[#201d1d]">
+          <Lightbulb size={12} className="inline mr-1 text-[#201d1d]" />
           {activeCount}/{totalTiles}
         </span>
       </div>
 
       {/* Responsive Grid Container */}
-      <div className="w-full max-w-md px-4 flex justify-center">
+      <div className="w-full max-w-md px-3 flex justify-center flex-1 min-h-0 items-center">
         <div
-          className="grid p-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl shadow-xl w-full max-w-[360px]"
+          className="grid p-2.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none shadow-none w-full max-w-[340px] max-h-[50vh]"
           style={{
             gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))`,
             gap: `${cellGap}px`,
@@ -231,24 +233,23 @@ export const CardFlipGame: React.FC<CardFlipGameProps> = ({
               onClick={() => toggleTile(tile.id)}
               disabled={isComplete || isAnimating}
               className={cn(
-                'aspect-square rounded-xl border-2 transition-all duration-150 select-none outline-none relative overflow-hidden',
-                'cursor-pointer hover:scale-[1.04] active:scale-95',
-                tile.active && 'border-amber-500/50 bg-slate-950 ring-2 ring-amber-500/20 shadow-lg shadow-amber-500/10',
-                !tile.active && 'border-white/10 bg-slate-900/50 shadow-inner',
-                isComplete && 'border-emerald-500/50 ring-2 ring-emerald-500/20',
+                'aspect-square rounded-sm border transition-all duration-150 select-none outline-none relative overflow-hidden',
+                'cursor-pointer hover:opacity-90 active:scale-95 min-h-[36px]',
+                tile.active && 'border-[#201d1d] bg-[#0f0000]',
+                !tile.active && 'border-[rgba(15,0,0,0.15)] bg-[#f1eeee]',
+                isComplete && 'border-[#201d1d] ring-1 ring-[#201d1d]',
               )}
             >
               {tile.active && (
                 <div
-                  className="w-full h-full rounded-lg"
+                  className="w-full h-full rounded-none"
                   style={getCardSpriteStyle(tile.cardId)}
                 />
               )}
               {!tile.active && (
-                <div className="w-full h-full bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-950 rounded-lg flex items-center justify-center relative overflow-hidden shadow-inner border border-white/5">
-                  <div className="absolute inset-0.5 border border-white/5 rounded-md pointer-events-none" />
-                  <div className="w-6 h-6 rounded-full bg-indigo-500/10 border border-indigo-400/10 flex items-center justify-center">
-                    <div className={cn("w-2 h-2 rounded-full bg-slate-600 shadow-md", !lowSpecMode && "animate-pulse")} />
+                <div className="w-full h-full bg-[#f1eeee] rounded-none flex items-center justify-center relative overflow-hidden border border-[rgba(15,0,0,0.06)]">
+                  <div className="w-5 h-5 rounded-sm bg-[#e5e1e1] border border-[rgba(15,0,0,0.1)] flex items-center justify-center">
+                    <span className="text-[10px] font-bold text-[#6e6e73]">?</span>
                   </div>
                 </div>
               )}
@@ -258,32 +259,32 @@ export const CardFlipGame: React.FC<CardFlipGameProps> = ({
       </div>
 
       {/* Hint text */}
-      <p className="mt-4 text-[11px] font-bold text-indigo-300/40 tracking-wider uppercase px-4 text-center">
+      <p className="my-2 text-[10px] font-bold text-[#6e6e73] tracking-wider uppercase px-4 text-center shrink-0">
         {language === 'ko'
-          ? '탭하면 주변 카드도 함께 뒤집힙니다! 모든 카드를 밝히세요.'
-          : 'Tap a card to flip it and its neighbors! Light up all cards.'}
+          ? '[ 탭하면 인접 카드도 함께 반전됩니다 · 전체 카드를 활성화하세요 ]'
+          : '[ TAP CARD TO TOGGLE NEIGHBORS · LIGHT UP ALL TILES ]'}
       </p>
 
       {/* Tutorial Modal */}
       {showTutorial && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-lg px-4">
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 text-slate-100 w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl p-6 animate-in zoom-in-95 duration-200">
-            <div className="flex items-center gap-2.5 mb-3 border-b border-white/10 pb-3">
-              <span className="p-1.5 bg-indigo-500/10 text-indigo-400 rounded-lg shrink-0">
-                <Zap size={16} />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0f0000]/70 backdrop-blur-none px-4 font-mono">
+          <div className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.2)] text-[#201d1d] w-full max-w-sm rounded-none p-5 animate-none">
+            <div className="flex items-center gap-2 mb-3 border-b border-[rgba(15,0,0,0.12)] pb-2.5">
+              <span className="p-1 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm text-[#201d1d] shrink-0">
+                <Zap size={14} />
               </span>
-              <h3 className="text-base font-black text-white uppercase tracking-wider">
-                {t('tutorial_title', language)}
+              <h3 className="text-sm font-bold text-[#201d1d] uppercase tracking-wider">
+                [ {t('tutorial_title', language)} ]
               </h3>
             </div>
-            <p className="text-xs sm:text-sm font-medium text-indigo-300/60 leading-relaxed mb-6 whitespace-pre-line">
+            <p className="text-xs font-medium text-[#424245] leading-relaxed mb-5 whitespace-pre-line">
               {t('tutorial_cardflip', language)}
             </p>
             <button
               onClick={handleStartGame}
-              className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl shadow-xl shadow-indigo-600/20 hover:shadow-2xl active:scale-95 transition-all cursor-pointer tracking-wider"
+              className="w-full py-2.5 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-xs rounded-sm border border-[#201d1d] active:scale-95 transition-all cursor-pointer min-h-[44px]"
             >
-              {t('tutorial_start_game', language)}
+              [ {t('tutorial_start_game', language)} ]
             </button>
           </div>
         </div>
@@ -291,20 +292,20 @@ export const CardFlipGame: React.FC<CardFlipGameProps> = ({
 
       {/* Complete Modal */}
       {isComplete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-lg px-4">
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 text-slate-100 w-full max-w-xs rounded-2xl overflow-hidden shadow-2xl p-6 text-center animate-in zoom-in-95 duration-200">
-            <Trophy className={cn("w-12 h-12 text-amber-400 mx-auto mb-3", !lowSpecMode && "animate-bounce")} />
-            <h3 className="text-lg font-black text-white mb-1">
-              {language === 'ko' ? '클리어!' : 'Cleared!'}
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0f0000]/70 backdrop-blur-none px-4 font-mono">
+          <div className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.2)] text-[#201d1d] w-full max-w-xs rounded-none p-5 text-center animate-none">
+            <Trophy className="w-10 h-10 text-[#201d1d] mx-auto mb-2" />
+            <h3 className="text-base font-bold text-[#201d1d] mb-1">
+              {language === 'ko' ? '[ 퍼즐 클리어! ]' : '[ PUZZLE CLEARED! ]'}
             </h3>
-            <p className="text-sm font-medium text-indigo-300/60 mb-4">
+            <p className="text-xs font-medium text-[#424245] mb-3">
               {language === 'ko'
-                ? `${moves}번 만에 성공!`
+                ? `${moves}수 만에 완성!`
                 : `Solved in ${moves} moves!`}
             </p>
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <span className="text-3xl font-extrabold text-amber-400">+{Math.floor(reward * (size * size / Math.max(moves, 1)))}</span>
-              <span className="text-xs font-semibold text-indigo-300/40">SNS</span>
+            <div className="flex items-center justify-center gap-1.5 mb-4 p-2 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm">
+              <span className="text-2xl font-bold text-[#201d1d]">+{Math.min(60, Math.max(15, Math.floor(reward * (size * size / Math.max(moves, 1)))))}</span>
+              <span className="text-xs font-bold text-[#6e6e73]">SNS</span>
             </div>
             <div className="flex flex-col gap-2">
               {level < DIFFICULTY_CONFIG.length - 1 && (
@@ -313,9 +314,9 @@ export const CardFlipGame: React.FC<CardFlipGameProps> = ({
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                     setLevel(l => l + 1);
                   }}
-                  className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl shadow-xl shadow-indigo-600/20 hover:shadow-2xl active:scale-95 transition-all cursor-pointer tracking-wider"
+                  className="w-full py-2.5 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-xs rounded-sm active:scale-95 transition-all cursor-pointer min-h-[44px]"
                 >
-                  {language === 'ko' ? '다음 레벨' : 'Next Level'}
+                  {language === 'ko' ? '[ 다음 레벨 ]' : '[ Next Level ]'}
                 </button>
               )}
               <button
@@ -323,16 +324,16 @@ export const CardFlipGame: React.FC<CardFlipGameProps> = ({
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                   initGame(true);
                 }}
-                className="w-full py-2.5 bg-white/10 hover:bg-white/15 border border-white/10 text-slate-200 font-black rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5 tracking-wider"
+                className="w-full py-2.5 bg-[#f8f7f7] hover:bg-[#f1eeee] border border-[rgba(15,0,0,0.18)] text-[#201d1d] font-bold text-xs rounded-sm active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5 min-h-[44px]"
               >
                 <RotateCcw size={14} />
-                <span>{language === 'ko' ? '다시하기' : 'Retry'}</span>
+                <span>{language === 'ko' ? '[ 다시하기 ]' : '[ Retry ]'}</span>
               </button>
               <button
                 onClick={onExit}
-                className="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-black rounded-xl shadow-xl shadow-rose-600/20 hover:shadow-2xl active:scale-95 transition-all cursor-pointer tracking-wider"
+                className="w-full py-2.5 bg-[#f1eeee] hover:bg-[#e5e1e1] border border-[rgba(15,0,0,0.18)] text-[#201d1d] font-bold text-xs rounded-sm active:scale-95 transition-all cursor-pointer min-h-[44px]"
               >
-                {language === 'ko' ? '종료' : 'Exit'}
+                {language === 'ko' ? '[ 나가기 ]' : '[ Exit ]'}
               </button>
             </div>
           </div>

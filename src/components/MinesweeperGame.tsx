@@ -315,7 +315,7 @@ export const MinesweeperGame: React.FC<MinesweeperGameProps> = ({
         return;
       }
       const col = isCards2 ? (idx - 101) % 10 : (idx - 1) % 10;
-      const row = isCards2 ? 0 : Math.floor(((idx - 1) % 100) / 10);
+      const row = isCards2 ? Math.floor((idx - 101) / 10) : Math.floor(((idx - 1) % 100) / 10);
       const spriteW = targetImg.naturalWidth / 10;
       const spriteH = targetImg.naturalHeight / 10;
       ctx.drawImage(targetImg, col * spriteW, row * spriteH, spriteW, spriteH, cx - size / 2, cy - size / 2, size, size);
