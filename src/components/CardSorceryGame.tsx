@@ -3,7 +3,7 @@ import { ArrowLeft, Zap, Timer, Flame, Droplets, Mountain, Wind } from 'lucide-r
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardData, Language } from '../types';
 import { t } from '../lib/i18n';
-import { cn } from '../lib/utils';
+import { cn, getCardSpriteStyle } from '../lib/utils';
 
 interface CardSorceryGameProps {
   deck: CardData[];
@@ -58,18 +58,7 @@ interface EnemyState {
   expiresAt: number;
 }
 
-const getCardSpriteStyle = (cardId: number): React.CSSProperties => {
-  const idx = CARD_DATABASE[cardId] ? cardId : 1;
-  const x = ((idx - 1) % 10) * (100 / 9);
-  const y = Math.floor((idx - 1) / 10) * (100 / 10);
-  return {
-    backgroundImage: 'url(/card100.png)',
-    backgroundSize: '1000% 1100%',
-    backgroundPosition: `${x}% ${y}%`,
-    backgroundRepeat: 'no-repeat',
-    imageRendering: 'pixelated' as const,
-  };
-};
+
 
 const getCardElement = (card: CardData): string | null => {
   const dbCard = card.imageIndex ? CARD_DATABASE[card.imageIndex] : null;
@@ -212,7 +201,8 @@ export const CardSorceryGame: React.FC<CardSorceryGameProps> = ({
     const finalScore = scoreRef.current;
     if (!rewardedRef.current) {
       rewardedRef.current = true;
-      const reward = Math.floor(finalScore * 2);
+      const rawReward = Math.floor(finalScore * 2);
+      const reward = finalScore > 0 ? Math.min(60, Math.max(10, rawReward)) : 5;
       if (reward > 0) onReward(reward);
       // Save high score
       const saved = localStorage.getItem('hero_cardsorcery_highscore');
@@ -376,7 +366,7 @@ export const CardSorceryGame: React.FC<CardSorceryGameProps> = ({
   ) : '';
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-b from-indigo-950 via-slate-900 to-indigo-950 font-sans text-white overflow-hidden relative">
+    <div className="w-full h-[100dvh] max-h-[100dvh] bg-gradient-to-b from-indigo-950 via-slate-900 to-indigo-950 font-sans text-white overflow-hidden relative flex flex-col justify-between select-none">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-white/5 backdrop-blur-sm">
         <button
@@ -520,8 +510,8 @@ export const CardSorceryGame: React.FC<CardSorceryGameProps> = ({
               <div className="space-y-3">
                 <p className="text-sm text-indigo-200/70 font-medium">
                   {isKo
-                    ? `보상: ${Math.floor(score * 2)} SNS`
-                    : `Reward: ${Math.floor(score * 2)} SNS`}
+                    ? `보상: ${score > 0 ? Math.min(60, Math.max(10, Math.floor(score * 2))) : 5} SNS`
+                    : `Reward: ${score > 0 ? Math.min(60, Math.max(10, Math.floor(score * 2))) : 5} SNS`}
                 </p>
                 <div className="flex gap-3 justify-center">
                   <button

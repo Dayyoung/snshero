@@ -1,7 +1,7 @@
 import React from 'react';
 import { Sparkles } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
-import { cn, getAssetUrl } from '../lib/utils';
+import { cn, getCardSpriteStyle } from '../lib/utils';
 
 interface MonsterPetBadgeProps {
   cardId: number | null | undefined;
@@ -12,15 +12,7 @@ interface MonsterPetBadgeProps {
 
 const getCardAvatarStyle = (cardId: number): React.CSSProperties => {
   const idx = CARD_DATABASE[cardId] ? cardId : 1;
-  const x = ((idx - 1) % 10) * (100 / 9);
-  const y = Math.floor((idx - 1) / 10) * (100 / 10);
-  return {
-    backgroundImage: `url('${getAssetUrl('/card100.png')}')`,
-    backgroundSize: '1000% 1100%',
-    backgroundPosition: `${x}% ${y}%`,
-    backgroundRepeat: 'no-repeat',
-    imageRendering: 'pixelated',
-  };
+  return getCardSpriteStyle(idx);
 };
 
 export const MonsterPetBadge: React.FC<MonsterPetBadgeProps> = ({

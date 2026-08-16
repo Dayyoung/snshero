@@ -16,7 +16,7 @@ import type { CharacterRarityTier } from '../types';
 import type { CardSkinThemeId } from './cardSkinThemes';
 import { getCardSkinThemeVisual } from './cardSkinThemes';
 import type { CardSkin } from './cardSkins';
-import { getAssetUrl } from '../lib/utils';
+import { getAssetUrl, getCardSpriteAsset } from '../lib/utils';
 
 // ─── Types ────────────────────────────────────────────────────────────────
 
@@ -244,12 +244,14 @@ export function resolveCardImage(
   // Theme visual exists but has no asset — still mark as theme priority
   // so CardItem can render the mecha overlay instead of an image
   if (themeVisual) {
-    const resolvedUrl = imageUrl ? getAssetUrl(imageUrl) : getAssetUrl('/card100.png');
+    const defaultSprite = getCardSpriteAsset(cardId);
+    const resolvedUrl = imageUrl ? getAssetUrl(imageUrl) : getAssetUrl(defaultSprite);
     return { source: resolvedUrl, fallback, priority: 'theme', themeVisual };
   }
 
   // Priority 4: Database image URL
-  const resolvedUrl = imageUrl ? getAssetUrl(imageUrl) : getAssetUrl('/card100.png');
+  const defaultSprite = getCardSpriteAsset(cardId);
+  const resolvedUrl = imageUrl ? getAssetUrl(imageUrl) : getAssetUrl(defaultSprite);
   return { source: resolvedUrl, fallback, priority: 'imageUrl' };
 
   // Priority 5: Fallback (faction-colored placeholder)

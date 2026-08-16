@@ -13,7 +13,8 @@ export const checkFlips = (
   board: Board, 
   placedIdx: number, 
   playerMultiplier: number = 1, 
-  elementalBoard: ElementalTile[] = []
+  elementalBoard: ElementalTile[] = [],
+  isSuddenDeath: boolean = false
 ): Board => {
   let newBoard = [...board];
   const card = newBoard[placedIdx];
@@ -32,6 +33,7 @@ export const checkFlips = (
   const sameMatched: number[] = [];
   const plusSums: Record<number, number[]> = {};
   let counterTargetOwner: 'player' | 'ai' | null = null;
+  const suddenDeathBonus = isSuddenDeath ? 2 : 0;
 
   // Find direct flips and potential combos
   dirs.forEach(d => {
@@ -41,8 +43,8 @@ export const checkFlips = (
       const neighborIdx = nr * 3 + nc;
       const neighbor = newBoard[neighborIdx];
       if (neighbor) {
-        const myStat = getCardStatWithBonus(card, d.m, elementalBoard[placedIdx]);
-        const oppStat = getCardStatWithBonus(neighbor, d.opp, elementalBoard[neighborIdx]);
+        let myStat = getCardStatWithBonus(card, d.m, elementalBoard[placedIdx]) + suddenDeathBonus;
+        let oppStat = getCardStatWithBonus(neighbor, d.opp, elementalBoard[neighborIdx]) + suddenDeathBonus;
 
         // SAME rule logic
         if (myStat === oppStat) {
@@ -171,7 +173,8 @@ export const findBestMove = (
   side: 'player' | 'ai',
   playerMultiplier: number = 1,
   elementalBoard: ElementalTile[] = [],
-  difficulty: AiDifficulty = 'hard'
+  difficulty: AiDifficulty = 'hard',
+  isSuddenDeath: boolean = false
 ): { cardIdx: number, boardIdx: number, reason: string } | null => {
   const possibleBoardIndices = board.map((c, i) => c === null ? i : -1).filter(i => i !== -1);
   if (possibleBoardIndices.length === 0 || hand.length === 0) return null;
@@ -184,8 +187,8 @@ export const findBestMove = (
       const virtualBoard = simulateAbility(board, bIdx, card);
       const virtualCardWithAbility = virtualBoard[bIdx]!;
 
-      // 2. Check flips (including combos and special abilities)
-      const afterMoveBoard = checkFlips(virtualBoard, bIdx, playerMultiplier, elementalBoard);
+      // 2. Check flips (including combos and special abilities, 1-Ply cascade prediction)
+      const afterMoveBoard = checkFlips(virtualBoard, bIdx, playerMultiplier, elementalBoard, isSuddenDeath);
       let flippedCount = 0;
       afterMoveBoard.forEach((c, i) => {
         if (board[i] && board[i]!.owner !== side && c!.owner === side) {
@@ -213,11 +216,13 @@ export const findBestMove = (
         }
       });
 
-      // 4. Position & Rarity weights
+      // 4. Position & Cascade combo weights (Item 350: 1-Ply combo cascade prediction)
       const isCorner = (row === 0 || row === 2) && (col === 0 || col === 2);
       const isCenter = row === 1 && col === 1;
 
-      let score = (flippedCount * 400);
+      // Cascade Multiplier: 2.0x weight for multi-tile flips
+      const cascadeMultiplier = flippedCount >= 2 ? 2.0 : 1.0;
+      let score = (flippedCount * 450 * cascadeMultiplier);
 
       if (strategy === 'random') {
         score = Math.random() * 1000; // Randomly weight moves

@@ -5,7 +5,7 @@ import {
   Waves, Flame, Wind, User, Skull, Leaf, Hammer, Ghost, Bot
 } from 'lucide-react';
 import type { CharacterFaction, CharacterRarityTier, CardData } from '../types';
-import { cn, getAssetUrl } from '../lib/utils';
+import { cn, getAssetUrl, getCardSpriteAsset, getCardSpriteStyle } from '../lib/utils';
 import { CARD_DATABASE } from '../cardDatabase';
 import { getCardPower, getCardStatWithBonus } from '../constants';
 import { t } from '../lib/i18n';
@@ -51,22 +51,18 @@ const areNumberArraysEqual = (left?: number[], right?: number[]) => {
 
 const isSpriteSheet = (source?: string | null): boolean => {
   if (!source) return false;
-  return source.includes('card100') || source.includes('110card');
+  return (
+    source.includes('cards1') ||
+    source.includes('card2') ||
+    source.includes('cards2') ||
+    source.includes('card100') ||
+    source.includes('110card')
+  );
 };
 
 const getSpritePosition = (cardIndex: number, spriteSource: string): React.CSSProperties => {
   if (!cardIndex) return {};
-  const rows = 11;
-  const cols = 10;
-  const x = ((cardIndex - 1) % cols) * (100 / (cols - 1));
-  const y = Math.floor((cardIndex - 1) / cols) * (100 / (rows - 1));
-  return {
-    backgroundImage: `url('${getAssetUrl(spriteSource)}')`,
-    backgroundSize: `${cols * 100}% ${rows * 100}%`,
-    backgroundPosition: `${x}% ${y}%`,
-    backgroundRepeat: 'no-repeat',
-    imageRendering: 'pixelated' as const,
-  };
+  return getCardSpriteStyle(cardIndex, spriteSource);
 };
 
 const areCardsVisuallyEqual = (left: CardData, right: CardData) => {
@@ -198,18 +194,21 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
   const powerScore = ignoreBonuses ? originalPower : getCardPower(activeCard);
 
   const imageSources = useMemo(() => {
+    const defaultSprite = visualCardId ? getCardSpriteAsset(visualCardId) : '/cards1.png';
     const orderedSources = [
       processedImage,
       customImage,
       activeCard.imageUrl,
+      defaultSprite,
       assetManifestEntry?.targetAssetPath,
+      assetManifestEntry?.frontAssetPath,
       assetManifestEntry?.legacySpritePath,
       assetManifestEntry?.fallbackAssetPath,
       assetManifestEntry?.lowSpecFallbackAssetPath,
     ];
 
     return Array.from(new Set(orderedSources.filter((source): source is string => Boolean(source)).map((src) => getAssetUrl(src))));
-  }, [activeCard.imageUrl, assetManifestEntry, customImage, processedImage]);
+  }, [activeCard.imageUrl, assetManifestEntry, customImage, processedImage, visualCardId]);
   const [imageSourceIndex, setImageSourceIndex] = useState(0);
 
   useEffect(() => {

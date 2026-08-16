@@ -24,7 +24,7 @@
     {
       "cardId": 1,
       "cardName": "아쿠아리스",
-      "image": "/character/001.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         31,
         32,
@@ -35,7 +35,7 @@
     {
       "cardId": 2,
       "cardName": "나이아드",
-      "image": "/character/002.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         31,
         32,
@@ -47,7 +47,7 @@
     {
       "cardId": 5,
       "cardName": "아쿠아로드",
-      "image": "/character/005.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         29,
         30,
@@ -62,7 +62,7 @@
     {
       "cardId": 11,
       "cardName": "이그니스",
-      "image": "/character/011.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         1,
         6,
@@ -99,7 +99,7 @@
     {
       "cardId": 13,
       "cardName": "벨페고르",
-      "image": "/character/013.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         3,
         4,
@@ -117,7 +117,7 @@
     {
       "cardId": 23,
       "cardName": "실피드",
-      "image": "/character/023.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         16,
         17,
@@ -129,7 +129,7 @@
     {
       "cardId": 25,
       "cardName": "에올루스",
-      "image": "/character/025.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         3,
         5,
@@ -157,7 +157,7 @@
     {
       "cardId": 38,
       "cardName": "오리하르콘",
-      "image": "/character/038.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         15,
         21,
@@ -174,7 +174,7 @@
     {
       "cardId": 41,
       "cardName": "카단",
-      "image": "/character/041.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         1,
         3,
@@ -221,7 +221,7 @@
     {
       "cardId": 42,
       "cardName": "엘윈",
-      "image": "/character/042.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         1,
         2,
@@ -245,7 +245,7 @@
     {
       "cardId": 43,
       "cardName": "발리안",
-      "image": "/character/043.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         1,
         6,
@@ -263,7 +263,7 @@
     {
       "cardId": 44,
       "cardName": "카제",
-      "image": "/character/044.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         2,
         3,
@@ -280,7 +280,7 @@
     {
       "cardId": 45,
       "cardName": "가웨인",
-      "image": "/character/045.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         2,
         3,
@@ -298,7 +298,7 @@
     {
       "cardId": 46,
       "cardName": "론돌",
-      "image": "/character/046.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         2,
         3,
@@ -317,7 +317,7 @@
     {
       "cardId": 47,
       "cardName": "길가메시",
-      "image": "/character/047.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         4,
         7,
@@ -334,7 +334,7 @@
     {
       "cardId": 48,
       "cardName": "로비냐드",
-      "image": "/character/048.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         2,
         3,
@@ -348,7 +348,7 @@
     {
       "cardId": 49,
       "cardName": "헤르쿨",
-      "image": "/character/049.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         1,
         2,
@@ -368,7 +368,7 @@
     {
       "cardId": 50,
       "cardName": "알렉산다르",
-      "image": "/character/050.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         1,
         2,
@@ -383,7 +383,7 @@
     {
       "cardId": 51,
       "cardName": "워커",
-      "image": "/character/051.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         9,
         10,
@@ -394,7 +394,7 @@
     {
       "cardId": 52,
       "cardName": "구울",
-      "image": "/character/052.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         1
       ],
@@ -403,7 +403,7 @@
     {
       "cardId": 60,
       "cardName": "데스나이트 아르투스",
-      "image": "/character/060.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         1,
         21,
@@ -426,7 +426,7 @@
     {
       "cardId": 61,
       "cardName": "루시안",
-      "image": "/character/061.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         1,
         2,
@@ -461,7 +461,7 @@
     {
       "cardId": 62,
       "cardName": "실리아",
-      "image": "/character/062.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         5,
         8,
@@ -503,7 +503,7 @@
     {
       "cardId": 63,
       "cardName": "엘리아나",
-      "image": "/character/063.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         2,
         3,
@@ -519,7 +519,7 @@
     {
       "cardId": 64,
       "cardName": "티타니아",
-      "image": "/character/064.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         4,
         6,
@@ -539,7 +539,7 @@
     {
       "cardId": 65,
       "cardName": "실바니아",
-      "image": "/character/065.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         30,
         31
@@ -549,7 +549,7 @@
     {
       "cardId": 66,
       "cardName": "말퓨온",
-      "image": "/character/066.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         6,
         7,
@@ -560,7 +560,7 @@
     {
       "cardId": 69,
       "cardName": "간다르",
-      "image": "/character/069.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         18,
         19,
@@ -576,7 +576,7 @@
     {
       "cardId": 70,
       "cardName": "에일라",
-      "image": "/character/070.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         2,
         3,
@@ -591,7 +591,7 @@
     {
       "cardId": 71,
       "cardName": "발보",
-      "image": "/character/071.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         8,
         9
@@ -601,7 +601,7 @@
     {
       "cardId": 74,
       "cardName": "그림리",
-      "image": "/character/074.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         2,
         3,
@@ -621,7 +621,7 @@
     {
       "cardId": 80,
       "cardName": "아이언포지",
-      "image": "/character/080.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         23,
         25,
@@ -636,7 +636,7 @@
     {
       "cardId": 81,
       "cardName": "펜릴",
-      "image": "/character/081.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         4,
         7,
@@ -653,7 +653,7 @@
     {
       "cardId": 84,
       "cardName": "그리폰",
-      "image": "/character/084.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         6,
         17,
@@ -667,7 +667,7 @@
     {
       "cardId": 86,
       "cardName": "레오나르",
-      "image": "/character/086.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         13,
         21,
@@ -682,7 +682,7 @@
     {
       "cardId": 87,
       "cardName": "바르가스트",
-      "image": "/character/087.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         7
       ],
@@ -691,7 +691,7 @@
     {
       "cardId": 88,
       "cardName": "우르삭",
-      "image": "/character/088.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         7
       ],
@@ -700,7 +700,7 @@
     {
       "cardId": 89,
       "cardName": "메두사 고르고",
-      "image": "/character/089.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         3,
         4,
@@ -723,7 +723,7 @@
     {
       "cardId": 90,
       "cardName": "페가수스",
-      "image": "/character/090.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         8,
         9,
@@ -736,7 +736,7 @@
     {
       "cardId": 99,
       "cardName": "마기테크 골렘",
-      "image": "/character/099.png",
+      "image": "/cards1.png",
       "episodeNumbers": [
         12,
         18,
@@ -747,7 +747,7 @@
     {
       "cardId": 107,
       "cardName": "이셀라",
-      "image": "/character/107.png",
+      "image": "/card2.png",
       "episodeNumbers": [
         1,
         2,

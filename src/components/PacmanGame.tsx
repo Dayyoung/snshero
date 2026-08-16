@@ -645,8 +645,8 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
   }, [initMaze]);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center font-sans select-none">
-      <header className="w-full max-w-md flex items-center justify-between p-3">
+    <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white flex flex-col items-center justify-between font-sans select-none overflow-hidden pb-3">
+      <header className="w-full max-w-md flex items-center justify-between p-3 shrink-0">
         <button onClick={onExit} className="p-2 rounded-2xl bg-white/10 hover:bg-white/15 transition-colors cursor-pointer">
           <ArrowLeft size={20} />
         </button>
@@ -663,14 +663,14 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
         </div>
       </header>
 
-      <main className="max-w-md mx-auto w-full px-4">
+      <main className="max-w-md mx-auto w-full px-4 flex flex-col items-center justify-center flex-1 min-h-0">
         <div
-          className="relative bg-slate-900 rounded-3xl border border-white/10 overflow-hidden shadow-2xl touch-none select-none"
+          className="relative bg-slate-900 rounded-3xl border border-white/10 overflow-hidden shadow-2xl touch-none select-none max-h-[50vh] aspect-square flex items-center justify-center"
           style={{ touchAction: 'none' }}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
-          <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H} className="w-full h-full" />
+          <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H} className="w-full h-full object-contain" />
 
           {(hudGameOver || hudWin) && (
             <div className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
@@ -701,6 +701,56 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
               </div>
             </div>
           )}
+        </div>
+
+        {/* Mobile One-Handed D-Pad */}
+        <div className="flex flex-col items-center justify-center gap-1 mt-3 select-none shrink-0">
+          <button
+            type="button"
+            onClick={() => {
+              if (!gameRef.current.started) gameRef.current.started = true;
+              changeDirection('up');
+            }}
+            className="w-12 h-10 rounded-xl bg-white/10 active:bg-indigo-500/40 border border-white/20 flex items-center justify-center text-base text-white active:scale-95 shadow-md touch-manipulation"
+            aria-label="Up"
+          >
+            ▲
+          </button>
+          <div className="flex items-center gap-5">
+            <button
+              type="button"
+              onClick={() => {
+                if (!gameRef.current.started) gameRef.current.started = true;
+                changeDirection('left');
+              }}
+              className="w-12 h-10 rounded-xl bg-white/10 active:bg-indigo-500/40 border border-white/20 flex items-center justify-center text-base text-white active:scale-95 shadow-md touch-manipulation"
+              aria-label="Left"
+            >
+              ◀
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (!gameRef.current.started) gameRef.current.started = true;
+                changeDirection('down');
+              }}
+              className="w-12 h-10 rounded-xl bg-white/10 active:bg-indigo-500/40 border border-white/20 flex items-center justify-center text-base text-white active:scale-95 shadow-md touch-manipulation"
+              aria-label="Down"
+            >
+              ▼
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (!gameRef.current.started) gameRef.current.started = true;
+                changeDirection('right');
+              }}
+              className="w-12 h-10 rounded-xl bg-white/10 active:bg-indigo-500/40 border border-white/20 flex items-center justify-center text-base text-white active:scale-95 shadow-md touch-manipulation"
+              aria-label="Right"
+            >
+              ▶
+            </button>
+          </div>
         </div>
       </main>
     </div>

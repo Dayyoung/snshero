@@ -321,15 +321,14 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
       // Input
       const moveSpeed = 5.5;
       if (g.started) {
+        let dir = moveRef.current;
         if (keysRef.current.has('arrowleft') || keysRef.current.has('a')) {
-          moveRef.current = -1;
+          dir = -1;
         } else if (keysRef.current.has('arrowright') || keysRef.current.has('d')) {
-          moveRef.current = 1;
-        } else {
-          moveRef.current = 0;
+          dir = 1;
         }
-        g.playerX += moveRef.current * moveSpeed;
-        g.playerDirection = moveRef.current;
+        g.playerX += dir * moveSpeed;
+        g.playerDirection = dir;
       } else {
         moveRef.current = 0;
       }
@@ -657,9 +656,9 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center font-sans select-none pb-12 w-full bg-slate-50/30 text-slate-800 overflow-x-hidden">
+    <div className="h-[100dvh] max-h-[100dvh] flex flex-col items-center justify-between font-sans select-none pb-2 w-full bg-slate-50/30 text-slate-800 overflow-hidden">
       {/* Header */}
-      <header className="w-full h-16 flex items-center justify-between border-b border-slate-100 px-4 md:px-6 bg-white shrink-0">
+      <header className="w-full h-14 flex items-center justify-between border-b border-slate-100 px-4 md:px-6 bg-white shrink-0">
         <button
           onClick={onExit}
           className="p-2 bg-slate-50 border border-slate-200/60 rounded-xl hover:bg-slate-100 hover:text-indigo-600 transition-colors shadow-sm cursor-pointer text-slate-600 flex items-center justify-center"
@@ -679,15 +678,15 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
         </div>
       </header>
 
-      <div className="w-full max-w-md px-4 mt-4 flex flex-col items-center">
+      <div className="w-full max-w-md px-4 flex flex-col items-center flex-1 min-h-0 justify-center">
         {/* Companion Card Info */}
-        <div className="w-full bg-white rounded-2xl border border-slate-100 p-3 mb-4 flex items-center gap-3 shadow-xs">
+        <div className="w-full bg-white rounded-2xl border border-slate-100 p-2.5 mb-2 flex items-center gap-3 shadow-xs shrink-0">
           <div
-            className="w-10 h-10 rounded-xl border border-amber-400 bg-cover bg-center shrink-0"
+            className="w-8 h-8 rounded-xl border border-amber-400 bg-cover bg-center shrink-0"
             style={getCardSpriteStyle(validPlayerCardId)}
           />
           <div className="min-w-0 flex-1">
-            <p className="text-amber-500 text-[10px] font-bold uppercase tracking-wider">
+            <p className="text-amber-500 text-[9px] font-bold uppercase tracking-wider">
               {language === 'ko' ? '점프 캐릭터' : 'JUMPER'}
             </p>
             <p className="text-slate-850 text-xs font-bold truncate">
@@ -697,17 +696,17 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
             </p>
           </div>
           <div className="text-right">
-            <p className="text-slate-400 text-[9px] font-bold uppercase">
+            <p className="text-slate-400 text-[8px] font-bold uppercase">
               {language === 'ko' ? '최고' : 'BEST'}
             </p>
-            <p className="text-slate-800 text-sm font-extrabold tabular-nums">{hudBest}</p>
+            <p className="text-slate-800 text-xs font-extrabold tabular-nums">{hudBest}</p>
           </div>
         </div>
 
         {/* Responsive Canvas Wrapper */}
         <div
           className={cn(
-            'relative w-full overflow-hidden rounded-3xl border border-slate-950 bg-slate-950 shadow-2xl shadow-indigo-950/20 touch-none max-w-[340px]'
+            'relative w-full overflow-hidden rounded-3xl border border-slate-950 bg-slate-950 shadow-2xl shadow-indigo-950/20 touch-none max-w-[300px] sm:max-w-[340px] max-h-[52vh] flex-1 min-h-0'
           )}
           style={{
             aspectRatio: `${CANVAS_W}/${CANVAS_H}`,
@@ -719,7 +718,7 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
         >
           <canvas
             ref={canvasRef}
-            className="w-full h-full"
+            className="w-full h-full object-contain"
           />
 
           {/* Start Screen Hint */}
@@ -737,11 +736,42 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
           )}
         </div>
 
-        {/* Touch zone hint */}
-        <div className="mt-4 px-4 py-2 bg-white rounded-2xl border border-slate-100 text-[10px] text-slate-500 font-bold text-center w-full max-w-[340px] shadow-xs">
-          {language === 'ko'
-            ? '화면 왼쪽/오른쪽 터치로 이동 | ← → 키보드 지원'
-            : 'Tap left/right screen half to move | Arrow keys supported'}
+        {/* Mobile Left / Right steering buttons */}
+        <div className="mt-2 flex items-center justify-center gap-4 w-full max-w-xs sm:hidden select-none shrink-0 px-2">
+          <button
+            type="button"
+            onPointerDown={() => {
+              const g = gameRef.current;
+              if (!g.started) g.started = true;
+              moveRef.current = -1;
+            }}
+            onPointerUp={() => {
+              moveRef.current = 0;
+            }}
+            onPointerLeave={() => {
+              moveRef.current = 0;
+            }}
+            className="flex-1 py-3 rounded-xl bg-slate-200 active:bg-indigo-600 active:text-white border border-slate-300 flex items-center justify-center text-sm font-bold text-slate-800 active:scale-95 shadow-sm touch-manipulation min-h-[44px]"
+          >
+            ◀ {language === 'ko' ? '왼쪽' : 'Left'}
+          </button>
+          <button
+            type="button"
+            onPointerDown={() => {
+              const g = gameRef.current;
+              if (!g.started) g.started = true;
+              moveRef.current = 1;
+            }}
+            onPointerUp={() => {
+              moveRef.current = 0;
+            }}
+            onPointerLeave={() => {
+              moveRef.current = 0;
+            }}
+            className="flex-1 py-3 rounded-xl bg-slate-200 active:bg-indigo-600 active:text-white border border-slate-300 flex items-center justify-center text-sm font-bold text-slate-800 active:scale-95 shadow-sm touch-manipulation min-h-[44px]"
+          >
+            {language === 'ko' ? '오른쪽' : 'Right'} ▶
+          </button>
         </div>
       </div>
 

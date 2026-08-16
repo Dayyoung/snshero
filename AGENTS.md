@@ -2,8 +2,8 @@
 # SNS히어로 에이전트 지침서 (AGENTS.md)
 
 ## 스프레드시트 개선 작업 진행 상태
-- **마지막 수정 완료 항목 ID**: `Row 410 / gemini-ex (카드 분해 모달, 덱 업그레이드 모달, 주식 거래소, 월드 코덱스 DESIGN.md 모노스페이스 최적화 및 구글폼 완료 보고 제출)`
-- **최종 업데이트 일시**: 2026-08-14 02:26
+- **마지막 수정 완료 항목 ID**: `gemini-ex / 1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s 346~353 항목 전수 구현 완료 (3x 터보 모드, 보물 고블린 난입, 스피드 어택 클리어 보너스, 1라인 턴 상태바, 1-Ply 콤보 캐스케이드 연쇄 수 싸움, 서든데스 오버클럭 가속, 언더독 역전 바운티, 1px 점선 모노스페이스 배치 가이드)`
+- **최종 업데이트 일시**: 2026-08-16 00:05 (KST)
 
 ## 프로젝트 개요
 - **이름**: SNS히어로 (SNSHero Revolution)
@@ -31,6 +31,7 @@
 
 ## 작업 전/후 체크리스트
 - [ ] `npm run lint` (tsc --noEmit) 통과 여부 확인
+- [ ] `DESIGN.md` 디자인 가이드 준수 여부 (Monospace 서체, 웜크림/잉크 테마, 플랫 디자인, 1px 헤어라인, 4px/0px 반경, 44px+ 터치 타깃)
 - [ ] 기존 코드 스타일(인덴트, 따옴표 등) 준수
 - [ ] 새로운 localStorage 키 추가 시 `AGENTS.md`에 문서화
 
@@ -44,22 +45,34 @@
 - 외부 CDN에서 직접 스크립트 로드 금지. 모든 의존성은 `npm`으로 관리.
 - `console.log` 남발 금지. 디버깅 후 불필요한 로그는 제거. (단, `testMode` 조건 내 로그는 허용)
 
-## 커밋 및 작업 종료 보고 정책
+## 매시 정각 미션 게임 테스트/개선 및 작업 종료 보고 정책
+- **매시 정각 크론 작업(`0 * * * *`)**: 매시 정각마다 미션게임(카드러시, 카드하이스트, 카드탭, 카드슬롯, 카드소서리, 카드플립, 카드슬라이드, 카드점퍼 등)을 순차적으로 선택하여 집중 테스트 및 개선을 수행합니다.
+- **미니게임 점검 및 개선 기준**:
+  1. **모바일 원핸드 플레이**: 상하스크롤 없이 한손으로 100% 간단하게 플레이 가능한지 (`100dvh`, overflow 방지, 모바일 가상 D-패드/터치 버튼 제공).
+  2. **난이도 및 재미**: 난이도 곡선이 적절하고 직관적인 재미와 성취감이 제공되는지.
+  3. **보상 형평성**: 타 게임 대비 합리적이고 균형 잡힌 SNS 포인트 보상 구조 (10~60 SNS 수준)를 갖추었는지.
+  4. **모바일 UI 무결성**: 모바일 화면에서 모든 UI가 잘림 없이 표시되고 터치 영역이 44px 이상으로 쾌적하게 동작하는지.
+  5. **디자인 가이드 준수**: [DESIGN.md](file:///Users/dayyoung/project/snshero/DESIGN.md) 기준 준수 여부 (Monospace 서체, 웜크림/잉크 팔레트, 그림자/그라데이션 지양, 1px hairline 보더, 인터랙티브 4px/컨테이너 0px 모서리 반경, 대괄호/ASCII 마커 활용).
 - 파일이 변경될 때마다 즉시 커밋을 수행합니다.
 - 커밋 메시지는 변경 사항을 명확하게 설명해야 합니다.
 - 모든 작업이 종료되면 검증 완료된 구글 폼 엔드포인트(`https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse`)로 결과를 즉시 보고합니다.
-  - **단일 보고 (curl)**:
+  - **단일 보고 (Python / curl)**:
+    ```bash
+    python3 skills/report-ex/scripts/submit_report.py --dept "개발" --task "[작업명]" --status "작업완료" --details "[작업 상세 내용 및 검증 결과]"
+    ```
+    또는
     ```bash
     curl -s -X POST "https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse" \
-      -d "entry.1712635414=개발" \
-      -d "entry.1651694192=[작업명]" \
-      -d "entry.1282964596=작업완료" \
-      -d "entry.1982035501=[작업 상세 내용 및 검증 결과]"
+      --data-urlencode "entry.1712635414=개발" \
+      --data-urlencode "entry.1651694192=[작업명]" \
+      --data-urlencode "entry.1282964596=작업완료" \
+      --data-urlencode "entry.1982035501=[작업 상세 내용 및 검증 결과]"
     ```
   - **일괄 자동 보고 (Python 스크립트)**:
     ```bash
     python3 skills/report-ex/scripts/submit_report.py --sync-sheet
     ```
+- 작업 완료 후 `WORK_LOGS.md` 파일에 실행 일시, 작업 내역, 검증 결과 및 구글 폼 제출 건수를 반드시 누적 기록하고 대화창에 보고합니다.
 
 ## 디자인 지침
 - UI의 일관성과 사용자 경험을 최우선으로 고려합니다.
@@ -101,6 +114,7 @@
 - `hero_dungeon_active_state`: 던전 활성 상태
 - `hero_mode_play_data`: 모드별 플레이 데이터
 - `hero_auto_battle_setting`: 자동 전투 설정 (true/false)
+- `hero_auto_battle_speed`: 자동/전투 배속 설정 ('1x' / '2x' / '3x')
 - `hero_match_history`: 매치 히스토리 (최근 전투 기록 배열)
 - `hero_community_pvp_post_id`: 커뮤니티 PVP 포스트 ID
 - `hero_pvp_battle_result`: PVP 전투 결과

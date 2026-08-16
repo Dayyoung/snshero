@@ -252,20 +252,20 @@ export const MemoryMatchGame: React.FC<MemoryMatchGameProps> = ({
   const cellGap = 5;
 
   return (
-    <div className="min-h-screen bg-slate-50/30 text-slate-800 flex flex-col items-center font-sans select-none pb-12 w-full overflow-x-hidden">
+    <div className="h-[100dvh] max-h-[100dvh] bg-slate-50/30 text-slate-800 flex flex-col items-center justify-between font-sans select-none pb-2 w-full overflow-hidden">
       {/* Header */}
-      <header className="w-full h-16 flex items-center justify-between border-b border-slate-100 px-4 md:px-6 bg-white shrink-0">
+      <header className="w-full h-14 flex items-center justify-between border-b border-slate-100 px-4 md:px-6 bg-white shrink-0">
         <button
           onClick={onExit}
           className="p-2 bg-slate-50 border border-slate-200/60 rounded-xl hover:bg-slate-100 hover:text-indigo-600 transition-colors shadow-sm cursor-pointer text-slate-600 flex items-center justify-center"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={18} />
         </button>
         <div className="text-center">
-          <h1 className="text-base md:text-lg font-bold text-slate-800 tracking-tight">
+          <h1 className="text-sm md:text-base font-bold text-slate-800 tracking-tight">
             {language === 'ko' ? '카드 짝맞추기' : 'Memory Match'}
           </h1>
-          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
+          <div className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
             Lv.{level + 1} ({cols}×{rows})
           </div>
         </div>
@@ -281,7 +281,7 @@ export const MemoryMatchGame: React.FC<MemoryMatchGameProps> = ({
       </header>
 
       {/* Info Stats */}
-      <div className="flex items-center gap-4 text-xs font-bold my-4 py-1.5 px-4 bg-white rounded-full border border-slate-100 shadow-xs">
+      <div className="flex items-center gap-4 text-xs font-bold my-2 py-1 px-4 bg-white rounded-full border border-slate-100 shadow-xs shrink-0">
         <span className="text-slate-550">
           {language === 'ko' ? '시도' : 'Moves'}: <span className="text-slate-800">{moves}</span>
         </span>
@@ -301,15 +301,15 @@ export const MemoryMatchGame: React.FC<MemoryMatchGameProps> = ({
       </div>
 
       {previewPhase && !showTutorial && (
-        <div className="mb-4 px-4 py-2 bg-amber-50 border border-amber-250 text-amber-800 text-xs font-bold rounded-xl text-center shadow-xs animate-pulse">
+        <div className="mb-2 px-4 py-1.5 bg-amber-50 border border-amber-250 text-amber-800 text-xs font-bold rounded-xl text-center shadow-xs animate-pulse shrink-0">
           {language === 'ko' ? `카드를 기억하세요! ${previewCountdown}초` : `Memorize! ${previewCountdown}s`}
         </div>
       )}
 
       {/* Responsive Grid Container */}
-      <div className="w-full max-w-md px-4 flex justify-center">
+      <div className="w-full max-w-md px-4 flex-1 min-h-0 flex items-center justify-center">
         <div
-          className="grid p-3 bg-slate-900/90 rounded-3xl border border-slate-950 shadow-xl w-full max-w-[360px]"
+          className="grid p-2.5 bg-slate-900/90 rounded-3xl border border-slate-950 shadow-xl w-full max-w-[340px] max-h-[62vh]"
           style={{
             gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
             gap: `${cellGap}px`,

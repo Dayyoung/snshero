@@ -6291,6 +6291,29 @@ function AppContent() {
                       </div>
                       <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-slate-400 group-hover:text-slate-600" />
                     </button>
+                    {/* Modoo Soft Work Monitor */}
+                    <button
+                      onClick={() => {
+                        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                        setIsMenuOpen(false);
+                        setView('modoo');
+                      }}
+                      className="w-full border border-amber-200/80 p-3.5 text-left transition-all relative flex items-center justify-between font-sans bg-amber-50/60 hover:bg-amber-100/80 active:scale-[0.98] shadow-xs hover:border-amber-300 cursor-pointer rounded-xl group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-xl">🏢</span>
+                        <div className="flex flex-col">
+                          <span className="font-bold text-sm uppercase tracking-tight text-slate-800 flex items-center gap-1.5">
+                            <span>{language === 'ko' ? '모두소프트 업무 현황' : 'Modoo Work Monitor'}</span>
+                            <span className="text-[9px] px-1 py-0.2 bg-amber-200 border border-amber-400 font-bold rounded-xs text-amber-900">LIVE</span>
+                          </span>
+                          <span className="text-[10px] text-slate-500 font-mono">
+                            {language === 'ko' ? '구글 스프레드시트 실시간 모니터링' : 'Realtime Google Sheets'}
+                          </span>
+                        </div>
+                      </div>
+                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-amber-700" />
+                    </button>
                   </div>
 
                   {/* Bottom area (Settings & Footer) */}

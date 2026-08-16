@@ -270,12 +270,11 @@ export const CardHeistGame: React.FC<CardHeistGameProps> = ({
   const handleReward = useCallback(() => {
     if (rewardedRef.current) return;
     rewardedRef.current = true;
-    const baseReward = level * 50;
-    const treasureBonus = treasuresCollected * 30;
-    const moveBonus = Math.max(0, 100 - moves);
-    const total = isWin ? baseReward + treasureBonus + moveBonus : Math.floor((treasureBonus) / 2);
-    onReward(Math.max(total, isWin ? 30 : 5));
-  }, [level, treasuresCollected, moves, isWin, onReward]);
+    const total = isWin 
+      ? Math.min(60, 20 + level * 5 + treasuresCollected * 4)
+      : Math.min(20, 5 + treasuresCollected * 3);
+    onReward(Math.max(total, 5));
+  }, [level, treasuresCollected, isWin, onReward]);
 
   useEffect(() => {
     if (isGameOver) {
@@ -357,226 +356,199 @@ export const CardHeistGame: React.FC<CardHeistGameProps> = ({
   const is = (row: number, col: number) => grid[row]?.[col];
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-b from-indigo-950 via-slate-900 to-indigo-950 flex flex-col items-center px-4 py-4 gap-4 font-sans">
-      {/* Header */}
-      <div className="w-full max-w-md flex items-center justify-between">
-        <button
-          onClick={() => {
-            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-            onExit();
-          }}
-          className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 flex items-center justify-center border border-white/10 transition-all"
-        >
-          <ArrowLeft size={20} className="text-white" />
-        </button>
-        <h1 className="text-lg font-black tracking-wider text-white uppercase">
-          {t('mode_cardheist', language)}
-        </h1>
-        <div className="flex items-center gap-1">
+    <div className="h-[100dvh] max-h-[100dvh] overflow-hidden flex flex-col justify-between select-none font-mono bg-[#0f1117] text-slate-100 p-2 sm:p-4">
+      <div className="w-full max-w-md mx-auto flex flex-col h-full justify-between gap-1 sm:gap-2">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-white/10 pb-1.5 shrink-0">
+          <button
+            onClick={() => {
+              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              onExit();
+            }}
+            className="inline-flex items-center gap-1.5 rounded-sm bg-white/5 border border-white/10 px-3 py-1.5 text-xs font-mono text-white tracking-wider hover:bg-white/10 transition-colors min-h-[44px]"
+          >
+            <ArrowLeft size={14} />
+            <span>[ {language === 'ko' ? '뒤로' : 'BACK'} ]</span>
+          </button>
+          <div className="text-xs sm:text-sm font-mono font-bold tracking-wider text-amber-400 uppercase">
+            [{t('mode_cardheist', language)}]
+          </div>
           <button
             onClick={() => setShowDangerZones(!showDangerZones)}
-            className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 flex items-center justify-center border border-white/10 transition-all"
+            className="inline-flex items-center gap-1.5 rounded-sm bg-white/5 border border-white/10 px-3 py-1.5 text-xs font-mono text-white tracking-wider hover:bg-white/10 transition-colors min-h-[44px]"
             title={showDangerZones ? 'Hide danger zones' : 'Show danger zones'}
           >
-            {showDangerZones ? <EyeOff size={18} className="text-amber-400" /> : <Eye size={18} className="text-indigo-300/60" />}
+            {showDangerZones ? <EyeOff size={14} className="text-amber-400" /> : <Eye size={14} className="text-slate-400" />}
+            <span className="text-[10px]">{showDangerZones ? '[ON]' : '[OFF]'}</span>
           </button>
         </div>
-      </div>
 
-      {/* Player Card Banner */}
-      <div className="w-full max-w-md bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 px-4 py-3 flex items-center gap-3 shadow-xl shadow-indigo-900/20">
-        <div
-          className="w-12 h-12 rounded-xl border-2 border-amber-400/40 bg-cover bg-center shrink-0"
-          style={getCardSpriteStyle(playerCardId)}
-        />
-        <div className="flex-1 min-w-0">
-          <p className="text-amber-300 text-xs font-semibold">
-            {language === 'ko' ? '침투 요원' : 'INFILTRATOR'}
-          </p>
-          <p className="text-white text-sm font-bold truncate">{playerCard?.title || playerCard?.title_en || ''}</p>
+        {/* Top Status Bar */}
+        <div className="grid grid-cols-4 gap-1.5 text-center shrink-0 border border-white/10 bg-white/5 p-1.5 rounded-none text-xs">
+          <div>
+            <div className="text-[10px] text-slate-400">{language === 'ko' ? '레벨' : 'LVL'}</div>
+            <div className="font-bold text-amber-400">LV.{level}</div>
+          </div>
+          <div>
+            <div className="text-[10px] text-slate-400">{language === 'ko' ? '보물' : 'TREASURE'}</div>
+            <div className="font-bold text-slate-100">{treasuresCollected}/{totalTreasures}</div>
+          </div>
+          <div>
+            <div className="text-[10px] text-slate-400">{language === 'ko' ? '이동' : 'MOVES'}</div>
+            <div className="font-bold text-slate-100">{moves}</div>
+          </div>
+          <div>
+            <div className="text-[10px] text-slate-400">{language === 'ko' ? '보상' : 'REWARD'}</div>
+            <div className="font-bold text-amber-400">{isWin ? Math.min(60, 20 + level * 5 + treasuresCollected * 4) : Math.min(20, 5 + treasuresCollected * 3)} SNS</div>
+          </div>
         </div>
-        <div className="text-right">
-          <p className="text-[10px] text-indigo-300/60 font-semibold uppercase tracking-wider">
-            {language === 'ko' ? '레벨' : 'LVL'}
-          </p>
-          <p className="text-amber-400 text-lg font-black">{level}</p>
-        </div>
-      </div>
 
-      {/* Stats Bar */}
-      <div className="w-full max-w-md flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 px-3 py-2">
-          <Trophy size={14} className="text-amber-400" />
-          <span className="text-amber-400 text-sm font-black">{score}</span>
-        </div>
-        <div className="flex items-center gap-2 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 px-3 py-2">
-          <Zap size={14} className="text-indigo-400" />
-          <span className="text-white text-sm font-black">
-            {treasuresCollected}/{totalTreasures}
-          </span>
-        </div>
-        <button
-          onClick={() => {
-            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-            initGame();
-          }}
-          className="flex items-center gap-1.5 bg-white/10 hover:bg-white/15 rounded-xl border border-white/10 px-3 py-2 transition-all"
-        >
-          <RotateCcw size={14} className="text-indigo-300/60" />
-        </button>
-      </div>
+        {/* Game Grid */}
+        <div className="flex-1 min-h-0 flex items-center justify-center relative overflow-hidden">
+          <div
+            ref={gridRef}
+            className="w-full max-w-[340px] aspect-square bg-black/40 border border-white/10 p-1 relative overflow-hidden touch-none select-none"
+            style={{ touchAction: 'none' }}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onTouchMove={(e) => e.preventDefault()}
+          >
+            <div
+              className="grid gap-1 w-full h-full"
+              style={{ gridTemplateColumns: `repeat(${GRID}, 1fr)`, gridTemplateRows: `repeat(${GRID}, 1fr)` }}
+            >
+              {Array.from({ length: GRID * GRID }, (_, i) => {
+                const row = Math.floor(i / GRID);
+                const col = i % GRID;
+                const cell = is(row, col);
+                const isDanger = showDangerZones && dangerNeighbors.has(`${row},${col}`);
 
-      {/* Game Grid */}
-      <div
-        ref={gridRef}
-        className="w-full max-w-md aspect-square bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-3 shadow-xl shadow-indigo-900/20 touch-none select-none"
-        style={{ touchAction: 'none' }}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        onTouchMove={(e) => e.preventDefault()}
-      >
-        <div
-          className="grid gap-1 w-full h-full"
-          style={{ gridTemplateColumns: `repeat(${GRID}, 1fr)`, gridTemplateRows: `repeat(${GRID}, 1fr)` }}
-        >
-          {Array.from({ length: GRID * GRID }, (_, i) => {
-            const row = Math.floor(i / GRID);
-            const col = i % GRID;
-            const cell = is(row, col);
-            const isDanger = showDangerZones && dangerNeighbors.has(`${row},${col}`);
-
-            return (
-              <div
-                key={`${row}-${col}`}
-                className={cn(
-                  'rounded-lg flex items-center justify-center relative transition-all duration-150',
-                  cell?.type === 'empty' && !isDanger && 'bg-white/5',
-                  isDanger && cell?.type === 'empty' && 'bg-red-900/20 border border-red-500/20',
-                  cell?.type === 'treasure' && 'bg-amber-900/30 ring-1 ring-amber-400/60',
-                  cell?.type === 'player' && 'bg-indigo-600/30 ring-2 ring-indigo-400/80',
-                  cell?.type === 'enemy' && 'bg-red-900/40 ring-1 ring-red-500/60',
-                )}
-              >
-                {(cell?.type === 'player' || cell?.type === 'enemy' || cell?.type === 'treasure') && cell.cardId > 0 && (
+                return (
                   <div
-                    className="w-full h-full bg-contain bg-center bg-no-repeat"
-                    style={{
-                      ...getCardSpriteStyle(cell.cardId),
-                      filter: cell.type === 'treasure'
-                        ? 'drop-shadow(0 0 6px rgba(251, 191, 36, 0.6)) brightness(1.2)'
-                        : cell.type === 'enemy'
-                          ? 'drop-shadow(0 0 4px rgba(239, 68, 68, 0.5)) brightness(0.9)'
-                          : 'drop-shadow(0 0 6px rgba(99, 102, 241, 0.7)) brightness(1.1)',
-                    }}
-                  />
-                )}
-                {cell?.type === 'treasure' && !lowSpecMode && (
-                  <div className="absolute inset-0 rounded-lg animate-pulse bg-amber-400/10" />
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Touch hint */}
-      <p className="text-[10px] font-bold text-indigo-300/40 text-center mt-2 tracking-wide">
-        {language === 'ko' ? '스와이프 또는 방향키로 이동 · 적을 피해 보물을 수집하세요!' : 'Swipe or arrow keys to move · Avoid enemies and collect treasures!'}
-      </p>
-
-      {/* Swipe Direction Indicator */}
-      {swipeDir && (
-        <div className={cn(
-          'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none',
-          'bg-indigo-600/80 backdrop-blur-sm text-white px-6 py-3 rounded-2xl',
-          'font-black text-xl tracking-wider uppercase shadow-2xl',
-          'animate-in fade-in zoom-in duration-150'
-        )}>
-          {swipeDir === 'up' && '▲'}
-          {swipeDir === 'down' && '▼'}
-          {swipeDir === 'left' && '◀'}
-          {swipeDir === 'right' && '▶'}
-        </div>
-      )}
-
-      {/* Game Over / Win Overlay */}
-      {isGameOver && (
-        <div className="fixed inset-0 z-[11000] flex flex-col items-center justify-center bg-slate-950/90 backdrop-blur-lg pointer-events-auto">
-          <div className={cn(
-            'w-64 p-6 rounded-2xl border shadow-2xl text-center',
-            isWin
-              ? 'bg-white/5 backdrop-blur-sm border-amber-400/30'
-              : 'bg-white/5 backdrop-blur-sm border-red-500/30'
-          )}>
-            <div className={cn(
-              'w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4',
-              isWin ? 'bg-amber-400/20' : 'bg-red-500/20'
-            )}>
-              {isWin
-                ? <Trophy size={32} className="text-amber-400" />
-                : <Shield size={32} className="text-red-400" />
-              }
-            </div>
-            <h2 className={cn(
-              'text-xl font-black tracking-wider mb-2',
-              isWin ? 'text-amber-400' : 'text-red-400'
-            )}>
-              {isWin
-                ? (language === 'ko' ? '탈출 성공!' : 'ESCAPED!')
-                : (language === 'ko' ? '발각됨!' : 'CAUGHT!')
-              }
-            </h2>
-            <p className="text-indigo-300/60 text-sm mb-4">
-              {language === 'ko'
-                ? `보물 ${treasuresCollected}개 수집 · ${moves}회 이동`
-                : `${treasuresCollected} treasures · ${moves} moves`
-              }
-            </p>
-            <div className="flex items-center gap-1 justify-center mb-4">
-              <Trophy size={14} className="text-amber-400" />
-              <span className="text-amber-400 text-2xl font-black">+{isWin ? (level * 50 + treasuresCollected * 30 + Math.max(0, 100 - moves)) : Math.floor(treasuresCollected * 15)}</span>
-              <span className="text-indigo-300/60 text-xs ml-1">SNS</span>
-            </div>
-            <div className="flex flex-col gap-2">
-              <button
-                onClick={() => {
-                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                  if (isWin) setLevel(prev => Math.min(prev + 1, 5));
-                  initGame();
-                }}
-                className={cn(
-                  'w-full py-2.5 rounded-xl font-black text-sm tracking-wider transition-all',
-                  isWin
-                    ? 'bg-amber-500 hover:bg-amber-400 text-slate-900 shadow-lg shadow-amber-500/30'
-                    : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30'
-                )}
-              >
-                {isWin
-                  ? (language === 'ko' ? '다음 레벨' : 'NEXT LEVEL')
-                  : (language === 'ko' ? '재도전' : 'RETRY')
-                }
-              </button>
-              <button
-                onClick={() => {
-                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                  onExit();
-                }}
-                className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-black text-sm tracking-wider border border-white/10 transition-all"
-              >
-                {language === 'ko' ? '나가기' : 'EXIT'}
-              </button>
+                    key={`${row}-${col}`}
+                    className={cn(
+                      'rounded-sm flex items-center justify-center relative transition-all duration-100 border',
+                      cell?.type === 'empty' && !isDanger && 'bg-slate-900/60 border-white/5',
+                      isDanger && cell?.type === 'empty' && 'bg-red-950/40 border-red-500/30',
+                      cell?.type === 'treasure' && 'bg-amber-950/40 border-amber-400/60',
+                      cell?.type === 'player' && 'bg-amber-500/20 border-amber-400 ring-1 ring-amber-400',
+                      cell?.type === 'enemy' && 'bg-red-950/60 border-red-500/60',
+                    )}
+                  >
+                    {(cell?.type === 'player' || cell?.type === 'enemy' || cell?.type === 'treasure') && cell.cardId > 0 && (
+                      <div
+                        className="w-full h-full bg-contain bg-center bg-no-repeat p-0.5"
+                        style={getCardSpriteStyle(cell.cardId)}
+                      />
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
-      )}
 
-      {/* Mobile Controls Hint */}
-      <p className="text-[10px] text-indigo-300/40 font-semibold tracking-wider text-center">
-        {language === 'ko'
-          ? '스와이프 또는 방향키로 이동 · 적을 피해 보물을 수집하세요!'
-          : 'SWIPE or ARROW KEYS to move · Avoid enemies & collect treasures!'
-        }
-      </p>
+        {/* Mobile One-Handed D-Pad */}
+        <div className="shrink-0 flex flex-col items-center gap-1 select-none pb-1">
+          <button
+            type="button"
+            onClick={() => movePlayer('up')}
+            className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
+            aria-label="Up"
+          >
+            ▲
+          </button>
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => movePlayer('left')}
+              className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
+              aria-label="Left"
+            >
+              ◀
+            </button>
+            <button
+              type="button"
+              onClick={() => movePlayer('down')}
+              className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
+              aria-label="Down"
+            >
+              ▼
+            </button>
+            <button
+              type="button"
+              onClick={() => movePlayer('right')}
+              className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
+              aria-label="Right"
+            >
+              ▶
+            </button>
+          </div>
+          <p className="text-[10px] text-slate-400 text-center font-mono">
+            {language === 'ko' ? 'D-패드 터치 또는 화면 스와이프로 1손 조작' : 'D-Pad or swipe to move'}
+          </p>
+        </div>
+
+        {/* Swipe Direction Indicator */}
+        {swipeDir && (
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none bg-slate-900 border border-amber-400 text-amber-300 px-4 py-2 font-mono text-lg font-bold">
+            [{swipeDir === 'up' && '▲'}{swipeDir === 'down' && '▼'}{swipeDir === 'left' && '◀'}{swipeDir === 'right' && '▶'}]
+          </div>
+        )}
+
+        {/* Game Over / Win Overlay */}
+        {isGameOver && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 font-mono">
+            <div className={cn(
+              'w-full max-w-xs p-5 border text-center rounded-none bg-slate-900',
+              isWin ? 'border-amber-400' : 'border-red-500'
+            )}>
+              <h2 className={cn(
+                'text-base font-bold tracking-wider mb-2 uppercase',
+                isWin ? 'text-amber-400' : 'text-red-400'
+              )}>
+                {isWin
+                  ? (language === 'ko' ? '[ 탈출 성공! ]' : '[ ESCAPED! ]')
+                  : (language === 'ko' ? '[ 적에게 발각됨! ]' : '[ CAUGHT! ]')
+                }
+              </h2>
+              <p className="text-slate-300 text-xs mb-2">
+                {language === 'ko'
+                  ? `보물 ${treasuresCollected}개 수집 · ${moves}회 이동`
+                  : `${treasuresCollected} treasures · ${moves} moves`
+                }
+              </p>
+              <div className="text-amber-400 text-sm font-bold mb-4">
+                +{isWin ? Math.min(60, 20 + level * 5 + treasuresCollected * 4) : Math.min(20, 5 + treasuresCollected * 3)} SNS
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    if (isWin) setLevel(prev => Math.min(prev + 1, 5));
+                    initGame();
+                  }}
+                  className="flex-1 py-2.5 rounded-sm font-bold text-xs bg-amber-500 text-slate-950 hover:bg-amber-400 min-h-[44px]"
+                >
+                  {isWin
+                    ? (language === 'ko' ? '다음 레벨' : 'NEXT')
+                    : (language === 'ko' ? '재도전' : 'RETRY')
+                  }
+                </button>
+                <button
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    onExit();
+                  }}
+                  className="flex-1 py-2.5 rounded-sm bg-white/10 hover:bg-white/15 text-white font-bold text-xs border border-white/20 min-h-[44px]"
+                >
+                  {language === 'ko' ? '나가기' : 'EXIT'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -458,68 +458,96 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center font-sans select-none">
-      <header className="w-full max-w-lg flex items-center justify-between p-3">
+    <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white flex flex-col items-center justify-between font-sans select-none overflow-hidden pb-3">
+      <header className="w-full max-w-lg flex items-center justify-between px-3 py-2 shrink-0">
         <button onClick={onExit} className="p-2 rounded-2xl bg-white/10 hover:bg-white/15 transition-colors cursor-pointer">
           <ArrowLeft size={20} />
         </button>
         <div className="text-center">
-          <h1 className="text-lg font-black uppercase tracking-tight">{t('mode_breakout', language)}</h1>
+          <h1 className="text-base sm:text-lg font-black uppercase tracking-tight">{t('mode_breakout', language)}</h1>
         </div>
-        <div className="px-3 py-2 rounded-2xl bg-indigo-500/20 border border-indigo-400/20 text-indigo-100 font-black text-sm tabular-nums">
+        <div className="px-3 py-1.5 rounded-2xl bg-indigo-500/20 border border-indigo-400/20 text-indigo-100 font-black text-xs sm:text-sm tabular-nums">
           {hudScore}
         </div>
       </header>
 
-      <div className="flex items-center gap-3 mb-2 text-sm font-bold">
+      <div className="flex items-center gap-3 py-1 text-xs sm:text-sm font-bold shrink-0">
         {Array.from({ length: MAX_LIVES }).map((_, i) => (
           <Heart key={i} size={16} className={i < hudLives ? 'text-rose-500 fill-rose-500' : 'text-slate-600'} />
         ))}
       </div>
 
-      <div
-        className={cn('relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 shadow-2xl')}
-        style={{ aspectRatio: `${CANVAS_W}/${CANVAS_H}`, touchAction: 'none' }}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp}
-      >
-        <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H} className="w-full h-full" />
+      <main className="w-full max-w-lg flex-1 min-h-0 flex flex-col items-center justify-center px-3">
+        <div
+          className={cn('relative w-full max-h-[58vh] overflow-hidden rounded-2xl border border-white/10 shadow-2xl')}
+          style={{ aspectRatio: `${CANVAS_W}/${CANVAS_H}`, touchAction: 'none' }}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+        >
+          <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H} className="w-full h-full object-contain" />
 
-        {(hudGameOver || hudWin) && (
-          <div className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-6">
-            <div className="bg-white text-slate-900 rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl">
-              {hudWin ? (
-                <Trophy size={42} className="mx-auto text-amber-500 mb-3" />
-              ) : (
-                <Heart size={42} className="mx-auto text-rose-500 mb-3" />
-              )}
-              <h2 className="text-xl font-black mb-1">
-                {hudWin ? (language === 'ko' ? '승리!' : 'WIN!') : (language === 'ko' ? '게임 오버' : 'GAME OVER')}
-              </h2>
-              <p className="text-sm font-bold text-slate-500 mb-1">
-                {language === 'ko' ? `점수: ${gameRef.current.score}` : `Score: ${gameRef.current.score}`}
-              </p>
-              <p className="text-sm font-bold text-indigo-600 mb-4">
-                {t('breakout_reward', language).replace('{amount}', String(Math.floor(gameRef.current.score / 20)))}
-              </p>
-              <div className="flex gap-2">
-                <button onClick={startGame} className="flex-1 py-3 bg-indigo-600 text-white rounded-2xl font-black flex items-center justify-center gap-2 cursor-pointer">
-                  <RotateCcw size={16} />
-                  {language === 'ko' ? '재시작' : 'Restart'}
-                </button>
-                <button onClick={onExit} className="flex-1 py-3 bg-slate-900 text-white rounded-2xl font-black cursor-pointer">
-                  {t('home', language)}
-                </button>
+          {(hudGameOver || hudWin) && (
+            <div className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-6">
+              <div className="bg-white text-slate-900 rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl">
+                {hudWin ? (
+                  <Trophy size={42} className="mx-auto text-amber-500 mb-3" />
+                ) : (
+                  <Heart size={42} className="mx-auto text-rose-500 mb-3" />
+                )}
+                <h2 className="text-xl font-black mb-1">
+                  {hudWin ? (language === 'ko' ? '승리!' : 'WIN!') : (language === 'ko' ? '게임 오버' : 'GAME OVER')}
+                </h2>
+                <p className="text-sm font-bold text-slate-500 mb-1">
+                  {language === 'ko' ? `점수: ${gameRef.current.score}` : `Score: ${gameRef.current.score}`}
+                </p>
+                <p className="text-sm font-bold text-indigo-600 mb-4">
+                  {t('breakout_reward', language).replace('{amount}', String(Math.floor(gameRef.current.score / 20)))}
+                </p>
+                <div className="flex gap-2">
+                  <button onClick={startGame} className="flex-1 py-3 bg-indigo-600 text-white rounded-2xl font-black flex items-center justify-center gap-2 cursor-pointer">
+                    <RotateCcw size={16} />
+                    {language === 'ko' ? '재시작' : 'Restart'}
+                  </button>
+                  <button onClick={onExit} className="flex-1 py-3 bg-slate-900 text-white rounded-2xl font-black cursor-pointer">
+                    {t('home', language)}
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
 
-      <div className="mt-3 px-4 py-2 bg-white/5 rounded-2xl text-[10px] text-slate-400 font-bold text-center max-w-lg">
-        {language === 'ko' ? '드래그하여 패들을 움직이세요 | 방향키 사용 가능' : 'Drag to move paddle | Arrow keys available'}
+        {/* Mobile Left / Right buttons */}
+        <div className="mt-3 flex items-center justify-center gap-8 w-full max-w-xs sm:hidden select-none shrink-0">
+          <button
+            type="button"
+            onPointerDown={() => {
+              const g = gameRef.current;
+              if (!g.started) g.started = true;
+              g.paddleX = Math.max(0, g.paddleX - 25);
+            }}
+            className="flex-1 py-2.5 rounded-xl bg-white/10 active:bg-indigo-500/40 border border-white/20 flex items-center justify-center text-lg text-white active:scale-95 shadow-md touch-manipulation"
+          >
+            ◀ {language === 'ko' ? '왼쪽' : 'Left'}
+          </button>
+          <button
+            type="button"
+            onPointerDown={() => {
+              const g = gameRef.current;
+              if (!g.started) g.started = true;
+              g.paddleX = Math.min(CANVAS_W - PADDLE_W, g.paddleX + 25);
+            }}
+            className="flex-1 py-2.5 rounded-xl bg-white/10 active:bg-indigo-500/40 border border-white/20 flex items-center justify-center text-lg text-white active:scale-95 shadow-md touch-manipulation"
+          >
+            {language === 'ko' ? '오른쪽' : 'Right'} ▶
+          </button>
+        </div>
+      </main>
+
+      <div className="px-4 py-1.5 bg-white/5 rounded-2xl text-[9px] sm:text-[10px] text-slate-400 font-bold text-center max-w-lg shrink-0">
+        {language === 'ko' ? '화면 드래그 또는 하단 버튼으로 패들을 조작하세요' : 'Drag screen or tap buttons to move paddle'}
       </div>
     </div>
   );

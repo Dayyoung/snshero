@@ -413,20 +413,20 @@ export const GomokuGame: React.FC<GomokuGameProps> = ({
   }, [phase, playSfx, placeStone]);
 
   return (
-    <div className="min-h-screen bg-slate-50/30 text-slate-800 flex flex-col items-center font-sans select-none pb-12 w-full overflow-x-hidden">
+    <div className="h-[100dvh] max-h-[100dvh] bg-slate-50/30 text-slate-800 flex flex-col items-center justify-between font-sans select-none pb-2 w-full overflow-hidden">
       {/* Header */}
-      <header className="w-full h-16 flex items-center justify-between border-b border-slate-100 px-4 md:px-6 bg-white shrink-0">
+      <header className="w-full h-14 flex items-center justify-between border-b border-slate-100 px-4 md:px-6 bg-white shrink-0">
         <button
           onClick={onExit}
           className="p-2 bg-slate-50 border border-slate-200/60 rounded-xl hover:bg-slate-100 hover:text-indigo-600 transition-colors shadow-sm cursor-pointer text-slate-600 flex items-center justify-center"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={18} />
         </button>
         <div className="text-center">
-          <h1 className="text-base md:text-lg font-bold text-slate-800 tracking-tight">
+          <h1 className="text-sm md:text-base font-bold text-slate-800 tracking-tight">
             {language === 'ko' ? '오목' : 'Gomoku'}
           </h1>
-          <div className="flex items-center justify-center gap-2 mt-0.5 text-[10px] font-bold text-slate-400">
+          <div className="flex items-center justify-center gap-2 mt-0.5 text-[9px] sm:text-[10px] font-bold text-slate-400">
             <span className="inline-flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-black border border-slate-700" />
               {language === 'ko' ? '나' : 'Me'}
@@ -450,7 +450,7 @@ export const GomokuGame: React.FC<GomokuGameProps> = ({
       </header>
 
       {/* Zoom controls */}
-      <div className="flex items-center gap-2 my-4 px-3 py-1 bg-white border border-slate-150 rounded-full shadow-xs">
+      <div className="flex items-center gap-2 my-2 px-3 py-1 bg-white border border-slate-150 rounded-full shadow-xs shrink-0">
         <button
           onClick={zoomOut}
           disabled={viewScale <= MIN_SCALE}
@@ -479,14 +479,14 @@ export const GomokuGame: React.FC<GomokuGameProps> = ({
       </div>
 
       {/* Board canvas (Responsive Wrapper) */}
-      <div className="w-full max-w-md px-4 flex justify-center">
+      <div className="w-full max-w-md px-4 flex-1 min-h-0 flex items-center justify-center">
         <div
-          className="relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-900/5 shadow-xl w-full max-w-[360px] aspect-square"
+          className="relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-900/5 shadow-xl w-full max-w-[340px] max-h-[60vh] aspect-square"
           style={{ touchAction: 'none', cursor: isPanning ? 'grabbing' : 'grab' }}
         >
           <canvas
             ref={canvasRef}
-            className="w-full h-full"
+            className="w-full h-full object-contain"
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
@@ -495,7 +495,7 @@ export const GomokuGame: React.FC<GomokuGameProps> = ({
       </div>
 
       {/* Hint */}
-      <p className="mt-3 text-[10px] font-bold text-slate-400 text-center tracking-wide">
+      <p className="py-1 text-[9px] sm:text-[10px] font-bold text-slate-400 text-center tracking-wide shrink-0">
         {language === 'ko'
           ? '드래그: 이동  |  클릭: 돌 놓기  |  +/- : 확대/축소'
           : 'Drag: pan  |  Click: place  |  +/- : zoom'}

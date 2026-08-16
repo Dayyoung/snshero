@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Trophy, Zap, Sparkles, ArrowUpRight, Coins, ChevronDown, ChevronUp } from 'lucide-react';
+import { Trophy, Zap, Sparkles, ArrowUpRight, Coins, ChevronDown, ChevronUp, Share2, Check, Layers } from 'lucide-react';
 import { CardData } from '../types';
+import { getCardSpriteStyle } from '../lib/utils';
 
 export interface LeveledUpCardInfo {
   card: CardData;
@@ -19,9 +20,14 @@ export interface BattleResultPanelProps {
   totalDamageDealt: number;
   leveledUpCards: LeveledUpCardInfo[];
   allDeckCardsProgress?: LeveledUpCardInfo[];
+  usedCards?: CardData[];
   battleType?: string;
   language?: string;
   className?: string;
+  isSpeedAttackBonus?: boolean;
+  isUnderdogBonus?: boolean;
+  isGoblinBonus?: boolean;
+  onShareToCommunity?: () => void;
 }
 
 export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
@@ -30,11 +36,45 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
   totalDamageDealt,
   leveledUpCards,
   allDeckCardsProgress = [],
+  usedCards = [],
   language = 'ko',
-  className = ''
+  className = '',
+  isSpeedAttackBonus = false,
+  isUnderdogBonus = false,
+  isGoblinBonus = false,
+  onShareToCommunity
 }) => {
   const isKo = language === 'ko';
   const [showRewardsDetail, setShowRewardsDetail] = useState(false);
+  const [shared, setShared] = useState(false);
+
+  const handleShareClick = () => {
+    if (onShareToCommunity) {
+      onShareToCommunity();
+    } else {
+      // Local fallback share logic
+      try {
+        const battleSummaryPost = {
+          id: 'post_battle_' + Date.now(),
+          type: 'battle_result',
+          result,
+          snsEarned,
+          totalDamageDealt,
+          cardCount: usedCards.length,
+          timestamp: Date.now(),
+          author: localStorage.getItem('hero_user_name') || 'Hero',
+          content: isKo
+            ? `🔥 전투 완료! [${result === 'win' ? 'VICTORY 승리' : 'DEFEAT'}] 입힌 데미지: ${totalDamageDealt.toLocaleString()} DMG | 보상: +${snsEarned} SNS`
+            : `🔥 Battle Finished! [${result === 'win' ? 'VICTORY' : 'DEFEAT'}] Damage: ${totalDamageDealt.toLocaleString()} DMG | Reward: +${snsEarned} SNS`
+        };
+        localStorage.setItem('hero_community_pvp_post_id', JSON.stringify(battleSummaryPost));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    setShared(true);
+    setTimeout(() => setShared(false), 3000);
+  };
 
   return (
     <motion.div
@@ -61,12 +101,36 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
         </span>
       </div>
 
+      {/* Bonus Badges: Speed Attack / Underdog / Loot Goblin */}
+      {(isSpeedAttackBonus || isUnderdogBonus || isGoblinBonus) && (
+        <div className="flex flex-wrap gap-1.5 pt-0.5">
+          {isSpeedAttackBonus && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-950/60 border border-yellow-500/50 text-yellow-300 text-[10px] font-mono font-bold rounded-sm">
+              <Zap size={11} className="text-yellow-400 animate-pulse" />
+              {isKo ? '[ ⚡ 스피드 어택 +15% ]' : '[ ⚡ SPEED ATTACK +15% ]'}
+            </span>
+          )}
+          {isUnderdogBonus && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-indigo-950/60 border border-indigo-500/50 text-indigo-300 text-[10px] font-mono font-bold rounded-sm">
+              <Trophy size={11} className="text-indigo-400" />
+              {isKo ? '[ 🏆 언더독 역전 보너스 +20% ]' : '[ 🏆 UNDERDOG BOUNTY +20% ]'}
+            </span>
+          )}
+          {isGoblinBonus && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-950/60 border border-amber-500/50 text-amber-300 text-[10px] font-mono font-bold rounded-sm">
+              <Coins size={11} className="text-amber-400 animate-bounce" />
+              {isKo ? '[ 💰 보물 고블린 포획 +25 SNS ]' : '[ 💰 LOOT GOBLIN +25 SNS ]'}
+            </span>
+          )}
+        </div>
+      )}
+
       {/* Metrics Row: 1. SNS Points Gained  |  2. Total Damage Dealt */}
       <div className="grid grid-cols-2 gap-3">
         {/* SNS Points Gained */}
         <div className="bg-gradient-to-br from-amber-500/10 via-amber-950/20 to-slate-900 border border-amber-500/30 rounded-xl p-3 flex flex-col justify-between">
           <div className="flex items-center justify-between text-[10px] font-bold text-amber-400/80 uppercase">
-            <span>{isKo ? '획득 SNS 포인트' : 'SNS Points Gained'}</span>
+            <span>{isKo ? '획득 보상 (Rewards)' : 'Rewards Earned'}</span>
             <Coins size={14} className="text-amber-400" />
           </div>
           <div className="mt-1 flex items-baseline gap-1">
@@ -95,9 +159,71 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
             <span className="text-[10px] font-extrabold text-indigo-400">DMG</span>
           </div>
           <p className="text-[9px] text-slate-400 mt-1 font-sans">
-            {isKo ? '카드 파워 및 상성 타격 합산' : 'Card attacks & flip power'}
+            {isKo ? '카드 파워 및 타격 합산' : 'Total attack damage dealt'}
           </p>
         </div>
+      </div>
+
+      {/* Cards Used List */}
+      {usedCards && usedCards.length > 0 && (
+        <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-3 space-y-2">
+          <div className="flex items-center justify-between text-[10px] font-bold text-slate-300 uppercase tracking-wider">
+            <div className="flex items-center gap-1.5">
+              <Layers size={13} className="text-indigo-400" />
+              <span>{isKo ? '출전 카드 (Cards Used)' : 'Cards Used'}</span>
+            </div>
+            <span className="text-[9px] text-slate-400 font-mono">[{usedCards.length} Cards]</span>
+          </div>
+          <div className="flex flex-wrap gap-2 items-center">
+            {usedCards.slice(0, 5).map((card, idx) => {
+              const cardIdNum = Number(card.id) || (idx + 1);
+              return (
+                <div 
+                  key={card.id || `used-card-${idx}`}
+                  className="flex items-center gap-1.5 bg-slate-950/80 border border-slate-750 px-2 py-1 rounded-lg text-[10px]"
+                >
+                  <div 
+                    className="w-5 h-5 rounded shrink-0 border border-slate-700 bg-slate-900"
+                    style={getCardSpriteStyle(cardIdNum)}
+                  />
+                  <div className="flex flex-col">
+                    <span className="font-bold text-slate-200 truncate max-w-[80px]">
+                      {isKo ? (card.title || '카드') : (card.title_en || card.title || 'Card')}
+                    </span>
+                    <span className="text-[8px] text-amber-400/90">
+                      Lv.{card.level || 1} · {card.power || (card.attack ? card.attack * 10 : 100)}⚡
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Share to Community Feed Button */}
+      <div className="pt-0.5">
+        <button
+          type="button"
+          onClick={handleShareClick}
+          className={`w-full py-2.5 px-3 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer border shadow-sm active:scale-95 ${
+            shared 
+              ? 'bg-emerald-900/60 border-emerald-500/50 text-emerald-300' 
+              : 'bg-indigo-600/30 hover:bg-indigo-600/50 border-indigo-500/40 text-indigo-200'
+          }`}
+        >
+          {shared ? (
+            <>
+              <Check size={14} className="text-emerald-400" />
+              <span>{isKo ? '✓ 커뮤니티 피드에 공유 완료!' : '✓ Shared to Community Feed!'}</span>
+            </>
+          ) : (
+            <>
+              <Share2 size={14} className="text-indigo-400" />
+              <span>{isKo ? '📢 커뮤니티 피드에 결과 공유 (Share)' : '📢 Share Result to Community Feed'}</span>
+            </>
+          )}
+        </button>
       </div>
 
       {/* Collapsible View Rewards Detail Button (ID 99) */}

@@ -3,9 +3,9 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { CardData, AiStrategy, AiDifficulty, Language, PlayerPatterns, Item, Skill, UserStats, UserInfo } from '../types';
 import { CardItem } from '../components/CardItem';
-import { cn, getFormattedCardName, getAssetUrl } from '../lib/utils';
+import { cn, getFormattedCardName, getAssetUrl, getCardSpriteAsset, getCardSpriteCoords, getCardSpriteStyle } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2, UserPlus, ShoppingBag, XCircle, Menu } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2, UserPlus, ShoppingBag, XCircle, Menu, Coins } from 'lucide-react';
 import { generateCard, INITIAL_CARDS, generateUniqueDeck, getCardStatWithBonus, generateAiName, syncCardWithDatabase, INITIAL_SKILLS, getCardPower, getNormalizedElement } from '../constants';
 import { CARD_DATABASE } from '../cardDatabase';
 import { ITEM_DATABASE } from '../constants/itemDatabase';
@@ -136,15 +136,7 @@ interface ChallengeData {
 
 const getMissionCardSpriteStyle = (cardId: number): React.CSSProperties => {
   const safeCardId = CARD_DATABASE[cardId] ? cardId : 41;
-  const x = ((safeCardId - 1) % 10) * (100 / 9);
-  const y = Math.floor((safeCardId - 1) / 10) * (100 / 10);
-  return {
-    backgroundImage: `url('${getAssetUrl('/card100.png')}')`,
-    backgroundSize: '1000% 1100%',
-    backgroundPosition: `${x}% ${y}%`,
-    backgroundRepeat: 'no-repeat',
-    imageRendering: 'pixelated' as const,
-  };
+  return getCardSpriteStyle(safeCardId);
 };
 
 const MissionCharacterPortrait: React.FC<{ cardId?: number; name: string; className?: string }> = ({
@@ -154,8 +146,7 @@ const MissionCharacterPortrait: React.FC<{ cardId?: number; name: string; classN
 }) => {
   const safeCardId = CARD_DATABASE[cardId] ? cardId : 41;
   const card = CARD_DATABASE[safeCardId];
-  const paddedId = String(safeCardId).padStart(3, '0');
-  const primaryImgUrl = card?.imageUrl || getAssetUrl(`/character/${paddedId}.png`);
+  const primaryImgUrl = card?.imageUrl;
   const [imgFailed, setImgFailed] = useState(false);
 
   return (
@@ -674,11 +665,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     if (typeof photoURL === 'string' && photoURL.startsWith('card:')) {
       const cardId = Number(photoURL.split(':')[1]) || 1;
       const idx = CARD_DATABASE[cardId] ? cardId : 1;
-      const x = ((idx - 1) % 10) * (100 / 9);
-      const y = Math.floor((idx - 1) / 10) * (100 / 10);
+      const spriteInfo = getCardSpriteCoords(idx);
       const html = `
         <div style="position:relative;width:44px;height:44px;border-radius:9999px;background:linear-gradient(135deg,#4f46e5,#06b6d4);border:3px solid white;box-shadow:0 8px 18px rgba(0,0,0,.35);overflow:hidden;">
-          <div style="width:130%;height:130%;transform:translate(-11%,-11%);background-image:url('/card100.png');background-size:1000% 1100%;background-position:${x}% ${y}%;background-repeat:no-repeat;image-rendering:pixelated;"></div>
+          <div style="width:130%;height:130%;transform:translate(-11%,-11%);background-image:url('${spriteInfo.assetUrl}');background-size:${spriteInfo.cols * 100}% ${spriteInfo.rows * 100}%;background-position:${spriteInfo.xPercent}% ${spriteInfo.yPercent}%;background-repeat:no-repeat;image-rendering:pixelated;"></div>
           <span style="position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);width:14px;height:14px;background:#22c55e;border:2px solid white;border-radius:9999px;"></span>
         </div>
       `;
@@ -2095,20 +2085,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     // Only pre-cache when entering match searching or preMatch, never repeatedly during active 'playing' turn updates
     if (gameState === 'searching' || gameState === 'preMatch') {
       const imageSources = new Set<string>();
-      imageSources.add('/card100.png');
+      imageSources.add(getAssetUrl('/cards1.png'));
+      imageSources.add(getAssetUrl('/card2.png'));
+      imageSources.add(getAssetUrl('/cards2.png'));
 
       (playerDeck || []).forEach((card) => {
-        if (card && card.imageIndex) {
-          const safeId = CARD_DATABASE[card.imageIndex] ? card.imageIndex : 41;
-          imageSources.add(`/character/${String(safeId).padStart(3, '0')}.png`);
+        if (card && card.imageUrl) {
+          imageSources.add(getAssetUrl(card.imageUrl));
         }
       });
 
       if (selectedOpponent && selectedOpponent.deck) {
         selectedOpponent.deck.forEach((card) => {
-          if (card && card.imageIndex) {
-            const safeId = CARD_DATABASE[card.imageIndex] ? card.imageIndex : 41;
-            imageSources.add(`/character/${String(safeId).padStart(3, '0')}.png`);
+          if (card && card.imageUrl) {
+            imageSources.add(getAssetUrl(card.imageUrl));
           }
         });
       }
@@ -2439,7 +2429,94 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     isAutoBattleRef.current = isAutoBattle;
   }, [isAutoBattle]);
 
-  const speedMultiplier = isAutoBattle ? 0.95 : (isLowPerformance ? 0.5 : 1);
+  // Item 346: 3-Speed Mode ('1x' | '2x' | '3x')
+  const [autoSpeedMode, setAutoSpeedMode] = useState<'1x' | '2x' | '3x'>(() => {
+    return (localStorage.getItem('hero_auto_battle_speed') as '1x' | '2x' | '3x') || '2x';
+  });
+
+  const toggleAutoSpeed = () => {
+    const nextSpeed: '1x' | '2x' | '3x' = autoSpeedMode === '1x' ? '2x' : autoSpeedMode === '2x' ? '3x' : '1x';
+    setAutoSpeedMode(nextSpeed);
+    localStorage.setItem('hero_auto_battle_speed', nextSpeed);
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+  };
+
+  const speedMultiplier = isAutoBattle
+    ? (autoSpeedMode === '3x' ? 0.15 : autoSpeedMode === '2x' ? 0.5 : 0.9)
+    : (isLowPerformance ? 0.5 : 1);
+
+  // Item 347: Loot Goblin Ambush State
+  const [goblinTileIndex, setGoblinTileIndex] = useState<number | null>(null);
+  const [goblinCaptured, setGoblinCaptured] = useState<boolean>(false);
+  const goblinSpawnAttempted = useRef<boolean>(false);
+
+  // Item 348: Speed Attack latency tracking
+  const playerTurnStartTime = useRef<number | null>(null);
+  const playerTurnLatencies = useRef<number[]>([]);
+  const [isSpeedAttackWin, setIsSpeedAttackWin] = useState<boolean>(false);
+
+  // Item 352: Underdog Reversal Bounty
+  const [isUnderdogMatch, setIsUnderdogMatch] = useState<boolean>(false);
+  const [underdogBountyClaimed, setUnderdogBountyClaimed] = useState<boolean>(false);
+
+  // Item 351: Sudden Death Overclock (turn count / filled slots >= 6)
+  const filledBoardCount = board.filter(c => c !== null).length;
+  const isSuddenDeathOverclock = gameState === 'playing' && filledBoardCount >= 6;
+
+  // Battle session initialization & Underdog detection
+  useEffect(() => {
+    if (gameState === 'playing') {
+      goblinSpawnAttempted.current = false;
+      setGoblinTileIndex(null);
+      setGoblinCaptured(false);
+      playerTurnLatencies.current = [];
+      setIsSpeedAttackWin(false);
+      setUnderdogBountyClaimed(false);
+
+      const pPower = calculatedTotalPower || 100;
+      const aPower = opponentTotalPower || aiSimulatedTotalPower || 100;
+      if (pPower < aPower * 0.9) {
+        setIsUnderdogMatch(true);
+        addLog(language === 'ko' ? '⚡ [언더독 매치] 전력 열세 상황입니다! 수동 승리 시 언더독 보너스 +20% 지급!' : '⚡ [UNDERDOG MATCH] Power deficit detected! Win manually for +20% Underdog Bounty!', 'system');
+      } else {
+        setIsUnderdogMatch(false);
+      }
+    }
+  }, [gameState]);
+
+  // Item 347: Loot Goblin Ambush Check (turns 4~6 / 3~5 filled tiles, 15% spawn chance)
+  useEffect(() => {
+    if (gameState === 'playing' && !isTutorialMode && !gameOver && goblinTileIndex === null && !goblinSpawnAttempted.current) {
+      const filled = board.filter(c => c !== null).length;
+      if (filled >= 3 && filled <= 5) {
+        goblinSpawnAttempted.current = true;
+        if (Math.random() < 0.15) {
+          const emptySlots: number[] = [];
+          board.forEach((c, idx) => {
+            if (c === null) emptySlots.push(idx);
+          });
+          if (emptySlots.length > 0) {
+            const chosenSlot = emptySlots[Math.floor(Math.random() * emptySlots.length)];
+            setGoblinTileIndex(chosenSlot);
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+            addLog(language === 'ko' 
+              ? `🪙 [보물 도둑 고블린 난입] ${chosenSlot + 1}번 구역에 고블린 출현! 1턴 내 캡처 시 보너스 획득!` 
+              : `🪙 [LOOT GOBLIN AMBUSH] Goblin appeared on Sector ${chosenSlot + 1}! Capture for bonus SNS!`, 
+              'system'
+            );
+          }
+        }
+      }
+    }
+  }, [board, gameState, isTutorialMode, gameOver, goblinTileIndex, language]);
+
+  // Item 348: Player turn start time tracking for speed attack bonus
+  useEffect(() => {
+    if (gameState === 'playing' && turn === 'player' && !gameOver) {
+      playerTurnStartTime.current = Date.now();
+    }
+  }, [turn, gameState, gameOver]);
+
   const [showInGameRules, setShowInGameRules] = useState(false);
 
 
@@ -4251,10 +4328,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         const ni = nr * 3 + nc;
         const neighbor = testBoard[ni];
         if (neighbor) {
+          const suddenDeathBonus = testBoard.filter(c => c !== null).length >= 6 ? 2 : 0;
           const placedSynergy = calculateBattleSynergy(placedCard, neighbor, placedCard.equipment);
           const defendingSynergy = calculateBattleSynergy(neighbor, placedCard, neighbor.equipment);
-          let myStat = getCardStatWithBonus(placedCard, dir.m, elementalBoard[index]) + placedSynergy.equipmentStatBonus[dir.m];
-          let oppStat = getCardStatWithBonus(neighbor, dir.o, elementalBoard[ni]) + defendingSynergy.equipmentStatBonus[dir.o];
+          let myStat = getCardStatWithBonus(placedCard, dir.m, elementalBoard[index]) + placedSynergy.equipmentStatBonus[dir.m] + suddenDeathBonus;
+          let oppStat = getCardStatWithBonus(neighbor, dir.o, elementalBoard[ni]) + defendingSynergy.equipmentStatBonus[dir.o] + suddenDeathBonus;
 
           myStat *= placedSynergy.factionMultiplier;
           oppStat *= defendingSynergy.factionMultiplier;
@@ -4867,6 +4945,25 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       setPendingQteMultiplier(null);
     }
 
+    // Item 348: Record manual decision latency
+    if (playerTurnStartTime.current) {
+      const latency = Date.now() - playerTurnStartTime.current;
+      playerTurnLatencies.current.push(latency);
+      playerTurnStartTime.current = null;
+    }
+
+    // Item 347: Loot Goblin Capture check
+    if (goblinTileIndex !== null && !goblinCaptured && (boardIdx === goblinTileIndex || flippedIndicesPreview.includes(goblinTileIndex))) {
+      setGoblinCaptured(true);
+      setRewardEarned(prev => prev + 25);
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+      addLog(language === 'ko' 
+        ? '💰 [보물 고블린 포획!] 보너스 +25 SNS 토큰을 획득했습니다!' 
+        : '💰 [LOOT GOBLIN CAPTURED!] Bonus +25 SNS Tokens earned!', 
+        'victory'
+      );
+    }
+
     resolveCombatDelay(newBoard, boardIdx, async (finalBoard, skipTurn) => {
       // Standalone mode logic
       setBoard(finalBoard);
@@ -5122,6 +5219,34 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 if (isStreakWin) {
                   myFinalReward += Math.max(1, Math.ceil(orig * 0.2));
                 }
+              }
+
+              // Item 348: Speed Attack bonus (+15% for fast manual play under 5s avg per move)
+              const avgPlayerLatency = playerTurnLatencies.current.length > 0 
+                ? (playerTurnLatencies.current.reduce((a, b) => a + b, 0) / playerTurnLatencies.current.length) 
+                : 99999;
+              const isFastPlay = !isAutoBattle && resultType === 'win' && avgPlayerLatency <= 5000;
+              if (isFastPlay) {
+                setIsSpeedAttackWin(true);
+                const speedBonus = Math.max(1, Math.ceil(baseReward * 0.15));
+                myFinalReward += speedBonus;
+                addLog(language === 'ko' 
+                  ? `⚡ [스피드 어택 클리어] 평균 ${Math.round(avgPlayerLatency / 100) / 10}초 내 신속한 수동 결정으로 보너스 +15% 획득!` 
+                  : `⚡ [SPEED ATTACK CLEAR] Fast manual moves (${Math.round(avgPlayerLatency / 100) / 10}s avg) granted +15% bonus!`, 
+                  'victory'
+                );
+              }
+
+              // Item 352: Underdog Reversal Bounty (+20% for winning with inferior combat power)
+              if (isUnderdogMatch && !isAutoBattle && resultType === 'win') {
+                setUnderdogBountyClaimed(true);
+                const underdogBonus = Math.max(1, Math.ceil(baseReward * 0.20));
+                myFinalReward += underdogBonus;
+                addLog(language === 'ko'
+                  ? `🏆 [언더독 승리 바운티] 전투력 열세를 극복하고 승리하여 +20% 추가 보상 지급!`
+                  : `🏆 [UNDERDOG BOUNTY] Overcame power deficit for +20% bounty reward!`,
+                  'victory'
+                );
               }
 
               let oppFinalReward = 0;
@@ -6395,18 +6520,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     ) : (
                       <div 
                         className="w-[180%] aspect-square transform-gpu scale-95"
-                        style={{
-                          backgroundImage: `url('/card100.png')`,
-                          backgroundSize: `1000% 1100%`,
-                          backgroundPosition: (() => {
-                            const imgIdx = runningRecentlyEarnedCard.imageIndex !== undefined ? runningRecentlyEarnedCard.imageIndex : runningRecentlyEarnedCard.id;
-                            const x = ((imgIdx - 1) % 10) * (100 / 9);
-                            const y = Math.floor((imgIdx - 1) / 10) * (100 / 10);
-                            return `${x}% ${y}%`;
-                          })(),
-                          backgroundRepeat: 'no-repeat',
-                          imageRendering: 'pixelated'
-                        }}
+                        style={getCardSpriteStyle(
+                          runningRecentlyEarnedCard.imageIndex !== undefined ? runningRecentlyEarnedCard.imageIndex : runningRecentlyEarnedCard.id
+                        )}
                       />
                     )}
                   </div>
@@ -6450,18 +6566,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         ) : (
                           <div 
                             className="w-[180%] aspect-square transform-gpu scale-95"
-                            style={{
-                              backgroundImage: `url('/card100.png')`,
-                              backgroundSize: `1000% 1100%`,
-                              backgroundPosition: (() => {
-                                const imgIdx = treasureRecentlyEarned.card.imageIndex !== undefined ? treasureRecentlyEarned.card.imageIndex : treasureRecentlyEarned.card.id;
-                                const x = ((Number(imgIdx) - 1) % 10) * (100 / 9);
-                                const y = Math.floor((Number(imgIdx) - 1) / 10) * (100 / 10);
-                                return `${x}% ${y}%`;
-                              })(),
-                              backgroundRepeat: 'no-repeat',
-                              imageRendering: 'pixelated'
-                            }}
+                            style={getCardSpriteStyle(
+                              Number(treasureRecentlyEarned.card.imageIndex !== undefined ? treasureRecentlyEarned.card.imageIndex : treasureRecentlyEarned.card.id)
+                            )}
                           />
                         )}
                       </div>
@@ -9752,59 +9859,81 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         )}
       </AnimatePresence>
 
-      {/* Floating Circular Robot Auto-Battle Button & Grid Skills */}
+      {/* Floating Circular Robot Auto-Battle Button, Speed Toggle & Grid Skills */}
       {gameState === 'playing' && !gameOver && (
         <div className="fixed bottom-28 right-3 sm:right-4 z-[160] pointer-events-auto flex flex-col items-end gap-2.5">
-          {/* 1. Robot Auto-Battle Toggle (Always prominent above skill buttons) */}
-          {(onToggleAutoBattle || setIsAutoBattle) && (
-            <div className="relative group flex items-center justify-center">
+          {/* 1. Auto-Battle Speed & Robot Toggle */}
+          <div className="flex items-center gap-2">
+            {/* Item 346: 3-Speed Turbo Mode Toggle (Visible during Auto Battle) */}
+            {isAutoBattle && (
               <button
                 type="button"
-                onClick={() => {
-                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                  if (onToggleAutoBattle) {
-                    onToggleAutoBattle();
-                  } else if (setIsAutoBattle) {
-                    const nextVal = !isAutoBattle;
-                    setIsAutoBattle(nextVal);
-                    localStorage.setItem('hero_auto_battle_setting', JSON.stringify(nextVal));
-                  }
-                }}
+                onClick={toggleAutoSpeed}
                 className={cn(
-                  "w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 shadow-2xl flex items-center justify-center transition-all duration-300 active:scale-95 cursor-pointer touch-target relative",
-                  isAutoBattle
-                    ? "bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 border-amber-300 text-slate-950 shadow-[0_0_25px_rgba(245,158,11,0.85)] ring-2 ring-amber-300/80"
-                    : "bg-slate-950/90 border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white shadow-xl"
+                  "px-2.5 py-1.5 rounded-sm border font-mono text-[11px] font-black shadow-lg transition-all cursor-pointer flex items-center gap-1 active:scale-95",
+                  autoSpeedMode === '3x'
+                    ? "bg-rose-950/90 border-rose-500 text-rose-300 shadow-[0_0_12px_rgba(244,63,94,0.6)] animate-pulse"
+                    : autoSpeedMode === '2x'
+                    ? "bg-amber-950/90 border-amber-500 text-amber-300"
+                    : "bg-slate-900/90 border-slate-700 text-slate-300"
                 )}
-                title={isAutoBattle ? (language === 'ko' ? '자동전투 ON (클릭 시 중단)' : 'AUTO ON (CLICK TO STOP)') : (language === 'ko' ? '자동전투 OFF (클릭 시 시작)' : 'AUTO OFF (CLICK TO START)')}
-                aria-label="Auto Battle Toggle"
+                title={language === 'ko' ? `배속 전환: 현재 ${autoSpeedMode.toUpperCase()}` : `Speed: Current ${autoSpeedMode.toUpperCase()}`}
               >
-                <Bot
-                  size={26}
-                  className={cn(
-                    "transition-transform",
-                    isAutoBattle ? "animate-spin text-slate-950 drop-shadow-md" : "text-slate-300"
-                  )}
-                />
-                <span
-                  className={cn(
-                    "absolute -bottom-1 -right-1 font-black text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded-full border shadow-md uppercase tracking-tighter",
-                    isAutoBattle
-                      ? "bg-rose-600 border-rose-300 text-white animate-pulse"
-                      : "bg-slate-800 border-slate-600 text-slate-400"
-                  )}
-                >
-                  {isAutoBattle ? 'AUTO' : 'OFF'}
-                </span>
+                <Zap size={12} className={cn(autoSpeedMode === '3x' ? "text-yellow-400 animate-spin" : "text-amber-400")} />
+                <span>{autoSpeedMode === '3x' ? '[ 3X TURBO ]' : `[ ${autoSpeedMode.toUpperCase()} ]`}</span>
               </button>
+            )}
 
-              <div className="absolute right-full mr-2.5 top-1/2 -translate-y-1/2 bg-black/95 backdrop-blur-md text-white px-2.5 py-1 text-[10px] font-black opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-md uppercase tracking-wider z-[200] shadow-xl">
-                {isAutoBattle
-                  ? (language === 'ko' ? '🤖 자동전투 중단하기' : '🤖 STOP AUTO BATTLE')
-                  : (language === 'ko' ? '🤖 자동전투 시작하기' : '🤖 START AUTO BATTLE')}
+            {(onToggleAutoBattle || setIsAutoBattle) && (
+              <div className="relative group flex items-center justify-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    if (onToggleAutoBattle) {
+                      onToggleAutoBattle();
+                    } else if (setIsAutoBattle) {
+                      const nextVal = !isAutoBattle;
+                      setIsAutoBattle(nextVal);
+                      localStorage.setItem('hero_auto_battle_setting', JSON.stringify(nextVal));
+                    }
+                  }}
+                  className={cn(
+                    "w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 shadow-2xl flex items-center justify-center transition-all duration-300 active:scale-95 cursor-pointer touch-target relative",
+                    isAutoBattle
+                      ? "bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 border-amber-300 text-slate-950 shadow-[0_0_25px_rgba(245,158,11,0.85)] ring-2 ring-amber-300/80"
+                      : "bg-slate-950/90 border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white shadow-xl"
+                  )}
+                  title={isAutoBattle ? (language === 'ko' ? '자동전투 ON (클릭 시 중단)' : 'AUTO ON (CLICK TO STOP)') : (language === 'ko' ? '자동전투 OFF (클릭 시 시작)' : 'AUTO OFF (CLICK TO START)')}
+                  aria-label="Auto Battle Toggle"
+                >
+                  <Bot
+                    size={26}
+                    className={cn(
+                      "transition-transform",
+                      isAutoBattle ? "animate-spin text-slate-950 drop-shadow-md" : "text-slate-300"
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      "absolute -bottom-1 -right-1 font-black text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded-full border shadow-md uppercase tracking-tighter",
+                      isAutoBattle
+                        ? "bg-rose-600 border-rose-300 text-white animate-pulse"
+                        : "bg-slate-800 border-slate-600 text-slate-400"
+                    )}
+                  >
+                    {isAutoBattle ? 'AUTO' : 'OFF'}
+                  </span>
+                </button>
+
+                <div className="absolute right-full mr-2.5 top-1/2 -translate-y-1/2 bg-black/95 backdrop-blur-md text-white px-2.5 py-1 text-[10px] font-black opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-md uppercase tracking-wider z-[200] shadow-xl">
+                  {isAutoBattle
+                    ? (language === 'ko' ? '🤖 자동전투 중단하기' : '🤖 STOP AUTO BATTLE')
+                    : (language === 'ko' ? '🤖 자동전투 시작하기' : '🤖 START AUTO BATTLE')}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* 2. Grid Skills (Rendered directly under the Robot button) */}
           {(() => {
@@ -10390,53 +10519,46 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           />
         </div>
 
-        {/* AI Thinking Overlay removed as requested */}
-
-        <AnimatePresence>
-          {turn === 'ai' && battleType === 'user' && !gameOver && (
-            <motion.div 
-               initial={{ opacity: 0 }}
-               animate={{ opacity: 1 }}
-               exit={{ opacity: 0 }}
-               className="absolute inset-0 z-40 bg-slate-950/60 backdrop-blur-[3px] flex flex-col items-center justify-center text-center p-6"
-            >
-              <div className="bg-slate-900/90 border border-slate-800 text-white p-6 rounded-2xl space-y-4 shadow-[0_15px_40px_rgba(0,0,0,0.6)]">
-                <motion.div 
-                  animate={{ scale: [1, 1.1, 1] }} 
-                  transition={{ duration: 1, repeat: Infinity }}
-                  className="w-12 h-12 border-4 border-blue-500 rounded-full border-t-transparent mx-auto"
-                />
-                <p className="text-sm font-bold tracking-wide">{t('waiting_opponent', language)}</p>
-                <p className="text-xs opacity-50">{t('waiting_input', language)}_</p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* MOBILE TOP COMPACT SCORE CHIP & TURN INDICATOR (lg:hidden) */}
+        {/* Item 349: TOP COMPACT 1-LINE SCORE & STATUS BAR (Never blocks board) */}
         {!gameOver && gameState === 'playing' && (
-          <div className="lg:hidden flex items-center justify-between w-full max-w-[280px] sm:max-w-xs px-3 py-1 bg-slate-950/90 border border-slate-800 rounded-full shadow-lg text-xs font-black z-20 mb-1 backdrop-blur-md">
+          <div className="flex flex-wrap items-center justify-between w-full max-w-sm sm:max-w-md px-3 py-1.5 bg-slate-950/90 border border-slate-800 rounded-sm shadow-md text-xs font-mono font-bold z-20 mb-1 backdrop-blur-md gap-2">
+            {/* Player Score */}
             <div className="flex items-center gap-1.5 text-indigo-400">
-              <span className="text-[10px] opacity-70">YOU</span>
-              <span className="w-5 h-5 rounded-full bg-indigo-950 border border-indigo-500/50 flex items-center justify-center font-mono text-[11px] font-black text-indigo-300">
+              <span className="text-[10px] text-slate-400">[YOU]</span>
+              <span className="px-1.5 py-0.5 rounded-sm bg-indigo-950/80 border border-indigo-500/50 font-black text-indigo-300 text-xs">
                 {battleType === 'matgo' ? matgoScores.player : boardScore.player}
               </span>
             </div>
-            <div className={cn(
-              "px-2.5 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-extrabold flex items-center gap-1 shadow-sm",
-              turn === 'player' ? "bg-indigo-600 text-white animate-pulse" : "bg-rose-600 text-white animate-pulse"
-            )}>
-              {turn === 'player' ? (
-                <><Zap size={10} className="text-yellow-300" /> YOUR TURN</>
-              ) : (
-                <><Cpu size={10} className="text-red-300 animate-spin" /> ENEMY TURN</>
+
+            {/* 1-Line Turn Status Indicator */}
+            <div className="flex items-center gap-1.5">
+              <div className={cn(
+                "px-2 py-0.5 rounded-sm text-[10px] uppercase font-mono font-black flex items-center gap-1 border",
+                turn === 'player'
+                  ? "bg-indigo-950/80 border-indigo-500/70 text-indigo-300 shadow-[0_0_8px_rgba(99,102,241,0.4)]"
+                  : "bg-rose-950/80 border-rose-500/70 text-rose-300"
+              )}>
+                {turn === 'player' ? (
+                  <><Zap size={11} className="text-yellow-400 animate-pulse" /> [ YOUR TURN ]</>
+                ) : (
+                  <><Cpu size={11} className="text-rose-400 animate-spin" /> [ ENEMY TURN ]</>
+                )}
+              </div>
+
+              {/* Item 351: Sudden Death Overclock Badge */}
+              {isSuddenDeathOverclock && (
+                <span className="px-1.5 py-0.5 rounded-sm bg-amber-950/80 border border-amber-500/70 text-amber-300 text-[9px] font-mono font-bold animate-pulse">
+                  [ ⚡ OVERCLOCK +2 ]
+                </span>
               )}
             </div>
+
+            {/* Opponent Score */}
             <div className="flex items-center gap-1.5 text-rose-400">
-              <span className="w-5 h-5 rounded-full bg-rose-950 border border-rose-500/50 flex items-center justify-center font-mono text-[11px] font-black text-rose-300">
+              <span className="px-1.5 py-0.5 rounded-sm bg-rose-950/80 border border-rose-500/50 font-black text-rose-300 text-xs">
                 {battleType === 'matgo' ? matgoScores.ai : boardScore.ai}
               </span>
-              <span className="text-[10px] opacity-70">ENEMY</span>
+              <span className="text-[10px] text-slate-400">[ENEMY]</span>
             </div>
           </div>
         )}
@@ -10595,7 +10717,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             </AnimatePresence>
 
             <div className="flex flex-col-reverse md:flex-row-reverse items-center justify-center gap-4 md:gap-12 relative animate-in fade-in duration-700">
-                    <div className="grid grid-cols-3 gap-1 md:gap-2 w-fit relative">
+                    <div className={cn(
+                      "grid grid-cols-3 gap-1 md:gap-2 w-fit relative p-1.5 rounded-sm transition-all",
+                      isSuddenDeathOverclock && "border border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.25)] bg-amber-950/10"
+                    )}>
                       {/* Shockwave Overlay */}
                       {customWaveEffect && (
                         <div className="absolute inset-0 pointer-events-none z-[200] flex items-center justify-center overflow-hidden rounded-xl">
@@ -10722,19 +10847,28 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             onMouseEnter={() => handleMouseEnterCell(idx)}
                             onMouseLeave={handleMouseLeaveCell}
                             className={cn(
-                              "grid-cell group w-[24vw] max-w-[74px] sm:max-w-[84px] md:w-[10vh] md:max-w-[88px] lg:w-[11.5vh] lg:max-w-[98px] aspect-[5/7] flex items-center justify-center relative border transition-all cursor-pointer overflow-visible rounded-lg shadow-inner",
-                              card ? "border-slate-550/40" : (
-                                turn === 'player'
-                                  ? "bg-blue-950/20 border-blue-500/30 hover:bg-blue-900/30 hover:border-blue-450/70 shadow-[inset_0_2px_8px_rgba(59,130,246,0.1)]"
-                                  : "bg-red-950/20 border-red-500/30 hover:bg-red-900/30 hover:border-red-450/70 shadow-[inset_0_2px_8px_rgba(239,68,68,0.1)]"
+                              "grid-cell group w-[24vw] max-w-[74px] sm:max-w-[84px] md:w-[10vh] md:max-w-[88px] lg:w-[11.5vh] lg:max-w-[98px] aspect-[5/7] flex items-center justify-center relative transition-all cursor-pointer overflow-visible rounded-sm font-mono shadow-none",
+                              card ? "border border-slate-750/70" : (
+                                idx === goblinTileIndex && !goblinCaptured
+                                  ? "border-2 border-yellow-400 bg-yellow-950/40 shadow-[0_0_12px_rgba(234,179,8,0.5)] animate-pulse"
+                                  : "border border-dashed border-slate-700/60 bg-slate-950/40 hover:border-solid hover:border-cyan-400 hover:bg-cyan-950/20"
                               ),
-                              !card && boardTraps[idx] === 'purple' && "bg-purple-800/40 border-purple-400 border-2 shadow-[0_0_15px_rgba(168,85,247,0.7),inset_0_0_15px_rgba(168,85,247,0.5)]",
-                              !card && boardTraps[idx] === 'red' && "bg-red-800/40 border-red-400 border-2 shadow-[0_0_15px_rgba(239,68,68,0.7),inset_0_0_15px_rgba(239,68,68,0.5)]",
-                              !card && selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player' && "bg-blue-600/40 border-blue-400 border-2 animate-pulse",
-                              !card && aiReasoning?.boardIdx === idx && turn === 'ai' && "bg-red-600/40 border-red-400 border-2 shadow-[inset_0_0_20px_rgba(239,68,68,0.7)]",
-                              !card && selectedCardIdx !== null && selectedCardSide === 'player' && recommendedPlayerMove?.cardIdx === selectedCardIdx && recommendedPlayerMove?.boardIdx === idx && turn === 'player' && "bg-blue-600/60 border-blue-400 border-2 shadow-[inset_0_0_30px_rgba(59,130,246,0.8)]"
+                              !card && boardTraps[idx] === 'purple' && "bg-purple-800/40 border-purple-400 border-2",
+                              !card && boardTraps[idx] === 'red' && "bg-red-800/40 border-red-400 border-2",
+                              !card && selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player' && "border-solid border-cyan-400 bg-cyan-950/30",
+                              !card && aiReasoning?.boardIdx === idx && turn === 'ai' && "border-solid border-rose-500 bg-rose-950/30",
+                              !card && selectedCardIdx !== null && selectedCardSide === 'player' && recommendedPlayerMove?.cardIdx === selectedCardIdx && recommendedPlayerMove?.boardIdx === idx && turn === 'player' && "border-solid border-cyan-300 bg-cyan-900/40"
                             )}
                           >
+                            {/* Item 347: Goblin Spawn Badge in Grid Cell */}
+                            {!card && idx === goblinTileIndex && !goblinCaptured && (
+                              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-1 pointer-events-none">
+                                <Coins size={22} className="text-yellow-400 animate-bounce drop-shadow-[0_0_8px_rgba(234,179,8,0.8)]" />
+                                <span className="text-[8px] font-mono font-black text-yellow-300 bg-black/80 px-1 py-0.5 rounded-sm border border-yellow-400/60 mt-1 whitespace-nowrap">
+                                  [🪙 +25 SNS]
+                                </span>
+                              </div>
+                            )}
                             {/* Elemental Tile Background */}
                             {!card && elementalBoard[idx] && (
                               <div className={cn(
@@ -11436,8 +11570,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 totalDamageDealt={totalDamageDealt > 0 ? totalDamageDealt : (boardScore.player * 85 + (winner === 'player' ? 320 : 120))}
                 leveledUpCards={leveledUpCards}
                 allDeckCardsProgress={allDeckCardsProgress}
+                usedCards={playerDeck}
                 battleType={battleType}
                 language={language}
+                isSpeedAttackBonus={isSpeedAttackWin}
+                isUnderdogBonus={underdogBountyClaimed}
+                isGoblinBonus={goblinCaptured}
+                onShareToCommunity={() => setShowBattleShareTemplate(true)}
               />
 
               {/* Match Analysis Section */}

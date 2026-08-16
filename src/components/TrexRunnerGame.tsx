@@ -112,26 +112,34 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
     startGame();
   }, [startGame]);
 
+  const calcReward = (score: number) => {
+    return Math.max(10, Math.min(60, Math.floor(score / 10)));
+  };
+
   useEffect(() => {
     if (hudGameOver && !rewardedRef.current) {
       rewardedRef.current = true;
-      onReward(Math.floor(gameRef.current.score / 10));
+      onReward(calcReward(gameRef.current.score));
     }
   }, [hudGameOver, onReward]);
+
+  const triggerJump = useCallback(() => {
+    const g = gameRef.current;
+    if (g.isGameOver) return;
+    if (!g.started) g.started = true;
+    if (g.jumpsLeft > 0) {
+      g.playerVY = JUMP_FORCE;
+      g.jumpsLeft--;
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+    }
+  }, [playSfx]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       keysRef.current.add(e.key.toLowerCase());
       if (e.key === ' ' || e.key === 'ArrowUp') {
         e.preventDefault();
-        const g = gameRef.current;
-        if (g.isGameOver) return;
-        if (!g.started) g.started = true;
-        if (g.jumpsLeft > 0) {
-          g.playerVY = JUMP_FORCE;
-          g.jumpsLeft--;
-          playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-        }
+        triggerJump();
       }
     };
     const handleKeyUp = (e: KeyboardEvent) => {
@@ -387,68 +395,81 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const g = gameRef.current;
-    if (g.isGameOver) return;
-    if (!g.started) g.started = true;
-    touchJumpRef.current = true;
+    triggerJump();
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center font-sans select-none">
-      <header className="w-full max-w-lg flex items-center justify-between p-3">
+    <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white flex flex-col items-center justify-between font-sans select-none overflow-hidden pb-3">
+      <header className="w-full max-w-lg flex items-center justify-between px-3 py-2 shrink-0">
         <button onClick={onExit} className="p-2 rounded-2xl bg-white/10 hover:bg-white/15 transition-colors cursor-pointer">
-          <ArrowLeft size={20} />
+          <ArrowLeft size={18} />
         </button>
         <div className="text-center">
-          <h1 className="text-lg font-black uppercase tracking-tight">{t('mode_trex', language)}</h1>
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+          <h1 className="text-base sm:text-lg font-black uppercase tracking-tight">{t('mode_trex', language)}</h1>
+          <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider">
             {language === 'ko' ? '달리고 점프하세요!' : 'RUN & JUMP!'}
           </p>
         </div>
-        <div className="px-3 py-2 rounded-2xl bg-indigo-500/20 border border-indigo-400/20 text-indigo-100 font-black text-sm tabular-nums">
+        <div className="px-3 py-1.5 rounded-2xl bg-indigo-500/20 border border-indigo-400/20 text-indigo-100 font-black text-xs sm:text-sm tabular-nums">
           {hudScore}
         </div>
       </header>
 
-      <div
-        className={cn('relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 shadow-2xl')}
-        style={{ aspectRatio: `${CANVAS_W}/${CANVAS_H}`, touchAction: 'none' }}
-        onPointerDown={handlePointerDown}
-      >
-        <canvas
-          ref={canvasRef}
-          width={CANVAS_W}
-          height={CANVAS_H}
-          className="w-full h-full"
-        />
+      <main className="w-full max-w-lg flex-1 min-h-0 flex flex-col items-center justify-center px-3">
+        <div
+          className={cn('relative w-full max-h-[58vh] overflow-hidden rounded-2xl border border-white/10 shadow-2xl')}
+          style={{ aspectRatio: `${CANVAS_W}/${CANVAS_H}`, touchAction: 'none' }}
+          onPointerDown={handlePointerDown}
+        >
+          <canvas
+            ref={canvasRef}
+            width={CANVAS_W}
+            height={CANVAS_H}
+            className="w-full h-full object-contain"
+          />
 
-        {hudGameOver && (
-          <div className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-6">
-            <div className="bg-white text-slate-900 rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl">
-              <Skull size={42} className="mx-auto text-rose-500 mb-3" />
-              <h2 className="text-xl font-black mb-1">{language === 'ko' ? '게임 오버' : 'GAME OVER'}</h2>
-              <p className="text-sm font-bold text-slate-500 mb-1">
-                {language === 'ko' ? `점수: ${gameRef.current.score}` : `Score: ${gameRef.current.score}`}
-              </p>
-              <p className="text-sm font-bold text-indigo-600 mb-4">
-                {t('trex_reward', language).replace('{amount}', String(Math.floor(gameRef.current.score / 10)))}
-              </p>
-              <div className="flex gap-2">
-                <button onClick={startGame} className="flex-1 py-3 bg-indigo-600 text-white rounded-2xl font-black flex items-center justify-center gap-2 cursor-pointer">
-                  <RotateCcw size={16} />
-                  {language === 'ko' ? '재시작' : 'Restart'}
-                </button>
-                <button onClick={onExit} className="flex-1 py-3 bg-slate-900 text-white rounded-2xl font-black cursor-pointer">
-                  {t('home', language)}
-                </button>
+          {hudGameOver && (
+            <div className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-6">
+              <div className="bg-white text-slate-900 rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl">
+                <Skull size={42} className="mx-auto text-rose-500 mb-3" />
+                <h2 className="text-xl font-black mb-1">{language === 'ko' ? '게임 오버' : 'GAME OVER'}</h2>
+                <p className="text-sm font-bold text-slate-500 mb-1">
+                  {language === 'ko' ? `점수: ${gameRef.current.score}` : `Score: ${gameRef.current.score}`}
+                </p>
+                <p className="text-sm font-bold text-indigo-600 mb-4">
+                  {t('trex_reward', language).replace('{amount}', String(calcReward(gameRef.current.score)))}
+                </p>
+                <div className="flex gap-2">
+                  <button onClick={startGame} className="flex-1 py-3 bg-indigo-600 text-white rounded-2xl font-black flex items-center justify-center gap-2 cursor-pointer">
+                    <RotateCcw size={16} />
+                    {language === 'ko' ? '재시작' : 'Restart'}
+                  </button>
+                  <button onClick={onExit} className="flex-1 py-3 bg-slate-900 text-white rounded-2xl font-black cursor-pointer">
+                    {t('home', language)}
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
 
-      <div className="mt-3 px-4 py-2 bg-white/5 rounded-2xl text-[10px] text-slate-400 font-bold text-center max-w-lg">
-        {language === 'ko' ? '터치 또는 스페이스바로 점프 | 공중에서 한 번 더 점프!' : 'Tap or Space to jump | Double jump in air!'}
+        {/* Mobile One-Hand Big Jump Button */}
+        <div className="mt-3 flex items-center justify-center w-full max-w-xs sm:hidden select-none shrink-0">
+          <button
+            type="button"
+            onPointerDown={(e) => {
+              e.preventDefault();
+              triggerJump();
+            }}
+            className="w-full py-3.5 rounded-2xl bg-indigo-600 active:bg-indigo-700 text-white font-black text-base active:scale-95 shadow-lg flex items-center justify-center gap-2 touch-manipulation border border-indigo-400/40"
+          >
+            ⚡ {language === 'ko' ? '점프 (2단 점프 가능)' : 'JUMP (Double Jump)'}
+          </button>
+        </div>
+      </main>
+
+      <div className="px-4 py-1.5 bg-white/5 rounded-2xl text-[9px] sm:text-[10px] text-slate-400 font-bold text-center max-w-lg shrink-0">
+        {language === 'ko' ? '화면 탭 또는 점프 버튼으로 점프 | 공중에서 2단 점프!' : 'Tap screen or jump button | Double jump in air!'}
       </div>
     </div>
   );

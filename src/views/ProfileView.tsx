@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Check, Lock, Flame, CloudRain, HelpCircle, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Language, UserInfo, UserStats } from '../types';
 import { t } from '../lib/i18n';
-import { cn, getAssetUrl } from '../lib/utils';
+import { cn, getAssetUrl, getCardSpriteStyle } from '../lib/utils';
 import { CARD_DATABASE } from '../cardDatabase';
 import {
   DEFAULT_PROFILE_BADGE_KEY,
@@ -62,15 +62,7 @@ const getProfileUnlockText = (
 
 const getCardAvatarStyle = (cardId: number): React.CSSProperties => {
   const idx = CARD_DATABASE[cardId] ? cardId : 1;
-  const x = ((idx - 1) % 10) * (100 / 9);
-  const y = Math.floor((idx - 1) / 10) * (100 / 10);
-  return {
-    backgroundImage: `url('${getAssetUrl('/card100.png')}')`,
-    backgroundSize: '1000% 1100%',
-    backgroundPosition: `${x}% ${y}%`,
-    backgroundRepeat: 'no-repeat',
-    imageRendering: 'pixelated',
-  };
+  return getCardSpriteStyle(idx);
 };
 
 const HELP_SLIDES = [

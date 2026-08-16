@@ -4,7 +4,7 @@ import { NotificationCenterModal } from "../components/NotificationCenterModal";
 import { getUnreadCount } from "../lib/notificationHelper";
 import { motion, AnimatePresence } from "motion/react";
 import { t } from "../lib/i18n";
-import { cn } from "../lib/utils";
+import { cn, getCardSpriteStyle } from "../lib/utils";
 import { CardData, Language, ViewType, EquipmentSlot } from "../types";
 import { CARD_DATABASE } from "../cardDatabase";
 import { CardItem } from "../components/CardItem";
@@ -18,19 +18,13 @@ import { NoticeModal } from "../components/NoticeModal";
 import { AfkPatrolModal } from "../components/AfkPatrolModal";
 import { PingIndicator } from "../components/PingIndicator";
 import { useSns } from "../contexts/SnsContext";
+import { DailyMissions } from "../components/DailyMissions";
+import { DAILY_MISSIONS, loadDailyMissions, getClaimableCount, DailyMissionProgress } from "../lib/dailyMissions";
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
   const idx = CARD_DATABASE[cardId] ? cardId : 1;
-  const x = ((idx - 1) % 10) * (100 / 9);
-  const y = Math.floor((idx - 1) / 10) * (100 / 10);
-  return {
-    backgroundImage: `url('/card100.png')`,
-    backgroundSize: '1000% 1100%',
-    backgroundPosition: `${x}% ${y}%`,
-    backgroundRepeat: 'no-repeat',
-    imageRendering: 'pixelated'
-  };
+  return getCardSpriteStyle(idx);
 };
 
 const BUILD_VERSION = "v2026.08.09-13:51";
@@ -83,6 +77,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
   const [isLobbyDrawerOpen, setIsLobbyDrawerOpen] = useState(false);
   const [isNoticeClosed, setIsNoticeClosed] = useState(false);
+  const [dailyMissionProgress, setDailyMissionProgress] = useState<DailyMissionProgress>(() => loadDailyMissions());
 
   useEffect(() => {
     const updateUnread = () => {
@@ -94,6 +89,19 @@ export const HomeView: React.FC<HomeViewProps> = ({
     window.addEventListener('hero_mailbox_changed', updateUnread);
     return () => window.removeEventListener('hero_mailbox_changed', updateUnread);
   }, [isNotifModalOpen]);
+
+  useEffect(() => {
+    const updateDailyMissions = () => {
+      setDailyMissionProgress(loadDailyMissions());
+    };
+    updateDailyMissions();
+    window.addEventListener('hero_daily_missions_updated', updateDailyMissions);
+    window.addEventListener('storage', updateDailyMissions);
+    return () => {
+      window.removeEventListener('hero_daily_missions_updated', updateDailyMissions);
+      window.removeEventListener('storage', updateDailyMissions);
+    };
+  }, []);
 
   const { lowSpecMode } = useGameSettings();
   const perf = usePerformanceMode();
@@ -442,27 +450,51 @@ export const HomeView: React.FC<HomeViewProps> = ({
               </div>
 
               {/* ID 79: Mini Daily Mission Progress Banner */}
-              <div 
-                onClick={() => {
-                  playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                  onNavigate('season_hub');
-                }}
-                className="w-full flex items-center justify-between bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-1.5 text-xs font-mono cursor-pointer hover:border-amber-400 transition-all shadow-sm group"
-              >
-                <div className="flex items-center gap-2">
-                  <Trophy size={14} className="text-amber-400 animate-bounce" />
-                  <span className="font-bold text-[11px] text-amber-300 group-hover:underline">
-                    {language === 'ko' ? '일일 퀘스트 진행도:' : 'Daily Quests Progress:'}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-16 sm:w-24 bg-slate-800 h-2 rounded-full overflow-hidden border border-slate-700">
-                    <div className="bg-gradient-to-r from-amber-400 to-orange-500 h-full w-[60%]" />
+              {(() => {
+                const totalMissions = DAILY_MISSIONS.length;
+                const completedMissions = DAILY_MISSIONS.filter(m => dailyMissionProgress.missions[m.id]?.completed).length;
+                const claimableCount = getClaimableCount();
+                const percent = Math.min(100, Math.round((completedMissions / Math.max(1, totalMissions)) * 100));
+
+                return (
+                  <div 
+                    onClick={() => {
+                      playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                      const el = document.getElementById('daily-missions-section');
+                      if (el) {
+                        el.scrollIntoView({ behavior: 'smooth' });
+                      } else {
+                        onNavigate('season_hub');
+                      }
+                    }}
+                    className="w-full flex items-center justify-between bg-[#201d1d] border border-[rgba(15,0,0,0.12)] text-[#fdfcfc] rounded-sm px-3 py-1.5 text-xs font-mono cursor-pointer hover:border-amber-400 transition-all shadow-sm group"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Trophy size={14} className={cn("text-amber-400", claimableCount > 0 ? "animate-bounce" : "")} />
+                      <span className="font-bold text-[11px] text-amber-300 group-hover:underline">
+                        {language === 'ko' ? '오늘의 일일 미션:' : 'Today\'s Daily Missions:'}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-16 sm:w-24 bg-slate-800 h-2 rounded-none overflow-hidden border border-white/10">
+                        <div 
+                          className="bg-gradient-to-r from-amber-400 to-amber-500 h-full transition-all duration-300"
+                          style={{ width: `${percent}%` }}
+                        />
+                      </div>
+                      <span className="text-[11px] font-black text-amber-400">
+                        {completedMissions}/{totalMissions}
+                      </span>
+                      {claimableCount > 0 && (
+                        <span className="bg-amber-500 text-[#201d1d] font-bold text-[10px] px-1.5 py-0.5 rounded-sm animate-pulse">
+                          {language === 'ko' ? `${claimableCount}개 수령 가능` : `${claimableCount} Claimable`}
+                        </span>
+                      )}
+                      <ChevronRight size={14} className="text-slate-400 group-hover:text-amber-300 transition-colors" />
+                    </div>
                   </div>
-                  <span className="text-[11px] font-black text-amber-400">3/5 Complete</span>
-                  <ChevronRight size={14} className="text-slate-400 group-hover:text-amber-300 transition-colors" />
-                </div>
-              </div>
+                );
+              })()}
 
               {/* ── Auto-Start Ranking Battle Countdown Bar ── */}
               <div className="w-full flex items-center justify-between bg-gradient-to-r from-amber-500/10 via-indigo-500/10 to-purple-500/10 border border-amber-500/20 rounded-lg px-3 py-1.5 text-xs font-mono shadow-2xs">
@@ -622,7 +654,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </AnimatePresence>
       </header>
 
-
+      {/* ── Daily Missions Section (Today's Tasks & Claim Rewards) ── */}
+      <section id="daily-missions-section" className="w-full">
+        <DailyMissions />
+      </section>
 
       <section className="space-y-4">
         <div className="grid grid-cols-1 gap-4">

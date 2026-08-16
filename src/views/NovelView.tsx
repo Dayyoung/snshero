@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { Language, ViewType } from '../types';
 import { t } from '../lib/i18n';
-import { cn, getAssetUrl } from '../lib/utils';
+import { cn, getAssetUrl, getCardSpriteAsset, getCardSpriteStyle } from '../lib/utils';
 import { CARD_DATABASE } from '../cardDatabase';
 import { getSeasonItem, setSeasonItem } from '../lib/webtoonProgress';
 import { WikiCardDetailModal } from '../components/WikiCardDetailModal';
@@ -348,7 +348,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
       return {
         cardId,
         cardName: card ? card.title : `Card #${cardId}`,
-        image: `/character/${String(cardId).padStart(3, '0')}.png`,
+        image: getCardSpriteAsset(cardId),
         episodeNumbers: [currentEpisodeNum],
         mentionCount: 1,
         artPrompt: getCharacterArtPrompt(cardId)
@@ -785,10 +785,6 @@ export const NovelView: React.FC<NovelViewProps> = ({
                 <span className="text-[10px] font-bold text-stone-500 block w-full sm:w-auto">[ 등장 캐릭터 ]</span>
                 <div className="flex items-center gap-1.5 flex-wrap">
                   {episodeCharacters.map(char => {
-                    const cardDbItem = CARD_DATABASE[char.cardId];
-                    const paddedId = String(char.cardId).padStart(3, '0');
-                    const imgUrl = getAssetUrl(`/character/${paddedId}.png`);
-
                     return (
                       <button
                         key={char.cardId}
@@ -798,13 +794,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                       >
                         <div
                           className="w-4 h-4 rounded-full border border-stone-400 shrink-0 overflow-hidden"
-                          style={{
-                            backgroundImage: `url('${getAssetUrl('/card100.png')}')`,
-                            backgroundSize: '1000% 1100%',
-                            backgroundPosition: `${((char.cardId - 1) % 10) * (100 / 9)}% ${Math.floor((char.cardId - 1) / 10) * (100 / 10)}%`,
-                            backgroundRepeat: 'no-repeat',
-                            imageRendering: 'pixelated',
-                          }}
+                          style={getCardSpriteStyle(char.cardId)}
                         />
                         <span>{char.cardName}</span>
                         <ExternalLink size={10} className="text-stone-400 ml-0.5" />
@@ -950,13 +940,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                           <div className="flex items-center gap-2">
                             <div
                               className="w-7 h-7 rounded-full border border-stone-400 shrink-0 overflow-hidden shadow-xs"
-                              style={{
-                                backgroundImage: `url('${getAssetUrl('/card100.png')}')`,
-                                backgroundSize: '1000% 1100%',
-                                backgroundPosition: `${((char.cardId - 1) % 10) * (100 / 9)}% ${Math.floor((char.cardId - 1) / 10) * (100 / 10)}%`,
-                                backgroundRepeat: 'no-repeat',
-                                imageRendering: 'pixelated',
-                              }}
+                              style={getCardSpriteStyle(char.cardId)}
                             />
                             <div>
                               <span className="font-bold text-xs text-stone-900 mr-2">
@@ -1181,13 +1165,9 @@ export const NovelView: React.FC<NovelViewProps> = ({
                           ) : (
                             /* Fallback Character Card Panel */
                             <div className="w-full py-12 px-6 flex flex-col items-center justify-center text-center font-mono bg-stone-900 text-stone-200">
-                              <img
-                                src={getAssetUrl(`/character/${pad3(((currentEpisodeNum * 5 + scNum) % 110) + 1)}.png`)}
-                                alt="Character Scene"
-                                loading="lazy"
-                                decoding="async"
-                                referrerPolicy="no-referrer"
-                                className="w-32 h-32 object-contain mb-3 drop-shadow-md"
+                              <div
+                                style={getCardSpriteStyle(((currentEpisodeNum * 5 + scNum) % 110) + 1)}
+                                className="w-28 h-28 rounded-lg mb-3 border border-stone-700 bg-stone-950 drop-shadow-md"
                               />
                               <span className="text-xs font-bold text-amber-300 uppercase tracking-widest">
                                 [ EPISODE {currentEpisodeNum} · SCENE {pad2(scNum)} ]
@@ -1263,13 +1243,9 @@ export const NovelView: React.FC<NovelViewProps> = ({
                             />
                           ) : (
                             <div className="w-full py-16 px-6 flex flex-col items-center justify-center text-center font-mono bg-stone-900 text-stone-200">
-                              <img
-                                src={getAssetUrl(`/character/${pad3(((currentEpisodeNum * 5 + scNum) % 110) + 1)}.png`)}
-                                alt="Character Scene"
-                                loading="lazy"
-                                decoding="async"
-                                referrerPolicy="no-referrer"
-                                className="w-36 h-36 object-contain mb-3 drop-shadow-md"
+                              <div
+                                style={getCardSpriteStyle(((currentEpisodeNum * 5 + scNum) % 110) + 1)}
+                                className="w-32 h-32 rounded-lg mb-3 border border-stone-700 bg-stone-950 drop-shadow-md"
                               />
                               <span className="text-xs font-bold text-amber-300 uppercase tracking-widest">
                                 [ SCENE {pad2(scNum)} ]

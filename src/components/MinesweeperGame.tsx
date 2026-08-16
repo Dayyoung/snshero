@@ -158,12 +158,18 @@ export const MinesweeperGame: React.FC<MinesweeperGameProps> = ({
     initGame();
   }, [initGame]);
 
+  const [flagMode, setFlagMode] = useState(false);
+
+  const calcReward = (win: boolean, lvl: number) => {
+    return win ? Math.min(60, 25 + lvl * 4) : 5;
+  };
+
   useEffect(() => {
     if ((hudGameOver || hudWin) && !rewardedRef.current) {
       rewardedRef.current = true;
-      onReward(hudScore);
+      onReward(calcReward(hudWin, level));
     }
-  }, [hudGameOver, hudWin, onReward, hudScore]);
+  }, [hudGameOver, hudWin, onReward, hudWin, level]);
 
   const revealCell = (x: number, y: number) => {
     const g = gameRef.current;
@@ -378,6 +384,11 @@ export const MinesweeperGame: React.FC<MinesweeperGameProps> = ({
     const cell = getCellFromPointer(e);
     if (!cell) return;
 
+    if (flagMode) {
+      toggleFlag(cell.x, cell.y);
+      return;
+    }
+
     touchStartRef.current = { x: cell.x, y: cell.y, time: Date.now() };
 
     longPressTimerRef.current = window.setTimeout(() => {
@@ -388,6 +399,8 @@ export const MinesweeperGame: React.FC<MinesweeperGameProps> = ({
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
+    if (flagMode) return;
+
     if (longPressTimerRef.current) {
       clearTimeout(longPressTimerRef.current);
       longPressTimerRef.current = null;
@@ -421,79 +434,111 @@ export const MinesweeperGame: React.FC<MinesweeperGameProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center font-sans select-none">
-      <header className="w-full max-w-md flex items-center justify-between p-3">
+    <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white flex flex-col items-center justify-between font-sans select-none overflow-hidden pb-3">
+      <header className="w-full max-w-md flex items-center justify-between px-3 py-2 shrink-0">
         <button onClick={onExit} className="p-2 rounded-2xl bg-white/10 hover:bg-white/15 transition-colors cursor-pointer">
-          <ArrowLeft size={20} />
+          <ArrowLeft size={18} />
         </button>
         <div className="text-center">
-          <h1 className="text-lg font-black uppercase tracking-tight">{t('mode_minesweeper', language)}</h1>
-          <div className="text-xs font-bold text-indigo-300">Lv.{level} ({gridSize}×{gridSize} / {minesCount})</div>
+          <h1 className="text-base sm:text-lg font-black uppercase tracking-tight">{t('mode_minesweeper', language)}</h1>
+          <div className="text-[10px] sm:text-xs font-bold text-indigo-300">Lv.{level} ({gridSize}×{gridSize} / {minesCount})</div>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="px-2 py-1 rounded-xl bg-red-500/20 border border-red-400/20 text-red-100 font-black text-sm tabular-nums">
+        <div className="flex items-center gap-1.5">
+          <div className="px-2 py-1 rounded-xl bg-red-500/20 border border-red-400/20 text-red-100 font-black text-xs sm:text-sm tabular-nums">
             {hudMinesLeft}
           </div>
-          <div className="px-2 py-1 rounded-xl bg-indigo-500/20 border border-indigo-400/20 text-indigo-100 font-black text-sm tabular-nums">
+          <div className="px-2 py-1 rounded-xl bg-indigo-500/20 border border-indigo-400/20 text-indigo-100 font-black text-xs sm:text-sm tabular-nums">
             {hudTimer}s
           </div>
         </div>
       </header>
 
-      <div
-        className={cn('relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl')}
-        style={{ width: CANVAS_SIZE, height: CANVAS_SIZE, touchAction: 'none' }}
-        onPointerDown={handlePointerDown}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp}
-      >
-        <canvas ref={canvasRef} width={CANVAS_SIZE} height={CANVAS_SIZE} className="w-full h-full" />
+      <main className="w-full max-w-md flex-1 min-h-0 flex flex-col items-center justify-center px-3">
+        <div
+          className={cn('relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl max-h-[58vh] aspect-square w-full max-w-[340px]')}
+          style={{ touchAction: 'none' }}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+        >
+          <canvas ref={canvasRef} width={CANVAS_SIZE} height={CANVAS_SIZE} className="w-full h-full object-contain" />
 
-        {(hudGameOver || hudWin) && (
-          <div className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-white text-slate-900 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl">
-              {hudWin ? (
-                <Trophy size={42} className="mx-auto text-amber-500 mb-3" />
-              ) : (
-                <Flag size={42} className="mx-auto text-red-500 mb-3" />
-              )}
-              <h2 className="text-xl font-black mb-1">
-                {hudWin ? (language === 'ko' ? '승리!' : 'WIN!') : (language === 'ko' ? '지뢰 폭발!' : 'BOOM!')}
-              </h2>
-              <p className="text-sm font-bold text-slate-500 mb-1">
-                {language === 'ko' ? `시간: ${gameRef.current.timer}초` : `Time: ${gameRef.current.timer}s`}
-              </p>
-              {hudWin && level < LEVEL_CONFIG.length && (
-                <p className="text-xs font-bold text-emerald-600 mb-1">
-                  {language === 'ko' ? `레벨 보너스: +${level * 50}` : `Level bonus: +${level * 50}`}
+          {(hudGameOver || hudWin) && (
+            <div className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
+              <div className="bg-white text-slate-900 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl">
+                {hudWin ? (
+                  <Trophy size={42} className="mx-auto text-amber-500 mb-3" />
+                ) : (
+                  <Flag size={42} className="mx-auto text-red-500 mb-3" />
+                )}
+                <h2 className="text-xl font-black mb-1">
+                  {hudWin ? (language === 'ko' ? '승리!' : 'WIN!') : (language === 'ko' ? '지뢰 폭발!' : 'BOOM!')}
+                </h2>
+                <p className="text-sm font-bold text-slate-500 mb-1">
+                  {language === 'ko' ? `시간: ${gameRef.current.timer}초` : `Time: ${gameRef.current.timer}s`}
                 </p>
-              )}
-              <p className="text-sm font-bold text-indigo-600 mb-4">
-                {t('minesweeper_reward', language).replace('{amount}', String(hudScore))}
-              </p>
-              <div className="flex gap-2">
-                <button onClick={initGame} className="flex-1 py-3 bg-indigo-600 text-white rounded-2xl font-black flex items-center justify-center gap-2 cursor-pointer">
-                  <RotateCcw size={16} />
-                  {language === 'ko' ? '재시작' : 'Restart'}
-                </button>
                 {hudWin && level < LEVEL_CONFIG.length && (
-                  <button onClick={handleNextLevel} className="flex-1 py-3 bg-emerald-500 text-white rounded-2xl font-black cursor-pointer">
-                    {language === 'ko' ? `Lv.${level + 1} ▶` : `Lv.${level + 1} ▶`}
-                  </button>
+                  <p className="text-xs font-bold text-emerald-600 mb-1">
+                    {language === 'ko' ? `레벨 보너스: +${level * 50}` : `Level bonus: +${level * 50}`}
+                  </p>
                 )}
-                {!hudWin && (
-                  <button onClick={onExit} className="flex-1 py-3 bg-slate-900 text-white rounded-2xl font-black cursor-pointer">
-                    {t('home', language)}
+                <p className="text-sm font-bold text-indigo-600 mb-4">
+                  {t('minesweeper_reward', language).replace('{amount}', String(calcReward(hudWin, level)))}
+                </p>
+                <div className="flex gap-2">
+                  <button onClick={initGame} className="flex-1 py-3 bg-indigo-600 text-white rounded-2xl font-black flex items-center justify-center gap-2 cursor-pointer">
+                    <RotateCcw size={16} />
+                    {language === 'ko' ? '재시작' : 'Restart'}
                   </button>
-                )}
+                  {hudWin && level < LEVEL_CONFIG.length && (
+                    <button onClick={handleNextLevel} className="flex-1 py-3 bg-emerald-500 text-white rounded-2xl font-black cursor-pointer">
+                      {language === 'ko' ? `Lv.${level + 1} ▶` : `Lv.${level + 1} ▶`}
+                    </button>
+                  )}
+                  {!hudWin && (
+                    <button onClick={onExit} className="flex-1 py-3 bg-slate-900 text-white rounded-2xl font-black cursor-pointer">
+                      {t('home', language)}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
 
-      <div className="mt-3 px-4 py-2 bg-white/5 rounded-2xl text-[10px] text-slate-400 font-bold text-center max-w-md">
-        {language === 'ko' ? '탭: 열기 | 길게 누르기: 깃발' : 'Tap: Reveal | Long press: Flag'}
+        {/* Mobile One-Hand Mode Toggle (Reveal vs Flag) */}
+        <div className="mt-3 flex items-center justify-center gap-3 w-full max-w-xs select-none shrink-0">
+          <button
+            type="button"
+            onClick={() => setFlagMode(false)}
+            className={cn(
+              'flex-1 py-2.5 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all border shadow-sm touch-manipulation',
+              !flagMode
+                ? 'bg-indigo-600 border-indigo-400 text-white shadow-indigo-500/20 ring-2 ring-indigo-400/30'
+                : 'bg-white/10 border-white/20 text-slate-300 active:scale-95'
+            )}
+          >
+            🔍 {language === 'ko' ? '열기 모드' : 'Dig'}
+          </button>
+          <button
+            type="button"
+            onClick={() => setFlagMode(true)}
+            className={cn(
+              'flex-1 py-2.5 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all border shadow-sm touch-manipulation',
+              flagMode
+                ? 'bg-rose-600 border-rose-400 text-white shadow-rose-500/20 ring-2 ring-rose-400/30'
+                : 'bg-white/10 border-white/20 text-slate-300 active:scale-95'
+            )}
+          >
+            🚩 {language === 'ko' ? '깃발 모드' : 'Flag'}
+          </button>
+        </div>
+      </main>
+
+      <div className="px-4 py-1.5 bg-white/5 rounded-2xl text-[9px] sm:text-[10px] text-slate-400 font-bold text-center max-w-md shrink-0">
+        {language === 'ko'
+          ? '모드 버튼으로 원터치 전환 가능 | 길게 누르기로도 깃발 설치'
+          : 'Toggle mode button for one-touch | Long press also flags'}
       </div>
     </div>
   );

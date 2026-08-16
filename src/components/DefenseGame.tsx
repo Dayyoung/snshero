@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Shield, Award, Heart, Play, RotateCcw, ShieldAlert, Zap, X } from 'lucide-react';
 import { Language, CardData } from '../types';
 import { t } from '../lib/i18n';
-import { cn } from '../lib/utils';
+import { cn, getCardSpriteStyle } from '../lib/utils';
 import { CARD_DATABASE } from '../cardDatabase';
 
 interface DefenseAlly {
@@ -584,18 +584,7 @@ export const DefenseGame: React.FC<DefenseGameProps> = ({
                     ) : (
                       <div 
                         className="w-[180%] aspect-square transform-gpu scale-95"
-                        style={{
-                          backgroundImage: `url('/card100.png')`,
-                          backgroundSize: `1000% 1100%`,
-                          backgroundPosition: (() => {
-                            const imgIdx = baseCard.imageIndex !== undefined ? baseCard.imageIndex : monster.cardId;
-                            const x = ((imgIdx - 1) % 10) * (100 / 9);
-                            const y = Math.floor((imgIdx - 1) / 10) * (100 / 10);
-                            return `${x}% ${y}%`;
-                          })(),
-                          backgroundRepeat: 'no-repeat',
-                          imageRendering: 'pixelated'
-                        }}
+                        style={getCardSpriteStyle(baseCard.imageIndex !== undefined ? baseCard.imageIndex : monster.cardId)}
                       />
                     )}
                   </div>
@@ -665,18 +654,7 @@ export const DefenseGame: React.FC<DefenseGameProps> = ({
                     ) : (
                       <div 
                         className="w-[180%] aspect-square transform-gpu scale-95"
-                        style={{
-                          backgroundImage: `url('/card100.png')`,
-                          backgroundSize: `1000% 1100%`,
-                          backgroundPosition: (() => {
-                            const imgIdx = ally.card.imageIndex !== undefined ? ally.card.imageIndex : 1;
-                            const x = ((imgIdx - 1) % 10) * (100 / 9);
-                            const y = Math.floor((imgIdx - 1) / 10) * (100 / 10);
-                            return `${x}% ${y}%`;
-                          })(),
-                          backgroundRepeat: 'no-repeat',
-                          imageRendering: 'pixelated'
-                        }}
+                        style={getCardSpriteStyle(ally.card.imageIndex !== undefined ? ally.card.imageIndex : 1)}
                       />
                     )}
                   </div>

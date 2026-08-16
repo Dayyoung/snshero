@@ -418,9 +418,9 @@ export const Slide2048Game: React.FC<Slide2048GameProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center w-full min-h-screen bg-slate-50/30 text-slate-800 font-sans select-none pb-12 overflow-x-hidden">
+    <div className="flex flex-col items-center justify-between w-full h-[100dvh] max-h-[100dvh] bg-slate-50/30 text-slate-800 font-sans select-none overflow-hidden pb-3">
       {/* Header */}
-      <header className="w-full h-16 flex items-center justify-between border-b border-slate-100 px-4 md:px-6 bg-white shrink-0">
+      <header className="w-full h-14 flex items-center justify-between border-b border-slate-100 px-4 md:px-6 bg-white shrink-0">
         <button
           onClick={onExit}
           className="p-2 bg-slate-50 border border-slate-200/60 rounded-xl hover:bg-slate-100 hover:text-indigo-600 transition-colors shadow-sm cursor-pointer text-slate-600 flex items-center justify-center"
@@ -444,43 +444,27 @@ export const Slide2048Game: React.FC<Slide2048GameProps> = ({
         </button>
       </header>
 
-      <div className="w-full max-w-md px-4 mt-4 flex flex-col items-center">
-        {/* Companion Card Info */}
-        <div className="w-full bg-white rounded-2xl border border-slate-100 p-3 mb-4 flex items-center gap-3 shadow-xs">
-          <div
-            className="w-10 h-10 rounded-xl border border-amber-400 bg-cover bg-center shrink-0"
-            style={getCardSpriteStyle(cardId)}
-          />
-          <div className="min-w-0 flex-1">
-            <p className="text-amber-500 text-[10px] font-bold uppercase tracking-wider">
-              {language === 'ko' ? '함께하는 캐릭터' : 'Companion'}
-            </p>
-            <p className="text-slate-800 text-xs font-bold truncate">
-              {cardData?.title || cardData?.title_en || 'Hero'}
-            </p>
-          </div>
-        </div>
-
+      <div className="w-full max-w-md px-4 flex flex-col items-center flex-1 min-h-0 justify-center">
         {/* Score Board */}
-        <div className="flex items-center gap-3 w-full mb-4">
-          <div className="flex-1 bg-white rounded-2xl border border-slate-100 py-2.5 text-center shadow-xs">
+        <div className="flex items-center gap-3 w-full mb-2 shrink-0">
+          <div className="flex-1 bg-white rounded-2xl border border-slate-100 py-1.5 text-center shadow-xs">
             <div className="text-[9px] text-indigo-500 uppercase tracking-widest font-bold">
               {language === 'ko' ? '점수' : 'SCORE'}
             </div>
-            <div className="text-lg font-extrabold text-slate-850">{score.toLocaleString()}</div>
+            <div className="text-base sm:text-lg font-extrabold text-slate-850">{score.toLocaleString()}</div>
           </div>
-          <div className="flex-1 bg-white rounded-2xl border border-slate-100 py-2.5 text-center shadow-xs">
+          <div className="flex-1 bg-white rounded-2xl border border-slate-100 py-1.5 text-center shadow-xs">
             <div className="text-[9px] text-amber-500 uppercase tracking-widest font-bold flex items-center justify-center gap-1">
               <Trophy size={10} />
               {language === 'ko' ? '최고' : 'BEST'}
             </div>
-            <div className="text-lg font-extrabold text-slate-850">{bestScore.toLocaleString()}</div>
+            <div className="text-base sm:text-lg font-extrabold text-slate-850">{bestScore.toLocaleString()}</div>
           </div>
         </div>
 
         {/* Combo */}
         {showCombo && !lowSpecMode && (
-          <div className="mb-3 px-4 py-1 bg-amber-50 border border-amber-250 text-amber-700 font-bold text-xs rounded-full shadow-xs animate-pop">
+          <div className="mb-2 px-4 py-0.5 bg-amber-50 border border-amber-250 text-amber-700 font-bold text-xs rounded-full shadow-xs animate-pop shrink-0">
             🔥 {comboCount}x {language === 'ko' ? '연속 합체!' : 'COMBO!'}
           </div>
         )}
@@ -488,7 +472,7 @@ export const Slide2048Game: React.FC<Slide2048GameProps> = ({
         {/* Game Board */}
         <div
           ref={containerRef}
-          className="relative w-full aspect-square max-w-[340px] bg-slate-900/90 rounded-3xl border border-slate-950 p-2.5 shadow-xl"
+          className="relative w-full aspect-square max-w-[300px] sm:max-w-[340px] bg-slate-900/90 rounded-3xl border border-slate-950 p-2.5 shadow-xl shrink-0"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -527,16 +511,41 @@ export const Slide2048Game: React.FC<Slide2048GameProps> = ({
           </div>
         </div>
 
-        {/* Controls Hint */}
-        <div className="mt-4 flex items-center gap-4 text-slate-400">
-          <div className="flex flex-col items-center gap-1 shrink-0">
-            <div className="flex gap-1"><ArrowUp size={12} /></div>
-            <div className="flex gap-1"><ArrowLeftIcon size={12} /><ArrowDown size={12} /><ArrowRight size={12} /></div>
-            <span className="text-[9px] uppercase font-bold">{language === 'ko' ? '키보드' : 'KEYS'}</span>
-          </div>
-          <div className="w-px h-8 bg-slate-200" />
-          <div className="text-[10px] font-medium leading-relaxed">
-            {language === 'ko' ? '↔ 화면 스와이프로 타일을 합치세요' : '↔ Swipe screen to merge tiles'}
+        {/* Mobile One-Handed D-Pad */}
+        <div className="mt-2 flex flex-col items-center justify-center gap-1 select-none shrink-0 sm:hidden">
+          <button
+            type="button"
+            onClick={() => handleMove('up')}
+            className="w-12 h-9 rounded-xl bg-slate-200 active:bg-indigo-500 active:text-white border border-slate-300 flex items-center justify-center text-sm font-black active:scale-95 shadow-sm touch-manipulation text-slate-700"
+            aria-label="Up"
+          >
+            ▲
+          </button>
+          <div className="flex items-center gap-5">
+            <button
+              type="button"
+              onClick={() => handleMove('left')}
+              className="w-12 h-9 rounded-xl bg-slate-200 active:bg-indigo-500 active:text-white border border-slate-300 flex items-center justify-center text-sm font-black active:scale-95 shadow-sm touch-manipulation text-slate-700"
+              aria-label="Left"
+            >
+              ◀
+            </button>
+            <button
+              type="button"
+              onClick={() => handleMove('down')}
+              className="w-12 h-9 rounded-xl bg-slate-200 active:bg-indigo-500 active:text-white border border-slate-300 flex items-center justify-center text-sm font-black active:scale-95 shadow-sm touch-manipulation text-slate-700"
+              aria-label="Down"
+            >
+              ▼
+            </button>
+            <button
+              type="button"
+              onClick={() => handleMove('right')}
+              className="w-12 h-9 rounded-xl bg-slate-200 active:bg-indigo-500 active:text-white border border-slate-300 flex items-center justify-center text-sm font-black active:scale-95 shadow-sm touch-manipulation text-slate-700"
+              aria-label="Right"
+            >
+              ▶
+            </button>
           </div>
         </div>
       </div>

@@ -10,6 +10,7 @@ import argparse
 import urllib.request
 import urllib.parse
 import csv
+import io
 import time
 
 FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse"
@@ -68,7 +69,7 @@ def sync_from_sheet(csv_url: str = DEFAULT_SHEET_CSV_URL, dry_run: bool = False)
         print(f"[ERROR] Failed to fetch CSV: {e}")
         return
 
-    reader = csv.reader(csv_content.splitlines())
+    reader = csv.reader(io.StringIO(csv_content))
     rows = list(reader)
     print(f"Total rows in sheet: {len(rows)}")
 

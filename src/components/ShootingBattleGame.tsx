@@ -884,30 +884,30 @@ export const ShootingBattleGame: React.FC<ShootingBattleGameProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center font-sans select-none">
-      <header className="w-full max-w-lg flex items-center justify-between p-3">
+    <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white flex flex-col items-center justify-between font-sans select-none overflow-hidden pb-2">
+      <header className="w-full max-w-lg flex items-center justify-between px-3 py-2 shrink-0">
         <button onClick={onExit} className="p-2 rounded-2xl bg-white/10 hover:bg-white/15 transition-colors cursor-pointer">
           <ArrowLeft size={20} />
         </button>
         <div className="text-center">
-          <h1 className="text-lg font-black uppercase tracking-tight">{t('mode_shooting', language)}</h1>
+          <h1 className="text-base sm:text-lg font-black uppercase tracking-tight">{t('mode_shooting', language)}</h1>
           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
             {t('shooting_wave', language)} {hudStage}/{MAX_STAGES}
           </p>
         </div>
-        <div className="px-3 py-2 rounded-2xl bg-indigo-500/20 border border-indigo-400/20 text-indigo-100 font-black text-sm tabular-nums">
+        <div className="px-3 py-1.5 rounded-2xl bg-indigo-500/20 border border-indigo-400/20 text-indigo-100 font-black text-xs sm:text-sm tabular-nums">
           {hudScore}
         </div>
       </header>
 
-      <div className="flex items-center gap-3 mb-2 text-sm font-bold">
+      <div className="flex items-center gap-3 py-1 text-xs sm:text-sm font-bold shrink-0">
         <div className="flex items-center gap-1">
-          <Heart size={16} className="text-rose-500 fill-rose-500" />
+          <Heart size={14} className="text-rose-500 fill-rose-500" />
           <span>{hudHp}/{maxHp}</span>
         </div>
         {hudRapid > 0 && (
           <div className="flex items-center gap-1 text-amber-400">
-            <Zap size={14} />
+            <Zap size={12} />
             <span className="text-xs">{hudRapid}s</span>
           </div>
         )}
@@ -918,83 +918,55 @@ export const ShootingBattleGame: React.FC<ShootingBattleGameProps> = ({
         )}
       </div>
 
-      <div className="w-full max-w-lg mb-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-        <div className="flex flex-col gap-2 text-left">
-          <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-sky-300">
-              {t('shooting_event_rule_label', language)}
-            </p>
-            <p className="text-xs font-bold text-white">
-              {t('shooting_event_rule_desc', language, {
-                season: seasonRule.id.toUpperCase(),
-                bonus: seasonRule.scoreBonusPerMilestone,
-                rapid: Math.round(seasonRule.rapidBoostMs / 1000),
-              })}
-            </p>
-          </div>
-          <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-amber-300">
-              {t('shooting_leader_bonus_label', language)}
-            </p>
-            <p className="text-xs font-bold text-slate-200">
-              {t('shooting_leader_bonus_desc', language, {
-                player: playerName || getCardName(playerCardId, language),
-                hp: maxHp,
-                score: Math.round((leaderBonus.scoreMultiplier - 1) * 100),
-                powerup: Math.round((leaderBonus.powerUpChance - POWERUP_CHANCE) * 100),
-              })}
-            </p>
-          </div>
-        </div>
-      </div>
+      <main className="w-full max-w-lg flex-1 min-h-0 flex flex-col items-center justify-center px-3">
+        <div
+          className="relative w-full max-h-[60vh] aspect-[2/3] overflow-hidden rounded-2xl border border-white/10 shadow-2xl"
+          style={{ touchAction: 'none' }}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+        >
+          <canvas
+            ref={canvasRef}
+            width={CANVAS_W}
+            height={CANVAS_H}
+            className="w-full h-full object-contain"
+          />
 
-      <div
-        className="relative w-full max-w-lg aspect-[2/3] overflow-hidden rounded-2xl border border-white/10 shadow-2xl"
-        style={{ touchAction: 'none' }}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp}
-      >
-        <canvas
-          ref={canvasRef}
-          width={CANVAS_W}
-          height={CANVAS_H}
-          className="w-full h-full"
-        />
-
-        {hudGameOver && (
-          <div className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-6">
-            <div className="bg-white text-slate-900 rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl">
-              {hudVictory ? (
-                <Trophy size={42} className="mx-auto text-amber-500 mb-3" />
-              ) : (
-                <Skull size={42} className="mx-auto text-rose-500 mb-3" />
-              )}
-              <h2 className="text-xl font-black mb-1">
-                {hudVictory ? t('shooting_victory', language) : t('shooting_game_over', language)}
-              </h2>
-              <p className="text-sm font-bold text-slate-500 mb-1">
-                {t('shooting_wave', language)} {hudStage}/{MAX_STAGES}
-              </p>
-              <p className="text-sm font-bold text-slate-500 mb-4">
-                {t('shooting_reward', language).replace('{amount}', String(Math.floor(gameRef.current.score / 2)))}
-              </p>
-              <div className="flex gap-2">
-                <button onClick={startGame} className="flex-1 py-3 bg-indigo-600 text-white rounded-2xl font-black flex items-center justify-center gap-2 cursor-pointer">
-                  <RotateCcw size={16} />
-                  {language === 'ko' ? '재시작' : 'Restart'}
-                </button>
-                <button onClick={onExit} className="flex-1 py-3 bg-slate-900 text-white rounded-2xl font-black cursor-pointer">
-                  {t('home', language)}
-                </button>
+          {hudGameOver && (
+            <div className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-6">
+              <div className="bg-white text-slate-900 rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl">
+                {hudVictory ? (
+                  <Trophy size={42} className="mx-auto text-amber-500 mb-3" />
+                ) : (
+                  <Skull size={42} className="mx-auto text-rose-500 mb-3" />
+                )}
+                <h2 className="text-xl font-black mb-1">
+                  {hudVictory ? t('shooting_victory', language) : t('shooting_game_over', language)}
+                </h2>
+                <p className="text-sm font-bold text-slate-500 mb-1">
+                  {t('shooting_wave', language)} {hudStage}/{MAX_STAGES}
+                </p>
+                <p className="text-sm font-bold text-slate-500 mb-4">
+                  {t('shooting_reward', language).replace('{amount}', String(Math.floor(gameRef.current.score / 2)))}
+                </p>
+                <div className="flex gap-2">
+                  <button onClick={startGame} className="flex-1 py-3 bg-indigo-600 text-white rounded-2xl font-black flex items-center justify-center gap-2 cursor-pointer">
+                    <RotateCcw size={16} />
+                    {language === 'ko' ? '재시작' : 'Restart'}
+                  </button>
+                  <button onClick={onExit} className="flex-1 py-3 bg-slate-900 text-white rounded-2xl font-black cursor-pointer">
+                    {t('home', language)}
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </main>
 
-      <div className="mt-3 px-4 py-2 bg-white/5 rounded-2xl text-[10px] text-slate-400 font-bold text-center max-w-lg">
+      <div className="px-4 py-1.5 bg-white/5 rounded-2xl text-[9px] sm:text-[10px] text-slate-400 font-bold text-center max-w-lg shrink-0">
         {t('shooting_touch_guide', language)}
       </div>
     </div>

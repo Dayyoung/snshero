@@ -3,7 +3,7 @@ import { ArrowLeft, Heart, Zap, Timer } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardData, Language } from '../types';
 import { t } from '../lib/i18n';
-import { cn } from '../lib/utils';
+import { cn, getCardSpriteStyle } from '../lib/utils';
 
 interface CardTapGameProps {
   deck: CardData[];
@@ -36,18 +36,7 @@ interface MoleState {
 
 type GameStatus = 'ready' | 'playing' | 'gameover';
 
-const getCardSpriteStyle = (cardId: number): React.CSSProperties => {
-  const idx = CARD_DATABASE[cardId] ? cardId : 1;
-  const x = Math.floor(((idx - 1) % 10) * (100 / 9) * 100) / 100;
-  const y = Math.floor(((idx - 1) / 10) * (100 / 10) * 100) / 100;
-  return {
-    backgroundImage: 'url(/card100.png)',
-    backgroundSize: '1000% 1100%',
-    backgroundPosition: `${x}% ${y}%`,
-    backgroundRepeat: 'no-repeat',
-    imageRendering: 'pixelated' as const,
-  };
-};
+
 
 export const CardTapGame: React.FC<CardTapGameProps> = ({
   deck,
@@ -288,8 +277,8 @@ export const CardTapGame: React.FC<CardTapGameProps> = ({
           localStorage.setItem('hero_cardtap_highscore', String(finalScore));
         }
 
-        // Calculate reward
-        const reward = Math.floor(finalScore / 5);
+        // Calculate reward (10 ~ 60 SNS)
+        const reward = Math.min(60, Math.max(10, Math.floor(finalScore / 10)));
         if (!rewardedRef.current) {
           rewardedRef.current = true;
           setTimeout(() => onReward(reward), 300);
@@ -371,24 +360,27 @@ export const CardTapGame: React.FC<CardTapGameProps> = ({
   const activeMoles = moles.filter(m => !m.tapped && m.showUntil > Date.now());
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-b from-indigo-950 via-slate-900 to-indigo-950 flex flex-col items-center justify-center p-4">
-      {/* Header */}
-      <div className="w-full max-w-sm flex items-center justify-between mb-2">
-        <button
-          onClick={onExit}
-          className="flex items-center gap-1.5 text-indigo-300/60 hover:text-indigo-200 transition-colors text-sm font-black tracking-wider"
-        >
-          <ArrowLeft size={18} />
-          <span>{isKo ? '나가기' : 'Exit'}</span>
-        </button>
+    <div className="w-full h-[100dvh] max-h-[100dvh] overflow-hidden bg-[#0f1117] text-slate-100 flex flex-col justify-between p-2 sm:p-4 font-mono select-none">
+      <div className="w-full max-w-sm mx-auto flex flex-col h-full justify-between gap-1 sm:gap-2">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-white/10 pb-1.5 shrink-0">
+          <button
+            onClick={onExit}
+            className="inline-flex items-center gap-1.5 rounded-sm bg-white/5 border border-white/10 px-3 py-1.5 text-xs font-mono text-white tracking-wider hover:bg-white/10 transition-colors min-h-[44px]"
+          >
+            <ArrowLeft size={14} />
+            <span>[ {isKo ? '뒤로' : 'BACK'} ]</span>
+          </button>
 
-        <div className="flex items-center gap-3">
-          {/* Lives */}
+          <div className="text-xs sm:text-sm font-mono font-bold tracking-wider text-amber-400 uppercase">
+            [CARD TAP]
+          </div>
+
           <div className="flex items-center gap-1">
             {[0, 1, 2].map(i => (
               <Heart
                 key={i}
-                size={16}
+                size={14}
                 className={cn(
                   'transition-all',
                   i < lives
@@ -398,178 +390,167 @@ export const CardTapGame: React.FC<CardTapGameProps> = ({
               />
             ))}
           </div>
+        </div>
 
-          {/* Timer */}
-          <div className="flex items-center gap-1 text-amber-400">
-            <Timer size={16} />
-            <span className="text-sm font-black tracking-wider tabular-nums">
-              {timeLeft}s
-            </span>
+        {/* Stats Bar */}
+        <div className="grid grid-cols-3 gap-1.5 text-center shrink-0 border border-white/10 bg-white/5 p-1.5 rounded-none text-xs">
+          <div>
+            <div className="text-[10px] text-slate-400">{isKo ? '남은 시간' : 'TIME'}</div>
+            <div className="font-bold text-amber-400">{timeLeft}s</div>
           </div>
-
-          {/* Score */}
-          <div className="flex items-center gap-1 text-amber-400">
-            <Zap size={16} />
-            <span className="text-sm font-black tracking-wider tabular-nums">
-              {score}
-            </span>
+          <div>
+            <div className="text-[10px] text-slate-400">{isKo ? '점수' : 'SCORE'}</div>
+            <div className="font-bold text-slate-100">{score}</div>
+          </div>
+          <div>
+            <div className="text-[10px] text-slate-400">{isKo ? '보상' : 'REWARD'}</div>
+            <div className="font-bold text-amber-400">{Math.min(60, Math.max(10, Math.floor(score / 10)))} SNS</div>
           </div>
         </div>
-      </div>
 
-      {/* Game Grid */}
-      <div
-        className="relative w-full max-w-sm aspect-square bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl shadow-xl shadow-indigo-900/20 p-3"
-        style={{ touchAction: 'none' as const }}
-      >
-        {/* Grid background */}
-        <div className="grid grid-cols-3 grid-rows-3 gap-2 w-full h-full">
-          {Array.from({ length: GRID_ROWS * GRID_COLS }).map((_, i) => {
-            const row = Math.floor(i / GRID_COLS);
-            const col = i % GRID_COLS;
-            const cellKey = `${row}-${col}`;
-            const mole = activeMoles.find(m => m.row === row && m.col === col);
-            const wasTapped = tappedCells.has(cellKey);
+        {/* Game Grid */}
+        <div className="flex-1 min-h-0 flex items-center justify-center relative overflow-hidden">
+          <div
+            className="w-full max-w-[340px] aspect-square bg-black/40 border border-white/10 p-1 relative overflow-hidden touch-none"
+            style={{ touchAction: 'none' as const }}
+          >
+            <div className="grid grid-cols-3 grid-rows-3 gap-1 w-full h-full">
+              {Array.from({ length: GRID_ROWS * GRID_COLS }).map((_, i) => {
+                const row = Math.floor(i / GRID_COLS);
+                const col = i % GRID_COLS;
+                const cellKey = `${row}-${col}`;
+                const mole = activeMoles.find(m => m.row === row && m.col === col);
+                const wasTapped = tappedCells.has(cellKey);
 
-            return (
-              <div
-                key={i}
-                className={cn(
-                  'relative rounded-xl border border-white/10 bg-indigo-950/60 overflow-hidden cursor-pointer select-none transition-all duration-100',
-                  mole && 'border-amber-500/40 bg-amber-500/5 shadow-lg shadow-amber-500/10',
-                  wasTapped && 'scale-95 border-amber-400/60 bg-amber-400/10',
-                  !lowSpecMode && !mole && 'hover:border-white/15'
-                )}
-                onClick={() => tapMole(row, col)}
-                {...getTouchHandlers(row, col)}
-              >
-                {/* Hole shadow */}
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-b from-black/40 to-transparent pointer-events-none" />
-
-                {/* Mole card */}
-                {mole && (
+                return (
                   <div
+                    key={i}
                     className={cn(
-                      'absolute inset-1 rounded-lg transition-all duration-100',
-                      mole.type === 'bonus' && 'ring-2 ring-amber-400/60 shadow-lg shadow-amber-400/20',
-                      mole.type === 'bomb' && 'ring-2 ring-red-500/60 shadow-lg shadow-red-500/20',
+                      'relative rounded-sm border border-white/10 bg-slate-900 overflow-hidden cursor-pointer select-none transition-all duration-100 flex items-center justify-center',
+                      mole && 'border-amber-400 bg-amber-500/10',
+                      wasTapped && 'scale-95 border-amber-300 bg-amber-400/20',
+                      !lowSpecMode && !mole && 'hover:border-white/20'
                     )}
-                    style={getCardSpriteStyle(mole.cardId)}
+                    onClick={() => tapMole(row, col)}
+                    {...getTouchHandlers(row, col)}
                   >
-                    {/* Type indicator */}
-                    {mole.type === 'bonus' && (
-                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center text-[10px] shadow-lg">
-                        ⭐
+                    {/* Mole card */}
+                    {mole && (
+                      <div
+                        className={cn(
+                          'w-[90%] h-[90%] rounded-sm relative border',
+                          mole.type === 'bonus' && 'border-amber-400 ring-1 ring-amber-400',
+                          mole.type === 'bomb' && 'border-red-500 ring-1 ring-red-500',
+                          mole.type === 'normal' && 'border-white/30'
+                        )}
+                        style={getCardSpriteStyle(mole.cardId)}
+                      >
+                        {mole.type === 'bonus' && (
+                          <div className="absolute top-0 right-0 bg-amber-500 text-slate-950 text-[10px] font-bold px-1 rounded-bl-sm">
+                            ★
+                          </div>
+                        )}
+                        {mole.type === 'bomb' && (
+                          <div className="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-bold px-1 rounded-bl-sm">
+                            ✕
+                          </div>
+                        )}
                       </div>
                     )}
-                    {mole.type === 'bomb' && (
-                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] shadow-lg">
-                        💣
-                      </div>
-                    )}
-                  </div>
-                )}
 
-                {/* Cell number hint (corner, subtle) */}
-                <span className="absolute bottom-0.5 right-1 text-[9px] text-slate-600 font-mono leading-none pointer-events-none select-none">
-                  {i + 1}
-                </span>
+                    <span className="absolute bottom-0.5 right-1 text-[8px] text-slate-500 font-mono pointer-events-none">
+                      {i + 1}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Combo text overlay */}
+            {comboText && (
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10 bg-slate-900/90 border border-amber-400 px-3 py-1 text-xs font-bold text-amber-300">
+                {comboText}
               </div>
-            );
-          })}
+            )}
+          </div>
         </div>
 
-        {/* Combo text overlay */}
-        {comboText && (
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10">
-            <span
-              className={cn(
-                'text-xl font-black tracking-wider drop-shadow-lg animate-pulse',
-                combo >= 5 ? 'text-amber-400' : comboText.includes('폭탄') || comboText.includes('BOMB') ? 'text-red-400' : 'text-amber-200'
+        {/* Footer controls hint */}
+        <div className="shrink-0 text-center pb-1">
+          <p className="text-[10px] text-slate-400 font-mono">
+            {isKo ? '카드가 나타나면 즉시 터치! (폭탄 ✕ 주의)' : 'Tap cards fast! Avoid bomb [✕] cards'}
+          </p>
+        </div>
+
+        {/* Ready Screen Overlay */}
+        {status === 'ready' && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 font-mono">
+            <div className="bg-slate-900 border border-white/15 rounded-none p-6 max-w-xs text-center w-full">
+              <h1 className="text-xl font-bold tracking-wider text-amber-400 mb-2">
+                [{isKo ? '카드 탭' : 'CARD TAP'}]
+              </h1>
+              <p className="text-slate-300 text-xs mb-4">
+                {isKo
+                  ? '구멍에서 튀어나오는 카드를 탭하세요! 30초 제한'
+                  : 'Tap cards appearing in the 3x3 grid! 30s limit'}
+              </p>
+              <div className="text-left text-xs text-slate-400 space-y-1 mb-4 border border-white/10 p-2 bg-white/5">
+                <div>[+] {isKo ? '일반/적: +10점' : 'Enemy card: +10'}</div>
+                <div>[★] {isKo ? '보너스: +30점' : 'Bonus card: +30'}</div>
+                <div>[✕] {isKo ? '폭탄: -50점 / 하트 차감' : 'Bomb: -50 / -1 Life'}</div>
+                <div>[🔥] {isKo ? '콤보 가산점 제공' : 'Combo bonuses'}</div>
+              </div>
+              {highScore > 0 && (
+                <p className="text-amber-400 text-xs mb-4 font-bold">
+                  {isKo ? `최고 점수: ${highScore}` : `Best: ${highScore}`}
+                </p>
               )}
-            >
-              {comboText}
-            </span>
+              <button
+                onClick={startGame}
+                className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold tracking-wider rounded-sm text-xs min-h-[44px]"
+              >
+                {isKo ? '게임 시작' : 'START GAME'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Game Over Overlay */}
+        {status === 'gameover' && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 font-mono">
+            <div className="bg-slate-900 border border-amber-400 rounded-none p-6 max-w-xs text-center w-full">
+              <h1 className="text-base font-bold tracking-wider text-amber-400 mb-2">
+                [{isKo ? '게임 종료' : 'GAME OVER'}]
+              </h1>
+              <div className="text-3xl font-bold text-white mb-2">
+                {score}
+              </div>
+              <p className="text-amber-400 text-sm font-bold mb-2">
+                +{Math.min(60, Math.max(10, Math.floor(score / 10)))} SNS
+              </p>
+              {score >= highScore && score > 0 && (
+                <p className="text-amber-300 text-xs font-bold mb-4">
+                  [🏆 {isKo ? '신기록 달성!' : 'NEW BEST SCORE!'}]
+                </p>
+              )}
+              <div className="flex gap-2 mt-4">
+                <button
+                  onClick={startGame}
+                  className="flex-1 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold tracking-wider rounded-sm text-xs min-h-[44px]"
+                >
+                  {isKo ? '재도전' : 'RETRY'}
+                </button>
+                <button
+                  onClick={onExit}
+                  className="flex-1 py-2.5 bg-white/10 hover:bg-white/15 text-white font-bold tracking-wider rounded-sm text-xs border border-white/20 min-h-[44px]"
+                >
+                  {isKo ? '나가기' : 'EXIT'}
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
-
-      {/* Ready Screen Overlay */}
-      {status === 'ready' && (
-        <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-sm flex flex-col items-center justify-center z-50 p-6">
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl shadow-xl p-8 max-w-sm text-center">
-            <h1 className="text-3xl font-black tracking-wider text-amber-400 mb-3">
-              {isKo ? '카드 탭' : 'CARD TAP'}
-            </h1>
-            <p className="text-indigo-300/60 text-sm font-black tracking-wider mb-6">
-              {isKo
-                ? '구멍에서 튀어나오는 카드들을 탭하세요!\n3x3 그리드, 30초 제한'
-                : 'Tap the cards popping out of holes!\n3x3 grid, 30 second timer'}
-            </p>
-            <div className="flex flex-col gap-2 mb-6 text-left text-xs text-indigo-300/50 font-black tracking-wider">
-              <div>🎯 {isKo ? '적 카드: +10점' : 'Enemy card: +10 pts'}</div>
-              <div>⭐ {isKo ? '보너스 카드: +30점' : 'Bonus card: +30 pts'}</div>
-              <div>💣 {isKo ? '폭탄 카드: -50점 (피하세요!)' : 'Bomb card: -50 pts (AVOID!)'}</div>
-              <div>🔥 {isKo ? '콤보: 콤보당 +5 추가점수' : 'Combo: +5 extra per combo'}</div>
-              <div className="mt-2 text-indigo-400/60">
-                ⌨️ {isKo ? '키보드: 1-9 키 또는 QWE/ASD/ZXC' : 'Keyboard: 1-9 keys or QWE/ASD/ZXC'}
-              </div>
-            </div>
-            {highScore > 0 && (
-              <p className="text-amber-500/60 text-xs font-black tracking-wider mb-4">
-                {isKo ? `최고 점수: ${highScore}` : `High Score: ${highScore}`}
-              </p>
-            )}
-            <button
-              onClick={startGame}
-              className="w-full py-3 px-6 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black tracking-wider rounded-xl transition-all shadow-lg shadow-amber-500/20 active:scale-95"
-            >
-              {isKo ? '게임 시작' : 'START GAME'}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Game Over Overlay */}
-      {status === 'gameover' && (
-        <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-sm flex flex-col items-center justify-center z-50 p-6">
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl shadow-xl p-8 max-w-sm text-center">
-            <h1 className="text-2xl font-black tracking-wider text-amber-400 mb-2">
-              {isKo ? '게임 오버' : 'GAME OVER'}
-            </h1>
-            <div className="text-4xl font-black tracking-wider text-white mb-2">
-              {score}
-            </div>
-            <p className="text-indigo-300/60 text-sm font-black tracking-wider mb-1">
-              {isKo ? `SNS 보상: +${Math.floor(score / 5)}` : `SNS Reward: +${Math.floor(score / 5)}`}
-            </p>
-            {score >= highScore && score > 0 && (
-              <p className="text-amber-400 text-xs font-black tracking-wider mb-4">
-                🏆 {isKo ? '최고 기록!' : 'NEW HIGH SCORE!'}
-              </p>
-            )}
-            {highScore > 0 && score < highScore && (
-              <p className="text-indigo-400/50 text-xs font-black tracking-wider mb-4">
-                {isKo ? `최고 점수: ${highScore}` : `Best: ${highScore}`}
-              </p>
-            )}
-            <div className="flex gap-3 mt-4">
-              <button
-                onClick={startGame}
-                className="flex-1 py-3 px-4 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black tracking-wider rounded-xl transition-all shadow-lg shadow-amber-500/20 active:scale-95 text-sm"
-              >
-                {isKo ? '다시 하기' : 'RETRY'}
-              </button>
-              <button
-                onClick={onExit}
-                className="flex-1 py-3 px-4 bg-white/10 hover:bg-white/15 text-white font-black tracking-wider rounded-xl transition-all text-sm"
-              >
-                {isKo ? '나가기' : 'EXIT'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

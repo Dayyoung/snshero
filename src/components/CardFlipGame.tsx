@@ -3,7 +3,7 @@ import { ArrowLeft, RotateCcw, Trophy, Zap, Lightbulb } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardData, Language } from '../types';
 import { t } from '../lib/i18n';
-import { cn, getAssetUrl } from '../lib/utils';
+import { cn, getAssetUrl, getCardSpriteStyle } from '../lib/utils';
 
 interface CardFlipGameProps {
   deck: CardData[];
@@ -15,10 +15,10 @@ interface CardFlipGameProps {
 }
 
 const DIFFICULTY_CONFIG = [
-  { size: 3, shuffleMoves: 5, reward: 20 },
-  { size: 4, shuffleMoves: 10, reward: 50 },
-  { size: 5, shuffleMoves: 18, reward: 100 },
-  { size: 6, shuffleMoves: 28, reward: 180 },
+  { size: 3, shuffleMoves: 5, reward: 15 },
+  { size: 4, shuffleMoves: 10, reward: 30 },
+  { size: 5, shuffleMoves: 18, reward: 45 },
+  { size: 6, shuffleMoves: 28, reward: 60 },
 ];
 
 interface FlipTile {
@@ -26,19 +26,6 @@ interface FlipTile {
   cardId: number;
   active: boolean; // true = showing card sprite (ON), false = showing back (OFF)
 }
-
-const getCardSpriteStyle = (cardId: number): React.CSSProperties => {
-  const idx = CARD_DATABASE[cardId] ? cardId : 1;
-  const x = ((idx - 1) % 10) * (100 / 9);
-  const y = Math.floor((idx - 1) / 10) * (100 / 10);
-  return {
-    backgroundImage: `url('${getAssetUrl('/card100.png')}')`,
-    backgroundSize: '1000% 1100%',
-    backgroundPosition: `${x}% ${y}%`,
-    backgroundRepeat: 'no-repeat',
-    imageRendering: 'pixelated' as const,
-  };
-};
 
 // Generate a solvable puzzle by starting from all-ON and applying N random moves
 const generateSolvablePuzzle = (size: number, moves: number, cardPool: number[]): FlipTile[] => {
@@ -189,7 +176,7 @@ export const CardFlipGame: React.FC<CardFlipGameProps> = ({
   const activeCount = tiles.filter(t => t.active).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-950 via-slate-900 to-indigo-950 text-slate-100 flex flex-col items-center font-sans select-none pb-12 w-full overflow-x-hidden">
+    <div className="h-[100dvh] max-h-[100dvh] bg-gradient-to-b from-indigo-950 via-slate-900 to-indigo-950 text-slate-100 flex flex-col items-center font-sans select-none pb-4 w-full overflow-hidden justify-between">
       {/* Header */}
       <header className="w-full h-16 flex items-center justify-between border-b border-white/10 px-4 md:px-6 bg-black/20 backdrop-blur-sm shrink-0">
         <button

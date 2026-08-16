@@ -3,7 +3,7 @@ import { ArrowLeft, RotateCcw, Trophy, Zap, Shield, Navigation } from 'lucide-re
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardData, Language } from '../types';
 import { t } from '../lib/i18n';
-import { cn, getAssetUrl } from '../lib/utils';
+import { cn, getAssetUrl, getCardSpriteStyle } from '../lib/utils';
 
 interface CardRushGameProps {
   deck: CardData[];
@@ -46,19 +46,6 @@ const pickRandomCardId = (exclude = new Set<number>()): number => {
   const available = CARD_POOL.filter((id) => !exclude.has(id));
   const pool = available.length > 0 ? available : CARD_POOL;
   return pool[Math.floor(Math.random() * pool.length)] || 1;
-};
-
-const getCardSpriteStyle = (cardId: number): React.CSSProperties => {
-  const safeId = CARD_DATABASE[cardId] ? cardId : 1;
-  const x = ((safeId - 1) % 10) * (100 / 9);
-  const y = Math.floor((safeId - 1) / 10) * (100 / 10);
-  return {
-    backgroundImage: `url('${getAssetUrl('/card100.png')}')`,
-    backgroundSize: '1000% 1100%',
-    backgroundPosition: `${x}% ${y}%`,
-    backgroundRepeat: 'no-repeat',
-    imageRendering: 'pixelated' as const,
-  };
 };
 
 const createCell = (backgroundCardId: number, kind: CellKind = 'empty', cardId = backgroundCardId): Cell => ({
@@ -235,13 +222,13 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
   const finalizeWin = useCallback((nextTurns: number, nextCollected: number) => {
     if (rewardedRef.current) return;
     rewardedRef.current = true;
-    const reward = Math.max(40, 60 + nextCollected * 25 - Math.floor(nextTurns * 1.5));
+    const reward = Math.min(60, Math.max(15, 25 + nextCollected * 10 - Math.floor(nextTurns * 0.5)));
     onReward(reward);
     setIsGameOver(true);
     setIsWin(true);
     isGameOverRef.current = true;
     isWinRef.current = true;
-    showStatus(language === 'ko' ? '게이트 탈출 성공!' : 'Gate escape success!');
+    showStatus(language === 'ko' ? '[게이트 탈출 성공!]' : '[Gate escape success!]');
     playSfx('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
   }, [language, onReward, playSfx, showStatus]);
 
@@ -498,89 +485,68 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
     : (language === 'ko' ? '동료 카드 구출 중' : 'Rescue ally cards');
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-950 via-slate-900 to-indigo-950 text-white overflow-y-auto">
-      <div className="max-w-5xl mx-auto px-4 py-4 sm:py-6 md:py-8 flex flex-col gap-4 sm:gap-6">
-        <div className="flex items-center justify-between gap-3">
+    <div className="h-[100dvh] max-h-[100dvh] overflow-hidden flex flex-col justify-between select-none font-mono bg-[#0f1117] text-slate-100 p-2 sm:p-4">
+      <div className="w-full max-w-4xl mx-auto flex flex-col h-full justify-between gap-1 sm:gap-2">
+        {/* Header */}
+        <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-1.5 shrink-0">
           <button
             onClick={onExit}
-            className="inline-flex items-center gap-2 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-xl shadow-indigo-900/20 px-4 py-3 text-xs sm:text-sm font-extrabold tracking-wider uppercase hover:bg-white/10 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-sm bg-white/5 border border-white/10 px-3 py-1.5 text-xs font-mono tracking-wider hover:bg-white/10 transition-colors min-h-[44px]"
           >
-            <ArrowLeft size={16} />
-            {language === 'ko' ? '뒤로' : 'Back'}
+            <ArrowLeft size={14} />
+            <span>[ {language === 'ko' ? '뒤로' : 'BACK'} ]</span>
           </button>
-          <div className="flex items-center gap-2 text-amber-300 font-extrabold tracking-wider uppercase text-xs sm:text-sm">
-            <Navigation size={16} />
-            {t('mode_cardrush', language)}
+          <div className="flex items-center gap-1.5 text-amber-400 font-mono font-bold tracking-wider text-xs sm:text-sm">
+            <Navigation size={14} />
+            <span>[{t('mode_cardrush', language)}]</span>
           </div>
           <button
             onClick={restartGame}
-            className="inline-flex items-center gap-2 rounded-2xl bg-amber-500/15 backdrop-blur-sm border border-amber-300/20 shadow-xl shadow-amber-900/10 px-4 py-3 text-xs sm:text-sm font-extrabold tracking-wider uppercase hover:bg-amber-500/25 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-sm bg-amber-500/10 border border-amber-400/30 px-3 py-1.5 text-xs font-mono text-amber-300 tracking-wider hover:bg-amber-500/20 transition-colors min-h-[44px]"
           >
-            <RotateCcw size={16} />
-            {language === 'ko' ? '재시작' : 'Restart'}
+            <RotateCcw size={14} />
+            <span>[ {language === 'ko' ? '재시작' : 'RETRY'} ]</span>
           </button>
         </div>
 
-        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl shadow-xl shadow-indigo-900/20 p-4 sm:p-5 flex flex-col gap-4">
-          <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6">
-            <div className="flex items-center gap-4 min-w-0 flex-1">
-              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border border-amber-300/30 shadow-xl shadow-amber-900/20 shrink-0">
-                <div className="w-full h-full" style={getCardSpriteStyle(heroCardId)} />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="text-[10px] uppercase tracking-[0.35em] text-indigo-300/70 font-extrabold mb-1">
-                  {boardStatus}
-                </div>
-                <div className="text-2xl sm:text-3xl font-extrabold tracking-wider text-white truncate">
-                  {t('mode_cardrush', language)}
-                </div>
-                <div className="mt-2 text-xs sm:text-sm text-slate-300 leading-relaxed">
-                  {t('mode_cardrush_guide', language)}
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center min-w-0">
-              <div className="bg-white/5 rounded-2xl border border-white/10 p-3">
-                <div className="text-[10px] uppercase tracking-wider text-indigo-300/60 font-extrabold">{language === 'ko' ? '구출' : 'Rescued'}</div>
-                <div className="mt-1 text-xl font-extrabold text-amber-300">{collected}/{allyTargetCount}</div>
-              </div>
-              <div className="bg-white/5 rounded-2xl border border-white/10 p-3">
-                <div className="text-[10px] uppercase tracking-wider text-indigo-300/60 font-extrabold">{language === 'ko' ? '턴' : 'Turns'}</div>
-                <div className="mt-1 text-xl font-extrabold text-white">{turns}</div>
-              </div>
-              <div className="bg-white/5 rounded-2xl border border-white/10 p-3">
-                <div className="text-[10px] uppercase tracking-wider text-indigo-300/60 font-extrabold">{language === 'ko' ? '게이트' : 'Gate'}</div>
-                <div className={cn('mt-1 text-xl font-extrabold', gateOpen ? 'text-emerald-300' : 'text-rose-300')}>
-                  {gateOpen ? (language === 'ko' ? '개방' : 'Open') : (language === 'ko' ? '잠금' : 'Locked')}
-                </div>
-              </div>
-              <div className="bg-white/5 rounded-2xl border border-white/10 p-3">
-                <div className="text-[10px] uppercase tracking-wider text-indigo-300/60 font-extrabold">{language === 'ko' ? '상태' : 'Status'}</div>
-                <div className="mt-1 text-xl font-extrabold text-amber-300">
-                  {isGameOver ? (isWin ? (language === 'ko' ? '승리' : 'Win') : (language === 'ko' ? '실패' : 'Lose')) : (language === 'ko' ? '진행중' : 'Live')}
-                </div>
-              </div>
+        {/* Top Status Banner */}
+        <div className="grid grid-cols-4 gap-1.5 text-center shrink-0 border border-white/10 bg-white/5 p-1.5 rounded-none text-xs">
+          <div>
+            <div className="text-[10px] text-slate-400">{language === 'ko' ? '구출' : 'RESCUE'}</div>
+            <div className="font-bold text-amber-400">{collected}/{allyTargetCount}</div>
+          </div>
+          <div>
+            <div className="text-[10px] text-slate-400">{language === 'ko' ? '턴' : 'TURNS'}</div>
+            <div className="font-bold text-slate-100">{turns}</div>
+          </div>
+          <div>
+            <div className="text-[10px] text-slate-400">{language === 'ko' ? '게이트' : 'GATE'}</div>
+            <div className={cn('font-bold', gateOpen ? 'text-emerald-400' : 'text-rose-400')}>
+              {gateOpen ? (language === 'ko' ? '열림' : 'OPEN') : (language === 'ko' ? '잠김' : 'LOCKED')}
             </div>
           </div>
-
-          {statusText && (
-            <div className="rounded-2xl border border-amber-300/20 bg-amber-500/10 px-4 py-3 text-sm font-extrabold tracking-wider text-amber-100">
-              {statusText}
-            </div>
-          )}
+          <div>
+            <div className="text-[10px] text-slate-400">{language === 'ko' ? '보상' : 'REWARD'}</div>
+            <div className="font-bold text-amber-400">{Math.min(60, Math.max(15, 25 + collected * 10 - Math.floor(turns * 0.5)))} SNS</div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-4 sm:gap-6 items-start">
+        {statusText && (
+          <div className="rounded-sm border border-amber-400/30 bg-amber-500/10 px-3 py-1 text-center text-xs font-mono text-amber-300 shrink-0">
+            {statusText}
+          </div>
+        )}
+
+        {/* Board Container */}
+        <div className="flex-1 min-h-0 flex items-center justify-center relative overflow-hidden">
           <div
-            className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl shadow-xl shadow-indigo-900/20 p-3 sm:p-4 relative overflow-hidden touch-none"
+            className="w-full max-w-[340px] sm:max-w-[400px] aspect-square bg-black/40 border border-white/10 p-1 relative overflow-hidden touch-none"
             style={{ touchAction: 'none' }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            <div className="absolute inset-0 pointer-events-none opacity-30 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.12),_transparent_45%)]" />
-            <div className="relative grid gap-2 aspect-square" style={{ gridTemplateColumns: `repeat(${boardSize}, minmax(0, 1fr))` }}>
+            <div className="relative grid gap-1 w-full h-full" style={{ gridTemplateColumns: `repeat(${boardSize}, minmax(0, 1fr))` }}>
               {board.map((row, rowIndex) => row.map((cell, colIndex) => {
                 const isPlayer = cell.kind === 'player';
                 const isAlly = cell.kind === 'ally';
@@ -598,147 +564,121 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
                   <div
                     key={`${rowIndex}-${colIndex}`}
                     className={cn(
-                      'relative aspect-square rounded-2xl overflow-hidden border shadow-xl transition-all duration-150',
-                      'border-white/10 bg-slate-900/60',
-                      isHinted && 'ring-2 ring-amber-400/70 scale-[1.03]',
-                      isPlayer && 'ring-2 ring-amber-300/80 scale-[1.02] shadow-amber-500/20',
-                      isAlly && 'ring-2 ring-emerald-300/60',
-                      isEnemy && 'ring-2 ring-rose-400/60',
-                      isGate && (gateOpen ? 'ring-2 ring-indigo-300/80' : 'ring-2 ring-slate-500/60')
+                      'relative aspect-square rounded-sm overflow-hidden border transition-all duration-100',
+                      'border-white/10 bg-slate-900',
+                      isHinted && 'ring-1 ring-amber-400 scale-[1.02]',
+                      isPlayer && 'ring-2 ring-amber-400 bg-amber-500/20',
+                      isAlly && 'ring-1 ring-emerald-400 bg-emerald-500/20',
+                      isEnemy && 'ring-1 ring-rose-400 bg-rose-500/20',
+                      isGate && (gateOpen ? 'ring-2 ring-indigo-400 bg-indigo-500/20' : 'ring-1 ring-slate-600')
                     )}
                   >
                     <div className="absolute inset-0 opacity-15">
                       <div className="w-full h-full" style={getCardSpriteStyle(cell.backgroundCardId)} />
                     </div>
-                    <div className={cn('absolute inset-0', isPlayer && 'bg-amber-500/10', isAlly && 'bg-emerald-500/10', isEnemy && 'bg-rose-500/10', isGate && 'bg-indigo-500/10')} />
-                    <div className="absolute inset-0 flex items-center justify-center p-1 sm:p-2">
+                    <div className="absolute inset-0 flex items-center justify-center p-0.5">
                       {isPlayer ? (
-                        <div className="w-[88%] h-[88%] rounded-xl overflow-hidden border border-amber-300/50 shadow-xl shadow-amber-900/30">
+                        <div className="w-[90%] h-[90%] rounded-sm overflow-hidden border border-amber-400">
                           <div className="w-full h-full" style={getCardSpriteStyle(heroCardId)} />
                         </div>
                       ) : isAlly ? (
-                        <div className="w-[82%] h-[82%] rounded-xl overflow-hidden border border-emerald-300/50 shadow-xl shadow-emerald-900/20">
+                        <div className="w-[85%] h-[85%] rounded-sm overflow-hidden border border-emerald-400">
                           <div className="w-full h-full" style={getCardSpriteStyle(cell.cardId)} />
                         </div>
                       ) : isEnemy ? (
-                        <div className="w-[82%] h-[82%] rounded-xl overflow-hidden border border-rose-300/50 shadow-xl shadow-rose-900/20 animate-pulse">
+                        <div className="w-[85%] h-[85%] rounded-sm overflow-hidden border border-rose-400">
                           <div className="w-full h-full" style={getCardSpriteStyle(cell.cardId)} />
                         </div>
                       ) : isGate ? (
-                        <div className={cn('w-[78%] h-[78%] rounded-xl overflow-hidden border shadow-xl', gateOpen ? 'border-indigo-300/60 shadow-indigo-900/30' : 'border-slate-300/40 shadow-slate-900/20')}>
+                        <div className={cn('w-[80%] h-[80%] rounded-sm overflow-hidden border', gateOpen ? 'border-indigo-400' : 'border-slate-500')}>
                           <div className="w-full h-full" style={getCardSpriteStyle(cell.cardId)} />
                         </div>
                       ) : null}
                     </div>
                     {isGate && !gateOpen && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-slate-950/35 backdrop-blur-[1px]">
-                        <Shield size={18} className="text-slate-100/80" />
+                      <div className="absolute inset-0 flex items-center justify-center bg-slate-950/60">
+                        <Shield size={14} className="text-slate-300" />
                       </div>
                     )}
                   </div>
                 );
               }))}
             </div>
-
-            <div className="absolute top-4 right-4 flex flex-col items-end gap-2 pointer-events-none">
-              {swipeHint && (
-                <div className="rounded-full bg-amber-500/20 border border-amber-300/30 px-3 py-1 text-[11px] font-extrabold tracking-wider text-amber-100 shadow-xl shadow-amber-900/10">
-                  {swipeHint.toUpperCase()}
-                </div>
-              )}
-              <div className="rounded-full bg-white/10 border border-white/10 px-3 py-1 text-[11px] font-extrabold tracking-wider text-white/80">
-                {language === 'ko' ? '스와이프 / 방향키' : 'Swipe / Arrows'}
-              </div>
-            </div>
-
-            <div className="mt-3 flex items-center justify-between gap-2 text-xs text-indigo-200/80 font-extrabold tracking-wider uppercase">
-              <span>{language === 'ko' ? '터치는 부드럽게, 빠른 스와이프는 더 민감하게' : 'Fast swipes use a lower threshold'}</span>
-              <span>{language === 'ko' ? '15px' : '15px'}</span>
-            </div>
-          </div>
-
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl shadow-xl shadow-indigo-900/20 p-4 sm:p-5 flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-14 h-14 rounded-2xl overflow-hidden border border-amber-300/30 shadow-xl shadow-amber-900/20 shrink-0">
-                <div className="w-full h-full" style={getCardSpriteStyle(heroCardId)} />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="text-[10px] uppercase tracking-[0.35em] text-indigo-300/70 font-extrabold mb-1">
-                  {language === 'ko' ? '플레이어 카드' : 'Player Card'}
-                </div>
-                <div className="text-lg sm:text-xl font-extrabold tracking-wider text-white truncate">
-                  {deck[0]?.title || deck[0]?.title_en || deck[0]?.title_dis || (language === 'ko' ? '대표 카드' : 'Main Hero')}
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-3">
-              <div className="rounded-2xl bg-black/20 border border-white/10 p-3 text-center">
-                <Zap className="mx-auto mb-1 text-amber-300" size={18} />
-                <div className="text-[10px] text-indigo-300/60 uppercase tracking-wider font-extrabold">{language === 'ko' ? '난이도' : 'Mode'}</div>
-                <div className="mt-1 text-sm font-extrabold text-white">{lowSpecMode ? 'LOW' : 'NORMAL'}</div>
-              </div>
-              <div className="rounded-2xl bg-black/20 border border-white/10 p-3 text-center">
-                <Trophy className="mx-auto mb-1 text-amber-300" size={18} />
-                <div className="text-[10px] text-indigo-300/60 uppercase tracking-wider font-extrabold">{language === 'ko' ? '보상' : 'Reward'}</div>
-                <div className="mt-1 text-sm font-extrabold text-white">{Math.max(40, 60 + collected * 25 - Math.floor(turns * 1.5))} SNS</div>
-              </div>
-              <div className="rounded-2xl bg-black/20 border border-white/10 p-3 text-center">
-                <Shield className="mx-auto mb-1 text-emerald-300" size={18} />
-                <div className="text-[10px] text-indigo-300/60 uppercase tracking-wider font-extrabold">{language === 'ko' ? '게이트' : 'Gate'}</div>
-                <div className="mt-1 text-sm font-extrabold text-white">{gateOpen ? (language === 'ko' ? '열림' : 'OPEN') : (language === 'ko' ? '잠김' : 'LOCKED')}</div>
-              </div>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <div className="text-xs font-extrabold tracking-wider uppercase text-indigo-300/70 mb-3">
-                {language === 'ko' ? '구출 카드' : 'Rescue Cards'}
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                {allyCardIds.map((cardId) => (
-                  <div key={cardId} className="aspect-square rounded-xl overflow-hidden border border-white/10 bg-slate-950/40">
-                    <div className="w-full h-full" style={getCardSpriteStyle(cardId)} />
-                  </div>
-                ))}
-              </div>
-              <div className="mt-3 text-xs text-slate-300 leading-relaxed">
-                {language === 'ko'
-                  ? '동료 카드를 모두 구출하면 게이트가 열립니다. 게이트까지 도달하면 승리합니다.'
-                  : 'Rescue every ally card to open the gate. Reach the gate to win.'}
-              </div>
-            </div>
-
-            {isGameOver && (
-              <div className={cn('rounded-2xl border p-4 text-center', isWin ? 'border-emerald-300/30 bg-emerald-500/10' : 'border-rose-300/30 bg-rose-500/10')}>
-                <div className="text-sm font-extrabold tracking-[0.25em] uppercase text-white mb-2">
-                  {isWin ? (language === 'ko' ? '승리' : 'Victory') : (language === 'ko' ? '패배' : 'Defeat')}
-                </div>
-                <div className="text-sm text-slate-200 mb-4">
-                  {isWin
-                    ? (language === 'ko' ? '보상을 획득했습니다.' : 'You earned the SNS reward.')
-                    : (language === 'ko' ? '적 카드에게 포획되었습니다.' : 'The rogue cards caught you.')}
-                </div>
-                <div className="flex items-center justify-center gap-2">
-                  <button
-                    onClick={restartGame}
-                    className="inline-flex items-center gap-2 rounded-2xl bg-indigo-600 hover:bg-indigo-500 px-4 py-3 text-xs font-extrabold tracking-wider uppercase shadow-xl shadow-indigo-900/20 transition-colors cursor-pointer"
-                  >
-                    <RotateCcw size={16} />
-                    {language === 'ko' ? '다시하기' : 'Play Again'}
-                  </button>
-                  <button
-                    onClick={onExit}
-                    className="inline-flex items-center gap-2 rounded-2xl bg-slate-800 hover:bg-slate-700 px-4 py-3 text-xs font-extrabold tracking-wider uppercase shadow-xl transition-colors text-slate-200 cursor-pointer"
-                  >
-                    {language === 'ko' 
-                      ? `나가기${defeatCountdown !== null ? ` (${defeatCountdown}초)` : ''}` 
-                      : `Exit${defeatCountdown !== null ? ` (${defeatCountdown}s)` : ''}`}
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         </div>
+
+        {/* Mobile One-Handed D-Pad & Controls */}
+        <div className="shrink-0 flex flex-col items-center gap-1 select-none pb-1">
+          <button
+            type="button"
+            onClick={() => movePlayer('up')}
+            className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
+            aria-label="Up"
+          >
+            ▲
+          </button>
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => movePlayer('left')}
+              className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
+              aria-label="Left"
+            >
+              ◀
+            </button>
+            <button
+              type="button"
+              onClick={() => movePlayer('down')}
+              className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
+              aria-label="Down"
+            >
+              ▼
+            </button>
+            <button
+              type="button"
+              onClick={() => movePlayer('right')}
+              className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
+              aria-label="Right"
+            >
+              ▶
+            </button>
+          </div>
+          <p className="text-[10px] text-slate-400 text-center font-mono">
+            {language === 'ko' ? 'D-패드 터치 또는 화면 스와이프로 1손 조작' : 'D-Pad or swipe to move'}
+          </p>
+        </div>
+
+        {/* Game Over Modal */}
+        {isGameOver && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 font-mono">
+            <div className={cn('w-full max-w-xs border p-5 rounded-none text-center bg-slate-900', isWin ? 'border-amber-400' : 'border-rose-400')}>
+              <div className="text-base font-bold uppercase tracking-wider mb-2">
+                {isWin ? (language === 'ko' ? '[ 승리: 게이트 탈출 성공 ]' : '[ VICTORY: ESCAPED ]') : (language === 'ko' ? '[ 패배: 적에게 포획됨 ]' : '[ DEFEAT: CAUGHT ]')}
+              </div>
+              <div className="text-xs text-slate-300 mb-3">
+                {isWin
+                  ? (language === 'ko' ? `보상 획득: +${Math.min(60, Math.max(15, 25 + collected * 10 - Math.floor(turns * 0.5)))} SNS` : `Reward: +${Math.min(60, Math.max(15, 25 + collected * 10 - Math.floor(turns * 0.5)))} SNS`)
+                  : (language === 'ko' ? '적 카드에 도달당했습니다.' : 'Caught by rogue cards.')}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={restartGame}
+                  className="flex-1 py-2.5 rounded-sm bg-amber-500 text-slate-950 font-bold text-xs hover:bg-amber-400 min-h-[44px]"
+                >
+                  {language === 'ko' ? '재도전' : 'RETRY'}
+                </button>
+                <button
+                  onClick={onExit}
+                  className="flex-1 py-2.5 rounded-sm bg-white/10 text-white font-bold text-xs border border-white/20 hover:bg-white/15 min-h-[44px]"
+                >
+                  {language === 'ko' 
+                    ? `나가기${defeatCountdown !== null ? ` (${defeatCountdown}s)` : ''}` 
+                    : `EXIT${defeatCountdown !== null ? ` (${defeatCountdown}s)` : ''}`}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

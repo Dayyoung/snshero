@@ -232,7 +232,7 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
   useEffect(() => {
     if (hudGameOver && !rewardedRef.current) {
       rewardedRef.current = true;
-      const reward = hudWinner === 'X' ? 50 : hudWinner === 'O' ? 0 : 10;
+      const reward = hudWinner === 'X' ? 50 : hudWinner === 'O' ? 5 : 15;
       onReward(reward);
     }
   }, [hudGameOver, hudWinner, onReward]);
@@ -483,28 +483,28 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
 
   const getRewardText = () => {
     const g = gameRef.current;
-    const reward = g.winner === 'X' ? 50 : g.winner === 'O' ? 0 : 10;
+    const reward = g.winner === 'X' ? 50 : g.winner === 'O' ? 5 : 15;
     return t('tictactoe_reward', language).replace('{amount}', String(reward));
   };
 
   const currentSize = boardSizeRef.current;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center font-sans select-none">
-      <header className="w-full max-w-md flex items-center justify-between p-3">
+    <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white flex flex-col items-center justify-between font-sans select-none overflow-hidden pb-3">
+      <header className="w-full max-w-md flex items-center justify-between px-3 py-2 shrink-0">
         <button onClick={onExit} className="p-2 rounded-2xl bg-white/10 hover:bg-white/15 transition-colors cursor-pointer">
-          <ArrowLeft size={20} />
+          <ArrowLeft size={18} />
         </button>
         <div className="text-center">
-          <h1 className="text-lg font-black uppercase tracking-tight">{t('mode_tictactoe', language)}</h1>
-          <p className="text-[10px] text-slate-400 font-bold">
+          <h1 className="text-base sm:text-lg font-black uppercase tracking-tight">{t('mode_tictactoe', language)}</h1>
+          <p className="text-[9px] sm:text-[10px] text-slate-400 font-bold">
             {language === 'ko' ? `${currentSize}x${currentSize} 보드` : `${currentSize}x${currentSize} board`}
           </p>
         </div>
-        <div className="w-20" />
+        <div className="w-8" />
       </header>
 
-      <div className="flex items-center gap-4 mb-3 text-sm font-bold">
+      <div className="flex items-center gap-4 py-1 text-xs sm:text-sm font-bold shrink-0">
         <div className="flex items-center gap-1">
           <span className="text-blue-400">{language === 'ko' ? '나' : 'YOU'}</span>
         </div>
@@ -514,34 +514,36 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
         </div>
       </div>
 
-      <div
-        className={cn('relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl')}
-        style={{ width: CANVAS_SIZE, height: CANVAS_SIZE, touchAction: 'none' }}
-        onPointerDown={handleCanvasClick}
-      >
-        <canvas ref={canvasRef} width={CANVAS_SIZE} height={CANVAS_SIZE} className="w-full h-full" />
+      <main className="w-full max-w-md flex-1 min-h-0 flex items-center justify-center px-3">
+        <div
+          className={cn('relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl max-h-[58vh] aspect-square w-full max-w-[340px]')}
+          style={{ touchAction: 'none' }}
+          onPointerDown={handleCanvasClick}
+        >
+          <canvas ref={canvasRef} width={CANVAS_SIZE} height={CANVAS_SIZE} className="w-full h-full object-contain" />
 
-        {hudGameOver && (
-          <div className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-white text-slate-900 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl">
-              <Trophy size={42} className={cn('mx-auto mb-3', gameRef.current.winner === 'O' ? 'text-red-500' : 'text-amber-500')} />
-              <h2 className="text-xl font-black mb-2">{getResultText()}</h2>
-              <p className="text-sm font-bold text-indigo-600 mb-4">{getRewardText()}</p>
-              <div className="flex gap-2">
-                <button onClick={() => initGame(currentSize)} className="flex-1 py-3 bg-indigo-600 text-white rounded-2xl font-black flex items-center justify-center gap-2 cursor-pointer">
-                  <RotateCcw size={16} />
-                  {language === 'ko' ? '재시작' : 'Restart'}
-                </button>
-                <button onClick={onExit} className="flex-1 py-3 bg-slate-900 text-white rounded-2xl font-black cursor-pointer">
-                  {t('home', language)}{defeatCountdown !== null ? ` (${defeatCountdown}s)` : ''}
-                </button>
+          {hudGameOver && (
+            <div className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
+              <div className="bg-white text-slate-900 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl">
+                <Trophy size={42} className={cn('mx-auto mb-3', gameRef.current.winner === 'O' ? 'text-red-500' : 'text-amber-500')} />
+                <h2 className="text-xl font-black mb-2">{getResultText()}</h2>
+                <p className="text-sm font-bold text-indigo-600 mb-4">{getRewardText()}</p>
+                <div className="flex gap-2">
+                  <button onClick={() => initGame(currentSize)} className="flex-1 py-3 bg-indigo-600 text-white rounded-2xl font-black flex items-center justify-center gap-2 cursor-pointer">
+                    <RotateCcw size={16} />
+                    {language === 'ko' ? '재시작' : 'Restart'}
+                  </button>
+                  <button onClick={onExit} className="flex-1 py-3 bg-slate-900 text-white rounded-2xl font-black cursor-pointer">
+                    {t('home', language)}{defeatCountdown !== null ? ` (${defeatCountdown}s)` : ''}
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </main>
 
-      <div className="mt-3 px-4 py-2 bg-white/5 rounded-2xl text-[10px] text-slate-400 font-bold text-center max-w-md">
+      <div className="px-4 py-1.5 bg-white/5 rounded-2xl text-[9px] sm:text-[10px] text-slate-400 font-bold text-center max-w-md shrink-0">
         {language === 'ko'
           ? '셀을 탭하여 X를 놓으세요 | AI는 자동으로 응답합니다 | 무승부 시 보드가 확장됩니다'
           : 'Tap a cell to place X | AI responds automatically | Board expands on draw'}

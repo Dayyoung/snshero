@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { RefreshCw, ExternalLink, ArrowLeft, CheckCircle2, Clock, PlayCircle, Search } from 'lucide-react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { RefreshCw, ExternalLink, ArrowLeft, CheckCircle2, Clock, PlayCircle, Search, Layers, ListFilter } from 'lucide-react';
 import { ViewType, Language } from '../types';
 
 interface ModooViewProps {
@@ -52,6 +52,98 @@ const DEPARTMENTS = [
   },
 ];
 
+// RFC 4180 Compliant CSV Parser
+function parseRFC4180CSV(text: string): string[][] {
+  const rows: string[][] = [];
+  let currentRow: string[] = [];
+  let currentField = '';
+  let inQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    const nextChar = text[i + 1];
+
+    if (inQuotes) {
+      if (char === '"' && nextChar === '"') {
+        currentField += '"';
+        i++; // skip escaped quote
+      } else if (char === '"') {
+        inQuotes = false;
+      } else {
+        currentField += char;
+      }
+    } else {
+      if (char === '"') {
+        inQuotes = true;
+      } else if (char === ',') {
+        currentRow.push(currentField.trim());
+        currentField = '';
+      } else if (char === '\r' || char === '\n') {
+        currentRow.push(currentField.trim());
+        if (currentRow.some(f => f.length > 0)) {
+          rows.push(currentRow);
+        }
+        currentRow = [];
+        currentField = '';
+        if (char === '\r' && nextChar === '\n') {
+          i++;
+        }
+      } else {
+        currentField += char;
+      }
+    }
+  }
+
+  if (currentField.length > 0 || currentRow.length > 0) {
+    currentRow.push(currentField.trim());
+    if (currentRow.some(f => f.length > 0)) {
+      rows.push(currentRow);
+    }
+  }
+
+  return rows;
+}
+
+// Normalize Department Name
+function normalizeDept(rawDept: string, task: string, details: string): string {
+  const clean = (rawDept || '').trim();
+  if (clean.includes('기획') || clean.includes('PM') || clean.toLowerCase().includes('plan')) return '기획';
+  if (clean.includes('디자인') || clean.includes('Design') || clean.includes('ART')) return '디자인';
+  if (clean.includes('개발') || clean.includes('Dev') || clean.toLowerCase().includes('eng')) return '개발';
+
+  const combined = `${task} ${details}`.toLowerCase();
+  if (combined.includes('피그마') || combined.includes('디자인') || combined.includes('컬러') || combined.includes('아이콘') || combined.includes('font') || combined.includes('theme')) {
+    return '디자인';
+  }
+  if (combined.includes('기획') || combined.includes('스펙') || combined.includes('밸런스') || combined.includes('시즌') || combined.includes('보상 규정')) {
+    return '기획';
+  }
+  return '개발';
+}
+
+// Normalize Status Value
+function normalizeStatus(rawStatus: string, task: string, details: string): string {
+  const clean = (rawStatus || '').trim();
+  if (clean.includes('완료') || clean.includes('성공') || clean.toLowerCase().includes('done') || clean.toLowerCase().includes('complete')) {
+    return '작업완료';
+  }
+  if (clean.includes('중') || clean.includes('진행') || clean.toLowerCase().includes('progress')) {
+    return '작업중';
+  }
+  if (clean.includes('대기') || clean.includes('전') || clean.toLowerCase().includes('pending')) {
+    return '작업대기';
+  }
+
+  const combined = `${task} ${details}`.toLowerCase();
+  if (combined.includes('완료') || combined.includes('수정완료') || combined.includes('해결') || combined.includes('반영') || combined.includes('성공')) {
+    return '작업완료';
+  }
+  if (combined.includes('진행') || combined.includes('수정중')) {
+    return '작업중';
+  }
+  return '작업완료';
+}
+
 export const ModooView: React.FC<ModooViewProps> = ({ language, onNavigate }) => {
   const [rows, setRows] = useState<StatusRow[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -59,70 +151,47 @@ export const ModooView: React.FC<ModooViewProps> = ({ language, onNavigate }) =>
   const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
   const [activeTab, setActiveTab] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [viewMode, setViewMode] = useState<'all' | 'dedup'>('all');
+  const [displayLimit, setDisplayLimit] = useState<number>(50);
   const [countdown, setCountdown] = useState<number>(45);
 
-  const parseCSV = (csvText: string): StatusRow[] => {
-    const lines: string[] = [];
-    let currentLine = '';
-    let inQuotes = false;
+  const processRawRows = useCallback((rawGrid: string[][]): StatusRow[] => {
+    if (rawGrid.length <= 1) return [];
+    
+    // Check if row 0 is header
+    const startIndex = rawGrid[0][0].includes('타임스탬프') || rawGrid[0][0].includes('Timestamp') ? 1 : 0;
+    const list: StatusRow[] = [];
 
-    for (let i = 0; i < csvText.length; i++) {
-      const char = csvText[i];
-      if (char === '"') {
-        inQuotes = !inQuotes;
-        currentLine += char;
-      } else if ((char === '\n' || char === '\r') && !inQuotes) {
-        if (currentLine.trim()) {
-          lines.push(currentLine.trim());
-        }
-        currentLine = '';
-        if (char === '\r' && csvText[i + 1] === '\n') {
-          i++;
-        }
-      } else {
-        currentLine += char;
-      }
+    for (let i = startIndex; i < rawGrid.length; i++) {
+      const row = rawGrid[i];
+      if (!row || row.length < 2) continue;
+
+      const timestamp = row[0] || '';
+      const rawDept = row[1] || '';
+      const rawTask = row[2] || '';
+      const rawStatus = row[3] || '';
+      const rawDetails = row[4] || '';
+
+      const taskName = rawTask.trim() || '내용 없음';
+      const department = normalizeDept(rawDept, taskName, rawDetails);
+      const status = normalizeStatus(rawStatus, taskName, rawDetails);
+
+      list.push({
+        timestamp,
+        department,
+        taskName,
+        status,
+        details: rawDetails.trim(),
+      });
     }
-    if (currentLine.trim()) lines.push(currentLine.trim());
-
-    const result: StatusRow[] = [];
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i];
-      const matches: string[] = [];
-      let field = '';
-      let fieldQuotes = false;
-
-      for (let j = 0; j < line.length; j++) {
-        const c = line[j];
-        if (c === '"') {
-          fieldQuotes = !fieldQuotes;
-        } else if (c === ',' && !fieldQuotes) {
-          matches.push(field.trim().replace(/^"|"$/g, '').replace(/""/g, '"'));
-          field = '';
-        } else {
-          field += c;
-        }
-      }
-      matches.push(field.trim().replace(/^"|"$/g, '').replace(/""/g, '"'));
-
-      if (matches.length >= 4) {
-        result.push({
-          timestamp: matches[0] || '',
-          department: matches[1] || '기타',
-          taskName: matches[2] || '내용 없음',
-          status: matches[3] || '작업중',
-          details: matches[4] || '',
-        });
-      }
-    }
-    return result;
-  };
+    return list;
+  }, []);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const cacheBuster = Math.floor(Date.now() / 30000); // 30초 단위 타임스탬프로 캐시 요청 완화
+      const cacheBuster = Date.now();
       const res = await fetch(`${SPREADSHEET_CSV_URL}&_t=${cacheBuster}`);
       if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
       const text = await res.text();
@@ -131,13 +200,15 @@ export const ModooView: React.FC<ModooViewProps> = ({ language, onNavigate }) =>
         throw new Error('Rate limit exceeded');
       }
 
-      const parsed = parseCSV(text);
+      const grid = parseRFC4180CSV(text);
+      const parsed = processRawRows(grid);
+
       if (parsed.length > 0) {
         setRows(parsed);
         try {
           localStorage.setItem('hero_modoo_status_cache', JSON.stringify(parsed));
         } catch {
-          // ignore storage error
+          // ignore storage quota error
         }
       }
       setLastRefreshed(new Date());
@@ -150,7 +221,7 @@ export const ModooView: React.FC<ModooViewProps> = ({ language, onNavigate }) =>
           const parsed = JSON.parse(cached);
           if (Array.isArray(parsed) && parsed.length > 0) {
             setRows(parsed);
-            setError('최신 데이터를 불러오는 도중 구글 시트 요청 제한(Rate Exceeded)이 발생하여 저장된 이전 데이터를 표시 중입니다.');
+            setError('최신 데이터를 불러오는 도중 구글 시트 요청 제한이 발생하여 저장된 이전 데이터를 표시 중입니다.');
           } else {
             setError('데이터를 불러오는데 실패했습니다.');
           }
@@ -163,11 +234,11 @@ export const ModooView: React.FC<ModooViewProps> = ({ language, onNavigate }) =>
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [processRawRows]);
 
   useEffect(() => {
     fetchData();
-    const fetchInterval = setInterval(fetchData, 45000); // 45초 주기 자동 새로고침으로 Rate Limit 방지
+    const fetchInterval = setInterval(fetchData, 45000); // 45초 주기 자동 새로고침
     const timerInterval = setInterval(() => {
       setCountdown(prev => (prev > 1 ? prev - 1 : 45));
     }, 1000);
@@ -179,8 +250,8 @@ export const ModooView: React.FC<ModooViewProps> = ({ language, onNavigate }) =>
   }, [fetchData]);
 
   // 부서별 최신 작업 추출 (행 순서상 뒤쪽이 더 최신)
-  const getLatestForDept = (deptName: string): StatusRow | null => {
-    const matched = rows.filter(r => r.department.includes(deptName) || deptName.includes(r.department));
+  const getLatestForDept = (deptId: string): StatusRow | null => {
+    const matched = rows.filter(r => r.department === deptId || r.department.includes(deptId) || deptId.includes(r.department));
     if (matched.length === 0) return null;
     return matched[matched.length - 1];
   };
@@ -205,19 +276,19 @@ export const ModooView: React.FC<ModooViewProps> = ({ language, onNavigate }) =>
     return (
       <span className="inline-flex items-center gap-1 rounded-xs border border-slate-300 bg-slate-100 px-2 py-0.5 font-mono text-xs font-bold text-slate-700">
         <Clock size={12} className="text-slate-500" />
-        <span>[{statusStr || '작업전'}]</span>
+        <span>[{statusStr || '작업대기'}]</span>
       </span>
     );
   };
 
-  // 동일 작업명에 대해 [작업완료 > 작업중 > 작업전] 순으로 단일 대표 상태만 유지
-  const deduplicatedRows = React.useMemo(() => {
+  // 대표 작업별 요약 (Deduplicated)
+  const deduplicatedRows = useMemo(() => {
     const taskMap = new Map<string, StatusRow>();
 
     const getPriority = (statusStr: string): number => {
-      if (statusStr.includes('완료')) return 3; // 최우선 (작업완료)
-      if (statusStr.includes('중') || statusStr.includes('진행')) return 2; // 작업중
-      return 1; // 작업전/대기
+      if (statusStr.includes('완료')) return 3;
+      if (statusStr.includes('중') || statusStr.includes('진행')) return 2;
+      return 1;
     };
 
     rows.forEach(row => {
@@ -230,9 +301,7 @@ export const ModooView: React.FC<ModooViewProps> = ({ language, onNavigate }) =>
         const existingPriority = getPriority(existing.status);
         const currentPriority = getPriority(row.status);
 
-        if (currentPriority > existingPriority) {
-          taskMap.set(normalizedKey, row);
-        } else if (currentPriority === existingPriority) {
+        if (currentPriority >= existingPriority) {
           taskMap.set(normalizedKey, row);
         }
       }
@@ -241,20 +310,34 @@ export const ModooView: React.FC<ModooViewProps> = ({ language, onNavigate }) =>
     return Array.from(taskMap.values());
   }, [rows]);
 
-  // 통계 계산 (중복 제거된 대표 상태 기준)
-  const totalCount = deduplicatedRows.length;
-  const completedCount = deduplicatedRows.filter(r => r.status.includes('완료')).length;
-  const inProgressCount = deduplicatedRows.filter(r => r.status.includes('중') || r.status.includes('진행')).length;
-  const pendingCount = deduplicatedRows.filter(r => r.status.includes('전') || r.status.includes('대기')).length;
+  // 통계 계산
+  const totalCount = rows.length;
+  const completedCount = rows.filter(r => r.status.includes('완료')).length;
+  const inProgressCount = rows.filter(r => r.status.includes('중') || r.status.includes('진행')).length;
+  const pendingCount = rows.filter(r => r.status.includes('대기') || r.status.includes('전')).length;
 
-  const filteredRows = [...deduplicatedRows]
-    .filter(r => {
-      const matchTab = activeTab === 'all' || r.department.includes(activeTab) || activeTab.includes(r.department);
-      const query = searchQuery.trim().toLowerCase();
-      const matchSearch = !query || r.taskName.toLowerCase().includes(query) || r.details.toLowerCase().includes(query) || r.department.toLowerCase().includes(query);
-      return matchTab && matchSearch;
-    })
-    .reverse();
+  // 필터링 및 정렬
+  const sourceRows = viewMode === 'dedup' ? deduplicatedRows : rows;
+
+  const filteredRows = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    return [...sourceRows]
+      .reverse() // 최신순
+      .filter(r => {
+        const matchTab = activeTab === 'all' || r.department === activeTab || r.department.includes(activeTab);
+        const matchSearch = !query || 
+          r.taskName.toLowerCase().includes(query) || 
+          r.details.toLowerCase().includes(query) || 
+          r.department.toLowerCase().includes(query) ||
+          r.timestamp.toLowerCase().includes(query);
+        return matchTab && matchSearch;
+      });
+  }, [sourceRows, activeTab, searchQuery]);
+
+  const displayedRows = useMemo(() => {
+    if (displayLimit === 0) return filteredRows;
+    return filteredRows.slice(0, displayLimit);
+  }, [filteredRows, displayLimit]);
 
   return (
     <div className="min-h-screen bg-[#fdfcfc] font-mono text-[#201d1d] selection:bg-[#201d1d] selection:text-[#fdfcfc] pb-24">
@@ -327,7 +410,7 @@ export const ModooView: React.FC<ModooViewProps> = ({ language, onNavigate }) =>
           <div className="flex items-center gap-2">
             <span className="text-base">📢</span>
             <span className="font-semibold">
-              실시간 모두소프트 업무 보고 현황입니다. (45초 자동 연동 / 다음 동기화까지 {countdown}초)
+              실시간 모두소프트 업무 보고 현황입니다. (총 {totalCount}건 동기화됨 | 다음 자동 갱신까지 {countdown}초)
             </span>
           </div>
 
@@ -343,7 +426,7 @@ export const ModooView: React.FC<ModooViewProps> = ({ language, onNavigate }) =>
               작업중 [{inProgressCount}]
             </span>
             <span className="px-2 py-0.5 border border-slate-300 bg-slate-100 font-bold text-slate-800">
-              작업전 [{pendingCount}]
+              대기 [{pendingCount}]
             </span>
           </div>
         </div>
@@ -364,7 +447,7 @@ export const ModooView: React.FC<ModooViewProps> = ({ language, onNavigate }) =>
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping inline-block"></span>
             </h2>
             <span className="text-[10px] text-[#201d1d]/60 font-mono bg-amber-100/60 px-2 py-0.5 border border-amber-300/80">
-              ☕️ 실시간 사무실 업무 현황 (자동 동기화: {countdown}s)
+              ☕️ 실시간 부서별 최신 작업 (갱신: {lastRefreshed.toLocaleTimeString()})
             </span>
           </div>
 
@@ -451,10 +534,31 @@ export const ModooView: React.FC<ModooViewProps> = ({ language, onNavigate }) =>
         {/* ─── 2. 전체 작업 히스토리 로그 테이블 (Work Logs History Table) ─── */}
         <div>
           <div className="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-[#201d1d]/15 pb-3">
-            <div>
+            <div className="flex items-center gap-3">
               <h2 className="text-xs font-black uppercase tracking-wider text-[#201d1d]/80">
-                [ WORK REPORT LOG HISTORY ({filteredRows.length} / {rows.length}) ]
+                [ WORK REPORT LOGS ({filteredRows.length} / {rows.length}) ]
               </h2>
+              {/* View Mode Toggle */}
+              <div className="flex items-center border border-[#201d1d]/30 bg-white rounded-xs p-0.5 text-[11px]">
+                <button
+                  onClick={() => setViewMode('all')}
+                  className={`px-2 py-0.5 font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                    viewMode === 'all' ? 'bg-[#201d1d] text-[#fdfcfc]' : 'text-[#201d1d] hover:bg-slate-100'
+                  }`}
+                >
+                  <ListFilter size={11} />
+                  <span>전체 로그</span>
+                </button>
+                <button
+                  onClick={() => setViewMode('dedup')}
+                  className={`px-2 py-0.5 font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                    viewMode === 'dedup' ? 'bg-[#201d1d] text-[#fdfcfc]' : 'text-[#201d1d] hover:bg-slate-100'
+                  }`}
+                >
+                  <Layers size={11} />
+                  <span>대표 작업별</span>
+                </button>
+              </div>
             </div>
 
             {/* Department Filter Tabs & Search */}
@@ -497,6 +601,18 @@ export const ModooView: React.FC<ModooViewProps> = ({ language, onNavigate }) =>
                   </button>
                 ))}
               </div>
+
+              {/* Limit Control */}
+              <select
+                value={displayLimit}
+                onChange={(e) => setDisplayLimit(Number(e.target.value))}
+                className="text-xs border border-[#201d1d]/30 bg-white px-2 py-1 rounded-xs font-mono font-bold cursor-pointer"
+              >
+                <option value={30}>30개</option>
+                <option value={50}>50개</option>
+                <option value={100}>100개</option>
+                <option value={0}>전체</option>
+              </select>
             </div>
           </div>
 
@@ -505,7 +621,7 @@ export const ModooView: React.FC<ModooViewProps> = ({ language, onNavigate }) =>
               <RefreshCw size={20} className="mx-auto mb-2 animate-spin text-slate-400" />
               <span>구글 스프레드시트 실시간 데이터 수신 중...</span>
             </div>
-          ) : filteredRows.length === 0 ? (
+          ) : displayedRows.length === 0 ? (
             <div className="py-12 text-center text-xs font-bold text-slate-500 border border-slate-200 bg-white">
               조건에 일치하는 업무 보고 내역이 없습니다.
             </div>
@@ -514,15 +630,15 @@ export const ModooView: React.FC<ModooViewProps> = ({ language, onNavigate }) =>
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="border-b-2 border-[#201d1d] bg-slate-100 text-[11px] font-black uppercase text-[#201d1d]">
-                    <th className="py-2.5 px-3 w-36 border-r border-[#201d1d]/20">타임스탬프</th>
+                    <th className="py-2.5 px-3 w-40 border-r border-[#201d1d]/20">타임스탬프</th>
                     <th className="py-2.5 px-3 w-28 border-r border-[#201d1d]/20">부서명</th>
                     <th className="py-2.5 px-3 w-32 border-r border-[#201d1d]/20">상태</th>
                     <th className="py-2.5 px-3">현재 작업명 / 상세 내용</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#201d1d]/10">
-                  {filteredRows.map((row, idx) => {
-                    const deptObj = DEPARTMENTS.find(d => d.id.includes(row.department) || row.department.includes(d.id));
+                  {displayedRows.map((row, idx) => {
+                    const deptObj = DEPARTMENTS.find(d => d.id === row.department || d.id.includes(row.department) || row.department.includes(d.id));
                     return (
                       <tr key={idx} className="hover:bg-slate-50/80 transition-colors">
                         <td className="py-2.5 px-3 border-r border-[#201d1d]/10 font-mono text-[11px] text-[#201d1d]/70 whitespace-nowrap">
@@ -557,4 +673,5 @@ export const ModooView: React.FC<ModooViewProps> = ({ language, onNavigate }) =>
     </div>
   );
 };
+
 

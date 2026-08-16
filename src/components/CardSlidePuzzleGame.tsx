@@ -15,9 +15,9 @@ interface CardSlidePuzzleGameProps {
 }
 
 const DIFFICULTY_CONFIG = [
-  { size: 3, reward: 30 },
-  { size: 4, reward: 80 },
-  { size: 5, reward: 160 },
+  { size: 3, reward: 20 },
+  { size: 4, reward: 40 },
+  { size: 5, reward: 60 },
 ];
 
 const SWIPE_THRESHOLD = 15;
@@ -267,7 +267,7 @@ export const CardSlidePuzzleGame: React.FC<CardSlidePuzzleGameProps> = ({
   const emptyIdx = tiles.indexOf(-1);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-950 via-slate-900 to-indigo-950 text-slate-100 flex flex-col items-center font-sans select-none pb-12 w-full overflow-x-hidden">
+    <div className="h-[100dvh] max-h-[100dvh] bg-gradient-to-b from-indigo-950 via-slate-900 to-indigo-950 text-slate-100 flex flex-col items-center font-sans select-none pb-4 w-full overflow-hidden justify-between">
       {/* Header */}
       <header className="w-full h-16 flex items-center justify-between border-b border-white/10 px-4 md:px-6 bg-black/20 backdrop-blur-sm shrink-0">
         <button

@@ -3,7 +3,7 @@ import { ArrowLeft, Zap, Trophy, Gem } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardData, Language } from '../types';
 import { t } from '../lib/i18n';
-import { cn } from '../lib/utils';
+import { cn, getCardSpriteStyle } from '../lib/utils';
 
 interface CardSlotGameProps {
   deck: CardData[];
@@ -34,19 +34,7 @@ interface SymbolData {
   isWild: boolean;
 }
 
-// Card sprite helper
-const getCardSpriteStyle = (cardId: number): React.CSSProperties => {
-  const idx = CARD_DATABASE[cardId] ? cardId : 1;
-  const x = ((idx - 1) % 10) * (100 / 9);
-  const y = Math.floor((idx - 1) / 10) * (100 / 10);
-  return {
-    backgroundImage: 'url(/card100.png)',
-    backgroundSize: '1000% 1100%',
-    backgroundPosition: `${x}% ${y}%`,
-    backgroundRepeat: 'no-repeat',
-    imageRendering: 'pixelated' as const,
-  };
-};
+
 
 const getElement = (cardId: number): string => {
   const db = CARD_DATABASE[cardId];
@@ -88,6 +76,7 @@ export const CardSlotGame: React.FC<CardSlotGameProps> = ({
 
   const rewardedRef = useRef(false);
   const scoreRef = useRef(0);
+  const spinsLeftRef = useRef(FREE_SPINS);
   const spinTimersRef = useRef<number[]>([]);
   const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
   const wildCardIdsRef = useRef<number[]>([]);
@@ -276,16 +265,18 @@ export const CardSlotGame: React.FC<CardSlotGameProps> = ({
         setWinLines([]);
       }
 
-      setStatus(spinsLeft > 0 ? 'ready' : 'gameover');
+      const isGameOver = spinsLeftRef.current <= 0;
+      setStatus(isGameOver ? 'gameover' : 'ready');
       return prev;
     });
-  }, [spinsLeft, checkWinLines, playSfx]);
+  }, [checkWinLines, playSfx]);
 
   // Handle game over
   useEffect(() => {
     if (status === 'gameover' && !rewardedRef.current) {
       rewardedRef.current = true;
-      const reward = Math.floor(scoreRef.current * 3);
+      const rawReward = Math.floor(scoreRef.current * 2);
+      const reward = scoreRef.current > 0 ? Math.min(60, Math.max(10, rawReward)) : 5;
       if (reward > 0) onReward(reward);
     }
   }, [status, onReward]);
@@ -293,9 +284,10 @@ export const CardSlotGame: React.FC<CardSlotGameProps> = ({
   // Perform a spin
   const handleSpin = useCallback(() => {
     if (status !== 'ready') return;
-    if (spinsLeft <= 0) return;
+    if (spinsLeftRef.current <= 0) return;
 
-    setSpinsLeft(prev => prev - 1);
+    spinsLeftRef.current -= 1;
+    setSpinsLeft(spinsLeftRef.current);
     setSpinningCols([true, true, true]);
     setWinLines([]);
     setLastWin(0);
@@ -312,12 +304,13 @@ export const CardSlotGame: React.FC<CardSlotGameProps> = ({
     setTimeout(() => spinColumn(0, finalGrid[0]), 100);
     setTimeout(() => spinColumn(1, finalGrid[1]), 300);
     setTimeout(() => spinColumn(2, finalGrid[2]), 500);
-  }, [status, spinsLeft, generateFinalSymbols, spinColumn]);
+  }, [status, generateFinalSymbols, spinColumn]);
 
   // Start game
   const startGame = useCallback(() => {
     scoreRef.current = 0;
     rewardedRef.current = false;
+    spinsLeftRef.current = FREE_SPINS;
     setScore(0);
     setSpinsLeft(FREE_SPINS);
     setWinLines([]);
@@ -384,7 +377,7 @@ export const CardSlotGame: React.FC<CardSlotGameProps> = ({
   const wildCount = wildCardIdsRef.current.length;
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-b from-indigo-950 via-slate-900 to-indigo-950 font-sans text-white overflow-hidden relative">
+    <div className="w-full h-[100dvh] max-h-[100dvh] bg-gradient-to-b from-indigo-950 via-slate-900 to-indigo-950 font-sans text-white overflow-hidden relative flex flex-col justify-between select-none">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-white/5 backdrop-blur-sm">
         <button
@@ -603,8 +596,8 @@ export const CardSlotGame: React.FC<CardSlotGameProps> = ({
             <div className="space-y-3">
               <p className="text-sm text-indigo-200/70 font-medium">
                 {isKo
-                  ? `보상: ${Math.floor(score * 3)} SNS`
-                  : `Reward: ${Math.floor(score * 3)} SNS`}
+                  ? `보상: ${score > 0 ? Math.min(60, Math.max(10, Math.floor(score * 2))) : 5} SNS`
+                  : `Reward: ${score > 0 ? Math.min(60, Math.max(10, Math.floor(score * 2))) : 5} SNS`}
               </p>
               <div className="flex gap-3 justify-center">
                 <button

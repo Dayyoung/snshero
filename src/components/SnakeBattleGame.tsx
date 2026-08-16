@@ -394,23 +394,23 @@ export const SnakeBattleGame: React.FC<SnakeBattleGameProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-4 pb-28 flex flex-col gap-4 font-sans">
-      <header className="flex items-center justify-between max-w-5xl mx-auto w-full">
-        <button onClick={onExit} className="p-3 rounded-2xl bg-white/10 hover:bg-white/15 transition-all active:scale-95 cursor-pointer">
-          <ArrowLeft size={20} />
+    <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white p-3 flex flex-col justify-between items-center font-sans select-none overflow-hidden pb-2">
+      <header className="flex items-center justify-between max-w-5xl mx-auto w-full shrink-0">
+        <button onClick={onExit} className="p-2.5 rounded-2xl bg-white/10 hover:bg-white/15 transition-all active:scale-95 cursor-pointer">
+          <ArrowLeft size={18} />
         </button>
         <div className="text-center">
-          <h1 className="text-lg font-black uppercase tracking-tight">{t('mode_snake', language)}</h1>
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('snake_subtitle', language)}</p>
+          <h1 className="text-base sm:text-lg font-black uppercase tracking-tight">{t('mode_snake', language)}</h1>
+          <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('snake_subtitle', language)}</p>
         </div>
-        <div className="px-3 py-2 rounded-2xl bg-indigo-500/20 border border-indigo-400/20 text-indigo-100 font-black text-sm tabular-nums">
+        <div className="px-3 py-1.5 rounded-2xl bg-indigo-500/20 border border-indigo-400/20 text-indigo-100 font-black text-xs sm:text-sm tabular-nums">
           {score}
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto w-full flex flex-col items-center gap-6 lg:grid lg:grid-cols-[1fr_260px] lg:items-start">
+      <main className="max-w-5xl mx-auto w-full flex flex-col items-center justify-center gap-3 lg:grid lg:grid-cols-[1fr_260px] lg:items-start flex-1 min-h-0">
         <div
-          className="relative w-full max-w-[360px] aspect-square bg-slate-900 rounded-3xl border border-white/10 overflow-hidden shadow-2xl touch-none select-none"
+          className="relative w-full max-w-[280px] sm:max-w-[340px] aspect-square bg-slate-900 rounded-3xl border border-white/10 overflow-hidden shadow-2xl touch-none select-none shrink-0"
           onPointerDown={(event) => {
             event.preventDefault();
             handleBoardPointer(event);

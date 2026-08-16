@@ -120,11 +120,11 @@ export function getAssetUrl(path: string | null | undefined): string {
 /**
  * Returns the sprite sheet asset URL for a given card ID.
  * - ID 1 ~ 100: /cards1.png (10x10 sheet)
- * - ID 101 ~ 110: /cards2.png (10x10 sheet, top row of 10 cards)
+ * - ID 101+: /card2.png (or /cards2.png 10x10 sheet)
  */
 export function getCardSpriteAsset(cardId: number): string {
   const id = Number(cardId) || 1;
-  return id >= 101 ? '/cards2.png' : '/cards1.png';
+  return id >= 101 ? '/card2.png' : '/cards1.png';
 }
 
 export interface CardSpriteCoords {
@@ -140,7 +140,9 @@ export interface CardSpriteCoords {
 
 export function getCardSpriteCoords(cardId: number, customSource?: string | null): CardSpriteCoords {
   const id = Number(cardId) || 1;
-  const isCards2 = customSource ? customSource.includes('cards2') : (id >= 101 && id <= 110);
+  const isCards2 = customSource 
+    ? (customSource.includes('card2') || customSource.includes('cards2')) 
+    : (id >= 101);
   const isLegacy110 = customSource && (customSource.includes('card100') || customSource.includes('110card'));
 
   if (isLegacy110) {
@@ -165,10 +167,11 @@ export function getCardSpriteCoords(cardId: number, customSource?: string | null
   if (isCards2) {
     const cols = 10;
     const rows = 10;
-    // cards2: 100 slots in 10x10 grid. Cards 101~110 are in the top row (row 0, cols 0..9)
-    const col = id >= 101 ? (id - 101) % 10 : (id - 1) % 10;
-    const row = id >= 101 ? 0 : Math.floor(((id - 1) % 100) / 10);
-    const source = customSource || '/cards2.png';
+    // card2 / cards2: 100 slots in 10x10 grid. Cards 101~110 in row 0, 111~120 in row 1, etc.
+    const offsetIndex = id >= 101 ? (id - 101) % 100 : (id - 1) % 100;
+    const col = offsetIndex % 10;
+    const row = Math.floor(offsetIndex / 10);
+    const source = customSource || (id >= 101 ? '/card2.png' : '/cards2.png');
     return {
       assetUrl: getAssetUrl(source),
       source,
@@ -203,7 +206,7 @@ export function getCardSpriteCoords(cardId: number, customSource?: string | null
 /**
  * Generates CSS background styling for card sprites.
  * - ID 1 ~ 100 -> cards1.png (10x10)
- * - ID 101 ~ 110 -> cards2.png (10x10, row 0)
+ * - ID 101+ -> card2.png (10x10)
  */
 export function getCardSpriteStyle(cardId: number, customSource?: string | null): CSSProperties {
   const coords = getCardSpriteCoords(cardId, customSource);

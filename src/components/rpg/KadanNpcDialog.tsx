@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Bot, Box, CheckCircle2, MessageCircle, Pause, Sparkles, Swords } from 'lucide-react';
-import { cn, getAssetUrl } from '../../lib/utils';
+import { cn, getAssetUrl, getCardSpriteStyle } from '../../lib/utils';
 import { t } from '../../lib/i18n';
 import { CARD_DATABASE } from '../../cardDatabase';
 import type { Language } from '../../types';
@@ -31,15 +31,7 @@ const iconByType = {
 
 const getCharacterPortraitStyle = (cardId?: number): React.CSSProperties => {
   const safeId = cardId && CARD_DATABASE[cardId] ? cardId : 41;
-  const x = ((safeId - 1) % 10) * (100 / 9);
-  const y = Math.floor((safeId - 1) / 10) * (100 / 10);
-  return {
-    backgroundImage: `url('${getAssetUrl('/card100.png')}')`,
-    backgroundSize: '1000% 1100%',
-    backgroundPosition: `${x}% ${y}%`,
-    backgroundRepeat: 'no-repeat',
-    imageRendering: 'pixelated',
-  };
+  return getCardSpriteStyle(safeId);
 };
 
 export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({

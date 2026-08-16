@@ -1,7 +1,7 @@
 import type { CharacterFaction, CharacterRarityTier } from '../types';
 import { CARD_DATABASE } from '../cardDatabase';
 import { CHARACTER_IP_PROFILES } from './characterIp';
-import { getAssetUrl } from '../lib/utils';
+import { getAssetUrl, getCardSpriteAsset } from '../lib/utils';
 
 export interface CharacterAssetManifestEntry {
   cardId: number;
@@ -70,7 +70,7 @@ export function getCharacterAssetManifestEntry(cardId: number): CharacterAssetMa
   const profile = CHARACTER_IP_PROFILES[cardId];
   const rarityTier = card && isCharacterRarityTier(card.rarity) ? card.rarity : 'bronze';
   const paddedId = formatCardId(cardId);
-  const frontAssetPath = getAssetUrl(`/character/${paddedId}.png`);
+  const cardSprite = getAssetUrl(getCardSpriteAsset(cardId));
 
   return {
     cardId,
@@ -78,15 +78,15 @@ export function getCharacterAssetManifestEntry(cardId: number): CharacterAssetMa
     cardNameEn: getCardNameEn(cardId),
     faction: profile?.faction ?? 'human',
     rarityTier,
-    targetAssetPath: LEGACY_CARD_SPRITE,
-    frontAssetPath: LEGACY_CARD_SPRITE,
+    targetAssetPath: cardSprite,
+    frontAssetPath: cardSprite,
     backAssetPath: SHARED_BACK_ASSET,
-    thumbnailAssetPath: `${ASSET_ROOT}/thumbs/card-${paddedId}.webp`,
+    thumbnailAssetPath: cardSprite,
     webtoonAssetPath: `${ASSET_ROOT}/webtoon/card-${paddedId}-cover.webp`,
     animationAssetPath: `${ASSET_ROOT}/animations/card-${paddedId}.webp`,
-    fallbackAssetPath: LEGACY_CARD_SPRITE,
-    lowSpecFallbackAssetPath: LEGACY_CARD_SPRITE,
-    legacySpritePath: LEGACY_CARD_SPRITE,
+    fallbackAssetPath: cardSprite,
+    lowSpecFallbackAssetPath: cardSprite,
+    legacySpritePath: cardSprite,
   };
 }
 

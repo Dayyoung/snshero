@@ -9,7 +9,7 @@ import { getCharacterArtPrompt } from '../content/characterArtPrompts';
 import { getCharacterIpProfile, getFactionDef, getRelatedCharacters, getAllyIds, getRivalIds } from '../content/characterIpUtils';
 import { getRecommendedIpMerchProducts } from '../content/ipProducts';
 import { t } from '../lib/i18n';
-import { cn, getFormattedCardName, getAssetUrl } from '../lib/utils';
+import { cn, getFormattedCardName, getAssetUrl, getCardSpriteStyle } from '../lib/utils';
 import { SkinSelector } from './SkinSelector';
 import { resolveCardImage } from '../content/cardImageVariants';
 import { useGameSettings } from '../contexts/GameSettingsContext';
@@ -88,16 +88,7 @@ const formatElementLabel = (card: DatabaseCard): string => {
 
 const buildPreviewImageStyle = (card: DatabaseCard): React.CSSProperties | undefined => {
   if (card.imageUrl) return undefined;
-  const idx = Number(card.id);
-  const x = ((idx - 1) % 10) * (100 / 9);
-  const y = Math.floor((idx - 1) / 10) * (100 / 10);
-  return {
-    backgroundImage: `url('${getAssetUrl('/card100.png')}')`,
-    backgroundSize: '1000% 1100%',
-    backgroundPosition: `${x}% ${y}%`,
-    backgroundRepeat: 'no-repeat',
-    imageRendering: 'pixelated',
-  };
+  return getCardSpriteStyle(Number(card.id));
 };
 
 export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
@@ -659,28 +650,18 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
                         {language === 'ko' ? '일러스트 원본 아트' : 'Full Illustration Art'}
                       </div>
                       <div className="w-full aspect-square rounded-xl bg-slate-950/80 border border-white/10 overflow-hidden flex items-center justify-center p-2">
-                        {resolvedImg ? (
+                        {resolvedImg.source && !resolvedImg.source.includes('.png') ? (
                           <img
-                            src={resolvedImg}
+                            src={resolvedImg.source}
                             alt={cardName}
                             className="h-full w-full object-contain drop-shadow-md rounded-lg"
                             referrerPolicy="no-referrer"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              const paddedId = String(selectedCard.id).padStart(3, '0');
-                              if (!target.dataset.triedFallback) {
-                                target.dataset.triedFallback = '1';
-                                target.src = getAssetUrl(`/character/${paddedId}.png`);
-                              } else if (target.dataset.triedFallback === '1') {
-                                target.dataset.triedFallback = '2';
-                                target.src = getAssetUrl(`/assets/cards/card-${paddedId}.webp`);
-                              }
-                            }}
                           />
                         ) : (
-                          <div className="flex h-full w-full items-center justify-center bg-slate-900 p-4">
-                            <ImageIcon size={42} className="text-white/30" />
-                          </div>
+                          <div
+                            className="w-full h-full rounded-lg"
+                            style={getCardSpriteStyle(Number(selectedCard.id))}
+                          />
                         )}
                       </div>
                     </div>
