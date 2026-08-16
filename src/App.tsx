@@ -75,7 +75,8 @@ import {
   Swords,
   Volume2,
   VolumeX,
-  RotateCw
+  RotateCw,
+  Grid3X3
 } from 'lucide-react';
 
 import { Meta } from './components/Meta';
@@ -126,6 +127,7 @@ import { NovelView } from './views/NovelView';
 import { AnimeView } from './views/AnimeView';
 import { MovieView } from './views/MovieView';
 import { ModooView } from './views/ModooView';
+import { GridToolView } from './views/GridToolView';
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -369,8 +371,10 @@ function getViewFromPathAndUrl(): ViewType {
   if (queryView === 'anime') return 'anime';
   if (queryView === 'movie') return 'movie';
   if (queryView === 'modoo') return 'modoo';
+  if (queryView === 'grid' || queryView === 'tool-grid' || queryView === 'tool/grid' || queryView === 'too/grid') return 'tool-grid';
 
   const path = window.location.pathname.replace(/\/$/, '').toLowerCase() || '/';
+  if (path === '/tool/grid' || path === '/too/grid' || path === '/grid' || path.startsWith('/tool/grid') || path.startsWith('/too/grid')) return 'tool-grid';
   if (path === '/book' || path === '/novel' || path.startsWith('/novel/s1-')) return 'novel';
   if (path === '/admin') return 'admin';
   if (path === '/status') return 'status';
@@ -510,6 +514,11 @@ function AppContent() {
     if (view === 'modoo') {
       if (window.location.pathname !== '/modoo') {
         window.history.pushState({}, '', '/modoo');
+      }
+    } else if (view === 'tool-grid') {
+      const p = window.location.pathname.toLowerCase();
+      if (p !== '/tool/grid' && p !== '/too/grid') {
+        window.history.pushState({}, '', '/tool/grid');
       }
     } else if (view !== 'community') {
       if (viewParam === 'community' || params.has('category') || params.has('postId') || params.has('id')) {
@@ -5816,6 +5825,13 @@ function AppContent() {
             onNavigate={setView}
           />
         );
+      case 'tool-grid':
+        return (
+          <GridToolView
+            language={language}
+            onNavigate={setView}
+          />
+        );
       case 'novel':
       case 'webtoon':
       case 'cartoonBook' as any:
@@ -6313,6 +6329,30 @@ function AppContent() {
                         </div>
                       </div>
                       <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-amber-700" />
+                    </button>
+
+                    {/* CSS Grid Generator Tool (/tool/grid) */}
+                    <button
+                      onClick={() => {
+                        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                        setIsMenuOpen(false);
+                        setView('tool-grid');
+                      }}
+                      className="w-full border border-emerald-200/80 p-3.5 text-left transition-all relative flex items-center justify-between font-sans bg-emerald-50/50 hover:bg-emerald-100/70 active:scale-[0.98] shadow-xs hover:border-emerald-300 cursor-pointer rounded-xl group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Grid3X3 size={20} className="text-emerald-700" />
+                        <div className="flex flex-col">
+                          <span className="font-bold text-sm uppercase tracking-tight text-slate-800 flex items-center gap-1.5">
+                            <span>{language === 'ko' ? 'CSS 그리드 생성기' : 'CSS Grid Generator'}</span>
+                            <span className="text-[9px] px-1 py-0.2 bg-emerald-200 border border-emerald-400 font-bold rounded-xs text-emerald-900">TOOL</span>
+                          </span>
+                          <span className="text-[10px] text-slate-500 font-mono">
+                            /tool/grid (CSS / HTML / Tailwind)
+                          </span>
+                        </div>
+                      </div>
+                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-emerald-700" />
                     </button>
                   </div>
 

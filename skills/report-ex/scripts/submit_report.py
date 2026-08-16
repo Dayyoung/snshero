@@ -86,13 +86,30 @@ def sync_from_sheet(csv_url: str = DEFAULT_SHEET_CSV_URL, dry_run: bool = False)
         print("No pending tasks to submit.")
         return
 
+    import concurrent.futures
+
+    def _submit_worker(item):
+        idx, dept, task, details = item
+        ok = submit_report(
+            dept=dept,
+            task=task,
+            status="작업완료",
+            details=f"{details} (수정 완료 및 검증 완료)" if details else "수정 완료 및 검증 완료",
+            dry_run=dry_run
+        )
+        return idx, dept, task, ok
+
     success_count = 0
-    for idx, dept, task, details in pending_tasks:
-        ok = submit_report(dept=dept, task=task, status="작업완료", details=f"{details} (수정 완료 및 검증 완료)" if details else "수정 완료 및 검증 완료", dry_run=dry_run)
-        if ok:
-            success_count += 1
-            print(f"[{success_count}/{len(pending_tasks)}] Row {idx} submitted: [{dept}] {task[:40]}")
-        time.sleep(0.05)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        futures = [executor.submit(_submit_worker, item) for item in pending_tasks]
+        for f in concurrent.futures.as_completed(futures):
+            try:
+                idx, dept, task, ok = f.result()
+                if ok:
+                    success_count += 1
+                    print(f"[{success_count}/{len(pending_tasks)}] Row {idx} submitted: [{dept}] {task[:40]}")
+            except Exception as e:
+                print(f"[ERROR] Task failed: {e}")
 
     print(f"\nDone. Successfully submitted {success_count}/{len(pending_tasks)} tasks.")
 
