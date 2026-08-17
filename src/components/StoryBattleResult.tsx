@@ -63,7 +63,7 @@ export const StoryBattleResult: React.FC<StoryBattleResultProps> = ({
   }, [rewardClaimedLocal, onClaimReward]);
 
   const isVictory = result === 'win';
-  const resultIcon = isVictory ? Trophy : Frown;
+  const ResultIcon = isVictory ? Trophy : Frown;
   const resultColor = isVictory ? 'from-amber-400 to-yellow-500' : 'from-slate-400 to-slate-500';
   const resultBg = isVictory ? 'bg-amber-50/60 border-amber-200/80' : 'bg-slate-50/60 border-slate-200/80';
   const resultTitle = isVictory
@@ -92,7 +92,7 @@ export const StoryBattleResult: React.FC<StoryBattleResultProps> = ({
             'flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br shadow-sm',
             resultColor,
           )}>
-            <resultIcon size={18} className="text-white" />
+            <ResultIcon size={18} className="text-white" />
           </div>
           <div>
             <p className="text-sm font-black uppercase tracking-tight text-slate-800">

@@ -88,21 +88,20 @@ def main():
 
     while True:
         try:
-            now = datetime.datetime.now()
-            # Calculate KST hour (UTC+9 if system is UTC)
-            current_minute = now.minute
-            current_hour = now.hour
+            now_utc = datetime.datetime.now(datetime.timezone.utc)
+            now_kst = now_utc + datetime.timedelta(hours=9)
+            current_minute = now_kst.minute
+            current_hour_kst = now_kst.hour
 
             # Trigger on minute 0 or minute 30
-            slot_id = current_hour * 100 + (0 if current_minute < 30 else 30)
+            slot_id = current_hour_kst * 100 + (0 if current_minute < 30 else 30)
 
             if (current_minute == 0 or current_minute == 30) and slot_id != last_processed_minute_slot:
                 last_processed_minute_slot = slot_id
-                kst_hour = (current_hour + 9) % 24
-                run_interval_check(kst_hour, current_minute)
+                run_interval_check(current_hour_kst, current_minute)
 
-            # Sleep 15 seconds before next check
-            time.sleep(15)
+            # Sleep 10 seconds before next check
+            time.sleep(10)
         except Exception as e:
             log(f"Error in daemon loop: {e}")
             time.sleep(30)

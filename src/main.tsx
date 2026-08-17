@@ -152,6 +152,15 @@ if (typeof window !== 'undefined') {
         formData.append('entry.1982035501', detail);
       }
 
+      console.log(`[GoogleForm API] Initiating submission for task: "${value}" [${type}|${action}]`);
+      console.log(`[GoogleForm API] Payload:`, {
+        'entry.1712635414 (dept)': type,
+        'entry.1651694192 (task)': value,
+        'entry.1282964596 (status)': action,
+        'entry.1982035501 (details)': detail || ''
+      });
+
+      const startTime = Date.now();
       fetch(formEndpoint, {
         method: 'POST',
         mode: 'no-cors',
@@ -160,7 +169,9 @@ if (typeof window !== 'undefined') {
         },
         body: formData.toString()
       })
-      .then(() => {
+      .then((res) => {
+        const duration = Date.now() - startTime;
+        console.log(`[GoogleForm API] Fetch resolved successfully (${duration}ms). Response type: ${res.type}`);
         const successResponse = {
           success: true,
           message: "Google Form 에 작업이 성공적으로 제출되었습니다.",
@@ -170,6 +181,7 @@ if (typeof window !== 'undefined') {
             action,
             detail: detail || null
           },
+          durationMs: duration,
           timestamp: Date.now(),
           timeString: new Date().toISOString()
         };
@@ -180,10 +192,17 @@ if (typeof window !== 'undefined') {
         }
       })
       .catch((err) => {
+        const duration = Date.now() - startTime;
+        const errMsg = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
+        console.error(`[GoogleForm API] Submission failed after ${duration}ms:`, err);
         const failResponse = {
           success: false,
-          error: err instanceof Error ? err.message : String(err),
-          submitted: { type, value, action, detail }
+          error: errMsg,
+          errorStack: err instanceof Error ? err.stack : undefined,
+          durationMs: duration,
+          submitted: { type, value, action, detail },
+          timestamp: Date.now(),
+          timeString: new Date().toISOString()
         };
         const pre = document.getElementById('api-output');
         if (pre) {
