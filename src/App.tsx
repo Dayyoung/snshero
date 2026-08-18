@@ -48,6 +48,7 @@ import { trackCreatorEvent } from './content/creatorCampaigns';
 import { WEBTOON_SEASONS, getWebtoonSeasonById, getWebtoonEpisodesForSeason } from './content/webtoonEpisodes';
 import { saveWebtoonProgress, type WebtoonProgressState } from './lib/webtoonProgress';
 import { BGM_TRACKS } from './lib/audioConstants';
+import { getSeasonItem, setSeasonItem, removeSeasonItem } from './lib/seasonStorage';
 import { getDeckUpgradeRecommendation } from './lib/deckUpgrade';
 import { incrementMissionProgress } from './lib/dailyMissions';
 import { 
@@ -322,26 +323,7 @@ const createVirtualUser = (index: number) => {
   return userDoc;
 };
 
-export const getSeasonItem = (baseKey: string, season: string, defaultValue: string | null = null): string | null => {
-  if (typeof window === 'undefined') return defaultValue;
-  const seasonKey = `${baseKey}_${season}`;
-  const val = localStorage.getItem(seasonKey);
-  if (val !== null) return val;
-  if (season === 'season1') {
-    const legacyVal = localStorage.getItem(baseKey);
-    if (legacyVal !== null) {
-      localStorage.setItem(seasonKey, legacyVal);
-      return legacyVal;
-    }
-  }
-  return defaultValue;
-};
-
-export const setSeasonItem = (baseKey: string, season: string, value: string) => {
-  if (typeof window === 'undefined') return;
-  const seasonKey = `${baseKey}_${season}`;
-  localStorage.setItem(seasonKey, value);
-};
+export { getSeasonItem, setSeasonItem, removeSeasonItem } from './lib/seasonStorage';
 
 interface AdminHelpMessageMeta {
   type: 'admin-help';

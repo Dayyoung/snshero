@@ -5,6 +5,9 @@ import { Language } from '../types';
 import { triggerHaptic } from '../lib/haptic';
 import { StoryWorldMapModal } from './StoryWorldMapModal';
 import { useSns } from '../contexts/SnsContext';
+import { generateCounterDeck } from '../lib/battleSynergy';
+import { CARD_DATABASE } from '../cardDatabase';
+import { getSeasonItem, setSeasonItem } from '../lib/seasonStorage';
 
 interface StoryStageSelectModalProps {
   isOpen: boolean;
@@ -231,21 +234,35 @@ export const StoryStageSelectModal: React.FC<StoryStageSelectModalProps> = ({
                     </div>
 
                     <div className="flex items-center gap-1.5">
-                      {/* ID 80: Story mode recommended clear deck load button */}
+                      {/* ID 354: Story mode recommended counter deck load button */}
                       {isCleared && (
                         <button
                           onClick={() => {
-                            // Auto load recommended deck for stage
-                            const recDeck = [1, 11, 21, 31, 101];
-                            localStorage.setItem('hero_playground_deck', JSON.stringify(recDeck));
+                            // Dynamically generate counter deck against stage boss cards
+                            const targetBossCards = [
+                              CARD_DATABASE[ep * 10] || CARD_DATABASE[1],
+                              CARD_DATABASE[ep * 5 + 1] || CARD_DATABASE[11],
+                              CARD_DATABASE[ep * 3 + 2] || CARD_DATABASE[21],
+                              CARD_DATABASE[ep + 31] || CARD_DATABASE[31],
+                              CARD_DATABASE[101] || CARD_DATABASE[41]
+                            ];
+                            const counterDeckIds = generateCounterDeck(targetBossCards, CARD_DATABASE);
+                            const season = localStorage.getItem('hero_current_season') || 'season1';
+                            setSeasonItem('hero_deck', season, JSON.stringify(counterDeckIds));
+                            setSeasonItem('hero_deck_guest', season, JSON.stringify(counterDeckIds));
+                            localStorage.setItem('hero_playground_deck', JSON.stringify(counterDeckIds));
                             window.dispatchEvent(new Event('snshero_deck_updated'));
-                            alert(language === 'ko' ? '⚡ Stage 추천 덱이 자동으로 장착되었습니다!' : '⚡ Recommended Stage Deck loaded!');
+                            triggerHaptic('medium');
+                            alert(language === 'ko' 
+                              ? `⚡ [상성 카운터 덱 장착] Stage 1-${ep} 보스 대항 상성 덱(Card #${counterDeckIds.join(', #')})이 장착되었습니다!` 
+                              : `⚡ [COUNTER DECK EQUIPPED] Stage 1-${ep} boss counter deck loaded!`
+                            );
                           }}
                           className="px-2 py-1 rounded bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-mono font-bold flex items-center gap-1 transition-all active:scale-95 cursor-pointer"
-                          title={language === 'ko' ? '추천 클리어 덱 즉시 불러오기' : 'Load Recommended Clear Deck'}
+                          title={language === 'ko' ? '스테이지 맞춤 상성 카운터 덱 장착' : 'Equip Stage Counter Deck'}
                         >
                           <Zap size={11} className="text-amber-400" />
-                          <span>{language === 'ko' ? '추천 덱' : 'Rec Deck'}</span>
+                          <span>{language === 'ko' ? '카운터 덱' : 'Counter Deck'}</span>
                         </button>
                       )}
 

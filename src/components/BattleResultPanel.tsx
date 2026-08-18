@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Trophy, Zap, Sparkles, ArrowUpRight, Coins, ChevronDown, ChevronUp, Share2, Check, Layers } from 'lucide-react';
+import { Trophy, Zap, Sparkles, ArrowUpRight, Coins, ChevronDown, ChevronUp, Share2, Check, Layers, Shield } from 'lucide-react';
 import { CardData } from '../types';
 import { getCardSpriteStyle } from '../lib/utils';
 
@@ -27,6 +27,9 @@ export interface BattleResultPanelProps {
   isSpeedAttackBonus?: boolean;
   isUnderdogBonus?: boolean;
   isGoblinBonus?: boolean;
+  isManaSpringBonus?: boolean;
+  isElementalComboBonus?: boolean;
+  isIroncladBonus?: boolean;
   onShareToCommunity?: () => void;
 }
 
@@ -42,6 +45,9 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
   isSpeedAttackBonus = false,
   isUnderdogBonus = false,
   isGoblinBonus = false,
+  isManaSpringBonus = false,
+  isElementalComboBonus = false,
+  isIroncladBonus = false,
   onShareToCommunity
 }) => {
   const isKo = language === 'ko';
@@ -101,8 +107,8 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
         </span>
       </div>
 
-      {/* Bonus Badges: Speed Attack / Underdog / Loot Goblin */}
-      {(isSpeedAttackBonus || isUnderdogBonus || isGoblinBonus) && (
+      {/* Bonus Badges: Speed Attack / Underdog / Loot Goblin / Mana Spring / Elemental Combo / Ironclad Defender */}
+      {(isSpeedAttackBonus || isUnderdogBonus || isGoblinBonus || isManaSpringBonus || isElementalComboBonus || isIroncladBonus) && (
         <div className="flex flex-wrap gap-1.5 pt-0.5">
           {isSpeedAttackBonus && (
             <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-950/60 border border-yellow-500/50 text-yellow-300 text-[10px] font-mono font-bold rounded-sm">
@@ -120,6 +126,24 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
             <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-950/60 border border-amber-500/50 text-amber-300 text-[10px] font-mono font-bold rounded-sm">
               <Coins size={11} className="text-amber-400 animate-bounce" />
               {isKo ? '[ 💰 보물 고블린 포획 +25 SNS ]' : '[ 💰 LOOT GOBLIN +25 SNS ]'}
+            </span>
+          )}
+          {isManaSpringBonus && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-cyan-950/60 border border-cyan-500/50 text-cyan-300 text-[10px] font-mono font-bold rounded-sm">
+              <Sparkles size={11} className="text-cyan-400 animate-spin" />
+              {isKo ? '[ 💧 마나샘 점령 +10 SNS ]' : '[ 💧 MANA SPRING +10 SNS ]'}
+            </span>
+          )}
+          {isElementalComboBonus && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-rose-950/60 border border-rose-500/50 text-rose-300 text-[10px] font-mono font-bold rounded-sm">
+              <Zap size={11} className="text-rose-400 animate-pulse" />
+              {isKo ? '[ 🔥 원소 콤보 마스터 +15 SNS ]' : '[ 🔥 ELEMENTAL COMBO +15 SNS ]'}
+            </span>
+          )}
+          {isIroncladBonus && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 text-[10px] font-mono font-bold rounded-sm">
+              <Shield size={11} className="text-emerald-400" />
+              {isKo ? '[ 🛡️ 철벽 방어자 상급 룬 +20 SNS ]' : '[ 🛡️ IRONCLAD DEFENDER +20 SNS ]'}
             </span>
           )}
         </div>

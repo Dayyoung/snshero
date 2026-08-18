@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   BookOpen, Play, Pause, Square, Volume2, Copy, Sparkles, ChevronLeft, ChevronRight,
   Check, Settings, Moon, Sun, Gift, ArrowLeft, Bookmark, List, ExternalLink, Award, User, Image,
-  Maximize2, X, Eye, Film, Layers, RefreshCw
+  Maximize2, X, Eye, Film, Layers, RefreshCw, ChevronDown, Search, ListOrdered, CheckCircle2, Clock
 } from 'lucide-react';
 import { Language, ViewType } from '../types';
 import { t } from '../lib/i18n';
@@ -73,6 +73,41 @@ const TOTAL_EPISODES = 40;
 
 const pad2 = (n: number) => String(n).padStart(2, '0');
 const pad3 = (n: number) => String(n).padStart(3, '0');
+
+/**
+ * Shortens a scene narration into a crisp single sentence that can be read within 8 seconds (~35-45 Korean chars / ~14-16 English words).
+ */
+export function get8SecShortNarration(text: string, lang: string = 'ko'): string {
+  if (!text) return '';
+  const clean = text.replace(/[\r\n]+/g, ' ').trim();
+  
+  if (lang === 'ko') {
+    // Split into sentences by '.', '!', '?'
+    const sentences = clean.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
+    const firstSentence = (sentences[0] || clean).trim();
+    
+    if (firstSentence.length <= 45) {
+      return firstSentence;
+    }
+    
+    const commaParts = firstSentence.split(/,\s*/);
+    if (commaParts.length > 1 && commaParts[0].length >= 12 && commaParts[0].length <= 40) {
+      const secondPartFirstWord = commaParts[1].split(/\s+/)[0] || '';
+      return commaParts[0] + (secondPartFirstWord ? ` ${secondPartFirstWord}...` : '...');
+    }
+    
+    return firstSentence.slice(0, 42).trim() + '...';
+  } else {
+    // English & other languages
+    const sentences = clean.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
+    const firstSentence = (sentences[0] || clean).trim();
+    const words = firstSentence.split(/\s+/);
+    if (words.length <= 16) {
+      return firstSentence;
+    }
+    return words.slice(0, 14).join(' ') + '...';
+  }
+}
 
 export const NovelView: React.FC<NovelViewProps> = ({
   language,
@@ -152,6 +187,11 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
   // Card detail modal state
   const [selectedWikiCardId, setSelectedWikiCardId] = useState<number | null>(null);
+
+  // Episode Selection Modal State
+  const [showEpisodeModal, setShowEpisodeModal] = useState<boolean>(false);
+  const [episodeModalFilter, setEpisodeModalFilter] = useState<'all' | '1-10' | '11-20' | '21-30' | '31-40'>('all');
+  const [episodeModalSearch, setEpisodeModalSearch] = useState<string>('');
 
   const { lowSpecMode } = useGameSettings();
   const {
@@ -760,9 +800,18 @@ export const NovelView: React.FC<NovelViewProps> = ({
           <div className="border-b border-stone-300/40 pb-6 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-2 flex-wrap">
-                <span className="text-xs font-bold uppercase tracking-widest text-amber-800 px-2 py-0.5 border border-amber-400/50 bg-amber-50/70 rounded-sm">
-                  EPISODE {currentEpisodeNum} / {TOTAL_EPISODES}
-                </span>
+                <button
+                  onClick={() => {
+                    setShowEpisodeModal(true);
+                    if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                  }}
+                  className="text-xs font-bold uppercase tracking-widest text-amber-800 px-2 py-0.5 border border-amber-400/50 bg-amber-50/70 hover:bg-amber-100 rounded-sm flex items-center gap-1 cursor-pointer transition-all active:scale-95 shadow-2xs group"
+                  title={t('novel_select_episode_hint', language)}
+                >
+                  <BookOpen size={11} className="text-amber-700 group-hover:scale-110 transition-transform" />
+                  <span>EPISODE {currentEpisodeNum} / {TOTAL_EPISODES}</span>
+                  <ChevronDown size={11} className="text-amber-600" />
+                </button>
                 {parsedContent.sourceRange && (
                   <span className="text-xs font-bold text-stone-600 px-2 py-0.5 border border-stone-300 rounded-sm bg-stone-100">
                     {parsedContent.sourceRange}
@@ -877,32 +926,114 @@ export const NovelView: React.FC<NovelViewProps> = ({
           ) : isPromptMode && narrationData?.scenes ? (
             /* ── PROMPT MODE: SCENE NARRATIONS & AI VIDEO PROMPTS ── */
             <div className="space-y-8 font-mono">
-              {/* Story Summary Section */}
-              <div className="border border-stone-300 p-5 rounded-sm bg-white/80">
-                <div className="flex items-center justify-between mb-4 border-b border-stone-200 pb-2">
-                  <span className="font-bold text-xs uppercase tracking-wider text-amber-800 flex items-center gap-2">
-                    <Bookmark size={14} />
-                    {t('novel_prompt_summary_label', language)}
+              {/* 1. 20문장 스토리 요약 (20-Sentence Story Summary) */}
+              <div className="border border-stone-300 p-5 rounded-sm bg-white/80 space-y-4 shadow-2xs">
+                <div className="flex items-center justify-between border-b border-stone-200 pb-2 flex-wrap gap-2">
+                  <span className="font-bold text-xs uppercase tracking-wider text-amber-900 flex items-center gap-2">
+                    <Bookmark size={15} className="text-amber-700" />
+                    [ {t('novel_prompt_summary_label', language)} ({narrationData.scenes.length}) ]
                   </span>
                   <button
                     onClick={() =>
                       handleCopyText(
-                        narrationData.scenes.map(s => (language === 'ko' ? s.narrationKo : s.narrationEn)).join('\n\n'),
-                        t('novel_prompt_summary_label', language)
+                        narrationData.scenes.map(s => `[#${s.sceneNumber}] ` + (language === 'ko' ? s.narrationKo : s.narrationEn)).join('\n\n'),
+                        t('novel_prompt_copy_20_summary', language)
                       )
                     }
-                    className="px-2 py-1 text-[11px] font-bold border border-stone-300 rounded-sm bg-stone-50 hover:bg-stone-100 cursor-pointer flex items-center gap-1"
+                    className="px-2.5 py-1 text-[11px] font-bold border border-amber-300 rounded-sm bg-amber-50 hover:bg-amber-100 text-amber-950 cursor-pointer flex items-center gap-1.5 transition-all shadow-2xs active:scale-95"
                   >
-                    <Copy size={12} /> {t('novel_prompt_copy_narration', language)}
+                    <Copy size={12} />
+                    <span>{t('novel_prompt_copy_20_summary', language)}</span>
                   </button>
                 </div>
                 <div className="space-y-3 text-xs leading-relaxed text-stone-800">
                   {narrationData.scenes.map((sc) => (
-                    <p key={sc.sceneNumber} className="border-l-2 border-amber-400 pl-3">
-                      <span className="font-bold text-amber-900 mr-2">#{sc.sceneNumber}</span>
-                      {language === 'ko' ? sc.narrationKo : sc.narrationEn}
-                    </p>
+                    <div key={sc.sceneNumber} className="border-l-2 border-amber-400 pl-3 py-0.5 flex items-start justify-between gap-2 group hover:bg-amber-50/50 transition-colors rounded-r-xs">
+                      <p className="flex-1">
+                        <span className="font-bold text-amber-900 mr-2">#{sc.sceneNumber}</span>
+                        {language === 'ko' ? sc.narrationKo : sc.narrationEn}
+                      </p>
+                      <button
+                        onClick={() =>
+                          handleCopyText(
+                            language === 'ko' ? sc.narrationKo : sc.narrationEn,
+                            `Scene #${sc.sceneNumber} Story Summary`
+                          )
+                        }
+                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-[10px] text-stone-500 hover:text-stone-900 border border-stone-200 hover:border-stone-400 rounded-xs bg-white cursor-pointer shrink-0"
+                        title={language === 'ko' ? '이 문장 복사' : 'Copy line'}
+                      >
+                        <Copy size={11} />
+                      </button>
+                    </div>
                   ))}
+                </div>
+              </div>
+
+              {/* 2. 10문장 나레이션 (10-Sentence Narration - 8s Fast Pace 20 Lines) */}
+              <div className="border border-stone-300 p-5 rounded-sm bg-white/90 space-y-4 shadow-2xs">
+                <div className="flex items-center justify-between border-b border-stone-200 pb-2 flex-wrap gap-2">
+                  <div>
+                    <span className="font-bold text-xs uppercase tracking-wider text-purple-900 flex items-center gap-2">
+                      <Volume2 size={15} className="text-purple-700" />
+                      [ {t('novel_prompt_short_narration_label', language)} ]
+                      <span className="text-[10px] bg-purple-100 text-purple-800 px-1.5 py-0.2 rounded-xs border border-purple-300 font-mono">
+                        ⏱️ ~8s / line ({narrationData.scenes.length})
+                      </span>
+                    </span>
+                    <p className="text-[11px] text-stone-500 mt-1 font-sans">
+                      {t('novel_prompt_short_narration_desc', language)}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      const allShort = narrationData.scenes.map(s => {
+                        const shortLine = get8SecShortNarration(language === 'ko' ? s.narrationKo : s.narrationEn, language);
+                        return `[#${String(s.sceneNumber).padStart(2, '0')}] ${shortLine}`;
+                      }).join('\n');
+                      handleCopyText(allShort, t('novel_prompt_copy_short_narration', language));
+                    }}
+                    className="px-2.5 py-1 text-[11px] font-bold border border-purple-300 rounded-sm bg-purple-50 hover:bg-purple-100 text-purple-950 cursor-pointer flex items-center gap-1.5 transition-all shadow-2xs active:scale-95"
+                  >
+                    <Copy size={12} />
+                    <span>{t('novel_prompt_copy_short_narration', language)}</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs text-stone-800">
+                  {narrationData.scenes.map((sc) => {
+                    const shortNarration = get8SecShortNarration(language === 'ko' ? sc.narrationKo : sc.narrationEn, language);
+                    return (
+                      <div
+                        key={`short-${sc.sceneNumber}`}
+                        className="border border-purple-100 bg-purple-50/40 p-2.5 rounded-sm flex flex-col justify-between hover:border-purple-300 hover:bg-purple-50 transition-all group"
+                      >
+                        <div className="flex items-center justify-between mb-1.5 text-[10px] text-purple-800 font-bold border-b border-purple-200/50 pb-1">
+                          <span className="flex items-center gap-1">
+                            <span className="bg-purple-200 text-purple-900 px-1 py-0.2 rounded-xs font-mono">
+                              #{String(sc.sceneNumber).padStart(2, '0')}
+                            </span>
+                            <span>{language === 'ko' ? '나레이션' : 'Narration'}</span>
+                          </span>
+                          <span className="text-[10px] text-stone-400 font-mono flex items-center gap-0.5">
+                            <Clock size={10} /> ~8s
+                          </span>
+                        </div>
+                        <p className="text-xs leading-relaxed text-stone-900 font-sans my-1">
+                          "{shortNarration}"
+                        </p>
+                        <div className="mt-2 pt-1 border-t border-purple-200/40 flex items-center justify-end">
+                          <button
+                            onClick={() => handleCopyText(shortNarration, `Scene #${sc.sceneNumber} 8s Narration`)}
+                            className="text-[10px] font-mono text-purple-700 hover:text-purple-900 flex items-center gap-1 cursor-pointer px-1.5 py-0.5 rounded-xs hover:bg-purple-100 transition-colors"
+                          >
+                            <Copy size={10} />
+                            <span>[COPY]</span>
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -1351,9 +1482,20 @@ export const NovelView: React.FC<NovelViewProps> = ({
             <span>[ {language === 'ko' ? '이전 회차' : 'PREV EP'} ]</span>
           </button>
 
-          <span className="font-bold text-stone-600">
-            {currentEpisodeNum} / {TOTAL_EPISODES}
-          </span>
+          {/* Middle 1 / 40 Button to open Episode Selection Popup */}
+          <button
+            id="novel-episode-selector-btn"
+            onClick={() => {
+              setShowEpisodeModal(true);
+              if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            }}
+            className="px-4 py-2 border border-stone-300 hover:border-[#201d1d] bg-white hover:bg-stone-100 rounded-sm font-bold text-stone-800 flex items-center gap-2 transition-all cursor-pointer shadow-2xs active:scale-95 group"
+            title={t('novel_select_episode_hint', language)}
+          >
+            <BookOpen size={14} className="text-amber-700 group-hover:scale-110 transition-transform" />
+            <span className="text-sm font-bold text-[#201d1d]">{currentEpisodeNum} / {TOTAL_EPISODES}</span>
+            <ChevronDown size={13} className="text-stone-400 group-hover:text-stone-700" />
+          </button>
 
           <button
             onClick={() => {
@@ -1381,6 +1523,186 @@ export const NovelView: React.FC<NovelViewProps> = ({
       <footer className="w-full border-t border-stone-300 bg-[#fdfcfc] py-4 text-center font-mono text-[11px] text-stone-500">
         <p>© 2026 SNSHero Revolution — Official Web Novel /public/book (40 Episodes)</p>
       </footer>
+
+      {/* ── EPISODE SELECTOR MODAL ── */}
+      {showEpisodeModal && (
+        <div
+          className="fixed inset-0 z-[10000] bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 font-mono"
+          onClick={() => setShowEpisodeModal(false)}
+        >
+          <div
+            className="bg-[#fdfcfc] text-[#201d1d] w-full max-w-2xl max-h-[85vh] rounded-none border border-stone-400 shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="p-4 border-b border-stone-300 bg-stone-100 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-2">
+                <BookOpen size={18} className="text-amber-700" />
+                <h3 className="font-bold text-sm sm:text-base text-[#201d1d]">
+                  [ {t('novel_select_episode_modal_title', language)} ]
+                </h3>
+              </div>
+              <button
+                onClick={() => setShowEpisodeModal(false)}
+                className="p-1 border border-stone-300 rounded-sm hover:bg-stone-200 text-stone-700 cursor-pointer transition-colors"
+                title="Close"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Modal Search & Filter Tabs */}
+            <div className="p-3 border-b border-stone-200 bg-white/70 space-y-2 shrink-0">
+              {/* Range Filter Tabs */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs scrollbar-none">
+                {[
+                  { id: 'all', labelKo: '전체 (1~40)', labelEn: 'All (1~40)' },
+                  { id: '1-10', labelKo: '1~10화', labelEn: 'Ep 1~10' },
+                  { id: '11-20', labelKo: '11~20화', labelEn: 'Ep 11~20' },
+                  { id: '21-30', labelKo: '21~30화', labelEn: 'Ep 21~30' },
+                  { id: '31-40', labelKo: '31~40화', labelEn: 'Ep 31~40' },
+                ].map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      setEpisodeModalFilter(tab.id as any);
+                      if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    }}
+                    className={cn(
+                      "px-3 py-1.5 border rounded-sm font-bold whitespace-nowrap cursor-pointer transition-all min-h-[36px] flex items-center justify-center",
+                      episodeModalFilter === tab.id
+                        ? "bg-[#201d1d] text-white border-[#201d1d] shadow-2xs"
+                        : "bg-white text-stone-700 border-stone-300 hover:bg-stone-100"
+                    )}
+                  >
+                    [ {language === 'ko' ? tab.labelKo : tab.labelEn} ]
+                  </button>
+                ))}
+              </div>
+
+              {/* Search input */}
+              <div className="relative">
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+                <input
+                  type="text"
+                  value={episodeModalSearch}
+                  onChange={(e) => setEpisodeModalSearch(e.target.value)}
+                  placeholder={language === 'ko' ? '회차 번호 또는 소설 제목 검색 (예: 5, 카단, 각성...)' : 'Search episode number or title...'}
+                  className="w-full pl-9 pr-8 py-1.5 text-xs bg-white border border-stone-300 rounded-sm focus:outline-hidden focus:border-[#201d1d]"
+                />
+                {episodeModalSearch && (
+                  <button
+                    onClick={() => setEpisodeModalSearch('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 cursor-pointer"
+                  >
+                    <X size={12} />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Episodes List Grid */}
+            <div className="p-3 sm:p-4 overflow-y-auto flex-1 max-h-[55vh] space-y-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {Array.from({ length: TOTAL_EPISODES }, (_, i) => i + 1)
+                  .filter((epNum) => {
+                    // Range filter
+                    if (episodeModalFilter === '1-10' && (epNum < 1 || epNum > 10)) return false;
+                    if (episodeModalFilter === '11-20' && (epNum < 11 || epNum > 20)) return false;
+                    if (episodeModalFilter === '21-30' && (epNum < 21 || epNum > 30)) return false;
+                    if (episodeModalFilter === '31-40' && (epNum < 31 || epNum > 40)) return false;
+
+                    // Search keyword filter
+                    if (episodeModalSearch.trim()) {
+                      const q = episodeModalSearch.trim().toLowerCase();
+                      const meta = indexData?.episodes.find(e => e.episodeNumber === epNum);
+                      const titleKo = meta?.titleKo.toLowerCase() || '';
+                      const titleEn = ENGLISH_NOVEL_MAP[epNum]?.titleEn.toLowerCase() || '';
+                      const numStr = epNum.toString();
+                      return numStr.includes(q) || titleKo.includes(q) || titleEn.includes(q);
+                    }
+                    return true;
+                  })
+                  .map((epNum) => {
+                    const meta = indexData?.episodes.find(e => e.episodeNumber === epNum);
+                    const isCurrent = epNum === currentEpisodeNum;
+                    const isClaimed = claimedRewards[epNum];
+                    const epTitleKo = meta ? meta.titleKo : `제 ${epNum}화`;
+                    const epTitleEn = ENGLISH_NOVEL_MAP[epNum]?.titleEn || (meta ? meta.titleKo : `Episode ${epNum}`);
+
+                    return (
+                      <button
+                        key={`ep-modal-${epNum}`}
+                        onClick={() => {
+                          setCurrentEpisodeNum(epNum);
+                          setShowEpisodeModal(false);
+                          stopTts();
+                          if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className={cn(
+                          "p-2.5 border rounded-sm text-left transition-all cursor-pointer flex items-center justify-between gap-2 group",
+                          isCurrent
+                            ? "bg-[#201d1d] text-white border-[#201d1d] shadow-sm ring-1 ring-amber-400"
+                            : "bg-white text-stone-800 border-stone-200 hover:border-amber-400 hover:bg-amber-50/50"
+                        )}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                          <span
+                            className={cn(
+                              "text-xs font-mono font-bold px-1.5 py-0.5 rounded-xs shrink-0",
+                              isCurrent
+                                ? "bg-amber-400 text-stone-900"
+                                : "bg-stone-100 text-stone-700 group-hover:bg-amber-100 group-hover:text-amber-900"
+                            )}
+                          >
+                            #{String(epNum).padStart(2, '0')}
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <p className={cn("text-xs font-bold truncate", isCurrent ? "text-white" : "text-stone-900")}>
+                              {language === 'ko' ? epTitleKo : epTitleEn}
+                            </p>
+                            <p className={cn("text-[10px] truncate opacity-70", isCurrent ? "text-amber-200" : "text-stone-500")}>
+                              {language === 'ko' ? epTitleEn : epTitleKo}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Status Badges */}
+                        <div className="shrink-0 flex items-center gap-1">
+                          {isCurrent ? (
+                            <span className="text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/40 px-1.5 py-0.2 rounded-xs">
+                              {language === 'ko' ? '읽는 중' : 'Reading'}
+                            </span>
+                          ) : isClaimed ? (
+                            <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded-xs flex items-center gap-0.5">
+                              <Check size={10} /> 100 SNS
+                            </span>
+                          ) : (
+                            <span className="text-[10px] text-stone-400 border border-stone-200 px-1.5 py-0.2 rounded-xs">
+                              {language === 'ko' ? '미완독' : 'Unread'}
+                            </span>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-3 border-t border-stone-300 bg-stone-50 flex items-center justify-between text-xs text-stone-500 shrink-0">
+              <span>{language === 'ko' ? `총 ${TOTAL_EPISODES}개 회차 중 ${Object.keys(claimedRewards).length}개 완독` : `${Object.keys(claimedRewards).length} / ${TOTAL_EPISODES} Episodes Read`}</span>
+              <button
+                onClick={() => setShowEpisodeModal(false)}
+                className="px-3 py-1 bg-stone-200 hover:bg-stone-300 text-stone-800 font-bold rounded-sm cursor-pointer transition-colors"
+              >
+                [ {language === 'ko' ? '닫기' : 'Close'} ]
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Card Detail Modal (Wiki) */}
       {selectedWikiCard && (

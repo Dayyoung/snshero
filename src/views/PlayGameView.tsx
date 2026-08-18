@@ -33,7 +33,7 @@ import { CardRushGame } from '../components/CardRushGame';
 import { ShootingBattleGame } from '../components/ShootingBattleGame';
 import { NativeAd } from '../components/NativeAd';
 import SkillTimingButton from '../components/SkillTimingButton';
-import { getEquipmentSetBonus, calculateBattleSynergy, FACTION_ADVANTAGE_COLORS, FACTION_ADVANTAGE_ICONS, EQUIPMENT_SET_ICONS } from '../lib/battleSynergy';
+import { getEquipmentSetBonus, calculateBattleSynergy, FACTION_ADVANTAGE_COLORS, FACTION_ADVANTAGE_ICONS, EQUIPMENT_SET_ICONS, generateCounterDeck, calculateElementalComboBonus } from '../lib/battleSynergy';
 import { incrementMissionProgress } from '../lib/dailyMissions';
 import { DailyMissions as DailyMissionsComponent } from '../components/DailyMissions';
 import { BattleResultPanel, LeveledUpCardInfo } from '../components/BattleResultPanel';
@@ -45,6 +45,8 @@ import { ShareTemplateCard } from '../components/ShareTemplateCard';
 import { StoryStageSelectModal } from '../components/StoryStageSelectModal';
 import { SkillActivationOverlay, SkillEvent } from '../components/SkillActivationOverlay';
 import { PingIndicator } from '../components/PingIndicator';
+import { getSeasonItem, setSeasonItem } from '../lib/seasonStorage';
+import { triggerHaptic } from '../lib/haptic';
 
 interface PlayGameViewProps {
   effectiveUser?: UserInfo;
@@ -2459,9 +2461,46 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [isUnderdogMatch, setIsUnderdogMatch] = useState<boolean>(false);
   const [underdogBountyClaimed, setUnderdogBountyClaimed] = useState<boolean>(false);
 
+  // Item 355: Mana Spring Tile State (30% spawn chance at match start)
+  const [manaSpringTileIndex, setManaSpringTileIndex] = useState<number | null>(null);
+  const [manaSpringClaimed, setManaSpringClaimed] = useState<boolean>(false);
+
+  // Item 356: Elemental Synergy Combo Trackers
+  const [hasTriggeredElementalCombo, setHasTriggeredElementalCombo] = useState<boolean>(false);
+
+  // Item 360: Ironclad Defender (0 cards lost to captures)
+  const playerCardsCapturedByAi = useRef<number>(0);
+  const [isIroncladWin, setIsIroncladWin] = useState<boolean>(false);
+
+  // Item 367: Poison Swamp Tile & Earth Purify State (35% hazard spawn chance)
+  const [poisonSwampTileIndex, setPoisonSwampTileIndex] = useState<number | null>(null);
+  const [poisonSwampCleansed, setPoisonSwampCleansed] = useState<boolean>(false);
+
+  // Item 368: Survival Master Clutch Comeback Tracker (tracks lowest friendly card count)
+  const minFriendlyCardsCount = useRef<number>(5);
+
   // Item 351: Sudden Death Overclock (turn count / filled slots >= 6)
   const filledBoardCount = board.filter(c => c !== null).length;
   const isSuddenDeathOverclock = gameState === 'playing' && filledBoardCount >= 6;
+
+  // Item 363: 3-Tile Line Mana Circuit calculation (horizontal, vertical, diagonal)
+  const activeManaCircuits = useMemo(() => {
+    const lines = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+    const found: { owner: 'player' | 'ai'; line: number[] }[] = [];
+    lines.forEach(l => {
+      const [a, b, c] = l;
+      if (board[a] && board[b] && board[c]) {
+        if (board[a]!.owner === board[b]!.owner && board[b]!.owner === board[c]!.owner) {
+          found.push({ owner: board[a]!.owner as 'player' | 'ai', line: l });
+        }
+      }
+    });
+    return found;
+  }, [board]);
 
   // Battle session initialization & Underdog detection
   useEffect(() => {
@@ -2472,6 +2511,39 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       playerTurnLatencies.current = [];
       setIsSpeedAttackWin(false);
       setUnderdogBountyClaimed(false);
+      setManaSpringClaimed(false);
+      setHasTriggeredElementalCombo(false);
+      playerCardsCapturedByAi.current = 0;
+      setIsIroncladWin(false);
+      minFriendlyCardsCount.current = 5;
+
+      // Item 355: Random Mana Spring spawn (30% chance on random board slot)
+      if (Math.random() < 0.30) {
+        const springSlot = Math.floor(Math.random() * 9);
+        setManaSpringTileIndex(springSlot);
+        addLog(language === 'ko'
+          ? `💧 [마나샘 발견] ${springSlot + 1}번 구역에 고대 마나샘이 솟아납니다! 점령 시 스탯 +2 및 +10 SNS 보너스!`
+          : `💧 [MANA SPRING] Ancient Mana Spring active on Sector ${springSlot + 1}! Claim for +2 Stats & +10 SNS!`,
+          'system'
+        );
+      } else {
+        setManaSpringTileIndex(null);
+      }
+
+      // Item 367: Random Poison Swamp hazard spawn (35% chance on random board slot)
+      if (Math.random() < 0.35) {
+        const hazardSlot = Math.floor(Math.random() * 9);
+        setPoisonSwampTileIndex(hazardSlot);
+        setPoisonSwampCleansed(false);
+        addLog(language === 'ko'
+          ? `☣️ [독기 늪지대 발생] ${hazardSlot + 1}번 구역에 맹독 안개가 드리웁니다! (지속성 카드로 정화 가능)`
+          : `☣️ [POISON SWAMP HAZARD] Toxic miasma at Sector ${hazardSlot + 1}! (Cleanse with Earth cards)`,
+          'system'
+        );
+      } else {
+        setPoisonSwampTileIndex(null);
+        setPoisonSwampCleansed(false);
+      }
 
       const pPower = calculatedTotalPower || 100;
       const aPower = opponentTotalPower || aiSimulatedTotalPower || 100;
@@ -2778,6 +2850,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [lastCombo, setLastCombo] = useState<{ count: number, timestamp: number } | null>(null);
   const [showDeckPreview, setShowDeckPreview] = useState(false);
   const [showMobileLogs, setShowMobileLogs] = useState(false);
+  const [showCortanaHud, setShowCortanaHud] = useState(false);
 
   // Sync gameLogs to localStorage with Debounce to eliminate main-thread I/O jank
   useEffect(() => {
@@ -4331,7 +4404,18 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           const suddenDeathBonus = testBoard.filter(c => c !== null).length >= 6 ? 2 : 0;
           const placedSynergy = calculateBattleSynergy(placedCard, neighbor, placedCard.equipment);
           const defendingSynergy = calculateBattleSynergy(neighbor, placedCard, neighbor.equipment);
-          let myStat = getCardStatWithBonus(placedCard, dir.m, elementalBoard[index]) + placedSynergy.equipmentStatBonus[dir.m] + suddenDeathBonus;
+          
+          // Item 356: Elemental Synergy Combo (Resonance / Amplification)
+          const elemCombo = calculateElementalComboBonus(placedCard, neighbor, neighbor.owner === owner);
+          const elemComboBonus = elemCombo.bonus;
+          if (elemComboBonus > 0 && !isDryRun && owner === 'player') {
+            setHasTriggeredElementalCombo(true);
+            if (elemCombo.logTextKo && elemCombo.logTextEn) {
+              addLog(language === 'ko' ? elemCombo.logTextKo : elemCombo.logTextEn, 'system');
+            }
+          }
+
+          let myStat = getCardStatWithBonus(placedCard, dir.m, elementalBoard[index]) + placedSynergy.equipmentStatBonus[dir.m] + suddenDeathBonus + elemComboBonus;
           let oppStat = getCardStatWithBonus(neighbor, dir.o, elementalBoard[ni]) + defendingSynergy.equipmentStatBonus[dir.o] + suddenDeathBonus;
 
           myStat *= placedSynergy.factionMultiplier;
@@ -4562,6 +4646,45 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       }
     }
 
+    // Item 355: Check Mana Spring Tile bonus (+2 all stats for placing card)
+    if (manaSpringTileIndex === index) {
+      newBoard[index] = {
+        ...placedCard,
+        stats: placedCard.stats.map(s => s + 2) as [number, number, number, number]
+      };
+      triggerStatFX(index, '+2 MANA', true);
+      if (placedCard.owner === 'player') {
+        setManaSpringClaimed(true);
+        addLog(language === 'ko'
+          ? `💧 [마나샘 점령] ${index + 1}번 구역 마나샘을 점령했습니다! 모든 방향 능력치 +2 및 +10 SNS 보너스 확보!`
+          : `💧 [MANA SPRING] Captured Mana Spring on Sector ${index + 1}! All stats +2 & +10 SNS bounty secured!`,
+          'system'
+        );
+      } else {
+        addLog(language === 'ko'
+          ? `💧 [AI 마나샘 점령] AI가 ${index + 1}번 구역 마나샘을 점령했습니다!`
+          : `💧 [AI MANA SPRING] AI secured Mana Spring on Sector ${index + 1}!`,
+          'info'
+        );
+      }
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+
+    // Item 359: Central Core Element Switch Mechanism (Cross tiles rotate)
+    if (index === 4) {
+      const ELEMENT_CYCLE: Record<string, string> = { 
+        water: 'fire', fire: 'wind', wind: 'land', land: 'water',
+        elf: 'dwarf', dwarf: 'monster', monster: 'robot', robot: 'dragon', dragon: 'human', human: 'undead', undead: 'elf'
+      };
+      setElementalBoard(prev => prev.map((el, i) => ([1, 3, 5, 7].includes(i) && el && ELEMENT_CYCLE[el]) ? ELEMENT_CYCLE[el] : el));
+      triggerStatFX(4, '🔄 SWITCH', true);
+      addLog(language === 'ko'
+        ? `🔄 [속성 스위치 (Element Switch)] 중앙 제어 타일에 카드가 배치되어 십자 방향 속성이 순환 전환됩니다! (물→불→바람→대지)`
+        : `🔄 [ELEMENT SWITCH] Center core activated! Cross element tiles shifted!`,
+        'system'
+      );
+    }
+
     // Ability trigger BEFORE flips calculation (for things like WEAKEN/REINFORCE)
     triggerCardAbility(newBoard, index);
 
@@ -4573,6 +4696,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       false,
       activeQteMultiplier,
     );
+
+    // Item 360: Track AI captures of player's cards for Ironclad Defender bonus
+    if (placedCard.owner === 'ai' && flippedIndices.length > 0) {
+      playerCardsCapturedByAi.current += flippedIndices.length;
+    }
     
     if (highlights && Object.keys(highlights).length > 0) {
       setCombatHighlights(highlights);
@@ -4964,7 +5092,38 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       );
     }
 
+    // Item 367: Poison Swamp hazard & Earth Purify mechanic
+    if (poisonSwampTileIndex !== null && !poisonSwampCleansed) {
+      const isEarthCard = getNormalizedElement(cardToPlace) === 'land' || cardToPlace.element === 'land' || cardToPlace.element === 'earth';
+      const rowDiff = Math.abs(Math.floor(boardIdx / 3) - Math.floor(poisonSwampTileIndex / 3));
+      const colDiff = Math.abs((boardIdx % 3) - (poisonSwampTileIndex % 3));
+      const isAdjacentOrSame = rowDiff <= 1 && colDiff <= 1;
+
+      if (isEarthCard && isAdjacentOrSame) {
+        setPoisonSwampCleansed(true);
+        playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+        addLog(language === 'ko'
+          ? `🌿 [대지 정화 (Earth Purify)] 지속성 카드의 정화력으로 ${poisonSwampTileIndex + 1}번 구역의 독기가 비옥한 대지로 정화되었습니다! (+1 PWR)`
+          : `🌿 [EARTH PURIFY] Earth energy cleansed Sector ${poisonSwampTileIndex + 1}! (+1 PWR)`,
+          'victory'
+        );
+      } else if (boardIdx === poisonSwampTileIndex) {
+        addLog(language === 'ko'
+          ? `☣️ [독기 노출] ${boardIdx + 1}번 구역의 독기로 인해 카드가 부식 상태이상에 걸렸습니다.`
+          : `☣️ [TOXIC EXPOSURE] Unit placed in Sector ${boardIdx + 1} suffers miasma decay.`,
+          'system'
+        );
+      }
+    }
+
     resolveCombatDelay(newBoard, boardIdx, async (finalBoard, skipTurn) => {
+      // Item 368: Track minimum friendly cards during match for clutch comeback bonus
+      const friendlyCount = finalBoard.filter(c => c?.owner === 'player').length;
+      const totalCount = finalBoard.filter(c => c !== null).length;
+      if (totalCount >= 4 && friendlyCount <= 1) {
+        minFriendlyCardsCount.current = Math.min(minFriendlyCardsCount.current, friendlyCount);
+      }
+
       // Standalone mode logic
       setBoard(finalBoard);
       setIsEvaluating(false);
@@ -5245,6 +5404,64 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 addLog(language === 'ko'
                   ? `🏆 [언더독 승리 바운티] 전투력 열세를 극복하고 승리하여 +20% 추가 보상 지급!`
                   : `🏆 [UNDERDOG BOUNTY] Overcame power deficit for +20% bounty reward!`,
+                  'victory'
+                );
+              }
+
+              // Item 355: Mana Spring Claimed Bonus (+10 SNS)
+              if (manaSpringClaimed && resultType === 'win') {
+                myFinalReward += 10;
+                addLog(language === 'ko'
+                  ? `💧 [마나샘 점령 보너스] 전장 마나샘 확보로 +10 SNS 추가 지급!`
+                  : `💧 [MANA SPRING BONUS] Secured Mana Spring for +10 SNS!`,
+                  'victory'
+                );
+              }
+
+              // Item 356: Elemental Master Combo Bonus (+15 SNS)
+              if (hasTriggeredElementalCombo && resultType === 'win') {
+                myFinalReward += 15;
+                addLog(language === 'ko'
+                  ? `🔥 [엘리멘탈 마스터] 4속성 순환/원소 콤보 달성으로 +15 SNS 추가 지급!`
+                  : `🔥 [ELEMENTAL MASTER] Elemental Synergy Combo achieved for +15 SNS!`,
+                  'victory'
+                );
+              }
+
+              // Item 360: Ironclad Defender Bonus (0 captures suffered, +20 SNS + Rare item fragment)
+              if (resultType === 'win' && playerCardsCapturedByAi.current === 0) {
+                setIsIroncladWin(true);
+                myFinalReward += 20;
+                addItem?.('rare');
+                addLog(language === 'ko'
+                  ? `🛡️ [철벽 방어자 (Ironclad Defender)] 무피격 완벽 방어 승리! 상급 룬 파편 및 +20 SNS 획득!`
+                  : `🛡️ [IRONCLAD DEFENDER] Flawless 0-capture defense victory! Rare Rune Fragment +20 SNS earned!`,
+                  'victory'
+                );
+              }
+
+              // Item 364: Legion Commander Bonus (5-card single faction pure deck manual victory)
+              const isPureFactionDeck = (playerDeck && playerDeck.length >= 5) && (() => {
+                const firstEl = getNormalizedElement(playerDeck[0]);
+                return playerDeck.every(c => getNormalizedElement(c) === firstEl);
+              })();
+              if (resultType === 'win' && !isAutoBattle && isPureFactionDeck) {
+                myFinalReward += 25;
+                addItem?.('epic');
+                addLog(language === 'ko'
+                  ? `🎖️ [군단 사령관 (Legion Commander)] 동일 소속 5인 순수 덱 수동 완파! 전술 비전서 및 +25 SNS 획득!`
+                  : `🎖️ [LEGION COMMANDER] Pure single-faction 5-card manual victory! Tactical Grimoire +25 SNS earned!`,
+                  'victory'
+                );
+              }
+
+              // Item 368: Survival Master Reversal Bonus (1 card left clutch comeback, +30 SNS + Special Chest)
+              if (resultType === 'win' && !isAutoBattle && minFriendlyCardsCount.current <= 1) {
+                myFinalReward += 30;
+                addItem?.('epic');
+                addLog(language === 'ko'
+                  ? `🔥 [서바이벌 마스터 (Survival Master)] 아군 1장 잔여 절체절명 위기 수동 대역전승! 서바이벌 상자 및 +30 SNS 획득!`
+                  : `🔥 [SURVIVAL MASTER] 1-card clutch comeback manual victory! Survival Chest +30 SNS earned!`,
                   'victory'
                 );
               }
@@ -5819,6 +6036,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     setOpponentHand(prev => prev.filter((_, i) => i !== cardIdx));
 
     resolveCombatDelay(newBoard, boardIdx, (finalBoard, skipTurn) => {
+      // Item 368: Track minimum friendly cards during match for clutch comeback bonus
+      const friendlyCount = finalBoard.filter(c => c?.owner === 'player').length;
+      const totalCount = finalBoard.filter(c => c !== null).length;
+      if (totalCount >= 4 && friendlyCount <= 1) {
+        minFriendlyCardsCount.current = Math.min(minFriendlyCardsCount.current, friendlyCount);
+      }
+
       setBoard(finalBoard);
       setTurn(skipTurn ? 'ai' : 'player');
       setSelectedCardIdx(null);
@@ -9215,6 +9439,31 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           </div>
                         ))}
                       </div>
+
+                      {/* Item 354: PreMatch Counter Deck Auto-Equip */}
+                      {previewDeck.length > 0 && (
+                        <button
+                          onClick={() => {
+                            const counterDeckIds = generateCounterDeck(previewDeck, CARD_DATABASE);
+                            const season = localStorage.getItem('hero_current_season') || 'season1';
+                            setSeasonItem('hero_deck', season, JSON.stringify(counterDeckIds));
+                            setSeasonItem('hero_deck_guest', season, JSON.stringify(counterDeckIds));
+                            window.dispatchEvent(new Event('snshero_deck_updated'));
+                            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                            triggerHaptic('medium');
+                            triggerAlert(
+                              language === 'ko'
+                                ? `상대 덱에 가장 유리한 상성 5장의 카드(#${counterDeckIds.join(', #')})가 자동으로 장착되었습니다!`
+                                : `Recommended counter deck (#${counterDeckIds.join(', #')}) has been equipped!`,
+                              language === 'ko' ? '카운터 덱 자동 장착' : 'Counter Deck Equipped'
+                            );
+                          }}
+                          className="w-full mt-2 py-2 px-3 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer font-mono text-xs font-bold shadow-xs"
+                        >
+                          <Zap size={14} className="text-amber-400 animate-pulse" />
+                          <span>{language === 'ko' ? '⚡ 추천 상성 카운터 덱 자동 장착' : '⚡ Equip Counter Deck'}</span>
+                        </button>
+                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -10402,28 +10651,26 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       {/* Game Overlays */}
       <div className="absolute left-2 md:left-4 top-[55%] md:top-[60%] -translate-y-1/2 flex flex-col gap-2 z-[60]">
       </div>
-      {/* 1. 상대 덱/패 영역 (카드 높이에 맞춰 컴팩트 조정) */}
-      <div id="opponent-hand-container" className={cn(
+
+      {/* Primary Battle Arena Container: Dedicated Viewport Area for Opponent Hand, Center Board, Player Hand */}
+      <div id="primary-battle-arena" className="w-full flex-1 flex flex-col justify-between items-center max-w-5xl mx-auto min-h-0 relative z-10 shrink-0 gap-1 sm:gap-1.5">
+        {/* 1. 상대 덱/패 영역 (카드 높이에 맞춰 컴팩트 조정) */}
+        <div id="opponent-hand-container" className={cn(
         "h-auto py-0.5 sm:py-1 md:py-1.5 relative flex items-center justify-center px-1 overflow-visible w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm shrink-0",
         turn === 'ai' && !gameOver ? "border-red-500/50 z-20" : "border-red-500/20 z-10"
       )}>
         
-        {/* 상대 상세 정보 (이름, ID, 전적, PW, SNS) */}
-        <div className="absolute top-2 left-4 z-20 hidden md:flex flex-col gap-1 bg-rose-600/95 text-white text-[9px] md:text-[10px] font-semibold uppercase px-2.5 py-1.5 rounded-xl shadow-lg pointer-events-none border border-rose-500/10">
-          <div className="flex items-center gap-2">
-            <span>{lastOpponent?.name || 'ENEMY'}</span>
-            <span className="opacity-60 text-[7px] md:text-[9px]">({(lastOpponent?.id || 'BOT').replace('ranking-', '')})</span>
-          </div>
-          {lastOpponent?.type === 'user' && (
-            <div className="flex items-center gap-1.5 opacity-90 text-[7px] md:text-[9px] border-t border-white/20 pt-1 mt-0.5">
-              <span>PW: <span className="text-yellow-300">{(lastOpponent?.totalPower || 0).toLocaleString()}</span></span>
-              <span>•</span>
-              <span>SNS: <span className="text-yellow-300">🪙{(lastOpponent?.sns || 0).toLocaleString()}</span></span>
-              <span>•</span>
-              <span className="text-yellow-200">
-                {lastOpponent?.wins || 0}W {lastOpponent?.losses || 0}L {lastOpponent?.draws || 0}D
-              </span>
-            </div>
+        {/* Item 357: Opponent 1-Line Slim Monospace Tag (Visible on Mobile & Desktop) */}
+        <div className="absolute top-1 left-2 z-20 flex items-center gap-1.5 bg-rose-950/90 text-rose-200 text-[8px] sm:text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-sm shadow-xs pointer-events-none border border-rose-500/40 backdrop-blur-xs">
+          <span className="text-rose-400 font-black">[OPP]</span>
+          <span className="truncate max-w-[80px] sm:max-w-[120px] text-white">{lastOpponent?.name || 'ENEMY'}</span>
+          <span className="text-slate-500">·</span>
+          <span>TP {((lastOpponent?.type === 'user' ? (lastOpponent as any).totalPower : undefined) || opponentTotalPower || aiSimulatedTotalPower || 1200).toLocaleString()}</span>
+          {lastOpponent?.sns !== undefined && lastOpponent.sns > 0 && (
+            <>
+              <span className="text-slate-500">·</span>
+              <span className="text-amber-300">🪙{lastOpponent.sns.toLocaleString()}</span>
+            </>
           )}
         </div>
         
@@ -10436,7 +10683,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <motion.div 
                 key={card.id} 
                 className={cn(
-                  "w-[15vw] max-w-[54px] sm:max-w-[62px] md:max-w-[82px] lg:max-w-[90px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg",
+                  "w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg",
                   isSelected && "z-50"
                 )}
                 onClick={() => handleCardClick(idx, 'ai')}
@@ -10469,7 +10716,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       </div>
 
       {/* 2. 가운데 카드판 영역 (유연하게 공간 확장) */}
-      <div className="flex-1 min-h-[250px] sm:min-h-[290px] md:min-h-[330px] flex flex-col items-center justify-center p-0.5 md:p-1 bg-[#060a14] relative overflow-visible py-1.5 sm:py-2.5 md:py-3 shadow-[inset_0_0_120px_rgba(0,0,0,0.9)] border border-slate-800 rounded-2xl md:rounded-3xl mx-1 md:mx-2 my-0.5 shrink-0">
+      <div className="flex-1 flex flex-col items-center justify-center p-0.5 sm:p-1 md:p-1.5 bg-[#060a14] relative overflow-visible py-1.5 sm:py-2 md:py-2.5 shadow-[inset_0_0_120px_rgba(0,0,0,0.9)] border border-slate-800 rounded-2xl md:rounded-3xl mx-1 md:mx-2 my-0.5 shrink-0">
         {/* Background layers */}
         <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/topography.png')] opacity-[0.06]" />
@@ -10519,7 +10766,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           />
         </div>
 
-        {/* Item 349: TOP COMPACT 1-LINE SCORE & STATUS BAR (Never blocks board) */}
+        {/* Item 349 & 361: TOP COMPACT 1-LINE SCORE & 9-ROUND LED MICRO-DOT STATUS BAR */}
         {!gameOver && gameState === 'playing' && (
           <div className="flex flex-wrap items-center justify-between w-full max-w-sm sm:max-w-md px-3 py-1.5 bg-slate-950/90 border border-slate-800 rounded-sm shadow-md text-xs font-mono font-bold z-20 mb-1 backdrop-blur-md gap-2">
             {/* Player Score */}
@@ -10530,7 +10777,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               </span>
             </div>
 
-            {/* 1-Line Turn Status Indicator */}
+            {/* 1-Line Turn Status + 9-Turn LED Micro-Dots */}
             <div className="flex items-center gap-1.5">
               <div className={cn(
                 "px-2 py-0.5 rounded-sm text-[10px] uppercase font-mono font-black flex items-center gap-1 border",
@@ -10550,6 +10797,27 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <span className="px-1.5 py-0.5 rounded-sm bg-amber-950/80 border border-amber-500/70 text-amber-300 text-[9px] font-mono font-bold animate-pulse">
                   [ ⚡ OVERCLOCK +2 ]
                 </span>
+              )}
+
+              {/* Item 361: 9-Turn LED Micro-Dots (Shows filled player/enemy slots & remaining turns) */}
+              {battleType !== 'matgo' && (
+                <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-slate-900 border border-slate-800" title={`Round Progress: ${board.filter(c => c !== null).length}/9 Turns`}>
+                  {board.map((cell, idx) => {
+                    const isPlayer = cell?.owner === 'player';
+                    const isAi = cell?.owner === 'ai';
+                    return (
+                      <span
+                        key={idx}
+                        className={cn(
+                          "w-1.5 h-1.5 rounded-full transition-all duration-300",
+                          isPlayer ? "bg-indigo-400 shadow-[0_0_4px_rgba(99,102,241,0.8)] scale-110" :
+                          isAi ? "bg-rose-400 shadow-[0_0_4px_rgba(244,63,94,0.8)] scale-110" :
+                          "bg-slate-700/60"
+                        )}
+                      />
+                    );
+                  })}
+                </div>
               )}
             </div>
 
@@ -10721,6 +10989,18 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       "grid grid-cols-3 gap-1 md:gap-2 w-fit relative p-1.5 rounded-sm transition-all",
                       isSuddenDeathOverclock && "border border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.25)] bg-amber-950/10"
                     )}>
+                      {/* Item 365: 1px Perimeter Ring Timer (BattleTurnRing) */}
+                      <div className="absolute inset-0 pointer-events-none rounded-sm border border-slate-700/60 overflow-hidden z-[100]">
+                        <div
+                          className={cn(
+                            "absolute inset-0 border transition-all duration-300 pointer-events-none",
+                            turn === 'player'
+                              ? "border-cyan-400/80 shadow-[0_0_10px_rgba(34,211,238,0.35)]"
+                              : "border-rose-500/80 shadow-[0_0_10px_rgba(244,63,94,0.35)]"
+                          )}
+                        />
+                      </div>
+
                       {/* Shockwave Overlay */}
                       {customWaveEffect && (
                         <div className="absolute inset-0 pointer-events-none z-[200] flex items-center justify-center overflow-hidden rounded-xl">
@@ -10751,77 +11031,109 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         </div>
                       )}
 
-                      {/* Item 74: Stat Comparison Lightning Pulse FX Overlay */}
-                      {Object.keys(combatHighlights).length > 0 && (
-                        <svg className="absolute inset-0 z-[180] w-full h-full pointer-events-none overflow-visible">
-                          <defs>
-                            <linearGradient id="lightningPulseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                              <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.9" />
-                              <stop offset="50%" stopColor="#38bdf8" stopOpacity="1" />
-                              <stop offset="100%" stopColor="#ef4444" stopOpacity="0.9" />
-                            </linearGradient>
-                            <filter id="lightningGlow" x="-20%" y="-20%" width="140%" height="140%">
-                              <feGaussianBlur stdDeviation="3" result="blur" />
-                              <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                            </filter>
-                          </defs>
-                          {Object.entries(combatHighlights).map(([srcIdxStr, dirs]) => {
-                            const srcIdx = Number(srcIdxStr);
-                            const srcRow = Math.floor(srcIdx / 3);
-                            const srcCol = srcIdx % 3;
-                            const x1 = `${(srcCol + 0.5) * 33.333}%`;
-                            const y1 = `${(srcRow + 0.5) * 33.333}%`;
+                      {/* Item 74: Stat Comparison Lightning Pulse & Item 363: Mana Circuit FX Overlay */}
+                      <svg className="absolute inset-0 z-[180] w-full h-full pointer-events-none overflow-visible">
+                        <defs>
+                          <linearGradient id="lightningPulseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.9" />
+                            <stop offset="50%" stopColor="#38bdf8" stopOpacity="1" />
+                            <stop offset="100%" stopColor="#ef4444" stopOpacity="0.9" />
+                          </linearGradient>
+                          <filter id="lightningGlow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="3" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                          </filter>
+                        </defs>
+                        {/* Item 363: 3-Tile Mana Circuit Lines */}
+                        {activeManaCircuits.map((circuit, cIdx) => {
+                          const [a, , c] = circuit.line;
+                          const ax = `${((a % 3) + 0.5) * 33.333}%`;
+                          const ay = `${(Math.floor(a / 3) + 0.5) * 33.333}%`;
+                          const cx = `${((c % 3) + 0.5) * 33.333}%`;
+                          const cy = `${(Math.floor(c / 3) + 0.5) * 33.333}%`;
+                          const isPl = circuit.owner === 'player';
+                          return (
+                            <g key={`mana-circuit-${cIdx}`}>
+                              <line
+                                x1={ax}
+                                y1={ay}
+                                x2={cx}
+                                y2={cy}
+                                stroke={isPl ? "#06b6d4" : "#ec4899"}
+                                strokeWidth="4"
+                                strokeLinecap="round"
+                                className="animate-pulse opacity-90 drop-shadow-[0_0_12px_rgba(6,182,212,0.8)]"
+                              />
+                              <line
+                                x1={ax}
+                                y1={ay}
+                                x2={cx}
+                                y2={cy}
+                                stroke="#ffffff"
+                                strokeWidth="1.5"
+                                strokeDasharray="4 4"
+                                strokeLinecap="round"
+                                className="animate-ping opacity-75"
+                              />
+                            </g>
+                          );
+                        })}
+                        {Object.entries(combatHighlights).map(([srcIdxStr, dirs]) => {
+                          const srcIdx = Number(srcIdxStr);
+                          const srcRow = Math.floor(srcIdx / 3);
+                          const srcCol = srcIdx % 3;
+                          const x1 = `${(srcCol + 0.5) * 33.333}%`;
+                          const y1 = `${(srcRow + 0.5) * 33.333}%`;
 
-                            return (dirs as number[]).map((dir, dIdx) => {
-                              let tgtIdx = -1;
-                              if (dir === 0 && srcRow > 0) tgtIdx = srcIdx - 3;
-                              else if (dir === 1 && srcCol < 2) tgtIdx = srcIdx + 1;
-                              else if (dir === 2 && srcRow < 2) tgtIdx = srcIdx + 3;
-                              else if (dir === 3 && srcCol > 0) tgtIdx = srcIdx - 1;
+                          return (dirs as number[]).map((dir, dIdx) => {
+                            let tgtIdx = -1;
+                            if (dir === 0 && srcRow > 0) tgtIdx = srcIdx - 3;
+                            else if (dir === 1 && srcCol < 2) tgtIdx = srcIdx + 1;
+                            else if (dir === 2 && srcRow < 2) tgtIdx = srcIdx + 3;
+                            else if (dir === 3 && srcCol > 0) tgtIdx = srcIdx - 1;
 
-                              if (tgtIdx < 0) return null;
+                            if (tgtIdx < 0) return null;
 
-                              const tgtRow = Math.floor(tgtIdx / 3);
-                              const tgtCol = tgtIdx % 3;
-                              const x2 = `${(tgtCol + 0.5) * 33.333}%`;
-                              const y2 = `${(tgtRow + 0.5) * 33.333}%`;
+                            const tgtRow = Math.floor(tgtIdx / 3);
+                            const tgtCol = tgtIdx % 3;
+                            const x2 = `${(tgtCol + 0.5) * 33.333}%`;
+                            const y2 = `${(tgtRow + 0.5) * 33.333}%`;
 
-                              return (
-                                <g key={`combat-hl-${srcIdx}-${tgtIdx}-${dir}-${dIdx}`}>
-                                  <line
-                                    x1={x1}
-                                    y1={y1}
-                                    x2={x2}
-                                    y2={y2}
-                                    stroke="url(#lightningPulseGrad)"
-                                    strokeWidth="6"
-                                    strokeLinecap="round"
-                                    filter="url(#lightningGlow)"
-                                    className="animate-pulse"
-                                  />
-                                  <line
-                                    x1={x1}
-                                    y1={y1}
-                                    x2={x2}
-                                    y2={y2}
-                                    stroke="#ffffff"
-                                    strokeWidth="2"
-                                    strokeDasharray="6 3"
-                                    strokeLinecap="round"
-                                    className="animate-ping opacity-80"
-                                  />
-                                </g>
-                              );
-                            });
-                          })}
-                        </svg>
-                      )}
+                            return (
+                              <g key={`combat-hl-${srcIdx}-${tgtIdx}-${dir}-${dIdx}`}>
+                                <line
+                                  x1={x1}
+                                  y1={y1}
+                                  x2={x2}
+                                  y2={y2}
+                                  stroke="url(#lightningPulseGrad)"
+                                  strokeWidth="6"
+                                  strokeLinecap="round"
+                                  filter="url(#lightningGlow)"
+                                  className="animate-pulse"
+                                />
+                                <line
+                                  x1={x1}
+                                  y1={y1}
+                                  x2={x2}
+                                  y2={y2}
+                                  stroke="#ffffff"
+                                  strokeWidth="2"
+                                  strokeDasharray="6 3"
+                                  strokeLinecap="round"
+                                  className="animate-ping opacity-80"
+                                />
+                              </g>
+                            );
+                          });
+                        })}
+                      </svg>
                       {board.map((card, idx) => {
                         if (battleType === 'matgo' && idx === 4) {
                           return (
                             <div
                               key={idx}
-                              className="grid-cell w-[22vw] max-w-[70px] sm:max-w-[80px] md:w-[10vh] md:max-w-[88px] lg:w-[11.5vh] lg:max-w-[98px] aspect-[5/7] flex items-center justify-center relative border border-amber-500 bg-amber-950/20 rounded-lg shadow-md overflow-visible cursor-default"
+                              className="grid-cell w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] flex items-center justify-center relative border border-amber-500 bg-amber-950/20 rounded-lg shadow-md overflow-visible cursor-default"
                             >
                               <div className="absolute inset-0 p-0.5 rounded-lg overflow-hidden flex items-center justify-center bg-[#1e293b]/70 border border-slate-700">
                                 <img
@@ -10847,11 +11159,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             onMouseEnter={() => handleMouseEnterCell(idx)}
                             onMouseLeave={handleMouseLeaveCell}
                             className={cn(
-                              "grid-cell group w-[24vw] max-w-[74px] sm:max-w-[84px] md:w-[10vh] md:max-w-[88px] lg:w-[11.5vh] lg:max-w-[98px] aspect-[5/7] flex items-center justify-center relative transition-all cursor-pointer overflow-visible rounded-sm font-mono shadow-none",
+                              "grid-cell group w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] flex items-center justify-center relative transition-all cursor-pointer overflow-visible rounded-lg font-mono shadow-none",
                               card ? "border border-slate-750/70" : (
                                 idx === goblinTileIndex && !goblinCaptured
                                   ? "border-2 border-yellow-400 bg-yellow-950/40 shadow-[0_0_12px_rgba(234,179,8,0.5)] animate-pulse"
-                                  : "border border-dashed border-slate-700/60 bg-slate-950/40 hover:border-solid hover:border-cyan-400 hover:bg-cyan-950/20"
+                                  : idx === manaSpringTileIndex && !manaSpringClaimed
+                                    ? "border-2 border-cyan-400 bg-cyan-950/40 shadow-[0_0_12px_rgba(34,211,238,0.5)] animate-pulse"
+                                    : "border border-dashed border-slate-700/60 bg-slate-950/40 hover:border-solid hover:border-cyan-400 hover:bg-cyan-950/20"
                               ),
                               !card && boardTraps[idx] === 'purple' && "bg-purple-800/40 border-purple-400 border-2",
                               !card && boardTraps[idx] === 'red' && "bg-red-800/40 border-red-400 border-2",
@@ -10867,6 +11181,29 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                 <span className="text-[8px] font-mono font-black text-yellow-300 bg-black/80 px-1 py-0.5 rounded-sm border border-yellow-400/60 mt-1 whitespace-nowrap">
                                   [🪙 +25 SNS]
                                 </span>
+                              </div>
+                            )}
+                            {/* Item 355: Mana Spring Badge in Grid Cell */}
+                            {!card && idx === manaSpringTileIndex && !manaSpringClaimed && (
+                              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-1 pointer-events-none">
+                                <Sparkles size={22} className="text-cyan-400 animate-spin drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+                                <span className="text-[8px] font-mono font-black text-cyan-300 bg-black/80 px-1 py-0.5 rounded-sm border border-cyan-400/60 mt-1 whitespace-nowrap">
+                                  [💧 +2 STATS]
+                                </span>
+                              </div>
+                            )}
+                            {/* Item 367: Poison Swamp Hazard Badge in Grid Cell */}
+                            {idx === poisonSwampTileIndex && (
+                              <div className="absolute top-1 right-1 z-20 flex items-center gap-1 pointer-events-none">
+                                {poisonSwampCleansed ? (
+                                  <span className="text-[8px] font-mono font-black text-emerald-300 bg-emerald-950/90 border border-emerald-400/70 px-1 py-0.5 rounded-sm shadow-md">
+                                    [🌿 정화 +1]
+                                  </span>
+                                ) : !card ? (
+                                  <span className="text-[8px] font-mono font-black text-rose-300 bg-rose-950/90 border border-rose-400/70 px-1 py-0.5 rounded-sm shadow-md animate-pulse">
+                                    [☣️ 독기 -1]
+                                  </span>
+                                ) : null}
                               </div>
                             )}
                             {/* Elemental Tile Background */}
@@ -11116,6 +11453,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                       </div>
                                     );
                                   })()}
+                                  {/* Item 369: Sleek 12px Corner Element Affinity Pip */}
+                                  {elementalBoard[idx] && getNormalizedElement(card) === elementalBoard[idx] && (
+                                    <div className="absolute top-0.5 left-0.5 z-[65] px-1 py-0.5 bg-black/90 border border-amber-400 text-amber-300 font-mono text-[8.5px] font-black rounded-xs shadow-md pointer-events-none whitespace-nowrap">
+                                      {elementalBoard[idx] === 'fire' && '[🔥+2]'}
+                                      {elementalBoard[idx] === 'water' && '[💧+2]'}
+                                      {elementalBoard[idx] === 'wind' && '[🌪️+2]'}
+                                      {elementalBoard[idx] === 'land' && '[🌱+2]'}
+                                      {elementalBoard[idx] !== 'fire' && elementalBoard[idx] !== 'water' && elementalBoard[idx] !== 'wind' && elementalBoard[idx] !== 'land' && `[+2]`}
+                                    </div>
+                                  )}
                                 </motion.div>
                               ) : (
                                 <div key={`empty-${idx}`} className="opacity-5 font-bold text-sm">{idx}</div>
@@ -11210,22 +11557,23 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         turn === 'player' && !gameOver ? "border-indigo-500/50 z-20" : "border-blue-500/20 z-10"
       )}>
         
-        {/* 내 상세 정보 (이름, ID, 전적, PW, SNS) */}
-        <div className="absolute top-2 left-4 z-20 hidden md:flex flex-col gap-1 bg-indigo-600/95 text-white text-[9px] md:text-[10px] font-semibold uppercase px-2.5 py-1.5 rounded-xl shadow-lg pointer-events-none border border-indigo-500/10">
-          <div className="flex items-center gap-2">
-            <span>{effectiveUser?.displayName || effectiveUser?.name || 'YOU'}</span>
-            <span className="opacity-60 text-[7px] md:text-[9px]">({effectiveUser?.uid || 'GUEST'})</span>
-          </div>
-          {effectiveUser && effectiveUser.uid !== 'guest-id' && (
-            <div className="flex items-center gap-1.5 opacity-90 text-[7px] md:text-[9px] border-t border-white/20 pt-1 mt-0.5">
-              <span>PW: <span className="text-yellow-300">{(calculatedTotalPower || 0).toLocaleString()}</span></span>
-              <span>•</span>
-              <span>SNS: <span className="text-yellow-300">🪙{(sns || 0).toLocaleString()}</span></span>
-              <span>•</span>
-              <span className="text-yellow-200">
-                {userStats?.wins || 0}W {userStats?.losses || 0}L {userStats?.draws || 0}D
-              </span>
-            </div>
+        {/* Item 357: Player 1-Line Slim Monospace Tag (Visible on Mobile & Desktop) */}
+        <div className="absolute top-1 left-2 z-20 flex items-center gap-1.5 bg-indigo-950/90 text-indigo-200 text-[8px] sm:text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-sm shadow-xs pointer-events-none border border-indigo-500/40 backdrop-blur-xs">
+          <span className="text-indigo-400 font-black">[YOU]</span>
+          <span className="truncate max-w-[80px] sm:max-w-[120px] text-white">{effectiveUser?.displayName || effectiveUser?.name || 'YOU'}</span>
+          <span className="text-slate-500">·</span>
+          <span>TP {(calculatedTotalPower || 1000).toLocaleString()}</span>
+          {sns !== undefined && sns > 0 && (
+            <>
+              <span className="text-slate-500">·</span>
+              <span className="text-amber-300">🪙{sns.toLocaleString()}</span>
+            </>
+          )}
+          {userStats && (userStats.wins > 0 || userStats.losses > 0) && (
+            <>
+              <span className="text-slate-500">·</span>
+              <span className="text-slate-300">{userStats.wins}W {userStats.losses}L</span>
+            </>
           )}
         </div>
 
@@ -11258,7 +11606,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 }}
                 whileTap={{ scale: 0.95 }}
                 className={cn(
-                  "w-[15vw] max-w-[54px] sm:max-w-[62px] md:max-w-[82px] lg:max-w-[90px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg",
+                  "w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg",
                   isSelected && "z-50"
                 )}
               >
@@ -11297,172 +11645,185 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           </AnimatePresence>
         </div>
       </div>
+      </div>
 
-      {/* Cortana HUD Scroll Indicator */}
+      {/* Cortana AI Bottom Scroll Section (화면 최하단에 스크롤하여 확인) */}
       {isAutoBattle && !gameOver && (
-        <div className="w-full text-center py-2 shrink-0 z-10 my-1">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/90 border border-indigo-500/30 text-[9px] font-black text-indigo-300 tracking-wider uppercase shadow-md animate-bounce">
-            <span>▼</span>
-            <span>{language === 'ko' ? '코타나 AI 전술 분석창 (스크롤하여 확인)' : 'CORTANA AI TACTICAL HUD (SCROLL DOWN)'}</span>
-          </span>
-        </div>
-      )}
+        <div id="cortana-ai-bottom-section" className="w-full max-w-5xl mx-auto mt-6 pt-4 border-t border-slate-800/80 px-3 sm:px-4 pb-12 flex flex-col items-center shrink-0">
+          <button
+            type="button"
+            onClick={() => setShowCortanaHud(prev => !prev)}
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm bg-slate-900/90 hover:bg-slate-800 border border-indigo-500/30 text-[10px] font-mono font-bold text-indigo-300 tracking-wider uppercase shadow-xs transition-all active:scale-95 cursor-pointer"
+            title={language === 'ko' ? '코타나 AI 전술 HUD 열기/접기' : 'Toggle Cortana AI HUD'}
+          >
+            <Cpu size={13} className="text-indigo-400" />
+            <span>
+              {showCortanaHud
+                ? (language === 'ko' ? '[ ▲ 코타나 AI 전술 HUD 접기 ]' : '[ ▲ COLLAPSE CORTANA AI HUD ]')
+                : (language === 'ko' ? '[ ▼ 코타나 AI 전술 분석창 (스크롤하여 확인) ]' : '[ ▼ CORTANA AI TACTICAL HUD (SCROLL DOWN) ]')}
+            </span>
+          </button>
 
-      {/* AI Tactical Cortana Operator HUD */}
-      {isAutoBattle && !gameOver && (
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-6xl mx-auto px-3 sm:px-4 mt-4 mb-12 shrink-0 relative z-10"
-        >
-          <div className="bg-slate-950/90 border border-indigo-500/40 rounded-3xl p-4 shadow-[0_0_30px_rgba(99,102,241,0.2)] backdrop-blur-md relative overflow-hidden flex flex-col md:flex-row gap-4">
-            
-            {/* Hologram Grid Overlay */}
-            <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)+50%,rgba(0,0,0,0.2)+50%),linear-gradient(90deg,rgba(99,102,241,0.04),rgba(0,0,0,0),rgba(244,63,94,0.04))] bg-[size:100%_4px,6px_100%] z-10 opacity-40 animate-pulse" />
-            
-            {/* Left: CORTANA ACTIVE HOLOGRAM AVATAR */}
-            <div className="flex items-center gap-3 border-b md:border-b-0 md:border-r border-indigo-500/10 pb-3 md:pb-0 md:pr-4 shrink-0 justify-center">
-              <div className="relative w-16 h-16 rounded-full flex items-center justify-center bg-indigo-950/40 border border-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.3)]">
-                {/* Rotating External Ring */}
-                <motion.div 
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                  className="absolute inset-0 border-t-2 border-b-2 border-indigo-400/40 rounded-full scale-110"
-                />
-                <motion.div 
-                  animate={{ rotate: -360 }}
-                  transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-                  className="absolute inset-1 border-r-2 border-l-2 border-indigo-300/30 rounded-full border-dashed scale-105"
-                />
-                {/* Core Avatar Pulsing */}
-                <motion.div 
-                  animate={{ 
-                    scale: [1, 1.12, 1],
-                    boxShadow: ["0 0 10px rgba(99,102,241,0.4)", "0 0 25px rgba(99,102,241,0.7)", "0 0 10px rgba(99,102,241,0.4)"] 
-                  }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                  className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-600 via-indigo-400 to-indigo-900 flex items-center justify-center relative overflow-hidden"
-                >
-                  <Cpu size={20} className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] animate-pulse" />
-                </motion.div>
-                {/* AI Voice Activity Waveforms */}
-                <div className="absolute -bottom-1 flex gap-0.5 items-end justify-center w-full">
-                  <motion.span animate={{ height: [4, 12, 4] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.1 }} className="w-1 bg-indigo-400 rounded-full" />
-                  <motion.span animate={{ height: [6, 16, 6] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.3 }} className="w-1 bg-indigo-300 rounded-full" />
-                  <motion.span animate={{ height: [4, 14, 4] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.2 }} className="w-1 bg-indigo-400 rounded-full" />
-                </div>
-              </div>
-              <div>
-                <h4 className="text-[11px] font-black text-indigo-400 tracking-wider">CORTANA.AI</h4>
-                <p className="text-[7px] text-slate-500 font-bold tracking-widest uppercase">TACTICAL_SYS_ACTIVE</p>
-              </div>
-            </div>
-
-            {/* Middle Left: WIN PROBABILITY */}
-            <div className="flex-1 min-w-[170px] flex flex-col justify-between border-b md:border-b-0 md:border-r border-indigo-500/10 pb-3 md:pb-0 md:pr-4">
-              <div className="flex justify-between items-center text-[9px] font-black text-indigo-300 uppercase tracking-widest mb-1.5">
-                <span className="flex items-center gap-1.5">
-                  <Activity size={10} className="text-indigo-400 animate-pulse" />
-                  {t('operator_hud_win_rate', language)}
-                </span>
-                <span className="font-mono text-indigo-200 bg-indigo-500/10 px-1.5 py-0.5 rounded shadow-sm">{winProbability}%</span>
-              </div>
-              <div className="w-full bg-slate-900 rounded-full h-3 border border-indigo-500/20 overflow-hidden p-[2px] shadow-inner">
-                <motion.div 
-                  initial={{ width: '50%' }}
-                  animate={{ width: `${winProbability}%` }}
-                  className="h-full bg-gradient-to-r from-indigo-500 via-indigo-400 to-indigo-700 rounded-full"
-                  transition={{ type: 'spring', stiffness: 85, damping: 15 }}
-                />
-              </div>
-              <p className="text-[8px] text-slate-500 leading-relaxed font-semibold">
-                {language === 'ko' ? "* 코타나가 콤보 및 배치 데이터를 실시간 검정 중." : "* Cortana checking board placements & combos."}
-              </p>
-            </div>
-
-            {/* Middle Right: THREAT DETECTOR */}
-            <div className="flex-1 min-w-[200px] flex flex-col justify-between border-b md:border-b-0 md:border-r border-indigo-500/10 pb-3 md:pb-0 md:pr-4">
-              <div className="text-[9px] font-black text-rose-400 uppercase tracking-widest flex items-center gap-1.5 mb-1.5">
-                <TargetIcon size={10} className="animate-spin-slow text-rose-400" />
-                {t('operator_hud_threat', language)}
-              </div>
-              {threatTarget ? (
-                <div className="flex items-center gap-2.5 bg-rose-950/20 border border-rose-500/20 rounded-xl p-1.5">
-                  <div className="w-7 h-7 rounded bg-slate-900 flex items-center justify-center font-black text-[10px] text-rose-400 border border-rose-500/20">
-                    {threatTarget.power}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[9px] font-black text-slate-300 truncate">{getFormattedCardName(threatTarget, language)}</div>
-                    <div className="text-[7px] text-slate-500 truncate">
-                      {threatTarget.ability 
-                        ? (typeof threatTarget.ability === 'object' 
-                            ? `Ability: ${language === 'ko' ? (threatTarget.ability.description_ko || threatTarget.ability.type) : (threatTarget.ability.description_en || threatTarget.ability.type)}`
-                            : `Ability: ${threatTarget.ability}`)
-                        : 'Standard Threat Class'}
+          <AnimatePresence>
+            {showCortanaHud && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+                className="w-full mt-3 overflow-hidden"
+              >
+                {/* AI Tactical Cortana Operator HUD */}
+                <div className="bg-slate-950/90 border border-indigo-500/40 rounded-3xl p-4 shadow-[0_0_30px_rgba(99,102,241,0.2)] backdrop-blur-md relative overflow-hidden flex flex-col md:flex-row gap-4">
+                  
+                  {/* Hologram Grid Overlay */}
+                  <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)+50%,rgba(0,0,0,0.2)+50%),linear-gradient(90deg,rgba(99,102,241,0.04),rgba(0,0,0,0),rgba(244,63,94,0.04))] bg-[size:100%_4px,6px_100%] z-10 opacity-40 animate-pulse" />
+                  
+                  {/* Left: CORTANA ACTIVE HOLOGRAM AVATAR */}
+                  <div className="flex items-center gap-3 border-b md:border-b-0 md:border-r border-indigo-500/10 pb-3 md:pb-0 md:pr-4 shrink-0 justify-center">
+                    <div className="relative w-16 h-16 rounded-full flex items-center justify-center bg-indigo-950/40 border border-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.3)]">
+                      {/* Rotating External Ring */}
+                      <motion.div 
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-0 border-t-2 border-b-2 border-indigo-400/40 rounded-full scale-110"
+                      />
+                      <motion.div 
+                        animate={{ rotate: -360 }}
+                        transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-1 border-r-2 border-l-2 border-indigo-300/30 rounded-full border-dashed scale-105"
+                      />
+                      {/* Core Avatar Pulsing */}
+                      <motion.div 
+                        animate={{ 
+                          scale: [1, 1.12, 1],
+                          boxShadow: ["0 0 10px rgba(99,102,241,0.4)", "0 0 25px rgba(99,102,241,0.7)", "0 0 10px rgba(99,102,241,0.4)"] 
+                        }}
+                        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                        className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-600 via-indigo-400 to-indigo-900 flex items-center justify-center relative overflow-hidden"
+                      >
+                        <Cpu size={20} className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] animate-pulse" />
+                      </motion.div>
+                      {/* AI Voice Activity Waveforms */}
+                      <div className="absolute -bottom-1 flex gap-0.5 items-end justify-center w-full">
+                        <motion.span animate={{ height: [4, 12, 4] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.1 }} className="w-1 bg-indigo-400 rounded-full" />
+                        <motion.span animate={{ height: [6, 16, 6] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.3 }} className="w-1 bg-indigo-300 rounded-full" />
+                        <motion.span animate={{ height: [4, 14, 4] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.2 }} className="w-1 bg-indigo-400 rounded-full" />
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="text-[11px] font-black text-indigo-400 tracking-wider">CORTANA.AI</h4>
+                      <p className="text-[7px] text-slate-500 font-bold tracking-widest uppercase">TACTICAL_SYS_ACTIVE</p>
                     </div>
                   </div>
-                  <span className="text-[7px] font-black text-rose-400 animate-pulse bg-rose-950/50 px-1.5 py-0.5 rounded border border-rose-500/30">LOCKED</span>
-                </div>
-              ) : (
-                <div className="flex items-center justify-center h-10 border border-dashed border-slate-800 rounded-xl text-[8px] text-slate-600">
-                  {language === 'ko' ? "위협 감지 대기 중..." : "Waiting for threats..."}
-                </div>
-              )}
-            </div>
 
-            {/* Right: LOGS & INTERACTIVE PROMPT POPUPS */}
-            <div className="flex-[1.3] min-w-[240px] flex flex-col justify-between relative">
-              <div className="text-[9px] font-black text-indigo-300 uppercase tracking-widest flex items-center justify-between mb-1.5">
-                <span className="flex items-center gap-1.5">
-                  <Terminal size={10} className="text-indigo-400" />
-                  {t('operator_hud_log', language)}
-                </span>
-                <span className="text-[7px] opacity-40">STANCE: {adaptiveStrategy.toUpperCase()}</span>
-              </div>
-              <div className="bg-slate-950 p-2 rounded-xl border border-indigo-500/10 min-h-[48px] max-h-[60px] overflow-y-auto space-y-0.5 scrollbar-hide">
-                {operatorLogs.length > 0 ? (
-                  operatorLogs.slice(0, 3).map((log, idx) => (
-                    <div key={idx} className={cn("text-[8.5px] font-semibold leading-normal flex items-start gap-1", idx === 0 ? "text-indigo-300" : "text-slate-600")}>
-                      <span className="text-indigo-500 font-black">{">"}</span>
-                      <span className="break-all">{log}</span>
+                  {/* Middle Left: WIN PROBABILITY */}
+                  <div className="flex-1 min-w-[170px] flex flex-col justify-between border-b md:border-b-0 md:border-r border-indigo-500/10 pb-3 md:pb-0 md:pr-4">
+                    <div className="flex justify-between items-center text-[9px] font-black text-indigo-300 uppercase tracking-widest mb-1.5">
+                      <span className="flex items-center gap-1.5">
+                        <Activity size={10} className="text-indigo-400 animate-pulse" />
+                        {t('operator_hud_win_rate', language)}
+                      </span>
+                      <span className="font-mono text-indigo-200 bg-indigo-500/10 px-1.5 py-0.5 rounded shadow-sm">{winProbability}%</span>
                     </div>
-                  ))
-                ) : (
-                  <div className="text-[8px] text-slate-600 italic">No activity logs.</div>
-                )}
-              </div>
+                    <div className="w-full bg-slate-900 rounded-full h-3 border border-indigo-500/20 overflow-hidden p-[2px] shadow-inner">
+                      <motion.div 
+                        initial={{ width: '50%' }}
+                        animate={{ width: `${winProbability}%` }}
+                        className="h-full bg-gradient-to-r from-indigo-500 via-indigo-400 to-indigo-700 rounded-full"
+                        transition={{ type: 'spring', stiffness: 85, damping: 15 }}
+                      />
+                    </div>
+                    <p className="text-[8px] text-slate-500 leading-relaxed font-semibold">
+                      {language === 'ko' ? "* 코타나가 콤보 및 배치 데이터를 실시간 검정 중." : "* Cortana checking board placements & combos."}
+                    </p>
+                  </div>
 
-              {/* Cortana Voice Question Prompt Container */}
-              <AnimatePresence>
-                {operatorPrompt && (
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.96, y: 8 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.96, y: 8 }}
-                    className="absolute inset-0 bg-slate-950/95 border border-indigo-400/80 rounded-xl p-2 pr-14 md:pr-2 flex flex-col justify-between z-30 shadow-2xl shadow-indigo-500/30"
-                  >
-                    <div className="text-[8.5px] font-black text-indigo-200 animate-pulse flex items-center gap-1.5">
-                      <Terminal size={9} className="text-indigo-400" />
-                      {operatorPrompt.question}
+                  {/* Middle Right: THREAT DETECTOR */}
+                  <div className="flex-1 min-w-[200px] flex flex-col justify-between border-b md:border-b-0 md:border-r border-indigo-500/10 pb-3 md:pb-0 md:pr-4">
+                    <div className="text-[9px] font-black text-rose-400 uppercase tracking-widest flex items-center gap-1.5 mb-1.5">
+                      <TargetIcon size={10} className="animate-spin-slow text-rose-400" />
+                      {t('operator_hud_threat', language)}
                     </div>
-                    <div className="flex gap-1.5 mt-1.5">
-                      {operatorPrompt.options.map((opt, oIdx) => (
-                        <button
-                          key={oIdx}
-                          onClick={() => handleSelectOperatorTactic(opt.strategy || 'balanced')}
-                          className="flex-1 bg-indigo-950 hover:bg-indigo-900 border border-indigo-500/30 hover:border-indigo-400 text-[8px] font-black py-1 px-0.5 rounded-lg text-indigo-300 transition-all text-center tracking-tighter"
+                    {threatTarget ? (
+                      <div className="flex items-center gap-2.5 bg-rose-950/20 border border-rose-500/20 rounded-xl p-1.5">
+                        <div className="w-7 h-7 rounded bg-slate-900 flex items-center justify-center font-black text-[10px] text-rose-400 border border-rose-500/20">
+                          {threatTarget.power}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[9px] font-black text-slate-300 truncate">{getFormattedCardName(threatTarget, language)}</div>
+                          <div className="text-[7px] text-slate-500 truncate">
+                            {threatTarget.ability 
+                              ? (typeof threatTarget.ability === 'object' 
+                                  ? `Ability: ${language === 'ko' ? (threatTarget.ability.description_ko || threatTarget.ability.type) : (threatTarget.ability.description_en || threatTarget.ability.type)}`
+                                  : `Ability: ${threatTarget.ability}`)
+                              : 'Standard Threat Class'}
+                          </div>
+                        </div>
+                        <span className="text-[7px] font-black text-rose-400 animate-pulse bg-rose-950/50 px-1.5 py-0.5 rounded border border-rose-500/30">LOCKED</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center h-10 border border-dashed border-slate-800 rounded-xl text-[8px] text-slate-600">
+                        {language === 'ko' ? "위협 감지 대기 중..." : "Waiting for threats..."}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Right: LOGS & INTERACTIVE PROMPT POPUPS */}
+                  <div className="flex-[1.3] min-w-[240px] flex flex-col justify-between relative">
+                    <div className="text-[9px] font-black text-indigo-300 uppercase tracking-widest flex items-center justify-between mb-1.5">
+                      <span className="flex items-center gap-1.5">
+                        <Terminal size={10} className="text-indigo-400" />
+                        {t('operator_hud_log', language)}
+                      </span>
+                      <span className="text-[7px] opacity-40">STANCE: {adaptiveStrategy.toUpperCase()}</span>
+                    </div>
+                    <div className="bg-slate-950 p-2 rounded-xl border border-indigo-500/10 min-h-[48px] max-h-[60px] overflow-y-auto space-y-0.5 scrollbar-hide">
+                      {operatorLogs.length > 0 ? (
+                        operatorLogs.slice(0, 3).map((log, idx) => (
+                          <div key={idx} className={cn("text-[8.5px] font-semibold leading-normal flex items-start gap-1", idx === 0 ? "text-indigo-300" : "text-slate-600")}>
+                            <span className="text-indigo-500 font-black">{">"}</span>
+                            <span className="break-all">{log}</span>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-[8px] text-slate-600 italic">No activity logs.</div>
+                      )}
+                    </div>
+
+                    {/* Cortana Voice Question Prompt Container */}
+                    <AnimatePresence>
+                      {operatorPrompt && (
+                        <motion.div 
+                          initial={{ opacity: 0, scale: 0.96, y: 8 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.96, y: 8 }}
+                          className="absolute inset-0 bg-slate-950/95 border border-indigo-400/80 rounded-xl p-2 pr-14 md:pr-2 flex flex-col justify-between z-30 shadow-2xl shadow-indigo-500/30"
                         >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-            
-          </div>
-        </motion.div>
+                          <div className="text-[8.5px] font-black text-indigo-200 animate-pulse flex items-center gap-1.5">
+                            <Terminal size={9} className="text-indigo-400" />
+                            {operatorPrompt.question}
+                          </div>
+                          <div className="flex gap-1.5 mt-1.5">
+                            {operatorPrompt.options.map((opt, oIdx) => (
+                              <button
+                                key={oIdx}
+                                onClick={() => handleSelectOperatorTactic(opt.strategy || 'balanced')}
+                                className="flex-1 bg-indigo-950 hover:bg-indigo-900 border border-indigo-500/30 hover:border-indigo-400 text-[8px] font-black py-1 px-0.5 rounded-lg text-indigo-300 transition-all text-center tracking-tighter"
+                              >
+                                {opt.label}
+                              </button>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       )}
 
       <AnimatePresence>
@@ -11576,6 +11937,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 isSpeedAttackBonus={isSpeedAttackWin}
                 isUnderdogBonus={underdogBountyClaimed}
                 isGoblinBonus={goblinCaptured}
+                isManaSpringBonus={manaSpringClaimed}
+                isElementalComboBonus={hasTriggeredElementalCombo}
+                isIroncladBonus={isIroncladWin}
                 onShareToCommunity={() => setShowBattleShareTemplate(true)}
               />
 

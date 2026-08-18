@@ -190,9 +190,21 @@ export const findBestMove = (
       // 2. Check flips (including combos and special abilities, 1-Ply cascade prediction)
       const afterMoveBoard = checkFlips(virtualBoard, bIdx, playerMultiplier, elementalBoard, isSuddenDeath);
       let flippedCount = 0;
+      let keyTargetSnipeBonus = 0;
       afterMoveBoard.forEach((c, i) => {
         if (board[i] && board[i]!.owner !== side && c!.owner === side) {
           flippedCount++;
+          const flippedCard = board[i]!;
+          // Item 358: Sniper Priority for Boss / High Power / Support Healer / Legendary cards
+          const isHighValue = (flippedCard.power && flippedCard.power >= 150) ||
+            flippedCard.rarity === 'legendary' ||
+            flippedCard.rarity === 'epic' ||
+            flippedCard.ability?.type === 'POWER_BOOST' ||
+            flippedCard.ability?.type === 'REINFORCE' ||
+            flippedCard.ability?.type === 'TIME_WARP';
+          if (isHighValue) {
+            keyTargetSnipeBonus += 350;
+          }
         }
       });
 
@@ -220,9 +232,34 @@ export const findBestMove = (
       const isCorner = (row === 0 || row === 2) && (col === 0 || col === 2);
       const isCenter = row === 1 && col === 1;
 
-      // Cascade Multiplier: 2.0x weight for multi-tile flips
+      // Cascade Multiplier: 2.0x weight for multi-tile flips + Item 358 Sniper bonus
       const cascadeMultiplier = flippedCount >= 2 ? 2.0 : 1.0;
-      let score = (flippedCount * 450 * cascadeMultiplier);
+      let score = (flippedCount * 450 * cascadeMultiplier) + keyTargetSnipeBonus;
+      let moveReason = strategy as string;
+
+      // Item 366: Buff-Denial & Intercept Smart AI (+320 pts for intercepting neutral buff / bonus tiles)
+      const isBuffOrPowerTile = bIdx === 4 || elementalBoard[bIdx] !== undefined;
+      if (isBuffOrPowerTile && flippedCount === 0) {
+        score += 320;
+        moveReason = 'Buff Deny (적 버프 선점 차단)';
+      }
+
+      // Item 362: Tempo Stalling Placement AI (Bait enemy aces by playing low-power/safe cards in corners)
+      const isLowPowerCard = (card.power || 0) <= 60 || (!card.rarity || card.rarity === 'common');
+      if (isLowPowerCard && isCorner && flippedCount === 0 && possibleBoardIndices.length >= 5) {
+        score += 260;
+        moveReason = 'Tempo Stall (적 필살기 유도 대기)';
+      }
+
+      // Item 370: 2-Ply Bait & Trap Placement AI (Deploy bait card to set up decisive next-turn capture)
+      if (flippedCount === 0 && (row === 1 || col === 1) && !isCenter) {
+        // Edge slot baiting enemy into center
+        const centerCard = board[4];
+        if (!centerCard) {
+          score += 280;
+          moveReason = 'Bait Trap (적 에이스 유인 트랩)';
+        }
+      }
 
       if (strategy === 'random') {
         score = Math.random() * 1000; // Randomly weight moves
@@ -257,7 +294,7 @@ export const findBestMove = (
          score -= (maxRisk * 30);
       }
 
-      moves.push({ cardIdx: cIdx, boardIdx: bIdx, score, reason: strategy });
+      moves.push({ cardIdx: cIdx, boardIdx: bIdx, score, reason: moveReason });
     });
   });
 
