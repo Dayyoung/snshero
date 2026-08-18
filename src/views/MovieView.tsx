@@ -23,6 +23,7 @@ import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
 import { PageHeader } from '../components/PageHeader';
 import { getSeasonItem, setSeasonItem } from '../lib/webtoonProgress';
+import { MOVIE_EPISODES } from '../content/movieEpisodeMapping';
 
 declare global {
   interface Window {
@@ -44,8 +45,8 @@ const TOTAL_EPISODES = 40;
 const YOUTUBE_PLAYLIST_ID = 'PLOLtCtApKgp8';
 const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/playlist?list=PLOLtCtApKgp8';
 
-// 기본 알려진 공개 영상 매핑 (1화, 2화)
-const INITIAL_RELEASED_EPISODES = [1, 2];
+// 기본 공개 완료 에피소드 기본값 (1화 ~ 5화)
+const DEFAULT_RELEASED_COUNT = 5;
 
 export const MovieView: React.FC<MovieViewProps> = ({
   language,
@@ -62,13 +63,14 @@ export const MovieView: React.FC<MovieViewProps> = ({
     return isNaN(parsed) || parsed < 1 || parsed > TOTAL_EPISODES ? 1 : parsed;
   });
 
-  // 공개된 에피소드 개수 (최초 2화부터 시작하여 유동 감지)
+  // 공개된 에피소드 개수 (최소 5화부터 시작하여 유동 감지)
   const [releasedCount, setReleasedCount] = useState<number>(() => {
     const saved = getSeasonItem('hero_movie_released_count', currentSeason);
-    const parsed = saved ? parseInt(saved, 10) : 2;
-    return isNaN(parsed) || parsed < 2 ? 2 : parsed;
+    const parsed = saved ? parseInt(saved, 10) : DEFAULT_RELEASED_COUNT;
+    return isNaN(parsed) || parsed < DEFAULT_RELEASED_COUNT ? DEFAULT_RELEASED_COUNT : parsed;
   });
 
+  const [playlistVideoIds, setPlaylistVideoIds] = useState<string[]>([]);
   const [isCheckingPlaylist, setIsCheckingPlaylist] = useState<boolean>(false);
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
@@ -77,6 +79,26 @@ export const MovieView: React.FC<MovieViewProps> = ({
   const playerContainerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<any>(null);
   const [isPlayerReady, setIsPlayerReady] = useState<boolean>(false);
+
+  // 에피소드 번호별 정확한 YouTube Video ID 도출
+  const getVideoId = (epNum: number): string | undefined => {
+    return playlistVideoIds[epNum - 1] || MOVIE_EPISODES[epNum]?.videoId;
+  };
+
+  // 에피소드 제목 헬퍼
+  const getEpisodeTitle = (epNum: number): { main: string; sub: string } => {
+    const meta = MOVIE_EPISODES[epNum];
+    if (!meta) {
+      return { main: `제 ${epNum}화`, sub: `Episode ${epNum}` };
+    }
+    if (language === 'ko') {
+      return { main: `제${epNum}화 ${meta.titleKo}`, sub: meta.titleJa ? `${meta.titleJa} (${meta.titleEn})` : meta.titleEn };
+    } else if (language === 'ja') {
+      return { main: `第${epNum}話 ${meta.titleJa || meta.titleKo}`, sub: meta.titleKo };
+    } else {
+      return { main: `Ep.${epNum} ${meta.titleEn}`, sub: meta.titleKo };
+    }
+  };
 
   // 최초화면 진입 시 유튜브 플레이리스트 최신 목록 동적 확인
   useEffect(() => {
@@ -97,10 +119,11 @@ export const MovieView: React.FC<MovieViewProps> = ({
 
         if (res.ok) {
           const text = await res.text();
-          // <entry> 매칭하여 비디오 개수 파악
-          const entries = text.match(/<entry>/g);
-          if (entries && entries.length > 0 && isMounted) {
-            const fetchedCount = Math.max(entries.length, 2);
+          // <yt:videoId> 매칭하여 비디오 ID 목록 파악
+          const videoIdMatches = Array.from(text.matchAll(/<yt:videoId>([^<]+)<\/yt:videoId>/g)).map(m => m[1]);
+          if (videoIdMatches.length > 0 && isMounted) {
+            setPlaylistVideoIds(videoIdMatches);
+            const fetchedCount = Math.max(videoIdMatches.length, DEFAULT_RELEASED_COUNT);
             setReleasedCount(fetchedCount);
             setSeasonItem('hero_movie_released_count', fetchedCount.toString(), currentSeason);
           }
@@ -147,11 +170,16 @@ export const MovieView: React.FC<MovieViewProps> = ({
                 if (!isMounted) return;
                 setIsPlayerReady(true);
                 try {
-                  event.target.cuePlaylist({
-                    listType: 'playlist',
-                    list: YOUTUBE_PLAYLIST_ID,
-                    index: currentEpisodeNum,
-                  });
+                  const targetVideoId = getVideoId(currentEpisodeNum);
+                  if (targetVideoId && typeof event.target.cueVideoById === 'function') {
+                    event.target.cueVideoById(targetVideoId);
+                  } else {
+                    event.target.cuePlaylist({
+                      listType: 'playlist',
+                      list: YOUTUBE_PLAYLIST_ID,
+                      index: currentEpisodeNum - 1,
+                    });
+                  }
                 } catch (err) {
                   console.warn('Cue playlist error:', err);
                 }
@@ -183,20 +211,23 @@ export const MovieView: React.FC<MovieViewProps> = ({
   useEffect(() => {
     if (playerRef.current && isPlayerReady) {
       try {
-        if (typeof playerRef.current.playVideoAt === 'function') {
-          playerRef.current.playVideoAt(currentEpisodeNum);
+        const targetVideoId = getVideoId(currentEpisodeNum);
+        if (targetVideoId && typeof playerRef.current.loadVideoById === 'function') {
+          playerRef.current.loadVideoById(targetVideoId);
+        } else if (typeof playerRef.current.playVideoAt === 'function') {
+          playerRef.current.playVideoAt(currentEpisodeNum - 1);
         } else if (typeof playerRef.current.loadPlaylist === 'function') {
           playerRef.current.loadPlaylist({
             listType: 'playlist',
             list: YOUTUBE_PLAYLIST_ID,
-            index: currentEpisodeNum,
+            index: currentEpisodeNum - 1,
           });
         }
       } catch (err) {
         console.warn('Failed to switch playlist episode via YT API:', err);
       }
     }
-  }, [currentEpisodeNum, isPlayerReady]);
+  }, [currentEpisodeNum, isPlayerReady, playlistVideoIds]);
 
   // Fullscreen event listener
   useEffect(() => {
@@ -290,8 +321,11 @@ export const MovieView: React.FC<MovieViewProps> = ({
   const currentRewardClaimed = Boolean(claimedRewards[currentEpisodeNum]);
   const isCurrentReleased = currentEpisodeNum <= releasedCount;
 
-  // 에피소드 번호 기반 YouTube 임베드 URL (index=1이 1화)
-  const embedUrl = `https://www.youtube-nocookie.com/embed?listType=playlist&list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum}&enablejsapi=1&rel=0`;
+  // 에피소드 번호 기반 YouTube 임베드 URL (정확한 Video ID 우선, 없을 경우 1-based index 플레이리스트 폴백)
+  const currentVideoId = getVideoId(currentEpisodeNum);
+  const embedUrl = currentVideoId
+    ? `https://www.youtube-nocookie.com/embed/${currentVideoId}?enablejsapi=1&rel=0`
+    : `https://www.youtube-nocookie.com/embed?listType=playlist&list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum}&enablejsapi=1&rel=0`;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#fdfcfc] text-[#201d1d] font-sans p-3 sm:p-4 md:p-8 pb-32 max-w-5xl mx-auto w-full overflow-x-hidden">
@@ -399,9 +433,12 @@ export const MovieView: React.FC<MovieViewProps> = ({
               </span>
             )}
             <span className="text-xs font-bold text-[#201d1d] font-mono">
-              {currentEpisodeNum === 1 && '제1화 吹雪に誓う二つの契り (Two Vows Beneath the Blizzard)'}
-              {currentEpisodeNum === 2 && '제2화 七人の追跡者の誓い (Oath of the Seven Pursuers)'}
-              {currentEpisodeNum > 2 && `제${currentEpisodeNum}화 ${isCurrentReleased ? '극장판 오피셜 영상' : '공개 예정 에피소드'}`}
+              {getEpisodeTitle(currentEpisodeNum).main}
+              {getEpisodeTitle(currentEpisodeNum).sub && (
+                <span className="text-[11px] text-stone-500 ml-1.5 font-normal">
+                  ({getEpisodeTitle(currentEpisodeNum).sub})
+                </span>
+              )}
             </span>
           </div>
 
@@ -608,15 +645,20 @@ export const MovieView: React.FC<MovieViewProps> = ({
                           : 'border-neutral-200 bg-neutral-100 text-neutral-400 hover:bg-neutral-150'
                       )}
                     >
-                      <div className="flex items-center gap-2.5">
-                        <span className="text-xs font-bold">
+                      <div className="flex items-center gap-2.5 overflow-hidden">
+                        <span className="text-xs font-bold shrink-0">
                           EP.{String(ep).padStart(2, '0')}
                         </span>
-                        <span className="text-xs">
-                          {ep === 1 && '吹雪に誓う二つの契り'}
-                          {ep === 2 && '七人の追跡者の誓い'}
-                          {ep > 2 && (isReleased ? `극장판 에피소드 ${ep}` : `공개 예정 에피소드`)}
-                        </span>
+                        <div className="flex flex-col truncate">
+                          <span className="text-xs truncate font-medium">
+                            {getEpisodeTitle(ep).main}
+                          </span>
+                          {getEpisodeTitle(ep).sub && (
+                            <span className="text-[10px] text-stone-400 truncate font-normal">
+                              {getEpisodeTitle(ep).sub}
+                            </span>
+                          )}
+                        </div>
                       </div>
 
                       <div className="flex items-center gap-2 shrink-0">
