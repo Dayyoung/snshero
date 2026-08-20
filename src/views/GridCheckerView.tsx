@@ -59,9 +59,9 @@ const PRESET_CSS_TEMPLATES = [
     areas: ''
   },
   {
-    name: '10x11 Card Sheet (110 Cards)',
+    name: '10x10 Card Sheet (100 Cards)',
     cols: 'repeat(10, 1fr)',
-    rows: 'repeat(11, 1fr)',
+    rows: 'repeat(10, 1fr)',
     gap: '4px',
     areas: ''
   },
@@ -440,7 +440,7 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
   };
 
   // ══════════════════════════════════════════════════════════════════════════════
-  // TAB 2: 110종 카드 썸네일 검수 상태
+  // TAB 2: 100종 카드 10x10 썸네일 검수 상태
   // ══════════════════════════════════════════════════════════════════════════════
   const [searchQuery, setSearchQuery] = useState('');
   const [thumbnailSize, setThumbnailSize] = useState<64 | 96 | 128>(96);
@@ -452,7 +452,7 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
   const promptValidation = useMemo(() => validateCharacterArtPrompts(), []);
 
   const filteredCardIds = useMemo(() => {
-    const allIds = Array.from({ length: 110 }, (_, i) => i + 1);
+    const allIds = Array.from({ length: 100 }, (_, i) => i + 1);
     return allIds.filter((id) => {
       const card = CARD_DATABASE[id];
       if (!card) return false;
@@ -584,7 +584,7 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
             }`}
           >
             <Layers size={14} />
-            <span>{isKo ? '[2] 110종 카드 10x11 DB 검수' : '[2] 110 Cards 10x11 DB'}</span>
+            <span>{isKo ? '[2] 100종 카드 10x10 DB 검수' : '[2] 100 Cards 10x10 DB'}</span>
           </button>
           <button
             onClick={() => setActiveTab('css-validator')}
@@ -1259,7 +1259,7 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
         )}
 
         {/* ══════════════════════════════════════════════════════════════════════════════
-            TAB 2: 110 CARDS 10x11 THUMBNAIL & SILHOUETTE INSPECTION
+            TAB 2: 100 CARDS 10x10 THUMBNAIL & SILHOUETTE INSPECTION
         ══════════════════════════════════════════════════════════════════════════════ */}
         {activeTab === 'cards' && (
           <div className="space-y-4">
@@ -1271,15 +1271,15 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
                 </div>
                 <div>
                   <div className="text-xs font-bold flex items-center gap-2">
-                    <span>{isKo ? '110종 카드 10x11 그리드 무결성 상태:' : '110 Cards Grid Status:'}</span>
+                    <span>{isKo ? '100종 카드 10x10 그리드 무결성 상태:' : '100 Cards 10x10 Grid Status:'}</span>
                     <span className="text-emerald-700 font-black">
                       {promptValidation.valid ? '100% VALID' : 'ACTION REQUIRED'}
                     </span>
                   </div>
                   <div className="text-[11px] text-[#201d1d]/70">
                     {isKo 
-                      ? `총 110개 카드 중 ${filteredCardIds.length}개 표시 중 (누락 0건, 규격 10x11)` 
-                      : `Displaying ${filteredCardIds.length} of 110 cards (0 missing, 10x11 format)`}
+                      ? `총 100개 카드 중 ${filteredCardIds.length}개 표시 중 (누락 0건, 규격 10x10)` 
+                      : `Displaying ${filteredCardIds.length} of 100 cards (0 missing, 10x10 format)`}
                   </div>
                 </div>
               </div>
@@ -1380,7 +1380,7 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
               )}
             </div>
 
-            {/* 10x11 Grid Matrix View */}
+            {/* 10x10 Grid Matrix View */}
             <div className="p-4 bg-white border border-[rgba(15,0,0,0.12)]">
               <div 
                 className="grid gap-2 justify-center"
