@@ -2,8 +2,8 @@
 # SNS히어로 에이전트 지침서 (AGENTS.md)
 
 ## 스프레드시트 개선 작업 진행 상태
-- **마지막 수정 완료 항목 ID**: `[대용량 계정 데이터 애니메이션 QR 분할 백업 & 연속 카메라 스캔 조합 복원 시스템 구현] DATA TOO LONG 오류 원천 해결: 280자 최적 청크 분할, 자동 롤링 애니메이션 QR 송출 및 0.3s~1.2s 속도/재생 컨트롤, 수신측 카메라 연속 조각 캡처 & 100% 자동 결합 복원 완료`
-- **최종 업데이트 일시**: 2026-08-20 10:25 (KST)
+- **마지막 수정 완료 항목 ID**: `[신규 3D 복셀 미니게임 8종 100% 통합 연동 완료] VoxelDartsBar, VoxelWingsuitSkydiving, VoxelBadmintonBlitz, VoxelMagnetHole, VoxelMotocrossStunt, VoxelSkateboardStreet, VoxelSnowboardSlalom, VoxelKarateBreak 8종 미니게임 PlayGameView 완벽 마운트, 1:1 히어로 카드(No.87~94) 매칭, 데일리 미션 및 렌더링 파이프라인 무결성 검증 완료`
+- **최종 업데이트 일시**: 2026-08-20 19:30 (KST)
 
 ## 프로젝트 개요
 - **이름**: SNS히어로 (SNSHero Revolution)
@@ -173,3 +173,4 @@
 - `hero_mastery_record_v1`: 개별 영웅별 승리 횟수, 총 출전 횟수, 골든 스킨 및 사령관 보이스 해금 상태 저장
 - `hero_secret_stamps_v1`: 8종 비밀 업적 스탬프 달성 기록 저장
 - `hero_secret_stamps_claimed`: 비밀 업적 보상 수령 여부 매핑 저장
+- `hero_last_ai_battle_summary`: 직전 AI 전투 상세 사후 분석 데이터 (총 가한/받은 데미지, 카드별 기여도/MVP, 전술 보너스, 보상) 저장

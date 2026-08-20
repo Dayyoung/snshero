@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Trophy, Zap, Sparkles, ArrowUpRight, Coins, ChevronDown, ChevronUp, Share2, Check, Layers, Shield } from 'lucide-react';
+import { Trophy, Zap, Sparkles, ArrowUpRight, Coins, ChevronDown, ChevronUp, Share2, Check, Layers, Shield, Flame, BarChart3 } from 'lucide-react';
 import { CardData } from '../types';
 import { getCardSpriteStyle } from '../lib/utils';
 
@@ -18,6 +18,7 @@ export interface BattleResultPanelProps {
   result: 'win' | 'loss' | 'draw';
   snsEarned: number;
   totalDamageDealt: number;
+  totalDamageReceived?: number;
   leveledUpCards: LeveledUpCardInfo[];
   allDeckCardsProgress?: LeveledUpCardInfo[];
   usedCards?: CardData[];
@@ -31,12 +32,14 @@ export interface BattleResultPanelProps {
   isElementalComboBonus?: boolean;
   isIroncladBonus?: boolean;
   onShareToCommunity?: () => void;
+  onOpenDetailedSummary?: () => void;
 }
 
 export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
   result,
   snsEarned,
   totalDamageDealt,
+  totalDamageReceived = 0,
   leveledUpCards,
   allDeckCardsProgress = [],
   usedCards = [],
@@ -48,11 +51,16 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
   isManaSpringBonus = false,
   isElementalComboBonus = false,
   isIroncladBonus = false,
-  onShareToCommunity
+  onShareToCommunity,
+  onOpenDetailedSummary
 }) => {
   const isKo = language === 'ko';
   const [showRewardsDetail, setShowRewardsDetail] = useState(false);
   const [shared, setShared] = useState(false);
+
+  const totalExchange = Math.max(1, totalDamageDealt + totalDamageReceived);
+  const playerDmgPercent = Math.round((totalDamageDealt / totalExchange) * 100);
+  const aiDmgPercent = 100 - playerDmgPercent;
 
   const handleShareClick = () => {
     if (onShareToCommunity) {
@@ -149,42 +157,66 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
         </div>
       )}
 
-      {/* Metrics Row: 1. SNS Points Gained  |  2. Total Damage Dealt */}
-      <div className="grid grid-cols-2 gap-3">
-        {/* SNS Points Gained */}
-        <div className="bg-gradient-to-br from-amber-500/10 via-amber-950/20 to-slate-900 border border-amber-500/30 rounded-xl p-3 flex flex-col justify-between">
-          <div className="flex items-center justify-between text-[10px] font-bold text-amber-400/80 uppercase">
-            <span>{isKo ? '획득 보상 (Rewards)' : 'Rewards Earned'}</span>
-            <Coins size={14} className="text-amber-400" />
+      {/* Metrics Row: 1. SNS Points Gained  |  2. Total Damage Dealt & Received */}
+      <div className="space-y-2">
+        <div className="grid grid-cols-2 gap-2.5">
+          {/* SNS Points Gained */}
+          <div className="bg-gradient-to-br from-amber-500/10 via-amber-950/20 to-slate-900 border border-amber-500/30 rounded-xl p-3 flex flex-col justify-between">
+            <div className="flex items-center justify-between text-[10px] font-bold text-amber-400/80 uppercase">
+              <span>{isKo ? '획득 보상 (Rewards)' : 'Rewards Earned'}</span>
+              <Coins size={14} className="text-amber-400" />
+            </div>
+            <div className="mt-1 flex items-baseline gap-1">
+              <span className="text-2xl font-black text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.3)]">
+                +{snsEarned.toLocaleString()}
+              </span>
+              <span className="text-[10px] font-extrabold text-amber-300/80">SNS</span>
+            </div>
+            <p className="text-[9px] text-slate-400 mt-1 font-sans truncate">
+              {result === 'win' 
+                ? (isKo ? '승리 보상 지급 완료' : 'Victory reward added') 
+                : (isKo ? '전투참여 보상' : 'Participation reward')}
+            </p>
           </div>
-          <div className="mt-1 flex items-baseline gap-1">
-            <span className="text-2xl font-black text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.3)]">
-              +{snsEarned.toLocaleString()}
-            </span>
-            <span className="text-[10px] font-extrabold text-amber-300/80">SNS</span>
-          </div>
-          <p className="text-[9px] text-slate-400 mt-1 font-sans">
-            {result === 'win' 
-              ? (isKo ? '승리 보상 지급 완료' : 'Victory reward added') 
-              : (isKo ? '전투참여 보상' : 'Participation reward')}
-          </p>
-        </div>
 
-        {/* Total Damage Dealt */}
-        <div className="bg-gradient-to-br from-indigo-500/10 via-indigo-950/20 to-slate-900 border border-indigo-500/30 rounded-xl p-3 flex flex-col justify-between">
-          <div className="flex items-center justify-between text-[10px] font-bold text-indigo-400/80 uppercase">
-            <span>{isKo ? '총 입힌 데미지' : 'Total Damage Dealt'}</span>
-            <Zap size={14} className="text-indigo-400 animate-bounce" />
+          {/* Combat Damage Exchange (Dealt vs Received) */}
+          <div className="bg-gradient-to-br from-indigo-500/10 via-slate-950 to-slate-900 border border-indigo-500/30 rounded-xl p-3 flex flex-col justify-between">
+            <div className="flex items-center justify-between text-[10px] font-bold text-indigo-400/80 uppercase">
+              <span>{isKo ? '전투 공방 데미지' : 'Damage Exchange'}</span>
+              <Zap size={14} className="text-indigo-400 animate-pulse" />
+            </div>
+            <div className="mt-1 flex items-baseline justify-between">
+              <div>
+                <span className="text-lg font-black text-indigo-300">
+                  {totalDamageDealt.toLocaleString()}
+                </span>
+                <span className="text-[9px] font-extrabold text-indigo-400 ml-0.5">DMG</span>
+              </div>
+              <div className="text-right">
+                <span className="text-sm font-black text-rose-400">
+                  -{totalDamageReceived.toLocaleString()}
+                </span>
+                <span className="text-[8px] font-extrabold text-rose-500 ml-0.5">DMG</span>
+              </div>
+            </div>
+            {/* Mini distribution bar */}
+            <div className="mt-1.5 space-y-1">
+              <div className="h-1.5 w-full bg-slate-950 rounded-full overflow-hidden flex border border-slate-800">
+                <div 
+                  className="h-full bg-indigo-500 rounded-l-full" 
+                  style={{ width: `${playerDmgPercent}%` }}
+                />
+                <div 
+                  className="h-full bg-rose-500 rounded-r-full" 
+                  style={{ width: `${aiDmgPercent}%` }}
+                />
+              </div>
+              <div className="flex justify-between text-[8px] text-slate-400">
+                <span>{isKo ? '가한 데미지' : 'Dealt'} {playerDmgPercent}%</span>
+                <span>{isKo ? '받은 피해' : 'Taken'} {aiDmgPercent}%</span>
+              </div>
+            </div>
           </div>
-          <div className="mt-1 flex items-baseline gap-1">
-            <span className="text-2xl font-black text-indigo-300 drop-shadow-[0_0_10px_rgba(129,140,248,0.3)]">
-              {totalDamageDealt.toLocaleString()}
-            </span>
-            <span className="text-[10px] font-extrabold text-indigo-400">DMG</span>
-          </div>
-          <p className="text-[9px] text-slate-400 mt-1 font-sans">
-            {isKo ? '카드 파워 및 타격 합산' : 'Total attack damage dealt'}
-          </p>
         </div>
       </div>
 
@@ -225,15 +257,26 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
         </div>
       )}
 
-      {/* Share to Community Feed Button */}
-      <div className="pt-0.5">
+      {/* Action Buttons: Deep Battle Summary & Share to Community */}
+      <div className="pt-0.5 space-y-1.5">
+        {onOpenDetailedSummary && (
+          <button
+            type="button"
+            onClick={onOpenDetailedSummary}
+            className="w-full py-2 px-3 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer border shadow-sm active:scale-95 bg-indigo-600 hover:bg-indigo-500 border-indigo-400 text-white"
+          >
+            <BarChart3 size={14} />
+            <span>{isKo ? '📊 전투 상세 사후 분석 (Post-Battle Summary)' : '📊 Post-Battle Deep Summary'}</span>
+          </button>
+        )}
+
         <button
           type="button"
           onClick={handleShareClick}
-          className={`w-full py-2.5 px-3 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer border shadow-sm active:scale-95 ${
+          className={`w-full py-2 px-3 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer border shadow-sm active:scale-95 ${
             shared 
               ? 'bg-emerald-900/60 border-emerald-500/50 text-emerald-300' 
-              : 'bg-indigo-600/30 hover:bg-indigo-600/50 border-indigo-500/40 text-indigo-200'
+              : 'bg-indigo-950/40 hover:bg-indigo-900/50 border-indigo-500/30 text-indigo-200'
           }`}
         >
           {shared ? (

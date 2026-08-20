@@ -4,6 +4,94 @@
 
 ---
 
+## [2026-08-20 19:30 KST / 10:30 UTC] [신규 3D 복셀 미니게임 8종 100% 통합 연동 & 1:1 히어로 카드(No.87~94) 전담 매칭 완료]
+- **작업 내용**:
+  1. **신규 3D 복셀 미니게임 8종 전담 개발 및 `PlayGameView.tsx` 통합 마운트**:
+     - **No.87 게임: 3D 복셀 다트 바 501 챔피언십 (`VoxelDartsBarGame.tsx`)**: No.87 바르가스트 전담. 3D 다트보드, 501 카운트다운 룰, 불스아이(Bullseye) 및 더블/트리플 링 판정, 피니시 체크아웃 가이드.
+     - **No.88 게임: 3D 복셀 윙슈트 스카이다이빙 (`VoxelWingsuitSkydivingGame.tsx`)**: No.88 우르삭 전담. 3D 협곡 링 통과 글라이딩, 다이브 가속 & 감속 플레어, 낙하산 전개 퍼펙트 터치다운.
+     - **No.89 게임: 3D 복셀 배드민턴 블리츠 (`VoxelBadmintonBlitzGame.tsx`)**: No.89 메두사 고르고 전담. 셔틀콕 물리 궤적, 풋워크 무빙, 점프 스매시, 헤어핀 드롭 샷, 11점 세트 AI 대전.
+     - **No.90 게임: 3D 복셀 마그넷 홀: 블랙홀 삼키기 (`VoxelMagnetHoleGame.tsx`)**: No.90 페가수스 전담. 소형 복셀 프롭부터 흡입하여 직경 확장, 거대 빌딩 파괴 및 10m 자석 진공 청소 부스터.
+     - **No.91 게임: 3D 복셀 모터크로스 스턴트 (`VoxelMotocrossStuntGame.tsx`)**: No.91 스파이더봇 전담. 오프로드 힐 & 점프대, 360 백플립/슈퍼맨 묘기, 착지 각도 물리 엔진 및 2000m 트랙 완주.
+     - **No.92 게임: 3D 복셀 스케이트보드 스트리트 (`VoxelSkateboardStreetGame.tsx`)**: No.92 크로노스 전담. 올리 점프, 50-50 레일 그라인드 콤보 배수, 360 킥플립 에어 트릭, 다운타운 장애물 파쿠르.
+     - **No.93 게임: 3D 복셀 스노보드 슬라롬 (`VoxelSnowboardSlalomGame.tsx`)**: No.93 센티넬 전담. 설원 카빙 엣징, 레드/블루 슬라롬 게이트 통과 콤보, 스노우 램프 점프 및 인디 그랩 에어 트릭.
+     - **No.94 게임: 3D 복셀 가라데 격파 (`VoxelKarateBreakGame.tsx`)**: No.94 디바스터 전담. 기력(Ki) 포커스 타이밍 게이지, 10단 송판, 화강암, 흑요석 및 전설의 운석 블록 산산조각 파괴 이펙트.
+  2. **모드 선택 및 데일리 미션 시스템 전면 연동**:
+     - `modes` 배열에 87~94번 게임 1:1 히어로 카드 매칭(`characterId: 87 ~ 94`), 테마 색상, 3D 복셀 배지 및 상세 가이드 등록.
+     - `getDailyMissionIds()`의 `allIds` 배열에 신규 8종 게임 ID 등록 완료.
+     - `gameState` 조건부 렌더링 블록에 8종 컴포넌트 마운트 및 `handleMinigameReward` 보상 파이프라인 연결 완료.
+  3. **코드 검증 및 빌드**:
+     - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+     - `compile_applet`: 프로덕션 빌드 성공.
+- **상태**: 구현 및 검증 완료.
+
+---
+
+## [2026-08-20 18:45 KST / 09:45 UTC] [신규 3D 복셀 미니게임 7종 100% 통합 연동 & 1:1 히어로 카드(No.80~86) 전담 매칭 완료]
+- **작업 내용**:
+  1. **신규 3D 복셀 미니게임 7종 컴포넌트 `PlayGameView.tsx` 통합 마운트**:
+     - **No.80 게임: 3D 복셀 베이스볼 홈런 더비 (`VoxelBaseballDerbyGame.tsx`)**: No.80 듀린 전담. 투수 투구 궤적 타이밍 퍼펙트 스윙 장외 홈런 & 연속 타격 콤보.
+     - **No.81 게임: 3D 복셀 마이티 복싱 (`VoxelMightyBoxingGame.tsx`)**: No.81 드왈린 전담. 잽, 훅, 어퍼컷, 가드 패링 & 위빙 회피 카운터 KO 펀치.
+     - **No.82 게임: 3D 복셀 마이크로 카트 레이싱 (`VoxelMicroKartGame.tsx`)**: No.82 글로인 전담. 파워 슬라이드 드리프트, 터보 부스터, 바나나/미사일 아이템전 서킷 1위 레이스.
+     - **No.83 게임: 3D 복셀 트레저 디거 (`VoxelTreasureDiggerGame.tsx`)**: No.83 오인 전담. 지하 암반층 채굴, 다이아몬드/황금 광맥 발굴 & 산소 게이지 관리.
+     - **No.84 게임: 3D 복셀 플라이트 랜딩 (`VoxelFlightLandingGame.tsx`)**: No.84 비푸르 전담. 강풍/측풍 돌파, 피치 및 스로틀 제어 활주로 퍼펙트 터치다운.
+     - **No.85 게임: 3D 복셀 가챠 클로 머신 (`VoxelGachaClawGame.tsx`)**: No.85 보푸르 전담. 3축 크레인 클로 이동, 캡슐 및 황금 복셀 인형 픽업 드롭 존 운반.
+     - **No.86 게임: 3D 복셀 트릭 당구 & 포켓볼 (`VoxelBilliardsTrickGame.tsx`)**: No.86 봄부르 전담. 큐대 조준, 파워 게이지, 쿠션 바운스 트릭샷 포켓팅.
+  2. **모드 선택 및 데일리 미션 시스템 전면 연동**:
+     - `modes` 배열에 80~86번 게임 1:1 히어로 카드 매칭(`characterId: 80 ~ 86`), 테마 색상, 3D 복셀 배지 및 상세 가이드 등록.
+     - `getDailyMissionIds()`의 `allIds` 배열에 신규 7종 게임 ID 등록 완료.
+     - `gameState` 조건부 렌더링 블록에 7종 컴포넌트 마운트 및 `handleMinigameReward` 보상 파이프라인 연결 완료.
+  3. **코드 검증 및 빌드**:
+     - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+     - `compile_applet`: 프로덕션 빌드 성공.
+- **상태**: 구현 및 검증 완료.
+
+---
+
+## [2026-08-20 18:30 KST / 09:30 UTC] [AI 전투 사후 상세 요약 뷰 및 공방 데미지 피드백 시스템 구현 완료]
+- **작업 내용**:
+  1. **사후 전투 상세 요약 모달 (`PostBattleSummaryModal.tsx`) 신규 개발**:
+     - **공방 데미지 분석 (Overview Tab)**: 총 가한 데미지(`totalDamageDealt`)와 받은 피해(`totalDamageReceived`), 순 데미지 마진(`netDamageMargin`), 보상(SNS/EXP), 전투 평점(S+~D Grade) 및 공방 점유율 프로그레스 바 제공.
+     - **카드별 기여도 (Cards Tab)**: 출전 카드별 가한 데미지, 받은 피해, 전장 점유율, MVP 카드 배지 및 레벨업 진행도 표시.
+     - **전술 및 룬 보너스 (Tactics Tab)**: 속공 승리(Speed Attack), 언더독(Underdog), 고블린 보너스, 마나 샘물, 원소 콤보(Elemental Combo), 철벽 방어자(Ironclad) 달성 현황 집계.
+     - **원클릭 후속 액션**: 즉시 재대결(Rematch), 자동 전투 이어하기(Resume Auto), 커뮤니티 피드 결과 공유(Share) 버튼 제공.
+  2. **기존 `BattleResultPanel.tsx` 공방 데미지 비교 UI 고도화**:
+     - 가한 데미지와 받은 피해를 동시에 보여주는 듀얼 데미지 지표 및 미니 밸런스 바 적용.
+     - `[📊 전투 상세 사후 분석]` 버튼을 통해 심층 분석 모달을 원클릭으로 호출 가능하도록 연결.
+  3. **`PlayGameView.tsx` 통합 연동 및 영구 저장**:
+     - `handleZeroSumAndRecord`에서 아군/적군 최종 보드 스탯, 보너스 파워, 레벨 기반 종합 공방 데미지 및 카드별 기여도 자동 계산.
+     - `hero_last_ai_battle_summary` 로컬스토리지 키에 직전 전투 데이터 영구 저장 및 앱 재진입 시 자동 복원.
+     - 자동 전투 로비 위젯 및 인게임 메뉴에 `[📊 최근 AI 전투 사후 분석]` 버튼을 배치하여 언제든 직전 전투 결과를 복기할 수 있도록 개선.
+  4. **코드 검증 및 빌드**:
+     - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+     - `compile_applet`: 프로덕션 빌드 성공.
+- **상태**: 구현 및 검증 완료.
+
+---
+
+## [2026-08-20 18:00 KST / 09:00 UTC] [신규 3D 복셀 미션 게임 10종 구현 & 70~79번 히어로 카드 전담 매칭 완전 연동] Items 459-468 완료
+- **작업 내용**:
+  1. **신규 3D 복셀 미니게임 10종 전담 개발 완료**:
+     - **Item 459 / 70번 게임: 3D 복셀 파이어 트럭 히어로 (`VoxelFireRescueGame.tsx`)**: No.70 에일라 전담. 모바일 한손 조작 특화 소방차 출동, 고압 소방 호스 화염 복셀 진화 및 탈출 주민 에스코트 구조.
+     - **Item 460 / 71번 게임: 3D 복셀 양궁 마스터: 윈드 헌터 (`VoxelWindHunterGame.tsx`)**: No.71 발보 전담. 탄도학 중력 낙차 및 실시간 변화하는 측풍(풍향/풍속) 오프셋 조준 10점 엑스텐(X-Ring) 슛.
+     - **Item 461 / 72번 게임: 3D 복셀 서브웨이 러너: 메트로 파쿠르 (`VoxelSubwayRunnerGame.tsx`)**: No.72 프레도 전담. 3차선 지하철 레일 질주, 점프 및 슬라이딩 회피, 30초 무적 호버보드 탑승.
+     - **Item 462 / 73번 게임: 3D 복셀 크레인 마스터: 항만 로지스틱스 (`VoxelCraneMasterGame.tsx`)**: No.73 샘와이 전담. 3축(XYZ) 크레인 트롤리 이동 및 전자석 마그넷 호이스트 컨테이너 하역 적재.
+     - **Item 463 / 74번 게임: 3D 복셀 몬스터 트럭 스매시: 데몰리션 더비 (`VoxelMonsterTruckGame.tsx`)**: No.74 그림리 전담. 66인치 빅 휠 트럭으로 폐차 바리케이드 돌파/파괴 및 니트로 부스터 점프 묘기.
+     - **Item 464 / 75번 게임: 3D 복셀 타워 스택 마스터: 스카이 스크레이퍼 (`VoxelTowerStackGame.tsx`)**: No.75 마그니스 전담. 좌우 왕복 3D 복셀 슬랩 타이밍 정렬, 퍼펙트 콤보 및 잉여 블록 절단 물리 구현.
+     - **Item 465 / 76번 게임: 3D 복셀 점핑 배스킷볼: 슬램덩크 아레나 (`VoxelSlamDunkGame.tsx`)**: No.76 브란디 전담. 포물선 3점슛 궤적 제어, 360도 윈드밀 슬램덩크 및 3연속 득점 온 파이어(On-Fire) 모드.
+     - **Item 466 / 77번 게임: 3D 복셀 롤러코스터 타이쿤: 스릴 라이더 (`VoxelCoasterTycoonGame.tsx`)**: No.77 무라디 전담. 3D 스플라인 트랙 레일 및 360도 루프 건설, 1인칭 카트 탑승 스릴 라이딩.
+     - **Item 467 / 78번 게임: 3D 복셀 스나이퍼 헌터: 사일런트 킬러 (`VoxelSniperHunterGame.tsx`)**: No.78 토그림 전담. 8X 망원 스코프 줌, 숨참기 손떨림 0% 고정, 시네마틱 헤드샷 및 가스통 환경 트랩 폭발 암살.
+     - **Item 468 / 79번 게임: 3D 복셀 제트스키 워터 레이스: 아쿠아 라이더 (`VoxelJetskiWaterGame.tsx`)**: No.79 베리포지 전담. 수상 카빙 턴, 파도 점프 360도 에어 스핀 트릭, 하이드로 터보 부스터 부표 코스 질주.
+  2. **미션 선택 화면 전면 등록 및 1:1 히어로 카드 시스템 통합 (`PlayGameView.tsx`)**:
+     - `modes` 배열에 70~79번 미션 게임을 `characterId: 70 ~ 79`로 1:1 매칭 등록 완료.
+     - `getDailyMissionIds()`의 `allIds` 배열 및 글로벌 뒤로가기 이벤트(`handleGlobalBackEvent`)에 전수 등록 완료.
+     - `gameState` 조건부 렌더링에 10종 신규 컴포넌트를 정확한 Props(deck, language, lowSpecMode, playSfx, onExit, onReward)로 마운트 완료.
+  3. **코드 검증 및 빌드**:
+     - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+     - `compile_applet`: 프로덕션 빌드 성공.
+- **상태**: 구현 및 검증 완료.
+
+---
+
 ## [2026-08-20 13:46 KST / 04:46 UTC] [AI Studio용 마스터 원샷 개발 지침서 snshero.md 기획/디자인가이드/풀스펙 전면 보강]
 - **작업 내용**:
   1. **게임 기획 사양서 (GDD) 상세 보강 (`snshero.md`)**:

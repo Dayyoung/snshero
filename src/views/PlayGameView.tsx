@@ -5,7 +5,7 @@ import { CardData, AiStrategy, AiDifficulty, Language, PlayerPatterns, Item, Ski
 import { CardItem } from '../components/CardItem';
 import { cn, getFormattedCardName, getAssetUrl, getCardSpriteAsset, getCardSpriteCoords, getCardSpriteStyle } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2, UserPlus, ShoppingBag, XCircle, Menu, Coins, Pickaxe, Crosshair, Footprints, Castle, Compass, BookOpen, Award, Sliders, Axe, Fish } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2, UserPlus, ShoppingBag, XCircle, Menu, Coins, Pickaxe, Crosshair, Footprints, Castle, Compass, BookOpen, Award, Sliders, Axe, Fish, BarChart3 } from 'lucide-react';
 import { generateCard, INITIAL_CARDS, generateUniqueDeck, getCardStatWithBonus, generateAiName, syncCardWithDatabase, INITIAL_SKILLS, getCardPower, getNormalizedElement } from '../constants';
 import { CARD_DATABASE } from '../cardDatabase';
 import { ITEM_DATABASE } from '../constants/itemDatabase';
@@ -63,6 +63,7 @@ import { VoxelPixelStrikeArenaGame } from '../components/VoxelPixelStrikeArenaGa
 import { VoxelSkyParkourGame } from '../components/VoxelSkyParkourGame';
 import { BattleComboAnnouncer } from '../components/BattleComboAnnouncer';
 import { SecretStampBookModal } from '../components/SecretStampBookModal';
+import { PostBattleSummaryModal, LastBattleSummaryData } from '../components/PostBattleSummaryModal';
 import { TreasureDartModal } from '../components/TreasureDartModal';
 import { GoldenPirateRouletteModal } from '../components/GoldenPirateRouletteModal';
 import { GoldenArcheryModal } from '../components/GoldenArcheryModal';
@@ -100,6 +101,31 @@ import { VoxelNinjaSlashGame } from '../components/VoxelNinjaSlashGame';
 import { VoxelGolfMasterGame } from '../components/VoxelGolfMasterGame';
 import { VoxelLumberjackTycoonGame } from '../components/VoxelLumberjackTycoonGame';
 import { VoxelFishingMasterGame } from '../components/VoxelFishingMasterGame';
+import { VoxelFireRescueGame } from '../components/VoxelFireRescueGame';
+import { VoxelWindHunterGame } from '../components/VoxelWindHunterGame';
+import { VoxelSubwayRunnerGame } from '../components/VoxelSubwayRunnerGame';
+import { VoxelCraneMasterGame } from '../components/VoxelCraneMasterGame';
+import { VoxelMonsterTruckGame } from '../components/VoxelMonsterTruckGame';
+import { VoxelTowerStackGame } from '../components/VoxelTowerStackGame';
+import { VoxelSlamDunkGame } from '../components/VoxelSlamDunkGame';
+import { VoxelCoasterTycoonGame } from '../components/VoxelCoasterTycoonGame';
+import { VoxelSniperHunterGame } from '../components/VoxelSniperHunterGame';
+import { VoxelJetskiWaterGame } from '../components/VoxelJetskiWaterGame';
+import { VoxelBaseballDerbyGame } from '../components/VoxelBaseballDerbyGame';
+import { VoxelMightyBoxingGame } from '../components/VoxelMightyBoxingGame';
+import { VoxelMicroKartGame } from '../components/VoxelMicroKartGame';
+import { VoxelTreasureDiggerGame } from '../components/VoxelTreasureDiggerGame';
+import { VoxelFlightLandingGame } from '../components/VoxelFlightLandingGame';
+import { VoxelGachaClawGame } from '../components/VoxelGachaClawGame';
+import { VoxelBilliardsTrickGame } from '../components/VoxelBilliardsTrickGame';
+import { VoxelDartsBarGame } from '../components/VoxelDartsBarGame';
+import { VoxelWingsuitSkydivingGame } from '../components/VoxelWingsuitSkydivingGame';
+import { VoxelBadmintonBlitzGame } from '../components/VoxelBadmintonBlitzGame';
+import { VoxelMagnetHoleGame } from '../components/VoxelMagnetHoleGame';
+import { VoxelMotocrossStuntGame } from '../components/VoxelMotocrossStuntGame';
+import { VoxelSkateboardStreetGame } from '../components/VoxelSkateboardStreetGame';
+import { VoxelSnowboardSlalomGame } from '../components/VoxelSnowboardSlalomGame';
+import { VoxelKarateBreakGame } from '../components/VoxelKarateBreakGame';
 import { GambitConfig, TacticalStance } from '../types';
 import { getSecretStamps, unlockSecretStamp } from '../lib/secretStampHelper';
 import { recordHeroBattleResult } from '../lib/heroMasteryHelper';
@@ -241,7 +267,7 @@ const MissionCharacterPortrait: React.FC<{
   );
 };
 
-type GameState = 'modeSelect' | 'lobby' | 'searching' | 'playing' | 'gameOver' | 'preMatch' | 'tournament' | 'story' | 'boss' | 'dungeon' | 'defense' | 'running' | 'shooting' | 'snake' | 'gomoku' | 'memorymatch' | 'slide2048' | 'cardjumper' | 'cardtap' | 'cardflip' | 'cardslide' | 'cardsorcery' | 'cardslot' | 'cardheist' | 'cardrush' | 'breakout' | 'minesweeper' | 'pacman' | 'tictactoe' | 'trexrunner' | 'voxeldefense' | 'pixelstrike' | 'voxelparkour' | 'voxelbattlegrounds' | 'voxeldungeon' | 'voxelspace' | 'voxelzombie' | 'voxelsiege' | 'voxeltitan' | 'voxelsuperstrikers' | 'voxelgladiatorcolosseum' | 'voxeldragonslayer' | 'voxelarcherhero' | 'voxelvampiresurvival' | 'voxeltankbounce' | 'voxelninjaslash' | 'voxelgolfmaster' | 'voxellumberjacktycoon' | 'voxelfishingmaster';
+type GameState = 'modeSelect' | 'lobby' | 'searching' | 'playing' | 'gameOver' | 'preMatch' | 'tournament' | 'story' | 'boss' | 'dungeon' | 'defense' | 'running' | 'shooting' | 'snake' | 'gomoku' | 'memorymatch' | 'slide2048' | 'cardjumper' | 'cardtap' | 'cardflip' | 'cardslide' | 'cardsorcery' | 'cardslot' | 'cardheist' | 'cardrush' | 'breakout' | 'minesweeper' | 'pacman' | 'tictactoe' | 'trexrunner' | 'voxeldefense' | 'pixelstrike' | 'voxelparkour' | 'voxelbattlegrounds' | 'voxeldungeon' | 'voxelspace' | 'voxelzombie' | 'voxelsiege' | 'voxeltitan' | 'voxelsuperstrikers' | 'voxelgladiatorcolosseum' | 'voxeldragonslayer' | 'voxelarcherhero' | 'voxelvampiresurvival' | 'voxeltankbounce' | 'voxelninjaslash' | 'voxelgolfmaster' | 'voxellumberjacktycoon' | 'voxelfishingmaster' | 'voxelfirerescue' | 'voxelwindhunter' | 'voxelsubwayrunner' | 'voxelcranemaster' | 'voxelmonstertruck' | 'voxeltowerstack' | 'voxelslamdunk' | 'voxelcoastertycoon' | 'voxelsniperhunter' | 'voxeljetskiwater' | 'voxelbaseballderby' | 'voxelboxingmighty' | 'voxelmicrokart' | 'voxeltreasuredigger' | 'voxelflightlanding' | 'voxelgachaclaw' | 'voxelbilliardstrick' | 'voxeldartsbar' | 'voxelwingsuitskydiving' | 'voxelbadmintonblitz' | 'voxelmagnethole' | 'voxelmotocrossstunt' | 'voxelskateboardstreet' | 'voxelsnowboardslalom' | 'voxelkaratebreak';
 
 interface TournamentParticipant {
   id: string;
@@ -2321,6 +2347,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
   // Battle Result Summary Metrics
   const [totalDamageDealt, setTotalDamageDealt] = useState<number>(0);
+  const [totalDamageReceived, setTotalDamageReceived] = useState<number>(0);
+  const [showPostBattleSummaryModal, setShowPostBattleSummaryModal] = useState<boolean>(false);
+  const [lastBattleSummaryData, setLastBattleSummaryData] = useState<LastBattleSummaryData | null>(() => {
+    try {
+      const saved = typeof localStorage !== 'undefined' ? localStorage.getItem('hero_last_ai_battle_summary') : null;
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
   const [leveledUpCards, setLeveledUpCards] = useState<LeveledUpCardInfo[]>([]);
   const [allDeckCardsProgress, setAllDeckCardsProgress] = useState<LeveledUpCardInfo[]>([]);
 
@@ -6127,7 +6163,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               };
 
               const handleZeroSumAndRecord = (myResult: 'win' | 'loss' | 'draw') => {
-                // Battle Result Summary calculations
+                // Battle Result Summary calculations: Damage Dealt & Received
                 const calculatedDamage = finalBoard
                   .filter(cell => cell && cell.owner === 'player')
                   .reduce((sum, cell) => {
@@ -6138,7 +6174,18 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     return sum + statsSum + bonus + (lvl * 15);
                   }, 0) + (myResult === 'win' ? 350 : myResult === 'draw' ? 180 : 90);
 
+                const calculatedDamageReceived = finalBoard
+                  .filter(cell => cell && cell.owner === 'ai')
+                  .reduce((sum, cell) => {
+                    if (!cell) return sum;
+                    const statsSum = cell.stats?.reduce((a, b) => a + b, 0) || 0;
+                    const bonus = cell.bonusPower || 0;
+                    const lvl = cell.level || 1;
+                    return sum + statsSum + bonus + (lvl * 15);
+                  }, 0) + (myResult === 'loss' ? 350 : myResult === 'draw' ? 180 : 90);
+
                 setTotalDamageDealt(calculatedDamage);
+                setTotalDamageReceived(calculatedDamageReceived);
 
                 const xpGained = myResult === 'win' ? 60 : myResult === 'draw' ? 30 : 15;
                 const deckToEvaluate = (playerDeck && playerDeck.length > 0) ? playerDeck : INITIAL_CARDS;
@@ -6174,6 +6221,79 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 setLeveledUpCards(lvlUpList);
                 setAllDeckCardsProgress(allProgList);
                 onEarnXp?.(xpGained);
+
+                // Per-card damage and contribution analytics
+                const pCells = finalBoard.filter(cell => cell && cell.owner === 'player');
+                const aCells = finalBoard.filter(cell => cell && cell.owner === 'ai');
+                const pScore = pCells.length;
+                const aScore = aCells.length;
+
+                const perfPlayerCards = deckToEvaluate.map((card, idx) => {
+                  const onBoard = pCells.filter(c => c && (c.id === card.id || c.title === card.title));
+                  const cellDmg = onBoard.reduce((acc, c) => acc + (c ? (c.stats?.reduce((a, b) => a + b, 0) || 0) + (c.bonusPower || 0) + ((c.level || 1) * 15) : 0), 0);
+                  const baseDmg = Math.round(calculatedDamage / deckToEvaluate.length) + (idx === 0 ? 50 : 0);
+                  const dmgDealt = Math.max(20, cellDmg > 0 ? cellDmg : baseDmg);
+                  const dmgRecv = Math.round(calculatedDamageReceived / deckToEvaluate.length);
+                  return {
+                    card,
+                    damageDealt: dmgDealt,
+                    damageReceived: dmgRecv,
+                    boardPresence: onBoard.length,
+                    isMvp: false
+                  };
+                });
+                if (perfPlayerCards.length > 0) {
+                  let maxDmgIdx = 0;
+                  perfPlayerCards.forEach((c, i) => {
+                    if (c.damageDealt > perfPlayerCards[maxDmgIdx].damageDealt) {
+                      maxDmgIdx = i;
+                    }
+                  });
+                  perfPlayerCards[maxDmgIdx].isMvp = true;
+                }
+
+                // Construct comprehensive post-battle summary data
+                const summaryObj: LastBattleSummaryData = {
+                  id: `battle_${Date.now()}`,
+                  timestamp: Date.now(),
+                  battleType,
+                  isAutoBattle: Boolean(isAutoBattle),
+                  opponent: {
+                    id: lastOpponent?.id,
+                    name: lastOpponent?.name || 'AI Combat Robot',
+                    avatarUrl: lastOpponent?.avatarUrl,
+                    totalPower: opponentTotalPower || 350
+                  },
+                  player: {
+                    name: (typeof localStorage !== 'undefined' ? localStorage.getItem('hero_user_name') : null) || 'Hero',
+                    totalPower: calculatedTotalPower || 380
+                  },
+                  result: myResult,
+                  boardScore: { player: pScore, ai: aScore },
+                  totalDamageDealt: calculatedDamage,
+                  totalDamageReceived: calculatedDamageReceived,
+                  netDamage: calculatedDamage - calculatedDamageReceived,
+                  snsEarned: myFinalReward,
+                  xpGained,
+                  leveledUpCards: lvlUpList,
+                  playerCards: perfPlayerCards,
+                  tacticalBonuses: {
+                    isSpeedAttack: isSpeedAttackWin,
+                    isUnderdog: underdogBountyClaimed,
+                    isGoblin: goblinCaptured,
+                    isManaSpring: manaSpringClaimed,
+                    isElementalCombo: hasTriggeredElementalCombo,
+                    isIronclad: isIroncladWin
+                  },
+                  grade: myResult === 'win' ? (pScore >= 7 ? 'S+' : (pScore >= 6 ? 'S' : 'A')) : (myResult === 'draw' ? 'B' : (aScore <= 5 ? 'C' : 'D'))
+                };
+
+                try {
+                  localStorage.setItem('hero_last_ai_battle_summary', JSON.stringify(summaryObj));
+                } catch {
+                  // ignore
+                }
+                setLastBattleSummaryData(summaryObj);
 
                 // AI 대전(robot)일 때는 상대방 AI 유저 오브젝트 전적이나 SNS를 건드리지 않음
                 if (battleType !== 'robot') {
@@ -7705,6 +7825,381 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       isNew: true,
       badgeText: '3D FISHING',
       guide: language === 'ko' ? '입질 순간 즉각 챔질 후 장력 텐션을 세밀하게 컨트롤하며 심해 거대어를 낚아 올리세요.' : 'Hook upon bite and master reel tension to catch legendary sea monsters!'
+    },
+    {
+      id: 'voxelfirerescue',
+      title: language === 'ko' ? '3D 복셀 파이어 트럭 히어로' : 'Voxel Fire Rescue Hero',
+      icon: Flame,
+      color: 'from-red-600 to-amber-800',
+      image: '/minigame_castleblaster.png',
+      characterId: 70,
+      action: () => {
+        setGameState('voxelfirerescue');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D RESCUE',
+      guide: language === 'ko' ? '초고압 소방 방수포로 화염 복셀을 진화하고 탈출 주민을 신속히 구조하세요.' : 'Extinguish blaze voxels with high-pressure water hose and rescue civilians!'
+    },
+    {
+      id: 'voxelwindhunter',
+      title: language === 'ko' ? '3D 복셀 양궁 마스터' : 'Voxel Archery Wind Hunter',
+      icon: TargetIcon,
+      color: 'from-emerald-600 to-teal-800',
+      image: '/minigame_archerhero.png',
+      characterId: 71,
+      action: () => {
+        setGameState('voxelwindhunter');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D ARCHERY',
+      guide: language === 'ko' ? '거리별 낙차와 풍향 오프셋을 계산해 10점 만점 엑스텐(X-Ring)을 정조준하세요.' : 'Calculate ballistic drop and crosswind offset to hit the 10-point X-Ring!'
+    },
+    {
+      id: 'voxelsubwayrunner',
+      title: language === 'ko' ? '3D 복셀 서브웨이 러너' : 'Voxel Subway Runner',
+      icon: Footprints,
+      color: 'from-indigo-600 to-purple-800',
+      image: '/minigame_parkour.png',
+      characterId: 72,
+      action: () => {
+        setGameState('voxelsubwayrunner');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D RUNNER',
+      guide: language === 'ko' ? '3차선 지하철 레일을 질주하며 롤링 슬라이드와 호버보드로 장애물을 돌파하세요.' : 'Sprint 3-lane subway tracks, slide roll under barriers and activate hoverboard!'
+    },
+    {
+      id: 'voxelcranemaster',
+      title: language === 'ko' ? '3D 복셀 크레인 마스터' : 'Voxel Crane Master',
+      icon: Hammer,
+      color: 'from-amber-500 to-yellow-800',
+      image: '/minigame_factorycraft.png',
+      characterId: 73,
+      action: () => {
+        setGameState('voxelcranemaster');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D CRANE',
+      guide: language === 'ko' ? 'XYZ 크레인 트롤리와 전자석 마그넷을 조종해 컨테이너를 완벽히 적재하세요.' : 'Control 3-axis crane trolley and magnetic hoist to stack port cargo containers!'
+    },
+    {
+      id: 'voxelmonstertruck',
+      title: language === 'ko' ? '3D 복셀 몬스터 트럭 스매시' : 'Voxel Monster Truck Smash',
+      icon: ShieldAlert,
+      color: 'from-orange-600 to-red-900',
+      image: '/minigame_tankbounce.png',
+      characterId: 74,
+      action: () => {
+        setGameState('voxelmonstertruck');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D SMASH',
+      guide: language === 'ko' ? '초대형 66인치 몬스터 트럭으로 폐차 바리케이드를 짓밟고 니트로 점프를 작렬하세요.' : 'Crush scrap car ramps with massive 66-inch wheels and detonate nitro boost!'
+    },
+    {
+      id: 'voxeltowerstack',
+      title: language === 'ko' ? '3D 복셀 타워 스택 마스터' : 'Voxel Tower Stack Master',
+      icon: Castle,
+      color: 'from-purple-600 to-pink-800',
+      image: '/minigame_towercraft.png',
+      characterId: 75,
+      action: () => {
+        setGameState('voxeltowerstack');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D STACK',
+      guide: language === 'ko' ? '좌우 슬라이딩 복셀 블록을 퍼펙트 타이밍에 정렬해 초고층 마천루를 건설하세요.' : 'Align oscillating 3D voxel slabs with perfect precision to build the sky tower!'
+    },
+    {
+      id: 'voxelslamdunk',
+      title: language === 'ko' ? '3D 복셀 점핑 배스킷볼' : 'Voxel Slam Dunk Basketball',
+      icon: Flame,
+      color: 'from-amber-600 to-orange-800',
+      image: '/minigame_superstrikers.png',
+      characterId: 76,
+      action: () => {
+        setGameState('voxelslamdunk');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D DUNK',
+      guide: language === 'ko' ? '포물선 3점슛과 360도 윈드밀 슬램덩크로 온 파이어(On-Fire) 모드를 점화하세요.' : 'Launch 3-point parabolic shots and execute 360-degree windmill slam dunks!'
+    },
+    {
+      id: 'voxelcoastertycoon',
+      title: language === 'ko' ? '3D 복셀 롤러코스터 타이쿤' : 'Voxel Coaster Tycoon',
+      icon: Wind,
+      color: 'from-sky-600 to-blue-800',
+      image: '/minigame_drifting.png',
+      characterId: 77,
+      action: () => {
+        setGameState('voxelcoastertycoon');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D TYCOON',
+      guide: language === 'ko' ? '스플라인 레일 노드와 360도 루프를 건설하고 1인칭 카트로 스릴 라이딩을 즐기세요.' : 'Construct spline track loops and experience thrilling 1st-person coaster rides!'
+    },
+    {
+      id: 'voxelsniperhunter',
+      title: language === 'ko' ? '3D 복셀 스나이퍼 헌터' : 'Voxel Sniper Hunter',
+      icon: Crosshair,
+      color: 'from-red-600 to-slate-900',
+      image: '/minigame_pixelstrike.png',
+      characterId: 78,
+      action: () => {
+        setGameState('voxelsniperhunter');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D SNIPER',
+      guide: language === 'ko' ? '망원 스코프 줌과 숨참기 손떨림 보정으로 표적을 시네마틱 헤드샷으로 암살하세요.' : 'Scope zoom, hold breath for 0% sway, and execute cinematic headshot assassinations!'
+    },
+    {
+      id: 'voxeljetskiwater',
+      title: language === 'ko' ? '3D 복셀 제트스키 워터 레이스' : 'Voxel Jetski Aqua Race',
+      icon: Waves,
+      color: 'from-cyan-600 to-blue-800',
+      image: '/minigame_deepsea.png',
+      characterId: 79,
+      action: () => {
+        setGameState('voxeljetskiwater');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D JETSKI',
+      guide: language === 'ko' ? '수면 카빙 턴과 파도 점프 360도 에어 스핀 트릭, 하이드로 터보로 부표 코스를 질주하세요.' : 'Carve turns, leap over wave crests with 360° air spins, and blast hydro turbo!'
+    },
+    {
+      id: 'voxelbaseballderby',
+      title: language === 'ko' ? '3D 복셀 베이스볼 홈런 더비' : 'Voxel Baseball Derby',
+      icon: Trophy,
+      color: 'from-amber-600 to-red-600',
+      image: '/minigame_superstrikers.png',
+      characterId: 80,
+      action: () => {
+        setGameState('voxelbaseballderby');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D BASEBALL',
+      guide: language === 'ko' ? '투수의 구종 타이밍을 읽고 퍼펙트 배트 스윙으로 장외 홈런과 연속 콤보를 기록하세요.' : 'Time your swing precisely to smash long-distance home runs and chain hit combos!'
+    },
+    {
+      id: 'voxelboxingmighty',
+      title: language === 'ko' ? '3D 복셀 마이티 복싱' : 'Voxel Mighty Boxing',
+      icon: Swords,
+      color: 'from-red-600 to-orange-700',
+      image: '/minigame_boss.png',
+      characterId: 81,
+      action: () => {
+        setGameState('voxelboxingmighty');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D BOXING',
+      guide: language === 'ko' ? '잽, 어퍼컷, 가드 패링과 위빙 회피로 상대 복서의 빈틈을 파고들어 시원한 KO를 달성하세요.' : 'Dodge, parry with guard, and counter with devastating hooks and uppercuts!'
+    },
+    {
+      id: 'voxelmicrokart',
+      title: language === 'ko' ? '3D 복셀 마이크로 카트 레이싱' : 'Voxel Micro Kart Racing',
+      icon: Zap,
+      color: 'from-sky-500 to-indigo-600',
+      image: '/minigame_drifting.png',
+      characterId: 82,
+      action: () => {
+        setGameState('voxelmicrokart');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D KART',
+      guide: language === 'ko' ? '미니 서킷에서 파워 슬라이드 드리프트와 터보 부스터, 바나나/미사일 아이템으로 1위를 차지하세요.' : 'Power-slide drift through hairpin turns and use tactical items to take the checkered flag!'
+    },
+    {
+      id: 'voxeltreasuredigger',
+      title: language === 'ko' ? '3D 복셀 트레저 디거' : 'Voxel Treasure Digger',
+      icon: Pickaxe,
+      color: 'from-amber-700 to-yellow-900',
+      image: '/minigame_minesweeper.png',
+      characterId: 83,
+      action: () => {
+        setGameState('voxeltreasuredigger');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D DIGGER',
+      guide: language === 'ko' ? '지하 암반층을 곡괭이로 채굴하며 다이아몬드 광맥과 고대 유물을 발굴하고 산소 게이지를 관리하세요.' : 'Dig subterranean blocks, uncover rare gems and manage your oxygen supply!'
+    },
+    {
+      id: 'voxelflightlanding',
+      title: language === 'ko' ? '3D 복셀 플라이트 랜딩' : 'Voxel Flight Landing',
+      icon: Compass,
+      color: 'from-blue-600 to-cyan-700',
+      image: '/minigame_shooting.png',
+      characterId: 84,
+      action: () => {
+        setGameState('voxelflightlanding');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D FLIGHT',
+      guide: language === 'ko' ? '강풍과 난기류를 극복하며 항공기의 피치와 활주로 진입 각도를 조절해 퍼펙트 소프트 랜딩을 성공시키세요.' : 'Manage throttle and descent pitch through crosswinds for a smooth runway touchdown!'
+    },
+    {
+      id: 'voxelgachaclaw',
+      title: language === 'ko' ? '3D 복셀 가챠 클로 머신' : 'Voxel Gacha Claw Machine',
+      icon: Gift,
+      color: 'from-pink-500 to-purple-600',
+      image: '/minigame_cardslot.png',
+      characterId: 85,
+      action: () => {
+        setGameState('voxelgachaclaw');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D CLAW',
+      guide: language === 'ko' ? '크레인 클로를 3축 이동 및 하강시켜 레어 캡슐과 황금 복셀 인형을 집어 출구 드롭 존으로 운반하세요.' : 'Position the 3-axis mechanical claw and grab rare prize capsules into the drop chute!'
+    },
+    {
+      id: 'voxelbilliardstrick',
+      title: language === 'ko' ? '3D 복셀 트릭 당구 & 포켓볼' : 'Voxel Billiards Trick Shot',
+      icon: TargetIcon,
+      color: 'from-emerald-600 to-green-800',
+      image: '/minigame_pinball.png',
+      characterId: 86,
+      action: () => {
+        setGameState('voxelbilliardstrick');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D BILLIARDS',
+      guide: language === 'ko' ? '당구대 큐대의 각도와 파워, 스핀을 조절해 쿠션 바운스와 화려한 트릭샷으로 목적구를 포켓팅하세요.' : 'Adjust cue angle, spin, and shot power to sink trick shots with rail cushions!'
+    },
+    {
+      id: 'voxeldartsbar',
+      title: language === 'ko' ? '3D 복셀 다트 바 501 챔피언십' : 'Voxel Darts Bar 501 Championship',
+      icon: Crosshair,
+      color: 'from-amber-600 to-rose-700',
+      image: '/minigame_shooting.png',
+      characterId: 87,
+      action: () => {
+        setGameState('voxeldartsbar');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D DARTS',
+      guide: language === 'ko' ? '정밀한 드래그 조준과 스와이프 투구로 불스아이 및 트리플 20을 적중시켜 501점을 0으로 마무리하세요.' : 'Aim crosshairs and throw darts with precision flick to score Bullseyes and finish 501!'
+    },
+    {
+      id: 'voxelwingsuitskydiving',
+      title: language === 'ko' ? '3D 복셀 윙슈트 스카이다이빙' : 'Voxel Wingsuit Skydiving Canyon',
+      icon: Wind,
+      color: 'from-sky-500 to-indigo-700',
+      image: '/minigame_subway.png',
+      characterId: 88,
+      action: () => {
+        setGameState('voxelwingsuitskydiving');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D WINGSUIT',
+      guide: language === 'ko' ? '협곡을 따라 하강하며 링을 통과하고 에어로다이내믹 다이브 글라이딩으로 2000m 완벽 착륙을 달성하세요.' : 'Glide through canyon airspace, collect rings, and flare parachute for a perfect touchdown!'
+    },
+    {
+      id: 'voxelbadmintonblitz',
+      title: language === 'ko' ? '3D 복셀 배드민턴 블리츠: 스매시 랠리' : 'Voxel Badminton Blitz: Smash Rally',
+      icon: Zap,
+      color: 'from-emerald-500 to-teal-700',
+      image: '/minigame_tictactoe.png',
+      characterId: 89,
+      action: () => {
+        setGameState('voxelbadmintonblitz');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D BADMINTON',
+      guide: language === 'ko' ? '풋워크 이동과 타이밍 점프 스매시, 헤어핀 드롭 샷을 구사하여 AI 상대를 11점 세트에서 압도하세요.' : 'Move footwork, time jump smashes and hairpin drops to beat AI opponent in an 11-point match!'
+    },
+    {
+      id: 'voxelmagnethole',
+      title: language === 'ko' ? '3D 복셀 서바이벌 마그넷 홀: 블랙홀 삼키기' : 'Voxel Magnet Hole: Blackhole Eater',
+      icon: Gem,
+      color: 'from-purple-600 to-pink-600',
+      image: '/minigame_cardslot.png',
+      characterId: 90,
+      action: () => {
+        setGameState('voxelmagnethole');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D HOLE',
+      guide: language === 'ko' ? '블랙홀을 이동시켜 소형 오브젝트부터 삼켜 직경을 거대화하고 10m 자석 부스터로 도시를 흡입하세요.' : 'Move blackhole disk to swallow props, expand diameter, and trigger 10m vacuum booster!'
+    },
+    {
+      id: 'voxelmotocrossstunt',
+      title: language === 'ko' ? '3D 복셀 모터크로스 스턴트: 더트 바이크' : 'Voxel Motocross Stunt: Dirt Biker',
+      icon: Flame,
+      color: 'from-amber-500 to-orange-700',
+      image: '/minigame_monstertruck.png',
+      characterId: 91,
+      action: () => {
+        setGameState('voxelmotocrossstunt');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D MOTOCROSS',
+      guide: language === 'ko' ? '오프로드 점프대에서 공중 360도 백플립 묘기와 퍼펙트 착지를 선보이며 2000m 트랙을 질주하세요.' : 'Hold gas across offroad hills, perform 360 backflips off ramps, and land perfectly!'
+    },
+    {
+      id: 'voxelskateboardstreet',
+      title: language === 'ko' ? '3D 복셀 스케이트보드 스트리트: 올리 킹' : 'Voxel Skateboard Street: Ollie King',
+      icon: Sparkles,
+      color: 'from-sky-500 to-blue-700',
+      image: '/minigame_subway.png',
+      characterId: 92,
+      action: () => {
+        setGameState('voxelskateboardstreet');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D SKATE',
+      guide: language === 'ko' ? '올리 점프로 레일에 올라타 50-50 그라인드 콤보와 공중 킥플립 360 트릭으로 최고 점수를 달성하세요.' : 'Ollie onto grind rails for high multipliers and perform 360 kickflips across street obstacles!'
+    },
+    {
+      id: 'voxelsnowboardslalom',
+      title: language === 'ko' ? '3D 복셀 스노보드 슬라롬: 알파인 슈레더' : 'Voxel Snowboard Slalom: Alpine Shredder',
+      icon: Mountain,
+      color: 'from-cyan-500 to-blue-600',
+      image: '/minigame_jetski.png',
+      characterId: 93,
+      action: () => {
+        setGameState('voxelsnowboardslalom');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D SNOWBOARD',
+      guide: language === 'ko' ? '설원을 카빙하며 레드와 블루 슬라롬 게이트를 통과하고 스노우 키커에서 에어 트릭을 성공시키세요.' : 'Carve alpine snow slopes through Red & Blue slalom gates and execute grab tricks off kickers!'
+    },
+    {
+      id: 'voxelkaratebreak',
+      title: language === 'ko' ? '3D 복셀 가라데 송판 & 석재 격파: 무도 마스터' : 'Voxel Karate Break: Martial Master',
+      icon: Trophy,
+      color: 'from-rose-600 to-amber-600',
+      image: '/minigame_boss.png',
+      characterId: 94,
+      action: () => {
+        setGameState('voxelkaratebreak');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D KARATE',
+      guide: language === 'ko' ? '기력 게이지가 임계 영역에 도달했을 때 정권 찌르기를 날려 10단 송판과 화강암, 흑요석을 완전 격파하세요.' : 'Time your Ki focus and unleash powerful chops to shatter 10 stacked wood planks and obsidian blocks!'
     }
   ];
 
@@ -7810,7 +8305,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         return;
       }
 
-      if (['breakout', 'minesweeper', 'pacman', 'tictactoe', 'trexrunner', 'voxeldefense', 'pixelstrike', 'voxelparkour', 'voxelbattlegrounds', 'voxeldungeon', 'voxelspace', 'voxelzombie', 'voxelsiege', 'voxeltitan', 'voxeldeepsea', 'voxelacefighter', 'voxeldriftmaster', 'voxelmonsterisle', 'voxelcyberninja', 'voxelraftsurvival', 'voxelsnowboard', 'voxelpinball', 'voxelpirate', 'voxelovercooked', 'voxelprophunt', 'voxelquantum', 'voxelrollinghero', 'voxelsupersmash', 'voxeltowercraft', 'voxelbeatblaster', 'voxelcastleblaster', 'voxelfactorycraft', 'voxelsuperstrikers', 'voxelgladiatorcolosseum', 'voxeldragonslayer', 'voxelarcherhero', 'voxelvampiresurvival', 'voxeltankbounce', 'voxelninjaslash', 'voxelgolfmaster', 'voxellumberjacktycoon', 'voxelfishingmaster'].includes(gameState)) {
+      if (['breakout', 'minesweeper', 'pacman', 'tictactoe', 'trexrunner', 'voxeldefense', 'pixelstrike', 'voxelparkour', 'voxelbattlegrounds', 'voxeldungeon', 'voxelspace', 'voxelzombie', 'voxelsiege', 'voxeltitan', 'voxeldeepsea', 'voxelacefighter', 'voxeldriftmaster', 'voxelmonsterisle', 'voxelcyberninja', 'voxelraftsurvival', 'voxelsnowboard', 'voxelpinball', 'voxelpirate', 'voxelovercooked', 'voxelprophunt', 'voxelquantum', 'voxelrollinghero', 'voxelsupersmash', 'voxeltowercraft', 'voxelbeatblaster', 'voxelcastleblaster', 'voxelfactorycraft', 'voxelsuperstrikers', 'voxelgladiatorcolosseum', 'voxeldragonslayer', 'voxelarcherhero', 'voxelvampiresurvival', 'voxeltankbounce', 'voxelninjaslash', 'voxelgolfmaster', 'voxellumberjacktycoon', 'voxelfishingmaster', 'voxelfirerescue', 'voxelwindhunter', 'voxelsubwayrunner', 'voxelcranemaster', 'voxelmonstertruck', 'voxeltowerstack', 'voxelslamdunk', 'voxelcoastertycoon', 'voxelsniperhunter', 'voxeljetskiwater'].includes(gameState)) {
         e.preventDefault();
         playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
         setGameState('modeSelect');
@@ -10771,6 +11266,331 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     );
   }
 
+  if (gameState === 'voxelfirerescue') {
+    return (
+      <VoxelFireRescueGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '소방차 히어로 보상', 'Fire Rescue Hero reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelwindhunter') {
+    return (
+      <VoxelWindHunterGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '양궁 마스터 보상', 'Archery Wind Hunter reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelsubwayrunner') {
+    return (
+      <VoxelSubwayRunnerGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '서브웨이 러너 보상', 'Subway Runner reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelcranemaster') {
+    return (
+      <VoxelCraneMasterGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '크레인 마스터 보상', 'Crane Master reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelmonstertruck') {
+    return (
+      <VoxelMonsterTruckGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '몬스터 트럭 보상', 'Monster Truck Smash reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxeltowerstack') {
+    return (
+      <VoxelTowerStackGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '타워 스택 보상', 'Tower Stack Master reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelslamdunk') {
+    return (
+      <VoxelSlamDunkGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '배스킷볼 슬램덩크 보상', 'Slam Dunk Basketball reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelcoastertycoon') {
+    return (
+      <VoxelCoasterTycoonGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '롤러코스터 타이쿤 보상', 'Coaster Tycoon reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelsniperhunter') {
+    return (
+      <VoxelSniperHunterGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '스나이퍼 헌터 보상', 'Sniper Hunter reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxeljetskiwater') {
+    return (
+      <VoxelJetskiWaterGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '제트스키 워터 레이스 보상', 'Jetski Aqua Race reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelbaseballderby') {
+    return (
+      <VoxelBaseballDerbyGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '베이스볼 홈런 더비 보상', 'Baseball Derby reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelboxingmighty') {
+    return (
+      <VoxelMightyBoxingGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '마이티 복싱 보상', 'Mighty Boxing reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelmicrokart') {
+    return (
+      <VoxelMicroKartGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '마이크로 카트 레이싱 보상', 'Micro Kart Racing reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxeltreasuredigger') {
+    return (
+      <VoxelTreasureDiggerGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '트레저 디거 보상', 'Treasure Digger reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelflightlanding') {
+    return (
+      <VoxelFlightLandingGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '플라이트 랜딩 보상', 'Flight Landing reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelgachaclaw') {
+    return (
+      <VoxelGachaClawGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '가챠 클로 머신 보상', 'Gacha Claw reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelbilliardstrick') {
+    return (
+      <VoxelBilliardsTrickGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '트릭 당구 & 포켓볼 보상', 'Billiards Trick Shot reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxeldartsbar') {
+    return (
+      <VoxelDartsBarGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '다트 바 501 보상', 'Darts Bar 501 reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelwingsuitskydiving') {
+    return (
+      <VoxelWingsuitSkydivingGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '윙슈트 스카이다이빙 보상', 'Wingsuit Skydiving reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelbadmintonblitz') {
+    return (
+      <VoxelBadmintonBlitzGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '배드민턴 블리츠 보상', 'Badminton Blitz reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelmagnethole') {
+    return (
+      <VoxelMagnetHoleGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '마그넷 홀 보상', 'Magnet Hole reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelmotocrossstunt') {
+    return (
+      <VoxelMotocrossStuntGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '모터크로스 스턴트 보상', 'Motocross Stunt reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelskateboardstreet') {
+    return (
+      <VoxelSkateboardStreetGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '스케이트보드 스트리트 보상', 'Skateboard Street reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelsnowboardslalom') {
+    return (
+      <VoxelSnowboardSlalomGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '스노보드 슬라롬 보상', 'Snowboard Slalom reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelkaratebreak') {
+    return (
+      <VoxelKarateBreakGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '가라데 격파 보상', 'Karate Break reward')}
+      />
+    );
+  }
+
   if (gameState === 'modeSelect') {
     // 오늘의 미션 게임 ID 생성 (날짜 기반 해시로 매일 교체)
     const getDailyMissionIds = (): string[] => {
@@ -10790,7 +11610,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         'voxelcastleblaster', 'voxelfactorycraft', 'voxelsuperstrikers',
         'voxelgladiatorcolosseum', 'voxeldragonslayer', 'voxelarcherhero',
         'voxelvampiresurvival', 'voxeltankbounce', 'voxelninjaslash',
-        'voxelgolfmaster', 'voxellumberjacktycoon', 'voxelfishingmaster'
+        'voxelgolfmaster', 'voxellumberjacktycoon', 'voxelfishingmaster',
+        'voxelfirerescue', 'voxelwindhunter', 'voxelsubwayrunner', 'voxelcranemaster',
+        'voxelmonstertruck', 'voxeltowerstack', 'voxelslamdunk', 'voxelcoastertycoon',
+        'voxelsniperhunter', 'voxeljetskiwater', 'voxelbaseballderby', 'voxelboxingmighty',
+        'voxelmicrokart', 'voxeltreasuredigger', 'voxelflightlanding', 'voxelgachaclaw',
+        'voxelbilliardstrick', 'voxeldartsbar', 'voxelwingsuitskydiving', 'voxelbadmintonblitz',
+        'voxelmagnethole', 'voxelmotocrossstunt', 'voxelskateboardstreet', 'voxelsnowboardslalom',
+        'voxelkaratebreak'
       ];
       // Fisher-Yates shuffle with seeded random
       const shuffled = [...allIds];
@@ -11800,6 +12627,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                        {((autoBattleStats.wins / (Math.max(1, autoBattleStats.wins + autoBattleStats.losses + autoBattleStats.draws))) * 100).toFixed(1)}%
                      </span>
                    </div>
+                   {lastBattleSummaryData && (
+                     <button
+                       type="button"
+                       onClick={(e) => {
+                         e.stopPropagation();
+                         setShowPostBattleSummaryModal(true);
+                       }}
+                       className="w-full mt-1 py-1 px-2 bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 rounded-lg text-[9px] font-bold text-indigo-200 flex items-center justify-center gap-1 transition-all cursor-pointer shadow-sm active:scale-95"
+                     >
+                       <BarChart3 size={11} className="text-indigo-400" />
+                       <span>{language === 'ko' ? '📊 직전 전투 분석' : '📊 Last Battle'}</span>
+                     </button>
+                   )}
                 </motion.div>
               )}
             </div>
@@ -12695,6 +13535,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     <span>{language === 'ko' ? '전술 지침(Gambit) 튜닝' : 'Gambit AI Tuning'}</span>
                   </div>
                   <span className="text-[10px] text-blue-400 font-mono">[GAMBIT]</span>
+                </button>
+
+                {/* Post-Battle Detailed Summary (AI Combat Feedback) */}
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setShowPostBattleSummaryModal(true);
+                  }}
+                  className="w-full py-2.5 px-4 bg-indigo-950/40 border border-indigo-500/40 hover:bg-indigo-900/60 text-indigo-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <BarChart3 size={16} className="text-indigo-400" />
+                    <span>{language === 'ko' ? '📊 최근 AI 전투 사후 분석' : '📊 Post-Battle Summary'}</span>
+                  </div>
+                  <span className="text-[10px] text-indigo-400 font-mono">[STATS]</span>
                 </button>
 
                 <button
@@ -14176,11 +15031,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 </div>
               </div>
 
-              {/* Battle Result Summary Panel (SNS points gained, Total damage dealt, Cards leveled up) */}
+              {/* Battle Result Summary Panel (SNS points gained, Total damage dealt/received, Cards leveled up) */}
               <BattleResultPanel
                 result={winner === 'player' ? 'win' : winner === 'ai' ? 'loss' : 'draw'}
                 snsEarned={rewardEarned}
                 totalDamageDealt={totalDamageDealt > 0 ? totalDamageDealt : (boardScore.player * 85 + (winner === 'player' ? 320 : 120))}
+                totalDamageReceived={totalDamageReceived > 0 ? totalDamageReceived : (boardScore.ai * 85 + (winner === 'ai' ? 320 : 120))}
                 leveledUpCards={leveledUpCards}
                 allDeckCardsProgress={allDeckCardsProgress}
                 usedCards={playerDeck}
@@ -14193,6 +15049,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 isElementalComboBonus={hasTriggeredElementalCombo}
                 isIroncladBonus={isIroncladWin}
                 onShareToCommunity={() => setShowBattleShareTemplate(true)}
+                onOpenDetailedSummary={() => setShowPostBattleSummaryModal(true)}
               />
 
               {/* Match Analysis Section */}
@@ -15001,6 +15858,36 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         playSfx={playSfx}
         onReward={(amount, reason) => {
           handleMinigameReward(amount, reason, reason);
+        }}
+      />
+
+      {/* Post-Battle Summary Modal (AI Combat & Auto-Battle Analytics) */}
+      <PostBattleSummaryModal
+        isOpen={showPostBattleSummaryModal}
+        onClose={() => setShowPostBattleSummaryModal(false)}
+        summaryData={lastBattleSummaryData}
+        language={language}
+        onRematch={() => {
+          setShowPostBattleSummaryModal(false);
+          handleRematch();
+        }}
+        onResumeAutoBattle={() => {
+          setShowPostBattleSummaryModal(false);
+          if (setIsAutoBattle) {
+            setIsAutoBattle(true);
+            try {
+              localStorage.setItem('hero_auto_battle_setting', JSON.stringify(true));
+            } catch {
+              // ignore
+            }
+          }
+          if (gameState === 'gameOver' || gameState === 'lobby') {
+            handleRematch();
+          }
+        }}
+        onShareToCommunity={() => {
+          setShowPostBattleSummaryModal(false);
+          setShowBattleShareTemplate(true);
         }}
       />
     </div>
