@@ -1425,6 +1425,10 @@ function AppContent() {
         setView('boost');
       } else if (path === '/policy-center') {
         setView('policy-center');
+      } else if (path === '/tool/checkgrid' || path === '/tool/check-grid' || path === '/checkgrid' || path.startsWith('/tool/checkgrid')) {
+        setView('tool-checkgrid');
+      } else if (path === '/tool/makegrid' || path === '/tool/make-grid' || path === '/makegrid' || path === '/tool/grid' || path === '/too/grid' || path === '/grid' || path.startsWith('/tool/makegrid') || path.startsWith('/tool/grid') || path.startsWith('/too/grid')) {
+        setView('tool-makegrid');
       } else if (path.startsWith('/creator/')) {
         const code = path.split('/creator/')[1]?.split('/')[0] || '';
         setCreatorCode(code);
@@ -1612,6 +1616,14 @@ function AppContent() {
       targetPath = '/cartoonbook';
       title = 'SNS히어로 카툰북 (CartoonBook) - SNSHero';
       description = 'AI로 그려낸 판타지 RPG 웹툰. SNS히어로의 매력적인 캐릭터들과 세계관을 아름다운 웹툰으로 감상하세요.';
+    } else if (view === 'tool-checkgrid') {
+      targetPath = '/tool/checkgrid';
+      title = '그리드 검수기 (Grid Checker 10x10) - SNS히어로';
+      description = '10x10 기본 그리드 이미지 로드 & 정밀 검수 도구. 파일 업로드 또는 이미지 URL을 입력하여 격자선 오버레이 정합성, 셀 슬라이스 좌표를 검수하세요.';
+    } else if (view === 'tool-makegrid' || view === 'tool-grid') {
+      targetPath = '/tool/makegrid';
+      title = 'CSS 그리드 생성기 (Grid Generator) - SNS히어로';
+      description = 'CSS Grid 레이아웃을 시각적으로 설계하고 코드를 실시간 추출하는 도구입니다.';
     }
 
     if (currentPath !== targetPath) {

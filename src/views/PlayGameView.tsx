@@ -13016,7 +13016,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           <div className="relative flex items-center justify-center w-full min-h-[280px] sm:min-h-[320px] md:min-h-[350px] gap-2 md:gap-4">
             {/* DESKTOP LEFT SIDEBAR: SCOREBOARD & TURN INDICATOR (lg:flex ONLY) */}
             {!gameOver && gameState === 'playing' && (
-              <div className="hidden lg:flex absolute left-2 md:left-4 top-1/2 -translate-y-1/2 flex-col items-center gap-4 z-20">
+              <div className="hidden lg:flex absolute left-2 md:left-4 xl:left-8 top-1/2 -translate-y-1/2 flex-col items-center gap-4 z-20">
                 {/* 1. VERTICAL TURN INDICATOR */}
                 {!isCoinFlipping && (
                   <motion.div 
@@ -13726,11 +13726,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     </div>
                   </div>
                </div>
-            {/* RIGHT: TACTICAL LOG (Absolute Right) */}
+            {/* RIGHT: TACTICAL LOG (Absolute Right of Card Board) */}
             {!gameOver && gameState === 'playing' && (
-              <div className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-20">
+              <div className="hidden lg:flex absolute right-2 md:right-4 xl:right-8 top-1/2 -translate-y-1/2 flex-col gap-4 z-20">
                 {/* Desktop Sidebar Log */}
-                <div className="w-44 hidden xl:flex flex-col gap-2 h-[320px]">
+                <div className="w-40 xl:w-48 flex flex-col gap-2 h-[320px]">
                   <div className="text-[10px] font-black text-white/40 uppercase tracking-widest pl-2 flex items-center gap-2">
                     <Terminal size={10} />
                     <span>TACTICAL_LOG</span>
