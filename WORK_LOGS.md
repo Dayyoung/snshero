@@ -4,6 +4,30 @@
 
 ---
 
+## [2026-08-20 13:45 KST / 04:45 UTC] [AI Studio용 마스터 원샷 개발 프롬프트 지침서 snshero.md 제작 완료]
+- **작업 내용**:
+  1. **AI Studio 마스터 원샷 개발 프롬프트 지침서 (`snshero.md`) 제작**:
+     - Google AI Studio, Gemini API 등에 단일 프롬프트/컨텍스트 파일로 입력 시, 100% 작동 가능한 완성형 SNSHero 게임을 단번에 생성할 수 있도록 완벽한 사양서 구축.
+     - **카드 이미지 스프라이트 그리드 매핑 공식**: `/public/cards1.png` (ID 1~100) 및 `/public/cards2.png` (ID 101~110+) 10x10 스프라이트 시트 CSS 연산 공식 (`background-size: 1000% 1000%`, `background-position: ${col * 11.111111}% ${row * 11.111111}%`, `image-rendering: pixelated`) 상세 명세.
+     - **110종 전체 카드 데이터베이스 (ID 1~110)**: 11개 속성(Water, Fire, Air, Earth, Human, Undead, Elf, Dwarf, Monster, Robot, Dragon), 6개 희귀도(Bronze~Legendary), 4방향 스탯, 종합 전투력, 7종 특수 어빌리티(SHIELD, WALL, COUNTER, OMNIBOOST, PIERCE, IMMUNITY, TIME_WARP) 완전 수록.
+     - **3x3 배틀 엔진 상세 알고리즘**: 상하좌우 스탯 비교 플립, 연쇄 콤보(Chain Combo), 전술 스탠스(Aggressive/Defensive/Balanced) 및 갬빗 AI, 1x/2x/3x 배속 자동 전투 엔진 명세.
+     - **전체 뷰 및 시스템 아키텍처 명세**:
+       - `HomeView`: 유저 프로필, SNS 잔액, 로비 배너 캐러셀, 30초 대기 자동 랭킹 배틀 시작 타이머, AFK 순찰, 일일 미션.
+       - `MyDeckView`: 5장 덱 Drag & Drop 편성, 인벤토리 필터링/검색, 4개 슬롯 장비 장착, 다마고치 돌봄 육성(포만감/행복도/훈련/휴식), 카드 일괄 분해 및 합성.
+       - `PlayGameView`: 랭킹 대전, 모험/스토리, 보스 레이드, 시련의 탑 50층, 8시간 원정대, 비스티아리움 도감, 비밀 업적 스탬프북.
+       - `ShopView`: 단일/10연차 가챠 및 개봉 애니메이션, 천장(Pity Gauge 30연차) 시스템, 장비팩 뽑기, SNS 포인트 충전.
+       - `KadanRpgView`: 카단 2D 타일 월드맵 RPG 탐험, NPC 대화, 보물상자, 전투 인카운터, 자동 모드, 환생 시스템.
+       - `MiniGames`: 카드러시, 카드하이스트, 카드탭, 카드슬롯, 카드소서리, 카드플립, 슬라이드 퍼즐, 카드점퍼 등 8종.
+       - `SettingView` & `BackupRestoreModal`: 280~750자 애니메이션 QR 분할 백업 & 연속 카메라 스캔 조합 복원 시스템.
+     - **LocalStorage 영구 저장 스키마**: `hero_xxx` 키 표준 및 초기 부트스트랩(기본 5장 덱 + 1,000 SNS 지급) 로직.
+     - **Web Audio API 칩튠 오디오 신디사이저**: 외부 mp3 없이 브라우저 자체 오디오 컨텍스트로 비프, 타격음, 연쇄 플립 팡파레 실시간 합성 엔진 수록.
+     - **OpenCode Monospace 테마 가이드**: Berkeley Mono 서체, Warm Cream `#fdfcfc`, Deep Ink `#201d1d`, 1px Hairline, 4px 인터랙티브 버튼 반경, `[+]`/`[BATTLE]` ASCII 마커 준수.
+  2. **AI Studio 실행용 복사-붙여넣기 마스터 프롬프트 템플릿 포함**:
+     - 사용자가 AI Studio에 복사하여 즉시 완전한 코드를 생성할 수 있는 완벽한 프롬프트 가이드 제공.
+- **상태**: 구현 및 검증 완료.
+
+---
+
 ## [2026-08-20 10:25 KST / 01:25 UTC] [대용량 계정 데이터 애니메이션 QR 분할 백업 & 연속 카메라 스캔 조합 복원 시스템 구현] 완료
 - **작업 내용**:
   1. **DATA TOO LONG 오류 원천 해결 및 최적 청크 분할 전송 시스템 구축 (`BackupRestoreModal.tsx`)**:
