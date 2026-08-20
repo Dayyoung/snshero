@@ -296,7 +296,7 @@ export interface RefundRequest {
   details?: string;
 }
 
-export type ViewType = 'game' | 'home' | 'main' | 'mydeck' | 'play' | 'shop' | 'event' | 'setting' | 'ranking' | 'admin' | 'status' | 'companion' | 'profile' | 'skill' | 'wiki' | 'world-codex' | 'wiki-card' | 'wiki-item' | 'wiki-skill' | 'wiki-howtoplay' | 'wiki-tip' | 'god' | 'guild-list' | 'guild-detail' | 'community' | 'playground' | 'stock-market' | 'card-marketplace' | 'reward-qr' | 'reward-ar' | 'share' | 'prediction-market' | 'boost' | 'season-hub' | 'policy-center' | 'web3-landing' | 'referral' | 'creator' | 'webtoon' | 'novel' | 'anime' | 'movie' | 'modoo' | 'tool-grid';
+export type ViewType = 'game' | 'home' | 'main' | 'mydeck' | 'play' | 'shop' | 'event' | 'setting' | 'ranking' | 'admin' | 'status' | 'companion' | 'profile' | 'skill' | 'wiki' | 'world-codex' | 'wiki-card' | 'wiki-item' | 'wiki-skill' | 'wiki-howtoplay' | 'wiki-tip' | 'god' | 'guild-list' | 'guild-detail' | 'community' | 'playground' | 'stock-market' | 'card-marketplace' | 'reward-qr' | 'reward-ar' | 'share' | 'prediction-market' | 'boost' | 'season-hub' | 'policy-center' | 'web3-landing' | 'referral' | 'creator' | 'webtoon' | 'novel' | 'anime' | 'movie' | 'modoo' | 'tool-grid' | 'tool-makegrid' | 'tool-checkgrid';
 
 export interface Skill {
   id: string;
@@ -568,7 +568,49 @@ export interface RaidRewardClaimResult {
   reason?: string;
 }
 
-// ─── Friend Battle Types ─────────────────────────────────────────────
+// ─── Battle Tactics & Gambit System Types (Items 393, 401) ───────────
+
+export type TacticalStance = 'attack' | 'defense' | 'balanced';
+
+export type GambitPriorityType = 
+  | 'COUNTER_ELEMENT'   // 속성 상성 우위 타겟 우선 캡처
+  | 'SECURE_CORNERS'     // 방어 취약 방지용 모서리 우선 선점
+  | 'PRESERVE_ACE'       // 에이스(전설/고파워) 카드 후반 보존
+  | 'SNIPE_HIGH_VALUE'   // 적 고가치 카드 저격 우선
+  | 'INTERCEPT_SYNERGY'; // 적 연계/버프 타일 차단
+
+export interface GambitConfig {
+  slots: [GambitPriorityType, GambitPriorityType, GambitPriorityType];
+  activeStance: TacticalStance;
+  autoDisassembleNR: boolean; // Item 405: N/R 자동분해
+}
+
+// ─── Secret Achievement Stamp Book Types (Item 397) ─────────────────
+
+export interface SecretStamp {
+  id: string;
+  titleKo: string;
+  titleEn: string;
+  descKo: string;
+  descEn: string;
+  icon: string;
+  rewardType: 'gems' | 'sns' | 'title';
+  rewardAmount: number;
+  rewardTitle?: string;
+  isUnlocked: boolean;
+  unlockedAt?: number;
+}
+
+// ─── Hero Mastery & Evolution Types (Items 395, 403) ────────────────
+
+export interface HeroMasteryRecord {
+  cardId: number;
+  battleCount: number;
+  winCount: number;
+  goldenMasteryUnlocked: boolean; // 50-win skin
+  commanderVoiceUnlocked: boolean; // 100-battle voice & badge
+}
+
 
 /** 친구 대전 요청 */
 export interface FriendBattleRequest {

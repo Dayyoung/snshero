@@ -77,7 +77,10 @@ import {
   Volume2,
   VolumeX,
   RotateCw,
-  Grid3X3
+  Grid3X3,
+  Wrench,
+  ChevronDown,
+  CheckCircle2
 } from 'lucide-react';
 
 import { Meta } from './components/Meta';
@@ -129,6 +132,7 @@ import { AnimeView } from './views/AnimeView';
 import { MovieView } from './views/MovieView';
 import { ModooView } from './views/ModooView';
 import { GridToolView } from './views/GridToolView';
+import { GridCheckerView } from './views/GridCheckerView';
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -353,10 +357,12 @@ function getViewFromPathAndUrl(): ViewType {
   if (queryView === 'anime') return 'anime';
   if (queryView === 'movie') return 'movie';
   if (queryView === 'modoo') return 'modoo';
-  if (queryView === 'grid' || queryView === 'tool-grid' || queryView === 'tool/grid' || queryView === 'too/grid') return 'tool-grid';
+  if (queryView === 'grid' || queryView === 'tool-grid' || queryView === 'tool/grid' || queryView === 'too/grid' || queryView === 'makegrid' || queryView === 'tool/makegrid' || queryView === 'tool-makegrid') return 'tool-makegrid';
+  if (queryView === 'checkgrid' || queryView === 'tool-checkgrid' || queryView === 'tool/checkgrid' || queryView === 'gridcheck') return 'tool-checkgrid';
 
   const path = window.location.pathname.replace(/\/$/, '').toLowerCase() || '/';
-  if (path === '/tool/grid' || path === '/too/grid' || path === '/grid' || path.startsWith('/tool/grid') || path.startsWith('/too/grid')) return 'tool-grid';
+  if (path === '/tool/checkgrid' || path === '/tool/check-grid' || path === '/checkgrid' || path.startsWith('/tool/checkgrid')) return 'tool-checkgrid';
+  if (path === '/tool/makegrid' || path === '/tool/make-grid' || path === '/makegrid' || path === '/tool/grid' || path === '/too/grid' || path === '/grid' || path.startsWith('/tool/makegrid') || path.startsWith('/tool/grid') || path.startsWith('/too/grid')) return 'tool-makegrid';
   if (path === '/book' || path === '/novel' || path.startsWith('/novel/s1-')) return 'novel';
   if (path === '/admin') return 'admin';
   if (path === '/status') return 'status';
@@ -424,6 +430,7 @@ function AppContent() {
   const [preselectedGameId, setPreselectedGameId] = useState<string | null>(null);
   const diceTimeoutRef = useRef<number | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUtilityOpen, setIsUtilityOpen] = useState(false);
   const adBannerRef = React.useRef<HTMLDivElement>(null);
   const [adBannerHeight, setAdBannerHeight] = useState(0);
   const [autoStartPvp, setAutoStartPvp] = useState(false);
@@ -497,10 +504,15 @@ function AppContent() {
       if (window.location.pathname !== '/modoo') {
         window.history.pushState({}, '', '/modoo');
       }
-    } else if (view === 'tool-grid') {
+    } else if (view === 'tool-makegrid' || view === 'tool-grid') {
       const p = window.location.pathname.toLowerCase();
-      if (p !== '/tool/grid' && p !== '/too/grid') {
-        window.history.pushState({}, '', '/tool/grid');
+      if (p !== '/tool/makegrid' && p !== '/tool/grid') {
+        window.history.pushState({}, '', '/tool/makegrid');
+      }
+    } else if (view === 'tool-checkgrid') {
+      const p = window.location.pathname.toLowerCase();
+      if (p !== '/tool/checkgrid') {
+        window.history.pushState({}, '', '/tool/checkgrid');
       }
     } else if (view !== 'community') {
       if (viewParam === 'community' || params.has('category') || params.has('postId') || params.has('id')) {
@@ -660,7 +672,7 @@ function AppContent() {
     refreshUserGuild();
   }, [effectiveUser?.uid, refreshUserGuild]);
 
-  const [guestDataLoaded, setGuestDataLoaded] = useState(false);
+  const [guestDataLoaded, setGuestDataLoaded] = useState(true);
   const [isTutorialMode, setIsTutorialMode] = useState(() => {
     if (typeof window !== 'undefined') {
       const season = localStorage.getItem('hero_current_season') || 'season1';
@@ -819,14 +831,15 @@ function AppContent() {
       }
     });
 
-    const isOnline = typeof window !== 'undefined' && navigator.onLine && localStorage.getItem('hero_offline_mode') !== 'true';
-    if (!isOnline && typeof window !== 'undefined') {
+    if (typeof window !== 'undefined') {
       const season = localStorage.getItem('hero_current_season') || 'season1';
       const savedGuest = getSeasonItem('hero_inventory_guest', season);
       const savedStandard = getSeasonItem('hero_inventory', season);
+      const rawStandard = localStorage.getItem('hero_inventory');
       
       let parsedGuest = {};
       let parsedStandard = {};
+      let parsedRaw = {};
       
       if (savedGuest) {
         try { parsedGuest = JSON.parse(savedGuest); } catch (e) {}
@@ -834,32 +847,34 @@ function AppContent() {
       if (savedStandard) {
         try { parsedStandard = JSON.parse(savedStandard); } catch (e) {}
       }
+      if (rawStandard) {
+        try { parsedRaw = JSON.parse(rawStandard); } catch (e) {}
+      }
       
-      const merged = { ...inv, ...parsedStandard, ...parsedGuest };
-      if (savedGuest || savedStandard) return merged;
+      const merged = { ...inv, ...parsedRaw, ...parsedStandard, ...parsedGuest };
+      if (savedGuest || savedStandard || rawStandard) return merged;
     }
     return inv;
   });
 
   const [totalPower, setTotalPower] = useState(() => {
-    const isOnline = typeof window !== 'undefined' && navigator.onLine && localStorage.getItem('hero_offline_mode') !== 'true';
-    if (!isOnline && typeof window !== 'undefined') {
+    if (typeof window !== 'undefined') {
       const season = localStorage.getItem('hero_current_season') || 'season1';
-      const saved = getSeasonItem('hero_totalPower_guest', season) || getSeasonItem('hero_totalPower', season);
+      const saved = getSeasonItem('hero_totalPower_guest', season) || getSeasonItem('hero_totalPower', season) || localStorage.getItem('hero_totalPower');
       if (saved) {
         const parsed = parseInt(saved, 10);
-        if (!isNaN(parsed)) return parsed;
+        if (!isNaN(parsed) && parsed > 0) return parsed;
       }
     }
     return INITIAL_CARDS.reduce((acc, c) => acc + (CARD_DATABASE[c.imageIndex || 0]?.power || 0), 0);
   });
 
   const [itemInventory, setItemInventory] = useState<Item[]>(() => {
-    const isOnline = typeof window !== 'undefined' && navigator.onLine && localStorage.getItem('hero_offline_mode') !== 'true';
-    if (!isOnline && typeof window !== 'undefined') {
+    if (typeof window !== 'undefined') {
       const season = localStorage.getItem('hero_current_season') || 'season1';
       const savedGuest = getSeasonItem('hero_itemInventory_guest', season);
       const savedStandard = getSeasonItem('hero_itemInventory', season);
+      const rawStandard = localStorage.getItem('hero_itemInventory');
       
       if (savedGuest && savedGuest !== '[]') {
         try { return JSON.parse(savedGuest); } catch (e) {}
@@ -867,15 +882,17 @@ function AppContent() {
       if (savedStandard && savedStandard !== '[]') {
         try { return JSON.parse(savedStandard); } catch (e) {}
       }
+      if (rawStandard && rawStandard !== '[]') {
+        try { return JSON.parse(rawStandard); } catch (e) {}
+      }
     }
     return [];
   });
 
   const [stats, setStats] = useState<UserStats>(() => {
-    const isOnline = typeof window !== 'undefined' && navigator.onLine && localStorage.getItem('hero_offline_mode') !== 'true';
-    if (!isOnline && typeof window !== 'undefined') {
+    if (typeof window !== 'undefined') {
       const season = localStorage.getItem('hero_current_season') || 'season1';
-      const saved = getSeasonItem('hero_stats_guest', season) || getSeasonItem('hero_stats', season);
+      const saved = getSeasonItem('hero_stats_guest', season) || getSeasonItem('hero_stats', season) || localStorage.getItem('hero_stats');
       if (saved) {
         try {
           return JSON.parse(saved);
@@ -896,12 +913,12 @@ function AppContent() {
   });
 
   const [currentDeck, setCurrentDeck] = useState<CardData[]>(() => {
-    const isOnline = typeof window !== 'undefined' && navigator.onLine && localStorage.getItem('hero_offline_mode') !== 'true';
-    if (!isOnline && typeof window !== 'undefined') {
+    if (typeof window !== 'undefined') {
       const season = localStorage.getItem('hero_current_season') || 'season1';
       const savedGuest = getSeasonItem('hero_deck_guest', season);
       const savedStandard = getSeasonItem('hero_deck', season);
-      const saved = savedGuest || savedStandard;
+      const rawStandard = localStorage.getItem('hero_deck');
+      const saved = savedGuest || savedStandard || rawStandard;
       
       if (saved) {
         try {
@@ -914,12 +931,17 @@ function AppContent() {
           });
           const savedInvGuest = getSeasonItem('hero_inventory_guest', season);
           const savedInvStandard = getSeasonItem('hero_inventory', season);
+          const rawInv = localStorage.getItem('hero_inventory');
           let parsedInvGuest = {};
           let parsedInvStandard = {};
+          let parsedRawInv = {};
           if (savedInvGuest) try { parsedInvGuest = JSON.parse(savedInvGuest); } catch (e) {}
           if (savedInvStandard) try { parsedInvStandard = JSON.parse(savedInvStandard); } catch (e) {}
-          const finalInv = { ...inv, ...parsedInvStandard, ...parsedInvGuest };
-          return parsed.map((c: any) => syncCardWithDatabase(c, finalInv));
+          if (rawInv) try { parsedRawInv = JSON.parse(rawInv); } catch (e) {}
+          const finalInv = { ...inv, ...parsedRawInv, ...parsedInvStandard, ...parsedInvGuest };
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed.map((c: any) => syncCardWithDatabase(c, finalInv));
+          }
         } catch (e) {
           console.error("Failed to parse deck", e);
         }
@@ -932,15 +954,18 @@ function AppContent() {
       }
     });
     let finalInv = inv;
-    if (!isOnline && typeof window !== 'undefined') {
+    if (typeof window !== 'undefined') {
       const season = localStorage.getItem('hero_current_season') || 'season1';
       const savedInvGuest = getSeasonItem('hero_inventory_guest', season);
       const savedInvStandard = getSeasonItem('hero_inventory', season);
+      const rawInv = localStorage.getItem('hero_inventory');
       let parsedInvGuest = {};
       let parsedInvStandard = {};
+      let parsedRawInv = {};
       if (savedInvGuest) try { parsedInvGuest = JSON.parse(savedInvGuest); } catch (e) {}
       if (savedInvStandard) try { parsedInvStandard = JSON.parse(savedInvStandard); } catch (e) {}
-      finalInv = { ...inv, ...parsedInvStandard, ...parsedInvGuest };
+      if (rawInv) try { parsedRawInv = JSON.parse(rawInv); } catch (e) {}
+      finalInv = { ...inv, ...parsedRawInv, ...parsedInvStandard, ...parsedInvGuest };
     }
     return INITIAL_CARDS.slice(0, 5).map(c => syncCardWithDatabase(c, finalInv));
   });
@@ -954,230 +979,63 @@ function AppContent() {
   const cloudDataLoadedRef = useRef(false);
 
   const syncUserData = useCallback(async (overwriteData?: any) => {
-    const now = Date.now();
-    const isLocked = isSyncingRef.current && (now - syncStartTimeRef.current < 15000);
-
-    if (testMode) {
-      if (!effectiveUser) console.warn("%c [FIRESTORE] Skip: No User Context ", 'color: #ef4444;');
-      else if (effectiveUser.uid === 'guest-id') console.warn("%c [FIRESTORE] Skip: Guest Mode (No Cloud Save) ", 'color: #f59e0b;');
-      else if (isLocked) {
-        const elapsed = now - syncStartTimeRef.current;
-        console.warn(`%c [FIRESTORE] Skip: Sync in Progress (Elapsed: ${elapsed}ms) `, 'color: #3b82f6;');
-      } else if (isSyncingRef.current) {
-        console.log("%c [FIRESTORE] Lock Timeout - Forcing new sync... ", 'color: #f97316;');
-      }
+    // 1. Synchronize React states immediately
+    if (overwriteData) {
+      if (overwriteData.sns !== undefined) setSns(overwriteData.sns);
+      if (overwriteData.stats !== undefined) setStats(overwriteData.stats);
+      if (overwriteData.inventory !== undefined) setInventory(overwriteData.inventory);
+      if (overwriteData.currentDeck !== undefined) setCurrentDeck(overwriteData.currentDeck);
+      if (overwriteData.itemInventory !== undefined) setItemInventory(overwriteData.itemInventory);
+      if (overwriteData.totalPower !== undefined) setTotalPower(overwriteData.totalPower);
+      if (overwriteData.isAutoBattle !== undefined) setIsAutoBattle(overwriteData.isAutoBattle);
+      if (overwriteData.lowSpecMode !== undefined) setLowSpecMode(overwriteData.lowSpecMode);
+      if (overwriteData.recommendMode !== undefined) setRecommendMode(overwriteData.recommendMode);
+      if (overwriteData.language !== undefined) setLanguage(overwriteData.language);
+      if (overwriteData.theme !== undefined) setTheme(overwriteData.theme);
+      if (overwriteData.isAdRemoved !== undefined) setIsAdRemoved(overwriteData.isAdRemoved);
     }
 
-    if (!effectiveUser || effectiveUser.uid === 'guest-id' || isLocked) return;
+    if (typeof window === 'undefined') return;
+    const season = localStorage.getItem('hero_current_season') || currentSeason || 'season1';
 
-    if (!cloudDataLoadedRef.current) {
-      if (testMode) console.log("%c [FIRESTORE] Sync blocked: Cloud data not loaded yet. ", 'color: #f59e0b;');
-      return;
+    // 2. Persist directly to LocalStorage (Single Source of Truth)
+    if (overwriteData?.inventory !== undefined) {
+      setSeasonItem('hero_inventory', season, JSON.stringify(overwriteData.inventory));
+      setSeasonItem('hero_inventory_guest', season, JSON.stringify(overwriteData.inventory));
+      localStorage.setItem('hero_inventory', JSON.stringify(overwriteData.inventory));
     }
-    
-    isSyncingRef.current = true;
-    syncStartTimeRef.current = now;
-    if (testMode) console.log("%c [FIRESTORE] Syncing Started... ", 'color: #10b981;');
-    try {
-      // Synchronize React states immediately to prevent state sync lags
-      if (overwriteData) {
-        if (overwriteData.sns !== undefined) setSns(overwriteData.sns);
-        if (overwriteData.stats !== undefined) setStats(overwriteData.stats);
-        if (overwriteData.inventory !== undefined) setInventory(overwriteData.inventory);
-        if (overwriteData.currentDeck !== undefined) setCurrentDeck(overwriteData.currentDeck);
-        if (overwriteData.itemInventory !== undefined) setItemInventory(overwriteData.itemInventory);
-        if (overwriteData.totalPower !== undefined) setTotalPower(overwriteData.totalPower);
-      }
-
-      const userRef = doc(db, getUserCollectionName(currentSeason), effectiveUser.uid);
-      const targetStats = overwriteData?.stats !== undefined ? overwriteData.stats : stats;
-      const wins = targetStats?.wins || 0;
-      const losses = targetStats?.losses || 0;
-      const draws = targetStats?.draws || 0;
-      const totalGames = wins + losses + draws;
-      const calculatedWinRate = totalGames > 0 ? parseFloat(((wins / totalGames) * 100).toFixed(1)) : 0;
-
-      const rawData = {
-        sns: overwriteData?.sns !== undefined ? overwriteData.sns : sns,
-        inventory: overwriteData?.inventory !== undefined ? overwriteData.inventory : inventory,
-        stats: targetStats,
-        winRate: calculatedWinRate,
-        currentDeck: overwriteData?.currentDeck !== undefined ? overwriteData.currentDeck : currentDeck,
-        itemInventory: overwriteData?.itemInventory !== undefined ? overwriteData.itemInventory : itemInventory,
-        totalPower: overwriteData?.totalPower !== undefined ? overwriteData.totalPower : totalPower,
-        displayName: overwriteData?.displayName !== undefined ? overwriteData.displayName : (effectiveUser.displayName || null),
-        photoURL: overwriteData?.photoURL !== undefined ? overwriteData.photoURL : (effectiveUser.photoURL || null),
-        activeEmoticonKey: overwriteData?.activeEmoticonKey !== undefined ? overwriteData.activeEmoticonKey : (effectiveUser.activeEmoticonKey || DEFAULT_PROFILE_EMOTICON_KEY),
-        activeBadgeKey: overwriteData?.activeBadgeKey !== undefined ? overwriteData.activeBadgeKey : (effectiveUser.activeBadgeKey || DEFAULT_PROFILE_BADGE_KEY),
-        activeTitleKey: overwriteData?.activeTitleKey !== undefined ? overwriteData.activeTitleKey : (effectiveUser.activeTitleKey || DEFAULT_PROFILE_TITLE_KEY),
-        isAutoBattle: overwriteData?.isAutoBattle !== undefined ? overwriteData.isAutoBattle : isAutoBattle,
-        lowSpecMode: overwriteData?.lowSpecMode !== undefined ? overwriteData.lowSpecMode : lowSpecMode,
-        recommendMode: overwriteData?.recommendMode !== undefined ? overwriteData.recommendMode : recommendMode,
-        language: overwriteData?.language !== undefined ? overwriteData.language : language,
-        theme: overwriteData?.theme !== undefined ? overwriteData.theme : theme,
-        isAdRemoved: overwriteData?.isAdRemoved !== undefined ? overwriteData.isAdRemoved : isAdRemoved,
-        tutorialCompleted: getSeasonItem('hero_tutorial_completed', currentSeason) === 'true',
-        lastSync: Date.now()
-      };
-
-      const dataToSync = sanitizeForFirestore(rawData);
-      
-      if (testMode) {
-        const dataSize = JSON.stringify(dataToSync).length;
-        console.log(`%c [FIRESTORE] Payload: ${Object.keys(dataToSync).join(', ')} (${dataSize} bytes) `, 'color: #888;');
-      }
-      
-      const syncPromise = setDoc(userRef, dataToSync, { merge: true });
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error("Firestore Timeout (10s)")), 10000)
-      );
-
-      await Promise.race([syncPromise, timeoutPromise]);
-      
-      if (testMode) {
-        console.log("%c [FIRESTORE] User Data Sync: SUCCESS ", 'background: #065f46; color: #fff; font-weight: bold;');
-      } else {
-        // Silent in production — logs only in testMode
-      }
-    } catch (error) {
-      if (testMode) {
-        console.error("%c [FIRESTORE] User Data Sync: FAILED ", 'background: #991b1b; color: #fff; font-weight: bold;', error);
-      } else {
-        console.error("Sync error:", error);
-      }
-    } finally {
-      isSyncingRef.current = false;
+    if (overwriteData?.currentDeck !== undefined) {
+      setSeasonItem('hero_deck', season, JSON.stringify(overwriteData.currentDeck));
+      setSeasonItem('hero_deck_guest', season, JSON.stringify(overwriteData.currentDeck));
+      localStorage.setItem('hero_deck', JSON.stringify(overwriteData.currentDeck));
     }
-  }, [effectiveUser, sns, inventory, stats, currentDeck, itemInventory, totalPower, isAutoBattle, lowSpecMode, recommendMode, language, isAdRemoved, testMode, currentSeason]);
-
-  const loadCloudUserData = useCallback(async (uid: string) => {
-    try {
-      const userRef = doc(db, getUserCollectionName(currentSeason), uid);
-      const userSnap = await getDoc(userRef);
-      
-      const localLastUid = getSeasonItem('hero_last_uid', currentSeason);
-      const localLastSyncStr = getSeasonItem('hero_lastSync', currentSeason);
-      let localLastSync = Number(localLastSyncStr) || 0;
-
-      // 만약 기기의 마지막 동기화 UID가 현재 로그인하려는 UID와 다르면,
-      // 이전 유저/게스트의 오프라인 데이터를 덮어쓰기 위해 로컬 버전을 0으로 취급합니다.
-      if (localLastUid !== uid) {
-        if (testMode) {
-          console.log(`%c [FIRESTORE] User changed (Last: ${localLastUid}, Current: ${uid}). Bypassing local cache. `, 'color: #f59e0b;');
-        }
-        localLastSync = 0;
-      }
-
-      if (userSnap.exists()) {
-        const cloudData = userSnap.data();
-        const cloudLastSync = Number(cloudData.lastSync) || 0;
-
-        setUser((prev: any) => prev && prev.uid === uid ? ({
-          ...prev,
-          activeEmoticonKey: cloudData.activeEmoticonKey || DEFAULT_PROFILE_EMOTICON_KEY,
-          activeBadgeKey: cloudData.activeBadgeKey || DEFAULT_PROFILE_BADGE_KEY,
-          activeTitleKey: cloudData.activeTitleKey || DEFAULT_PROFILE_TITLE_KEY,
-        }) : prev);
-
-        if (testMode) {
-          console.log(`%c [FIRESTORE] Cloud data exists (Sync: ${cloudLastSync}). Force updating local states with cloud data. `, 'color: #10b981;');
-        }
-        
-        if (cloudData.sns !== undefined) setSns(cloudData.sns);
-        if (cloudData.inventory) {
-          setInventory(cloudData.inventory);
-          const basePower = Object.entries(cloudData.inventory).reduce((acc, [idx, record]: [string, any]) => {
-            const power = CARD_DATABASE[Number(idx)]?.power || 0;
-            return acc + (power * (record.quantity || 1));
-          }, 0);
-          setTotalPower(Math.ceil(basePower));
-        }
-        if (cloudData.stats) setStats(cloudData.stats);
-        if (cloudData.currentDeck) setCurrentDeck(cloudData.currentDeck);
-        if (cloudData.itemInventory) setItemInventory(cloudData.itemInventory);
-        if (cloudData.isAutoBattle !== undefined) setIsAutoBattle(cloudData.isAutoBattle);
-        if (cloudData.lowSpecMode !== undefined) setLowSpecMode(cloudData.lowSpecMode);
-        if (cloudData.isAdRemoved !== undefined) setIsAdRemoved(cloudData.isAdRemoved);
-        if (cloudData.language) setLanguage(cloudData.language);
-        if (cloudData.theme) {
-          setTheme(cloudData.theme);
-        }
-        if (cloudData.recommendMode !== undefined) setRecommendMode(cloudData.recommendMode);
-        
-        // 튜토리얼 완료 처리
-        const isTutorialDone = cloudData.tutorialCompleted === true || cloudData.sns !== undefined;
-        if (isTutorialDone) {
-          setSeasonItem('hero_tutorial_completed', currentSeason, 'true');
-          setIsTutorialMode(false);
-          setTutorialStep(0);
-        } else {
-          setIsTutorialMode(true);
-          setTutorialStep(1);
-        }
-
-        setSeasonItem('hero_lastSync', currentSeason, cloudLastSync.toString());
-        setSeasonItem('hero_last_uid', currentSeason, uid);
-        cloudDataLoadedRef.current = true;
-        return true;
-      } else {
-        if (testMode) console.log("%c [FIRESTORE] No cloud data found. Checking local cache... ", 'color: #3b82f6;');
-        
-        if (localLastSync > 0) {
-          if (testMode) console.log("%c [FIRESTORE] Local cache exists. Keeping local states and uploading to cloud. ", 'color: #10b981;');
-          cloudDataLoadedRef.current = true;
-          await syncUserData();
-          setSeasonItem('hero_last_uid', currentSeason, uid);
-          return true;
-        } else {
-          if (testMode) console.log("%c [FIRESTORE] Resetting to initial game state. ", 'color: #3b82f6;');
-          setSns(1000);
-          
-          const defaultInv: Record<number, InventoryRecord> = {};
-          INITIAL_CARDS.forEach(c => {
-            if (c.imageIndex !== undefined) {
-              defaultInv[c.imageIndex] = { 
-                cardIndex: c.imageIndex, 
-                quantity: 1, 
-                rarity: c.rarity || 'bronze' 
-              };
-            }
-          });
-          setInventory(defaultInv);
-          
-          const defaultPower = INITIAL_CARDS.reduce((acc, c) => acc + (CARD_DATABASE[c.imageIndex || 0]?.power || 0), 0);
-          setTotalPower(defaultPower);
-          
-          setItemInventory([]);
-          
-          setStats({ 
-            wins: 0, 
-            losses: 0, 
-            draws: 0, 
-            skillPoints: 0, 
-            winStreak: 0, 
-            lossStreak: 0, 
-            unlockedAchievements: [], 
-            claimedAchievements: [],
-            achievementProgress: {} 
-          });
-          
-          const defaultDeck = INITIAL_CARDS.slice(0, 5).map(c => syncCardWithDatabase(c, defaultInv));
-          setCurrentDeck(defaultDeck);
-          
-          setIsTutorialMode(true);
-          setTutorialStep(1);
-          
-          cloudDataLoadedRef.current = true;
-          await syncUserData();
-          setSeasonItem('hero_last_uid', currentSeason, uid);
-          return true;
-        }
-      }
-    } catch (e) {
-      console.error("Failed to load cloud user data:", e);
-      return false;
+    if (overwriteData?.stats !== undefined) {
+      setSeasonItem('hero_stats', season, JSON.stringify(overwriteData.stats));
+      setSeasonItem('hero_stats_guest', season, JSON.stringify(overwriteData.stats));
+      localStorage.setItem('hero_stats', JSON.stringify(overwriteData.stats));
     }
-  }, [testMode, currentSeason, syncUserData, stats, sns, inventory, currentDeck, itemInventory, totalPower, isAutoBattle, lowSpecMode, isAdRemoved, language, recommendMode]);
+    if (overwriteData?.sns !== undefined) {
+      setSeasonItem('hero_sns', season, overwriteData.sns.toString());
+      setSeasonItem('hero_sns_guest', season, overwriteData.sns.toString());
+      localStorage.setItem('hero_sns', overwriteData.sns.toString());
+    }
+    if (overwriteData?.itemInventory !== undefined) {
+      setSeasonItem('hero_itemInventory', season, JSON.stringify(overwriteData.itemInventory));
+      setSeasonItem('hero_itemInventory_guest', season, JSON.stringify(overwriteData.itemInventory));
+      localStorage.setItem('hero_itemInventory', JSON.stringify(overwriteData.itemInventory));
+    }
+    if (overwriteData?.totalPower !== undefined) {
+      setSeasonItem('hero_totalPower', season, overwriteData.totalPower.toString());
+      setSeasonItem('hero_totalPower_guest', season, overwriteData.totalPower.toString());
+      localStorage.setItem('hero_totalPower', overwriteData.totalPower.toString());
+    }
+    if (overwriteData?.displayName !== undefined) {
+      localStorage.setItem('hero_user_name', overwriteData.displayName);
+    }
+    if (overwriteData?.photoURL !== undefined) {
+      localStorage.setItem('hero_user_avatar', overwriteData.photoURL);
+    }
+  }, [currentSeason]);
 
   const startSimulation = useCallback(async (selectedUserUid: string, selectedUserData: any) => {
     setIsGlobalLoading(true);
@@ -1193,81 +1051,83 @@ function AppContent() {
     setSimulationUser(simUser);
     
     try {
-      cloudDataLoadedRef.current = true;
-      await loadCloudUserData(selectedUserUid);
+      if (selectedUserData.inventory) setInventory(selectedUserData.inventory);
+      if (selectedUserData.sns !== undefined) setSns(selectedUserData.sns);
+      if (selectedUserData.stats) setStats(selectedUserData.stats);
+      if (selectedUserData.currentDeck) setCurrentDeck(selectedUserData.currentDeck);
     } catch (err) {
       console.error("Simulation load error:", err);
     } finally {
       setIsGlobalLoading(false);
       setGlobalLoadingMessage('');
     }
-  }, [language, loadCloudUserData]);
+  }, [language]);
 
   const endSimulation = useCallback(async () => {
     setIsGlobalLoading(true);
     setGlobalLoadingMessage(language === 'ko' ? '시뮬레이션 종료 중...' : 'Ending simulation...');
     
     setSimulationUser(null);
-    cloudDataLoadedRef.current = false;
     
     try {
-      if (user && user.uid !== 'guest-id') {
-        cloudDataLoadedRef.current = true;
-        await loadCloudUserData(user.uid);
+      const storedProfile = localStorage.getItem('hero_user_profile');
+      if (storedProfile) {
+        try { setUser(JSON.parse(storedProfile)); } catch (e) { setUser(getStoredGuestProfile()); }
       } else {
         setUser(getStoredGuestProfile());
-        
-        const season = localStorage.getItem('hero_current_season') || 'season1';
-        
-        const savedSns = getSeasonItem('hero_sns_guest', season) || getSeasonItem('hero_sns', season);
-        setSns(savedSns ? parseInt(savedSns, 10) : 1000);
-
-        const defaultInv: Record<number, InventoryRecord> = {};
-        INITIAL_CARDS.forEach(c => {
-          if (c.imageIndex !== undefined) {
-            defaultInv[c.imageIndex] = { cardIndex: c.imageIndex, quantity: 1, rarity: c.rarity || 'bronze' };
-          }
-        });
-        const savedInvGuest = getSeasonItem('hero_inventory_guest', season);
-        const savedInvStandard = getSeasonItem('hero_inventory', season);
-        let parsedInvGuest = {};
-        let parsedInvStandard = {};
-        if (savedInvGuest) try { parsedInvGuest = JSON.parse(savedInvGuest); } catch (e) {}
-        if (savedInvStandard) try { parsedInvStandard = JSON.parse(savedInvStandard); } catch (e) {}
-        setInventory({ ...defaultInv, ...parsedInvStandard, ...parsedInvGuest });
-
-        const savedPower = getSeasonItem('hero_totalPower_guest', season) || getSeasonItem('hero_totalPower', season);
-        setTotalPower(savedPower ? parseInt(savedPower, 10) : INITIAL_CARDS.reduce((acc, c) => acc + (CARD_DATABASE[c.imageIndex || 0]?.power || 0), 0));
-
-        const savedItemGuest = getSeasonItem('hero_itemInventory_guest', season);
-        const savedItemStandard = getSeasonItem('hero_itemInventory', season);
-        let parsedItems = [];
-        if (savedItemGuest) try { parsedItems = JSON.parse(savedItemGuest); } catch (e) {}
-        else if (savedItemStandard) try { parsedItems = JSON.parse(savedItemStandard); } catch (e) {}
-        setItemInventory(parsedItems);
-        
-        const savedDeckGuest = getSeasonItem('hero_currentDeck_guest', season);
-        const savedDeckStandard = getSeasonItem('hero_currentDeck', season);
-        let parsedDeck = [];
-        if (savedDeckGuest) try { parsedDeck = JSON.parse(savedDeckGuest); } catch (e) {}
-        else if (savedDeckStandard) try { parsedDeck = JSON.parse(savedDeckStandard); } catch (e) {}
-        if (parsedDeck && parsedDeck.length > 0) {
-          const finalInv = { ...defaultInv, ...parsedInvStandard, ...parsedInvGuest };
-          setCurrentDeck(parsedDeck.map((c: any) => syncCardWithDatabase(c, finalInv)));
-        } else {
-          const finalInv = { ...defaultInv, ...parsedInvStandard, ...parsedInvGuest };
-          setCurrentDeck(INITIAL_CARDS.slice(0, 5).map(c => syncCardWithDatabase(c, finalInv)));
-        }
-
-        const savedStatsGuest = getSeasonItem('hero_stats_guest', season);
-        const savedStatsStandard = getSeasonItem('hero_stats', season);
-        let parsedStats = null;
-        if (savedStatsGuest) try { parsedStats = JSON.parse(savedStatsGuest); } catch (e) {}
-        else if (savedStatsStandard) try { parsedStats = JSON.parse(savedStatsStandard); } catch (e) {}
-        setStats(parsedStats || { wins: 0, losses: 0, draws: 0, winStreak: 0, lossStreak: 0, longestWinStreak: 0, companionLevel: 1, companionExp: 0, companionMaxExp: 100, companionHunger: 100, companionHappiness: 100, companionLastCareTime: Date.now() });
-        
-        cloudDataLoadedRef.current = true;
       }
+      
+      const season = localStorage.getItem('hero_current_season') || 'season1';
+      const savedSns = getSeasonItem('hero_sns_guest', season) || getSeasonItem('hero_sns', season) || localStorage.getItem('hero_sns');
+      setSns(savedSns ? parseInt(savedSns, 10) : 1000);
+
+      const defaultInv: Record<number, InventoryRecord> = {};
+      INITIAL_CARDS.forEach(c => {
+        if (c.imageIndex !== undefined) {
+          defaultInv[c.imageIndex] = { cardIndex: c.imageIndex, quantity: 1, rarity: c.rarity || 'bronze' };
+        }
+      });
+      const savedInvGuest = getSeasonItem('hero_inventory_guest', season);
+      const savedInvStandard = getSeasonItem('hero_inventory', season);
+      const rawStandard = localStorage.getItem('hero_inventory');
+      let parsedInvGuest = {};
+      let parsedInvStandard = {};
+      let parsedRaw = {};
+      if (savedInvGuest) try { parsedInvGuest = JSON.parse(savedInvGuest); } catch (e) {}
+      if (savedInvStandard) try { parsedInvStandard = JSON.parse(savedInvStandard); } catch (e) {}
+      if (rawStandard) try { parsedRaw = JSON.parse(rawStandard); } catch (e) {}
+      const finalInv = { ...defaultInv, ...parsedRaw, ...parsedInvStandard, ...parsedInvGuest };
+      setInventory(finalInv);
+
+      const savedPower = getSeasonItem('hero_totalPower_guest', season) || getSeasonItem('hero_totalPower', season) || localStorage.getItem('hero_totalPower');
+      setTotalPower(savedPower ? parseInt(savedPower, 10) : INITIAL_CARDS.reduce((acc, c) => acc + (CARD_DATABASE[c.imageIndex || 0]?.power || 0), 0));
+
+      const savedItemGuest = getSeasonItem('hero_itemInventory_guest', season);
+      const savedItemStandard = getSeasonItem('hero_itemInventory', season);
+      let parsedItems = [];
+      if (savedItemGuest) try { parsedItems = JSON.parse(savedItemGuest); } catch (e) {}
+      else if (savedItemStandard) try { parsedItems = JSON.parse(savedItemStandard); } catch (e) {}
+      setItemInventory(parsedItems);
+      
+      const savedDeckGuest = getSeasonItem('hero_deck_guest', season) || getSeasonItem('hero_currentDeck_guest', season);
+      const savedDeckStandard = getSeasonItem('hero_deck', season) || getSeasonItem('hero_currentDeck', season);
+      const rawDeck = localStorage.getItem('hero_deck');
+      let parsedDeck = [];
+      if (savedDeckGuest) try { parsedDeck = JSON.parse(savedDeckGuest); } catch (e) {}
+      else if (savedDeckStandard) try { parsedDeck = JSON.parse(savedDeckStandard); } catch (e) {}
+      else if (rawDeck) try { parsedDeck = JSON.parse(rawDeck); } catch (e) {}
+      if (parsedDeck && parsedDeck.length > 0) {
+        setCurrentDeck(parsedDeck.map((c: any) => syncCardWithDatabase(c, finalInv)));
+      } else {
+        setCurrentDeck(INITIAL_CARDS.slice(0, 5).map(c => syncCardWithDatabase(c, finalInv)));
+      }
+
+      const savedStatsGuest = getSeasonItem('hero_stats_guest', season);
+      const savedStatsStandard = getSeasonItem('hero_stats', season);
+      let parsedStats = null;
+      if (savedStatsGuest) try { parsedStats = JSON.parse(savedStatsGuest); } catch (e) {}
+      else if (savedStatsStandard) try { parsedStats = JSON.parse(savedStatsStandard); } catch (e) {}
+      setStats(parsedStats || { wins: 0, losses: 0, draws: 0, winStreak: 0, lossStreak: 0, longestWinStreak: 0, companionLevel: 1, companionExp: 0, companionMaxExp: 100, companionHunger: 100, companionHappiness: 100, companionLastCareTime: Date.now() });
     } catch (err) {
       console.error("Simulation end error:", err);
     } finally {
@@ -1275,188 +1135,108 @@ function AppContent() {
       setGlobalLoadingMessage('');
       setView('admin');
     }
-  }, [user, language, loadCloudUserData]);
+  }, [language, getStoredGuestProfile]);
 
-  const loadCloudUserDataRef = useRef(loadCloudUserData);
-  const currentSeasonRef = useRef(currentSeason);
-  const languageRef = useRef(language);
-
+  // Initialize App Data & User Profile directly from LocalStorage
   useEffect(() => {
-    loadCloudUserDataRef.current = loadCloudUserData;
-  }, [loadCloudUserData]);
-
-  useEffect(() => {
-    currentSeasonRef.current = currentSeason;
-  }, [currentSeason]);
-
-  useEffect(() => {
-    languageRef.current = language;
-  }, [language]);
-
-  // Initialize Auth
-  useEffect(() => {
-    setTargetProgress(5);
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      setTargetProgress(10);
-      if (firebaseUser) {
-        setIsGlobalLoading(true);
-        setGlobalLoadingMessage(languageRef.current === 'ko' ? '데이터 동기화 중...' : 'Syncing cloud data...');
-        
-        let cloudDisplayName = '';
-        let cloudPhotoURL = '';
-        let cloudActiveEmoticonKey = DEFAULT_PROFILE_EMOTICON_KEY;
-        let cloudActiveBadgeKey = DEFAULT_PROFILE_BADGE_KEY;
-        let cloudActiveTitleKey = DEFAULT_PROFILE_TITLE_KEY;
-        try {
-          const userRef = doc(db, getUserCollectionName(currentSeasonRef.current), firebaseUser.uid);
-          const userSnap = await getDoc(userRef);
-          setTargetProgress(15);
-          if (userSnap.exists()) {
-            const cloudData = userSnap.data();
-            cloudDisplayName = cloudData.displayName || '';
-            cloudPhotoURL = cloudData.photoURL || '';
-            cloudActiveEmoticonKey = cloudData.activeEmoticonKey || DEFAULT_PROFILE_EMOTICON_KEY;
-            cloudActiveBadgeKey = cloudData.activeBadgeKey || DEFAULT_PROFILE_BADGE_KEY;
-            cloudActiveTitleKey = cloudData.activeTitleKey || DEFAULT_PROFILE_TITLE_KEY;
-          }
-        } catch (e) {
-          console.error("Failed to fetch cloud user profile:", e);
-        }
-
-        const mergedUser = {
-          ...firebaseUser,
-          uid: firebaseUser.uid,
-          email: firebaseUser.email,
-          displayName: firebaseUser.displayName || cloudDisplayName || firebaseUser.email?.split('@')[0] || 'User',
-          photoURL: firebaseUser.photoURL || cloudPhotoURL || '',
-          activeEmoticonKey: cloudActiveEmoticonKey,
-          activeBadgeKey: cloudActiveBadgeKey,
-          activeTitleKey: cloudActiveTitleKey,
-        };
-
-        cloudDataLoadedRef.current = false;
-        setUser(mergedUser);
-        setTargetProgress(20);
-        try {
-          await loadCloudUserDataRef.current(firebaseUser.uid);
-          // P3-2: 구글 로그인 일일 보너스
-          const isGoogleLogin = firebaseUser.providerData.some(p => p.providerId === 'google.com');
-          if (isGoogleLogin) {
-            const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-            const bonusKey = `hero_login_bonus_${today}`;
-            const alreadyClaimed = localStorage.getItem(bonusKey);
-            if (!alreadyClaimed) {
-              const bonusAmount = SNS_ECONOMY_EARNINGS.loginBonus;
-              localStorage.setItem(bonusKey, 'true');
-              setSns(prev => prev + bonusAmount);
-              setTimeout(() => {
-                showCustomAlert(
-                  t('login_bonus_title', languageRef.current),
-                  t('login_bonus_message', languageRef.current, { amount: bonusAmount })
-                );
-              }, 800);
-            }
-          }
-        } catch (err) {
-          console.error("Error loading cloud user data inside onAuthStateChanged:", err);
-        } finally {
-          setIsGlobalLoading(false);
-          setGlobalLoadingMessage('');
-          setTargetProgress(100);
-        }
-      } else {
-        // If logged out, revert to guest
-        setTargetProgress(20);
+    setTargetProgress(10);
+    const storedProfile = localStorage.getItem('hero_user_profile');
+    if (storedProfile) {
+      try {
+        setUser(JSON.parse(storedProfile));
+      } catch (e) {
         setUser(getStoredGuestProfile());
-        
-        // Restore offline/guest data to React States
-        const season = localStorage.getItem('hero_current_season') || 'season1';
-        setTargetProgress(35);
-        
-        // 1. sns
-        const savedSns = getSeasonItem('hero_sns_guest', season) || getSeasonItem('hero_sns', season);
-        if (savedSns) {
-          const parsed = parseInt(savedSns, 10);
-          if (!isNaN(parsed)) setSns(parsed);
-        } else {
-          setSns(1000);
-        }
-        setTargetProgress(50);
+      }
+    } else {
+      setUser(getStoredGuestProfile());
+    }
 
-        // 2. inventory
-        const defaultInv: Record<number, InventoryRecord> = {};
-        INITIAL_CARDS.forEach(c => {
-          if (c.imageIndex !== undefined) {
-            defaultInv[c.imageIndex] = { cardIndex: c.imageIndex, quantity: 1, rarity: c.rarity || 'bronze' };
-          }
-        });
-        const savedInvGuest = getSeasonItem('hero_inventory_guest', season);
-        const savedInvStandard = getSeasonItem('hero_inventory', season);
-        let parsedInvGuest = {};
-        let parsedInvStandard = {};
-        if (savedInvGuest) try { parsedInvGuest = JSON.parse(savedInvGuest); } catch (e) {}
-        if (savedInvStandard) try { parsedInvStandard = JSON.parse(savedInvStandard); } catch (e) {}
-        const finalInv = { ...defaultInv, ...parsedInvStandard, ...parsedInvGuest };
-        setInventory(finalInv);
-        setTargetProgress(65);
+    const season = localStorage.getItem('hero_current_season') || 'season1';
+    setTargetProgress(30);
 
-        // 3. totalPower
-        const savedPower = getSeasonItem('hero_totalPower_guest', season) || getSeasonItem('hero_totalPower', season);
-        if (savedPower) {
-          const parsed = parseInt(savedPower, 10);
-          if (!isNaN(parsed)) setTotalPower(parsed);
-        } else {
-          const defaultPower = INITIAL_CARDS.reduce((acc, c) => acc + (CARD_DATABASE[c.imageIndex || 0]?.power || 0), 0);
-          setTotalPower(defaultPower);
-        }
-        setTargetProgress(75);
+    // 1. sns
+    const savedSns = getSeasonItem('hero_sns_guest', season) || getSeasonItem('hero_sns', season) || localStorage.getItem('hero_sns');
+    if (savedSns) {
+      const parsed = parseInt(savedSns, 10);
+      if (!isNaN(parsed)) setSns(parsed);
+    } else {
+      setSns(1000);
+    }
+    setTargetProgress(50);
 
-        // 4. itemInventory
-        const savedItemGuest = getSeasonItem('hero_itemInventory_guest', season);
-        const savedItemStandard = getSeasonItem('hero_itemInventory', season);
-        let parsedItems = [];
-        if (savedItemGuest && savedItemGuest !== '[]') {
-          try { parsedItems = JSON.parse(savedItemGuest); } catch (e) {}
-        } else if (savedItemStandard && savedItemStandard !== '[]') {
-          try { parsedItems = JSON.parse(savedItemStandard); } catch (e) {}
-        }
-        setItemInventory(parsedItems);
-        setTargetProgress(85);
+    // 2. inventory
+    const defaultInv: Record<number, InventoryRecord> = {};
+    INITIAL_CARDS.forEach(c => {
+      if (c.imageIndex !== undefined) {
+        defaultInv[c.imageIndex] = { cardIndex: c.imageIndex, quantity: 1, rarity: c.rarity || 'bronze' };
+      }
+    });
+    const savedInvGuest = getSeasonItem('hero_inventory_guest', season);
+    const savedInvStandard = getSeasonItem('hero_inventory', season);
+    const rawStandard = localStorage.getItem('hero_inventory');
+    let parsedInvGuest = {};
+    let parsedInvStandard = {};
+    let parsedRaw = {};
+    if (savedInvGuest) try { parsedInvGuest = JSON.parse(savedInvGuest); } catch (e) {}
+    if (savedInvStandard) try { parsedInvStandard = JSON.parse(savedInvStandard); } catch (e) {}
+    if (rawStandard) try { parsedRaw = JSON.parse(rawStandard); } catch (e) {}
+    const finalInv = { ...defaultInv, ...parsedRaw, ...parsedInvStandard, ...parsedInvGuest };
+    setInventory(finalInv);
+    setTargetProgress(65);
 
-        // 5. stats
-        const savedStats = getSeasonItem('hero_stats_guest', season) || getSeasonItem('hero_stats', season);
-        if (savedStats) {
-          try {
-            setStats(JSON.parse(savedStats));
-          } catch (e) {}
-        } else {
-          setStats({ 
-            wins: 0, losses: 0, draws: 0, skillPoints: 0, winStreak: 0, lossStreak: 0, 
-            unlockedAchievements: [], claimedAchievements: [], achievementProgress: {} 
-          });
-        }
-        setTargetProgress(90);
+    // 3. totalPower
+    const savedPower = getSeasonItem('hero_totalPower_guest', season) || getSeasonItem('hero_totalPower', season) || localStorage.getItem('hero_totalPower');
+    if (savedPower) {
+      const parsed = parseInt(savedPower, 10);
+      if (!isNaN(parsed)) setTotalPower(parsed);
+    } else {
+      const defaultPower = INITIAL_CARDS.reduce((acc, c) => acc + (CARD_DATABASE[c.imageIndex || 0]?.power || 0), 0);
+      setTotalPower(defaultPower);
+    }
+    setTargetProgress(75);
 
-        // 6. currentDeck
-        const savedDeckGuest = getSeasonItem('hero_deck_guest', season);
-        const savedDeckStandard = getSeasonItem('hero_deck', season);
-        const savedDeck = savedDeckGuest || savedDeckStandard;
-        if (savedDeck) {
-          try {
-            const parsedDeck = JSON.parse(savedDeck);
-            setCurrentDeck(parsedDeck.map((c: any) => syncCardWithDatabase(c, finalInv)));
-          } catch (e) {
-            console.error("Failed to restore guest deck:", e);
-          }
+    // 4. itemInventory
+    const savedItemGuest = getSeasonItem('hero_itemInventory_guest', season);
+    const savedItemStandard = getSeasonItem('hero_itemInventory', season);
+    let parsedItems = [];
+    if (savedItemGuest && savedItemGuest !== '[]') {
+      try { parsedItems = JSON.parse(savedItemGuest); } catch (e) {}
+    } else if (savedItemStandard && savedItemStandard !== '[]') {
+      try { parsedItems = JSON.parse(savedItemStandard); } catch (e) {}
+    }
+    if (parsedItems.length > 0) setItemInventory(parsedItems);
+    setTargetProgress(85);
+
+    // 5. stats
+    const savedStats = getSeasonItem('hero_stats_guest', season) || getSeasonItem('hero_stats', season) || localStorage.getItem('hero_stats');
+    if (savedStats) {
+      try {
+        setStats(JSON.parse(savedStats));
+      } catch (e) {}
+    } else {
+      setStats({ 
+        wins: 0, losses: 0, draws: 0, skillPoints: 0, winStreak: 0, lossStreak: 0, 
+        unlockedAchievements: [], claimedAchievements: [], achievementProgress: {} 
+      });
+    }
+
+    // 6. currentDeck
+    const savedDeck = getSeasonItem('hero_deck_guest', season) || getSeasonItem('hero_deck', season) || getSeasonItem('hero_currentDeck_guest', season) || getSeasonItem('hero_currentDeck', season) || localStorage.getItem('hero_deck');
+    if (savedDeck) {
+      try {
+        const parsed = JSON.parse(savedDeck);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setCurrentDeck(parsed.map((c: any) => syncCardWithDatabase(c, finalInv)));
         } else {
           setCurrentDeck(INITIAL_CARDS.slice(0, 5).map(c => syncCardWithDatabase(c, finalInv)));
         }
-        setTargetProgress(100);
-
-        cloudDataLoadedRef.current = true;
+      } catch (e) {
+        setCurrentDeck(INITIAL_CARDS.slice(0, 5).map(c => syncCardWithDatabase(c, finalInv)));
       }
-    });
-    return () => unsubscribe();
+    } else {
+      setCurrentDeck(INITIAL_CARDS.slice(0, 5).map(c => syncCardWithDatabase(c, finalInv)));
+    }
+    setTargetProgress(100);
   }, []);
 
   // Version Log
@@ -3296,7 +3076,7 @@ function AppContent() {
     // Add any other cards present in inventory that aren't in baseCards
     const otherCardsIndices = Object.keys(inventory)
       .map(Number)
-      .filter(idx => !INITIAL_CARDS.some(c => c.imageIndex === idx));
+      .filter(idx => !isNaN(idx) && (inventory[idx]?.quantity || 0) > 0 && !INITIAL_CARDS.some(c => c.imageIndex === idx));
       
     const otherCards = otherCardsIndices.map(idx => {
       const dbCard = CARD_DATABASE[idx];
@@ -3310,7 +3090,7 @@ function AppContent() {
         stats: [...dbCard.stats],
         rarity: dbCard.rarity,
         owner: null,
-        level: 1,
+        level: inventory[idx]?.level || 1,
         skills: []
       }, inventory);
     }).filter(Boolean) as CardData[];
@@ -3947,7 +3727,14 @@ function AppContent() {
   const lastAiDifficultySyncRef = React.useRef<AiDifficulty>(aiDifficulty);
 
   const updateDeck = useCallback((newDeck: CardData[]) => {
-    setCurrentDeck(newDeck.map(c => syncCardWithDatabase(c, inventory)));
+    const syncedDeck = newDeck.map(c => syncCardWithDatabase(c, inventory));
+    setCurrentDeck(syncedDeck);
+    if (typeof window !== 'undefined') {
+      const season = localStorage.getItem('hero_current_season') || 'season1';
+      setSeasonItem('hero_deck', season, JSON.stringify(syncedDeck));
+      setSeasonItem('hero_deck_guest', season, JSON.stringify(syncedDeck));
+      localStorage.setItem('hero_deck', JSON.stringify(syncedDeck));
+    }
   }, [inventory]);
 
   // Sync AI Strategy
@@ -4483,19 +4270,35 @@ function AppContent() {
     const cardIndex = dbCard.id;
     const rarity = dbCard.rarity || 'bronze';
 
-    // Always update local state
+    // Always update local state & immediately persist to localStorage
     setInventory(prev => {
       const current = prev[cardIndex] || { cardIndex, quantity: 0, rarity };
-      return {
+      const next = {
         ...prev,
-        [cardIndex]: { ...current, quantity: current.quantity + 1 }
+        [cardIndex]: { ...current, quantity: (current.quantity || 0) + 1 }
       };
+      if (typeof window !== 'undefined') {
+        const season = localStorage.getItem('hero_current_season') || 'season1';
+        setSeasonItem('hero_inventory', season, JSON.stringify(next));
+        setSeasonItem('hero_inventory_guest', season, JSON.stringify(next));
+        localStorage.setItem('hero_inventory', JSON.stringify(next));
+      }
+      return next;
     });
-    setTotalPower(prev => prev + dbCard.power);
+    setTotalPower(prev => {
+      const nextPower = prev + (dbCard.power || 0);
+      if (typeof window !== 'undefined') {
+        const season = localStorage.getItem('hero_current_season') || 'season1';
+        setSeasonItem('hero_totalPower', season, nextPower.toString());
+        setSeasonItem('hero_totalPower_guest', season, nextPower.toString());
+        localStorage.setItem('hero_totalPower', nextPower.toString());
+      }
+      return nextPower;
+    });
 
     // Recommend upgrade if the card is better
     checkAndRecommendDeckUpgrade([cardIndex], isSilent);
-  }, [inventory, totalPower, checkAndRecommendDeckUpgrade]);
+  }, [checkAndRecommendDeckUpgrade]);
 
   const handleClawPlay = useCallback(() => {
     setSns(prev => Math.max(0, prev - 5));
@@ -4527,50 +4330,46 @@ function AppContent() {
       }
     }
 
-    // Update local state
+    // Update local state and immediately persist to localStorage
     if (newCard.imageIndex !== undefined) {
       const cardIndex = newCard.imageIndex;
       const dbCard = CARD_DATABASE[cardIndex];
       if (dbCard) {
-        let updatedInventory: Record<number, InventoryRecord> = {};
         setInventory(prev => {
           const current = prev[cardIndex] || { cardIndex, quantity: 0, rarity: newCard.rarity };
-          updatedInventory = {
+          const next = {
             ...prev,
-            [cardIndex]: { ...current, quantity: current.quantity + 1 }
+            [cardIndex]: { ...current, quantity: (current.quantity || 0) + 1 }
           };
-          return updatedInventory;
+          if (typeof window !== 'undefined') {
+            const season = localStorage.getItem('hero_current_season') || 'season1';
+            setSeasonItem('hero_inventory', season, JSON.stringify(next));
+            setSeasonItem('hero_inventory_guest', season, JSON.stringify(next));
+            localStorage.setItem('hero_inventory', JSON.stringify(next));
+          }
+          return next;
         });
         
-        const newTotalPower = totalPower + dbCard.power;
-        setTotalPower(newTotalPower);
+        setTotalPower(prev => {
+          const nextPower = prev + (dbCard.power || 0);
+          if (typeof window !== 'undefined') {
+            const season = localStorage.getItem('hero_current_season') || 'season1';
+            setSeasonItem('hero_totalPower', season, nextPower.toString());
+            setSeasonItem('hero_totalPower_guest', season, nextPower.toString());
+            localStorage.setItem('hero_totalPower', nextPower.toString());
+          }
+          return nextPower;
+        });
 
-        // Immediate sync if logged in
-        if (effectiveUser && effectiveUser.uid !== 'guest-id') {
-          if (testMode) console.log("%c [DEBUG] Requesting Firestore Sync for Card... ", 'color: #8b5cf6;');
-          syncUserData({
-            sns,
-            inventory: updatedInventory,
-            stats,
-            currentDeck,
-            itemInventory,
-            totalPower: newTotalPower,
-            displayName: effectiveUser.displayName || null,
-            photoURL: effectiveUser.photoURL || null,
-            isAutoBattle,
-            lowSpecMode,
-            language,
-            lastSync: Date.now()
-          });
-        } else if (testMode) {
-          console.log("%c [DEBUG] Local Card Save (Guest/Offline) ", 'color: #6b7280;');
+        if (testMode) {
+          console.log(`%c [DEBUG] Card Added to Inventory: #${cardIndex} (${dbCard.title}) `, 'color: #10b981;');
         }
 
         // Recommend upgrade if the card is better
         checkAndRecommendDeckUpgrade([cardIndex], isSilent);
       }
     }
-  }, [user, totalPower, effectiveUser, sns, stats, currentDeck, itemInventory, isAutoBattle, lowSpecMode, language, syncUserData, testMode, checkAndRecommendDeckUpgrade]);
+  }, [testMode, checkAndRecommendDeckUpgrade]);
 
   const [isGlobalPopupOpen, setIsGlobalPopupOpen] = useState(false);
 
@@ -4859,70 +4658,31 @@ function AppContent() {
     setIsGlobalLoading(true);
     setGlobalLoadingMessage(t('logging_in', language));
     try {
-      let firebaseUser;
-      const isLocalhost = typeof window !== 'undefined' && 
-        (window.location.hostname === 'localhost' || 
-         window.location.hostname === '127.0.0.1' ||
-         window.location.hostname.startsWith('192.168.') ||
-         window.location.hostname.startsWith('10.') ||
-         window.location.hostname.startsWith('172.') ||
-         window.location.hostname.endsWith('.local') ||
-         window.location.hostname.endsWith('.ngrok-free.app'));
-
-      const targetEmail = emailOverride || 'dryudryu@gmail.com';
-
-      if (emailOverride || (isLocalhost && currentDbMode !== 'production') || testMode) {
-        // Sign in with virtual user
-        try {
-          const result = await signInWithEmailAndPassword(auth, targetEmail, 'password123');
-          firebaseUser = result.user;
-        } catch (err: any) {
-          if (
-            err.code === 'auth/user-not-found' || 
-            err.code === 'auth/invalid-credential' || 
-            err.code === 'auth/invalid-login-credentials' ||
-            err.code === 'auth/wrong-password'
-          ) {
-            // User doesn't exist yet, create them!
-            const result = await createUserWithEmailAndPassword(auth, targetEmail, 'password123');
-            firebaseUser = result.user;
-          } else {
-            throw err;
-          }
-        }
-      } else {
-        try {
-          const popupResult = await signInWithPopup(auth, googleProvider);
-          firebaseUser = popupResult.user;
-        } catch (popupErr: any) {
-          console.error("signInWithPopup failed:", popupErr);
-          showCustomAlert(
-            language === 'ko' ? '로그인 오류' : 'Login Error',
-            language === 'ko'
-              ? `구글 로그인 실패: ${popupErr.message || popupErr}`
-              : `Google login failed: ${popupErr.message || popupErr}`
-          );
-          setIsGlobalLoading(false);
-          return;
-        }
-      }
-      
-      // 실제 loadCloudUserData 및 setUser 세팅은 onAuthStateChanged가 처리하므로,
-      // handleLogin은 Firebase Sign-in만 완료하고 종료합니다.
-
-      // Analytics: track login event (fire-and-forget)
-      if (firebaseUser) {
-        const loginMethod: 'email' | 'google' = (emailOverride || (isLocalhost && currentDbMode !== 'production') || testMode) ? 'email' : 'google';
-        trackAnalytics({ event: AnalyticsEvent.LOGIN, payload: { method: loginMethod, uid: firebaseUser.uid } });
-      }
-      
+      const targetName = emailOverride ? emailOverride.split('@')[0] : 'Hero';
+      const localProfile = {
+        uid: 'local-hero-user',
+        displayName: targetName,
+        email: emailOverride || 'hero@snshero.local',
+        photoURL: 'https://api.dicebear.com/7.x/bottts/svg?seed=' + targetName,
+        isAnonymous: false,
+        activeEmoticonKey: DEFAULT_PROFILE_EMOTICON_KEY,
+        activeBadgeKey: DEFAULT_PROFILE_BADGE_KEY,
+        activeTitleKey: DEFAULT_PROFILE_TITLE_KEY,
+      };
+      localStorage.setItem('hero_user_profile', JSON.stringify(localProfile));
+      localStorage.setItem('hero_user_name', localProfile.displayName);
+      localStorage.setItem('hero_user_avatar', localProfile.photoURL);
+      setUser(localProfile);
+      trackAnalytics({ event: AnalyticsEvent.LOGIN, payload: { method: 'demo', uid: localProfile.uid } });
+      showCustomAlert(
+        language === 'ko' ? '로그인 완료' : 'Login Success',
+        language === 'ko' ? `${localProfile.displayName}님 환영합니다!` : `Welcome, ${localProfile.displayName}!`
+      );
     } catch (error) {
-      if (testMode) {
-        console.error("%c [FIRESTORE] Login: FAILED ", 'background: #991b1b; color: #fff; font-weight: bold;', error);
-      } else {
-        console.error("Login failed:", error);
-      }
+      console.error("Login failed:", error);
+    } finally {
       setIsGlobalLoading(false);
+      setGlobalLoadingMessage('');
     }
   };
 
@@ -4930,116 +4690,24 @@ function AppContent() {
     setIsGlobalLoading(true);
     setGlobalLoadingMessage(t('logging_out', language));
     try {
-      // Force immediate sync to cloud before clearing local data
-      if (effectiveUser && effectiveUser.uid !== 'guest-id') {
-         try {
-          // Timeout the sync so logout isn't blocked forever if network is slow
-          // Since we already have immediate sync on card draw/SNS update, this is just a final safety net
-          await Promise.race([
-            syncUserData({
-              sns,
-              inventory,
-              stats,
-              currentDeck,
-              itemInventory,
-              totalPower,
-              displayName: effectiveUser.displayName || null,
-              photoURL: effectiveUser.photoURL || null,
-              isAutoBattle,
-              lowSpecMode,
-              language,
-              isAdRemoved,
-              lastSync: Date.now()
-            }),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Sync timeout')), 2500))
-          ]);
-        } catch (syncError) {
-          console.error("Pre-logout sync timed out or failed, proceeding with logout:", syncError);
-        }
-      }
-      
-      await signOut(auth);
-      
-      // Clear all local storage game data (all starting with hero_, except language)
-      Object.keys(localStorage).forEach(key => {
-        if (key.startsWith('hero_') && key !== 'hero_language') {
-          localStorage.removeItem(key);
-        }
-      });
-      // Strict deletion for persistent guest items
-      localStorage.removeItem('hero_tutorial_completed');
-      localStorage.removeItem('hero_inventory');
-      localStorage.removeItem('hero_inventory_guest');
-      localStorage.removeItem('hero_deck');
-      localStorage.removeItem('hero_test_mode');
-      localStorage.removeItem('hero_tutorial_step');
-      
-      // Reset React states to initial values
-      setSns(1000);
-      setIsTutorialMode(true);
-      setTutorialStep(1);
-      
-      const initialInv: Record<number, InventoryRecord> = {};
-      INITIAL_CARDS.forEach(c => {
-        if (c.imageIndex !== undefined) {
-          initialInv[c.imageIndex] = { 
-            cardIndex: c.imageIndex, 
-            quantity: 1, 
-            rarity: c.rarity || 'bronze' 
-          };
-        }
-      });
-      setInventory(initialInv);
-      
-      setStats({ 
-        wins: 0, 
-        losses: 0, 
-        draws: 0, 
-        skillPoints: 0, 
-        winStreak: 0, 
-        lossStreak: 0, 
-        unlockedAchievements: [], 
-        claimedAchievements: [],
-        achievementProgress: {} 
-      });
-      
-      setCurrentDeck(INITIAL_CARDS);
-      const initialPower = INITIAL_CARDS.reduce((acc, c) => {
-        const dbCard = CARD_DATABASE[c.imageIndex || 0];
-        return acc + (dbCard?.power || 0);
-      }, 0);
-      setTotalPower(initialPower);
-      setItemInventory([]);
-      setIsAutoBattle(false);
-      
-      // Revert to Guest User
+      localStorage.removeItem('hero_user_profile');
       localStorage.setItem('hero_user_name', 'GUEST');
       localStorage.setItem('hero_user_avatar', 'preset:0');
       localStorage.setItem(PROFILE_EMOTICON_STORAGE_KEY, DEFAULT_PROFILE_EMOTICON_KEY);
       localStorage.setItem(PROFILE_BADGE_STORAGE_KEY, DEFAULT_PROFILE_BADGE_KEY);
       localStorage.setItem(PROFILE_TITLE_STORAGE_KEY, DEFAULT_PROFILE_TITLE_KEY);
       setUser(getStoredGuestProfile());
-      
-      setView('home');
+      showCustomAlert(
+        language === 'ko' ? '로그아웃' : 'Logout',
+        language === 'ko' ? '게스트 모드로 전환되었습니다.' : 'Switched to guest mode.'
+      );
     } catch (error) {
       console.error("Logout failed:", error);
     } finally {
       setIsGlobalLoading(false);
+      setGlobalLoadingMessage('');
     }
-  }, [effectiveUser, sns, inventory, stats, currentDeck, itemInventory, totalPower, isAutoBattle, lowSpecMode, language, syncUserData]);
-
-  // Automatic sync removed to optimize Firestore writes.
-  // Synchronization now occurs on specific game events as requested.
-
-  // Debounced Sync for Settings Changes
-  useEffect(() => {
-    if (authInitialized && effectiveUser && effectiveUser.uid !== 'guest-id') {
-      const timer = setTimeout(() => {
-        syncUserData();
-      }, 3000); 
-      return () => clearTimeout(timer);
-    }
-  }, [isAutoBattle, lowSpecMode, language]);
+  }, [language, getStoredGuestProfile, showCustomAlert]);
 
   const calculatedBattlePower = useMemo(() => {
     const basePowerWithBonus = Object.entries(inventory).reduce((acc, [idx, record]) => {
@@ -5807,9 +5475,17 @@ function AppContent() {
             onNavigate={setView}
           />
         );
+      case 'tool-makegrid':
       case 'tool-grid':
         return (
           <GridToolView
+            language={language}
+            onNavigate={setView}
+          />
+        );
+      case 'tool-checkgrid':
+        return (
+          <GridCheckerView
             language={language}
             onNavigate={setView}
           />
@@ -6289,53 +5965,92 @@ function AppContent() {
                       </div>
                       <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-slate-400 group-hover:text-slate-600" />
                     </button>
-                    {/* Modoo Soft Work Monitor */}
-                    <button
-                      onClick={() => {
-                        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                        setIsMenuOpen(false);
-                        setView('modoo');
-                      }}
-                      className="w-full border border-amber-200/80 p-3.5 text-left transition-all relative flex items-center justify-between font-sans bg-amber-50/60 hover:bg-amber-100/80 active:scale-[0.98] shadow-xs hover:border-amber-300 cursor-pointer rounded-xl group"
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-xl">🏢</span>
-                        <div className="flex flex-col">
-                          <span className="font-bold text-sm uppercase tracking-tight text-slate-800 flex items-center gap-1.5">
-                            <span>{language === 'ko' ? '모두소프트 업무 현황' : 'Modoo Work Monitor'}</span>
-                            <span className="text-[9px] px-1 py-0.2 bg-amber-200 border border-amber-400 font-bold rounded-xs text-amber-900">LIVE</span>
-                          </span>
-                          <span className="text-[10px] text-slate-500 font-mono">
-                            {language === 'ko' ? '구글 스프레드시트 실시간 모니터링' : 'Realtime Google Sheets'}
-                          </span>
+                    {/* Utility Tools Accordion (그리드 생성기 / 그리드 검수기) */}
+                    <div className="w-full flex flex-col border border-slate-200 bg-slate-50/70 rounded-xl overflow-hidden shadow-xs transition-all">
+                      <button
+                        onClick={() => {
+                          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                          setIsUtilityOpen(prev => !prev);
+                        }}
+                        className="w-full p-3.5 text-left transition-all flex items-center justify-between font-sans bg-white hover:bg-slate-50 cursor-pointer group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Wrench size={20} className="text-amber-600 group-hover:rotate-12 transition-transform" />
+                          <div className="flex flex-col">
+                            <span className="font-bold text-sm uppercase tracking-tight text-slate-800 flex items-center gap-1.5">
+                              <span>{language === 'ko' ? '유틸리티' : 'Utility'}</span>
+                              <span className="text-[9px] px-1 py-0.2 bg-amber-100 text-amber-900 border border-amber-300 font-bold rounded-xs">TOOLS</span>
+                            </span>
+                            <span className="text-[10px] text-slate-500 font-mono">
+                              {language === 'ko' ? '개발 & 레이아웃 도구 모음' : 'Dev & Layout Toolset'}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-amber-700" />
-                    </button>
+                        <ChevronDown 
+                          size={18} 
+                          className={`text-slate-400 transition-transform duration-200 ${isUtilityOpen ? 'rotate-180 text-slate-700' : ''}`} 
+                        />
+                      </button>
 
-                    {/* CSS Grid Generator Tool (/tool/grid) */}
-                    <button
-                      onClick={() => {
-                        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                        setIsMenuOpen(false);
-                        setView('tool-grid');
-                      }}
-                      className="w-full border border-emerald-200/80 p-3.5 text-left transition-all relative flex items-center justify-between font-sans bg-emerald-50/50 hover:bg-emerald-100/70 active:scale-[0.98] shadow-xs hover:border-emerald-300 cursor-pointer rounded-xl group"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Grid3X3 size={20} className="text-emerald-700" />
-                        <div className="flex flex-col">
-                          <span className="font-bold text-sm uppercase tracking-tight text-slate-800 flex items-center gap-1.5">
-                            <span>{language === 'ko' ? 'CSS 그리드 생성기' : 'CSS Grid Generator'}</span>
-                            <span className="text-[9px] px-1 py-0.2 bg-emerald-200 border border-emerald-400 font-bold rounded-xs text-emerald-900">TOOL</span>
-                          </span>
-                          <span className="text-[10px] text-slate-500 font-mono">
-                            /tool/grid (CSS / HTML / Tailwind)
-                          </span>
-                        </div>
-                      </div>
-                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-emerald-700" />
-                    </button>
+                      {/* Accordion Content */}
+                      <AnimatePresence>
+                        {isUtilityOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden border-t border-slate-200/80 bg-slate-50/50 p-2 space-y-1.5"
+                          >
+                            {/* [1] Grid Generator (/tool/makegrid) */}
+                            <button
+                              onClick={() => {
+                                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                                setIsMenuOpen(false);
+                                setView('tool-makegrid');
+                              }}
+                              className="w-full p-2.5 bg-white hover:bg-emerald-50 text-left border border-slate-200 hover:border-emerald-300 rounded-lg flex items-center justify-between transition-all cursor-pointer group"
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <Grid3X3 size={17} className="text-emerald-600 group-hover:scale-110 transition-transform" />
+                                <div className="flex flex-col">
+                                  <span className="font-bold text-xs text-slate-800 group-hover:text-emerald-900 flex items-center gap-1.5">
+                                    <span>{language === 'ko' ? '그리드 생성기' : 'Grid Generator'}</span>
+                                  </span>
+                                  <span className="text-[9px] text-slate-500 font-mono">/tool/makegrid</span>
+                                </div>
+                              </div>
+                              <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded-xs">
+                                [→]
+                              </span>
+                            </button>
+
+                            {/* [2] Grid Checker (/tool/checkgrid) */}
+                            <button
+                              onClick={() => {
+                                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                                setIsMenuOpen(false);
+                                setView('tool-checkgrid');
+                              }}
+                              className="w-full p-2.5 bg-white hover:bg-indigo-50 text-left border border-slate-200 hover:border-indigo-300 rounded-lg flex items-center justify-between transition-all cursor-pointer group"
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <CheckCircle2 size={17} className="text-indigo-600 group-hover:scale-110 transition-transform" />
+                                <div className="flex flex-col">
+                                  <span className="font-bold text-xs text-slate-800 group-hover:text-indigo-900 flex items-center gap-1.5">
+                                    <span>{language === 'ko' ? '그리드 검수기' : 'Grid Checker'}</span>
+                                  </span>
+                                  <span className="text-[9px] text-slate-500 font-mono">/tool/checkgrid</span>
+                                </div>
+                              </div>
+                              <span className="text-[10px] font-mono font-bold text-indigo-700 bg-indigo-100 px-1.5 py-0.5 rounded-xs">
+                                [→]
+                              </span>
+                            </button>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   </div>
 
                   {/* Bottom area (Settings & Footer) */}
@@ -6348,10 +6063,10 @@ function AppContent() {
                           setIsMenuOpen(false);
                           setView('modoo');
                         }}
-                        className="text-[10px] font-bold text-slate-400 hover:text-[#201d1d] tracking-wider uppercase transition-colors cursor-pointer"
-                        title="Modoo Work Monitor"
+                        className="text-[10px] font-bold text-slate-400 hover:text-[#201d1d] tracking-wider uppercase transition-colors cursor-pointer py-1 px-2 rounded-sm hover:bg-slate-100"
+                        title={language === 'ko' ? '내부 개발팀 전용 모니터링 (클릭하여 이동)' : 'Internal Dev Team Monitor'}
                       >
-                        SNS_HERO v1.0.5
+                        SNS_HERO v2.1.0
                       </button>
                     </div>
                   </div>
@@ -6502,265 +6217,331 @@ function AppContent() {
                    {/* Chat Toggle */}
                    <button
                      id="global-chat-toggle-btn"
+                    onClick={() => {
+                      setIsChatOpen(!isChatOpen);
+                      if (!isChatOpen) setUnreadCount(0);
+                    }}
+                    className={cn(
+                      "w-12 h-12 border border-slate-200 rounded-lg flex items-center justify-center transition-all bg-white active:scale-95 relative shadow-xl hover:scale-105",
+                      isChatOpen ? "bg-black text-white" : "hover:bg-gray-800 hover:text-white",
+                      (!isChatOpen && unreadCount > 0) && "ring-4 ring-yellow-400 ring-offset-2 animate-bounce"
+                    )}
+                  >
+                    {isChatOpen ? <X size={24} /> : <MessageCircle size={24} />}
+                    <AnimatePresence>
+                      {!isChatOpen && unreadCount > 0 && (
+                        <motion.span 
+                          key="unread-badge"
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0, opacity: 0 }}
+                          className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-black min-w-[22px] h-5.5 rounded-full flex items-center justify-center border-2 border-white px-1 shadow-lg animate-pulse z-10"
+                        >
+                          {unreadCount > 99 ? '99+' : unreadCount}
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                    
+                    {/* Visual glow when new messages are pending */}
+                    {!isChatOpen && unreadCount > 0 && (
+                      <div className="absolute inset-0 rounded-full animate-ping bg-yellow-400 opacity-20 pointer-events-none" />
+                    )}
+                  </button>
+                </div>
+             </div>
+
+          <AnimatePresence>
+            {isChatOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: view === 'play' ? 0 : 50, x: view === 'play' ? 60 : 0, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, x: 0, scale: 1 }}
+                exit={{ opacity: 0, y: view === 'play' ? 0 : 50, x: view === 'play' ? 60 : 0, scale: 0.95 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className={cn(
+                  view === 'play'
+                    ? "fixed right-2 sm:right-4 md:right-6 lg:right-8 top-12 sm:top-14 bottom-24 sm:bottom-28 md:bottom-20 w-[92vw] sm:w-[320px] md:w-[340px] lg:w-[380px] max-h-[calc(100dvh-120px)] md:max-h-[560px] bg-[#090d16]/95 backdrop-blur-md text-white z-[10000] flex flex-col overflow-hidden rounded-xl border border-slate-700/80 shadow-[0_10px_35px_rgba(0,0,0,0.8)] font-mono"
+                    : "fixed inset-0 w-full h-full max-h-none border-0 rounded-none shadow-none md:inset-auto md:bottom-36 md:right-4 md:left-auto md:w-[360px] md:h-auto md:max-h-[500px] bg-white z-[10000] flex flex-col overflow-hidden md:rounded-3xl md:border md:border-slate-200/80 md:shadow-2xl"
+                )}
+              >
+              <div className={cn(
+                "p-3.5 flex items-center justify-between border-b shrink-0 select-none",
+                view === 'play'
+                  ? "bg-slate-950/90 text-white border-slate-800"
+                  : "bg-gradient-to-r from-slate-900 to-slate-800 text-white border-slate-700/10"
+              )}>
+                 <div className="flex items-center gap-2">
+                    <MessageCircle size={18} className={view === 'play' ? "text-indigo-400" : "text-white"} />
+                    <span className="text-xs sm:text-sm font-bold tracking-wider uppercase font-mono">
+                      {view === 'play' ? (language === 'ko' ? '전투 통신망' : 'BATTLE COMMS') : t('global_network_persistent', language)}
+                    </span>
+                 </div>
+                 <div className="flex items-center gap-1.5 sm:gap-2">
+                   <label className="flex items-center gap-1 text-[10px] font-bold uppercase cursor-pointer hover:text-yellow-400 select-none text-slate-300 shrink-0 mr-1">
+                     <input 
+                       type="checkbox" 
+                       checked={showAllChats} 
+                       onChange={(e) => {
+                         setShowAllChats(e.target.checked);
+                         playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                       }}
+                       className={cn("w-3 h-3 cursor-pointer", view === 'play' ? "accent-indigo-500" : "accent-yellow-400")}
+                     />
+                     <span>{t('all_chats', language)}</span>
+                   </label>
+                   <button 
                      onClick={() => {
-                       setIsChatOpen(!isChatOpen);
-                       if (!isChatOpen) setUnreadCount(0);
+                       setUnreadCount(0);
+                       scrollToBottom();
                      }}
                      className={cn(
-                       "w-12 h-12 border border-slate-200 rounded-lg flex items-center justify-center transition-all bg-white active:scale-95 relative shadow-xl hover:scale-105",
-                       isChatOpen ? "bg-black text-white" : "hover:bg-gray-800 hover:text-white",
-                       (!isChatOpen && unreadCount > 0) && "ring-4 ring-yellow-400 ring-offset-2 animate-bounce"
+                       "text-[9px] font-bold uppercase px-2 py-0.5 rounded transition-colors",
+                       view === 'play'
+                         ? "bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700"
+                         : "bg-white text-black hover:bg-yellow-400"
                      )}
                    >
-                     {isChatOpen ? <X size={24} /> : <MessageCircle size={24} />}
-                     <AnimatePresence>
-                       {!isChatOpen && unreadCount > 0 && (
-                         <motion.span 
-                           key="unread-badge"
-                           initial={{ scale: 0, opacity: 0 }}
-                           animate={{ scale: 1, opacity: 1 }}
-                           exit={{ scale: 0, opacity: 0 }}
-                           className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-black min-w-[22px] h-5.5 rounded-full flex items-center justify-center border-2 border-white px-1 shadow-lg animate-pulse z-10"
-                         >
-                           {unreadCount > 99 ? '99+' : unreadCount}
-                         </motion.span>
-                       )}
-                     </AnimatePresence>
-                     
-                     {/* Visual glow when new messages are pending */}
-                     {!isChatOpen && unreadCount > 0 && (
-                       <div className="absolute inset-0 rounded-full animate-ping bg-yellow-400 opacity-20 pointer-events-none" />
-                     )}
+                     {t('read_all', language)}
+                   </button>
+                   <button 
+                     onClick={() => setIsChatOpen(false)} 
+                     className={cn("transition-colors p-1", view === 'play' ? "text-slate-400 hover:text-red-400" : "hover:text-red-400")}
+                     title="Close Chat"
+                   >
+                      <X size={20} />
                    </button>
                  </div>
               </div>
 
-            <AnimatePresence>
-              {isChatOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 50, scale: 0.9 }}
-                  className="fixed inset-0 w-full h-full max-h-none border-0 rounded-none shadow-none md:inset-auto md:bottom-36 md:right-4 md:left-auto md:w-[360px] md:h-auto md:max-h-[500px] bg-white z-[10000] flex flex-col overflow-hidden md:rounded-3xl md:border md:border-slate-200/80 md:shadow-2xl"
-                >
-                <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-4 flex items-center justify-between border-b border-slate-700/10">
-                   <div className="flex items-center gap-2">
-                      <MessageCircle size={18} />
-                      <span className="text-sm font-bold tracking-wider">
-                        {t('global_network_persistent', language)}
-                      </span>
-                   </div>
-                   <div className="flex items-center gap-2">
-                     <label className="flex items-center gap-1.5 text-[10px] font-black uppercase cursor-pointer hover:text-yellow-400 select-none text-white shrink-0 mr-1">
-                       <input 
-                         type="checkbox" 
-                         checked={showAllChats} 
-                         onChange={(e) => {
-                           setShowAllChats(e.target.checked);
-                           playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              {/* AI Persona Selector */}
+              <div className={cn(
+                "p-1.5 flex gap-1 overflow-x-auto scrollbar-hide shrink-0 border-b",
+                view === 'play'
+                  ? "bg-slate-950 border-slate-800"
+                  : "bg-gray-50 border-b-2 border-black"
+              )}>
+                <div className="flex items-center px-1 mr-1">
+                  <Bot size={12} className={view === 'play' ? "text-indigo-400" : "text-black/30"} />
+                </div>
+                {(['helpful', 'aggressive', 'sarcastic', 'mysterious'] as const).map(role => (
+                  <button
+                    key={role}
+                    onClick={() => {
+                      setBotRole(role);
+                      playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    }}
+                    className={cn(
+                      "px-2 py-0.5 text-[9px] font-bold font-mono uppercase tracking-tighter truncate rounded border transition-all shrink-0 cursor-pointer",
+                      botRole === role 
+                        ? (view === 'play' ? "bg-indigo-600 text-white border-indigo-500 shadow-xs" : "bg-black text-white border-black shadow-sm")
+                        : (view === 'play' ? "bg-slate-900 text-slate-400 border-slate-800 hover:text-white" : "bg-white text-black/40 border-black/10 hover:border-black/30")
+                    )}
+                  >
+                    {role}
+                  </button>
+                ))}
+              </div>
+              
+              <div className={cn(
+                "flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 flex flex-col text-[12px] sm:text-[13px] font-mono",
+                view === 'play' ? "bg-[#060a14]/90 text-slate-200" : "bg-white text-slate-900"
+              )}>
+                 {allMessages.map((msg, idx) => {
+                    const isMe = msg.userId === (effectiveUser?.uid || effectiveUser?.id);
+                    const msgDate = msg.createdAt ? (msg.createdAt.toDate ? msg.createdAt.toDate() : new Date(msg.createdAt)) : new Date();
+                    const timeStr = msgDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    const dateStr = msgDate.toLocaleDateString([], { month: 'numeric', day: 'numeric' });
+
+                    return (
+                      <div key={msg.id || `chat-msg-${idx}`} className={cn(
+                        "flex flex-col max-w-[85%]",
+                        isMe ? "self-end items-end text-right" : "self-start items-start text-left"
+                      )}>
+                        <button 
+                         onClick={() => {
+                           if (!isMe && !msg.isBot && msg.userId) {
+                             showCustomConfirm(
+                               language === 'ko' ? '전투 도전' : 'CHALLENGE',
+                               t('confirm_attack_user', language),
+                               () => handleAttackFromChat(msg.userId!)
+                             );
+                           }
                          }}
-                         className="accent-yellow-400 w-3 h-3 cursor-pointer"
-                       />
-                       <span>{t('all_chats', language)}</span>
-                     </label>
-                     <button 
-                       onClick={() => {
-                         setUnreadCount(0);
-                         scrollToBottom();
-                       }}
-                       className="text-[10px] font-black uppercase bg-white text-black px-2 py-0.5 rounded hover:bg-yellow-400 transition-colors"
-                     >
-                       {t('read_all', language)}
-                     </button>
-                     <button onClick={() => setIsChatOpen(false)} className="hover:text-red-400 transition-colors">
-                        <X size={24} />
-                     </button>
-                   </div>
-                </div>
-
-                {/* AI Persona Selector */}
-                <div className="bg-gray-50 p-2 border-b-2 border-black flex gap-1 overflow-x-auto scrollbar-hide shrink-0">
-                  <div className="flex items-center px-1 mr-1">
-                    <Bot size={12} className="text-black/30" />
-                  </div>
-                  {(['helpful', 'aggressive', 'sarcastic', 'mysterious'] as const).map(role => (
-                    <button
-                      key={role}
-                      onClick={() => {
-                        setBotRole(role);
-                        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                      }}
-                      className={cn(
-                        "px-2 py-1 text-[9px] font-black uppercase tracking-tighter truncate rounded-lg border transition-all shrink-0",
-                        botRole === role 
-                          ? "bg-black text-white border-black shadow-sm" 
-                          : "bg-white text-black/40 border-black/10 hover:border-black/30"
-                      )}
-                    >
-                      {role}
-                    </button>
-                  ))}
-                </div>
-                
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white flex flex-col text-[13px]">
-                   {allMessages.map((msg, idx) => {
-                      const isMe = msg.userId === (effectiveUser?.uid || effectiveUser?.id);
-                      const msgDate = msg.createdAt ? (msg.createdAt.toDate ? msg.createdAt.toDate() : new Date(msg.createdAt)) : new Date();
-                      const timeStr = msgDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                      const dateStr = msgDate.toLocaleDateString([], { month: 'numeric', day: 'numeric' });
-
-                      return (
-                        <div key={msg.id || `chat-msg-${idx}`} className={cn(
-                          "flex flex-col max-w-[85%]",
-                          isMe ? "self-end items-end text-right" : "self-start items-start text-left"
-                        )}>
-                          <button 
-                           onClick={() => {
-                             if (!isMe && !msg.isBot && msg.userId) {
-                               showCustomConfirm(
-                                 language === 'ko' ? '전투 도전' : 'CHALLENGE',
-                                 t('confirm_attack_user', language),
-                                 () => handleAttackFromChat(msg.userId!)
-                               );
-                             }
-                           }}
-                            className={cn(
-                              "text-[10px] mb-0.5 px-1 font-bold flex items-center gap-1 flex-wrap",
-                              isMe ? "text-blue-600" : msg.isBot ? "text-red-600" : "text-gray-500 hover:underline"
-                            )}
-                          >
-                            <span>{msg.name}</span>
-                            {msg.isLocalAiReply && msg.aiBadgeLabel && (
-                              <span className="inline-flex items-center rounded-full border border-emerald-300 bg-emerald-50 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wide text-emerald-700">
-                                {msg.aiBadgeLabel}
-                              </span>
-                            )}
-                            <span className="text-[11px]" title={msg.language?.toUpperCase() || 'EN'}>
-                              {FLAG_MAP[msg.language || 'en'] || '🇺🇸'}
-                            </span>
-                          </button>
-                          
-                          <div className={cn(
-                            "flex items-center gap-1.5 w-full",
-                            isMe ? "flex-row-reverse" : "flex-row"
-                          )}>
-                            <div className={cn(
-                              "px-3 py-1.5 rounded-2xl text-[13px] break-words shadow-sm border max-w-full",
-                              isMe ? "bg-blue-600 text-white border-blue-700 rounded-tr-none" : 
-                              msg.isBot ? "bg-red-50 text-red-900 border-red-200 rounded-tl-none" :
-                              "bg-gray-100 text-gray-800 border-gray-200 rounded-tl-none"
+                          className={cn(
+                            "text-[10px] mb-0.5 px-1 font-bold flex items-center gap-1 flex-wrap",
+                            isMe 
+                              ? (view === 'play' ? "text-indigo-400" : "text-blue-600") 
+                              : msg.isBot 
+                              ? (view === 'play' ? "text-rose-400" : "text-red-600") 
+                              : (view === 'play' ? "text-slate-400 hover:underline" : "text-gray-500 hover:underline")
+                          )}
+                        >
+                          <span>{msg.name}</span>
+                          {msg.isLocalAiReply && msg.aiBadgeLabel && (
+                            <span className={cn(
+                              "inline-flex items-center rounded px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wide",
+                              view === 'play'
+                                ? "border border-emerald-500/40 bg-emerald-950/60 text-emerald-300"
+                                : "border border-emerald-300 bg-emerald-50 text-emerald-700"
                             )}>
-                              {translatedTexts[msg.id] ? (
-                                <div>
-                                  <span className="italic">{translatedTexts[msg.id]}</span>
-                                  <span className="text-[9px] opacity-60 block mt-1 border-t border-black/10 pt-1 text-left">
-                                    🌐 {t('translated', language)}
-                                  </span>
-                                </div>
-                              ) : msg.meta?.type === 'admin-help' ? (
-                                <div className="space-y-3 min-w-[260px]">
-                                  <p className="text-[12px] font-semibold text-slate-800">{msg.text}</p>
-                                  <div className="space-y-2">
-                                    {msg.meta.items.map((item) => (
-                                      <div key={item.key} className="rounded-2xl border border-red-200/80 bg-white px-3 py-3 text-left text-slate-900 shadow-sm">
-                                        <div className="flex flex-wrap items-center gap-2">
-                                          <span className="rounded-full bg-red-600 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-white">
-                                            {item.command}
-                                          </span>
-                                          <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-600">
-                                            {item.risk === 'confirm' ? t('admin_slash_risk_confirm', language) : t('admin_slash_risk_safe', language)}
-                                          </span>
-                                        </div>
-                                        <p className="mt-2 text-[12px] font-medium leading-5 text-slate-800">{item.description}</p>
-                                        <div className="mt-2 space-y-1 text-[11px] leading-5 text-slate-600">
-                                          <p>
-                                            <span className="font-bold text-slate-900">{t('admin_slash_help_example_label', language)}</span> {item.example}
-                                          </p>
-                                          <p>
-                                            <span className="font-bold text-slate-900">{t('admin_slash_help_permission_label', language)}</span> {item.permission}
-                                          </p>
-                                        </div>
+                              {msg.aiBadgeLabel}
+                            </span>
+                          )}
+                          <span className="text-[11px]" title={msg.language?.toUpperCase() || 'EN'}>
+                            {FLAG_MAP[msg.language || 'en'] || '🇺🇸'}
+                          </span>
+                        </button>
+                        
+                        <div className={cn(
+                          "flex items-center gap-1.5 w-full",
+                          isMe ? "flex-row-reverse" : "flex-row"
+                        )}>
+                          <div className={cn(
+                            "px-3 py-1.5 rounded-2xl text-[12px] sm:text-[13px] break-words shadow-sm border max-w-full leading-relaxed",
+                            view === 'play'
+                              ? (isMe ? "bg-indigo-600/90 text-white border-indigo-500 rounded-tr-none" : 
+                                 msg.isBot ? "bg-rose-950/70 text-rose-200 border-rose-800/80 rounded-tl-none" :
+                                 "bg-slate-800/90 text-slate-100 border-slate-700 rounded-tl-none")
+                              : (isMe ? "bg-blue-600 text-white border-blue-700 rounded-tr-none" : 
+                                 msg.isBot ? "bg-red-50 text-red-900 border-red-200 rounded-tl-none" :
+                                 "bg-gray-100 text-gray-800 border-gray-200 rounded-tl-none")
+                          )}>
+                            {translatedTexts[msg.id] ? (
+                              <div>
+                                <span className="italic">{translatedTexts[msg.id]}</span>
+                                <span className="text-[9px] opacity-60 block mt-1 border-t border-black/10 pt-1 text-left">
+                                  🌐 {t('translated', language)}
+                                </span>
+                              </div>
+                            ) : msg.meta?.type === 'admin-help' ? (
+                              <div className="space-y-3 min-w-[260px]">
+                                <p className="text-[12px] font-semibold">{msg.text}</p>
+                                <div className="space-y-2">
+                                  {msg.meta.items.map((item) => (
+                                    <div key={item.key} className={cn(
+                                      "rounded-2xl border px-3 py-3 text-left shadow-sm",
+                                      view === 'play' ? "border-red-500/30 bg-slate-900/80 text-slate-200" : "border-red-200/80 bg-white text-slate-900"
+                                    )}>
+                                      <div className="flex flex-wrap items-center gap-2">
+                                        <span className="rounded-full bg-red-600 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-white">
+                                          {item.command}
+                                        </span>
+                                        <span className={cn(
+                                          "rounded-full border px-2.5 py-1 text-[10px] font-bold",
+                                          view === 'play' ? "border-slate-700 bg-slate-800 text-slate-400" : "border-slate-200 bg-slate-50 text-slate-600"
+                                        )}>
+                                          {item.risk === 'confirm' ? t('admin_slash_risk_confirm', language) : t('admin_slash_risk_safe', language)}
+                                        </span>
                                       </div>
-                                    ))}
-                                  </div>
+                                      <p className="mt-2 text-[12px] font-medium leading-5">{item.description}</p>
+                                      <div className="mt-2 space-y-1 text-[11px] leading-5 opacity-75">
+                                        <p>
+                                          <span className="font-bold">{t('admin_slash_help_example_label', language)}</span> {item.example}
+                                        </p>
+                                        <p>
+                                          <span className="font-bold">{t('admin_slash_help_permission_label', language)}</span> {item.permission}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  ))}
                                 </div>
-                              ) : (
-                                msg.text
-                              )}
-                            </div>
-                            
-                            {!msg.meta && (
-                              <button
-                                onClick={() => handleTranslateChat(msg.id, msg.text)}
-                                className={cn(
-                                  "p-1.5 border border-black rounded-lg bg-white hover:bg-yellow-100 active:translate-y-0.5 active:shadow-none shadow-[1px_1px_0px_rgba(0,0,0,1)] shrink-0 flex items-center justify-center cursor-pointer text-black transition-all",
-                                  translatedTexts[msg.id] && "bg-yellow-400"
-                                )}
-                                title={t('translate', language)}
-                              >
-                                <Languages size={11} className={translatingIds.has(msg.id) ? "animate-spin" : ""} />
-                              </button>
+                              </div>
+                            ) : (
+                              msg.text
                             )}
                           </div>
                           
-                          <div className="text-[9px] text-gray-400 mt-0.5 flex gap-1 opacity-70">
-                            <span>{dateStr}</span>
-                            <span>{timeStr}</span>
-                          </div>
+                          {!msg.meta && (
+                            <button
+                              onClick={() => handleTranslateChat(msg.id, msg.text)}
+                              className={cn(
+                                "p-1.5 border rounded-lg shrink-0 flex items-center justify-center cursor-pointer transition-all",
+                                view === 'play'
+                                  ? "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
+                                  : "border border-black bg-white hover:bg-yellow-100 active:translate-y-0.5 active:shadow-none shadow-[1px_1px_0px_rgba(0,0,0,1)] text-black",
+                                translatedTexts[msg.id] && (view === 'play' ? "bg-indigo-700 text-white" : "bg-yellow-400")
+                              )}
+                              title={t('translate', language)}
+                            >
+                              <Languages size={11} className={translatingIds.has(msg.id) ? "animate-spin" : ""} />
+                            </button>
+                          )}
                         </div>
-                      );
-                    })}
-                    <div ref={messagesEndRef} />
-                </div>
+                        
+                        <div className="text-[9px] text-gray-400 mt-0.5 flex gap-1 opacity-70">
+                          <span>{dateStr}</span>
+                          <span>{timeStr}</span>
+                        </div>
+                      </div>
+                    );
+                 })}
+                 <div ref={messagesEndRef} />
+              </div>
 
-                <form onSubmit={handleSendChat} className="p-3 border-t-4 border-black flex gap-2 bg-white pb-3">
-                   <input 
-                    id="global-chat-input"
-                    type="text"
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'ArrowUp') {
-                        e.preventDefault();
-                        if (chatHistory.length === 0) return;
-                        let nextIdx = historyIndex;
-                        if (historyIndex === -1) {
-                          nextIdx = chatHistory.length - 1;
-                        } else if (historyIndex > 0) {
-                          nextIdx = historyIndex - 1;
-                        }
+              <form onSubmit={handleSendChat} className={cn(
+                "flex gap-1.5 shrink-0 border-t",
+                view === 'play' ? "p-2 sm:p-2.5 bg-slate-950 border-slate-800" : "p-3 border-t-4 border-black flex gap-2 bg-white pb-3"
+              )}>
+                 <input 
+                  id="global-chat-input"
+                  type="text"
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'ArrowUp') {
+                      e.preventDefault();
+                      if (chatHistory.length === 0) return;
+                      let nextIdx = historyIndex;
+                      if (historyIndex === -1) {
+                        nextIdx = chatHistory.length - 1;
+                      } else if (historyIndex > 0) {
+                        nextIdx = historyIndex - 1;
+                      }
+                      setHistoryIndex(nextIdx);
+                      setChatInput(chatHistory[nextIdx]);
+                    } else if (e.key === 'ArrowDown') {
+                      e.preventDefault();
+                      if (chatHistory.length === 0) return;
+                      if (historyIndex === -1) return;
+                      let nextIdx = historyIndex + 1;
+                      if (nextIdx < chatHistory.length) {
                         setHistoryIndex(nextIdx);
                         setChatInput(chatHistory[nextIdx]);
-                      } else if (e.key === 'ArrowDown') {
-                        e.preventDefault();
-                        if (chatHistory.length === 0) return;
-                        if (historyIndex === -1) return;
-                        let nextIdx = historyIndex + 1;
-                        if (nextIdx < chatHistory.length) {
-                          setHistoryIndex(nextIdx);
-                          setChatInput(chatHistory[nextIdx]);
-                        } else {
-                          setHistoryIndex(-1);
-                          setChatInput("");
-                        }
+                      } else {
+                        setHistoryIndex(-1);
+                        setChatInput("");
                       }
-                    }}
-                    className="flex-1 border-2 border-black p-3 text-sm font-bold outline-none focus:bg-yellow-100 placeholder:text-gray-400"
-                    placeholder={localAiStatus.state === 'ready'
-                      ? t('local_ai_chat_placeholder_ready', language)
-                      : t('local_ai_chat_placeholder_fallback', language)}
-                    maxLength={100}
-                   />
-                   <button type="submit" className="bg-black text-white px-4 border-2 border-black hover:bg-white hover:text-black transition-colors flex items-center justify-center">
-                      <PlusCircle size={20} />
-                   </button>
-                </form>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </>
-      )}
-      {/* Item Drop Notification */}
+                    }
+                  }}
+                  className={cn(
+                    "flex-1 p-2 sm:p-2.5 text-xs sm:text-sm font-mono font-bold outline-none rounded-lg",
+                    view === 'play'
+                      ? "bg-slate-900 border border-slate-700 text-white placeholder:text-slate-500 focus:border-indigo-500"
+                      : "border-2 border-black p-3 text-sm font-bold outline-none focus:bg-yellow-100 placeholder:text-gray-400"
+                  )}
+                  placeholder={localAiStatus.state === 'ready'
+                    ? t('local_ai_chat_placeholder_ready', language)
+                    : t('local_ai_chat_placeholder_fallback', language)}
+                  maxLength={100}
+                 />
+                 <button 
+                   type="submit" 
+                   className={cn(
+                     "px-3.5 flex items-center justify-center transition-colors rounded-lg cursor-pointer",
+                     view === 'play'
+                       ? "bg-indigo-600 text-white border border-indigo-500 hover:bg-indigo-500 shadow-sm"
+                       : "bg-black text-white px-4 border-2 border-black hover:bg-white hover:text-black"
+                   )}
+                 >
+                    <PlusCircle size={20} />
+                 </button>
+              </form>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </>
+    )}
+    
+    {/* Item Drop Notification */}
       <AnimatePresence>
         {itemDropNotification && (
           <motion.div 

@@ -1,6 +1,6 @@
 export const ko = {
-    backup_data: '계정 데이터 백업 (QR코드)',
-    restore_data: '계정 데이터 복원 (카메라 스캔)',
+    backup_data: '계정 데이터 백업 (애니메이션 QR)',
+    restore_data: '계정 데이터 복원 (카메라 연속 스캔)',
     backup_modal_title: '데이터 백업 QR코드',
     backup_modal_desc: '아래 QR 코드를 다른 기기 카메라로 스캔하거나 백업 코드를 복사하세요.',
     restore_modal_title: '데이터 복원 카메라 스캔',

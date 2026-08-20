@@ -850,38 +850,34 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
         </div>
       )}
 
-      {/* Ability Icon & Tooltip - Hidden on board */}
+      {/* Item 377: Streamlined 14px Corner Skill / Ability Badge per design.md */}
       {activeCard.ability && !isOnBoard && (
-        <div className="absolute bottom-[3cqw] right-[3cqw] z-50 group/ability">
+        <div className="absolute bottom-1 right-1 z-50 group/ability">
           <div
-            className="w-[12cqw] h-[12cqw] bg-black/95 rounded-full border-[1px] border-white/50 flex items-center justify-center text-white p-[2cqw] shadow-[0_2px_5px_rgba(0,0,0,0.5)] relative"
+            className="h-3.5 min-w-[14px] px-1 bg-[#201d1d]/95 border border-[rgba(255,255,255,0.25)] rounded-[2px] flex items-center justify-center text-[8px] font-mono font-bold text-amber-300 shadow-none leading-none select-none"
             role="img"
             aria-label={activeCard.ability ? `${activeCard.ability.type} ${language === 'ko' ? activeCard.ability.description_ko : activeCard.ability.description_en}` : undefined}
             title={activeCard.ability ? (language === 'ko' ? activeCard.ability.description_ko : activeCard.ability.description_en) : undefined}
           >
-            {activeCard.ability.type === 'POWER_BOOST' && <Zap className="w-full h-full text-yellow-400" />}
-            {activeCard.ability.type === 'WEAKEN' && <ChevronsDown className="w-full h-full text-red-400" />}
-            {activeCard.ability.type === 'REINFORCE' && <ChevronsUp className="w-full h-full text-green-400" />}
-            {activeCard.ability.type === 'SHIELD' && <Shield className="w-full h-full text-blue-400" />}
-            {activeCard.ability.type === 'WALL' && <Mountain className="w-full h-full text-slate-400" />}
-            {activeCard.ability.type === 'PIERCE' && <Crosshair className="w-full h-full text-orange-400" />}
+            {activeCard.ability.type === 'POWER_BOOST' && <span>[⚡+1]</span>}
+            {activeCard.ability.type === 'WEAKEN' && <span>[🔻-1]</span>}
+            {activeCard.ability.type === 'REINFORCE' && <span>[🛡️+1]</span>}
+            {activeCard.ability.type === 'SHIELD' && <span>[🛡️SHD]</span>}
+            {activeCard.ability.type === 'WALL' && <span>[🧱WAL]</span>}
+            {activeCard.ability.type === 'PIERCE' && <span>[🎯PRC]</span>}
+            {activeCard.ability.type === 'COUNTER' && <span>[⚔️CTR]</span>}
+            {activeCard.ability.type === 'IMMUNITY' && <span>[✨IMM]</span>}
+            {activeCard.ability.type === 'TIME_WARP' && <span>[⏳TRN]</span>}
+            {activeCard.ability.type === 'OMNIBOOST' && <span>[⭐BST]</span>}
             
             {/* Tooltip */}
             {!(isSelected || isDragging) && (
-              <div className="absolute bottom-full right-0 mb-2 opacity-0 group-hover/ability:opacity-100 transition-opacity duration-200 pointer-events-none w-[40cqw] min-w-[120px] max-w-[180px] bg-black/95 text-white p-2 rounded-lg border border-white/20 shadow-xl z-[150] origin-bottom-right transform scale-95 group-hover/ability:scale-100">
-                <div className="text-[8px] sm:text-[10px] font-black uppercase tracking-widest text-blue-300 mb-1 flex items-center gap-1">
-                  <HelpCircle size={10} className="shrink-0" />
-                  <span className="truncate">{activeCard.ability.type.replace('_', ' ')}</span>
+              <div className="absolute bottom-full right-0 mb-1 opacity-0 group-hover/ability:opacity-100 transition-opacity duration-150 pointer-events-none w-36 bg-[#201d1d] text-[#fdfcfc] p-1.5 rounded-none border border-[rgba(255,255,255,0.2)] shadow-md z-[150] origin-bottom-right">
+                <div className="text-[9px] font-mono font-bold uppercase text-amber-300 mb-0.5">
+                  [{activeCard.ability.type.replace('_', ' ')}]
                 </div>
-                <div className="flex flex-col gap-1">
-                  <p className="text-[8px] sm:text-[10px] leading-tight font-sans font-medium text-white/90">
-                    {activeCard.ability.description_en}
-                  </p>
-                  {activeCard.ability.description_ko && (
-                    <p className="text-[7px] sm:text-[9px] leading-tight font-sans text-white/50">
-                      {activeCard.ability.description_ko}
-                    </p>
-                  )}
+                <div className="text-[8px] leading-tight font-mono text-[#fdfcfc]/90">
+                  {language === 'ko' ? (activeCard.ability.description_ko || activeCard.ability.description_en) : activeCard.ability.description_en}
                 </div>
               </div>
             )}

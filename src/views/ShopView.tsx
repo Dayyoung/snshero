@@ -1830,7 +1830,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
       const hasSrPlus = combined.some(c => ['gold', 'rare', 'epic', 'legendary', 'platinum'].includes((c.rarity || '').toLowerCase()));
       if (!hasSrPlus) {
-        combined[0] = { ...combined[0], rarity: 'gold' };
+        const possibleGold = cardRarityPools['gold'] || [1, 2, 3];
+        const goldIndex = possibleGold[Math.floor(Math.random() * possibleGold.length)];
+        addCard('gold', goldIndex, true);
+        combined[0] = { ...combined[0], rarity: 'gold', imageIndex: goldIndex };
       }
 
       recordGachaPity(packRarity, combined.map(card => card.rarity));
@@ -1840,7 +1843,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
         step: 0,
         packType: packRarity,
         isRevealed: false,
-        cards: combined.slice(0, 5)
+        cards: combined
       });
 
       playSfx('https://assets.mixkit.co/active_storage/sfx/2012/2012-preview.mp3');

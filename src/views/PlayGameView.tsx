@@ -5,7 +5,7 @@ import { CardData, AiStrategy, AiDifficulty, Language, PlayerPatterns, Item, Ski
 import { CardItem } from '../components/CardItem';
 import { cn, getFormattedCardName, getAssetUrl, getCardSpriteAsset, getCardSpriteCoords, getCardSpriteStyle } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2, UserPlus, ShoppingBag, XCircle, Menu, Coins } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2, UserPlus, ShoppingBag, XCircle, Menu, Coins, Pickaxe, Crosshair, Footprints, Castle, Compass, BookOpen, Award, Sliders, Axe, Fish } from 'lucide-react';
 import { generateCard, INITIAL_CARDS, generateUniqueDeck, getCardStatWithBonus, generateAiName, syncCardWithDatabase, INITIAL_SKILLS, getCardPower, getNormalizedElement } from '../constants';
 import { CARD_DATABASE } from '../cardDatabase';
 import { ITEM_DATABASE } from '../constants/itemDatabase';
@@ -31,6 +31,11 @@ import { CardSlotGame } from '../components/CardSlotGame';
 import { CardHeistGame } from '../components/CardHeistGame';
 import { CardRushGame } from '../components/CardRushGame';
 import { ShootingBattleGame } from '../components/ShootingBattleGame';
+import { BreakoutGame } from '../components/BreakoutGame';
+import { MinesweeperGame } from '../components/MinesweeperGame';
+import { PacmanGame } from '../components/PacmanGame';
+import { TictactoeGame } from '../components/TictactoeGame';
+import { TrexRunnerGame } from '../components/TrexRunnerGame';
 import { NativeAd } from '../components/NativeAd';
 import SkillTimingButton from '../components/SkillTimingButton';
 import { getEquipmentSetBonus, calculateBattleSynergy, FACTION_ADVANTAGE_COLORS, FACTION_ADVANTAGE_ICONS, EQUIPMENT_SET_ICONS, generateCounterDeck, calculateElementalComboBonus } from '../lib/battleSynergy';
@@ -45,6 +50,59 @@ import { ShareTemplateCard } from '../components/ShareTemplateCard';
 import { StoryStageSelectModal } from '../components/StoryStageSelectModal';
 import { SkillActivationOverlay, SkillEvent } from '../components/SkillActivationOverlay';
 import { PingIndicator } from '../components/PingIndicator';
+import { LuckyMatchModal } from '../components/LuckyMatchModal';
+import { TreasureChestUnlockModal } from '../components/TreasureChestUnlockModal';
+import { ExpeditionModal } from '../components/ExpeditionModal';
+import { MonsterBeastariumModal } from '../components/MonsterBeastariumModal';
+import { TacticianMasteryModal } from '../components/TacticianMasteryModal';
+import { TowerOfTrialsModal } from '../components/TowerOfTrialsModal';
+import { BattleStanceBar } from '../components/BattleStanceBar';
+import { BattleGambitModal } from '../components/BattleGambitModal';
+import { VoxelMiningDefenseGame } from '../components/VoxelMiningDefenseGame';
+import { VoxelPixelStrikeArenaGame } from '../components/VoxelPixelStrikeArenaGame';
+import { VoxelSkyParkourGame } from '../components/VoxelSkyParkourGame';
+import { BattleComboAnnouncer } from '../components/BattleComboAnnouncer';
+import { SecretStampBookModal } from '../components/SecretStampBookModal';
+import { TreasureDartModal } from '../components/TreasureDartModal';
+import { GoldenPirateRouletteModal } from '../components/GoldenPirateRouletteModal';
+import { GoldenArcheryModal } from '../components/GoldenArcheryModal';
+import { VoxelBattlegroundsGame } from '../components/VoxelBattlegroundsGame';
+import { VoxelDungeonCrawlerGame } from '../components/VoxelDungeonCrawlerGame';
+import { VoxelSpaceOdysseyGame } from '../components/VoxelSpaceOdysseyGame';
+import { VoxelZombieSurvivalGame } from '../components/VoxelZombieSurvivalGame';
+import { VoxelMedievalSiegeGame } from '../components/VoxelMedievalSiegeGame';
+import { VoxelTitanMechaGame } from '../components/VoxelTitanMechaGame';
+import { VoxelDeepSeaOdysseyGame } from '../components/VoxelDeepSeaOdysseyGame';
+import { VoxelAceFighterGame } from '../components/VoxelAceFighterGame';
+import { VoxelDriftMasterGame } from '../components/VoxelDriftMasterGame';
+import { VoxelMonsterIsleGame } from '../components/VoxelMonsterIsleGame';
+import { VoxelCyberNinjaGame } from '../components/VoxelCyberNinjaGame';
+import { VoxelRaftSurvivalGame } from '../components/VoxelRaftSurvivalGame';
+import { VoxelSnowboardExtremeGame } from '../components/VoxelSnowboardExtremeGame';
+import { VoxelPinballKnightsGame } from '../components/VoxelPinballKnightsGame';
+import { VoxelPirateBattlesGame } from '../components/VoxelPirateBattlesGame';
+import { VoxelPixelOvercookedGame } from '../components/VoxelPixelOvercookedGame';
+import { VoxelPropHuntGame } from '../components/VoxelPropHuntGame';
+import { VoxelQuantumPortalGame } from '../components/VoxelQuantumPortalGame';
+import { VoxelRollingHeroGame } from '../components/VoxelRollingHeroGame';
+import { VoxelSuperSmashGame } from '../components/VoxelSuperSmashGame';
+import { VoxelTowerCraftGame } from '../components/VoxelTowerCraftGame';
+import { VoxelBeatBlasterGame } from '../components/VoxelBeatBlasterGame';
+import { VoxelCastleBlasterGame } from '../components/VoxelCastleBlasterGame';
+import { VoxelFactoryCraftGame } from '../components/VoxelFactoryCraftGame';
+import { VoxelSuperStrikersGame } from '../components/VoxelSuperStrikersGame';
+import { VoxelGladiatorColosseumGame } from '../components/VoxelGladiatorColosseumGame';
+import { VoxelDragonSlayerGame } from '../components/VoxelDragonSlayerGame';
+import { VoxelArcherHeroGame } from '../components/VoxelArcherHeroGame';
+import { VoxelVampireSurvivalGame } from '../components/VoxelVampireSurvivalGame';
+import { VoxelTankBounceGame } from '../components/VoxelTankBounceGame';
+import { VoxelNinjaSlashGame } from '../components/VoxelNinjaSlashGame';
+import { VoxelGolfMasterGame } from '../components/VoxelGolfMasterGame';
+import { VoxelLumberjackTycoonGame } from '../components/VoxelLumberjackTycoonGame';
+import { VoxelFishingMasterGame } from '../components/VoxelFishingMasterGame';
+import { GambitConfig, TacticalStance } from '../types';
+import { getSecretStamps, unlockSecretStamp } from '../lib/secretStampHelper';
+import { recordHeroBattleResult } from '../lib/heroMasteryHelper';
 import { getSeasonItem, setSeasonItem } from '../lib/seasonStorage';
 import { triggerHaptic } from '../lib/haptic';
 
@@ -136,41 +194,54 @@ interface ChallengeData {
   turn?: string;
 }
 
-const getMissionCardSpriteStyle = (cardId: number): React.CSSProperties => {
-  const safeCardId = CARD_DATABASE[cardId] ? cardId : 41;
-  return getCardSpriteStyle(safeCardId);
-};
-
-const MissionCharacterPortrait: React.FC<{ cardId?: number; name: string; className?: string }> = ({
+const MissionCharacterPortrait: React.FC<{ 
+  cardId?: number; 
+  name?: string; 
+  className?: string;
+  language?: string;
+  hideStats?: boolean;
+}> = ({
   cardId = 41,
   name,
-  className
+  className,
+  language = 'ko',
+  hideStats = false,
 }) => {
   const safeCardId = CARD_DATABASE[cardId] ? cardId : 41;
-  const card = CARD_DATABASE[safeCardId];
-  const primaryImgUrl = card?.imageUrl;
-  const [imgFailed, setImgFailed] = useState(false);
+  const dbCard = CARD_DATABASE[safeCardId];
+
+  const cardData: CardData = useMemo(() => {
+    return {
+      id: String(safeCardId),
+      title: dbCard?.title || name || `Hero #${safeCardId}`,
+      title_en: dbCard?.title_en || name || `Hero #${safeCardId}`,
+      title_dis: dbCard?.title_dis,
+      stats: dbCard?.stats || [3, 3, 3, 3],
+      power: dbCard?.power || 10,
+      rarity: dbCard?.rarity || 'bronze',
+      element: dbCard?.element || 'monster',
+      race: dbCard?.race,
+      imageIndex: safeCardId,
+      imageUrl: dbCard?.imageUrl,
+      level: 1,
+      skills: [],
+      owner: null,
+    };
+  }, [safeCardId, dbCard, name]);
 
   return (
-    <div className={cn('relative flex h-full w-full items-center justify-center overflow-hidden', className)} title={name}>
-      <div className="relative z-10 w-full h-full bg-transparent overflow-hidden flex items-center justify-center">
-        {!imgFailed && primaryImgUrl ? (
-          <img
-            src={primaryImgUrl}
-            alt={name}
-            className="w-full h-full object-cover object-top scale-125 group-hover:scale-135 filter drop-shadow-xl transition-transform duration-300 pointer-events-none"
-            referrerPolicy="no-referrer"
-            onError={() => setImgFailed(true)}
-          />
-        ) : (
-          <div className="h-[140%] w-[140%] transform scale-150 flex-shrink-0" style={getMissionCardSpriteStyle(safeCardId)} />
-        )}
-      </div>
+    <div className={cn('relative flex h-full w-full items-center justify-center p-1', className)} title={name || dbCard?.title}>
+      <CardItem
+        card={cardData}
+        className="w-24 h-34 sm:w-28 sm:h-38 rounded-lg shadow-lg pointer-events-none transform group-hover:scale-105 transition-transform duration-300"
+        language={language}
+        hideStats={hideStats}
+      />
     </div>
   );
 };
 
-type GameState = 'modeSelect' | 'lobby' | 'searching' | 'playing' | 'gameOver' | 'preMatch' | 'tournament' | 'story' | 'boss' | 'dungeon' | 'defense' | 'running' | 'shooting' | 'snake' | 'gomoku' | 'memorymatch' | 'slide2048' | 'cardjumper' | 'cardtap' | 'cardflip' | 'cardslide' | 'cardsorcery' | 'cardslot' | 'cardheist' | 'cardrush';
+type GameState = 'modeSelect' | 'lobby' | 'searching' | 'playing' | 'gameOver' | 'preMatch' | 'tournament' | 'story' | 'boss' | 'dungeon' | 'defense' | 'running' | 'shooting' | 'snake' | 'gomoku' | 'memorymatch' | 'slide2048' | 'cardjumper' | 'cardtap' | 'cardflip' | 'cardslide' | 'cardsorcery' | 'cardslot' | 'cardheist' | 'cardrush' | 'breakout' | 'minesweeper' | 'pacman' | 'tictactoe' | 'trexrunner' | 'voxeldefense' | 'pixelstrike' | 'voxelparkour' | 'voxelbattlegrounds' | 'voxeldungeon' | 'voxelspace' | 'voxelzombie' | 'voxelsiege' | 'voxeltitan' | 'voxelsuperstrikers' | 'voxelgladiatorcolosseum' | 'voxeldragonslayer' | 'voxelarcherhero' | 'voxelvampiresurvival' | 'voxeltankbounce' | 'voxelninjaslash' | 'voxelgolfmaster' | 'voxellumberjacktycoon' | 'voxelfishingmaster';
 
 interface TournamentParticipant {
   id: string;
@@ -232,7 +303,7 @@ interface DamagePopup {
   direction: string;
 }
 
-import { checkFlips, findBestMove, Board, CardInstance } from '../lib/gameEngine';
+import { checkFlips, checkFlipsWithDetails, findBestMove, Board, CardInstance } from '../lib/gameEngine';
 
 interface TruncatableDescriptionProps {
   text: string;
@@ -339,6 +410,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [guideMode, setGuideMode] = useState<any>(null);
   const [sortBy, setSortBy] = useState<'default' | 'popular' | 'recent'>('default');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'battle' | 'arcade' | 'puzzle' | 'casual'>('all');
   const [showDailyMissions, setShowDailyMissions] = useState(false);
   const [modePlayData, setModePlayData] = useState<Record<string, { count: number; lastPlayed: number }>>({});
   const [showHelpPopup, setShowHelpPopup] = useState(false);
@@ -387,6 +459,51 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       title: title || (language === 'ko' ? '알림' : 'Notice'),
       message
     });
+  };
+
+  // =========================================================================
+  // BATTLE GAMBIT & TACTICAL STANCE & SECRET STAMPS (Items 393-405)
+  // =========================================================================
+  const [gambitConfig, setGambitConfig] = useState<GambitConfig>(() => {
+    try {
+      const raw = localStorage.getItem('hero_gambit_config_v1');
+      if (raw) return JSON.parse(raw);
+    } catch (e) {
+      console.error('Failed to load gambit config:', e);
+    }
+    return {
+      slots: ['COUNTER_ELEMENT', 'SECURE_CORNERS', 'PRESERVE_ACE'],
+      activeStance: 'balanced',
+      autoDisassembleNR: false,
+    };
+  });
+  const [isGambitModalOpen, setIsGambitModalOpen] = useState<boolean>(false);
+  const [isSecretStampModalOpen, setIsSecretStampModalOpen] = useState<boolean>(false);
+  const [isTreasureDartOpen, setIsTreasureDartOpen] = useState<boolean>(false);
+  const [isPirateRouletteOpen, setIsPirateRouletteOpen] = useState<boolean>(false);
+  const [isArcheryOpen, setIsArcheryOpen] = useState<boolean>(false);
+  const [comboAnnounceData, setComboAnnounceData] = useState<{
+    comboType: 'NORMAL' | 'DOUBLE' | 'TRIPLE' | 'MEGA' | 'SAME' | 'PLUS' | 'DOMINO' | 'Z_LIGHTNING' | 'L_STORM' | null;
+    comboCount: number;
+    isCriticalShatter: boolean;
+    maxPowerDiff: number;
+  } | null>(null);
+  const [isClutchSlowMo, setIsClutchSlowMo] = useState<boolean>(false);
+  const [battleStartTime, setBattleStartTime] = useState<number>(Date.now());
+  const [hasTriggeredDoubleBreak, setHasTriggeredDoubleBreak] = useState<boolean>(false);
+
+  const handleSaveGambitConfig = (newConfig: GambitConfig) => {
+    setGambitConfig(newConfig);
+    try {
+      localStorage.setItem('hero_gambit_config_v1', JSON.stringify(newConfig));
+    } catch (e) {
+      console.error('Failed to save gambit config:', e);
+    }
+  };
+
+  const handleStanceChange = (stance: TacticalStance) => {
+    const newConfig = { ...gambitConfig, activeStance: stance };
+    handleSaveGambitConfig(newConfig);
   };
 
   // Centralized minigame reward: grants SNS coins + card XP
@@ -2479,6 +2596,62 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   // Item 368: Survival Master Clutch Comeback Tracker (tracks lowest friendly card count)
   const minFriendlyCardsCount = useRef<number>(5);
 
+  // Item 372: Shield Crusher Multi-Layer Barrier Tracker
+  const bossShieldBreaksCount = useRef<number>(0);
+  const [isShieldCrusherWin, setIsShieldCrusherWin] = useState<boolean>(false);
+
+  // Item 376: Mirror Master Zero-Elemental-Advantage Tracker
+  const elementBonusCountUsed = useRef<number>(0);
+
+  // Item 375: Turn 7 Rage Spark Ignition Slot
+  const [rageSparkSlotIndex, setRageSparkSlotIndex] = useState<number | null>(null);
+
+  // Item 380: 9th Turn 3-Tile Clutch Ace Breaker Comeback Tracker
+  const isClutchAceBreaker = useRef<boolean>(false);
+
+  // Item 382: Total Eclipse Full Board Domination (9:0 Win)
+  const [isTotalEclipseWin, setIsTotalEclipseWin] = useState<boolean>(false);
+
+  // Item 384: Manual 5-Win Streak Memory Mini-Game Modal
+  const manualWinStreak = useRef<number>(0);
+  const [isLuckyMatchOpen, setIsLuckyMatchOpen] = useState<boolean>(false);
+
+  // Item 386: 4-Way Cross Simultaneous Capture Flash & Shockwave
+  const [isCrossDominationActive, setIsCrossDominationActive] = useState<boolean>(false);
+
+  // Item 387: Post-Boss Manual Victory Treasure Chest Picker Modal
+  const [isBossChestUnlockOpen, setIsBossChestUnlockOpen] = useState<boolean>(false);
+
+  // Item 388: Consecutive Capture Fever Mode (2x Currency Drop Multiplier)
+  const [feverMeter, setFeverMeter] = useState<number>(0);
+  const isFeverMode = feverMeter >= 3;
+
+  // Item 389: Tactician Mastery & Board Auras Modal
+  const [isTacticianMasteryOpen, setIsTacticianMasteryOpen] = useState<boolean>(false);
+
+  // Item 390: Micro Screen Shake on 3+ Cascade Flips
+  const [isMicroShaking, setIsMicroShaking] = useState<boolean>(false);
+
+  // Item 383 & 385 & 392: Modals
+  const [isBeastariumOpen, setIsBeastariumOpen] = useState<boolean>(false);
+  const [isExpeditionOpen, setIsExpeditionOpen] = useState<boolean>(false);
+  const [isTowerTrialsOpen, setIsTowerTrialsOpen] = useState<boolean>(false);
+
+  // Item 391: Hero Faction/Bond Synergy Passive
+  const deckFactionSynergy = useMemo(() => {
+    if (!playerDeck || playerDeck.length < 3) return null;
+    const counts: Record<string, number> = {};
+    playerDeck.forEach(c => {
+      const el = getNormalizedElement(c) || 'neutral';
+      counts[el] = (counts[el] || 0) + 1;
+    });
+    const dominant = Object.entries(counts).find(([_, cnt]) => cnt >= 3);
+    if (dominant) {
+      return { faction: dominant[0], count: dominant[1], buff: '+1 Stats' };
+    }
+    return null;
+  }, [playerDeck]);
+
   // Item 351: Sudden Death Overclock (turn count / filled slots >= 6)
   const filledBoardCount = board.filter(c => c !== null).length;
   const isSuddenDeathOverclock = gameState === 'playing' && filledBoardCount >= 6;
@@ -2516,6 +2689,23 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       playerCardsCapturedByAi.current = 0;
       setIsIroncladWin(false);
       minFriendlyCardsCount.current = 5;
+      bossShieldBreaksCount.current = 0;
+      setIsShieldCrusherWin(false);
+      elementBonusCountUsed.current = 0;
+      setRageSparkSlotIndex(null);
+      isClutchAceBreaker.current = false;
+      setIsTotalEclipseWin(false);
+      setIsCrossDominationActive(false);
+      setFeverMeter(0);
+
+      // Item 391: Team Faction Synergy Log
+      if (deckFactionSynergy) {
+        addLog(language === 'ko'
+          ? `🛡️ [세력 결속 (Faction Synergy)] [${deckFactionSynergy.faction.toUpperCase()}] 세력 영웅 ${deckFactionSynergy.count}명 편성으로 전 팀원 결속 버프 발동!`
+          : `🛡️ [FACTION SYNERGY] ${deckFactionSynergy.count}x [${deckFactionSynergy.faction.toUpperCase()}] heroes activated Team Bond (+1 Stats)!`,
+          'system'
+        );
+      }
 
       // Item 355: Random Mana Spring spawn (30% chance on random board slot)
       if (Math.random() < 0.30) {
@@ -2555,6 +2745,26 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       }
     }
   }, [gameState]);
+
+  // Item 375: Turn 7 Rage Spark Slot Ignition
+  useEffect(() => {
+    if (gameState === 'playing' && !gameOver && filledBoardCount === 6 && rageSparkSlotIndex === null) {
+      const emptySlots: number[] = [];
+      board.forEach((c, idx) => {
+        if (c === null) emptySlots.push(idx);
+      });
+      if (emptySlots.length > 0) {
+        const chosen = emptySlots[Math.floor(Math.random() * emptySlots.length)];
+        setRageSparkSlotIndex(chosen);
+        playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+        addLog(language === 'ko'
+          ? `🔥 [분노 각성 타일 점화] 7턴 개시! ${chosen + 1}번 구역이 분노의 불꽃으로 각성합니다! (배치 시 전 방향 파워 +3 폭주!)`
+          : `🔥 [RAGE SPARK IGNITED] Turn 7 reached! Sector ${chosen + 1} ignited with Rage Spark (+3 all-directional power)!`,
+          'system'
+        );
+      }
+    }
+  }, [gameState, gameOver, filledBoardCount, rageSparkSlotIndex, board, language]);
 
   // Item 347: Loot Goblin Ambush Check (turns 4~6 / 3~5 filled tiles, 15% spawn chance)
   useEffect(() => {
@@ -4670,6 +4880,61 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
     }
 
+    // Item 375: Rage Spark Slot bonus (+3 all directional stats)
+    if (rageSparkSlotIndex === index) {
+      newBoard[index] = {
+        ...placedCard,
+        stats: placedCard.stats.map(s => s + 3) as [number, number, number, number]
+      };
+      triggerStatFX(index, '+3 RAGE', true);
+      const unitName = getFormattedCardName(placedCard, language);
+      addLog(language === 'ko'
+        ? `🔥 [분노 각성 폭주] [${unitName}] 카드가 분노 각성 타일의 힘으로 전 방향 파워 +3 폭주 상태에 돌입했습니다!`
+        : `🔥 [RAGE SPARK FRENZY] [${unitName}] empowered by Rage Spark (+3 All Stats)!`,
+        'victory'
+      );
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+
+    // Item 371: Wind Gust Knockback Displacement Mechanic
+    const isWindCard = getNormalizedElement(placedCard) === 'wind' || placedCard.element === 'air' || placedCard.element === 'wind';
+    if (isWindCard) {
+      const wRow = Math.floor(index / 3);
+      const wCol = index % 3;
+      const wDirs = [
+        { r: -1, c: 0 },
+        { r: 0, c: 1 },
+        { r: 1, c: 0 },
+        { r: 0, c: -1 }
+      ];
+      wDirs.forEach(d => {
+        const nr = wRow + d.r;
+        const nc = wCol + d.c;
+        if (nr >= 0 && nr < 3 && nc >= 0 && nc < 3) {
+          const adjIdx = nr * 3 + nc;
+          const adjCard = newBoard[adjIdx];
+          if (adjCard && adjCard.owner !== placedCard.owner) {
+            const pushR = nr + d.r;
+            const pushC = nc + d.c;
+            if (pushR >= 0 && pushR < 3 && pushC >= 0 && pushC < 3) {
+              const pushIdx = pushR * 3 + pushC;
+              if (newBoard[pushIdx] === null) {
+                newBoard[pushIdx] = adjCard;
+                newBoard[adjIdx] = null;
+                triggerStatFX(pushIdx, '🌪️ GUST', false);
+                const victimName = getFormattedCardName(adjCard, language);
+                addLog(language === 'ko'
+                  ? `🌪️ [윈드 거스트] 풍속성 돌풍으로 [${victimName}] 카드가 ${pushIdx + 1}번 구역으로 밀려났습니다!`
+                  : `🌪️ [WIND GUST] Gale knocked [${victimName}] backwards into Sector ${pushIdx + 1}!`,
+                  'system'
+                );
+              }
+            }
+          }
+        }
+      });
+    }
+
     // Item 359: Central Core Element Switch Mechanism (Cross tiles rotate)
     if (index === 4) {
       const ELEMENT_CYCLE: Record<string, string> = { 
@@ -4700,6 +4965,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     // Item 360: Track AI captures of player's cards for Ironclad Defender bonus
     if (placedCard.owner === 'ai' && flippedIndices.length > 0) {
       playerCardsCapturedByAi.current += flippedIndices.length;
+    }
+
+    // Item 372 & Item 380: Track shield breaks and 9th turn clutch ace flips
+    if (placedCard.owner === 'player' && flippedIndices.length > 0) {
+      flippedIndices.forEach(ni => {
+        const victimCard = newBoard[ni];
+        if (victimCard && (victimCard.ability?.type === 'SHIELD' || victimCard.ability?.type === 'WALL' || (victimCard.power && victimCard.power >= 150))) {
+          bossShieldBreaksCount.current += 1;
+        }
+      });
+      if (board.filter(c => c !== null).length === 8 && flippedIndices.length >= 3) {
+        isClutchAceBreaker.current = true;
+      }
     }
     
     if (highlights && Object.keys(highlights).length > 0) {
@@ -4748,6 +5026,97 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3'); // Critical capture sound
         addLog(t('log_critical_capture', language, { count: flippedIndices.length }), 'system');
         setLastCombo({ count: flippedIndices.length, timestamp: Date.now() });
+      }
+
+      // Item 394 & Item 402, Item 406 (Z-Lightning), Item 410 (Elemental L-Storm)
+      let detectedComboType: 'NORMAL' | 'DOUBLE' | 'TRIPLE' | 'MEGA' | 'SAME' | 'PLUS' | 'DOMINO' | 'Z_LIGHTNING' | 'L_STORM' | null = null;
+      
+      // Check Z-shape (indices: [0,1,2,4,6,7,8] or [0,1,4,7,8])
+      const playerIndices = newBoard
+        .map((c, i) => (c && c.owner === 'player' ? i : -1))
+        .filter(i => i !== -1);
+      
+      const isZFormation = (
+        [0, 1, 4, 7, 8].every(idx => playerIndices.includes(idx)) ||
+        [2, 1, 4, 7, 6].every(idx => playerIndices.includes(idx))
+      );
+
+      // Check L-shape (indices: [0,3,6,7,8] or [2,5,8,7,6] or [0,1,2,5,8])
+      const isLFormation = (
+        [0, 3, 6, 7, 8].every(idx => playerIndices.includes(idx)) ||
+        [2, 5, 8, 7, 6].every(idx => playerIndices.includes(idx)) ||
+        [0, 1, 2, 5, 8].every(idx => playerIndices.includes(idx))
+      );
+
+      if (isZFormation) detectedComboType = 'Z_LIGHTNING';
+      else if (isLFormation) detectedComboType = 'L_STORM';
+      else if (flippedIndices.length >= 4) detectedComboType = 'MEGA';
+      else if (flippedIndices.length === 3) detectedComboType = 'TRIPLE';
+      else if (flippedIndices.length === 2) detectedComboType = 'DOUBLE';
+      else detectedComboType = 'NORMAL';
+
+      setComboAnnounceData({
+        comboType: detectedComboType,
+        comboCount: isZFormation || isLFormation ? 5 : flippedIndices.length,
+        isCriticalShatter: flippedIndices.length >= 2 || isZFormation || isLFormation,
+        maxPowerDiff: isZFormation || isLFormation ? 10 : flippedIndices.length * 2,
+      });
+      setTimeout(() => setComboAnnounceData(null), 1800);
+
+      // Item 396: 0.3s Clutch Slow-Motion Effect on 9th move or high-stakes flip
+      const totalPlaced = newBoard.filter(c => c !== null).length;
+      if (totalPlaced >= 8 || flippedIndices.length >= 3) {
+        setIsClutchSlowMo(true);
+        setTimeout(() => setIsClutchSlowMo(false), 350);
+      }
+
+      // Item 397: Secret Stamp Check (Triple Flip Master)
+      if (placedCard.owner === 'player' && flippedIndices.length >= 3) {
+        const unlocked = unlockSecretStamp('TRIPLE_COMBO_MASTER');
+        if (unlocked) {
+          addLog(`📜 [비밀 업적 달성] [${unlocked.titleKo}] 골든 스탬프를 획득했습니다!`, 'victory');
+        }
+      }
+
+      // Item 400: Double Weakness Break check for Boss Raids
+      if (isBossActive && placedCard.owner === 'player' && flippedIndices.length >= 2) {
+        setHasTriggeredDoubleBreak(true);
+        const unlocked = unlockSecretStamp('DOUBLE_WEAKNESS_BREAKER');
+        if (unlocked) {
+          addLog(`📜 [비밀 업적 달성] [${unlocked.titleKo}] 보스 2연속 약점 파쇄!`, 'victory');
+        }
+      }
+
+      // Item 386: Cross Domination (4 simultaneous flips)
+      if (flippedIndices.length >= 4) {
+        setIsCrossDominationActive(true);
+        setTimeout(() => setIsCrossDominationActive(false), 2000);
+        addLog(language === 'ko'
+          ? '✨ [크로스 도미네이션 (Cross Domination)] 4방향 십자 동시 캡처 충격파 폭발!'
+          : '✨ [CROSS DOMINATION] 4-way cross simultaneous capture shockwave triggered!',
+          'victory'
+        );
+      }
+
+      // Item 388: Fever Mode Combo accumulation (2x currency multiplier)
+      if (placedCard.owner === 'player' && flippedIndices.length > 0) {
+        setFeverMeter(prev => {
+          const next = prev + flippedIndices.length;
+          if (next >= 3 && prev < 3) {
+            addLog(language === 'ko'
+              ? '🔥 [피버 타임 (Fever Mode) 발동] 황금 불꽃 활성화! 전투 보상 재화 2배 적용!'
+              : '🔥 [FEVER MODE ACTIVATED] Golden flames roaring! 2x Reward multiplier active!',
+              'victory'
+            );
+          }
+          return next;
+        });
+      }
+
+      // Item 390: 2D Micro Screen Shake on 3+ combo flips
+      if (flippedIndices.length >= 3) {
+        setIsMicroShaking(true);
+        setTimeout(() => setIsMicroShaking(false), 250);
       }
     } else {
       // Defense Success SFX & log (ID 82)
@@ -4809,8 +5178,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const recommendedPlayerMove = useMemo(() => {
     if (gameState !== 'playing' || gameOver || turn !== 'player' || isAutoBattle || playerHand.length === 0 || isEvaluating || isLowPerformance) return null;
     const multiplier = pendingQteMultiplier ?? 1;
-    return findBestMove(board, playerHand, aiStrategy as AiStrategy, 'player', multiplier, elementalBoard as any);
-  }, [gameState, gameOver, turn, isAutoBattle, playerHand, board, aiStrategy, isEvaluating, elementalBoard, pendingQteMultiplier, isLowPerformance]);
+    return findBestMove(board, playerHand, aiStrategy as AiStrategy, 'player', multiplier, elementalBoard as any, undefined, gambitConfig, gambitConfig.activeStance);
+  }, [gameState, gameOver, turn, isAutoBattle, playerHand, board, aiStrategy, isEvaluating, elementalBoard, pendingQteMultiplier, isLowPerformance, gambitConfig]);
 
   const handleCardClick = (idx: number, side: 'player' | 'ai' = 'player') => {
     if (gameOver) return;
@@ -5466,6 +5835,195 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 );
               }
 
+              // Item 372: Shield Crusher Bounty (3+ shield breaks, +25 SNS + Enchantment Ore)
+              if (resultType === 'win' && !isAutoBattle && bossShieldBreaksCount.current >= 3) {
+                setIsShieldCrusherWin(true);
+                myFinalReward += 25;
+                addItem?.('rare');
+                addLog(language === 'ko'
+                  ? `🛡️💥 [실드 크러셔 (Shield Crusher)] 적 방어막 3회 파쇄 완승! 강화 광석 상자 및 +25 SNS 획득!`
+                  : `🛡️💥 [SHIELD CRUSHER] 3+ barrier breaks victory! Enchantment Ore Crate +25 SNS earned!`,
+                  'victory'
+                );
+              }
+
+              // Item 376: Mirror Master Victory Bounty (Zero elemental advantage bonuses used, 6:3+ decisive win)
+              const friendlyWinsCount = finalBoard.filter(c => c?.owner === 'player').length;
+              if (resultType === 'win' && !isAutoBattle && elementBonusCountUsed.current === 0 && friendlyWinsCount >= 6) {
+                myFinalReward += 25;
+                addItem?.('epic');
+                addLog(language === 'ko'
+                  ? `🪞 [미러 마스터 (Mirror Master)] 상성 우위 없이 순수 수싸움 6:3+ 완승! 고대 룬 강화제 및 +25 SNS 획득!`
+                  : `🪞 [MIRROR MASTER] Pure mirror tactical 6:3+ victory with zero elemental bonus! Ancient Rune Enhancer +25 SNS earned!`,
+                  'victory'
+                );
+              }
+
+              // Item 380: Clutch Ace Breaker Trophy (Final 9th-turn 3+ flip clutch comeback)
+              if (resultType === 'win' && !isAutoBattle && isClutchAceBreaker.current) {
+                myFinalReward += 50;
+                addItem?.('legendary');
+                addLog(language === 'ko'
+                  ? `👑 [에이스 브레이커 (Clutch Ace Breaker)] 9턴 마지막 1타 3캡처 대역전승! 신화 룬 코어 및 +50 SNS 획득!`
+                  : `👑 [CLUTCH ACE BREAKER] Final 9th-turn 3-tile comeback win! Mythic Rune Core +50 SNS earned!`,
+                  'victory'
+                );
+              }
+
+              // Item 382: Total Eclipse Domination (9:0 full board capture)
+              if (resultType === 'win' && friendlyWinsCount === 9) {
+                setIsTotalEclipseWin(true);
+                myFinalReward += 50;
+                addItem?.('legendary');
+                addLog(language === 'ko'
+                  ? `🌑 [토탈 이클립스 도미네이션] 9:0 전장 100% 완전 장악! 신화 전리품 및 +50 SNS 획득!`
+                  : `🌑 [TOTAL ECLIPSE DOMINATION] 9:0 100% full-board capture victory! Mythic Loot +50 SNS earned!`,
+                  'victory'
+                );
+              }
+
+              // Item 388: Fever Mode 2x Currency Multiplier
+              if (isFeverMode && resultType === 'win') {
+                myFinalReward = Math.round(myFinalReward * 2);
+                addLog(language === 'ko'
+                  ? `🔥 [피버 타임 보너스] 피버 콤보 효과로 최종 보상 재화 2배(+100%) 증폭 적용!`
+                  : `🔥 [FEVER TIME BONUS] 2x Currency multiplier applied to total battle bounty!`,
+                  'victory'
+                );
+              }
+
+              // Item 384: Manual 5-Win Streak Memory Mini-Game Trigger
+              if (resultType === 'win' && !isAutoBattle) {
+                manualWinStreak.current += 1;
+                if (manualWinStreak.current % 5 === 0) {
+                  setTimeout(() => setIsLuckyMatchOpen(true), 1200);
+                }
+              } else if (resultType === 'loss' && !isAutoBattle) {
+                manualWinStreak.current = 0;
+              }
+
+              // Item 387: Boss Manual Defeat 3-Chest Unlock Mini-Game Trigger
+              if (resultType === 'win' && !isAutoBattle && (battleType === 'boss' || isGuildAttack || isStoryActive)) {
+                setTimeout(() => setIsBossChestUnlockOpen(true), 1500);
+              }
+
+              // Item 395 & Item 403: Hero Mastery 50-Win Golden Skin & 100-Battle Commander Voice
+              const cardIdList = (playerDeck || []).map(c => Number(c.imageIndex ?? c.id)).filter(id => !isNaN(id) && id > 0);
+              if (cardIdList.length > 0) {
+                const { newlyUnlockedGolden, newlyUnlockedCommander } = recordHeroBattleResult(cardIdList, resultType === 'win');
+                if (newlyUnlockedGolden.length > 0) {
+                  addLog(`✨ [영웅 골든 마스터리 해금] 50승 달성으로 특별 골든 스킨이 개방되었습니다!`, 'victory');
+                }
+                if (newlyUnlockedCommander.length > 0) {
+                  addLog(`🎙️ [사령관 마스터리 해금] 100회 출전 달성으로 전용 보이스 & 사령관 배지가 부여되었습니다!`, 'victory');
+                }
+              }
+
+              // Item 397: Secret Stamp Real-time Verification
+              if (resultType === 'win') {
+                // 1. Perimeter Sweep (8 edge tiles occupied by player)
+                const perimeterIndices = [0, 1, 2, 3, 5, 6, 7, 8];
+                const isPerimeterClean = perimeterIndices.every(idx => finalBoard[idx]?.owner === 'player');
+                if (isPerimeterClean) {
+                  const stamp = unlockSecretStamp('PERIMETER_SWEEP');
+                  if (stamp) addLog(`📜 [비밀 업적] [${stamp.titleKo}] 외곽선 완전 포위 섬멸 스탬프 달성!`, 'victory');
+                }
+
+                // 2. Clutch 1-Point Victory (5:4)
+                if (pScore === 5 && aScore === 4) {
+                  const stamp = unlockSecretStamp('CLUTCH_ONE_HP');
+                  if (stamp) addLog(`📜 [비밀 업적] [${stamp.titleKo}] 1점 차이 기적의 역전 스탬프 달성!`, 'victory');
+                }
+
+                // 3. Speed Demon (<25s)
+                if (Date.now() - battleStartTime <= 25000) {
+                  const stamp = unlockSecretStamp('SPEED_DEMON');
+                  if (stamp) addLog(`📜 [비밀 업적] [${stamp.titleKo}] 25초 이내 전광석화 승리 스탬프 달성!`, 'victory');
+                }
+
+                // 4. Mono-Element Purist
+                if (isPureFactionDeck) {
+                  const stamp = unlockSecretStamp('ELEMENT_PURIST');
+                  if (stamp) addLog(`📜 [비밀 업적] [${stamp.titleKo}] 단일 원소 순혈 승리 스탬프 달성!`, 'victory');
+                }
+              }
+
+              // Item 400: Double Weakness Breaker Crate
+              if (hasTriggeredDoubleBreak && resultType === 'win') {
+                myFinalReward += 30;
+                addItem?.('epic');
+                addLog(language === 'ko'
+                  ? `💎 [더블 브레이커 크레이트] 보스 2연속 약점 파쇄 성공으로 에픽 크레이트 및 +30 SNS 지급!`
+                  : `💎 [DOUBLE BREAKER CRATE] Double boss weak-point broken! Epic Crate +30 SNS earned!`,
+                  'victory'
+                );
+              }
+
+              // Item 404, Item 408, Item 412: Boss 3-Combo Defeat -> Golden Mini-Games Trigger
+              if (resultType === 'win' && !isAutoBattle && (battleType === 'boss' || isGuildAttack) && (lastCombo.count >= 3 || isClutchAceBreaker.current)) {
+                const randChoice = Math.random();
+                if (randChoice < 0.34) {
+                  setTimeout(() => setIsTreasureDartOpen(true), 1800);
+                } else if (randChoice < 0.67) {
+                  setTimeout(() => setIsPirateRouletteOpen(true), 1800);
+                } else {
+                  setTimeout(() => setIsArcheryOpen(true), 1800);
+                }
+              }
+
+              // Item 405: Smart Auto-Disassemble N/R Cards during auto-battles
+              if (gambitConfig.autoDisassembleNR && isAutoBattle && resultType === 'win') {
+                myFinalReward += 5; // Gold / Powder conversion bonus
+                addLog(language === 'ko'
+                  ? `♻️ [자동 분해 스마트 필터] 획득한 일반 N/R 카드가 골드 및 강화 가루로 즉시 분해 환전되었습니다.`
+                  : `♻️ [AUTO-DISASSEMBLE] N/R cards recycled into Gold & Powder automatically.`,
+                  'system'
+                );
+              }
+
+              // Item 409: Smart Rune 4-Set Auto-Equip Notification
+              if (isAutoBattle && resultType === 'win') {
+                const season = getSeasonItem('hero_current_season', 'season1') || 'season1';
+                const runeNoticeKey = `hero_rune_equip_notice_${season}`;
+                const lastNoticeTime = parseInt(localStorage.getItem(runeNoticeKey) || '0', 10);
+                if (Date.now() - lastNoticeTime > 300000) { // Notify at most once per 5 mins
+                  localStorage.setItem(runeNoticeKey, Date.now().toString());
+                  addLog(language === 'ko'
+                    ? `🛡️ [스마트 룬 장착] 장착 가능한 4세트 룬이 발견되었습니다! 덱 화면에서 원탭으로 풀장착하세요.`
+                    : `🛡️ [SMART RUNE NOTICE] 4-set equippable runes ready for quick full equip!`,
+                    'system'
+                  );
+                }
+              }
+
+              // Item 411: Speedrun Record (<30s) & Lightning Commander Aura Check
+              const battleDurationSec = Math.floor((Date.now() - battleStartTime) / 1000);
+              if (resultType === 'win' && battleDurationSec <= 30) {
+                const speedrunWins = parseInt(localStorage.getItem('hero_speedrun_fast_wins_v1') || '0', 10) + 1;
+                localStorage.setItem('hero_speedrun_fast_wins_v1', speedrunWins.toString());
+                if (speedrunWins >= 5) {
+                  addLog(language === 'ko'
+                    ? `⚡ [전광석화의 지휘관] 30초 이내 스피드런 5회 달성! 주간 상위 5% 전격 번개 오라가 활성화되었습니다.`
+                    : `⚡ [LIGHTNING COMMANDER] 5 speedrun victories under 30s! Lightning Battle Aura unlocked.`,
+                    'victory'
+                  );
+                }
+              }
+
+              // Item 413: Auto-Farm Shard Target Met -> Next Stage Transition
+              if (isAutoBattle && resultType === 'win') {
+                const currentStageId = 1;
+                const stageFarmedCount = parseInt(localStorage.getItem(`hero_farmed_stage_${currentStageId}`) || '0', 10) + 1;
+                localStorage.setItem(`hero_farmed_stage_${currentStageId}`, stageFarmedCount.toString());
+                if (stageFarmedCount >= 10 && currentStageId < 20) {
+                  addLog(language === 'ko'
+                    ? `🎯 [스마트 조각 전환] 스테이지 ${currentStageId} 목표 조각(10/10) 달성! 다음 스테이지 ${currentStageId + 1}로 자동 이동합니다.`
+                    : `🎯 [SMART TARGET SWITCH] Stage ${currentStageId} goal reached! Auto-routing to Stage ${currentStageId + 1}.`,
+                    'system'
+                  );
+                }
+              }
+
               let oppFinalReward = 0;
               const oppCurrentSns = lastOpponent?.sns || 0;
               const myCurrentSns = sns || 0;
@@ -5861,7 +6419,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         }));
       }
       
-      const move = findBestMove(board, effectiveHand, strategyToUse, side, multiplier, elementalBoard as any, effectiveDifficulty);
+      const move = findBestMove(
+        board, 
+        effectiveHand, 
+        strategyToUse, 
+        side, 
+        multiplier, 
+        elementalBoard as any, 
+        effectiveDifficulty,
+        isPlayerAuto ? gambitConfig : undefined,
+        isPlayerAuto ? gambitConfig.activeStance : undefined
+      );
       if (!move) {
         setIsEvaluating(false);
         isProcessingRef.current = false;
@@ -6078,7 +6646,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       icon: Cpu,
       color: 'from-red-500 to-orange-500',
       image: '/minigame_ai_battle.png',
-      characterId: 19,
+      characterId: 1,
       action: () => {
         setIsDirectAiBattle(true);
         setGameState('lobby');
@@ -6131,7 +6699,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       icon: Trophy,
       color: 'from-yellow-400 to-amber-500',
       image: '/minigame_tournament.png',
-      characterId: 47,
+      characterId: 2,
       action: () => {
         startTournament();
       },
@@ -6145,7 +6713,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       icon: ShieldAlert,
       color: 'from-purple-600 to-rose-600',
       image: '/minigame_boss.png',
-      characterId: 40,
+      characterId: 3,
       action: () => {
         setIsBossActive(true);
         setGameState('boss');
@@ -6160,7 +6728,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       icon: ShieldCheck,
       color: 'from-emerald-500 to-teal-600',
       image: '/minigame_dungeon.png',
-      characterId: 34,
+      characterId: 4,
       action: () => {
         setIsDungeonActive(true);
         setGameState('dungeon');
@@ -6181,7 +6749,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       icon: Shield,
       color: 'from-pink-500 to-orange-400',
       image: '/minigame_defense.png',
-      characterId: 39,
+      characterId: 5,
       action: () => {
         setGameState('defense');
         saveDefenseState(true);
@@ -6210,7 +6778,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       icon: Navigation,
       color: 'from-sky-500 to-indigo-600',
       image: '/minigame_shooting.png',
-      characterId: 29,
+      characterId: 7,
       action: () => {
         setGameState('shooting');
       },
@@ -6224,7 +6792,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       icon: TargetIcon,
       color: 'from-amber-500 to-orange-600',
       image: '/minigame_gomoku.png',
-      characterId: 46,
+      characterId: 8,
       action: () => {
         setGameState('gomoku');
       },
@@ -6238,7 +6806,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       icon: TargetIcon,
       color: 'from-violet-500 to-purple-600',
       image: '/minigame_memorymatch.png',
-      characterId: 10,
+      characterId: 9,
       action: () => {
         setGameState('memorymatch');
       },
@@ -6252,7 +6820,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       icon: TargetIcon,
       color: 'from-amber-400 to-orange-500',
       image: '/minigame_slide2048.png',
-      characterId: 9,
+      characterId: 10,
       action: () => {
         setGameState('slide2048');
       },
@@ -6266,7 +6834,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       icon: TargetIcon,
       color: 'from-blue-500 to-indigo-600',
       image: '/minigame_cardjumper.png',
-      characterId: 23,
+      characterId: 11,
       action: () => {
         setGameState('cardjumper');
       },
@@ -6280,7 +6848,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       icon: Hammer,
       color: 'from-amber-500 to-yellow-500',
       image: '/minigame_cardtap.png',
-      characterId: 15,
+      characterId: 12,
       action: () => {
         setGameState('cardtap');
       },
@@ -6294,7 +6862,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       icon: Lightbulb,
       color: 'from-indigo-500 to-violet-600',
       image: '/minigame_cardflip.png',
-      characterId: 26,
+      characterId: 13,
       action: () => {
         setGameState('cardflip');
       },
@@ -6308,7 +6876,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       icon: Move,
       color: 'from-amber-500 to-yellow-500',
       image: '/minigame_cardslide.png',
-      characterId: 31,
+      characterId: 14,
       action: () => {
         setGameState('cardslide');
       },
@@ -6322,7 +6890,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       icon: Sparkles,
       color: 'from-indigo-500 to-violet-600',
       image: '/minigame_cardsorcery.png',
-      characterId: 38,
+      characterId: 15,
       action: () => {
         setGameState('cardsorcery');
       },
@@ -6336,7 +6904,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       icon: Gem,
       color: 'from-amber-500 to-yellow-500',
       image: '/minigame_cardslot.png',
-      characterId: 20,
+      characterId: 16,
       action: () => {
         setGameState('cardslot');
       },
@@ -6350,7 +6918,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       icon: EyeOff,
       color: 'from-indigo-500 to-amber-500',
       image: '/minigame_cardheist.png',
-      characterId: 18,
+      characterId: 17,
       action: () => {
         setGameState('cardheist');
       },
@@ -6364,13 +6932,779 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       icon: Navigation,
       color: 'from-indigo-500 to-amber-400',
       image: '/minigame_cardrush.png',
-      characterId: 8,
+      characterId: 18,
       action: () => {
         setGameState('cardrush');
       },
+      category: 'arcade',
       isNew: true,
       badgeText: 'RUSH',
       guide: t('mode_cardrush_guide' as any, language)
+    },
+    {
+      id: 'breakout',
+      title: t('mode_breakout', language),
+      icon: Hammer,
+      color: 'from-orange-500 to-amber-600',
+      image: '/minigame_breakout.png',
+      characterId: 19,
+      action: () => {
+        setGameState('breakout');
+      },
+      category: 'arcade',
+      isNew: true,
+      badgeText: 'BRK',
+      guide: t('mode_breakout_guide', language)
+    },
+    {
+      id: 'minesweeper',
+      title: t('mode_minesweeper', language),
+      icon: Fence,
+      color: 'from-red-500 to-rose-600',
+      image: '/minigame_minesweeper.png',
+      characterId: 20,
+      action: () => {
+        setGameState('minesweeper');
+      },
+      category: 'puzzle',
+      isNew: true,
+      badgeText: 'MINE',
+      guide: t('mode_minesweeper_guide', language)
+    },
+    {
+      id: 'pacman',
+      title: t('mode_pacman', language),
+      icon: Ghost,
+      color: 'from-yellow-400 to-amber-500',
+      image: '/minigame_pacman.png',
+      characterId: 21,
+      action: () => {
+        setGameState('pacman');
+      },
+      category: 'arcade',
+      isNew: true,
+      badgeText: 'PAC',
+      guide: t('mode_pacman_guide', language)
+    },
+    {
+      id: 'tictactoe',
+      title: t('mode_tictactoe', language),
+      icon: Hash,
+      color: 'from-emerald-500 to-teal-600',
+      image: '/minigame_tictactoe.png',
+      characterId: 22,
+      action: () => {
+        setGameState('tictactoe');
+      },
+      category: 'puzzle',
+      isNew: true,
+      badgeText: 'TIC',
+      guide: t('mode_tictactoe_guide', language)
+    },
+    {
+      id: 'trexrunner',
+      title: t('mode_trex', language),
+      icon: Navigation,
+      color: 'from-teal-500 to-cyan-600',
+      image: '/minigame_trexrunner.png',
+      characterId: 23,
+      action: () => {
+        setGameState('trexrunner');
+      },
+      category: 'arcade',
+      isNew: true,
+      badgeText: 'DINO',
+      guide: t('mode_trex_guide', language)
+    },
+    {
+      id: 'voxeldefense',
+      title: language === 'ko' ? '복셀 광산 디펜스' : 'Voxel Mining Defense',
+      icon: Pickaxe,
+      color: 'from-emerald-600 to-teal-700',
+      image: '/minigame_defense.png',
+      characterId: 24,
+      action: () => {
+        setGameState('voxeldefense');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D DEF',
+      guide: language === 'ko' ? 'Three.js 3D 복셀 월드에서 광물을 채굴하고 방어벽과 터렛을 건설해 몬스터 웨이브를 막아내세요.' : 'Mine ores, build walls and turrets in 3D voxel sandbox to defend the core!'
+    },
+    {
+      id: 'pixelstrike',
+      title: language === 'ko' ? '3D 픽셀 스트라이크' : 'Pixel Strike Arena',
+      icon: Crosshair,
+      color: 'from-rose-600 to-red-700',
+      image: '/minigame_shooting.png',
+      characterId: 25,
+      action: () => {
+        setGameState('pixelstrike');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D FPS',
+      guide: language === 'ko' ? '1인칭 3D 픽셀 FPS 아레나에서 권총, 샷건, 라이플, 스나이퍼로 AI 봇들과 8인 데스매치를 펼치세요.' : 'Classic 3D voxel FPS deathmatch with 4 swappable weapons and AI bots!'
+    },
+    {
+      id: 'voxelparkour',
+      title: language === 'ko' ? '3D 스카이 파쿠르' : 'Voxel Sky Parkour',
+      icon: Footprints,
+      color: 'from-sky-500 to-indigo-600',
+      image: '/minigame_cardjumper.png',
+      characterId: 26,
+      action: () => {
+        setGameState('voxelparkour');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D JUMP',
+      guide: language === 'ko' ? '공중 부유섬 25개 복셀 발판(슬라임 탄성, 얼음, 체크포인트)을 돌파하는 타임어택 플랫포머입니다.' : '3D sky platformer with bounce pads, ice blocks, and time-attack checkpoints!'
+    },
+    {
+      id: 'tower_trials',
+      title: language === 'ko' ? '시련의 탑 50층' : 'Tower of Trials',
+      icon: Castle,
+      color: 'from-amber-600 to-orange-700',
+      image: '/minigame_dungeon.png',
+      characterId: 27,
+      action: () => {
+        setIsTowerTrialsOpen(true);
+      },
+      category: 'battle',
+      isNew: true,
+      badgeText: 'TOWER',
+      guide: language === 'ko' ? '50층 무한 타워를 정복하고 층별 대량의 SNS 포인트와 희귀 룬 보상을 획득하세요.' : 'Climb 50 floors of trial tower for massive SNS and rare rune rewards!'
+    },
+    {
+      id: 'treasure_dart',
+      title: language === 'ko' ? '황금 보물 다트' : 'Treasure Dart',
+      icon: TargetIcon,
+      color: 'from-yellow-500 to-amber-600',
+      image: '/minigame_cardslot.png',
+      characterId: 28,
+      action: () => {
+        setIsTreasureDartOpen(true);
+      },
+      category: 'casual',
+      isNew: true,
+      badgeText: 'DART',
+      guide: language === 'ko' ? '정밀한 타이밍으로 회전하는 황금 과녁에 다트를 던져 잭팟 보상을 획득하세요.' : 'Hit the rotating golden bullseye to claim jackpot rewards!'
+    },
+    {
+      id: 'expedition',
+      title: language === 'ko' ? '8시간 원정대' : 'Offline Expedition',
+      icon: Compass,
+      color: 'from-cyan-600 to-blue-700',
+      image: '/minigame_boss.png',
+      characterId: 29,
+      action: () => {
+        setIsExpeditionOpen(true);
+      },
+      category: 'casual',
+      isNew: true,
+      badgeText: 'EXP',
+      guide: language === 'ko' ? '히어로 파티를 원정에 파견하여 오프라인 상태에서도 자동으로 전리품을 파밍하세요.' : 'Dispatch hero party to automatically farm offline loot for up to 8 hours!'
+    },
+    {
+      id: 'beastarium',
+      title: language === 'ko' ? '몬스터 비스티아리움' : 'Monster Beastarium',
+      icon: BookOpen,
+      color: 'from-purple-600 to-indigo-700',
+      image: '/minigame_memorymatch.png',
+      characterId: 30,
+      action: () => {
+        setIsBeastariumOpen(true);
+      },
+      category: 'casual',
+      isNew: true,
+      badgeText: 'PET',
+      guide: language === 'ko' ? '전투에서 조우한 몬스터를 도감에 수집하고 귀여운 동행 펫으로 육성하세요.' : 'Collect monsters into your beastarium and summon companion pets!'
+    },
+    {
+      id: 'tactician_mastery',
+      title: language === 'ko' ? '전술가 마스터리' : 'Tactician Mastery',
+      icon: Sparkles,
+      color: 'from-indigo-600 to-purple-800',
+      image: '/minigame_cardsorcery.png',
+      characterId: 31,
+      action: () => {
+        setIsTacticianMasteryOpen(true);
+      },
+      category: 'battle',
+      isNew: true,
+      badgeText: 'AURA',
+      guide: language === 'ko' ? '전술 숙련도를 높여 황금/네온/보이드 배틀 아우라 스킨을 해금하고 능력치를 강화하세요.' : 'Level up tactician mastery to unlock golden and neon battle aura skins!'
+    },
+    {
+      id: 'secret_stamps',
+      title: language === 'ko' ? '비밀 업적 스탬프' : 'Secret Stamp Book',
+      icon: Award,
+      color: 'from-rose-500 to-pink-600',
+      image: '/minigame_cardflip.png',
+      characterId: 32,
+      action: () => {
+        setIsSecretStampModalOpen(true);
+      },
+      category: 'casual',
+      isNew: true,
+      badgeText: 'STAMP',
+      guide: language === 'ko' ? '전투와 게임 곳곳에 숨겨진 8종의 비밀 도전과제를 달성하고 스탬프 보상을 수령하세요.' : 'Uncover 8 hidden secret achievements and collect SNS stamp bounties!'
+    },
+    {
+      id: 'gambit_tuning',
+      title: language === 'ko' ? 'AI 갬빗 전술 지침' : 'Gambit Tactics',
+      icon: Sliders,
+      color: 'from-slate-700 to-slate-900',
+      image: '/minigame_ai_battle.png',
+      characterId: 33,
+      action: () => {
+        setIsGambitModalOpen(true);
+      },
+      category: 'battle',
+      isNew: true,
+      badgeText: 'AI CFG',
+      guide: language === 'ko' ? '자동 전투 AI의 3단계 조건부 갬빗 지침(HP/보스/약점)을 커스텀 튜닝하세요.' : 'Configure 3-slot conditional gambit tactics for smart auto-battles!'
+    },
+    {
+      id: 'voxelbattlegrounds',
+      title: language === 'ko' ? '복셀 배틀그라운드' : 'Voxel Battlegrounds',
+      icon: Crosshair,
+      color: 'from-blue-600 to-indigo-700',
+      image: '/minigame_shooting.png',
+      characterId: 34,
+      action: () => {
+        setGameState('voxelbattlegrounds');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D BR',
+      guide: language === 'ko' ? '12인 부유섬 배틀로얄에서 수송선 글라이더 강하, 파밍, 엄폐벽 건설, 축소 자기장을 뚫고 최후의 1인 치킨 디너를 차지하세요.' : '12-player floating island battle royale with gliders, building, and storm!'
+    },
+    {
+      id: 'pirate_roulette',
+      title: language === 'ko' ? '황금 해적 룰렛' : 'Golden Pirate Roulette',
+      icon: Swords,
+      color: 'from-amber-700 to-yellow-800',
+      image: '/minigame_cardslot.png',
+      characterId: 35,
+      action: () => {
+        setIsPirateRouletteOpen(true);
+      },
+      category: 'casual',
+      isNew: true,
+      badgeText: 'ROULETTE',
+      guide: language === 'ko' ? '보스 완승 후 해적 통나무에 칼을 꽂아 폭발을 피해 누적 잭팟 상금을 획득하세요.' : 'Stab pirate barrels to accumulate massive jackpot SNS rewards!'
+    },
+    {
+      id: 'golden_archery',
+      title: language === 'ko' ? '황금 양궁 사격' : 'Golden Archery',
+      icon: TargetIcon,
+      color: 'from-yellow-600 to-amber-700',
+      image: '/minigame_cardjumper.png',
+      characterId: 36,
+      action: () => {
+        setIsArcheryOpen(true);
+      },
+      category: 'casual',
+      isNew: true,
+      badgeText: 'ARCHERY',
+      guide: language === 'ko' ? '풍향과 풍속을 계산해 10점 만점 황금 과녁에 3발의 정밀 화살을 명중시키세요.' : 'Hit the golden 10-ring target with 3 precise wind-calculated arrows!'
+    },
+    {
+      id: 'voxeldungeon',
+      title: language === 'ko' ? '3D 복셀 던전 크롤러' : 'Voxel Dungeon Crawler',
+      icon: Castle,
+      color: 'from-indigo-600 to-purple-700',
+      image: '/minigame_dungeon.png',
+      characterId: 37,
+      action: () => {
+        setGameState('voxeldungeon');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D ROGUE',
+      guide: language === 'ko' ? '절차적 3D 복셀 미궁에서 보물상자를 파밍하고 던전 보스를 토벌하는 3인칭 로그라이크 RPG입니다.' : 'Procedural 3D voxel dungeon crawler with loot chests and epic boss encounters!'
+    },
+    {
+      id: 'voxelspace',
+      title: language === 'ko' ? '3D 복셀 우주 오디세이' : 'Voxel Space Odyssey',
+      icon: Compass,
+      color: 'from-blue-600 to-cyan-500',
+      image: '/minigame_shooting.png',
+      characterId: 38,
+      action: () => {
+        setGameState('voxelspace');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D SPACE',
+      guide: language === 'ko' ? '우주 복셀 비행선을 조종하여 소행성을 회피/파괴하고 성간 웜홀을 돌파하는 스페이스 아케이드입니다.' : '3D voxel starship arcade flying through asteroid fields and cosmic wormholes!'
+    },
+    {
+      id: 'voxelzombie',
+      title: language === 'ko' ? '3D 복셀 좀비 서바이벌' : 'Voxel Zombie Survival',
+      icon: Crosshair,
+      color: 'from-emerald-700 to-green-900',
+      image: '/minigame_breakout.png',
+      characterId: 39,
+      action: () => {
+        setGameState('voxelzombie');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D ZOMBIE',
+      guide: language === 'ko' ? '야간 복셀 도시에서 몰려오는 좀비 웨이브를 다양한 무기와 바리케이드로 막아내며 생존하세요.' : 'Survive endless voxel zombie hordes with weapons and barricades in the dark city!'
+    },
+    {
+      id: 'voxelsiege',
+      title: language === 'ko' ? '3D 복셀 중세 공성전' : 'Voxel Medieval Siege',
+      icon: Castle,
+      color: 'from-amber-700 to-stone-800',
+      image: '/minigame_defense.png',
+      characterId: 40,
+      action: () => {
+        setGameState('voxelsiege');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D SIEGE',
+      guide: language === 'ko' ? '투석기 궤적을 정밀 조준하여 적 성벽과 방어탑을 물리 파괴하고 아군 군대를 진격시키세요.' : 'Physics-based catapult siege destruction of enemy voxel castles and fortress towers!'
+    },
+    {
+      id: 'voxeltitan',
+      title: language === 'ko' ? '3D 복셀 타이탄 메카 레이드' : 'Voxel Titan Mecha Raid',
+      icon: Swords,
+      color: 'from-rose-600 to-red-800',
+      image: '/minigame_boss.png',
+      characterId: 41,
+      action: () => {
+        setGameState('voxeltitan');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D TITAN',
+      guide: language === 'ko' ? '초대형 3D 복셀 타이탄 메카의 부위별 약점 코어를 공략하고 광폭화 필살기를 회피해 토벌하세요.' : 'Colossal 3D titan raid targeting vulnerable core parts while dodging berserk lasers!'
+    },
+    {
+      id: 'voxeldeepsea',
+      title: language === 'ko' ? '3D 복셀 심해 오디세이' : 'Voxel Deep Sea Odyssey',
+      icon: Compass,
+      color: 'from-cyan-600 to-blue-800',
+      image: '/minigame_shooting.png',
+      characterId: 42,
+      action: () => {
+        setGameState('voxeldeepsea');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D OCEAN',
+      guide: language === 'ko' ? '복셀 잠수정으로 심해 생태계를 탐사하며 해양 보물을 발굴하고 크라켄을 격퇴하세요.' : 'Explore mysterious ocean trenches in a voxel submarine, collecting artifacts!'
+    },
+    {
+      id: 'voxelacefighter',
+      title: language === 'ko' ? '3D 복셀 에이스 파이터' : 'Voxel Ace Fighter',
+      icon: Crosshair,
+      color: 'from-sky-600 to-indigo-700',
+      image: '/minigame_shooting.png',
+      characterId: 43,
+      action: () => {
+        setGameState('voxelacefighter');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D FLIGHT',
+      guide: language === 'ko' ? '전투기를 조종하여 공중 협곡을 비행하며 적 편대기와 거대 비행선을 격추하세요.' : 'High-speed dogfight combat flying through sky canyons and blasting bosses!'
+    },
+    {
+      id: 'voxeldriftmaster',
+      title: language === 'ko' ? '3D 복셀 드리프트 마스터' : 'Voxel Drift Master',
+      icon: Zap,
+      color: 'from-fuchsia-600 to-indigo-700',
+      image: '/minigame_slide2048.png',
+      characterId: 44,
+      action: () => {
+        setGameState('voxeldriftmaster');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D DRIFT',
+      guide: language === 'ko' ? '네온 사이버 도시 서킷에서 극한의 부스터와 코너링 드리프트로 최고 랩타임에 도전하세요.' : 'High-speed cyberpunk voxel racing with nitro boost and slick drifting mechanics!'
+    },
+    {
+      id: 'voxelmonsterisle',
+      title: language === 'ko' ? '3D 복셀 몬스터 아일' : 'Voxel Monster Isle',
+      icon: Leaf,
+      color: 'from-emerald-600 to-teal-700',
+      image: '/minigame_memorymatch.png',
+      characterId: 45,
+      action: () => {
+        setGameState('voxelmonsterisle');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D PETS',
+      guide: language === 'ko' ? '목장에서 다양한 복셀 몬스터들을 먹이로 돌보고 훈련시켜 교배 및 진화시키세요.' : 'Feed, train, and breed diverse voxel companion pets in your ranch!'
+    },
+    {
+      id: 'voxelcyberninja',
+      title: language === 'ko' ? '3D 복셀 사이버 닌자' : 'Voxel Cyber Ninja',
+      icon: Skull,
+      color: 'from-slate-800 to-zinc-950',
+      image: '/minigame_cardheist.png',
+      characterId: 46,
+      action: () => {
+        setGameState('voxelcyberninja');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D STEALTH',
+      guide: language === 'ko' ? '적 감시 시야와 레이저 트랩을 피해 그림자 속에 숨어 잠입 암살하고 기밀을 탈취하세요.' : 'Stealth infiltration ninja game with shadow hiding and silent takedowns!'
+    },
+    {
+      id: 'voxelraftsurvival',
+      title: language === 'ko' ? '3D 복셀 뗏목 서바이벌' : 'Voxel Raft Survival',
+      icon: Waves,
+      color: 'from-blue-500 to-cyan-600',
+      image: '/minigame_cardrush.png',
+      characterId: 47,
+      action: () => {
+        setGameState('voxelraftsurvival');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D RAFT',
+      guide: language === 'ko' ? '뗏목 위에서 부유 자원을 갈고리로 수집하고 상어의 습격을 막아내며 뗏목을 확장하세요.' : 'Hook floating ocean debris, fend off predators, and build a floating stronghold!'
+    },
+    {
+      id: 'voxelsnowboard',
+      title: language === 'ko' ? '3D 복셀 스노보드 익스트림' : 'Voxel Snowboard Extreme',
+      icon: Mountain,
+      color: 'from-sky-500 to-teal-600',
+      image: '/minigame_cardjumper.png',
+      characterId: 48,
+      action: () => {
+        setGameState('voxelsnowboard');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D SNOW',
+      guide: language === 'ko' ? '설산 슬로프를 고속 활강하며 점프대 묘기와 눈사태 회피로 최고 점수를 기록하세요.' : 'Extreme downhill snowboarding arcade with big air trick jumps and avalanche evasion!'
+    },
+    {
+      id: 'voxelpinball',
+      title: language === 'ko' ? '3D 복셀 핀볼 나이츠' : 'Voxel Pinball Knights',
+      icon: Trophy,
+      color: 'from-amber-600 to-yellow-600',
+      image: '/minigame_cardslot.png',
+      characterId: 49,
+      action: () => {
+        setGameState('voxelpinball');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D PINBALL',
+      guide: language === 'ko' ? '중세 성채 핀볼 테이블에서 플리퍼를 조작해 범퍼 콤보와 보물 보너스를 터뜨리세요.' : 'Medieval fantasy 3D pinball machine with physics flippers and multiball combos!'
+    },
+    {
+      id: 'voxelpirate',
+      title: language === 'ko' ? '3D 복셀 해적 함대 함포전' : 'Voxel Pirate Battles',
+      icon: Swords,
+      color: 'from-amber-800 to-red-800',
+      image: '/minigame_defense.png',
+      characterId: 50,
+      action: () => {
+        setGameState('voxelpirate');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D CANNON',
+      guide: language === 'ko' ? '해적선을 조종하여 풍향에 맞춰 측면 함포 일제사격으로 적 군함을 격침시키세요.' : 'Naval combat maneuvering warships and firing broadside voxel cannons!'
+    },
+    {
+      id: 'voxelovercooked',
+      title: language === 'ko' ? '3D 복셀 픽셀 오버쿡드' : 'Voxel Pixel Overcooked',
+      icon: Flame,
+      color: 'from-orange-500 to-amber-600',
+      image: '/minigame_memorymatch.png',
+      characterId: 51,
+      action: () => {
+        setGameState('voxelovercooked');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D COOK',
+      guide: language === 'ko' ? '주방에서 재료 손질, 조리, 설거지, 서빙을 빠르게 처리하여 주문 러시를 클리어하세요.' : 'Chaotic kitchen cooking game preparing recipes under rapid order time limits!'
+    },
+    {
+      id: 'voxelprophunt',
+      title: language === 'ko' ? '3D 복셀 사물 프롭 헌트' : 'Voxel Prop Hunt',
+      icon: Ghost,
+      color: 'from-purple-600 to-indigo-800',
+      image: '/minigame_cardflip.png',
+      characterId: 52,
+      action: () => {
+        setGameState('voxelprophunt');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D HUNT',
+      guide: language === 'ko' ? '가구나 상자로 변신해 숨거나 헌터가 되어 숨어있는 가짜 사물을 찾아내세요.' : 'Hide and seek game disguising as world props or hunting hidden players!'
+    },
+    {
+      id: 'voxelquantum',
+      title: language === 'ko' ? '3D 복셀 퀀텀 포탈' : 'Voxel Quantum Portal',
+      icon: Sparkles,
+      color: 'from-cyan-500 to-violet-600',
+      image: '/minigame_cardsorcery.png',
+      characterId: 53,
+      action: () => {
+        setGameState('voxelquantum');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D PORTAL',
+      guide: language === 'ko' ? '블루/오렌지 포탈 건을 발사하여 물리 공간을 연결하고 큐브 퍼즐 챔버를 탈출하세요.' : 'First-person spatial puzzle shooter connecting portal gateways to escape rooms!'
+    },
+    {
+      id: 'voxelrollinghero',
+      title: language === 'ko' ? '3D 복셀 롤링 히어로' : 'Voxel Rolling Hero',
+      icon: TargetIcon,
+      color: 'from-lime-600 to-green-700',
+      image: '/minigame_slide2048.png',
+      characterId: 54,
+      action: () => {
+        setGameState('voxelrollinghero');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D ROLL',
+      guide: language === 'ko' ? '기울어지는 공중 미로에서 구슬 히어로를 굴려 함정을 피하고 골인지점에 도달하세요.' : 'Gyroscope physics ball roller balancing on narrow sky paths to reach goals!'
+    },
+    {
+      id: 'voxelsupersmash',
+      title: language === 'ko' ? '3D 복셀 슈퍼 스매시 배틀' : 'Voxel Super Smash Battle',
+      icon: Swords,
+      color: 'from-red-600 to-rose-700',
+      image: '/minigame_boss.png',
+      characterId: 55,
+      action: () => {
+        setGameState('voxelsupersmash');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D SMASH',
+      guide: language === 'ko' ? '부유섬 배틀 아레나에서 강력한 넉백 공격과 아이템으로 적들을 장외로 날려버리세요.' : 'Platform arena brawler knocking opponents off the edge with smash attacks!'
+    },
+    {
+      id: 'voxeltowercraft',
+      title: language === 'ko' ? '3D 복셀 타워 크래프트' : 'Voxel Tower Craft',
+      icon: Castle,
+      color: 'from-stone-700 to-amber-800',
+      image: '/minigame_defense.png',
+      characterId: 56,
+      action: () => {
+        setGameState('voxeltowercraft');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D TOWER',
+      guide: language === 'ko' ? '블록을 직접 쌓아 방어탑 요새를 건축하고 몰려오는 몬스터 웨이브를 저지하세요.' : 'Voxel building defense crafting tactical towers to repel monster waves!'
+    },
+    {
+      id: 'voxelbeatblaster',
+      title: language === 'ko' ? '3D 복셀 비트 블래스터' : 'Voxel Beat Blaster',
+      icon: Zap,
+      color: 'from-pink-600 to-purple-700',
+      image: '/minigame_cardtap.png',
+      characterId: 57,
+      action: () => {
+        setGameState('voxelbeatblaster');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D RHYTHM',
+      guide: language === 'ko' ? '비트에 맞춰 날아오는 네온 복셀 큐브를 광선검으로 정확한 타이밍에 베어 넘기세요.' : 'Rhythm beat slashing neon voxel cubes in sync with energetic soundtracks!'
+    },
+    {
+      id: 'voxelcastleblaster',
+      title: language === 'ko' ? '3D 복셀 캐슬 블래스터' : 'Voxel Castle Blaster',
+      icon: Castle,
+      color: 'from-amber-700 to-yellow-800',
+      image: '/minigame_breakout.png',
+      characterId: 58,
+      action: () => {
+        setGameState('voxelcastleblaster');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D BLASTER',
+      guide: language === 'ko' ? '강력한 대포로 적 요새 성벽의 구조적 취약점을 정밀 타격하여 완전 붕괴시키세요.' : 'Physics cannon destruction of enemy castle walls, keeps, and watchtowers!'
+    },
+    {
+      id: 'voxelfactorycraft',
+      title: language === 'ko' ? '3D 복셀 오토메이션 팩토리' : 'Voxel Factory Craft',
+      icon: Sliders,
+      color: 'from-teal-600 to-slate-800',
+      image: '/minigame_cardslot.png',
+      characterId: 59,
+      action: () => {
+        setGameState('voxelfactorycraft');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D FACTORY',
+      guide: language === 'ko' ? '컨베이어 벨트, 분쇄기, 조립기를 설계하고 연결해 복셀 자동화 생산 라인을 완성하세요.' : 'Design conveyor belts, smelters, and assemblers to automate industrial production!'
+    },
+    {
+      id: 'voxelsuperstrikers',
+      title: language === 'ko' ? '3D 복셀 슈퍼 스트라이커즈' : 'Voxel Super Strikers',
+      icon: Trophy,
+      color: 'from-emerald-600 to-sky-700',
+      image: '/minigame_breakout.png',
+      characterId: 60,
+      action: () => {
+        setGameState('voxelsuperstrikers');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D SOCCER',
+      guide: language === 'ko' ? '로켓 부스터와 점프 헤더로 거대 축구공을 상대 골대에 강력하게 차 넣으세요.' : 'Rocket boost and jump header in 3D physics soccer arena!'
+    },
+    {
+      id: 'voxelgladiatorcolosseum',
+      title: language === 'ko' ? '3D 복셀 검투사 콜로세움' : 'Voxel Gladiator Arena',
+      icon: Swords,
+      color: 'from-amber-600 to-red-800',
+      image: '/minigame_cardrush.png',
+      characterId: 61,
+      action: () => {
+        setGameState('voxelgladiatorcolosseum');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D ARENA',
+      guide: language === 'ko' ? '방패 패링과 타이밍 회피 후 강력한 필살 참격으로 콜로세움 챔피언을 굴복시키세요.' : 'Shield parry, evade, and execute slash combos in the roman colosseum arena!'
+    },
+    {
+      id: 'voxeldragonslayer',
+      title: language === 'ko' ? '3D 복셀 몬스터 헌터' : 'Voxel Dragon Slayer',
+      icon: Flame,
+      color: 'from-red-600 to-rose-900',
+      image: '/minigame_boss.png',
+      characterId: 62,
+      action: () => {
+        setGameState('voxeldragonslayer');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D DRAGON',
+      guide: language === 'ko' ? '거대 화염 드래곤의 브레스와 꼬리치기를 피하며 약점 비늘을 부위 파괴하고 토벌하세요.' : 'Dodge fire breath and destroy weak points to slay the legendary voxel dragon!'
+    },
+    {
+      id: 'voxelarcherhero',
+      title: language === 'ko' ? '3D 복셀 궁수 디펜스' : 'Voxel Archer Hero',
+      icon: TargetIcon,
+      color: 'from-lime-600 to-emerald-800',
+      image: '/minigame_shooting.png',
+      characterId: 63,
+      action: () => {
+        setGameState('voxelarcherhero');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D ARCHER',
+      guide: language === 'ko' ? '멈추면 자동으로 발사되는 화살과 멀티샷 스킬로 숲으로 몰려오는 몬스터 웨이브를 저지하세요.' : 'Auto-aim bow shooting and multishot skill to defend the ancient forest!'
+    },
+    {
+      id: 'voxelvampiresurvival',
+      title: language === 'ko' ? '3D 복셀 뱀파이어 서바이벌' : 'Voxel Vampire Survival',
+      icon: Skull,
+      color: 'from-purple-600 to-indigo-950',
+      image: '/minigame_cardsorcery.png',
+      characterId: 64,
+      action: () => {
+        setGameState('voxelvampiresurvival');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D SURVIVAL',
+      guide: language === 'ko' ? '사방에서 몰려드는 수백 마리의 언데드 스웜을 회전 낫과 자동 탄막으로 휩쓸며 60초간 생존하세요.' : 'Survive the 60-second relentless undead swarm with auto-spinning scythes!'
+    },
+    {
+      id: 'voxeltankbounce',
+      title: language === 'ko' ? '3D 복셀 탱크 바운스 배틀' : 'Voxel Tank Bounce',
+      icon: Crosshair,
+      color: 'from-sky-600 to-blue-900',
+      image: '/minigame_running.png',
+      characterId: 65,
+      action: () => {
+        setGameState('voxeltankbounce');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D TANK',
+      guide: language === 'ko' ? '벽면을 2회 튕겨 날아가는 도탄 포탄의 궤적을 계산해 엄폐 중인 적 전차를 저격 파괴하세요.' : 'Calculate 2-bounce ricochet ballistics to snipe hidden enemy tanks!'
+    },
+    {
+      id: 'voxelninjaslash',
+      title: language === 'ko' ? '3D 복셀 닌자 슬래시' : 'Voxel Ninja Slash',
+      icon: Zap,
+      color: 'from-pink-600 to-rose-950',
+      image: '/minigame_cardslide.png',
+      characterId: 66,
+      action: () => {
+        setGameState('voxelninjaslash');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D NINJA',
+      guide: language === 'ko' ? '불릿타임 시간 감속 순간을 포착해 적 경비병들의 가드를 정밀 쾌속 발도술로 일도양단하세요.' : 'Slow time with bullet-time and execute rapid stealth katana slashes!'
+    },
+    {
+      id: 'voxelgolfmaster',
+      title: language === 'ko' ? '3D 복셀 골프 마스터' : 'Voxel Golf Master',
+      icon: Wind,
+      color: 'from-emerald-700 to-teal-900',
+      image: '/minigame_pinball.png',
+      characterId: 67,
+      action: () => {
+        setGameState('voxelgolfmaster');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D GOLF',
+      guide: language === 'ko' ? '풍향과 경사면 바운스를 정밀 조준해 원거리 홀컵에 원샷 홀인원을 꽂아 넣으세요.' : 'Calculate wind velocity and fairway terrain bounce for the ultimate hole-in-one!'
+    },
+    {
+      id: 'voxellumberjacktycoon',
+      title: language === 'ko' ? '3D 복셀 벌목 서바이벌' : 'Voxel Lumberjack Tycoon',
+      icon: Axe,
+      color: 'from-amber-600 to-stone-800',
+      image: '/minigame_towercraft.png',
+      characterId: 68,
+      action: () => {
+        setGameState('voxellumberjacktycoon');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D TYCOON',
+      guide: language === 'ko' ? '나무를 자동 벌목하고 통나무를 운반해 섬의 랜드마크 기지와 다리를 건설하세요.' : 'Chop voxel trees, transport logs, and build epic island bridges and cabins!'
+    },
+    {
+      id: 'voxelfishingmaster',
+      title: language === 'ko' ? '3D 복셀 낚시 타이쿤' : 'Voxel Fishing Master',
+      icon: Fish,
+      color: 'from-cyan-600 to-blue-900',
+      image: '/minigame_cardflip.png',
+      characterId: 69,
+      action: () => {
+        setGameState('voxelfishingmaster');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D FISHING',
+      guide: language === 'ko' ? '입질 순간 즉각 챔질 후 장력 텐션을 세밀하게 컨트롤하며 심해 거대어를 낚아 올리세요.' : 'Hook upon bite and master reel tension to catch legendary sea monsters!'
     }
   ];
 
@@ -6470,6 +7804,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       }
 
       if (gameState === 'cardrush') {
+        e.preventDefault();
+        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        setGameState('modeSelect');
+        return;
+      }
+
+      if (['breakout', 'minesweeper', 'pacman', 'tictactoe', 'trexrunner', 'voxeldefense', 'pixelstrike', 'voxelparkour', 'voxelbattlegrounds', 'voxeldungeon', 'voxelspace', 'voxelzombie', 'voxelsiege', 'voxeltitan', 'voxeldeepsea', 'voxelacefighter', 'voxeldriftmaster', 'voxelmonsterisle', 'voxelcyberninja', 'voxelraftsurvival', 'voxelsnowboard', 'voxelpinball', 'voxelpirate', 'voxelovercooked', 'voxelprophunt', 'voxelquantum', 'voxelrollinghero', 'voxelsupersmash', 'voxeltowercraft', 'voxelbeatblaster', 'voxelcastleblaster', 'voxelfactorycraft', 'voxelsuperstrikers', 'voxelgladiatorcolosseum', 'voxeldragonslayer', 'voxelarcherhero', 'voxelvampiresurvival', 'voxeltankbounce', 'voxelninjaslash', 'voxelgolfmaster', 'voxellumberjacktycoon', 'voxelfishingmaster'].includes(gameState)) {
         e.preventDefault();
         playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
         setGameState('modeSelect');
@@ -8884,12 +10225,573 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     );
   }
 
+  if (gameState === 'breakout') {
+    return (
+      <BreakoutGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '벽돌깨기 보상', 'Breakout reward')}
+      />
+    );
+  }
+
+  if (gameState === 'minesweeper') {
+    return (
+      <MinesweeperGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '지뢰찾기 보상', 'Minesweeper reward')}
+      />
+    );
+  }
+
+  if (gameState === 'pacman') {
+    return (
+      <PacmanGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '팩맨 보상', 'Pacman reward')}
+      />
+    );
+  }
+
+  if (gameState === 'tictactoe') {
+    return (
+      <TictactoeGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '틱택토 보상', 'Tic-Tac-Toe reward')}
+      />
+    );
+  }
+
+  if (gameState === 'trexrunner') {
+    return (
+      <TrexRunnerGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '티렉스 러너 보상', 'T-Rex Runner reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxeldefense') {
+    return (
+      <VoxelMiningDefenseGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '복셀 디펜스 보상', 'Voxel Defense reward')}
+      />
+    );
+  }
+
+  if (gameState === 'pixelstrike') {
+    return (
+      <VoxelPixelStrikeArenaGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '픽셀 스트라이크 보상', 'Pixel Strike reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelparkour') {
+    return (
+      <VoxelSkyParkourGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '스카이 파쿠르 보상', 'Sky Parkour reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelbattlegrounds') {
+    return (
+      <VoxelBattlegroundsGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '배틀그라운드 보상', 'Battlegrounds reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxeldungeon') {
+    return (
+      <VoxelDungeonCrawlerGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '던전 크롤러 보상', 'Dungeon Crawler reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelspace') {
+    return (
+      <VoxelSpaceOdysseyGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '우주 오디세이 보상', 'Space Odyssey reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelzombie') {
+    return (
+      <VoxelZombieSurvivalGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '좀비 서바이벌 보상', 'Zombie Survival reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelsiege') {
+    return (
+      <VoxelMedievalSiegeGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '중세 공성전 보상', 'Medieval Siege reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxeltitan') {
+    return (
+      <VoxelTitanMechaGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '타이탄 메카 보상', 'Titan Mecha reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxeldeepsea') {
+    return (
+      <VoxelDeepSeaOdysseyGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '심해 오디세이 보상', 'Deep Sea Odyssey reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelacefighter') {
+    return (
+      <VoxelAceFighterGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '에이스 파이터 보상', 'Ace Fighter reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxeldriftmaster') {
+    return (
+      <VoxelDriftMasterGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '드리프트 마스터 보상', 'Drift Master reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelmonsterisle') {
+    return (
+      <VoxelMonsterIsleGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '몬스터 아일 보상', 'Monster Isle reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelcyberninja') {
+    return (
+      <VoxelCyberNinjaGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '사이버 닌자 보상', 'Cyber Ninja reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelraftsurvival') {
+    return (
+      <VoxelRaftSurvivalGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '뗏목 서바이벌 보상', 'Raft Survival reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelsnowboard') {
+    return (
+      <VoxelSnowboardExtremeGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '스노보드 익스트림 보상', 'Snowboard Extreme reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelpinball') {
+    return (
+      <VoxelPinballKnightsGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '핀볼 나이츠 보상', 'Pinball Knights reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelpirate') {
+    return (
+      <VoxelPirateBattlesGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '해적 함대 보상', 'Pirate Battles reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelovercooked') {
+    return (
+      <VoxelPixelOvercookedGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '픽셀 오버쿡드 보상', 'Pixel Overcooked reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelprophunt') {
+    return (
+      <VoxelPropHuntGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '사물 프롭 헌트 보상', 'Prop Hunt reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelquantum') {
+    return (
+      <VoxelQuantumPortalGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '퀀텀 포탈 보상', 'Quantum Portal reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelrollinghero') {
+    return (
+      <VoxelRollingHeroGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '롤링 히어로 보상', 'Rolling Hero reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelsupersmash') {
+    return (
+      <VoxelSuperSmashGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '슈퍼 스매시 보상', 'Super Smash reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxeltowercraft') {
+    return (
+      <VoxelTowerCraftGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '타워 크래프트 보상', 'Tower Craft reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelbeatblaster') {
+    return (
+      <VoxelBeatBlasterGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '비트 블래스터 보상', 'Beat Blaster reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelcastleblaster') {
+    return (
+      <VoxelCastleBlasterGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '캐슬 블래스터 보상', 'Castle Blaster reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelfactorycraft') {
+    return (
+      <VoxelFactoryCraftGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '오토메이션 팩토리 보상', 'Factory Craft reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelsuperstrikers') {
+    return (
+      <VoxelSuperStrikersGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '슈퍼 스트라이커즈 보상', 'Super Strikers reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelgladiatorcolosseum') {
+    return (
+      <VoxelGladiatorColosseumGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '검투사 콜로세움 보상', 'Gladiator Colosseum reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxeldragonslayer') {
+    return (
+      <VoxelDragonSlayerGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '드래곤 슬레이어 보상', 'Dragon Slayer reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelarcherhero') {
+    return (
+      <VoxelArcherHeroGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '궁수 디펜스 보상', 'Archer Hero reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelvampiresurvival') {
+    return (
+      <VoxelVampireSurvivalGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '뱀파이어 서바이벌 보상', 'Vampire Survival reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxeltankbounce') {
+    return (
+      <VoxelTankBounceGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '탱크 바운스 보상', 'Tank Bounce reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelninjaslash') {
+    return (
+      <VoxelNinjaSlashGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '닌자 슬래시 보상', 'Ninja Slash reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelgolfmaster') {
+    return (
+      <VoxelGolfMasterGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '골프 마스터 보상', 'Golf Master reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxellumberjacktycoon') {
+    return (
+      <VoxelLumberjackTycoonGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '벌목 서바이벌 보상', 'Lumberjack Tycoon reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelfishingmaster') {
+    return (
+      <VoxelFishingMasterGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '낚시 타이쿤 보상', 'Fishing Master reward')}
+      />
+    );
+  }
+
   if (gameState === 'modeSelect') {
     // 오늘의 미션 게임 ID 생성 (날짜 기반 해시로 매일 교체)
     const getDailyMissionIds = (): string[] => {
       const today = new Date();
       const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
-      const allIds = ['ai_battle', 'gomoku', 'slide2048', 'snake', 'memorymatch', 'defense', 'cardjumper', 'cardtap', 'cardflip', 'cardslide', 'cardsorcery', 'cardslot', 'cardheist', 'cardrush'];
+      const allIds = [
+        'ai_battle', 'tournament', 'boss', 'dungeon', 'defense', 'snake', 'shooting',
+        'gomoku', 'memorymatch', 'slide2048', 'cardjumper', 'cardtap', 'cardflip',
+        'cardslide', 'cardsorcery', 'cardslot', 'cardheist', 'cardrush',
+        'breakout', 'minesweeper', 'pacman', 'tictactoe', 'trexrunner',
+        'voxeldefense', 'pixelstrike', 'voxelparkour', 'voxelbattlegrounds',
+        'voxeldungeon', 'voxelspace', 'voxelzombie', 'voxelsiege', 'voxeltitan',
+        'voxeldeepsea', 'voxelacefighter', 'voxeldriftmaster', 'voxelmonsterisle',
+        'voxelcyberninja', 'voxelraftsurvival', 'voxelsnowboard', 'voxelpinball',
+        'voxelpirate', 'voxelovercooked', 'voxelprophunt', 'voxelquantum',
+        'voxelrollinghero', 'voxelsupersmash', 'voxeltowercraft', 'voxelbeatblaster',
+        'voxelcastleblaster', 'voxelfactorycraft', 'voxelsuperstrikers',
+        'voxelgladiatorcolosseum', 'voxeldragonslayer', 'voxelarcherhero',
+        'voxelvampiresurvival', 'voxeltankbounce', 'voxelninjaslash',
+        'voxelgolfmaster', 'voxellumberjacktycoon', 'voxelfishingmaster'
+      ];
       // Fisher-Yates shuffle with seeded random
       const shuffled = [...allIds];
       for (let i = shuffled.length - 1; i > 0; i--) {
@@ -8901,13 +10803,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     };
     const dailyMissionIds = getDailyMissionIds();
 
-    const filteredModes = modes.filter(m => {
-      if (showDailyMissions) return dailyMissionIds.includes(m.id);
+    const filteredModes = modes.filter((m, idx) => {
+      if (showDailyMissions && !dailyMissionIds.includes(m.id)) return false;
+      if (selectedCategory !== 'all' && m.category !== selectedCategory) return false;
       const query = searchQuery.trim().toLowerCase();
       if (!query) return true;
       const titleMatches = m.title.toLowerCase().includes(query);
       const guideMatches = m.guide ? m.guide.toLowerCase().includes(query) : false;
-      return titleMatches || guideMatches;
+      const cardIndex = m.characterId || (idx + 1);
+      const charCard = CARD_DATABASE[cardIndex] || CARD_DATABASE[((cardIndex - 1) % 110) + 1];
+      const charKoMatches = charCard?.title ? charCard.title.toLowerCase().includes(query) : false;
+      const charEnMatches = charCard?.title_en ? charCard.title_en.toLowerCase().includes(query) : false;
+      const charElemMatches = charCard?.element ? charCard.element.toLowerCase().includes(query) : false;
+      const numberMatches = query === String(cardIndex) || query === `no.${cardIndex}` || query === `no.${String(cardIndex).padStart(2, '0')}` || query === `#${cardIndex}`;
+      return titleMatches || guideMatches || charKoMatches || charEnMatches || charElemMatches || numberMatches;
     });
 
 
@@ -8946,8 +10855,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.24),transparent_32%),linear-gradient(135deg,rgba(15,23,42,0.96),rgba(67,56,202,0.92),rgba(14,165,233,0.70))]" />
             <div className="relative flex min-h-[132px] items-stretch gap-3 p-3 sm:min-h-[150px] sm:p-4">
-              <div className="w-[112px] shrink-0 overflow-hidden rounded-lg border border-white/20 bg-white/10 sm:w-[140px]">
-                <MissionCharacterPortrait cardId={41} name={kadanName} className="p-1.5" />
+              <div className="w-[112px] shrink-0 overflow-hidden rounded-lg border border-white/20 bg-white/10 sm:w-[140px] flex items-center justify-center p-1">
+                <MissionCharacterPortrait cardId={41} name={kadanName} language={language} className="p-0" />
               </div>
               <div className="flex min-w-0 flex-1 flex-col justify-center gap-2 py-1 text-white">
                 <div className="inline-flex w-fit items-center gap-1.5 rounded-md border border-white/15 bg-white/10 px-2 py-1 text-[10px] font-black uppercase tracking-wider text-cyan-100">
@@ -8973,19 +10882,131 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           {/* Daily Missions Component */}
           <DailyMissionsComponent />
 
-          {/* Mode List Grid - shortcut style */}
+          {/* Hero Card Mission Matching Overview Banner */}
+          <div className="w-full rounded-sm border border-slate-800 bg-slate-950 p-3 sm:p-4 text-white shadow-xs font-mono">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-sm bg-amber-500/15 border border-amber-400/30 flex items-center justify-center text-amber-400 shrink-0 font-black text-xs">
+                  🎴
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-400/10 border border-amber-400/20 px-1.5 py-0.5 rounded-xs">
+                      HERO MISSION SYSTEM
+                    </span>
+                    <span className="text-[11px] text-slate-400">
+                      [ 1:1 HERO MATCHING ]
+                    </span>
+                  </div>
+                  <h3 className="text-xs sm:text-sm font-black text-white mt-0.5">
+                    {language === 'ko' 
+                      ? `총 ${modes.length}종의 미션 게임 × No.01~${String(modes.length).padStart(2, '0')} 히어로 카드 전담 매칭` 
+                      : `Total ${modes.length} Mission Games × No.01~${String(modes.length).padStart(2, '0')} Hero Card System`}
+                  </h3>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-sm shrink-0 self-start sm:self-auto">
+                <span className="text-[11px] text-slate-400">{language === 'ko' ? '카드 연동률' : 'Card Linked'}</span>
+                <span className="text-xs font-black text-emerald-400 font-mono">100% ({modes.length}/{modes.length})</span>
+              </div>
+            </div>
+            <p className="text-[11px] text-slate-400 mt-2.5 leading-relaxed border-t border-slate-800/80 pt-2">
+              {language === 'ko'
+                ? `모든 미션 게임은 1번 카드(No.01 ${CARD_DATABASE[1]?.title || '아쿠아리스'})부터 순서대로 고유 히어로 캐릭터 카드가 담당 수호자로 배속되어 있습니다.`
+                : `Every mission game is assigned a unique Hero Card starting from No.01 (${CARD_DATABASE[1]?.title_en || 'Aquaris'}) as guardian.`}
+            </p>
+          </div>
+
+          {/* Mode Search & Category Filter Tabs */}
+          <div className="flex flex-col gap-2.5 w-full pt-1">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs font-mono flex-1">
+                {[
+                  { id: 'all', labelKo: `전체 (${modes.length})`, labelEn: `All (${modes.length})` },
+                  { id: '3d', labelKo: `3D 복셀 (${modes.filter(m => m.category === '3d').length})`, labelEn: `3D Voxel (${modes.filter(m => m.category === '3d').length})` },
+                  { id: 'battle', labelKo: `배틀 (${modes.filter(m => m.category === 'battle').length})`, labelEn: `Battle (${modes.filter(m => m.category === 'battle').length})` },
+                  { id: 'arcade', labelKo: `아케이드 (${modes.filter(m => m.category === 'arcade').length})`, labelEn: `Arcade (${modes.filter(m => m.category === 'arcade').length})` },
+                  { id: 'puzzle', labelKo: `퍼즐 (${modes.filter(m => m.category === 'puzzle').length})`, labelEn: `Puzzle (${modes.filter(m => m.category === 'puzzle').length})` },
+                  { id: 'casual', labelKo: `캐주얼 (${modes.filter(m => m.category === 'casual').length})`, labelEn: `Casual (${modes.filter(m => m.category === 'casual').length})` }
+                ].map(cat => {
+                  const active = selectedCategory === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => {
+                        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                        setSelectedCategory(cat.id as any);
+                      }}
+                      className={cn(
+                        "px-3 py-1.5 rounded-sm whitespace-nowrap font-bold transition-all cursor-pointer border text-xs min-h-[36px] flex items-center justify-center",
+                        active
+                          ? "bg-slate-900 text-white border-slate-900 shadow-xs"
+                          : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100"
+                      )}
+                    >
+                      {language === 'ko' ? cat.labelKo : cat.labelEn}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Quick search */}
+            <div className="relative w-full">
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={language === 'ko' ? '게임 모드 또는 히어로 이름 검색...' : 'Search game modes or hero names...'}
+                className="w-full pl-8 pr-8 py-2 bg-white border border-slate-200 rounded-sm text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 font-mono"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                >
+                  <X size={12} />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Mode List Grid - Card Battle Theme Frame Style */}
           <main className="flex-1 px-0 pb-4 md:pb-8 pt-0 flex flex-col justify-start items-center w-full gap-4 md:gap-6 overflow-y-visible">
-            <div className="grid grid-cols-2 gap-3 md:gap-4 w-full py-4 items-stretch">
+            <div className="grid grid-cols-2 gap-3 md:gap-4 w-full py-4 items-stretch font-mono">
               {filteredModes.map((m, idx) => {
                 const IconComp = m.icon;
-                const charCard = m.characterId ? CARD_DATABASE[m.characterId] : null;
+                const cardIndex = m.characterId || (idx + 1);
+                const charCard = CARD_DATABASE[cardIndex] || CARD_DATABASE[((cardIndex - 1) % 110) + 1];
                 const charName = charCard ? (language === 'ko' ? charCard.title : charCard.title_en) : m.title;
+                const cardNumFormatted = String(cardIndex).padStart(2, '0');
+                
+                // Element visual config
+                const elem = (charCard?.element || 'neutral') as string;
+                const elemBadgeStyle = 
+                  elem === 'water' ? 'bg-cyan-950/80 text-cyan-300 border-cyan-700/60' :
+                  elem === 'fire' ? 'bg-rose-950/80 text-rose-300 border-rose-700/60' :
+                  elem === 'air' || elem === 'wind' ? 'bg-sky-950/80 text-sky-300 border-sky-700/60' :
+                  elem === 'earth' || elem === 'land' ? 'bg-amber-950/80 text-amber-300 border-amber-700/60' :
+                  elem === 'dragon' || elem === 'holy' ? 'bg-yellow-950/80 text-yellow-300 border-yellow-600/60' :
+                  elem === 'undead' || elem === 'monster' ? 'bg-purple-950/80 text-purple-300 border-purple-700/60' :
+                  'bg-slate-900 text-slate-300 border-slate-700';
+                  
+                const elemIcon = 
+                  elem === 'water' ? '💧' :
+                  elem === 'fire' ? '🔥' :
+                  elem === 'air' || elem === 'wind' ? '🌪️' :
+                  elem === 'earth' || elem === 'land' ? '⛰️' :
+                  elem === 'dragon' || elem === 'holy' ? '✦' :
+                  elem === 'undead' || elem === 'monster' ? '💀' : '⚔️';
+
                 return (
                   <motion.div
                     key={m.id}
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.05 }}
+                    transition={{ delay: Math.min(idx * 0.03, 0.3) }}
                     whileHover={lowSpecMode ? {} : { y: -3, transition: { duration: 0.15 } }}
                   >
                     <div
@@ -9004,34 +11025,82 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           m.action();
                         }
                       }}
-                      className="w-full min-h-[200px] bg-white border border-slate-200 rounded-2xl hover:border-indigo-300 hover:shadow-md transition-all flex flex-col overflow-hidden group cursor-pointer"
-                      aria-label={m.title}
+                      className="w-full min-h-[220px] bg-[#14121e] border border-slate-800 rounded-sm hover:border-amber-400/80 hover:shadow-md transition-all flex flex-col overflow-hidden group cursor-pointer text-left"
+                      aria-label={`${m.title} - No.${cardNumFormatted} ${charName}`}
                     >
-                      {/* Character card top area — upper body crop */}
-                      <div className={cn('flex-1 flex items-center justify-center p-0 relative overflow-hidden h-44 sm:h-48 min-h-[160px]', `bg-gradient-to-br ${m.color}`)}>
+                      {/* TCG Card Header Bar */}
+                      <div className="px-2.5 py-1.5 bg-slate-950/90 border-b border-slate-800/90 flex items-center justify-between gap-1 text-[10px] text-white">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-black text-amber-400 bg-amber-400/10 border border-amber-400/25 px-1 py-0.2 rounded-xs tracking-tight">
+                            No.{cardNumFormatted}
+                          </span>
+                          <span className="text-[9px] text-slate-400 font-semibold truncate max-w-[60px] sm:max-w-none">
+                            {charName}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className={cn("text-[9px] px-1 py-0.2 rounded-xs border font-black flex items-center gap-0.5", elemBadgeStyle)}>
+                            <span>{elemIcon}</span>
+                            <span className="uppercase text-[8px]">{elem}</span>
+                          </span>
+                          {charCard?.power && (
+                            <span className="text-[9px] text-amber-300 font-bold bg-amber-950/40 border border-amber-800/40 px-1 py-0.2 rounded-xs">
+                              P.{charCard.power}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Character Card Portrait Box */}
+                      <div className="flex-1 flex items-center justify-center p-2 sm:p-3 relative overflow-hidden h-44 sm:h-48 min-h-[160px] bg-gradient-to-b from-slate-900 via-[#131024] to-[#0a0814]">
+                        {/* Background Subtle Ink Grid */}
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(99,102,241,0.18),transparent_70%)] pointer-events-none" />
+                        
                         {charCard ? (
-                          <MissionCharacterPortrait cardId={charCard.id} name={charName} className="h-full w-full" />
+                          <MissionCharacterPortrait cardId={charCard.id} name={charName} language={language} className="w-full h-full" />
                         ) : (
                           <IconComp size={48} className="text-white/80 drop-shadow-lg my-6" />
                         )}
+
+                        {/* Bottom Overlay Label inside Card Art */}
+                        <div className="absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-between pointer-events-none z-30">
+                          <div className="bg-black/85 backdrop-blur-xs border border-white/15 px-1.5 py-0.5 rounded-xs text-[9px] text-white font-bold truncate max-w-[70%] shadow-sm">
+                            [#{cardNumFormatted}] {charName}
+                          </div>
+                          {m.badgeText && (
+                            <div className="bg-amber-400 text-slate-950 font-black px-1.5 py-0.5 rounded-xs text-[8px] uppercase tracking-wider shadow-sm">
+                              {m.badgeText}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      {/* Game title bar */}
-                      <div className="px-3 py-2.5 bg-slate-900 flex items-center justify-between gap-2">
-                        <span className="flex-1 text-left font-extrabold text-xs text-white truncate drop-shadow-sm">
-                          {m.title}
-                        </span>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                            setGuideMode(m);
-                          }}
-                          className="min-w-[28px] min-h-[28px] rounded-full bg-white/15 hover:bg-white/25 border border-white/20 text-white/80 hover:text-white transition-all flex items-center justify-center cursor-pointer text-[10px] font-black shrink-0"
-                          aria-label={language === 'ko' ? '설명 보기' : 'Show Description'}
-                        >
-                          ?
-                        </button>
-                        <ChevronRight size={14} className="text-slate-400 shrink-0" />
+
+                      {/* Game Title & Mission Info Bar */}
+                      <div className="p-2.5 bg-slate-950 border-t border-slate-800 flex flex-col gap-1.5">
+                        <div className="flex items-center justify-between gap-1">
+                          <span className="flex-1 text-left font-black text-xs text-white truncate drop-shadow-xs">
+                            {m.title}
+                          </span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                              setGuideMode(m);
+                            }}
+                            className="min-w-[24px] min-h-[24px] rounded-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition-all flex items-center justify-center cursor-pointer text-[10px] font-black shrink-0"
+                            aria-label={language === 'ko' ? '설명 보기' : 'Show Description'}
+                          >
+                            ?
+                          </button>
+                        </div>
+                        <div className="flex items-center justify-between text-[10px] text-slate-400">
+                          <span className="truncate text-slate-400 text-[10px]">
+                            ✦ {language === 'ko' ? '수호' : 'Hero'}: <strong className="text-slate-200 font-bold">{charName}</strong>
+                          </span>
+                          <span className="text-emerald-400 font-bold shrink-0 text-[10px] flex items-center gap-0.5">
+                            +SNS <ChevronRight size={12} className="inline text-slate-500 group-hover:translate-x-0.5 transition-transform" />
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </motion.div>
@@ -10415,7 +12484,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             </button>
           </div>
 
-          {/* Right side: Auto Toggle, Ping, Rules */}
+          {/* Right side: Auto Toggle, Chat Toggle, Ping, Rules */}
           <div className="flex items-center gap-1.5 sm:gap-2">
             {onToggleAutoBattle && (
               <button
@@ -10433,6 +12502,25 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 aria-label="Auto Battle Toggle"
               >
                 <Bot size={15} className={cn(isAutoBattle ? "animate-spin text-amber-300" : "text-slate-400")} />
+              </button>
+            )}
+
+            {onToggleChat && (
+              <button
+                onClick={() => {
+                  onToggleChat();
+                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                }}
+                className={cn(
+                  "h-8 w-8 border rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0",
+                  isChatOpen
+                    ? "bg-indigo-600 border-indigo-400 text-white shadow-[0_0_12px_rgba(99,102,241,0.6)] animate-pulse"
+                    : "bg-slate-900/90 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700"
+                )}
+                title={language === 'ko' ? '전투 채팅 열기/닫기' : 'Toggle Battle Chat'}
+                aria-label="Toggle Battle Chat"
+              >
+                <MessageCircle size={15} className={cn(isChatOpen ? "text-white" : "text-slate-400")} />
               </button>
             )}
 
@@ -10517,6 +12605,96 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 >
                   <HelpCircle size={16} className="text-indigo-400" />
                   <span>{language === 'ko' ? '게임 규칙 및 설명' : 'Game Rules'}</span>
+                </button>
+
+                {/* Item 383: Monster Beastarium & Pets */}
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setIsBeastariumOpen(true);
+                  }}
+                  className="w-full py-2.5 px-4 bg-purple-950/40 border border-purple-800/40 hover:bg-purple-900/60 text-purple-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">🐾</span>
+                    <span>{language === 'ko' ? '몬스터 비스티아리움' : 'Beastarium & Pets'}</span>
+                  </div>
+                  <span className="text-[10px] text-purple-400 font-mono">[OPEN]</span>
+                </button>
+
+                {/* Item 385: Offline Expedition */}
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setIsExpeditionOpen(true);
+                  }}
+                  className="w-full py-2.5 px-4 bg-emerald-950/40 border border-emerald-800/40 hover:bg-emerald-900/60 text-emerald-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">🧭</span>
+                    <span>{language === 'ko' ? '오프라인 원정대' : 'Offline Expedition'}</span>
+                  </div>
+                  <span className="text-[10px] text-emerald-400 font-mono">[PATROL]</span>
+                </button>
+
+                {/* Item 389: Tactician Mastery */}
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setIsTacticianMasteryOpen(true);
+                  }}
+                  className="w-full py-2.5 px-4 bg-amber-950/40 border border-amber-800/40 hover:bg-amber-900/60 text-amber-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">👑</span>
+                    <span>{language === 'ko' ? '전술가 마스터리 & 스킨' : 'Tactician Mastery'}</span>
+                  </div>
+                  <span className="text-[10px] text-amber-400 font-mono">[AURA]</span>
+                </button>
+
+                {/* Item 392: Tower of Trials */}
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setIsTowerTrialsOpen(true);
+                  }}
+                  className="w-full py-2.5 px-4 bg-indigo-950/40 border border-indigo-800/40 hover:bg-indigo-900/60 text-indigo-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">🗼</span>
+                    <span>{language === 'ko' ? '시련의 탑 50층' : 'Tower of Trials'}</span>
+                  </div>
+                  <span className="text-[10px] text-indigo-400 font-mono">[ASCENT]</span>
+                </button>
+
+                {/* Item 397: Secret Stamp Book */}
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setIsSecretStampModalOpen(true);
+                  }}
+                  className="w-full py-2.5 px-4 bg-amber-950/40 border border-amber-800/40 hover:bg-amber-900/60 text-amber-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">📜</span>
+                    <span>{language === 'ko' ? '비밀 업적 스탬프북' : 'Secret Stamp Book'}</span>
+                  </div>
+                  <span className="text-[10px] text-amber-400 font-mono">[STAMPS]</span>
+                </button>
+
+                {/* Item 393: Battle Gambit Tuning */}
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setIsGambitModalOpen(true);
+                  }}
+                  className="w-full py-2.5 px-4 bg-blue-950/40 border border-blue-800/40 hover:bg-blue-900/60 text-blue-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">⚙️</span>
+                    <span>{language === 'ko' ? '전술 지침(Gambit) 튜닝' : 'Gambit AI Tuning'}</span>
+                  </div>
+                  <span className="text-[10px] text-blue-400 font-mono">[GAMBIT]</span>
                 </button>
 
                 <button
@@ -10869,26 +13047,26 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 )}
 
                 {/* 2. SCOREBOARD */}
-                <div className="flex flex-col gap-1 items-center bg-slate-950/80 rounded-3xl p-1.5 md:p-2 border border-slate-800/80 shadow-inner shadow-black/60 backdrop-blur-sm">
+                <div className="flex flex-col gap-1 items-center bg-[#201d1d] rounded-none p-1.5 border border-[rgba(255,255,255,0.15)] shadow-none">
                   {/* Enemy Score */}
-                  <div className="flex flex-col items-center gap-1 p-1 md:p-2 bg-rose-500/5 rounded-xl md:rounded-full border border-rose-900/20">
-                      <span className="text-[6px] md:text-[8px] font-black uppercase text-rose-400 md:[writing-mode:vertical-lr] tracking-wider">ENEMY</span>
-                      <div className="w-6 h-6 md:w-10 md:h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-[10px] md:text-xl font-extrabold text-rose-500 shadow-sm font-mono">
+                  <div className="flex flex-col items-center gap-0.5 p-1 bg-rose-950/30 rounded-none border border-rose-800/40">
+                      <span className="text-[7px] font-mono font-bold uppercase text-rose-400 [writing-mode:vertical-lr] tracking-widest">[ENEMY]</span>
+                      <div className="w-7 h-7 rounded-none bg-[#141212] border border-rose-700/50 flex items-center justify-center text-sm font-bold text-rose-400 font-mono">
                         {battleType === 'matgo' ? matgoScores.ai : boardScore.ai}
                       </div>
                   </div>
                   
                   {/* Divider */}
-                  <div className="py-1 md:py-2 opacity-15">
-                      <div className="w-4 h-[1px] md:w-[2px] md:h-8 bg-slate-700" />
+                  <div className="py-0.5 opacity-20">
+                      <div className="w-3 h-[1px] bg-white" />
                   </div>
     
                   {/* Player Score */}
-                  <div className="flex flex-col items-center gap-1 p-1 md:p-2 bg-indigo-500/5 rounded-xl md:rounded-full border border-indigo-900/20">
-                      <div className="w-6 h-6 md:w-10 md:h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-[10px] md:text-xl font-extrabold text-indigo-400 shadow-sm font-mono">
+                  <div className="flex flex-col items-center gap-0.5 p-1 bg-indigo-950/30 rounded-none border border-indigo-800/40">
+                      <div className="w-7 h-7 rounded-none bg-[#141212] border border-indigo-700/50 flex items-center justify-center text-sm font-bold text-indigo-400 font-mono">
                         {battleType === 'matgo' ? matgoScores.player : boardScore.player}
                       </div>
-                      <span className="text-[6px] md:text-[8px] font-black uppercase text-indigo-400 md:[writing-mode:vertical-lr] tracking-wider">PLAYER</span>
+                      <span className="text-[7px] font-mono font-bold uppercase text-indigo-400 [writing-mode:vertical-lr] tracking-widest">[YOU]</span>
                   </div>
                 </div>
               </div>
@@ -10897,12 +13075,55 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           <div className={cn(
             "relative p-1 md:p-2 border-4 rounded-3xl bg-[#090d16]/90 border-slate-800 transition-all duration-300",
             !isLowPerformance && "shadow-[0_0_50px_rgba(0,0,0,0.8)]",
-            !gameOver && gameState === 'playing' ? (
+            isFeverMode && "border-amber-400 shadow-[0_0_35px_rgba(251,191,36,0.6)] animate-pulse",
+            isMicroShaking && "translate-x-[2px] translate-y-[-2px]",
+            !gameOver && gameState === 'playing' && !isFeverMode ? (
               turn === 'player' 
                 ? (isLowPerformance ? "border-blue-500" : "border-blue-500/50 shadow-[0_0_60px_rgba(59,130,246,0.25)] scale-[1.01]")
                 : (isLowPerformance ? "border-red-500" : "border-red-500/50 shadow-[0_0_60px_rgba(239,68,68,0.25)] scale-[1.01]")
-            ) : "border-slate-700 shadow-2xl"
+            ) : (!isFeverMode && "border-slate-700 shadow-2xl")
           )}>
+            {/* Item 386: Cross Domination 4-Way Capture Shockwave Overlay */}
+            <AnimatePresence>
+              {isCrossDominationActive && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1.05 }}
+                  exit={{ opacity: 0, scale: 1.2 }}
+                  className="absolute inset-0 z-[250] flex flex-col items-center justify-center bg-amber-500/20 backdrop-blur-xs pointer-events-none rounded-3xl"
+                >
+                  <div className="bg-black/85 border border-amber-400 px-4 py-2 rounded-sm text-center shadow-2xl">
+                    <span className="text-lg md:text-2xl font-black text-amber-300 font-mono block">
+                      ✨ [ CROSS DOMINATION ]
+                    </span>
+                    <span className="text-xs text-white font-mono">
+                      {language === 'ko' ? '4방향 동시 십자 격파!' : '4-Way Simultaneous Shockwave!'}
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Item 382: Total Eclipse Domination 9:0 Full Board Black Hole Vortex */}
+            <AnimatePresence>
+              {isTotalEclipseWin && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="absolute inset-0 z-[260] flex flex-col items-center justify-center bg-black/90 pointer-events-none rounded-3xl"
+                >
+                  <div className="text-center p-4">
+                    <span className="text-4xl md:text-6xl animate-spin block mb-2">🌑</span>
+                    <span className="text-lg md:text-2xl font-black text-purple-400 font-mono tracking-widest block">
+                      [ TOTAL ECLIPSE DOMINATION ]
+                    </span>
+                    <span className="text-xs text-purple-200 font-mono">
+                      {language === 'ko' ? '9:0 전장 100% 완전 장악!' : '100% Full Board Clean Sweep!'}
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
             {/* Floating Combo Text */}
             <AnimatePresence>
               {lastCombo && (Date.now() - lastCombo.timestamp < 1500) && (
@@ -10984,11 +13205,33 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               )}
             </AnimatePresence>
 
-            <div className="flex flex-col-reverse md:flex-row-reverse items-center justify-center gap-4 md:gap-12 relative animate-in fade-in duration-700">
+            {/* Item 401 & Item 393: Battle Stance Switcher & Gambit Customizer HUD */}
+            <div className="w-full max-w-sm mb-2">
+              <BattleStanceBar
+                currentStance={gambitConfig.activeStance}
+                onStanceChange={handleStanceChange}
+                onOpenGambitModal={() => setIsGambitModalOpen(true)}
+              />
+            </div>
+
+            <div className={cn(
+              "flex flex-col-reverse md:flex-row-reverse items-center justify-center gap-4 md:gap-12 relative animate-in fade-in duration-700",
+              isClutchSlowMo && "scale-[1.02] filter contrast-125 transition-transform duration-300"
+            )}>
                     <div className={cn(
                       "grid grid-cols-3 gap-1 md:gap-2 w-fit relative p-1.5 rounded-sm transition-all",
                       isSuddenDeathOverclock && "border border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.25)] bg-amber-950/10"
                     )}>
+                      {/* Item 394 & Item 402: Battle Combo Announcer & Critical Shatter Overlay */}
+                      {comboAnnounceData && (
+                        <BattleComboAnnouncer
+                          comboType={comboAnnounceData.comboType}
+                          comboCount={comboAnnounceData.comboCount}
+                          isCriticalShatter={comboAnnounceData.isCriticalShatter}
+                          maxPowerDiff={comboAnnounceData.maxPowerDiff}
+                        />
+                      )}
+
                       {/* Item 365: 1px Perimeter Ring Timer (BattleTurnRing) */}
                       <div className="absolute inset-0 pointer-events-none rounded-sm border border-slate-700/60 overflow-hidden z-[100]">
                         <div
@@ -11189,6 +13432,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                 <Sparkles size={22} className="text-cyan-400 animate-spin drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
                                 <span className="text-[8px] font-mono font-black text-cyan-300 bg-black/80 px-1 py-0.5 rounded-sm border border-cyan-400/60 mt-1 whitespace-nowrap">
                                   [💧 +2 STATS]
+                                </span>
+                              </div>
+                            )}
+                            {/* Item 375: Rage Spark Slot Badge in Grid Cell */}
+                            {!card && idx === rageSparkSlotIndex && (
+                              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-1 pointer-events-none">
+                                <Flame size={22} className="text-red-400 animate-bounce drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
+                                <span className="text-[8px] font-mono font-black text-red-300 bg-black/80 px-1 py-0.5 rounded-sm border border-red-400/60 mt-1 whitespace-nowrap">
+                                  [🔥 +3 RAGE]
                                 </span>
                               </div>
                             )}
@@ -12613,6 +14865,142 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           const currentGold = Number(localStorage.getItem('hero_gold') || 0);
           localStorage.setItem('hero_gold', String(currentGold + 600));
           window.dispatchEvent(new Event('snshero_gold_updated'));
+        }}
+      />
+
+      {/* Item 384: Lucky Card Match 5-Win Streak Mini-Game Modal */}
+      <LuckyMatchModal
+        isOpen={isLuckyMatchOpen}
+        onClose={() => setIsLuckyMatchOpen(false)}
+        language={language}
+        onClaimReward={(snsReward, cardRarity) => {
+          if (addItem && cardRarity) {
+            addItem(cardRarity);
+          }
+          addLog(language === 'ko'
+            ? `🎁 [럭키 카드 매치 보상] +${snsReward} SNS 및 [${cardRarity.toUpperCase()}] 카드 팩을 획득했습니다!`
+            : `🎁 [LUCKY MATCH REWARD] Claimed +${snsReward} SNS & [${cardRarity.toUpperCase()}] Card Pack!`,
+            'victory'
+          );
+        }}
+      />
+
+      {/* Item 387: Post-Boss Manual Victory 3-Chest Unlock Modal */}
+      <TreasureChestUnlockModal
+        isOpen={isBossChestUnlockOpen}
+        onClose={() => setIsBossChestUnlockOpen(false)}
+        language={language}
+        onClaimReward={(snsReward, itemType) => {
+          if (addItem) {
+            addItem('epic');
+          }
+          addLog(language === 'ko'
+            ? `👑 [보스 토벌 전리품 상자] +${snsReward} SNS 및 [${itemType.toUpperCase()}] 획득 완료!`
+            : `👑 [BOSS VICTORY CHEST] Claimed +${snsReward} SNS & [${itemType.toUpperCase()}]!`,
+            'victory'
+          );
+        }}
+      />
+
+      {/* Item 385: Offline Expedition 8-Hour Patrol Modal */}
+      <ExpeditionModal
+        isOpen={isExpeditionOpen}
+        onClose={() => setIsExpeditionOpen(false)}
+        language={language}
+        userDeck={playerDeck}
+        onClaimReward={(snsReward, expReward) => {
+          addLog(language === 'ko'
+            ? `🧭 [원정대 순찰 보고] +${snsReward} SNS 및 +${expReward} EXP 보상을 수령했습니다!`
+            : `🧭 [EXPEDITION REWARDS] Claimed +${snsReward} SNS & +${expReward} EXP!`,
+            'victory'
+          );
+        }}
+      />
+
+      {/* Item 383: Monster Beastarium & Mini-Pet Modal */}
+      <MonsterBeastariumModal
+        isOpen={isBeastariumOpen}
+        onClose={() => setIsBeastariumOpen(false)}
+        language={language}
+        onSelectPet={(pet) => {
+          addLog(language === 'ko'
+            ? `🐾 [동행 펫 출격] ${pet.name} (${pet.skillDescription}) 동행 활성화!`
+            : `🐾 [PET COMPANION] ${pet.nameEn} (${pet.skillDescriptionEn}) now following!`,
+            'system'
+          );
+        }}
+      />
+
+      {/* Item 389: Tactician Mastery & Board Auras Modal */}
+      <TacticianMasteryModal
+        isOpen={isTacticianMasteryOpen}
+        onClose={() => setIsTacticianMasteryOpen(false)}
+        language={language}
+        onSelectAura={(skin) => {
+          addLog(language === 'ko'
+            ? `👑 [전술가 아우라 적용] ${skin.name} 테마가 전장에 적용되었습니다!`
+            : `👑 [AURA APPLIED] ${skin.nameEn} Aura Skin activated!`,
+            'system'
+          );
+        }}
+      />
+
+      {/* Item 392: Tower of Trials 50-Floor Challenge Modal */}
+      <TowerOfTrialsModal
+        isOpen={isTowerTrialsOpen}
+        onClose={() => setIsTowerTrialsOpen(false)}
+        language={language}
+        onStartTowerFloor={(floor) => {
+          setIsTowerTrialsOpen(false);
+          setIsStoryActive(false);
+          setGameState('single');
+          addLog(language === 'ko'
+            ? `🗼 [시련의 탑 ${floor}층] 도전 시작! (${floor}F 보스: 가디언)`
+            : `🗼 [TOWER OF TRIALS FLOOR ${floor}] Ascent commenced!`,
+            'system'
+          );
+        }}
+      />
+
+      {/* Item 393 & Item 405: Battle Gambit & Smart Filter Modal */}
+      <BattleGambitModal
+        isOpen={isGambitModalOpen}
+        onClose={() => setIsGambitModalOpen(false)}
+        config={gambitConfig}
+        onSaveConfig={handleSaveGambitConfig}
+      />
+
+      {/* Item 397: Secret Stamp Book Modal */}
+      <SecretStampBookModal
+        isOpen={isSecretStampModalOpen}
+        onClose={() => setIsSecretStampModalOpen(false)}
+      />
+
+      {/* Item 404: Golden Treasure Dart Mini-Game Modal */}
+      <TreasureDartModal
+        isOpen={isTreasureDartOpen}
+        onClose={() => setIsTreasureDartOpen(false)}
+      />
+
+      {/* Item 408: Golden Pirate Roulette Mini-Game Modal */}
+      <GoldenPirateRouletteModal
+        isOpen={isPirateRouletteOpen}
+        onClose={() => setIsPirateRouletteOpen(false)}
+        language={language}
+        playSfx={playSfx}
+        onReward={(amount, reason) => {
+          handleMinigameReward(amount, reason, reason);
+        }}
+      />
+
+      {/* Item 412: Golden Archery Challenge Mini-Game Modal */}
+      <GoldenArcheryModal
+        isOpen={isArcheryOpen}
+        onClose={() => setIsArcheryOpen(false)}
+        language={language}
+        playSfx={playSfx}
+        onReward={(amount, reason) => {
+          handleMinigameReward(amount, reason, reason);
         }}
       />
     </div>

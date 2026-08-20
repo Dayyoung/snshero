@@ -47,8 +47,9 @@ export const MinesweeperGame: React.FC<MinesweeperGameProps> = ({
 
   const [level, setLevel] = useState(1);
 
-  const gridSize = LEVEL_CONFIG[Math.min(level - 1, LEVEL_CONFIG.length - 1)].grid;
-  const minesCount = LEVEL_CONFIG[Math.min(level - 1, LEVEL_CONFIG.length - 1)].mines;
+  const currentLevelConfig = LEVEL_CONFIG[Math.min(level - 1, LEVEL_CONFIG.length - 1)];
+  const gridSize = currentLevelConfig.grid;
+  const minesCount = currentLevelConfig.mines;
   const cellSize = CANVAS_SIZE / gridSize;
 
   const gameRef = useRef({
@@ -72,6 +73,7 @@ export const MinesweeperGame: React.FC<MinesweeperGameProps> = ({
   const [hudGameOver, setHudGameOver] = useState(false);
   const [hudWin, setHudWin] = useState(false);
   const [hudScore, setHudScore] = useState(0);
+  const [earnedReward, setEarnedReward] = useState(0);
   const timerIntervalRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -147,6 +149,7 @@ export const MinesweeperGame: React.FC<MinesweeperGameProps> = ({
     setHudGameOver(false);
     setHudWin(false);
     setHudScore(0);
+    setEarnedReward(0);
 
     if (timerIntervalRef.current) {
       clearInterval(timerIntervalRef.current);
@@ -160,16 +163,41 @@ export const MinesweeperGame: React.FC<MinesweeperGameProps> = ({
 
   const [flagMode, setFlagMode] = useState(false);
 
-  const calcReward = (win: boolean, lvl: number) => {
-    return win ? Math.min(60, 25 + lvl * 4) : 5;
-  };
+  const calcReward = useCallback((isWin: boolean, lvl: number, timeSec: number, revealedRatio = 0) => {
+    if (isWin) {
+      // Base win reward scaled from 25 to 55 SNS + time bonus up to +5 SNS
+      const baseWin = 20 + lvl * 3.5;
+      const speedBonus = timeSec < 20 ? 5 : timeSec < 45 ? 3 : timeSec < 90 ? 1 : 0;
+      return Math.min(60, Math.max(25, Math.floor(baseWin + speedBonus)));
+    }
+    // Loss reward: fair participation reward based on how much was explored (10~22 SNS)
+    const baseMin = 10;
+    const progressBonus = Math.floor(revealedRatio * (10 + lvl));
+    return Math.min(25, baseMin + progressBonus);
+  }, []);
+
+  const getRevealedRatio = useCallback(() => {
+    const g = gameRef.current;
+    let revealed = 0;
+    let totalSafe = 0;
+    for (let y = 0; y < gridSize; y++) {
+      for (let x = 0; x < gridSize; x++) {
+        if (!g.mines[y]?.[x]) totalSafe++;
+        if (g.cellStates[y]?.[x] === 'revealed') revealed++;
+      }
+    }
+    return totalSafe > 0 ? revealed / totalSafe : 0;
+  }, [gridSize]);
 
   useEffect(() => {
     if ((hudGameOver || hudWin) && !rewardedRef.current) {
       rewardedRef.current = true;
-      onReward(calcReward(hudWin, level));
+      const ratio = getRevealedRatio();
+      const finalReward = calcReward(hudWin, level, gameRef.current.timer, ratio);
+      setEarnedReward(finalReward);
+      onReward(finalReward);
     }
-  }, [hudGameOver, hudWin, onReward, hudWin, level]);
+  }, [calcReward, getRevealedRatio, hudGameOver, hudWin, level, onReward]);
 
   const revealCell = (x: number, y: number) => {
     const g = gameRef.current;
@@ -434,28 +462,86 @@ export const MinesweeperGame: React.FC<MinesweeperGameProps> = ({
   };
 
   return (
-    <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white flex flex-col items-center justify-between font-sans select-none overflow-hidden pb-3">
+    <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white flex flex-col items-center justify-between font-mono select-none overflow-hidden pb-3">
       <header className="w-full max-w-md flex items-center justify-between px-3 py-2 shrink-0">
-        <button onClick={onExit} className="p-2 rounded-2xl bg-white/10 hover:bg-white/15 transition-colors cursor-pointer">
+        <button onClick={onExit} className="p-2 rounded-sm bg-white/10 hover:bg-white/15 transition-colors cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center">
           <ArrowLeft size={18} />
         </button>
         <div className="text-center">
-          <h1 className="text-base sm:text-lg font-black uppercase tracking-tight">{t('mode_minesweeper', language)}</h1>
-          <div className="text-[10px] sm:text-xs font-bold text-indigo-300">Lv.{level} ({gridSize}×{gridSize} / {minesCount})</div>
+          <h1 className="text-sm sm:text-base font-bold tracking-tight">{t('mode_minesweeper', language)}</h1>
+          <div className="text-[10px] sm:text-xs text-indigo-300 font-bold">Lv.{level} ({gridSize}×{gridSize} / 💣{minesCount})</div>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="px-2 py-1 rounded-xl bg-red-500/20 border border-red-400/20 text-red-100 font-black text-xs sm:text-sm tabular-nums">
-            {hudMinesLeft}
+          <div className="px-2 py-1 rounded-sm bg-red-500/20 border border-red-400/30 text-red-100 font-bold text-xs sm:text-sm tabular-nums">
+            🚩{hudMinesLeft}
           </div>
-          <div className="px-2 py-1 rounded-xl bg-indigo-500/20 border border-indigo-400/20 text-indigo-100 font-black text-xs sm:text-sm tabular-nums">
-            {hudTimer}s
+          <div className="px-2 py-1 rounded-sm bg-indigo-500/20 border border-indigo-400/30 text-indigo-100 font-bold text-xs sm:text-sm tabular-nums">
+            ⏱{hudTimer}s
           </div>
         </div>
       </header>
 
+      {/* Difficulty Presets (초급/중급/고급) & Level Selector */}
+      <div className="w-full max-w-md px-3 flex items-center justify-between gap-1.5 shrink-0">
+        <div className="flex items-center gap-1">
+          {[
+            { id: 'beg', nameKo: '초급(1)', nameEn: 'Easy(1)', lvl: 1 },
+            { id: 'mid', nameKo: '중급(5)', nameEn: 'Mid(5)', lvl: 5 },
+            { id: 'exp', nameKo: '고급(10)', nameEn: 'Hard(10)', lvl: 10 },
+          ].map((preset) => {
+            const active = level === preset.lvl;
+            return (
+              <button
+                key={preset.id}
+                type="button"
+                onClick={() => {
+                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                  setLevel(preset.lvl);
+                }}
+                className={cn(
+                  "px-2 py-1 text-xs rounded-sm border transition-all cursor-pointer min-h-[36px]",
+                  active
+                    ? "bg-indigo-600 text-white border-indigo-500 font-bold"
+                    : "bg-white/5 text-slate-300 border-white/10 hover:bg-white/10"
+                )}
+              >
+                [{language === 'ko' ? preset.nameKo : preset.nameEn}]
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Level step controls */}
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            disabled={level <= 1}
+            onClick={() => {
+              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              setLevel(prev => Math.max(1, prev - 1));
+            }}
+            className="px-2 py-1 bg-white/10 disabled:opacity-30 rounded-sm text-xs font-bold min-h-[36px] cursor-pointer"
+          >
+            [-]
+          </button>
+          <span className="text-xs font-bold text-slate-300 min-w-[32px] text-center">L{level}</span>
+          <button
+            type="button"
+            disabled={level >= LEVEL_CONFIG.length}
+            onClick={() => {
+              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              setLevel(prev => Math.min(LEVEL_CONFIG.length, prev + 1));
+            }}
+            className="px-2 py-1 bg-white/10 disabled:opacity-30 rounded-sm text-xs font-bold min-h-[36px] cursor-pointer"
+          >
+            [+]
+          </button>
+        </div>
+      </div>
+
       <main className="w-full max-w-md flex-1 min-h-0 flex flex-col items-center justify-center px-3">
         <div
-          className={cn('relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl max-h-[58vh] aspect-square w-full max-w-[340px]')}
+          className={cn('relative overflow-hidden rounded-sm border border-white/10 max-h-[58vh] aspect-square w-full max-w-[340px]')}
           style={{ touchAction: 'none' }}
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
@@ -464,39 +550,51 @@ export const MinesweeperGame: React.FC<MinesweeperGameProps> = ({
           <canvas ref={canvasRef} width={CANVAS_SIZE} height={CANVAS_SIZE} className="w-full h-full object-contain" />
 
           {(hudGameOver || hudWin) && (
-            <div className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
-              <div className="bg-white text-slate-900 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl">
+            <div className="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white text-slate-900 rounded-sm p-5 max-w-xs w-full text-center border border-slate-300 shadow-lg">
                 {hudWin ? (
-                  <Trophy size={42} className="mx-auto text-amber-500 mb-3" />
+                  <Trophy size={36} className="mx-auto text-amber-500 mb-2" />
                 ) : (
-                  <Flag size={42} className="mx-auto text-red-500 mb-3" />
+                  <Flag size={36} className="mx-auto text-red-500 mb-2" />
                 )}
-                <h2 className="text-xl font-black mb-1">
-                  {hudWin ? (language === 'ko' ? '승리!' : 'WIN!') : (language === 'ko' ? '지뢰 폭발!' : 'BOOM!')}
+                <h2 className="text-lg font-bold mb-1">
+                  {hudWin ? (language === 'ko' ? '[승리! 지뢰 탐지 완료]' : '[VICTORY! MINES CLEARED]') : (language === 'ko' ? '[지뢰 폭발!]' : '[BOOM! GAME OVER]')}
                 </h2>
-                <p className="text-sm font-bold text-slate-500 mb-1">
-                  {language === 'ko' ? `시간: ${gameRef.current.timer}초` : `Time: ${gameRef.current.timer}s`}
-                </p>
-                {hudWin && level < LEVEL_CONFIG.length && (
-                  <p className="text-xs font-bold text-emerald-600 mb-1">
-                    {language === 'ko' ? `레벨 보너스: +${level * 50}` : `Level bonus: +${level * 50}`}
-                  </p>
-                )}
-                <p className="text-sm font-bold text-indigo-600 mb-4">
-                  {t('minesweeper_reward', language).replace('{amount}', String(calcReward(hudWin, level)))}
-                </p>
+                <div className="text-xs text-slate-600 space-y-1 mb-3 bg-slate-50 p-2.5 rounded-sm border border-slate-200">
+                  <div className="flex justify-between">
+                    <span>{language === 'ko' ? '도전 레벨' : 'Level'}:</span>
+                    <span className="font-bold text-slate-900">Lv.{level} ({gridSize}×{gridSize})</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>{language === 'ko' ? '소요 시간' : 'Time'}:</span>
+                    <span className="font-bold text-slate-900">{gameRef.current.timer}s</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>{language === 'ko' ? '탐지 상태' : 'Explored'}:</span>
+                    <span className="font-bold text-slate-900">
+                      {hudWin ? '100% Complete' : `${Math.round(getRevealedRatio() * 100)}% Safe`}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mb-3.5 py-2 px-3 bg-indigo-50 border border-indigo-200 rounded-sm">
+                  <span className="text-xs text-indigo-700 font-bold">
+                    {language === 'ko' ? `보상 지급: +${earnedReward} SNS 포인트` : `Reward Earned: +${earnedReward} SNS Points`}
+                  </span>
+                </div>
+
                 <div className="flex gap-2">
-                  <button onClick={initGame} className="flex-1 py-3 bg-indigo-600 text-white rounded-2xl font-black flex items-center justify-center gap-2 cursor-pointer">
-                    <RotateCcw size={16} />
-                    {language === 'ko' ? '재시작' : 'Restart'}
+                  <button onClick={initGame} className="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-sm font-bold flex items-center justify-center gap-1 cursor-pointer min-h-[44px] text-xs">
+                    <RotateCcw size={14} />
+                    {language === 'ko' ? '재도전' : 'Retry'}
                   </button>
                   {hudWin && level < LEVEL_CONFIG.length && (
-                    <button onClick={handleNextLevel} className="flex-1 py-3 bg-emerald-500 text-white rounded-2xl font-black cursor-pointer">
+                    <button onClick={handleNextLevel} className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-sm font-bold cursor-pointer min-h-[44px] text-xs">
                       {language === 'ko' ? `Lv.${level + 1} ▶` : `Lv.${level + 1} ▶`}
                     </button>
                   )}
                   {!hudWin && (
-                    <button onClick={onExit} className="flex-1 py-3 bg-slate-900 text-white rounded-2xl font-black cursor-pointer">
+                    <button onClick={onExit} className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-sm font-bold cursor-pointer min-h-[44px] text-xs">
                       {t('home', language)}
                     </button>
                   )}
@@ -507,38 +605,38 @@ export const MinesweeperGame: React.FC<MinesweeperGameProps> = ({
         </div>
 
         {/* Mobile One-Hand Mode Toggle (Reveal vs Flag) */}
-        <div className="mt-3 flex items-center justify-center gap-3 w-full max-w-xs select-none shrink-0">
+        <div className="mt-2.5 flex items-center justify-center gap-3 w-full max-w-xs select-none shrink-0">
           <button
             type="button"
             onClick={() => setFlagMode(false)}
             className={cn(
-              'flex-1 py-2.5 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all border shadow-sm touch-manipulation',
+              'flex-1 py-2.5 rounded-sm font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all border touch-manipulation min-h-[44px]',
               !flagMode
-                ? 'bg-indigo-600 border-indigo-400 text-white shadow-indigo-500/20 ring-2 ring-indigo-400/30'
+                ? 'bg-indigo-600 border-indigo-500 text-white'
                 : 'bg-white/10 border-white/20 text-slate-300 active:scale-95'
             )}
           >
-            🔍 {language === 'ko' ? '열기 모드' : 'Dig'}
+            [🔍 {language === 'ko' ? '열기 모드' : 'Dig'}]
           </button>
           <button
             type="button"
             onClick={() => setFlagMode(true)}
             className={cn(
-              'flex-1 py-2.5 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all border shadow-sm touch-manipulation',
+              'flex-1 py-2.5 rounded-sm font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all border touch-manipulation min-h-[44px]',
               flagMode
-                ? 'bg-rose-600 border-rose-400 text-white shadow-rose-500/20 ring-2 ring-rose-400/30'
+                ? 'bg-rose-600 border-rose-500 text-white'
                 : 'bg-white/10 border-white/20 text-slate-300 active:scale-95'
             )}
           >
-            🚩 {language === 'ko' ? '깃발 모드' : 'Flag'}
+            [🚩 {language === 'ko' ? '깃발 모드' : 'Flag'}]
           </button>
         </div>
       </main>
 
-      <div className="px-4 py-1.5 bg-white/5 rounded-2xl text-[9px] sm:text-[10px] text-slate-400 font-bold text-center max-w-md shrink-0">
+      <div className="px-3 py-1 bg-white/5 rounded-sm text-[10px] text-slate-400 font-mono text-center max-w-md shrink-0 border border-white/5">
         {language === 'ko'
-          ? '모드 버튼으로 원터치 전환 가능 | 길게 누르기로도 깃발 설치'
-          : 'Toggle mode button for one-touch | Long press also flags'}
+          ? '모드 버튼으로 원터치 전환 | 길게 누르기로 깃발 | 레벨/시간별 25~60 SNS 지급'
+          : 'Toggle mode for one-touch | Long press flags | 25~60 SNS reward'}
       </div>
     </div>
   );

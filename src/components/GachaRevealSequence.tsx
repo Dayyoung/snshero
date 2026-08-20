@@ -237,19 +237,41 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
     }
   }, [instantMode, phase]);
 
-  // 팩 개봉 클릭/진입
+  // 팩 개봉 클릭/진입 -> 즉시 모든 카드를 공개 상태로 전환
   const handleOpenPack = () => {
+    onSkip();
+    const allSet = new Set<number>();
+    cards.forEach((_, idx) => allSet.add(idx));
+    setRevealedIds(allSet);
+
     if (instantMode) {
-      handleRevealAll();
       setPhase('summary');
       return;
     }
 
     setPhase('tearing');
-    // 팩 찢어지는 컷씬 후 스프레드로 전환
+
+    // 팩 찢어지는 연출 후 바로 전체 공개 화면(summary)으로 전환 (최상위 카드 컷인 연출 포함)
     window.setTimeout(() => {
-      setPhase('spread');
-    }, 1100);
+      if (bestCard) {
+        const r = bestCard.rarity.toLowerCase();
+        const isGoldCondition = (EXTENDED_RARITY_RANK[r] ?? 0) >= EXTENDED_RARITY_RANK['gold'];
+        const dbCard = CARD_DATABASE[bestCard.imageIndex];
+        setCutInInfo({
+          rarity: bestCard.rarity,
+          name: topCardName ?? '',
+          isGoldSpecial: isGoldCondition,
+          imageIndex: bestCard.imageIndex,
+          power: dbCard?.power,
+        });
+        window.setTimeout(() => {
+          setCutInInfo(null);
+          setPhase('summary');
+        }, isGoldCondition ? 1400 : 900);
+      } else {
+        setPhase('summary');
+      }
+    }, 800);
   };
 
   // 다시 뽑기 핸들러 (특수 소환 마법진 & 버스트 연출)
@@ -562,14 +584,6 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
             </button>
             <button
               type="button"
-              onClick={handleRevealAll}
-              className="flex min-h-10 items-center gap-1.5 rounded-full border border-yellow-300/40 bg-yellow-400/15 px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-yellow-200 transition hover:bg-yellow-400/25 active:scale-95 cursor-pointer"
-            >
-              <SkipForward size={14} />
-              {t('shop_gacha_skip', language)}
-            </button>
-            <button
-              type="button"
               onClick={onClose}
               className="flex min-h-10 min-w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80 transition hover:bg-white/15 hover:text-white cursor-pointer"
               aria-label={t('close', language)}
@@ -788,11 +802,11 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                                     id: `gacha-reveal-${index}`,
                                     owner: null,
                                     level: 1,
-                                    imageIndex: dbCard?.index,
+                                    imageIndex: card.imageIndex,
                                   }}
                                   className="h-full w-full"
                                   customImage={customCardImage}
-                                  processedImage={dbCard?.index ? processedCardImages?.[dbCard.index - 1] : undefined}
+                                  processedImage={card.imageIndex ? processedCardImages?.[card.imageIndex - 1] : undefined}
                                   lowSpecMode={lowSpecMode}
                                 />
                                 <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent p-2.5 pt-6">
@@ -816,38 +830,24 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                   {/* 하단 컨트롤 및 요약 바 */}
                   <div className="pt-2 flex flex-wrap items-center justify-between gap-4 border-t border-white/10">
                     <div className="flex items-center gap-2">
-                      {!allRevealed && (
+                      <button
+                        type="button"
+                        disabled={isReSummoning}
+                        onClick={handleDrawAgainClick}
+                        className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 text-xs font-black uppercase tracking-wider shadow-lg hover:brightness-110 active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <Package2 size={16} className={isReSummoning ? 'animate-spin' : ''} />
+                        {t('draw_again', language)} ({packCost} SNS)
+                      </button>
+                      {canShareBestCard && bestCard && (
                         <button
                           type="button"
-                          onClick={handleRevealAll}
-                          className="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 text-xs font-black uppercase tracking-wider shadow-lg hover:brightness-110 active:scale-95 transition-all cursor-pointer"
+                          onClick={() => onShareBestCard(bestCard.imageIndex)}
+                          className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-fuchsia-400/40 bg-fuchsia-500/20 text-fuchsia-200 text-xs font-black uppercase tracking-wider transition hover:bg-fuchsia-500/30 active:scale-95 cursor-pointer shadow-md"
                         >
-                          {t('shop_gacha_reveal_all', language)}
+                          <Share2 size={15} />
+                          {t('shop_gacha_share_cta', language)}
                         </button>
-                      )}
-
-                      {phase === 'summary' && (
-                        <>
-                          <button
-                            type="button"
-                            disabled={isReSummoning}
-                            onClick={handleDrawAgainClick}
-                            className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 text-xs font-black uppercase tracking-wider shadow-lg hover:brightness-110 active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                          >
-                            <Package2 size={16} className={isReSummoning ? 'animate-spin' : ''} />
-                            {t('draw_again', language)} ({packCost} SNS)
-                          </button>
-                          {canShareBestCard && bestCard && (
-                            <button
-                              type="button"
-                              onClick={() => onShareBestCard(bestCard.imageIndex)}
-                              className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-fuchsia-400/40 bg-fuchsia-500/20 text-fuchsia-200 text-xs font-black uppercase tracking-wider transition hover:bg-fuchsia-500/30 active:scale-95 cursor-pointer shadow-md"
-                            >
-                              <Share2 size={15} />
-                              {t('shop_gacha_share_cta', language)}
-                            </button>
-                          )}
-                        </>
                       )}
                     </div>
 

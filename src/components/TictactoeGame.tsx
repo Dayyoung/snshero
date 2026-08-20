@@ -14,6 +14,44 @@ interface TictactoeGameProps {
   onReward: (amount: number) => void;
 }
 
+export type TictactoeDifficulty = 'easy' | 'normal' | 'hard';
+
+export interface TictactoeDifficultyConfig {
+  nameKo: string;
+  nameEn: string;
+  initialSize: number;
+  aiSmartness: number; // 0..1 probability of optimal move vs random
+  reward: {
+    win: number;
+    draw: number;
+    loss: number;
+  };
+}
+
+export const TICTACTOE_DIFFICULTY_CONFIG: Record<TictactoeDifficulty, TictactoeDifficultyConfig> = {
+  easy: {
+    nameKo: '쉬움',
+    nameEn: 'Easy',
+    initialSize: 3,
+    aiSmartness: 0.45,
+    reward: { win: 30, draw: 12, loss: 8 }
+  },
+  normal: {
+    nameKo: '보통',
+    nameEn: 'Normal',
+    initialSize: 3,
+    aiSmartness: 0.85,
+    reward: { win: 45, draw: 18, loss: 10 }
+  },
+  hard: {
+    nameKo: '어려움 (6x6)',
+    nameEn: 'Hard (6x6)',
+    initialSize: 6,
+    aiSmartness: 0.95,
+    reward: { win: 60, draw: 24, loss: 15 }
+  }
+};
+
 const MIN_BOARD_SIZE = 3;
 const MAX_BOARD_SIZE = 12;
 const SIZE_STEPS = [3, 6, 12];
@@ -39,13 +77,16 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
     return CARD_DATABASE[id] ? id : 2;
   })();
 
+  const [difficulty, setDifficulty] = useState<TictactoeDifficulty>('normal');
+  const dCfg = TICTACTOE_DIFFICULTY_CONFIG[difficulty];
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef(0);
   const cardImgRef = useRef<HTMLImageElement | null>(null);
   const rewardedRef = useRef(false);
 
-  const boardSizeRef = useRef(MIN_BOARD_SIZE);
-  const [boardSize, setBoardSize] = useState(MIN_BOARD_SIZE);
+  const boardSizeRef = useRef(dCfg.initialSize);
+  const [boardSize, setBoardSize] = useState(dCfg.initialSize);
 
   const gameRef = useRef({
     board: [] as CellValue[],
@@ -59,6 +100,7 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
 
   const [hudGameOver, setHudGameOver] = useState(false);
   const [hudWinner, setHudWinner] = useState<CellValue>('');
+  const [earnedReward, setEarnedReward] = useState(0);
   const [defeatCountdown, setDefeatCountdown] = useState<number | null>(null);
 
   useEffect(() => {
@@ -176,7 +218,16 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
     return null;
   };
 
-  const getAiMove = (board: CellValue[], size: number): number => {
+  const getAiMove = (board: CellValue[], size: number, diffKey: TictactoeDifficulty = difficulty): number => {
+    const cfg = TICTACTOE_DIFFICULTY_CONFIG[diffKey];
+    const empty = board.map((cell, idx) => (cell === '' ? idx : -1)).filter(idx => idx >= 0);
+    if (empty.length === 0) return 0;
+
+    // In easy or normal mode, occasionally make random moves
+    if (Math.random() > cfg.aiSmartness) {
+      return empty[Math.floor(Math.random() * empty.length)];
+    }
+
     const lines = getWinLinesForSize(size);
     for (const line of lines) {
       if (line.length < 3) continue;
@@ -206,13 +257,16 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
     const emptyCorners = corners.filter(i => board[i] === '');
     if (emptyCorners.length > 0) return emptyCorners[Math.floor(Math.random() * emptyCorners.length)];
 
-    const empty = board.map((cell, idx) => (cell === '' ? idx : -1)).filter(idx => idx >= 0);
     return empty[Math.floor(Math.random() * empty.length)];
   };
 
-  const initGame = useCallback((size?: number) => {
+  const initGame = useCallback((size?: number, diffKey: TictactoeDifficulty = difficulty) => {
+    const cfg = TICTACTOE_DIFFICULTY_CONFIG[diffKey];
+    const nextSize = size ?? cfg.initialSize;
+    boardSizeRef.current = nextSize;
+    setBoardSize(nextSize);
+
     const g = gameRef.current;
-    const nextSize = size ?? boardSizeRef.current;
     g.board = Array(nextSize * nextSize).fill('') as CellValue[];
     g.isPlayerTurn = true;
     g.isGameOver = false;
@@ -223,19 +277,28 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
     rewardedRef.current = false;
     setHudGameOver(false);
     setHudWinner('');
-  }, []);
+    setEarnedReward(0);
+  }, [difficulty]);
 
   useEffect(() => {
-    initGame();
-  }, [initGame]);
+    initGame(undefined, difficulty);
+  }, [difficulty, initGame]);
+
+  const calcReward = useCallback((winner: CellValue, diffKey: TictactoeDifficulty) => {
+    const cfg = TICTACTOE_DIFFICULTY_CONFIG[diffKey];
+    if (winner === 'X') return cfg.reward.win;
+    if (winner === 'O') return cfg.reward.loss;
+    return cfg.reward.draw;
+  }, []);
 
   useEffect(() => {
     if (hudGameOver && !rewardedRef.current) {
       rewardedRef.current = true;
-      const reward = hudWinner === 'X' ? 50 : hudWinner === 'O' ? 5 : 15;
-      onReward(reward);
+      const finalReward = calcReward(hudWinner, difficulty);
+      setEarnedReward(finalReward);
+      onReward(finalReward);
     }
-  }, [hudGameOver, hudWinner, onReward]);
+  }, [calcReward, difficulty, hudGameOver, hudWinner, onReward]);
 
   const handleCellClick = useCallback((index: number) => {
     const g = gameRef.current;
@@ -288,7 +351,7 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
     playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
 
     setTimeout(() => {
-      const aiMove = getAiMove(g.board, boardSizeRef.current);
+      const aiMove = getAiMove(g.board, boardSizeRef.current, difficulty);
       g.board[aiMove] = 'O';
       g.aiThinking = false;
 
@@ -327,8 +390,8 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
       }
 
       g.isPlayerTurn = true;
-    }, 500);
-  }, [playSfx]);
+    }, 450);
+  }, [difficulty, playSfx]);
 
   useEffect(() => {
     const renderLoop = (timestamp: number) => {
@@ -355,24 +418,27 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
     ctx.fillStyle = '#0f172a';
     ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-    for (let i = 1; i < size; i++) {
-      ctx.strokeStyle = '#334155';
-      ctx.lineWidth = 3;
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+    ctx.lineWidth = 1;
+
+    for (let r = 1; r < size; r++) {
       ctx.beginPath();
-      ctx.moveTo(i * cellSize, 8);
-      ctx.lineTo(i * cellSize, CANVAS_SIZE - 8);
+      ctx.moveTo(0, r * cellSize);
+      ctx.lineTo(CANVAS_SIZE, r * cellSize);
       ctx.stroke();
+    }
+    for (let c = 1; c < size; c++) {
       ctx.beginPath();
-      ctx.moveTo(8, i * cellSize);
-      ctx.lineTo(8, CANVAS_SIZE - i * cellSize);
+      ctx.moveTo(c * cellSize, 0);
+      ctx.lineTo(c * cellSize, CANVAS_SIZE);
       ctx.stroke();
     }
 
     const img = cardImgRef.current;
-    const drawCard = (cardId: number, cx: number, cy: number, size: number) => {
+    const drawCardSprite = (cardId: number, cx: number, cy: number, sz: number) => {
       if (!img || !img.complete || img.naturalWidth <= 0) {
-        ctx.fillStyle = '#6366f1';
-        ctx.fillRect(cx - size / 2, cy - size / 2, size, size);
+        ctx.fillStyle = cardId === playerCardId ? '#3b82f6' : '#ef4444';
+        ctx.fillRect(cx - sz / 2, cy - sz / 2, sz, sz);
         return;
       }
       const idx = CARD_DATABASE[cardId] ? cardId : 1;
@@ -380,46 +446,28 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
       const row = Math.floor((idx - 1) / 10);
       const spriteW = img.naturalWidth / 10;
       const spriteH = img.naturalHeight / 11;
-      ctx.drawImage(img, col * spriteW, row * spriteH, spriteW, spriteH, cx - size / 2, cy - size / 2, size, size);
+      ctx.drawImage(img, col * spriteW, row * spriteH, spriteW, spriteH, cx - sz / 2, cy - sz / 2, sz, sz);
     };
 
-    for (let i = 0; i < size * size; i++) {
-      const row = Math.floor(i / size);
-      const col = i % size;
+    const cardSize = cellSize * 0.75;
+
+    for (let i = 0; i < g.board.length; i++) {
+      const cell = g.board[i];
+      if (cell === '') continue;
+      const { row, col } = boardPoint(i, size);
       const cx = col * cellSize + cellSize / 2;
       const cy = row * cellSize + cellSize / 2;
-      const cell = g.board[i];
 
       if (cell === 'X') {
-        ctx.save();
-        if (g.winLine && g.winLine.includes(i)) {
-          ctx.globalAlpha = 0.8 + 0.2 * Math.sin(timestamp / 200);
-        }
-        drawCard(playerCardId, cx, cy, cellSize - 12);
+        drawCardSprite(playerCardId, cx, cy, cardSize);
         ctx.strokeStyle = '#3b82f6';
         ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(cx, cy, cellSize / 2 - 4, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.restore();
+        ctx.strokeRect(cx - cardSize / 2, cy - cardSize / 2, cardSize, cardSize);
       } else if (cell === 'O') {
-        ctx.save();
-        if (g.winLine && g.winLine.includes(i)) {
-          ctx.globalAlpha = 0.8 + 0.2 * Math.sin(timestamp / 200);
-        }
-        drawCard(aiCardId, cx, cy, cellSize - 12);
+        drawCardSprite(aiCardId, cx, cy, cardSize);
         ctx.strokeStyle = '#ef4444';
         ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(cx, cy, cellSize / 2 - 4, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.restore();
-      } else if (!g.isGameOver && g.isPlayerTurn && !g.aiThinking) {
-        ctx.save();
-        ctx.globalAlpha = 0.08 + 0.04 * Math.sin(timestamp / 300);
-        ctx.fillStyle = '#3b82f6';
-        ctx.fillRect(col * cellSize + 4, row * cellSize + 4, cellSize - 8, cellSize - 8);
-        ctx.restore();
+        ctx.strokeRect(cx - cardSize / 2, cy - cardSize / 2, cardSize, cardSize);
       }
     }
 
@@ -432,8 +480,6 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
       ctx.save();
       ctx.strokeStyle = g.winner === 'X' ? '#3b82f6' : '#ef4444';
       ctx.lineWidth = 4;
-      ctx.shadowColor = ctx.strokeStyle;
-      ctx.shadowBlur = lowSpecMode ? 0 : 10;
       ctx.beginPath();
       ctx.moveTo(start.col * cellSize + cellSize / 2, start.row * cellSize + cellSize / 2);
       ctx.lineTo(end.col * cellSize + cellSize / 2, end.row * cellSize + cellSize / 2);
@@ -445,7 +491,7 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
       ctx.save();
       ctx.globalAlpha = 0.6 + 0.4 * Math.sin(timestamp / 200);
       ctx.fillStyle = 'white';
-      ctx.font = 'bold 16px sans-serif';
+      ctx.font = 'bold 14px monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(language === 'ko' ? 'AI 생각 중...' : 'AI thinking...', CANVAS_SIZE / 2, CANVAS_SIZE / 2);
@@ -476,64 +522,113 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
 
   const getResultText = () => {
     const g = gameRef.current;
-    if (g.winner === 'X') return language === 'ko' ? '승리!' : 'YOU WIN!';
-    if (g.winner === 'O') return language === 'ko' ? '패배!' : 'YOU LOSE!';
-    return language === 'ko' ? '무승부!' : 'DRAW!';
-  };
-
-  const getRewardText = () => {
-    const g = gameRef.current;
-    const reward = g.winner === 'X' ? 50 : g.winner === 'O' ? 5 : 15;
-    return t('tictactoe_reward', language).replace('{amount}', String(reward));
+    if (g.winner === 'X') return language === 'ko' ? '[승리!]' : '[YOU WIN!]';
+    if (g.winner === 'O') return language === 'ko' ? '[패배!]' : '[YOU LOSE!]';
+    return language === 'ko' ? '[무승부!]' : '[DRAW!]';
   };
 
   const currentSize = boardSizeRef.current;
 
   return (
-    <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white flex flex-col items-center justify-between font-sans select-none overflow-hidden pb-3">
+    <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white flex flex-col items-center justify-between font-mono select-none overflow-hidden pb-3">
       <header className="w-full max-w-md flex items-center justify-between px-3 py-2 shrink-0">
-        <button onClick={onExit} className="p-2 rounded-2xl bg-white/10 hover:bg-white/15 transition-colors cursor-pointer">
+        <button onClick={onExit} className="p-2 rounded-sm bg-white/10 hover:bg-white/15 transition-colors cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center">
           <ArrowLeft size={18} />
         </button>
         <div className="text-center">
-          <h1 className="text-base sm:text-lg font-black uppercase tracking-tight">{t('mode_tictactoe', language)}</h1>
-          <p className="text-[9px] sm:text-[10px] text-slate-400 font-bold">
-            {language === 'ko' ? `${currentSize}x${currentSize} 보드` : `${currentSize}x${currentSize} board`}
+          <h1 className="text-sm sm:text-base font-bold tracking-tight">{t('mode_tictactoe', language)}</h1>
+          <p className="text-[10px] text-slate-400 font-bold">
+            {language === 'ko' ? `${currentSize}x${currentSize} 격자 전장` : `${currentSize}x${currentSize} grid`}
           </p>
         </div>
-        <div className="w-8" />
+        <div className="px-2 py-1 bg-white/10 rounded-sm text-xs font-bold">
+          {gameRef.current.isPlayerTurn ? 'YOU TURN' : 'AI TURN'}
+        </div>
       </header>
 
-      <div className="flex items-center gap-4 py-1 text-xs sm:text-sm font-bold shrink-0">
+      {/* Difficulty Selector Tabs */}
+      <div className="w-full max-w-md px-3 flex items-center justify-between gap-1 shrink-0">
         <div className="flex items-center gap-1">
-          <span className="text-blue-400">{language === 'ko' ? '나' : 'YOU'}</span>
+          {(['easy', 'normal', 'hard'] as TictactoeDifficulty[]).map((d) => {
+            const active = difficulty === d;
+            const dName = language === 'ko' ? TICTACTOE_DIFFICULTY_CONFIG[d].nameKo : TICTACTOE_DIFFICULTY_CONFIG[d].nameEn;
+            return (
+              <button
+                key={d}
+                type="button"
+                onClick={() => {
+                  if (difficulty !== d) {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    setDifficulty(d);
+                    initGame(TICTACTOE_DIFFICULTY_CONFIG[d].initialSize, d);
+                  }
+                }}
+                className={cn(
+                  "px-2.5 py-1 text-xs rounded-sm border transition-all cursor-pointer min-h-[36px]",
+                  active
+                    ? "bg-indigo-600 text-white border-indigo-500 font-bold"
+                    : "bg-white/5 text-slate-300 border-white/10 hover:bg-white/10"
+                )}
+              >
+                [{dName}]
+              </button>
+            );
+          })}
+        </div>
+        <div className="text-xs text-slate-400">
+          WIN: +{dCfg.reward.win} SNS
+        </div>
+      </div>
+
+      <div className="flex items-center gap-4 py-1 text-xs font-bold shrink-0">
+        <div className="flex items-center gap-1">
+          <span className="text-blue-400">[나 (X)]</span>
         </div>
         <span className="text-slate-500">vs</span>
         <div className="flex items-center gap-1">
-          <span className="text-red-400">AI</span>
+          <span className="text-red-400">[AI (O)]</span>
         </div>
       </div>
 
       <main className="w-full max-w-md flex-1 min-h-0 flex items-center justify-center px-3">
         <div
-          className={cn('relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl max-h-[58vh] aspect-square w-full max-w-[340px]')}
+          className={cn('relative overflow-hidden rounded-sm border border-white/15 max-h-[55vh] aspect-square w-full max-w-[320px]')}
           style={{ touchAction: 'none' }}
           onPointerDown={handleCanvasClick}
         >
           <canvas ref={canvasRef} width={CANVAS_SIZE} height={CANVAS_SIZE} className="w-full h-full object-contain" />
 
           {hudGameOver && (
-            <div className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
-              <div className="bg-white text-slate-900 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl">
-                <Trophy size={42} className={cn('mx-auto mb-3', gameRef.current.winner === 'O' ? 'text-red-500' : 'text-amber-500')} />
-                <h2 className="text-xl font-black mb-2">{getResultText()}</h2>
-                <p className="text-sm font-bold text-indigo-600 mb-4">{getRewardText()}</p>
+            <div className="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white text-slate-900 rounded-sm p-5 max-w-xs w-full text-center border border-slate-300 shadow-lg">
+                <Trophy size={36} className={cn('mx-auto mb-2', gameRef.current.winner === 'O' ? 'text-rose-500' : 'text-amber-500')} />
+                <h2 className="text-lg font-bold mb-1">{getResultText()}</h2>
+
+                <div className="text-xs text-slate-600 space-y-1 mb-3 bg-slate-50 p-2.5 rounded-sm border border-slate-200">
+                  <div className="flex justify-between">
+                    <span>{language === 'ko' ? '난이도' : 'Difficulty'}:</span>
+                    <span className="font-bold text-slate-900">[{language === 'ko' ? dCfg.nameKo : dCfg.nameEn}]</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>{language === 'ko' ? '결과' : 'Outcome'}:</span>
+                    <span className="font-bold text-slate-900">
+                      {hudWinner === 'X' ? (language === 'ko' ? '승리' : 'Victory') : hudWinner === 'O' ? (language === 'ko' ? '패배' : 'Defeat') : (language === 'ko' ? '무승부' : 'Draw')}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mb-3.5 py-2 px-3 bg-indigo-50 border border-indigo-200 rounded-sm">
+                  <span className="text-xs text-indigo-700 font-bold">
+                    {language === 'ko' ? `보상 지급: +${earnedReward} SNS 포인트` : `Reward Earned: +${earnedReward} SNS Points`}
+                  </span>
+                </div>
+
                 <div className="flex gap-2">
-                  <button onClick={() => initGame(currentSize)} className="flex-1 py-3 bg-indigo-600 text-white rounded-2xl font-black flex items-center justify-center gap-2 cursor-pointer">
-                    <RotateCcw size={16} />
-                    {language === 'ko' ? '재시작' : 'Restart'}
+                  <button onClick={() => initGame(dCfg.initialSize, difficulty)} className="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-sm font-bold flex items-center justify-center gap-1 cursor-pointer min-h-[44px] text-xs">
+                    <RotateCcw size={14} />
+                    {language === 'ko' ? '재대결' : 'Rematch'}
                   </button>
-                  <button onClick={onExit} className="flex-1 py-3 bg-slate-900 text-white rounded-2xl font-black cursor-pointer">
+                  <button onClick={onExit} className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-sm font-bold cursor-pointer min-h-[44px] text-xs">
                     {t('home', language)}{defeatCountdown !== null ? ` (${defeatCountdown}s)` : ''}
                   </button>
                 </div>
@@ -543,10 +638,10 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
         </div>
       </main>
 
-      <div className="px-4 py-1.5 bg-white/5 rounded-2xl text-[9px] sm:text-[10px] text-slate-400 font-bold text-center max-w-md shrink-0">
+      <div className="px-3 py-1.5 bg-white/5 rounded-sm text-[10px] text-slate-400 font-mono text-center max-w-md shrink-0 border border-white/5">
         {language === 'ko'
-          ? '셀을 탭하여 X를 놓으세요 | AI는 자동으로 응답합니다 | 무승부 시 보드가 확장됩니다'
-          : 'Tap a cell to place X | AI responds automatically | Board expands on draw'}
+          ? '칸을 터치하여 수 놓기 | 난이도별 30~60 SNS 포인트 보상'
+          : 'Tap cell to place card | 30~60 SNS points reward based on difficulty'}
       </div>
     </div>
   );

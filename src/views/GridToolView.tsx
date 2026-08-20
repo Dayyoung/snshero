@@ -287,12 +287,23 @@ export const GridToolView: React.FC<GridToolViewProps> = ({
           <div className="flex items-center gap-2">
             <Grid3X3 className="w-5 h-5 text-amber-600" />
             <h1 className="font-bold text-sm sm:text-base tracking-tight uppercase">
-              CSS GRID GENERATOR <span className="text-xs font-normal text-slate-500">/Tool/grid</span>
+              {isKo ? 'CSS 그리드 생성기' : 'CSS GRID GENERATOR'}{' '}
+              <span className="text-[10px] font-mono font-normal text-emerald-700 bg-emerald-50 px-1.5 py-0.5 border border-emerald-300 rounded-xs">
+                /tool/makegrid
+              </span>
             </h1>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => onNavigate('tool-checkgrid')}
+            className="px-2.5 py-1.5 border border-[#201d1d]/20 bg-white hover:bg-[#201d1d]/5 text-xs font-bold flex items-center gap-1 cursor-pointer"
+            title={isKo ? '그리드 검수기로 이동' : 'Switch to Grid Checker'}
+          >
+            <Layers className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">{isKo ? '[검수기 이동]' : '[Grid Checker]'}</span>
+          </button>
           <button
             onClick={() => {
               setItems([]);

@@ -14,16 +14,65 @@ interface PacmanGameProps {
   onReward: (amount: number) => void;
 }
 
+export type PacmanDifficulty = 'easy' | 'normal' | 'hard';
+
+export interface PacmanDifficultyConfig {
+  nameKo: string;
+  nameEn: string;
+  ghostCount: number;
+  baseGhostSpeed: number; // ms per move (higher is slower)
+  minGhostSpeed: number;
+  playerSpeed: number;
+  powerDuration: number;
+  pursuitChance: number;
+  reward: {
+    winBase: number;
+    lossBase: number;
+    scoreDivisor: number;
+  };
+}
+
+export const PACMAN_DIFFICULTY_CONFIG: Record<PacmanDifficulty, PacmanDifficultyConfig> = {
+  easy: {
+    nameKo: '쉬움',
+    nameEn: 'Easy',
+    ghostCount: 1,
+    baseGhostSpeed: 160,
+    minGhostSpeed: 100,
+    playerSpeed: 75,
+    powerDuration: 7500,
+    pursuitChance: 0.35,
+    reward: { winBase: 35, lossBase: 10, scoreDivisor: 40 }
+  },
+  normal: {
+    nameKo: '보통',
+    nameEn: 'Normal',
+    ghostCount: 2,
+    baseGhostSpeed: 130,
+    minGhostSpeed: 75,
+    playerSpeed: 80,
+    powerDuration: 6000,
+    pursuitChance: 0.55,
+    reward: { winBase: 45, lossBase: 12, scoreDivisor: 35 }
+  },
+  hard: {
+    nameKo: '어려움',
+    nameEn: 'Hard',
+    ghostCount: 3,
+    baseGhostSpeed: 105,
+    minGhostSpeed: 60,
+    playerSpeed: 80,
+    powerDuration: 4500,
+    pursuitChance: 0.70,
+    reward: { winBase: 60, lossBase: 15, scoreDivisor: 30 }
+  }
+};
+
 const GRID_SIZE = 15;
 const CELL_SIZE = 24;
 const CANVAS_W = GRID_SIZE * CELL_SIZE;
 const CANVAS_H = GRID_SIZE * CELL_SIZE;
-const INITIAL_GHOST_COUNT = 2;
-const POWER_DURATION = 6000;
-const BASE_GHOST_SPEED = 130;
-const MIN_GHOST_SPEED = 75;
-const PLAYER_SPEED = 80;
-const EXTRA_GHOST_SCORE = 500; // +1 ghost every 500pts
+const EXTRA_GHOST_SCORE = 600; // +1 ghost every 600pts
 
 type Direction = 'up' | 'down' | 'left' | 'right' | '';
 type CellType = 0 | 1 | 2 | 3;
@@ -79,6 +128,9 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
     return CARD_DATABASE[id] ? id : 1;
   })();
 
+  const [difficulty, setDifficulty] = useState<PacmanDifficulty>('normal');
+  const dCfg = PACMAN_DIFFICULTY_CONFIG[difficulty];
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef(0);
   const lastTimeRef = useRef(0);
@@ -96,8 +148,8 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
     particles: [] as Particle[],
     score: 0,
     dotsLeft: 0,
-    maxGhosts: INITIAL_GHOST_COUNT,
-    ghostSpeed: BASE_GHOST_SPEED,
+    maxGhosts: dCfg.ghostCount,
+    ghostSpeed: dCfg.baseGhostSpeed,
     powerTimer: 0,
     isGameOver: false,
     isWin: false,
@@ -109,6 +161,7 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
   const [hudScore, setHudScore] = useState(0);
   const [hudGameOver, setHudGameOver] = useState(false);
   const [hudWin, setHudWin] = useState(false);
+  const [earnedReward, setEarnedReward] = useState(0);
   const [swipeHint, setSwipeHint] = useState<string | null>(null);
   const hudCounter = useRef(0);
 
@@ -118,7 +171,8 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
     cardImgRef.current = img;
   }, []);
 
-  const initMaze = useCallback(() => {
+  const initMaze = useCallback((diffKey: PacmanDifficulty = difficulty) => {
+    const cfg = PACMAN_DIFFICULTY_CONFIG[diffKey];
     const g = gameRef.current;
     g.maze = MAZE_TEMPLATE.map(row => [...row]) as CellType[][];
     g.playerX = 1;
@@ -131,8 +185,8 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
     g.isGameOver = false;
     g.isWin = false;
     g.particles = [];
-    g.maxGhosts = INITIAL_GHOST_COUNT;
-    g.ghostSpeed = BASE_GHOST_SPEED;
+    g.maxGhosts = cfg.ghostCount;
+    g.ghostSpeed = cfg.baseGhostSpeed;
 
     let dots = 0;
     for (let y = 0; y < GRID_SIZE; y++) {
@@ -145,11 +199,12 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
     const ghostStarts = [
       { x: 7, y: 6 },
       { x: 1, y: 13 },
+      { x: 13, y: 1 },
     ];
-    g.ghosts = ghostStarts.map((pos, i) => ({
+    g.ghosts = ghostStarts.slice(0, cfg.ghostCount).map((pos, i) => ({
       x: pos.x,
       y: pos.y,
-      direction: ['left', 'right', 'up'][i] as Direction,
+      direction: ['left', 'right', 'up'][i % 3] as Direction,
       cardId: ((i * 37) % 110) + 1,
       frightened: false,
       moveTimer: 0,
@@ -160,18 +215,31 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
     setHudScore(0);
     setHudGameOver(false);
     setHudWin(false);
-  }, []);
+    setEarnedReward(0);
+  }, [difficulty]);
 
   useEffect(() => {
-    initMaze();
-  }, [initMaze]);
+    initMaze(difficulty);
+  }, [difficulty, initMaze]);
+
+  const calcReward = useCallback((isWin: boolean, diffKey: PacmanDifficulty, score: number) => {
+    const cfg = PACMAN_DIFFICULTY_CONFIG[diffKey];
+    if (isWin) {
+      const extraScoreBonus = Math.floor(score / 200);
+      return Math.min(60, cfg.reward.winBase + extraScoreBonus);
+    }
+    const scoreBonus = Math.floor(score / cfg.reward.scoreDivisor);
+    return Math.min(25, cfg.reward.lossBase + scoreBonus);
+  }, []);
 
   useEffect(() => {
     if ((hudGameOver || hudWin) && !rewardedRef.current) {
       rewardedRef.current = true;
-      onReward(Math.floor(gameRef.current.score / 20));
+      const finalReward = calcReward(hudWin, difficulty, gameRef.current.score);
+      setEarnedReward(finalReward);
+      onReward(finalReward);
     }
-  }, [hudGameOver, hudWin, onReward]);
+  }, [calcReward, difficulty, hudGameOver, hudWin, onReward]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -241,8 +309,8 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
 
   // Update difficulty based on score
   const updateDifficulty = useCallback((score: number) => {
+    const cfg = PACMAN_DIFFICULTY_CONFIG[difficulty];
     const g = gameRef.current;
-    // Ghost speed: base 130ms → min 75ms (gentle progression)
     const totalDots = (() => {
       let d = 0;
       const t = MAZE_TEMPLATE;
@@ -252,17 +320,18 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
       return d;
     })();
     const progress = 1 - (g.dotsLeft / totalDots);
-    g.ghostSpeed = Math.max(MIN_GHOST_SPEED, BASE_GHOST_SPEED - Math.floor(progress * 55));
+    g.ghostSpeed = Math.max(cfg.minGhostSpeed, cfg.baseGhostSpeed - Math.floor(progress * 45));
 
     // Extra ghost every EXTRA_GHOST_SCORE points, max 4 total
-    const targetGhosts = INITIAL_GHOST_COUNT + Math.floor(score / EXTRA_GHOST_SCORE);
+    const targetGhosts = cfg.ghostCount + Math.floor(score / EXTRA_GHOST_SCORE);
     while (g.ghosts.length < targetGhosts && g.ghosts.length < 4) {
       spawnExtraGhost();
     }
-  }, [spawnExtraGhost]);
+  }, [difficulty, spawnExtraGhost]);
 
   useEffect(() => {
     const loop = (timestamp: number) => {
+      const cfg = PACMAN_DIFFICULTY_CONFIG[difficulty];
       const g = gameRef.current;
 
       if (g.isGameOver || g.isWin) {
@@ -296,7 +365,7 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
       }
 
       g.moveTimer += delta;
-      if (g.moveTimer >= PLAYER_SPEED) {
+      if (g.moveTimer >= cfg.playerSpeed) {
         g.moveTimer = 0;
 
         if (g.nextDir && canMove(g.maze, g.playerX, g.playerY, g.nextDir)) {
@@ -318,7 +387,7 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
             g.maze[g.playerY][g.playerX] = 3;
             g.score += 50;
             g.dotsLeft--;
-            g.powerTimer = POWER_DURATION;
+            g.powerTimer = cfg.powerDuration;
             for (const gh of g.ghosts) gh.frightened = true;
             updateDifficulty(g.score);
             playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
@@ -347,7 +416,6 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
                 const dy = n.y - g.playerY;
                 return (Math.abs(dx) + Math.abs(dy)) > 0;
               });
-              // When frightened, prefer fleeing
               const fleeDir = awayOptions.length > 0 
                 ? awayOptions.reduce((best, d) => {
                     const n = moveEntity(gh.x, gh.y, d as Direction);
@@ -372,9 +440,7 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
                   best = d;
                 }
               }
-              // Random movement with moderate chase probability
-              const pursuitChance = 0.55;
-              if (Math.random() < pursuitChance) {
+              if (Math.random() < cfg.pursuitChance) {
                 gh.direction = best as Direction;
               } else {
                 gh.direction = options[Math.floor(Math.random() * options.length)] as Direction;
@@ -432,7 +498,7 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [language, lowSpecMode, playSfx, updateDifficulty]);
+  }, [difficulty, language, lowSpecMode, playSfx, updateDifficulty]);
 
   const renderCanvas = (g: typeof gameRef.current, timestamp: number) => {
     const canvas = canvasRef.current;
@@ -533,7 +599,7 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
 
     ctx.save();
     ctx.fillStyle = 'white';
-    ctx.font = 'bold 16px sans-serif';
+    ctx.font = 'bold 16px monospace';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillText(`${g.score}`, 4, 4);
@@ -542,17 +608,17 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
     if (g.powerTimer > 0) {
       ctx.save();
       ctx.fillStyle = '#3b82f6';
-      ctx.font = 'bold 12px sans-serif';
+      ctx.font = 'bold 12px monospace';
       ctx.textAlign = 'right';
       ctx.textBaseline = 'top';
       ctx.fillText(`${language === 'ko' ? '파워' : 'PWR'} ${Math.ceil(g.powerTimer / 1000)}s`, CANVAS_W - 4, 4);
       ctx.restore();
     }
 
-    // Ghost speed indicator
+    // Ghost count indicator
     ctx.save();
     ctx.fillStyle = '#94a3b8';
-    ctx.font = 'bold 10px sans-serif';
+    ctx.font = 'bold 10px monospace';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'bottom';
     ctx.fillText(
@@ -568,11 +634,11 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
       ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
       ctx.globalAlpha = 1;
       ctx.fillStyle = 'white';
-      ctx.font = 'bold 16px sans-serif';
+      ctx.font = 'bold 14px monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(language === 'ko' ? '스와이프로 방향 전환' : 'SWIPE TO SET DIRECTION', CANVAS_W / 2, CANVAS_H / 2 - 10);
-      ctx.fillText(language === 'ko' ? '탭하여 시작' : 'TAP TO START', CANVAS_W / 2, CANVAS_H / 2 + 14);
+      ctx.fillText(language === 'ko' ? '[버튼 또는 스와이프 조작]' : '[TAP BUTTONS OR SWIPE]', CANVAS_W / 2, CANVAS_H / 2 - 10);
+      ctx.fillText(language === 'ko' ? '시작하려면 탭' : 'TAP TO START', CANVAS_W / 2, CANVAS_H / 2 + 14);
       ctx.restore();
     }
 
@@ -582,7 +648,7 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
       ctx.fillStyle = 'rgba(99, 102, 241, 0.5)';
       const hintX = CANVAS_W / 2;
       const hintY = CANVAS_H / 2;
-      ctx.font = 'bold 40px sans-serif';
+      ctx.font = 'bold 40px monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       if (swipeHint === 'up') ctx.fillText('▲', hintX, hintY);
@@ -616,15 +682,12 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
     const dy = touch.clientY - start.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
 
-    // Require minimum distance for swipe
     const SWIPE_THRESHOLD = 20;
     if (dist < SWIPE_THRESHOLD) {
-      // Tap — just start if not started
       if (!gameRef.current.started) gameRef.current.started = true;
       return;
     }
 
-    // Determine dominant direction
     if (Math.abs(dx) > Math.abs(dy)) {
       const dir: Direction = dx > 0 ? 'right' : 'left';
       setSwipeHint(dir);
@@ -635,37 +698,70 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
       changeDirection(dir);
     }
 
-    // Clear hint after 300ms
     setTimeout(() => setSwipeHint(null), 300);
   };
 
-  const startGame = useCallback(() => {
-    initMaze();
+  const startGame = useCallback((diffKey: PacmanDifficulty = difficulty) => {
+    initMaze(diffKey);
     gameRef.current.started = true;
-  }, [initMaze]);
+  }, [difficulty, initMaze]);
 
   return (
-    <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white flex flex-col items-center justify-between font-sans select-none overflow-hidden pb-3">
-      <header className="w-full max-w-md flex items-center justify-between p-3 shrink-0">
-        <button onClick={onExit} className="p-2 rounded-2xl bg-white/10 hover:bg-white/15 transition-colors cursor-pointer">
-          <ArrowLeft size={20} />
+    <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white flex flex-col items-center justify-between font-mono select-none overflow-hidden pb-3">
+      <header className="w-full max-w-md flex items-center justify-between px-3 py-2 shrink-0">
+        <button onClick={onExit} className="p-2 rounded-sm bg-white/10 hover:bg-white/15 transition-colors cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center">
+          <ArrowLeft size={18} />
         </button>
         <div className="text-center">
-          <h1 className="text-lg font-black uppercase tracking-tight">{t('mode_pacman', language)}</h1>
+          <h1 className="text-sm sm:text-base font-bold tracking-tight">{t('mode_pacman', language)}</h1>
           {gameRef.current.powerTimer > 0 && (
-            <p className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">
-              {language === 'ko' ? '파워' : 'PWR'} {Math.ceil(gameRef.current.powerTimer / 1000)}s
+            <p className="text-[10px] font-bold text-blue-400">
+              ⚡ {language === 'ko' ? '파워' : 'PWR'} {Math.ceil(gameRef.current.powerTimer / 1000)}s
             </p>
           )}
         </div>
-        <div className="px-3 py-2 rounded-2xl bg-indigo-500/20 border border-indigo-400/20 text-indigo-100 font-black text-sm tabular-nums">
-          {hudScore}
+        <div className="px-2.5 py-1 rounded-sm bg-indigo-500/20 border border-indigo-400/30 text-indigo-100 font-bold text-xs sm:text-sm tabular-nums">
+          {hudScore} PTS
         </div>
       </header>
 
-      <main className="max-w-md mx-auto w-full px-4 flex flex-col items-center justify-center flex-1 min-h-0">
+      {/* Difficulty Selector Tabs */}
+      <div className="w-full max-w-md px-3 flex items-center justify-between gap-1 shrink-0">
+        <div className="flex items-center gap-1">
+          {(['easy', 'normal', 'hard'] as PacmanDifficulty[]).map((d) => {
+            const active = difficulty === d;
+            const dName = language === 'ko' ? PACMAN_DIFFICULTY_CONFIG[d].nameKo : PACMAN_DIFFICULTY_CONFIG[d].nameEn;
+            return (
+              <button
+                key={d}
+                type="button"
+                onClick={() => {
+                  if (difficulty !== d) {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    setDifficulty(d);
+                    startGame(d);
+                  }
+                }}
+                className={cn(
+                  "px-2.5 py-1 text-xs rounded-sm border transition-all cursor-pointer min-h-[36px]",
+                  active
+                    ? "bg-indigo-600 text-white border-indigo-500 font-bold"
+                    : "bg-white/5 text-slate-300 border-white/10 hover:bg-white/10"
+                )}
+              >
+                [{dName}]
+              </button>
+            );
+          })}
+        </div>
+        <div className="text-xs text-slate-400">
+          👻 {gameRef.current.ghosts.length}
+        </div>
+      </div>
+
+      <main className="max-w-md mx-auto w-full px-3 flex flex-col items-center justify-center flex-1 min-h-0">
         <div
-          className="relative bg-slate-900 rounded-3xl border border-white/10 overflow-hidden shadow-2xl touch-none select-none max-h-[50vh] aspect-square flex items-center justify-center"
+          className="relative bg-slate-900 rounded-sm border border-white/10 overflow-hidden touch-none select-none max-h-[50vh] aspect-square flex items-center justify-center"
           style={{ touchAction: 'none' }}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
@@ -673,28 +769,39 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
           <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H} className="w-full h-full object-contain" />
 
           {(hudGameOver || hudWin) && (
-            <div className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
-              <div className="bg-white text-slate-900 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl">
+            <div className="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white text-slate-900 rounded-sm p-5 max-w-xs w-full text-center border border-slate-300 shadow-lg">
                 {hudWin ? (
-                  <Trophy size={42} className="mx-auto text-amber-500 mb-3" />
+                  <Trophy size={36} className="mx-auto text-amber-500 mb-2" />
                 ) : (
-                  <Skull size={42} className="mx-auto text-rose-500 mb-3" />
+                  <Skull size={36} className="mx-auto text-rose-500 mb-2" />
                 )}
-                <h2 className="text-xl font-black mb-1">
-                  {hudWin ? (language === 'ko' ? '승리!' : 'WIN!') : (language === 'ko' ? '게임 오버' : 'GAME OVER')}
+                <h2 className="text-lg font-bold mb-1">
+                  {hudWin ? (language === 'ko' ? '[승리! 미로 완주]' : '[VICTORY! CLEARED]') : (language === 'ko' ? '[게임 오버]' : '[GAME OVER]')}
                 </h2>
-                <p className="text-sm font-bold text-slate-500 mb-1">
-                  {language === 'ko' ? `점수: ${gameRef.current.score}` : `Score: ${gameRef.current.score}`}
-                </p>
-                <p className="text-sm font-bold text-indigo-600 mb-4">
-                  {t('pacman_reward', language).replace('{amount}', String(Math.floor(gameRef.current.score / 20)))}
-                </p>
+                <div className="text-xs text-slate-600 space-y-1 mb-3 bg-slate-50 p-2.5 rounded-sm border border-slate-200">
+                  <div className="flex justify-between">
+                    <span>{language === 'ko' ? '난이도' : 'Difficulty'}:</span>
+                    <span className="font-bold text-slate-900">[{language === 'ko' ? dCfg.nameKo : dCfg.nameEn}]</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>{language === 'ko' ? '최종 점수' : 'Final Score'}:</span>
+                    <span className="font-bold text-slate-900">{gameRef.current.score} PTS</span>
+                  </div>
+                </div>
+
+                <div className="mb-3.5 py-2 px-3 bg-indigo-50 border border-indigo-200 rounded-sm">
+                  <span className="text-xs text-indigo-700 font-bold">
+                    {language === 'ko' ? `보상 지급: +${earnedReward} SNS 포인트` : `Reward Earned: +${earnedReward} SNS Points`}
+                  </span>
+                </div>
+
                 <div className="flex gap-2">
-                  <button onClick={startGame} className="flex-1 py-3 bg-indigo-600 text-white rounded-2xl font-black flex items-center justify-center gap-2 cursor-pointer">
-                    <RotateCcw size={16} />
-                    {language === 'ko' ? '재시작' : 'Restart'}
+                  <button onClick={() => startGame(difficulty)} className="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-sm font-bold flex items-center justify-center gap-1 cursor-pointer min-h-[44px] text-xs">
+                    <RotateCcw size={14} />
+                    {language === 'ko' ? '재도전' : 'Retry'}
                   </button>
-                  <button onClick={onExit} className="flex-1 py-3 bg-slate-900 text-white rounded-2xl font-black cursor-pointer">
+                  <button onClick={onExit} className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-sm font-bold cursor-pointer min-h-[44px] text-xs">
                     {t('home', language)}
                   </button>
                 </div>
@@ -704,29 +811,29 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
         </div>
 
         {/* Mobile One-Handed D-Pad */}
-        <div className="flex flex-col items-center justify-center gap-1 mt-3 select-none shrink-0">
+        <div className="flex flex-col items-center justify-center gap-1 mt-2.5 select-none shrink-0">
           <button
             type="button"
             onClick={() => {
               if (!gameRef.current.started) gameRef.current.started = true;
               changeDirection('up');
             }}
-            className="w-12 h-10 rounded-xl bg-white/10 active:bg-indigo-500/40 border border-white/20 flex items-center justify-center text-base text-white active:scale-95 shadow-md touch-manipulation"
+            className="w-14 h-11 rounded-sm bg-white/10 active:bg-indigo-600 border border-white/20 flex items-center justify-center text-sm font-bold text-white active:scale-95 touch-manipulation min-h-[44px]"
             aria-label="Up"
           >
-            ▲
+            [▲]
           </button>
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-4">
             <button
               type="button"
               onClick={() => {
                 if (!gameRef.current.started) gameRef.current.started = true;
                 changeDirection('left');
               }}
-              className="w-12 h-10 rounded-xl bg-white/10 active:bg-indigo-500/40 border border-white/20 flex items-center justify-center text-base text-white active:scale-95 shadow-md touch-manipulation"
+              className="w-14 h-11 rounded-sm bg-white/10 active:bg-indigo-600 border border-white/20 flex items-center justify-center text-sm font-bold text-white active:scale-95 touch-manipulation min-h-[44px]"
               aria-label="Left"
             >
-              ◀
+              [◀]
             </button>
             <button
               type="button"
@@ -734,10 +841,10 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
                 if (!gameRef.current.started) gameRef.current.started = true;
                 changeDirection('down');
               }}
-              className="w-12 h-10 rounded-xl bg-white/10 active:bg-indigo-500/40 border border-white/20 flex items-center justify-center text-base text-white active:scale-95 shadow-md touch-manipulation"
+              className="w-14 h-11 rounded-sm bg-white/10 active:bg-indigo-600 border border-white/20 flex items-center justify-center text-sm font-bold text-white active:scale-95 touch-manipulation min-h-[44px]"
               aria-label="Down"
             >
-              ▼
+              [▼]
             </button>
             <button
               type="button"
@@ -745,14 +852,20 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
                 if (!gameRef.current.started) gameRef.current.started = true;
                 changeDirection('right');
               }}
-              className="w-12 h-10 rounded-xl bg-white/10 active:bg-indigo-500/40 border border-white/20 flex items-center justify-center text-base text-white active:scale-95 shadow-md touch-manipulation"
+              className="w-14 h-11 rounded-sm bg-white/10 active:bg-indigo-600 border border-white/20 flex items-center justify-center text-sm font-bold text-white active:scale-95 touch-manipulation min-h-[44px]"
               aria-label="Right"
             >
-              ▶
+              [▶]
             </button>
           </div>
         </div>
       </main>
+
+      <div className="px-3 py-1 bg-white/5 rounded-sm text-[10px] text-slate-400 font-mono text-center max-w-md shrink-0 border border-white/5">
+        {language === 'ko'
+          ? '방향키 / 스와이프로 조작 | 난이도별 35~60 SNS 포인트 보상'
+          : 'D-Pad or swipe | 35~60 SNS points reward based on difficulty'}
+      </div>
     </div>
   );
 };

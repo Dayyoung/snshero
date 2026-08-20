@@ -14,14 +14,61 @@ interface TrexRunnerGameProps {
   onReward: (amount: number) => void;
 }
 
+export type TrexDifficulty = 'easy' | 'normal' | 'hard';
+
+export interface TrexDifficultyConfig {
+  nameKo: string;
+  nameEn: string;
+  minSpeed: number;
+  maxSpeed: number;
+  jumpForce: number;
+  minObstacleDistance: number;
+  baseReward: number;
+  scoreDivisor: number;
+  maxReward: number;
+}
+
+export const TREX_DIFFICULTY_CONFIG: Record<TrexDifficulty, TrexDifficultyConfig> = {
+  easy: {
+    nameKo: '쉬움',
+    nameEn: 'Easy',
+    minSpeed: 3.5,
+    maxSpeed: 8,
+    jumpForce: -12.5,
+    minObstacleDistance: 220,
+    baseReward: 15,
+    scoreDivisor: 25,
+    maxReward: 40
+  },
+  normal: {
+    nameKo: '보통',
+    nameEn: 'Normal',
+    minSpeed: 4.5,
+    maxSpeed: 12,
+    jumpForce: -12.0,
+    minObstacleDistance: 170,
+    baseReward: 20,
+    scoreDivisor: 20,
+    maxReward: 50
+  },
+  hard: {
+    nameKo: '어려움',
+    nameEn: 'Hard',
+    minSpeed: 6.0,
+    maxSpeed: 16,
+    jumpForce: -11.5,
+    minObstacleDistance: 130,
+    baseReward: 25,
+    scoreDivisor: 15,
+    maxReward: 60
+  }
+};
+
 const CANVAS_W = 400;
 const CANVAS_H = 600;
 const GRAVITY = 0.6;
-const JUMP_FORCE = -12;
 const GROUND_Y = CANVAS_H - 130;
 const PLAYER_SIZE = 40;
-const MIN_SPEED = 4;
-const MAX_SPEED = 12;
 
 interface Obstacle {
   x: number;
@@ -55,6 +102,9 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
     return CARD_DATABASE[id] ? id : 1;
   })();
 
+  const [difficulty, setDifficulty] = useState<TrexDifficulty>('normal');
+  const dCfg = TREX_DIFFICULTY_CONFIG[difficulty];
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef(0);
   const lastTimeRef = useRef(0);
@@ -66,7 +116,7 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
     playerVY: 0,
     jumpsLeft: 2,
     score: 0,
-    speed: MIN_SPEED,
+    speed: dCfg.minSpeed,
     distance: 0,
     obstacles: [] as Obstacle[],
     particles: [] as Particle[],
@@ -80,6 +130,7 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
   const touchJumpRef = useRef(false);
   const [hudScore, setHudScore] = useState(0);
   const [hudGameOver, setHudGameOver] = useState(false);
+  const [earnedReward, setEarnedReward] = useState(0);
   const hudCounter = useRef(0);
 
   useEffect(() => {
@@ -88,13 +139,14 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
     cardImgRef.current = img;
   }, []);
 
-  const startGame = useCallback(() => {
+  const startGame = useCallback((diffKey: TrexDifficulty = difficulty) => {
+    const cfg = TREX_DIFFICULTY_CONFIG[diffKey];
     const g = gameRef.current;
     g.playerY = GROUND_Y - PLAYER_SIZE;
     g.playerVY = 0;
     g.jumpsLeft = 2;
     g.score = 0;
-    g.speed = MIN_SPEED;
+    g.speed = cfg.minSpeed;
     g.distance = 0;
     g.obstacles = [];
     g.particles = [];
@@ -106,33 +158,39 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
     lastTimeRef.current = 0;
     setHudScore(0);
     setHudGameOver(false);
-  }, []);
+    setEarnedReward(0);
+  }, [difficulty]);
 
   useEffect(() => {
-    startGame();
-  }, [startGame]);
+    startGame(difficulty);
+  }, [difficulty, startGame]);
 
-  const calcReward = (score: number) => {
-    return Math.max(10, Math.min(60, Math.floor(score / 10)));
-  };
+  const calcReward = useCallback((score: number, diffKey: TrexDifficulty) => {
+    const cfg = TREX_DIFFICULTY_CONFIG[diffKey];
+    const bonus = Math.floor(score / cfg.scoreDivisor);
+    return Math.min(cfg.maxReward, cfg.baseReward + bonus);
+  }, []);
 
   useEffect(() => {
     if (hudGameOver && !rewardedRef.current) {
       rewardedRef.current = true;
-      onReward(calcReward(gameRef.current.score));
+      const finalReward = calcReward(gameRef.current.score, difficulty);
+      setEarnedReward(finalReward);
+      onReward(finalReward);
     }
-  }, [hudGameOver, onReward]);
+  }, [calcReward, difficulty, hudGameOver, onReward]);
 
   const triggerJump = useCallback(() => {
+    const cfg = TREX_DIFFICULTY_CONFIG[difficulty];
     const g = gameRef.current;
     if (g.isGameOver) return;
     if (!g.started) g.started = true;
     if (g.jumpsLeft > 0) {
-      g.playerVY = JUMP_FORCE;
+      g.playerVY = cfg.jumpForce;
       g.jumpsLeft--;
       playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
     }
-  }, [playSfx]);
+  }, [difficulty, playSfx]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -151,10 +209,11 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
-  }, [playSfx]);
+  }, [triggerJump]);
 
   useEffect(() => {
     const loop = (timestamp: number) => {
+      const cfg = TREX_DIFFICULTY_CONFIG[difficulty];
       const g = gameRef.current;
 
       if (g.isGameOver) {
@@ -181,7 +240,7 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
 
       const dt = delta / 16;
 
-      g.speed = Math.min(MAX_SPEED, MIN_SPEED + g.distance * 0.0001);
+      g.speed = Math.min(cfg.maxSpeed, cfg.minSpeed + g.distance * 0.0001);
       const moveAmount = g.speed * dt;
       g.distance += moveAmount;
       g.score = Math.floor(g.distance / 10);
@@ -199,7 +258,7 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
       if (touchJumpRef.current) {
         touchJumpRef.current = false;
         if (g.jumpsLeft > 0) {
-          g.playerVY = JUMP_FORCE;
+          g.playerVY = cfg.jumpForce;
           g.jumpsLeft--;
           playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
         }
@@ -217,7 +276,7 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
           cardId: Math.floor(Math.random() * 110) + 1,
           isCard
         });
-        g.nextObstacleDistance = 150 + Math.random() * 200 / (g.speed / MIN_SPEED);
+        g.nextObstacleDistance = cfg.minObstacleDistance + Math.random() * 180 / (g.speed / cfg.minSpeed);
       }
 
       for (const obs of g.obstacles) {
@@ -249,30 +308,25 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
                 x: px, y: g.playerY + PLAYER_SIZE / 2,
                 vx: (Math.random() - 0.5) * 6,
                 vy: (Math.random() - 0.5) * 6,
-                life: 600, maxLife: 600,
-                color: ['#f87171', '#fbbf24', '#60a5fa'][i % 3]
+                life: 500, maxLife: 500,
+                color: obs.isCard ? '#3b82f6' : '#22c55e'
               });
             }
           }
-          break;
         }
       }
 
-      if (!lowSpecMode && !g.isGameOver && Math.random() < 0.15) {
-        g.particles.push({
-          x: px - 10, y: g.playerY + PLAYER_SIZE,
-          vx: -1 - Math.random() * 2, vy: -Math.random() * 1.5,
-          life: 300, maxLife: 300,
-          color: '#94a3b8'
-        });
-      }
-
       g.particles = g.particles
-        .map(p => ({ ...p, x: p.x + p.vx * dt, y: p.y + p.vy * dt, life: p.life - delta }))
+        .map(p => ({
+          ...p,
+          x: p.x + p.vx,
+          y: p.y + p.vy,
+          life: p.life - delta
+        }))
         .filter(p => p.life > 0);
 
       hudCounter.current++;
-      if (hudCounter.current % 4 === 0) {
+      if (hudCounter.current % 3 === 0) {
         setHudScore(g.score);
       }
 
@@ -282,7 +336,7 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [language, lowSpecMode, playSfx]);
+  }, [difficulty, language, lowSpecMode, playSfx]);
 
   const renderCanvas = (g: typeof gameRef.current, timestamp: number) => {
     const canvas = canvasRef.current;
@@ -292,34 +346,36 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
 
     ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
 
-    const skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_H);
-    skyGrad.addColorStop(0, '#0f172a');
-    skyGrad.addColorStop(0.6, '#1e293b');
-    skyGrad.addColorStop(1, '#334155');
-    ctx.fillStyle = skyGrad;
+    ctx.fillStyle = '#0f172a';
     ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
+    // Stars
     if (!lowSpecMode) {
-      ctx.fillStyle = 'rgba(255,255,255,0.08)';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
       for (let i = 0; i < 20; i++) {
-        const sx = (i * 127 + Math.floor(timestamp * 0.005 * ((i % 3) + 1))) % CANVAS_W;
-        const sy = (i * 73) % (GROUND_Y - 40);
-        ctx.fillRect(sx, sy, 1, 1);
+        const sx = ((i * 73 + g.distance * 0.05) % CANVAS_W);
+        const sy = (i * 37) % (GROUND_Y - 50);
+        ctx.fillRect(sx, sy, 1.5, 1.5);
       }
     }
 
-    ctx.fillStyle = '#475569';
+    // Ground
+    ctx.fillStyle = '#1e293b';
     ctx.fillRect(0, GROUND_Y, CANVAS_W, CANVAS_H - GROUND_Y);
 
-    ctx.fillStyle = '#64748b';
-    ctx.fillRect(0, GROUND_Y, CANVAS_W, 2);
+    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, GROUND_Y);
+    ctx.lineTo(CANVAS_W, GROUND_Y);
+    ctx.stroke();
 
-    ctx.strokeStyle = 'rgba(100,116,139,0.3)';
+    ctx.strokeStyle = '#334155';
     ctx.lineWidth = 1;
     for (let x = -g.groundOffset; x < CANVAS_W; x += 20) {
       ctx.beginPath();
-      ctx.moveTo(x, GROUND_Y + 10);
-      ctx.lineTo(x + 10, GROUND_Y + 10);
+      ctx.moveTo(x, GROUND_Y + 4);
+      ctx.lineTo(x + 10, GROUND_Y + 4);
       ctx.stroke();
     }
 
@@ -340,12 +396,12 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
 
     for (const obs of g.obstacles) {
       if (obs.isCard) {
-        drawCard(obs.cardId, obs.x + obs.width / 2, GROUND_Y - obs.height / 2, Math.min(obs.width, obs.height));
+        drawCard(obs.cardId, obs.x + obs.width / 2, GROUND_Y - obs.height / 2, obs.height);
       } else {
-        ctx.fillStyle = '#6b7280';
+        ctx.fillStyle = '#22c55e';
         ctx.fillRect(obs.x, GROUND_Y - obs.height, obs.width, obs.height);
-        ctx.fillStyle = '#4b5563';
-        ctx.fillRect(obs.x + 2, GROUND_Y - obs.height + 2, obs.width - 4, 4);
+        ctx.fillStyle = '#16a34a';
+        ctx.fillRect(obs.x + 2, GROUND_Y - obs.height + 4, obs.width - 4, obs.height - 8);
       }
     }
 
@@ -369,13 +425,13 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
 
     ctx.save();
     ctx.fillStyle = 'white';
-    ctx.font = 'bold 20px sans-serif';
+    ctx.font = 'bold 20px monospace';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'top';
-    ctx.fillText(`${g.score}`, CANVAS_W - 15, 15);
-    ctx.font = '10px sans-serif';
+    ctx.fillText(`${g.score} M`, CANVAS_W - 15, 15);
+    ctx.font = '10px monospace';
     ctx.fillStyle = '#94a3b8';
-    ctx.fillText(language === 'ko' ? '점수' : 'SCORE', CANVAS_W - 15, 38);
+    ctx.fillText(language === 'ko' ? '기록' : 'DISTANCE', CANVAS_W - 15, 38);
     ctx.restore();
 
     if (!g.started) {
@@ -385,10 +441,10 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
       ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
       ctx.globalAlpha = 1;
       ctx.fillStyle = 'white';
-      ctx.font = 'bold 28px sans-serif';
+      ctx.font = 'bold 20px monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(language === 'ko' ? '터치하여 시작' : 'TAP TO START', CANVAS_W / 2, CANVAS_H / 2);
+      ctx.fillText(language === 'ko' ? '[터치하여 시작]' : '[TAP TO START]', CANVAS_W / 2, CANVAS_H / 2);
       ctx.restore();
     }
   };
@@ -399,25 +455,59 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
   };
 
   return (
-    <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white flex flex-col items-center justify-between font-sans select-none overflow-hidden pb-3">
+    <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white flex flex-col items-center justify-between font-mono select-none overflow-hidden pb-3">
       <header className="w-full max-w-lg flex items-center justify-between px-3 py-2 shrink-0">
-        <button onClick={onExit} className="p-2 rounded-2xl bg-white/10 hover:bg-white/15 transition-colors cursor-pointer">
+        <button onClick={onExit} className="p-2 rounded-sm bg-white/10 hover:bg-white/15 transition-colors cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center">
           <ArrowLeft size={18} />
         </button>
         <div className="text-center">
-          <h1 className="text-base sm:text-lg font-black uppercase tracking-tight">{t('mode_trex', language)}</h1>
-          <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-            {language === 'ko' ? '달리고 점프하세요!' : 'RUN & JUMP!'}
+          <h1 className="text-sm sm:text-base font-bold tracking-tight">{t('mode_trex', language)}</h1>
+          <p className="text-[10px] font-bold text-slate-400">
+            {language === 'ko' ? '2단 점프로 장애물 회피' : 'DOUBLE JUMP RUNNER'}
           </p>
         </div>
-        <div className="px-3 py-1.5 rounded-2xl bg-indigo-500/20 border border-indigo-400/20 text-indigo-100 font-black text-xs sm:text-sm tabular-nums">
-          {hudScore}
+        <div className="px-2.5 py-1 rounded-sm bg-indigo-500/20 border border-indigo-400/30 text-indigo-100 font-bold text-xs sm:text-sm tabular-nums">
+          {hudScore} M
         </div>
       </header>
 
+      {/* Difficulty Selector Tabs */}
+      <div className="w-full max-w-lg px-3 flex items-center justify-between gap-1 shrink-0">
+        <div className="flex items-center gap-1">
+          {(['easy', 'normal', 'hard'] as TrexDifficulty[]).map((d) => {
+            const active = difficulty === d;
+            const dName = language === 'ko' ? TREX_DIFFICULTY_CONFIG[d].nameKo : TREX_DIFFICULTY_CONFIG[d].nameEn;
+            return (
+              <button
+                key={d}
+                type="button"
+                onClick={() => {
+                  if (difficulty !== d) {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    setDifficulty(d);
+                    startGame(d);
+                  }
+                }}
+                className={cn(
+                  "px-2.5 py-1 text-xs rounded-sm border transition-all cursor-pointer min-h-[36px]",
+                  active
+                    ? "bg-indigo-600 text-white border-indigo-500 font-bold"
+                    : "bg-white/5 text-slate-300 border-white/10 hover:bg-white/10"
+                )}
+              >
+                [{dName}]
+              </button>
+            );
+          })}
+        </div>
+        <div className="text-xs text-slate-400">
+          MAX: +{dCfg.maxReward} SNS
+        </div>
+      </div>
+
       <main className="w-full max-w-lg flex-1 min-h-0 flex flex-col items-center justify-center px-3">
         <div
-          className={cn('relative w-full max-h-[58vh] overflow-hidden rounded-2xl border border-white/10 shadow-2xl')}
+          className={cn('relative w-full max-h-[55vh] overflow-hidden rounded-sm border border-white/15')}
           style={{ aspectRatio: `${CANVAS_W}/${CANVAS_H}`, touchAction: 'none' }}
           onPointerDown={handlePointerDown}
         >
@@ -429,22 +519,34 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
           />
 
           {hudGameOver && (
-            <div className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-6">
-              <div className="bg-white text-slate-900 rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl">
-                <Skull size={42} className="mx-auto text-rose-500 mb-3" />
-                <h2 className="text-xl font-black mb-1">{language === 'ko' ? '게임 오버' : 'GAME OVER'}</h2>
-                <p className="text-sm font-bold text-slate-500 mb-1">
-                  {language === 'ko' ? `점수: ${gameRef.current.score}` : `Score: ${gameRef.current.score}`}
-                </p>
-                <p className="text-sm font-bold text-indigo-600 mb-4">
-                  {t('trex_reward', language).replace('{amount}', String(calcReward(gameRef.current.score)))}
-                </p>
+            <div className="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-xs flex items-center justify-center p-5">
+              <div className="bg-white text-slate-900 rounded-sm p-5 max-w-sm w-full text-center border border-slate-300 shadow-lg">
+                <Skull size={36} className="mx-auto text-rose-500 mb-2" />
+                <h2 className="text-lg font-bold mb-1">{language === 'ko' ? '[게임 오버]' : '[GAME OVER]'}</h2>
+
+                <div className="text-xs text-slate-600 space-y-1 mb-3 bg-slate-50 p-2.5 rounded-sm border border-slate-200">
+                  <div className="flex justify-between">
+                    <span>{language === 'ko' ? '난이도' : 'Difficulty'}:</span>
+                    <span className="font-bold text-slate-900">[{language === 'ko' ? dCfg.nameKo : dCfg.nameEn}]</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>{language === 'ko' ? '이동 거리' : 'Distance'}:</span>
+                    <span className="font-bold text-slate-900">{gameRef.current.score} M</span>
+                  </div>
+                </div>
+
+                <div className="mb-3.5 py-2 px-3 bg-indigo-50 border border-indigo-200 rounded-sm">
+                  <span className="text-xs text-indigo-700 font-bold">
+                    {language === 'ko' ? `보상 지급: +${earnedReward} SNS 포인트` : `Reward Earned: +${earnedReward} SNS Points`}
+                  </span>
+                </div>
+
                 <div className="flex gap-2">
-                  <button onClick={startGame} className="flex-1 py-3 bg-indigo-600 text-white rounded-2xl font-black flex items-center justify-center gap-2 cursor-pointer">
-                    <RotateCcw size={16} />
+                  <button onClick={() => startGame(difficulty)} className="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-sm font-bold flex items-center justify-center gap-1 cursor-pointer min-h-[44px] text-xs">
+                    <RotateCcw size={14} />
                     {language === 'ko' ? '재시작' : 'Restart'}
                   </button>
-                  <button onClick={onExit} className="flex-1 py-3 bg-slate-900 text-white rounded-2xl font-black cursor-pointer">
+                  <button onClick={onExit} className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-sm font-bold cursor-pointer min-h-[44px] text-xs">
                     {t('home', language)}
                   </button>
                 </div>
@@ -454,22 +556,22 @@ export const TrexRunnerGame: React.FC<TrexRunnerGameProps> = ({
         </div>
 
         {/* Mobile One-Hand Big Jump Button */}
-        <div className="mt-3 flex items-center justify-center w-full max-w-xs sm:hidden select-none shrink-0">
+        <div className="mt-2.5 flex items-center justify-center w-full max-w-xs select-none shrink-0">
           <button
             type="button"
             onPointerDown={(e) => {
               e.preventDefault();
               triggerJump();
             }}
-            className="w-full py-3.5 rounded-2xl bg-indigo-600 active:bg-indigo-700 text-white font-black text-base active:scale-95 shadow-lg flex items-center justify-center gap-2 touch-manipulation border border-indigo-400/40"
+            className="w-full py-3 rounded-sm bg-indigo-600 active:bg-indigo-700 text-white font-bold text-sm active:scale-95 flex items-center justify-center gap-2 touch-manipulation border border-indigo-400/40 min-h-[44px] cursor-pointer"
           >
-            ⚡ {language === 'ko' ? '점프 (2단 점프 가능)' : 'JUMP (Double Jump)'}
+            [⚡ {language === 'ko' ? '점프 (2단 점프)' : 'JUMP (Double Jump)'}]
           </button>
         </div>
       </main>
 
-      <div className="px-4 py-1.5 bg-white/5 rounded-2xl text-[9px] sm:text-[10px] text-slate-400 font-bold text-center max-w-lg shrink-0">
-        {language === 'ko' ? '화면 탭 또는 점프 버튼으로 점프 | 공중에서 2단 점프!' : 'Tap screen or jump button | Double jump in air!'}
+      <div className="px-3 py-1.5 bg-white/5 rounded-sm text-[10px] text-slate-400 font-mono text-center max-w-lg shrink-0 border border-white/5">
+        {language === 'ko' ? '화면 탭 / 점프 버튼 | 난이도별 15~60 SNS 포인트 보상' : 'Tap screen or jump button | 15~60 SNS points based on difficulty'}
       </div>
     </div>
   );

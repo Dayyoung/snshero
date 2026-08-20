@@ -2,13 +2,19 @@
 # SNS히어로 에이전트 지침서 (AGENTS.md)
 
 ## 스프레드시트 개선 작업 진행 상태
-- **마지막 수정 완료 항목 ID**: `[전투 엔진 & AI 개선] Items 360-370 전투 전술 고도화 및 보드 기믹/보상 시스템 구축 완료`
-- **최종 업데이트 일시**: 2026-08-18 14:15 (KST)
+- **마지막 수정 완료 항목 ID**: `[대용량 계정 데이터 애니메이션 QR 분할 백업 & 연속 카메라 스캔 조합 복원 시스템 구현] DATA TOO LONG 오류 원천 해결: 280자 최적 청크 분할, 자동 롤링 애니메이션 QR 송출 및 0.3s~1.2s 속도/재생 컨트롤, 수신측 카메라 연속 조각 캡처 & 100% 자동 결합 복원 완료`
+- **최종 업데이트 일시**: 2026-08-20 10:25 (KST)
 
 ## 프로젝트 개요
 - **이름**: SNS히어로 (SNSHero Revolution)
 - **유형**: AI 기반 원클릭 웹 카드 배틀 게임
-- **스택**: React 19 + Vite 6 + TypeScript 5.8 + Tailwind CSS 4.1 + Firebase
+- **스택**: React 19 + Vite 6 + TypeScript 5.8 + Tailwind CSS 4.1
+- **데이터 저장소**: 100% 로컬스토리지 (LocalStorage) 기반 영구 저장
+
+## 게임 데이터 로컬스토리지 완전 기반 원칙
+- **단일 진실 공급원 (Single Source of Truth)**: 인벤토리(카드 획득/보유/수량), 덱 구성, SNS 재화(구매/획득), 유저 전적 및 스탯, 아이템, 강화 레벨, 컴패니언 육성, 시즌 진행도 등 **모든 변경/수정/삭제/추가되는 게임 데이터는 오직 로컬스토리지(`localStorage`)를 기반으로 영구 보존**됩니다.
+- **데이터 무결성 및 리셋 방지**: 원격 인증 상태 변경, 오프라인 전환, 페이지 새로고침 등에 의해 로컬스토리지에 저장된 카드/재화 데이터가 기본값으로 초기화되거나 유실되는 일이 절대 없어야 합니다.
+- **즉시 동기화**: 상점 뽑기(단일팩, 10연차, 연속뽑기 등), 보상 수령, 덱 편집, 레벨업 등의 이벤트 발생 즉시 로컬스토리지에 동기적으로 기록합니다.
 
 ## 등록된 커스텀 스킬 및 명령어
 - **`/gemini-ex`**: 구글 스프레드시트 (`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`)의 미작업 항목을 확인하고 소스코드에 반영 및 완료하는 스킬
@@ -101,7 +107,6 @@
 - `hero_season_missions_{season}`: 시즌 미션 상태 저장 (데일리/위클리/시즌 미션 진행도, 완료/수령 상태, 리셋 날짜)
 - `hero_fan_event_votes_{season}`: 팬 이벤트 투표 상태 저장 (이벤트 ID별 선택한 옵션)
 - `hero_sns_challenge_submissions_{season}`: 외부 SNS 챌린지 제출 상태 저장 (챌린지 ID별 제출 링크, 스크린샷 URL, 검토 상태)
-- `firebase_db_mode`: Firebase DB 모드 설정 ('online' / 'offline')
 - `hero_user_name`: 사용자 프로필 닉네임
 - `hero_user_avatar`: 사용자 프로필 아바타
 - `hero_user_guild_level`: 사용자 길드 레벨
@@ -160,3 +165,11 @@
 - `hero_build_version`: 빌드 타임스탬프 저장 키
 - `hero_last_version_check`: 마지막 버전 확인 타임스탬프 (ms)
 - `hero_boot_gate_shown`: 세션 내 시스템 시작 게이트/버전 동기화 화면 노출 여부
+- `hero_tower_trials_floor_v1`: 시련의 탑 50층 무한 등반 최고 달성 층수 및 보상 상태 저장
+- `hero_expedition_state_v1`: 8시간 오프라인 원정대 순찰 파티 및 수령 대기 데이터
+- `hero_beastarium_pet_v1`: 비스티아리움 도감 수집 및 활성 동행 펫 상태
+- `hero_tactician_aura_skin_v1`: 전술가 마스터리 레벨, 경험치 및 활성 전장 아우라 테마 설정
+- `hero_battle_gambit_config_v1`: 자동 전투 AI 전술 지침 슬롯, 활성 스탠스 및 N/R 자동분해 설정 저장
+- `hero_mastery_record_v1`: 개별 영웅별 승리 횟수, 총 출전 횟수, 골든 스킨 및 사령관 보이스 해금 상태 저장
+- `hero_secret_stamps_v1`: 8종 비밀 업적 스탬프 달성 기록 저장
+- `hero_secret_stamps_claimed`: 비밀 업적 보상 수령 여부 매핑 저장

@@ -761,12 +761,16 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
          level: inventory[idx]?.level || 1,
        } as CardData, inventory);
        
+       const isOwned = (inventory[idx]?.quantity || 0) > 0 || 
+                       (inventory[String(idx) as any]?.quantity || 0) > 0 || 
+                       ownedCards.some(c => c.imageIndex === idx || Number(c.imageIndex) === idx);
+
        return {
          idx,
          card,
          power: getCardPower(card),
-         isOwned: ownedCards.some(c => c.imageIndex === idx),
-         isInDeck: currentDeck.some(c => c && c.imageIndex === idx)
+         isOwned,
+         isInDeck: currentDeck.some(c => c && (c.imageIndex === idx || Number(c.imageIndex) === idx))
        };
     }).filter((item): item is NonNullable<typeof item> => item !== null);
 
@@ -781,15 +785,25 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         // Element Filter (Item 44)
         if (selectedElementFilter !== 'ALL') {
           const dbCard = CARD_DATABASE[item.idx];
-          const el = String((item.card as any).element || dbCard?.element || '').toUpperCase();
-          if (!el.includes(selectedElementFilter)) return false;
+          const rawEl = String((item.card as any).element || dbCard?.element || (item.card as any).race || dbCard?.race || '').toLowerCase();
+          const target = selectedElementFilter.toLowerCase();
+          const matches = (
+            rawEl === target ||
+            (target === 'wind' && (rawEl === 'air' || rawEl === 'wind')) ||
+            (target === 'earth' && (rawEl === 'earth' || rawEl === 'land')) ||
+            (target === 'water' && (rawEl === 'water' || rawEl === 'aqua')) ||
+            (target === 'fire' && (rawEl === 'fire' || rawEl === 'flame')) ||
+            (target === 'holy' && (rawEl === 'holy' || rawEl === 'light' || rawEl === 'human' || rawEl === 'elf')) ||
+            (target === 'dark' && (rawEl === 'dark' || rawEl === 'undead' || rawEl === 'shadow' || rawEl === 'demon' || rawEl === 'monster'))
+          );
+          if (!matches) return false;
         }
 
         // Search Query Filter (Item 44)
         if (cardSearchQuery.trim() !== '') {
           const q = cardSearchQuery.toLowerCase();
           const dbCard = CARD_DATABASE[item.idx];
-          const nameKo = String(item.card.title_dis || dbCard?.title_dis || '').toLowerCase();
+          const nameKo = String(item.card.title || item.card.title_dis || dbCard?.title || dbCard?.title_dis || '').toLowerCase();
           const nameEn = String((item.card as any).title_en || dbCard?.title_en || '').toLowerCase();
           const lore = String((item.card as any).lore_ko || dbCard?.lore_ko || '').toLowerCase();
           if (!nameKo.includes(q) && !nameEn.includes(q) && !lore.includes(q)) {

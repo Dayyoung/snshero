@@ -40,13 +40,14 @@ export const MOVIE_EPISODES: Record<number, MovieEpisodeMeta> = {
     titleKo: "폭우 속의 유령",
     titleJa: "豪雨の中の亡霊",
     titleEn: "Phantom in the Downpour",
-    videoId: "qm_qJZu3s3k"
+    videoId: "if4xYWaXyTw"
   },
   6: {
     episodeNumber: 6,
     titleKo: "별을 호흡하는 법",
     titleJa: "星を呼吸する方法",
-    titleEn: "The Art of Breathing Stars"
+    titleEn: "The Art of Breathing Stars",
+    videoId: "eX1nJf_95Hk"
   },
   7: {
     episodeNumber: 7,

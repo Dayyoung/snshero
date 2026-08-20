@@ -1,6 +1,6 @@
 export const en = {
-    backup_data: 'Backup Data (QR Code)',
-    restore_data: 'Restore Data (Camera Scan)',
+    backup_data: 'Backup Data (Animated QR)',
+    restore_data: 'Restore Data (Camera Stream Scan)',
     backup_modal_title: 'Data Backup QR Code',
     backup_modal_desc: 'Scan the QR code below with another device camera or copy the backup code.',
     restore_modal_title: 'Data Restore Camera Scan',

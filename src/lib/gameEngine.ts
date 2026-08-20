@@ -1,4 +1,4 @@
-import { CardData, AiStrategy, AiDifficulty } from '../types';
+import { CardData, AiStrategy, AiDifficulty, GambitConfig, TacticalStance } from '../types';
 import { getCardStatWithBonus } from '../constants';
 
 export interface CardInstance extends CardData {
@@ -9,16 +9,35 @@ export type Board = (CardInstance | null)[];
 
 export type ElementalTile = 'fire' | 'water' | 'earth' | 'air' | null;
 
-export const checkFlips = (
+export interface FlipResultDetails {
+  newBoard: Board;
+  flippedIndices: number[];
+  comboType: 'NORMAL' | 'DOUBLE' | 'TRIPLE' | 'MEGA' | 'SAME' | 'PLUS' | 'DOMINO' | null;
+  comboCount: number;
+  isCriticalShatter: boolean;
+  maxPowerDiff: number;
+  doubleWeaknessBroken?: boolean;
+}
+
+export const checkFlipsWithDetails = (
   board: Board, 
   placedIdx: number, 
   playerMultiplier: number = 1, 
   elementalBoard: ElementalTile[] = [],
   isSuddenDeath: boolean = false
-): Board => {
+): FlipResultDetails => {
   let newBoard = [...board];
   const card = newBoard[placedIdx];
-  if (!card) return newBoard;
+  if (!card) {
+    return {
+      newBoard,
+      flippedIndices: [],
+      comboType: null,
+      comboCount: 0,
+      isCriticalShatter: false,
+      maxPowerDiff: 0,
+    };
+  }
 
   const row = Math.floor(placedIdx / 3);
   const col = Math.floor(placedIdx % 3);
@@ -34,6 +53,8 @@ export const checkFlips = (
   const plusSums: Record<number, number[]> = {};
   let counterTargetOwner: 'player' | 'ai' | null = null;
   const suddenDeathBonus = isSuddenDeath ? 2 : 0;
+  let maxPowerDiff = 0;
+  let weakPointsBroken = 0;
 
   // Find direct flips and potential combos
   dirs.forEach(d => {
@@ -74,12 +95,16 @@ export const checkFlips = (
           if (card.owner === 'player') effectiveMyStat *= playerMultiplier;
           else effectiveOppStat *= playerMultiplier;
 
-          if (effectiveMyStat > effectiveOppStat) {
+          const diff = effectiveMyStat - effectiveOppStat;
+          if (diff > 0) {
             flips.push(neighborIdx);
+            maxPowerDiff = Math.max(maxPowerDiff, diff);
+            // Check weakness break (boss or weak elemental target)
+            if (diff >= 3 || (card.element && neighbor.element && card.element !== neighbor.element)) {
+              weakPointsBroken++;
+            }
           } else if (neighbor.ability?.type === 'COUNTER' && card.ability?.type !== 'IMMUNITY') {
-            // COUNTER: If placed card fails to flip neighbor, and neighbor has COUNTER, placed card gets flipped.
-            // IMMUNITY protects against COUNTER.
-            counterTargetOwner = neighbor.owner; // Will mutate ownership after all checks
+            counterTargetOwner = neighbor.owner;
           }
         }
       }
@@ -88,19 +113,25 @@ export const checkFlips = (
 
   // Finalize combo flips (SAME/PLUS)
   const comboFlippables: number[] = [];
+  let isSameCombo = false;
+  let isPlusCombo = false;
   
-  // SAME: if 2+ sides match stats
   if (sameMatched.length >= 2) {
     sameMatched.forEach(idx => {
-      if (board[idx]?.owner !== card.owner) comboFlippables.push(idx);
+      if (board[idx]?.owner !== card.owner) {
+        comboFlippables.push(idx);
+        isSameCombo = true;
+      }
     });
   }
 
-  // PLUS: if 2+ sides have identical sums
   Object.values(plusSums).forEach(indices => {
     if (indices.length >= 2) {
       indices.forEach(idx => {
-        if (board[idx]?.owner !== card.owner && board[idx]?.ability?.type !== 'IMMUNITY') comboFlippables.push(idx);
+        if (board[idx]?.owner !== card.owner && board[idx]?.ability?.type !== 'IMMUNITY') {
+          comboFlippables.push(idx);
+          isPlusCombo = true;
+        }
       });
     }
   });
@@ -111,17 +142,82 @@ export const checkFlips = (
     const neighbor = newBoard[idx];
     if (neighbor && neighbor.ability?.type !== 'IMMUNITY') {
       newBoard[idx] = { ...neighbor, owner: card.owner };
-      // Recursive Combo: Flipping via combo can flip others (Simple version: one level depth for now)
-      // In full Triple Triad, combos trigger further captures.
     }
   });
+
+  // Domino Blast Cascade
+  let isDominoCombo = false;
+  if (allFlips.length > 0) {
+    const dominoFlips: number[] = [];
+    allFlips.forEach(fIdx => {
+      const fCard = newBoard[fIdx];
+      if (!fCard) return;
+      const fRow = Math.floor(fIdx / 3);
+      const fCol = fIdx % 3;
+      dirs.forEach(d => {
+        const dRow = fRow + d.r;
+        const dCol = fCol + d.c;
+        if (dRow >= 0 && dRow < 3 && dCol >= 0 && dCol < 3) {
+          const adjIdx = dRow * 3 + dCol;
+          const adjCard = newBoard[adjIdx];
+          if (adjCard && adjCard.owner !== card.owner && adjCard.ability?.type !== 'IMMUNITY' && adjCard.ability?.type !== 'WALL') {
+            const fStat = getCardStatWithBonus(fCard, d.m, elementalBoard[fIdx]);
+            const adjStat = getCardStatWithBonus(adjCard, d.opp, elementalBoard[adjIdx]);
+            if (fStat >= adjStat + 2) {
+              dominoFlips.push(adjIdx);
+              isDominoCombo = true;
+            }
+          }
+        }
+      });
+    });
+
+    dominoFlips.forEach(dIdx => {
+      const target = newBoard[dIdx];
+      if (target && target.ability?.type !== 'IMMUNITY') {
+        newBoard[dIdx] = { ...target, owner: card.owner };
+        if (!allFlips.includes(dIdx)) {
+          allFlips.push(dIdx);
+        }
+      }
+    });
+  }
 
   // Apply COUNTER
   if (counterTargetOwner && newBoard[placedIdx]) {
     newBoard[placedIdx] = { ...newBoard[placedIdx]!, owner: counterTargetOwner };
   }
 
-  return newBoard;
+  let comboType: 'NORMAL' | 'DOUBLE' | 'TRIPLE' | 'MEGA' | 'SAME' | 'PLUS' | 'DOMINO' | null = null;
+  if (allFlips.length >= 4) comboType = 'MEGA';
+  else if (allFlips.length === 3) comboType = 'TRIPLE';
+  else if (allFlips.length === 2) comboType = 'DOUBLE';
+  else if (isSameCombo) comboType = 'SAME';
+  else if (isPlusCombo) comboType = 'PLUS';
+  else if (isDominoCombo) comboType = 'DOMINO';
+  else if (allFlips.length === 1) comboType = 'NORMAL';
+
+  const isCriticalShatter = maxPowerDiff >= 3 || allFlips.length >= 2;
+  const doubleWeaknessBroken = weakPointsBroken >= 2;
+
+  return {
+    newBoard,
+    flippedIndices: allFlips,
+    comboType,
+    comboCount: allFlips.length,
+    isCriticalShatter,
+    maxPowerDiff,
+    doubleWeaknessBroken,
+  };
+};
+export const checkFlips = (
+  board: Board, 
+  placedIdx: number, 
+  playerMultiplier: number = 1, 
+  elementalBoard: ElementalTile[] = [],
+  isSuddenDeath: boolean = false
+): Board => {
+  return checkFlipsWithDetails(board, placedIdx, playerMultiplier, elementalBoard, isSuddenDeath).newBoard;
 };
 
 const simulateAbility = (board: Board, index: number, card: CardData): Board => {
@@ -174,12 +270,18 @@ export const findBestMove = (
   playerMultiplier: number = 1,
   elementalBoard: ElementalTile[] = [],
   difficulty: AiDifficulty = 'hard',
-  isSuddenDeath: boolean = false
-): { cardIdx: number, boardIdx: number, reason: string } | null => {
+  isSuddenDeath: boolean = false,
+  gambitConfig?: GambitConfig,
+  tacticalStance: TacticalStance = 'balanced'
+): { cardIdx: number, boardIdx: number, score: number, reason: string } | null => {
   const possibleBoardIndices = board.map((c, i) => c === null ? i : -1).filter(i => i !== -1);
   if (possibleBoardIndices.length === 0 || hand.length === 0) return null;
 
   let moves: { cardIdx: number, boardIdx: number, score: number, reason: string }[] = [];
+
+  // Tactical stance weighting multipliers (Item 401)
+  const stanceAtkMult = tacticalStance === 'attack' ? 1.6 : (tacticalStance === 'defense' ? 0.75 : 1.0);
+  const stanceDefMult = tacticalStance === 'defense' ? 2.5 : (tacticalStance === 'attack' ? 0.5 : 1.0);
 
   hand.forEach((card, cIdx) => {
     possibleBoardIndices.forEach(bIdx => {
@@ -191,6 +293,8 @@ export const findBestMove = (
       const afterMoveBoard = checkFlips(virtualBoard, bIdx, playerMultiplier, elementalBoard, isSuddenDeath);
       let flippedCount = 0;
       let keyTargetSnipeBonus = 0;
+      let counteredElementCount = 0;
+
       afterMoveBoard.forEach((c, i) => {
         if (board[i] && board[i]!.owner !== side && c!.owner === side) {
           flippedCount++;
@@ -204,6 +308,14 @@ export const findBestMove = (
             flippedCard.ability?.type === 'TIME_WARP';
           if (isHighValue) {
             keyTargetSnipeBonus += 350;
+          }
+
+          // Check if flipped via elemental counter
+          if (card.element && flippedCard.element) {
+            const elWins: Record<string, string> = { water: 'fire', fire: 'earth', earth: 'wind', wind: 'water' };
+            if (elWins[card.element] === flippedCard.element) {
+              counteredElementCount++;
+            }
           }
         }
       });
@@ -234,8 +346,38 @@ export const findBestMove = (
 
       // Cascade Multiplier: 2.0x weight for multi-tile flips + Item 358 Sniper bonus
       const cascadeMultiplier = flippedCount >= 2 ? 2.0 : 1.0;
-      let score = (flippedCount * 450 * cascadeMultiplier) + keyTargetSnipeBonus;
+      let score = (flippedCount * 450 * cascadeMultiplier * stanceAtkMult) + (keyTargetSnipeBonus * stanceAtkMult);
       let moveReason = strategy as string;
+
+      // Item 393: Player-Configured 'Gambit' Tactics Priority Engine
+      if (gambitConfig && gambitConfig.slots) {
+        const slotWeights = [380, 240, 140];
+        gambitConfig.slots.forEach((priority, pIdx) => {
+          const pWeight = slotWeights[pIdx] || 100;
+          if (priority === 'COUNTER_ELEMENT' && counteredElementCount > 0) {
+            score += pWeight * 1.5 * counteredElementCount;
+            moveReason = `Gambit P${pIdx + 1}: 속성 카운터 캡처`;
+          } else if (priority === 'SECURE_CORNERS' && isCorner) {
+            score += pWeight * (flippedCount > 0 ? 1.3 : 1.0);
+            moveReason = `Gambit P${pIdx + 1}: 모서리 요충지 선점`;
+          } else if (priority === 'PRESERVE_ACE') {
+            const isAce = (card.power || 0) >= 140 || card.rarity === 'legendary';
+            if (!isAce && possibleBoardIndices.length >= 4) {
+              score += pWeight * 1.2; // Save Ace for late game
+              moveReason = `Gambit P${pIdx + 1}: 에이스 보존 전략`;
+            }
+          } else if (priority === 'SNIPE_HIGH_VALUE' && keyTargetSnipeBonus > 0) {
+            score += pWeight * 1.8;
+            moveReason = `Gambit P${pIdx + 1}: 고가치 영웅 저격`;
+          } else if (priority === 'INTERCEPT_SYNERGY') {
+            // Check if intercepting buff or synergy lines
+            if (bIdx === 4 || elementalBoard[bIdx] !== undefined) {
+              score += pWeight * 1.2;
+              moveReason = `Gambit P${pIdx + 1}: 연계/버프 타일 선점`;
+            }
+          }
+        });
+      }
 
       // Item 366: Buff-Denial & Intercept Smart AI (+320 pts for intercepting neutral buff / bonus tiles)
       const isBuffOrPowerTile = bIdx === 4 || elementalBoard[bIdx] !== undefined;
@@ -253,7 +395,6 @@ export const findBestMove = (
 
       // Item 370: 2-Ply Bait & Trap Placement AI (Deploy bait card to set up decisive next-turn capture)
       if (flippedCount === 0 && (row === 1 || col === 1) && !isCenter) {
-        // Edge slot baiting enemy into center
         const centerCard = board[4];
         if (!centerCard) {
           score += 280;
@@ -261,19 +402,69 @@ export const findBestMove = (
         }
       }
 
+      // Item 374: Enemy Synergy Disruption Heuristics (Intercept opponent 2-tile elemental alignment)
+      const lines = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+      ];
+      let isEnemySynergyIntercept = false;
+      lines.forEach(l => {
+        if (l.includes(bIdx)) {
+          const otherTwo = l.filter(i => i !== bIdx);
+          const c1 = board[otherTwo[0]];
+          const c2 = board[otherTwo[1]];
+          if (c1 && c2 && c1.owner !== side && c2.owner !== side && (c1.element === c2.element || c1.power === c2.power)) {
+            isEnemySynergyIntercept = true;
+          }
+        }
+      });
+      if (isEnemySynergyIntercept) {
+        score += 280;
+        moveReason = 'Disrupt Chain (적 속성 연계 분단 차단)';
+      }
+
+      // Item 378: Card Auto-Rotation Optimization AI (Simulate 4 directional rotations for best capture angle)
+      if (card.stats && card.stats.length === 4) {
+        let bestRotBonus = 0;
+        const statRotations = [
+          card.stats,
+          [card.stats[3], card.stats[0], card.stats[1], card.stats[2]],
+          [card.stats[2], card.stats[3], card.stats[0], card.stats[1]],
+          [card.stats[1], card.stats[2], card.stats[3], card.stats[0]],
+        ];
+        statRotations.forEach((rotStats, rotIdx) => {
+          if (rotIdx === 0) return;
+          const rotCard = { ...card, stats: rotStats as [number, number, number, number] };
+          const rotBoard = simulateAbility(board, bIdx, rotCard);
+          const rotAfter = checkFlips(rotBoard, bIdx, playerMultiplier, elementalBoard, isSuddenDeath);
+          let rotFlips = 0;
+          rotAfter.forEach((c, i) => {
+            if (board[i] && board[i]!.owner !== side && c!.owner === side) rotFlips++;
+          });
+          if (rotFlips > flippedCount) {
+            bestRotBonus = Math.max(bestRotBonus, (rotFlips - flippedCount) * 200 + 120);
+          }
+        });
+        if (bestRotBonus > 0) {
+          score += bestRotBonus;
+          moveReason = 'Auto-Rotate (최적 각도 회전 캡처)';
+        }
+      }
+
       if (strategy === 'random') {
         score = Math.random() * 1000; // Randomly weight moves
-      } else if (strategy === 'aggressive') {
-        score += (isCenter ? 100 : 0) + (exposeScore * 0.5);
-      } else if (strategy === 'defensive') {
-        score += (isCorner ? 120 : 0) + (exposeScore * 5.0);
+      } else if (strategy === 'aggressive' || tacticalStance === 'attack') {
+        score += (isCenter ? 140 : 0) + (exposeScore * 0.5 * stanceDefMult);
+      } else if (strategy === 'defensive' || tacticalStance === 'defense') {
+        score += (isCorner ? 180 : 0) + (exposeScore * 4.0 * stanceDefMult);
       } else {
-        score += (isCorner ? 60 : 0) + (exposeScore * 2.0);
+        score += (isCorner ? 80 : 0) + (exposeScore * 2.0 * stanceDefMult);
       }
 
       // Elemental affinity bonus
       if (card.element && card.element === elementalBoard[bIdx]) {
-        score += 50;
+        score += 60;
       }
       
       if (card.ability?.type === 'TIME_WARP') {
@@ -281,7 +472,7 @@ export const findBestMove = (
       }
 
       // Lookahead Risk
-      if (strategy !== 'aggressive') {
+      if (strategy !== 'aggressive' && tacticalStance !== 'attack') {
          let maxRisk = 0;
          dirs.forEach(d => {
             const nr = row + d.r;
@@ -291,7 +482,7 @@ export const findBestMove = (
                maxRisk = Math.max(maxRisk, 12 - ourStat); 
             }
          });
-         score -= (maxRisk * 30);
+         score -= (maxRisk * 25 * stanceDefMult);
       }
 
       moves.push({ cardIdx: cIdx, boardIdx: bIdx, score, reason: moveReason });

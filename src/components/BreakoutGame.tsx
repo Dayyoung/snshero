@@ -14,24 +14,75 @@ interface BreakoutGameProps {
   onReward: (amount: number) => void;
 }
 
+export type BreakoutDifficulty = 'easy' | 'normal' | 'hard';
+
+export const BREAKOUT_DIFFICULTY_CONFIG: Record<BreakoutDifficulty, {
+  cols: number;
+  rows: number;
+  paddleW: number;
+  baseSpeed: number;
+  maxSpeed: number;
+  lives: number;
+  minReward: number;
+  winReward: number;
+  pointDiv: number;
+  nameKo: string;
+  nameEn: string;
+}> = {
+  easy: {
+    cols: 8,
+    rows: 6,
+    paddleW: 75,
+    baseSpeed: 3.5,
+    maxSpeed: 5.5,
+    lives: 4,
+    minReward: 15,
+    winReward: 35,
+    pointDiv: 15,
+    nameKo: '쉬움',
+    nameEn: 'Easy',
+  },
+  normal: {
+    cols: 10,
+    rows: 8,
+    paddleW: 60,
+    baseSpeed: 4.2,
+    maxSpeed: 6.8,
+    lives: 3,
+    minReward: 20,
+    winReward: 48,
+    pointDiv: 18,
+    nameKo: '보통',
+    nameEn: 'Normal',
+  },
+  hard: {
+    cols: 10,
+    rows: 10,
+    paddleW: 48,
+    baseSpeed: 5.0,
+    maxSpeed: 8.0,
+    lives: 2,
+    minReward: 25,
+    winReward: 60,
+    pointDiv: 20,
+    nameKo: '어려움',
+    nameEn: 'Hard',
+  }
+};
+
 const CANVAS_W = 400;
 const CANVAS_H = 600;
-const PADDLE_W = 60;
 const PADDLE_H = 10;
 const BALL_R = 5;
-const BRICK_COLS = 10;
-const BRICK_ROWS = 10;
-const BRICK_W = CANVAS_W / BRICK_COLS;
 const BRICK_H = 18;
 const BRICK_TOP = 50;
-const MAX_LIVES = 3;
-const BALL_BASE_SPEED = 4;
-const BALL_MAX_SPEED = 7;
 const PADDLE_Y = CANVAS_H - 50 - 50;
 
 interface Brick {
   x: number;
   y: number;
+  w: number;
+  h: number;
   cardId: number;
   alive: boolean;
   row: number;
@@ -55,6 +106,9 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
   onExit,
   onReward
 }) => {
+  const [difficulty, setDifficulty] = useState<BreakoutDifficulty>('normal');
+  const cfg = BREAKOUT_DIFFICULTY_CONFIG[difficulty];
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef(0);
   const lastTimeRef = useRef(0);
@@ -63,14 +117,15 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
 
   const gameRef = useRef({
     paddleX: CANVAS_W / 2,
+    paddleW: cfg.paddleW,
     ballX: CANVAS_W / 2,
     ballY: PADDLE_Y - 30,
-    ballVX: BALL_BASE_SPEED * 0.7,
-    ballVY: -BALL_BASE_SPEED,
+    ballVX: cfg.baseSpeed * 0.7,
+    ballVY: -cfg.baseSpeed,
     bricks: [] as Brick[],
     particles: [] as Particle[],
     score: 0,
-    lives: MAX_LIVES,
+    lives: cfg.lives,
     isGameOver: false,
     isWin: false,
     started: false,
@@ -80,9 +135,10 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
   const touchRef = useRef<{ active: boolean; x: number }>({ active: false, x: 0 });
   const keysRef = useRef<Set<string>>(new Set());
   const [hudScore, setHudScore] = useState(0);
-  const [hudLives, setHudLives] = useState(MAX_LIVES);
+  const [hudLives, setHudLives] = useState(cfg.lives);
   const [hudGameOver, setHudGameOver] = useState(false);
   const [hudWin, setHudWin] = useState(false);
+  const [earnedReward, setEarnedReward] = useState(0);
   const hudCounter = useRef(0);
 
   useEffect(() => {
@@ -91,14 +147,18 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
     cardImgRef.current = img;
   }, []);
 
-  const buildBricks = useCallback((): Brick[] => {
+  const buildBricks = useCallback((diff: BreakoutDifficulty): Brick[] => {
+    const dCfg = BREAKOUT_DIFFICULTY_CONFIG[diff];
+    const brickW = CANVAS_W / dCfg.cols;
     const bricks: Brick[] = [];
-    for (let row = 0; row < BRICK_ROWS; row++) {
-      for (let col = 0; col < BRICK_COLS; col++) {
-        const cardId = ((row * BRICK_COLS + col) % 110) + 1;
+    for (let row = 0; row < dCfg.rows; row++) {
+      for (let col = 0; col < dCfg.cols; col++) {
+        const cardId = ((row * dCfg.cols + col) % 110) + 1;
         bricks.push({
-          x: col * BRICK_W,
+          x: col * brickW,
           y: BRICK_TOP + row * BRICK_H,
+          w: brickW,
+          h: BRICK_H,
           cardId: CARD_DATABASE[cardId] ? cardId : 1,
           alive: true,
           row,
@@ -108,18 +168,21 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
     return bricks;
   }, []);
 
-  const startGame = useCallback(() => {
+  const startGame = useCallback((diffToUse?: BreakoutDifficulty) => {
+    const targetDiff = diffToUse || difficulty;
+    const dCfg = BREAKOUT_DIFFICULTY_CONFIG[targetDiff];
     const g = gameRef.current;
     g.paddleX = CANVAS_W / 2;
+    g.paddleW = dCfg.paddleW;
     g.ballX = CANVAS_W / 2;
     g.ballY = PADDLE_Y - 30;
     const angle = -(Math.PI / 4 + Math.random() * Math.PI / 4);
-    g.ballVX = BALL_BASE_SPEED * Math.cos(angle) * (Math.random() < 0.5 ? 1 : -1);
-    g.ballVY = -BALL_BASE_SPEED;
-    g.bricks = buildBricks();
+    g.ballVX = dCfg.baseSpeed * Math.cos(angle) * (Math.random() < 0.5 ? 1 : -1);
+    g.ballVY = -dCfg.baseSpeed;
+    g.bricks = buildBricks(targetDiff);
     g.particles = [];
     g.score = 0;
-    g.lives = MAX_LIVES;
+    g.lives = dCfg.lives;
     g.isGameOver = false;
     g.isWin = false;
     g.started = true;
@@ -127,21 +190,33 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
     rewardedRef.current = false;
     lastTimeRef.current = 0;
     setHudScore(0);
-    setHudLives(MAX_LIVES);
+    setHudLives(dCfg.lives);
     setHudGameOver(false);
     setHudWin(false);
-  }, [buildBricks]);
+    setEarnedReward(0);
+  }, [buildBricks, difficulty]);
 
   useEffect(() => {
-    startGame();
-  }, [startGame]);
+    startGame(difficulty);
+  }, [difficulty, startGame]);
+
+  const calcReward = useCallback((isWin: boolean, score: number, diff: BreakoutDifficulty, livesLeft: number) => {
+    const dCfg = BREAKOUT_DIFFICULTY_CONFIG[diff];
+    if (isWin) {
+      return Math.min(60, dCfg.winReward + livesLeft * 2);
+    }
+    const scoreBonus = Math.floor(score / dCfg.pointDiv);
+    return Math.min(dCfg.winReward - 5, Math.max(dCfg.minReward, 10 + scoreBonus));
+  }, []);
 
   useEffect(() => {
     if ((hudGameOver || hudWin) && !rewardedRef.current) {
       rewardedRef.current = true;
-      onReward(Math.floor(gameRef.current.score / 20));
+      const finalReward = calcReward(hudWin, gameRef.current.score, difficulty, gameRef.current.lives);
+      setEarnedReward(finalReward);
+      onReward(finalReward);
     }
-  }, [hudGameOver, hudWin, onReward]);
+  }, [calcReward, difficulty, hudGameOver, hudWin, onReward]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -201,9 +276,11 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
         g.paddleX += diff * 0.3;
       }
 
-      g.paddleX = Math.max(PADDLE_W / 2, Math.min(CANVAS_W - PADDLE_W / 2, g.paddleX));
+      const curPaddleW = g.paddleW || cfg.paddleW;
+      g.paddleX = Math.max(curPaddleW / 2, Math.min(CANVAS_W - curPaddleW / 2, g.paddleX));
 
-      const speed = Math.min(BALL_BASE_SPEED * g.speedMultiplier, BALL_MAX_SPEED);
+      const dCfg = BREAKOUT_DIFFICULTY_CONFIG[difficulty];
+      const speed = Math.min(dCfg.baseSpeed * g.speedMultiplier, dCfg.maxSpeed);
       const currentSpeed = Math.sqrt(g.ballVX * g.ballVX + g.ballVY * g.ballVY);
       if (currentSpeed > 0) {
         const factor = speed / currentSpeed;
@@ -248,8 +325,8 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
         return;
       }
 
-      const pLeft = g.paddleX - PADDLE_W / 2;
-      const pRight = g.paddleX + PADDLE_W / 2;
+      const pLeft = g.paddleX - curPaddleW / 2;
+      const pRight = g.paddleX + curPaddleW / 2;
       const pTop = PADDLE_Y;
       if (
         g.ballY + BALL_R >= pTop &&
@@ -259,7 +336,7 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
         g.ballVY > 0
       ) {
         g.ballY = pTop - BALL_R;
-        const hitPos = (g.ballX - g.paddleX) / (PADDLE_W / 2);
+        const hitPos = (g.ballX - g.paddleX) / (curPaddleW / 2);
         const angle = hitPos * (Math.PI / 3);
         g.ballVX = speed * Math.sin(angle);
         g.ballVY = -speed * Math.cos(angle);
@@ -270,9 +347,9 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
         if (!brick.alive) continue;
 
         const bLeft = brick.x;
-        const bRight = brick.x + BRICK_W;
+        const bRight = brick.x + brick.w;
         const bTop = brick.y;
-        const bBottom = brick.y + BRICK_H;
+        const bBottom = brick.y + brick.h;
 
         if (
           g.ballX + BALL_R > bLeft &&
@@ -296,13 +373,13 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
             g.ballVY = -g.ballVY;
           }
 
-          g.speedMultiplier = Math.min(g.speedMultiplier + 0.002, 1.6);
+          g.speedMultiplier = Math.min(g.speedMultiplier + 0.003, 1.6);
 
           if (!lowSpecMode) {
             for (let i = 0; i < 3; i++) {
               g.particles.push({
-                x: brick.x + BRICK_W / 2,
-                y: brick.y + BRICK_H / 2,
+                x: brick.x + brick.w / 2,
+                y: brick.y + brick.h / 2,
                 vx: (Math.random() - 0.5) * 4,
                 vy: (Math.random() - 0.5) * 4,
                 life: 400, maxLife: 400,
@@ -319,7 +396,7 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
         }
       }
 
-      if (g.bricks.every(b => !b.alive)) {
+      if (g.bricks.length > 0 && g.bricks.every(b => !b.alive)) {
         g.isWin = true;
         setHudWin(true);
         playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
@@ -340,7 +417,7 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [language, lowSpecMode, playSfx]);
+  }, [cfg.paddleW, difficulty, language, lowSpecMode, playSfx]);
 
   const renderCanvas = (g: typeof gameRef.current, timestamp: number) => {
     const canvas = canvasRef.current;
@@ -350,10 +427,7 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
 
     ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
 
-    const bgGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_H);
-    bgGrad.addColorStop(0, '#0f172a');
-    bgGrad.addColorStop(1, '#1e1b4b');
-    ctx.fillStyle = bgGrad;
+    ctx.fillStyle = '#0f172a';
     ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
     if (!lowSpecMode) {
@@ -390,10 +464,10 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
 
       const bx = brick.x + 1;
       const by = brick.y + 1;
-      const bw = BRICK_W - 2;
-      const bh = BRICK_H - 2;
+      const bw = brick.w - 2;
+      const bh = brick.h - 2;
 
-      drawCard(brick.cardId, brick.x + BRICK_W / 2, brick.y + BRICK_H / 2, Math.min(bw, bh) - 2);
+      drawCard(brick.cardId, brick.x + brick.w / 2, brick.y + brick.h / 2, Math.min(bw, bh) - 2);
 
       ctx.strokeStyle = rowColors[brick.row % rowColors.length];
       ctx.lineWidth = 2;
@@ -411,10 +485,11 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
     ctx.fillStyle = '#6366f1';
     ctx.shadowColor = '#818cf8';
     ctx.shadowBlur = lowSpecMode ? 0 : 10;
-    const pX = g.paddleX - PADDLE_W / 2;
+    const curPaddleW = g.paddleW || cfg.paddleW;
+    const pX = g.paddleX - curPaddleW / 2;
     const pY = PADDLE_Y;
     ctx.beginPath();
-    ctx.roundRect(pX, pY, PADDLE_W, PADDLE_H, 5);
+    ctx.roundRect(pX, pY, curPaddleW, PADDLE_H, 4);
     ctx.fill();
     ctx.shadowBlur = 0;
 
@@ -428,7 +503,7 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
 
     ctx.save();
     ctx.fillStyle = 'white';
-    ctx.font = 'bold 20px sans-serif';
+    ctx.font = 'bold 20px monospace';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillText(`${g.score}`, 10, 10);
@@ -458,28 +533,59 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
   };
 
   return (
-    <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white flex flex-col items-center justify-between font-sans select-none overflow-hidden pb-3">
+    <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white flex flex-col items-center justify-between font-mono select-none overflow-hidden pb-3">
       <header className="w-full max-w-lg flex items-center justify-between px-3 py-2 shrink-0">
-        <button onClick={onExit} className="p-2 rounded-2xl bg-white/10 hover:bg-white/15 transition-colors cursor-pointer">
-          <ArrowLeft size={20} />
+        <button onClick={onExit} className="p-2 rounded-sm bg-white/10 hover:bg-white/15 transition-colors cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center">
+          <ArrowLeft size={18} />
         </button>
         <div className="text-center">
-          <h1 className="text-base sm:text-lg font-black uppercase tracking-tight">{t('mode_breakout', language)}</h1>
+          <h1 className="text-sm sm:text-base font-bold tracking-tight">{t('mode_breakout', language)}</h1>
         </div>
-        <div className="px-3 py-1.5 rounded-2xl bg-indigo-500/20 border border-indigo-400/20 text-indigo-100 font-black text-xs sm:text-sm tabular-nums">
-          {hudScore}
+        <div className="px-2.5 py-1 rounded-sm bg-indigo-500/20 border border-indigo-400/30 text-indigo-200 font-bold text-xs sm:text-sm tabular-nums">
+          {hudScore} PTS
         </div>
       </header>
 
-      <div className="flex items-center gap-3 py-1 text-xs sm:text-sm font-bold shrink-0">
-        {Array.from({ length: MAX_LIVES }).map((_, i) => (
-          <Heart key={i} size={16} className={i < hudLives ? 'text-rose-500 fill-rose-500' : 'text-slate-600'} />
-        ))}
+      {/* Difficulty Selector & Lives Header */}
+      <div className="w-full max-w-lg px-3 flex items-center justify-between gap-2 shrink-0">
+        <div className="flex items-center gap-1">
+          {(['easy', 'normal', 'hard'] as BreakoutDifficulty[]).map((d) => {
+            const active = difficulty === d;
+            const dName = language === 'ko' ? BREAKOUT_DIFFICULTY_CONFIG[d].nameKo : BREAKOUT_DIFFICULTY_CONFIG[d].nameEn;
+            return (
+              <button
+                key={d}
+                type="button"
+                onClick={() => {
+                  if (difficulty !== d) {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    setDifficulty(d);
+                    startGame(d);
+                  }
+                }}
+                className={cn(
+                  "px-2 py-1 text-xs rounded-sm border transition-all cursor-pointer min-h-[36px]",
+                  active
+                    ? "bg-indigo-600 text-white border-indigo-500 font-bold"
+                    : "bg-white/5 text-slate-300 border-white/10 hover:bg-white/10"
+                )}
+              >
+                [{dName}]
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="flex items-center gap-1.5 py-1 text-xs font-bold shrink-0">
+          {Array.from({ length: cfg.lives }).map((_, i) => (
+            <Heart key={i} size={15} className={i < hudLives ? 'text-rose-500 fill-rose-500' : 'text-slate-700'} />
+          ))}
+        </div>
       </div>
 
       <main className="w-full max-w-lg flex-1 min-h-0 flex flex-col items-center justify-center px-3">
         <div
-          className={cn('relative w-full max-h-[58vh] overflow-hidden rounded-2xl border border-white/10 shadow-2xl')}
+          className={cn('relative w-full max-h-[58vh] overflow-hidden rounded-sm border border-white/10')}
           style={{ aspectRatio: `${CANVAS_W}/${CANVAS_H}`, touchAction: 'none' }}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
@@ -489,28 +595,47 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
           <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H} className="w-full h-full object-contain" />
 
           {(hudGameOver || hudWin) && (
-            <div className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-6">
-              <div className="bg-white text-slate-900 rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl">
+            <div className="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white text-slate-900 rounded-sm p-5 max-w-sm w-full text-center border border-slate-300 shadow-lg">
                 {hudWin ? (
-                  <Trophy size={42} className="mx-auto text-amber-500 mb-3" />
+                  <Trophy size={36} className="mx-auto text-amber-500 mb-2" />
                 ) : (
-                  <Heart size={42} className="mx-auto text-rose-500 mb-3" />
+                  <Heart size={36} className="mx-auto text-rose-500 mb-2" />
                 )}
-                <h2 className="text-xl font-black mb-1">
-                  {hudWin ? (language === 'ko' ? '승리!' : 'WIN!') : (language === 'ko' ? '게임 오버' : 'GAME OVER')}
+                <h2 className="text-lg font-bold mb-1">
+                  {hudWin ? (language === 'ko' ? '[승리! 완파 성공]' : '[VICTORY! CLEAR]') : (language === 'ko' ? '[게임 오버]' : '[GAME OVER]')}
                 </h2>
-                <p className="text-sm font-bold text-slate-500 mb-1">
-                  {language === 'ko' ? `점수: ${gameRef.current.score}` : `Score: ${gameRef.current.score}`}
-                </p>
-                <p className="text-sm font-bold text-indigo-600 mb-4">
-                  {t('breakout_reward', language).replace('{amount}', String(Math.floor(gameRef.current.score / 20)))}
-                </p>
+                <div className="text-xs text-slate-600 space-y-1 mb-3 bg-slate-50 p-2.5 rounded-sm border border-slate-200">
+                  <div className="flex justify-between">
+                    <span>{language === 'ko' ? '난이도' : 'Difficulty'}:</span>
+                    <span className="font-bold text-slate-900">[{language === 'ko' ? cfg.nameKo : cfg.nameEn}]</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>{language === 'ko' ? '최종 점수' : 'Final Score'}:</span>
+                    <span className="font-bold text-slate-900">{gameRef.current.score} PTS</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>{language === 'ko' ? '잔여 생명' : 'Remaining Lives'}:</span>
+                    <span className="font-bold text-slate-900">{gameRef.current.lives} / {cfg.lives}</span>
+                  </div>
+                </div>
+                <div className="mb-4 py-2 px-3 bg-indigo-50 border border-indigo-200 rounded-sm">
+                  <span className="text-xs text-indigo-700 font-bold">
+                    {language === 'ko' ? `보상 지급: +${earnedReward} SNS 포인트` : `Reward Earned: +${earnedReward} SNS Points`}
+                  </span>
+                </div>
                 <div className="flex gap-2">
-                  <button onClick={startGame} className="flex-1 py-3 bg-indigo-600 text-white rounded-2xl font-black flex items-center justify-center gap-2 cursor-pointer">
-                    <RotateCcw size={16} />
-                    {language === 'ko' ? '재시작' : 'Restart'}
+                  <button
+                    onClick={() => startGame(difficulty)}
+                    className="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-sm font-bold flex items-center justify-center gap-1.5 cursor-pointer min-h-[44px] text-xs"
+                  >
+                    <RotateCcw size={14} />
+                    {language === 'ko' ? '재도전' : 'Retry'}
                   </button>
-                  <button onClick={onExit} className="flex-1 py-3 bg-slate-900 text-white rounded-2xl font-black cursor-pointer">
+                  <button
+                    onClick={onExit}
+                    className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-sm font-bold cursor-pointer min-h-[44px] text-xs"
+                  >
                     {t('home', language)}
                   </button>
                 </div>
@@ -520,34 +645,36 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
         </div>
 
         {/* Mobile Left / Right buttons */}
-        <div className="mt-3 flex items-center justify-center gap-8 w-full max-w-xs sm:hidden select-none shrink-0">
+        <div className="mt-2.5 flex items-center justify-center gap-4 w-full max-w-xs sm:hidden select-none shrink-0">
           <button
             type="button"
             onPointerDown={() => {
               const g = gameRef.current;
               if (!g.started) g.started = true;
-              g.paddleX = Math.max(0, g.paddleX - 25);
+              const curPaddleW = g.paddleW || cfg.paddleW;
+              g.paddleX = Math.max(curPaddleW / 2, g.paddleX - 25);
             }}
-            className="flex-1 py-2.5 rounded-xl bg-white/10 active:bg-indigo-500/40 border border-white/20 flex items-center justify-center text-lg text-white active:scale-95 shadow-md touch-manipulation"
+            className="flex-1 py-3 rounded-sm bg-white/10 active:bg-indigo-600 border border-white/20 flex items-center justify-center text-sm font-bold text-white active:scale-95 touch-manipulation min-h-[44px]"
           >
-            ◀ {language === 'ko' ? '왼쪽' : 'Left'}
+            [◀ {language === 'ko' ? '왼쪽' : 'Left'}]
           </button>
           <button
             type="button"
             onPointerDown={() => {
               const g = gameRef.current;
               if (!g.started) g.started = true;
-              g.paddleX = Math.min(CANVAS_W - PADDLE_W, g.paddleX + 25);
+              const curPaddleW = g.paddleW || cfg.paddleW;
+              g.paddleX = Math.min(CANVAS_W - curPaddleW / 2, g.paddleX + 25);
             }}
-            className="flex-1 py-2.5 rounded-xl bg-white/10 active:bg-indigo-500/40 border border-white/20 flex items-center justify-center text-lg text-white active:scale-95 shadow-md touch-manipulation"
+            className="flex-1 py-3 rounded-sm bg-white/10 active:bg-indigo-600 border border-white/20 flex items-center justify-center text-sm font-bold text-white active:scale-95 touch-manipulation min-h-[44px]"
           >
-            {language === 'ko' ? '오른쪽' : 'Right'} ▶
+            [{language === 'ko' ? '오른쪽' : 'Right'} ▶]
           </button>
         </div>
       </main>
 
-      <div className="px-4 py-1.5 bg-white/5 rounded-2xl text-[9px] sm:text-[10px] text-slate-400 font-bold text-center max-w-lg shrink-0">
-        {language === 'ko' ? '화면 드래그 또는 하단 버튼으로 패들을 조작하세요' : 'Drag screen or tap buttons to move paddle'}
+      <div className="px-3 py-1 bg-white/5 rounded-sm text-[10px] text-slate-400 font-mono text-center max-w-lg shrink-0 border border-white/5">
+        {language === 'ko' ? '드래그 또는 좌우 버튼으로 패들 이동 | 난이도별 최대 35~60 SNS 보상' : 'Drag or tap buttons to move paddle | Up to 35~60 SNS reward'}
       </div>
     </div>
   );

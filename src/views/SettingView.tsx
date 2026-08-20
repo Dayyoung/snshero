@@ -1317,7 +1317,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 }}
                 className="flex-1 py-3 px-4 bg-slate-900 text-white rounded-xl font-mono text-xs font-bold hover:bg-slate-800 transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-98 shadow-sm"
               >
-                [+] {t('backup_data', language)} (QR코드)
+                [+] {t('backup_data', language)}
               </button>
               <button
                 type="button"
@@ -1327,7 +1327,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 }}
                 className="flex-1 py-3 px-4 bg-emerald-700 text-white rounded-xl font-mono text-xs font-bold hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-98 shadow-sm"
               >
-                [+] {t('restore_data', language)} (카메라 스캔)
+                [+] {t('restore_data', language)}
               </button>
               <button
                 type="button"

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX, Zap, Clock, Pause, PanelLeftClose, PanelLeftOpen, Layers, Image, Film, Github, Youtube, Grid3X3 } from "lucide-react";
+import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX, Zap, Clock, Pause, PanelLeftClose, PanelLeftOpen, Layers, Image, Film, Github, Youtube } from "lucide-react";
 import { NotificationCenterModal } from "../components/NotificationCenterModal";
 import { getUnreadCount } from "../lib/notificationHelper";
 import { motion, AnimatePresence } from "motion/react";
@@ -775,29 +775,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
           )}
         </div>
 
-        {/* ── External Link Buttons: Source Code & Dev Playlist & Tools ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 pt-1">
-          <button
-            onClick={() => {
-              playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-              onNavigate('tool-grid');
-            }}
-            className="w-full p-3.5 sm:p-4 bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-sm flex items-center justify-between transition-all group active:scale-[0.98] cursor-pointer"
-          >
-            <div className="flex items-center gap-3 font-mono">
-              <Grid3X3 size={20} className="text-amber-600 group-hover:scale-110 transition-transform shrink-0" />
-              <div className="text-left">
-                <div className="text-xs sm:text-sm font-bold uppercase tracking-tight">
-                  {language === 'ko' ? '그리드 생성기' : 'Grid Generator'}
-                </div>
-                <div className="text-[10px] text-[#646262] font-mono">/tool/grid CSS Tool</div>
-              </div>
-            </div>
-            <span className="text-xs font-mono text-[#646262] group-hover:text-[#201d1d] font-bold">
-              [→]
-            </span>
-          </button>
-
+        {/* ── External Link Buttons: Source Code & Dev Playlist ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 pt-1">
           <a
             href="https://github.com/Dayyoung/snshero"
             target="_blank"

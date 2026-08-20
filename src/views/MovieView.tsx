@@ -16,7 +16,8 @@ import {
   Clock,
   Info,
   Maximize,
-  Minimize
+  Minimize,
+  RefreshCw
 } from 'lucide-react';
 import { Language, ViewType } from '../types';
 import { t } from '../lib/i18n';
@@ -45,8 +46,8 @@ const TOTAL_EPISODES = 40;
 const YOUTUBE_PLAYLIST_ID = 'PLOLtCtApKgp8';
 const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/playlist?list=PLOLtCtApKgp8';
 
-// 기본 공개 완료 에피소드 기본값 (1화 ~ 5화)
-const DEFAULT_RELEASED_COUNT = 5;
+// 기본 공개 완료 에피소드 기본값 (현재 최소 6화까지 공개됨)
+const DEFAULT_RELEASED_COUNT = 6;
 
 export const MovieView: React.FC<MovieViewProps> = ({
   language,
@@ -63,7 +64,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
     return isNaN(parsed) || parsed < 1 || parsed > TOTAL_EPISODES ? 1 : parsed;
   });
 
-  // 공개된 에피소드 개수 (최소 5화부터 시작하여 유동 감지)
+  // 공개된 에피소드 개수 (최소 6화부터 시작하여 유동 감지)
   const [releasedCount, setReleasedCount] = useState<number>(() => {
     const saved = getSeasonItem('hero_movie_released_count', currentSeason);
     const parsed = saved ? parseInt(saved, 10) : DEFAULT_RELEASED_COUNT;
@@ -100,49 +101,68 @@ export const MovieView: React.FC<MovieViewProps> = ({
     }
   };
 
-  // 최초화면 진입 시 유튜브 플레이리스트 최신 목록 동적 확인
-  useEffect(() => {
-    let isMounted = true;
-    const fetchLatestPlaylistStatus = async () => {
-      setIsCheckingPlaylist(true);
-      try {
-        // AllOrigins / CORS proxy를 이용하여 YouTube RSS feed에서 공개 비디오 개수 파싱
-        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(
-          `https://www.youtube.com/feeds/videos.xml?playlist_id=${YOUTUBE_PLAYLIST_ID}`
-        )}`;
-        
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4000);
-        
-        const res = await fetch(proxyUrl, { signal: controller.signal });
-        clearTimeout(timeoutId);
+  // 유튜브 플레이리스트 최신 목록 동적 확인 (다중 CORS 프록시 fallback 체인 지원)
+  const fetchLatestPlaylistStatus = async (silent = false) => {
+    setIsCheckingPlaylist(true);
+    try {
+      const rawRssUrl = `https://www.youtube.com/feeds/videos.xml?playlist_id=${YOUTUBE_PLAYLIST_ID}`;
+      const proxyList = [
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(rawRssUrl)}`,
+        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rawRssUrl)}`,
+        `https://corsproxy.io/?url=${encodeURIComponent(rawRssUrl)}`
+      ];
 
-        if (res.ok) {
-          const text = await res.text();
-          // <yt:videoId> 매칭하여 비디오 ID 목록 파악
-          const videoIdMatches = Array.from(text.matchAll(/<yt:videoId>([^<]+)<\/yt:videoId>/g)).map(m => m[1]);
-          if (videoIdMatches.length > 0 && isMounted) {
-            setPlaylistVideoIds(videoIdMatches);
-            const fetchedCount = Math.max(videoIdMatches.length, DEFAULT_RELEASED_COUNT);
-            setReleasedCount(fetchedCount);
-            setSeasonItem('hero_movie_released_count', fetchedCount.toString(), currentSeason);
+      let fetchedVideoIds: string[] = [];
+
+      for (const pUrl of proxyList) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3500);
+          const res = await fetch(pUrl, { signal: controller.signal });
+          clearTimeout(timeoutId);
+
+          if (res.ok) {
+            const text = await res.text();
+            const matches = Array.from(text.matchAll(/<yt:videoId>([^<]+)<\/yt:videoId>/g)).map(m => m[1]);
+            if (matches.length > 0) {
+              fetchedVideoIds = matches;
+              break;
+            }
           }
+        } catch {
+          // try next proxy
         }
-      } catch (err) {
-        console.warn('Movie playlist dynamic check notice (using default cache):', err);
-      } finally {
-        if (isMounted) setIsCheckingPlaylist(false);
       }
-    };
 
-    fetchLatestPlaylistStatus();
+      if (fetchedVideoIds.length > 0) {
+        setPlaylistVideoIds(fetchedVideoIds);
+        const count = Math.max(fetchedVideoIds.length, DEFAULT_RELEASED_COUNT);
+        setReleasedCount(count);
+        setSeasonItem('hero_movie_released_count', count.toString(), currentSeason);
 
-    return () => {
-      isMounted = false;
-    };
+        if (!silent && showCustomAlert) {
+          showCustomAlert(
+            language === 'ko' ? '동기화 완료' : 'Sync Complete',
+            language === 'ko'
+              ? `유튜브 플레이리스트에서 총 ${count}화 공개 완료 상태를 동기화했습니다.`
+              : `Successfully synced ${count} released episodes from YouTube playlist.`
+          );
+        }
+        return;
+      }
+    } catch (err) {
+      console.warn('Movie playlist dynamic check notice (using cache):', err);
+    } finally {
+      setIsCheckingPlaylist(false);
+    }
+  };
+
+  // 최초화면 진입 시 자동 확인
+  useEffect(() => {
+    fetchLatestPlaylistStatus(true);
   }, [currentSeason]);
 
-  // YouTube IFrame API Initializer
+  // YouTube IFrame API Initializer (플레이어의 getPlaylist() 동적 감지 포함)
   useEffect(() => {
     let isMounted = true;
 
@@ -161,6 +181,22 @@ export const MovieView: React.FC<MovieViewProps> = ({
       }
     }
 
+    const syncPlaylistFromPlayer = (player: any) => {
+      try {
+        if (typeof player.getPlaylist === 'function') {
+          const list = player.getPlaylist();
+          if (Array.isArray(list) && list.length > 0 && isMounted) {
+            setPlaylistVideoIds(list);
+            const count = Math.max(list.length, DEFAULT_RELEASED_COUNT);
+            setReleasedCount(count);
+            setSeasonItem('hero_movie_released_count', count.toString(), currentSeason);
+          }
+        }
+      } catch (err) {
+        console.warn('YouTube player getPlaylist notice:', err);
+      }
+    };
+
     const initYTPlayer = () => {
       if (window.YT && window.YT.Player && !playerRef.current) {
         try {
@@ -169,6 +205,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
               onReady: (event: any) => {
                 if (!isMounted) return;
                 setIsPlayerReady(true);
+                syncPlaylistFromPlayer(event.target);
                 try {
                   const targetVideoId = getVideoId(currentEpisodeNum);
                   if (targetVideoId && typeof event.target.cueVideoById === 'function') {
@@ -183,6 +220,10 @@ export const MovieView: React.FC<MovieViewProps> = ({
                 } catch (err) {
                   console.warn('Cue playlist error:', err);
                 }
+              },
+              onStateChange: (event: any) => {
+                if (!isMounted) return;
+                syncPlaylistFromPlayer(event.target);
               },
             },
           });
@@ -205,7 +246,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [currentSeason]);
 
   // Sync player episode when currentEpisodeNum changes
   useEffect(() => {
@@ -334,14 +375,26 @@ export const MovieView: React.FC<MovieViewProps> = ({
         title={t('movie_title', language) || 'SNSHero 공식 영화 (극장판)'}
         onBack={() => onNavigate('home')}
         rightAction={
-          <button
-            type="button"
-            onClick={() => setShowDrawer(true)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-white text-xs font-bold text-[#201d1d] hover:bg-[#f8f7f7] transition-colors cursor-pointer touch-target shrink-0"
-          >
-            <List size={16} />
-            <span className="hidden sm:inline">{t('movie_list', language) || '영화 회차 목록'}</span>
-          </button>
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => fetchLatestPlaylistStatus(false)}
+              disabled={isCheckingPlaylist}
+              title="YouTube 최신 회차 동기화"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-white text-xs font-bold text-[#201d1d] hover:bg-[#f8f7f7] disabled:opacity-50 transition-colors cursor-pointer touch-target shrink-0 font-mono"
+            >
+              <RefreshCw size={14} className={cn(isCheckingPlaylist && 'animate-spin text-rose-600')} />
+              <span className="hidden sm:inline">동기화</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowDrawer(true)}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-white text-xs font-bold text-[#201d1d] hover:bg-[#f8f7f7] transition-colors cursor-pointer touch-target shrink-0"
+            >
+              <List size={16} />
+              <span className="hidden sm:inline">{t('movie_list', language) || '영화 회차 목록'}</span>
+            </button>
+          </div>
         }
       />
 
@@ -361,8 +414,8 @@ export const MovieView: React.FC<MovieViewProps> = ({
                   {releasedCount}화 공개 중
                 </span>
                 {isCheckingPlaylist && (
-                  <span className="text-[10px] text-neutral-400 animate-pulse font-mono">
-                    (최신 목록 동기화 중...)
+                  <span className="text-[10px] text-rose-300 animate-pulse font-mono">
+                    (YouTube 최신 목록 확인 중...)
                   </span>
                 )}
               </div>
@@ -372,15 +425,26 @@ export const MovieView: React.FC<MovieViewProps> = ({
             </div>
           </div>
 
-          <a
-            href={YOUTUBE_PLAYLIST_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-rose-600 hover:bg-rose-700 text-white font-mono text-xs font-bold transition active:scale-95 shrink-0"
-          >
-            <ExternalLink size={14} />
-            <span>YouTube 전체 플레이리스트</span>
-          </a>
+          <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto justify-end">
+            <button
+              type="button"
+              onClick={() => fetchLatestPlaylistStatus(false)}
+              disabled={isCheckingPlaylist}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm bg-white/10 hover:bg-white/20 border border-white/20 text-white font-mono text-xs font-bold transition active:scale-95 shrink-0 cursor-pointer"
+            >
+              <RefreshCw size={13} className={cn(isCheckingPlaylist && 'animate-spin')} />
+              <span>{isCheckingPlaylist ? '동기화 중...' : '최신 회차 동기화'}</span>
+            </button>
+            <a
+              href={YOUTUBE_PLAYLIST_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-rose-600 hover:bg-rose-700 text-white font-mono text-xs font-bold transition active:scale-95 shrink-0"
+            >
+              <ExternalLink size={14} />
+              <span>YouTube 전체 재생목록</span>
+            </a>
+          </div>
         </div>
       </div>
 
