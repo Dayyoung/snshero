@@ -2568,11 +2568,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                           id: `g-t-${idx}`,
                                           owner: null,
                                           level: 1,
-                                          imageIndex: CARD_DATABASE[obj.imageIndex]?.index
+                                          imageIndex: obj.imageIndex
                                         }}
                                         className="w-full h-full rounded-lg overflow-hidden"
                                         customImage={customCardImage}
-                                        processedImage={processedCardImages?.[CARD_DATABASE[obj.imageIndex]?.index - 1]}
+                                        processedImage={processedCardImages?.[obj.imageIndex - 1]}
                                         lowSpecMode={true}
                                       />
                                     )}
@@ -2683,11 +2683,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                           id: `g-b-${idx}`,
                                           owner: null,
                                           level: 1,
-                                          imageIndex: CARD_DATABASE[obj.imageIndex]?.index
+                                          imageIndex: obj.imageIndex
                                         }}
                                         className="w-full h-full rounded-lg overflow-hidden"
                                         customImage={customCardImage}
-                                        processedImage={processedCardImages?.[CARD_DATABASE[obj.imageIndex]?.index - 1]}
+                                        processedImage={processedCardImages?.[obj.imageIndex - 1]}
                                         lowSpecMode={true}
                                       />
                                     )}
@@ -3875,11 +3875,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
                               id: 'goods-modal-preview',
                               owner: null,
                               level: 1,
-                              imageIndex: CARD_DATABASE[selectedGoods === 'mug' ? mugCardId : tshirtCardId]?.index
+                              imageIndex: selectedGoods === 'mug' ? mugCardId : tshirtCardId
                             }}
                             className="w-full h-full text-[4px]"
                             customImage={customCardImage}
-                            processedImage={processedCardImages?.[CARD_DATABASE[selectedGoods === 'mug' ? mugCardId : tshirtCardId]?.index - 1]}
+                            processedImage={processedCardImages?.[(selectedGoods === 'mug' ? mugCardId : tshirtCardId) - 1]}
                             lowSpecMode={true}
                           />
                         </div>

@@ -536,7 +536,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   const [editName, setEditName] = useState('');
   const [editNotes, setEditNotes] = useState('');
 
-  const [visibleCardLimit, setVisibleCardLimit] = useState(40);
+  const [visibleCardLimit, setVisibleCardLimit] = useState(120);
   const [activeCategory, setActiveCategory] = useState<'all' | 'battle' | 'collection' | 'growth' | 'special' | 'social'>('all');
 
   // Sync popup state to App.tsx
