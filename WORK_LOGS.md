@@ -4,6 +4,24 @@
 
 ---
 
+## [2026-08-21 13:30 KST / 04:30 UTC] [카드 전투 상대편 덱 동일 카드 중복 보유 방지 및 100% 고유 덱 보장 로직 구현]
+- **작업 내용**:
+  1. **고유 덱 보장 헬퍼 함수 (`ensureUniqueDeck`) 구현 (`constants.ts`)**:
+     - 덱 내 `imageIndex` 및 카드 식별자 중복 여부를 감지하고, 중복 카드가 존재할 경우 아직 덱에 사용되지 않은 다른 고유한 카드로 자동 교체.
+     - `generateUniqueDeck`에 안전 상한(`safeCount`) 적용.
+  2. **`PlayGameView.tsx` 상대 덱 생성/초기화 전 파이프라인 적용**:
+     - **AI 상대 덱 생성 (`generateAIOpponentDeck`)**: `selectedIndices`를 엄격하게 추적하여 후보군이 없을 때도 중복 없는 카드만 선택되도록 개선하고 반환 전 `ensureUniqueDeck` 적용.
+     - **매치 프리뷰 (`previewDeck`) & 게임 시작 (`startGame`)**: 유저 덱 복사, AI 덱 생성, 리매치 등 모든 상대 덱 세팅 시 `ensureUniqueDeck`를 통과시켜 100% 중복 없는 5장의 고유 카드로 확정.
+     - **보스전 (`startBossMatch`) / 던전 (`startDungeonBattle`) / 스토리 모드 (`startStoryMatch`) / 토너먼트 (`startTournamentMatch`)**: 보스 카드와 보조 카드가 겹치지 않는 고유한 5장 덱으로 세팅되도록 보장.
+  3. **코드 검증 및 빌드**:
+     - `tsc --noEmit`: 0 오류 통과 (PASS).
+     - Git 커밋: `fix(battle): enforce strictly unique card decks for opponent to prevent duplicate cards`.
+  4. **구글 폼 보고**:
+     - 엔드포인트(`https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse`)로 보고서 제출 완료 (1건).
+- **상태**: 구현 및 검증 완료.
+
+---
+
 ## [2026-08-21 13:25 KST / 04:25 UTC] [플레이 화면 배틀 턴 인디케이터 및 스코어보드 좌우 분리 배치로 카드판 가림 방지]
 - **작업 내용**:
   1. **PlayGameView 내 턴 인디케이터 및 스코어보드 좌우 분리 배치**:
