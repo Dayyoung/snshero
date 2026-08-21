@@ -3463,7 +3463,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
               <div className="absolute -left-10 top-8 h-28 w-28 rounded-full bg-purple-500/10 blur-3xl transition-all duration-500 group-hover:bg-purple-500/20" />
               <Package className="pointer-events-none absolute left-4 top-14 z-0 h-16 w-16 text-purple-200 opacity-80 sm:h-20 sm:w-20" aria-hidden="true" />
 
-              <div className="relative z-10 flex flex-col gap-4">
+              <div className="relative z-10 flex flex-col gap-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="rounded-lg bg-purple-600 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-white sm:text-[10px]">
                     {t('item_pack', language)}
@@ -3481,25 +3481,34 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
                 <div className="pl-14 sm:pl-16">
                   <h3 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">{t('buy_item_pack', language)}</h3>
+                  <p className="text-xs text-purple-700 font-bold mt-0.5">
+                    {language === 'ko' ? '랜덤 장비 3종 획득' : '3 Random Equipments'}
+                  </p>
                 </div>
+
+                <ul className="space-y-1.5 text-xs text-slate-600 border-t border-purple-100 pt-3 font-medium">
+                  <li className="flex items-center gap-1.5">
+                    <span className="text-purple-600 font-bold">✓</span>
+                    <span>{language === 'ko' ? '무기, 방어구, 장신구 장착 가능' : 'Weapons, Armors, Accessories'}</span>
+                  </li>
+                  <li className="flex items-center gap-1.5">
+                    <span className="text-purple-600 font-bold">✓</span>
+                    <span>{language === 'ko' ? '카드 4방향 스탯 추가 보너스' : '4-Direction Stat Boosts'}</span>
+                  </li>
+                </ul>
               </div>
 
               <div className="relative z-10 mt-auto pt-2 w-full">
                 <button
                   id="shop-pack-item-btn"
                   onClick={buyItemPack}
-                  className="min-h-[52px] sm:min-h-[56px] h-auto w-full rounded-xl border border-purple-700 bg-purple-700 px-4 py-3 text-left text-white shadow-sm transition-all hover:border-purple-600 hover:bg-purple-600 active:scale-95 touch-target flex items-center justify-between gap-2"
+                  className="min-h-[44px] h-auto w-full rounded-xl border border-purple-700 bg-purple-700 hover:bg-purple-600 px-3 py-2.5 text-left text-white shadow-sm transition-all active:scale-95 touch-target flex items-center justify-between gap-1 overflow-hidden cursor-pointer"
                 >
-                  <span className="flex w-full items-center justify-between gap-3">
-                    <span className="min-w-0 leading-tight">
-                      <span className="block text-[9px] uppercase tracking-[0.18em] text-white/70 sm:text-[10px]">{t('item_pack', language)}</span>
-                      <span className="mt-0.5 block text-sm font-black uppercase sm:text-base leading-none">{t('buy', language)}</span>
-                    </span>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-sm font-black sm:text-base">{itemPackCost} SNS</span>
-                      <ArrowRight size={16} className="shrink-0 opacity-80" />
-                    </div>
+                  <span className="min-w-0 leading-tight flex-1">
+                    <span className="block text-[10px] uppercase tracking-[0.05em] text-white/80 truncate">{language === 'ko' ? '아이템 팩 구매' : 'Buy Item Pack'}</span>
+                    <span className="text-sm font-black truncate block">{itemPackCost} SNS</span>
                   </span>
+                  <ArrowRight size={16} className="shrink-0 opacity-80 ml-1" />
                 </button>
               </div>
             </motion.div>
@@ -3512,7 +3521,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
               <div className="absolute -left-10 top-8 h-28 w-28 rounded-full bg-blue-500/10 blur-3xl transition-all duration-500 group-hover:bg-blue-500/20" />
               <ShieldAlert className="pointer-events-none absolute left-4 top-14 z-0 h-16 w-16 text-blue-200 opacity-80 sm:h-20 sm:w-20" aria-hidden="true" />
 
-              <div className="relative z-10 flex flex-col gap-4">
+              <div className="relative z-10 flex flex-col gap-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="rounded-lg bg-blue-600 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-white sm:text-[10px]">
                     {language === 'ko' ? '광고 제거' : 'REMOVE ADS'}
@@ -3530,7 +3539,21 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
                 <div className="pl-14 sm:pl-16">
                   <h3 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">{language === 'ko' ? '광고 제거 패키지' : 'Ad-Free Package'}</h3>
+                  <p className="text-xs text-blue-700 font-bold mt-0.5">
+                    {isAdRemoved ? (language === 'ko' ? '영구 적용 완료' : 'Permanently Active') : (language === 'ko' ? '영구 무제한 광고 차단' : 'Permanent Ad Block')}
+                  </p>
                 </div>
+
+                <ul className="space-y-1.5 text-xs text-slate-600 border-t border-blue-100 pt-3 font-medium">
+                  <li className="flex items-center gap-1.5">
+                    <span className="text-blue-600 font-bold">✓</span>
+                    <span>{language === 'ko' ? '전투 및 미니게임 즉시 플레이' : 'Instant play without ads'}</span>
+                  </li>
+                  <li className="flex items-center gap-1.5">
+                    <span className="text-blue-600 font-bold">✓</span>
+                    <span>{language === 'ko' ? '모든 광고 보상 딜레이 없이 즉시 수령' : 'Direct reward claims'}</span>
+                  </li>
+                </ul>
               </div>
 
               <div className="relative z-10 mt-auto pt-2 w-full">
@@ -3549,26 +3572,21 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     }
                   }}
                   className={cn(
-                    'min-h-[52px] sm:min-h-[56px] h-auto w-full rounded-xl border px-4 py-3 text-left shadow-sm transition-all touch-target flex items-center justify-between gap-2',
+                    'min-h-[44px] h-auto w-full rounded-xl border px-3 py-2.5 text-left shadow-sm transition-all touch-target flex items-center justify-between gap-1 overflow-hidden cursor-pointer',
                     isAdRemoved
                       ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400'
                       : 'border-blue-600 bg-blue-600 text-white hover:border-blue-500 hover:bg-blue-500 active:scale-95'
                   )}
                 >
-                  <span className="flex w-full items-center justify-between gap-3">
-                    <span className="min-w-0 leading-tight">
-                      <span className={cn('block text-[9px] uppercase tracking-[0.18em] sm:text-[10px]', isAdRemoved ? 'text-slate-400' : 'text-white/70')}>
-                        {language === 'ko' ? '광고 제거' : 'Ad-Free'}
-                      </span>
-                      <span className="mt-0.5 block text-sm font-black uppercase sm:text-base leading-none">
-                        {isAdRemoved ? (language === 'ko' ? '구매 완료' : 'Owned') : t('buy', language)}
-                      </span>
+                  <span className="min-w-0 leading-tight flex-1">
+                    <span className="block text-[10px] uppercase tracking-[0.05em] text-white/80 truncate">
+                      {isAdRemoved ? (language === 'ko' ? '구매 완료' : 'Owned') : (language === 'ko' ? '광고 제거 구매' : 'Buy Ad-Free')}
                     </span>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-sm font-black sm:text-base">{isAdRemoved ? '✓' : `${adRemovalCost.toLocaleString()} SNS`}</span>
-                      {!isAdRemoved && <ArrowRight size={16} className="shrink-0 opacity-80" />}
-                    </div>
+                    <span className="text-sm font-black truncate block">
+                      {isAdRemoved ? '✓' : `${adRemovalCost.toLocaleString()} SNS`}
+                    </span>
                   </span>
+                  {!isAdRemoved && <ArrowRight size={16} className="shrink-0 opacity-80 ml-1" />}
                 </button>
               </div>
             </motion.div>
@@ -3632,15 +3650,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     link.click();
                     document.body.removeChild(link);
                   }}
-                  className="min-h-[48px] sm:min-h-[52px] h-auto w-full rounded-xl border border-emerald-700 bg-emerald-700 px-4 py-2.5 text-white shadow-sm transition-all hover:bg-emerald-800 active:scale-95 touch-target flex items-center justify-between gap-2 cursor-pointer"
+                  className="min-h-[44px] h-auto w-full rounded-xl border border-emerald-700 bg-emerald-700 hover:bg-emerald-800 px-3 py-2.5 text-left text-white shadow-sm transition-all active:scale-95 touch-target flex items-center justify-between gap-1 overflow-hidden cursor-pointer"
                 >
-                  <span className="flex items-center gap-2 font-black text-sm uppercase tracking-wider">
-                    <Download size={18} className="shrink-0" />
-                    <span>{language === 'ko' ? '소설 PDF 다운로드' : 'Download Novel PDF'}</span>
+                  <span className="min-w-0 leading-tight flex-1">
+                    <span className="block text-[10px] uppercase tracking-[0.05em] text-white/80 truncate">{language === 'ko' ? '소설 PDF 다운로드' : 'Download Novel PDF'}</span>
+                    <span className="text-sm font-black truncate block">FREE (PDF)</span>
                   </span>
-                  <span className="text-xs font-black bg-emerald-900/60 px-2 py-0.5 rounded text-emerald-100">
-                    PDF (143p)
-                  </span>
+                  <Download size={16} className="shrink-0 opacity-80 ml-1" />
                 </button>
               </div>
             </motion.div>
@@ -3699,15 +3715,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       : 'https://www.youtube.com/watch?v=TA1klx1DSGs';
                     window.open(videoUrl, '_blank', 'noopener,noreferrer');
                   }}
-                  className="min-h-[48px] sm:min-h-[52px] h-auto w-full rounded-xl border border-red-700 bg-red-700 px-4 py-2.5 text-white shadow-sm transition-all hover:bg-red-800 active:scale-95 touch-target flex items-center justify-between gap-2 cursor-pointer"
+                  className="min-h-[44px] h-auto w-full rounded-xl border border-red-700 bg-red-700 hover:bg-red-800 px-3 py-2.5 text-left text-white shadow-sm transition-all active:scale-95 touch-target flex items-center justify-between gap-1 overflow-hidden cursor-pointer"
                 >
-                  <span className="flex items-center gap-2 font-black text-sm uppercase tracking-wider">
-                    <Play size={18} className="shrink-0 fill-current" />
-                    <span>{language === 'ko' ? '동영상 전체보기' : 'Watch Video'}</span>
+                  <span className="min-w-0 leading-tight flex-1">
+                    <span className="block text-[10px] uppercase tracking-[0.05em] text-white/80 truncate">{language === 'ko' ? '공식 영상 시청' : 'Watch Official Video'}</span>
+                    <span className="text-sm font-black truncate block">FREE (YOUTUBE)</span>
                   </span>
-                  <span className="text-xs font-black bg-red-900/60 px-2 py-0.5 rounded text-red-100">
-                    YOUTUBE
-                  </span>
+                  <Play size={16} className="shrink-0 fill-current opacity-80 ml-1" />
                 </button>
               </div>
             </motion.div>
