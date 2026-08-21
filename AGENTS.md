@@ -2,8 +2,8 @@
 # SNS히어로 에이전트 지침서 (AGENTS.md)
 
 ## 스프레드시트 개선 작업 진행 상태
-- **마지막 수정 완료 항목 ID**: `[신규 3D 복셀 미니게임 8종 100% 통합 연동 완료] VoxelDartsBar, VoxelWingsuitSkydiving, VoxelBadmintonBlitz, VoxelMagnetHole, VoxelMotocrossStunt, VoxelSkateboardStreet, VoxelSnowboardSlalom, VoxelKarateBreak 8종 미니게임 PlayGameView 완벽 마운트, 1:1 히어로 카드(No.87~94) 매칭, 데일리 미션 및 렌더링 파이프라인 무결성 검증 완료`
-- **최종 업데이트 일시**: 2026-08-20 19:30 (KST)
+- **마지막 수정 완료 항목 ID**: `[플레이 화면 UI] 배틀 턴 인디케이터 및 스코어보드 좌우 분리 배치로 카드판 가림 방지 (좌측: 턴 표시기, 우측: 스코어보드 플랭킹 레이아웃 적용)`
+- **최종 업데이트 일시**: 2026-08-21 13:25 (KST)
 
 ## 프로젝트 개요
 - **이름**: SNS히어로 (SNSHero Revolution)

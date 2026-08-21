@@ -4,6 +4,23 @@
 
 ---
 
+## [2026-08-21 13:25 KST / 04:25 UTC] [플레이 화면 배틀 턴 인디케이터 및 스코어보드 좌우 분리 배치로 카드판 가림 방지]
+- **작업 내용**:
+  1. **PlayGameView 내 턴 인디케이터 및 스코어보드 좌우 분리 배치**:
+     - 기존 `absolute` 오버레이로 인해 중앙 3x3 카드판과 겹치던 문제를 해결하기 위해, 플렉스 플랭킹(Flex Flanking) 레이아웃 적용.
+     - **좌측 (Left)**: 세로형 턴 인디케이터 (`Vertical Turn Indicator: "당신의 턴" / "상대방 턴"`) 배치 (`hidden lg:flex shrink-0`).
+     - **중앙 (Center)**: 3x3 카드 배틀판이 방해 요소 없이 100% 온전하게 노출되도록 보장.
+     - **우측 (Right)**: 세로형 스코어보드 (`Vertical Scoreboard: [ENEMY] / [YOU]`) 배치 (`hidden lg:flex shrink-0`).
+     - 화면 해상도가 아주 넓은 경우(`2xl:`)에만 우측 외곽에 TACTICAL_LOG가 보조로 표시되도록 레이아웃 정돈.
+  2. **코드 검증 및 빌드**:
+     - `tsc --noEmit`: 0 오류 통과 (PASS).
+     - Git 커밋: `fix(battle): split turn indicator and scoreboard to left/right flanking layout to prevent card board overlap`.
+  3. **구글 폼 보고**:
+     - 엔드포인트(`https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse`)로 보고서 제출 완료 (1건).
+- **상태**: 구현 및 검증 완료.
+
+---
+
 ## [2026-08-20 19:30 KST / 10:30 UTC] [신규 3D 복셀 미니게임 8종 100% 통합 연동 & 1:1 히어로 카드(No.87~94) 전담 매칭 완료]
 - **작업 내용**:
   1. **신규 3D 복셀 미니게임 8종 전담 개발 및 `PlayGameView.tsx` 통합 마운트**:
