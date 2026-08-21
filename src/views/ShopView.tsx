@@ -3435,37 +3435,20 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 </div>
 
                 <div className="relative z-10 mt-auto pt-2 w-full flex flex-col gap-2">
-                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-2 w-full">
-                    <button
-                      id={`shop-pack-${pack.rarity}-btn`}
-                      onClick={() => buyPack(pack.cost, pack.rarity)}
-                      className={cn(
-                        'min-h-[44px] h-auto w-full rounded-xl border px-2.5 py-2 text-left text-white shadow-sm transition-all active:scale-95 touch-target flex items-center justify-between gap-1 overflow-hidden',
-                        packTheme.primaryButton,
-                      )}
-                    >
-                      <span className="min-w-0 leading-tight flex-1">
-                        <span className="block text-[9px] uppercase tracking-[0.05em] text-white/80 truncate">{language === 'ko' ? '1회 소환' : '1x Draw'}</span>
-                        <span className="text-xs font-black truncate block">{pack.cost} SNS</span>
-                      </span>
-                      <ArrowRight size={14} className="shrink-0 opacity-80 ml-1" />
-                    </button>
-
-                    <button
-                      id={`shop-pack-${pack.rarity}-10x-btn`}
-                      onClick={() => buy10xPack(pack.cost, pack.rarity)}
-                      className="min-h-[44px] h-auto w-full rounded-xl border border-rose-500 bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 px-2.5 py-2 text-left text-white shadow-md transition-all active:scale-95 touch-target flex items-center justify-between gap-1 relative overflow-hidden"
-                    >
-                      <span className="min-w-0 leading-tight flex-1">
-                        <span className="block text-[9px] font-black uppercase tracking-[0.02em] text-amber-200 truncate">{language === 'ko' ? '10연차 (10%할인)' : '10x (10% OFF)'}</span>
-                        <span className="text-xs font-black truncate block">{Math.floor(pack.cost * 10 * 0.9)} SNS</span>
-                      </span>
-                      <Sparkles size={14} className="shrink-0 text-amber-300 animate-pulse ml-1" />
-                    </button>
-                  </div>
-                  <p className="text-[9px] text-center text-amber-700 font-bold bg-amber-50 rounded border border-amber-200/60 py-0.5">
-                    {language === 'ko' ? '★ 10연차 시 SR 등급 이상 1장 확정!' : '★ Guaranteed SR+ in 10x Draw!'}
-                  </p>
+                  <button
+                    id={`shop-pack-${pack.rarity}-btn`}
+                    onClick={() => buyPack(pack.cost, pack.rarity)}
+                    className={cn(
+                      'min-h-[44px] h-auto w-full rounded-xl border px-3 py-2.5 text-left text-white shadow-sm transition-all active:scale-95 touch-target flex items-center justify-between gap-1 overflow-hidden cursor-pointer',
+                      packTheme.primaryButton,
+                    )}
+                  >
+                    <span className="min-w-0 leading-tight flex-1">
+                      <span className="block text-[10px] uppercase tracking-[0.05em] text-white/80 truncate">{language === 'ko' ? '카드팩 개봉' : 'Open Pack'}</span>
+                      <span className="text-sm font-black truncate block">{pack.cost} SNS</span>
+                    </span>
+                    <ArrowRight size={16} className="shrink-0 opacity-80 ml-1" />
+                  </button>
                 </div>
 
               </motion.div>
