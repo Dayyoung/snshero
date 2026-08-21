@@ -4,6 +4,20 @@
 
 ---
 
+## [2026-08-21 15:02 KST / 06:02 UTC] [미션게임 UI] 미션게임 목록 그리드 1줄에 3카드 배치로 반응형 개편
+- **작업 내용**:
+  1. **`PlayGameView.tsx` 미션게임 모드 선택 화면 그리드 3열 개편**:
+     - 기존 `grid-cols-2`에서 `grid-cols-3 gap-2 sm:gap-3 md:gap-4`로 변경하여 1줄에 3장의 카드가 한눈에 정렬되도록 개선.
+     - 3열 배치에 맞추어 카드 헤더 텍스트(`text-[8px] sm:text-[9px]`), 초상화 박스 높이(`h-32 sm:h-44 md:h-48`), 게임 타이틀 및 정보 영역 패딩/폰트 반응형 최적화.
+  2. **코드 검증 및 빌드**:
+     - `tsc --noEmit`: 0 오류 통과 (PASS).
+     - Git 커밋: `style(play): display 3 cards per row for minigames list`.
+  3. **구글 폼 보고**:
+     - 엔드포인트(`https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse`)로 보고서 제출 완료 (1건).
+- **상태**: 구현 및 검증 완료.
+
+---
+
 ## [2026-08-21 14:58 KST / 05:58 UTC] [3D 복셀 미니게임 8종 신규 확장 (총 110개 달성) & 홈화면 오늘의 미션 제거]
 - **작업 내용**:
   1. **신규 3D Three.js 복셀 미니게임 8종 개발 (No.103 ~ No.110 전담 매칭)**:
