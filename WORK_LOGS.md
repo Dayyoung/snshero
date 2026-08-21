@@ -4,6 +4,32 @@
 
 ---
 
+## [2026-08-21 14:58 KST / 05:58 UTC] [3D 복셀 미니게임 8종 신규 확장 (총 110개 달성) & 홈화면 오늘의 미션 제거]
+- **작업 내용**:
+  1. **신규 3D Three.js 복셀 미니게임 8종 개발 (No.103 ~ No.110 전담 매칭)**:
+     - **No.103 네더 포탈: 차원 균열 점프 (`VoxelNetherPortalGame.tsx`)**: 네더 용암 바다 위 부유 섬을 점프하며 네더 오브 15개 수집 및 차원 탈출 게이트 오픈.
+     - **No.104 메가 플레어: 공중 함대 요격전 (`VoxelMegaFlareAssaultGame.tsx`)**: 3D 비행 조준 사격 및 메가 플레어 게이지 폭발로 적 공중 요새 함선 격추.
+     - **No.105 스파이크 롤러: 볼더 크러시 (`VoxelSpikeRollingGame.tsx`)**: 회전 가시 볼더가 되어 협곡 내리막 트랙을 질주하며 크리스탈/암석 분쇄 콤보.
+     - **No.106 테라 퀘이크: 지반 붕괴 서바이벌 (`VoxelTerraQuakeGame.tsx`)**: 무너지는 3D 지반 위에서 어스 스톰프 충격파를 발동해 대지 보석 채굴 및 45초 생존.
+     - **No.107 드림위버: 에메랄드 링 플라이트 (`VoxelDreamweaverGame.tsx`)**: 에메랄드 꿈의 미로를 3D 비행하며 회전하는 빛의 링 통과 및 부스터 연쇄 달성.
+     - **No.108 라이프 플레임: 생명의 나무 디펜스 (`VoxelLifeFlameGame.tsx`)**: 360도 붉은 생명의 불꽃을 발사하여 몰려오는 섀도우 괴물을 정화하고 세계수 결계 수호.
+     - **No.109 아케인 넥서스: 비전 마나 서클 (`VoxelArcaneNexusGame.tsx`)**: 3단 동심원 3D 마법 링을 회전 정렬시켜 비전 광선을 넥서스 코어로 연결해 마나 과부하 달성.
+     - **No.110 드레드 섀도우: 암흑 잠입 침투 (`VoxelDreadShadowGame.tsx`)**: 섀도우 은신 모드로 감시탑 서치라이트를 피해 침투하여 암흑 코어 100% 해킹.
+  2. **`PlayGameView.tsx` 통합 연동**:
+     - 8종 신규 컴포넌트 import 및 `modes` 배열 등록 (총 110개 모드 달성).
+     - `GameState` 유니온 타입 및 `getDailyMissionIds` 내 `allIds` 배열에 8개 ID 추가.
+     - 렌더링 블록 마운트 및 `handleMinigameReward` 보상 파이프라인 연결.
+  3. **홈 화면 오늘의 미션 섹션 제거**:
+     - `HomeView.tsx` 내 `#daily-missions-section` 섹션 및 `<DailyMissions />` 렌더링 블록 제거로 깔끔한 홈 레이아웃 정리.
+  4. **코드 검증 및 빌드**:
+     - `tsc --noEmit`: 0 오류 통과 (PASS).
+     - Git 커밋: `feat(game): expand to 110 minigames with 8 dragon 3d voxel games and remove daily missions from home`.
+  5. **구글 폼 보고**:
+     - 엔드포인트(`https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse`)로 보고서 제출 완료 (1건).
+- **상태**: 구현 및 검증 완료.
+
+---
+
 ## [2026-08-21 14:15 KST / 05:15 UTC] [3D 복셀 미니게임 8종 확장: 핀볼 클라이머, 크레이지 택시, 레이저 스텔스, 도장 밸런스, 버블 팝, 워터 슬라이드, 크라켄 헌터, 하프파이프 스케이터]
 - **작업 내용**:
   1. **8종의 신규 3D Voxel 미니게임 엔진 및 컴포넌트 개발 (`src/components/`)**:
