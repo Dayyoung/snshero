@@ -5,6 +5,7 @@ import { cn } from '../lib/utils';
 import type { CardData, CardRarity, ItemRarity, Language, ViewType } from '../types';
 import {
   KADAN_RPG_EVENTS,
+  getDynamicKadanEncounter,
   getKadanRewardRarity,
   getKadanRpgEncounter,
   getKadanRpgRegion,
@@ -96,52 +97,75 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
   const [rewardEvent, setRewardEvent] = useState<KadanRpgEvent | null>(null);
   const [isMoving, setIsMoving] = useState(false);
 
-  const activeEncounter = battleEvent?.encounterId ? getKadanRpgEncounter(battleEvent.encounterId) : undefined;
+  const activeEncounter = useMemo(() => {
+    if (!battleEvent) return undefined;
+    return getDynamicKadanEncounter(battleEvent, progress.rebirthLevel);
+  }, [battleEvent, progress.rebirthLevel]);
+
   const activeReward = rewardEvent?.rewardId ? getKadanRpgReward(rewardEvent.rewardId) : undefined;
 
   const rpgOpponent = useMemo(() => {
-    if (!activeEncounter) return null;
-    const oppCards: CardData[] = activeEncounter.opponentCardIds.map((cardId) => {
+    if (!activeEncounter || !battleEvent) return null;
+    const categoryToElement = (cat: number): any => {
+      switch (cat) {
+        case 1: return 'water';
+        case 2: return 'fire';
+        case 3: return 'wind';
+        case 4: return 'land';
+        case 5: return 'human';
+        case 6: return 'undead';
+        case 7: return 'elf';
+        case 8: return 'dragon';
+        default: return 'fire';
+      }
+    };
+
+    const diffBonus = activeEncounter.difficulty === 'boss' ? 2 : activeEncounter.difficulty === 'hard' ? 1 : activeEncounter.difficulty === 'normal' ? 0 : -1;
+    const rebirthBonus = Math.max(0, Math.floor(progress.rebirthLevel));
+    const totalBonus = diffBonus + Math.min(3, rebirthBonus);
+
+    const boostStat = (val: number) => Math.max(1, Math.min(10, val + totalBonus));
+
+    const oppCards: CardData[] = activeEncounter.opponentCardIds.map((cardId, idx) => {
       const base = CARD_DATABASE[cardId];
       if (!base) return INITIAL_CARDS[0];
-      const categoryToElement = (cat: number): any => {
-        switch (cat) {
-          case 1: return 'water';
-          case 2: return 'fire';
-          case 3: return 'wind';
-          case 4: return 'land';
-          case 5: return 'human';
-          case 6: return 'undead';
-          case 7: return 'elf';
-          case 8: return 'dragon';
-          default: return 'fire';
-        }
-      };
+
+      const scaledLevel = Math.min(10, base.level + Math.max(0, progress.rebirthLevel) + (activeEncounter.difficulty === 'boss' ? 1 : 0));
+      const scaledPower = (base.power || 100) + totalBonus * 30 + Math.floor(battleEvent.chapterNumber * 3);
+
       const card: CardData = {
-        id: `kadan-card-${cardId}-${Math.random().toString(36).substring(2, 6)}`,
+        id: `kadan-card-${cardId}-${idx}-${Math.random().toString(36).substring(2, 6)}`,
         title: base.title,
         title_en: base.title_en,
         title_dis: base.title,
-        stats: [base.top, base.right, base.bottom, base.left],
+        stats: [boostStat(base.top), boostStat(base.right), boostStat(base.bottom), boostStat(base.left)],
         element: categoryToElement(base.category),
-        rarity: (base.level >= 5 ? 'UR' : base.level >= 4 ? 'SSR' : base.level >= 3 ? 'SR' : base.level >= 2 ? 'R' : 'N'),
-        power: base.power,
+        rarity: (scaledLevel >= 6 || progress.rebirthLevel >= 2 ? 'UR' : scaledLevel >= 4 ? 'SSR' : scaledLevel >= 3 ? 'SR' : scaledLevel >= 2 ? 'R' : 'N'),
+        power: scaledPower,
         imageIndex: base.id,
-        level: base.level,
+        level: scaledLevel,
       };
       return card;
     });
+
+    const rebirthLabel = progress.rebirthLevel > 0
+      ? (language === 'ko' ? ` (환생 ${progress.rebirthLevel}회차)` : ` (Rebirth Lv.${progress.rebirthLevel})`)
+      : '';
+    const chapterPrefix = language === 'ko'
+      ? `[제 ${battleEvent.chapterNumber}화] `
+      : `[Ch.${battleEvent.chapterNumber}] `;
+
     return {
       id: `kadan-${activeEncounter.id}`,
-      name: t(activeEncounter.opponentNameKey, language),
+      name: `${chapterPrefix}${t(activeEncounter.opponentNameKey, language)}${rebirthLabel}`,
       deck: oppCards,
       totalPower: oppCards.reduce((acc, c) => acc + (c.power || 0), 0),
     };
-  }, [activeEncounter, language]);
+  }, [activeEncounter, battleEvent, language, progress.rebirthLevel]);
   const isComplete = !nextEvent;
   const isAtTarget = sameTile(heroTile, nextEvent?.tile ?? null);
   const hasDialog = Boolean(activeEvent && !battleEvent && !rewardEvent);
-  const hasBattle = Boolean(activeEvent?.encounterId && !battleEvent && !rewardEvent);
+  const hasBattle = Boolean(activeEvent && !battleEvent && !rewardEvent);
   const hasReward = Boolean(rewardEvent && activeReward);
 
   // Auto mode setting is persisted in local storage and managed by user toggle
@@ -256,14 +280,14 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
   ]);
 
   const handleBattleComplete = useCallback((result: KadanBattleResult) => {
-    if (!battleEvent?.encounterId) return;
-    const encounter = getKadanRpgEncounter(battleEvent.encounterId);
+    if (!battleEvent) return;
+    const encounter = getDynamicKadanEncounter(battleEvent, progress.rebirthLevel);
     if (!encounter) return;
 
     if (result === 'win' || result === 'draw' || encounter.allowLossProgress) {
       markEncounterCleared(encounter.id);
       setBattleEvent(null);
-      if (battleEvent.rewardId) {
+      if (battleEvent.rewardId && !progress.claimedRewardIds.includes(battleEvent.rewardId)) {
         setRewardEvent(battleEvent);
       } else {
         completeActiveEvent(battleEvent);
@@ -274,7 +298,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
     setBattleEvent(null);
     setActiveEvent(battleEvent);
     showCustomAlert(t('kadan_rpg_battle_loss_title', language), t('kadan_rpg_battle_loss_desc', language));
-  }, [battleEvent, completeActiveEvent, language, markEncounterCleared, showCustomAlert]);
+  }, [battleEvent, completeActiveEvent, language, markEncounterCleared, progress.claimedRewardIds, progress.rebirthLevel, showCustomAlert]);
 
   const autoRunner = useKadanRpgAutoRunner({
     enabled: progress.autoMode,
@@ -293,16 +317,10 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
     },
     onAdvanceDialog: () => {
       if (!activeEvent) return;
-      if (activeEvent.encounterId) {
-        setBattleEvent(activeEvent);
-      } else if (activeEvent.rewardId && !progress.claimedRewardIds.includes(activeEvent.rewardId)) {
-        setRewardEvent(activeEvent);
-      } else {
-        completeActiveEvent(activeEvent);
-      }
+      setBattleEvent(activeEvent);
     },
     onStartBattle: () => {
-      if (activeEvent?.encounterId) setBattleEvent(activeEvent);
+      if (activeEvent) setBattleEvent(activeEvent);
     },
     onClaimReward: () => {
       if (rewardEvent) {
@@ -402,8 +420,8 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
               language={language}
               autoMode={progress.autoMode}
               isCompleted={completedIds.includes(activeEvent.id)}
-              canStartBattle={Boolean(activeEvent.encounterId && !progress.clearedEncounterIds.includes(activeEvent.encounterId))}
-              canClaimReward={Boolean(activeEvent.rewardId && !progress.claimedRewardIds.includes(activeEvent.rewardId) && (!activeEvent.encounterId || progress.clearedEncounterIds.includes(activeEvent.encounterId)))}
+              canStartBattle={true}
+              canClaimReward={Boolean(activeEvent.rewardId && !progress.claimedRewardIds.includes(activeEvent.rewardId) && progress.clearedEncounterIds.includes(activeEvent.encounterId || `enc-ch${String(activeEvent.chapterNumber).padStart(2, '0')}`))}
               onStartBattle={() => setBattleEvent(activeEvent)}
               onClaimReward={() => setRewardEvent(activeEvent)}
               onComplete={() => completeActiveEvent(activeEvent)}
