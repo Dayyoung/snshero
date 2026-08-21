@@ -284,11 +284,12 @@ export const generateCard = (rarity?: CardData['rarity']): CardData => {
 };
 
 export const generateUniqueDeck = (count: number = 5): CardData[] => {
+  const safeCount = Math.min(Math.max(1, count > 50 ? 5 : count), 10);
   const allIndices = Object.keys(CARD_DATABASE).map(Number);
   const deck: CardData[] = [];
   const selectedIndices = new Set<number>();
 
-  while (deck.length < count && selectedIndices.size < allIndices.length) {
+  while (deck.length < safeCount && selectedIndices.size < allIndices.length) {
     const idx = allIndices[Math.floor(Math.random() * allIndices.length)];
     if (!selectedIndices.has(idx)) {
       selectedIndices.add(idx);
@@ -307,6 +308,62 @@ export const generateUniqueDeck = (count: number = 5): CardData[] => {
     }
   }
   return deck;
+};
+
+/**
+ * 상대편/AI 덱에서 동일한 카드(imageIndex/id)가 중복되지 않도록 100% 보장하는 헬퍼 함수.
+ * 중복된 카드가 있거나 카드가 부족한 경우, 아직 덱에 없는 다른 고유한 카드로 자동 교체합니다.
+ */
+export const ensureUniqueDeck = (deck: CardData[] = [], targetCount: number = 5): CardData[] => {
+  const allIndices = Object.keys(CARD_DATABASE).map(Number);
+  const usedIndices = new Set<number>();
+  const uniqueDeck: CardData[] = [];
+
+  // 1. First pass: keep unique, valid cards
+  for (const card of deck) {
+    if (!card) continue;
+    const idx = card.imageIndex !== undefined ? card.imageIndex : (typeof card.id === 'number' ? card.id : null);
+    
+    if (idx !== null && !usedIndices.has(idx) && CARD_DATABASE[idx]) {
+      usedIndices.add(idx);
+      uniqueDeck.push({ ...card, imageIndex: idx });
+    }
+    if (uniqueDeck.length >= targetCount) break;
+  }
+
+  // 2. Second pass: shuffle remaining available indices to fill missing slots
+  const availableIndices = allIndices.filter(i => !usedIndices.has(i));
+  for (let i = availableIndices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [availableIndices[i], availableIndices[j]] = [availableIndices[j], availableIndices[i]];
+  }
+
+  while (uniqueDeck.length < targetCount && availableIndices.length > 0) {
+    const newIdx = availableIndices.pop()!;
+    usedIndices.add(newIdx);
+    const dbCard = CARD_DATABASE[newIdx];
+    const newCard: CardData = syncCardWithDatabase({
+      id: `unique-opp-card-${newIdx}-${Date.now()}-${uniqueDeck.length}-${Math.random().toString(36).substring(2, 5)}`,
+      imageIndex: newIdx,
+      title: dbCard.title,
+      title_dis: dbCard.title_dis,
+      title_en: dbCard.title_en,
+      power: dbCard.power,
+      rarity: dbCard.rarity || 'bronze',
+      owner: 'ai',
+      stats: [...dbCard.stats],
+      ability: dbCard.ability,
+      element: dbCard.element,
+      skills: INITIAL_SKILLS.map(s => ({ ...s, level: 0 })),
+      equipment: {},
+      bonusPower: 0,
+      exp: 0,
+      level: 1
+    });
+    uniqueDeck.push(newCard);
+  }
+
+  return uniqueDeck.slice(0, targetCount);
 };
 
 export const AI_NAMES = {

@@ -6,7 +6,7 @@ import { CardItem } from '../components/CardItem';
 import { cn, getFormattedCardName, getAssetUrl, getCardSpriteAsset, getCardSpriteCoords, getCardSpriteStyle } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2, UserPlus, ShoppingBag, XCircle, Menu, Coins, Pickaxe, Crosshair, Footprints, Castle, Compass, BookOpen, Award, Sliders, Axe, Fish, BarChart3 } from 'lucide-react';
-import { generateCard, INITIAL_CARDS, generateUniqueDeck, getCardStatWithBonus, generateAiName, syncCardWithDatabase, INITIAL_SKILLS, getCardPower, getNormalizedElement } from '../constants';
+import { generateCard, INITIAL_CARDS, generateUniqueDeck, ensureUniqueDeck, getCardStatWithBonus, generateAiName, syncCardWithDatabase, INITIAL_SKILLS, getCardPower, getNormalizedElement } from '../constants';
 import { CARD_DATABASE } from '../cardDatabase';
 import { ITEM_DATABASE } from '../constants/itemDatabase';
 import { t, translateText, staticTranslations } from '../lib/i18n';
@@ -688,17 +688,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     // Boss Battle Difficulty & Power Calculation
     const oppPower = Math.ceil((calculatedTotalPower || 1000) * 1.5);
     
-    // Opponent Deck generation with the primary Boss card
-    const baseDeck = generateUniqueDeck(oppPower);
-    baseDeck[0] = {
+    // Opponent Deck generation with the primary Boss card & guaranteed unique cards
+    const bossCardData = {
       ...bossCard,
       id: `boss-raid-${Date.now()}`,
-      owner: 'ai',
+      owner: 'ai' as const,
       bonusPower: 0,
       xp: 0,
       imageIndex: bossCardId,
       isFinalBoss: true
     };
+    const baseDeck = ensureUniqueDeck([bossCardData, ...generateUniqueDeck(4)], 5);
 
     setCurrentBossFightCardId(bossCardId);
 
@@ -1545,16 +1545,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       if (!bossCard) return;
 
       const oppPower = Math.ceil((calculatedTotalPower || 1000) * 1.5);
-      const baseDeck = generateUniqueDeck(oppPower);
-      baseDeck[0] = {
+      const bossCardData = {
         ...bossCard,
         id: `dungeon-boss-${Date.now()}`,
-        owner: 'ai',
+        owner: 'ai' as const,
         bonusPower: 0,
         xp: 0,
         imageIndex: bossCardId,
         isFinalBoss: true
       };
+      const baseDeck = ensureUniqueDeck([bossCardData, ...generateUniqueDeck(4)], 5);
 
       setSelectedOpponent({
         id: `dungeon-boss-${bossCard.title_en}-${Date.now()}`,
@@ -1854,17 +1854,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     const actDifficultyBuff = (storyAct + 1) * 200;
     const oppPower = Math.ceil((calculatedTotalPower || 1000) * (0.8 + storyAct * 0.1) + actDifficultyBuff);
     
-    const baseDeck = generateUniqueDeck(oppPower);
-    baseDeck[0] = {
+    const bossCardData = {
       ...bossCard,
       id: `story-boss-${Date.now()}`,
-      owner: 'ai',
+      owner: 'ai' as const,
       bonusPower: 0,
       xp: 0,
       imageIndex: bossCardId,
       isMidBoss: !isFinal,
       isFinalBoss: isFinal
     };
+    const baseDeck = ensureUniqueDeck([bossCardData, ...generateUniqueDeck(4)], 5);
 
     setSelectedOpponent({
       id: `story-boss-${bossCard.title_en}-${Date.now()}`,
@@ -2049,7 +2049,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       losses: 0,
       draws: 0,
       sns: 0,
-      deck: generateUniqueDeck(opp.power)
+      deck: generateUniqueDeck(5)
     });
 
     if (setIsAutoBattle) {
@@ -4197,6 +4197,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const generateAIOpponentDeck = (targetPower: number): CardData[] => {
     const allCards = Object.keys(CARD_DATABASE).map(Number);
     const deck: CardData[] = [];
+    const selectedIndices = new Set<number>();
     
     // Scale target power based on difficulty with RANDOM VARIANCE
     let minRange = 0.9;
@@ -4222,12 +4223,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     const targetPerCard = scaledTargetPower / 5;
 
     for (let i = 0; i < 5; i++) {
-        const selectedIndices = deck.map(c => c.imageIndex);
-        
-        // Find cards with power near the targetPerCard
+        // Find cards with power near the targetPerCard excluding already selected card indices
         let tolerance = 5;
         let candidates = allCards.filter(idx => {
-            if (selectedIndices.includes(idx)) return false;
+            if (selectedIndices.has(idx)) return false;
             const p = CARD_DATABASE[idx].power;
             return Math.abs(p - targetPerCard) <= tolerance;
         });
@@ -4236,26 +4235,28 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         while (candidates.length === 0 && tolerance < 200) {
             tolerance += 15;
             candidates = allCards.filter(idx => {
-                if (selectedIndices.includes(idx)) return false;
+                if (selectedIndices.has(idx)) return false;
                 const p = CARD_DATABASE[idx].power;
                 return Math.abs(p - targetPerCard) <= tolerance;
             });
         }
         
         if (candidates.length === 0) {
-            candidates = allCards.filter(idx => !selectedIndices.includes(idx));
+            candidates = allCards.filter(idx => !selectedIndices.has(idx));
         }
         
         const selectedIdx = candidates.length > 0 
             ? candidates[Math.floor(Math.random() * candidates.length)]
-            : allCards[Math.floor(Math.random() * allCards.length)];
+            : (allCards.find(idx => !selectedIndices.has(idx)) ?? allCards[0]);
+            
+        selectedIndices.add(selectedIdx);
         
         const cardInfo = CARD_DATABASE[selectedIdx];
         
         // --- REALISTIC POWER SCALING ---
         // Create an AI card with base stats
         const aiCard: CardData = {
-            id: `ai-card-${i}-${Date.now()}`,
+            id: `ai-card-${i}-${Date.now()}-${selectedIdx}`,
             imageIndex: selectedIdx,
             title: cardInfo.title,
             title_dis: cardInfo.title_dis,
@@ -4326,7 +4327,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         deck.push(aiCard);
     }
     
-    return deck;
+    return ensureUniqueDeck(deck, 5);
   };
 
   useEffect(() => {
@@ -4336,9 +4337,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           const targetPower = selectedOpponent.totalPower || playerDeck.reduce((acc, c) => {
              return acc + (c.power || 0);
           }, 0);
-          setPreviewDeck(generateAIOpponentDeck(targetPower));
+          setPreviewDeck(ensureUniqueDeck(generateAIOpponentDeck(targetPower), 5));
       } else if (selectedOpponent?.type === 'user' && (selectedOpponent as any).deck) {
-          setPreviewDeck((selectedOpponent as any).deck.map((c: any) => syncCardWithDatabase({ ...c, owner: 'ai' })).slice(0, 5));
+          setPreviewDeck(ensureUniqueDeck((selectedOpponent as any).deck.map((c: any) => syncCardWithDatabase({ ...c, owner: 'ai' })), 5));
       }
     }
   }, [gameState, selectedOpponent, aiDifficulty, playerDeck]);
@@ -4416,20 +4417,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       
       if (effectiveOpponent?.type === 'user' && (effectiveOpponent as any).deck) {
          let baseOppDeck = (effectiveOpponent as any).deck;
-         if (baseOppDeck.length < 5) {
-           baseOppDeck = [...baseOppDeck];
-           while (baseOppDeck.length < 5) {
-             baseOppDeck.push(INITIAL_CARDS[Math.floor(Math.random() * INITIAL_CARDS.length)]);
-           }
-         }
-         oppDeck = baseOppDeck.map((c: any) => syncCardWithDatabase({ ...c, owner: 'ai' })).slice(0, 5);
+         oppDeck = ensureUniqueDeck(baseOppDeck, 5).map((c: any) => syncCardWithDatabase({ ...c, owner: 'ai' }));
       } else if (!opponent && lastAiDeck) {
          // Rematch case with AI
-         oppDeck = lastAiDeck.map(c => ({ ...c, owner: 'ai' }));
+         oppDeck = ensureUniqueDeck(lastAiDeck, 5).map(c => ({ ...c, owner: 'ai' }));
       } else {
           // New AI match or fresh generation
           if (previewDeck.length === 5) {
-              oppDeck = previewDeck;
+              oppDeck = ensureUniqueDeck(previewDeck, 5);
           } else {
               // Use opponent's totalPower if available (from matching), otherwise fallback to player power
               const targetPower = effectiveOpponent?.totalPower || playerDeck.reduce((acc, c) => {
@@ -4441,14 +4436,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
          setLastAiDeck(oppDeck);
       }
 
-      // Ensure oppDeck is exactly 5 cards
-      if (oppDeck.length < 5) {
-        oppDeck = [...oppDeck];
-        while (oppDeck.length < 5) {
-          oppDeck.push(syncCardWithDatabase({ ...INITIAL_CARDS[Math.floor(Math.random() * INITIAL_CARDS.length)], owner: 'ai' }));
-        }
-      }
-      oppDeck = oppDeck.slice(0, 5).map((c, i) => ({ ...c, owner: 'ai' as const, id: `ai-${Date.now()}-${i}` }));
+      // Ensure oppDeck is 100% strictly 5 unique cards (no duplicate card IDs/imageIndex)
+      oppDeck = ensureUniqueDeck(oppDeck, 5).map((c, i) => ({ ...c, owner: 'ai' as const, id: `ai-${Date.now()}-${i}-${c.imageIndex ?? i}` }));
 
       if (effectiveOpponent) setLastOpponent(effectiveOpponent);
       
