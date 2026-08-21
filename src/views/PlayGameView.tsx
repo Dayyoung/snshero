@@ -13868,10 +13868,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         <div className="relative flex flex-col items-center justify-center w-full max-w-6xl md:px-2 min-h-0 gap-1 md:gap-2 mt-0.5">
           
 
-          <div className="relative flex items-center justify-center w-full min-h-[280px] sm:min-h-[320px] md:min-h-[350px] gap-2 md:gap-4">
-            {/* DESKTOP LEFT SIDEBAR: SCOREBOARD & TURN INDICATOR (lg:flex ONLY) */}
+          <div className="relative flex items-center justify-center w-full min-h-[280px] sm:min-h-[320px] md:min-h-[350px] gap-2 md:gap-4 lg:gap-6 xl:gap-8">
+            {/* DESKTOP LEFT SIDEBAR: VERTICAL TURN INDICATOR (lg:flex ONLY) */}
             {!gameOver && gameState === 'playing' && (
-              <div className="hidden lg:flex absolute left-2 md:left-4 xl:left-8 top-1/2 -translate-y-1/2 flex-col items-center gap-4 z-20">
+              <div className="hidden lg:flex flex-col items-center justify-center shrink-0 z-20 pointer-events-none select-none">
                 {/* 1. VERTICAL TURN INDICATOR */}
                 {!isCoinFlipping && (
                   <motion.div 
@@ -13900,35 +13900,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     </div>
                   </motion.div>
                 )}
-
-                {/* 2. SCOREBOARD */}
-                <div className="flex flex-col gap-1 items-center bg-[#201d1d] rounded-none p-1.5 border border-[rgba(255,255,255,0.15)] shadow-none">
-                  {/* Enemy Score */}
-                  <div className="flex flex-col items-center gap-0.5 p-1 bg-rose-950/30 rounded-none border border-rose-800/40">
-                      <span className="text-[7px] font-mono font-bold uppercase text-rose-400 [writing-mode:vertical-lr] tracking-widest">[ENEMY]</span>
-                      <div className="w-7 h-7 rounded-none bg-[#141212] border border-rose-700/50 flex items-center justify-center text-sm font-bold text-rose-400 font-mono">
-                        {battleType === 'matgo' ? matgoScores.ai : boardScore.ai}
-                      </div>
-                  </div>
-                  
-                  {/* Divider */}
-                  <div className="py-0.5 opacity-20">
-                      <div className="w-3 h-[1px] bg-white" />
-                  </div>
-    
-                  {/* Player Score */}
-                  <div className="flex flex-col items-center gap-0.5 p-1 bg-indigo-950/30 rounded-none border border-indigo-800/40">
-                      <div className="w-7 h-7 rounded-none bg-[#141212] border border-indigo-700/50 flex items-center justify-center text-sm font-bold text-indigo-400 font-mono">
-                        {battleType === 'matgo' ? matgoScores.player : boardScore.player}
-                      </div>
-                      <span className="text-[7px] font-mono font-bold uppercase text-indigo-400 [writing-mode:vertical-lr] tracking-widest">[YOU]</span>
-                  </div>
-                </div>
               </div>
             )}
 
           <div className={cn(
-            "relative p-1 md:p-2 border-4 rounded-3xl bg-[#090d16]/90 border-slate-800 transition-all duration-300",
+            "relative p-1 md:p-2 border-4 rounded-3xl bg-[#090d16]/90 border-slate-800 transition-all duration-300 shrink-0",
             !isLowPerformance && "shadow-[0_0_50px_rgba(0,0,0,0.8)]",
             isFeverMode && "border-amber-400 shadow-[0_0_35px_rgba(251,191,36,0.6)] animate-pulse",
             isMicroShaking && "translate-x-[2px] translate-y-[-2px]",
@@ -14581,11 +14557,40 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     </div>
                   </div>
                </div>
-            {/* RIGHT: TACTICAL LOG (Absolute Right of Card Board) */}
+            {/* DESKTOP RIGHT SIDEBAR: VERTICAL SCOREBOARD (lg:flex ONLY) */}
             {!gameOver && gameState === 'playing' && (
-              <div className="hidden lg:flex absolute right-2 md:right-4 xl:right-8 top-1/2 -translate-y-1/2 flex-col gap-4 z-20">
+              <div className="hidden lg:flex flex-col items-center justify-center shrink-0 z-20 pointer-events-none select-none gap-3">
+                {/* 2. SCOREBOARD */}
+                <div className="flex flex-col gap-1 items-center bg-[#201d1d] rounded-none p-1.5 border border-[rgba(255,255,255,0.15)] shadow-none">
+                  {/* Enemy Score */}
+                  <div className="flex flex-col items-center gap-0.5 p-1 bg-rose-950/30 rounded-none border border-rose-800/40">
+                    <span className="text-[7px] font-mono font-bold uppercase text-rose-400 [writing-mode:vertical-lr] tracking-widest">[ENEMY]</span>
+                    <div className="w-7 h-7 rounded-none bg-[#141212] border border-rose-700/50 flex items-center justify-center text-sm font-bold text-rose-400 font-mono">
+                      {battleType === 'matgo' ? matgoScores.ai : boardScore.ai}
+                    </div>
+                  </div>
+                  
+                  {/* Divider */}
+                  <div className="py-0.5 opacity-20">
+                    <div className="w-3 h-[1px] bg-white" />
+                  </div>
+    
+                  {/* Player Score */}
+                  <div className="flex flex-col items-center gap-0.5 p-1 bg-indigo-950/30 rounded-none border border-indigo-800/40">
+                    <div className="w-7 h-7 rounded-none bg-[#141212] border border-indigo-700/50 flex items-center justify-center text-sm font-bold text-indigo-400 font-mono">
+                      {battleType === 'matgo' ? matgoScores.player : boardScore.player}
+                    </div>
+                    <span className="text-[7px] font-mono font-bold uppercase text-indigo-400 [writing-mode:vertical-lr] tracking-widest">[YOU]</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* DESKTOP 2XL+: TACTICAL LOG (Wide Screen Only) */}
+            {!gameOver && gameState === 'playing' && (
+              <div className="hidden 2xl:flex flex-col gap-2 shrink-0 z-20 pointer-events-auto">
                 {/* Desktop Sidebar Log */}
-                <div className="w-40 xl:w-48 flex flex-col gap-2 h-[320px]">
+                <div className="w-40 xl:w-44 flex flex-col gap-2 h-[320px]">
                   <div className="text-[10px] font-black text-white/40 uppercase tracking-widest pl-2 flex items-center gap-2">
                     <Terminal size={10} />
                     <span>TACTICAL_LOG</span>
