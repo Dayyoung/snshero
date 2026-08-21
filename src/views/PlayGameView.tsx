@@ -12256,9 +12256,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             </div>
           </div>
 
-          {/* Mode List Grid - Card Battle Theme Frame Style */}
-          <main className="flex-1 px-0 pb-4 md:pb-8 pt-0 flex flex-col justify-start items-center w-full gap-4 md:gap-6 overflow-y-visible">
-            <div className="grid grid-cols-2 gap-3 md:gap-4 w-full py-4 items-stretch font-mono">
+          {/* Mode List Grid - Card Battle Theme Frame Style (3 cards per row) */}
+          <main className="flex-1 px-0 pb-4 md:pb-8 pt-0 flex flex-col justify-start items-center w-full gap-3 md:gap-5 overflow-y-visible">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 w-full py-3 sm:py-4 items-stretch font-mono">
               {filteredModes.map((m, idx) => {
                 const IconComp = m.icon;
                 const cardIndex = m.characterId || (idx + 1);
@@ -12309,26 +12309,26 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           m.action();
                         }
                       }}
-                      className="w-full min-h-[220px] bg-[#14121e] border border-slate-800 rounded-sm hover:border-amber-400/80 hover:shadow-md transition-all flex flex-col overflow-hidden group cursor-pointer text-left"
+                      className="w-full min-h-[180px] sm:min-h-[220px] bg-[#14121e] border border-slate-800 rounded-sm hover:border-amber-400/80 hover:shadow-md transition-all flex flex-col overflow-hidden group cursor-pointer text-left"
                       aria-label={`${m.title} - No.${cardNumFormatted} ${charName}`}
                     >
                       {/* TCG Card Header Bar */}
-                      <div className="px-2.5 py-1.5 bg-slate-950/90 border-b border-slate-800/90 flex items-center justify-between gap-1 text-[10px] text-white">
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-black text-amber-400 bg-amber-400/10 border border-amber-400/25 px-1 py-0.2 rounded-xs tracking-tight">
+                      <div className="px-1.5 sm:px-2.5 py-1 sm:py-1.5 bg-slate-950/90 border-b border-slate-800/90 flex items-center justify-between gap-1 text-[9px] sm:text-[10px] text-white">
+                        <div className="flex items-center gap-1 sm:gap-1.5 truncate">
+                          <span className="font-black text-amber-400 bg-amber-400/10 border border-amber-400/25 px-1 py-0.2 rounded-xs tracking-tight shrink-0 text-[8px] sm:text-[9px]">
                             No.{cardNumFormatted}
                           </span>
-                          <span className="text-[9px] text-slate-400 font-semibold truncate max-w-[60px] sm:max-w-none">
+                          <span className="text-[8px] sm:text-[9px] text-slate-400 font-semibold truncate">
                             {charName}
                           </span>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <span className={cn("text-[9px] px-1 py-0.2 rounded-xs border font-black flex items-center gap-0.5", elemBadgeStyle)}>
+                        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
+                          <span className={cn("text-[8px] sm:text-[9px] px-1 py-0.2 rounded-xs border font-black flex items-center gap-0.5", elemBadgeStyle)}>
                             <span>{elemIcon}</span>
-                            <span className="uppercase text-[8px]">{elem}</span>
+                            <span className="uppercase text-[7px] sm:text-[8px] hidden min-[400px]:inline">{elem}</span>
                           </span>
                           {charCard?.power && (
-                            <span className="text-[9px] text-amber-300 font-bold bg-amber-950/40 border border-amber-800/40 px-1 py-0.2 rounded-xs">
+                            <span className="text-[8px] sm:text-[9px] text-amber-300 font-bold bg-amber-950/40 border border-amber-800/40 px-1 py-0.2 rounded-xs">
                               P.{charCard.power}
                             </span>
                           )}
@@ -12336,23 +12336,23 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       </div>
 
                       {/* Character Card Portrait Box */}
-                      <div className="flex-1 flex items-center justify-center p-2 sm:p-3 relative overflow-hidden h-44 sm:h-48 min-h-[160px] bg-gradient-to-b from-slate-900 via-[#131024] to-[#0a0814]">
+                      <div className="flex-1 flex items-center justify-center p-1.5 sm:p-3 relative overflow-hidden h-32 sm:h-44 md:h-48 min-h-[120px] sm:min-h-[160px] bg-gradient-to-b from-slate-900 via-[#131024] to-[#0a0814]">
                         {/* Background Subtle Ink Grid */}
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(99,102,241,0.18),transparent_70%)] pointer-events-none" />
                         
                         {charCard ? (
                           <MissionCharacterPortrait cardId={charCard.id} name={charName} language={language} className="w-full h-full" />
                         ) : (
-                          <IconComp size={48} className="text-white/80 drop-shadow-lg my-6" />
+                          <IconComp size={36} className="text-white/80 drop-shadow-lg my-4" />
                         )}
 
                         {/* Bottom Overlay Label inside Card Art */}
-                        <div className="absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-between pointer-events-none z-30">
-                          <div className="bg-black/85 backdrop-blur-xs border border-white/15 px-1.5 py-0.5 rounded-xs text-[9px] text-white font-bold truncate max-w-[70%] shadow-sm">
-                            [#{cardNumFormatted}] {charName}
+                        <div className="absolute bottom-1 left-1 right-1 flex items-center justify-between pointer-events-none z-30 gap-1">
+                          <div className="bg-black/85 backdrop-blur-xs border border-white/15 px-1 py-0.5 rounded-xs text-[8px] sm:text-[9px] text-white font-bold truncate max-w-[70%] shadow-sm">
+                            #{cardNumFormatted} {charName}
                           </div>
                           {m.badgeText && (
-                            <div className="bg-amber-400 text-slate-950 font-black px-1.5 py-0.5 rounded-xs text-[8px] uppercase tracking-wider shadow-sm">
+                            <div className="bg-amber-400 text-slate-950 font-black px-1 py-0.5 rounded-xs text-[7px] sm:text-[8px] uppercase tracking-wider shadow-sm shrink-0">
                               {m.badgeText}
                             </div>
                           )}
@@ -12360,9 +12360,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       </div>
 
                       {/* Game Title & Mission Info Bar */}
-                      <div className="p-2.5 bg-slate-950 border-t border-slate-800 flex flex-col gap-1.5">
+                      <div className="p-1.5 sm:p-2.5 bg-slate-950 border-t border-slate-800 flex flex-col gap-1 sm:gap-1.5">
                         <div className="flex items-center justify-between gap-1">
-                          <span className="flex-1 text-left font-black text-xs text-white truncate drop-shadow-xs">
+                          <span className="flex-1 text-left font-black text-[10px] sm:text-xs text-white truncate drop-shadow-xs">
                             {m.title}
                           </span>
                           <button
@@ -12371,18 +12371,18 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                               playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                               setGuideMode(m);
                             }}
-                            className="min-w-[24px] min-h-[24px] rounded-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition-all flex items-center justify-center cursor-pointer text-[10px] font-black shrink-0"
+                            className="w-5 h-5 sm:w-6 sm:h-6 rounded-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition-all flex items-center justify-center cursor-pointer text-[9px] sm:text-[10px] font-black shrink-0"
                             aria-label={language === 'ko' ? '설명 보기' : 'Show Description'}
                           >
                             ?
                           </button>
                         </div>
-                        <div className="flex items-center justify-between text-[10px] text-slate-400">
-                          <span className="truncate text-slate-400 text-[10px]">
-                            ✦ {language === 'ko' ? '수호' : 'Hero'}: <strong className="text-slate-200 font-bold">{charName}</strong>
+                        <div className="flex items-center justify-between text-[9px] sm:text-[10px] text-slate-400">
+                          <span className="truncate text-slate-400 text-[8px] sm:text-[9px]">
+                            ✦ <strong className="text-slate-200 font-bold">{charName}</strong>
                           </span>
-                          <span className="text-emerald-400 font-bold shrink-0 text-[10px] flex items-center gap-0.5">
-                            +SNS <ChevronRight size={12} className="inline text-slate-500 group-hover:translate-x-0.5 transition-transform" />
+                          <span className="text-emerald-400 font-bold shrink-0 text-[8px] sm:text-[9px] flex items-center gap-0.5">
+                            +SNS <ChevronRight size={10} className="inline text-slate-500 group-hover:translate-x-0.5 transition-transform" />
                           </span>
                         </div>
                       </div>
