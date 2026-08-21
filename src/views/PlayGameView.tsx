@@ -134,6 +134,14 @@ import { VoxelBubblePopGame } from '../components/VoxelBubblePopGame';
 import { VoxelWaterSlideGame } from '../components/VoxelWaterSlideGame';
 import { VoxelKrakenHunterGame } from '../components/VoxelKrakenHunterGame';
 import { VoxelHalfpipeSkaterGame } from '../components/VoxelHalfpipeSkaterGame';
+import { VoxelNetherPortalGame } from '../components/VoxelNetherPortalGame';
+import { VoxelMegaFlareAssaultGame } from '../components/VoxelMegaFlareAssaultGame';
+import { VoxelSpikeRollingGame } from '../components/VoxelSpikeRollingGame';
+import { VoxelTerraQuakeGame } from '../components/VoxelTerraQuakeGame';
+import { VoxelDreamweaverGame } from '../components/VoxelDreamweaverGame';
+import { VoxelLifeFlameGame } from '../components/VoxelLifeFlameGame';
+import { VoxelArcaneNexusGame } from '../components/VoxelArcaneNexusGame';
+import { VoxelDreadShadowGame } from '../components/VoxelDreadShadowGame';
 import { GambitConfig, TacticalStance } from '../types';
 import { getSecretStamps, unlockSecretStamp } from '../lib/secretStampHelper';
 import { recordHeroBattleResult } from '../lib/heroMasteryHelper';
@@ -275,7 +283,7 @@ const MissionCharacterPortrait: React.FC<{
   );
 };
 
-type GameState = 'modeSelect' | 'lobby' | 'searching' | 'playing' | 'gameOver' | 'preMatch' | 'tournament' | 'story' | 'boss' | 'dungeon' | 'defense' | 'running' | 'shooting' | 'snake' | 'gomoku' | 'memorymatch' | 'slide2048' | 'cardjumper' | 'cardtap' | 'cardflip' | 'cardslide' | 'cardsorcery' | 'cardslot' | 'cardheist' | 'cardrush' | 'breakout' | 'minesweeper' | 'pacman' | 'tictactoe' | 'trexrunner' | 'voxeldefense' | 'pixelstrike' | 'voxelparkour' | 'voxelbattlegrounds' | 'voxeldungeon' | 'voxelspace' | 'voxelzombie' | 'voxelsiege' | 'voxeltitan' | 'voxelsuperstrikers' | 'voxelgladiatorcolosseum' | 'voxeldragonslayer' | 'voxelarcherhero' | 'voxelvampiresurvival' | 'voxeltankbounce' | 'voxelninjaslash' | 'voxelgolfmaster' | 'voxellumberjacktycoon' | 'voxelfishingmaster' | 'voxelfirerescue' | 'voxelwindhunter' | 'voxelsubwayrunner' | 'voxelcranemaster' | 'voxelmonstertruck' | 'voxeltowerstack' | 'voxelslamdunk' | 'voxelcoastertycoon' | 'voxelsniperhunter' | 'voxeljetskiwater' | 'voxelbaseballderby' | 'voxelboxingmighty' | 'voxelmicrokart' | 'voxeltreasuredigger' | 'voxelflightlanding' | 'voxelgachaclaw' | 'voxelbilliardstrick' | 'voxeldartsbar' | 'voxelwingsuitskydiving' | 'voxelbadmintonblitz' | 'voxelmagnethole' | 'voxelmotocrossstunt' | 'voxelskateboardstreet' | 'voxelsnowboardslalom' | 'voxelkaratebreak' | 'voxelpinballclimber' | 'voxelcrazytaxi' | 'voxellaserstealth' | 'voxeldojobalance' | 'voxelbubblepop' | 'voxelwaterslide' | 'voxelkrakenhunter' | 'voxelhalfpipeskater';
+type GameState = 'modeSelect' | 'lobby' | 'searching' | 'playing' | 'gameOver' | 'preMatch' | 'tournament' | 'story' | 'boss' | 'dungeon' | 'defense' | 'running' | 'shooting' | 'snake' | 'gomoku' | 'memorymatch' | 'slide2048' | 'cardjumper' | 'cardtap' | 'cardflip' | 'cardslide' | 'cardsorcery' | 'cardslot' | 'cardheist' | 'cardrush' | 'breakout' | 'minesweeper' | 'pacman' | 'tictactoe' | 'trexrunner' | 'voxeldefense' | 'pixelstrike' | 'voxelparkour' | 'voxelbattlegrounds' | 'voxeldungeon' | 'voxelspace' | 'voxelzombie' | 'voxelsiege' | 'voxeltitan' | 'voxelsuperstrikers' | 'voxelgladiatorcolosseum' | 'voxeldragonslayer' | 'voxelarcherhero' | 'voxelvampiresurvival' | 'voxeltankbounce' | 'voxelninjaslash' | 'voxelgolfmaster' | 'voxellumberjacktycoon' | 'voxelfishingmaster' | 'voxelfirerescue' | 'voxelwindhunter' | 'voxelsubwayrunner' | 'voxelcranemaster' | 'voxelmonstertruck' | 'voxeltowerstack' | 'voxelslamdunk' | 'voxelcoastertycoon' | 'voxelsniperhunter' | 'voxeljetskiwater' | 'voxelbaseballderby' | 'voxelboxingmighty' | 'voxelmicrokart' | 'voxeltreasuredigger' | 'voxelflightlanding' | 'voxelgachaclaw' | 'voxelbilliardstrick' | 'voxeldartsbar' | 'voxelwingsuitskydiving' | 'voxelbadmintonblitz' | 'voxelmagnethole' | 'voxelmotocrossstunt' | 'voxelskateboardstreet' | 'voxelsnowboardslalom' | 'voxelkaratebreak' | 'voxelpinballclimber' | 'voxelcrazytaxi' | 'voxellaserstealth' | 'voxeldojobalance' | 'voxelbubblepop' | 'voxelwaterslide' | 'voxelkrakenhunter' | 'voxelhalfpipeskater' | 'voxelnetherportal' | 'voxelmegaflareassault' | 'voxelspikerolling' | 'voxelterraquake' | 'voxeldreamweaver' | 'voxellifeflame' | 'voxelarcanenexus' | 'voxeldreadshadow';
 
 interface TournamentParticipant {
   id: string;
@@ -8317,6 +8325,126 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       isNew: true,
       badgeText: '3D HALFPIPE',
       guide: language === 'ko' ? 'U자형 하프파이프 램프에서 펌핑 가속 후 공중으로 도약하여 킥플립, 스핀, 핸드플랜트 묘기를 완성하세요.' : 'Pump speed in the U-ramp, launch high into the air, and pull off 360 spins and flip tricks!'
+    },
+    {
+      id: 'voxelnetherportal',
+      title: language === 'ko' ? '3D 복셀 네더 포탈: 차원 균열 점프' : 'Voxel Nether Portal: Dimension Jump',
+      icon: Trophy,
+      color: 'from-purple-900 to-orange-700',
+      image: '/minigame_boss.png',
+      characterId: 103,
+      action: () => {
+        setGameState('voxelnetherportal');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D PORTAL',
+      guide: language === 'ko' ? '네더 용암 바다 위 부유 섬들을 점프하며 네더 오브를 수집하고 차원 균열을 피해 탈출 포탈을 여세요.' : 'Leap across floating nether islands above lava, collect purple orbs, and escape through the dimensional portal!'
+    },
+    {
+      id: 'voxelmegaflareassault',
+      title: language === 'ko' ? '3D 복셀 메가 플레어: 공중 함대 요격전' : 'Voxel Mega Flare: Sky Assault',
+      icon: Trophy,
+      color: 'from-amber-600 to-red-800',
+      image: '/minigame_boss.png',
+      characterId: 104,
+      action: () => {
+        setGameState('voxelmegaflareassault');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D MEGAFLARE',
+      guide: language === 'ko' ? '바하무트의 브레스를 조준 발사하여 적 공중 요새 함선들을 요격하고 게이지를 채워 메가 플레어를 폭발시키세요.' : 'Aim Bahamut breath shots to intercept enemy voxel airships and charge the gauge to unleash Mega Flare!'
+    },
+    {
+      id: 'voxelspikerolling',
+      title: language === 'ko' ? '3D 복셀 스파이크 롤러: 볼더 크러시' : 'Voxel Spike Roller: Boulder Crush',
+      icon: Trophy,
+      color: 'from-orange-700 to-yellow-600',
+      image: '/minigame_boss.png',
+      characterId: 105,
+      action: () => {
+        setGameState('voxelspikerolling');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D ROLLER',
+      guide: language === 'ko' ? '회전하는 가시 볼더가 되어 협곡 내리막 트랙을 질주하며 크리스탈 블록과 바위를 부수고 전방위 분쇄 콤보를 달성하세요.' : 'Roll down steep canyon slopes as a giant spike boulder, crushing rocks and crystals for massive combo points!'
+    },
+    {
+      id: 'voxelterraquake',
+      title: language === 'ko' ? '3D 복셀 테라 퀘이크: 지반 붕괴 서바이벌' : 'Voxel Terra Quake: Ground Survival',
+      icon: Trophy,
+      color: 'from-lime-800 to-emerald-900',
+      image: '/minigame_boss.png',
+      characterId: 106,
+      action: () => {
+        setGameState('voxelterraquake');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D QUAKE',
+      guide: language === 'ko' ? '무너지는 3D 지반 타일 위에서 지진 충격파를 발동해 암석을 분쇄하고 대지의 고대 보석을 채굴하며 생존하세요.' : 'Survive on shaking collapsible ground tiles, trigger earth shockwaves, and mine ancient gems!'
+    },
+    {
+      id: 'voxeldreamweaver',
+      title: language === 'ko' ? '3D 복셀 드림위버: 에메랄드 링 플라이트' : 'Voxel Dreamweaver: Emerald Flight',
+      icon: Trophy,
+      color: 'from-emerald-600 to-teal-800',
+      image: '/minigame_boss.png',
+      characterId: 107,
+      action: () => {
+        setGameState('voxeldreamweaver');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D DREAM',
+      guide: language === 'ko' ? '에메랄드 꿈의 세계를 3D 비행하며 회전하는 빛의 링을 연속 통과하여 비행 부스터를 유지하고 악몽 안개를 정화하세요.' : 'Glide through emerald dreamscapes, pass through rotating light rings in sequence, and clear nightmare mists!'
+    },
+    {
+      id: 'voxellifeflame',
+      title: language === 'ko' ? '3D 복셀 라이프 플레임: 생명의 나무 디펜스' : 'Voxel Life Flame: Tree Defense',
+      icon: Trophy,
+      color: 'from-rose-600 to-pink-900',
+      image: '/minigame_boss.png',
+      characterId: 108,
+      action: () => {
+        setGameState('voxellifeflame');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D LIFE',
+      guide: language === 'ko' ? '360도 붉은 생명의 불꽃을 회전 조준 발사하여 몰려오는 섀도우 괴물들을 정화하고 신성한 세계수를 수호하세요.' : 'Fire 360-degree life flame projectiles to purify approaching shadow creeps and defend the sacred World Tree!'
+    },
+    {
+      id: 'voxelarcanenexus',
+      title: language === 'ko' ? '3D 복셀 아케인 넥서스: 비전 마나 서클' : 'Voxel Arcane Nexus: Mana Circle',
+      icon: Trophy,
+      color: 'from-indigo-600 to-purple-900',
+      image: '/minigame_boss.png',
+      characterId: 109,
+      action: () => {
+        setGameState('voxelarcanenexus');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D NEXUS',
+      guide: language === 'ko' ? '3D 동심원 마법 링들을 회전 정렬시켜 비전 마나 광선을 넥서스 코어로 연결하고 마나 과부하를 터뜨리세요.' : 'Rotate concentric 3D arcane rings to align mana beams into the nexus core and trigger mana overloads!'
+    },
+    {
+      id: 'voxeldreadshadow',
+      title: language === 'ko' ? '3D 복셀 드레드 섀도우: 암흑 잠입 침투' : 'Voxel Dread Shadow: Stealth Mission',
+      icon: Trophy,
+      color: 'from-slate-900 to-purple-950',
+      image: '/minigame_boss.png',
+      characterId: 110,
+      action: () => {
+        setGameState('voxeldreadshadow');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D STEALTH',
+      guide: language === 'ko' ? '섀도우 은신 모드를 켜고 감시탑의 서치라이트를 피해 적 요새 심장부로 침투하여 암흑 코어를 해킹하세요.' : 'Activate shadow cloak to bypass searchlights, infiltrate deep into the enemy fortress, and hack the dark core!'
     }
   ];
 
@@ -11812,6 +11940,110 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     );
   }
 
+  if (gameState === 'voxelnetherportal') {
+    return (
+      <VoxelNetherPortalGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '네더 포탈 보상', 'Nether Portal reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelmegaflareassault') {
+    return (
+      <VoxelMegaFlareAssaultGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '메가 플레어 요격전 보상', 'Mega Flare Sky Assault reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelspikerolling') {
+    return (
+      <VoxelSpikeRollingGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '스파이크 롤러 보상', 'Spike Roller reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelterraquake') {
+    return (
+      <VoxelTerraQuakeGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '테라 퀘이크 보상', 'Terra Quake reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxeldreamweaver') {
+    return (
+      <VoxelDreamweaverGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '드림위버 비행 보상', 'Dreamweaver Flight reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxellifeflame') {
+    return (
+      <VoxelLifeFlameGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '라이프 플레임 보상', 'Life Flame Defense reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelarcanenexus') {
+    return (
+      <VoxelArcaneNexusGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '아케인 넥서스 보상', 'Arcane Nexus reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxeldreadshadow') {
+    return (
+      <VoxelDreadShadowGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '드레드 섀도우 보상', 'Dread Shadow Stealth reward')}
+      />
+    );
+  }
+
   if (gameState === 'modeSelect') {
     // 오늘의 미션 게임 ID 생성 (날짜 기반 해시로 매일 교체)
     const getDailyMissionIds = (): string[] => {
@@ -11840,7 +12072,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         'voxelmagnethole', 'voxelmotocrossstunt', 'voxelskateboardstreet', 'voxelsnowboardslalom',
         'voxelkaratebreak', 'voxelpinballclimber', 'voxelcrazytaxi', 'voxellaserstealth',
         'voxeldojobalance', 'voxelbubblepop', 'voxelwaterslide', 'voxelkrakenhunter',
-        'voxelhalfpipeskater'
+        'voxelhalfpipeskater', 'voxelnetherportal', 'voxelmegaflareassault', 'voxelspikerolling',
+        'voxelterraquake', 'voxeldreamweaver', 'voxellifeflame', 'voxelarcanenexus',
+        'voxeldreadshadow'
       ];
       // Fisher-Yates shuffle with seeded random
       const shuffled = [...allIds];

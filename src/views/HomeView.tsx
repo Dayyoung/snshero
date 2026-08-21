@@ -654,11 +654,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </AnimatePresence>
       </header>
 
-      {/* ── Daily Missions Section (Today's Tasks & Claim Rewards) ── */}
-      <section id="daily-missions-section" className="w-full">
-        <DailyMissions />
-      </section>
-
       <section className="space-y-4">
         <div className="grid grid-cols-1 gap-4">
           {(!user || user.uid === 'guest-id') ? (
