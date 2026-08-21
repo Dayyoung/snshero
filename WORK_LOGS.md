@@ -4,6 +4,31 @@
 
 ---
 
+## [2026-08-21 14:15 KST / 05:15 UTC] [3D 복셀 미니게임 8종 확장: 핀볼 클라이머, 크레이지 택시, 레이저 스텔스, 도장 밸런스, 버블 팝, 워터 슬라이드, 크라켄 헌터, 하프파이프 스케이터]
+- **작업 내용**:
+  1. **8종의 신규 3D Voxel 미니게임 엔진 및 컴포넌트 개발 (`src/components/`)**:
+     - `VoxelPinballClimberGame.tsx` (Card No.95): 수직 타워 상승 듀얼 플리퍼 핀볼, 범퍼/스프링 물리 점프.
+     - `VoxelCrazyTaxiGame.tsx` (Card No.96): 도심 승객 픽업 & 목적지 니트로 부스터 폭주 레이싱.
+     - `VoxelLaserStealthGame.tsx` (Card No.97): 박물관 금고 이동형 레이저망 회피 슬라이딩 & EMP 스턴 잠입 액션.
+     - `VoxelDojoBalanceGame.tsx` (Card No.98): 외나무다리 린(Lean) 균형 유지 & 봉술 타격/가드 패링 닌자 결투.
+     - `VoxelBubblePopGame.tsx` (Card No.99): 3D 버블 대포 슈팅 3매치 연쇄 폭발 & 콤보 피버 아레나.
+     - `VoxelWaterSlideGame.tsx` (Card No.100): 워터파크 튜브 급류 카빙 & 터보 제트 스플래시 다운 질주.
+     - `VoxelKrakenHunterGame.tsx` (Card No.101): 심해 소용돌이 크라켄 낚시, 텐션 릴링 & 작살 포획 배틀.
+     - `VoxelHalfpipeSkaterGame.tsx` (Card No.102): U자형 하프파이프 펌핑 가속 & 킥플립/360스핀/핸드플랜트 에어 트릭.
+  2. **`PlayGameView.tsx` 전역 연동**:
+     - `GameState` 유니온 타입에 8개 모드 식별자 등록.
+     - `modes` 배열에 95~102번 캐릭터 연계 모드 정보, 가이드, 배지, 테마 컬러 등록.
+     - `getDailyMissionIds` 일일 미션 풀에 전체 8개 신규 모드 추가.
+     - 게임 플레이 시 모바일 원핸드 터치 최적화 및 SNS 재화 보상 연동.
+  3. **코드 검증 및 빌드**:
+     - `tsc --noEmit`: 0 오류 통과 (PASS).
+     - `npm run build`: 프로덕션 빌드 성공.
+  4. **구글 폼 보고**:
+     - 엔드포인트(`https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse`)로 제출 완료.
+- **상태**: 구현 및 검증 완료.
+
+---
+
 ## [2026-08-21 13:30 KST / 04:30 UTC] [카드 전투 상대편 덱 동일 카드 중복 보유 방지 및 100% 고유 덱 보장 로직 구현]
 - **작업 내용**:
   1. **고유 덱 보장 헬퍼 함수 (`ensureUniqueDeck`) 구현 (`constants.ts`)**:

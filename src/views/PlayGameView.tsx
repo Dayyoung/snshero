@@ -126,6 +126,14 @@ import { VoxelMotocrossStuntGame } from '../components/VoxelMotocrossStuntGame';
 import { VoxelSkateboardStreetGame } from '../components/VoxelSkateboardStreetGame';
 import { VoxelSnowboardSlalomGame } from '../components/VoxelSnowboardSlalomGame';
 import { VoxelKarateBreakGame } from '../components/VoxelKarateBreakGame';
+import { VoxelPinballClimberGame } from '../components/VoxelPinballClimberGame';
+import { VoxelCrazyTaxiGame } from '../components/VoxelCrazyTaxiGame';
+import { VoxelLaserStealthGame } from '../components/VoxelLaserStealthGame';
+import { VoxelDojoBalanceGame } from '../components/VoxelDojoBalanceGame';
+import { VoxelBubblePopGame } from '../components/VoxelBubblePopGame';
+import { VoxelWaterSlideGame } from '../components/VoxelWaterSlideGame';
+import { VoxelKrakenHunterGame } from '../components/VoxelKrakenHunterGame';
+import { VoxelHalfpipeSkaterGame } from '../components/VoxelHalfpipeSkaterGame';
 import { GambitConfig, TacticalStance } from '../types';
 import { getSecretStamps, unlockSecretStamp } from '../lib/secretStampHelper';
 import { recordHeroBattleResult } from '../lib/heroMasteryHelper';
@@ -267,7 +275,7 @@ const MissionCharacterPortrait: React.FC<{
   );
 };
 
-type GameState = 'modeSelect' | 'lobby' | 'searching' | 'playing' | 'gameOver' | 'preMatch' | 'tournament' | 'story' | 'boss' | 'dungeon' | 'defense' | 'running' | 'shooting' | 'snake' | 'gomoku' | 'memorymatch' | 'slide2048' | 'cardjumper' | 'cardtap' | 'cardflip' | 'cardslide' | 'cardsorcery' | 'cardslot' | 'cardheist' | 'cardrush' | 'breakout' | 'minesweeper' | 'pacman' | 'tictactoe' | 'trexrunner' | 'voxeldefense' | 'pixelstrike' | 'voxelparkour' | 'voxelbattlegrounds' | 'voxeldungeon' | 'voxelspace' | 'voxelzombie' | 'voxelsiege' | 'voxeltitan' | 'voxelsuperstrikers' | 'voxelgladiatorcolosseum' | 'voxeldragonslayer' | 'voxelarcherhero' | 'voxelvampiresurvival' | 'voxeltankbounce' | 'voxelninjaslash' | 'voxelgolfmaster' | 'voxellumberjacktycoon' | 'voxelfishingmaster' | 'voxelfirerescue' | 'voxelwindhunter' | 'voxelsubwayrunner' | 'voxelcranemaster' | 'voxelmonstertruck' | 'voxeltowerstack' | 'voxelslamdunk' | 'voxelcoastertycoon' | 'voxelsniperhunter' | 'voxeljetskiwater' | 'voxelbaseballderby' | 'voxelboxingmighty' | 'voxelmicrokart' | 'voxeltreasuredigger' | 'voxelflightlanding' | 'voxelgachaclaw' | 'voxelbilliardstrick' | 'voxeldartsbar' | 'voxelwingsuitskydiving' | 'voxelbadmintonblitz' | 'voxelmagnethole' | 'voxelmotocrossstunt' | 'voxelskateboardstreet' | 'voxelsnowboardslalom' | 'voxelkaratebreak';
+type GameState = 'modeSelect' | 'lobby' | 'searching' | 'playing' | 'gameOver' | 'preMatch' | 'tournament' | 'story' | 'boss' | 'dungeon' | 'defense' | 'running' | 'shooting' | 'snake' | 'gomoku' | 'memorymatch' | 'slide2048' | 'cardjumper' | 'cardtap' | 'cardflip' | 'cardslide' | 'cardsorcery' | 'cardslot' | 'cardheist' | 'cardrush' | 'breakout' | 'minesweeper' | 'pacman' | 'tictactoe' | 'trexrunner' | 'voxeldefense' | 'pixelstrike' | 'voxelparkour' | 'voxelbattlegrounds' | 'voxeldungeon' | 'voxelspace' | 'voxelzombie' | 'voxelsiege' | 'voxeltitan' | 'voxelsuperstrikers' | 'voxelgladiatorcolosseum' | 'voxeldragonslayer' | 'voxelarcherhero' | 'voxelvampiresurvival' | 'voxeltankbounce' | 'voxelninjaslash' | 'voxelgolfmaster' | 'voxellumberjacktycoon' | 'voxelfishingmaster' | 'voxelfirerescue' | 'voxelwindhunter' | 'voxelsubwayrunner' | 'voxelcranemaster' | 'voxelmonstertruck' | 'voxeltowerstack' | 'voxelslamdunk' | 'voxelcoastertycoon' | 'voxelsniperhunter' | 'voxeljetskiwater' | 'voxelbaseballderby' | 'voxelboxingmighty' | 'voxelmicrokart' | 'voxeltreasuredigger' | 'voxelflightlanding' | 'voxelgachaclaw' | 'voxelbilliardstrick' | 'voxeldartsbar' | 'voxelwingsuitskydiving' | 'voxelbadmintonblitz' | 'voxelmagnethole' | 'voxelmotocrossstunt' | 'voxelskateboardstreet' | 'voxelsnowboardslalom' | 'voxelkaratebreak' | 'voxelpinballclimber' | 'voxelcrazytaxi' | 'voxellaserstealth' | 'voxeldojobalance' | 'voxelbubblepop' | 'voxelwaterslide' | 'voxelkrakenhunter' | 'voxelhalfpipeskater';
 
 interface TournamentParticipant {
   id: string;
@@ -8189,6 +8197,126 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       isNew: true,
       badgeText: '3D KARATE',
       guide: language === 'ko' ? '기력 게이지가 임계 영역에 도달했을 때 정권 찌르기를 날려 10단 송판과 화강암, 흑요석을 완전 격파하세요.' : 'Time your Ki focus and unleash powerful chops to shatter 10 stacked wood planks and obsidian blocks!'
+    },
+    {
+      id: 'voxelpinballclimber',
+      title: language === 'ko' ? '3D 복셀 핀볼 클라이머: 수직 타워 상승' : 'Voxel Pinball Climber: Tower Ascent',
+      icon: Trophy,
+      color: 'from-amber-500 to-rose-500',
+      image: '/minigame_boss.png',
+      characterId: 95,
+      action: () => {
+        setGameState('voxelpinballclimber');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D PINBALL',
+      guide: language === 'ko' ? '듀얼 플리퍼로 복셀 핀볼을 상공으로 튕겨 올리며 범퍼와 보너스 링을 획득하고 수직 타워 정상을 정복하세요.' : 'Flip the voxel pinball with dual flippers, hit bumper targets, and climb the endless vertical tower!'
+    },
+    {
+      id: 'voxelcrazytaxi',
+      title: language === 'ko' ? '3D 복셀 크레이지 택시: 도심 폭주 레이싱' : 'Voxel Crazy Taxi: City Rush',
+      icon: Trophy,
+      color: 'from-amber-400 to-cyan-500',
+      image: '/minigame_boss.png',
+      characterId: 96,
+      action: () => {
+        setGameState('voxelcrazytaxi');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D TAXI',
+      guide: language === 'ko' ? '노란색 복셀 택시를 조종하여 도심의 승객을 태우고 제한 시간 내에 목적지까지 초고속 드리프트 질주하세요.' : 'Steer your yellow taxi, pick up urban fares, and turbo rush to destinations before time runs out!'
+    },
+    {
+      id: 'voxellaserstealth',
+      title: language === 'ko' ? '3D 복셀 레이저 스텔스: 박물관 금고 잠입' : 'Voxel Laser Stealth: Vault Thief',
+      icon: Trophy,
+      color: 'from-rose-500 to-slate-800',
+      image: '/minigame_boss.png',
+      characterId: 97,
+      action: () => {
+        setGameState('voxellaserstealth');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D STEALTH',
+      guide: language === 'ko' ? '이동하는 레이저 보안망을 슬라이딩으로 회피하고 EMP 스턴으로 무력화하며 금고의 다이아몬드를 탈취하세요.' : 'Slide under moving laser security grids, use EMP gadgets, and steal museum diamonds undetected!'
+    },
+    {
+      id: 'voxeldojobalance',
+      title: language === 'ko' ? '3D 복셀 도장 밸런스: 외나무다리 결투' : 'Voxel Dojo Balance: Log Duel',
+      icon: Trophy,
+      color: 'from-zinc-700 to-amber-600',
+      image: '/minigame_boss.png',
+      characterId: 98,
+      action: () => {
+        setGameState('voxeldojobalance');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D DOJO',
+      guide: language === 'ko' ? '좁은 외나무다리 위에서 좌우 균형을 잡으며 봉술 타격과 가드 패링으로 상대 닌자를 낙하시키세요.' : 'Maintain balance on a narrow log high in the air and knock rival ninjas into the waterfall with staff strikes!'
+    },
+    {
+      id: 'voxelbubblepop',
+      title: language === 'ko' ? '3D 복셀 버블 팝: 몬스터 아레나 슈터' : 'Voxel Bubble Pop: Arena Shooter',
+      icon: Trophy,
+      color: 'from-purple-500 to-pink-500',
+      image: '/minigame_boss.png',
+      characterId: 99,
+      action: () => {
+        setGameState('voxelbubblepop');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D BUBBLE',
+      guide: language === 'ko' ? '3D 복셀 버블 대포를 발사하여 같은 색상의 버블을 3개 이상 매치하고 연쇄 폭발 콤보를 달성하세요.' : 'Aim and fire 3D voxel bubble cannons to match 3+ spheres and trigger explosive chain combos!'
+    },
+    {
+      id: 'voxelwaterslide',
+      title: language === 'ko' ? '3D 복셀 워터 슬라이드: 아쿠아 스플래시' : 'Voxel Water Slide: Aqua Splash',
+      icon: Trophy,
+      color: 'from-cyan-400 to-blue-600',
+      image: '/minigame_boss.png',
+      characterId: 100,
+      action: () => {
+        setGameState('voxelwaterslide');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D SLIDE',
+      guide: language === 'ko' ? '워터파크 튜브를 타고 거대한 곡선 슬라이드 플룸을 초고속 카빙하며 황금 진주를 수집하고 스플래시 풀로 골인하세요.' : 'Ride inflatable tubes carving down giant water flumes at high speed into the splash pool!'
+    },
+    {
+      id: 'voxelkrakenhunter',
+      title: language === 'ko' ? '3D 복셀 심해 피싱: 크라켄 헌터' : 'Voxel Deepsea Fishing: Kraken Hunter',
+      icon: Trophy,
+      color: 'from-sky-600 to-rose-700',
+      image: '/minigame_boss.png',
+      characterId: 101,
+      action: () => {
+        setGameState('voxelkrakenhunter');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D KRAKEN',
+      guide: language === 'ko' ? '어선을 타고 심해 소용돌이에 낚싯줄을 던져 줄 텐션을 조절하고 작살을 발사해 거대 크라켄을 포획하세요.' : 'Cast lines into deep ocean vortexes, manage tension to prevent snaps, and harpoon giant krakens!'
+    },
+    {
+      id: 'voxelhalfpipeskater',
+      title: language === 'ko' ? '3D 복셀 하프파이프 스케이터: 스트리트 트릭' : 'Voxel Halfpipe Skater: Street Tricks',
+      icon: Trophy,
+      color: 'from-amber-500 to-cyan-500',
+      image: '/minigame_boss.png',
+      characterId: 102,
+      action: () => {
+        setGameState('voxelhalfpipeskater');
+      },
+      category: '3d',
+      isNew: true,
+      badgeText: '3D HALFPIPE',
+      guide: language === 'ko' ? 'U자형 하프파이프 램프에서 펌핑 가속 후 공중으로 도약하여 킥플립, 스핀, 핸드플랜트 묘기를 완성하세요.' : 'Pump speed in the U-ramp, launch high into the air, and pull off 360 spins and flip tricks!'
     }
   ];
 
@@ -11580,6 +11708,110 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     );
   }
 
+  if (gameState === 'voxelpinballclimber') {
+    return (
+      <VoxelPinballClimberGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '핀볼 클라이머 보상', 'Pinball Climber reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelcrazytaxi') {
+    return (
+      <VoxelCrazyTaxiGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '크레이지 택시 보상', 'Crazy Taxi reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxellaserstealth') {
+    return (
+      <VoxelLaserStealthGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '레이저 스텔스 보상', 'Laser Stealth reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxeldojobalance') {
+    return (
+      <VoxelDojoBalanceGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '도장 밸런스 보상', 'Dojo Balance reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelbubblepop') {
+    return (
+      <VoxelBubblePopGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '버블 팝 보상', 'Bubble Pop reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelwaterslide') {
+    return (
+      <VoxelWaterSlideGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '워터 슬라이드 보상', 'Water Slide reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelkrakenhunter') {
+    return (
+      <VoxelKrakenHunterGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '크라켄 헌터 보상', 'Kraken Hunter reward')}
+      />
+    );
+  }
+
+  if (gameState === 'voxelhalfpipeskater') {
+    return (
+      <VoxelHalfpipeSkaterGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '하프파이프 스케이터 보상', 'Halfpipe Skater reward')}
+      />
+    );
+  }
+
   if (gameState === 'modeSelect') {
     // 오늘의 미션 게임 ID 생성 (날짜 기반 해시로 매일 교체)
     const getDailyMissionIds = (): string[] => {
@@ -11606,7 +11838,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         'voxelmicrokart', 'voxeltreasuredigger', 'voxelflightlanding', 'voxelgachaclaw',
         'voxelbilliardstrick', 'voxeldartsbar', 'voxelwingsuitskydiving', 'voxelbadmintonblitz',
         'voxelmagnethole', 'voxelmotocrossstunt', 'voxelskateboardstreet', 'voxelsnowboardslalom',
-        'voxelkaratebreak'
+        'voxelkaratebreak', 'voxelpinballclimber', 'voxelcrazytaxi', 'voxellaserstealth',
+        'voxeldojobalance', 'voxelbubblepop', 'voxelwaterslide', 'voxelkrakenhunter',
+        'voxelhalfpipeskater'
       ];
       // Fisher-Yates shuffle with seeded random
       const shuffled = [...allIds];
