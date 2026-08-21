@@ -4,6 +4,21 @@
 
 ---
 
+## [2026-08-21 15:05 KST / 06:05 UTC] [상점 UI] 카드팩 연속뽑기(10연차) 버튼 제거 및 단일 개봉 버튼 일원화
+- **작업 내용**:
+  1. **`ShopView.tsx` 카드팩 구매 버튼 UI 단순화**:
+     - 상점 카드팩 목록에서 10연차(연속뽑기) 버튼 및 10연차 안내 배너를 제거.
+     - 개별 카드팩의 `카드팩 개봉 (Open Pack)` 단일 버튼으로 전체 너비 일원화.
+     - 팩 개봉 후 결과 화면에서 `다시 뽑기 (Draw Again)`를 통해 자연스럽게 연속 진행이 가능하므로 상점 카드팩 메인 UI가 더욱 직관적이고 깔끔해짐.
+  2. **코드 검증 및 빌드**:
+     - `tsc --noEmit`: 0 오류 통과 (PASS).
+     - Git 커밋: `refactor(shop): remove 10x continuous draw button for streamlined card pack opening`.
+  3. **구글 폼 보고**:
+     - 엔드포인트(`https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse`)로 보고서 제출 완료 (1건).
+- **상태**: 구현 및 검증 완료.
+
+---
+
 ## [2026-08-21 15:02 KST / 06:02 UTC] [미션게임 UI] 미션게임 목록 그리드 1줄에 3카드 배치로 반응형 개편
 - **작업 내용**:
   1. **`PlayGameView.tsx` 미션게임 모드 선택 화면 그리드 3열 개편**:
