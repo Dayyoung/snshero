@@ -35,15 +35,6 @@ const getViewTitle = (view?: ViewType, lang?: string) => {
       return isKo ? '예측 시장' : 'Prediction Market';
     case 'share':
       return isKo ? '카드 공유' : 'Card Share';
-    case 'world-codex':
-      return isKo ? '월드 코덱스' : 'World Codex';
-    case 'wiki':
-    case 'wiki-card':
-    case 'wiki-item':
-    case 'wiki-skill':
-    case 'wiki-howtoplay':
-    case 'wiki-tip':
-      return isKo ? '위키 백과' : 'Wiki Guide';
     default:
       return isKo ? '메인 로비' : 'Main Lobby';
   }

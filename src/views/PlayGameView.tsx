@@ -549,24 +549,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     handleSaveGambitConfig(newConfig);
   };
 
-  // Centralized minigame reward: grants standardized SNS coins + card XP with fair reward floor
+  // Centralized minigame reward: grants SNS coins + card XP
   const handleMinigameReward = (amount: number, rewardKo: string, rewardEn: string) => {
-    // Guaranteed fair normalized reward floor (minimum 35P for any completed victory/session)
-    const finalAmount = amount > 0 ? Math.max(35, amount) : 0;
-    if (finalAmount > 0) {
+    if (amount > 0) {
       const reason = language === 'ko' ? rewardKo : rewardEn;
-      updateSns?.(finalAmount, reason);
-      const xpAmount = Math.ceil(finalAmount * 0.5);
+      updateSns?.(amount, reason);
+      const xpAmount = Math.ceil(amount * 0.5);
       onEarnXp?.(xpAmount);
       // 일일 미션 진행도 업데이트 (미니게임 플레이)
       incrementMissionProgress('play_minigame', 1);
-
-      // Dispatch custom event for real-time wallet sync across UI
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('hero_sns_updated', {
-          detail: { amount: finalAmount, reason, timestamp: Date.now() }
-        }));
-      }
     }
   };
 
