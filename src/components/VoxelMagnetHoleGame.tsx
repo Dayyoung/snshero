@@ -1,7 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ArrowLeft, Trophy, Magnet, Sparkles, Timer, Zap, Expand } from 'lucide-react';
+import { Magnet, Expand } from 'lucide-react';
 import { CardData } from '../types';
+import { UniversalTutorialModal } from './UniversalTutorialModal';
+import { ResponsiveCleanHUD } from './ResponsiveCleanHUD';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelMagnetHoleGameProps {
   deck: CardData[];
@@ -34,6 +38,14 @@ export const VoxelMagnetHoleGame: React.FC<VoxelMagnetHoleGameProps> = ({
   const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
 
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_blackhole') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [holeSize, setHoleSize] = useState<number>(1.2);
   const [swallowedCount, setSwallowedCount] = useState<number>(0);
@@ -41,7 +53,7 @@ export const VoxelMagnetHoleGame: React.FC<VoxelMagnetHoleGameProps> = ({
   const [magnetCooldown, setMagnetCooldown] = useState<number>(0);
   const [bannerText, setBannerText] = useState<string>('');
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
     holeX: 0,
@@ -53,11 +65,17 @@ export const VoxelMagnetHoleGame: React.FC<VoxelMagnetHoleGameProps> = ({
     swallowedCount: 0,
     timeLeft: 90,
     isGameOver: false,
+    isPaused: false,
     magnetPulseTime: 0,
     magnetCooldown: 0,
     cityObjects: [] as CityObject[],
     holeMesh: null as THREE.Group | null
   });
+
+  // Keep stateRef.isPaused synced
+  useEffect(() => {
+    stateRef.current.isPaused = isPaused || showTutorial;
+  }, [isPaused, showTutorial]);
 
   useEffect(() => {
     const container = mountRef.current;
@@ -234,7 +252,7 @@ export const VoxelMagnetHoleGame: React.FC<VoxelMagnetHoleGameProps> = ({
     // Timer Interval
     const timerInterval = setInterval(() => {
       const state = stateRef.current;
-      if (state.isGameOver) return;
+      if (state.isGameOver || state.isPaused) return;
 
       if (state.magnetCooldown > 0) {
         state.magnetCooldown -= 1;
@@ -247,9 +265,18 @@ export const VoxelMagnetHoleGame: React.FC<VoxelMagnetHoleGameProps> = ({
       if (state.timeLeft <= 0) {
         state.isGameOver = true;
         setIsGameOver(true);
-        const earnedSns = Math.min(260, Math.max(35, Math.floor(state.score * 0.15)));
-        setRewardSns(earnedSns);
-        onReward(earnedSns);
+        const receipt = calculateAndDepositMissionReward({
+          gameId: 'voxel_blackhole',
+          gameTitle: isKo ? '3D 복셀 서바이벌 마그넷 홀' : 'Voxel Magnet Hole',
+          durationSeconds: 90 - state.timeLeft,
+          score: state.score,
+          maxTargetScore: 1200,
+          isVictory: true,
+          difficulty: 'NORMAL',
+          perfectClear: state.holeRadius >= 8.0
+        });
+        setSettlementReceipt(receipt);
+        onReward(receipt.totalSns);
       }
     }, 1000);
 
@@ -262,7 +289,7 @@ export const VoxelMagnetHoleGame: React.FC<VoxelMagnetHoleGameProps> = ({
       const delta = clock.getDelta();
       const state = stateRef.current;
 
-      if (!state.isGameOver) {
+      if (!state.isGameOver && !state.isPaused) {
         // Move Blackhole
         state.holeX += (state.targetX - state.holeX) * 0.1;
         state.holeZ += (state.targetZ - state.holeZ) * 0.1;
@@ -352,7 +379,7 @@ export const VoxelMagnetHoleGame: React.FC<VoxelMagnetHoleGameProps> = ({
 
   // Touch Move Hole
   const handleTouchMove = (e: React.TouchEvent | React.MouseEvent) => {
-    if (isGameOver) return;
+    if (isGameOver || isPaused || showTutorial) return;
     const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
     const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
 
@@ -366,13 +393,33 @@ export const VoxelMagnetHoleGame: React.FC<VoxelMagnetHoleGameProps> = ({
   // Magnet Vacuum Booster (Pulses for 3.5 seconds)
   const handleMagnetBoost = () => {
     const state = stateRef.current;
-    if (state.magnetCooldown > 0 || isGameOver) return;
+    if (state.magnetCooldown > 0 || isGameOver || isPaused || showTutorial) return;
 
     state.magnetPulseTime = 3.5;
     state.magnetCooldown = 15;
     setMagnetCooldown(15);
     setBannerText(isKo ? '⚡ 10m 자석 진공 흡입 가동!!' : '⚡ 10M MAGNET VACUUM ENGAGED!!');
     playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+  };
+
+  const handleRestart = () => {
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+    setScore(0);
+    setHoleSize(1.2);
+    setSwallowedCount(0);
+    setTimeLeft(90);
+    setMagnetCooldown(0);
+    const state = stateRef.current;
+    state.holeX = 0;
+    state.holeZ = 0;
+    state.targetX = 0;
+    state.targetZ = 0;
+    state.holeRadius = 1.2;
+    state.score = 0;
+    state.swallowedCount = 0;
+    state.timeLeft = 90;
+    state.isGameOver = false;
   };
 
   return (
@@ -383,45 +430,34 @@ export const VoxelMagnetHoleGame: React.FC<VoxelMagnetHoleGameProps> = ({
     >
       <div ref={mountRef} className="w-full h-full" />
 
-      {/* Top HUD */}
-      <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
-        <button
-          onClick={onExit}
-          className="pointer-events-auto p-2 bg-slate-900/80 border border-slate-700 text-slate-200 rounded-sm hover:bg-slate-800 transition-all flex items-center gap-1.5 text-xs font-bold cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-          <span>{isKo ? '나가기' : 'Exit'}</span>
-        </button>
-
-        <div className="flex items-center gap-2 bg-slate-900/90 border border-purple-500/40 px-3 py-1.5 rounded-sm">
-          <Trophy size={16} className="text-amber-400" />
-          <span className="text-xs text-purple-300 font-bold">
-            {isKo ? `점수: ${score}P` : `Score: ${score}`}
-          </span>
-          <span className="text-[10px] text-amber-400 font-bold">
-            [{holeSize}m Ø]
-          </span>
-          <span className="text-[10px] text-slate-300 flex items-center gap-1">
-            <Timer size={12} className="text-rose-400" />
-            {timeLeft}s
-          </span>
-        </div>
-      </div>
+      {/* Responsive Clean HUD (Upper 5% Slim Bar per design.md) */}
+      <ResponsiveCleanHUD
+        gameTitle={isKo ? '마그넷 홀: 블랙홀' : 'Voxel Magnet Hole'}
+        score={score}
+        timeLeft={timeLeft}
+        customMetricLabel={isKo ? '직경' : 'Size'}
+        customMetricValue={`${holeSize}m`}
+        isPaused={isPaused}
+        language={language}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onTogglePause={() => setIsPaused(prev => !prev)}
+      />
 
       {/* Hole Growth / Swallowed Counter */}
       <div className="absolute top-14 left-4 flex flex-col gap-1.5 z-10 pointer-events-none">
-        <div className="flex items-center gap-1.5 bg-slate-900/80 border border-slate-700 text-purple-300 px-2.5 py-1 rounded-sm text-xs font-bold w-fit">
-          <Expand size={14} className="text-purple-400" />
+        <div className="flex items-center gap-1.5 bg-[#fdfcfc]/90 border border-[#201d1d]/30 text-[#201d1d] px-2.5 py-1 rounded-sm text-xs font-bold w-fit shadow-xs backdrop-blur-xs">
+          <Expand size={13} className="text-purple-600" />
           <span>{isKo ? `블랙홀 직경: ${holeSize}m` : `HOLE: ${holeSize}m`}</span>
         </div>
-        <div className="flex items-center gap-1.5 bg-slate-900/80 border border-slate-700 text-slate-300 px-2.5 py-0.5 rounded-sm text-[11px] font-bold w-fit">
+        <div className="flex items-center gap-1.5 bg-[#fdfcfc]/90 border border-[#201d1d]/30 text-[#201d1d] px-2.5 py-0.5 rounded-sm text-[11px] font-bold w-fit shadow-xs backdrop-blur-xs">
           <span>{isKo ? `삼킨 사물: ${swallowedCount}개` : `Swallowed: ${swallowedCount}`}</span>
         </div>
       </div>
 
       {/* Banner Notification */}
       {bannerText && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 bg-purple-600/90 text-white px-4 py-1 rounded-sm text-xs font-black tracking-wider shadow-lg z-10 pointer-events-none animate-bounce">
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 bg-[#201d1d] text-[#fdfcfc] px-4 py-1 rounded-sm text-xs font-black tracking-wider shadow-lg z-10 pointer-events-none animate-bounce border border-[#fdfcfc]/20">
           {bannerText}
         </div>
       )}
@@ -431,63 +467,43 @@ export const VoxelMagnetHoleGame: React.FC<VoxelMagnetHoleGameProps> = ({
         <button
           onClick={handleMagnetBoost}
           disabled={magnetCooldown > 0}
-          className={`w-full max-w-sm py-4 border text-slate-950 font-black text-base rounded-sm shadow-xl flex items-center justify-center gap-2 uppercase tracking-widest cursor-pointer transition-all active:scale-95 ${
+          className={`w-full max-w-sm py-4 border-2 text-slate-950 font-black text-sm sm:text-base rounded-sm shadow-xl flex items-center justify-center gap-2 uppercase tracking-widest cursor-pointer transition-all active:scale-95 ${
             magnetCooldown > 0
-              ? 'bg-slate-800 border-slate-700 text-slate-500'
-              : 'bg-gradient-to-r from-purple-500 to-pink-500 border-purple-300'
+              ? 'bg-slate-800 border-slate-700 text-slate-500 cursor-not-allowed'
+              : 'bg-amber-400 hover:bg-amber-300 border-[#201d1d] text-[#201d1d]'
           }`}
         >
-          <Magnet size={20} className={magnetCooldown === 0 ? 'animate-bounce' : ''} />
+          <Magnet size={18} className={magnetCooldown === 0 ? 'animate-bounce' : ''} />
           <span>
             {magnetCooldown > 0
               ? (isKo ? `⚡ 자석 쿨다운 (${magnetCooldown}초)` : `⚡ COOLDOWN (${magnetCooldown}s)`)
               : (isKo ? '⚡ 10m 자석 진공 흡입 부스터' : '⚡ 10M MAGNET VACUUM')}
           </span>
         </button>
-        <p className="text-[11px] text-slate-300 bg-slate-900/80 px-3 py-0.5 rounded-sm border border-slate-700">
+        <p className="text-[11px] text-[#201d1d] bg-[#fdfcfc]/90 px-3 py-0.5 rounded-sm border border-[#201d1d]/30 font-medium">
           {isKo ? '화면을 드래그하여 블랙홀을 이동하고 작은 사물부터 삼켜 거대화하세요!' : 'Drag screen to move blackhole and swallow city objects to grow!'}
         </p>
       </div>
 
-      {/* Game Over Summary Modal */}
-      {isGameOver && (
-        <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-xs bg-slate-900 border border-purple-500/50 p-5 rounded-none text-center space-y-4 shadow-2xl">
-            <div className="flex justify-center">
-              <Sparkles size={36} className="text-purple-400 animate-pulse" />
-            </div>
-            <h2 className="text-lg font-black text-purple-400 uppercase tracking-widest">
-              {isKo ? '🏆 블랙홀 삼키기 완료!' : '🏆 BLACKHOLE TIME UP!'}
-            </h2>
-            <div className="space-y-1.5 text-xs text-slate-300 bg-slate-950/60 p-3 border border-slate-800">
-              <div className="flex justify-between">
-                <span>{isKo ? '최종 블랙홀 직경' : 'Final Hole Size'}</span>
-                <span className="font-bold text-purple-300">{holeSize}m</span>
-              </div>
-              <div className="flex justify-between">
-                <span>{isKo ? '삼킨 총 사물' : 'Total Swallowed'}</span>
-                <span className="font-bold text-amber-300">{swallowedCount} 개</span>
-              </div>
-              <div className="flex justify-between">
-                <span>{isKo ? '최종 득점' : 'Final Score'}</span>
-                <span className="font-bold text-indigo-300">{score} PTS</span>
-              </div>
-              <div className="flex justify-between pt-1 border-t border-slate-800 text-amber-400 font-bold">
-                <span>{isKo ? '획득 SNS 보상' : 'Earned SNS'}</span>
-                <span>+{rewardSns} SNS</span>
-              </div>
-            </div>
+      {/* 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_blackhole"
+          gameTitle={isKo ? '3D 복셀 마그넷 홀 (블랙홀 이터)' : 'Voxel Magnet Hole: Blackhole Eater'}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-            <div className="flex gap-2 pt-2">
-              <button
-                onClick={onExit}
-                className="flex-1 py-2 bg-purple-500 hover:bg-purple-400 text-slate-950 font-black text-xs uppercase rounded-sm transition-all cursor-pointer"
-              >
-                {isKo ? '보상 수령 및 복귀' : 'Claim & Exit'}
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );

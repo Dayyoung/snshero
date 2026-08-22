@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ArrowLeft, Trophy, Sparkles, Zap, Flame, Shield, ArrowUp } from 'lucide-react';
 import { CardData } from '../types';
+import { UniversalTutorialModal } from './UniversalTutorialModal';
+import { ResponsiveCleanHUD } from './ResponsiveCleanHUD';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelPinballClimberGameProps {
   deck: CardData[];
@@ -37,13 +40,21 @@ export const VoxelPinballClimberGame: React.FC<VoxelPinballClimberGameProps> = (
   const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
 
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_pinball_climber') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [currentFloor, setCurrentFloor] = useState<number>(1);
   const [combo, setCombo] = useState<number>(0);
   const [ballsLeft, setBallsLeft] = useState<number>(3);
   const [isFever, setIsFever] = useState<boolean>(false);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
     ballPos: new THREE.Vector3(0, 2, 0),
@@ -66,10 +77,15 @@ export const VoxelPinballClimberGame: React.FC<VoxelPinballClimberGameProps> = (
     isFever: false,
     feverTime: 0,
     isGameOver: false,
+    isPaused: false,
     bumpers: [] as Bumper[],
     coins: [] as VoxelCoin[],
-    particles: [] as { mesh: THREE.Mesh; vel: THREE.Vector3; life: number }[]
+    startTime: Date.now()
   });
+
+  useEffect(() => {
+    stateRef.current.isPaused = isPaused || showTutorial;
+  }, [isPaused, showTutorial]);
 
   useEffect(() => {
     const container = mountRef.current;
@@ -368,9 +384,20 @@ export const VoxelPinballClimberGame: React.FC<VoxelPinballClimberGameProps> = (
         if (state.ballsLeft <= 0) {
           state.isGameOver = true;
           setIsGameOver(true);
-          const reward = Math.min(260, Math.floor(state.score / 60) + state.maxFloorReached * 4);
-          setRewardSns(reward);
-          onReward(reward);
+          const durationSeconds = Math.round((Date.now() - state.startTime) / 1000);
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'voxel_pinball_climber',
+            gameTitle: isKo ? '3D 복셀 핀볼 배틀 타워: 범퍼 클라이머' : 'Voxel Pinball Climber: Bumper Tower',
+            durationSeconds,
+            score: state.score,
+            maxTargetScore: 10000,
+            isVictory: true,
+            difficulty: 'NORMAL',
+            comboCount: state.combo,
+            perfectClear: state.maxFloorReached >= 10
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
         } else {
           // Respawn ball
           state.ballPos.set(0, state.maxFloorReached * 2.6 + 2, 0);
@@ -414,55 +441,65 @@ export const VoxelPinballClimberGame: React.FC<VoxelPinballClimberGameProps> = (
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, playSfx]);
+  }, [lowSpecMode, onReward, playSfx, isKo]);
+
+  const handleRestart = () => {
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+    setScore(0);
+    setCurrentFloor(1);
+    setCombo(0);
+    setBallsLeft(3);
+    setIsFever(false);
+
+    const state = stateRef.current;
+    state.ballPos.set(0, 2, 0);
+    state.ballVel.set(0, 0, 0);
+    state.score = 0;
+    state.currentFloor = 1;
+    state.maxFloorReached = 1;
+    state.combo = 0;
+    state.ballsLeft = 3;
+    state.isFever = false;
+    state.isGameOver = false;
+    state.startTime = Date.now();
+  };
 
   return (
     <div className="relative w-full h-full min-h-[100dvh] bg-slate-950 flex flex-col items-center select-none overflow-hidden font-mono">
       {/* 3D Canvas Mount */}
       <div ref={mountRef} className="absolute inset-0 w-full h-full" />
 
-      {/* Top Header HUD */}
-      <div className="relative z-10 w-full max-w-xl p-3 flex items-center justify-between pointer-events-auto bg-slate-900/80 backdrop-blur-sm border-b border-cyan-500/30">
-        <button
-          onClick={onExit}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 active:scale-95 text-cyan-300 text-xs font-bold rounded-sm border border-cyan-500/40"
-        >
-          <ArrowLeft size={14} />
-          <span>{isKo ? '나가기' : 'Exit'}</span>
-        </button>
-
-        <div className="flex items-center gap-4 text-xs font-bold">
-          <div className="flex items-center gap-1 text-amber-400">
-            <Trophy size={14} />
-            <span>{score.toLocaleString()}P</span>
-          </div>
-          <div className="flex items-center gap-1 text-cyan-300">
-            <ArrowUp size={14} />
-            <span>{currentFloor}F</span>
-          </div>
-          <div className="flex items-center gap-1 text-rose-400">
-            <span>● x{ballsLeft}</span>
-          </div>
-        </div>
-      </div>
+      {/* Responsive Clean HUD (Upper 5% Slim Bar per design.md) */}
+      <ResponsiveCleanHUD
+        gameTitle={isKo ? '핀볼 범퍼 타워' : 'Voxel Pinball'}
+        score={score}
+        customMetricLabel={isKo ? '층수' : 'Floor'}
+        customMetricValue={`${currentFloor}F (●x${ballsLeft})`}
+        combo={combo}
+        isPaused={isPaused}
+        language={language}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onTogglePause={() => setIsPaused(prev => !prev)}
+      />
 
       {/* Fever / Combo Overlay */}
-      <div className="relative z-10 mt-2 flex flex-col items-center pointer-events-none gap-1">
+      <div className="relative z-10 mt-14 flex flex-col items-center pointer-events-none gap-1">
         {combo > 1 && (
-          <div className="px-3 py-0.5 bg-indigo-950/80 border border-indigo-400 text-indigo-300 text-xs font-bold rounded-sm animate-bounce">
+          <div className="px-3 py-0.5 bg-[#fdfcfc]/90 border border-[#201d1d]/30 text-[#201d1d] text-xs font-bold rounded-sm animate-bounce shadow-xs">
             {combo} COMBO BOOST!
           </div>
         )}
         {isFever && (
-          <div className="px-4 py-1 bg-amber-500 text-slate-950 text-xs font-black rounded-sm animate-pulse tracking-widest flex items-center gap-1 shadow-[0_0_20px_rgba(245,158,11,0.8)]">
-            <Flame size={14} />
+          <div className="px-4 py-1 bg-amber-400 border border-[#201d1d] text-[#201d1d] text-xs font-black rounded-sm animate-pulse tracking-widest flex items-center gap-1 shadow-md">
             <span>SUPER FEVER x3 MULTIPLIER!</span>
           </div>
         )}
       </div>
 
       {/* Mobile Touch Flipper Controls (Left / Right Screen Halves) */}
-      {!isGameOver && (
+      {!isGameOver && !isPaused && !showTutorial && (
         <div className="absolute inset-x-0 bottom-0 top-16 z-20 flex pointer-events-auto">
           {/* Left Flipper Button Area */}
           <div
@@ -471,7 +508,7 @@ export const VoxelPinballClimberGame: React.FC<VoxelPinballClimberGameProps> = (
             onPointerLeave={() => { stateRef.current.leftFlipPressed = false; }}
             className="w-1/2 h-full flex items-end justify-start p-6 active:bg-cyan-500/10 cursor-pointer"
           >
-            <div className="px-4 py-3 bg-cyan-950/70 border-2 border-cyan-400/80 text-cyan-300 text-xs font-black rounded-sm shadow-[0_0_15px_rgba(6,182,212,0.4)]">
+            <div className="px-4 py-3 bg-[#fdfcfc]/90 border-2 border-[#201d1d] text-[#201d1d] text-xs font-black rounded-sm shadow-md">
               {isKo ? '◀ 좌측 플리퍼 (A)' : '◀ LEFT FLIPPER'}
             </div>
           </div>
@@ -483,44 +520,32 @@ export const VoxelPinballClimberGame: React.FC<VoxelPinballClimberGameProps> = (
             onPointerLeave={() => { stateRef.current.rightFlipPressed = false; }}
             className="w-1/2 h-full flex items-end justify-end p-6 active:bg-cyan-500/10 cursor-pointer"
           >
-            <div className="px-4 py-3 bg-cyan-950/70 border-2 border-cyan-400/80 text-cyan-300 text-xs font-black rounded-sm shadow-[0_0_15px_rgba(6,182,212,0.4)]">
+            <div className="px-4 py-3 bg-[#fdfcfc]/90 border-2 border-[#201d1d] text-[#201d1d] text-xs font-black rounded-sm shadow-md">
               {isKo ? '우측 플리퍼 (D) ▶' : 'RIGHT FLIPPER ▶'}
             </div>
           </div>
         </div>
       )}
 
-      {/* Game Over Modal */}
-      {isGameOver && (
-        <div className="absolute inset-0 z-30 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
-          <div className="w-full max-w-sm bg-slate-900 border-2 border-cyan-500 p-6 flex flex-col items-center gap-4 text-center rounded-none shadow-[0_0_30px_rgba(6,182,212,0.3)]">
-            <Trophy size={40} className="text-amber-400 animate-bounce" />
-            <h2 className="text-lg font-black text-white tracking-widest">
-              {isKo ? '타워 등반 완료!' : 'TOWER CLIMB COMPLETE!'}
-            </h2>
-            <div className="w-full bg-slate-950 p-3 border border-slate-800 flex flex-col gap-1.5 text-xs">
-              <div className="flex justify-between text-slate-400">
-                <span>{isKo ? '최고 도달 층수' : 'Max Floor'}</span>
-                <span className="text-cyan-400 font-bold">{currentFloor}F</span>
-              </div>
-              <div className="flex justify-between text-slate-400">
-                <span>{isKo ? '최종 획득 점수' : 'Final Score'}</span>
-                <span className="text-amber-400 font-bold">{score.toLocaleString()}P</span>
-              </div>
-              <div className="flex justify-between text-slate-400 border-t border-slate-800 pt-1.5">
-                <span>{isKo ? 'SNS 보상 포인트' : 'SNS Reward'}</span>
-                <span className="text-emerald-400 font-bold">+{rewardSns} SNS</span>
-              </div>
-            </div>
+      {/* 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_pinball_climber"
+          gameTitle={isKo ? '3D 복셀 핀볼 배틀 타워: 범퍼 클라이머' : 'Voxel Pinball Climber: Bumper Tower'}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-            <button
-              onClick={onExit}
-              className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 active:scale-98 text-slate-950 font-black text-sm rounded-sm tracking-wider shadow-lg"
-            >
-              {isKo ? '확인 및 보상 수령' : 'Confirm & Claim'}
-            </button>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );

@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ArrowLeft, Trophy, Zap, Sparkles, Gauge, Flame, RotateCw } from 'lucide-react';
 import { CardData } from '../types';
+import { UniversalTutorialModal } from './UniversalTutorialModal';
+import { ResponsiveCleanHUD } from './ResponsiveCleanHUD';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelMotocrossStuntGameProps {
   deck: CardData[];
@@ -23,6 +26,14 @@ export const VoxelMotocrossStuntGame: React.FC<VoxelMotocrossStuntGameProps> = (
   const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
 
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_motocross_stunt') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [distance, setDistance] = useState<number>(0);
   const [totalGoal] = useState<number>(2000);
@@ -31,7 +42,7 @@ export const VoxelMotocrossStuntGame: React.FC<VoxelMotocrossStuntGameProps> = (
   const [stuntText, setStuntText] = useState<string>('');
   const [flipCount, setFlipCount] = useState<number>(0);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
     posX: 0,
@@ -53,10 +64,16 @@ export const VoxelMotocrossStuntGame: React.FC<VoxelMotocrossStuntGameProps> = (
     nitro: 100,
     distance: 0,
     isGameOver: false,
+    isPaused: false,
+    startTime: Date.now(),
     bikeMesh: null as THREE.Group | null,
     frontWheel: null as THREE.Mesh | null,
     rearWheel: null as THREE.Mesh | null
   });
+
+  useEffect(() => {
+    stateRef.current.isPaused = isPaused || showTutorial;
+  }, [isPaused, showTutorial]);
 
   useEffect(() => {
     const container = mountRef.current;
@@ -312,9 +329,20 @@ export const VoxelMotocrossStuntGame: React.FC<VoxelMotocrossStuntGameProps> = (
         if (currDist >= 2000 && !state.isGameOver) {
           state.isGameOver = true;
           setIsGameOver(true);
-          const earnedSns = Math.min(260, Math.max(45, Math.floor(state.score * 0.25 + 50)));
-          setRewardSns(earnedSns);
-          onReward(earnedSns);
+          const durationSeconds = Math.round((Date.now() - state.startTime) / 1000);
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'voxel_motocross_stunt',
+            gameTitle: isKo ? '3D 복셀 익스트림 모터크로스: 스턴트 랠리' : 'Voxel Extreme Motocross: Stunt Rally',
+            durationSeconds,
+            score: state.score,
+            maxTargetScore: 5000,
+            isVictory: true,
+            difficulty: 'NORMAL',
+            comboCount: state.flips,
+            perfectClear: state.flips >= 5
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
         }
       }
 
@@ -343,6 +371,37 @@ export const VoxelMotocrossStuntGame: React.FC<VoxelMotocrossStuntGameProps> = (
       }
     };
   }, [lowSpecMode, onReward, isKo, playSfx]);
+
+  const handleRestart = () => {
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+    setScore(0);
+    setDistance(0);
+    setSpeedKmh(0);
+    setNitroGauge(100);
+    setStuntText('');
+    setFlipCount(0);
+
+    const state = stateRef.current;
+    state.posX = 0;
+    state.posY = 0.8;
+    state.posZ = 0;
+    state.rotX = 0;
+    state.rotY = 0;
+    state.rotZ = 0;
+    state.speed = 0;
+    state.isGasPressed = false;
+    state.isNitroActive = false;
+    state.isInAir = false;
+    state.airTime = 0;
+    state.inAirFlipAngle = 0;
+    state.flips = 0;
+    state.score = 0;
+    state.nitro = 100;
+    state.distance = 0;
+    state.isGameOver = false;
+    state.startTime = Date.now();
+  };
 
   // Gas Hold Controls
   const handleGasStart = () => {
@@ -378,118 +437,91 @@ export const VoxelMotocrossStuntGame: React.FC<VoxelMotocrossStuntGameProps> = (
     <div className="relative w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none">
       <div ref={mountRef} className="w-full h-full" />
 
-      {/* Top HUD */}
-      <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
-        <button
-          onClick={onExit}
-          className="pointer-events-auto p-2 bg-slate-900/80 border border-slate-700 text-slate-200 rounded-sm hover:bg-slate-800 transition-all flex items-center gap-1.5 text-xs font-bold cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-          <span>{isKo ? '나가기' : 'Exit'}</span>
-        </button>
-
-        <div className="flex items-center gap-2 bg-slate-900/90 border border-amber-500/40 px-3 py-1.5 rounded-sm">
-          <Trophy size={16} className="text-amber-400" />
-          <span className="text-xs text-amber-300 font-bold">
-            {isKo ? `점수: ${score}P` : `Score: ${score}`}
-          </span>
-          <span className="text-[10px] text-orange-400 font-bold">
-            [{flipCount} FLIPS]
-          </span>
-          <span className="text-[10px] text-slate-400">
-            {distance}m / {totalGoal}m
-          </span>
-        </div>
-      </div>
+      {/* Responsive Clean HUD */}
+      <ResponsiveCleanHUD
+        gameTitle={isKo ? '복셀 모터크로스' : 'Voxel Motocross'}
+        score={score}
+        customMetricLabel={isKo ? '거리' : 'Dist'}
+        customMetricValue={`${distance}m/${totalGoal}m`}
+        combo={flipCount}
+        isPaused={isPaused}
+        language={language}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onTogglePause={() => setIsPaused(prev => !prev)}
+      />
 
       {/* Speed & Nitro Bar */}
       <div className="absolute top-14 left-4 flex flex-col gap-1.5 z-10 pointer-events-none">
-        <div className="flex items-center gap-1.5 bg-slate-900/80 border border-slate-700 text-slate-200 px-2.5 py-1 rounded-sm text-xs font-bold w-fit">
-          <Gauge size={14} className="text-amber-400" />
+        <div className="flex items-center gap-1.5 bg-[#fdfcfc]/90 border border-[#201d1d]/30 text-[#201d1d] px-2.5 py-1 rounded-sm text-xs font-bold w-fit shadow-xs">
           <span>{speedKmh} km/h</span>
         </div>
-        <div className="flex items-center gap-1.5 bg-slate-900/80 border border-slate-700 px-2.5 py-1 rounded-sm text-xs font-bold w-fit">
-          <Flame size={14} className="text-orange-500 animate-pulse" />
-          <div className="w-20 bg-slate-800 h-2 rounded-full overflow-hidden border border-slate-600">
-            <div className="bg-gradient-to-r from-orange-500 to-amber-400 h-full transition-all" style={{ width: `${nitroGauge}%` }} />
+        <div className="flex items-center gap-1.5 bg-[#fdfcfc]/90 border border-[#201d1d]/30 px-2.5 py-1 rounded-sm text-xs font-bold w-fit shadow-xs">
+          <span className="text-xs text-orange-600 font-black">NITRO</span>
+          <div className="w-20 bg-slate-200 h-2 rounded-full overflow-hidden border border-slate-300">
+            <div className="bg-orange-500 h-full transition-all" style={{ width: `${nitroGauge}%` }} />
           </div>
         </div>
       </div>
 
       {/* Stunt Announcement */}
       {stuntText && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 bg-amber-500/90 text-slate-950 px-4 py-1 rounded-sm text-xs font-black tracking-wider shadow-lg z-10 pointer-events-none animate-bounce">
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 bg-amber-400 border border-[#201d1d] text-[#201d1d] px-4 py-1 rounded-sm text-xs font-black tracking-wider shadow-md z-10 pointer-events-none animate-bounce">
           {stuntText}
         </div>
       )}
 
       {/* Mobile-First Controls */}
-      <div className="absolute bottom-6 left-4 right-4 flex flex-col items-center gap-2.5 z-10">
-        <div className="w-full max-w-sm flex gap-2">
-          <button
-            onMouseDown={handleGasStart}
-            onMouseUp={handleGasEnd}
-            onTouchStart={handleGasStart}
-            onTouchEnd={handleGasEnd}
-            className="flex-1 py-4 bg-gradient-to-r from-amber-500 to-orange-600 border border-amber-300 text-slate-950 font-black text-base rounded-sm active:scale-95 shadow-xl flex items-center justify-center gap-2 uppercase cursor-pointer"
-          >
-            <Zap size={20} />
-            <span>{isKo ? '⛽ 가속 (HOLD GAS)' : '⛽ GAS ACCEL'}</span>
-          </button>
-          <button
-            onClick={handleBackflip}
-            className="flex-1 py-4 bg-slate-900/90 border border-amber-400 text-amber-300 font-black text-base rounded-sm active:scale-95 shadow-xl flex items-center justify-center gap-1.5 uppercase cursor-pointer"
-          >
-            <RotateCw size={18} />
-            <span>{isKo ? '🔄 360° 백플립' : '🔄 360° FLIP'}</span>
-          </button>
-          <button
-            onClick={handleNitro}
-            className="px-4 py-4 bg-rose-600 border border-rose-400 text-white font-black text-base rounded-sm active:scale-95 shadow-xl flex items-center justify-center gap-1 uppercase cursor-pointer"
-          >
-            <Flame size={20} />
-          </button>
-        </div>
-        <p className="text-[11px] text-slate-300 bg-slate-900/80 px-3 py-0.5 rounded-sm border border-slate-700">
-          {isKo ? '가속을 유지하며 점프대에서 공중 백플립 묘기와 퍼펙트 착지를 완성하세요!' : 'Hold Gas to accelerate, do 360 flips in air and stick perfect landings!'}
-        </p>
-      </div>
-
-      {/* Game Over Summary Modal */}
-      {isGameOver && (
-        <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-xs bg-slate-900 border border-amber-500/50 p-5 rounded-none text-center space-y-4 shadow-2xl">
-            <div className="flex justify-center">
-              <Sparkles size={36} className="text-amber-400 animate-pulse" />
-            </div>
-            <h2 className="text-lg font-black text-amber-400 uppercase tracking-widest">
-              {isKo ? '🏆 모터크로스 완주!' : '🏆 MOTOCROSS FINISHED!'}
-            </h2>
-            <div className="space-y-1.5 text-xs text-slate-300 bg-slate-950/60 p-3 border border-slate-800">
-              <div className="flex justify-between">
-                <span>{isKo ? '성공한 백플립' : 'Flips Landed'}</span>
-                <span className="font-bold text-amber-300">{flipCount} 회</span>
-              </div>
-              <div className="flex justify-between">
-                <span>{isKo ? '스턴트 총점' : 'Total Score'}</span>
-                <span className="font-bold text-indigo-300">{score} PTS</span>
-              </div>
-              <div className="flex justify-between pt-1 border-t border-slate-800 text-amber-400 font-bold">
-                <span>{isKo ? '획득 SNS 보상' : 'Earned SNS'}</span>
-                <span>+{rewardSns} SNS</span>
-              </div>
-            </div>
-
-            <div className="flex gap-2 pt-2">
-              <button
-                onClick={onExit}
-                className="flex-1 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase rounded-sm transition-all cursor-pointer"
-              >
-                {isKo ? '보상 수령 및 복귀' : 'Claim & Exit'}
-              </button>
-            </div>
+      {!isGameOver && !isPaused && !showTutorial && (
+        <div className="absolute bottom-6 left-4 right-4 flex flex-col items-center gap-2.5 z-10">
+          <div className="w-full max-w-sm flex gap-2">
+            <button
+              onMouseDown={handleGasStart}
+              onMouseUp={handleGasEnd}
+              onTouchStart={handleGasStart}
+              onTouchEnd={handleGasEnd}
+              className="flex-1 py-4 bg-[#fdfcfc] hover:bg-amber-100 border-2 border-[#201d1d] text-[#201d1d] font-black text-sm rounded-sm active:scale-95 shadow-md flex items-center justify-center gap-2 uppercase cursor-pointer"
+            >
+              <span>{isKo ? '⛽ 가속 (HOLD GAS)' : '⛽ GAS ACCEL'}</span>
+            </button>
+            <button
+              onClick={handleBackflip}
+              className="flex-1 py-4 bg-[#fdfcfc] hover:bg-cyan-100 border-2 border-[#201d1d] text-[#201d1d] font-black text-sm rounded-sm active:scale-95 shadow-md flex items-center justify-center gap-1.5 uppercase cursor-pointer"
+            >
+              <span>{isKo ? '🔄 360° 백플립' : '🔄 360° FLIP'}</span>
+            </button>
+            <button
+              onClick={handleNitro}
+              className="px-5 py-4 bg-orange-500 hover:bg-orange-400 border-2 border-[#201d1d] text-white font-black text-sm rounded-sm active:scale-95 shadow-md flex items-center justify-center gap-1 uppercase cursor-pointer"
+            >
+              <span>N</span>
+            </button>
           </div>
+          <p className="text-[11px] text-[#201d1d] bg-[#fdfcfc]/90 px-3 py-0.5 rounded-sm border border-[#201d1d]/30 shadow-xs">
+            {isKo ? '가속을 유지하며 점프대에서 공중 백플립 묘기와 퍼펙트 착지를 완성하세요!' : 'Hold Gas to accelerate, do 360 flips in air and stick perfect landings!'}
+          </p>
         </div>
+      )}
+
+      {/* 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_motocross_stunt"
+          gameTitle={isKo ? '3D 복셀 익스트림 모터크로스: 스턴트 랠리' : 'Voxel Extreme Motocross: Stunt Rally'}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
+
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );

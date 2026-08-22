@@ -34,15 +34,15 @@ export const STORAGE_LAST_CHECK_KEY = 'hero_last_version_check';
  */
 export async function fetchServerVersion(): Promise<AppVersionInfo | null> {
   const endpoints = [
-    `/api/version?_t=${Date.now()}`,
     getAssetUrl(`/version.json?_t=${Date.now()}`),
-    `/version.json?_t=${Date.now()}`
+    `/version.json?_t=${Date.now()}`,
+    `/api/version?_t=${Date.now()}`
   ];
 
   for (const url of endpoints) {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2500);
+      const timeoutId = setTimeout(() => controller.abort(), 600);
 
       const res = await fetch(url, {
         method: 'GET',

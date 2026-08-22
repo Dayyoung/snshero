@@ -2,13 +2,21 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   BookOpen, Play, Pause, Square, Volume2, Copy, Sparkles, ChevronLeft, ChevronRight,
   Check, Settings, Moon, Sun, Gift, ArrowLeft, Bookmark, List, ExternalLink, Award, User, Image,
-  Maximize2, X, Eye, Film, Layers, RefreshCw, ChevronDown, Search, ListOrdered, CheckCircle2, Clock
+  Maximize2, X, Eye, Film, Layers, RefreshCw, ChevronDown, Search, ListOrdered, CheckCircle2, Clock,
+  ArrowUp, ArrowRight, BookmarkCheck, RotateCcw, MapPin
 } from 'lucide-react';
 import { Language, ViewType } from '../types';
 import { t } from '../lib/i18n';
 import { cn, getAssetUrl, getCardSpriteAsset, getCardSpriteStyle } from '../lib/utils';
 import { CARD_DATABASE } from '../cardDatabase';
-import { getSeasonItem, setSeasonItem } from '../lib/webtoonProgress';
+import {
+  getSeasonItem,
+  setSeasonItem,
+  saveEpisodeScrollState,
+  loadEpisodeScrollState,
+  getEpisodeMaxReadPct,
+  EpisodeScrollData
+} from '../lib/webtoonProgress';
 import { WikiCardDetailModal } from '../components/WikiCardDetailModal';
 import { useGameSettings } from '../contexts/GameSettingsContext';
 import { useCardSkins } from '../hooks/useCardSkins';
@@ -221,6 +229,98 @@ export const NovelView: React.FC<NovelViewProps> = ({
   useEffect(() => {
     setSeasonItem('hero_novel_progress', currentEpisodeNum.toString(), currentSeason);
   }, [currentEpisodeNum, currentSeason]);
+
+  // Reading scroll position and progress tracking (Item 19)
+  const [scrollProgressPct, setScrollProgressPct] = useState<number>(0);
+  const [savedScrollState, setSavedScrollState] = useState<EpisodeScrollData | null>(null);
+  const [showResumeBanner, setShowResumeBanner] = useState<boolean>(false);
+  const [currentVisibleScene, setCurrentVisibleScene] = useState<number>(1);
+  const scrollDebounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Load saved scroll state on episode or tab switch
+  useEffect(() => {
+    const saved = loadEpisodeScrollState(currentSeason, currentEpisodeNum, readerTab);
+    setSavedScrollState(saved);
+    if (saved && saved.scrollY > 250 && saved.progressPct < 90) {
+      setShowResumeBanner(true);
+    } else {
+      setShowResumeBanner(false);
+    }
+  }, [currentEpisodeNum, currentSeason, readerTab]);
+
+  // Window scroll event listener
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = window.innerHeight || document.documentElement.clientHeight;
+      const totalScrollable = Math.max(1, scrollHeight - clientHeight);
+      const pct = Math.min(100, Math.max(0, Math.round((scrollY / totalScrollable) * 100)));
+      
+      setScrollProgressPct(pct);
+
+      // Hide resume banner once user scrolls past 400px
+      if (scrollY > 400) {
+        setShowResumeBanner(false);
+      }
+
+      // Track visible scene in Cartoon mode (Scenes 1-5)
+      if (readerTab === 'cartoon' && cartoonDisplayMode === 'scroll') {
+        const sceneNum = Math.min(5, Math.max(1, Math.ceil((pct / 100) * 5)));
+        setCurrentVisibleScene(sceneNum);
+      }
+
+      // Save scroll state debounced
+      if (scrollDebounceTimerRef.current) {
+        clearTimeout(scrollDebounceTimerRef.current);
+      }
+      scrollDebounceTimerRef.current = setTimeout(() => {
+        saveEpisodeScrollState(currentSeason, currentEpisodeNum, scrollY, pct, readerTab);
+      }, 300);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollDebounceTimerRef.current) clearTimeout(scrollDebounceTimerRef.current);
+    };
+  }, [currentEpisodeNum, currentSeason, readerTab, cartoonDisplayMode]);
+
+  const handleResumeLastScroll = () => {
+    if (savedScrollState && savedScrollState.scrollY > 0) {
+      window.scrollTo({
+        top: savedScrollState.scrollY,
+        behavior: 'smooth'
+      });
+      setShowResumeBanner(false);
+      if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+  };
+
+  const goToPrevEpisode = () => {
+    if (currentEpisodeNum > 1) {
+      setCurrentEpisodeNum(prev => prev - 1);
+      setActiveSlideIndex(1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    }
+  };
+
+  const goToNextEpisode = () => {
+    if (currentEpisodeNum < TOTAL_EPISODES) {
+      setCurrentEpisodeNum(prev => prev + 1);
+      setActiveSlideIndex(1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    }
+  };
 
   // Toggle Prompt Mode
   const handleTogglePromptMode = () => {
@@ -628,6 +728,41 @@ export const NovelView: React.FC<NovelViewProps> = ({
           </button>
         </div>
       </header>
+
+      {/* Sticky Top Reading Progress Bar */}
+      <div className="sticky top-[49px] z-40 w-full bg-stone-200 h-[3px]">
+        <div
+          className="h-full bg-amber-500 transition-all duration-150 ease-out"
+          style={{ width: `${scrollProgressPct}%` }}
+        />
+      </div>
+
+      {/* Resume Last Read Position Floating Banner */}
+      {showResumeBanner && savedScrollState && (
+        <div className="fixed top-16 right-4 z-40 bg-[#201d1d] text-amber-300 text-xs px-3.5 py-2 rounded-sm border border-amber-500/50 shadow-lg flex items-center gap-2.5 font-mono animate-in fade-in slide-in-from-top-2 duration-200">
+          <MapPin size={14} className="text-amber-400 shrink-0 animate-bounce" />
+          <div className="flex items-center gap-2">
+            <span>
+              {language === 'ko'
+                ? `이전 읽던 위치 (${savedScrollState.progressPct}%)`
+                : `Last read position (${savedScrollState.progressPct}%)`}
+            </span>
+            <button
+              onClick={handleResumeLastScroll}
+              className="px-2 py-0.5 bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold rounded-xs cursor-pointer transition-colors text-[11px]"
+            >
+              [ {language === 'ko' ? '이동' : 'Resume'} ]
+            </button>
+          </div>
+          <button
+            onClick={() => setShowResumeBanner(false)}
+            className="text-stone-400 hover:text-white cursor-pointer ml-1"
+            title="Dismiss"
+          >
+            <X size={13} />
+          </button>
+        </div>
+      )}
 
       {/* Primary Reader View Mode Tabs (Novel Reader / Cartoon Viewer / Prompt Mode) */}
       <div className="w-full bg-[#fdfcfc] border-b border-stone-300 py-2.5 px-4 flex items-center justify-center gap-2 font-mono flex-wrap">
@@ -1458,18 +1593,53 @@ export const NovelView: React.FC<NovelViewProps> = ({
               </div>
             )}
           </div>
+
+          {/* Next Episode Teaser & Quick Advance Card */}
+          {currentEpisodeNum < TOTAL_EPISODES ? (
+            <div className="mt-8 p-4 sm:p-5 border-2 border-dashed border-amber-300 bg-amber-50/50 rounded-sm flex flex-col sm:flex-row items-center justify-between gap-4 font-mono">
+              <div className="space-y-1 text-center sm:text-left">
+                <div className="flex items-center justify-center sm:justify-start gap-2 text-xs font-bold text-amber-900">
+                  <BookmarkCheck size={16} className="text-amber-600" />
+                  <span>[ {t('webtoon_next_ep_teaser', language)} ]</span>
+                  <span className="bg-amber-200 text-amber-950 px-1.5 py-0.2 text-[10px] rounded-xs font-bold">
+                    EP {pad2(currentEpisodeNum + 1)}
+                  </span>
+                </div>
+                <p className="text-sm font-bold text-stone-900">
+                  {(() => {
+                    const nextMeta = indexData?.episodes.find(e => e.episodeNumber === currentEpisodeNum + 1);
+                    if (language === 'ko') {
+                      return nextMeta ? nextMeta.titleKo : `제 ${currentEpisodeNum + 1}화`;
+                    }
+                    return ENGLISH_NOVEL_MAP[currentEpisodeNum + 1]?.titleEn || (nextMeta ? nextMeta.titleKo : `Episode ${currentEpisodeNum + 1}`);
+                  })()}
+                </p>
+                <p className="text-xs text-stone-600 line-clamp-1">
+                  {language === 'ko'
+                    ? `제 ${currentEpisodeNum + 1}화로 바로 넘어가 다음 스토리를 계속 읽어보세요!`
+                    : `Jump straight into Episode ${currentEpisodeNum + 1} and continue the adventure!`}
+                </p>
+              </div>
+
+              <button
+                onClick={goToNextEpisode}
+                className="px-5 py-2.5 bg-[#201d1d] hover:bg-stone-800 text-white font-bold text-xs rounded-sm shrink-0 flex items-center gap-2 cursor-pointer shadow-xs active:scale-95 transition-all group"
+              >
+                <span>{t('webtoon_next_ep_btn', language)}</span>
+                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+              </button>
+            </div>
+          ) : (
+            <div className="mt-8 p-4 border border-emerald-300 bg-emerald-50 text-emerald-900 rounded-sm text-center text-xs font-bold font-mono">
+              🎉 {t('webtoon_last_ep_reached', language)}
+            </div>
+          )}
         </div>
 
         {/* Bottom Pagination Controls */}
-        <div className="w-full flex items-center justify-between mt-6 font-mono text-xs">
+        <div className="w-full flex items-center justify-between mt-6 font-mono text-xs pb-16">
           <button
-            onClick={() => {
-              if (currentEpisodeNum > 1) {
-                setCurrentEpisodeNum(prev => prev - 1);
-                if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }
-            }}
+            onClick={goToPrevEpisode}
             disabled={currentEpisodeNum <= 1}
             className={cn(
               "px-4 py-2 border rounded-sm font-bold flex items-center gap-2 transition-all cursor-pointer",
@@ -1498,13 +1668,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
           </button>
 
           <button
-            onClick={() => {
-              if (currentEpisodeNum < TOTAL_EPISODES) {
-                setCurrentEpisodeNum(prev => prev + 1);
-                if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }
-            }}
+            onClick={goToNextEpisode}
             disabled={currentEpisodeNum >= TOTAL_EPISODES}
             className={cn(
               "px-4 py-2 border rounded-sm font-bold flex items-center gap-2 transition-all cursor-pointer",
@@ -1670,19 +1834,30 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
                         {/* Status Badges */}
                         <div className="shrink-0 flex items-center gap-1">
-                          {isCurrent ? (
-                            <span className="text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/40 px-1.5 py-0.2 rounded-xs">
-                              {language === 'ko' ? '읽는 중' : 'Reading'}
-                            </span>
-                          ) : isClaimed ? (
-                            <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded-xs flex items-center gap-0.5">
-                              <Check size={10} /> 100 SNS
-                            </span>
-                          ) : (
-                            <span className="text-[10px] text-stone-400 border border-stone-200 px-1.5 py-0.2 rounded-xs">
-                              {language === 'ko' ? '미완독' : 'Unread'}
-                            </span>
-                          )}
+                          {(() => {
+                            const maxPct = getEpisodeMaxReadPct(currentSeason, epNum);
+                            return (
+                              <>
+                                {isCurrent ? (
+                                  <span className="text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/40 px-1.5 py-0.2 rounded-xs">
+                                    {language === 'ko' ? '읽는 중' : 'Reading'}
+                                  </span>
+                                ) : isClaimed ? (
+                                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded-xs flex items-center gap-0.5">
+                                    <Check size={10} /> 100 SNS
+                                  </span>
+                                ) : maxPct > 0 ? (
+                                  <span className="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-300 px-1.5 py-0.2 rounded-xs">
+                                    {maxPct}%
+                                  </span>
+                                ) : (
+                                  <span className="text-[10px] text-stone-400 border border-stone-200 px-1.5 py-0.2 rounded-xs">
+                                    {language === 'ko' ? '미완독' : 'Unread'}
+                                  </span>
+                                )}
+                              </>
+                            );
+                          })()}
                         </div>
                       </button>
                     );
@@ -1807,6 +1982,70 @@ export const NovelView: React.FC<NovelViewProps> = ({
           </div>
         </div>
       )}
+
+      {/* Sticky Bottom Floating Episode Navigation Dock */}
+      <div className="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 bg-[#201d1d]/95 backdrop-blur-xs text-stone-100 px-3 py-2 rounded-sm border border-stone-700 shadow-xl flex items-center gap-2 font-mono text-xs max-w-[95vw]">
+        {/* Previous Episode Button */}
+        <button
+          onClick={goToPrevEpisode}
+          disabled={currentEpisodeNum <= 1}
+          className={cn(
+            "px-2.5 py-1.5 border rounded-xs font-bold flex items-center gap-1 transition-all cursor-pointer text-xs",
+            currentEpisodeNum <= 1
+              ? "opacity-30 cursor-not-allowed border-stone-800 bg-stone-900 text-stone-500"
+              : "border-stone-600 bg-stone-800 hover:bg-stone-700 text-white active:scale-95"
+          )}
+          title={t('webtoon_nav_prev_ep', language)}
+        >
+          <ChevronLeft size={14} />
+          <span className="hidden xs:inline">{t('webtoon_nav_prev_ep', language)}</span>
+        </button>
+
+        {/* Episode Selector & Progress Display */}
+        <button
+          onClick={() => {
+            setShowEpisodeModal(true);
+            if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+          }}
+          className="px-3 py-1.5 bg-stone-900 hover:bg-stone-800 border border-stone-700 hover:border-amber-400/60 rounded-xs font-bold text-amber-300 flex items-center gap-2 cursor-pointer transition-all active:scale-95"
+          title={t('novel_select_episode_hint', language)}
+        >
+          <BookOpen size={13} className="text-amber-400" />
+          <span>{currentEpisodeNum} / {TOTAL_EPISODES}</span>
+          <span className="text-[10px] px-1 py-0.2 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-xs font-mono">
+            {scrollProgressPct}%
+          </span>
+        </button>
+
+        {/* Next Episode Button (with subtle highlight if scroll >= 80%) */}
+        <button
+          onClick={goToNextEpisode}
+          disabled={currentEpisodeNum >= TOTAL_EPISODES}
+          className={cn(
+            "px-2.5 py-1.5 border rounded-xs font-bold flex items-center gap-1 transition-all cursor-pointer text-xs",
+            currentEpisodeNum >= TOTAL_EPISODES
+              ? "opacity-30 cursor-not-allowed border-stone-800 bg-stone-900 text-stone-500"
+              : scrollProgressPct >= 80
+              ? "border-amber-500 bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-xs active:scale-95 animate-pulse"
+              : "border-stone-600 bg-stone-800 hover:bg-stone-700 text-white active:scale-95"
+          )}
+          title={t('webtoon_nav_next_ep', language)}
+        >
+          <span className="hidden xs:inline">{t('webtoon_nav_next_ep', language)}</span>
+          <ChevronRight size={14} />
+        </button>
+
+        <div className="h-4 w-[1px] bg-stone-700 mx-0.5 hidden sm:block" />
+
+        {/* Scroll to Top Button */}
+        <button
+          onClick={scrollToTop}
+          className="p-1.5 border border-stone-700 bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white rounded-xs transition-all cursor-pointer active:scale-95"
+          title={t('webtoon_nav_scroll_to_top', language)}
+        >
+          <ArrowUp size={14} />
+        </button>
+      </div>
     </div>
   );
 };

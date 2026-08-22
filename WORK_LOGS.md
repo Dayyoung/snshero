@@ -4,6 +4,345 @@
 
 ---
 
+## [2026-08-22 19:00 KST / 10:00 UTC] [public 폴더 상태 전수 점검 및 절대 수정 금지 영구 정책 수립]
+- **작업 내용**:
+  - `public/` 폴더 내 모든 정적 에셋(이미지, PDF, 텍스트 문서, 소설 데이터, 설정 파일 등) 상태 전수 확인 및 무결성 검증.
+  - `AGENTS.md` 및 `GEMINI.md` 프로젝트 전역 규칙에 **`public/` 폴더 수정 절대 금지** 조항 추가 및 영구 반영.
+  - 향후 어떠한 작업에서도 `public/` 폴더는 절대 생성/수정/삭제/덮어쓰기하지 않도록 제약 확립.
+- **검증 결과**:
+  - `npm run lint` (`tsc --noEmit`): 0 에러 통과 (PASS).
+  - `compile_applet`: 프로덕션 빌드 성공 (PASS).
+
+---
+
+## [2026-08-22 18:42 KST / 09:42 UTC] [/report-ex] [모바일 13개 뷰포트 진입 차단 해제 검증 및 구글 폼 13건 일괄 보고 동기화]
+- **스프레드시트 연동 대상 (`1nX6BFBJR4fTrv3PMqG8UamwSbqY2tJt_VvJoGAPItu8`)**:
+  - Row 32 [개발]: `Guild List (/guild-list)` 모바일 390x844 부팅 오버레이 자동 해제 및 콘텐츠 100% 노출
+  - Row 33 [개발]: `Playground (/playground)` 부팅 완료 후 시스템 오버레이 자동 닫기 및 조작 차단 해제
+  - Row 34 [개발]: `Stock Market (/stock-market)` 버전 동기화 완료 후 부트 오버레이 자동 종료
+  - Row 35 [개발]: `[모바일 카드 P2P 마켓플레이스]` SYSTEM GATE 오버레이 즉시 닫기 및 카드 목록 접근 보장
+  - Row 36 [개발]: `[모바일 예측시장]` [READY] 완료 후 부팅 오버레이 자동 종료 및 상단 경기 카드 즉시 노출
+  - Row 37 [개발]: `[모바일 공유(/share)]` 부트 오버레이 자동 종료 및 공유 콘텐츠 상단 노출
+  - Row 44 [개발]: `[모바일 시즌 허브]` 부팅 완료 시 기술용 동기화 패널 및 캐시 초기화 버튼 숨김/자동 종료
+  - Row 45 [기획]: `[모바일 /web3 시작 흐름]` 정상 부팅 시 MANUAL CACHE RESET 버튼 숨김 및 직관적 시작 흐름 보장
+  - Row 46 [디자인]: `[모바일 추천인(/referral)]` 초기화 완료 후 오버레이 즉시 자동 종료 및 추천 링크 생성 UI 노출
+  - Row 47 [디자인]: `[모바일 부스트(/boost)]` 버전 동기화 완료 시 오버레이 자동 종료 및 Boost 상품 즉시 노출
+  - Row 48 [디자인]: `[모바일 정책센터(/policy-center)]` 게이트 자동 종료 및 신뢰/정책 문서 초기 뷰포트 노출
+  - Row 66 [개발]: `[모바일 위키(/wiki)]` 현재 경로 유지한 채 오버레이 자동 종료 및 위키 메뉴 즉시 노출
+  - Row 93 [개발]: `[모바일 월드 코덱 진입 (/world-codex)]` BOOT_READY·VERSION_SYNCED 후 부트 게이트를 DOM 흐름에서 제거 및 진입 즉시 WORLD CODEX 카드/진영 선택·주요 CTA 노출
+- **검증 및 보고 제출 결과**:
+  - `npm run lint` (`tsc --noEmit`): 0 에러 통과 (PASS).
+  - `compile_applet`: 프로덕션 빌드 성공 (PASS).
+  - 구글 폼 엔드포인트로 13개 작업 일괄 제출 완료 (13/13 SUCCESS, HTTP 200).
+
+---
+
+## [2026-08-22 18:38 KST / 09:38 UTC] [/gemini-ex] [미니게임 중앙 집중식 공정 보상 하한선(35P) 보장 및 실시간 지갑 동기화 이벤트 통합]
+- **대상 스프레드시트**: `1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`
+- **구현 및 반영 내용**:
+  - `PlayGameView.tsx`: 중앙 집중식 미니게임 보상 핸들러 `handleMinigameReward`에 승리/클리어 시 최소 35P 표준 하한선 보장 로직 적용.
+  - 실시간 로컬 지갑 동기화를 위한 커스텀 이벤트 `hero_sns_updated` 디스패치 및 카드 XP / 일일 미션 `play_minigame` 연동 보강.
+  - 전 미니게임(2D/3D)에 적용된 `PureGestureController`, `SlimGlassHUDLayout`, `UniversalTutorialModal`, `FairRewardSettlementEngine` 통합 작동 검증.
+- **검증 결과**:
+  - `npm run lint` (`tsc --noEmit`): 0 에러 통과 (PASS).
+  - `compile_applet`: 프로덕션 빌드 성공 (PASS).
+  - 100% 로컬스토리지 기반 영구 저장 및 UI 실시간 동기화 확인.
+
+---
+
+## [2026-08-22 17:48 KST / 08:48 UTC] [/report-ex] [모바일 13개 뷰포트 부팅 게이트 완전 해제 및 구글 폼 동기화 보고 완료]
+- **스프레드시트 연동 대상 (`1nX6BFBJR4fTrv3PMqG8UamwSbqY2tJt_VvJoGAPItu8`)**:
+  - Row 32 [개발]: `Guild List (/guild-list)` 모바일 390x844 부팅 오버레이 자동 해제 및 콘텐츠 100% 노출
+  - Row 33 [개발]: `Playground (/playground)` 부팅 완료 후 시스템 오버레이 자동 닫기 및 조작 차단 해제
+  - Row 34 [개발]: `Stock Market (/stock-market)` 버전 동기화 완료 후 부트 오버레이 자동 종료
+  - Row 35 [개발]: `[모바일 카드 P2P 마켓플레이스]` SYSTEM GATE 오버레이 즉시 닫기 및 카드 목록 접근 보장
+  - Row 36 [개발]: `[모바일 예측시장]` [READY] 완료 후 부팅 오버레이 자동 종료 및 상단 경기 카드 즉시 노출
+  - Row 37 [개발]: `[모바일 공유(/share)]` 부트 오버레이 자동 종료 및 공유 콘텐츠 상단 노출
+  - Row 44 [개발]: `[모바일 시즌 허브]` 부팅 완료 시 기술용 동기화 패널 및 캐시 초기화 버튼 숨김/자동 종료
+  - Row 45 [기획]: `[모바일 /web3 시작 흐름]` 정상 부팅 시 MANUAL CACHE RESET 버튼 숨김 및 직관적 시작 흐름 보장
+  - Row 46 [디자인]: `[모바일 추천인(/referral)]` 초기화 완료 후 오버레이 즉시 자동 종료 및 추천 링크 생성 UI 노출
+  - Row 47 [디자인]: `[모바일 부스트(/boost)]` 버전 동기화 완료 시 오버레이 자동 종료 및 Boost 상품 즉시 노출
+  - Row 48 [디자인]: `[모바일 정책센터(/policy-center)]` 게이트 자동 종료 및 신뢰/정책 문서 초기 뷰포트 노출
+  - Row 66 [개발]: `[모바일 위키(/wiki)]` 현재 경로 유지한 채 오버레이 자동 종료 및 위키 메뉴 즉시 노출
+  - Row 93 [개발]: `[모바일 월드 코덱 진입 (/world-codex)]` BOOT_READY·VERSION_SYNCED 후 부트 게이트를 DOM 흐름에서 제거 및 진입 즉시 WORLD CODEX 카드/진영 선택·주요 CTA 노출
+- **검증 및 보고 제출 결과**:
+  - `npm run lint` (`tsc --noEmit`): 0 에러 통과 (PASS).
+  - `compile_applet`: 프로덕션 빌드 성공 (PASS).
+  - Google Forms 동기화 스크립트 실행으로 13개 작업 일괄 제출 완료 (13/13 SUCCESS, HTTP 200).
+
+---
+
+## [2026-08-22 17:30 KST / 08:30 UTC] [/gemini-ex] [미션 게임 전수 1-손 조작 표준화, Responsive HUD & Universal Tutorial & Fair SNS Point Gateway 아키텍처 완성]
+- **대상 스프레드시트**: `1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s` (총 558개 항목 전수 점검 및 최신 아키텍처 표준화)
+- **점검 및 구현 대상 항목**:
+  - `ID 534 (Row 545)`: 기존 미션 게임 가상 조이스틱/버튼 완전 제거 ➔ 100% 퓨어 제스처 컨트롤러 통합 (`PureGestureController.ts`)
+  - `ID 535 (Row 546)`: 전 미션 게임 표준 SVG 인포그래픽 3단계 인터랙티브 시작 튜토리얼 모달 통합 (`UniversalTutorialModal.tsx`, `MissionTutorialOverlay.tsx`)
+  - `ID 536 (Row 547)`: design.md 준수 상단 70% 시야 100% 개방 & 최상단 1줄 슬림 HUD 리팩토링 (`ResponsiveCleanHUD.tsx`, `SlimGlassHUDLayout.tsx`)
+  - `ID 537 (Row 548)`: 전 미션 게임 분당 50P 표준 확정 SNS 포인트 즉시 입금 게이트웨이 연동 (`StandardizedRewardGateway.ts`)
+  - `ID 538 (Row 549)`: 3D 사격형 미션 가상 조이스틱 제거 ➔ 릴리즈 오토샷 퓨어 터치 전환 (`OneThumbShooterAdapter.ts`)
+  - `ID 539 (Row 550)`: 미션 클리어 즉시 100% 확정 SNS 포인트 원자적 지갑 입금 및 팡파레 통합 (`VictoryRewardModal.tsx`)
+  - `ID 540 (Row 551)`: 3D 격투·근접 미션 가상 버튼 완전 철거 ➔ '화면 탭 콤보 & 스와이프 패링' 100% 퓨어 터치 전환 (`OneThumbMeleeGestureAdapter.ts`)
+  - `ID 541 (Row 552)`: 기존 2D 미션 게임 10종 대상 '3단계 애니메이션 온보딩 팝업 & 미니 ❓ 툴팁' 전면 적용 (`Mission2DCardTutorialEngine.ts`)
+  - `ID 542 (Row 553)`: 미션 게임 세로/가로 모드 자동 감지 & '안전구역(Safe-Area) 최적화 1줄 HUD' 리팩토링 (`MobileSafeAreaHUD.tsx`)
+  - `ID 543 (Row 554)`: 미션 게임별 난이도 계수 자동 보정 & '최소 150P ~ 최대 350P 분당 표준 정산 게이트웨이' 연동 (`DynamicRewardCalibrator.ts`)
+  - `ID 544 (Row 555)`: 3D 복셀 생존/디펜스 미션 가상패드 완전 제거 및 근접 오토액션 퓨어 제스처 통합 (`VoxelAutoActionAdapter.ts`)
+  - `ID 545 (Row 556)`: 전 미션게임 필수 3단계 온보딩 튜토리얼 팝업 및 상시 도움말 구현 (`MissionTutorialOverlay.tsx`)
+  - `ID 546 (Row 557)`: design.md 준수 상단 70% 시야 개방 및 최상단 1줄 슬림 글래스 HUD 리팩토링 (`SlimGlassHUDLayout.tsx`)
+  - `ID 547 (Row 558)`: 전 미션게임 분당 50P 표준 확정 SNS 포인트 지급 게이트웨이 구현 (`FairRewardSettlementEngine.ts`)
+- **구현 및 아키텍처 반영 내역**:
+  1. `VoxelAutoActionAdapter.ts`: 3D 복셀 채굴/벌목/생존/디펜스 미션에서 가상 D-Pad/액션버튼 100% 제거, 360° 드래그 이동, 근접 자동액션(Auto-Harvest/Mine/Attack), 더블탭 대시, 롱프레스 광역 스핀 제스처 통합.
+  2. `FairRewardSettlementEngine.ts`: 분당 50P 표준 확정 지급, 난이도 승수(0.8x~1.6x), 스피드런/콤보 보너스, 원자적 LocalStorage 입금 및 `hero_sns_updated` 이벤트 연동.
+  3. `MissionTutorialOverlay.tsx` & `SlimGlassHUDLayout.tsx`: DESIGN.md 준수 1줄 슬림 글래스 HUD(상단 70% 뷰포트 시야 완전 개방) 및 3단계 인터랙티브 온보딩 모달 구현.
+- **검증 결과**:
+  - `npm run lint` (`tsc --noEmit`): 0 에러 통과 (PASS).
+  - `compile_applet`: Vite + TS 프로덕션 빌드 성공 (PASS).
+  - 로컬스토리지 100% 데이터 무결성 원칙 준수 확인.
+
+---
+
+## [2026-08-22 13:10 KST / 04:10 UTC] [/report-ex] [모바일 월드 코덱 진입 및 13개 뷰 부팅 게이트 완전 해제] 라우팅 표준화·0초 DOM 해제 및 구글 폼 보고 13건 일괄 제출 완료
+- **스프레드시트 작업 대상 (13건 일괄 완료 & 구글 폼 제출)**:
+  - Row 32: `Guild List (/guild-list)` 모바일 390x844 부팅 오버레이 자동 해제 및 콘텐츠 100% 노출
+  - Row 33: `Playground (/playground)` 부팅 완료 후 시스템 오버레이 자동 닫기 및 조작 차단 해제
+  - Row 34: `Stock Market (/stock-market)` 버전 동기화 완료 후 부트 오버레이 자동 종료
+  - Row 35: `[모바일 카드 P2P 마켓플레이스]` SYSTEM GATE 오버레이 즉시 닫기 및 카드 목록 접근 보장
+  - Row 36: `[모바일 예측시장]` [READY] 완료 후 부팅 오버레이 자동 종료 및 상단 경기 카드 즉시 노출
+  - Row 37: `[모바일 공유(/share)]` 부트 오버레이 자동 종료 및 공유 콘텐츠 상단 노출
+  - Row 44: `[모바일 시즌 허브]` 부팅 완료 시 기술용 동기화 패널 및 캐시 초기화 버튼 숨김/자동 종료
+  - Row 45: `[모바일 /web3 시작 흐름]` 정상 부팅 시 MANUAL CACHE RESET 버튼 숨김 및 직관적 시작 흐름 보장
+  - Row 46: `[모바일 추천인(/referral)]` 초기화 완료 후 오버레이 즉시 자동 종료 및 추천 링크 생성 UI 노출
+  - Row 47: `[모바일 부스트(/boost)]` 버전 동기화 완료 시 오버레이 자동 종료 및 Boost 상품 즉시 노출
+  - Row 48: `[모바일 정책센터(/policy-center)]` 게이트 자동 종료 및 신뢰/정책 문서 초기 뷰포트 노출
+  - Row 66: `[모바일 위키(/wiki)]` 현재 경로 유지한 채 오버레이 자동 종료 및 위키 메뉴 즉시 노출
+  - Row 93: `[모바일 월드 코덱 진입 (/world-codex)]` BOOT_READY·VERSION_SYNCED 후 부트 게이트를 DOM 흐름에서 제거 및 진입 즉시 WORLD CODEX 카드/진영 선택·주요 CTA 노출
+- **수정 및 개선 내용**:
+  1. `App.tsx`:
+     - `getViewFromPathAndUrl()` 내 `world-codex`, `world_codex`, `codex`, `worldcodex`, `wiki/codex` 등 다양한 쿼리 파라미터 및 경로 별칭을 완벽 지원.
+     - `handleUrlRouting()`을 `getViewFromPathAndUrl()`과 단일 진실 공급원으로 통일하여 직링크, 뒤로가기/앞으로가기, 쿼리 라우팅에서 예외 없이 서브페이지 뷰로 즉시 직행하도록 개선.
+  2. `AppLoadingGate.tsx`:
+     - `getViewTitle()`에 `world-codex`, `wiki`, `wiki-card`, `wiki-item`, `wiki-skill`, `wiki-howtoplay`, `wiki-tip` 매핑 등록.
+     - 서브페이지 진입 시 150ms 내 자동 게이트 언마운트 및 비차단 상단 인디케이터 적용.
+- **검증 및 보고**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+  - `compile_applet`: 프로덕션 빌드 성공 (PASS).
+  - Google Forms 동기화 스크립트 실행으로 13개 작업 일괄 제출 완료 (13/13 SUCCESS, HTTP 200).
+
+---
+
+## [2026-08-22 13:00 KST / 04:00 UTC] [시스템 게이트/부팅 오버레이 전면 개선] 모바일 12개 뷰(길드/플레이그라운드/스톡/P2P마켓/예측/공유/시즌허브/Web3/추천인/부스트/정책센터/위키) 자동 종료·0초 블로킹 해제 및 캐시 리셋 버튼 숨김 완료
+- **스프레드시트 작업 대상 (12건 일괄 완료)**:
+  - Row 32: `Guild List (/guild-list)` 모바일 390x844 부팅 오버레이 자동 해제 및 콘텐츠 100% 노출
+  - Row 33: `Playground (/playground)` 부팅 완료 후 시스템 오버레이 자동 닫기 및 조작 차단 해제
+  - Row 34: `Stock Market (/stock-market)` 버전 동기화 완료 후 부트 오버레이 자동 종료
+  - Row 35: `[모바일 카드 P2P 마켓플레이스]` SYSTEM GATE 오버레이 즉시 닫기 및 카드 목록 접근 보장
+  - Row 36: `[모바일 예측시장]` [READY] 완료 후 부팅 오버레이 자동 종료 및 상단 경기 카드 즉시 노출
+  - Row 37: `[모바일 공유(/share)]` 부트 오버레이 자동 종료 및 공유 콘텐츠 상단 노출
+  - Row 44: `[모바일 시즌 허브]` 부팅 완료 시 기술용 동기화 패널 및 캐시 초기화 버튼 숨김/자동 종료
+  - Row 45: `[모바일 /web3 시작 흐름]` 정상 부팅 시 MANUAL CACHE RESET 버튼 숨김 및 직관적 시작 흐름 보장
+  - Row 46: `[모바일 추천인(/referral)]` 초기화 완료 후 오버레이 즉시 자동 종료 및 추천 링크 생성 UI 노출
+  - Row 47: `[모바일 부스트(/boost)]` 버전 동기화 완료 시 오버레이 자동 종료 및 Boost 상품 즉시 노출
+  - Row 48: `[모바일 정책센터(/policy-center)]` 게이트 자동 종료 및 신뢰/정책 문서 초기 뷰포트 노출
+  - Row 66: `[모바일 위키(/wiki)]` 현재 경로 유지한 채 오버레이 자동 종료 및 위키 메뉴 즉시 노출
+- **수정 및 개선 내용**:
+  1. `AppLoadingGate.tsx`:
+     - 버전 동기화 완료(`BOOT_READY` / `VERSION_SYNCED`) 시 30ms 내 초고속 자동 언마운트(`dismissGate`) 전환.
+     - 서브페이지 진입 시(`isSubpage === true`) 풀스크린 블로킹 게이트 렌더링 방지 및 초슬림 비차단형 상태 표시기 적용 (안전 타임아웃 150ms).
+     - 루트/메인 진입 시에도 350ms 안전 타임아웃을 적용하여 무한 대기 및 화면 블로킹 원천 차단.
+     - 정상 상태(`hasError === false`)에서는 기술용 `MANUAL CACHE RESET` 및 디버깅 패널을 완전히 숨김 처리하여 일반 사용자/테스트의 불필요한 혼선 제거.
+  2. `versionManager.ts`:
+     - `fetchServerVersion()` 네트워크 fetch 타임아웃을 2500ms -> 600ms로 단축하여 네트워크 지연 시에도 UI 정체 없이 0초 만에 로컬 캐시 기반 정상 진입.
+  3. `App.tsx`:
+     - `showInitialGate` 상태 초기화 시 `getViewFromPathAndUrl()`을 통해 쿼리/해시/경로가 서브페이지인 경우 부팅 게이트를 즉시 스킵(`false`)하도록 최적화.
+     - 세션 및 로컬스토리지 `hero_boot_gate_shown` 플래그 즉시 동기화.
+- **검증 및 보고**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+  - `compile_applet`: 프로덕션 빌드 성공.
+  - Google Forms 동기화 스크립트 실행으로 12개 작업 일괄 제출 완료 (12/12 SUCCESS).
+
+---
+
+## [2026-08-22 12:45 KST / 03:45 UTC] [미션게임 전체 고도화] 2D 카드 미션게임 5종(슬라이드퍼즐/하이스트/점퍼/슬롯/소서리) 모바일 원핸드·클린HUD·3단계 튜토리얼·원자적 보상 정산 전면 통합 완료
+- **스프레드시트 작업 ID**: `[ID 544-554] 2D 카드 미션 및 3D 복셀 미션게임 1-손 조작 표준화, Responsive HUD & Universal Tutorial & Atomic Reward Gateway 전면 통합`
+- **작업 내용**:
+  1. **2D 카드 미션게임 5종 전면 리팩토링 및 표준화**:
+     - `CardSlidePuzzleGame.tsx`: 모바일 터치 및 방향키 조작, `MobileSafeAreaHUD`, 3단계 튜토리얼 모달, `VictoryRewardModal` 연동.
+     - `CardHeistGame.tsx`: 위험 구역 토글, 모바일 1-손 D-패드/스와이프 조작, `MobileSafeAreaHUD`, 3단계 튜토리얼, `VictoryRewardModal` 연동.
+     - `CardJumperGame.tsx`: 캔버스 뷰포트 반응형 스케일링, 좌/우 1-손 조작, `MobileSafeAreaHUD`, 3단계 튜토리얼, `VictoryRewardModal` 연동.
+     - `CardSlotGame.tsx`: 3x3 슬롯 머신, 하단 스와이프/원터치 스핀, `MobileSafeAreaHUD`, 3단계 튜토리얼, `VictoryRewardModal` 연동.
+     - `CardSorceryGame.tsx`: 4원소 상성 마법 결투, `MobileSafeAreaHUD`, 3단계 튜토리얼, `VictoryRewardModal` 연동.
+  2. **모바일 세이프에리어 반응형 클린 HUD (`MobileSafeAreaHUD.tsx`) 전면 적용**:
+     - 상단 5% 높이의 슬림 바로 70%+ 게임 뷰포트 시야 확보, 일시정지/도움말 토글 및 스코어/HP/시간 실시간 표시.
+  3. **원자적 보상 정산 게이트웨이 (`calculateAndDepositMissionReward` & `VictoryRewardModal`) 일괄 연동**:
+     - 플레이 지속 시간, 달성 스코어, 승리 여부, 콤보 수치에 따른 공정한 SNS 포인트 계산, `localStorage` 동기화 및 `VictoryRewardModal` 영수증 팝업.
+  4. **코드 검증 및 빌드**:
+     - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+     - `compile_applet`: 프로덕션 빌드 성공.
+- **상태**: 구현, 검증 및 구글 폼 보고 완료.
+
+---
+
+## [2026-08-22 12:15 KST / 03:15 UTC] [미션게임 고도화] 3D 밀리 격투(가라데/닌자/콜로세움) 및 2D 카드 미션(카드러시/카드탭/카드플립) 모바일 원핸드·클린HUD·원자적 보상 통합 완료
+- **스프레드시트 작업 ID**: `[ID 540-543] 3D 근접 격투 및 2D 카드 미션게임 1-손 조작 표준화, Responsive HUD & Universal Tutorial 전면 통합`
+- **작업 내용**:
+  1. **3D 밀리 제스처 어댑터 (`src/lib/oneThumbMeleeGestureAdapter.ts`) 및 2D 카드 튜토리얼 엔진 (`src/lib/mission2DCardTutorialEngine.ts`) 연동**:
+     - `VoxelKarateBreakGame.tsx`, `VoxelNinjaSlashGame.tsx`, `VoxelGladiatorColosseumGame.tsx`에 순수 제스처 어댑터를 전면 통합하여 화면 터치/스와이프/길게 누르기로 콤보, 패링, 회피, 기력 집중을 1-손으로 완벽 구동.
+     - 2D 카드 미션 (`CardRushGame.tsx`, `CardTapGame.tsx`, `CardFlipGame.tsx`)에 `get2DGameTutorialSteps` 기반 3단계 튜토리얼 모달 및 원터치 반응형 제스처 연결.
+  2. **모바일 세이프에리어 반응형 클린 HUD (`MobileSafeAreaHUD.tsx`) 표준화 적용**:
+     - 상단 5% 높이의 슬림 바로 70%+ 게임 뷰포트 시야 확보, 일시정지/도움말 토글 및 스코어/HP/콤보 실시간 표시.
+  3. **원자적 보상 정산 게이트웨이 (`calculateAndDepositMissionReward` & `VictoryRewardModal`) 일괄 연동**:
+     - 플레이 지속 시간, 달성 스코어, 승리 여부, 콤보 수치에 따른 공정한 SNS 포인트 계산, `localStorage` 동기화 및 `VictoryRewardModal` 영수증 팝업.
+  4. **코드 검증 및 빌드**:
+     - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+     - `compile_applet`: 프로덕션 빌드 성공.
+- **상태**: 구현, 검증 및 구글 폼 보고 완료.
+
+---
+
+## [2026-08-22 11:45 KST / 02:45 UTC] [미션게임 최적화] 모바일 원핸드 제스처 컨트롤러, 3단계 튜토리얼 모달, 클린 HUD 및 원자적 보상 정산 시스템 통합
+- **스프레드시트 작업 ID**: `[ID 534-539] 미션게임 1-손 조작 표준화 및 반응형 HUD/보상 모달 전면 통합`
+- **작업 내용**:
+  1. **순수 제스처 컨트롤러 모듈 (`src/lib/pureGestureController.ts`) 및 슈터 어댑터 (`src/lib/oneThumbShooterAdapter.ts`) 구축**:
+     - 시야를 가리는 가상 조이스틱을 대체하여 화면 드래그, 탭, 더블탭, 길게 누르기(Hold) 등 자연스러운 1-손 터치 제스처를 정밀 캡처하는 통합 컨트롤러 구현.
+  2. **원자적 보상 정산 및 로컬스토리지 영구 게이트웨이 (`src/lib/standardizedRewardGateway.ts`) 구축**:
+     - 플레이 시간(초), 점수, 승리 여부, 콤보, 퍼펙트 클리어 여부에 따른 공정하고 표준화된 SNS 포인트 보상 계산 및 `hero_user_stats`, `hero_sns_history` 동기 저장 및 `hero_sns_updated` 이벤트 디스패치.
+  3. **3대 통합 UI 컴포넌트 개발 (`UniversalTutorialModal`, `ResponsiveCleanHUD`, `VictoryRewardModal`)**:
+     - `UniversalTutorialModal`: 3단계 인터랙티브 튜토리얼(목표, 조작법, 특별 보너스) 및 로컬스토리지 1회 온보딩 관리.
+     - `ResponsiveCleanHUD`: 상단 5% 높이의 슬림 바 HUD로 70% 이상의 뷰포트 시야를 확보하고 일시정지, 점수, 커스텀 메트릭, 나가기 기능 제공.
+     - `VictoryRewardModal`: 최종 점수, 기본 보상, 성과 보너스, 콤보 보너스 영수증 상세 내역 및 다시하기/복귀 지원.
+  4. **주요 복셀 미션게임 4종 전면 리팩토링 및 통합**:
+     - `VoxelMagnetHoleGame.tsx` (마그넷 홀)
+     - `VoxelPinballClimberGame.tsx` (핀볼 타워 클라이머)
+     - `VoxelMotocrossStuntGame.tsx` (익스트림 모터크로스)
+     - `VoxelSkateboardStreetGame.tsx` (스트리트 스케이트보드)
+  5. **코드 검증 및 구글 폼 보고**:
+     - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+     - `compile_applet`: 프로덕션 빌드 성공.
+     - 구글 폼 엔드포인트(`https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse`)로 개발 보고 완료 (HTTP 200).
+- **상태**: 구현, 검증 및 구글 폼 보고 완료.
+
+---
+
+## [2026-08-22 10:35 KST / 01:35 UTC] [시스템 게이트/비차단형 최적화] 서브페이지 비차단형 상단 상태 표시 및 정상 상태 수동 캐시 리셋 버튼 숨김 최적화 완료
+- **스프레드시트 작업 ID**: `ID 44~48 (시즌 허브, /web3, 추천인, 부스트, 정책센터 진입 5건 일괄 완료)`
+- **작업 내용**:
+  1. **서브페이지 진입 시 비차단형 상단 플로팅 배지 적용 (`src/components/AppLoadingGate.tsx`)**:
+     - `/season-hub`, `/web3`, `/referral`, `/boost`, `/policy-center` 등 서브페이지 진입 시, 전체 화면을 가리는 불투명 오버레이 대신 비차단형 상단 플로팅 배지(`[SYSTEM] {Title} • v2.1.0 (100%)`)로 축소 렌더링하여 하위 컨텐츠(정책 문서 목록, 추천 링크, 부스트 상품, 시즌 허브 본문, Start Game 등)가 100% 온전히 노출되고 즉시 조작 가능하도록 개선.
+  2. **정상 상태(`!hasError`)에서 `[RELOAD]` 수동 캐시 리셋 버튼 및 기술 설명 완전 숨김**:
+     - 정상적인 버전 동기화/부팅 완료 상태에서 일반 사용자에게 노출되던 기술용 `[RELOAD] MANUAL CACHE RESET & FRESH RELOAD` 버튼 및 캐시 강제 삭제 안내를 기본 숨김 처리.
+     - 오직 오류/네트워크 실패 상황(`hasError === true`)에서만 `[비상 복구]` 옵션으로 제공하여 일반 사용자의 불필요한 캐시 초기화 혼란 방지.
+  3. **완료 시 초고속 자동 언마운트 & 1.0초 세이프티 가드**:
+     - 버전 동기화 완료(`[BOOT_READY] 100%`) 즉시 60ms 이내에 오버레이를 자동 언마운트하고, 서브페이지의 경우 400ms 안전 타임아웃을 적용하여 무조건 즉시 조작 가능하도록 보장.
+  4. **코드 검증 및 구글 폼 5건 일괄 보고**:
+     - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+     - `compile_applet`: 프로덕션 빌드 성공.
+     - 구글 폼 엔드포인트(`https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse`)로 5건 모두 보고 완료 (HTTP 200).
+- **상태**: 구현, 검증 및 구글 폼 5건 보고 완료.
+
+---
+
+## [2026-08-22 09:40 KST / 00:40 UTC] [시스템 게이트/버전 동기화] System Gate 부트 오버레이 블로킹 해결 및 즉시 자동 닫기·수동 닫기/시작 CTA 구현 완료
+- **스프레드시트 작업 ID**: `ID 32~37 (Guild List, Playground, Stock Market, Marketplace, Prediction Market, Share 화면 블로킹 6건 일괄 완료)`
+- **작업 내용**:
+  1. **서브페이지 직접 진입 시 블로킹 오버레이 바이패스 (`src/App.tsx`)**:
+     - 사용자가 `/guild-list`, `/playground`, `/stock-market`, `/marketplace`, `/prediction-market`, `/share` 등 기능 화면으로 직접 접속 시, 풀스크린 게이트가 화면을 가리지 않도록 즉각 바이패스 처리.
+  2. **100% 동기화 즉각 자동 종료 및 1.2초 세이프티 타임아웃 (`src/components/AppLoadingGate.tsx`)**:
+     - 기존의 불필요한 인위적 다단계 `setTimeout` 딜레이(150ms+200ms+300ms+250ms)를 제거하고, `[BOOT_READY]` 100% 완료 즉시(80ms 이내) 페이드아웃 및 자동 언마운트.
+     - 네트워크 지연이나 응답 지연 시에도 사용자가 갇히지 않도록 1.2초 안전 타임아웃(Safety Timer)을 내장하여 무조건 자동 진입 처리.
+  3. **수동 [닫기] 및 [지금 바로 시작하기] CTA 버튼 추가**:
+     - 상단 우측 `[X 닫기 (Close)]` 버튼 및 중앙 메인 `[지금 바로 시작하기 (Enter Lobby Now ▶)]` CTA를 배치하여 사용자가 원할 때 0.1초 만에 즉시 오버레이를 닫고 게임/기능으로 진입할 수 있도록 개선.
+     - 오류/오프라인 발생 시에만 `[재시도]`, `[캐시 초기화]` 및 `[무시하고 계속]` 옵션 제공.
+  4. **콘솔 404 리소스 오류 제거 (`src/lib/versionManager.ts`)**:
+     - 엔드포인트 조회 순서를 `/version.json` 우선으로 변경하여 정적 호스팅 환경에서 발생하던 `/api/version` 404 리소스 에러를 원천 제거.
+  5. **코드 검증 및 구글 폼 6건 일괄 보고**:
+     - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+     - `compile_applet`: 프로덕션 빌드 성공.
+     - 구글 폼 엔드포인트(`https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse`)로 6건 모두 보고 완료 (HTTP 200).
+- **상태**: 구현, 검증 및 구글 폼 6건 보고 완료.
+
+---
+
+## [2026-08-21 21:35 KST / 12:35 UTC] [웹툰/웹소설 뷰어] 웹툰/소설 뷰어 내 다음/이전 화 이동 버튼, 읽기 진행률(%) 상단/플로팅 바 및 스크롤 위치 복원 기능 구현
+- **스프레드시트 작업 ID**: `ID 19: 웹툰 에피소드 뷰어 내 다음/이전 화 이동 버튼 및 읽기 진행률 저장 부족`
+- **작업 내용**:
+  1. **스티키 탑 읽기 진행률 바 (Top Sticky Progress Bar) 구현**:
+     - 상단 헤더 바로 아래에 2.5px 앰버 색상 실시간 스크롤 진행률 게이지 바를 배치하여 현재 회차의 읽기 진척도(0~100%)를 실시간 시각화.
+  2. **하단 고정 플로팅 에피소드 내비게이션 독 (Sticky Bottom Floating Dock) 구현**:
+     - 화면 하단 중앙에 플로팅 모노스페이스 내비게이션 바를 고정(`fixed bottom-3`):
+       - `[ ◀ 이전 화 ]`: 1화 이전 회차로 즉시 이동 (1화 시 비활성화).
+       - `[ 📖 제 {N}화 / 40 ({Progress}%) ]`: 클릭 시 전체 40부작 회차 선택 팝업 즉시 호출 및 현재 진행률 실시간 표시.
+       - `[ 다음 화 ▶ ]`: 다음 회차로 즉시 이동 (40화 시 비활성화, 스크롤 80% 이상 도달 시 앰버 펄스 하이라이트 효과로 다음 화 열람 유도).
+       - `[ ⬆ 맨 위로 ]`: 부드러운 스크롤 탑 이동 버튼.
+  3. **스크롤 위치 및 읽기 진행률 로컬스토리지 자동 영구 저장 (`hero_scroll_state_{season}_{tab}_ep{ep}`)**:
+     - 스크롤 시 디바운스(300ms)로 마지막 스크롤 Y좌표 및 도달 백분율을 로컬스토리지에 실시간 저장.
+     - 회차별 최대 도달 완독률(`hero_max_read_pct_{season}_ep{ep}`)을 기록하고, 85% 이상 도달 시 자동 완독 처리.
+     - 이전에 읽던 회차를 다시 열었을 때 우측 상단에 `[ 📍 이전 읽던 위치 ({Progress}%) | [이동] | [X] ]` 플로팅 복원 알림 배너를 노출하여 원클릭으로 이어보기 지원.
+  4. **회차 완독 후 다음 화 이어보기 프리뷰 카드 (Next Episode Teaser) 연동**:
+     - 본문/카툰 마지막 영역에 제 {N+1}화 제목 및 시놉시스 프리뷰 카드와 `[ ⏩ 다음 화 바로 읽기 (Next Chapter) ]` 버튼 추가.
+     - 회차 선택 모달 목록 내 각 회차별 진행률 백분율(예: `[ 100% 완독 ]`, `[ 45% ]`) 뱃지 실시간 표시.
+  5. **코드 검증 및 보고**:
+     - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+     - `compile_applet`: 프로덕션 빌드 성공.
+     - 구글 폼 보고 제출 완료 (`submit_report.py`).
+- **상태**: 구현, 검증 및 구글 폼 보고 완료.
+
+---
+
+## [2026-08-21 21:05 KST / 12:05 UTC] [전투 시스템] 전투 화면 내 속성 상성표(Element Advantage) 퀵 참조 팝오버 및 실시간 계산기 모달 구현
+- **스프레드시트 작업 ID**: `ID 18: 전투 화면 내 속성 상성표(Element Advantage) 퀵 참조 팝오버 부재`
+- **작업 내용**:
+  1. **`ElementAdvantageModal.tsx` 컴포넌트 신규 구현**:
+     - **4대 원소 순환 고리 (4-Element Cycle)**: 💧 물 -> 🔥 불 -> 🌪️ 바람 -> 🌱 대지 -> 💧 물 (+15% 팩션 배율 & +2 PWR 증폭 타격 콤보) 및 ASCII 다이어그램 구현.
+     - **7대 종족/세력 상성 매트릭스**: 👤 인간 -> 💀 언데드 -> 🧝 엘프 -> 🔨 드워프 -> 🤖 로봇 -> 🐉 드래곤 / 👾 몬스터 등 +10% 우위 관계 명시.
+     - **실시간 상성 계산기 (Matchup Tester)**: 공격 카드 속성과 수비 대상 속성을 즉석 선택하여 상성 판정(우위/열세/대등), 배율(예: x1.15), 전투 팁을 실시간 안내.
+     - **지형 및 시너지 룰 (Tiles & Synergy)**: 속성 일치 타일 배치 시 4방향 스탯 +2 PWR 보너스 및 인접 동일 속성 아군 원소 공명(Resonance +1) 룰 가이드 제공.
+  2. **인게임 전장 HUD 및 메뉴 연동 (`PlayGameView.tsx`)**:
+     - 전투 화면 상단 HUD 바에 `[상성 / ELEM]` 원터치 퀵 참조 버튼 추가.
+     - 인게임 메뉴 모달 내 `[🛡️ 속성 상성표 퀵 가이드]` 메뉴 추가.
+  3. **디자인 및 성능 준수**:
+     - OpenCode Monospace 테마(`font-mono`, 1px 헤어라인, `rounded-sm` 칩, 다크 HUD 모드) 준수.
+     - 한국어(`ko`)/영어(`en`) 다국어 지원 및 `lowSpecMode` 저사양 최적화 지원.
+  4. **코드 검증 및 보고**:
+     - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+     - `compile_applet`: 프로덕션 빌드 성공.
+     - 구글 폼 보고 제출 완료 (`submit_report.py`).
+- **상태**: 구현, 검증 및 구글 폼 보고 완료.
+
+---
+
+## [2026-08-21 20:26 KST / 11:26 UTC] [전투 시스템] Battle Summary 모달 승리 시 축하 파티클 및 컨페티(Confetti) 애니메이션 추가
+- **작업 내용**:
+  1. **승리 시 다채로운 컨페티(Confetti) 파티클 시스템 구현 (`BattleSummaryModal.tsx`)**:
+     - 전투 승리(`result === 'win'`) 시 36개의 골드/에메랄드/핑크/퍼플/블루/앰버 등 다채로운 색상의 컨페티 조각이 상단에서 3D 회전하며 쏟아지는 낙하 애니메이션 연동.
+     - 승리 트로피 아이콘 주변에 12개의 방사형 황금 스파클 파티클(Sparkle Burst) 폭발 효과 구현.
+     - 승리 배너 배경에 은은한 에메랄드/앰버 아우라 펄스 shimmer 이펙트 추가.
+     - 사용자가 원할 때 언제든지 축하 파티클을 재실행할 수 있는 `[✨ 축하 효과 (PartyPopper)]` 인터랙티브 버튼 지원.
+  2. **저사양 모드(`lowSpecMode`) 최적화**:
+     - 저사양 모드 활성화 시 파티클 수를 12개로 축소하고 무거운 그림자/3D 연산을 최적화하여 쾌적한 60fps 프레임 유지.
+  3. **코드 검증 및 빌드**:
+     - `tsc --noEmit`: 0 오류 통과 (PASS).
+     - `compile_applet`: 프로덕션 빌드 성공.
+- **상태**: 구현 및 검증 완료.
+
+---
+
+## [2026-08-21 20:20 KST / 11:20 UTC] [전투 시스템] 전투 종료 후 데미지·출전카드·SNS 획득 통계 표시 Battle Summary 모달 생성 및 연동
+- **작업 내용**:
+  1. **`BattleSummaryModal.tsx` 컴포넌트 생성 및 고도화**:
+     - 기존 통계 저장소(`hero_last_ai_battle_summary`, `hero_match_history`)와 완벽 호환.
+     - **데미지 통계 (Damage Dealt/Received)**: 총 가한 데미지(DMG), 받은 피해량, 공방 효율 교환비(Ratio), 순 데미지 마진(Net Margin) 및 시각적 지분 그래프 제공.
+     - **출전 카드 기여도 (Cards Used)**: 전투에 투입된 모든 히어로 카드의 스프라이트 썸네일, 레벨, 전투력, 가한 데미지, 받은 데미지 및 MVP 지정 뱃지 표시.
+     - **총 획득 SNS (Total SNS Gained)**: 기본 승리/패배 보상, 스피드 어택(+15%), 언더독 바운티(+20%), 원소 상성 콤보, 철벽 방어자, 마나샘 점령, 보물 고블린 포획 등 세부 보너스 항목화 및 덱 EXP 획득 표시.
+     - **액션 버튼**: `[다시 대전]`, `[자동전투 시작]`, `[피드 공유]`, `[닫기]` 등 44px+ 플랫 버튼 제공.
+  2. **전투 종료 시 자동 팝업 및 연동 (`PlayGameView.tsx`)**:
+     - 대전 종료 시 전투 요약 모달이 부드럽게 팝업되도록 자동 연동.
+     - 게임오버 화면 및 인게임 메뉴에서 언제든지 `[전투 결과 요약]` 버튼으로 다시 열어볼 수 있도록 지원.
+  3. **코드 검증 및 빌드**:
+     - `tsc --noEmit`: 0 오류 통과 (PASS).
+     - `compile_applet`: 프로덕션 빌드 성공.
+- **상태**: 구현 및 검증 완료.
+
+---
+
 ## [2026-08-21 15:09 KST / 06:09 UTC] [상점 UI] 4종 상품 카드(아이템팩/광고제거/소설/영상) 버튼 단순화 및 본문 설명 강화
 - **작업 내용**:
   1. **4종 상품 카드 액션 버튼 디자인 통일**:

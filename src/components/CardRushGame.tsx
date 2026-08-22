@@ -1,9 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, RotateCcw, Trophy, Zap, Shield, Navigation } from 'lucide-react';
+import { Shield, Navigation } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardData, Language } from '../types';
 import { t } from '../lib/i18n';
-import { cn, getAssetUrl, getCardSpriteStyle } from '../lib/utils';
+import { cn, getCardSpriteStyle } from '../lib/utils';
+import { MobileSafeAreaHUD } from './MobileSafeAreaHUD';
+import { UniversalTutorialModal } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { get2DGameTutorialSteps } from '../lib/mission2DCardTutorialEngine';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface CardRushGameProps {
   deck: CardData[];
@@ -62,9 +67,19 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
   onExit,
   onReward,
 }) => {
+  const isKo = language === 'ko';
   const boardSize = lowSpecMode ? 5 : 6;
   const allyTargetCount = lowSpecMode ? 2 : 3;
   const enemyCount = lowSpecMode ? 2 : 3;
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_2d_card_rush') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
 
   const heroCardId = useMemo(() => getValidCardId(deck[0]), [deck]);
   const allyCardIds = useMemo(() => {
@@ -94,28 +109,7 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
   const [isWin, setIsWin] = useState(false);
   const [swipeHint, setSwipeHint] = useState<Direction | null>(null);
   const [statusText, setStatusText] = useState<string>('');
-  const [defeatCountdown, setDefeatCountdown] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (isGameOver && !isWin) {
-      setDefeatCountdown(5);
-    } else {
-      setDefeatCountdown(null);
-    }
-  }, [isGameOver, isWin]);
-
-  useEffect(() => {
-    if (defeatCountdown === null) return;
-    if (defeatCountdown <= 0) {
-      setDefeatCountdown(null);
-      onExit();
-      return;
-    }
-    const timer = setTimeout(() => {
-      setDefeatCountdown(prev => (prev !== null ? prev - 1 : null));
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [defeatCountdown, onExit]);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const rewardedRef = useRef(false);
   const boardRef = useRef<Cell[][]>([]);
@@ -127,6 +121,7 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
   const isWinRef = useRef(false);
   const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
   const statusTimerRef = useRef<number | null>(null);
+  const startTimeRef = useRef<number>(Date.now());
 
   const clearStatusTimer = useCallback(() => {
     if (statusTimerRef.current) {
@@ -206,12 +201,14 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
     setIsWin(false);
     setSwipeHint(null);
     setStatusText('');
+    setSettlementReceipt(null);
     collectedRef.current = 0;
     turnsRef.current = 0;
     gateOpenRef.current = false;
     isGameOverRef.current = false;
     isWinRef.current = false;
     rewardedRef.current = false;
+    startTimeRef.current = Date.now();
   }, [allyCardIds, boardSize, enemyCount, heroCardId]);
 
   useEffect(() => {
@@ -222,24 +219,58 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
   const finalizeWin = useCallback((nextTurns: number, nextCollected: number) => {
     if (rewardedRef.current) return;
     rewardedRef.current = true;
-    const reward = Math.min(60, Math.max(15, 25 + nextCollected * 10 - Math.floor(nextTurns * 0.5)));
-    onReward(reward);
+
+    const durationSeconds = Math.max(15, Math.round((Date.now() - startTimeRef.current) / 1000));
+    const score = 1000 + nextCollected * 300 - nextTurns * 20;
+
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'card_rush',
+      gameTitle: isKo ? '2D 카드 러시: 던전 탈출' : '2D Card Rush: Dungeon Escape',
+      durationSeconds,
+      score,
+      maxTargetScore: 2000,
+      isVictory: true,
+      difficulty: 'NORMAL',
+      comboCount: nextCollected,
+      perfectClear: nextTurns <= 15
+    });
+
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
     setIsGameOver(true);
     setIsWin(true);
     isGameOverRef.current = true;
     isWinRef.current = true;
-    showStatus(language === 'ko' ? '[게이트 탈출 성공!]' : '[Gate escape success!]');
+    showStatus(isKo ? '[게이트 탈출 성공!]' : '[Gate escape success!]');
     playSfx('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-  }, [language, onReward, playSfx, showStatus]);
+  }, [isKo, onReward, playSfx, showStatus]);
 
   const finalizeLoss = useCallback(() => {
+    if (rewardedRef.current) return;
+    rewardedRef.current = true;
+
+    const durationSeconds = Math.max(10, Math.round((Date.now() - startTimeRef.current) / 1000));
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'card_rush',
+      gameTitle: isKo ? '2D 카드 러시: 던전 탈출' : '2D Card Rush: Dungeon Escape',
+      durationSeconds,
+      score: collectedRef.current * 150,
+      maxTargetScore: 2000,
+      isVictory: false,
+      difficulty: 'NORMAL',
+      comboCount: collectedRef.current
+    });
+
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
+
     setIsGameOver(true);
     setIsWin(false);
     isGameOverRef.current = true;
     isWinRef.current = false;
-    showStatus(language === 'ko' ? '적 카드에 붙잡혔습니다.' : 'Captured by rogue cards!');
+    showStatus(isKo ? '적 카드에 붙잡혔습니다.' : 'Captured by rogue cards!');
     playSfx('https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3');
-  }, [language, playSfx, showStatus]);
+  }, [isKo, onReward, playSfx, showStatus]);
 
   const moveEnemies = useCallback((currentBoard: Cell[][], nextPlayerPos: Position) => {
     const nextBoard = currentBoard.map((row) => row.map((cell) => ({ ...cell })));
@@ -301,7 +332,7 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
   }, [boardSize]);
 
   const movePlayer = useCallback((direction: Direction) => {
-    if (isGameOverRef.current) return;
+    if (isGameOverRef.current || isPaused || showTutorial) return;
 
     const delta = {
       up: { row: -1, col: 0 },
@@ -313,7 +344,7 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
     const currentPos = playerPosRef.current;
     const nextPos = { row: currentPos.row + delta.row, col: currentPos.col + delta.col };
     if (nextPos.row < 0 || nextPos.row >= boardSize || nextPos.col < 0 || nextPos.col >= boardSize) {
-      showStatus(language === 'ko' ? '이동할 수 없습니다.' : 'Cannot move there.');
+      showStatus(isKo ? '이동할 수 없습니다.' : 'Cannot move there.');
       playSfx('https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3');
       return;
     }
@@ -330,7 +361,7 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
     }
 
     if (targetCell.kind === 'gate' && !gateOpenRef.current) {
-      showStatus(language === 'ko' ? '게이트가 잠겨 있습니다.' : 'The gate is locked.');
+      showStatus(isKo ? '게이트가 잠겨 있습니다.' : 'The gate is locked.');
       playSfx('https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3');
       return;
     }
@@ -347,7 +378,7 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
     if (targetCell.kind === 'ally') {
       nextCollected += 1;
       nextGateOpen = nextCollected >= allyTargetCount;
-      nextMessage = language === 'ko' ? '동료 카드를 구출했습니다!' : 'Ally card rescued!';
+      nextMessage = isKo ? '동료 카드를 구출했습니다!' : 'Ally card rescued!';
       playSfx('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
     } else {
       playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
@@ -399,12 +430,12 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
 
     if (nextMessage) showStatus(nextMessage);
     if (nextGateOpen && !wasGateOpen) {
-      showStatus(language === 'ko' ? '게이트가 열렸습니다!' : 'The gate opened!');
+      showStatus(isKo ? '게이트가 열렸습니다!' : 'The gate opened!');
     }
-  }, [allyTargetCount, boardSize, finalizeLoss, finalizeWin, heroCardId, language, moveEnemies, playSfx, showStatus]);
+  }, [allyTargetCount, boardSize, finalizeLoss, finalizeWin, heroCardId, isKo, isPaused, moveEnemies, playSfx, showStatus, showTutorial]);
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
-    if (event.defaultPrevented) return;
+    if (event.defaultPrevented || isPaused || showTutorial) return;
     const key = event.key;
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd', 'W', 'A', 'S', 'D'].includes(key)) {
       event.preventDefault();
@@ -415,7 +446,7 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
             : 'right';
       movePlayer(direction);
     }
-  }, [movePlayer]);
+  }, [isPaused, movePlayer, showTutorial]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown, { passive: false });
@@ -475,59 +506,39 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
     }
   }, [movePlayer]);
 
-  const restartGame = useCallback(() => {
-    buildBoard();
-    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-  }, [buildBoard, playSfx]);
-
-  const boardStatus = gateOpen
-    ? (language === 'ko' ? '게이트 개방 완료' : 'Gate unlocked')
-    : (language === 'ko' ? '동료 카드 구출 중' : 'Rescue ally cards');
+  const tutorialSteps = get2DGameTutorialSteps('card_rush', isKo);
 
   return (
-    <div className="h-[100dvh] max-h-[100dvh] overflow-hidden flex flex-col justify-between select-none font-mono bg-[#0f1117] text-slate-100 p-2 sm:p-4">
-      <div className="w-full max-w-4xl mx-auto flex flex-col h-full justify-between gap-1 sm:gap-2">
-        {/* Header */}
-        <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-1.5 shrink-0">
-          <button
-            onClick={onExit}
-            className="inline-flex items-center gap-1.5 rounded-sm bg-white/5 border border-white/10 px-3 py-1.5 text-xs font-mono tracking-wider hover:bg-white/10 transition-colors min-h-[44px]"
-          >
-            <ArrowLeft size={14} />
-            <span>[ {language === 'ko' ? '뒤로' : 'BACK'} ]</span>
-          </button>
-          <div className="flex items-center gap-1.5 text-amber-400 font-mono font-bold tracking-wider text-xs sm:text-sm">
-            <Navigation size={14} />
-            <span>[{t('mode_cardrush', language)}]</span>
-          </div>
-          <button
-            onClick={restartGame}
-            className="inline-flex items-center gap-1.5 rounded-sm bg-amber-500/10 border border-amber-400/30 px-3 py-1.5 text-xs font-mono text-amber-300 tracking-wider hover:bg-amber-500/20 transition-colors min-h-[44px]"
-          >
-            <RotateCcw size={14} />
-            <span>[ {language === 'ko' ? '재시작' : 'RETRY'} ]</span>
-          </button>
-        </div>
+    <div className="h-[100dvh] max-h-[100dvh] overflow-hidden flex flex-col justify-between select-none font-mono bg-[#0f1117] text-slate-100">
+      {/* Top Safe Area HUD */}
+      <MobileSafeAreaHUD
+        gameTitle={isKo ? '카드 러시' : 'Card Rush'}
+        score={collected * 300}
+        customMetricLabel={isKo ? '턴' : 'Turns'}
+        customMetricValue={turns}
+        isPaused={isPaused}
+        language={language}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onTogglePause={() => setIsPaused(prev => !prev)}
+      />
 
+      <div className="w-full max-w-4xl mx-auto flex-1 flex flex-col justify-between gap-1 sm:gap-2 p-2 sm:p-4">
         {/* Top Status Banner */}
-        <div className="grid grid-cols-4 gap-1.5 text-center shrink-0 border border-white/10 bg-white/5 p-1.5 rounded-none text-xs">
+        <div className="grid grid-cols-3 gap-1.5 text-center shrink-0 border border-white/10 bg-white/5 p-1.5 rounded-none text-xs">
           <div>
-            <div className="text-[10px] text-slate-400">{language === 'ko' ? '구출' : 'RESCUE'}</div>
+            <div className="text-[10px] text-slate-400">{isKo ? '구출 진행' : 'RESCUE'}</div>
             <div className="font-bold text-amber-400">{collected}/{allyTargetCount}</div>
           </div>
           <div>
-            <div className="text-[10px] text-slate-400">{language === 'ko' ? '턴' : 'TURNS'}</div>
-            <div className="font-bold text-slate-100">{turns}</div>
-          </div>
-          <div>
-            <div className="text-[10px] text-slate-400">{language === 'ko' ? '게이트' : 'GATE'}</div>
+            <div className="text-[10px] text-slate-400">{isKo ? '게이트 상태' : 'GATE'}</div>
             <div className={cn('font-bold', gateOpen ? 'text-emerald-400' : 'text-rose-400')}>
-              {gateOpen ? (language === 'ko' ? '열림' : 'OPEN') : (language === 'ko' ? '잠김' : 'LOCKED')}
+              {gateOpen ? (isKo ? '개방 [열림]' : 'UNLOCKED') : (isKo ? '잠김 [LOCKED]' : 'LOCKED')}
             </div>
           </div>
           <div>
-            <div className="text-[10px] text-slate-400">{language === 'ko' ? '보상' : 'REWARD'}</div>
-            <div className="font-bold text-amber-400">{Math.min(60, Math.max(15, 25 + collected * 10 - Math.floor(turns * 0.5)))} SNS</div>
+            <div className="text-[10px] text-slate-400">{isKo ? '소요 턴' : 'TURNS'}</div>
+            <div className="font-bold text-slate-100">{turns}</div>
           </div>
         </div>
 
@@ -644,40 +655,30 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
             </button>
           </div>
           <p className="text-[10px] text-slate-400 text-center font-mono">
-            {language === 'ko' ? 'D-패드 터치 또는 화면 스와이프로 1손 조작' : 'D-Pad or swipe to move'}
+            {isKo ? 'D-패드 터치 또는 화면 스와이프로 1손 조작' : 'D-Pad or swipe to move'}
           </p>
         </div>
 
-        {/* Game Over Modal */}
-        {isGameOver && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 font-mono">
-            <div className={cn('w-full max-w-xs border p-5 rounded-none text-center bg-slate-900', isWin ? 'border-amber-400' : 'border-rose-400')}>
-              <div className="text-base font-bold uppercase tracking-wider mb-2">
-                {isWin ? (language === 'ko' ? '[ 승리: 게이트 탈출 성공 ]' : '[ VICTORY: ESCAPED ]') : (language === 'ko' ? '[ 패배: 적에게 포획됨 ]' : '[ DEFEAT: CAUGHT ]')}
-              </div>
-              <div className="text-xs text-slate-300 mb-3">
-                {isWin
-                  ? (language === 'ko' ? `보상 획득: +${Math.min(60, Math.max(15, 25 + collected * 10 - Math.floor(turns * 0.5)))} SNS` : `Reward: +${Math.min(60, Math.max(15, 25 + collected * 10 - Math.floor(turns * 0.5)))} SNS`)
-                  : (language === 'ko' ? '적 카드에 도달당했습니다.' : 'Caught by rogue cards.')}
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={restartGame}
-                  className="flex-1 py-2.5 rounded-sm bg-amber-500 text-slate-950 font-bold text-xs hover:bg-amber-400 min-h-[44px]"
-                >
-                  {language === 'ko' ? '재도전' : 'RETRY'}
-                </button>
-                <button
-                  onClick={onExit}
-                  className="flex-1 py-2.5 rounded-sm bg-white/10 text-white font-bold text-xs border border-white/20 hover:bg-white/15 min-h-[44px]"
-                >
-                  {language === 'ko' 
-                    ? `나가기${defeatCountdown !== null ? ` (${defeatCountdown}s)` : ''}` 
-                    : `EXIT${defeatCountdown !== null ? ` (${defeatCountdown}s)` : ''}`}
-                </button>
-              </div>
-            </div>
-          </div>
+        {/* 2D Tutorial Modal */}
+        {showTutorial && (
+          <UniversalTutorialModal
+            gameId="2d_card_rush"
+            gameTitle={isKo ? '2D 카드 러시: 던전 탈출' : '2D Card Rush: Dungeon Escape'}
+            customSteps={tutorialSteps}
+            language={language}
+            onStartGame={() => setShowTutorial(false)}
+            onClose={() => setShowTutorial(false)}
+          />
+        )}
+
+        {/* Victory / Reward Settlement Modal */}
+        {isGameOver && settlementReceipt && (
+          <VictoryRewardModal
+            receipt={settlementReceipt}
+            language={language}
+            onPlayAgain={buildBoard}
+            onExit={onExit}
+          />
         )}
       </div>
     </div>

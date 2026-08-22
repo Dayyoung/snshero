@@ -359,6 +359,26 @@ function getViewFromPathAndUrl(): ViewType {
   if (queryView === 'modoo') return 'modoo';
   if (queryView === 'grid' || queryView === 'tool-grid' || queryView === 'tool/grid' || queryView === 'too/grid' || queryView === 'makegrid' || queryView === 'tool/makegrid' || queryView === 'tool-makegrid') return 'tool-makegrid';
   if (queryView === 'checkgrid' || queryView === 'tool-checkgrid' || queryView === 'tool/checkgrid' || queryView === 'gridcheck') return 'tool-checkgrid';
+  if (queryView === 'world-codex' || queryView === 'world_codex' || queryView === 'codex' || queryView === 'worldcodex') return 'world-codex';
+  if (queryView === 'guild-list' || queryView === 'guild') return 'guild-list';
+  if (queryView === 'playground') return 'playground';
+  if (queryView === 'stock-market' || queryView === 'stock') return 'stock-market';
+  if (queryView === 'card-marketplace' || queryView === 'marketplace') return 'card-marketplace';
+  if (queryView === 'prediction-market' || queryView === 'prediction') return 'prediction-market';
+  if (queryView === 'reward' || queryView === 'reward-qr') return 'reward-qr';
+  if (queryView === 'reward-ar') return 'reward-ar';
+  if (queryView === 'share') return 'share';
+  if (queryView === 'boost') return 'boost';
+  if (queryView === 'season-hub' || queryView === 'mission' || queryView === 'missions') return 'season-hub';
+  if (queryView === 'policy-center' || queryView === 'policy') return 'policy-center';
+  if (queryView === 'web3' || queryView === 'web3-landing') return 'web3-landing';
+  if (queryView === 'referral') return 'referral';
+  if (queryView === 'wiki') return 'wiki';
+  if (queryView === 'wiki/card' || queryView === 'wiki-card') return 'wiki-card';
+  if (queryView === 'wiki/item' || queryView === 'wiki-item') return 'wiki-item';
+  if (queryView === 'wiki/skill' || queryView === 'wiki-skill') return 'wiki-skill';
+  if (queryView === 'wiki/howtoplay' || queryView === 'wiki-howtoplay') return 'wiki-howtoplay';
+  if (queryView === 'wiki/tip' || queryView === 'wiki-tip') return 'wiki-tip';
 
   const path = window.location.pathname.replace(/\/$/, '').toLowerCase() || '/';
   if (path === '/tool/checkgrid' || path === '/tool/check-grid' || path === '/checkgrid' || path.startsWith('/tool/checkgrid')) return 'tool-checkgrid';
@@ -367,7 +387,7 @@ function getViewFromPathAndUrl(): ViewType {
   if (path === '/admin') return 'admin';
   if (path === '/status') return 'status';
   if (path === '/wiki') return 'wiki';
-  if (path === '/world-codex') return 'world-codex';
+  if (path === '/world-codex' || path === '/world_codex' || path === '/codex' || path === '/worldcodex' || path === '/wiki/codex') return 'world-codex';
   if (path === '/wiki/howtoplay') return 'wiki-howtoplay';
   if (path === '/wiki/tip') return 'wiki-tip';
   if (path === '/wiki/card') return 'wiki-card';
@@ -411,9 +431,22 @@ function getViewFromPathAndUrl(): ViewType {
 function AppContent() {
   const [showInitialGate, setShowInitialGate] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
-      return sessionStorage.getItem('hero_boot_gate_shown') !== 'true';
+      try {
+        if (sessionStorage.getItem('hero_boot_gate_shown') === 'true' || localStorage.getItem('hero_boot_gate_shown') === 'true') {
+          return false;
+        }
+        const initialView = getViewFromPathAndUrl();
+        // If directly landing on specific feature subpages, bypass full-screen blocking gate
+        if (initialView && initialView !== 'home' && initialView !== 'main') {
+          sessionStorage.setItem('hero_boot_gate_shown', 'true');
+          return false;
+        }
+        return sessionStorage.getItem('hero_boot_gate_shown') !== 'true';
+      } catch {
+        return false;
+      }
     }
-    return true;
+    return false;
   });
 
   const [currentSeason, setCurrentSeason] = useState<string>(() => {
@@ -1340,27 +1373,7 @@ function AppContent() {
   useEffect(() => {
     const handleUrlRouting = async () => {
       const path = window.location.pathname;
-      if (path === '/book' || path === '/novel' || path.startsWith('/novel/s1-')) {
-        setView('novel');
-      } else if (path === '/admin') {
-        setView('admin');
-      } else if (path === '/wiki') {
-        setView('wiki');
-      } else if (path === '/world-codex') {
-        setView('world-codex');
-      } else if (path === '/wiki/howtoplay') {
-        setView('wiki-howtoplay');
-      } else if (path === '/wiki/tip') {
-        setView('wiki-tip');
-      } else if (path === '/wiki/card') {
-        setView('wiki-card');
-      } else if (path === '/wiki/item') {
-        setView('wiki-item');
-      } else if (path === '/wiki/skill') {
-        setView('wiki-skill');
-      } else if (path === '/webtoon') {
-        setView('webtoon');
-      } else if (path === '/logout') {
+      if (path === '/logout') {
         try {
           await signOut(auth);
         } catch (err) {
@@ -1370,13 +1383,16 @@ function AppContent() {
         setUser(null);
         setView('home');
         window.history.replaceState({}, '', '/home');
-      } else if (path === '/home') {
-        setView('home');
-      } else if (path === '/main') {
-        setView('main');
-      } else if (path === '/deck') {
-        setView('mydeck');
-      } else if (path === '/play') {
+        return;
+      }
+      if (path.startsWith('/creator/')) {
+        const code = path.split('/creator/')[1]?.split('/')[0] || '';
+        setCreatorCode(code);
+        setView('creator');
+        return;
+      }
+      const routedView = getViewFromPathAndUrl();
+      if (routedView === 'play') {
         const savedView = localStorage.getItem('hero_current_view');
         if (!savedView) {
           setView('home');
@@ -1389,59 +1405,8 @@ function AppContent() {
             localStorage.setItem('hero_auto_battle', 'true');
           }
         }
-      } else if (path === '/shop') {
-        setView('shop');
-      } else if (path === '/event') {
-        setView('event');
-      } else if (path === '/setting') {
-        setView('setting');
-      } else if (path === '/ranking') {
-        setView('ranking');
-      } else if (path === '/companion') {
-        setView('companion');
-      } else if (path === '/profile') {
-        setView('profile');
-      } else if (path === '/skill') {
-        setView('skill');
-      } else if (path === '/guild-list') {
-        setView('guild-list');
-      } else if (path === '/playground') {
-        setView('playground');
-      } else if (path === '/stock-market') {
-        setView('stock-market');
-      } else if (path === '/marketplace') {
-        setView('card-marketplace');
-      } else if (path === '/prediction-market') {
-        setView('prediction-market');
-      } else if (path === '/share') {
-        setView('share');
-      } else if (path === '/season-hub') {
-        setView('season-hub');
-      } else if (path === '/web3') {
-        setView('web3-landing');
-      } else if (path === '/referral') {
-        setView('referral');
-      } else if (path === '/boost') {
-        setView('boost');
-      } else if (path === '/policy-center') {
-        setView('policy-center');
-      } else if (path === '/tool/checkgrid' || path === '/tool/check-grid' || path === '/checkgrid' || path.startsWith('/tool/checkgrid')) {
-        setView('tool-checkgrid');
-      } else if (path === '/tool/makegrid' || path === '/tool/make-grid' || path === '/makegrid' || path === '/tool/grid' || path === '/too/grid' || path === '/grid' || path.startsWith('/tool/makegrid') || path.startsWith('/tool/grid') || path.startsWith('/too/grid')) {
-        setView('tool-makegrid');
-      } else if (path.startsWith('/creator/')) {
-        const code = path.split('/creator/')[1]?.split('/')[0] || '';
-        setCreatorCode(code);
-        setView('creator');
       } else {
-        const params = new URLSearchParams(window.location.search);
-        const queryView = params.get('view');
-        
-        if (queryView === 'community') {
-          setView('community');
-        } else {
-          setView('home');
-        }
+        setView(routedView);
       }
     };
     
@@ -7324,6 +7289,7 @@ function AppContent() {
       {showInitialGate && (
         <AppLoadingGate
           language={language}
+          currentView={view}
           onComplete={() => setShowInitialGate(false)}
         />
       )}

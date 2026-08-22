@@ -63,7 +63,8 @@ import { VoxelPixelStrikeArenaGame } from '../components/VoxelPixelStrikeArenaGa
 import { VoxelSkyParkourGame } from '../components/VoxelSkyParkourGame';
 import { BattleComboAnnouncer } from '../components/BattleComboAnnouncer';
 import { SecretStampBookModal } from '../components/SecretStampBookModal';
-import { PostBattleSummaryModal, LastBattleSummaryData } from '../components/PostBattleSummaryModal';
+import { BattleSummaryModal, LastBattleSummaryData } from '../components/BattleSummaryModal';
+import { ElementAdvantageModal } from '../components/ElementAdvantageModal';
 import { TreasureDartModal } from '../components/TreasureDartModal';
 import { GoldenPirateRouletteModal } from '../components/GoldenPirateRouletteModal';
 import { GoldenArcheryModal } from '../components/GoldenArcheryModal';
@@ -548,15 +549,24 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     handleSaveGambitConfig(newConfig);
   };
 
-  // Centralized minigame reward: grants SNS coins + card XP
+  // Centralized minigame reward: grants standardized SNS coins + card XP with fair reward floor
   const handleMinigameReward = (amount: number, rewardKo: string, rewardEn: string) => {
-    if (amount > 0) {
+    // Guaranteed fair normalized reward floor (minimum 35P for any completed victory/session)
+    const finalAmount = amount > 0 ? Math.max(35, amount) : 0;
+    if (finalAmount > 0) {
       const reason = language === 'ko' ? rewardKo : rewardEn;
-      updateSns?.(amount, reason);
-      const xpAmount = Math.ceil(amount * 0.5);
+      updateSns?.(finalAmount, reason);
+      const xpAmount = Math.ceil(finalAmount * 0.5);
       onEarnXp?.(xpAmount);
       // 일일 미션 진행도 업데이트 (미니게임 플레이)
       incrementMissionProgress('play_minigame', 1);
+
+      // Dispatch custom event for real-time wallet sync across UI
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('hero_sns_updated', {
+          detail: { amount: finalAmount, reason, timestamp: Date.now() }
+        }));
+      }
     }
   };
 
@@ -2365,6 +2375,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [totalDamageDealt, setTotalDamageDealt] = useState<number>(0);
   const [totalDamageReceived, setTotalDamageReceived] = useState<number>(0);
   const [showPostBattleSummaryModal, setShowPostBattleSummaryModal] = useState<boolean>(false);
+  const [showElementAdvantageModal, setShowElementAdvantageModal] = useState<boolean>(false);
   const [lastBattleSummaryData, setLastBattleSummaryData] = useState<LastBattleSummaryData | null>(() => {
     try {
       const saved = typeof localStorage !== 'undefined' ? localStorage.getItem('hero_last_ai_battle_summary') : null;
@@ -6299,6 +6310,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   // ignore
                 }
                 setLastBattleSummaryData(summaryObj);
+
+                // Auto-trigger Battle Summary modal after battle conclusion
+                if (!isAutoBattle) {
+                  setTimeout(() => {
+                    setShowPostBattleSummaryModal(true);
+                  }, 800);
+                }
 
                 // AI 대전(robot)일 때는 상대방 AI 유저 오브젝트 전적이나 SNS를 건드리지 않음
                 if (battleType !== 'robot') {
@@ -13823,6 +13841,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
             <PingIndicator language={language} className="shrink-0" />
 
+            {/* Element Advantage Quick Reference HUD Button */}
+            <button
+              onClick={() => {
+                setShowElementAdvantageModal(true);
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              }}
+              className="h-8 px-2 bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 text-cyan-300 hover:text-white rounded-xl shadow-md cursor-pointer flex items-center gap-1 transition-all duration-200 active:scale-95 shrink-0"
+              title={language === 'ko' ? '속성 상성표 퀵 가이드' : 'Element Advantage Guide'}
+              aria-label={language === 'ko' ? '속성 상성표' : 'Element Advantage'}
+            >
+              <Shield size={13} className="text-cyan-400" />
+              <span className="text-[10px] font-bold hidden xs:inline">{language === 'ko' ? '상성' : 'ELEM'}</span>
+            </button>
+
             <button
               onClick={() => {
                 setShowInGameRules(true);
@@ -14007,6 +14039,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     <span>{language === 'ko' ? '📊 최근 AI 전투 사후 분석' : '📊 Post-Battle Summary'}</span>
                   </div>
                   <span className="text-[10px] text-indigo-400 font-mono">[STATS]</span>
+                </button>
+
+                {/* Element Advantage Quick Reference Guide */}
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setShowElementAdvantageModal(true);
+                  }}
+                  className="w-full py-2.5 px-4 bg-cyan-950/40 border border-cyan-500/40 hover:bg-cyan-900/60 text-cyan-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <Shield size={16} className="text-cyan-400" />
+                    <span>{language === 'ko' ? '🛡️ 속성 상성표 퀵 가이드' : '🛡️ Element Advantage Guide'}</span>
+                  </div>
+                  <span className="text-[10px] text-cyan-400 font-mono">[ELEM]</span>
                 </button>
 
                 <button
@@ -16323,12 +16370,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         }}
       />
 
-      {/* Post-Battle Summary Modal (AI Combat & Auto-Battle Analytics) */}
-      <PostBattleSummaryModal
+      {/* Battle Summary Modal (Post-Battle Analytics & Stats) */}
+      <BattleSummaryModal
         isOpen={showPostBattleSummaryModal}
         onClose={() => setShowPostBattleSummaryModal(false)}
         summaryData={lastBattleSummaryData}
         language={language}
+        lowSpecMode={lowSpecMode}
         onRematch={() => {
           setShowPostBattleSummaryModal(false);
           handleRematch();
@@ -16351,6 +16399,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           setShowPostBattleSummaryModal(false);
           setShowBattleShareTemplate(true);
         }}
+      />
+
+      {/* Element Advantage Quick Reference Modal */}
+      <ElementAdvantageModal
+        isOpen={showElementAdvantageModal}
+        onClose={() => setShowElementAdvantageModal(false)}
+        language={language}
+        lowSpecMode={lowSpecMode}
       />
     </div>
   );
