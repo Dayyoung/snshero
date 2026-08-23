@@ -331,48 +331,67 @@ export const VoxelSuperStrikersGame: React.FC<VoxelSuperStrikersGameProps> = ({
       {/* 3D Canvas */}
       <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Mobile Touch Controls */}
-      <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-auto">
-        <div className="flex gap-2">
-          <button
-            onPointerDown={() => { stateRef.current.keys['a'] = true; }}
-            onPointerUp={() => { stateRef.current.keys['a'] = false; }}
-            className="w-14 h-14 bg-slate-900/80 active:bg-cyan-600 border border-slate-700 rounded-sm text-white font-black text-lg flex items-center justify-center"
-          >
-            ◀
-          </button>
-          <button
-            onPointerDown={() => { stateRef.current.keys['d'] = true; }}
-            onPointerUp={() => { stateRef.current.keys['d'] = false; }}
-            className="w-14 h-14 bg-slate-900/80 active:bg-cyan-600 border border-slate-700 rounded-sm text-white font-black text-lg flex items-center justify-center"
-          >
-            ▶
-          </button>
-        </div>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-        <div className="flex gap-2">
-          <button
-            onPointerDown={() => { stateRef.current.keys['s'] = true; }}
-            onPointerUp={() => { stateRef.current.keys['s'] = false; }}
-            className="w-14 h-14 bg-slate-900/80 active:bg-slate-700 border border-slate-700 rounded-sm text-white font-black text-xs flex items-center justify-center"
-          >
-            BRAKE
-          </button>
-          <button
-            onPointerDown={() => { stateRef.current.keys['w'] = true; }}
-            onPointerUp={() => { stateRef.current.keys['w'] = false; }}
-            className="w-16 h-14 bg-cyan-600 active:bg-cyan-500 border border-cyan-400 rounded-sm text-white font-black text-sm flex items-center justify-center shadow-lg"
-          >
-            GAS ▲
-          </button>
-          <button
-            onPointerDown={() => { stateRef.current.isBoosting = true; }}
-            onPointerUp={() => { stateRef.current.isBoosting = false; }}
-            className="w-14 h-14 bg-amber-500 active:bg-amber-400 border border-amber-300 rounded-sm text-slate-950 font-black text-xs flex flex-col items-center justify-center shadow-lg"
-          >
-            <Flame size={16} />
-            BOOST
-          </button>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+                moved = true;
+                stateRef.current.keys['w'] = dy < -8;
+                stateRef.current.keys['s'] = dy > 12;
+                stateRef.current.keys['a'] = dx < -10;
+                stateRef.current.keys['d'] = dx > 10;
+              }
+              if (dy < -25) {
+                stateRef.current.isBoosting = true;
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              stateRef.current.keys['w'] = false;
+              stateRef.current.keys['s'] = false;
+              stateRef.current.keys['a'] = false;
+              stateRef.current.keys['d'] = false;
+              stateRef.current.isBoosting = false;
+
+              if (!moved) {
+                // Tap: Boost burst
+                stateRef.current.isBoosting = true;
+                setTimeout(() => { stateRef.current.isBoosting = false; }, 800);
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={() => {
+            stateRef.current.isBoosting = true;
+            setTimeout(() => { stateRef.current.isBoosting = false; }, 1200);
+          }}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-amber-400/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '드래그: 카 주행 및 조향 | 탭/더블탭/위로: 슈퍼 부스트 (버튼 없음)' : 'Drag: Drive & Steer | Tap/Double Tap/Up: Boost (No Buttons)'}
         </div>
       </div>
 

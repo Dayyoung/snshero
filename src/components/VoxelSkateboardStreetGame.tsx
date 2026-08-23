@@ -467,28 +467,60 @@ export const VoxelSkateboardStreetGame: React.FC<VoxelSkateboardStreetGameProps>
         </div>
       )}
 
-      {/* Mobile-First Controls */}
+      {/* Screen Gesture Touch Overlay */}
       {!isGameOver && !isPaused && !showTutorial && (
-        <div className="absolute bottom-6 left-4 right-4 flex flex-col items-center gap-2.5 z-10">
-          <div className="w-full max-w-sm flex gap-2">
-            <button
-              onClick={handleOllie}
-              className="flex-1 py-4 bg-[#fdfcfc] hover:bg-sky-100 border-2 border-[#201d1d] text-[#201d1d] font-black text-sm rounded-sm active:scale-95 shadow-md flex items-center justify-center gap-2 uppercase cursor-pointer"
-            >
-              <span>{isKo ? '🛹 올리 점프 (OLLIE)' : '🛹 OLLIE JUMP'}</span>
-            </button>
-            <button
-              onClick={handleKickflip}
-              className="flex-1 py-4 bg-[#fdfcfc] hover:bg-amber-100 border-2 border-[#201d1d] text-[#201d1d] font-black text-sm rounded-sm active:scale-95 shadow-md flex items-center justify-center gap-1.5 uppercase cursor-pointer"
-            >
-              <span>{isKo ? '💫 킥플립 360' : '💫 KICKFLIP'}</span>
-            </button>
-          </div>
-          <p className="text-[11px] text-[#201d1d] bg-[#fdfcfc]/90 px-3 py-0.5 rounded-sm border border-[#201d1d]/30 shadow-xs">
-            {isKo ? '좌우 드래그로 카빙하고 올리 점프로 레일에 올라타 그라인드 콤보를 만드세요!' : 'Drag to steer, pop Ollie jumps onto rails for epic grind combos!'}
-          </p>
-        </div>
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-pointer"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
+
+            const onMove = (moveEvt: PointerEvent) => {
+              const clientX = moveEvt.clientX;
+              const curY = moveEvt.clientY - rect.top;
+              const normX = (clientX / window.innerWidth - 0.5) * 2;
+              stateRef.current.targetX = normX * 6.5;
+
+              if (Math.abs(clientX - (startX + rect.left)) > 15 || Math.abs(curY - startY) > 15) {
+                moved = true;
+                if (stateRef.current.isInAir) {
+                  handleKickflip();
+                  window.removeEventListener('pointermove', onMove);
+                }
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Ollie jump or In-air Kickflip
+                if (stateRef.current.isInAir) {
+                  handleKickflip();
+                } else {
+                  handleOllie();
+                }
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
       )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-[#201d1d]/85 border border-[#201d1d]/40 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {isKo ? '좌우 드래그: 카빙 조향 | 탭: 올리 점프 | 공중에서 탭/스와이프: 킥플립 360 (버튼 없음)' : 'Drag: Carve Steer | Tap: Ollie | Air Tap/Swipe: Kickflip 360 (No Buttons)'}
+        </div>
+      </div>
 
       {/* 3-Step Interactive Tutorial Modal */}
       {showTutorial && (

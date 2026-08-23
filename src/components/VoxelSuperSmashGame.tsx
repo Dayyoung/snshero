@@ -315,46 +315,69 @@ export const VoxelSuperSmashGame: React.FC<VoxelSuperSmashGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Touch Controls */}
-      <div className="absolute bottom-4 left-4 right-4 z-20 flex justify-between items-end pointer-events-none">
-        <div className="flex gap-2 pointer-events-auto">
-          <button
-            onPointerDown={() => (gameStateRef.current.keys.a = true)}
-            onPointerUp={() => (gameStateRef.current.keys.a = false)}
-            className="w-16 h-16 bg-slate-800/90 text-white rounded-2xl border border-slate-600 font-bold text-lg flex items-center justify-center cursor-pointer active:scale-95"
-          >
-            ◀
-          </button>
-          <button
-            onPointerDown={() => (gameStateRef.current.keys.d = true)}
-            onPointerUp={() => (gameStateRef.current.keys.d = false)}
-            className="w-16 h-16 bg-slate-800/90 text-white rounded-2xl border border-slate-600 font-bold text-lg flex items-center justify-center cursor-pointer active:scale-95"
-          >
-            ▶
-          </button>
-        </div>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && !isVictory && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-        <div className="flex gap-2 pointer-events-auto">
-          <button
-            onClick={() => {
-              const s = gameStateRef.current;
-              if (s.posY <= 1.2) {
-                s.vy = 16;
-                playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 10) {
+                moved = true;
+                gameStateRef.current.keys.a = dx < -10;
+                gameStateRef.current.keys.d = dx > 10;
               }
-            }}
-            className="w-16 h-16 bg-sky-600/90 text-white rounded-2xl border-2 border-sky-400 font-bold text-xs flex flex-col items-center justify-center cursor-pointer active:scale-95"
-          >
-            <span>점프</span>
-          </button>
+              if (dy < -20) {
+                moved = true;
+                const s = gameStateRef.current;
+                if (s.posY <= 1.2) {
+                  s.vy = 16;
+                  playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                }
+              }
+            };
 
-          <button
-            onClick={performSmashAttack}
-            className="w-16 h-16 bg-rose-600/90 text-white rounded-2xl border-2 border-rose-400 font-bold text-xs flex flex-col items-center justify-center cursor-pointer active:scale-95 shadow-xl"
-          >
-            <Swords size={22} />
-            <span>스매시 [Space]</span>
-          </button>
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              gameStateRef.current.keys.a = false;
+              gameStateRef.current.keys.d = false;
+
+              if (!moved) {
+                // Tap: Smash Attack
+                performSmashAttack();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={() => {
+            const s = gameStateRef.current;
+            if (s.posY <= 1.2) {
+              s.vy = 16;
+              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            }
+          }}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-rose-500/30 rounded-full text-[10px] text-rose-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '좌우 드래그: 이동 | 탭: 스매시 공격 | 위로/더블탭: 점프 (버튼 없음)' : 'Drag L/R: Move | Tap: Smash Strike | Up/Double Tap: Jump (No Buttons)'}
         </div>
       </div>
 

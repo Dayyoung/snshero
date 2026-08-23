@@ -340,56 +340,56 @@ export const VoxelTerraQuakeGame: React.FC<VoxelTerraQuakeGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Touch D-Pad & Stomp Button */}
+      {/* Screen Gesture Touch Overlay */}
       {!isGameOver && (
-        <div className="absolute inset-x-0 bottom-4 z-20 flex justify-between px-6 pointer-events-auto">
-          {/* 4-Way D-Pad */}
-          <div className="grid grid-cols-3 gap-1.5 w-36 h-36">
-            <div />
-            <button
-              onPointerDown={() => { stateRef.current.playerZ = Math.max(-6, stateRef.current.playerZ - 1.8); }}
-              className="bg-slate-900/80 border border-lime-500/60 text-lime-300 font-black rounded-sm active:scale-95 flex items-center justify-center shadow-md"
-            >
-              ▲
-            </button>
-            <div />
-            <button
-              onPointerDown={() => { stateRef.current.playerX = Math.max(-6, stateRef.current.playerX - 1.8); }}
-              className="bg-slate-900/80 border border-lime-500/60 text-lime-300 font-black rounded-sm active:scale-95 flex items-center justify-center shadow-md"
-            >
-              ◀
-            </button>
-            <div className="bg-lime-950/40 rounded-sm flex items-center justify-center text-[10px] text-lime-400 font-bold">MOVE</div>
-            <button
-              onPointerDown={() => { stateRef.current.playerX = Math.min(6, stateRef.current.playerX + 1.8); }}
-              className="bg-slate-900/80 border border-lime-500/60 text-lime-300 font-black rounded-sm active:scale-95 flex items-center justify-center shadow-md"
-            >
-              ▶
-            </button>
-            <div />
-            <button
-              onPointerDown={() => { stateRef.current.playerZ = Math.min(6, stateRef.current.playerZ + 1.8); }}
-              className="bg-slate-900/80 border border-lime-500/60 text-lime-300 font-black rounded-sm active:scale-95 flex items-center justify-center shadow-md"
-            >
-              ▼
-            </button>
-            <div />
-          </div>
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-          {/* Stomp Button */}
-          <button
-            disabled={stompCooldown > 0}
-            onPointerDown={() => {
-              const e = new KeyboardEvent('keydown', { key: ' ' });
-              window.dispatchEvent(e);
-            }}
-            className={`w-28 h-28 self-end text-white text-xs font-black rounded-sm active:scale-95 flex flex-col items-center justify-center gap-1 shadow-lg border ${stompCooldown <= 0 ? 'bg-gradient-to-r from-lime-600 to-emerald-600 border-lime-400 animate-pulse shadow-[0_0_20px_rgba(132,204,22,0.8)] cursor-pointer' : 'bg-slate-800/80 border-slate-700 opacity-40 cursor-not-allowed'}`}
-          >
-            <Zap size={24} />
-            <span>{stompCooldown > 0 ? `${stompCooldown}s` : (isKo ? '어스 스톰프' : 'TERRA STOMP')}</span>
-          </button>
-        </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+                moved = true;
+                stateRef.current.playerX = Math.max(-6, Math.min(6, stateRef.current.playerX + dx * 0.03));
+                stateRef.current.playerZ = Math.max(-6, Math.min(6, stateRef.current.playerZ + dy * 0.03));
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Terra Stomp
+                if (stompCooldown <= 0) {
+                  window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }));
+                }
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
       )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-lime-500/30 rounded-full text-[10px] text-lime-300 font-mono backdrop-blur-xs">
+          {isKo ? '드래그: 대지 이동 | 탭: 어스 스톰프 (버튼 없음)' : 'Drag: Move | Tap: Terra Stomp (No Buttons)'}
+        </div>
+      </div>
 
       {/* Game Over Modal */}
       {isGameOver && (

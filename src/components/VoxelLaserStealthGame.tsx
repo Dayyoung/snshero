@@ -393,80 +393,72 @@ export const VoxelLaserStealthGame: React.FC<VoxelLaserStealthGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Touch Controls */}
+      {/* Screen Gesture Touch Overlay */}
       {!isGameOver && (
-        <div className="absolute inset-x-0 bottom-6 z-20 flex justify-between px-6 pointer-events-none">
-          {/* 4-Way D-Pad Buttons */}
-          <div className="grid grid-cols-3 gap-1.5 pointer-events-auto">
-            <div />
-            <button
-              onPointerDown={() => { stateRef.current.moveDir.y = 1; }}
-              onPointerUp={() => { if (stateRef.current.moveDir.y === 1) stateRef.current.moveDir.y = 0; }}
-              className="w-12 h-12 bg-slate-900/90 border border-slate-700 active:bg-slate-800 text-cyan-400 font-black rounded-sm flex items-center justify-center shadow-lg"
-            >
-              ▲
-            </button>
-            <div />
-            <button
-              onPointerDown={() => { stateRef.current.moveDir.x = -1; }}
-              onPointerUp={() => { if (stateRef.current.moveDir.x === -1) stateRef.current.moveDir.x = 0; }}
-              className="w-12 h-12 bg-slate-900/90 border border-slate-700 active:bg-slate-800 text-cyan-400 font-black rounded-sm flex items-center justify-center shadow-lg"
-            >
-              ◀
-            </button>
-            <button
-              onPointerDown={() => { stateRef.current.moveDir.y = -1; }}
-              onPointerUp={() => { if (stateRef.current.moveDir.y === -1) stateRef.current.moveDir.y = 0; }}
-              className="w-12 h-12 bg-slate-900/90 border border-slate-700 active:bg-slate-800 text-cyan-400 font-black rounded-sm flex items-center justify-center shadow-lg"
-            >
-              ▼
-            </button>
-            <button
-              onPointerDown={() => { stateRef.current.moveDir.x = 1; }}
-              onPointerUp={() => { if (stateRef.current.moveDir.x === 1) stateRef.current.moveDir.x = 0; }}
-              className="w-12 h-12 bg-slate-900/90 border border-slate-700 active:bg-slate-800 text-cyan-400 font-black rounded-sm flex items-center justify-center shadow-lg"
-            >
-              ▶
-            </button>
-          </div>
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-          {/* Action Buttons (Slide & EMP Stun) */}
-          <div className="flex flex-col gap-3 pointer-events-auto">
-            <button
-              onPointerDown={() => {
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+                moved = true;
+                stateRef.current.moveDir.x = Math.abs(dx) > 10 ? (dx > 0 ? 1 : -1) : 0;
+                stateRef.current.moveDir.y = Math.abs(dy) > 10 ? (dy < 0 ? 1 : -1) : 0;
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              stateRef.current.moveDir.x = 0;
+              stateRef.current.moveDir.y = 0;
+
+              if (!moved) {
+                // Tap: Slide Dodge
                 if (!stateRef.current.isSliding) {
                   stateRef.current.isSliding = true;
                   stateRef.current.slideTimer = 0.8;
                   setIsSliding(true);
                 }
-              }}
-              className="px-5 py-3 bg-cyan-600 active:bg-cyan-500 text-slate-950 font-black text-xs rounded-sm shadow-lg tracking-wider"
-            >
-              {isKo ? '슬라이딩 (회피)' : 'SLIDE'}
-            </button>
+              }
+            };
 
-            <button
-              onPointerDown={() => {
-                if (stateRef.current.empCharges > 0) {
-                  stateRef.current.empCharges--;
-                  setEmpCharges(stateRef.current.empCharges);
-                  stateRef.current.lasers.forEach(l => {
-                    l.isStunned = true;
-                    l.mesh.visible = false;
-                    setTimeout(() => { l.isStunned = false; l.mesh.visible = true; }, 3500);
-                  });
-                }
-              }}
-              disabled={empCharges <= 0}
-              className={`px-5 py-3 font-black text-xs rounded-sm shadow-lg tracking-wider ${
-                empCharges > 0 ? 'bg-amber-500 active:bg-amber-400 text-slate-950' : 'bg-slate-800 text-slate-500'
-              }`}
-            >
-              {isKo ? `EMP 무력화 (x${empCharges})` : `EMP STUN (x${empCharges})`}
-            </button>
-          </div>
-        </div>
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={() => {
+            // Double Tap: EMP Stun
+            if (stateRef.current.empCharges > 0) {
+              stateRef.current.empCharges--;
+              setEmpCharges(stateRef.current.empCharges);
+              stateRef.current.lasers.forEach(l => {
+                l.isStunned = true;
+                l.mesh.visible = false;
+                setTimeout(() => { l.isStunned = false; l.mesh.visible = true; }, 3500);
+              });
+            }
+          }}
+        />
       )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-cyan-400/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
+          {isKo ? '드래그: 잠입 이동 | 탭: 슬라이딩 회피 | 더블탭: EMP 무력화 (버튼 없음)' : 'Drag: Move | Tap: Slide Dodge | Double Tap: EMP Stun (No Buttons)'}
+        </div>
+      </div>
 
       {/* Game Over Modal */}
       {isGameOver && (

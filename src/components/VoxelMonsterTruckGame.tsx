@@ -23,7 +23,7 @@ interface EnemyTruck {
 
 export const VoxelMonsterTruckGame: React.FC<VoxelMonsterTruckGameProps> = ({
   deck: _deck,
-  language: _language,
+  language = 'ko',
   lowSpecMode = false,
   playSfx,
   onExit,
@@ -336,53 +336,60 @@ export const VoxelMonsterTruckGame: React.FC<VoxelMonsterTruckGameProps> = ({
       {/* 3D Canvas */}
       <div ref={mountRef} className="relative flex-1 w-full overflow-hidden" />
 
-      {/* Mobile Controls */}
-      <div className="p-3 bg-[#18181b]/95 border-t border-slate-700 flex items-center justify-between gap-2 z-20">
-        <div className="flex gap-2">
-          <button
-            onPointerDown={() => { stateRef.current.truckRot += 0.2; }}
-            className="w-12 h-12 bg-slate-800 border border-slate-600 rounded-sm font-bold active:bg-slate-700"
-          >
-            ◀
-          </button>
-          <button
-            onPointerDown={() => { stateRef.current.truckRot -= 0.2; }}
-            className="w-12 h-12 bg-slate-800 border border-slate-600 rounded-sm font-bold active:bg-slate-700"
-          >
-            ▶
-          </button>
-        </div>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-        <div className="flex gap-2">
-          <button
-            onPointerDown={() => { stateRef.current.speed = 0.6; }}
-            onPointerUp={() => { stateRef.current.speed = 0; }}
-            className="w-12 h-12 bg-slate-800 border border-slate-600 rounded-sm font-bold active:bg-slate-700"
-          >
-            ▲
-          </button>
-          <button
-            onPointerDown={() => { stateRef.current.speed = -0.3; }}
-            onPointerUp={() => { stateRef.current.speed = 0; }}
-            className="w-12 h-12 bg-slate-800 border border-slate-600 rounded-sm font-bold active:bg-slate-700"
-          >
-            ▼
-          </button>
-        </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
 
-        <div className="flex gap-2">
-          <button
-            onClick={performDonutTurn}
-            className="px-3 h-12 bg-slate-800 border border-slate-600 rounded-sm font-bold text-xs active:bg-slate-700"
-          >
-            [360° 도넛]
-          </button>
-          <button
-            onClick={activateNitro}
-            className="px-4 h-12 bg-amber-500 text-black font-bold text-xs rounded-sm active:bg-amber-400 flex items-center gap-1 shadow-lg"
-          >
-            <Zap className="w-4 h-4" /> [니트로 돌진]
-          </button>
+              if (Math.abs(dx) > 8) {
+                moved = true;
+                stateRef.current.truckRot -= dx * 0.003;
+              }
+              if (Math.abs(dy) > 8) {
+                moved = true;
+                stateRef.current.speed = dy < 0 ? 0.6 : -0.3;
+              }
+              if (dy < -25) {
+                activateNitro();
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              stateRef.current.speed = 0;
+
+              if (!moved) {
+                // Tap: Donut Turn
+                performDonutTurn();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={() => activateNitro()}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '드래그: 조향 & 주행 | 탭: 360° 도넛 턴 | 더블탭/위로: 니트로 돌진 (버튼 없음)' : 'Drag: Steer & Drive | Tap: Donut Turn | Double Tap/Up: Nitro (No Buttons)'}
         </div>
       </div>
 

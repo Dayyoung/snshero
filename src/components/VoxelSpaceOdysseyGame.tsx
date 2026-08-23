@@ -339,55 +339,59 @@ export const VoxelSpaceOdysseyGame: React.FC<VoxelSpaceOdysseyGameProps> = ({
       {/* 3D Canvas */}
       <div ref={mountRef} className="w-full flex-1 touch-none" />
 
-      {/* Mobile Controls */}
-      <div className="absolute bottom-6 left-0 right-0 z-20 px-4 flex items-center justify-between pointer-events-none">
-        {/* Virtual Joystick / D-Pad */}
-        <div className="grid grid-cols-3 gap-1 pointer-events-auto w-32 h-32">
-          <div />
-          <button
-            onPointerDown={() => { keysRef.current['w'] = true; }}
-            onPointerUp={() => { keysRef.current['w'] = false; }}
-            className="bg-white/20 active:bg-white/40 border border-white/30 rounded-sm flex items-center justify-center text-white font-bold"
-          >
-            ▲
-          </button>
-          <div />
-          <button
-            onPointerDown={() => { keysRef.current['a'] = true; }}
-            onPointerUp={() => { keysRef.current['a'] = false; }}
-            className="bg-white/20 active:bg-white/40 border border-white/30 rounded-sm flex items-center justify-center text-white font-bold"
-          >
-            ◀
-          </button>
-          <div className="bg-white/10 rounded-sm flex items-center justify-center text-[10px] text-white/50">
-            PULL
-          </div>
-          <button
-            onPointerDown={() => { keysRef.current['d'] = true; }}
-            onPointerUp={() => { keysRef.current['d'] = false; }}
-            className="bg-white/20 active:bg-white/40 border border-white/30 rounded-sm flex items-center justify-center text-white font-bold"
-          >
-            ▶
-          </button>
-          <div />
-          <button
-            onPointerDown={() => { keysRef.current['s'] = true; }}
-            onPointerUp={() => { keysRef.current['s'] = false; }}
-            className="bg-white/20 active:bg-white/40 border border-white/30 rounded-sm flex items-center justify-center text-white font-bold"
-          >
-            ▼
-          </button>
-          <div />
-        </div>
+      {/* Screen Gesture Touch Overlay */}
+      {!isVictory && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-        {/* Laser Trigger */}
-        <button
-          onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }))}
-          className="w-16 h-16 bg-cyan-600/90 active:bg-cyan-500 border border-cyan-400 rounded-full flex flex-col items-center justify-center text-white text-xs font-black shadow-2xl pointer-events-auto animate-pulse"
-        >
-          <Crosshair size={24} />
-          <span className="text-[9px]">LASER</span>
-        </button>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+                moved = true;
+                keysRef.current['w'] = dy < -8;
+                keysRef.current['s'] = dy > 12;
+                keysRef.current['a'] = dx < -10;
+                keysRef.current['d'] = dx > 10;
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              keysRef.current['w'] = false;
+              keysRef.current['s'] = false;
+              keysRef.current['a'] = false;
+              keysRef.current['d'] = false;
+
+              if (!moved) {
+                // Tap: Fire Laser
+                window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }));
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-cyan-500/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '드래그: 우주선 비행 조종 | 탭: 레이저 발사 (버튼 없음)' : 'Drag: Fly Spaceship | Tap: Fire Laser (No Buttons)'}
+        </div>
       </div>
 
       {/* Victory */}

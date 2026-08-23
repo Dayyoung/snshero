@@ -257,45 +257,57 @@ export const VoxelMicroKartGame: React.FC<VoxelMicroKartGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Controls: Left Steer / Right Steer / Turbo / Item */}
-      <div className="absolute bottom-6 left-3 right-3 flex flex-col gap-2 z-10">
-        <div className="flex justify-between items-center px-1">
-          <span className="text-[10px] text-amber-300 font-bold">TURBO BOOST</span>
-          <span className="text-[10px] text-slate-400">{turboGauge}%</span>
-        </div>
-        <div className="w-full h-2 bg-slate-950 rounded-full overflow-hidden border border-amber-900 mb-1">
-          <div className="h-full bg-amber-500 transition-all duration-75" style={{ width: `${turboGauge}%` }} />
-        </div>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-        <div className="grid grid-cols-4 gap-2">
-          <button
-            onPointerDown={() => { stateRef.current.steer = -1; }}
-            onPointerUp={() => { stateRef.current.steer = 0; }}
-            className="py-4 bg-slate-900/90 active:bg-blue-600 text-white font-black text-sm uppercase rounded-sm border border-slate-700 flex items-center justify-center cursor-pointer"
-          >
-            ◀ LEFT
-          </button>
-          <button
-            onPointerDown={() => { stateRef.current.steer = 1; }}
-            onPointerUp={() => { stateRef.current.steer = 0; }}
-            className="py-4 bg-slate-900/90 active:bg-blue-600 text-white font-black text-sm uppercase rounded-sm border border-slate-700 flex items-center justify-center cursor-pointer"
-          >
-            RIGHT ▶
-          </button>
-          <button
-            onClick={handleTurbo}
-            className="py-4 bg-amber-600 hover:bg-amber-500 active:scale-95 text-slate-950 font-black text-xs uppercase rounded-sm border border-amber-300 flex items-center justify-center gap-1 cursor-pointer"
-          >
-            <Zap size={16} />
-            <span>TURBO</span>
-          </button>
-          <button
-            onClick={handleUseItem}
-            className="py-4 bg-red-600 hover:bg-red-500 active:scale-95 text-white font-black text-xs uppercase rounded-sm border border-red-300 flex items-center justify-center gap-1 cursor-pointer"
-          >
-            <Bomb size={16} />
-            <span>x{items}</span>
-          </button>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 8) {
+                moved = true;
+                stateRef.current.steer = dx > 0 ? 1 : -1;
+              }
+              if (dy < -25) {
+                moved = true;
+                handleTurbo();
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              stateRef.current.steer = 0;
+
+              if (!moved) {
+                // Tap: Use Item
+                handleUseItem();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={() => handleTurbo()}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-amber-400/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {isKo ? '좌우 드래그: 조향 | 탭: 아이템 사용 | 더블탭/위로: 터보 (버튼 없음)' : 'Drag L/R: Steer | Tap: Use Item | Double Tap/Up: Turbo (No Buttons)'}
         </div>
       </div>
 

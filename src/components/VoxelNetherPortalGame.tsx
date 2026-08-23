@@ -394,49 +394,72 @@ export const VoxelNetherPortalGame: React.FC<VoxelNetherPortalGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Touch Controls */}
+      {/* Screen Gesture Touch Overlay */}
       {!isGameOver && (
-        <div className="absolute inset-x-0 bottom-4 z-20 flex justify-between px-6 pointer-events-auto">
-          <div className="flex gap-3">
-            <button
-              onPointerDown={() => {
-                if (stateRef.current.playerLane > -1) {
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
+
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 20) {
+                moved = true;
+                if (dx > 0 && stateRef.current.playerLane < 1) {
+                  stateRef.current.playerLane++;
+                  playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+                } else if (dx < 0 && stateRef.current.playerLane > -1) {
                   stateRef.current.playerLane--;
                   playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
                 }
-              }}
-              className="w-14 h-14 bg-purple-950/80 border-2 border-purple-500/70 text-purple-300 text-lg font-black rounded-sm active:scale-95 flex items-center justify-center shadow-lg"
-            >
-              ◀
-            </button>
-            <button
-              onPointerDown={() => {
-                if (stateRef.current.playerLane < 1) {
-                  stateRef.current.playerLane++;
-                  playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+                window.removeEventListener('pointermove', onMove);
+              } else if (dy < -25) {
+                moved = true;
+                if (!stateRef.current.isJumping) {
+                  stateRef.current.isJumping = true;
+                  stateRef.current.jumpVel = 9;
+                  playSfx?.('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3');
                 }
-              }}
-              className="w-14 h-14 bg-purple-950/80 border-2 border-purple-500/70 text-purple-300 text-lg font-black rounded-sm active:scale-95 flex items-center justify-center shadow-lg"
-            >
-              ▶
-            </button>
-          </div>
-
-          <button
-            onPointerDown={() => {
-              if (!stateRef.current.isJumping) {
-                stateRef.current.isJumping = true;
-                stateRef.current.jumpVel = 9;
-                playSfx?.('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3');
+                window.removeEventListener('pointermove', onMove);
               }
-            }}
-            className="w-24 h-14 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-black rounded-sm active:scale-95 flex items-center justify-center gap-1 shadow-[0_0_15px_rgba(168,85,247,0.5)] border border-purple-400/50"
-          >
-            <Zap size={14} />
-            <span>{isKo ? '점프 (W)' : 'JUMP'}</span>
-          </button>
-        </div>
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Jump
+                if (!stateRef.current.isJumping) {
+                  stateRef.current.isJumping = true;
+                  stateRef.current.jumpVel = 9;
+                  playSfx?.('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3');
+                }
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
       )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-purple-500/30 rounded-full text-[10px] text-purple-300 font-mono backdrop-blur-xs">
+          {isKo ? '좌우 스와이프: 레인 이동 | 탭/위로 스와이프: 점프 (버튼 없음)' : 'Swipe L/R: Switch Lane | Tap/Swipe Up: Jump (No Buttons)'}
+        </div>
+      </div>
 
       {/* Game Over / Portal Clear Modal */}
       {isGameOver && (

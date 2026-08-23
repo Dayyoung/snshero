@@ -224,36 +224,52 @@ export const VoxelLumberjackTycoonGame: React.FC<VoxelLumberjackTycoonGameProps>
       {/* 3D Canvas */}
       <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* D-Pad Controls */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-4 pointer-events-auto">
-        <button
-          onPointerDown={() => { stateRef.current.keys['a'] = true; }}
-          onPointerUp={() => { stateRef.current.keys['a'] = false; }}
-          className="w-16 h-16 bg-slate-900/90 active:bg-amber-600 border border-amber-400 rounded-sm text-white font-black text-xl flex items-center justify-center shadow-lg"
-        >
-          ◀
-        </button>
-        <button
-          onPointerDown={() => { stateRef.current.keys['w'] = true; }}
-          onPointerUp={() => { stateRef.current.keys['w'] = false; }}
-          className="w-16 h-16 bg-slate-900/90 active:bg-amber-600 border border-amber-400 rounded-sm text-white font-black text-xl flex items-center justify-center shadow-lg"
-        >
-          ▲
-        </button>
-        <button
-          onPointerDown={() => { stateRef.current.keys['s'] = true; }}
-          onPointerUp={() => { stateRef.current.keys['s'] = false; }}
-          className="w-16 h-16 bg-slate-900/90 active:bg-amber-600 border border-amber-400 rounded-sm text-white font-black text-xl flex items-center justify-center shadow-lg"
-        >
-          ▼
-        </button>
-        <button
-          onPointerDown={() => { stateRef.current.keys['d'] = true; }}
-          onPointerUp={() => { stateRef.current.keys['d'] = false; }}
-          className="w-16 h-16 bg-slate-900/90 active:bg-amber-600 border border-amber-400 rounded-sm text-white font-black text-xl flex items-center justify-center shadow-lg"
-        >
-          ▶
-        </button>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+                stateRef.current.keys['w'] = dy < -8;
+                stateRef.current.keys['s'] = dy > 12;
+                stateRef.current.keys['a'] = dx < -10;
+                stateRef.current.keys['d'] = dx > 10;
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              stateRef.current.keys['w'] = false;
+              stateRef.current.keys['s'] = false;
+              stateRef.current.keys['a'] = false;
+              stateRef.current.keys['d'] = false;
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-amber-400/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '드래그: 벌목꾼 이동 (나무 접근 시 자동 벌목, 버튼 없음)' : 'Drag: Move Lumberjack (Auto Chops Trees, No Buttons)'}
+        </div>
       </div>
 
       {/* Modal */}

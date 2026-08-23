@@ -263,43 +263,62 @@ export const VoxelHalfpipeSkaterGame: React.FC<VoxelHalfpipeSkaterGameProps> = (
         </div>
       )}
 
-      {/* Mobile Touch Action Controls */}
+      {/* Screen Gesture Touch Overlay */}
       {!isGameOver && (
-        <div className="absolute inset-x-0 bottom-6 z-20 flex justify-between px-6 pointer-events-none">
-          {/* Pump Speed Button */}
-          <div className="flex pointer-events-auto">
-            <button
-              onPointerDown={handlePump}
-              className="w-18 h-18 px-4 bg-emerald-600 active:bg-emerald-500 text-slate-950 text-xs font-black rounded-sm flex flex-col items-center justify-center shadow-lg tracking-wider"
-            >
-              <Zap size={20} />
-              <span>PUMP (가속)</span>
-            </button>
-          </div>
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-pointer"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-          {/* Air Trick Buttons */}
-          <div className="flex gap-2 pointer-events-auto">
-            <button
-              onPointerDown={() => handleTrick('KICKFLIP', 350)}
-              className="w-14 h-14 bg-cyan-600 active:bg-cyan-500 text-slate-950 text-xs font-black rounded-sm flex flex-col items-center justify-center shadow-lg"
-            >
-              <span>FLIP</span>
-            </button>
-            <button
-              onPointerDown={() => handleTrick('360 SPIN', 500)}
-              className="w-14 h-14 bg-amber-600 active:bg-amber-500 text-slate-950 text-xs font-black rounded-sm flex flex-col items-center justify-center shadow-lg"
-            >
-              <span>SPIN</span>
-            </button>
-            <button
-              onPointerDown={() => handleTrick('HANDPLANT', 700)}
-              className="w-14 h-14 bg-rose-600 active:bg-rose-500 text-white text-xs font-black rounded-sm flex flex-col items-center justify-center shadow-lg"
-            >
-              <span>GRAB</span>
-            </button>
-          </div>
-        </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 15 || Math.abs(dy) > 15) {
+                moved = true;
+                if (Math.abs(dx) > Math.abs(dy)) {
+                  handleTrick(dx > 0 ? '360 SPIN' : 'KICKFLIP', 450);
+                } else {
+                  handleTrick(dy > 0 ? 'HANDPLANT' : 'RODEO FLIP', 650);
+                }
+                window.removeEventListener('pointermove', onMove);
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Pump speed or Air trick
+                if (Math.abs(stateRef.current.posY) < 1.0) {
+                  handlePump();
+                } else {
+                  handleTrick('KICKFLIP', 350);
+                }
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
       )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-amber-400/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {isKo ? '바닥에서 탭: 펌핑 가속 | 공중에서 스와이프: 에어 트릭 구사 (버튼 없음)' : 'Tap on pipe: Pump speed | Swipe in air: Air tricks (No Buttons)'}
+        </div>
+      </div>
 
       {/* Finish / Session Modal Button */}
       <div className="absolute top-16 right-4 z-10 pointer-events-auto">

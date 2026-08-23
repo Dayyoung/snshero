@@ -24,7 +24,7 @@ interface ContainerBox {
 
 export const VoxelCraneMasterGame: React.FC<VoxelCraneMasterGameProps> = ({
   deck: _deck,
-  language: _language,
+  language = 'ko',
   lowSpecMode = false,
   playSfx,
   onExit,
@@ -373,53 +373,54 @@ export const VoxelCraneMasterGame: React.FC<VoxelCraneMasterGameProps> = ({
       {/* 3D Canvas */}
       <div ref={mountRef} className="relative flex-1 w-full overflow-hidden" />
 
-      {/* Mobile Controls */}
-      <div className="p-3 bg-[#0f172a]/95 border-t border-slate-700 flex items-center justify-between gap-2 z-20">
-        <div className="grid grid-cols-3 gap-1">
-          <div />
-          <button
-            onClick={() => moveCraneDir(0, -1)}
-            className="w-11 h-11 bg-slate-800 border border-slate-600 rounded-sm font-bold text-xs active:bg-slate-700"
-          >
-            ▲
-          </button>
-          <div />
-          <button
-            onClick={() => moveCraneDir(-1, 0)}
-            className="w-11 h-11 bg-slate-800 border border-slate-600 rounded-sm font-bold text-xs active:bg-slate-700"
-          >
-            ◀
-          </button>
-          <button
-            onClick={() => moveCraneDir(0, 1)}
-            className="w-11 h-11 bg-slate-800 border border-slate-600 rounded-sm font-bold text-xs active:bg-slate-700"
-          >
-            ▼
-          </button>
-          <button
-            onClick={() => moveCraneDir(1, 0)}
-            className="w-11 h-11 bg-slate-800 border border-slate-600 rounded-sm font-bold text-xs active:bg-slate-700"
-          >
-            ▶
-          </button>
-        </div>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-        <div className="flex gap-2">
-          <button
-            onClick={rotateContainer}
-            className="px-3 h-12 bg-slate-800 border border-slate-600 rounded-sm text-xs font-bold flex items-center gap-1 active:bg-slate-700"
-          >
-            <RotateCw className="w-4 h-4" /> [회전]
-          </button>
-          <button
-            onClick={toggleMagnet}
-            className={`px-4 h-12 rounded-sm font-bold text-xs flex items-center gap-1.5 shadow-lg ${
-              hasMagnetGrab ? 'bg-amber-500 text-black' : 'bg-red-600 text-white'
-            }`}
-          >
-            <ArrowDown className="w-4 h-4" />
-            {hasMagnetGrab ? '[화물선 적재]' : '[전자석 흡착]'}
-          </button>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 15 || Math.abs(dy) > 15) {
+                moved = true;
+                const dirX = Math.abs(dx) > 15 ? (dx > 0 ? 0.3 : -0.3) : 0;
+                const dirZ = Math.abs(dy) > 15 ? (dy > 0 ? 0.3 : -0.3) : 0;
+                moveCraneDir(dirX, dirZ);
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Toggle Magnet Grab / Drop
+                toggleMagnet();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={() => rotateContainer()}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '드래그: 크레인 이동 | 탭: 전자석 흡착/적재 | 더블탭: 컨테이너 회전 (버튼 없음)' : 'Drag: Move Crane | Tap: Magnet Grab/Drop | Double Tap: Rotate (No Buttons)'}
         </div>
       </div>
 

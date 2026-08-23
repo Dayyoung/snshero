@@ -360,34 +360,66 @@ export const VoxelSpikeRollingGame: React.FC<VoxelSpikeRollingGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Touch Steer Controls */}
+      {/* Screen Gesture Touch Overlay */}
       {!isGameOver && (
-        <div className="absolute inset-x-0 bottom-4 z-20 flex justify-between px-6 pointer-events-auto">
-          <div className="flex gap-3">
-            <button
-              onPointerDown={() => { stateRef.current.targetX = Math.max(-6, stateRef.current.targetX - 2.5); }}
-              className="w-14 h-14 bg-orange-950/80 border-2 border-orange-500/70 text-orange-300 text-lg font-black rounded-sm active:scale-95 flex items-center justify-center shadow-lg"
-            >
-              ◀
-            </button>
-            <button
-              onPointerDown={() => { stateRef.current.targetX = Math.min(6, stateRef.current.targetX + 2.5); }}
-              className="w-14 h-14 bg-orange-950/80 border-2 border-orange-500/70 text-orange-300 text-lg font-black rounded-sm active:scale-95 flex items-center justify-center shadow-lg"
-            >
-              ▶
-            </button>
-          </div>
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-          <button
-            onPointerDown={() => { stateRef.current.speed = 35; playSfx?.('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3'); }}
-            onPointerUp={() => { stateRef.current.speed = 20; }}
-            className="w-24 h-14 bg-gradient-to-r from-amber-600 to-orange-600 text-white text-xs font-black rounded-sm active:scale-95 flex items-center justify-center gap-1 shadow-lg border border-amber-400/50"
-          >
-            <Zap size={14} />
-            <span>{isKo ? '부스트' : 'BOOST'}</span>
-          </button>
-        </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 8) {
+                moved = true;
+                stateRef.current.targetX = Math.max(-6, Math.min(6, (curX / rect.width - 0.5) * 12));
+              }
+              if (dy < -25) {
+                moved = true;
+                stateRef.current.speed = 35;
+                playSfx?.('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3');
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              stateRef.current.speed = 20;
+
+              if (!moved) {
+                // Tap: Short Boost
+                stateRef.current.speed = 35;
+                playSfx?.('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3');
+                setTimeout(() => { stateRef.current.speed = 20; }, 1000);
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={() => {
+            stateRef.current.speed = 38;
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3');
+            setTimeout(() => { stateRef.current.speed = 20; }, 1500);
+          }}
+        />
       )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-orange-500/30 rounded-full text-[10px] text-orange-300 font-mono backdrop-blur-xs">
+          {isKo ? '좌우 드래그: 볼더 조향 | 탭/더블탭: 부스트 가속 (버튼 없음)' : 'Drag L/R: Steer Boulder | Tap/Double Tap: Boost (No Buttons)'}
+        </div>
+      </div>
 
       {/* Game Over Modal */}
       {isGameOver && (

@@ -342,53 +342,65 @@ export const VoxelDreamweaverGame: React.FC<VoxelDreamweaverGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Touch Flight Pad */}
+      {/* Screen Gesture Touch Overlay */}
       {!isGameOver && (
-        <div className="absolute inset-x-0 bottom-4 z-20 flex justify-between px-6 pointer-events-auto">
-          {/* 4-Way Flight Pad */}
-          <div className="grid grid-cols-3 gap-1.5 w-36 h-36">
-            <div />
-            <button
-              onPointerDown={() => { stateRef.current.targetY = Math.min(5, stateRef.current.targetY + 2.0); }}
-              className="bg-slate-900/80 border border-emerald-500/60 text-emerald-300 font-black rounded-sm active:scale-95 flex items-center justify-center shadow-md"
-            >
-              ▲
-            </button>
-            <div />
-            <button
-              onPointerDown={() => { stateRef.current.targetX = Math.max(-7, stateRef.current.targetX - 2.0); }}
-              className="bg-slate-900/80 border border-emerald-500/60 text-emerald-300 font-black rounded-sm active:scale-95 flex items-center justify-center shadow-md"
-            >
-              ◀
-            </button>
-            <div className="bg-emerald-950/40 rounded-sm flex items-center justify-center text-[10px] text-emerald-400 font-bold">FLY</div>
-            <button
-              onPointerDown={() => { stateRef.current.targetX = Math.min(7, stateRef.current.targetX + 2.0); }}
-              className="bg-slate-900/80 border border-emerald-500/60 text-emerald-300 font-black rounded-sm active:scale-95 flex items-center justify-center shadow-md"
-            >
-              ▶
-            </button>
-            <div />
-            <button
-              onPointerDown={() => { stateRef.current.targetY = Math.max(-5, stateRef.current.targetY - 2.0); }}
-              className="bg-slate-900/80 border border-emerald-500/60 text-emerald-300 font-black rounded-sm active:scale-95 flex items-center justify-center shadow-md"
-            >
-              ▼
-            </button>
-            <div />
-          </div>
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-          {/* Dash Boost Button */}
-          <button
-            onPointerDown={() => { stateRef.current.speed = 36; setFlightSpeed(36); playSfx?.('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3'); }}
-            onPointerUp={() => { stateRef.current.speed = 22; setFlightSpeed(22); }}
-            className="w-28 h-28 self-end bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xs font-black rounded-sm active:scale-95 flex flex-col items-center justify-center gap-1 shadow-lg border border-emerald-400/50 cursor-pointer"
-          >
-            <Wind size={24} />
-            <span>{isKo ? '에메랄드 부스트' : 'BOOST'}</span>
-          </button>
-        </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+                moved = true;
+                stateRef.current.targetX = Math.max(-7, Math.min(7, (curX / rect.width - 0.5) * 14));
+                stateRef.current.targetY = Math.max(-5, Math.min(5, (0.5 - curY / rect.height) * 10));
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Boost Dash
+                stateRef.current.speed = 36;
+                setFlightSpeed(36);
+                playSfx?.('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3');
+                setTimeout(() => {
+                  stateRef.current.speed = 22;
+                  setFlightSpeed(22);
+                }, 1000);
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={() => {
+            stateRef.current.speed = 38;
+            setFlightSpeed(38);
+            setTimeout(() => { stateRef.current.speed = 22; setFlightSpeed(22); }, 1500);
+          }}
+        />
       )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-emerald-500/30 rounded-full text-[10px] text-emerald-300 font-mono backdrop-blur-xs">
+          {isKo ? '드래그: 글라이더 조종 | 탭/더블탭: 에메랄드 부스트 (버튼 없음)' : 'Drag: Glide Flight | Tap/Double Tap: Boost (No Buttons)'}
+        </div>
+      </div>
 
       {/* Game Over Modal */}
       {isGameOver && (

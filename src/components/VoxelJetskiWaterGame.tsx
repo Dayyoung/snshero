@@ -20,7 +20,7 @@ interface BuoyGate {
 
 export const VoxelJetskiWaterGame: React.FC<VoxelJetskiWaterGameProps> = ({
   deck: _deck,
-  language: _language,
+  language = 'ko',
   lowSpecMode = false,
   playSfx,
   onExit,
@@ -303,36 +303,56 @@ export const VoxelJetskiWaterGame: React.FC<VoxelJetskiWaterGameProps> = ({
       {/* 3D Canvas */}
       <div ref={mountRef} className="relative flex-1 w-full overflow-hidden" />
 
-      {/* Mobile Controls */}
-      <div className="p-3 bg-[#0c4a6e]/95 border-t border-sky-800 flex items-center justify-between gap-2 z-20">
-        <div className="flex gap-2">
-          <button
-            onPointerDown={() => { stateRef.current.jetskiPos.x -= 1.8; }}
-            className="w-12 h-12 bg-sky-900 border border-sky-600 rounded-sm font-bold text-xs active:bg-sky-800"
-          >
-            ◀ 좌
-          </button>
-          <button
-            onPointerDown={() => { stateRef.current.jetskiPos.x += 1.8; }}
-            className="w-12 h-12 bg-sky-900 border border-sky-600 rounded-sm font-bold text-xs active:bg-sky-800"
-          >
-            우 ▶
-          </button>
-        </div>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-        <div className="flex gap-2">
-          <button
-            onClick={triggerAirStunt}
-            className="px-4 h-12 bg-amber-500 text-black font-bold text-xs rounded-sm active:bg-amber-400 flex items-center gap-1 shadow-lg"
-          >
-            <Sparkles className="w-4 h-4" /> [공중 스턴트]
-          </button>
-          <button
-            onClick={activateTurbo}
-            className="px-4 h-12 bg-cyan-500 text-black font-bold text-xs rounded-sm active:bg-cyan-400 flex items-center gap-1 shadow-lg"
-          >
-            <Zap className="w-4 h-4" /> [하이드로 터보]
-          </button>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 8) {
+                moved = true;
+                stateRef.current.jetskiPos.x = Math.max(-12, Math.min(12, stateRef.current.jetskiPos.x + dx * 0.04));
+              }
+              if (dy < -25) {
+                moved = true;
+                activateTurbo();
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Air Stunt
+                triggerAirStunt();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={() => activateTurbo()}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-cyan-400/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '좌우 드래그: 조향 | 탭: 공중 스턴트 | 더블탭/위로: 하이드로 터보 (버튼 없음)' : 'Drag L/R: Steer | Tap: Air Stunt | Double Tap/Up: Turbo (No Buttons)'}
         </div>
       </div>
 

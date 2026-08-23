@@ -212,38 +212,39 @@ export const VoxelFishingMasterGame: React.FC<VoxelFishingMasterGameProps> = ({
       {/* 3D Canvas */}
       <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Action Controls */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-4 pointer-events-auto">
-        {biteState === 'idle' && (
-          <button
-            onClick={castRod}
-            className="px-8 py-4 bg-cyan-600 active:bg-cyan-500 border border-cyan-400 rounded-sm text-white font-black text-sm shadow-lg flex items-center gap-2"
-          >
-            <Anchor size={18} />
-            낚싯대 던지기 (CAST)
-          </button>
-        )}
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-pointer"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            e.preventDefault();
+            if (biteState === 'idle') {
+              castRod();
+            } else if (biteState === 'bite') {
+              hookAndReel();
+            } else if (biteState === 'reeling') {
+              stateRef.current.isPressingReel = true;
+            }
+          }}
+          onPointerUp={() => {
+            stateRef.current.isPressingReel = false;
+          }}
+          onPointerCancel={() => {
+            stateRef.current.isPressingReel = false;
+          }}
+        />
+      )}
 
-        {biteState === 'bite' && (
-          <button
-            onClick={hookAndReel}
-            className="px-8 py-4 bg-amber-500 active:bg-amber-400 border border-amber-300 rounded-sm text-slate-950 font-black text-base shadow-xl animate-bounce flex items-center gap-2"
-          >
-            <Fish size={22} />
-            챔질하기! (HOOK!)
-          </button>
-        )}
-
-        {biteState === 'reeling' && (
-          <button
-            onPointerDown={() => { stateRef.current.isPressingReel = true; }}
-            onPointerUp={() => { stateRef.current.isPressingReel = false; }}
-            className="w-32 h-20 bg-blue-600 active:bg-blue-500 border-2 border-cyan-300 rounded-sm text-white font-black text-sm shadow-xl flex flex-col items-center justify-center"
-          >
-            <Fish size={24} />
-            <span>누르고 릴링!</span>
-          </button>
-        )}
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-cyan-400/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
+          {biteState === 'idle'
+            ? (language === 'ko' ? '화면을 탭하여 낚싯대 던지기 (버튼 없음)' : 'Tap anywhere to cast rod (No Buttons)')
+            : biteState === 'bite'
+            ? (language === 'ko' ? '⚡ 입질 발생! 즉시 화면을 탭하여 챔질!' : '⚡ BITE! Tap now to hook!')
+            : (language === 'ko' ? '화면을 꾹 눌러 릴 감기' : 'Hold screen to reel in')}
+        </div>
       </div>
 
       {/* Modal */}

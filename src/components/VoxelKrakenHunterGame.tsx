@@ -320,47 +320,57 @@ export const VoxelKrakenHunterGame: React.FC<VoxelKrakenHunterGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Reel & Harpoon Controls */}
+      {/* Screen Gesture Touch Overlay */}
       {!isGameOver && (
-        <div className="absolute inset-x-0 bottom-6 z-20 flex justify-between px-8 pointer-events-none">
-          {/* Harpoon Launch Button */}
-          <div className="flex pointer-events-auto">
-            <button
-              onPointerDown={handleHarpoonStrike}
-              className="w-16 h-16 bg-rose-600 active:bg-rose-500 text-white text-xs font-black rounded-sm flex flex-col items-center justify-center shadow-lg tracking-wider"
-            >
-              <Zap size={20} />
-              <span>HARPOON</span>
-            </button>
-          </div>
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
+            stateRef.current.isReeling = true;
+            setIsReeling(true);
 
-          {/* Reel In Hold Button */}
-          <div className="flex pointer-events-auto">
-            <button
-              onPointerDown={() => {
-                stateRef.current.isReeling = true;
-                setIsReeling(true);
-              }}
-              onPointerUp={() => {
-                stateRef.current.isReeling = false;
-                setIsReeling(false);
-              }}
-              onPointerLeave={() => {
-                stateRef.current.isReeling = false;
-                setIsReeling(false);
-              }}
-              className={`w-20 h-20 border-2 rounded-sm flex flex-col items-center justify-center shadow-2xl transition-all ${
-                isReeling
-                  ? 'bg-amber-500 border-amber-300 text-slate-950 scale-95'
-                  : 'bg-slate-900/90 border-sky-400 text-sky-400'
-              }`}
-            >
-              <Anchor size={24} className={isReeling ? 'animate-spin' : ''} />
-              <span className="text-xs font-black tracking-wider mt-1">REEL IN</span>
-            </button>
-          </div>
-        </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+                moved = true;
+                stateRef.current.shipAngle += (dx > 0 ? 0.04 : -0.04);
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              stateRef.current.isReeling = false;
+              setIsReeling(false);
+
+              if (!moved) {
+                // Quick Tap: Harpoon Strike
+                handleHarpoonStrike();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
       )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-sky-400/30 rounded-full text-[10px] text-sky-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '드래그: 조준 | 탭: 작살 발사 | 화면 홀드: 릴링 감기 (버튼 없음)' : 'Drag: Aim | Tap: Harpoon Strike | Hold: Reel In (No Buttons)'}
+        </div>
+      </div>
 
       {/* Game Over Modal */}
       {isGameOver && (

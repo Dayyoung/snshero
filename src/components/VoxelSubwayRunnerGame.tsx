@@ -22,7 +22,7 @@ interface ObstacleItem {
 
 export const VoxelSubwayRunnerGame: React.FC<VoxelSubwayRunnerGameProps> = ({
   deck: _deck,
-  language: _language,
+  language = 'ko',
   lowSpecMode = false,
   playSfx,
   onExit,
@@ -404,32 +404,62 @@ export const VoxelSubwayRunnerGame: React.FC<VoxelSubwayRunnerGameProps> = ({
       {/* 3D Canvas */}
       <div ref={mountRef} className="relative flex-1 w-full overflow-hidden" />
 
-      {/* Mobile Touch Helper Buttons */}
-      <div className="p-3 bg-[#1e293b]/95 border-t border-slate-700 grid grid-cols-4 gap-2 z-20">
-        <button
-          onClick={() => changeLane(-1)}
-          className="py-3 bg-slate-800 border border-slate-600 rounded-sm font-bold text-xs active:bg-slate-700"
-        >
-          ◀ 좌측
-        </button>
-        <button
-          onClick={jump}
-          className="py-3 bg-slate-800 border border-slate-600 rounded-sm font-bold text-xs active:bg-slate-700 text-sky-400"
-        >
-          ▲ 점프
-        </button>
-        <button
-          onClick={slide}
-          className="py-3 bg-slate-800 border border-slate-600 rounded-sm font-bold text-xs active:bg-slate-700 text-amber-400"
-        >
-          ▼ 슬라이딩
-        </button>
-        <button
-          onClick={() => changeLane(1)}
-          className="py-3 bg-slate-800 border border-slate-600 rounded-sm font-bold text-xs active:bg-slate-700"
-        >
-          우측 ▶
-        </button>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
+
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 20) {
+                moved = true;
+                changeLane(dx > 0 ? 1 : -1);
+                window.removeEventListener('pointermove', onMove);
+              } else if (dy < -20) {
+                moved = true;
+                jump();
+                window.removeEventListener('pointermove', onMove);
+              } else if (dy > 20) {
+                moved = true;
+                slide();
+                window.removeEventListener('pointermove', onMove);
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Jump
+                jump();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={() => activateHoverboard()}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-sky-400/30 rounded-full text-[10px] text-sky-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '좌우 스와이프: 차선변경 | 위/탭: 점프 | 아래: 슬라이딩 | 더블탭: 호버보드 (버튼 없음)' : 'Swipe L/R: Lane | Up/Tap: Jump | Down: Slide | Double Tap: Hoverboard (No Buttons)'}
+        </div>
       </div>
 
       {/* Game Over Modal */}

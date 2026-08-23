@@ -22,7 +22,7 @@ interface SniperTarget {
 
 export const VoxelSniperHunterGame: React.FC<VoxelSniperHunterGameProps> = ({
   deck: _deck,
-  language: _language,
+  language = 'ko',
   lowSpecMode = false,
   playSfx,
   onExit,
@@ -300,26 +300,56 @@ export const VoxelSniperHunterGame: React.FC<VoxelSniperHunterGameProps> = ({
         )}
       </div>
 
-      {/* Mobile Controls */}
-      <div className="p-3 bg-[#18181b]/95 border-t border-slate-700 flex items-center justify-between gap-3 z-20">
-        <button
-          onPointerDown={() => handleHoldBreath(true)}
-          onPointerUp={() => handleHoldBreath(false)}
-          className={`px-5 py-3 rounded-sm font-bold text-xs flex items-center gap-1.5 shadow-lg ${
-            isHoldingBreath ? 'bg-cyan-500 text-black' : 'bg-slate-800 text-white'
-          }`}
-        >
-          <Eye className="w-4 h-4" />
-          [숨참기 (흔들림 0%)]
-        </button>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && (
+        <div
+          className="absolute inset-0 z-20 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
+            handleHoldBreath(true);
 
-        <button
-          onClick={handleShoot}
-          className="px-6 py-3 bg-red-600 text-white font-bold text-xs rounded-sm active:bg-red-500 shadow-lg flex items-center gap-1.5"
-        >
-          <Crosshair className="w-4 h-4" />
-          [정밀 사격]
-        </button>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+                moved = true;
+                const state = stateRef.current;
+                state.targetScopeX = Math.max(-12, Math.min(12, state.targetScopeX + dx * 0.02));
+                state.targetScopeY = Math.max(-6, Math.min(6, state.targetScopeY - dy * 0.02));
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              handleHoldBreath(false);
+
+              if (!moved) {
+                // Tap: Shoot
+                handleShoot();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-red-500/30 rounded-full text-[10px] text-red-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '드래그: 조준 | 화면 홀드: 숨참기 | 탭: 저격 사격 (버튼 없음)' : 'Drag: Aim | Hold: Breath Hold | Tap: Fire (No Buttons)'}
+        </div>
       </div>
 
       {/* Game Over Modal */}

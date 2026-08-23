@@ -331,22 +331,27 @@ export const VoxelTreasureDiggerGame: React.FC<VoxelTreasureDiggerGameProps> = (
         </div>
       </div>
 
-      {/* Mobile Controls: Shoot Hook & TNT Bomb */}
-      <div className="absolute bottom-6 left-4 right-4 flex items-center justify-center gap-3 z-10">
-        <button
-          onClick={handleShootHook}
-          className="flex-1 max-w-xs py-4 bg-gradient-to-r from-amber-500 to-yellow-600 hover:brightness-110 active:scale-95 text-slate-950 font-black text-base uppercase rounded-sm border border-amber-300 shadow-xl flex items-center justify-center gap-2 cursor-pointer"
-        >
-          <Pickaxe size={20} />
-          <span>{isKo ? '갈고리 사출 (LAUNCH)' : 'LAUNCH CLAW'}</span>
-        </button>
-        <button
-          onClick={handleUseTnt}
-          className="py-4 px-5 bg-red-600 hover:bg-red-500 active:scale-95 text-white font-black text-xs uppercase rounded-sm border border-red-400 shadow-lg flex items-center justify-center gap-1.5 cursor-pointer"
-        >
-          <Bomb size={18} />
-          <span>TNT x{tntCount}</span>
-        </button>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-pointer"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            e.preventDefault();
+            handleShootHook();
+          }}
+          onDoubleClick={(e) => {
+            e.preventDefault();
+            handleUseTnt();
+          }}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-amber-400/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {isKo ? '화면 탭: 갈고리 사출 | 더블탭: TNT 폭파 (버튼 없음)' : 'Tap: Launch Claw | Double Tap: Detonate TNT (No Buttons)'}
+        </div>
       </div>
 
       {/* Game Over Modal */}

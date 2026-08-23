@@ -273,43 +273,63 @@ export const VoxelWaterSlideGame: React.FC<VoxelWaterSlideGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Touch Steering Controls */}
+      {/* Screen Gesture Touch Overlay */}
       {!isGameOver && (
-        <div className="absolute inset-x-0 bottom-6 z-20 flex justify-between px-6 pointer-events-none">
-          {/* Steering Left/Right Buttons */}
-          <div className="flex gap-3 pointer-events-auto">
-            <button
-              onPointerDown={() => { stateRef.current.steerDir = -1; }}
-              onPointerUp={() => { if (stateRef.current.steerDir === -1) stateRef.current.steerDir = 0; }}
-              onPointerLeave={() => { if (stateRef.current.steerDir === -1) stateRef.current.steerDir = 0; }}
-              className="w-14 h-14 bg-slate-900/90 border-2 border-cyan-400 active:bg-cyan-500/20 text-cyan-400 text-lg font-black rounded-sm flex items-center justify-center shadow-lg"
-            >
-              ◀
-            </button>
-            <button
-              onPointerDown={() => { stateRef.current.steerDir = 1; }}
-              onPointerUp={() => { if (stateRef.current.steerDir === 1) stateRef.current.steerDir = 0; }}
-              onPointerLeave={() => { if (stateRef.current.steerDir === 1) stateRef.current.steerDir = 0; }}
-              className="w-14 h-14 bg-slate-900/90 border-2 border-cyan-400 active:bg-cyan-500/20 text-cyan-400 text-lg font-black rounded-sm flex items-center justify-center shadow-lg"
-            >
-              ▶
-            </button>
-          </div>
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-          {/* Waterjet Turbo Boost */}
-          <div className="flex pointer-events-auto">
-            <button
-              onPointerDown={() => { stateRef.current.speed = 52; }}
-              onPointerUp={() => { stateRef.current.speed = 35; }}
-              onPointerLeave={() => { stateRef.current.speed = 35; }}
-              className="w-14 h-14 bg-cyan-600 active:bg-cyan-500 text-slate-950 text-xs font-black rounded-sm flex flex-col items-center justify-center shadow-lg tracking-wider"
-            >
-              <Zap size={16} />
-              <span>BOOST</span>
-            </button>
-          </div>
-        </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 10) {
+                moved = true;
+                stateRef.current.steerDir = dx > 0 ? 1 : -1;
+              }
+              if (dy < -20) {
+                stateRef.current.speed = 52;
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              stateRef.current.steerDir = 0;
+              stateRef.current.speed = 35;
+
+              if (!moved) {
+                // Tap: Temporary Turbo Boost
+                stateRef.current.speed = 52;
+                setTimeout(() => { stateRef.current.speed = 35; }, 1000);
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={() => {
+            stateRef.current.speed = 55;
+            setTimeout(() => { stateRef.current.speed = 35; }, 1500);
+          }}
+        />
       )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-cyan-400/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
+          {isKo ? '좌우 드래그: 슬라이드 조향 | 탭/더블탭/위로: 워터젯 부스트 (버튼 없음)' : 'Drag L/R: Steer | Tap/Double Tap/Up: Turbo Boost (No Buttons)'}
+        </div>
+      </div>
 
       {/* Game Over Modal */}
       {isGameOver && (

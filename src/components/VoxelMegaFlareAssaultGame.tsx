@@ -410,67 +410,60 @@ export const VoxelMegaFlareAssaultGame: React.FC<VoxelMegaFlareAssaultGameProps>
         </div>
       </div>
 
-      {/* Touch Crosshair Drag Pad & Action Buttons */}
+      {/* Screen Gesture Touch Overlay */}
       {!isGameOver && (
-        <div className="absolute inset-x-0 bottom-4 z-20 flex justify-between px-6 pointer-events-auto">
-          {/* Aim Control Pad */}
-          <div className="flex gap-2">
-            <button
-              onPointerDown={() => { stateRef.current.aimX = Math.max(-1, stateRef.current.aimX - 0.35); }}
-              className="w-12 h-12 bg-slate-900/80 border border-amber-500/60 text-amber-300 font-black rounded-sm active:scale-95 flex items-center justify-center shadow-md"
-            >
-              ◀
-            </button>
-            <div className="flex flex-col gap-2">
-              <button
-                onPointerDown={() => { stateRef.current.aimY = Math.min(1, stateRef.current.aimY + 0.35); }}
-                className="w-12 h-12 bg-slate-900/80 border border-amber-500/60 text-amber-300 font-black rounded-sm active:scale-95 flex items-center justify-center shadow-md"
-              >
-                ▲
-              </button>
-              <button
-                onPointerDown={() => { stateRef.current.aimY = Math.max(-1, stateRef.current.aimY - 0.35); }}
-                className="w-12 h-12 bg-slate-900/80 border border-amber-500/60 text-amber-300 font-black rounded-sm active:scale-95 flex items-center justify-center shadow-md"
-              >
-                ▼
-              </button>
-            </div>
-            <button
-              onPointerDown={() => { stateRef.current.aimX = Math.min(1, stateRef.current.aimX + 0.35); }}
-              className="w-12 h-12 bg-slate-900/80 border border-amber-500/60 text-amber-300 font-black rounded-sm active:scale-95 flex items-center justify-center shadow-md"
-            >
-              ▶
-            </button>
-          </div>
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-          {/* Fire / Mega Flare Buttons */}
-          <div className="flex gap-3">
-            <button
-              onPointerDown={() => {
-                // Fire normal shot
-                const e = new KeyboardEvent('keydown', { key: ' ' });
-                window.dispatchEvent(e);
-              }}
-              className="w-20 h-14 bg-gradient-to-r from-pink-600 to-rose-600 text-white text-xs font-black rounded-sm active:scale-95 flex flex-col items-center justify-center shadow-lg border border-pink-400/50"
-            >
-              <Crosshair size={16} />
-              <span>{isKo ? '발사 (F)' : 'FIRE'}</span>
-            </button>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
 
-            <button
-              disabled={megaGauge < 100}
-              onPointerDown={() => {
-                const e = new KeyboardEvent('keydown', { key: 'm' });
-                window.dispatchEvent(e);
-              }}
-              className={`w-24 h-14 text-white text-xs font-black rounded-sm active:scale-95 flex flex-col items-center justify-center shadow-lg border ${megaGauge >= 100 ? 'bg-gradient-to-r from-amber-500 to-red-600 border-amber-300 animate-pulse shadow-[0_0_20px_rgba(245,158,11,0.8)] cursor-pointer' : 'bg-slate-800/80 border-slate-700 opacity-40 cursor-not-allowed'}`}
-            >
-              <Flame size={16} />
-              <span>{isKo ? '메가 플레어' : 'MEGA'}</span>
-            </button>
-          </div>
-        </div>
+              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+                moved = true;
+                stateRef.current.aimX = Math.max(-1, Math.min(1, stateRef.current.aimX + dx * 0.003));
+                stateRef.current.aimY = Math.max(-1, Math.min(1, stateRef.current.aimY - dy * 0.003));
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Fire Shot
+                window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }));
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={() => {
+            // Double Tap: Mega Flare
+            if (megaGauge >= 100) {
+              window.dispatchEvent(new KeyboardEvent('keydown', { key: 'm' }));
+            }
+          }}
+        />
       )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {isKo ? '드래그: 조준 | 탭: 포격 발사 | 더블탭: 메가 플레어 궁극기 (버튼 없음)' : 'Drag: Aim | Tap: Fire | Double Tap: Mega Flare (No Buttons)'}
+        </div>
+      </div>
 
       {/* Game Over Modal */}
       {isGameOver && (

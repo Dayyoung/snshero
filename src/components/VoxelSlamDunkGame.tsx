@@ -14,7 +14,7 @@ interface VoxelSlamDunkGameProps {
 
 export const VoxelSlamDunkGame: React.FC<VoxelSlamDunkGameProps> = ({
   deck: _deck,
-  language: _language,
+  language = 'ko',
   lowSpecMode = false,
   playSfx,
   onExit,
@@ -324,22 +324,15 @@ export const VoxelSlamDunkGame: React.FC<VoxelSlamDunkGameProps> = ({
         ref={mountRef}
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
+        onDoubleClick={performSlamDunk}
         className="relative flex-1 w-full overflow-hidden cursor-grab active:cursor-grabbing"
       />
 
-      {/* Mobile Controls */}
-      <div className="p-3 bg-[#09090b]/95 border-t border-slate-700 flex items-center justify-between gap-3 z-20">
-        <div className="text-xs text-slate-400">
-          [화면을 아래에서 위로 쓸어올리면 3점슛 발사]
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '아래에서 위로 스와이프: 3점슛 | 더블탭: 360° 슬램덩크 (버튼 없음)' : 'Swipe Up: 3-Point Shot | Double Tap: 360° Slam Dunk (No Buttons)'}
         </div>
-        <button
-          onClick={performSlamDunk}
-          disabled={isDunking || shotsLeft <= 0}
-          className="px-5 py-3 bg-red-600 text-white font-bold text-xs rounded-sm active:bg-red-500 shadow-lg flex items-center gap-1.5 disabled:opacity-50"
-        >
-          <Flame className="w-4 h-4 text-amber-300" />
-          [360° 슬램덩크]
-        </button>
       </div>
 
       {/* Game Over Modal */}

@@ -236,39 +236,54 @@ export const VoxelFlightLandingGame: React.FC<VoxelFlightLandingGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Flight Controls: Pitch / Roll / Gear */}
-      <div className="absolute bottom-6 left-3 right-3 flex flex-col gap-2 z-10">
-        <div className="grid grid-cols-4 gap-2">
-          <button
-            onPointerDown={() => { stateRef.current.roll = -1; }}
-            onPointerUp={() => { stateRef.current.roll = 0; }}
-            className="py-4 bg-slate-900/90 active:bg-sky-600 text-white font-black text-xs uppercase rounded-sm border border-slate-700 flex items-center justify-center cursor-pointer"
-          >
-            ◀ ROLL L
-          </button>
-          <button
-            onPointerDown={() => { stateRef.current.roll = 1; }}
-            onPointerUp={() => { stateRef.current.roll = 0; }}
-            className="py-4 bg-slate-900/90 active:bg-sky-600 text-white font-black text-xs uppercase rounded-sm border border-slate-700 flex items-center justify-center cursor-pointer"
-          >
-            ROLL R ▶
-          </button>
-          <button
-            onPointerDown={() => { stateRef.current.pitch = 1; }}
-            onPointerUp={() => { stateRef.current.pitch = 0; }}
-            className="py-4 bg-slate-900/90 active:bg-amber-600 text-white font-black text-xs uppercase rounded-sm border border-slate-700 flex items-center justify-center cursor-pointer"
-          >
-            ▲ NOSE UP
-          </button>
-          <button
-            onClick={toggleGear}
-            className={`py-4 font-black text-xs uppercase rounded-sm border transition-all flex items-center justify-center gap-1 cursor-pointer ${
-              gearDeployed ? 'bg-emerald-600 text-white border-emerald-300' : 'bg-slate-900/90 text-slate-300 border-slate-700'
-            }`}
-          >
-            <ShieldCheck size={16} />
-            <span>{gearDeployed ? 'GEAR ON' : 'GEAR OFF'}</span>
-          </button>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
+
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+                moved = true;
+                stateRef.current.roll = Math.max(-1, Math.min(1, dx * 0.02));
+                stateRef.current.pitch = Math.max(-1, Math.min(1, -dy * 0.02));
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              stateRef.current.roll = 0;
+              stateRef.current.pitch = 0;
+
+              if (!moved) {
+                // Tap: Toggle Landing Gear
+                toggleGear();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-sky-400/30 rounded-full text-[10px] text-sky-300 font-mono backdrop-blur-xs">
+          {isKo ? '드래그: 기수 상승/하강 & 선회 | 탭: 랜딩기어 ON/OFF (버튼 없음)' : 'Drag: Pitch & Roll | Tap: Toggle Landing Gear (No Buttons)'}
         </div>
       </div>
 

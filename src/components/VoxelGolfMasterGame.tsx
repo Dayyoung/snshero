@@ -198,40 +198,58 @@ export const VoxelGolfMasterGame: React.FC<VoxelGolfMasterGameProps> = ({
       {/* 3D Canvas */}
       <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Bottom Controls */}
-      <div className="absolute bottom-6 left-4 right-4 z-20 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-900/80 p-3 rounded-sm border border-slate-800 pointer-events-auto">
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <span className="text-xs text-slate-300 font-bold">각도:</span>
-          <input
-            type="range"
-            min="-30"
-            max="30"
-            value={angle}
-            onChange={(e) => { setAngle(Number(e.target.value)); stateRef.current.angle = Number(e.target.value); }}
-            className="w-28"
-          />
-          <span className="text-xs text-cyan-300 font-black">{angle}°</span>
-        </div>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <span className="text-xs text-slate-300 font-bold">파워:</span>
-          <input
-            type="range"
-            min="20"
-            max="100"
-            value={power}
-            onChange={(e) => { setPower(Number(e.target.value)); stateRef.current.power = Number(e.target.value); }}
-            className="w-28"
-          />
-          <span className="text-xs text-amber-300 font-black">{power}%</span>
-        </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
 
-        <button
-          onClick={swingClub}
-          className="w-full sm:w-auto px-6 py-2.5 bg-emerald-600 active:bg-emerald-500 border border-emerald-400 rounded-sm text-white font-black text-xs shadow-lg"
-        >
-          SWING (샷 발사)
-        </button>
+              if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+                moved = true;
+                const newAngle = Math.max(-30, Math.min(30, stateRef.current.angle + dx * 0.05));
+                stateRef.current.angle = Math.round(newAngle);
+                setAngle(Math.round(newAngle));
+
+                const newPow = Math.max(20, Math.min(100, stateRef.current.power - dy * 0.2));
+                stateRef.current.power = Math.round(newPow);
+                setPower(Math.round(newPow));
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Swing Club
+                swingClub();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-emerald-400/30 rounded-full text-[10px] text-emerald-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '좌우 드래그: 조준 각도 | 상하: 파워 조절 | 탭: 골프 스윙 (버튼 없음)' : 'Drag L/R: Aim | Drag U/D: Power | Tap: Swing (No Buttons)'}
+        </div>
       </div>
 
       {/* Modal */}

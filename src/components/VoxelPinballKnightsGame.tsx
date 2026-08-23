@@ -246,21 +246,34 @@ export const VoxelPinballKnightsGame: React.FC<VoxelPinballKnightsGameProps> = (
         </div>
       </div>
 
-      {/* Mobile Touch Flipper Controls */}
-      <div className="absolute bottom-6 left-4 right-4 z-20 flex justify-between items-center pointer-events-none">
-        <button
-          onClick={triggerLeftFlipper}
-          className="w-28 h-20 bg-fuchsia-600/90 text-white rounded-3xl border-2 border-fuchsia-400 font-black text-sm flex items-center justify-center cursor-pointer active:scale-95 shadow-2xl pointer-events-auto"
-        >
-          좌측 플리퍼 [A]
-        </button>
+      {/* Screen Touch Flipper Overlay (Left / Right Half Screen) */}
+      {!isGameOver && !isVictory && (
+        <div className="absolute inset-0 z-20 flex select-none touch-none" style={{ touchAction: 'none' }}>
+          {/* Left Flipper Area */}
+          <div
+            onPointerDown={(e) => {
+              e.preventDefault();
+              triggerLeftFlipper();
+            }}
+            className="w-1/2 h-full cursor-pointer"
+          />
 
-        <button
-          onClick={triggerRightFlipper}
-          className="w-28 h-20 bg-fuchsia-600/90 text-white rounded-3xl border-2 border-fuchsia-400 font-black text-sm flex items-center justify-center cursor-pointer active:scale-95 shadow-2xl pointer-events-auto"
-        >
-          우측 플리퍼 [D]
-        </button>
+          {/* Right Flipper Area */}
+          <div
+            onPointerDown={(e) => {
+              e.preventDefault();
+              triggerRightFlipper();
+            }}
+            className="w-1/2 h-full cursor-pointer"
+          />
+        </div>
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-slate-900/80 border border-fuchsia-400/30 rounded-full text-[10px] text-fuchsia-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '화면 좌/우 터치: 좌우 플리퍼 작동 (버튼 없음)' : 'Touch Left/Right Half: Flip Paddles (No Buttons)'}
+        </div>
       </div>
 
       {/* Victory / Game Over Modal */}

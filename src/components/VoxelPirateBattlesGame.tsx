@@ -497,58 +497,62 @@ export const VoxelPirateBattlesGame: React.FC<VoxelPirateBattlesGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Touch Controls HUD */}
-      <div className="absolute bottom-4 left-4 right-4 z-20 flex justify-between items-end pointer-events-none">
-        {/* Left/Right Broadside Cannon Fire Buttons */}
-        <div className="flex gap-2 pointer-events-auto">
-          <button
-            onClick={() => fireCannons('left')}
-            className="w-16 h-16 sm:w-20 sm:h-20 bg-rose-600/90 hover:bg-rose-500 active:scale-95 text-white rounded-2xl border-2 border-rose-400 shadow-lg flex flex-col items-center justify-center font-bold text-xs cursor-pointer"
-          >
-            <Target size={20} />
-            <span>좌현 사격 [Q]</span>
-          </button>
-          <button
-            onClick={() => fireCannons('right')}
-            className="w-16 h-16 sm:w-20 sm:h-20 bg-rose-600/90 hover:bg-rose-500 active:scale-95 text-white rounded-2xl border-2 border-rose-400 shadow-lg flex flex-col items-center justify-center font-bold text-xs cursor-pointer"
-          >
-            <Target size={20} />
-            <span>우현 사격 [E]</span>
-          </button>
-        </div>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && !isVictory && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-        {/* Movement Touch Buttons */}
-        <div className="flex flex-col items-center gap-1 pointer-events-auto">
-          <button
-            onPointerDown={() => (gameStateRef.current.keys.w = true)}
-            onPointerUp={() => (gameStateRef.current.keys.w = false)}
-            className="w-14 h-12 bg-slate-800/90 hover:bg-slate-700 active:scale-95 text-white rounded-xl border border-slate-600 font-bold text-sm flex items-center justify-center cursor-pointer"
-          >
-            ▲
-          </button>
-          <div className="flex gap-1">
-            <button
-              onPointerDown={() => (gameStateRef.current.keys.a = true)}
-              onPointerUp={() => (gameStateRef.current.keys.a = false)}
-              className="w-14 h-12 bg-slate-800/90 hover:bg-slate-700 active:scale-95 text-white rounded-xl border border-slate-600 font-bold text-sm flex items-center justify-center cursor-pointer"
-            >
-              ◀
-            </button>
-            <button
-              onPointerDown={() => (gameStateRef.current.keys.s = true)}
-              onPointerUp={() => (gameStateRef.current.keys.s = false)}
-              className="w-14 h-12 bg-slate-800/90 hover:bg-slate-700 active:scale-95 text-white rounded-xl border border-slate-600 font-bold text-sm flex items-center justify-center cursor-pointer"
-            >
-              ▼
-            </button>
-            <button
-              onPointerDown={() => (gameStateRef.current.keys.d = true)}
-              onPointerUp={() => (gameStateRef.current.keys.d = false)}
-              className="w-14 h-12 bg-slate-800/90 hover:bg-slate-700 active:scale-95 text-white rounded-xl border border-slate-600 font-bold text-sm flex items-center justify-center cursor-pointer"
-            >
-              ▶
-            </button>
-          </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+                moved = true;
+                gameStateRef.current.keys.w = dy < -8;
+                gameStateRef.current.keys.s = dy > 12;
+                gameStateRef.current.keys.a = dx < -10;
+                gameStateRef.current.keys.d = dx > 10;
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              gameStateRef.current.keys.w = false;
+              gameStateRef.current.keys.s = false;
+              gameStateRef.current.keys.a = false;
+              gameStateRef.current.keys.d = false;
+
+              if (!moved) {
+                // Tap: Fire broadside cannon depending on left or right half of screen
+                if (startX < rect.width / 2) {
+                  fireCannons('left');
+                } else {
+                  fireCannons('right');
+                }
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '드래그: 함선 조타 항해 | 좌/우측 탭: 좌/우현 일제 사격 (버튼 없음)' : 'Drag: Steer Ship | Tap Left/Right: Port/Starboard Broadside (No Buttons)'}
         </div>
       </div>
 

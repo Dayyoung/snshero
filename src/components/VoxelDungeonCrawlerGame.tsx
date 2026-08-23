@@ -489,63 +489,59 @@ export const VoxelDungeonCrawlerGame: React.FC<VoxelDungeonCrawlerGameProps> = (
         <span>유물: {activeRelic}</span>
       </div>
 
-      {/* Mobile Virtual Controls */}
-      <div className="absolute bottom-6 left-0 right-0 z-20 px-4 flex items-center justify-between pointer-events-none">
-        {/* Virtual D-Pad */}
-        <div className="grid grid-cols-3 gap-1 pointer-events-auto w-32 h-32">
-          <div />
-          <button
-            onPointerDown={() => { keysRef.current['w'] = true; }}
-            onPointerUp={() => { keysRef.current['w'] = false; }}
-            className="bg-white/20 active:bg-white/40 border border-white/30 rounded-sm flex items-center justify-center text-white font-bold"
-          >
-            ▲
-          </button>
-          <div />
-          <button
-            onPointerDown={() => { keysRef.current['a'] = true; }}
-            onPointerUp={() => { keysRef.current['a'] = false; }}
-            className="bg-white/20 active:bg-white/40 border border-white/30 rounded-sm flex items-center justify-center text-white font-bold"
-          >
-            ◀
-          </button>
-          <div className="bg-white/10 rounded-sm flex items-center justify-center text-[10px] text-white/50">
-            PAD
-          </div>
-          <button
-            onPointerDown={() => { keysRef.current['d'] = true; }}
-            onPointerUp={() => { keysRef.current['d'] = false; }}
-            className="bg-white/20 active:bg-white/40 border border-white/30 rounded-sm flex items-center justify-center text-white font-bold"
-          >
-            ▶
-          </button>
-          <div />
-          <button
-            onPointerDown={() => { keysRef.current['s'] = true; }}
-            onPointerUp={() => { keysRef.current['s'] = false; }}
-            className="bg-white/20 active:bg-white/40 border border-white/30 rounded-sm flex items-center justify-center text-white font-bold"
-          >
-            ▼
-          </button>
-          <div />
-        </div>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && !isVictory && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-        {/* Action Buttons (Attack, Dash) */}
-        <div className="flex items-center gap-3 pointer-events-auto">
-          <button
-            onClick={handleMobileDash}
-            className="w-14 h-14 bg-amber-600/80 active:bg-amber-500 border border-amber-400 rounded-full flex flex-col items-center justify-center text-white text-xs font-bold shadow-lg"
-          >
-            <Zap size={18} />
-            <span className="text-[9px]">DASH</span>
-          </button>
-          <button
-            onClick={handleMobileAttack}
-            className="w-16 h-16 bg-rose-600/90 active:bg-rose-500 border border-rose-400 rounded-full flex flex-col items-center justify-center text-white text-sm font-bold shadow-xl animate-pulse"
-          >
-            <Swords size={22} />
-            <span className="text-[10px]">SLASH</span>
-          </button>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+                moved = true;
+                keysRef.current['w'] = dy < -8;
+                keysRef.current['s'] = dy > 12;
+                keysRef.current['a'] = dx < -10;
+                keysRef.current['d'] = dx > 10;
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              keysRef.current['w'] = false;
+              keysRef.current['s'] = false;
+              keysRef.current['a'] = false;
+              keysRef.current['d'] = false;
+
+              if (!moved) {
+                // Tap: Slash Attack
+                handleMobileAttack();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={() => handleMobileDash()}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-red-500/30 rounded-full text-[10px] text-red-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '드래그: 히어로 이동 | 탭: 검 참격 | 더블탭: 회피 대시 (버튼 없음)' : 'Drag: Move | Tap: Slash Attack | Double Tap: Dash (No Buttons)'}
         </div>
       </div>
 

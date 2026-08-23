@@ -270,29 +270,29 @@ export const VoxelRaftSurvivalGame: React.FC<VoxelRaftSurvivalGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Action Controls */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-3 pointer-events-auto">
-        <button
-          onClick={() => {
-            const scene = (mountRef.current?.children[0] as any)?.__r3f?.scene;
-            if (scene) expandRaft(scene);
-          }}
-          disabled={planks < 4}
-          className={`w-32 h-16 rounded-2xl border-2 font-bold text-xs flex flex-col items-center justify-center cursor-pointer active:scale-95 ${planks >= 4 ? 'bg-amber-600/90 border-amber-400 text-white' : 'bg-slate-800/80 border-slate-700 text-slate-500'}`}
-        >
-          <span>뗏목 확장 (4목재)</span>
-        </button>
-
-        <button
-          onClick={() => {
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && !isVictory && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            e.preventDefault();
             const scene = (mountRef.current?.children[0] as any)?.__r3f?.scene;
             if (scene) throwHook(scene);
           }}
-          className="w-32 h-16 bg-cyan-600/90 text-white rounded-2xl border-2 border-cyan-400 font-bold text-xs flex flex-col items-center justify-center cursor-pointer active:scale-95 shadow-xl"
-        >
-          <Crosshair size={22} />
-          <span>갈고리 투척 [Space]</span>
-        </button>
+          onDoubleClick={(e) => {
+            e.preventDefault();
+            const scene = (mountRef.current?.children[0] as any)?.__r3f?.scene;
+            if (scene && planks >= 4) expandRaft(scene);
+          }}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-cyan-400/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '화면 탭: 갈고리 투척 | 더블탭: 뗏목 확장 (4목재) (버튼 없음)' : 'Tap: Throw Hook | Double Tap: Expand Raft (4 wood) (No Buttons)'}
+        </div>
       </div>
 
       {/* Victory / Game Over Modal */}

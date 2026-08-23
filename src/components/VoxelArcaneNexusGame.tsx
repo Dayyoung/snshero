@@ -350,46 +350,67 @@ export const VoxelArcaneNexusGame: React.FC<VoxelArcaneNexusGameProps> = ({
         ))}
       </div>
 
-      {/* Mobile Touch Rotate & Pulse Buttons */}
+      {/* Screen Gesture Touch Overlay */}
       {!isGameOver && (
-        <div className="absolute inset-x-0 bottom-4 z-20 flex justify-between px-6 pointer-events-auto">
-          {/* Rotate Left / Right */}
-          <div className="flex gap-3">
-            <button
-              onPointerDown={() => {
-                const step = Math.PI / 4;
-                stateRef.current.targetAngles[activeRingIndex] -= step;
-                playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-              }}
-              className="w-14 h-14 bg-indigo-950/80 border-2 border-indigo-500/70 text-indigo-300 text-lg font-black rounded-sm active:scale-95 flex items-center justify-center shadow-lg"
-            >
-              ↺
-            </button>
-            <button
-              onPointerDown={() => {
-                const step = Math.PI / 4;
-                stateRef.current.targetAngles[activeRingIndex] += step;
-                playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-              }}
-              className="w-14 h-14 bg-indigo-950/80 border-2 border-indigo-500/70 text-indigo-300 text-lg font-black rounded-sm active:scale-95 flex items-center justify-center shadow-lg"
-            >
-              ↻
-            </button>
-          </div>
+        <div
+          className="absolute inset-0 z-10 select-none touch-none"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-          {/* Mana Pulse Trigger Button */}
-          <button
-            onPointerDown={() => {
-              const e = new KeyboardEvent('keydown', { key: ' ' });
-              window.dispatchEvent(e);
-            }}
-            className="w-32 h-14 bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-white text-xs font-black rounded-sm active:scale-95 flex items-center justify-center gap-1.5 shadow-lg border border-indigo-400/50 cursor-pointer"
-          >
-            <Zap size={16} />
-            <span>{isKo ? '마나 펄스 방출' : 'MANA PULSE'}</span>
-          </button>
-        </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 25) {
+                moved = true;
+                const step = Math.PI / 4;
+                stateRef.current.targetAngles[stateRef.current.activeRing] += dx > 0 ? step : -step;
+                playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+                window.removeEventListener('pointermove', onMove);
+              } else if (Math.abs(dy) > 30) {
+                moved = true;
+                if (dy < 0) {
+                  stateRef.current.activeRing = (stateRef.current.activeRing + 1) % 3;
+                } else {
+                  stateRef.current.activeRing = (stateRef.current.activeRing + 2) % 3;
+                }
+                setActiveRingIndex(stateRef.current.activeRing);
+                playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                window.removeEventListener('pointermove', onMove);
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Trigger Mana Pulse
+                const evt = new KeyboardEvent('keydown', { key: ' ' });
+                window.dispatchEvent(evt);
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
       )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-indigo-500/30 rounded-full text-[10px] text-indigo-300 font-mono backdrop-blur-xs">
+          {isKo ? '좌우 스와이프: 링 회전 | 상하 스와이프: 링 전환 | 탭: 마나 방출 (버튼 없음)' : 'Swipe L/R: Rotate | Swipe U/D: Switch Ring | Tap: Pulse (No Buttons)'}
+        </div>
+      </div>
 
       {/* Game Over Modal */}
       {isGameOver && (

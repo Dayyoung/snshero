@@ -206,21 +206,29 @@ export const VoxelBeatBlasterGame: React.FC<VoxelBeatBlasterGameProps> = ({
         </div>
       </div>
 
-      {/* 4 Touch Lane Buttons */}
-      <div className="absolute bottom-6 left-4 right-4 z-20 grid grid-cols-4 gap-2 pointer-events-auto">
-        {['D', 'F', 'J', 'K'].map((key, idx) => (
-          <button
-            key={key}
-            onClick={() => {
+      {/* 4-Zone Screen Gesture Touch Overlay */}
+      <div
+        className="absolute inset-0 z-10 grid grid-cols-4 select-none touch-none"
+        style={{ touchAction: 'none' }}
+      >
+        {[0, 1, 2, 3].map((laneIdx) => (
+          <div
+            key={laneIdx}
+            className="w-full h-full active:bg-cyan-500/10 transition-colors border-r border-white/5 last:border-r-0 cursor-pointer"
+            onPointerDown={(e) => {
+              e.preventDefault();
               const scene = (mountRef.current?.children[0] as any)?.__r3f?.scene;
-              if (scene) hitLane(idx, scene);
+              if (scene) hitLane(laneIdx, scene);
             }}
-            className="h-20 bg-gradient-to-t from-fuchsia-900/90 to-cyan-900/90 text-white rounded-2xl border-2 border-cyan-400 font-black text-xl flex flex-col items-center justify-center cursor-pointer active:scale-95 shadow-xl"
-          >
-            <span>{key}</span>
-            <span className="text-[10px] text-cyan-300 font-normal">LANE {idx + 1}</span>
-          </button>
+          />
         ))}
+      </div>
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-fuchsia-500/30 rounded-full text-[10px] text-fuchsia-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '화면의 4개 구역(좌/중좌/중우/우)을 타이밍에 맞춰 탭 (버튼 없음)' : 'Tap 4 screen columns to hit rhythm beats (No Buttons)'}
+        </div>
       </div>
 
       {/* Victory / Game Over Modal */}

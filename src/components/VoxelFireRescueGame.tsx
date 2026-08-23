@@ -26,7 +26,7 @@ interface BuildingTarget {
 
 export const VoxelFireRescueGame: React.FC<VoxelFireRescueGameProps> = ({
   deck: _deck,
-  language: _language,
+  language = 'ko',
   lowSpecMode = false,
   playSfx,
   onExit,
@@ -418,50 +418,54 @@ export const VoxelFireRescueGame: React.FC<VoxelFireRescueGameProps> = ({
       {/* 3D Canvas Container */}
       <div ref={mountRef} className="relative flex-1 w-full overflow-hidden" />
 
-      {/* Mobile Controls Overlay */}
-      <div className="p-3 bg-[#0f172a]/95 border-t border-slate-700 flex items-center justify-between gap-2 z-20">
-        <div className="flex gap-1.5">
-          <button
-            onPointerDown={() => handleMobileTurn(1)}
-            className="w-12 h-12 bg-slate-800 border border-slate-600 rounded-sm text-sm font-bold active:bg-slate-700"
-          >
-            ◀ 좌
-          </button>
-          <button
-            onPointerDown={() => handleMobileTurn(-1)}
-            className="w-12 h-12 bg-slate-800 border border-slate-600 rounded-sm text-sm font-bold active:bg-slate-700"
-          >
-            우 ▶
-          </button>
-        </div>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
+            handleMobileSpray(true);
 
-        <div className="flex gap-1.5">
-          <button
-            onPointerDown={() => handleMobileThrottle(1)}
-            onPointerUp={() => handleMobileThrottle(0)}
-            className="w-12 h-12 bg-slate-800 border border-slate-600 rounded-sm text-sm font-bold active:bg-slate-700"
-          >
-            ▲ 전진
-          </button>
-          <button
-            onPointerDown={() => handleMobileThrottle(-1)}
-            onPointerUp={() => handleMobileThrottle(0)}
-            className="w-12 h-12 bg-slate-800 border border-slate-600 rounded-sm text-sm font-bold active:bg-slate-700"
-          >
-            ▼ 후진
-          </button>
-        </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
 
-        <button
-          onPointerDown={() => handleMobileSpray(true)}
-          onPointerUp={() => handleMobileSpray(false)}
-          className={`px-5 h-12 rounded-sm font-bold text-xs flex items-center gap-1.5 shadow-lg ${
-            isWaterSpraying ? 'bg-cyan-500 text-black' : 'bg-cyan-600 text-white'
-          }`}
-        >
-          <Droplets className="w-4 h-4" />
-          [고압 방수포]
-        </button>
+              if (Math.abs(dx) > 10) {
+                moved = true;
+                handleMobileTurn(dx > 0 ? -1 : 1);
+              }
+              if (Math.abs(dy) > 10) {
+                moved = true;
+                handleMobileThrottle(dy < 0 ? 1 : -1);
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              handleMobileSpray(false);
+              handleMobileThrottle(0);
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-cyan-500/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '드래그: 소방차 주행 조향 | 탭/홀드: 고압 방수포 분사 (버튼 없음)' : 'Drag: Drive Firetruck | Tap/Hold: Spray Water (No Buttons)'}
+        </div>
       </div>
 
       {/* Game Over Modal */}

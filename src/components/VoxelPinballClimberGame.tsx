@@ -500,32 +500,31 @@ export const VoxelPinballClimberGame: React.FC<VoxelPinballClimberGameProps> = (
 
       {/* Mobile Touch Flipper Controls (Left / Right Screen Halves) */}
       {!isGameOver && !isPaused && !showTutorial && (
-        <div className="absolute inset-x-0 bottom-0 top-16 z-20 flex pointer-events-auto">
-          {/* Left Flipper Button Area */}
+        <div className="absolute inset-0 z-20 flex pointer-events-auto select-none touch-none" style={{ touchAction: 'none' }}>
+          {/* Left Flipper Area */}
           <div
             onPointerDown={() => { stateRef.current.leftFlipPressed = true; }}
             onPointerUp={() => { stateRef.current.leftFlipPressed = false; }}
             onPointerLeave={() => { stateRef.current.leftFlipPressed = false; }}
-            className="w-1/2 h-full flex items-end justify-start p-6 active:bg-cyan-500/10 cursor-pointer"
-          >
-            <div className="px-4 py-3 bg-[#fdfcfc]/90 border-2 border-[#201d1d] text-[#201d1d] text-xs font-black rounded-sm shadow-md">
-              {isKo ? '◀ 좌측 플리퍼 (A)' : '◀ LEFT FLIPPER'}
-            </div>
-          </div>
+            className="w-1/2 h-full cursor-pointer"
+          />
 
-          {/* Right Flipper Button Area */}
+          {/* Right Flipper Area */}
           <div
             onPointerDown={() => { stateRef.current.rightFlipPressed = true; }}
             onPointerUp={() => { stateRef.current.rightFlipPressed = false; }}
             onPointerLeave={() => { stateRef.current.rightFlipPressed = false; }}
-            className="w-1/2 h-full flex items-end justify-end p-6 active:bg-cyan-500/10 cursor-pointer"
-          >
-            <div className="px-4 py-3 bg-[#fdfcfc]/90 border-2 border-[#201d1d] text-[#201d1d] text-xs font-black rounded-sm shadow-md">
-              {isKo ? '우측 플리퍼 (D) ▶' : 'RIGHT FLIPPER ▶'}
-            </div>
-          </div>
+            className="w-1/2 h-full cursor-pointer"
+          />
         </div>
       )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-[#201d1d]/85 border border-[#201d1d]/40 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {isKo ? '화면 좌/우 터치: 좌우 플리퍼 튕기기 (버튼 없음)' : 'Touch Left/Right Half: Flip Paddles (No Buttons)'}
+        </div>
+      </div>
 
       {/* 3-Step Interactive Tutorial Modal */}
       {showTutorial && (

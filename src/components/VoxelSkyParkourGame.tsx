@@ -331,58 +331,60 @@ export const VoxelSkyParkourGame: React.FC<VoxelSkyParkourGameProps> = ({
           <div className="text-[10px] text-neutral-500">추락 횟수: {fallsCount}회</div>
         </div>
 
-        {/* Mobile Control Pad */}
-        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between pointer-events-auto">
-          {/* Mobile Move Keys */}
-          <div className="grid grid-cols-3 gap-1.5 w-32">
-            <div />
-            <button
-              onMouseDown={() => { keysRef.current['KeyW'] = true; }}
-              onMouseUp={() => { keysRef.current['KeyW'] = false; }}
-              onTouchStart={() => { keysRef.current['KeyW'] = true; }}
-              onTouchEnd={() => { keysRef.current['KeyW'] = false; }}
-              className="min-h-[44px] bg-black/60 text-white font-black text-sm rounded-sm border border-white/20 active:bg-black/90 cursor-pointer flex items-center justify-center"
-            >
-              ▲
-            </button>
-            <div />
-            <button
-              onMouseDown={() => { keysRef.current['KeyA'] = true; }}
-              onMouseUp={() => { keysRef.current['KeyA'] = false; }}
-              onTouchStart={() => { keysRef.current['KeyA'] = true; }}
-              onTouchEnd={() => { keysRef.current['KeyA'] = false; }}
-              className="min-h-[44px] bg-black/60 text-white font-black text-sm rounded-sm border border-white/20 active:bg-black/90 cursor-pointer flex items-center justify-center"
-            >
-              ◀
-            </button>
-            <button
-              onMouseDown={() => { keysRef.current['KeyS'] = true; }}
-              onMouseUp={() => { keysRef.current['KeyS'] = false; }}
-              onTouchStart={() => { keysRef.current['KeyS'] = true; }}
-              onTouchEnd={() => { keysRef.current['KeyS'] = false; }}
-              className="min-h-[44px] bg-black/60 text-white font-black text-sm rounded-sm border border-white/20 active:bg-black/90 cursor-pointer flex items-center justify-center"
-            >
-              ▼
-            </button>
-            <button
-              onMouseDown={() => { keysRef.current['KeyD'] = true; }}
-              onMouseUp={() => { keysRef.current['KeyD'] = false; }}
-              onTouchStart={() => { keysRef.current['KeyD'] = true; }}
-              onTouchEnd={() => { keysRef.current['KeyD'] = false; }}
-              className="min-h-[44px] bg-black/60 text-white font-black text-sm rounded-sm border border-white/20 active:bg-black/90 cursor-pointer flex items-center justify-center"
-            >
-              ▶
-            </button>
-          </div>
+      {/* Screen Gesture Touch Overlay */}
+      {!gameOver && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-          {/* Jump Button */}
-          <button
-            onClick={handleJump}
-            className="min-h-[56px] min-w-[72px] px-4 bg-emerald-600 text-white font-black text-sm rounded-sm border border-emerald-400 active:bg-emerald-700 shadow-md cursor-pointer flex items-center justify-center gap-1"
-          >
-            <Footprints size={18} /> [점프]
-          </button>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+                moved = true;
+                keysRef.current['KeyW'] = dy < -8;
+                keysRef.current['KeyS'] = dy > 12;
+                keysRef.current['KeyA'] = dx < -10;
+                keysRef.current['KeyD'] = dx > 10;
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              keysRef.current['KeyW'] = false;
+              keysRef.current['KeyS'] = false;
+              keysRef.current['KeyA'] = false;
+              keysRef.current['KeyD'] = false;
+
+              if (!moved) {
+                // Tap: Jump
+                handleJump();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-[#201d1d]/85 border border-[#201d1d]/40 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '드래그: 발판 이동 | 탭: 파쿠르 점프 (버튼 없음)' : 'Drag: Move | Tap: Parkour Jump (No Buttons)'}
         </div>
+      </div>
       </div>
 
       {/* Victory Modal */}

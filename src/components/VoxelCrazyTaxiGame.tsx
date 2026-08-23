@@ -452,55 +452,67 @@ export const VoxelCrazyTaxiGame: React.FC<VoxelCrazyTaxiGameProps> = ({
         <span className="text-[9px] text-cyan-400 font-bold">NITRO BOOST</span>
       </div>
 
-      {/* Mobile Touch Controls */}
+      {/* Screen Gesture Touch Overlay */}
       {!isGameOver && (
-        <div className="absolute inset-x-0 bottom-4 z-20 flex justify-between px-6 pointer-events-none">
-          {/* Steering Left/Right Buttons */}
-          <div className="flex gap-3 pointer-events-auto">
-            <button
-              onPointerDown={() => { stateRef.current.steerDir = -1; }}
-              onPointerUp={() => { if (stateRef.current.steerDir === -1) stateRef.current.steerDir = 0; }}
-              onPointerLeave={() => { if (stateRef.current.steerDir === -1) stateRef.current.steerDir = 0; }}
-              className="w-14 h-14 bg-slate-900/90 border-2 border-amber-400 active:bg-amber-500/20 text-amber-400 text-lg font-black rounded-sm flex items-center justify-center shadow-lg"
-            >
-              ◀
-            </button>
-            <button
-              onPointerDown={() => { stateRef.current.steerDir = 1; }}
-              onPointerUp={() => { if (stateRef.current.steerDir === 1) stateRef.current.steerDir = 0; }}
-              onPointerLeave={() => { if (stateRef.current.steerDir === 1) stateRef.current.steerDir = 0; }}
-              className="w-14 h-14 bg-slate-900/90 border-2 border-amber-400 active:bg-amber-500/20 text-amber-400 text-lg font-black rounded-sm flex items-center justify-center shadow-lg"
-            >
-              ▶
-            </button>
-          </div>
+        <div
+          className="absolute inset-0 z-10 select-none touch-none"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-          {/* Jump & Nitro Buttons */}
-          <div className="flex gap-3 pointer-events-auto">
-            <button
-              onPointerDown={() => {
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 10) {
+                moved = true;
+                stateRef.current.steerDir = dx > 0 ? 1 : -1;
+              }
+              if (dy < -20) {
+                moved = true;
+                // Swipe up: Nitro boost
+                stateRef.current.isBoosting = true;
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              stateRef.current.steerDir = 0;
+              stateRef.current.isBoosting = false;
+
+              if (!moved) {
+                // Tap: Crazy Jump
                 if (!stateRef.current.isJumping) {
                   stateRef.current.isJumping = true;
                   stateRef.current.jumpVel = 12;
                 }
-              }}
-              className="w-14 h-14 bg-slate-900/90 border-2 border-emerald-400 active:bg-emerald-500/20 text-emerald-400 text-xs font-black rounded-sm flex flex-col items-center justify-center shadow-lg"
-            >
-              <Zap size={16} />
-              <span>JUMP</span>
-            </button>
-            <button
-              onPointerDown={() => { stateRef.current.isBoosting = true; }}
-              onPointerUp={() => { stateRef.current.isBoosting = false; }}
-              onPointerLeave={() => { stateRef.current.isBoosting = false; }}
-              className="w-14 h-14 bg-slate-900/90 border-2 border-cyan-400 active:bg-cyan-500/20 text-cyan-400 text-xs font-black rounded-sm flex flex-col items-center justify-center shadow-lg"
-            >
-              <Flame size={16} />
-              <span>NITRO</span>
-            </button>
-          </div>
-        </div>
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={() => {
+            stateRef.current.isBoosting = true;
+            setTimeout(() => { stateRef.current.isBoosting = false; }, 1200);
+          }}
+        />
       )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-amber-400/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {isKo ? '좌우 드래그: 조향 | 탭: 점프 | 위로 드래그/더블탭: 니트로 부스트 (버튼 없음)' : 'Drag L/R: Steer | Tap: Jump | Drag Up/Double Tap: Nitro (No Buttons)'}
+        </div>
+      </div>
 
       {/* Game Over Modal */}
       {isGameOver && (

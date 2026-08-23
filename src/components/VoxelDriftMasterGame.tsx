@@ -214,56 +214,63 @@ export const VoxelDriftMasterGame: React.FC<VoxelDriftMasterGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Touch Controls */}
-      <div className="absolute bottom-4 left-4 right-4 z-20 flex justify-between items-end pointer-events-none">
-        <div className="flex flex-col items-center gap-1 pointer-events-auto">
-          <button
-            onPointerDown={() => (gameStateRef.current.keys.w = true)}
-            onPointerUp={() => (gameStateRef.current.keys.w = false)}
-            className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-          >
-            ▲
-          </button>
-          <div className="flex gap-1">
-            <button
-              onPointerDown={() => (gameStateRef.current.keys.a = true)}
-              onPointerUp={() => (gameStateRef.current.keys.a = false)}
-              className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-            >
-              ◀
-            </button>
-            <button
-              onPointerDown={() => (gameStateRef.current.keys.s = true)}
-              onPointerUp={() => (gameStateRef.current.keys.s = false)}
-              className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-            >
-              ▼
-            </button>
-            <button
-              onPointerDown={() => (gameStateRef.current.keys.d = true)}
-              onPointerUp={() => (gameStateRef.current.keys.d = false)}
-              className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-            >
-              ▶
-            </button>
-          </div>
-        </div>
+      {/* Screen Gesture Touch Overlay */}
+      <div
+        className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+        style={{ touchAction: 'none' }}
+        onPointerDown={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const startX = e.clientX - rect.left;
+          const startY = e.clientY - rect.top;
+          let moved = false;
 
-        <div className="flex gap-2 pointer-events-auto">
-          <button
-            onPointerDown={() => (gameStateRef.current.keys.space = true)}
-            onPointerUp={() => (gameStateRef.current.keys.space = false)}
-            className="w-16 h-16 bg-amber-600/90 text-white rounded-2xl border-2 border-amber-400 font-bold text-xs flex flex-col items-center justify-center cursor-pointer active:scale-95 shadow-xl"
-          >
-            <span>드리프트 [Space]</span>
-          </button>
-          <button
-            onClick={triggerNitro}
-            className="w-16 h-16 bg-cyan-600/90 text-white rounded-2xl border-2 border-cyan-400 font-bold text-xs flex flex-col items-center justify-center cursor-pointer active:scale-95 shadow-xl"
-          >
-            <Zap size={20} />
-            <span>니트로 [Shift]</span>
-          </button>
+          const onMove = (moveEvt: PointerEvent) => {
+            const curX = moveEvt.clientX - rect.left;
+            const curY = moveEvt.clientY - rect.top;
+            const dx = curX - startX;
+            const dy = curY - startY;
+
+            if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+              moved = true;
+              gameStateRef.current.keys.w = dy < -8;
+              gameStateRef.current.keys.s = dy > 12;
+              gameStateRef.current.keys.a = dx < -10;
+              gameStateRef.current.keys.d = dx > 10;
+              if (Math.abs(dx) > 28) {
+                gameStateRef.current.keys.space = true;
+              } else {
+                gameStateRef.current.keys.space = false;
+              }
+            }
+          };
+
+          const onUp = () => {
+            window.removeEventListener('pointermove', onMove);
+            window.removeEventListener('pointerup', onUp);
+            window.removeEventListener('pointercancel', onUp);
+            gameStateRef.current.keys.w = false;
+            gameStateRef.current.keys.s = false;
+            gameStateRef.current.keys.a = false;
+            gameStateRef.current.keys.d = false;
+            gameStateRef.current.keys.space = false;
+
+            if (!moved) {
+              // Tap: Trigger Nitro Boost
+              triggerNitro();
+            }
+          };
+
+          window.addEventListener('pointermove', onMove);
+          window.addEventListener('pointerup', onUp);
+          window.addEventListener('pointercancel', onUp);
+        }}
+        onDoubleClick={() => triggerNitro()}
+      />
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-cyan-500/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '드래그: 주행 & 드리프트 | 탭/더블탭: 니트로 부스트 (버튼 없음)' : 'Drag: Drive & Drift | Tap/Double Tap: Nitro (No Buttons)'}
         </div>
       </div>
 

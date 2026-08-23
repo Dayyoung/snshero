@@ -374,55 +374,55 @@ export const VoxelDreadShadowGame: React.FC<VoxelDreadShadowGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Touch D-Pad & Cloak Toggle Button */}
+      {/* Screen Gesture Touch Overlay */}
       {!isGameOver && (
-        <div className="absolute inset-x-0 bottom-4 z-20 flex justify-between px-6 pointer-events-auto">
-          {/* 4-Way D-Pad */}
-          <div className="grid grid-cols-3 gap-1.5 w-36 h-36">
-            <div />
-            <button
-              onPointerDown={() => { stateRef.current.playerZ = Math.max(-14, stateRef.current.playerZ - 1.5); }}
-              className="bg-slate-900/80 border border-purple-500/60 text-purple-300 font-black rounded-sm active:scale-95 flex items-center justify-center shadow-md"
-            >
-              ▲
-            </button>
-            <div />
-            <button
-              onPointerDown={() => { stateRef.current.playerX = Math.max(-12, stateRef.current.playerX - 1.5); }}
-              className="bg-slate-900/80 border border-purple-500/60 text-purple-300 font-black rounded-sm active:scale-95 flex items-center justify-center shadow-md"
-            >
-              ◀
-            </button>
-            <div className="bg-purple-950/40 rounded-sm flex items-center justify-center text-[10px] text-purple-400 font-bold">MOVE</div>
-            <button
-              onPointerDown={() => { stateRef.current.playerX = Math.min(12, stateRef.current.playerX + 1.5); }}
-              className="bg-slate-900/80 border border-purple-500/60 text-purple-300 font-black rounded-sm active:scale-95 flex items-center justify-center shadow-md"
-            >
-              ▶
-            </button>
-            <div />
-            <button
-              onPointerDown={() => { stateRef.current.playerZ = Math.min(15, stateRef.current.playerZ + 1.5); }}
-              className="bg-slate-900/80 border border-purple-500/60 text-purple-300 font-black rounded-sm active:scale-95 flex items-center justify-center shadow-md"
-            >
-              ▼
-            </button>
-            <div />
-          </div>
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-          {/* Cloak Button */}
-          <button
-            onPointerDown={() => {
-              const e = new KeyboardEvent('keydown', { key: ' ' });
-              window.dispatchEvent(e);
-            }}
-            className={`w-28 h-28 self-end text-white text-xs font-black rounded-sm active:scale-95 flex flex-col items-center justify-center gap-1.5 shadow-lg border transition-all cursor-pointer ${isCloaked ? 'bg-purple-600 border-purple-300 shadow-[0_0_20px_rgba(168,85,247,0.8)]' : 'bg-slate-900/90 border-purple-500/60'}`}
-          >
-            {isCloaked ? <EyeOff size={24} className="animate-pulse text-purple-200" /> : <Eye size={24} className="text-purple-400" />}
-            <span>{isCloaked ? (isKo ? '은신 활성' : 'CLOAKED') : (isKo ? '은신 토글' : 'CLOAK')}</span>
-          </button>
-        </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+                moved = true;
+                stateRef.current.playerX = Math.max(-12, Math.min(12, stateRef.current.playerX + dx * 0.03));
+                stateRef.current.playerZ = Math.max(-14, Math.min(15, stateRef.current.playerZ + dy * 0.03));
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Toggle Cloak
+                const evt = new KeyboardEvent('keydown', { key: ' ' });
+                window.dispatchEvent(evt);
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
       )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-purple-500/30 rounded-full text-[10px] text-purple-300 font-mono backdrop-blur-xs">
+          {isKo ? '드래그: 잠입 이동 | 탭: 은신 섀도우 토글 (버튼 없음)' : 'Drag: Sneak Move | Tap: Toggle Cloak (No Buttons)'}
+        </div>
+      </div>
 
       {/* Game Over Modal */}
       {isGameOver && (

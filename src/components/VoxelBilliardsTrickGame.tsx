@@ -339,45 +339,54 @@ export const VoxelBilliardsTrickGame: React.FC<VoxelBilliardsTrickGameProps> = (
         </div>
       </div>
 
-      {/* Mobile Controls: Aim Rotate & Power Strike */}
-      <div className="absolute bottom-6 left-3 right-3 flex flex-col gap-2 z-10">
-        <div className="flex items-center justify-between px-1">
-          <span className="text-[10px] text-emerald-300 font-bold">SHOT POWER</span>
-          <span className="text-[10px] text-slate-400">{power}%</span>
-        </div>
-        <input
-          type="range"
-          min="20"
-          max="100"
-          value={power}
-          onChange={(e) => {
-            const v = Number(e.target.value);
-            setPower(v);
-            stateRef.current.cuePower = v;
-          }}
-          className="w-full accent-emerald-500 mb-1"
-        />
+       {/* Screen Gesture Touch Overlay */}
+      <div
+        className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+        style={{ touchAction: 'none' }}
+        onPointerDown={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const startX = e.clientX - rect.left;
+          const startY = e.clientY - rect.top;
+          let moved = false;
 
-        <div className="grid grid-cols-3 gap-2">
-          <button
-            onClick={() => handleRotateCue(-0.15)}
-            className="py-4 bg-slate-900/90 active:bg-emerald-600 text-white font-bold text-xs uppercase rounded-sm border border-slate-700 flex items-center justify-center cursor-pointer"
-          >
-            ◀ AIM LEFT
-          </button>
-          <button
-            onClick={handleShoot}
-            className="py-4 bg-gradient-to-r from-emerald-600 to-teal-600 active:scale-95 text-white font-black text-xs uppercase rounded-sm border border-emerald-300 shadow-xl flex items-center justify-center gap-1 cursor-pointer"
-          >
-            <Target size={16} />
-            <span>{isKo ? '스트로크' : 'STRIKE'}</span>
-          </button>
-          <button
-            onClick={() => handleRotateCue(0.15)}
-            className="py-4 bg-slate-900/90 active:bg-emerald-600 text-white font-bold text-xs uppercase rounded-sm border border-slate-700 flex items-center justify-center cursor-pointer"
-          >
-            AIM RIGHT ▶
-          </button>
+          const onMove = (moveEvt: PointerEvent) => {
+            const curX = moveEvt.clientX - rect.left;
+            const curY = moveEvt.clientY - rect.top;
+            const dx = curX - startX;
+            const dy = curY - startY;
+
+            if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+              moved = true;
+              // Horizontal drag: rotate cue angle
+              stateRef.current.cueAngle += dx * 0.003;
+              // Vertical drag: adjust power
+              const newPow = Math.max(20, Math.min(100, stateRef.current.cuePower - dy * 0.2));
+              stateRef.current.cuePower = newPow;
+              setPower(Math.round(newPow));
+            }
+          };
+
+          const onUp = () => {
+            window.removeEventListener('pointermove', onMove);
+            window.removeEventListener('pointerup', onUp);
+            window.removeEventListener('pointercancel', onUp);
+
+            if (!moved) {
+              // Tap: Shoot
+              handleShoot();
+            }
+          };
+
+          window.addEventListener('pointermove', onMove);
+          window.addEventListener('pointerup', onUp);
+          window.addEventListener('pointercancel', onUp);
+        }}
+      />
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-slate-900/80 border border-emerald-500/40 rounded-full text-[10px] text-emerald-300 font-mono backdrop-blur-xs">
+          {isKo ? '좌우 드래그: 조준 | 상하: 파워 조절 | 탭: 샷 스트로크 (버튼 없음)' : 'Drag L/R: Aim | Drag U/D: Power | Tap: Strike (No Buttons)'}
         </div>
       </div>
 

@@ -313,58 +313,59 @@ export const VoxelDojoBalanceGame: React.FC<VoxelDojoBalanceGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Touch Action Controls */}
+      {/* Screen Gesture Touch Overlay */}
       {!isGameOver && (
-        <div className="absolute inset-x-0 bottom-6 z-20 flex justify-between px-6 pointer-events-none">
-          {/* Left / Right Balance Recovery Buttons */}
-          <div className="flex gap-3 pointer-events-auto">
-            <button
-              onPointerDown={() => handleBalanceAdjust(-1)}
-              className="w-14 h-14 bg-zinc-900/90 border-2 border-cyan-400 active:bg-cyan-500/20 text-cyan-400 text-sm font-black rounded-sm flex flex-col items-center justify-center shadow-lg"
-            >
-              <span>◀ LEAN</span>
-            </button>
-            <button
-              onPointerDown={() => handleBalanceAdjust(1)}
-              className="w-14 h-14 bg-zinc-900/90 border-2 border-cyan-400 active:bg-cyan-500/20 text-cyan-400 text-sm font-black rounded-sm flex flex-col items-center justify-center shadow-lg"
-            >
-              <span>LEAN ▶</span>
-            </button>
-          </div>
+        <div
+          className="absolute inset-0 z-10 select-none touch-none"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
+            const guardTimeout = setTimeout(() => {
+              stateRef.current.isPlayerGuarding = true;
+            }, 300);
 
-          {/* Attack / Heavy / Guard Buttons */}
-          <div className="flex gap-2 pointer-events-auto">
-            <button
-              onPointerDown={() => {
-                stateRef.current.isPlayerGuarding = true;
-              }}
-              onPointerUp={() => {
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const dx = curX - startX;
+
+              if (Math.abs(dx) > 15) {
+                moved = true;
+                clearTimeout(guardTimeout);
                 stateRef.current.isPlayerGuarding = false;
-              }}
-              className="w-14 h-14 bg-zinc-900/90 border-2 border-emerald-400 active:bg-emerald-500/20 text-emerald-400 text-xs font-black rounded-sm flex flex-col items-center justify-center shadow-lg"
-            >
-              <Shield size={16} />
-              <span>GUARD</span>
-            </button>
+                handleBalanceAdjust(dx > 0 ? 1 : -1);
+              }
+            };
 
-            <button
-              onPointerDown={() => handlePlayerAttack(false)}
-              className="w-14 h-14 bg-amber-600 active:bg-amber-500 text-zinc-950 text-xs font-black rounded-sm flex flex-col items-center justify-center shadow-lg"
-            >
-              <Swords size={16} />
-              <span>STRIKE</span>
-            </button>
+            const onUp = () => {
+              clearTimeout(guardTimeout);
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              stateRef.current.isPlayerGuarding = false;
 
-            <button
-              onPointerDown={() => handlePlayerAttack(true)}
-              className="w-14 h-14 bg-rose-600 active:bg-rose-500 text-white text-xs font-black rounded-sm flex flex-col items-center justify-center shadow-lg"
-            >
-              <Flame size={16} />
-              <span>HEAVY</span>
-            </button>
-          </div>
-        </div>
+              if (!moved) {
+                // Tap: Fast Strike
+                handlePlayerAttack(false);
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={() => handlePlayerAttack(true)}
+        />
       )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-zinc-900/80 border border-cyan-400/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
+          {isKo ? '좌우 스와이프: 균형잡기 | 탭: 공격 | 더블탭: 강타 | 길게누름: 가드 (버튼 없음)' : 'Swipe L/R: Lean | Tap: Strike | Double Tap: Heavy | Hold: Guard (No Buttons)'}
+        </div>
+      </div>
 
       {/* Game Over Modal */}
       {isGameOver && (

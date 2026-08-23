@@ -373,20 +373,51 @@ export const VoxelSnowboardSlalomGame: React.FC<VoxelSnowboardSlalomGameProps> =
         </div>
       )}
 
-      {/* Mobile-First Controls */}
-      <div className="absolute bottom-6 left-4 right-4 flex flex-col items-center gap-2.5 z-10">
-        <div className="w-full max-w-sm flex gap-2">
-          <button
-            onClick={handleJumpTrick}
-            className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 border border-cyan-300 text-slate-950 font-black text-base rounded-sm active:scale-95 shadow-xl flex items-center justify-center gap-2 uppercase cursor-pointer"
-          >
-            <Snowflake size={20} />
-            <span>{isKo ? '🏂 뮬트 그랩 점프 트릭' : '🏂 MUTE GRAB TRICK'}</span>
-          </button>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-pointer"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
+
+            const onMove = (moveEvt: PointerEvent) => {
+              const clientX = moveEvt.clientX;
+              const curY = moveEvt.clientY - rect.top;
+              const normX = (clientX / window.innerWidth - 0.5) * 2;
+              stateRef.current.targetX = normX * 7.0;
+
+              if (Math.abs(clientX - (startX + rect.left)) > 15 || Math.abs(curY - startY) > 15) {
+                moved = true;
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Jump Trick
+                handleJumpTrick();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-cyan-400/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
+          {isKo ? '좌우 드래그: 슬라롬 카빙 | 탭: 뮬트 그랩 점프 트릭 (버튼 없음)' : 'Drag L/R: Slalom Carve | Tap: Mute Grab Trick (No Buttons)'}
         </div>
-        <p className="text-[11px] text-slate-300 bg-slate-900/80 px-3 py-0.5 rounded-sm border border-slate-700">
-          {isKo ? '좌우 드래그로 설원을 카빙하며 레드/블루 슬라롬 게이트를 연속 통과하세요!' : 'Drag left/right to carve through Red and Blue slalom gates!'}
-        </p>
       </div>
 
       {/* Game Over Summary Modal */}

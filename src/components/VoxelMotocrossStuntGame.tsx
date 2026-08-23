@@ -471,37 +471,52 @@ export const VoxelMotocrossStuntGame: React.FC<VoxelMotocrossStuntGameProps> = (
         </div>
       )}
 
-      {/* Mobile-First Controls */}
+      {/* Screen Gesture Touch Overlay */}
       {!isGameOver && !isPaused && !showTutorial && (
-        <div className="absolute bottom-6 left-4 right-4 flex flex-col items-center gap-2.5 z-10">
-          <div className="w-full max-w-sm flex gap-2">
-            <button
-              onMouseDown={handleGasStart}
-              onMouseUp={handleGasEnd}
-              onTouchStart={handleGasStart}
-              onTouchEnd={handleGasEnd}
-              className="flex-1 py-4 bg-[#fdfcfc] hover:bg-amber-100 border-2 border-[#201d1d] text-[#201d1d] font-black text-sm rounded-sm active:scale-95 shadow-md flex items-center justify-center gap-2 uppercase cursor-pointer"
-            >
-              <span>{isKo ? '⛽ 가속 (HOLD GAS)' : '⛽ GAS ACCEL'}</span>
-            </button>
-            <button
-              onClick={handleBackflip}
-              className="flex-1 py-4 bg-[#fdfcfc] hover:bg-cyan-100 border-2 border-[#201d1d] text-[#201d1d] font-black text-sm rounded-sm active:scale-95 shadow-md flex items-center justify-center gap-1.5 uppercase cursor-pointer"
-            >
-              <span>{isKo ? '🔄 360° 백플립' : '🔄 360° FLIP'}</span>
-            </button>
-            <button
-              onClick={handleNitro}
-              className="px-5 py-4 bg-orange-500 hover:bg-orange-400 border-2 border-[#201d1d] text-white font-black text-sm rounded-sm active:scale-95 shadow-md flex items-center justify-center gap-1 uppercase cursor-pointer"
-            >
-              <span>N</span>
-            </button>
-          </div>
-          <p className="text-[11px] text-[#201d1d] bg-[#fdfcfc]/90 px-3 py-0.5 rounded-sm border border-[#201d1d]/30 shadow-xs">
-            {isKo ? '가속을 유지하며 점프대에서 공중 백플립 묘기와 퍼펙트 착지를 완성하세요!' : 'Hold Gas to accelerate, do 360 flips in air and stick perfect landings!'}
-          </p>
-        </div>
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-pointer"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
+            handleGasStart();
+
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dy) > 20) {
+                moved = true;
+                handleBackflip();
+                window.removeEventListener('pointermove', onMove);
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              handleGasEnd();
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={() => handleNitro()}
+        />
       )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-[#201d1d]/85 border border-[#201d1d]/40 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {isKo ? '화면 길게 누름: 가속 | 공중에서 스와이프: 360° 플립 | 더블탭: 니트로 (버튼 없음)' : 'Hold Screen: Gas | Swipe in Air: 360° Flip | Double Tap: Nitro (No Buttons)'}
+        </div>
+      </div>
 
       {/* 3-Step Interactive Tutorial Modal */}
       {showTutorial && (

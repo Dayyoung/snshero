@@ -476,73 +476,61 @@ export const VoxelAceFighterGame: React.FC<VoxelAceFighterGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Touch Flight Buttons */}
-      <div className="absolute bottom-4 left-4 right-4 z-20 flex justify-between items-end pointer-events-none">
-        {/* Left D-pad */}
-        <div className="flex flex-col items-center gap-1 pointer-events-auto">
-          <button
-            onPointerDown={() => (gameStateRef.current.keys.w = true)}
-            onPointerUp={() => (gameStateRef.current.keys.w = false)}
-            className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-          >
-            ▲
-          </button>
-          <div className="flex gap-1">
-            <button
-              onPointerDown={() => (gameStateRef.current.keys.a = true)}
-              onPointerUp={() => (gameStateRef.current.keys.a = false)}
-              className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-            >
-              ◀
-            </button>
-            <button
-              onPointerDown={() => (gameStateRef.current.keys.s = true)}
-              onPointerUp={() => (gameStateRef.current.keys.s = false)}
-              className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-            >
-              ▼
-            </button>
-            <button
-              onPointerDown={() => (gameStateRef.current.keys.d = true)}
-              onPointerUp={() => (gameStateRef.current.keys.d = false)}
-              className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-            >
-              ▶
-            </button>
-          </div>
-        </div>
+      {/* Screen Gesture Touch Overlay */}
+      <div
+        className="absolute inset-0 z-10 select-none touch-none"
+        style={{ touchAction: 'none' }}
+        onPointerDown={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const startX = e.clientX - rect.left;
+          const startY = e.clientY - rect.top;
+          let moved = false;
 
-        {/* Action Buttons: Gun, Missile, Barrel Roll */}
-        <div className="flex gap-2 pointer-events-auto">
-          <button
-            onClick={() => (gameStateRef.current.barrelRoll = Math.PI * 2)}
-            className="w-14 h-14 bg-indigo-600/90 text-white rounded-2xl border border-indigo-400 font-bold text-xs flex flex-col items-center justify-center cursor-pointer active:scale-95"
-          >
-            <Zap size={18} />
-            <span>롤 [Q]</span>
-          </button>
+          const onMove = (moveEvt: PointerEvent) => {
+            const curX = moveEvt.clientX - rect.left;
+            const curY = moveEvt.clientY - rect.top;
+            const dx = curX - startX;
+            const dy = curY - startY;
 
-          <button
-            onClick={() => {
-              const scene = (mountRef.current?.children[0] as any)?.__r3f?.scene;
-              if (scene) fireHomingMissile(scene);
-            }}
-            className="w-14 h-14 bg-orange-600/90 text-white rounded-2xl border border-orange-400 font-bold text-xs flex flex-col items-center justify-center cursor-pointer active:scale-95"
-          >
-            <Rocket size={18} />
-            <span>유도탄 [E]</span>
-          </button>
+            if (Math.abs(dx) > 12 || Math.abs(dy) > 12) {
+              moved = true;
+              gameStateRef.current.keys.w = dy < -12;
+              gameStateRef.current.keys.s = dy > 12;
+              gameStateRef.current.keys.a = dx < -12;
+              gameStateRef.current.keys.d = dx > 12;
+            }
+          };
 
-          <button
-            onPointerDown={() => {
+          const onUp = () => {
+            window.removeEventListener('pointermove', onMove);
+            window.removeEventListener('pointerup', onUp);
+            window.removeEventListener('pointercancel', onUp);
+            gameStateRef.current.keys.w = false;
+            gameStateRef.current.keys.s = false;
+            gameStateRef.current.keys.a = false;
+            gameStateRef.current.keys.d = false;
+
+            if (!moved) {
+              // Tap: Fire Gun
               const scene = (mountRef.current?.children[0] as any)?.__r3f?.scene;
               if (scene) fireGun(scene);
-            }}
-            className="w-16 h-16 bg-rose-600/90 text-white rounded-2xl border-2 border-rose-400 font-bold text-xs flex flex-col items-center justify-center cursor-pointer active:scale-95"
-          >
-            <Crosshair size={22} />
-            <span>기관포 [Space]</span>
-          </button>
+            }
+          };
+
+          window.addEventListener('pointermove', onMove);
+          window.addEventListener('pointerup', onUp);
+          window.addEventListener('pointercancel', onUp);
+        }}
+        onDoubleClick={() => {
+          const scene = (mountRef.current?.children[0] as any)?.__r3f?.scene;
+          if (scene) fireHomingMissile(scene);
+        }}
+      />
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-cyan-500/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '드래그: 비행 | 탭: 기관포 | 더블탭: 유도탄 (화면 버튼 없음)' : 'Drag: Fly | Tap: Fire Cannon | Double Tap: Missile (No Buttons)'}
         </div>
       </div>
 

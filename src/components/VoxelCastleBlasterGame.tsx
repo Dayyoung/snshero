@@ -217,52 +217,55 @@ export const VoxelCastleBlasterGame: React.FC<VoxelCastleBlasterGameProps> = ({
         </div>
       </div>
 
-      {/* Bottom Sliders & Fire Button */}
-      <div className="absolute bottom-4 left-4 right-4 z-20 flex flex-col sm:flex-row items-center justify-between gap-3 pointer-events-auto bg-slate-900/80 p-3 rounded-2xl border border-slate-700">
-        <div className="flex items-center gap-4 w-full sm:w-auto">
-          <div className="flex flex-col">
-            <span className="text-[10px] text-slate-400">발사 각도: {cannonAngle}°</span>
-            <input
-              type="range"
-              min="15"
-              max="75"
-              value={cannonAngle}
-              onChange={e => {
-                const v = Number(e.target.value);
-                setCannonAngle(v);
-                gameStateRef.current.angle = v;
-              }}
-              className="w-28"
-            />
-          </div>
+      {/* Screen Gesture Touch Overlay */}
+      <div
+        className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+        style={{ touchAction: 'none' }}
+        onPointerDown={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const startX = e.clientX - rect.left;
+          const startY = e.clientY - rect.top;
+          let moved = false;
 
-          <div className="flex flex-col">
-            <span className="text-[10px] text-slate-400">발사 파워: {cannonPower}%</span>
-            <input
-              type="range"
-              min="30"
-              max="100"
-              value={cannonPower}
-              onChange={e => {
-                const v = Number(e.target.value);
-                setCannonPower(v);
-                gameStateRef.current.power = v;
-              }}
-              className="w-28"
-            />
-          </div>
+          const onMove = (moveEvt: PointerEvent) => {
+            const curX = moveEvt.clientX - rect.left;
+            const curY = moveEvt.clientY - rect.top;
+            const dx = curX - startX;
+            const dy = curY - startY;
+
+            if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+              moved = true;
+              gameStateRef.current.angle = Math.max(-0.6, Math.min(0.6, gameStateRef.current.angle + dx * 0.003));
+              setCannonAngle(Math.round(gameStateRef.current.angle * 50));
+              const newPow = Math.max(30, Math.min(100, gameStateRef.current.power - dy * 0.2));
+              gameStateRef.current.power = newPow;
+              setCannonPower(Math.round(newPow));
+            }
+          };
+
+          const onUp = () => {
+            window.removeEventListener('pointermove', onMove);
+            window.removeEventListener('pointerup', onUp);
+            window.removeEventListener('pointercancel', onUp);
+
+            if (!moved) {
+              // Tap: Fire Cannon
+              const scene = (mountRef.current?.children[0] as any)?.__r3f?.scene;
+              if (scene) fireCannon(scene);
+            }
+          };
+
+          window.addEventListener('pointermove', onMove);
+          window.addEventListener('pointerup', onUp);
+          window.addEventListener('pointercancel', onUp);
+        }}
+      />
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-rose-500/30 rounded-full text-[10px] text-rose-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '좌우 드래그: 조준 각도 | 상하: 발사 파워 | 탭: 대포 발사 (버튼 없음)' : 'Drag L/R: Aim | Drag U/D: Power | Tap: Fire Cannon (No Buttons)'}
         </div>
-
-        <button
-          onClick={() => {
-            const scene = (mountRef.current?.children[0] as any)?.__r3f?.scene;
-            if (scene) fireCannon(scene);
-          }}
-          className="w-full sm:w-36 h-14 bg-rose-600 hover:bg-rose-500 text-white rounded-xl border border-rose-400 font-black text-sm flex items-center justify-center gap-1 cursor-pointer active:scale-95 shadow-xl"
-        >
-          <Crosshair size={18} />
-          <span>대포 발사!</span>
-        </button>
       </div>
 
       {/* Victory / Game Over Modal */}

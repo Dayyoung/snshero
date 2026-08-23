@@ -295,18 +295,21 @@ export const VoxelBaseballDerbyGame: React.FC<VoxelBaseballDerbyGameProps> = ({
         </div>
       )}
 
-      {/* Mobile-First Big Swing Trigger */}
-      <div className="absolute bottom-6 left-4 right-4 flex flex-col items-center gap-3 z-10">
-        <button
-          onClick={handleSwing}
-          className="w-full max-w-sm py-4 bg-gradient-to-r from-amber-500 to-orange-600 border border-amber-300 text-slate-950 font-black text-lg rounded-sm active:scale-95 shadow-xl flex items-center justify-center gap-2 uppercase tracking-widest cursor-pointer"
-        >
-          <Target size={22} className="animate-spin" />
-          <span>{isKo ? '⚾ 풀스윙 배팅 (SWING)' : '⚾ FULL SWING BAT'}</span>
-        </button>
-        <p className="text-[11px] text-slate-300 bg-slate-900/80 px-3 py-0.5 rounded-sm border border-slate-700">
-          {isKo ? '공이 홈플레이트에 도달하는 순간 타이밍 맞춰 탭하세요!' : 'Tap exactly when the pitch crosses the home plate!'}
-        </p>
+      {/* Screen Gesture Touch Overlay */}
+      <div
+        className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+        style={{ touchAction: 'none' }}
+        onPointerDown={(e) => {
+          e.preventDefault();
+          handleSwing();
+        }}
+      />
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-slate-900/80 border border-amber-500/40 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {isKo ? '화면 어디든 타이밍에 맞춰 탭하여 풀스윙 (버튼 없음)' : 'Tap anywhere with perfect timing to swing (No Buttons)'}
+        </div>
       </div>
 
       {/* Game Over Modal */}

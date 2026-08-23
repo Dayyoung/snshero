@@ -457,34 +457,60 @@ export const VoxelBadmintonBlitzGame: React.FC<VoxelBadmintonBlitzGameProps> = (
         </div>
       )}
 
-      {/* Mobile-First Shot Action Buttons */}
-      <div className="absolute bottom-6 left-4 right-4 flex flex-col items-center gap-2 z-10">
-        <div className="w-full max-w-sm flex gap-2">
-          <button
-            onClick={handleSmash}
-            className="flex-1 py-3.5 bg-gradient-to-r from-rose-500 to-amber-500 border border-rose-300 text-slate-950 font-black text-sm rounded-sm active:scale-95 shadow-xl flex items-center justify-center gap-1.5 uppercase cursor-pointer"
-          >
-            <Zap size={18} />
-            <span>{isKo ? '⚡ 점프 스매시' : '⚡ SMASH'}</span>
-          </button>
-          <button
-            onClick={handleDropShot}
-            className="flex-1 py-3.5 bg-slate-900/90 border border-emerald-400 text-emerald-300 font-black text-sm rounded-sm active:scale-95 shadow-xl flex items-center justify-center gap-1.5 uppercase cursor-pointer"
-          >
-            <Sparkles size={18} />
-            <span>{isKo ? '✨ 드롭 샷' : '✨ DROP'}</span>
-          </button>
-          <button
-            onClick={handleClearLob}
-            className="flex-1 py-3.5 bg-slate-900/90 border border-sky-400 text-sky-300 font-black text-sm rounded-sm active:scale-95 shadow-xl flex items-center justify-center gap-1.5 uppercase cursor-pointer"
-          >
-            <Shield size={18} />
-            <span>{isKo ? '🏸 클리어 롭' : '🏸 CLEAR'}</span>
-          </button>
+      {/* Screen Gesture Touch Overlay */}
+      <div
+        className="absolute inset-0 z-10 select-none touch-none"
+        style={{ touchAction: 'none' }}
+        onPointerDown={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const startX = e.clientX - rect.left;
+          const startY = e.clientY - rect.top;
+          let moved = false;
+
+          const onMove = (moveEvt: PointerEvent) => {
+            const curX = moveEvt.clientX - rect.left;
+            const curY = moveEvt.clientY - rect.top;
+            const dx = curX - startX;
+            const dy = curY - startY;
+
+            if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+              moved = true;
+              stateRef.current.playerX = Math.max(-5.5, Math.min(5.5, (curX / rect.width - 0.5) * 12));
+              stateRef.current.playerZ = Math.max(3, Math.min(8.5, 4 + (curY / rect.height) * 5));
+            }
+          };
+
+          const onUp = (upEvt: PointerEvent) => {
+            window.removeEventListener('pointermove', onMove);
+            window.removeEventListener('pointerup', onUp);
+            window.removeEventListener('pointercancel', onUp);
+
+            const curY = upEvt.clientY - rect.top;
+            const dy = curY - startY;
+
+            if (!moved) {
+              // Tap: Power Smash
+              handleSmash();
+            } else if (dy < -35) {
+              // Swipe Up: Clear Lob
+              handleClearLob();
+            } else if (dy > 35) {
+              // Swipe Down: Drop Shot
+              handleDropShot();
+            }
+          };
+
+          window.addEventListener('pointermove', onMove);
+          window.addEventListener('pointerup', onUp);
+          window.addEventListener('pointercancel', onUp);
+        }}
+      />
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-slate-900/80 border border-emerald-400/30 rounded-full text-[10px] text-emerald-300 font-mono backdrop-blur-xs">
+          {isKo ? '드래그: 이동 | 탭: 스매시 | 위로 스와이프: 롭 | 아래로: 드롭 (버튼 없음)' : 'Drag: Move | Tap: Smash | Swipe Up: Lob | Swipe Down: Drop (No Buttons)'}
         </div>
-        <p className="text-[11px] text-slate-300 bg-slate-900/80 px-3 py-0.5 rounded-sm border border-slate-700">
-          {isKo ? '화면 좌우 드래그로 풋워크 이동 후 버튼으로 스매시 / 드롭을 구사하세요!' : 'Drag left/right to move and tap buttons to hit Smash or Drop!'}
-        </p>
       </div>
 
       {/* Game Over Modal */}

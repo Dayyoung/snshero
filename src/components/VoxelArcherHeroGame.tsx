@@ -255,36 +255,47 @@ export const VoxelArcherHeroGame: React.FC<VoxelArcherHeroGameProps> = ({
       {/* 3D Canvas */}
       <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Bottom Joystick Controls */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-4 pointer-events-auto">
-        <button
-          onPointerDown={() => { stateRef.current.isMoving = true; stateRef.current.pPos.x -= 1.5; }}
-          onPointerUp={() => { stateRef.current.isMoving = false; }}
-          className="w-16 h-16 bg-slate-900/90 active:bg-lime-600 border border-lime-400 rounded-sm text-white font-black text-xl flex items-center justify-center shadow-lg"
-        >
-          ◀
-        </button>
-        <button
-          onPointerDown={() => { stateRef.current.isMoving = true; stateRef.current.pPos.z -= 1.5; }}
-          onPointerUp={() => { stateRef.current.isMoving = false; }}
-          className="w-16 h-16 bg-slate-900/90 active:bg-lime-600 border border-lime-400 rounded-sm text-white font-black text-xl flex items-center justify-center shadow-lg"
-        >
-          ▲
-        </button>
-        <button
-          onPointerDown={() => { stateRef.current.isMoving = true; stateRef.current.pPos.z += 1.5; }}
-          onPointerUp={() => { stateRef.current.isMoving = false; }}
-          className="w-16 h-16 bg-slate-900/90 active:bg-lime-600 border border-lime-400 rounded-sm text-white font-black text-xl flex items-center justify-center shadow-lg"
-        >
-          ▼
-        </button>
-        <button
-          onPointerDown={() => { stateRef.current.isMoving = true; stateRef.current.pPos.x += 1.5; }}
-          onPointerUp={() => { stateRef.current.isMoving = false; }}
-          className="w-16 h-16 bg-slate-900/90 active:bg-lime-600 border border-lime-400 rounded-sm text-white font-black text-xl flex items-center justify-center shadow-lg"
-        >
-          ▶
-        </button>
+      {/* Screen Gesture Touch Overlay */}
+      <div
+        className="absolute inset-0 z-10 select-none touch-none"
+        style={{ touchAction: 'none' }}
+        onPointerDown={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const startX = e.clientX - rect.left;
+          const startY = e.clientY - rect.top;
+          stateRef.current.isMoving = true;
+
+          const onMove = (moveEvt: PointerEvent) => {
+            const curX = moveEvt.clientX - rect.left;
+            const curY = moveEvt.clientY - rect.top;
+            const dx = curX - startX;
+            const dy = curY - startY;
+
+            if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+              stateRef.current.isMoving = true;
+              stateRef.current.pPos.x = Math.max(-18, Math.min(18, stateRef.current.pPos.x + dx * 0.05));
+              stateRef.current.pPos.z = Math.max(-18, Math.min(18, stateRef.current.pPos.z + dy * 0.05));
+            }
+          };
+
+          const onUp = () => {
+            window.removeEventListener('pointermove', onMove);
+            window.removeEventListener('pointerup', onUp);
+            window.removeEventListener('pointercancel', onUp);
+            stateRef.current.isMoving = false;
+          };
+
+          window.addEventListener('pointermove', onMove);
+          window.addEventListener('pointerup', onUp);
+          window.addEventListener('pointercancel', onUp);
+        }}
+      />
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-lime-400/30 rounded-full text-[10px] text-lime-300 font-mono backdrop-blur-xs">
+          {language === 'ko' ? '드래그: 궁수 이동 | 손 떼기: 자동 조준 사격 (버튼 없음)' : 'Drag: Move | Release: Auto Aim Shoot (No Buttons)'}
+        </div>
       </div>
 
       {/* Game Over Modal */}

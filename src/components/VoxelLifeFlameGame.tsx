@@ -390,38 +390,53 @@ export const VoxelLifeFlameGame: React.FC<VoxelLifeFlameGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Touch Aim & Flame Buttons */}
+      {/* Screen Gesture Touch Overlay */}
       {!isGameOver && (
-        <div className="absolute inset-x-0 bottom-4 z-20 flex justify-between px-6 pointer-events-auto">
-          {/* Aim Left / Right Rotation */}
-          <div className="flex gap-3">
-            <button
-              onPointerDown={() => { stateRef.current.aimAngle -= 0.35; }}
-              className="w-14 h-14 bg-rose-950/80 border-2 border-rose-500/70 text-rose-300 text-lg font-black rounded-sm active:scale-95 flex items-center justify-center shadow-lg"
-            >
-              ↺
-            </button>
-            <button
-              onPointerDown={() => { stateRef.current.aimAngle += 0.35; }}
-              className="w-14 h-14 bg-rose-950/80 border-2 border-rose-500/70 text-rose-300 text-lg font-black rounded-sm active:scale-95 flex items-center justify-center shadow-lg"
-            >
-              ↻
-            </button>
-          </div>
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-          {/* Fire Flame Button */}
-          <button
-            onPointerDown={() => {
-              const e = new KeyboardEvent('keydown', { key: ' ' });
-              window.dispatchEvent(e);
-            }}
-            className="w-28 h-14 bg-gradient-to-r from-rose-600 to-pink-600 text-white text-xs font-black rounded-sm active:scale-95 flex items-center justify-center gap-1.5 shadow-lg border border-rose-400/50 cursor-pointer"
-          >
-            <Flame size={16} />
-            <span>{isKo ? '생명의 불꽃' : 'BURST'}</span>
-          </button>
-        </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 8) {
+                moved = true;
+                stateRef.current.aimAngle += (dx > 0 ? 0.05 : -0.05);
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Fire Flame Burst
+                window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }));
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
       )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-rose-500/30 rounded-full text-[10px] text-rose-300 font-mono backdrop-blur-xs">
+          {isKo ? '좌우 드래그: 화염 조준 회전 | 탭: 생명의 불꽃 발사 (버튼 없음)' : 'Drag L/R: Aim Flame Angle | Tap: Fire Burst (No Buttons)'}
+        </div>
+      </div>
 
       {/* Game Over Modal */}
       {isGameOver && (

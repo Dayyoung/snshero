@@ -302,56 +302,54 @@ export const VoxelGachaClawGame: React.FC<VoxelGachaClawGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Controls: D-Pad & Grab Drop */}
-      <div className="absolute bottom-6 left-3 right-3 flex items-center justify-between gap-3 z-10">
-        {/* D-Pad */}
-        <div className="grid grid-cols-3 gap-1 bg-slate-900/80 p-2 rounded-sm border border-slate-700">
-          <div />
-          <button
-            onClick={() => handleMoveClaw(0, -0.4)}
-            className="w-10 h-10 bg-slate-800 active:bg-pink-600 text-white font-bold text-xs rounded-sm flex items-center justify-center cursor-pointer"
-          >
-            ▲
-          </button>
-          <div />
-          <button
-            onClick={() => handleMoveClaw(-0.4, 0)}
-            className="w-10 h-10 bg-slate-800 active:bg-pink-600 text-white font-bold text-xs rounded-sm flex items-center justify-center cursor-pointer"
-          >
-            ◀
-          </button>
-          <div className="w-10 h-10 flex items-center justify-center text-slate-500 text-xs">
-            <Move size={14} />
-          </div>
-          <button
-            onClick={() => handleMoveClaw(0.4, 0)}
-            className="w-10 h-10 bg-slate-800 active:bg-pink-600 text-white font-bold text-xs rounded-sm flex items-center justify-center cursor-pointer"
-          >
-            ▶
-          </button>
-          <div />
-          <button
-            onClick={() => handleMoveClaw(0, 0.4)}
-            className="w-10 h-10 bg-slate-800 active:bg-pink-600 text-white font-bold text-xs rounded-sm flex items-center justify-center cursor-pointer"
-          >
-            ▼
-          </button>
-          <div />
-        </div>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-        {/* Drop Grab Button */}
-        <button
-          onClick={handleDropClaw}
-          disabled={isClawBusy || tokens <= 0}
-          className={`flex-1 py-6 font-black text-base uppercase rounded-sm border shadow-xl flex flex-col items-center justify-center gap-1 cursor-pointer transition-all ${
-            isClawBusy
-              ? 'bg-slate-800 text-slate-500 border-slate-700'
-              : 'bg-gradient-to-r from-pink-500 to-rose-600 hover:brightness-110 active:scale-95 text-white border-pink-300'
-          }`}
-        >
-          <Gift size={24} />
-          <span>{isKo ? '집게 하강 (GRAB)' : 'DROP CLAW'}</span>
-        </button>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 15 || Math.abs(dy) > 15) {
+                moved = true;
+                const dirX = Math.abs(dx) > 15 ? (dx > 0 ? 0.35 : -0.35) : 0;
+                const dirZ = Math.abs(dy) > 15 ? (dy > 0 ? 0.35 : -0.35) : 0;
+                handleMoveClaw(dirX, dirZ);
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Drop Claw
+                handleDropClaw();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/70 border border-pink-500/30 rounded-full text-[10px] text-pink-300 font-mono backdrop-blur-xs">
+          {isKo ? '드래그: 집게 위치 조준 | 탭: 집게 하강 (버튼 없음)' : 'Drag: Aim Claw Position | Tap: Drop Claw (No Buttons)'}
+        </div>
       </div>
 
       {/* Game Over Modal */}

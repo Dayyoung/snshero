@@ -473,40 +473,11 @@ export const SnakeBattleGame: React.FC<SnakeBattleGameProps> = ({
         </div>
 
         <aside className="w-full max-w-[360px] space-y-3">
-          <div className="bg-white/10 border border-white/10 rounded-3xl p-4">
+          <div className="bg-white/10 border border-white/10 rounded-none p-4">
             <p className="text-[10px] font-black text-slate-400 uppercase mb-2 text-center lg:text-left">{t('snake_controls', language)}</p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-              <div className="grid grid-cols-3 grid-rows-3 gap-2 place-items-center w-fit">
-                <div />
-                <DirectionButton dir="up" />
-                <div />
-                <DirectionButton dir="left" />
-                <div className="w-14 h-14 rounded-2xl bg-slate-950/80 border border-white/10 flex items-center justify-center text-[10px] font-black text-indigo-200 shadow-inner select-none">
-                  MOVE
-                </div>
-                <DirectionButton dir="right" />
-                <div />
-                <DirectionButton dir="down" />
-                <div />
-              </div>
-              <div className="flex flex-col items-center gap-1.5">
-                <button
-                  onPointerDown={() => setIsBoosting(true)}
-                  onPointerUp={() => setIsBoosting(false)}
-                  onPointerLeave={() => setIsBoosting(false)}
-                  className={cn(
-                    "w-16 h-16 rounded-full flex flex-col items-center justify-center border font-black uppercase text-xs shadow-md transition-all active:scale-90 cursor-pointer select-none touch-none",
-                    isBoosting 
-                      ? "bg-amber-500 border-amber-300 text-slate-950 scale-95 shadow-amber-500/20" 
-                      : "bg-white/10 border-white/15 text-amber-400 hover:bg-white/15"
-                  )}
-                  style={{ touchAction: 'none' }}
-                >
-                  <Zap size={22} className={cn(isBoosting && "animate-pulse")} />
-                  <span className="text-[8px] mt-0.5">BOOST</span>
-                </button>
-                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">{language === 'ko' ? '스페이스바' : 'SPACEBAR'}</span>
-              </div>
+            <div className="p-3 bg-black/40 border border-white/10 text-center text-xs text-amber-300 font-mono space-y-1">
+              <div>{language === 'ko' ? '화면 스와이프: 4방향 전환' : 'Swipe Screen: 4-Way Steer'}</div>
+              <div>{language === 'ko' ? '화면 탭 / 더블탭: 부스터 질주' : 'Tap / Double Tap: Boost Rush'}</div>
             </div>
           </div>
           <div className="bg-white/10 border border-white/10 rounded-3xl p-4">
