@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
-import { Trophy, Zap, Sparkles, ArrowUpRight, Coins, ChevronDown, ChevronUp, Share2, Check, Layers, Shield, Flame, BarChart3 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Trophy, Zap, Sparkles, ArrowUpRight, Coins, ChevronDown, ChevronUp, Share2, Check, Layers, Shield, Flame, BarChart3, UserPlus, UserCheck, Eye, User, X } from 'lucide-react';
 import { CardData } from '../types';
 import { getCardSpriteStyle } from '../lib/utils';
 
@@ -31,8 +31,15 @@ export interface BattleResultPanelProps {
   isManaSpringBonus?: boolean;
   isElementalComboBonus?: boolean;
   isIroncladBonus?: boolean;
+  opponentName?: string;
+  opponentAvatar?: string;
+  opponentUid?: string;
+  opponentLevel?: number;
+  opponentWinRate?: string;
+  opponentMainCardTitle?: string;
   onShareToCommunity?: () => void;
   onOpenDetailedSummary?: () => void;
+  onAddFriend?: (uid: string, name: string) => void;
 }
 
 export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
@@ -51,12 +58,50 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
   isManaSpringBonus = false,
   isElementalComboBonus = false,
   isIroncladBonus = false,
+  opponentName,
+  opponentAvatar,
+  opponentUid,
+  opponentLevel = 15,
+  opponentWinRate = '68.4%',
+  opponentMainCardTitle,
   onShareToCommunity,
-  onOpenDetailedSummary
+  onOpenDetailedSummary,
+  onAddFriend
 }) => {
   const isKo = language === 'ko';
   const [showRewardsDetail, setShowRewardsDetail] = useState(false);
   const [shared, setShared] = useState(false);
+  const [friendRequested, setFriendRequested] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+
+  const displayOpponentName = opponentName || (isKo ? '라이벌 사령관' : 'Rival Commander');
+  const displayOpponentUid = opponentUid || 'rival_' + Math.floor(1000 + Math.random() * 9000);
+
+  const handleAddFriendClick = () => {
+    if (friendRequested) return;
+    try {
+      const savedFriendsStr = localStorage.getItem('hero_friends') || '[]';
+      const friendsList = JSON.parse(savedFriendsStr);
+      if (!friendsList.some((f: any) => f.uid === displayOpponentUid || f.name === displayOpponentName)) {
+        friendsList.push({
+          uid: displayOpponentUid,
+          name: displayOpponentName,
+          avatar: opponentAvatar || 'https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=100&auto=format&fit=crop&q=80',
+          level: opponentLevel,
+          battles: 1,
+          lastBattle: Date.now(),
+          status: 'pending_request'
+        });
+        localStorage.setItem('hero_friends', JSON.stringify(friendsList));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    if (onAddFriend) {
+      onAddFriend(displayOpponentUid, displayOpponentName);
+    }
+    setFriendRequested(true);
+  };
 
   const totalExchange = Math.max(1, totalDamageDealt + totalDamageReceived);
   const playerDmgPercent = Math.round((totalDamageDealt / totalExchange) * 100);
@@ -113,6 +158,62 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
         }`}>
           {result === 'win' ? (isKo ? 'VICTORY 승리' : 'VICTORY') : result === 'loss' ? (isKo ? 'DEFEAT 패배' : 'DEFEAT') : (isKo ? 'DRAW 무승부' : 'DRAW')}
         </span>
+      </div>
+
+      {/* Opponent Nameplate & Quick Social Actions (ID 53) */}
+      <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 flex items-center justify-between gap-2 shadow-inner">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="w-8 h-8 rounded-full overflow-hidden border border-amber-500/40 bg-slate-800 shrink-0 flex items-center justify-center">
+            {opponentAvatar ? (
+              <img src={opponentAvatar} alt={displayOpponentName} className="w-full h-full object-cover" />
+            ) : (
+              <User size={16} className="text-amber-400" />
+            )}
+          </div>
+          <div className="flex flex-col min-w-0">
+            <div className="flex items-center gap-1">
+              <span className="text-xs font-black text-slate-200 truncate">{displayOpponentName}</span>
+              <span className="text-[9px] text-amber-400 font-bold shrink-0">Lv.{opponentLevel}</span>
+            </div>
+            <span className="text-[9px] text-slate-400 font-mono">
+              {isKo ? `승률 ${opponentWinRate}` : `Win Rate ${opponentWinRate}`}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            type="button"
+            onClick={handleAddFriendClick}
+            disabled={friendRequested}
+            className={`px-2 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 border transition-all cursor-pointer ${
+              friendRequested
+                ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300 opacity-80 cursor-default'
+                : 'bg-slate-800 hover:bg-slate-750 border-slate-700 text-slate-200 active:scale-95'
+            }`}
+          >
+            {friendRequested ? (
+              <>
+                <UserCheck size={12} className="text-emerald-400" />
+                <span>{isKo ? '신청완료' : 'Requested'}</span>
+              </>
+            ) : (
+              <>
+                <UserPlus size={12} className="text-blue-400" />
+                <span>{isKo ? '친구 신청' : 'Add Friend'}</span>
+              </>
+            )}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowProfileModal(true)}
+            className="px-2 py-1 rounded-lg text-[10px] font-bold bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-200 flex items-center gap-1 transition-all cursor-pointer active:scale-95"
+          >
+            <Eye size={12} className="text-amber-400" />
+            <span>{isKo ? '프로필' : 'Inspect'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Bonus Badges: Speed Attack / Underdog / Loot Goblin / Mana Spring / Elemental Combo / Ironclad Defender */}
@@ -407,6 +508,111 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
           </motion.div>
         )}
       </div>
+
+      {/* Opponent Profile Modal Overlay (ID 53) */}
+      <AnimatePresence>
+        {showProfileModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={() => setShowProfileModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-sm bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-4 font-mono text-left shadow-2xl"
+            >
+              {/* Modal Header */}
+              <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                <div className="flex items-center gap-2">
+                  <User size={18} className="text-amber-400" />
+                  <span className="text-sm font-black text-slate-100 uppercase tracking-wider">
+                    {isKo ? '상대 프로필 조회' : 'Opponent Profile'}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowProfileModal(false)}
+                  className="p-1 text-slate-400 hover:text-white rounded-lg transition-colors cursor-pointer"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Opponent Avatar & Level Info */}
+              <div className="flex items-center gap-3 bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-amber-500/50 bg-slate-800 shrink-0 flex items-center justify-center">
+                  {opponentAvatar ? (
+                    <img src={opponentAvatar} alt={displayOpponentName} className="w-full h-full object-cover" />
+                  ) : (
+                    <User size={24} className="text-amber-400" />
+                  )}
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-sm font-black text-slate-100 truncate">{displayOpponentName}</span>
+                    <span className="text-[10px] text-amber-400 font-bold bg-amber-950/60 border border-amber-500/40 px-1.5 py-0.2 rounded-full">
+                      Lv.{opponentLevel}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-slate-400">UID: {displayOpponentUid}</span>
+                </div>
+              </div>
+
+              {/* Stats Summary Grid */}
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800 flex flex-col">
+                  <span className="text-[10px] text-slate-400">{isKo ? '전적 승률' : 'Win Rate'}</span>
+                  <span className="text-sm font-black text-emerald-400">{opponentWinRate}</span>
+                </div>
+                <div className="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800 flex flex-col">
+                  <span className="text-[10px] text-slate-400">{isKo ? '대표 에이스 카드' : 'Main Ace Card'}</span>
+                  <span className="text-sm font-black text-amber-400 truncate">
+                    {opponentMainCardTitle || (isKo ? '카단 (SSR)' : 'Kadan (SSR)')}
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Buttons in Modal */}
+              <div className="pt-2 flex gap-2">
+                <button
+                  type="button"
+                  onClick={handleAddFriendClick}
+                  disabled={friendRequested}
+                  className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1.5 border transition-all cursor-pointer ${
+                    friendRequested
+                      ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300 opacity-80 cursor-default'
+                      : 'bg-blue-600 hover:bg-blue-500 border-blue-400 text-white active:scale-95'
+                  }`}
+                >
+                  {friendRequested ? (
+                    <>
+                      <UserCheck size={14} className="text-emerald-400" />
+                      <span>{isKo ? '친구 신청 완료' : 'Friend Requested'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus size={14} />
+                      <span>{isKo ? '친구 신청' : 'Add Friend'}</span>
+                    </>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowProfileModal(false)}
+                  className="py-2.5 px-4 rounded-xl text-xs font-black uppercase bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 transition-all cursor-pointer"
+                >
+                  {isKo ? '닫기' : 'Close'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };

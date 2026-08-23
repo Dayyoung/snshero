@@ -15753,6 +15753,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 isManaSpringBonus={manaSpringClaimed}
                 isElementalComboBonus={hasTriggeredElementalCombo}
                 isIroncladBonus={isIroncladWin}
+                opponentName={lastOpponent?.name || (battleType === 'robot' ? 'AI 로봇' : language === 'ko' ? '라이벌 사령관' : 'Rival Commander')}
+                opponentAvatar={lastOpponent?.avatar}
+                opponentLevel={lastOpponent?.level || 15}
+                opponentMainCardTitle={opponentDeck[0]?.title || (language === 'ko' ? '카단 (SSR)' : 'Kadan (SSR)')}
                 onShareToCommunity={() => setShowBattleShareTemplate(true)}
                 onOpenDetailedSummary={() => setShowPostBattleSummaryModal(true)}
               />

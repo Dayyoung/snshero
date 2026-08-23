@@ -4,6 +4,23 @@
 
 ---
 
+## [2026-08-24 08:46 KST / 23:46 UTC] [/gemini-ex 스프레드시트 개선] Row 53 전투 결과 화면 내 상대방 유저 '친구 신청' 및 '프로필 조회' 퀵 버튼/모달 구현 완료
+- **스프레드시트 작업 대상 (Row 53)**:
+  - Row 53: `전투 결과 화면 내 상대방 유저 '친구 신청' 및 '프로필 조회' 퀵 버튼 부재`
+- **구현 및 개선 상세**:
+  1. `src/components/BattleResultPanel.tsx`:
+     - 상대방 정보(`opponentName`, `opponentAvatar`, `opponentUid`, `opponentLevel`, `opponentWinRate`, `opponentMainCardTitle`) 바인딩.
+     - 상대방 네임플레이트 상단에 [친구 신청 (Add Friend)] 버튼(클릭 시 `hero_friends` 로컬스토리지 즉시 동기화 및 `신청완료` 토글) 및 [프로필 조회 (Inspect)] 퀵 버튼 추가.
+     - 상대방의 레벨, UID, 전적 승률, 대표 에이스 카드 정보를 시각화하는 [상대 프로필 조회] 모달 팝업 오버레이 구현.
+  2. `src/views/PlayGameView.tsx`:
+     - 대전 상대(`lastOpponent` / `opponentDeck`)의 정보 props를 `BattleResultPanel`에 완벽 연동.
+- **검증 및 보고**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+  - 프로덕션 빌드 성공.
+  - 구글 폼 보고 완료: `[개발] [Row 53] 전투 결과 화면 내 상대방 유저 '친구 신청' 및 '프로필 조회' 퀵 액션 및 프로필 모달 구현 완료`
+
+---
+
 ## [2026-08-24 08:40 KST / 23:40 UTC] [미션게임 UI/UX 전면 개편] 모든 미션게임 화면상 가상 조이스틱/버튼 100% 제거 및 풀스크린 상하좌우 스와이프/탭 터치 제스처 전환 완료
 - **작업 목표 및 요구사항**:
   - 모바일 뷰포트에서 게임 플레이 화면을 가리거나 터치 오류를 유발하는 모든 가상 D-Pad, 가상 조이스틱, 하단 액션 버튼을 100% 전수 제거.
