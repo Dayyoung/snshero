@@ -4,6 +4,82 @@
 
 ---
 
+## [2026-08-24 08:40 KST / 23:40 UTC] [미션게임 UI/UX 전면 개편] 모든 미션게임 화면상 가상 조이스틱/버튼 100% 제거 및 풀스크린 상하좌우 스와이프/탭 터치 제스처 전환 완료
+- **작업 목표 및 요구사항**:
+  - 모바일 뷰포트에서 게임 플레이 화면을 가리거나 터치 오류를 유발하는 모든 가상 D-Pad, 가상 조이스틱, 하단 액션 버튼을 100% 전수 제거.
+  - 화면 어디서든 직관적인 상하좌우 드래그/스와이프(이동/선회/조향/조준), 단순 탭/클릭(공격/사격/점프/트릭), 더블탭/롱프레스(특수기/부스터/스매시/회피) 제스처 인터랙션으로 전환.
+- **수정 및 전환 완료 컴포넌트 목록 (58개 컴포넌트 전수 적용)**:
+  1. **2D / 클래식 미션 게임**:
+     - `SnakeBattleGame.tsx`: 화면 스와이프로 4방향 전환, 탭으로 부스터 질주.
+     - `ShootingBattleGame.tsx`: 비행선 캔버스 터치 추종 및 자동 사격.
+     - `PacmanGame.tsx`: 캔버스 상하좌우 스와이프로 팩맨 4방향 이동.
+     - `BreakoutGame.tsx`: 패들 터치 드래그 추종.
+     - `CardJumperGame.tsx`: 좌우 터치/스와이프로 점퍼 이동.
+     - `TrexRunnerGame.tsx`: 화면 탭으로 공중 점프 & 2단 점프.
+  2. **3D Voxel 미션 게임 시리즈 (52개 전수 전환)**:
+     - `VoxelAceFighterGame.tsx`: 드래그 비행, 탭 사격, 더블탭 유도탄.
+     - `VoxelArcaneNexusGame.tsx`: 좌우 스와이프 회전, 상하 전환, 탭 아케인 펄스.
+     - `VoxelArcherHeroGame.tsx`: 드래그 이동, 손 떼기 자동 사격.
+     - `VoxelBadmintonBlitzGame.tsx`: 드래그 풋워크, 탭 스매시, 스와이프 드롭.
+     - `VoxelBaseballDerbyGame.tsx`: 타이밍 화면 탭 풀스윙.
+     - `VoxelBeatBlasterGame.tsx`: 4분할 풀스크린 터치 존.
+     - `VoxelBilliardsTrickGame.tsx`: 좌우 조준, 상하 파워, 탭 타구.
+     - `VoxelCastleBlasterGame.tsx`: 좌우 각도, 상하 파워, 탭 포탄 발사.
+     - `VoxelCraneMasterGame.tsx`: 드래그 크레인 이동, 탭 전자석 흡착/적재, 더블탭 90° 회전.
+     - `VoxelCrazyTaxiGame.tsx`: 좌우 조향, 탭 점프, 더블탭 니트로 부스트.
+     - `VoxelCyberNinjaGame.tsx`: 드래그 이동, 탭 카타나 베기, 더블탭 블링크 참격.
+     - `VoxelDeepSeaOdysseyGame.tsx`: 3D 드래그 잠수 항해, 탭 어뢰 발사.
+     - `VoxelDojoBalanceGame.tsx`: 좌우 스와이프 균형, 탭 공격, 롱프레스 가드, 더블탭 강타.
+     - `VoxelDreadShadowGame.tsx`: 드래그 은밀 이동, 탭 은신 토글.
+     - `VoxelDreamweaverGame.tsx`: 드래그 글라이딩 비행, 탭 부스트.
+     - `VoxelDriftMasterGame.tsx`: 드래그 주행 & 드리프트, 더블탭 니트로.
+     - `VoxelDungeonCrawlerGame.tsx`: 드래그 이동, 탭 검 참격, 더블탭 대시.
+     - `VoxelFireRescueGame.tsx`: 드래그 소방차 조향, 탭/홀드 방수포 소화.
+     - `VoxelFishingMasterGame.tsx`: 탭 캐스팅 & 챔질, 홀드 릴링.
+     - `VoxelFlightLandingGame.tsx`: 드래그 롤/피치 비행, 탭 랜딩기어.
+     - `VoxelGachaClawGame.tsx`: 드래그 집게 조준, 탭 집게 하강.
+     - `VoxelGolfMasterGame.tsx`: 좌우 각도, 상하 파워, 탭 티샷 스윙.
+     - `VoxelHalfpipeSkaterGame.tsx`: 탭 펌핑, 공중 스와이프 에어 트릭.
+     - `VoxelJetskiWaterGame.tsx`: 드래그 조향, 탭 스턴트, 더블탭 터보.
+     - `VoxelKrakenHunterGame.tsx`: 드래그 조준, 탭 작살 발사, 홀드 릴링.
+     - `VoxelLaserStealthGame.tsx`: 드래그 잠입 이동, 탭 슬라이딩, 더블탭 EMP 무력화.
+     - `VoxelLifeFlameGame.tsx`: 좌우 드래그 조준, 탭 생명의 불꽃 발사.
+     - `VoxelLumberjackTycoonGame.tsx`: 드래그 이동 (나무 접근 시 자동 벌목).
+     - `VoxelMegaFlareAssaultGame.tsx`: 드래그 조준, 탭 포격, 더블탭 메가 플레어.
+     - `VoxelMicroKartGame.tsx`: 드래그 카트 조향, 탭 아이템, 더블탭 터보.
+     - `VoxelMonsterIsleGame.tsx`: 드래그 섬 탐험, 탭 큐브 투척.
+     - `VoxelMonsterTruckGame.tsx`: 드래그 주행, 탭 도넛 스핀, 더블탭 니트로.
+     - `VoxelMotocrossStuntGame.tsx`: 홀드 가속, 스와이프 360° 플립, 더블탭 니트로.
+     - `VoxelNetherPortalGame.tsx`: 좌우 스와이프 레인 이동, 탭 점프.
+     - `VoxelPinballClimberGame.tsx` / `VoxelPinballKnightsGame.tsx`: 화면 좌/우 반할 순수 터치 존.
+     - `VoxelPirateBattlesGame.tsx`: 드래그 조타, 좌/우 탭 좌현/우현 일제 사격.
+     - `VoxelRaftSurvivalGame.tsx`: 탭 갈고리 수거, 더블탭 뗏목 확장.
+     - `VoxelRollingHeroGame.tsx`: 드래그 볼 롤링, 탭 점프.
+     - `VoxelSkateboardStreetGame.tsx`: 좌우 드래그 카빙, 탭 올리 점프, 공중 탭/스와이프 킥플립 360.
+     - `VoxelSkyParkourGame.tsx`: 드래그 발판 이동, 탭 파쿠르 점프.
+     - `VoxelSlamDunkGame.tsx`: 아래에서 위로 스와이프 3점슛, 더블탭 360° 슬램덩크.
+     - `VoxelSniperHunterGame.tsx`: 드래그 조준, 홀드 숨참기, 탭 저격 사격.
+     - `VoxelSnowboardExtremeGame.tsx`: 좌우 드래그 조향, 탭 점프 트릭, 더블탭/위로 부스터.
+     - `VoxelSnowboardSlalomGame.tsx`: 좌우 드래그 슬라롬 카빙, 탭 뮬트 그랩 점프.
+     - `VoxelSpaceOdysseyGame.tsx`: 드래그 우주선 궤도 비행, 탭 레이저 발사.
+     - `VoxelSpikeRollingGame.tsx`: 좌우 드래그 볼더 조향, 탭/더블탭 부스트 가속.
+     - `VoxelSubwayRunnerGame.tsx`: 좌우 스와이프 차선변경, 위로/탭 점프, 아래로 슬라이딩, 더블탭 호버보드.
+     - `VoxelSuperSmashGame.tsx`: 좌우 드래그 이동, 탭 스매시 공격, 위로/더블탭 점프.
+     - `VoxelSuperStrikersGame.tsx`: 드래그 카 주행 & 조향, 탭/더블탭/위로 슈퍼 부스트.
+     - `VoxelTankBounceGame.tsx`: 드래그 탱크 주행 & 조향, 탭 도탄 포탄 발사.
+     - `VoxelTerraQuakeGame.tsx`: 드래그 대지 이동, 탭 어스 스톰프.
+     - `VoxelTitanMechaGame.tsx`: 드래그 메카 기동, 탭 미사일 사격, 더블탭/위로 부스트.
+     - `VoxelTreasureDiggerGame.tsx`: 화면 탭 갈고리 사출, 더블탭 TNT 폭파.
+     - `VoxelVampireSurvivalGame.tsx`: 드래그 히어로 이동 (자동 무기 발사).
+     - `VoxelWaterSlideGame.tsx`: 좌우 드래그 슬라이드 조향, 탭/더블탭/위로 워터젯 부스트.
+     - `VoxelZombieSurvivalGame.tsx`: 드래그 조준 및 시점 회전, 탭 사격, 더블탭 바리케이드 수리.
+- **검증 및 보고**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+  - Git 커밋 완료: `617ce33` (58개 파일 변경, +2688 / -2169).
+  - 구글 폼 보고 완료: `[개발] [미션게임 UI/UX 전면 개편] 화면상 모든 가상 조이스틱/버튼 전수 제거 및 100% 상하좌우 스와이프/탭 터치 제스처 전환 -> 작업완료` (SUCCESS).
+
+---
+
 ## [2026-08-22 13:30 KST / 04:30 UTC] [스킬 뷰 개선 및 데스크톱 사이드바 최적화] 대상 카드 요약 배너 추가, 덱 뒤로가기 라우팅 복구, 도움말 다국어 키 표시 버그 수정 및 사이드바 겹침 개선 완료
 - **스프레드시트 작업 대상 (Row 6, 7, 8, 9)**:
   - Row 6: `[Skill View]` 스킬 강화 뷰 최상단에 대상 영웅 카드 요약 정보 배너(썸네일, 속성, 레벨, 전투력, 레어도) 표시
