@@ -49,6 +49,7 @@ import { StoryBattleBanner } from '../components/StoryBattleBanner';
 import { StoryBattleResult } from '../components/StoryBattleResult';
 import { ShareTemplateCard } from '../components/ShareTemplateCard';
 import { StoryStageSelectModal } from '../components/StoryStageSelectModal';
+import { CardLongPressPreviewModal } from '../components/CardLongPressPreviewModal';
 import { SkillActivationOverlay, SkillEvent } from '../components/SkillActivationOverlay';
 import { PingIndicator } from '../components/PingIndicator';
 import { LuckyMatchModal } from '../components/LuckyMatchModal';
@@ -57,7 +58,6 @@ import { ExpeditionModal } from '../components/ExpeditionModal';
 import { MonsterBeastariumModal } from '../components/MonsterBeastariumModal';
 import { TacticianMasteryModal } from '../components/TacticianMasteryModal';
 import { TowerOfTrialsModal } from '../components/TowerOfTrialsModal';
-import { BattleStanceBar } from '../components/BattleStanceBar';
 import { BattleGambitModal } from '../components/BattleGambitModal';
 import { VoxelMiningDefenseGame } from '../components/VoxelMiningDefenseGame';
 import { VoxelPixelStrikeArenaGame } from '../components/VoxelPixelStrikeArenaGame';
@@ -598,6 +598,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     setGambitConfig(newConfig);
     try {
       localStorage.setItem('hero_gambit_config_v1', JSON.stringify(newConfig));
+      localStorage.setItem('hero_battle_gambit_config_v1', JSON.stringify(newConfig));
     } catch (e) {
       console.error('Failed to save gambit config:', e);
     }
@@ -2751,6 +2752,26 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [isBeastariumOpen, setIsBeastariumOpen] = useState<boolean>(false);
   const [isExpeditionOpen, setIsExpeditionOpen] = useState<boolean>(false);
   const [isTowerTrialsOpen, setIsTowerTrialsOpen] = useState<boolean>(false);
+
+  // Row 51: Hand Card Long-Press Zoom Preview Modal
+  const [longPressPreviewCard, setLongPressPreviewCard] = useState<CardData | null>(null);
+  const handLongPressTimerRef = useRef<number | null>(null);
+
+  const handleHandCardPointerDown = (card: CardData) => {
+    if (handLongPressTimerRef.current) clearTimeout(handLongPressTimerRef.current);
+    handLongPressTimerRef.current = window.setTimeout(() => {
+      setLongPressPreviewCard(card);
+      triggerHaptic('light');
+      handLongPressTimerRef.current = null;
+    }, 350);
+  };
+
+  const handleHandCardPointerUp = () => {
+    if (handLongPressTimerRef.current) {
+      clearTimeout(handLongPressTimerRef.current);
+      handLongPressTimerRef.current = null;
+    }
+  };
 
   // Item 391: Hero Faction/Bond Synergy Passive
   const deckFactionSynergy = useMemo(() => {
@@ -13882,26 +13903,43 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             </button>
           </div>
 
-          {/* Right side: Auto Toggle, Chat Toggle, Ping, Rules */}
+          {/* Right side: AI Model & Tactics Button, Chat Toggle, Ping, Rules */}
           <div className="flex items-center gap-1.5 sm:gap-2">
-            {onToggleAutoBattle && (
-              <button
-                onClick={() => {
-                  onToggleAutoBattle();
-                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                }}
-                className={cn(
-                  "h-8 w-8 border rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0",
-                  isAutoBattle
-                    ? "bg-amber-500/20 border-amber-500/80 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.3)]"
-                    : "bg-slate-900/90 border-slate-800 text-slate-400 hover:text-white"
-                )}
-                title={isAutoBattle ? (language === 'ko' ? '자동전투 ON (클릭 시 끄기)' : 'AUTO ON') : (language === 'ko' ? '자동전투 OFF (클릭 시 켜기)' : 'AUTO OFF')}
-                aria-label="Auto Battle Toggle"
-              >
-                <Bot size={15} className={cn(isAutoBattle ? "animate-spin text-amber-300" : "text-slate-400")} />
-              </button>
-            )}
+            {/* Top AI Model & Tactics Button (Opens AI Model/Tactics Modal & Shows Current Stance) */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsGambitModalOpen(true);
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              }}
+              className={cn(
+                "h-8 px-2 sm:px-2.5 border rounded-xl shadow-md cursor-pointer flex items-center gap-1.5 transition-all duration-200 active:scale-95 shrink-0 font-mono select-none",
+                isAutoBattle
+                  ? "bg-amber-500/20 border-amber-500/80 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.3)] ring-1 ring-amber-400/40"
+                  : "bg-slate-900/90 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700"
+              )}
+              title={language === 'ko'
+                ? `AI 모델 및 전술 설정 (현재: ${gambitConfig.activeStance === 'attack' ? '⚔️ 공격형' : gambitConfig.activeStance === 'defense' ? '🛡️ 방어형' : '⚖️ 밸런스'} / ${isAutoBattle ? 'AUTO ON' : 'AUTO OFF'})`
+                : `AI Model & Tactics (Current: ${gambitConfig.activeStance === 'attack' ? '⚔️ ATK' : gambitConfig.activeStance === 'defense' ? '🛡️ DEF' : '⚖️ BAL'} / ${isAutoBattle ? 'AUTO ON' : 'AUTO OFF'})`}
+              aria-label="AI Battle Model and Tactics"
+            >
+              <Bot size={15} className={cn(isAutoBattle ? "animate-spin text-amber-300" : "text-slate-400")} />
+              <span className="text-[11px] font-black">
+                {gambitConfig.activeStance === 'attack' ? '⚔️' : gambitConfig.activeStance === 'defense' ? '🛡️' : '⚖️'}
+              </span>
+              <span className="text-[10px] font-black hidden xs:inline">
+                {gambitConfig.activeStance === 'attack' 
+                  ? (language === 'ko' ? '공격' : 'ATK') 
+                  : gambitConfig.activeStance === 'defense' 
+                  ? (language === 'ko' ? '방어' : 'DEF') 
+                  : (language === 'ko' ? '균형' : 'BAL')}
+              </span>
+              {isAutoBattle && (
+                <span className="text-[8px] px-1 py-0.2 rounded bg-amber-500 text-black font-black uppercase">
+                  AUTO
+                </span>
+              )}
+            </button>
 
             {onToggleChat && (
               <button
@@ -13984,6 +14022,24 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               </div>
 
               <div className="space-y-2.5">
+                {/* AI Model & Tactics Setup Button */}
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setIsGambitModalOpen(true);
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                  }}
+                  className="w-full py-2.5 px-4 bg-slate-950/60 border border-slate-800 hover:bg-slate-800 text-slate-300 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <Bot size={16} className="text-amber-400" />
+                    <span>{language === 'ko' ? 'AI 전투 모델 및 전술 설정' : 'AI Battle Model & Tactics'}</span>
+                  </div>
+                  <span className="text-[10px] text-amber-300 font-black">
+                    {gambitConfig.activeStance === 'attack' ? '⚔️' : gambitConfig.activeStance === 'defense' ? '🛡️' : '⚖️'}
+                  </span>
+                </button>
+
                 {onToggleAutoBattle && (
                   <button
                     onClick={() => {
@@ -13998,8 +14054,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     )}
                   >
                     <div className="flex items-center gap-2">
-                      <Bot size={16} />
-                      <span>{language === 'ko' ? '자동 전투' : 'Auto Battle'}</span>
+                      <Zap size={16} className={cn(isAutoBattle ? "text-yellow-400 animate-pulse" : "text-slate-400")} />
+                      <span>{language === 'ko' ? '자동 전투 빠른 토글' : 'Auto Battle Toggle'}</span>
                     </div>
                     <span className="text-[10px] px-2 py-0.5 rounded bg-black/40 font-black">
                       {isAutoBattle ? 'ON' : 'OFF'}
@@ -14676,16 +14732,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               )}
             </AnimatePresence>
 
-            {/* Item 401 & Item 393: Battle Stance Switcher & Gambit Customizer HUD */}
-            <div className="w-full max-w-sm mb-2">
-              <BattleStanceBar
-                currentStance={gambitConfig.activeStance}
-                onStanceChange={handleStanceChange}
-                onOpenGambitModal={() => setIsGambitModalOpen(true)}
-                language={language}
-              />
-            </div>
-
             <div className={cn(
               "flex flex-col-reverse md:flex-row-reverse items-center justify-center gap-4 md:gap-12 relative animate-in fade-in duration-700",
               isClutchSlowMo && "scale-[1.02] filter contrast-125 transition-transform duration-300"
@@ -15354,6 +15400,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <motion.div
                 key={card.id}
                 onClick={() => handleCardClick(idx, 'player')}
+                onPointerDown={() => handleHandCardPointerDown(card)}
+                onPointerUp={handleHandCardPointerUp}
+                onPointerLeave={handleHandCardPointerUp}
+                onPointerCancel={handleHandCardPointerUp}
                 initial={{ opacity: 0, scale: 0.9, y: 0 }}
                 animate={{ 
                   opacity: 1,
@@ -16564,6 +16614,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         onClose={() => setIsGambitModalOpen(false)}
         config={gambitConfig}
         onSaveConfig={handleSaveGambitConfig}
+        language={language}
+        isAutoBattle={isAutoBattle}
+        onToggleAutoBattle={onToggleAutoBattle}
       />
 
       {/* Item 397: Secret Stamp Book Modal */}
@@ -16598,6 +16651,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         onReward={(amount, reason) => {
           handleMinigameReward(amount, reason, reason);
         }}
+      />
+
+      {/* Row 51: Hand Card Long-Press Zoom Preview Modal */}
+      <CardLongPressPreviewModal
+        card={longPressPreviewCard}
+        isOpen={Boolean(longPressPreviewCard)}
+        onClose={() => setLongPressPreviewCard(null)}
+        language={language}
+        customImage={customCardImage}
       />
 
       {/* Battle Summary Modal (Post-Battle Analytics & Stats) */}
