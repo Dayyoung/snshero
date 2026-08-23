@@ -653,8 +653,8 @@
 
 :not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-slate-100,
 :not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-gray-100,
-:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-slate-200/50,
-:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-slate-200/30 {
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-slate-200\/50,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-slate-200\/30 {
   background-color: #f1eeee !important; /* surface-card */
 }
 
@@ -683,8 +683,8 @@
 :not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .border-slate-100,
 :not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .border-slate-200,
 :not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .border-gray-150,
-:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .border-slate-200/50,
-:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .border-slate-200/70 {
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .border-slate-200\/50,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .border-slate-200\/70 {
   border-color: rgba(15, 0, 0, 0.12) !important;
 }
 
