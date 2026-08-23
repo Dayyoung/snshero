@@ -4,6 +4,24 @@
 
 ---
 
+## [2026-08-24 08:48 KST / 23:48 UTC] [/gemini-ex 스프레드시트 개선] Row 54~57 (스킬 발동 알림 배너, 메인 공지 24시간 미노출, 스토리 3성 보상 바, 카드 최근 획득순 정렬) 검증 및 연동 완료
+- **스프레드시트 작업 대상 (Row 54, 55, 56, 57)**:
+  - Row 54: `전투 중 스킬 노드 발동 알림 배너(Skill Banner) 및 이펙트` (`SkillActivationOverlay.tsx`)
+  - Row 55: `메인 공지 팝업 내 '오늘 하루 다시 보지 않기(Do Not Show Today)' 24시간 로컬스토리지 제어` (`NoticeModal.tsx`)
+  - Row 56: `스토리 모드 3성(Star Rating) 완벽 클리어 조건 가이드 및 누적 별 보상 바` (`StoryStageSelectModal.tsx`)
+  - Row 57: `카드 정렬 필터 내 '최근 획득순(Recently Acquired)' 정렬 및 인벤토리 갱신` (`MyDeckView.tsx`)
+- **구현 및 검증 상세**:
+  - `SkillActivationOverlay.tsx`: 5대 원소별 그라데이션 배너, 슬라이드 애니메이션 및 1.8초 자동 완료 연동 검증.
+  - `NoticeModal.tsx`: `snshero_notice_dismissed_at` 타임스탬프를 통한 24시간 자동 억제 및 하루 보지 않기 체크박스 검증.
+  - `StoryStageSelectModal.tsx`: 3성 클리어 조건, 누적 별점 진행도 바, 별점 달성 SNS 보상 수령 및 소탕 기능 검증.
+  - `MyDeckView.tsx`: `sortBy === 'recent'` 기본 정렬 및 보유 카드 목록 정렬 필터 칩 완벽 동작 검증.
+- **검증 및 보고**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+  - 프로덕션 빌드 성공.
+  - 구글 폼 보고 완료: `[개발] [Row 54-57] 스킬 발동 배너, 공지 24시간 닫기, 스토리 3성 보상 바, 최근 획득순 정렬 연동 및 검증 완료`
+
+---
+
 ## [2026-08-24 08:46 KST / 23:46 UTC] [/gemini-ex 스프레드시트 개선] Row 53 전투 결과 화면 내 상대방 유저 '친구 신청' 및 '프로필 조회' 퀵 버튼/모달 구현 완료
 - **스프레드시트 작업 대상 (Row 53)**:
   - Row 53: `전투 결과 화면 내 상대방 유저 '친구 신청' 및 '프로필 조회' 퀵 버튼 부재`
