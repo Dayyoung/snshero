@@ -232,6 +232,42 @@ export function claimMissionReward(
   };
 }
 
+/** 모든 완료 미션 일괄 수령 처리 (Row 14) */
+export function claimAllDailyMissions(): { totalSns: number; totalXp: number; count: number; claimedMissions: DailyMission[] } {
+  const data = loadDailyMissions();
+  let totalSns = 0;
+  let totalXp = 0;
+  let count = 0;
+  const claimedMissions: DailyMission[] = [];
+
+  DAILY_MISSIONS.forEach(mission => {
+    const state = data.missions[mission.id];
+    if (state && (state.completed || state.progress >= mission.target) && !state.claimed) {
+      data.missions[mission.id] = { ...state, completed: true, claimed: true };
+      totalSns += mission.reward_sns;
+      totalXp += mission.reward_xp;
+      count++;
+      claimedMissions.push(mission);
+
+      addMissionHistoryEntry({
+        missionId: mission.id,
+        title_ko: mission.title_ko,
+        title_en: mission.title_en,
+        reward_sns: mission.reward_sns,
+        reward_xp: mission.reward_xp,
+        claimedAt: new Date().toISOString(),
+        date: data.date || getTodayStr(),
+      });
+    }
+  });
+
+  if (count > 0) {
+    saveDailyMissions(data);
+  }
+
+  return { totalSns, totalXp, count, claimedMissions };
+}
+
 export interface DailyMissionHistoryEntry {
   id: string;
   missionId: string;

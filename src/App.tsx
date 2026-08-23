@@ -3127,21 +3127,49 @@ function AppContent() {
 
   // Sound Settings
   const [bgmEnabled, setBgmEnabled] = useState(() => {
+    try {
+      const combined = localStorage.getItem('snshero_audio_settings');
+      if (combined) {
+        const parsed = JSON.parse(combined);
+        if (typeof parsed.bgmEnabled === 'boolean') return parsed.bgmEnabled;
+      }
+    } catch (_) {}
     const saved = localStorage.getItem('hero_bgm');
     return saved === null ? true : saved === 'true';
   });
   const [sfxEnabled, setSfxEnabled] = useState(() => {
+    try {
+      const combined = localStorage.getItem('snshero_audio_settings');
+      if (combined) {
+        const parsed = JSON.parse(combined);
+        if (typeof parsed.sfxEnabled === 'boolean') return parsed.sfxEnabled;
+      }
+    } catch (_) {}
     const saved = localStorage.getItem('hero_sfx');
     return saved === null ? true : saved === 'true';
   });
 
   const [bgmVolume, setBgmVolume] = useState(() => {
+    try {
+      const combined = localStorage.getItem('snshero_audio_settings');
+      if (combined) {
+        const parsed = JSON.parse(combined);
+        if (typeof parsed.bgmVolume === 'number') return parsed.bgmVolume;
+      }
+    } catch (_) {}
     const saved = localStorage.getItem('hero_bgm_volume');
     const parsed = saved ? parseFloat(saved) : NaN;
     return isNaN(parsed) ? 0.15 : parsed;
   });
 
   const [sfxVolume, setSfxVolume] = useState(() => {
+    try {
+      const combined = localStorage.getItem('snshero_audio_settings');
+      if (combined) {
+        const parsed = JSON.parse(combined);
+        if (typeof parsed.sfxVolume === 'number') return parsed.sfxVolume;
+      }
+    } catch (_) {}
     const saved = localStorage.getItem('hero_sfx_volume');
     const parsed = saved ? parseFloat(saved) : NaN;
     return isNaN(parsed) ? 0.4 : parsed;
@@ -4458,7 +4486,17 @@ function AppContent() {
     localStorage.setItem('hero_sfx', sfxEnabled.toString());
     localStorage.setItem('hero_bgm_volume', bgmVolume.toString());
     localStorage.setItem('hero_sfx_volume', sfxVolume.toString());
-  }, [bgmEnabled, sfxEnabled, bgmVolume, sfxVolume]);
+    try {
+      localStorage.setItem('snshero_audio_settings', JSON.stringify({
+        bgmEnabled,
+        sfxEnabled,
+        bgmVolume,
+        sfxVolume,
+        bgmTrackId,
+        updatedAt: Date.now(),
+      }));
+    } catch (_) {}
+  }, [bgmEnabled, sfxEnabled, bgmVolume, sfxVolume, bgmTrackId]);
 
   const isAudioMuted = !bgmEnabled && !sfxEnabled;
 
@@ -4983,6 +5021,9 @@ function AppContent() {
             onNavigate={setView}
             onUpgradeSkill={handleUpgradeSkill}
             onResetSkills={handleResetSkills}
+            onBack={() => setView('mydeck')}
+            selectedCard={selectedCompanion}
+            allCards={currentDeck}
             companionLevel={selectedCompanion?.level || 1}
             skillPoints={stats.skillPoints || 0}
             sns={sns}
@@ -5653,9 +5694,9 @@ function AppContent() {
         )}
         <Meta view={view} language={language} />
 
-        {/* Desktop Fixed Left Sidebar Ad (xl screens only) — sticky, doesn't scroll away */}
+        {/* Desktop Fixed Left Sidebar Ad (min-1420px screens only to prevent 1024px container overlap) — sticky, doesn't scroll away */}
         {!isAdRemoved && (
-          <div className="hidden xl:block fixed left-0 top-0 h-screen w-[184px] z-40 pointer-events-none">
+          <div className="hidden min-[1420px]:block fixed left-0 top-0 h-screen w-[184px] z-40 pointer-events-none">
             <div className="h-full bg-slate-950 border-r border-slate-800 p-3 pointer-events-auto overflow-y-auto flex flex-col gap-3">
               <div className="w-full flex items-center justify-between border-b border-slate-800 pb-2 shrink-0">
                 <span className="text-[10px] font-black text-cyan-400 tracking-widest">{t('ad_notice', language)}</span>

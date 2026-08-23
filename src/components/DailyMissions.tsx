@@ -11,6 +11,7 @@ import {
   DAILY_MISSIONS,
   loadDailyMissions,
   claimMissionReward,
+  claimAllDailyMissions,
   getClaimableCount,
   getClaimableRewardTotal,
   getDailyMissionRewardTotal,
@@ -27,12 +28,20 @@ export const DailyMissions: React.FC = () => {
   const [claimingId, setClaimingId] = useState<string | null>(null);
   const [timeLeft, setTimeLeft] = useState('');
   const [notificationMsg, setNotificationMsg] = useState<string | null>(null);
+  const [floatingReward, setFloatingReward] = useState<{ id: number; sns: number; xp: number } | null>(null);
 
   // Tab & History Modal State
   const [activeTab, setActiveTab] = useState<'active' | 'history'>('active');
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [historyList, setHistoryList] = useState<DailyMissionHistoryEntry[]>(loadDailyMissionHistory);
   const [historyStats, setHistoryStats] = useState(getMissionHistoryStats);
+
+  const triggerFloatingReward = (sns: number, xp: number) => {
+    setFloatingReward({ id: Date.now(), sns, xp });
+    setTimeout(() => {
+      setFloatingReward(null);
+    }, 2200);
+  };
 
   const refreshHistory = useCallback(() => {
     setHistoryList(loadDailyMissionHistory());
@@ -106,11 +115,31 @@ export const DailyMissions: React.FC = () => {
       addCompanionXp(result.xp);
       setMissionData(loadDailyMissions());
       refreshHistory();
+      triggerFloatingReward(result.sns, result.xp);
 
       const title = language === 'ko' ? result.title_ko : result.title_en;
       const msg = language === 'ko'
-        ? `🎁 [${title}] 보상이 지급되었습니다! (+${result.sns} SNS)`
-        : `🎁 [${title}] Reward claimed! (+${result.sns} SNS)`;
+        ? `🎁 [${title}] 보상이 지급되었습니다! (+${result.sns} SNS, +${result.xp} XP)`
+        : `🎁 [${title}] Reward claimed! (+${result.sns} SNS, +${result.xp} XP)`;
+      setNotificationMsg(msg);
+    }
+    setTimeout(() => setClaimingId(null), 500);
+  }, [claimingId, addSns, addCompanionXp, language, refreshHistory]);
+
+  const handleClaimAll = useCallback(() => {
+    if (claimingId) return;
+    setClaimingId('all');
+    const result = claimAllDailyMissions();
+    if (result.count > 0) {
+      addSns(result.totalSns, 'daily_mission', 'earned');
+      addCompanionXp(result.totalXp);
+      setMissionData(loadDailyMissions());
+      refreshHistory();
+      triggerFloatingReward(result.totalSns, result.totalXp);
+
+      const msg = language === 'ko'
+        ? `🎉 완료된 ${result.count}개 미션 일괄 수령 완료! (+${result.totalSns} SNS, +${result.totalXp} XP)`
+        : `🎉 Claimed all ${result.count} missions! (+${result.totalSns} SNS, +${result.totalXp} XP)`;
       setNotificationMsg(msg);
     }
     setTimeout(() => setClaimingId(null), 500);
@@ -344,17 +373,15 @@ export const DailyMissions: React.FC = () => {
 
             {claimableCount > 0 && (
               <button
-                onClick={() => {
-                  DAILY_MISSIONS.forEach(m => {
-                    const st = missionData.missions[m.id];
-                    if (st && st.completed && !st.claimed) {
-                      handleClaim(m.id);
-                    }
-                  });
-                }}
-                className="text-[10px] font-bold bg-[#201d1d] text-[#fdfcfc] hover:bg-[#333030] px-2.5 py-0.5 rounded-sm cursor-pointer transition-all active:scale-95 border border-[rgba(15,0,0,0.12)]"
+                onClick={handleClaimAll}
+                disabled={claimingId !== null}
+                className={cn(
+                  "text-[10px] font-bold bg-[#201d1d] text-[#fdfcfc] hover:bg-[#333030] px-2.5 py-0.5 rounded-sm cursor-pointer transition-all active:scale-95 border border-[rgba(15,0,0,0.12)] flex items-center gap-1",
+                  claimingId === 'all' && "opacity-70 cursor-wait"
+                )}
               >
-                {language === 'ko' ? `일괄 수령 (${claimableCount})` : `Claim All (${claimableCount})`}
+                <Gift size={10} className="text-amber-300" />
+                <span>{language === 'ko' ? `일괄 수령 (${claimableCount})` : `Claim All (${claimableCount})`}</span>
               </button>
             )}
           </div>
@@ -530,6 +557,31 @@ export const DailyMissions: React.FC = () => {
               </div>
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Currency Gain Animation (Row 14) */}
+      <AnimatePresence>
+        {floatingReward && (
+          <motion.div
+            key={floatingReward.id}
+            initial={{ opacity: 0, y: 15, scale: 0.8 }}
+            animate={{ opacity: 1, y: -25, scale: 1.05 }}
+            exit={{ opacity: 0, y: -45, scale: 0.9 }}
+            transition={{ duration: 1.8, ease: "easeOut" }}
+            className="pointer-events-none fixed top-1/3 left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center gap-1 bg-slate-950/95 text-amber-300 px-5 py-3 rounded-xl border-2 border-amber-400/80 shadow-[0_0_30px_rgba(251,191,36,0.4)] backdrop-blur-md font-mono"
+          >
+            <div className="flex items-center gap-2 text-base font-black tracking-wider text-amber-300">
+              <Coins size={20} className="text-amber-400 animate-spin-slow" />
+              <span>+{floatingReward.sns.toLocaleString()} SNS</span>
+            </div>
+            {floatingReward.xp > 0 && (
+              <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-300">
+                <Zap size={14} className="text-indigo-400" />
+                <span>+{floatingReward.xp.toLocaleString()} XP</span>
+              </div>
+            )}
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

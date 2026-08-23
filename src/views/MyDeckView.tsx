@@ -23,8 +23,9 @@ import { CSS } from '@dnd-kit/utilities';
 import { CardItem } from '../components/CardItem';
 import { ArDeckViewer } from '../components/ArDeckViewer';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ChevronLeft, ChevronRight, HelpCircle, Trophy, Info, Zap, Package, Shield, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Gift, Star as StarIcon, Edit2, Plus, Gem, Footprints, Sparkles, Share2, Camera, BookOpen, Users, PawPrint, Trash2, Layers, Lock, Search } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, HelpCircle, Trophy, Info, Zap, Package, Shield, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Gift, Star as StarIcon, Edit2, Plus, Gem, Footprints, Sparkles, Share2, Camera, BookOpen, Users, PawPrint, Trash2, Layers, Lock, Search, Flame } from 'lucide-react';
 import { CardDisassembleModal } from '../components/CardDisassembleModal';
+import { ElementAdvantageModal } from '../components/ElementAdvantageModal';
 import { useCardLock } from '../hooks/useCardLock';
 import { cn, getFormattedCardName } from '../lib/utils';
 import { CARD_DATABASE } from '../cardDatabase';
@@ -274,6 +275,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   const [isCombineModalOpen, setIsCombineModalOpen] = useState(false);
   const [is3DDeckViewerOpen, setIs3DDeckViewerOpen] = useState(false);
   const [isDisassembleModalOpen, setIsDisassembleModalOpen] = useState(false);
+  const [isElementAdvantageOpen, setIsElementAdvantageOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [helpStep, setHelpStep] = useState(0);
   const { isLocked } = useCardLock();
@@ -393,6 +395,75 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     }),
     [currentDeck, cardSkins.activeSkinMap],
   );
+
+  // Real-time Deck Synergy Calculation (Row 23)
+  const activeSynergies = useMemo(() => {
+    const elementCounts: Record<string, number> = {};
+    let urCount = 0;
+    let ssrCount = 0;
+    
+    currentDeck.forEach(card => {
+      if (!card) return;
+      const dbCard = CARD_DATABASE[card.imageIndex || 0];
+      const elem = (card.element || dbCard?.element || 'FIRE').toUpperCase();
+      elementCounts[elem] = (elementCounts[elem] || 0) + 1;
+      const rarity = (dbCard?.rarity || card.rarity || 'N').toUpperCase();
+      if (rarity === 'UR' || rarity === 'LR') urCount++;
+      if (rarity === 'SSR') ssrCount++;
+    });
+
+    const list: { name: string; icon: string; count: number; active: boolean; effect: string; progress: string; desc: string }[] = [];
+
+    const elementNames: Record<string, { ko: string; en: string; icon: string }> = {
+      FIRE: { ko: '화염', en: 'Fire', icon: '🔥' },
+      WATER: { ko: '물', en: 'Water', icon: '💧' },
+      EARTH: { ko: '대지', en: 'Earth', icon: '🌿' },
+      WIND: { ko: '바람', en: 'Wind', icon: '⚡' },
+      LIGHT: { ko: '빛', en: 'Light', icon: '✨' },
+      DARK: { ko: '어둠', en: 'Dark', icon: '🌑' },
+    };
+
+    Object.entries(elementCounts).forEach(([elem, count]) => {
+      if (count >= 2) {
+        const meta = elementNames[elem] || { ko: elem, en: elem, icon: '🔮' };
+        const name = language === 'ko' ? `${meta.ko} 공명` : `${meta.en} Resonance`;
+        const isTri = count >= 3;
+        list.push({
+          name,
+          icon: meta.icon,
+          count,
+          active: true,
+          effect: isTri ? (language === 'ko' ? '+10% 전력' : '+10% PWR') : (language === 'ko' ? '+5% 공격' : '+5% ATK'),
+          progress: `${count}/5`,
+          desc: language === 'ko' ? `${meta.ko} 속성 ${count}장 배치: ${isTri ? '동일 속성 시너지 10% 전력 증가' : '공격력 5% 증가'}` : `${meta.en} x${count}: ${isTri ? '+10% Total Power' : '+5% ATK'}`
+        });
+      }
+    });
+
+    if (urCount >= 2) {
+      list.push({
+        name: language === 'ko' ? 'UR 정점 각성' : 'UR Apex',
+        icon: '👑',
+        count: urCount,
+        active: true,
+        effect: language === 'ko' ? '+8% 치명' : '+8% Crit',
+        progress: `${urCount}/2`,
+        desc: language === 'ko' ? `UR 카드 ${urCount}장: 치명타율 +8%` : `UR cards x${urCount}: +8% Crit Rate`
+      });
+    } else if (ssrCount >= 3) {
+      list.push({
+        name: language === 'ko' ? 'SSR 엘리트 결집' : 'SSR Elite',
+        icon: '⭐',
+        count: ssrCount,
+        active: true,
+        effect: language === 'ko' ? '+5% 전력' : '+5% PWR',
+        progress: `${ssrCount}/3`,
+        desc: language === 'ko' ? `SSR 카드 ${ssrCount}장: 전력 +5%` : `SSR cards x${ssrCount}: +5% Power`
+      });
+    }
+
+    return list;
+  }, [currentDeck, language]);
 
   const selectedHeroCareState = selectedCardForDetail ? getCareState(selectedCardForDetail) : null;
   const selectedHeroCareRewardStatus = selectedCardForDetail ? getRewardStatus(selectedCardForDetail) : null;
@@ -898,6 +969,18 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           <button
             onClick={() => {
               playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              setIsElementAdvantageOpen(true);
+            }}
+            className="min-h-10 sm:min-h-11 px-2.5 sm:px-3 py-2 sm:py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg active:scale-95 transition-all cursor-pointer shadow-md flex items-center gap-1.5 touch-target"
+            title={language === 'ko' ? '속성 상성 가이드' : 'Element Advantage'}
+          >
+            <Flame size={14} className="shrink-0 text-amber-300" />
+            <span className="text-[10px] font-bold uppercase">{language === 'ko' ? '상성표' : 'AFFINITY'}</span>
+          </button>
+
+          <button
+            onClick={() => {
+              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               setIs3DDeckViewerOpen(true);
             }}
             className="min-h-10 sm:min-h-11 px-2.5 sm:px-3 py-2 sm:py-2.5 bg-teal-500 hover:bg-teal-600 text-white rounded-lg active:scale-95 transition-all cursor-pointer shadow-md flex items-center gap-1.5 touch-target"
@@ -1012,8 +1095,42 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         </div>
       </div>
 
-      <div className="flex flex-col gap-6 md:gap-8">
+      <div className="flex flex-col gap-4 md:gap-6">
         <div className="flex flex-col items-center gap-3 sm:gap-4 w-full">
+          {/* Real-time Deck Synergy Bar (Row 23) */}
+          <div className="w-full max-w-4xl bg-slate-900/90 border border-slate-800 text-white px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl flex flex-wrap items-center justify-between gap-2 shadow-md">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-indigo-500/20 border border-indigo-500/40 rounded-lg text-indigo-400 shrink-0">
+                <Sparkles size={14} className="animate-pulse" />
+              </div>
+              <span className="text-[11px] font-black uppercase tracking-wider text-slate-200">
+                {language === 'ko' ? '실시간 덱 시너지' : 'Active Synergies'}
+              </span>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-1.5">
+              {activeSynergies.length === 0 ? (
+                <span className="text-[10px] font-medium text-slate-400 italic">
+                  {language === 'ko' ? '동일 속성 2장 이상 배치 시 공명 활성화' : 'Equip 2+ cards of same element to activate resonance'}
+                </span>
+              ) : (
+                activeSynergies.map((syn, idx) => (
+                  <div
+                    key={idx}
+                    className="px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-mono font-bold flex items-center gap-1.5 border bg-indigo-950/80 border-indigo-500/50 text-indigo-300 shadow-xs cursor-help transition-all hover:bg-indigo-900"
+                    title={syn.desc}
+                  >
+                    <span>{syn.icon}</span>
+                    <span>{syn.name}</span>
+                    <span className="px-1 py-0.2 rounded text-[8px] font-black bg-indigo-500/30 text-indigo-200">
+                      {syn.effect}
+                    </span>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
           <div id="deck-list" className="mx-auto flex w-full max-w-full flex-nowrap sm:flex-wrap justify-center items-center gap-1 xs:gap-2 sm:gap-4 md:gap-6 px-0.5 sm:px-1">
           <DndContext 
             sensors={sensors}
@@ -2702,6 +2819,14 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           );
         }}
         playSfx={playSfx}
+      />
+
+      {/* Element Advantage Guide Modal (Row 18) */}
+      <ElementAdvantageModal
+        isOpen={isElementAdvantageOpen}
+        onClose={() => setIsElementAdvantageOpen(false)}
+        language={language}
+        lowSpecMode={lowSpecMode}
       />
 
     </div>

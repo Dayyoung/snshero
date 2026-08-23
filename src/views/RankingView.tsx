@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Trophy, ArrowUp, ArrowDown, Users, Gift, ShieldAlert, Swords, X, Bell, List, AlertCircle, Wifi, Bluetooth, Compass, Zap, Clock, HelpCircle, ChevronLeft, ChevronRight, Crown, Sparkles, ShoppingBag } from 'lucide-react';
+import { Trophy, ArrowUp, ArrowDown, Users, Gift, ShieldAlert, Swords, X, Bell, List, AlertCircle, Wifi, Bluetooth, Compass, Zap, Clock, HelpCircle, ChevronLeft, ChevronRight, Crown, Sparkles, ShoppingBag, Loader2 } from 'lucide-react';
 import { RankRewardsModal } from '../components/RankRewardsModal';
 import { MatchHistoryModal } from '../components/MatchHistoryModal';
 import { Language } from '../types';
@@ -126,6 +126,7 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
 
   // PvP Real-time Matchmaking State
   const [isPvpSearching, setIsPvpSearching] = useState(false);
+  const [isPvpCancelling, setIsPvpCancelling] = useState(false);
   const [pvpQueuePos, setPvpQueuePos] = useState(0);
   const [pvpError, setPvpError] = useState('');
   const pvpCleanupRef = useRef<(() => void) | null>(null);
@@ -791,13 +792,24 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
   };
 
   /** 실시간 PvP 매칭 취소 */
-  const cancelRealTimePvp = () => {
+  const cancelRealTimePvp = async () => {
+    if (isPvpCancelling) return;
+    setIsPvpCancelling(true);
     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-    pvpCleanupRef.current?.();
-    pvpCleanupRef.current = null;
-    setIsPvpSearching(false);
-    setPvpQueuePos(0);
-    setPvpError('');
+    try {
+      if (user?.uid) {
+        await leaveMatchmaking(user.uid);
+      }
+      pvpCleanupRef.current?.();
+      pvpCleanupRef.current = null;
+    } catch (e) {
+      console.error('Error leaving matchmaking:', e);
+    } finally {
+      setIsPvpSearching(false);
+      setIsPvpCancelling(false);
+      setPvpQueuePos(0);
+      setPvpError('');
+    }
   };
 
   // Direct target attack logic
@@ -1705,9 +1717,20 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
 
               <button
                 onClick={cancelRealTimePvp}
-                className="w-full bg-gradient-to-r from-slate-950 to-slate-900 border border-slate-800 hover:from-red-950 hover:to-red-900 hover:border-red-900 hover:text-red-300 text-slate-400 py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-md active:scale-[0.98] transition-all cursor-pointer touch-target"
+                disabled={isPvpCancelling}
+                className={cn(
+                  "w-full bg-gradient-to-r from-slate-950 to-slate-900 border border-slate-800 hover:from-red-950 hover:to-red-900 hover:border-red-900 hover:text-red-300 text-slate-400 py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-md active:scale-[0.98] transition-all cursor-pointer touch-target flex items-center justify-center gap-2",
+                  isPvpCancelling && "opacity-75 cursor-wait"
+                )}
               >
-                {t('pvp_matchmaking_cancel', language)}
+                {isPvpCancelling ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin text-red-400" />
+                    <span>{language === 'ko' ? '대기열 취소 중...' : 'Cancelling Match...'}</span>
+                  </>
+                ) : (
+                  t('pvp_matchmaking_cancel', language)
+                )}
               </button>
             </motion.div>
           </motion.div>

@@ -287,11 +287,13 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
     if (!card) return;
 
     const unitPriceSns = getCardSnsPrice(selectedCardId);
-    const totalPriceSns = unitPriceSns * tradeAmount;
+    const subtotalSns = unitPriceSns * tradeAmount;
+    const tradingFeeSns = Math.max(1, Math.round(subtotalSns * 0.015)); // 1.5% gas/trading fee
+    const finalTotalSns = tradeMode === 'buy' ? (subtotalSns + tradingFeeSns) : Math.max(1, subtotalSns - tradingFeeSns);
     const currentQty = inventory[selectedCardId]?.quantity || 0;
 
     if (tradeMode === 'buy') {
-      if (sns < totalPriceSns) {
+      if (sns < finalTotalSns) {
         playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
         setAlertMsg({ type: 'error', text: t('insufficient_sns', language) });
         return;
@@ -300,7 +302,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
       playSfx('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
 
       // Update SNS & Inventory
-      updateSns(-totalPriceSns, `${card.title} X${tradeAmount} ${t('buy', language)}`);
+      updateSns(-finalTotalSns, `${card.title} X${tradeAmount} ${t('buy', language)} (Fee: ${tradingFeeSns} SNS)`);
 
       // Add cards directly
       for (let i = 0; i < tradeAmount; i++) {
@@ -318,7 +320,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
       playSfx('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
 
       // Add SNS back to user
-      updateSns(totalPriceSns, `${card.title} X${tradeAmount} ${t('sell', language)}`);
+      updateSns(finalTotalSns, `${card.title} X${tradeAmount} ${t('sell', language)} (Fee: ${tradingFeeSns} SNS)`);
 
       // Directly manipulate inventory state (quantity reduction)
       const updatedInv = { ...inventory };
@@ -327,7 +329,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
         // Keep inventory sync
         if (user && user.uid !== 'guest-id') {
           await syncUserData({
-            sns: sns + totalPriceSns,
+            sns: sns + finalTotalSns,
             inventory: updatedInv
           });
         }
@@ -609,13 +611,46 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                   </button>
                 </div>
 
-                {/* Sleek Horizontal 1-line Summary Bar (ID 261, 265, 269) */}
-                <div className="flex justify-between items-center border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] px-3 py-2 rounded-sm text-xs font-mono font-bold">
-                  <span className="text-[#646262]">Qty: {tradeAmount}</span>
-                  <span className="text-[#201d1d]">
-                    Total: {(getCardSnsPrice(selectedCardId) * tradeAmount).toLocaleString()} SNS
-                  </span>
-                </div>
+                {/* Itemized Transaction Breakdown (Row 13) */}
+                {(() => {
+                  const unitPrice = getCardSnsPrice(selectedCardId);
+                  const subtotal = unitPrice * tradeAmount;
+                  const fee = Math.max(1, Math.round(subtotal * 0.015));
+                  const netTotal = tradeMode === 'buy' ? (subtotal + fee) : Math.max(1, subtotal - fee);
+
+                  return (
+                    <div className="space-y-1.5 border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-2.5 rounded-sm text-xs font-mono">
+                      <div className="flex justify-between items-center text-[#646262]">
+                        <span>{language === 'ko' ? '기본 단가 (Base Unit Price)' : 'Base Unit Price'}:</span>
+                        <span className="font-bold text-[#201d1d]">{unitPrice.toLocaleString()} SNS</span>
+                      </div>
+                      <div className="flex justify-between items-center text-[#646262]">
+                        <span>{language === 'ko' ? '주문 수량 (Quantity)' : 'Quantity'}:</span>
+                        <span className="font-bold text-[#201d1d]">{tradeAmount} EA</span>
+                      </div>
+                      <div className="flex justify-between items-center text-[#646262]">
+                        <span>{language === 'ko' ? '주문 소계 (Subtotal)' : 'Subtotal'}:</span>
+                        <span className="font-bold text-[#201d1d]">{subtotal.toLocaleString()} SNS</span>
+                      </div>
+                      <div className="flex justify-between items-center text-[#646262]">
+                        <span>{language === 'ko' ? '거래 수수료 (Fee 1.5%)' : 'Trading Fee (1.5%)'}:</span>
+                        <span className="font-bold text-amber-700">
+                          {tradeMode === 'buy' ? `+${fee.toLocaleString()}` : `-${fee.toLocaleString()}`} SNS
+                        </span>
+                      </div>
+                      <div className="border-t border-[rgba(15,0,0,0.12)] pt-1.5 flex justify-between items-center font-bold">
+                        <span className="text-[#201d1d]">
+                          {tradeMode === 'buy'
+                            ? (language === 'ko' ? '최종 결제 예상액' : 'Final Expected Cost')
+                            : (language === 'ko' ? '최종 정산 입금액' : 'Final Expected Payout')}:
+                        </span>
+                        <span className={cn("text-sm font-black", tradeMode === 'buy' ? "text-rose-700" : "text-emerald-700")}>
+                          {netTotal.toLocaleString()} SNS
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {/* Action feedback */}
                 {alertMsg && (

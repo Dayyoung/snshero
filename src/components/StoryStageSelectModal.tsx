@@ -32,6 +32,7 @@ export const StoryStageSelectModal: React.FC<StoryStageSelectModalProps> = ({
   const [selectedEpisode, setSelectedEpisode] = useState<number>(1);
   const [claimedRewards, setClaimedRewards] = useState<number[]>([]);
   const [sweepResult, setSweepResult] = useState<{ gold: number; exp: number; item: string } | null>(null);
+  const [counterDeckMsg, setCounterDeckMsg] = useState<string | null>(null);
   const [isWorldMapOpen, setIsWorldMapOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -198,10 +199,32 @@ export const StoryStageSelectModal: React.FC<StoryStageSelectModalProps> = ({
                         {ep}
                       </div>
                       <div>
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1.5 flex-wrap">
                           <span className="font-mono text-xs font-bold text-slate-200">
                             Stage 1-{ep}
                           </span>
+                          {/* Recommended TP (Row 10) */}
+                          <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-indigo-950/80 border border-indigo-500/40 text-indigo-300">
+                            TP {1200 + (ep - 1) * 350}
+                          </span>
+                          {/* Opponent Primary Element Attribute (Row 10) */}
+                          {(() => {
+                            const elements = [
+                              { type: 'fire', icon: '🔥', label_ko: '화염', label_en: 'Fire', cls: 'bg-red-950/80 border-red-500/40 text-red-300' },
+                              { type: 'water', icon: '💧', label_ko: '빙결/수류', label_en: 'Water', cls: 'bg-blue-950/80 border-blue-500/40 text-blue-300' },
+                              { type: 'earth', icon: '🌿', label_ko: '대지', label_en: 'Earth', cls: 'bg-emerald-950/80 border-emerald-500/40 text-emerald-300' },
+                              { type: 'wind', icon: '⚡', label_ko: '질풍/번개', label_en: 'Wind', cls: 'bg-amber-950/80 border-amber-500/40 text-amber-300' },
+                              { type: 'light', icon: '✨', label_ko: '성광', label_en: 'Light', cls: 'bg-yellow-950/80 border-yellow-500/40 text-yellow-300' },
+                              { type: 'dark', icon: '🌑', label_ko: '암흑', label_en: 'Dark', cls: 'bg-purple-950/80 border-purple-500/40 text-purple-300' },
+                            ];
+                            const elem = elements[(ep - 1) % elements.length];
+                            return (
+                              <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border flex items-center gap-0.5 ${elem.cls}`}>
+                                <span>{elem.icon}</span>
+                                <span>{language === 'ko' ? elem.label_ko : elem.label_en}</span>
+                              </span>
+                            );
+                          })()}
                           {isThreeStar && (
                             <div className="flex text-amber-400">
                               <Star size={10} className="fill-amber-400" />
@@ -211,9 +234,9 @@ export const StoryStageSelectModal: React.FC<StoryStageSelectModalProps> = ({
                           )}
                         </div>
 
-                        {/* Item 72 & ID 97: Grouped Reward Chest Preview Badge */}
-                        <div className="flex flex-col gap-0.5 mt-1">
-                          <div className="flex items-center gap-1.5">
+                        {/* Item 72 & Row 10: Grouped Reward Chest & Expected Drop Details */}
+                        <div className="flex flex-col gap-0.5 mt-1.5">
+                          <div className="flex items-center gap-1.5 flex-wrap">
                             {isCleared ? (
                               <span className="inline-flex items-center gap-1 text-[9px] font-mono font-bold px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">
                                 <Gift size={11} className="text-amber-400" />
@@ -222,12 +245,15 @@ export const StoryStageSelectModal: React.FC<StoryStageSelectModalProps> = ({
                             ) : (
                               <span className="inline-flex items-center gap-1 text-[9px] font-mono font-bold px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400 text-amber-300 shadow-sm animate-pulse">
                                 <Gift size={11} className="text-amber-400" />
-                                {language === 'ko' ? '🎁 최초 보관함: SSR 뽑기권 + 1,000G' : '🎁 First Clear: SSR Ticket + 1,000G'}
+                                {language === 'ko' ? '🎁 최초 클리어: SSR 뽑기권 + 1,000 SNS' : '🎁 First Clear: SSR Ticket + 1,000 SNS'}
                               </span>
                             )}
+                            <span className="text-[9px] font-mono font-bold text-amber-300 bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-500/30">
+                              {language === 'ko' ? `🏆 드롭: ${100 + ep * 50}G · ${50 + ep * 15} SNS · 카드조각` : `🏆 Drop: ${100 + ep * 50}G · ${50 + ep * 15} SNS · Shards`}
+                            </span>
                           </div>
                           <span className="text-[9px] font-mono text-slate-400">
-                            {language === 'ko' ? '🔄 반복 드랍: 300 Gold + 50 EXP' : '🔄 Repeatable: 300 Gold + 50 EXP'}
+                            {language === 'ko' ? `🔄 반복 드랍: ${300 + ep * 20} Gold + ${50 + ep * 10} EXP` : `🔄 Repeatable: ${300 + ep * 20} Gold + ${50 + ep * 10} EXP`}
                           </span>
                         </div>
                       </div>
@@ -253,10 +279,11 @@ export const StoryStageSelectModal: React.FC<StoryStageSelectModalProps> = ({
                             localStorage.setItem('hero_playground_deck', JSON.stringify(counterDeckIds));
                             window.dispatchEvent(new Event('snshero_deck_updated'));
                             triggerHaptic('medium');
-                            alert(language === 'ko' 
+                            setCounterDeckMsg(language === 'ko' 
                               ? `⚡ [상성 카운터 덱 장착] Stage 1-${ep} 보스 대항 상성 덱(Card #${counterDeckIds.join(', #')})이 장착되었습니다!` 
                               : `⚡ [COUNTER DECK EQUIPPED] Stage 1-${ep} boss counter deck loaded!`
                             );
+                            setTimeout(() => setCounterDeckMsg(null), 4000);
                           }}
                           className="px-2 py-1 rounded bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-mono font-bold flex items-center gap-1 transition-all active:scale-95 cursor-pointer"
                           title={language === 'ko' ? '스테이지 맞춤 상성 카운터 덱 장착' : 'Equip Stage Counter Deck'}
@@ -297,6 +324,19 @@ export const StoryStageSelectModal: React.FC<StoryStageSelectModalProps> = ({
                 );
               })}
             </div>
+
+            {/* Counter Deck Equipped Banner */}
+            {counterDeckMsg && (
+              <div className="p-3 rounded-xl bg-amber-950/90 border border-amber-500/50 text-amber-200 text-xs font-mono space-y-1 animate-fade-in flex items-center justify-between">
+                <span className="flex items-center gap-1.5 font-bold">
+                  <Zap size={14} className="text-amber-400 shrink-0" />
+                  <span>{counterDeckMsg}</span>
+                </span>
+                <button onClick={() => setCounterDeckMsg(null)} className="text-amber-400 hover:text-white p-1">
+                  <X size={14} />
+                </button>
+              </div>
+            )}
 
             {/* Sweep Result Popup */}
             {sweepResult && (

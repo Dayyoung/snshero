@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Bot, Box, CheckCircle2, MessageCircle, Pause, Sparkles, Swords } from 'lucide-react';
+import { Bot, Box, CheckCircle2, FastForward, MessageCircle, Pause, Sparkles, Swords } from 'lucide-react';
 import { cn, getAssetUrl, getCardSpriteStyle } from '../../lib/utils';
 import { t } from '../../lib/i18n';
 import { CARD_DATABASE } from '../../cardDatabase';
@@ -132,6 +132,10 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
     finishConversation();
   }, [conversationLines.length, finishConversation, lineIndex]);
 
+  const handleSkipToFinal = useCallback(() => {
+    setLineIndex(conversationLines.length - 1);
+  }, [conversationLines.length]);
+
   useEffect(() => {
     if (!autoMode) return;
     const timer = window.setTimeout(advanceConversation, lineIndex < conversationLines.length - 1 ? 1800 : 2300);
@@ -255,21 +259,36 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
 
         {/* 액션 버튼 바 */}
         <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-800/80 bg-slate-900/60 p-3">
-          {onToggleAutoMode ? (
-            <button
-              type="button"
-              onClick={onToggleAutoMode}
-              className={cn(
-                "min-h-10 rounded-lg px-3 py-2 text-xs font-bold transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 border",
-                autoMode
-                  ? "bg-indigo-600/90 border-indigo-500 text-white shadow-sm"
-                  : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
-              )}
-            >
-              {autoMode ? <Bot size={14} className="animate-spin text-cyan-200" /> : <Pause size={14} />}
-              <span>{autoMode ? t('kadan_rpg_auto_on', language) : t('kadan_rpg_auto_off', language)}</span>
-            </button>
-          ) : <div />}
+          <div className="flex items-center gap-2">
+            {onToggleAutoMode && (
+              <button
+                type="button"
+                onClick={onToggleAutoMode}
+                className={cn(
+                  "min-h-10 rounded-lg px-3 py-2 text-xs font-bold transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 border",
+                  autoMode
+                    ? "bg-indigo-600/90 border-indigo-500 text-white shadow-sm"
+                    : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
+                )}
+                title={autoMode ? (language === 'ko' ? '자동 진행 끄기' : 'Turn Off Auto') : (language === 'ko' ? '자동 진행 켜기' : 'Turn On Auto')}
+              >
+                {autoMode ? <Bot size={14} className="animate-spin text-cyan-200" /> : <Pause size={14} />}
+                <span>{autoMode ? t('kadan_rpg_auto_on', language) : t('kadan_rpg_auto_off', language)}</span>
+              </button>
+            )}
+
+            {!isFinalLine && (
+              <button
+                type="button"
+                onClick={handleSkipToFinal}
+                className="min-h-10 rounded-lg px-3 py-2 text-xs font-bold border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
+                title={language === 'ko' ? '대화 스킵' : 'Skip Dialog'}
+              >
+                <FastForward size={14} className="text-amber-400" />
+                <span>{language === 'ko' ? '스킵' : 'Skip'}</span>
+              </button>
+            )}
+          </div>
 
           <div className="flex items-center gap-2">
             <button

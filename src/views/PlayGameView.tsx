@@ -5,7 +5,8 @@ import { CardData, AiStrategy, AiDifficulty, Language, PlayerPatterns, Item, Ski
 import { CardItem } from '../components/CardItem';
 import { cn, getFormattedCardName, getAssetUrl, getCardSpriteAsset, getCardSpriteCoords, getCardSpriteStyle } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2, UserPlus, ShoppingBag, XCircle, Menu, Coins, Pickaxe, Crosshair, Footprints, Castle, Compass, BookOpen, Award, Sliders, Axe, Fish, BarChart3 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2, UserPlus, ShoppingBag, XCircle, Menu, Coins, Pickaxe, Crosshair, Footprints, Castle, Compass, BookOpen, Award, Sliders, Axe, Fish, BarChart3, Clock, Timer, Volume2, VolumeX, Smile } from 'lucide-react';
+import { InBattleEmoteModal, BATTLE_EMOTES, EmoteItem } from '../components/InBattleEmoteModal';
 import { generateCard, INITIAL_CARDS, generateUniqueDeck, ensureUniqueDeck, getCardStatWithBonus, generateAiName, syncCardWithDatabase, INITIAL_SKILLS, getCardPower, getNormalizedElement } from '../constants';
 import { CARD_DATABASE } from '../cardDatabase';
 import { ITEM_DATABASE } from '../constants/itemDatabase';
@@ -525,6 +526,64 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [isTreasureDartOpen, setIsTreasureDartOpen] = useState<boolean>(false);
   const [isPirateRouletteOpen, setIsPirateRouletteOpen] = useState<boolean>(false);
   const [isArcheryOpen, setIsArcheryOpen] = useState<boolean>(false);
+  const [isEmoteModalOpen, setIsEmoteModalOpen] = useState<boolean>(false);
+  const [isOpponentMuted, setIsOpponentMuted] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_opponent_muted') === 'true';
+    } catch {
+      return false;
+    }
+  });
+  const [activeEmoteBubble, setActiveEmoteBubble] = useState<{
+    text: string;
+    emoji: string;
+    side: 'player' | 'opponent';
+    id: number;
+  } | null>(null);
+
+  const handleToggleOpponentMute = useCallback(() => {
+    setIsOpponentMuted(prev => {
+      const next = !prev;
+      try {
+        localStorage.setItem('hero_opponent_muted', String(next));
+      } catch (e) {
+        console.error(e);
+      }
+      return next;
+    });
+  }, []);
+
+  const handleSendEmote = useCallback((emote: EmoteItem) => {
+    const emoteId = Date.now();
+    setActiveEmoteBubble({
+      text: language === 'ko' ? emote.labelKo : emote.labelEn,
+      emoji: emote.emoji,
+      side: 'player',
+      id: emoteId,
+    });
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+
+    setTimeout(() => {
+      setActiveEmoteBubble(prev => (prev?.id === emoteId ? null : prev));
+    }, 2800);
+
+    if (!isOpponentMuted && Math.random() < 0.55) {
+      setTimeout(() => {
+        const randomAiEmote = BATTLE_EMOTES[Math.floor(Math.random() * BATTLE_EMOTES.length)];
+        const aiEmoteId = Date.now();
+        setActiveEmoteBubble({
+          text: language === 'ko' ? randomAiEmote.labelKo : randomAiEmote.labelEn,
+          emoji: randomAiEmote.emoji,
+          side: 'opponent',
+          id: aiEmoteId,
+        });
+        playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+        setTimeout(() => {
+          setActiveEmoteBubble(prev => (prev?.id === aiEmoteId ? null : prev));
+        }, 2800);
+      }, 1200);
+    }
+  }, [language, isOpponentMuted, playSfx]);
   const [comboAnnounceData, setComboAnnounceData] = useState<{
     comboType: 'NORMAL' | 'DOUBLE' | 'TRIPLE' | 'MEGA' | 'SAME' | 'PLUS' | 'DOMINO' | 'Z_LIGHTNING' | 'L_STORM' | null;
     comboCount: number;
@@ -2228,6 +2287,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [opponentHand, setOpponentHand] = useState<CardData[]>([]);
   const [turn, setTurn] = useState<'player' | 'ai'>('player');
   const [firstTurn, setFirstTurn] = useState<'player' | 'ai'>('player');
+  const [turnTimerSeconds, setTurnTimerSeconds] = useState<number>(15);
+  const turnMaxSeconds = 15;
   const [showPreviewDeck, setShowPreviewDeck] = useState(false);
   const [previewDeck, setPreviewDeck] = useState<CardData[]>([]);
   const [gameOver, setGameOver] = useState(false);
@@ -3238,6 +3299,33 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [previewCountdown, setPreviewCountdown] = useState(3);
   const [lastAiDeck, setLastAiDeck] = useState<CardData[] | null>(null);
   const hasRecordedResult = useRef(false);
+
+  // Turn Countdown Timer (Row 26)
+  useEffect(() => {
+    if (gameState !== 'playing' || gameOver || isEvaluating) {
+      setTurnTimerSeconds(15);
+      return;
+    }
+
+    setTurnTimerSeconds(15);
+
+    const timer = setInterval(() => {
+      setTurnTimerSeconds((prev) => {
+        if (prev <= 1) {
+          return 0;
+        }
+        const next = prev - 1;
+        if (next <= 5 && next > 0 && turn === 'player' && !isAutoBattle) {
+          try {
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+          } catch {}
+        }
+        return next;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [turn, gameState, gameOver, isEvaluating, isAutoBattle, playSfx]);
 
   const resetQteState = useCallback(() => {
     setPendingQteMultiplier(null);
@@ -13706,9 +13794,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <ShieldAlert size={32} />
               </div>
               <div className="space-y-2">
-                <h3 className="text-lg font-black tracking-wider text-red-500 uppercase">MATCH_ABORT</h3>
+                <h3 className="text-lg font-black tracking-wider text-red-500 uppercase">
+                  {language === 'ko' ? '경기 기권 확인' : 'MATCH SURRENDER'}
+                </h3>
                 <p className="text-sm font-semibold text-slate-300 leading-relaxed">
-                  {t('confirm_forfeit', language) || (language === 'ko' ? "정말 경기를 포기하고 나가시겠습니까?" : "Quit current match?")}
+                  {language === 'ko'
+                    ? "정말 경기를 기권하고 나가시겠습니까? (패배로 처리되며 전적에 반영됩니다)"
+                    : "Are you sure you want to forfeit this match? (Result: Loss)"}
                 </p>
               </div>
               <div className="flex gap-3">
@@ -14188,8 +14280,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         turn === 'ai' && !gameOver ? "border-red-500/50 z-20" : "border-red-500/20 z-10"
       )}>
         
-        {/* Item 357: Opponent 1-Line Slim Monospace Tag (Visible on Mobile & Desktop) */}
-        <div className="absolute top-1 left-2 z-20 flex items-center gap-1.5 bg-rose-950/90 text-rose-200 text-[8px] sm:text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-sm shadow-xs pointer-events-none border border-rose-500/40 backdrop-blur-xs">
+        {/* Item 357: Opponent 1-Line Slim Monospace Tag (Visible on Mobile & Desktop) & Item 34: Mute Toggle */}
+        <div className="absolute top-1 left-2 z-20 flex items-center gap-1.5 bg-rose-950/90 text-rose-200 text-[8px] sm:text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-sm shadow-xs border border-rose-500/40 backdrop-blur-xs">
           <span className="text-rose-400 font-black">[OPP]</span>
           <span className="truncate max-w-[80px] sm:max-w-[120px] text-white">{lastOpponent?.name || 'ENEMY'}</span>
           <span className="text-slate-500">·</span>
@@ -14200,6 +14292,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <span className="text-amber-300">🪙{lastOpponent.sns.toLocaleString()}</span>
             </>
           )}
+          <button
+            type="button"
+            onClick={handleToggleOpponentMute}
+            className={cn(
+              "ml-1 px-1.5 py-0.2 rounded text-[8px] font-black uppercase tracking-wider flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-2xs",
+              isOpponentMuted
+                ? "bg-rose-600 text-white hover:bg-rose-700"
+                : "bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700"
+            )}
+            title={isOpponentMuted ? (language === 'ko' ? '상대 감정표현 차단 해제' : 'Unmute Opponent') : (language === 'ko' ? '상대 감정표현 차단' : 'Mute Opponent')}
+          >
+            {isOpponentMuted ? <VolumeX size={10} className="text-white" /> : <Volume2 size={10} className="text-slate-300" />}
+            <span>{isOpponentMuted ? (language === 'ko' ? '차단됨' : 'Muted') : (language === 'ko' ? '음소거' : 'Mute')}</span>
+          </button>
         </div>
         
         <div className="w-full max-w-6xl mx-auto flex items-center justify-center gap-1 md:gap-2 h-auto my-auto relative z-10 py-0.5">
@@ -14305,7 +14411,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               </span>
             </div>
 
-            {/* 1-Line Turn Status + 9-Turn LED Micro-Dots */}
+            {/* 1-Line Turn Status + Turn Countdown Timer + 9-Turn LED Micro-Dots */}
             <div className="flex items-center gap-1.5">
               <div className={cn(
                 "px-2 py-0.5 rounded-sm text-[10px] uppercase font-mono font-black flex items-center gap-1 border",
@@ -14318,6 +14424,45 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 ) : (
                   <><Cpu size={11} className="text-rose-400 animate-spin" /> [ ENEMY TURN ]</>
                 )}
+              </div>
+
+              {/* Turn Countdown Timer SVG (Row 26) */}
+              <div
+                className={cn(
+                  "flex items-center gap-1 px-1.5 py-0.5 rounded-sm font-mono text-[9px] font-bold border transition-all",
+                  turnTimerSeconds <= 5
+                    ? "bg-rose-950/90 border-rose-500 text-rose-300 animate-pulse shadow-[0_0_10px_rgba(244,63,94,0.6)]"
+                    : "bg-slate-900 border-slate-700/70 text-slate-300"
+                )}
+                title={language === 'ko' ? `남은 턴 시간: ${turnTimerSeconds}초` : `Turn Time: ${turnTimerSeconds}s`}
+              >
+                <div className="relative w-3.5 h-3.5 flex items-center justify-center shrink-0">
+                  <svg className="w-3.5 h-3.5 -rotate-90" viewBox="0 0 20 20">
+                    <circle
+                      cx="10"
+                      cy="10"
+                      r="7.5"
+                      fill="none"
+                      stroke="#334155"
+                      strokeWidth="2.5"
+                    />
+                    <circle
+                      cx="10"
+                      cy="10"
+                      r="7.5"
+                      fill="none"
+                      stroke={turnTimerSeconds <= 5 ? "#f43f5e" : turn === 'player' ? "#6366f1" : "#f59e0b"}
+                      strokeWidth="2.5"
+                      strokeDasharray={47.12}
+                      strokeDashoffset={47.12 * (1 - turnTimerSeconds / turnMaxSeconds)}
+                      strokeLinecap="round"
+                      className="transition-all duration-1000 ease-linear"
+                    />
+                  </svg>
+                </div>
+                <span className={cn("font-black tracking-tighter", turnTimerSeconds <= 5 ? "text-rose-400 font-extrabold" : "text-slate-200")}>
+                  {turnTimerSeconds}s
+                </span>
               </div>
 
               {/* Item 351: Sudden Death Overclock Badge */}
@@ -14537,6 +14682,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 currentStance={gambitConfig.activeStance}
                 onStanceChange={handleStanceChange}
                 onOpenGambitModal={() => setIsGambitModalOpen(true)}
+                language={language}
               />
             </div>
 
@@ -15164,8 +15310,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         turn === 'player' && !gameOver ? "border-indigo-500/50 z-20" : "border-blue-500/20 z-10"
       )}>
         
-        {/* Item 357: Player 1-Line Slim Monospace Tag (Visible on Mobile & Desktop) */}
-        <div className="absolute top-1 left-2 z-20 flex items-center gap-1.5 bg-indigo-950/90 text-indigo-200 text-[8px] sm:text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-sm shadow-xs pointer-events-none border border-indigo-500/40 backdrop-blur-xs">
+        {/* Item 357: Player 1-Line Slim Monospace Tag (Visible on Mobile & Desktop) & Item 34: In-Battle Emote */}
+        <div className="absolute top-1 left-2 z-20 flex items-center gap-1.5 bg-indigo-950/90 text-indigo-200 text-[8px] sm:text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-sm shadow-xs border border-indigo-500/40 backdrop-blur-xs">
           <span className="text-indigo-400 font-black">[YOU]</span>
           <span className="truncate max-w-[80px] sm:max-w-[120px] text-white">{effectiveUser?.displayName || effectiveUser?.name || 'YOU'}</span>
           <span className="text-slate-500">·</span>
@@ -15182,6 +15328,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <span className="text-slate-300">{userStats.wins}W {userStats.losses}L</span>
             </>
           )}
+          <button
+            type="button"
+            onClick={() => setIsEmoteModalOpen(true)}
+            className="ml-1 px-1.5 py-0.2 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-[8px] font-black uppercase tracking-wider flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-2xs"
+            title={language === 'ko' ? '감정표현 보내기' : 'Send Emote'}
+          >
+            <span>💬</span>
+            <span>{language === 'ko' ? '감정표현' : 'Emote'}</span>
+          </button>
         </div>
 
         <div className={cn(
@@ -15775,6 +15930,66 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 />
               )}
 
+              {/* Row 30: Battle Victory EXP Gauge Animation */}
+              {winner === 'player' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="bg-slate-950/80 border border-indigo-500/30 rounded-2xl p-4 shadow-md text-left space-y-3"
+                >
+                  <div className="flex justify-between items-center border-b border-slate-800/80 pb-2">
+                    <div className="flex items-center gap-2">
+                      <Sparkles size={14} className="text-yellow-400 animate-pulse" />
+                      <span className="text-[11px] font-black uppercase tracking-wider text-slate-200">
+                        {language === 'ko' ? '전투 경험치 (EXP)' : 'BATTLE EXPERIENCE'}
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-indigo-950/70 border border-indigo-500/40 text-indigo-300">
+                      +150 EXP
+                    </span>
+                  </div>
+
+                  {/* Player EXP Progress Bar */}
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between items-center text-[10px] font-mono">
+                      <span className="text-slate-400 font-bold">
+                        {language === 'ko' ? '사령관 레벨' : 'Commander Lv'}.{Math.floor((calculatedTotalPower || 1000) / 500) + 1}
+                      </span>
+                      <span className="text-indigo-400 font-bold">
+                        {((calculatedTotalPower || 1000) % 500)} / 500 EXP
+                      </span>
+                    </div>
+                    <div className="relative w-full h-3 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                      <motion.div
+                        initial={{ width: "35%" }}
+                        animate={{ width: "72%" }}
+                        transition={{ duration: 1.4, delay: 0.6, ease: "easeOut" }}
+                        className="h-full bg-gradient-to-r from-indigo-600 to-cyan-400 rounded-full relative"
+                      >
+                        <div className="absolute inset-0 bg-white/20 animate-pulse" />
+                      </motion.div>
+                    </div>
+                  </div>
+
+                  {/* Hero Card EXP gain */}
+                  {playerDeck[0] && (
+                    <div className="flex items-center justify-between pt-1 text-[10px] text-slate-300 font-mono">
+                      <div className="flex items-center gap-1.5 truncate">
+                        <span className="text-amber-400 font-bold">[{getFormattedCardName(playerDeck[0], language)}]</span>
+                        <span className="text-slate-400">Card EXP</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="text-emerald-400 font-bold">+85 EXP</span>
+                        <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[8px] font-black border border-amber-500/40 animate-pulse">
+                          LEVEL UP!
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+
               {/* Item 53: 상대방 유저 친구 신청 & 프로필 조회 퀵 버튼 */}
               <div className="flex items-center justify-center gap-2 pt-2 border-t border-slate-800/80">
                 <button
@@ -15879,19 +16094,43 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         : t('back_to_lobby', language))}
                 </button>
                 {!isBossActive && !isStoryActive && !isDungeonActive && !isTournamentActive && winner !== 'player' && (
-                  <button 
-                     onClick={() => {
-                       setShowBattleShareTemplate(false);
-                       handleRematch();
-                     }}
-                     className="w-full bg-indigo-600 text-white py-3 font-bold uppercase tracking-wider hover:bg-indigo-700 active:scale-95 transition-all rounded-2xl shadow-lg shadow-indigo-600/20 text-xs"
-                  >
-                    {rematchCountdown !== null
-                      ? t('rematch_countdown', language)
-                          .replace('{seconds}', String(rematchCountdown))
-                          .replace('{text}', t('rematch', language))
-                      : t('rematch', language)}
-                  </button>
+                  <>
+                    <button 
+                       onClick={() => {
+                         setShowBattleShareTemplate(false);
+                         handleRematch();
+                       }}
+                       className="w-full bg-indigo-600 text-white py-3 font-bold uppercase tracking-wider hover:bg-indigo-700 active:scale-95 transition-all rounded-2xl shadow-lg shadow-indigo-600/20 text-xs flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <RotateCcw size={15} />
+                      <span>
+                        {rematchCountdown !== null
+                          ? t('rematch_countdown', language)
+                              .replace('{seconds}', String(rematchCountdown))
+                              .replace('{text}', t('rematch', language))
+                          : t('rematch', language)}
+                      </span>
+                    </button>
+                    {setView && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDefeatExitCountdown(null);
+                          handleExitMatch(false);
+                          setShowBattleShareTemplate(false);
+                          setShowOverwhelmingEffect(false);
+                          setShowStreakEffect(false);
+                          setCurrentWinStreakDisplay(0);
+                          setView('deck');
+                          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                        }}
+                        className="w-full bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/40 py-3 font-bold uppercase tracking-wider active:scale-95 transition-all rounded-2xl shadow-lg text-xs flex items-center justify-center gap-2 cursor-pointer"
+                      >
+                        <Sliders size={15} />
+                        <span>{language === 'ko' ? '덱 편집하러 가기' : 'Edit Deck'}</span>
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
 
@@ -16398,6 +16637,38 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         onClose={() => setShowElementAdvantageModal(false)}
         language={language}
         lowSpecMode={lowSpecMode}
+      />
+
+      {/* Item 34: In-Battle Emote Floating Speech Bubble */}
+      <AnimatePresence>
+        {activeEmoteBubble && (
+          <motion.div
+            key={`bubble-${activeEmoteBubble.id}`}
+            initial={{ opacity: 0, scale: 0.6, y: activeEmoteBubble.side === 'player' ? 24 : -24 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.7, y: activeEmoteBubble.side === 'player' ? -16 : 16 }}
+            className={cn(
+              "fixed z-[250] pointer-events-none flex items-center gap-2.5 px-4 py-2.5 rounded-2xl shadow-2xl border backdrop-blur-md",
+              activeEmoteBubble.side === 'player'
+                ? "bottom-28 left-1/2 -translate-x-1/2 bg-indigo-950/95 border-indigo-500/80 text-white shadow-indigo-500/30"
+                : "top-24 left-1/2 -translate-x-1/2 bg-rose-950/95 border-rose-500/80 text-white shadow-rose-500/30"
+            )}
+          >
+            <span className="text-2xl animate-bounce">{activeEmoteBubble.emoji}</span>
+            <span className="text-xs font-black font-mono tracking-tight">{activeEmoteBubble.text}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Item 34: In-Battle Emote Modal */}
+      <InBattleEmoteModal
+        isOpen={isEmoteModalOpen}
+        onClose={() => setIsEmoteModalOpen(false)}
+        language={language}
+        onSendEmote={handleSendEmote}
+        isMuted={isOpponentMuted}
+        onToggleMute={handleToggleOpponentMute}
+        playSfx={playSfx}
       />
     </div>
   );

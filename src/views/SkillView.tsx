@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Zap,
@@ -17,9 +17,16 @@ import {
   ShieldCheck,
   Coins,
   RotateCcw,
+  Flame,
+  Droplets,
+  Mountain,
+  Wind,
+  Shield,
+  Layers,
+  Sparkle,
 } from 'lucide-react';
-import { cn } from '../lib/utils';
-import { Skill, Language, ViewType } from '../types';
+import { cn, getCardSpriteStyle } from '../lib/utils';
+import { Skill, Language, ViewType, CardData } from '../types';
 import { t } from '../lib/i18n';
 import { INITIAL_SKILLS, getSkillTier, getRequiredLevelForSkill } from '../constants';
 import { PageHeader } from '../components/PageHeader';
@@ -36,6 +43,9 @@ interface SkillViewProps {
   skillPoints: number;
   sns: number;
   isImpersonating?: boolean;
+  selectedCard?: CardData | null;
+  cardId?: string;
+  allCards?: CardData[];
 }
 
 const iconMap: Record<string, React.ComponentType<any>> = {
@@ -52,21 +62,27 @@ const iconMap: Record<string, React.ComponentType<any>> = {
 
 const HELP_STEPS = [
   {
-    title: { ko: '스킬 강화', en: 'Skill Upgrade' },
+    key: 'skill_help_upgrade',
+    descKey: 'skill_help_upgrade_desc',
+    title: { ko: '스킬 강화 안내', en: 'Skill Upgrade Guide' },
     desc: {
       ko: '소지한 SNS 포인트를 소모하여 스킬을 강화할 수 있습니다. 레벨이 오를수록 효과 수치가 증가합니다.',
       en: 'Spend SNS points to upgrade skills. Higher levels provide stronger stat boosts.',
     },
   },
   {
-    title: { ko: '스킬 초기화', en: 'Reset Skills' },
+    key: 'skill_help_reset',
+    descKey: 'skill_help_reset_desc',
+    title: { ko: '스킬 초기화 안내', en: 'Skill Reset Guide' },
     desc: {
       ko: '스킬 초기화 진행 시 투자했던 모든 스킬 포인트가 반환되며, 스킬이 초기 상태로 되돌아갑니다.',
       en: 'Resetting skills returns all invested points and resets skills to initial levels.',
     },
   },
   {
-    title: { ko: '티어 및 조건', en: 'Tiers & Requirements' },
+    key: 'skill_help_points',
+    descKey: 'skill_help_points_desc',
+    title: { ko: '티어 및 조건 안내', en: 'Tiers & Requirements Guide' },
     desc: {
       ko: '동반자(Companion) 레벨 조건에 따라 차례대로 고티어 스킬이 해금됩니다.',
       en: 'Higher tier skills unlock as your Companion level increases.',
@@ -75,6 +91,21 @@ const HELP_STEPS = [
 ];
 
 const cleanSkillName = (name: string) => name.replace(/\s+[IVX]+$/, '');
+
+const getElementInfo = (element?: string) => {
+  switch (element) {
+    case 'fire':
+      return { label: 'FIRE', bg: 'bg-rose-500/20 text-rose-300 border-rose-500/40', icon: Flame };
+    case 'water':
+      return { label: 'WATER', bg: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40', icon: Droplets };
+    case 'earth':
+      return { label: 'EARTH', bg: 'bg-amber-600/20 text-amber-300 border-amber-500/40', icon: Mountain };
+    case 'wind':
+      return { label: 'WIND', bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40', icon: Wind };
+    default:
+      return { label: 'NEUTRAL', bg: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40', icon: Zap };
+  }
+};
 
 export const SkillView: React.FC<SkillViewProps> = ({
   skills,
@@ -87,10 +118,79 @@ export const SkillView: React.FC<SkillViewProps> = ({
   skillPoints,
   sns,
   isImpersonating = false,
+  selectedCard,
+  cardId,
+  allCards = [],
 }) => {
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [upgradingSkillId, setUpgradingSkillId] = useState<string | null>(null);
+
+  // Batch Select & Upgrade Plan Calculation (Row 27)
+  const affordableUpgrades = useMemo(() => {
+    let remainingSns = sns;
+    const upgradePlan: { skillId: string; count: number; totalCost: number }[] = [];
+    const simulatedLevels: Record<string, number> = {};
+    skills.forEach(s => { simulatedLevels[s.id] = s.level || 0; });
+
+    let found = true;
+    while (found) {
+      found = false;
+      for (const skill of skills) {
+        const baseSkill = INITIAL_SKILLS.find(s => s.id === skill.id) || skill;
+        const requiredLvl = baseSkill.requiredLevel || 0;
+        const isLocked = companionLevel < requiredLvl;
+        const maxLvl = skill.maxLevel || 5;
+        const curLvl = simulatedLevels[skill.id] || 0;
+        if (!isLocked && curLvl < maxLvl) {
+          const cost = getSkillUpgradeCost(curLvl);
+          if (remainingSns >= cost) {
+            remainingSns -= cost;
+            simulatedLevels[skill.id] = curLvl + 1;
+            const plan = upgradePlan.find(p => p.skillId === skill.id);
+            if (plan) {
+              plan.count += 1;
+              plan.totalCost += cost;
+            } else {
+              upgradePlan.push({ skillId: skill.id, count: 1, totalCost: cost });
+            }
+            found = true;
+          }
+        }
+      }
+    }
+    const totalCount = upgradePlan.reduce((acc, p) => acc + p.count, 0);
+    const totalCost = upgradePlan.reduce((acc, p) => acc + p.totalCost, 0);
+    return { upgradePlan, totalCount, totalCost, simulatedLevels };
+  }, [skills, sns, companionLevel]);
+
+  const handleBatchUpgrade = () => {
+    if (affordableUpgrades.totalCount === 0) return;
+    affordableUpgrades.upgradePlan.forEach(plan => {
+      for (let i = 0; i < plan.count; i++) {
+        onUpgradeSkill(plan.skillId);
+      }
+    });
+    try {
+      new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3').play().catch(() => {});
+    } catch {}
+  };
+
+  // Target card context (from props or URL query ?cardId=)
+  const targetCard = useMemo(() => {
+    if (selectedCard) return selectedCard;
+    if (cardId && allCards && allCards.length > 0) {
+      return allCards.find(c => String(c.id) === String(cardId) || String(c.imageIndex) === String(cardId)) || null;
+    }
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const qCardId = params.get('cardId');
+      if (qCardId && allCards && allCards.length > 0) {
+        return allCards.find(c => String(c.id) === String(qCardId) || String(c.imageIndex) === String(qCardId)) || null;
+      }
+    }
+    return null;
+  }, [selectedCard, cardId, allCards]);
 
   // Dispatch global popup events so bottom nav hides while help is open
   useEffect(() => {
@@ -117,6 +217,23 @@ export const SkillView: React.FC<SkillViewProps> = ({
     setShowResetConfirm(false);
   };
 
+  const targetCardIdNum = targetCard
+    ? (targetCard.imageIndex !== undefined ? targetCard.imageIndex : (Number(targetCard.id) || 1))
+    : 1;
+
+  const targetCardTitle = targetCard
+    ? (language === 'ko'
+        ? (targetCard.title || targetCard.title_dis || '영웅')
+        : (targetCard.title_en || targetCard.title_dis || targetCard.title || 'Hero'))
+    : null;
+
+  const targetCardPower = targetCard
+    ? (targetCard.power || (targetCard.stats ? targetCard.stats.reduce((a, b) => a + b, 0) : 100))
+    : 0;
+
+  const elementInfo = getElementInfo(targetCard?.element);
+  const ElementIcon = elementInfo.icon;
+
   return (
     <div id="skill-tree" className="p-4 md:p-8 pb-32 max-w-4xl mx-auto min-h-screen text-slate-800 font-sans">
       <PageHeader
@@ -136,8 +253,54 @@ export const SkillView: React.FC<SkillViewProps> = ({
         }
       />
 
+      {/* ─── 대상 카드 정보 배너 (Target Card Context Banner - Row 6/ID 6) ─── */}
+      {targetCard && (
+        <div className="my-4 rounded-xl border border-indigo-500/30 bg-slate-900 p-4 text-white shadow-md flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5 min-w-0">
+            <div
+              className="w-13 h-13 rounded-lg border-2 border-indigo-400/60 bg-slate-950 shrink-0 relative overflow-hidden shadow-inner"
+              style={getCardSpriteStyle(targetCardIdNum)}
+            >
+              {targetCard.rarity && (
+                <span className="absolute top-0 right-0 bg-indigo-600 text-white font-mono font-black text-[8px] px-1 py-0.5 rounded-bl-sm">
+                  {targetCard.rarity}
+                </span>
+              )}
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-[10px] font-black uppercase tracking-wider text-indigo-400 bg-indigo-500/20 px-1.5 py-0.5 rounded border border-indigo-500/30">
+                  {language === 'ko' ? '강화 대상 히어로' : 'TARGET HERO'}
+                </span>
+                <span className={cn('text-[9px] font-black uppercase px-1.5 py-0.5 rounded border flex items-center gap-1', elementInfo.bg)}>
+                  <ElementIcon size={10} />
+                  <span>{elementInfo.label}</span>
+                </span>
+              </div>
+              <h2 className="text-base font-black text-white truncate mt-1">
+                {targetCardTitle}
+              </h2>
+              <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-400 font-mono">
+                <span>Lv. {targetCard.level || companionLevel}</span>
+                <span>•</span>
+                <span className="text-amber-400 font-bold">POW {targetCardPower}⚡</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="hidden sm:flex flex-col items-end shrink-0 text-right font-mono">
+            <span className="text-[10px] text-slate-400 uppercase font-bold">
+              {language === 'ko' ? '스킬 레벨 보너스' : 'SKILL LEVEL BONUS'}
+            </span>
+            <span className="text-sm font-black text-amber-300">
+              Lv. {totalSkillLevels} / {skills.length * 5}
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* ─── 상단 요약 대시보드 배너 (Summary Dashboard Banner) ─── */}
-      <div className="my-6 rounded-2xl border border-slate-900/10 bg-slate-950 p-5 text-white shadow-xl backdrop-blur-md">
+      <div className="my-4 rounded-2xl border border-slate-900/10 bg-slate-950 p-5 text-white shadow-xl backdrop-blur-md">
         <div className="flex flex-wrap items-center justify-between gap-4">
           {/* 포인트 & 티어 정보 */}
           <div className="flex items-center gap-4">
@@ -169,8 +332,8 @@ export const SkillView: React.FC<SkillViewProps> = ({
             </div>
           </div>
 
-          {/* 보유 SNS & 초기화 버튼 */}
-          <div className="flex flex-wrap items-center gap-3">
+          {/* 보유 SNS & 일괄 강화 & 초기화 버튼 */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <div className="flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-900/90 px-3.5 py-2">
               <Coins size={16} className="text-amber-400" />
               <div className="text-right">
@@ -182,6 +345,36 @@ export const SkillView: React.FC<SkillViewProps> = ({
                 </p>
               </div>
             </div>
+
+            {/* Row 27: Smart Batch Upgrade All Button */}
+            <button
+              type="button"
+              disabled={affordableUpgrades.totalCount === 0}
+              onClick={handleBatchUpgrade}
+              className={cn(
+                "flex min-h-10 items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-black uppercase tracking-wider active:scale-95 transition-all shadow-md cursor-pointer",
+                affordableUpgrades.totalCount > 0
+                  ? "bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 border border-amber-300 shadow-amber-500/20"
+                  : "bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed shadow-none"
+              )}
+              title={
+                affordableUpgrades.totalCount > 0
+                  ? language === 'ko'
+                    ? `가능한 모든 스킬 ${affordableUpgrades.totalCount}회 일괄 강화 (소모: ${affordableUpgrades.totalCost.toLocaleString()} SNS)`
+                    : `Batch upgrade ${affordableUpgrades.totalCount} levels for ${affordableUpgrades.totalCost.toLocaleString()} SNS`
+                  : language === 'ko'
+                  ? '강화 가능한 스킬이 없습니다.'
+                  : 'No affordable upgrades available'
+              }
+            >
+              <Sparkles size={14} className={affordableUpgrades.totalCount > 0 ? "animate-pulse" : ""} />
+              <span>{language === 'ko' ? '일괄 강화' : 'BATCH UPGRADE'}</span>
+              {affordableUpgrades.totalCount > 0 && (
+                <span className="ml-1 px-1.5 py-0.2 rounded bg-slate-950/20 text-slate-950 font-extrabold text-[10px]">
+                  +{affordableUpgrades.totalCount}
+                </span>
+              )}
+            </button>
 
             <button
               type="button"
@@ -480,10 +673,18 @@ export const SkillView: React.FC<SkillViewProps> = ({
               <div className="text-center mb-5">
                 <HelpCircle size={24} className="mx-auto text-indigo-500 mb-2" />
                 <h3 className="text-sm font-black text-slate-900">
-                  {language === 'ko' ? HELP_STEPS[helpStep].title.ko : HELP_STEPS[helpStep].title.en}
+                  {(() => {
+                    const translated = t(HELP_STEPS[helpStep].key, language);
+                    if (translated && translated !== HELP_STEPS[helpStep].key) return translated;
+                    return language === 'ko' ? HELP_STEPS[helpStep].title.ko : HELP_STEPS[helpStep].title.en;
+                  })()}
                 </h3>
                 <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
-                  {language === 'ko' ? HELP_STEPS[helpStep].desc.ko : HELP_STEPS[helpStep].desc.en}
+                  {(() => {
+                    const translated = t(HELP_STEPS[helpStep].descKey, language);
+                    if (translated && translated !== HELP_STEPS[helpStep].descKey) return translated;
+                    return language === 'ko' ? HELP_STEPS[helpStep].desc.ko : HELP_STEPS[helpStep].desc.en;
+                  })()}
                 </p>
               </div>
 

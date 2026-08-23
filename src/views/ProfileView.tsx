@@ -148,15 +148,17 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   const previewCardId = useMemo(() => parseCardAvatarId(selectedAvatar), [selectedAvatar]);
   const previewPetCardId = previewCardId ? getPetIdForRepresentativeCard(previewCardId) : null;
 
-  const handleSave = async () => {
-    if (!user) return;
+  const MIN_NICKNAME_LENGTH = 2;
+  const MAX_NICKNAME_LENGTH = 12;
+  const trimmedNickname = nickname.trim();
+  const hasInvalidChars = /[^a-zA-Z0-9가-힣_]/.test(nickname);
+  const hasSpaces = /\s/.test(nickname);
+  const isTooShort = nickname.length > 0 && trimmedNickname.length < MIN_NICKNAME_LENGTH;
+  const isTooLong = nickname.length > MAX_NICKNAME_LENGTH;
+  const isNicknameValid = trimmedNickname.length >= MIN_NICKNAME_LENGTH && nickname.length <= MAX_NICKNAME_LENGTH && !hasInvalidChars && !hasSpaces;
 
-    const trimmedNickname = nickname.trim();
-    if (trimmedNickname.length < 2 || trimmedNickname.length > 10) {
-      setMessage({ text: t('nickname_hint', language), type: 'error' });
-      setTimeout(() => setMessage(null), 3000);
-      return;
-    }
+  const handleSave = async () => {
+    if (!user || !isNicknameValid) return;
 
     setIsSaving(true);
     try {
@@ -289,16 +291,79 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           </div>
         </div>
 
-        {/* Nickname */}
+        {/* Nickname with live validation */}
         <div className="space-y-2">
-          <input
-            type="text"
-            id="nickname-field"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            placeholder={user?.displayName || t('profile_nickname_placeholder', language)}
-            className="w-full p-3.5 bg-slate-50 border border-slate-100 rounded-lg font-semibold text-slate-800 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 transition-all text-sm"
-          />
+          <div className="flex items-center justify-between">
+            <label htmlFor="nickname-field" className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+              {language === 'ko' ? '닉네임' : 'Nickname'}
+            </label>
+            <span className={cn(
+              "text-xs font-mono font-bold",
+              nickname.length > MAX_NICKNAME_LENGTH ? 'text-rose-500 font-black' : nickname.length < MIN_NICKNAME_LENGTH ? 'text-amber-500' : 'text-slate-400'
+            )}>
+              {nickname.length} / {MAX_NICKNAME_LENGTH}
+            </span>
+          </div>
+
+          <div className="relative">
+            <input
+              type="text"
+              id="nickname-field"
+              value={nickname}
+              maxLength={MAX_NICKNAME_LENGTH + 4}
+              onChange={(e) => setNickname(e.target.value)}
+              placeholder={user?.displayName || t('profile_nickname_placeholder', language)}
+              className={cn(
+                "w-full p-3.5 border rounded-lg font-semibold text-slate-800 focus:outline-none transition-all text-sm pr-10",
+                hasInvalidChars || hasSpaces || isTooLong
+                  ? "bg-rose-50/40 border-rose-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 text-rose-900"
+                  : isNicknameValid
+                  ? "bg-emerald-50/20 border-emerald-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                  : "bg-slate-50 border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10"
+              )}
+            />
+            <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+              {hasInvalidChars || hasSpaces || isTooLong ? (
+                <X size={16} className="text-rose-500" />
+              ) : isNicknameValid ? (
+                <Check size={16} className="text-emerald-600" />
+              ) : null}
+            </div>
+          </div>
+
+          {/* Real-time Validation Feedback Message */}
+          <div className="min-h-[18px]">
+            {hasSpaces ? (
+              <p className="text-[11px] font-bold text-rose-500 flex items-center gap-1">
+                <span>[!]</span>
+                <span>{language === 'ko' ? '닉네임에 공백(띄어쓰기)을 포함할 수 없습니다.' : 'Spaces are not allowed in nickname.'}</span>
+              </p>
+            ) : hasInvalidChars ? (
+              <p className="text-[11px] font-bold text-rose-500 flex items-center gap-1">
+                <span>[!]</span>
+                <span>{language === 'ko' ? '특수문자는 사용할 수 없습니다 (영문, 한글, 숫자, 밑줄 _ 만 허용).' : 'Special characters not allowed (letters, numbers, _ only).'}</span>
+              </p>
+            ) : isTooLong ? (
+              <p className="text-[11px] font-bold text-rose-500 flex items-center gap-1">
+                <span>[!]</span>
+                <span>{language === 'ko' ? `최대 ${MAX_NICKNAME_LENGTH}자까지 입력할 수 있습니다.` : `Maximum ${MAX_NICKNAME_LENGTH} characters allowed.`}</span>
+              </p>
+            ) : isTooShort ? (
+              <p className="text-[11px] font-medium text-amber-600 flex items-center gap-1">
+                <span>[-]</span>
+                <span>{language === 'ko' ? `최소 ${MIN_NICKNAME_LENGTH}자 이상 입력해주세요.` : `Minimum ${MIN_NICKNAME_LENGTH} characters required.`}</span>
+              </p>
+            ) : isNicknameValid ? (
+              <p className="text-[11px] font-bold text-emerald-600 flex items-center gap-1">
+                <span>[✓]</span>
+                <span>{language === 'ko' ? '사용 가능한 닉네임입니다.' : 'Valid nickname available.'}</span>
+              </p>
+            ) : (
+              <p className="text-[11px] text-slate-400">
+                {language === 'ko' ? '영문, 한글, 숫자, 밑줄(_) 2~12자' : '2-12 chars: Letters, Numbers, Korean, _'}
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Title selection */}
@@ -412,10 +477,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         {/* Save button */}
         <button
           onClick={handleSave}
-          disabled={isSaving}
+          disabled={isSaving || !isNicknameValid}
           id="profile-save-btn"
           className={cn(
-            'w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold tracking-wide rounded-lg transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 shadow-md shadow-indigo-600/10 cursor-pointer',
+            'w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold tracking-wide rounded-lg transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md shadow-indigo-600/10 cursor-pointer',
             isSaving && 'animate-pulse',
           )}
         >
