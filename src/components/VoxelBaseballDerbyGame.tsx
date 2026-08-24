@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ArrowLeft, Trophy, Zap, Sparkles, Target, RotateCcw } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelBaseballDerbyGameProps {
   deck: CardData[];
@@ -23,17 +26,23 @@ export const VoxelBaseballDerbyGame: React.FC<VoxelBaseballDerbyGameProps> = ({
   const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
 
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_baseball_derby') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [pitchCount, setPitchCount] = useState<number>(1);
-  const [totalPitches] = useState<number>(10);
+  const totalPitches = 10;
   const [homeruns, setHomeruns] = useState<number>(0);
   const [totalDistance, setTotalDistance] = useState<number>(0);
   const [lastHitText, setLastHitText] = useState<string>('');
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
-    aimX: 0, // -1 to 1
-    aimY: 0, // -1 to 1
     isPitching: false,
     ballPos: new THREE.Vector3(0, 1.2, -18),
     ballVel: new THREE.Vector3(0, 0, 0),
@@ -43,7 +52,11 @@ export const VoxelBaseballDerbyGame: React.FC<VoxelBaseballDerbyGameProps> = ({
     homeruns: 0,
     totalDistance: 0,
     pitch: 1,
-    isGameOver: false
+    isGameOver: false,
+    isPaused: false,
+    startTime: Date.now(),
+    batMesh: null as THREE.Mesh | null,
+    ballMesh: null as THREE.Mesh | null
   });
 
   useEffect(() => {
@@ -76,7 +89,7 @@ export const VoxelBaseballDerbyGame: React.FC<VoxelBaseballDerbyGameProps> = ({
     dirLight.castShadow = !lowSpecMode;
     scene.add(dirLight);
 
-    // Baseball Stadium Field
+    // Field
     const grassGeo = new THREE.PlaneGeometry(160, 160);
     const grassMat = new THREE.MeshStandardMaterial({ color: 0x3b7a36, roughness: 0.8 });
     const grassMesh = new THREE.Mesh(grassGeo, grassMat);
@@ -84,7 +97,7 @@ export const VoxelBaseballDerbyGame: React.FC<VoxelBaseballDerbyGameProps> = ({
     grassMesh.receiveShadow = !lowSpecMode;
     scene.add(grassMesh);
 
-    // Dirt Infield Diamond
+    // Infield
     const dirtGeo = new THREE.RingGeometry(0, 18, 4);
     const dirtMat = new THREE.MeshStandardMaterial({ color: 0x9b673c, roughness: 0.9 });
     const dirtMesh = new THREE.Mesh(dirtGeo, dirtMat);
@@ -102,251 +115,272 @@ export const VoxelBaseballDerbyGame: React.FC<VoxelBaseballDerbyGameProps> = ({
 
     // Pitcher Mound & Voxel Pitcher
     const moundGeo = new THREE.CylinderGeometry(2, 2.5, 0.3, 16);
-    const moundMat = new THREE.MeshStandardMaterial({ color: 0x8b5a2b });
+    const moundMat = new THREE.MeshStandardMaterial({ color: 0x9b673c });
     const mound = new THREE.Mesh(moundGeo, moundMat);
     mound.position.set(0, 0.15, -18);
     scene.add(mound);
 
     const pitcherGroup = new THREE.Group();
-    const pBodyMat = new THREE.MeshStandardMaterial({ color: 0xd9534f });
-    const pHeadMat = new THREE.MeshStandardMaterial({ color: 0xffd1a4 });
-    const pBody = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.9, 0.5), pBodyMat);
-    pBody.position.y = 1.2;
-    const pHead = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), pHeadMat);
-    pHead.position.y = 1.9;
-    pitcherGroup.add(pBody, pHead);
-    pitcherGroup.position.set(0, 0, -18);
+    const pBody = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.4, 0.6), new THREE.MeshStandardMaterial({ color: 0xd97706 }));
+    pBody.position.y = 1.0;
+    pitcherGroup.add(pBody);
+    pitcherGroup.position.set(0, 0.3, -18);
     scene.add(pitcherGroup);
 
-    // Voxel Batter & Bat
+    // Batter & Bat
     const batterGroup = new THREE.Group();
-    const bBodyMat = new THREE.MeshStandardMaterial({ color: 0x2b5797 });
-    const bBody = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.9, 0.4), bBodyMat);
-    bBody.position.set(-0.6, 1.2, 0);
-    const bHead = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.45, 0.45), pHeadMat);
-    bHead.position.set(-0.6, 1.85, 0);
+    const bBody = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.4, 0.6), new THREE.MeshStandardMaterial({ color: 0x2563eb }));
+    bBody.position.y = 1.0;
+    batterGroup.add(bBody);
 
-    const batGeo = new THREE.CylinderGeometry(0.06, 0.04, 1.1, 8);
-    const batMat = new THREE.MeshStandardMaterial({ color: 0xcc9966, roughness: 0.4 });
+    const batGeo = new THREE.CylinderGeometry(0.08, 0.05, 1.4, 8);
+    const batMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.4 });
     const batMesh = new THREE.Mesh(batGeo, batMat);
-    batMesh.position.set(-0.2, 1.4, 0.3);
-    batMesh.rotation.z = Math.PI / 3;
-    batterGroup.add(bBody, bHead, batMesh);
+    batMesh.position.set(0.6, 1.2, 0.2);
+    batMesh.rotation.z = Math.PI / 4;
+    batterGroup.add(batMesh);
+    batterGroup.position.set(-0.9, 0, 0);
     scene.add(batterGroup);
+    stateRef.current.batMesh = batMesh;
 
     // Baseball
-    const ballGeo = new THREE.SphereGeometry(0.12, 12, 12);
-    const ballMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.2 });
+    const ballGeo = new THREE.SphereGeometry(0.15, 8, 8);
+    const ballMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
     const ballMesh = new THREE.Mesh(ballGeo, ballMat);
-    ballMesh.castShadow = !lowSpecMode;
-    ballMesh.position.set(0, 1.4, -18);
+    ballMesh.position.copy(stateRef.current.ballPos);
     scene.add(ballMesh);
+    stateRef.current.ballMesh = ballMesh;
 
-    // Start first pitch after 1s
-    const startPitch = () => {
-      if (stateRef.current.isGameOver) return;
-      stateRef.current.isPitching = true;
-      stateRef.current.ballPos.set((Math.random() - 0.5) * 0.8, 1.2 + (Math.random() - 0.5) * 0.6, -18);
-      stateRef.current.ballVel.set((Math.random() - 0.5) * 0.5, 0.05, 0.52 + Math.random() * 0.08);
-      stateRef.current.isBallInPlay = true;
+    const throwNextPitch = () => {
+      const s = stateRef.current;
+      if (s.isGameOver || s.pitch > totalPitches) return;
+
+      s.isPitching = true;
+      s.isBallInPlay = false;
+      s.ballPos.set(0, 1.4, -18);
+      const speed = 22 + Math.random() * 8;
+      const targetX = (Math.random() - 0.5) * 0.8;
+      const targetY = 1.1 + (Math.random() - 0.5) * 0.6;
+      s.ballVel.set((targetX - s.ballPos.x) * 1.5, (targetY - s.ballPos.y) * 1.5, speed);
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
     };
 
-    const timer = setTimeout(() => startPitch(), 1000);
+    setTimeout(throwNextPitch, 800);
 
-    let animationFrameId: number;
+    let animId: number;
+    let lastTime = performance.now();
 
-    const animate = () => {
-      animationFrameId = requestAnimationFrame(animate);
+    const animate = (now: number) => {
+      animId = requestAnimationFrame(animate);
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
 
-      // Pitch Ball physics
-      if (stateRef.current.isBallInPlay) {
-        stateRef.current.ballPos.add(stateRef.current.ballVel);
-        ballMesh.position.copy(stateRef.current.ballPos);
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-        // Check if ball reached home plate
-        if (stateRef.current.ballPos.z >= 0.8 && stateRef.current.ballVel.z > 0) {
-          // Missed pitch (Strike)
-          stateRef.current.isBallInPlay = false;
-          setLastHitText(isKo ? '❌ 헛스윙 / 스트라이크!' : '❌ Strike / Miss!');
-          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-          nextPitch();
-        } else if (stateRef.current.ballPos.z < -70 || stateRef.current.ballPos.y < 0) {
-          // Ball hit completed landing
-          stateRef.current.isBallInPlay = false;
-          nextPitch();
+      // Bat Swing animation
+      if (s.isSwinging) {
+        s.batSwingTime += dt * 8;
+        if (s.batMesh) {
+          s.batMesh.rotation.y = -Math.sin(s.batSwingTime) * (Math.PI * 0.8);
+        }
+        if (s.batSwingTime >= Math.PI) {
+          s.isSwinging = false;
+          s.batSwingTime = 0;
+          if (s.batMesh) s.batMesh.rotation.y = 0;
         }
       }
 
-      // Bat Swing animation
-      if (stateRef.current.isSwinging) {
-        stateRef.current.batSwingTime += 0.15;
-        batMesh.rotation.y = -Math.sin(stateRef.current.batSwingTime) * Math.PI * 1.2;
-        batMesh.rotation.z = Math.PI / 3 - Math.sin(stateRef.current.batSwingTime) * 0.5;
-        if (stateRef.current.batSwingTime >= Math.PI) {
-          stateRef.current.isSwinging = false;
-          batMesh.rotation.set(0, 0, Math.PI / 3);
+      // Ball Physics
+      if (s.isPitching || s.isBallInPlay) {
+        s.ballPos.addScaledVector(s.ballVel, dt);
+
+        if (s.isBallInPlay) {
+          s.ballVel.y -= 9.8 * dt; // Gravity
+        }
+
+        if (s.ballMesh) {
+          s.ballMesh.position.copy(s.ballPos);
+        }
+
+        // Catch / Pass home plate
+        if (s.isPitching && !s.isBallInPlay && s.ballPos.z > 2.0) {
+          s.isPitching = false;
+          setLastHitText(isKo ? '❌ 스트라이크 / 헛스윙' : '❌ Strike!');
+          advancePitch();
+        }
+
+        // Outfield Landed
+        if (s.isBallInPlay && s.ballPos.y <= 0.15) {
+          s.isBallInPlay = false;
+          s.ballPos.y = 0.15;
+          advancePitch();
         }
       }
 
       renderer.render(scene, camera);
     };
 
-    animate();
+    const advancePitch = () => {
+      const s = stateRef.current;
+      s.pitch += 1;
+      setPitchCount(Math.min(s.pitch, totalPitches));
 
-    const nextPitch = () => {
-      if (stateRef.current.pitch >= totalPitches) {
-        // Game Over
-        stateRef.current.isGameOver = true;
+      if (s.pitch > totalPitches) {
+        s.isGameOver = true;
         setIsGameOver(true);
-        const reward = Math.min(260, 50 + stateRef.current.homeruns * 20 + Math.floor(stateRef.current.totalDistance / 20));
-        setRewardSns(reward);
-        onReward(reward);
-        return;
+        const duration = (Date.now() - s.startTime) / 1000;
+        const isVictory = s.homeruns >= 4;
+        const receipt = calculateAndDepositMissionReward({
+          gameId: 'voxel_baseball_derby',
+          gameTitle: '복셀 홈런 더비',
+          durationSeconds: duration,
+          score: s.totalDistance + s.homeruns * 500,
+          difficulty: isVictory ? 'HARD' : 'NORMAL',
+          isVictory
+        });
+        setSettlementReceipt(receipt);
+        onReward(receipt.totalSns);
+      } else {
+        setTimeout(throwNextPitch, 1400);
       }
-      stateRef.current.pitch += 1;
-      setPitchCount(stateRef.current.pitch);
-      setTimeout(() => startPitch(), 1200);
     };
 
-    const handleResize = () => {
-      if (!container) return;
-      const w = container.clientWidth;
-      const h = container.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-
-    window.addEventListener('resize', handleResize);
+    animId = requestAnimationFrame(animate);
 
     return () => {
-      clearTimeout(timer);
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', handleResize);
-      if (container && renderer.domElement) {
+      cancelAnimationFrame(animId);
+      renderer.dispose();
+      if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
-      renderer.dispose();
     };
-  }, [lowSpecMode, totalPitches, isKo, onReward, playSfx]);
+  }, [lowSpecMode]);
 
   const handleSwing = () => {
-    if (stateRef.current.isSwinging || !stateRef.current.isBallInPlay || stateRef.current.isGameOver) return;
+    const s = stateRef.current;
+    if (s.isGameOver || s.isSwinging || !s.isPitching || s.isPaused) return;
 
-    stateRef.current.isSwinging = true;
-    stateRef.current.batSwingTime = 0;
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    s.isSwinging = true;
+    s.batSwingTime = 0;
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
 
-    // Check hit timing at plate (z around -0.8 to 0.4)
-    const bz = stateRef.current.ballPos.z;
-    if (bz >= -1.6 && bz <= 0.4) {
-      // Hit!
-      const timingAccuracy = 1 - Math.abs(bz - (-0.4)) / 1.0;
-      if (timingAccuracy > 0.6) {
-        // HOMERUN!
-        const dist = Math.floor(120 + timingAccuracy * 45 + Math.random() * 15);
-        stateRef.current.ballVel.set((Math.random() - 0.5) * 0.4, 0.6 + timingAccuracy * 0.4, -1.2 - timingAccuracy * 0.6);
-        stateRef.current.homeruns += 1;
-        stateRef.current.totalDistance += dist;
-        setHomeruns(stateRef.current.homeruns);
-        setTotalDistance(stateRef.current.totalDistance);
-        setLastHitText(isKo ? `💥 장외 150m 초거대 홈런! (${dist}m)` : `💥 CRUSHING HOMERUN! (${dist}m)`);
-        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+    // Contact Timing Check (Plate is at Z ≈ 0)
+    const distToPlate = Math.abs(s.ballPos.z);
+    if (distToPlate < 1.2) {
+      // Clean Contact Hit!
+      s.isPitching = false;
+      s.isBallInPlay = true;
+
+      const timingBonus = 1.0 - (distToPlate / 1.2) * 0.4;
+      const launchAngle = Math.PI / 4.5;
+      const hitPower = 40 * timingBonus + Math.random() * 8;
+
+      s.ballVel.set(
+        (Math.random() - 0.5) * 12,
+        Math.sin(launchAngle) * hitPower,
+        -Math.cos(launchAngle) * hitPower
+      );
+
+      const dist = Math.round(hitPower * 3.4);
+      if (dist >= 120) {
+        s.homeruns += 1;
+        s.totalDistance += dist;
+        setHomeruns(s.homeruns);
+        setTotalDistance(s.totalDistance);
+        setLastHitText(isKo ? `💥 장외 대형 홈런! (${dist}m)` : `💥 GRAND HOMERUN! (${dist}m)`);
       } else {
-        // Fair hit / Line drive
-        const dist = Math.floor(60 + timingAccuracy * 40);
-        stateRef.current.ballVel.set((Math.random() - 0.5) * 0.8, 0.2, -0.8);
-        stateRef.current.totalDistance += dist;
-        setTotalDistance(stateRef.current.totalDistance);
+        s.totalDistance += dist;
+        setTotalDistance(s.totalDistance);
         setLastHitText(isKo ? `⚾ 안타! (${dist}m)` : `⚾ Fair Hit! (${dist}m)`);
       }
     }
   };
 
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.homeruns = 0;
+    s.totalDistance = 0;
+    s.pitch = 1;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    setHomeruns(0);
+    setTotalDistance(0);
+    setPitchCount(1);
+    setLastHitText('');
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
+
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none">
-      <div ref={mountRef} className="w-full h-full" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Top HUD */}
-      <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
-        <button
-          onClick={onExit}
-          className="pointer-events-auto p-2 bg-slate-900/80 border border-slate-700 text-slate-200 rounded-sm hover:bg-slate-800 transition-all flex items-center gap-1.5 text-xs font-bold"
-        >
-          <ArrowLeft size={16} />
-          <span>{isKo ? '나가기' : 'Exit'}</span>
-        </button>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 홈런 더비' : 'Voxel Baseball Derby'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '홈런' : 'HR', value: `${homeruns}개`, color: 'text-amber-300' },
+          { label: isKo ? '누적거리' : 'Dist', value: `${totalDistance}m`, color: 'text-cyan-300' },
+          { label: isKo ? '투구수' : 'Pitch', value: `${pitchCount}/${totalPitches}P`, color: 'text-emerald-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
-        <div className="flex items-center gap-2 bg-slate-900/90 border border-amber-500/40 px-3 py-1.5 rounded-sm">
-          <Trophy size={16} className="text-amber-400" />
-          <span className="text-xs text-amber-300 font-bold">
-            {isKo ? `홈런: ${homeruns}개` : `HR: ${homeruns}`} | {totalDistance}m
-          </span>
-          <span className="text-[10px] text-slate-400">
-            [{pitchCount}/{totalPitches}P]
-          </span>
-        </div>
-      </div>
-
-      {/* Last hit notification banner */}
+      {/* Last Hit Notification Banner */}
       {lastHitText && (
-        <div className="absolute top-16 left-1/2 -translate-x-1/2 bg-amber-500/90 text-slate-950 px-4 py-1 rounded-sm text-xs font-black tracking-wider shadow-lg animate-bounce pointer-events-none z-10">
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 bg-amber-500/90 text-slate-950 px-4 py-1 rounded-sm text-xs font-black tracking-wider shadow-lg animate-bounce pointer-events-none z-20">
           {lastHitText}
         </div>
       )}
 
       {/* Screen Gesture Touch Overlay */}
-      <div
-        className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
-        style={{ touchAction: 'none' }}
-        onPointerDown={(e) => {
-          e.preventDefault();
-          handleSwing();
-        }}
-      />
+      {!isGameOver && !isPaused && !showTutorial && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            e.preventDefault();
+            handleSwing();
+          }}
+        />
+      )}
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-slate-900/80 border border-amber-500/40 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
-          {isKo ? '화면 어디든 타이밍에 맞춰 탭하여 풀스윙 (버튼 없음)' : 'Tap anywhere with perfect timing to swing (No Buttons)'}
+        <div className="px-3 py-1 bg-black/75 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {isKo ? '공이 홈플레이트에 올 때 화면 탭: 풀스윙 타격 (버튼 없음)' : 'Tap anywhere when ball reaches plate: Full Swing (No Buttons)'}
         </div>
       </div>
 
-      {/* Game Over Modal */}
-      {isGameOver && (
-        <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-xs bg-slate-900 border border-amber-500/50 p-5 rounded-none text-center space-y-4 shadow-2xl">
-            <div className="flex justify-center">
-              <Sparkles size={36} className="text-amber-400 animate-pulse" />
-            </div>
-            <h2 className="text-lg font-black text-amber-400 uppercase tracking-widest">
-              {isKo ? '🏆 홈런 더비 완주!' : '🏆 DERBY COMPLETED!'}
-            </h2>
-            <div className="space-y-1.5 text-xs text-slate-300 bg-slate-950/60 p-3 border border-slate-800">
-              <div className="flex justify-between">
-                <span>{isKo ? '총 홈런 수' : 'Total Homeruns'}</span>
-                <span className="font-bold text-amber-300">{homeruns} HR</span>
-              </div>
-              <div className="flex justify-between">
-                <span>{isKo ? '최장 누적 거리' : 'Total Distance'}</span>
-                <span className="font-bold text-indigo-300">{totalDistance}m</span>
-              </div>
-              <div className="flex justify-between pt-1 border-t border-slate-800 text-amber-400 font-bold">
-                <span>{isKo ? '획득 SNS 보상' : 'Earned SNS'}</span>
-                <span>+{rewardSns} SNS</span>
-              </div>
-            </div>
+      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {showTutorial && (
+        <SportsMissionTutorial
+          gameId="voxel_baseball_derby"
+          gameTitle={isKo ? '3D 복셀 야구 홈런 더비: 슬러거 챌린지' : 'Voxel Baseball Derby: Slugger Challenge'}
+          sportType="golf"
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-            <div className="flex gap-2 pt-2">
-              <button
-                onClick={onExit}
-                className="flex-1 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase rounded-sm transition-all"
-              >
-                {isKo ? '보상 수령 및 복귀' : 'Claim & Exit'}
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
