@@ -139,7 +139,7 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`w-full bg-slate-950/80 border border-slate-800 rounded-2xl p-4 space-y-4 font-mono text-left shadow-lg backdrop-blur-md ${className}`}
+      className={`w-full bg-slate-950/80 border border-slate-800 rounded-2xl p-4 space-y-4 font-mono text-left shadow-lg backdrop-blur-md [contain:paint] [transform:translate3d(0,0,0)] [will-change:transform,opacity] ${className}`}
     >
       {/* Header Badge */}
       <div className="flex justify-between items-center border-b border-slate-800 pb-2.5">

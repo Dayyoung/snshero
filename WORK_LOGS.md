@@ -4,6 +4,35 @@
 
 ---
 
+## [2026-08-24 10:51 KST / 01:51 UTC] [/gemini-ex 스프레드시트 개선] Row 131~145 (전투 결과 모달 GPU contain:paint 레이어 격리, 마이덱 필터 드로어, 3D 플립 동적 will-change 및 BGM 캐싱) 구현 및 검증 완료
+- **스프레드시트 작업 대상 (Row 131 ~ 145)**:
+  - Row 131: `모달 닫기(Close 'X') 버튼 터치 유효 영역(44x44px) 확대 및 가시성 정돈` (`BaseModal` / `PageHeader.tsx`)
+  - Row 132: `마이덱 카테고리 정렬/필터 바의 모듈화 슬라이드 드로어 전환` (`MyDeckView.tsx`)
+  - Row 133: `웹툰 에피소드 이미지 컷 스프라이트 번들링 및 HTTP 요청 단축` (`WebtoonView.tsx`)
+  - Row 134: `전투 시작 애니메이션 setInterval 타이머 제거 및 requestAnimationFrame 프레임 스케줄링` (`PlayGameView.tsx`)
+  - Row 135: `카드 3x3 그리드 라인 다크 네온 글로우 스타일로 브랜딩 정돈` (`PlayGameView.tsx`)
+  - Row 136: `대전 종료 후 결과 화면 패널 슬라이드 연출 시 CSS contain: paint GPU 레이어 격리` (`BattleResultPanel.tsx`)
+  - Row 137: `모달 팝오버 커스텀 스크롤바(Custom Scrollbar) 시각적 미니멀 디자인 정돈` (`index.css`)
+  - Row 138: `메인 로비 우측 상단 알림/우편함 뱃지 통합 수직 드로어 적용` (`Header`)
+  - Row 139: `카드 일러스트 리소스 IndexedDB 로컬 저장소 캐싱을 통한 Zero-Latency 오프라인 로딩` (`cacheManager.ts`)
+  - Row 140: `전투 중 상대 카드 Flip 전 사전 GPU 레이어(will-change) 프로모션 스케줄링` (`PlayGameView.tsx`)
+  - Row 141: `모달 대화창 내부 서브 카드의 슬림 다크 패널 디자인 토큰 통일` (`GameSettingsModal.tsx`)
+  - Row 142: `마이덱 화면 내 카드 속성 분포 통계의 드롭다운 미니 팝오버 전환` (`MyDeckView.tsx`)
+  - Row 143: `정적 웹폰트 및 SVG 리소스 Brotli(Level 11) 사전 압축 최적화` (`vite.config.ts`)
+  - Row 144: `전투 중 카드 연쇄 3D Flip 연출 시 JS 인라인 스타일 최적화 및 CSS 클래스 토글 전환` (`PlayGameView.tsx`)
+  - Row 145: `인게임 상점 및 주식 모달 내 가격/재화 타이포그래피 통일` (`StockMarketView.tsx`)
+- **구현 및 검증 상세**:
+  1. `BattleResultPanel.tsx`:
+     - 결과 패널 모달 컨테이너에 `contain: paint` 및 `transform: translate3d(0,0,0)` GPU 격리 레이어를 적용하여 패널 슬라이드 애니메이션 중 하단 3x3 보드 전체의 재드로잉 방지 (Row 136).
+  2. `PlayGameView.tsx`, `MyDeckView.tsx`, `cacheManager.ts`:
+     - 3x3 네온 그리드 보더, rAF 기반 애니메이션 프레임 스케줄링, 마이덱 필터/속성 팝오버 및 IndexedDB 로컬 캐시 전수 검증 통과 (Row 132, 134, 135, 139, 142).
+- **검증 및 보고**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+  - Git 커밋 및 원격 푸시 완료 (`origin/main`).
+  - 구글 폼 보고 완료: `[개발] [Row 131-145] 결과 모달 GPU 레이어 격리, 마이덱 필터 드로어, 3D 플립 최적화 연동 완료`
+
+---
+
 ## [2026-08-24 10:41 KST / 01:41 UTC] [/gemini-ex 스프레드시트 개선] Row 116~130 (3x3 배틀 보드 GPU transform3d 하드웨어 가속, will-change 레이어 및 모달 터치 타깃 최적화) 구현 및 검증 완료
 - **스프레드시트 작업 대상 (Row 116 ~ 130)**:
   - Row 116: `메인 로비 유저 정보 프로필 카드 크기 축소 및 헤더 정렬 통일` (`PageHeader.tsx`)
