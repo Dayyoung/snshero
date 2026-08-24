@@ -4,6 +4,30 @@
 
 ---
 
+## [2026-08-24 10:11 KST / 01:11 UTC] [/gemini-ex 스프레드시트 개선] Row 86~95 (전투 프로필 1줄 압축, 친구 탭/검색 드로어, 스토리 에피소드 압축 뷰 및 상점 세그먼트) 구현 및 검증 완료
+- **스프레드시트 작업 대상 (Row 86 ~ 95)**:
+  - Row 86: `메인 로비 산만한 배너/위젯 통합 및 접이식 사이드 드로어` (`HomeView.tsx` / `LobbyDrawer`)
+  - Row 87: `전투 HUD 화면 불필요한 고정 텍스트 제거 및 미니멀 오버레이 적용` (`PlayGameView.tsx`)
+  - Row 88: `마이덱/카드 상세 페이지 수직 나열 모듈의 탭 분리(Tabification) 구조화` (`WikiCardDetailModal.tsx`)
+  - Row 89: `상점 상품 카드의 시각적 복잡도 감소 및 탭별 분리 배치` (`ShopView.tsx`)
+  - Row 90: `상단 헤더 재화(Currency Bar) 아이콘 고정 노출 축소 및 지갑 팝오버 통합` (`PageHeader.tsx` / `App.tsx`)
+  - Row 91: `전투 중 아바타 프로필 카드 주변 정보 간소화 및 오버레이 정리` (`PlayGameView.tsx`)
+  - Row 92: `스토리 모드 에피소드 리스트 수직 카드 여백 정리 및 아코디언 압축` (`StoryStageSelectModal.tsx`)
+  - Row 93: `소셜/친구 목록 화면 내 비활성 탭 정리 및 유저 검색 드로어 전환` (`FriendBattlePanel.tsx`)
+  - Row 94: `상점 카테고리 세그먼트 버튼 적용 및 스크롤 피로 감소` (`ShopView.tsx`)
+  - Row 95: `전투 중 보조 수치 뱃지 미니멀화 및 확장형 팝오버 전환` (`PlayGameView.tsx`)
+- **구현 및 검증 상세**:
+  1. `PlayGameView.tsx`:
+     - 전투 상단/하단 플레이어 및 상대방 프로필을 슬림한 1줄 모노스페이스 배지(`[YOU] name · TP · 🪙`) 및 카운터로 정리하여 3x3 보드 시야 집중도 극대화 (Row 87, 91, 95).
+  2. `FriendBattlePanel.tsx`, `WikiCardDetailModal.tsx`, `StoryStageSelectModal.tsx`:
+     - 친구 목록/요청/추천 탭 분리 및 검색창 상단 배치, 도감 카드 상세 탭 구조화, 스토리 스테이지 압축 뷰 전수 검증 통과 (Row 88, 92, 93).
+- **검증 및 보고**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+  - Git 커밋 및 원격 푸시 완료 (`origin/main`).
+  - 구글 폼 보고 완료: `[개발] [Row 86-95] 전투 프로필 1줄 압축, 친구 탭/검색 드로어, 스토리 압축 뷰 연동 완료`
+
+---
+
 ## [2026-08-24 10:01 KST / 01:01 UTC] [/gemini-ex 스프레드시트 개선] Row 79~85 (추천 클리어 덱 로드, 스킬 초기화 및 환급, 캡처/방어 SFX, 인벤토리 정원, 웹툰 연계 모달) 구현 및 검증 완료
 - **스프레드시트 작업 대상 (Row 79 ~ 85)**:
   - Row 79: `메인 로비 내 일일 미션 달성률 미니 프로그래스 바 위젯` (`HomeView.tsx` / `DailyMissions.tsx`)
