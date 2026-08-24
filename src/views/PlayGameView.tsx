@@ -14921,7 +14921,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             onMouseLeave={handleMouseLeaveCell}
                             className={cn(
                               "grid-cell group w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] flex items-center justify-center relative transition-all cursor-pointer overflow-visible rounded-lg font-mono shadow-none",
-                              card ? "border border-slate-750/70" : (
+                              card ? (
+                                selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player'
+                                  ? "border border-slate-750/50 opacity-70 saturate-75"
+                                  : "border border-slate-750/70"
+                              ) : (
                                 idx === goblinTileIndex && !goblinCaptured
                                   ? "border-2 border-yellow-400 bg-yellow-950/40 shadow-[0_0_12px_rgba(234,179,8,0.5)] animate-pulse"
                                   : idx === manaSpringTileIndex && !manaSpringClaimed
@@ -14930,11 +14934,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                               ),
                               !card && boardTraps[idx] === 'purple' && "bg-purple-800/40 border-purple-400 border-2",
                               !card && boardTraps[idx] === 'red' && "bg-red-800/40 border-red-400 border-2",
-                              !card && selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player' && "border-solid border-cyan-400 bg-cyan-950/30",
+                              !card && selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player' && "border-2 border-emerald-400 bg-emerald-950/50 shadow-[0_0_16px_rgba(52,211,153,0.6)] animate-pulse",
                               !card && aiReasoning?.boardIdx === idx && turn === 'ai' && "border-solid border-rose-500 bg-rose-950/30",
-                              !card && selectedCardIdx !== null && selectedCardSide === 'player' && recommendedPlayerMove?.cardIdx === selectedCardIdx && recommendedPlayerMove?.boardIdx === idx && turn === 'player' && "border-solid border-cyan-300 bg-cyan-900/40"
+                              !card && selectedCardIdx !== null && selectedCardSide === 'player' && recommendedPlayerMove?.cardIdx === selectedCardIdx && recommendedPlayerMove?.boardIdx === idx && turn === 'player' && "border-2 border-cyan-300 bg-cyan-900/50 shadow-[0_0_18px_rgba(34,211,238,0.8)]"
                             )}
                           >
+                            {/* Row 62: Valid Drop Target Indicator when player card selected */}
+                            {!card && selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player' && (
+                              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-1 pointer-events-none">
+                                <div className="w-5 h-5 rounded-full border-2 border-emerald-400 bg-emerald-500/20 flex items-center justify-center animate-ping" />
+                                <span className="text-[7px] font-mono font-black text-emerald-300 bg-black/85 px-1 py-0.2 rounded-xs border border-emerald-400/60 mt-1 uppercase whitespace-nowrap shadow-sm">
+                                  {language === 'ko' ? '[배치]' : '[PLACE]'}
+                                </span>
+                              </div>
+                            )}
                             {/* Item 347: Goblin Spawn Badge in Grid Cell */}
                             {!card && idx === goblinTileIndex && !goblinCaptured && (
                               <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-1 pointer-events-none">
@@ -15356,37 +15369,44 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         turn === 'player' && !gameOver ? "border-indigo-500/50 z-20" : "border-blue-500/20 z-10"
       )}>
         
-        {/* Item 357: Player 1-Line Slim Monospace Tag (Visible on Mobile & Desktop) & Item 34: In-Battle Emote */}
-        <div className="absolute top-1 left-2 z-20 flex items-center gap-1.5 bg-indigo-950/90 text-indigo-200 text-[8px] sm:text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-sm shadow-xs border border-indigo-500/40 backdrop-blur-xs">
-          <span className="text-indigo-400 font-black">[YOU]</span>
-          <span className="truncate max-w-[80px] sm:max-w-[120px] text-white">{effectiveUser?.displayName || effectiveUser?.name || 'YOU'}</span>
-          <span className="text-slate-500">·</span>
-          <span>TP {(calculatedTotalPower || 1000).toLocaleString()}</span>
-          {sns !== undefined && sns > 0 && (
-            <>
-              <span className="text-slate-500">·</span>
-              <span className="text-amber-300">🪙{sns.toLocaleString()}</span>
-            </>
-          )}
-          {userStats && (userStats.wins > 0 || userStats.losses > 0) && (
-            <>
-              <span className="text-slate-500">·</span>
-              <span className="text-slate-300">{userStats.wins}W {userStats.losses}L</span>
-            </>
-          )}
-          <button
-            type="button"
-            onClick={() => setIsEmoteModalOpen(true)}
-            className="ml-1 px-1.5 py-0.2 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-[8px] font-black uppercase tracking-wider flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-2xs"
-            title={language === 'ko' ? '감정표현 보내기' : 'Send Emote'}
-          >
-            <span>💬</span>
-            <span>{language === 'ko' ? '감정표현' : 'Emote'}</span>
-          </button>
+        {/* Item 357: Player 1-Line Slim Monospace Tag (Visible on Mobile & Desktop) & Row 66: Hand/Deck Counter Badge */}
+        <div className="absolute top-1 left-2 right-2 z-20 flex items-center justify-between pointer-events-none">
+          <div className="flex items-center gap-1.5 bg-indigo-950/90 text-indigo-200 text-[8px] sm:text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-sm shadow-xs border border-indigo-500/40 backdrop-blur-xs pointer-events-auto">
+            <span className="text-indigo-400 font-black">[YOU]</span>
+            <span className="truncate max-w-[70px] sm:max-w-[120px] text-white">{effectiveUser?.displayName || effectiveUser?.name || 'YOU'}</span>
+            <span className="text-slate-500">·</span>
+            <span>TP {(calculatedTotalPower || 1000).toLocaleString()}</span>
+            {sns !== undefined && sns > 0 && (
+              <>
+                <span className="text-slate-500">·</span>
+                <span className="text-amber-300">🪙{sns.toLocaleString()}</span>
+              </>
+            )}
+            <button
+              type="button"
+              onClick={() => setIsEmoteModalOpen(true)}
+              className="ml-1 px-1.5 py-0.2 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-[8px] font-black uppercase tracking-wider flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-2xs"
+              title={language === 'ko' ? '감정표현 보내기' : 'Send Emote'}
+            >
+              <span>💬</span>
+              <span>{language === 'ko' ? '감정' : 'Emote'}</span>
+            </button>
+          </div>
+
+          {/* Row 66: Player Hand Cards & Deck Stack Remaining Counter Badge */}
+          <div className="flex items-center gap-1 bg-slate-900/90 text-slate-300 text-[8px] sm:text-[9px] font-mono font-bold px-2 py-0.5 rounded-sm border border-slate-700/60 shadow-xs backdrop-blur-xs pointer-events-auto">
+            <span className="text-cyan-400 font-black">
+              {language === 'ko' ? `손패 ${playerHand.length}장` : `Hand: ${playerHand.length}`}
+            </span>
+            <span className="text-slate-500">/</span>
+            <span className="text-amber-400 font-black">
+              {language === 'ko' ? `잔여 ${Math.max(0, 5 - (9 - board.filter(c => c !== null).length - opponentHand.length))}장` : `Deck: ${Math.max(0, 5 - (9 - board.filter(c => c !== null).length - opponentHand.length))}`}
+            </span>
+          </div>
         </div>
 
         <div className={cn(
-          "w-full max-w-6xl mx-auto flex items-center gap-1 md:gap-2 h-auto py-0.5 md:py-1 overflow-x-auto overflow-y-visible scrollbar-hide px-4 touch-pan-x relative z-10 my-auto",
+          "w-full max-w-6xl mx-auto flex items-center gap-1 md:gap-2 h-auto py-0.5 md:py-1 overflow-x-auto overflow-y-visible scrollbar-hide px-4 touch-pan-x relative z-10 my-auto select-none",
           playerHand.length > 5 ? "justify-start md:justify-center" : "justify-center"
         )}>
 

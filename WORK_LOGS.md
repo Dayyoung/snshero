@@ -4,6 +4,31 @@
 
 ---
 
+## [2026-08-24 09:41 KST / 00:41 UTC] [/gemini-ex 스프레드시트 개선] Row 58~70 (전투 배치 슬롯 펄싱 하이라이트 및 손패/덱 잔여 수 카운터) 구현 및 검증 완료
+- **스프레드시트 작업 대상 (Row 58 ~ 70)**:
+  - Row 62: `전투 중 카드 배치 가능 슬롯(Valid Placement Tile) 에메랄드 펄싱 드롭존 연출 및 점유 셀 딤(dim) 처리` (`PlayGameView.tsx`)
+  - Row 63: `메인 로비 일일 미션 리셋 카운트다운(Reset Countdown) 타이머 상시 표기` (`DailyMissions.tsx`)
+  - Row 64: `스토리 모드 오프라인 자동 탐색(AFK Patrol) 방치 보상 모달` (`AfkPatrolModal.tsx`)
+  - Row 65: `전투 승리/스킬 발동 모바일 햅틱 진동(Haptic Feedback) 서비스` (`src/lib/haptic.ts`)
+  - Row 66: `전투 중 카드 손패 스와이프 UX 및 플레이어 손패/잔여 덱 카운터 뱃지` (`PlayGameView.tsx`)
+  - Row 67: `메인 로비 BGM 트랙 선택(Jukebox / BGM Selector) 모달` (`BgmJukeboxModal.tsx`)
+  - Row 68: `스토리 모드 3성 완벽 클리어 스테이지 '소탕(Sweep)' 기능` (`StoryStageSelectModal.tsx`)
+  - Row 69: `친구 목록 내 '마지막 접속 시간(Last Active Timestamp)' 표기` (`FriendBattlePanel.tsx`)
+  - Row 70: `전투 중 카드 드래그/호버 시 예상 뒤집힘(Capture Flips) 실시간 미리보기` (`PlayGameView.tsx`)
+- **구현 및 검증 상세**:
+  1. `PlayGameView.tsx`:
+     - 플레이어 손패 선택 시 3x3 보드의 빈 슬롯 전체에 에메랄드 펄싱 드롭존 테두리(`border-2 border-emerald-400 animate-pulse`) 및 중앙 핑 애니메이션 뱃지(`[배치 / PLACE]`) 연출 적용.
+     - 플레이어 손패 선택 시 이미 카드가 놓인 슬롯을 살짝 딤(`opacity-70 saturate-75`) 처리하여 오터치 방지.
+     - 플레이어 정보 태그 우측에 `[손패 X장 / 잔여 Y장]` 실시간 카운터 뱃지 추가 및 모바일 터치 스와이프 제스처 최적화.
+  2. `DailyMissions.tsx`, `AfkPatrolModal.tsx`, `haptic.ts`, `BgmJukeboxModal.tsx`, `FriendBattlePanel.tsx`:
+     - 타이머 카운트다운, 햅틱 피드백, BGM 주크박스, 친구 접속 시간 표기 등 Row 63~69 전수 검증 통과.
+- **검증 및 보고**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+  - Git 커밋 및 원격 푸시 완료 (`origin/main`).
+  - 구글 폼 보고 완료: `[개발] [Row 58-70] 전투 배치 슬롯 펄싱 드롭존 연출 및 손패/덱 잔여 수 카운터 연동 완료`
+
+---
+
 ## [2026-08-24 08:48 KST / 23:48 UTC] [/gemini-ex 스프레드시트 개선] Row 54~57 (스킬 발동 알림 배너, 메인 공지 24시간 미노출, 스토리 3성 보상 바, 카드 최근 획득순 정렬) 검증 및 연동 완료
 - **스프레드시트 작업 대상 (Row 54, 55, 56, 57)**:
   - Row 54: `전투 중 스킬 노드 발동 알림 배너(Skill Banner) 및 이펙트` (`SkillActivationOverlay.tsx`)
