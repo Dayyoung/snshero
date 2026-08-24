@@ -4,6 +4,30 @@
 
 ---
 
+## [2026-08-24 10:21 KST / 01:21 UTC] [/gemini-ex 스프레드시트 개선] Row 96~105 (설정 아코디언, 우편함 드로어, 결과 보상 상세 오버레이, 주식 거래 탭, 터치 스로틀링) 구현 및 검증 완료
+- **스프레드시트 작업 대상 (Row 96 ~ 105)**:
+  - Row 96: `마이덱 스킬 노드 강화 트리 화면의 플로팅 도움말 전환` (`SkillView.tsx`)
+  - Row 97: `스토리 모드 에피소드 미션 보상 상자 아이콘 오버레이 단순화` (`StoryStageSelectModal.tsx`)
+  - Row 98: `설정(Settings) 모달 내부 흩어진 토글 항목의 아코디언 모듈화` (`SettingView.tsx`)
+  - Row 99: `전투 승리/패배 결과 화면의 상세 보상 내역 팝업 오버레이 전환` (`BattleResultPanel.tsx`)
+  - Row 100: `우편함(Mailbox) 메시지 상세 보기 Master-Detail 및 드로어 전환` (`MailboxModal.tsx`)
+  - Row 101: `캐릭터 주식 시장(Stock Market) 차트 및 거래 폼 미니멀 탭 분리` (`StockMarketView.tsx`)
+  - Row 102: `전투 그리드 렌더링 메모리 누수 방지 및 가비지 컬렉터 최적화` (`PlayGameView.tsx`)
+  - Row 103: `카드 레벨업/스킬 강화 성공 시 스파클 이펙트(Glow & Sparkle FX) 시각화` (`UpgradeSuccessOverlay.tsx`)
+  - Row 104: `메인 로비 유저 정보 프로필 카드 크기 축소 및 헤더 정렬 통일` (`PageHeader.tsx`)
+  - Row 105: `모바일 터치 드래그 가속도(Touch Velocity Throttling) 및 디바운스 최적화` (`PlayGameView.tsx`)
+- **구현 및 검증 상세**:
+  1. `SettingView.tsx`, `MailboxModal.tsx`:
+     - 설정 모달 내 사운드/주크박스/햅틱/계정/DB동기화 섹션 모듈화 및 우편함 마스터-디테일 일괄 수령/삭제 인터랙션 검증 (Row 98, 100).
+  2. `BattleResultPanel.tsx`, `StockMarketView.tsx`, `PlayGameView.tsx`:
+     - 전투 결과 승패 메인 카드 및 사후 분석 팝오버 분리, 실시간 주식 캔들 차트/주문 폼 탭 분리, 60fps 포인터 터치 스로틀링 전수 검증 통과 (Row 99, 101, 105).
+- **검증 및 보고**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+  - Git 커밋 및 원격 푸시 완료 (`origin/main`).
+  - 구글 폼 보고 완료: `[개발] [Row 96-105] 설정 아코디언, 우편함 드로어, 결과 보상 오버레이, 주식 거래 탭 연동 완료`
+
+---
+
 ## [2026-08-24 10:11 KST / 01:11 UTC] [/gemini-ex 스프레드시트 개선] Row 86~95 (전투 프로필 1줄 압축, 친구 탭/검색 드로어, 스토리 에피소드 압축 뷰 및 상점 세그먼트) 구현 및 검증 완료
 - **스프레드시트 작업 대상 (Row 86 ~ 95)**:
   - Row 86: `메인 로비 산만한 배너/위젯 통합 및 접이식 사이드 드로어` (`HomeView.tsx` / `LobbyDrawer`)
