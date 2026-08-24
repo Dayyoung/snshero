@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Trophy, ArrowLeft, Fish, Anchor, Sparkles } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelFishingMasterGameProps {
   deck: CardData[];
@@ -20,12 +23,23 @@ export const VoxelFishingMasterGame: React.FC<VoxelFishingMasterGameProps> = ({
   onExit,
   onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_fishing_master') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [fishCaught, setFishCaught] = useState<number>(0);
+  const targetFish = 3;
   const [tension, setTension] = useState<number>(30);
   const [biteState, setBiteState] = useState<'idle' | 'waiting' | 'bite' | 'reeling'>('idle');
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
     fishCaught: 0,
@@ -33,13 +47,17 @@ export const VoxelFishingMasterGame: React.FC<VoxelFishingMasterGameProps> = ({
     biteState: 'idle' as 'idle' | 'waiting' | 'bite' | 'reeling',
     reelProgress: 0,
     isPressingReel: false,
-    floatMesh: null as THREE.Mesh | null,
-    isGameOver: false
+    score: 0,
+    isGameOver: false,
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
+    floatMesh: null as THREE.Mesh | null
   });
 
   const castRod = () => {
     const s = stateRef.current;
-    if (s.biteState !== 'idle' || s.isGameOver) return;
+    if (s.biteState !== 'idle' || s.isGameOver || s.isVictory || s.isPaused) return;
     s.biteState = 'waiting';
     setBiteState('waiting');
     playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
@@ -61,14 +79,16 @@ export const VoxelFishingMasterGame: React.FC<VoxelFishingMasterGameProps> = ({
       s.reelProgress = 0;
       s.tension = 40;
       setBiteState('reeling');
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
     }
   };
 
   useEffect(() => {
-    if (!mountRef.current) return;
     const container = mountRef.current;
-    const width = container.clientWidth || 800;
-    const height = container.clientHeight || 500;
+    if (!container) return;
+
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x082f49);
@@ -78,9 +98,9 @@ export const VoxelFishingMasterGame: React.FC<VoxelFishingMasterGameProps> = ({
     camera.position.set(0, 8, 16);
     camera.lookAt(0, 1, 0);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode });
+    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
     container.appendChild(renderer.domElement);
 
     const ambLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -91,66 +111,90 @@ export const VoxelFishingMasterGame: React.FC<VoxelFishingMasterGameProps> = ({
     scene.add(dirLight);
 
     // Ocean Water
-    const water = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.MeshLambertMaterial({ color: 0x0284c7, transparent: true, opacity: 0.85 }));
+    const water = new THREE.Mesh(
+      new THREE.PlaneGeometry(60, 60),
+      new THREE.MeshStandardMaterial({ color: 0x0284c7, transparent: true, opacity: 0.85, roughness: 0.1 })
+    );
     water.rotation.x = -Math.PI / 2;
     scene.add(water);
 
-    // Fishing Pier / Boat
-    const pier = new THREE.Mesh(new THREE.BoxGeometry(6, 1, 8), new THREE.MeshLambertMaterial({ color: 0x78350f }));
+    // Fishing Pier
+    const pier = new THREE.Mesh(new THREE.BoxGeometry(6, 1, 8), new THREE.MeshStandardMaterial({ color: 0x78350f }));
     pier.position.set(0, 0.5, 6);
     scene.add(pier);
 
-    // Float Mesh
-    const floatMesh = new THREE.Mesh(new THREE.SphereGeometry(0.5, 12, 12), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
-    floatMesh.position.set(0, 0.2, -6);
+    // Fishing Float (찌)
+    const floatMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(0.4, 16, 16),
+      new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0x991b1b, emissiveIntensity: 0.4 })
+    );
+    floatMesh.position.set(0, 0.2, -4);
     scene.add(floatMesh);
     stateRef.current.floatMesh = floatMesh;
 
-    let reqId: number;
-    const animate = () => {
-      reqId = requestAnimationFrame(animate);
+    let animId: number;
+    let lastTime = performance.now();
+
+    const animate = (now: number) => {
+      animId = requestAnimationFrame(animate);
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+
       const s = stateRef.current;
-      if (s.isGameOver) {
-        renderer.render(scene, camera);
-        return;
-      }
+      if (s.isPaused || s.isGameOver) return;
 
-      // Float ripple animation
-      if (s.biteState === 'bite') {
-        floatMesh.position.y = 0.2 + Math.sin(Date.now() * 0.03) * 0.4;
-      } else {
-        floatMesh.position.y = 0.2 + Math.sin(Date.now() * 0.003) * 0.1;
-      }
+      // Float Physics & Bobbing
+      if (floatMesh) {
+        if (s.biteState === 'idle') {
+          floatMesh.position.set(0, 1.0, 4);
+        } else if (s.biteState === 'waiting') {
+          floatMesh.position.set(0, 0.1 + Math.sin(now * 0.003) * 0.1, -4);
+        } else if (s.biteState === 'bite') {
+          floatMesh.position.set(0, -0.4 + Math.sin(now * 0.02) * 0.2, -4);
+        } else if (s.biteState === 'reeling') {
+          floatMesh.position.set(0, 0.2, -4 + (s.reelProgress / 100) * 8);
 
-      // Reeling Mechanic
-      if (s.biteState === 'reeling') {
-        if (s.isPressingReel) {
-          s.tension = Math.min(100, s.tension + 1.2);
-          s.reelProgress += 0.8;
-        } else {
-          s.tension = Math.max(0, s.tension - 0.8);
-        }
-        setTension(Math.round(s.tension));
+          // Reeling Physics
+          if (s.isPressingReel) {
+            s.reelProgress += dt * 35;
+            s.tension = Math.min(100, s.tension + dt * 45);
+          } else {
+            s.tension = Math.max(10, s.tension - dt * 30);
+          }
+          setTension(Math.round(s.tension));
 
-        // Tension break or catch
-        if (s.tension >= 95 || s.tension <= 5) {
-          // Line snapped or escaped
-          s.biteState = 'idle';
-          setBiteState('idle');
-        } else if (s.reelProgress >= 100) {
-          // Fish Caught!
-          s.fishCaught += 1;
-          setFishCaught(s.fishCaught);
-          s.biteState = 'idle';
-          setBiteState('idle');
-          playSfx?.('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
+          // Line Break Check
+          if (s.tension >= 100) {
+            s.biteState = 'idle';
+            setBiteState('idle');
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+          }
 
-          if (s.fishCaught >= 3) {
-            s.isGameOver = true;
-            setIsGameOver(true);
-            const reward = 260;
-            setRewardSns(reward);
-            onReward(reward);
+          // Fish Caught Check
+          if (s.reelProgress >= 100) {
+            s.fishCaught += 1;
+            s.score += 500;
+            s.biteState = 'idle';
+            setFishCaught(s.fishCaught);
+            setBiteState('idle');
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+
+            if (s.fishCaught >= targetFish) {
+              s.isVictory = true;
+              s.isGameOver = true;
+              setIsGameOver(true);
+              const duration = (Date.now() - s.startTime) / 1000;
+              const receipt = calculateAndDepositMissionReward({
+                gameId: 'voxel_fishing_master',
+                gameTitle: '복셀 피싱 마스터',
+                durationSeconds: duration,
+                score: s.score + 1000,
+                difficulty: 'HARD',
+                isVictory: true
+              });
+              setSettlementReceipt(receipt);
+              onReward(receipt.totalSns);
+            }
           }
         }
       }
@@ -158,21 +202,10 @@ export const VoxelFishingMasterGame: React.FC<VoxelFishingMasterGameProps> = ({
       renderer.render(scene, camera);
     };
 
-    animate();
-
-    const handleResize = () => {
-      if (!mountRef.current) return;
-      const w = mountRef.current.clientWidth;
-      const h = mountRef.current.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener('resize', handleResize);
+    animId = requestAnimationFrame(animate);
 
     return () => {
-      cancelAnimationFrame(reqId);
-      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animId);
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
@@ -180,40 +213,52 @@ export const VoxelFishingMasterGame: React.FC<VoxelFishingMasterGameProps> = ({
     };
   }, [lowSpecMode]);
 
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.fishCaught = 0;
+    s.tension = 30;
+    s.biteState = 'idle';
+    s.reelProgress = 0;
+    s.score = 0;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    setFishCaught(0);
+    setTension(30);
+    setBiteState('idle');
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
+
   return (
     <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* HUD */}
-      <div className="absolute top-0 left-0 right-0 z-20 px-3 py-2.5 bg-slate-900/85 backdrop-blur-xs border-b border-slate-800 flex items-center justify-between text-white text-xs">
-        <button
-          onClick={onExit}
-          className="flex items-center gap-1 bg-slate-800 hover:bg-slate-700 px-2.5 py-1.5 rounded-sm border border-slate-700 font-bold"
-        >
-          <ArrowLeft size={14} />
-          <span>{language === 'ko' ? '나가기' : 'Exit'}</span>
-        </button>
-
-        <div className="flex items-center gap-4 font-black">
-          <span className="text-cyan-300">🎣 낚은 대어: {fishCaught}/3마리</span>
-          {biteState === 'reeling' && (
-            <span className={`font-bold ${tension > 80 ? 'text-rose-400 animate-pulse' : 'text-emerald-400'}`}>
-              텐션: {tension}%
-            </span>
-          )}
-        </div>
-
-        <div className="text-amber-300 font-bold">
-          {biteState === 'idle' && '낚싯대 던지기 대기'}
-          {biteState === 'waiting' && '입질 대기 중...'}
-          {biteState === 'bite' && '⚡ 입질 발생! 지금 탭!'}
-          {biteState === 'reeling' && '릴링 진행 중!'}
-        </div>
-      </div>
-
-      {/* 3D Canvas */}
+      {/* 3D Canvas Mount */}
       <div ref={mountRef} className="flex-1 w-full h-full" />
 
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 피싱 마스터' : 'Voxel Fishing Master'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '대어' : 'Fish', value: `${fishCaught}/${targetFish}마리`, color: 'text-cyan-300' },
+          { label: isKo ? '텐션' : 'Tension', value: `${tension}%`, color: tension > 80 ? 'text-rose-400' : 'text-emerald-300' },
+          {
+            label: isKo ? '상태' : 'State',
+            value: biteState === 'idle' ? '캐스팅대기' : biteState === 'waiting' ? '입질대기' : biteState === 'bite' ? '⚡입질발생!' : '릴링중!',
+            color: biteState === 'bite' ? 'text-yellow-300' : 'text-amber-300'
+          }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
+
       {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && (
+      {!isGameOver && !isPaused && !showTutorial && (
         <div
           className="absolute inset-0 z-10 select-none touch-none cursor-pointer"
           style={{ touchAction: 'none' }}
@@ -238,32 +283,35 @@ export const VoxelFishingMasterGame: React.FC<VoxelFishingMasterGameProps> = ({
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/70 border border-cyan-400/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
+        <div className="px-3 py-1 bg-black/75 border border-cyan-500/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
           {biteState === 'idle'
-            ? (language === 'ko' ? '화면을 탭하여 낚싯대 던지기 (버튼 없음)' : 'Tap anywhere to cast rod (No Buttons)')
+            ? (isKo ? '화면 탭: 낚싯대 던지기 (버튼 없음)' : 'Tap screen to cast rod (No Buttons)')
             : biteState === 'bite'
-            ? (language === 'ko' ? '⚡ 입질 발생! 즉시 화면을 탭하여 챔질!' : '⚡ BITE! Tap now to hook!')
-            : (language === 'ko' ? '화면을 꾹 눌러 릴 감기' : 'Hold screen to reel in')}
+            ? (isKo ? '⚡ 입질 발생! 즉시 화면 탭하여 챔질!' : '⚡ BITE! Tap now to hook!')
+            : (isKo ? '화면 롱프레스: 릴 감기 (텐션 100% 주의)' : 'Hold screen to reel in (Watch tension)')}
         </div>
       </div>
 
-      {/* Modal */}
-      {isGameOver && (
-        <div className="absolute inset-0 z-40 bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 p-6 rounded-sm max-w-sm w-full text-center text-white flex flex-col gap-4">
-            <Trophy size={48} className="mx-auto text-amber-400" />
-            <h2 className="text-xl font-black">{language === 'ko' ? '대어 3마리 낚시 성공!' : 'FISHING MASTER!'}</h2>
-            <div className="bg-slate-950 p-3 rounded-xs border border-amber-400/30 text-amber-300 font-bold text-sm">
-              +{rewardSns} SNS 포인트 획득!
-            </div>
-            <button
-              onClick={onExit}
-              className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-sm border border-amber-300 text-sm"
-            >
-              {language === 'ko' ? '확인 및 돌아가기' : 'Confirm & Exit'}
-            </button>
-          </div>
-        </div>
+      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {showTutorial && (
+        <SportsMissionTutorial
+          gameId="voxel_fishing_master"
+          gameTitle={isKo ? '3D 복셀 피싱 마스터: 바다 낚시 대결' : 'Voxel Fishing Master: Ocean Fishing'}
+          sportType="fishing"
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
+
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
