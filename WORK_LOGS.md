@@ -4,6 +4,21 @@
 
 ---
 
+## [2026-08-24 20:39 KST / 11:39 UTC] [/gemini-ex 스프레드시트 개선] 최신 스프레드시트 Row 595~606 (CSV Line 618) 전수 구현 및 동기화 완료
+- **스프레드시트 최신 618줄 전수 조사 및 매핑 완료**:
+  - 스프레드시트 전체 행(CSV Line 1 ~ Line 618, ID 606) 최신 데이터 실시간 파싱 완료.
+  - 최신 요구사항:
+    1. `MinimalistMissionHUD.tsx`: 상단 70% 뷰포트 시야 100% 개방 & 최상단 1줄 반투명 글래스모피즘 HUD 전 미션 표준화.
+    2. `VictoryRewardModal.tsx` & `standardizedRewardGateway.ts`: 난이도/스킬 승수 계산 기반 100% 확정 SNS 포인트 지갑 입금 및 2초 황금 코인 팡파레.
+    3. `src/lib/vehicleGestureController.ts`: 3D 레이싱/카트 가상 핸들·버튼 100% 제거 및 썸존 슬라이드 조향, 코너링 드리프트 릴리즈 미니터보, 더블탭 아이템 트리거.
+    4. `src/components/SportsMissionTutorial.tsx`: 스포츠 미션 3단계 인터랙티브 온보딩 모달 및 상시 ❓ 가이드 버튼.
+- **품질 검증 및 동기화**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+  - Git 커밋 및 원격 저장소 푸시 완료 (`origin/main`).
+  - 구글 폼 보고 완료: `[개발] [Row 606 / CSV 618] 3D 레이싱 제스처 컨트롤러, 스포츠 튜토리얼, 1줄 슬림 HUD, 확정 보상 팝업 전수 동기화 및 검증 완료`
+
+---
+
 ## [2026-08-24 16:45 KST / 07:45 UTC] [/gemini-ex 스프레드시트 개선] Row 585~594 (3D 레이싱 썸존 조향/드리프트 컨트롤러, 3단계 스포츠 온보딩 튜토리얼, 초슬림 1줄 HUD, 확정 SNS 정산 팝업) 신규 구현 및 검증 완료
 - **스프레드시트 신규 작업 대상 (Row 585 ~ 594)**:
   - Row 585 / 589 / 593: `design.md 준수 상단 70% 시야 100% 개방 & 최상단 1줄 슬림 HUD 레이아웃 리팩토링` (`MinimalistMissionHUD.tsx`)
