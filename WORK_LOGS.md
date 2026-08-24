@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-25 08:28 KST / 23:28 UTC] [/imp-mission 5개 게임 일괄 개선 #35~39] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
+- **1회차 5개 일괄 선정 및 개선 대상 게임**:
+  1. `src/components/VoxelLifeFlameGame.tsx` (35 / 110) - 88점 ➔ **99점** (360° 드래곤 화염 조준, 탭 생명의 불꽃 발사, 세계수 수호 1줄 HUD 및 확정보상 연동)
+  2. `src/components/VoxelLumberjackTycoonGame.tsx` (36 / 110) - 88점 ➔ **99점** (원터치 자유 드래그 이동, 근접 자동 벌목 및 기지 건설 납품 1줄 HUD 및 확정보상 연동)
+  3. `src/components/VoxelMagnetHoleGame.tsx` (37 / 110) - 88점 ➔ **99점** (자유 드래그 이동, 2x탭 10m 자석 진공 펄스 부스터, 1줄 슬림 HUD 및 확정보상 연동)
+  4. `src/components/VoxelMedievalSiegeGame.tsx` (38 / 110) - 88점 ➔ **99점** (드래그 각도/장력 조절, 탭 투석기 화염탄 발사, 1줄 슬림 HUD 및 확정보상 연동)
+  5. `src/components/VoxelMegaFlareAssaultGame.tsx` (39 / 110) - 88점 ➔ **99점** (드래그 십자선 조준, 탭 고속 포격, 더블탭 100% 게이지 메가 플레어 전체 격파 및 확정보상 연동)
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 5개 게임 일괄(VoxelLifeFlame, VoxelLumberjackTycoon, VoxelMagnetHole, VoxelMedievalSiege, VoxelMegaFlareAssault) 1줄 HUD/확정보상 전면 개선 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 08:25 KST / 23:25 UTC] [/imp-mission 스킬 미션 게임 풀 110종 전면 확장 및 점검 동기화]
 - **작업 개요**: 미션 게임 점검 대상을 기존 78종(복셀 단독)에서 전체 **110종 통합 미션 게임 풀**로 전면 확장 및 스크립트/지침 동기화 완료.
 - **110종 미션 게임 통합 구성**:

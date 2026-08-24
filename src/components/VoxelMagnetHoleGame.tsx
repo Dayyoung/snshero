@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Magnet, Expand } from 'lucide-react';
 import { CardData } from '../types';
-import { UniversalTutorialModal } from './UniversalTutorialModal';
-import { ResponsiveCleanHUD } from './ResponsiveCleanHUD';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
@@ -49,7 +48,7 @@ export const VoxelMagnetHoleGame: React.FC<VoxelMagnetHoleGameProps> = ({
   const [score, setScore] = useState<number>(0);
   const [holeSize, setHoleSize] = useState<number>(1.2);
   const [swallowedCount, setSwallowedCount] = useState<number>(0);
-  const [timeLeft, setTimeLeft] = useState<number>(90);
+  const targetObjects = 35;
   const [magnetCooldown, setMagnetCooldown] = useState<number>(0);
   const [bannerText, setBannerText] = useState<string>('');
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
@@ -63,19 +62,29 @@ export const VoxelMagnetHoleGame: React.FC<VoxelMagnetHoleGameProps> = ({
     holeRadius: 1.2,
     score: 0,
     swallowedCount: 0,
-    timeLeft: 90,
     isGameOver: false,
+    isVictory: false,
     isPaused: false,
     magnetPulseTime: 0,
     magnetCooldown: 0,
+    startTime: Date.now(),
     cityObjects: [] as CityObject[],
     holeMesh: null as THREE.Group | null
   });
 
-  // Keep stateRef.isPaused synced
   useEffect(() => {
     stateRef.current.isPaused = isPaused || showTutorial;
   }, [isPaused, showTutorial]);
+
+  const handleMagnetBoost = () => {
+    const s = stateRef.current;
+    if (s.isPaused || s.isGameOver || s.isVictory || s.magnetCooldown > 0) return;
+    s.magnetCooldown = 15;
+    s.magnetPulseTime = 4.0;
+    setMagnetCooldown(15);
+    setBannerText(isKo ? '⚡ 10m 자석 진공 흡입 가동!!' : '⚡ 10M MAGNET VACUUM ENGAGED!!');
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+  };
 
   useEffect(() => {
     const container = mountRef.current;
@@ -89,7 +98,7 @@ export const VoxelMagnetHoleGame: React.FC<VoxelMagnetHoleGameProps> = ({
     scene.fog = new THREE.Fog(0x38bdf8, 30, 90);
 
     const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 200);
-    camera.position.set(0, 14, 14);
+    camera.position.set(0, 16, 16);
     camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
@@ -98,398 +107,355 @@ export const VoxelMagnetHoleGame: React.FC<VoxelMagnetHoleGameProps> = ({
     renderer.shadowMap.enabled = !lowSpecMode;
     container.appendChild(renderer.domElement);
 
-    // Sunlight & City Ambience
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x475569, 0.85);
-    scene.add(hemiLight);
+    const ambLight = new THREE.AmbientLight(0xffffff, 0.9);
+    scene.add(ambLight);
 
-    const dirLight = new THREE.DirectionalLight(0xfffaed, 1.3);
-    dirLight.position.set(30, 50, 30);
-    dirLight.castShadow = !lowSpecMode;
-    scene.add(dirLight);
+    const sun = new THREE.DirectionalLight(0xfef08a, 1.4);
+    sun.position.set(20, 40, 20);
+    scene.add(sun);
 
-    // Ground Road Grid
+    // Ground Plane
     const groundGeo = new THREE.PlaneGeometry(80, 80);
-    const groundMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.8 });
-    const groundMesh = new THREE.Mesh(groundGeo, groundMat);
-    groundMesh.rotation.x = -Math.PI / 2;
-    groundMesh.receiveShadow = !lowSpecMode;
-    scene.add(groundMesh);
+    const groundMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.8 });
+    const ground = new THREE.Mesh(groundGeo, groundMat);
+    ground.rotation.x = -Math.PI / 2;
+    scene.add(ground);
 
-    // Voxel Blackhole Mesh (Dark void cylinder + neon accretion disk)
+    // Black Hole Mesh Group
     const holeGroup = new THREE.Group();
+    const diskGeo = new THREE.RingGeometry(0.1, 1.2, 32);
+    const diskMat = new THREE.MeshBasicMaterial({ color: 0x0f172a, side: THREE.DoubleSide });
+    const disk = new THREE.Mesh(diskGeo, diskMat);
+    disk.rotation.x = -Math.PI / 2;
+    disk.position.y = 0.02;
+    holeGroup.add(disk);
 
-    const holeVoidGeo = new THREE.CylinderGeometry(1.0, 1.0, 0.2, 32);
-    const holeVoidMat = new THREE.MeshBasicMaterial({ color: 0x050505 });
-    const holeVoid = new THREE.Mesh(holeVoidGeo, holeVoidMat);
-    holeVoid.position.y = 0.05;
-    holeGroup.add(holeVoid);
+    const glowGeo = new THREE.RingGeometry(1.2, 1.4, 32);
+    const glowMat = new THREE.MeshBasicMaterial({ color: 0x8b5cf6, side: THREE.DoubleSide });
+    const glow = new THREE.Mesh(glowGeo, glowMat);
+    glow.rotation.x = -Math.PI / 2;
+    glow.position.y = 0.03;
+    holeGroup.add(glow);
 
-    const ringGeo = new THREE.RingGeometry(0.95, 1.15, 32);
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0xa855f7, side: THREE.DoubleSide });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.rotation.x = -Math.PI / 2;
-    ring.position.y = 0.12;
-    holeGroup.add(ring);
-
-    holeGroup.position.set(0, 0, 0);
     scene.add(holeGroup);
     stateRef.current.holeMesh = holeGroup;
 
-    // City Props Spawner
-    const objects: CityObject[] = [];
+    // Spawn 50 City Objects
+    stateRef.current.cityObjects = [];
+    const colors = [0xef4444, 0x3b82f6, 0x10b981, 0xf59e0b, 0x8b5cf6];
 
-    // Helper: Small Hydrant / Trash Bin (radius ~0.4, req size > 0.8)
-    const createTrashBin = (x: number, z: number) => {
-      const geo = new THREE.CylinderGeometry(0.25, 0.25, 0.6, 8);
-      const mat = new THREE.MeshStandardMaterial({ color: 0x0284c7 });
-      const mesh = new THREE.Mesh(geo, mat);
-      mesh.position.set(x, 0.3, z);
-      scene.add(mesh);
-      return { mesh, x, z, radius: 0.4, points: 10, swallowed: false, isFalling: false, fallSpeed: 0 };
-    };
+    for (let i = 0; i < 50; i++) {
+      const isCar = i % 3 === 0;
+      const isTree = i % 3 === 1;
+      const ox = (Math.random() - 0.5) * 60;
+      const oz = (Math.random() - 0.5) * 60;
+      if (Math.hypot(ox, oz) < 4) continue;
 
-    // Helper: Bench / Street Light (radius ~0.7, req size > 1.2)
-    const createBench = (x: number, z: number) => {
-      const geo = new THREE.BoxGeometry(0.9, 0.4, 0.4);
-      const mat = new THREE.MeshStandardMaterial({ color: 0x854d0e });
-      const mesh = new THREE.Mesh(geo, mat);
-      mesh.position.set(x, 0.2, z);
-      scene.add(mesh);
-      return { mesh, x, z, radius: 0.7, points: 25, swallowed: false, isFalling: false, fallSpeed: 0 };
-    };
+      let objMesh: THREE.Object3D;
+      let objRadius = 0.8;
+      let objPoints = 100;
 
-    // Helper: Trees (radius ~1.2, req size > 1.8)
-    const createTree = (x: number, z: number) => {
-      const treeGroup = new THREE.Group();
-      const trunkGeo = new THREE.BoxGeometry(0.35, 1.2, 0.35);
-      const trunkMat = new THREE.MeshStandardMaterial({ color: 0x78350f });
-      const trunk = new THREE.Mesh(trunkGeo, trunkMat);
-      trunk.position.y = 0.6;
-      treeGroup.add(trunk);
-
-      const leafGeo = new THREE.BoxGeometry(1.4, 1.4, 1.4);
-      const leafMat = new THREE.MeshStandardMaterial({ color: 0x16a34a });
-      const leaf = new THREE.Mesh(leafGeo, leafMat);
-      leaf.position.y = 1.8;
-      treeGroup.add(leaf);
-
-      treeGroup.position.set(x, 0, z);
-      scene.add(treeGroup);
-      return { mesh: treeGroup, x, z, radius: 1.2, points: 50, swallowed: false, isFalling: false, fallSpeed: 0 };
-    };
-
-    // Helper: Voxel Cars (radius ~1.8, req size > 2.5)
-    const createCar = (x: number, z: number, color: number) => {
-      const carGroup = new THREE.Group();
-      const bodyGeo = new THREE.BoxGeometry(1.6, 0.6, 2.4);
-      const bodyMat = new THREE.MeshStandardMaterial({ color });
-      const body = new THREE.Mesh(bodyGeo, bodyMat);
-      body.position.y = 0.4;
-      carGroup.add(body);
-
-      const roofGeo = new THREE.BoxGeometry(1.3, 0.5, 1.4);
-      const roofMat = new THREE.MeshStandardMaterial({ color: 0x0f172a });
-      const roof = new THREE.Mesh(roofGeo, roofMat);
-      roof.position.set(0, 0.85, -0.1);
-      carGroup.add(roof);
-
-      carGroup.position.set(x, 0, z);
-      scene.add(carGroup);
-      return { mesh: carGroup, x, z, radius: 1.8, points: 100, swallowed: false, isFalling: false, fallSpeed: 0 };
-    };
-
-    // Helper: Voxel Buildings (radius ~3.5, req size > 4.5)
-    const createBuilding = (x: number, z: number, color: number) => {
-      const h = 4 + Math.random() * 4;
-      const bGeo = new THREE.BoxGeometry(3.0, h, 3.0);
-      const bMat = new THREE.MeshStandardMaterial({ color });
-      const mesh = new THREE.Mesh(bGeo, bMat);
-      mesh.position.set(x, h / 2, z);
-      scene.add(mesh);
-      return { mesh, x, z, radius: 3.5, points: 250, swallowed: false, isFalling: false, fallSpeed: 0 };
-    };
-
-    // Populate City Scene
-    for (let i = 0; i < 45; i++) {
-      const x = (Math.random() - 0.5) * 65;
-      const z = (Math.random() - 0.5) * 65;
-      if (Math.hypot(x, z) < 3.0) continue;
-      objects.push(createTrashBin(x, z));
-    }
-
-    for (let i = 0; i < 35; i++) {
-      const x = (Math.random() - 0.5) * 65;
-      const z = (Math.random() - 0.5) * 65;
-      if (Math.hypot(x, z) < 4.0) continue;
-      objects.push(createBench(x, z));
-    }
-
-    for (let i = 0; i < 28; i++) {
-      const x = (Math.random() - 0.5) * 65;
-      const z = (Math.random() - 0.5) * 65;
-      if (Math.hypot(x, z) < 5.0) continue;
-      objects.push(createTree(x, z));
-    }
-
-    const carColors = [0xef4444, 0xf59e0b, 0x3b82f6, 0x10b981, 0x8b5cf6];
-    for (let i = 0; i < 20; i++) {
-      const x = (Math.random() - 0.5) * 65;
-      const z = (Math.random() - 0.5) * 65;
-      if (Math.hypot(x, z) < 6.0) continue;
-      objects.push(createCar(x, z, carColors[i % carColors.length]));
-    }
-
-    const bldColors = [0x475569, 0x64748b, 0x94a3b8, 0x334155];
-    for (let i = 0; i < 14; i++) {
-      const x = (Math.random() - 0.5) * 65;
-      const z = (Math.random() - 0.5) * 65;
-      if (Math.hypot(x, z) < 9.0) continue;
-      objects.push(createBuilding(x, z, bldColors[i % bldColors.length]));
-    }
-
-    stateRef.current.cityObjects = objects;
-
-    // Timer Interval
-    const timerInterval = setInterval(() => {
-      const state = stateRef.current;
-      if (state.isGameOver || state.isPaused) return;
-
-      if (state.magnetCooldown > 0) {
-        state.magnetCooldown -= 1;
-        setMagnetCooldown(state.magnetCooldown);
+      if (isCar) {
+        objMesh = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.8, 2.0), new THREE.MeshStandardMaterial({ color: colors[i % colors.length] }));
+        objMesh.position.set(ox, 0.4, oz);
+        objRadius = 0.9;
+        objPoints = 150;
+      } else if (isTree) {
+        objMesh = new THREE.Mesh(new THREE.ConeGeometry(1.0, 2.4, 8), new THREE.MeshStandardMaterial({ color: 0x16a34a }));
+        objMesh.position.set(ox, 1.2, oz);
+        objRadius = 0.7;
+        objPoints = 80;
+      } else {
+        objMesh = new THREE.Mesh(new THREE.BoxGeometry(2.0, 4.0, 2.0), new THREE.MeshStandardMaterial({ color: 0x64748b }));
+        objMesh.position.set(ox, 2.0, oz);
+        objRadius = 1.6;
+        objPoints = 300;
       }
 
-      state.timeLeft -= 1;
-      setTimeLeft(state.timeLeft);
+      scene.add(objMesh);
+      stateRef.current.cityObjects.push({
+        mesh: objMesh,
+        x: ox,
+        z: oz,
+        radius: objRadius,
+        points: objPoints,
+        swallowed: false,
+        isFalling: false,
+        fallSpeed: 0
+      });
+    }
 
-      if (state.timeLeft <= 0) {
-        state.isGameOver = true;
-        setIsGameOver(true);
-        const receipt = calculateAndDepositMissionReward({
-          gameId: 'voxel_blackhole',
-          gameTitle: isKo ? '3D 복셀 서바이벌 마그넷 홀' : 'Voxel Magnet Hole',
-          durationSeconds: 90 - state.timeLeft,
-          score: state.score,
-          maxTargetScore: 1200,
-          isVictory: true,
-          difficulty: 'NORMAL',
-          perfectClear: state.holeRadius >= 8.0
-        });
-        setSettlementReceipt(receipt);
-        onReward(receipt.totalSns);
-      }
-    }, 1000);
-
-    // Animation Loop
     let animId: number;
-    let clock = new THREE.Clock();
+    let lastTime = performance.now();
 
-    const animate = () => {
+    const animate = (now: number) => {
       animId = requestAnimationFrame(animate);
-      const delta = clock.getDelta();
-      const state = stateRef.current;
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
 
-      if (!state.isGameOver && !state.isPaused) {
-        // Move Blackhole
-        state.holeX += (state.targetX - state.holeX) * 0.1;
-        state.holeZ += (state.targetZ - state.holeZ) * 0.1;
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-        if (state.holeMesh) {
-          state.holeMesh.position.set(state.holeX, 0, state.holeZ);
-          state.holeMesh.scale.set(state.holeRadius, 1, state.holeRadius);
-          // Spin accretion ring
-          state.holeMesh.children[1].rotation.z += delta * 2.5;
+      // Cooldown timer
+      if (s.magnetCooldown > 0) {
+        s.magnetCooldown -= dt;
+        if (s.magnetCooldown <= 0) {
+          s.magnetCooldown = 0;
+          setMagnetCooldown(0);
+        }
+      }
+
+      if (s.magnetPulseTime > 0) {
+        s.magnetPulseTime -= dt;
+        if (s.magnetPulseTime <= 0) setBannerText('');
+      }
+
+      // Smooth hole movement
+      s.holeX += (s.targetX - s.holeX) * 8 * dt;
+      s.holeZ += (s.targetZ - s.holeZ) * 8 * dt;
+
+      if (holeGroup) {
+        holeGroup.position.set(s.holeX, 0, s.holeZ);
+        const scale = s.holeRadius / 1.2;
+        holeGroup.scale.set(scale, scale, scale);
+      }
+
+      // Camera Follow
+      camera.position.set(s.holeX, 16 + s.holeRadius * 2, s.holeZ + 16 + s.holeRadius * 2);
+      camera.lookAt(s.holeX, 0, s.holeZ);
+
+      // Check Object Swallow
+      s.cityObjects.forEach(obj => {
+        if (obj.swallowed) return;
+
+        const dist = Math.hypot(obj.x - s.holeX, obj.z - s.holeZ);
+
+        // Magnet attraction
+        if (s.magnetPulseTime > 0 && dist < 12 && obj.radius <= s.holeRadius * 1.3) {
+          const pullDir = new THREE.Vector2(s.holeX - obj.x, s.holeZ - obj.z).normalize();
+          obj.x += pullDir.x * 12 * dt;
+          obj.z += pullDir.y * 12 * dt;
+          obj.mesh.position.x = obj.x;
+          obj.mesh.position.z = obj.z;
         }
 
-        // Camera Follow
-        camera.position.set(state.holeX, 14 + state.holeRadius * 1.5, state.holeZ + 14 + state.holeRadius * 1.2);
-        camera.lookAt(state.holeX, 0, state.holeZ);
+        if (dist < s.holeRadius && obj.radius <= s.holeRadius * 1.1) {
+          obj.isFalling = true;
+        }
 
-        // Check Object Suction & Falling
-        state.cityObjects.forEach(obj => {
-          if (obj.swallowed) return;
+        if (obj.isFalling) {
+          obj.fallSpeed += dt * 20;
+          obj.mesh.position.y -= obj.fallSpeed * dt;
+          obj.mesh.scale.multiplyScalar(0.92);
 
-          const dist = Math.hypot(state.holeX - obj.x, state.holeZ - obj.z);
+          if (obj.mesh.position.y < -4) {
+            obj.swallowed = true;
+            scene.remove(obj.mesh);
+            s.swallowedCount += 1;
+            s.score += obj.points;
+            s.holeRadius = Math.min(6.0, s.holeRadius + 0.08);
 
-          // Vacuum suction check
-          const effectiveRadius = state.magnetPulseTime > 0 ? state.holeRadius * 2.2 : state.holeRadius;
+            setSwallowedCount(s.swallowedCount);
+            setScore(s.score);
+            setHoleSize(parseFloat(s.holeRadius.toFixed(1)));
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
 
-          if (dist < effectiveRadius) {
-            // Can be swallowed if hole is large enough for object
-            if (state.holeRadius * 1.15 >= obj.radius) {
-              obj.isFalling = true;
-              // Pull to center
-              obj.mesh.position.x += (state.holeX - obj.mesh.position.x) * 0.18;
-              obj.mesh.position.z += (state.holeZ - obj.mesh.position.z) * 0.18;
-              obj.fallSpeed += 0.04;
-              obj.mesh.position.y -= obj.fallSpeed;
-              obj.mesh.scale.multiplyScalar(0.92);
-
-              if (obj.mesh.position.y < -3.0 || obj.mesh.scale.x < 0.05) {
-                obj.swallowed = true;
-                scene.remove(obj.mesh);
-
-                state.swallowedCount += 1;
-                state.score += obj.points;
-
-                // Hole Expands
-                state.holeRadius = Math.min(16.0, state.holeRadius + obj.points * 0.0035);
-                setHoleSize(Number(state.holeRadius.toFixed(1)));
-                setScore(state.score);
-                setSwallowedCount(state.swallowedCount);
-
-                setBannerText(isKo ? `🕳️ 사물 흡입! (+${obj.points}P)` : `🕳️ OBJECT CONSUMED! (+${obj.points}P)`);
-                playSfx?.('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-              }
+            if (s.swallowedCount >= targetObjects && !s.isGameOver) {
+              s.isVictory = true;
+              s.isGameOver = true;
+              setIsGameOver(true);
+              const duration = (Date.now() - s.startTime) / 1000;
+              const receipt = calculateAndDepositMissionReward({
+                gameId: 'voxel_blackhole',
+                gameTitle: '복셀 마그넷 홀',
+                durationSeconds: duration,
+                score: s.score + 1500,
+                difficulty: 'HARD',
+                isVictory: true
+              });
+              setSettlementReceipt(receipt);
+              onReward(receipt.totalSns);
             }
           }
-        });
-
-        if (state.magnetPulseTime > 0) {
-          state.magnetPulseTime -= delta;
         }
-      }
+      });
 
       renderer.render(scene, camera);
     };
 
     animId = requestAnimationFrame(animate);
 
-    // Resize
-    const handleResize = () => {
-      if (!container) return;
-      const w = container.clientWidth;
-      const h = container.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
-      clearInterval(timerInterval);
-      window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animId);
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, isKo, playSfx]);
-
-  // Touch Move Hole
-  const handleTouchMove = (e: React.TouchEvent | React.MouseEvent) => {
-    if (isGameOver || isPaused || showTutorial) return;
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-
-    const normX = (clientX / window.innerWidth - 0.5) * 2;
-    const normY = (clientY / window.innerHeight - 0.5) * 2;
-
-    stateRef.current.targetX = normX * 30;
-    stateRef.current.targetZ = normY * 30;
-  };
-
-  // Magnet Vacuum Booster (Pulses for 3.5 seconds)
-  const handleMagnetBoost = () => {
-    const state = stateRef.current;
-    if (state.magnetCooldown > 0 || isGameOver || isPaused || showTutorial) return;
-
-    state.magnetPulseTime = 3.5;
-    state.magnetCooldown = 15;
-    setMagnetCooldown(15);
-    setBannerText(isKo ? '⚡ 10m 자석 진공 흡입 가동!!' : '⚡ 10M MAGNET VACUUM ENGAGED!!');
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-  };
+  }, [lowSpecMode]);
 
   const handleRestart = () => {
-    setIsGameOver(false);
-    setSettlementReceipt(null);
+    const s = stateRef.current;
+    s.holeX = 0;
+    s.holeZ = 0;
+    s.targetX = 0;
+    s.targetZ = 0;
+    s.holeRadius = 1.2;
+    s.score = 0;
+    s.swallowedCount = 0;
+    s.magnetCooldown = 0;
+    s.magnetPulseTime = 0;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
     setScore(0);
     setHoleSize(1.2);
     setSwallowedCount(0);
-    setTimeLeft(90);
     setMagnetCooldown(0);
-    const state = stateRef.current;
-    state.holeX = 0;
-    state.holeZ = 0;
-    state.targetX = 0;
-    state.targetZ = 0;
-    state.holeRadius = 1.2;
-    state.score = 0;
-    state.swallowedCount = 0;
-    state.timeLeft = 90;
-    state.isGameOver = false;
+    setBannerText('');
+    setIsGameOver(false);
+    setSettlementReceipt(null);
   };
 
-  return (
-    <div
-      className="relative w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none"
-      onTouchMove={handleTouchMove}
-      onMouseMove={handleTouchMove}
-    >
-      <div ref={mountRef} className="w-full h-full" />
+  const customTutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 블랙홀 거대화' : 'STEP 1: GROW THE HOLE',
+      title: isKo ? '도시 사물 집어삼키기' : 'Swallow the City',
+      description: isKo
+        ? '작은 가로등, 나무부터 삼켜 블랙홀의 직경을 키우고 거대한 자동차와 빌딩까지 삼키세요.'
+        : 'Start with small trees and props, expand your blackhole radius, and devour giant cars and buildings.',
+      keyPoints: isKo
+        ? [
+            '내 직경보다 작은 사물만 흡입 가능',
+            '35개 이상 사물 삼키면 승리',
+            '블랙홀 직경 최대 6m까지 무한 확장'
+          ]
+        : [
+            'Can only swallow objects smaller than radius',
+            'Devour 35+ objects to clear',
+            'Grow blackhole up to 6 meters wide'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 컨트롤' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '자유 드래그 & 자석 진공 펄스' : 'Free Drag & Magnet Pulse',
+      description: isKo
+        ? '가상 조이스틱 없이 화면 드래그로 블랙홀을 이동하고, 2x 탭으로 10m 자석 진공을 발동합니다.'
+        : 'Drag anywhere to move the hole, and double-tap to unleash a 10m magnet vacuum with zero buttons.',
+      keyPoints: isKo
+        ? [
+            '👆 자유 드래그: 블랙홀 전방향 이동',
+            '⚡ 2x 탭: 10m 자석 진공 흡입 부스터',
+            '🌊 연속 삼킴 시 피버 콤보 발동'
+          ]
+        : [
+            '👆 Free Drag: Smooth omni-directional move',
+            '⚡ Double-Tap: 10m Magnet vacuum boost',
+            '🌊 Fever multiplier on rapid swallowing'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '도시 정복 즉시 HARD 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Standard payout scaled with Hard multiplier deposited atomically to your wallet.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '블랙홀 최종 직경 및 스피드 보너스',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Final hole size and speed bonuses',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
+    }
+  ];
 
-      {/* Responsive Clean HUD (Upper 5% Slim Bar per design.md) */}
-      <ResponsiveCleanHUD
-        gameTitle={isKo ? '마그넷 홀: 블랙홀' : 'Voxel Magnet Hole'}
-        score={score}
-        timeLeft={timeLeft}
-        customMetricLabel={isKo ? '직경' : 'Size'}
-        customMetricValue={`${holeSize}m`}
-        isPaused={isPaused}
+  return (
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
+
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 마그넷 홀' : 'Voxel Magnet Hole'}
         language={language}
+        telemetries={[
+          { label: isKo ? '직경' : 'Size', value: `${holeSize}m`, color: 'text-purple-300' },
+          { label: isKo ? '삼킴' : 'Swallowed', value: `${swallowedCount}/${targetObjects}`, color: 'text-emerald-300' },
+          { label: isKo ? '자석' : 'Magnet', value: magnetCooldown > 0 ? `${Math.round(magnetCooldown)}s` : 'READY', color: magnetCooldown === 0 ? 'text-amber-400 font-black animate-pulse' : 'text-slate-400' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-cyan-300' }
+        ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onTogglePause={() => setIsPaused(prev => !prev)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
       />
 
-      {/* Hole Growth / Swallowed Counter */}
-      <div className="absolute top-14 left-4 flex flex-col gap-1.5 z-10 pointer-events-none">
-        <div className="flex items-center gap-1.5 bg-[#fdfcfc]/90 border border-[#201d1d]/30 text-[#201d1d] px-2.5 py-1 rounded-sm text-xs font-bold w-fit shadow-xs backdrop-blur-xs">
-          <Expand size={13} className="text-purple-600" />
-          <span>{isKo ? `블랙홀 직경: ${holeSize}m` : `HOLE: ${holeSize}m`}</span>
-        </div>
-        <div className="flex items-center gap-1.5 bg-[#fdfcfc]/90 border border-[#201d1d]/30 text-[#201d1d] px-2.5 py-0.5 rounded-sm text-[11px] font-bold w-fit shadow-xs backdrop-blur-xs">
-          <span>{isKo ? `삼킨 사물: ${swallowedCount}개` : `Swallowed: ${swallowedCount}`}</span>
-        </div>
-      </div>
-
-      {/* Banner Notification */}
+      {/* Action Banner */}
       {bannerText && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 bg-[#201d1d] text-[#fdfcfc] px-4 py-1 rounded-sm text-xs font-black tracking-wider shadow-lg z-10 pointer-events-none animate-bounce border border-[#fdfcfc]/20">
+        <div className="absolute top-14 left-1/2 -translate-x-1/2 bg-black/85 border border-amber-400 text-amber-300 px-4 py-1 rounded-full text-xs font-black tracking-wider shadow-lg z-30 pointer-events-none animate-bounce">
           {bannerText}
         </div>
       )}
 
-      {/* Mobile-First Magnet Vacuum Action Button */}
-      <div className="absolute bottom-6 left-4 right-4 flex flex-col items-center gap-2 z-10">
-        <button
-          onClick={handleMagnetBoost}
-          disabled={magnetCooldown > 0}
-          className={`w-full max-w-sm py-4 border-2 text-slate-950 font-black text-sm sm:text-base rounded-sm shadow-xl flex items-center justify-center gap-2 uppercase tracking-widest cursor-pointer transition-all active:scale-95 ${
-            magnetCooldown > 0
-              ? 'bg-slate-800 border-slate-700 text-slate-500 cursor-not-allowed'
-              : 'bg-amber-400 hover:bg-amber-300 border-[#201d1d] text-[#201d1d]'
-          }`}
-        >
-          <Magnet size={18} className={magnetCooldown === 0 ? 'animate-bounce' : ''} />
-          <span>
-            {magnetCooldown > 0
-              ? (isKo ? `⚡ 자석 쿨다운 (${magnetCooldown}초)` : `⚡ COOLDOWN (${magnetCooldown}s)`)
-              : (isKo ? '⚡ 10m 자석 진공 흡입 부스터' : '⚡ 10M MAGNET VACUUM')}
-          </span>
-        </button>
-        <p className="text-[11px] text-[#201d1d] bg-[#fdfcfc]/90 px-3 py-0.5 rounded-sm border border-[#201d1d]/30 font-medium">
-          {isKo ? '화면을 드래그하여 블랙홀을 이동하고 작은 사물부터 삼켜 거대화하세요!' : 'Drag screen to move blackhole and swallow city objects to grow!'}
-        </p>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && !isPaused && !showTutorial && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              const speed = 0.08;
+              stateRef.current.targetX = THREE.MathUtils.clamp(stateRef.current.targetX + dx * speed, -28, 28);
+              stateRef.current.targetZ = THREE.MathUtils.clamp(stateRef.current.targetZ + dy * speed, -28, 28);
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={handleMagnetBoost}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/75 border border-purple-500/30 rounded-full text-[10px] text-purple-300 font-mono backdrop-blur-xs">
+          {isKo ? '화면 드래그: 블랙홀 이동 | 더블탭: 10m 자석 진공 펄스 (버튼 없음)' : 'Drag: Move Hole | Double Tap: 10m Magnet Vacuum Pulse (No Buttons)'}
+        </div>
       </div>
 
-      {/* 3-Step Interactive Tutorial Modal */}
+      {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
         <UniversalTutorialModal
           gameId="voxel_blackhole"
           gameTitle={isKo ? '3D 복셀 마그넷 홀 (블랙홀 이터)' : 'Voxel Magnet Hole: Blackhole Eater'}
+          customSteps={customTutorialSteps}
           language={language}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}

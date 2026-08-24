@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ArrowLeft, Trophy, Flame, Crosshair, Zap, Sparkles } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelMegaFlareAssaultGameProps {
   deck: CardData[];
@@ -39,29 +42,87 @@ export const VoxelMegaFlareAssaultGame: React.FC<VoxelMegaFlareAssaultGameProps>
   const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
 
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_mega_flare') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
-  const [wave, setWave] = useState<number>(1);
-  const [megaGauge, setMegaGauge] = useState<number>(0); // 0 ~ 100%
+  const [megaGauge, setMegaGauge] = useState<number>(0);
   const [destroyedCount, setDestroyedCount] = useState<number>(0);
+  const targetEnemies = 15;
   const [timeLeft, setTimeLeft] = useState<number>(60);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
     aimX: 0,
     aimY: 0,
     score: 0,
-    wave: 1,
     megaGauge: 0,
     destroyedCount: 0,
     timeLeft: 60,
     isGameOver: false,
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
     enemies: [] as EnemyShip[],
     lasers: [] as Laser[],
-    particles: [] as { mesh: THREE.Mesh; vel: THREE.Vector3; life: number }[],
-    playerDragon: null as THREE.Group | null,
-    reticleMesh: null as THREE.Mesh | null
+    scene: null as THREE.Scene | null,
+    playerDragon: null as THREE.Group | null
   });
+
+  const fireNormalShot = () => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isVictory || s.isPaused || !s.scene) return;
+
+    const lGeo = new THREE.SphereGeometry(0.4, 8, 8);
+    const lMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+    const lMesh = new THREE.Mesh(lGeo, lMat);
+    const startPos = new THREE.Vector3(s.aimX * 4, s.aimY * 3, 4);
+    lMesh.position.copy(startPos);
+    s.scene.add(lMesh);
+
+    const targetPos = new THREE.Vector3(s.aimX * 25, s.aimY * 18, -60);
+    const vel = targetPos.sub(startPos).normalize().multiplyScalar(65);
+
+    s.lasers.push({
+      mesh: lMesh,
+      pos: startPos.clone(),
+      vel,
+      isMega: false
+    });
+
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+  };
+
+  const fireMegaFlare = () => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isVictory || s.isPaused || s.megaGauge < 100 || !s.scene) return;
+
+    s.megaGauge = 0;
+    setMegaGauge(0);
+
+    const mGeo = new THREE.SphereGeometry(2.5, 16, 16);
+    const mMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
+    const mMesh = new THREE.Mesh(mGeo, mMat);
+    const startPos = new THREE.Vector3(0, 0, 4);
+    mMesh.position.copy(startPos);
+    s.scene.add(mMesh);
+
+    const vel = new THREE.Vector3(0, 0, -45);
+    s.lasers.push({
+      mesh: mMesh,
+      pos: startPos.clone(),
+      vel,
+      isMega: true
+    });
+
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+  };
 
   useEffect(() => {
     const container = mountRef.current;
@@ -73,6 +134,7 @@ export const VoxelMegaFlareAssaultGame: React.FC<VoxelMegaFlareAssaultGameProps>
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0c1322);
     scene.fog = new THREE.FogExp2(0x0c1322, 0.02);
+    stateRef.current.scene = scene;
 
     const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 150);
     camera.position.set(0, 3, 10);
@@ -81,10 +143,8 @@ export const VoxelMegaFlareAssaultGame: React.FC<VoxelMegaFlareAssaultGameProps>
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    renderer.shadowMap.enabled = !lowSpecMode;
     container.appendChild(renderer.domElement);
 
-    // Sky & Flare Lighting
     const ambientLight = new THREE.AmbientLight(0x60a5fa, 0.7);
     scene.add(ambientLight);
 
@@ -92,326 +152,274 @@ export const VoxelMegaFlareAssaultGame: React.FC<VoxelMegaFlareAssaultGameProps>
     sunLight.position.set(10, 30, 20);
     scene.add(sunLight);
 
-    // Sky Clouds Grid
-    const cloudGeo = new THREE.BoxGeometry(4, 1.5, 6);
-    const cloudMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.9 });
-    for (let c = 0; c < 20; c++) {
-      const cloud = new THREE.Mesh(cloudGeo, cloudMat);
-      cloud.position.set((Math.random() - 0.5) * 60, -6 - Math.random() * 8, -Math.random() * 80);
-      scene.add(cloud);
-    }
-
-    // Build Bahamut Dragon (Dark Gold & Obsidian Voxel)
+    // Player Dragon
     const dragonGroup = new THREE.Group();
-    const dragonMat = new THREE.MeshStandardMaterial({ color: 0x1c1917, roughness: 0.3 });
-    const goldMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.2, metalness: 0.8 });
+    const dBody = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.8, 2.4), new THREE.MeshStandardMaterial({ color: 0xd97706 }));
+    dragonGroup.add(dBody);
 
-    // Torso
-    const torso = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.0, 2.0), dragonMat);
-    torso.position.y = 0;
-    dragonGroup.add(torso);
+    const dWings = new THREE.Mesh(new THREE.BoxGeometry(5.0, 0.1, 1.2), new THREE.MeshStandardMaterial({ color: 0xb45309 }));
+    dWings.position.set(0, 0.4, 0);
+    dragonGroup.add(dWings);
 
-    // Gold Armor Crest
-    const crest = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.8, 1.6), goldMat);
-    crest.position.set(0, 0.7, 0);
-    dragonGroup.add(crest);
-
-    // Wings
-    const wingMat = new THREE.MeshStandardMaterial({ color: 0xb45309, roughness: 0.4 });
-    const lWing = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.1, 1.2), wingMat);
-    lWing.position.set(-1.8, 0.4, 0);
-    dragonGroup.add(lWing);
-
-    const rWing = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.1, 1.2), wingMat);
-    rWing.position.set(1.8, 0.4, 0);
-    dragonGroup.add(rWing);
-
-    dragonGroup.position.set(0, -1, 4);
+    dragonGroup.position.set(0, 0, 4);
     scene.add(dragonGroup);
     stateRef.current.playerDragon = dragonGroup;
 
-    // Crosshair Reticle in 3D
-    const retGeo = new THREE.RingGeometry(0.3, 0.38, 16);
-    const retMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b, side: THREE.DoubleSide });
-    const reticle = new THREE.Mesh(retGeo, retMat);
-    reticle.position.set(0, 1, -15);
-    scene.add(reticle);
-    stateRef.current.reticleMesh = reticle;
+    // Timer Interval
+    const timerInterval = setInterval(() => {
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
+      s.timeLeft -= 1;
+      setTimeLeft(s.timeLeft);
 
-    // Spawn Enemy Airship Function
-    const spawnEnemy = (waveNum: number) => {
-      const eGroup = new THREE.Group();
-      const isBoss = Math.random() < 0.25;
-
-      const hullMat = new THREE.MeshStandardMaterial({ color: isBoss ? 0x991b1b : 0x334155, roughness: 0.5 });
-      const coreMat = new THREE.MeshBasicMaterial({ color: isBoss ? 0xef4444 : 0x38bdf8 });
-
-      // Airship Hull
-      const hull = new THREE.Mesh(new THREE.BoxGeometry(isBoss ? 3.0 : 1.8, isBoss ? 1.4 : 0.8, isBoss ? 4.0 : 2.2), hullMat);
-      eGroup.add(hull);
-
-      // Core Crystal
-      const core = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.6, 0.6), coreMat);
-      core.position.y = 0.5;
-      eGroup.add(core);
-
-      const posX = (Math.random() - 0.5) * 16;
-      const posY = Math.random() * 6 - 1;
-      const posZ = -60 - Math.random() * 30;
-      eGroup.position.set(posX, posY, posZ);
-      scene.add(eGroup);
-
-      stateRef.current.enemies.push({
-        mesh: eGroup,
-        pos: eGroup.position,
-        hp: isBoss ? 4 : 1,
-        maxHp: isBoss ? 4 : 1,
-        speed: 10 + waveNum * 2,
-        points: isBoss ? 500 : 150
-      });
-    };
-
-    // Initial Wave Spawn
-    for (let i = 0; i < 6; i++) {
-      spawnEnemy(1);
-    }
-
-    // Fire Flare Shot
-    const fireFlare = (isMega: boolean = false) => {
-      if (stateRef.current.isGameOver) return;
-      const laserGeo = new THREE.CylinderGeometry(isMega ? 0.35 : 0.12, isMega ? 0.35 : 0.12, isMega ? 4 : 2, 8);
-      const laserMat = new THREE.MeshBasicMaterial({ color: isMega ? 0xf59e0b : 0xec4899 });
-      const laserMesh = new THREE.Mesh(laserGeo, laserMat);
-      laserMesh.rotation.x = Math.PI / 2;
-
-      const spawnPos = dragonGroup.position.clone().add(new THREE.Vector3(0, 0.5, -1));
-      laserMesh.position.copy(spawnPos);
-      scene.add(laserMesh);
-
-      const targetPos = new THREE.Vector3(stateRef.current.aimX * 8, stateRef.current.aimY * 4 + 1, -25);
-      const dir = targetPos.sub(spawnPos).normalize();
-
-      stateRef.current.lasers.push({
-        mesh: laserMesh,
-        pos: laserMesh.position,
-        vel: dir.multiplyScalar(isMega ? 60 : 45),
-        isMega
-      });
-
-      if (isMega) {
-        stateRef.current.megaGauge = 0;
-        setMegaGauge(0);
-        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-      } else {
-        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-      }
-    };
-
-    const spawnExplosion = (pos: THREE.Vector3, color: number) => {
-      const count = lowSpecMode ? 5 : 10;
-      const pGeo = new THREE.BoxGeometry(0.25, 0.25, 0.25);
-      const pMat = new THREE.MeshBasicMaterial({ color });
-      for (let p = 0; p < count; p++) {
-        const pm = new THREE.Mesh(pGeo, pMat);
-        pm.position.copy(pos);
-        scene.add(pm);
-        stateRef.current.particles.push({
-          mesh: pm,
-          vel: new THREE.Vector3((Math.random() - 0.5) * 8, (Math.random() - 0.5) * 8, (Math.random() - 0.5) * 8),
-          life: 0.6
+      if (s.timeLeft <= 0 && !s.isGameOver) {
+        s.isGameOver = true;
+        setIsGameOver(true);
+        const duration = (Date.now() - s.startTime) / 1000;
+        const receipt = calculateAndDepositMissionReward({
+          gameId: 'voxel_mega_flare',
+          gameTitle: '복셀 메가 플레어 어설트',
+          durationSeconds: duration,
+          score: s.score,
+          difficulty: 'NIGHTMARE',
+          isVictory: s.destroyedCount >= 10
         });
+        setSettlementReceipt(receipt);
+        onReward(receipt.totalSns);
       }
-    };
+    }, 1000);
 
-    // Keyboard Listeners
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === ' ' || e.key === 'f' || e.key === 'F') {
-        fireFlare(false);
-      } else if (e.key === 'm' || e.key === 'M' || e.key === 'e' || e.key === 'E') {
-        if (stateRef.current.megaGauge >= 100) {
-          fireFlare(true);
-        }
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-
-    // Animation Loop
-    let lastTime = performance.now();
     let animId: number;
-    let timerAcc = 0;
+    let lastTime = performance.now();
+    let spawnTimer = 0;
 
     const animate = (now: number) => {
-      const delta = Math.min((now - lastTime) / 1000, 0.1);
+      animId = requestAnimationFrame(animate);
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
-      const state = stateRef.current;
-      if (!state.isGameOver) {
-        // Countdown
-        timerAcc += delta;
-        if (timerAcc >= 1.0) {
-          timerAcc = 0;
-          state.timeLeft = Math.max(0, state.timeLeft - 1);
-          setTimeLeft(state.timeLeft);
-          if (state.timeLeft <= 0) {
-            state.isGameOver = true;
-            setIsGameOver(true);
-            const reward = Math.min(50, Math.max(10, Math.floor(state.score / 200)));
-            setRewardSns(reward);
-            onReward(reward);
-          }
-        }
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-        // Dragon & Reticle Movement
-        const targetAimX = state.aimX * 6;
-        const targetAimY = state.aimY * 3 + 1;
-        dragonGroup.position.x += (targetAimX * 0.4 - dragonGroup.position.x) * 6 * delta;
-        dragonGroup.position.y += ((targetAimY - 1) * 0.3 - dragonGroup.position.y) * 6 * delta;
-        dragonGroup.rotation.z = -dragonGroup.position.x * 0.1;
+      // Spawn Enemy Ships
+      spawnTimer += dt;
+      if (spawnTimer > 1.4 && s.enemies.length < 7) {
+        spawnTimer = 0;
+        const ex = (Math.random() - 0.5) * 30;
+        const ey = (Math.random() - 0.5) * 16 + 2;
+        const ez = -70;
 
-        lWing.rotation.z = Math.sin(now * 0.008) * 0.25;
-        rWing.rotation.z = -Math.sin(now * 0.008) * 0.25;
+        const eGroup = new THREE.Group();
+        const eMesh = new THREE.Mesh(new THREE.BoxGeometry(2.0, 1.0, 3.0), new THREE.MeshStandardMaterial({ color: 0x334155 }));
+        eGroup.add(eMesh);
+        eGroup.position.set(ex, ey, ez);
+        scene.add(eGroup);
 
-        if (reticle) {
-          reticle.position.x = state.aimX * 8;
-          reticle.position.y = state.aimY * 4 + 1;
-          reticle.rotation.z += 1.5 * delta;
-        }
+        s.enemies.push({
+          mesh: eGroup,
+          pos: new THREE.Vector3(ex, ey, ez),
+          hp: 2,
+          maxHp: 2,
+          speed: 12 + Math.random() * 6,
+          points: 200
+        });
+      }
 
-        // Update Lasers
-        for (let l = state.lasers.length - 1; l >= 0; l--) {
-          const laser = state.lasers[l];
-          laser.mesh.position.addScaledVector(laser.vel, delta);
+      // Aim dragon
+      if (dragonGroup) {
+        dragonGroup.position.set(s.aimX * 3, s.aimY * 2, 4);
+        dragonGroup.rotation.z = -s.aimX * 0.3;
+        dragonGroup.rotation.x = s.aimY * 0.2;
+      }
 
-          // Check hit against enemies
-          let hit = false;
-          for (let e = state.enemies.length - 1; e >= 0; e--) {
-            const enemy = state.enemies[e];
-            if (laser.mesh.position.distanceTo(enemy.mesh.position) < (laser.isMega ? 3.0 : 1.8)) {
-              hit = true;
-              enemy.hp -= laser.isMega ? 5 : 1;
-              spawnExplosion(laser.mesh.position, laser.isMega ? 0xf59e0b : 0xec4899);
+      // Update Lasers
+      for (let i = s.lasers.length - 1; i >= 0; i--) {
+        const l = s.lasers[i];
+        l.pos.addScaledVector(l.vel, dt);
+        l.mesh.position.copy(l.pos);
 
-              if (enemy.hp <= 0) {
-                scene.remove(enemy.mesh);
-                state.enemies.splice(e, 1);
-                state.score += enemy.points;
-                state.destroyedCount++;
-                state.megaGauge = Math.min(100, state.megaGauge + 15);
-                setScore(state.score);
-                setDestroyedCount(state.destroyedCount);
-                setMegaGauge(state.megaGauge);
-                spawnExplosion(enemy.pos, 0xf97316);
-                playSfx?.('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+        let hit = false;
+        for (let eIdx = s.enemies.length - 1; eIdx >= 0; eIdx--) {
+          const e = s.enemies[eIdx];
+          const dist = l.pos.distanceTo(e.pos);
+          const hitRadius = l.isMega ? 6.0 : 2.0;
+
+          if (dist < hitRadius) {
+            hit = !l.isMega;
+            e.hp -= l.isMega ? 10 : 1;
+
+            if (e.hp <= 0) {
+              scene.remove(e.mesh);
+              s.enemies.splice(eIdx, 1);
+              s.destroyedCount += 1;
+              s.score += e.points;
+              s.megaGauge = Math.min(100, s.megaGauge + 15);
+
+              setDestroyedCount(s.destroyedCount);
+              setScore(s.score);
+              setMegaGauge(s.megaGauge);
+              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+
+              if (s.destroyedCount >= targetEnemies && !s.isGameOver) {
+                s.isVictory = true;
+                s.isGameOver = true;
+                setIsGameOver(true);
+                const duration = (Date.now() - s.startTime) / 1000;
+                const receipt = calculateAndDepositMissionReward({
+                  gameId: 'voxel_mega_flare',
+                  gameTitle: '복셀 메가 플레어 어설트',
+                  durationSeconds: duration,
+                  score: s.score + 2500,
+                  difficulty: 'NIGHTMARE',
+                  isVictory: true
+                });
+                setSettlementReceipt(receipt);
+                onReward(receipt.totalSns);
               }
-              break;
             }
           }
-
-          if (hit || laser.mesh.position.z < -90) {
-            scene.remove(laser.mesh);
-            state.lasers.splice(l, 1);
-          }
         }
 
-        // Update Enemies
-        for (let e = state.enemies.length - 1; e >= 0; e--) {
-          const enemy = state.enemies[e];
-          enemy.pos.z += enemy.speed * delta;
-          enemy.mesh.position.copy(enemy.pos);
-
-          if (enemy.pos.z > 8) {
-            scene.remove(enemy.mesh);
-            state.enemies.splice(e, 1);
-          }
-        }
-
-        // Replenish Wave
-        while (state.enemies.length < 6) {
-          spawnEnemy(state.wave);
+        if (hit || l.pos.z < -80) {
+          scene.remove(l.mesh);
+          s.lasers.splice(i, 1);
         }
       }
 
-      // Update Particles
-      for (let p = state.particles.length - 1; p >= 0; p--) {
-        const pt = state.particles[p];
-        pt.life -= delta;
-        pt.mesh.position.addScaledVector(pt.vel, delta);
-        if (pt.life <= 0) {
-          scene.remove(pt.mesh);
-          state.particles.splice(p, 1);
+      // Move Enemies Forward
+      for (let eIdx = s.enemies.length - 1; eIdx >= 0; eIdx--) {
+        const e = s.enemies[eIdx];
+        e.pos.z += e.speed * dt;
+        e.mesh.position.copy(e.pos);
+
+        if (e.pos.z > 10) {
+          scene.remove(e.mesh);
+          s.enemies.splice(eIdx, 1);
         }
       }
 
       renderer.render(scene, camera);
-      animId = requestAnimationFrame(animate);
     };
 
     animId = requestAnimationFrame(animate);
 
-    const handleResize = () => {
-      if (!container) return;
-      const w = container.clientWidth || window.innerWidth;
-      const h = container.clientHeight || window.innerHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
+      clearInterval(timerInterval);
       cancelAnimationFrame(animId);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('resize', handleResize);
-      if (renderer.domElement.parentNode) {
-        renderer.domElement.parentNode.removeChild(renderer.domElement);
-      }
       renderer.dispose();
+      if (container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
+      }
     };
-  }, [lowSpecMode, onReward, playSfx]);
+  }, [lowSpecMode]);
+
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.enemies.forEach(e => s.scene?.remove(e.mesh));
+    s.lasers.forEach(l => s.scene?.remove(l.mesh));
+    s.enemies = [];
+    s.lasers = [];
+    s.score = 0;
+    s.megaGauge = 0;
+    s.destroyedCount = 0;
+    s.timeLeft = 60;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    setScore(0);
+    setMegaGauge(0);
+    setDestroyedCount(0);
+    setTimeLeft(60);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
+
+  const customTutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 공중 함대 요격' : 'STEP 1: AIR FLEET ASSAULT',
+      title: isKo ? '적 비행선 격추 & 메가 게이지' : 'Intercept Enemy Ships',
+      description: isKo
+        ? '하늘을 뒤덮는 적 침공 함선을 조준 요격하고 메가 플레어 브레스로 전장을 일소하세요.'
+        : 'Aim and shoot down invading fleet ships, charge your mega gauge and unleash catastrophic breath.',
+      keyPoints: isKo
+        ? [
+            '적 함선 15대 격추 시 완승 클리어',
+            '제한 시간 60초 내 공중전 제압',
+            '격추마다 메가 게이지 +15% 급상승'
+          ]
+        : [
+            'Shoot down 15 enemy ships to win',
+            'Dominate the sky within 60s limit',
+            '+15% Mega gauge boost per kill'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 조준' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '드래그 조준 & 2x 탭 궁극기' : 'Drag Aim & Double-Tap Ultimate',
+      description: isKo
+        ? '가상 버튼 없이 드래그로 십자선을 조준하고, 탭으로 포격, 2x 탭으로 100% 메가 플레어를 발사합니다.'
+        : 'Drag anywhere to aim reticle, tap to fire fireballs, and double-tap to unleash full Mega Flare.',
+      keyPoints: isKo
+        ? [
+            '👆 전방향 드래그: 드래곤 비행 및 십자선 조준',
+            '🔥 탭: 고속 파이어볼 포격',
+            '⚡ 2x 탭: 100% 게이지 메가 플레어 전체 격파'
+          ]
+        : [
+            '👆 Free Drag: Flight aiming reticle',
+            '🔥 Tap: High-velocity fireballs',
+            '⚡ Double-Tap: 100% Mega Flare sweep'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '공중 함대 제압 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare multiplier payout calculated and deposited atomically to your wallet.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '스피드 격추 및 메가 플레어 가산점',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Speed kills and mega flare bonuses',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
+    }
+  ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col select-none overflow-hidden font-mono">
-      {/* 3D WebGL Canvas */}
-      <div ref={mountRef} className="absolute inset-0 z-0" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Top Header */}
-      <div className="relative z-10 w-full p-3 sm:p-4 flex items-center justify-between bg-slate-950/80 border-b border-amber-900/40 backdrop-blur-md">
-        <button
-          onClick={onExit}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 border border-slate-700 hover:border-amber-400 text-slate-200 text-xs font-bold rounded-sm transition-all cursor-pointer"
-        >
-          <ArrowLeft size={14} />
-          <span>{isKo ? '나가기' : 'Exit'}</span>
-        </button>
-
-        <div className="flex items-center gap-3 text-xs">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-950/70 border border-amber-500/50 rounded-sm text-amber-300">
-            <Trophy size={13} className="text-amber-400" />
-            <span>{score.toLocaleString()}P</span>
-          </div>
-
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-cyan-950/70 border border-cyan-500/50 rounded-sm text-cyan-300">
-            <span>⏱️ {timeLeft}s</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Mega Flare Gauge Bar */}
-      <div className="relative z-10 w-full px-4 pt-2 flex flex-col items-center gap-1 pointer-events-none">
-        <div className="w-full max-w-md flex justify-between text-[10px] text-amber-300 font-bold">
-          <span>{isKo ? '메가 플레어 브레스 게이지' : 'MEGA FLARE GAUGE'}</span>
-          <span>{megaGauge}%</span>
-        </div>
-        <div className="w-full max-w-md h-2.5 bg-slate-900 border border-amber-700 rounded-sm overflow-hidden">
-          <div
-            className={`h-full transition-all duration-300 ${megaGauge >= 100 ? 'bg-gradient-to-r from-amber-500 to-red-500 animate-pulse shadow-[0_0_15px_rgba(245,158,11,1)]' : 'bg-gradient-to-r from-orange-600 to-amber-400'}`}
-            style={{ width: `${megaGauge}%` }}
-          />
-        </div>
-      </div>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 메가 플레어' : 'Voxel Mega Flare'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '격추' : 'Kills', value: `${destroyedCount}/${targetEnemies}`, color: 'text-amber-300' },
+          { label: isKo ? '메가' : 'Mega', value: `${megaGauge}%`, color: megaGauge >= 100 ? 'text-rose-400 font-black animate-pulse' : 'text-orange-300' },
+          { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 15 ? 'text-rose-400 font-bold' : 'text-cyan-300' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-yellow-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
       {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && (
+      {!isGameOver && !isPaused && !showTutorial && (
         <div
           className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
           style={{ touchAction: 'none' }}
@@ -427,10 +435,10 @@ export const VoxelMegaFlareAssaultGame: React.FC<VoxelMegaFlareAssaultGameProps>
               const dx = curX - startX;
               const dy = curY - startY;
 
-              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+              if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
                 moved = true;
-                stateRef.current.aimX = Math.max(-1, Math.min(1, stateRef.current.aimX + dx * 0.003));
-                stateRef.current.aimY = Math.max(-1, Math.min(1, stateRef.current.aimY - dy * 0.003));
+                stateRef.current.aimX = THREE.MathUtils.clamp(stateRef.current.aimX + dx * 0.003, -1, 1);
+                stateRef.current.aimY = THREE.MathUtils.clamp(stateRef.current.aimY - dy * 0.003, -1, 1);
               }
             };
 
@@ -440,8 +448,8 @@ export const VoxelMegaFlareAssaultGame: React.FC<VoxelMegaFlareAssaultGameProps>
               window.removeEventListener('pointercancel', onUp);
 
               if (!moved) {
-                // Tap: Fire Shot
-                window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }));
+                // Tap: Fire Normal Shot
+                fireNormalShot();
               }
             };
 
@@ -449,53 +457,37 @@ export const VoxelMegaFlareAssaultGame: React.FC<VoxelMegaFlareAssaultGameProps>
             window.addEventListener('pointerup', onUp);
             window.addEventListener('pointercancel', onUp);
           }}
-          onDoubleClick={() => {
-            // Double Tap: Mega Flare
-            if (megaGauge >= 100) {
-              window.dispatchEvent(new KeyboardEvent('keydown', { key: 'm' }));
-            }
-          }}
+          onDoubleClick={fireMegaFlare}
         />
       )}
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/70 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
-          {isKo ? '드래그: 조준 | 탭: 포격 발사 | 더블탭: 메가 플레어 궁극기 (버튼 없음)' : 'Drag: Aim | Tap: Fire | Double Tap: Mega Flare (No Buttons)'}
+        <div className="px-3 py-1 bg-black/75 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {isKo ? '화면 드래그: 조준 | 탭: 포격 발사 | 더블탭: 100% 게이지 메가 플레어 (버튼 없음)' : 'Drag: Aim | Tap: Fire | Double Tap: 100% Mega Flare (No Buttons)'}
         </div>
       </div>
 
-      {/* Game Over Modal */}
-      {isGameOver && (
-        <div className="absolute inset-0 z-30 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
-          <div className="w-full max-w-sm bg-slate-900 border-2 border-amber-500 p-6 flex flex-col items-center gap-4 text-center rounded-none shadow-[0_0_30px_rgba(245,158,11,0.3)]">
-            <Trophy size={40} className="text-amber-400 animate-bounce" />
-            <h2 className="text-lg font-black text-white tracking-widest">
-              {isKo ? '공중 함대 요격 완료!' : 'SKY ASSAULT COMPLETE!'}
-            </h2>
-            <div className="w-full bg-slate-950 p-3 border border-slate-800 flex flex-col gap-1.5 text-xs">
-              <div className="flex justify-between text-slate-400">
-                <span>{isKo ? '격추 함선 수' : 'Enemies Shot Down'}</span>
-                <span className="text-amber-400 font-bold">{destroyedCount}</span>
-              </div>
-              <div className="flex justify-between text-slate-400">
-                <span>{isKo ? '최종 점수' : 'Final Score'}</span>
-                <span className="text-amber-400 font-bold">{score.toLocaleString()}P</span>
-              </div>
-              <div className="flex justify-between text-slate-400 border-t border-slate-800 pt-1.5">
-                <span>{isKo ? 'SNS 보상' : 'SNS Reward'}</span>
-                <span className="text-emerald-400 font-bold">+{rewardSns} SNS</span>
-              </div>
-            </div>
+      {/* Universal 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_mega_flare"
+          gameTitle={isKo ? '3D 복셀 메가 플레어 어설트: 공중 함대 요격' : 'Voxel Mega Flare: Sky Fleet Assault'}
+          customSteps={customTutorialSteps}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-            <button
-              onClick={onExit}
-              className="w-full py-3 bg-amber-500 hover:bg-amber-400 active:scale-98 text-slate-950 font-black text-sm rounded-sm tracking-wider shadow-lg cursor-pointer"
-            >
-              {isKo ? '확인 및 보상 수령' : 'Confirm & Claim'}
-            </button>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
