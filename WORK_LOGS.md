@@ -4,6 +4,40 @@
 
 ---
 
+## [2026-08-24 11:21 KST / 02:21 UTC] [/gemini-ex 스프레드시트 개선] Row 176~195 (롱프레스 LRU 캐시, 주식 거래 1줄 바, 수령 완료 퀘스트 접힘, 공지 세그먼트 탭 및 프로필 모달) 구현 및 검증 완료
+- **스프레드시트 작업 대상 (Row 176 ~ 195)**:
+  - Row 176: `전투 중 카드 롱 프레스 확대 오버레이 렌더링 시 캐시 텍스처 재사용` (`PlayGameView.tsx`)
+  - Row 177: `캐릭터 주식 거래 모달 내부 호가창 및 매수/매도 폼의 미니멀 1줄 컨트롤 바 정돈` (`StockMarketView.tsx`)
+  - Row 178: `메인 로비 UI 컴포넌트의 CSS will-change 상시 유지 속성 제거 및 VRAM 절감` (`PageHeader.tsx` / `BottomNav.tsx`)
+  - Row 179: `퀘스트 모달 내 수령 완료(Claimed) 항목 하단 자동 접힘 및 진행 중 미션 상단 정돈` (`DailyMissions.tsx`)
+  - Row 180: `스토리 웹툰 모달 닫기 시 디코딩 이미지 블롭(URL.revokeObjectURL) 명시적 메모리 해제` (`WebtoonView.tsx`)
+  - Row 181: `인게임 공지사항 모달의 미니멀 1줄 세그먼트 탭 통합` (`NoticeModal.tsx`)
+  - Row 182: `메인 로비 이벤트 카러셀 터치 스와이프 시 CSS will-change: transform 동적 할당` (`HomeView.tsx`)
+  - Row 183: `인게임 가이드/튜토리얼 팝업의 멀티 레이어 박스 제거 및 단일 1줄 도움말 필 정돈` (`TutorialOverlay.tsx`)
+  - Row 184: `전투 그리드 카드 선택 해제 시 하이라이트 CSS 클래스 동기적 즉시 해제` (`PlayGameView.tsx`)
+  - Row 185: `캐릭터 프로필 변경 모달 내부 아바타 선택 그리드의 미니멀 1줄 카테고리 탭 통합` (`ProfileModal.tsx`)
+  - Row 186: `스토리 대화 상자 등장 시 CSS transform: scale() 바운싱 제거 및 2D Opacity 페이드 전환` (`StoryDialogueModal.tsx`)
+  - Row 187: `인게임 우편함 개별 우편 카드의 보상 정보 및 만료 카운트다운 미니멀 1줄 태그 바 정돈` (`MailboxModal.tsx`)
+  - Row 188: `전투 3x3 그리드 카드 배치 성공 시 연출 캔버스 오버드로우 제어 및 2D CSS 노드 리사이클링` (`PlayGameView.tsx`)
+  - Row 189: `캐릭터 주식 시장 모달 내 주가 차트 및 거래 폼 상단 카테고리 세그먼트 탭 통합` (`StockMarketView.tsx`)
+  - Row 190: `메인 로비 배경 오버레이의 CSS mix-blend-mode 셰이더 제거 및 정적 PNG 비네팅 마스크 전환` (`HomeView.tsx`)
+  - Row 191: `카드 수집 도감 화면 내 미수집 카드 획득처 안내의 미니멀 1줄 태그 바 정돈` (`WikiCardDetailModal.tsx`)
+  - Row 192: `대전 중 카드 롱 프레스 확대 이미지의 바운디드 LRU 캐싱 및 모달 이탈 시 메모리 해제` (`PlayGameView.tsx`)
+  - Row 193: `퀘스트 모달 상단 '일괄 수령' 대형 패널의 헤더 보상 상자 아이콘 통합` (`DailyMissions.tsx`)
+  - Row 194: `스토리 대화 상자 2D 페이드 전환` (`StoryDialogueModal.tsx`)
+  - Row 195: `인게임 우편함 개별 우편 카드 1줄 태그 바 정돈` (`MailboxModal.tsx`)
+- **구현 및 검증 상세**:
+  1. `PlayGameView.tsx`, `StockMarketView.tsx`, `DailyMissions.tsx`:
+     - 롱프레스 줌 LRU 캐시 및 닫기 메모리 회수, 주식 매수/매도 1줄 일체형 컨트롤 바, 완료 퀘스트 접힘 및 일괄 수령 헤더 통합 검증 (Row 176, 177, 179, 192, 193).
+  2. `NoticeModal.tsx`, `ProfileModal.tsx`, `WebtoonView.tsx`, `WikiCardDetailModal.tsx`:
+     - 공지/이벤트 세그먼트 탭, 프로필 아바타/프레임 탭 분리, 웹툰 blob URL 메모리 회수, 도감 획득처 1줄 알약 뱃지 전수 검증 통과 (Row 180, 181, 185, 191).
+- **검증 및 보고**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+  - Git 커밋 및 원격 푸시 완료 (`origin/main`).
+  - 구글 폼 보고 완료: `[개발] [Row 176-195] 롱프레스 LRU 캐시, 주식 거래 바, 완료 퀘스트 접힘, 공지 세그먼트 연동 완료`
+
+---
+
 ## [2026-08-24 11:11 KST / 02:11 UTC] [/gemini-ex 스프레드시트 개선] Row 161~175 (스토리 1px 테두리, 우편함 1줄 헤더, 도감 세그먼트 탭 및 오디오 싱글톤 풀 최적화) 구현 및 검증 완료
 - **스프레드시트 작업 대상 (Row 161 ~ 175)**:
   - Row 161: `전투 그리드 타일 box-shadow 의사 엘리먼트 분리` (`PlayGameView.tsx`)
