@@ -4,6 +4,22 @@
 
 ---
 
+## [2026-08-25 08:25 KST / 23:25 UTC] [/imp-mission 스킬 미션 게임 풀 110종 전면 확장 및 점검 동기화]
+- **작업 개요**: 미션 게임 점검 대상을 기존 78종(복셀 단독)에서 전체 **110종 통합 미션 게임 풀**로 전면 확장 및 스크립트/지침 동기화 완료.
+- **110종 미션 게임 통합 구성**:
+  1. **3D 복셀 미션 게임**: 78종 (`Voxel*Game.tsx`)
+  2. **2D 카드/스킬 미션 게임**: 8종 (`CardFlipGame`, `CardHeistGame`, `CardJumperGame`, `CardRushGame`, `CardSlidePuzzleGame`, `CardSlotGame`, `CardSorceryGame`, `CardTapGame`)
+  3. **클래식/아케이드 캐주얼 미션 게임**: 11종 (`BreakoutGame`, `DefenseGame`, `GomokuGame`, `MemoryMatchGame`, `MinesweeperGame`, `PacmanGame`, `ShootingBattleGame`, `Slide2048Game`, `SnakeBattleGame`, `TictactoeGame`, `TrexRunnerGame`)
+  4. **특수 레이드·던전·시련 모드 미션**: 13종 (`RunningEndlessMission`, `TreasureLootHuntMission`, `UndergroundDungeonMission`, `WorldBossRaidMission`, `StoryChapterBattleMission`, `GuildRaidCoopMission`, `TowerOfTrials50FMission`, `ExpeditionPatrolMission`, `TacticianAuraGambitMission`, `MonsterBeastariumCatchMission`, `PvpArenaMatgoMission`, `PvpArenaClassicMission`, `TournamentChampionMission`)
+- **수정 파일**:
+  - `skills/imp-mission/scripts/mission_evaluator.py`: 110종 전체 순차 순회 및 자동 추적 풀 갱신 완료.
+  - `skills/imp-mission/SKILL.md`: 110종 풀 대상 설명 갱신.
+  - `AGENTS.md`: 미션 게임 점검 총 대상 수 110종 갱신.
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 미션 게임 대상 풀 110종 확장 및 순차 점검 스크립트 동기화 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 08:20 KST / 23:20 UTC] [/imp-mission 스킬 크론 #33] VoxelLaserStealthGame (3D 복셀 레이저 스텔스 뮤지엄 볼트 잠입) 4대 품질 평가 및 1줄 HUD·3단계 온보딩·확정보상 팝업 전면 리팩토링 개선 완료
 - **선정 게임**: `src/components/VoxelLaserStealthGame.tsx` (34 / 78)
 - **4대 품질 평가 결과 (개선 전 88점 ➔ 개선 후 99점)**:

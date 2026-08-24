@@ -24,7 +24,7 @@
 
 ## imp-mission 미션게임 점검 진행 상태
 - **마지막 점검 게임**: `VoxelLaserStealthGame.tsx` (개선 완료 / 평가 점수: 88점 ➔ 99점)
-- **총 대상 게임 수**: 78종 (`src/components/Voxel*Game.tsx`)
+- **총 대상 게임 수**: 110종 (78종 3D 복셀 게임 + 8종 2D 카드 게임 + 11종 클래식 아케이드 게임 + 13종 특수 미션 모드)
 
 ## 코딩 스타일 및 규칙
 - **TypeScript**: `strict` 모드 준수. `any` 타입 지양. 필요시 `unknown` 후 타입 가드 사용.

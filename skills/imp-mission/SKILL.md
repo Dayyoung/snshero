@@ -39,8 +39,8 @@ SNSHero에 등록된 미션 게임들을 순차적으로 1개씩 선정하여 �
 
 ### 1단계: 순차적 대상 게임 선정
 - `AGENTS.md`의 `imp-mission 마지막 점검 게임`을 확인합니다.
-- `src/components/Voxel*Game.tsx` 및 미션 게임 목록 중 다음 순번의 게임 컴포넌트 1개를 추출합니다.
-- (예: `VoxelArcherHeroGame` ➔ `VoxelDragonSlayerGame` ➔ `VoxelTankBounceGame` ➔ `VoxelNinjaSlashGame` ➔ ...)
+- 총 110종 미션 게임 풀(3D 복셀 78종 + 2D 카드 8종 + 클래식 아케이드 11종 + 특수 미션 모드 13종) 중 다음 순번의 게임 컴포넌트 1개를 추출합니다.
+- (예: `VoxelArcherHeroGame` ➔ `VoxelDragonSlayerGame` ➔ `CardJumperGame` ➔ `BreakoutGame` ➔ `VoxelLaserStealthGame` ➔ ...)
 
 ### 2단계: 코드 심층 분석 및 4대 평가 점수 산출
 - 대상 파일의 Three.js 씬 구성, 이벤트 리스너, 제스처 핸들러, HUD 레이아웃, 보상 입금 로직을 정밀 분석합니다.
