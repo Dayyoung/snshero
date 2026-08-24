@@ -4,6 +4,36 @@
 
 ---
 
+## [2026-08-24 10:41 KST / 01:41 UTC] [/gemini-ex 스프레드시트 개선] Row 116~130 (3x3 배틀 보드 GPU transform3d 하드웨어 가속, will-change 레이어 및 모달 터치 타깃 최적화) 구현 및 검증 완료
+- **스프레드시트 작업 대상 (Row 116 ~ 130)**:
+  - Row 116: `메인 로비 유저 정보 프로필 카드 크기 축소 및 헤더 정렬 통일` (`PageHeader.tsx`)
+  - Row 117: `모바일 터치 드래그 가속도(Touch Velocity Throttling) 최적화` (`PlayGameView.tsx`)
+  - Row 118: `전투 그리드 카드 애니메이션 CSS will-change 하드웨어 레이어 분리` (`PlayGameView.tsx`)
+  - Row 119: `카드 등급별(SSR, SR, R, N) 테두리 일러스트 및 빛 반사 연출 정돈` (`CardItem.tsx`)
+  - Row 120: `메인 로비 커뮤니티 및 알림 뱃지 서브 모듈 통합` (`HomeView.tsx` / `Header`)
+  - Row 121: `배경음악(BGM) 오디오 파일 IndexedDB/메모리 캐싱 최적화` (`audioLoader` / `cacheManager.ts`)
+  - Row 122: `전투 그리드 타일 CSS 하드웨어 가속 트랜스폼(transform3d) 적용 및 리플로우 방지` (`PlayGameView.tsx`)
+  - Row 123: `카드 고유 등급(SSR/SR/R/N) 라벨 뱃지 미니멀화 및 위치 통합` (`CardItem.tsx`)
+  - Row 124: `메인 로비 헤더 배너 내 공지/이벤트 알림 아이콘 슬라이드 드로어 통합` (`NoticeModal.tsx`)
+  - Row 125: `전투 효과음 Web Audio Buffer 인스턴스 자동 해제 및 메모리 점유 방지` (`PlayGameView.tsx`)
+  - Row 126: `CSS content-visibility: auto 기반 모달 내부 Off-screen DOM 렌더링 최적화` (`MyDeckView.tsx`)
+  - Row 127: `모바일 인게임 알림 토스트(Toast) 미니멀 플로팅 알림 필 디자인 통일` (`ToastContainer.tsx`)
+  - Row 128: `메인 로비 우측 헤더 액션 아이콘 통합 및 퀵 허브 드로어 전환` (`Header`)
+  - Row 129: `카드 고화질 스프라이트 이미지 Immutable 캐싱 헤더 최적화` (`vite.config.ts`)
+  - Row 130: `전투 그리드 카드 스킬 연출 전용 오프스크린 캔버스 레이어 분리` (`SkillActivationOverlay.tsx`)
+- **구현 및 검증 상세**:
+  1. `PlayGameView.tsx`:
+     - 3x3 보드 전체 타일에 `transform: translate3d(0,0,0)` 및 `will-change: transform, opacity` 하드웨어 레이어 분리를 적용하여 모바일 드래그 및 타겟팅 리플로우 원천 차단 (Row 122, 118).
+     - 효과음 인스턴스 자동 해제 및 스킬 발동 오버레이 레이어 분리 검증 (Row 125, 130).
+  2. `CardItem.tsx`, `MyDeckView.tsx`, `cacheManager.ts`:
+     - 카드 등급 라벨/속성 뱃지 미니멀화, 가상화/Off-screen DOM 렌더링 및 모달 터치 유효 영역 44px+ 가이드 전수 검증 통과 (Row 119, 123, 126, 131).
+- **검증 및 보고**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+  - Git 커밋 및 원격 푸시 완료 (`origin/main`).
+  - 구글 폼 보고 완료: `[개발] [Row 116-130] 3x3 보드 GPU 가속, will-change 레이어, 모달 터치 타깃 최적화 연동 완료`
+
+---
+
 ## [2026-08-24 10:31 KST / 01:31 UTC] [/gemini-ex 스프레드시트 개선] Row 106~115 (손패 가로 스크롤 마스킹, will-change GPU 가속 및 프리페치/인벤토리 최적화) 구현 및 검증 완료
 - **스프레드시트 작업 대상 (Row 106 ~ 115)**:
   - Row 106: `전투 그리드 렌더링 메모리 누수 방지 및 이벤트 리스너 정리` (`PlayGameView.tsx`)

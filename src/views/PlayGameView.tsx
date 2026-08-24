@@ -14920,7 +14920,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             onMouseEnter={() => handleMouseEnterCell(idx)}
                             onMouseLeave={handleMouseLeaveCell}
                             className={cn(
-                              "grid-cell group w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] flex items-center justify-center relative transition-all overflow-visible rounded-lg font-mono shadow-none",
+                              "grid-cell group w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] flex items-center justify-center relative transition-all overflow-visible rounded-lg font-mono shadow-none [transform:translate3d(0,0,0)] [will-change:transform,opacity]",
                               card ? (
                                 selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player'
                                   ? "border border-rose-500/40 opacity-75 saturate-75 cursor-not-allowed"
