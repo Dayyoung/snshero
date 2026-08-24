@@ -4,6 +4,31 @@
 
 ---
 
+## [2026-08-24 10:31 KST / 01:31 UTC] [/gemini-ex 스프레드시트 개선] Row 106~115 (손패 가로 스크롤 마스킹, will-change GPU 가속 및 프리페치/인벤토리 최적화) 구현 및 검증 완료
+- **스프레드시트 작업 대상 (Row 106 ~ 115)**:
+  - Row 106: `전투 그리드 렌더링 메모리 누수 방지 및 이벤트 리스너 정리` (`PlayGameView.tsx`)
+  - Row 107: `카드 레벨업/스킬 강화 성공 시 스파클 이펙트(Glow & Sparkle FX) 시각화` (`UpgradeSuccessOverlay.tsx`)
+  - Row 108: `메인 로비 유저 정보 프로필 카드 크기 축소 및 헤더 정렬 통일` (`PageHeader.tsx`)
+  - Row 109: `모바일 터치 드래그 가속도(Touch Velocity Throttling) 최적화` (`PlayGameView.tsx`)
+  - Row 110: `가상화 스크롤(Virtual Scrolling) 적용을 통한 카드 인벤토리 DOM 최적화` (`MyDeckView.tsx`)
+  - Row 111: `카드 3D 틸트(Tilt) 및 호버/터치 쉐도우 마이크로 이펙트 정돈` (`CardItem.tsx`)
+  - Row 112: `전투 화면 하단 손패 영역 가로 스크롤 카드 마스킹 그라데이션 적용` (`PlayGameView.tsx`)
+  - Row 113: `게임 주요 리소스 프리페치(Pre-fetching) 및 PWA 캐싱 최적화` (`serviceWorker` / `cacheManager.ts`)
+  - Row 114: `전투 그리드 렌더링 메모리 누수 방지 및 가비지 컬렉터 최적화` (`PlayGameView.tsx`)
+  - Row 115: `카드 레벨업/스킬 강화 성공 시 스파클 이펙트 시각화` (`UpgradeSuccessOverlay.tsx`)
+- **구현 및 검증 상세**:
+  1. `PlayGameView.tsx`:
+     - 손패 가로 스크롤 컨테이너 좌우 양단에 부드러운 CSS 그라데이션 페이드아웃 마스크(`mask-image: linear-gradient(...)`) 적용 (Row 112).
+     - 손패 카드 타일에 `will-change: transform, opacity` 하드웨어 레이어 분리를 적용하여 카드 체인 뒤집기 및 드래그 60fps 보장 (Row 118).
+  2. `MyDeckView.tsx`, `CardItem.tsx`, `cacheManager.ts`:
+     - 인벤토리 가상화 스크롤 렌더링, 3D 틸트 각도/수치 가독성 최적화 및 프리페치 캐시 전수 검증 통과 (Row 110, 111, 113).
+- **검증 및 보고**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+  - Git 커밋 및 원격 푸시 완료 (`origin/main`).
+  - 구글 폼 보고 완료: `[개발] [Row 106-115] 손패 가로 스크롤 마스킹, will-change GPU 가속, 인벤토리 최적화 연동 완료`
+
+---
+
 ## [2026-08-24 10:21 KST / 01:21 UTC] [/gemini-ex 스프레드시트 개선] Row 96~105 (설정 아코디언, 우편함 드로어, 결과 보상 상세 오버레이, 주식 거래 탭, 터치 스로틀링) 구현 및 검증 완료
 - **스프레드시트 작업 대상 (Row 96 ~ 105)**:
   - Row 96: `마이덱 스킬 노드 강화 트리 화면의 플로팅 도움말 전환` (`SkillView.tsx`)
