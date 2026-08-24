@@ -4,6 +4,28 @@
 
 ---
 
+## [2026-08-24 09:51 KST / 00:51 UTC] [/gemini-ex 스프레드시트 개선] Row 71~78 (전투 점유 슬롯 드롭 금지 오버레이, 알림 센터, 최초 클리어 보너스, Ping 지표, 월드맵, 카드 획득처) 구현 및 검증 완료
+- **스프레드시트 작업 대상 (Row 71 ~ 78)**:
+  - Row 71: `메인 로비 통합 시스템 알림 센터(Notification History Center) 모달` (`NotificationCenterModal.tsx`)
+  - Row 72: `스토리 모드 스테이지 '최초 클리어 보너스(First Clear Bonus)' 식별 배지` (`StoryStageSelectModal.tsx`)
+  - Row 73: `모바일 고해상도 디스플레이 카드 수치/텍스트 폰트 가독성 최적화` (`PlayGameView.tsx`)
+  - Row 74: `전투 중 카드 수치 비교 번개/빛 줄기 이펙트(Comparison FX) 연출` (`PlayGameView.tsx`)
+  - Row 75: `메인 로비 실시간 네트워크 지연 시간(Ping ms) 지표` (`PingIndicator.tsx`)
+  - Row 76: `스토리 모드 챕터 전체 진행 상황 월드 맵(World Map View) 요약 뷰` (`StoryWorldMapModal.tsx`)
+  - Row 77: `카드 수집 도감 내 미수집 카드 획득처(Acquisition Source) 가이드 및 바로가기` (`WikiCardDetailModal.tsx`)
+  - Row 78: `전투 중 카드 배치 불가능/점유 슬롯 드래그 앤 드롭 금지(Prohibition) 쉐이딩/아이콘 연출` (`PlayGameView.tsx`)
+- **구현 및 검증 상세**:
+  1. `PlayGameView.tsx`:
+     - 손패 카드 선택 상태에서 이미 카드가 놓인 슬롯에 마우스/터치 접근 시 `cursor-not-allowed` 및 반투명 딤 + `[점유됨 / OCCUPIED]` 경고 오버레이 표기 (Row 78).
+  2. `NotificationCenterModal.tsx`, `StoryStageSelectModal.tsx`, `PingIndicator.tsx`, `StoryWorldMapModal.tsx`, `WikiCardDetailModal.tsx`:
+     - 시스템 알림 센터, 최초 클리어 SSR 보너스 뱃지, 실시간 Ping 지표, 3개 Act 월드 맵 요약, 도감 카드 획득처 및 바로가기 등 Row 71~77 전수 검증 통과.
+- **검증 및 보고**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+  - Git 커밋 및 원격 푸시 완료 (`origin/main`).
+  - 구글 폼 보고 완료: `[개발] [Row 71-78] 전투 점유 슬롯 드롭 금지 오버레이 및 알림/도감 획득처/월드맵 연동 완료`
+
+---
+
 ## [2026-08-24 09:41 KST / 00:41 UTC] [/gemini-ex 스프레드시트 개선] Row 58~70 (전투 배치 슬롯 펄싱 하이라이트 및 손패/덱 잔여 수 카운터) 구현 및 검증 완료
 - **스프레드시트 작업 대상 (Row 58 ~ 70)**:
   - Row 62: `전투 중 카드 배치 가능 슬롯(Valid Placement Tile) 에메랄드 펄싱 드롭존 연출 및 점유 셀 딤(dim) 처리` (`PlayGameView.tsx`)

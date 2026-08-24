@@ -14920,17 +14920,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             onMouseEnter={() => handleMouseEnterCell(idx)}
                             onMouseLeave={handleMouseLeaveCell}
                             className={cn(
-                              "grid-cell group w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] flex items-center justify-center relative transition-all cursor-pointer overflow-visible rounded-lg font-mono shadow-none",
+                              "grid-cell group w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] flex items-center justify-center relative transition-all overflow-visible rounded-lg font-mono shadow-none",
                               card ? (
                                 selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player'
-                                  ? "border border-slate-750/50 opacity-70 saturate-75"
-                                  : "border border-slate-750/70"
+                                  ? "border border-rose-500/40 opacity-75 saturate-75 cursor-not-allowed"
+                                  : "border border-slate-750/70 cursor-pointer"
                               ) : (
                                 idx === goblinTileIndex && !goblinCaptured
-                                  ? "border-2 border-yellow-400 bg-yellow-950/40 shadow-[0_0_12px_rgba(234,179,8,0.5)] animate-pulse"
+                                  ? "border-2 border-yellow-400 bg-yellow-950/40 shadow-[0_0_12px_rgba(234,179,8,0.5)] animate-pulse cursor-pointer"
                                   : idx === manaSpringTileIndex && !manaSpringClaimed
-                                    ? "border-2 border-cyan-400 bg-cyan-950/40 shadow-[0_0_12px_rgba(34,211,238,0.5)] animate-pulse"
-                                    : "border border-dashed border-slate-700/60 bg-slate-950/40 hover:border-solid hover:border-cyan-400 hover:bg-cyan-950/20"
+                                    ? "border-2 border-cyan-400 bg-cyan-950/40 shadow-[0_0_12px_rgba(34,211,238,0.5)] animate-pulse cursor-pointer"
+                                    : "border border-dashed border-slate-700/60 bg-slate-950/40 hover:border-solid hover:border-cyan-400 hover:bg-cyan-950/20 cursor-pointer"
                               ),
                               !card && boardTraps[idx] === 'purple' && "bg-purple-800/40 border-purple-400 border-2",
                               !card && boardTraps[idx] === 'red' && "bg-red-800/40 border-red-400 border-2",
@@ -14939,6 +14939,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                               !card && selectedCardIdx !== null && selectedCardSide === 'player' && recommendedPlayerMove?.cardIdx === selectedCardIdx && recommendedPlayerMove?.boardIdx === idx && turn === 'player' && "border-2 border-cyan-300 bg-cyan-900/50 shadow-[0_0_18px_rgba(34,211,238,0.8)]"
                             )}
                           >
+                            {/* Row 78: Invalid Drop Target Overlay on Occupied Slots */}
+                            {card && selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player' && (
+                              <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none bg-black/25 rounded-lg">
+                                <span className="text-[7px] font-mono font-bold text-rose-300/90 bg-rose-950/80 px-1 py-0.2 rounded-xs border border-rose-500/40 shadow-xs">
+                                  {language === 'ko' ? '점유됨' : 'OCCUPIED'}
+                                </span>
+                              </div>
+                            )}
+
                             {/* Row 62: Valid Drop Target Indicator when player card selected */}
                             {!card && selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player' && (
                               <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-1 pointer-events-none">
