@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Swords, Shield, Zap, Sparkles, ArrowLeft, Trophy, Crosshair, Award } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelCyberNinjaGameProps {
   deck: CardData[];
@@ -20,14 +23,23 @@ export const VoxelCyberNinjaGame: React.FC<VoxelCyberNinjaGameProps> = ({
   onExit,
   onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_cyber_ninja') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [hp, setHp] = useState<number>(100);
-  const [maxHp] = useState<number>(100);
   const [energy, setEnergy] = useState<number>(100);
   const [killCount, setKillCount] = useState<number>(0);
+  const targetKills = 8;
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [isVictory, setIsVictory] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const gameStateRef = useRef({
     posX: 0,
@@ -40,17 +52,20 @@ export const VoxelCyberNinjaGame: React.FC<VoxelCyberNinjaGameProps> = ({
     killCount: 0,
     isSlashing: false,
     slashCooldown: 0,
-    bulletTime: 1.0,
-    keys: { w: false, s: false, a: false, d: false, jump: false, slash: false, blink: false },
+    keys: { w: false, s: false, a: false, d: false },
     enemies: [] as { group: THREE.Group; x: number; z: number; hp: number; alive: boolean; shootTimer: number }[],
     enemyBullets: [] as { mesh: THREE.Mesh; vx: number; vz: number; life: number }[],
     isGameOver: false,
-    isVictory: false
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
+    scene: null as THREE.Scene | null,
+    ninjaGroup: null as THREE.Group | null
   });
 
   const performKatanaSlash = () => {
     const s = gameStateRef.current;
-    if (s.isGameOver || s.isVictory || s.slashCooldown > 0) return;
+    if (s.isGameOver || s.isVictory || s.isPaused || s.slashCooldown > 0) return;
     s.slashCooldown = 0.25;
     s.isSlashing = true;
     setTimeout(() => {
@@ -59,11 +74,11 @@ export const VoxelCyberNinjaGame: React.FC<VoxelCyberNinjaGameProps> = ({
 
     playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
 
-    // Slash hitbox check & deflect bullets
+    // Slash hitbox check
     s.enemies.forEach(e => {
       if (!e.alive) return;
       const dist = Math.hypot(e.x - s.posX, e.z - s.posZ);
-      if (dist < 4.0) {
+      if (dist < 4.5) {
         e.hp -= 40;
         playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
         if (e.hp <= 0) {
@@ -73,12 +88,21 @@ export const VoxelCyberNinjaGame: React.FC<VoxelCyberNinjaGameProps> = ({
           setKillCount(s.killCount);
           setEnergy(Math.round(s.energy));
 
-          if (s.killCount >= 8) {
+          if (s.killCount >= targetKills) {
             s.isVictory = true;
-            setIsVictory(true);
-            const reward = 50 + s.killCount * 5;
-            setRewardSns(reward);
-            onReward(reward);
+            s.isGameOver = true;
+            setIsGameOver(true);
+            const duration = (Date.now() - s.startTime) / 1000;
+            const receipt = calculateAndDepositMissionReward({
+              gameId: 'voxel_cyber_ninja',
+              gameTitle: '복셀 사이버 닌자',
+              durationSeconds: duration,
+              score: s.killCount * 300 + 1000,
+              difficulty: 'HARD',
+              isVictory: true
+            });
+            setSettlementReceipt(receipt);
+            onReward(receipt.totalSns);
           }
         }
       }
@@ -87,24 +111,28 @@ export const VoxelCyberNinjaGame: React.FC<VoxelCyberNinjaGameProps> = ({
     // Deflect incoming bullets
     s.enemyBullets.forEach(b => {
       const d = Math.hypot(b.mesh.position.x - s.posX, b.mesh.position.z - s.posZ);
-      if (d < 3.0) {
+      if (d < 3.2) {
         b.vx = -b.vx * 1.5;
         b.vz = -b.vz * 1.5;
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
       }
     });
   };
 
   const performBlinkStrike = () => {
     const s = gameStateRef.current;
-    if (s.isGameOver || s.isVictory || s.energy < 30) return;
+    if (s.isGameOver || s.isVictory || s.isPaused || s.energy < 30) return;
     s.energy -= 30;
     setEnergy(Math.round(s.energy));
 
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3');
 
-    // Blink forward 10 meters
-    s.posX += Math.sin(s.rotY) * 10;
-    s.posZ -= Math.cos(s.rotY) * 10;
+    // Teleport forward
+    const forwardX = Math.sin(s.rotY) * 9;
+    const forwardZ = Math.cos(s.rotY) * 9;
+    s.posX = Math.max(-20, Math.min(20, s.posX + forwardX));
+    s.posZ = Math.max(-20, Math.min(20, s.posZ + forwardZ));
+
     performKatanaSlash();
   };
 
@@ -112,69 +140,64 @@ export const VoxelCyberNinjaGame: React.FC<VoxelCyberNinjaGameProps> = ({
     const container = mountRef.current;
     if (!container) return;
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x050512);
-    scene.fog = new THREE.FogExp2(0x050512, 0.02);
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
 
-    const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 300);
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x050014);
+    scene.fog = new THREE.Fog(0x050014, 20, 80);
+    gameStateRef.current.scene = scene;
+
+    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 150);
+    camera.position.set(0, 14, 18);
+    camera.lookAt(0, 0, 0);
+
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
     container.appendChild(renderer.domElement);
 
-    // Lights
-    const ambient = new THREE.AmbientLight(0x221144, 0.8);
-    scene.add(ambient);
+    const hemiLight = new THREE.HemisphereLight(0xff00ff, 0x00ffff, 0.9);
+    scene.add(hemiLight);
 
-    const neonLight = new THREE.PointLight(0x00ffff, 2, 40);
-    neonLight.position.set(0, 10, 0);
-    scene.add(neonLight);
+    const dirLight = new THREE.DirectionalLight(0x00ffff, 1.4);
+    dirLight.position.set(20, 30, 20);
+    scene.add(dirLight);
 
-    // Cyberpunk Rooftop Floor
-    const floorGeo = new THREE.PlaneGeometry(120, 120, 16, 16);
-    floorGeo.rotateX(-Math.PI / 2);
-    const floorMat = new THREE.MeshLambertMaterial({ color: 0x111122 });
+    // Neon Floor Grid
+    const floorGeo = new THREE.PlaneGeometry(60, 60);
+    const floorMat = new THREE.MeshStandardMaterial({ color: 0x0a0518, roughness: 0.8 });
     const floor = new THREE.Mesh(floorGeo, floorMat);
+    floor.rotation.x = -Math.PI / 2;
     scene.add(floor);
 
-    // Cyber Ninja Mesh
-    const ninja = new THREE.Group();
+    // Voxel Ninja Character
+    const ninjaGroup = new THREE.Group();
+    const ninjaBody = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.8, 0.8), new THREE.MeshStandardMaterial({ color: 0x1e1b4b }));
+    ninjaBody.position.y = 0.9;
+    ninjaGroup.add(ninjaBody);
 
-    // Body
-    const bodyGeo = new THREE.BoxGeometry(0.8, 1.4, 0.5);
-    const bodyMat = new THREE.MeshLambertMaterial({ color: 0x111111 });
-    const body = new THREE.Mesh(bodyGeo, bodyMat);
-    body.position.y = 1.0;
-    ninja.add(body);
+    const visor = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.3, 0.4), new THREE.MeshBasicMaterial({ color: 0x00ffff }));
+    visor.position.set(0, 1.4, 0.4);
+    ninjaGroup.add(visor);
 
-    // Neon Scarf
-    const scarfGeo = new THREE.BoxGeometry(0.85, 0.2, 0.6);
-    const scarfMat = new THREE.MeshBasicMaterial({ color: 0xff0055 });
-    const scarf = new THREE.Mesh(scarfGeo, scarfMat);
-    scarf.position.y = 1.6;
-    ninja.add(scarf);
+    scene.add(ninjaGroup);
+    gameStateRef.current.ninjaGroup = ninjaGroup;
 
-    // Katana Blade
-    const bladeGeo = new THREE.BoxGeometry(0.08, 0.12, 1.8);
-    const bladeMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
-    const blade = new THREE.Mesh(bladeGeo, bladeMat);
-    blade.position.set(0.6, 1.0, -0.6);
-    ninja.add(blade);
+    // Spawn 8 Enemies
+    const enemyGeo = new THREE.BoxGeometry(1.4, 1.8, 1.0);
+    const enemyMat = new THREE.MeshStandardMaterial({ color: 0xef4444 });
+    gameStateRef.current.enemies = [];
 
-    scene.add(ninja);
-
-    // Spawn 8 Cyber Guards
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < targetKills; i++) {
       const eGroup = new THREE.Group();
-      const eBody = new THREE.Mesh(
-        new THREE.BoxGeometry(0.9, 1.5, 0.6),
-        new THREE.MeshLambertMaterial({ color: 0x882222 })
-      );
-      eBody.position.y = 1.0;
-      eGroup.add(eBody);
+      const eMesh = new THREE.Mesh(enemyGeo, enemyMat);
+      eMesh.position.y = 0.9;
+      eGroup.add(eMesh);
 
-      const ex = (Math.random() - 0.5) * 80;
-      const ez = -15 - Math.random() * 60;
+      const angle = (i / targetKills) * Math.PI * 2;
+      const ex = Math.sin(angle) * 16;
+      const ez = Math.cos(angle) * 16;
       eGroup.position.set(ex, 0, ez);
       scene.add(eGroup);
 
@@ -182,118 +205,109 @@ export const VoxelCyberNinjaGame: React.FC<VoxelCyberNinjaGameProps> = ({
         group: eGroup,
         x: ex,
         z: ez,
-        hp: 60,
+        hp: 40,
         alive: true,
-        shootTimer: Math.random() * 2 + 1
+        shootTimer: 1.0 + Math.random() * 2.0
       });
     }
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const k = e.key.toLowerCase();
-      if (k === 'w' || k === 'arrowup') gameStateRef.current.keys.w = true;
-      if (k === 's' || k === 'arrowdown') gameStateRef.current.keys.s = true;
-      if (k === 'a' || k === 'arrowleft') gameStateRef.current.keys.a = true;
-      if (k === 'd' || k === 'arrowright') gameStateRef.current.keys.d = true;
-      if (k === ' ' || k === 'j') performKatanaSlash();
-      if (k === 'e' || k === 'k') performBlinkStrike();
-    };
-
-    const handleKeyUp = (e: KeyboardEvent) => {
-      const k = e.key.toLowerCase();
-      if (k === 'w' || k === 'arrowup') gameStateRef.current.keys.w = false;
-      if (k === 's' || k === 'arrowdown') gameStateRef.current.keys.s = false;
-      if (k === 'a' || k === 'arrowleft') gameStateRef.current.keys.a = false;
-      if (k === 'd' || k === 'arrowright') gameStateRef.current.keys.d = false;
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-
     let animId: number;
-    let clock = new THREE.Clock();
+    let lastTime = performance.now();
 
-    const animate = () => {
+    const animate = (now: number) => {
       animId = requestAnimationFrame(animate);
-      const dt = clock.getDelta();
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+
       const s = gameStateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-      if (s.slashCooldown > 0) s.slashCooldown -= dt;
+      // Update Ninja Movement
+      if (s.keys.w) s.posZ -= 16 * dt;
+      if (s.keys.s) s.posZ += 16 * dt;
+      if (s.keys.a) s.posX -= 16 * dt;
+      if (s.keys.d) s.posX += 16 * dt;
 
-      if (!s.isGameOver && !s.isVictory) {
-        // Ninja Movement & Rotation
-        if (s.keys.a) s.rotY += 2.5 * dt;
-        if (s.keys.d) s.rotY -= 2.5 * dt;
+      s.posX = Math.max(-24, Math.min(24, s.posX));
+      s.posZ = Math.max(-24, Math.min(24, s.posZ));
 
-        const forward = (s.keys.w ? 1 : 0) - (s.keys.s ? 1 : 0);
-        s.posX += Math.sin(s.rotY) * forward * 16 * dt;
-        s.posZ -= Math.cos(s.rotY) * forward * 16 * dt;
+      if (s.ninjaGroup) {
+        s.ninjaGroup.position.set(s.posX, 0, s.posZ);
+      }
 
-        ninja.position.set(s.posX, 0, s.posZ);
-        ninja.rotation.y = s.rotY;
+      // Camera Follow
+      camera.position.set(s.posX, 14, s.posZ + 18);
+      camera.lookAt(s.posX, 1, s.posZ);
 
-        // Katana swing animation
-        if (s.isSlashing) {
-          blade.rotation.x = -Math.PI / 3;
-          blade.position.set(0.2, 1.0, -1.0);
-        } else {
-          blade.rotation.x = 0;
-          blade.position.set(0.6, 1.0, -0.6);
+      // Enemy AI & Bullet Firing
+      s.enemies.forEach(e => {
+        if (!e.alive) {
+          e.group.position.y = -10;
+          return;
         }
 
-        // Camera Follow
-        camera.position.set(s.posX - Math.sin(s.rotY) * 6, 4, s.posZ + Math.cos(s.rotY) * 6);
-        camera.lookAt(s.posX, 1.5, s.posZ);
+        e.shootTimer -= dt;
+        if (e.shootTimer <= 0) {
+          e.shootTimer = 2.0 + Math.random() * 1.5;
 
-        // Cyber Guard AI Shooting
-        s.enemies.forEach(e => {
-          if (!e.alive) return;
-          e.shootTimer -= dt;
-          if (e.shootTimer <= 0) {
-            e.shootTimer = 2.0 + Math.random() * 1.5;
-            const bGeo = new THREE.SphereGeometry(0.2, 6, 6);
-            const bMat = new THREE.MeshBasicMaterial({ color: 0xff0033 });
+          const dx = s.posX - e.x;
+          const dz = s.posZ - e.z;
+          const dist = Math.hypot(dx, dz);
+          if (dist > 0.1) {
+            const bGeo = new THREE.SphereGeometry(0.3, 8, 8);
+            const bMat = new THREE.MeshBasicMaterial({ color: 0xff0055 });
             const bMesh = new THREE.Mesh(bGeo, bMat);
             bMesh.position.set(e.x, 1.2, e.z);
             scene.add(bMesh);
 
-            const dx = s.posX - e.x;
-            const dz = s.posZ - e.z;
-            const dist = Math.hypot(dx, dz);
-
+            const bSpeed = 14;
             s.enemyBullets.push({
               mesh: bMesh,
-              vx: (dx / dist) * 18,
-              vz: (dz / dist) * 18,
-              life: 3.0
+              vx: (dx / dist) * bSpeed,
+              vz: (dz / dist) * bSpeed,
+              life: 3.5
             });
           }
-        });
+        }
+      });
 
-        // Update Bullets
-        for (let i = s.enemyBullets.length - 1; i >= 0; i--) {
-          const b = s.enemyBullets[i];
-          b.mesh.position.x += b.vx * dt;
-          b.mesh.position.z += b.vz * dt;
-          b.life -= dt;
+      // Update Bullets
+      for (let i = s.enemyBullets.length - 1; i >= 0; i--) {
+        const b = s.enemyBullets[i];
+        b.mesh.position.x += b.vx * dt;
+        b.mesh.position.z += b.vz * dt;
+        b.life -= dt;
 
-          const dist = Math.hypot(b.mesh.position.x - s.posX, b.mesh.position.z - s.posZ);
-          if (dist < 1.0) {
-            scene.remove(b.mesh);
-            s.enemyBullets.splice(i, 1);
-            s.hp = Math.max(0, s.hp - 15);
-            setHp(s.hp);
-            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-            if (s.hp <= 0) {
-              s.isGameOver = true;
-              setIsGameOver(true);
-            }
-            continue;
+        // Player Hit
+        const dist = Math.hypot(b.mesh.position.x - s.posX, b.mesh.position.z - s.posZ);
+        if (dist < 1.0) {
+          s.hp = Math.max(0, s.hp - 15);
+          setHp(s.hp);
+          scene.remove(b.mesh);
+          s.enemyBullets.splice(i, 1);
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+
+          if (s.hp <= 0 && !s.isGameOver) {
+            s.isGameOver = true;
+            setIsGameOver(true);
+            const duration = (Date.now() - s.startTime) / 1000;
+            const receipt = calculateAndDepositMissionReward({
+              gameId: 'voxel_cyber_ninja',
+              gameTitle: '복셀 사이버 닌자',
+              durationSeconds: duration,
+              score: s.killCount * 250,
+              difficulty: 'HARD',
+              isVictory: false
+            });
+            setSettlementReceipt(receipt);
+            onReward(receipt.totalSns);
           }
+          continue;
+        }
 
-          if (b.life <= 0) {
-            scene.remove(b.mesh);
-            s.enemyBullets.splice(i, 1);
-          }
+        if (b.life <= 0) {
+          scene.remove(b.mesh);
+          s.enemyBullets.splice(i, 1);
         }
       }
 
@@ -302,63 +316,61 @@ export const VoxelCyberNinjaGame: React.FC<VoxelCyberNinjaGameProps> = ({
 
     animId = requestAnimationFrame(animate);
 
-    const handleResize = () => {
-      if (!container) return;
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      window.removeEventListener('resize', handleResize);
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, playSfx]);
+  }, [lowSpecMode]);
+
+  const handleRestart = () => {
+    const s = gameStateRef.current;
+    s.posX = 0;
+    s.posZ = 0;
+    s.hp = 100;
+    s.energy = 100;
+    s.killCount = 0;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    s.enemies.forEach(e => {
+      e.alive = true;
+      e.hp = 40;
+    });
+    setHp(100);
+    setEnergy(100);
+    setKillCount(0);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 text-white select-none overflow-hidden flex flex-col font-sans">
-      <div ref={mountRef} className="w-full h-full absolute inset-0" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Top HUD */}
-      <div className="relative z-10 p-3 sm:p-4 flex items-center justify-between bg-gradient-to-b from-slate-950/90 to-transparent pointer-events-none">
-        <button
-          onClick={onExit}
-          className="pointer-events-auto p-2 bg-slate-900/80 hover:bg-slate-800 text-white rounded-xl border border-slate-700 active:scale-95 flex items-center gap-1 cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-          <span className="text-xs font-bold">{language === 'ko' ? '나가기' : 'Exit'}</span>
-        </button>
-
-        {/* HP & Energy Stats */}
-        <div className="flex items-center gap-3 bg-slate-900/80 px-3 py-1.5 rounded-2xl border border-slate-700">
-          <div className="flex items-center gap-1.5">
-            <Shield size={16} className="text-rose-400" />
-            <div className="w-20 sm:w-28 h-2 bg-slate-950 rounded-full overflow-hidden">
-              <div className="h-full bg-rose-500 transition-all" style={{ width: `${(hp / maxHp) * 100}%` }} />
-            </div>
-            <span className="text-xs font-mono font-bold text-rose-400">{hp}</span>
-          </div>
-
-          <div className="flex items-center gap-1 text-cyan-400 text-xs font-bold">
-            <Zap size={14} />
-            <span>{energy}% ENERGY</span>
-          </div>
-
-          <div className="bg-indigo-950 border border-indigo-500/40 px-2 py-0.5 rounded text-indigo-300 text-xs font-bold">
-            KILLS: {killCount}/8
-          </div>
-        </div>
-      </div>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 사이버 닌자' : 'Voxel Cyber Ninja'}
+        language={language}
+        hp={{ current: hp, max: 100 }}
+        telemetries={[
+          { label: isKo ? '암살' : 'Kills', value: `${killCount}/${targetKills}명`, color: 'text-rose-300' },
+          { label: isKo ? '에너지' : 'Energy', value: `${energy}%`, color: 'text-cyan-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          gameStateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
       {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isVictory && (
+      {!isGameOver && !isPaused && !showTutorial && (
         <div
           className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
           style={{ touchAction: 'none' }}
@@ -377,9 +389,9 @@ export const VoxelCyberNinjaGame: React.FC<VoxelCyberNinjaGameProps> = ({
               if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
                 moved = true;
                 gameStateRef.current.keys.w = dy < -8;
-                gameStateRef.current.keys.s = dy > 12;
-                gameStateRef.current.keys.a = dx < -10;
-                gameStateRef.current.keys.d = dx > 10;
+                gameStateRef.current.keys.s = dy > 8;
+                gameStateRef.current.keys.a = dx < -8;
+                gameStateRef.current.keys.d = dx > 8;
               }
             };
 
@@ -402,50 +414,36 @@ export const VoxelCyberNinjaGame: React.FC<VoxelCyberNinjaGameProps> = ({
             window.addEventListener('pointerup', onUp);
             window.addEventListener('pointercancel', onUp);
           }}
-          onDoubleClick={() => performBlinkStrike()}
+          onDoubleClick={performBlinkStrike}
         />
       )}
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/70 border border-cyan-400/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
-          {language === 'ko' ? '드래그: 닌자 이동 | 탭: 카타나 베기 | 더블탭: 블링크 참격 (버튼 없음)' : 'Drag: Move Ninja | Tap: Katana Slash | Double Tap: Blink Strike (No Buttons)'}
+        <div className="px-3 py-1 bg-black/75 border border-cyan-400/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
+          {isKo ? '드래그: 닌자 이동 | 탭: 카타나 베기 & 탄환 튕겨내기 | 더블탭: 블링크 참격 (버튼 없음)' : 'Drag: Move Ninja | Tap: Katana Slash & Deflect | Double Tap: Blink Strike (No Buttons)'}
         </div>
       </div>
 
-      {/* Victory / Game Over Modal */}
-      {(isVictory || isGameOver) && (
-        <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
-            <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center ${isVictory ? 'bg-amber-400/20 text-yellow-400' : 'bg-rose-500/20 text-rose-400'}`}>
-              {isVictory ? <Trophy size={36} /> : <Award size={36} />}
-            </div>
+      {/* 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_cyber_ninja"
+          gameTitle={isKo ? '3D 복셀 사이버 닌자: 네온 섀도우' : 'Voxel Cyber Ninja: Neon Shadow'}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-            <h2 className="text-2xl font-black italic uppercase">{isVictory ? '네온 섀도우 암살 완수! VICTORY' : '미션 실패! DEFEAT'}</h2>
-
-            <p className="text-xs text-slate-300">
-              {isVictory
-                ? '모든 적 사이버 가드를 처치하고 코어 해킹을 성공적으로 마쳤습니다!'
-                : '적들의 총격으로 치명상을 입었습니다.'}
-            </p>
-
-            {isVictory && (
-              <div className="bg-slate-950 border border-amber-500/30 p-3 rounded-2xl">
-                <span className="text-xs text-slate-400 block uppercase font-bold">REWARD</span>
-                <span className="text-2xl font-black text-yellow-400 flex items-center justify-center gap-1">
-                  <Sparkles size={20} /> +{rewardSns} SNS
-                </span>
-              </div>
-            )}
-
-            <button
-              onClick={onExit}
-              className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 text-slate-950 font-bold rounded-xl active:scale-95 transition-all cursor-pointer"
-            >
-              {language === 'ko' ? '확인 및 나가기' : 'Confirm & Exit'}
-            </button>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
