@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Trophy, ArrowLeft, Zap, Sparkles, Target } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelArcherHeroGameProps {
   deck: CardData[];
@@ -20,13 +23,24 @@ export const VoxelArcherHeroGame: React.FC<VoxelArcherHeroGameProps> = ({
   onExit,
   onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_archer_hero') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [wave, setWave] = useState<number>(1);
   const [playerHp, setPlayerHp] = useState<number>(100);
   const [kills, setKills] = useState<number>(0);
   const [multiShot, setMultiShot] = useState<number>(1);
+  const [score, setScore] = useState<number>(0);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
     pPos: new THREE.Vector3(0, 0.5, 12),
@@ -37,16 +51,19 @@ export const VoxelArcherHeroGame: React.FC<VoxelArcherHeroGameProps> = ({
     shootCooldown: 0,
     wave: 1,
     kills: 0,
+    score: 0,
     multiShot: 1,
     playerHp: 100,
-    isGameOver: false
+    isGameOver: false,
+    isPaused: false,
+    startTime: Date.now()
   });
 
   useEffect(() => {
     if (!mountRef.current) return;
     const container = mountRef.current;
-    const width = container.clientWidth || 800;
-    const height = container.clientHeight || 500;
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0d1f12);
@@ -56,9 +73,9 @@ export const VoxelArcherHeroGame: React.FC<VoxelArcherHeroGameProps> = ({
     camera.position.set(0, 16, 22);
     camera.lookAt(0, 0, 4);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode });
+    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
     container.appendChild(renderer.domElement);
 
     const ambLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -68,12 +85,12 @@ export const VoxelArcherHeroGame: React.FC<VoxelArcherHeroGameProps> = ({
     dirLight.position.set(10, 30, 10);
     scene.add(dirLight);
 
-    // Forest Grid
+    // Forest Grid Floor
     const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 50), new THREE.MeshLambertMaterial({ color: 0x1e3a1e }));
     floor.rotation.x = -Math.PI / 2;
     scene.add(floor);
 
-    // Player Archer
+    // Player Archer Mesh
     const playerGroup = new THREE.Group();
     const pMesh = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.8, 1.2), new THREE.MeshLambertMaterial({ color: 0x84cc16 }));
     pMesh.position.y = 0.9;
@@ -100,131 +117,154 @@ export const VoxelArcherHeroGame: React.FC<VoxelArcherHeroGameProps> = ({
 
     spawnWave(1);
 
-    let reqId: number;
-    const animate = () => {
-      reqId = requestAnimationFrame(animate);
+    let animId: number;
+    let lastTime = performance.now();
+
+    const animate = (now: number) => {
+      animId = requestAnimationFrame(animate);
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+
       const s = stateRef.current;
-      if (s.isGameOver) {
-        renderer.render(scene, camera);
-        return;
-      }
+      if (s.isPaused || s.isGameOver) return;
+
+      playerGroup.position.copy(s.pPos);
 
       // Auto-Shooting when standing still
-      if (!s.isMoving) {
-        s.shootCooldown -= 1;
-        if (s.shootCooldown <= 0 && s.enemies.length > 0) {
-          s.shootCooldown = 22; // rapid shoot
-          // Find closest enemy
-          let closest = s.enemies[0];
-          let minDist = 999;
-          s.enemies.forEach(e => {
-            const dist = s.pPos.distanceTo(e.mesh.position);
-            if (dist < minDist) { minDist = dist; closest = e; }
-          });
+      if (!s.isMoving && s.enemies.length > 0) {
+        s.shootCooldown -= dt;
+        if (s.shootCooldown <= 0) {
+          s.shootCooldown = 0.35;
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
 
-          if (closest) {
-            const dir = new THREE.Vector3().subVectors(closest.mesh.position, s.pPos).normalize();
-            for (let i = 0; i < s.multiShot; i++) {
-              const arrowMesh = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.2, 1.2), new THREE.MeshBasicMaterial({ color: 0xfef08a }));
-              const offset = new THREE.Vector3((i - (s.multiShot - 1) / 2) * 0.4, 0.9, 0);
-              arrowMesh.position.copy(s.pPos).add(offset);
-              scene.add(arrowMesh);
-              s.arrows.push({ mesh: arrowMesh, vel: dir.clone().multiplyScalar(0.7), life: 60 });
+          // Find closest target
+          let target = s.enemies[0];
+          let minDist = 999;
+          for (let e of s.enemies) {
+            const d = s.pPos.distanceTo(e.mesh.position);
+            if (d < minDist) {
+              minDist = d;
+              target = e;
             }
-            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+          }
+
+          if (target) {
+            const dir = new THREE.Vector3().subVectors(target.mesh.position, s.pPos).normalize();
+
+            // Multishot Spread
+            for (let i = 0; i < s.multiShot; i++) {
+              const spread = (i - (s.multiShot - 1) / 2) * 0.18;
+              const arrowDir = dir.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), spread);
+
+              const aMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.2, 4), new THREE.MeshBasicMaterial({ color: 0xfacc15 }));
+              aMesh.rotation.x = Math.PI / 2;
+              aMesh.position.copy(s.pPos).add(new THREE.Vector3(0, 0.9, 0));
+              scene.add(aMesh);
+
+              s.arrows.push({
+                mesh: aMesh,
+                vel: arrowDir.multiplyScalar(35),
+                life: 2.0
+              });
+            }
           }
         }
       }
 
       // Update Arrows
       for (let i = s.arrows.length - 1; i >= 0; i--) {
-        const arr = s.arrows[i];
-        arr.mesh.position.add(arr.vel);
-        arr.life -= 1;
+        const a = s.arrows[i];
+        a.mesh.position.addScaledVector(a.vel, dt);
+        a.life -= dt;
 
-        // Check hit
-        let hit = false;
+        // Collision with enemies
         for (let j = s.enemies.length - 1; j >= 0; j--) {
-          const em = s.enemies[j];
-          if (arr.mesh.position.distanceTo(em.mesh.position) < 1.4) {
-            em.hp -= 20;
-            hit = true;
-            if (em.hp <= 0) {
-              scene.remove(em.mesh);
+          const e = s.enemies[j];
+          if (a.mesh.position.distanceTo(e.mesh.position) < 1.4) {
+            e.hp -= 20;
+            a.life = 0;
+            if (e.hp <= 0) {
+              scene.remove(e.mesh);
               s.enemies.splice(j, 1);
               s.kills += 1;
+              s.score += 150;
               setKills(s.kills);
+              setScore(s.score);
+
+              // Multishot Upgrade
+              if (s.kills % 6 === 0 && s.multiShot < 3) {
+                s.multiShot += 1;
+                setMultiShot(s.multiShot);
+              }
             }
             break;
           }
         }
 
-        if (hit || arr.life <= 0) {
-          scene.remove(arr.mesh);
+        if (a.life <= 0) {
+          scene.remove(a.mesh);
           s.arrows.splice(i, 1);
         }
       }
 
-      // Update Enemies
+      // Update Enemies Movement & Attack
       for (let i = s.enemies.length - 1; i >= 0; i--) {
-        const em = s.enemies[i];
-        const dir = new THREE.Vector3().subVectors(s.pPos, em.mesh.position).normalize();
-        em.mesh.position.add(dir.multiplyScalar(0.045));
+        const e = s.enemies[i];
+        const dir = new THREE.Vector3().subVectors(s.pPos, e.mesh.position).normalize();
+        e.mesh.position.addScaledVector(dir, 4.5 * dt);
 
-        if (em.mesh.position.distanceTo(s.pPos) < 1.5) {
-          s.playerHp = Math.max(0, s.playerHp - 15);
-          setPlayerHp(s.playerHp);
-          scene.remove(em.mesh);
-          s.enemies.splice(i, 1);
+        // Attack Player
+        if (e.mesh.position.distanceTo(s.pPos) < 1.6) {
+          s.playerHp = Math.max(0, s.playerHp - 15 * dt);
+          setPlayerHp(Math.round(s.playerHp));
           if (s.playerHp <= 0) {
             s.isGameOver = true;
             setIsGameOver(true);
-            const reward = 60 + s.kills * 5;
-            setRewardSns(reward);
-            onReward(reward);
+            const duration = (Date.now() - s.startTime) / 1000;
+            const receipt = calculateAndDepositMissionReward({
+              gameId: 'voxel_archer_hero',
+              gameTitle: '복셀 아처 히어로',
+              durationSeconds: duration,
+              score: s.score,
+              difficulty: 'NORMAL',
+              isVictory: false
+            });
+            setSettlementReceipt(receipt);
+            onReward(receipt.totalSns);
           }
         }
       }
 
-      // Check Next Wave
-      if (s.enemies.length === 0) {
-        s.wave += 1;
-        setWave(s.wave);
-        if (s.wave % 2 === 0) {
-          s.multiShot = Math.min(4, s.multiShot + 1);
-          setMultiShot(s.multiShot);
-        }
-        if (s.wave > 4) {
+      // Next Wave Progression
+      if (s.enemies.length === 0 && !s.isGameOver) {
+        if (s.wave >= 4) {
           s.isGameOver = true;
           setIsGameOver(true);
-          const reward = 230;
-          setRewardSns(reward);
-          onReward(reward);
-          playSfx?.('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
+          const duration = (Date.now() - s.startTime) / 1000;
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'voxel_archer_hero',
+            gameTitle: '복셀 아처 히어로',
+            durationSeconds: duration,
+            score: s.score + 1000,
+            difficulty: 'HARD',
+            isVictory: true
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
         } else {
+          s.wave += 1;
+          setWave(s.wave);
           spawnWave(s.wave);
         }
       }
 
-      playerGroup.position.copy(s.pPos);
       renderer.render(scene, camera);
     };
 
-    animate();
-
-    const handleResize = () => {
-      if (!mountRef.current) return;
-      const w = mountRef.current.clientWidth;
-      const h = mountRef.current.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener('resize', handleResize);
+    animId = requestAnimationFrame(animate);
 
     return () => {
-      cancelAnimationFrame(reqId);
-      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animId);
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
@@ -232,89 +272,113 @@ export const VoxelArcherHeroGame: React.FC<VoxelArcherHeroGameProps> = ({
     };
   }, [lowSpecMode]);
 
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.pPos.set(0, 0.5, 12);
+    s.playerHp = 100;
+    s.wave = 1;
+    s.kills = 0;
+    s.score = 0;
+    s.multiShot = 1;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    setWave(1);
+    setPlayerHp(100);
+    setKills(0);
+    setScore(0);
+    setMultiShot(1);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
+
   return (
     <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* Top HUD */}
-      <div className="absolute top-0 left-0 right-0 z-20 px-3 py-2.5 bg-slate-900/85 backdrop-blur-xs border-b border-slate-800 flex items-center justify-between text-white text-xs">
-        <button
-          onClick={onExit}
-          className="flex items-center gap-1 bg-slate-800 hover:bg-slate-700 px-2.5 py-1.5 rounded-sm border border-slate-700 font-bold"
-        >
-          <ArrowLeft size={14} />
-          <span>{language === 'ko' ? '나가기' : 'Exit'}</span>
-        </button>
-
-        <div className="flex items-center gap-3">
-          <span className="text-lime-400 font-black">WAVE {wave}/4</span>
-          <span className="text-amber-300 font-bold">🎯 MULTISHOT x{multiShot}</span>
-        </div>
-
-        <div className="text-cyan-400 font-bold">HP: {playerHp}/100</div>
-      </div>
-
-      {/* 3D Canvas */}
+      {/* 3D Canvas Mount */}
       <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Screen Gesture Touch Overlay */}
-      <div
-        className="absolute inset-0 z-10 select-none touch-none"
-        style={{ touchAction: 'none' }}
-        onPointerDown={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const startX = e.clientX - rect.left;
-          const startY = e.clientY - rect.top;
-          stateRef.current.isMoving = true;
-
-          const onMove = (moveEvt: PointerEvent) => {
-            const curX = moveEvt.clientX - rect.left;
-            const curY = moveEvt.clientY - rect.top;
-            const dx = curX - startX;
-            const dy = curY - startY;
-
-            if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
-              stateRef.current.isMoving = true;
-              stateRef.current.pPos.x = Math.max(-18, Math.min(18, stateRef.current.pPos.x + dx * 0.05));
-              stateRef.current.pPos.z = Math.max(-18, Math.min(18, stateRef.current.pPos.z + dy * 0.05));
-            }
-          };
-
-          const onUp = () => {
-            window.removeEventListener('pointermove', onMove);
-            window.removeEventListener('pointerup', onUp);
-            window.removeEventListener('pointercancel', onUp);
-            stateRef.current.isMoving = false;
-          };
-
-          window.addEventListener('pointermove', onMove);
-          window.addEventListener('pointerup', onUp);
-          window.addEventListener('pointercancel', onUp);
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 아처 히어로' : 'Voxel Archer Hero'}
+        language={language}
+        hp={{ current: playerHp, max: 100 }}
+        telemetries={[
+          { label: isKo ? '웨이브' : 'Wave', value: `${wave}/4`, color: 'text-lime-300' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300' },
+          { label: isKo ? '멀티샷' : 'Multishot', value: `x${multiShot}`, color: 'text-cyan-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
         }}
+        isPaused={isPaused}
       />
+
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && !isPaused && !showTutorial && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            stateRef.current.isMoving = true;
+
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+                stateRef.current.isMoving = true;
+                stateRef.current.pPos.x = Math.max(-18, Math.min(18, stateRef.current.pPos.x + dx * 0.05));
+                stateRef.current.pPos.z = Math.max(-18, Math.min(18, stateRef.current.pPos.z + dy * 0.05));
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              stateRef.current.isMoving = false;
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
+      )}
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/70 border border-lime-400/30 rounded-full text-[10px] text-lime-300 font-mono backdrop-blur-xs">
-          {language === 'ko' ? '드래그: 궁수 이동 | 손 떼기: 자동 조준 사격 (버튼 없음)' : 'Drag: Move | Release: Auto Aim Shoot (No Buttons)'}
+        <div className="px-3 py-1 bg-black/75 border border-lime-400/30 rounded-full text-[10px] text-lime-300 font-mono backdrop-blur-xs">
+          {isKo ? '드래그: 궁수 이동 | 손 떼기: 자동 조준 사격 (버튼 없음)' : 'Drag: Move | Release: Auto Aim Shoot (No Buttons)'}
         </div>
       </div>
 
-      {/* Game Over Modal */}
-      {isGameOver && (
-        <div className="absolute inset-0 z-40 bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 p-6 rounded-sm max-w-sm w-full text-center text-white flex flex-col gap-4">
-            <Trophy size={48} className="mx-auto text-amber-400" />
-            <h2 className="text-xl font-black">{wave >= 4 ? (language === 'ko' ? '숲 수호 성공!' : 'DEFENSE VICTORY!') : 'DEFENSE FAILED'}</h2>
-            <div className="bg-slate-950 p-3 rounded-xs border border-amber-400/30 text-amber-300 font-bold text-sm">
-              +{rewardSns} SNS 포인트 획득!
-            </div>
-            <button
-              onClick={onExit}
-              className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-sm border border-amber-300 text-sm"
-            >
-              {language === 'ko' ? '확인 및 돌아가기' : 'Confirm & Exit'}
-            </button>
-          </div>
-        </div>
+      {/* 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_archer_hero"
+          gameTitle={isKo ? '3D 복셀 아처 히어로: 숲의 수호자' : 'Voxel Archer Hero: Forest Guardian'}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
+
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
