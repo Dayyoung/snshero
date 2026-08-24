@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ArrowLeft, Trophy, Sparkles, Target, Zap } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelBilliardsTrickGameProps {
   deck: CardData[];
@@ -32,12 +35,20 @@ export const VoxelBilliardsTrickGame: React.FC<VoxelBilliardsTrickGameProps> = (
   const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
 
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_billiards_trick') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [pocketedCount, setPocketedCount] = useState<number>(0);
   const totalBalls = 7;
   const [power, setPower] = useState<number>(50);
   const [shots, setShots] = useState<number>(0);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
     cueAngle: 0,
@@ -47,7 +58,10 @@ export const VoxelBilliardsTrickGame: React.FC<VoxelBilliardsTrickGameProps> = (
     isShooting: false,
     pocketed: 0,
     shots: 0,
-    isGameOver: false
+    isGameOver: false,
+    isPaused: false,
+    startTime: Date.now(),
+    cueMesh: null as THREE.Mesh | null
   });
 
   useEffect(() => {
@@ -99,66 +113,67 @@ export const VoxelBilliardsTrickGame: React.FC<VoxelBilliardsTrickGameProps> = (
     railB.position.set(0, 0.2, 5.2);
     scene.add(railL, railR, railT, railB);
 
-    // Pockets (6 pockets)
+    // Pockets
     const pocketGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 16);
-    const pocketMat = new THREE.MeshStandardMaterial({ color: 0x050505 });
+    const pocketMat = new THREE.MeshBasicMaterial({ color: 0x050505 });
     const pocketCoords = [
       [-2.8, -4.8], [2.8, -4.8],
       [-2.9, 0], [2.9, 0],
       [-2.8, 4.8], [2.8, 4.8]
     ];
     pocketCoords.forEach(([px, pz]) => {
-      const pocket = new THREE.Mesh(pocketGeo, pocketMat);
-      pocket.position.set(px, 0.12, pz);
-      scene.add(pocket);
+      const pMesh = new THREE.Mesh(pocketGeo, pocketMat);
+      pMesh.position.set(px, 0.11, pz);
+      scene.add(pMesh);
     });
 
-    // Cue Stick
-    const cueGeo = new THREE.CylinderGeometry(0.04, 0.08, 4, 8);
-    const cueMat = new THREE.MeshStandardMaterial({ color: 0xcc9966 });
+    // Cue Stick Mesh
+    const cueGeo = new THREE.CylinderGeometry(0.04, 0.08, 4.5, 8);
+    const cueMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.3 });
     const cueMesh = new THREE.Mesh(cueGeo, cueMat);
     cueMesh.rotation.x = Math.PI / 2;
-    cueMesh.position.set(0, 0.3, 3);
     scene.add(cueMesh);
+    stateRef.current.cueMesh = cueMesh;
 
-    // Spawn Cue Ball and Object Balls
-    const balls: BilliardBall[] = [];
-    const ballRadius = 0.22;
-    const sphereGeo = new THREE.SphereGeometry(ballRadius, 16, 16);
+    // Spawn Balls
+    const colors = [0xffffff, 0xfacc15, 0x3b82f6, 0xef4444, 0xa855f7, 0xf97316, 0x10b981, 0x1e293b];
+    stateRef.current.balls = [];
 
-    // White Cue Ball
-    const whiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.2 });
-    const cueBallMesh = new THREE.Mesh(sphereGeo, whiteMat);
+    // Cue Ball
+    const ballGeo = new THREE.SphereGeometry(0.2, 16, 16);
+    const cueBallMat = new THREE.MeshStandardMaterial({ color: colors[0], roughness: 0.2 });
+    const cueBallMesh = new THREE.Mesh(ballGeo, cueBallMat);
     cueBallMesh.position.set(0, 0.3, 2.5);
     scene.add(cueBallMesh);
+
     const cueBallObj: BilliardBall = {
       mesh: cueBallMesh,
       num: 0,
-      color: 0xffffff,
-      pos: cueBallMesh.position,
+      color: colors[0],
+      pos: new THREE.Vector3(0, 0.3, 2.5),
       vel: new THREE.Vector3(0, 0, 0),
       isPocketed: false
     };
-    balls.push(cueBallObj);
     stateRef.current.cueBall = cueBallObj;
+    stateRef.current.balls.push(cueBallObj);
 
-    // 7 Colored Target Balls in Triangle Rack
-    const ballColors = [0xffcc00, 0x0066cc, 0xcc0000, 0x660099, 0xff6600, 0x009933, 0x111111];
-    let bIdx = 0;
-    for (let r = 0; r < 3; r++) {
-      for (let c = 0; c <= r; c++) {
-        if (bIdx >= totalBalls) break;
-        const bMat = new THREE.MeshStandardMaterial({ color: ballColors[bIdx], roughness: 0.2 });
-        const bMesh = new THREE.Mesh(sphereGeo, bMat);
-        const x = (c - r * 0.5) * 0.48;
-        const z = -2.0 - r * 0.44;
-        bMesh.position.set(x, 0.3, z);
+    // Target Balls in Triangle
+    let bIdx = 1;
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col <= row; col++) {
+        if (bIdx > 7) break;
+        const bx = (col - row / 2) * 0.45;
+        const bz = -2.0 - row * 0.4;
+        const bMat = new THREE.MeshStandardMaterial({ color: colors[bIdx], roughness: 0.2 });
+        const bMesh = new THREE.Mesh(ballGeo, bMat);
+        bMesh.position.set(bx, 0.3, bz);
         scene.add(bMesh);
-        balls.push({
+
+        stateRef.current.balls.push({
           mesh: bMesh,
-          num: bIdx + 1,
-          color: ballColors[bIdx],
-          pos: bMesh.position,
+          num: bIdx,
+          color: colors[bIdx],
+          pos: new THREE.Vector3(bx, 0.3, bz),
           vel: new THREE.Vector3(0, 0, 0),
           isPocketed: false
         });
@@ -166,261 +181,258 @@ export const VoxelBilliardsTrickGame: React.FC<VoxelBilliardsTrickGameProps> = (
       }
     }
 
-    stateRef.current.balls = balls;
+    let animId: number;
+    let lastTime = performance.now();
 
-    let animationFrameId: number;
+    const animate = (now: number) => {
+      animId = requestAnimationFrame(animate);
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
 
-    const animate = () => {
-      animationFrameId = requestAnimationFrame(animate);
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-      if (!stateRef.current.isGameOver) {
-        // Update Ball Physics & Pocket Collisions
-        let anyMoving = false;
-
-        balls.forEach((ball) => {
-          if (ball.isPocketed) return;
-
-          // Apply velocity
-          if (ball.vel.length() > 0.005) {
-            anyMoving = true;
-            ball.pos.add(ball.vel);
-            ball.vel.multiplyScalar(0.98); // Table friction
-
-            // Table bounds bounce
-            if (ball.pos.x < -2.7 || ball.pos.x > 2.7) {
-              ball.vel.x *= -0.8;
-              ball.pos.x = Math.max(-2.7, Math.min(2.7, ball.pos.x));
-            }
-            if (ball.pos.z < -4.7 || ball.pos.z > 4.7) {
-              ball.vel.z *= -0.8;
-              ball.pos.z = Math.max(-4.7, Math.min(4.7, ball.pos.z));
-            }
-
-            // Check pockets
-            pocketCoords.forEach(([px, pz]) => {
-              if (Math.hypot(ball.pos.x - px, ball.pos.z - pz) < 0.45) {
-                ball.isPocketed = true;
-                scene.remove(ball.mesh);
-                if (ball.num !== 0) {
-                  stateRef.current.pocketed += 1;
-                  setPocketedCount(stateRef.current.pocketed);
-                  playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-
-                  if (stateRef.current.pocketed >= totalBalls) {
-                    stateRef.current.isGameOver = true;
-                    setIsGameOver(true);
-                    const r = 260;
-                    setRewardSns(r);
-                    onReward(r);
-                  }
-                } else {
-                  // White ball scratched: respawn at center
-                  setTimeout(() => {
-                    ball.isPocketed = false;
-                    ball.pos.set(0, 0.3, 2.5);
-                    ball.vel.set(0, 0, 0);
-                    scene.add(ball.mesh);
-                  }, 800);
-                }
-              }
-            });
-          } else {
-            ball.vel.set(0, 0, 0);
-          }
-        });
-
-        // Ball vs Ball Collisions
-        for (let i = 0; i < balls.length; i++) {
-          for (let j = i + 1; j < balls.length; j++) {
-            const b1 = balls[i];
-            const b2 = balls[j];
-            if (b1.isPocketed || b2.isPocketed) continue;
-
-            const dist = b1.pos.distanceTo(b2.pos);
-            if (dist < ballRadius * 2) {
-              // Elastic collision
-              const normal = new THREE.Vector3().subVectors(b2.pos, b1.pos).normalize();
-              const relVel = new THREE.Vector3().subVectors(b1.vel, b2.vel);
-              const speed = relVel.dot(normal);
-
-              if (speed > 0) {
-                b1.vel.sub(normal.clone().multiplyScalar(speed));
-                b2.vel.add(normal.clone().multiplyScalar(speed));
-                playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-              }
-            }
-          }
+      // Update Cue Stick Position
+      if (s.cueBall && !s.cueBall.isPocketed && !s.isShooting) {
+        if (s.cueMesh) {
+          s.cueMesh.visible = true;
+          const cueDist = 2.8 + (s.cuePower / 100) * 0.6;
+          s.cueMesh.position.set(
+            s.cueBall.pos.x + Math.sin(s.cueAngle) * cueDist,
+            0.55,
+            s.cueBall.pos.z + Math.cos(s.cueAngle) * cueDist
+          );
+          s.cueMesh.rotation.y = s.cueAngle;
         }
+      } else if (s.cueMesh) {
+        s.cueMesh.visible = false;
+      }
 
-        // Cue Stick positioning when balls stopped
-        if (!anyMoving && stateRef.current.cueBall && !stateRef.current.cueBall.isPocketed) {
-          cueMesh.visible = true;
-          const cb = stateRef.current.cueBall.pos;
-          const distOffset = 2.4 + (stateRef.current.cuePower / 100) * 0.6;
-          const cx = cb.x + Math.sin(stateRef.current.cueAngle) * distOffset;
-          const cz = cb.z + Math.cos(stateRef.current.cueAngle) * distOffset;
-          cueMesh.position.set(cx, 0.35, cz);
-          cueMesh.rotation.y = -stateRef.current.cueAngle;
-        } else {
-          cueMesh.visible = false;
+      // Ball Physics & Collisions
+      let anyMoving = false;
+      for (let b of s.balls) {
+        if (b.isPocketed) continue;
+
+        if (b.vel.lengthSq() > 0.0001) {
+          anyMoving = true;
+          b.pos.addScaledVector(b.vel, dt);
+          b.vel.multiplyScalar(0.985); // Friction
+          b.mesh.position.copy(b.pos);
+
+          // Rail Bounce
+          if (Math.abs(b.pos.x) > 2.7) {
+            b.vel.x = -b.vel.x * 0.85;
+            b.pos.x = Math.sign(b.pos.x) * 2.7;
+          }
+          if (Math.abs(b.pos.z) > 4.7) {
+            b.vel.z = -b.vel.z * 0.85;
+            b.pos.z = Math.sign(b.pos.z) * 4.7;
+          }
+
+          // Pocket Detection
+          for (let [px, pz] of pocketCoords) {
+            if (Math.hypot(b.pos.x - px, b.pos.z - pz) < 0.45) {
+              b.isPocketed = true;
+              b.mesh.position.y = -10;
+              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3');
+
+              if (b.num !== 0) {
+                s.pocketed += 1;
+                setPocketedCount(s.pocketed);
+
+                if (s.pocketed >= totalBalls) {
+                  s.isGameOver = true;
+                  setIsGameOver(true);
+                  const duration = (Date.now() - s.startTime) / 1000;
+                  const receipt = calculateAndDepositMissionReward({
+                    gameId: 'voxel_billiards_trick',
+                    gameTitle: '복셀 당구 트릭샷',
+                    durationSeconds: duration,
+                    score: s.pocketed * 400 + Math.max(0, 1000 - s.shots * 80),
+                    difficulty: 'HARD',
+                    isVictory: true
+                  });
+                  setSettlementReceipt(receipt);
+                  onReward(receipt.totalSns);
+                }
+              } else {
+                // Scratch cue ball -> respawn
+                setTimeout(() => {
+                  b.isPocketed = false;
+                  b.pos.set(0, 0.3, 2.5);
+                  b.vel.set(0, 0, 0);
+                  b.mesh.position.copy(b.pos);
+                }, 800);
+              }
+              break;
+            }
+          }
         }
       }
+
+      // Ball to Ball Collisions
+      for (let i = 0; i < s.balls.length; i++) {
+        for (let j = i + 1; j < s.balls.length; j++) {
+          const b1 = s.balls[i];
+          const b2 = s.balls[j];
+          if (b1.isPocketed || b2.isPocketed) continue;
+
+          const diff = new THREE.Vector3().subVectors(b2.pos, b1.pos);
+          const dist = diff.length();
+          if (dist < 0.4 && dist > 0.0001) {
+            const normal = diff.normalize();
+            const relVel = new THREE.Vector3().subVectors(b1.vel, b2.vel);
+            const impulse = relVel.dot(normal);
+
+            if (impulse > 0) {
+              b1.vel.subScaledVector(normal, impulse * 0.95);
+              b2.vel.addScaledVector(normal, impulse * 0.95);
+              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            }
+          }
+        }
+      }
+
+      s.isShooting = anyMoving;
 
       renderer.render(scene, camera);
     };
 
-    animate();
-
-    const handleResize = () => {
-      if (!container) return;
-      const w = container.clientWidth;
-      const h = container.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-
-    window.addEventListener('resize', handleResize);
+    animId = requestAnimationFrame(animate);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', handleResize);
-      if (container && renderer.domElement) {
+      cancelAnimationFrame(animId);
+      renderer.dispose();
+      if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
-      renderer.dispose();
     };
-  }, [lowSpecMode, onReward, playSfx]);
-
-  const handleRotateCue = (delta: number) => {
-    stateRef.current.cueAngle += delta;
-  };
+  }, [lowSpecMode]);
 
   const handleShoot = () => {
-    if (!stateRef.current.cueBall || stateRef.current.cueBall.isPocketed || stateRef.current.isGameOver) return;
+    const s = stateRef.current;
+    if (s.isShooting || !s.cueBall || s.cueBall.isPocketed || s.isGameOver || s.isPaused) return;
 
-    const angle = stateRef.current.cueAngle;
-    const p = stateRef.current.cuePower / 100;
-    const force = 0.25 + p * 0.45;
+    s.shots += 1;
+    setShots(s.shots);
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
 
-    stateRef.current.cueBall.vel.set(
-      -Math.sin(angle) * force,
+    const shotSpeed = 10 + (s.cuePower / 100) * 25;
+    s.cueBall.vel.set(
+      -Math.sin(s.cueAngle) * shotSpeed,
       0,
-      -Math.cos(angle) * force
+      -Math.cos(s.cueAngle) * shotSpeed
     );
+  };
 
-    stateRef.current.shots += 1;
-    setShots(stateRef.current.shots);
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.pocketed = 0;
+    s.shots = 0;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    setPocketedCount(0);
+    setShots(0);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
   };
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none">
-      <div ref={mountRef} className="w-full h-full" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Top HUD */}
-      <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
-        <button
-          onClick={onExit}
-          className="pointer-events-auto p-2 bg-slate-900/80 border border-slate-700 text-slate-200 rounded-sm hover:bg-slate-800 transition-all flex items-center gap-1.5 text-xs font-bold"
-        >
-          <ArrowLeft size={16} />
-          <span>{isKo ? '나가기' : 'Exit'}</span>
-        </button>
-
-        <div className="flex items-center gap-2 bg-slate-900/90 border border-emerald-500/40 px-3 py-1.5 rounded-sm">
-          <Trophy size={16} className="text-amber-400" />
-          <span className="text-xs text-emerald-300 font-bold">
-            {isKo ? `포켓: ${pocketedCount}/${totalBalls}구` : `POCKETED: ${pocketedCount}/${totalBalls}`}
-          </span>
-          <span className="text-[10px] text-slate-400">
-            [{shots} SHOTS]
-          </span>
-        </div>
-      </div>
-
-       {/* Screen Gesture Touch Overlay */}
-      <div
-        className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
-        style={{ touchAction: 'none' }}
-        onPointerDown={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const startX = e.clientX - rect.left;
-          const startY = e.clientY - rect.top;
-          let moved = false;
-
-          const onMove = (moveEvt: PointerEvent) => {
-            const curX = moveEvt.clientX - rect.left;
-            const curY = moveEvt.clientY - rect.top;
-            const dx = curX - startX;
-            const dy = curY - startY;
-
-            if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
-              moved = true;
-              // Horizontal drag: rotate cue angle
-              stateRef.current.cueAngle += dx * 0.003;
-              // Vertical drag: adjust power
-              const newPow = Math.max(20, Math.min(100, stateRef.current.cuePower - dy * 0.2));
-              stateRef.current.cuePower = newPow;
-              setPower(Math.round(newPow));
-            }
-          };
-
-          const onUp = () => {
-            window.removeEventListener('pointermove', onMove);
-            window.removeEventListener('pointerup', onUp);
-            window.removeEventListener('pointercancel', onUp);
-
-            if (!moved) {
-              // Tap: Shoot
-              handleShoot();
-            }
-          };
-
-          window.addEventListener('pointermove', onMove);
-          window.addEventListener('pointerup', onUp);
-          window.addEventListener('pointercancel', onUp);
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 당구 트릭샷' : 'Voxel Billiards Trick'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '포켓' : 'Pocket', value: `${pocketedCount}/${totalBalls}구`, color: 'text-emerald-300' },
+          { label: isKo ? '파워' : 'Power', value: `${power}%`, color: 'text-amber-300' },
+          { label: isKo ? '샷' : 'Shots', value: `${shots}회`, color: 'text-cyan-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
         }}
+        isPaused={isPaused}
       />
+
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && !isPaused && !showTutorial && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
+
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
+
+              if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+                moved = true;
+                // Horizontal drag: rotate cue angle
+                stateRef.current.cueAngle += dx * 0.003;
+                // Vertical drag: adjust power
+                const newPow = Math.max(20, Math.min(100, stateRef.current.cuePower - dy * 0.2));
+                stateRef.current.cuePower = newPow;
+                setPower(Math.round(newPow));
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Strike Cue Ball
+                handleShoot();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
+      )}
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-slate-900/80 border border-emerald-500/40 rounded-full text-[10px] text-emerald-300 font-mono backdrop-blur-xs">
-          {isKo ? '좌우 드래그: 조준 | 상하: 파워 조절 | 탭: 샷 스트로크 (버튼 없음)' : 'Drag L/R: Aim | Drag U/D: Power | Tap: Strike (No Buttons)'}
+        <div className="px-3 py-1 bg-black/75 border border-emerald-500/30 rounded-full text-[10px] text-emerald-300 font-mono backdrop-blur-xs">
+          {isKo ? '좌우 드래그: 360° 조준 | 상하: 파워 조절 | 탭: 샷 타격 (버튼 없음)' : 'Drag L/R: 360° Aim | Drag U/D: Power | Tap: Strike (No Buttons)'}
         </div>
       </div>
 
-      {/* Game Over Modal */}
-      {isGameOver && (
-        <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-xs bg-slate-900 border border-amber-500/50 p-5 rounded-none text-center space-y-4 shadow-2xl">
-            <div className="flex justify-center">
-              <Sparkles size={36} className="text-amber-400 animate-pulse" />
-            </div>
-            <h2 className="text-lg font-black text-amber-400 uppercase tracking-widest">
-              {isKo ? '🏆 당구 테이블 완클리어!' : '🏆 TABLE CLEARED!'}
-            </h2>
-            <div className="space-y-1.5 text-xs text-slate-300 bg-slate-950/60 p-3 border border-slate-800">
-              <div className="flex justify-between">
-                <span>{isKo ? '포켓 성공 구수' : 'Pocketed Balls'}</span>
-                <span className="font-bold text-amber-300">{pocketedCount} / {totalBalls}</span>
-              </div>
-              <div className="flex justify-between pt-1 border-t border-slate-800 text-amber-400 font-bold">
-                <span>{isKo ? '획득 SNS 보상' : 'Earned SNS'}</span>
-                <span>+{rewardSns} SNS</span>
-              </div>
-            </div>
+      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {showTutorial && (
+        <SportsMissionTutorial
+          gameId="voxel_billiards_trick"
+          gameTitle={isKo ? '3D 복셀 당구 트릭샷: 마스터 큐' : 'Voxel Billiards Trick: Master Cue'}
+          sportType="billiards"
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-            <div className="flex gap-2 pt-2">
-              <button
-                onClick={onExit}
-                className="flex-1 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase rounded-sm transition-all"
-              >
-                {isKo ? '보상 수령 및 복귀' : 'Claim & Exit'}
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
