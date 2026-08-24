@@ -20,6 +20,11 @@
 ## 등록된 커스텀 스킬 및 명령어
 - **`/gemini-ex`**: 구글 스프레드시트 (`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`)의 미작업 항목을 확인하고 소스코드에 반영 및 완료하는 스킬
 - **`/report-ex`**: 구글 스프레드시트 (`1nX6BFBJR4fTrv3PMqG8UamwSbqY2tJt_VvJoGAPItu8`)의 작업대기 항목들을 작업하고 완료 시 구글폼으로 제출 보고하는 스킬
+- **`/imp-mission`**: 미션 게임들을 순차적으로 1개씩 선정하여 모바일 적합도, 터치 편의성, 게임성, 보상 난이도를 4대 기준으로 평가하고 고도화 개선 또는 미달 시 신규 대체한 뒤 영구 로그 및 구글 폼 제출을 수행하는 스킬
+
+## imp-mission 미션게임 점검 진행 상태
+- **마지막 점검 게임**: `None`
+- **총 대상 게임 수**: 78종 (`src/components/Voxel*Game.tsx`)
 
 ## 코딩 스타일 및 규칙
 - **TypeScript**: `strict` 모드 준수. `any` 타입 지양. 필요시 `unknown` 후 타입 가드 사용.
