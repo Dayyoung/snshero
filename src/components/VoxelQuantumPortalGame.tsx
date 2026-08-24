@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Trophy, ArrowLeft, Zap, Sparkles, Award, Crosshair } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelQuantumPortalGameProps {
   deck: CardData[];
@@ -20,58 +23,105 @@ export const VoxelQuantumPortalGame: React.FC<VoxelQuantumPortalGameProps> = ({
   onExit,
   onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_quantum_portal') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [puzzlesSolved, setPuzzlesSolved] = useState<number>(0);
+  const targetPuzzles = 3;
   const [bluePortalActive, setBluePortalActive] = useState<boolean>(false);
   const [orangePortalActive, setOrangePortalActive] = useState<boolean>(false);
-  const [puzzlesSolved, setPuzzlesSolved] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [isVictory, setIsVictory] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
-  const gameStateRef = useRef({
+  const stateRef = useRef({
     posX: 0,
-    posY: 1.6,
-    posZ: 10,
+    posZ: 8,
     rotY: 0,
-    bluePortal: null as THREE.Vector3 | null,
-    orangePortal: null as THREE.Vector3 | null,
+    moveDir: new THREE.Vector2(0, 0),
+    bluePortal: null as THREE.Mesh | null,
+    orangePortal: null as THREE.Mesh | null,
     puzzlesSolved: 0,
-    keys: { w: false, s: false, a: false, d: false },
+    score: 0,
     isGameOver: false,
-    isVictory: false
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
+    playerMesh: null as THREE.Group | null,
+    scene: null as THREE.Scene | null
   });
 
   const shootPortal = (type: 'blue' | 'orange') => {
-    const s = gameStateRef.current;
-    if (s.isGameOver || s.isVictory) return;
+    const s = stateRef.current;
+    if (s.isGameOver || s.isVictory || s.isPaused || !s.scene) return;
 
     playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
 
-    const targetPos = new THREE.Vector3(
-      s.posX + Math.sin(s.rotY) * 20,
-      1.5,
-      s.posZ - Math.cos(s.rotY) * 20
-    );
+    const pGeo = new THREE.TorusGeometry(1.2, 0.15, 8, 24);
+    const pMat = new THREE.MeshStandardMaterial({
+      color: type === 'blue' ? 0x06b6d4 : 0xf59e0b,
+      emissive: type === 'blue' ? 0x0891b2 : 0xd97706
+    });
+
+    const targetX = (type === 'blue' ? -1 : 1) * (4 + s.puzzlesSolved * 2);
+    const targetZ = -8 - s.puzzlesSolved * 4;
 
     if (type === 'blue') {
-      s.bluePortal = targetPos;
+      if (s.bluePortal) s.scene.remove(s.bluePortal);
+      const bMesh = new THREE.Mesh(pGeo, pMat);
+      bMesh.position.set(targetX, 1.6, targetZ);
+      s.scene.add(bMesh);
+      s.bluePortal = bMesh;
       setBluePortalActive(true);
     } else {
-      s.orangePortal = targetPos;
+      if (s.orangePortal) s.scene.remove(s.orangePortal);
+      const oMesh = new THREE.Mesh(pGeo, pMat);
+      oMesh.position.set(targetX, 1.6, targetZ);
+      s.scene.add(oMesh);
+      s.orangePortal = oMesh;
       setOrangePortalActive(true);
     }
 
-    // If both portals are open, puzzle trigger
     if (s.bluePortal && s.orangePortal) {
       s.puzzlesSolved += 1;
+      s.score += 400;
       setPuzzlesSolved(s.puzzlesSolved);
+      setScore(s.score);
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
 
-      if (s.puzzlesSolved >= 3) {
+      // Clear portals for next puzzle
+      setTimeout(() => {
+        if (s.bluePortal) s.scene?.remove(s.bluePortal);
+        if (s.orangePortal) s.scene?.remove(s.orangePortal);
+        s.bluePortal = null;
+        s.orangePortal = null;
+        setBluePortalActive(false);
+        setOrangePortalActive(false);
+      }, 800);
+
+      if (s.puzzlesSolved >= targetPuzzles && !s.isGameOver) {
         s.isVictory = true;
-        setIsVictory(true);
-        const reward = 55 + s.puzzlesSolved * 5;
-        setRewardSns(reward);
-        onReward(reward);
+        s.isGameOver = true;
+        setIsGameOver(true);
+        const duration = (Date.now() - s.startTime) / 1000;
+        const receipt = calculateAndDepositMissionReward({
+          gameId: 'voxel_quantum_portal',
+          gameTitle: '복셀 퀀텀 포탈',
+          durationSeconds: duration,
+          score: s.score + 2000,
+          difficulty: 'HARD',
+          isVictory: true
+        });
+        setSettlementReceipt(receipt);
+        onReward(receipt.totalSns);
       }
     }
   };
@@ -80,215 +130,275 @@ export const VoxelQuantumPortalGame: React.FC<VoxelQuantumPortalGameProps> = ({
     const container = mountRef.current;
     if (!container) return;
 
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
+
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0a0f1d);
+    stateRef.current.scene = scene;
 
-    const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 200);
+    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 200);
+    camera.position.set(0, 10, 16);
+    camera.lookAt(0, 1, 0);
+
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
     container.appendChild(renderer.domElement);
 
     const ambient = new THREE.AmbientLight(0xffffff, 0.9);
     scene.add(ambient);
 
-    // Chamber Room
-    const floorGeo = new THREE.PlaneGeometry(50, 50);
-    floorGeo.rotateX(-Math.PI / 2);
-    const floorMat = new THREE.MeshLambertMaterial({ color: 0x223344 });
-    const floor = new THREE.Mesh(floorGeo, floorMat);
+    const dirLight = new THREE.DirectionalLight(0x38bdf8, 1.4);
+    dirLight.position.set(10, 25, 10);
+    scene.add(dirLight);
+
+    // Chamber Floor
+    const floor = new THREE.Mesh(
+      new THREE.PlaneGeometry(50, 50),
+      new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 })
+    );
+    floor.rotation.x = -Math.PI / 2;
     scene.add(floor);
 
-    // Quantum Cube
-    const cubeGeo = new THREE.BoxGeometry(1.5, 1.5, 1.5);
-    const cubeMat = new THREE.MeshPhongMaterial({ color: 0x00ffff, emissive: 0x004488 });
-    const cube = new THREE.Mesh(cubeGeo, cubeMat);
-    cube.position.set(0, 0.75, 0);
-    scene.add(cube);
+    // Player Avatar
+    const pGroup = new THREE.Group();
+    const pBody = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.6, 0.6), new THREE.MeshStandardMaterial({ color: 0x6366f1 }));
+    pBody.position.y = 0.8;
+    pGroup.add(pBody);
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const k = e.key.toLowerCase();
-      if (k === 'w' || k === 'arrowup') gameStateRef.current.keys.w = true;
-      if (k === 's' || k === 'arrowdown') gameStateRef.current.keys.s = true;
-      if (k === 'a' || k === 'arrowleft') gameStateRef.current.keys.a = true;
-      if (k === 'd' || k === 'arrowright') gameStateRef.current.keys.d = true;
-      if (k === 'q' || k === 'j') shootPortal('blue');
-      if (k === 'e' || k === 'k') shootPortal('orange');
-    };
-
-    const handleKeyUp = (e: KeyboardEvent) => {
-      const k = e.key.toLowerCase();
-      if (k === 'w' || k === 'arrowup') gameStateRef.current.keys.w = false;
-      if (k === 's' || k === 'arrowdown') gameStateRef.current.keys.s = false;
-      if (k === 'a' || k === 'arrowleft') gameStateRef.current.keys.a = false;
-      if (k === 'd' || k === 'arrowright') gameStateRef.current.keys.d = false;
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
+    pGroup.position.set(0, 0, 8);
+    scene.add(pGroup);
+    stateRef.current.playerMesh = pGroup;
 
     let animId: number;
-    let clock = new THREE.Clock();
+    let lastTime = performance.now();
 
-    const animate = () => {
+    const animate = (now: number) => {
       animId = requestAnimationFrame(animate);
-      const dt = clock.getDelta();
-      const s = gameStateRef.current;
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
 
-      if (!s.isGameOver && !s.isVictory) {
-        if (s.keys.a) s.rotY += 2.0 * dt;
-        if (s.keys.d) s.rotY -= 2.0 * dt;
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-        const forward = (s.keys.w ? 1 : 0) - (s.keys.s ? 1 : 0);
-        s.posX += Math.sin(s.rotY) * forward * 12 * dt;
-        s.posZ -= Math.cos(s.rotY) * forward * 12 * dt;
+      // Move player
+      const speed = 10;
+      s.posX += s.moveDir.x * speed * dt;
+      s.posZ += s.moveDir.y * speed * dt;
+      s.posX = THREE.MathUtils.clamp(s.posX, -20, 20);
+      s.posZ = THREE.MathUtils.clamp(s.posZ, -20, 20);
 
-        camera.position.set(s.posX, 1.8, s.posZ);
-        camera.rotation.y = s.rotY;
-
-        cube.rotation.y += dt;
+      if (s.moveDir.length() > 0.1) {
+        s.rotY = Math.atan2(s.moveDir.x, s.moveDir.y);
       }
+
+      if (pGroup) {
+        pGroup.position.set(s.posX, 0, s.posZ);
+        pGroup.rotation.y = s.rotY;
+      }
+
+      // Camera follow
+      camera.position.set(s.posX, 10, s.posZ + 14);
+      camera.lookAt(s.posX, 1, s.posZ);
 
       renderer.render(scene, camera);
     };
 
     animId = requestAnimationFrame(animate);
 
-    const handleResize = () => {
-      if (!container) return;
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      window.removeEventListener('resize', handleResize);
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, playSfx]);
+  }, [lowSpecMode]);
+
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.posX = 0;
+    s.posZ = 8;
+    s.rotY = 0;
+    s.puzzlesSolved = 0;
+    s.score = 0;
+    if (s.bluePortal) s.scene?.remove(s.bluePortal);
+    if (s.orangePortal) s.scene?.remove(s.orangePortal);
+    s.bluePortal = null;
+    s.orangePortal = null;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    setPuzzlesSolved(0);
+    setScore(0);
+    setBluePortalActive(false);
+    setOrangePortalActive(false);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
+
+  const customTutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 퀀텀 포탈 퍼즐' : 'STEP 1: QUANTUM PUZZLE',
+      title: isKo ? '블루/오렌지 포탈 3단계 연결' : 'Link Portals Across 3 Stages',
+      description: isKo
+        ? '시공간 챔버에서 블루 포탈과 오렌지 포탈을 쌍으로 생성하여 3개의 퍼즐을 돌파하세요.'
+        : 'Cast paired blue and orange portals in the chamber room to solve 3 spatial puzzles.',
+      keyPoints: isKo
+        ? [
+            '3단계 시공간 퍼즐 해결 시 승리',
+            '블루 + 오렌지 포탈 한 쌍 완성 시 통과',
+            '단계마다 +400P 보너스 획득'
+          ]
+        : [
+            'Solve 3 spatial puzzles to win',
+            'Link paired Blue + Orange portals',
+            '+400P bonus points per puzzle'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '드래그 이동 & 화면 좌/우 탭 발사' : 'Drag Move & Left/Right Portal Tap',
+      description: isKo
+        ? '가상 버튼 없이 드래그로 이동하고, 화면 좌측 탭은 블루 포탈, 우측 탭은 오렌지 포탈을 발사합니다.'
+        : 'Drag anywhere to move, and tap left screen for Blue portal, right screen for Orange portal with zero buttons.',
+      keyPoints: isKo
+        ? [
+            '👆 드래그: 챔버 360° 이동',
+            '🔷 화면 좌측 탭: 블루 포탈 발사',
+            '🔶 화면 우측 탭: 오렌지 포탈 발사'
+          ]
+        : [
+            '👆 Drag: Smooth 360° chamber move',
+            '🔷 Tap Left: Shoot Blue Portal',
+            '🔶 Tap Right: Shoot Orange Portal'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '퍼즐 돌파 즉시 HARD 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Standard payout scaled with Hard multiplier deposited atomically to your wallet.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '스피드 탈출 및 포탈 연결 가산점',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Speed and portal pairing bonuses',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
+    }
+  ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 text-white select-none overflow-hidden flex flex-col font-sans">
-      <div ref={mountRef} className="w-full h-full absolute inset-0" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Top HUD */}
-      <div className="relative z-10 p-3 sm:p-4 flex items-center justify-between bg-gradient-to-b from-slate-950/90 to-transparent pointer-events-none">
-        <button
-          onClick={onExit}
-          className="pointer-events-auto p-2 bg-slate-900/80 hover:bg-slate-800 text-white rounded-xl border border-slate-700 active:scale-95 flex items-center gap-1 cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-          <span className="text-xs font-bold">{language === 'ko' ? '나가기' : 'Exit'}</span>
-        </button>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 퀀텀 포탈' : 'Voxel Quantum Portal'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '퍼즐' : 'Puzzle', value: `${puzzlesSolved}/${targetPuzzles}`, color: 'text-amber-300' },
+          { label: isKo ? '블루' : 'Blue', value: bluePortalActive ? 'OPEN' : 'READY', color: bluePortalActive ? 'text-cyan-400 font-bold' : 'text-slate-400' },
+          { label: isKo ? '오렌지' : 'Orange', value: orangePortalActive ? 'OPEN' : 'READY', color: orangePortalActive ? 'text-orange-400 font-bold' : 'text-slate-400' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-yellow-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
-        {/* Portal Status */}
-        <div className="flex items-center gap-3 bg-slate-900/80 px-3 py-1.5 rounded-2xl border border-slate-700">
-          <div className={`text-xs font-bold ${bluePortalActive ? 'text-cyan-400' : 'text-slate-500'}`}>
-            🔵 블루 포탈
-          </div>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && !isPaused && !showTutorial && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-          <div className={`text-xs font-bold ${orangePortalActive ? 'text-amber-400' : 'text-slate-500'}`}>
-            🟠 오렌지 포탈
-          </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
 
-          <div className="bg-indigo-950 border border-indigo-500/40 px-2 py-0.5 rounded text-indigo-300 text-xs font-bold">
-            해결: {puzzlesSolved}/3
-          </div>
+              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+                moved = true;
+                stateRef.current.moveDir.x = Math.abs(dx) > 8 ? (dx > 0 ? 1 : -1) : 0;
+                stateRef.current.moveDir.y = Math.abs(dy) > 8 ? (dy > 0 ? 1 : -1) : 0;
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              stateRef.current.moveDir.x = 0;
+              stateRef.current.moveDir.y = 0;
+
+              if (!moved) {
+                // Tap Left Half (Blue) / Right Half (Orange)
+                if (startX < rect.width / 2) {
+                  shootPortal('blue');
+                } else {
+                  shootPortal('orange');
+                }
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/75 border border-cyan-500/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
+          {isKo ? '화면 드래그: 이동 | 좌측 탭: 블루 포탈 | 우측 탭: 오렌지 포탈 (버튼 없음)' : 'Drag: Move | Tap Left: Blue Portal | Tap Right: Orange Portal (No Buttons)'}
         </div>
       </div>
 
-      {/* Mobile Touch Controls */}
-      <div className="absolute bottom-4 left-4 right-4 z-20 flex justify-between items-end pointer-events-none">
-        <div className="flex flex-col items-center gap-1 pointer-events-auto">
-          <button
-            onPointerDown={() => (gameStateRef.current.keys.w = true)}
-            onPointerUp={() => (gameStateRef.current.keys.w = false)}
-            className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-          >
-            ▲
-          </button>
-          <div className="flex gap-1">
-            <button
-              onPointerDown={() => (gameStateRef.current.keys.a = true)}
-              onPointerUp={() => (gameStateRef.current.keys.a = false)}
-              className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-            >
-              ◀
-            </button>
-            <button
-              onPointerDown={() => (gameStateRef.current.keys.s = true)}
-              onPointerUp={() => (gameStateRef.current.keys.s = false)}
-              className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-            >
-              ▼
-            </button>
-            <button
-              onPointerDown={() => (gameStateRef.current.keys.d = true)}
-              onPointerUp={() => (gameStateRef.current.keys.d = false)}
-              className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-            >
-              ▶
-            </button>
-          </div>
-        </div>
+      {/* Universal 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_quantum_portal"
+          gameTitle={isKo ? '3D 복셀 퀀텀 포탈: 시공간 퍼즐' : 'Voxel Quantum Portal: Spatial Puzzle'}
+          customSteps={customTutorialSteps}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-        <div className="flex gap-2 pointer-events-auto">
-          <button
-            onClick={() => shootPortal('blue')}
-            className="w-16 h-16 bg-cyan-600/90 text-white rounded-2xl border-2 border-cyan-400 font-bold text-xs flex flex-col items-center justify-center cursor-pointer active:scale-95 shadow-xl"
-          >
-            <span>블루 포탈 [Q]</span>
-          </button>
-          <button
-            onClick={() => shootPortal('orange')}
-            className="w-16 h-16 bg-amber-600/90 text-white rounded-2xl border-2 border-amber-400 font-bold text-xs flex flex-col items-center justify-center cursor-pointer active:scale-95 shadow-xl"
-          >
-            <span>오렌지 [E]</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Victory / Game Over Modal */}
-      {(isVictory || isGameOver) && (
-        <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
-            <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center ${isVictory ? 'bg-amber-400/20 text-yellow-400' : 'bg-rose-500/20 text-rose-400'}`}>
-              {isVictory ? <Trophy size={36} /> : <Award size={36} />}
-            </div>
-
-            <h2 className="text-2xl font-black italic uppercase">{isVictory ? '시공간 탈출 성공! VICTORY' : '실험 실패! DEFEAT'}</h2>
-
-            <p className="text-xs text-slate-300">
-              {isVictory
-                ? '퀀텀 포탈을 완벽히 활용하여 모든 물리학 퍼즐을 돌파했습니다!'
-                : '시공간 루프에 갇혔습니다.'}
-            </p>
-
-            {isVictory && (
-              <div className="bg-slate-950 border border-amber-500/30 p-3 rounded-2xl">
-                <span className="text-xs text-slate-400 block uppercase font-bold">REWARD</span>
-                <span className="text-2xl font-black text-yellow-400 flex items-center justify-center gap-1">
-                  <Sparkles size={20} /> +{rewardSns} SNS
-                </span>
-              </div>
-            )}
-
-            <button
-              onClick={onExit}
-              className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 text-slate-950 font-bold rounded-xl active:scale-95 transition-all cursor-pointer"
-            >
-              {language === 'ko' ? '확인 및 나가기' : 'Confirm & Exit'}
-            </button>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
 };
+export default VoxelQuantumPortalGame;

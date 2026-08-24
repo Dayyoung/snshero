@@ -1,7 +1,10 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ArrowLeft, Volume2, VolumeX, Crosshair, Trophy, RotateCcw, Zap, ShieldAlert, Award } from 'lucide-react';
 import { CardData, Language } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelPixelStrikeArenaGameProps {
   deck: CardData[];
@@ -17,480 +20,433 @@ type WeaponType = 'pistol' | 'shotgun' | 'rifle' | 'sniper';
 interface WeaponInfo {
   name: string;
   damage: number;
-  fireRate: number; // ms
   ammoMax: number;
-  reloadTime: number; // ms
   color: number;
 }
 
 const WEAPONS: Record<WeaponType, WeaponInfo> = {
-  pistol: { name: '권총 (Pistol)', damage: 25, fireRate: 350, ammoMax: 12, reloadTime: 1200, color: 0x94a3b8 },
-  shotgun: { name: '샷건 (Shotgun)', damage: 60, fireRate: 800, ammoMax: 6, reloadTime: 1800, color: 0xf97316 },
-  rifle: { name: '돌격소총 (Rifle)', damage: 20, fireRate: 120, ammoMax: 30, reloadTime: 1500, color: 0x3b82f6 },
-  sniper: { name: '스나이퍼 (Sniper)', damage: 100, fireRate: 1200, ammoMax: 5, reloadTime: 2200, color: 0xa855f7 },
+  pistol: { name: '권총', damage: 25, ammoMax: 12, color: 0x94a3b8 },
+  shotgun: { name: '샷건', damage: 60, ammoMax: 6, color: 0xf97316 },
+  rifle: { name: '돌격소총', damage: 20, ammoMax: 30, color: 0x3b82f6 },
+  sniper: { name: '스나이퍼', damage: 100, ammoMax: 5, color: 0xa855f7 },
 };
 
-interface BotData {
-  id: number;
-  name: string;
-  mesh: THREE.Group;
-  hp: number;
-  maxHp: number;
-  kills: number;
-  lastShot: number;
-  targetPos: THREE.Vector3;
-}
-
 export const VoxelPixelStrikeArenaGame: React.FC<VoxelPixelStrikeArenaGameProps> = ({
+  deck: _deck,
   language,
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward,
+  onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
-  const [isMuted, setIsMuted] = useState(false);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_pixel_strike_arena') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [currentWeapon, setCurrentWeapon] = useState<WeaponType>('rifle');
-  const [ammo, setAmmo] = useState(30);
-  const [isReloading, setIsReloading] = useState(false);
-  const [playerHp, setPlayerHp] = useState(100);
-  const [playerKills, setPlayerKills] = useState(0);
-  const [matchTime, setMatchTime] = useState(60); // 60s deathmatch
-  const [gameOver, setGameOver] = useState(false);
-  const [killFeed, setKillFeed] = useState<string[]>([]);
+  const [ammo, setAmmo] = useState<number>(30);
+  const [playerHp, setPlayerHp] = useState<number>(100);
+  const [playerKills, setPlayerKills] = useState<number>(0);
+  const targetKills = 5;
+  const [score, setScore] = useState<number>(0);
+  const [matchTime, setMatchTime] = useState<number>(60);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
-  const sceneRef = useRef<THREE.Scene | null>(null);
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const botsRef = useRef<BotData[]>([]);
-  const lastShotTimeRef = useRef(0);
-  const keysRef = useRef<{ [key: string]: boolean }>({});
-  const playerPosRef = useRef(new THREE.Vector3(0, 1.6, 0));
-  const playerYawRef = useRef(0);
-  const playerPitchRef = useRef(0);
-  const animFrameRef = useRef<number | null>(null);
+  const stateRef = useRef({
+    currentWeapon: 'rifle' as WeaponType,
+    ammo: 30,
+    playerHp: 100,
+    playerKills: 0,
+    score: 0,
+    matchTime: 60,
+    playerYaw: 0,
+    playerPitch: 0,
+    isGameOver: false,
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
+    bots: [] as { group: THREE.Group; hp: number; isAlive: boolean; x: number; z: number }[],
+    scene: null as THREE.Scene | null,
+    camera: null as THREE.PerspectiveCamera | null
+  });
 
-  // Sound helper
-  const triggerSound = useCallback((type: 'shoot' | 'hit' | 'reload' | 'win' | 'lose') => {
-    if (isMuted) return;
-    if (type === 'shoot') playSfx?.('https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3');
-    else if (type === 'hit') playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-    else if (type === 'reload') playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-    else if (type === 'win') playSfx?.('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-    else if (type === 'lose') playSfx?.('https://assets.mixkit.co/active_storage/sfx/2658/2658-preview.mp3');
-  }, [isMuted, playSfx]);
-
-  // Initialize 3D Arena
-  useEffect(() => {
-    if (!mountRef.current) return;
-    const container = mountRef.current;
-    const width = container.clientWidth || 360;
-    const height = container.clientHeight || 500;
-
-    // 1. Scene
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color('#1e293b');
-    scene.fog = new THREE.Fog('#1e293b', 20, 50);
-    sceneRef.current = scene;
-
-    // 2. Camera
-    const camera = new THREE.PerspectiveCamera(65, width / height, 0.1, 100);
-    camera.position.set(0, 1.6, 0);
-    cameraRef.current = camera;
-
-    // 3. Renderer
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    container.innerHTML = '';
-    container.appendChild(renderer.domElement);
-    rendererRef.current = renderer;
-
-    // 4. Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-    scene.add(ambientLight);
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    dirLight.position.set(20, 30, 20);
-    scene.add(dirLight);
-
-    // 5. Arena Floor & Obstacles (Voxel Matrix)
-    const floorGeo = new THREE.PlaneGeometry(60, 60);
-    const floorMat = new THREE.MeshLambertMaterial({ color: 0x334155 });
-    const floor = new THREE.Mesh(floorGeo, floorMat);
-    floor.rotation.x = -Math.PI / 2;
-    scene.add(floor);
-
-    // Obstacle Crates
-    const boxGeo = new THREE.BoxGeometry(2, 2, 2);
-    const boxMat = new THREE.MeshLambertMaterial({ color: 0xd97706 });
-    for (let i = 0; i < 20; i++) {
-      const box = new THREE.Mesh(boxGeo, boxMat);
-      const x = (Math.random() - 0.5) * 45;
-      const z = (Math.random() - 0.5) * 45;
-      if (Math.abs(x) > 3 || Math.abs(z) > 3) {
-        box.position.set(x, 1, z);
-        scene.add(box);
-      }
-    }
-
-    // 6. Spawn 5 AI Bots
-    const botNames = ['ShadowSniper', 'PixelReaper', 'CyberKnight', 'VoxelAce', 'NovaStriker'];
-    const bots: BotData[] = [];
-    botNames.forEach((name, idx) => {
-      const group = new THREE.Group();
-      // Body
-      const bodyGeo = new THREE.BoxGeometry(0.8, 1.2, 0.6);
-      const bodyMat = new THREE.MeshLambertMaterial({ color: 0xef4444 });
-      const bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
-      bodyMesh.position.y = 0.6;
-      group.add(bodyMesh);
-
-      // Head
-      const headGeo = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-      const headMat = new THREE.MeshLambertMaterial({ color: 0xfca5a5 });
-      const headMesh = new THREE.Mesh(headGeo, headMat);
-      headMesh.position.y = 1.4;
-      group.add(headMesh);
-
-      const angle = (idx / botNames.length) * Math.PI * 2;
-      const radius = 15 + Math.random() * 5;
-      group.position.set(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
-      scene.add(group);
-
-      bots.push({
-        id: idx + 1,
-        name,
-        mesh: group,
-        hp: 100,
-        maxHp: 100,
-        kills: 0,
-        lastShot: 0,
-        targetPos: new THREE.Vector3((Math.random() - 0.5) * 40, 0, (Math.random() - 0.5) * 40),
-      });
-    });
-    botsRef.current = bots;
-
-    // 7. Keyboard listeners
-    const handleKeyDown = (e: KeyboardEvent) => { keysRef.current[e.code] = true; };
-    const handleKeyUp = (e: KeyboardEvent) => { keysRef.current[e.code] = false; };
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-
-    // 8. Animation Loop
-    let lastTime = performance.now();
-    const animate = (time: number) => {
-      const dt = Math.min((time - lastTime) / 1000, 0.1);
-      lastTime = time;
-
-      // Update Player Movement
-      const speed = 7;
-      const forward = new THREE.Vector3(-Math.sin(playerYawRef.current), 0, -Math.cos(playerYawRef.current));
-      const right = new THREE.Vector3(Math.cos(playerYawRef.current), 0, -Math.sin(playerYawRef.current));
-
-      const move = new THREE.Vector3();
-      if (keysRef.current['KeyW'] || keysRef.current['ArrowUp']) move.add(forward);
-      if (keysRef.current['KeyS'] || keysRef.current['ArrowDown']) move.sub(forward);
-      if (keysRef.current['KeyD'] || keysRef.current['ArrowRight']) move.add(right);
-      if (keysRef.current['KeyA'] || keysRef.current['ArrowLeft']) move.sub(right);
-
-      if (move.lengthSq() > 0) {
-        move.normalize().multiplyScalar(speed * dt);
-        playerPosRef.current.add(move);
-        // Arena boundary clamp
-        playerPosRef.current.x = Math.max(-28, Math.min(28, playerPosRef.current.x));
-        playerPosRef.current.z = Math.max(-28, Math.min(28, playerPosRef.current.z));
-      }
-
-      camera.position.copy(playerPosRef.current);
-      camera.rotation.set(playerPitchRef.current, playerYawRef.current, 0, 'YXZ');
-
-      // Update AI Bots
-      botsRef.current.forEach((bot) => {
-        if (bot.hp <= 0) return;
-
-        // Move towards targetPos
-        const dir = new THREE.Vector3().subVectors(bot.targetPos, bot.mesh.position);
-        if (dir.length() < 2) {
-          bot.targetPos.set((Math.random() - 0.5) * 45, 0, (Math.random() - 0.5) * 45);
-        } else {
-          dir.normalize().multiplyScalar(3.5 * dt);
-          bot.mesh.position.add(dir);
-          bot.mesh.rotation.y = Math.atan2(dir.x, dir.z);
-        }
-
-        // Bot AI shoot player if in sight
-        const distToPlayer = bot.mesh.position.distanceTo(playerPosRef.current);
-        if (distToPlayer < 20 && time - bot.lastShot > 1800) {
-          bot.lastShot = time;
-          // 40% hit probability
-          if (Math.random() < 0.4) {
-            setPlayerHp((prev) => {
-              const next = Math.max(0, prev - 12);
-              if (next <= 0 && !gameOver) {
-                setGameOver(true);
-                triggerSound('lose');
-              }
-              return next;
-            });
-            triggerSound('hit');
-          }
-        }
-      });
-
-      renderer.render(scene, camera);
-      animFrameRef.current = requestAnimationFrame(animate);
-    };
-
-    animFrameRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-      renderer.dispose();
-    };
-  }, [lowSpecMode, triggerSound, gameOver]);
-
-  // Match Timer
-  useEffect(() => {
-    if (gameOver) return;
-    const timer = setInterval(() => {
-      setMatchTime((t) => {
-        if (t <= 1) {
-          setGameOver(true);
-          const reward = Math.max(30, playerKills * 15);
-          onReward(reward);
-          triggerSound('win');
-          return 0;
-        }
-        return t - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [gameOver, playerKills, onReward, triggerSound]);
-
-  // Shoot Weapon
-  const shoot = () => {
-    if (isReloading || ammo <= 0 || gameOver || !sceneRef.current || !cameraRef.current) return;
-    const now = performance.now();
-    const weapon = WEAPONS[currentWeapon];
-    if (now - lastShotTimeRef.current < weapon.fireRate) return;
-
-    lastShotTimeRef.current = now;
-    setAmmo((a) => a - 1);
-    triggerSound('shoot');
-
-    // Raycast hit detection
-    const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(new THREE.Vector2(0, 0), cameraRef.current);
-
-    const botMeshes: THREE.Object3D[] = [];
-    botsRef.current.forEach((b) => {
-      if (b.hp > 0) botMeshes.push(b.mesh);
-    });
-
-    const intersects = raycaster.intersectObjects(botMeshes, true);
-    if (intersects.length > 0) {
-      // Find hit bot
-      let hitBot: BotData | null = null;
-      for (const bot of botsRef.current) {
-        if (bot.mesh === intersects[0].object || bot.mesh.children.includes(intersects[0].object as any)) {
-          hitBot = bot;
-          break;
-        }
-      }
-
-      if (hitBot) {
-        hitBot.hp -= weapon.damage;
-        triggerSound('hit');
-        if (hitBot.hp <= 0) {
-          hitBot.mesh.position.set(999, -999, 999); // Hide dead bot
-          setPlayerKills((k) => k + 1);
-          setKillFeed((kf) => [`YOU eliminated ${hitBot?.name}! (+100)`, ...kf.slice(0, 2)]);
-          // Respawn bot in 4s
-          setTimeout(() => {
-            if (hitBot && sceneRef.current) {
-              hitBot.hp = 100;
-              hitBot.mesh.position.set((Math.random() - 0.5) * 40, 0, (Math.random() - 0.5) * 40);
-            }
-          }, 4000);
-        }
-      }
-    }
-  };
-
-  // Reload Weapon
-  const reload = () => {
-    if (isReloading || ammo >= WEAPONS[currentWeapon].ammoMax) return;
-    setIsReloading(true);
-    triggerSound('reload');
-    setTimeout(() => {
-      setAmmo(WEAPONS[currentWeapon].ammoMax);
-      setIsReloading(false);
-    }, WEAPONS[currentWeapon].reloadTime);
-  };
-
-  // Switch Weapon
-  const switchWeapon = (w: WeaponType) => {
-    setCurrentWeapon(w);
-    setAmmo(WEAPONS[w].ammoMax);
-    setIsReloading(false);
+  const switchNextWeapon = () => {
+    const s = stateRef.current;
+    const wKeys: WeaponType[] = ['pistol', 'shotgun', 'rifle', 'sniper'];
+    const nextIdx = (wKeys.indexOf(s.currentWeapon) + 1) % wKeys.length;
+    const nextW = wKeys[nextIdx];
+    s.currentWeapon = nextW;
+    s.ammo = WEAPONS[nextW].ammoMax;
+    setCurrentWeapon(nextW);
+    setAmmo(s.ammo);
     playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
   };
 
+  const shoot = () => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isVictory || s.isPaused || !s.camera) return;
+
+    if (s.ammo <= 0) {
+      s.ammo = WEAPONS[s.currentWeapon].ammoMax;
+      setAmmo(s.ammo);
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+      return;
+    }
+
+    s.ammo -= 1;
+    setAmmo(s.ammo);
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3');
+
+    const w = WEAPONS[s.currentWeapon];
+    const camDir = new THREE.Vector3();
+    s.camera.getWorldDirection(camDir);
+
+    // Raycast hit check
+    for (const b of s.bots) {
+      if (b.isAlive) {
+        const botDir = new THREE.Vector3(b.x, 1.4, b.z).sub(s.camera.position).normalize();
+        const dot = camDir.dot(botDir);
+
+        if (dot > 0.88) {
+          b.hp -= w.damage;
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+
+          if (b.hp <= 0) {
+            b.isAlive = false;
+            s.scene?.remove(b.group);
+            s.playerKills += 1;
+            s.score += 300;
+            setPlayerKills(s.playerKills);
+            setScore(s.score);
+
+            if (s.playerKills >= targetKills && !s.isGameOver) {
+              s.isVictory = true;
+              s.isGameOver = true;
+              setIsGameOver(true);
+              const duration = (Date.now() - s.startTime) / 1000;
+              const receipt = calculateAndDepositMissionReward({
+                gameId: 'voxel_pixel_strike_arena',
+                gameTitle: '복셀 픽셀 스트라이크',
+                durationSeconds: duration,
+                score: s.score + 2500,
+                difficulty: 'NIGHTMARE',
+                isVictory: true
+              });
+              setSettlementReceipt(receipt);
+              onReward(receipt.totalSns);
+            }
+          }
+          break;
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    const container = mountRef.current;
+    if (!container) return;
+
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0f172a);
+    stateRef.current.scene = scene;
+
+    const camera = new THREE.PerspectiveCamera(65, width / height, 0.1, 100);
+    camera.position.set(0, 1.6, 0);
+    stateRef.current.camera = camera;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
+    container.appendChild(renderer.domElement);
+
+    const ambLight = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambLight);
+
+    const dirLight = new THREE.DirectionalLight(0x60a5fa, 1.2);
+    dirLight.position.set(10, 20, 10);
+    scene.add(dirLight);
+
+    // Arena Floor
+    const floor = new THREE.Mesh(
+      new THREE.PlaneGeometry(60, 60),
+      new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 })
+    );
+    floor.rotation.x = -Math.PI / 2;
+    scene.add(floor);
+
+    // Spawn 5 Enemy Bots
+    stateRef.current.bots = [];
+    for (let i = 0; i < targetKills; i++) {
+      const bGroup = new THREE.Group();
+      const bMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(0.9, 1.8, 0.9),
+        new THREE.MeshStandardMaterial({ color: 0xdc2626 })
+      );
+      bMesh.position.y = 0.9;
+      bGroup.add(bMesh);
+
+      const angle = (i / targetKills) * Math.PI * 2 + 0.3;
+      const dist = 14 + Math.random() * 6;
+      const bx = Math.sin(angle) * dist;
+      const bz = Math.cos(angle) * dist;
+      bGroup.position.set(bx, 0, bz);
+      scene.add(bGroup);
+
+      stateRef.current.bots.push({
+        group: bGroup,
+        hp: 100,
+        isAlive: true,
+        x: bx,
+        z: bz
+      });
+    }
+
+    // Timer
+    const timerInterval = setInterval(() => {
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
+      s.matchTime -= 1;
+      setMatchTime(s.matchTime);
+
+      if (s.matchTime <= 0 && !s.isGameOver) {
+        s.isGameOver = true;
+        setIsGameOver(true);
+        const duration = (Date.now() - s.startTime) / 1000;
+        const receipt = calculateAndDepositMissionReward({
+          gameId: 'voxel_pixel_strike_arena',
+          gameTitle: '복셀 픽셀 스트라이크',
+          durationSeconds: duration,
+          score: s.score,
+          difficulty: 'NIGHTMARE',
+          isVictory: s.playerKills >= targetKills
+        });
+        setSettlementReceipt(receipt);
+        onReward(receipt.totalSns);
+      }
+    }, 1000);
+
+    let animId: number;
+
+    const animate = () => {
+      animId = requestAnimationFrame(animate);
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
+
+      camera.rotation.order = 'YXZ';
+      camera.rotation.y = s.playerYaw;
+      camera.rotation.x = s.playerPitch;
+
+      renderer.render(scene, camera);
+    };
+
+    animId = requestAnimationFrame(animate);
+
+    return () => {
+      clearInterval(timerInterval);
+      cancelAnimationFrame(animId);
+      renderer.dispose();
+      if (container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
+      }
+    };
+  }, [lowSpecMode]);
+
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.playerKills = 0;
+    s.score = 0;
+    s.matchTime = 60;
+    s.ammo = WEAPONS[s.currentWeapon].ammoMax;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    s.bots.forEach(b => {
+      b.isAlive = true;
+      b.hp = 100;
+      s.scene?.add(b.group);
+    });
+    setPlayerKills(0);
+    setScore(0);
+    setMatchTime(60);
+    setAmmo(s.ammo);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
+
+  const customTutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 아레나 데스매치' : 'STEP 1: ARENA DEATHMATCH',
+      title: isKo ? '적 봇 5킬 달성 승리' : 'Eliminate 5 Enemy Bots',
+      description: isKo
+        ? '3D 복셀 FPS 전장에서 시야를 회전 조준하고 적 봇 5명을 먼저 처치하세요.'
+        : 'Aim reticle across the 3D arena and eliminate 5 enemy bots within 60s limit.',
+      keyPoints: isKo
+        ? [
+            '적 봇 5킬 달성 시 즉시 완승',
+            '헤드/몸통 직격 시 폭발적 데미지',
+            '60초 타임어택 제한 시간'
+          ]
+        : [
+            'Score 5 kills to win',
+            'Deliver direct hits for high damage',
+            '60s time attack challenge'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 조준' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '드래그 조준 & 탭 사격 & 2x 무기교체' : 'Drag Aim & Tap Shoot',
+      description: isKo
+        ? '가상 버튼 없이 화면 드래그로 조준, 탭으로 사격, 더블탭으로 무기를 순환 교체합니다.'
+        : 'Drag to aim, tap to shoot, and double-tap to switch weapon with zero buttons.',
+      keyPoints: isKo
+        ? [
+            '👆 드래그: 360° 시야 및 십자선 조준',
+            '💥 탭: 총기 사격 (탄약 소진 시 자동 재장전)',
+            '⚡ 2x 탭: 권총/샷건/소총/스나이퍼 교체'
+          ]
+        : [
+            '👆 Drag: Smooth 360° aiming',
+            '💥 Tap: Fire weapon (Auto reload on empty)',
+            '⚡ Double-Tap: Switch weapon type'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '아레나 제패 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare multiplier payout calculated and deposited atomically to your wallet.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '킬 수 및 스피드 제압 가산점',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Kills and speed bonuses',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
+    }
+  ];
+
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-[#fdfcfc] text-[#201d1d] font-mono select-none overflow-hidden h-[100dvh]">
-      {/* Top Header */}
-      <header className="flex items-center justify-between px-3 py-2 border-b border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] shrink-0 z-10">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={onExit}
-            className="min-h-[44px] min-w-[44px] p-2 flex items-center justify-center border border-[rgba(15,0,0,0.12)] rounded-sm bg-white hover:bg-neutral-100 cursor-pointer"
-          >
-            <ArrowLeft size={18} />
-          </button>
-          <div>
-            <h1 className="text-xs font-black uppercase tracking-wider">
-              {language === 'ko' ? '[3D 픽셀 스트라이크 아레나]' : '[3D PIXEL STRIKE ARENA]'}
-            </h1>
-            <span className="text-[10px] text-neutral-500">8-PLAYER DEATHMATCH • {matchTime}s</span>
-          </div>
-        </div>
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-        <div className="flex items-center gap-3">
-          <div className="flex flex-col items-end">
-            <span className="text-[9px] font-bold text-neutral-500">HP: {playerHp}/100</span>
-            <div className="w-20 h-2.5 bg-neutral-200 border border-[rgba(15,0,0,0.12)] rounded-none overflow-hidden">
-              <div
-                className="h-full bg-rose-500 transition-all duration-150"
-                style={{ width: `${Math.max(0, playerHp)}%` }}
-              />
-            </div>
-          </div>
-          <button
-            onClick={() => setIsMuted(!isMuted)}
-            className="min-h-[44px] min-w-[44px] p-2 flex items-center justify-center border border-[rgba(15,0,0,0.12)] rounded-sm bg-white hover:bg-neutral-100 cursor-pointer"
-          >
-            {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
-          </button>
-        </div>
-      </header>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 픽셀 스트라이크' : 'Voxel Pixel Strike'}
+        language={language}
+        hp={{ current: playerHp, max: 100 }}
+        telemetries={[
+          { label: isKo ? '처치' : 'Kills', value: `${playerKills}/${targetKills}`, color: 'text-rose-400 font-bold' },
+          { label: isKo ? '무기' : 'Gun', value: `${WEAPONS[currentWeapon].name}`, color: 'text-amber-300' },
+          { label: isKo ? '탄약' : 'Ammo', value: `${ammo}/${WEAPONS[currentWeapon].ammoMax}`, color: ammo <= 3 ? 'text-rose-400 font-bold' : 'text-cyan-300' },
+          { label: isKo ? '시간' : 'Time', value: `${matchTime}s`, color: matchTime <= 15 ? 'text-rose-400 font-bold' : 'text-emerald-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
-      {/* 3D FPS Canvas */}
-      <div
-        ref={mountRef}
-        onClick={shoot}
-        className="flex-1 w-full relative cursor-crosshair overflow-hidden"
-      >
-        {/* Center Crosshair */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none text-emerald-400">
-          <Crosshair size={24} />
-        </div>
-
-        {/* Top HUD: Kills & Score */}
-        <div className="absolute top-3 left-3 flex flex-col gap-1 p-2 bg-[#fdfcfc]/90 border border-[rgba(15,0,0,0.12)] rounded-sm text-xs pointer-events-none">
-          <div className="font-black text-rose-600">KILLS: {playerKills}</div>
-          <div className="text-[10px] text-neutral-500">AMMO: {ammo} / {WEAPONS[currentWeapon].ammoMax}</div>
-        </div>
-
-        {/* Kill Feed */}
-        <div className="absolute top-3 right-3 flex flex-col gap-1 pointer-events-none">
-          {killFeed.map((kf, i) => (
-            <div key={i} className="px-2 py-1 bg-black/70 text-amber-300 text-[10px] rounded-xs">
-              {kf}
-            </div>
-          ))}
-        </div>
-
-        {/* Mobile On-Screen Controls */}
-        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between pointer-events-auto">
-          {/* Mobile Turn Controls */}
-          <div className="flex gap-2">
-            <button
-              onMouseDown={() => { playerYawRef.current += 0.15; }}
-              onTouchStart={() => { playerYawRef.current += 0.15; }}
-              className="min-h-[48px] min-w-[48px] bg-black/60 text-white font-black text-sm rounded-sm border border-white/20 active:bg-black/90 cursor-pointer"
-            >
-              ◀ 회전
-            </button>
-            <button
-              onMouseDown={() => { playerYawRef.current -= 0.15; }}
-              onTouchStart={() => { playerYawRef.current -= 0.15; }}
-              className="min-h-[48px] min-w-[48px] bg-black/60 text-white font-black text-sm rounded-sm border border-white/20 active:bg-black/90 cursor-pointer"
-            >
-              회전 ▶
-            </button>
-          </div>
-
-          {/* Shoot & Reload */}
-          <div className="flex gap-2">
-            <button
-              onClick={reload}
-              className="min-h-[48px] px-3 bg-neutral-800 text-white font-bold text-xs rounded-sm border border-white/20 active:bg-neutral-900 cursor-pointer"
-            >
-              [재장전]
-            </button>
-            <button
-              onClick={shoot}
-              className="min-h-[48px] px-5 bg-rose-600 text-white font-black text-sm rounded-sm border border-rose-400 active:bg-rose-700 shadow-md cursor-pointer flex items-center gap-1.5"
-            >
-              <Zap size={16} /> [발사]
-            </button>
-          </div>
+      {/* Crosshair Center */}
+      <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
+        <div className="w-6 h-6 border border-white/40 rounded-full flex items-center justify-center">
+          <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse" />
         </div>
       </div>
 
-      {/* Bottom Weapon Selection Bar */}
-      <footer className="p-2 border-t border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] shrink-0">
-        <div className="flex items-center justify-center gap-1.5 max-w-md mx-auto">
-          {(['pistol', 'shotgun', 'rifle', 'sniper'] as WeaponType[]).map((wKey) => {
-            const w = WEAPONS[wKey];
-            const active = currentWeapon === wKey;
-            return (
-              <button
-                key={wKey}
-                onClick={() => switchWeapon(wKey)}
-                className={`flex-1 min-h-[44px] py-1 px-1 flex flex-col items-center justify-center border rounded-sm cursor-pointer transition-all ${
-                  active
-                    ? 'bg-[#201d1d] text-white border-[#201d1d]'
-                    : 'bg-white text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-neutral-100'
-                }`}
-              >
-                <span className="text-[11px] font-bold">{w.name.split(' ')[0]}</span>
-                <span className={`text-[8px] ${active ? 'text-neutral-300' : 'text-neutral-400'}`}>
-                  DMG {w.damage}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </footer>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && !isPaused && !showTutorial && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const startX = e.clientX;
+            const startY = e.clientY;
+            let moved = false;
 
-      {/* Game Over Modal */}
-      {gameOver && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-          <div className="w-full max-w-sm bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] p-6 rounded-sm shadow-xl text-center flex flex-col gap-4">
-            <div className="flex justify-center">
-              <div className="p-3 bg-amber-100 text-amber-600 rounded-full border border-amber-300">
-                <Trophy size={32} />
-              </div>
-            </div>
-            <div>
-              <h2 className="text-base font-black uppercase">
-                {language === 'ko' ? '데스매치 경기 종료!' : 'DEATHMATCH FINISHED!'}
-              </h2>
-              <p className="text-xs text-neutral-500 mt-1">
-                {`총 처치: ${playerKills} KILLS • (+${Math.max(30, playerKills * 15)} SNS 획득)`}
-              </p>
-            </div>
-            <button
-              onClick={onExit}
-              className="min-h-[44px] py-2 bg-[#201d1d] text-white font-bold text-xs rounded-sm hover:bg-neutral-800 cursor-pointer"
-            >
-              {language === 'ko' ? '[로비로 나가기]' : '[EXIT TO LOBBY]'}
-            </button>
-          </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const dx = moveEvt.clientX - startX;
+              const dy = moveEvt.clientY - startY;
+
+              if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+                moved = true;
+                stateRef.current.playerYaw -= dx * 0.003;
+                stateRef.current.playerPitch = THREE.MathUtils.clamp(
+                  stateRef.current.playerPitch - dy * 0.003,
+                  -Math.PI / 4,
+                  Math.PI / 4
+                );
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Shoot
+                shoot();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={switchNextWeapon}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/75 border border-rose-500/30 rounded-full text-[10px] text-rose-300 font-mono backdrop-blur-xs">
+          {isKo ? '화면 드래그: 조준 회전 | 탭: 사격 | 더블탭: 무기 교체 (버튼 없음)' : 'Drag: Aim | Tap: Shoot | Double Tap: Switch Gun (No Buttons)'}
         </div>
+      </div>
+
+      {/* Universal 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_pixel_strike_arena"
+          gameTitle={isKo ? '3D 복셀 픽셀 스트라이크: 아레나 데스매치' : 'Voxel Pixel Strike: Arena Deathmatch'}
+          customSteps={customTutorialSteps}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
+
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );

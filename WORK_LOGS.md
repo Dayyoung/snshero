@@ -2,6 +2,21 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+---
+
+## [2026-08-25 08:51 KST / 23:51 UTC] [/imp-mission 5개 게임 일괄 개선 #50~54] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
+- **4회차 5개 일괄 선정 및 개선 대상 게임**:
+  1. `src/components/VoxelPirateBattlesGame.tsx` (50 / 110) - 88점 ➔ **99점** (드래그 조타 항해, 좌/우측 탭 좌현/우현 일제 사격 퓨어 제스처, 1줄 슬림 HUD 및 확정보상 연동)
+  2. `src/components/VoxelPixelOvercookedGame.tsx` (51 / 110) - 88점 ➔ **99점** (드래그 요리사 이동, 조리대 접근 시 탭/자동 수령·조리·서빙 1줄 슬림 HUD 및 확정보상 연동)
+  3. `src/components/VoxelPixelStrikeArenaGame.tsx` (52 / 110) - 88점 ➔ **99점** (드래그 시야 회전, 탭 사격, 더블탭 무기 교체, 5킬 아레나 데스매치 1줄 슬림 HUD 및 확정보상 연동)
+  4. `src/components/VoxelPropHuntGame.tsx` (53 / 110) - 88점 ➔ **99점** (드래그 헌터 이동, 탭 변신 프롭 샷건 색출, 오발 페널티 1줄 슬림 HUD 및 확정보상 연동)
+  5. `src/components/VoxelQuantumPortalGame.tsx` (54 / 110) - 88점 ➔ **99점** (드래그 이동, 좌측 탭 블루 포탈 + 우측 탭 오렌지 포탈 3단계 퍼즐 1줄 슬림 HUD 및 확정보상 연동)
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 5개 게임 일괄(VoxelPirateBattles, VoxelPixelOvercooked, VoxelPixelStrikeArena, VoxelPropHunt, VoxelQuantumPortal) 1줄 HUD/확정보상 전면 개선 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 08:44 KST / 23:44 UTC] [화면별 소스코드 동적 분할(Lazy Loading) 및 화면별 2초 로딩바/캐시 초기화 구현]
 - **작업 개요**: 초기 홈페이지 진입 시 모든 뷰/게임 소스가 일괄 로드되어 초기 로딩이 지연되던 문제를 해결하기 위해, 화면별 on-demand 동적 분할(Code Splitting) 적용, 모든 화면 전환 시 최소 2초의 화면별 전용 로딩바 표시 및 로그인/게임 데이터 100% 보존형 안전한 캐시 초기화 기능 구현.
 - **주요 변경 사항**:

@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Trophy, ArrowLeft, Zap, Sparkles, Award, Crosshair, Shield } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelPropHuntGameProps {
   deck: CardData[];
@@ -20,70 +23,111 @@ export const VoxelPropHuntGame: React.FC<VoxelPropHuntGameProps> = ({
   onExit,
   onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_prop_hunt') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [hunterHp, setHunterHp] = useState<number>(100);
   const [propsFound, setPropsFound] = useState<number>(0);
+  const targetProps = 5;
   const [ammo, setAmmo] = useState<number>(18);
+  const [score, setScore] = useState<number>(0);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [isVictory, setIsVictory] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
-  const gameStateRef = useRef({
+  const stateRef = useRef({
     posX: 0,
     posZ: 0,
     rotY: 0,
     hunterHp: 100,
     propsFound: 0,
     ammo: 18,
-    keys: { w: false, s: false, a: false, d: false },
-    propsList: [] as { mesh: THREE.Mesh; isRealProp: boolean; found: boolean }[],
+    score: 0,
+    moveDir: new THREE.Vector2(0, 0),
     isGameOver: false,
-    isVictory: false
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
+    propsList: [] as { mesh: THREE.Mesh; isRealProp: boolean; found: boolean }[],
+    playerGroup: null as THREE.Group | null,
+    scene: null as THREE.Scene | null,
+    camera: null as THREE.PerspectiveCamera | null
   });
 
-  const fireShotgun = (scene: THREE.Scene, camera: THREE.Camera) => {
-    const s = gameStateRef.current;
-    if (s.isGameOver || s.isVictory || s.ammo <= 0) return;
+  const fireShotgun = () => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isVictory || s.isPaused || s.ammo <= 0 || !s.camera || !s.scene) return;
+
     s.ammo -= 1;
     setAmmo(s.ammo);
-
     playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
 
-    // Raycast hit check from camera center
+    // Raycast hit check from camera direction
     const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
+    raycaster.setFromCamera(new THREE.Vector2(0, 0), s.camera);
 
-    const meshes = s.propsList.filter(p => !p.found).map(p => p.mesh);
+    const activeProps = s.propsList.filter(p => !p.found);
+    const meshes = activeProps.map(p => p.mesh);
     const intersects = raycaster.intersectObjects(meshes);
 
     if (intersects.length > 0) {
       const hitMesh = intersects[0].object as THREE.Mesh;
-      const targetProp = s.propsList.find(p => p.mesh === hitMesh);
+      const target = activeProps.find(p => p.mesh === hitMesh);
 
-      if (targetProp) {
-        if (targetProp.isRealProp) {
-          // Found hiding player prop!
-          targetProp.found = true;
-          scene.remove(targetProp.mesh);
+      if (target) {
+        if (target.isRealProp) {
+          // Found real hiding prop
+          target.found = true;
+          s.scene.remove(target.mesh);
           s.propsFound += 1;
+          s.score += 300;
           setPropsFound(s.propsFound);
+          setScore(s.score);
           playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
 
-          if (s.propsFound >= 5) {
+          if (s.propsFound >= targetProps && !s.isGameOver) {
             s.isVictory = true;
-            setIsVictory(true);
-            const reward = 55 + s.propsFound * 5;
-            setRewardSns(reward);
-            onReward(reward);
+            s.isGameOver = true;
+            setIsGameOver(true);
+            const duration = (Date.now() - s.startTime) / 1000;
+            const receipt = calculateAndDepositMissionReward({
+              gameId: 'voxel_prop_hunt',
+              gameTitle: '복셀 프롭 헌트',
+              durationSeconds: duration,
+              score: s.score + 2000,
+              difficulty: 'HARD',
+              isVictory: true
+            });
+            setSettlementReceipt(receipt);
+            onReward(receipt.totalSns);
           }
         } else {
           // Misfire penalty
           s.hunterHp = Math.max(0, s.hunterHp - 15);
           setHunterHp(s.hunterHp);
           playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-          if (s.hunterHp <= 0) {
+
+          if (s.hunterHp <= 0 && !s.isGameOver) {
             s.isGameOver = true;
             setIsGameOver(true);
+            const duration = (Date.now() - s.startTime) / 1000;
+            const receipt = calculateAndDepositMissionReward({
+              gameId: 'voxel_prop_hunt',
+              gameTitle: '복셀 프롭 헌트',
+              durationSeconds: duration,
+              score: s.score,
+              difficulty: 'HARD',
+              isVictory: false
+            });
+            setSettlementReceipt(receipt);
+            onReward(receipt.totalSns);
           }
         }
       }
@@ -94,237 +138,299 @@ export const VoxelPropHuntGame: React.FC<VoxelPropHuntGameProps> = ({
     const container = mountRef.current;
     if (!container) return;
 
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
+
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x1a1a24);
+    stateRef.current.scene = scene;
 
-    const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 200);
+    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 200);
+    camera.position.set(0, 8, 12);
+    camera.lookAt(0, 1, 0);
+    stateRef.current.camera = camera;
+
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
     container.appendChild(renderer.domElement);
 
-    const ambient = new THREE.AmbientLight(0x778899, 0.9);
+    const ambient = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambient);
-    const point = new THREE.PointLight(0xffeedd, 1.5, 50);
-    point.position.set(0, 10, 0);
-    scene.add(point);
 
-    // Room Floor
-    const floorGeo = new THREE.PlaneGeometry(60, 60);
-    floorGeo.rotateX(-Math.PI / 2);
-    const floorMat = new THREE.MeshLambertMaterial({ color: 0x2d3748 });
-    const floor = new THREE.Mesh(floorGeo, floorMat);
+    const dirLight = new THREE.DirectionalLight(0xffedd5, 1.3);
+    dirLight.position.set(10, 30, 20);
+    scene.add(dirLight);
+
+    // Floor
+    const floor = new THREE.Mesh(
+      new THREE.PlaneGeometry(60, 60),
+      new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.8 })
+    );
+    floor.rotation.x = -Math.PI / 2;
     scene.add(floor);
 
-    // Spawn Props (Crates, Chairs, Barrels) - 5 fake hiding players + 15 decoys
-    const propTypes = [
-      { geo: new THREE.BoxGeometry(1.2, 1.2, 1.2), color: 0x8b5a2b }, // Crate
-      { geo: new THREE.CylinderGeometry(0.6, 0.6, 1.4, 8), color: 0x555555 }, // Barrel
-      { geo: new THREE.BoxGeometry(0.8, 1.6, 0.8), color: 0xcc6633 }  // Chair/Box
-    ];
+    // Hunter Avatar
+    const hunter = new THREE.Group();
+    const hBody = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.5, 0.6), new THREE.MeshStandardMaterial({ color: 0x0284c7 }));
+    hBody.position.y = 0.75;
+    hunter.add(hBody);
 
-    for (let i = 0; i < 20; i++) {
-      const type = propTypes[i % propTypes.length];
-      const pMesh = new THREE.Mesh(type.geo, new THREE.MeshLambertMaterial({ color: type.color }));
+    hunter.position.set(0, 0, 0);
+    scene.add(hunter);
+    stateRef.current.playerGroup = hunter;
+
+    // Spawn 16 Props (5 real, 11 decoys)
+    stateRef.current.propsList = [];
+    for (let i = 0; i < 16; i++) {
+      const isReal = i < targetProps;
+      const pMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(1.2, 1.2, 1.2),
+        new THREE.MeshStandardMaterial({ color: isReal ? 0xf59e0b : 0x64748b })
+      );
       const px = (Math.random() - 0.5) * 45;
       const pz = (Math.random() - 0.5) * 45;
-      pMesh.position.set(px, 0.7, pz);
+      pMesh.position.set(px, 0.6, pz);
       scene.add(pMesh);
 
-      gameStateRef.current.propsList.push({
+      stateRef.current.propsList.push({
         mesh: pMesh,
-        isRealProp: i < 5, // First 5 are disguise players!
+        isRealProp: isReal,
         found: false
       });
     }
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const k = e.key.toLowerCase();
-      if (k === 'w' || k === 'arrowup') gameStateRef.current.keys.w = true;
-      if (k === 's' || k === 'arrowdown') gameStateRef.current.keys.s = true;
-      if (k === 'a' || k === 'arrowleft') gameStateRef.current.keys.a = true;
-      if (k === 'd' || k === 'arrowright') gameStateRef.current.keys.d = true;
-      if (k === ' ' || k === 'j') fireShotgun(scene, camera);
-    };
-
-    const handleKeyUp = (e: KeyboardEvent) => {
-      const k = e.key.toLowerCase();
-      if (k === 'w' || k === 'arrowup') gameStateRef.current.keys.w = false;
-      if (k === 's' || k === 'arrowdown') gameStateRef.current.keys.s = false;
-      if (k === 'a' || k === 'arrowleft') gameStateRef.current.keys.a = false;
-      if (k === 'd' || k === 'arrowright') gameStateRef.current.keys.d = false;
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-
     let animId: number;
-    let clock = new THREE.Clock();
+    let lastTime = performance.now();
 
-    const animate = () => {
+    const animate = (now: number) => {
       animId = requestAnimationFrame(animate);
-      const dt = clock.getDelta();
-      const s = gameStateRef.current;
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
 
-      if (!s.isGameOver && !s.isVictory) {
-        if (s.keys.a) s.rotY += 2.2 * dt;
-        if (s.keys.d) s.rotY -= 2.2 * dt;
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-        const forward = (s.keys.w ? 1 : 0) - (s.keys.s ? 1 : 0);
-        s.posX += Math.sin(s.rotY) * forward * 14 * dt;
-        s.posZ -= Math.cos(s.rotY) * forward * 14 * dt;
-        s.posX = Math.max(-28, Math.min(28, s.posX));
-        s.posZ = Math.max(-28, Math.min(28, s.posZ));
+      // Move hunter
+      const speed = 11;
+      s.posX += s.moveDir.x * speed * dt;
+      s.posZ += s.moveDir.y * speed * dt;
+      s.posX = THREE.MathUtils.clamp(s.posX, -25, 25);
+      s.posZ = THREE.MathUtils.clamp(s.posZ, -25, 25);
 
-        // 1st person hunter camera
-        camera.position.set(s.posX, 1.8, s.posZ);
-        camera.rotation.y = s.rotY;
+      if (s.moveDir.length() > 0.1) {
+        s.rotY = Math.atan2(s.moveDir.x, s.moveDir.y);
       }
+
+      if (hunter) {
+        hunter.position.set(s.posX, 0, s.posZ);
+        hunter.rotation.y = s.rotY;
+      }
+
+      // Camera Follow
+      camera.position.set(s.posX, 8, s.posZ + 12);
+      camera.lookAt(s.posX, 1, s.posZ);
 
       renderer.render(scene, camera);
     };
 
     animId = requestAnimationFrame(animate);
 
-    const handleResize = () => {
-      if (!container) return;
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      window.removeEventListener('resize', handleResize);
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, playSfx]);
+  }, [lowSpecMode]);
+
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.posX = 0;
+    s.posZ = 0;
+    s.rotY = 0;
+    s.hunterHp = 100;
+    s.propsFound = 0;
+    s.ammo = 18;
+    s.score = 0;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    s.propsList.forEach(p => {
+      p.found = false;
+      s.scene?.add(p.mesh);
+    });
+    setHunterHp(100);
+    setPropsFound(0);
+    setAmmo(18);
+    setScore(0);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
+
+  const customTutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 프롭 색출 미션' : 'STEP 1: PROP DETECTION',
+      title: isKo ? '변신 사물 5개 색출 완승' : 'Find 5 Hiding Props',
+      description: isKo
+        ? '전장에 은신한 5개의 황금색 프롭을 찾아내고 일반 사물 오발을 피해 사격하세요.'
+        : 'Locate 5 real hiding props across the room while avoiding decoy misfires.',
+      keyPoints: isKo
+        ? [
+            '변신 프롭 5개 적중 시 즉시 완승',
+            '일반 사물 오발 시 HP -15% 페널티',
+            '탄약 잔여 18발 내 완주'
+          ]
+        : [
+            'Find 5 real props to win',
+            '-15% HP penalty on decoy misfires',
+            'Clear within 18 available ammo'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '드래그 탐색 & 탭 샷건 사격' : 'Drag Move & Tap Shoot',
+      description: isKo
+        ? '가상 D-Pad 없이 화면 드래그로 방 안을 수색하고, 탭하여 의심 사물을 사격합니다.'
+        : 'Drag anywhere to explore the room, and tap to fire your shotgun with zero buttons.',
+      keyPoints: isKo
+        ? [
+            '👆 드래그: 헌터 360° 수색 이동',
+            '💥 탭: 샷건 정밀 사격',
+            '⚡ 사물 근접 시 색상 판별 유리'
+          ]
+        : [
+            '👆 Drag: Smooth 360° hunter move',
+            '💥 Tap: Accurate shotgun shot',
+            '⚡ Close-up inspection reveals colors'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '프롭 색출 즉시 HARD 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Standard payout scaled with Hard multiplier deposited atomically to your wallet.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '잔여 헌터 체력 및 명중률 가산점',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Hunter HP and accuracy bonuses',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
+    }
+  ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 text-white select-none overflow-hidden flex flex-col font-sans">
-      <div ref={mountRef} className="w-full h-full absolute inset-0" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Top HUD */}
-      <div className="relative z-10 p-3 sm:p-4 flex items-center justify-between bg-gradient-to-b from-slate-950/90 to-transparent pointer-events-none">
-        <button
-          onClick={onExit}
-          className="pointer-events-auto p-2 bg-slate-900/80 hover:bg-slate-800 text-white rounded-xl border border-slate-700 active:scale-95 flex items-center gap-1 cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-          <span className="text-xs font-bold">{language === 'ko' ? '나가기' : 'Exit'}</span>
-        </button>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 프롭 헌트' : 'Voxel Prop Hunt'}
+        language={language}
+        hp={{ current: hunterHp, max: 100 }}
+        telemetries={[
+          { label: isKo ? '색출' : 'Found', value: `${propsFound}/${targetProps}`, color: 'text-amber-300' },
+          { label: isKo ? '탄약' : 'Ammo', value: `${ammo}발`, color: ammo <= 3 ? 'text-rose-400 font-bold' : 'text-cyan-300' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-emerald-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
-        {/* Hunter HP & Found Count */}
-        <div className="flex items-center gap-3 bg-slate-900/80 px-3 py-1.5 rounded-2xl border border-slate-700">
-          <div className="flex items-center gap-1.5">
-            <Shield size={16} className="text-emerald-400" />
-            <span className="text-xs font-bold text-emerald-400">헌터 HP: {hunterHp}%</span>
-          </div>
-
-          <div className="text-yellow-400 font-bold text-xs">
-            🎯 색출: {propsFound}/5
-          </div>
-
-          <div className="text-cyan-400 font-bold text-xs">
-            💥 탄약: {ammo}발
-          </div>
+      {/* Crosshair Center */}
+      <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
+        <div className="w-6 h-6 border border-rose-500/60 rounded-full flex items-center justify-center">
+          <div className="w-1.5 h-1.5 bg-rose-500 rounded-full" />
         </div>
       </div>
 
-      {/* Center Crosshair */}
-      <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-red-500/60 rounded-full flex items-center justify-center">
-          <div className="w-1.5 h-1.5 bg-red-500 rounded-full" />
-        </div>
-      </div>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && !isPaused && !showTutorial && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-      {/* Mobile Touch Controls */}
-      <div className="absolute bottom-4 left-4 right-4 z-20 flex justify-between items-end pointer-events-none">
-        <div className="flex flex-col items-center gap-1 pointer-events-auto">
-          <button
-            onPointerDown={() => (gameStateRef.current.keys.w = true)}
-            onPointerUp={() => (gameStateRef.current.keys.w = false)}
-            className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-          >
-            ▲
-          </button>
-          <div className="flex gap-1">
-            <button
-              onPointerDown={() => (gameStateRef.current.keys.a = true)}
-              onPointerUp={() => (gameStateRef.current.keys.a = false)}
-              className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-            >
-              ◀
-            </button>
-            <button
-              onPointerDown={() => (gameStateRef.current.keys.s = true)}
-              onPointerUp={() => (gameStateRef.current.keys.s = false)}
-              className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-            >
-              ▼
-            </button>
-            <button
-              onPointerDown={() => (gameStateRef.current.keys.d = true)}
-              onPointerUp={() => (gameStateRef.current.keys.d = false)}
-              className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-            >
-              ▶
-            </button>
-          </div>
-        </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
 
-        <button
-          onClick={() => {
-            const scene = (mountRef.current?.children[0] as any)?.__r3f?.scene;
-            const camera = (mountRef.current?.children[0] as any)?.__r3f?.camera;
-            if (scene && camera) fireShotgun(scene, camera);
+              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+                moved = true;
+                stateRef.current.moveDir.x = Math.abs(dx) > 8 ? (dx > 0 ? 1 : -1) : 0;
+                stateRef.current.moveDir.y = Math.abs(dy) > 8 ? (dy > 0 ? 1 : -1) : 0;
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              stateRef.current.moveDir.x = 0;
+              stateRef.current.moveDir.y = 0;
+
+              if (!moved) {
+                // Tap: Fire Shotgun
+                fireShotgun();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
           }}
-          className="w-20 h-20 bg-rose-600/90 text-white rounded-2xl border-2 border-rose-400 font-bold text-xs flex flex-col items-center justify-center cursor-pointer active:scale-95 shadow-xl pointer-events-auto"
-        >
-          <Crosshair size={24} />
-          <span>샷건 사격 [Space]</span>
-        </button>
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/75 border border-rose-500/30 rounded-full text-[10px] text-rose-300 font-mono backdrop-blur-xs">
+          {isKo ? '화면 드래그: 헌터 이동 | 탭: 샷건 사격 (버튼 없음)' : 'Drag: Move Hunter | Tap: Fire Shotgun (No Buttons)'}
+        </div>
       </div>
 
-      {/* Victory / Game Over Modal */}
-      {(isVictory || isGameOver) && (
-        <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
-            <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center ${isVictory ? 'bg-amber-400/20 text-yellow-400' : 'bg-rose-500/20 text-rose-400'}`}>
-              {isVictory ? <Trophy size={36} /> : <Award size={36} />}
-            </div>
+      {/* Universal 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_prop_hunt"
+          gameTitle={isKo ? '3D 복셀 프롭 헌트: 변신 사물 색출' : 'Voxel Prop Hunt: Hidden Props'}
+          customSteps={customTutorialSteps}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-            <h2 className="text-2xl font-black italic uppercase">{isVictory ? '모든 사물 색출 완료! VICTORY' : '사냥 실패! DEFEAT'}</h2>
-
-            <p className="text-xs text-slate-300">
-              {isVictory
-                ? '숨어있던 모든 프롭 변신자들을 정확히 찾아냈습니다!'
-                : '오발 페널티 누적으로 헌터 체력이 소진되었습니다.'}
-            </p>
-
-            {isVictory && (
-              <div className="bg-slate-950 border border-amber-500/30 p-3 rounded-2xl">
-                <span className="text-xs text-slate-400 block uppercase font-bold">REWARD</span>
-                <span className="text-2xl font-black text-yellow-400 flex items-center justify-center gap-1">
-                  <Sparkles size={20} /> +{rewardSns} SNS
-                </span>
-              </div>
-            )}
-
-            <button
-              onClick={onExit}
-              className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 text-slate-950 font-bold rounded-xl active:scale-95 transition-all cursor-pointer"
-            >
-              {language === 'ko' ? '확인 및 나가기' : 'Confirm & Exit'}
-            </button>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );

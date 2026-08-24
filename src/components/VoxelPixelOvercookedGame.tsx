@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Shield, Zap, Sparkles, ArrowLeft, Trophy, Crosshair, Award, Flame, Utensils } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelPixelOvercookedGameProps {
   deck: CardData[];
@@ -20,24 +23,36 @@ export const VoxelPixelOvercookedGame: React.FC<VoxelPixelOvercookedGameProps> =
   onExit,
   onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_pixel_overcooked') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
+  const targetScore = 150;
   const [timeLeft, setTimeLeft] = useState<number>(60);
   const [heldItem, setHeldItem] = useState<string>('none');
-  const [currentOrder, setCurrentOrder] = useState<string>('Burger');
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [isVictory, setIsVictory] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
-  const gameStateRef = useRef({
+  const stateRef = useRef({
     posX: 0,
     posZ: 0,
     rotY: 0,
     score: 0,
     timeLeft: 60,
     heldItem: 'none' as 'none' | 'meat' | 'cooked_meat' | 'bread' | 'burger',
-    currentOrder: 'Burger',
-    keys: { w: false, s: false, a: false, d: false },
+    moveDir: new THREE.Vector2(0, 0),
+    isGameOver: false,
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
     stations: {
       meatDispenser: { x: -6, z: -4 },
       breadDispenser: { x: -6, z: 4 },
@@ -45,53 +60,53 @@ export const VoxelPixelOvercookedGame: React.FC<VoxelPixelOvercookedGameProps> =
       plate: { x: 6, z: 0, hasBread: false, hasMeat: false },
       delivery: { x: 0, z: 6 }
     },
-    isGameOver: false,
-    isVictory: false
+    playerGroup: null as THREE.Group | null,
+    scene: null as THREE.Scene | null
   });
 
   const interactStation = () => {
-    const s = gameStateRef.current;
-    if (s.isGameOver || s.isVictory) return;
+    const s = stateRef.current;
+    if (s.isGameOver || s.isVictory || s.isPaused) return;
 
     // Check Meat Dispenser
-    if (Math.hypot(s.posX - s.stations.meatDispenser.x, s.posZ - s.stations.meatDispenser.z) < 2.5) {
+    if (Math.hypot(s.posX - s.stations.meatDispenser.x, s.posZ - s.stations.meatDispenser.z) < 2.8) {
       if (s.heldItem === 'none') {
         s.heldItem = 'meat';
-        setHeldItem('생고기 (Meat)');
+        setHeldItem(isKo ? '생고기' : 'Raw Meat');
         playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
       }
       return;
     }
 
     // Check Bread Dispenser
-    if (Math.hypot(s.posX - s.stations.breadDispenser.x, s.posZ - s.stations.breadDispenser.z) < 2.5) {
+    if (Math.hypot(s.posX - s.stations.breadDispenser.x, s.posZ - s.stations.breadDispenser.z) < 2.8) {
       if (s.heldItem === 'none') {
         s.heldItem = 'bread';
-        setHeldItem('빵 (Bread)');
+        setHeldItem(isKo ? '빵' : 'Bread');
         playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
       }
       return;
     }
 
     // Check Pan
-    if (Math.hypot(s.posX - s.stations.pan.x, s.posZ - s.stations.pan.z) < 2.5) {
+    if (Math.hypot(s.posX - s.stations.pan.x, s.posZ - s.stations.pan.z) < 2.8) {
       if (s.heldItem === 'meat' && !s.stations.pan.cooking) {
         s.heldItem = 'none';
         setHeldItem('none');
         s.stations.pan.cooking = true;
-        s.stations.pan.timer = 3.0; // cook 3s
+        s.stations.pan.timer = 2.5;
         playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
       } else if (s.heldItem === 'none' && s.stations.pan.cooking && s.stations.pan.timer <= 0) {
         s.stations.pan.cooking = false;
         s.heldItem = 'cooked_meat';
-        setHeldItem('구운 패티 (Cooked Meat)');
+        setHeldItem(isKo ? '구운 패티' : 'Cooked Meat');
         playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
       }
       return;
     }
 
-    // Check Plate assembly
-    if (Math.hypot(s.posX - s.stations.plate.x, s.posZ - s.stations.plate.z) < 2.5) {
+    // Check Plate
+    if (Math.hypot(s.posX - s.stations.plate.x, s.posZ - s.stations.plate.z) < 2.8) {
       if (s.heldItem === 'bread') {
         s.stations.plate.hasBread = true;
         s.heldItem = 'none';
@@ -102,31 +117,40 @@ export const VoxelPixelOvercookedGame: React.FC<VoxelPixelOvercookedGameProps> =
         setHeldItem('none');
       }
 
-      if (s.stations.plate.hasBread && s.stations.plate.hasMeat && s.heldItem === 'none') {
+      if (s.stations.plate.hasBread && s.stations.plate.hasMeat) {
         s.stations.plate.hasBread = false;
         s.stations.plate.hasMeat = false;
         s.heldItem = 'burger';
-        setHeldItem('완성된 수제 버거 🍔');
-        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+        setHeldItem(isKo ? '완성된 버거' : 'Burger');
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
       }
       return;
     }
 
-    // Check Delivery table
-    if (Math.hypot(s.posX - s.stations.delivery.x, s.posZ - s.stations.delivery.z) < 2.5) {
+    // Check Delivery
+    if (Math.hypot(s.posX - s.stations.delivery.x, s.posZ - s.stations.delivery.z) < 2.8) {
       if (s.heldItem === 'burger') {
         s.heldItem = 'none';
         setHeldItem('none');
         s.score += 50;
         setScore(s.score);
-        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
 
-        if (s.score >= 150) {
+        if (s.score >= targetScore && !s.isGameOver) {
           s.isVictory = true;
-          setIsVictory(true);
-          const reward = 60 + Math.floor(s.score / 10);
-          setRewardSns(reward);
-          onReward(reward);
+          s.isGameOver = true;
+          setIsGameOver(true);
+          const duration = (Date.now() - s.startTime) / 1000;
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'voxel_pixel_overcooked',
+            gameTitle: '복셀 픽셀 오버쿡드',
+            durationSeconds: duration,
+            score: s.score + 2000,
+            difficulty: 'HARD',
+            isVictory: true
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
         }
       }
     }
@@ -136,110 +160,127 @@ export const VoxelPixelOvercookedGame: React.FC<VoxelPixelOvercookedGameProps> =
     const container = mountRef.current;
     if (!container) return;
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xffeedd);
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
 
-    const camera = new THREE.PerspectiveCamera(55, container.clientWidth / container.clientHeight, 0.1, 300);
-    camera.position.set(0, 16, 14);
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x1e293b);
+    stateRef.current.scene = scene;
+
+    const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 200);
+    camera.position.set(0, 16, 16);
     camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
     container.appendChild(renderer.domElement);
 
-    // Lights
     const ambient = new THREE.AmbientLight(0xffffff, 0.9);
     scene.add(ambient);
 
-    const sun = new THREE.DirectionalLight(0xffeedd, 1.2);
-    sun.position.set(20, 40, 20);
-    scene.add(sun);
+    const dirLight = new THREE.DirectionalLight(0xffedd5, 1.4);
+    dirLight.position.set(10, 25, 10);
+    scene.add(dirLight);
 
     // Kitchen Floor
-    const floorGeo = new THREE.PlaneGeometry(20, 20);
-    floorGeo.rotateX(-Math.PI / 2);
-    const floorMat = new THREE.MeshLambertMaterial({ color: 0xeeccaa });
-    const floor = new THREE.Mesh(floorGeo, floorMat);
+    const floor = new THREE.Mesh(
+      new THREE.PlaneGeometry(24, 24),
+      new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.8 })
+    );
+    floor.rotation.x = -Math.PI / 2;
     scene.add(floor);
 
-    // Station Counters
-    const counterMat = new THREE.MeshLambertMaterial({ color: 0x664422 });
-    const addStation = (x: number, z: number, color: number) => {
-      const c = new THREE.Mesh(new THREE.BoxGeometry(2.5, 1.2, 2.5), new THREE.MeshLambertMaterial({ color }));
-      c.position.set(x, 0.6, z);
-      scene.add(c);
-    };
+    // Stations
+    const sMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8 });
+    const meatSt = new THREE.Mesh(new THREE.BoxGeometry(2, 1, 2), sMat);
+    meatSt.position.set(-6, 0.5, -4);
+    scene.add(meatSt);
 
-    addStation(-6, -4, 0xcc4444); // Meat
-    addStation(-6, 4, 0xddaa44);  // Bread
-    addStation(0, -6, 0x444444);  // Pan
-    addStation(6, 0, 0xffffff);   // Plate
-    addStation(0, 6, 0x44aa44);   // Delivery
+    const breadSt = new THREE.Mesh(new THREE.BoxGeometry(2, 1, 2), sMat);
+    breadSt.position.set(-6, 0.5, 4);
+    scene.add(breadSt);
 
-    // Chef Mesh
-    const chef = new THREE.Group();
-    const chefBody = new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.4, 0.6), new THREE.MeshLambertMaterial({ color: 0xffffff }));
-    chefBody.position.y = 0.7;
-    chef.add(chefBody);
+    const panSt = new THREE.Mesh(new THREE.BoxGeometry(2, 1, 2), new THREE.MeshStandardMaterial({ color: 0xef4444 }));
+    panSt.position.set(0, 0.5, -6);
+    scene.add(panSt);
 
-    const chefHat = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.4, 0.8, 8), new THREE.MeshLambertMaterial({ color: 0xffffff }));
-    chefHat.position.y = 1.8;
-    chef.add(chefHat);
+    const plateSt = new THREE.Mesh(new THREE.BoxGeometry(2, 1, 2), new THREE.MeshStandardMaterial({ color: 0x3b82f6 }));
+    plateSt.position.set(6, 0.5, 0);
+    scene.add(plateSt);
 
-    scene.add(chef);
+    const delivSt = new THREE.Mesh(new THREE.BoxGeometry(3, 1, 2), new THREE.MeshStandardMaterial({ color: 0x10b981 }));
+    delivSt.position.set(0, 0.5, 6);
+    scene.add(delivSt);
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const k = e.key.toLowerCase();
-      if (k === 'w' || k === 'arrowup') gameStateRef.current.keys.w = true;
-      if (k === 's' || k === 'arrowdown') gameStateRef.current.keys.s = true;
-      if (k === 'a' || k === 'arrowleft') gameStateRef.current.keys.a = true;
-      if (k === 'd' || k === 'arrowright') gameStateRef.current.keys.d = true;
-      if (k === ' ' || k === 'e') interactStation();
-    };
+    // Chef Player
+    const playerGroup = new THREE.Group();
+    const pBody = new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.6, 0.8), new THREE.MeshStandardMaterial({ color: 0xf59e0b }));
+    pBody.position.y = 0.8;
+    playerGroup.add(pBody);
 
-    const handleKeyUp = (e: KeyboardEvent) => {
-      const k = e.key.toLowerCase();
-      if (k === 'w' || k === 'arrowup') gameStateRef.current.keys.w = false;
-      if (k === 's' || k === 'arrowdown') gameStateRef.current.keys.s = false;
-      if (k === 'a' || k === 'arrowleft') gameStateRef.current.keys.a = false;
-      if (k === 'd' || k === 'arrowright') gameStateRef.current.keys.d = false;
-    };
+    const hat = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.4, 0.6, 8), new THREE.MeshStandardMaterial({ color: 0xffffff }));
+    hat.position.y = 1.9;
+    playerGroup.add(hat);
 
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
+    playerGroup.position.set(0, 0, 0);
+    scene.add(playerGroup);
+    stateRef.current.playerGroup = playerGroup;
+
+    // Timer
+    const timerInterval = setInterval(() => {
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
+      s.timeLeft -= 1;
+      setTimeLeft(s.timeLeft);
+
+      if (s.timeLeft <= 0 && !s.isGameOver) {
+        s.isGameOver = true;
+        setIsGameOver(true);
+        const duration = (Date.now() - s.startTime) / 1000;
+        const receipt = calculateAndDepositMissionReward({
+          gameId: 'voxel_pixel_overcooked',
+          gameTitle: '복셀 픽셀 오버쿡드',
+          durationSeconds: duration,
+          score: s.score,
+          difficulty: 'HARD',
+          isVictory: s.score >= targetScore
+        });
+        setSettlementReceipt(receipt);
+        onReward(receipt.totalSns);
+      }
+    }, 1000);
 
     let animId: number;
-    let clock = new THREE.Clock();
+    let lastTime = performance.now();
 
-    const animate = () => {
+    const animate = (now: number) => {
       animId = requestAnimationFrame(animate);
-      const dt = clock.getDelta();
-      const s = gameStateRef.current;
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
 
-      if (!s.isGameOver && !s.isVictory) {
-        // Timer
-        s.timeLeft -= dt;
-        setTimeLeft(Math.max(0, Math.ceil(s.timeLeft)));
-        if (s.timeLeft <= 0) {
-          s.isGameOver = true;
-          setIsGameOver(true);
-        }
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-        // Pan cooking timer
-        if (s.stations.pan.cooking && s.stations.pan.timer > 0) {
-          s.stations.pan.timer -= dt;
-        }
+      // Pan timer
+      if (s.stations.pan.cooking && s.stations.pan.timer > 0) {
+        s.stations.pan.timer -= dt;
+      }
 
-        // Chef Movement
-        const vx = (s.keys.d ? 1 : 0) - (s.keys.a ? 1 : 0);
-        const vz = (s.keys.s ? 1 : 0) - (s.keys.w ? 1 : 0);
-        s.posX += vx * 12 * dt;
-        s.posZ += vz * 12 * dt;
-        s.posX = Math.max(-7, Math.min(7, s.posX));
-        s.posZ = Math.max(-7, Math.min(7, s.posZ));
+      // Move player
+      const speed = 10;
+      s.posX += s.moveDir.x * speed * dt;
+      s.posZ += s.moveDir.y * speed * dt;
+      s.posX = THREE.MathUtils.clamp(s.posX, -9, 9);
+      s.posZ = THREE.MathUtils.clamp(s.posZ, -9, 9);
 
-        chef.position.set(s.posX, 0, s.posZ);
+      if (s.moveDir.length() > 0.1) {
+        s.rotY = Math.atan2(s.moveDir.x, s.moveDir.y);
+      }
+
+      if (playerGroup) {
+        playerGroup.position.set(s.posX, 0, s.posZ);
+        playerGroup.rotation.y = s.rotY;
       }
 
       renderer.render(scene, camera);
@@ -247,133 +288,192 @@ export const VoxelPixelOvercookedGame: React.FC<VoxelPixelOvercookedGameProps> =
 
     animId = requestAnimationFrame(animate);
 
-    const handleResize = () => {
-      if (!container) return;
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
+      clearInterval(timerInterval);
       cancelAnimationFrame(animId);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      window.removeEventListener('resize', handleResize);
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, playSfx]);
+  }, [lowSpecMode]);
+
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.posX = 0;
+    s.posZ = 0;
+    s.rotY = 0;
+    s.score = 0;
+    s.timeLeft = 60;
+    s.heldItem = 'none';
+    s.stations.pan.cooking = false;
+    s.stations.pan.timer = 0;
+    s.stations.plate.hasBread = false;
+    s.stations.plate.hasMeat = false;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    setScore(0);
+    setTimeLeft(60);
+    setHeldItem('none');
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
+
+  const customTutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 픽셀 키친 오더' : 'STEP 1: KITCHEN RUSH',
+      title: isKo ? '수제 버거 서빙 150점 달성' : 'Serve Burgers & Score 150P',
+      description: isKo
+        ? '생고기를 프라이팬에 구워 빵과 조합한 뒤 서빙대에 납품하여 150점을 달성하세요.'
+        : 'Cook raw meat on the pan, assemble with bread on the plate and deliver to score 150P.',
+      keyPoints: isKo
+        ? [
+            '150점 (버거 3개) 서빙 시 승리',
+            '생고기 굽기(2.5초) ➔ 접시 조립 ➔ 서빙',
+            '60초 타임어택 내 완주'
+          ]
+        : [
+            'Serve 3 burgers (150P) to win',
+            'Cook meat (2.5s) ➔ Plate assemble ➔ Deliver',
+            'Clear within 60s limit'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '드래그 이동 & 탭 상호작용' : 'Drag Move & Tap Interact',
+      description: isKo
+        ? '가상 D-Pad 없이 화면 드래그로 주방을 이동하고, 조리대 접근 시 탭하여 상호작용합니다.'
+        : 'Drag anywhere to move your chef and tap near stations to pick up/cook/deliver with zero buttons.',
+      keyPoints: isKo
+        ? [
+            '👆 드래그: 셰프 360° 주방 이동',
+            '🍳 조리대 근접 탭: 재료 수령 / 조리 / 조립',
+            '⚡ 최단 동선 이동으로 스피드 보너스'
+          ]
+        : [
+            '👆 Drag: Smooth 360° kitchen move',
+            '🍳 Proximity Tap: Pick / Cook / Serve',
+            '⚡ Optimize chef route for speed bonus'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '주방 클리어 즉시 HARD 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Standard payout scaled with Hard multiplier deposited atomically to your wallet.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '잔여 시간 및 완벽 서빙 가산점',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Remaining time and perfect service bonus',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
+    }
+  ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 text-white select-none overflow-hidden flex flex-col font-sans">
-      <div ref={mountRef} className="w-full h-full absolute inset-0" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Top HUD */}
-      <div className="relative z-10 p-3 sm:p-4 flex items-center justify-between bg-gradient-to-b from-slate-950/90 to-transparent pointer-events-none">
-        <button
-          onClick={onExit}
-          className="pointer-events-auto p-2 bg-slate-900/80 hover:bg-slate-800 text-white rounded-xl border border-slate-700 active:scale-95 flex items-center gap-1 cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-          <span className="text-xs font-bold">{language === 'ko' ? '나가기' : 'Exit'}</span>
-        </button>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 픽셀 오버쿡드' : 'Voxel Pixel Overcooked'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '점수' : 'Score', value: `${score}/${targetScore}`, color: 'text-amber-300' },
+          { label: isKo ? '아이템' : 'Held', value: `${heldItem}`, color: 'text-cyan-300' },
+          { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 15 ? 'text-rose-400 font-bold' : 'text-emerald-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
-        {/* Score & Time Left */}
-        <div className="flex items-center gap-3 bg-slate-900/80 px-3 py-1.5 rounded-2xl border border-slate-700">
-          <div className="text-yellow-400 font-bold text-xs">
-            🪙 SCORE: {score}/150
-          </div>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && !isPaused && !showTutorial && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-          <div className="text-rose-400 font-bold text-xs">
-            ⏱️ {timeLeft}초
-          </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
 
-          <div className="bg-amber-950 border border-amber-500/40 px-2 py-0.5 rounded text-amber-300 text-xs font-bold">
-            손에 든 아이템: {heldItem}
-          </div>
+              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+                moved = true;
+                stateRef.current.moveDir.x = Math.abs(dx) > 8 ? (dx > 0 ? 1 : -1) : 0;
+                stateRef.current.moveDir.y = Math.abs(dy) > 8 ? (dy > 0 ? 1 : -1) : 0;
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              stateRef.current.moveDir.x = 0;
+              stateRef.current.moveDir.y = 0;
+
+              if (!moved) {
+                // Tap: Interact with station
+                interactStation();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/75 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {isKo ? '화면 드래그: 셰프 이동 | 조리대 근접 탭: 재료 수령 / 조리 / 서빙 (버튼 없음)' : 'Drag: Move Chef | Proximity Tap: Pick / Cook / Serve (No Buttons)'}
         </div>
       </div>
 
-      {/* Mobile Touch Controls */}
-      <div className="absolute bottom-4 left-4 right-4 z-20 flex justify-between items-end pointer-events-none">
-        <div className="flex flex-col items-center gap-1 pointer-events-auto">
-          <button
-            onPointerDown={() => (gameStateRef.current.keys.w = true)}
-            onPointerUp={() => (gameStateRef.current.keys.w = false)}
-            className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-          >
-            ▲
-          </button>
-          <div className="flex gap-1">
-            <button
-              onPointerDown={() => (gameStateRef.current.keys.a = true)}
-              onPointerUp={() => (gameStateRef.current.keys.a = false)}
-              className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-            >
-              ◀
-            </button>
-            <button
-              onPointerDown={() => (gameStateRef.current.keys.s = true)}
-              onPointerUp={() => (gameStateRef.current.keys.s = false)}
-              className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-            >
-              ▼
-            </button>
-            <button
-              onPointerDown={() => (gameStateRef.current.keys.d = true)}
-              onPointerUp={() => (gameStateRef.current.keys.d = false)}
-              className="w-14 h-12 bg-slate-800/90 text-white rounded-xl border border-slate-600 font-bold flex items-center justify-center"
-            >
-              ▶
-            </button>
-          </div>
-        </div>
+      {/* Universal 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_pixel_overcooked"
+          gameTitle={isKo ? '3D 복셀 픽셀 오버쿡드: 키친 러시' : 'Voxel Pixel Overcooked: Kitchen Rush'}
+          customSteps={customTutorialSteps}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-        <button
-          onClick={interactStation}
-          className="w-20 h-20 bg-amber-600/90 text-white rounded-2xl border-2 border-amber-400 font-bold text-xs flex flex-col items-center justify-center cursor-pointer active:scale-95 shadow-xl pointer-events-auto"
-        >
-          <Utensils size={24} />
-          <span>상호작용 [E]</span>
-        </button>
-      </div>
-
-      {/* Victory / Game Over Modal */}
-      {(isVictory || isGameOver) && (
-        <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
-            <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center ${isVictory ? 'bg-amber-400/20 text-yellow-400' : 'bg-rose-500/20 text-rose-400'}`}>
-              {isVictory ? <Trophy size={36} /> : <Award size={36} />}
-            </div>
-
-            <h2 className="text-2xl font-black italic uppercase">{isVictory ? '최고의 셰프 VICTORY' : '영업 종료! DEFEAT'}</h2>
-
-            <p className="text-xs text-slate-300">
-              {isVictory
-                ? '모든 주문을 성공적으로 완벽 서빙하여 미슐랭 스타를 획득했습니다!'
-                : '제한 시간이 종료되었습니다.'}
-            </p>
-
-            {isVictory && (
-              <div className="bg-slate-950 border border-amber-500/30 p-3 rounded-2xl">
-                <span className="text-xs text-slate-400 block uppercase font-bold">REWARD</span>
-                <span className="text-2xl font-black text-yellow-400 flex items-center justify-center gap-1">
-                  <Sparkles size={20} /> +{rewardSns} SNS
-                </span>
-              </div>
-            )}
-
-            <button
-              onClick={onExit}
-              className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 text-slate-950 font-bold rounded-xl active:scale-95 transition-all cursor-pointer"
-            >
-              {language === 'ko' ? '확인 및 나가기' : 'Confirm & Exit'}
-            </button>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
