@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ArrowLeft, Trophy, Sparkles, Wind, Zap } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelDreamweaverGameProps {
   deck: CardData[];
@@ -30,13 +33,22 @@ export const VoxelDreamweaverGame: React.FC<VoxelDreamweaverGameProps> = ({
   const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
 
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_dreamweaver') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [ringsPassed, setRingsPassed] = useState<number>(0);
-  const [flightSpeed, setFlightSpeed] = useState<number>(20);
+  const targetRings = 15;
+  const [flightSpeed, setFlightSpeed] = useState<number>(22);
   const [timeLeft, setTimeLeft] = useState<number>(50);
   const [combo, setCombo] = useState<number>(0);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
     dragonX: 0,
@@ -49,9 +61,10 @@ export const VoxelDreamweaverGame: React.FC<VoxelDreamweaverGameProps> = ({
     combo: 0,
     timeLeft: 50,
     isGameOver: false,
+    isPaused: false,
+    startTime: Date.now(),
     playerDragon: null as THREE.Group | null,
-    rings: [] as EmeraldRing[],
-    particles: [] as { mesh: THREE.Mesh; vel: THREE.Vector3; life: number }[]
+    rings: [] as EmeraldRing[]
   });
 
   useEffect(() => {
@@ -72,10 +85,8 @@ export const VoxelDreamweaverGame: React.FC<VoxelDreamweaverGameProps> = ({
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    renderer.shadowMap.enabled = !lowSpecMode;
     container.appendChild(renderer.domElement);
 
-    // Emerald Dream World Lighting
     const ambientLight = new THREE.AmbientLight(0x34d399, 0.8);
     scene.add(ambientLight);
 
@@ -83,7 +94,7 @@ export const VoxelDreamweaverGame: React.FC<VoxelDreamweaverGameProps> = ({
     dreamLight.position.set(10, 25, 10);
     scene.add(dreamLight);
 
-    // Dream Cloud Floating Islands
+    // Floating Dream Islands
     const islandGeo = new THREE.DodecahedronGeometry(3.0);
     const islandMat = new THREE.MeshStandardMaterial({ color: 0x064e3b, roughness: 0.8 });
     for (let i = 0; i < 15; i++) {
@@ -92,258 +103,202 @@ export const VoxelDreamweaverGame: React.FC<VoxelDreamweaverGameProps> = ({
       scene.add(isl);
     }
 
-    // Build Ysela Green Dream Dragon
+    // Emerald Dream Dragon
     const dragonGroup = new THREE.Group();
     const dragonMat = new THREE.MeshStandardMaterial({ color: 0x059669, roughness: 0.3 });
-    const hornMat = new THREE.MeshStandardMaterial({ color: 0xa7f3d0, metalness: 0.6 });
 
     const body = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.8, 2.0), dragonMat);
+    body.position.y = 0.4;
     dragonGroup.add(body);
 
-    const lWing = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.08, 1.0), dragonMat);
-    lWing.position.set(-1.8, 0.3, 0);
-    dragonGroup.add(lWing);
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.6, 1.0), dragonMat);
+    head.position.set(0, 0.7, -1.3);
+    dragonGroup.add(head);
 
-    const rWing = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.08, 1.0), dragonMat);
-    rWing.position.set(1.8, 0.3, 0);
-    dragonGroup.add(rWing);
+    const wingL = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.15, 1.2), new THREE.MeshStandardMaterial({ color: 0x34d399 }));
+    wingL.position.set(-1.6, 0.6, 0);
+    dragonGroup.add(wingL);
 
-    const horn = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.8, 6), hornMat);
-    horn.position.set(0, 0.8, -0.6);
-    horn.rotation.x = -Math.PI / 4;
-    dragonGroup.add(horn);
+    const wingR = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.15, 1.2), new THREE.MeshStandardMaterial({ color: 0x34d399 }));
+    wingR.position.set(1.6, 0.6, 0);
+    dragonGroup.add(wingR);
 
-    dragonGroup.position.set(0, 0, 0);
     scene.add(dragonGroup);
     stateRef.current.playerDragon = dragonGroup;
 
-    // Emerald Torus Rings
-    const ringGeo = new THREE.TorusGeometry(1.6, 0.2, 8, 24);
-    const ringMat = new THREE.MeshStandardMaterial({ color: 0x10b981, emissive: 0x059669, emissiveIntensity: 0.8 });
+    // Spawn Emerald Rings ahead
+    const ringGeo = new THREE.TorusGeometry(1.6, 0.15, 12, 24);
+    const ringMat = new THREE.MeshStandardMaterial({ color: 0x10b981, emissive: 0x10b981, emissiveIntensity: 0.8 });
 
-    const spawnRing = (zPos: number) => {
-      const mesh = new THREE.Mesh(ringGeo, ringMat);
-      const posX = (Math.random() - 0.5) * 14;
-      const posY = (Math.random() - 0.5) * 8;
-      mesh.position.set(posX, posY, zPos);
-      scene.add(mesh);
+    stateRef.current.rings = [];
+    for (let i = 0; i < 20; i++) {
+      const rMesh = new THREE.Mesh(ringGeo, ringMat);
+      const rx = (Math.random() - 0.5) * 12;
+      const ry = (Math.random() - 0.5) * 8;
+      const rz = -20 - i * 22;
+      rMesh.position.set(rx, ry, rz);
+      scene.add(rMesh);
 
       stateRef.current.rings.push({
-        mesh,
-        pos: mesh.position,
+        mesh: rMesh,
+        pos: new THREE.Vector3(rx, ry, rz),
         passed: false,
-        points: 250
+        points: 150
       });
-    };
-
-    // Initial Rings
-    for (let z = -20; z > -160; z -= 14) {
-      spawnRing(z);
     }
 
-    const spawnDreamParticles = (pos: THREE.Vector3, color: number) => {
-      const pCount = lowSpecMode ? 4 : 8;
-      const pGeo = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-      const pMat = new THREE.MeshBasicMaterial({ color });
-      for (let p = 0; p < pCount; p++) {
-        const pm = new THREE.Mesh(pGeo, pMat);
-        pm.position.copy(pos);
-        scene.add(pm);
-        stateRef.current.particles.push({
-          mesh: pm,
-          vel: new THREE.Vector3((Math.random() - 0.5) * 6, (Math.random() - 0.5) * 6, (Math.random() - 0.5) * 6),
-          life: 0.8
+    // Timer Interval
+    const timerInterval = setInterval(() => {
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
+      s.timeLeft -= 1;
+      setTimeLeft(s.timeLeft);
+
+      if (s.timeLeft <= 0) {
+        s.isGameOver = true;
+        setIsGameOver(true);
+        const duration = (Date.now() - s.startTime) / 1000;
+        const receipt = calculateAndDepositMissionReward({
+          gameId: 'voxel_dreamweaver',
+          gameTitle: '복셀 드림위버',
+          durationSeconds: duration,
+          score: s.score,
+          difficulty: 'HARD',
+          isVictory: s.ringsPassed >= 10
         });
+        setSettlementReceipt(receipt);
+        onReward(receipt.totalSns);
       }
-    };
+    }, 1000);
 
-    // Controls
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (stateRef.current.isGameOver) return;
-      const step = 2.0;
-      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-        stateRef.current.targetX = Math.max(-7, stateRef.current.targetX - step);
-      } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-        stateRef.current.targetX = Math.min(7, stateRef.current.targetX + step);
-      } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
-        stateRef.current.targetY = Math.min(5, stateRef.current.targetY + step);
-      } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
-        stateRef.current.targetY = Math.max(-5, stateRef.current.targetY - step);
-      } else if (e.key === ' ') {
-        stateRef.current.speed = 36;
-        setFlightSpeed(36);
-        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3');
-      }
-    };
-    const handleKeyUp = (e: KeyboardEvent) => {
-      if (e.key === ' ') {
-        stateRef.current.speed = 22;
-        setFlightSpeed(22);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-
-    // Animation Loop
-    let lastTime = performance.now();
     let animId: number;
-    let timerAcc = 0;
+    let lastTime = performance.now();
 
     const animate = (now: number) => {
-      const delta = Math.min((now - lastTime) / 1000, 0.1);
+      animId = requestAnimationFrame(animate);
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
-      const state = stateRef.current;
-      if (!state.isGameOver) {
-        // Countdown
-        timerAcc += delta;
-        if (timerAcc >= 1.0) {
-          timerAcc = 0;
-          state.timeLeft = Math.max(0, state.timeLeft - 1);
-          setTimeLeft(state.timeLeft);
-          if (state.timeLeft <= 0) {
-            state.isGameOver = true;
-            setIsGameOver(true);
-            const reward = Math.min(50, Math.max(15, Math.floor(state.score / 200)));
-            setRewardSns(reward);
-            onReward(reward);
-          }
-        }
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-        // Dragon movement
-        state.dragonX += (state.targetX - state.dragonX) * 8 * delta;
-        state.dragonY += (state.targetY - state.dragonY) * 8 * delta;
-        if (dragonGroup) {
-          dragonGroup.position.x = state.dragonX;
-          dragonGroup.position.y = state.dragonY;
-          dragonGroup.rotation.z = -(state.targetX - state.dragonX) * 0.15;
-          dragonGroup.rotation.x = (state.targetY - state.dragonY) * 0.15;
-          lWing.rotation.z = Math.sin(now * 0.01) * 0.3;
-          rWing.rotation.z = -Math.sin(now * 0.01) * 0.3;
-        }
+      // Smooth Flight Steering
+      s.dragonX = THREE.MathUtils.lerp(s.dragonX, s.targetX, dt * 6);
+      s.dragonY = THREE.MathUtils.lerp(s.dragonY, s.targetY, dt * 6);
 
-        // Update Rings
-        for (let i = state.rings.length - 1; i >= 0; i--) {
-          const ring = state.rings[i];
-          ring.pos.z += state.speed * delta;
-          ring.mesh.position.z = ring.pos.z;
-          ring.mesh.rotation.z += 1.5 * delta;
+      if (dragonGroup) {
+        dragonGroup.position.set(s.dragonX, s.dragonY, 0);
+        dragonGroup.rotation.z = -(s.targetX - s.dragonX) * 0.2;
+        dragonGroup.rotation.x = (s.targetY - s.dragonY) * 0.15;
+      }
 
-          // Check Ring Pass
-          if (!ring.passed && Math.abs(ring.pos.z - 0) < 1.5) {
-            const dist = Math.hypot(ring.pos.x - state.dragonX, ring.pos.y - state.dragonY);
-            if (dist < 1.6) {
-              ring.passed = true;
-              ring.mesh.visible = false;
-              state.combo++;
-              state.ringsPassed++;
-              state.score += ring.points * (1 + state.combo * 0.2);
-              setRingsPassed(state.ringsPassed);
-              setScore(Math.floor(state.score));
-              setCombo(state.combo);
-              spawnDreamParticles(dragonGroup.position, 0x34d399);
-              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+      // Move Rings forward
+      s.rings.forEach(r => {
+        r.pos.z += s.speed * dt;
+        r.mesh.position.copy(r.pos);
+        r.mesh.rotation.z += dt * 1.5;
+
+        // Pass ring check
+        if (!r.passed && Math.abs(r.pos.z - 0) < 1.8) {
+          const dist = Math.hypot(r.pos.x - s.dragonX, r.pos.y - s.dragonY);
+          if (dist < 1.8) {
+            r.passed = true;
+            s.ringsPassed += 1;
+            s.combo += 1;
+            s.score += r.points * Math.min(4, s.combo);
+            setRingsPassed(s.ringsPassed);
+            setScore(s.score);
+            setCombo(s.combo);
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+
+            if (s.ringsPassed >= targetRings) {
+              s.isGameOver = true;
+              setIsGameOver(true);
+              const duration = (Date.now() - s.startTime) / 1000;
+              const receipt = calculateAndDepositMissionReward({
+                gameId: 'voxel_dreamweaver',
+                gameTitle: '복셀 드림위버',
+                durationSeconds: duration,
+                score: s.score + 1000,
+                difficulty: 'HARD',
+                isVictory: true
+              });
+              setSettlementReceipt(receipt);
+              onReward(receipt.totalSns);
             }
           }
-
-          // Recycle
-          if (ring.pos.z > 10) {
-            scene.remove(ring.mesh);
-            state.rings.splice(i, 1);
-          }
         }
 
-        // Spawn new rings
-        while (state.rings.length < 12) {
-          spawnRing(-140 - Math.random() * 20);
+        // Recycle ring
+        if (r.pos.z > 12) {
+          r.pos.z = -120;
+          r.pos.x = (Math.random() - 0.5) * 12;
+          r.pos.y = (Math.random() - 0.5) * 8;
+          r.passed = false;
         }
-      }
-
-      // Update Particles
-      for (let p = state.particles.length - 1; p >= 0; p--) {
-        const pt = state.particles[p];
-        pt.life -= delta;
-        pt.mesh.position.addScaledVector(pt.vel, delta);
-        if (pt.life <= 0) {
-          scene.remove(pt.mesh);
-          state.particles.splice(p, 1);
-        }
-      }
+      });
 
       renderer.render(scene, camera);
-      animId = requestAnimationFrame(animate);
     };
 
     animId = requestAnimationFrame(animate);
 
-    const handleResize = () => {
-      if (!container) return;
-      const w = container.clientWidth || window.innerWidth;
-      const h = container.clientHeight || window.innerHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
+      clearInterval(timerInterval);
       cancelAnimationFrame(animId);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      window.removeEventListener('resize', handleResize);
-      if (renderer.domElement.parentNode) {
-        renderer.domElement.parentNode.removeChild(renderer.domElement);
-      }
       renderer.dispose();
+      if (container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
+      }
     };
-  }, [lowSpecMode, onReward, playSfx]);
+  }, [lowSpecMode]);
+
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.dragonX = 0;
+    s.dragonY = 0;
+    s.targetX = 0;
+    s.targetY = 0;
+    s.score = 0;
+    s.ringsPassed = 0;
+    s.combo = 0;
+    s.timeLeft = 50;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    setScore(0);
+    setRingsPassed(0);
+    setCombo(0);
+    setTimeLeft(50);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col select-none overflow-hidden font-mono">
-      {/* 3D WebGL Canvas */}
-      <div ref={mountRef} className="absolute inset-0 z-0" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Top Header */}
-      <div className="relative z-10 w-full p-3 sm:p-4 flex items-center justify-between bg-slate-950/80 border-b border-emerald-900/40 backdrop-blur-md">
-        <button
-          onClick={onExit}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 border border-slate-700 hover:border-emerald-400 text-slate-200 text-xs font-bold rounded-sm transition-all cursor-pointer"
-        >
-          <ArrowLeft size={14} />
-          <span>{isKo ? '나가기' : 'Exit'}</span>
-        </button>
-
-        <div className="flex items-center gap-3 text-xs">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-950/70 border border-emerald-500/50 rounded-sm text-emerald-300">
-            <Sparkles size={13} className="text-emerald-400 animate-pulse" />
-            <span>{ringsPassed} {isKo ? '링 통과' : 'Rings'}</span>
-          </div>
-
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-950/70 border border-amber-500/50 rounded-sm text-amber-300">
-            <Trophy size={13} className="text-amber-400" />
-            <span>{score.toLocaleString()}P</span>
-          </div>
-
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-cyan-950/70 border border-cyan-500/50 rounded-sm text-cyan-300">
-            <span>⏱️ {timeLeft}s</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Flight Speed & Combo Banner */}
-      <div className="relative z-10 w-full px-4 pt-2 flex flex-col items-center gap-1 pointer-events-none">
-        {combo > 1 && (
-          <div className="px-3 py-0.5 bg-emerald-950/80 border border-emerald-400 text-emerald-300 text-xs font-black rounded-sm animate-bounce">
-            ✨ {combo} RING COMBO CHAIN!
-          </div>
-        )}
-        <div className="text-[10px] text-emerald-300/80 font-bold">
-          {isKo ? `비행 속도: ${flightSpeed} km/h` : `Flight Speed: ${flightSpeed} km/h`}
-        </div>
-      </div>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 드림위버' : 'Voxel Dreamweaver'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '링통과' : 'Rings', value: `${ringsPassed}/${targetRings}개`, color: 'text-emerald-300' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300' },
+          { label: isKo ? '콤보' : 'Combo', value: `✨ x${combo}`, color: 'text-cyan-300' },
+          { label: isKo ? '남은시간' : 'Time', value: `${timeLeft}s`, color: 'text-rose-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
       {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && (
+      {!isGameOver && !isPaused && !showTutorial && (
         <div
           className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
           style={{ touchAction: 'none' }}
@@ -390,49 +345,40 @@ export const VoxelDreamweaverGame: React.FC<VoxelDreamweaverGameProps> = ({
           onDoubleClick={() => {
             stateRef.current.speed = 38;
             setFlightSpeed(38);
-            setTimeout(() => { stateRef.current.speed = 22; setFlightSpeed(22); }, 1500);
+            setTimeout(() => {
+              stateRef.current.speed = 22;
+              setFlightSpeed(22);
+            }, 1500);
           }}
         />
       )}
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/70 border border-emerald-500/30 rounded-full text-[10px] text-emerald-300 font-mono backdrop-blur-xs">
-          {isKo ? '드래그: 글라이더 조종 | 탭/더블탭: 에메랄드 부스트 (버튼 없음)' : 'Drag: Glide Flight | Tap/Double Tap: Boost (No Buttons)'}
+        <div className="px-3 py-1 bg-black/75 border border-emerald-500/30 rounded-full text-[10px] text-emerald-300 font-mono backdrop-blur-xs">
+          {isKo ? '드래그: 에메랄드 드래곤 비행 조종 | 탭/더블탭: 부스트 대시 (버튼 없음)' : 'Drag: Glide Flight | Tap/Double Tap: Boost Dash (No Buttons)'}
         </div>
       </div>
 
-      {/* Game Over Modal */}
-      {isGameOver && (
-        <div className="absolute inset-0 z-30 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
-          <div className="w-full max-w-sm bg-slate-900 border-2 border-emerald-500 p-6 flex flex-col items-center gap-4 text-center rounded-none shadow-[0_0_30px_rgba(16,185,129,0.3)]">
-            <Trophy size={40} className="text-amber-400 animate-bounce" />
-            <h2 className="text-lg font-black text-white tracking-widest">
-              {isKo ? '꿈의 비행 완료!' : 'EMERALD FLIGHT COMPLETE!'}
-            </h2>
-            <div className="w-full bg-slate-950 p-3 border border-slate-800 flex flex-col gap-1.5 text-xs">
-              <div className="flex justify-between text-slate-400">
-                <span>{isKo ? '통과한 에메랄드 링' : 'Rings Cleared'}</span>
-                <span className="text-emerald-400 font-bold">{ringsPassed}개</span>
-              </div>
-              <div className="flex justify-between text-slate-400">
-                <span>{isKo ? '최종 점수' : 'Final Score'}</span>
-                <span className="text-yellow-400 font-bold">{score.toLocaleString()}P</span>
-              </div>
-              <div className="flex justify-between text-slate-400 border-t border-slate-800 pt-1.5">
-                <span>{isKo ? 'SNS 보상' : 'SNS Reward'}</span>
-                <span className="text-emerald-400 font-bold">+{rewardSns} SNS</span>
-              </div>
-            </div>
+      {/* 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_dreamweaver"
+          gameTitle={isKo ? '3D 복셀 드림위버: 에메랄드 꿈의 비행' : 'Voxel Dreamweaver: Emerald Flight'}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-            <button
-              onClick={onExit}
-              className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 active:scale-98 text-white font-black text-sm rounded-sm tracking-wider shadow-lg cursor-pointer"
-            >
-              {isKo ? '확인 및 보상 수령' : 'Confirm & Claim'}
-            </button>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
