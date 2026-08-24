@@ -1,9 +1,4 @@
 #!/usr/bin/env python3
-"""
-mission_evaluator.py
-SNSHero 미션 게임 순차 탐색 및 평가/로그/보고 도우미 스크립트
-"""
-
 import os
 import glob
 import re
@@ -21,7 +16,7 @@ def get_last_inspected_game():
         return None
     with open(AGENTS_FILE, "r", encoding="utf-8") as f:
         content = f.read()
-    match = re.search(r"imp-mission 마지막 점검 게임[*\s:]+`?([A-Za-z0-9_.]+)`?", content)
+    match = re.search(r"마지막 점검 게임[*\s:]+`([A-Za-z0-9_.]+)`", content)
     if match:
         return match.group(1)
     return None
