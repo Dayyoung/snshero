@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Shield, Zap, Sparkles, ArrowLeft, Trophy, Crosshair, Award } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelMonsterIsleGameProps {
   deck: CardData[];
@@ -20,47 +23,63 @@ export const VoxelMonsterIsleGame: React.FC<VoxelMonsterIsleGameProps> = ({
   onExit,
   onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_monster_isle') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [cubes, setCubes] = useState<number>(10);
   const [captured, setCaptured] = useState<number>(0);
+  const targetCaptured = 5;
+  const [score, setScore] = useState<number>(0);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [isVictory, setIsVictory] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
-  const gameStateRef = useRef({
+  const stateRef = useRef({
     posX: 0,
     posZ: 0,
     rotY: 0,
     cubes: 10,
     captured: 0,
-    keys: { w: false, s: false, a: false, d: false },
-    monsters: [] as { mesh: THREE.Group; x: number; z: number; hp: number; captured: boolean; name: string }[],
-    throwCubes: [] as { mesh: THREE.Mesh; vx: number; vy: number; vz: number; life: number }[],
+    moveDir: new THREE.Vector2(0, 0),
+    score: 0,
     isGameOver: false,
-    isVictory: false
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
+    monsters: [] as { mesh: THREE.Group; x: number; z: number; hp: number; captured: boolean }[],
+    throwCubes: [] as { mesh: THREE.Mesh; vx: number; vy: number; vz: number; life: number }[],
+    playerGroup: null as THREE.Group | null,
+    scene: null as THREE.Scene | null
   });
 
-  const throwTamingCube = (scene: THREE.Scene) => {
-    const s = gameStateRef.current;
-    if (s.isGameOver || s.isVictory || s.cubes <= 0) return;
+  const throwTamingCube = () => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isVictory || s.isPaused || s.cubes <= 0 || !s.scene) return;
+
     s.cubes -= 1;
     setCubes(s.cubes);
-
     playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
 
     const cubeGeo = new THREE.BoxGeometry(0.6, 0.6, 0.6);
-    const cubeMat = new THREE.MeshLambertMaterial({ color: 0x00ccff });
+    const cubeMat = new THREE.MeshStandardMaterial({ color: 0x06b6d4, emissive: 0x0891b2 });
     const cubeMesh = new THREE.Mesh(cubeGeo, cubeMat);
-    cubeMesh.position.set(s.posX, 1.5, s.posZ);
-    scene.add(cubeMesh);
+    cubeMesh.position.set(s.posX, 1.2, s.posZ);
+    s.scene.add(cubeMesh);
 
-    const speed = 25;
+    const speed = 26;
     s.throwCubes.push({
       mesh: cubeMesh,
       vx: Math.sin(s.rotY) * speed,
-      vy: 8,
+      vy: 6,
       vz: -Math.cos(s.rotY) * speed,
-      life: 3.0
+      life: 2.5
     });
   };
 
@@ -68,147 +87,165 @@ export const VoxelMonsterIsleGame: React.FC<VoxelMonsterIsleGameProps> = ({
     const container = mountRef.current;
     if (!container) return;
 
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
+
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x88ccff);
     scene.fog = new THREE.FogExp2(0x88ccff, 0.015);
+    stateRef.current.scene = scene;
 
-    const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 300);
+    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 300);
+    camera.position.set(0, 8, 12);
+    camera.lookAt(0, 1, 0);
+
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
     container.appendChild(renderer.domElement);
 
-    // Lights
     const ambient = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambient);
 
-    const sun = new THREE.DirectionalLight(0xffeedd, 1.2);
+    const sun = new THREE.DirectionalLight(0xffeedd, 1.4);
     sun.position.set(50, 100, 50);
     scene.add(sun);
 
     // Island Terrain
-    const islandGeo = new THREE.PlaneGeometry(160, 160, 16, 16);
-    islandGeo.rotateX(-Math.PI / 2);
-    const islandMat = new THREE.MeshLambertMaterial({ color: 0x55aa44 });
-    const island = new THREE.Mesh(islandGeo, islandMat);
+    const island = new THREE.Mesh(
+      new THREE.PlaneGeometry(120, 120),
+      new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.8 })
+    );
+    island.rotation.x = -Math.PI / 2;
     scene.add(island);
 
-    // Player Mesh
+    // Player Avatar
     const playerGroup = new THREE.Group();
-    const pBody = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.4, 0.6), new THREE.MeshLambertMaterial({ color: 0x2244aa }));
-    pBody.position.y = 0.9;
+    const pBody = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.4, 0.6), new THREE.MeshStandardMaterial({ color: 0x2563eb }));
+    pBody.position.y = 0.7;
     playerGroup.add(pBody);
     scene.add(playerGroup);
+    stateRef.current.playerGroup = playerGroup;
 
-    // Spawn 10 Wild Pixel Monsters
-    const monsterColors = [0xff4444, 0x44ff44, 0xffff44, 0xaa44ff, 0xff8800];
-    for (let i = 0; i < 10; i++) {
+    // Spawn 8 Wild Monsters
+    stateRef.current.monsters = [];
+    const mColors = [0xef4444, 0x8b5cf6, 0xf59e0b, 0x10b981];
+
+    for (let i = 0; i < 8; i++) {
       const mGroup = new THREE.Group();
       const mBody = new THREE.Mesh(
-        new THREE.BoxGeometry(1.2, 1.2, 1.2),
-        new THREE.MeshLambertMaterial({ color: monsterColors[i % monsterColors.length] })
+        new THREE.SphereGeometry(0.8, 12, 12),
+        new THREE.MeshStandardMaterial({ color: mColors[i % mColors.length] })
       );
       mBody.position.y = 0.8;
       mGroup.add(mBody);
 
-      // Horns / Ears
-      const horn = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.6, 4), new THREE.MeshLambertMaterial({ color: 0xffffff }));
-      horn.position.set(0.3, 1.6, 0);
-      mGroup.add(horn);
-
-      const mx = (Math.random() - 0.5) * 100;
-      const mz = -15 - Math.random() * 80;
+      const mx = (Math.random() - 0.5) * 60;
+      const mz = (Math.random() - 0.5) * 60;
       mGroup.position.set(mx, 0, mz);
       scene.add(mGroup);
 
-      gameStateRef.current.monsters.push({
+      stateRef.current.monsters.push({
         mesh: mGroup,
         x: mx,
         z: mz,
-        hp: 100,
-        captured: false,
-        name: `Monster #${i + 1}`
+        hp: 1,
+        captured: false
       });
     }
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const k = e.key.toLowerCase();
-      if (k === 'w' || k === 'arrowup') gameStateRef.current.keys.w = true;
-      if (k === 's' || k === 'arrowdown') gameStateRef.current.keys.s = true;
-      if (k === 'a' || k === 'arrowleft') gameStateRef.current.keys.a = true;
-      if (k === 'd' || k === 'arrowright') gameStateRef.current.keys.d = true;
-      if (k === ' ' || k === 'j') throwTamingCube(scene);
-    };
-
-    const handleKeyUp = (e: KeyboardEvent) => {
-      const k = e.key.toLowerCase();
-      if (k === 'w' || k === 'arrowup') gameStateRef.current.keys.w = false;
-      if (k === 's' || k === 'arrowdown') gameStateRef.current.keys.s = false;
-      if (k === 'a' || k === 'arrowleft') gameStateRef.current.keys.a = false;
-      if (k === 'd' || k === 'arrowright') gameStateRef.current.keys.d = false;
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-
     let animId: number;
-    let clock = new THREE.Clock();
+    let lastTime = performance.now();
 
-    const animate = () => {
+    const animate = (now: number) => {
       animId = requestAnimationFrame(animate);
-      const dt = clock.getDelta();
-      const s = gameStateRef.current;
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
 
-      if (!s.isGameOver && !s.isVictory) {
-        if (s.keys.a) s.rotY += 2.0 * dt;
-        if (s.keys.d) s.rotY -= 2.0 * dt;
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-        const forward = (s.keys.w ? 1 : 0) - (s.keys.s ? 1 : 0);
-        s.posX += Math.sin(s.rotY) * forward * 14 * dt;
-        s.posZ -= Math.cos(s.rotY) * forward * 14 * dt;
+      // Move player
+      const speed = 12;
+      s.posX += s.moveDir.x * speed * dt;
+      s.posZ += s.moveDir.y * speed * dt;
+      s.posX = THREE.MathUtils.clamp(s.posX, -50, 50);
+      s.posZ = THREE.MathUtils.clamp(s.posZ, -50, 50);
 
+      if (s.moveDir.length() > 0.1) {
+        s.rotY = Math.atan2(s.moveDir.x, s.moveDir.y);
+      }
+
+      if (playerGroup) {
         playerGroup.position.set(s.posX, 0, s.posZ);
         playerGroup.rotation.y = s.rotY;
+      }
 
-        camera.position.set(s.posX - Math.sin(s.rotY) * 8, 5, s.posZ + Math.cos(s.rotY) * 8);
-        camera.lookAt(s.posX, 1.5, s.posZ);
+      // Camera follow
+      camera.position.set(s.posX, 8, s.posZ + 12);
+      camera.lookAt(s.posX, 1, s.posZ);
 
-        // Update Throw Cubes
-        for (let i = s.throwCubes.length - 1; i >= 0; i--) {
-          const c = s.throwCubes[i];
-          c.mesh.position.x += c.vx * dt;
-          c.mesh.position.y += c.vy * dt;
-          c.mesh.position.z += c.vz * dt;
-          c.vy -= 18 * dt; // gravity
-          c.life -= dt;
+      // Throw cubes update
+      for (let i = s.throwCubes.length - 1; i >= 0; i--) {
+        const c = s.throwCubes[i];
+        c.life -= dt;
+        c.vy -= 9.8 * 1.5 * dt;
+        c.mesh.position.x += c.vx * dt;
+        c.mesh.position.y += c.vy * dt;
+        c.mesh.position.z += c.vz * dt;
 
-          let hit = false;
-          s.monsters.forEach(m => {
-            if (m.captured || hit) return;
-            const dist = c.mesh.position.distanceTo(m.mesh.position);
-            if (dist < 2.5) {
-              hit = true;
-              m.captured = true;
-              scene.remove(m.mesh);
-              s.captured += 1;
-              setCaptured(s.captured);
-              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+        // Monster collision
+        for (const m of s.monsters) {
+          if (!m.captured && c.mesh.position.distanceTo(m.mesh.position) < 1.6) {
+            m.captured = true;
+            scene.remove(m.mesh);
+            s.captured += 1;
+            s.score += 300;
+            setCaptured(s.captured);
+            setScore(s.score);
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
 
-              if (s.captured >= 6) {
-                s.isVictory = true;
-                setIsVictory(true);
-                const reward = 50 + s.captured * 5;
-                setRewardSns(reward);
-                onReward(reward);
-              }
+            if (s.captured >= targetCaptured && !s.isGameOver) {
+              s.isVictory = true;
+              s.isGameOver = true;
+              setIsGameOver(true);
+              const duration = (Date.now() - s.startTime) / 1000;
+              const receipt = calculateAndDepositMissionReward({
+                gameId: 'voxel_monster_isle',
+                gameTitle: '복셀 몬스터 아일',
+                durationSeconds: duration,
+                score: s.score + 1500,
+                difficulty: 'HARD',
+                isVictory: true
+              });
+              setSettlementReceipt(receipt);
+              onReward(receipt.totalSns);
             }
-          });
-
-          if (hit || c.mesh.position.y < 0 || c.life <= 0) {
-            scene.remove(c.mesh);
-            s.throwCubes.splice(i, 1);
+            break;
           }
         }
+
+        if (c.life <= 0 || c.mesh.position.y <= 0.3) {
+          scene.remove(c.mesh);
+          s.throwCubes.splice(i, 1);
+        }
+      }
+
+      // Check cube out failure
+      if (s.cubes <= 0 && s.throwCubes.length === 0 && s.captured < targetCaptured && !s.isGameOver) {
+        s.isGameOver = true;
+        setIsGameOver(true);
+        const duration = (Date.now() - s.startTime) / 1000;
+        const receipt = calculateAndDepositMissionReward({
+          gameId: 'voxel_monster_isle',
+          gameTitle: '복셀 몬스터 아일',
+          durationSeconds: duration,
+          score: s.score,
+          difficulty: 'HARD',
+          isVictory: false
+        });
+        setSettlementReceipt(receipt);
+        onReward(receipt.totalSns);
       }
 
       renderer.render(scene, camera);
@@ -216,55 +253,122 @@ export const VoxelMonsterIsleGame: React.FC<VoxelMonsterIsleGameProps> = ({
 
     animId = requestAnimationFrame(animate);
 
-    const handleResize = () => {
-      if (!container) return;
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      window.removeEventListener('resize', handleResize);
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, playSfx]);
+  }, [lowSpecMode]);
+
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.posX = 0;
+    s.posZ = 0;
+    s.rotY = 0;
+    s.cubes = 10;
+    s.captured = 0;
+    s.score = 0;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    s.monsters.forEach(m => {
+      m.captured = false;
+      s.scene?.add(m.mesh);
+    });
+    setCubes(10);
+    setCaptured(0);
+    setScore(0);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
+
+  const customTutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 야생 몬스터 포획' : 'STEP 1: MONSTER TAMING',
+      title: isKo ? '몬스터 아일 탐험 포획' : 'Explore Isle & Tame Monsters',
+      description: isKo
+        ? '3D 복셀 미지의 섬을 탐험하며 야생 몬스터를 찾아 테이밍 큐브를 던져 포획하세요.'
+        : 'Explore the 3D voxel island, locate wild monsters and throw taming cubes to capture them.',
+      keyPoints: isKo
+        ? [
+            '야생 몬스터 5마리 포획 시 승리',
+            '테이밍 큐브 잔여 10개 내 완료',
+            '포획마다 +300P 보너스 획득'
+          ]
+        : [
+            'Capture 5 wild monsters to win',
+            'Clear within 10 available taming cubes',
+            '+300P bonus points per capture'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 컨트롤' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '원터치 드래그 & 탭 큐브 투척' : 'Free Drag & Tap Cube Throw',
+      description: isKo
+        ? '가상 조이스틱 없이 화면 드래그로 자유 이동하고 탭하여 테이밍 큐브를 던집니다.'
+        : 'Drag anywhere to explore the island and tap to throw taming cubes with zero buttons.',
+      keyPoints: isKo
+        ? [
+            '👆 자유 드래그: 테이머 360° 섬 탐험 이동',
+            '🎯 탭: 조준 방향 테이밍 큐브 투척',
+            '⚡ 몬스터 근접 시 포획 확률 증가'
+          ]
+        : [
+            '👆 Free Drag: Smooth 360° movement',
+            '🎯 Tap: Launch taming cube forward',
+            '⚡ Higher capture chance at close range'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '몬스터 테이밍 완료 즉시 HARD 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Standard payout scaled with Hard multiplier deposited atomically to your wallet.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '잔여 큐브 및 스피드 포획 가산점',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Remaining cubes and speed bonuses',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
+    }
+  ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 text-white select-none overflow-hidden flex flex-col font-sans">
-      <div ref={mountRef} className="w-full h-full absolute inset-0" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Top HUD */}
-      <div className="relative z-10 p-3 sm:p-4 flex items-center justify-between bg-gradient-to-b from-slate-950/90 to-transparent pointer-events-none">
-        <button
-          onClick={onExit}
-          className="pointer-events-auto p-2 bg-slate-900/80 hover:bg-slate-800 text-white rounded-xl border border-slate-700 active:scale-95 flex items-center gap-1 cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-          <span className="text-xs font-bold">{language === 'ko' ? '나가기' : 'Exit'}</span>
-        </button>
-
-        {/* Cubes & Captured Stats */}
-        <div className="flex items-center gap-3 bg-slate-900/80 px-3 py-1.5 rounded-2xl border border-slate-700">
-          <div className="flex items-center gap-1 text-cyan-400 text-xs font-bold">
-            <Zap size={14} />
-            <span>{cubes} 테이밍 큐브</span>
-          </div>
-
-          <div className="bg-emerald-950 border border-emerald-500/40 px-2 py-0.5 rounded text-emerald-300 text-xs font-bold">
-            포획: {captured}/6
-          </div>
-        </div>
-      </div>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 몬스터 아일' : 'Voxel Monster Isle'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '포획' : 'Captured', value: `${captured}/${targetCaptured}`, color: 'text-emerald-300' },
+          { label: isKo ? '큐브' : 'Cubes', value: `x${cubes}`, color: cubes <= 2 ? 'text-rose-400 font-bold' : 'text-cyan-300' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
       {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isVictory && (
+      {!isGameOver && !isPaused && !showTutorial && (
         <div
           className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
           style={{ touchAction: 'none' }}
@@ -280,12 +384,10 @@ export const VoxelMonsterIsleGame: React.FC<VoxelMonsterIsleGameProps> = ({
               const dx = curX - startX;
               const dy = curY - startY;
 
-              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
                 moved = true;
-                gameStateRef.current.keys.w = dy < -8;
-                gameStateRef.current.keys.s = dy > 12;
-                gameStateRef.current.keys.a = dx < -10;
-                gameStateRef.current.keys.d = dx > 10;
+                stateRef.current.moveDir.x = Math.abs(dx) > 8 ? (dx > 0 ? 1 : -1) : 0;
+                stateRef.current.moveDir.y = Math.abs(dy) > 8 ? (dy > 0 ? 1 : -1) : 0;
               }
             };
 
@@ -293,15 +395,12 @@ export const VoxelMonsterIsleGame: React.FC<VoxelMonsterIsleGameProps> = ({
               window.removeEventListener('pointermove', onMove);
               window.removeEventListener('pointerup', onUp);
               window.removeEventListener('pointercancel', onUp);
-              gameStateRef.current.keys.w = false;
-              gameStateRef.current.keys.s = false;
-              gameStateRef.current.keys.a = false;
-              gameStateRef.current.keys.d = false;
+              stateRef.current.moveDir.x = 0;
+              stateRef.current.moveDir.y = 0;
 
               if (!moved) {
                 // Tap: Throw Taming Cube
-                const scene = (mountRef.current?.children[0] as any)?.__r3f?.scene;
-                if (scene) throwTamingCube(scene);
+                throwTamingCube();
               }
             };
 
@@ -314,44 +413,31 @@ export const VoxelMonsterIsleGame: React.FC<VoxelMonsterIsleGameProps> = ({
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/70 border border-emerald-500/30 rounded-full text-[10px] text-emerald-300 font-mono backdrop-blur-xs">
-          {language === 'ko' ? '드래그: 섬 탐험 이동 | 탭: 테이밍 큐브 투척 (버튼 없음)' : 'Drag: Move & Explore | Tap: Throw Taming Cube (No Buttons)'}
+        <div className="px-3 py-1 bg-black/75 border border-emerald-500/30 rounded-full text-[10px] text-emerald-300 font-mono backdrop-blur-xs">
+          {isKo ? '화면 드래그: 섬 탐험 이동 | 탭: 테이밍 큐브 투척 (버튼 없음)' : 'Drag: Move & Explore | Tap: Throw Taming Cube (No Buttons)'}
         </div>
       </div>
 
-      {/* Victory / Game Over Modal */}
-      {(isVictory || isGameOver) && (
-        <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
-            <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center ${isVictory ? 'bg-amber-400/20 text-yellow-400' : 'bg-rose-500/20 text-rose-400'}`}>
-              {isVictory ? <Trophy size={36} /> : <Award size={36} />}
-            </div>
+      {/* Universal 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_monster_isle"
+          gameTitle={isKo ? '3D 복셀 몬스터 아일: 야생 몬스터 포획' : 'Voxel Monster Isle: Wild Taming'}
+          customSteps={customTutorialSteps}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-            <h2 className="text-2xl font-black italic uppercase">{isVictory ? '테이머즈 마스터 VICTORY' : '큐브 소진! DEFEAT'}</h2>
-
-            <p className="text-xs text-slate-300">
-              {isVictory
-                ? '섬의 야생 몬스터들을 성공적으로 포획하여 최강의 덱을 구축했습니다!'
-                : '모든 테이밍 큐브가 소진되었습니다.'}
-            </p>
-
-            {isVictory && (
-              <div className="bg-slate-950 border border-amber-500/30 p-3 rounded-2xl">
-                <span className="text-xs text-slate-400 block uppercase font-bold">REWARD</span>
-                <span className="text-2xl font-black text-yellow-400 flex items-center justify-center gap-1">
-                  <Sparkles size={20} /> +{rewardSns} SNS
-                </span>
-              </div>
-            )}
-
-            <button
-              onClick={onExit}
-              className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 text-slate-950 font-bold rounded-xl active:scale-95 transition-all cursor-pointer"
-            >
-              {language === 'ko' ? '확인 및 나가기' : 'Confirm & Exit'}
-            </button>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );

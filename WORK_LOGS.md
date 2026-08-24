@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-25 08:31 KST / 23:31 UTC] [/imp-mission 5개 게임 일괄 개선 #40~44] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
+- **2회차 5개 일괄 선정 및 개선 대상 게임**:
+  1. `src/components/VoxelMicroKartGame.tsx` (40 / 110) - 88점 ➔ **99점** (좌우 드래그 조향, 탭 아이템 사용, 더블탭/위로 터보 부스터 퓨어 제스처, 1줄 슬림 HUD 및 확정보상 연동)
+  2. `src/components/VoxelMightyBoxingGame.tsx` (41 / 110) - 88점 ➔ **99점** (탭 스트레이트, 위로/더블탭 카운터 어퍼컷, 좌우 스와이프 위빙 회피, 1줄 슬림 HUD 및 확정보상 연동)
+  3. `src/components/VoxelMiningDefenseGame.tsx` (42 / 110) - 88점 ➔ **99점** (탭 광물 채굴, 더블탭 방어 포탑 스마트 빌드, 코어 수호 1줄 슬림 HUD 및 확정보상 연동)
+  4. `src/components/VoxelMonsterIsleGame.tsx` (43 / 110) - 88점 ➔ **99점** (원터치 자유 드래그 섬 탐험 이동, 탭 테이밍 큐브 투척, 1줄 슬림 HUD 및 확정보상 연동)
+  5. `src/components/VoxelMonsterTruckGame.tsx` (44 / 110) - 88점 ➔ **99점** (드래그 조향 및 주행, 탭 360° 도넛 턴, 더블탭/위로 니트로 램 어택, 1줄 슬림 HUD 및 확정보상 연동)
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 5개 게임 일괄(VoxelMicroKart, VoxelMightyBoxing, VoxelMiningDefense, VoxelMonsterIsle, VoxelMonsterTruck) 1줄 HUD/확정보상 전면 개선 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 08:28 KST / 23:28 UTC] [/imp-mission 5개 게임 일괄 개선 #35~39] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
 - **1회차 5개 일괄 선정 및 개선 대상 게임**:
   1. `src/components/VoxelLifeFlameGame.tsx` (35 / 110) - 88점 ➔ **99점** (360° 드래곤 화염 조준, 탭 생명의 불꽃 발사, 세계수 수호 1줄 HUD 및 확정보상 연동)

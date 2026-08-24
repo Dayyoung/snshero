@@ -1,7 +1,10 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ArrowLeft, Volume2, VolumeX, Shield, Pickaxe, Hammer, Bomb, Sparkles, Trophy, RotateCcw } from 'lucide-react';
 import { CardData, Language } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelMiningDefenseGameProps {
   deck: CardData[];
@@ -12,527 +15,389 @@ interface VoxelMiningDefenseGameProps {
   onReward: (amount: number) => void;
 }
 
-type BlockType = 'grass' | 'dirt' | 'stone' | 'iron' | 'gold' | 'turret';
-
-interface BlockData {
-  x: number;
-  y: number;
-  z: number;
-  type: BlockType;
-  mesh?: THREE.Mesh;
-}
-
-interface MonsterData {
-  id: number;
-  mesh: THREE.Mesh;
-  hp: number;
-  maxHp: number;
-  speed: number;
-}
-
 export const VoxelMiningDefenseGame: React.FC<VoxelMiningDefenseGameProps> = ({
+  deck: _deck,
   language,
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward,
+  onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
-  const [isMuted, setIsMuted] = useState(false);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_mining_defense') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [coreHp, setCoreHp] = useState<number>(100);
   const [phase, setPhase] = useState<'day' | 'night'>('day');
-  const [wave, setWave] = useState(1);
-  const [maxWaves] = useState(3);
-  const [timeLeft, setTimeLeft] = useState(25); // Day phase timer
-  const [coreHp, setCoreHp] = useState(100);
-  const [maxCoreHp] = useState(100);
-  const [minedOres, setMinedOres] = useState({ stone: 10, iron: 5, gold: 2 });
-  const [selectedTool, setSelectedTool] = useState<'pickaxe' | 'stone' | 'iron' | 'turret'>('pickaxe');
-  const [gameOver, setGameOver] = useState(false);
-  const [isVictory, setIsVictory] = useState(false);
-  const [score, setScore] = useState(0);
+  const [wave, setWave] = useState<number>(1);
+  const maxWaves = 3;
+  const [stoneCount, setStoneCount] = useState<number>(12);
+  const [ironCount, setIronCount] = useState<number>(6);
+  const [score, setScore] = useState<number>(0);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
-  const sceneRef = useRef<THREE.Scene | null>(null);
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const blocksRef = useRef<Map<string, BlockData>>(new Map());
-  const monstersRef = useRef<MonsterData[]>([]);
-  const turretsRef = useRef<{ x: number; y: number; z: number; lastShot: number; mesh: THREE.Mesh }[]>([]);
-  const coreMeshRef = useRef<THREE.Mesh | null>(null);
-  const animFrameRef = useRef<number | null>(null);
+  const stateRef = useRef({
+    coreHp: 100,
+    phase: 'day' as 'day' | 'night',
+    wave: 1,
+    stone: 12,
+    iron: 6,
+    score: 0,
+    isGameOver: false,
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
+    turrets: [] as THREE.Mesh[],
+    monsters: [] as { mesh: THREE.Mesh; hp: number; speed: number }[],
+    scene: null as THREE.Scene | null
+  });
 
-  // Sound helper
-  const triggerSound = useCallback((type: 'mine' | 'build' | 'hit' | 'win' | 'lose') => {
-    if (isMuted) return;
-    if (type === 'mine') playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-    else if (type === 'build') playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-    else if (type === 'hit') playSfx?.('https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3');
-    else if (type === 'win') playSfx?.('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-    else if (type === 'lose') playSfx?.('https://assets.mixkit.co/active_storage/sfx/2658/2658-preview.mp3');
-  }, [isMuted, playSfx]);
+  const handleBuildTurret = () => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isVictory || s.isPaused || s.stone < 4 || !s.scene) return;
 
-  // Block Materials
-  const materialsRef = useRef<{ [key in BlockType]?: THREE.Material }>({});
+    s.stone -= 4;
+    setStoneCount(s.stone);
+
+    const tMesh = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.5, 0.7, 1.8, 8),
+      new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.4 })
+    );
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 3.5;
+    tMesh.position.set(Math.sin(angle) * dist, 0.9, Math.cos(angle) * dist);
+    s.scene.add(tMesh);
+    s.turrets.push(tMesh);
+
+    s.score += 200;
+    setScore(s.score);
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+  };
+
+  const handleMine = () => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isVictory || s.isPaused) return;
+    s.stone += 3;
+    s.iron += 1;
+    s.score += 80;
+    setStoneCount(s.stone);
+    setIronCount(s.iron);
+    setScore(s.score);
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+  };
 
   useEffect(() => {
-    if (!mountRef.current) return;
     const container = mountRef.current;
-    const width = container.clientWidth || 360;
-    const height = container.clientHeight || 500;
+    if (!container) return;
 
-    // 1. Scene setup
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
+
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color('#87CEEB'); // Sky blue
-    sceneRef.current = scene;
+    scene.background = new THREE.Color(0x0f172a);
+    stateRef.current.scene = scene;
 
-    // 2. Camera setup
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
     camera.position.set(12, 16, 18);
     camera.lookAt(0, 0, 0);
-    cameraRef.current = camera;
 
-    // 3. Renderer setup
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    renderer.shadowMap.enabled = !lowSpecMode;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    container.innerHTML = '';
     container.appendChild(renderer.domElement);
-    rendererRef.current = renderer;
 
-    // 4. Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-    scene.add(ambientLight);
+    const ambLight = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambLight);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    dirLight.position.set(20, 40, 20);
-    dirLight.castShadow = !lowSpecMode;
+    const dirLight = new THREE.DirectionalLight(0xf59e0b, 1.4);
+    dirLight.position.set(15, 30, 20);
     scene.add(dirLight);
 
-    // 5. Materials
-    materialsRef.current = {
-      grass: new THREE.MeshLambertMaterial({ color: 0x4caf50 }),
-      dirt: new THREE.MeshLambertMaterial({ color: 0x795548 }),
-      stone: new THREE.MeshLambertMaterial({ color: 0x9e9e9e }),
-      iron: new THREE.MeshLambertMaterial({ color: 0xe0e0e0 }),
-      gold: new THREE.MeshLambertMaterial({ color: 0xffd700 }),
-      turret: new THREE.MeshLambertMaterial({ color: 0x0288d1 }),
-    };
+    // Grid Floor
+    const floor = new THREE.Mesh(
+      new THREE.PlaneGeometry(36, 36),
+      new THREE.MeshStandardMaterial({ color: 0x14532d, roughness: 0.8 })
+    );
+    floor.rotation.x = -Math.PI / 2;
+    scene.add(floor);
 
-    const boxGeo = new THREE.BoxGeometry(1, 1, 1);
+    // Hero Core Target
+    const core = new THREE.Mesh(
+      new THREE.OctahedronGeometry(1.4),
+      new THREE.MeshStandardMaterial({ color: 0x06b6d4, emissive: 0x0891b2 })
+    );
+    core.position.y = 1.4;
+    scene.add(core);
 
-    // 6. Generate 11x11 Base Island
-    const blocks = new Map<string, BlockData>();
-    const size = 5;
-    for (let x = -size; x <= size; x++) {
-      for (let z = -size; z <= size; z++) {
-        // Floor
-        let type: BlockType = 'grass';
-        const rand = Math.random();
-        if (rand < 0.15) type = 'gold';
-        else if (rand < 0.35) type = 'iron';
-        else if (rand < 0.6) type = 'stone';
-
-        const mesh = new THREE.Mesh(boxGeo, materialsRef.current[type]);
-        mesh.position.set(x, 0, z);
-        mesh.castShadow = !lowSpecMode;
-        mesh.receiveShadow = !lowSpecMode;
-        scene.add(mesh);
-
-        const key = `${x},0,${z}`;
-        blocks.set(key, { x, y: 0, z, type, mesh });
-      }
-    }
-    blocksRef.current = blocks;
-
-    // 7. Core Crystal in the Center
-    const coreGeo = new THREE.OctahedronGeometry(0.9, 0);
-    const coreMat = new THREE.MeshLambertMaterial({ color: 0x00ffff, wireframe: false });
-    const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-    coreMesh.position.set(0, 1.2, 0);
-    scene.add(coreMesh);
-    coreMeshRef.current = coreMesh;
-
-    // 8. Animation Loop
+    let animId: number;
     let lastTime = performance.now();
-    const animate = (time: number) => {
-      const dt = (time - lastTime) / 1000;
-      lastTime = time;
+    let spawnTimer = 0;
 
-      // Rotate core
-      if (coreMeshRef.current) {
-        coreMeshRef.current.rotation.y += 0.02;
-        coreMeshRef.current.position.y = 1.2 + Math.sin(time * 0.003) * 0.15;
+    const animate = (now: number) => {
+      animId = requestAnimationFrame(animate);
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
+
+      core.rotation.y += dt * 1.5;
+
+      // Spawn creeps
+      spawnTimer += dt;
+      if (spawnTimer > 1.8 && s.monsters.length < 8) {
+        spawnTimer = 0;
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 14;
+        const mMesh = new THREE.Mesh(
+          new THREE.BoxGeometry(0.9, 0.9, 0.9),
+          new THREE.MeshStandardMaterial({ color: 0x991b1b })
+        );
+        mMesh.position.set(Math.sin(angle) * dist, 0.45, Math.cos(angle) * dist);
+        scene.add(mMesh);
+
+        s.monsters.push({
+          mesh: mMesh,
+          hp: 2,
+          speed: 2.2
+        });
       }
 
-      // Update Monsters
-      const monsters = monstersRef.current;
-      for (let i = monsters.length - 1; i >= 0; i--) {
-        const mon = monsters[i];
-        // Move towards center (0, 0, 0)
-        const dx = 0 - mon.mesh.position.x;
-        const dz = 0 - mon.mesh.position.z;
-        const dist = Math.sqrt(dx * dx + dz * dz);
+      // Turret auto attack
+      s.turrets.forEach(t => {
+        s.monsters.forEach(m => {
+          if (t.position.distanceTo(m.mesh.position) < 8.0) {
+            m.hp -= dt * 2.5;
+          }
+        });
+      });
 
-        if (dist > 0.8) {
-          mon.mesh.position.x += (dx / dist) * mon.speed * dt;
-          mon.mesh.position.z += (dz / dist) * mon.speed * dt;
-          mon.mesh.rotation.y = Math.atan2(-dx, -dz);
-        } else {
-          // Attack Core
-          setCoreHp((prev) => {
-            const next = Math.max(0, prev - 10 * dt);
-            if (next <= 0 && !gameOver) {
-              setGameOver(true);
-              setIsVictory(false);
-              triggerSound('lose');
-            }
-            return next;
-          });
+      // Monster movement
+      for (let i = s.monsters.length - 1; i >= 0; i--) {
+        const m = s.monsters[i];
+        const dir = new THREE.Vector3(0, 0.45, 0).sub(m.mesh.position).normalize();
+        m.mesh.position.addScaledVector(dir, m.speed * dt);
+
+        if (m.hp <= 0) {
+          scene.remove(m.mesh);
+          s.monsters.splice(i, 1);
+          s.score += 120;
+          setScore(s.score);
+          continue;
         }
-      }
 
-      // Turrets Shoot Monsters
-      const turrets = turretsRef.current;
-      turrets.forEach((turret) => {
-        if (time - turret.lastShot > 800) {
-          // Find closest monster
-          let closestMon: MonsterData | null = null;
-          let minDist = 7;
-          monsters.forEach((m) => {
-            const d = m.mesh.position.distanceTo(turret.mesh.position);
-            if (d < minDist) {
-              minDist = d;
-              closestMon = m;
-            }
-          });
+        if (m.mesh.position.length() < 1.6) {
+          // Attack Core
+          s.coreHp = Math.max(0, s.coreHp - 8);
+          setCoreHp(s.coreHp);
+          scene.remove(m.mesh);
+          s.monsters.splice(i, 1);
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3');
 
-          if (closestMon) {
-            turret.lastShot = time;
-            (closestMon as MonsterData).hp -= 25;
-            if ((closestMon as MonsterData).hp <= 0) {
-              scene.remove((closestMon as MonsterData).mesh);
-              monstersRef.current = monstersRef.current.filter((m) => m.id !== (closestMon as MonsterData).id);
-              setScore((s) => s + 50);
-              triggerSound('hit');
-            }
+          if (s.coreHp <= 0 && !s.isGameOver) {
+            s.isGameOver = true;
+            setIsGameOver(true);
+            const duration = (Date.now() - s.startTime) / 1000;
+            const receipt = calculateAndDepositMissionReward({
+              gameId: 'voxel_mining_defense',
+              gameTitle: '복셀 마이닝 디펜스',
+              durationSeconds: duration,
+              score: s.score,
+              difficulty: 'NIGHTMARE',
+              isVictory: false
+            });
+            setSettlementReceipt(receipt);
+            onReward(receipt.totalSns);
           }
         }
-      });
+      }
+
+      // Victory Condition (Wave clear on high score)
+      if (s.score >= 1200 && !s.isGameOver) {
+        s.isVictory = true;
+        s.isGameOver = true;
+        setIsGameOver(true);
+        const duration = (Date.now() - s.startTime) / 1000;
+        const receipt = calculateAndDepositMissionReward({
+          gameId: 'voxel_mining_defense',
+          gameTitle: '복셀 마이닝 디펜스',
+          durationSeconds: duration,
+          score: s.score + 1800,
+          difficulty: 'NIGHTMARE',
+          isVictory: true
+        });
+        setSettlementReceipt(receipt);
+        onReward(receipt.totalSns);
+      }
 
       renderer.render(scene, camera);
-      animFrameRef.current = requestAnimationFrame(animate);
     };
 
-    animFrameRef.current = requestAnimationFrame(animate);
-
-    // Resize handler
-    const handleResize = () => {
-      if (!container || !camera || !renderer) return;
-      const w = container.clientWidth;
-      const h = container.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener('resize', handleResize);
+    animId = requestAnimationFrame(animate);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      cancelAnimationFrame(animId);
       renderer.dispose();
+      if (container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
+      }
     };
-  }, [lowSpecMode, triggerSound, gameOver]);
+  }, [lowSpecMode]);
 
-  // Timer & Wave Lifecycle
-  useEffect(() => {
-    if (gameOver) return;
-
-    const timer = setInterval(() => {
-      if (phase === 'day') {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            // Switch to night
-            setPhase('night');
-            if (sceneRef.current) sceneRef.current.background = new THREE.Color('#0f172a');
-            spawnMonsterWave(wave);
-            return 20;
-          }
-          return prev - 1;
-        });
-      } else {
-        // Night phase countdown
-        setTimeLeft((prev) => {
-          if (prev <= 1 || monstersRef.current.length === 0) {
-            // Night cleared
-            if (wave >= maxWaves) {
-              setGameOver(true);
-              setIsVictory(true);
-              const rewardSns = 60;
-              onReward(rewardSns);
-              triggerSound('win');
-              return 0;
-            } else {
-              setWave((w) => w + 1);
-              setPhase('day');
-              if (sceneRef.current) sceneRef.current.background = new THREE.Color('#87CEEB');
-              return 25;
-            }
-          }
-          return prev - 1;
-        });
-      }
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [phase, wave, maxWaves, gameOver, onReward, triggerSound]);
-
-  // Spawn monster wave
-  const spawnMonsterWave = (currentWave: number) => {
-    if (!sceneRef.current) return;
-    const scene = sceneRef.current;
-    const count = 4 + currentWave * 3;
-    const newMonsters: MonsterData[] = [];
-
-    const monGeo = new THREE.BoxGeometry(0.8, 1.2, 0.8);
-    const monMat = new THREE.MeshLambertMaterial({ color: 0xef4444 });
-
-    for (let i = 0; i < count; i++) {
-      const angle = (i / count) * Math.PI * 2 + Math.random() * 0.2;
-      const radius = 8 + Math.random() * 2;
-      const x = Math.cos(angle) * radius;
-      const z = Math.sin(angle) * radius;
-
-      const mesh = new THREE.Mesh(monGeo, monMat);
-      mesh.position.set(x, 0.6, z);
-      scene.add(mesh);
-
-      newMonsters.push({
-        id: Date.now() + i,
-        mesh,
-        hp: 40 + currentWave * 15,
-        maxHp: 40 + currentWave * 15,
-        speed: 1.5 + currentWave * 0.3,
-      });
-    }
-
-    monstersRef.current = newMonsters;
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.monsters.forEach(m => s.scene?.remove(m.mesh));
+    s.turrets.forEach(t => s.scene?.remove(t));
+    s.monsters = [];
+    s.turrets = [];
+    s.coreHp = 100;
+    s.stone = 12;
+    s.iron = 6;
+    s.score = 0;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    setCoreHp(100);
+    setStoneCount(12);
+    setIronCount(6);
+    setScore(0);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
   };
 
-  // Click / Tap on 3D Voxel World (Mine or Build)
-  const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!mountRef.current || !cameraRef.current || !sceneRef.current || gameOver) return;
-    const rect = mountRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    const y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-
-    const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(new THREE.Vector2(x, y), cameraRef.current);
-
-    const meshes: THREE.Mesh[] = [];
-    blocksRef.current.forEach((b) => {
-      if (b.mesh) meshes.push(b.mesh);
-    });
-
-    const intersects = raycaster.intersectObjects(meshes);
-    if (intersects.length > 0) {
-      const hit = intersects[0];
-      const clickedMesh = hit.object as THREE.Mesh;
-      const bx = Math.round(clickedMesh.position.x);
-      const by = Math.round(clickedMesh.position.y);
-      const bz = Math.round(clickedMesh.position.z);
-      const key = `${bx},${by},${bz}`;
-
-      if (selectedTool === 'pickaxe') {
-        // Mine block
-        const block = blocksRef.current.get(key);
-        if (block && (bx !== 0 || bz !== 0)) { // Cannot mine core
-          if (block.type === 'stone') setMinedOres((prev) => ({ ...prev, stone: prev.stone + 1 }));
-          else if (block.type === 'iron') setMinedOres((prev) => ({ ...prev, iron: prev.iron + 1 }));
-          else if (block.type === 'gold') setMinedOres((prev) => ({ ...prev, gold: prev.gold + 1 }));
-
-          sceneRef.current.remove(clickedMesh);
-          blocksRef.current.delete(key);
-          setScore((s) => s + 10);
-          triggerSound('mine');
-        }
-      } else if (selectedTool === 'stone' || selectedTool === 'iron') {
-        // Build wall on top
-        const cost = 1;
-        if (selectedTool === 'stone' && minedOres.stone >= cost) {
-          setMinedOres((prev) => ({ ...prev, stone: prev.stone - cost }));
-          const newY = by + 1;
-          if (newY <= 3) {
-            const newGeo = new THREE.BoxGeometry(1, 1, 1);
-            const newMesh = new THREE.Mesh(newGeo, materialsRef.current[selectedTool]);
-            newMesh.position.set(bx, newY, bz);
-            sceneRef.current.add(newMesh);
-            blocksRef.current.set(`${bx},${newY},${bz}`, { x: bx, y: newY, z: bz, type: selectedTool, mesh: newMesh });
-            triggerSound('build');
-          }
-        }
-      } else if (selectedTool === 'turret') {
-        // Place Turret
-        if (minedOres.iron >= 3 && minedOres.gold >= 1) {
-          setMinedOres((prev) => ({ ...prev, iron: prev.iron - 3, gold: prev.gold - 1 }));
-          const tGeo = new THREE.CylinderGeometry(0.4, 0.5, 1.2, 8);
-          const tMesh = new THREE.Mesh(tGeo, materialsRef.current['turret']);
-          tMesh.position.set(bx, by + 1, bz);
-          sceneRef.current.add(tMesh);
-          turretsRef.current.push({ x: bx, y: by + 1, z: bz, lastShot: 0, mesh: tMesh });
-          triggerSound('build');
-        }
-      }
+  const customTutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 코어 수호 & 자원 채굴' : 'STEP 1: DEFEND & MINE',
+      title: isKo ? '마이닝 & 포탑 요새 구축' : 'Mine & Fortify Core',
+      description: isKo
+        ? '화면 탭으로 광물을 채굴하고, 자원을 소모하여 자동 방어 포탑을 건설해 몬스터를 막아내세요.'
+        : 'Tap screen to mine stone/iron resources and build automated turrets to defend the core.',
+      keyPoints: isKo
+        ? [
+            '영웅 코어 HP: 100% 사수',
+            '돌 4개 수집 시 방어 포탑 자동 건설',
+            '스코어 1,200P 도달 시 디펜스 완승'
+          ]
+        : [
+            'Protect Core HP at 100%',
+            'Build Turret with 4 Stone',
+            'Reach 1,200P to achieve victory'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '탭 채굴 & 더블탭 포탑 건설' : 'Tap Mine & Double-Tap Turret',
+      description: isKo
+        ? '가상 버튼 없이 탭으로 자원 채굴, 더블탭으로 포탑 건설을 100% 제스처로 수행합니다.'
+        : 'Tap anywhere to mine ores, and double-tap to instantly deploy defense turrets with zero buttons.',
+      keyPoints: isKo
+        ? [
+            '⛏️ 탭: 광물 자원 채굴 (+3 돌/+1 철)',
+            '🛡️ 2x 탭: 방어 포탑 건설 (돌 4 소모)',
+            '⚡ 포탑 자동 사거리 요격'
+          ]
+        : [
+            '⛏️ Tap: Mine ores (+3 Stone/+1 Iron)',
+            '🛡️ Double-Tap: Deploy Turret (Cost 4)',
+            '⚡ Automated turret firing range'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '디펜스 완승 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare multiplier payout calculated and deposited atomically to your wallet.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '코어 잔여 체력 및 포탑 구축 보너스',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Core HP and turret construction bonus',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
     }
-  };
+  ];
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-[#fdfcfc] text-[#201d1d] font-mono select-none overflow-hidden h-[100dvh]">
-      {/* Top Header Bar (DESIGN.md: 1px hairline, flat, rounded-none) */}
-      <header className="flex items-center justify-between px-3 py-2 border-b border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] shrink-0 z-10">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={onExit}
-            className="min-h-[44px] min-w-[44px] p-2 flex items-center justify-center border border-[rgba(15,0,0,0.12)] rounded-sm bg-white hover:bg-neutral-100 cursor-pointer"
-            aria-label="Back"
-          >
-            <ArrowLeft size={18} />
-          </button>
-          <div>
-            <h1 className="text-xs font-black uppercase tracking-wider">
-              {language === 'ko' ? '[3D 복셀 광산 서바이벌 디펜스]' : '[3D VOXEL MINING DEFENSE]'}
-            </h1>
-            <div className="flex items-center gap-2 text-[10px] text-neutral-500">
-              <span>{phase === 'day' ? '☀️ 낮 (자원 채굴/건설)' : '🌙 밤 (몬스터 습격)'}</span>
-              <span>•</span>
-              <span>WAVE {wave}/{maxWaves}</span>
-            </div>
-          </div>
-        </div>
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-        <div className="flex items-center gap-3">
-          {/* Core HP */}
-          <div className="flex flex-col items-end">
-            <span className="text-[9px] font-bold text-neutral-500">CORE HP</span>
-            <div className="w-20 h-2.5 bg-neutral-200 border border-[rgba(15,0,0,0.12)] rounded-none overflow-hidden">
-              <div
-                className="h-full bg-emerald-500 transition-all duration-200"
-                style={{ width: `${(coreHp / maxCoreHp) * 100}%` }}
-              />
-            </div>
-          </div>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 마이닝 디펜스' : 'Voxel Mining Defense'}
+        language={language}
+        hp={{ current: coreHp, max: 100 }}
+        telemetries={[
+          { label: isKo ? '돌' : 'Stone', value: `${stoneCount}`, color: 'text-neutral-300' },
+          { label: isKo ? '철' : 'Iron', value: `${ironCount}`, color: 'text-sky-300' },
+          { label: isKo ? '포탑' : 'Turret', value: `${stateRef.current.turrets.length}`, color: 'text-amber-300' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-cyan-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
-          <button
-            onClick={() => setIsMuted(!isMuted)}
-            className="min-h-[44px] min-w-[44px] p-2 flex items-center justify-center border border-[rgba(15,0,0,0.12)] rounded-sm bg-white hover:bg-neutral-100 cursor-pointer"
-          >
-            {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
-          </button>
-        </div>
-      </header>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && !isPaused && !showTutorial && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-pointer"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            e.preventDefault();
+            handleMine();
+          }}
+          onDoubleClick={handleBuildTurret}
+        />
+      )}
 
-      {/* Main 3D Canvas Area */}
-      <div
-        ref={mountRef}
-        onClick={handleCanvasClick}
-        className="flex-1 w-full relative cursor-crosshair overflow-hidden"
-      >
-        {/* Floating Timer & Status */}
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 px-4 py-1.5 bg-[#fdfcfc]/90 border border-[rgba(15,0,0,0.12)] shadow-xs rounded-sm text-xs font-black text-center pointer-events-none">
-          {phase === 'day' ? `낮 파밍 남은 시간: ${timeLeft}s` : `밤 방어 진행 중: ${timeLeft}s (${monstersRef.current.length}마리)`}
-        </div>
-
-        {/* Resources HUD */}
-        <div className="absolute top-3 left-3 flex flex-col gap-1 p-2 bg-[#fdfcfc]/90 border border-[rgba(15,0,0,0.12)] rounded-sm text-[11px] pointer-events-none">
-          <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 bg-neutral-400 border border-neutral-600" />
-            <span>돌: {minedOres.stone}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 bg-slate-200 border border-slate-400" />
-            <span>철: {minedOres.iron}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 bg-amber-400 border border-amber-600" />
-            <span>금: {minedOres.gold}</span>
-          </div>
-          <div className="text-[10px] text-indigo-600 font-black mt-1">SCORE: {score}</div>
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/75 border border-cyan-500/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
+          {isKo ? '화면 탭: 광물 채굴 | 더블탭: 방어 포탑 건설 (돌 4소모, 버튼 없음)' : 'Tap: Mine Ores | Double Tap: Build Turret (Cost 4 Stone, No Buttons)'}
         </div>
       </div>
 
-      {/* Bottom Tool Hotbar (DESIGN.md: 44px+ touch targets, rounded-sm) */}
-      <footer className="p-2 border-t border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] shrink-0">
-        <div className="flex items-center justify-center gap-2 max-w-md mx-auto">
-          {[
-            { id: 'pickaxe', labelKo: '곡괭이', icon: Pickaxe, cost: '채굴' },
-            { id: 'stone', labelKo: '돌벽', icon: Hammer, cost: '돌 1개' },
-            { id: 'turret', labelKo: '방어포탑', icon: Shield, cost: '철3 금1' },
-          ].map((tool) => {
-            const active = selectedTool === tool.id;
-            const Icon = tool.icon;
-            return (
-              <button
-                key={tool.id}
-                onClick={() => {
-                  setSelectedTool(tool.id as any);
-                  playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                }}
-                className={`flex-1 min-h-[48px] py-1.5 px-2 flex flex-col items-center justify-center border transition-all cursor-pointer rounded-sm ${
-                  active
-                    ? 'bg-[#201d1d] text-white border-[#201d1d]'
-                    : 'bg-white text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-neutral-100'
-                }`}
-              >
-                <div className="flex items-center gap-1">
-                  <Icon size={14} />
-                  <span className="text-xs font-bold">{tool.labelKo}</span>
-                </div>
-                <span className={`text-[9px] ${active ? 'text-neutral-300' : 'text-neutral-400'}`}>
-                  [{tool.cost}]
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </footer>
+      {/* Universal 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_mining_defense"
+          gameTitle={isKo ? '3D 복셀 마이닝 디펜스: 코어 결계 수호' : 'Voxel Mining Defense: Core Guard'}
+          customSteps={customTutorialSteps}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-      {/* Game Over / Victory Modal */}
-      {gameOver && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-          <div className="w-full max-w-sm bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] p-6 rounded-sm shadow-xl text-center flex flex-col gap-4 animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex justify-center">
-              {isVictory ? (
-                <div className="p-3 bg-amber-100 text-amber-600 rounded-full border border-amber-300">
-                  <Trophy size={32} />
-                </div>
-              ) : (
-                <div className="p-3 bg-rose-100 text-rose-600 rounded-full border border-rose-300">
-                  <Bomb size={32} />
-                </div>
-              )}
-            </div>
-
-            <div>
-              <h2 className="text-base font-black uppercase">
-                {isVictory ? (language === 'ko' ? '복셀 디펜스 완승!' : 'DEFENSE VICTORY!') : (language === 'ko' ? '코어 파괴 (패배)' : 'CORE DESTROYED')}
-              </h2>
-              <p className="text-xs text-neutral-500 mt-1">
-                {isVictory
-                  ? `모든 웨이브 방어 성공! 점수: ${score}점 (+60 SNS 획득)`
-                  : `영웅 코어가 파괴되었습니다. 점수: ${score}점`}
-              </p>
-            </div>
-
-            <div className="flex gap-2">
-              <button
-                onClick={onExit}
-                className="flex-1 min-h-[44px] py-2 bg-[#201d1d] text-white font-bold text-xs rounded-sm hover:bg-neutral-800 cursor-pointer"
-              >
-                {language === 'ko' ? '[로비로 나가기]' : '[EXIT TO LOBBY]'}
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );

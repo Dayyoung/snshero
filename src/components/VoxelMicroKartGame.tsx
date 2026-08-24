@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ArrowLeft, Trophy, Zap, Sparkles, Navigation, Bomb } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelMicroKartGameProps {
   deck: CardData[];
@@ -23,17 +26,24 @@ export const VoxelMicroKartGame: React.FC<VoxelMicroKartGameProps> = ({
   const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
 
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_micro_kart') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [currentLap, setCurrentLap] = useState<number>(1);
   const totalLaps = 3;
   const [speed, setSpeed] = useState<number>(0);
   const [turboGauge, setTurboGauge] = useState<number>(100);
   const [items, setItems] = useState<number>(3);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
-    kartPos: new THREE.Vector3(0, 0.3, 0),
-    kartRot: 0,
+    kartAngle: 0,
     speed: 0,
     maxSpeed: 0.65,
     steer: 0,
@@ -42,8 +52,37 @@ export const VoxelMicroKartGame: React.FC<VoxelMicroKartGameProps> = ({
     lap: 1,
     checkpointsPassed: 0,
     items: 3,
-    isGameOver: false
+    score: 0,
+    isGameOver: false,
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
+    kartGroup: null as THREE.Group | null
   });
+
+  const handleTurbo = () => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isVictory || s.isPaused || s.turbo < 30) return;
+    s.isTurbo = true;
+    s.turbo -= 30;
+    s.speed = 1.1;
+    setTurboGauge(Math.floor(s.turbo));
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+
+    setTimeout(() => {
+      s.speed = s.maxSpeed;
+      s.isTurbo = false;
+    }, 2000);
+  };
+
+  const handleUseItem = () => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isVictory || s.isPaused || s.items <= 0) return;
+    s.items -= 1;
+    s.score += 250;
+    setItems(s.items);
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+  };
 
   useEffect(() => {
     const container = mountRef.current;
@@ -62,10 +101,8 @@ export const VoxelMicroKartGame: React.FC<VoxelMicroKartGameProps> = ({
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    renderer.shadowMap.enabled = !lowSpecMode;
     container.appendChild(renderer.domElement);
 
-    // Lighting
     const hemiLight = new THREE.HemisphereLight(0xffffff, 0x445544, 0.9);
     scene.add(hemiLight);
 
@@ -91,174 +128,131 @@ export const VoxelMicroKartGame: React.FC<VoxelMicroKartGameProps> = ({
 
     // Voxel Micro Kart
     const kartGroup = new THREE.Group();
-    const kBodyGeo = new THREE.BoxGeometry(0.9, 0.4, 1.4);
-    const kBodyMat = new THREE.MeshStandardMaterial({ color: 0xe63946 });
-    const kBody = new THREE.Mesh(kBodyGeo, kBodyMat);
+    const kBody = new THREE.Mesh(
+      new THREE.BoxGeometry(0.9, 0.4, 1.4),
+      new THREE.MeshStandardMaterial({ color: 0xe63946 })
+    );
     kBody.position.y = 0.25;
+    kartGroup.add(kBody);
 
-    // Kart Wheels
-    const wGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.15, 12);
-    const wMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
-    const w1 = new THREE.Mesh(wGeo, wMat);
-    w1.rotation.z = Math.PI / 2;
-    w1.position.set(-0.5, 0.2, 0.5);
-    const w2 = new THREE.Mesh(wGeo, wMat);
-    w2.rotation.z = Math.PI / 2;
-    w2.position.set(0.5, 0.2, 0.5);
-    const w3 = new THREE.Mesh(wGeo, wMat);
-    w3.rotation.z = Math.PI / 2;
-    w3.position.set(-0.5, 0.2, -0.5);
-    const w4 = new THREE.Mesh(wGeo, wMat);
-    w4.rotation.z = Math.PI / 2;
-    w4.position.set(0.5, 0.2, -0.5);
-
-    kartGroup.add(kBody, w1, w2, w3, w4);
-    kartGroup.position.set(12, 0.1, 0);
+    kartGroup.position.set(12, 0.3, 0);
     scene.add(kartGroup);
+    stateRef.current.kartGroup = kartGroup;
 
-    // AI Rival Karts
-    const rivals: { mesh: THREE.Group; angle: number; speed: number }[] = [];
-    const colors = [0x457b9d, 0x2a9d8f, 0xf4a261];
-    for (let i = 0; i < 3; i++) {
-      const rGroup = new THREE.Group();
-      const rBody = new THREE.Mesh(kBodyGeo, new THREE.MeshStandardMaterial({ color: colors[i] }));
-      rBody.position.y = 0.25;
-      rGroup.add(rBody);
-      scene.add(rGroup);
-      rivals.push({ mesh: rGroup, angle: 0.3 * (i + 1), speed: 0.02 + i * 0.003 });
-    }
+    let animId: number;
+    let lastTime = performance.now();
 
-    let trackAngle = 0;
-    let animationFrameId: number;
+    const animate = (now: number) => {
+      animId = requestAnimationFrame(animate);
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
 
-    const animate = () => {
-      animationFrameId = requestAnimationFrame(animate);
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-      if (!stateRef.current.isGameOver) {
-        // Accelerate
-        const max = stateRef.current.isTurbo ? 0.9 : stateRef.current.maxSpeed;
-        stateRef.current.speed = THREE.MathUtils.lerp(stateRef.current.speed, max, 0.05);
+      // Accelerate
+      if (!s.isTurbo) {
+        s.speed = THREE.MathUtils.clamp(s.speed + dt * 0.4, 0, s.maxSpeed);
+      }
+      setSpeed(Math.round(s.speed * 120));
 
-        // Turn angle
-        trackAngle += (stateRef.current.speed * 0.035);
-        stateRef.current.kartRot += stateRef.current.steer * 0.04;
+      // Turbo recharge
+      s.turbo = Math.min(100, s.turbo + dt * 6);
+      setTurboGauge(Math.round(s.turbo));
 
-        // Kart position on track oval
-        const r = 12;
-        const x = Math.cos(trackAngle) * r;
-        const z = Math.sin(trackAngle) * r;
-        kartGroup.position.set(x, 0.2, z);
-        kartGroup.rotation.y = -trackAngle + Math.PI / 2 + stateRef.current.steer * 0.4;
+      // Steer & Move along circle
+      s.kartAngle += (s.speed * 2.2 + s.steer * 0.8) * dt;
 
-        // Camera follow
-        camera.position.x = x + Math.sin(trackAngle) * 6;
-        camera.position.z = z - Math.cos(trackAngle) * 6 + 4;
-        camera.position.y = 9;
-        camera.lookAt(x, 0.5, z);
+      if (s.kartAngle >= Math.PI * 2) {
+        s.kartAngle -= Math.PI * 2;
+        s.lap += 1;
+        setCurrentLap(Math.min(totalLaps, s.lap));
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
 
-        // Check Lap completion
-        if (trackAngle >= Math.PI * 2) {
-          trackAngle -= Math.PI * 2;
-          stateRef.current.lap += 1;
-          if (stateRef.current.lap > totalLaps) {
-            stateRef.current.isGameOver = true;
-            setIsGameOver(true);
-            const reward = 260;
-            setRewardSns(reward);
-            onReward(reward);
-          } else {
-            setCurrentLap(stateRef.current.lap);
-            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-          }
+        if (s.lap > totalLaps && !s.isGameOver) {
+          s.isVictory = true;
+          s.isGameOver = true;
+          setIsGameOver(true);
+          const duration = (Date.now() - s.startTime) / 1000;
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'voxel_micro_kart',
+            gameTitle: '복셀 마이크로 카트',
+            durationSeconds: duration,
+            score: s.score + 1500,
+            difficulty: 'HARD',
+            isVictory: true
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
         }
+      }
 
-        // Move Rival Karts
-        rivals.forEach((riv) => {
-          riv.angle += riv.speed;
-          riv.mesh.position.set(Math.cos(riv.angle) * 12, 0.2, Math.sin(riv.angle) * 12);
-          riv.mesh.rotation.y = -riv.angle + Math.PI / 2;
-        });
-
-        // Turbo recovery
-        if (stateRef.current.isTurbo) {
-          stateRef.current.turbo = Math.max(0, stateRef.current.turbo - 1.5);
-          if (stateRef.current.turbo <= 0) stateRef.current.isTurbo = false;
-        } else {
-          stateRef.current.turbo = Math.min(100, stateRef.current.turbo + 0.3);
-        }
-        setTurboGauge(Math.floor(stateRef.current.turbo));
-        setSpeed(Math.floor(stateRef.current.speed * 160));
+      if (kartGroup) {
+        const radius = 12;
+        kartGroup.position.set(Math.cos(s.kartAngle) * radius, 0.3, Math.sin(s.kartAngle) * radius);
+        kartGroup.rotation.y = -s.kartAngle + Math.PI / 2;
       }
 
       renderer.render(scene, camera);
     };
 
-    animate();
-
-    const handleResize = () => {
-      if (!container) return;
-      const w = container.clientWidth;
-      const h = container.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-
-    window.addEventListener('resize', handleResize);
+    animId = requestAnimationFrame(animate);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', handleResize);
-      if (container && renderer.domElement) {
+      cancelAnimationFrame(animId);
+      renderer.dispose();
+      if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
-      renderer.dispose();
     };
-  }, [lowSpecMode, totalLaps, onReward, playSfx]);
+  }, [lowSpecMode]);
 
-  const handleTurbo = () => {
-    if (stateRef.current.turbo > 30) {
-      stateRef.current.isTurbo = true;
-      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-    }
-  };
-
-  const handleUseItem = () => {
-    if (stateRef.current.items > 0) {
-      stateRef.current.items -= 1;
-      setItems(stateRef.current.items);
-      handleTurbo();
-      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-    }
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.kartAngle = 0;
+    s.speed = 0;
+    s.steer = 0;
+    s.turbo = 100;
+    s.lap = 1;
+    s.items = 3;
+    s.score = 0;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    setCurrentLap(1);
+    setSpeed(0);
+    setTurboGauge(100);
+    setItems(3);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
   };
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none">
-      <div ref={mountRef} className="w-full h-full" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Top HUD */}
-      <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
-        <button
-          onClick={onExit}
-          className="pointer-events-auto p-2 bg-slate-900/80 border border-slate-700 text-slate-200 rounded-sm hover:bg-slate-800 transition-all flex items-center gap-1.5 text-xs font-bold"
-        >
-          <ArrowLeft size={16} />
-          <span>{isKo ? '나가기' : 'Exit'}</span>
-        </button>
-
-        <div className="flex items-center gap-2 bg-slate-900/90 border border-red-500/40 px-3 py-1.5 rounded-sm">
-          <Trophy size={16} className="text-amber-400" />
-          <span className="text-xs text-amber-300 font-bold">
-            {isKo ? `랩: ${currentLap}/${totalLaps}` : `LAP: ${currentLap}/${totalLaps}`}
-          </span>
-          <span className="text-[10px] text-cyan-300">
-            {speed} KM/H
-          </span>
-        </div>
-      </div>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 마이크로 카트' : 'Voxel Micro Kart'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '랩' : 'Lap', value: `${currentLap}/${totalLaps}`, color: 'text-amber-300' },
+          { label: isKo ? '속도' : 'Speed', value: `${speed} KM/H`, color: 'text-cyan-300' },
+          { label: isKo ? '터보' : 'Turbo', value: `${turboGauge}%`, color: 'text-rose-400 font-bold' },
+          { label: isKo ? '아이템' : 'Item', value: `x${items}`, color: 'text-emerald-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
       {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && (
+      {!isGameOver && !isPaused && !showTutorial && (
         <div
           className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
           style={{ touchAction: 'none' }}
@@ -300,48 +294,37 @@ export const VoxelMicroKartGame: React.FC<VoxelMicroKartGameProps> = ({
             window.addEventListener('pointerup', onUp);
             window.addEventListener('pointercancel', onUp);
           }}
-          onDoubleClick={() => handleTurbo()}
+          onDoubleClick={handleTurbo}
         />
       )}
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/70 border border-amber-400/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
-          {isKo ? '좌우 드래그: 조향 | 탭: 아이템 사용 | 더블탭/위로: 터보 (버튼 없음)' : 'Drag L/R: Steer | Tap: Use Item | Double Tap/Up: Turbo (No Buttons)'}
+        <div className="px-3 py-1 bg-black/75 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {isKo ? '좌우 드래그: 조향 | 탭: 아이템 발사 | 더블탭: 터보 부스트 (버튼 없음)' : 'Drag L/R: Steer | Tap: Item | Double Tap: Turbo (No Buttons)'}
         </div>
       </div>
 
-      {/* Game Over Modal */}
-      {isGameOver && (
-        <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-xs bg-slate-900 border border-amber-500/50 p-5 rounded-none text-center space-y-4 shadow-2xl">
-            <div className="flex justify-center">
-              <Sparkles size={36} className="text-amber-400 animate-pulse" />
-            </div>
-            <h2 className="text-lg font-black text-amber-400 uppercase tracking-widest">
-              {isKo ? '🏆 그랑프리 3랩 완주!' : '🏆 GRAND PRIX CLEARED!'}
-            </h2>
-            <div className="space-y-1.5 text-xs text-slate-300 bg-slate-950/60 p-3 border border-slate-800">
-              <div className="flex justify-between">
-                <span>{isKo ? '최종 순위' : 'Final Rank'}</span>
-                <span className="font-bold text-amber-300">1ST PLACE 🥇</span>
-              </div>
-              <div className="flex justify-between pt-1 border-t border-slate-800 text-amber-400 font-bold">
-                <span>{isKo ? '획득 SNS 보상' : 'Earned SNS'}</span>
-                <span>+{rewardSns} SNS</span>
-              </div>
-            </div>
+      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {showTutorial && (
+        <SportsMissionTutorial
+          gameId="voxel_micro_kart"
+          gameTitle={isKo ? '3D 복셀 마이크로 카트: 그랑프리 3랩 레이싱' : 'Voxel Micro Kart: 3-Lap Grand Prix'}
+          sportType="racing"
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-            <div className="flex gap-2 pt-2">
-              <button
-                onClick={onExit}
-                className="flex-1 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase rounded-sm transition-all"
-              >
-                {isKo ? '보상 수령 및 복귀' : 'Claim & Exit'}
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
