@@ -1,7 +1,10 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Shield, Crosshair, ArrowLeft, Trophy, Zap, RefreshCw, Volume2, VolumeX, Eye } from 'lucide-react';
 import { CardData, Language } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelBattlegroundsGameProps {
   deck: CardData[];
@@ -50,7 +53,17 @@ export const VoxelBattlegroundsGame: React.FC<VoxelBattlegroundsGameProps> = ({
   onExit,
   onReward,
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_battlegrounds') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [gameState, setGameState] = useState<'gliding' | 'combat' | 'gameover' | 'victory'>('gliding');
   const [player, setPlayer] = useState<PlayerState>({
     x: 0,
@@ -71,10 +84,8 @@ export const VoxelBattlegroundsGame: React.FC<VoxelBattlegroundsGameProps> = ({
   });
 
   const [zoneRadius, setZoneRadius] = useState<number>(80);
-  const [isBuildingWall, setIsBuildingWall] = useState<boolean>(false);
-  const [gameTime, setGameTime] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
-  // References for Three.js scene loop
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -84,235 +95,271 @@ export const VoxelBattlegroundsGame: React.FC<VoxelBattlegroundsGameProps> = ({
   const playerRef = useRef<PlayerState>(player);
   playerRef.current = player;
 
-  const keysPressed = useRef<{ [key: string]: boolean }>({});
+  const gameStateRef = useRef({
+    isPaused: false,
+    startTime: Date.now(),
+    isGameOver: false
+  });
+
+  const handleShoot = () => {
+    const p = playerRef.current;
+    if (p.ammo <= 0 || p.hp <= 0 || gameStateRef.current.isGameOver || gameStateRef.current.isPaused) return;
+
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+
+    // Bullet Raycast / Hit Detection against Bots
+    const shootDist = 45;
+    let hitBot: BotEnemy | null = null;
+    let minD = shootDist;
+
+    for (let bot of botsRef.current) {
+      if (!bot.alive) continue;
+      const dx = bot.x - p.x;
+      const dz = bot.z - p.z;
+      const dist = Math.hypot(dx, dz);
+
+      // Angle check towards bot
+      const angleToBot = Math.atan2(dx, dz);
+      const angleDiff = Math.abs(angleToBot - p.rotationY);
+
+      if (dist < minD && (angleDiff < 0.6 || Math.abs(angleDiff - Math.PI * 2) < 0.6)) {
+        minD = dist;
+        hitBot = bot;
+      }
+    }
+
+    if (hitBot) {
+      hitBot.hp -= 35;
+      if (hitBot.hp <= 0) {
+        hitBot.alive = false;
+        if (sceneRef.current) sceneRef.current.remove(hitBot.mesh);
+        p.kills += 1;
+        p.aliveCount = Math.max(1, p.aliveCount - 1);
+        p.materials += 40;
+        p.ammo += 30;
+
+        if (p.aliveCount <= 1) {
+          // Chicken Dinner Victory!
+          setGameState('victory');
+          gameStateRef.current.isGameOver = true;
+          const duration = (Date.now() - gameStateRef.current.startTime) / 1000;
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'voxel_battlegrounds',
+            gameTitle: '복셀 배틀그라운드',
+            durationSeconds: duration,
+            score: p.kills * 400 + 1500,
+            difficulty: 'NIGHTMARE',
+            isVictory: true
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
+        }
+      }
+    }
+
+    p.ammo -= 1;
+    setPlayer({ ...p });
+  };
+
+  const handleBuildWall = () => {
+    const p = playerRef.current;
+    if (p.materials < 20 || !sceneRef.current || gameStateRef.current.isGameOver || gameStateRef.current.isPaused) return;
+
+    p.materials -= 20;
+    setPlayer({ ...p });
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+
+    const wallGeo = new THREE.BoxGeometry(4, 3, 0.4);
+    const wallMat = new THREE.MeshStandardMaterial({ color: 0x92400e, roughness: 0.8 });
+    const wall = new THREE.Mesh(wallGeo, wallMat);
+
+    const fwdX = Math.sin(p.rotationY) * 3.5;
+    const fwdZ = Math.cos(p.rotationY) * 3.5;
+    wall.position.set(p.x + fwdX, 1.5, p.z + fwdZ);
+    wall.rotation.y = p.rotationY;
+    sceneRef.current.add(wall);
+    wallsRef.current.push(wall);
+  };
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      keysPressed.current[e.code] = true;
-    };
-    const handleKeyUp = (e: KeyboardEvent) => {
-      keysPressed.current[e.code] = false;
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-    };
-  }, []);
-
-  // Initialize Three.js 3D Voxel Battlegrounds Scene
-  useEffect(() => {
-    if (!mountRef.current) return;
     const container = mountRef.current;
-    const width = container.clientWidth || 360;
-    const height = container.clientHeight || 480;
+    if (!container) return;
+
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x70b8ff);
-    scene.fog = new THREE.FogExp2(0x70b8ff, lowSpecMode ? 0.015 : 0.008);
+    scene.background = new THREE.Color(0x7dd3fc);
+    scene.fog = new THREE.FogExp2(0x7dd3fc, 0.008);
     sceneRef.current = scene;
 
-    const camera = new THREE.PerspectiveCamera(65, width / height, 0.1, 500);
-    camera.position.set(0, 35, 10);
+    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 500);
     cameraRef.current = camera;
 
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1.0 : 1.5));
-    container.appendChild(renderer.domElement);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
+    renderer.shadowMap.enabled = !lowSpecMode;
     rendererRef.current = renderer;
+    container.appendChild(renderer.domElement);
 
-    // Lighting
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.9);
-    hemiLight.position.set(0, 100, 0);
+    // Lights
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x334155, 0.9);
     scene.add(hemiLight);
 
-    const dirLight = new THREE.DirectionalLight(0xfffaed, 1.2);
-    dirLight.position.set(50, 100, 50);
+    const dirLight = new THREE.DirectionalLight(0xffedd5, 1.3);
+    dirLight.position.set(60, 100, 40);
     scene.add(dirLight);
 
-    // Floating Island Voxel Terrain (160x160)
-    const islandGeo = new THREE.BoxGeometry(160, 10, 160);
-    const islandMat = new THREE.MeshLambertMaterial({ color: 0x4e8d3b });
-    const island = new THREE.Mesh(islandGeo, islandMat);
-    island.position.set(0, -5, 0);
-    scene.add(island);
+    // Voxel Terrain Island
+    const terrainGeo = new THREE.PlaneGeometry(240, 240, 32, 32);
+    const terrainMat = new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.9 });
+    const terrain = new THREE.Mesh(terrainGeo, terrainMat);
+    terrain.rotation.x = -Math.PI / 2;
+    scene.add(terrain);
 
-    // Scattered Voxel Rocks & Buildings
-    const blockMat = new THREE.MeshLambertMaterial({ color: 0x808080 });
-    const woodMat = new THREE.MeshLambertMaterial({ color: 0x8b5a2b });
-    for (let i = 0; i < 24; i++) {
-      const bx = (Math.random() - 0.5) * 120;
-      const bz = (Math.random() - 0.5) * 120;
-      const h = Math.floor(Math.random() * 4) + 2;
-      const bGeo = new THREE.BoxGeometry(4, h * 2, 4);
-      const bMesh = new THREE.Mesh(bGeo, i % 2 === 0 ? blockMat : woodMat);
-      bMesh.position.set(bx, h, bz);
-      scene.add(bMesh);
-    }
-
-    // Shrinking Storm Zone (Cylinder)
-    const zoneGeo = new THREE.CylinderGeometry(80, 80, 60, 32, 1, true);
-    const zoneMat = new THREE.MeshBasicMaterial({
-      color: 0x0088ff,
-      transparent: true,
-      opacity: 0.3,
-      side: THREE.DoubleSide,
-    });
+    // Safe Zone Storm Circle
+    const zoneGeo = new THREE.CylinderGeometry(80, 80, 50, 32, 1, true);
+    const zoneMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
     const zoneMesh = new THREE.Mesh(zoneGeo, zoneMat);
-    zoneMesh.position.set(0, 20, 0);
+    zoneMesh.position.y = 25;
     scene.add(zoneMesh);
     zoneMeshRef.current = zoneMesh;
 
-    // Spawn 11 AI Bot Enemies
-    const botList: BotEnemy[] = [];
-    const botColors = [0xe74c3c, 0x9b59b6, 0xf39c12, 0x1abc9c, 0x34495e];
+    // Spawn 11 Enemy Bots
+    botsRef.current = [];
     for (let i = 0; i < 11; i++) {
-      const bGroup = new THREE.Group();
-      const bodyMat = new THREE.MeshLambertMaterial({ color: botColors[i % botColors.length] });
-      const bBody = new THREE.Mesh(new THREE.BoxGeometry(1.6, 2.4, 1.2), bodyMat);
-      bBody.position.y = 1.2;
-      bGroup.add(bBody);
+      const g = new THREE.Group();
+      const bMesh = new THREE.Mesh(new THREE.BoxGeometry(1.2, 2.0, 1.2), new THREE.MeshStandardMaterial({ color: 0xdc2626 }));
+      bMesh.position.y = 1.0;
+      g.add(bMesh);
 
-      const bHead = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 1.2), new THREE.MeshLambertMaterial({ color: 0xf1c40f }));
-      bHead.position.y = 2.8;
-      bGroup.add(bHead);
+      const rad = 25 + Math.random() * 45;
+      const ang = Math.random() * Math.PI * 2;
+      const bx = Math.cos(ang) * rad;
+      const bz = Math.sin(ang) * rad;
+      g.position.set(bx, 0, bz);
+      scene.add(g);
 
-      const bx = (Math.random() - 0.5) * 100;
-      const bz = (Math.random() - 0.5) * 100;
-      bGroup.position.set(bx, 0, bz);
-      scene.add(bGroup);
-
-      botList.push({
-        id: i + 1,
-        mesh: bGroup,
+      botsRef.current.push({
+        id: i,
+        mesh: g,
         x: bx,
         y: 0,
         z: bz,
-        hp: 60,
+        hp: 100,
         alive: true,
-        targetX: bx + (Math.random() - 0.5) * 30,
-        targetZ: bz + (Math.random() - 0.5) * 30,
-        shootCooldown: Math.random() * 60,
+        targetX: bx + (Math.random() - 0.5) * 20,
+        targetZ: bz + (Math.random() - 0.5) * 20,
+        shootCooldown: 1.0 + Math.random() * 2.0
       });
     }
-    botsRef.current = botList;
 
-    // Main Game Loop
-    let animId = 0;
-    let localTime = 0;
-    let localZone = 80;
+    let animId: number;
+    let lastTime = performance.now();
+    let currentRadius = 80;
 
-    const animate = () => {
+    const animate = (now: number) => {
       animId = requestAnimationFrame(animate);
-      localTime++;
-      if (localTime % 30 === 0) {
-        setGameTime((t) => t + 1);
-      }
-
-      // Zone Shrinking
-      if (localZone > 15) {
-        localZone -= 0.015;
-        if (zoneMeshRef.current) {
-          zoneMeshRef.current.scale.set(localZone / 80, 1, localZone / 80);
-        }
-        setZoneRadius(Math.floor(localZone));
-      }
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
 
       const p = playerRef.current;
+      if (gameStateRef.current.isPaused || gameStateRef.current.isGameOver) return;
 
-      // Handle Glide or Ground Combat Movement
-      let speed = p.y > 0 ? 0.35 : 0.45;
-      let dx = 0;
-      let dz = 0;
-
-      if (keysPressed.current['KeyW'] || keysPressed.current['ArrowUp']) dz -= speed;
-      if (keysPressed.current['KeyS'] || keysPressed.current['ArrowDown']) dz += speed;
-      if (keysPressed.current['KeyA'] || keysPressed.current['ArrowLeft']) dx -= speed;
-      if (keysPressed.current['KeyD'] || keysPressed.current['ArrowRight']) dx += speed;
-
-      // Glider slow descent
-      let nextY = p.y;
+      // Gliding down or Ground movement
       if (p.y > 0) {
-        nextY = Math.max(0, p.y - 0.12);
-        if (nextY === 0 && gameState === 'gliding') {
-          setGameState('combat');
-          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        p.y = Math.max(0, p.y - 7.5 * dt);
+        if (p.y <= 0) setGameState('combat');
+      }
+
+      // Safe Zone Shrink
+      if (currentRadius > 15) {
+        currentRadius -= dt * 0.8;
+        setZoneRadius(Math.round(currentRadius));
+        if (zoneMeshRef.current) {
+          zoneMeshRef.current.scale.set(currentRadius / 80, 1, currentRadius / 80);
         }
       }
 
-      const nextX = Math.max(-75, Math.min(75, p.x + dx));
-      const nextZ = Math.max(-75, Math.min(75, p.z + dz));
-
-      // Zone Damage Check
-      const distFromCenter = Math.sqrt(nextX * nextX + nextZ * nextZ);
-      let nextHp = p.hp;
-      let nextShield = p.shield;
-      if (distFromCenter > localZone && localTime % 60 === 0) {
-        if (nextShield > 0) nextShield -= 5;
-        else nextHp -= 8;
-        playSfx('https://assets.mixkit.co/active_storage/sfx/2874/2874-preview.mp3');
+      // Storm Damage if outside circle
+      const pDist = Math.hypot(p.x, p.z);
+      if (pDist > currentRadius) {
+        p.hp = Math.max(0, p.hp - 8 * dt);
+        if (p.hp <= 0) {
+          setGameState('gameover');
+          gameStateRef.current.isGameOver = true;
+          const duration = (Date.now() - gameStateRef.current.startTime) / 1000;
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'voxel_battlegrounds',
+            gameTitle: '복셀 배틀그라운드',
+            durationSeconds: duration,
+            score: p.kills * 400,
+            difficulty: 'NORMAL',
+            isVictory: false
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
+        }
+        setPlayer({ ...p });
       }
 
-      // Update Camera follow player
-      camera.position.set(nextX, nextY + 2.5, nextZ + 6);
-      camera.lookAt(nextX, nextY + 1.5, nextZ - 10);
+      // Update Bot AI
+      for (let bot of botsRef.current) {
+        if (!bot.alive) continue;
 
-      // AI Bots Update
-      let currentAlive = 1; // player
-      botsRef.current.forEach((bot) => {
-        if (!bot.alive) return;
-        currentAlive++;
-
-        // Bot movement
-        const bdx = bot.targetX - bot.x;
-        const bdz = bot.targetZ - bot.z;
-        const dist = Math.sqrt(bdx * bdx + bdz * bdz);
-        if (dist > 1) {
-          bot.x += (bdx / dist) * 0.15;
-          bot.z += (bdz / dist) * 0.15;
+        // Move towards target / safe zone center
+        const dx = (bot.targetX - bot.x);
+        const dz = (bot.targetZ - bot.z);
+        const d = Math.hypot(dx, dz);
+        if (d > 1) {
+          bot.x += (dx / d) * 3.5 * dt;
+          bot.z += (dz / d) * 3.5 * dt;
           bot.mesh.position.set(bot.x, 0, bot.z);
         } else {
-          bot.targetX = (Math.random() - 0.5) * (localZone * 1.5);
-          bot.targetZ = (Math.random() - 0.5) * (localZone * 1.5);
+          bot.targetX = (Math.random() - 0.5) * currentRadius * 0.8;
+          bot.targetZ = (Math.random() - 0.5) * currentRadius * 0.8;
         }
 
-        // Bot Shooting at Player
-        const pDist = Math.sqrt((bot.x - nextX) ** 2 + (bot.z - nextZ) ** 2);
-        if (pDist < 25) {
-          bot.shootCooldown--;
-          if (bot.shootCooldown <= 0) {
-            bot.shootCooldown = 90 + Math.random() * 60;
-            // Bot hit player
-            if (Math.random() > 0.4) {
-              if (nextShield > 0) nextShield = Math.max(0, nextShield - 10);
-              else nextHp = Math.max(0, nextHp - 12);
-              playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-            }
+        // Shoot at player if close
+        const distToP = Math.hypot(p.x - bot.x, p.z - bot.z);
+        bot.shootCooldown -= dt;
+        if (distToP < 25 && bot.shootCooldown <= 0) {
+          bot.shootCooldown = 2.0 + Math.random() * 1.5;
+          if (p.shield > 0) {
+            p.shield = Math.max(0, p.shield - 12);
+          } else {
+            p.hp = Math.max(0, p.hp - 12);
           }
+          if (p.hp <= 0) {
+            setGameState('gameover');
+            gameStateRef.current.isGameOver = true;
+            const duration = (Date.now() - gameStateRef.current.startTime) / 1000;
+            const receipt = calculateAndDepositMissionReward({
+              gameId: 'voxel_battlegrounds',
+              gameTitle: '복셀 배틀그라운드',
+              durationSeconds: duration,
+              score: p.kills * 400,
+              difficulty: 'NORMAL',
+              isVictory: false
+            });
+            setSettlementReceipt(receipt);
+            onReward(receipt.totalSns);
+          }
+          setPlayer({ ...p });
         }
-      });
+      }
 
-      // Update Player State
-      setPlayer((prev) => ({
-        ...prev,
-        x: nextX,
-        y: nextY,
-        z: nextZ,
-        hp: nextHp,
-        shield: nextShield,
-        aliveCount: currentAlive,
-      }));
-
-      // Check GameOver / Victory
-      if (nextHp <= 0 && gameState !== 'gameover') {
-        setGameState('gameover');
-        playSfx('https://assets.mixkit.co/active_storage/sfx/2874/2874-preview.mp3');
-      } else if (currentAlive === 1 && gameState !== 'victory') {
-        setGameState('victory');
-        playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-        onReward(300);
+      // Camera Chase 3rd Person View
+      if (cameraRef.current) {
+        const camDist = 6;
+        const camH = 3.2;
+        cameraRef.current.position.set(
+          p.x - Math.sin(p.rotationY) * camDist,
+          p.y + camH,
+          p.z - Math.cos(p.rotationY) * camDist
+        );
+        cameraRef.current.lookAt(p.x, p.y + 1.5, p.z);
       }
 
       renderer.render(scene, camera);
@@ -320,19 +367,8 @@ export const VoxelBattlegroundsGame: React.FC<VoxelBattlegroundsGameProps> = ({
 
     animId = requestAnimationFrame(animate);
 
-    const handleResize = () => {
-      if (!container) return;
-      const w = container.clientWidth || 360;
-      const h = container.clientHeight || 480;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener('resize', handleResize);
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
@@ -340,169 +376,133 @@ export const VoxelBattlegroundsGame: React.FC<VoxelBattlegroundsGameProps> = ({
     };
   }, [lowSpecMode]);
 
-  // Player Shoot Gun
-  const handleShoot = () => {
-    if (player.ammo <= 0 || gameState !== 'combat') return;
-
-    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-    setPlayer((prev) => ({ ...prev, ammo: prev.ammo - 1 }));
-
-    // Check hit nearest bot in front
-    botsRef.current.forEach((bot) => {
-      if (!bot.alive) return;
-      const dist = Math.sqrt((bot.x - player.x) ** 2 + (bot.z - (player.z - 10)) ** 2);
-      if (dist < 12) {
-        bot.hp -= player.weapon === 'SHOTGUN' ? 60 : player.weapon === 'SNIPER' ? 100 : 35;
-        if (bot.hp <= 0) {
-          bot.alive = false;
-          if (sceneRef.current) sceneRef.current.remove(bot.mesh);
-          setPlayer((p) => ({ ...p, kills: p.kills + 1, materials: p.materials + 30 }));
-          playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-        }
-      }
+  const handleRestart = () => {
+    setPlayer({
+      x: 0,
+      y: 35,
+      z: 0,
+      vx: 0,
+      vy: 0,
+      vz: 0,
+      rotationY: 0,
+      hp: 100,
+      maxHp: 100,
+      shield: 50,
+      weapon: 'RIFLE',
+      ammo: 120,
+      materials: 100,
+      kills: 0,
+      aliveCount: 12,
     });
-  };
-
-  // Build Quick Voxel Wall
-  const handleBuildWall = () => {
-    if (player.materials < 20 || !sceneRef.current) return;
-
-    setPlayer((prev) => ({ ...prev, materials: prev.materials - 20 }));
-    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-
-    const wallMat = new THREE.MeshLambertMaterial({ color: 0x8b5a2b });
-    const wallGeo = new THREE.BoxGeometry(4, 3, 0.8);
-    const wall = new THREE.Mesh(wallGeo, wallMat);
-    wall.position.set(player.x, 1.5, player.z - 3);
-    sceneRef.current.add(wall);
-    wallsRef.current.push(wall);
+    setGameState('gliding');
+    gameStateRef.current.isGameOver = false;
+    gameStateRef.current.startTime = Date.now();
+    setSettlementReceipt(null);
   };
 
   return (
-    <div className="relative w-full h-[100dvh] flex flex-col bg-slate-950 font-mono text-white select-none overflow-hidden">
-      {/* Top HUD Bar */}
-      <div className="absolute top-2 left-2 right-2 z-20 flex items-center justify-between pointer-events-none">
-        <button
-          onClick={onExit}
-          className="pointer-events-auto min-w-[40px] min-h-[40px] px-2.5 py-1 bg-black/60 border border-white/20 text-xs font-bold rounded-sm flex items-center gap-1 hover:bg-black/80 cursor-pointer"
-        >
-          <ArrowLeft size={14} />
-          <span>{language === 'ko' ? '나가기' : 'Exit'}</span>
-        </button>
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-        {/* Alive & Kills Count */}
-        <div className="flex items-center gap-2 bg-black/70 px-3 py-1.5 border border-white/20 rounded-sm text-xs font-black">
-          <div className="flex items-center gap-1 text-emerald-400">
-            <span>👤</span>
-            <span>{player.aliveCount} ALIVE</span>
-          </div>
-          <div className="text-white/40">|</div>
-          <div className="flex items-center gap-1 text-rose-400">
-            <span>🎯</span>
-            <span>{player.kills} KILLS</span>
-          </div>
-        </div>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 배틀그라운드' : 'Voxel Battlegrounds'}
+        language={language}
+        hp={{ current: player.hp, max: 100 }}
+        telemetries={[
+          { label: isKo ? '생존' : 'Alive', value: `${player.aliveCount}/12명`, color: 'text-amber-300' },
+          { label: isKo ? '처치' : 'Kills', value: `${player.kills}킬`, color: 'text-rose-300' },
+          { label: isKo ? '탄약' : 'Ammo', value: `${player.ammo}`, color: 'text-cyan-300' },
+          { label: isKo ? '목재' : 'Wood', value: `${player.materials}`, color: 'text-yellow-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          gameStateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
-        {/* Zone Radius */}
-        <div className="bg-blue-900/80 px-2.5 py-1 border border-blue-400/50 rounded-sm text-xs font-bold flex items-center gap-1">
-          <span>🌀 ZONE: {zoneRadius}m</span>
-        </div>
-      </div>
-
-      {/* Three.js 3D WebGL Canvas */}
-      <div ref={mountRef} className="w-full h-full" />
-
-      {/* Center Aim Crosshair */}
+      {/* Crosshair */}
       <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-        <Crosshair size={28} className="text-white/80 opacity-70" />
-      </div>
-
-      {/* Bottom Health & Shield & Weapon HUD */}
-      <div className="absolute bottom-20 left-3 right-3 z-20 pointer-events-none flex flex-col gap-1.5 max-w-md mx-auto">
-        <div className="flex items-center gap-2">
-          {/* HP Bar */}
-          <div className="flex-1 bg-black/70 border border-white/20 p-1 rounded-sm">
-            <div className="text-[10px] font-bold text-emerald-300 mb-0.5">HP {player.hp}/100</div>
-            <div className="w-full bg-slate-800 h-2 rounded-none overflow-hidden">
-              <div className="bg-emerald-500 h-full transition-all" style={{ width: `${player.hp}%` }} />
-            </div>
-          </div>
-
-          {/* Shield Bar */}
-          <div className="flex-1 bg-black/70 border border-white/20 p-1 rounded-sm">
-            <div className="text-[10px] font-bold text-cyan-300 mb-0.5">SHIELD {player.shield}/50</div>
-            <div className="w-full bg-slate-800 h-2 rounded-none overflow-hidden">
-              <div className="bg-cyan-400 h-full transition-all" style={{ width: `${(player.shield / 50) * 100}%` }} />
-            </div>
-          </div>
-        </div>
-
-        {/* Weapon & Ammo & Build Materials */}
-        <div className="flex items-center justify-between bg-black/80 border border-white/20 px-3 py-1.5 rounded-sm text-xs">
-          <div className="flex items-center gap-2">
-            <span className="font-black text-amber-400">[{player.weapon}]</span>
-            <span className="font-bold text-slate-300">AMMO: {player.ammo}</span>
-          </div>
-          <div className="font-bold text-yellow-300">WOOD: {player.materials}</div>
+        <div className="w-8 h-8 border border-white/40 rounded-full flex items-center justify-center">
+          <div className="w-1.5 h-1.5 bg-red-400 rounded-full" />
         </div>
       </div>
 
-      {/* Mobile Touch Action Controls (Shoot & Wall Build) */}
-      <div className="absolute bottom-3 right-3 z-20 flex items-center gap-2">
-        <button
-          onClick={handleBuildWall}
-          disabled={player.materials < 20}
-          className="min-w-[54px] min-h-[54px] bg-amber-800/90 border border-amber-500 rounded-sm font-black text-xs flex flex-col items-center justify-center active:scale-95 shadow-md cursor-pointer"
-        >
-          <span>🧱</span>
-          <span className="text-[10px]">{language === 'ko' ? '벽건설' : 'Build'}</span>
-        </button>
+      {/* Screen Gesture Touch Overlay */}
+      {gameState !== 'gameover' && gameState !== 'victory' && !isPaused && !showTutorial && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-        <button
-          onClick={handleShoot}
-          disabled={player.ammo <= 0}
-          className="min-w-[64px] min-h-[64px] bg-red-600/90 border-2 border-red-400 rounded-sm font-black text-sm flex flex-col items-center justify-center active:scale-95 shadow-lg cursor-pointer"
-        >
-          <Crosshair size={20} />
-          <span className="text-[11px]">{language === 'ko' ? '사격' : 'Fire'}</span>
-        </button>
-      </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
 
-      {/* Victory / Game Over Overlay */}
-      {gameState === 'victory' && (
-        <div className="absolute inset-0 z-30 bg-black/80 flex flex-col items-center justify-center p-4">
-          <div className="text-5xl mb-2">🍗👑</div>
-          <div className="text-2xl font-black text-yellow-400 mb-1">
-            {language === 'ko' ? '이겼닭! 오늘 저녁은 치킨이닭!' : 'WINNER WINNER CHICKEN DINNER!'}
-          </div>
-          <div className="text-xs text-slate-300 mb-4">
-            {language === 'ko' ? `최후의 1인 생존! 보상 +300 SNS 획득` : `Last Survivor! +300 SNS Reward`}
-          </div>
-          <button
-            onClick={onExit}
-            className="min-h-[44px] px-6 bg-yellow-400 text-black font-black text-xs rounded-sm hover:bg-yellow-300 cursor-pointer"
-          >
-            {language === 'ko' ? '결과 확인 및 복귀' : 'Claim & Exit'}
-          </button>
-        </div>
+              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+                moved = true;
+                const p = playerRef.current;
+                p.rotationY -= dx * 0.006;
+                p.x += Math.sin(p.rotationY) * (-dy * 0.05);
+                p.z += Math.cos(p.rotationY) * (-dy * 0.05);
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Fire Gun
+                handleShoot();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={handleBuildWall}
+        />
       )}
 
-      {gameState === 'gameover' && (
-        <div className="absolute inset-0 z-30 bg-black/85 flex flex-col items-center justify-center p-4">
-          <div className="text-4xl mb-2">💀</div>
-          <div className="text-xl font-black text-red-500 mb-1">
-            {language === 'ko' ? '전투 불능 (작전 실패)' : 'ELIMINATED'}
-          </div>
-          <div className="text-xs text-slate-300 mb-4">
-            {language === 'ko' ? `${player.kills}킬 달성` : `${player.kills} Kills Recorded`}
-          </div>
-          <button
-            onClick={onExit}
-            className="min-h-[44px] px-6 bg-slate-700 text-white font-black text-xs rounded-sm hover:bg-slate-600 cursor-pointer"
-          >
-            {language === 'ko' ? '로비로 나가기' : 'Exit to Lobby'}
-          </button>
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/75 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {isKo ? '드래그: 이동/조준 | 탭: 사격 | 더블탭: 방어벽 건설 (버튼 없음)' : 'Drag: Move/Aim | Tap: Shoot | Double Tap: Build Wall (No Buttons)'}
         </div>
+      </div>
+
+      {/* 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_battlegrounds"
+          gameTitle={isKo ? '3D 복셀 배틀그라운드: 치킨 디너 챌린지' : 'Voxel Battlegrounds: Chicken Dinner Challenge'}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
+
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {(gameState === 'victory' || gameState === 'gameover') && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
