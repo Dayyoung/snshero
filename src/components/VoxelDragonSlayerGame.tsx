@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Trophy, ArrowLeft, Shield, Swords, Zap, Flame } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelDragonSlayerGameProps {
   deck: CardData[];
@@ -20,15 +23,22 @@ export const VoxelDragonSlayerGame: React.FC<VoxelDragonSlayerGameProps> = ({
   onExit,
   onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_dragon_slayer') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [playerHp, setPlayerHp] = useState<number>(100);
   const [dragonHp, setDragonHp] = useState<number>(200);
-  const [headHp, setHeadHp] = useState<number>(50);
-  const [wingHp, setWingHp] = useState<number>(50);
   const [isGroggy, setIsGroggy] = useState<boolean>(false);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [isVictory, setIsVictory] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
     pPos: new THREE.Vector3(0, 0, 10),
@@ -43,54 +53,59 @@ export const VoxelDragonSlayerGame: React.FC<VoxelDragonSlayerGameProps> = ({
     groggyTimer: 0,
     dragonAttackTimer: 90,
     playerHp: 100,
-    joystick: { active: false, dx: 0, dy: 0 },
+    score: 0,
     isGameOver: false,
-    isVictory: false
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
+    scene: null as THREE.Scene | null,
+    dragonMesh: null as THREE.Group | null
   });
 
-  const attackDragon = (targetPart: 'head' | 'wing' | 'body') => {
+  const attackDragon = (isHeavy: boolean = false) => {
     const s = stateRef.current;
-    if (s.attackCooldown > 0 || s.isGameOver) return;
+    if (s.attackCooldown > 0 || s.isGameOver || s.isVictory || s.isPaused) return;
+
     s.isAttacking = true;
-    s.attackCooldown = 15;
+    s.attackCooldown = isHeavy ? 20 : 10;
     playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
 
-    let dmg = 20;
-    if (targetPart === 'head') {
+    let dmg = isHeavy ? 45 : 22;
+    if (isHeavy) {
       s.headHp = Math.max(0, s.headHp - dmg);
-      setHeadHp(s.headHp);
       if (s.headHp === 0 && !s.groggyTimer) {
-        s.groggyTimer = 180; // 3 sec groggy!
-        setIsGroggy(true);
-      }
-    } else if (targetPart === 'wing') {
-      s.wingHp = Math.max(0, s.wingHp - dmg);
-      setWingHp(s.wingHp);
-      if (s.wingHp === 0 && !s.groggyTimer) {
         s.groggyTimer = 180;
         setIsGroggy(true);
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
       }
     }
 
     if (s.groggyTimer > 0) dmg *= 2;
     s.dragonHp = Math.max(0, s.dragonHp - dmg);
+    s.score += dmg * 15;
     setDragonHp(s.dragonHp);
 
     if (s.dragonHp <= 0) {
       s.isGameOver = true;
       s.isVictory = true;
       setIsGameOver(true);
-      setIsVictory(true);
-      const reward = 260;
-      setRewardSns(reward);
-      onReward(reward);
-      playSfx?.('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
+      const duration = (Date.now() - s.startTime) / 1000;
+      const receipt = calculateAndDepositMissionReward({
+        gameId: 'voxel_dragon_slayer',
+        gameTitle: '복셀 드래곤 슬레이어',
+        durationSeconds: duration,
+        score: s.score + 1500,
+        difficulty: 'NIGHTMARE',
+        isVictory: true
+      });
+      setSettlementReceipt(receipt);
+      onReward(receipt.totalSns);
     }
   };
 
   const rollDodge = () => {
     const s = stateRef.current;
-    if (s.isRolling || s.isGameOver) return;
+    if (s.isRolling || s.isGameOver || s.isPaused) return;
     s.isRolling = true;
     s.rollTime = 20;
     s.pPos.x += (Math.random() > 0.5 ? 4 : -4);
@@ -98,126 +113,98 @@ export const VoxelDragonSlayerGame: React.FC<VoxelDragonSlayerGameProps> = ({
   };
 
   useEffect(() => {
-    if (!mountRef.current) return;
     const container = mountRef.current;
-    const width = container.clientWidth || 800;
-    const height = container.clientHeight || 500;
+    if (!container) return;
+
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x140a1c);
-    scene.fog = new THREE.FogExp2(0x140a1c, 0.02);
+    scene.background = new THREE.Color(0x0f172a);
+    scene.fog = new THREE.Fog(0x0f172a, 15, 60);
+    stateRef.current.scene = scene;
 
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
     camera.position.set(0, 7, 18);
-    camera.lookAt(0, 2, 0);
+    camera.lookAt(0, 3, 0);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode });
+    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
+    renderer.shadowMap.enabled = !lowSpecMode;
     container.appendChild(renderer.domElement);
 
-    const ambLight = new THREE.AmbientLight(0xffeedd, 0.8);
-    scene.add(ambLight);
+    const hemiLight = new THREE.HemisphereLight(0xffeedd, 0x334155, 0.8);
+    scene.add(hemiLight);
 
-    const dirLight = new THREE.DirectionalLight(0xff4500, 1.6);
-    dirLight.position.set(10, 25, 10);
-    scene.add(dirLight);
+    const lavaLight = new THREE.PointLight(0xf97316, 2.5, 40);
+    lavaLight.position.set(0, 1, 0);
+    scene.add(lavaLight);
 
-    // Volcano Rock Ground
-    const floorGeo = new THREE.PlaneGeometry(60, 60);
-    const floorMat = new THREE.MeshLambertMaterial({ color: 0x24172b });
-    const floor = new THREE.Mesh(floorGeo, floorMat);
-    floor.rotation.x = -Math.PI / 2;
-    scene.add(floor);
+    // Arena Floor
+    const arenaGeo = new THREE.CylinderGeometry(18, 18, 1, 32);
+    const arenaMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.9 });
+    const arena = new THREE.Mesh(arenaGeo, arenaMat);
+    arena.position.y = -0.5;
+    scene.add(arena);
 
-    // Dragon Group
+    // Giant Voxel Dragon Boss
     const dragonGroup = new THREE.Group();
-    const dBody = new THREE.Mesh(new THREE.BoxGeometry(4, 3, 6), new THREE.MeshLambertMaterial({ color: 0x800e13 }));
+    const dBody = new THREE.Mesh(new THREE.BoxGeometry(4, 3, 7), new THREE.MeshStandardMaterial({ color: 0x991b1b, roughness: 0.6 }));
     dBody.position.y = 2.5;
     dragonGroup.add(dBody);
 
-    const dHead = new THREE.Mesh(new THREE.BoxGeometry(2.2, 2, 3), new THREE.MeshLambertMaterial({ color: 0xad2831 }));
-    dHead.position.set(0, 3.5, 3.5);
+    const dHead = new THREE.Mesh(new THREE.BoxGeometry(2.2, 2, 3), new THREE.MeshStandardMaterial({ color: 0x7f1d1d }));
+    dHead.position.set(0, 3.8, 4.2);
     dragonGroup.add(dHead);
 
-    const dWings = new THREE.Mesh(new THREE.BoxGeometry(10, 0.4, 3), new THREE.MeshLambertMaterial({ color: 0x38040e }));
-    dWings.position.set(0, 4, -0.5);
-    dragonGroup.add(dWings);
+    const dWingL = new THREE.Mesh(new THREE.BoxGeometry(7, 0.3, 3), new THREE.MeshStandardMaterial({ color: 0xb91c1c }));
+    dWingL.position.set(-4.5, 3.5, 0);
+    dragonGroup.add(dWingL);
 
-    dragonGroup.position.set(0, 0, -4);
+    const dWingR = new THREE.Mesh(new THREE.BoxGeometry(7, 0.3, 3), new THREE.MeshStandardMaterial({ color: 0xb91c1c }));
+    dWingR.position.set(4.5, 3.5, 0);
+    dragonGroup.add(dWingR);
+
+    dragonGroup.position.set(0, 0, -2);
     scene.add(dragonGroup);
+    stateRef.current.dragonMesh = dragonGroup;
 
-    // Hunter Player Mesh
-    const playerMesh = new THREE.Mesh(new THREE.BoxGeometry(1.2, 2, 1.2), new THREE.MeshLambertMaterial({ color: 0x00f5d4 }));
-    playerMesh.position.y = 1;
-    scene.add(playerMesh);
+    let animId: number;
+    let lastTime = performance.now();
 
-    let reqId: number;
-    const animate = () => {
-      reqId = requestAnimationFrame(animate);
+    const animate = (now: number) => {
+      animId = requestAnimationFrame(animate);
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+
       const s = stateRef.current;
-      if (s.isGameOver) {
-        renderer.render(scene, camera);
-        return;
-      }
+      if (s.isPaused || s.isGameOver) return;
 
-      if (s.attackCooldown > 0) s.attackCooldown -= 1;
-      if (s.rollTime > 0) s.rollTime -= 1;
-      else s.isRolling = false;
-
-      // Joystick Movement
-      if (s.joystick.active) {
-        s.pPos.x += s.joystick.dx * 0.15;
-        s.pPos.z += s.joystick.dy * 0.15;
-      }
-      s.pPos.x = Math.max(-15, Math.min(15, s.pPos.x));
-      s.pPos.z = Math.max(3, Math.min(20, s.pPos.z));
-      playerMesh.position.copy(s.pPos);
-
-      // Groggy Handling
+      if (s.attackCooldown > 0) s.attackCooldown -= dt * 60;
       if (s.groggyTimer > 0) {
-        s.groggyTimer -= 1;
-        dragonGroup.rotation.z = Math.sin(Date.now() * 0.01) * 0.2;
+        s.groggyTimer -= dt * 60;
         if (s.groggyTimer <= 0) setIsGroggy(false);
-      } else {
-        dragonGroup.rotation.z = 0;
-        // Dragon Attack
-        s.dragonAttackTimer -= 1;
-        if (s.dragonAttackTimer <= 0) {
-          s.dragonAttackTimer = 110;
-          if (!s.isRolling) {
-            s.playerHp = Math.max(0, s.playerHp - 25);
-            setPlayerHp(s.playerHp);
-            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-            if (s.playerHp <= 0) {
-              s.isGameOver = true;
-              setIsGameOver(true);
-              const reward = 50;
-              setRewardSns(reward);
-              onReward(reward);
-            }
-          }
+      }
+
+      // Dragon Idle / Attack Logic
+      if (s.dragonMesh) {
+        if (s.groggyTimer > 0) {
+          s.dragonMesh.position.y = -0.6;
+          s.dragonMesh.rotation.z = Math.sin(now * 0.01) * 0.05;
+        } else {
+          s.dragonMesh.position.y = Math.sin(now * 0.003) * 0.4;
+          s.dragonMesh.rotation.y = Math.sin(now * 0.002) * 0.2;
         }
       }
 
       renderer.render(scene, camera);
     };
 
-    animate();
-
-    const handleResize = () => {
-      if (!mountRef.current) return;
-      const w = mountRef.current.clientWidth;
-      const h = mountRef.current.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener('resize', handleResize);
+    animId = requestAnimationFrame(animate);
 
     return () => {
-      cancelAnimationFrame(reqId);
-      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animId);
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
@@ -225,93 +212,111 @@ export const VoxelDragonSlayerGame: React.FC<VoxelDragonSlayerGameProps> = ({
     };
   }, [lowSpecMode]);
 
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.dragonHp = 200;
+    s.headHp = 50;
+    s.wingHp = 50;
+    s.playerHp = 100;
+    s.groggyTimer = 0;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    setDragonHp(200);
+    setPlayerHp(100);
+    setIsGroggy(false);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
+
   return (
     <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* Top Header */}
-      <div className="absolute top-0 left-0 right-0 z-20 px-3 py-2.5 bg-slate-900/85 backdrop-blur-xs border-b border-slate-800 flex items-center justify-between text-white text-xs">
-        <button
-          onClick={onExit}
-          className="flex items-center gap-1 bg-slate-800 hover:bg-slate-700 px-2.5 py-1.5 rounded-sm border border-slate-700 font-bold"
-        >
-          <ArrowLeft size={14} />
-          <span>{language === 'ko' ? '나가기' : 'Exit'}</span>
-        </button>
-
-        {/* Dragon HP & Parts */}
-        <div className="flex items-center gap-3">
-          <div className="flex flex-col items-center">
-            <span className="text-rose-400 font-black text-xs">DRAGON HP: {dragonHp}/200 {isGroggy && '⚡ GROGGY!'}</span>
-            <div className="w-36 bg-slate-950 border border-rose-500/40 h-2.5 rounded-xs overflow-hidden">
-              <div className="bg-rose-600 h-full transition-all" style={{ width: `${(dragonHp / 200) * 100}%` }} />
-            </div>
-          </div>
-          <div className="text-[10px] text-amber-300 font-bold flex gap-1">
-            <span>[머리: {headHp}]</span>
-            <span>[날개: {wingHp}]</span>
-          </div>
-        </div>
-
-        {/* Hunter HP */}
-        <div className="flex items-center gap-1 text-cyan-400 font-bold">
-          <span>HP: {playerHp}/100</span>
-        </div>
-      </div>
-
-      {/* 3D Canvas */}
+      {/* 3D Canvas Mount */}
       <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Part Targeting & Action Bar */}
-      <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-auto">
-        <div className="flex gap-2">
-          <button
-            onClick={() => attackDragon('head')}
-            className="px-3 py-3 bg-amber-600 active:bg-amber-500 border border-amber-400 rounded-sm text-white font-black text-xs shadow-lg"
-          >
-            🎯 머리 타격
-          </button>
-          <button
-            onClick={() => attackDragon('wing')}
-            className="px-3 py-3 bg-rose-700 active:bg-rose-600 border border-rose-500 rounded-sm text-white font-black text-xs shadow-lg"
-          >
-            🪓 날개 절단
-          </button>
-        </div>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 드래곤 슬레이어' : 'Voxel Dragon Slayer'}
+        language={language}
+        hp={{ current: dragonHp, max: 200 }}
+        telemetries={[
+          { label: isKo ? '상태' : 'State', value: isGroggy ? '⚡ 그로기' : '🔥 분노', color: isGroggy ? 'text-amber-300' : 'text-rose-400' },
+          { label: isKo ? '헌터HP' : 'HP', value: `${playerHp}/100`, color: 'text-cyan-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
-        <div className="flex gap-2">
-          <button
-            onClick={rollDodge}
-            className="w-18 h-14 bg-slate-900 border border-cyan-400 text-cyan-300 font-black text-xs rounded-sm shadow-lg flex flex-col items-center justify-center"
-          >
-            <Shield size={16} />
-            ROLL
-          </button>
-          <button
-            onClick={() => attackDragon('body')}
-            className="w-20 h-14 bg-red-600 active:bg-red-500 border border-red-400 text-white font-black text-sm rounded-sm shadow-lg flex flex-col items-center justify-center"
-          >
-            <Swords size={20} />
-            ATTACK
-          </button>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && !isPaused && !showTutorial && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            let moved = false;
+
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const dx = curX - startX;
+
+              if (Math.abs(dx) > 15) {
+                moved = true;
+                rollDodge();
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Attack
+                attackDragon(false);
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={() => attackDragon(true)}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/75 border border-rose-500/30 rounded-full text-[10px] text-rose-300 font-mono backdrop-blur-xs">
+          {isKo ? '좌우 스와이프: 구르기 회피 | 탭: 대검 베기 | 더블탭: 부위파괴 강타 (버튼 없음)' : 'Swipe L/R: Roll Dodge | Tap: Slash | Double Tap: Heavy Part Strike (No Buttons)'}
         </div>
       </div>
 
-      {/* Game Over Modal */}
-      {isGameOver && (
-        <div className="absolute inset-0 z-40 bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 p-6 rounded-sm max-w-sm w-full text-center text-white flex flex-col gap-4">
-            <Trophy size={48} className="mx-auto text-amber-400" />
-            <h2 className="text-xl font-black">{isVictory ? (language === 'ko' ? '거대 드래곤 토벌 성공!' : 'DRAGON HUNT COMPLETE!') : 'HUNT FAILED'}</h2>
-            <div className="bg-slate-950 p-3 rounded-xs border border-amber-400/30 text-amber-300 font-bold text-sm">
-              +{rewardSns} SNS 포인트 획득!
-            </div>
-            <button
-              onClick={onExit}
-              className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-sm border border-amber-300 text-sm"
-            >
-              {language === 'ko' ? '확인 및 돌아가기' : 'Confirm & Exit'}
-            </button>
-          </div>
-        </div>
+      {/* 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_dragon_slayer"
+          gameTitle={isKo ? '3D 복셀 드래곤 슬레이어: 거대 몬스터 토벌' : 'Voxel Dragon Slayer: Boss Raid'}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
+
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
