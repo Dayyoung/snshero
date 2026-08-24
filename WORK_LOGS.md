@@ -2,7 +2,32 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-08-25 08:44 KST / 23:44 UTC] [화면별 소스코드 동적 분할(Lazy Loading) 및 화면별 2초 로딩바/캐시 초기화 구현]
+- **작업 개요**: 초기 홈페이지 진입 시 모든 뷰/게임 소스가 일괄 로드되어 초기 로딩이 지연되던 문제를 해결하기 위해, 화면별 on-demand 동적 분할(Code Splitting) 적용, 모든 화면 전환 시 최소 2초의 화면별 전용 로딩바 표시 및 로그인/게임 데이터 100% 보존형 안전한 캐시 초기화 기능 구현.
+- **주요 변경 사항**:
+  1. **화면별 Dynamic Lazy Loading (`src/App.tsx`)**:
+     - `HomeView`, `MyDeckView`, `PlayGameView`, `ShopView`, `SeasonHubView`, `KadanRpgView`, `NovelView`, `RankingView`, `AdminView`, `SettingView`, `EventView`, `CommunityView` 등 40여 종의 뷰 컴포넌트를 `React.lazy`로 전환하여 뷰별 독립 JS 청크로 완전 분리.
+     - 메인 번들 크기 축소 및 초기 진입 시 로드되는 코드량 대폭 경량화 (PlayGameView 1.4MB 등 비활성 뷰 청크는 진입 시점에만 로드).
+  2. **화면별 전용 모노스페이스 로딩바 컴포넌트 신설 (`src/components/ViewLoadingFallback.tsx`)**:
+     - `DESIGN.md` 가이드라인(Monospace 글꼴, 웜크림 `#fdfcfc`, 잉크 `#201d1d`, 1px hairline 보더, 0px/4px 모서리, ASCII 마커) 완벽 준수.
+     - 0% → 100% 2초(2,000ms) 동안 부드럽게 상승하는 프로그레스 바 + 실시간 퍼센티지 + ASCII 게이지 `[==========>     ] 65%`.
+     - 화면별 맞춤 타이틀/설명(`[HOME]`, `[MY DECK]`, `[PLAY]`, `[MISSIONS]`, `[SHOP]` 등 20+ 화면별 메타데이터 대응).
+     - 스켈레톤 라인 펄스 애니메이션 적용.
+  3. **모든 화면 전환 시 최소 2초 로딩 유지 (`src/App.tsx`)**:
+     - `isViewTransitioning` 상태 및 2,000ms 타이머를 통해 화면 이동 시 최소 2초 동안 화면별 로딩바를 보여준 뒤 화면 렌더링.
+     - `Suspense fallback`에도 `ViewLoadingFallback`을 연동하여 네트워크 다운로드 및 화면 전환 중 일관된 로딩 경험 제공.
+  4. **로그인 정보 & 게임 데이터 100% 보존형 캐시 초기화 버튼**:
+     - 로딩 화면 하단에 `[↺ 캐시 초기화 & 새로고침]` 버튼 제공.
+     - 클릭 시 `resetAllCaches()`를 통해 브라우저 Cache API(`window.caches`)와 임시 캐시만 삭제하고 즉시 새로고침.
+     - **로그인 세션(Firebase Auth)과 게임 데이터(`hero_*` 인벤토리, 덱, 재화, 스탯, 전적 등)는 절대 초기화되지 않으며 안전하게 보존**.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+  - `npm run build`: 정상 빌드 완료, 뷰별 독립 청크(HomeView 64KB, MyDeckView 110KB, PlayGameView 1.4MB, ShopView 175KB, SeasonHubView 25KB 등) 생성 확인.
+- **Git 커밋 & 푸시**: 완료.
+- **구글 폼 제출**: 완료.
+
 ---
+
 
 ## [2026-08-25 08:41 KST / 23:41 UTC] [/imp-mission 5개 게임 일괄 개선 #45~49] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
 - **3회차 5개 일괄 선정 및 개선 대상 게임**:
