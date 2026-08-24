@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ArrowLeft, Trophy, Sparkles, Zap, Flame, Shield, Target } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelKarateBreakGameProps {
   deck: CardData[];
@@ -13,11 +16,11 @@ interface VoxelKarateBreakGameProps {
 }
 
 const TARGET_TIERS = [
-  { nameKo: '삼나무 송판 (10단)', nameEn: 'Cedar Wood Planks (x10)', color: 0xb45309, reqPower: 45, maxBlocks: 10, points: 150 },
-  { nameKo: '붉은 점토 벽돌 (10단)', nameEn: 'Red Clay Bricks (x10)', color: 0xb91c1c, reqPower: 60, maxBlocks: 10, points: 250 },
-  { nameKo: '단단한 화강암석 (10단)', nameEn: 'Granite Stones (x10)', color: 0x64748b, reqPower: 75, maxBlocks: 10, points: 400 },
-  { nameKo: '강철 모루 블록 (10단)', nameEn: 'Forged Iron Anvils (x10)', color: 0x334155, reqPower: 88, maxBlocks: 10, points: 650 },
-  { nameKo: '흑요석 크리스탈 (10단)', nameEn: 'Obsidian Crystals (x10)', color: 0x581c87, reqPower: 95, maxBlocks: 10, points: 1000 }
+  { nameKo: '삼나무 송판 (10단)', nameEn: 'Cedar Wood (x10)', color: 0xb45309, reqPower: 45, maxBlocks: 10, points: 150 },
+  { nameKo: '붉은 점토 벽돌 (10단)', nameEn: 'Clay Bricks (x10)', color: 0xb91c1c, reqPower: 60, maxBlocks: 10, points: 250 },
+  { nameKo: '단단한 화강암석 (10단)', nameEn: 'Granite (x10)', color: 0x64748b, reqPower: 75, maxBlocks: 10, points: 400 },
+  { nameKo: '강철 모루 블록 (10단)', nameEn: 'Iron Anvil (x10)', color: 0x334155, reqPower: 88, maxBlocks: 10, points: 650 },
+  { nameKo: '흑요석 크리스탈 (10단)', nameEn: 'Obsidian (x10)', color: 0x581c87, reqPower: 95, maxBlocks: 10, points: 1000 }
 ];
 
 export const VoxelKarateBreakGame: React.FC<VoxelKarateBreakGameProps> = ({
@@ -31,14 +34,21 @@ export const VoxelKarateBreakGame: React.FC<VoxelKarateBreakGameProps> = ({
   const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
 
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_karate_break') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [currentTierIdx, setCurrentTierIdx] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
   const [gaugeVal, setGaugeVal] = useState<number>(0);
   const [isStriking, setIsStriking] = useState<boolean>(false);
-  const [shatteredCount, setShatteredCount] = useState<number>(0);
   const [breakResultText, setBreakResultText] = useState<string>('');
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
     tierIdx: 0,
@@ -50,11 +60,112 @@ export const VoxelKarateBreakGame: React.FC<VoxelKarateBreakGameProps> = ({
     isStriking: false,
     score: 0,
     isGameOver: false,
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
     blocks: [] as THREE.Mesh[],
     particles: [] as { mesh: THREE.Mesh; vel: THREE.Vector3 }[],
     karateMasterGroup: null as THREE.Group | null,
-    armMesh: null as THREE.Mesh | null
+    armMesh: null as THREE.Mesh | null,
+    scene: null as THREE.Scene | null
   });
+
+  const currTier = TARGET_TIERS[currentTierIdx] || TARGET_TIERS[0];
+
+  const handleKiFocus = () => {
+    const s = stateRef.current;
+    if (s.isStriking || s.isGameOver || s.isVictory || s.isPaused) return;
+    s.isFocusActive = true;
+    s.focusTime = 1.2;
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+  };
+
+  const handleStrike = () => {
+    const s = stateRef.current;
+    if (s.isStriking || s.isGameOver || s.isVictory || s.isPaused) return;
+
+    s.isStriking = true;
+    setIsStriking(true);
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+
+    const power = s.gauge;
+    const tier = TARGET_TIERS[s.tierIdx];
+
+    setTimeout(() => {
+      if (power >= tier.reqPower) {
+        // Break Success!
+        const breakRatio = Math.min(1.0, power / 100);
+        const count = Math.round(breakRatio * tier.maxBlocks);
+        const gained = Math.round(tier.points * (count / tier.maxBlocks) * 1.5);
+        s.score += gained;
+        setScore(s.score);
+        setBreakResultText(`💥 ${count}단 완전 격파 성공! (+${gained}P)`);
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+
+        // Shatter animation
+        s.blocks.forEach((b, idx) => {
+          if (idx < count) {
+            b.position.y = -10;
+          }
+        });
+
+        if (s.tierIdx >= TARGET_TIERS.length - 1) {
+          s.isVictory = true;
+          s.isGameOver = true;
+          setIsGameOver(true);
+          const duration = (Date.now() - s.startTime) / 1000;
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'voxel_karate_break',
+            gameTitle: '복셀 무도 정권 격파',
+            durationSeconds: duration,
+            score: s.score + 1500,
+            difficulty: 'NIGHTMARE',
+            isVictory: true
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
+        } else {
+          setTimeout(() => {
+            s.tierIdx += 1;
+            setCurrentTierIdx(s.tierIdx);
+            s.isStriking = false;
+            setIsStriking(false);
+            setBreakResultText('');
+            s.gauge = 0;
+            // Respawn next tier blocks
+            respawnBlocks(s.tierIdx);
+          }, 1400);
+        }
+      } else {
+        // Break Failed!
+        setBreakResultText('❌ 기력 부족! 격파 실패');
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        setTimeout(() => {
+          s.isStriking = false;
+          setIsStriking(false);
+          setBreakResultText('');
+        }, 1200);
+      }
+    }, 200);
+  };
+
+  const respawnBlocks = (tierIndex: number) => {
+    const s = stateRef.current;
+    if (!s.scene) return;
+    s.blocks.forEach(b => s.scene?.remove(b));
+    s.blocks = [];
+
+    const tier = TARGET_TIERS[tierIndex];
+    const bGeo = new THREE.BoxGeometry(1.0, 0.08, 0.6);
+    const bMat = new THREE.MeshStandardMaterial({ color: tier.color, roughness: 0.5 });
+
+    for (let i = 0; i < 10; i++) {
+      const bMesh = new THREE.Mesh(bGeo, bMat);
+      bMesh.position.set(0, 0.84 + i * 0.09, 0);
+      s.scene.add(bMesh);
+      s.blocks.push(bMesh);
+    }
+  };
 
   useEffect(() => {
     const container = mountRef.current;
@@ -65,6 +176,7 @@ export const VoxelKarateBreakGame: React.FC<VoxelKarateBreakGameProps> = ({
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x1c1917);
+    stateRef.current.scene = scene;
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
     camera.position.set(0, 2.5, 5.5);
@@ -73,146 +185,89 @@ export const VoxelKarateBreakGame: React.FC<VoxelKarateBreakGameProps> = ({
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    renderer.shadowMap.enabled = !lowSpecMode;
     container.appendChild(renderer.domElement);
 
-    // Dojo Lighting (Warm Torches & Spotlight)
     const hemiLight = new THREE.HemisphereLight(0xffedd5, 0x441a03, 0.9);
     scene.add(hemiLight);
 
     const spot = new THREE.SpotLight(0xffedd5, 2.5);
     spot.position.set(0, 8, 4);
-    spot.castShadow = !lowSpecMode;
     scene.add(spot);
 
-    // Tatami Mat Dojo Floor
+    // Floor
     const floorGeo = new THREE.PlaneGeometry(16, 16);
     const floorMat = new THREE.MeshStandardMaterial({ color: 0x854d0e, roughness: 0.8 });
     const floorMesh = new THREE.Mesh(floorGeo, floorMat);
     floorMesh.rotation.x = -Math.PI / 2;
-    floorMesh.receiveShadow = !lowSpecMode;
     scene.add(floorMesh);
 
-    // Dojo Wooden Stand Pedestal for Stacking Target Blocks
-    const standGeo = new THREE.BoxGeometry(1.2, 0.8, 1.0);
-    const standMat = new THREE.MeshStandardMaterial({ color: 0x451a03 });
-    const stand = new THREE.Mesh(standGeo, standMat);
+    // Wooden Stand Pedestal
+    const stand = new THREE.Mesh(
+      new THREE.BoxGeometry(1.2, 0.8, 1.0),
+      new THREE.MeshStandardMaterial({ color: 0x451a03 })
+    );
     stand.position.set(0, 0.4, 0);
     scene.add(stand);
 
-    // Voxel Karate Master Model
+    // Karate Master
     const masterGroup = new THREE.Group();
-
-    // Gi Pants (White)
-    const giMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.8 });
-    const legGeo = new THREE.BoxGeometry(0.24, 0.65, 0.26);
-    const legL = new THREE.Mesh(legGeo, giMat);
-    legL.position.set(-0.2, 0.35, 0);
-    masterGroup.add(legL);
-
-    const legR = new THREE.Mesh(legGeo, giMat);
-    legR.position.set(0.2, 0.35, 0);
-    masterGroup.add(legR);
-
-    // Gi Torso with Black Belt
-    const bodyGeo = new THREE.BoxGeometry(0.65, 0.7, 0.4);
-    const body = new THREE.Mesh(bodyGeo, giMat);
-    body.position.y = 1.0;
+    const body = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.4, 0.6), new THREE.MeshStandardMaterial({ color: 0xffffff }));
+    body.position.y = 0.7;
     masterGroup.add(body);
 
-    const beltGeo = new THREE.BoxGeometry(0.68, 0.1, 0.42);
-    const beltMat = new THREE.MeshStandardMaterial({ color: 0x09090b });
-    const belt = new THREE.Mesh(beltGeo, beltMat);
-    belt.position.y = 0.85;
+    const belt = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.2, 0.65), new THREE.MeshStandardMaterial({ color: 0x000000 }));
+    belt.position.set(0, 0.6, 0);
     masterGroup.add(belt);
 
-    // Head with Martial Headband
-    const headGeo = new THREE.BoxGeometry(0.4, 0.4, 0.4);
-    const skinMat = new THREE.MeshStandardMaterial({ color: 0xfcd34d });
-    const head = new THREE.Mesh(headGeo, skinMat);
-    head.position.y = 1.55;
-    masterGroup.add(head);
-
-    const bandGeo = new THREE.BoxGeometry(0.44, 0.1, 0.44);
-    const bandMat = new THREE.MeshStandardMaterial({ color: 0xef4444 });
-    const band = new THREE.Mesh(bandGeo, bandMat);
-    band.position.y = 1.62;
-    masterGroup.add(band);
-
-    // Striking Fist / Chop Arm
-    const armGeo = new THREE.BoxGeometry(0.2, 0.6, 0.2);
-    const arm = new THREE.Mesh(armGeo, giMat);
-    arm.position.set(0.45, 1.25, 0.2);
-    arm.rotation.x = -Math.PI / 4;
+    const arm = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.8, 0.25), new THREE.MeshStandardMaterial({ color: 0xffffff }));
+    arm.position.set(0.5, 1.2, 0.4);
     masterGroup.add(arm);
     stateRef.current.armMesh = arm;
 
-    masterGroup.position.set(0, 0, 1.5);
+    masterGroup.position.set(0, 0, 1.4);
     scene.add(masterGroup);
     stateRef.current.karateMasterGroup = masterGroup;
 
-    // Build Stack of Target Blocks
-    const buildStack = (tierIdx: number) => {
-      // Clear old blocks
-      stateRef.current.blocks.forEach(b => scene.remove(b));
-      stateRef.current.blocks = [];
+    // Initial blocks
+    respawnBlocks(0);
 
-      const tier = TARGET_TIERS[tierIdx];
-      const blockMat = new THREE.MeshStandardMaterial({ color: tier.color, roughness: 0.5 });
-      const blockGeo = new THREE.BoxGeometry(1.0, 0.08, 0.6);
-
-      for (let i = 0; i < 10; i++) {
-        const b = new THREE.Mesh(blockGeo, blockMat);
-        b.position.set(0, 0.84 + i * 0.09, 0);
-        b.castShadow = !lowSpecMode;
-        scene.add(b);
-        stateRef.current.blocks.push(b);
-      }
-    };
-
-    buildStack(0);
-
-    // Animation Loop
     let animId: number;
-    let clock = new THREE.Clock();
+    let lastTime = performance.now();
 
-    const animate = () => {
+    const animate = (now: number) => {
       animId = requestAnimationFrame(animate);
-      const delta = clock.getDelta();
-      const state = stateRef.current;
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
 
-      if (!state.isGameOver && !state.isStriking) {
-        // Ping-pong power gauge oscillation
-        const speed = state.isFocusActive ? state.gaugeSpeed * 0.5 : state.gaugeSpeed;
-        state.gauge += state.gaugeDir * speed * delta * 60;
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-        if (state.gauge >= 100) {
-          state.gauge = 100;
-          state.gaugeDir = -1;
-        } else if (state.gauge <= 0) {
-          state.gauge = 0;
-          state.gaugeDir = 1;
+      // Ki Power Gauge Oscillation
+      if (!s.isStriking) {
+        let speed = s.gaugeSpeed * (s.isFocusActive ? 0.35 : 1.0);
+        s.gauge += s.gaugeDir * speed * 60 * dt;
+
+        if (s.gauge >= 100) {
+          s.gauge = 100;
+          s.gaugeDir = -1;
+        } else if (s.gauge <= 0) {
+          s.gauge = 0;
+          s.gaugeDir = 1;
         }
+        setGaugeVal(Math.round(s.gauge));
 
-        setGaugeVal(Math.floor(state.gauge));
-
-        if (state.focusTime > 0) {
-          state.focusTime -= delta;
-          if (state.focusTime <= 0) state.isFocusActive = false;
+        if (s.isFocusActive) {
+          s.focusTime -= dt;
+          if (s.focusTime <= 0) s.isFocusActive = false;
         }
       }
 
-      // Update particle physics if broken
-      for (let i = state.particles.length - 1; i >= 0; i--) {
-        const p = state.particles[i];
-        p.mesh.position.add(p.vel);
-        p.vel.y -= 0.015; // Gravity
-        p.mesh.rotation.x += 0.1;
-        p.mesh.rotation.y += 0.1;
-
-        if (p.mesh.position.y < -1.0) {
-          scene.remove(p.mesh);
-          state.particles.splice(i, 1);
+      // Arm animation
+      if (s.armMesh) {
+        if (s.isStriking) {
+          s.armMesh.rotation.x = -Math.PI / 2;
+        } else {
+          s.armMesh.rotation.x = Math.sin(now * 0.005) * 0.2;
         }
       }
 
@@ -221,254 +276,130 @@ export const VoxelKarateBreakGame: React.FC<VoxelKarateBreakGameProps> = ({
 
     animId = requestAnimationFrame(animate);
 
-    // Resize
-    const handleResize = () => {
-      if (!container) return;
-      const w = container.clientWidth;
-      const h = container.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
-      window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animId);
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, isKo, playSfx]);
+  }, [lowSpecMode]);
 
-  // Ki Focus (Slows down bar oscillation)
-  const handleKiFocus = () => {
-    const state = stateRef.current;
-    if (state.isStriking || state.isGameOver) return;
-    state.isFocusActive = true;
-    state.focusTime = 3.0;
-    setBreakResultText(isKo ? '🧘 단전호흡 집중: 게이지 감속!' : '🧘 KI FOCUS: Gauge Slowed!');
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.tierIdx = 0;
+    s.gauge = 0;
+    s.score = 0;
+    s.isStriking = false;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    setCurrentTierIdx(0);
+    setScore(0);
+    setGaugeVal(0);
+    setIsStriking(false);
+    setBreakResultText('');
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+    respawnBlocks(0);
   };
-
-  // Chop Strike Strike Action
-  const handleStrike = () => {
-    const state = stateRef.current;
-    if (state.isStriking || state.isGameOver) return;
-
-    state.isStriking = true;
-    setIsStriking(true);
-
-    const tier = TARGET_TIERS[state.tierIdx];
-    const power = state.gauge;
-
-    // Calculate blocks shattered based on power vs tier requirement
-    let broken = 0;
-    if (power >= tier.reqPower) {
-      if (power >= 90) {
-        broken = 10; // CRITICAL 100% PERFECT BREAK
-      } else {
-        broken = 6 + Math.floor(((power - tier.reqPower) / (90 - tier.reqPower)) * 4);
-      }
-    } else {
-      broken = Math.max(1, Math.floor((power / tier.reqPower) * 5));
-    }
-
-    setShatteredCount(broken);
-
-    // Animate chop strike
-    if (state.armMesh) {
-      state.armMesh.rotation.x = Math.PI / 3;
-    }
-
-    // Shatter Voxel Blocks with fragmentation
-    for (let i = 9; i >= 10 - broken; i--) {
-      const b = state.blocks[i];
-      if (b) {
-        b.visible = false;
-        // Spawn small voxel debris shards
-        const debrisGeo = new THREE.BoxGeometry(0.2, 0.08, 0.2);
-        const debrisMat = b.material;
-        for (let j = 0; j < 6; j++) {
-          const debris = new THREE.Mesh(debrisGeo, debrisMat);
-          debris.position.copy(b.position);
-          const vel = new THREE.Vector3(
-            (Math.random() - 0.5) * 0.25,
-            0.15 + Math.random() * 0.15,
-            (Math.random() - 0.5) * 0.25
-          );
-          state.particles.push({ mesh: debris, vel });
-          b.parent?.add(debris);
-        }
-      }
-    }
-
-    if (broken === 10) {
-      const earned = tier.points;
-      state.score += earned;
-      setScore(state.score);
-      setBreakResultText(isKo ? `💥 10단 완전 격파 대성공! (+${earned}P)` : `💥 PERFECT 10-BLOCK SHATTER! (+${earned}P)`);
-      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-    } else {
-      const earned = Math.floor(tier.points * (broken / 10));
-      state.score += earned;
-      setScore(state.score);
-      setBreakResultText(isKo ? `🥋 ${broken}단 부분 격파! (+${earned}P)` : `🥋 ${broken} Blocks Shattered! (+${earned}P)`);
-      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
-    }
-
-    // Advance to next tier or end
-    setTimeout(() => {
-      if (state.tierIdx + 1 < TARGET_TIERS.length) {
-        state.tierIdx += 1;
-        setCurrentTierIdx(state.tierIdx);
-        state.isStriking = false;
-        setIsStriking(false);
-        if (state.armMesh) state.armMesh.rotation.x = -Math.PI / 4;
-
-        // Rebuild new tier stack
-        state.blocks.forEach(b => b.visible = true);
-        const newTier = TARGET_TIERS[state.tierIdx];
-        state.blocks.forEach(b => {
-          (b.material as THREE.MeshStandardMaterial).color.setHex(newTier.color);
-        });
-      } else {
-        // Finished all 5 martial tiers!
-        state.isGameOver = true;
-        setIsGameOver(true);
-        const earnedSns = Math.min(260, Math.max(50, Math.floor(state.score * 0.12)));
-        setRewardSns(earnedSns);
-        onReward(earnedSns);
-      }
-    }, 2200);
-  };
-
-  const currTier = TARGET_TIERS[currentTierIdx];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none">
-      <div ref={mountRef} className="w-full h-full" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Top HUD */}
-      <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
-        <button
-          onClick={onExit}
-          className="pointer-events-auto p-2 bg-slate-900/80 border border-slate-700 text-slate-200 rounded-sm hover:bg-slate-800 transition-all flex items-center gap-1.5 text-xs font-bold cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-          <span>{isKo ? '나가기' : 'Exit'}</span>
-        </button>
-
-        <div className="flex items-center gap-2 bg-slate-900/90 border border-amber-500/40 px-3 py-1.5 rounded-sm">
-          <Trophy size={16} className="text-amber-400" />
-          <span className="text-xs text-amber-300 font-bold">
-            {isKo ? `점수: ${score}P` : `Score: ${score}`}
-          </span>
-          <span className="text-[10px] text-amber-400 font-bold">
-            [TIER {currentTierIdx + 1}/5]
-          </span>
-        </div>
-      </div>
-
-      {/* Target Info Banner */}
-      <div className="absolute top-14 left-4 flex flex-col gap-1.5 z-10 pointer-events-none">
-        <div className="flex items-center gap-1.5 bg-slate-900/80 border border-slate-700 text-amber-300 px-2.5 py-1 rounded-sm text-xs font-bold w-fit">
-          <Target size={14} className="text-amber-400" />
-          <span>{isKo ? currTier.nameKo : currTier.nameEn}</span>
-        </div>
-        <div className="flex items-center gap-1.5 bg-slate-900/80 border border-slate-700 text-slate-300 px-2.5 py-0.5 rounded-sm text-[11px] font-bold w-fit">
-          <span>{isKo ? `격파 요구 파워: ${currTier.reqPower}%+` : `Req Ki Power: ${currTier.reqPower}%+`}</span>
-        </div>
-      </div>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 무도 정권 격파' : 'Voxel Karate Break'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '단계' : 'Tier', value: `${currentTierIdx + 1}/5 (${isKo ? currTier.nameKo : currTier.nameEn})`, color: 'text-amber-300' },
+          { label: isKo ? '기력' : 'Ki', value: `${gaugeVal}%`, color: gaugeVal >= currTier.reqPower ? 'text-emerald-400 font-black animate-pulse' : 'text-orange-300' },
+          { label: isKo ? '요구' : 'Req', value: `${currTier.reqPower}%+`, color: 'text-cyan-300' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-yellow-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
       {/* Break Result Banner */}
       {breakResultText && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 bg-amber-500/90 text-slate-950 px-4 py-1 rounded-sm text-xs font-black tracking-wider shadow-lg z-10 pointer-events-none animate-bounce">
+        <div className="absolute top-14 left-1/2 -translate-x-1/2 bg-black/85 border border-amber-400 text-amber-300 px-4 py-1 rounded-full text-xs font-black tracking-wider shadow-lg z-30 pointer-events-none animate-bounce">
           {breakResultText}
         </div>
       )}
 
-      {/* Power Gauge Bar */}
-      <div className="absolute bottom-28 left-6 right-6 flex flex-col items-center gap-1.5 z-10">
-        <div className="w-full max-w-sm flex justify-between text-xs font-black text-amber-400">
-          <span>{isKo ? '기력 게이지' : 'KI POWER'}</span>
-          <span>{gaugeVal}%</span>
-        </div>
-        <div className="w-full max-w-sm h-4 bg-slate-900 border-2 border-slate-700 rounded-full overflow-hidden relative">
-          {/* Sweet Spot Highlight */}
-          <div
-            className="absolute top-0 bottom-0 bg-emerald-500/40 border-x border-emerald-400"
-            style={{ left: `${currTier.reqPower}%`, right: 0 }}
-          />
-          {/* Dynamic Gauge Indicator */}
-          <div
-            className="h-full bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 transition-all duration-75"
-            style={{ width: `${gaugeVal}%` }}
-          />
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && !isPaused && !showTutorial && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-pointer"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            e.preventDefault();
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startY = e.clientY - rect.top;
+            let moved = false;
+
+            const onMove = (moveEvt: PointerEvent) => {
+              const curY = moveEvt.clientY - rect.top;
+              if (Math.abs(curY - startY) > 20) {
+                moved = true;
+                handleKiFocus();
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Strike Chop!
+                handleStrike();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={handleKiFocus}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/75 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {isKo ? '화면 탭: 정권 격파 (CHOP!) | 드래그/더블탭: 단전호흡 기력집중 (버튼 없음)' : 'Tap: Strike Chop! | Drag/Double Tap: Ki Focus Slow (No Buttons)'}
         </div>
       </div>
 
-      {/* Mobile-First Action Controls */}
-      <div className="absolute bottom-6 left-4 right-4 flex flex-col items-center gap-2.5 z-10">
-        <div className="w-full max-w-sm flex gap-2">
-          <button
-            onClick={handleKiFocus}
-            disabled={isStriking}
-            className="flex-1 py-4 bg-slate-900/90 border border-sky-400 text-sky-300 font-black text-sm rounded-sm active:scale-95 shadow-xl flex items-center justify-center gap-1.5 uppercase cursor-pointer disabled:opacity-50"
-          >
-            <Zap size={18} />
-            <span>{isKo ? '🧘 단전호흡 (감속)' : '🧘 KI FOCUS'}</span>
-          </button>
-          <button
-            onClick={handleStrike}
-            disabled={isStriking}
-            className="flex-1 py-4 bg-gradient-to-r from-rose-500 to-amber-500 border border-rose-300 text-slate-950 font-black text-sm rounded-sm active:scale-95 shadow-xl flex items-center justify-center gap-1.5 uppercase cursor-pointer disabled:opacity-50"
-          >
-            <Flame size={20} />
-            <span>{isKo ? '💥 정권 격파 (CHOP!)' : '💥 KA-CHOP!'}</span>
-          </button>
-        </div>
-        <p className="text-[11px] text-slate-300 bg-slate-900/80 px-3 py-0.5 rounded-sm border border-slate-700">
-          {isKo ? '파워 게이지가 녹색 임계 영역(90%+)에 도달했을 때 정권 격파를 누르세요!' : 'Hit KA-CHOP when the power gauge reaches the green critical zone!'}
-        </p>
-      </div>
+      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {showTutorial && (
+        <SportsMissionTutorial
+          gameId="voxel_karate_break"
+          gameTitle={isKo ? '3D 복셀 무도 정권 격파: 5단계 송판/벽돌 격파' : 'Voxel Karate Break: 5-Tier Board Breaking'}
+          sportType="martial"
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-      {/* Game Over Summary Modal */}
-      {isGameOver && (
-        <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-xs bg-slate-900 border border-amber-500/50 p-5 rounded-none text-center space-y-4 shadow-2xl">
-            <div className="flex justify-center">
-              <Sparkles size={36} className="text-amber-400 animate-pulse" />
-            </div>
-            <h2 className="text-lg font-black text-amber-400 uppercase tracking-widest">
-              {isKo ? '🏆 무도 격파 단련 완료!' : '🏆 MARTIAL MASTERY!'}
-            </h2>
-            <div className="space-y-1.5 text-xs text-slate-300 bg-slate-950/60 p-3 border border-slate-800">
-              <div className="flex justify-between">
-                <span>{isKo ? '도달한 무도 단계' : 'Max Tier Reached'}</span>
-                <span className="font-bold text-amber-300">5 / 5 TIER</span>
-              </div>
-              <div className="flex justify-between">
-                <span>{isKo ? '격파 총점' : 'Total Score'}</span>
-                <span className="font-bold text-indigo-300">{score} PTS</span>
-              </div>
-              <div className="flex justify-between pt-1 border-t border-slate-800 text-amber-400 font-bold">
-                <span>{isKo ? '획득 SNS 보상' : 'Earned SNS'}</span>
-                <span>+{rewardSns} SNS</span>
-              </div>
-            </div>
-
-            <div className="flex gap-2 pt-2">
-              <button
-                onClick={onExit}
-                className="flex-1 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase rounded-sm transition-all cursor-pointer"
-              >
-                {isKo ? '보상 수령 및 복귀' : 'Claim & Exit'}
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
