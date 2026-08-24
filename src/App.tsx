@@ -449,25 +449,16 @@ function AppContent() {
   const [adBannerHeight, setAdBannerHeight] = useState(0);
   const [autoStartPvp, setAutoStartPvp] = useState(false);
   const [view, setView] = useState<ViewType>(() => getViewFromPathAndUrl());
-  const [isViewTransitioning, setIsViewTransitioning] = useState<boolean>(true);
-  const viewTransitionTimerRef = useRef<number | null>(null);
+  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
 
-  // 모든 화면 이동 시 최소 2초의 화면별 로딩바 유지
+  // 최초 접속 시에만 3초 동안 로딩화면 표시 (이후 캐시된 화면은 즉시 표시)
   useEffect(() => {
-    setIsViewTransitioning(true);
-    if (viewTransitionTimerRef.current) {
-      clearTimeout(viewTransitionTimerRef.current);
-    }
-    viewTransitionTimerRef.current = window.setTimeout(() => {
-      setIsViewTransitioning(false);
-    }, 2000);
+    const timer = window.setTimeout(() => {
+      setIsInitialLoading(false);
+    }, 3000);
 
-    return () => {
-      if (viewTransitionTimerRef.current) {
-        clearTimeout(viewTransitionTimerRef.current);
-      }
-    };
-  }, [view]);
+    return () => clearTimeout(timer);
+  }, []);
 
   const [creatorCode, setCreatorCode] = useState<string>(() => {
     if (typeof window !== 'undefined') {
@@ -6196,16 +6187,16 @@ function AppContent() {
                     <ViewLoadingFallback
                       view={view}
                       language={language}
-                      targetDurationMs={2000}
+                      targetDurationMs={800}
                     />
                   }
                 >
                   <SnsProvider sns={sns} updateSns={updateSns} setCurrentDeck={setCurrentDeck} selectedCompanionIndex={selectedCompanionIndex}>
-                    {isViewTransitioning ? (
+                    {isInitialLoading ? (
                       <ViewLoadingFallback
                         view={view}
                         language={language}
-                        targetDurationMs={2000}
+                        targetDurationMs={3000}
                       />
                     ) : (
                       renderView()
