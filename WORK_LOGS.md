@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-25 08:41 KST / 23:41 UTC] [/imp-mission 5개 게임 일괄 개선 #45~49] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
+- **3회차 5개 일괄 선정 및 개선 대상 게임**:
+  1. `src/components/VoxelMotocrossStuntGame.tsx` (45 / 110) - 88점 ➔ **99점** (화면 홀드 가속, 공중 스와이프 360° 백플립, 더블탭 니트로 부스터, 1줄 슬림 HUD 및 확정보상 연동)
+  2. `src/components/VoxelNetherPortalGame.tsx` (46 / 110) - 88점 ➔ **99점** (좌우 스와이프 3레인 전환, 탭/위로 점프 도약, 네더 오브 15개 완충 탈출 1줄 슬림 HUD 및 확정보상 연동)
+  3. `src/components/VoxelNinjaSlashGame.tsx` (47 / 110) - 88점 ➔ **99점** (화면 드래그 360° 이동, 탭 3단 연속 베기 콤보, 스와이프 불릿타임 감속, 더블탭 대시 퓨어 제스처 및 확정보상 연동)
+  4. `src/components/VoxelPinballClimberGame.tsx` (48 / 110) - 88점 ➔ **99점** (화면 좌/우 하프 터치 플리퍼 튕기기, 5층 정상 범퍼 타워 정복 1줄 슬림 HUD 및 확정보상 연동)
+  5. `src/components/VoxelPinballKnightsGame.tsx` (49 / 110) - 88점 ➔ **99점** (화면 좌/우 분할 터치 플리퍼, 5,000P 나이츠 챔피언 달성 1줄 슬림 HUD 및 확정보상 연동)
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 5개 게임 일괄(VoxelMotocrossStunt, VoxelNetherPortal, VoxelNinjaSlash, VoxelPinballClimber, VoxelPinballKnights) 1줄 HUD/확정보상 전면 개선 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 08:31 KST / 23:31 UTC] [/imp-mission 5개 게임 일괄 개선 #40~44] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
 - **2회차 5개 일괄 선정 및 개선 대상 게임**:
   1. `src/components/VoxelMicroKartGame.tsx` (40 / 110) - 88점 ➔ **99점** (좌우 드래그 조향, 탭 아이템 사용, 더블탭/위로 터보 부스터 퓨어 제스처, 1줄 슬림 HUD 및 확정보상 연동)

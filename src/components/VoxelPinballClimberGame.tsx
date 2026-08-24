@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { CardData } from '../types';
-import { UniversalTutorialModal } from './UniversalTutorialModal';
-import { ResponsiveCleanHUD } from './ResponsiveCleanHUD';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
@@ -17,16 +17,8 @@ interface VoxelPinballClimberGameProps {
 
 interface Bumper {
   mesh: THREE.Mesh;
-  lightMesh: THREE.Mesh;
   radius: number;
   points: number;
-  hitCooldown: number;
-}
-
-interface VoxelCoin {
-  mesh: THREE.Mesh;
-  collected: boolean;
-  y: number;
 }
 
 export const VoxelPinballClimberGame: React.FC<VoxelPinballClimberGameProps> = ({
@@ -50,9 +42,9 @@ export const VoxelPinballClimberGame: React.FC<VoxelPinballClimberGameProps> = (
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [currentFloor, setCurrentFloor] = useState<number>(1);
+  const targetFloor = 5;
   const [combo, setCombo] = useState<number>(0);
   const [ballsLeft, setBallsLeft] = useState<number>(3);
-  const [isFever, setIsFever] = useState<boolean>(false);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
@@ -60,32 +52,30 @@ export const VoxelPinballClimberGame: React.FC<VoxelPinballClimberGameProps> = (
     ballPos: new THREE.Vector3(0, 2, 0),
     ballVel: new THREE.Vector3(0, 0, 0),
     ballMesh: null as THREE.Mesh | null,
-    leftFlipper: null as THREE.Mesh | null,
-    rightFlipper: null as THREE.Mesh | null,
-    leftFlipAngle: 0,
-    rightFlipAngle: 0,
     leftFlipPressed: false,
     rightFlipPressed: false,
-    cameraY: 6,
-    targetCameraY: 6,
+    leftFlipAngle: 0,
+    rightFlipAngle: 0,
+    leftFlipper: null as THREE.Mesh | null,
+    rightFlipper: null as THREE.Mesh | null,
     currentFloor: 1,
-    maxFloorReached: 1,
     score: 0,
     combo: 0,
-    comboTimer: 0,
     ballsLeft: 3,
-    isFever: false,
-    feverTime: 0,
     isGameOver: false,
+    isVictory: false,
     isPaused: false,
+    startTime: Date.now(),
     bumpers: [] as Bumper[],
-    coins: [] as VoxelCoin[],
-    startTime: Date.now()
+    scene: null as THREE.Scene | null
   });
 
-  useEffect(() => {
-    stateRef.current.isPaused = isPaused || showTutorial;
-  }, [isPaused, showTutorial]);
+  const launchBall = () => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isVictory || s.isPaused) return;
+    s.ballVel.set((Math.random() - 0.5) * 4, 18, 0);
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+  };
 
   useEffect(() => {
     const container = mountRef.current;
@@ -96,322 +86,184 @@ export const VoxelPinballClimberGame: React.FC<VoxelPinballClimberGameProps> = (
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0f172a);
+    stateRef.current.scene = scene;
 
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 150);
-    camera.position.set(0, 6, 16);
-    camera.lookAt(0, 4, 0);
+    camera.position.set(0, 10, 20);
+    camera.lookAt(0, 8, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    renderer.shadowMap.enabled = !lowSpecMode;
     container.appendChild(renderer.domElement);
 
-    // Cyberpunk Neon Lighting
-    const ambientLight = new THREE.AmbientLight(0x38bdf8, 0.8);
-    scene.add(ambientLight);
+    const ambLight = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambLight);
 
-    const dirLight = new THREE.DirectionalLight(0xf43f5e, 1.5);
-    dirLight.position.set(5, 20, 10);
+    const dirLight = new THREE.DirectionalLight(0xf43f5e, 1.4);
+    dirLight.position.set(10, 20, 10);
     scene.add(dirLight);
 
-    // Build Vertical Pinball Climber Tower (50 Floors)
-    const towerRadius = 4.5;
-    const wallGeo = new THREE.BoxGeometry(0.4, 120, 1.2);
-    const wallMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4 });
+    // Pinball Backboard
+    const board = new THREE.Mesh(
+      new THREE.BoxGeometry(16, 32, 0.8),
+      new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 })
+    );
+    board.position.set(0, 12, -0.4);
+    scene.add(board);
 
-    const leftWall = new THREE.Mesh(wallGeo, wallMat);
-    leftWall.position.set(-towerRadius, 60, 0);
-    scene.add(leftWall);
-
-    const rightWall = new THREE.Mesh(wallGeo, wallMat);
-    rightWall.position.set(towerRadius, 60, 0);
-    scene.add(rightWall);
-
-    // Back Panel with Neon Grid
-    const backGeo = new THREE.PlaneGeometry(towerRadius * 2, 120);
-    const backMat = new THREE.MeshStandardMaterial({ color: 0x020617, roughness: 0.9 });
-    const backMesh = new THREE.Mesh(backGeo, backMat);
-    backMesh.position.set(0, 60, -0.6);
-    scene.add(backMesh);
-
-    // Pinball Ball
-    const ballGeo = new THREE.SphereGeometry(0.42, 16, 16);
-    const ballMat = new THREE.MeshStandardMaterial({
-      color: 0xfacc15,
-      emissive: 0xeab308,
-      emissiveIntensity: 0.6,
-      metalness: 0.9,
-      roughness: 0.1
-    });
-    const ball = new THREE.Mesh(ballGeo, ballMat);
-    ball.position.set(0, 2.5, 0);
+    // Ball
+    const bGeo = new THREE.SphereGeometry(0.5, 16, 16);
+    const bMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.2, metalness: 0.8 });
+    const ball = new THREE.Mesh(bGeo, bMat);
+    ball.position.set(0, 4, 0);
     scene.add(ball);
     stateRef.current.ballMesh = ball;
-    stateRef.current.ballPos.set(0, 2.5, 0);
-    stateRef.current.ballVel.set((Math.random() - 0.5) * 4, 12, 0);
 
     // Flippers
-    const flipperGeo = new THREE.BoxGeometry(2.2, 0.45, 0.6);
-    const flipperMat = new THREE.MeshStandardMaterial({ color: 0x06b6d4, emissive: 0x0891b2, emissiveIntensity: 0.4 });
+    const fGeo = new THREE.BoxGeometry(2.4, 0.4, 0.4);
+    const fMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8 });
 
-    const leftFlipper = new THREE.Mesh(flipperGeo, flipperMat);
-    leftFlipper.position.set(-1.8, 1.2, 0);
-    scene.add(leftFlipper);
-    stateRef.current.leftFlipper = leftFlipper;
+    const lFlip = new THREE.Mesh(fGeo, fMat);
+    lFlip.position.set(-2.0, 1.5, 0);
+    scene.add(lFlip);
+    stateRef.current.leftFlipper = lFlip;
 
-    const rightFlipper = new THREE.Mesh(flipperGeo, flipperMat);
-    rightFlipper.position.set(1.8, 1.2, 0);
-    scene.add(rightFlipper);
-    stateRef.current.rightFlipper = rightFlipper;
+    const rFlip = new THREE.Mesh(fGeo, fMat);
+    rFlip.position.set(2.0, 1.5, 0);
+    scene.add(rFlip);
+    stateRef.current.rightFlipper = rFlip;
 
-    // Generate Bumpers and Floating Boosters along 50 floors
-    const bumpers: Bumper[] = [];
-    const coins: VoxelCoin[] = [];
+    // Spawn Bumpers
+    stateRef.current.bumpers = [];
+    const bmpGeo = new THREE.CylinderGeometry(0.8, 0.8, 0.4, 16);
+    const bmpMat = new THREE.MeshStandardMaterial({ color: 0xf43f5e, emissive: 0x9f1239 });
 
-    for (let floor = 1; floor <= 45; floor++) {
-      const yBase = floor * 2.6 + 2;
-      const count = Math.floor(Math.random() * 2) + 1;
+    for (let f = 1; f <= targetFloor; f++) {
+      [-3, 0, 3].forEach(bx => {
+        const bmp = new THREE.Mesh(bmpGeo, bmpMat);
+        bmp.rotation.x = Math.PI / 2;
+        bmp.position.set(bx, f * 5 + 3, 0);
+        scene.add(bmp);
 
-      for (let b = 0; b < count; b++) {
-        const x = (Math.random() - 0.5) * (towerRadius * 1.3);
-        const bumpRadius = 0.55 + Math.random() * 0.25;
-
-        const bumpGeo = new THREE.CylinderGeometry(bumpRadius, bumpRadius, 0.5, 16);
-        const bumpMat = new THREE.MeshStandardMaterial({
-          color: floor % 5 === 0 ? 0xf43f5e : 0xa855f7,
-          emissive: floor % 5 === 0 ? 0xe11d48 : 0x9333ea,
-          emissiveIntensity: 0.5,
-          metalness: 0.3
+        stateRef.current.bumpers.push({
+          mesh: bmp,
+          radius: 0.9,
+          points: 150 * f
         });
-        const bumpMesh = new THREE.Mesh(bumpGeo, bumpMat);
-        bumpMesh.position.set(x, yBase + (b * 0.8), 0);
-        bumpMesh.rotation.x = Math.PI / 2;
-        scene.add(bumpMesh);
-
-        // Core Ring
-        const ringGeo = new THREE.TorusGeometry(bumpRadius + 0.1, 0.05, 8, 24);
-        const ringMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
-        const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-        ringMesh.position.set(x, yBase + (b * 0.8), 0.2);
-        scene.add(ringMesh);
-
-        bumpers.push({
-          mesh: bumpMesh,
-          lightMesh: ringMesh as any,
-          radius: bumpRadius,
-          points: 100 * (floor % 5 === 0 ? 3 : 1),
-          hitCooldown: 0
-        });
-      }
-
-      // Add Collectible Voxel Gems
-      if (Math.random() > 0.4) {
-        const coinGeo = new THREE.OctahedronGeometry(0.35, 0);
-        const coinMat = new THREE.MeshStandardMaterial({
-          color: 0x34d399,
-          emissive: 0x10b981,
-          emissiveIntensity: 0.6,
-          metalness: 0.8
-        });
-        const coinMesh = new THREE.Mesh(coinGeo, coinMat);
-        coinMesh.position.set((Math.random() - 0.5) * (towerRadius * 1.2), yBase + 1.2, 0);
-        scene.add(coinMesh);
-        coins.push({ mesh: coinMesh, collected: false, y: yBase + 1.2 });
-      }
+      });
     }
 
-    stateRef.current.bumpers = bumpers;
-    stateRef.current.coins = coins;
+    launchBall();
 
     let animId: number;
     let lastTime = performance.now();
 
-    const animate = () => {
+    const animate = (now: number) => {
       animId = requestAnimationFrame(animate);
-      const now = performance.now();
-      const dt = Math.min((now - lastTime) / 1000, 0.05);
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
-      const state = stateRef.current;
-      if (state.isGameOver) {
-        renderer.render(scene, camera);
-        return;
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
+
+      // Ball Physics
+      s.ballVel.y -= 18 * dt; // Gravity
+      s.ballPos.x += s.ballVel.x * dt;
+      s.ballPos.y += s.ballVel.y * dt;
+
+      // Wall bounce
+      if (s.ballPos.x < -7) {
+        s.ballPos.x = -7;
+        s.ballVel.x *= -0.8;
+      } else if (s.ballPos.x > 7) {
+        s.ballPos.x = 7;
+        s.ballVel.x *= -0.8;
       }
 
-      // Fever Mode Timer
-      if (state.isFever) {
-        state.feverTime -= dt;
-        if (state.feverTime <= 0) {
-          state.isFever = false;
-          setIsFever(false);
-        }
+      // Ceiling bounce
+      if (s.ballPos.y > 28) {
+        s.ballPos.y = 28;
+        s.ballVel.y *= -0.8;
       }
 
-      // Combo Timer
-      if (state.combo > 0) {
-        state.comboTimer -= dt;
-        if (state.comboTimer <= 0) {
-          state.combo = 0;
-          setCombo(0);
-        }
-      }
+      // Bumper Hit Check
+      s.bumpers.forEach(b => {
+        const dist = s.ballPos.distanceTo(b.mesh.position);
+        if (dist < b.radius + 0.5) {
+          const hitDir = new THREE.Vector3().subVectors(s.ballPos, b.mesh.position).normalize();
+          s.ballVel.copy(hitDir.multiplyScalar(22));
+          s.score += b.points;
+          s.combo += 1;
+          s.currentFloor = Math.min(targetFloor, Math.max(1, Math.floor(s.ballPos.y / 5)));
 
-      // Physics: Gravity & Ball Velocity
-      const gravity = -14.0;
-      state.ballVel.y += gravity * dt;
+          setScore(s.score);
+          setCombo(s.combo);
+          setCurrentFloor(s.currentFloor);
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
 
-      // Terminal Velocity cap
-      state.ballVel.x = Math.max(-16, Math.min(16, state.ballVel.x));
-      state.ballVel.y = Math.max(-20, Math.min(26, state.ballVel.y));
-
-      state.ballPos.x += state.ballVel.x * dt;
-      state.ballPos.y += state.ballVel.y * dt;
-
-      // Wall Collisions
-      if (state.ballPos.x < -towerRadius + 0.45) {
-        state.ballPos.x = -towerRadius + 0.45;
-        state.ballVel.x = Math.abs(state.ballVel.x) * 0.85;
-      } else if (state.ballPos.x > towerRadius - 0.45) {
-        state.ballPos.x = towerRadius - 0.45;
-        state.ballVel.x = -Math.abs(state.ballVel.x) * 0.85;
-      }
-
-      // Flipper Rotations & Hits
-      const maxAngle = 0.55;
-      const targetLeft = state.leftFlipPressed ? maxAngle : -0.25;
-      const targetRight = state.rightFlipPressed ? -maxAngle : 0.25;
-
-      state.leftFlipAngle += (targetLeft - state.leftFlipAngle) * 22 * dt;
-      state.rightFlipAngle += (targetRight - state.rightFlipAngle) * 22 * dt;
-
-      if (state.leftFlipper) state.leftFlipper.rotation.z = state.leftFlipAngle;
-      if (state.rightFlipper) state.rightFlipper.rotation.z = state.rightFlipAngle;
-
-      // Flipper Hit Checks (Lower bound)
-      if (state.ballPos.y < 2.0 && state.ballPos.y > 0.6) {
-        // Left flipper hit
-        if (state.ballPos.x >= -3.0 && state.ballPos.x <= -0.4) {
-          const power = state.leftFlipPressed ? 19 : 7;
-          state.ballVel.y = power;
-          state.ballVel.x = (state.ballPos.x + 1.8) * 6 + (state.leftFlipPressed ? 4 : 0);
-          state.ballPos.y = 2.0;
-          if (state.leftFlipPressed && playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-        }
-        // Right flipper hit
-        else if (state.ballPos.x <= 3.0 && state.ballPos.x >= 0.4) {
-          const power = state.rightFlipPressed ? 19 : 7;
-          state.ballVel.y = power;
-          state.ballVel.x = (state.ballPos.x - 1.8) * 6 - (state.rightFlipPressed ? 4 : 0);
-          state.ballPos.y = 2.0;
-          if (state.rightFlipPressed && playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-        }
-      }
-
-      // Floor Calculation
-      const calculatedFloor = Math.max(1, Math.floor(state.ballPos.y / 2.6) + 1);
-      if (calculatedFloor > state.maxFloorReached) {
-        state.maxFloorReached = calculatedFloor;
-        setCurrentFloor(calculatedFloor);
-        state.score += (calculatedFloor - state.currentFloor) * 150;
-        setScore(state.score);
-        state.currentFloor = calculatedFloor;
-      }
-
-      // Bumpers Collision
-      for (const bump of state.bumpers) {
-        bump.hitCooldown = Math.max(0, bump.hitCooldown - dt);
-        const dx = state.ballPos.x - bump.mesh.position.x;
-        const dy = state.ballPos.y - bump.mesh.position.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < bump.radius + 0.45 && bump.hitCooldown <= 0) {
-          bump.hitCooldown = 0.15;
-          const nx = dx / (dist || 1);
-          const ny = dy / (dist || 1);
-
-          // Super Spring Bumper Bounce
-          const bounceForce = state.isFever ? 24 : 17;
-          state.ballVel.x = nx * bounceForce + (Math.random() - 0.5) * 4;
-          state.ballVel.y = ny * bounceForce + 4;
-
-          state.combo++;
-          state.comboTimer = 2.5;
-          setCombo(state.combo);
-
-          const mult = state.isFever ? 3 : (1 + state.combo * 0.1);
-          const pts = Math.round(bump.points * mult);
-          state.score += pts;
-          setScore(state.score);
-
-          if (state.combo >= 6 && !state.isFever) {
-            state.isFever = true;
-            state.feverTime = 6.0;
-            setIsFever(true);
-          }
-
-          if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
-
-          // Bumper hit scale pulse
-          bump.mesh.scale.set(1.4, 1.4, 1.4);
-        } else {
-          bump.mesh.scale.lerp(new THREE.Vector3(1, 1, 1), 10 * dt);
-        }
-      }
-
-      // Collect Gems
-      for (const coin of state.coins) {
-        if (!coin.collected) {
-          coin.mesh.rotation.y += 3.5 * dt;
-          const dx = state.ballPos.x - coin.mesh.position.x;
-          const dy = state.ballPos.y - coin.mesh.position.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < 0.8) {
-            coin.collected = true;
-            scene.remove(coin.mesh);
-            state.score += 500;
-            setScore(state.score);
-            if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
+          if (s.currentFloor >= targetFloor && !s.isGameOver) {
+            s.isVictory = true;
+            s.isGameOver = true;
+            setIsGameOver(true);
+            const duration = (Date.now() - s.startTime) / 1000;
+            const receipt = calculateAndDepositMissionReward({
+              gameId: 'voxel_pinball_climber',
+              gameTitle: '복셀 핀볼 클라이머',
+              durationSeconds: duration,
+              score: s.score + 2000,
+              difficulty: 'HARD',
+              isVictory: true
+            });
+            setSettlementReceipt(receipt);
+            onReward(receipt.totalSns);
           }
         }
+      });
+
+      // Flipper bounce
+      if (s.leftFlipPressed && s.ballPos.y < 2.5 && s.ballPos.x < 0 && s.ballPos.x > -4) {
+        s.ballVel.set(4, 20, 0);
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+      }
+      if (s.rightFlipPressed && s.ballPos.y < 2.5 && s.ballPos.x > 0 && s.ballPos.x < 4) {
+        s.ballVel.set(-4, 20, 0);
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
       }
 
-      // Ball Drain (Fall below flippers)
-      if (state.ballPos.y < -1.5) {
-        state.ballsLeft--;
-        setBallsLeft(state.ballsLeft);
-        if (state.ballsLeft <= 0) {
-          state.isGameOver = true;
+      // Ball Drain Check
+      if (s.ballPos.y < 0) {
+        s.ballsLeft -= 1;
+        setBallsLeft(s.ballsLeft);
+        s.combo = 0;
+        setCombo(0);
+
+        if (s.ballsLeft > 0) {
+          s.ballPos.set(0, 4, 0);
+          launchBall();
+        } else if (!s.isGameOver) {
+          s.isGameOver = true;
           setIsGameOver(true);
-          const durationSeconds = Math.round((Date.now() - state.startTime) / 1000);
+          const duration = (Date.now() - s.startTime) / 1000;
           const receipt = calculateAndDepositMissionReward({
             gameId: 'voxel_pinball_climber',
-            gameTitle: isKo ? '3D 복셀 핀볼 배틀 타워: 범퍼 클라이머' : 'Voxel Pinball Climber: Bumper Tower',
-            durationSeconds,
-            score: state.score,
-            maxTargetScore: 10000,
-            isVictory: true,
-            difficulty: 'NORMAL',
-            comboCount: state.combo,
-            perfectClear: state.maxFloorReached >= 10
+            gameTitle: '복셀 핀볼 클라이머',
+            durationSeconds: duration,
+            score: s.score,
+            difficulty: 'HARD',
+            isVictory: false
           });
           setSettlementReceipt(receipt);
           onReward(receipt.totalSns);
-        } else {
-          // Respawn ball
-          state.ballPos.set(0, state.maxFloorReached * 2.6 + 2, 0);
-          state.ballVel.set((Math.random() - 0.5) * 6, 8, 0);
         }
       }
 
-      // Update Mesh & Smooth Ascending Camera
-      if (state.ballMesh) {
-        state.ballMesh.position.copy(state.ballPos);
+      if (ball) {
+        ball.position.copy(s.ballPos);
       }
 
-      state.targetCameraY = Math.max(6, state.ballPos.y + 3);
-      camera.position.y += (state.targetCameraY - camera.position.y) * 4 * dt;
+      // Camera Y follow
+      camera.position.y = THREE.MathUtils.lerp(camera.position.y, s.ballPos.y + 6, dt * 5);
       camera.lookAt(0, camera.position.y - 2, 0);
 
       renderer.render(scene, camera);
@@ -419,118 +271,150 @@ export const VoxelPinballClimberGame: React.FC<VoxelPinballClimberGameProps> = (
 
     animId = requestAnimationFrame(animate);
 
-    // Keyboard Controls
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') stateRef.current.leftFlipPressed = true;
-      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') stateRef.current.rightFlipPressed = true;
-    };
-    const handleKeyUp = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') stateRef.current.leftFlipPressed = false;
-      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') stateRef.current.rightFlipPressed = false;
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, playSfx, isKo]);
+  }, [lowSpecMode]);
 
   const handleRestart = () => {
+    const s = stateRef.current;
+    s.ballPos.set(0, 4, 0);
+    s.ballVel.set(0, 0, 0);
+    s.score = 0;
+    s.combo = 0;
+    s.currentFloor = 1;
+    s.ballsLeft = 3;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    setScore(0);
+    setCombo(0);
+    setCurrentFloor(1);
+    setBallsLeft(3);
     setIsGameOver(false);
     setSettlementReceipt(null);
-    setScore(0);
-    setCurrentFloor(1);
-    setCombo(0);
-    setBallsLeft(3);
-    setIsFever(false);
-
-    const state = stateRef.current;
-    state.ballPos.set(0, 2, 0);
-    state.ballVel.set(0, 0, 0);
-    state.score = 0;
-    state.currentFloor = 1;
-    state.maxFloorReached = 1;
-    state.combo = 0;
-    state.ballsLeft = 3;
-    state.isFever = false;
-    state.isGameOver = false;
-    state.startTime = Date.now();
+    launchBall();
   };
 
-  return (
-    <div className="relative w-full h-full min-h-[100dvh] bg-slate-950 flex flex-col items-center select-none overflow-hidden font-mono">
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="absolute inset-0 w-full h-full" />
+  const customTutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 핀볼 타워 등반' : 'STEP 1: PINBALL CLIMB',
+      title: isKo ? '5층 범퍼 정상 정복' : 'Reach Floor 5 Summit',
+      description: isKo
+        ? '좌우 플리퍼로 볼을 힘차게 튕겨 상층부 범퍼를 타격하며 5층 타워 꼭대기에 도달하세요.'
+        : 'Flip paddles to bounce the pinball upwards across bumper floors and conquer 5F summit.',
+      keyPoints: isKo
+        ? [
+            '5층 정상 도달 시 클리어 완승',
+            '범퍼 타격마다 콤보 보너스 폭발',
+            '볼 잔여 3개 내에 완주'
+          ]
+        : [
+            'Climb to 5F summit to win',
+            'Chain bumper combos for high score',
+            'Clear within 3 available balls'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 컨트롤' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '좌/우 화면 분할 플리퍼 조작' : 'Left/Right Half Touch Controls',
+      description: isKo
+        ? '화면 왼쪽을 누르면 좌측 플리퍼, 오른쪽을 누르면 우측 플리퍼가 작동합니다.'
+        : 'Touch left screen half for left flipper, right half for right flipper with zero buttons.',
+      keyPoints: isKo
+        ? [
+            '👆 화면 좌측 터치: 좌측 플리퍼 튕기기',
+            '👆 화면 우측 터치: 우측 플리퍼 튕기기',
+            '⚡ 양쪽 동시 터치: 파워 리바운드'
+          ]
+        : [
+            '👆 Touch Left: Left paddle flip',
+            '👆 Touch Right: Right paddle flip',
+            '⚡ Dual touch: Power rebound'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '정상 정복 즉시 HARD 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Standard payout scaled with Hard multiplier deposited atomically to your wallet.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '최고 층수 및 콤보 팡파레 보너스',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Highest floor and combo bonuses',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
+    }
+  ];
 
-      {/* Responsive Clean HUD (Upper 5% Slim Bar per design.md) */}
-      <ResponsiveCleanHUD
-        gameTitle={isKo ? '핀볼 범퍼 타워' : 'Voxel Pinball'}
-        score={score}
-        customMetricLabel={isKo ? '층수' : 'Floor'}
-        customMetricValue={`${currentFloor}F (●x${ballsLeft})`}
-        combo={combo}
-        isPaused={isPaused}
+  return (
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
+
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 핀볼 클라이머' : 'Voxel Pinball Climber'}
         language={language}
+        telemetries={[
+          { label: isKo ? '층수' : 'Floor', value: `${currentFloor}F/${targetFloor}F`, color: 'text-amber-300' },
+          { label: isKo ? '볼' : 'Balls', value: `x${ballsLeft}`, color: ballsLeft <= 1 ? 'text-rose-400 font-bold' : 'text-cyan-300' },
+          { label: isKo ? '콤보' : 'Combo', value: `x${combo}`, color: combo > 1 ? 'text-emerald-400 font-bold' : 'text-slate-400' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-yellow-300' }
+        ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onTogglePause={() => setIsPaused(prev => !prev)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
       />
 
-      {/* Fever / Combo Overlay */}
-      <div className="relative z-10 mt-14 flex flex-col items-center pointer-events-none gap-1">
-        {combo > 1 && (
-          <div className="px-3 py-0.5 bg-[#fdfcfc]/90 border border-[#201d1d]/30 text-[#201d1d] text-xs font-bold rounded-sm animate-bounce shadow-xs">
-            {combo} COMBO BOOST!
-          </div>
-        )}
-        {isFever && (
-          <div className="px-4 py-1 bg-amber-400 border border-[#201d1d] text-[#201d1d] text-xs font-black rounded-sm animate-pulse tracking-widest flex items-center gap-1 shadow-md">
-            <span>SUPER FEVER x3 MULTIPLIER!</span>
-          </div>
-        )}
-      </div>
-
-      {/* Mobile Touch Flipper Controls (Left / Right Screen Halves) */}
+      {/* Screen Gesture Touch Overlay (Left / Right Halves) */}
       {!isGameOver && !isPaused && !showTutorial && (
-        <div className="absolute inset-0 z-20 flex pointer-events-auto select-none touch-none" style={{ touchAction: 'none' }}>
-          {/* Left Flipper Area */}
+        <div className="absolute inset-0 z-10 flex select-none touch-none cursor-pointer" style={{ touchAction: 'none' }}>
           <div
+            className="w-1/2 h-full"
             onPointerDown={() => { stateRef.current.leftFlipPressed = true; }}
             onPointerUp={() => { stateRef.current.leftFlipPressed = false; }}
             onPointerLeave={() => { stateRef.current.leftFlipPressed = false; }}
-            className="w-1/2 h-full cursor-pointer"
           />
-
-          {/* Right Flipper Area */}
           <div
+            className="w-1/2 h-full"
             onPointerDown={() => { stateRef.current.rightFlipPressed = true; }}
             onPointerUp={() => { stateRef.current.rightFlipPressed = false; }}
             onPointerLeave={() => { stateRef.current.rightFlipPressed = false; }}
-            className="w-1/2 h-full cursor-pointer"
           />
         </div>
       )}
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-[#201d1d]/85 border border-[#201d1d]/40 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+        <div className="px-3 py-1 bg-black/75 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
           {isKo ? '화면 좌/우 터치: 좌우 플리퍼 튕기기 (버튼 없음)' : 'Touch Left/Right Half: Flip Paddles (No Buttons)'}
         </div>
       </div>
 
-      {/* 3-Step Interactive Tutorial Modal */}
+      {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
         <UniversalTutorialModal
           gameId="voxel_pinball_climber"
-          gameTitle={isKo ? '3D 복셀 핀볼 배틀 타워: 범퍼 클라이머' : 'Voxel Pinball Climber: Bumper Tower'}
+          gameTitle={isKo ? '3D 복셀 핀볼 클라이머: 범퍼 타워' : 'Voxel Pinball Climber: Bumper Tower'}
+          customSteps={customTutorialSteps}
           language={language}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}
