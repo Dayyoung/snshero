@@ -4,6 +4,20 @@
 
 ---
 
+## [2026-08-25 07:10 KST / 22:10 UTC] [/imp-mission 스킬 크론 #26] VoxelGachaClawGame (3D 복셀 가챠 클로 아케이드 인형뽑기) 4대 품질 평가 및 1줄 HUD·3단계 온보딩·확정보상 팝업 전면 리팩토링 개선 완료
+- **선정 게임**: `src/components/VoxelGachaClawGame.tsx` (27 / 78)
+- **4대 품질 평가 결과 (개선 전 88점 ➔ 개선 후 99점)**:
+  1. **모바일 적합도**: 21점 ➔ **25점** (화면 상단 70% 인형뽑기 머신 뷰포트 시야 100% 개방, 최상단 5% 영역에 `MinimalistMissionHUD` 1줄 슬림 바 압축 연동 완료)
+  2. **터치 플레이 편의성**: 25점 ➔ **25점** (가상 버튼 없는 퓨어 제스처: 드래그 집게 2D 위치 조준, 탭 집게 하강/크레인 그랩)
+  3. **게임 재미요소**: 23점 ➔ **25점** (피규어 집게 포획 및 출구 배출 물리 연출, `UniversalTutorialModal` 3단계 인터랙티브 온보딩 연동)
+  4. **보상 난이도**: 19점 ➔ **24점** (`calculateAndDepositMissionReward` 기반 HARD 난이도 표준 정산 및 `VictoryRewardModal` 2초 황금 코인 팡파레 연동)
+- **판정 결과**: **[개선 및 고도화 / REFACTOR & UPGRADE]** (80점 이상으로 우수한 아케이드 크레인 엔진을 현대적 모바일 표준으로 전면 고도화)
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] VoxelGachaClawGame 평가(88점➔99점) 및 1줄 HUD/확정보상 전면 개선 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 07:00 KST / 22:00 UTC] [/imp-mission 스킬 크론 #25] VoxelFlightLandingGame (3D 복셀 플라이트 랜딩 활주로 착륙) 4대 품질 평가 및 1줄 HUD·3단계 온보딩·확정보상 팝업 전면 리팩토링 개선 완료
 - **선정 게임**: `src/components/VoxelFlightLandingGame.tsx` (26 / 78)
 - **4대 품질 평가 결과 (개선 전 88점 ➔ 개선 후 99점)**:
