@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ArrowLeft, Rocket, Trophy, Play, Plus, Sparkles } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelCoasterTycoonGameProps {
   deck: CardData[];
@@ -14,19 +17,29 @@ interface VoxelCoasterTycoonGameProps {
 
 export const VoxelCoasterTycoonGame: React.FC<VoxelCoasterTycoonGameProps> = ({
   deck: _deck,
-  language: _language,
+  language,
   lowSpecMode = false,
   playSfx,
   onExit,
   onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_coaster_tycoon') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [mode, setMode] = useState<'build' | 'ride'>('build');
-  const [trackPieces, setTrackPieces] = useState<number>(4);
+  const [trackPieces, setTrackPieces] = useState<number>(5);
   const [thrillScore, setThrillScore] = useState<number>(85);
   const [rideProgress, setRideProgress] = useState<number>(0);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
     points: [
@@ -45,12 +58,14 @@ export const VoxelCoasterTycoonGame: React.FC<VoxelCoasterTycoonGameProps> = ({
     trackLine: null as THREE.Line | null,
     camera: null as THREE.PerspectiveCamera | null,
     isGameOver: false,
+    isPaused: false,
+    startTime: Date.now(),
     thrill: 85
   });
 
   const addSpecialPiece = (type: 'loop' | 'drop' | 'corkscrew') => {
     const s = stateRef.current;
-    if (s.mode === 'ride') return;
+    if (s.mode === 'ride' || s.isGameOver || s.isPaused) return;
 
     const last = s.points[s.points.length - 2];
     const newPt = last.clone();
@@ -73,7 +88,7 @@ export const VoxelCoasterTycoonGame: React.FC<VoxelCoasterTycoonGameProps> = ({
     setTrackPieces(s.points.length);
     setThrillScore(s.thrill);
     updateTrackGeometry();
-    if (playSfx) playSfx('/sounds/build.mp3');
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
   };
 
   const updateTrackGeometry = () => {
@@ -95,41 +110,46 @@ export const VoxelCoasterTycoonGame: React.FC<VoxelCoasterTycoonGameProps> = ({
   };
 
   const startRide = () => {
-    stateRef.current.mode = 'ride';
-    stateRef.current.cartProgress = 0;
+    const s = stateRef.current;
+    if (s.mode === 'ride' || s.isGameOver || s.isPaused) return;
+    s.mode = 'ride';
+    s.cartProgress = 0;
     setMode('ride');
-    if (playSfx) playSfx('/sounds/coaster_start.mp3');
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
   };
 
   useEffect(() => {
-    if (!mountRef.current) return;
     const container = mountRef.current;
-    const width = container.clientWidth || 800;
-    const height = container.clientHeight || 500;
+    if (!container) return;
+
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0f172a);
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.01);
+    scene.fog = new THREE.Fog(0x0f172a, 30, 160);
     stateRef.current.scene = scene;
 
-    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 500);
+    camera.position.set(0, 30, 50);
+    camera.lookAt(0, 5, 0);
     stateRef.current.camera = camera;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode });
+    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
     container.appendChild(renderer.domElement);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
-    scene.add(ambientLight);
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x334155, 0.9);
+    scene.add(hemiLight);
 
-    const sun = new THREE.DirectionalLight(0xfacc15, 1.3);
-    sun.position.set(30, 80, 40);
-    scene.add(sun);
+    const dirLight = new THREE.DirectionalLight(0xffedd5, 1.3);
+    dirLight.position.set(50, 80, 50);
+    scene.add(dirLight);
 
     // Ground Grid
-    const groundGeo = new THREE.PlaneGeometry(160, 160);
-    const groundMat = new THREE.MeshLambertMaterial({ color: 0x1e293b });
+    const groundGeo = new THREE.PlaneGeometry(200, 200);
+    const groundMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 });
     const ground = new THREE.Mesh(groundGeo, groundMat);
     ground.rotation.x = -Math.PI / 2;
     scene.add(ground);
@@ -139,165 +159,161 @@ export const VoxelCoasterTycoonGame: React.FC<VoxelCoasterTycoonGameProps> = ({
 
     // Coaster Cart Mesh
     const cartGroup = new THREE.Group();
-    const cartBody = new THREE.Mesh(
-      new THREE.BoxGeometry(2, 1.2, 3),
-      new THREE.MeshLambertMaterial({ color: 0xef4444 })
-    );
+    const cartBody = new THREE.Mesh(new THREE.BoxGeometry(2, 1.2, 3), new THREE.MeshStandardMaterial({ color: 0xf59e0b }));
     cartBody.position.y = 0.6;
     cartGroup.add(cartBody);
-
     scene.add(cartGroup);
     stateRef.current.cartMesh = cartGroup;
 
     let animId: number;
-    const animate = () => {
-      animId = requestAnimationFrame(animate);
-      const s = stateRef.current;
+    let lastTime = performance.now();
 
-      if (s.mode === 'build') {
-        // Build mode overview orbit
-        camera.position.set(35, 40, 45);
-        camera.lookAt(0, 10, -15);
-      } else if (s.mode === 'ride' && s.curve && s.cartMesh) {
-        // 1st Person Coaster Ride
-        s.cartProgress += s.speed;
-        setRideProgress(Math.min(100, Math.floor(s.cartProgress * 100)));
+    const animate = (now: number) => {
+      animId = requestAnimationFrame(animate);
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
+
+      if (s.mode === 'ride' && s.curve && s.cartMesh && camera) {
+        s.cartProgress += s.speed * (dt * 60);
+        setRideProgress(Math.min(100, Math.round(s.cartProgress * 100)));
+
+        const point = s.curve.getPointAt(Math.min(s.cartProgress % 1, 0.999));
+        const tangent = s.curve.getTangentAt(Math.min(s.cartProgress % 1, 0.999)).normalize();
+
+        s.cartMesh.position.copy(point);
+        s.cartMesh.lookAt(point.clone().add(tangent));
+
+        // 1st Person POV Camera attached to Cart
+        camera.position.copy(point).add(new THREE.Vector3(0, 1.5, 0));
+        camera.lookAt(point.clone().add(tangent.clone().multiplyScalar(10)));
 
         if (s.cartProgress >= 1.0) {
-          // Completed Ride
           s.mode = 'build';
-          setMode('build');
           s.isGameOver = true;
           setIsGameOver(true);
-          const finalSns = Math.min(260, Math.max(40, s.thrill + 40));
-          setRewardSns(finalSns);
-          onReward(finalSns);
-          if (playSfx) playSfx('/sounds/fanfare.mp3');
-          return;
+          const duration = (Date.now() - s.startTime) / 1000;
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'voxel_coaster_tycoon',
+            gameTitle: '복셀 코스터 타이쿤',
+            durationSeconds: duration,
+            score: s.thrill * 25,
+            difficulty: 'HARD',
+            isVictory: true
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
         }
-
-        const pt = s.curve.getPointAt(s.cartProgress);
-        const tangent = s.curve.getTangentAt(s.cartProgress).normalize();
-
-        s.cartMesh.position.copy(pt);
-        s.cartMesh.lookAt(pt.clone().add(tangent));
-
-        // Mount camera inside cart
-        camera.position.copy(pt).add(new THREE.Vector3(0, 1.5, 0));
-        camera.lookAt(pt.clone().add(tangent.multiplyScalar(5)));
+      } else if (camera) {
+        // Overview Camera in build mode
+        camera.position.set(0, 30, 50);
+        camera.lookAt(0, 5, 0);
       }
 
       renderer.render(scene, camera);
     };
 
-    animate();
+    animId = requestAnimationFrame(animate);
 
     return () => {
       cancelAnimationFrame(animId);
-      if (renderer.domElement && container.contains(renderer.domElement)) {
+      renderer.dispose();
+      if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, playSfx]);
+  }, [lowSpecMode]);
+
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.mode = 'build';
+    s.cartProgress = 0;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    setMode('build');
+    setRideProgress(0);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
 
   return (
-    <div className="relative w-full h-[100dvh] bg-[#0f172a] font-mono text-[#fdfcfc] select-none flex flex-col overflow-hidden">
-      {/* Top Header */}
-      <div className="flex items-center justify-between px-3 py-2 bg-[#201d1d] border-b border-[#201d1d]/30 z-20">
-        <button
-          onClick={onExit}
-          className="flex items-center gap-1 px-2.5 py-1 bg-[#fdfcfc]/10 text-white rounded-sm text-xs active:bg-white/20"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" /> [뒤로]
-        </button>
-        <div className="text-center">
-          <div className="text-xs font-bold text-amber-400 flex items-center justify-center gap-1">
-            <Rocket className="w-3.5 h-3.5" /> [No.77 무라디 전담] 3D 롤러코스터 타이쿤
-          </div>
-          <div className="text-[10px] text-slate-300">스플라인 레일 건설 & 1인칭 탑승 스릴 라이더</div>
-        </div>
-        <div className="text-xs text-cyan-300 font-bold">
-          스릴 지수: {thrillScore}P
-        </div>
-      </div>
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Stats HUD */}
-      <div className="flex items-center justify-between px-4 py-2 bg-[#1e293b]/90 text-xs border-b border-slate-700 z-20">
-        <div>레일 구간: <strong className="text-amber-400">{trackPieces}개</strong></div>
-        {mode === 'ride' ? (
-          <div className="text-pink-400 font-bold animate-pulse">
-            탑승 진행률: {rideProgress}%
-          </div>
-        ) : (
-          <div className="text-slate-400">건설 모드 (스릴 트랙 추가)</div>
-        )}
-      </div>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 롤러코스터 타이쿤' : 'Voxel Coaster Tycoon'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '스릴점수' : 'Thrill', value: `${thrillScore}P`, color: 'text-amber-300' },
+          { label: isKo ? '트랙구간' : 'Tracks', value: `${trackPieces}구간`, color: 'text-cyan-300' },
+          { label: isKo ? '모드' : 'Mode', value: mode === 'ride' ? `${rideProgress}% (탑승)` : '건설중', color: 'text-emerald-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
-      {/* 3D Canvas */}
-      <div ref={mountRef} className="relative flex-1 w-full overflow-hidden" />
-
-      {/* Bottom Controls */}
-      <div className="p-3 bg-[#1e293b]/95 border-t border-slate-700 flex items-center justify-between gap-2 z-20">
-        <div className="flex gap-1.5">
-          <button
-            onClick={() => addSpecialPiece('loop')}
-            disabled={mode === 'ride'}
-            className="px-2.5 py-2.5 bg-slate-800 border border-slate-600 rounded-sm text-[11px] font-bold active:bg-slate-700 disabled:opacity-50"
-          >
-            [+ 360° 루프]
-          </button>
-          <button
-            onClick={() => addSpecialPiece('drop')}
-            disabled={mode === 'ride'}
-            className="px-2.5 py-2.5 bg-slate-800 border border-slate-600 rounded-sm text-[11px] font-bold active:bg-slate-700 disabled:opacity-50"
-          >
-            [+ 급강하 힐]
-          </button>
-          <button
-            onClick={() => addSpecialPiece('corkscrew')}
-            disabled={mode === 'ride'}
-            className="px-2.5 py-2.5 bg-slate-800 border border-slate-600 rounded-sm text-[11px] font-bold active:bg-slate-700 disabled:opacity-50"
-          >
-            [+ 코크스크류]
-          </button>
-        </div>
-
-        <button
-          onClick={startRide}
-          disabled={mode === 'ride'}
-          className="px-5 py-3 bg-amber-500 text-black font-bold text-xs rounded-sm active:bg-amber-400 shadow-lg flex items-center gap-1 disabled:opacity-50"
-        >
-          <Play className="w-4 h-4" /> [1인칭 탑승 출발]
-        </button>
-      </div>
-
-      {/* Game Over Modal */}
-      {isGameOver && (
-        <div className="absolute inset-0 bg-black/80 flex items-center justify-center p-4 z-50 animate-fade-in">
-          <div className="w-full max-w-sm bg-[#201d1d] border border-amber-500/40 p-5 rounded-none text-center font-mono">
-            <Trophy className="w-12 h-12 text-amber-400 mx-auto mb-2" />
-            <h2 className="text-base font-bold text-amber-400 mb-1">[스릴 라이딩 완주!]</h2>
-            <p className="text-xs text-slate-300 mb-4">1인칭 롤러코스터 탑승 성공</p>
-
-            <div className="bg-slate-900/80 p-3 rounded-sm text-xs space-y-1 mb-4 text-left border border-slate-700">
-              <div className="flex justify-between">
-                <span className="text-slate-400">최종 스릴 점수:</span>
-                <span className="text-amber-400 font-bold">{thrillScore}P</span>
-              </div>
-              <div className="flex justify-between border-t border-slate-700 pt-1">
-                <span className="text-amber-300 font-bold">확정 보상 SNS:</span>
-                <span className="text-amber-400 font-bold">+{rewardSns} SNS</span>
-              </div>
-            </div>
-
+      {/* Bottom Track Builder Pure Gesture Bar */}
+      {mode === 'build' && !isGameOver && !isPaused && !showTutorial && (
+        <div className="absolute bottom-4 left-3 right-3 z-20 flex items-center justify-between gap-2 max-w-lg mx-auto">
+          <div className="flex gap-1.5 flex-1">
             <button
-              onClick={onExit}
-              className="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-sm active:bg-amber-400"
+              onClick={() => addSpecialPiece('loop')}
+              className="flex-1 py-2.5 bg-slate-900/90 border border-cyan-400/40 rounded-sm text-[11px] font-bold text-cyan-300 active:scale-95 transition-all shadow-md cursor-pointer"
             >
-              [보상 수령 및 복귀]
+              {isKo ? '+ 360° 루프' : '+ Loop'}
+            </button>
+            <button
+              onClick={() => addSpecialPiece('drop')}
+              className="flex-1 py-2.5 bg-slate-900/90 border border-amber-400/40 rounded-sm text-[11px] font-bold text-amber-300 active:scale-95 transition-all shadow-md cursor-pointer"
+            >
+              {isKo ? '+ 급강하 힐' : '+ Drop'}
+            </button>
+            <button
+              onClick={() => addSpecialPiece('corkscrew')}
+              className="flex-1 py-2.5 bg-slate-900/90 border border-purple-400/40 rounded-sm text-[11px] font-bold text-purple-300 active:scale-95 transition-all shadow-md cursor-pointer"
+            >
+              {isKo ? '+ 코크스크류' : '+ Corkscrew'}
             </button>
           </div>
+
+          <button
+            onClick={startRide}
+            className="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 font-black text-xs rounded-sm shadow-xl transition-all flex items-center gap-1 cursor-pointer"
+          >
+            <span>🎢</span>
+            <span>{isKo ? '1인칭 탑승' : 'Ride POV'}</span>
+          </button>
         </div>
+      )}
+
+      {/* 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_coaster_tycoon"
+          gameTitle={isKo ? '3D 복셀 롤러코스터 타이쿤: 스릴 라이더' : 'Voxel Coaster Tycoon: Thrill Rider'}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
+
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
