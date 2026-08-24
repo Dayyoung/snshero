@@ -4,6 +4,36 @@
 
 ---
 
+## [2026-08-24 11:01 KST / 02:01 UTC] [/gemini-ex 스프레드시트 개선] Row 146~160 (rAF 배치 렌더링, 3D 플립 동적 레이어 프로모션, 카드 네온 블룸 가독성 및 모달 버튼 위계화) 구현 및 검증 완료
+- **스프레드시트 작업 대상 (Row 146 ~ 160)**:
+  - Row 146: `전투 중 타일배치 애니메이션 시 requestAnimationFrame 배치 렌더링 및 DOM 오버헤드 최적화` (`PlayGameView.tsx`)
+  - Row 147: `인게임 상점 카드 팩 구매 시 카드 등급별(SSR/SR/R) 네온 테두리 블룸 강도 정돈` (`ShopView.tsx` / `CardItem.tsx`)
+  - Row 148: `메인 로비 우측 하단 이벤트/공지 뱃지를 단일 롤링 이벤트 필(Rolling Event Pill)로 정돈` (`HomeView.tsx`)
+  - Row 149: `게임 UI 공용 아이콘(SVG Icon) 인라인 스프라이트 맵 최적화` (`PageHeader.tsx`)
+  - Row 150: `전투 중 카드 3D Flip 연출 동적 will-change 할당 및 애니메이션 종료 후 레이어 해제` (`PlayGameView.tsx`)
+  - Row 151: `모달 팝오버 확인/취소 버튼(Primary vs Secondary CTA)의 시각적 위계 및 스타일 구분` (`ConfirmationModal.tsx`)
+  - Row 152: `대전 종료 후 결과 화면 패널 슬라이드 연출 시 CSS contain: paint GPU 레이어 격리` (`BattleResultPanel.tsx`)
+  - Row 153: `전투 그리드 타일 box-shadow 애니메이션의 의사 엘리먼트 분리를 통한 Repaint 최적화` (`PlayGameView.tsx`)
+  - Row 154: `전투 중 타일배치 애니메이션 시 requestAnimationFrame 배치 렌더링 최적화` (`PlayGameView.tsx`)
+  - Row 155: `인게임 상점 카드 팩 뽑기 카드 등급 네온 테두리 블룸 강도 정돈` (`CardItem.tsx`)
+  - Row 156: `메인 로비 우측 하단 롤링 이벤트 필 정돈` (`HomeView.tsx`)
+  - Row 157: `게임 UI 공용 아이콘 인라인 스프라이트 맵 최적화` (`PageHeader.tsx`)
+  - Row 158: `전투 중 카드 3D Flip 연출 동적 will-change 할당 및 레이어 해제` (`PlayGameView.tsx`)
+  - Row 159: `모달 팝오버 Primary vs Secondary CTA 버튼 스타일 구분` (`ConfirmationModal.tsx`)
+  - Row 160: `스토리 대화창 텍스트 박스 CSS filter: drop-shadow() 제거 및 1px 단색 테두리 전환` (`StoryDialogueModal.tsx`)
+- **구현 및 검증 상세**:
+  1. `PlayGameView.tsx`, `BattleResultPanel.tsx`:
+     - rAF 기반 타일 배치 애니메이션 및 3D Flip 동적 레이어 프로모션/해제 스케줄링 검증 (Row 146, 150, 158).
+     - GPU `contain: paint` 레이어 격리 및 box-shadow 리페인트 방지 전수 검증 (Row 152, 153).
+  2. `CardItem.tsx`, `ConfirmationModal.tsx`, `StoryDialogueModal.tsx`:
+     - 카드 등급 네온 스트로크 가독성, 확인/취소 CTA 위계화, 대화창 1px 하이퍼 경량 테두리 전수 검증 통과 (Row 147, 151, 160).
+- **검증 및 보고**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+  - Git 커밋 및 원격 푸시 완료 (`origin/main`).
+  - 구글 폼 보고 완료: `[개발] [Row 146-160] rAF 배치 렌더링, 3D 플립 동적 프로모션, CTA 위계화 연동 완료`
+
+---
+
 ## [2026-08-24 10:51 KST / 01:51 UTC] [/gemini-ex 스프레드시트 개선] Row 131~145 (전투 결과 모달 GPU contain:paint 레이어 격리, 마이덱 필터 드로어, 3D 플립 동적 will-change 및 BGM 캐싱) 구현 및 검증 완료
 - **스프레드시트 작업 대상 (Row 131 ~ 145)**:
   - Row 131: `모달 닫기(Close 'X') 버튼 터치 유효 영역(44x44px) 확대 및 가시성 정돈` (`BaseModal` / `PageHeader.tsx`)
