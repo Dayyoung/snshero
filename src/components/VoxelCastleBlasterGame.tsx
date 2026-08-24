@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Trophy, ArrowLeft, Zap, Sparkles, Award, Crosshair } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelCastleBlasterGameProps {
   deck: CardData[];
@@ -20,29 +23,43 @@ export const VoxelCastleBlasterGame: React.FC<VoxelCastleBlasterGameProps> = ({
   onExit,
   onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_castle_blaster') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [cannonAngle, setCannonAngle] = useState<number>(45);
   const [cannonPower, setCannonPower] = useState<number>(70);
   const [castleHp, setCastleHp] = useState<number>(100);
   const [ammo, setAmmo] = useState<number>(8);
+  const [score, setScore] = useState<number>(0);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [isVictory, setIsVictory] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const gameStateRef = useRef({
     angle: 45,
     power: 70,
     castleHp: 100,
     ammo: 8,
+    score: 0,
     cannonBalls: [] as { mesh: THREE.Mesh; vx: number; vy: number; vz: number; life: number }[],
     blocks: [] as { mesh: THREE.Mesh; x: number; y: number; z: number; destroyed: boolean }[],
     isGameOver: false,
-    isVictory: false
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
+    scene: null as THREE.Scene | null
   });
 
-  const fireCannon = (scene: THREE.Scene) => {
+  const fireCannon = () => {
     const s = gameStateRef.current;
-    if (s.ammo <= 0 || s.isGameOver || s.isVictory) return;
+    if (s.ammo <= 0 || s.isGameOver || s.isVictory || s.isPaused || !s.scene) return;
     s.ammo -= 1;
     setAmmo(s.ammo);
 
@@ -55,7 +72,7 @@ export const VoxelCastleBlasterGame: React.FC<VoxelCastleBlasterGameProps> = ({
     const ballMat = new THREE.MeshLambertMaterial({ color: 0x222222 });
     const ball = new THREE.Mesh(ballGeo, ballMat);
     ball.position.set(0, 2, -5);
-    scene.add(ball);
+    s.scene.add(ball);
 
     s.cannonBalls.push({
       mesh: ball,
@@ -70,15 +87,19 @@ export const VoxelCastleBlasterGame: React.FC<VoxelCastleBlasterGameProps> = ({
     const container = mountRef.current;
     if (!container) return;
 
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
+
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x88bbff);
+    gameStateRef.current.scene = scene;
 
-    const camera = new THREE.PerspectiveCamera(55, container.clientWidth / container.clientHeight, 0.1, 300);
+    const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 300);
     camera.position.set(-15, 12, 10);
     camera.lookAt(0, 4, -30);
 
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
     container.appendChild(renderer.domElement);
 
@@ -98,72 +119,93 @@ export const VoxelCastleBlasterGame: React.FC<VoxelCastleBlasterGameProps> = ({
     // Build Voxel Castle at Z = -45
     const blockGeo = new THREE.BoxGeometry(1.8, 1.8, 1.8);
     const blockMat = new THREE.MeshLambertMaterial({ color: 0x888899 });
+    const castleBlocks: { mesh: THREE.Mesh; x: number; y: number; z: number; destroyed: boolean }[] = [];
 
-    for (let y = 0; y < 4; y++) {
+    for (let y = 0; y < 6; y++) {
       for (let x = -3; x <= 3; x++) {
-        const block = new THREE.Mesh(blockGeo, blockMat);
-        const bx = x * 2.0;
-        const by = y * 2.0 + 1.0;
-        const bz = -45;
-        block.position.set(bx, by, bz);
-        scene.add(block);
-
-        gameStateRef.current.blocks.push({
-          mesh: block,
-          x: bx,
-          y: by,
-          z: bz,
-          destroyed: false
-        });
+        for (let z = -1; z <= 1; z++) {
+          if (y > 3 && (Math.abs(x) > 2 || Math.abs(z) > 0)) continue; // Turret shape
+          const b = new THREE.Mesh(blockGeo, blockMat);
+          const bx = x * 2;
+          const by = y * 2 + 1;
+          const bz = -45 + z * 2;
+          b.position.set(bx, by, bz);
+          scene.add(b);
+          castleBlocks.push({ mesh: b, x: bx, y: by, z: bz, destroyed: false });
+        }
       }
     }
+    gameStateRef.current.blocks = castleBlocks;
 
     let animId: number;
-    let clock = new THREE.Clock();
+    let lastTime = performance.now();
 
-    const animate = () => {
+    const animate = (now: number) => {
       animId = requestAnimationFrame(animate);
-      const dt = clock.getDelta();
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+
       const s = gameStateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-      if (!s.isGameOver && !s.isVictory) {
-        // Update Cannonballs
-        for (let i = s.cannonBalls.length - 1; i >= 0; i--) {
-          const b = s.cannonBalls[i];
-          b.mesh.position.x += b.vx * dt;
-          b.mesh.position.y += b.vy * dt;
-          b.mesh.position.z += b.vz * dt;
-          b.vy -= 22 * dt; // gravity
-          b.life -= dt;
+      // Update Cannonballs
+      for (let i = s.cannonBalls.length - 1; i >= 0; i--) {
+        const cb = s.cannonBalls[i];
+        cb.mesh.position.x += cb.vx * dt;
+        cb.mesh.position.y += cb.vy * dt;
+        cb.mesh.position.z += cb.vz * dt;
+        cb.vy -= 9.8 * dt; // Gravity
+        cb.life -= dt;
 
-          // Check block collision
-          s.blocks.forEach(bl => {
-            if (bl.destroyed) return;
-            if (b.mesh.position.distanceTo(bl.mesh.position) < 2.5) {
-              bl.destroyed = true;
-              scene.remove(bl.mesh);
-              s.castleHp = Math.max(0, s.castleHp - 15);
-              setCastleHp(s.castleHp);
-              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+        // Collision with Castle Blocks
+        for (let b of s.blocks) {
+          if (!b.destroyed && cb.mesh.position.distanceTo(b.mesh.position) < 2.0) {
+            b.destroyed = true;
+            b.mesh.position.y = -10;
+            s.castleHp = Math.max(0, s.castleHp - 3);
+            s.score += 150;
+            setCastleHp(s.castleHp);
+            setScore(s.score);
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
 
-              if (s.castleHp <= 0) {
-                s.isVictory = true;
-                setIsVictory(true);
-                const reward = 55 + s.ammo * 5;
-                setRewardSns(reward);
-                onReward(reward);
-              }
-            }
-          });
-
-          if (b.mesh.position.y < 0 || b.life <= 0) {
-            scene.remove(b.mesh);
-            s.cannonBalls.splice(i, 1);
-
-            if (s.ammo <= 0 && s.cannonBalls.length === 0 && s.castleHp > 0) {
+            if (s.castleHp <= 0) {
+              s.isVictory = true;
               s.isGameOver = true;
               setIsGameOver(true);
+              const duration = (Date.now() - s.startTime) / 1000;
+              const receipt = calculateAndDepositMissionReward({
+                gameId: 'voxel_castle_blaster',
+                gameTitle: '복셀 캐슬 블래스터',
+                durationSeconds: duration,
+                score: s.score + 1000,
+                difficulty: 'HARD',
+                isVictory: true
+              });
+              setSettlementReceipt(receipt);
+              onReward(receipt.totalSns);
             }
+          }
+        }
+
+        if (cb.life <= 0 || cb.mesh.position.y < 0) {
+          scene.remove(cb.mesh);
+          s.cannonBalls.splice(i, 1);
+
+          // Check ammo exhaustion
+          if (s.ammo <= 0 && s.cannonBalls.length === 0 && !s.isGameOver) {
+            s.isGameOver = true;
+            setIsGameOver(true);
+            const duration = (Date.now() - s.startTime) / 1000;
+            const receipt = calculateAndDepositMissionReward({
+              gameId: 'voxel_castle_blaster',
+              gameTitle: '복셀 캐슬 블래스터',
+              durationSeconds: duration,
+              score: s.score,
+              difficulty: 'NORMAL',
+              isVictory: s.castleHp <= 30
+            });
+            setSettlementReceipt(receipt);
+            onReward(receipt.totalSns);
           }
         }
       }
@@ -173,134 +215,125 @@ export const VoxelCastleBlasterGame: React.FC<VoxelCastleBlasterGameProps> = ({
 
     animId = requestAnimationFrame(animate);
 
-    const handleResize = () => {
-      if (!container) return;
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener('resize', handleResize);
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, playSfx]);
+  }, [lowSpecMode]);
+
+  const handleRestart = () => {
+    const s = gameStateRef.current;
+    s.castleHp = 100;
+    s.ammo = 8;
+    s.score = 0;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    setCastleHp(100);
+    setAmmo(8);
+    setScore(0);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 text-white select-none overflow-hidden flex flex-col font-sans">
-      <div ref={mountRef} className="w-full h-full absolute inset-0" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Top HUD */}
-      <div className="relative z-10 p-3 sm:p-4 flex items-center justify-between bg-gradient-to-b from-slate-950/90 to-transparent pointer-events-none">
-        <button
-          onClick={onExit}
-          className="pointer-events-auto p-2 bg-slate-900/80 hover:bg-slate-800 text-white rounded-xl border border-slate-700 active:scale-95 flex items-center gap-1 cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-          <span className="text-xs font-bold">{language === 'ko' ? '나가기' : 'Exit'}</span>
-        </button>
-
-        {/* Castle HP & Ammo */}
-        <div className="flex items-center gap-3 bg-slate-900/80 px-3 py-1.5 rounded-2xl border border-slate-700">
-          <div className="text-rose-400 font-bold text-xs">
-            🏰 성채 내구도: {castleHp}%
-          </div>
-
-          <div className="text-yellow-400 font-bold text-xs">
-            💣 포탄: {ammo}발
-          </div>
-        </div>
-      </div>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 캐슬 블래스터' : 'Voxel Castle Blaster'}
+        language={language}
+        hp={{ current: castleHp, max: 100 }}
+        telemetries={[
+          { label: isKo ? '포탄' : 'Ammo', value: `${ammo}발`, color: 'text-amber-300' },
+          { label: isKo ? '각도' : 'Angle', value: `${cannonAngle}°`, color: 'text-cyan-300' },
+          { label: isKo ? '파워' : 'Power', value: `${cannonPower}%`, color: 'text-emerald-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          gameStateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
       {/* Screen Gesture Touch Overlay */}
-      <div
-        className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
-        style={{ touchAction: 'none' }}
-        onPointerDown={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const startX = e.clientX - rect.left;
-          const startY = e.clientY - rect.top;
-          let moved = false;
+      {!isGameOver && !isPaused && !showTutorial && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-          const onMove = (moveEvt: PointerEvent) => {
-            const curX = moveEvt.clientX - rect.left;
-            const curY = moveEvt.clientY - rect.top;
-            const dx = curX - startX;
-            const dy = curY - startY;
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
 
-            if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
-              moved = true;
-              gameStateRef.current.angle = Math.max(-0.6, Math.min(0.6, gameStateRef.current.angle + dx * 0.003));
-              setCannonAngle(Math.round(gameStateRef.current.angle * 50));
-              const newPow = Math.max(30, Math.min(100, gameStateRef.current.power - dy * 0.2));
-              gameStateRef.current.power = newPow;
-              setCannonPower(Math.round(newPow));
-            }
-          };
+              if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+                moved = true;
+                gameStateRef.current.angle = Math.max(15, Math.min(80, gameStateRef.current.angle - dy * 0.15));
+                setCannonAngle(Math.round(gameStateRef.current.angle));
+                const newPow = Math.max(30, Math.min(100, gameStateRef.current.power + dx * 0.15));
+                gameStateRef.current.power = newPow;
+                setCannonPower(Math.round(newPow));
+              }
+            };
 
-          const onUp = () => {
-            window.removeEventListener('pointermove', onMove);
-            window.removeEventListener('pointerup', onUp);
-            window.removeEventListener('pointercancel', onUp);
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
 
-            if (!moved) {
-              // Tap: Fire Cannon
-              const scene = (mountRef.current?.children[0] as any)?.__r3f?.scene;
-              if (scene) fireCannon(scene);
-            }
-          };
+              if (!moved) {
+                // Tap: Fire Cannon
+                fireCannon();
+              }
+            };
 
-          window.addEventListener('pointermove', onMove);
-          window.addEventListener('pointerup', onUp);
-          window.addEventListener('pointercancel', onUp);
-        }}
-      />
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
+      )}
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/70 border border-rose-500/30 rounded-full text-[10px] text-rose-300 font-mono backdrop-blur-xs">
-          {language === 'ko' ? '좌우 드래그: 조준 각도 | 상하: 발사 파워 | 탭: 대포 발사 (버튼 없음)' : 'Drag L/R: Aim | Drag U/D: Power | Tap: Fire Cannon (No Buttons)'}
+        <div className="px-3 py-1 bg-black/75 border border-rose-500/30 rounded-full text-[10px] text-rose-300 font-mono backdrop-blur-xs">
+          {isKo ? '상하 드래그: 발사 각도 | 좌우: 파워 조절 | 탭: 대포 발사 (버튼 없음)' : 'Drag U/D: Angle | Drag L/R: Power | Tap: Fire Cannon (No Buttons)'}
         </div>
       </div>
 
-      {/* Victory / Game Over Modal */}
-      {(isVictory || isGameOver) && (
-        <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
-            <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center ${isVictory ? 'bg-amber-400/20 text-yellow-400' : 'bg-rose-500/20 text-rose-400'}`}>
-              {isVictory ? <Trophy size={36} /> : <Award size={36} />}
-            </div>
+      {/* 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_castle_blaster"
+          gameTitle={isKo ? '3D 복셀 캐슬 블래스터: 요새 공성전' : 'Voxel Castle Blaster: Siege Warfare'}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-            <h2 className="text-2xl font-black italic uppercase">{isVictory ? '성채 완전 함락! VICTORY' : '공성 실패! DEFEAT'}</h2>
-
-            <p className="text-xs text-slate-300">
-              {isVictory
-                ? '정밀한 대포 사격으로 적의 견고한 복셀 요새를 완전히 파괴했습니다!'
-                : '모든 포탄이 소진되었습니다.'}
-            </p>
-
-            {isVictory && (
-              <div className="bg-slate-950 border border-amber-500/30 p-3 rounded-2xl">
-                <span className="text-xs text-slate-400 block uppercase font-bold">REWARD</span>
-                <span className="text-2xl font-black text-yellow-400 flex items-center justify-center gap-1">
-                  <Sparkles size={20} /> +{rewardSns} SNS
-                </span>
-              </div>
-            )}
-
-            <button
-              onClick={onExit}
-              className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 text-slate-950 font-bold rounded-xl active:scale-95 transition-all cursor-pointer"
-            >
-              {language === 'ko' ? '확인 및 나가기' : 'Confirm & Exit'}
-            </button>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
