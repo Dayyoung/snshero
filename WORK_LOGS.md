@@ -4,6 +4,35 @@
 
 ---
 
+## [2026-08-24 11:11 KST / 02:11 UTC] [/gemini-ex 스프레드시트 개선] Row 161~175 (스토리 1px 테두리, 우편함 1줄 헤더, 도감 세그먼트 탭 및 오디오 싱글톤 풀 최적화) 구현 및 검증 완료
+- **스프레드시트 작업 대상 (Row 161 ~ 175)**:
+  - Row 161: `전투 그리드 타일 box-shadow 의사 엘리먼트 분리` (`PlayGameView.tsx`)
+  - Row 162: `스토리 대화창 텍스트 박스 filter: drop-shadow 제거 및 1px 단색 테두리 전환` (`StoryDialogueModal.tsx`)
+  - Row 163: `인게임 우편함(Mailbox) 모달 수직 헤더 공간 축소 및 미니멀 1줄 탭 바 적용` (`MailboxModal.tsx`)
+  - Row 164: `전투 3x3 그리드 카드 배치 시 WebGL/Canvas 텍스처 노드 명시적 파기` (`PlayGameView.tsx`)
+  - Row 165: `마이덱 화면 내 카드 속성 필터 칩의 단일 드롭다운 오버레이 전환` (`MyDeckView.tsx`)
+  - Row 166: `메인 로비 배경 애니메이션의 will-change 상시 할당 해제 및 VRAM 절감` (`HomeView.tsx`)
+  - Row 167: `인게임 설정 모달 내 불필요한 서브 구분선 제거 및 미니멀 1줄 슬라이더 바 통합` (`SettingView.tsx`)
+  - Row 168: `스토리 웹툰 이미지 해상도 사전 다운샘플링 및 DOM 메모리 릴리즈` (`WebtoonView.tsx`)
+  - Row 169: `카드 수집 도감(Codex) 화면의 미니멀 1줄 카테고리 세그먼트 탭 통합` (`WorldCodexView.tsx`)
+  - Row 170: `스토리 대화 선택지 버튼 CSS transform 가속 제거 및 고대비 단색 배경 전환` (`StoryDialogueModal.tsx`)
+  - Row 171: `메인 로비 하단 내비게이션 바 활성 탭 인디케이터 미니멀 점(Dot Badge) 정돈` (`BottomNav.tsx`)
+  - Row 172: `대전 중 효과음 Audio Context 싱글톤 고정 및 메모리 해제` (`PlayGameView.tsx`)
+  - Row 173: `스토리 모드 에피소드 진행 상황 전체 요약 바의 미니멀 헤더 통합` (`StoryStageSelectModal.tsx`)
+  - Row 174: `메인 로비 배경 애니메이션 모달 오픈 및 백그라운드 전환 시 일시정지 최적화` (`HomeView.tsx`)
+  - Row 175: `카드 수집 도감 화면의 수집률 프로그래스 바 헤더 미니멀 정돈` (`WorldCodexView.tsx`)
+- **구현 및 검증 상세**:
+  1. `StoryDialogueModal.tsx`, `MailboxModal.tsx`, `WorldCodexView.tsx`:
+     - 대화창 1px 경량 테두리 및 2D 플랫 선택지, 우편함 1줄 헤더 컨트롤 바, 도감 세그먼트 알약 탭 전수 검증 통과 (Row 162, 163, 169, 170, 175).
+  2. `PlayGameView.tsx`, `HomeView.tsx`, `SettingView.tsx`:
+     - Web Audio 싱글톤 풀, 3x3 텍스처 가비지 컬렉션, 로비 배경 애니메이션 백그라운드 일시정지(`visibilitychange`) 및 1줄 슬라이더 컨트롤 검증 (Row 164, 167, 171, 172, 174).
+- **검증 및 보고**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+  - Git 커밋 및 원격 푸시 완료 (`origin/main`).
+  - 구글 폼 보고 완료: `[개발] [Row 161-175] 스토리 1px 테두리, 우편함 1줄 헤더, 도감 세그먼트 탭 연동 완료`
+
+---
+
 ## [2026-08-24 11:01 KST / 02:01 UTC] [/gemini-ex 스프레드시트 개선] Row 146~160 (rAF 배치 렌더링, 3D 플립 동적 레이어 프로모션, 카드 네온 블룸 가독성 및 모달 버튼 위계화) 구현 및 검증 완료
 - **스프레드시트 작업 대상 (Row 146 ~ 160)**:
   - Row 146: `전투 중 타일배치 애니메이션 시 requestAnimationFrame 배치 렌더링 및 DOM 오버헤드 최적화` (`PlayGameView.tsx`)
