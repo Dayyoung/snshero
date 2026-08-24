@@ -88,51 +88,52 @@ import { NativeAd } from './components/NativeAd';
 import { CortanaCommandButton } from './components/CortanaCommandButton';
 import { TutorialCoachMark } from './components/TutorialCoachMark';
 import { AppLoadingGate } from './components/AppLoadingGate';
+import { ViewLoadingFallback } from './components/ViewLoadingFallback';
 
-import { HomeView } from './views/HomeView';
-import { KadanRpgView } from './views/KadanRpgView';
-import { MyDeckView } from './views/MyDeckView';
-import { ShareView } from './views/ShareView';
-import { ShopView } from './views/ShopView';
-import { EventView } from './views/EventView';
-import { SettingView } from './views/SettingView';
-import { PlayGameView } from './views/PlayGameView';
-import { RankingView } from './views/RankingView';
-import { AdminView } from './views/AdminView';
-import { StatusView } from './views/StatusView';
-import { CompanionView } from './views/CompanionView';
-import { ProfileView } from './views/ProfileView';
-import { SkillView } from './views/SkillView';
-import { StockMarketView } from './views/StockMarketView';
-import { CardMarketplaceView } from './views/CardMarketplaceView';
-import { PredictionMarketView } from './views/PredictionMarketView';
-import { WikiHomeView } from './views/WikiHomeView';
-import { WorldCodexView } from './views/WorldCodexView';
-import { WikiHowToPlayView } from './views/WikiHowToPlayView';
-import { WikiTipView } from './views/WikiTipView';
-import { WikiCardView } from './views/WikiCardView';
-import { WikiItemView } from './views/WikiItemView';
-import { WikiSkillView } from './views/WikiSkillView';
-import { GodView } from './views/GodView';
-import { GuildListView } from './views/GuildListView';
-import { GuildDetailView } from './views/GuildDetailView';
-import { CommunityView } from './views/CommunityView';
-import { PlaygroundView } from './views/PlaygroundView';
-import { BoostView } from './views/BoostView';
-import { Web3LandingView } from './views/Web3LandingView';
-import { SeasonHubView } from './views/SeasonHubView';
-import { ReferralView } from './views/ReferralView';
-import { CreatorLandingView } from './views/CreatorLandingView';
-import { DeckUpgradeModal } from './components/DeckUpgradeModal';
-import { SimulationOverlay } from './components/SimulationOverlay';
-import { QrReward } from './components/QrReward';
-import { PolicyCenterView } from './views/PolicyCenterView';
-import { NovelView } from './views/NovelView';
-import { AnimeView } from './views/AnimeView';
-import { MovieView } from './views/MovieView';
-import { ModooView } from './views/ModooView';
-import { GridToolView } from './views/GridToolView';
-import { GridCheckerView } from './views/GridCheckerView';
+const HomeView = lazy(() => import('./views/HomeView').then(m => ({ default: m.HomeView })));
+const KadanRpgView = lazy(() => import('./views/KadanRpgView').then(m => ({ default: m.KadanRpgView })));
+const MyDeckView = lazy(() => import('./views/MyDeckView').then(m => ({ default: m.MyDeckView })));
+const ShareView = lazy(() => import('./views/ShareView').then(m => ({ default: m.ShareView })));
+const ShopView = lazy(() => import('./views/ShopView').then(m => ({ default: m.ShopView })));
+const EventView = lazy(() => import('./views/EventView').then(m => ({ default: m.EventView })));
+const SettingView = lazy(() => import('./views/SettingView').then(m => ({ default: m.SettingView })));
+const PlayGameView = lazy(() => import('./views/PlayGameView').then(m => ({ default: m.PlayGameView })));
+const RankingView = lazy(() => import('./views/RankingView').then(m => ({ default: m.RankingView })));
+const AdminView = lazy(() => import('./views/AdminView').then(m => ({ default: m.AdminView })));
+const StatusView = lazy(() => import('./views/StatusView').then(m => ({ default: m.StatusView })));
+const CompanionView = lazy(() => import('./views/CompanionView').then(m => ({ default: m.CompanionView })));
+const ProfileView = lazy(() => import('./views/ProfileView').then(m => ({ default: m.ProfileView })));
+const SkillView = lazy(() => import('./views/SkillView').then(m => ({ default: m.SkillView })));
+const StockMarketView = lazy(() => import('./views/StockMarketView').then(m => ({ default: m.StockMarketView })));
+const CardMarketplaceView = lazy(() => import('./views/CardMarketplaceView').then(m => ({ default: m.CardMarketplaceView })));
+const PredictionMarketView = lazy(() => import('./views/PredictionMarketView').then(m => ({ default: m.PredictionMarketView })));
+const WikiHomeView = lazy(() => import('./views/WikiHomeView').then(m => ({ default: m.WikiHomeView })));
+const WorldCodexView = lazy(() => import('./views/WorldCodexView').then(m => ({ default: m.WorldCodexView })));
+const WikiHowToPlayView = lazy(() => import('./views/WikiHowToPlayView').then(m => ({ default: m.WikiHowToPlayView })));
+const WikiTipView = lazy(() => import('./views/WikiTipView').then(m => ({ default: m.WikiTipView })));
+const WikiCardView = lazy(() => import('./views/WikiCardView').then(m => ({ default: m.WikiCardView })));
+const WikiItemView = lazy(() => import('./views/WikiItemView').then(m => ({ default: m.WikiItemView })));
+const WikiSkillView = lazy(() => import('./views/WikiSkillView').then(m => ({ default: m.WikiSkillView })));
+const GodView = lazy(() => import('./views/GodView').then(m => ({ default: m.GodView })));
+const GuildListView = lazy(() => import('./views/GuildListView').then(m => ({ default: m.GuildListView })));
+const GuildDetailView = lazy(() => import('./views/GuildDetailView').then(m => ({ default: m.GuildDetailView })));
+const CommunityView = lazy(() => import('./views/CommunityView').then(m => ({ default: m.CommunityView })));
+const PlaygroundView = lazy(() => import('./views/PlaygroundView').then(m => ({ default: m.PlaygroundView })));
+const BoostView = lazy(() => import('./views/BoostView').then(m => ({ default: m.BoostView })));
+const Web3LandingView = lazy(() => import('./views/Web3LandingView').then(m => ({ default: m.Web3LandingView })));
+const SeasonHubView = lazy(() => import('./views/SeasonHubView').then(m => ({ default: m.SeasonHubView })));
+const ReferralView = lazy(() => import('./views/ReferralView').then(m => ({ default: m.ReferralView })));
+const CreatorLandingView = lazy(() => import('./views/CreatorLandingView').then(m => ({ default: m.CreatorLandingView })));
+const DeckUpgradeModal = lazy(() => import('./components/DeckUpgradeModal').then(m => ({ default: m.DeckUpgradeModal })));
+const SimulationOverlay = lazy(() => import('./components/SimulationOverlay').then(m => ({ default: m.SimulationOverlay })));
+const QrReward = lazy(() => import('./components/QrReward').then(m => ({ default: m.QrReward })));
+const PolicyCenterView = lazy(() => import('./views/PolicyCenterView').then(m => ({ default: m.PolicyCenterView })));
+const NovelView = lazy(() => import('./views/NovelView').then(m => ({ default: m.NovelView })));
+const AnimeView = lazy(() => import('./views/AnimeView').then(m => ({ default: m.AnimeView })));
+const MovieView = lazy(() => import('./views/MovieView').then(m => ({ default: m.MovieView })));
+const ModooView = lazy(() => import('./views/ModooView').then(m => ({ default: m.ModooView })));
+const GridToolView = lazy(() => import('./views/GridToolView').then(m => ({ default: m.GridToolView })));
+const GridCheckerView = lazy(() => import('./views/GridCheckerView').then(m => ({ default: m.GridCheckerView })));
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -448,6 +449,26 @@ function AppContent() {
   const [adBannerHeight, setAdBannerHeight] = useState(0);
   const [autoStartPvp, setAutoStartPvp] = useState(false);
   const [view, setView] = useState<ViewType>(() => getViewFromPathAndUrl());
+  const [isViewTransitioning, setIsViewTransitioning] = useState<boolean>(true);
+  const viewTransitionTimerRef = useRef<number | null>(null);
+
+  // 모든 화면 이동 시 최소 2초의 화면별 로딩바 유지
+  useEffect(() => {
+    setIsViewTransitioning(true);
+    if (viewTransitionTimerRef.current) {
+      clearTimeout(viewTransitionTimerRef.current);
+    }
+    viewTransitionTimerRef.current = window.setTimeout(() => {
+      setIsViewTransitioning(false);
+    }, 2000);
+
+    return () => {
+      if (viewTransitionTimerRef.current) {
+        clearTimeout(viewTransitionTimerRef.current);
+      }
+    };
+  }, [view]);
+
   const [creatorCode, setCreatorCode] = useState<string>(() => {
     if (typeof window !== 'undefined') {
       const path = window.location.pathname;
@@ -6172,21 +6193,24 @@ function AppContent() {
               >
                 <Suspense
                   fallback={
-                    <div className="flex min-h-[40vh] flex-1 items-center justify-center p-6 text-center font-mono">
-                      <div className="flex flex-col items-center gap-2.5 bg-white/80 border border-[#201d1d]/12 px-6 py-5 rounded-sm shadow-xs max-w-xs w-full">
-                        <div className="w-full bg-[#f0eded] h-2 rounded-none border border-[#201d1d]/10 overflow-hidden relative">
-                          <div className="bg-[#201d1d] h-full w-2/3 animate-pulse" />
-                        </div>
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#201d1d]">
-                          [{t('loading', language)}]
-                        </span>
-                      </div>
-                    </div>
+                    <ViewLoadingFallback
+                      view={view}
+                      language={language}
+                      targetDurationMs={2000}
+                    />
                   }
                 >
                   <SnsProvider sns={sns} updateSns={updateSns} setCurrentDeck={setCurrentDeck} selectedCompanionIndex={selectedCompanionIndex}>
-                  {renderView()}
-                </SnsProvider>
+                    {isViewTransitioning ? (
+                      <ViewLoadingFallback
+                        view={view}
+                        language={language}
+                        targetDurationMs={2000}
+                      />
+                    ) : (
+                      renderView()
+                    )}
+                  </SnsProvider>
                 </Suspense>
               </motion.div>
             </AnimatePresence>
