@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Trophy, ArrowLeft, Zap, Sparkles, Award, Hammer, Cog } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelFactoryCraftGameProps {
   deck: CardData[];
@@ -20,53 +23,79 @@ export const VoxelFactoryCraftGame: React.FC<VoxelFactoryCraftGameProps> = ({
   onExit,
   onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_factory_craft') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [iron, setIron] = useState<number>(10);
   const [belts, setBelts] = useState<number>(0);
+  const targetBelts = 6;
   const [chipsProduced, setChipsProduced] = useState<number>(0);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [isVictory, setIsVictory] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const gameStateRef = useRef({
     iron: 10,
     belts: 0,
     chipsProduced: 0,
-    machines: [] as { type: string; x: number; z: number }[],
+    score: 0,
     isGameOver: false,
-    isVictory: false
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
+    scene: null as THREE.Scene | null
   });
 
-  const buildConveyorBelt = (scene: THREE.Scene) => {
+  const buildConveyorBelt = () => {
     const s = gameStateRef.current;
-    if (s.iron < 2 || s.isGameOver || s.isVictory) return;
+    if (s.iron < 2 || s.isGameOver || s.isVictory || s.isPaused || !s.scene) return;
     s.iron -= 2;
     s.belts += 1;
+    s.chipsProduced += 5;
+    s.score += 200;
     setIron(s.iron);
     setBelts(s.belts);
+    setChipsProduced(s.chipsProduced);
 
     playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
 
     // Add Belt Mesh
     const bGeo = new THREE.BoxGeometry(2, 0.2, 2);
-    const bMat = new THREE.MeshLambertMaterial({ color: 0x333344 });
+    const bMat = new THREE.MeshLambertMaterial({ color: 0x38bdf8 });
     const bMesh = new THREE.Mesh(bGeo, bMat);
-    bMesh.position.set((s.belts - 3) * 2.2, 0.1, 0);
-    scene.add(bMesh);
+    bMesh.position.set((s.belts - 3.5) * 2.4, 0.1, 0);
+    s.scene.add(bMesh);
 
-    if (s.belts >= 6) {
+    if (s.belts >= targetBelts) {
       s.isVictory = true;
-      setIsVictory(true);
-      const reward = 60 + s.belts * 5;
-      setRewardSns(reward);
-      onReward(reward);
+      s.isGameOver = true;
+      setIsGameOver(true);
+      const duration = (Date.now() - s.startTime) / 1000;
+      const receipt = calculateAndDepositMissionReward({
+        gameId: 'voxel_factory_craft',
+        gameTitle: '복셀 팩토리 크래프트',
+        durationSeconds: duration,
+        score: s.score + 1000,
+        difficulty: 'HARD',
+        isVictory: true
+      });
+      setSettlementReceipt(receipt);
+      onReward(receipt.totalSns);
     }
   };
 
   const manualMineOre = () => {
     const s = gameStateRef.current;
-    if (s.isGameOver || s.isVictory) return;
+    if (s.isGameOver || s.isVictory || s.isPaused) return;
     s.iron += 3;
+    s.score += 50;
     setIron(s.iron);
     playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
   };
@@ -75,15 +104,19 @@ export const VoxelFactoryCraftGame: React.FC<VoxelFactoryCraftGameProps> = ({
     const container = mountRef.current;
     if (!container) return;
 
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
+
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x1a202c);
+    gameStateRef.current.scene = scene;
 
-    const camera = new THREE.PerspectiveCamera(55, container.clientWidth / container.clientHeight, 0.1, 300);
+    const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 300);
     camera.position.set(0, 16, 16);
     camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
     container.appendChild(renderer.domElement);
 
@@ -93,145 +126,148 @@ export const VoxelFactoryCraftGame: React.FC<VoxelFactoryCraftGameProps> = ({
     sun.position.set(20, 40, 20);
     scene.add(sun);
 
-    // Factory Floor Grid
+    // Factory Floor
     const floorGeo = new THREE.PlaneGeometry(30, 30);
     floorGeo.rotateX(-Math.PI / 2);
     const floorMat = new THREE.MeshLambertMaterial({ color: 0x2d3748 });
     const floor = new THREE.Mesh(floorGeo, floorMat);
     scene.add(floor);
 
-    // Core Assembler Machine
-    const asmGeo = new THREE.BoxGeometry(3, 2.5, 3);
-    const asmMat = new THREE.MeshLambertMaterial({ color: 0x3182ce });
-    const asm = new THREE.Mesh(asmGeo, asmMat);
-    asm.position.set(0, 1.25, -6);
-    scene.add(asm);
+    // Smelter Machine at left
+    const smelter = new THREE.Mesh(new THREE.BoxGeometry(3, 4, 3), new THREE.MeshLambertMaterial({ color: 0xe53e3e }));
+    smelter.position.set(-10, 2, 0);
+    scene.add(smelter);
+
+    // Assembler Machine at right
+    const assembler = new THREE.Mesh(new THREE.BoxGeometry(3, 4, 3), new THREE.MeshLambertMaterial({ color: 0x3182ce }));
+    assembler.position.set(10, 2, 0);
+    scene.add(assembler);
 
     let animId: number;
-    let clock = new THREE.Clock();
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
-      const dt = clock.getDelta();
-      const s = gameStateRef.current;
-
-      if (!s.isGameOver && !s.isVictory) {
-        // Auto produce chips if belts exist
-        if (s.belts > 0) {
-          s.chipsProduced += s.belts * 2 * dt;
-          setChipsProduced(Math.floor(s.chipsProduced));
-        }
-      }
-
+      if (gameStateRef.current.isPaused || gameStateRef.current.isGameOver) return;
       renderer.render(scene, camera);
     };
 
     animId = requestAnimationFrame(animate);
 
-    const handleResize = () => {
-      if (!container) return;
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener('resize', handleResize);
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, playSfx]);
+  }, [lowSpecMode]);
+
+  const handleRestart = () => {
+    const s = gameStateRef.current;
+    s.iron = 10;
+    s.belts = 0;
+    s.chipsProduced = 0;
+    s.score = 0;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    setIron(10);
+    setBelts(0);
+    setChipsProduced(0);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 text-white select-none overflow-hidden flex flex-col font-sans">
-      <div ref={mountRef} className="w-full h-full absolute inset-0" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Top HUD */}
-      <div className="relative z-10 p-3 sm:p-4 flex items-center justify-between bg-gradient-to-b from-slate-950/90 to-transparent pointer-events-none">
-        <button
-          onClick={onExit}
-          className="pointer-events-auto p-2 bg-slate-900/80 hover:bg-slate-800 text-white rounded-xl border border-slate-700 active:scale-95 flex items-center gap-1 cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-          <span className="text-xs font-bold">{language === 'ko' ? '나가기' : 'Exit'}</span>
-        </button>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 팩토리 크래프트' : 'Voxel Factory Craft'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '철광석' : 'Iron', value: `${iron}개`, color: 'text-cyan-300' },
+          { label: isKo ? '벨트' : 'Belts', value: `${belts}/${targetBelts}개`, color: 'text-amber-300' },
+          { label: isKo ? '칩셋생산' : 'Chips', value: `${chipsProduced}개`, color: 'text-emerald-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          gameStateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
-        {/* Resources & Belts */}
-        <div className="flex items-center gap-3 bg-slate-900/80 px-3 py-1.5 rounded-2xl border border-slate-700">
-          <div className="text-cyan-400 font-bold text-xs">
-            ⛏️ 철광석: {iron}
-          </div>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && !isPaused && !showTutorial && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-          <div className="text-yellow-400 font-bold text-xs">
-            ⚙️ 컨베이어 벨트: {belts}/6
-          </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
 
-          <div className="text-emerald-400 font-bold text-xs">
-            💾 칩셋 생산량: {chipsProduced}개
-          </div>
-        </div>
-      </div>
+              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+                moved = true;
+              }
+            };
 
-      {/* Bottom Action Buttons */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-3 pointer-events-auto">
-        <button
-          onClick={manualMineOre}
-          className="w-32 h-16 bg-slate-800/90 hover:bg-slate-700 text-white rounded-2xl border border-slate-600 font-bold text-xs flex flex-col items-center justify-center cursor-pointer active:scale-95 shadow-xl"
-        >
-          <Hammer size={18} />
-          <span>철광석 채굴 (+3)</span>
-        </button>
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
 
-        <button
-          onClick={() => {
-            const scene = (mountRef.current?.children[0] as any)?.__r3f?.scene;
-            if (scene) buildConveyorBelt(scene);
+              if (!moved) {
+                // Tap: Mine Ore
+                manualMineOre();
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
           }}
-          disabled={iron < 2}
-          className={`w-36 h-16 rounded-2xl border-2 font-bold text-xs flex flex-col items-center justify-center cursor-pointer active:scale-95 shadow-xl ${iron >= 2 ? 'bg-cyan-600/90 border-cyan-400 text-white' : 'bg-slate-800/80 border-slate-700 text-slate-500'}`}
-        >
-          <Cog size={18} />
-          <span>벨트 설치 (2철광석)</span>
-        </button>
+          onDoubleClick={buildConveyorBelt}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/75 border border-cyan-500/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
+          {isKo ? '탭: 철광석 수동 채굴 (+3) | 더블탭: 컨베이어 벨트 설치 (철광석 2소모) (버튼 없음)' : 'Tap: Mine Iron (+3) | Double Tap: Install Belt (Cost 2) (No Buttons)'}
+        </div>
       </div>
 
-      {/* Victory / Game Over Modal */}
-      {(isVictory || isGameOver) && (
-        <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
-            <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center ${isVictory ? 'bg-amber-400/20 text-yellow-400' : 'bg-rose-500/20 text-rose-400'}`}>
-              {isVictory ? <Trophy size={36} /> : <Award size={36} />}
-            </div>
+      {/* 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_factory_craft"
+          gameTitle={isKo ? '3D 복셀 팩토리 크래프트: 자동화 생산 라인' : 'Voxel Factory Craft: Automation'}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-            <h2 className="text-2xl font-black italic uppercase">{isVictory ? '자동화 공장 완성! VICTORY' : '공장 중단! DEFEAT'}</h2>
-
-            <p className="text-xs text-slate-300">
-              {isVictory
-                ? '완벽한 컨베이어 벨트 라인을 구축하여 대량 생산 시스템을 완성했습니다!'
-                : '공장 생산 라인이 중단되었습니다.'}
-            </p>
-
-            {isVictory && (
-              <div className="bg-slate-950 border border-amber-500/30 p-3 rounded-2xl">
-                <span className="text-xs text-slate-400 block uppercase font-bold">REWARD</span>
-                <span className="text-2xl font-black text-yellow-400 flex items-center justify-center gap-1">
-                  <Sparkles size={20} /> +{rewardSns} SNS
-                </span>
-              </div>
-            )}
-
-            <button
-              onClick={onExit}
-              className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 text-slate-950 font-bold rounded-xl active:scale-95 transition-all cursor-pointer"
-            >
-              {language === 'ko' ? '확인 및 나가기' : 'Confirm & Exit'}
-            </button>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
