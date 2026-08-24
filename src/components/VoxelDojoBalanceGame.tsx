@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ArrowLeft, Trophy, Sparkles, Zap, Flame, Shield, Swords } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelDojoBalanceGameProps {
   deck: CardData[];
@@ -23,13 +26,21 @@ export const VoxelDojoBalanceGame: React.FC<VoxelDojoBalanceGameProps> = ({
   const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
 
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_dojo_balance') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [streak, setStreak] = useState<number>(0);
-  const [balance, setBalance] = useState<number>(50); // 0 (left fall) ~ 100 (right fall), 50 is perfect
+  const targetStreak = 3;
+  const [balance, setBalance] = useState<number>(50);
   const [enemyHp, setEnemyHp] = useState<number>(100);
-  const [opponentName, setOpponentName] = useState<string>('Shadow Shinobi');
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
     balance: 50,
@@ -43,11 +54,60 @@ export const VoxelDojoBalanceGame: React.FC<VoxelDojoBalanceGameProps> = ({
     score: 0,
     streak: 0,
     isGameOver: false,
+    isPaused: false,
+    startTime: Date.now(),
     playerGroup: null as THREE.Group | null,
     playerStaff: null as THREE.Mesh | null,
     enemyGroup: null as THREE.Group | null,
     enemyStaff: null as THREE.Mesh | null
   });
+
+  const handlePlayerAttack = (isHeavy: boolean = false) => {
+    const s = stateRef.current;
+    if (s.isPlayerAttacking || s.isGameOver || s.isPaused) return;
+
+    s.isPlayerAttacking = true;
+    const dmg = isHeavy ? 35 : 18;
+    playSfx?.(isHeavy ? 'https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3' : 'https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+
+    setTimeout(() => {
+      s.isPlayerAttacking = false;
+      s.enemyHp = Math.max(0, s.enemyHp - dmg);
+      setEnemyHp(s.enemyHp);
+
+      if (s.enemyHp <= 0) {
+        s.streak += 1;
+        s.score += 500;
+        setStreak(s.streak);
+        setScore(s.score);
+        s.enemyHp = 100;
+        setEnemyHp(100);
+
+        if (s.streak >= targetStreak) {
+          s.isGameOver = true;
+          setIsGameOver(true);
+          const duration = (Date.now() - s.startTime) / 1000;
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'voxel_dojo_balance',
+            gameTitle: '복셀 도장 밸런스 결투',
+            durationSeconds: duration,
+            score: s.score + 1000,
+            difficulty: 'HARD',
+            isVictory: true
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
+        }
+      }
+    }, 200);
+  };
+
+  const handleBalanceAdjust = (dir: number) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+    s.balance = Math.max(0, Math.min(100, s.balance + dir * 8));
+    setBalance(Math.round(s.balance));
+  };
 
   useEffect(() => {
     const container = mountRef.current;
@@ -75,131 +135,94 @@ export const VoxelDojoBalanceGame: React.FC<VoxelDojoBalanceGameProps> = ({
 
     const sun = new THREE.DirectionalLight(0xf97316, 2.2);
     sun.position.set(5, 12, 6);
-    sun.castShadow = !lowSpecMode;
     scene.add(sun);
 
-    // Waterfall / Mist Pool Below
+    // Waterfall Mist Pool Below
     const waterGeo = new THREE.PlaneGeometry(30, 30);
-    const waterMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.1, metalness: 0.8 });
+    const waterMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.1 });
     const water = new THREE.Mesh(waterGeo, waterMat);
     water.rotation.x = -Math.PI / 2;
     water.position.set(0, -3, 0);
     scene.add(water);
 
-    // High Narrow Wooden Log (The Bridge)
+    // High Narrow Wooden Log Bridge
     const logGeo = new THREE.CylinderGeometry(0.5, 0.5, 12, 16);
     const logMat = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.9 });
     const log = new THREE.Mesh(logGeo, logMat);
     log.rotation.z = Math.PI / 2;
     log.position.set(0, 0, 0);
-    log.receiveShadow = !lowSpecMode;
     scene.add(log);
 
-    // Player Ninja (Left side of the log)
+    // Player Ninja
     const playerGroup = new THREE.Group();
-    const pBodyGeo = new THREE.BoxGeometry(0.7, 1.3, 0.6);
-    const pBodyMat = new THREE.MeshStandardMaterial({ color: 0x1e293b });
-    const pBody = new THREE.Mesh(pBodyGeo, pBodyMat);
+    const pBody = new THREE.Mesh(new THREE.BoxGeometry(0.7, 1.3, 0.6), new THREE.MeshStandardMaterial({ color: 0x0284c7 }));
     pBody.position.y = 1.0;
     playerGroup.add(pBody);
 
-    // Player Bo Staff
-    const staffGeo = new THREE.CylinderGeometry(0.06, 0.06, 2.2, 8);
-    const staffMat = new THREE.MeshStandardMaterial({ color: 0xb45309 });
-    const playerStaff = new THREE.Mesh(staffGeo, staffMat);
-    playerStaff.position.set(0.4, 1.1, 0.5);
-    playerStaff.rotation.x = Math.PI / 3;
-    playerGroup.add(playerStaff);
+    const staffGeo = new THREE.CylinderGeometry(0.04, 0.04, 2.4, 8);
+    const staffMat = new THREE.MeshStandardMaterial({ color: 0xd97706 });
+    const pStaff = new THREE.Mesh(staffGeo, staffMat);
+    pStaff.rotation.z = Math.PI / 3;
+    pStaff.position.set(0.4, 1.0, 0.3);
+    playerGroup.add(pStaff);
 
-    playerGroup.position.set(-1.8, 0.4, 0);
+    playerGroup.position.set(-1.8, 0, 0);
     scene.add(playerGroup);
     stateRef.current.playerGroup = playerGroup;
-    stateRef.current.playerStaff = playerStaff;
+    stateRef.current.playerStaff = pStaff;
 
-    // Enemy Ninja (Right side of the log)
+    // Enemy Ninja
     const enemyGroup = new THREE.Group();
-    const eBodyGeo = new THREE.BoxGeometry(0.7, 1.3, 0.6);
-    const eBodyMat = new THREE.MeshStandardMaterial({ color: 0xb91c1c });
-    const eBody = new THREE.Mesh(eBodyGeo, eBodyMat);
+    const eBody = new THREE.Mesh(new THREE.BoxGeometry(0.7, 1.3, 0.6), new THREE.MeshStandardMaterial({ color: 0xef4444 }));
     eBody.position.y = 1.0;
     enemyGroup.add(eBody);
 
-    // Enemy Bo Staff
-    const enemyStaff = new THREE.Mesh(staffGeo, staffMat);
-    enemyStaff.position.set(-0.4, 1.1, 0.5);
-    enemyStaff.rotation.x = Math.PI / 3;
-    enemyGroup.add(enemyStaff);
+    const eStaff = new THREE.Mesh(staffGeo, staffMat);
+    eStaff.rotation.z = -Math.PI / 3;
+    eStaff.position.set(-0.4, 1.0, 0.3);
+    enemyGroup.add(eStaff);
 
-    enemyGroup.position.set(1.8, 0.4, 0);
+    enemyGroup.position.set(1.8, 0, 0);
     scene.add(enemyGroup);
     stateRef.current.enemyGroup = enemyGroup;
-    stateRef.current.enemyStaff = enemyStaff;
+    stateRef.current.enemyStaff = eStaff;
 
     let animId: number;
     let lastTime = performance.now();
 
-    const animate = () => {
+    const animate = (now: number) => {
       animId = requestAnimationFrame(animate);
-      const now = performance.now();
-      const dt = Math.min((now - lastTime) / 1000, 0.05);
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
-      const state = stateRef.current;
-      if (state.isGameOver) {
-        renderer.render(scene, camera);
-        return;
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
+
+      // Natural Balance Drift
+      s.balanceDrift += (Math.random() - 0.5) * 15 * dt;
+      s.balance = THREE.MathUtils.clamp(s.balance + s.balanceDrift * dt, 0, 100);
+      setBalance(Math.round(s.balance));
+
+      if (playerGroup) {
+        const tilt = (s.balance - 50) * 0.015;
+        playerGroup.rotation.z = tilt;
       }
 
-      // Natural Wind / Balance Drift
-      state.balanceDrift += (Math.random() - 0.5) * 12 * dt;
-      state.balance += state.balanceDrift * dt;
-      state.balance = Math.max(0, Math.min(100, state.balance));
-      setBalance(Math.round(state.balance));
-
-      // Tilt Player Mesh based on balance
-      if (state.playerGroup) {
-        const tiltAngle = ((state.balance - 50) / 50) * 0.45;
-        state.playerGroup.rotation.z = -tiltAngle;
-      }
-
-      // Check Fall Game Over
-      if (state.balance <= 2 || state.balance >= 98) {
-        state.isGameOver = true;
+      // Check Fall from bridge
+      if (s.balance <= 5 || s.balance >= 95) {
+        s.isGameOver = true;
         setIsGameOver(true);
-        const reward = Math.min(260, Math.floor(state.score / 40) + state.streak * 20);
-        setRewardSns(reward);
-        onReward(reward);
-        if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-      }
-
-      // Enemy Attack AI Loop
-      state.enemyAttackTimer -= dt;
-      if (state.enemyAttackTimer <= 0) {
-        state.enemyAttackTimer = 1.6 + Math.random() * 1.2;
-        state.isEnemyAttacking = true;
-
-        if (state.enemyStaff) {
-          state.enemyStaff.rotation.z = -Math.PI / 2;
-        }
-
-        setTimeout(() => {
-          if (state.isGameOver) return;
-          if (state.isPlayerGuarding) {
-            // Guard successful! Push enemy back
-            state.balanceDrift *= 0.5;
-            state.score += 150;
-            setScore(state.score);
-            if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
-          } else {
-            // Player hit! Lose balance
-            const force = (Math.random() > 0.5 ? 1 : -1) * (15 + Math.random() * 10);
-            state.balance += force;
-            state.balanceDrift += force * 0.5;
-            if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-          }
-          if (state.enemyStaff) state.enemyStaff.rotation.z = 0;
-          state.isEnemyAttacking = false;
-        }, 300);
+        const duration = (Date.now() - s.startTime) / 1000;
+        const receipt = calculateAndDepositMissionReward({
+          gameId: 'voxel_dojo_balance',
+          gameTitle: '복셀 도장 밸런스 결투',
+          durationSeconds: duration,
+          score: s.score,
+          difficulty: 'HARD',
+          isVictory: false
+        });
+        setSettlementReceipt(receipt);
+        onReward(receipt.totalSns);
       }
 
       renderer.render(scene, camera);
@@ -214,140 +237,75 @@ export const VoxelDojoBalanceGame: React.FC<VoxelDojoBalanceGameProps> = ({
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, playSfx]);
+  }, [lowSpecMode]);
 
-  const handlePlayerAttack = (heavy: boolean = false) => {
-    const state = stateRef.current;
-    if (state.isGameOver || state.isPlayerAttacking) return;
-
-    state.isPlayerAttacking = true;
-    if (state.playerStaff) {
-      state.playerStaff.rotation.z = Math.PI / 2;
-    }
-
-    const dmg = heavy ? 45 : 25;
-    const recoil = (Math.random() - 0.5) * (heavy ? 12 : 5);
-    state.balance += recoil;
-
-    setTimeout(() => {
-      state.enemyHp -= dmg;
-      if (state.enemyHp <= 0) {
-        // Enemy Knocked Off!
-        state.streak++;
-        state.score += 500 + state.streak * 200;
-        setScore(state.score);
-        setStreak(state.streak);
-        state.enemyHp = 100;
-        state.balance = 50;
-        state.balanceDrift = 0;
-        setEnemyHp(100);
-        setOpponentName(`Shadow Shinobi #${state.streak + 1}`);
-        if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-      } else {
-        setEnemyHp(state.enemyHp);
-        if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
-      }
-
-      if (state.playerStaff) state.playerStaff.rotation.z = 0;
-      state.isPlayerAttacking = false;
-    }, 250);
-  };
-
-  const handleBalanceAdjust = (dir: number) => {
-    const state = stateRef.current;
-    state.balance += dir * 6;
-    state.balanceDrift = 0;
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.balance = 50;
+    s.balanceDrift = 0;
+    s.score = 0;
+    s.streak = 0;
+    s.enemyHp = 100;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    setBalance(50);
+    setScore(0);
+    setStreak(0);
+    setEnemyHp(100);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
   };
 
   return (
-    <div className="relative w-full h-full min-h-[100dvh] bg-zinc-950 flex flex-col items-center select-none overflow-hidden font-mono">
-      {/* 3D Viewport */}
-      <div ref={mountRef} className="absolute inset-0 w-full h-full" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Header HUD */}
-      <div className="relative z-10 w-full max-w-xl p-3 flex items-center justify-between pointer-events-auto bg-zinc-900/85 backdrop-blur-sm border-b border-amber-600/40">
-        <button
-          onClick={onExit}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-amber-400 text-xs font-bold rounded-sm border border-amber-600/40"
-        >
-          <ArrowLeft size={14} />
-          <span>{isKo ? '나가기' : 'Exit'}</span>
-        </button>
-
-        <div className="flex items-center gap-4 text-xs font-bold">
-          <div className="flex items-center gap-1 text-amber-400">
-            <Trophy size={14} />
-            <span>{score.toLocaleString()}P</span>
-          </div>
-          <div className="flex items-center gap-1 text-rose-400">
-            <Swords size={14} />
-            <span>{streak} KO</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Center Balance Meter */}
-      <div className="relative z-10 mt-3 w-full max-w-xs px-4 flex flex-col items-center pointer-events-none gap-1 bg-zinc-950/80 p-2 border border-zinc-800 rounded-sm">
-        <div className="w-full flex justify-between text-[10px] font-bold text-amber-400">
-          <span>◀ LEFT</span>
-          <span>BALANCE</span>
-          <span>RIGHT ▶</span>
-        </div>
-        <div className="w-full h-3 bg-zinc-800 rounded-sm overflow-hidden border border-zinc-700 relative">
-          <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-1 bg-emerald-500 z-10" />
-          <div
-            className="absolute top-0 bottom-0 w-4 bg-amber-400 -translate-x-1/2 transition-all duration-75"
-            style={{ left: `${balance}%` }}
-          />
-        </div>
-      </div>
-
-      {/* Enemy Health Bar */}
-      <div className="relative z-10 mt-2 w-full max-w-xs px-4 flex flex-col items-center pointer-events-none gap-1">
-        <div className="w-full flex justify-between text-[11px] font-bold text-rose-400">
-          <span>{opponentName}</span>
-          <span>{enemyHp} HP</span>
-        </div>
-        <div className="w-full h-2 bg-zinc-800 rounded-sm overflow-hidden border border-zinc-700">
-          <div className="h-full bg-rose-500 transition-all duration-150" style={{ width: `${enemyHp}%` }} />
-        </div>
-      </div>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 도장 밸런스 결투' : 'Voxel Dojo Balance'}
+        language={language}
+        hp={{ current: enemyHp, max: 100 }}
+        telemetries={[
+          { label: isKo ? '밸런스' : 'Balance', value: `${balance}%`, color: Math.abs(balance - 50) > 25 ? 'text-rose-400' : 'text-emerald-300' },
+          { label: isKo ? '격파' : 'Streak', value: `${streak}/${targetStreak}KO`, color: 'text-amber-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
       {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && (
+      {!isGameOver && !isPaused && !showTutorial && (
         <div
-          className="absolute inset-0 z-10 select-none touch-none"
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
           style={{ touchAction: 'none' }}
           onPointerDown={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
             const startX = e.clientX - rect.left;
-            const startY = e.clientY - rect.top;
             let moved = false;
-            const guardTimeout = setTimeout(() => {
-              stateRef.current.isPlayerGuarding = true;
-            }, 300);
 
             const onMove = (moveEvt: PointerEvent) => {
               const curX = moveEvt.clientX - rect.left;
               const dx = curX - startX;
 
-              if (Math.abs(dx) > 15) {
+              if (Math.abs(dx) > 12) {
                 moved = true;
-                clearTimeout(guardTimeout);
-                stateRef.current.isPlayerGuarding = false;
                 handleBalanceAdjust(dx > 0 ? 1 : -1);
               }
             };
 
             const onUp = () => {
-              clearTimeout(guardTimeout);
               window.removeEventListener('pointermove', onMove);
               window.removeEventListener('pointerup', onUp);
               window.removeEventListener('pointercancel', onUp);
-              stateRef.current.isPlayerGuarding = false;
 
               if (!moved) {
-                // Tap: Fast Strike
+                // Tap: Strike
                 handlePlayerAttack(false);
               }
             };
@@ -362,42 +320,31 @@ export const VoxelDojoBalanceGame: React.FC<VoxelDojoBalanceGameProps> = ({
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-zinc-900/80 border border-cyan-400/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
-          {isKo ? '좌우 스와이프: 균형잡기 | 탭: 공격 | 더블탭: 강타 | 길게누름: 가드 (버튼 없음)' : 'Swipe L/R: Lean | Tap: Strike | Double Tap: Heavy | Hold: Guard (No Buttons)'}
+        <div className="px-3 py-1 bg-black/75 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {isKo ? '좌우 스와이프: 균형 복구 | 탭: 빠른 타격 | 더블탭: 강타 (버튼 없음)' : 'Swipe L/R: Balance | Tap: Strike | Double Tap: Heavy (No Buttons)'}
         </div>
       </div>
 
-      {/* Game Over Modal */}
-      {isGameOver && (
-        <div className="absolute inset-0 z-30 flex items-center justify-center p-4 bg-zinc-950/85 backdrop-blur-md">
-          <div className="w-full max-w-sm bg-zinc-900 border-2 border-amber-500 p-6 flex flex-col items-center gap-4 text-center rounded-none shadow-[0_0_30px_rgba(245,158,11,0.3)]">
-            <Trophy size={40} className="text-amber-400 animate-bounce" />
-            <h2 className="text-lg font-black text-white tracking-widest">
-              {isKo ? '외나무다리 대결 종료!' : 'DOJO DUEL ENDED!'}
-            </h2>
-            <div className="w-full bg-zinc-950 p-3 border border-zinc-800 flex flex-col gap-1.5 text-xs">
-              <div className="flex justify-between text-zinc-400">
-                <span>{isKo ? '격파한 닌자 수' : 'Defeated Ninjas'}</span>
-                <span className="text-rose-400 font-bold">{streak} KO</span>
-              </div>
-              <div className="flex justify-between text-zinc-400">
-                <span>{isKo ? '최종 획득 점수' : 'Final Score'}</span>
-                <span className="text-amber-400 font-bold">{score.toLocaleString()}P</span>
-              </div>
-              <div className="flex justify-between text-zinc-400 border-t border-zinc-800 pt-1.5">
-                <span>{isKo ? 'SNS 보상 포인트' : 'SNS Reward'}</span>
-                <span className="text-emerald-400 font-bold">+{rewardSns} SNS</span>
-              </div>
-            </div>
+      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {showTutorial && (
+        <SportsMissionTutorial
+          gameId="voxel_dojo_balance"
+          gameTitle={isKo ? '3D 복셀 도장 밸런스 결투: 외나무다리 승부' : 'Voxel Dojo Balance: Bridge Duel'}
+          sportType="martial_arts"
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-            <button
-              onClick={onExit}
-              className="w-full py-3 bg-amber-500 hover:bg-amber-400 active:scale-98 text-zinc-950 font-black text-sm rounded-sm tracking-wider shadow-lg"
-            >
-              {isKo ? '확인 및 보상 수령' : 'Confirm & Claim'}
-            </button>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
