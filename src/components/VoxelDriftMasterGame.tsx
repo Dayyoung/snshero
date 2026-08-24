@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Trophy, ArrowLeft, Zap, Sparkles, Award, Gauge } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelDriftMasterGameProps {
   deck: CardData[];
@@ -20,32 +23,45 @@ export const VoxelDriftMasterGame: React.FC<VoxelDriftMasterGameProps> = ({
   onExit,
   onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_drift_master') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [speed, setSpeed] = useState<number>(0);
   const [driftScore, setDriftScore] = useState<number>(0);
+  const targetScore = 2000;
   const [nitro, setNitro] = useState<number>(100);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [isVictory, setIsVictory] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const gameStateRef = useRef({
-    posX: 0,
+    posX: 45,
     posZ: 0,
     rotY: 0,
     speed: 0,
     driftScore: 0,
     nitro: 100,
     isDrifting: false,
-    keys: { w: false, s: false, a: false, d: false, space: false, shift: false },
+    keys: { w: false, s: false, a: false, d: false, space: false },
     isGameOver: false,
-    isVictory: false
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
+    carMesh: null as THREE.Group | null
   });
 
   const triggerNitro = () => {
     const s = gameStateRef.current;
-    if (s.nitro < 30 || s.isGameOver || s.isVictory) return;
-    s.nitro -= 30;
-    s.speed += 25;
+    if (s.nitro < 25 || s.isGameOver || s.isVictory || s.isPaused) return;
+    s.nitro -= 25;
+    s.speed += 20;
     setNitro(Math.round(s.nitro));
     playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
   };
@@ -54,13 +70,16 @@ export const VoxelDriftMasterGame: React.FC<VoxelDriftMasterGameProps> = ({
     const container = mountRef.current;
     if (!container) return;
 
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
+
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x050510);
     scene.fog = new THREE.FogExp2(0x050510, 0.015);
 
-    const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 300);
+    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 300);
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
     container.appendChild(renderer.domElement);
 
@@ -73,7 +92,7 @@ export const VoxelDriftMasterGame: React.FC<VoxelDriftMasterGameProps> = ({
     // Circuit Track
     const trackGeo = new THREE.RingGeometry(30, 60, 32);
     trackGeo.rotateX(-Math.PI / 2);
-    const trackMat = new THREE.MeshLambertMaterial({ color: 0x222222 });
+    const trackMat = new THREE.MeshLambertMaterial({ color: 0x1e293b });
     const track = new THREE.Mesh(trackGeo, trackMat);
     scene.add(track);
 
@@ -89,74 +108,70 @@ export const VoxelDriftMasterGame: React.FC<VoxelDriftMasterGameProps> = ({
 
     car.position.set(45, 0, 0);
     scene.add(car);
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const k = e.key.toLowerCase();
-      if (k === 'w' || k === 'arrowup') gameStateRef.current.keys.w = true;
-      if (k === 's' || k === 'arrowdown') gameStateRef.current.keys.s = true;
-      if (k === 'a' || k === 'arrowleft') gameStateRef.current.keys.a = true;
-      if (k === 'd' || k === 'arrowright') gameStateRef.current.keys.d = true;
-      if (k === ' ') gameStateRef.current.keys.space = true;
-      if (k === 'shift' || k === 'e') triggerNitro();
-    };
-
-    const handleKeyUp = (e: KeyboardEvent) => {
-      const k = e.key.toLowerCase();
-      if (k === 'w' || k === 'arrowup') gameStateRef.current.keys.w = false;
-      if (k === 's' || k === 'arrowdown') gameStateRef.current.keys.s = false;
-      if (k === 'a' || k === 'arrowleft') gameStateRef.current.keys.a = false;
-      if (k === 'd' || k === 'arrowright') gameStateRef.current.keys.d = false;
-      if (k === ' ') gameStateRef.current.keys.space = false;
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
+    gameStateRef.current.carMesh = car;
 
     let animId: number;
-    let clock = new THREE.Clock();
+    let lastTime = performance.now();
 
-    const animate = () => {
+    const animate = (now: number) => {
       animId = requestAnimationFrame(animate);
-      const dt = clock.getDelta();
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+
       const s = gameStateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-      if (!s.isGameOver && !s.isVictory) {
-        // Accelerate & Brake
-        if (s.keys.w) s.speed = Math.min(80, s.speed + 35 * dt);
-        else if (s.keys.s) s.speed = Math.max(-20, s.speed - 40 * dt);
-        else s.speed *= 0.98;
+      // Steering & Acceleration
+      if (s.keys.w) s.speed = Math.min(45, s.speed + 25 * dt);
+      else if (s.keys.s) s.speed = Math.max(-15, s.speed - 25 * dt);
+      else s.speed = THREE.MathUtils.lerp(s.speed, 0, dt * 2);
 
-        // Turn
-        const turnSpeed = s.keys.space ? 3.5 : 2.0;
-        if (s.keys.a) s.rotY += turnSpeed * dt * (s.speed > 0 ? 1 : -1);
-        if (s.keys.d) s.rotY -= turnSpeed * dt * (s.speed > 0 ? 1 : -1);
+      let steerRate = s.keys.space ? 3.5 : 2.0;
+      if (s.keys.a) s.rotY += steerRate * dt;
+      if (s.keys.d) s.rotY -= steerRate * dt;
 
-        // Drift scoring
-        if (s.keys.space && Math.abs(s.speed) > 20 && (s.keys.a || s.keys.d)) {
-          s.driftScore += Math.floor(100 * dt);
-          setDriftScore(s.driftScore);
-          s.nitro = Math.min(100, s.nitro + 15 * dt);
-          setNitro(Math.round(s.nitro));
+      s.posX += Math.sin(s.rotY) * s.speed * dt;
+      s.posZ += Math.cos(s.rotY) * s.speed * dt;
 
-          if (s.driftScore >= 1000) {
-            s.isVictory = true;
-            setIsVictory(true);
-            const reward = 50 + Math.floor(s.driftScore / 50);
-            setRewardSns(reward);
-            onReward(reward);
-          }
+      setSpeed(Math.round(Math.abs(s.speed) * 4));
+
+      // Nitro Recharge
+      s.nitro = Math.min(100, s.nitro + dt * 8);
+      setNitro(Math.round(s.nitro));
+
+      // Drift Score Logic
+      if (s.keys.space && Math.abs(s.speed) > 15) {
+        s.driftScore += Math.round(Math.abs(s.speed) * 20 * dt);
+        setDriftScore(s.driftScore);
+
+        if (s.driftScore >= targetScore && !s.isGameOver) {
+          s.isVictory = true;
+          s.isGameOver = true;
+          setIsGameOver(true);
+          const duration = (Date.now() - s.startTime) / 1000;
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'voxel_drift_master',
+            gameTitle: '복셀 드리프트 마스터',
+            durationSeconds: duration,
+            score: s.driftScore,
+            difficulty: 'HARD',
+            isVictory: true
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
         }
+      }
 
-        s.posX += Math.sin(s.rotY) * s.speed * dt;
-        s.posZ += Math.cos(s.rotY) * s.speed * dt;
-
-        car.position.set(s.posX + 45, 0, s.posZ);
+      if (car) {
+        car.position.set(s.posX, 0, s.posZ);
         car.rotation.y = s.rotY;
 
-        setSpeed(Math.round(s.speed));
-
-        camera.position.set(car.position.x - Math.sin(s.rotY) * 10, 5, car.position.z - Math.cos(s.rotY) * 10);
-        camera.lookAt(car.position.x, 1, car.position.z);
+        camera.position.set(
+          s.posX - Math.sin(s.rotY) * 12,
+          6,
+          s.posZ - Math.cos(s.rotY) * 12
+        );
+        camera.lookAt(s.posX, 1.5, s.posZ);
       }
 
       renderer.render(scene, camera);
@@ -164,149 +179,134 @@ export const VoxelDriftMasterGame: React.FC<VoxelDriftMasterGameProps> = ({
 
     animId = requestAnimationFrame(animate);
 
-    const handleResize = () => {
-      if (!container) return;
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      window.removeEventListener('resize', handleResize);
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, playSfx]);
+  }, [lowSpecMode]);
+
+  const handleRestart = () => {
+    const s = gameStateRef.current;
+    s.posX = 45;
+    s.posZ = 0;
+    s.rotY = 0;
+    s.speed = 0;
+    s.driftScore = 0;
+    s.nitro = 100;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    setSpeed(0);
+    setDriftScore(0);
+    setNitro(100);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 text-white select-none overflow-hidden flex flex-col font-sans">
-      <div ref={mountRef} className="w-full h-full absolute inset-0" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Top HUD */}
-      <div className="relative z-10 p-3 sm:p-4 flex items-center justify-between bg-gradient-to-b from-slate-950/90 to-transparent pointer-events-none">
-        <button
-          onClick={onExit}
-          className="pointer-events-auto p-2 bg-slate-900/80 hover:bg-slate-800 text-white rounded-xl border border-slate-700 active:scale-95 flex items-center gap-1 cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-          <span className="text-xs font-bold">{language === 'ko' ? '나가기' : 'Exit'}</span>
-        </button>
-
-        {/* Speed & Drift Score */}
-        <div className="flex items-center gap-3 bg-slate-900/80 px-3 py-1.5 rounded-2xl border border-slate-700">
-          <div className="text-rose-400 font-mono font-black text-sm">
-            🏎️ {speed} KM/H
-          </div>
-
-          <div className="text-yellow-400 font-bold text-xs">
-            🔥 DRIFT: {driftScore}/1000
-          </div>
-
-          <div className="text-cyan-400 font-bold text-xs">
-            ⚡ NITRO: {nitro}%
-          </div>
-        </div>
-      </div>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 드리프트 마스터' : 'Voxel Drift Master'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '드리프트' : 'Drift', value: `${driftScore}/${targetScore}P`, color: 'text-amber-300' },
+          { label: isKo ? '속도' : 'Speed', value: `${speed}km/h`, color: 'text-cyan-300' },
+          { label: isKo ? '니트로' : 'Nitro', value: `${nitro}%`, color: 'text-fuchsia-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          gameStateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
       {/* Screen Gesture Touch Overlay */}
-      <div
-        className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
-        style={{ touchAction: 'none' }}
-        onPointerDown={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const startX = e.clientX - rect.left;
-          const startY = e.clientY - rect.top;
-          let moved = false;
+      {!isGameOver && !isPaused && !showTutorial && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-          const onMove = (moveEvt: PointerEvent) => {
-            const curX = moveEvt.clientX - rect.left;
-            const curY = moveEvt.clientY - rect.top;
-            const dx = curX - startX;
-            const dy = curY - startY;
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const curY = moveEvt.clientY - rect.top;
+              const dx = curX - startX;
+              const dy = curY - startY;
 
-            if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
-              moved = true;
-              gameStateRef.current.keys.w = dy < -8;
-              gameStateRef.current.keys.s = dy > 12;
-              gameStateRef.current.keys.a = dx < -10;
-              gameStateRef.current.keys.d = dx > 10;
-              if (Math.abs(dx) > 28) {
-                gameStateRef.current.keys.space = true;
-              } else {
-                gameStateRef.current.keys.space = false;
+              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+                moved = true;
+                gameStateRef.current.keys.w = dy < -8;
+                gameStateRef.current.keys.s = dy > 12;
+                gameStateRef.current.keys.a = dx < -10;
+                gameStateRef.current.keys.d = dx > 10;
+                gameStateRef.current.keys.space = Math.abs(dx) > 25;
               }
-            }
-          };
+            };
 
-          const onUp = () => {
-            window.removeEventListener('pointermove', onMove);
-            window.removeEventListener('pointerup', onUp);
-            window.removeEventListener('pointercancel', onUp);
-            gameStateRef.current.keys.w = false;
-            gameStateRef.current.keys.s = false;
-            gameStateRef.current.keys.a = false;
-            gameStateRef.current.keys.d = false;
-            gameStateRef.current.keys.space = false;
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+              gameStateRef.current.keys.w = false;
+              gameStateRef.current.keys.s = false;
+              gameStateRef.current.keys.a = false;
+              gameStateRef.current.keys.d = false;
+              gameStateRef.current.keys.space = false;
 
-            if (!moved) {
-              // Tap: Trigger Nitro Boost
-              triggerNitro();
-            }
-          };
+              if (!moved) {
+                // Tap: Nitro Boost
+                triggerNitro();
+              }
+            };
 
-          window.addEventListener('pointermove', onMove);
-          window.addEventListener('pointerup', onUp);
-          window.addEventListener('pointercancel', onUp);
-        }}
-        onDoubleClick={() => triggerNitro()}
-      />
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+          onDoubleClick={triggerNitro}
+        />
+      )}
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/70 border border-cyan-500/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
-          {language === 'ko' ? '드래그: 주행 & 드리프트 | 탭/더블탭: 니트로 부스트 (버튼 없음)' : 'Drag: Drive & Drift | Tap/Double Tap: Nitro (No Buttons)'}
+        <div className="px-3 py-1 bg-black/75 border border-cyan-500/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
+          {isKo ? '드래그: 주행 & 드리프트 | 탭/더블탭: 니트로 부스트 (버튼 없음)' : 'Drag: Drive & Drift | Tap/Double Tap: Nitro (No Buttons)'}
         </div>
       </div>
 
-      {/* Victory / Game Over Modal */}
-      {(isVictory || isGameOver) && (
-        <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
-            <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center ${isVictory ? 'bg-amber-400/20 text-yellow-400' : 'bg-rose-500/20 text-rose-400'}`}>
-              {isVictory ? <Trophy size={36} /> : <Award size={36} />}
-            </div>
+      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {showTutorial && (
+        <SportsMissionTutorial
+          gameId="voxel_drift_master"
+          gameTitle={isKo ? '3D 복셀 드리프트 마스터: 나이트 서킷 레이서' : 'Voxel Drift Master: Night Circuit'}
+          sportType="racing"
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-            <h2 className="text-2xl font-black italic uppercase">{isVictory ? '도쿄 드리프트 마스터 VICTORY' : '레이스 종료! DEFEAT'}</h2>
-
-            <p className="text-xs text-slate-300">
-              {isVictory
-                ? '압도적인 드리프트 컨트롤과 터보 가속으로 나이트 서킷을 제패했습니다!'
-                : '레이스가 종료되었습니다.'}
-            </p>
-
-            {isVictory && (
-              <div className="bg-slate-950 border border-amber-500/30 p-3 rounded-2xl">
-                <span className="text-xs text-slate-400 block uppercase font-bold">REWARD</span>
-                <span className="text-2xl font-black text-yellow-400 flex items-center justify-center gap-1">
-                  <Sparkles size={20} /> +{rewardSns} SNS
-                </span>
-              </div>
-            )}
-
-            <button
-              onClick={onExit}
-              className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 text-slate-950 font-bold rounded-xl active:scale-95 transition-all cursor-pointer"
-            >
-              {language === 'ko' ? '확인 및 나가기' : 'Confirm & Exit'}
-            </button>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
