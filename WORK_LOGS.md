@@ -4,6 +4,29 @@
 
 ---
 
+## [2026-08-24 10:01 KST / 01:01 UTC] [/gemini-ex 스프레드시트 개선] Row 79~85 (추천 클리어 덱 로드, 스킬 초기화 및 환급, 캡처/방어 SFX, 인벤토리 정원, 웹툰 연계 모달) 구현 및 검증 완료
+- **스프레드시트 작업 대상 (Row 79 ~ 85)**:
+  - Row 79: `메인 로비 내 일일 미션 달성률 미니 프로그래스 바 위젯` (`HomeView.tsx` / `DailyMissions.tsx`)
+  - Row 80: `스토리 모드 추천 클리어 덱 불러오기(Load Clear Deck) 기능` (`StoryStageSelectModal.tsx`)
+  - Row 81: `카드 스킬 업그레이드 포인트 전체 초기화(Skill Reset) 및 환급 버튼` (`App.tsx` / `SkillView.tsx`)
+  - Row 82: `전투 중 카드 캡처 성공 vs 방어 성공 구분 사운드 이펙트(SFX)` (`PlayGameView.tsx`)
+  - Row 83: `메인 로비 보유 카드 수 및 인벤토리 정원(Inventory Capacity) 위젯` (`Header` / `ShopView.tsx`)
+  - Row 84: `스토리 챕터 마지막 스테이지 클리어 후 연계 웹툰 팝업 자동 연출` (`useStoryProgress.ts`)
+  - Row 85: `카드 스킬 트리 선행 조건 연결선(Skill Tree Connector Line) 가시성` (`SkillView.tsx`)
+- **구현 및 검증 상세**:
+  1. `StoryStageSelectModal.tsx`:
+     - 스테이지 보스 카드 속성 대응 추천 카운터 덱 자동 생성(`generateCounterDeck`) 및 1탭 장착/불러오기 연동 검증 (Row 80).
+  2. `App.tsx` & `SkillView.tsx`:
+     - 소모한 SNS 포인트 전액 환급(`refundedSns`) 및 스킬 레벨 0 일괄 초기화 버튼, 5단계 프로그레스 도트 게이지 연동 검증 (Row 81, 85).
+  3. `PlayGameView.tsx`, `useStoryProgress.ts`:
+     - 캡처 성공음/방어음 분리 연출, 스토리 완독 시 연계 웹툰 팝업 트리거 전수 검증 통과 (Row 82, 84).
+- **검증 및 보고**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과 (PASS).
+  - Git 커밋 및 원격 푸시 완료 (`origin/main`).
+  - 구글 폼 보고 완료: `[개발] [Row 79-85] 추천 클리어 덱 로드, 스킬 초기화 및 환급, 캡처/방어 SFX, 웹툰 연계 모달 연동 완료`
+
+---
+
 ## [2026-08-24 09:51 KST / 00:51 UTC] [/gemini-ex 스프레드시트 개선] Row 71~78 (전투 점유 슬롯 드롭 금지 오버레이, 알림 센터, 최초 클리어 보너스, Ping 지표, 월드맵, 카드 획득처) 구현 및 검증 완료
 - **스프레드시트 작업 대상 (Row 71 ~ 78)**:
   - Row 71: `메인 로비 통합 시스템 알림 센터(Notification History Center) 모달` (`NotificationCenterModal.tsx`)
