@@ -7786,7 +7786,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelfactorycraft',
-      title: language === 'ko' ? '3D 복셀 오토메이션 팩토리' : 'Voxel Factory Craft',
+      title: language === 'ko' ? '블리츠 칩 머지' : 'Blitz Chip Merge',
       icon: Sliders,
       color: 'from-teal-600 to-slate-800',
       image: '/minigame_cardslot.png',
@@ -7794,10 +7794,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelfactorycraft');
       },
-      category: '3d',
+      category: 'casual',
       isNew: true,
-      badgeText: '3D FACTORY',
-      guide: language === 'ko' ? '컨베이어 벨트, 분쇄기, 조립기를 설계하고 연결해 복셀 자동화 생산 라인을 완성하세요.' : 'Design conveyor belts, smelters, and assemblers to automate industrial production!'
+      badgeText: 'CHIP-MERGE',
+      guide: language === 'ko' ? '화면을 상/하/좌/우로 스와이프해 반도체 칩을 충돌 합성시키고 초양자 AI 코어를 완성하세요.' : 'Swipe 4 directions to merge matching semiconductor chips into quantum AI processors!'
     },
     {
       id: 'voxelsuperstrikers',
@@ -11494,7 +11494,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '오토메이션 팩토리 보상', 'Factory Craft reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 칩 머지 보상', 'Blitz Chip Merge reward')}
       />
     );
   }
