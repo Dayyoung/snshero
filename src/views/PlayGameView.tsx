@@ -8056,18 +8056,18 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelcoastertycoon',
-      title: language === 'ko' ? '3D 복셀 롤러코스터 타이쿤' : 'Voxel Coaster Tycoon',
+      title: language === 'ko' ? '블리츠 카페 타이쿤' : 'Blitz Cafe Tycoon',
       icon: Wind,
-      color: 'from-sky-600 to-blue-800',
+      color: 'from-amber-600 to-orange-800',
       image: '/minigame_drifting.png',
       characterId: 77,
       action: () => {
         setGameState('voxelcoastertycoon');
       },
-      category: '3d',
+      category: 'casual',
       isNew: true,
-      badgeText: '3D TYCOON',
-      guide: language === 'ko' ? '스플라인 레일 노드와 360도 루프를 건설하고 1인칭 카트로 스릴 라이딩을 즐기세요.' : 'Construct spline track loops and experience thrilling 1st-person coaster rides!'
+      badgeText: 'CAFE-SERVE',
+      guide: language === 'ko' ? '몰려오는 손님들의 주문 메뉴를 확인하고 하단 버튼을 탭해 빠르게 서빙하세요.' : 'Check customer order bubbles and tap the menu items below to serve them quickly!'
     },
     {
       id: 'voxelsniperhunter',
@@ -11728,7 +11728,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '롤러코스터 타이쿤 보상', 'Coaster Tycoon reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 카페 타이쿤 보상', 'Blitz Cafe Tycoon reward')}
       />
     );
   }
