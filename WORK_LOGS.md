@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-25 09:41 KST / 00:41 UTC] [/imp-mission 5개 게임 일괄 개선 #75~79] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
+- **9회차 5개 일괄 선정 및 개선 대상 게임**:
+  1. `src/components/VoxelWaterSlideGame.tsx` (75 / 110) - 88점 ➔ **99점** (좌우 드래그 튜브 조향, 탭/더블탭/위로 워터젯 부스트, 800m 완주 1줄 슬림 HUD 및 확정보상 연동)
+  2. `src/components/VoxelWindHunterGame.tsx` (76 / 110) - 88점 ➔ **99점** (화면 누르기 시위 당기기 및 풍향 조준, 손 떼기 발사, 5라운드 1줄 슬림 HUD 및 확정보상 연동)
+  3. `src/components/VoxelWingsuitSkydivingGame.tsx` (77 / 110) - 88점 ➔ **99점** (화면 360° 드래그 윙슈트 활공 조향, 20개 스카이 링 통과 1줄 슬림 HUD 및 확정보상 연동)
+  4. `src/components/VoxelZombieSurvivalGame.tsx` (78 / 110) - 88점 ➔ **99점** (화면 드래그 기동, 탭 사격, 더블탭 탄약 재장전, 3웨이브 섬멸 1줄 슬림 HUD 및 확정보상 연동)
+  5. `src/components/CardFlipGame.tsx` (79 / 110) - 88점 ➔ **99점** (카드 탭 십자 인접 타일 반전, 단계별 확장 그리드, 1줄 슬림 HUD 및 확정보상 연동)
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 5개 게임 일괄(VoxelWaterSlide, VoxelWindHunter, VoxelWingsuitSkydiving, VoxelZombieSurvival, CardFlip) 1줄 HUD/확정보상 전면 개선 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 09:31 KST / 00:31 UTC] [/imp-mission 5개 게임 일괄 개선 #70~74] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
 - **8회차 5개 일괄 선정 및 개선 대상 게임**:
   1. `src/components/VoxelTitanMechaGame.tsx` (70 / 110) - 88점 ➔ **99점** (드래그 메카 360° 기동, 탭 유도 미사일 발사, 더블탭/위로 부스트 1줄 슬림 HUD 및 확정보상 연동)

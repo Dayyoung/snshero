@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Skull, Shield, Crosshair, Wrench, Trophy, ArrowLeft, Zap } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelZombieSurvivalGameProps {
   deck: CardData[];
@@ -13,67 +16,106 @@ interface VoxelZombieSurvivalGameProps {
 }
 
 interface Zombie {
-  mesh: THREE.Group;
-  x: number;
-  z: number;
+  mesh: THREE.Mesh;
   hp: number;
   speed: number;
   alive: boolean;
 }
 
-interface Barricade {
-  mesh: THREE.Group;
-  planks: number;
-  x: number;
-  z: number;
-}
-
 export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = ({
-  deck,
+  deck: _deck,
   language,
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward,
+  onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
-  const [wave, setWave] = useState<number>(1);
-  const [points, setPoints] = useState<number>(500);
-  const [playerHp, setPlayerHp] = useState<number>(100);
-  const [playerMaxHp] = useState<number>(100);
-  const [ammo, setAmmo] = useState<number>(30);
-  const [weapon, setWeapon] = useState<'pistol' | 'shotgun' | 'raygun'>('pistol');
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [isVictory, setIsVictory] = useState<boolean>(false);
 
-  const playerPosRef = useRef<{ x: number; z: number }>({ x: 0, z: 0 });
-  const playerYawRef = useRef<number>(0);
-  const keysRef = useRef<{ [key: string]: boolean }>({});
-  const zombiesRef = useRef<Zombie[]>([]);
-  const barricadesRef = useRef<Barricade[]>([]);
-  const animationFrameRef = useRef<number>(0);
-  const waveRef = useRef<number>(1);
-  const pointsRef = useRef<number>(500);
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_zombie_survival') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [wave, setWave] = useState<number>(1);
+  const maxWaves = 3;
+  const [ammo, setAmmo] = useState<number>(30);
+  const [playerHp, setPlayerHp] = useState<number>(100);
+  const [score, setScore] = useState<number>(0);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
+
+  const stateRef = useRef({
+    playerX: 0,
+    playerZ: 0,
+    moveDir: new THREE.Vector2(0, 0),
+    aimAngle: 0,
+    playerHp: 100,
+    ammo: 30,
+    wave: 1,
+    score: 0,
+    isGameOver: false,
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
+    zombies: [] as Zombie[],
+    bullets: [] as { mesh: THREE.Mesh; vel: THREE.Vector3 }[],
+    playerMesh: null as THREE.Group | null,
+    scene: null as THREE.Scene | null
+  });
+
+  const fireGun = () => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isVictory || s.isPaused || !s.scene || s.ammo <= 0) return;
+
+    s.ammo -= 1;
+    setAmmo(s.ammo);
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+
+    const bMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(0.2, 8, 8),
+      new THREE.MeshStandardMaterial({ color: 0xfacc15, emissive: 0xeab308, emissiveIntensity: 0.8 })
+    );
+    bMesh.position.set(s.playerX, 1.2, s.playerZ);
+    s.scene.add(bMesh);
+
+    const fwd = new THREE.Vector3(-Math.sin(s.aimAngle), 0, -Math.cos(s.aimAngle)).normalize();
+    s.bullets.push({ mesh: bMesh, vel: fwd.multiplyScalar(40) });
+  };
+
+  const reloadAmmo = () => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isVictory || s.isPaused) return;
+    s.ammo = 30;
+    setAmmo(30);
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+  };
 
   useEffect(() => {
-    if (!mountRef.current) return;
     const container = mountRef.current;
-    const width = container.clientWidth;
-    const height = container.clientHeight;
+    if (!container) return;
+
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x05080c);
     scene.fog = new THREE.FogExp2(0x05080c, 0.04);
+    stateRef.current.scene = scene;
 
-    const camera = new THREE.PerspectiveCamera(70, width / height, 0.1, 100);
-    camera.position.set(0, 1.7, 0);
+    const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 100);
+    camera.position.set(0, 18, 14);
+    camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
     container.appendChild(renderer.domElement);
 
-    // Night Atmosphere & Moon
     const ambientLight = new THREE.AmbientLight(0x1e293b, 1.0);
     scene.add(ambientLight);
 
@@ -81,269 +123,286 @@ export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = (
     moonLight.position.set(-20, 40, -20);
     scene.add(moonLight);
 
-    // Flashlight
-    const flashlight = new THREE.SpotLight(0xfffaed, 3.5, 30, Math.PI / 6, 0.4);
-    flashlight.position.set(0, 1.7, 0);
-    scene.add(flashlight);
-    scene.add(flashlight.target);
+    // Outpost Floor
+    const floor = new THREE.Mesh(
+      new THREE.PlaneGeometry(36, 36),
+      new THREE.MeshStandardMaterial({ color: 0x1e1e24, roughness: 0.8 })
+    );
+    floor.rotation.x = -Math.PI / 2;
+    scene.add(floor);
 
-    // Outpost Room Builder
-    const roomGroup = new THREE.Group();
-    const floorGeo = new THREE.BoxGeometry(20, 0.2, 20);
-    const floorMat = new THREE.MeshLambertMaterial({ color: 0x1e1e24 });
-    const floorMesh = new THREE.Mesh(floorGeo, floorMat);
-    floorMesh.position.y = -0.1;
-    roomGroup.add(floorMesh);
+    // Player Hero
+    const pGroup = new THREE.Group();
+    const body = new THREE.Mesh(
+      new THREE.BoxGeometry(1.2, 1.8, 0.8),
+      new THREE.MeshStandardMaterial({ color: 0x10b981 })
+    );
+    body.position.y = 0.9;
+    pGroup.add(body);
+    pGroup.position.set(0, 0, 0);
+    scene.add(pGroup);
+    stateRef.current.playerMesh = pGroup;
 
-    // Walls with 4 Window Barricades
-    const wallMat = new THREE.MeshLambertMaterial({ color: 0x334155 });
-    const wallGeo = new THREE.BoxGeometry(20, 4, 1);
-
-    // North Wall with Window
-    const northWallLeft = new THREE.Mesh(new THREE.BoxGeometry(7, 4, 1), wallMat);
-    northWallLeft.position.set(-6.5, 2, -10);
-    const northWallRight = new THREE.Mesh(new THREE.BoxGeometry(7, 4, 1), wallMat);
-    northWallRight.position.set(6.5, 2, -10);
-    roomGroup.add(northWallLeft, northWallRight);
-
-    // South Wall
-    const southWall = new THREE.Mesh(wallGeo, wallMat);
-    southWall.position.set(0, 2, 10);
-    roomGroup.add(southWall);
-
-    // West & East Walls
-    const westWall = new THREE.Mesh(new THREE.BoxGeometry(1, 4, 20), wallMat);
-    westWall.position.set(-10, 2, 0);
-    const eastWall = new THREE.Mesh(new THREE.BoxGeometry(1, 4, 20), wallMat);
-    eastWall.position.set(10, 2, 0);
-    roomGroup.add(westWall, eastWall);
-
-    scene.add(roomGroup);
-
-    // Barricade Window (North)
-    const barGroup = new THREE.Group();
-    for (let p = 0; p < 5; p++) {
-      const plank = new THREE.Mesh(new THREE.BoxGeometry(5.5, 0.4, 0.2), new THREE.MeshLambertMaterial({ color: 0x78350f }));
-      plank.position.set(0, 0.8 + p * 0.6, -10);
-      barGroup.add(plank);
-    }
-    scene.add(barGroup);
-    barricadesRef.current = [{ mesh: barGroup, planks: 5, x: 0, z: -10 }];
-
-    // Spawn Zombies
-    const spawnZombiesForWave = (w: number) => {
-      zombiesRef.current.forEach(z => scene.remove(z.mesh));
-      zombiesRef.current = [];
-
-      const count = 5 + w * 3;
+    // Spawn Wave Zombies
+    const spawnWave = (w: number) => {
+      stateRef.current.zombies = [];
+      const count = 6 + w * 4;
       for (let i = 0; i < count; i++) {
-        const zGroup = new THREE.Group();
-        const zBody = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.6, 0.6), new THREE.MeshLambertMaterial({ color: 0x15803d }));
-        zBody.position.y = 0.8;
-        const zHead = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.7, 0.7), new THREE.MeshLambertMaterial({ color: 0x166534 }));
-        zHead.position.y = 1.8;
-        zGroup.add(zBody, zHead);
+        const zMesh = new THREE.Mesh(
+          new THREE.BoxGeometry(1.2, 1.8, 0.8),
+          new THREE.MeshStandardMaterial({ color: 0xdc2626 })
+        );
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 14 + Math.random() * 4;
+        const zx = Math.cos(angle) * dist;
+        const zz = Math.sin(angle) * dist;
+        zMesh.position.set(zx, 0.9, zz);
+        scene.add(zMesh);
 
-        const zx = (Math.random() - 0.5) * 16;
-        const zz = -15 - Math.random() * 25;
-        zGroup.position.set(zx, 0, zz);
-        scene.add(zGroup);
-
-        zombiesRef.current.push({
-          mesh: zGroup,
-          x: zx,
-          z: zz,
-          hp: 40 + w * 10,
-          speed: 0.035 + w * 0.005,
-          alive: true,
+        stateRef.current.zombies.push({
+          mesh: zMesh,
+          hp: 30 + w * 15,
+          speed: 3.5 + w * 0.5,
+          alive: true
         });
       }
     };
+    spawnWave(1);
 
-    spawnZombiesForWave(1);
+    let animId: number;
+    let lastTime = performance.now();
 
-    // Shoot gun
-    const shootGun = () => {
-      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-      setAmmo(a => {
-        if (a <= 1) {
-          // Reload
-          setTimeout(() => setAmmo(30), 1200);
-          return 0;
-        }
-        return a - 1;
-      });
+    const animate = (now: number) => {
+      animId = requestAnimationFrame(animate);
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
 
-      // Raycast forward from camera
-      const raycaster = new THREE.Raycaster();
-      raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-      zombiesRef.current.forEach(zombie => {
-        if (!zombie.alive) return;
-        const intersects = raycaster.intersectObjects(zombie.mesh.children);
-        if (intersects.length > 0) {
-          const isHeadshot = intersects[0].point.y > 1.4;
-          const dmg = isHeadshot ? 100 : 40;
-          zombie.hp -= dmg;
-          pointsRef.current += isHeadshot ? 100 : 50;
-          setPoints(pointsRef.current);
-          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+      // Player Movement
+      const speed = 10;
+      s.playerX += s.moveDir.x * speed * dt;
+      s.playerZ += s.moveDir.y * speed * dt;
+      s.playerX = THREE.MathUtils.clamp(s.playerX, -15, 15);
+      s.playerZ = THREE.MathUtils.clamp(s.playerZ, -15, 15);
 
-          if (zombie.hp <= 0) {
-            zombie.alive = false;
-            scene.remove(zombie.mesh);
+      if (s.moveDir.length() > 0.1) {
+        s.aimAngle = Math.atan2(-s.moveDir.x, -s.moveDir.y);
+      }
+
+      if (pGroup) {
+        pGroup.position.set(s.playerX, 0, s.playerZ);
+        pGroup.rotation.y = s.aimAngle;
+      }
+
+      // Update Bullets
+      for (let i = s.bullets.length - 1; i >= 0; i--) {
+        const b = s.bullets[i];
+        b.mesh.position.addScaledVector(b.vel, dt);
+
+        // Check Zombie Hit
+        for (const z of s.zombies) {
+          if (z.alive && b.mesh.position.distanceTo(z.mesh.position) < 1.4) {
+            z.hp -= 25;
+            s.score += 50;
+            setScore(s.score);
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+
+            if (z.hp <= 0) {
+              z.alive = false;
+              scene.remove(z.mesh);
+              s.score += 150;
+              setScore(s.score);
+            }
+            break;
           }
         }
-      });
-    };
 
-    // Repair window
-    const repairWindow = () => {
-      barricadesRef.current.forEach(bar => {
-        if (bar.planks < 5) {
-          bar.planks += 1;
-          pointsRef.current += 10;
-          setPoints(pointsRef.current);
-          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3');
+        if (b.mesh.position.length() > 30) {
+          scene.remove(b.mesh);
+          s.bullets.splice(i, 1);
         }
-      });
-    };
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      keysRef.current[e.key.toLowerCase()] = true;
-      if (e.key === ' ' || e.key === 'j') {
-        shootGun();
       }
-      if (e.key === 'f' || e.key === 'e') {
-        repairWindow();
-      }
-    };
-    const handleKeyUp = (e: KeyboardEvent) => {
-      keysRef.current[e.key.toLowerCase()] = false;
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
 
-    // Main loop
-    let lastTime = performance.now();
-    const animate = (time: number) => {
-      const delta = (time - lastTime) / 1000;
-      lastTime = time;
-
-      // Player move
-      let moveX = 0;
-      let moveZ = 0;
-      if (keysRef.current['w'] || keysRef.current['arrowup']) moveZ -= 1;
-      if (keysRef.current['s'] || keysRef.current['arrowdown']) moveZ += 1;
-      if (keysRef.current['a'] || keysRef.current['arrowleft']) playerYawRef.current += 2.0 * delta;
-      if (keysRef.current['d'] || keysRef.current['arrowright']) playerYawRef.current -= 2.0 * delta;
-
-      const speed = 5.0;
-      const sin = Math.sin(playerYawRef.current);
-      const cos = Math.cos(playerYawRef.current);
-
-      playerPosRef.current.x += (moveX * cos + moveZ * sin) * speed * delta;
-      playerPosRef.current.z += (-moveX * sin + moveZ * cos) * speed * delta;
-
-      // Keep inside room
-      playerPosRef.current.x = Math.max(-8, Math.min(8, playerPosRef.current.x));
-      playerPosRef.current.z = Math.max(-8, Math.min(8, playerPosRef.current.z));
-
-      camera.position.set(playerPosRef.current.x, 1.7, playerPosRef.current.z);
-      camera.rotation.y = playerYawRef.current;
-
-      flashlight.position.copy(camera.position);
-      flashlight.target.position.set(
-        camera.position.x - Math.sin(playerYawRef.current) * 10,
-        camera.position.y,
-        camera.position.z - Math.cos(playerYawRef.current) * 10
-      );
-
-      // Zombie AI
-      let allDead = true;
-      zombiesRef.current.forEach(z => {
+      // Update Zombies Chasing Player
+      let aliveZombies = 0;
+      s.zombies.forEach(z => {
         if (!z.alive) return;
-        allDead = false;
-        const dx = playerPosRef.current.x - z.x;
-        const dz = playerPosRef.current.z - z.z;
-        const dist = Math.sqrt(dx * dx + dz * dz);
+        aliveZombies++;
 
-        if (dist > 1.2) {
-          z.x += (dx / dist) * z.speed;
-          z.z += (dz / dist) * z.speed;
-          z.mesh.position.set(z.x, 0, z.z);
-          z.mesh.rotation.y = Math.atan2(dx, dz);
-        } else {
-          setPlayerHp(h => {
-            const next = h - 5 * delta;
-            if (next <= 0) setIsGameOver(true);
-            return Math.max(0, next);
-          });
+        const dir = new THREE.Vector3(s.playerX - z.mesh.position.x, 0, s.playerZ - z.mesh.position.z).normalize();
+        z.mesh.position.addScaledVector(dir, z.speed * dt);
+        z.mesh.rotation.y = Math.atan2(dir.x, dir.z);
+
+        // Attack Player
+        if (z.mesh.position.distanceTo(new THREE.Vector3(s.playerX, 0.9, s.playerZ)) < 1.4) {
+          s.playerHp -= 20 * dt;
+          setPlayerHp(Math.max(0, Math.round(s.playerHp)));
+
+          if (s.playerHp <= 0 && !s.isGameOver) {
+            s.isGameOver = true;
+            setIsGameOver(true);
+            const duration = (Date.now() - s.startTime) / 1000;
+            const receipt = calculateAndDepositMissionReward({
+              gameId: 'voxel_zombie_survival',
+              gameTitle: '복셀 좀비 서바이벌',
+              durationSeconds: duration,
+              score: s.score,
+              difficulty: 'NIGHTMARE',
+              isVictory: false
+            });
+            setSettlementReceipt(receipt);
+            onReward(receipt.totalSns);
+          }
         }
       });
 
       // Wave Clear Check
-      if (allDead && !isGameOver && !isVictory) {
-        if (waveRef.current >= 5) {
-          setIsVictory(true);
-          onReward(240);
+      if (aliveZombies === 0 && !s.isGameOver) {
+        if (s.wave < maxWaves) {
+          s.wave += 1;
+          setWave(s.wave);
+          spawnWave(s.wave);
         } else {
-          waveRef.current += 1;
-          setWave(waveRef.current);
-          spawnZombiesForWave(waveRef.current);
-          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2569/2569-preview.mp3');
+          s.isVictory = true;
+          s.isGameOver = true;
+          setIsGameOver(true);
+          const duration = (Date.now() - s.startTime) / 1000;
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'voxel_zombie_survival',
+            gameTitle: '복셀 좀비 서바이벌',
+            durationSeconds: duration,
+            score: s.score + 2500,
+            difficulty: 'NIGHTMARE',
+            isVictory: true
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
         }
       }
 
       renderer.render(scene, camera);
-      animationFrameRef.current = requestAnimationFrame(animate);
     };
 
-    animationFrameRef.current = requestAnimationFrame(animate);
+    animId = requestAnimationFrame(animate);
 
     return () => {
-      cancelAnimationFrame(animationFrameRef.current);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      if (mountRef.current && renderer.domElement) {
-        mountRef.current.removeChild(renderer.domElement);
-      }
+      cancelAnimationFrame(animId);
       renderer.dispose();
+      if (container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
+      }
     };
-  }, [lowSpecMode, playSfx, onReward]);
+  }, [lowSpecMode]);
+
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.playerX = 0;
+    s.playerZ = 0;
+    s.playerHp = 100;
+    s.ammo = 30;
+    s.wave = 1;
+    s.score = 0;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    s.zombies.forEach(z => s.scene?.remove(z.mesh));
+    s.zombies = [];
+    setPlayerHp(100);
+    setAmmo(30);
+    setWave(1);
+    setScore(0);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
+
+  const customTutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 좀비 호드 요새 사수' : 'STEP 1: ZOMBIE OUTPOST',
+      title: isKo ? '3개 웨이브 좀비 군단 전원 섬멸' : 'Survive 3 Zombie Waves',
+      description: isKo
+        ? '어둠 속에서 몰려오는 변이체 좀비 호드를 사격하여 전원 섬멸하고 요새를 사수하세요.'
+        : 'Eliminate all mutant zombie waves with precision rifle fire to secure the outpost.',
+      keyPoints: isKo
+        ? [
+            '3웨이브 좀비 전멸 시 완승',
+            '탄약 소진 시 더블탭 재장전',
+            '플레이어 HP 0% 도달 방어'
+          ]
+        : [
+            'Clear 3 waves to win',
+            'Double tap to reload ammo',
+            'Prevent player HP reaching 0%'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '드래그 기동 & 탭 사격' : 'Drag Maneuver & Tap Fire',
+      description: isKo
+        ? '가상 D-Pad 없이 화면 드래그로 요새를 360° 기동하고, 탭하여 정밀 사격, 더블탭으로 재장전합니다.'
+        : 'Drag anywhere to move around and tap to fire rifle shells with zero buttons.',
+      keyPoints: isKo
+        ? [
+            '👆 드래그: 360° 부드러운 전방위 기동',
+            '💥 탭: 전방 정밀 라이플 사격',
+            '⚡ 더블탭: 탄약 30발 즉시 재장전'
+          ]
+        : [
+            '👆 Drag: Smooth 360° movement',
+            '💥 Tap: Precision rifle fire',
+            '⚡ Double Tap: Fast ammo reload'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '요새 사수 승리 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare multiplier payout calculated and deposited atomically to your wallet.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '잔여 체력 및 좀비 처치 콤보 보너스',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Remaining HP and kill bonuses',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
+    }
+  ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-[#05080c] text-white font-mono select-none overflow-hidden flex flex-col">
-      {/* Top HUD */}
-      <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between p-3 bg-black/60 backdrop-blur-sm border-b border-white/10">
-        <button
-          onClick={onExit}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-sm text-xs font-bold transition-all border border-white/15"
-        >
-          <ArrowLeft size={14} />
-          {language === 'ko' ? '로비로' : 'LOBBY'}
-        </button>
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-        <div className="flex items-center gap-4 text-xs font-bold">
-          <span className="text-red-400 bg-red-950/80 px-2 py-1 border border-red-500/40 rounded-sm">
-            WAVE {wave}/5
-          </span>
-          <span className="text-amber-300">POINTS: {points}</span>
-          <span className="text-emerald-400">AMMO: {ammo}/30</span>
-          <span className="text-rose-300">HP: {Math.round(playerHp)}</span>
-        </div>
-      </div>
-
-      {/* Crosshair */}
-      <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
-        <div className="w-4 h-4 border-2 border-emerald-400/80 rounded-full" />
-      </div>
-
-      {/* 3D Canvas */}
-      <div ref={mountRef} className="w-full flex-1 touch-none" />
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 좀비 서바이벌' : 'Voxel Zombie Survival'}
+        language={language}
+        hp={{ current: playerHp, max: 100 }}
+        telemetries={[
+          { label: isKo ? '웨이브' : 'Wave', value: `${wave}/${maxWaves}`, color: 'text-rose-400 font-bold' },
+          { label: isKo ? '탄약' : 'Ammo', value: `${ammo}/30`, color: ammo <= 5 ? 'text-rose-400 font-bold' : 'text-emerald-300' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-yellow-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
       {/* Screen Gesture Touch Overlay */}
-      {!isVictory && (
+      {!isGameOver && !isPaused && !showTutorial && (
         <div
           className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
           style={{ touchAction: 'none' }}
@@ -359,12 +418,10 @@ export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = (
               const dx = curX - startX;
               const dy = curY - startY;
 
-              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
                 moved = true;
-                keysRef.current['w'] = dy < -8;
-                keysRef.current['s'] = dy > 12;
-                keysRef.current['a'] = dx < -10;
-                keysRef.current['d'] = dx > 10;
+                stateRef.current.moveDir.x = Math.abs(dx) > 8 ? (dx > 0 ? 1 : -1) : 0;
+                stateRef.current.moveDir.y = Math.abs(dy) > 8 ? (dy > 0 ? 1 : -1) : 0;
               }
             };
 
@@ -372,14 +429,11 @@ export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = (
               window.removeEventListener('pointermove', onMove);
               window.removeEventListener('pointerup', onUp);
               window.removeEventListener('pointercancel', onUp);
-              keysRef.current['w'] = false;
-              keysRef.current['s'] = false;
-              keysRef.current['a'] = false;
-              keysRef.current['d'] = false;
+              stateRef.current.moveDir.set(0, 0);
 
               if (!moved) {
                 // Tap: Fire Gun
-                window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }));
+                fireGun();
               }
             };
 
@@ -387,42 +441,37 @@ export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = (
             window.addEventListener('pointerup', onUp);
             window.addEventListener('pointercancel', onUp);
           }}
-          onDoubleClick={() => {
-            // Double Tap: Repair Barricade
-            window.dispatchEvent(new KeyboardEvent('keydown', { key: 'f' }));
-          }}
+          onDoubleClick={reloadAmmo}
         />
       )}
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/70 border border-red-500/30 rounded-full text-[10px] text-red-300 font-mono backdrop-blur-xs">
-          {language === 'ko' ? '드래그: 조준 및 시점 회전 | 탭: 사격 | 더블탭: 바리케이드 수리 (버튼 없음)' : 'Drag: Aim | Tap: Fire | Double Tap: Repair Barricade (No Buttons)'}
+        <div className="px-3 py-1 bg-black/75 border border-rose-500/30 rounded-full text-[10px] text-rose-300 font-mono backdrop-blur-xs">
+          {isKo ? '화면 드래그: 이동 | 탭: 사격 | 더블탭: 탄약 재장전 (버튼 없음)' : 'Drag: Move | Tap: Fire Rifle | Double Tap: Reload Ammo (No Buttons)'}
         </div>
       </div>
 
-      {/* Victory */}
-      {isVictory && (
-        <div className="absolute inset-0 z-50 bg-black/85 flex flex-col items-center justify-center p-6 text-center">
-          <div className="p-6 bg-slate-900 border-2 border-emerald-500 rounded-sm max-w-sm w-full space-y-4">
-            <Trophy size={48} className="mx-auto text-emerald-400 animate-bounce" />
-            <h2 className="text-2xl font-black text-emerald-400">OUTPOST SURVIVED!</h2>
-            <p className="text-xs text-slate-300">
-              {language === 'ko'
-                ? `5개 웨이브의 모든 변이체 좀비 호드를 저지하고 요새를 사수했습니다!`
-                : `All 5 waves cleared! Fortress secured.`}
-            </p>
-            <div className="p-2 bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-sm font-bold">
-              +240 SNS POINT EARNED
-            </div>
-            <button
-              onClick={onExit}
-              className="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-sm text-sm"
-            >
-              {language === 'ko' ? '보상 수령 및 로비로' : 'CLAIM REWARD & EXIT'}
-            </button>
-          </div>
-        </div>
+      {/* Universal 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_zombie_survival"
+          gameTitle={isKo ? '3D 복셀 좀비 서바이벌: 요새 사수' : 'Voxel Zombie Survival: Outpost Defense'}
+          customSteps={customTutorialSteps}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
+
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
