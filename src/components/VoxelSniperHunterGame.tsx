@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { CardData } from '../types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
@@ -8,7 +7,7 @@ import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standard
 
 interface VoxelSniperHunterGameProps {
   deck: CardData[];
-  language: string;
+  language?: string;
   lowSpecMode?: boolean;
   playSfx?: (url: string) => void;
   onExit: () => void;
@@ -16,10 +15,17 @@ interface VoxelSniperHunterGameProps {
 }
 
 interface SniperTarget {
-  mesh: THREE.Group;
-  pos: THREE.Vector3;
-  type: 'target' | 'gas_can';
-  alive: boolean;
+  id: number;
+  x: number;
+  y: number;
+  vx: number;
+  type: 'agent' | 'vip' | 'barrel' | 'drone';
+  icon: string;
+  points: number;
+  radius: number;
+  hp: number;
+  maxHp: number;
+  isHit: boolean;
 }
 
 export const VoxelSniperHunterGame: React.FC<VoxelSniperHunterGameProps> = ({
@@ -28,414 +34,507 @@ export const VoxelSniperHunterGame: React.FC<VoxelSniperHunterGameProps> = ({
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
+  const [targetsEliminated, setTargetsEliminated] = useState<number>(0);
+  const [ammo, setAmmo] = useState<number>(10);
+  const maxAmmo = 10;
+  const [score, setScore] = useState<number>(0);
+  const [sniperCombo, setSniperCombo] = useState<number>(0);
+  const [maxCombo, setMaxCombo] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(35);
+  const [feedbackText, setFeedbackText] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_sniper_hunter') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_sniper_hunter') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [eliminatedCount, setEliminatedCount] = useState<number>(0);
-  const totalTargets = 4;
-  const [breathMeter, setBreathMeter] = useState<number>(100);
-  const [score, setScore] = useState<number>(0);
-  const [lastShotText, setLastShotText] = useState<string | null>(null);
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
-    aimX: 0,
-    aimY: 0,
-    sway: 0,
-    isHoldingBreath: false,
-    breath: 100,
+    targets: [] as SniperTarget[],
+    ammo: 10,
+    targetsEliminated: 0,
     score: 0,
-    eliminated: 0,
+    combo: 0,
+    maxCombo: 0,
+    timeLeft: 35,
     isGameOver: false,
-    isVictory: false,
     isPaused: false,
     startTime: Date.now(),
-    targets: [] as SniperTarget[],
-    scene: null as THREE.Scene | null,
-    camera: null as THREE.PerspectiveCamera | null
+    targetCounter: 1,
+    spawnTimer: 0,
+    scopeRing: { x: 180, y: 250, active: false },
+    crosshairs: [] as { x: number; y: number; life: number }[],
+    particles: [] as { x: number; y: number; vx: number; vy: number; color: string; life: number }[],
   });
 
-  const handleShoot = () => {
+  const initGame = useCallback(() => {
     const s = stateRef.current;
-    if (s.isGameOver || s.isVictory || s.isPaused || !s.camera) return;
+    s.targets = [];
+    s.ammo = 10;
+    s.targetsEliminated = 0;
+    s.score = 0;
+    s.combo = 0;
+    s.maxCombo = 0;
+    s.timeLeft = 35;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    s.targetCounter = 1;
+    s.spawnTimer = 0;
+    s.crosshairs = [];
+    s.particles = [];
 
+    // Initial Targets
+    s.targets.push(
+      { id: s.targetCounter++, x: 80, y: 140, vx: 45, type: 'agent', icon: '🦹', points: 300, radius: 24, hp: 1, maxHp: 1, isHit: false },
+      { id: s.targetCounter++, x: 260, y: 190, vx: -35, type: 'barrel', icon: '🛢️', points: 500, radius: 22, hp: 1, maxHp: 1, isHit: false }
+    );
+
+    setTargetsEliminated(0);
+    setAmmo(10);
+    setScore(0);
+    setSniperCombo(0);
+    setMaxCombo(0);
+    setTimeLeft(35);
+    setFeedbackText(null);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  }, []);
+
+  useEffect(() => {
+    initGame();
+  }, [initGame]);
+
+  // Timer loop
+  useEffect(() => {
+    if (isGameOver || isPaused) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          endGame(true);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isGameOver, isPaused]);
+
+  // Reload Ammo
+  const handleReload = () => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused || s.ammo === maxAmmo) return;
+    s.ammo = maxAmmo;
+    setAmmo(maxAmmo);
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    setFeedbackText(isKo ? '스나이퍼 탄창 장전 완료! ⚡' : 'SNIPER RELOADED! ⚡');
+    setTimeout(() => setFeedbackText(null), 300);
+  };
+
+  // Direct Tap Precision Sniper Fire (Zero Joysticks)
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    const tapX = (e.clientX - rect.left) * scaleX;
+    const tapY = (e.clientY - rect.top) * scaleY;
+
+    if (s.ammo <= 0) {
+      handleReload();
+      return;
+    }
+
+    s.ammo -= 1;
+    setAmmo(s.ammo);
+    s.crosshairs.push({ x: tapX, y: tapY, life: 0.3 });
     playSfx?.('https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3');
 
-    const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(new THREE.Vector2(0, 0), s.camera);
+    // Check Hit on Targets
+    let hitAny = false;
+    for (let i = s.targets.length - 1; i >= 0; i--) {
+      const t = s.targets[i];
+      if (Math.hypot(t.x - tapX, t.y - tapY) < t.radius + 14) {
+        hitAny = true;
+        t.hp -= 1;
 
-    let hit = false;
-    for (const t of s.targets) {
-      if (!t.alive) continue;
-      const intersects = raycaster.intersectObjects(t.mesh.children, true);
-      if (intersects.length > 0) {
-        hit = true;
-        t.alive = false;
-        t.mesh.visible = false;
+        s.combo += 1;
+        if (s.combo > s.maxCombo) s.maxCombo = s.combo;
 
-        if (t.type === 'gas_can') {
-          s.score += 80;
-          s.eliminated += 1;
-          setLastShotText(isKo ? '💥 환경 트랩 폭발 암살! (+80P)' : '💥 Trap Explosion! (+80P)');
-          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+        if (t.type === 'barrel') {
+          // Explosive Barrel Blast -> Kills all nearby targets!
+          s.targetsEliminated += 1;
+          const blastPts = 800 + s.combo * 50;
+          s.score += blastPts;
+
+          setFeedbackText(isKo ? `💥 폭발 배럴 연쇄 폭파! +${blastPts}P` : `💥 BARREL BLAST! +${blastPts}P`);
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+
+          // Blast particles
+          for (let p = 0; p < 18; p++) {
+            s.particles.push({
+              x: t.x,
+              y: t.y,
+              vx: (Math.random() - 0.5) * 280,
+              vy: (Math.random() - 0.5) * 280,
+              color: '#f97316',
+              life: 0.5,
+            });
+          }
+
+          s.targets.splice(i, 1);
         } else {
-          const isHead = intersects[0].point.y > t.pos.y + 1.1;
-          const pts = isHead ? 60 : 35;
+          const isHeadshot = Math.hypot(t.x - tapX, (t.y - t.radius * 0.4) - tapY) < 14;
+          const pts = (t.points + (isHeadshot ? 400 : 0)) + s.combo * 50;
           s.score += pts;
-          s.eliminated += 1;
-          setLastShotText(isHead ? (isKo ? '🎯 시네마틱 헤드샷! (+60P)' : '🎯 Cinematic Headshot! (+60P)') : (isKo ? '🎯 표적 저격 완료 (+35P)' : '🎯 Target Down (+35P)'));
+
+          setFeedbackText(isHeadshot ? `🎯 HEADSHOT! +${pts}P` : `SNIPED! +${pts}P 💥`);
           playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+
+          // Sniper blood / spark particles
+          for (let p = 0; p < 10; p++) {
+            s.particles.push({
+              x: tapX,
+              y: tapY,
+              vx: (Math.random() - 0.5) * 220,
+              vy: (Math.random() - 0.5) * 220,
+              color: isHeadshot ? '#fde047' : '#ef4444',
+              life: 0.4,
+            });
+          }
+
+          if (t.hp <= 0) {
+            s.targetsEliminated += 1;
+            s.targets.splice(i, 1);
+          }
         }
 
-        setEliminatedCount(s.eliminated);
+        setTargetsEliminated(s.targetsEliminated);
         setScore(s.score);
-
-        if (s.eliminated >= totalTargets && !s.isGameOver) {
-          s.isVictory = true;
-          s.isGameOver = true;
-          setIsGameOver(true);
-          const duration = (Date.now() - s.startTime) / 1000;
-          const receipt = calculateAndDepositMissionReward({
-            gameId: 'voxel_sniper_hunter',
-            gameTitle: '복셀 스나이퍼 헌터',
-            durationSeconds: duration,
-            score: s.score + 2500,
-            difficulty: 'NIGHTMARE',
-            isVictory: true
-          });
-          setSettlementReceipt(receipt);
-          onReward(receipt.totalSns);
-        }
+        setSniperCombo(s.combo);
+        setMaxCombo(s.maxCombo);
+        setTimeout(() => setFeedbackText(null), 300);
         break;
       }
     }
 
-    if (!hit) {
-      setLastShotText(isKo ? '빗나감 (Miss)' : 'Miss');
-      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    if (!hitAny) {
+      s.combo = 0;
+      setSniperCombo(0);
     }
-
-    setTimeout(() => setLastShotText(null), 1200);
   };
 
+  // Main 60FPS Sniper Loop
   useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
-
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x020617);
-    scene.fog = new THREE.Fog(0x020617, 30, 100);
-    stateRef.current.scene = scene;
-
-    const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 200);
-    camera.position.set(0, 4, 15);
-    stateRef.current.camera = camera;
-
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    container.appendChild(renderer.domElement);
-
-    const ambient = new THREE.AmbientLight(0xffffff, 0.7);
-    scene.add(ambient);
-
-    const moonLight = new THREE.DirectionalLight(0x93c5fd, 1.2);
-    moonLight.position.set(20, 30, -10);
-    scene.add(moonLight);
-
-    // Compound Ground
-    const ground = new THREE.Mesh(
-      new THREE.PlaneGeometry(80, 80),
-      new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.9 })
-    );
-    ground.rotation.x = -Math.PI / 2;
-    scene.add(ground);
-
-    // Spawn 4 Targets
-    stateRef.current.targets = [];
-    const targetConfigs = [
-      { x: -6, y: 1.0, z: -25, type: 'target' as const },
-      { x: 5, y: 1.0, z: -30, type: 'target' as const },
-      { x: -10, y: 2.2, z: -35, type: 'target' as const },
-      { x: 8, y: 0.6, z: -20, type: 'gas_can' as const }
-    ];
-
-    targetConfigs.forEach((cfg) => {
-      const group = new THREE.Group();
-      if (cfg.type === 'gas_can') {
-        const can = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.5, 0.5, 1.2, 12),
-          new THREE.MeshStandardMaterial({ color: 0xef4444 })
-        );
-        can.position.y = 0.6;
-        group.add(can);
-      } else {
-        const body = new THREE.Mesh(
-          new THREE.BoxGeometry(0.8, 1.4, 0.6),
-          new THREE.MeshStandardMaterial({ color: 0xd97706 })
-        );
-        body.position.y = 0.7;
-        group.add(body);
-
-        const head = new THREE.Mesh(
-          new THREE.BoxGeometry(0.5, 0.5, 0.5),
-          new THREE.MeshStandardMaterial({ color: 0xfef08a })
-        );
-        head.position.y = 1.6;
-        group.add(head);
-      }
-
-      group.position.set(cfg.x, cfg.y, cfg.z);
-      scene.add(group);
-
-      stateRef.current.targets.push({
-        mesh: group,
-        pos: new THREE.Vector3(cfg.x, cfg.y, cfg.z),
-        type: cfg.type,
-        alive: true
-      });
-    });
-
-    let animId: number;
     let lastTime = performance.now();
 
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const s = stateRef.current;
       if (s.isPaused || s.isGameOver) return;
 
-      // Breath Meter physics
-      if (s.isHoldingBreath) {
-        s.breath = Math.max(0, s.breath - 30 * dt);
-        s.sway = 0.05;
-      } else {
-        s.breath = Math.min(100, s.breath + 40 * dt);
-        s.sway = Math.sin(now * 0.003) * 0.2;
+      // Spawn Sniper Targets
+      s.spawnTimer += dt;
+      if (s.spawnTimer > 1.0 && s.targets.length < 5) {
+        s.spawnTimer = 0;
+        const rand = Math.random();
+        const isVip = rand < 0.18;
+        const isBarrel = rand >= 0.18 && rand < 0.45;
+        const isDrone = rand >= 0.45 && rand < 0.7;
+
+        s.targets.push({
+          id: s.targetCounter++,
+          x: Math.random() < 0.5 ? 30 : 330,
+          y: 90 + Math.random() * 210,
+          vx: (Math.random() < 0.5 ? 1 : -1) * (isVip ? 40 : (isDrone ? 80 : 50)),
+          type: isVip ? 'vip' : (isBarrel ? 'barrel' : (isDrone ? 'drone' : 'agent')),
+          icon: isVip ? '👑' : (isBarrel ? '🛢️' : (isDrone ? '🤖' : '🦹')),
+          points: isVip ? 1000 : (isBarrel ? 500 : (isDrone ? 400 : 300)),
+          radius: isVip ? 28 : (isBarrel ? 22 : 24),
+          hp: isVip ? 2 : 1,
+          maxHp: isVip ? 2 : 1,
+          isHit: false,
+        });
       }
-      setBreathMeter(Math.round(s.breath));
 
-      camera.rotation.order = 'YXZ';
-      camera.rotation.y = s.aimX;
-      camera.rotation.x = s.aimY + s.sway * 0.02;
+      // Move Targets
+      s.targets.forEach((t) => {
+        t.x += t.vx * dt;
+        if (t.x > 330) {
+          t.x = 330;
+          t.vx = -Math.abs(t.vx);
+        } else if (t.x < 30) {
+          t.x = 30;
+          t.vx = Math.abs(t.vx);
+        }
+      });
 
-      renderer.render(scene, camera);
+      // Update Crosshairs
+      for (let i = s.crosshairs.length - 1; i >= 0; i--) {
+        const c = s.crosshairs[i];
+        c.life -= dt;
+        if (c.life <= 0) s.crosshairs.splice(i, 1);
+      }
+
+      // Update Particles
+      for (let i = s.particles.length - 1; i >= 0; i--) {
+        const p = s.particles[i];
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.life -= dt;
+        if (p.life <= 0) s.particles.splice(i, 1);
+      }
+
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Night City Sniper Rooftop Background
+      const cityGrad = ctx.createLinearGradient(0, 0, 0, h);
+      cityGrad.addColorStop(0, '#020617');
+      cityGrad.addColorStop(0.5, '#0f172a');
+      cityGrad.addColorStop(1, '#1e1b4b');
+      ctx.fillStyle = cityGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Sniper Scope Vignette Overlay
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.2)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(10, 10, w - 20, h - 20);
+
+      // Render Sniper Targets
+      s.targets.forEach((t) => {
+        ctx.save();
+        ctx.translate(t.x, t.y);
+        if (t.type === 'vip') {
+          ctx.shadowColor = '#fde047';
+          ctx.shadowBlur = 20;
+        } else if (t.type === 'barrel') {
+          ctx.shadowColor = '#f97316';
+          ctx.shadowBlur = 15;
+        }
+        ctx.font = `${t.radius * 1.8}px serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(t.icon, 0, 0);
+
+        // HP Bar for VIP
+        if (t.maxHp > 1) {
+          ctx.fillStyle = '#1e293b';
+          ctx.fillRect(-14, t.radius + 2, 28, 4);
+          ctx.fillStyle = '#ef4444';
+          ctx.fillRect(-14, t.radius + 2, 28 * (t.hp / t.maxHp), 4);
+        }
+        ctx.restore();
+      });
+
+      // Render Crosshair Taps
+      s.crosshairs.forEach((c) => {
+        ctx.save();
+        ctx.translate(c.x, c.y);
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(0, 0, 18, 0, Math.PI * 2);
+        ctx.moveTo(-24, 0);
+        ctx.lineTo(24, 0);
+        ctx.moveTo(0, -24);
+        ctx.lineTo(0, 24);
+        ctx.stroke();
+        ctx.restore();
+      });
+
+      // Render Particles
+      s.particles.forEach((p) => {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 4, 4);
+      });
     };
 
-    animId = requestAnimationFrame(animate);
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, []);
 
-    return () => {
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-    };
-  }, [lowSpecMode]);
-
-  const handleRestart = () => {
+  const endGame = (isWin: boolean) => {
     const s = stateRef.current;
-    s.aimX = 0;
-    s.aimY = 0;
-    s.score = 0;
-    s.eliminated = 0;
-    s.breath = 100;
-    s.isGameOver = false;
-    s.isVictory = false;
-    s.startTime = Date.now();
-    s.targets.forEach(t => {
-      t.alive = true;
-      t.mesh.visible = true;
+    if (s.isGameOver) return;
+    s.isGameOver = true;
+    setIsGameOver(true);
+
+    if (isWin) {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    } else {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+
+    const duration = (Date.now() - s.startTime) / 1000;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'arcade_sniper_hunter',
+      gameTitle: '블리츠 스나이퍼 헌터',
+      durationSeconds: duration,
+      score: s.score + (isWin ? 3500 : s.targetsEliminated * 350) + s.maxCombo * 50,
+      difficulty: 'NIGHTMARE',
+      isVictory: isWin || s.targetsEliminated >= 8,
     });
-    setEliminatedCount(0);
-    setScore(0);
-    setBreathMeter(100);
-    setIsGameOver(false);
-    setSettlementReceipt(null);
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
   };
 
-  const customTutorialSteps: TutorialStep[] = [
+  const tutorialSteps: TutorialStep[] = [
     {
-      badge: isKo ? 'STEP 1: 원거리 암살 작전' : 'STEP 1: SNIPER MISSION',
-      title: isKo ? '표적 4개 전원 저격 완승' : 'Eliminate 4 Targets',
+      badge: isKo ? 'STEP 1: 화면 탭 정밀 저격 암살' : 'STEP 1: TAP PRECISION SNIPING',
+      title: isKo ? '화면의 적 요원과 폭발 배럴을 직접 탭해 저격하세요' : 'Tap Enemy Agents and Explosive Barrels to Snipe',
       description: isKo
-        ? '8배율 고배율 스코프로 전방 표적과 환경 폭발 트랩을 저격하여 4개를 무력화하세요.'
-        : 'Use 8x sniper scope to eliminate 4 targets including explosive gas cans.',
+        ? '가상 조이스틱 없이 건물 옥상과 도로를 이동하는 적 요원(🦹), VIP 타깃(👑), 폭발 배럴(🛢️)을 손가락으로 직접 탭하여 초정밀 헤드샷 암살을 성공시키세요.'
+        : 'Tap roaming agents and explosive red barrels directly on your screen to eliminate targets with precision headshots.',
       keyPoints: isKo
         ? [
-            '표적 4개 제거 시 즉시 완승',
-            '헤드샷 직격 시 +60P 가산점',
-            '가스통 저격 시 광역 폭발 +80P'
+            '가상 조이스틱 0개 (100% 손가락 직접 타깃 탭 저격)',
+            'VIP 타깃(👑) 암살 시 1,000P 잭팟 대박 보너스',
+            '폭발 배럴(🛢️) 저격 시 주변 연쇄 폭파 암살'
           ]
         : [
-            'Eliminate 4 targets to win',
-            '+60P for precision headshots',
-            '+80P for environmental gas explosions'
+            'Zero Virtual Joysticks: 100% Direct Tap Sniper Fire',
+            'VIP Targets (👑) award 1,000P massive bounty jackpot',
+            'Shoot red barrels (🛢️) to trigger explosive chain kills'
           ],
-      iconType: 'GOAL'
+      iconType: 'GOAL',
     },
     {
-      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
-      title: isKo ? '드래그 조준 & 화면 홀드 숨참기' : 'Drag Aim & Hold Breath',
+      badge: isKo ? 'STEP 2: 모바일 퓨어 제스처' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '화면 직접 탭 & 재장전 (Direct Tap & Reload)' : 'Direct Tap & Reload',
       description: isKo
-        ? '가상 버튼 없이 화면 드래그로 조준, 화면을 길게 눌러 숨참기 흔들림 제어, 탭으로 격발합니다.'
-        : 'Drag to aim, hold screen to hold breath for zero sway, and tap to fire with zero buttons.',
+        ? '표적을 탭하여 저격하고, 탄창 소진 시 재장전 버튼을 누릅니다.'
+        : 'Tap targets to snipe, tap reload when empty.',
       keyPoints: isKo
         ? [
-            '👆 드래그: 스코프 정밀 조준',
-            '🫁 화면 홀드: 숨참기 (조준 흔들림 0% 고정)',
-            '💥 탭: 시네마틱 저격 격발'
+            '👆 타깃 직접 탭: 60FPS 즉각 반응 초정밀 탄도 사격',
+            '🎯 연속 헤드샷 시 스나이퍼 콤보 배수 보너스',
+            '⏱️ 35초 타임어택 고득점 챌린지'
           ]
         : [
-            '👆 Drag: Fine scope aiming',
-            '🫁 Hold: Hold breath (Zero sway)',
-            '💥 Tap: Fire sniper bullet'
+            '👆 Direct Tap: Instant precision ballistics strike',
+            '🎯 Consecutive headshots grant combo multipliers',
+            '⏱️ 35s time attack sniper hunter sprint'
           ],
-      iconType: 'GESTURES'
+      iconType: 'GESTURES',
     },
     {
       badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
       title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
       description: isKo
-        ? '저격 완수 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
-        : 'Nightmare multiplier payout calculated and deposited atomically to your wallet.',
+        ? '암살 작전 완료 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon match finish.',
       keyPoints: isKo
         ? [
-            '승리 즉시 LocalStorage 영구 지갑 입금',
-            '헤드샷 명중률 및 암살 보너스',
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '암살한 타깃 수 및 최대 콤보 비례 대량 잭팟',
             'VictoryRewardModal 2초 황금 코인 팡파레'
           ]
         : [
             'Instant atomic deposit to LocalStorage wallet',
-            'Headshot and trap bonuses',
+            'Eliminated targets count and combo multipliers',
             'VictoryRewardModal golden coin fanfare'
           ],
-      iconType: 'REWARDS'
-    }
+      iconType: 'REWARDS',
+    },
   ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
-
+    <div className="relative w-full h-[100dvh] bg-[#020617] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none">
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
       <MinimalistMissionHUD
-        title={isKo ? '복셀 스나이퍼 헌터' : 'Voxel Sniper Hunter'}
-        language={language}
+        title={isKo ? '블리츠 스나이퍼 헌터' : 'Blitz Sniper Hunter'}
+        language={(language as Language) || 'ko'}
         telemetries={[
-          { label: isKo ? '제거' : 'Targets', value: `${eliminatedCount}/${totalTargets}`, color: 'text-rose-400 font-bold' },
-          { label: isKo ? '호흡' : 'Breath', value: `${breathMeter}%`, color: breathMeter <= 20 ? 'text-rose-400 font-bold' : 'text-cyan-300' },
-          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-yellow-300' }
+          { label: isKo ? '암살' : 'Kills', value: `${targetsEliminated}명`, color: 'text-amber-400 font-bold' },
+          { label: isKo ? '탄창' : 'Ammo', value: `${ammo}/${maxAmmo}`, color: ammo <= 2 ? 'text-rose-500 font-bold animate-pulse' : 'text-cyan-300 font-bold' },
+          { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 10 ? 'text-rose-500 font-bold animate-pulse' : 'text-cyan-400 font-bold' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          stateRef.current.isPaused = !isPaused;
-        }}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
         isPaused={isPaused}
       />
 
-      {/* Sniper Scope Vignette & Reticle */}
-      <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-        <div className="relative w-72 h-72 rounded-full border-2 border-red-500/80 shadow-[0_0_0_9999px_rgba(0,0,0,0.85)] flex items-center justify-center">
-          <div className="w-2 h-2 bg-red-500 rounded-full animate-ping" />
-          <div className="absolute w-full h-[1px] bg-red-500/60" />
-          <div className="absolute h-full w-[1px] bg-red-500/60" />
-          <div className="absolute top-4 text-[10px] text-red-400 font-bold">8X SCOPE ZOOM</div>
-        </div>
+      {/* Pure Touch Sniper Canvas Viewport */}
+      <div className="flex-1 w-full max-w-md relative overflow-hidden flex items-center justify-center select-none touch-none p-2">
+        <canvas
+          ref={canvasRef}
+          width={360}
+          height={500}
+          onPointerDown={handlePointerDown}
+          className="w-full h-full object-contain touch-none cursor-crosshair shadow-2xl"
+        />
+
+        {/* Floating Feedback Text */}
+        {feedbackText && (
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 pointer-events-none text-base font-bold text-amber-300 drop-shadow-lg animate-bounce whitespace-nowrap bg-black/60 px-4 py-1 rounded-full border border-amber-400/30">
+            {feedbackText}
+          </div>
+        )}
+
+        {/* Quick Reload Overlay Button (Bottom Right) */}
+        <button
+          onClick={handleReload}
+          className="absolute bottom-4 right-4 z-10 px-4 py-2 bg-rose-600/90 hover:bg-rose-500 active:scale-95 text-white font-bold text-xs rounded-xl shadow-lg border border-white/20 transition-transform"
+        >
+          {isKo ? '장전 🔄' : 'RELOAD 🔄'}
+        </button>
       </div>
 
-      {/* Shot Result Banner */}
-      {lastShotText && (
-        <div className="absolute top-16 left-1/2 -translate-x-1/2 bg-black/90 px-4 py-1.5 rounded-sm border border-red-500 text-red-400 font-bold text-xs z-30 animate-bounce">
-          {lastShotText}
-        </div>
-      )}
-
-      {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div
-          className="absolute inset-0 z-20 select-none touch-none cursor-crosshair"
-          style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            const startX = e.clientX;
-            const startY = e.clientY;
-            let moved = false;
-            stateRef.current.isHoldingBreath = true;
-
-            const onMove = (moveEvt: PointerEvent) => {
-              const dx = moveEvt.clientX - startX;
-              const dy = moveEvt.clientY - startY;
-
-              if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
-                moved = true;
-                stateRef.current.aimX = THREE.MathUtils.clamp(stateRef.current.aimX - dx * 0.001, -0.6, 0.6);
-                stateRef.current.aimY = THREE.MathUtils.clamp(stateRef.current.aimY - dy * 0.001, -0.3, 0.3);
-              }
-            };
-
-            const onUp = () => {
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-              window.removeEventListener('pointercancel', onUp);
-              stateRef.current.isHoldingBreath = false;
-
-              if (!moved) {
-                // Tap: Shoot
-                handleShoot();
-              }
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-          }}
-        />
-      )}
-
       {/* Minimal Bottom Guide */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/75 border border-red-500/30 rounded-full text-[10px] text-red-300 font-mono backdrop-blur-xs">
-          {isKo ? '화면 드래그: 조준 | 화면 홀드: 숨참기 (흔들림 0%) | 탭: 저격 사격 (버튼 없음)' : 'Drag: Aim | Hold: Breath Hold | Tap: Fire (No Buttons)'}
+      <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono">
+          {isKo ? '적 요원과 폭발 배럴(🛢️)을 손가락으로 직접 탭해 저격하세요' : 'Tap enemy agents and explosive barrels directly to snipe'}
         </div>
       </div>
 
       {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
         <UniversalTutorialModal
-          gameId="voxel_sniper_hunter"
-          gameTitle={isKo ? '3D 복셀 스나이퍼 헌터: 원거리 암살' : 'Voxel Sniper Hunter: Covert Ops'}
-          customSteps={customTutorialSteps}
-          language={language}
+          gameId="arcade_sniper_hunter"
+          gameTitle={isKo ? '블리츠 스나이퍼: 정밀 저격' : 'Blitz Sniper: Precision Hunter'}
+          customSteps={tutorialSteps}
+          language={(language as Language) || 'ko'}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}
         />
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
         <VictoryRewardModal
           receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
+          language={(language as Language) || 'ko'}
+          onPlayAgain={initGame}
           onExit={onExit}
         />
       )}

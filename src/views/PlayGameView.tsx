@@ -8071,7 +8071,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelsniperhunter',
-      title: language === 'ko' ? '3D 복셀 스나이퍼 헌터' : 'Voxel Sniper Hunter',
+      title: language === 'ko' ? '블리츠 스나이퍼 헌터' : 'Blitz Sniper Hunter',
       icon: Crosshair,
       color: 'from-red-600 to-slate-900',
       image: '/minigame_pixelstrike.png',
@@ -8079,10 +8079,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelsniperhunter');
       },
-      category: '3d',
+      category: 'battle',
       isNew: true,
-      badgeText: '3D SNIPER',
-      guide: language === 'ko' ? '망원 스코프 줌과 숨참기 손떨림 보정으로 표적을 시네마틱 헤드샷으로 암살하세요.' : 'Scope zoom, hold breath for 0% sway, and execute cinematic headshot assassinations!'
+      badgeText: 'SNIPER-HUNTER',
+      guide: language === 'ko' ? '적 요원과 폭발 배럴(🛢️)을 손가락으로 직접 탭해 저격하세요.' : 'Tap enemy agents and explosive barrels directly to snipe!'
     },
     {
       id: 'voxeljetskiwater',
@@ -11741,7 +11741,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '스나이퍼 헌터 보상', 'Sniper Hunter reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 스나이퍼 헌터 보상', 'Blitz Sniper Hunter reward')}
       />
     );
   }
