@@ -8401,7 +8401,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelwaterslide',
-      title: language === 'ko' ? '3D 복셀 워터 슬라이드: 아쿠아 스플래시' : 'Voxel Water Slide: Aqua Splash',
+      title: language === 'ko' ? '블리츠 워터 슬라이드' : 'Blitz Water Slide',
       icon: Trophy,
       color: 'from-cyan-400 to-blue-600',
       image: '/minigame_boss.png',
@@ -8409,10 +8409,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelwaterslide');
       },
-      category: '3d',
+      category: 'casual',
       isNew: true,
-      badgeText: '3D SLIDE',
-      guide: language === 'ko' ? '워터파크 튜브를 타고 거대한 곡선 슬라이드 플룸을 초고속 카빙하며 황금 진주를 수집하고 스플래시 풀로 골인하세요.' : 'Ride inflatable tubes carving down giant water flumes at high speed into the splash pool!'
+      badgeText: 'WATER-SLIDE',
+      guide: language === 'ko' ? '손가락으로 튜브를 좌우 드래그해 부스터를 타고 아이템을 수집하세요.' : 'Drag tube left & right to catch boosters and items!'
     },
     {
       id: 'voxelkrakenhunter',
@@ -12027,7 +12027,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '워터 슬라이드 보상', 'Water Slide reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 워터 슬라이드 보상', 'Blitz Water Slide reward')}
       />
     );
   }
