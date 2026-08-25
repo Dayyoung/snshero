@@ -7936,7 +7936,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelfishingmaster',
-      title: language === 'ko' ? '3D 복셀 낚시 타이쿤' : 'Voxel Fishing Master',
+      title: language === 'ko' ? '블리츠 피싱 슬링' : 'Blitz Fishing Sling',
       icon: Fish,
       color: 'from-cyan-600 to-blue-900',
       image: '/minigame_cardflip.png',
@@ -7944,10 +7944,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelfishingmaster');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D FISHING',
-      guide: language === 'ko' ? '입질 순간 즉각 챔질 후 장력 텐션을 세밀하게 컨트롤하며 심해 거대어를 낚아 올리세요.' : 'Hook upon bite and master reel tension to catch legendary sea monsters!'
+      badgeText: 'FISHING-SLING',
+      guide: language === 'ko' ? '물고기를 향해 탭하여 바늘을 던지고, 걸리면 위로 스와이프 챔질하여 낚아 올리세요.' : 'Tap to cast hook at fishes, swipe up upon bite to catch!'
     },
     {
       id: 'voxelfirerescue',
@@ -11624,7 +11624,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '낚시 타이쿤 보상', 'Fishing Master reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 피싱 슬링 보상', 'Blitz Fishing Sling reward')}
       />
     );
   }
