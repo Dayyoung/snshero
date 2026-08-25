@@ -7996,7 +7996,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelcranemaster',
-      title: language === 'ko' ? '3D 복셀 크레인 마스터' : 'Voxel Crane Master',
+      title: language === 'ko' ? '블리츠 택배 분류' : 'Blitz Express Sort',
       icon: Hammer,
       color: 'from-amber-500 to-yellow-800',
       image: '/minigame_factorycraft.png',
@@ -8004,10 +8004,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelcranemaster');
       },
-      category: '3d',
+      category: 'casual',
       isNew: true,
-      badgeText: '3D CRANE',
-      guide: language === 'ko' ? 'XYZ 크레인 트롤리와 전자석 마그넷을 조종해 컨테이너를 완벽히 적재하세요.' : 'Control 3-axis crane trolley and magnetic hoist to stack port cargo containers!'
+      badgeText: 'EXPRESS-SORT',
+      guide: language === 'ko' ? '중앙 택배 상자의 색상을 확인하고 해당 목적지 방향(상/하/좌/우)으로 빠르게 스와이프하세요.' : 'Check parcel colors and swipe quickly toward the matching depot direction (Up/Down/Left/Right)!'
     },
     {
       id: 'voxelmonstertruck',
@@ -11676,7 +11676,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '크레인 마스터 보상', 'Crane Master reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 택배 분류 보상', 'Blitz Express Sort reward')}
       />
     );
   }

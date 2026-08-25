@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-08-25 12:51 KST / 03:51 UTC] [/imp-mission 제12회차 3D 복셀 폐기 및 신규 스피드 정렬 게임 개발 완료]
+- **심사 대상 게임**: `src/components/VoxelCraneMasterGame.tsx` (12 / 78)
+  - **심사 결과**: **폐기 (DECOMMISSION)** (3D 항만 크레인의 다축 조작 피로도 및 느린 템포)
+  - **신규 대체 개발**: **블리츠 택배 분류 (`BlitzExpressSort` - 캐주얼/스피드 정렬)**
+  - **신규 게임 특징**: 가상 조이스틱 0개 (100% 모바일 퓨어 터치), 중앙 컨베이어로 떨어지는 택배 상자의 색상/라벨(🔴서부, 🔵동부, 🟢북부, 🟡남부)을 확인하고 손가락으로 4방향 직접 스와이프(Direct Screen Swipe)하여 신속하게 분류하는 초스피드 물류 타이쿤, 연속 정렬 콤보 배수, 35초 타임어택 고득점 챌린지, 1줄 슬림 HUD, 3단계 온보딩, VictoryRewardModal 확정 보상 정산 완벽 내장
+  - **메뉴 및 검색 연동**: `PlayGameView.tsx` 메뉴 메타데이터(타이틀: '블리츠 택배 분류', 카테고리: 'casual', 배지: 'EXPRESS-SORT', 가이드, 보상 알림, 검색 키워드) 100% 동기화 등록 완료
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 3D 복셀(VoxelCraneMaster) 폐기 및 신규 스피드 정렬 게임(블리츠 택배 분류) 개발 대체 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 12:41 KST / 03:41 UTC] [/imp-mission 제11회차 3D 복셀 폐기 및 신규 카페 타이쿤 게임 개발 완료]
 - **심사 대상 게임**: `src/components/VoxelCoasterTycoonGame.tsx` (11 / 78)
   - **심사 결과**: **폐기 (DECOMMISSION)** (3D 롤러코스터의 극심한 카메라 흔들림/멀미 및 수동적 관람에 그치는 얕은 게임성)
