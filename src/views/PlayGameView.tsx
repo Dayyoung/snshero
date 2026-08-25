@@ -8221,7 +8221,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelwingsuitskydiving',
-      title: language === 'ko' ? '3D 복셀 윙슈트 스카이다이빙' : 'Voxel Wingsuit Skydiving Canyon',
+      title: language === 'ko' ? '블리츠 윙슈트' : 'Blitz Wingsuit',
       icon: Wind,
       color: 'from-sky-500 to-indigo-700',
       image: '/minigame_subway.png',
@@ -8229,10 +8229,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelwingsuitskydiving');
       },
-      category: '3d',
+      category: 'sports',
       isNew: true,
-      badgeText: '3D WINGSUIT',
-      guide: language === 'ko' ? '협곡을 따라 하강하며 링을 통과하고 에어로다이내믹 다이브 글라이딩으로 2000m 완벽 착륙을 달성하세요.' : 'Glide through canyon airspace, collect rings, and flare parachute for a perfect touchdown!'
+      badgeText: 'WINGSUIT',
+      guide: language === 'ko' ? '손가락으로 다이버를 드래그해 링을 통과하고 아이템을 수집하세요.' : 'Drag wingsuit diver to pass rings and collect items!'
     },
     {
       id: 'voxelbadmintonblitz',
@@ -11871,7 +11871,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '윙슈트 스카이다이빙 보상', 'Wingsuit Skydiving reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 윙슈트 보상', 'Blitz Wingsuit reward')}
       />
     );
   }
