@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { CardData } from '../types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
@@ -15,24 +14,76 @@ interface VoxelLaserStealthGameProps {
   onReward: (amount: number) => void;
 }
 
-interface LaserGrid {
-  mesh: THREE.Mesh;
-  yMin: number;
-  yMax: number;
+interface LaserBeam {
+  id: number;
+  y: number;
   speed: number;
   dir: number;
-  axis: 'x' | 'z';
-  pos: number;
-  isStunned: boolean;
+  minY: number;
+  maxY: number;
 }
 
 interface Jewel {
-  mesh: THREE.Mesh;
+  id: number;
   x: number;
-  z: number;
-  collected: boolean;
-  value: number;
+  y: number;
+  isCollected: boolean;
+  points: number;
 }
+
+const VAULT_LEVELS = [
+  {
+    level: 1,
+    name: '보안 1구역: 레이저 복도',
+    enName: 'Sector 1: Laser Hallway',
+    laserSpeed: 110,
+    lasers: [
+      { id: 1, y: 150, speed: 90, dir: 1, minY: 120, maxY: 200 },
+      { id: 2, y: 300, speed: 110, dir: -1, minY: 250, maxY: 350 },
+    ],
+    jewels: [
+      { id: 1, x: 90, y: 220, isCollected: false, points: 300 },
+      { id: 2, x: 270, y: 220, isCollected: false, points: 300 },
+    ],
+    exit: { x: 180, y: 70, radius: 24 },
+  },
+  {
+    level: 2,
+    name: '보안 2구역: 펄스 그리드',
+    enName: 'Sector 2: Pulse Grid',
+    laserSpeed: 140,
+    lasers: [
+      { id: 1, y: 130, speed: 120, dir: 1, minY: 100, maxY: 180 },
+      { id: 2, y: 230, speed: 140, dir: -1, minY: 190, maxY: 280 },
+      { id: 3, y: 340, speed: 130, dir: 1, minY: 290, maxY: 380 },
+    ],
+    jewels: [
+      { id: 1, x: 80, y: 180, isCollected: false, points: 400 },
+      { id: 2, x: 280, y: 180, isCollected: false, points: 400 },
+      { id: 3, x: 180, y: 290, isCollected: false, points: 400 },
+    ],
+    exit: { x: 180, y: 60, radius: 24 },
+  },
+  {
+    level: 3,
+    name: '보안 3구역: 마스터 볼트',
+    enName: 'Sector 3: Master Vault',
+    laserSpeed: 170,
+    lasers: [
+      { id: 1, y: 120, speed: 150, dir: 1, minY: 90, maxY: 170 },
+      { id: 2, y: 200, speed: 170, dir: -1, minY: 160, maxY: 250 },
+      { id: 3, y: 290, speed: 160, dir: 1, minY: 250, maxY: 340 },
+      { id: 4, y: 370, speed: 180, dir: -1, minY: 330, maxY: 420 },
+    ],
+    jewels: [
+      { id: 1, x: 70, y: 150, isCollected: false, points: 500 },
+      { id: 2, x: 290, y: 150, isCollected: false, points: 500 },
+      { id: 3, x: 70, y: 330, isCollected: false, points: 500 },
+      { id: 4, x: 290, y: 330, isCollected: false, points: 500 },
+    ],
+    exit: { x: 180, y: 50, radius: 24 },
+  },
+];
 
 export const VoxelLaserStealthGame: React.FC<VoxelLaserStealthGameProps> = ({
   deck: _deck,
@@ -40,477 +91,473 @@ export const VoxelLaserStealthGame: React.FC<VoxelLaserStealthGameProps> = ({
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
+  const [currentLevelIdx, setCurrentLevelIdx] = useState<number>(0);
+  const [jewelsCount, setJewelsCount] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
+  const [stealthCombo, setStealthCombo] = useState<number>(0);
+  const [maxCombo, setMaxCombo] = useState<number>(0);
+  const [alarmAlert, setAlarmAlert] = useState<boolean>(false);
+  const [timeLeft, setTimeLeft] = useState<number>(35);
+  const [feedbackText, setFeedbackText] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_laser_stealth') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_laser_infil') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [score, setScore] = useState<number>(0);
-  const [alarmLevel, setAlarmLevel] = useState<number>(0);
-  const [empCharges, setEmpCharges] = useState<number>(3);
-  const [currentLevel, setCurrentLevel] = useState<number>(1);
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
-    thiefPos: new THREE.Vector3(0, 0.4, -18),
-    thiefVel: new THREE.Vector3(0, 0, 0),
-    moveDir: new THREE.Vector2(0, 0),
-    isSliding: false,
-    slideTimer: 0,
-    empCharges: 3,
-    alarmLevel: 0,
+    levelIdx: 0,
+    agentX: 180,
+    agentY: 440,
+    targetX: 180,
+    targetY: 440,
+    lasers: [] as LaserBeam[],
+    jewels: [] as Jewel[],
+    collectedCount: 0,
     score: 0,
-    currentLevel: 1,
+    combo: 0,
+    maxCombo: 0,
+    timeLeft: 35,
     isGameOver: false,
-    isVictory: false,
     isPaused: false,
     startTime: Date.now(),
-    thiefMesh: null as THREE.Group | null,
-    lasers: [] as LaserGrid[],
-    jewels: [] as Jewel[],
-    exitDoorMesh: null as THREE.Mesh | null
+    alarmCooldown: 0,
   });
 
-  const triggerSlide = () => {
+  const setupLevel = useCallback((idx: number) => {
     const s = stateRef.current;
-    if (s.isGameOver || s.isVictory || s.isPaused || s.isSliding) return;
-    s.isSliding = true;
-    s.slideTimer = 0.8;
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-  };
+    const lvl = VAULT_LEVELS[idx] || VAULT_LEVELS[0];
+    s.levelIdx = idx;
+    s.agentX = 180;
+    s.agentY = 440;
+    s.targetX = 180;
+    s.targetY = 440;
+    s.lasers = lvl.lasers.map((l) => ({ ...l }));
+    s.jewels = lvl.jewels.map((j) => ({ ...j }));
 
-  const triggerEmp = () => {
+    setCurrentLevelIdx(idx);
+    setAlarmAlert(false);
+  }, []);
+
+  const initGame = useCallback(() => {
     const s = stateRef.current;
-    if (s.isGameOver || s.isVictory || s.isPaused || s.empCharges <= 0) return;
-    s.empCharges -= 1;
-    setEmpCharges(s.empCharges);
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    s.score = 0;
+    s.combo = 0;
+    s.maxCombo = 0;
+    s.collectedCount = 0;
+    s.timeLeft = 35;
+    s.isGameOver = false;
+    s.startTime = Date.now();
 
-    s.lasers.forEach(l => {
-      l.isStunned = true;
-      l.mesh.visible = false;
-      setTimeout(() => {
-        l.isStunned = false;
-        l.mesh.visible = true;
-      }, 3500);
-    });
-  };
+    setScore(0);
+    setJewelsCount(0);
+    setStealthCombo(0);
+    setMaxCombo(0);
+    setTimeLeft(35);
+    setFeedbackText(null);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+
+    setupLevel(0);
+  }, [setupLevel]);
 
   useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+    initGame();
+  }, [initGame]);
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+  // Timer loop
+  useEffect(() => {
+    if (isGameOver || isPaused) return;
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x020617);
-
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
-    camera.position.set(0, 18, -12);
-    camera.lookAt(0, 0, 0);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    renderer.shadowMap.enabled = !lowSpecMode;
-    container.appendChild(renderer.domElement);
-
-    const ambientLight = new THREE.AmbientLight(0x1e293b, 0.8);
-    scene.add(ambientLight);
-
-    const blueSpot = new THREE.SpotLight(0x38bdf8, 2.5);
-    blueSpot.position.set(0, 20, 0);
-    scene.add(blueSpot);
-
-    // Floor
-    const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(24, 44),
-      new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.2 })
-    );
-    floor.rotation.x = -Math.PI / 2;
-    scene.add(floor);
-
-    // Exit Vault Gate
-    const exitDoor = new THREE.Mesh(
-      new THREE.BoxGeometry(6, 4, 1),
-      new THREE.MeshStandardMaterial({ color: 0x10b981, emissive: 0x047857 })
-    );
-    exitDoor.position.set(0, 2, 20);
-    scene.add(exitDoor);
-    stateRef.current.exitDoorMesh = exitDoor;
-
-    // Player Thief
-    const thiefGroup = new THREE.Group();
-    const body = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.4, 0.8), new THREE.MeshStandardMaterial({ color: 0x1e1b4b }));
-    body.position.y = 0.7;
-    thiefGroup.add(body);
-
-    const goggles = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.2, 0.3), new THREE.MeshStandardMaterial({ color: 0x10b981, emissive: 0x10b981 }));
-    goggles.position.set(0, 1.1, 0.4);
-    thiefGroup.add(goggles);
-
-    thiefGroup.position.set(0, 0.4, -18);
-    scene.add(thiefGroup);
-    stateRef.current.thiefMesh = thiefGroup;
-
-    // Laser Grids (6 moving beams)
-    stateRef.current.lasers = [];
-    for (let i = 0; i < 6; i++) {
-      const isX = i % 2 === 0;
-      const lGeo = isX ? new THREE.CylinderGeometry(0.08, 0.08, 24, 8) : new THREE.CylinderGeometry(0.08, 0.08, 44, 8);
-      const lMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
-      const lMesh = new THREE.Mesh(lGeo, lMat);
-      if (isX) {
-        lMesh.rotation.z = Math.PI / 2;
-        lMesh.position.set(0, 1.2, -12 + i * 5);
-      } else {
-        lMesh.rotation.x = Math.PI / 2;
-        lMesh.position.set(-8 + i * 3, 1.2, 0);
-      }
-      scene.add(lMesh);
-
-      stateRef.current.lasers.push({
-        mesh: lMesh,
-        yMin: 0.4,
-        yMax: 2.2,
-        speed: 1.5 + i * 0.4,
-        dir: 1,
-        axis: isX ? 'x' : 'z',
-        pos: isX ? -12 + i * 5 : -8 + i * 3,
-        isStunned: false
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          endGame(false);
+          return 0;
+        }
+        return t - 1;
       });
-    }
+    }, 1000);
 
-    // Jewels
-    stateRef.current.jewels = [];
-    for (let j = 0; j < 5; j++) {
-      const jMesh = new THREE.Mesh(
-        new THREE.OctahedronGeometry(0.4),
-        new THREE.MeshStandardMaterial({ color: 0x06b6d4, emissive: 0x0891b2 })
-      );
-      const jx = (j % 2 === 0 ? 1 : -1) * (3 + j * 1.5);
-      const jz = -10 + j * 6;
-      jMesh.position.set(jx, 0.6, jz);
-      scene.add(jMesh);
+    return () => clearInterval(timer);
+  }, [isGameOver, isPaused]);
 
-      stateRef.current.jewels.push({
-        mesh: jMesh,
-        x: jx,
-        z: jz,
-        collected: false,
-        value: 300
-      });
-    }
+  // Touch Handlers: Direct Finger Drag Movement (Zero Joysticks)
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
 
-    let animId: number;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    s.targetX = Math.max(30, Math.min(330, (e.clientX - rect.left) * scaleX));
+    s.targetY = Math.max(40, Math.min(460, (e.clientY - rect.top) * scaleY));
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    s.targetX = Math.max(30, Math.min(330, (e.clientX - rect.left) * scaleX));
+    s.targetY = Math.max(40, Math.min(460, (e.clientY - rect.top) * scaleY));
+  };
+
+  // Main 60FPS Laser Security Engine Loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     let lastTime = performance.now();
 
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const s = stateRef.current;
       if (s.isPaused || s.isGameOver) return;
 
-      // Sliding timer
-      if (s.isSliding) {
-        s.slideTimer -= dt;
-        if (s.slideTimer <= 0) s.isSliding = false;
-      }
+      const lvl = VAULT_LEVELS[s.levelIdx] || VAULT_LEVELS[0];
 
-      // Movement
-      const moveSpeed = s.isSliding ? 14 : 9;
-      s.thiefPos.x += s.moveDir.x * moveSpeed * dt;
-      s.thiefPos.z += s.moveDir.y * moveSpeed * dt;
+      // Smooth Agent Motion towards Finger Target
+      s.agentX += (s.targetX - s.agentX) * Math.min(1, dt * 14);
+      s.agentY += (s.targetY - s.agentY) * Math.min(1, dt * 14);
 
-      s.thiefPos.x = THREE.MathUtils.clamp(s.thiefPos.x, -10, 10);
-      s.thiefPos.z = THREE.MathUtils.clamp(s.thiefPos.z, -19, 21);
-
-      if (thiefGroup) {
-        thiefGroup.position.copy(s.thiefPos);
-        thiefGroup.scale.y = s.isSliding ? 0.4 : 1.0;
-      }
-
-      // Move Lasers
-      s.lasers.forEach(l => {
-        if (l.isStunned) return;
-        l.mesh.position.y += l.dir * l.speed * dt;
-        if (l.mesh.position.y > l.yMax) {
-          l.mesh.position.y = l.yMax;
+      // Update Moving Lasers
+      s.lasers.forEach((l) => {
+        l.y += l.speed * l.dir * dt;
+        if (l.y > l.maxY) {
+          l.y = l.maxY;
           l.dir = -1;
-        } else if (l.mesh.position.y < l.yMin) {
-          l.mesh.position.y = l.yMin;
+        } else if (l.y < l.minY) {
+          l.y = l.minY;
           l.dir = 1;
         }
 
-        // Collision Check
-        const dist = l.axis === 'x'
-          ? Math.abs(s.thiefPos.z - l.pos)
-          : Math.abs(s.thiefPos.x - l.pos);
-
-        if (dist < 0.6) {
-          const beamY = l.mesh.position.y;
-          const playerY = s.isSliding ? 0.3 : 0.8;
-          if (Math.abs(beamY - playerY) < 0.5) {
-            // Laser Hit
-            s.alarmLevel = Math.min(100, s.alarmLevel + dt * 50);
-            setAlarmLevel(Math.round(s.alarmLevel));
-            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-
-            if (s.alarmLevel >= 100 && !s.isGameOver) {
-              s.isGameOver = true;
-              setIsGameOver(true);
-              const duration = (Date.now() - s.startTime) / 1000;
-              const receipt = calculateAndDepositMissionReward({
-                gameId: 'voxel_laser_stealth',
-                gameTitle: '복셀 레이저 스텔스',
-                durationSeconds: duration,
-                score: s.score,
-                difficulty: 'HARD',
-                isVictory: false
-              });
-              setSettlementReceipt(receipt);
-              onReward(receipt.totalSns);
-            }
-          }
-        }
-      });
-
-      // Collect Jewels
-      s.jewels.forEach(j => {
-        if (!j.collected) {
-          const dist = s.thiefPos.distanceTo(new THREE.Vector3(j.x, 0.4, j.z));
-          if (dist < 1.2) {
-            j.collected = true;
-            j.mesh.visible = false;
-            s.score += j.value;
+        // Check Collision with Agent
+        if (Math.abs(l.y - s.agentY) < 14) {
+          // Laser Tripped! Alarm Triggered!
+          if (s.alarmCooldown <= 0) {
+            s.alarmCooldown = 1.0;
+            s.score = Math.max(0, s.score - 150);
+            s.combo = 0;
             setScore(s.score);
-            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+            setStealthCombo(0);
+            setAlarmAlert(true);
+            setFeedbackText(isKo ? '경보 발령! 레이저 접촉 -150P 🚨' : 'ALARM! LASER CONTACT -150P 🚨');
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+
+            // Push agent back
+            s.agentY = Math.min(440, s.agentY + 50);
+            s.targetY = s.agentY;
+
+            setTimeout(() => {
+              setAlarmAlert(false);
+              setFeedbackText(null);
+            }, 600);
           }
         }
       });
 
-      // Exit Door Check
-      if (s.thiefPos.z >= 19 && !s.isGameOver) {
-        s.isVictory = true;
-        s.isGameOver = true;
-        setIsGameOver(true);
-        const duration = (Date.now() - s.startTime) / 1000;
-        const receipt = calculateAndDepositMissionReward({
-          gameId: 'voxel_laser_stealth',
-          gameTitle: '복셀 레이저 스텔스',
-          durationSeconds: duration,
-          score: s.score + 1500,
-          difficulty: 'HARD',
-          isVictory: true
-        });
-        setSettlementReceipt(receipt);
-        onReward(receipt.totalSns);
+      if (s.alarmCooldown > 0) s.alarmCooldown -= dt;
+
+      // Check Jewel Pickup
+      s.jewels.forEach((j) => {
+        if (!j.isCollected && Math.hypot(j.x - s.agentX, j.y - s.agentY) < 26) {
+          j.isCollected = true;
+          s.collectedCount += 1;
+          s.combo += 1;
+          if (s.combo > s.maxCombo) s.maxCombo = s.combo;
+
+          const pts = j.points + s.combo * 30;
+          s.score += pts;
+          setScore(s.score);
+          setJewelsCount(s.collectedCount);
+          setStealthCombo(s.combo);
+          setMaxCombo(s.maxCombo);
+
+          setFeedbackText(`DIAMOND HACKED! +${pts}P 💎`);
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+          setTimeout(() => setFeedbackText(null), 400);
+        }
+      });
+
+      // Check Exit Goal Passage
+      if (Math.hypot(lvl.exit.x - s.agentX, lvl.exit.y - s.agentY) < lvl.exit.radius + 15) {
+        // Vault Level Escaped!
+        if (s.levelIdx < VAULT_LEVELS.length - 1) {
+          s.score += 1000;
+          setScore(s.score);
+          setFeedbackText(`SECTOR CLEARED! +1000P 🚪`);
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+
+          setTimeout(() => {
+            setFeedbackText(null);
+            setupLevel(s.levelIdx + 1);
+          }, 700);
+        } else {
+          // Master Vault Win!
+          endGame(true);
+          return;
+        }
       }
 
-      renderer.render(scene, camera);
-    };
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
 
-    animId = requestAnimationFrame(animate);
+      // High-Security Vault Grid Background
+      ctx.fillStyle = '#090d16';
+      ctx.fillRect(0, 0, w, h);
 
-    return () => {
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
+      // Security Grid Lines
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.1)';
+      ctx.lineWidth = 1;
+      for (let x = 30; x < w; x += 30) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
       }
-    };
-  }, [lowSpecMode]);
+      for (let y = 30; y < h; y += 30) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
 
-  const handleRestart = () => {
+      // Render Exit Vault Door at Top
+      ctx.fillStyle = '#065f46';
+      ctx.beginPath();
+      ctx.arc(lvl.exit.x, lvl.exit.y, lvl.exit.radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#34d399';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      ctx.font = '20px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🚪', lvl.exit.x, lvl.exit.y);
+
+      // Render Jewels (Diamonds)
+      s.jewels.forEach((j) => {
+        if (!j.isCollected) {
+          ctx.font = '26px serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('💎', j.x, j.y);
+        }
+      });
+
+      // Render Laser Beams (Glowing Crimson Red)
+      s.lasers.forEach((l) => {
+        ctx.shadowColor = '#ef4444';
+        ctx.shadowBlur = 12;
+        ctx.strokeStyle = '#f43f5e';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(20, l.y);
+        ctx.lineTo(w - 20, l.y);
+        ctx.stroke();
+
+        // Laser Projectors on walls
+        ctx.fillStyle = '#ef4444';
+        ctx.fillRect(12, l.y - 4, 8, 8);
+        ctx.fillRect(w - 20, l.y - 4, 8, 8);
+      });
+      ctx.shadowBlur = 0;
+
+      // Render Agent (Secret Infiltrator)
+      ctx.save();
+      ctx.translate(s.agentX, s.agentY);
+      ctx.font = '32px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🕵️', 0, 0);
+      ctx.restore();
+    };
+
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, [isKo, playSfx, setupLevel]);
+
+  const endGame = (isWin: boolean) => {
     const s = stateRef.current;
-    s.thiefPos.set(0, 0.4, -18);
-    s.moveDir.set(0, 0);
-    s.isSliding = false;
-    s.empCharges = 3;
-    s.alarmLevel = 0;
-    s.score = 0;
-    s.isGameOver = false;
-    s.isVictory = false;
-    s.startTime = Date.now();
-    s.jewels.forEach(j => {
-      j.collected = false;
-      j.mesh.visible = true;
+    if (s.isGameOver) return;
+    s.isGameOver = true;
+    setIsGameOver(true);
+
+    if (isWin) {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    } else {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+
+    const duration = (Date.now() - s.startTime) / 1000;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'arcade_laser_infil',
+      gameTitle: '블리츠 레이저 인필트레이션',
+      durationSeconds: duration,
+      score: s.score + (isWin ? 3500 : (s.levelIdx + 1) * 700) + s.maxCombo * 50,
+      difficulty: 'NIGHTMARE',
+      isVictory: isWin || s.levelIdx >= 2,
     });
-    setScore(0);
-    setAlarmLevel(0);
-    setEmpCharges(3);
-    setIsGameOver(false);
-    setSettlementReceipt(null);
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
   };
 
-  const customTutorialSteps: TutorialStep[] = [
+  const tutorialSteps: TutorialStep[] = [
     {
-      badge: isKo ? 'STEP 1: 뮤지엄 볼트 탈출' : 'STEP 1: VAULT ESCAPE',
-      title: isKo ? '보석 루팅 및 비상구 도달' : 'Loot Jewels & Reach Exit',
+      badge: isKo ? 'STEP 1: 손가락 드래그 잠입 탈출' : 'STEP 1: DRAG STEALTH INFILTRATION',
+      title: isKo ? '레이저를 피해 다이아몬드를 털고 탈출하세요' : 'Dodge Lasers, Steal Diamonds and Escape',
       description: isKo
-        ? '움직이는 레이저 경보 센서를 피해 보석을 루팅하고 녹색 비상구 게이트로 탈출하세요.'
-        : 'Evade moving laser alarm beams, steal jewels, and escape through the green vault gate.',
+        ? '가상 조이스틱 없이 요원(🕵️)을 손가락으로 화면에 직접 드래그하여 움직이며, 붉은 레이저 트랩(🔴⚡)을 피해 다이아몬드(💎)를 수집하고 상단 탈출구(🚪)로 골인하세요.'
+        : 'Drag the secret agent with your finger to dodge moving lasers, collect diamonds, and reach the exit vault.',
       keyPoints: isKo
         ? [
-            '레이저 접촉 시 알람 수치 급상승',
-            '보석 루팅당 +300P 보너스',
-            '경보 100% 도달 전 안전 탈출'
+            '가상 조이스틱 0개 (100% 손가락 직접 드래그 이동)',
+            '왕복 레이저 접촉 시 경보 발령 및 뒤로 튕김(-150P)',
+            '3개 보안 구역(Sector 1~3) 완벽 잠입 올클리어'
           ]
         : [
-            'Alarm rises rapidly upon laser contact',
-            '+300P bonus per stolen jewel',
-            'Escape before alarm hits 100%'
+            'Zero Virtual Joysticks: 100% Direct Finger Drag',
+            'Laser contact triggers alarm and penalty knockback',
+            'Clear all 3 high-security sectors to claim jackpot'
           ],
-      iconType: 'GOAL'
+      iconType: 'GOAL',
     },
     {
-      badge: isKo ? 'STEP 2: 퓨어 제스처 컨트롤' : 'STEP 2: PURE GESTURES',
-      title: isKo ? '슬라이딩 회피 & EMP 무력화' : 'Slide Dodge & EMP Stun',
+      badge: isKo ? 'STEP 2: 모바일 퓨어 제스처' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '화면 직접 드래그 (Direct Drag)' : 'Direct Drag Gesture',
       description: isKo
-        ? '가상 조이스틱 없이 드래그 이동, 탭 슬라이딩 회피, 더블탭 EMP로 모든 센서를 잠식합니다.'
-        : 'Control stealth runs with drag movement, tap slide-dodge, and double-tap EMP blast.',
+        ? '손가락을 대고 원하는 방향으로 요원을 부드럽게 이끕니다.'
+        : 'Slide your thumb smoothly to guide the secret agent.',
       keyPoints: isKo
         ? [
-            '👆 드래그: 전방향 스텔스 잠입 이동',
-            '⚡ 탭: 낮은 레이저 슬라이딩 회피',
-            '💥 2x 탭: 전자기 EMP 3.5초 무력화'
+            '👆 손가락 드래그: 실시간 즉각 반응 잠입 이동',
+            '💎 다이아몬드 연속 획득 시 스텔스 콤보 배수 보너스',
+            '⏱️ 35초 타임어택 고득점 챌린지'
           ]
         : [
-            '👆 Drag: Multi-directional stealth movement',
-            '⚡ Tap: Low laser slide dodging',
-            '💥 Double-Tap: EMP 3.5s laser blackout'
+            '👆 Finger Drag: Instant responsive stealth navigation',
+            '💎 Consecutive diamond hacks grant high combo multipliers',
+            '⏱️ 35s time attack infiltration sprint'
           ],
-      iconType: 'GESTURES'
+      iconType: 'GESTURES',
     },
     {
       badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
       title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
       description: isKo
-        ? '탈출 성공 시 HARD 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
-        : 'Standard payout scaled with Hard multiplier deposited atomically to your wallet.',
+        ? '탈출 완료 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon match finish.',
       keyPoints: isKo
         ? [
-            '승리 즉시 LocalStorage 영구 지갑 입금',
-            '스피드 탈출 및 보석 루팅 가산점',
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '수집 다이아몬드 및 탈출 구역 비례 대량 잭팟',
             'VictoryRewardModal 2초 황금 코인 팡파레'
           ]
         : [
             'Instant atomic deposit to LocalStorage wallet',
-            'Speed escape and jewel loot bonuses',
+            'Hacked diamonds and cleared sectors multipliers',
             'VictoryRewardModal golden coin fanfare'
           ],
-      iconType: 'REWARDS'
-    }
+      iconType: 'REWARDS',
+    },
   ];
 
-  return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
+  const currentLevel = VAULT_LEVELS[currentLevelIdx] || VAULT_LEVELS[0];
 
+  return (
+    <div className="relative w-full h-[100dvh] bg-[#090d16] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none">
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
       <MinimalistMissionHUD
-        title={isKo ? '복셀 레이저 스텔스' : 'Voxel Laser Stealth'}
-        language={language}
+        title={isKo ? '블리츠 레이저 잠입' : 'Blitz Laser Infiltration'}
+        language={(language as Language) || 'ko'}
         telemetries={[
-          { label: isKo ? '경보' : 'Alarm', value: `${alarmLevel}%`, color: alarmLevel > 70 ? 'text-rose-400 font-black animate-pulse' : 'text-emerald-300' },
-          { label: isKo ? 'EMP' : 'EMP', value: `x${empCharges}`, color: 'text-cyan-300' },
-          { label: isKo ? '전리품' : 'Loot', value: `${score}P`, color: 'text-amber-300' }
+          { label: isKo ? '구역' : 'Sector', value: `${currentLevelIdx + 1}/${VAULT_LEVELS.length} ${isKo ? currentLevel.name : currentLevel.enName}`, color: 'text-amber-400 font-bold' },
+          { label: isKo ? '보석' : 'Gems', value: `${jewelsCount}💎`, color: 'text-cyan-300 font-bold' },
+          { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 10 ? 'text-rose-500 font-bold animate-pulse' : 'text-cyan-400 font-bold' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          stateRef.current.isPaused = !isPaused;
-        }}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
         isPaused={isPaused}
       />
 
-      {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div
-          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
-          style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const startX = e.clientX - rect.left;
-            const startY = e.clientY - rect.top;
-            let moved = false;
-
-            const onMove = (moveEvt: PointerEvent) => {
-              const curX = moveEvt.clientX - rect.left;
-              const curY = moveEvt.clientY - rect.top;
-              const dx = curX - startX;
-              const dy = curY - startY;
-
-              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
-                moved = true;
-                stateRef.current.moveDir.x = Math.abs(dx) > 10 ? (dx > 0 ? 1 : -1) : 0;
-                stateRef.current.moveDir.y = Math.abs(dy) > 10 ? (dy < 0 ? 1 : -1) : 0;
-              }
-            };
-
-            const onUp = () => {
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-              window.removeEventListener('pointercancel', onUp);
-              stateRef.current.moveDir.x = 0;
-              stateRef.current.moveDir.y = 0;
-
-              if (!moved) {
-                // Tap: Slide Dodge
-                triggerSlide();
-              }
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-          }}
-          onDoubleClick={triggerEmp}
+      {/* Pure Touch Laser Infiltration Canvas Viewport */}
+      <div className={`flex-1 w-full max-w-md relative overflow-hidden flex items-center justify-center select-none touch-none p-2 transition-colors ${alarmAlert ? 'bg-rose-950/30 ring-4 ring-rose-500/50' : ''}`}>
+        <canvas
+          ref={canvasRef}
+          width={360}
+          height={500}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          className="w-full h-full object-contain touch-none cursor-pointer shadow-2xl"
         />
-      )}
+
+        {/* Floating Feedback Text */}
+        {feedbackText && (
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 pointer-events-none text-base font-bold text-amber-300 drop-shadow-lg animate-bounce whitespace-nowrap">
+            {feedbackText}
+          </div>
+        )}
+      </div>
 
       {/* Minimal Bottom Guide */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/75 border border-cyan-500/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
-          {isKo ? '드래그: 잠입 이동 | 탭: 슬라이딩 회피 | 더블탭: EMP 무력화 (버튼 없음)' : 'Drag: Move | Tap: Slide Dodge | Double Tap: EMP Stun (No Buttons)'}
+      <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono">
+          {isKo ? '손가락으로 요원을 드래그해 레이저를 피해 탈출구로 가세요' : 'Drag agent with finger to dodge lasers and reach the exit'}
         </div>
       </div>
 
       {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
         <UniversalTutorialModal
-          gameId="voxel_laser_stealth"
-          gameTitle={isKo ? '3D 복셀 레이저 스텔스: 뮤지엄 볼트 잠입' : 'Voxel Laser Stealth: Vault Heist'}
-          customSteps={customTutorialSteps}
-          language={language}
+          gameId="arcade_laser_infil"
+          gameTitle={isKo ? '블리츠 레이저: 잠입 탈출' : 'Blitz Laser: Infiltration'}
+          customSteps={tutorialSteps}
+          language={(language as Language) || 'ko'}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}
         />
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
         <VictoryRewardModal
           receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
+          language={(language as Language) || 'ko'}
+          onPlayAgain={initGame}
           onExit={onExit}
         />
       )}
     </div>
   );
 };
+export default VoxelLaserStealthGame;

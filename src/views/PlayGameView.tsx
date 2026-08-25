@@ -8356,7 +8356,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxellaserstealth',
-      title: language === 'ko' ? '3D 복셀 레이저 스텔스: 박물관 금고 잠입' : 'Voxel Laser Stealth: Vault Thief',
+      title: language === 'ko' ? '블리츠 레이저 잠입' : 'Blitz Laser Infiltration',
       icon: Trophy,
       color: 'from-rose-500 to-slate-800',
       image: '/minigame_boss.png',
@@ -8364,10 +8364,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxellaserstealth');
       },
-      category: '3d',
+      category: 'puzzle',
       isNew: true,
-      badgeText: '3D STEALTH',
-      guide: language === 'ko' ? '이동하는 레이저 보안망을 슬라이딩으로 회피하고 EMP 스턴으로 무력화하며 금고의 다이아몬드를 탈취하세요.' : 'Slide under moving laser security grids, use EMP gadgets, and steal museum diamonds undetected!'
+      badgeText: 'LASER-INFIL',
+      guide: language === 'ko' ? '손가락으로 요원을 드래그해 레이저를 피해 다이아몬드를 털고 탈출구로 가세요.' : 'Drag agent with finger to dodge lasers, hack diamonds and reach the exit vault!'
     },
     {
       id: 'voxeldojobalance',
@@ -11988,7 +11988,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '레이저 스텔스 보상', 'Laser Stealth reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 레이저 잠입 보상', 'Blitz Laser Infiltration reward')}
       />
     );
   }
