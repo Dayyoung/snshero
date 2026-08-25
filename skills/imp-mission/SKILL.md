@@ -43,12 +43,14 @@ description: 3D 복셀 미션 게임을 엄격한 기준으로 심사하여 모�
 - **퍼즐 / 두뇌 (Puzzle & Brain)**: 매치3, 라인 연결, 숫자 연산, 타일 배치, 미로 탈출, 스도쿠 변형 등
 - **캐주얼 / 스포츠 (Casual & Sports)**: 원터치 골프/양궁/다트, 물리 드로우, 다마고치 미니게임 등
 
-### 신규 게임 개발 필수 규격:
+### 신규 게임 개발 필수 규격 & 완전 구현 원칙:
+- **반드시 즉시 개발 & 완료 원칙**: `imp-mission` 수행 시 3D 복셀 폐기 및 신규 게임 추가가 결정되면, **반드시 실제 플레이 가능한 고품질 신규 게임 코드를 즉시 100% 새로 개발하여 컴포넌트, `PlayGameView.tsx` 메뉴 메타데이터(제목/가이드/카테고리/보상명/검색 키워드)까지 완벽하게 연동하고 완료**해야 합니다.
 1. `src/components/MinimalistMissionHUD.tsx` 1줄 슬림 HUD (최상단 5%) 탑재
 2. Zero-Button 퓨어 제스처 컨트롤러 (화면 탭, 드래그, 스와이프 등)
 3. `UniversalTutorialModal` 3단계 인터랙티브 온보딩 (목표, 조작법, 확정보상)
 4. `VictoryRewardModal` & `calculateAndDepositMissionReward` 확정 SNS 보상 원자적 입금
 5. `DESIGN.md` 준수: Monospace 폰트, 웜크림/잉크 팔레트, 플랫 1px 테두리
+6. `PlayGameView.tsx` 모드 선택 목록 및 검색 키워드 100% 동기화 등록
 
 ---
 
