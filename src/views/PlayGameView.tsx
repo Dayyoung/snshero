@@ -8506,18 +8506,18 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxeldreamweaver',
-      title: language === 'ko' ? '3D 복셀 드림위버: 에메랄드 링 플라이트' : 'Voxel Dreamweaver: Emerald Flight',
+      title: language === 'ko' ? '블리츠 스타 트레이서' : 'Blitz Star Tracer',
       icon: Trophy,
-      color: 'from-emerald-600 to-teal-800',
+      color: 'from-blue-600 to-indigo-900',
       image: '/minigame_boss.png',
       characterId: 107,
       action: () => {
         setGameState('voxeldreamweaver');
       },
-      category: '3d',
+      category: 'puzzle',
       isNew: true,
-      badgeText: '3D DREAM',
-      guide: language === 'ko' ? '에메랄드 꿈의 세계를 3D 비행하며 회전하는 빛의 링을 연속 통과하여 비행 부스터를 유지하고 악몽 안개를 정화하세요.' : 'Glide through emerald dreamscapes, pass through rotating light rings in sequence, and clear nightmare mists!'
+      badgeText: 'STAR-TRACER',
+      guide: language === 'ko' ? '별 노드를 손가락으로 드래그하여 점선으로 표시된 별자리를 한붓그리기로 완성하세요.' : 'Drag seamlessly from star to star to connect all constellation lines in one continuous stroke!'
     },
     {
       id: 'voxellifeflame',
@@ -12118,7 +12118,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '드림위버 비행 보상', 'Dreamweaver Flight reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 스타 트레이서 보상', 'Blitz Star Tracer reward')}
       />
     );
   }
