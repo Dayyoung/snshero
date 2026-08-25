@@ -8461,7 +8461,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelmegaflareassault',
-      title: language === 'ko' ? '3D 복셀 메가 플레어: 공중 함대 요격전' : 'Voxel Mega Flare: Sky Assault',
+      title: language === 'ko' ? '블리츠 메가 플레어' : 'Blitz Mega Flare',
       icon: Trophy,
       color: 'from-amber-600 to-red-800',
       image: '/minigame_boss.png',
@@ -8469,10 +8469,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelmegaflareassault');
       },
-      category: '3d',
+      category: 'battle',
       isNew: true,
-      badgeText: '3D MEGAFLARE',
-      guide: language === 'ko' ? '바하무트의 브레스를 조준 발사하여 적 공중 요새 함선들을 요격하고 게이지를 채워 메가 플레어를 폭발시키세요.' : 'Aim Bahamut breath shots to intercept enemy voxel airships and charge the gauge to unleash Mega Flare!'
+      badgeText: 'MEGA-FLARE',
+      guide: language === 'ko' ? '적을 직접 탭해 요격 사격하고, 게이지 100% 시 아래로 스와이프해 메가 플레어를 발동하세요.' : 'Tap enemy ships to shoot plasma, and swipe down at 100% to unleash Mega Flare!'
     },
     {
       id: 'voxelspikerolling',
@@ -12079,7 +12079,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '메가 플레어 요격전 보상', 'Mega Flare Sky Assault reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 메가 플레어 보상', 'Blitz Mega Flare reward')}
       />
     );
   }
