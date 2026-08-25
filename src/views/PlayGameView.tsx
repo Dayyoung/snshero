@@ -7951,7 +7951,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelfirerescue',
-      title: language === 'ko' ? '3D 복셀 파이어 트럭 히어로' : 'Voxel Fire Rescue Hero',
+      title: language === 'ko' ? '블리츠 파이어 레스큐' : 'Blitz Fire Rescue',
       icon: Flame,
       color: 'from-red-600 to-amber-800',
       image: '/minigame_castleblaster.png',
@@ -7959,10 +7959,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelfirerescue');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D RESCUE',
-      guide: language === 'ko' ? '초고압 소방 방수포로 화염 복셀을 진화하고 탈출 주민을 신속히 구조하세요.' : 'Extinguish blaze voxels with high-pressure water hose and rescue civilians!'
+      badgeText: 'FIRE-RESCUE',
+      guide: language === 'ko' ? '불타는 창문을 눌러 물대포를 직접 분사해 화재를 진압하고 탈출 시민(🏃)을 구조하세요.' : 'Hold on burning windows to spray water jets and tap escaping citizens to rescue!'
     },
     {
       id: 'voxelwindhunter',
@@ -11637,7 +11637,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '소방차 히어로 보상', 'Fire Rescue Hero reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 파이어 레스큐 보상', 'Blitz Fire Rescue reward')}
       />
     );
   }
