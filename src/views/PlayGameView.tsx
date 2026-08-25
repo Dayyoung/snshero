@@ -7831,7 +7831,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxeldragonslayer',
-      title: language === 'ko' ? '3D 복셀 몬스터 헌터' : 'Voxel Dragon Slayer',
+      title: language === 'ko' ? '블리츠 드래곤 레이드' : 'Blitz Dragon Raid',
       icon: Flame,
       color: 'from-red-600 to-rose-900',
       image: '/minigame_boss.png',
@@ -7839,10 +7839,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxeldragonslayer');
       },
-      category: '3d',
+      category: 'battle',
       isNew: true,
-      badgeText: '3D DRAGON',
-      guide: language === 'ko' ? '거대 화염 드래곤의 브레스와 꼬리치기를 피하며 약점 비늘을 부위 파괴하고 토벌하세요.' : 'Dodge fire breath and destroy weak points to slay the legendary voxel dragon!'
+      badgeText: 'DRAGON-RAID',
+      guide: language === 'ko' ? '비행하는 드래곤을 직접 탭해 화살을 쏘고 날아오는 화염탄을 탭으로 요격하세요.' : 'Tap flying dragon head directly to shoot & tap incoming fireballs to intercept!'
     },
     {
       id: 'voxelarcherhero',
@@ -11533,7 +11533,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '드래곤 슬레이어 보상', 'Dragon Slayer reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 드래곤 레이드 보상', 'Blitz Dragon Raid reward')}
       />
     );
   }
