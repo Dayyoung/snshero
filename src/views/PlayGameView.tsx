@@ -7471,7 +7471,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelspace',
-      title: language === 'ko' ? '3D 복셀 우주 오디세이' : 'Voxel Space Odyssey',
+      title: language === 'ko' ? '블리츠 스페이스 오디세이' : 'Blitz Space Odyssey',
       icon: Compass,
       color: 'from-blue-600 to-cyan-500',
       image: '/minigame_shooting.png',
@@ -7479,10 +7479,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelspace');
       },
-      category: '3d',
+      category: 'shooting',
       isNew: true,
-      badgeText: '3D SPACE',
-      guide: language === 'ko' ? '우주 복셀 비행선을 조종하여 소행성을 회피/파괴하고 성간 웜홀을 돌파하는 스페이스 아케이드입니다.' : '3D voxel starship arcade flying through asteroid fields and cosmic wormholes!'
+      badgeText: 'SPACE-ODYSSEY',
+      guide: language === 'ko' ? '손가락으로 전투기를 좌우 드래그해 해적 함선과 외계 모선을 요격하세요.' : 'Drag starfighter left & right to blast pirate ships and motherships!'
     },
     {
       id: 'voxelzombie',
@@ -11221,7 +11221,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '우주 오디세이 보상', 'Space Odyssey reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 스페이스 오디세이 보상', 'Blitz Space Odyssey reward')}
       />
     );
   }
