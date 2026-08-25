@@ -8311,7 +8311,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelkaratebreak',
-      title: language === 'ko' ? '3D 복셀 가라데 송판 & 석재 격파: 무도 마스터' : 'Voxel Karate Break: Martial Master',
+      title: language === 'ko' ? '블리츠 가라테 찹' : 'Blitz Karate Chop',
       icon: Trophy,
       color: 'from-rose-600 to-amber-600',
       image: '/minigame_boss.png',
@@ -8319,10 +8319,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelkaratebreak');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D KARATE',
-      guide: language === 'ko' ? '기력 게이지가 임계 영역에 도달했을 때 정권 찌르기를 날려 10단 송판과 화강암, 흑요석을 완전 격파하세요.' : 'Time your Ki focus and unleash powerful chops to shatter 10 stacked wood planks and obsidian blocks!'
+      badgeText: 'KARATE-CHOP',
+      guide: language === 'ko' ? '위에서 아래로 빠르게 스와이프하여 수도로 10단 송판과 흑요석 블록을 격파하세요.' : 'Swipe down rapidly to execute a powerful karate chop and shatter blocks!'
     },
     {
       id: 'voxelpinballclimber',
@@ -11949,7 +11949,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '가라데 격파 보상', 'Karate Break reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 가라테 찹 보상', 'Blitz Karate Chop reward')}
       />
     );
   }

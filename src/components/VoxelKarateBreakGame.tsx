@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { CardData } from '../types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
-import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
@@ -15,12 +14,22 @@ interface VoxelKarateBreakGameProps {
   onReward: (amount: number) => void;
 }
 
-const TARGET_TIERS = [
-  { nameKo: '삼나무 송판 (10단)', nameEn: 'Cedar Wood (x10)', color: 0xb45309, reqPower: 45, maxBlocks: 10, points: 150 },
-  { nameKo: '붉은 점토 벽돌 (10단)', nameEn: 'Clay Bricks (x10)', color: 0xb91c1c, reqPower: 60, maxBlocks: 10, points: 250 },
-  { nameKo: '단단한 화강암석 (10단)', nameEn: 'Granite (x10)', color: 0x64748b, reqPower: 75, maxBlocks: 10, points: 400 },
-  { nameKo: '강철 모루 블록 (10단)', nameEn: 'Iron Anvil (x10)', color: 0x334155, reqPower: 88, maxBlocks: 10, points: 650 },
-  { nameKo: '흑요석 크리스탈 (10단)', nameEn: 'Obsidian (x10)', color: 0x581c87, reqPower: 95, maxBlocks: 10, points: 1000 }
+interface BreakTarget {
+  id: number;
+  name: string;
+  enName: string;
+  icon: string;
+  color: string;
+  layers: number;
+  points: number;
+}
+
+const BREAK_TARGETS: BreakTarget[] = [
+  { id: 1, name: '삼나무 송판 (10단)', enName: 'Cedar Wood (10x)', icon: '🪵', color: '#b45309', layers: 10, points: 200 },
+  { id: 2, name: '붉은 점토 벽돌 (10단)', enName: 'Clay Bricks (10x)', icon: '🧱', color: '#b91c1c', layers: 10, points: 350 },
+  { id: 3, name: '화강암 암석 (10단)', enName: 'Granite Rock (10x)', icon: '🪨', color: '#64748b', layers: 10, points: 550 },
+  { id: 4, name: '강철 모루 블록 (10단)', enName: 'Steel Anvil (10x)', icon: '⚙️', color: '#334155', layers: 10, points: 800 },
+  { id: 5, name: '흑요석 크리스탈 (10단)', enName: 'Obsidian Crystal (10x)', icon: '💎', color: '#7e22ce', layers: 10, points: 1200 },
 ];
 
 export const VoxelKarateBreakGame: React.FC<VoxelKarateBreakGameProps> = ({
@@ -29,378 +38,453 @@ export const VoxelKarateBreakGame: React.FC<VoxelKarateBreakGameProps> = ({
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
+  const [currentTargetIdx, setCurrentTargetIdx] = useState<number>(0);
+  const [brokenLayers, setBrokenLayers] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
+  const [chopCombo, setChopCombo] = useState<number>(0);
+  const [maxCombo, setMaxCombo] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(35);
+  const [feedbackText, setFeedbackText] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_karate_break') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_karate_chop') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [currentTierIdx, setCurrentTierIdx] = useState<number>(0);
-  const [score, setScore] = useState<number>(0);
-  const [gaugeVal, setGaugeVal] = useState<number>(0);
-  const [isStriking, setIsStriking] = useState<boolean>(false);
-  const [breakResultText, setBreakResultText] = useState<string>('');
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
-    tierIdx: 0,
-    gauge: 0,
-    gaugeSpeed: 2.2,
-    gaugeDir: 1,
-    isFocusActive: false,
-    focusTime: 0,
-    isStriking: false,
+    targetIdx: 0,
+    brokenCount: 0,
+    isChopping: false,
+    chopAnimation: 0,
     score: 0,
+    combo: 0,
+    maxCombo: 0,
+    timeLeft: 35,
     isGameOver: false,
-    isVictory: false,
     isPaused: false,
     startTime: Date.now(),
-    blocks: [] as THREE.Mesh[],
-    particles: [] as { mesh: THREE.Mesh; vel: THREE.Vector3 }[],
-    karateMasterGroup: null as THREE.Group | null,
-    armMesh: null as THREE.Mesh | null,
-    scene: null as THREE.Scene | null
+    touchStart: { x: 0, y: 0, time: 0 },
+    shards: [] as { x: number; y: number; vx: number; vy: number; color: string; life: number }[],
   });
 
-  const currTier = TARGET_TIERS[currentTierIdx] || TARGET_TIERS[0];
-
-  const handleKiFocus = () => {
+  const setupTarget = useCallback((idx: number) => {
     const s = stateRef.current;
-    if (s.isStriking || s.isGameOver || s.isVictory || s.isPaused) return;
-    s.isFocusActive = true;
-    s.focusTime = 1.2;
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-  };
+    s.targetIdx = idx;
+    s.brokenCount = 0;
+    s.isChopping = false;
+    setCurrentTargetIdx(idx);
+    setBrokenLayers(0);
+  }, []);
 
-  const handleStrike = () => {
+  const initGame = useCallback(() => {
     const s = stateRef.current;
-    if (s.isStriking || s.isGameOver || s.isVictory || s.isPaused) return;
+    s.score = 0;
+    s.combo = 0;
+    s.maxCombo = 0;
+    s.timeLeft = 35;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    s.shards = [];
 
-    s.isStriking = true;
-    setIsStriking(true);
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    setScore(0);
+    setChopCombo(0);
+    setMaxCombo(0);
+    setTimeLeft(35);
+    setFeedbackText(null);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
 
-    const power = s.gauge;
-    const tier = TARGET_TIERS[s.tierIdx];
+    setupTarget(0);
+  }, [setupTarget]);
 
-    setTimeout(() => {
-      if (power >= tier.reqPower) {
-        // Break Success!
-        const breakRatio = Math.min(1.0, power / 100);
-        const count = Math.round(breakRatio * tier.maxBlocks);
-        const gained = Math.round(tier.points * (count / tier.maxBlocks) * 1.5);
-        s.score += gained;
-        setScore(s.score);
-        setBreakResultText(`💥 ${count}단 완전 격파 성공! (+${gained}P)`);
-        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+  useEffect(() => {
+    initGame();
+  }, [initGame]);
 
-        // Shatter animation
-        s.blocks.forEach((b, idx) => {
-          if (idx < count) {
-            b.position.y = -10;
-          }
-        });
+  // Timer loop
+  useEffect(() => {
+    if (isGameOver || isPaused) return;
 
-        if (s.tierIdx >= TARGET_TIERS.length - 1) {
-          s.isVictory = true;
-          s.isGameOver = true;
-          setIsGameOver(true);
-          const duration = (Date.now() - s.startTime) / 1000;
-          const receipt = calculateAndDepositMissionReward({
-            gameId: 'voxel_karate_break',
-            gameTitle: '복셀 무도 정권 격파',
-            durationSeconds: duration,
-            score: s.score + 1500,
-            difficulty: 'NIGHTMARE',
-            isVictory: true
-          });
-          setSettlementReceipt(receipt);
-          onReward(receipt.totalSns);
-        } else {
-          setTimeout(() => {
-            s.tierIdx += 1;
-            setCurrentTierIdx(s.tierIdx);
-            s.isStriking = false;
-            setIsStriking(false);
-            setBreakResultText('');
-            s.gauge = 0;
-            // Respawn next tier blocks
-            respawnBlocks(s.tierIdx);
-          }, 1400);
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          endGame(true);
+          return 0;
         }
-      } else {
-        // Break Failed!
-        setBreakResultText('❌ 기력 부족! 격파 실패');
-        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-        setTimeout(() => {
-          s.isStriking = false;
-          setIsStriking(false);
-          setBreakResultText('');
-        }, 1200);
-      }
-    }, 200);
+        return t - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isGameOver, isPaused]);
+
+  // Touch Downward Chop Swipe Handlers (Zero Joysticks)
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused || s.isChopping) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    s.touchStart = {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY,
+      time: performance.now(),
+    };
   };
 
-  const respawnBlocks = (tierIndex: number) => {
+  const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
     const s = stateRef.current;
-    if (!s.scene) return;
-    s.blocks.forEach(b => s.scene?.remove(b));
-    s.blocks = [];
+    if (s.isGameOver || s.isPaused || s.isChopping) return;
 
-    const tier = TARGET_TIERS[tierIndex];
-    const bGeo = new THREE.BoxGeometry(1.0, 0.08, 0.6);
-    const bMat = new THREE.MeshStandardMaterial({ color: tier.color, roughness: 0.5 });
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
 
-    for (let i = 0; i < 10; i++) {
-      const bMesh = new THREE.Mesh(bGeo, bMat);
-      bMesh.position.set(0, 0.84 + i * 0.09, 0);
-      s.scene.add(bMesh);
-      s.blocks.push(bMesh);
+    const endX = (e.clientX - rect.left) * scaleX;
+    const endY = (e.clientY - rect.top) * scaleY;
+    const duration = (performance.now() - s.touchStart.time) / 1000;
+
+    const dy = endY - s.touchStart.y;
+    const dx = endX - s.touchStart.x;
+
+    // Downward Chop Gesture (Fast swipe down >= 40px within 0.35s)
+    if (dy > 40 && Math.abs(dx) < dy && duration < 0.35) {
+      s.isChopping = true;
+      s.chopAnimation = 1.0;
+
+      const swipeSpeed = dy / duration; // px per second
+      const isPerfectChop = swipeSpeed > 600 && Math.abs(s.touchStart.x - 180) < 60;
+
+      const target = BREAK_TARGETS[s.targetIdx] || BREAK_TARGETS[0];
+      const smashed = isPerfectChop ? 10 : Math.min(10, Math.round((swipeSpeed / 500) * 10));
+
+      s.brokenCount = smashed;
+      setBrokenLayers(smesh_layers => Math.max(smesh_layers, smashed));
+
+      s.combo += 1;
+      if (s.combo > s.maxCombo) s.maxCombo = s.combo;
+
+      const pts = (isPerfectChop ? target.points * 1.5 : (target.points * (smashed / 10))) + s.combo * 30;
+      s.score += Math.round(pts);
+
+      setScore(s.score);
+      setChopCombo(s.combo);
+      setMaxCombo(s.maxCombo);
+
+      // Spawn Block Shards
+      for (let i = 0; i < smashed * 4; i++) {
+        s.shards.push({
+          x: 180 + (Math.random() - 0.5) * 80,
+          y: 280 + (Math.random() - 0.5) * 60,
+          vx: (Math.random() - 0.5) * 350,
+          vy: -150 - Math.random() * 200,
+          color: target.color,
+          life: 0.8,
+        });
+      }
+
+      if (isPerfectChop) {
+        setFeedbackText(`💥 PERFECT ALL-BREAK! +${Math.round(pts)}P 🥋`);
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+      } else {
+        setFeedbackText(`SMASH! ${smashed}/10 +${Math.round(pts)}P`);
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+      }
+
+      setTimeout(() => {
+        setFeedbackText(null);
+        s.isChopping = false;
+        if (s.targetIdx < BREAK_TARGETS.length - 1) {
+          setupTarget(s.targetIdx + 1);
+        } else {
+          // Final Obsidian Cleared! Win!
+          endGame(true);
+        }
+      }, 700);
     }
   };
 
+  // Main 60FPS Karate Dojo & Shards Loop
   useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
-
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1c1917);
-    stateRef.current.scene = scene;
-
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, 2.5, 5.5);
-    camera.lookAt(0, 1.2, 0);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    container.appendChild(renderer.domElement);
-
-    const hemiLight = new THREE.HemisphereLight(0xffedd5, 0x441a03, 0.9);
-    scene.add(hemiLight);
-
-    const spot = new THREE.SpotLight(0xffedd5, 2.5);
-    spot.position.set(0, 8, 4);
-    scene.add(spot);
-
-    // Floor
-    const floorGeo = new THREE.PlaneGeometry(16, 16);
-    const floorMat = new THREE.MeshStandardMaterial({ color: 0x854d0e, roughness: 0.8 });
-    const floorMesh = new THREE.Mesh(floorGeo, floorMat);
-    floorMesh.rotation.x = -Math.PI / 2;
-    scene.add(floorMesh);
-
-    // Wooden Stand Pedestal
-    const stand = new THREE.Mesh(
-      new THREE.BoxGeometry(1.2, 0.8, 1.0),
-      new THREE.MeshStandardMaterial({ color: 0x451a03 })
-    );
-    stand.position.set(0, 0.4, 0);
-    scene.add(stand);
-
-    // Karate Master
-    const masterGroup = new THREE.Group();
-    const body = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.4, 0.6), new THREE.MeshStandardMaterial({ color: 0xffffff }));
-    body.position.y = 0.7;
-    masterGroup.add(body);
-
-    const belt = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.2, 0.65), new THREE.MeshStandardMaterial({ color: 0x000000 }));
-    belt.position.set(0, 0.6, 0);
-    masterGroup.add(belt);
-
-    const arm = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.8, 0.25), new THREE.MeshStandardMaterial({ color: 0xffffff }));
-    arm.position.set(0.5, 1.2, 0.4);
-    masterGroup.add(arm);
-    stateRef.current.armMesh = arm;
-
-    masterGroup.position.set(0, 0, 1.4);
-    scene.add(masterGroup);
-    stateRef.current.karateMasterGroup = masterGroup;
-
-    // Initial blocks
-    respawnBlocks(0);
-
-    let animId: number;
     let lastTime = performance.now();
 
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const s = stateRef.current;
       if (s.isPaused || s.isGameOver) return;
 
-      // Ki Power Gauge Oscillation
-      if (!s.isStriking) {
-        let speed = s.gaugeSpeed * (s.isFocusActive ? 0.35 : 1.0);
-        s.gauge += s.gaugeDir * speed * 60 * dt;
+      const target = BREAK_TARGETS[s.targetIdx] || BREAK_TARGETS[0];
 
-        if (s.gauge >= 100) {
-          s.gauge = 100;
-          s.gaugeDir = -1;
-        } else if (s.gauge <= 0) {
-          s.gauge = 0;
-          s.gaugeDir = 1;
-        }
-        setGaugeVal(Math.round(s.gauge));
-
-        if (s.isFocusActive) {
-          s.focusTime -= dt;
-          if (s.focusTime <= 0) s.isFocusActive = false;
-        }
+      // Update Shards
+      for (let i = s.shards.length - 1; i >= 0; i--) {
+        const sh = s.shards[i];
+        sh.x += sh.vx * dt;
+        sh.y += sh.vy * dt;
+        sh.vy += 480 * dt; // Gravity
+        sh.life -= dt;
+        if (sh.life <= 0) s.shards.splice(i, 1);
       }
 
-      // Arm animation
-      if (s.armMesh) {
-        if (s.isStriking) {
-          s.armMesh.rotation.x = -Math.PI / 2;
-        } else {
-          s.armMesh.rotation.x = Math.sin(now * 0.005) * 0.2;
-        }
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Traditional Martial Arts Dojo Background (Warm Amber / Tatami)
+      ctx.fillStyle = '#1c130c';
+      ctx.fillRect(0, 0, w, h);
+
+      // Tatami Floor Mat
+      ctx.fillStyle = '#78350f';
+      ctx.fillRect(20, 360, w - 40, 110);
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(20, 360, w - 40, 110);
+
+      // Dojo Scroll Banner at Top
+      ctx.fillStyle = '#451a03';
+      ctx.fillRect(50, 20, w - 100, 40);
+      ctx.strokeStyle = '#fde047';
+      ctx.strokeRect(50, 20, w - 100, 40);
+      ctx.font = 'bold 15px monospace';
+      ctx.fillStyle = '#fde047';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🥋 一擊必殺 DOJO 🥋', w / 2, 40);
+
+      // Render Stacked Target Blocks on Stand
+      const standY = 350;
+      const blockW = 160;
+      const blockH = 12;
+
+      // Wooden Pillar Stand
+      ctx.fillStyle = '#451a03';
+      ctx.fillRect(w / 2 - 90, standY, 20, 50);
+      ctx.fillRect(w / 2 + 70, standY, 20, 50);
+
+      // Render Remaining Layers
+      const remainingLayers = target.layers - s.brokenCount;
+      for (let l = 0; l < remainingLayers; l++) {
+        const by = standY - l * (blockH + 4);
+        ctx.fillStyle = target.color;
+        ctx.fillRect((w - blockW) / 2, by, blockW, blockH);
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect((w - blockW) / 2, by, blockW, blockH);
       }
 
-      renderer.render(scene, camera);
+      // Target Label
+      ctx.font = 'bold 16px monospace';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(`${isKo ? target.name : target.enName} ${target.icon}`, w / 2, 100);
+
+      // Downward Chop Guide Arrow
+      if (!s.isChopping) {
+        ctx.font = 'bold 24px monospace';
+        ctx.fillStyle = '#ef4444';
+        ctx.fillText('⬇️ SWIPE DOWN! ⬇️', w / 2, 160);
+      }
+
+      // Karate Chop Arm Animation
+      if (s.isChopping) {
+        ctx.save();
+        ctx.font = '70px serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('✋', w / 2, 230);
+        ctx.restore();
+      }
+
+      // Render Shard Particles
+      s.shards.forEach((sh) => {
+        ctx.fillStyle = sh.color;
+        ctx.fillRect(sh.x, sh.y, 8, 8);
+      });
     };
 
-    animId = requestAnimationFrame(animate);
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, [isKo, playSfx]);
 
-    return () => {
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-    };
-  }, [lowSpecMode]);
-
-  const handleRestart = () => {
+  const endGame = (isWin: boolean) => {
     const s = stateRef.current;
-    s.tierIdx = 0;
-    s.gauge = 0;
-    s.score = 0;
-    s.isStriking = false;
-    s.isGameOver = false;
-    s.isVictory = false;
-    s.startTime = Date.now();
-    setCurrentTierIdx(0);
-    setScore(0);
-    setGaugeVal(0);
-    setIsStriking(false);
-    setBreakResultText('');
-    setIsGameOver(false);
-    setSettlementReceipt(null);
-    respawnBlocks(0);
+    if (s.isGameOver) return;
+    s.isGameOver = true;
+    setIsGameOver(true);
+
+    if (isWin) {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    } else {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+
+    const duration = (Date.now() - s.startTime) / 1000;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'arcade_karate_chop',
+      gameTitle: '블리츠 가라테 찹',
+      durationSeconds: duration,
+      score: s.score + (isWin ? 3500 : (s.targetIdx + 1) * 600) + s.maxCombo * 50,
+      difficulty: 'NIGHTMARE',
+      isVictory: isWin || s.targetIdx >= 3,
+    });
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
   };
 
-  return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
+  const tutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 수도 내리치기 광속 스와이프' : 'STEP 1: DOWNWARD CHOP SWIPE',
+      title: isKo ? '위에서 아래로 단숨에 스와이프해 격파하세요' : 'Swipe Down Fast to Chop and Break Blocks',
+      description: isKo
+        ? '가상 조이스틱 없이 화면을 위에서 아래로 날카롭고 빠르게 스와이프하여 수도(Karate Chop)를 내리치고, 쌓여있는 송판, 벽돌, 화강암, 흑요석 블록을 10단 일도양단 산산조각 내세요.'
+        : 'Swipe down rapidly from top to bottom to execute a powerful karate chop and smash block stacks.',
+      keyPoints: isKo
+        ? [
+            '가상 조이스틱 0개 (100% 화면 직접 아래로 스와이프 격파)',
+            '광속 정중앙 찹 시 10단 전소 퍼펙트 올브레이크 잭팟',
+            '송판 ➔ 벽돌 ➔ 화강암 ➔ 모루 ➔ 흑요석 5단계 챔피언십'
+          ]
+        : [
+            'Zero Virtual Joysticks: 100% Downward Chop Swipes',
+            'Fast central swipes trigger 10-layer perfect all-break jackpots',
+            '5-Stage Championship: Wood ➔ Brick ➔ Granite ➔ Anvil ➔ Obsidian'
+          ],
+      iconType: 'GOAL',
+    },
+    {
+      badge: isKo ? 'STEP 2: 모바일 퓨어 제스처' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '화면 직접 아래로 긋기 (Downward Chop)' : 'Downward Chop Gesture',
+      description: isKo
+        ? '화면 상단에서 하단으로 빠르게 손가락을 내리긋습니다.'
+        : 'Flick down forcefully with your finger over the block stack.',
+      keyPoints: isKo
+        ? [
+            '👆 아래로 스와이프: 실시간 타격 수도 내리치기',
+            '💥 파편 슬로우모션 폭발 연출 및 콤보 팡파레',
+            '⏱️ 35초 타임어택 고득점 챌린지'
+          ]
+        : [
+            '👆 Downward Swipe: Instant responsive karate hand strike',
+            '💥 Slow-motion shard shatter blast and combo fanfare',
+            '⏱️ 35s time attack breaking sprint'
+          ],
+      iconType: 'GESTURES',
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '격파 완료 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon match finish.',
+      keyPoints: isKo
+        ? [
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '격파 단수 및 올브레이크 콤보 비례 대량 잭팟',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Smashed block layers and all-break combo multipliers',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS',
+    },
+  ];
 
+  const currentTarget = BREAK_TARGETS[currentTargetIdx] || BREAK_TARGETS[0];
+
+  return (
+    <div className="relative w-full h-[100dvh] bg-[#140c06] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none">
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
       <MinimalistMissionHUD
-        title={isKo ? '복셀 무도 정권 격파' : 'Voxel Karate Break'}
-        language={language}
+        title={isKo ? '블리츠 가라테 찹' : 'Blitz Karate Chop'}
+        language={(language as Language) || 'ko'}
         telemetries={[
-          { label: isKo ? '단계' : 'Tier', value: `${currentTierIdx + 1}/5 (${isKo ? currTier.nameKo : currTier.nameEn})`, color: 'text-amber-300' },
-          { label: isKo ? '기력' : 'Ki', value: `${gaugeVal}%`, color: gaugeVal >= currTier.reqPower ? 'text-emerald-400 font-black animate-pulse' : 'text-orange-300' },
-          { label: isKo ? '요구' : 'Req', value: `${currTier.reqPower}%+`, color: 'text-cyan-300' },
-          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-yellow-300' }
+          { label: isKo ? '단계' : 'Stage', value: `${currentTargetIdx + 1}/${BREAK_TARGETS.length} ${isKo ? currentTarget.name : currentTarget.enName}`, color: 'text-amber-400 font-bold' },
+          { label: isKo ? '격파' : 'Broken', value: `${brokenLayers}/10단`, color: brokenLayers >= 10 ? 'text-yellow-300 font-bold animate-bounce' : 'text-slate-300' },
+          { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 10 ? 'text-rose-500 font-bold animate-pulse' : 'text-cyan-400 font-bold' },
+          { label: isKo ? '콤보' : 'Combo', value: `${chopCombo}x`, color: chopCombo > 4 ? 'text-emerald-400 font-bold' : 'text-slate-300' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          stateRef.current.isPaused = !isPaused;
-        }}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
         isPaused={isPaused}
       />
 
-      {/* Break Result Banner */}
-      {breakResultText && (
-        <div className="absolute top-14 left-1/2 -translate-x-1/2 bg-black/85 border border-amber-400 text-amber-300 px-4 py-1 rounded-full text-xs font-black tracking-wider shadow-lg z-30 pointer-events-none animate-bounce">
-          {breakResultText}
-        </div>
-      )}
-
-      {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div
-          className="absolute inset-0 z-10 select-none touch-none cursor-pointer"
-          style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            e.preventDefault();
-            const rect = e.currentTarget.getBoundingClientRect();
-            const startY = e.clientY - rect.top;
-            let moved = false;
-
-            const onMove = (moveEvt: PointerEvent) => {
-              const curY = moveEvt.clientY - rect.top;
-              if (Math.abs(curY - startY) > 20) {
-                moved = true;
-                handleKiFocus();
-              }
-            };
-
-            const onUp = () => {
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-              window.removeEventListener('pointercancel', onUp);
-
-              if (!moved) {
-                // Tap: Strike Chop!
-                handleStrike();
-              }
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-          }}
-          onDoubleClick={handleKiFocus}
+      {/* Pure Touch Karate Chop Canvas Viewport */}
+      <div className="flex-1 w-full max-w-md relative overflow-hidden flex items-center justify-center select-none touch-none p-2">
+        <canvas
+          ref={canvasRef}
+          width={360}
+          height={500}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          className="w-full h-full object-contain touch-none cursor-pointer shadow-2xl"
         />
-      )}
+
+        {/* Floating Feedback Text */}
+        {feedbackText && (
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 pointer-events-none text-base font-bold text-amber-300 drop-shadow-lg animate-bounce whitespace-nowrap">
+            {feedbackText}
+          </div>
+        )}
+      </div>
 
       {/* Minimal Bottom Guide */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/75 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
-          {isKo ? '화면 탭: 정권 격파 (CHOP!) | 드래그/더블탭: 단전호흡 기력집중 (버튼 없음)' : 'Tap: Strike Chop! | Drag/Double Tap: Ki Focus Slow (No Buttons)'}
+      <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono">
+          {isKo ? '위에서 아래로 빠르게 스와이프하여 블록을 격파하세요' : 'Swipe down rapidly from top to bottom to chop blocks'}
         </div>
       </div>
 
-      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
-        <SportsMissionTutorial
-          gameId="voxel_karate_break"
-          gameTitle={isKo ? '3D 복셀 무도 정권 격파: 5단계 송판/벽돌 격파' : 'Voxel Karate Break: 5-Tier Board Breaking'}
-          sportType="martial"
-          language={language}
+        <UniversalTutorialModal
+          gameId="arcade_karate_chop"
+          gameTitle={isKo ? '블리츠 가라테: 수도 격파' : 'Blitz Karate: Power Chop'}
+          customSteps={tutorialSteps}
+          language={(language as Language) || 'ko'}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}
         />
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
         <VictoryRewardModal
           receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
+          language={(language as Language) || 'ko'}
+          onPlayAgain={initGame}
           onExit={onExit}
         />
       )}
     </div>
   );
 };
+export default VoxelKarateBreakGame;
