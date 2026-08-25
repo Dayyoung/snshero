@@ -8416,7 +8416,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelkrakenhunter',
-      title: language === 'ko' ? '3D 복셀 심해 피싱: 크라켄 헌터' : 'Voxel Deepsea Fishing: Kraken Hunter',
+      title: language === 'ko' ? '블리츠 크라켄' : 'Blitz Kraken Slayer',
       icon: Trophy,
       color: 'from-sky-600 to-rose-700',
       image: '/minigame_boss.png',
@@ -8424,10 +8424,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelkrakenhunter');
       },
-      category: '3d',
+      category: 'battle',
       isNew: true,
-      badgeText: '3D KRAKEN',
-      guide: language === 'ko' ? '어선을 타고 심해 소용돌이에 낚싯줄을 던져 줄 텐션을 조절하고 작살을 발사해 거대 크라켄을 포획하세요.' : 'Cast lines into deep ocean vortexes, manage tension to prevent snaps, and harpoon giant krakens!'
+      badgeText: 'KRAKEN-SLAYER',
+      guide: language === 'ko' ? '솟구치는 촉수를 스와이프로 자르고, 그로기 시 중앙 눈동자를 연타해 크라켄을 토벌하세요.' : 'Swipe to slice tentacles, tap the central eye during groggy to defeat the Kraken!'
     },
     {
       id: 'voxelhalfpipeskater',
@@ -12040,7 +12040,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '크라켄 헌터 보상', 'Kraken Hunter reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 크라켄 보상', 'Blitz Kraken Slayer reward')}
       />
     );
   }

@@ -1,334 +1,539 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { CardData } from '../types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
-import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelKrakenHunterGameProps {
   deck: CardData[];
-  language: string;
+  language?: string;
   lowSpecMode?: boolean;
   playSfx?: (url: string) => void;
   onExit: () => void;
   onReward: (amount: number) => void;
 }
 
+interface Tentacle {
+  id: number;
+  x: number;
+  y: number;
+  hp: number;
+  maxHp: number;
+  isCut: boolean;
+  angle: number;
+}
+
 export const VoxelKrakenHunterGame: React.FC<VoxelKrakenHunterGameProps> = ({
   deck: _deck,
-  language,
+  language = 'ko',
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
+  const [krakenHp, setKrakenHp] = useState<number>(600);
+  const maxKrakenHp = 600;
+  const [tentaclesCut, setTentaclesCut] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
+  const [slayCombo, setSlayCombo] = useState<number>(0);
+  const [maxCombo, setMaxCombo] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(35);
+  const [feedbackText, setFeedbackText] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_kraken_hunter') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_kraken_slayer') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [score, setScore] = useState<number>(0);
-  const [fishCaught, setFishCaught] = useState<number>(0);
-  const targetMonsters = 2;
-  const [lineTension, setLineTension] = useState<number>(30);
-  const [monsterHp, setMonsterHp] = useState<number>(100);
-  const [monsterDistance, setMonsterDistance] = useState<number>(45);
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
-    lineTension: 30,
-    monsterHp: 100,
-    monsterDist: 45,
-    isReeling: false,
-    shipAngle: 0,
+    krakenHp: 600,
+    tentacles: [] as Tentacle[],
+    groggyTimer: 0,
     score: 0,
-    fishCaught: 0,
+    combo: 0,
+    maxCombo: 0,
+    tentaclesCutTotal: 0,
+    timeLeft: 35,
     isGameOver: false,
-    isVictory: false,
     isPaused: false,
     startTime: Date.now(),
-    shipGroup: null as THREE.Group | null,
-    monsterGroup: null as THREE.Group | null
+    tentacleCounter: 1,
+    spawnTimer: 0,
+    touchStart: { x: 0, y: 0 },
+    hitEffects: [] as { x: number; y: number; text: string; color: string; life: number }[],
   });
 
-  const handleHarpoonStrike = () => {
+  const initGame = useCallback(() => {
     const s = stateRef.current;
-    if (s.isGameOver || s.isVictory || s.isPaused) return;
+    s.krakenHp = 600;
+    s.tentacles = [];
+    s.groggyTimer = 0;
+    s.score = 0;
+    s.combo = 0;
+    s.maxCombo = 0;
+    s.tentaclesCutTotal = 0;
+    s.timeLeft = 35;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    s.tentacleCounter = 1;
+    s.spawnTimer = 0;
+    s.hitEffects = [];
 
-    s.monsterHp = Math.max(0, s.monsterHp - 25);
-    s.score += 250;
-    setMonsterHp(s.monsterHp);
-    setScore(s.score);
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    // Initial 4 Tentacles around Kraken
+    for (let i = 0; i < 4; i++) {
+      const angle = (i * Math.PI) / 2 + Math.PI / 4;
+      s.tentacles.push({
+        id: s.tentacleCounter++,
+        x: 180 + Math.cos(angle) * 110,
+        y: 260 + Math.sin(angle) * 90,
+        hp: 50,
+        maxHp: 50,
+        isCut: false,
+        angle,
+      });
+    }
 
-    if (s.monsterHp <= 0) {
-      s.fishCaught += 1;
-      setFishCaught(s.fishCaught);
-      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    setKrakenHp(600);
+    setTentaclesCut(0);
+    setScore(0);
+    setSlayCombo(0);
+    setMaxCombo(0);
+    setTimeLeft(35);
+    setFeedbackText(null);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  }, []);
 
-      if (s.fishCaught >= targetMonsters) {
-        s.isVictory = true;
-        s.isGameOver = true;
-        setIsGameOver(true);
-        const duration = (Date.now() - s.startTime) / 1000;
-        const receipt = calculateAndDepositMissionReward({
-          gameId: 'voxel_kraken_hunter',
-          gameTitle: '복셀 크라켄 헌터',
-          durationSeconds: duration,
-          score: s.score + 1500,
-          difficulty: 'NIGHTMARE',
-          isVictory: true
+  useEffect(() => {
+    initGame();
+  }, [initGame]);
+
+  // Timer loop
+  useEffect(() => {
+    if (isGameOver || isPaused) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          endGame(false);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isGameOver, isPaused]);
+
+  // Touch Handlers: Swipe to Cut Tentacles / Tap to Harpoon Core (Zero Joysticks)
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    s.touchStart = {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY,
+    };
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    const endX = (e.clientX - rect.left) * scaleX;
+    const endY = (e.clientY - rect.top) * scaleY;
+
+    const dx = endX - s.touchStart.x;
+    const dy = endY - s.touchStart.y;
+    const dist = Math.hypot(dx, dy);
+
+    if (dist > 25) {
+      // Swipe: TENTACLE SLICE!
+      let sliced = false;
+      s.tentacles.forEach((t) => {
+        if (!t.isCut && Math.hypot(t.x - endX, t.y - endY) < 55) {
+          t.hp -= 35;
+          sliced = true;
+
+          if (t.hp <= 0) {
+            t.isCut = true;
+            s.tentaclesCutTotal += 1;
+            setTentaclesCut(s.tentaclesCutTotal);
+
+            s.combo += 1;
+            if (s.combo > s.maxCombo) s.maxCombo = s.combo;
+
+            s.score += 300 + s.combo * 20;
+            setScore(s.score);
+            setSlayCombo(s.combo);
+            setMaxCombo(s.maxCombo);
+
+            setFeedbackText(`TENTACLE SLICED! +300P ⚔️`);
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+            setTimeout(() => setFeedbackText(null), 300);
+
+            s.hitEffects.push({
+              x: t.x,
+              y: t.y,
+              text: '💥 SEVERED!',
+              color: '#38bdf8',
+              life: 0.6,
+            });
+          }
+        }
+      });
+
+      if (sliced) {
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+
+        // Check if all tentacles are cut -> Trigger Groggy State!
+        const allCut = s.tentacles.every((t) => t.isCut);
+        if (allCut && s.groggyTimer <= 0) {
+          s.groggyTimer = 3.0; // 3 sec groggy!
+          setFeedbackText(`👑 GROGGY! CORE EXPOSED! 2X CRIT! 👑`);
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+          setTimeout(() => setFeedbackText(null), 600);
+        }
+      }
+    } else {
+      // Tap: HARPOON STRIKE ON KRAKEN EYE/CORE!
+      const coreX = 180;
+      const coreY = 240;
+      if (Math.hypot(endX - coreX, endY - coreY) < 70) {
+        const isGroggy = s.groggyTimer > 0;
+        const dmg = isGroggy ? 60 : 25;
+
+        s.krakenHp = Math.max(0, s.krakenHp - dmg);
+        setKrakenHp(s.krakenHp);
+
+        s.combo += 1;
+        if (s.combo > s.maxCombo) s.maxCombo = s.combo;
+
+        const pts = (isGroggy ? 150 : 60) + s.combo * 10;
+        s.score += pts;
+        setScore(s.score);
+        setSlayCombo(s.combo);
+        setMaxCombo(s.maxCombo);
+
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+
+        s.hitEffects.push({
+          x: endX + (Math.random() - 0.5) * 30,
+          y: endY + (Math.random() - 0.5) * 30,
+          text: isGroggy ? `CRIT! -${dmg} 🔱` : `-${dmg}`,
+          color: isGroggy ? '#fde047' : '#f43f5e',
+          life: 0.5,
         });
-        setSettlementReceipt(receipt);
-        onReward(receipt.totalSns);
-      } else {
-        s.monsterHp = 100;
-        s.monsterDist = 45;
-        setMonsterHp(100);
-        setMonsterDistance(45);
+
+        if (s.krakenHp <= 0) {
+          endGame(true);
+        }
       }
     }
   };
 
+  // Main 60FPS Kraken Deep Sea Loop
   useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
-
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x030712);
-    scene.fog = new THREE.Fog(0x030712, 20, 80);
-
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
-    camera.position.set(0, 5, -8);
-    camera.lookAt(0, 1.5, 20);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    container.appendChild(renderer.domElement);
-
-    const ambientLight = new THREE.AmbientLight(0x0284c7, 0.6);
-    scene.add(ambientLight);
-
-    const moonLight = new THREE.DirectionalLight(0x38bdf8, 1.6);
-    moonLight.position.set(-10, 30, -20);
-    scene.add(moonLight);
-
-    // Ocean Water
-    const ocean = new THREE.Mesh(
-      new THREE.PlaneGeometry(80, 80),
-      new THREE.MeshStandardMaterial({ color: 0x0c4a6e, roughness: 0.1, metalness: 0.7 })
-    );
-    ocean.rotation.x = -Math.PI / 2;
-    scene.add(ocean);
-
-    // Fishing Ship (Player)
-    const shipGroup = new THREE.Group();
-    const hull = new THREE.Mesh(
-      new THREE.BoxGeometry(3.5, 1.2, 7),
-      new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.7 })
-    );
-    hull.position.y = 0.6;
-    shipGroup.add(hull);
-
-    const cabin = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.4, 2.5), new THREE.MeshStandardMaterial({ color: 0xffffff }));
-    cabin.position.set(0, 1.9, -1.2);
-    shipGroup.add(cabin);
-
-    shipGroup.position.set(0, 0, 0);
-    scene.add(shipGroup);
-    stateRef.current.shipGroup = shipGroup;
-
-    // Giant Kraken Sea Monster
-    const monsterGroup = new THREE.Group();
-    const head = new THREE.Mesh(new THREE.SphereGeometry(2.5, 16, 16), new THREE.MeshStandardMaterial({ color: 0x881337 }));
-    head.position.y = 1.5;
-    monsterGroup.add(head);
-
-    for (let t = 0; t < 6; t++) {
-      const tentacle = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.6, 6, 8), new THREE.MeshStandardMaterial({ color: 0x9f1239 }));
-      const angle = (t / 6) * Math.PI * 2;
-      tentacle.position.set(Math.sin(angle) * 3, 1, Math.cos(angle) * 3);
-      monsterGroup.add(tentacle);
-    }
-
-    monsterGroup.position.set(0, 0, 45);
-    scene.add(monsterGroup);
-    stateRef.current.monsterGroup = monsterGroup;
-
-    let animId: number;
     let lastTime = performance.now();
 
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const s = stateRef.current;
       if (s.isPaused || s.isGameOver) return;
 
-      // Reeling Logic
-      if (s.isReeling) {
-        s.monsterDist = Math.max(10, s.monsterDist - dt * 8);
-        s.lineTension = Math.min(100, s.lineTension + dt * 35);
-      } else {
-        s.monsterDist = Math.min(50, s.monsterDist + dt * 3);
-        s.lineTension = Math.max(15, s.lineTension - dt * 25);
+      // Update Groggy Timer & Tentacle Respawn
+      if (s.groggyTimer > 0) {
+        s.groggyTimer -= dt;
+        if (s.groggyTimer <= 0) {
+          // Respawn Tentacles
+          s.tentacles.forEach((t) => {
+            t.isCut = false;
+            t.hp = t.maxHp;
+          });
+        }
       }
 
-      setMonsterDistance(Math.round(s.monsterDist));
-      setLineTension(Math.round(s.lineTension));
-
-      if (monsterGroup) {
-        monsterGroup.position.set(Math.sin(now * 0.002) * 5, Math.sin(now * 0.005) * 0.8, s.monsterDist);
+      // Update Hit Effects
+      for (let i = s.hitEffects.length - 1; i >= 0; i--) {
+        const eff = s.hitEffects[i];
+        eff.y -= 30 * dt;
+        eff.life -= dt;
+        if (eff.life <= 0) s.hitEffects.splice(i, 1);
       }
 
-      if (shipGroup) {
-        shipGroup.rotation.y = s.shipAngle;
-        shipGroup.position.y = Math.sin(now * 0.003) * 0.2;
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Abyssal Deep Sea Background (Dark Oceanic Cyan)
+      const oceanGrad = ctx.createLinearGradient(0, 0, 0, h);
+      oceanGrad.addColorStop(0, '#02131e');
+      oceanGrad.addColorStop(0.5, '#042f48');
+      oceanGrad.addColorStop(1, '#064e77');
+      ctx.fillStyle = oceanGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Deep Sea Vortex Swirl
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.15)';
+      ctx.lineWidth = 3;
+      [50, 100, 150].forEach((r) => {
+        ctx.beginPath();
+        ctx.arc(w / 2, 240, r, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+
+      // Render Kraken Tentacles
+      s.tentacles.forEach((t) => {
+        if (!t.isCut) {
+          ctx.save();
+          ctx.translate(t.x, t.y);
+          ctx.font = '40px serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('🐙', 0, 0);
+
+          // Tentacle Mini HP Bar
+          ctx.fillStyle = '#1e293b';
+          ctx.fillRect(-15, 22, 30, 4);
+          ctx.fillStyle = '#38bdf8';
+          ctx.fillRect(-15, 22, 30 * (t.hp / t.maxHp), 4);
+          ctx.restore();
+        }
+      });
+
+      // Render Kraken Central Core Eye
+      const coreX = 180;
+      const coreY = 240;
+      ctx.save();
+      ctx.translate(coreX, coreY);
+
+      if (s.groggyTimer > 0) {
+        ctx.shadowColor = '#fde047';
+        ctx.shadowBlur = 25;
       }
 
-      renderer.render(scene, camera);
+      ctx.font = s.groggyTimer > 0 ? '70px serif' : '62px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(s.groggyTimer > 0 ? '💫' : '👁️', 0, 0);
+      ctx.restore();
+
+      // Boss Health Bar at Top
+      const barW = 240;
+      const barH = 10;
+      const barX = (w - barW) / 2;
+      const barY = 90;
+
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(barX, barY, barW, barH);
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(barX, barY, barW * (s.krakenHp / maxKrakenHp), barH);
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(barX, barY, barW, barH);
+
+      ctx.font = 'bold 13px monospace';
+      ctx.fillStyle = '#fde047';
+      ctx.textAlign = 'center';
+      ctx.fillText(`심해의 지배자 크라켄 [${s.krakenHp}/${maxKrakenHp}]`, w / 2, barY - 10);
+
+      // Render Floating Hit Effects
+      s.hitEffects.forEach((eff) => {
+        ctx.font = 'bold 15px monospace';
+        ctx.fillStyle = eff.color;
+        ctx.textAlign = 'center';
+        ctx.fillText(eff.text, eff.x, eff.y);
+      });
     };
 
-    animId = requestAnimationFrame(animate);
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, [playSfx]);
 
-    return () => {
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-    };
-  }, [lowSpecMode]);
-
-  const handleRestart = () => {
+  const endGame = (isWin: boolean) => {
     const s = stateRef.current;
-    s.lineTension = 30;
-    s.monsterHp = 100;
-    s.monsterDist = 45;
-    s.isReeling = false;
-    s.shipAngle = 0;
-    s.score = 0;
-    s.fishCaught = 0;
-    s.isGameOver = false;
-    s.isVictory = false;
-    s.startTime = Date.now();
-    setScore(0);
-    setFishCaught(0);
-    setLineTension(30);
-    setMonsterHp(100);
-    setMonsterDistance(45);
-    setIsGameOver(false);
-    setSettlementReceipt(null);
+    if (s.isGameOver) return;
+    s.isGameOver = true;
+    setIsGameOver(true);
+
+    if (isWin) {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    } else {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+
+    const duration = (Date.now() - s.startTime) / 1000;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'arcade_kraken_slayer',
+      gameTitle: '블리츠 크라켄 슬레이어',
+      durationSeconds: duration,
+      score: s.score + (isWin ? 3500 : 800) + s.maxCombo * 40,
+      difficulty: 'NIGHTMARE',
+      isVictory: isWin || s.krakenHp <= 100,
+    });
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
   };
 
-  return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
+  const tutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 촉수 슬라이스 & 코어 작살' : 'STEP 1: SLICE TENTACLES & HARPOON',
+      title: isKo ? '촉수를 베어내고 본체 눈동자를 연속 타격하세요' : 'Slice Tentacles and Tap to Harpoon Core',
+      description: isKo
+        ? '가상 조이스틱 없이 솟구치는 촉수(🐙)를 손가락 스와이프로 잘라내고, 촉수가 모두 잘려 그로기(💫) 상태가 되면 중앙의 거대 눈동자를 광속 탭하여 작살로 2배 크리티컬 폭딜을 꽂아 넣으세요.'
+        : 'Swipe to sever surrounding tentacles, then rapidly tap the exposed eye during groggy for 2x critical damage.',
+      keyPoints: isKo
+        ? [
+            '가상 조이스틱 0개 (100% 스와이프 절단 & 탭 작살 난사)',
+            '촉수 전멸 시 3초간 그로기 코어 노출 & 2배 크리티컬',
+            '35초 타임어택 내 심해 지배자 크라켄 완전 토벌'
+          ]
+        : [
+            'Zero Virtual Joysticks: 100% Swipe Slice & Tap Harpoon',
+            'Severing all tentacles triggers 3s groggy for 2x crit damage',
+            'Slay the abyssal Kraken within 35s time attack'
+          ],
+      iconType: 'GOAL',
+    },
+    {
+      badge: isKo ? 'STEP 2: 모바일 퓨어 제스처' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '화면 스와이프 & 연타 탭 (Swipe & Tap)' : 'Swipe & Rapid Tap Gestures',
+      description: isKo
+        ? '촉수는 손가락으로 빗겨 긋고, 코어는 연타로 두드립니다.'
+        : 'Slice tentacles with quick swipes and hammer the eye with rapid taps.',
+      keyPoints: isKo
+        ? [
+            '⚡ 스와이프: 실시간 촉수 일도양단 절단',
+            '👆 고속 탭: 거대 눈동자 작살 폭풍 난타',
+            '⏱️ 35초 타임어택 고득점 챌린지'
+          ]
+        : [
+            '⚡ Quick Swipe: Slice through emerging tentacles',
+            '👆 Fast Tap: Unleash barrage of harpoon strikes',
+            '⏱️ 35s time attack boss raid'
+          ],
+      iconType: 'GESTURES',
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '토벌 완료 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon match finish.',
+      keyPoints: isKo
+        ? [
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '절단 촉수 및 보스 데미지 비례 대량 잭팟',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Severed tentacles and boss damage combo multipliers',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS',
+    },
+  ];
 
+  return (
+    <div className="relative w-full h-[100dvh] bg-[#02131e] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none">
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
       <MinimalistMissionHUD
-        title={isKo ? '복셀 크라켄 헌터' : 'Voxel Kraken Hunter'}
-        language={language}
-        hp={{ current: monsterHp, max: 100 }}
+        title={isKo ? '블리츠 크라켄' : 'Blitz Kraken Slayer'}
+        language={(language as Language) || 'ko'}
         telemetries={[
-          { label: isKo ? '포획' : 'Caught', value: `${fishCaught}/${targetMonsters}마리`, color: 'text-cyan-300' },
-          { label: isKo ? '거리' : 'Dist', value: `${monsterDistance}m`, color: 'text-amber-300' },
-          { label: isKo ? '장력' : 'Tension', value: `${lineTension}%`, color: lineTension > 80 ? 'text-rose-400 font-black animate-pulse' : 'text-emerald-300' }
+          { label: isKo ? '촉수' : 'Tentacles', value: `${tentaclesCut}개 절단`, color: 'text-cyan-300 font-bold' },
+          { label: isKo ? '체력' : 'Boss HP', value: `${krakenHp}/${maxKrakenHp}`, color: krakenHp <= 200 ? 'text-rose-500 font-bold animate-pulse' : 'text-amber-400 font-bold' },
+          { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 10 ? 'text-rose-500 font-bold animate-pulse' : 'text-cyan-400 font-bold' },
+          { label: isKo ? '콤보' : 'Combo', value: `${slayCombo}x`, color: slayCombo > 4 ? 'text-emerald-400 font-bold' : 'text-slate-300' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          stateRef.current.isPaused = !isPaused;
-        }}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
         isPaused={isPaused}
       />
 
-      {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div
-          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
-          style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const startX = e.clientX - rect.left;
-            const startY = e.clientY - rect.top;
-            let moved = false;
-            stateRef.current.isReeling = true;
-
-            const onMove = (moveEvt: PointerEvent) => {
-              const curX = moveEvt.clientX - rect.left;
-              const curY = moveEvt.clientY - rect.top;
-              const dx = curX - startX;
-              const dy = curY - startY;
-
-              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
-                moved = true;
-                stateRef.current.shipAngle += dx > 0 ? 0.03 : -0.03;
-              }
-            };
-
-            const onUp = () => {
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-              window.removeEventListener('pointercancel', onUp);
-              stateRef.current.isReeling = false;
-
-              if (!moved) {
-                // Tap: Harpoon Strike
-                handleHarpoonStrike();
-              }
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-          }}
+      {/* Pure Touch Kraken Boss Raid Canvas Viewport */}
+      <div className="flex-1 w-full max-w-md relative overflow-hidden flex items-center justify-center select-none touch-none p-2">
+        <canvas
+          ref={canvasRef}
+          width={360}
+          height={500}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          className="w-full h-full object-contain touch-none cursor-crosshair shadow-2xl"
         />
-      )}
+
+        {/* Floating Feedback Text */}
+        {feedbackText && (
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 pointer-events-none text-base font-bold text-amber-300 drop-shadow-lg animate-bounce whitespace-nowrap">
+            {feedbackText}
+          </div>
+        )}
+      </div>
 
       {/* Minimal Bottom Guide */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/75 border border-sky-500/30 rounded-full text-[10px] text-sky-300 font-mono backdrop-blur-xs">
-          {isKo ? '드래그: 조준 | 탭: 작살 발사 | 화면 홀드: 릴링 당기기 (버튼 없음)' : 'Drag: Aim | Tap: Harpoon Strike | Hold: Reel In (No Buttons)'}
+      <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono">
+          {isKo ? '촉수를 스와이프로 자르고, 그로기 시 중앙 눈동자를 연타해 타격하세요' : 'Swipe to slice tentacles, tap the central eye during groggy'}
         </div>
       </div>
 
-      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
-        <SportsMissionTutorial
-          gameId="voxel_kraken_hunter"
-          gameTitle={isKo ? '3D 복셀 크라켄 헌터: 심해 거대 해수 포획' : 'Voxel Kraken Hunter: Deep Sea Monster Hunt'}
-          sportType="fishing"
-          language={language}
+        <UniversalTutorialModal
+          gameId="arcade_kraken_slayer"
+          gameTitle={isKo ? '블리츠 크라켄: 심해 보스 토벌' : 'Blitz Kraken: Deep Sea Raid'}
+          customSteps={tutorialSteps}
+          language={(language as Language) || 'ko'}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}
         />
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
         <VictoryRewardModal
           receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
+          language={(language as Language) || 'ko'}
+          onPlayAgain={initGame}
           onExit={onExit}
         />
       )}
     </div>
   );
 };
+export default VoxelKrakenHunterGame;
