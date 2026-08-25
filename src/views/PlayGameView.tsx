@@ -8341,18 +8341,18 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelcrazytaxi',
-      title: language === 'ko' ? '3D 복셀 크레이지 택시: 도심 폭주 레이싱' : 'Voxel Crazy Taxi: City Rush',
+      title: language === 'ko' ? '블리츠 하이웨이 레이서' : 'Blitz Highway Racer',
       icon: Trophy,
-      color: 'from-amber-400 to-cyan-500',
+      color: 'from-cyan-500 to-blue-700',
       image: '/minigame_boss.png',
       characterId: 96,
       action: () => {
         setGameState('voxelcrazytaxi');
       },
-      category: '3d',
+      category: 'casual',
       isNew: true,
-      badgeText: '3D TAXI',
-      guide: language === 'ko' ? '노란색 복셀 택시를 조종하여 도심의 승객을 태우고 제한 시간 내에 목적지까지 초고속 드리프트 질주하세요.' : 'Steer your yellow taxi, pick up urban fares, and turbo rush to destinations before time runs out!'
+      badgeText: 'HIGHWAY-RACE',
+      guide: language === 'ko' ? '화면을 손가락으로 좌우 드래그하여 차선을 변경하고 장애물 차량을 아슬아슬하게 추월하세요.' : 'Drag finger across screen to steer lanes and near-miss traffic at high speed!'
     },
     {
       id: 'voxellaserstealth',
@@ -11975,7 +11975,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '크레이지 택시 보상', 'Crazy Taxi reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 하이웨이 레이서 보상', 'Blitz Highway Racer reward')}
       />
     );
   }
