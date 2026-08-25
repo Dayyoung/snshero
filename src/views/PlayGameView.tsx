@@ -8431,7 +8431,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelhalfpipeskater',
-      title: language === 'ko' ? '3D 복셀 하프파이프 스케이터: 스트리트 트릭' : 'Voxel Halfpipe Skater: Street Tricks',
+      title: language === 'ko' ? '블리츠 하프파이프' : 'Blitz Halfpipe Air',
       icon: Trophy,
       color: 'from-amber-500 to-cyan-500',
       image: '/minigame_boss.png',
@@ -8439,10 +8439,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelhalfpipeskater');
       },
-      category: '3d',
+      category: 'sports',
       isNew: true,
-      badgeText: '3D HALFPIPE',
-      guide: language === 'ko' ? 'U자형 하프파이프 램프에서 펌핑 가속 후 공중으로 도약하여 킥플립, 스핀, 핸드플랜트 묘기를 완성하세요.' : 'Pump speed in the U-ramp, launch high into the air, and pull off 360 spins and flip tricks!'
+      badgeText: 'HALFPIPE-AIR',
+      guide: language === 'ko' ? '위로 스와이프해 에어 도약하고, 공중에서 4방향 스와이프로 트릭 콤보를 구사하세요.' : 'Swipe up to launch and swipe 4-ways to perform radical aerial tricks!'
     },
     {
       id: 'voxelnetherportal',
@@ -12053,7 +12053,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '하프파이프 스케이터 보상', 'Halfpipe Skater reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 하프파이프 보상', 'Blitz Halfpipe Air reward')}
       />
     );
   }
