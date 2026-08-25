@@ -8146,7 +8146,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxeltreasuredigger',
-      title: language === 'ko' ? '3D 복셀 트레저 디거' : 'Voxel Treasure Digger',
+      title: language === 'ko' ? '블리츠 트레저 디거' : 'Blitz Treasure Digger',
       icon: Pickaxe,
       color: 'from-amber-700 to-yellow-900',
       image: '/minigame_minesweeper.png',
@@ -8154,10 +8154,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxeltreasuredigger');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D DIGGER',
-      guide: language === 'ko' ? '지하 암반층을 곡괭이로 채굴하며 다이아몬드 광맥과 고대 유물을 발굴하고 산소 게이지를 관리하세요.' : 'Dig subterranean blocks, uncover rare gems and manage your oxygen supply!'
+      badgeText: 'TREASURE-DIGGER',
+      guide: language === 'ko' ? '화면을 드래그해 각도를 맞추고 손을 떼어 갈고리를 사출하세요.' : 'Drag to aim hook and release to launch claw!'
     },
     {
       id: 'voxelflightlanding',
@@ -11806,7 +11806,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '트레저 디거 보상', 'Treasure Digger reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 트레저 디거 보상', 'Blitz Treasure Digger reward')}
       />
     );
   }
