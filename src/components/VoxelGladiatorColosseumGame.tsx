@@ -1,7 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { CardData } from '../types';
-import { OneThumbMeleeGestureAdapter } from '../lib/oneThumbMeleeGestureAdapter';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
@@ -16,464 +14,543 @@ interface VoxelGladiatorColosseumGameProps {
   onReward: (amount: number) => void;
 }
 
+interface RivalGladiator {
+  id: number;
+  name: string;
+  enName: string;
+  avatar: string;
+  maxHp: number;
+  attackInterval: number; // seconds
+}
+
+const RIVALS: RivalGladiator[] = [
+  { id: 1, name: '철벽의 트레보', enName: 'Trevor the Iron', avatar: '🛡️', maxHp: 180, attackInterval: 1.8 },
+  { id: 2, name: '화염검의 이그니스', enName: 'Ignis the Flame', avatar: '⚔️', maxHp: 260, attackInterval: 1.4 },
+  { id: 3, name: '패왕 막시무스', enName: 'Maximus the Warlord', avatar: '👑', maxHp: 380, attackInterval: 1.1 },
+];
+
 export const VoxelGladiatorColosseumGame: React.FC<VoxelGladiatorColosseumGameProps> = ({
-  deck,
+  deck: _deck,
   language,
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
-  const heroCards = deck.slice(0, 3);
-  const [activeHeroIdx, setActiveHeroIdx] = useState<number>(0);
+  const [currentRivalIdx, setCurrentRivalIdx] = useState<number>(0);
+  const [playerHp, setPlayerHp] = useState<number>(100);
+  const [enemyHp, setEnemyHp] = useState<number>(180);
+  const [score, setScore] = useState<number>(0);
+  const [duelCombo, setDuelCombo] = useState<number>(0);
+  const [maxCombo, setMaxCombo] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(35);
+  const [feedbackText, setFeedbackText] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_gladiator_colosseum') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_gladiator_duel') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [playerHp, setPlayerHp] = useState<number>(100);
-  const [enemyHp, setEnemyHp] = useState<number>(200);
-  const [crowdFever, setCrowdFever] = useState<number>(0);
-  const [combo, setCombo] = useState<number>(1);
-  const [score, setScore] = useState<number>(0);
-  const [timeLeft, setTimeLeft] = useState<number>(90);
-  const [actionBanner, setActionBanner] = useState<string>('');
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
-  const currentHero = heroCards[activeHeroIdx] || { title: 'Gladiator', power: 20 };
-
   const stateRef = useRef({
-    playerPos: new THREE.Vector3(0, 0, 4),
-    targetVelocity: new THREE.Vector3(0, 0, 0),
+    rivalIdx: 0,
     playerHp: 100,
-    enemyHp: 200,
-    crowdFever: 0,
-    isGuarding: false,
-    parryWindow: 0,
-    isAttacking: false,
-    attackTime: 0,
-    enemyAttackCooldown: 60,
-    enemyIsAttacking: false,
-    heroIdx: 0,
-    combo: 1,
+    enemyHp: 180,
+    isEnemyAttacking: false,
+    enemyAttackTimer: 0,
+    enemyStunTimer: 0,
     score: 0,
-    timeLeft: 90,
+    combo: 0,
+    maxCombo: 0,
+    timeLeft: 35,
     isGameOver: false,
     isPaused: false,
     startTime: Date.now(),
-    pSword: null as THREE.Mesh | null,
-    pShield: null as THREE.Mesh | null,
-    eAxe: null as THREE.Mesh | null,
-    playerGroup: null as THREE.Group | null,
-    enemyGroup: null as THREE.Group | null
+    touchStart: { x: 0, y: 0 },
+    hitEffects: [] as { x: number; y: number; text: string; color: string; life: number }[],
   });
 
-  useEffect(() => {
-    stateRef.current.isPaused = isPaused || showTutorial;
-  }, [isPaused, showTutorial]);
+  const setupRival = useCallback((idx: number) => {
+    const s = stateRef.current;
+    const rival = RIVALS[idx] || RIVALS[0];
+    s.rivalIdx = idx;
+    s.enemyHp = rival.maxHp;
+    s.isEnemyAttacking = false;
+    s.enemyAttackTimer = 0;
+    s.enemyStunTimer = 0;
+
+    setCurrentRivalIdx(idx);
+    setEnemyHp(rival.maxHp);
+  }, []);
+
+  const initGame = useCallback(() => {
+    const s = stateRef.current;
+    s.playerHp = 100;
+    s.score = 0;
+    s.combo = 0;
+    s.maxCombo = 0;
+    s.timeLeft = 35;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    s.hitEffects = [];
+
+    setPlayerHp(100);
+    setScore(0);
+    setDuelCombo(0);
+    setMaxCombo(0);
+    setTimeLeft(35);
+    setFeedbackText(null);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+
+    setupRival(0);
+  }, [setupRival]);
 
   useEffect(() => {
-    if (!mountRef.current) return;
-    const container = mountRef.current;
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+    initGame();
+  }, [initGame]);
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1a0f0a);
-    scene.fog = new THREE.FogExp2(0x1a0f0a, 0.02);
+  // Timer loop
+  useEffect(() => {
+    if (isGameOver || isPaused) return;
 
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
-    camera.position.set(0, 6, 14);
-    camera.lookAt(0, 1.5, 0);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    renderer.shadowMap.enabled = !lowSpecMode;
-    container.appendChild(renderer.domElement);
-
-    const ambLight = new THREE.AmbientLight(0xffedd5, 0.8);
-    scene.add(ambLight);
-
-    const dirLight = new THREE.DirectionalLight(0xf97316, 1.4);
-    dirLight.position.set(15, 30, 20);
-    dirLight.castShadow = !lowSpecMode;
-    scene.add(dirLight);
-
-    // Arena Floor
-    const arenaGeo = new THREE.CylinderGeometry(14, 14, 1, 32);
-    const arenaMat = new THREE.MeshStandardMaterial({ color: 0x2b1e16, roughness: 0.9 });
-    const arena = new THREE.Mesh(arenaGeo, arenaMat);
-    arena.position.y = -0.5;
-    scene.add(arena);
-
-    // Player Gladiator
-    const pGroup = new THREE.Group();
-    const pBody = new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.6, 0.8), new THREE.MeshStandardMaterial({ color: 0xef4444 }));
-    pBody.position.y = 0.8;
-    pGroup.add(pBody);
-
-    const pSword = new THREE.Mesh(new THREE.BoxGeometry(0.15, 1.8, 0.3), new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.8 }));
-    pSword.position.set(0.7, 0.9, 0.4);
-    pGroup.add(pSword);
-    stateRef.current.pSword = pSword;
-
-    const pShield = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.0, 0.2), new THREE.MeshStandardMaterial({ color: 0x3b82f6 }));
-    pShield.position.set(-0.7, 0.8, 0.4);
-    pGroup.add(pShield);
-    stateRef.current.pShield = pShield;
-
-    pGroup.position.set(0, 0, 4);
-    scene.add(pGroup);
-    stateRef.current.playerGroup = pGroup;
-
-    // Boss Champion
-    const eGroup = new THREE.Group();
-    const eBody = new THREE.Mesh(new THREE.BoxGeometry(1.6, 2.4, 1.2), new THREE.MeshStandardMaterial({ color: 0x7c2d12 }));
-    eBody.position.y = 1.2;
-    eGroup.add(eBody);
-
-    const eAxe = new THREE.Mesh(new THREE.BoxGeometry(0.3, 2.6, 0.8), new THREE.MeshStandardMaterial({ color: 0x475569 }));
-    eAxe.position.set(1.2, 1.4, 0.6);
-    eGroup.add(eAxe);
-    stateRef.current.eAxe = eAxe;
-
-    eGroup.position.set(0, 0, -4);
-    scene.add(eGroup);
-    stateRef.current.enemyGroup = eGroup;
-
-    // Gesture Adapter
-    const gesture = new OneThumbMeleeGestureAdapter(container, {
-      onMove: (nx, nz) => {
-        const s = stateRef.current;
-        if (s.isPaused || s.isGameOver) return;
-        s.targetVelocity.set(nx * 12, 0, nz * 12);
-      },
-      onComboSlash: () => {
-        const s = stateRef.current;
-        if (s.isPaused || s.isGameOver || s.isAttacking) return;
-        s.isAttacking = true;
-        s.attackTime = 0.2;
-        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-
-        // Check Hit
-        const dist = s.playerPos.distanceTo(eGroup.position);
-        if (dist < 4.2) {
-          const dmg = (heroCards[s.heroIdx]?.power || 20) * (s.crowdFever > 80 ? 2.2 : 1.0);
-          s.enemyHp = Math.max(0, s.enemyHp - dmg);
-          s.score += Math.round(dmg * 10);
-          s.combo += 1;
-          s.crowdFever = Math.min(100, s.crowdFever + 8);
-          setEnemyHp(Math.round(s.enemyHp));
-          setScore(s.score);
-          setCombo(s.combo);
-          setCrowdFever(Math.round(s.crowdFever));
-          setActionBanner(`💥 ${Math.round(dmg)} DMG! (x${s.combo} HIT)`);
-          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-
-          if (s.enemyHp <= 0 && !s.isGameOver) {
-            s.isGameOver = true;
-            setIsGameOver(true);
-            const duration = (Date.now() - s.startTime) / 1000;
-            const receipt = calculateAndDepositMissionReward({
-              gameId: 'voxel_gladiator_colosseum',
-              gameTitle: '복셀 검투사 콜로세움',
-              durationSeconds: duration,
-              score: s.score + 2000,
-              difficulty: 'NIGHTMARE',
-              isVictory: true
-            });
-            setSettlementReceipt(receipt);
-            onReward(receipt.totalSns);
-          }
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          endGame(false);
+          return 0;
         }
-      },
-      onParryGuard: () => {
-        const s = stateRef.current;
-        if (s.isPaused || s.isGameOver) return;
-        s.isGuarding = true;
-        s.parryWindow = 0.4;
-        setActionBanner('🛡️ PARRY GUARD!');
-        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-        setTimeout(() => {
-          s.isGuarding = false;
-        }, 400);
-      },
-      onEvasiveDodge: () => {
-        const s = stateRef.current;
-        if (s.isPaused || s.isGameOver || heroCards.length <= 1) return;
-        s.heroIdx = (s.heroIdx + 1) % heroCards.length;
-        setActiveHeroIdx(s.heroIdx);
-        setActionBanner(`🔄 HERO TAG: ${heroCards[s.heroIdx]?.title || 'Hero'}`);
-        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-      },
-      onChargeStrike: () => {
-        // Charge Strike
-      }
-    });
-
-    // Timer Interval
-    const timerInterval = setInterval(() => {
-      const s = stateRef.current;
-      if (s.isPaused || s.isGameOver) return;
-      s.timeLeft -= 1;
-      setTimeLeft(s.timeLeft);
-
-      if (s.timeLeft <= 0) {
-        s.isGameOver = true;
-        setIsGameOver(true);
-        const duration = (Date.now() - s.startTime) / 1000;
-        const receipt = calculateAndDepositMissionReward({
-          gameId: 'voxel_gladiator_colosseum',
-          gameTitle: '복셀 검투사 콜로세움',
-          durationSeconds: duration,
-          score: s.score,
-          difficulty: 'NIGHTMARE',
-          isVictory: s.enemyHp <= 50
-        });
-        setSettlementReceipt(receipt);
-        onReward(receipt.totalSns);
-      }
+        return t - 1;
+      });
     }, 1000);
 
-    let animId: number;
+    return () => clearInterval(timer);
+  }, [isGameOver, isPaused]);
+
+  // Touch Handlers: Tap to Attack / Swipe to Parry (Zero Joysticks)
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    s.touchStart = {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY,
+    };
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    const endX = (e.clientX - rect.left) * scaleX;
+    const endY = (e.clientY - rect.top) * scaleY;
+
+    const dx = endX - s.touchStart.x;
+    const dy = endY - s.touchStart.y;
+    const dist = Math.hypot(dx, dy);
+
+    if (dist > 30) {
+      // Swipe Action: PARRY / DEFLECT!
+      if (s.isEnemyAttacking) {
+        // Perfect Parry Clash!
+        s.isEnemyAttacking = false;
+        s.enemyStunTimer = 2.0; // Stun enemy for 2 sec!
+        s.combo += 1;
+        if (s.combo > s.maxCombo) s.maxCombo = s.combo;
+
+        s.score += 300 + s.combo * 40;
+        setScore(s.score);
+        setDuelCombo(s.combo);
+        setMaxCombo(s.maxCombo);
+
+        setFeedbackText(`PERFECT PARRY! ⚔️ STUNNED!`);
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+        setTimeout(() => setFeedbackText(null), 500);
+
+        s.hitEffects.push({
+          x: 180,
+          y: 240,
+          text: '⚡ PARRY!',
+          color: '#38bdf8',
+          life: 0.7,
+        });
+      } else {
+        // Normal Blade Slash
+        triggerPlayerAttack(40, true);
+      }
+    } else {
+      // Tap Action: RAPID FLURRY STRIKE!
+      triggerPlayerAttack(25, false);
+    }
+  };
+
+  const triggerPlayerAttack = (dmg: number, isHeavy: boolean) => {
+    const s = stateRef.current;
+    const isStunned = s.enemyStunTimer > 0;
+    const finalDmg = isStunned ? dmg * 2 : dmg;
+
+    s.enemyHp = Math.max(0, s.enemyHp - finalDmg);
+    s.combo += 1;
+    if (s.combo > s.maxCombo) s.maxCombo = s.combo;
+
+    s.score += 80 + s.combo * 15;
+    setEnemyHp(s.enemyHp);
+    setScore(s.score);
+    setDuelCombo(s.combo);
+    setMaxCombo(s.maxCombo);
+
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+
+    s.hitEffects.push({
+      x: 150 + Math.random() * 60,
+      y: 200 + Math.random() * 50,
+      text: isStunned ? `CRITICAL! -${finalDmg} 💥` : `-${finalDmg}`,
+      color: isStunned ? '#fde047' : '#f43f5e',
+      life: 0.6,
+    });
+
+    // Check Rival Defeat
+    if (s.enemyHp <= 0) {
+      if (s.rivalIdx < RIVALS.length - 1) {
+        setFeedbackText(`CHAMPION DEFEATED! 🏆`);
+        s.score += 1000;
+        setScore(s.score);
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+        setTimeout(() => {
+          setFeedbackText(null);
+          setupRival(s.rivalIdx + 1);
+        }, 800);
+      } else {
+        // Slay Maximus to Win!
+        endGame(true);
+      }
+    }
+  };
+
+  // Main 60FPS Duel Battle Loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     let lastTime = performance.now();
 
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const s = stateRef.current;
       if (s.isPaused || s.isGameOver) return;
 
-      // Player Movement
-      s.playerPos.addScaledVector(s.targetVelocity, dt);
-      s.playerPos.x = THREE.MathUtils.clamp(s.playerPos.x, -11, 11);
-      s.playerPos.z = THREE.MathUtils.clamp(s.playerPos.z, -11, 11);
-      pGroup.position.copy(s.playerPos);
+      const rival = RIVALS[s.rivalIdx] || RIVALS[0];
 
-      // Sword Swing
-      if (s.isAttacking && s.pSword) {
-        s.attackTime -= dt;
-        s.pSword.rotation.x = Math.sin(s.attackTime * 20) * 1.2;
-        if (s.attackTime <= 0) {
-          s.isAttacking = false;
-          s.pSword.rotation.x = 0;
+      // Update Stun & Enemy Attack AI
+      if (s.enemyStunTimer > 0) {
+        s.enemyStunTimer -= dt;
+      } else {
+        s.enemyAttackTimer += dt;
+        if (s.enemyAttackTimer >= rival.attackInterval - 0.45 && !s.isEnemyAttacking) {
+          // Warning state: Flash Red!
+          s.isEnemyAttacking = true;
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
         }
-      }
 
-      // Boss AI Attack
-      s.enemyAttackCooldown -= dt * 60;
-      if (s.enemyAttackCooldown <= 0) {
-        s.enemyAttackCooldown = 70;
-        const dist = s.playerPos.distanceTo(eGroup.position);
-        if (dist < 4.5) {
-          if (s.isGuarding) {
-            // Parried!
-            s.crowdFever = Math.min(100, s.crowdFever + 20);
-            setActionBanner('✨ PERFECT PARRY COUNTER!');
-            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-          } else {
-            // Hit Player
-            s.playerHp = Math.max(0, s.playerHp - 18);
-            s.combo = 1;
-            setPlayerHp(s.playerHp);
-            setCombo(1);
-            setActionBanner('⚠️ BOSS STRIKE HIT!');
-            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        if (s.enemyAttackTimer >= rival.attackInterval) {
+          // Enemy Strike Lands!
+          s.enemyAttackTimer = 0;
+          s.isEnemyAttacking = false;
+          s.playerHp = Math.max(0, s.playerHp - 22);
+          s.combo = 0;
+          setPlayerHp(s.playerHp);
+          setDuelCombo(0);
+          setFeedbackText(isKo ? '피격 당함! -22 HP 💔' : 'HIT TAKEN! -22 HP 💔');
+          setTimeout(() => setFeedbackText(null), 350);
 
-            if (s.playerHp <= 0 && !s.isGameOver) {
-              s.isGameOver = true;
-              setIsGameOver(true);
-              const duration = (Date.now() - s.startTime) / 1000;
-              const receipt = calculateAndDepositMissionReward({
-                gameId: 'voxel_gladiator_colosseum',
-                gameTitle: '복셀 검투사 콜로세움',
-                durationSeconds: duration,
-                score: s.score,
-                difficulty: 'NIGHTMARE',
-                isVictory: false
-              });
-              setSettlementReceipt(receipt);
-              onReward(receipt.totalSns);
-            }
+          if (s.playerHp <= 0) {
+            endGame(false);
+            return;
           }
         }
       }
 
-      renderer.render(scene, camera);
-    };
-
-    animId = requestAnimationFrame(animate);
-
-    return () => {
-      gesture.destroy();
-      clearInterval(timerInterval);
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
+      // Update Hit Effects
+      for (let i = s.hitEffects.length - 1; i >= 0; i--) {
+        const eff = s.hitEffects[i];
+        eff.y -= 30 * dt;
+        eff.life -= dt;
+        if (eff.life <= 0) s.hitEffects.splice(i, 1);
       }
-    };
-  }, [lowSpecMode]);
 
-  const handleRestart = () => {
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Colosseum Sand Arena Background
+      ctx.fillStyle = '#1c130d';
+      ctx.fillRect(0, 0, w, h);
+
+      // Arena Torch Pillars
+      ctx.fillStyle = '#451a03';
+      ctx.fillRect(15, 60, 20, 360);
+      ctx.fillRect(w - 35, 60, 20, 360);
+      ctx.font = '20px serif';
+      ctx.fillText('🔥', 15, 65);
+      ctx.fillText('🔥', w - 35, 65);
+
+      // Sand Ground Oval
+      ctx.fillStyle = '#78350f';
+      ctx.beginPath();
+      ctx.ellipse(w / 2, 340, 140, 60, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#92400e';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Render Enemy Gladiator
+      const enemyY = 240;
+      ctx.save();
+      if (s.isEnemyAttacking) {
+        // Red Flashing Rage
+        ctx.shadowColor = '#ef4444';
+        ctx.shadowBlur = 20;
+      }
+
+      ctx.font = s.isEnemyAttacking ? '70px serif' : '60px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(rival.avatar, w / 2, enemyY);
+      ctx.restore();
+
+      // Enemy Stunned Stars
+      if (s.enemyStunTimer > 0) {
+        ctx.font = '22px serif';
+        ctx.fillText('💫😵💫', w / 2, enemyY - 50);
+      }
+
+      // Enemy Attack Warning Indicator
+      if (s.isEnemyAttacking) {
+        ctx.font = 'bold 16px monospace';
+        ctx.fillStyle = '#ef4444';
+        ctx.textAlign = 'center';
+        ctx.fillText('⚠️ SWIPE TO PARRY! ⚠️', w / 2, enemyY - 60);
+      }
+
+      // Enemy Health Bar at Top
+      const barW = 220;
+      const barH = 10;
+      const barX = (w - barW) / 2;
+      const barY = 110;
+
+      ctx.fillStyle = '#374151';
+      ctx.fillRect(barX, barY, barW, barH);
+      ctx.fillStyle = '#f43f5e';
+      ctx.fillRect(barX, barY, barW * (s.enemyHp / rival.maxHp), barH);
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(barX, barY, barW, barH);
+
+      ctx.font = 'bold 13px monospace';
+      ctx.fillStyle = '#fde047';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${isKo ? rival.name : rival.enName} [${s.enemyHp}/${rival.maxHp}]`, w / 2, barY - 10);
+
+      // Player Sword at Bottom-Right
+      ctx.font = '40px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🗡️', w / 2 + 50, 420);
+
+      // Render Floating Hit Effects
+      s.hitEffects.forEach((eff) => {
+        ctx.font = 'bold 15px monospace';
+        ctx.fillStyle = eff.color;
+        ctx.textAlign = 'center';
+        ctx.fillText(eff.text, eff.x, eff.y);
+      });
+    };
+
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, [isKo, playSfx]);
+
+  const endGame = (isWin: boolean) => {
     const s = stateRef.current;
-    s.playerPos.set(0, 0, 4);
-    s.targetVelocity.set(0, 0, 0);
-    s.playerHp = 100;
-    s.enemyHp = 200;
-    s.crowdFever = 0;
-    s.combo = 1;
-    s.score = 0;
-    s.timeLeft = 90;
-    s.isGameOver = false;
-    s.isVictory = false;
-    s.startTime = Date.now();
-    setPlayerHp(100);
-    setEnemyHp(200);
-    setCrowdFever(0);
-    setCombo(1);
-    setScore(0);
-    setTimeLeft(90);
-    setIsGameOver(false);
-    setSettlementReceipt(null);
+    if (s.isGameOver) return;
+    s.isGameOver = true;
+    setIsGameOver(true);
+
+    if (isWin) {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    } else {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+
+    const duration = (Date.now() - s.startTime) / 1000;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'arcade_gladiator_duel',
+      gameTitle: '블리츠 글래디에이터 듀얼',
+      durationSeconds: duration,
+      score: s.score + (isWin ? 3500 : (s.rivalIdx + 1) * 600) + s.maxCombo * 50,
+      difficulty: 'NIGHTMARE',
+      isVictory: isWin || s.rivalIdx >= 2,
+    });
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
   };
 
-  const customTutorialSteps: TutorialStep[] = [
+  const tutorialSteps: TutorialStep[] = [
     {
-      badge: isKo ? 'STEP 1: 투기장 챔피언 결투' : 'STEP 1: ARENA CHAMPION DUEL',
-      title: isKo ? '콜로세움 보스 격파' : 'Colosseum Boss Raid',
+      badge: isKo ? 'STEP 1: 탭 공격 & 스와이프 패링' : 'STEP 1: TAP ATTACK & SWIPE PARRY',
+      title: isKo ? '화면을 탭해 공격하고 스와이프로 쳐내세요' : 'Tap to Rapid Slash, Swipe to Parry Enemy Strikes',
       description: isKo
-        ? '3D 복셀 원형 투기장에서 거대 챔피언의 도끼 참격을 피하고 패링 가드로 반격하세요.'
-        : 'Circle strafe around the giant champion in the 3D voxel arena and counter with parry guards.',
+        ? '가상 조이스틱 없이 화면을 탭하여 연속 검격을 가하고, 적이 붉게 번쩍이며 공격할 때(⚠️) 화면을 슥 스와이프하여 패링 쳐내고 스턴 그로기에 빠뜨리세요.'
+        : 'Tap rapidly to unleash combo slashes, and swipe across the screen when the enemy flashes red to parry.',
       keyPoints: isKo
         ? [
-            '보스 HP: 200 / 플레이어 HP: 100',
-            '피버 80% 달성 시 공격력 2.2배 증폭',
-            '제한 시간 90초 내 보스 토벌'
+            '가상 조이스틱 0개 (100% 탭 연속 공격 & 스와이프 패링)',
+            '패링 성공 시 적이 2초간 스턴되며 2배 크리티컬 폭딜',
+            '3인의 검투 챔피언을 모두 쓰러뜨리고 패왕에 등극하세요'
           ]
         : [
-            'Boss HP: 200 / Player HP: 100',
-            '2.2x damage boost on 80%+ Fever',
-            'Defeat the boss within 90 seconds'
+            'Zero Virtual Joysticks: 100% Direct Tap Rush & Swipe Parry',
+            'Successful parries stun enemies for 2x critical damage',
+            'Defeat all 3 colosseum champions to claim the throne'
           ],
-      iconType: 'GOAL'
+      iconType: 'GOAL',
     },
     {
-      badge: isKo ? 'STEP 2: 원터치 퓨어 제스처' : 'STEP 2: ONE-THUMB GESTURES',
-      title: isKo ? '100% 제스처 무술 컨트롤' : 'Pure Gesture Melee Controls',
+      badge: isKo ? 'STEP 2: 모바일 퓨어 제스처' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '화면 탭 & 스와이프 (Tap & Swipe)' : 'Tap & Swipe Gestures',
       description: isKo
-        ? '가상 버튼 없이 드래그, 탭, 스와이프, 2x 탭 제스처로 모든 액션을 조작합니다.'
-        : 'Zero on-screen buttons: control all melee moves with drag, tap, swipe and double-tap gestures.',
+        ? '적의 빈틈에 폭풍 연타를 넣고, 공격 타이밍에 날카롭게 스와이프합니다.'
+        : 'Tap for flurry combos and flick quickly for parry counter-attacks.',
       keyPoints: isKo
         ? [
-            '👆 드래그: 원형 투기장 이동',
-            '⚔️ 탭: 3연속 검술 콤보',
-            '🛡️ 스와이프: 0.33초 정밀 패링 가드',
-            '🔄 2x 탭: 덱 영웅 태그 스위칭'
+            '👆 빠른 탭: 폭풍 연속 난타 검격 콤보',
+            '⚡ 슥 스와이프: 칼날 쳐내기 패링 반격',
+            '⏱️ 35초 타임어택 고득점 챌린지'
           ]
         : [
-            '👆 Drag: Arena circle strafing',
-            '⚔️ Tap: 3-hit weapon combo slashes',
-            '🛡️ Swipe: 0.33s precision shield parry guard',
-            '🔄 Double-Tap: Tag-switch deck heroes'
+            '👆 Fast Tap: Rapid-fire sword flurry combos',
+            '⚡ Quick Swipe: Blade-deflecting parry counter',
+            '⏱️ 35s time attack duel sprint'
           ],
-      iconType: 'GESTURES'
+      iconType: 'GESTURES',
     },
     {
       badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
       title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
       description: isKo
-        ? '승리 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
-        : 'Standard payout scaled with Nightmare multiplier deposited atomically to your wallet.',
+        ? '결투 승리 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon match finish.',
       keyPoints: isKo
         ? [
-            '승리 즉시 LocalStorage 영구 지갑 입금',
-            '피버 콤보 및 스피드 보너스 추가 합산',
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '격파 챔피언 및 패링 콤보 비례 대량 잭팟',
             'VictoryRewardModal 2초 황금 코인 팡파레'
           ]
         : [
             'Instant atomic deposit to LocalStorage wallet',
-            'Fever combo and speed bonuses added',
+            'Defeated champions and parry combo multipliers',
             'VictoryRewardModal golden coin fanfare'
           ],
-      iconType: 'REWARDS'
-    }
+      iconType: 'REWARDS',
+    },
   ];
 
-  return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D Canvas */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
+  const currentRival = RIVALS[currentRivalIdx] || RIVALS[0];
 
+  return (
+    <div className="relative w-full h-[100dvh] bg-[#120b06] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none">
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
       <MinimalistMissionHUD
-        title={isKo ? '복셀 검투사 콜로세움' : 'Voxel Gladiator Colosseum'}
-        language={language}
+        title={isKo ? '블리츠 글래디에이터' : 'Blitz Gladiator Duel'}
+        language={(language as Language) || 'ko'}
         hp={{ current: playerHp, max: 100 }}
         telemetries={[
-          { label: isKo ? '보스' : 'Boss', value: `${enemyHp}/200`, color: 'text-rose-400' },
-          { label: isKo ? '피버' : 'Fever', value: `${crowdFever}%`, color: crowdFever > 80 ? 'text-amber-300 animate-pulse' : 'text-orange-400' },
-          { label: isKo ? '콤보' : 'Combo', value: `x${combo}`, color: 'text-cyan-300' },
-          { label: isKo ? '영웅' : 'Hero', value: currentHero.title || 'Hero', color: 'text-purple-300' }
+          { label: isKo ? '챔피언' : 'Champion', value: `${currentRivalIdx + 1}/${RIVALS.length} ${isKo ? currentRival.name : currentRival.enName}`, color: 'text-amber-400 font-bold' },
+          { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 10 ? 'text-rose-500 font-bold animate-pulse' : 'text-cyan-400 font-bold' },
+          { label: isKo ? '콤보' : 'Combo', value: `${duelCombo}x`, color: duelCombo > 4 ? 'text-emerald-400 font-bold animate-bounce' : 'text-slate-300' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          stateRef.current.isPaused = !isPaused;
-        }}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
         isPaused={isPaused}
       />
 
-      {/* Action Notification Banner */}
-      {actionBanner && (
-        <div className="absolute top-14 left-1/2 -translate-x-1/2 bg-black/80 border border-amber-400 text-amber-300 px-4 py-1 rounded-full text-xs font-black tracking-wider shadow-lg z-30 pointer-events-none animate-bounce">
-          {actionBanner}
-        </div>
-      )}
+      {/* Pure Touch Gladiator Duel Canvas Viewport */}
+      <div className="flex-1 w-full max-w-md relative overflow-hidden flex items-center justify-center select-none touch-none p-2">
+        <canvas
+          ref={canvasRef}
+          width={360}
+          height={500}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          className="w-full h-full object-contain touch-none cursor-pointer shadow-2xl"
+        />
 
-      {/* Bottom Gesture Guide */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-          <div className="px-3 py-1 bg-black/75 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
-            {isKo
-              ? '드래그: 이동 | 탭: 연속 검술 | 스와이프: 패링 가드 | 더블탭: 영웅 교체 (버튼 없음)'
-              : 'Drag: Move | Tap: Slash Combo | Swipe: Parry Guard | Double Tap: Tag Switch (No Buttons)'}
+        {/* Floating Feedback Text */}
+        {feedbackText && (
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 pointer-events-none text-base font-bold text-amber-300 drop-shadow-lg animate-bounce whitespace-nowrap">
+            {feedbackText}
           </div>
+        )}
+      </div>
+
+      {/* Minimal Bottom Guide */}
+      <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono">
+          {isKo ? '화면을 탭해 연속 공격하고, 적 공격(⚠️) 시 스와이프해 패링하세요' : 'Tap to attack, swipe when enemy strikes (⚠️) to parry'}
         </div>
-      )}
+      </div>
 
       {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
         <UniversalTutorialModal
-          gameId="voxel_gladiator_colosseum"
-          gameTitle={isKo ? '3D 복셀 검투사 콜로세움: 영광의 투기장' : '3D Voxel Gladiator Colosseum: Arena of Glory'}
-          customSteps={customTutorialSteps}
-          language={language}
+          gameId="arcade_gladiator_duel"
+          gameTitle={isKo ? '블리츠 글래디에이터: 1:1 결투' : 'Blitz Gladiator: 1v1 Duel'}
+          customSteps={tutorialSteps}
+          language={(language as Language) || 'ko'}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}
         />
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
         <VictoryRewardModal
           receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
+          language={(language as Language) || 'ko'}
+          onPlayAgain={initGame}
           onExit={onExit}
         />
       )}
     </div>
   );
 };
+export default VoxelGladiatorColosseumGame;

@@ -7816,7 +7816,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelgladiatorcolosseum',
-      title: language === 'ko' ? '3D 복셀 검투사 콜로세움' : 'Voxel Gladiator Arena',
+      title: language === 'ko' ? '블리츠 글래디에이터' : 'Blitz Gladiator Duel',
       icon: Swords,
       color: 'from-amber-600 to-red-800',
       image: '/minigame_cardrush.png',
@@ -7824,10 +7824,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelgladiatorcolosseum');
       },
-      category: '3d',
+      category: 'battle',
       isNew: true,
-      badgeText: '3D ARENA',
-      guide: language === 'ko' ? '방패 패링과 타이밍 회피 후 강력한 필살 참격으로 콜로세움 챔피언을 굴복시키세요.' : 'Shield parry, evade, and execute slash combos in the roman colosseum arena!'
+      badgeText: 'GLADIATOR-DUEL',
+      guide: language === 'ko' ? '화면을 탭해 연속 공격하고, 적 공격(⚠️) 시 스와이프해 패링 쳐내며 챔피언을 쓰러뜨리세요.' : 'Tap to attack rapidly and swipe when enemy strikes (⚠️) to parry and defeat champions!'
     },
     {
       id: 'voxeldragonslayer',
@@ -11520,7 +11520,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '검투사 콜로세움 보상', 'Gladiator Colosseum reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 글래디에이터 보상', 'Blitz Gladiator Duel reward')}
       />
     );
   }
