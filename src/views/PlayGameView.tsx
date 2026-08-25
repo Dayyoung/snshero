@@ -8326,7 +8326,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelpinballclimber',
-      title: language === 'ko' ? '3D 복셀 핀볼 클라이머: 수직 타워 상승' : 'Voxel Pinball Climber: Tower Ascent',
+      title: language === 'ko' ? '블리츠 핀볼 클라이머' : 'Blitz Pinball Climber',
       icon: Trophy,
       color: 'from-amber-500 to-rose-500',
       image: '/minigame_boss.png',
@@ -8334,10 +8334,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelpinballclimber');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D PINBALL',
-      guide: language === 'ko' ? '듀얼 플리퍼로 복셀 핀볼을 상공으로 튕겨 올리며 범퍼와 보너스 링을 획득하고 수직 타워 정상을 정복하세요.' : 'Flip the voxel pinball with dual flippers, hit bumper targets, and climb the endless vertical tower!'
+      badgeText: 'PINBALL-CLIMB',
+      guide: language === 'ko' ? '손가락으로 패들을 좌우 드래그해 핀볼을 튕겨 타워를 오르세요.' : 'Drag paddle left & right to bounce pinball and climb the tower!'
     },
     {
       id: 'voxelcrazytaxi',
@@ -11962,7 +11962,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '핀볼 클라이머 보상', 'Pinball Climber reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 핀볼 클라이머 보상', 'Blitz Pinball Climber reward')}
       />
     );
   }
