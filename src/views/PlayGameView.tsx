@@ -8176,7 +8176,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelgachaclaw',
-      title: language === 'ko' ? '3D 복셀 가챠 클로 머신' : 'Voxel Gacha Claw Machine',
+      title: language === 'ko' ? '블리츠 가챠 버스트' : 'Blitz Gacha Burst',
       icon: Gift,
       color: 'from-pink-500 to-purple-600',
       image: '/minigame_cardslot.png',
@@ -8184,10 +8184,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelgachaclaw');
       },
-      category: '3d',
+      category: 'casual',
       isNew: true,
-      badgeText: '3D CLAW',
-      guide: language === 'ko' ? '크레인 클로를 3축 이동 및 하강시켜 레어 캡슐과 황금 복셀 인형을 집어 출구 드롭 존으로 운반하세요.' : 'Position the 3-axis mechanical claw and grab rare prize capsules into the drop chute!'
+      badgeText: 'GACHA-BURST',
+      guide: language === 'ko' ? '쏟아지는 가챠 캡슐을 빠르게 탭하여 피규어를 터뜨리고 전설 황금 캡슐 잭팟을 노리세요.' : 'Tap falling gacha capsules rapidly to pop figures and hit the legendary jackpot!'
     },
     {
       id: 'voxelbilliardstrick',
@@ -11832,7 +11832,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '가챠 클로 머신 보상', 'Gacha Claw reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 가챠 버스트 보상', 'Blitz Gacha Burst reward')}
       />
     );
   }
