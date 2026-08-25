@@ -8101,18 +8101,18 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelbaseballderby',
-      title: language === 'ko' ? '3D 복셀 베이스볼 홈런 더비' : 'Voxel Baseball Derby',
-      icon: Trophy,
+      title: language === 'ko' ? '블리츠 슬라이스 닌자' : 'Blitz Slice Ninja',
+      icon: Swords,
       color: 'from-amber-600 to-red-600',
       image: '/minigame_superstrikers.png',
       characterId: 80,
       action: () => {
         setGameState('voxelbaseballderby');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D BASEBALL',
-      guide: language === 'ko' ? '투수의 구종 타이밍을 읽고 퍼펙트 배트 스윙으로 장외 홈런과 연속 콤보를 기록하세요.' : 'Time your swing precisely to smash long-distance home runs and chain hit combos!'
+      badgeText: 'SLICE',
+      guide: language === 'ko' ? '화면 위로 튀어오르는 과일과 보석을 손가락으로 직접 슥 베어 가르고 폭탄을 피하세요.' : 'Swipe across the screen to slice flying fruits and gems with your katana while avoiding bombs!'
     },
     {
       id: 'voxelboxingmighty',
@@ -11767,7 +11767,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '베이스볼 홈런 더비 보상', 'Baseball Derby reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 슬라이스 닌자 보상', 'Blitz Slice Ninja reward')}
       />
     );
   }
