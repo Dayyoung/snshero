@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { CardData } from '../types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
@@ -15,377 +14,452 @@ interface VoxelLumberjackTycoonGameProps {
   onReward: (amount: number) => void;
 }
 
+interface TreeTrunk {
+  id: number;
+  branch: 'none' | 'left' | 'right';
+}
+
 export const VoxelLumberjackTycoonGame: React.FC<VoxelLumberjackTycoonGameProps> = ({
   deck: _deck,
   language,
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
+  const [woodCount, setWoodCount] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
+  const [chopCombo, setChopCombo] = useState<number>(0);
+  const [maxCombo, setMaxCombo] = useState<number>(0);
+  const [playerSide, setPlayerSide] = useState<'left' | 'right'>('left');
+  const [timeLeft, setTimeLeft] = useState<number>(35);
+  const [feedbackText, setFeedbackText] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_lumberjack_tycoon') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_lumber_chop') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [woodCount, setWoodCount] = useState<number>(0);
-  const [buildProgress, setBuildProgress] = useState<number>(0);
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
-    pPos: new THREE.Vector3(0, 0.5, 10),
-    moveDir: new THREE.Vector2(0, 0),
-    trees: [] as { mesh: THREE.Group; hp: number; x: number; z: number }[],
+    playerSide: 'left' as 'left' | 'right',
+    trunks: [] as TreeTrunk[],
     wood: 0,
-    build: 0,
-    chopCooldown: 0,
+    score: 0,
+    combo: 0,
+    maxCombo: 0,
+    timeLeft: 35,
     isGameOver: false,
-    isVictory: false,
     isPaused: false,
     startTime: Date.now(),
-    playerGroup: null as THREE.Group | null
+    trunkCounter: 1,
+    chopEffects: [] as { x: number; y: number; text: string; color: string; life: number }[],
   });
 
-  useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+  const generateTrunk = (counter: number): TreeTrunk => {
+    // 35% chance of branch
+    const rand = Math.random();
+    let branch: 'none' | 'left' | 'right' = 'none';
+    if (rand < 0.3) branch = 'left';
+    else if (rand < 0.6) branch = 'right';
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+    return {
+      id: counter,
+      branch,
+    };
+  };
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a);
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.02);
+  const initGame = useCallback(() => {
+    const s = stateRef.current;
+    s.playerSide = 'left';
+    s.trunks = [];
+    s.wood = 0;
+    s.score = 0;
+    s.combo = 0;
+    s.maxCombo = 0;
+    s.timeLeft = 35;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    s.trunkCounter = 1;
+    s.chopEffects = [];
 
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
-    camera.position.set(0, 16, 22);
-    camera.lookAt(0, 0, 4);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    container.appendChild(renderer.domElement);
-
-    const ambLight = new THREE.AmbientLight(0xffffff, 0.8);
-    scene.add(ambLight);
-
-    const dirLight = new THREE.DirectionalLight(0xf59e0b, 1.4);
-    dirLight.position.set(10, 30, 10);
-    scene.add(dirLight);
-
-    // Forest Island
-    const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(40, 40),
-      new THREE.MeshStandardMaterial({ color: 0x14532d, roughness: 0.8 })
-    );
-    floor.rotation.x = -Math.PI / 2;
-    scene.add(floor);
-
-    // Build Site (Cabin Base)
-    const siteMesh = new THREE.Mesh(
-      new THREE.BoxGeometry(6, 0.4, 6),
-      new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.6 })
-    );
-    siteMesh.position.set(0, 0.2, -12);
-    scene.add(siteMesh);
-
-    // Lumberjack Player
-    const playerGroup = new THREE.Group();
-    const pBody = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.8, 1.2), new THREE.MeshStandardMaterial({ color: 0xd97706 }));
-    pBody.position.y = 0.9;
-    playerGroup.add(pBody);
-
-    const axe = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.2, 0.6), new THREE.MeshStandardMaterial({ color: 0x94a3b8 }));
-    axe.position.set(0.8, 1.0, 0.4);
-    playerGroup.add(axe);
-
-    playerGroup.position.set(0, 0.5, 10);
-    scene.add(playerGroup);
-    stateRef.current.playerGroup = playerGroup;
-
-    // Spawn 8 Trees
-    stateRef.current.trees = [];
-    for (let i = 0; i < 8; i++) {
-      const tGroup = new THREE.Group();
-      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.5, 3, 8), new THREE.MeshStandardMaterial({ color: 0x713f12 }));
-      trunk.position.y = 1.5;
-      tGroup.add(trunk);
-
-      const foliage = new THREE.Mesh(new THREE.ConeGeometry(1.8, 4, 8), new THREE.MeshStandardMaterial({ color: 0x16a34a }));
-      foliage.position.y = 4.5;
-      tGroup.add(foliage);
-
-      const tx = (i % 4 - 1.5) * 8 + (Math.random() - 0.5) * 2;
-      const tz = (Math.floor(i / 4) - 0.5) * 10 + 2;
-      tGroup.position.set(tx, 0, tz);
-      scene.add(tGroup);
-
-      stateRef.current.trees.push({
-        mesh: tGroup,
-        hp: 3,
-        x: tx,
-        z: tz
-      });
+    // Initial 6 trunks (first 2 have no branches)
+    s.trunks.push({ id: s.trunkCounter++, branch: 'none' });
+    s.trunks.push({ id: s.trunkCounter++, branch: 'none' });
+    for (let i = 0; i < 5; i++) {
+      s.trunks.push(generateTrunk(s.trunkCounter++));
     }
 
-    let animId: number;
+    setPlayerSide('left');
+    setWoodCount(0);
+    setScore(0);
+    setChopCombo(0);
+    setMaxCombo(0);
+    setTimeLeft(35);
+    setFeedbackText(null);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  }, []);
+
+  useEffect(() => {
+    initGame();
+  }, [initGame]);
+
+  // Timer loop
+  useEffect(() => {
+    if (isGameOver || isPaused) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          endGame(true);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isGameOver, isPaused]);
+
+  // Touch Handlers: Left Tap / Right Tap to Chop & Move (Zero Joysticks)
+  const handleChop = (side: 'left' | 'right') => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+
+    s.playerSide = side;
+    setPlayerSide(side);
+
+    // Bottom trunk being chopped
+    s.trunks.shift();
+    s.trunks.push(generateTrunk(s.trunkCounter++));
+
+    // Check branch collision with player side
+    const bottomTrunk = s.trunks[0];
+    if (bottomTrunk && bottomTrunk.branch === side) {
+      // Hit by falling branch! Game Over!
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+      setFeedbackText(isKo ? '나뭇가지 충돌! 💥' : 'BRANCH HIT! 💥');
+      endGame(false);
+      return;
+    }
+
+    // Successful Chop!
+    s.wood += 1;
+    s.combo += 1;
+    if (s.combo > s.maxCombo) s.maxCombo = s.combo;
+
+    const pts = 80 + s.combo * 15;
+    s.score += pts;
+
+    setScore(s.score);
+    setWoodCount(s.wood);
+    setChopCombo(s.combo);
+    setMaxCombo(s.maxCombo);
+
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+
+    s.chopEffects.push({
+      x: side === 'left' ? 120 : 240,
+      y: 380,
+      text: `+${pts}P 🪵`,
+      color: '#fde047',
+      life: 0.5,
+    });
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const tapX = e.clientX - rect.left;
+
+    if (tapX < rect.width / 2) {
+      handleChop('left');
+    } else {
+      handleChop('right');
+    }
+  };
+
+  // Main 60FPS Tree Render Loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     let lastTime = performance.now();
 
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const s = stateRef.current;
       if (s.isPaused || s.isGameOver) return;
 
-      // Move player
-      const speed = 11;
-      s.pPos.x += s.moveDir.x * speed * dt;
-      s.pPos.z += s.moveDir.y * speed * dt;
-      s.pPos.x = THREE.MathUtils.clamp(s.pPos.x, -18, 18);
-      s.pPos.z = THREE.MathUtils.clamp(s.pPos.z, -18, 18);
-
-      if (playerGroup) {
-        playerGroup.position.copy(s.pPos);
+      // Update Effects
+      for (let i = s.chopEffects.length - 1; i >= 0; i--) {
+        const eff = s.chopEffects[i];
+        eff.y -= 35 * dt;
+        eff.life -= dt;
+        if (eff.life <= 0) s.chopEffects.splice(i, 1);
       }
 
-      // Check Tree Chop
-      s.chopCooldown -= dt;
-      if (s.chopCooldown <= 0) {
-        s.trees.forEach(t => {
-          if (t.hp > 0) {
-            const dist = s.pPos.distanceTo(new THREE.Vector3(t.x, 0.5, t.z));
-            if (dist < 2.4) {
-              t.hp -= 1;
-              s.chopCooldown = 0.5;
-              s.wood += 2;
-              setWoodCount(s.wood);
-              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
 
-              if (t.hp <= 0) {
-                t.mesh.scale.set(0, 0, 0);
-              }
-            }
-          }
-        });
-      }
+      // Deep Forest Evening Background
+      const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+      bgGrad.addColorStop(0, '#064e3b');
+      bgGrad.addColorStop(0.7, '#0f172a');
+      bgGrad.addColorStop(1, '#1e293b');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, w, h);
 
-      // Check Build Site Deposit
-      const distToSite = s.pPos.distanceTo(new THREE.Vector3(0, 0.5, -12));
-      if (distToSite < 4.0 && s.wood > 0) {
-        const deposited = Math.min(s.wood, 2);
-        s.wood -= deposited;
-        s.build = Math.min(100, s.build + deposited * 5);
-        setWoodCount(s.wood);
-        setBuildProgress(s.build);
-        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+      // Forest Floor Grass
+      ctx.fillStyle = '#14532d';
+      ctx.fillRect(0, 440, w, 60);
 
-        if (s.build >= 100 && !s.isGameOver) {
-          s.isVictory = true;
-          s.isGameOver = true;
-          setIsGameOver(true);
-          const duration = (Date.now() - s.startTime) / 1000;
-          const receipt = calculateAndDepositMissionReward({
-            gameId: 'voxel_lumberjack_tycoon',
-            gameTitle: '복셀 벌목꾼 타이쿤',
-            durationSeconds: duration,
-            score: s.build * 25 + 500,
-            difficulty: 'HARD',
-            isVictory: true
-          });
-          setSettlementReceipt(receipt);
-          onReward(receipt.totalSns);
+      // Tree Trunk Stack (Centered at x: 180)
+      const treeX = 180;
+      const trunkW = 60;
+      const trunkH = 50;
+
+      s.trunks.forEach((trk, idx) => {
+        const ty = 390 - idx * trunkH;
+
+        // Trunk Body
+        ctx.fillStyle = '#78350f';
+        ctx.fillRect(treeX - trunkW / 2, ty, trunkW, trunkH - 4);
+        ctx.strokeStyle = '#92400e';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(treeX - trunkW / 2, ty, trunkW, trunkH - 4);
+
+        // Bark texture lines
+        ctx.fillStyle = '#451a03';
+        ctx.fillRect(treeX - 10, ty + 10, 20, 4);
+        ctx.fillRect(treeX - 18, ty + 28, 14, 4);
+
+        // Branch
+        if (trk.branch === 'left') {
+          ctx.fillStyle = '#92400e';
+          ctx.fillRect(treeX - trunkW / 2 - 50, ty + 12, 50, 18);
+          ctx.font = '22px serif';
+          ctx.fillText('🌿', treeX - trunkW / 2 - 40, ty + 24);
+        } else if (trk.branch === 'right') {
+          ctx.fillStyle = '#92400e';
+          ctx.fillRect(treeX + trunkW / 2, ty + 12, 50, 18);
+          ctx.font = '22px serif';
+          ctx.fillText('🌿', treeX + trunkW / 2 + 15, ty + 24);
         }
+      });
+
+      // Render Lumberjack Player
+      const pX = s.playerSide === 'left' ? treeX - 70 : treeX + 70;
+      const pY = 405;
+
+      ctx.save();
+      ctx.translate(pX, pY);
+      if (s.playerSide === 'right') {
+        ctx.scale(-1, 1);
       }
 
-      renderer.render(scene, camera);
+      ctx.font = '36px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🪓', 0, 0);
+      ctx.restore();
+
+      // Screen Half Divider Guide
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(w / 2, 0);
+      ctx.lineTo(w / 2, h);
+      ctx.stroke();
+
+      // Left / Right Touch Guidance Hints
+      ctx.font = 'bold 12px monospace';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.textAlign = 'center';
+      ctx.fillText('👈 TAP LEFT', 70, 470);
+      ctx.fillText('TAP RIGHT 👉', w - 70, 470);
+
+      // Render Floating Effects
+      s.chopEffects.forEach((eff) => {
+        ctx.font = 'bold 15px monospace';
+        ctx.fillStyle = eff.color;
+        ctx.textAlign = 'center';
+        ctx.fillText(eff.text, eff.x, eff.y);
+      });
     };
 
-    animId = requestAnimationFrame(animate);
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, [playSfx]);
 
-    return () => {
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-    };
-  }, [lowSpecMode]);
-
-  const handleRestart = () => {
+  const endGame = (isWin: boolean) => {
     const s = stateRef.current;
-    s.pPos.set(0, 0.5, 10);
-    s.moveDir.set(0, 0);
-    s.wood = 0;
-    s.build = 0;
-    s.isGameOver = false;
-    s.isVictory = false;
-    s.startTime = Date.now();
-    s.trees.forEach(t => {
-      t.hp = 3;
-      t.mesh.scale.set(1, 1, 1);
+    if (s.isGameOver) return;
+    s.isGameOver = true;
+    setIsGameOver(true);
+
+    if (isWin) {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    } else {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+
+    const duration = (Date.now() - s.startTime) / 1000;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'arcade_lumber_chop',
+      gameTitle: '블리츠 럼버잭 찹',
+      durationSeconds: duration,
+      score: s.score + (isWin ? 3500 : s.wood * 80) + s.maxCombo * 40,
+      difficulty: 'NIGHTMARE',
+      isVictory: isWin || s.wood >= 40,
     });
-    setWoodCount(0);
-    setBuildProgress(0);
-    setIsGameOver(false);
-    setSettlementReceipt(null);
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
   };
 
-  const customTutorialSteps: TutorialStep[] = [
+  const tutorialSteps: TutorialStep[] = [
     {
-      badge: isKo ? 'STEP 1: 숲속 벌목 & 타이쿤' : 'STEP 1: LUMBERJACK HARVEST',
-      title: isKo ? '나무 벌목 및 기지 건설' : 'Chop Trees & Build Cabin',
+      badge: isKo ? 'STEP 1: 좌우 탭 광속 벌목' : 'STEP 1: LEFT & RIGHT TAP CHOP',
+      title: isKo ? '화면 좌우를 탭해 나뭇가지를 피하며 벌목하세요' : 'Tap Left & Right to Chop while Dodging Branches',
       description: isKo
-        ? '숲속의 나무에 접근하여 통나무를 벌목하고 북쪽 기지 건설 현장에 납품하여 완공하세요.'
-        : 'Approach voxel trees to chop lumber and deliver logs to the north build site to complete construction.',
+        ? '가상 조이스틱 없이 화면의 왼쪽(👈)과 오른쪽(👉)을 손가락으로 빠르게 탭하여 거대 나무를 쪼개고, 위에서 떨어져 내리는 나뭇가지(🌿)를 반대쪽으로 피해가며 통나무를 수집하세요.'
+        : 'Tap left and right sides of the screen to chop wood while instantly dodging falling branches.',
       keyPoints: isKo
         ? [
-            '나무 접근 시 0.5초 주기 자동 벌목',
-            '통나무 수집 후 북쪽 기지로 운반',
-            '건설 진행도 100% 달성 시 승리'
+            '가상 조이스틱 0개 (100% 화면 좌우 원터치 탭 벌목)',
+            '떨어지는 나뭇가지(🌿) 충돌 시 즉시 게임 오버 주의',
+            '35초간 최대 콤보로 통나무를 대량 벌목하세요'
           ]
         : [
-            'Auto-chops lumber every 0.5s near trees',
-            'Transport logs to the north base site',
-            'Reach 100% build progress to win'
+            'Zero Virtual Joysticks: 100% Left/Right Screen Tap Chops',
+            'Avoid colliding with falling branches (🌿) overhead',
+            'Chain rapid continuous chops for high score multipliers'
           ],
-      iconType: 'GOAL'
+      iconType: 'GOAL',
     },
     {
-      badge: isKo ? 'STEP 2: 퓨어 제스처 이동' : 'STEP 2: PURE GESTURES',
-      title: isKo ? '원터치 드래그 이동 조작' : 'One-Thumb Free Movement',
+      badge: isKo ? 'STEP 2: 모바일 퓨어 제스처' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '화면 좌우 분할 탭 (Left/Right Tap)' : 'Left/Right Screen Tap',
       description: isKo
-        ? '가상 D-Pad 없이 화면 어디서든 손가락을 드래그하여 벌목꾼을 360도 자유자재로 이동합니다.'
-        : 'Drag anywhere on screen to smoothly navigate your lumberjack across the forest with zero buttons.',
+        ? '양손 엄지로 리듬감 있게 좌우를 번갈아 두드립니다.'
+        : 'Alternate thumbs quickly between left and right zones.',
       keyPoints: isKo
         ? [
-            '👆 전방향 드래그: 벌목꾼 이동',
-            '🪵 근접 자동 상호작용 (벌목/건축)',
-            '⚡ 최단 경로 운반으로 스피드 보너스'
+            '👈 왼쪽 탭: 나무 왼쪽 벌목 & 위치 이동',
+            '👉 오른쪽 탭: 나무 오른쪽 벌목 & 위치 이동',
+            '⏱️ 35초 타임어택 고득점 챌린지'
           ]
         : [
-            '👆 Free Drag: Smooth 360° movement',
-            '🪵 Proximity auto-interaction',
-            '⚡ Optimize delivery route for bonus'
+            '👈 Left Tap: Chop from left side of tree',
+            '👉 Right Tap: Chop from right side of tree',
+            '⏱️ 35s time attack lumberjack sprint'
           ],
-      iconType: 'GESTURES'
+      iconType: 'GESTURES',
     },
     {
       badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
       title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
       description: isKo
-        ? '기지 완공 즉시 HARD 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
-        : 'Standard payout scaled with Hard multiplier deposited atomically to your wallet.',
+        ? '벌목 완료 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon match finish.',
       keyPoints: isKo
         ? [
-            '승리 즉시 LocalStorage 영구 지갑 입금',
-            '스피드 완공 및 벌목 생산성 가산점',
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '벌목한 통나무 수 및 최대 콤보 비례 대량 잭팟',
             'VictoryRewardModal 2초 황금 코인 팡파레'
           ]
         : [
             'Instant atomic deposit to LocalStorage wallet',
-            'Speed building and harvest bonuses',
+            'Chopped logs and maximum combo multipliers',
             'VictoryRewardModal golden coin fanfare'
           ],
-      iconType: 'REWARDS'
-    }
+      iconType: 'REWARDS',
+    },
   ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
-
+    <div className="relative w-full h-[100dvh] bg-[#0f172a] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none">
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
       <MinimalistMissionHUD
-        title={isKo ? '복셀 벌목꾼 타이쿤' : 'Voxel Lumberjack Tycoon'}
-        language={language}
+        title={isKo ? '블리츠 럼버잭' : 'Blitz Lumberjack Chop'}
+        language={(language as Language) || 'ko'}
         telemetries={[
-          { label: isKo ? '통나무' : 'Logs', value: `${woodCount}개`, color: 'text-amber-300' },
-          { label: isKo ? '건설' : 'Build', value: `${buildProgress}%`, color: buildProgress >= 100 ? 'text-emerald-400 font-black animate-pulse' : 'text-cyan-300' }
+          { label: isKo ? '통나무' : 'Wood', value: `${woodCount}개`, color: 'text-amber-400 font-bold' },
+          { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 10 ? 'text-rose-500 font-bold animate-pulse' : 'text-cyan-400 font-bold' },
+          { label: isKo ? '콤보' : 'Combo', value: `${chopCombo}x`, color: chopCombo > 4 ? 'text-emerald-400 font-bold animate-bounce' : 'text-slate-300' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          stateRef.current.isPaused = !isPaused;
-        }}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
         isPaused={isPaused}
       />
 
-      {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div
-          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
-          style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const startX = e.clientX - rect.left;
-            const startY = e.clientY - rect.top;
-
-            const onMove = (moveEvt: PointerEvent) => {
-              const curX = moveEvt.clientX - rect.left;
-              const curY = moveEvt.clientY - rect.top;
-              const dx = curX - startX;
-              const dy = curY - startY;
-
-              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
-                stateRef.current.moveDir.x = Math.abs(dx) > 8 ? (dx > 0 ? 1 : -1) : 0;
-                stateRef.current.moveDir.y = Math.abs(dy) > 8 ? (dy > 0 ? 1 : -1) : 0;
-              }
-            };
-
-            const onUp = () => {
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-              window.removeEventListener('pointercancel', onUp);
-              stateRef.current.moveDir.x = 0;
-              stateRef.current.moveDir.y = 0;
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-          }}
+      {/* Pure Touch Lumberjack Canvas Viewport */}
+      <div className="flex-1 w-full max-w-md relative overflow-hidden flex items-center justify-center select-none touch-none p-2">
+        <canvas
+          ref={canvasRef}
+          width={360}
+          height={500}
+          onPointerDown={handlePointerDown}
+          className="w-full h-full object-contain touch-none cursor-pointer shadow-2xl"
         />
-      )}
+
+        {/* Floating Feedback Text */}
+        {feedbackText && (
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 pointer-events-none text-base font-bold text-amber-300 drop-shadow-lg animate-bounce whitespace-nowrap">
+            {feedbackText}
+          </div>
+        )}
+      </div>
 
       {/* Minimal Bottom Guide */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/75 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
-          {isKo ? '화면 드래그: 벌목꾼 이동 (나무/기지 접근 시 자동 상호작용, 버튼 없음)' : 'Drag: Move Lumberjack (Auto Chops/Builds on proximity, No Buttons)'}
+      <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono">
+          {isKo ? '화면 좌우를 탭해 나뭇가지를 피하며 빠르게 나무를 쪼개세요' : 'Tap left/right to chop wood and dodge falling branches'}
         </div>
       </div>
 
       {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
         <UniversalTutorialModal
-          gameId="voxel_lumberjack_tycoon"
-          gameTitle={isKo ? '3D 복셀 벌목꾼 타이쿤: 숲속 기지 건설' : 'Voxel Lumberjack Tycoon: Forest Base'}
-          customSteps={customTutorialSteps}
-          language={language}
+          gameId="arcade_lumber_chop"
+          gameTitle={isKo ? '블리츠 럼버잭: 스피드 벌목' : 'Blitz Lumberjack: Speed Chop'}
+          customSteps={tutorialSteps}
+          language={(language as Language) || 'ko'}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}
         />
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
         <VictoryRewardModal
           receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
+          language={(language as Language) || 'ko'}
+          onPlayAgain={initGame}
           onExit={onExit}
         />
       )}
     </div>
   );
 };
+export default VoxelLumberjackTycoonGame;

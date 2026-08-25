@@ -7921,7 +7921,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxellumberjacktycoon',
-      title: language === 'ko' ? '3D 복셀 벌목 서바이벌' : 'Voxel Lumberjack Tycoon',
+      title: language === 'ko' ? '블리츠 럼버잭' : 'Blitz Lumberjack Chop',
       icon: Axe,
       color: 'from-amber-600 to-stone-800',
       image: '/minigame_towercraft.png',
@@ -7929,10 +7929,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxellumberjacktycoon');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D TYCOON',
-      guide: language === 'ko' ? '나무를 자동 벌목하고 통나무를 운반해 섬의 랜드마크 기지와 다리를 건설하세요.' : 'Chop voxel trees, transport logs, and build epic island bridges and cabins!'
+      badgeText: 'LUMBER-CHOP',
+      guide: language === 'ko' ? '화면 좌우를 탭해 나뭇가지를 피하며 빠르게 나무를 벌목하세요.' : 'Tap left/right to chop wood and dodge falling branches!'
     },
     {
       id: 'voxelfishingmaster',
@@ -11611,7 +11611,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '벌목 서바이벌 보상', 'Lumberjack Tycoon reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 럼버잭 보상', 'Blitz Lumberjack Chop reward')}
       />
     );
   }
