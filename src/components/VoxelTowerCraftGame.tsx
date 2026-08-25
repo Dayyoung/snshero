@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Shield, Crosshair, Flame, Zap, Award, ArrowLeft, Trophy, Sparkles, Hammer } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelTowerCraftGameProps {
   deck: CardData[];
@@ -16,7 +19,7 @@ interface Tower {
   mesh: THREE.Group;
   gx: number;
   gz: number;
-  type: 'flame' | 'ice' | 'tesla' | 'railgun';
+  type: 'flame' | 'ice' | 'tesla';
   range: number;
   damage: number;
   cooldown: number;
@@ -42,339 +45,251 @@ export const VoxelTowerCraftGame: React.FC<VoxelTowerCraftGameProps> = ({
   onExit,
   onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_tower_craft') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [coreHp, setCoreHp] = useState<number>(100);
   const [energy, setEnergy] = useState<number>(150);
   const [wave, setWave] = useState<number>(1);
-  const [maxWave] = useState<number>(5);
-  const [selectedTowerType, setSelectedTowerType] = useState<'flame' | 'ice' | 'tesla' | 'railgun'>('flame');
+  const maxWave = 3;
+  const [selectedType, setSelectedType] = useState<'flame' | 'ice' | 'tesla'>('flame');
+  const [score, setScore] = useState<number>(0);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [isVictory, setIsVictory] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
-  const gameStateRef = useRef({
+  const stateRef = useRef({
     coreHp: 100,
     energy: 150,
     wave: 1,
-    isGameOver: false,
-    isVictory: false,
-    gridSize: 16,
-    grid: Array(16).fill(null).map(() => Array(16).fill(0)), // 0: empty, 1: wall, 2: tower
+    score: 0,
+    selectedType: 'flame' as 'flame' | 'ice' | 'tesla',
+    gridSize: 10,
+    grid: Array(10).fill(null).map(() => Array(10).fill(0)),
     towers: [] as Tower[],
     enemies: [] as EnemyMob[],
-    projectiles: [] as { mesh: THREE.Mesh; vx: number; vy: number; vz: number; damage: number }[],
-    waveTimer: 10,
-    isWaveActive: false,
-    selectedTowerType: 'flame' as 'flame' | 'ice' | 'tesla' | 'railgun'
+    projectiles: [] as { mesh: THREE.Mesh; vx: number; vz: number; damage: number }[],
+    isGameOver: false,
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
+    scene: null as THREE.Scene | null,
+    camera: null as THREE.PerspectiveCamera | null
   });
 
-  const towerCosts = {
-    flame: 40,
-    ice: 50,
-    tesla: 70,
-    railgun: 100
-  };
+  const towerCosts = { flame: 40, ice: 50, tesla: 70 };
 
-  const buildTower = (gx: number, gz: number, scene: THREE.Scene) => {
-    const s = gameStateRef.current;
+  const buildTower = (gx: number, gz: number) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isVictory || s.isPaused || !s.scene) return;
     if (gx < 0 || gx >= s.gridSize || gz < 0 || gz >= s.gridSize) return;
     if (s.grid[gx][gz] !== 0) return;
-    const cost = towerCosts[s.selectedTowerType];
+
+    const cost = towerCosts[s.selectedType];
     if (s.energy < cost) return;
 
     s.energy -= cost;
     setEnergy(s.energy);
-    s.grid[gx][gz] = 2;
+    s.grid[gx][gz] = 1;
 
     playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
 
-    const towerGroup = new THREE.Group();
-    const baseGeo = new THREE.BoxGeometry(1.6, 1.2, 1.6);
-    const baseMat = new THREE.MeshLambertMaterial({ color: 0x444444 });
-    const base = new THREE.Mesh(baseGeo, baseMat);
+    const tGroup = new THREE.Group();
+    const base = new THREE.Mesh(
+      new THREE.BoxGeometry(1.6, 1.2, 1.6),
+      new THREE.MeshStandardMaterial({ color: 0x475569 })
+    );
     base.position.y = 0.6;
-    towerGroup.add(base);
+    tGroup.add(base);
 
-    // Top Turret
-    const turretGeo = new THREE.CylinderGeometry(0.5, 0.7, 1.0, 8);
-    const typeColor = s.selectedTowerType === 'flame' ? 0xff4400 : s.selectedTowerType === 'ice' ? 0x00ccff : s.selectedTowerType === 'tesla' ? 0xaa00ff : 0xffff00;
-    const turretMat = new THREE.MeshLambertMaterial({ color: typeColor });
-    const turret = new THREE.Mesh(turretGeo, turretMat);
+    const turret = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.5, 0.7, 1.0, 8),
+      new THREE.MeshStandardMaterial({
+        color: s.selectedType === 'flame' ? 0xf97316 : s.selectedType === 'ice' ? 0x06b6d4 : 0xa855f7
+      })
+    );
     turret.position.y = 1.6;
-    towerGroup.add(turret);
+    tGroup.add(turret);
 
-    const worldX = (gx - s.gridSize / 2 + 0.5) * 2;
-    const worldZ = (gz - s.gridSize / 2 + 0.5) * 2;
-    towerGroup.position.set(worldX, 0, worldZ);
-    scene.add(towerGroup);
+    const posX = (gx - s.gridSize / 2 + 0.5) * 2.2;
+    const posZ = (gz - s.gridSize / 2 + 0.5) * 2.2;
+    tGroup.position.set(posX, 0, posZ);
+    s.scene.add(tGroup);
 
     s.towers.push({
-      mesh: towerGroup,
+      mesh: tGroup,
       gx,
       gz,
-      type: s.selectedTowerType,
-      range: s.selectedTowerType === 'railgun' ? 15 : s.selectedTowerType === 'tesla' ? 10 : 8,
-      damage: s.selectedTowerType === 'railgun' ? 60 : s.selectedTowerType === 'tesla' ? 35 : 20,
-      cooldown: s.selectedTowerType === 'railgun' ? 2.0 : s.selectedTowerType === 'tesla' ? 1.0 : 0.6,
+      type: s.selectedType,
+      range: 8.0,
+      damage: s.selectedType === 'flame' ? 25 : s.selectedType === 'ice' ? 15 : 45,
+      cooldown: s.selectedType === 'flame' ? 0.6 : s.selectedType === 'ice' ? 1.0 : 1.2,
       timer: 0
     });
   };
 
   useEffect(() => {
-    gameStateRef.current.selectedTowerType = selectedTowerType;
-  }, [selectedTowerType]);
-
-  useEffect(() => {
     const container = mountRef.current;
     if (!container) return;
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x101525);
-    scene.fog = new THREE.FogExp2(0x101525, 0.02);
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
 
-    const camera = new THREE.PerspectiveCamera(55, container.clientWidth / container.clientHeight, 0.1, 300);
-    camera.position.set(0, 26, 22);
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0f172a);
+    stateRef.current.scene = scene;
+
+    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
+    camera.position.set(0, 20, 20);
     camera.lookAt(0, 0, 0);
+    stateRef.current.camera = camera;
 
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    if (!lowSpecMode) renderer.shadowMap.enabled = true;
     container.appendChild(renderer.domElement);
 
-    // Lights
-    const ambientLight = new THREE.AmbientLight(0x7788aa, 0.8);
-    scene.add(ambientLight);
+    const ambient = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambient);
 
-    const dirLight = new THREE.DirectionalLight(0xffeedd, 1.2);
-    dirLight.position.set(20, 40, 20);
+    const dirLight = new THREE.DirectionalLight(0x38bdf8, 1.4);
+    dirLight.position.set(15, 30, 15);
     scene.add(dirLight);
 
-    // Grid Base Platform
-    const gridGeo = new THREE.PlaneGeometry(32, 32, 16, 16);
-    gridGeo.rotateX(-Math.PI / 2);
-    const gridMat = new THREE.MeshLambertMaterial({ color: 0x1e2640 });
-    const gridMesh = new THREE.Mesh(gridGeo, gridMat);
-    scene.add(gridMesh);
+    // Arena Grid Ground
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(24, 24),
+      new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 })
+    );
+    ground.rotation.x = -Math.PI / 2;
+    scene.add(ground);
 
-    // Grid wire helper
-    const gridHelper = new THREE.GridHelper(32, 16, 0x00ffff, 0x334466);
-    gridHelper.position.y = 0.01;
+    const gridHelper = new THREE.GridHelper(24, 10, 0x38bdf8, 0x334155);
+    gridHelper.position.y = 0.05;
     scene.add(gridHelper);
 
-    // Core Crystal (At center/bottom end)
-    const coreGeo = new THREE.OctahedronGeometry(1.5, 0);
-    const coreMat = new THREE.MeshPhongMaterial({ color: 0x00ffcc, emissive: 0x008866, shininess: 100 });
-    const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-    coreMesh.position.set(0, 2, 14);
-    scene.add(coreMesh);
+    // Spawn Initial Wave Enemies
+    const spawnWave = (w: number) => {
+      stateRef.current.enemies = [];
+      const count = 4 + w * 3;
+      for (let i = 0; i < count; i++) {
+        const mob = new THREE.Mesh(
+          new THREE.SphereGeometry(0.8, 12, 12),
+          new THREE.MeshStandardMaterial({ color: 0xef4444 })
+        );
+        mob.position.set(-10, 0.8, -10 - i * 4);
+        scene.add(mob);
 
-    // Spawn Path Waypoints (From Top to Core)
-    const waypoints = [
-      { x: 0, z: -16 },
-      { x: -10, z: -8 },
-      { x: 10, z: 0 },
-      { x: -6, z: 8 },
-      { x: 0, z: 14 }
-    ];
-
-    // Raycaster for mouse click to build tower
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-
-    const handlePointerDown = (e: MouseEvent | TouchEvent) => {
-      const rect = renderer.domElement.getBoundingClientRect();
-      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-      const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-      mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
-      mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
-
-      raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObject(gridMesh);
-      if (intersects.length > 0) {
-        const hit = intersects[0].point;
-        const gx = Math.floor((hit.x + 16) / 2);
-        const gz = Math.floor((hit.z + 16) / 2);
-        buildTower(gx, gz, scene);
+        stateRef.current.enemies.push({
+          mesh: mob,
+          x: -10,
+          z: -10 - i * 4,
+          hp: 40 + w * 20,
+          maxHp: 40 + w * 20,
+          speed: 4.5,
+          alive: true,
+          pathIndex: 0
+        });
       }
     };
-
-    container.addEventListener('pointerdown', handlePointerDown);
-
-    // Spawn wave monsters
-    const spawnWave = (currentW: number) => {
-      const s = gameStateRef.current;
-      const monsterCount = 5 + currentW * 4;
-      for (let i = 0; i < monsterCount; i++) {
-        setTimeout(() => {
-          if (s.isGameOver || s.isVictory) return;
-          const mobGeo = new THREE.BoxGeometry(1.2, 1.2, 1.2);
-          const mobMat = new THREE.MeshLambertMaterial({
-            color: currentW % 2 === 0 ? 0xff2255 : 0xaa22ff
-          });
-          const mobMesh = new THREE.Mesh(mobGeo, mobMat);
-          mobMesh.position.set(waypoints[0].x, 0.6, waypoints[0].z);
-          scene.add(mobMesh);
-
-          s.enemies.push({
-            mesh: mobMesh,
-            x: waypoints[0].x,
-            z: waypoints[0].z,
-            hp: 50 + currentW * 30,
-            maxHp: 50 + currentW * 30,
-            speed: 3.5 + Math.random() * 1.5,
-            alive: true,
-            pathIndex: 0
-          });
-        }, i * 700);
-      }
-    };
+    spawnWave(1);
 
     let animId: number;
-    let clock = new THREE.Clock();
+    let lastTime = performance.now();
 
-    const animate = () => {
+    const animate = (now: number) => {
       animId = requestAnimationFrame(animate);
-      const dt = clock.getDelta();
-      const time = clock.getElapsedTime();
-      const s = gameStateRef.current;
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
 
-      coreMesh.rotation.y = time * 2;
-      coreMesh.position.y = 2 + Math.sin(time * 3) * 0.3;
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-      if (!s.isGameOver && !s.isVictory) {
-        // Wave management
-        s.waveTimer -= dt;
-        if (s.waveTimer <= 0) {
-          s.waveTimer = 25;
-          s.isWaveActive = true;
-          spawnWave(s.wave);
-        }
-
-        // Check wave complete
-        if (s.enemies.length === 0 && s.isWaveActive && s.waveTimer < 15) {
-          s.isWaveActive = false;
-          if (s.wave >= maxWave) {
-            s.isVictory = true;
-            setIsVictory(true);
-            const reward = 60 + s.energy;
-            setRewardSns(reward);
-            onReward(reward);
-          } else {
-            s.wave += 1;
-            s.energy += 80;
-            setWave(s.wave);
-            setEnergy(s.energy);
-          }
-        }
-
-        // Enemy movement along waypoints
-        for (let i = s.enemies.length - 1; i >= 0; i--) {
-          const mob = s.enemies[i];
-          if (!mob.alive) continue;
-
-          const target = waypoints[mob.pathIndex + 1];
-          if (!target) {
-            // Reached core
-            scene.remove(mob.mesh);
-            s.enemies.splice(i, 1);
-            s.coreHp = Math.max(0, s.coreHp - 15);
-            setCoreHp(s.coreHp);
+      // Update Towers Firing
+      s.towers.forEach(t => {
+        t.timer += dt;
+        if (t.timer >= t.cooldown) {
+          const target = s.enemies.find(e => e.alive && t.mesh.position.distanceTo(e.mesh.position) <= t.range);
+          if (target) {
+            t.timer = 0;
+            target.hp -= t.damage;
             playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-            if (s.coreHp <= 0) {
-              s.isGameOver = true;
-              setIsGameOver(true);
+
+            if (target.hp <= 0) {
+              target.alive = false;
+              scene.remove(target.mesh);
+              s.energy += 25;
+              s.score += 100;
+              setEnergy(s.energy);
+              setScore(s.score);
             }
-            continue;
-          }
-
-          const dx = target.x - mob.x;
-          const dz = target.z - mob.z;
-          const dist = Math.hypot(dx, dz);
-
-          if (dist < 0.5) {
-            mob.pathIndex += 1;
-          } else {
-            mob.x += (dx / dist) * mob.speed * dt;
-            mob.z += (dz / dist) * mob.speed * dt;
-            mob.mesh.position.set(mob.x, 0.6, mob.z);
           }
         }
+      });
 
-        // Towers Auto-target and shoot
-        s.towers.forEach(t => {
-          t.timer -= dt;
-          if (t.timer > 0) return;
+      // Update Enemies Movement along Path
+      let aliveCount = 0;
+      s.enemies.forEach(e => {
+        if (!e.alive) return;
+        aliveCount++;
 
-          // Find nearest enemy in range
-          let closestEnemy: EnemyMob | null = null;
-          let minDist = t.range;
+        // Path waypoint movement towards Core (10, 0, 10)
+        const targetPos = new THREE.Vector3(10, 0.8, 10);
+        const dir = new THREE.Vector3().subVectors(targetPos, e.mesh.position).normalize();
+        e.mesh.position.addScaledVector(dir, e.speed * dt);
 
-          const tWorldX = (t.gx - s.gridSize / 2 + 0.5) * 2;
-          const tWorldZ = (t.gz - s.gridSize / 2 + 0.5) * 2;
+        if (e.mesh.position.distanceTo(targetPos) < 2.0) {
+          e.alive = false;
+          scene.remove(e.mesh);
+          s.coreHp = Math.max(0, s.coreHp - 20);
+          setCoreHp(s.coreHp);
 
-          s.enemies.forEach(mob => {
-            if (!mob.alive) return;
-            const d = Math.hypot(mob.x - tWorldX, mob.z - tWorldZ);
-            if (d < minDist) {
-              minDist = d;
-              closestEnemy = mob;
-            }
-          });
-
-          if (closestEnemy) {
-            t.timer = t.cooldown;
-            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-
-            // Fire beam / projectile
-            const projGeo = new THREE.SphereGeometry(0.3, 6, 6);
-            const projMat = new THREE.MeshBasicMaterial({
-              color: t.type === 'flame' ? 0xff4400 : t.type === 'ice' ? 0x00ffff : 0xffff00
+          if (s.coreHp <= 0 && !s.isGameOver) {
+            s.isGameOver = true;
+            setIsGameOver(true);
+            const duration = (Date.now() - s.startTime) / 1000;
+            const receipt = calculateAndDepositMissionReward({
+              gameId: 'voxel_tower_craft',
+              gameTitle: '복셀 타워 크래프트',
+              durationSeconds: duration,
+              score: s.score,
+              difficulty: 'HARD',
+              isVictory: false
             });
-            const proj = new THREE.Mesh(projGeo, projMat);
-            proj.position.set(tWorldX, 1.8, tWorldZ);
-            scene.add(proj);
-
-            const dx = (closestEnemy as EnemyMob).x - tWorldX;
-            const dz = (closestEnemy as EnemyMob).z - tWorldZ;
-            const dist = Math.hypot(dx, dz);
-
-            s.projectiles.push({
-              mesh: proj,
-              vx: (dx / dist) * 25,
-              vy: 0,
-              vz: (dz / dist) * 25,
-              damage: t.damage
-            });
+            setSettlementReceipt(receipt);
+            onReward(receipt.totalSns);
           }
-        });
+        }
+      });
 
-        // Update Projectiles
-        for (let i = s.projectiles.length - 1; i >= 0; i--) {
-          const p = s.projectiles[i];
-          p.mesh.position.x += p.vx * dt;
-          p.mesh.position.z += p.vz * dt;
-
-          let hit = false;
-          s.enemies.forEach(mob => {
-            if (!mob.alive || hit) return;
-            const d = Math.hypot(mob.x - p.mesh.position.x, mob.z - p.mesh.position.z);
-            if (d < 1.2) {
-              hit = true;
-              mob.hp -= p.damage;
-              if (mob.hp <= 0) {
-                mob.alive = false;
-                scene.remove(mob.mesh);
-                s.energy += 15;
-                setEnergy(s.energy);
-              }
-            }
+      // Wave Progression Check
+      if (aliveCount === 0 && !s.isGameOver) {
+        if (s.wave < maxWave) {
+          s.wave += 1;
+          setWave(s.wave);
+          spawnWave(s.wave);
+        } else {
+          s.isVictory = true;
+          s.isGameOver = true;
+          setIsGameOver(true);
+          const duration = (Date.now() - s.startTime) / 1000;
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'voxel_tower_craft',
+            gameTitle: '복셀 타워 크래프트',
+            durationSeconds: duration,
+            score: s.score + 2500,
+            difficulty: 'HARD',
+            isVictory: true
           });
-
-          if (hit || Math.hypot(p.mesh.position.x, p.mesh.position.z) > 30) {
-            scene.remove(p.mesh);
-            s.projectiles.splice(i, 1);
-          }
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
         }
       }
 
@@ -383,134 +298,195 @@ export const VoxelTowerCraftGame: React.FC<VoxelTowerCraftGameProps> = ({
 
     animId = requestAnimationFrame(animate);
 
-    const handleResize = () => {
-      if (!container) return;
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
       cancelAnimationFrame(animId);
-      container.removeEventListener('pointerdown', handlePointerDown);
-      window.removeEventListener('resize', handleResize);
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, maxWave, onReward, playSfx]);
+  }, [lowSpecMode]);
+
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.coreHp = 100;
+    s.energy = 150;
+    s.wave = 1;
+    s.score = 0;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    s.towers.forEach(t => s.scene?.remove(t.mesh));
+    s.towers = [];
+    s.grid = Array(10).fill(null).map(() => Array(10).fill(0));
+    setCoreHp(100);
+    setEnergy(150);
+    setWave(1);
+    setScore(0);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
+
+  const customTutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 코어 크리스탈 방어' : 'STEP 1: CORE DEFENSE',
+      title: isKo ? '3웨이브 몬스터 침공 전원 격퇴' : 'Defeat 3 Monster Waves',
+      description: isKo
+        ? '그리드 바닥에 방어 타워를 전략적으로 건설하여 코어 크리스탈을 몬스터로부터 수호하세요.'
+        : 'Construct defense towers strategically across the grid to protect your core crystal.',
+      keyPoints: isKo
+        ? [
+            '3웨이브 몬스터 전멸 시 승리',
+            '에너지 자원 관리 및 타워 증설',
+            '코어 HP 0% 도달 방어'
+          ]
+        : [
+            'Clear 3 waves to win',
+            'Manage energy for tower builds',
+            'Prevent core HP dropping to 0%'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '바닥 탭 건설 & 스와이프 타워 교체' : 'Tap Build & Swipe Tower Type',
+      description: isKo
+        ? '가상 버튼 없이 그리드 바닥을 탭하여 타워를 즉시 배치하고, 화면을 스와이프해 타워 종류를 전환합니다.'
+        : 'Tap any grid tile to build towers and swipe to switch tower types with zero buttons.',
+      keyPoints: isKo
+        ? [
+            '👆 타일 탭: 선택된 방어 타워 즉시 건설',
+            '↔️ 좌우 스와이프: 화염 / 냉각 / 테슬라 순환',
+            '⚡ 몬스터 처치 시 에너지 즉시 환급'
+          ]
+        : [
+            '👆 Tap Tile: Build defense tower instantly',
+            '↔️ Swipe L/R: Cycle Flame / Ice / Tesla',
+            '⚡ Enemy kills refund energy'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '수호 승리 즉시 HARD 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Standard payout scaled with Hard multiplier deposited atomically to your wallet.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '잔여 코어 HP 및 클리어 웨이브 보너스',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Core HP and clear wave bonuses',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
+    }
+  ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 text-white select-none overflow-hidden flex flex-col font-sans">
-      <div ref={mountRef} className="w-full h-full absolute inset-0 cursor-pointer" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Top HUD */}
-      <div className="relative z-10 p-3 sm:p-4 flex items-center justify-between bg-gradient-to-b from-slate-950/90 to-transparent pointer-events-none">
-        <button
-          onClick={onExit}
-          className="pointer-events-auto p-2 bg-slate-900/80 hover:bg-slate-800 text-white rounded-xl border border-slate-700 active:scale-95 flex items-center gap-1 cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-          <span className="text-xs font-bold">{language === 'ko' ? '나가기' : 'Exit'}</span>
-        </button>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 타워 크래프트' : 'Voxel Tower Craft'}
+        language={language}
+        hp={{ current: coreHp, max: 100 }}
+        telemetries={[
+          { label: isKo ? '웨이브' : 'Wave', value: `${wave}/${maxWave}`, color: 'text-purple-400 font-bold' },
+          { label: isKo ? '에너지' : 'Energy', value: `${energy}⚡`, color: 'text-amber-300' },
+          { label: isKo ? '타입' : 'Tower', value: selectedType.toUpperCase(), color: selectedType === 'flame' ? 'text-orange-400 font-bold' : selectedType === 'ice' ? 'text-cyan-400 font-bold' : 'text-purple-400 font-bold' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
-        {/* Core HP & Energy */}
-        <div className="flex items-center gap-3 bg-slate-900/80 px-3 py-1.5 rounded-2xl border border-slate-700">
-          <div className="flex items-center gap-1.5">
-            <Shield size={16} className="text-cyan-400" />
-            <div className="w-20 sm:w-28 h-2 bg-slate-950 rounded-full overflow-hidden">
-              <div className="h-full bg-cyan-400 transition-all" style={{ width: `${coreHp}%` }} />
-            </div>
-            <span className="text-xs font-mono font-bold text-cyan-400">{coreHp}</span>
-          </div>
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && !isPaused && !showTutorial && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-pointer"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX - rect.left;
+            const startY = e.clientY - rect.top;
+            let moved = false;
 
-          <div className="flex items-center gap-1 text-yellow-400 text-xs font-bold">
-            <Zap size={14} />
-            <span>{energy} ENERGY</span>
-          </div>
+            const onMove = (moveEvt: PointerEvent) => {
+              const curX = moveEvt.clientX - rect.left;
+              const dx = curX - startX;
 
-          <div className="bg-indigo-950 px-2 py-0.5 rounded text-indigo-300 text-xs font-bold border border-indigo-700/50">
-            WAVE {wave}/{maxWave}
-          </div>
+              if (Math.abs(dx) > 30) {
+                moved = true;
+                const types: ('flame' | 'ice' | 'tesla')[] = ['flame', 'ice', 'tesla'];
+                const nextIdx = (types.indexOf(stateRef.current.selectedType) + (dx > 0 ? 1 : 2)) % 3;
+                stateRef.current.selectedType = types[nextIdx];
+                setSelectedType(types[nextIdx]);
+                window.removeEventListener('pointermove', onMove);
+              }
+            };
+
+            const onUp = () => {
+              window.removeEventListener('pointermove', onMove);
+              window.removeEventListener('pointerup', onUp);
+              window.removeEventListener('pointercancel', onUp);
+
+              if (!moved) {
+                // Tap: Calculate Tile Coordinate & Build
+                const normX = (startX / rect.width - 0.5) * 2;
+                const normY = (startY / rect.height - 0.5) * 2;
+                const gx = Math.floor((normX * 12 + 12) / 2.4);
+                const gz = Math.floor((normY * 12 + 12) / 2.4);
+                buildTower(gx, gz);
+              }
+            };
+
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+            window.addEventListener('pointercancel', onUp);
+          }}
+        />
+      )}
+
+      {/* Minimal Bottom Guide */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/75 border border-purple-500/30 rounded-full text-[10px] text-purple-300 font-mono backdrop-blur-xs">
+          {isKo ? '바닥 탭: 타워 건설 | 좌우 스와이프: 타워 타입 교체 (버튼 없음)' : 'Tap Tile: Build Tower | Swipe L/R: Switch Tower Type (No Buttons)'}
         </div>
       </div>
 
-      {/* Bottom Tower Selector Toolbar */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2 bg-slate-900/90 p-2 rounded-2xl border border-slate-700 shadow-2xl pointer-events-auto">
-        <button
-          onClick={() => setSelectedTowerType('flame')}
-          className={`flex flex-col items-center p-2 rounded-xl border ${selectedTowerType === 'flame' ? 'bg-orange-600/30 border-orange-500 text-orange-400' : 'bg-slate-800 border-slate-700 text-slate-400'}`}
-        >
-          <Flame size={20} />
-          <span className="text-[10px] font-bold mt-1">화염 (40)</span>
-        </button>
+      {/* Universal 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_tower_craft"
+          gameTitle={isKo ? '3D 복셀 타워 크래프트: 코어 디펜스' : 'Voxel Tower Craft: Core Defense'}
+          customSteps={customTutorialSteps}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-        <button
-          onClick={() => setSelectedTowerType('ice')}
-          className={`flex flex-col items-center p-2 rounded-xl border ${selectedTowerType === 'ice' ? 'bg-cyan-600/30 border-cyan-500 text-cyan-400' : 'bg-slate-800 border-slate-700 text-slate-400'}`}
-        >
-          <Crosshair size={20} />
-          <span className="text-[10px] font-bold mt-1">냉각 (50)</span>
-        </button>
-
-        <button
-          onClick={() => setSelectedTowerType('tesla')}
-          className={`flex flex-col items-center p-2 rounded-xl border ${selectedTowerType === 'tesla' ? 'bg-purple-600/30 border-purple-500 text-purple-400' : 'bg-slate-800 border-slate-700 text-slate-400'}`}
-        >
-          <Zap size={20} />
-          <span className="text-[10px] font-bold mt-1">테슬라 (70)</span>
-        </button>
-
-        <button
-          onClick={() => setSelectedTowerType('railgun')}
-          className={`flex flex-col items-center p-2 rounded-xl border ${selectedTowerType === 'railgun' ? 'bg-yellow-600/30 border-yellow-500 text-yellow-400' : 'bg-slate-800 border-slate-700 text-slate-400'}`}
-        >
-          <Award size={20} />
-          <span className="text-[10px] font-bold mt-1">레일건 (100)</span>
-        </button>
-      </div>
-
-      {/* Guide Note */}
-      <div className="absolute top-16 left-1/2 -translate-x-1/2 z-10 bg-black/60 px-3 py-1 rounded-full text-[11px] text-slate-300 pointer-events-none">
-        💡 그리드 바닥을 터치/클릭하여 타워를 건설하고 코어를 수호하세요!
-      </div>
-
-      {/* Victory / Game Over Modal */}
-      {(isVictory || isGameOver) && (
-        <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
-            <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center ${isVictory ? 'bg-amber-400/20 text-yellow-400' : 'bg-rose-500/20 text-rose-400'}`}>
-              {isVictory ? <Trophy size={36} /> : <Hammer size={36} />}
-            </div>
-
-            <h2 className="text-2xl font-black italic uppercase">{isVictory ? '코어 수호 성공! VICTORY' : '코어 파괴! DEFEAT'}</h2>
-
-            <p className="text-xs text-slate-300">
-              {isVictory
-                ? '모든 웨이브 몬스터를 격퇴하고 수호 결계를 완성했습니다!'
-                : '몬스터들의 침공으로 코어 크리스탈이 파괴되었습니다.'}
-            </p>
-
-            {isVictory && (
-              <div className="bg-slate-950 border border-amber-500/30 p-3 rounded-2xl">
-                <span className="text-xs text-slate-400 block uppercase font-bold">REWARD</span>
-                <span className="text-2xl font-black text-yellow-400 flex items-center justify-center gap-1">
-                  <Sparkles size={20} /> +{rewardSns} SNS
-                </span>
-              </div>
-            )}
-
-            <button
-              onClick={onExit}
-              className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 text-slate-950 font-bold rounded-xl active:scale-95 transition-all cursor-pointer"
-            >
-              {language === 'ko' ? '확인 및 나가기' : 'Confirm & Exit'}
-            </button>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
 };
+export default VoxelTowerCraftGame;

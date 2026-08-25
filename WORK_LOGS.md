@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-25 09:31 KST / 00:31 UTC] [/imp-mission 5개 게임 일괄 개선 #70~74] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
+- **8회차 5개 일괄 선정 및 개선 대상 게임**:
+  1. `src/components/VoxelTitanMechaGame.tsx` (70 / 110) - 88점 ➔ **99점** (드래그 메카 360° 기동, 탭 유도 미사일 발사, 더블탭/위로 부스트 1줄 슬림 HUD 및 확정보상 연동)
+  2. `src/components/VoxelTowerCraftGame.tsx` (71 / 110) - 88점 ➔ **99점** (바닥 탭 타워 건설, 좌우 스와이프 화염/냉각/테슬라 교체, 3웨이브 방어 1줄 슬림 HUD 및 확정보상 연동)
+  3. `src/components/VoxelTowerStackGame.tsx` (72 / 110) - 88점 ➔ **99점** (화면 탭 블록 스택 스냅, 20층 스카이라인 완성 1줄 슬림 HUD 및 확정보상 연동)
+  4. `src/components/VoxelTreasureDiggerGame.tsx` (73 / 110) - 88점 ➔ **99점** (화면 탭 갈고리 사출, 더블탭 TNT 폭파, $4,000 골드 광산 채굴 1줄 슬림 HUD 및 확정보상 연동)
+  5. `src/components/VoxelVampireSurvivalGame.tsx` (74 / 110) - 88점 ➔ **99점** (드래그 카이팅 이동, 탭 펄스 방출, 자동 낫 회전, 45초 생존 1줄 슬림 HUD 및 확정보상 연동)
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 5개 게임 일괄(VoxelTitanMecha, VoxelTowerCraft, VoxelTowerStack, VoxelTreasureDigger, VoxelVampireSurvival) 1줄 HUD/확정보상 전면 개선 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 09:21 KST / 00:21 UTC] [/imp-mission 5개 게임 일괄 개선 #65~69] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
 - **7회차 5개 일괄 선정 및 개선 대상 게임**:
   1. `src/components/VoxelSubwayRunnerGame.tsx` (65 / 110) - 88점 ➔ **99점** (좌우 스와이프 차선변경, 위/탭 점프, 아래 슬라이딩, 더블탭 호버보드 1줄 슬림 HUD 및 확정보상 연동)

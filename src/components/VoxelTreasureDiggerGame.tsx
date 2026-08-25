@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ArrowLeft, Trophy, Coins, Sparkles, Bomb, Pickaxe } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelTreasureDiggerGameProps {
   deck: CardData[];
@@ -35,16 +38,25 @@ export const VoxelTreasureDiggerGame: React.FC<VoxelTreasureDiggerGameProps> = (
   const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
 
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_treasure_digger') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [goldScore, setGoldScore] = useState<number>(0);
-  const targetGold = 5000;
+  const targetGold = 4000;
   const [tntCount, setTntCount] = useState<number>(2);
   const [timeLeft, setTimeLeft] = useState<number>(60);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
     hookAngle: 0,
-    hookSpeed: 0.035,
+    hookSpeed: 1.8,
+    hookAngleDir: 1,
     hookState: 'swinging' as 'swinging' | 'shooting' | 'retracting',
     hookLength: 1.0,
     hookTargetItem: null as OreItem | null,
@@ -52,8 +64,35 @@ export const VoxelTreasureDiggerGame: React.FC<VoxelTreasureDiggerGameProps> = (
     tntCount: 2,
     timeLeft: 60,
     ores: [] as OreItem[],
-    isGameOver: false
+    isGameOver: false,
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
+    hookLineMesh: null as THREE.Mesh | null,
+    hookGroup: null as THREE.Group | null,
+    scene: null as THREE.Scene | null
   });
+
+  const handleShootHook = () => {
+    const s = stateRef.current;
+    if (s.hookState === 'swinging' && !s.isGameOver && !s.isVictory && !s.isPaused) {
+      s.hookState = 'shooting';
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    }
+  };
+
+  const handleUseTnt = () => {
+    const s = stateRef.current;
+    if (s.tntCount > 0 && s.hookTargetItem && !s.isGameOver && !s.isVictory && !s.isPaused) {
+      s.tntCount -= 1;
+      setTntCount(s.tntCount);
+      s.hookTargetItem.mesh.visible = false;
+      s.hookTargetItem.isCollected = true;
+      s.hookTargetItem = null;
+      s.hookState = 'retracting';
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+  };
 
   useEffect(() => {
     const container = mountRef.current;
@@ -64,6 +103,7 @@ export const VoxelTreasureDiggerGame: React.FC<VoxelTreasureDiggerGameProps> = (
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x1a110a);
+    stateRef.current.scene = scene;
 
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
     camera.position.set(0, -3.5, 14);
@@ -72,10 +112,8 @@ export const VoxelTreasureDiggerGame: React.FC<VoxelTreasureDiggerGameProps> = (
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    renderer.shadowMap.enabled = !lowSpecMode;
     container.appendChild(renderer.domElement);
 
-    // Lighting
     const hemiLight = new THREE.HemisphereLight(0xffffff, 0x332211, 0.9);
     scene.add(hemiLight);
 
@@ -83,14 +121,15 @@ export const VoxelTreasureDiggerGame: React.FC<VoxelTreasureDiggerGameProps> = (
     spotLight.position.set(0, 5, 8);
     scene.add(spotLight);
 
-    // Miner Cart on top
-    const cartGeo = new THREE.BoxGeometry(1.6, 0.8, 1.2);
-    const cartMat = new THREE.MeshStandardMaterial({ color: 0x8b5a2b });
-    const cart = new THREE.Mesh(cartGeo, cartMat);
+    // Miner Cart
+    const cart = new THREE.Mesh(
+      new THREE.BoxGeometry(1.6, 0.8, 1.2),
+      new THREE.MeshStandardMaterial({ color: 0x8b5a2b })
+    );
     cart.position.set(0, 0.4, 0);
     scene.add(cart);
 
-    // Hook Line & Claw
+    // Hook Group
     const hookGroup = new THREE.Group();
     hookGroup.position.set(0, 0, 0);
 
@@ -98,294 +137,328 @@ export const VoxelTreasureDiggerGame: React.FC<VoxelTreasureDiggerGameProps> = (
     const lineMat = new THREE.MeshStandardMaterial({ color: 0xcccccc });
     const lineMesh = new THREE.Mesh(lineGeo, lineMat);
     lineMesh.position.y = -0.5;
+    hookGroup.add(lineMesh);
 
-    const clawGeo = new THREE.BoxGeometry(0.5, 0.3, 0.4);
-    const clawMat = new THREE.MeshStandardMaterial({ color: 0x444444, metalness: 0.8 });
-    const clawMesh = new THREE.Mesh(clawGeo, clawMat);
-    clawMesh.position.y = -1.0;
+    const claw = new THREE.Mesh(
+      new THREE.ConeGeometry(0.3, 0.5, 6),
+      new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.6 })
+    );
+    claw.rotation.x = Math.PI;
+    claw.position.y = -1.0;
+    hookGroup.add(claw);
 
-    hookGroup.add(lineMesh, clawMesh);
     scene.add(hookGroup);
+    stateRef.current.hookGroup = hookGroup;
+    stateRef.current.hookLineMesh = lineMesh;
 
-    // Generate Gold, Rocks & Diamonds
-    const ores: OreItem[] = [];
-    const oreTypes: ('small_gold' | 'big_gold' | 'diamond' | 'rock')[] = [
-      'small_gold', 'small_gold', 'big_gold', 'diamond', 'rock', 'rock', 'small_gold', 'big_gold'
+    // Spawn Underground Ores
+    stateRef.current.ores = [];
+    const oreTypes = [
+      { type: 'small_gold' as const, value: 500, weight: 1.0, radius: 0.6, color: 0xfacc15 },
+      { type: 'big_gold' as const, value: 1200, weight: 2.2, radius: 1.1, color: 0xeab308 },
+      { type: 'diamond' as const, value: 2000, weight: 0.8, radius: 0.5, color: 0x06b6d4 },
+      { type: 'rock' as const, value: 50, weight: 3.5, radius: 1.3, color: 0x78716c }
     ];
 
-    oreTypes.forEach((type, i) => {
-      let geo: THREE.BufferGeometry = new THREE.BoxGeometry(0.8, 0.8, 0.8);
-      let mat: THREE.Material = new THREE.MeshStandardMaterial({ color: 0xffcc00, metalness: 0.6, roughness: 0.2 });
-      let val = 250;
-      let weight = 1.0;
-      let rad = 0.5;
+    for (let i = 0; i < 16; i++) {
+      const proto = oreTypes[i % 4];
+      const ox = (Math.random() - 0.5) * 14;
+      const oy = -2.5 - Math.random() * 6.5;
 
-      if (type === 'small_gold') {
-        geo = new THREE.BoxGeometry(0.7, 0.7, 0.7);
-        val = 250;
-        weight = 1.0;
-        rad = 0.45;
-      } else if (type === 'big_gold') {
-        geo = new THREE.BoxGeometry(1.4, 1.4, 1.4);
-        val = 750;
-        weight = 2.4;
-        rad = 0.9;
-      } else if (type === 'diamond') {
-        geo = new THREE.OctahedronGeometry(0.5);
-        mat = new THREE.MeshStandardMaterial({ color: 0x00ffff, roughness: 0.1 });
-        val = 1000;
-        weight = 0.6;
-        rad = 0.4;
-      } else if (type === 'rock') {
-        geo = new THREE.DodecahedronGeometry(1.0);
-        mat = new THREE.MeshStandardMaterial({ color: 0x777777, roughness: 0.9 });
-        val = 50;
-        weight = 3.5;
-        rad = 0.8;
-      }
-
-      const mesh = new THREE.Mesh(geo, mat);
-      const angleSpread = ((i - (oreTypes.length / 2)) / (oreTypes.length / 2)) * 1.1;
-      const dist = 3.5 + (i % 3) * 2.2;
-      const x = Math.sin(angleSpread) * dist;
-      const y = -Math.cos(angleSpread) * dist;
-
-      mesh.position.set(x, y, 0);
+      const mesh = new THREE.Mesh(
+        proto.type === 'diamond' ? new THREE.OctahedronGeometry(proto.radius) : new THREE.DodecahedronGeometry(proto.radius),
+        new THREE.MeshStandardMaterial({ color: proto.color, roughness: 0.4 })
+      );
+      mesh.position.set(ox, oy, 0);
       scene.add(mesh);
 
-      ores.push({
+      stateRef.current.ores.push({
         mesh,
-        type,
-        value: val,
-        weight,
-        x,
-        y,
+        type: proto.type,
+        value: proto.value,
+        weight: proto.weight,
+        x: ox,
+        y: oy,
         z: 0,
-        radius: rad,
+        radius: proto.radius,
         isCollected: false
       });
-    });
+    }
 
-    stateRef.current.ores = ores;
+    // 60s Timer
+    const timerInterval = setInterval(() => {
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
+      s.timeLeft -= 1;
+      setTimeLeft(s.timeLeft);
 
-    let animationFrameId: number;
-    let clock = new THREE.Clock();
+      if (s.timeLeft <= 0 && !s.isGameOver) {
+        s.isGameOver = true;
+        s.isVictory = s.goldScore >= targetGold;
+        setIsGameOver(true);
+        const duration = (Date.now() - s.startTime) / 1000;
+        const receipt = calculateAndDepositMissionReward({
+          gameId: 'voxel_treasure_digger',
+          gameTitle: '복셀 트레저 디거',
+          durationSeconds: duration,
+          score: s.goldScore,
+          difficulty: 'HARD',
+          isVictory: s.isVictory
+        });
+        setSettlementReceipt(receipt);
+        onReward(receipt.totalSns);
+      }
+    }, 1000);
 
-    const animate = () => {
-      animationFrameId = requestAnimationFrame(animate);
-      const delta = clock.getDelta();
+    let animId: number;
+    let lastTime = performance.now();
 
-      if (!stateRef.current.isGameOver) {
-        // Hook FSM
-        if (stateRef.current.hookState === 'swinging') {
-          stateRef.current.hookAngle += stateRef.current.hookSpeed;
-          if (stateRef.current.hookAngle > 1.2 || stateRef.current.hookAngle < -1.2) {
-            stateRef.current.hookSpeed *= -1;
-          }
-          hookGroup.rotation.z = stateRef.current.hookAngle;
-          stateRef.current.hookLength = 1.0;
-        } else if (stateRef.current.hookState === 'shooting') {
-          stateRef.current.hookLength += 0.2;
-          const tipX = Math.sin(-stateRef.current.hookAngle) * stateRef.current.hookLength;
-          const tipY = -Math.cos(-stateRef.current.hookAngle) * stateRef.current.hookLength;
+    const animate = (now: number) => {
+      animId = requestAnimationFrame(animate);
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
 
-          // Check collisions with ores
-          for (let ore of stateRef.current.ores) {
-            if (!ore.isCollected) {
-              const d = Math.hypot(tipX - ore.x, tipY - ore.y);
-              if (d < ore.radius + 0.3) {
-                // Hooked!
-                stateRef.current.hookTargetItem = ore;
-                stateRef.current.hookState = 'retracting';
-                playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                break;
-              }
-            }
-          }
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-          if (stateRef.current.hookLength > 12) {
-            stateRef.current.hookState = 'retracting';
-          }
-        } else if (stateRef.current.hookState === 'retracting') {
-          const w = stateRef.current.hookTargetItem ? stateRef.current.hookTargetItem.weight : 0.5;
-          const retractSpeed = Math.max(0.05, 0.22 / w);
-          stateRef.current.hookLength -= retractSpeed;
+      if (s.hookState === 'swinging') {
+        s.hookAngle += s.hookAngleDir * s.hookSpeed * dt * 25;
+        if (s.hookAngle > 1.2) { s.hookAngle = 1.2; s.hookAngleDir = -1; }
+        if (s.hookAngle < -1.2) { s.hookAngle = -1.2; s.hookAngleDir = 1; }
+        if (hookGroup) hookGroup.rotation.z = s.hookAngle;
+      } else if (s.hookState === 'shooting') {
+        s.hookLength += 16 * dt;
+        if (lineMesh) {
+          lineMesh.scale.set(1, s.hookLength, 1);
+          lineMesh.position.y = -s.hookLength / 2;
+        }
+        claw.position.y = -s.hookLength;
 
-          if (stateRef.current.hookTargetItem) {
-            const tipX = Math.sin(-stateRef.current.hookAngle) * stateRef.current.hookLength;
-            const tipY = -Math.cos(-stateRef.current.hookAngle) * stateRef.current.hookLength;
-            stateRef.current.hookTargetItem.mesh.position.set(tipX, tipY, 0);
-          }
+        const tipX = -Math.sin(s.hookAngle) * s.hookLength;
+        const tipY = -Math.cos(s.hookAngle) * s.hookLength;
 
-          if (stateRef.current.hookLength <= 1.0) {
-            // Reeled in completely
-            if (stateRef.current.hookTargetItem) {
-              const item = stateRef.current.hookTargetItem;
-              item.isCollected = true;
-              scene.remove(item.mesh);
-              stateRef.current.goldScore += item.value;
-              setGoldScore(stateRef.current.goldScore);
-              stateRef.current.hookTargetItem = null;
-              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-
-              if (stateRef.current.goldScore >= targetGold) {
-                stateRef.current.isGameOver = true;
-                setIsGameOver(true);
-                const r = 260;
-                setRewardSns(r);
-                onReward(r);
-              }
-            }
-            stateRef.current.hookState = 'swinging';
+        // Check Ore Collision
+        for (const o of s.ores) {
+          if (!o.isCollected && Math.hypot(tipX - o.x, tipY - o.y) < o.radius + 0.4) {
+            s.hookTargetItem = o;
+            s.hookState = 'retracting';
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+            break;
           }
         }
 
-        // Scale hook visual length
-        lineMesh.scale.y = stateRef.current.hookLength;
-        lineMesh.position.y = -stateRef.current.hookLength / 2;
-        clawMesh.position.y = -stateRef.current.hookLength;
+        if (s.hookLength > 11.5) {
+          s.hookState = 'retracting';
+        }
+      } else if (s.hookState === 'retracting') {
+        const pullSpeed = s.hookTargetItem ? 12 / s.hookTargetItem.weight : 16;
+        s.hookLength -= pullSpeed * dt;
+
+        if (lineMesh) {
+          lineMesh.scale.set(1, Math.max(1, s.hookLength), 1);
+          lineMesh.position.y = -s.hookLength / 2;
+        }
+        claw.position.y = -s.hookLength;
+
+        const tipX = -Math.sin(s.hookAngle) * s.hookLength;
+        const tipY = -Math.cos(s.hookAngle) * s.hookLength;
+
+        if (s.hookTargetItem) {
+          s.hookTargetItem.mesh.position.set(tipX, tipY, 0);
+        }
+
+        if (s.hookLength <= 1.0) {
+          s.hookLength = 1.0;
+          s.hookState = 'swinging';
+
+          if (s.hookTargetItem) {
+            s.hookTargetItem.isCollected = true;
+            scene.remove(s.hookTargetItem.mesh);
+            s.goldScore += s.hookTargetItem.value;
+            setGoldScore(s.goldScore);
+            s.hookTargetItem = null;
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+
+            if (s.goldScore >= targetGold && !s.isGameOver) {
+              s.isVictory = true;
+              s.isGameOver = true;
+              setIsGameOver(true);
+              const duration = (Date.now() - s.startTime) / 1000;
+              const receipt = calculateAndDepositMissionReward({
+                gameId: 'voxel_treasure_digger',
+                gameTitle: '복셀 트레저 디거',
+                durationSeconds: duration,
+                score: s.goldScore + 2000,
+                difficulty: 'HARD',
+                isVictory: true
+              });
+              setSettlementReceipt(receipt);
+              onReward(receipt.totalSns);
+            }
+          }
+        }
       }
 
       renderer.render(scene, camera);
     };
 
-    animate();
-
-    const timer = setInterval(() => {
-      if (stateRef.current.isGameOver) return;
-      stateRef.current.timeLeft -= 1;
-      setTimeLeft(stateRef.current.timeLeft);
-
-      if (stateRef.current.timeLeft <= 0) {
-        stateRef.current.isGameOver = true;
-        setIsGameOver(true);
-        const r = Math.min(260, 50 + Math.floor(stateRef.current.goldScore / 25));
-        setRewardSns(r);
-        onReward(r);
-      }
-    }, 1000);
-
-    const handleResize = () => {
-      if (!container) return;
-      const w = container.clientWidth;
-      const h = container.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-
-    window.addEventListener('resize', handleResize);
+    animId = requestAnimationFrame(animate);
 
     return () => {
-      clearInterval(timer);
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', handleResize);
-      if (container && renderer.domElement) {
+      clearInterval(timerInterval);
+      cancelAnimationFrame(animId);
+      renderer.dispose();
+      if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
-      renderer.dispose();
     };
-  }, [lowSpecMode, onReward, playSfx]);
+  }, [lowSpecMode]);
 
-  const handleShootHook = () => {
-    if (stateRef.current.hookState === 'swinging' && !stateRef.current.isGameOver) {
-      stateRef.current.hookState = 'shooting';
-      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-    }
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.goldScore = 0;
+    s.tntCount = 2;
+    s.timeLeft = 60;
+    s.hookState = 'swinging';
+    s.hookLength = 1.0;
+    s.hookTargetItem = null;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    s.ores.forEach(o => {
+      o.isCollected = false;
+      o.mesh.visible = true;
+      s.scene?.add(o.mesh);
+    });
+    setGoldScore(0);
+    setTntCount(2);
+    setTimeLeft(60);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
   };
 
-  const handleUseTnt = () => {
-    if (stateRef.current.tntCount > 0 && stateRef.current.hookTargetItem) {
-      stateRef.current.tntCount -= 1;
-      setTntCount(stateRef.current.tntCount);
-      // Destroy hooked item instantly to reel in fast
-      stateRef.current.hookTargetItem.mesh.visible = false;
-      stateRef.current.hookTargetItem.isCollected = true;
-      stateRef.current.hookTargetItem = null;
-      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+  const customTutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 황금 광산 $4,000 채굴' : 'STEP 1: GOLD DIGGER',
+      title: isKo ? '$4,000 골드 광물 채굴 승리' : 'Mine $4,000 in Minerals',
+      description: isKo
+        ? '회전하는 갈고리를 지하로 사출하여 황금 덩어리와 다이아몬드를 채굴하고 목표 금액을 달성하세요.'
+        : 'Launch your claw deep underground to mine gold nuggets and diamonds.',
+      keyPoints: isKo
+        ? [
+            '60초 내 $4,000 달성 시 승리',
+            '다이아몬드는 가볍고 고가치 ($2,000)',
+            '바위는 무겁고 저가치 ($50)'
+          ]
+        : [
+            'Mine $4,000 within 60s to win',
+            'Diamonds are light and high value ($2,000)',
+            'Rocks are heavy and low value ($50)'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '탭 사출 & 더블탭 TNT 폭파' : 'Tap Launch & Double Tap TNT',
+      description: isKo
+        ? '가상 버튼 없이 화면 탭으로 갈고리를 사출하고, 무거운 바위가 걸렸을 때 더블탭하여 TNT로 파괴합니다.'
+        : 'Tap screen to fire the claw and double-tap to detonate TNT on heavy rocks with zero buttons.',
+      keyPoints: isKo
+        ? [
+            '👆 화면 탭: 조준 각도로 갈고리 즉시 사출',
+            '💥 더블탭: 걸린 장애물 TNT 폭파 파쇄',
+            '⚡ 릴 회수 가속으로 시간 절약'
+          ]
+        : [
+            '👆 Screen Tap: Fire claw along aim angle',
+            '💥 Double Tap: Detonate TNT to shatter rocks',
+            '⚡ Save time with fast reel retract'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '채굴 성공 즉시 HARD 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Standard payout scaled with Hard multiplier deposited atomically to your wallet.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '채굴 골드액 및 잔여 시간 보너스',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Mined gold and remaining time bonuses',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
     }
-  };
+  ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none">
-      <div ref={mountRef} className="w-full h-full" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Top HUD */}
-      <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
-        <button
-          onClick={onExit}
-          className="pointer-events-auto p-2 bg-slate-900/80 border border-slate-700 text-slate-200 rounded-sm hover:bg-slate-800 transition-all flex items-center gap-1.5 text-xs font-bold"
-        >
-          <ArrowLeft size={16} />
-          <span>{isKo ? '나가기' : 'Exit'}</span>
-        </button>
-
-        <div className="flex items-center gap-2 bg-slate-900/90 border border-amber-500/40 px-3 py-1.5 rounded-sm">
-          <Coins size={16} className="text-amber-400" />
-          <span className="text-xs text-amber-300 font-bold">
-            ${goldScore} / ${targetGold}
-          </span>
-          <span className="text-[10px] text-slate-400">
-            ⏳ {timeLeft}s
-          </span>
-        </div>
-      </div>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 트레저 디거' : 'Voxel Treasure Digger'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '골드' : 'Gold', value: `$${goldScore}/$${targetGold}`, color: goldScore >= targetGold ? 'text-emerald-400 font-bold' : 'text-amber-300' },
+          { label: isKo ? 'TNT' : 'TNT', value: `💣x${tntCount}`, color: tntCount > 0 ? 'text-rose-400 font-bold' : 'text-slate-500' },
+          { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 15 ? 'text-rose-400 font-bold' : 'text-cyan-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
       {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && (
+      {!isGameOver && !isPaused && !showTutorial && (
         <div
           className="absolute inset-0 z-10 select-none touch-none cursor-pointer"
           style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            e.preventDefault();
-            handleShootHook();
-          }}
-          onDoubleClick={(e) => {
-            e.preventDefault();
-            handleUseTnt();
-          }}
+          onPointerDown={handleShootHook}
+          onDoubleClick={handleUseTnt}
         />
       )}
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/70 border border-amber-400/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+        <div className="px-3 py-1 bg-black/75 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
           {isKo ? '화면 탭: 갈고리 사출 | 더블탭: TNT 폭파 (버튼 없음)' : 'Tap: Launch Claw | Double Tap: Detonate TNT (No Buttons)'}
         </div>
       </div>
 
-      {/* Game Over Modal */}
-      {isGameOver && (
-        <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-xs bg-slate-900 border border-amber-500/50 p-5 rounded-none text-center space-y-4 shadow-2xl">
-            <div className="flex justify-center">
-              <Sparkles size={36} className="text-amber-400 animate-pulse" />
-            </div>
-            <h2 className="text-lg font-black text-amber-400 uppercase tracking-widest">
-              {goldScore >= targetGold ? (isKo ? '🏆 황금 광산 정복!' : '🏆 GOLD RUSH CLEARED!') : (isKo ? '⏳ 시간 종료' : '⏳ TIME OVER')}
-            </h2>
-            <div className="space-y-1.5 text-xs text-slate-300 bg-slate-950/60 p-3 border border-slate-800">
-              <div className="flex justify-between">
-                <span>{isKo ? '채굴 총액' : 'Total Gold'}</span>
-                <span className="font-bold text-amber-300">${goldScore}</span>
-              </div>
-              <div className="flex justify-between pt-1 border-t border-slate-800 text-amber-400 font-bold">
-                <span>{isKo ? '획득 SNS 보상' : 'Earned SNS'}</span>
-                <span>+{rewardSns} SNS</span>
-              </div>
-            </div>
+      {/* Universal 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_treasure_digger"
+          gameTitle={isKo ? '3D 복셀 트레저 디거: 황금 광산 채굴' : 'Voxel Treasure Digger: Gold Rush'}
+          customSteps={customTutorialSteps}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-            <div className="flex gap-2 pt-2">
-              <button
-                onClick={onExit}
-                className="flex-1 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase rounded-sm transition-all"
-              >
-                {isKo ? '보상 수령 및 복귀' : 'Claim & Exit'}
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
 };
+export default VoxelTreasureDiggerGame;
