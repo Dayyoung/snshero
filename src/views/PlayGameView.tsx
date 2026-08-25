@@ -8551,18 +8551,18 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxeldreadshadow',
-      title: language === 'ko' ? '3D 복셀 드레드 섀도우: 암흑 잠입 침투' : 'Voxel Dread Shadow: Stealth Mission',
+      title: language === 'ko' ? '블리츠 프리즘 레이저' : 'Blitz Prism Laser',
       icon: Trophy,
-      color: 'from-slate-900 to-purple-950',
+      color: 'from-cyan-900 to-purple-950',
       image: '/minigame_boss.png',
       characterId: 110,
       action: () => {
         setGameState('voxeldreadshadow');
       },
-      category: '3d',
+      category: 'puzzle',
       isNew: true,
-      badgeText: '3D STEALTH',
-      guide: language === 'ko' ? '섀도우 은신 모드를 켜고 감시탑의 서치라이트를 피해 적 요새 심장부로 침투하여 암흑 코어를 해킹하세요.' : 'Activate shadow cloak to bypass searchlights, infiltrate deep into the enemy fortress, and hack the dark core!'
+      badgeText: 'PRISM-LASER',
+      guide: language === 'ko' ? '프리즘 거울을 탭하여 90도 회전시키고 레이저 빛을 우하단 섀도우 코어에 연결하세요.' : 'Tap prism mirrors to rotate 90 degrees and connect laser beam to the target core!'
     }
   ];
 
@@ -12157,7 +12157,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '드레드 섀도우 보상', 'Dread Shadow Stealth reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 프리즘 레이저 보상', 'Blitz Prism Laser reward')}
       />
     );
   }
