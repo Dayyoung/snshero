@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { CardData } from '../types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
-import { UniversalTutorialModal } from './UniversalTutorialModal';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
@@ -15,24 +14,12 @@ interface VoxelAceFighterGameProps {
   onReward: (amount: number) => void;
 }
 
-interface Missile {
-  mesh: THREE.Mesh;
-  target: THREE.Object3D | null;
-  vx: number;
-  vy: number;
-  vz: number;
-  life: number;
-}
-
-interface EnemyFighter {
-  group: THREE.Group;
-  x: number;
-  y: number;
-  z: number;
-  hp: number;
-  maxHp: number;
-  alive: boolean;
-  isBoss?: boolean;
+interface RhythmNote {
+  id: number;
+  lane: number; // 0, 1, 2, 3
+  y: number; // 0 to 100%
+  hit: boolean;
+  type: 'normal' | 'fever';
 }
 
 export const VoxelAceFighterGame: React.FC<VoxelAceFighterGameProps> = ({
@@ -41,502 +28,447 @@ export const VoxelAceFighterGame: React.FC<VoxelAceFighterGameProps> = ({
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
+  const [score, setScore] = useState<number>(0);
+  const [combo, setCombo] = useState<number>(0);
+  const [maxCombo, setMaxCombo] = useState<number>(0);
+  const [feverMeter, setFeverMeter] = useState<number>(0);
+  const [isFever, setIsFever] = useState<boolean>(false);
+  const [songProgress, setSongProgress] = useState<number>(0);
+  const [hitFeedback, setHitFeedback] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_ace_fighter') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_cyber_rhythm_blaster') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [shield, setShield] = useState<number>(100);
-  const [maxShield] = useState<number>(100);
-  const [score, setScore] = useState<number>(0);
-  const [missileStock, setMissileStock] = useState<number>(12);
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const gameStateRef = useRef({
-    posX: 0,
-    posY: 10,
-    posZ: 0,
-    rotX: 0,
-    rotY: 0,
-    rotZ: 0,
-    speed: 25,
-    boost: false,
-    barrelRoll: 0,
-    shield: 100,
-    maxShield: 100,
+    notes: [] as RhythmNote[],
     score: 0,
-    missileStock: 12,
-    keys: { w: false, s: false, a: false, d: false, boost: false, shoot: false, missile: false },
-    bullets: [] as { mesh: THREE.Mesh; vx: number; vy: number; vz: number; life: number }[],
-    missiles: [] as Missile[],
-    enemies: [] as EnemyFighter[],
+    combo: 0,
+    maxCombo: 0,
+    feverMeter: 0,
+    isFever: false,
+    feverTimer: 0,
+    songDuration: 35, // 35 seconds match
+    elapsed: 0,
+    noteCounter: 0,
     isGameOver: false,
-    isVictory: false,
     isPaused: false,
     startTime: Date.now(),
-    shootCooldown: 0
+    laneFeedback: [0, 0, 0, 0],
   });
 
-  const fireGun = (scene: THREE.Scene) => {
+  const initGame = useCallback(() => {
     const s = gameStateRef.current;
-    if (s.isGameOver || s.isVictory || s.shootCooldown > 0) return;
-    s.shootCooldown = 0.12;
+    s.notes = [];
+    s.score = 0;
+    s.combo = 0;
+    s.maxCombo = 0;
+    s.feverMeter = 0;
+    s.isFever = false;
+    s.feverTimer = 0;
+    s.elapsed = 0;
+    s.noteCounter = 0;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    s.laneFeedback = [0, 0, 0, 0];
 
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-
-    const bGeo = new THREE.CylinderGeometry(0.08, 0.08, 1.2, 4);
-    bGeo.rotateX(Math.PI / 2);
-    const bMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
-
-    for (let offset of [-0.8, 0.8]) {
-      const bMesh = new THREE.Mesh(bGeo, bMat);
-      bMesh.position.set(s.posX + offset, s.posY - 0.2, s.posZ - 2);
-      scene.add(bMesh);
-
-      s.bullets.push({
-        mesh: bMesh,
-        vx: -Math.sin(s.rotY) * 90,
-        vy: Math.sin(s.rotX) * 90,
-        vz: -Math.cos(s.rotY) * 90,
-        life: 2.0
-      });
-    }
-  };
-
-  const fireHomingMissile = (scene: THREE.Scene) => {
-    const s = gameStateRef.current;
-    if (s.isGameOver || s.isVictory || s.missileStock <= 0) return;
-    s.missileStock -= 1;
-    setMissileStock(s.missileStock);
-
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-
-    let closestEnemy: EnemyFighter | null = null;
-    let closestDist = 999;
-    for (let e of s.enemies) {
-      if (!e.alive) continue;
-      const d = Math.hypot(e.x - s.posX, e.y - s.posY, e.z - s.posZ);
-      if (d < closestDist && e.z < s.posZ) {
-        closestDist = d;
-        closestEnemy = e;
-      }
-    }
-
-    const mGeo = new THREE.ConeGeometry(0.2, 1.4, 4);
-    mGeo.rotateX(Math.PI / 2);
-    const mMat = new THREE.MeshBasicMaterial({ color: 0xff5500 });
-    const mMesh = new THREE.Mesh(mGeo, mMat);
-    mMesh.position.set(s.posX, s.posY - 0.5, s.posZ - 2);
-    scene.add(mMesh);
-
-    s.missiles.push({
-      mesh: mMesh,
-      target: closestEnemy ? closestEnemy.group : null,
-      vx: 0,
-      vy: 0,
-      vz: -45,
-      life: 4.0
-    });
-  };
+    setScore(0);
+    setCombo(0);
+    setMaxCombo(0);
+    setFeverMeter(0);
+    setIsFever(false);
+    setSongProgress(0);
+    setHitFeedback(null);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  }, []);
 
   useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+    initGame();
+  }, [initGame]);
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+  const handleHitLane = (laneIndex: number) => {
+    const s = gameStateRef.current;
+    if (s.isGameOver || s.isPaused) return;
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a1128);
-    scene.fog = new THREE.FogExp2(0x0a1128, 0.005);
+    s.laneFeedback[laneIndex] = 0.2; // Visual flash duration
 
-    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-    camera.position.set(0, 3, 7);
+    // Find closest note in this lane near hit line (80% ~ 95%)
+    let targetNote: RhythmNote | null = null;
+    let minDistance = 999;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    container.appendChild(renderer.domElement);
-
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x112244, 0.9);
-    scene.add(hemiLight);
-
-    const dirLight = new THREE.DirectionalLight(0xffddaa, 1.2);
-    dirLight.position.set(50, 100, 50);
-    scene.add(dirLight);
-
-    // Player Fighter Mesh
-    const playerGroup = new THREE.Group();
-    const bodyGeo = new THREE.BoxGeometry(1.2, 0.5, 4.0);
-    const bodyMat = new THREE.MeshLambertMaterial({ color: 0x3b82f6 });
-    const body = new THREE.Mesh(bodyGeo, bodyMat);
-    playerGroup.add(body);
-
-    const wingGeo = new THREE.BoxGeometry(5.0, 0.1, 1.8);
-    const wingMat = new THREE.MeshLambertMaterial({ color: 0x1d4ed8 });
-    const wings = new THREE.Mesh(wingGeo, wingMat);
-    wings.position.set(0, 0, 0.2);
-    playerGroup.add(wings);
-
-    const tailGeo = new THREE.BoxGeometry(0.15, 1.2, 1.2);
-    const tailMat = new THREE.MeshLambertMaterial({ color: 0xef4444 });
-    const tail = new THREE.Mesh(tailGeo, tailMat);
-    tail.position.set(0, 0.7, 1.4);
-    playerGroup.add(tail);
-
-    scene.add(playerGroup);
-
-    // Clouds
-    const clouds: THREE.Mesh[] = [];
-    const cloudGeo = new THREE.DodecahedronGeometry(8, 0);
-    const cloudMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.25 });
-    for (let i = 0; i < 40; i++) {
-      const c = new THREE.Mesh(cloudGeo, cloudMat);
-      c.position.set((Math.random() - 0.5) * 200, (Math.random() - 0.5) * 30 + 10, -Math.random() * 500);
-      scene.add(c);
-      clouds.push(c);
+    for (const note of s.notes) {
+      if (note.lane === laneIndex && !note.hit) {
+        const dist = Math.abs(note.y - 85);
+        if (dist < minDistance && note.y >= 65 && note.y <= 100) {
+          minDistance = dist;
+          targetNote = note;
+        }
+      }
     }
 
-    // Spawn Initial Enemies
-    const spawnEnemy = (x: number, y: number, z: number, isBoss = false) => {
-      const g = new THREE.Group();
-      const eBodyGeo = new THREE.BoxGeometry(isBoss ? 6 : 1.4, isBoss ? 2.5 : 0.6, isBoss ? 8 : 3.5);
-      const eBodyMat = new THREE.MeshLambertMaterial({ color: isBoss ? 0xd97706 : 0xdc2626 });
-      const eBody = new THREE.Mesh(eBodyGeo, eBodyMat);
-      g.add(eBody);
+    if (targetNote) {
+      targetNote.hit = true;
+      let points = 100;
+      let grade = 'PERFECT!';
 
-      if (isBoss) {
-        const turretGeo = new THREE.CylinderGeometry(0.8, 1.0, 0.8, 6);
-        const turretMat = new THREE.MeshLambertMaterial({ color: 0x7c2d12 });
-        const turret = new THREE.Mesh(turretGeo, turretMat);
-        turret.position.set(0, 1.5, 0);
-        g.add(turret);
+      if (minDistance < 6) {
+        points = 150;
+        grade = 'PERFECT!';
+      } else if (minDistance < 12) {
+        points = 100;
+        grade = 'GREAT!';
+      } else {
+        points = 60;
+        grade = 'GOOD!';
       }
 
-      g.position.set(x, y, z);
-      scene.add(g);
+      if (s.isFever) points *= 2;
 
-      gameStateRef.current.enemies.push({
-        group: g,
-        x,
-        y,
-        z,
-        hp: isBoss ? 600 : 60,
-        maxHp: isBoss ? 600 : 60,
-        alive: true,
-        isBoss
-      });
-    };
+      s.combo += 1;
+      if (s.combo > s.maxCombo) s.maxCombo = s.combo;
+      s.score += points;
 
-    for (let i = 0; i < 15; i++) {
-      spawnEnemy((Math.random() - 0.5) * 80, Math.random() * 20 + 5, -80 - i * 35);
+      if (!s.isFever) {
+        s.feverMeter = Math.min(100, s.feverMeter + 8);
+        if (s.feverMeter >= 100) {
+          s.isFever = true;
+          s.feverTimer = 6.0;
+        }
+      }
+
+      setScore(s.score);
+      setCombo(s.combo);
+      setMaxCombo(s.maxCombo);
+      setFeverMeter(s.feverMeter);
+      setIsFever(s.isFever);
+      setHitFeedback(grade);
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+
+      setTimeout(() => setHitFeedback(null), 300);
+    } else {
+      // Miss penalty
+      s.combo = 0;
+      setCombo(0);
+      setHitFeedback('MISS');
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+      setTimeout(() => setHitFeedback(null), 250);
     }
-    spawnEnemy(0, 12, -650, true); // Boss Carrier
+  };
 
-    let animId: number;
+  // Main Rhythm Loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     let lastTime = performance.now();
+    let spawnAccum = 0;
 
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const s = gameStateRef.current;
-      if (s.isPaused || s.isGameOver || s.isVictory) return;
+      if (s.isPaused || s.isGameOver) return;
 
-      if (s.shootCooldown > 0) s.shootCooldown -= dt;
+      s.elapsed += dt;
+      setSongProgress(Math.min(100, (s.elapsed / s.songDuration) * 100));
 
-      // Pitch / Yaw / Roll based on keys or gesture controls
-      if (s.keys.w) s.rotX = Math.max(s.rotX - 2.5 * dt, -0.6);
-      else if (s.keys.s) s.rotX = Math.min(s.rotX + 2.5 * dt, 0.6);
-      else s.rotX *= 0.92;
-
-      if (s.keys.a) {
-        s.rotY += 1.8 * dt;
-        s.rotZ = Math.min(s.rotZ + 3.0 * dt, 0.8);
-      } else if (s.keys.d) {
-        s.rotY -= 1.8 * dt;
-        s.rotZ = Math.max(s.rotZ - 3.0 * dt, -0.8);
-      } else {
-        s.rotZ *= 0.9;
-      }
-
-      // Forward Thrust
-      s.posX -= Math.sin(s.rotY) * s.speed * dt * 1.5;
-      s.posY += Math.sin(s.rotX) * s.speed * dt * 1.5;
-      s.posZ -= Math.cos(s.rotY) * s.speed * dt;
-
-      playerGroup.position.set(s.posX, s.posY, s.posZ);
-      playerGroup.rotation.set(-s.rotX, s.rotY, s.rotZ);
-
-      // Chase Camera
-      camera.position.set(
-        s.posX + Math.sin(s.rotY) * 6,
-        s.posY + 2.5 - Math.sin(s.rotX) * 3,
-        s.posZ + Math.cos(s.rotY) * 6
-      );
-      camera.lookAt(s.posX, s.posY + 0.5, s.posZ - 8);
-
-      // Update Bullets
-      for (let i = s.bullets.length - 1; i >= 0; i--) {
-        const b = s.bullets[i];
-        b.mesh.position.x += b.vx * dt;
-        b.mesh.position.y += b.vy * dt;
-        b.mesh.position.z += b.vz * dt;
-        b.life -= dt;
-
-        // Hit Detection against enemies
-        for (let enemy of s.enemies) {
-          if (!enemy.alive) continue;
-          const dist = b.mesh.position.distanceTo(enemy.group.position);
-          if (dist < (enemy.isBoss ? 4.5 : 2.0)) {
-            enemy.hp -= 20;
-            b.life = 0;
-            if (enemy.hp <= 0) {
-              enemy.alive = false;
-              scene.remove(enemy.group);
-              s.score += enemy.isBoss ? 1500 : 200;
-              setScore(s.score);
-              if (enemy.isBoss) {
-                s.isVictory = true;
-                const duration = (Date.now() - s.startTime) / 1000;
-                const receipt = calculateAndDepositMissionReward({
-                  gameId: 'voxel_ace_fighter',
-                  gameTitle: '복셀 에이스 파이터',
-                  durationSeconds: duration,
-                  score: s.score,
-                  difficulty: 'NIGHTMARE',
-                  isVictory: true
-                });
-                setSettlementReceipt(receipt);
-                onReward(receipt.totalSns);
-                setIsGameOver(true);
-              }
-            }
-            break;
-          }
-        }
-
-        if (b.life <= 0) {
-          scene.remove(b.mesh);
-          s.bullets.splice(i, 1);
+      // Fever Timer
+      if (s.isFever) {
+        s.feverTimer -= dt;
+        s.feverMeter = Math.max(0, (s.feverTimer / 6.0) * 100);
+        setFeverMeter(s.feverMeter);
+        if (s.feverTimer <= 0) {
+          s.isFever = false;
+          s.feverMeter = 0;
+          setIsFever(false);
         }
       }
 
-      // Update Missiles
-      for (let i = s.missiles.length - 1; i >= 0; i--) {
-        const m = s.missiles[i];
-        if (m.target && m.target.parent) {
-          const tPos = m.target.position;
-          const dir = new THREE.Vector3().subVectors(tPos, m.mesh.position).normalize();
-          m.vx = THREE.MathUtils.lerp(m.vx, dir.x * 60, 0.1);
-          m.vy = THREE.MathUtils.lerp(m.vy, dir.y * 60, 0.1);
-          m.vz = THREE.MathUtils.lerp(m.vz, dir.z * 60, 0.1);
-        }
-        m.mesh.position.x += m.vx * dt;
-        m.mesh.position.y += m.vy * dt;
-        m.mesh.position.z += m.vz * dt;
-        m.mesh.lookAt(m.mesh.position.clone().add(new THREE.Vector3(m.vx, m.vy, m.vz)));
-        m.life -= dt;
+      // Lane feedback decay
+      for (let i = 0; i < 4; i++) {
+        if (s.laneFeedback[i] > 0) s.laneFeedback[i] -= dt;
+      }
 
-        for (let enemy of s.enemies) {
-          if (!enemy.alive) continue;
-          if (m.mesh.position.distanceTo(enemy.group.position) < (enemy.isBoss ? 5.0 : 2.5)) {
-            enemy.hp -= 120;
-            m.life = 0;
-            if (enemy.hp <= 0) {
-              enemy.alive = false;
-              scene.remove(enemy.group);
-              s.score += enemy.isBoss ? 1500 : 200;
-              setScore(s.score);
-              if (enemy.isBoss) {
-                s.isVictory = true;
-                const duration = (Date.now() - s.startTime) / 1000;
-                const receipt = calculateAndDepositMissionReward({
-                  gameId: 'voxel_ace_fighter',
-                  gameTitle: '복셀 에이스 파이터',
-                  durationSeconds: duration,
-                  score: s.score,
-                  difficulty: 'NIGHTMARE',
-                  isVictory: true
-                });
-                setSettlementReceipt(receipt);
-                onReward(receipt.totalSns);
-                setIsGameOver(true);
-              }
-            }
-            break;
-          }
-        }
+      // Spawn Notes
+      spawnAccum += dt;
+      const spawnInterval = s.isFever ? 0.28 : 0.38;
+      if (spawnAccum >= spawnInterval && s.elapsed < s.songDuration - 2) {
+        spawnAccum = 0;
+        const lane = Math.floor(Math.random() * 4);
+        s.notes.push({
+          id: s.noteCounter++,
+          lane,
+          y: 0,
+          hit: false,
+          type: Math.random() < 0.2 ? 'fever' : 'normal',
+        });
+      }
 
-        if (m.life <= 0) {
-          scene.remove(m.mesh);
-          s.missiles.splice(i, 1);
+      // Move Notes
+      const noteSpeed = 65; // % per second
+      for (let i = s.notes.length - 1; i >= 0; i--) {
+        const note = s.notes[i];
+        note.y += noteSpeed * dt;
+
+        if (note.y > 105 && !note.hit) {
+          // Missed note
+          s.combo = 0;
+          setCombo(0);
+          s.notes.splice(i, 1);
+        } else if (note.y > 110) {
+          s.notes.splice(i, 1);
         }
       }
 
-      // Recycle Clouds
-      for (let c of clouds) {
-        if (c.position.z > s.posZ + 20) {
-          c.position.z = s.posZ - 300 - Math.random() * 200;
-          c.position.x = s.posX + (Math.random() - 0.5) * 180;
+      // Song Finish Check
+      if (s.elapsed >= s.songDuration && !s.isGameOver) {
+        s.isGameOver = true;
+        setIsGameOver(true);
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+
+        const duration = (Date.now() - s.startTime) / 1000;
+        const receipt = calculateAndDepositMissionReward({
+          gameId: 'arcade_rhythm_blaster',
+          gameTitle: '사이버 리듬 블래스터',
+          durationSeconds: duration,
+          score: s.score + s.maxCombo * 20,
+          difficulty: 'NIGHTMARE',
+          isVictory: s.score >= 1800,
+        });
+        setSettlementReceipt(receipt);
+        onReward(receipt.totalSns);
+        return;
+      }
+
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Cyber Neon Background
+      ctx.fillStyle = s.isFever ? '#180728' : '#080c14';
+      ctx.fillRect(0, 0, w, h);
+
+      // Track Lanes (4 columns)
+      const laneW = w / 4;
+      for (let i = 0; i < 4; i++) {
+        const lx = i * laneW;
+        ctx.strokeStyle = s.isFever ? 'rgba(217, 70, 239, 0.2)' : 'rgba(56, 189, 248, 0.15)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(lx, 0, laneW, h);
+
+        if (s.laneFeedback[i] > 0) {
+          ctx.fillStyle = s.isFever ? 'rgba(236, 72, 153, 0.25)' : 'rgba(56, 189, 248, 0.25)';
+          ctx.fillRect(lx, 0, laneW, h);
         }
       }
 
-      renderer.render(scene, camera);
+      // Hit Target Line (at 85% height)
+      const targetY = h * 0.85;
+      ctx.strokeStyle = s.isFever ? '#ec4899' : '#38bdf8';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(0, targetY);
+      ctx.lineTo(w, targetY);
+      ctx.stroke();
+
+      // Render Target Rings
+      for (let i = 0; i < 4; i++) {
+        const cx = i * laneW + laneW / 2;
+        ctx.strokeStyle = s.isFever ? 'rgba(244, 114, 182, 0.6)' : 'rgba(56, 189, 248, 0.5)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(cx, targetY, laneW * 0.35, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // Render Falling Notes
+      s.notes.forEach((note) => {
+        if (note.hit) return;
+        const nx = note.lane * laneW + laneW / 2;
+        const ny = (note.y / 100) * h;
+        const radius = laneW * 0.32;
+
+        ctx.fillStyle = note.type === 'fever' || s.isFever ? '#f43f5e' : '#38bdf8';
+        ctx.beginPath();
+        ctx.arc(nx, ny, radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 12px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('⚡', nx, ny);
+      });
     };
 
-    animId = requestAnimationFrame(animate);
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, [isPaused, onReward, playSfx]);
 
-    return () => {
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-    };
-  }, [lowSpecMode]);
-
-  const handleRestart = () => {
-    setScore(0);
-    setShield(100);
-    setMissileStock(12);
-    setIsGameOver(false);
-    setSettlementReceipt(null);
-    const s = gameStateRef.current;
-    s.posX = 0;
-    s.posY = 10;
-    s.posZ = 0;
-    s.rotX = 0;
-    s.rotY = 0;
-    s.rotZ = 0;
-    s.score = 0;
-    s.shield = 100;
-    s.missileStock = 12;
-    s.isGameOver = false;
-    s.isVictory = false;
-    s.startTime = Date.now();
-  };
+  const tutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 4레인 네온 비트 히트' : 'STEP 1: 4-LANE RHYTHM HIT',
+      title: isKo ? '타이밍 맞춰 노트를 터치하세요' : 'Hit Notes on the Target Line',
+      description: isKo
+        ? '위에서 4개 레인으로 떨어지는 비트 노트를 하단 판정선에 맞춰 원터치로 히트하세요.'
+        : 'Tap the 4 lanes precisely when notes reach the bottom target line.',
+      keyPoints: isKo
+        ? [
+            'PERFECT / GREAT 판정 시 고득점 획득',
+            '노트 적중 시 콤보 누적 및 보너스 가산',
+            'MISS 발생 시 콤보가 초기화됩니다.'
+          ]
+        : [
+            'PERFECT / GREAT hits yield maximum score',
+            'Chain combos for progressive multiplier bonuses',
+            'Missing a note resets current combo'
+          ],
+      iconType: 'GOAL',
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '하단 4개 썸존 원터치 탭' : '4-Zone Thumb Tap Controls',
+      description: isKo
+        ? '하단 4개 레인 버튼을 양손 엄지손가락으로 쾌적하게 탭하여 리듬을 연주합니다.'
+        : 'Tap bottom 4 lane zones with thumb gestures for responsive rhythm action.',
+      keyPoints: isKo
+        ? [
+            '👆 4개 레인 원터치: 쾌적한 썸존 터치',
+            '🔥 피버 모드: 게이지 100% 시 2배 득점',
+            '⚡ 60FPS 부드러운 네온 비트 스트림'
+          ]
+        : [
+            '👆 4-Lane One-Touch: Responsive thumb zones',
+            '🔥 Fever Mode: Double points when full',
+            '⚡ 60FPS fluid neon beat stream'
+          ],
+      iconType: 'GESTURES',
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '곡 완주 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon song clear.',
+      keyPoints: isKo
+        ? [
+            '완주 즉시 LocalStorage 영구 지갑 입금',
+            '최종 점수 및 맥스 콤보 비례 잭팟 보너스',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Max combo and score multipliers',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS',
+    },
+  ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
-
+    <div className="relative w-full h-[100dvh] bg-[#080c14] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between">
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
       <MinimalistMissionHUD
-        title={isKo ? '복셀 에이스 파이터' : 'Voxel Ace Fighter'}
-        language={language}
-        hp={{ current: shield, max: maxShield }}
+        title={isKo ? '사이버 리듬 블래스터' : 'Cyber Rhythm Blaster'}
+        language={(language as Language) || 'ko'}
         telemetries={[
-          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300' },
-          { label: isKo ? '미사일' : 'Missiles', value: `${missileStock}발`, color: 'text-cyan-300' }
+          { label: isKo ? '콤보' : 'Combo', value: `${combo}x`, color: combo > 10 ? 'text-pink-400 font-bold' : 'text-cyan-400 font-bold' },
+          { label: isKo ? '피버' : 'Fever', value: isFever ? 'FEVER!' : `${feverMeter.toFixed(0)}%`, color: isFever ? 'text-rose-500 font-bold animate-pulse' : 'text-amber-400' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-emerald-400 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          gameStateRef.current.isPaused = !isPaused;
-        }}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
         isPaused={isPaused}
       />
 
-      {/* Center Targeting Reticle HUD */}
-      <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-        <div className="w-14 h-14 border border-cyan-400/50 rounded-full flex items-center justify-center animate-pulse">
-          <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full" />
-        </div>
-      </div>
-
-      {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div
-          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
-          style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const startX = e.clientX - rect.left;
-            const startY = e.clientY - rect.top;
-            let moved = false;
-
-            const onMove = (moveEvt: PointerEvent) => {
-              const curX = moveEvt.clientX - rect.left;
-              const curY = moveEvt.clientY - rect.top;
-              const dx = curX - startX;
-              const dy = curY - startY;
-
-              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
-                moved = true;
-                gameStateRef.current.keys.w = dy < -10;
-                gameStateRef.current.keys.s = dy > 10;
-                gameStateRef.current.keys.a = dx < -10;
-                gameStateRef.current.keys.d = dx > 10;
-              }
-            };
-
-            const onUp = () => {
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-              window.removeEventListener('pointercancel', onUp);
-              gameStateRef.current.keys.w = false;
-              gameStateRef.current.keys.s = false;
-              gameStateRef.current.keys.a = false;
-              gameStateRef.current.keys.d = false;
-
-              if (!moved) {
-                // Tap: Fire Gun
-                const scene = (mountRef.current?.children[0] as any)?.__r3f?.scene;
-                if (scene) fireGun(scene);
-              }
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-          }}
-          onDoubleClick={() => {
-            const scene = (mountRef.current?.children[0] as any)?.__r3f?.scene;
-            if (scene) fireHomingMissile(scene);
-          }}
+      {/* Rhythm Track Canvas Viewport */}
+      <div className="flex-1 min-h-0 flex items-center justify-center relative overflow-hidden p-2 w-full max-w-sm">
+        <canvas
+          ref={canvasRef}
+          width={340}
+          height={480}
+          className="w-full h-full max-h-[60vh] object-contain border border-slate-800 rounded-none shadow-2xl"
         />
-      )}
 
-      {/* Minimal Bottom Guide */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/75 border border-cyan-500/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
-          {language === 'ko' ? '드래그: 조향 비행 | 탭: 기관포 | 더블탭: 유도 미사일 (화면 버튼 없음)' : 'Drag: Fly | Tap: Cannon | Double Tap: Missile (No Buttons)'}
-        </div>
+        {/* Floating Grade Feedback */}
+        {hitFeedback && (
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none text-xl font-bold tracking-wider text-amber-300 drop-shadow-md animate-ping">
+            {hitFeedback}
+          </div>
+        )}
       </div>
 
-      {/* 3-Step Interactive Tutorial Modal */}
+      {/* 4-Lane Responsive Touch Buttons (Thumb Zone) */}
+      <div className="shrink-0 w-full max-w-sm px-3 pb-4 grid grid-cols-4 gap-2 select-none">
+        {[0, 1, 2, 3].map((lane) => (
+          <button
+            key={lane}
+            type="button"
+            onPointerDown={(e) => {
+              e.preventDefault();
+              handleHitLane(lane);
+            }}
+            className="h-16 bg-slate-900 border-2 border-cyan-500/40 active:border-pink-500 active:bg-pink-600/30 text-cyan-300 font-bold text-lg rounded-none flex items-center justify-center active:scale-95 transition-all shadow-md touch-manipulation cursor-pointer"
+          >
+            {lane === 0 ? '◀' : lane === 1 ? '▲' : lane === 2 ? '▼' : '▶'}
+          </button>
+        ))}
+      </div>
+
+      {/* Song Progress Bar */}
+      <div className="w-full h-1.5 bg-black/40">
+        <div
+          className="h-full bg-cyan-400 transition-all duration-100"
+          style={{ width: `${songProgress}%` }}
+        />
+      </div>
+
+      {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
         <UniversalTutorialModal
-          gameId="voxel_ace_fighter"
-          gameTitle={isKo ? '3D 복셀 에이스 파이터: 창공의 발키리' : 'Voxel Ace Fighter: Valkyrie of Skies'}
-          language={language}
+          gameId="arcade_rhythm_blaster"
+          gameTitle={isKo ? '사이버 리듬 블래스터: 네온 비트 액션' : 'Cyber Rhythm Blaster: Neon Beat'}
+          customSteps={tutorialSteps}
+          language={(language as Language) || 'ko'}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}
         />
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
         <VictoryRewardModal
           receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
+          language={(language as Language) || 'ko'}
+          onPlayAgain={initGame}
           onExit={onExit}
         />
       )}
     </div>
   );
 };
+export default VoxelAceFighterGame;

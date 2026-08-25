@@ -2,13 +2,13 @@
 import os
 import glob
 import re
+import sys
 
 COMPONENTS_DIR = "/Users/dayyoung/project/snshero/src/components"
 AGENTS_FILE = "/Users/dayyoung/project/snshero/AGENTS.md"
 
-# 110종 미션 게임 풀 정의 (78종 3D 복셀 + 8종 2D 카드 + 11종 클래식 아케이드 + 13종 전술/특수 미션 모드)
-MISSION_GAME_POOL = [
-    # 1. 3D Voxel 액션/스포츠/아케이드 미션 게임 (78종)
+# 3D 복셀 미션 게임 리스트 (엄격 심사 및 대체 대상 78종)
+VOXEL_GAMES = [
     "VoxelAceFighterGame.tsx",
     "VoxelArcaneNexusGame.tsx",
     "VoxelArcherHeroGame.tsx",
@@ -87,72 +87,28 @@ MISSION_GAME_POOL = [
     "VoxelWindHunterGame.tsx",
     "VoxelWingsuitSkydivingGame.tsx",
     "VoxelZombieSurvivalGame.tsx",
-
-    # 2. 2D 카드/스킬 미션 게임 (8종)
-    "CardFlipGame.tsx",
-    "CardHeistGame.tsx",
-    "CardJumperGame.tsx",
-    "CardRushGame.tsx",
-    "CardSlidePuzzleGame.tsx",
-    "CardSlotGame.tsx",
-    "CardSorceryGame.tsx",
-    "CardTapGame.tsx",
-
-    # 3. 클래식 / 아케이드 캐주얼 미션 게임 (11종)
-    "BreakoutGame.tsx",
-    "DefenseGame.tsx",
-    "GomokuGame.tsx",
-    "MemoryMatchGame.tsx",
-    "MinesweeperGame.tsx",
-    "PacmanGame.tsx",
-    "ShootingBattleGame.tsx",
-    "Slide2048Game.tsx",
-    "SnakeBattleGame.tsx",
-    "TictactoeGame.tsx",
-    "TrexRunnerGame.tsx",
-
-    # 4. 특수 레이드 & 던전 & 시련 모드 미션 (13종)
-    "RunningEndlessMission.tsx",
-    "TreasureLootHuntMission.tsx",
-    "UndergroundDungeonMission.tsx",
-    "WorldBossRaidMission.tsx",
-    "StoryChapterBattleMission.tsx",
-    "GuildRaidCoopMission.tsx",
-    "TowerOfTrials50FMission.tsx",
-    "ExpeditionPatrolMission.tsx",
-    "TacticianAuraGambitMission.tsx",
-    "MonsterBeastariumCatchMission.tsx",
-    "PvpArenaMatgoMission.tsx",
-    "PvpArenaClassicMission.tsx",
-    "TournamentChampionMission.tsx"
 ]
 
-def get_mission_games():
-    return MISSION_GAME_POOL
-
-def get_last_inspected_game():
+def get_last_inspected_voxel_game():
     if not os.path.exists(AGENTS_FILE):
         return None
     with open(AGENTS_FILE, "r", encoding="utf-8") as f:
         content = f.read()
-    match = re.search(r"마지막 점검 게임[*\s:]+`([A-Za-z0-9_.]+)`", content)
+    match = re.search(r"마지막 심사 복셀 게임[*\s:]+`([^`]+)`", content)
     if match:
-        return match.group(1)
+        return match.group(1).strip()
     return None
 
-def get_next_game():
-    games = get_mission_games()
-    last = get_last_inspected_game()
-    if not last or last not in games:
-        return games[0] if games else None
-    idx = games.index(last)
-    next_idx = (idx + 1) % len(games)
-    return games[next_idx]
+def get_next_target_voxel_game():
+    last = get_last_inspected_voxel_game()
+    if not last or last not in VOXEL_GAMES:
+        return 1, VOXEL_GAMES[0]
+    idx = (VOXEL_GAMES.index(last) + 1) % len(VOXEL_GAMES)
+    return idx + 1, VOXEL_GAMES[idx]
 
 if __name__ == "__main__":
-    games = get_mission_games()
-    last = get_last_inspected_game()
-    next_game = get_next_game()
-    print(f"Total Mission Games: {len(games)} (110 Total Pool)")
-    print(f"Last Inspected Game: {last}")
-    print(f"Next Target Game: {next_game}")
+    last = get_last_inspected_voxel_game()
+    num, next_game = get_next_target_voxel_game()
+    print(f"Total Voxel Games to Audit: {len(VOXEL_GAMES)}")
+    print(f"Last Audited Voxel Game: {last}")
+    print(f"Next Target Voxel Game: [{num:02d}/{len(VOXEL_GAMES)}] {next_game}")
