@@ -7966,7 +7966,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelwindhunter',
-      title: language === 'ko' ? '3D 복셀 양궁 마스터' : 'Voxel Archery Wind Hunter',
+      title: language === 'ko' ? '블리츠 윈드 헌터' : 'Blitz Wind Hunter',
       icon: TargetIcon,
       color: 'from-emerald-600 to-teal-800',
       image: '/minigame_archerhero.png',
@@ -7974,10 +7974,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelwindhunter');
       },
-      category: '3d',
+      category: 'sports',
       isNew: true,
-      badgeText: '3D ARCHERY',
-      guide: language === 'ko' ? '거리별 낙차와 풍향 오프셋을 계산해 10점 만점 엑스텐(X-Ring)을 정조준하세요.' : 'Calculate ballistic drop and crosswind offset to hit the 10-point X-Ring!'
+      badgeText: 'WIND-HUNTER',
+      guide: language === 'ko' ? '화면을 뒤로 당겨 각도를 조준하고 손을 떼어 화살을 발사하세요.' : 'Drag backward to aim trajectory and release to shoot!'
     },
     {
       id: 'voxelsubwayrunner',
@@ -11650,7 +11650,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '양궁 마스터 보상', 'Archery Wind Hunter reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 윈드 헌터 보상', 'Blitz Wind Hunter reward')}
       />
     );
   }
