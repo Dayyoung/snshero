@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { CardData } from '../types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
@@ -15,386 +14,508 @@ interface VoxelQuantumPortalGameProps {
   onReward: (amount: number) => void;
 }
 
+interface QuantumNode {
+  id: number;
+  r: number;
+  c: number;
+  x: number;
+  y: number;
+  type: 'blue_portal' | 'orange_portal' | 'quantum_gem' | 'star_core';
+  icon: string;
+  points: number;
+  connected: boolean;
+}
+
 export const VoxelQuantumPortalGame: React.FC<VoxelQuantumPortalGameProps> = ({
   deck: _deck,
   language,
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
+  const [loopsCompleted, setLoopsCompleted] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
+  const [quantumCombo, setQuantumCombo] = useState<number>(0);
+  const [maxCombo, setMaxCombo] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(35);
+  const [feedbackText, setFeedbackText] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_quantum_portal') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_quantum_loop') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [puzzlesSolved, setPuzzlesSolved] = useState<number>(0);
-  const targetPuzzles = 3;
-  const [bluePortalActive, setBluePortalActive] = useState<boolean>(false);
-  const [orangePortalActive, setOrangePortalActive] = useState<boolean>(false);
-  const [score, setScore] = useState<number>(0);
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
-    posX: 0,
-    posZ: 8,
-    rotY: 0,
-    moveDir: new THREE.Vector2(0, 0),
-    bluePortal: null as THREE.Mesh | null,
-    orangePortal: null as THREE.Mesh | null,
-    puzzlesSolved: 0,
+    grid: [] as QuantumNode[],
+    selectedNodes: [] as number[],
+    isDragging: false,
+    dragPos: { x: 0, y: 0 },
+    loopsCompleted: 0,
     score: 0,
+    combo: 0,
+    maxCombo: 0,
+    timeLeft: 35,
     isGameOver: false,
-    isVictory: false,
     isPaused: false,
     startTime: Date.now(),
-    playerMesh: null as THREE.Group | null,
-    scene: null as THREE.Scene | null
+    particles: [] as { x: number; y: number; vx: number; vy: number; color: string; life: number }[],
   });
 
-  const shootPortal = (type: 'blue' | 'orange') => {
-    const s = stateRef.current;
-    if (s.isGameOver || s.isVictory || s.isPaused || !s.scene) return;
+  const setupQuantumGrid = useCallback(() => {
+    const grid: QuantumNode[] = [];
+    const rows = 4;
+    const cols = 4;
+    let id = 1;
 
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        let type: 'blue_portal' | 'orange_portal' | 'quantum_gem' | 'star_core' = 'quantum_gem';
+        let icon = '🟣';
+        let points = 250;
 
-    const pGeo = new THREE.TorusGeometry(1.2, 0.15, 8, 24);
-    const pMat = new THREE.MeshStandardMaterial({
-      color: type === 'blue' ? 0x06b6d4 : 0xf59e0b,
-      emissive: type === 'blue' ? 0x0891b2 : 0xd97706
-    });
+        if (r === 0 && c === 0) {
+          type = 'blue_portal';
+          icon = '🌀';
+          points = 500;
+        } else if (r === 3 && c === 3) {
+          type = 'orange_portal';
+          icon = '🟠';
+          points = 500;
+        } else if ((r + c) % 3 === 0) {
+          type = 'star_core';
+          icon = '⭐';
+          points = 400;
+        } else if ((r * c) % 2 === 1) {
+          icon = '🔵';
+          points = 300;
+        }
 
-    const targetX = (type === 'blue' ? -1 : 1) * (4 + s.puzzlesSolved * 2);
-    const targetZ = -8 - s.puzzlesSolved * 4;
-
-    if (type === 'blue') {
-      if (s.bluePortal) s.scene.remove(s.bluePortal);
-      const bMesh = new THREE.Mesh(pGeo, pMat);
-      bMesh.position.set(targetX, 1.6, targetZ);
-      s.scene.add(bMesh);
-      s.bluePortal = bMesh;
-      setBluePortalActive(true);
-    } else {
-      if (s.orangePortal) s.scene.remove(s.orangePortal);
-      const oMesh = new THREE.Mesh(pGeo, pMat);
-      oMesh.position.set(targetX, 1.6, targetZ);
-      s.scene.add(oMesh);
-      s.orangePortal = oMesh;
-      setOrangePortalActive(true);
-    }
-
-    if (s.bluePortal && s.orangePortal) {
-      s.puzzlesSolved += 1;
-      s.score += 400;
-      setPuzzlesSolved(s.puzzlesSolved);
-      setScore(s.score);
-      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-
-      // Clear portals for next puzzle
-      setTimeout(() => {
-        if (s.bluePortal) s.scene?.remove(s.bluePortal);
-        if (s.orangePortal) s.scene?.remove(s.orangePortal);
-        s.bluePortal = null;
-        s.orangePortal = null;
-        setBluePortalActive(false);
-        setOrangePortalActive(false);
-      }, 800);
-
-      if (s.puzzlesSolved >= targetPuzzles && !s.isGameOver) {
-        s.isVictory = true;
-        s.isGameOver = true;
-        setIsGameOver(true);
-        const duration = (Date.now() - s.startTime) / 1000;
-        const receipt = calculateAndDepositMissionReward({
-          gameId: 'voxel_quantum_portal',
-          gameTitle: '복셀 퀀텀 포탈',
-          durationSeconds: duration,
-          score: s.score + 2000,
-          difficulty: 'HARD',
-          isVictory: true
+        grid.push({
+          id: id++,
+          r,
+          c,
+          x: 55 + c * 82,
+          y: 95 + r * 82,
+          type,
+          icon,
+          points,
+          connected: false,
         });
-        setSettlementReceipt(receipt);
-        onReward(receipt.totalSns);
+      }
+    }
+    return grid;
+  }, []);
+
+  const initGame = useCallback(() => {
+    const s = stateRef.current;
+    s.grid = setupQuantumGrid();
+    s.selectedNodes = [];
+    s.isDragging = false;
+    s.loopsCompleted = 0;
+    s.score = 0;
+    s.combo = 0;
+    s.maxCombo = 0;
+    s.timeLeft = 35;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    s.particles = [];
+
+    setLoopsCompleted(0);
+    setScore(0);
+    setQuantumCombo(0);
+    setMaxCombo(0);
+    setTimeLeft(35);
+    setFeedbackText(null);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  }, [setupQuantumGrid]);
+
+  useEffect(() => {
+    initGame();
+  }, [initGame]);
+
+  // Timer loop
+  useEffect(() => {
+    if (isGameOver || isPaused) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          endGame(true);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isGameOver, isPaused]);
+
+  // Drag Connect Quantum Loop (Zero Joysticks)
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    const touchX = (e.clientX - rect.left) * scaleX;
+    const touchY = (e.clientY - rect.top) * scaleY;
+
+    // Find starting node
+    const startNode = s.grid.find((n) => Math.hypot(n.x - touchX, n.y - touchY) < 32);
+    if (startNode) {
+      s.isDragging = true;
+      s.selectedNodes = [startNode.id];
+      s.dragPos = { x: touchX, y: touchY };
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    }
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (!s.isDragging || s.isGameOver || s.isPaused) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    const touchX = (e.clientX - rect.left) * scaleX;
+    const touchY = (e.clientY - rect.top) * scaleY;
+    s.dragPos = { x: touchX, y: touchY };
+
+    // Check adjacent neighbor connection
+    const lastId = s.selectedNodes[s.selectedNodes.length - 1];
+    const lastNode = s.grid.find((n) => n.id === lastId);
+    if (!lastNode) return;
+
+    const hoveredNode = s.grid.find((n) => Math.hypot(n.x - touchX, n.y - touchY) < 32);
+    if (hoveredNode && !s.selectedNodes.includes(hoveredNode.id)) {
+      const isNeighbor = Math.abs(hoveredNode.r - lastNode.r) <= 1 && Math.abs(hoveredNode.c - lastNode.c) <= 1;
+      if (isNeighbor) {
+        s.selectedNodes.push(hoveredNode.id);
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
       }
     }
   };
 
+  const handlePointerUp = () => {
+    const s = stateRef.current;
+    if (!s.isDragging || s.isGameOver || s.isPaused) return;
+    s.isDragging = false;
+
+    // Check if path connects Blue Portal and Orange Portal
+    const selected = s.selectedNodes.map((id) => s.grid.find((n) => n.id === id)!);
+    const hasBlue = selected.some((n) => n.type === 'blue_portal');
+    const hasOrange = selected.some((n) => n.type === 'orange_portal');
+
+    if (hasBlue && hasOrange && selected.length >= 4) {
+      // Quantum Wormhole Loop Closed!
+      s.loopsCompleted += 1;
+      s.combo += 1;
+      if (s.combo > s.maxCombo) s.maxCombo = s.combo;
+
+      let loopPoints = selected.reduce((sum, n) => sum + n.points, 0) + s.combo * 100;
+      s.score += loopPoints;
+
+      setLoopsCompleted(s.loopsCompleted);
+      setScore(s.score);
+      setQuantumCombo(s.combo);
+      setMaxCombo(s.maxCombo);
+
+      setFeedbackText(`QUANTUM LOOP OPEN! +${loopPoints}P 🌀⚡`);
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+      setTimeout(() => setFeedbackText(null), 500);
+
+      // Loop Sparkles
+      selected.forEach((n) => {
+        for (let p = 0; p < 8; p++) {
+          s.particles.push({
+            x: n.x,
+            y: n.y,
+            vx: (Math.random() - 0.5) * 250,
+            vy: (Math.random() - 0.5) * 250,
+            color: n.type === 'blue_portal' ? '#06b6d4' : '#f97316',
+            life: 0.5,
+          });
+        }
+      });
+
+      // Regenerate Grid
+      setTimeout(() => {
+        s.grid = setupQuantumGrid();
+      }, 400);
+    } else if (selected.length > 1) {
+      s.combo = 0;
+      setQuantumCombo(0);
+      setFeedbackText(isKo ? '포탈 연결 미완성 (🌀-🟠 연결 필요)' : 'INCOMPLETE PORTAL LOOP');
+      setTimeout(() => setFeedbackText(null), 400);
+    }
+
+    s.selectedNodes = [];
+  };
+
+  // Main 60FPS Quantum Loop Render Loop
   useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
-
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0f1d);
-    stateRef.current.scene = scene;
-
-    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 200);
-    camera.position.set(0, 10, 16);
-    camera.lookAt(0, 1, 0);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    container.appendChild(renderer.domElement);
-
-    const ambient = new THREE.AmbientLight(0xffffff, 0.9);
-    scene.add(ambient);
-
-    const dirLight = new THREE.DirectionalLight(0x38bdf8, 1.4);
-    dirLight.position.set(10, 25, 10);
-    scene.add(dirLight);
-
-    // Chamber Floor
-    const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(50, 50),
-      new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 })
-    );
-    floor.rotation.x = -Math.PI / 2;
-    scene.add(floor);
-
-    // Player Avatar
-    const pGroup = new THREE.Group();
-    const pBody = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.6, 0.6), new THREE.MeshStandardMaterial({ color: 0x6366f1 }));
-    pBody.position.y = 0.8;
-    pGroup.add(pBody);
-
-    pGroup.position.set(0, 0, 8);
-    scene.add(pGroup);
-    stateRef.current.playerMesh = pGroup;
-
-    let animId: number;
     let lastTime = performance.now();
 
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const s = stateRef.current;
       if (s.isPaused || s.isGameOver) return;
 
-      // Move player
-      const speed = 10;
-      s.posX += s.moveDir.x * speed * dt;
-      s.posZ += s.moveDir.y * speed * dt;
-      s.posX = THREE.MathUtils.clamp(s.posX, -20, 20);
-      s.posZ = THREE.MathUtils.clamp(s.posZ, -20, 20);
-
-      if (s.moveDir.length() > 0.1) {
-        s.rotY = Math.atan2(s.moveDir.x, s.moveDir.y);
+      // Update Particles
+      for (let i = s.particles.length - 1; i >= 0; i--) {
+        const p = s.particles[i];
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.life -= dt;
+        if (p.life <= 0) s.particles.splice(i, 1);
       }
 
-      if (pGroup) {
-        pGroup.position.set(s.posX, 0, s.posZ);
-        pGroup.rotation.y = s.rotY;
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Dark Quantum Space Background
+      const spaceGrad = ctx.createLinearGradient(0, 0, 0, h);
+      spaceGrad.addColorStop(0, '#0f172a');
+      spaceGrad.addColorStop(0.5, '#1e1b4b');
+      spaceGrad.addColorStop(1, '#020617');
+      ctx.fillStyle = spaceGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Quantum Grid Laser Lines (Connected Trail)
+      if (s.selectedNodes.length > 0) {
+        const selNodes = s.selectedNodes.map((id) => s.grid.find((n) => n.id === id)!);
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 6;
+        ctx.shadowColor = '#38bdf8';
+        ctx.shadowBlur = 18;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(selNodes[0].x, selNodes[0].y);
+        for (let i = 1; i < selNodes.length; i++) {
+          ctx.lineTo(selNodes[i].x, selNodes[i].y);
+        }
+        if (s.isDragging) {
+          ctx.lineTo(s.dragPos.x, s.dragPos.y);
+        }
+        ctx.stroke();
+        ctx.shadowBlur = 0;
       }
 
-      // Camera follow
-      camera.position.set(s.posX, 10, s.posZ + 14);
-      camera.lookAt(s.posX, 1, s.posZ);
+      // Render Quantum Nodes
+      s.grid.forEach((n) => {
+        const isSelected = s.selectedNodes.includes(n.id);
+        ctx.save();
+        ctx.translate(n.x, n.y);
 
-      renderer.render(scene, camera);
+        if (isSelected) {
+          ctx.scale(1.2, 1.2);
+          ctx.shadowColor = n.type === 'orange_portal' ? '#f97316' : '#38bdf8';
+          ctx.shadowBlur = 20;
+        }
+
+        ctx.fillStyle = '#1e293b';
+        ctx.beginPath();
+        ctx.arc(0, 0, 26, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = n.type === 'blue_portal' ? '#06b6d4' : (n.type === 'orange_portal' ? '#f97316' : '#64748b');
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        ctx.font = '24px serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(n.icon, 0, 0);
+        ctx.restore();
+      });
+
+      // Render Particles
+      s.particles.forEach((p) => {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 4, 4);
+      });
     };
 
-    animId = requestAnimationFrame(animate);
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, []);
 
-    return () => {
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-    };
-  }, [lowSpecMode]);
-
-  const handleRestart = () => {
+  const endGame = (isWin: boolean) => {
     const s = stateRef.current;
-    s.posX = 0;
-    s.posZ = 8;
-    s.rotY = 0;
-    s.puzzlesSolved = 0;
-    s.score = 0;
-    if (s.bluePortal) s.scene?.remove(s.bluePortal);
-    if (s.orangePortal) s.scene?.remove(s.orangePortal);
-    s.bluePortal = null;
-    s.orangePortal = null;
-    s.isGameOver = false;
-    s.isVictory = false;
-    s.startTime = Date.now();
-    setPuzzlesSolved(0);
-    setScore(0);
-    setBluePortalActive(false);
-    setOrangePortalActive(false);
-    setIsGameOver(false);
-    setSettlementReceipt(null);
+    if (s.isGameOver) return;
+    s.isGameOver = true;
+    setIsGameOver(true);
+
+    if (isWin) {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    } else {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+
+    const duration = (Date.now() - s.startTime) / 1000;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'arcade_quantum_loop',
+      gameTitle: '블리츠 퀀텀 루프',
+      durationSeconds: duration,
+      score: s.score + (isWin ? 3500 : s.loopsCompleted * 600) + s.maxCombo * 50,
+      difficulty: 'NIGHTMARE',
+      isVictory: isWin || s.loopsCompleted >= 5,
+    });
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
   };
 
-  const customTutorialSteps: TutorialStep[] = [
+  const tutorialSteps: TutorialStep[] = [
     {
-      badge: isKo ? 'STEP 1: 퀀텀 포탈 퍼즐' : 'STEP 1: QUANTUM PUZZLE',
-      title: isKo ? '블루/오렌지 포탈 3단계 연결' : 'Link Portals Across 3 Stages',
+      badge: isKo ? 'STEP 1: 손가락 스와이프 양자 루프 연결' : 'STEP 1: SWIPE CONNECT QUANTUM LOOPS',
+      title: isKo ? '블루 포탈(🌀)에서 오렌지 포탈(🟠)까지 선을 그어 연결하세요' : 'Drag from Blue Portal to Orange Portal to Open Circuit',
       description: isKo
-        ? '시공간 챔버에서 블루 포탈과 오렌지 포탈을 쌍으로 생성하여 3개의 퍼즐을 돌파하세요.'
-        : 'Cast paired blue and orange portals in the chamber room to solve 3 spatial puzzles.',
+        ? '가상 조이스틱 없이 화면의 블루 웜홀(🌀)을 터치하고 손가락을 떼지 않은 채 주변 양자 오브(🟣, 🔵, ⭐)들을 연결하여 오렌지 웜홀(🟠)까지 회로를 닫아 차원문을 여세요.'
+        : 'Connect from the blue portal across quantum gems to the orange portal with a single continuous drag gesture.',
       keyPoints: isKo
         ? [
-            '3단계 시공간 퍼즐 해결 시 승리',
-            '블루 + 오렌지 포탈 한 쌍 완성 시 통과',
-            '단계마다 +400P 보너스 획득'
+            '가상 조이스틱 0개 (100% 손가락 직접 스와이프 연결)',
+            '스타 코어(⭐) 포함 연결 시 400P 추가 잭팟',
+            '35초간 최대 콤보로 퀀텀 루프를 완성하고 올클리어'
           ]
         : [
-            'Solve 3 spatial puzzles to win',
-            'Link paired Blue + Orange portals',
-            '+400P bonus points per puzzle'
+            'Zero Virtual Joysticks: 100% Continuous Drag Circuit',
+            'Star Cores (⭐) grant 400P extra bonus energy',
+            'Complete quantum loops with continuous combos within 35s'
           ],
-      iconType: 'GOAL'
+      iconType: 'GOAL',
     },
     {
-      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
-      title: isKo ? '드래그 이동 & 화면 좌/우 탭 발사' : 'Drag Move & Left/Right Portal Tap',
+      badge: isKo ? 'STEP 2: 모바일 퓨어 제스처' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '화면 직접 드래그 라인 (Drag Line Gesture)' : 'Drag Line Gesture',
       description: isKo
-        ? '가상 버튼 없이 드래그로 이동하고, 화면 좌측 탭은 블루 포탈, 우측 탭은 오렌지 포탈을 발사합니다.'
-        : 'Drag anywhere to move, and tap left screen for Blue portal, right screen for Orange portal with zero buttons.',
+        ? '인접한 노드들을 손가락으로 부드럽게 이어 회로를 완성합니다.'
+        : 'Connect adjacent nodes smoothly in a single stroke.',
       keyPoints: isKo
         ? [
-            '👆 드래그: 챔버 360° 이동',
-            '🔷 화면 좌측 탭: 블루 포탈 발사',
-            '🔶 화면 우측 탭: 오렌지 포탈 발사'
+            '👆 연속 드래그: 실시간 푸른빛 레이저 회로 궤적',
+            '🌀 연속 루프 완성 시 퀀텀 콤보 배수 보너스',
+            '⏱️ 35초 타임어택 고득점 챌린지'
           ]
         : [
-            '👆 Drag: Smooth 360° chamber move',
-            '🔷 Tap Left: Shoot Blue Portal',
-            '🔶 Tap Right: Shoot Orange Portal'
+            '👆 Drag Line: Radiant blue laser circuit line',
+            '🌀 Consecutive loop completions grant combo multipliers',
+            '⏱️ 35s time attack quantum loop sprint'
           ],
-      iconType: 'GESTURES'
+      iconType: 'GESTURES',
     },
     {
       badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
       title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
       description: isKo
-        ? '퍼즐 돌파 즉시 HARD 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
-        : 'Standard payout scaled with Hard multiplier deposited atomically to your wallet.',
+        ? '도약 완료 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon match finish.',
       keyPoints: isKo
         ? [
-            '승리 즉시 LocalStorage 영구 지갑 입금',
-            '스피드 탈출 및 포탈 연결 가산점',
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '완성한 퀀텀 루프 수 및 최대 콤보 비례 대량 잭팟',
             'VictoryRewardModal 2초 황금 코인 팡파레'
           ]
         : [
             'Instant atomic deposit to LocalStorage wallet',
-            'Speed and portal pairing bonuses',
+            'Completed quantum loops count and combo multipliers',
             'VictoryRewardModal golden coin fanfare'
           ],
-      iconType: 'REWARDS'
-    }
+      iconType: 'REWARDS',
+    },
   ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
-
+    <div className="relative w-full h-[100dvh] bg-[#020617] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none">
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
       <MinimalistMissionHUD
-        title={isKo ? '복셀 퀀텀 포탈' : 'Voxel Quantum Portal'}
-        language={language}
+        title={isKo ? '블리츠 퀀텀 루프' : 'Blitz Quantum Loop'}
+        language={(language as Language) || 'ko'}
         telemetries={[
-          { label: isKo ? '퍼즐' : 'Puzzle', value: `${puzzlesSolved}/${targetPuzzles}`, color: 'text-amber-300' },
-          { label: isKo ? '블루' : 'Blue', value: bluePortalActive ? 'OPEN' : 'READY', color: bluePortalActive ? 'text-cyan-400 font-bold' : 'text-slate-400' },
-          { label: isKo ? '오렌지' : 'Orange', value: orangePortalActive ? 'OPEN' : 'READY', color: orangePortalActive ? 'text-orange-400 font-bold' : 'text-slate-400' },
-          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-yellow-300' }
+          { label: isKo ? '루프' : 'Loops', value: `${loopsCompleted}회`, color: 'text-amber-400 font-bold' },
+          { label: isKo ? '콤보' : 'Combo', value: `${quantumCombo}x`, color: quantumCombo > 2 ? 'text-amber-300 font-bold animate-bounce' : 'text-slate-300' },
+          { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 10 ? 'text-rose-500 font-bold animate-pulse' : 'text-cyan-400 font-bold' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          stateRef.current.isPaused = !isPaused;
-        }}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
         isPaused={isPaused}
       />
 
-      {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div
-          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
-          style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const startX = e.clientX - rect.left;
-            const startY = e.clientY - rect.top;
-            let moved = false;
-
-            const onMove = (moveEvt: PointerEvent) => {
-              const curX = moveEvt.clientX - rect.left;
-              const curY = moveEvt.clientY - rect.top;
-              const dx = curX - startX;
-              const dy = curY - startY;
-
-              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
-                moved = true;
-                stateRef.current.moveDir.x = Math.abs(dx) > 8 ? (dx > 0 ? 1 : -1) : 0;
-                stateRef.current.moveDir.y = Math.abs(dy) > 8 ? (dy > 0 ? 1 : -1) : 0;
-              }
-            };
-
-            const onUp = () => {
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-              window.removeEventListener('pointercancel', onUp);
-              stateRef.current.moveDir.x = 0;
-              stateRef.current.moveDir.y = 0;
-
-              if (!moved) {
-                // Tap Left Half (Blue) / Right Half (Orange)
-                if (startX < rect.width / 2) {
-                  shootPortal('blue');
-                } else {
-                  shootPortal('orange');
-                }
-              }
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-          }}
+      {/* Pure Touch Quantum Loop Canvas Viewport */}
+      <div className="flex-1 w-full max-w-md relative overflow-hidden flex items-center justify-center select-none touch-none p-2">
+        <canvas
+          ref={canvasRef}
+          width={360}
+          height={500}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          className="w-full h-full object-contain touch-none cursor-crosshair shadow-2xl"
         />
-      )}
+
+        {/* Floating Feedback Text */}
+        {feedbackText && (
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 pointer-events-none text-base font-bold text-amber-300 drop-shadow-lg animate-bounce whitespace-nowrap bg-black/60 px-4 py-1 rounded-full border border-amber-400/30">
+            {feedbackText}
+          </div>
+        )}
+      </div>
 
       {/* Minimal Bottom Guide */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/75 border border-cyan-500/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
-          {isKo ? '화면 드래그: 이동 | 좌측 탭: 블루 포탈 | 우측 탭: 오렌지 포탈 (버튼 없음)' : 'Drag: Move | Tap Left: Blue Portal | Tap Right: Orange Portal (No Buttons)'}
+      <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono">
+          {isKo ? '블루 포탈(🌀)에서 오렌지 포탈(🟠)까지 손가락으로 이어 루프를 완성하세요' : 'Drag from blue portal to orange portal across quantum gems to close loop'}
         </div>
       </div>
 
       {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
         <UniversalTutorialModal
-          gameId="voxel_quantum_portal"
-          gameTitle={isKo ? '3D 복셀 퀀텀 포탈: 시공간 퍼즐' : 'Voxel Quantum Portal: Spatial Puzzle'}
-          customSteps={customTutorialSteps}
-          language={language}
+          gameId="arcade_quantum_loop"
+          gameTitle={isKo ? '블리츠 퀀텀: 차원 회로' : 'Blitz Quantum: Circuit Loop'}
+          customSteps={tutorialSteps}
+          language={(language as Language) || 'ko'}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}
         />
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
         <VictoryRewardModal
           receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
+          language={(language as Language) || 'ko'}
+          onPlayAgain={initGame}
           onExit={onExit}
         />
       )}

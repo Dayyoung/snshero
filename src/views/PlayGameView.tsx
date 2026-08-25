@@ -7696,7 +7696,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelquantum',
-      title: language === 'ko' ? '3D 복셀 퀀텀 포탈' : 'Voxel Quantum Portal',
+      title: language === 'ko' ? '블리츠 퀀텀 루프' : 'Blitz Quantum Loop',
       icon: Sparkles,
       color: 'from-cyan-500 to-violet-600',
       image: '/minigame_cardsorcery.png',
@@ -7704,10 +7704,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelquantum');
       },
-      category: '3d',
+      category: 'puzzle',
       isNew: true,
-      badgeText: '3D PORTAL',
-      guide: language === 'ko' ? '블루/오렌지 포탈 건을 발사하여 물리 공간을 연결하고 큐브 퍼즐 챔버를 탈출하세요.' : 'First-person spatial puzzle shooter connecting portal gateways to escape rooms!'
+      badgeText: 'QUANTUM-LOOP',
+      guide: language === 'ko' ? '블루 포탈(🌀)에서 오렌지 포탈(🟠)까지 손가락으로 이어 루프를 완성하세요.' : 'Drag from blue portal to orange portal across quantum gems to close loop!'
     },
     {
       id: 'voxelrollinghero',
@@ -11416,7 +11416,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '퀀텀 포탈 보상', 'Quantum Portal reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 퀀텀 루프 보상', 'Blitz Quantum Loop reward')}
       />
     );
   }
