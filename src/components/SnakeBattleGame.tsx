@@ -1,9 +1,20 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, RotateCcw, Trophy, Zap } from 'lucide-react';
-import { CARD_DATABASE } from '../cardDatabase';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
-import { t } from '../lib/i18n';
 import { cn, getCardSpriteStyle } from '../lib/utils';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
+
+interface SnakeBattleGameProps {
+  deck: CardData[];
+  language: Language;
+  playerName?: string;
+  lowSpecMode?: boolean;
+  playSfx: (url: string) => void;
+  onExit: () => void;
+  onReward: (amount: number) => void;
+}
 
 type Direction = 'up' | 'down' | 'left' | 'right';
 
@@ -16,508 +27,329 @@ interface SnakeSegment extends Point {
   cardId: number;
 }
 
-interface AiSnake {
-  id: string;
-  name: string;
-  color: string;
-  direction: Direction;
-  segments: SnakeSegment[];
-}
+const BOARD_SIZE = 16;
 
-interface PeerSnake {
-  id: string;
-  name: string;
-  segments: SnakeSegment[];
-  updatedAt: number;
-}
-
-interface SnakeBattleGameProps {
-  deck: CardData[];
-  language: Language;
-  playerName?: string;
-  lowSpecMode?: boolean;
-  playSfx: (url: string) => void;
-  onExit: () => void;
-  onReward: (amount: number) => void;
-}
-
-const BOARD_SIZE = 18;
-const TICK_MS = 140;
-const CHANNEL_NAME = 'hero_snake_battle';
-
-const getCardId = (card: CardData | undefined, fallback: number) => {
-  const imageIndex = typeof card?.imageIndex === 'number' ? card.imageIndex : undefined;
-  const numericId = typeof card?.id === 'number' ? card.id : undefined;
-  const id = imageIndex || numericId || fallback;
-  return CARD_DATABASE[id] ? id : fallback;
+const wrap = (val: number) => {
+  if (val < 0) return BOARD_SIZE - 1;
+  if (val >= BOARD_SIZE) return 0;
+  return val;
 };
-
-// Uses getCardSpriteStyle from utils
-
-const wrap = (value: number) => {
-  if (value < 0) return BOARD_SIZE - 1;
-  if (value >= BOARD_SIZE) return 0;
-  return value;
-};
-
-const movePoint = (point: Point, direction: Direction): Point => {
-  if (direction === 'up') return { x: point.x, y: wrap(point.y - 1) };
-  if (direction === 'down') return { x: point.x, y: wrap(point.y + 1) };
-  if (direction === 'left') return { x: wrap(point.x - 1), y: point.y };
-  return { x: wrap(point.x + 1), y: point.y };
-};
-
-const samePoint = (a: Point, b: Point) => a.x === b.x && a.y === b.y;
-
-const isOppositeDirection = (a: Direction, b: Direction) => {
-  return (a === 'up' && b === 'down') ||
-    (a === 'down' && b === 'up') ||
-    (a === 'left' && b === 'right') ||
-    (a === 'right' && b === 'left');
-};
-
-const makeInitialPlayerSnake = (deck: CardData[]) => {
-  const cards = Array.from({ length: 5 }).map((_, idx) => getCardId(deck[idx], idx + 1));
-  return cards.map((cardId, idx) => ({ x: 9 - idx, y: 9, cardId }));
-};
-
-const makeAiSnake = (idx: number): AiSnake => {
-  const baseY = 3 + idx * 4;
-  const baseX = idx % 2 === 0 ? 5 : 14;
-  return {
-    id: `snake-ai-${idx}`,
-    name: `AI-${idx + 1}`,
-    color: ['bg-rose-500', 'bg-amber-500', 'bg-cyan-500'][idx] || 'bg-slate-500',
-    direction: idx % 2 === 0 ? 'right' : 'left',
-    segments: Array.from({ length: 4 }).map((_, segIdx) => ({
-      x: baseX - segIdx,
-      y: baseY,
-      cardId: ((idx * 12 + segIdx) % 110) + 1
-    }))
-  };
-};
-
-const nextFood = () => ({
-  x: Math.floor(Math.random() * BOARD_SIZE),
-  y: Math.floor(Math.random() * BOARD_SIZE),
-  cardId: Math.floor(Math.random() * 110) + 1
-});
 
 export const SnakeBattleGame: React.FC<SnakeBattleGameProps> = ({
   deck,
   language,
-  playerName,
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
-  const playerId = useMemo(() => `snake-${Date.now()}-${Math.random().toString(36).slice(2)}`, []);
-  const [showTutorial, setShowTutorial] = useState(true);
-  const [isBoosting, setIsBoosting] = useState(false);
-  const boostFrameRef = useRef(0);
-  const [snake, setSnake] = useState<SnakeSegment[]>(() => makeInitialPlayerSnake(deck));
+  const isKo = language === 'ko';
+  const [snake, setSnake] = useState<SnakeSegment[]>([]);
+  const [food, setFood] = useState<Point>({ x: 5, y: 5 });
   const [direction, setDirection] = useState<Direction>('right');
-  const [food, setFood] = useState<SnakeSegment>(() => nextFood());
-  const [aiSnakes, setAiSnakes] = useState<AiSnake[]>(() => [makeAiSnake(0), makeAiSnake(1), makeAiSnake(2)]);
-  const [peers, setPeers] = useState<Record<string, PeerSnake>>({});
   const [score, setScore] = useState(0);
+  const [length, setLength] = useState(3);
+  const [isPaused, setIsPaused] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
-  const directionRef = useRef(direction);
-  const nextCardRef = useRef(6);
-  const channelRef = useRef<BroadcastChannel | null>(null);
-  const rewardedRef = useRef(false);
-
-  useEffect(() => {
-    directionRef.current = direction;
-  }, [direction]);
-
-  const changePlayerDirection = (nextDirection: Direction) => {
-    const current = directionRef.current;
-    if (nextDirection === current) return;
-
-    if (isOppositeDirection(current, nextDirection)) {
-      setSnake(prev => [...prev].reverse());
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_arcade_snake') !== 'true';
+    } catch {
+      return true;
     }
+  });
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
-    directionRef.current = nextDirection;
-    setDirection(nextDirection);
-  };
+  const startTimeRef = useRef(Date.now());
+  const dirRef = useRef<Direction>('right');
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const key = event.key.toLowerCase();
-      if (key === ' ') {
-        event.preventDefault();
-        setIsBoosting(true);
-        return;
-      }
-      const nextDirection =
-        key === 'arrowup' || key === 'w' ? 'up' :
-        key === 'arrowdown' || key === 's' ? 'down' :
-        key === 'arrowleft' || key === 'a' ? 'left' :
-        key === 'arrowright' || key === 'd' ? 'right' :
-        null;
-
-      if (!nextDirection) return;
-      event.preventDefault();
-      event.stopPropagation();
-
-      changePlayerDirection(nextDirection);
-    };
-    const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.key === ' ') {
-        setIsBoosting(false);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown, { passive: false });
-    window.addEventListener('keyup', handleKeyUp);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (typeof BroadcastChannel === 'undefined') return;
-    const channel = new BroadcastChannel(CHANNEL_NAME);
-    channelRef.current = channel;
-    channel.onmessage = (event: MessageEvent<PeerSnake>) => {
-      const data = event.data;
-      if (!data || data.id === playerId) return;
-      setPeers(prev => ({ ...prev, [data.id]: data }));
-    };
-    return () => channel.close();
-  }, [playerId]);
-
-  useEffect(() => {
-    if (!channelRef.current || isGameOver) return;
-    channelRef.current.postMessage({
-      id: playerId,
-      name: playerName || 'Player',
-      segments: snake,
-      updatedAt: Date.now()
-    });
-  }, [isGameOver, playerId, playerName, snake]);
-
-  useEffect(() => {
-    const cleanup = window.setInterval(() => {
-      const now = Date.now();
-      setPeers(prev => Object.fromEntries(
-        (Object.entries(prev) as [string, PeerSnake][]).filter(([, peer]) => now - peer.updatedAt < 3000)
-      ));
-    }, 1000);
-    return () => window.clearInterval(cleanup);
-  }, []);
-
-  useEffect(() => {
-    if (isGameOver || showTutorial) return;
-    const currentTick = isBoosting ? 70 : TICK_MS;
-    const interval = window.setInterval(() => {
-      if (isBoosting) {
-        boostFrameRef.current += currentTick;
-        if (boostFrameRef.current >= 1200) {
-          boostFrameRef.current = 0;
-          setScore(prev => {
-            if (prev <= 1) {
-              setIsBoosting(false);
-              return 0;
-            }
-            return prev - 1;
-          });
-        }
-      }
-
-      setSnake(prevSnake => {
-        const head = prevSnake[0];
-        const nextHead = { ...movePoint(head, directionRef.current), cardId: head.cardId };
-        const hitSelf = prevSnake.slice(1).some(segment => samePoint(segment, nextHead));
-        const hitPeer = (Object.values(peers) as PeerSnake[]).some(peer => peer.segments.some(segment => samePoint(segment, nextHead)));
-
-        if (hitSelf || hitPeer) {
-          setIsGameOver(true);
-          return prevSnake;
-        }
-
-        let grew = false;
-        let nextScore = 0;
-        let nextFoodState = food;
-        let eatenAiId: string | null = null;
-        let eatenAiSegmentIndex = -1;
-
-        if (samePoint(nextHead, food)) {
-          grew = true;
-          nextScore += 1;
-          nextFoodState = nextFood();
-          playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-        }
-
-        aiSnakes.forEach(ai => {
-          const foundIndex = ai.segments.findIndex(segment => samePoint(segment, nextHead));
-          if (foundIndex >= 0 && eatenAiId === null) {
-            grew = true;
-            nextScore += 5;
-            eatenAiId = ai.id;
-            eatenAiSegmentIndex = foundIndex;
-            playSfx('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
-          }
-        });
-
-        if (nextFoodState !== food) setFood(nextFoodState);
-        if (nextScore > 0) setScore(prev => prev + nextScore);
-        if (eatenAiId) {
-          setAiSnakes(prev => prev.map(ai => {
-            if (ai.id !== eatenAiId) return ai;
-            const remaining = ai.segments.filter((_, idx) => idx !== eatenAiSegmentIndex);
-            return remaining.length > 0 ? { ...ai, segments: remaining } : makeAiSnake(Math.floor(Math.random() * 3));
-          }));
-        }
-
-        const next = [nextHead, ...prevSnake];
-        if (grew) {
-          const nextCard = nextCardRef.current;
-          nextCardRef.current = nextCard >= 110 ? 1 : nextCard + 1;
-          next.push({ ...prevSnake[prevSnake.length - 1], cardId: nextCard });
-        } else {
-          next.pop();
-        }
-        return next;
-      });
-
-      setAiSnakes(prev => prev.map(ai => {
-        if (ai.segments.length === 0) return ai;
-        const head = ai.segments[0];
-        const horizontal = Math.abs(food.x - head.x) > Math.abs(food.y - head.y);
-        const preferred: Direction = horizontal ? (food.x > head.x ? 'right' : 'left') : (food.y > head.y ? 'down' : 'up');
-        const nextDirection = Math.random() < 0.75 ? preferred : ai.direction;
-        const nextHead = { ...movePoint(head, nextDirection), cardId: head.cardId };
-        const nextSegments = [nextHead, ...ai.segments];
-        if (samePoint(nextHead, food)) {
-          setFood(nextFood());
-        } else {
-          nextSegments.pop();
-        }
-        return { ...ai, direction: nextDirection, segments: nextSegments };
-      }));
-    }, currentTick);
-    return () => window.clearInterval(interval);
-  }, [aiSnakes, food, isGameOver, peers, playSfx, isBoosting]);
-
-  useEffect(() => {
-    if (!isGameOver || rewardedRef.current) return;
-    rewardedRef.current = true;
-    onReward(score * 10);
-  }, [isGameOver, onReward, score]);
-
-  const restart = () => {
-    rewardedRef.current = false;
-    setSnake(makeInitialPlayerSnake(deck));
-    setAiSnakes([makeAiSnake(0), makeAiSnake(1), makeAiSnake(2)]);
+  const initGame = useCallback(() => {
+    const playerCardId = deck[0]?.imageIndex || (deck[0]?.id as number) || 1;
+    const initialSnake: SnakeSegment[] = [
+      { x: 8, y: 8, cardId: playerCardId },
+      { x: 7, y: 8, cardId: playerCardId },
+      { x: 6, y: 8, cardId: playerCardId },
+    ];
+    setSnake(initialSnake);
+    setFood({ x: 4, y: 4 });
     setDirection('right');
-    setFood(nextFood());
+    dirRef.current = 'right';
     setScore(0);
+    setLength(3);
     setIsGameOver(false);
-    nextCardRef.current = 6;
-  };
+    setSettlementReceipt(null);
+    startTimeRef.current = Date.now();
+  }, [deck]);
 
-  const renderSegment = (segment: SnakeSegment, className: string, idx: number, label?: string) => {
-    const size = 100 / BOARD_SIZE;
-    const visualScale = 1;
-    const offset = (size * (visualScale - 1)) / 2;
+  useEffect(() => {
+    initGame();
+  }, [initGame]);
 
-    return (
-    <div
-      key={`${segment.x}-${segment.y}-${segment.cardId}-${idx}`}
-      className={cn('absolute overflow-visible drop-shadow-xl', className)}
-      style={{
-        left: `${(segment.x / BOARD_SIZE) * 100 - offset}%`,
-        top: `${(segment.y / BOARD_SIZE) * 100 - offset}%`,
-        width: `${size * visualScale}%`,
-        height: `${size * visualScale}%`
-      }}
-    >
-      <div
-        className="w-full h-full scale-[1.25]"
-        style={getCardSpriteStyle(segment.cardId)}
-        title={CARD_DATABASE[segment.cardId]?.title_dis || CARD_DATABASE[segment.cardId]?.title_en || 'card'}
-      />
-      {label && (
-        <span className="absolute -top-4 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-indigo-600 text-white text-[9px] font-black shadow-lg whitespace-nowrap border border-white/40 animate-pulse">
-          {label}
-        </span>
-      )}
-    </div>
-    );
-  };
-
-  const directionLabels: Record<Direction, { arrow: string; label: string }> = {
-    up: { arrow: '^', label: 'N' },
-    right: { arrow: '>', label: 'E' },
-    down: { arrow: 'v', label: 'S' },
-    left: { arrow: '<', label: 'W' }
-  };
-
-  const DirectionButton = ({ dir }: { dir: Direction }) => (
-    <button
-      aria-label={dir}
-      type="button"
-      onPointerDown={(event) => {
-        event.preventDefault();
-        changePlayerDirection(dir);
-      }}
-      onClick={() => changePlayerDirection(dir)}
-      className={cn(
-        'w-14 h-14 rounded-2xl border border-white/10 bg-white/10 hover:bg-white/20 active:scale-95 transition-all cursor-pointer flex flex-col items-center justify-center leading-none font-black shadow-sm select-none touch-none',
-        direction === dir && 'bg-indigo-500/70 border-indigo-300 shadow-indigo-500/30 shadow-lg'
-      )}
-      style={{ touchAction: 'none' }}
-    >
-      <span className="text-lg font-black">{directionLabels[dir].arrow}</span>
-      <span className="text-[9px] font-black text-slate-300 mt-0.5">{directionLabels[dir].label}</span>
-    </button>
-  );
-
-  const handleBoardPointer = (event: React.PointerEvent<HTMLDivElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const dx = x - centerX;
-    const dy = y - centerY;
-
-    if (Math.abs(dx) > Math.abs(dy)) {
-      changePlayerDirection(dx > 0 ? 'right' : 'left');
-    } else {
-      changePlayerDirection(dy > 0 ? 'down' : 'up');
+  const changeDirection = (newDir: Direction) => {
+    const cur = dirRef.current;
+    if (
+      (newDir === 'up' && cur === 'down') ||
+      (newDir === 'down' && cur === 'up') ||
+      (newDir === 'left' && cur === 'right') ||
+      (newDir === 'right' && cur === 'left')
+    ) {
+      return;
     }
+    dirRef.current = newDir;
+    setDirection(newDir);
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
   };
+
+  // Game Loop
+  useEffect(() => {
+    if (isGameOver || isPaused) return;
+
+    const interval = setInterval(() => {
+      setSnake(prev => {
+        if (prev.length === 0) return prev;
+
+        const head = prev[0];
+        let nx = head.x;
+        let ny = head.y;
+        const d = dirRef.current;
+
+        if (d === 'up') ny = wrap(ny - 1);
+        if (d === 'down') ny = wrap(ny + 1);
+        if (d === 'left') nx = wrap(nx - 1);
+        if (d === 'right') nx = wrap(nx + 1);
+
+        // Self collision check
+        for (let i = 1; i < prev.length; i++) {
+          if (prev[i].x === nx && prev[i].y === ny) {
+            setIsGameOver(true);
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+            const duration = (Date.now() - startTimeRef.current) / 1000;
+            const receipt = calculateAndDepositMissionReward({
+              gameId: 'arcade_snake',
+              gameTitle: '클래식 스네이크 배틀',
+              durationSeconds: duration,
+              score: prev.length * 200,
+              difficulty: 'HARD',
+              isVictory: false
+            });
+            setSettlementReceipt(receipt);
+            onReward(receipt.totalSns);
+            return prev;
+          }
+        }
+
+        const newHead: SnakeSegment = { x: nx, y: ny, cardId: head.cardId };
+        const newSnake = [newHead, ...prev];
+
+        // Eat food
+        if (nx === food.x && ny === food.y) {
+          setScore(s => s + 100);
+          setLength(l => l + 1);
+          setFood({
+            x: Math.floor(Math.random() * BOARD_SIZE),
+            y: Math.floor(Math.random() * BOARD_SIZE),
+          });
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+        } else {
+          newSnake.pop();
+        }
+
+        return newSnake;
+      });
+    }, 140);
+
+    return () => clearInterval(interval);
+  }, [food, isGameOver, isPaused, onReward, playSfx]);
+
+  const tutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 먹이 수집 & 꼬리 성장' : 'STEP 1: GROW SNAKE',
+      title: isKo ? '황금 사과 섭취 & 몸체 확장' : 'Eat Apples & Extend Body',
+      description: isKo
+        ? '보드 위에 나타나는 황금 먹이를 섭취하여 꼬리를 늘리고 최고 점수를 달성하세요.'
+        : 'Eat golden food items to extend your snake body and score high.',
+      keyPoints: isKo
+        ? [
+            '먹이 섭취 시 +100P 및 길이 +1',
+            '자신의 꼬리와 충돌 시 게임 오버',
+            '보드 경계 통과 시 반대편으로 루프'
+          ]
+        : [
+            'Food items give +100P and +1 length',
+            'Colliding with self causes game over',
+            'Screen edge wrap-around loop'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '스와이프 & 원핸드 D-패드' : 'Swipe & D-Pad Steer',
+      description: isKo
+        ? '화면 스와이프 또는 하단 D-패드로 4방향 이동을 빠르고 정확하게 조작합니다.'
+        : 'Swipe screen or tap one-handed D-pad to change direction.',
+      keyPoints: isKo
+        ? [
+            '👆 스와이프: 상하좌우 즉시 턴',
+            '🕹️ 컴팩트 D-패드 원터치 조작',
+            '⚡ 140ms 고속 반응 틱'
+          ]
+        : [
+            '👆 Swipe: Instant 4-way turn',
+            '🕹️ Compact D-pad one-touch move',
+            '⚡ 140ms fast game loop'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '게임 종료 즉시 HARD 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Standard payout deposited atomically to your LocalStorage wallet upon game finish.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '최종 몸체 길이 및 먹이 수집 보너스',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Snake length and food bonuses',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
+    }
+  ];
 
   return (
-    <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white p-3 flex flex-col justify-between items-center font-sans select-none overflow-hidden pb-2">
-      <header className="flex items-center justify-between max-w-5xl mx-auto w-full shrink-0">
-        <button onClick={onExit} className="p-2.5 rounded-2xl bg-white/10 hover:bg-white/15 transition-all active:scale-95 cursor-pointer">
-          <ArrowLeft size={18} />
-        </button>
-        <div className="text-center">
-          <h1 className="text-base sm:text-lg font-black uppercase tracking-tight">{t('mode_snake', language)}</h1>
-          <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('snake_subtitle', language)}</p>
-        </div>
-        <div className="px-3 py-1.5 rounded-2xl bg-indigo-500/20 border border-indigo-400/20 text-indigo-100 font-black text-xs sm:text-sm tabular-nums">
-          {score}
-        </div>
-      </header>
+    <div className="relative w-full h-[100dvh] bg-[#fdfcfc] text-[#201d1d] font-mono select-none flex flex-col overflow-hidden items-center justify-between">
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '클래식 스네이크' : 'Classic Snake'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '길이' : 'Length', value: `${length}`, color: 'text-emerald-700 font-bold' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-600 font-bold' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
+        isPaused={isPaused}
+      />
 
-      <main className="max-w-5xl mx-auto w-full flex flex-col items-center justify-center gap-3 lg:grid lg:grid-cols-[1fr_260px] lg:items-start flex-1 min-h-0">
+      {/* Board Viewport */}
+      <div className="flex-1 min-h-0 flex items-center justify-center relative overflow-hidden p-2 w-full max-w-sm">
         <div
-          className="relative w-full max-w-[280px] sm:max-w-[340px] aspect-square bg-slate-900 rounded-3xl border border-white/10 overflow-hidden shadow-2xl touch-none select-none shrink-0"
-          onPointerDown={(event) => {
-            event.preventDefault();
-            handleBoardPointer(event);
-          }}
+          className="w-full max-w-[340px] aspect-square bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] relative overflow-hidden touch-none select-none p-1"
           style={{ touchAction: 'none' }}
+          onTouchStart={(e) => {
+            touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+          }}
+          onTouchEnd={(e) => {
+            if (!touchStartRef.current) return;
+            const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
+            const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 15) {
+              changeDirection(dx > 0 ? 'right' : 'left');
+            } else if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 15) {
+              changeDirection(dy > 0 ? 'down' : 'up');
+            }
+            touchStartRef.current = null;
+          }}
         >
-          <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px)', backgroundSize: `${100 / BOARD_SIZE}% ${100 / BOARD_SIZE}%` }} />
-          <div className="pointer-events-none absolute inset-0 z-[45] text-white/25 font-black">
-            <div className="absolute inset-x-[28%] top-3 h-[28%] rounded-3xl border border-white/10 bg-white/[0.03] flex items-start justify-center pt-3 text-3xl">^</div>
-            <div className="absolute inset-x-[28%] bottom-3 h-[28%] rounded-3xl border border-white/10 bg-white/[0.03] flex items-end justify-center pb-3 text-3xl">v</div>
-            <div className="absolute inset-y-[28%] left-3 w-[28%] rounded-3xl border border-white/10 bg-white/[0.03] flex items-center justify-start pl-3 text-3xl">&lt;</div>
-            <div className="absolute inset-y-[28%] right-3 w-[28%] rounded-3xl border border-white/10 bg-white/[0.03] flex items-center justify-end pr-3 text-3xl">&gt;</div>
-            <div className="absolute left-1/2 top-1/2 w-28 h-28 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-slate-950/20 flex items-center justify-center text-[10px] tracking-[0.3em] text-white/20">
-              TOUCH
-            </div>
+          {/* Food */}
+          <div
+            style={{
+              left: `${(food.x / BOARD_SIZE) * 100}%`,
+              top: `${(food.y / BOARD_SIZE) * 100}%`,
+              width: `${100 / BOARD_SIZE}%`,
+              height: `${100 / BOARD_SIZE}%`,
+            }}
+            className="absolute p-0.5"
+          >
+            <div className="w-full h-full bg-amber-500 rounded-full animate-pulse shadow-xs" />
           </div>
-          {renderSegment(food, lowSpecMode ? 'bg-amber-400' : 'bg-amber-400 animate-pulse', 0)}
-          {snake.map((segment, idx) => renderSegment(
-            segment,
-            idx === 0
-              ? 'z-40 [filter:drop-shadow(0_0_16px_rgba(129,140,248,1))]'
-              : 'z-30 [filter:drop-shadow(0_0_10px_rgba(99,102,241,0.75))]',
-            idx,
-            idx === 0 ? (language === 'ko' ? '내 지렁이' : 'YOU') : undefined
-          ))}
-          {aiSnakes.flatMap(ai => ai.segments.map((segment, idx) => renderSegment(segment, cn(ai.color, 'opacity-90 z-5'), idx)))}
-          {(Object.values(peers) as PeerSnake[]).flatMap(peer => peer.segments.map((segment, idx) => renderSegment(segment, 'ring-2 ring-emerald-300 z-10', idx)))}
 
-          {isGameOver && (
-            <div className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-6 animate-in fade-in duration-200">
-              <div className="bg-white text-slate-800 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl border border-slate-100/80 animate-in zoom-in-95 duration-200">
-                <Trophy size={42} className="mx-auto text-amber-500 mb-3 animate-bounce" />
-                <h2 className="text-xl font-bold text-slate-800 mb-1">
-                  {t('snake_game_over', language)}
-                </h2>
-                <div className="flex items-center justify-center gap-2 mb-6 mt-3">
-                  <span className="text-3xl font-extrabold text-indigo-600">
-                    +{score * 10}
-                  </span>
-                  <span className="text-xs font-semibold text-slate-400">SNS</span>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <button
-                    onClick={restart}
-                    className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold active:scale-95 transition-all shadow-md shadow-indigo-600/10 hover:shadow-lg cursor-pointer flex items-center justify-center gap-1.5"
-                  >
-                    <RotateCcw size={14} />
-                    {language === 'ko' ? '재시작' : 'Restart'}
-                  </button>
-                  <button
-                    onClick={onExit}
-                    className="w-full py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200/85 text-slate-700 font-semibold rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer"
-                  >
-                    {language === 'ko' ? '종료' : 'Exit'}
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <aside className="w-full max-w-[360px] space-y-3">
-          <div className="bg-white/10 border border-white/10 rounded-none p-4">
-            <p className="text-[10px] font-black text-slate-400 uppercase mb-2 text-center lg:text-left">{t('snake_controls', language)}</p>
-            <div className="p-3 bg-black/40 border border-white/10 text-center text-xs text-amber-300 font-mono space-y-1">
-              <div>{language === 'ko' ? '화면 스와이프: 4방향 전환' : 'Swipe Screen: 4-Way Steer'}</div>
-              <div>{language === 'ko' ? '화면 탭 / 더블탭: 부스터 질주' : 'Tap / Double Tap: Boost Rush'}</div>
-            </div>
-          </div>
-          <div className="bg-white/10 border border-white/10 rounded-3xl p-4">
-            <p className="text-[10px] font-black text-slate-400 uppercase mb-2">{t('snake_players', language)}</p>
-            <div className="space-y-2 text-xs font-bold text-slate-300">
-              <div className="flex justify-between"><span>{playerName || 'YOU'}</span><span>{snake.length}</span></div>
-              {aiSnakes.map(ai => <div key={ai.id} className="flex justify-between"><span>{ai.name}</span><span>{ai.segments.length}</span></div>)}
-              {(Object.values(peers) as PeerSnake[]).map(peer => <div key={peer.id} className="flex justify-between text-emerald-300"><span>{peer.name}</span><span>{peer.segments.length}</span></div>)}
-            </div>
-          </div>
-        </aside>
-      </main>
-
-      {/* Tutorial Modal */}
-      {showTutorial && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs px-4 animate-in fade-in duration-200">
-          <div className="bg-white text-slate-800 w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl border border-slate-100/80 p-6 animate-in zoom-in-95 duration-200">
-            <div className="flex items-center gap-2.5 mb-3 border-b border-slate-100 pb-3">
-              <span className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg shrink-0">
-                <Zap size={16} />
-              </span>
-              <h3 className="text-base font-bold text-slate-800 uppercase tracking-tight">
-                {t('tutorial_title', language)}
-              </h3>
-            </div>
-            <p className="text-xs sm:text-sm font-medium text-slate-600 leading-relaxed mb-6 whitespace-pre-line">
-              {t('tutorial_snakebattle', language)}
-            </p>
-            <button
-              onClick={() => {
-                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                setShowTutorial(false);
+          {/* Snake Segments */}
+          {snake.map((seg, i) => (
+            <div
+              key={i}
+              style={{
+                left: `${(seg.x / BOARD_SIZE) * 100}%`,
+                top: `${(seg.y / BOARD_SIZE) * 100}%`,
+                width: `${100 / BOARD_SIZE}%`,
+                height: `${100 / BOARD_SIZE}%`,
               }}
-              className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-md shadow-indigo-600/10 hover:shadow-lg active:scale-95 transition-all cursor-pointer"
+              className="absolute p-0.5"
             >
-              {t('tutorial_start_game', language)}
-            </button>
-          </div>
+              <div
+                className={cn(
+                  'w-full h-full rounded-xs border transition-all',
+                  i === 0 ? 'bg-[#201d1d] border-[#201d1d] shadow-xs' : 'bg-cyan-600 border-cyan-700'
+                )}
+              />
+            </div>
+          ))}
         </div>
+      </div>
+
+      {/* Mobile One-Handed D-Pad */}
+      <div className="shrink-0 flex flex-col items-center gap-1 select-none pb-3">
+        <button
+          type="button"
+          onClick={() => changeDirection('up')}
+          className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
+        >
+          ▲
+        </button>
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => changeDirection('left')}
+            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
+          >
+            ◀
+          </button>
+          <button
+            type="button"
+            onClick={() => changeDirection('down')}
+            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
+          >
+            ▼
+          </button>
+          <button
+            type="button"
+            onClick={() => changeDirection('right')}
+            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
+          >
+            ▶
+          </button>
+        </div>
+      </div>
+
+      {/* Universal 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="arcade_snake"
+          gameTitle={isKo ? '클래식 스네이크 배틀' : 'Classic Snake Battle'}
+          customSteps={tutorialSteps}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
+
+      {/* Victory Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={initGame}
+          onExit={onExit}
+        />
       )}
     </div>
   );
 };
+export default SnakeBattleGame;

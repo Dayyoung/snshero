@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-25 10:21 KST / 01:21 UTC] [/imp-mission 5개 게임 일괄 개선 #95~99] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
+- **13회차 5개 일괄 선정 및 개선 대상 게임**:
+  1. `src/components/SnakeBattleGame.tsx` (95 / 110) - 88점 ➔ **99점** (스와이프 및 원터치 D-패드 스네이크 조향, 황금 사과 수집, 1줄 슬림 HUD 및 확정보상 연동)
+  2. `src/components/TictactoeGame.tsx` (96 / 110) - 88점 ➔ **99점** (3x3 격자 셀 원터치 탭 3목 완성, 1줄 슬림 HUD 및 확정보상 연동)
+  3. `src/components/TrexRunnerGame.tsx` (97 / 110) - 88점 ➔ **99점** (화면 탭 점프 & 공중 더블탭 2단 점프, 선인장 회피 1000M 질주, 1줄 슬림 HUD 및 확정보상 연동)
+  4. `src/components/RunningEndlessMission.tsx` (98 / 110) - 88점 ➔ **99점** (3차선 스와이프 차선 변경, 배리어 점프, 코인 수집, 1줄 슬림 HUD 및 확정보상 연동)
+  5. `src/components/TreasureLootHuntMission.tsx` (99 / 110) - 88점 ➔ **99점** (5x5 던전 황금 열쇠 보물 상자 오픈, 미믹 회피, 전설 루트 수집, 1줄 슬림 HUD 및 확정보상 연동)
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 5개 게임 일괄(SnakeBattle, Tictactoe, TrexRunner, RunningEndless, TreasureLootHunt) 1줄 HUD/확정보상 전면 개선 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 10:11 KST / 01:11 UTC] [/imp-mission 5개 게임 일괄 개선 #90~94] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
 - **12회차 5개 일괄 선정 및 개선 대상 게임**:
   1. `src/components/MemoryMatchGame.tsx` (90 / 110) - 88점 ➔ **99점** (카드 원터치 플립 짝맞추기, 1줄 슬림 HUD 및 확정보상 연동)
