@@ -8041,7 +8041,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelslamdunk',
-      title: language === 'ko' ? '3D 복셀 점핑 배스킷볼' : 'Voxel Slam Dunk Basketball',
+      title: language === 'ko' ? '블리츠 슬램덩크' : 'Blitz Slam Dunk',
       icon: Flame,
       color: 'from-amber-600 to-orange-800',
       image: '/minigame_superstrikers.png',
@@ -8049,10 +8049,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelslamdunk');
       },
-      category: '3d',
+      category: 'sports',
       isNew: true,
-      badgeText: '3D DUNK',
-      guide: language === 'ko' ? '포물선 3점슛과 360도 윈드밀 슬램덩크로 온 파이어(On-Fire) 모드를 점화하세요.' : 'Launch 3-point parabolic shots and execute 360-degree windmill slam dunks!'
+      badgeText: 'SLAM-DUNK',
+      guide: language === 'ko' ? '농구공을 골대를 향해 손가락으로 빠르게 쓸어올려 슛을 넣으세요.' : 'Flick basketball upward toward the moving hoop to score!'
     },
     {
       id: 'voxelcoastertycoon',
@@ -11715,7 +11715,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '배스킷볼 슬램덩크 보상', 'Slam Dunk Basketball reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 슬램덩크 보상', 'Blitz Slam Dunk reward')}
       />
     );
   }
