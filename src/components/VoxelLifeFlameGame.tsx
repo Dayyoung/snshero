@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { CardData } from '../types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
@@ -16,16 +15,26 @@ interface VoxelLifeFlameGameProps {
 }
 
 interface ShadowCreep {
-  mesh: THREE.Group;
-  pos: THREE.Vector3;
-  hp: number;
+  id: number;
+  x: number;
+  y: number;
   speed: number;
+  hp: number;
+  maxHp: number;
+  type: 'crawler' | 'wraith' | 'golem';
+  icon: string;
+  points: number;
+  radius: number;
 }
 
-interface FlameShot {
-  mesh: THREE.Mesh;
-  pos: THREE.Vector3;
-  vel: THREE.Vector3;
+interface FlameProjectile {
+  id: number;
+  x: number;
+  y: number;
+  targetX: number;
+  targetY: number;
+  speed: number;
+  life: number;
 }
 
 export const VoxelLifeFlameGame: React.FC<VoxelLifeFlameGameProps> = ({
@@ -34,425 +43,490 @@ export const VoxelLifeFlameGame: React.FC<VoxelLifeFlameGameProps> = ({
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
+  const [treeHp, setTreeHp] = useState<number>(100);
+  const [purifiedCount, setPurifiedCount] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
+  const [flameCombo, setFlameCombo] = useState<number>(0);
+  const [maxCombo, setMaxCombo] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(35);
+  const [feedbackText, setFeedbackText] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_life_flame') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_flame_defense') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [score, setScore] = useState<number>(0);
-  const [treeHp, setTreeHp] = useState<number>(100);
-  const [purifiedCount, setPurifiedCount] = useState<number>(0);
-  const targetPurified = 25;
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
-    aimAngle: 0,
     treeHp: 100,
+    creeps: [] as ShadowCreep[],
+    flames: [] as FlameProjectile[],
+    purified: 0,
     score: 0,
-    purifiedCount: 0,
+    combo: 0,
+    maxCombo: 0,
+    timeLeft: 35,
     isGameOver: false,
-    isVictory: false,
     isPaused: false,
     startTime: Date.now(),
-    creeps: [] as ShadowCreep[],
-    flames: [] as FlameShot[],
-    scene: null as THREE.Scene | null,
-    dragonMesh: null as THREE.Group | null
+    creepCounter: 1,
+    spawnTimer: 0,
+    novaParticles: [] as { x: number; y: number; vx: number; vy: number; color: string; life: number }[],
   });
 
-  const fireFlame = () => {
+  const initGame = useCallback(() => {
     const s = stateRef.current;
-    if (s.isGameOver || s.isVictory || s.isPaused || !s.scene) return;
+    s.treeHp = 100;
+    s.creeps = [];
+    s.flames = [];
+    s.purified = 0;
+    s.score = 0;
+    s.combo = 0;
+    s.maxCombo = 0;
+    s.timeLeft = 35;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    s.creepCounter = 1;
+    s.spawnTimer = 0;
+    s.novaParticles = [];
 
-    const fGeo = new THREE.SphereGeometry(0.35, 8, 8);
-    const fMat = new THREE.MeshBasicMaterial({ color: 0xf43f5e });
-    const fMesh = new THREE.Mesh(fGeo, fMat);
-    const origin = new THREE.Vector3(0, 1.2, 0);
-    fMesh.position.copy(origin);
-    s.scene.add(fMesh);
-
-    const speed = 25;
-    const vel = new THREE.Vector3(Math.sin(s.aimAngle) * speed, 0, Math.cos(s.aimAngle) * speed);
-
-    s.flames.push({
-      mesh: fMesh,
-      pos: origin.clone(),
-      vel
-    });
-
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-  };
+    setTreeHp(100);
+    setPurifiedCount(0);
+    setScore(0);
+    setFlameCombo(0);
+    setMaxCombo(0);
+    setTimeLeft(35);
+    setFeedbackText(null);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  }, []);
 
   useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+    initGame();
+  }, [initGame]);
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+  // Timer loop
+  useEffect(() => {
+    if (isGameOver || isPaused) return;
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1a0a0e);
-    scene.fog = new THREE.FogExp2(0x1a0a0e, 0.025);
-    stateRef.current.scene = scene;
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          endGame(true);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
 
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
-    camera.position.set(0, 14, 16);
-    camera.lookAt(0, 0, 0);
+    return () => clearInterval(timer);
+  }, [isGameOver, isPaused]);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    renderer.shadowMap.enabled = !lowSpecMode;
-    container.appendChild(renderer.domElement);
+  // Direct Touch Tap to Cast Sacred Flame (Zero Joysticks)
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
 
-    const ambientLight = new THREE.AmbientLight(0xf43f5e, 0.7);
-    scene.add(ambientLight);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
 
-    const treeLight = new THREE.PointLight(0xfb7185, 2.5, 30);
-    treeLight.position.set(0, 4, 0);
-    scene.add(treeLight);
+    const tapX = (e.clientX - rect.left) * scaleX;
+    const tapY = (e.clientY - rect.top) * scaleY;
 
-    // Ground Disc
-    const groundGeo = new THREE.CylinderGeometry(14, 14, 0.6, 32);
-    const groundMat = new THREE.MeshStandardMaterial({ color: 0x271318, roughness: 0.8 });
-    const ground = new THREE.Mesh(groundGeo, groundMat);
-    ground.position.y = -0.3;
-    scene.add(ground);
+    // Fire Sacred Flame from Tree Center (180, 250) towards Tap Point
+    const treeX = 180;
+    const treeY = 250;
 
-    // Tree of Life
-    const treeGroup = new THREE.Group();
-    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 1.2, 4, 8), new THREE.MeshStandardMaterial({ color: 0x4a1525 }));
-    trunk.position.y = 2;
-    treeGroup.add(trunk);
+    s.flames.push({
+      id: Date.now() + Math.random(),
+      x: treeX,
+      y: treeY,
+      targetX: tapX,
+      targetY: tapY,
+      speed: 650,
+      life: 0.6,
+    });
 
-    const crown = new THREE.Mesh(new THREE.DodecahedronGeometry(2.2), new THREE.MeshStandardMaterial({ color: 0xe11d48, emissive: 0x9f1239 }));
-    crown.position.y = 4.2;
-    treeGroup.add(crown);
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
 
-    scene.add(treeGroup);
+    // Check Immediate Hit on tapped creep
+    for (let i = s.creeps.length - 1; i >= 0; i--) {
+      const c = s.creeps[i];
+      if (Math.hypot(c.x - tapX, c.y - tapY) < c.radius + 20) {
+        c.hp -= 40;
 
-    // Flame Dragon Guardian
-    const dragonGroup = new THREE.Group();
-    const dBody = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.6, 1.6), new THREE.MeshStandardMaterial({ color: 0xfb7185 }));
-    dBody.position.y = 1.0;
-    dragonGroup.add(dBody);
-    scene.add(dragonGroup);
-    stateRef.current.dragonMesh = dragonGroup;
+        // Particle Burst
+        for (let p = 0; p < 6; p++) {
+          s.novaParticles.push({
+            x: c.x,
+            y: c.y,
+            vx: (Math.random() - 0.5) * 200,
+            vy: (Math.random() - 0.5) * 200,
+            color: '#f43f5e',
+            life: 0.5,
+          });
+        }
 
-    let animId: number;
+        if (c.hp <= 0) {
+          s.purified += 1;
+          s.combo += 1;
+          if (s.combo > s.maxCombo) s.maxCombo = s.combo;
+
+          const pts = c.points + s.combo * 20;
+          s.score += pts;
+
+          setScore(s.score);
+          setPurifiedCount(s.purified);
+          setFlameCombo(s.combo);
+          setMaxCombo(s.maxCombo);
+
+          setFeedbackText(`PURIFIED! +${pts}P 🔥`);
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+          setTimeout(() => setFeedbackText(null), 300);
+
+          s.creeps.splice(i, 1);
+        }
+        return;
+      }
+    }
+  };
+
+  // Main 60FPS Flame Defense Engine Loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     let lastTime = performance.now();
-    let spawnTimer = 0;
 
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const s = stateRef.current;
       if (s.isPaused || s.isGameOver) return;
 
-      // Spawn creeps
-      spawnTimer += dt;
-      if (spawnTimer > 1.2 && s.creeps.length < 8) {
-        spawnTimer = 0;
-        const angle = Math.random() * Math.PI * 2;
-        const dist = 13;
-        const pos = new THREE.Vector3(Math.sin(angle) * dist, 0.4, Math.cos(angle) * dist);
+      const treeX = 180;
+      const treeY = 250;
 
-        const cGroup = new THREE.Group();
-        const cMesh = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.7, 0.7), new THREE.MeshStandardMaterial({ color: 0x09090b }));
-        cGroup.add(cMesh);
-        cGroup.position.copy(pos);
-        scene.add(cGroup);
+      // Spawn Shadow Creeps from Edges
+      s.spawnTimer += dt;
+      const spawnRate = s.timeLeft <= 10 ? 0.45 : 0.8;
+      if (s.spawnTimer >= spawnRate && s.creeps.length < 12) {
+        s.spawnTimer = 0;
+        const angle = Math.random() * Math.PI * 2;
+        const spawnDist = 240;
+        const cx = treeX + Math.cos(angle) * spawnDist;
+        const cy = treeY + Math.sin(angle) * spawnDist;
+
+        const isGolem = Math.random() < 0.2;
+        const isWraith = Math.random() < 0.35;
 
         s.creeps.push({
-          mesh: cGroup,
-          pos,
-          hp: 2,
-          speed: 1.8 + Math.random() * 0.8
+          id: s.creepCounter++,
+          x: cx,
+          y: cy,
+          speed: isGolem ? 35 : (isWraith ? 70 : 50),
+          hp: isGolem ? 100 : (isWraith ? 40 : 50),
+          maxHp: isGolem ? 100 : (isWraith ? 40 : 50),
+          type: isGolem ? 'golem' : (isWraith ? 'wraith' : 'crawler'),
+          icon: isGolem ? '🗿' : (isWraith ? '👻' : '👾'),
+          points: isGolem ? 500 : (isWraith ? 250 : 150),
+          radius: isGolem ? 22 : 16,
         });
       }
 
-      // Aim dragon
-      if (dragonGroup) {
-        dragonGroup.rotation.y = s.aimAngle;
-        dragonGroup.position.set(Math.sin(s.aimAngle) * 2, 0, Math.cos(s.aimAngle) * 2);
-      }
+      // Move Creeps towards Tree
+      for (let i = s.creeps.length - 1; i >= 0; i--) {
+        const c = s.creeps[i];
+        const dx = treeX - c.x;
+        const dy = treeY - c.y;
+        const dist = Math.hypot(dx, dy);
 
-      // Move flames
-      for (let i = s.flames.length - 1; i >= 0; i--) {
-        const f = s.flames[i];
-        f.pos.addScaledVector(f.vel, dt);
-        f.mesh.position.copy(f.pos);
+        if (dist > 30) {
+          c.x += (dx / dist) * c.speed * dt;
+          c.y += (dy / dist) * c.speed * dt;
+        } else {
+          // Reached Tree: Inflict Damage
+          s.treeHp = Math.max(0, s.treeHp - (c.type === 'golem' ? 25 : 12));
+          setTreeHp(s.treeHp);
+          s.combo = 0;
+          setFlameCombo(0);
 
-        // Check creep hit
-        let hit = false;
-        for (let cIdx = s.creeps.length - 1; cIdx >= 0; cIdx--) {
-          const c = s.creeps[cIdx];
-          if (f.pos.distanceTo(c.pos) < 1.0) {
-            hit = true;
-            c.hp -= 1;
-            if (c.hp <= 0) {
-              scene.remove(c.mesh);
-              s.creeps.splice(cIdx, 1);
-              s.purifiedCount += 1;
-              s.score += 150;
-              setPurifiedCount(s.purifiedCount);
-              setScore(s.score);
-              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+          setFeedbackText(isKo ? '생명의 나무 피격! 💔' : 'TREE DAMAGED! 💔');
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+          setTimeout(() => setFeedbackText(null), 400);
 
-              if (s.purifiedCount >= targetPurified && !s.isGameOver) {
-                s.isVictory = true;
-                s.isGameOver = true;
-                setIsGameOver(true);
-                const duration = (Date.now() - s.startTime) / 1000;
-                const receipt = calculateAndDepositMissionReward({
-                  gameId: 'voxel_life_flame',
-                  gameTitle: '복셀 생명의 불꽃',
-                  durationSeconds: duration,
-                  score: s.score + 2000,
-                  difficulty: 'NIGHTMARE',
-                  isVictory: true
-                });
-                setSettlementReceipt(receipt);
-                onReward(receipt.totalSns);
-              }
-            }
-            break;
+          s.creeps.splice(i, 1);
+
+          if (s.treeHp <= 0) {
+            endGame(false);
+            return;
           }
         }
+      }
 
-        if (hit || f.pos.length() > 15) {
-          scene.remove(f.mesh);
+      // Update Flame Projectiles
+      for (let i = s.flames.length - 1; i >= 0; i--) {
+        const f = s.flames[i];
+        const dx = f.targetX - f.x;
+        const dy = f.targetY - f.y;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist > 15) {
+          f.x += (dx / dist) * f.speed * dt;
+          f.y += (dy / dist) * f.speed * dt;
+        } else {
           s.flames.splice(i, 1);
         }
       }
 
-      // Move creeps toward tree center
-      for (let cIdx = s.creeps.length - 1; cIdx >= 0; cIdx--) {
-        const c = s.creeps[cIdx];
-        const dir = new THREE.Vector3(0, 0.4, 0).sub(c.pos).normalize();
-        c.pos.addScaledVector(dir, c.speed * dt);
-        c.mesh.position.copy(c.pos);
-
-        if (c.pos.length() < 1.4) {
-          // Creep damages tree
-          s.treeHp = Math.max(0, s.treeHp - 10);
-          setTreeHp(s.treeHp);
-          scene.remove(c.mesh);
-          s.creeps.splice(cIdx, 1);
-          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-
-          if (s.treeHp <= 0 && !s.isGameOver) {
-            s.isGameOver = true;
-            setIsGameOver(true);
-            const duration = (Date.now() - s.startTime) / 1000;
-            const receipt = calculateAndDepositMissionReward({
-              gameId: 'voxel_life_flame',
-              gameTitle: '복셀 생명의 불꽃',
-              durationSeconds: duration,
-              score: s.score,
-              difficulty: 'NIGHTMARE',
-              isVictory: false
-            });
-            setSettlementReceipt(receipt);
-            onReward(receipt.totalSns);
-          }
-        }
+      // Update Nova Particles
+      for (let i = s.novaParticles.length - 1; i >= 0; i--) {
+        const p = s.novaParticles[i];
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.life -= dt;
+        if (p.life <= 0) s.novaParticles.splice(i, 1);
       }
 
-      renderer.render(scene, camera);
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Mystical Enchanted Grove Background
+      ctx.fillStyle = '#06130d';
+      ctx.fillRect(0, 0, w, h);
+
+      // Sacred Aura Circles around Tree
+      ctx.strokeStyle = 'rgba(52, 211, 153, 0.15)';
+      ctx.lineWidth = 2;
+      [80, 150, 220].forEach((r) => {
+        ctx.beginPath();
+        ctx.arc(treeX, treeY, r, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+
+      // Sacred Flame Dragon Tree at Center
+      ctx.save();
+      ctx.translate(treeX, treeY);
+      ctx.shadowColor = '#10b981';
+      ctx.shadowBlur = 20;
+      ctx.font = '54px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🌳', 0, 0);
+      ctx.font = '28px serif';
+      ctx.fillText('🔥', 0, -25);
+      ctx.restore();
+
+      // Render Shadow Creeps
+      s.creeps.forEach((c) => {
+        ctx.save();
+        ctx.translate(c.x, c.y);
+        ctx.font = `${c.radius * 1.8}px serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(c.icon, 0, 0);
+
+        // Mini HP Bar
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(-12, c.radius + 2, 24, 4);
+        ctx.fillStyle = '#f43f5e';
+        ctx.fillRect(-12, c.radius + 2, 24 * (c.hp / c.maxHp), 4);
+        ctx.restore();
+      });
+
+      // Render Flying Flames
+      s.flames.forEach((f) => {
+        ctx.shadowColor = '#f43f5e';
+        ctx.shadowBlur = 12;
+        ctx.fillStyle = '#fde047';
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, 6, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.shadowBlur = 0;
+
+      // Render Nova Particles
+      s.novaParticles.forEach((p) => {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 4, 4);
+      });
     };
 
-    animId = requestAnimationFrame(animate);
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, [isKo, playSfx]);
 
-    return () => {
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-    };
-  }, [lowSpecMode]);
-
-  const handleRestart = () => {
+  const endGame = (isWin: boolean) => {
     const s = stateRef.current;
-    s.creeps.forEach(c => s.scene?.remove(c.mesh));
-    s.flames.forEach(f => s.scene?.remove(f.mesh));
-    s.creeps = [];
-    s.flames = [];
-    s.treeHp = 100;
-    s.purifiedCount = 0;
-    s.score = 0;
-    s.isGameOver = false;
-    s.isVictory = false;
-    s.startTime = Date.now();
-    setTreeHp(100);
-    setPurifiedCount(0);
-    setScore(0);
-    setIsGameOver(false);
-    setSettlementReceipt(null);
+    if (s.isGameOver) return;
+    s.isGameOver = true;
+    setIsGameOver(true);
+
+    if (isWin) {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    } else {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+
+    const duration = (Date.now() - s.startTime) / 1000;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'arcade_flame_defense',
+      gameTitle: '블리츠 플레임 디펜스',
+      durationSeconds: duration,
+      score: s.score + (isWin ? 3500 : s.purified * 100) + s.maxCombo * 40,
+      difficulty: 'NIGHTMARE',
+      isVictory: isWin || s.purified >= 20,
+    });
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
   };
 
-  const customTutorialSteps: TutorialStep[] = [
+  const tutorialSteps: TutorialStep[] = [
     {
-      badge: isKo ? 'STEP 1: 세계수 수호 미션' : 'STEP 1: TREE DEFENSE',
-      title: isKo ? '생명의 나무 결계 방어' : 'Protect the World Tree',
+      badge: isKo ? 'STEP 1: 어둠의 몬스터 탭 정화' : 'STEP 1: TAP TO PURIFY CREEPS',
+      title: isKo ? '다가오는 몬스터를 탭해 성스러운 불꽃으로 정화하세요' : 'Tap Approaching Shadow Creeps to Purify with Sacred Flames',
       description: isKo
-        ? '3D 복셀 원형 제단으로 몰려드는 섀도우 괴물들을 정화하여 세계수의 HP를 지켜내세요.'
-        : 'Purify invading shadow creeps approaching the sacred Tree of Life in the 3D voxel altar.',
+        ? '가상 조이스틱 없이 중앙의 생명의 나무(🌳🔥)를 향해 몰려오는 어둠의 크립(👾, 👻, 🗿)을 손가락으로 직접 탭하여 성스러운 화염탄으로 파괴하고 나무를 보호하세요.'
+        : 'Directly tap incoming shadow creeps to launch homing fireballs and protect the sacred tree of life.',
       keyPoints: isKo
         ? [
-            '세계수 HP: 100% 보존',
-            '섀도우 괴물 25마리 정화 시 클리어',
-            '원형 제단 360도 전방위 방어'
+            '가상 조이스틱 0개 (100% 화면 직접 몬스터 원터치 탭 발사)',
+            '거대 어둠 골렘(🗿) 격파 시 500P 대박 보너스',
+            '35초간 생명의 나무 HP를 수호하고 올클리어하세요'
           ]
         : [
-            'Maintain World Tree HP at 100%',
-            'Purify 25 shadow creeps to win',
-            '360-degree omni-directional defense'
+            'Zero Virtual Joysticks: 100% Direct Screen Tap Fire',
+            'Giant Shadow Golems (🗿) award 500P huge bonus',
+            'Defend the sacred tree HP for 35s to claim victory'
           ],
-      iconType: 'GOAL'
+      iconType: 'GOAL',
     },
     {
-      badge: isKo ? 'STEP 2: 퓨어 제스처 컨트롤' : 'STEP 2: PURE GESTURES',
-      title: isKo ? '화염 조준 & 생명의 불꽃 발사' : 'Aim Flame & Cast Burst',
+      badge: isKo ? 'STEP 2: 모바일 퓨어 제스처' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '화면 직접 타깃 탭 (Direct Target Tap)' : 'Direct Screen Tap',
       description: isKo
-        ? '가상 조이스틱 없이 드래그 회전 조준과 원터치 탭으로 생명의 불꽃을 발사합니다.'
-        : 'Aim flame angle by dragging horizontally and tap to unleash fiery bursts with zero buttons.',
+        ? '사방에서 몰려드는 적을 보며 신속하게 손가락으로 콕콕 찌릅니다.'
+        : 'Tap rapidly on enemies moving in from all angles.',
       keyPoints: isKo
         ? [
-            '👆 좌우 드래그: 360° 드래곤 화염 조준',
-            '🔥 탭: 생명의 화염 구체 발사',
-            '⚡ 콤보 정화 시 보너스 점수 가산'
+            '👆 타깃 직접 탭: 즉각적인 성스러운 화염탄 발사',
+            '🔥 연속 정화 성공 시 플레임 콤보 점수 배수 폭증',
+            '⏱️ 35초 타임어택 고득점 챌린지'
           ]
         : [
-            '👆 Drag L/R: 360° Dragon flame aiming',
-            '🔥 Tap: Cast Life Flame projectile',
-            '⚡ Bonus points on combo purifications'
+            '👆 Direct Tap: Instant responsive homing fire barrage',
+            '🔥 Continuous purifications grant huge combo multipliers',
+            '⏱️ 35s time attack circle defense sprint'
           ],
-      iconType: 'GESTURES'
+      iconType: 'GESTURES',
     },
     {
       badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
       title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
       description: isKo
-        ? '세계수 수호 성공 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
-        : 'Nightmare multiplier payout calculated and deposited atomically to your wallet.',
+        ? '수호 완료 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon match finish.',
       keyPoints: isKo
         ? [
-            '승리 즉시 LocalStorage 영구 지갑 입금',
-            '세계수 잔여 체력 및 스피드 가산점',
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '정화 몬스터 수 및 잔여 나무 HP 비례 대량 잭팟',
             'VictoryRewardModal 2초 황금 코인 팡파레'
           ]
         : [
             'Instant atomic deposit to LocalStorage wallet',
-            'Remaining HP and speed bonus',
+            'Purified monsters and remaining tree HP multipliers',
             'VictoryRewardModal golden coin fanfare'
           ],
-      iconType: 'REWARDS'
-    }
+      iconType: 'REWARDS',
+    },
   ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D WebGL Canvas Mount */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
-
+    <div className="relative w-full h-[100dvh] bg-[#040e09] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none">
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
       <MinimalistMissionHUD
-        title={isKo ? '복셀 생명의 불꽃' : 'Voxel Life Flame'}
-        language={language}
+        title={isKo ? '블리츠 플레임 디펜스' : 'Blitz Flame Defense'}
+        language={(language as Language) || 'ko'}
         hp={{ current: treeHp, max: 100 }}
         telemetries={[
-          { label: isKo ? '정화' : 'Purified', value: `${purifiedCount}/${targetPurified}`, color: 'text-rose-300' },
-          { label: isKo ? '세계수HP' : 'TreeHP', value: `${treeHp}%`, color: treeHp < 30 ? 'text-rose-400 font-black animate-pulse' : 'text-emerald-300' },
-          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300' }
+          { label: isKo ? '정화' : 'Purified', value: `${purifiedCount}마리`, color: 'text-amber-400 font-bold' },
+          { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 10 ? 'text-rose-500 font-bold animate-pulse' : 'text-cyan-400 font-bold' },
+          { label: isKo ? '콤보' : 'Combo', value: `${flameCombo}x`, color: flameCombo > 4 ? 'text-emerald-400 font-bold animate-bounce' : 'text-slate-300' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          stateRef.current.isPaused = !isPaused;
-        }}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
         isPaused={isPaused}
       />
 
-      {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div
-          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
-          style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const startX = e.clientX - rect.left;
-            const startY = e.clientY - rect.top;
-            let moved = false;
-
-            const onMove = (moveEvt: PointerEvent) => {
-              const curX = moveEvt.clientX - rect.left;
-              const dx = curX - startX;
-              if (Math.abs(dx) > 6) {
-                moved = true;
-                stateRef.current.aimAngle += dx > 0 ? 0.05 : -0.05;
-              }
-            };
-
-            const onUp = () => {
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-              window.removeEventListener('pointercancel', onUp);
-
-              if (!moved) {
-                // Tap: Fire Flame Burst
-                fireFlame();
-              }
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-          }}
+      {/* Pure Touch Circle Defense Canvas Viewport */}
+      <div className="flex-1 w-full max-w-md relative overflow-hidden flex items-center justify-center select-none touch-none p-2">
+        <canvas
+          ref={canvasRef}
+          width={360}
+          height={500}
+          onPointerDown={handlePointerDown}
+          className="w-full h-full object-contain touch-none cursor-crosshair shadow-2xl"
         />
-      )}
+
+        {/* Floating Feedback Text */}
+        {feedbackText && (
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 pointer-events-none text-base font-bold text-amber-300 drop-shadow-lg animate-bounce whitespace-nowrap">
+            {feedbackText}
+          </div>
+        )}
+      </div>
 
       {/* Minimal Bottom Guide */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/75 border border-rose-500/30 rounded-full text-[10px] text-rose-300 font-mono backdrop-blur-xs">
-          {isKo ? '좌우 드래그: 화염 조준 회전 | 탭: 생명의 불꽃 발사 (버튼 없음)' : 'Drag L/R: Aim Flame Angle | Tap: Fire Burst (No Buttons)'}
+      <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono">
+          {isKo ? '다가오는 몬스터를 탭하여 화염구로 정화하고 생명의 나무를 지키세요' : 'Tap approaching monsters to purify with flames and defend the tree'}
         </div>
       </div>
 
       {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
         <UniversalTutorialModal
-          gameId="voxel_life_flame"
-          gameTitle={isKo ? '3D 복셀 생명의 불꽃: 세계수 수호' : 'Voxel Life Flame: World Tree Defense'}
-          customSteps={customTutorialSteps}
-          language={language}
+          gameId="arcade_flame_defense"
+          gameTitle={isKo ? '블리츠 플레임: 서클 디펜스' : 'Blitz Flame: Circle Defense'}
+          customSteps={tutorialSteps}
+          language={(language as Language) || 'ko'}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}
         />
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
         <VictoryRewardModal
           receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
+          language={(language as Language) || 'ko'}
+          onPlayAgain={initGame}
           onExit={onExit}
         />
       )}
     </div>
   );
 };
+export default VoxelLifeFlameGame;

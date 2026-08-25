@@ -8521,7 +8521,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxellifeflame',
-      title: language === 'ko' ? '3D 복셀 라이프 플레임: 생명의 나무 디펜스' : 'Voxel Life Flame: Tree Defense',
+      title: language === 'ko' ? '블리츠 플레임 디펜스' : 'Blitz Flame Defense',
       icon: Trophy,
       color: 'from-rose-600 to-pink-900',
       image: '/minigame_boss.png',
@@ -8529,10 +8529,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxellifeflame');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D LIFE',
-      guide: language === 'ko' ? '360도 붉은 생명의 불꽃을 회전 조준 발사하여 몰려오는 섀도우 괴물들을 정화하고 신성한 세계수를 수호하세요.' : 'Fire 360-degree life flame projectiles to purify approaching shadow creeps and defend the sacred World Tree!'
+      badgeText: 'FLAME-DEFENSE',
+      guide: language === 'ko' ? '다가오는 어둠의 몬스터를 직접 탭하여 화염구로 정화하고 생명의 나무를 지키세요.' : 'Tap approaching shadow monsters to purify with homing fireballs and defend the tree!'
     },
     {
       id: 'voxelarcanenexus',
@@ -12131,7 +12131,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '라이프 플레임 보상', 'Life Flame Defense reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 플레임 디펜스 보상', 'Blitz Flame Defense reward')}
       />
     );
   }
