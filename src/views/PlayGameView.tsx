@@ -8026,7 +8026,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxeltowerstack',
-      title: language === 'ko' ? '3D 복셀 타워 스택 마스터' : 'Voxel Tower Stack Master',
+      title: language === 'ko' ? '블리츠 타워 스택' : 'Blitz Tower Stack',
       icon: Castle,
       color: 'from-purple-600 to-pink-800',
       image: '/minigame_towercraft.png',
@@ -8034,10 +8034,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxeltowerstack');
       },
-      category: '3d',
+      category: 'casual',
       isNew: true,
-      badgeText: '3D STACK',
-      guide: language === 'ko' ? '좌우 슬라이딩 복셀 블록을 퍼펙트 타이밍에 정렬해 초고층 마천루를 건설하세요.' : 'Align oscillating 3D voxel slabs with perfect precision to build the sky tower!'
+      badgeText: 'TOWER-STACK',
+      guide: language === 'ko' ? '화면을 탭해 타이밍에 맞춰 블록을 완벽하게 쌓으세요.' : 'Tap anywhere to drop and stack the moving block!'
     },
     {
       id: 'voxelslamdunk',
@@ -11702,7 +11702,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '타워 스택 보상', 'Tower Stack Master reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 타워 스택 보상', 'Blitz Tower Stack reward')}
       />
     );
   }
