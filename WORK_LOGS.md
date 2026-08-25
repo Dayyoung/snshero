@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-08-25 11:21 KST / 02:21 UTC] [/imp-mission 제3회차 3D 복셀 폐기 및 신규 슬링샷 물리 액션 게임 개발 완료]
+- **심사 대상 게임**: `src/components/VoxelArcherHeroGame.tsx` (3 / 78)
+  - **심사 결과**: **폐기 (DECOMMISSION)** (3D 탑다운 아처의 거리 왜곡, 이동/사격 분리의 뻑뻑한 조작감)
+  - **신규 대체 개발**: **아케인 슬링샷 궁수 (`ArcaneSlingshotArcher` - 캐주얼/물리 액션)**
+  - **신규 게임 특징**: 가상 조이스틱 0개 (100% 모바일 퓨어 터치), 화면 하단 활시위를 손가락으로 직접 당겨 조준(Drag & Aim)하고 떼어 발사(Release to Shoot)하는 슬링샷 물리 슈팅, 궤적 예측선, 드래곤/오크/고블린 다중 타격, 15발 화살 스톡, 1줄 슬림 HUD, 3단계 온보딩, VictoryRewardModal 확정 보상 정산 완벽 내장
+  - **메뉴 및 검색 연동**: `PlayGameView.tsx` 메뉴 메타데이터(타이틀: '아케인 슬링샷 궁수', 카테고리: 'casual', 배지: 'SLINGSHOT', 가이드, 보상 알림, 검색 키워드) 100% 동기화 등록 완료
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 3D 복셀(VoxelArcherHero) 폐기 및 신규 슬링샷 물리 액션 게임(아케인 슬링샷 궁수) 개발 대체 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 11:11 KST / 02:11 UTC] [/imp-mission 제2회차 3D 복셀 폐기 및 신규 매치3 퍼즐 게임 개발 완료]
 - **심사 대상 게임**: `src/components/VoxelArcaneNexusGame.tsx` (2 / 78)
   - **심사 결과**: **폐기 (DECOMMISSION)** (3D 공간 3-Ring 회전 정렬의 모바일 터치 시각 왜곡, 단순 반복적 조작성 미달)

@@ -7846,7 +7846,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelarcherhero',
-      title: language === 'ko' ? '3D 복셀 궁수 디펜스' : 'Voxel Archer Hero',
+      title: language === 'ko' ? '아케인 슬링샷 궁수' : 'Arcane Slingshot Archer',
       icon: TargetIcon,
       color: 'from-lime-600 to-emerald-800',
       image: '/minigame_shooting.png',
@@ -7854,10 +7854,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelarcherhero');
       },
-      category: '3d',
+      category: 'casual',
       isNew: true,
-      badgeText: '3D ARCHER',
-      guide: language === 'ko' ? '멈추면 자동으로 발사되는 화살과 멀티샷 스킬로 숲으로 몰려오는 몬스터 웨이브를 저지하세요.' : 'Auto-aim bow shooting and multishot skill to defend the ancient forest!'
+      badgeText: 'SLINGSHOT',
+      guide: language === 'ko' ? '화면의 활시위를 손가락으로 직접 당겨 각도를 조준하고 놓아서 몰려오는 몬스터들을 격추하세요.' : 'Drag and release the bowstring to aim and shoot flying monsters in physics archery!'
     },
     {
       id: 'voxelvampiresurvival',
@@ -11546,7 +11546,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '궁수 디펜스 보상', 'Archer Hero reward')}
+        onReward={(amount) => handleMinigameReward(amount, '아케인 슬링샷 궁수 보상', 'Arcane Slingshot Archer reward')}
       />
     );
   }
