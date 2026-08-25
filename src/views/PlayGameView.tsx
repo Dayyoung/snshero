@@ -7666,7 +7666,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelovercooked',
-      title: language === 'ko' ? '3D 복셀 픽셀 오버쿡드' : 'Voxel Pixel Overcooked',
+      title: language === 'ko' ? '블리츠 셰프 타이쿤' : 'Blitz Chef Tycoon',
       icon: Flame,
       color: 'from-orange-500 to-amber-600',
       image: '/minigame_memorymatch.png',
@@ -7674,10 +7674,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelovercooked');
       },
-      category: '3d',
+      category: 'casual',
       isNew: true,
-      badgeText: '3D COOK',
-      guide: language === 'ko' ? '주방에서 재료 손질, 조리, 설거지, 서빙을 빠르게 처리하여 주문 러시를 클리어하세요.' : 'Chaotic kitchen cooking game preparing recipes under rapid order time limits!'
+      badgeText: 'CHEF-TYCOON',
+      guide: language === 'ko' ? '주문서에 필요한 재료를 손가락으로 탭하여 접시에 담으세요.' : 'Tap matching ingredients to assemble order on the plate!'
     },
     {
       id: 'voxelprophunt',
@@ -11390,7 +11390,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '픽셀 오버쿡드 보상', 'Pixel Overcooked reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 셰프 타이쿤 보상', 'Blitz Chef Tycoon reward')}
       />
     );
   }
