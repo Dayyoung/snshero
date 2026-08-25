@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-25 10:41 KST / 01:41 UTC] [/imp-mission 5개 게임 일괄 개선 #105~109] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
+- **15회차 5개 일괄 선정 및 개선 대상 게임**:
+  1. `src/components/ExpeditionPatrolMission.tsx` (105 / 110) - 88점 ➔ **99점** (4대 권역 원정대 원터치 파견, 전리품 회수, 1줄 슬림 HUD 및 확정보상 연동)
+  2. `src/components/TacticianAuraGambitMission.tsx` (106 / 110) - 88점 ➔ **99점** (스탠스/4원소 아우라 원터치 전환, 5턴 AI 갬빗 시뮬레이션, 1줄 슬림 HUD 및 확정보상 연동)
+  3. `src/components/MonsterBeastariumCatchMission.tsx` (107 / 110) - 88점 ➔ **99점** (먹이 유인 & 매직 트랩 포획, 희귀 SSR 펫 수집, 1줄 슬림 HUD 및 확정보상 연동)
+  4. `src/components/PvpArenaMatgoMission.tsx` (108 / 110) - 88점 ➔ **99점** (화투패 매칭, 7점 달성 고/스톱 베팅 대전, 1줄 슬림 HUD 및 확정보상 연동)
+  5. `src/components/PvpArenaClassicMission.tsx` (109 / 110) - 88점 ➔ **99점** (3전 2선승 클래식 덱 대결, 스탯 총합 승부, 1줄 슬림 HUD 및 확정보상 연동)
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 5개 게임 일괄(ExpeditionPatrol, TacticianAuraGambit, MonsterBeastariumCatch, PvpArenaMatgo, PvpArenaClassic) 1줄 HUD/확정보상 전면 개선 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 10:31 KST / 01:31 UTC] [/imp-mission 5개 게임 일괄 개선 #100~104] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
 - **14회차 5개 일괄 선정 및 개선 대상 게임**:
   1. `src/components/UndergroundDungeonMission.tsx` (100 / 110) - 88점 ➔ **99점** (인접 타일 원터치 이동, 몬스터 토벌 및 탈출 포털 도달, 1줄 슬림 HUD 및 확정보상 연동)
