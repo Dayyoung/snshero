@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-08-25 21:31 KST / 12:31 UTC] [/imp-mission 제37회차 3D 복셀 폐기 및 신규 블랙홀 흡입 성장 캐주얼 게임 개발 완료]
+- **심사 대상 게임**: `src/components/VoxelMagnetHoleGame.tsx` (37 / 78)
+  - **심사 결과**: **폐기 (DECOMMISSION)** (3D 복셀 마그넷 홀의 저사양 3D 렌더링 렉 및 충돌 판정 모호)
+  - **신규 대체 개발**: **블리츠 블랙홀 (`BlitzBlackholeSink` - 캐주얼/블랙홀 흡입 성장)**
+  - **신규 게임 특징**: 가상 조이스틱 0개 (100% 모바일 퓨어 터치), 블랙홀(🕳️)을 손가락으로 화면에 직접 드래그(Direct 1:1 Finger Tracking)하여 작은 소품(우체통, 벤치)부터 삼켜 반경을 거대화한 뒤 차량(🚗), 버스(🚌), 거대 빌딩(🏢)까지 차례로 흡입하는 초통쾌 캐주얼 액션, 연쇄 흡입 피버 콤보 팡파레, 35초 타임어택 고득점 챌린지, 1줄 슬림 HUD, 3단계 온보딩, VictoryRewardModal 확정 보상 정산 완벽 내장
+  - **메뉴 및 검색 연동**: `PlayGameView.tsx` 메뉴 메타데이터(타이틀: '블리츠 블랙홀', 카테고리: 'casual', 배지: 'BLACKHOLE-SINK', 가이드, 보상 알림, 검색 키워드) 100% 동기화 등록 완료
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 3D 복셀(VoxelMagnetHole) 폐기 및 신규 블랙홀 흡입 성장 캐주얼 게임(블리츠 블랙홀) 개발 대체 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 21:21 KST / 12:21 UTC] [/imp-mission 제36회차 3D 복셀 폐기 및 신규 스피드 벌목 아케이드 게임 개발 완료]
 - **심사 대상 게임**: `src/components/VoxelLumberjackTycoonGame.tsx` (36 / 78)
   - **심사 결과**: **폐기 (DECOMMISSION)** (3D 복셀 벌목 타이쿤의 긴 이동 시간 및 모바일 손맛 결여)

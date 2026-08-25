@@ -8251,7 +8251,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelmagnethole',
-      title: language === 'ko' ? '3D 복셀 서바이벌 마그넷 홀: 블랙홀 삼키기' : 'Voxel Magnet Hole: Blackhole Eater',
+      title: language === 'ko' ? '블리츠 블랙홀' : 'Blitz Blackhole Sink',
       icon: Gem,
       color: 'from-purple-600 to-pink-600',
       image: '/minigame_cardslot.png',
@@ -8259,10 +8259,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelmagnethole');
       },
-      category: '3d',
+      category: 'casual',
       isNew: true,
-      badgeText: '3D HOLE',
-      guide: language === 'ko' ? '블랙홀을 이동시켜 소형 오브젝트부터 삼켜 직경을 거대화하고 10m 자석 부스터로 도시를 흡입하세요.' : 'Move blackhole disk to swallow props, expand diameter, and trigger 10m vacuum booster!'
+      badgeText: 'BLACKHOLE-SINK',
+      guide: language === 'ko' ? '손가락으로 블랙홀을 드래그해 소형 소품부터 삼키고 도시를 흡입하세요.' : 'Drag blackhole with finger to swallow small objects first and devour the city!'
     },
     {
       id: 'voxelmotocrossstunt',
@@ -11897,7 +11897,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '마그넷 홀 보상', 'Magnet Hole reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 블랙홀 보상', 'Blitz Blackhole Sink reward')}
       />
     );
   }
