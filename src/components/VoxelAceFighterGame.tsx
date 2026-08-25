@@ -31,6 +31,7 @@ export const VoxelAceFighterGame: React.FC<VoxelAceFighterGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
 
@@ -100,11 +101,11 @@ export const VoxelAceFighterGame: React.FC<VoxelAceFighterGameProps> = ({
     initGame();
   }, [initGame]);
 
-  const handleHitLane = (laneIndex: number) => {
+  const handleHitLane = useCallback((laneIndex: number) => {
     const s = gameStateRef.current;
     if (s.isGameOver || s.isPaused) return;
 
-    s.laneFeedback[laneIndex] = 0.2; // Visual flash duration
+    s.laneFeedback[laneIndex] = 0.25; // Visual flash duration
 
     // Find closest note in this lane near hit line (80% ~ 95%)
     let targetNote: RhythmNote | null = null;
@@ -167,6 +168,16 @@ export const VoxelAceFighterGame: React.FC<VoxelAceFighterGameProps> = ({
       playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
       setTimeout(() => setHitFeedback(null), 250);
     }
+  }, [playSfx]);
+
+  // Direct Screen Touch Handler (Pure Touch - No Virtual D-pad)
+  const handleTouchScreen = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const touchX = e.clientX - rect.left;
+    const laneWidth = rect.width / 4;
+    const laneIndex = Math.min(3, Math.max(0, Math.floor(touchX / laneWidth)));
+    handleHitLane(laneIndex);
   };
 
   // Main Rhythm Loop
@@ -276,7 +287,7 @@ export const VoxelAceFighterGame: React.FC<VoxelAceFighterGameProps> = ({
         ctx.strokeRect(lx, 0, laneW, h);
 
         if (s.laneFeedback[i] > 0) {
-          ctx.fillStyle = s.isFever ? 'rgba(236, 72, 153, 0.25)' : 'rgba(56, 189, 248, 0.25)';
+          ctx.fillStyle = s.isFever ? 'rgba(236, 72, 153, 0.35)' : 'rgba(56, 189, 248, 0.35)';
           ctx.fillRect(lx, 0, laneW, h);
         }
       }
@@ -317,7 +328,7 @@ export const VoxelAceFighterGame: React.FC<VoxelAceFighterGameProps> = ({
         ctx.stroke();
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 12px monospace';
+        ctx.font = 'bold 14px monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('⚡', nx, ny);
@@ -331,37 +342,37 @@ export const VoxelAceFighterGame: React.FC<VoxelAceFighterGameProps> = ({
   const tutorialSteps: TutorialStep[] = [
     {
       badge: isKo ? 'STEP 1: 4레인 네온 비트 히트' : 'STEP 1: 4-LANE RHYTHM HIT',
-      title: isKo ? '타이밍 맞춰 노트를 터치하세요' : 'Hit Notes on the Target Line',
+      title: isKo ? '화면 레인을 직접 터치하세요' : 'Direct Touch on Screen Lanes',
       description: isKo
-        ? '위에서 4개 레인으로 떨어지는 비트 노트를 하단 판정선에 맞춰 원터치로 히트하세요.'
-        : 'Tap the 4 lanes precisely when notes reach the bottom target line.',
+        ? '가상 버튼 없이 떨어지는 4개 레인 화면을 손가락으로 직접 터치하여 비트를 연주하세요.'
+        : 'Touch the 4 falling lane zones directly on screen with zero virtual buttons.',
       keyPoints: isKo
         ? [
+            '화면을 가리는 가상 버튼 0개 (순수 화면 직접 터치)',
             'PERFECT / GREAT 판정 시 고득점 획득',
-            '노트 적중 시 콤보 누적 및 보너스 가산',
-            'MISS 발생 시 콤보가 초기화됩니다.'
+            '노트 적중 시 콤보 누적 및 피버 게이지 충전'
           ]
         : [
+            'Zero virtual buttons: Direct screen tap',
             'PERFECT / GREAT hits yield maximum score',
-            'Chain combos for progressive multiplier bonuses',
-            'Missing a note resets current combo'
+            'Chain combos to charge Fever Gauge'
           ],
       iconType: 'GOAL',
     },
     {
-      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
-      title: isKo ? '하단 4개 썸존 원터치 탭' : '4-Zone Thumb Tap Controls',
+      badge: isKo ? 'STEP 2: 퓨어 터치 조작' : 'STEP 2: PURE TOUCH',
+      title: isKo ? '화면 직접 터치 리듬 액션' : 'Direct Screen Touch Controls',
       description: isKo
-        ? '하단 4개 레인 버튼을 양손 엄지손가락으로 쾌적하게 탭하여 리듬을 연주합니다.'
-        : 'Tap bottom 4 lane zones with thumb gestures for responsive rhythm action.',
+        ? '화면의 4개 레인 중 떨어지는 노트의 레인을 손가락으로 직접 탭합니다.'
+        : 'Directly tap the 4 track lanes on your mobile screen.',
       keyPoints: isKo
         ? [
-            '👆 4개 레인 원터치: 쾌적한 썸존 터치',
-            '🔥 피버 모드: 게이지 100% 시 2배 득점',
+            '👆 화면 직접 터치: 레인 위치를 탭하면 즉시 판정',
+            '🔥 피버 모드: 게이지 100% 시 2배 득점 팡파레',
             '⚡ 60FPS 부드러운 네온 비트 스트림'
           ]
         : [
-            '👆 4-Lane One-Touch: Responsive thumb zones',
+            '👆 Direct Touch: Instant hit upon screen lane tap',
             '🔥 Fever Mode: Double points when full',
             '⚡ 60FPS fluid neon beat stream'
           ],
@@ -389,7 +400,7 @@ export const VoxelAceFighterGame: React.FC<VoxelAceFighterGameProps> = ({
   ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-[#080c14] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between">
+    <div className="relative w-full h-[100dvh] bg-[#080c14] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none">
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
       <MinimalistMissionHUD
         title={isKo ? '사이버 리듬 블래스터' : 'Cyber Rhythm Blaster'}
@@ -405,38 +416,37 @@ export const VoxelAceFighterGame: React.FC<VoxelAceFighterGameProps> = ({
         isPaused={isPaused}
       />
 
-      {/* Rhythm Track Canvas Viewport */}
-      <div className="flex-1 min-h-0 flex items-center justify-center relative overflow-hidden p-2 w-full max-w-sm">
+      {/* Pure Direct Touch Full Screen Rhythm Viewport (No Virtual Buttons) */}
+      <div
+        ref={containerRef}
+        onPointerDown={handleTouchScreen}
+        className="flex-1 w-full max-w-md relative overflow-hidden flex items-center justify-center cursor-pointer select-none touch-none"
+      >
         <canvas
           ref={canvasRef}
-          width={340}
-          height={480}
-          className="w-full h-full max-h-[60vh] object-contain border border-slate-800 rounded-none shadow-2xl"
+          width={360}
+          height={600}
+          className="w-full h-full object-fill pointer-events-none"
         />
 
         {/* Floating Grade Feedback */}
         {hitFeedback && (
-          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none text-xl font-bold tracking-wider text-amber-300 drop-shadow-md animate-ping">
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none text-2xl font-bold tracking-wider text-amber-300 drop-shadow-lg animate-ping">
             {hitFeedback}
           </div>
         )}
-      </div>
 
-      {/* 4-Lane Responsive Touch Buttons (Thumb Zone) */}
-      <div className="shrink-0 w-full max-w-sm px-3 pb-4 grid grid-cols-4 gap-2 select-none">
-        {[0, 1, 2, 3].map((lane) => (
-          <button
-            key={lane}
-            type="button"
-            onPointerDown={(e) => {
-              e.preventDefault();
-              handleHitLane(lane);
-            }}
-            className="h-16 bg-slate-900 border-2 border-cyan-500/40 active:border-pink-500 active:bg-pink-600/30 text-cyan-300 font-bold text-lg rounded-none flex items-center justify-center active:scale-95 transition-all shadow-md touch-manipulation cursor-pointer"
-          >
-            {lane === 0 ? '◀' : lane === 1 ? '▲' : lane === 2 ? '▼' : '▶'}
-          </button>
-        ))}
+        {/* 4 Touch Lane Visual Dividers */}
+        <div className="absolute inset-0 grid grid-cols-4 pointer-events-none">
+          {[0, 1, 2, 3].map((lane) => (
+            <div
+              key={lane}
+              className="h-full border-r border-white/5 flex flex-col justify-end pb-6 items-center text-white/30 text-xs font-bold"
+            >
+              <span>TAP</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Song Progress Bar */}

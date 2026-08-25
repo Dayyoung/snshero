@@ -45,8 +45,11 @@ description: 3D 복셀 미션 게임을 엄격한 기준으로 심사하여 모�
 
 ### 신규 게임 개발 필수 규격 & 완전 구현 원칙:
 - **반드시 즉시 개발 & 완료 원칙**: `imp-mission` 수행 시 3D 복셀 폐기 및 신규 게임 추가가 결정되면, **반드시 실제 플레이 가능한 고품질 신규 게임 코드를 즉시 100% 새로 개발하여 컴포넌트, `PlayGameView.tsx` 메뉴 메타데이터(제목/가이드/카테고리/보상명/검색 키워드)까지 완벽하게 연동하고 완료**해야 합니다.
+- **모바일 네이티브 퓨어 터치 절대 원칙 (가상 조이스틱/D-패드 금지)**:
+  - 화면을 가리는 가상 조이스틱(Virtual Joystick), D-Pad, 둔탁한 가상 방향키는 **절대 배제**합니다.
+  - 모바일 터치스크린의 장점을 100% 살려 **화면 직접 터치(Direct Touch), 드래그 앤 드롭(Drag & Drop), 스와이프(Swipe), 원터치 탭(Tap), 홀드 & 릴리즈(Hold & Release) 등 모바일 네이티브 제스처**로만 조작되도록 개발합니다.
 1. `src/components/MinimalistMissionHUD.tsx` 1줄 슬림 HUD (최상단 5%) 탑재
-2. Zero-Button 퓨어 제스처 컨트롤러 (화면 탭, 드래그, 스와이프 등)
+2. 100% 화면 직접 터치/스와이프/제스처 컨트롤러 (Zero Virtual Joystick)
 3. `UniversalTutorialModal` 3단계 인터랙티브 온보딩 (목표, 조작법, 확정보상)
 4. `VictoryRewardModal` & `calculateAndDepositMissionReward` 확정 SNS 보상 원자적 입금
 5. `DESIGN.md` 준수: Monospace 폰트, 웜크림/잉크 팔레트, 플랫 1px 테두리
