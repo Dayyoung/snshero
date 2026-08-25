@@ -7606,7 +7606,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelraftsurvival',
-      title: language === 'ko' ? '3D 복셀 뗏목 서바이벌' : 'Voxel Raft Survival',
+      title: language === 'ko' ? '블리츠 뗏목 서바이벌' : 'Blitz Raft Survival',
       icon: Waves,
       color: 'from-blue-500 to-cyan-600',
       image: '/minigame_cardrush.png',
@@ -7614,10 +7614,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelraftsurvival');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D RAFT',
-      guide: language === 'ko' ? '뗏목 위에서 부유 자원을 갈고리로 수집하고 상어의 습격을 막아내며 뗏목을 확장하세요.' : 'Hook floating ocean debris, fend off predators, and build a floating stronghold!'
+      badgeText: 'RAFT-SURVIVAL',
+      guide: language === 'ko' ? '갈고리를 뒤로 당겨 자원을 낚고, 상어(🦈)는 직접 탭해 퇴치하세요.' : 'Drag hook back to salvage debris, tap sharks to repel!'
     },
     {
       id: 'voxelsnowboard',
@@ -11338,7 +11338,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '뗏목 서바이벌 보상', 'Raft Survival reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 뗏목 서바이벌 보상', 'Blitz Raft Survival reward')}
       />
     );
   }
