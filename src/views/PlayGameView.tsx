@@ -7711,7 +7711,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelrollinghero',
-      title: language === 'ko' ? '3D 복셀 롤링 히어로' : 'Voxel Rolling Hero',
+      title: language === 'ko' ? '블리츠 롤링 볼' : 'Blitz Rolling Ball',
       icon: TargetIcon,
       color: 'from-lime-600 to-green-700',
       image: '/minigame_slide2048.png',
@@ -7719,10 +7719,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelrollinghero');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D ROLL',
-      guide: language === 'ko' ? '기울어지는 공중 미로에서 구슬 히어로를 굴려 함정을 피하고 골인지점에 도달하세요.' : 'Gyroscope physics ball roller balancing on narrow sky paths to reach goals!'
+      badgeText: 'ROLLING-BALL',
+      guide: language === 'ko' ? '손가락으로 볼을 좌우 드래그해 장애물을 피하고 부스터를 밟으세요.' : 'Drag ball left & right to dodge obstacles and hit speed boosters!'
     },
     {
       id: 'voxelsupersmash',
@@ -11429,7 +11429,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '롤링 히어로 보상', 'Rolling Hero reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 롤링 볼 보상', 'Blitz Rolling Ball reward')}
       />
     );
   }
