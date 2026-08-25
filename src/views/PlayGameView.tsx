@@ -7456,7 +7456,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxeldungeon',
-      title: language === 'ko' ? '3D 복셀 던전 크롤러' : 'Voxel Dungeon Crawler',
+      title: language === 'ko' ? '블리츠 던전 슬래셔' : 'Blitz Dungeon Slasher',
       icon: Castle,
       color: 'from-indigo-600 to-purple-700',
       image: '/minigame_dungeon.png',
@@ -7464,10 +7464,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxeldungeon');
       },
-      category: '3d',
+      category: 'battle',
       isNew: true,
-      badgeText: '3D ROGUE',
-      guide: language === 'ko' ? '절차적 3D 복셀 미궁에서 보물상자를 파밍하고 던전 보스를 토벌하는 3인칭 로그라이크 RPG입니다.' : 'Procedural 3D voxel dungeon crawler with loot chests and epic boss encounters!'
+      badgeText: 'DUNGEON-SLASH',
+      guide: language === 'ko' ? '몰려오는 몬스터를 탭해 베어 넘기고 보물 상자(📦)를 열며 5층 던전을 정복하세요.' : 'Tap monsters directly to slash and collect loot chests to conquer 5 dungeon floors!'
     },
     {
       id: 'voxelspace',
@@ -11208,7 +11208,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '던전 크롤러 보상', 'Dungeon Crawler reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 던전 슬래셔 보상', 'Blitz Dungeon Slasher reward')}
       />
     );
   }
