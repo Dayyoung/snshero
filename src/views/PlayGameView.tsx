@@ -7756,18 +7756,18 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelbeatblaster',
-      title: language === 'ko' ? '3D 복셀 비트 블래스터' : 'Voxel Beat Blaster',
+      title: language === 'ko' ? '아케인 체인 넘버' : 'Arcane Chain Number',
       icon: Zap,
-      color: 'from-pink-600 to-purple-700',
+      color: 'from-indigo-600 to-purple-700',
       image: '/minigame_cardtap.png',
       characterId: 57,
       action: () => {
         setGameState('voxelbeatblaster');
       },
-      category: '3d',
+      category: 'puzzle',
       isNew: true,
-      badgeText: '3D RHYTHM',
-      guide: language === 'ko' ? '비트에 맞춰 날아오는 네온 복셀 큐브를 광선검으로 정확한 타이밍에 베어 넘기세요.' : 'Rhythm beat slashing neon voxel cubes in sync with energetic soundtracks!'
+      badgeText: 'CHAIN-SUM',
+      guide: language === 'ko' ? '화면 위 숫자 노드를 손가락으로 드래그해 선으로 연결하여 목표 합계를 완성하세요.' : 'Drag to connect adjacent number nodes into chains matching the target sum!'
     },
     {
       id: 'voxelcastleblaster',
@@ -11468,7 +11468,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '비트 블래스터 보상', 'Beat Blaster reward')}
+        onReward={(amount) => handleMinigameReward(amount, '아케인 체인 넘버 보상', 'Arcane Chain Number reward')}
       />
     );
   }
