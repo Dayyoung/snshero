@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-08-25 20:01 KST / 11:01 UTC] [/imp-mission 제29회차 3D 복셀 폐기 및 신규 원터치 미니골프 게임 개발 완료]
+- **심사 대상 게임**: `src/components/VoxelGolfMasterGame.tsx` (29 / 78)
+  - **심사 결과**: **폐기 (DECOMMISSION)** (3D 복셀 골프의 파워/각도 가상 버튼 조합 복잡도 및 퍼팅 왜곡)
+  - **신규 대체 개발**: **블리츠 미니골프 (`BlitzMiniGolfSling` - 스포츠/원터치 미니골프)**
+  - **신규 게임 특징**: 가상 조이스틱 0개 (100% 모바일 퓨어 터치), 골프공(⚪)을 손가락으로 직접 뒤로 당겨 파워와 궤적을 조준하고 손을 떼어 발사(Drag & Release Slingshot)하는 100% 모바일 쾌감 미니골프, 원샷 홀인원(Hole in One!) 1,000P 대박 잭팟, 벽 쿠션 바운스 반사 물리, 4개 코스(그린/벙커/지그재그/챔피언십) 래더, 35초 타임어택 고득점 챌린지, 1줄 슬림 HUD, 3단계 온보딩, VictoryRewardModal 확정 보상 정산 완벽 내장
+  - **메뉴 및 검색 연동**: `PlayGameView.tsx` 메뉴 메타데이터(타이틀: '블리츠 미니골프', 카테고리: 'sports', 배지: 'GOLF-SLING', 가이드, 보상 알림, 검색 키워드) 100% 동기화 등록 완료
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 3D 복셀(VoxelGolfMaster) 폐기 및 신규 원터치 미니골프 게임(블리츠 미니골프) 개발 대체 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 19:54 KST / 10:54 UTC] [/imp-mission 제28회차 3D 복셀 폐기 및 신규 1:1 검투사 배틀 게임 개발 완료]
 - **심사 대상 게임**: `src/components/VoxelGladiatorColosseumGame.tsx` (28 / 78)
   - **심사 결과**: **폐기 (DECOMMISSION)** (3D 복셀 글래디에이터의 3D 앵글 회전 시 패링/피격 타이밍 왜곡 및 긴 전투 시간의 지루함)

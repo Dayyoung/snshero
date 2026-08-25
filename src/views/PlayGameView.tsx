@@ -7906,7 +7906,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelgolfmaster',
-      title: language === 'ko' ? '3D 복셀 골프 마스터' : 'Voxel Golf Master',
+      title: language === 'ko' ? '블리츠 미니골프' : 'Blitz Mini Golf',
       icon: Wind,
       color: 'from-emerald-700 to-teal-900',
       image: '/minigame_pinball.png',
@@ -7914,10 +7914,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelgolfmaster');
       },
-      category: '3d',
+      category: 'sports',
       isNew: true,
-      badgeText: '3D GOLF',
-      guide: language === 'ko' ? '풍향과 경사면 바운스를 정밀 조준해 원거리 홀컵에 원샷 홀인원을 꽂아 넣으세요.' : 'Calculate wind velocity and fairway terrain bounce for the ultimate hole-in-one!'
+      badgeText: 'GOLF-SLING',
+      guide: language === 'ko' ? '골프공을 뒤로 당겨 파워를 조준하고 손을 떼어 홀인원 퍼팅을 성공시키세요.' : 'Pull back on the golf ball and release to sink a hole-in-one!'
     },
     {
       id: 'voxellumberjacktycoon',
@@ -11598,7 +11598,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '골프 마스터 보상', 'Golf Master reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 미니골프 보상', 'Blitz Mini Golf reward')}
       />
     );
   }
