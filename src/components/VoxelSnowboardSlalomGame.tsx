@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ArrowLeft, Trophy, Sparkles, Zap, Flame, Snowflake, ShieldCheck } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelSnowboardSlalomGameProps {
   deck: CardData[];
@@ -23,15 +26,22 @@ export const VoxelSnowboardSlalomGame: React.FC<VoxelSnowboardSlalomGameProps> =
   const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
 
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_snowboard_slalom') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [distance, setDistance] = useState<number>(0);
-  const [totalGoal] = useState<number>(2000);
+  const totalGoal = 1000;
   const [gatesPassed, setGatesPassed] = useState<number>(0);
-  const [totalGates, setTotalGates] = useState<number>(25);
-  const [speedKmh, setSpeedKmh] = useState<number>(0);
+  const totalGates = 20;
   const [trickText, setTrickText] = useState<string>('');
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
     posX: 0,
@@ -46,10 +56,24 @@ export const VoxelSnowboardSlalomGame: React.FC<VoxelSnowboardSlalomGameProps> =
     distance: 0,
     gatesPassed: 0,
     isGameOver: false,
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
     riderMesh: null as THREE.Group | null,
-    boardMesh: null as THREE.Group | null,
     gates: [] as { x: number; z: number; color: 'red' | 'blue'; passed: boolean; missed: boolean }[]
   });
+
+  const handleJumpTrick = () => {
+    const s = stateRef.current;
+    if (s.isInAir || s.isGameOver || s.isVictory || s.isPaused) return;
+    s.isInAir = true;
+    s.jumpVelY = 0.22;
+    s.score += 200;
+    setScore(s.score);
+    setTrickText(isKo ? '🔥 MUTE GRAB +200P!' : '🔥 MUTE GRAB +200P!');
+    setTimeout(() => setTrickText(''), 1000);
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+  };
 
   useEffect(() => {
     const container = mountRef.current;
@@ -69,220 +93,139 @@ export const VoxelSnowboardSlalomGame: React.FC<VoxelSnowboardSlalomGameProps> =
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    renderer.shadowMap.enabled = !lowSpecMode;
     container.appendChild(renderer.domElement);
 
-    // Alpine Sunlight
     const hemiLight = new THREE.HemisphereLight(0xffffff, 0x93c5fd, 0.9);
     scene.add(hemiLight);
 
     const dirLight = new THREE.DirectionalLight(0xffffff, 1.3);
     dirLight.position.set(30, 60, 30);
-    dirLight.castShadow = !lowSpecMode;
     scene.add(dirLight);
 
-    // Snow Powder Mountain Slope
-    const slopeGeo = new THREE.PlaneGeometry(30, 2500);
-    const slopeMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.9 });
-    const slopeMesh = new THREE.Mesh(slopeGeo, slopeMat);
-    slopeMesh.rotation.x = -Math.PI / 2;
-    slopeMesh.position.set(0, 0, -1200);
-    slopeMesh.receiveShadow = !lowSpecMode;
-    scene.add(slopeMesh);
+    // Mountain Slope
+    const slope = new THREE.Mesh(
+      new THREE.PlaneGeometry(30, 1200),
+      new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.9 })
+    );
+    slope.rotation.x = -Math.PI / 2;
+    slope.position.set(0, 0, -500);
+    scene.add(slope);
 
-    // Pine Trees along the slopes
-    const treeGeo = new THREE.ConeGeometry(1.2, 3.5, 6);
-    const treeMat = new THREE.MeshStandardMaterial({ color: 0x166534 });
-    const trunkGeo = new THREE.CylinderGeometry(0.2, 0.2, 1.0, 6);
-    const trunkMat = new THREE.MeshStandardMaterial({ color: 0x78350f });
+    // Rider Group
+    const riderGroup = new THREE.Group();
+    const board = new THREE.Mesh(
+      new THREE.BoxGeometry(0.8, 0.08, 2.0),
+      new THREE.MeshStandardMaterial({ color: 0x06b6d4 })
+    );
+    board.position.y = 0.08;
+    riderGroup.add(board);
 
-    for (let z = -20; z > -2200; z -= 35) {
-      for (let side of [-11 - Math.random() * 4, 11 + Math.random() * 4]) {
-        const treeGroup = new THREE.Group();
-        const trunk = new THREE.Mesh(trunkGeo, trunkMat);
-        trunk.position.y = 0.5;
-        treeGroup.add(trunk);
+    const body = new THREE.Mesh(
+      new THREE.BoxGeometry(0.6, 1.3, 0.5),
+      new THREE.MeshStandardMaterial({ color: 0x2563eb })
+    );
+    body.position.y = 0.8;
+    riderGroup.add(body);
 
-        const crown = new THREE.Mesh(treeGeo, treeMat);
-        crown.position.y = 2.4;
-        treeGroup.add(crown);
+    riderGroup.position.set(0, 0.25, 0);
+    scene.add(riderGroup);
+    stateRef.current.riderMesh = riderGroup;
 
-        treeGroup.position.set(side, 0, z);
-        scene.add(treeGroup);
-      }
+    // Generate 20 Slalom Gates
+    stateRef.current.gates = [];
+    for (let i = 1; i <= totalGates; i++) {
+      const gz = -i * 50;
+      const gx = (i % 2 === 0 ? 1 : -1) * (3.5 + Math.random() * 2.0);
+      const color: 'red' | 'blue' = i % 2 === 0 ? 'red' : 'blue';
+
+      const poleMesh = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.1, 0.1, 2.5, 8),
+        new THREE.MeshStandardMaterial({ color: color === 'red' ? 0xef4444 : 0x3b82f6 })
+      );
+      poleMesh.position.set(gx, 1.25, gz);
+      scene.add(poleMesh);
+
+      stateRef.current.gates.push({
+        x: gx,
+        z: gz,
+        color,
+        passed: false,
+        missed: false
+      });
     }
 
-    // Voxel Snowboarder & Board
-    const riderRoot = new THREE.Group();
-
-    // Snowboard
-    const boardGroup = new THREE.Group();
-    const boardGeo = new THREE.BoxGeometry(0.55, 0.04, 1.6);
-    const boardMat = new THREE.MeshStandardMaterial({ color: 0x06b6d4, roughness: 0.3 });
-    const board = new THREE.Mesh(boardGeo, boardMat);
-    board.position.y = 0.1;
-    boardGroup.add(board);
-
-    // Bindings
-    const bindMat = new THREE.MeshStandardMaterial({ color: 0x18181b });
-    for (let z of [-0.35, 0.35]) {
-      const bindGeo = new THREE.BoxGeometry(0.4, 0.08, 0.2);
-      const bind = new THREE.Mesh(bindGeo, bindMat);
-      bind.position.set(0, 0.14, z);
-      boardGroup.add(bind);
-    }
-
-    riderRoot.add(boardGroup);
-    stateRef.current.boardMesh = boardGroup;
-
-    // Voxel Rider (Ski Jacket & Goggles)
-    const charGroup = new THREE.Group();
-    // Winter Pants
-    const pantsMat = new THREE.MeshStandardMaterial({ color: 0x334155 });
-    for (let x of [-0.15, 0.15]) {
-      const legGeo = new THREE.BoxGeometry(0.2, 0.6, 0.22);
-      const leg = new THREE.Mesh(legGeo, pantsMat);
-      leg.position.set(x, 0.45, (x < 0 ? -0.2 : 0.2));
-      charGroup.add(leg);
-    }
-
-    // Jacket Torso (Bright Cyan / Orange)
-    const torsoGeo = new THREE.BoxGeometry(0.5, 0.65, 0.35);
-    const torsoMat = new THREE.MeshStandardMaterial({ color: 0xf97316 });
-    const torso = new THREE.Mesh(torsoGeo, torsoMat);
-    torso.position.set(0, 1.05, 0);
-    charGroup.add(torso);
-
-    // Helmet & Snow Goggles
-    const helmGeo = new THREE.BoxGeometry(0.38, 0.35, 0.38);
-    const helmMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6 });
-    const helm = new THREE.Mesh(helmGeo, helmMat);
-    helm.position.set(0, 1.55, 0);
-    charGroup.add(helm);
-
-    const goggleGeo = new THREE.BoxGeometry(0.32, 0.12, 0.12);
-    const goggleMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, metalness: 0.9, roughness: 0.1 });
-    const goggle = new THREE.Mesh(goggleGeo, goggleMat);
-    goggle.position.set(0, 1.55, -0.18);
-    charGroup.add(goggle);
-
-    charGroup.rotation.y = Math.PI / 2.6; // Snowboard stance
-    riderRoot.add(charGroup);
-
-    riderRoot.position.set(0, 0.25, 0);
-    scene.add(riderRoot);
-    stateRef.current.riderMesh = riderRoot;
-
-    // Slalom Gates (Alternating Red and Blue paired poles)
-    const gatesList: { x: number; z: number; color: 'red' | 'blue'; passed: boolean; missed: boolean }[] = [];
-    const poleGeo = new THREE.CylinderGeometry(0.06, 0.06, 2.2, 8);
-    const redMat = new THREE.MeshStandardMaterial({ color: 0xef4444 });
-    const blueMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6 });
-
-    let gateCount = 0;
-    for (let z = -80; z > -2000; z -= 80) {
-      gateCount++;
-      const isRed = gateCount % 2 === 1;
-      const gx = isRed ? -3.5 - Math.random() * 2.0 : 3.5 + Math.random() * 2.0;
-      const mat = isRed ? redMat : blueMat;
-
-      // Left Pole
-      const poleL = new THREE.Mesh(poleGeo, mat);
-      poleL.position.set(gx - 1.8, 1.1, z);
-      scene.add(poleL);
-
-      // Right Pole
-      const poleR = new THREE.Mesh(poleGeo, mat);
-      poleR.position.set(gx + 1.8, 1.1, z);
-      scene.add(poleR);
-
-      // Gate Flag Banner connecting poles
-      const bannerGeo = new THREE.PlaneGeometry(3.6, 0.5);
-      const banner = new THREE.Mesh(bannerGeo, mat);
-      banner.position.set(gx, 1.8, z);
-      scene.add(banner);
-
-      gatesList.push({ x: gx, z, color: isRed ? 'red' : 'blue', passed: false, missed: false });
-    }
-    stateRef.current.gates = gatesList;
-    setTotalGates(gatesList.length);
-
-    // Finish Arch at z = -2000
-    const finishArch = new THREE.Mesh(new THREE.BoxGeometry(16, 5, 0.8), new THREE.MeshStandardMaterial({ color: 0x0284c7 }));
-    finishArch.position.set(0, 2.5, -2000);
-    scene.add(finishArch);
-
-    // Animation Loop
     let animId: number;
-    let clock = new THREE.Clock();
+    let lastTime = performance.now();
 
-    const animate = () => {
+    const animate = (now: number) => {
       animId = requestAnimationFrame(animate);
-      const delta = clock.getDelta();
-      const state = stateRef.current;
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
 
-      if (!state.isGameOver) {
-        // Forward movement
-        state.posZ -= state.speed * 60 * delta * 2.2;
-        const currDist = Math.min(2000, Math.floor(-state.posZ));
-        state.distance = currDist;
-        setDistance(currDist);
-        setSpeedKmh(Math.floor(state.speed * 110));
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-        // Lateral Carving
-        state.posX += (state.targetX - state.posX) * 0.14;
+      // Downhill motion
+      s.posZ -= s.speed * 60 * dt;
+      s.distance = Math.min(totalGoal, Math.round(-s.posZ));
+      setDistance(s.distance);
 
-        // In Air Jump Physics
-        if (state.isInAir) {
-          state.posY += state.jumpVelY * delta * 60;
-          state.jumpVelY -= 0.014 * (delta * 60);
+      // Carving steer
+      s.posX += (s.targetX - s.posX) * 7 * dt;
 
-          if (state.posY <= 0.25) {
-            state.posY = 0.25;
-            state.isInAir = false;
-            state.jumpVelY = 0;
-            if (state.boardMesh) state.boardMesh.rotation.z = 0;
+      // Airborne Jump
+      if (s.isInAir) {
+        s.jumpVelY -= 0.65 * dt;
+        s.posY += s.jumpVelY;
+        if (s.posY <= 0.25) {
+          s.posY = 0.25;
+          s.jumpVelY = 0;
+          s.isInAir = false;
+        }
+      }
+
+      if (riderGroup) {
+        riderGroup.position.set(s.posX, s.posY, s.posZ);
+        riderGroup.rotation.y = (s.targetX - s.posX) * 0.15;
+        riderGroup.rotation.z = (s.targetX - s.posX) * -0.08;
+      }
+
+      // Check Gate Pass
+      s.gates.forEach(g => {
+        if (!g.passed && !g.missed && s.posZ <= g.z + 1.0 && s.posZ >= g.z - 1.0) {
+          if (Math.abs(s.posX - g.x) < 2.5) {
+            g.passed = true;
+            s.gatesPassed += 1;
+            s.score += 150;
+            setGatesPassed(s.gatesPassed);
+            setScore(s.score);
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+          } else {
+            g.missed = true;
           }
         }
+      });
 
-        // Apply Rider Position & Carving Tilt
-        if (riderRoot) {
-          riderRoot.position.set(state.posX, state.posY, state.posZ);
-          const tilt = (state.targetX - state.posX) * 0.25;
-          riderRoot.rotation.z = THREE.MathUtils.lerp(riderRoot.rotation.z, tilt, 0.15);
-        }
+      // Camera Follow
+      camera.position.set(s.posX * 0.4, s.posY + 3.8, s.posZ + 7.0);
+      camera.lookAt(s.posX * 0.4, s.posY + 1.2, s.posZ - 10);
 
-        // Check Slalom Gates
-        state.gates.forEach(gate => {
-          if (!gate.passed && !gate.missed && state.posZ <= gate.z) {
-            if (Math.abs(state.posX - gate.x) < 2.0) {
-              // Passed cleanly through gate!
-              gate.passed = true;
-              state.gatesPassed += 1;
-              state.score += 100;
-              state.speed = Math.min(1.2, state.speed + 0.04);
-              setGatesPassed(state.gatesPassed);
-              setScore(state.score);
-              setTrickText(isKo ? `🎿 슬라롬 게이트 통과! (+100P & 가속)` : `🎿 SLALOM GATE PASSED! (+100P)`);
-              playSfx?.('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-            } else {
-              gate.missed = true;
-            }
-          }
+      // Goal Reach Check
+      if (s.distance >= totalGoal && !s.isGameOver) {
+        s.isVictory = true;
+        s.isGameOver = true;
+        setIsGameOver(true);
+        const duration = (Date.now() - s.startTime) / 1000;
+        const receipt = calculateAndDepositMissionReward({
+          gameId: 'voxel_snowboard_slalom',
+          gameTitle: '복셀 스노보드 슬라롬',
+          durationSeconds: duration,
+          score: s.score + 2000,
+          difficulty: 'HARD',
+          isVictory: true
         });
-
-        // Camera Follow
-        camera.position.set(state.posX * 0.6, state.posY + 3.4, state.posZ + 6.5);
-        camera.lookAt(state.posX, state.posY + 1.1, state.posZ - 12);
-
-        // Finish Line Check
-        if (currDist >= 2000 && !state.isGameOver) {
-          state.isGameOver = true;
-          setIsGameOver(true);
-          const earnedSns = Math.min(260, Math.max(45, Math.floor(state.score * 0.28 + state.gatesPassed * 4)));
-          setRewardSns(earnedSns);
-          onReward(earnedSns);
-        }
+        setSettlementReceipt(receipt);
+        onReward(receipt.totalSns);
       }
 
       renderer.render(scene, camera);
@@ -290,107 +233,85 @@ export const VoxelSnowboardSlalomGame: React.FC<VoxelSnowboardSlalomGameProps> =
 
     animId = requestAnimationFrame(animate);
 
-    // Resize
-    const handleResize = () => {
-      if (!container) return;
-      const w = container.clientWidth;
-      const h = container.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
-      window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animId);
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, isKo, playSfx]);
+  }, [lowSpecMode]);
 
-  // Touch Drag Carve
-  const handleTouchMove = (e: React.TouchEvent | React.MouseEvent) => {
-    if (isGameOver) return;
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const normX = (clientX / window.innerWidth - 0.5) * 2;
-    stateRef.current.targetX = normX * 8.5;
-  };
-
-  // Jump Snow Kicker Action
-  const handleJumpTrick = () => {
-    const state = stateRef.current;
-    if (state.isInAir || isGameOver) return;
-    state.isInAir = true;
-    state.jumpVelY = 0.3;
-    state.score += 250;
-    setScore(state.score);
-    if (state.boardMesh) {
-      state.boardMesh.rotation.z = Math.PI / 4; // Mute grab tilt
-    }
-    setTrickText(isKo ? '❄️ 뮬트 그랩 에어 트릭 (+250P)!!' : '❄️ MUTE GRAB AIR TRICK (+250P)!!');
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.posX = 0;
+    s.posY = 0.25;
+    s.posZ = 0;
+    s.targetX = 0;
+    s.score = 0;
+    s.distance = 0;
+    s.gatesPassed = 0;
+    s.isInAir = false;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    s.gates.forEach(g => {
+      g.passed = false;
+      g.missed = false;
+    });
+    setScore(0);
+    setDistance(0);
+    setGatesPassed(0);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
   };
 
   return (
-    <div
-      className="relative w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none"
-      onTouchMove={handleTouchMove}
-      onMouseMove={handleTouchMove}
-    >
-      <div ref={mountRef} className="w-full h-full" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Top HUD */}
-      <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
-        <button
-          onClick={onExit}
-          className="pointer-events-auto p-2 bg-slate-900/80 border border-slate-700 text-slate-200 rounded-sm hover:bg-slate-800 transition-all flex items-center gap-1.5 text-xs font-bold cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-          <span>{isKo ? '나가기' : 'Exit'}</span>
-        </button>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 스노보드 슬라롬' : 'Voxel Snowboard Slalom'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '거리' : 'Dist', value: `${distance}m/${totalGoal}m`, color: 'text-cyan-300' },
+          { label: isKo ? '게이트' : 'Gates', value: `${gatesPassed}/${totalGates}`, color: 'text-amber-400 font-bold' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-yellow-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
-        <div className="flex items-center gap-2 bg-slate-900/90 border border-cyan-500/40 px-3 py-1.5 rounded-sm">
-          <Trophy size={16} className="text-amber-400" />
-          <span className="text-xs text-cyan-300 font-bold">
-            {isKo ? `점수: ${score}P` : `Score: ${score}`}
-          </span>
-          <span className="text-[10px] text-cyan-400 font-bold">
-            [{gatesPassed}/{totalGates} GATES]
-          </span>
-          <span className="text-[10px] text-slate-400">
-            {distance}m / {totalGoal}m
-          </span>
-        </div>
-      </div>
-
-      {/* Gate Pass & Trick Notification */}
+      {/* Trick Notification Banner */}
       {trickText && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 bg-cyan-500/90 text-slate-950 px-4 py-1 rounded-sm text-xs font-black tracking-wider shadow-lg z-10 pointer-events-none animate-bounce">
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 bg-cyan-500/90 text-slate-950 px-4 py-1 rounded-sm text-xs font-black tracking-wider shadow-lg z-10 pointer-events-none animate-bounce">
           {trickText}
         </div>
       )}
 
       {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && (
+      {!isGameOver && !isPaused && !showTutorial && (
         <div
           className="absolute inset-0 z-10 select-none touch-none cursor-pointer"
           style={{ touchAction: 'none' }}
           onPointerDown={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
             const startX = e.clientX - rect.left;
-            const startY = e.clientY - rect.top;
             let moved = false;
 
             const onMove = (moveEvt: PointerEvent) => {
               const clientX = moveEvt.clientX;
-              const curY = moveEvt.clientY - rect.top;
               const normX = (clientX / window.innerWidth - 0.5) * 2;
               stateRef.current.targetX = normX * 7.0;
 
-              if (Math.abs(clientX - (startX + rect.left)) > 15 || Math.abs(curY - startY) > 15) {
+              if (Math.abs(clientX - (startX + rect.left)) > 15) {
                 moved = true;
               }
             };
@@ -415,47 +336,33 @@ export const VoxelSnowboardSlalomGame: React.FC<VoxelSnowboardSlalomGameProps> =
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/70 border border-cyan-400/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
-          {isKo ? '좌우 드래그: 슬라롬 카빙 | 탭: 뮬트 그랩 점프 트릭 (버튼 없음)' : 'Drag L/R: Slalom Carve | Tap: Mute Grab Trick (No Buttons)'}
+        <div className="px-3 py-1 bg-black/75 border border-cyan-500/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
+          {isKo ? '좌우 드래그: 슬라롬 카빙 회전 | 탭: 뮬트 그랩 점프 트릭 (버튼 없음)' : 'Drag L/R: Slalom Carve | Tap: Mute Grab Trick (No Buttons)'}
         </div>
       </div>
 
-      {/* Game Over Summary Modal */}
-      {isGameOver && (
-        <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-xs bg-slate-900 border border-cyan-500/50 p-5 rounded-none text-center space-y-4 shadow-2xl">
-            <div className="flex justify-center">
-              <Sparkles size={36} className="text-cyan-400 animate-pulse" />
-            </div>
-            <h2 className="text-lg font-black text-cyan-400 uppercase tracking-widest">
-              {isKo ? '🏆 스노보드 슬라롬 완주!' : '🏆 SLALOM FINISHED!'}
-            </h2>
-            <div className="space-y-1.5 text-xs text-slate-300 bg-slate-950/60 p-3 border border-slate-800">
-              <div className="flex justify-between">
-                <span>{isKo ? '통과한 게이트' : 'Gates Passed'}</span>
-                <span className="font-bold text-cyan-300">{gatesPassed} / {totalGates}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>{isKo ? '슬라롬 총점' : 'Total Score'}</span>
-                <span className="font-bold text-indigo-300">{score} PTS</span>
-              </div>
-              <div className="flex justify-between pt-1 border-t border-slate-800 text-amber-400 font-bold">
-                <span>{isKo ? '획득 SNS 보상' : 'Earned SNS'}</span>
-                <span>+{rewardSns} SNS</span>
-              </div>
-            </div>
+      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {showTutorial && (
+        <SportsMissionTutorial
+          gameId="voxel_snowboard_slalom"
+          gameTitle={isKo ? '3D 복셀 스노보드: 슬라롬 챔피언' : 'Voxel Snowboard: Slalom Championship'}
+          sportType="racing"
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-            <div className="flex gap-2 pt-2">
-              <button
-                onClick={onExit}
-                className="flex-1 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase rounded-sm transition-all cursor-pointer"
-              >
-                {isKo ? '보상 수령 및 복귀' : 'Claim & Exit'}
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
 };
+export default VoxelSnowboardSlalomGame;

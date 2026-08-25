@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ArrowLeft, Trophy, Sparkles, Zap, Flame } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelSpikeRollingGameProps {
   deck: CardData[];
@@ -31,31 +34,47 @@ export const VoxelSpikeRollingGame: React.FC<VoxelSpikeRollingGameProps> = ({
   const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
 
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_spike_rolling') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [combo, setCombo] = useState<number>(0);
   const [boulderSize, setBoulderSize] = useState<number>(1.0);
   const [distance, setDistance] = useState<number>(0);
-  const [isFever, setIsFever] = useState<boolean>(false);
+  const maxDistance = 1000;
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
     rollerX: 0,
     rollerZ: 0,
-    speed: 20,
+    speed: 25,
     targetX: 0,
     scale: 1.0,
     score: 0,
     combo: 0,
-    comboTimer: 0,
     distance: 0,
-    isFever: false,
-    feverTimer: 0,
     isGameOver: false,
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
     rollerMesh: null as THREE.Group | null,
     obstacles: [] as ObstacleBlock[],
-    particles: [] as { mesh: THREE.Mesh; vel: THREE.Vector3; life: number }[]
+    scene: null as THREE.Scene | null
   });
+
+  const triggerBoost = () => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isVictory || s.isPaused) return;
+    s.speed = 42;
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    setTimeout(() => { s.speed = 25; }, 1500);
+  };
 
   useEffect(() => {
     const container = mountRef.current;
@@ -67,6 +86,7 @@ export const VoxelSpikeRollingGame: React.FC<VoxelSpikeRollingGameProps> = ({
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x180f08);
     scene.fog = new THREE.FogExp2(0x180f08, 0.02);
+    stateRef.current.scene = scene;
 
     const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 150);
     camera.position.set(0, 6, 12);
@@ -75,10 +95,8 @@ export const VoxelSpikeRollingGame: React.FC<VoxelSpikeRollingGameProps> = ({
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    renderer.shadowMap.enabled = !lowSpecMode;
     container.appendChild(renderer.domElement);
 
-    // Desert Canyon Lighting
     const ambientLight = new THREE.AmbientLight(0xfbbf24, 0.7);
     scene.add(ambientLight);
 
@@ -86,282 +104,199 @@ export const VoxelSpikeRollingGame: React.FC<VoxelSpikeRollingGameProps> = ({
     dirLight.position.set(10, 25, 10);
     scene.add(dirLight);
 
-    // Canyon Floor Track (Sloping Downward)
-    const floorGeo = new THREE.PlaneGeometry(16, 200, 16, 16);
-    const floorMat = new THREE.MeshStandardMaterial({ color: 0x451a03, roughness: 0.8 });
-    const floorMesh = new THREE.Mesh(floorGeo, floorMat);
-    floorMesh.rotation.x = -Math.PI / 2;
-    floorMesh.position.set(0, 0, -80);
-    scene.add(floorMesh);
+    // Canyon Floor Track
+    const floor = new THREE.Mesh(
+      new THREE.PlaneGeometry(16, 1200),
+      new THREE.MeshStandardMaterial({ color: 0x451a03, roughness: 0.8 })
+    );
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.set(0, 0, -500);
+    scene.add(floor);
 
-    // Canyon Walls
-    const wallGeo = new THREE.BoxGeometry(2, 6, 200);
-    const wallMat = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.9 });
-    const lWall = new THREE.Mesh(wallGeo, wallMat);
-    lWall.position.set(-9, 3, -80);
-    scene.add(lWall);
-
-    const rWall = new THREE.Mesh(wallGeo, wallMat);
-    rWall.position.set(9, 3, -80);
-    scene.add(rWall);
-
-    // Build Spike Dragon Roller Mesh (Central Core + Protruding Spikes)
+    // Spike Roller Boulder
     const rollerGroup = new THREE.Group();
-    const coreGeo = new THREE.DodecahedronGeometry(1.0);
-    const coreMat = new THREE.MeshStandardMaterial({ color: 0x9a3412, roughness: 0.4, metalness: 0.6 });
-    const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-    rollerGroup.add(coreMesh);
+    const core = new THREE.Mesh(
+      new THREE.SphereGeometry(1.2, 16, 16),
+      new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.9 })
+    );
+    rollerGroup.add(core);
 
-    // Add 12 Spikes
-    const spikeGeo = new THREE.ConeGeometry(0.3, 0.8, 6);
-    const spikeMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, metalness: 0.8 });
-    const spikeDirs = [
-      [0, 1, 0], [0, -1, 0], [1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1],
-      [0.7, 0.7, 0], [-0.7, 0.7, 0], [0, 0.7, 0.7], [0, 0.7, -0.7], [0.7, 0, 0.7], [-0.7, 0, 0.7]
-    ];
-    spikeDirs.forEach(([x, y, z]) => {
-      const sp = new THREE.Mesh(spikeGeo, spikeMat);
-      sp.position.set(x * 1.1, y * 1.1, z * 1.1);
-      sp.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(x, y, z).normalize());
-      rollerGroup.add(sp);
-    });
+    // Add Spikes
+    for (let i = 0; i < 12; i++) {
+      const spike = new THREE.Mesh(
+        new THREE.ConeGeometry(0.3, 0.8, 6),
+        new THREE.MeshStandardMaterial({ color: 0xf97316, metalness: 0.8 })
+      );
+      const u = Math.random();
+      const v = Math.random();
+      const theta = u * 2.0 * Math.PI;
+      const phi = Math.acos(2.0 * v - 1.0);
+      const r = 1.2;
+      const sinPhi = Math.sin(phi);
+      spike.position.set(r * sinPhi * Math.cos(theta), r * sinPhi * Math.sin(theta), r * Math.cos(phi));
+      spike.lookAt(spike.position.clone().multiplyScalar(2));
+      rollerGroup.add(spike);
+    }
 
     rollerGroup.position.set(0, 1.2, 0);
     scene.add(rollerGroup);
     stateRef.current.rollerMesh = rollerGroup;
 
-    // Obstacle Spawner
-    const rockGeo = new THREE.BoxGeometry(1.4, 1.4, 1.4);
-    const rockMat = new THREE.MeshStandardMaterial({ color: 0x57534e, roughness: 0.9 });
-    const gemGeo = new THREE.OctahedronGeometry(0.6);
-    const gemMat = new THREE.MeshStandardMaterial({ color: 0x06b6d4, emissive: 0x0891b2, emissiveIntensity: 0.6 });
+    // Spawn Obstacles
+    stateRef.current.obstacles = [];
+    for (let i = 1; i <= 35; i++) {
+      const oz = -i * 30;
+      const ox = (Math.random() - 0.5) * 10;
+      const type: ObstacleBlock['type'] = i % 4 === 0 ? 'gem' : (i % 7 === 0 ? 'tnt' : 'rock');
 
-    const spawnObstacleRow = (zPos: number) => {
-      const count = Math.floor(Math.random() * 3) + 1;
-      for (let c = 0; c < count; c++) {
-        const laneX = (Math.random() - 0.5) * 12;
-        const isGem = Math.random() < 0.4;
+      let color = 0x57534e;
+      let pts = 100;
+      if (type === 'gem') { color = 0x06b6d4; pts = 250; }
+      else if (type === 'tnt') { color = 0xef4444; pts = 350; }
 
-        const mesh = new THREE.Mesh(isGem ? gemGeo : rockGeo, isGem ? gemMat : rockMat);
-        mesh.position.set(laneX, isGem ? 1.0 : 0.7, zPos);
-        scene.add(mesh);
+      const oMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(1.4, 1.4, 1.4),
+        new THREE.MeshStandardMaterial({ color })
+      );
+      oMesh.position.set(ox, 0.7, oz);
+      scene.add(oMesh);
 
-        stateRef.current.obstacles.push({
-          mesh,
-          pos: mesh.position,
-          type: isGem ? 'gem' : 'rock',
-          points: isGem ? 300 : 150,
-          broken: false
-        });
-      }
-    };
-
-    // Initial Obstacle Field
-    for (let z = -15; z > -150; z -= 8) {
-      spawnObstacleRow(z);
+      stateRef.current.obstacles.push({
+        mesh: oMesh,
+        pos: new THREE.Vector3(ox, 0.7, oz),
+        type,
+        points: pts,
+        broken: false
+      });
     }
 
-    const spawnShatterFX = (pos: THREE.Vector3, color: number) => {
-      const pCount = lowSpecMode ? 4 : 8;
-      const pGeo = new THREE.BoxGeometry(0.3, 0.3, 0.3);
-      const pMat = new THREE.MeshBasicMaterial({ color });
-      for (let p = 0; p < pCount; p++) {
-        const pm = new THREE.Mesh(pGeo, pMat);
-        pm.position.copy(pos);
-        scene.add(pm);
-        stateRef.current.particles.push({
-          mesh: pm,
-          vel: new THREE.Vector3((Math.random() - 0.5) * 8, Math.random() * 6 + 2, (Math.random() - 0.5) * 8),
-          life: 0.6
-        });
-      }
-    };
-
-    // Controls
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (stateRef.current.isGameOver) return;
-      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-        stateRef.current.targetX = Math.max(-6, stateRef.current.targetX - 2.5);
-      } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-        stateRef.current.targetX = Math.min(6, stateRef.current.targetX + 2.5);
-      } else if (e.key === ' ' || e.key === 'Shift') {
-        // Super Spike Expansion Dash
-        stateRef.current.speed = 35;
-        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3');
-      }
-    };
-    const handleKeyUp = (e: KeyboardEvent) => {
-      if (e.key === ' ' || e.key === 'Shift') {
-        stateRef.current.speed = 20;
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-
-    // Animation Loop
-    let lastTime = performance.now();
     let animId: number;
+    let lastTime = performance.now();
 
     const animate = (now: number) => {
-      const delta = Math.min((now - lastTime) / 1000, 0.1);
+      animId = requestAnimationFrame(animate);
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
-      const state = stateRef.current;
-      if (!state.isGameOver) {
-        state.distance += state.speed * delta;
-        setDistance(Math.floor(state.distance));
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-        // Steer Roller
-        state.rollerX += (state.targetX - state.rollerX) * 10 * delta;
-        if (rollerGroup) {
-          rollerGroup.position.x = state.rollerX;
-          rollerGroup.rotation.x -= state.speed * 0.15 * delta;
-          rollerGroup.rotation.z = -(state.targetX - state.rollerX) * 0.1;
-          rollerGroup.scale.setScalar(state.scale);
-        }
+      // Forward motion
+      s.rollerZ -= s.speed * dt;
+      s.distance = Math.min(maxDistance, Math.round(-s.rollerZ));
+      setDistance(s.distance);
 
-        // Combo decay
-        if (state.combo > 0) {
-          state.comboTimer -= delta;
-          if (state.comboTimer <= 0) {
-            state.combo = 0;
-            setCombo(0);
-          }
-        }
+      // Horizontal steer
+      s.rollerX += (s.targetX - s.rollerX) * 8 * dt;
 
-        // Move Obstacles
-        for (let i = state.obstacles.length - 1; i >= 0; i--) {
-          const obs = state.obstacles[i];
-          obs.pos.z += state.speed * delta;
-          obs.mesh.position.z = obs.pos.z;
-
-          // Collision Check
-          if (!obs.broken && Math.abs(obs.pos.z - 0) < 1.4 && Math.abs(obs.pos.x - state.rollerX) < (1.2 * state.scale)) {
-            obs.broken = true;
-            obs.mesh.visible = false;
-
-            state.combo++;
-            state.comboTimer = 2.0;
-            const multiplier = state.isFever ? 2.5 : 1.0;
-            const addedScore = Math.floor(obs.points * (1 + state.combo * 0.1) * multiplier);
-            state.score += addedScore;
-            state.scale = Math.min(2.0, state.scale + 0.05);
-
-            setScore(state.score);
-            setCombo(state.combo);
-            setBoulderSize(parseFloat(state.scale.toFixed(2)));
-
-            spawnShatterFX(obs.pos, obs.type === 'gem' ? 0x06b6d4 : 0xf97316);
-            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-
-            if (state.combo >= 10 && !state.isFever) {
-              state.isFever = true;
-              setIsFever(true);
-            }
-          }
-
-          // Recycle Obstacles
-          if (obs.pos.z > 15) {
-            scene.remove(obs.mesh);
-            state.obstacles.splice(i, 1);
-          }
-        }
-
-        // Spawn new rows
-        while (state.obstacles.length < 24) {
-          spawnObstacleRow(-120 - Math.random() * 30);
-        }
-
-        // End condition: 1500m reached or 10000 points
-        if (state.distance >= 1200 && !state.isGameOver) {
-          state.isGameOver = true;
-          setIsGameOver(true);
-          const finalSns = Math.min(50, Math.max(15, Math.floor(state.score / 250)));
-          setRewardSns(finalSns);
-          onReward(finalSns);
-        }
+      if (rollerGroup) {
+        rollerGroup.position.set(s.rollerX, 1.2 * s.scale, s.rollerZ);
+        rollerGroup.rotation.x -= (s.speed * dt) / (1.2 * s.scale);
+        rollerGroup.scale.set(s.scale, s.scale, s.scale);
       }
 
-      // Update Particles
-      for (let p = state.particles.length - 1; p >= 0; p--) {
-        const pt = state.particles[p];
-        pt.life -= delta;
-        pt.mesh.position.addScaledVector(pt.vel, delta);
-        if (pt.life <= 0) {
-          scene.remove(pt.mesh);
-          state.particles.splice(p, 1);
+      // Check Obstacle Crush
+      s.obstacles.forEach(o => {
+        if (!o.broken && Math.hypot(s.rollerX - o.pos.x, s.rollerZ - o.pos.z) < 1.6 * s.scale) {
+          o.broken = true;
+          scene.remove(o.mesh);
+          s.combo += 1;
+          s.score += o.points * Math.min(5, s.combo);
+          s.scale = Math.min(2.5, s.scale + 0.05);
+          setCombo(s.combo);
+          setScore(s.score);
+          setBoulderSize(parseFloat(s.scale.toFixed(1)));
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
         }
+      });
+
+      // Camera Follow
+      camera.position.set(s.rollerX * 0.4, 6 * s.scale, s.rollerZ + 12);
+      camera.lookAt(s.rollerX * 0.4, 2, s.rollerZ - 15);
+
+      // Finish Line Check
+      if (s.distance >= maxDistance && !s.isGameOver) {
+        s.isVictory = true;
+        s.isGameOver = true;
+        setIsGameOver(true);
+        const duration = (Date.now() - s.startTime) / 1000;
+        const receipt = calculateAndDepositMissionReward({
+          gameId: 'voxel_spike_rolling',
+          gameTitle: '복셀 스파이크 롤링',
+          durationSeconds: duration,
+          score: s.score + 2000,
+          difficulty: 'HARD',
+          isVictory: true
+        });
+        setSettlementReceipt(receipt);
+        onReward(receipt.totalSns);
       }
 
       renderer.render(scene, camera);
-      animId = requestAnimationFrame(animate);
     };
 
     animId = requestAnimationFrame(animate);
 
-    const handleResize = () => {
-      if (!container) return;
-      const w = container.clientWidth || window.innerWidth;
-      const h = container.clientHeight || window.innerHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      window.removeEventListener('resize', handleResize);
-      if (renderer.domElement.parentNode) {
-        renderer.domElement.parentNode.removeChild(renderer.domElement);
-      }
       renderer.dispose();
+      if (container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
+      }
     };
-  }, [lowSpecMode, onReward, playSfx]);
+  }, [lowSpecMode]);
+
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.rollerX = 0;
+    s.rollerZ = 0;
+    s.targetX = 0;
+    s.scale = 1.0;
+    s.score = 0;
+    s.combo = 0;
+    s.distance = 0;
+    s.speed = 25;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    s.obstacles.forEach(o => {
+      o.broken = false;
+      s.scene?.add(o.mesh);
+    });
+    setScore(0);
+    setCombo(0);
+    setBoulderSize(1.0);
+    setDistance(0);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col select-none overflow-hidden font-mono">
-      {/* 3D WebGL Canvas */}
-      <div ref={mountRef} className="absolute inset-0 z-0" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Top Header */}
-      <div className="relative z-10 w-full p-3 sm:p-4 flex items-center justify-between bg-slate-950/80 border-b border-orange-900/40 backdrop-blur-md">
-        <button
-          onClick={onExit}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 border border-slate-700 hover:border-orange-400 text-slate-200 text-xs font-bold rounded-sm transition-all cursor-pointer"
-        >
-          <ArrowLeft size={14} />
-          <span>{isKo ? '나가기' : 'Exit'}</span>
-        </button>
-
-        <div className="flex items-center gap-3 text-xs">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-950/70 border border-amber-500/50 rounded-sm text-amber-300">
-            <Trophy size={13} className="text-amber-400" />
-            <span>{score.toLocaleString()}P</span>
-          </div>
-
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-orange-950/70 border border-orange-500/50 rounded-sm text-orange-300">
-            <span>📏 {distance}m / 1200m</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Combo & Boulder Size Indicator */}
-      <div className="relative z-10 w-full px-4 pt-2 flex flex-col items-center gap-1 pointer-events-none">
-        {combo > 1 && (
-          <div className="px-3 py-0.5 bg-orange-950/80 border border-orange-400 text-orange-300 text-xs font-black rounded-sm animate-bounce">
-            🔥 {combo} CRUSH COMBO!
-          </div>
-        )}
-        <div className="text-[10px] text-amber-300/80 font-bold">
-          {isKo ? `볼더 크기: x${boulderSize}` : `Boulder Size: x${boulderSize}`}
-        </div>
-      </div>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 스파이크 롤링' : 'Voxel Spike Rolling'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '거리' : 'Dist', value: `${distance}m/${maxDistance}m`, color: 'text-cyan-300' },
+          { label: isKo ? '콤보' : 'Combo', value: `x${combo}`, color: combo > 1 ? 'text-amber-400 font-bold' : 'text-slate-400' },
+          { label: isKo ? '크기' : 'Size', value: `x${boulderSize}`, color: 'text-orange-400 font-bold' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-yellow-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
       {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && (
+      {!isGameOver && !isPaused && !showTutorial && (
         <div
           className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
           style={{ touchAction: 'none' }}
@@ -377,14 +312,13 @@ export const VoxelSpikeRollingGame: React.FC<VoxelSpikeRollingGameProps> = ({
               const dx = curX - startX;
               const dy = curY - startY;
 
-              if (Math.abs(dx) > 8) {
+              if (Math.abs(dx) > 6) {
                 moved = true;
-                stateRef.current.targetX = Math.max(-6, Math.min(6, (curX / rect.width - 0.5) * 12));
+                stateRef.current.targetX = THREE.MathUtils.clamp((curX / rect.width - 0.5) * 12, -6, 6);
               }
               if (dy < -25) {
                 moved = true;
-                stateRef.current.speed = 35;
-                playSfx?.('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3');
+                triggerBoost();
               }
             };
 
@@ -392,13 +326,10 @@ export const VoxelSpikeRollingGame: React.FC<VoxelSpikeRollingGameProps> = ({
               window.removeEventListener('pointermove', onMove);
               window.removeEventListener('pointerup', onUp);
               window.removeEventListener('pointercancel', onUp);
-              stateRef.current.speed = 20;
 
               if (!moved) {
-                // Tap: Short Boost
-                stateRef.current.speed = 35;
-                playSfx?.('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3');
-                setTimeout(() => { stateRef.current.speed = 20; }, 1000);
+                // Tap: Boost
+                triggerBoost();
               }
             };
 
@@ -406,57 +337,39 @@ export const VoxelSpikeRollingGame: React.FC<VoxelSpikeRollingGameProps> = ({
             window.addEventListener('pointerup', onUp);
             window.addEventListener('pointercancel', onUp);
           }}
-          onDoubleClick={() => {
-            stateRef.current.speed = 38;
-            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3');
-            setTimeout(() => { stateRef.current.speed = 20; }, 1500);
-          }}
+          onDoubleClick={triggerBoost}
         />
       )}
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/70 border border-orange-500/30 rounded-full text-[10px] text-orange-300 font-mono backdrop-blur-xs">
-          {isKo ? '좌우 드래그: 볼더 조향 | 탭/더블탭: 부스트 가속 (버튼 없음)' : 'Drag L/R: Steer Boulder | Tap/Double Tap: Boost (No Buttons)'}
+        <div className="px-3 py-1 bg-black/75 border border-orange-500/30 rounded-full text-[10px] text-orange-300 font-mono backdrop-blur-xs">
+          {isKo ? '좌우 드래그: 볼더 조향 | 탭/더블탭/위로: 부스트 가속 (버튼 없음)' : 'Drag L/R: Steer Boulder | Tap/Double Tap/Up: Boost (No Buttons)'}
         </div>
       </div>
 
-      {/* Game Over Modal */}
-      {isGameOver && (
-        <div className="absolute inset-0 z-30 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
-          <div className="w-full max-w-sm bg-slate-900 border-2 border-orange-500 p-6 flex flex-col items-center gap-4 text-center rounded-none shadow-[0_0_30px_rgba(249,115,22,0.3)]">
-            <Trophy size={40} className="text-amber-400 animate-bounce" />
-            <h2 className="text-lg font-black text-white tracking-widest">
-              {isKo ? '협곡 돌파 완주 성공!' : 'CANYON RUN COMPLETE!'}
-            </h2>
-            <div className="w-full bg-slate-950 p-3 border border-slate-800 flex flex-col gap-1.5 text-xs">
-              <div className="flex justify-between text-slate-400">
-                <span>{isKo ? '질주 거리' : 'Distance'}</span>
-                <span className="text-orange-400 font-bold">{distance}m</span>
-              </div>
-              <div className="flex justify-between text-slate-400">
-                <span>{isKo ? '최대 볼더 배율' : 'Max Boulder Size'}</span>
-                <span className="text-amber-400 font-bold">x{boulderSize}</span>
-              </div>
-              <div className="flex justify-between text-slate-400">
-                <span>{isKo ? '최종 점수' : 'Final Score'}</span>
-                <span className="text-yellow-400 font-bold">{score.toLocaleString()}P</span>
-              </div>
-              <div className="flex justify-between text-slate-400 border-t border-slate-800 pt-1.5">
-                <span>{isKo ? 'SNS 보상' : 'SNS Reward'}</span>
-                <span className="text-emerald-400 font-bold">+{rewardSns} SNS</span>
-              </div>
-            </div>
+      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {showTutorial && (
+        <SportsMissionTutorial
+          gameId="voxel_spike_rolling"
+          gameTitle={isKo ? '3D 복셀 스파이크 롤링: 협곡 파괴 질주' : 'Voxel Spike Rolling: Canyon Rush'}
+          sportType="racing"
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-            <button
-              onClick={onExit}
-              className="w-full py-3 bg-orange-600 hover:bg-orange-500 active:scale-98 text-white font-black text-sm rounded-sm tracking-wider shadow-lg cursor-pointer"
-            >
-              {isKo ? '확인 및 보상 수령' : 'Confirm & Claim'}
-            </button>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
 };
+export default VoxelSpikeRollingGame;

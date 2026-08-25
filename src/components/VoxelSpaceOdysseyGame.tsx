@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Rocket, Shield, Crosshair, Zap, Award, ArrowLeft, Trophy, Sparkles } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelSpaceOdysseyGameProps {
   deck: CardData[];
@@ -18,7 +21,6 @@ interface Asteroid {
   y: number;
   z: number;
   hp: number;
-  mineralType: 'iron' | 'gold' | 'crystal';
   alive: boolean;
 }
 
@@ -32,54 +34,102 @@ interface PirateShip {
 }
 
 export const VoxelSpaceOdysseyGame: React.FC<VoxelSpaceOdysseyGameProps> = ({
-  deck,
+  deck: _deck,
   language,
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward,
+  onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
-  const [minerals, setMinerals] = useState<{ iron: number; gold: number; crystal: number }>({
-    iron: 0,
-    gold: 0,
-    crystal: 0,
-  });
-  const [shield, setShield] = useState<number>(100);
-  const [maxShield] = useState<number>(100);
-  const [fuel, setFuel] = useState<number>(100);
-  const [piratesDefeated, setPiratesDefeated] = useState<number>(0);
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [isVictory, setIsVictory] = useState<boolean>(false);
 
-  const shipPosRef = useRef<{ x: number; y: number; z: number }>({ x: 0, y: 0, z: 0 });
-  const shipRotRef = useRef<{ pitch: number; yaw: number; roll: number }>({ pitch: 0, yaw: 0, roll: 0 });
-  const keysRef = useRef<{ [key: string]: boolean }>({});
-  const asteroidsRef = useRef<Asteroid[]>([]);
-  const piratesRef = useRef<PirateShip[]>([]);
-  const lasersRef = useRef<THREE.Mesh[]>([]);
-  const animationFrameRef = useRef<number>(0);
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_space_odyssey') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [shield, setShield] = useState<number>(100);
+  const [piratesDefeated, setPiratesDefeated] = useState<number>(0);
+  const targetPirates = 4;
+  const [minerals, setMinerals] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
+
+  const stateRef = useRef({
+    shipPos: new THREE.Vector3(0, 0, 0),
+    moveDir: new THREE.Vector2(0, 0),
+    shield: 100,
+    piratesDefeated: 0,
+    minerals: 0,
+    score: 0,
+    isGameOver: false,
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
+    shipMesh: null as THREE.Group | null,
+    asteroids: [] as Asteroid[],
+    pirates: [] as PirateShip[],
+    lasers: [] as { mesh: THREE.Mesh; vx: number; vy: number; vz: number }[],
+    scene: null as THREE.Scene | null,
+    camera: null as THREE.PerspectiveCamera | null
+  });
+
+  const fireLaser = () => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isVictory || s.isPaused || !s.scene) return;
+
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3');
+
+    const lGeo = new THREE.CylinderGeometry(0.08, 0.08, 2.0, 8);
+    const lMat = new THREE.MeshBasicMaterial({ color: 0x06b6d4 });
+    const laser = new THREE.Mesh(lGeo, lMat);
+    laser.rotation.x = Math.PI / 2;
+    laser.position.set(s.shipPos.x, s.shipPos.y, s.shipPos.z - 1.5);
+    s.scene.add(laser);
+
+    s.lasers.push({
+      mesh: laser,
+      vx: 0,
+      vy: 0,
+      vz: -80
+    });
+  };
 
   useEffect(() => {
-    if (!mountRef.current) return;
     const container = mountRef.current;
-    const width = container.clientWidth;
-    const height = container.clientHeight;
+    if (!container) return;
+
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x02040a);
+    stateRef.current.scene = scene;
 
     const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 500);
     camera.position.set(0, 3, 8);
+    stateRef.current.camera = camera;
 
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
     container.appendChild(renderer.domElement);
 
-    // Starfield Background
+    const ambient = new THREE.AmbientLight(0x38bdf8, 0.8);
+    scene.add(ambient);
+
+    const sun = new THREE.DirectionalLight(0xfff7d6, 1.6);
+    sun.position.set(50, 100, 50);
+    scene.add(sun);
+
+    // Starfield Points
     const starGeo = new THREE.BufferGeometry();
-    const starCount = 800;
+    const starCount = 600;
     const starPos = new Float32Array(starCount * 3);
     for (let i = 0; i < starCount * 3; i += 3) {
       starPos[i] = (Math.random() - 0.5) * 400;
@@ -87,260 +137,302 @@ export const VoxelSpaceOdysseyGame: React.FC<VoxelSpaceOdysseyGameProps> = ({
       starPos[i + 2] = (Math.random() - 0.5) * 400;
     }
     starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-    const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 1.2 });
-    const starField = new THREE.Points(starGeo, starMat);
+    const starField = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 1.2 }));
     scene.add(starField);
 
-    // Lighting
-    const sunLight = new THREE.DirectionalLight(0xfff7d6, 1.8);
-    sunLight.position.set(50, 100, 50);
-    scene.add(sunLight);
-    scene.add(new THREE.AmbientLight(0x223355, 0.9));
+    // Spaceship Group
+    const ship = new THREE.Group();
+    const body = new THREE.Mesh(
+      new THREE.BoxGeometry(1.2, 0.6, 2.4),
+      new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.3 })
+    );
+    ship.add(body);
 
-    // Player Voxel Spaceship
-    const shipGroup = new THREE.Group();
-    const bodyGeo = new THREE.BoxGeometry(1.6, 0.8, 3.2);
-    const bodyMat = new THREE.MeshLambertMaterial({ color: 0x3b82f6 });
-    const shipBody = new THREE.Mesh(bodyGeo, bodyMat);
-    shipGroup.add(shipBody);
+    const cockpit = new THREE.Mesh(
+      new THREE.BoxGeometry(0.6, 0.4, 0.8),
+      new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.1 })
+    );
+    cockpit.position.set(0, 0.35, -0.4);
+    ship.add(cockpit);
 
-    const cockpitGeo = new THREE.BoxGeometry(0.8, 0.6, 1.2);
-    const cockpitMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
-    const cockpit = new THREE.Mesh(cockpitGeo, cockpitMat);
-    cockpit.position.set(0, 0.5, 0.2);
-    shipGroup.add(cockpit);
+    ship.position.set(0, 0, 0);
+    scene.add(ship);
+    stateRef.current.shipMesh = ship;
 
-    const wingGeo = new THREE.BoxGeometry(4.5, 0.2, 1.4);
-    const wingMat = new THREE.MeshLambertMaterial({ color: 0x1d4ed8 });
-    const wings = new THREE.Mesh(wingGeo, wingMat);
-    wings.position.set(0, 0, -0.4);
-    shipGroup.add(wings);
+    // Spawn 4 Pirate Ships
+    stateRef.current.pirates = [];
+    for (let i = 0; i < targetPirates; i++) {
+      const pGroup = new THREE.Group();
+      const pMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(1.4, 0.6, 2.2),
+        new THREE.MeshStandardMaterial({ color: 0xdc2626 })
+      );
+      pGroup.add(pMesh);
 
-    // Engines
-    const engineGeo = new THREE.BoxGeometry(0.6, 0.6, 0.8);
-    const engineMat = new THREE.MeshBasicMaterial({ color: 0xf97316 });
-    const leftEngine = new THREE.Mesh(engineGeo, engineMat);
-    leftEngine.position.set(-1.2, 0, 1.6);
-    const rightEngine = new THREE.Mesh(engineGeo, engineMat);
-    rightEngine.position.set(1.2, 0, 1.6);
-    shipGroup.add(leftEngine, rightEngine);
+      const px = (i % 2 === 0 ? 1 : -1) * (10 + i * 3);
+      const py = (Math.random() - 0.5) * 6;
+      const pz = -25 - i * 15;
+      pGroup.position.set(px, py, pz);
+      scene.add(pGroup);
 
-    scene.add(shipGroup);
-
-    // Asteroids Field
-    const asteroidGeo = new THREE.DodecahedronGeometry(2.5, 1);
-    const matIron = new THREE.MeshLambertMaterial({ color: 0x64748b });
-    const matGold = new THREE.MeshLambertMaterial({ color: 0xeab308 });
-    const matCrystal = new THREE.MeshLambertMaterial({ color: 0x06b6d4 });
-
-    for (let i = 0; i < 25; i++) {
-      const typeRand = Math.random();
-      const type: 'iron' | 'gold' | 'crystal' = typeRand < 0.5 ? 'iron' : typeRand < 0.8 ? 'gold' : 'crystal';
-      const mat = type === 'iron' ? matIron : type === 'gold' ? matGold : matCrystal;
-      const mesh = new THREE.Mesh(asteroidGeo, mat);
-
-      const ax = (Math.random() - 0.5) * 120;
-      const ay = (Math.random() - 0.5) * 50;
-      const az = -30 - Math.random() * 150;
-      mesh.position.set(ax, ay, az);
-      mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
-      scene.add(mesh);
-
-      asteroidsRef.current.push({
-        mesh,
-        x: ax,
-        y: ay,
-        z: az,
-        hp: type === 'crystal' ? 60 : 30,
-        mineralType: type,
-        alive: true,
-      });
-    }
-
-    // Pirate Ships
-    for (let i = 0; i < 4; i++) {
-      const pirateGroup = new THREE.Group();
-      const pBody = new THREE.Mesh(new THREE.BoxGeometry(1.8, 1, 3), new THREE.MeshLambertMaterial({ color: 0xdc2626 }));
-      pirateGroup.add(pBody);
-      const px = (Math.random() - 0.5) * 60;
-      const py = (Math.random() - 0.5) * 20;
-      const pz = -50 - Math.random() * 80;
-      pirateGroup.position.set(px, py, pz);
-      scene.add(pirateGroup);
-
-      piratesRef.current.push({
-        mesh: pirateGroup,
+      stateRef.current.pirates.push({
+        mesh: pGroup,
         x: px,
         y: py,
         z: pz,
-        hp: 80,
-        alive: true,
+        hp: 3,
+        alive: true
       });
     }
 
-    // Space Station (Goal)
-    const stationGroup = new THREE.Group();
-    const stationCore = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 4, 16), new THREE.MeshLambertMaterial({ color: 0x475569 }));
-    const stationRing = new THREE.Mesh(new THREE.TorusGeometry(18, 1.2, 8, 32), new THREE.MeshLambertMaterial({ color: 0x94a3b8 }));
-    stationGroup.add(stationCore, stationRing);
-    stationGroup.position.set(0, 0, -220);
-    scene.add(stationGroup);
+    // Spawn Asteroids
+    stateRef.current.asteroids = [];
+    for (let i = 0; i < 15; i++) {
+      const aMesh = new THREE.Mesh(
+        new THREE.DodecahedronGeometry(1.5, 0),
+        new THREE.MeshStandardMaterial({ color: 0x78716c, roughness: 0.9 })
+      );
+      const ax = (Math.random() - 0.5) * 35;
+      const ay = (Math.random() - 0.5) * 20;
+      const az = -15 - i * 8;
+      aMesh.position.set(ax, ay, az);
+      scene.add(aMesh);
 
-    // Keyboard handlers
-    const handleKeyDown = (e: KeyboardEvent) => {
-      keysRef.current[e.key.toLowerCase()] = true;
-      if (e.key === ' ' || e.key === 'j') {
-        fireLaser();
-      }
-    };
-    const handleKeyUp = (e: KeyboardEvent) => {
-      keysRef.current[e.key.toLowerCase()] = false;
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
+      stateRef.current.asteroids.push({
+        mesh: aMesh,
+        x: ax,
+        y: ay,
+        z: az,
+        hp: 2,
+        alive: true
+      });
+    }
 
-    // Laser firing
-    const fireLaser = () => {
-      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-      const laserGeo = new THREE.BoxGeometry(0.2, 0.2, 2.5);
-      const laserMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
-      const laser = new THREE.Mesh(laserGeo, laserMat);
-      laser.position.set(shipPosRef.current.x, shipPosRef.current.y, shipPosRef.current.z - 2);
-      scene.add(laser);
-      lasersRef.current.push(laser);
-    };
-
-    // Game loop
+    let animId: number;
     let lastTime = performance.now();
-    const animate = (time: number) => {
-      const delta = (time - lastTime) / 1000;
-      lastTime = time;
 
-      // Controls
-      let forward = 0;
-      let strafeX = 0;
-      let strafeY = 0;
+    const animate = (now: number) => {
+      animId = requestAnimationFrame(animate);
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
 
-      if (keysRef.current['w'] || keysRef.current['arrowup']) forward -= 1;
-      if (keysRef.current['s'] || keysRef.current['arrowdown']) forward += 1;
-      if (keysRef.current['a'] || keysRef.current['arrowleft']) strafeX -= 1;
-      if (keysRef.current['d'] || keysRef.current['arrowright']) strafeX += 1;
-      if (keysRef.current['q']) strafeY -= 1;
-      if (keysRef.current['e']) strafeY += 1;
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-      const speed = 22;
-      shipPosRef.current.z += (forward * speed - 10) * delta; // constant forward thrust
-      shipPosRef.current.x += strafeX * speed * delta;
-      shipPosRef.current.y += strafeY * speed * delta;
+      // Ship controls
+      const speed = 15;
+      s.shipPos.x += s.moveDir.x * speed * dt;
+      s.shipPos.y += s.moveDir.y * speed * dt;
+      s.shipPos.x = THREE.MathUtils.clamp(s.shipPos.x, -20, 20);
+      s.shipPos.y = THREE.MathUtils.clamp(s.shipPos.y, -10, 10);
 
-      shipGroup.position.set(shipPosRef.current.x, shipPosRef.current.y, shipPosRef.current.z);
-      shipGroup.rotation.z = -strafeX * 0.35;
-      shipGroup.rotation.x = forward * 0.15;
+      if (ship) {
+        ship.position.set(s.shipPos.x, s.shipPos.y, s.shipPos.z);
+        ship.rotation.z = -s.moveDir.x * 0.4;
+        ship.rotation.x = s.moveDir.y * 0.3;
+      }
 
-      camera.position.set(shipPosRef.current.x, shipPosRef.current.y + 3, shipPosRef.current.z + 9);
-      camera.lookAt(shipPosRef.current.x, shipPosRef.current.y, shipPosRef.current.z - 15);
+      // Camera follow
+      camera.position.set(s.shipPos.x * 0.5, s.shipPos.y * 0.5 + 3, s.shipPos.z + 8);
+      camera.lookAt(s.shipPos.x * 0.5, s.shipPos.y * 0.5, s.shipPos.z - 20);
 
-      // Station rotation
-      stationGroup.rotation.z += delta * 0.1;
+      // Update Lasers
+      for (let i = s.lasers.length - 1; i >= 0; i--) {
+        const l = s.lasers[i];
+        l.mesh.position.z += l.vz * dt;
 
-      // Update lasers
-      for (let i = lasersRef.current.length - 1; i >= 0; i--) {
-        const laser = lasersRef.current[i];
-        laser.position.z -= 60 * delta;
+        // Check Pirate Hit
+        for (const p of s.pirates) {
+          if (p.alive && l.mesh.position.distanceTo(p.mesh.position) < 2.2) {
+            p.hp -= 1;
+            s.score += 200;
+            setScore(s.score);
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
 
-        // Check Asteroid Hits
-        asteroidsRef.current.forEach(ast => {
-          if (!ast.alive) return;
-          const dist = laser.position.distanceTo(ast.mesh.position);
-          if (dist < 3.2) {
-            ast.hp -= 25;
-            if (ast.hp <= 0) {
-              ast.alive = false;
-              scene.remove(ast.mesh);
-              setMinerals(m => ({ ...m, [ast.mineralType]: m[ast.mineralType] + (ast.mineralType === 'crystal' ? 3 : 5) }));
+            if (p.hp <= 0) {
+              p.alive = false;
+              scene.remove(p.mesh);
+              s.piratesDefeated += 1;
+              setPiratesDefeated(s.piratesDefeated);
+
+              if (s.piratesDefeated >= targetPirates && !s.isGameOver) {
+                s.isVictory = true;
+                s.isGameOver = true;
+                setIsGameOver(true);
+                const duration = (Date.now() - s.startTime) / 1000;
+                const receipt = calculateAndDepositMissionReward({
+                  gameId: 'voxel_space_odyssey',
+                  gameTitle: '복셀 스페이스 오디세이',
+                  durationSeconds: duration,
+                  score: s.score + 2500,
+                  difficulty: 'NIGHTMARE',
+                  isVictory: true
+                });
+                setSettlementReceipt(receipt);
+                onReward(receipt.totalSns);
+              }
+            }
+            break;
+          }
+        }
+
+        // Check Asteroid Hit
+        for (const a of s.asteroids) {
+          if (a.alive && l.mesh.position.distanceTo(a.mesh.position) < 2.0) {
+            a.hp -= 1;
+            s.score += 80;
+            setScore(s.score);
+            if (a.hp <= 0) {
+              a.alive = false;
+              scene.remove(a.mesh);
+              s.minerals += 5;
+              setMinerals(s.minerals);
               playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
             }
+            break;
           }
-        });
+        }
 
-        // Check Pirate Hits
-        piratesRef.current.forEach(pirate => {
-          if (!pirate.alive) return;
-          const dist = laser.position.distanceTo(pirate.mesh.position);
-          if (dist < 3.0) {
-            pirate.hp -= 30;
-            if (pirate.hp <= 0) {
-              pirate.alive = false;
-              scene.remove(pirate.mesh);
-              setPiratesDefeated(p => p + 1);
-              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-            }
-          }
-        });
-
-        if (laser.position.z < shipPosRef.current.z - 150) {
-          scene.remove(laser);
-          lasersRef.current.splice(i, 1);
+        if (l.mesh.position.z < -150) {
+          scene.remove(l.mesh);
+          s.lasers.splice(i, 1);
         }
       }
 
-      // Check Docking with Space Station
-      if (shipPosRef.current.z <= -200) {
-        setIsVictory(true);
-        onReward(220);
-      }
-
       renderer.render(scene, camera);
-      animationFrameRef.current = requestAnimationFrame(animate);
     };
 
-    animationFrameRef.current = requestAnimationFrame(animate);
+    animId = requestAnimationFrame(animate);
 
     return () => {
-      cancelAnimationFrame(animationFrameRef.current);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      if (mountRef.current && renderer.domElement) {
-        mountRef.current.removeChild(renderer.domElement);
-      }
+      cancelAnimationFrame(animId);
       renderer.dispose();
+      if (container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
+      }
     };
-  }, [lowSpecMode, playSfx, onReward]);
+  }, [lowSpecMode]);
+
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.shipPos.set(0, 0, 0);
+    s.shield = 100;
+    s.piratesDefeated = 0;
+    s.minerals = 0;
+    s.score = 0;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    s.pirates.forEach((p, idx) => {
+      p.alive = true;
+      p.hp = 3;
+      const px = (idx % 2 === 0 ? 1 : -1) * (10 + idx * 3);
+      const py = (Math.random() - 0.5) * 6;
+      const pz = -25 - idx * 15;
+      p.mesh.position.set(px, py, pz);
+      s.scene?.add(p.mesh);
+    });
+    setShield(100);
+    setPiratesDefeated(0);
+    setMinerals(0);
+    setScore(0);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
+
+  const customTutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 성계 개척 & 우주 해적 소탕' : 'STEP 1: SPACE ODYSSEY',
+      title: isKo ? '우주 해적선 4척 격추 승리' : 'Destroy 4 Pirate Vessels',
+      description: isKo
+        ? '심우주를 항해하며 소행성 광물을 채굴하고 은하 해적선 4척을 모두 격추하세요.'
+        : 'Navigate deep space, mine asteroid minerals and eliminate 4 pirate ships.',
+      keyPoints: isKo
+        ? [
+            '해적선 4척 격추 시 즉시 완승',
+            '소행성 파괴 시 광물 자원 수집',
+            '실드 HP 100% 방어 유지'
+          ]
+        : [
+            'Destroy 4 pirate ships to win',
+            'Mine asteroid minerals',
+            'Maintain shield HP at 100%'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '드래그 비행 & 탭 레이저 포격' : 'Drag Fly & Tap Laser',
+      description: isKo
+        ? '가상 D-Pad 없이 화면 드래그로 360° 비행하고, 탭하여 고출력 레이저를 연사합니다.'
+        : 'Drag anywhere to steer spaceship and tap to fire rapid plasma lasers with zero buttons.',
+      keyPoints: isKo
+        ? [
+            '👆 드래그: 우주선 3D 방향 비행 조종',
+            '💥 탭: 전방 플라즈마 레이저 발사',
+            '⚡ 연속 격추 시 성계 해방 보너스'
+          ]
+        : [
+            '👆 Drag: Smooth 3D flight steering',
+            '💥 Tap: Fire plasma lasers',
+            '⚡ Chain kills for star pioneer bonus'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '성계 도킹 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare multiplier payout calculated and deposited atomically to your wallet.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '광물 채굴량 및 실드 잔여 보너스',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Minerals and shield bonuses',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
+    }
+  ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-[#02040a] text-white font-mono select-none overflow-hidden flex flex-col">
-      {/* Top HUD */}
-      <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between p-3 bg-black/60 backdrop-blur-sm border-b border-white/10">
-        <button
-          onClick={onExit}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-sm text-xs font-bold transition-all border border-white/15"
-        >
-          <ArrowLeft size={14} />
-          {language === 'ko' ? '로비로' : 'LOBBY'}
-        </button>
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-        {/* Shield & Minerals */}
-        <div className="flex items-center gap-4 text-xs">
-          <div className="flex items-center gap-1.5 text-sky-300">
-            <Shield size={14} />
-            <span>SHIELD {shield}%</span>
-          </div>
-          <div className="flex items-center gap-2 bg-slate-900/80 px-2 py-1 border border-slate-700 rounded-sm">
-            <span className="text-slate-300">철: {minerals.iron}</span>
-            <span className="text-yellow-400">금: {minerals.gold}</span>
-            <span className="text-cyan-300">수정: {minerals.crystal}</span>
-          </div>
-          <div className="text-rose-400 font-bold">
-            해적 격추: {piratesDefeated}/4
-          </div>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 스페이스 오디세이' : 'Voxel Space Odyssey'}
+        language={language}
+        hp={{ current: shield, max: 100 }}
+        telemetries={[
+          { label: isKo ? '해적' : 'Pirates', value: `${piratesDefeated}/${targetPirates}`, color: 'text-rose-400 font-bold' },
+          { label: isKo ? '광물' : 'Minerals', value: `${minerals}`, color: 'text-cyan-300' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-yellow-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
+
+      {/* Crosshair Center */}
+      <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
+        <div className="w-6 h-6 border border-cyan-400/60 rounded-full flex items-center justify-center">
+          <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full" />
         </div>
       </div>
 
-      {/* 3D Canvas */}
-      <div ref={mountRef} className="w-full flex-1 touch-none" />
-
       {/* Screen Gesture Touch Overlay */}
-      {!isVictory && (
+      {!isGameOver && !isPaused && !showTutorial && (
         <div
           className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
           style={{ touchAction: 'none' }}
@@ -356,12 +448,10 @@ export const VoxelSpaceOdysseyGame: React.FC<VoxelSpaceOdysseyGameProps> = ({
               const dx = curX - startX;
               const dy = curY - startY;
 
-              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
                 moved = true;
-                keysRef.current['w'] = dy < -8;
-                keysRef.current['s'] = dy > 12;
-                keysRef.current['a'] = dx < -10;
-                keysRef.current['d'] = dx > 10;
+                stateRef.current.moveDir.x = Math.abs(dx) > 8 ? (dx > 0 ? 1 : -1) : 0;
+                stateRef.current.moveDir.y = Math.abs(dy) > 8 ? (dy > 0 ? -1 : 1) : 0;
               }
             };
 
@@ -369,14 +459,12 @@ export const VoxelSpaceOdysseyGame: React.FC<VoxelSpaceOdysseyGameProps> = ({
               window.removeEventListener('pointermove', onMove);
               window.removeEventListener('pointerup', onUp);
               window.removeEventListener('pointercancel', onUp);
-              keysRef.current['w'] = false;
-              keysRef.current['s'] = false;
-              keysRef.current['a'] = false;
-              keysRef.current['d'] = false;
+              stateRef.current.moveDir.x = 0;
+              stateRef.current.moveDir.y = 0;
 
               if (!moved) {
                 // Tap: Fire Laser
-                window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }));
+                fireLaser();
               }
             };
 
@@ -389,33 +477,31 @@ export const VoxelSpaceOdysseyGame: React.FC<VoxelSpaceOdysseyGameProps> = ({
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/70 border border-cyan-500/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
-          {language === 'ko' ? '드래그: 우주선 비행 조종 | 탭: 레이저 발사 (버튼 없음)' : 'Drag: Fly Spaceship | Tap: Fire Laser (No Buttons)'}
+        <div className="px-3 py-1 bg-black/75 border border-cyan-500/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
+          {isKo ? '화면 드래그: 우주선 3D 비행 | 탭: 레이저 발사 (버튼 없음)' : 'Drag: 3D Flight Steer | Tap: Fire Lasers (No Buttons)'}
         </div>
       </div>
 
-      {/* Victory */}
-      {isVictory && (
-        <div className="absolute inset-0 z-50 bg-black/85 flex flex-col items-center justify-center p-6 text-center">
-          <div className="p-6 bg-slate-900 border-2 border-cyan-500 rounded-sm max-w-sm w-full space-y-4">
-            <Trophy size={48} className="mx-auto text-cyan-400 animate-bounce" />
-            <h2 className="text-2xl font-black text-cyan-400">STATION DOCKED!</h2>
-            <p className="text-xs text-slate-300">
-              {language === 'ko'
-                ? `성계 개척 성공! 수집한 광물과 해적 전리품이 정산되었습니다.`
-                : `Star Pioneer Mission Accomplished!`}
-            </p>
-            <div className="p-2 bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 text-sm font-bold">
-              +220 SNS POINT EARNED
-            </div>
-            <button
-              onClick={onExit}
-              className="w-full py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-sm text-sm"
-            >
-              {language === 'ko' ? '보상 수령 및 로비로' : 'CLAIM REWARD & EXIT'}
-            </button>
-          </div>
-        </div>
+      {/* Universal 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_space_odyssey"
+          gameTitle={isKo ? '3D 복셀 스페이스 오디세이: 은하 해적전' : 'Voxel Space Odyssey: Star Battle'}
+          customSteps={customTutorialSteps}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
+
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );

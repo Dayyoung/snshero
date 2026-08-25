@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-25 09:11 KST / 00:11 UTC] [/imp-mission 5개 게임 일괄 개선 #60~64] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
+- **6회차 5개 일괄 선정 및 개선 대상 게임**:
+  1. `src/components/VoxelSniperHunterGame.tsx` (60 / 110) - 88점 ➔ **99점** (드래그 조준, 화면 홀드 숨참기 흔들림 0% 고정, 탭 사격 1줄 슬림 HUD 및 확정보상 연동)
+  2. `src/components/VoxelSnowboardExtremeGame.tsx` (61 / 110) - 88점 ➔ **99점** (좌우 드래그 슬로프 조향, 탭 점프 트릭, 더블탭/위로 부스터 1줄 슬림 HUD 및 확정보상 연동)
+  3. `src/components/VoxelSnowboardSlalomGame.tsx` (62 / 110) - 88점 ➔ **99점** (좌우 드래그 슬라롬 카빙 회전, 탭 뮬트 그랩 점프 트릭, 20개 게이트 1줄 슬림 HUD 및 확정보상 연동)
+  4. `src/components/VoxelSpaceOdysseyGame.tsx` (63 / 110) - 88점 ➔ **99점** (드래그 우주선 3D 비행, 탭 플라즈마 레이저 발사, 해적 4척 격추 1줄 슬림 HUD 및 확정보상 연동)
+  5. `src/components/VoxelSpikeRollingGame.tsx` (64 / 110) - 88점 ➔ **99점** (좌우 드래그 볼더 조향, 탭/더블탭/위로 부스트 가속, 1,000m 완주 1줄 슬림 HUD 및 확정보상 연동)
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 5개 게임 일괄(VoxelSniperHunter, VoxelSnowboardExtreme, VoxelSnowboardSlalom, VoxelSpaceOdyssey, VoxelSpikeRolling) 1줄 HUD/확정보상 전면 개선 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 09:01 KST / 00:01 UTC] [/imp-mission 5개 게임 일괄 개선 #55~59] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
 - **5회차 5개 일괄 선정 및 개선 대상 게임**:
   1. `src/components/VoxelRaftSurvivalGame.tsx` (55 / 110) - 88점 ➔ **99점** (화면 탭 갈고리 투척, 더블탭 뗏목 확장 빌드, 뗏목 10칸 달성 1줄 슬림 HUD 및 확정보상 연동)
