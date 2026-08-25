@@ -8131,7 +8131,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelmicrokart',
-      title: language === 'ko' ? '3D 복셀 마이크로 카트 레이싱' : 'Voxel Micro Kart Racing',
+      title: language === 'ko' ? '블리츠 마이크로 카트' : 'Blitz Micro Kart',
       icon: Zap,
       color: 'from-sky-500 to-indigo-600',
       image: '/minigame_drifting.png',
@@ -8139,10 +8139,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelmicrokart');
       },
-      category: '3d',
+      category: 'sports',
       isNew: true,
-      badgeText: '3D KART',
-      guide: language === 'ko' ? '미니 서킷에서 파워 슬라이드 드리프트와 터보 부스터, 바나나/미사일 아이템으로 1위를 차지하세요.' : 'Power-slide drift through hairpin turns and use tactical items to take the checkered flag!'
+      badgeText: 'MICRO-KART',
+      guide: language === 'ko' ? '손가락으로 카트를 좌우 드래그해 터보를 밟고 골인하세요.' : 'Drag kart left & right to grab turbos and reach the finish line!'
     },
     {
       id: 'voxeltreasuredigger',
@@ -11793,7 +11793,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '마이크로 카트 레이싱 보상', 'Micro Kart Racing reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 마이크로 카트 보상', 'Blitz Micro Kart reward')}
       />
     );
   }
