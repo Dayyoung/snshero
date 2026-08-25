@@ -7876,7 +7876,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxeltankbounce',
-      title: language === 'ko' ? '3D 복셀 탱크 바운스 배틀' : 'Voxel Tank Bounce',
+      title: language === 'ko' ? '블리츠 탱크 바운스' : 'Blitz Tank Bounce',
       icon: Crosshair,
       color: 'from-sky-600 to-blue-900',
       image: '/minigame_running.png',
@@ -7884,10 +7884,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxeltankbounce');
       },
-      category: '3d',
+      category: 'battle',
       isNew: true,
-      badgeText: '3D TANK',
-      guide: language === 'ko' ? '벽면을 2회 튕겨 날아가는 도탄 포탄의 궤적을 계산해 엄폐 중인 적 전차를 저격 파괴하세요.' : 'Calculate 2-bounce ricochet ballistics to snipe hidden enemy tanks!'
+      badgeText: 'TANK-BOUNCE',
+      guide: language === 'ko' ? '화면을 드래그해 각도를 맞추고 손을 떼어 도탄 포탄을 발사하세요.' : 'Drag to aim ricochet angle and release to fire bouncing shell!'
     },
     {
       id: 'voxelninjaslash',
@@ -11572,7 +11572,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '탱크 바운스 보상', 'Tank Bounce reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 탱크 바운스 보상', 'Blitz Tank Bounce reward')}
       />
     );
   }
