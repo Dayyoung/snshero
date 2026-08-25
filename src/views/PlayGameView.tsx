@@ -7891,7 +7891,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelninjaslash',
-      title: language === 'ko' ? '3D 복셀 닌자 슬래시' : 'Voxel Ninja Slash',
+      title: language === 'ko' ? '블리츠 닌자 슬래시' : 'Blitz Ninja Slash',
       icon: Zap,
       color: 'from-pink-600 to-rose-950',
       image: '/minigame_cardslide.png',
@@ -7899,10 +7899,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelninjaslash');
       },
-      category: '3d',
+      category: 'battle',
       isNew: true,
-      badgeText: '3D NINJA',
-      guide: language === 'ko' ? '불릿타임 시간 감속 순간을 포착해 적 경비병들의 가드를 정밀 쾌속 발도술로 일도양단하세요.' : 'Slow time with bullet-time and execute rapid stealth katana slashes!'
+      badgeText: 'NINJA-SLASH',
+      guide: language === 'ko' ? '손가락으로 화면을 슥 그어 날아오는 표적들을 베어가르세요.' : 'Swipe screen like a blade to slice flying ninja targets!'
     },
     {
       id: 'voxelgolfmaster',
@@ -11585,7 +11585,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '닌자 슬래시 보상', 'Ninja Slash reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 닌자 슬래시 보상', 'Blitz Ninja Slash reward')}
       />
     );
   }
