@@ -8296,7 +8296,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelsnowboardslalom',
-      title: language === 'ko' ? '3D 복셀 스노보드 슬라롬: 알파인 슈레더' : 'Voxel Snowboard Slalom: Alpine Shredder',
+      title: language === 'ko' ? '블리츠 알파인 슬라롬' : 'Blitz Alpine Slalom',
       icon: Mountain,
       color: 'from-cyan-500 to-blue-600',
       image: '/minigame_jetski.png',
@@ -8304,10 +8304,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelsnowboardslalom');
       },
-      category: '3d',
+      category: 'sports',
       isNew: true,
-      badgeText: '3D SNOWBOARD',
-      guide: language === 'ko' ? '설원을 카빙하며 레드와 블루 슬라롬 게이트를 통과하고 스노우 키커에서 에어 트릭을 성공시키세요.' : 'Carve alpine snow slopes through Red & Blue slalom gates and execute grab tricks off kickers!'
+      badgeText: 'ALPINE-SLALOM',
+      guide: language === 'ko' ? '손가락으로 라이더를 좌우 드래그해 레드(🚩)/블루(🔷) 깃발을 통과하세요.' : 'Drag rider left & right to clear red/blue slalom gates!'
     },
     {
       id: 'voxelkaratebreak',
@@ -11936,7 +11936,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '스노보드 슬라롬 보상', 'Snowboard Slalom reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 알파인 슬라롬 보상', 'Blitz Alpine Slalom reward')}
       />
     );
   }
