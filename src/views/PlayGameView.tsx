@@ -7531,7 +7531,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxeldeepsea',
-      title: language === 'ko' ? '3D 복셀 심해 오디세이' : 'Voxel Deep Sea Odyssey',
+      title: language === 'ko' ? '블리츠 딥씨 다이버' : 'Blitz Deep Sea Diver',
       icon: Compass,
       color: 'from-cyan-600 to-blue-800',
       image: '/minigame_shooting.png',
@@ -7539,10 +7539,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxeldeepsea');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D OCEAN',
-      guide: language === 'ko' ? '복셀 잠수정으로 심해 생태계를 탐사하며 해양 보물을 발굴하고 크라켄을 격퇴하세요.' : 'Explore mysterious ocean trenches in a voxel submarine, collecting artifacts!'
+      badgeText: 'DEEPSEA-DIVE',
+      guide: language === 'ko' ? '잠수함을 손가락으로 드래그하여 산소(🫧)와 크리스탈(💎)을 채굴하고 300m 심해에 도달하세요.' : 'Drag submarine to collect oxygen and crystals while diving toward 300m abyssal trench!'
     },
     {
       id: 'voxelacefighter',
@@ -11273,7 +11273,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '심해 오디세이 보상', 'Deep Sea Odyssey reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 딥씨 다이버 보상', 'Blitz Deep Sea Diver reward')}
       />
     );
   }

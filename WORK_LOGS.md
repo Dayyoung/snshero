@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-08-25 13:41 KST / 04:41 UTC] [/imp-mission 제16회차 3D 복셀 폐기 및 신규 심해 액션 게임 개발 완료]
+- **심사 대상 게임**: `src/components/VoxelDeepSeaOdysseyGame.tsx` (16 / 78)
+  - **심사 결과**: **폐기 (DECOMMISSION)** (3D 심해 오디세이의 복잡한 다축 가상 이동/잠항 및 어두운 3D 안개 시각 피로도)
+  - **신규 대체 개발**: **블리츠 딥씨 다이버 (`BlitzDeepSeaDiver` - 아케이드/심해 수집 액션)**
+  - **신규 게임 특징**: 가상 조이스틱 0개 (100% 모바일 퓨어 터치), 화면 속 잠수함을 손가락으로 직접 자유 드래그(Direct Finger Drag)하여 심해로 잠항하며 네온 산소 방울(🫧)과 크리스탈(💎)을 채굴하고 해파리(🪼)/상어(🦈)를 회피하여 300m 해저 심연을 탐사하는 쾌속 다이빙 아케이드, 연속 채굴 콤보 배수, 1줄 슬림 HUD, 3단계 온보딩, VictoryRewardModal 확정 보상 정산 완벽 내장
+  - **메뉴 및 검색 연동**: `PlayGameView.tsx` 메뉴 메타데이터(타이틀: '블리츠 딥씨 다이버', 카테고리: 'arcade', 배지: 'DEEPSEA-DIVE', 가이드, 보상 알림, 검색 키워드) 100% 동기화 등록 완료
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 3D 복셀(VoxelDeepSeaOdyssey) 폐기 및 신규 심해 액션 게임(블리츠 딥씨 다이버) 개발 대체 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 13:21 KST / 04:21 UTC] [/imp-mission 제15회차 3D 복셀 폐기 및 신규 나이프 히트 아케이드 게임 개발 완료]
 - **심사 대상 게임**: `src/components/VoxelDartsBarGame.tsx` (15 / 78)
   - **심사 결과**: **폐기 (DECOMMISSION)** (3D 다트 바의 작은 판정 링 조준 피로도 및 모바일 터치 손맛 부재)
