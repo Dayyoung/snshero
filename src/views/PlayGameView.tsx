@@ -7981,7 +7981,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelsubwayrunner',
-      title: language === 'ko' ? '3D 복셀 서브웨이 러너' : 'Voxel Subway Runner',
+      title: language === 'ko' ? '블리츠 서브웨이 러너' : 'Blitz Subway Runner',
       icon: Footprints,
       color: 'from-indigo-600 to-purple-800',
       image: '/minigame_parkour.png',
@@ -7989,10 +7989,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelsubwayrunner');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D RUNNER',
-      guide: language === 'ko' ? '3차선 지하철 레일을 질주하며 롤링 슬라이드와 호버보드로 장애물을 돌파하세요.' : 'Sprint 3-lane subway tracks, slide roll under barriers and activate hoverboard!'
+      badgeText: 'SUBWAY-RUNNER',
+      guide: language === 'ko' ? '화면을 좌우/상하로 스와이프해 레인을 변경하고 점프/슬라이딩하세요.' : 'Swipe 4 ways for lane switches, jumps, and slides!'
     },
     {
       id: 'voxelcranemaster',
@@ -11663,7 +11663,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '서브웨이 러너 보상', 'Subway Runner reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 서브웨이 러너 보상', 'Blitz Subway Runner reward')}
       />
     );
   }
