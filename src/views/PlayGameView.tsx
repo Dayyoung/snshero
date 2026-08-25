@@ -8236,7 +8236,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelbadmintonblitz',
-      title: language === 'ko' ? '3D 복셀 배드민턴 블리츠: 스매시 랠리' : 'Voxel Badminton Blitz: Smash Rally',
+      title: language === 'ko' ? '블리츠 핑퐁 랠리' : 'Blitz Ping Pong Rally',
       icon: Zap,
       color: 'from-emerald-500 to-teal-700',
       image: '/minigame_tictactoe.png',
@@ -8244,10 +8244,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelbadmintonblitz');
       },
-      category: '3d',
+      category: 'casual',
       isNew: true,
-      badgeText: '3D BADMINTON',
-      guide: language === 'ko' ? '풋워크 이동과 타이밍 점프 스매시, 헤어핀 드롭 샷을 구사하여 AI 상대를 11점 세트에서 압도하세요.' : 'Move footwork, time jump smashes and hairpin drops to beat AI opponent in an 11-point match!'
+      badgeText: 'PING-PONG',
+      guide: language === 'ko' ? '화면을 좌우로 직접 드래그하여 탁구공을 받아치고 스매시를 날려 3점을 선취하세요.' : 'Drag across the screen directly to hit ping pong balls and unleash smashes to score 3 points!'
     },
     {
       id: 'voxelmagnethole',
@@ -11884,7 +11884,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '배드민턴 블리츠 보상', 'Badminton Blitz reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 핑퐁 랠리 보상', 'Blitz Ping Pong Rally reward')}
       />
     );
   }

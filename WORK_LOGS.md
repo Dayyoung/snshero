@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-08-25 11:31 KST / 02:31 UTC] [/imp-mission 제4회차 3D 복셀 폐기 및 신규 핑퐁 스포츠 게임 개발 완료]
+- **심사 대상 게임**: `src/components/VoxelBadmintonBlitzGame.tsx` (4 / 78)
+  - **심사 결과**: **폐기 (DECOMMISSION)** (3D 공간 상 셔틀콕 높이/원근감의 모바일 시각 왜곡, 헛스윙 및 불합리한 판정)
+  - **신규 대체 개발**: **블리츠 핑퐁 랠리 (`BlitzPingPongRally` - 캐주얼/스포츠)**
+  - **신규 게임 특징**: 가상 조이스틱 0개 (100% 모바일 퓨어 터치), 화면 위를 손가락으로 직접 좌우 드래그하여 탁구공을 받아치고 스매시를 꽂아넣는 직관적인 핑퐁 랠리, 라켓 가장자리 강타 시 SMASH 팡파레, 3점 선취승 룰, 1줄 슬림 HUD, 3단계 온보딩, VictoryRewardModal 확정 보상 정산 완벽 내장
+  - **메뉴 및 검색 연동**: `PlayGameView.tsx` 메뉴 메타데이터(타이틀: '블리츠 핑퐁 랠리', 카테고리: 'casual', 배지: 'PING-PONG', 가이드, 보상 알림, 검색 키워드) 100% 동기화 등록 완료
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 3D 복셀(VoxelBadmintonBlitz) 폐기 및 신규 핑퐁 스포츠 게임(블리츠 핑퐁 랠리) 개발 대체 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 11:21 KST / 02:21 UTC] [/imp-mission 제3회차 3D 복셀 폐기 및 신규 슬링샷 물리 액션 게임 개발 완료]
 - **심사 대상 게임**: `src/components/VoxelArcherHeroGame.tsx` (3 / 78)
   - **심사 결과**: **폐기 (DECOMMISSION)** (3D 탑다운 아처의 거리 왜곡, 이동/사격 분리의 뻑뻑한 조작감)

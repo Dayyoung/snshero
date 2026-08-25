@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { CardData } from '../types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
-import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
@@ -21,38 +20,44 @@ export const VoxelBadmintonBlitzGame: React.FC<VoxelBadmintonBlitzGameProps> = (
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
+  const [playerScore, setPlayerScore] = useState<number>(0);
+  const [aiScore, setAiScore] = useState<number>(0);
+  const [rally, setRally] = useState<number>(0);
+  const [maxRally, setMaxRally] = useState<number>(0);
+  const [smashText, setSmashText] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_badminton_blitz') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_pingpong_rally') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [playerScore, setPlayerScore] = useState<number>(0);
-  const [aiScore, setAiScore] = useState<number>(0);
-  const [rallyCount, setRallyCount] = useState<number>(0);
-  const [lastSmashSpeed, setLastSmashSpeed] = useState<number>(0);
-  const [rallyText, setRallyText] = useState<string>('');
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
-    playerPos: new THREE.Vector3(0, 0, 4.5),
-    targetPlayerX: 0,
-    targetPlayerZ: 4.5,
-    aiPos: new THREE.Vector3(0, 0, -4.5),
-    aiTargetX: 0,
-    aiTargetZ: -4.5,
-    shuttlePos: new THREE.Vector3(0, 1.8, 3.5),
-    shuttleVel: new THREE.Vector3(0, 0, 0),
-    isRallyActive: false,
-    servingPlayer: true,
+    paddleX: 180,
+    paddleY: 480,
+    paddleW: 75,
+    paddleH: 14,
+    aiPaddleX: 180,
+    aiPaddleY: 50,
+    aiPaddleW: 70,
+    ballX: 180,
+    ballY: 260,
+    ballVx: 0,
+    ballVy: 0,
+    ballSpeed: 4.5,
+    isServing: true,
+    server: 'player' as 'player' | 'ai',
     playerScore: 0,
     aiScore: 0,
     rally: 0,
@@ -60,424 +65,400 @@ export const VoxelBadmintonBlitzGame: React.FC<VoxelBadmintonBlitzGameProps> = (
     isGameOver: false,
     isPaused: false,
     startTime: Date.now(),
-    playerMesh: null as THREE.Group | null,
-    aiMesh: null as THREE.Group | null,
-    shuttleMesh: null as THREE.Group | null,
-    playerRacketSwing: 0,
-    aiRacketSwing: 0
   });
 
-  useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
-
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
-
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a);
-    scene.fog = new THREE.Fog(0x0f172a, 15, 45);
-
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
-    camera.position.set(0, 6.5, 9.5);
-    camera.lookAt(0, 1.0, 0);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    renderer.shadowMap.enabled = !lowSpecMode;
-    container.appendChild(renderer.domElement);
-
-    // Court Lights
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x334155, 0.85);
-    scene.add(hemiLight);
-
-    const courtSpot = new THREE.SpotLight(0xffffff, 2.2);
-    courtSpot.position.set(0, 12, 0);
-    courtSpot.castShadow = !lowSpecMode;
-    scene.add(courtSpot);
-
-    // Voxel Badminton Court (Mat: Green 0x15803d)
-    const courtGeo = new THREE.PlaneGeometry(6.1, 13.4);
-    const courtMat = new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.7 });
-    const courtMesh = new THREE.Mesh(courtGeo, courtMat);
-    courtMesh.rotation.x = -Math.PI / 2;
-    courtMesh.receiveShadow = !lowSpecMode;
-    scene.add(courtMesh);
-
-    // Net
-    const netGroup = new THREE.Group();
-    const netGeo = new THREE.PlaneGeometry(6.1, 1.55);
-    const netMat = new THREE.MeshStandardMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.6,
-      roughness: 0.3
-    });
-    const netMesh = new THREE.Mesh(netGeo, netMat);
-    netMesh.position.set(0, 0.775, 0);
-    netGroup.add(netMesh);
-    scene.add(netGroup);
-
-    // Player Voxel Avatar
-    const playerGroup = new THREE.Group();
-    const pBodyGeo = new THREE.BoxGeometry(0.8, 1.2, 0.5);
-    const pBodyMat = new THREE.MeshStandardMaterial({ color: 0x0284c7 });
-    const pBody = new THREE.Mesh(pBodyGeo, pBodyMat);
-    pBody.position.y = 1.0;
-    playerGroup.add(pBody);
-
-    const pRacketGeo = new THREE.BoxGeometry(0.1, 0.7, 0.4);
-    const pRacketMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b });
-    const pRacket = new THREE.Mesh(pRacketGeo, pRacketMat);
-    pRacket.position.set(0.6, 1.1, -0.4);
-    playerGroup.add(pRacket);
-
-    playerGroup.position.copy(stateRef.current.playerPos);
-    scene.add(playerGroup);
-    stateRef.current.playerMesh = playerGroup;
-
-    // AI Voxel Avatar
-    const aiGroup = new THREE.Group();
-    const aiBodyGeo = new THREE.BoxGeometry(0.8, 1.2, 0.5);
-    const aiBodyMat = new THREE.MeshStandardMaterial({ color: 0xe11d48 });
-    const aiBody = new THREE.Mesh(aiBodyGeo, aiBodyMat);
-    aiBody.position.y = 1.0;
-    aiGroup.add(aiBody);
-
-    const aiRacket = new THREE.Mesh(pRacketGeo, pRacketMat);
-    aiRacket.position.set(-0.6, 1.1, 0.4);
-    aiGroup.add(aiRacket);
-
-    aiGroup.position.copy(stateRef.current.aiPos);
-    scene.add(aiGroup);
-    stateRef.current.aiMesh = aiGroup;
-
-    // Shuttlecock
-    const shuttleGroup = new THREE.Group();
-    const sHead = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), new THREE.MeshStandardMaterial({ color: 0xffffff }));
-    const sSkirt = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.25, 8), new THREE.MeshStandardMaterial({ color: 0xfacc15, wireframe: true }));
-    sSkirt.position.y = 0.12;
-    shuttleGroup.add(sHead);
-    shuttleGroup.add(sSkirt);
-    shuttleGroup.position.copy(stateRef.current.shuttlePos);
-    scene.add(shuttleGroup);
-    stateRef.current.shuttleMesh = shuttleGroup;
-
-    let animId: number;
-    let lastTime = performance.now();
-
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
-      const dt = Math.min((now - lastTime) / 1000, 0.1);
-      lastTime = now;
-
-      const s = stateRef.current;
-      if (s.isPaused || s.isGameOver) return;
-
-      // Lerp Player Position
-      s.playerPos.x = THREE.MathUtils.lerp(s.playerPos.x, s.targetPlayerX, dt * 14);
-      s.playerPos.z = THREE.MathUtils.lerp(s.playerPos.z, s.targetPlayerZ, dt * 14);
-      if (s.playerMesh) s.playerMesh.position.copy(s.playerPos);
-
-      // AI Logic
-      if (s.isRallyActive) {
-        if (s.shuttleVel.z < 0) {
-          s.aiTargetX = THREE.MathUtils.clamp(s.shuttlePos.x + (Math.random() - 0.5) * 0.4, -2.6, 2.6);
-          s.aiTargetZ = THREE.MathUtils.clamp(s.shuttlePos.z - 0.4, -6.0, -2.0);
-        } else {
-          s.aiTargetX = THREE.MathUtils.lerp(s.aiTargetX, 0, dt * 2);
-          s.aiTargetZ = THREE.MathUtils.lerp(s.aiTargetZ, -4.5, dt * 2);
-        }
-        s.aiPos.x = THREE.MathUtils.lerp(s.aiPos.x, s.aiTargetX, dt * 8);
-        s.aiPos.z = THREE.MathUtils.lerp(s.aiPos.z, s.aiTargetZ, dt * 8);
-        if (s.aiMesh) s.aiMesh.position.copy(s.aiPos);
-      }
-
-      // Shuttlecock Physics
-      if (s.isRallyActive) {
-        s.shuttlePos.addScaledVector(s.shuttleVel, dt);
-        s.shuttleVel.y -= 14.5 * dt; // Gravity
-        s.shuttleVel.x *= 0.99;
-        s.shuttleVel.z *= 0.99;
-
-        if (s.shuttleMesh) {
-          s.shuttleMesh.position.copy(s.shuttlePos);
-          s.shuttleMesh.lookAt(s.shuttlePos.clone().add(s.shuttleVel));
-        }
-
-        // AI Return Hit
-        if (s.shuttlePos.z < s.aiPos.z + 0.6 && s.shuttlePos.z > s.aiPos.z - 0.8 && s.shuttleVel.z < 0) {
-          if (Math.abs(s.shuttlePos.x - s.aiPos.x) < 1.8 && s.shuttlePos.y > 0.3 && s.shuttlePos.y < 2.5) {
-            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-            s.rally += 1;
-            s.maxRally = Math.max(s.maxRally, s.rally);
-            setRallyCount(s.rally);
-
-            const returnSpeed = 16 + Math.min(s.rally * 0.8, 12);
-            const targetX = (Math.random() - 0.5) * 4.8;
-            s.shuttleVel.set((targetX - s.shuttlePos.x) * 1.8, 6.0 + Math.random() * 2, returnSpeed);
-          }
-        }
-
-        // Out / Floor Hit Detection
-        if (s.shuttlePos.y <= 0.1) {
-          s.isRallyActive = false;
-          // Check who scored
-          if (s.shuttlePos.z > 0 && Math.abs(s.shuttlePos.x) <= 3.05 && s.shuttlePos.z <= 6.7) {
-            // Landed in player court -> AI scores
-            s.aiScore += 1;
-            setAiScore(s.aiScore);
-            setRallyText(isKo ? '실점! (AI 득점)' : 'AI SCORED!');
-          } else if (s.shuttlePos.z < 0 && Math.abs(s.shuttlePos.x) <= 3.05 && s.shuttlePos.z >= -6.7) {
-            // Landed in AI court -> Player scores
-            s.playerScore += 1;
-            setPlayerScore(s.playerScore);
-            setRallyText(isKo ? '스매시 득점! (+1P)' : 'PLAYER SCORED!');
-          } else if (s.shuttleVel.z > 0) {
-            // Player hit out -> AI scores
-            s.aiScore += 1;
-            setAiScore(s.aiScore);
-            setRallyText(isKo ? '아웃! (AI 득점)' : 'OUT! AI SCORED');
-          } else {
-            // AI hit out -> Player scores
-            s.playerScore += 1;
-            setPlayerScore(s.playerScore);
-            setRallyText(isKo ? '상대 아웃! (+1P)' : 'AI OUT! +1P');
-          }
-
-          // Match Winner Check (First to 5)
-          if (s.playerScore >= 5 || s.aiScore >= 5) {
-            s.isGameOver = true;
-            setIsGameOver(true);
-            const duration = (Date.now() - s.startTime) / 1000;
-            const isWon = s.playerScore >= 5;
-            const receipt = calculateAndDepositMissionReward({
-              gameId: 'voxel_badminton_blitz',
-              gameTitle: '복셀 배드민턴 블리츠',
-              durationSeconds: duration,
-              score: s.playerScore * 300 + s.maxRally * 50,
-              difficulty: isWon ? 'HARD' : 'NORMAL',
-              isVictory: isWon
-            });
-            setSettlementReceipt(receipt);
-            onReward(receipt.totalSns);
-          } else {
-            setTimeout(() => {
-              setRallyText('');
-              resetService(s.playerScore > s.aiScore);
-            }, 1200);
-          }
-        }
-      }
-
-      renderer.render(scene, camera);
-    };
-
-    animId = requestAnimationFrame(animate);
-
-    return () => {
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-    };
-  }, [lowSpecMode]);
-
-  const resetService = (playerServes: boolean) => {
+  const resetBall = useCallback((server: 'player' | 'ai') => {
     const s = stateRef.current;
-    s.rally = 0;
-    setRallyCount(0);
-    s.shuttlePos.set(playerServes ? 0 : 0, 1.8, playerServes ? 3.5 : -3.5);
-    s.shuttleVel.set(0, 0, 0);
-    s.isRallyActive = false;
-    if (s.shuttleMesh) s.shuttleMesh.position.copy(s.shuttlePos);
-  };
+    s.isServing = true;
+    s.server = server;
+    s.ballSpeed = 4.5;
+    s.ballX = 180;
+    s.ballY = server === 'player' ? 440 : 80;
+    s.ballVx = 0;
+    s.ballVy = 0;
+  }, []);
 
-  const handleSmash = () => {
+  const initGame = useCallback(() => {
     const s = stateRef.current;
-    if (s.isGameOver || s.isPaused) return;
-
-    if (!s.isRallyActive) {
-      // Service Start
-      s.isRallyActive = true;
-      s.shuttleVel.set((Math.random() - 0.5) * 3, 7.5, -20);
-      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-      return;
-    }
-
-    // Player Smash Hit
-    if (s.shuttlePos.z > s.playerPos.z - 1.2 && s.shuttlePos.z < s.playerPos.z + 1.2 && s.shuttleVel.z > 0) {
-      if (Math.abs(s.shuttlePos.x - s.playerPos.x) < 2.0 && s.shuttlePos.y > 0.4) {
-        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-        s.rally += 1;
-        s.maxRally = Math.max(s.maxRally, s.rally);
-        setRallyCount(s.rally);
-
-        const smashSpd = 28 + Math.random() * 6;
-        setLastSmashSpeed(Math.round(smashSpd * 10));
-        const targetX = (Math.random() - 0.5) * 4.8;
-        s.shuttleVel.set((targetX - s.shuttlePos.x) * 2.2, 4.0, -smashSpd);
-      }
-    }
-  };
-
-  const handleClearLob = () => {
-    const s = stateRef.current;
-    if (!s.isRallyActive || s.isGameOver || s.isPaused) return;
-
-    if (s.shuttlePos.z > s.playerPos.z - 1.2 && s.shuttlePos.z < s.playerPos.z + 1.2 && s.shuttleVel.z > 0) {
-      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-      s.rally += 1;
-      s.maxRally = Math.max(s.maxRally, s.rally);
-      setRallyCount(s.rally);
-      const targetX = (Math.random() - 0.5) * 4.5;
-      s.shuttleVel.set((targetX - s.shuttlePos.x) * 1.5, 11.5, -18);
-    }
-  };
-
-  const handleDropShot = () => {
-    const s = stateRef.current;
-    if (!s.isRallyActive || s.isGameOver || s.isPaused) return;
-
-    if (s.shuttlePos.z > s.playerPos.z - 1.2 && s.shuttlePos.z < s.playerPos.z + 1.2 && s.shuttleVel.z > 0) {
-      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-      s.rally += 1;
-      s.maxRally = Math.max(s.maxRally, s.rally);
-      setRallyCount(s.rally);
-      const targetX = (Math.random() - 0.5) * 4.0;
-      s.shuttleVel.set((targetX - s.shuttlePos.x) * 1.2, 3.5, -12);
-    }
-  };
-
-  const handleRestart = () => {
-    const s = stateRef.current;
+    s.paddleX = 180;
+    s.paddleY = 480;
+    s.aiPaddleX = 180;
+    s.aiPaddleY = 50;
     s.playerScore = 0;
     s.aiScore = 0;
     s.rally = 0;
     s.maxRally = 0;
     s.isGameOver = false;
     s.startTime = Date.now();
+
     setPlayerScore(0);
     setAiScore(0);
-    setRallyCount(0);
-    setLastSmashSpeed(0);
-    setRallyText('');
+    setRally(0);
+    setMaxRally(0);
+    setSmashText(null);
     setIsGameOver(false);
     setSettlementReceipt(null);
-    resetService(true);
+    resetBall('player');
+  }, [resetBall]);
+
+  useEffect(() => {
+    initGame();
+  }, [initGame]);
+
+  // Touch / Pointer Direct Drag Control (Zero Virtual Joystick)
+  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+
+    const touchX = (e.clientX - rect.left) * scaleX;
+    s.paddleX = Math.min(360 - s.paddleW / 2, Math.max(s.paddleW / 2, touchX));
+
+    // Serve on touch tap/drag if serving
+    if (s.isServing && s.server === 'player') {
+      s.isServing = false;
+      s.ballVx = (Math.random() - 0.5) * 4;
+      s.ballVy = -s.ballSpeed;
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    }
   };
 
-  return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    handlePointerMove(e);
+  };
 
+  // Main 60FPS Game Physics Loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let lastTime = performance.now();
+
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
+
+      // AI Serve Logic
+      if (s.isServing && s.server === 'ai') {
+        s.isServing = false;
+        s.ballVx = (Math.random() - 0.5) * 3.5;
+        s.ballVy = s.ballSpeed;
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+      }
+
+      if (!s.isServing) {
+        // AI Paddle Tracking
+        const aiTargetX = s.ballX + (Math.sin(now * 0.005) * 15);
+        const aiSpeed = 3.8 + Math.min(2.0, s.rally * 0.15);
+        if (s.aiPaddleX < aiTargetX - 4) {
+          s.aiPaddleX += aiSpeed;
+        } else if (s.aiPaddleX > aiTargetX + 4) {
+          s.aiPaddleX -= aiSpeed;
+        }
+        s.aiPaddleX = Math.min(360 - s.aiPaddleW / 2, Math.max(s.aiPaddleW / 2, s.aiPaddleX));
+
+        // Ball Movement
+        s.ballX += s.ballVx * dt * 60;
+        s.ballY += s.ballVy * dt * 60;
+
+        // Side Walls Bounce
+        if (s.ballX < 12) {
+          s.ballX = 12;
+          s.ballVx *= -1;
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        } else if (s.ballX > 348) {
+          s.ballX = 348;
+          s.ballVx *= -1;
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        }
+
+        // Player Paddle Collision (Bottom)
+        if (
+          s.ballY >= s.paddleY - 14 &&
+          s.ballY <= s.paddleY + 10 &&
+          s.ballX >= s.paddleX - s.paddleW / 2 - 8 &&
+          s.ballX <= s.paddleX + s.paddleW / 2 + 8 &&
+          s.ballVy > 0
+        ) {
+          const hitOffset = (s.ballX - s.paddleX) / (s.paddleW / 2);
+          s.ballSpeed = Math.min(8.5, s.ballSpeed + 0.25);
+          s.ballVx = hitOffset * 5.5;
+          s.ballVy = -s.ballSpeed;
+          s.rally += 1;
+          if (s.rally > s.maxRally) s.maxRally = s.rally;
+          setRally(s.rally);
+          setMaxRally(s.maxRally);
+
+          if (Math.abs(hitOffset) > 0.6) {
+            setSmashText('SMASH! ⚡');
+            setTimeout(() => setSmashText(null), 400);
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+          } else {
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+          }
+        }
+
+        // AI Paddle Collision (Top)
+        if (
+          s.ballY <= s.aiPaddleY + 14 &&
+          s.ballY >= s.aiPaddleY - 10 &&
+          s.ballX >= s.aiPaddleX - s.aiPaddleW / 2 - 8 &&
+          s.ballX <= s.aiPaddleX + s.aiPaddleW / 2 + 8 &&
+          s.ballVy < 0
+        ) {
+          const hitOffset = (s.ballX - s.aiPaddleX) / (s.aiPaddleW / 2);
+          s.ballSpeed = Math.min(8.5, s.ballSpeed + 0.2);
+          s.ballVx = hitOffset * 5.0;
+          s.ballVy = s.ballSpeed;
+          s.rally += 1;
+          if (s.rally > s.maxRally) s.maxRally = s.rally;
+          setRally(s.rally);
+          setMaxRally(s.maxRally);
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        }
+
+        // Point Scored (Out of top or bottom)
+        if (s.ballY > 520) {
+          // AI scores
+          s.aiScore += 1;
+          setAiScore(s.aiScore);
+          s.rally = 0;
+          setRally(0);
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+          checkEndMatch(s.playerScore, s.aiScore);
+          if (s.aiScore < 3 && s.playerScore < 3) resetBall('player');
+        } else if (s.ballY < 10) {
+          // Player scores!
+          s.playerScore += 1;
+          setPlayerScore(s.playerScore);
+          s.rally = 0;
+          setRally(0);
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+          checkEndMatch(s.playerScore, s.aiScore);
+          if (s.aiScore < 3 && s.playerScore < 3) resetBall('ai');
+        }
+      }
+
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Ping Pong Table Background (Emerald Blue Table)
+      ctx.fillStyle = '#0f3a2c';
+      ctx.fillRect(0, 0, w, h);
+
+      // Table Boundary Lines
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(10, 10, w - 20, h - 20);
+
+      // Center Net Line
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 6]);
+      ctx.beginPath();
+      ctx.moveTo(10, h / 2);
+      ctx.lineTo(w - 10, h / 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Center Vertical Guide Line
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(w / 2, 10);
+      ctx.lineTo(w / 2, h - 10);
+      ctx.stroke();
+
+      // Render AI Paddle (Red)
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(s.aiPaddleX - s.aiPaddleW / 2, s.aiPaddleY - s.paddleH / 2, s.aiPaddleW, s.paddleH);
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(s.aiPaddleX - s.aiPaddleW / 2, s.aiPaddleY - s.paddleH / 2, s.aiPaddleW, s.paddleH);
+
+      // Render Player Paddle (Cyan Blue)
+      ctx.fillStyle = '#06b6d4';
+      ctx.fillRect(s.paddleX - s.paddleW / 2, s.paddleY - s.paddleH / 2, s.paddleW, s.paddleH);
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(s.paddleX - s.paddleW / 2, s.paddleY - s.paddleH / 2, s.paddleW, s.paddleH);
+
+      // Render Ping Pong Ball (Golden Orange)
+      ctx.fillStyle = '#fbbf24';
+      ctx.beginPath();
+      ctx.arc(s.ballX, s.ballY, 8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    };
+
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, [onReward, playSfx, resetBall]);
+
+  const checkEndMatch = (pScore: number, aScore: number) => {
+    const s = stateRef.current;
+    if ((pScore >= 3 || aScore >= 3) && !s.isGameOver) {
+      s.isGameOver = true;
+      setIsGameOver(true);
+      const isVictory = pScore >= 3;
+      if (isVictory) {
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+      } else {
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+      }
+
+      const duration = (Date.now() - s.startTime) / 1000;
+      const receipt = calculateAndDepositMissionReward({
+        gameId: 'arcade_pingpong_rally',
+        gameTitle: '블리츠 핑퐁 랠리',
+        durationSeconds: duration,
+        score: pScore * 1200 + s.maxRally * 150,
+        difficulty: 'NIGHTMARE',
+        isVictory: isVictory,
+      });
+      setSettlementReceipt(receipt);
+      onReward(receipt.totalSns);
+    }
+  };
+
+  const tutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 3점 선취 핑퐁 승리' : 'STEP 1: FIRST TO 3 WINS',
+      title: isKo ? '핑퐁 랠리를 이어가며 3점을 선취하세요' : 'Win Rallies to Score 3 Points First',
+      description: isKo
+        ? '가상 조이스틱 없이 화면을 손가락으로 직접 좌우 드래그하여 날아오는 탁구공을 받아치고 스매시를 날리세요.'
+        : 'Drag your finger directly on screen to control the paddle and score 3 points.',
+      keyPoints: isKo
+        ? [
+            '가상 조이스틱 0개 (100% 손가락 직접 좌우 드래그)',
+            '라켓 외곽 부분으로 칠수록 강력한 각도 스매시',
+            '먼저 3점을 획득하면 완승 정산'
+          ]
+        : [
+            'Zero Virtual Joysticks: 100% Direct Finger Drag',
+            'Hit on paddle edges for sharp angle smashes',
+            'First to 3 points wins the match'
+          ],
+      iconType: 'GOAL',
+    },
+    {
+      badge: isKo ? 'STEP 2: 모바일 퓨어 제스처' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '화면 직접 터치 & 드래그' : 'Direct Screen Touch & Drag',
+      description: isKo
+        ? '화면 하단을 손가락으로 슥 밀어 라켓을 공 궤적으로 신속하게 이동시킵니다.'
+        : 'Drag across the screen to position your paddle smoothly.',
+      keyPoints: isKo
+        ? [
+            '👆 손가락 드래그: 실시간 즉각적인 라켓 이동',
+            '⚡ 서브 시작: 화면 터치 즉시 공 발사',
+            '🏓 랠리 누적 시 공 속도 점진적 상승'
+          ]
+        : [
+            '👆 Direct Drag: Instant paddle tracking',
+            '⚡ Touch to Serve: Tap to launch ball',
+            '🏓 Rallies accelerate ball speed'
+          ],
+      iconType: 'GESTURES',
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '매치 완료 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon match finish.',
+      keyPoints: isKo
+        ? [
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '승리 및 맥스 랠리 콤보 비례 대량 잭팟',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Win and max rally combo multipliers',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS',
+    },
+  ];
+
+  return (
+    <div className="relative w-full h-[100dvh] bg-[#081c15] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none">
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
       <MinimalistMissionHUD
-        title={isKo ? '복셀 배드민턴 블리츠' : 'Voxel Badminton Blitz'}
-        language={language}
+        title={isKo ? '블리츠 핑퐁 랠리' : 'Blitz Ping Pong Rally'}
+        language={(language as Language) || 'ko'}
         telemetries={[
-          { label: isKo ? '스코어' : 'Score', value: `${playerScore} : ${aiScore}`, color: 'text-emerald-300' },
-          { label: isKo ? '랠리' : 'Rally', value: `${rallyCount}회`, color: 'text-amber-300' },
-          { label: isKo ? '스매시' : 'Smash', value: `${lastSmashSpeed}km/h`, color: 'text-cyan-300' }
+          { label: isKo ? '스코어' : 'Score', value: `${playerScore} : ${aiScore}`, color: playerScore >= aiScore ? 'text-cyan-400 font-bold' : 'text-rose-500 font-bold' },
+          { label: isKo ? '랠리' : 'Rally', value: `${rally}x`, color: rally > 5 ? 'text-amber-400 font-bold animate-bounce' : 'text-slate-300' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          stateRef.current.isPaused = !isPaused;
-        }}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
         isPaused={isPaused}
       />
 
-      {/* Rally Notification Banner */}
-      {rallyText && (
-        <div className="absolute top-16 left-1/2 -translate-x-1/2 bg-emerald-500/90 text-slate-950 px-4 py-1 rounded-sm text-xs font-black tracking-wider shadow-lg z-20 pointer-events-none animate-bounce">
-          {rallyText}
-        </div>
-      )}
-
-      {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div
-          className="absolute inset-0 z-10 select-none touch-none"
-          style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const startX = e.clientX - rect.left;
-            const startY = e.clientY - rect.top;
-            let moved = false;
-
-            const onMove = (moveEvt: PointerEvent) => {
-              const curX = moveEvt.clientX - rect.left;
-              const curY = moveEvt.clientY - rect.top;
-              const dx = curX - startX;
-              const dy = curY - startY;
-
-              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
-                moved = true;
-                stateRef.current.targetPlayerX = THREE.MathUtils.clamp((curX / rect.width - 0.5) * 7.5, -2.6, 2.6);
-                stateRef.current.targetPlayerZ = THREE.MathUtils.clamp(3.5 + (curY / rect.height) * 4.0, 2.5, 6.2);
-              }
-            };
-
-            const onUp = (upEvt: PointerEvent) => {
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-              window.removeEventListener('pointercancel', onUp);
-
-              const curY = upEvt.clientY - rect.top;
-              const dy = curY - startY;
-
-              if (!moved) {
-                // Tap: Power Smash / Serve
-                handleSmash();
-              } else if (dy < -35) {
-                // Swipe Up: Clear Lob
-                handleClearLob();
-              } else if (dy > 35) {
-                // Swipe Down: Drop Shot
-                handleDropShot();
-              }
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-          }}
+      {/* Pure Touch Ping Pong Canvas Viewport */}
+      <div className="flex-1 w-full max-w-md relative overflow-hidden flex items-center justify-center select-none touch-none">
+        <canvas
+          ref={canvasRef}
+          width={360}
+          height={540}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          className="w-full h-full object-contain touch-none cursor-ew-resize"
         />
-      )}
+
+        {/* Smash Floating Text */}
+        {smashText && (
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none text-2xl font-bold text-amber-300 drop-shadow-md animate-ping">
+            {smashText}
+          </div>
+        )}
+      </div>
 
       {/* Minimal Bottom Guide */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/75 border border-emerald-400/30 rounded-full text-[10px] text-emerald-300 font-mono backdrop-blur-xs">
-          {isKo ? '드래그: 풋워크 | 탭: 스매시/서브 | 위로 스와이프: 롭 | 아래로: 드롭 (버튼 없음)' : 'Drag: Footwork | Tap: Smash/Serve | Swipe Up: Lob | Swipe Down: Drop (No Buttons)'}
+      <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/40 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono">
+          {isKo ? '화면을 손가락으로 좌우 드래그하여 공을 받아치세요 (3점 선취승)' : 'Drag across the screen to hit the ball (First to 3 wins)'}
         </div>
       </div>
 
-      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
-        <SportsMissionTutorial
-          gameId="voxel_badminton_blitz"
-          gameTitle={isKo ? '3D 복셀 배드민턴 블리츠: 번개 셔틀' : 'Voxel Badminton Blitz: Lightning Shuttle'}
-          sportType="hockey"
-          language={language}
+        <UniversalTutorialModal
+          gameId="arcade_pingpong_rally"
+          gameTitle={isKo ? '블리츠 핑퐁 랠리: 핑퐁 스포츠' : 'Blitz Ping Pong Rally: Table Tennis'}
+          customSteps={tutorialSteps}
+          language={(language as Language) || 'ko'}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}
         />
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
         <VictoryRewardModal
           receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
+          language={(language as Language) || 'ko'}
+          onPlayAgain={initGame}
           onExit={onExit}
         />
       )}
     </div>
   );
 };
+export default VoxelBadmintonBlitzGame;
