@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { CardData } from '../types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
@@ -15,26 +14,39 @@ interface VoxelTowerCraftGameProps {
   onReward: (amount: number) => void;
 }
 
-interface Tower {
-  mesh: THREE.Group;
-  gx: number;
-  gz: number;
-  type: 'flame' | 'ice' | 'tesla';
+interface PlacedTower {
+  id: number;
+  x: number;
+  y: number;
+  type: 'flame' | 'frost' | 'tesla';
+  icon: string;
   range: number;
   damage: number;
   cooldown: number;
-  timer: number;
+  cooldownTimer: number;
 }
 
-interface EnemyMob {
-  mesh: THREE.Mesh;
+interface MobEnemy {
+  id: number;
   x: number;
-  z: number;
+  y: number;
+  vx: number;
+  type: 'goblin' | 'bat' | 'dragon';
+  icon: string;
+  points: number;
+  radius: number;
   hp: number;
   maxHp: number;
-  speed: number;
-  alive: boolean;
-  pathIndex: number;
+  isAlive: boolean;
+}
+
+interface DefenseShot {
+  x: number;
+  y: number;
+  targetX: number;
+  targetY: number;
+  color: string;
+  life: number;
 }
 
 export const VoxelTowerCraftGame: React.FC<VoxelTowerCraftGameProps> = ({
@@ -43,446 +55,609 @@ export const VoxelTowerCraftGame: React.FC<VoxelTowerCraftGameProps> = ({
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
+  const [enemiesDefeated, setEnemiesDefeated] = useState<number>(0);
+  const [mana, setMana] = useState<number>(100);
+  const [score, setScore] = useState<number>(0);
+  const [defenseCombo, setDefenseCombo] = useState<number>(0);
+  const [maxCombo, setMaxCombo] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(35);
+  const [selectedTowerType, setSelectedTowerType] = useState<'flame' | 'frost' | 'tesla'>('flame');
+  const [feedbackText, setFeedbackText] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_tower_craft') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_tower_craft') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [coreHp, setCoreHp] = useState<number>(100);
-  const [energy, setEnergy] = useState<number>(150);
-  const [wave, setWave] = useState<number>(1);
-  const maxWave = 3;
-  const [selectedType, setSelectedType] = useState<'flame' | 'ice' | 'tesla'>('flame');
-  const [score, setScore] = useState<number>(0);
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
+  const towerCosts = { flame: 30, frost: 40, tesla: 50 };
+
   const stateRef = useRef({
-    coreHp: 100,
-    energy: 150,
-    wave: 1,
+    towers: [] as PlacedTower[],
+    enemies: [] as MobEnemy[],
+    shots: [] as DefenseShot[],
+    enemiesDefeated: 0,
+    mana: 100,
     score: 0,
-    selectedType: 'flame' as 'flame' | 'ice' | 'tesla',
-    gridSize: 10,
-    grid: Array(10).fill(null).map(() => Array(10).fill(0)),
-    towers: [] as Tower[],
-    enemies: [] as EnemyMob[],
-    projectiles: [] as { mesh: THREE.Mesh; vx: number; vz: number; damage: number }[],
+    combo: 0,
+    maxCombo: 0,
+    timeLeft: 35,
+    selectedTowerType: 'flame' as 'flame' | 'frost' | 'tesla',
     isGameOver: false,
-    isVictory: false,
     isPaused: false,
     startTime: Date.now(),
-    scene: null as THREE.Scene | null,
-    camera: null as THREE.PerspectiveCamera | null
+    enemyCounter: 1,
+    towerCounter: 1,
+    spawnTimer: 0,
+    particles: [] as { x: number; y: number; vx: number; vy: number; color: string; life: number }[],
   });
 
-  const towerCosts = { flame: 40, ice: 50, tesla: 70 };
-
-  const buildTower = (gx: number, gz: number) => {
+  const initGame = useCallback(() => {
     const s = stateRef.current;
-    if (s.isGameOver || s.isVictory || s.isPaused || !s.scene) return;
-    if (gx < 0 || gx >= s.gridSize || gz < 0 || gz >= s.gridSize) return;
-    if (s.grid[gx][gz] !== 0) return;
+    s.towers = [
+      { id: s.towerCounter++, x: 90, y: 320, type: 'flame', icon: '🔥', range: 110, damage: 1, cooldown: 0.8, cooldownTimer: 0 },
+      { id: s.towerCounter++, x: 270, y: 320, type: 'tesla', icon: '⚡', range: 120, damage: 2, cooldown: 1.2, cooldownTimer: 0 }
+    ];
+    s.enemies = [];
+    s.shots = [];
+    s.enemiesDefeated = 0;
+    s.mana = 100;
+    s.score = 0;
+    s.combo = 0;
+    s.maxCombo = 0;
+    s.timeLeft = 35;
+    s.selectedTowerType = 'flame';
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    s.enemyCounter = 1;
+    s.spawnTimer = 0;
+    s.particles = [];
 
-    const cost = towerCosts[s.selectedType];
-    if (s.energy < cost) return;
-
-    s.energy -= cost;
-    setEnergy(s.energy);
-    s.grid[gx][gz] = 1;
-
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-
-    const tGroup = new THREE.Group();
-    const base = new THREE.Mesh(
-      new THREE.BoxGeometry(1.6, 1.2, 1.6),
-      new THREE.MeshStandardMaterial({ color: 0x475569 })
+    // Initial Enemy Mob
+    s.enemies.push(
+      { id: s.enemyCounter++, x: 50, y: 130, vx: 55, type: 'goblin', icon: '👹', points: 300, radius: 22, hp: 1, maxHp: 1, isAlive: true },
+      { id: s.enemyCounter++, x: 310, y: 190, vx: -45, type: 'bat', icon: '🦇', points: 400, radius: 24, hp: 2, maxHp: 2, isAlive: true }
     );
-    base.position.y = 0.6;
-    tGroup.add(base);
 
-    const turret = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.5, 0.7, 1.0, 8),
-      new THREE.MeshStandardMaterial({
-        color: s.selectedType === 'flame' ? 0xf97316 : s.selectedType === 'ice' ? 0x06b6d4 : 0xa855f7
-      })
-    );
-    turret.position.y = 1.6;
-    tGroup.add(turret);
-
-    const posX = (gx - s.gridSize / 2 + 0.5) * 2.2;
-    const posZ = (gz - s.gridSize / 2 + 0.5) * 2.2;
-    tGroup.position.set(posX, 0, posZ);
-    s.scene.add(tGroup);
-
-    s.towers.push({
-      mesh: tGroup,
-      gx,
-      gz,
-      type: s.selectedType,
-      range: 8.0,
-      damage: s.selectedType === 'flame' ? 25 : s.selectedType === 'ice' ? 15 : 45,
-      cooldown: s.selectedType === 'flame' ? 0.6 : s.selectedType === 'ice' ? 1.0 : 1.2,
-      timer: 0
-    });
-  };
+    setEnemiesDefeated(0);
+    setMana(100);
+    setScore(0);
+    setDefenseCombo(0);
+    setMaxCombo(0);
+    setTimeLeft(35);
+    setSelectedTowerType('flame');
+    setFeedbackText(null);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  }, []);
 
   useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+    initGame();
+  }, [initGame]);
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+  // Timer loop
+  useEffect(() => {
+    if (isGameOver || isPaused) return;
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a);
-    stateRef.current.scene = scene;
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          endGame(true);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
 
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
-    camera.position.set(0, 20, 20);
-    camera.lookAt(0, 0, 0);
-    stateRef.current.camera = camera;
+    return () => clearInterval(timer);
+  }, [isGameOver, isPaused]);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    container.appendChild(renderer.domElement);
+  // Direct Tap to Build Tower or Tap Enemy to Support Attack
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
 
-    const ambient = new THREE.AmbientLight(0xffffff, 0.8);
-    scene.add(ambient);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
 
-    const dirLight = new THREE.DirectionalLight(0x38bdf8, 1.4);
-    dirLight.position.set(15, 30, 15);
-    scene.add(dirLight);
+    const tapX = (e.clientX - rect.left) * scaleX;
+    const tapY = (e.clientY - rect.top) * scaleY;
 
-    // Arena Grid Ground
-    const ground = new THREE.Mesh(
-      new THREE.PlaneGeometry(24, 24),
-      new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 })
-    );
-    ground.rotation.x = -Math.PI / 2;
-    scene.add(ground);
+    // Check if tapped enemy mob directly (Direct Air Support Blast)
+    let hitMob = false;
+    for (const mob of s.enemies) {
+      if (mob.isAlive && Math.hypot(mob.x - tapX, mob.y - tapY) < mob.radius + 16) {
+        hitMob = true;
+        mob.hp -= 1;
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
 
-    const gridHelper = new THREE.GridHelper(24, 10, 0x38bdf8, 0x334155);
-    gridHelper.position.y = 0.05;
-    scene.add(gridHelper);
+        // Spark FX
+        for (let p = 0; p < 8; p++) {
+          s.particles.push({
+            x: mob.x,
+            y: mob.y,
+            vx: (Math.random() - 0.5) * 200,
+            vy: (Math.random() - 0.5) * 200,
+            color: '#f59e0b',
+            life: 0.3,
+          });
+        }
 
-    // Spawn Initial Wave Enemies
-    const spawnWave = (w: number) => {
-      stateRef.current.enemies = [];
-      const count = 4 + w * 3;
-      for (let i = 0; i < count; i++) {
-        const mob = new THREE.Mesh(
-          new THREE.SphereGeometry(0.8, 12, 12),
-          new THREE.MeshStandardMaterial({ color: 0xef4444 })
-        );
-        mob.position.set(-10, 0.8, -10 - i * 4);
-        scene.add(mob);
+        if (mob.hp <= 0) {
+          mob.isAlive = false;
+          s.enemiesDefeated += 1;
+          s.mana = Math.min(150, s.mana + 25);
+          s.combo += 1;
+          if (s.combo > s.maxCombo) s.maxCombo = s.combo;
 
-        stateRef.current.enemies.push({
-          mesh: mob,
-          x: -10,
-          z: -10 - i * 4,
-          hp: 40 + w * 20,
-          maxHp: 40 + w * 20,
-          speed: 4.5,
-          alive: true,
-          pathIndex: 0
-        });
+          const pts = mob.points + s.combo * 40;
+          s.score += pts;
+
+          setEnemiesDefeated(s.enemiesDefeated);
+          setMana(s.mana);
+          setScore(s.score);
+          setDefenseCombo(s.combo);
+          setMaxCombo(s.maxCombo);
+
+          setFeedbackText(`TAP BLAST! +${pts}P 💥`);
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+          setTimeout(() => setFeedbackText(null), 300);
+        }
+        break;
       }
-    };
-    spawnWave(1);
+    }
 
-    let animId: number;
+    // If not tapping mob and in middle/lower area, deploy Tower
+    if (!hitMob && tapY > 230 && tapY < 450 && s.towers.length < 8) {
+      const cost = towerCosts[selectedTowerType];
+      if (s.mana >= cost) {
+        s.mana -= cost;
+        setMana(s.mana);
+
+        const icon = selectedTowerType === 'flame' ? '🔥' : (selectedTowerType === 'frost' ? '❄️' : '⚡');
+        const range = selectedTowerType === 'tesla' ? 130 : 110;
+        const damage = selectedTowerType === 'tesla' ? 2 : 1;
+        const cooldown = selectedTowerType === 'flame' ? 0.8 : (selectedTowerType === 'frost' ? 1.0 : 1.2);
+
+        s.towers.push({
+          id: s.towerCounter++,
+          x: tapX,
+          y: tapY,
+          type: selectedTowerType,
+          icon,
+          range,
+          damage,
+          cooldown,
+          cooldownTimer: 0,
+        });
+
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+        setFeedbackText(`TOWER DEPLOYED! ${icon}`);
+        setTimeout(() => setFeedbackText(null), 300);
+      } else {
+        setFeedbackText(isKo ? '마나 부족!' : 'LOW MANA!');
+        setTimeout(() => setFeedbackText(null), 300);
+      }
+    }
+  };
+
+  // Main 60FPS Tower Craft Loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     let lastTime = performance.now();
 
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const s = stateRef.current;
       if (s.isPaused || s.isGameOver) return;
 
-      // Update Towers Firing
-      s.towers.forEach(t => {
-        t.timer += dt;
-        if (t.timer >= t.cooldown) {
-          const target = s.enemies.find(e => e.alive && t.mesh.position.distanceTo(e.mesh.position) <= t.range);
-          if (target) {
-            t.timer = 0;
-            target.hp -= t.damage;
-            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+      // Passive Mana Regen
+      s.mana = Math.min(150, s.mana + dt * 6);
+      setMana(Math.round(s.mana));
 
-            if (target.hp <= 0) {
-              target.alive = false;
-              scene.remove(target.mesh);
-              s.energy += 25;
-              s.score += 100;
-              setEnergy(s.energy);
-              setScore(s.score);
+      // Spawn Enemy Mobs
+      s.spawnTimer += dt;
+      if (s.spawnTimer > 1.3 && s.enemies.length < 6) {
+        s.spawnTimer = 0;
+        const rand = Math.random();
+        const isDragon = rand < 0.2;
+        const isBat = rand >= 0.2 && rand < 0.6;
+
+        s.enemies.push({
+          id: s.enemyCounter++,
+          x: Math.random() < 0.5 ? 40 : 320,
+          y: 70 + Math.random() * 140,
+          vx: (Math.random() < 0.5 ? 1 : -1) * (isDragon ? 35 : (isBat ? 55 : 45)),
+          type: isDragon ? 'dragon' : (isBat ? 'bat' : 'goblin'),
+          icon: isDragon ? '🐲' : (isBat ? '🦇' : '👹'),
+          points: isDragon ? 1000 : (isBat ? 500 : 300),
+          radius: isDragon ? 32 : (isBat ? 24 : 22),
+          hp: isDragon ? 3 : (isBat ? 2 : 1),
+          maxHp: isDragon ? 3 : (isBat ? 2 : 1),
+          isAlive: true,
+        });
+      }
+
+      // Move Enemies
+      s.enemies.forEach((enemy) => {
+        enemy.x += enemy.vx * dt;
+        if (enemy.x > 325) {
+          enemy.x = 325;
+          enemy.vx = -Math.abs(enemy.vx);
+        } else if (enemy.x < 35) {
+          enemy.x = 35;
+          enemy.vx = Math.abs(enemy.vx);
+        }
+      });
+
+      // Towers Auto-Attack
+      s.towers.forEach((tower) => {
+        tower.cooldownTimer -= dt;
+        if (tower.cooldownTimer <= 0) {
+          // Find closest alive enemy in range
+          for (let i = s.enemies.length - 1; i >= 0; i--) {
+            const enemy = s.enemies[i];
+            if (enemy.isAlive && Math.hypot(enemy.x - tower.x, enemy.y - tower.y) <= tower.range) {
+              tower.cooldownTimer = tower.cooldown;
+              enemy.hp -= tower.damage;
+
+              s.shots.push({
+                x: tower.x,
+                y: tower.y,
+                targetX: enemy.x,
+                targetY: enemy.y,
+                color: tower.type === 'flame' ? '#ef4444' : (tower.type === 'frost' ? '#38bdf8' : '#fde047'),
+                life: 0.15,
+              });
+
+              if (enemy.hp <= 0) {
+                enemy.isAlive = false;
+                s.enemiesDefeated += 1;
+                s.combo += 1;
+                if (s.combo > s.maxCombo) s.maxCombo = s.combo;
+
+                const pts = enemy.points + s.combo * 40;
+                s.score += pts;
+
+                setEnemiesDefeated(s.enemiesDefeated);
+                setScore(s.score);
+                setDefenseCombo(s.combo);
+                setMaxCombo(s.maxCombo);
+
+                if (enemy.type === 'dragon') {
+                  setFeedbackText(`🐲 DRAGON BOSS SLAIN! +${pts}P 💥`);
+                  playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+                } else {
+                  setFeedbackText(`ENEMY SLAIN! +${pts}P ⚡`);
+                  playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+                }
+                setTimeout(() => setFeedbackText(null), 300);
+
+                // Mob Blast Particles
+                for (let p = 0; p < 14; p++) {
+                  s.particles.push({
+                    x: enemy.x,
+                    y: enemy.y,
+                    vx: (Math.random() - 0.5) * 260,
+                    vy: (Math.random() - 0.5) * 260,
+                    color: enemy.type === 'dragon' ? '#f59e0b' : '#38bdf8',
+                    life: 0.4,
+                  });
+                }
+              }
+              break;
             }
           }
         }
       });
 
-      // Update Enemies Movement along Path
-      let aliveCount = 0;
-      s.enemies.forEach(e => {
-        if (!e.alive) return;
-        aliveCount++;
+      // Filter dead enemies
+      s.enemies = s.enemies.filter((e) => e.isAlive);
 
-        // Path waypoint movement towards Core (10, 0, 10)
-        const targetPos = new THREE.Vector3(10, 0.8, 10);
-        const dir = new THREE.Vector3().subVectors(targetPos, e.mesh.position).normalize();
-        e.mesh.position.addScaledVector(dir, e.speed * dt);
+      // Update Shots FX
+      for (let i = s.shots.length - 1; i >= 0; i--) {
+        const sh = s.shots[i];
+        sh.life -= dt;
+        if (sh.life <= 0) s.shots.splice(i, 1);
+      }
 
-        if (e.mesh.position.distanceTo(targetPos) < 2.0) {
-          e.alive = false;
-          scene.remove(e.mesh);
-          s.coreHp = Math.max(0, s.coreHp - 20);
-          setCoreHp(s.coreHp);
+      // Update Particles
+      for (let i = s.particles.length - 1; i >= 0; i--) {
+        const p = s.particles[i];
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.life -= dt;
+        if (p.life <= 0) s.particles.splice(i, 1);
+      }
 
-          if (s.coreHp <= 0 && !s.isGameOver) {
-            s.isGameOver = true;
-            setIsGameOver(true);
-            const duration = (Date.now() - s.startTime) / 1000;
-            const receipt = calculateAndDepositMissionReward({
-              gameId: 'voxel_tower_craft',
-              gameTitle: '복셀 타워 크래프트',
-              durationSeconds: duration,
-              score: s.score,
-              difficulty: 'HARD',
-              isVictory: false
-            });
-            setSettlementReceipt(receipt);
-            onReward(receipt.totalSns);
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Dungeon Defense Arena Dark Gradient
+      const defenseGrad = ctx.createLinearGradient(0, 0, 0, h);
+      defenseGrad.addColorStop(0, '#0f172a');
+      defenseGrad.addColorStop(0.5, '#1e293b');
+      defenseGrad.addColorStop(1, '#020617');
+      ctx.fillStyle = defenseGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Enemy Invasion Lane Border
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.1)';
+      ctx.fillRect(20, 60, w - 40, 160);
+      ctx.strokeStyle = 'rgba(239, 68, 68, 0.4)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(20, 60, w - 40, 160);
+
+      // Tower Placement Zone Border
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.08)';
+      ctx.fillRect(20, 230, w - 40, 230);
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.3)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(20, 230, w - 40, 230);
+
+      // Render Tower Beams / Shots
+      s.shots.forEach((sh) => {
+        ctx.strokeStyle = sh.color;
+        ctx.lineWidth = 3;
+        ctx.shadowColor = sh.color;
+        ctx.shadowBlur = 14;
+        ctx.beginPath();
+        ctx.moveTo(sh.x, sh.y);
+        ctx.lineTo(sh.targetX, sh.targetY);
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      });
+
+      // Render Enemies
+      s.enemies.forEach((enemy) => {
+        if (enemy.isAlive) {
+          ctx.save();
+          ctx.translate(enemy.x, enemy.y);
+          if (enemy.type === 'dragon') {
+            ctx.shadowColor = '#f59e0b';
+            ctx.shadowBlur = 18;
+          } else {
+            ctx.shadowColor = '#ef4444';
+            ctx.shadowBlur = 12;
           }
+          ctx.font = `${enemy.radius * 1.8}px serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(enemy.icon, 0, 0);
+
+          // HP Bar
+          if (enemy.maxHp > 1) {
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(-16, enemy.radius + 4, 32, 4);
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(-16, enemy.radius + 4, 32 * (enemy.hp / enemy.maxHp), 4);
+          }
+          ctx.restore();
         }
       });
 
-      // Wave Progression Check
-      if (aliveCount === 0 && !s.isGameOver) {
-        if (s.wave < maxWave) {
-          s.wave += 1;
-          setWave(s.wave);
-          spawnWave(s.wave);
-        } else {
-          s.isVictory = true;
-          s.isGameOver = true;
-          setIsGameOver(true);
-          const duration = (Date.now() - s.startTime) / 1000;
-          const receipt = calculateAndDepositMissionReward({
-            gameId: 'voxel_tower_craft',
-            gameTitle: '복셀 타워 크래프트',
-            durationSeconds: duration,
-            score: s.score + 2500,
-            difficulty: 'HARD',
-            isVictory: true
-          });
-          setSettlementReceipt(receipt);
-          onReward(receipt.totalSns);
-        }
-      }
+      // Render Placed Towers
+      s.towers.forEach((tower) => {
+        ctx.save();
+        ctx.translate(tower.x, tower.y);
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.15)';
+        ctx.beginPath();
+        ctx.arc(0, 0, tower.range, 0, Math.PI * 2);
+        ctx.fill();
 
-      renderer.render(scene, camera);
+        ctx.shadowColor = tower.type === 'flame' ? '#ef4444' : (tower.type === 'frost' ? '#38bdf8' : '#fde047');
+        ctx.shadowBlur = 16;
+        ctx.font = '36px serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(tower.icon, 0, 0);
+        ctx.restore();
+      });
+
+      // Render Particles
+      s.particles.forEach((p) => {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 4, 4);
+      });
     };
 
-    animId = requestAnimationFrame(animate);
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, [playSfx]);
 
-    return () => {
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-    };
-  }, [lowSpecMode]);
-
-  const handleRestart = () => {
+  const endGame = (isWin: boolean) => {
     const s = stateRef.current;
-    s.coreHp = 100;
-    s.energy = 150;
-    s.wave = 1;
-    s.score = 0;
-    s.isGameOver = false;
-    s.isVictory = false;
-    s.startTime = Date.now();
-    s.towers.forEach(t => s.scene?.remove(t.mesh));
-    s.towers = [];
-    s.grid = Array(10).fill(null).map(() => Array(10).fill(0));
-    setCoreHp(100);
-    setEnergy(150);
-    setWave(1);
-    setScore(0);
-    setIsGameOver(false);
-    setSettlementReceipt(null);
+    if (s.isGameOver) return;
+    s.isGameOver = true;
+    setIsGameOver(true);
+
+    if (isWin) {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    } else {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+
+    const duration = (Date.now() - s.startTime) / 1000;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'arcade_tower_craft',
+      gameTitle: '블리츠 타워 크래프트',
+      durationSeconds: duration,
+      score: s.score + (isWin ? 3500 : s.enemiesDefeated * 350) + s.maxCombo * 40,
+      difficulty: 'NIGHTMARE',
+      isVictory: isWin || s.enemiesDefeated >= 8,
+    });
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
   };
 
-  const customTutorialSteps: TutorialStep[] = [
+  const tutorialSteps: TutorialStep[] = [
     {
-      badge: isKo ? 'STEP 1: 코어 크리스탈 방어' : 'STEP 1: CORE DEFENSE',
-      title: isKo ? '3웨이브 몬스터 침공 전원 격퇴' : 'Defeat 3 Monster Waves',
+      badge: isKo ? 'STEP 1: 손가락 탭 타워 배치 & 포격' : 'STEP 1: TAP DEPLOY & STRIKE',
+      title: isKo ? '타워를 터치해 배치하고 적을 탭해 직접 지원 사격하세요' : 'Tap to place defense towers and tap enemy mobs for air strikes',
       description: isKo
-        ? '그리드 바닥에 방어 타워를 전략적으로 건설하여 코어 크리스탈을 몬스터로부터 수호하세요.'
-        : 'Construct defense towers strategically across the grid to protect your core crystal.',
+        ? '가상 조이스틱 없이 하단 영역을 터치하여 3종 원소 타워(🔥 플레임, ❄️ 프로스트, ⚡ 테슬라)를 배치하고 상단에 몰려오는 몬스터를 직접 탭해 포격을 쏟아부으세요.'
+        : 'Tap the lower zone to build elemental towers and tap incoming monsters for instant air support.',
       keyPoints: isKo
         ? [
-            '3웨이브 몬스터 전멸 시 승리',
-            '에너지 자원 관리 및 타워 증설',
-            '코어 HP 0% 도달 방어'
+            '가상 조이스틱 0개 (100% 손가락 직접 탭 타워 건설 & 지원 사격)',
+            '드래곤 보스(🐲) 격파 시 1,000P 잭팟 대박 보너스',
+            '35초간 최대 콤보로 전선을 수호하고 올클리어'
           ]
         : [
-            'Clear 3 waves to win',
-            'Manage energy for tower builds',
-            'Prevent core HP dropping to 0%'
+            'Zero Virtual Joysticks: 100% Direct Tap Construction & Strikes',
+            'Dragon Boss (🐲) awards 1,000P massive defense jackpot',
+            'Defend the fortress with continuous combos within 35s'
           ],
-      iconType: 'GOAL'
+      iconType: 'GOAL',
     },
     {
-      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
-      title: isKo ? '바닥 탭 건설 & 스와이프 타워 교체' : 'Tap Build & Swipe Tower Type',
+      badge: isKo ? 'STEP 2: 모바일 퓨어 제스처' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '화면 직접 탭 조작 (Direct Tap Actions)' : 'Direct Tap Gesture',
       description: isKo
-        ? '가상 버튼 없이 그리드 바닥을 탭하여 타워를 즉시 배치하고, 화면을 스와이프해 타워 종류를 전환합니다.'
-        : 'Tap any grid tile to build towers and swipe to switch tower types with zero buttons.',
+        ? '원소 버튼 선택 후 필드를 탭해 타워를 짓고 적을 탭해 공격합니다.'
+        : 'Select elemental cards, tap field to build and tap mobs to strike.',
       keyPoints: isKo
         ? [
-            '👆 타일 탭: 선택된 방어 타워 즉시 건설',
-            '↔️ 좌우 스와이프: 화염 / 냉각 / 테슬라 순환',
-            '⚡ 몬스터 처치 시 에너지 즉시 환급'
+            '👆 전장 탭: 60FPS 즉시 건설 및 초정밀 지원 사격',
+            '⚡ 연속 격퇴 시 디펜스 콤보 배수 보너스',
+            '⏱️ 35초 타임어택 고득점 챌린지'
           ]
         : [
-            '👆 Tap Tile: Build defense tower instantly',
-            '↔️ Swipe L/R: Cycle Flame / Ice / Tesla',
-            '⚡ Enemy kills refund energy'
+            '👆 Field Tap: Instant 60FPS construction & air strikes',
+            '⚡ Consecutive eliminates grant defense combo multipliers',
+            '⏱️ 35s time attack tower defense sprint'
           ],
-      iconType: 'GESTURES'
+      iconType: 'GESTURES',
     },
     {
       badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
       title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
       description: isKo
-        ? '수호 승리 즉시 HARD 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
-        : 'Standard payout scaled with Hard multiplier deposited atomically to your wallet.',
+        ? '방어 완료 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon match finish.',
       keyPoints: isKo
         ? [
-            '승리 즉시 LocalStorage 영구 지갑 입금',
-            '잔여 코어 HP 및 클리어 웨이브 보너스',
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '격퇴한 몬스터 수 및 배치 타워 비례 대량 잭팟',
             'VictoryRewardModal 2초 황금 코인 팡파레'
           ]
         : [
             'Instant atomic deposit to LocalStorage wallet',
-            'Core HP and clear wave bonuses',
+            'Defeated monsters count and tower multipliers',
             'VictoryRewardModal golden coin fanfare'
           ],
-      iconType: 'REWARDS'
-    }
+      iconType: 'REWARDS',
+    },
   ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
-
+    <div className="relative w-full h-[100dvh] bg-[#020617] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none">
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
       <MinimalistMissionHUD
-        title={isKo ? '복셀 타워 크래프트' : 'Voxel Tower Craft'}
-        language={language}
-        hp={{ current: coreHp, max: 100 }}
+        title={isKo ? '블리츠 타워 크래프트' : 'Blitz Tower Craft'}
+        language={(language as Language) || 'ko'}
         telemetries={[
-          { label: isKo ? '웨이브' : 'Wave', value: `${wave}/${maxWave}`, color: 'text-purple-400 font-bold' },
-          { label: isKo ? '에너지' : 'Energy', value: `${energy}⚡`, color: 'text-amber-300' },
-          { label: isKo ? '타입' : 'Tower', value: selectedType.toUpperCase(), color: selectedType === 'flame' ? 'text-orange-400 font-bold' : selectedType === 'ice' ? 'text-cyan-400 font-bold' : 'text-purple-400 font-bold' }
+          { label: isKo ? '격퇴' : 'Kills', value: `${enemiesDefeated}마리`, color: 'text-amber-400 font-bold' },
+          { label: isKo ? '마나' : 'Mana', value: `${mana}`, color: 'text-cyan-300 font-bold' },
+          { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 10 ? 'text-rose-500 font-bold animate-pulse' : 'text-cyan-400 font-bold' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          stateRef.current.isPaused = !isPaused;
-        }}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
         isPaused={isPaused}
       />
 
-      {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div
-          className="absolute inset-0 z-10 select-none touch-none cursor-pointer"
-          style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const startX = e.clientX - rect.left;
-            const startY = e.clientY - rect.top;
-            let moved = false;
-
-            const onMove = (moveEvt: PointerEvent) => {
-              const curX = moveEvt.clientX - rect.left;
-              const dx = curX - startX;
-
-              if (Math.abs(dx) > 30) {
-                moved = true;
-                const types: ('flame' | 'ice' | 'tesla')[] = ['flame', 'ice', 'tesla'];
-                const nextIdx = (types.indexOf(stateRef.current.selectedType) + (dx > 0 ? 1 : 2)) % 3;
-                stateRef.current.selectedType = types[nextIdx];
-                setSelectedType(types[nextIdx]);
-                window.removeEventListener('pointermove', onMove);
-              }
-            };
-
-            const onUp = () => {
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-              window.removeEventListener('pointercancel', onUp);
-
-              if (!moved) {
-                // Tap: Calculate Tile Coordinate & Build
-                const normX = (startX / rect.width - 0.5) * 2;
-                const normY = (startY / rect.height - 0.5) * 2;
-                const gx = Math.floor((normX * 12 + 12) / 2.4);
-                const gz = Math.floor((normY * 12 + 12) / 2.4);
-                buildTower(gx, gz);
-              }
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-          }}
+      {/* Pure Touch Tower Defense Canvas Viewport */}
+      <div className="flex-1 w-full max-w-md relative overflow-hidden flex items-center justify-center select-none touch-none p-2">
+        <canvas
+          ref={canvasRef}
+          width={360}
+          height={480}
+          onPointerDown={handlePointerDown}
+          className="w-full h-full object-contain touch-none cursor-pointer shadow-2xl"
         />
-      )}
 
-      {/* Minimal Bottom Guide */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/75 border border-purple-500/30 rounded-full text-[10px] text-purple-300 font-mono backdrop-blur-xs">
-          {isKo ? '바닥 탭: 타워 건설 | 좌우 스와이프: 타워 타입 교체 (버튼 없음)' : 'Tap Tile: Build Tower | Swipe L/R: Switch Tower Type (No Buttons)'}
-        </div>
+        {/* Floating Feedback Text */}
+        {feedbackText && (
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 pointer-events-none text-base font-bold text-amber-300 drop-shadow-lg animate-bounce whitespace-nowrap bg-black/60 px-4 py-1 rounded-full border border-amber-400/30">
+            {feedbackText}
+          </div>
+        )}
+      </div>
+
+      {/* Element Tower Selection Dock */}
+      <div className="w-full max-w-md px-4 py-2 flex items-center justify-around bg-black/60 border-t border-white/10 select-none z-10">
+        <button
+          onClick={() => setSelectedTowerType('flame')}
+          className={`flex items-center gap-1 px-3 py-1.5 rounded-sm border text-xs font-mono transition-all ${
+            selectedTowerType === 'flame' ? 'bg-red-600/30 border-red-500 text-red-300' : 'bg-white/5 border-white/10 text-slate-400'
+          }`}
+        >
+          <span>🔥</span>
+          <span>플레임 (30M)</span>
+        </button>
+        <button
+          onClick={() => setSelectedTowerType('frost')}
+          className={`flex items-center gap-1 px-3 py-1.5 rounded-sm border text-xs font-mono transition-all ${
+            selectedTowerType === 'frost' ? 'bg-sky-600/30 border-sky-500 text-sky-300' : 'bg-white/5 border-white/10 text-slate-400'
+          }`}
+        >
+          <span>❄️</span>
+          <span>프로스트 (40M)</span>
+        </button>
+        <button
+          onClick={() => setSelectedTowerType('tesla')}
+          className={`flex items-center gap-1 px-3 py-1.5 rounded-sm border text-xs font-mono transition-all ${
+            selectedTowerType === 'tesla' ? 'bg-amber-600/30 border-amber-500 text-amber-300' : 'bg-white/5 border-white/10 text-slate-400'
+          }`}
+        >
+          <span>⚡</span>
+          <span>테슬라 (50M)</span>
+        </button>
       </div>
 
       {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
         <UniversalTutorialModal
-          gameId="voxel_tower_craft"
-          gameTitle={isKo ? '3D 복셀 타워 크래프트: 코어 디펜스' : 'Voxel Tower Craft: Core Defense'}
-          customSteps={customTutorialSteps}
-          language={language}
+          gameId="arcade_tower_craft"
+          gameTitle={isKo ? '블리츠 타워: 전략 디펜스' : 'Blitz Tower: Strategy Defense'}
+          customSteps={tutorialSteps}
+          language={(language as Language) || 'ko'}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}
         />
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
         <VictoryRewardModal
           receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
+          language={(language as Language) || 'ko'}
+          onPlayAgain={initGame}
           onExit={onExit}
         />
       )}

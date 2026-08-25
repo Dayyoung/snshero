@@ -7741,7 +7741,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxeltowercraft',
-      title: language === 'ko' ? '3D 복셀 타워 크래프트' : 'Voxel Tower Craft',
+      title: language === 'ko' ? '블리츠 타워 크래프트' : 'Blitz Tower Craft',
       icon: Castle,
       color: 'from-stone-700 to-amber-800',
       image: '/minigame_defense.png',
@@ -7749,10 +7749,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxeltowercraft');
       },
-      category: '3d',
+      category: 'puzzle',
       isNew: true,
-      badgeText: '3D TOWER',
-      guide: language === 'ko' ? '블록을 직접 쌓아 방어탑 요새를 건축하고 몰려오는 몬스터 웨이브를 저지하세요.' : 'Voxel building defense crafting tactical towers to repel monster waves!'
+      badgeText: 'TOWER-CRAFT',
+      guide: language === 'ko' ? '타워 카드를 선택해 필드에 배치하고 적을 탭해 직접 지원 사격하세요.' : 'Select tower cards to deploy on field and tap mobs for air strikes!'
     },
     {
       id: 'voxelbeatblaster',
@@ -11455,7 +11455,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '타워 크래프트 보상', 'Tower Craft reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 타워 크래프트 보상', 'Blitz Tower Craft reward')}
       />
     );
   }
