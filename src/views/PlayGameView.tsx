@@ -8266,7 +8266,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelmotocrossstunt',
-      title: language === 'ko' ? '3D 복셀 모터크로스 스턴트: 더트 바이크' : 'Voxel Motocross Stunt: Dirt Biker',
+      title: language === 'ko' ? '블리츠 모토크로스' : 'Blitz Motocross',
       icon: Flame,
       color: 'from-amber-500 to-orange-700',
       image: '/minigame_monstertruck.png',
@@ -8274,10 +8274,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelmotocrossstunt');
       },
-      category: '3d',
+      category: 'sports',
       isNew: true,
-      badgeText: '3D MOTOCROSS',
-      guide: language === 'ko' ? '오프로드 점프대에서 공중 360도 백플립 묘기와 퍼펙트 착지를 선보이며 2000m 트랙을 질주하세요.' : 'Hold gas across offroad hills, perform 360 backflips off ramps, and land perfectly!'
+      badgeText: 'MOTOCROSS',
+      guide: language === 'ko' ? '화면 홀드로 가속하고 공중에서 360° 백플립 스턴트를 성공시키세요.' : 'Hold to accelerate on ground and hold in air for 360° backflips!'
     },
     {
       id: 'voxelskateboardstreet',
@@ -11910,7 +11910,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '모터크로스 스턴트 보상', 'Motocross Stunt reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 모토크로스 보상', 'Blitz Motocross reward')}
       />
     );
   }
