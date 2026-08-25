@@ -7576,7 +7576,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelmonsterisle',
-      title: language === 'ko' ? '3D 복셀 몬스터 아일' : 'Voxel Monster Isle',
+      title: language === 'ko' ? '블리츠 몬스터 테이머' : 'Blitz Monster Tamer',
       icon: Leaf,
       color: 'from-emerald-600 to-teal-700',
       image: '/minigame_memorymatch.png',
@@ -7584,10 +7584,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelmonsterisle');
       },
-      category: '3d',
+      category: 'casual',
       isNew: true,
-      badgeText: '3D PETS',
-      guide: language === 'ko' ? '목장에서 다양한 복셀 몬스터들을 먹이로 돌보고 훈련시켜 교배 및 진화시키세요.' : 'Feed, train, and breed diverse voxel companion pets in your ranch!'
+      badgeText: 'MONSTER-TAMER',
+      guide: language === 'ko' ? '몬스터볼을 위로 쓸어올려 뛰어다니는 희귀 몬스터를 포획하세요.' : 'Swipe up to toss taming balls and capture wild monsters!'
     },
     {
       id: 'voxelcyberninja',
@@ -11312,7 +11312,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '몬스터 아일 보상', 'Monster Isle reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 몬스터 테이머 보상', 'Blitz Monster Tamer reward')}
       />
     );
   }
