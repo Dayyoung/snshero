@@ -8116,7 +8116,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelboxingmighty',
-      title: language === 'ko' ? '3D 복셀 마이티 복싱' : 'Voxel Mighty Boxing',
+      title: language === 'ko' ? '블리츠 복싱' : 'Blitz Boxing Champ',
       icon: Swords,
       color: 'from-red-600 to-orange-700',
       image: '/minigame_boss.png',
@@ -8124,10 +8124,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelboxingmighty');
       },
-      category: '3d',
+      category: 'battle',
       isNew: true,
-      badgeText: '3D BOXING',
-      guide: language === 'ko' ? '잽, 어퍼컷, 가드 패링과 위빙 회피로 상대 복서의 빈틈을 파고들어 시원한 KO를 달성하세요.' : 'Dodge, parry with guard, and counter with devastating hooks and uppercuts!'
+      badgeText: 'BOXING-CHAMP',
+      guide: language === 'ko' ? '탭으로 잽, 스와이프로 훅과 어퍼컷을 날려 3다운 KO를 달성하세요.' : 'Tap for jabs, swipe for hooks and uppercuts to score 3-down KO!'
     },
     {
       id: 'voxelmicrokart',
@@ -11780,7 +11780,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '마이티 복싱 보상', 'Mighty Boxing reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 복싱 보상', 'Blitz Boxing Champ reward')}
       />
     );
   }
