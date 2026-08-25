@@ -7261,7 +7261,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxeldefense',
-      title: language === 'ko' ? '복셀 광산 디펜스' : 'Voxel Mining Defense',
+      title: language === 'ko' ? '블리츠 마이닝 디펜스' : 'Blitz Mining Defense',
       icon: Pickaxe,
       color: 'from-emerald-600 to-teal-700',
       image: '/minigame_defense.png',
@@ -7269,10 +7269,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxeldefense');
       },
-      category: '3d',
+      category: 'puzzle',
       isNew: true,
-      badgeText: '3D DEF',
-      guide: language === 'ko' ? 'Three.js 3D 복셀 월드에서 광물을 채굴하고 방어벽과 터렛을 건설해 몬스터 웨이브를 막아내세요.' : 'Mine ores, build walls and turrets in 3D voxel sandbox to defend the core!'
+      badgeText: 'MINING-DEF',
+      guide: language === 'ko' ? '슬롯을 탭해 포탑을 강화하고, 몬스터를 직접 탭해 번개 벼락으로 코어를 지키세요.' : 'Tap slots to build turrets and tap monsters to strike holy lightning!'
     },
     {
       id: 'pixelstrike',
@@ -11156,7 +11156,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '복셀 디펜스 보상', 'Voxel Defense reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 마이닝 디펜스 보상', 'Blitz Mining Defense reward')}
       />
     );
   }
