@@ -7486,7 +7486,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelzombie',
-      title: language === 'ko' ? '3D 복셀 좀비 서바이벌' : 'Voxel Zombie Survival',
+      title: language === 'ko' ? '블리츠 좀비 서바이벌' : 'Blitz Zombie Survival',
       icon: Crosshair,
       color: 'from-emerald-700 to-green-900',
       image: '/minigame_breakout.png',
@@ -7494,10 +7494,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelzombie');
       },
-      category: '3d',
+      category: 'battle',
       isNew: true,
-      badgeText: '3D ZOMBIE',
-      guide: language === 'ko' ? '야간 복셀 도시에서 몰려오는 좀비 웨이브를 다양한 무기와 바리케이드로 막아내며 생존하세요.' : 'Survive endless voxel zombie hordes with weapons and barricades in the dark city!'
+      badgeText: 'ZOMBIE-SURVIVAL',
+      guide: language === 'ko' ? '좀비를 손가락으로 직접 탭해 헤드샷으로 사격하세요.' : 'Tap zombies directly for instant headshots!'
     },
     {
       id: 'voxelsiege',
@@ -11234,7 +11234,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '좀비 서바이벌 보상', 'Zombie Survival reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 좀비 서바이벌 보상', 'Blitz Zombie Survival reward')}
       />
     );
   }

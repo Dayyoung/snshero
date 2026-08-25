@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { CardData } from '../types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
@@ -15,11 +14,18 @@ interface VoxelZombieSurvivalGameProps {
   onReward: (amount: number) => void;
 }
 
-interface Zombie {
-  mesh: THREE.Mesh;
+interface ZombieTarget {
+  id: number;
+  x: number;
+  y: number;
+  vx: number;
+  type: 'runner' | 'brute' | 'king';
+  icon: string;
+  points: number;
+  radius: number;
   hp: number;
-  speed: number;
-  alive: boolean;
+  maxHp: number;
+  isAlive: boolean;
 }
 
 export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = ({
@@ -28,448 +34,492 @@ export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = (
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
+  const [zombiesKilled, setZombiesKilled] = useState<number>(0);
+  const [bulletsLeft, setBulletsLeft] = useState<number>(30);
+  const [score, setScore] = useState<number>(0);
+  const [zombieCombo, setZombieCombo] = useState<number>(0);
+  const [maxCombo, setMaxCombo] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(35);
+  const [feedbackText, setFeedbackText] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_zombie_survival') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_zombie_survival') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [wave, setWave] = useState<number>(1);
-  const maxWaves = 3;
-  const [ammo, setAmmo] = useState<number>(30);
-  const [playerHp, setPlayerHp] = useState<number>(100);
-  const [score, setScore] = useState<number>(0);
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
+  const shooterY = 430;
+
   const stateRef = useRef({
-    playerX: 0,
-    playerZ: 0,
-    moveDir: new THREE.Vector2(0, 0),
-    aimAngle: 0,
-    playerHp: 100,
-    ammo: 30,
-    wave: 1,
+    shooterX: 180,
+    targetShooterX: 180,
+    zombies: [] as ZombieTarget[],
+    zombiesKilled: 0,
+    bulletsLeft: 30,
     score: 0,
+    combo: 0,
+    maxCombo: 0,
+    timeLeft: 35,
     isGameOver: false,
-    isVictory: false,
     isPaused: false,
     startTime: Date.now(),
-    zombies: [] as Zombie[],
-    bullets: [] as { mesh: THREE.Mesh; vel: THREE.Vector3 }[],
-    playerMesh: null as THREE.Group | null,
-    scene: null as THREE.Scene | null
+    zombieCounter: 1,
+    spawnTimer: 0,
+    muzzleFlash: null as { x: number; y: number; life: number } | null,
+    particles: [] as { x: number; y: number; vx: number; vy: number; color: string; life: number }[],
   });
 
-  const fireGun = () => {
+  const initGame = useCallback(() => {
     const s = stateRef.current;
-    if (s.isGameOver || s.isVictory || s.isPaused || !s.scene || s.ammo <= 0) return;
+    s.shooterX = 180;
+    s.targetShooterX = 180;
+    s.zombies = [];
+    s.zombiesKilled = 0;
+    s.bulletsLeft = 30;
+    s.score = 0;
+    s.combo = 0;
+    s.maxCombo = 0;
+    s.timeLeft = 35;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    s.zombieCounter = 1;
+    s.spawnTimer = 0;
+    s.muzzleFlash = null;
+    s.particles = [];
 
-    s.ammo -= 1;
-    setAmmo(s.ammo);
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-
-    const bMesh = new THREE.Mesh(
-      new THREE.SphereGeometry(0.2, 8, 8),
-      new THREE.MeshStandardMaterial({ color: 0xfacc15, emissive: 0xeab308, emissiveIntensity: 0.8 })
+    // Initial Zombies
+    s.zombies.push(
+      { id: s.zombieCounter++, x: 80, y: 130, vx: 50, type: 'runner', icon: '🧟', points: 300, radius: 22, hp: 1, maxHp: 1, isAlive: true },
+      { id: s.zombieCounter++, x: 280, y: 200, vx: -35, type: 'brute', icon: '🧟‍♂️', points: 600, radius: 26, hp: 2, maxHp: 2, isAlive: true }
     );
-    bMesh.position.set(s.playerX, 1.2, s.playerZ);
-    s.scene.add(bMesh);
 
-    const fwd = new THREE.Vector3(-Math.sin(s.aimAngle), 0, -Math.cos(s.aimAngle)).normalize();
-    s.bullets.push({ mesh: bMesh, vel: fwd.multiplyScalar(40) });
-  };
-
-  const reloadAmmo = () => {
-    const s = stateRef.current;
-    if (s.isGameOver || s.isVictory || s.isPaused) return;
-    s.ammo = 30;
-    setAmmo(30);
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-  };
+    setZombiesKilled(0);
+    setBulletsLeft(30);
+    setScore(0);
+    setZombieCombo(0);
+    setMaxCombo(0);
+    setTimeLeft(35);
+    setFeedbackText(null);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  }, []);
 
   useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+    initGame();
+  }, [initGame]);
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+  // Timer loop
+  useEffect(() => {
+    if (isGameOver || isPaused) return;
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x05080c);
-    scene.fog = new THREE.FogExp2(0x05080c, 0.04);
-    stateRef.current.scene = scene;
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          endGame(true);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
 
-    const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 100);
-    camera.position.set(0, 18, 14);
-    camera.lookAt(0, 0, 0);
+    return () => clearInterval(timer);
+  }, [isGameOver, isPaused]);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    container.appendChild(renderer.domElement);
+  // Direct Touch Tap to Shoot Zombie & Drag to Move Shooter
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
 
-    const ambientLight = new THREE.AmbientLight(0x1e293b, 1.0);
-    scene.add(ambientLight);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
 
-    const moonLight = new THREE.DirectionalLight(0x93c5fd, 1.2);
-    moonLight.position.set(-20, 40, -20);
-    scene.add(moonLight);
+    const touchX = (e.clientX - rect.left) * scaleX;
+    const touchY = (e.clientY - rect.top) * scaleY;
 
-    // Outpost Floor
-    const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(36, 36),
-      new THREE.MeshStandardMaterial({ color: 0x1e1e24, roughness: 0.8 })
-    );
-    floor.rotation.x = -Math.PI / 2;
-    scene.add(floor);
+    // Direct Tap on Zombie (Headshot)
+    let hitZombie = false;
+    for (let i = s.zombies.length - 1; i >= 0; i--) {
+      const z = s.zombies[i];
+      if (z.isAlive && Math.hypot(z.x - touchX, z.y - touchY) < z.radius + 18) {
+        hitZombie = true;
+        z.hp -= 1;
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
 
-    // Player Hero
-    const pGroup = new THREE.Group();
-    const body = new THREE.Mesh(
-      new THREE.BoxGeometry(1.2, 1.8, 0.8),
-      new THREE.MeshStandardMaterial({ color: 0x10b981 })
-    );
-    body.position.y = 0.9;
-    pGroup.add(body);
-    pGroup.position.set(0, 0, 0);
-    scene.add(pGroup);
-    stateRef.current.playerMesh = pGroup;
+        // Muzzle Flash
+        s.muzzleFlash = { x: s.shooterX, y: shooterY, life: 0.15 };
 
-    // Spawn Wave Zombies
-    const spawnWave = (w: number) => {
-      stateRef.current.zombies = [];
-      const count = 6 + w * 4;
-      for (let i = 0; i < count; i++) {
-        const zMesh = new THREE.Mesh(
-          new THREE.BoxGeometry(1.2, 1.8, 0.8),
-          new THREE.MeshStandardMaterial({ color: 0xdc2626 })
-        );
-        const angle = Math.random() * Math.PI * 2;
-        const dist = 14 + Math.random() * 4;
-        const zx = Math.cos(angle) * dist;
-        const zz = Math.sin(angle) * dist;
-        zMesh.position.set(zx, 0.9, zz);
-        scene.add(zMesh);
+        if (z.hp <= 0) {
+          z.isAlive = false;
+          s.zombiesKilled += 1;
+          s.combo += 1;
+          if (s.combo > s.maxCombo) s.maxCombo = s.combo;
 
-        stateRef.current.zombies.push({
-          mesh: zMesh,
-          hp: 30 + w * 15,
-          speed: 3.5 + w * 0.5,
-          alive: true
-        });
+          const pts = z.points + s.combo * 40;
+          s.score += pts;
+
+          setZombiesKilled(s.zombiesKilled);
+          setScore(s.score);
+          setZombieCombo(s.combo);
+          setMaxCombo(s.maxCombo);
+
+          if (z.type === 'king') {
+            setFeedbackText(`👑 ZOMBIE KING SLAIN! +${pts}P 💥`);
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+          } else {
+            setFeedbackText(`HEADSHOT! +${pts}P ⚡`);
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+          }
+          setTimeout(() => setFeedbackText(null), 350);
+
+          // Headshot particles
+          for (let p = 0; p < 14; p++) {
+            s.particles.push({
+              x: z.x,
+              y: z.y,
+              vx: (Math.random() - 0.5) * 260,
+              vy: (Math.random() - 0.5) * 260,
+              color: z.type === 'king' ? '#f59e0b' : '#22c55e',
+              life: 0.4,
+            });
+          }
+
+          s.zombies.splice(i, 1);
+        }
+        break;
       }
-    };
-    spawnWave(1);
+    }
 
-    let animId: number;
+    if (!hitZombie) {
+      // Direct drag move shooter
+      s.targetShooterX = Math.max(35, Math.min(325, touchX));
+    }
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+
+    const touchX = (e.clientX - rect.left) * scaleX;
+    s.targetShooterX = Math.max(35, Math.min(325, touchX));
+  };
+
+  // Main 60FPS Zombie Survival Loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     let lastTime = performance.now();
 
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const s = stateRef.current;
       if (s.isPaused || s.isGameOver) return;
 
-      // Player Movement
-      const speed = 10;
-      s.playerX += s.moveDir.x * speed * dt;
-      s.playerZ += s.moveDir.y * speed * dt;
-      s.playerX = THREE.MathUtils.clamp(s.playerX, -15, 15);
-      s.playerZ = THREE.MathUtils.clamp(s.playerZ, -15, 15);
+      // Shooter Movement Tracking
+      s.shooterX += (s.targetShooterX - s.shooterX) * Math.min(1, dt * 22);
 
-      if (s.moveDir.length() > 0.1) {
-        s.aimAngle = Math.atan2(-s.moveDir.x, -s.moveDir.y);
+      // Spawn Zombies
+      s.spawnTimer += dt;
+      if (s.spawnTimer > 1.0 && s.zombies.length < 7) {
+        s.spawnTimer = 0;
+        const rand = Math.random();
+        const isKing = rand < 0.18;
+        const isBrute = rand >= 0.18 && rand < 0.55;
+
+        s.zombies.push({
+          id: s.zombieCounter++,
+          x: Math.random() < 0.5 ? 40 : 320,
+          y: 70 + Math.random() * 200,
+          vx: (Math.random() < 0.5 ? 1 : -1) * (isKing ? 30 : (isBrute ? 40 : 60)),
+          type: isKing ? 'king' : (isBrute ? 'brute' : 'runner'),
+          icon: isKing ? '👑' : (isBrute ? '🧟‍♂️' : '🧟'),
+          points: isKing ? 1000 : (isBrute ? 600 : 300),
+          radius: isKing ? 30 : (isBrute ? 26 : 22),
+          hp: isKing ? 3 : (isBrute ? 2 : 1),
+          maxHp: isKing ? 3 : (isBrute ? 2 : 1),
+          isAlive: true,
+        });
       }
 
-      if (pGroup) {
-        pGroup.position.set(s.playerX, 0, s.playerZ);
-        pGroup.rotation.y = s.aimAngle;
-      }
-
-      // Update Bullets
-      for (let i = s.bullets.length - 1; i >= 0; i--) {
-        const b = s.bullets[i];
-        b.mesh.position.addScaledVector(b.vel, dt);
-
-        // Check Zombie Hit
-        for (const z of s.zombies) {
-          if (z.alive && b.mesh.position.distanceTo(z.mesh.position) < 1.4) {
-            z.hp -= 25;
-            s.score += 50;
-            setScore(s.score);
-            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-
-            if (z.hp <= 0) {
-              z.alive = false;
-              scene.remove(z.mesh);
-              s.score += 150;
-              setScore(s.score);
-            }
-            break;
-          }
-        }
-
-        if (b.mesh.position.length() > 30) {
-          scene.remove(b.mesh);
-          s.bullets.splice(i, 1);
-        }
-      }
-
-      // Update Zombies Chasing Player
-      let aliveZombies = 0;
-      s.zombies.forEach(z => {
-        if (!z.alive) return;
-        aliveZombies++;
-
-        const dir = new THREE.Vector3(s.playerX - z.mesh.position.x, 0, s.playerZ - z.mesh.position.z).normalize();
-        z.mesh.position.addScaledVector(dir, z.speed * dt);
-        z.mesh.rotation.y = Math.atan2(dir.x, dir.z);
-
-        // Attack Player
-        if (z.mesh.position.distanceTo(new THREE.Vector3(s.playerX, 0.9, s.playerZ)) < 1.4) {
-          s.playerHp -= 20 * dt;
-          setPlayerHp(Math.max(0, Math.round(s.playerHp)));
-
-          if (s.playerHp <= 0 && !s.isGameOver) {
-            s.isGameOver = true;
-            setIsGameOver(true);
-            const duration = (Date.now() - s.startTime) / 1000;
-            const receipt = calculateAndDepositMissionReward({
-              gameId: 'voxel_zombie_survival',
-              gameTitle: '복셀 좀비 서바이벌',
-              durationSeconds: duration,
-              score: s.score,
-              difficulty: 'NIGHTMARE',
-              isVictory: false
-            });
-            setSettlementReceipt(receipt);
-            onReward(receipt.totalSns);
-          }
+      // Move Zombies
+      s.zombies.forEach((z) => {
+        z.x += z.vx * dt;
+        if (z.x > 325) {
+          z.x = 325;
+          z.vx = -Math.abs(z.vx);
+        } else if (z.x < 35) {
+          z.x = 35;
+          z.vx = Math.abs(z.vx);
         }
       });
 
-      // Wave Clear Check
-      if (aliveZombies === 0 && !s.isGameOver) {
-        if (s.wave < maxWaves) {
-          s.wave += 1;
-          setWave(s.wave);
-          spawnWave(s.wave);
-        } else {
-          s.isVictory = true;
-          s.isGameOver = true;
-          setIsGameOver(true);
-          const duration = (Date.now() - s.startTime) / 1000;
-          const receipt = calculateAndDepositMissionReward({
-            gameId: 'voxel_zombie_survival',
-            gameTitle: '복셀 좀비 서바이벌',
-            durationSeconds: duration,
-            score: s.score + 2500,
-            difficulty: 'NIGHTMARE',
-            isVictory: true
-          });
-          setSettlementReceipt(receipt);
-          onReward(receipt.totalSns);
+      // Update Muzzle Flash
+      if (s.muzzleFlash) {
+        s.muzzleFlash.life -= dt;
+        if (s.muzzleFlash.life <= 0) s.muzzleFlash = null;
+      }
+
+      // Update Particles
+      for (let i = s.particles.length - 1; i >= 0; i--) {
+        const p = s.particles[i];
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.life -= dt;
+        if (p.life <= 0) s.particles.splice(i, 1);
+      }
+
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Apocalypse City Dark Gradient
+      const apoGrad = ctx.createLinearGradient(0, 0, 0, h);
+      apoGrad.addColorStop(0, '#022c22');
+      apoGrad.addColorStop(0.5, '#064e3b');
+      apoGrad.addColorStop(1, '#020617');
+      ctx.fillStyle = apoGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Barricade Line
+      ctx.strokeStyle = '#eab308';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([12, 12]);
+      ctx.beginPath();
+      ctx.moveTo(0, shooterY - 30);
+      ctx.lineTo(w, shooterY - 30);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Render Zombies
+      s.zombies.forEach((z) => {
+        if (z.isAlive) {
+          ctx.save();
+          ctx.translate(z.x, z.y);
+          if (z.type === 'king') {
+            ctx.shadowColor = '#f59e0b';
+            ctx.shadowBlur = 18;
+          } else {
+            ctx.shadowColor = '#22c55e';
+            ctx.shadowBlur = 12;
+          }
+          ctx.font = `${z.radius * 1.8}px serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(z.icon, 0, 0);
+
+          // HP Bar
+          if (z.maxHp > 1) {
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(-16, z.radius + 4, 32, 4);
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(-16, z.radius + 4, 32 * (z.hp / z.maxHp), 4);
+          }
+          ctx.restore();
         }
-      }
+      });
 
-      renderer.render(scene, camera);
+      // Render Shooter Hero (🤠)
+      ctx.save();
+      ctx.translate(s.shooterX, shooterY);
+      ctx.shadowColor = '#fde047';
+      ctx.shadowBlur = 18;
+      ctx.font = '42px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🤠', 0, 0);
+
+      // Muzzle Flash Spark
+      if (s.muzzleFlash) {
+        ctx.fillStyle = '#fde047';
+        ctx.beginPath();
+        ctx.arc(0, -25, 12, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+
+      // Render Particles
+      s.particles.forEach((p) => {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 4, 4);
+      });
     };
 
-    animId = requestAnimationFrame(animate);
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, [shooterY, playSfx]);
 
-    return () => {
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-    };
-  }, [lowSpecMode]);
-
-  const handleRestart = () => {
+  const endGame = (isWin: boolean) => {
     const s = stateRef.current;
-    s.playerX = 0;
-    s.playerZ = 0;
-    s.playerHp = 100;
-    s.ammo = 30;
-    s.wave = 1;
-    s.score = 0;
-    s.isGameOver = false;
-    s.isVictory = false;
-    s.startTime = Date.now();
-    s.zombies.forEach(z => s.scene?.remove(z.mesh));
-    s.zombies = [];
-    setPlayerHp(100);
-    setAmmo(30);
-    setWave(1);
-    setScore(0);
-    setIsGameOver(false);
-    setSettlementReceipt(null);
+    if (s.isGameOver) return;
+    s.isGameOver = true;
+    setIsGameOver(true);
+
+    if (isWin) {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    } else {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+
+    const duration = (Date.now() - s.startTime) / 1000;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'arcade_zombie_survival',
+      gameTitle: '블리츠 좀비 서바이벌',
+      durationSeconds: duration,
+      score: s.score + (isWin ? 3500 : s.zombiesKilled * 300) + s.maxCombo * 40,
+      difficulty: 'NIGHTMARE',
+      isVictory: isWin || s.zombiesKilled >= 8,
+    });
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
   };
 
-  const customTutorialSteps: TutorialStep[] = [
+  const tutorialSteps: TutorialStep[] = [
     {
-      badge: isKo ? 'STEP 1: 좀비 호드 요새 사수' : 'STEP 1: ZOMBIE OUTPOST',
-      title: isKo ? '3개 웨이브 좀비 군단 전원 섬멸' : 'Survive 3 Zombie Waves',
+      badge: isKo ? 'STEP 1: 손가락 탭 좀비 헤드샷 슈팅' : 'STEP 1: TAP HEADSHOT SHOOTING',
+      title: isKo ? '좀비를 직접 탭해 헤드샷으로 일격에 토벌하세요' : 'Tap zombies directly to eliminate them with precision headshots',
       description: isKo
-        ? '어둠 속에서 몰려오는 변이체 좀비 호드를 사격하여 전원 섬멸하고 요새를 사수하세요.'
-        : 'Eliminate all mutant zombie waves with precision rifle fire to secure the outpost.',
+        ? '가상 조이스틱 없이 화면에 나타나는 좀비(🧟, 🧟‍♂️, 👑)를 손가락으로 직접 탭(Direct Tap)하여 즉시 저격 사살하고 하단의 사수(🤠)를 드래그해 이동하세요.'
+        : 'Tap incoming zombies directly on screen for instant headshot kills while sliding your shooter horizontally.',
       keyPoints: isKo
         ? [
-            '3웨이브 좀비 전멸 시 완승',
-            '탄약 소진 시 더블탭 재장전',
-            '플레이어 HP 0% 도달 방어'
+            '가상 조이스틱 0개 (100% 손가락 직접 탭 저격 사격)',
+            '좀비 킹(👑) 헤드샷 토벌 시 1,000P 잭팟 대박 보너스',
+            '35초간 최대 콤보로 아포칼립스를 수호하고 올클리어'
           ]
         : [
-            'Clear 3 waves to win',
-            'Double tap to reload ammo',
-            'Prevent player HP reaching 0%'
+            'Zero Virtual Joysticks: 100% Direct Tap Headshot Shooting',
+            'Zombie King (👑) awards 1,000P massive survival jackpot',
+            'Defend the barricade with continuous combos within 35s'
           ],
-      iconType: 'GOAL'
+      iconType: 'GOAL',
     },
     {
-      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
-      title: isKo ? '드래그 기동 & 탭 사격' : 'Drag Maneuver & Tap Fire',
+      badge: isKo ? 'STEP 2: 모바일 퓨어 제스처' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '화면 직접 탭 & 드래그 (Tap to Shoot & Drag)' : 'Tap & Drag Gestures',
       description: isKo
-        ? '가상 D-Pad 없이 화면 드래그로 요새를 360° 기동하고, 탭하여 정밀 사격, 더블탭으로 재장전합니다.'
-        : 'Drag anywhere to move around and tap to fire rifle shells with zero buttons.',
+        ? '타깃을 탭해 사격하고 하단을 밀어 사수의 위치를 조종합니다.'
+        : 'Tap zombies to shoot and slide shooter left or right.',
       keyPoints: isKo
         ? [
-            '👆 드래그: 360° 부드러운 전방위 기동',
-            '💥 탭: 전방 정밀 라이플 사격',
-            '⚡ 더블탭: 탄약 30발 즉시 재장전'
+            '👆 타깃 탭: 60FPS 즉각 반응 초정밀 헤드샷',
+            '🧟 연속 토벌 시 좀비 콤보 배수 보너스',
+            '⏱️ 35초 타임어택 고득점 챌린지'
           ]
         : [
-            '👆 Drag: Smooth 360° movement',
-            '💥 Tap: Precision rifle fire',
-            '⚡ Double Tap: Fast ammo reload'
+            '👆 Tap Targets: Instant 60FPS responsive headshot kills',
+            '🧟 Consecutive kills grant zombie combo multipliers',
+            '⏱️ 35s time attack zombie survival sprint'
           ],
-      iconType: 'GESTURES'
+      iconType: 'GESTURES',
     },
     {
       badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
       title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
       description: isKo
-        ? '요새 사수 승리 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
-        : 'Nightmare multiplier payout calculated and deposited atomically to your wallet.',
+        ? '토벌 완료 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon match finish.',
       keyPoints: isKo
         ? [
-            '승리 즉시 LocalStorage 영구 지갑 입금',
-            '잔여 체력 및 좀비 처치 콤보 보너스',
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '토벌한 좀비 수 및 좀비 킹 비례 대량 잭팟',
             'VictoryRewardModal 2초 황금 코인 팡파레'
           ]
         : [
             'Instant atomic deposit to LocalStorage wallet',
-            'Remaining HP and kill bonuses',
+            'Killed zombies count and king multipliers',
             'VictoryRewardModal golden coin fanfare'
           ],
-      iconType: 'REWARDS'
-    }
+      iconType: 'REWARDS',
+    },
   ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
-
+    <div className="relative w-full h-[100dvh] bg-[#020617] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none">
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
       <MinimalistMissionHUD
-        title={isKo ? '복셀 좀비 서바이벌' : 'Voxel Zombie Survival'}
-        language={language}
-        hp={{ current: playerHp, max: 100 }}
+        title={isKo ? '블리츠 좀비 서바이벌' : 'Blitz Zombie Survival'}
+        language={(language as Language) || 'ko'}
         telemetries={[
-          { label: isKo ? '웨이브' : 'Wave', value: `${wave}/${maxWaves}`, color: 'text-rose-400 font-bold' },
-          { label: isKo ? '탄약' : 'Ammo', value: `${ammo}/30`, color: ammo <= 5 ? 'text-rose-400 font-bold' : 'text-emerald-300' },
-          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-yellow-300' }
+          { label: isKo ? '토벌' : 'Kills', value: `${zombiesKilled}마리`, color: 'text-amber-400 font-bold' },
+          { label: isKo ? '콤보' : 'Combo', value: `${zombieCombo}x`, color: zombieCombo > 2 ? 'text-amber-300 font-bold animate-bounce' : 'text-slate-300' },
+          { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 10 ? 'text-rose-500 font-bold animate-pulse' : 'text-white font-bold' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          stateRef.current.isPaused = !isPaused;
-        }}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
         isPaused={isPaused}
       />
 
-      {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div
-          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
-          style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const startX = e.clientX - rect.left;
-            const startY = e.clientY - rect.top;
-            let moved = false;
-
-            const onMove = (moveEvt: PointerEvent) => {
-              const curX = moveEvt.clientX - rect.left;
-              const curY = moveEvt.clientY - rect.top;
-              const dx = curX - startX;
-              const dy = curY - startY;
-
-              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
-                moved = true;
-                stateRef.current.moveDir.x = Math.abs(dx) > 8 ? (dx > 0 ? 1 : -1) : 0;
-                stateRef.current.moveDir.y = Math.abs(dy) > 8 ? (dy > 0 ? 1 : -1) : 0;
-              }
-            };
-
-            const onUp = () => {
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-              window.removeEventListener('pointercancel', onUp);
-              stateRef.current.moveDir.set(0, 0);
-
-              if (!moved) {
-                // Tap: Fire Gun
-                fireGun();
-              }
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-          }}
-          onDoubleClick={reloadAmmo}
+      {/* Pure Touch Zombie Survival Canvas Viewport */}
+      <div className="flex-1 w-full max-w-md relative overflow-hidden flex items-center justify-center select-none touch-none p-2">
+        <canvas
+          ref={canvasRef}
+          width={360}
+          height={500}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          className="w-full h-full object-contain touch-none cursor-pointer shadow-2xl"
         />
-      )}
+
+        {/* Floating Feedback Text */}
+        {feedbackText && (
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 pointer-events-none text-base font-bold text-amber-300 drop-shadow-lg animate-bounce whitespace-nowrap bg-black/60 px-4 py-1 rounded-full border border-amber-400/30">
+            {feedbackText}
+          </div>
+        )}
+      </div>
 
       {/* Minimal Bottom Guide */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/75 border border-rose-500/30 rounded-full text-[10px] text-rose-300 font-mono backdrop-blur-xs">
-          {isKo ? '화면 드래그: 이동 | 탭: 사격 | 더블탭: 탄약 재장전 (버튼 없음)' : 'Drag: Move | Tap: Fire Rifle | Double Tap: Reload Ammo (No Buttons)'}
+      <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-200 font-mono">
+          {isKo ? '좀비를 손가락으로 직접 탭해 헤드샷으로 사격하세요' : 'Tap zombies directly for instant headshots'}
         </div>
       </div>
 
       {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
         <UniversalTutorialModal
-          gameId="voxel_zombie_survival"
-          gameTitle={isKo ? '3D 복셀 좀비 서바이벌: 요새 사수' : 'Voxel Zombie Survival: Outpost Defense'}
-          customSteps={customTutorialSteps}
-          language={language}
+          gameId="arcade_zombie_survival"
+          gameTitle={isKo ? '블리츠 좀비: 아포칼립스' : 'Blitz Zombie: Apocalypse'}
+          customSteps={tutorialSteps}
+          language={(language as Language) || 'ko'}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}
         />
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
         <VictoryRewardModal
           receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
+          language={(language as Language) || 'ko'}
+          onPlayAgain={initGame}
           onExit={onExit}
         />
       )}
