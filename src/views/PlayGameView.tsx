@@ -7636,7 +7636,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelpinball',
-      title: language === 'ko' ? '3D 복셀 핀볼 나이츠' : 'Voxel Pinball Knights',
+      title: language === 'ko' ? '블리츠 나이츠 슬링' : 'Blitz Knights Sling',
       icon: Trophy,
       color: 'from-amber-600 to-yellow-600',
       image: '/minigame_cardslot.png',
@@ -7644,10 +7644,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelpinball');
       },
-      category: '3d',
+      category: 'battle',
       isNew: true,
-      badgeText: '3D PINBALL',
-      guide: language === 'ko' ? '중세 성채 핀볼 테이블에서 플리퍼를 조작해 범퍼 콤보와 보물 보너스를 터뜨리세요.' : 'Medieval fantasy 3D pinball machine with physics flippers and multiball combos!'
+      badgeText: 'KNIGHTS-SLING',
+      guide: language === 'ko' ? '방패를 뒤로 당겨 궤적을 조준하고 손을 떼어 발사하세요.' : 'Drag shield back to aim trajectory and release to fire!'
     },
     {
       id: 'voxelpirate',
@@ -11364,7 +11364,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '핀볼 나이츠 보상', 'Pinball Knights reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 나이츠 슬링 보상', 'Blitz Knights Sling reward')}
       />
     );
   }
