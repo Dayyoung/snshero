@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
@@ -29,7 +30,7 @@ interface SmashFighter {
 }
 
 export const VoxelSuperSmashGame: React.FC<VoxelSuperSmashGameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -37,6 +38,7 @@ export const VoxelSuperSmashGame: React.FC<VoxelSuperSmashGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 55;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
 

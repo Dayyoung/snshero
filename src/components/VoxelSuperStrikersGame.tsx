@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
@@ -24,7 +25,7 @@ interface FlyingBall {
 }
 
 export const VoxelSuperStrikersGame: React.FC<VoxelSuperStrikersGameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -32,6 +33,7 @@ export const VoxelSuperStrikersGame: React.FC<VoxelSuperStrikersGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 60;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
 

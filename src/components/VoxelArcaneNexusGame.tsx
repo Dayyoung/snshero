@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
@@ -25,7 +26,7 @@ interface GemCell {
 }
 
 export const VoxelArcaneNexusGame: React.FC<VoxelArcaneNexusGameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -33,6 +34,7 @@ export const VoxelArcaneNexusGame: React.FC<VoxelArcaneNexusGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 109;
   const [grid, setGrid] = useState<GemCell[][]>([]);
   const [selectedCell, setSelectedCell] = useState<{ r: number; c: number } | null>(null);
   const [score, setScore] = useState<number>(0);

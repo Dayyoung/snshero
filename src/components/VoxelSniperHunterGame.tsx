@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
@@ -29,7 +30,7 @@ interface SniperTarget {
 }
 
 export const VoxelSniperHunterGame: React.FC<VoxelSniperHunterGameProps> = ({
-  deck: _deck,
+  deck = [],
   language = 'ko',
   lowSpecMode = false,
   playSfx,
@@ -37,6 +38,7 @@ export const VoxelSniperHunterGame: React.FC<VoxelSniperHunterGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 78;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
 

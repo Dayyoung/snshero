@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Shield } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
@@ -56,7 +57,7 @@ const createCell = (backgroundCardId: number, kind: CellKind = 'empty', cardId =
 });
 
 export const CardRushGame: React.FC<CardRushGameProps> = ({
-  deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -64,6 +65,7 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 18;
   const boardSize = 6;
   const allyTargetCount = 3;
   const enemyCount = 3;

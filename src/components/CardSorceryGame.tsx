@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Flame, Droplets, Mountain, Wind } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
@@ -50,7 +51,7 @@ const getCardElement = (card: CardData): string => {
 };
 
 export const CardSorceryGame: React.FC<CardSorceryGameProps> = ({
-  deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -58,6 +59,7 @@ export const CardSorceryGame: React.FC<CardSorceryGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 15;
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(5);
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);

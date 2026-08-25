@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { CARD_DATABASE } from '../cardDatabase';
@@ -63,7 +64,7 @@ const generateSolvablePuzzle = (size: number, moves: number, cardPool: number[])
 };
 
 export const CardFlipGame: React.FC<CardFlipGameProps> = ({
-  deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -71,6 +72,7 @@ export const CardFlipGame: React.FC<CardFlipGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 13;
   const [level, setLevel] = useState(0);
   const [tiles, setTiles] = useState<FlipTile[]>([]);
   const [moves, setMoves] = useState(0);

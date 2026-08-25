@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
@@ -26,7 +27,7 @@ interface Bullet {
 }
 
 export const VoxelBattlegroundsGame: React.FC<VoxelBattlegroundsGameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -34,6 +35,7 @@ export const VoxelBattlegroundsGame: React.FC<VoxelBattlegroundsGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 34;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
 

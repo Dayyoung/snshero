@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
@@ -27,7 +28,7 @@ const CHIP_TIERS = [
 ];
 
 export const VoxelFactoryCraftGame: React.FC<VoxelFactoryCraftGameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -35,6 +36,7 @@ export const VoxelFactoryCraftGame: React.FC<VoxelFactoryCraftGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 59;
 
   const [board, setBoard] = useState<number[][]>([
     [0, 0, 0, 0],

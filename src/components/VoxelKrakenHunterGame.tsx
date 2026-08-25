@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
@@ -25,7 +26,7 @@ interface Tentacle {
 }
 
 export const VoxelKrakenHunterGame: React.FC<VoxelKrakenHunterGameProps> = ({
-  deck: _deck,
+  deck = [],
   language = 'ko',
   lowSpecMode = false,
   playSfx,
@@ -33,6 +34,7 @@ export const VoxelKrakenHunterGame: React.FC<VoxelKrakenHunterGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 101;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
 

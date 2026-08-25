@@ -4,6 +4,7 @@ import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 
 interface GomokuGameProps {
   deck: CardData[];
@@ -20,7 +21,7 @@ const BOARD_SIZE = 15;
 const WIN_COUNT = 5;
 
 export const GomokuGame: React.FC<GomokuGameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -28,6 +29,7 @@ export const GomokuGame: React.FC<GomokuGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 8;
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
@@ -142,29 +144,54 @@ export const GomokuGame: React.FC<GomokuGameProps> = ({
       ctx.stroke();
     }
 
-    // Pieces
+    // Pieces (Player Card Hero vs AI Monster Card)
     for (let r = 0; r < BOARD_SIZE; r++) {
       for (let c = 0; c < BOARD_SIZE; c++) {
         const val = g.board[r * BOARD_SIZE + c];
         if (val) {
           const cx = (c + 1) * cellSize;
           const cy = (r + 1) * cellSize;
+          const radius = cellSize * 0.42;
 
-          ctx.beginPath();
-          ctx.arc(cx, cy, cellSize * 0.4, 0, Math.PI * 2);
           if (val === 'B') {
-            ctx.fillStyle = '#201d1d';
-            ctx.fill();
+            // Player Card Hero
+            drawCardSprite(
+              ctx,
+              playerHeroId,
+              cx - radius,
+              cy - radius,
+              radius * 2,
+              radius * 2,
+              {
+                circleClip: true,
+                borderWidth: 1.5,
+                borderColor: '#3b82f6',
+                shadowBlur: 4,
+                shadowColor: 'rgba(59, 130, 246, 0.5)',
+              }
+            );
           } else {
-            ctx.fillStyle = '#ffffff';
-            ctx.fill();
-            ctx.strokeStyle = '#201d1d';
-            ctx.stroke();
+            // AI Monster Card
+            drawCardSprite(
+              ctx,
+              30,
+              cx - radius,
+              cy - radius,
+              radius * 2,
+              radius * 2,
+              {
+                circleClip: true,
+                borderWidth: 1.5,
+                borderColor: '#ef4444',
+                shadowBlur: 4,
+                shadowColor: 'rgba(239, 68, 68, 0.5)',
+              }
+            );
           }
         }
       }
     }
-  }, []);
+  }, [playerHeroId]);
 
   const initGame = useCallback(() => {
     const g = gameRef.current;

@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
@@ -110,7 +111,7 @@ const STAGES_DATA: { name: string; enName: string; stars: StarNode[]; edges: Con
 ];
 
 export const VoxelDreamweaverGame: React.FC<VoxelDreamweaverGameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -118,6 +119,7 @@ export const VoxelDreamweaverGame: React.FC<VoxelDreamweaverGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 107;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
 

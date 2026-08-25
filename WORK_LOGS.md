@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-26 08:06 KST / 23:06 UTC] [/goal 110개 전체 미션 게임 cards1.png/cards2.png 카드 캐릭터 스프라이트 전수 연동 및 품질 혁신 완료!]
+- **작업 개요**: 총 110개 미션 게임(클래식 16종 + 블리츠 78종 + 모드/시즌 16종) 전수 조사 및 카드 캐릭터 스프라이트(`cards1.png`, `cards2.png`) 100% 전면 적용.
+- **핵심 개선 사항**:
+  1. **카드 캐릭터 캔버스 렌더러 신설 (`src/lib/canvasCardRenderer.ts`)**: `cards1.png` (ID 1~100) 및 `cards2.png` (ID 101~200) 스프라이트 시트에서 10x10 그리드 좌표를 자동 연산하여 캔버스 상에 고해상도로 렌더링하는 `drawCardSprite()` 엔진 완비.
+  2. **티렉스 러너 (`TrexRunnerGame.tsx`) 전면 혁신**: 단순 공룡 픽셀 사각형을 플레이어 덱의 대표 카드 영웅 캐릭터(`deck[0]?.id` 또는 카단) 스프라이트로 교체하고, 장애물/공중 몬스터도 카드 몬스터 스프라이트로 완벽 개편.
+  3. **클래식 미니게임군 100% 카드화**: `BreakoutGame`, `PacmanGame`, `ShootingBattleGame`, `GomokuGame`, `TictactoeGame`, `Slide2048Game`, `MinesweeperGame`, `CardJumperGame`, `SnakeBattleGame` 등에서 플레이어 및 적/타깃을 모두 공식 카드 캐릭터로 렌더링.
+  4. **78종 블리츠 게임 전수 이모지 퇴출 및 카드 스프라이트 적용**: `fillText` 이모지 대신 `drawCardSprite(ctx, playerHeroId, ...)`를 통해 공식 카드 캐릭터 아트를 실시간 렌더링하도록 90+개 컴포넌트 전수 고도화.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS), `npm run build` 프로덕션 빌드 성공.
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [110개 미션 게임 전수조사] cards1.png/cards2.png 카드 캐릭터 스프라이트 100% 전면 연동 및 티렉스 러너 등 전체 게임 품질 혁신 완료 -> 작업완료`
+
+---
+
 ## [2026-08-26 04:21 KST / 19:21 UTC] [/imp-mission 제78회차 3D 복셀 전수 심사 폐기 및 신규 좀비 슈터 배틀 게임 개발 100% 완료!]
 - **심사 대상 게임**: `src/components/VoxelZombieSurvivalGame.tsx` (78 / 78 - 최종)
   - **심사 결과**: **폐기 (DECOMMISSION)** (3D 복셀 좀비 서바이벌의 가상 조이스틱 이동과 사격/장전 버튼 조작 지연 피로도)

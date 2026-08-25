@@ -4,6 +4,7 @@ import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 
 interface ShootingBattleGameProps {
   deck: CardData[];
@@ -34,7 +35,7 @@ interface Enemy {
 }
 
 export const ShootingBattleGame: React.FC<ShootingBattleGameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -42,6 +43,7 @@ export const ShootingBattleGame: React.FC<ShootingBattleGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 7;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef(0);
 
@@ -251,27 +253,50 @@ export const ShootingBattleGame: React.FC<ShootingBattleGameProps> = ({
         ctx.fill();
       });
 
-      // Draw Enemies
+      // Draw Enemies (Card Monster Sprites)
       g.enemies.forEach(e => {
-        ctx.fillStyle = '#e11d48';
-        ctx.fillRect(e.x - 14, e.y - 14, 28, 28);
-        ctx.fillStyle = '#fecdd3';
-        ctx.fillRect(e.x - 14, e.y - 18, 28 * (e.hp / e.maxHp), 3);
+        drawCardSprite(
+          ctx,
+          e.cardId,
+          e.x - 16,
+          e.y - 16,
+          32,
+          32,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: '#e11d48',
+            shadowBlur: 6,
+            shadowColor: 'rgba(225, 29, 72, 0.5)',
+          }
+        );
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(e.x - 14, e.y - 20, 28, 3);
+        ctx.fillStyle = '#ef4444';
+        ctx.fillRect(e.x - 14, e.y - 20, 28 * (e.hp / e.maxHp), 3);
       });
 
-      // Draw Player
-      ctx.fillStyle = '#0ea5e9';
-      ctx.beginPath();
-      ctx.moveTo(g.px, g.py - 18);
-      ctx.lineTo(g.px - 14, g.py + 14);
-      ctx.lineTo(g.px + 14, g.py + 14);
-      ctx.closePath();
-      ctx.fill();
+      // Draw Player Hero (Card Hero Sprite from cards1.png / cards2.png)
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        g.px - 18,
+        g.py - 18,
+        36,
+        36,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#0ea5e9',
+          shadowBlur: 10,
+          shadowColor: 'rgba(14, 165, 233, 0.6)',
+        }
+      );
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [onReward, playSfx, spawnWave]);
+  }, [onReward, playSfx, spawnWave, playerHeroId]);
 
   const tutorialSteps: TutorialStep[] = [
     {

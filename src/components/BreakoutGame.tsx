@@ -4,6 +4,7 @@ import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 
 interface BreakoutGameProps {
   deck: CardData[];
@@ -22,16 +23,17 @@ const BALL_R = 5;
 const BRICK_ROWS = 5;
 const BRICK_COLS = 6;
 const BRICK_W = 52;
-const BRICK_H = 16;
+const BRICK_H = 18;
 
 interface Brick {
   x: number;
   y: number;
+  monsterId: number;
   alive: boolean;
 }
 
 export const BreakoutGame: React.FC<BreakoutGameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -39,6 +41,7 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 19;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef(0);
 
@@ -87,11 +90,13 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
     g.startTime = Date.now();
 
     const bricks: Brick[] = [];
+    const monsterPool = [4, 7, 13, 16, 22, 28, 35, 41, 49, 58];
     for (let r = 0; r < BRICK_ROWS; r++) {
       for (let c = 0; c < BRICK_COLS; c++) {
         bricks.push({
-          x: 20 + c * (BRICK_W + 5),
+          x: 18 + c * (BRICK_W + 5),
           y: 40 + r * (BRICK_H + 6),
+          monsterId: monsterPool[(r * BRICK_COLS + c) % monsterPool.length],
           alive: true,
         });
       }
@@ -237,17 +242,47 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
       ctx.fillStyle = '#f8fafc';
       ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
-      // Bricks
+      // Bricks (Card Monsters from cards1.png / cards2.png)
       for (const b of g.bricks) {
         if (b.alive) {
-          ctx.fillStyle = '#0284c7';
-          ctx.fillRect(b.x, b.y, BRICK_W, BRICK_H);
+          drawCardSprite(
+            ctx,
+            b.monsterId,
+            b.x,
+            b.y,
+            BRICK_W,
+            BRICK_H,
+            {
+              roundedRadius: 4,
+              borderWidth: 1,
+              borderColor: '#0284c7',
+              shadowBlur: 4,
+              shadowColor: 'rgba(2, 132, 199, 0.4)',
+            }
+          );
         }
       }
 
-      // Paddle
-      ctx.fillStyle = '#f43f5e';
-      ctx.fillRect(g.paddleX - PADDLE_W / 2, CANVAS_H - 30, PADDLE_W, PADDLE_H);
+      // Paddle Platform
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(g.paddleX - PADDLE_W / 2, CANVAS_H - 24, PADDLE_W, PADDLE_H);
+
+      // Paddle Hero (Card Hero Sprite)
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        g.paddleX - 16,
+        CANVAS_H - 44,
+        32,
+        32,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#f43f5e',
+          shadowBlur: 8,
+          shadowColor: 'rgba(244, 63, 94, 0.6)',
+        }
+      );
 
       // Ball
       ctx.fillStyle = '#eab308';
@@ -261,7 +296,7 @@ export const BreakoutGame: React.FC<BreakoutGameProps> = ({
     return () => {
       cancelAnimationFrame(animFrameRef.current);
     };
-  }, [onReward, playSfx]);
+  }, [onReward, playSfx, playerHeroId]);
 
   const tutorialSteps: TutorialStep[] = [
     {

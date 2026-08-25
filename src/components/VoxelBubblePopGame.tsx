@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
@@ -31,7 +32,7 @@ const BUBBLE_COLORS = [
 ];
 
 export const VoxelBubblePopGame: React.FC<VoxelBubblePopGameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -39,6 +40,7 @@ export const VoxelBubblePopGame: React.FC<VoxelBubblePopGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 99;
   const ROWS = 7;
   const COLS = 7;
 

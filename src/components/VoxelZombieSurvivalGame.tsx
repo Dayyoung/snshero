@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
@@ -29,7 +30,7 @@ interface ZombieTarget {
 }
 
 export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -37,6 +38,7 @@ export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = (
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 39;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
 
@@ -351,7 +353,13 @@ export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = (
       ctx.font = '42px serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('🤠', 0, 0);
+      drawCardSprite(ctx, playerHeroId, -22, -22, 44, 44, {
+        circleClip: true,
+        borderWidth: 2,
+        borderColor: '#fde047',
+        shadowBlur: 14,
+        shadowColor: 'rgba(253, 224, 71, 0.6)',
+      });
 
       // Muzzle Flash Spark
       if (s.muzzleFlash) {

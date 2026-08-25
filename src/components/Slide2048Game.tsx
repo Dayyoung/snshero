@@ -1,6 +1,7 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
-import { cn } from '../lib/utils';
+import { cn, getCardSpriteStyle } from '../lib/utils';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
@@ -18,7 +19,7 @@ interface Slide2048GameProps {
 const GRID_SIZE = 4;
 
 export const Slide2048Game: React.FC<Slide2048GameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -26,6 +27,7 @@ export const Slide2048Game: React.FC<Slide2048GameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 10;
   const [grid, setGrid] = useState<number[][]>(() =>
     Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(0))
   );
@@ -264,23 +266,50 @@ export const Slide2048Game: React.FC<Slide2048GameProps> = ({
         >
           <div className="grid grid-cols-4 gap-1.5 w-full h-full">
             {grid.flatMap((row, r) =>
-              row.map((val, c) => (
-                <div
-                  key={`${r}-${c}`}
-                  className={cn(
-                    'aspect-square rounded-sm border transition-all duration-100 flex items-center justify-center font-bold text-sm select-none',
-                    val === 0 && 'border-[rgba(15,0,0,0.06)] bg-white/40 text-transparent',
-                    val === 2 && 'border-indigo-300 bg-indigo-50 text-indigo-900',
-                    val === 4 && 'border-indigo-400 bg-indigo-100 text-indigo-900',
-                    val === 8 && 'border-amber-400 bg-amber-100 text-amber-900',
-                    val === 16 && 'border-amber-500 bg-amber-200 text-amber-950',
-                    val >= 32 && val < 128 && 'border-rose-400 bg-rose-100 text-rose-900',
-                    val >= 128 && 'border-amber-500 bg-amber-500 text-white shadow-xs'
-                  )}
-                >
-                  {val > 0 && val}
-                </div>
-              ))
+              row.map((val, c) => {
+                const cardMap: Record<number, number> = {
+                  2: 1,
+                  4: 5,
+                  8: 12,
+                  16: 25,
+                  32: 40,
+                  64: 60,
+                  128: 80,
+                  256: 95,
+                  512: 105,
+                  1024: 120,
+                  2048: 150,
+                };
+                const tileCardId = cardMap[val] || 1;
+
+                return (
+                  <div
+                    key={`${r}-${c}`}
+                    className={cn(
+                      'aspect-square rounded-sm border transition-all duration-100 flex flex-col items-center justify-center font-bold text-xs select-none relative overflow-hidden',
+                      val === 0 && 'border-[rgba(15,0,0,0.06)] bg-white/40 text-transparent',
+                      val === 2 && 'border-indigo-300 bg-indigo-50 text-indigo-900',
+                      val === 4 && 'border-indigo-400 bg-indigo-100 text-indigo-900',
+                      val === 8 && 'border-amber-400 bg-amber-100 text-amber-900',
+                      val === 16 && 'border-amber-500 bg-amber-200 text-amber-950',
+                      val >= 32 && val < 128 && 'border-rose-400 bg-rose-100 text-rose-900',
+                      val >= 128 && 'border-amber-500 bg-amber-500 text-white shadow-xs'
+                    )}
+                  >
+                    {val > 0 && (
+                      <>
+                        <div
+                          className="w-8 h-8 rounded-full border border-black/20 shadow-xs mb-0.5"
+                          style={getCardSpriteStyle(tileCardId)}
+                        />
+                        <span className="text-[10px] font-mono leading-none bg-black/60 text-white px-1 rounded-xs">
+                          {val}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                );
+              })
             )}
           </div>
         </div>

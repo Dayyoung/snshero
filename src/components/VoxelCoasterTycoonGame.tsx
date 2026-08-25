@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
@@ -31,7 +32,7 @@ const MENU_ITEMS = [
 ];
 
 export const VoxelCoasterTycoonGame: React.FC<VoxelCoasterTycoonGameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -39,6 +40,7 @@ export const VoxelCoasterTycoonGame: React.FC<VoxelCoasterTycoonGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 77;
 
   const [orders, setOrders] = useState<CustomerOrder[]>([]);
   const [score, setScore] = useState<number>(0);

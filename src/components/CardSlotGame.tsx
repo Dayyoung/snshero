@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardData, Language } from '../types';
@@ -28,7 +29,7 @@ interface SymbolData {
 const randomCardId = (): number => Math.floor(Math.random() * 110) + 1;
 
 export const CardSlotGame: React.FC<CardSlotGameProps> = ({
-  deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -36,6 +37,7 @@ export const CardSlotGame: React.FC<CardSlotGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 16;
   const [spinsLeft, setSpinsLeft] = useState(FREE_SPINS);
   const [score, setScore] = useState(0);
   const [grid, setGrid] = useState<SymbolData[][]>([]);

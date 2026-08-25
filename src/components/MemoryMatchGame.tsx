@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { cn, getCardSpriteStyle } from '../lib/utils';
@@ -29,7 +30,7 @@ interface CardTile {
 }
 
 export const MemoryMatchGame: React.FC<MemoryMatchGameProps> = ({
-  deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -37,6 +38,7 @@ export const MemoryMatchGame: React.FC<MemoryMatchGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 9;
   const [level, setLevel] = useState(0);
   const [tiles, setTiles] = useState<CardTile[]>([]);
   const [flippedIds, setFlippedIds] = useState<number[]>([]);

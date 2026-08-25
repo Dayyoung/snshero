@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Shield, Heart, Play, Zap } from 'lucide-react';
 import { Language, CardData } from '../types';
@@ -64,6 +65,7 @@ export const DefenseGame: React.FC<DefenseGameProps> = ({
   onExit,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = playerDeck?.[0]?.id || 5;
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
       return localStorage.getItem('hero_tutorial_game_arcade_defense') !== 'true';

@@ -5,6 +5,7 @@ import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 
 interface MinesweeperGameProps {
   deck: CardData[];
@@ -22,7 +23,7 @@ const CANVAS_SIZE = 340;
 type CellState = 'hidden' | 'revealed' | 'flagged';
 
 export const MinesweeperGame: React.FC<MinesweeperGameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -30,6 +31,7 @@ export const MinesweeperGame: React.FC<MinesweeperGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 20;
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [flagMode, setFlagMode] = useState(false);
@@ -83,10 +85,21 @@ export const MinesweeperGame: React.FC<MinesweeperGameProps> = ({
           ctx.strokeRect(x, y, cellSize, cellSize);
 
           if (isMine) {
-            ctx.fillStyle = '#e11d48';
-            ctx.beginPath();
-            ctx.arc(x + cellSize / 2, y + cellSize / 2, cellSize * 0.3, 0, Math.PI * 2);
-            ctx.fill();
+            drawCardSprite(
+              ctx,
+              4,
+              x + 2,
+              y + 2,
+              cellSize - 4,
+              cellSize - 4,
+              {
+                circleClip: true,
+                borderWidth: 1.5,
+                borderColor: '#ef4444',
+                shadowBlur: 4,
+                shadowColor: 'rgba(239, 68, 68, 0.6)',
+              }
+            );
           } else if (num > 0) {
             ctx.font = 'bold 16px monospace';
             ctx.fillStyle = num === 1 ? '#0284c7' : num === 2 ? '#16a34a' : num === 3 ? '#dc2626' : '#9333ea';
@@ -101,15 +114,26 @@ export const MinesweeperGame: React.FC<MinesweeperGameProps> = ({
           ctx.strokeRect(x, y, cellSize, cellSize);
 
           if (state === 'flagged') {
-            ctx.font = '16px monospace';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('🚩', x + cellSize / 2, y + cellSize / 2);
+            drawCardSprite(
+              ctx,
+              playerHeroId,
+              x + 3,
+              y + 3,
+              cellSize - 6,
+              cellSize - 6,
+              {
+                circleClip: true,
+                borderWidth: 1,
+                borderColor: '#3b82f6',
+                shadowBlur: 4,
+                shadowColor: 'rgba(59, 130, 246, 0.5)',
+              }
+            );
           }
         }
       }
     }
-  }, [cellSize]);
+  }, [cellSize, playerHeroId]);
 
   const initGame = useCallback(() => {
     const g = gameRef.current;

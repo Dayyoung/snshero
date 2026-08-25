@@ -4,6 +4,7 @@ import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 
 interface PacmanGameProps {
   deck: CardData[];
@@ -37,7 +38,7 @@ const MAZE: number[][] = [
 ];
 
 export const PacmanGame: React.FC<PacmanGameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -45,6 +46,7 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 21;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef(0);
 
@@ -256,24 +258,47 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
         }
       }
 
-      // Render Pacman
-      ctx.fillStyle = '#facc15';
-      ctx.beginPath();
-      ctx.arc(g.px * CELL_SIZE + CELL_SIZE / 2, g.py * CELL_SIZE + CELL_SIZE / 2, 8, 0, Math.PI * 2);
-      ctx.fill();
+      // Render Pacman Hero (Card Hero Sprite from cards1.png / cards2.png)
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        g.px * CELL_SIZE + 1,
+        g.py * CELL_SIZE + 1,
+        CELL_SIZE - 2,
+        CELL_SIZE - 2,
+        {
+          circleClip: true,
+          borderWidth: 1.5,
+          borderColor: '#facc15',
+          shadowBlur: 6,
+          shadowColor: 'rgba(250, 204, 21, 0.6)',
+        }
+      );
 
-      // Render Ghosts
-      g.ghosts.forEach(ghost => {
-        ctx.fillStyle = g.powerTimer > 0 ? '#38bdf8' : '#f43f5e';
-        ctx.beginPath();
-        ctx.arc(ghost.x * CELL_SIZE + CELL_SIZE / 2, ghost.y * CELL_SIZE + CELL_SIZE / 2, 8, 0, Math.PI * 2);
-        ctx.fill();
+      // Render Ghosts (Card Monster Sprites)
+      g.ghosts.forEach((ghost, idx) => {
+        const ghostMonsterId = g.powerTimer > 0 ? 100 : (idx === 0 ? 4 : 14);
+        drawCardSprite(
+          ctx,
+          ghostMonsterId,
+          ghost.x * CELL_SIZE + 1,
+          ghost.y * CELL_SIZE + 1,
+          CELL_SIZE - 2,
+          CELL_SIZE - 2,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: g.powerTimer > 0 ? '#38bdf8' : '#f43f5e',
+            shadowBlur: 6,
+            shadowColor: g.powerTimer > 0 ? 'rgba(56, 189, 248, 0.6)' : 'rgba(244, 63, 94, 0.6)',
+          }
+        );
       });
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [onReward, playSfx]);
+  }, [onReward, playSfx, playerHeroId]);
 
   const tutorialSteps: TutorialStep[] = [
     {

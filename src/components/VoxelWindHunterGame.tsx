@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
@@ -35,7 +36,7 @@ interface FlyingArrow {
 }
 
 export const VoxelWindHunterGame: React.FC<VoxelWindHunterGameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -43,6 +44,7 @@ export const VoxelWindHunterGame: React.FC<VoxelWindHunterGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 71;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
 
@@ -417,7 +419,13 @@ export const VoxelWindHunterGame: React.FC<VoxelWindHunterGameProps> = ({
       ctx.font = '44px serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('🏹', 0, 0);
+      drawCardSprite(ctx, playerHeroId, -22, -22, 44, 44, {
+        circleClip: true,
+        borderWidth: 2,
+        borderColor: '#fde047',
+        shadowBlur: 14,
+        shadowColor: 'rgba(253, 224, 71, 0.6)',
+      });
       ctx.restore();
 
       // Render Particles

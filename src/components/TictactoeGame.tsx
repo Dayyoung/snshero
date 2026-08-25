@@ -1,9 +1,11 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
+import { getCardSpriteStyle } from '../lib/utils';
 
 interface TictactoeGameProps {
   deck: CardData[];
@@ -18,7 +20,7 @@ type CellValue = '' | 'X' | 'O';
 const BOARD_SIZE = 3;
 
 export const TictactoeGame: React.FC<TictactoeGameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -26,6 +28,7 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 22;
   const [board, setBoard] = useState<CellValue[]>(() => Array(BOARD_SIZE * BOARD_SIZE).fill(''));
   const [turn, setTurn] = useState<'player' | 'ai'>('player');
   const [isPaused, setIsPaused] = useState(false);
@@ -239,10 +242,20 @@ export const TictactoeGame: React.FC<TictactoeGameProps> = ({
               type="button"
               onClick={() => handleCellClick(idx)}
               disabled={cell !== '' || turn !== 'player' || isGameOver || isPaused}
-              className="aspect-square bg-white border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-3xl font-bold rounded-none active:scale-95 transition-all cursor-pointer shadow-xs disabled:cursor-default"
+              className="aspect-square bg-white border border-[rgba(15,0,0,0.15)] flex items-center justify-center rounded-none active:scale-95 transition-all cursor-pointer shadow-xs disabled:cursor-default p-2"
             >
-              {cell === 'X' && <span className="text-cyan-700">X</span>}
-              {cell === 'O' && <span className="text-rose-600">O</span>}
+              {cell === 'X' && (
+                <div 
+                  className="w-14 h-14 rounded-full border-2 border-cyan-600 shadow-md transform hover:scale-105 transition-transform" 
+                  style={getCardSpriteStyle(playerHeroId)} 
+                />
+              )}
+              {cell === 'O' && (
+                <div 
+                  className="w-14 h-14 rounded-full border-2 border-rose-600 shadow-md transform hover:scale-105 transition-transform" 
+                  style={getCardSpriteStyle(22)} 
+                />
+              )}
             </button>
           ))}
         </div>

@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
@@ -21,7 +22,7 @@ interface StackLayer {
 }
 
 export const VoxelTowerStackGame: React.FC<VoxelTowerStackGameProps> = ({
-  deck: _deck,
+  deck = [],
   language = 'ko',
   lowSpecMode = false,
   playSfx,
@@ -29,6 +30,7 @@ export const VoxelTowerStackGame: React.FC<VoxelTowerStackGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 75;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
 

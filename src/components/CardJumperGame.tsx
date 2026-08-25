@@ -5,6 +5,7 @@ import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 
 interface CardJumperGameProps {
   deck: CardData[];
@@ -17,8 +18,8 @@ interface CardJumperGameProps {
 
 const CANVAS_W = 360;
 const CANVAS_H = 640;
-const PLAYER_W = 32;
-const PLAYER_H = 32;
+const PLAYER_W = 34;
+const PLAYER_H = 34;
 const PLATFORM_W = 64;
 const PLATFORM_H = 14;
 const GRAVITY = 0.42;
@@ -33,7 +34,7 @@ interface Platform {
 }
 
 export const CardJumperGame: React.FC<CardJumperGameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -41,6 +42,7 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 11;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef(0);
 
@@ -233,9 +235,23 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
         }
       }
 
-      // Render Player
-      ctx.fillStyle = '#f43f5e';
-      ctx.fillRect(g.playerX - PLAYER_W / 2, g.playerY - PLAYER_H / 2, PLAYER_W, PLAYER_H);
+      // Render Player (Card Hero from cards1.png / cards2.png)
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        g.playerX - PLAYER_W / 2,
+        g.playerY - PLAYER_H / 2,
+        PLAYER_W,
+        PLAYER_H,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#f43f5e',
+          shadowBlur: 10,
+          shadowColor: 'rgba(244, 63, 94, 0.6)',
+          rotation: g.playerVY * 0.03,
+        }
+      );
 
       ctx.restore();
     };
@@ -245,7 +261,7 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
     return () => {
       cancelAnimationFrame(animFrameRef.current);
     };
-  }, [playSfx, onReward]);
+  }, [playSfx, onReward, playerHeroId]);
 
   const tutorialSteps: TutorialStep[] = [
     {

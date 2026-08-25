@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
@@ -26,7 +27,7 @@ interface SlopeObstacle {
 }
 
 export const VoxelSnowboardExtremeGame: React.FC<VoxelSnowboardExtremeGameProps> = ({
-  deck: _deck,
+  deck = [],
   language = 'ko',
   lowSpecMode = false,
   playSfx,
@@ -34,6 +35,7 @@ export const VoxelSnowboardExtremeGame: React.FC<VoxelSnowboardExtremeGameProps>
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 48;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
 

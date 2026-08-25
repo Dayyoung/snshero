@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { cn, getCardSpriteStyle } from '../lib/utils';
@@ -25,7 +26,7 @@ interface GridCell {
 }
 
 export const CardHeistGame: React.FC<CardHeistGameProps> = ({
-  deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -33,6 +34,7 @@ export const CardHeistGame: React.FC<CardHeistGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 17;
   const [grid, setGrid] = useState<GridCell[][]>(() =>
     Array.from({ length: GRID }, () =>
       Array.from({ length: GRID }, (): GridCell => ({ type: 'empty', cardId: 0 }))

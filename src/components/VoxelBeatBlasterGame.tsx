@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
@@ -23,7 +24,7 @@ interface NumberNode {
 }
 
 export const VoxelBeatBlasterGame: React.FC<VoxelBeatBlasterGameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -31,6 +32,7 @@ export const VoxelBeatBlasterGame: React.FC<VoxelBeatBlasterGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 57;
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [grid, setGrid] = useState<NumberNode[][]>([]);

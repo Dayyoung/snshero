@@ -1,3 +1,4 @@
+import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
@@ -29,7 +30,7 @@ interface RoomProp {
 const PROP_ICONS = ['📦', '🪑', '📺', '🌵', '🏺', '🧸', '🧯', '🎁', '⏰', '📻', '💡', '🛋️'];
 
 export const VoxelPropHuntGame: React.FC<VoxelPropHuntGameProps> = ({
-  deck: _deck,
+  deck = [],
   language,
   lowSpecMode = false,
   playSfx,
@@ -37,6 +38,7 @@ export const VoxelPropHuntGame: React.FC<VoxelPropHuntGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || 52;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
 
