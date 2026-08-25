@@ -7651,7 +7651,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelpirate',
-      title: language === 'ko' ? '3D 복셀 해적 함대 함포전' : 'Voxel Pirate Battles',
+      title: language === 'ko' ? '블리츠 파이럿 캐논' : 'Blitz Pirate Cannon',
       icon: Swords,
       color: 'from-amber-800 to-red-800',
       image: '/minigame_defense.png',
@@ -7659,10 +7659,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelpirate');
       },
-      category: '3d',
+      category: 'battle',
       isNew: true,
-      badgeText: '3D CANNON',
-      guide: language === 'ko' ? '해적선을 조종하여 풍향에 맞춰 측면 함포 일제사격으로 적 군함을 격침시키세요.' : 'Naval combat maneuvering warships and firing broadside voxel cannons!'
+      badgeText: 'PIRATE-CANNON',
+      guide: language === 'ko' ? '적 해적선을 직접 탭해 포격하고, 100% 시 아래로 스와이프하세요.' : 'Tap ships to shoot, swipe down at 100% for full broadside salvo!'
     },
     {
       id: 'voxelovercooked',
@@ -11377,7 +11377,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '해적 함대 보상', 'Pirate Battles reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 파이럿 캐논 보상', 'Blitz Pirate Cannon reward')}
       />
     );
   }
