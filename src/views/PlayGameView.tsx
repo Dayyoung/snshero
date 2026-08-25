@@ -7801,7 +7801,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelsuperstrikers',
-      title: language === 'ko' ? '3D 복셀 슈퍼 스트라이커즈' : 'Voxel Super Strikers',
+      title: language === 'ko' ? '블리츠 슈퍼 스트라이커' : 'Blitz Super Striker',
       icon: Trophy,
       color: 'from-emerald-600 to-sky-700',
       image: '/minigame_breakout.png',
@@ -7809,10 +7809,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelsuperstrikers');
       },
-      category: '3d',
+      category: 'sports',
       isNew: true,
-      badgeText: '3D SOCCER',
-      guide: language === 'ko' ? '로켓 부스터와 점프 헤더로 거대 축구공을 상대 골대에 강력하게 차 넣으세요.' : 'Rocket boost and jump header in 3D physics soccer arena!'
+      badgeText: 'SUPER-STRIKER',
+      guide: language === 'ko' ? '축구공을 골대를 향해 손가락으로 쓸어올려 감아차세요.' : 'Swipe soccer ball upward toward the goal to curve shoot!'
     },
     {
       id: 'voxelgladiatorcolosseum',
@@ -11507,7 +11507,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '슈퍼 스트라이커즈 보상', 'Super Strikers reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 슈퍼 스트라이커 보상', 'Blitz Super Striker reward')}
       />
     );
   }
