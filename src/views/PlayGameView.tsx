@@ -7546,18 +7546,18 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelacefighter',
-      title: language === 'ko' ? '3D 복셀 에이스 파이터' : 'Voxel Ace Fighter',
-      icon: Crosshair,
-      color: 'from-sky-600 to-indigo-700',
+      title: language === 'ko' ? '사이버 리듬 블래스터' : 'Cyber Rhythm Blaster',
+      icon: Zap,
+      color: 'from-pink-600 to-cyan-600',
       image: '/minigame_shooting.png',
       characterId: 43,
       action: () => {
         setGameState('voxelacefighter');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D FLIGHT',
-      guide: language === 'ko' ? '전투기를 조종하여 공중 협곡을 비행하며 적 편대기와 거대 비행선을 격추하세요.' : 'High-speed dogfight combat flying through sky canyons and blasting bosses!'
+      badgeText: 'RHYTHM',
+      guide: language === 'ko' ? '4개 레인으로 떨어지는 네온 비트 노트를 타이밍에 맞춰 터치하고 콤보 피버를 폭발시키세요.' : 'Tap neon rhythm beat notes falling in 4 lanes to unleash high-combo fever!'
     },
     {
       id: 'voxeldriftmaster',
@@ -11286,7 +11286,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '에이스 파이터 보상', 'Ace Fighter reward')}
+        onReward={(amount) => handleMinigameReward(amount, '사이버 리듬 블래스터 보상', 'Cyber Rhythm Blaster reward')}
       />
     );
   }
