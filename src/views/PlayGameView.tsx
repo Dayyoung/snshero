@@ -7681,7 +7681,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelprophunt',
-      title: language === 'ko' ? '3D 복셀 사물 프롭 헌트' : 'Voxel Prop Hunt',
+      title: language === 'ko' ? '블리츠 프롭 헌터' : 'Blitz Prop Hunter',
       icon: Ghost,
       color: 'from-purple-600 to-indigo-800',
       image: '/minigame_cardflip.png',
@@ -7689,10 +7689,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelprophunt');
       },
-      category: '3d',
+      category: 'puzzle',
       isNew: true,
-      badgeText: '3D HUNT',
-      guide: language === 'ko' ? '가구나 상자로 변신해 숨거나 헌터가 되어 숨어있는 가짜 사물을 찾아내세요.' : 'Hide and seek game disguising as world props or hunting hidden players!'
+      badgeText: 'PROP-HUNTER',
+      guide: language === 'ko' ? '미세하게 들썩이는 의심스러운 가구를 손가락으로 직접 탭하세요.' : 'Tap subtly wiggling suspicious props on your screen!'
     },
     {
       id: 'voxelquantum',
@@ -11403,7 +11403,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '사물 프롭 헌트 보상', 'Prop Hunt reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 프롭 헌터 보상', 'Blitz Prop Hunter reward')}
       />
     );
   }
