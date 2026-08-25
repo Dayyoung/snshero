@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { CardData } from '../types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
@@ -15,14 +14,15 @@ interface VoxelTerraQuakeGameProps {
   onReward: (amount: number) => void;
 }
 
-interface TileBlock {
-  mesh: THREE.Mesh;
-  gridX: number;
-  gridZ: number;
-  height: number;
-  isFalling: boolean;
-  hasGem: boolean;
-  gemMesh?: THREE.Mesh;
+interface QuakeHazard {
+  id: number;
+  x: number;
+  y: number;
+  type: 'fissure' | 'rock' | 'gem' | 'chest';
+  icon: string;
+  points: number;
+  radius: number;
+  collected: boolean;
 }
 
 export const VoxelTerraQuakeGame: React.FC<VoxelTerraQuakeGameProps> = ({
@@ -31,418 +31,480 @@ export const VoxelTerraQuakeGame: React.FC<VoxelTerraQuakeGameProps> = ({
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
+  const [gemsCollected, setGemsCollected] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
+  const [quakeCombo, setQuakeCombo] = useState<number>(0);
+  const [maxCombo, setMaxCombo] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(35);
+  const [feedbackText, setFeedbackText] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_terra_quake') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_terra_quake') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [score, setScore] = useState<number>(0);
-  const [gemsMined, setGemsMined] = useState<number>(0);
-  const [survivalTime, setSurvivalTime] = useState<number>(0);
-  const targetTime = 45;
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
-    playerX: 0,
-    playerZ: 0,
-    moveDir: new THREE.Vector2(0, 0),
+    survivorX: 180,
+    survivorY: 260,
+    targetX: 180,
+    targetY: 260,
+    hazards: [] as QuakeHazard[],
+    gemsCollected: 0,
     score: 0,
-    gemsMined: 0,
-    survivalTime: 0,
+    combo: 0,
+    maxCombo: 0,
+    timeLeft: 35,
     isGameOver: false,
-    isVictory: false,
     isPaused: false,
     startTime: Date.now(),
-    playerMesh: null as THREE.Group | null,
-    tiles: [] as TileBlock[],
-    scene: null as THREE.Scene | null
+    hazardCounter: 1,
+    spawnTimer: 0,
+    quakeIntensity: 0,
+    particles: [] as { x: number; y: number; vx: number; vy: number; color: string; life: number }[],
   });
 
-  const performStomp = () => {
+  const initGame = useCallback(() => {
     const s = stateRef.current;
-    if (s.isGameOver || s.isVictory || s.isPaused || !s.scene) return;
+    s.survivorX = 180;
+    s.survivorY = 260;
+    s.targetX = 180;
+    s.targetY = 260;
+    s.hazards = [];
+    s.gemsCollected = 0;
+    s.score = 0;
+    s.combo = 0;
+    s.maxCombo = 0;
+    s.timeLeft = 35;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    s.hazardCounter = 1;
+    s.spawnTimer = 0;
+    s.quakeIntensity = 0;
+    s.particles = [];
 
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    // Initial Hazards and Gems
+    s.hazards.push(
+      { id: s.hazardCounter++, x: 100, y: 160, type: 'gem', icon: '💎', points: 350, radius: 22, collected: false },
+      { id: s.hazardCounter++, x: 260, y: 340, type: 'chest', icon: '📦', points: 800, radius: 26, collected: false }
+    );
 
-    // Shatter adjacent gems and stabilize ground
-    s.tiles.forEach(t => {
-      const dist = Math.hypot(t.mesh.position.x - s.playerX, t.mesh.position.z - s.playerZ);
-      if (dist < 3.5 && t.hasGem && t.gemMesh) {
-        t.hasGem = false;
-        s.scene?.remove(t.gemMesh);
-        s.gemsMined += 1;
-        s.score += 200;
-        setGemsMined(s.gemsMined);
-        setScore(s.score);
-        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-      }
-    });
-  };
+    setGemsCollected(0);
+    setScore(0);
+    setQuakeCombo(0);
+    setMaxCombo(0);
+    setTimeLeft(35);
+    setFeedbackText(null);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  }, []);
 
   useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+    initGame();
+  }, [initGame]);
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+  // Timer loop
+  useEffect(() => {
+    if (isGameOver || isPaused) return;
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f1712);
-    scene.fog = new THREE.FogExp2(0x0f1712, 0.025);
-    stateRef.current.scene = scene;
-
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
-    camera.position.set(0, 16, 16);
-    camera.lookAt(0, 0, 0);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    container.appendChild(renderer.domElement);
-
-    const ambientLight = new THREE.AmbientLight(0x84cc16, 0.7);
-    scene.add(ambientLight);
-
-    const dirLight = new THREE.DirectionalLight(0xa3e635, 1.8);
-    dirLight.position.set(10, 20, 10);
-    scene.add(dirLight);
-
-    // Build 7x7 Grid of Floating Terra Tiles
-    const gridSize = 7;
-    const tileSize = 2.0;
-    const tileGeo = new THREE.BoxGeometry(tileSize * 0.9, 1.0, tileSize * 0.9);
-    const tileMat = new THREE.MeshStandardMaterial({ color: 0x365314, roughness: 0.8 });
-    const gemGeo = new THREE.OctahedronGeometry(0.4);
-    const gemMat = new THREE.MeshStandardMaterial({ color: 0xeab308, emissive: 0xca8a04, emissiveIntensity: 0.8 });
-
-    const tiles: TileBlock[] = [];
-    const offset = (gridSize - 1) * tileSize * 0.5;
-
-    for (let x = 0; x < gridSize; x++) {
-      for (let z = 0; z < gridSize; z++) {
-        const mesh = new THREE.Mesh(tileGeo, tileMat);
-        const posX = x * tileSize - offset;
-        const posZ = z * tileSize - offset;
-        mesh.position.set(posX, 0, posZ);
-        scene.add(mesh);
-
-        const hasGem = Math.random() < 0.3;
-        let gemMesh: THREE.Mesh | undefined;
-
-        if (hasGem) {
-          gemMesh = new THREE.Mesh(gemGeo, gemMat);
-          gemMesh.position.set(posX, 0.9, posZ);
-          scene.add(gemMesh);
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          endGame(true);
+          return 0;
         }
-
-        tiles.push({
-          mesh,
-          gridX: x,
-          gridZ: z,
-          height: 0,
-          isFalling: false,
-          hasGem,
-          gemMesh
-        });
-      }
-    }
-    stateRef.current.tiles = tiles;
-
-    // Player Model
-    const pGroup = new THREE.Group();
-    const pBody = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.6, 0.6), new THREE.MeshStandardMaterial({ color: 0x84cc16 }));
-    pBody.position.y = 0.8;
-    pGroup.add(pBody);
-    pGroup.position.set(0, 0.5, 0);
-    scene.add(pGroup);
-    stateRef.current.playerMesh = pGroup;
-
-    // Timer
-    const timerInterval = setInterval(() => {
-      const s = stateRef.current;
-      if (s.isPaused || s.isGameOver) return;
-      s.survivalTime += 1;
-      setSurvivalTime(s.survivalTime);
-      s.score += 20;
-      setScore(s.score);
-
-      // Randomly collapse 1 tile every 3 seconds
-      if (s.survivalTime % 3 === 0) {
-        const unfallen = s.tiles.filter(t => !t.isFalling);
-        if (unfallen.length > 0) {
-          const victim = unfallen[Math.floor(Math.random() * unfallen.length)];
-          victim.isFalling = true;
-        }
-      }
-
-      if (s.survivalTime >= targetTime && !s.isGameOver) {
-        s.isVictory = true;
-        s.isGameOver = true;
-        setIsGameOver(true);
-        const duration = (Date.now() - s.startTime) / 1000;
-        const receipt = calculateAndDepositMissionReward({
-          gameId: 'voxel_terra_quake',
-          gameTitle: '복셀 테라 퀘이크',
-          durationSeconds: duration,
-          score: s.score + 2000,
-          difficulty: 'HARD',
-          isVictory: true
-        });
-        setSettlementReceipt(receipt);
-        onReward(receipt.totalSns);
-      }
+        return t - 1;
+      });
     }, 1000);
 
-    let animId: number;
+    return () => clearInterval(timer);
+  }, [isGameOver, isPaused]);
+
+  // Direct Finger Drag Handlers (Zero Joysticks)
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    s.targetX = Math.max(35, Math.min(325, (e.clientX - rect.left) * scaleX));
+    s.targetY = Math.max(50, Math.min(450, (e.clientY - rect.top) * scaleY));
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    s.targetX = Math.max(35, Math.min(325, (e.clientX - rect.left) * scaleX));
+    s.targetY = Math.max(50, Math.min(450, (e.clientY - rect.top) * scaleY));
+  };
+
+  // Main 60FPS Terra Quake Loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     let lastTime = performance.now();
 
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const s = stateRef.current;
       if (s.isPaused || s.isGameOver) return;
 
-      // Player Movement
-      const speed = 10;
-      s.playerX += s.moveDir.x * speed * dt;
-      s.playerZ += s.moveDir.y * speed * dt;
-      s.playerX = THREE.MathUtils.clamp(s.playerX, -6, 6);
-      s.playerZ = THREE.MathUtils.clamp(s.playerZ, -6, 6);
+      // Survivor Movement Tracking
+      s.survivorX += (s.targetX - s.survivorX) * Math.min(1, dt * 20);
+      s.survivorY += (s.targetY - s.survivorY) * Math.min(1, dt * 20);
 
-      if (pGroup) {
-        pGroup.position.set(s.playerX, 0.5, s.playerZ);
+      // Quake Tremble Effect
+      s.quakeIntensity = Math.sin(now * 0.02) * 3;
+
+      // Spawn Hazards & Items
+      s.spawnTimer += dt;
+      if (s.spawnTimer > 0.75 && s.hazards.length < 7) {
+        s.spawnTimer = 0;
+        const rand = Math.random();
+        const isChest = rand < 0.18;
+        const isGem = rand >= 0.18 && rand < 0.55;
+        const isFissure = rand >= 0.55 && rand < 0.8;
+
+        s.hazards.push({
+          id: s.hazardCounter++,
+          x: 45 + Math.random() * 270,
+          y: 60 + Math.random() * 380,
+          type: isChest ? 'chest' : (isGem ? 'gem' : (isFissure ? 'fissure' : 'rock')),
+          icon: isChest ? '📦' : (isGem ? '💎' : (isFissure ? '🕳️' : '🪨')),
+          points: isChest ? 800 : (isGem ? 350 : -250),
+          radius: isChest ? 26 : (isGem ? 22 : 24),
+          collected: false,
+        });
       }
 
-      // Tile Quake & Collapse Physics
-      s.tiles.forEach(t => {
-        if (t.isFalling) {
-          t.mesh.position.y -= 12 * dt;
-          if (t.gemMesh) t.gemMesh.position.y -= 12 * dt;
+      // Check Collision with Hazards & Items
+      for (let i = s.hazards.length - 1; i >= 0; i--) {
+        const h = s.hazards[i];
+        const dist = Math.hypot(h.x - s.survivorX, h.y - s.survivorY);
 
-          // Check if player stands on falling tile
-          if (Math.abs(s.playerX - t.mesh.position.x) < 0.9 && Math.abs(s.playerZ - t.mesh.position.z) < 0.9) {
-            if (!s.isGameOver) {
-              s.isGameOver = true;
-              setIsGameOver(true);
-              const duration = (Date.now() - s.startTime) / 1000;
-              const receipt = calculateAndDepositMissionReward({
-                gameId: 'voxel_terra_quake',
-                gameTitle: '복셀 테라 퀘이크',
-                durationSeconds: duration,
-                score: s.score,
-                difficulty: 'HARD',
-                isVictory: false
+        if (!h.collected && dist < h.radius + 18) {
+          h.collected = true;
+
+          if (h.type === 'rock' || h.type === 'fissure') {
+            // Hazard hit
+            s.score = Math.max(0, s.score - 250);
+            s.combo = 0;
+            setScore(s.score);
+            setQuakeCombo(0);
+
+            setFeedbackText(isKo ? '지진 균열 충격! 💥' : 'QUAKE CRACK! 💥');
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+            setTimeout(() => setFeedbackText(null), 300);
+
+            // Dust particles
+            for (let p = 0; p < 10; p++) {
+              s.particles.push({
+                x: h.x,
+                y: h.y,
+                vx: (Math.random() - 0.5) * 200,
+                vy: (Math.random() - 0.5) * 200,
+                color: '#78716c',
+                life: 0.4,
               });
-              setSettlementReceipt(receipt);
-              onReward(receipt.totalSns);
+            }
+          } else {
+            // Gem or Chest Collected
+            s.gemsCollected += 1;
+            s.combo += 1;
+            if (s.combo > s.maxCombo) s.maxCombo = s.combo;
+
+            const pts = h.points + s.combo * 40;
+            s.score += pts;
+
+            setGemsCollected(s.gemsCollected);
+            setScore(s.score);
+            setQuakeCombo(s.combo);
+            setMaxCombo(s.maxCombo);
+
+            if (h.type === 'chest') {
+              setFeedbackText(`📦 ANCIENT CHEST! +${pts}P ⚡`);
+              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+            } else {
+              setFeedbackText(`CRYSTAL! 💎 +${pts}P`);
+              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+            }
+            setTimeout(() => setFeedbackText(null), 300);
+
+            // Sparkles
+            for (let p = 0; p < 12; p++) {
+              s.particles.push({
+                x: h.x,
+                y: h.y,
+                vx: (Math.random() - 0.5) * 220,
+                vy: (Math.random() - 0.5) * 220,
+                color: h.type === 'chest' ? '#f59e0b' : '#38bdf8',
+                life: 0.5,
+              });
             }
           }
+
+          s.hazards.splice(i, 1);
+        }
+      }
+
+      // Update Particles
+      for (let i = s.particles.length - 1; i >= 0; i--) {
+        const p = s.particles[i];
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.life -= dt;
+        if (p.life <= 0) s.particles.splice(i, 1);
+      }
+
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Quake Terrain Ground Gradient
+      const groundGrad = ctx.createLinearGradient(0, 0, 0, h);
+      groundGrad.addColorStop(0, '#1c1917');
+      groundGrad.addColorStop(0.5, '#292524');
+      groundGrad.addColorStop(1, '#451a03');
+      ctx.fillStyle = groundGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Cracked Earth Grid
+      ctx.save();
+      ctx.translate(s.quakeIntensity, 0);
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.25)';
+      ctx.lineWidth = 2;
+      for (let x = 40; x < w; x += 60) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+      for (let y = 40; y < h; y += 60) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // Render Hazards & Items
+      s.hazards.forEach((haz) => {
+        if (!haz.collected) {
+          ctx.save();
+          ctx.translate(haz.x, haz.y);
+          if (haz.type === 'chest') {
+            ctx.shadowColor = '#f59e0b';
+            ctx.shadowBlur = 18;
+          } else if (haz.type === 'gem') {
+            ctx.shadowColor = '#38bdf8';
+            ctx.shadowBlur = 15;
+          }
+          ctx.font = `${haz.radius * 1.8}px serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(haz.icon, 0, 0);
+          ctx.restore();
         }
       });
 
-      renderer.render(scene, camera);
+      // Render Survivor Hero (🧗)
+      ctx.save();
+      ctx.translate(s.survivorX, s.survivorY);
+      ctx.shadowColor = '#38bdf8';
+      ctx.shadowBlur = 18;
+      ctx.font = '38px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🧗', 0, 0);
+      ctx.restore();
+
+      // Render Particles
+      s.particles.forEach((p) => {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 4, 4);
+      });
     };
 
-    animId = requestAnimationFrame(animate);
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, [isKo, playSfx]);
 
-    return () => {
-      clearInterval(timerInterval);
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-    };
-  }, [lowSpecMode]);
-
-  const handleRestart = () => {
+  const endGame = (isWin: boolean) => {
     const s = stateRef.current;
-    s.playerX = 0;
-    s.playerZ = 0;
-    s.score = 0;
-    s.gemsMined = 0;
-    s.survivalTime = 0;
-    s.isGameOver = false;
-    s.isVictory = false;
-    s.startTime = Date.now();
-    s.tiles.forEach(t => {
-      t.isFalling = false;
-      t.mesh.position.y = 0;
-      if (t.gemMesh) {
-        t.gemMesh.position.y = 0.9;
-        t.hasGem = true;
-        s.scene?.add(t.gemMesh);
-      }
+    if (s.isGameOver) return;
+    s.isGameOver = true;
+    setIsGameOver(true);
+
+    if (isWin) {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    } else {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+
+    const duration = (Date.now() - s.startTime) / 1000;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'arcade_terra_quake',
+      gameTitle: '블리츠 테라 퀘이크',
+      durationSeconds: duration,
+      score: s.score + (isWin ? 3500 : s.gemsCollected * 300) + s.maxCombo * 40,
+      difficulty: 'NIGHTMARE',
+      isVictory: isWin || s.gemsCollected >= 8,
     });
-    setScore(0);
-    setGemsMined(0);
-    setSurvivalTime(0);
-    setIsGameOver(false);
-    setSettlementReceipt(null);
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
   };
 
-  const customTutorialSteps: TutorialStep[] = [
+  const tutorialSteps: TutorialStep[] = [
     {
-      badge: isKo ? 'STEP 1: 지반 붕괴 서바이벌' : 'STEP 1: TERRA SURVIVAL',
-      title: isKo ? '45초 생존 & 대지 보석 채굴' : 'Survive 45s & Mine Gems',
+      badge: isKo ? 'STEP 1: 손가락 드래그 지진 생존' : 'STEP 1: DRAG & SURVIVE QUAKE',
+      title: isKo ? '생존자를 손가락으로 드래그해 균열을 피하고 보석을 캐세요' : 'Drag survivor to dodge quake fissures and gather ancient gems',
       description: isKo
-        ? '무너져 내리는 7x7 테라 지반 위에서 살아남고 보석을 채굴하여 45초 동안 생존하세요.'
-        : 'Survive across collapsing 7x7 terra tiles and mine gems for 45s.',
+        ? '가상 조이스틱 없이 화면의 생존자(🧗)를 손가락으로 직접 드래그하여 지진 균열(🕳️)과 낙석(🪨)을 피하고 고대 크리스탈(💎)과 보물 상자(📦)를 수집하세요.'
+        : 'Slide your finger to guide the survivor, dodging fissures while collecting crystals and treasure chests.',
       keyPoints: isKo
         ? [
-            '45초 생존 성공 시 즉시 승리',
-            '붕괴되는 타일 위에서 신속 대피',
-            '보석 채굴 시 +200P 가산점'
+            '가상 조이스틱 0개 (100% 손가락 직접 2D 드래그 이동)',
+            '보물 상자(📦) 획득 시 800P 잭팟 대박 보너스',
+            '35초간 최대 콤보로 붕괴 지반에서 살아남아 올클리어'
           ]
         : [
-            'Survive 45s to win',
-            'Evacuate collapsing tiles immediately',
-            '+200P for each gem mined'
+            'Zero Virtual Joysticks: 100% Direct Finger Drag',
+            'Treasure Chests (📦) award 800P survival jackpots',
+            'Maintain continuous survival combos within 35s'
           ],
-      iconType: 'GOAL'
+      iconType: 'GOAL',
     },
     {
-      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
-      title: isKo ? '드래그 이동 & 탭 어스 스톰프' : 'Drag Move & Tap Stomp',
+      badge: isKo ? 'STEP 2: 모바일 퓨어 제스처' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '화면 직접 자유 드래그 (Direct Finger Drag)' : 'Direct Drag Gesture',
       description: isKo
-        ? '가상 D-Pad 없이 화면 드래그로 안전한 지반을 찾아 이동하고, 탭하여 어스 스톰프로 보석을 채굴합니다.'
-        : 'Drag anywhere to move across tiles and tap to terra stomp and mine gems with zero buttons.',
+        ? '손가락을 원하는 위치로 부드럽게 밀어 생존 경로를 제어합니다.'
+        : 'Slide your thumb smoothly anywhere on the terrain.',
       keyPoints: isKo
         ? [
-            '👆 드래그: 안전한 지반 360° 이동',
-            '💥 탭: 어스 스톰프 광역 보석 채굴',
-            '⚡ 붕괴 직전 지반 탈출 타이밍'
+            '👆 자유 드래그: 60FPS 즉각 반응 초정밀 회피 기동',
+            '💎 연속 수집 시 테라 콤보 배수 보너스',
+            '⏱️ 35초 타임어택 고득점 챌린지'
           ]
         : [
-            '👆 Drag: Smooth 360° tile move',
-            '💥 Tap: Terra stomp area mining',
-            '⚡ Evacuate before tile plunges'
+            '👆 Free Drag: Instant responsive dodging control',
+            '💎 Consecutive collects grant quake combo multipliers',
+            '⏱️ 35s time attack terra quake sprint'
           ],
-      iconType: 'GESTURES'
+      iconType: 'GESTURES',
     },
     {
       badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
       title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
       description: isKo
-        ? '서바이벌 성공 즉시 HARD 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
-        : 'Standard payout scaled with Hard multiplier deposited atomically to your wallet.',
+        ? '생존 완료 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon match finish.',
       keyPoints: isKo
         ? [
-            '승리 즉시 LocalStorage 영구 지갑 입금',
-            '채굴 보석 및 생존 시간 보너스',
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '수집한 보석 수 및 상자 개수 비례 대량 잭팟',
             'VictoryRewardModal 2초 황금 코인 팡파레'
           ]
         : [
             'Instant atomic deposit to LocalStorage wallet',
-            'Gems and survival duration bonuses',
+            'Collected gems count and chest multipliers',
             'VictoryRewardModal golden coin fanfare'
           ],
-      iconType: 'REWARDS'
-    }
+      iconType: 'REWARDS',
+    },
   ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
-
+    <div className="relative w-full h-[100dvh] bg-[#1c1917] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none">
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
       <MinimalistMissionHUD
-        title={isKo ? '복셀 테라 퀘이크' : 'Voxel Terra Quake'}
-        language={language}
+        title={isKo ? '블리츠 테라 퀘이크' : 'Blitz Terra Quake'}
+        language={(language as Language) || 'ko'}
         telemetries={[
-          { label: isKo ? '시간' : 'Time', value: `${survivalTime}s/${targetTime}s`, color: survivalTime >= targetTime ? 'text-emerald-400 font-bold' : 'text-lime-300' },
-          { label: isKo ? '보석' : 'Gems', value: `${gemsMined}개`, color: 'text-amber-300' },
-          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-yellow-300' }
+          { label: isKo ? '보석' : 'Gems', value: `${gemsCollected}개`, color: 'text-amber-400 font-bold' },
+          { label: isKo ? '콤보' : 'Combo', value: `${quakeCombo}x`, color: quakeCombo > 2 ? 'text-amber-300 font-bold animate-bounce' : 'text-slate-300' },
+          { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 10 ? 'text-rose-500 font-bold animate-pulse' : 'text-cyan-400 font-bold' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          stateRef.current.isPaused = !isPaused;
-        }}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
         isPaused={isPaused}
       />
 
-      {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div
-          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
-          style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const startX = e.clientX - rect.left;
-            const startY = e.clientY - rect.top;
-            let moved = false;
-
-            const onMove = (moveEvt: PointerEvent) => {
-              const curX = moveEvt.clientX - rect.left;
-              const curY = moveEvt.clientY - rect.top;
-              const dx = curX - startX;
-              const dy = curY - startY;
-
-              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
-                moved = true;
-                stateRef.current.moveDir.x = Math.abs(dx) > 8 ? (dx > 0 ? 1 : -1) : 0;
-                stateRef.current.moveDir.y = Math.abs(dy) > 8 ? (dy > 0 ? 1 : -1) : 0;
-              }
-            };
-
-            const onUp = () => {
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-              window.removeEventListener('pointercancel', onUp);
-              stateRef.current.moveDir.set(0, 0);
-
-              if (!moved) {
-                // Tap: Terra Stomp
-                performStomp();
-              }
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-          }}
+      {/* Pure Touch Terra Quake Canvas Viewport */}
+      <div className="flex-1 w-full max-w-md relative overflow-hidden flex items-center justify-center select-none touch-none p-2">
+        <canvas
+          ref={canvasRef}
+          width={360}
+          height={500}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          className="w-full h-full object-contain touch-none cursor-pointer shadow-2xl"
         />
-      )}
+
+        {/* Floating Feedback Text */}
+        {feedbackText && (
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 pointer-events-none text-base font-bold text-amber-300 drop-shadow-lg animate-bounce whitespace-nowrap bg-black/60 px-4 py-1 rounded-full border border-amber-400/30">
+            {feedbackText}
+          </div>
+        )}
+      </div>
 
       {/* Minimal Bottom Guide */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/75 border border-lime-500/30 rounded-full text-[10px] text-lime-300 font-mono backdrop-blur-xs">
-          {isKo ? '화면 드래그: 지반 이동 | 탭: 어스 스톰프 채굴 (버튼 없음)' : 'Drag: Move on Tiles | Tap: Terra Stomp (No Buttons)'}
+      <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono">
+          {isKo ? '손가락으로 생존자를 드래그해 균열을 피하고 크리스탈을 수집하세요' : 'Drag survivor to dodge fissures and gather ancient gems'}
         </div>
       </div>
 
       {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
         <UniversalTutorialModal
-          gameId="voxel_terra_quake"
-          gameTitle={isKo ? '3D 복셀 테라 퀘이크: 지반 붕괴 서바이벌' : 'Voxel Terra Quake: Ground Collapse'}
-          customSteps={customTutorialSteps}
-          language={language}
+          gameId="arcade_terra_quake"
+          gameTitle={isKo ? '블리츠 테라: 지진 서바이벌' : 'Blitz Terra: Quake Survival'}
+          customSteps={tutorialSteps}
+          language={(language as Language) || 'ko'}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}
         />
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
         <VictoryRewardModal
           receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
+          language={(language as Language) || 'ko'}
+          onPlayAgain={initGame}
           onExit={onExit}
         />
       )}

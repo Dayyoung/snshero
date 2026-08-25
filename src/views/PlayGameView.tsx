@@ -8491,7 +8491,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelterraquake',
-      title: language === 'ko' ? '3D 복셀 테라 퀘이크: 지반 붕괴 서바이벌' : 'Voxel Terra Quake: Ground Survival',
+      title: language === 'ko' ? '블리츠 테라 퀘이크' : 'Blitz Terra Quake',
       icon: Trophy,
       color: 'from-lime-800 to-emerald-900',
       image: '/minigame_boss.png',
@@ -8499,10 +8499,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelterraquake');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D QUAKE',
-      guide: language === 'ko' ? '무너지는 3D 지반 타일 위에서 지진 충격파를 발동해 암석을 분쇄하고 대지의 고대 보석을 채굴하며 생존하세요.' : 'Survive on shaking collapsible ground tiles, trigger earth shockwaves, and mine ancient gems!'
+      badgeText: 'TERRA-QUAKE',
+      guide: language === 'ko' ? '손가락으로 생존자를 드래그해 균열을 피하고 크리스탈을 수집하세요.' : 'Drag survivor to dodge fissures and gather ancient gems!'
     },
     {
       id: 'voxeldreamweaver',
@@ -12105,7 +12105,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '테라 퀘이크 보상', 'Terra Quake reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 테라 퀘이크 보상', 'Blitz Terra Quake reward')}
       />
     );
   }
