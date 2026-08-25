@@ -7591,7 +7591,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelcyberninja',
-      title: language === 'ko' ? '3D 복셀 사이버 닌자' : 'Voxel Cyber Ninja',
+      title: language === 'ko' ? '블리츠 섀도우 듀얼' : 'Blitz Shadow Duel',
       icon: Skull,
       color: 'from-slate-800 to-zinc-950',
       image: '/minigame_cardheist.png',
@@ -7599,10 +7599,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelcyberninja');
       },
-      category: '3d',
+      category: 'battle',
       isNew: true,
-      badgeText: '3D STEALTH',
-      guide: language === 'ko' ? '적 감시 시야와 레이저 트랩을 피해 그림자 속에 숨어 잠입 암살하고 기밀을 탈취하세요.' : 'Stealth infiltration ninja game with shadow hiding and silent takedowns!'
+      badgeText: 'PARRY-DUEL',
+      guide: language === 'ko' ? '4방향에서 돌진해오는 그림자 적을 타이밍에 맞춰 해당 방향 탭으로 패링 반격하세요.' : 'Tap matching screen quadrants in time to parry incoming shadow attackers!'
     },
     {
       id: 'voxelraftsurvival',
@@ -11325,7 +11325,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '사이버 닌자 보상', 'Cyber Ninja reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 섀도우 듀얼 보상', 'Blitz Shadow Duel reward')}
       />
     );
   }

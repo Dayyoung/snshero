@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-08-25 13:11 KST / 04:11 UTC] [/imp-mission 제14회차 3D 복셀 폐기 및 신규 배틀 패링 액션 게임 개발 완료]
+- **심사 대상 게임**: `src/components/VoxelCyberNinjaGame.tsx` (14 / 78)
+  - **심사 결과**: **폐기 (DECOMMISSION)** (3D 탑다운 닌자의 가상 D-Pad 양손 조작 불편함 및 닌자 칼질 장르 중복)
+  - **신규 대체 개발**: **블리츠 섀도우 듀얼 (`BlitzShadowDuel` - 배틀/패링 액션)**
+  - **신규 게임 특징**: 가상 조이스틱 0개 (100% 모바일 퓨어 터치), 화면 4방향(상/하/좌/우)에서 돌진해오는 그림자 적 닌자들을 파란색 타이밍 링에 맞춰 해당 방향 화면을 탭(Direct Quadrant Tap)하여 패링 반격(Just Parry Strike)을 날리는 박진감 넘치는 반사신경 배틀, 퍼펙트 패링 콤보 배수, 35초 타임어택 고득점 챌린지, 1줄 슬림 HUD, 3단계 온보딩, VictoryRewardModal 확정 보상 정산 완벽 내장
+  - **메뉴 및 검색 연동**: `PlayGameView.tsx` 메뉴 메타데이터(타이틀: '블리츠 섀도우 듀얼', 카테고리: 'battle', 배지: 'PARRY-DUEL', 가이드, 보상 알림, 검색 키워드) 100% 동기화 등록 완료
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 3D 복셀(VoxelCyberNinja) 폐기 및 신규 배틀 패링 액션 게임(블리츠 섀도우 듀얼) 개발 대체 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 13:01 KST / 04:01 UTC] [/imp-mission 제13회차 3D 복셀 폐기 및 신규 스피드 레이싱 게임 개발 완료]
 - **심사 대상 게임**: `src/components/VoxelCrazyTaxiGame.tsx` (13 / 78)
   - **심사 결과**: **폐기 (DECOMMISSION)** (3D 크레이지 택시의 과도한 가상 버튼 조작, 시야 가림 및 3D 멀미 유발)
