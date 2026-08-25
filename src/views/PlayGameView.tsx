@@ -8011,7 +8011,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelmonstertruck',
-      title: language === 'ko' ? '3D 복셀 몬스터 트럭 스매시' : 'Voxel Monster Truck Smash',
+      title: language === 'ko' ? '블리츠 몬스터 트럭' : 'Blitz Monster Truck',
       icon: ShieldAlert,
       color: 'from-orange-600 to-red-900',
       image: '/minigame_tankbounce.png',
@@ -8019,10 +8019,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelmonstertruck');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D SMASH',
-      guide: language === 'ko' ? '초대형 66인치 몬스터 트럭으로 폐차 바리케이드를 짓밟고 니트로 점프를 작렬하세요.' : 'Crush scrap car ramps with massive 66-inch wheels and detonate nitro boost!'
+      badgeText: 'MONSTER-TRUCK',
+      guide: language === 'ko' ? '손가락으로 트럭을 좌우 드래그해 폐차를 짓밟고 점프 램프를 타세요.' : 'Drag truck left & right to crush scrap cars and launch off ramps!'
     },
     {
       id: 'voxeltowerstack',
@@ -11689,7 +11689,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '몬스터 트럭 보상', 'Monster Truck Smash reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 몬스터 트럭 보상', 'Blitz Monster Truck reward')}
       />
     );
   }
