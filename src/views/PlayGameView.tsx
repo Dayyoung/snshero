@@ -8086,7 +8086,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxeljetskiwater',
-      title: language === 'ko' ? '3D 복셀 제트스키 워터 레이스' : 'Voxel Jetski Aqua Race',
+      title: language === 'ko' ? '블리츠 제트스키' : 'Blitz Jetski Surf',
       icon: Waves,
       color: 'from-cyan-600 to-blue-800',
       image: '/minigame_deepsea.png',
@@ -8094,10 +8094,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxeljetskiwater');
       },
-      category: '3d',
+      category: 'sports',
       isNew: true,
-      badgeText: '3D JETSKI',
-      guide: language === 'ko' ? '수면 카빙 턴과 파도 점프 360도 에어 스핀 트릭, 하이드로 터보로 부표 코스를 질주하세요.' : 'Carve turns, leap over wave crests with 360° air spins, and blast hydro turbo!'
+      badgeText: 'JETSKI-SURF',
+      guide: language === 'ko' ? '화면을 좌우로 드래그해 부표 사이를 통과하고 파도 점프대와 터보로 질주하세요.' : 'Drag horizontally to weave through buoys, hit wave ramps and blast turbo!'
     },
     {
       id: 'voxelbaseballderby',
@@ -11754,7 +11754,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '제트스키 워터 레이스 보상', 'Jetski Aqua Race reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 제트스키 보상', 'Blitz Jetski Surf reward')}
       />
     );
   }
