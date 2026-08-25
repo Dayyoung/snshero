@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
-import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
@@ -15,12 +14,14 @@ interface VoxelSkyParkourGameProps {
   onReward: (amount: number) => void;
 }
 
-interface PlatformData {
+interface SkyStep {
   id: number;
-  mesh: THREE.Mesh;
-  type: 'normal' | 'slime' | 'ice' | 'checkpoint' | 'goal';
-  pos: THREE.Vector3;
-  size: THREE.Vector3;
+  lane: number; // 0: Left, 1: Center, 2: Right
+  y: number;
+  type: 'normal' | 'cloud' | 'gem' | 'goal';
+  icon: string;
+  points: number;
+  radius: number;
 }
 
 export const VoxelSkyParkourGame: React.FC<VoxelSkyParkourGameProps> = ({
@@ -29,362 +30,450 @@ export const VoxelSkyParkourGame: React.FC<VoxelSkyParkourGameProps> = ({
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
+  const [stepsClimbed, setStepsClimbed] = useState<number>(0);
+  const maxSteps = 25;
+  const [score, setScore] = useState<number>(0);
+  const [parkourCombo, setParkourCombo] = useState<number>(0);
+  const [maxCombo, setMaxCombo] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(35);
+  const [feedbackText, setFeedbackText] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_sky_parkour') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_sky_parkour') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [stageProgress, setStageProgress] = useState<number>(0);
-  const totalPlatforms = 25;
-  const [elapsedTime, setElapsedTime] = useState<number>(0);
-  const [fallsCount, setFallsCount] = useState<number>(0);
-  const [score, setScore] = useState<number>(0);
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
+  const laneX = [90, 180, 270];
+
   const stateRef = useRef({
-    posX: 0,
-    posY: 1.5,
-    posZ: 0,
-    velX: 0,
-    velY: 0,
-    velZ: 0,
-    isGrounded: true,
-    moveDir: new THREE.Vector2(0, 0),
-    stageProgress: 0,
-    fallsCount: 0,
+    steps: [] as SkyStep[],
+    currentStepIdx: 0,
+    playerLane: 1,
+    playerY: 420,
+    jumpAnim: 0,
+    stepsClimbed: 0,
     score: 0,
+    combo: 0,
+    maxCombo: 0,
+    timeLeft: 35,
     isGameOver: false,
-    isVictory: false,
     isPaused: false,
     startTime: Date.now(),
-    lastCheckpoint: new THREE.Vector3(0, 1.5, 0),
-    playerMesh: null as THREE.Group | null,
-    platforms: [] as PlatformData[],
-    scene: null as THREE.Scene | null
+    particles: [] as { x: number; y: number; vx: number; vy: number; color: string; life: number }[],
   });
 
-  const jump = () => {
-    const s = stateRef.current;
-    if (!s.isGrounded || s.isGameOver || s.isVictory || s.isPaused) return;
-    s.velY = 12;
-    s.isGrounded = false;
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-  };
+  const setupSkySteps = useCallback(() => {
+    const steps: SkyStep[] = [];
+    let curLane = 1;
 
-  useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
-
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
-
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x38bdf8);
-    scene.fog = new THREE.Fog(0x38bdf8, 30, 80);
-    stateRef.current.scene = scene;
-
-    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 200);
-    camera.position.set(0, 5, 8);
-    camera.lookAt(0, 1, 0);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    container.appendChild(renderer.domElement);
-
-    const ambient = new THREE.AmbientLight(0xffffff, 0.8);
-    scene.add(ambient);
-
-    const sun = new THREE.DirectionalLight(0xffffff, 1.2);
-    sun.position.set(20, 40, 20);
-    scene.add(sun);
-
-    // Player Model
-    const pGroup = new THREE.Group();
-    const pBody = new THREE.Mesh(new THREE.BoxGeometry(0.7, 1.4, 0.7), new THREE.MeshStandardMaterial({ color: 0x6366f1 }));
-    pBody.position.y = 0.7;
-    pGroup.add(pBody);
-    pGroup.position.set(0, 1.5, 0);
-    scene.add(pGroup);
-    stateRef.current.playerMesh = pGroup;
-
-    // Generate 25 Sky Parkour Platforms
-    stateRef.current.platforms = [];
-    let curX = 0;
-    let curY = 0;
-    let curZ = 0;
-
-    for (let i = 0; i < totalPlatforms; i++) {
-      let type: PlatformData['type'] = 'normal';
-      let color = 0x64748b;
-
-      if (i === 0) {
-        type = 'checkpoint';
-        color = 0x22c55e;
-      } else if (i === totalPlatforms - 1) {
-        type = 'goal';
-        color = 0xf59e0b;
-      } else if (i % 8 === 0) {
-        type = 'checkpoint';
-        color = 0x3b82f6;
-      } else if (i % 4 === 0) {
-        type = 'slime';
-        color = 0x10b981;
+    for (let i = 0; i < maxSteps; i++) {
+      if (i > 0) {
+        // Random step in adjacent or same lane
+        const choices = [0, 1, 2].filter((l) => Math.abs(l - curLane) <= 1);
+        curLane = choices[Math.floor(Math.random() * choices.length)];
       }
 
-      const pSize = new THREE.Vector3(3.0, 0.8, 3.0);
-      const pMesh = new THREE.Mesh(
-        new THREE.BoxGeometry(pSize.x, pSize.y, pSize.z),
-        new THREE.MeshStandardMaterial({ color, roughness: 0.5 })
-      );
-      pMesh.position.set(curX, curY, curZ);
-      scene.add(pMesh);
+      const isGoal = i === maxSteps - 1;
+      const isGem = (i + 1) % 4 === 0;
+      const isCloud = (i + 1) % 3 === 0;
 
-      stateRef.current.platforms.push({
-        id: i,
-        mesh: pMesh,
-        type,
-        pos: new THREE.Vector3(curX, curY, curZ),
-        size: pSize
+      steps.push({
+        id: i + 1,
+        lane: curLane,
+        y: 420 - i * 75,
+        type: isGoal ? 'goal' : (isGem ? 'gem' : (isCloud ? 'cloud' : 'normal')),
+        icon: isGoal ? '🏆' : (isGem ? '💎' : (isCloud ? '☁️' : '🧱')),
+        points: isGoal ? 1500 : (isGem ? 400 : 250),
+        radius: 28,
       });
-
-      // Next platform step
-      curZ -= 5.5 + Math.random() * 2.0;
-      curX += (Math.random() - 0.5) * 4.0;
-      curY += (Math.random() - 0.2) * 1.5;
     }
+    return steps;
+  }, []);
 
-    // Timer
-    const timerInterval = setInterval(() => {
-      const s = stateRef.current;
-      if (s.isPaused || s.isGameOver) return;
-      const elapsed = Math.floor((Date.now() - s.startTime) / 1000);
-      setElapsedTime(elapsed);
+  const initGame = useCallback(() => {
+    const s = stateRef.current;
+    s.steps = setupSkySteps();
+    s.currentStepIdx = 0;
+    s.playerLane = s.steps[0].lane;
+    s.playerY = 420;
+    s.jumpAnim = 0;
+    s.stepsClimbed = 0;
+    s.score = 0;
+    s.combo = 0;
+    s.maxCombo = 0;
+    s.timeLeft = 35;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    s.particles = [];
+
+    setStepsClimbed(0);
+    setScore(0);
+    setParkourCombo(0);
+    setMaxCombo(0);
+    setTimeLeft(35);
+    setFeedbackText(null);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  }, [setupSkySteps]);
+
+  useEffect(() => {
+    initGame();
+  }, [initGame]);
+
+  // Timer loop
+  useEffect(() => {
+    if (isGameOver || isPaused) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          endGame(true);
+          return 0;
+        }
+        return t - 1;
+      });
     }, 1000);
 
-    let animId: number;
+    return () => clearInterval(timer);
+  }, [isGameOver, isPaused]);
+
+  // Direct Tap Platform Jump (Zero Joysticks)
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+
+    const tapX = (e.clientX - rect.left) * scaleX;
+
+    // Detect tapped lane (0, 1, 2)
+    let tappedLane = 1;
+    if (tapX < 135) tappedLane = 0;
+    else if (tapX > 225) tappedLane = 2;
+
+    const nextStep = s.steps[s.currentStepIdx + 1];
+
+    if (nextStep && nextStep.lane === tappedLane) {
+      // Correct step jump!
+      s.currentStepIdx += 1;
+      s.playerLane = tappedLane;
+      s.jumpAnim = 1;
+      s.stepsClimbed += 1;
+      s.combo += 1;
+      if (s.combo > s.maxCombo) s.maxCombo = s.combo;
+
+      const pts = nextStep.points + s.combo * 40;
+      s.score += pts;
+
+      setStepsClimbed(s.stepsClimbed);
+      setScore(s.score);
+      setParkourCombo(s.combo);
+      setMaxCombo(s.maxCombo);
+
+      setFeedbackText(`PERFECT JUMP! ${nextStep.icon} +${pts}P ✨`);
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+      setTimeout(() => setFeedbackText(null), 300);
+
+      // Jump Sparkles
+      for (let p = 0; p < 8; p++) {
+        s.particles.push({
+          x: laneX[tappedLane],
+          y: s.playerY,
+          vx: (Math.random() - 0.5) * 200,
+          vy: -Math.random() * 150,
+          color: '#38bdf8',
+          life: 0.4,
+        });
+      }
+
+      if (nextStep.type === 'goal' || s.stepsClimbed >= maxSteps) {
+        endGame(true);
+      }
+    } else {
+      // Wrong lane miss
+      s.combo = 0;
+      setParkourCombo(0);
+      setFeedbackText(isKo ? '발판 빗나감! ❌' : 'MISSED PLATFORM! ❌');
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+      setTimeout(() => setFeedbackText(null), 300);
+    }
+  };
+
+  // Main 60FPS Sky Parkour Loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     let lastTime = performance.now();
 
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const s = stateRef.current;
       if (s.isPaused || s.isGameOver) return;
 
-      // Horizontal movement
-      const speed = 8;
-      s.posX += s.moveDir.x * speed * dt;
-      s.posZ += s.moveDir.y * speed * dt;
+      if (s.jumpAnim > 0) s.jumpAnim -= dt * 5;
 
-      // Gravity & Vertical physics
-      s.velY -= 28 * dt;
-      s.posY += s.velY * dt;
+      // Update Particles
+      for (let i = s.particles.length - 1; i >= 0; i--) {
+        const p = s.particles[i];
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.life -= dt;
+        if (p.life <= 0) s.particles.splice(i, 1);
+      }
 
-      // Check Platform Collisions
-      s.isGrounded = false;
-      for (const p of s.platforms) {
-        const minX = p.pos.x - p.size.x / 2 - 0.3;
-        const maxX = p.pos.x + p.size.x / 2 + 0.3;
-        const minZ = p.pos.z - p.size.z / 2 - 0.3;
-        const maxZ = p.pos.z + p.size.z / 2 + 0.3;
-        const topY = p.pos.y + p.size.y / 2;
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
 
-        if (s.posX >= minX && s.posX <= maxX && s.posZ >= minZ && s.posZ <= maxZ) {
-          if (s.posY >= topY && s.posY <= topY + 0.8 && s.velY <= 0) {
-            s.posY = topY;
-            s.velY = 0;
-            s.isGrounded = true;
+      // Sky Blue Atmosphere Background
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
+      skyGrad.addColorStop(0, '#0284c7');
+      skyGrad.addColorStop(0.5, '#38bdf8');
+      skyGrad.addColorStop(1, '#bae6fd');
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, w, h);
 
-            if (p.type === 'slime') {
-              s.velY = 18;
-              s.isGrounded = false;
-              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-            } else if (p.type === 'checkpoint') {
-              s.lastCheckpoint.set(p.pos.x, topY + 1.0, p.pos.z);
-            } else if (p.type === 'goal' && !s.isGameOver) {
-              s.isVictory = true;
-              s.isGameOver = true;
-              setIsGameOver(true);
-              const duration = (Date.now() - s.startTime) / 1000;
-              const receipt = calculateAndDepositMissionReward({
-                gameId: 'voxel_sky_parkour',
-                gameTitle: '복셀 스카이 파쿠르',
-                durationSeconds: duration,
-                score: s.score + 2500,
-                difficulty: 'HARD',
-                isVictory: true
-              });
-              setSettlementReceipt(receipt);
-              onReward(receipt.totalSns);
-            }
+      // Camera Follow Y (Smooth Scrolling)
+      const scrollOffsetY = s.currentStepIdx * 75;
 
-            s.stageProgress = Math.max(s.stageProgress, p.id);
-            setStageProgress(s.stageProgress);
-            s.score = s.stageProgress * 120;
-            setScore(s.score);
-            break;
+      // Render 3 Lane Guidelines
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([8, 8]);
+      laneX.forEach((lx) => {
+        ctx.beginPath();
+        ctx.moveTo(lx, 0);
+        ctx.lineTo(lx, h);
+        ctx.stroke();
+      });
+      ctx.setLineDash([]);
+
+      // Render Sky Steps
+      s.steps.forEach((st, idx) => {
+        const renderY = st.y + scrollOffsetY;
+        if (renderY > -50 && renderY < h + 50) {
+          ctx.save();
+          ctx.translate(laneX[st.lane], renderY);
+
+          const isCurrent = idx === s.currentStepIdx;
+          const isNext = idx === s.currentStepIdx + 1;
+
+          if (isNext) {
+            ctx.shadowColor = '#fde047';
+            ctx.shadowBlur = 15;
           }
+
+          // Platform Base
+          ctx.fillStyle = isCurrent ? '#047857' : (isNext ? '#0284c7' : '#1e293b');
+          ctx.beginPath();
+          ctx.arc(0, 0, st.radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = isNext ? '#fde047' : '#ffffff';
+          ctx.lineWidth = 2.5;
+          ctx.stroke();
+
+          ctx.font = `${st.radius * 1.3}px serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(st.icon, 0, 0);
+
+          ctx.restore();
         }
-      }
+      });
 
-      // Check Fall below void
-      if (s.posY < -15) {
-        s.fallsCount += 1;
-        setFallsCount(s.fallsCount);
-        s.posX = s.lastCheckpoint.x;
-        s.posY = s.lastCheckpoint.y;
-        s.posZ = s.lastCheckpoint.z;
-        s.velY = 0;
-        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2658/2658-preview.mp3');
-      }
+      // Render Parkour Hero (Jumping Animation)
+      const curX = laneX[s.playerLane];
+      const jumpOffset = Math.sin(s.jumpAnim * Math.PI) * 22;
 
-      if (pGroup) {
-        pGroup.position.set(s.posX, s.posY, s.posZ);
-      }
+      ctx.save();
+      ctx.translate(curX, s.playerY - jumpOffset);
+      ctx.shadowColor = '#fde047';
+      ctx.shadowBlur = 18;
+      ctx.font = '36px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🏃', 0, 0);
+      ctx.restore();
 
-      // Camera follow
-      camera.position.set(s.posX, s.posY + 4.5, s.posZ + 7.5);
-      camera.lookAt(s.posX, s.posY + 0.8, s.posZ - 5);
-
-      renderer.render(scene, camera);
+      // Render Particles
+      s.particles.forEach((p) => {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 4, 4);
+      });
     };
 
-    animId = requestAnimationFrame(animate);
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, [laneX]);
 
-    return () => {
-      clearInterval(timerInterval);
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-    };
-  }, [lowSpecMode]);
-
-  const handleRestart = () => {
+  const endGame = (isWin: boolean) => {
     const s = stateRef.current;
-    s.posX = 0;
-    s.posY = 1.5;
-    s.posZ = 0;
-    s.velY = 0;
-    s.stageProgress = 0;
-    s.fallsCount = 0;
-    s.score = 0;
-    s.isGameOver = false;
-    s.isVictory = false;
-    s.startTime = Date.now();
-    s.lastCheckpoint.set(0, 1.5, 0);
-    setStageProgress(0);
-    setFallsCount(0);
-    setScore(0);
-    setElapsedTime(0);
-    setIsGameOver(false);
-    setSettlementReceipt(null);
+    if (s.isGameOver) return;
+    s.isGameOver = true;
+    setIsGameOver(true);
+
+    if (isWin) {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    } else {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+
+    const duration = (Date.now() - s.startTime) / 1000;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'arcade_sky_parkour',
+      gameTitle: '블리츠 스카이 파쿠르',
+      durationSeconds: duration,
+      score: s.score + (isWin ? 3500 : s.stepsClimbed * 250) + s.maxCombo * 40,
+      difficulty: 'NIGHTMARE',
+      isVictory: isWin || s.stepsClimbed >= 15,
+    });
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
   };
 
-  return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
+  const tutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 손가락 직접 탭 발판 점프' : 'STEP 1: DIRECT TAP PLATFORM JUMP',
+      title: isKo ? '다음 발판의 레인(좌/중/우)을 탭해 구름 위를 도약하세요' : 'Tap Next Platform Lane (Left/Center/Right) to Jump',
+      description: isKo
+        ? '가상 조이스틱 없이 다음 발판이 위치한 화면의 좌측, 중앙, 우측을 손가락으로 직접 탭하여 리듬감 있게 25단 스카이 파쿠르를 정복하세요.'
+        : 'Tap the left, center, or right lane to jump continuously across 25 vertical sky platforms.',
+      keyPoints: isKo
+        ? [
+            '가상 조이스틱 0개 (100% 손가락 직접 탭 파쿠르)',
+            '골드 트로피(🏆) 발판 도달 시 1,500P 잭팟 올클리어',
+            '35초간 최대 콤보로 25개 발판을 정복하고 완주'
+          ]
+        : [
+            'Zero Virtual Joysticks: 100% Direct Tap Platform Jumping',
+            'Gold Trophy (🏆) goal awards 1,500P all-clear jackpot',
+            'Climb 25 steps with continuous combos within 35s'
+          ],
+      iconType: 'GOAL',
+    },
+    {
+      badge: isKo ? 'STEP 2: 모바일 퓨어 제스처' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '화면 직접 탭 (Direct Lane Tap)' : 'Direct Lane Tap',
+      description: isKo
+        ? '화면의 3개 레인 중 다음 발판이 있는 레인을 탭합니다.'
+        : 'Tap the lane matching the next platform.',
+      keyPoints: isKo
+        ? [
+            '👆 레인 직접 탭: 60FPS 즉시 도약 착지',
+            '⚡ 연속 착지 성공 시 파쿠르 콤보 배수 보너스',
+            '⏱️ 35초 타임어택 고득점 챌린지'
+          ]
+        : [
+            '👆 Lane Tap: Instant fluid jump to platform',
+            '⚡ Consecutive jumps grant combo multipliers',
+            '⏱️ 35s time attack sky parkour sprint'
+          ],
+      iconType: 'GESTURES',
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '완주 완료 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon match finish.',
+      keyPoints: isKo
+        ? [
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '도달한 발판 수 및 최대 콤보 비례 대량 잭팟',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Climbed platforms count and combo multipliers',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS',
+    },
+  ];
 
+  return (
+    <div className="relative w-full h-[100dvh] bg-[#0284c7] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none">
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
       <MinimalistMissionHUD
-        title={isKo ? '복셀 스카이 파쿠르' : 'Voxel Sky Parkour'}
-        language={language}
+        title={isKo ? '블리츠 스카이 파쿠르' : 'Blitz Sky Parkour'}
+        language={(language as Language) || 'ko'}
         telemetries={[
-          { label: isKo ? '진행' : 'Stage', value: `${stageProgress + 1}/${totalPlatforms}`, color: 'text-amber-300' },
-          { label: isKo ? '추락' : 'Falls', value: `${fallsCount}회`, color: fallsCount > 3 ? 'text-rose-400 font-bold' : 'text-cyan-300' },
-          { label: isKo ? '시간' : 'Time', value: `${elapsedTime}s`, color: 'text-emerald-300' }
+          { label: isKo ? '발판' : 'Step', value: `${stepsClimbed}/${maxSteps}`, color: 'text-amber-400 font-bold' },
+          { label: isKo ? '콤보' : 'Combo', value: `${parkourCombo}x`, color: parkourCombo > 2 ? 'text-amber-300 font-bold animate-bounce' : 'text-slate-300' },
+          { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 10 ? 'text-rose-500 font-bold animate-pulse' : 'text-cyan-400 font-bold' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          stateRef.current.isPaused = !isPaused;
-        }}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
         isPaused={isPaused}
       />
 
-      {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div
-          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
-          style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const startX = e.clientX - rect.left;
-            const startY = e.clientY - rect.top;
-            let moved = false;
-
-            const onMove = (moveEvt: PointerEvent) => {
-              const curX = moveEvt.clientX - rect.left;
-              const curY = moveEvt.clientY - rect.top;
-              const dx = curX - startX;
-              const dy = curY - startY;
-
-              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
-                moved = true;
-                stateRef.current.moveDir.x = Math.abs(dx) > 8 ? (dx > 0 ? 1 : -1) : 0;
-                stateRef.current.moveDir.y = Math.abs(dy) > 8 ? (dy > 0 ? 1 : -1) : 0;
-              }
-            };
-
-            const onUp = () => {
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-              window.removeEventListener('pointercancel', onUp);
-              stateRef.current.moveDir.x = 0;
-              stateRef.current.moveDir.y = 0;
-
-              if (!moved) {
-                // Tap: Jump
-                jump();
-              }
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-          }}
+      {/* Pure Touch Sky Parkour Canvas Viewport */}
+      <div className="flex-1 w-full max-w-md relative overflow-hidden flex items-center justify-center select-none touch-none p-2">
+        <canvas
+          ref={canvasRef}
+          width={360}
+          height={500}
+          onPointerDown={handlePointerDown}
+          className="w-full h-full object-contain touch-none cursor-pointer shadow-2xl"
         />
-      )}
+
+        {/* Floating Feedback Text */}
+        {feedbackText && (
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 pointer-events-none text-base font-bold text-amber-300 drop-shadow-lg animate-bounce whitespace-nowrap bg-black/60 px-4 py-1 rounded-full border border-amber-400/30">
+            {feedbackText}
+          </div>
+        )}
+      </div>
 
       {/* Minimal Bottom Guide */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/75 border border-sky-500/30 rounded-full text-[10px] text-sky-300 font-mono backdrop-blur-xs">
-          {isKo ? '화면 드래그: 발판 이동 | 탭: 파쿠르 도약 점프 (버튼 없음)' : 'Drag: Move on Platform | Tap: Parkour Jump (No Buttons)'}
+      <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono">
+          {isKo ? '다음 발판의 레인(좌측/중앙/우측)을 손가락으로 직접 탭하세요' : 'Tap matching platform lane (left/center/right) to jump'}
         </div>
       </div>
 
-      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
-        <SportsMissionTutorial
-          gameId="voxel_sky_parkour"
-          gameTitle={isKo ? '3D 복셀 스카이 파쿠르: 천공 등반' : 'Voxel Sky Parkour: Sky Climb'}
-          sportType="parkour"
-          language={language}
+        <UniversalTutorialModal
+          gameId="arcade_sky_parkour"
+          gameTitle={isKo ? '블리츠 스카이: 파쿠르 런' : 'Blitz Sky: Parkour Run'}
+          customSteps={tutorialSteps}
+          language={(language as Language) || 'ko'}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}
         />
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
         <VictoryRewardModal
           receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
+          language={(language as Language) || 'ko'}
+          onPlayAgain={initGame}
           onExit={onExit}
         />
       )}

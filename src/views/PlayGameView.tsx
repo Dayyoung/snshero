@@ -7291,7 +7291,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelparkour',
-      title: language === 'ko' ? '3D 스카이 파쿠르' : 'Voxel Sky Parkour',
+      title: language === 'ko' ? '블리츠 스카이 파쿠르' : 'Blitz Sky Parkour',
       icon: Footprints,
       color: 'from-sky-500 to-indigo-600',
       image: '/minigame_cardjumper.png',
@@ -7299,10 +7299,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelparkour');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D JUMP',
-      guide: language === 'ko' ? '공중 부유섬 25개 복셀 발판(슬라임 탄성, 얼음, 체크포인트)을 돌파하는 타임어택 플랫포머입니다.' : '3D sky platformer with bounce pads, ice blocks, and time-attack checkpoints!'
+      badgeText: 'SKY-PARKOUR',
+      guide: language === 'ko' ? '다음 발판의 레인(좌측/중앙/우측)을 손가락으로 직접 탭하세요.' : 'Tap matching platform lane (left/center/right) to jump!'
     },
     {
       id: 'tower_trials',
@@ -11182,7 +11182,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '스카이 파쿠르 보상', 'Sky Parkour reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 스카이 파쿠르 보상', 'Blitz Sky Parkour reward')}
       />
     );
   }
