@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Heart, MessageCircle, Plus, Send, X, ImageIcon, User, AlertCircle, Trash2, Languages, Globe, ChevronLeft, ChevronRight, CornerDownRight, ArrowLeft, Share2, Sparkles, Swords, HelpCircle, Trophy, Navigation, Shield, ExternalLink, CheckCircle2, Vote, Palette, BookOpenCheck, Tag, Copy, Pin, EyeOff, Flag, Flame, Clock, ArrowUp, MessageSquare, MoreHorizontal } from 'lucide-react';
+import { Heart, MessageCircle, Plus, Send, X, ImageIcon, User, AlertCircle, Trash2, Languages, Globe, ChevronLeft, ChevronRight, CornerDownRight, ArrowLeft, Share2, Sparkles, Swords, HelpCircle, Trophy, Navigation, Shield, ExternalLink, CheckCircle2, Vote, Palette, BookOpenCheck, Tag, Copy, Pin, EyeOff, Flag, Flame, Clock, ArrowUp, MessageSquare, MoreHorizontal, RotateCw } from 'lucide-react';
 import { Language, CommunityPost, CommunityComment, CardData, CommunityCategory, CommunityWritableCategory, UserInfo, CommunitySortMode, PostFlair } from '../types';
 import { CardItem } from '../components/CardItem';
 import { t, translateText } from '../lib/i18n';
@@ -15,6 +15,7 @@ import {
   deleteCommunityPost,
   addReplyToComment,
   uploadCommunityImage,
+  compressImagesToBase64,
   toggleHidePost,
   reportPost,
   togglePinPost,
@@ -573,25 +574,23 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
 
     try {
-      // 1. 다중 이미지 업로드 순차 실행
-      const uploadedUrls: string[] = [];
-      for (const file of imageFiles) {
-        const url = await uploadCommunityImage(file, isGuest);
-        uploadedUrls.push(url);
-      }
+      // 1. 다중 이미지 Canvas 고압축 Base64 변환 (최대 5장)
+      const compressedBase64Images = imageFiles.length > 0
+        ? await compressImagesToBase64(imageFiles)
+        : [];
 
-      // 2. 포스트 생성 호출
+      // 2. 포스트 생성 및 구글 폼 제출 호출
       const newPost = await createCommunityPost(
         content.trim(),
-        uploadedUrls[0] || undefined, // 하위 호환성용 첫번째 이미지
+        compressedBase64Images[0] || undefined,
         user,
         uploadCategory,
-        uploadedUrls.length > 0 ? uploadedUrls : undefined,
+        compressedBase64Images.length > 0 ? compressedBase64Images : undefined,
         undefined, // deckData
         uploadFlair || undefined, // Doc 62: flair
       );
 
-      setPosts((prev) => [newPost, ...prev]);
+      setPosts((prev) => [newPost, ...prev.filter(p => p.id !== newPost.id)]);
       setContent('');
       setImageFiles([]);
       setImagePreviews([]);
@@ -607,6 +606,11 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
 
       // 부지런의 나무 보상 판정
       checkAndGrantDiligenceReward();
+
+      // 백그라운드에서 구글 시트 데이터 동기화 재시도
+      setTimeout(() => {
+        loadPosts();
+      }, 1500);
     } catch (error) {
       console.error(error);
       setCustomModal({
@@ -966,14 +970,30 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
           }
         }}
         rightAction={
-          <button
-            onClick={() => { setShowHelp(true); setHelpSlide(0); playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3'); }}
-            className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-full border border-slate-300 bg-white/80 text-slate-600 transition-all hover:border-slate-400 hover:bg-white hover:text-slate-800 active:scale-95"
-            title="Help"
-            aria-label="Help"
-          >
-            <HelpCircle size={16} />
-          </button>
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => {
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+                loadPosts();
+              }}
+              className={cn(
+                "inline-flex min-h-9 min-w-9 items-center justify-center rounded-full border border-slate-300 bg-white/80 text-slate-600 transition-all hover:border-slate-400 hover:bg-white hover:text-slate-800 active:scale-95",
+                loading && "animate-spin text-indigo-600"
+              )}
+              title={language === 'ko' ? '글 목록 새로고침 (구글 시트)' : 'Refresh posts (Google Sheet)'}
+              aria-label="Refresh posts"
+            >
+              <RotateCw size={15} />
+            </button>
+            <button
+              onClick={() => { setShowHelp(true); setHelpSlide(0); playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3'); }}
+              className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-full border border-slate-300 bg-white/80 text-slate-600 transition-all hover:border-slate-400 hover:bg-white hover:text-slate-800 active:scale-95"
+              title="Help"
+              aria-label="Help"
+            >
+              <HelpCircle size={16} />
+            </button>
+          </div>
         }
       />
 

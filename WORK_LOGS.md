@@ -4,6 +4,27 @@
 
 ---
 
+## [2026-08-25 15:55 KST / 06:55 UTC] [SNSHero 커뮤니티 전 게시판 구글 폼 저장 및 구글 스프레드시트 조회 연동 개발 완료]
+- **작업 개요**: SNSHero 커뮤니티(자유, 묻고답하기, 게임꿀팁, 카드뽐내기, 러닝보드, 길드, PVP, 팬아트, 투표, 웹툰, 시즌 등 모든 게시판)의 글 저장 및 조회를 구글 폼 및 구글 스프레드시트와 실시간 연동
+- **구글 폼 제출 연동**:
+  - 엔드포인트: `https://docs.google.com/forms/d/e/1FAIpQLSer0AqPbpduTxfSJNg3X8Pa1C8h2L5_Skmbt0NDdVZt6bS1GA/formResponse`
+  - 필드 매핑: `category`(entry.971729544), `label`(entry.815360484), `text`(entry.1672381815), `image1~5`(entry.1335992406, entry.1318042058, entry.1837775719, entry.1372833796, entry.1345278852)
+  - `mode: 'no-cors'` 비동기 전송 및 최적화
+- **다중 이미지 Canvas 고압축 Base64 인코딩**:
+  - `compressImageToBase64` / `compressImagesToBase64` Canvas 기반 리사이징/JPEG 압축(0.7 품질, 최대 800px) 구현
+  - 최대 5장의 첨부 이미지를 고압축 Base64 문자열로 변환하여 폼 각 필드에 안전하게 전송
+- **구글 스프레드시트 CSV 실시간 조회 및 파싱**:
+  - 시트 URL: `https://docs.google.com/spreadsheets/d/1o8rwdG_O_-efkKHgf9oMpFaOUnAAVxMQVfDldFavbjg/gviz/tq?tqx=out:csv`
+  - RFC 4180 호환 멀티라인 및 큰따옴표 이스케이프 지원 CSV 파서 `parseCSV` 구현
+  - 한국어/영어 날짜 타임스탬프 파서 `parseGoogleSheetTimestamp` 구현
+  - 로컬 인터랙션(좋아요, 댓글, 대댓글, 숨김, 신고 등)과의 영구 보존 및 결합 지원
+- **UI 개선**:
+  - `CommunityView.tsx` 상단에 실시간 구글 시트 글 목록 새로고침(`RotateCw`) 버튼 추가
+  - 글 작성 완료 후 자동 구글 시트 동기화 리로드 연동
+- **검증**: `npx tsc --noEmit` 통과 (0 errors), `npm run build` 프로덕션 빌드 성공.
+
+---
+
 ## [2026-08-25 15:51 KST / 06:51 UTC] [/imp-mission 제26회차 3D 복셀 폐기 및 신규 항공 관제 캐주얼 게임 개발 완료]
 - **심사 대상 게임**: `src/components/VoxelFlightLandingGame.tsx` (26 / 78)
   - **심사 결과**: **폐기 (DECOMMISSION)** (3D 복셀 비행 착륙의 과도한 시뮬레이터 가상 버튼과 좁은 시야)
