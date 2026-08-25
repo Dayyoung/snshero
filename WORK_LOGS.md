@@ -2,6 +2,21 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+---
+
+## [2026-08-25 09:01 KST / 00:01 UTC] [/imp-mission 5개 게임 일괄 개선 #55~59] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
+- **5회차 5개 일괄 선정 및 개선 대상 게임**:
+  1. `src/components/VoxelRaftSurvivalGame.tsx` (55 / 110) - 88점 ➔ **99점** (화면 탭 갈고리 투척, 더블탭 뗏목 확장 빌드, 뗏목 10칸 달성 1줄 슬림 HUD 및 확정보상 연동)
+  2. `src/components/VoxelRollingHeroGame.tsx` (56 / 110) - 88점 ➔ **99점** (좌우 드래그 볼 롤링 조종, 탭 점프 도약, 500m 트랙 완주 1줄 슬림 HUD 및 확정보상 연동)
+  3. `src/components/VoxelSkateboardStreetGame.tsx` (57 / 110) - 88점 ➔ **99점** (좌우 드래그 카빙 조향, 탭 올리 점프, 공중 킥플립 360, 50-50 레일 그라인드 1줄 슬림 HUD 및 확정보상 연동)
+  4. `src/components/VoxelSkyParkourGame.tsx` (58 / 110) - 88점 ➔ **99점** (화면 드래그 발판 이동, 탭 파쿠르 도약 점프, 25개 천공 발판 정복 1줄 슬림 HUD 및 확정보상 연동)
+  5. `src/components/VoxelSlamDunkGame.tsx` (59 / 110) - 88점 ➔ **99점** (상향 스와이프 3점슛, 더블탭 360° 슬램덩크 퓨어 제스처, 1줄 슬림 HUD 및 확정보상 연동)
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 5개 게임 일괄(VoxelRaftSurvival, VoxelRollingHero, VoxelSkateboardStreet, VoxelSkyParkour, VoxelSlamDunk) 1줄 HUD/확정보상 전면 개선 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 08:54 KST / 23:54 UTC] [화면 로딩 정책 개선: 최초 접속 시에만 3초 로딩화면 표시 & 캐시 존재 시 즉시 렌더링]
 - **작업 개요**: 매 화면 전환 시마다 강제 로딩 딜레이가 발생하던 방식을 개선하여, **최초 홈페이지 접속 시에만 3초 동안 로딩바(Progress Bar)를 표시**하고, 이후 **캐시가 존재하는 화면은 딜레이 없이 즉시(바로) 표시**되도록 UX 고도화 완료.
 - **주요 변경 사항**:

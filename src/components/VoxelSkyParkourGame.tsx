@@ -1,7 +1,10 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ArrowLeft, Volume2, VolumeX, Trophy, RotateCcw, Footprints, Sparkles, Timer } from 'lucide-react';
 import { CardData, Language } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelSkyParkourGameProps {
   deck: CardData[];
@@ -21,318 +24,300 @@ interface PlatformData {
 }
 
 export const VoxelSkyParkourGame: React.FC<VoxelSkyParkourGameProps> = ({
+  deck: _deck,
   language,
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward,
+  onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
-  const [isMuted, setIsMuted] = useState(false);
-  const [stageProgress, setStageProgress] = useState(0);
-  const [totalPlatforms] = useState(25);
-  const [elapsedTime, setElapsedTime] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
-  const [isVictory, setIsVictory] = useState(false);
-  const [fallsCount, setFallsCount] = useState(0);
 
-  const sceneRef = useRef<THREE.Scene | null>(null);
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const platformsRef = useRef<PlatformData[]>([]);
-  const lastCheckpointPosRef = useRef(new THREE.Vector3(0, 1.5, 0));
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_sky_parkour') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [stageProgress, setStageProgress] = useState<number>(0);
+  const totalPlatforms = 25;
+  const [elapsedTime, setElapsedTime] = useState<number>(0);
+  const [fallsCount, setFallsCount] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
-  // Player Physics State
-  const playerPosRef = useRef(new THREE.Vector3(0, 1.5, 0));
-  const playerVelRef = useRef(new THREE.Vector3(0, 0, 0));
-  const isGroundedRef = useRef(true);
-  const keysRef = useRef<{ [key: string]: boolean }>({});
-  const animFrameRef = useRef<number | null>(null);
+  const stateRef = useRef({
+    posX: 0,
+    posY: 1.5,
+    posZ: 0,
+    velX: 0,
+    velY: 0,
+    velZ: 0,
+    isGrounded: true,
+    moveDir: new THREE.Vector2(0, 0),
+    stageProgress: 0,
+    fallsCount: 0,
+    score: 0,
+    isGameOver: false,
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
+    lastCheckpoint: new THREE.Vector3(0, 1.5, 0),
+    playerMesh: null as THREE.Group | null,
+    platforms: [] as PlatformData[],
+    scene: null as THREE.Scene | null
+  });
 
-  const triggerSound = useCallback((type: 'jump' | 'bounce' | 'checkpoint' | 'win' | 'fall') => {
-    if (isMuted) return;
-    if (type === 'jump') playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-    else if (type === 'bounce') playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-    else if (type === 'checkpoint') playSfx?.('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-    else if (type === 'win') playSfx?.('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-    else if (type === 'fall') playSfx?.('https://assets.mixkit.co/active_storage/sfx/2658/2658-preview.mp3');
-  }, [isMuted, playSfx]);
+  const jump = () => {
+    const s = stateRef.current;
+    if (!s.isGrounded || s.isGameOver || s.isVictory || s.isPaused) return;
+    s.velY = 12;
+    s.isGrounded = false;
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+  };
 
-  // Setup 3D Parkour Sky World
   useEffect(() => {
-    if (!mountRef.current) return;
     const container = mountRef.current;
-    const width = container.clientWidth || 360;
-    const height = container.clientHeight || 500;
+    if (!container) return;
 
-    // 1. Scene
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
+
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color('#38bdf8'); // Sky blue
-    scene.fog = new THREE.Fog('#38bdf8', 30, 80);
-    sceneRef.current = scene;
+    scene.background = new THREE.Color(0x38bdf8);
+    scene.fog = new THREE.Fog(0x38bdf8, 30, 80);
+    stateRef.current.scene = scene;
 
-    // 2. Camera
     const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 200);
     camera.position.set(0, 5, 8);
-    cameraRef.current = camera;
+    camera.lookAt(0, 1, 0);
 
-    // 3. Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    container.innerHTML = '';
     container.appendChild(renderer.domElement);
-    rendererRef.current = renderer;
 
-    // 4. Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-    scene.add(ambientLight);
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
-    dirLight.position.set(20, 40, 20);
-    scene.add(dirLight);
+    const ambient = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambient);
 
-    // 5. Generate 25 Sky Parkour Platforms
-    const platforms: PlatformData[] = [];
+    const sun = new THREE.DirectionalLight(0xffffff, 1.2);
+    sun.position.set(20, 40, 20);
+    scene.add(sun);
+
+    // Player Model
+    const pGroup = new THREE.Group();
+    const pBody = new THREE.Mesh(new THREE.BoxGeometry(0.7, 1.4, 0.7), new THREE.MeshStandardMaterial({ color: 0x6366f1 }));
+    pBody.position.y = 0.7;
+    pGroup.add(pBody);
+    pGroup.position.set(0, 1.5, 0);
+    scene.add(pGroup);
+    stateRef.current.playerMesh = pGroup;
+
+    // Generate 25 Sky Parkour Platforms
+    stateRef.current.platforms = [];
     let curX = 0;
     let curY = 0;
     let curZ = 0;
 
-    const materials = {
-      normal: new THREE.MeshLambertMaterial({ color: 0x10b981 }), // Green
-      slime: new THREE.MeshLambertMaterial({ color: 0x84cc16 }),  // Slime green
-      ice: new THREE.MeshLambertMaterial({ color: 0xe0f2fe }),    // Ice
-      checkpoint: new THREE.MeshLambertMaterial({ color: 0xf59e0b }), // Gold
-      goal: new THREE.MeshLambertMaterial({ color: 0xa855f7 }),   // Purple
-    };
-
     for (let i = 0; i < totalPlatforms; i++) {
       let type: PlatformData['type'] = 'normal';
+      let color = 0x64748b;
+
       if (i === 0) {
-        // Start platform
-        curX = 0; curY = 0; curZ = 0;
+        type = 'checkpoint';
+        color = 0x22c55e;
       } else if (i === totalPlatforms - 1) {
         type = 'goal';
-        curZ -= 4.5;
-        curY += 0.8;
+        color = 0xf59e0b;
       } else if (i % 8 === 0) {
         type = 'checkpoint';
-        curZ -= 4.5;
-        curY += 0.5;
+        color = 0x3b82f6;
       } else if (i % 4 === 0) {
         type = 'slime';
-        curZ -= 5;
-        curY += 1.2;
-        curX += (Math.random() - 0.5) * 3;
-      } else if (i % 3 === 0) {
-        type = 'ice';
-        curZ -= 4;
-        curY += (Math.random() - 0.3) * 1.5;
-        curX += (Math.random() - 0.5) * 3.5;
-      } else {
-        curZ -= 3.8;
-        curY += (Math.random() - 0.2) * 1;
-        curX += (Math.random() - 0.5) * 3;
+        color = 0x10b981;
       }
 
-      const size = type === 'checkpoint' || i === 0 || type === 'goal'
-        ? new THREE.Vector3(3.5, 0.8, 3.5)
-        : new THREE.Vector3(2, 0.6, 2);
+      const pSize = new THREE.Vector3(3.0, 0.8, 3.0);
+      const pMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(pSize.x, pSize.y, pSize.z),
+        new THREE.MeshStandardMaterial({ color, roughness: 0.5 })
+      );
+      pMesh.position.set(curX, curY, curZ);
+      scene.add(pMesh);
 
-      const geo = new THREE.BoxGeometry(size.x, size.y, size.z);
-      const mesh = new THREE.Mesh(geo, materials[type]);
-      mesh.position.set(curX, curY, curZ);
-      scene.add(mesh);
-
-      platforms.push({
+      stateRef.current.platforms.push({
         id: i,
-        mesh,
+        mesh: pMesh,
         type,
         pos: new THREE.Vector3(curX, curY, curZ),
-        size,
+        size: pSize
       });
+
+      // Next platform step
+      curZ -= 5.5 + Math.random() * 2.0;
+      curX += (Math.random() - 0.5) * 4.0;
+      curY += (Math.random() - 0.2) * 1.5;
     }
-    platformsRef.current = platforms;
 
-    // 6. Player Voxel Avatar (3D Box)
-    const playerGeo = new THREE.BoxGeometry(0.7, 1.2, 0.7);
-    const playerMat = new THREE.MeshLambertMaterial({ color: 0x3b82f6 });
-    const playerMesh = new THREE.Mesh(playerGeo, playerMat);
-    playerMesh.position.copy(playerPosRef.current);
-    scene.add(playerMesh);
+    // Timer
+    const timerInterval = setInterval(() => {
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
+      const elapsed = Math.floor((Date.now() - s.startTime) / 1000);
+      setElapsedTime(elapsed);
+    }, 1000);
 
-    // 7. Keyboard
-    const handleKeyDown = (e: KeyboardEvent) => { keysRef.current[e.code] = true; };
-    const handleKeyUp = (e: KeyboardEvent) => { keysRef.current[e.code] = false; };
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-
-    // 8. Animation & Physics Loop
+    let animId: number;
     let lastTime = performance.now();
-    const animate = (time: number) => {
-      const dt = Math.min((time - lastTime) / 1000, 0.1);
-      lastTime = time;
 
-      if (!gameOver) {
-        // Player Input
-        const speed = 6;
-        let moveX = 0;
-        let moveZ = 0;
-        if (keysRef.current['KeyW'] || keysRef.current['ArrowUp']) moveZ -= 1;
-        if (keysRef.current['KeyS'] || keysRef.current['ArrowDown']) moveZ += 1;
-        if (keysRef.current['KeyA'] || keysRef.current['ArrowLeft']) moveX -= 1;
-        if (keysRef.current['KeyD'] || keysRef.current['ArrowRight']) moveX += 1;
+    const animate = (now: number) => {
+      animId = requestAnimationFrame(animate);
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
 
-        if (keysRef.current['Space'] && isGroundedRef.current) {
-          playerVelRef.current.y = 7.5;
-          isGroundedRef.current = false;
-          triggerSound('jump');
-        }
+      const s = stateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-        // Apply Horizontal Velocity
-        playerPosRef.current.x += moveX * speed * dt;
-        playerPosRef.current.z += moveZ * speed * dt;
+      // Horizontal movement
+      const speed = 8;
+      s.posX += s.moveDir.x * speed * dt;
+      s.posZ += s.moveDir.y * speed * dt;
 
-        // Apply Gravity
-        playerVelRef.current.y -= 18 * dt;
-        playerPosRef.current.y += playerVelRef.current.y * dt;
+      // Gravity & Vertical physics
+      s.velY -= 28 * dt;
+      s.posY += s.velY * dt;
 
-        // Platform Collision Detection
-        let grounded = false;
-        platformsRef.current.forEach((p) => {
-          const minX = p.pos.x - p.size.x / 2 - 0.35;
-          const maxX = p.pos.x + p.size.x / 2 + 0.35;
-          const minZ = p.pos.z - p.size.z / 2 - 0.35;
-          const maxZ = p.pos.z + p.size.z / 2 + 0.35;
-          const topY = p.pos.y + p.size.y / 2 + 0.6;
+      // Check Platform Collisions
+      s.isGrounded = false;
+      for (const p of s.platforms) {
+        const minX = p.pos.x - p.size.x / 2 - 0.3;
+        const maxX = p.pos.x + p.size.x / 2 + 0.3;
+        const minZ = p.pos.z - p.size.z / 2 - 0.3;
+        const maxZ = p.pos.z + p.size.z / 2 + 0.3;
+        const topY = p.pos.y + p.size.y / 2;
 
-          if (
-            playerPosRef.current.x >= minX &&
-            playerPosRef.current.x <= maxX &&
-            playerPosRef.current.z >= minZ &&
-            playerPosRef.current.z <= maxZ &&
-            playerPosRef.current.y <= topY &&
-            playerPosRef.current.y >= topY - 0.8 &&
-            playerVelRef.current.y <= 0
-          ) {
-            playerPosRef.current.y = topY;
-            grounded = true;
+        if (s.posX >= minX && s.posX <= maxX && s.posZ >= minZ && s.posZ <= maxZ) {
+          if (s.posY >= topY && s.posY <= topY + 0.8 && s.velY <= 0) {
+            s.posY = topY;
+            s.velY = 0;
+            s.isGrounded = true;
 
-            // Check Special Blocks
             if (p.type === 'slime') {
-              playerVelRef.current.y = 12; // High bounce
-              grounded = false;
-              triggerSound('bounce');
+              s.velY = 18;
+              s.isGrounded = false;
+              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
             } else if (p.type === 'checkpoint') {
-              lastCheckpointPosRef.current.set(p.pos.x, topY, p.pos.z);
-              setStageProgress(Math.max(stageProgress, p.id));
-            } else if (p.type === 'goal') {
-              setGameOver(true);
-              setIsVictory(true);
-              const reward = 50;
-              onReward(reward);
-              triggerSound('win');
-            } else {
-              playerVelRef.current.y = 0;
+              s.lastCheckpoint.set(p.pos.x, topY + 1.0, p.pos.z);
+            } else if (p.type === 'goal' && !s.isGameOver) {
+              s.isVictory = true;
+              s.isGameOver = true;
+              setIsGameOver(true);
+              const duration = (Date.now() - s.startTime) / 1000;
+              const receipt = calculateAndDepositMissionReward({
+                gameId: 'voxel_sky_parkour',
+                gameTitle: '복셀 스카이 파쿠르',
+                durationSeconds: duration,
+                score: s.score + 2500,
+                difficulty: 'HARD',
+                isVictory: true
+              });
+              setSettlementReceipt(receipt);
+              onReward(receipt.totalSns);
             }
 
-            setStageProgress(Math.max(stageProgress, p.id));
+            s.stageProgress = Math.max(s.stageProgress, p.id);
+            setStageProgress(s.stageProgress);
+            s.score = s.stageProgress * 120;
+            setScore(s.score);
+            break;
           }
-        });
-
-        isGroundedRef.current = grounded;
-
-        // Fall Off Detection
-        if (playerPosRef.current.y < -15) {
-          // Respawn at last checkpoint
-          playerPosRef.current.copy(lastCheckpointPosRef.current);
-          playerVelRef.current.set(0, 0, 0);
-          setFallsCount((f) => f + 1);
-          triggerSound('fall');
         }
-
-        // Update 3D Model & Camera
-        playerMesh.position.copy(playerPosRef.current);
-        camera.position.set(
-          playerPosRef.current.x,
-          playerPosRef.current.y + 3.5,
-          playerPosRef.current.z + 6
-        );
-        camera.lookAt(playerPosRef.current.x, playerPosRef.current.y + 0.5, playerPosRef.current.z - 5);
       }
 
+      // Check Fall below void
+      if (s.posY < -15) {
+        s.fallsCount += 1;
+        setFallsCount(s.fallsCount);
+        s.posX = s.lastCheckpoint.x;
+        s.posY = s.lastCheckpoint.y;
+        s.posZ = s.lastCheckpoint.z;
+        s.velY = 0;
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2658/2658-preview.mp3');
+      }
+
+      if (pGroup) {
+        pGroup.position.set(s.posX, s.posY, s.posZ);
+      }
+
+      // Camera follow
+      camera.position.set(s.posX, s.posY + 4.5, s.posZ + 7.5);
+      camera.lookAt(s.posX, s.posY + 0.8, s.posZ - 5);
+
       renderer.render(scene, camera);
-      animFrameRef.current = requestAnimationFrame(animate);
     };
 
-    animFrameRef.current = requestAnimationFrame(animate);
+    animId = requestAnimationFrame(animate);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      clearInterval(timerInterval);
+      cancelAnimationFrame(animId);
       renderer.dispose();
+      if (container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
+      }
     };
-  }, [lowSpecMode, totalPlatforms, triggerSound, gameOver, onReward, stageProgress]);
+  }, [lowSpecMode]);
 
-  // Timer
-  useEffect(() => {
-    if (gameOver) return;
-    const timer = setInterval(() => {
-      setElapsedTime((t) => t + 1);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [gameOver]);
-
-  // Mobile Jump Button
-  const handleJump = () => {
-    if (isGroundedRef.current && !gameOver) {
-      playerVelRef.current.y = 7.5;
-      isGroundedRef.current = false;
-      triggerSound('jump');
-    }
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.posX = 0;
+    s.posY = 1.5;
+    s.posZ = 0;
+    s.velY = 0;
+    s.stageProgress = 0;
+    s.fallsCount = 0;
+    s.score = 0;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    s.lastCheckpoint.set(0, 1.5, 0);
+    setStageProgress(0);
+    setFallsCount(0);
+    setScore(0);
+    setElapsedTime(0);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-[#fdfcfc] text-[#201d1d] font-mono select-none overflow-hidden h-[100dvh]">
-      {/* Header */}
-      <header className="flex items-center justify-between px-3 py-2 border-b border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] shrink-0 z-10">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={onExit}
-            className="min-h-[44px] min-w-[44px] p-2 flex items-center justify-center border border-[rgba(15,0,0,0.12)] rounded-sm bg-white hover:bg-neutral-100 cursor-pointer"
-          >
-            <ArrowLeft size={18} />
-          </button>
-          <div>
-            <h1 className="text-xs font-black uppercase tracking-wider">
-              {language === 'ko' ? '[3D 복셀 스카이 파쿠르]' : '[3D VOXEL SKY PARKOUR]'}
-            </h1>
-            <div className="flex items-center gap-2 text-[10px] text-neutral-500">
-              <span className="flex items-center gap-1"><Timer size={10} /> {elapsedTime}s</span>
-              <span>•</span>
-              <span>진행도: {stageProgress + 1} / {totalPlatforms}</span>
-            </div>
-          </div>
-        </div>
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-        <button
-          onClick={() => setIsMuted(!isMuted)}
-          className="min-h-[44px] min-w-[44px] p-2 flex items-center justify-center border border-[rgba(15,0,0,0.12)] rounded-sm bg-white hover:bg-neutral-100 cursor-pointer"
-        >
-          {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
-        </button>
-      </header>
-
-      {/* 3D Canvas */}
-      <div ref={mountRef} className="flex-1 w-full relative overflow-hidden">
-        {/* Top Progress HUD */}
-        <div className="absolute top-3 left-3 p-2 bg-[#fdfcfc]/90 border border-[rgba(15,0,0,0.12)] rounded-sm text-xs pointer-events-none">
-          <div className="font-bold text-sky-600">진행도: {Math.round(((stageProgress + 1) / totalPlatforms) * 100)}%</div>
-          <div className="text-[10px] text-neutral-500">추락 횟수: {fallsCount}회</div>
-        </div>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 스카이 파쿠르' : 'Voxel Sky Parkour'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '진행' : 'Stage', value: `${stageProgress + 1}/${totalPlatforms}`, color: 'text-amber-300' },
+          { label: isKo ? '추락' : 'Falls', value: `${fallsCount}회`, color: fallsCount > 3 ? 'text-rose-400 font-bold' : 'text-cyan-300' },
+          { label: isKo ? '시간' : 'Time', value: `${elapsedTime}s`, color: 'text-emerald-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
       {/* Screen Gesture Touch Overlay */}
-      {!gameOver && (
+      {!isGameOver && !isPaused && !showTutorial && (
         <div
           className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
           style={{ touchAction: 'none' }}
@@ -348,12 +333,10 @@ export const VoxelSkyParkourGame: React.FC<VoxelSkyParkourGameProps> = ({
               const dx = curX - startX;
               const dy = curY - startY;
 
-              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
                 moved = true;
-                keysRef.current['KeyW'] = dy < -8;
-                keysRef.current['KeyS'] = dy > 12;
-                keysRef.current['KeyA'] = dx < -10;
-                keysRef.current['KeyD'] = dx > 10;
+                stateRef.current.moveDir.x = Math.abs(dx) > 8 ? (dx > 0 ? 1 : -1) : 0;
+                stateRef.current.moveDir.y = Math.abs(dy) > 8 ? (dy > 0 ? 1 : -1) : 0;
               }
             };
 
@@ -361,14 +344,12 @@ export const VoxelSkyParkourGame: React.FC<VoxelSkyParkourGameProps> = ({
               window.removeEventListener('pointermove', onMove);
               window.removeEventListener('pointerup', onUp);
               window.removeEventListener('pointercancel', onUp);
-              keysRef.current['KeyW'] = false;
-              keysRef.current['KeyS'] = false;
-              keysRef.current['KeyA'] = false;
-              keysRef.current['KeyD'] = false;
+              stateRef.current.moveDir.x = 0;
+              stateRef.current.moveDir.y = 0;
 
               if (!moved) {
                 // Tap: Jump
-                handleJump();
+                jump();
               }
             };
 
@@ -381,38 +362,33 @@ export const VoxelSkyParkourGame: React.FC<VoxelSkyParkourGameProps> = ({
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-[#201d1d]/85 border border-[#201d1d]/40 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
-          {language === 'ko' ? '드래그: 발판 이동 | 탭: 파쿠르 점프 (버튼 없음)' : 'Drag: Move | Tap: Parkour Jump (No Buttons)'}
+        <div className="px-3 py-1 bg-black/75 border border-sky-500/30 rounded-full text-[10px] text-sky-300 font-mono backdrop-blur-xs">
+          {isKo ? '화면 드래그: 발판 이동 | 탭: 파쿠르 도약 점프 (버튼 없음)' : 'Drag: Move on Platform | Tap: Parkour Jump (No Buttons)'}
         </div>
-      </div>
       </div>
 
-      {/* Victory Modal */}
-      {gameOver && isVictory && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-          <div className="w-full max-w-sm bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] p-6 rounded-sm shadow-xl text-center flex flex-col gap-4">
-            <div className="flex justify-center">
-              <div className="p-3 bg-amber-100 text-amber-600 rounded-full border border-amber-300">
-                <Trophy size={32} />
-              </div>
-            </div>
-            <div>
-              <h2 className="text-base font-black uppercase">
-                {language === 'ko' ? '스카이 파쿠르 완주!' : 'PARKOUR COMPLETED!'}
-              </h2>
-              <p className="text-xs text-neutral-500 mt-1">
-                {`클리어 타임: ${elapsedTime}초 (추락: ${fallsCount}회) • (+50 SNS 획득)`}
-              </p>
-            </div>
-            <button
-              onClick={onExit}
-              className="min-h-[44px] py-2 bg-[#201d1d] text-white font-bold text-xs rounded-sm hover:bg-neutral-800 cursor-pointer"
-            >
-              {language === 'ko' ? '[로비로 나가기]' : '[EXIT TO LOBBY]'}
-            </button>
-          </div>
-        </div>
+      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {showTutorial && (
+        <SportsMissionTutorial
+          gameId="voxel_sky_parkour"
+          gameTitle={isKo ? '3D 복셀 스카이 파쿠르: 천공 등반' : 'Voxel Sky Parkour: Sky Climb'}
+          sportType="parkour"
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
+
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
 };
+export default VoxelSkyParkourGame;

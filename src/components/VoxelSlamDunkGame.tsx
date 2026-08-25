@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { ArrowLeft, Flame, Trophy, Sparkles } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelSlamDunkGameProps {
   deck: CardData[];
@@ -20,14 +23,23 @@ export const VoxelSlamDunkGame: React.FC<VoxelSlamDunkGameProps> = ({
   onExit,
   onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_slam_dunk') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [streak, setStreak] = useState<number>(0);
-  const [isOnFire, setIsOnFire] = useState<boolean>(false);
   const [shotsLeft, setShotsLeft] = useState<number>(10);
   const [isDunking, setIsDunking] = useState<boolean>(false);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
     ballPos: new THREE.Vector3(0, 1.2, 8),
@@ -40,6 +52,9 @@ export const VoxelSlamDunkGame: React.FC<VoxelSlamDunkGameProps> = ({
     streak: 0,
     shotsLeft: 10,
     isGameOver: false,
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
     dragStartX: 0,
     dragStartY: 0,
     isDragging: false,
@@ -49,7 +64,7 @@ export const VoxelSlamDunkGame: React.FC<VoxelSlamDunkGameProps> = ({
 
   const performSlamDunk = () => {
     const s = stateRef.current;
-    if (s.isShooting || s.isDunking || s.isGameOver || s.shotsLeft <= 0) return;
+    if (s.isShooting || s.isDunking || s.isGameOver || s.shotsLeft <= 0 || s.isPaused) return;
 
     s.isDunking = true;
     setIsDunking(true);
@@ -59,7 +74,6 @@ export const VoxelSlamDunkGame: React.FC<VoxelSlamDunkGameProps> = ({
     let step = 0;
     const dunkAnim = setInterval(() => {
       step += 1;
-      // Leap forward and up towards rim (Z: -12, Y: 6)
       s.playerPos.z = 8 - step * 0.8;
       s.playerJumpY = Math.sin((step / 25) * Math.PI) * 6;
 
@@ -73,16 +87,13 @@ export const VoxelSlamDunkGame: React.FC<VoxelSlamDunkGameProps> = ({
         s.isDunking = false;
         setIsDunking(false);
 
-        // Dunk Success!
         s.streak += 1;
         const pts = s.streak >= 3 ? 30 : 20;
         s.score += pts;
         setStreak(s.streak);
         setScore(s.score);
-        setIsOnFire(s.streak >= 3);
-        if (playSfx) playSfx('/sounds/slamdunk.mp3');
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
 
-        // Reset player & ball
         s.playerPos.set(0, 1.0, 8);
         s.playerJumpY = 0;
         if (s.playerGroup) s.playerGroup.position.copy(s.playerPos);
@@ -99,270 +110,253 @@ export const VoxelSlamDunkGame: React.FC<VoxelSlamDunkGameProps> = ({
     const s = stateRef.current;
     if (s.isGameOver) return;
     s.isGameOver = true;
+    s.isVictory = s.score >= 150;
     setIsGameOver(true);
-    const finalSns = Math.min(260, Math.max(30, s.score * 2 + 40));
-    setRewardSns(finalSns);
-    onReward(finalSns);
-    if (playSfx) playSfx('/sounds/fanfare.mp3');
+
+    const duration = (Date.now() - s.startTime) / 1000;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'voxel_slam_dunk',
+      gameTitle: '복셀 슬램덩크',
+      durationSeconds: duration,
+      score: s.score + 2000,
+      difficulty: 'HARD',
+      isVictory: s.isVictory
+    });
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
   };
 
   useEffect(() => {
-    if (!mountRef.current) return;
     const container = mountRef.current;
-    const width = container.clientWidth || 800;
-    const height = container.clientHeight || 500;
+    if (!container) return;
+
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x18181b);
-    scene.fog = new THREE.FogExp2(0x18181b, 0.015);
 
-    const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 1000);
-    camera.position.set(0, 5, 18);
-    camera.lookAt(0, 3, -12);
+    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
+    camera.position.set(0, 4, 14);
+    camera.lookAt(0, 2, 0);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode });
+    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
     container.appendChild(renderer.domElement);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
-    scene.add(ambientLight);
+    const ambient = new THREE.AmbientLight(0xffffff, 0.9);
+    scene.add(ambient);
 
-    const spot = new THREE.SpotLight(0xffedd5, 1.6);
-    spot.position.set(0, 25, 0);
-    spot.angle = Math.PI / 3;
-    scene.add(spot);
+    const spotLight = new THREE.SpotLight(0xffedd5, 1.6);
+    spotLight.position.set(0, 20, 10);
+    scene.add(spotLight);
 
-    // Basketball Wooden Court Floor
-    const courtGeo = new THREE.PlaneGeometry(30, 45);
-    const courtMat = new THREE.MeshLambertMaterial({ color: 0xd97706 });
-    const court = new THREE.Mesh(courtGeo, courtMat);
+    // Basketball Court Floor
+    const court = new THREE.Mesh(
+      new THREE.PlaneGeometry(20, 40),
+      new THREE.MeshStandardMaterial({ color: 0x92400e, roughness: 0.4 })
+    );
     court.rotation.x = -Math.PI / 2;
     scene.add(court);
 
-    // Basketball Hoop Stand at Z = -14
-    const hoopGroup = new THREE.Group();
-    hoopGroup.position.set(0, 0, -14);
+    // Rim & Hoop
+    const hoop = new THREE.Group();
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 6, 16), new THREE.MeshStandardMaterial({ color: 0x334155 }));
+    pole.position.set(0, 3, -12);
+    hoop.add(pole);
 
-    const pole = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.2, 0.2, 8),
-      new THREE.MeshLambertMaterial({ color: 0x334155 })
-    );
-    pole.position.set(0, 4, -1.5);
-    hoopGroup.add(pole);
+    const board = new THREE.Mesh(new THREE.BoxGeometry(3, 2, 0.1), new THREE.MeshStandardMaterial({ color: 0xffffff }));
+    board.position.set(0, 5, -11.5);
+    hoop.add(board);
 
-    const backboard = new THREE.Mesh(
-      new THREE.BoxGeometry(4.5, 3.0, 0.2),
-      new THREE.MeshLambertMaterial({ color: 0xf8fafc })
-    );
-    backboard.position.set(0, 6.2, 0);
-    hoopGroup.add(backboard);
-
-    const rim = new THREE.Mesh(
-      new THREE.TorusGeometry(0.9, 0.08, 8, 24),
-      new THREE.MeshLambertMaterial({ color: 0xef4444 })
-    );
+    const rim = new THREE.Mesh(new THREE.TorusGeometry(0.6, 0.05, 8, 24), new THREE.MeshStandardMaterial({ color: 0xef4444 }));
     rim.rotation.x = Math.PI / 2;
-    rim.position.set(0, 5.2, 1.0);
-    hoopGroup.add(rim);
+    rim.position.set(0, 4.3, -10.8);
+    hoop.add(rim);
+    scene.add(hoop);
 
-    scene.add(hoopGroup);
-
-    // Player Mesh
-    const playerGroup = new THREE.Group();
-    playerGroup.position.set(0, 1.0, 8);
-
-    const pBody = new THREE.Mesh(
-      new THREE.BoxGeometry(1.2, 1.8, 0.8),
-      new THREE.MeshLambertMaterial({ color: 0xef4444 })
+    // Basketball
+    const ball = new THREE.Mesh(
+      new THREE.SphereGeometry(0.4, 16, 16),
+      new THREE.MeshStandardMaterial({ color: 0xf97316, roughness: 0.6 })
     );
-    pBody.position.y = 0.9;
-    playerGroup.add(pBody);
+    ball.position.set(0, 1.2, 7.5);
+    scene.add(ball);
+    stateRef.current.ballMesh = ball;
 
-    const pHead = new THREE.Mesh(
-      new THREE.BoxGeometry(0.8, 0.8, 0.8),
-      new THREE.MeshLambertMaterial({ color: 0xfacc15 })
-    );
-    pHead.position.y = 2.2;
-    playerGroup.add(pHead);
-
-    scene.add(playerGroup);
-    stateRef.current.playerGroup = playerGroup;
-
-    // Basketball Mesh
-    const ballGeo = new THREE.SphereGeometry(0.55, 16, 16);
-    const ballMat = new THREE.MeshLambertMaterial({ color: 0xea580c });
-    const ballMesh = new THREE.Mesh(ballGeo, ballMat);
-    ballMesh.position.set(0, 1.2, 7.5);
-    scene.add(ballMesh);
-    stateRef.current.ballMesh = ballMesh;
+    // Player Avatar
+    const pGroup = new THREE.Group();
+    const pBody = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.6, 0.6), new THREE.MeshStandardMaterial({ color: 0xd97706 }));
+    pBody.position.y = 0.8;
+    pGroup.add(pBody);
+    pGroup.position.set(0, 1.0, 8);
+    scene.add(pGroup);
+    stateRef.current.playerGroup = pGroup;
 
     let animId: number;
+
     const animate = () => {
       animId = requestAnimationFrame(animate);
       const s = stateRef.current;
-      if (s.isGameOver) {
-        renderer.render(scene, camera);
-        return;
-      }
+      if (s.isPaused || s.isGameOver) return;
 
-      // Ball Trajectory Physics during shot
-      if (s.isShooting && s.ballMesh) {
+      // Shooting physics
+      if (s.isShooting) {
+        s.ballVel.y -= 0.018;
         s.ballPos.add(s.ballVel);
-        s.ballVel.y -= 0.018; // Gravity
+        ball.position.copy(s.ballPos);
 
-        s.ballMesh.position.copy(s.ballPos);
-
-        // Check basket hit around Z = -13, Y = 5.2
-        if (s.ballPos.z <= -13 && Math.abs(s.ballPos.y - 5.2) < 1.2 && Math.abs(s.ballPos.x) < 1.2) {
+        // Check Hoop Basket
+        if (s.ballPos.z <= -10.5 && s.ballPos.z >= -11.5 && s.ballPos.y >= 3.8 && s.ballPos.y <= 4.8 && Math.abs(s.ballPos.x) < 0.8) {
           s.isShooting = false;
           s.streak += 1;
-          const pts = s.streak >= 3 ? 30 : 15;
-          s.score += pts;
+          s.score += s.streak >= 3 ? 30 : 20;
           setStreak(s.streak);
           setScore(s.score);
-          setIsOnFire(s.streak >= 3);
-          if (playSfx) playSfx('/sounds/swish.mp3');
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
 
-          setTimeout(() => {
-            s.ballPos.set(0, 1.2, 7.5);
-            if (s.ballMesh) s.ballMesh.position.copy(s.ballPos);
-            if (s.shotsLeft <= 0) endGame();
-          }, 600);
-        } else if (s.ballPos.y <= 0.5 || s.ballPos.z <= -20) {
-          // Missed shot
+          s.ballPos.set(0, 1.2, 7.5);
+          s.ballVel.set(0, 0, 0);
+          ball.position.copy(s.ballPos);
+
+          if (s.shotsLeft <= 0) endGame();
+        } else if (s.ballPos.y < 0.3 || s.ballPos.z < -16) {
+          // Miss
           s.isShooting = false;
           s.streak = 0;
           setStreak(0);
-          setIsOnFire(false);
+          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2658/2658-preview.mp3');
 
-          setTimeout(() => {
-            s.ballPos.set(0, 1.2, 7.5);
-            if (s.ballMesh) s.ballMesh.position.copy(s.ballPos);
-            if (s.shotsLeft <= 0) endGame();
-          }, 600);
+          s.ballPos.set(0, 1.2, 7.5);
+          s.ballVel.set(0, 0, 0);
+          ball.position.copy(s.ballPos);
+
+          if (s.shotsLeft <= 0) endGame();
         }
       }
 
       renderer.render(scene, camera);
     };
 
-    animate();
+    animId = requestAnimationFrame(animate);
 
     return () => {
       cancelAnimationFrame(animId);
-      if (renderer.domElement && container.contains(renderer.domElement)) {
+      renderer.dispose();
+      if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, playSfx]);
+  }, [lowSpecMode]);
 
-  const handlePointerDown = (e: React.PointerEvent) => {
+  const handleRestart = () => {
     const s = stateRef.current;
-    if (s.isShooting || s.isDunking || s.isGameOver || s.shotsLeft <= 0) return;
-    s.isDragging = true;
-    s.dragStartX = e.clientX;
-    s.dragStartY = e.clientY;
-  };
-
-  const handlePointerUp = (e: React.PointerEvent) => {
-    const s = stateRef.current;
-    if (!s.isDragging || s.isShooting || s.isDunking) return;
-    s.isDragging = false;
-
-    const dx = e.clientX - s.dragStartX;
-    const dy = e.clientY - s.dragStartY;
-
-    if (dy < -30) {
-      // Release 3-Point Shot
-      s.isShooting = true;
-      s.shotsLeft -= 1;
-      setShotsLeft(s.shotsLeft);
-
-      s.ballPos.set(0, 1.6, 7.5);
-      const power = Math.min(1.2, Math.abs(dy) * 0.007);
-      s.ballVel.set(dx * 0.002, power * 0.55 + 0.35, -power * 0.9 - 0.4);
-
-      if (playSfx) playSfx('/sounds/shoot.mp3');
-    }
+    s.score = 0;
+    s.streak = 0;
+    s.shotsLeft = 10;
+    s.isShooting = false;
+    s.isDunking = false;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    s.ballPos.set(0, 1.2, 7.5);
+    s.ballVel.set(0, 0, 0);
+    s.playerPos.set(0, 1.0, 8);
+    setScore(0);
+    setStreak(0);
+    setShotsLeft(10);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
   };
 
   return (
-    <div className="relative w-full h-[100dvh] bg-[#18181b] font-mono text-[#fdfcfc] select-none flex flex-col overflow-hidden">
-      {/* Top Header */}
-      <div className="flex items-center justify-between px-3 py-2 bg-[#201d1d] border-b border-[#201d1d]/30 z-20">
-        <button
-          onClick={onExit}
-          className="flex items-center gap-1 px-2.5 py-1 bg-[#fdfcfc]/10 text-white rounded-sm text-xs active:bg-white/20"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" /> [뒤로]
-        </button>
-        <div className="text-center">
-          <div className="text-xs font-bold text-amber-400 flex items-center justify-center gap-1">
-            <Flame className="w-3.5 h-3.5" /> [No.76 브란디 전담] 3D 점핑 배스킷볼
-          </div>
-          <div className="text-[10px] text-slate-300">포물선 3점슛 & 360° 슬램덩크 아레나</div>
-        </div>
-        <div className="text-xs text-amber-300 font-bold">
-          남은 슛: {shotsLeft}구
-        </div>
-      </div>
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Stats HUD */}
-      <div className="flex items-center justify-between px-4 py-2 bg-[#09090b]/90 text-xs border-b border-slate-700 z-20">
-        <div>연속 득점: <strong className="text-amber-400">{streak}콤보</strong></div>
-        {isOnFire && (
-          <div className="text-red-500 font-bold animate-pulse flex items-center gap-1">
-            <Flame className="w-4 h-4" /> [ON FIRE! 점수 1.5배]
-          </div>
-        )}
-        <div>총점: <strong className="text-cyan-400">{score}P</strong></div>
-      </div>
-
-      {/* 3D Canvas & Touch Target */}
-      <div
-        ref={mountRef}
-        onPointerDown={handlePointerDown}
-        onPointerUp={handlePointerUp}
-        onDoubleClick={performSlamDunk}
-        className="relative flex-1 w-full overflow-hidden cursor-grab active:cursor-grabbing"
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 슬램덩크' : 'Voxel Slam Dunk'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '남은 슛' : 'Shots', value: `${shotsLeft}구`, color: shotsLeft <= 2 ? 'text-rose-400 font-bold' : 'text-cyan-300' },
+          { label: isKo ? '콤보' : 'Streak', value: `x${streak}`, color: streak >= 3 ? 'text-amber-400 font-bold animate-pulse' : 'text-slate-300' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-yellow-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
       />
+
+      {/* Screen Gesture Touch Overlay */}
+      {!isGameOver && !isPaused && !showTutorial && (
+        <div
+          className="absolute inset-0 z-10 select-none touch-none cursor-pointer"
+          style={{ touchAction: 'none' }}
+          onPointerDown={(e) => {
+            const s = stateRef.current;
+            if (s.isShooting || s.isDunking || s.isGameOver || s.shotsLeft <= 0) return;
+            s.isDragging = true;
+            s.dragStartX = e.clientX;
+            s.dragStartY = e.clientY;
+          }}
+          onPointerUp={(e) => {
+            const s = stateRef.current;
+            if (!s.isDragging || s.isShooting || s.isDunking) return;
+            s.isDragging = false;
+
+            const dx = e.clientX - s.dragStartX;
+            const dy = e.clientY - s.dragStartY;
+
+            if (dy < -25) {
+              s.isShooting = true;
+              s.shotsLeft -= 1;
+              setShotsLeft(s.shotsLeft);
+
+              s.ballPos.set(0, 1.6, 7.5);
+              const power = Math.min(1.2, Math.abs(dy) * 0.007);
+              s.ballVel.set(dx * 0.002, power * 0.55 + 0.35, -power * 0.9 - 0.4);
+              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            }
+          }}
+          onDoubleClick={performSlamDunk}
+        />
+      )}
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/70 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
-          {language === 'ko' ? '아래에서 위로 스와이프: 3점슛 | 더블탭: 360° 슬램덩크 (버튼 없음)' : 'Swipe Up: 3-Point Shot | Double Tap: 360° Slam Dunk (No Buttons)'}
+        <div className="px-3 py-1 bg-black/75 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {isKo ? '위로 스와이프: 3점슛 슛팅 | 더블탭: 360° 슬램덩크 (버튼 없음)' : 'Swipe Up: 3-Point Shot | Double Tap: 360° Slam Dunk (No Buttons)'}
         </div>
       </div>
 
-      {/* Game Over Modal */}
-      {isGameOver && (
-        <div className="absolute inset-0 bg-black/80 flex items-center justify-center p-4 z-50 animate-fade-in">
-          <div className="w-full max-w-sm bg-[#201d1d] border border-amber-500/40 p-5 rounded-none text-center font-mono">
-            <Trophy className="w-12 h-12 text-amber-400 mx-auto mb-2" />
-            <h2 className="text-base font-bold text-amber-400 mb-1">[농구 경기 종료!]</h2>
-            <p className="text-xs text-slate-300 mb-4">10구 3점슛 및 슬램덩크 기록</p>
+      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {showTutorial && (
+        <SportsMissionTutorial
+          gameId="voxel_slam_dunk"
+          gameTitle={isKo ? '3D 복셀 슬램덩크: 3점슛 & 덩크슛' : 'Voxel Slam Dunk: 3-Point & Dunk'}
+          sportType="basketball"
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-            <div className="bg-slate-900/80 p-3 rounded-sm text-xs space-y-1 mb-4 text-left border border-slate-700">
-              <div className="flex justify-between">
-                <span className="text-slate-400">최종 점수:</span>
-                <span className="text-cyan-400 font-bold">{score}P</span>
-              </div>
-              <div className="flex justify-between border-t border-slate-700 pt-1">
-                <span className="text-amber-300 font-bold">확정 보상 SNS:</span>
-                <span className="text-amber-400 font-bold">+{rewardSns} SNS</span>
-              </div>
-            </div>
-
-            <button
-              onClick={onExit}
-              className="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-sm active:bg-amber-400"
-            >
-              [보상 수령 및 복귀]
-            </button>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
 };
+export default VoxelSlamDunkGame;
