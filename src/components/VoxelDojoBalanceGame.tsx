@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { CardData } from '../types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
-import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
@@ -15,337 +14,422 @@ interface VoxelDojoBalanceGameProps {
   onReward: (amount: number) => void;
 }
 
+interface RivalFighter {
+  name: string;
+  enName: string;
+  avatar: string;
+  pushPower: number; // Opponent pushing strength
+}
+
+const RIVALS: RivalFighter[] = [
+  { name: '도장 수련생', enName: 'Trainee', avatar: '🥋', pushPower: 38 },
+  { name: '붉은 오니', enName: 'Red Oni', avatar: '👹', pushPower: 50 },
+  { name: '천하장사 요코즈나', enName: 'Yokozuna', avatar: '🤼', pushPower: 65 },
+];
+
 export const VoxelDojoBalanceGame: React.FC<VoxelDojoBalanceGameProps> = ({
   deck: _deck,
   language,
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
+  const [currentRivalIdx, setCurrentRivalIdx] = useState<number>(0);
+  const [powerMeter, setPowerMeter] = useState<number>(50); // 0 (player loses) ~ 100 (rival pushed out)
+  const [score, setScore] = useState<number>(0);
+  const [tapCombo, setTapCombo] = useState<number>(0);
+  const [maxCombo, setMaxCombo] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(35);
+  const [feedbackText, setFeedbackText] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_dojo_balance') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_sumo_tackle') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [score, setScore] = useState<number>(0);
-  const [streak, setStreak] = useState<number>(0);
-  const targetStreak = 3;
-  const [balance, setBalance] = useState<number>(50);
-  const [enemyHp, setEnemyHp] = useState<number>(100);
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
-    balance: 50,
-    balanceDrift: 0,
-    playerHp: 100,
-    enemyHp: 100,
-    enemyAttackTimer: 1.5,
-    isPlayerAttacking: false,
-    isPlayerGuarding: false,
-    isEnemyAttacking: false,
+    rivalIdx: 0,
+    power: 50,
     score: 0,
-    streak: 0,
+    tapCombo: 0,
+    maxCombo: 0,
+    timeLeft: 35,
     isGameOver: false,
     isPaused: false,
     startTime: Date.now(),
-    playerGroup: null as THREE.Group | null,
-    playerStaff: null as THREE.Mesh | null,
-    enemyGroup: null as THREE.Group | null,
-    enemyStaff: null as THREE.Mesh | null
+    shakeAnim: 0,
   });
 
-  const handlePlayerAttack = (isHeavy: boolean = false) => {
+  const initGame = useCallback(() => {
     const s = stateRef.current;
-    if (s.isPlayerAttacking || s.isGameOver || s.isPaused) return;
+    s.rivalIdx = 0;
+    s.power = 50;
+    s.score = 0;
+    s.tapCombo = 0;
+    s.maxCombo = 0;
+    s.timeLeft = 35;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    s.shakeAnim = 0;
 
-    s.isPlayerAttacking = true;
-    const dmg = isHeavy ? 35 : 18;
-    playSfx?.(isHeavy ? 'https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3' : 'https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-
-    setTimeout(() => {
-      s.isPlayerAttacking = false;
-      s.enemyHp = Math.max(0, s.enemyHp - dmg);
-      setEnemyHp(s.enemyHp);
-
-      if (s.enemyHp <= 0) {
-        s.streak += 1;
-        s.score += 500;
-        setStreak(s.streak);
-        setScore(s.score);
-        s.enemyHp = 100;
-        setEnemyHp(100);
-
-        if (s.streak >= targetStreak) {
-          s.isGameOver = true;
-          setIsGameOver(true);
-          const duration = (Date.now() - s.startTime) / 1000;
-          const receipt = calculateAndDepositMissionReward({
-            gameId: 'voxel_dojo_balance',
-            gameTitle: '복셀 도장 밸런스 결투',
-            durationSeconds: duration,
-            score: s.score + 1000,
-            difficulty: 'HARD',
-            isVictory: true
-          });
-          setSettlementReceipt(receipt);
-          onReward(receipt.totalSns);
-        }
-      }
-    }, 200);
-  };
-
-  const handleBalanceAdjust = (dir: number) => {
-    const s = stateRef.current;
-    if (s.isGameOver || s.isPaused) return;
-    s.balance = Math.max(0, Math.min(100, s.balance + dir * 8));
-    setBalance(Math.round(s.balance));
-  };
+    setCurrentRivalIdx(0);
+    setPowerMeter(50);
+    setScore(0);
+    setTapCombo(0);
+    setMaxCombo(0);
+    setTimeLeft(35);
+    setFeedbackText(null);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  }, []);
 
   useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+    initGame();
+  }, [initGame]);
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+  // Timer loop
+  useEffect(() => {
+    if (isGameOver || isPaused) return;
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x18181b);
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          endGame(false);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
 
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, 3.5, 7.5);
-    camera.lookAt(0, 1.2, 0);
+    return () => clearInterval(timer);
+  }, [isGameOver, isPaused]);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    renderer.shadowMap.enabled = !lowSpecMode;
-    container.appendChild(renderer.domElement);
+  // Direct Screen Tap Rush (Zero Joysticks)
+  const handleTapRush = () => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
 
-    // Warm Sunset Light
-    const ambientLight = new THREE.AmbientLight(0xfef08a, 0.8);
-    scene.add(ambientLight);
+    s.power = Math.min(100, s.power + 5.5);
+    s.tapCombo += 1;
+    if (s.tapCombo > s.maxCombo) s.maxCombo = s.tapCombo;
+    s.shakeAnim = 8;
 
-    const sun = new THREE.DirectionalLight(0xf97316, 2.2);
-    sun.position.set(5, 12, 6);
-    scene.add(sun);
+    const pts = 30 + s.tapCombo * 5;
+    s.score += pts;
 
-    // Waterfall Mist Pool Below
-    const waterGeo = new THREE.PlaneGeometry(30, 30);
-    const waterMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.1 });
-    const water = new THREE.Mesh(waterGeo, waterMat);
-    water.rotation.x = -Math.PI / 2;
-    water.position.set(0, -3, 0);
-    scene.add(water);
+    setPowerMeter(Math.round(s.power));
+    setTapCombo(s.tapCombo);
+    setMaxCombo(s.maxCombo);
+    setScore(s.score);
 
-    // High Narrow Wooden Log Bridge
-    const logGeo = new THREE.CylinderGeometry(0.5, 0.5, 12, 16);
-    const logMat = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.9 });
-    const log = new THREE.Mesh(logGeo, logMat);
-    log.rotation.z = Math.PI / 2;
-    log.position.set(0, 0, 0);
-    scene.add(log);
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
 
-    // Player Ninja
-    const playerGroup = new THREE.Group();
-    const pBody = new THREE.Mesh(new THREE.BoxGeometry(0.7, 1.3, 0.6), new THREE.MeshStandardMaterial({ color: 0x0284c7 }));
-    pBody.position.y = 1.0;
-    playerGroup.add(pBody);
+    // Check Ring-out Victory for current rival
+    if (s.power >= 100) {
+      if (s.rivalIdx < RIVALS.length - 1) {
+        s.score += 800;
+        s.rivalIdx += 1;
+        s.power = 50;
+        setCurrentRivalIdx(s.rivalIdx);
+        setPowerMeter(50);
+        setFeedbackText(`RING OUT! STAGE ${s.rivalIdx + 1} 💥`);
+        setTimeout(() => setFeedbackText(null), 500);
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+      } else {
+        // Champion Victory!
+        endGame(true);
+      }
+    }
+  };
 
-    const staffGeo = new THREE.CylinderGeometry(0.04, 0.04, 2.4, 8);
-    const staffMat = new THREE.MeshStandardMaterial({ color: 0xd97706 });
-    const pStaff = new THREE.Mesh(staffGeo, staffMat);
-    pStaff.rotation.z = Math.PI / 3;
-    pStaff.position.set(0.4, 1.0, 0.3);
-    playerGroup.add(pStaff);
+  // Main 60FPS Dojo Sumo Engine Loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    playerGroup.position.set(-1.8, 0, 0);
-    scene.add(playerGroup);
-    stateRef.current.playerGroup = playerGroup;
-    stateRef.current.playerStaff = pStaff;
-
-    // Enemy Ninja
-    const enemyGroup = new THREE.Group();
-    const eBody = new THREE.Mesh(new THREE.BoxGeometry(0.7, 1.3, 0.6), new THREE.MeshStandardMaterial({ color: 0xef4444 }));
-    eBody.position.y = 1.0;
-    enemyGroup.add(eBody);
-
-    const eStaff = new THREE.Mesh(staffGeo, staffMat);
-    eStaff.rotation.z = -Math.PI / 3;
-    eStaff.position.set(-0.4, 1.0, 0.3);
-    enemyGroup.add(eStaff);
-
-    enemyGroup.position.set(1.8, 0, 0);
-    scene.add(enemyGroup);
-    stateRef.current.enemyGroup = enemyGroup;
-    stateRef.current.enemyStaff = eStaff;
-
-    let animId: number;
     let lastTime = performance.now();
 
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const s = stateRef.current;
       if (s.isPaused || s.isGameOver) return;
 
-      // Natural Balance Drift
-      s.balanceDrift += (Math.random() - 0.5) * 15 * dt;
-      s.balance = THREE.MathUtils.clamp(s.balance + s.balanceDrift * dt, 0, 100);
-      setBalance(Math.round(s.balance));
+      // Opponent pushes back!
+      const currentRival = RIVALS[s.rivalIdx];
+      s.power = Math.max(0, s.power - currentRival.pushPower * dt);
+      setPowerMeter(Math.round(s.power));
 
-      if (playerGroup) {
-        const tilt = (s.balance - 50) * 0.015;
-        playerGroup.rotation.z = tilt;
+      if (s.shakeAnim > 0) s.shakeAnim = Math.max(0, s.shakeAnim - 25 * dt);
+
+      // Player pushed out ➔ Defeat
+      if (s.power <= 0) {
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+        endGame(false);
+        return;
       }
 
-      // Check Fall from bridge
-      if (s.balance <= 5 || s.balance >= 95) {
-        s.isGameOver = true;
-        setIsGameOver(true);
-        const duration = (Date.now() - s.startTime) / 1000;
-        const receipt = calculateAndDepositMissionReward({
-          gameId: 'voxel_dojo_balance',
-          gameTitle: '복셀 도장 밸런스 결투',
-          durationSeconds: duration,
-          score: s.score,
-          difficulty: 'HARD',
-          isVictory: false
-        });
-        setSettlementReceipt(receipt);
-        onReward(receipt.totalSns);
-      }
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
 
-      renderer.render(scene, camera);
+      // Dojo Ring Arena Background
+      ctx.fillStyle = '#1c1917';
+      ctx.fillRect(0, 0, w, h);
+
+      // Circular Ring (Dohyo)
+      const centerX = w / 2;
+      const centerY = 270;
+
+      ctx.fillStyle = '#b45309';
+      ctx.beginPath();
+      ctx.ellipse(centerX, centerY, 150, 110, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#fef08a';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+
+      // Center Line
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY - 100);
+      ctx.lineTo(centerX, centerY + 100);
+      ctx.stroke();
+
+      // Power Gauge Tug-of-War Bar on Ring
+      const pushOffset = ((s.power - 50) / 50) * 110;
+      const shakeX = (Math.random() - 0.5) * s.shakeAnim;
+
+      // Render Player Sumo Fighter (Left Side, Cyan)
+      const playerX = centerX - 45 + pushOffset + shakeX;
+      const playerY = centerY;
+
+      ctx.fillStyle = '#0284c7';
+      ctx.beginPath();
+      ctx.arc(playerX, playerY, 32, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.font = '32px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🥊', playerX, playerY);
+
+      // Render Rival Fighter (Right Side, Amber/Red)
+      const rivalX = centerX + 45 + pushOffset - shakeX;
+      const rivalY = centerY;
+
+      ctx.fillStyle = '#dc2626';
+      ctx.beginPath();
+      ctx.arc(rivalX, rivalY, 32, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.font = '32px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(currentRival.avatar, rivalX, rivalY);
+
+      // Impact Clash Sparks in Middle
+      const clashX = (playerX + rivalX) / 2;
+      ctx.font = '24px serif';
+      ctx.fillText('⚡', clashX, centerY - 30);
     };
 
-    animId = requestAnimationFrame(animate);
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, [playSfx]);
 
-    return () => {
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-    };
-  }, [lowSpecMode]);
-
-  const handleRestart = () => {
+  const endGame = (isWin: boolean) => {
     const s = stateRef.current;
-    s.balance = 50;
-    s.balanceDrift = 0;
-    s.score = 0;
-    s.streak = 0;
-    s.enemyHp = 100;
-    s.isGameOver = false;
-    s.startTime = Date.now();
-    setBalance(50);
-    setScore(0);
-    setStreak(0);
-    setEnemyHp(100);
-    setIsGameOver(false);
-    setSettlementReceipt(null);
+    if (s.isGameOver) return;
+    s.isGameOver = true;
+    setIsGameOver(true);
+
+    if (isWin) {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    } else {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+
+    const duration = (Date.now() - s.startTime) / 1000;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'arcade_sumo_tackle',
+      gameTitle: '블리츠 스모 태클',
+      durationSeconds: duration,
+      score: s.score + (isWin ? 3000 : (s.rivalIdx + 1) * 500) + s.maxCombo * 60,
+      difficulty: 'NIGHTMARE',
+      isVictory: isWin || s.rivalIdx >= 2,
+    });
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
   };
 
+  const tutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 초고속 탭 태클 배틀' : 'STEP 1: FAST TAP TACKLE',
+      title: isKo ? '화면을 광속으로 연타하여 상대를 밀어내세요' : 'Fast Tap Screen to Push Opponent Out of Ring',
+      description: isKo
+        ? '가상 조이스틱 없이 화면을 손가락으로 빠르게 연타(Tap Rush)하여 상대 리키시를 도효(링) 밖으로 밀어내고 3인의 라이벌을 제패하세요.'
+        : 'Tap rapidly anywhere to build push momentum and shove rival fighters out of the dohyo ring.',
+      keyPoints: isKo
+        ? [
+            '가상 조이스틱 0개 (100% 화면 직접 광속 탭 연타)',
+            '상대방도 밀어붙이므로 쉼 없이 빠른 연타가 핵심',
+            '게이지 100% 달성 시 즉시 링아웃 승리 및 다음 라이벌 등장'
+          ]
+        : [
+            'Zero Virtual Joysticks: 100% Direct Rapid Screen Tapping',
+            'Opponents push back forcefully, require relentless taps',
+            'Reach 100% power gauge to score instant ring-out knockouts'
+          ],
+      iconType: 'GOAL',
+    },
+    {
+      badge: isKo ? 'STEP 2: 모바일 퓨어 제스처' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '양손 원터치 광속 탭 (Rapid Tapping)' : 'Multi-Finger Rapid Tap',
+      description: isKo
+        ? '화면 아무 곳이나 양손 엄지 또는 검지로 마구 두드립니다.'
+        : 'Use both thumbs or index fingers to tap anywhere on the screen rapidly.',
+      keyPoints: isKo
+        ? [
+            '👆 연속 탭 연타: 실시간 파워 게이지 폭풍 전진',
+            '⚡ 탭 콤보 배수 보너스로 점수 대량 가산',
+            '🥊 3인의 도장 라이벌을 모두 격파하세요'
+          ]
+        : [
+            '👆 Rapid Tapping: Real-time power tug-of-war advancement',
+            '⚡ High tap combo multipliers grant massive score',
+            '🥊 Defeat all 3 dojo rivals to become Grand Champion'
+          ],
+      iconType: 'GESTURES',
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '결투 완료 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon match finish.',
+      keyPoints: isKo
+        ? [
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '격파 라이벌 수 및 탭 콤보 비례 대량 잭팟',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Defeated rivals and max tap combo multipliers',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS',
+    },
+  ];
+
+  const currentRival = RIVALS[currentRivalIdx] || RIVALS[0];
+
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
-
+    <div
+      onClick={handleTapRush}
+      className="relative w-full h-[100dvh] bg-[#0c0a09] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none cursor-pointer"
+    >
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
-      <MinimalistMissionHUD
-        title={isKo ? '복셀 도장 밸런스 결투' : 'Voxel Dojo Balance'}
-        language={language}
-        hp={{ current: enemyHp, max: 100 }}
-        telemetries={[
-          { label: isKo ? '밸런스' : 'Balance', value: `${balance}%`, color: Math.abs(balance - 50) > 25 ? 'text-rose-400' : 'text-emerald-300' },
-          { label: isKo ? '격파' : 'Streak', value: `${streak}/${targetStreak}KO`, color: 'text-amber-300' }
-        ]}
-        onExit={onExit}
-        onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          stateRef.current.isPaused = !isPaused;
-        }}
-        isPaused={isPaused}
-      />
-
-      {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div
-          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
-          style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const startX = e.clientX - rect.left;
-            let moved = false;
-
-            const onMove = (moveEvt: PointerEvent) => {
-              const curX = moveEvt.clientX - rect.left;
-              const dx = curX - startX;
-
-              if (Math.abs(dx) > 12) {
-                moved = true;
-                handleBalanceAdjust(dx > 0 ? 1 : -1);
-              }
-            };
-
-            const onUp = () => {
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-              window.removeEventListener('pointercancel', onUp);
-
-              if (!moved) {
-                // Tap: Strike
-                handlePlayerAttack(false);
-              }
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-          }}
-          onDoubleClick={() => handlePlayerAttack(true)}
+      <div onClick={(e) => e.stopPropagation()} className="w-full">
+        <MinimalistMissionHUD
+          title={isKo ? '블리츠 스모 태클' : 'Blitz Sumo Tackle'}
+          language={(language as Language) || 'ko'}
+          telemetries={[
+            { label: isKo ? '라이벌' : 'Rival', value: `${currentRivalIdx + 1}/${RIVALS.length} ${currentRival.avatar}`, color: 'text-amber-400 font-bold' },
+            { label: isKo ? '밀치기' : 'Power', value: `${powerMeter}%`, color: powerMeter >= 70 ? 'text-emerald-400 font-bold' : powerMeter <= 30 ? 'text-rose-500 font-bold animate-pulse' : 'text-cyan-300' },
+            { label: isKo ? '연타' : 'Combo', value: `${tapCombo}x`, color: tapCombo > 15 ? 'text-amber-300 font-bold animate-bounce' : 'text-slate-300' },
+            { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-cyan-300 font-bold' }
+          ]}
+          onExit={onExit}
+          onHelp={() => setShowTutorial(true)}
+          onPauseToggle={() => setIsPaused(prev => !prev)}
+          isPaused={isPaused}
         />
-      )}
+      </div>
+
+      {/* Pure Touch Sumo Ring Canvas Viewport */}
+      <div className="flex-1 w-full max-w-md relative overflow-hidden flex flex-col items-center justify-center select-none touch-none p-2">
+        {/* Tug of War Push Power Bar */}
+        <div className="w-64 bg-slate-800 border border-slate-600 h-5 rounded-full overflow-hidden mb-3 relative flex items-center">
+          <div
+            className="h-full bg-gradient-to-r from-rose-500 via-amber-400 to-cyan-400 transition-all duration-75"
+            style={{ width: `${powerMeter}%` }}
+          />
+          <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white drop-shadow">
+            {isKo ? `도효 밀치기: ${powerMeter}%` : `Ring Push: ${powerMeter}%`}
+          </span>
+        </div>
+
+        <canvas
+          ref={canvasRef}
+          width={360}
+          height={420}
+          className="w-full object-contain touch-none shadow-2xl"
+        />
+
+        {/* Floating Feedback Text */}
+        {feedbackText && (
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none text-xl font-bold text-amber-300 drop-shadow-lg animate-bounce whitespace-nowrap">
+            {feedbackText}
+          </div>
+        )}
+      </div>
 
       {/* Minimal Bottom Guide */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/75 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
-          {isKo ? '좌우 스와이프: 균형 복구 | 탭: 빠른 타격 | 더블탭: 강타 (버튼 없음)' : 'Swipe L/R: Balance | Tap: Strike | Double Tap: Heavy (No Buttons)'}
+      <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono animate-pulse">
+          {isKo ? '화면을 마구 연타하여 상대를 밀어내세요! (광속 탭 연타)' : 'Tap screen rapidly to push opponent out of the ring!'}
         </div>
       </div>
 
-      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
-        <SportsMissionTutorial
-          gameId="voxel_dojo_balance"
-          gameTitle={isKo ? '3D 복셀 도장 밸런스 결투: 외나무다리 승부' : 'Voxel Dojo Balance: Bridge Duel'}
-          sportType="martial_arts"
-          language={language}
-          onStartGame={() => setShowTutorial(false)}
-          onClose={() => setShowTutorial(false)}
-        />
+        <div onClick={(e) => e.stopPropagation()}>
+          <UniversalTutorialModal
+            gameId="arcade_sumo_tackle"
+            gameTitle={isKo ? '블리츠 스모 태클: 연타 배틀' : 'Blitz Sumo Tackle: Tap Battle'}
+            customSteps={tutorialSteps}
+            language={(language as Language) || 'ko'}
+            onStartGame={() => setShowTutorial(false)}
+            onClose={() => setShowTutorial(false)}
+          />
+        </div>
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
-        <VictoryRewardModal
-          receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
-          onExit={onExit}
-        />
+        <div onClick={(e) => e.stopPropagation()}>
+          <VictoryRewardModal
+            receipt={settlementReceipt}
+            language={(language as Language) || 'ko'}
+            onPlayAgain={initGame}
+            onExit={onExit}
+          />
+        </div>
       )}
     </div>
   );
 };
+export default VoxelDojoBalanceGame;

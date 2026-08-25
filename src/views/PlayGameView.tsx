@@ -8371,7 +8371,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxeldojobalance',
-      title: language === 'ko' ? '3D 복셀 도장 밸런스: 외나무다리 결투' : 'Voxel Dojo Balance: Log Duel',
+      title: language === 'ko' ? '블리츠 스모 태클' : 'Blitz Sumo Tackle',
       icon: Trophy,
       color: 'from-zinc-700 to-amber-600',
       image: '/minigame_boss.png',
@@ -8379,10 +8379,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxeldojobalance');
       },
-      category: '3d',
+      category: 'casual',
       isNew: true,
-      badgeText: '3D DOJO',
-      guide: language === 'ko' ? '좁은 외나무다리 위에서 좌우 균형을 잡으며 봉술 타격과 가드 패링으로 상대 닌자를 낙하시키세요.' : 'Maintain balance on a narrow log high in the air and knock rival ninjas into the waterfall with staff strikes!'
+      badgeText: 'SUMO-TACKLE',
+      guide: language === 'ko' ? '화면을 광속으로 연타하여 상대를 도효(링) 밖으로 밀어내고 3인의 라이벌을 제패하세요.' : 'Tap rapidly anywhere to build push momentum and shove rival fighters out of the dohyo ring!'
     },
     {
       id: 'voxelbubblepop',
@@ -12001,7 +12001,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '도장 밸런스 보상', 'Dojo Balance reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 스모 태클 보상', 'Blitz Sumo Tackle reward')}
       />
     );
   }
