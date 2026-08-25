@@ -7516,7 +7516,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxeltitan',
-      title: language === 'ko' ? '3D 복셀 타이탄 메카 레이드' : 'Voxel Titan Mecha Raid',
+      title: language === 'ko' ? '블리츠 타이탄 메카' : 'Blitz Titan Mecha',
       icon: Swords,
       color: 'from-rose-600 to-red-800',
       image: '/minigame_boss.png',
@@ -7524,10 +7524,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxeltitan');
       },
-      category: '3d',
+      category: 'battle',
       isNew: true,
-      badgeText: '3D TITAN',
-      guide: language === 'ko' ? '초대형 3D 복셀 타이탄 메카의 부위별 약점 코어를 공략하고 광폭화 필살기를 회피해 토벌하세요.' : 'Colossal 3D titan raid targeting vulnerable core parts while dodging berserk lasers!'
+      badgeText: 'TITAN-MECHA',
+      guide: language === 'ko' ? '적 메카를 손가락으로 직접 탭해 미사일을 발사하세요.' : 'Tap enemy mechas to fire guided missiles!'
     },
     {
       id: 'voxeldeepsea',
@@ -11260,7 +11260,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '타이탄 메카 보상', 'Titan Mecha reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 타이탄 메카 보상', 'Blitz Titan Mecha reward')}
       />
     );
   }
