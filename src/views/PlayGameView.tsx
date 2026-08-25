@@ -8446,7 +8446,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelnetherportal',
-      title: language === 'ko' ? '3D 복셀 네더 포탈: 차원 균열 점프' : 'Voxel Nether Portal: Dimension Jump',
+      title: language === 'ko' ? '블리츠 네더 포탈' : 'Blitz Nether Portal',
       icon: Trophy,
       color: 'from-purple-900 to-orange-700',
       image: '/minigame_boss.png',
@@ -8454,10 +8454,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelnetherportal');
       },
-      category: '3d',
+      category: 'puzzle',
       isNew: true,
-      badgeText: '3D PORTAL',
-      guide: language === 'ko' ? '네더 용암 바다 위 부유 섬들을 점프하며 네더 오브를 수집하고 차원 균열을 피해 탈출 포탈을 여세요.' : 'Leap across floating nether islands above lava, collect purple orbs, and escape through the dimensional portal!'
+      badgeText: 'NETHER-PORTAL',
+      guide: language === 'ko' ? '같은 색 크리스탈을 3개 이상 그어 연결해 포탈을 여세요.' : 'Drag to link 3 or more matching crystals to open the nether portal!'
     },
     {
       id: 'voxelmegaflareassault',
@@ -12066,7 +12066,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '네더 포탈 보상', 'Nether Portal reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 네더 포탈 보상', 'Blitz Nether Portal reward')}
       />
     );
   }
