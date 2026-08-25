@@ -7561,7 +7561,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxeldriftmaster',
-      title: language === 'ko' ? '3D 복셀 드리프트 마스터' : 'Voxel Drift Master',
+      title: language === 'ko' ? '블리츠 슬링 드리프트' : 'Blitz Sling Drift',
       icon: Zap,
       color: 'from-fuchsia-600 to-indigo-700',
       image: '/minigame_slide2048.png',
@@ -7569,10 +7569,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxeldriftmaster');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D DRIFT',
-      guide: language === 'ko' ? '네온 사이버 도시 서킷에서 극한의 부스터와 코너링 드리프트로 최고 랩타임에 도전하세요.' : 'High-speed cyberpunk voxel racing with nitro boost and slick drifting mechanics!'
+      badgeText: 'SLING-DRIFT',
+      guide: language === 'ko' ? '화면을 꾹 눌러 앵커 코너를 파워 드리프트하고, 손을 떼어 부스터 사출하세요.' : 'Hold screen to sling drift around anchor corners and release to launch forward!'
     },
     {
       id: 'voxelmonsterisle',
@@ -11299,7 +11299,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '드리프트 마스터 보상', 'Drift Master reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 슬링 드리프트 보상', 'Blitz Sling Drift reward')}
       />
     );
   }

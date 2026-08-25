@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { CardData } from '../types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
-import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
@@ -15,299 +14,479 @@ interface VoxelDriftMasterGameProps {
   onReward: (amount: number) => void;
 }
 
+interface TrackCorner {
+  id: number;
+  x: number;
+  y: number;
+  radius: number;
+  passed: boolean;
+}
+
 export const VoxelDriftMasterGame: React.FC<VoxelDriftMasterGameProps> = ({
   deck: _deck,
   language,
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
+  const [driftCornersCount, setDriftCornersCount] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
+  const [driftCombo, setDriftCombo] = useState<number>(0);
+  const [maxCombo, setMaxCombo] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(35);
+  const [feedbackText, setFeedbackText] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_drift_master') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_sling_drift') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [speed, setSpeed] = useState<number>(0);
-  const [driftScore, setDriftScore] = useState<number>(0);
-  const targetScore = 2000;
-  const [nitro, setNitro] = useState<number>(100);
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
-  const gameStateRef = useRef({
-    posX: 45,
-    posZ: 0,
-    rotY: 0,
-    speed: 0,
-    driftScore: 0,
-    nitro: 100,
-    isDrifting: false,
-    keys: { w: false, s: false, a: false, d: false, space: false },
+  const stateRef = useRef({
+    carX: 180,
+    carY: 420,
+    carAngle: -Math.PI / 2, // Facing up
+    speed: 260,
+    isHolding: false,
+    activeCorner: null as TrackCorner | null,
+    corners: [] as TrackCorner[],
+    driftCount: 0,
+    score: 0,
+    driftCombo: 0,
+    maxCombo: 0,
+    timeLeft: 35,
     isGameOver: false,
-    isVictory: false,
     isPaused: false,
     startTime: Date.now(),
-    carMesh: null as THREE.Group | null
+    cornerCounter: 1,
+    spawnTimer: 0,
+    scrollOffset: 0,
   });
 
-  const triggerNitro = () => {
-    const s = gameStateRef.current;
-    if (s.nitro < 25 || s.isGameOver || s.isVictory || s.isPaused) return;
-    s.nitro -= 25;
-    s.speed += 20;
-    setNitro(Math.round(s.nitro));
+  const initGame = useCallback(() => {
+    const s = stateRef.current;
+    s.carX = 180;
+    s.carY = 420;
+    s.carAngle = -Math.PI / 2;
+    s.speed = 260;
+    s.isHolding = false;
+    s.activeCorner = null;
+    s.corners = [
+      { id: 1, x: 180, y: 220, radius: 55, passed: false },
+      { id: 2, x: 180, y: 20, radius: 55, passed: false },
+    ];
+    s.driftCount = 0;
+    s.score = 0;
+    s.driftCombo = 0;
+    s.maxCombo = 0;
+    s.timeLeft = 35;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    s.cornerCounter = 3;
+    s.spawnTimer = 0;
+    s.scrollOffset = 0;
+
+    setDriftCornersCount(0);
+    setScore(0);
+    setDriftCombo(0);
+    setMaxCombo(0);
+    setTimeLeft(35);
+    setFeedbackText(null);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  }, []);
+
+  useEffect(() => {
+    initGame();
+  }, [initGame]);
+
+  // Timer loop
+  useEffect(() => {
+    if (isGameOver || isPaused) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          endGame(true);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isGameOver, isPaused]);
+
+  // Touch / Pointer Hold & Release Drift Action (Zero Joysticks)
+  const handlePointerDown = () => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+
+    s.isHolding = true;
     playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
   };
 
+  const handlePointerUp = () => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+
+    if (s.isHolding && s.activeCorner) {
+      // Released Sling Shot Boost!
+      s.driftCombo += 1;
+      if (s.driftCombo > s.maxCombo) s.maxCombo = s.driftCombo;
+
+      const pts = 150 + s.driftCombo * 40;
+      s.score += pts;
+      s.driftCount += 1;
+
+      setScore(s.score);
+      setDriftCombo(s.driftCombo);
+      setMaxCombo(s.maxCombo);
+      setDriftCornersCount(s.driftCount);
+
+      setFeedbackText(`PERFECT DRIFT! +${pts}P ⚡`);
+      setTimeout(() => setFeedbackText(null), 400);
+
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+      s.activeCorner.passed = true;
+      s.activeCorner = null;
+    }
+
+    s.isHolding = false;
+  };
+
+  // Main 60FPS Sling Drift Engine Loop
   useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
-
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x050510);
-    scene.fog = new THREE.FogExp2(0x050510, 0.015);
-
-    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 300);
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    container.appendChild(renderer.domElement);
-
-    const ambient = new THREE.AmbientLight(0x223366, 0.8);
-    scene.add(ambient);
-    const dirLight = new THREE.DirectionalLight(0xff00ff, 1.2);
-    dirLight.position.set(20, 50, 20);
-    scene.add(dirLight);
-
-    // Circuit Track
-    const trackGeo = new THREE.RingGeometry(30, 60, 32);
-    trackGeo.rotateX(-Math.PI / 2);
-    const trackMat = new THREE.MeshLambertMaterial({ color: 0x1e293b });
-    const track = new THREE.Mesh(trackGeo, trackMat);
-    scene.add(track);
-
-    // Sports Car Mesh
-    const car = new THREE.Group();
-    const carBody = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.8, 3.6), new THREE.MeshPhongMaterial({ color: 0xff0055 }));
-    carBody.position.y = 0.5;
-    car.add(carBody);
-
-    const spoiler = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.2, 0.6), new THREE.MeshLambertMaterial({ color: 0x111111 }));
-    spoiler.position.set(0, 1.1, 1.5);
-    car.add(spoiler);
-
-    car.position.set(45, 0, 0);
-    scene.add(car);
-    gameStateRef.current.carMesh = car;
-
-    let animId: number;
     let lastTime = performance.now();
 
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
-      const s = gameStateRef.current;
+      const s = stateRef.current;
       if (s.isPaused || s.isGameOver) return;
 
-      // Steering & Acceleration
-      if (s.keys.w) s.speed = Math.min(45, s.speed + 25 * dt);
-      else if (s.keys.s) s.speed = Math.max(-15, s.speed - 25 * dt);
-      else s.speed = THREE.MathUtils.lerp(s.speed, 0, dt * 2);
-
-      let steerRate = s.keys.space ? 3.5 : 2.0;
-      if (s.keys.a) s.rotY += steerRate * dt;
-      if (s.keys.d) s.rotY -= steerRate * dt;
-
-      s.posX += Math.sin(s.rotY) * s.speed * dt;
-      s.posZ += Math.cos(s.rotY) * s.speed * dt;
-
-      setSpeed(Math.round(Math.abs(s.speed) * 4));
-
-      // Nitro Recharge
-      s.nitro = Math.min(100, s.nitro + dt * 8);
-      setNitro(Math.round(s.nitro));
-
-      // Drift Score Logic
-      if (s.keys.space && Math.abs(s.speed) > 15) {
-        s.driftScore += Math.round(Math.abs(s.speed) * 20 * dt);
-        setDriftScore(s.driftScore);
-
-        if (s.driftScore >= targetScore && !s.isGameOver) {
-          s.isVictory = true;
-          s.isGameOver = true;
-          setIsGameOver(true);
-          const duration = (Date.now() - s.startTime) / 1000;
-          const receipt = calculateAndDepositMissionReward({
-            gameId: 'voxel_drift_master',
-            gameTitle: '복셀 드리프트 마스터',
-            durationSeconds: duration,
-            score: s.driftScore,
-            difficulty: 'HARD',
-            isVictory: true
-          });
-          setSettlementReceipt(receipt);
-          onReward(receipt.totalSns);
+      // Find nearest upcoming anchor corner
+      if (!s.activeCorner) {
+        for (const c of s.corners) {
+          if (!c.passed && Math.hypot(c.x - s.carX, c.y - s.carY) < 110) {
+            s.activeCorner = c;
+            break;
+          }
         }
       }
 
-      if (car) {
-        car.position.set(s.posX, 0, s.posZ);
-        car.rotation.y = s.rotY;
+      // Physics Motion
+      if (s.isHolding && s.activeCorner) {
+        // Orbit around anchor corner (Drift Tether)
+        const dx = s.carX - s.activeCorner.x;
+        const dy = s.carY - s.activeCorner.y;
+        let angle = Math.atan2(dy, dx);
 
-        camera.position.set(
-          s.posX - Math.sin(s.rotY) * 12,
-          6,
-          s.posZ - Math.cos(s.rotY) * 12
-        );
-        camera.lookAt(s.posX, 1.5, s.posZ);
+        const angularSpeed = 4.2; // Rad/s
+        angle += angularSpeed * dt;
+
+        s.carX = s.activeCorner.x + Math.cos(angle) * s.activeCorner.radius;
+        s.carY = s.activeCorner.y + Math.sin(angle) * s.activeCorner.radius;
+        s.carAngle = angle + Math.PI / 2; // Tangent heading
+      } else {
+        // Linear Forward Motion
+        s.carX += Math.cos(s.carAngle) * s.speed * dt;
+        s.carY += Math.sin(s.carAngle) * s.speed * dt;
       }
 
-      renderer.render(scene, camera);
-    };
+      // Track Scroll down when car moves up
+      const targetScreenY = 380;
+      if (s.carY < targetScreenY) {
+        const scrollDist = (targetScreenY - s.carY);
+        s.carY = targetScreenY;
 
-    animId = requestAnimationFrame(animate);
-
-    return () => {
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
+        s.corners.forEach((c) => {
+          c.y += scrollDist;
+        });
       }
-    };
-  }, [lowSpecMode]);
 
-  const handleRestart = () => {
-    const s = gameStateRef.current;
-    s.posX = 45;
-    s.posZ = 0;
-    s.rotY = 0;
-    s.speed = 0;
-    s.driftScore = 0;
-    s.nitro = 100;
-    s.isGameOver = false;
-    s.isVictory = false;
-    s.startTime = Date.now();
-    setSpeed(0);
-    setDriftScore(0);
-    setNitro(100);
-    setIsGameOver(false);
-    setSettlementReceipt(null);
+      // Spawn Next Corners
+      const highestCornerY = s.corners.reduce((minY, c) => Math.min(minY, c.y), 500);
+      if (highestCornerY > -100) {
+        const nextX = 100 + Math.random() * 160;
+        s.corners.push({
+          id: s.cornerCounter++,
+          x: nextX,
+          y: highestCornerY - 200,
+          radius: 55,
+          passed: false,
+        });
+      }
+
+      // Remove offscreen corners
+      for (let i = s.corners.length - 1; i >= 0; i--) {
+        if (s.corners[i].y > 580) {
+          s.corners.splice(i, 1);
+        }
+      }
+
+      // Boundary Crash Check (Off Track)
+      if (s.carX < 30 || s.carX > 330) {
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+        endGame(false);
+        return;
+      }
+
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Neon Cyber Track Background
+      ctx.fillStyle = '#0a0d18';
+      ctx.fillRect(0, 0, w, h);
+
+      // Road Borders
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(35, 0);
+      ctx.lineTo(35, h);
+      ctx.moveTo(w - 35, 0);
+      ctx.lineTo(w - 35, h);
+      ctx.stroke();
+
+      // Render Anchor Corners (⚓)
+      s.corners.forEach((c) => {
+        ctx.fillStyle = c.passed ? '#334155' : '#0284c7';
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, 16, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.font = '16px serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('⚓', c.x, c.y);
+
+        // Drift Tether Line if Holding
+        if (s.isHolding && s.activeCorner && s.activeCorner.id === c.id) {
+          ctx.strokeStyle = '#fde047';
+          ctx.lineWidth = 2.5;
+          ctx.setLineDash([6, 6]);
+          ctx.beginPath();
+          ctx.moveTo(c.x, c.y);
+          ctx.lineTo(s.carX, s.carY);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      });
+
+      // Render Drift Skid Marks
+      if (s.isHolding && s.activeCorner) {
+        ctx.fillStyle = 'rgba(253, 224, 71, 0.4)';
+        ctx.beginPath();
+        ctx.arc(s.carX, s.carY, 8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Render Player Sports Car
+      ctx.save();
+      ctx.translate(s.carX, s.carY);
+      ctx.rotate(s.carAngle + Math.PI / 2);
+
+      ctx.fillStyle = '#f43f5e';
+      ctx.beginPath();
+      ctx.roundRect(-12, -20, 24, 40, 4);
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Windshield
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(-9, -10, 18, 10);
+
+      ctx.restore();
+    };
+
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, [playSfx]);
+
+  const endGame = (isWin: boolean) => {
+    const s = stateRef.current;
+    if (s.isGameOver) return;
+    s.isGameOver = true;
+    setIsGameOver(true);
+
+    if (isWin) {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    } else {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+
+    const duration = (Date.now() - s.startTime) / 1000;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'arcade_sling_drift',
+      gameTitle: '블리츠 슬링 드리프트',
+      durationSeconds: duration,
+      score: s.score + (isWin ? 3000 : s.driftCount * 300) + s.maxCombo * 70,
+      difficulty: 'NIGHTMARE',
+      isVictory: isWin || s.driftCount >= 10,
+    });
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
   };
 
+  const tutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 원터치 슬링 드리프트' : 'STEP 1: SLING DRIFT',
+      title: isKo ? '화면을 꾹 눌러 코너를 드리프트하세요' : 'Hold Screen to Sling Drift Around Anchors',
+      description: isKo
+        ? '가상 조이스틱 없이 차량이 앵커(⚓)에 다가갈 때 화면을 꾹 누르고 있으면 줄을 걸고 드리프트하며, 손을 떼면 직선으로 부스터 사출됩니다.'
+        : 'Hold anywhere to tether to the anchor and drift, then release in time to launch forward.',
+      keyPoints: isKo
+        ? [
+            '가상 조이스틱 0개 (100% 화면 원터치 홀드 & 릴리즈)',
+            '완벽한 각도에서 손을 떼면 PERFECT DRIFT 콤보',
+            '트랙 벽 충돌 없이 35초간 최대 코너를 통과하세요'
+          ]
+        : [
+            'Zero Virtual Joysticks: 100% One-Touch Hold & Release',
+            'Release at the perfect tangent for PERFECT DRIFT combos',
+            'Survive 35s of high-speed drifting without wall crashing'
+          ],
+      iconType: 'GOAL',
+    },
+    {
+      badge: isKo ? 'STEP 2: 모바일 퓨어 제스처' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '화면 길게 누르기 & 손 떼기 (Hold & Release)' : 'Hold & Release Screen',
+      description: isKo
+        ? '화면 아무 곳이나 꾹 누르고 있다가 코너 탈출 시 손을 뗍니다.'
+        : 'Simply press and hold on corners, then release into the straightaway.',
+      keyPoints: isKo
+        ? [
+            '👆 홀드 & 릴리즈: 실시간 앵커 테더 물리 궤적',
+            '⚡ 연속 코너링 콤보로 피버 스코어 잭팟 획득',
+            '🏎️ 35초 타임어택 고득점 챌린지'
+          ]
+        : [
+            '👆 Hold & Release: Real-time tether physics trajectory',
+            '⚡ High drift combos grant massive bonus scores',
+            '🏎️ 35s time attack high-score sprint'
+          ],
+      iconType: 'GESTURES',
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '레이스 완주 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon match finish.',
+      keyPoints: isKo
+        ? [
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '통과 코너 수 및 드리프트 콤보 비례 대량 잭팟',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Cleared corners and drift combo multipliers',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS',
+    },
+  ];
+
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
-
+    <div
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      className="relative w-full h-[100dvh] bg-[#070913] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none cursor-pointer"
+    >
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
-      <MinimalistMissionHUD
-        title={isKo ? '복셀 드리프트 마스터' : 'Voxel Drift Master'}
-        language={language}
-        telemetries={[
-          { label: isKo ? '드리프트' : 'Drift', value: `${driftScore}/${targetScore}P`, color: 'text-amber-300' },
-          { label: isKo ? '속도' : 'Speed', value: `${speed}km/h`, color: 'text-cyan-300' },
-          { label: isKo ? '니트로' : 'Nitro', value: `${nitro}%`, color: 'text-fuchsia-300' }
-        ]}
-        onExit={onExit}
-        onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          gameStateRef.current.isPaused = !isPaused;
-        }}
-        isPaused={isPaused}
-      />
-
-      {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div
-          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
-          style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const startX = e.clientX - rect.left;
-            const startY = e.clientY - rect.top;
-            let moved = false;
-
-            const onMove = (moveEvt: PointerEvent) => {
-              const curX = moveEvt.clientX - rect.left;
-              const curY = moveEvt.clientY - rect.top;
-              const dx = curX - startX;
-              const dy = curY - startY;
-
-              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
-                moved = true;
-                gameStateRef.current.keys.w = dy < -8;
-                gameStateRef.current.keys.s = dy > 12;
-                gameStateRef.current.keys.a = dx < -10;
-                gameStateRef.current.keys.d = dx > 10;
-                gameStateRef.current.keys.space = Math.abs(dx) > 25;
-              }
-            };
-
-            const onUp = () => {
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-              window.removeEventListener('pointercancel', onUp);
-              gameStateRef.current.keys.w = false;
-              gameStateRef.current.keys.s = false;
-              gameStateRef.current.keys.a = false;
-              gameStateRef.current.keys.d = false;
-              gameStateRef.current.keys.space = false;
-
-              if (!moved) {
-                // Tap: Nitro Boost
-                triggerNitro();
-              }
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-          }}
-          onDoubleClick={triggerNitro}
+      <div onClick={(e) => e.stopPropagation()} className="w-full">
+        <MinimalistMissionHUD
+          title={isKo ? '블리츠 슬링 드리프트' : 'Blitz Sling Drift'}
+          language={(language as Language) || 'ko'}
+          telemetries={[
+            { label: isKo ? '코너' : 'Corners', value: `${driftCornersCount}회`, color: 'text-amber-400 font-bold' },
+            { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 10 ? 'text-rose-500 font-bold animate-pulse' : 'text-cyan-400 font-bold' },
+            { label: isKo ? '드리프트' : 'Combo', value: `${driftCombo}x`, color: driftCombo > 3 ? 'text-emerald-400 font-bold animate-bounce' : 'text-slate-300' },
+            { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300 font-bold' }
+          ]}
+          onExit={onExit}
+          onHelp={() => setShowTutorial(true)}
+          onPauseToggle={() => setIsPaused(prev => !prev)}
+          isPaused={isPaused}
         />
-      )}
+      </div>
+
+      {/* Pure Touch Sling Drift Canvas Viewport */}
+      <div className="flex-1 w-full max-w-md relative overflow-hidden flex items-center justify-center select-none touch-none p-2">
+        <canvas
+          ref={canvasRef}
+          width={360}
+          height={500}
+          className="w-full h-full object-contain touch-none shadow-2xl"
+        />
+
+        {/* Floating Feedback Text */}
+        {feedbackText && (
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 pointer-events-none text-xl font-bold text-amber-300 drop-shadow-lg animate-bounce whitespace-nowrap">
+            {feedbackText}
+          </div>
+        )}
+      </div>
 
       {/* Minimal Bottom Guide */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/75 border border-cyan-500/30 rounded-full text-[10px] text-cyan-300 font-mono backdrop-blur-xs">
-          {isKo ? '드래그: 주행 & 드리프트 | 탭/더블탭: 니트로 부스트 (버튼 없음)' : 'Drag: Drive & Drift | Tap/Double Tap: Nitro (No Buttons)'}
+      <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono">
+          {isKo ? '화면을 꾹 누르면 드리프트, 손을 떼면 사출됩니다' : 'Hold screen to drift around anchor, release to launch'}
         </div>
       </div>
 
-      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
-        <SportsMissionTutorial
-          gameId="voxel_drift_master"
-          gameTitle={isKo ? '3D 복셀 드리프트 마스터: 나이트 서킷 레이서' : 'Voxel Drift Master: Night Circuit'}
-          sportType="racing"
-          language={language}
-          onStartGame={() => setShowTutorial(false)}
-          onClose={() => setShowTutorial(false)}
-        />
+        <div onClick={(e) => e.stopPropagation()}>
+          <UniversalTutorialModal
+            gameId="arcade_sling_drift"
+            gameTitle={isKo ? '블리츠 슬링 드리프트: 원터치 레이싱' : 'Blitz Sling Drift: One-Touch Racing'}
+            customSteps={tutorialSteps}
+            language={(language as Language) || 'ko'}
+            onStartGame={() => setShowTutorial(false)}
+            onClose={() => setShowTutorial(false)}
+          />
+        </div>
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
-        <VictoryRewardModal
-          receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
-          onExit={onExit}
-        />
+        <div onClick={(e) => e.stopPropagation()}>
+          <VictoryRewardModal
+            receipt={settlementReceipt}
+            language={(language as Language) || 'ko'}
+            onPlayAgain={initGame}
+            onExit={onExit}
+          />
+        </div>
       )}
     </div>
   );
 };
+export default VoxelDriftMasterGame;
