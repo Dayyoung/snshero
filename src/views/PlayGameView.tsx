@@ -8536,18 +8536,18 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelarcanenexus',
-      title: language === 'ko' ? '3D 복셀 아케인 넥서스: 비전 마나 서클' : 'Voxel Arcane Nexus: Mana Circle',
-      icon: Trophy,
-      color: 'from-indigo-600 to-purple-900',
+      title: language === 'ko' ? '아케인 젬 크러시' : 'Arcane Gem Crush',
+      icon: Sparkles,
+      color: 'from-purple-600 to-indigo-700',
       image: '/minigame_boss.png',
       characterId: 109,
       action: () => {
         setGameState('voxelarcanenexus');
       },
-      category: '3d',
+      category: 'puzzle',
       isNew: true,
-      badgeText: '3D NEXUS',
-      guide: language === 'ko' ? '3D 동심원 마법 링들을 회전 정렬시켜 비전 마나 광선을 넥서스 코어로 연결하고 마나 과부하를 터뜨리세요.' : 'Rotate concentric 3D arcane rings to align mana beams into the nexus core and trigger mana overloads!'
+      badgeText: 'MATCH-3',
+      guide: language === 'ko' ? '인접한 원소 보석을 스와이프/탭하여 3개 이상 일렬로 매칭하고 연쇄 폭발 콤보를 터뜨리세요.' : 'Swap adjacent element gems to match 3+ in a row and trigger massive cascade combos!'
     },
     {
       id: 'voxeldreadshadow',
@@ -12144,7 +12144,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '아케인 넥서스 보상', 'Arcane Nexus reward')}
+        onReward={(amount) => handleMinigameReward(amount, '아케인 젬 크러시 보상', 'Arcane Gem Crush reward')}
       />
     );
   }
