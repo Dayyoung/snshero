@@ -7726,7 +7726,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelsupersmash',
-      title: language === 'ko' ? '3D 복셀 슈퍼 스매시 배틀' : 'Voxel Super Smash Battle',
+      title: language === 'ko' ? '블리츠 슈퍼 스매시' : 'Blitz Super Smash',
       icon: Swords,
       color: 'from-red-600 to-rose-700',
       image: '/minigame_boss.png',
@@ -7734,10 +7734,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelsupersmash');
       },
-      category: '3d',
+      category: 'battle',
       isNew: true,
-      badgeText: '3D SMASH',
-      guide: language === 'ko' ? '부유섬 배틀 아레나에서 강력한 넉백 공격과 아이템으로 적들을 장외로 날려버리세요.' : 'Platform arena brawler knocking opponents off the edge with smash attacks!'
+      badgeText: 'SUPER-SMASH',
+      guide: language === 'ko' ? '파이터를 손가락으로 잡고 링 밖으로 빠르게 쓸어 넘기세요.' : 'Touch fighter and swipe quickly toward the ring edge to knock out!'
     },
     {
       id: 'voxeltowercraft',
@@ -11442,7 +11442,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '슈퍼 스매시 보상', 'Super Smash reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 슈퍼 스매시 보상', 'Blitz Super Smash reward')}
       />
     );
   }
