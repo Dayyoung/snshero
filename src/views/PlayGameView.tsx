@@ -7411,7 +7411,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelbattlegrounds',
-      title: language === 'ko' ? '복셀 배틀그라운드' : 'Voxel Battlegrounds',
+      title: language === 'ko' ? '블리츠 불릿 닷지' : 'Blitz Bullet Dodge',
       icon: Crosshair,
       color: 'from-blue-600 to-indigo-700',
       image: '/minigame_shooting.png',
@@ -7419,10 +7419,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelbattlegrounds');
       },
-      category: '3d',
+      category: 'battle',
       isNew: true,
-      badgeText: '3D BR',
-      guide: language === 'ko' ? '12인 부유섬 배틀로얄에서 수송선 글라이더 강하, 파밍, 엄폐벽 건설, 축소 자기장을 뚫고 최후의 1인 치킨 디너를 차지하세요.' : '12-player floating island battle royale with gliders, building, and storm!'
+      badgeText: 'BULLET-HELL',
+      guide: language === 'ko' ? '화면을 손가락으로 드래그해 쏟아지는 탄막을 아슬아슬하게 피하고 더블 탭 패링 실드로 반사하세요.' : 'Drag to dodge bullet hell patterns and double tap to reflect bullets with Parry Shield!'
     },
     {
       id: 'pirate_roulette',
@@ -11195,7 +11195,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '배틀그라운드 보상', 'Battlegrounds reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 불릿 닷지 보상', 'Blitz Bullet Dodge reward')}
       />
     );
   }
