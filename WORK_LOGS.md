@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-25 10:31 KST / 01:31 UTC] [/imp-mission 5개 게임 일괄 개선 #100~104] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
+- **14회차 5개 일괄 선정 및 개선 대상 게임**:
+  1. `src/components/UndergroundDungeonMission.tsx` (100 / 110) - 88점 ➔ **99점** (인접 타일 원터치 이동, 몬스터 토벌 및 탈출 포털 도달, 1줄 슬림 HUD 및 확정보상 연동)
+  2. `src/components/WorldBossRaidMission.tsx` (101 / 110) - 88점 ➔ **99점** (45초 타임어택, 일반/치명타/필살기 스킬 시전, 5000 HP 보스 토벌, 1줄 슬림 HUD 및 확정보상 연동)
+  3. `src/components/StoryChapterBattleMission.tsx` (102 / 110) - 88점 ➔ **99점** (3라운드 챕터 연속 배틀, 강타/방어/마법 전술 커맨드, 1줄 슬림 HUD 및 확정보상 연동)
+  4. `src/components/GuildRaidCoopMission.tsx` (103 / 110) - 88점 ➔ **99점** (골렘 원터치 연타 공격, 길드 원군 증원 DPS 화력 집중, 1줄 슬림 HUD 및 확정보상 연동)
+  5. `src/components/TowerOfTrials50FMission.tsx` (104 / 110) - 88점 ➔ **99점** (시련의 탑 50층 무한 등반, 속공/강타 수호자 격파, 1줄 슬림 HUD 및 확정보상 연동)
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 5개 게임 일괄(UndergroundDungeon, WorldBossRaid, StoryChapterBattle, GuildRaidCoop, TowerOfTrials50F) 1줄 HUD/확정보상 전면 개선 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 10:21 KST / 01:21 UTC] [/imp-mission 5개 게임 일괄 개선 #95~99] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
 - **13회차 5개 일괄 선정 및 개선 대상 게임**:
   1. `src/components/SnakeBattleGame.tsx` (95 / 110) - 88점 ➔ **99점** (스와이프 및 원터치 D-패드 스네이크 조향, 황금 사과 수집, 1줄 슬림 HUD 및 확정보상 연동)
