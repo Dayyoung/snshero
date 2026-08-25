@@ -7276,7 +7276,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'pixelstrike',
-      title: language === 'ko' ? '3D 픽셀 스트라이크' : 'Pixel Strike Arena',
+      title: language === 'ko' ? '블리츠 픽셀 스트라이크' : 'Blitz Pixel Strike',
       icon: Crosshair,
       color: 'from-rose-600 to-red-700',
       image: '/minigame_shooting.png',
@@ -7284,10 +7284,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('pixelstrike');
       },
-      category: '3d',
+      category: 'battle',
       isNew: true,
-      badgeText: '3D FPS',
-      guide: language === 'ko' ? '1인칭 3D 픽셀 FPS 아레나에서 권총, 샷건, 라이플, 스나이퍼로 AI 봇들과 8인 데스매치를 펼치세요.' : 'Classic 3D voxel FPS deathmatch with 4 swappable weapons and AI bots!'
+      badgeText: 'PIXEL-STRIKE',
+      guide: language === 'ko' ? '적 타깃을 손가락으로 직접 탭해 사격하고 헤드샷을 터뜨리세요.' : 'Tap enemy targets directly to shoot with precision headshots!'
     },
     {
       id: 'voxelparkour',
@@ -11169,7 +11169,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '픽셀 스트라이크 보상', 'Pixel Strike reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 픽셀 스트라이크 보상', 'Blitz Pixel Strike reward')}
       />
     );
   }
