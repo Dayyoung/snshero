@@ -8206,7 +8206,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxeldartsbar',
-      title: language === 'ko' ? '3D 복셀 다트 바 501 챔피언십' : 'Voxel Darts Bar 501 Championship',
+      title: language === 'ko' ? '블리츠 플릭 나이프' : 'Blitz Flick Knife',
       icon: Crosshair,
       color: 'from-amber-600 to-rose-700',
       image: '/minigame_shooting.png',
@@ -8214,10 +8214,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxeldartsbar');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D DARTS',
-      guide: language === 'ko' ? '정밀한 드래그 조준과 스와이프 투구로 불스아이 및 트리플 20을 적중시켜 501점을 0으로 마무리하세요.' : 'Aim crosshairs and throw darts with precision flick to score Bullseyes and finish 501!'
+      badgeText: 'FLICK-KNIFE',
+      guide: language === 'ko' ? '화면을 원터치 탭하여 회전하는 통나무에 단검을 꽂아 넣고 사과를 베어내세요.' : 'Tap anywhere to throw knives into the spinning log target and slice apples!'
     },
     {
       id: 'voxelwingsuitskydiving',
@@ -11858,7 +11858,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '다트 바 501 보상', 'Darts Bar 501 reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 플릭 나이프 보상', 'Blitz Flick Knife reward')}
       />
     );
   }
