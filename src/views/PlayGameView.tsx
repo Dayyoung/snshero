@@ -8281,7 +8281,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelskateboardstreet',
-      title: language === 'ko' ? '3D 복셀 스케이트보드 스트리트: 올리 킹' : 'Voxel Skateboard Street: Ollie King',
+      title: language === 'ko' ? '블리츠 스케이트 스트리트' : 'Blitz Skate Street',
       icon: Sparkles,
       color: 'from-sky-500 to-blue-700',
       image: '/minigame_subway.png',
@@ -8289,10 +8289,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelskateboardstreet');
       },
-      category: '3d',
+      category: 'sports',
       isNew: true,
-      badgeText: '3D SKATE',
-      guide: language === 'ko' ? '올리 점프로 레일에 올라타 50-50 그라인드 콤보와 공중 킥플립 360 트릭으로 최고 점수를 달성하세요.' : 'Ollie onto grind rails for high multipliers and perform 360 kickflips across street obstacles!'
+      badgeText: 'SKATE-STREET',
+      guide: language === 'ko' ? '위로 스와이프해 점프하고, 공중에서 좌우 스와이프로 360 킥플립을 구사하세요.' : 'Swipe up to Ollie jump, swipe left/right in air for 360 kickflip!'
     },
     {
       id: 'voxelsnowboardslalom',
@@ -11923,7 +11923,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '스케이트보드 스트리트 보상', 'Skateboard Street reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 스케이트 스트리트 보상', 'Blitz Skate Street reward')}
       />
     );
   }

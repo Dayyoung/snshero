@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { CardData } from '../types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
-import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
@@ -15,376 +14,569 @@ interface VoxelSkateboardStreetGameProps {
   onReward: (amount: number) => void;
 }
 
+interface StreetElement {
+  id: number;
+  x: number;
+  y: number;
+  type: 'rail' | 'cone' | 'star' | 'ramp';
+  icon: string;
+  points: number;
+  radius: number;
+  cleared: boolean;
+}
+
 export const VoxelSkateboardStreetGame: React.FC<VoxelSkateboardStreetGameProps> = ({
   deck: _deck,
   language,
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
+  const [tricksPerformed, setTricksPerformed] = useState<number>(0);
+  const [distanceRun, setDistanceRun] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
+  const [skateCombo, setSkateCombo] = useState<number>(0);
+  const [maxCombo, setMaxCombo] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(35);
+  const [feedbackText, setFeedbackText] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_skateboard_street') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_skate_street') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [score, setScore] = useState<number>(0);
-  const [distance, setDistance] = useState<number>(0);
-  const totalGoal = 1000;
-  const [comboMultiplier, setComboMultiplier] = useState<number>(1);
-  const [trickText, setTrickText] = useState<string>('');
-  const [isGrinding, setIsGrinding] = useState<boolean>(false);
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
+  const groundY = 410;
+
   const stateRef = useRef({
-    posX: 0,
-    posY: 0.25,
-    posZ: 0,
-    targetX: 0,
-    speed: 0.85,
-    jumpVelY: 0,
+    skaterY: groundY,
+    skaterVy: 0,
     isInAir: false,
     isGrinding: false,
     boardFlipAngle: 0,
-    combo: 1,
+    elements: [] as StreetElement[],
+    tricksPerformed: 0,
+    distanceRun: 0,
     score: 0,
-    distance: 0,
+    combo: 0,
+    maxCombo: 0,
+    timeLeft: 35,
     isGameOver: false,
     isPaused: false,
     startTime: Date.now(),
-    skaterMesh: null as THREE.Group | null,
-    boardMesh: null as THREE.Group | null,
-    rails: [] as { x: number; zStart: number; zEnd: number; height: number }[],
-    obstacles: [] as { x: number; z: number; width: number; height: number; type: 'bin' | 'cone' | 'rail' }[]
+    elemCounter: 1,
+    spawnTimer: 0,
+    touchStart: { x: 0, y: 0, time: 0 },
+    isHolding: false,
+    particles: [] as { x: number; y: number; vx: number; vy: number; color: string; life: number }[],
   });
 
-  const handleOllie = () => {
+  const initGame = useCallback(() => {
     const s = stateRef.current;
-    if (s.isPaused || s.isGameOver || s.isInAir) return;
-    s.isInAir = true;
+    s.skaterY = groundY;
+    s.skaterVy = 0;
+    s.isInAir = false;
     s.isGrinding = false;
-    setIsGrinding(false);
-    s.jumpVelY = 0.24;
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-  };
+    s.boardFlipAngle = 0;
+    s.elements = [];
+    s.tricksPerformed = 0;
+    s.distanceRun = 0;
+    s.score = 0;
+    s.combo = 0;
+    s.maxCombo = 0;
+    s.timeLeft = 35;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    s.elemCounter = 1;
+    s.spawnTimer = 0;
+    s.isHolding = false;
+    s.particles = [];
 
-  const handleKickflip = () => {
-    const s = stateRef.current;
-    if (s.isPaused || s.isGameOver || !s.isInAir) return;
-    s.boardFlipAngle += Math.PI * 2;
-    s.combo += 1;
-    s.score += 250 * s.combo;
-    setScore(s.score);
-    setComboMultiplier(s.combo);
-    setTrickText(`🔥 KICKFLIP 360° x${s.combo}!`);
-    setTimeout(() => setTrickText(''), 1000);
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-  };
+    // Initial items on road
+    s.elements.push(
+      { id: s.elemCounter++, x: 200, y: groundY - 20, type: 'star', icon: '⭐', points: 250, radius: 20, cleared: false },
+      { id: s.elemCounter++, x: 380, y: groundY - 10, type: 'rail', icon: '🛹', points: 600, radius: 28, cleared: false }
+    );
+
+    setTricksPerformed(0);
+    setDistanceRun(0);
+    setScore(0);
+    setSkateCombo(0);
+    setMaxCombo(0);
+    setTimeLeft(35);
+    setFeedbackText(null);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  }, [groundY]);
 
   useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+    initGame();
+  }, [initGame]);
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+  // Timer loop
+  useEffect(() => {
+    if (isGameOver || isPaused) return;
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x38bdf8);
-    scene.fog = new THREE.Fog(0x38bdf8, 30, 110);
-
-    const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 200);
-    camera.position.set(0, 3.5, 6.5);
-    camera.lookAt(0, 1.0, -10);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    container.appendChild(renderer.domElement);
-
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x475569, 0.85);
-    scene.add(hemiLight);
-
-    const dirLight = new THREE.DirectionalLight(0xfffaed, 1.3);
-    dirLight.position.set(30, 50, 30);
-    scene.add(dirLight);
-
-    // Street Floor
-    const street = new THREE.Mesh(
-      new THREE.PlaneGeometry(16, 1200),
-      new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.8 })
-    );
-    street.rotation.x = -Math.PI / 2;
-    street.position.set(0, 0, -500);
-    scene.add(street);
-
-    // Skater & Board Group
-    const skaterGroup = new THREE.Group();
-    const board = new THREE.Mesh(
-      new THREE.BoxGeometry(0.7, 0.08, 1.8),
-      new THREE.MeshStandardMaterial({ color: 0xf59e0b })
-    );
-    board.position.y = 0.1;
-    skaterGroup.add(board);
-
-    const rider = new THREE.Mesh(
-      new THREE.BoxGeometry(0.6, 1.2, 0.4),
-      new THREE.MeshStandardMaterial({ color: 0x2563eb })
-    );
-    rider.position.y = 0.8;
-    skaterGroup.add(rider);
-
-    skaterGroup.position.set(0, 0.25, 0);
-    scene.add(skaterGroup);
-    stateRef.current.skaterMesh = skaterGroup;
-    stateRef.current.boardMesh = skaterGroup;
-
-    // Generate Rails & Obstacles
-    stateRef.current.rails = [];
-    stateRef.current.obstacles = [];
-    for (let i = 1; i <= 20; i++) {
-      const rz = -i * 45;
-      const rx = (i % 2 === 0 ? 1 : -1) * 3;
-      const rMesh = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.08, 0.08, 18, 8),
-        new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.8 })
-      );
-      rMesh.rotation.x = Math.PI / 2;
-      rMesh.position.set(rx, 0.6, rz);
-      scene.add(rMesh);
-
-      stateRef.current.rails.push({
-        x: rx,
-        zStart: rz + 9,
-        zEnd: rz - 9,
-        height: 0.6
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          endGame(true);
+          return 0;
+        }
+        return t - 1;
       });
-    }
+    }, 1000);
 
-    let animId: number;
+    return () => clearInterval(timer);
+  }, [isGameOver, isPaused]);
+
+  // Pure Touch Gestures: Swipe Up to Ollie Jump, Swipe Left/Right in Air for Kickflip, Hold on Rail for Grind
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+
+    s.isHolding = true;
+    s.touchStart = {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+      time: Date.now(),
+    };
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+
+    const endX = e.clientX - rect.left;
+    const endY = e.clientY - rect.top;
+
+    const dx = endX - s.touchStart.x;
+    const dy = endY - s.touchStart.y;
+
+    s.isHolding = false;
+
+    // Gesture Classification
+    if (!s.isInAir && dy < -35) {
+      // Swipe Up: Ollie Jump!
+      s.isInAir = true;
+      s.skaterVy = -480;
+      s.boardFlipAngle = 0;
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+
+      setFeedbackText(isKo ? '🔥 OLLIE JUMP!' : '🔥 OLLIE JUMP!');
+      setTimeout(() => setFeedbackText(null), 300);
+    } else if (s.isInAir && Math.abs(dx) > 30) {
+      // Swipe Left or Right in Air: 360 Kickflip Trick!
+      s.boardFlipAngle += Math.PI * 2;
+      s.tricksPerformed += 1;
+      s.combo += 1;
+      if (s.combo > s.maxCombo) s.maxCombo = s.combo;
+
+      const pts = 450 + s.combo * 40;
+      s.score += pts;
+
+      setTricksPerformed(s.tricksPerformed);
+      setScore(s.score);
+      setSkateCombo(s.combo);
+      setMaxCombo(s.maxCombo);
+
+      setFeedbackText(`🛹 KICKFLIP 360° +${pts}P ✨`);
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+      setTimeout(() => setFeedbackText(null), 400);
+
+      // Trick Sparkles
+      for (let p = 0; p < 10; p++) {
+        s.particles.push({
+          x: 100,
+          y: s.skaterY,
+          vx: (Math.random() - 0.5) * 200,
+          vy: (Math.random() - 0.5) * 200,
+          color: '#fde047',
+          life: 0.4,
+        });
+      }
+    }
+  };
+
+  // Main 60FPS Skate Street Loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     let lastTime = performance.now();
 
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const s = stateRef.current;
       if (s.isPaused || s.isGameOver) return;
 
-      // Forward movement
-      s.posZ -= s.speed * 60 * dt;
-      s.distance = Math.min(totalGoal, Math.round(-s.posZ));
-      setDistance(s.distance);
+      const speed = 400;
 
-      // Horizontal steer
-      s.posX += (s.targetX - s.posX) * 8 * dt;
-
-      // Jump & Gravity
+      // Physics: Air Gravity & Skater Jump
       if (s.isInAir) {
-        s.jumpVelY -= 0.65 * dt;
-        s.posY += s.jumpVelY;
+        s.skaterVy += 980 * dt; // Gravity
+        s.skaterY += s.skaterVy * dt;
 
-        if (s.posY <= 0.25) {
-          s.posY = 0.25;
-          s.jumpVelY = 0;
+        if (s.skaterY >= groundY) {
+          s.skaterY = groundY;
+          s.skaterVy = 0;
           s.isInAir = false;
-          s.combo = 1;
-          setComboMultiplier(1);
+          s.boardFlipAngle = 0;
         }
       }
 
-      // Check Rail Grind
-      let grinding = false;
-      s.rails.forEach(r => {
-        if (Math.abs(s.posX - r.x) < 0.6 && s.posZ <= r.zStart && s.posZ >= r.zEnd) {
-          grinding = true;
-          s.posY = r.height;
-          s.isInAir = false;
-          s.score += Math.round(150 * dt * 10);
-          setScore(s.score);
+      // Distance update
+      s.distanceRun += Math.round(speed * dt * 0.1);
+      setDistanceRun(s.distanceRun);
+
+      // Spawn Elements (Rails, Cones, Stars, Ramps)
+      s.spawnTimer += dt;
+      if (s.spawnTimer > 0.85) {
+        s.spawnTimer = 0;
+        const rand = Math.random();
+        const isRail = rand < 0.35;
+        const isCone = rand >= 0.35 && rand < 0.65;
+
+        s.elements.push({
+          id: s.elemCounter++,
+          x: 400,
+          y: isRail ? groundY - 15 : (isCone ? groundY - 5 : groundY - 60),
+          type: isRail ? 'rail' : (isCone ? 'cone' : 'star'),
+          icon: isRail ? '🛹' : (isCone ? '🚧' : '⭐'),
+          points: isRail ? 600 : (isCone ? -250 : 300),
+          radius: isRail ? 28 : (isCone ? 20 : 18),
+          cleared: false,
+        });
+      }
+
+      // Move Street Elements (Leftward scroll)
+      for (let i = s.elements.length - 1; i >= 0; i--) {
+        const elem = s.elements[i];
+        elem.x -= speed * dt;
+
+        const skaterX = 100;
+        const dist = Math.hypot(elem.x - skaterX, elem.y - s.skaterY);
+
+        if (!elem.cleared && dist < elem.radius + 20) {
+          elem.cleared = true;
+
+          if (elem.type === 'cone') {
+            if (!s.isInAir) {
+              // Hit obstacle penalty
+              s.score = Math.max(0, s.score - 250);
+              s.combo = 0;
+              setScore(s.score);
+              setSkateCombo(0);
+
+              setFeedbackText(isKo ? '장애물 충돌! 💥' : 'CRASH! 💥');
+              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+              setTimeout(() => setFeedbackText(null), 300);
+            } else {
+              // Cleared obstacle with Ollie jump!
+              s.combo += 1;
+              s.score += 350;
+              setScore(s.score);
+              setSkateCombo(s.combo);
+            }
+          } else if (elem.type === 'rail') {
+            // Rail Grind!
+            s.isGrinding = true;
+            s.tricksPerformed += 1;
+            s.combo += 1;
+            if (s.combo > s.maxCombo) s.maxCombo = s.combo;
+
+            const pts = elem.points + s.combo * 50;
+            s.score += pts;
+
+            setTricksPerformed(s.tricksPerformed);
+            setScore(s.score);
+            setSkateCombo(s.combo);
+            setMaxCombo(s.maxCombo);
+
+            setFeedbackText(`🔥 50-50 RAIL GRIND! +${pts}P ⚡`);
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+            setTimeout(() => setFeedbackText(null), 400);
+
+            // Grind Sparks
+            for (let p = 0; p < 12; p++) {
+              s.particles.push({
+                x: skaterX,
+                y: s.skaterY + 10,
+                vx: (Math.random() - 0.5) * 220,
+                vy: -Math.random() * 150,
+                color: '#f97316',
+                life: 0.4,
+              });
+            }
+          } else if (elem.type === 'star') {
+            // Star collect
+            s.combo += 1;
+            if (s.combo > s.maxCombo) s.maxCombo = s.combo;
+
+            const pts = elem.points + s.combo * 30;
+            s.score += pts;
+
+            setScore(s.score);
+            setSkateCombo(s.combo);
+            setMaxCombo(s.maxCombo);
+
+            setFeedbackText(`STAR! ⭐ +${pts}P`);
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+            setTimeout(() => setFeedbackText(null), 300);
+          }
+        }
+
+        if (elem.x < -60) {
+          s.elements.splice(i, 1);
+        }
+      }
+
+      // Update Particles
+      for (let i = s.particles.length - 1; i >= 0; i--) {
+        const p = s.particles[i];
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.life -= dt;
+        if (p.life <= 0) s.particles.splice(i, 1);
+      }
+
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Sunset Skatepark Skyline Background
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
+      skyGrad.addColorStop(0, '#f97316');
+      skyGrad.addColorStop(0.5, '#7c3aed');
+      skyGrad.addColorStop(1, '#0f172a');
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Asphalt Street Ground
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(0, groundY + 15, w, h - (groundY + 15));
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(0, groundY + 15);
+      ctx.lineTo(w, groundY + 15);
+      ctx.stroke();
+
+      // Render Street Elements
+      s.elements.forEach((elem) => {
+        if (!elem.cleared) {
+          ctx.save();
+          ctx.translate(elem.x, elem.y);
+          if (elem.type === 'rail') {
+            ctx.shadowColor = '#f97316';
+            ctx.shadowBlur = 15;
+          }
+          ctx.font = `${elem.radius * 1.8}px serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(elem.icon, 0, 0);
+          ctx.restore();
         }
       });
-      s.isGrinding = grinding;
-      setIsGrinding(grinding);
 
-      if (skaterGroup) {
-        skaterGroup.position.set(s.posX, s.posY, s.posZ);
-        skaterGroup.rotation.y = (s.targetX - s.posX) * 0.15;
-      }
+      // Render Skateboard Hero
+      ctx.save();
+      ctx.translate(100, s.skaterY);
+      ctx.rotate(s.boardFlipAngle);
+      ctx.shadowColor = '#fde047';
+      ctx.shadowBlur = 18;
+      ctx.font = '36px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🛹', 0, 0);
+      ctx.restore();
 
-      // Camera Follow
-      camera.position.set(s.posX * 0.4, s.posY + 3.5, s.posZ + 6.5);
-      camera.lookAt(s.posX * 0.4, s.posY + 1.0, s.posZ - 10);
-
-      // Goal Reach Check
-      if (s.distance >= totalGoal && !s.isGameOver) {
-        s.isGameOver = true;
-        setIsGameOver(true);
-        const duration = (Date.now() - s.startTime) / 1000;
-        const receipt = calculateAndDepositMissionReward({
-          gameId: 'voxel_skateboard_street',
-          gameTitle: '복셀 스트리트 스케이트보드',
-          durationSeconds: duration,
-          score: s.score + 2000,
-          difficulty: 'HARD',
-          isVictory: true
-        });
-        setSettlementReceipt(receipt);
-        onReward(receipt.totalSns);
-      }
-
-      renderer.render(scene, camera);
+      // Render Particles
+      s.particles.forEach((p) => {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 4, 4);
+      });
     };
 
-    animId = requestAnimationFrame(animate);
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, [groundY, isKo, playSfx]);
 
-    return () => {
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-    };
-  }, [lowSpecMode]);
-
-  const handleRestart = () => {
+  const endGame = (isWin: boolean) => {
     const s = stateRef.current;
-    s.posX = 0;
-    s.posY = 0.25;
-    s.posZ = 0;
-    s.targetX = 0;
-    s.score = 0;
-    s.distance = 0;
-    s.combo = 1;
-    s.isGameOver = false;
-    s.isInAir = false;
-    s.isGrinding = false;
-    s.startTime = Date.now();
-    setScore(0);
-    setDistance(0);
-    setComboMultiplier(1);
-    setIsGrinding(false);
-    setIsGameOver(false);
-    setSettlementReceipt(null);
+    if (s.isGameOver) return;
+    s.isGameOver = true;
+    setIsGameOver(true);
+
+    if (isWin) {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    } else {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+
+    const duration = (Date.now() - s.startTime) / 1000;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'arcade_skate_street',
+      gameTitle: '블리츠 스케이트 스트리트',
+      durationSeconds: duration,
+      score: s.score + (isWin ? 3500 : (s.tricksPerformed * 300 + s.distanceRun * 2)) + s.maxCombo * 40,
+      difficulty: 'NIGHTMARE',
+      isVictory: isWin || s.tricksPerformed >= 8,
+    });
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
   };
 
-  return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
+  const tutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 손가락 제스처 스케이트 트릭' : 'STEP 1: PURE GESTURE SKATE TRICKS',
+      title: isKo ? '화면 위 스와이프로 알리 점프, 공중 좌우 스와이프로 킥플립을 구사하세요' : 'Swipe Up for Ollie Jump, Swipe Left/Right in Air for Kickflip',
+      description: isKo
+        ? '가상 조이스틱 없이 화면을 위로 스와이프하여 장애물을 뛰어넘고, 공중에서 좌우로 스와이프하여 360 킥플립 트릭을 시전하며 레일을 타고 그라인드하세요.'
+        : 'Swipe up to execute high ollie jumps, swipe left or right in air to kickflip 360, and grind along rails.',
+      keyPoints: isKo
+        ? [
+            '가상 조이스틱 0개 (100% 모바일 퓨어 제스처 조작)',
+            '레일 그라인드 성공 시 600P 잭팟 대박 보너스',
+            '35초간 최대 콤보로 스트리트 트릭을 완성하고 올클리어'
+          ]
+        : [
+            'Zero Virtual Joysticks: 100% Mobile Pure Gestures',
+            'Rail Grinds award 600P massive trick jackpot',
+            'Perform street combos within 35s sprint'
+          ],
+      iconType: 'GOAL',
+    },
+    {
+      badge: isKo ? 'STEP 2: 모바일 퓨어 제스처' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '위로 스와이프 & 공중 좌우 스와이프' : 'Swipe Up & Air Swipes',
+      description: isKo
+        ? '지상에서 위로 쓸어올리고 공중에서 좌우로 쓸어 트릭을 넣습니다.'
+        : 'Swipe up on ground to jump, swipe left/right in air for trick.',
+      keyPoints: isKo
+        ? [
+            '⬆️ 위로 스와이프: 고공 알리 점프 (Ollie Jump)',
+            '↔️ 공중 좌우 스와이프: 360° 익스트림 킥플립',
+            '⏱️ 35초 타임어택 고득점 챌린지'
+          ]
+        : [
+            '⬆️ Swipe Up: High air Ollie jump',
+            '↔️ Air Swipe: 360° extreme Kickflip combo',
+            '⏱️ 35s time attack skate street sprint'
+          ],
+      iconType: 'GESTURES',
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '라이딩 완료 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon match finish.',
+      keyPoints: isKo
+        ? [
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '구사한 트릭 수 및 주행 거리 비례 대량 잭팟',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Performed tricks and distance multipliers',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS',
+    },
+  ];
 
+  return (
+    <div className="relative w-full h-[100dvh] bg-[#0f172a] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none">
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
       <MinimalistMissionHUD
-        title={isKo ? '복셀 스트리트 스케이트' : 'Voxel Street Skateboard'}
-        language={language}
+        title={isKo ? '블리츠 스케이트 스트리트' : 'Blitz Skate Street'}
+        language={(language as Language) || 'ko'}
         telemetries={[
-          { label: isKo ? '거리' : 'Dist', value: `${distance}m/${totalGoal}m`, color: 'text-cyan-300' },
-          { label: isKo ? '콤보' : 'Combo', value: `x${comboMultiplier}`, color: comboMultiplier > 1 ? 'text-amber-400 font-bold' : 'text-slate-400' },
-          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-yellow-300' }
+          { label: isKo ? '트릭' : 'Tricks', value: `${tricksPerformed}회`, color: 'text-amber-400 font-bold' },
+          { label: isKo ? '콤보' : 'Combo', value: `${skateCombo}x`, color: skateCombo > 2 ? 'text-amber-300 font-bold animate-bounce' : 'text-slate-300' },
+          { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 10 ? 'text-rose-500 font-bold animate-pulse' : 'text-cyan-400 font-bold' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          stateRef.current.isPaused = !isPaused;
-        }}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
         isPaused={isPaused}
       />
 
-      {/* Grind / Trick Overlay */}
-      {isGrinding && (
-        <div className="absolute top-14 left-4 flex items-center gap-1.5 bg-amber-400 border border-[#201d1d] text-[#201d1d] px-2.5 py-1 rounded-sm text-xs font-black animate-pulse z-10 pointer-events-none shadow-xs">
-          <span>{isKo ? '🔥 50-50 레일 그라인드 중!!' : '🔥 50-50 RAIL GRINDING!'}</span>
-        </div>
-      )}
-
-      {trickText && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 bg-amber-400 border border-[#201d1d] text-[#201d1d] px-4 py-1 rounded-sm text-xs font-black tracking-wider shadow-md z-10 pointer-events-none animate-bounce">
-          {trickText}
-        </div>
-      )}
-
-      {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div
-          className="absolute inset-0 z-10 select-none touch-none cursor-pointer"
-          style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const startX = e.clientX - rect.left;
-            let moved = false;
-
-            const onMove = (moveEvt: PointerEvent) => {
-              const clientX = moveEvt.clientX;
-              const normX = (clientX / window.innerWidth - 0.5) * 2;
-              stateRef.current.targetX = normX * 6.5;
-
-              if (Math.abs(clientX - (startX + rect.left)) > 15) {
-                moved = true;
-                if (stateRef.current.isInAir) {
-                  handleKickflip();
-                  window.removeEventListener('pointermove', onMove);
-                }
-              }
-            };
-
-            const onUp = () => {
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-              window.removeEventListener('pointercancel', onUp);
-
-              if (!moved) {
-                // Tap: Ollie jump or Air Kickflip
-                if (stateRef.current.isInAir) {
-                  handleKickflip();
-                } else {
-                  handleOllie();
-                }
-              }
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-          }}
+      {/* Pure Touch Skate Street Canvas Viewport */}
+      <div className="flex-1 w-full max-w-md relative overflow-hidden flex items-center justify-center select-none touch-none p-2">
+        <canvas
+          ref={canvasRef}
+          width={360}
+          height={500}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          className="w-full h-full object-contain touch-none cursor-pointer shadow-2xl"
         />
-      )}
+
+        {/* Floating Feedback Text */}
+        {feedbackText && (
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 pointer-events-none text-base font-bold text-amber-300 drop-shadow-lg animate-bounce whitespace-nowrap bg-black/60 px-4 py-1 rounded-full border border-amber-400/30">
+            {feedbackText}
+          </div>
+        )}
+      </div>
 
       {/* Minimal Bottom Guide */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/75 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
-          {isKo ? '좌우 드래그: 카빙 조향 | 탭: 올리 점프 | 공중 탭/스와이프: 킥플립 360 (버튼 없음)' : 'Drag: Carve Steer | Tap: Ollie | Air Tap/Swipe: Kickflip 360 (No Buttons)'}
+      <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono">
+          {isKo ? '위로 스와이프해 점프하고, 공중에서 좌우 스와이프로 360 킥플립을 구사하세요' : 'Swipe up to Ollie jump, swipe left/right in air for 360 kickflip'}
         </div>
       </div>
 
-      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
-        <SportsMissionTutorial
-          gameId="voxel_skateboard_street"
-          gameTitle={isKo ? '3D 복셀 스트리트 스케이트: 그라인드 마스터' : 'Voxel Street Skateboard: Grind Master'}
-          sportType="racing"
-          language={language}
+        <UniversalTutorialModal
+          gameId="arcade_skate_street"
+          gameTitle={isKo ? '블리츠 스케이트: 스트리트 익스트림' : 'Blitz Skate: Street Extreme'}
+          customSteps={tutorialSteps}
+          language={(language as Language) || 'ko'}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}
         />
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
         <VictoryRewardModal
           receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
+          language={(language as Language) || 'ko'}
+          onPlayAgain={initGame}
           onExit={onExit}
         />
       )}
     </div>
   );
 };
+export default VoxelSkateboardStreetGame;
