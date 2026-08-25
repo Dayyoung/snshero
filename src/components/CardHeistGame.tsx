@@ -1,13 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { CARD_DATABASE } from '../cardDatabase';
 import { CardData, Language } from '../types';
 import { cn, getCardSpriteStyle } from '../lib/utils';
-import { MobileSafeAreaHUD } from './MobileSafeAreaHUD';
-import { UniversalTutorialModal } from './UniversalTutorialModal';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
-import { get2DGameTutorialSteps } from '../lib/mission2DCardTutorialEngine';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
-import { Eye, EyeOff } from 'lucide-react';
 
 interface CardHeistGameProps {
   deck: CardData[];
@@ -19,8 +16,6 @@ interface CardHeistGameProps {
 }
 
 const GRID = 7;
-const SWIPE_THRESHOLD = 15;
-const FAST_SWIPE_MS = 200;
 
 interface GridCell {
   type: 'empty' | 'player' | 'enemy' | 'treasure';
@@ -52,8 +47,6 @@ export const CardHeistGame: React.FC<CardHeistGameProps> = ({
   const [isWin, setIsWin] = useState(false);
   const [level, setLevel] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
-  const [showDangerZones, setShowDangerZones] = useState(false);
-  const [swipeDir, setSwipeDir] = useState<string | null>(null);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
       return localStorage.getItem('hero_tutorial_game_2d_card_heist') !== 'true';
@@ -63,354 +56,239 @@ export const CardHeistGame: React.FC<CardHeistGameProps> = ({
   });
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
-  const rewardedRef = useRef(false);
-  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
   const startTimeRef = useRef(Date.now());
-
   const playerCardId = deck[0]?.imageIndex || deck[0]?.id as number || 1;
-
-  const getEnemyPatrolCards = useCallback(() => {
-    const enemies: number[] = [];
-    const pools: Record<number, number[]> = {
-      1: [51, 52, 53, 54, 55],
-      2: [81, 82, 83, 84, 85],
-      3: [91, 92, 93, 94, 95, 96],
-    };
-    const pool = pools[Math.min(level, 3)] || pools[3];
-    const count = Math.min(level + 2, 5);
-    for (let i = 0; i < count; i++) {
-      enemies.push(pool[i % pool.length]);
-    }
-    return enemies;
-  }, [level]);
-
-  const getTreasureCards = useCallback(() => {
-    const cards: number[] = [];
-    const treasurePool = [106, 107, 108, 109, 110];
-    const count = Math.min(level + 1, 4);
-    for (let i = 0; i < count; i++) {
-      cards.push(treasurePool[i % treasurePool.length]);
-    }
-    return cards;
-  }, [level]);
 
   const initGame = useCallback(() => {
     const newGrid: GridCell[][] = Array.from({ length: GRID }, () =>
       Array.from({ length: GRID }, (): GridCell => ({ type: 'empty', cardId: 0 }))
     );
 
-    const playerRow = GRID - 1;
-    const playerCol = Math.floor(GRID / 2);
-    newGrid[playerRow][playerCol] = { type: 'player', cardId: playerCardId };
+    const pRow = GRID - 1;
+    const pCol = Math.floor(GRID / 2);
+    newGrid[pRow][pCol] = { type: 'player', cardId: playerCardId };
+    setPlayerPos({ row: pRow, col: pCol });
 
-    const enemyCardIds = getEnemyPatrolCards();
-    enemyCardIds.forEach((cardId, i) => {
-      const row = 2 + i;
-      const col = i % 2 === 0 ? 1 : GRID - 2;
-      if (row < GRID - 1) {
-        newGrid[row][col] = {
+    // Place treasures
+    const tCount = Math.min(level + 1, 4);
+    setTotalTreasures(tCount);
+    setTreasuresCollected(0);
+
+    const treasureCards = [106, 107, 108, 109, 110];
+    let placedT = 0;
+    while (placedT < tCount) {
+      const tr = Math.floor(Math.random() * (GRID - 2));
+      const tc = Math.floor(Math.random() * GRID);
+      if (newGrid[tr][tc].type === 'empty') {
+        newGrid[tr][tc] = { type: 'treasure', cardId: treasureCards[placedT % treasureCards.length] };
+        placedT++;
+      }
+    }
+
+    // Place patrol enemies
+    const eCount = Math.min(level + 2, 5);
+    const enemyCards = [51, 52, 81, 82, 91];
+    let placedE = 0;
+    while (placedE < eCount) {
+      const er = 1 + Math.floor(Math.random() * (GRID - 3));
+      const ec = Math.floor(Math.random() * GRID);
+      if (newGrid[er][ec].type === 'empty') {
+        newGrid[er][ec] = {
           type: 'enemy',
-          cardId,
-          patrolDir: i % 2 === 0 ? 'right' : 'left',
+          cardId: enemyCards[placedE % enemyCards.length],
+          patrolDir: placedE % 2 === 0 ? 'left' : 'right',
           patrolStep: 0,
         };
+        placedE++;
       }
-    });
-
-    const treasureCardIds = getTreasureCards();
-    let placedTreasures = 0;
-    treasureCardIds.forEach((cardId, i) => {
-      const row = i % 2 === 0 ? 0 : 1;
-      const col = 1 + i * 2;
-      if (col < GRID && newGrid[row][col].type === 'empty') {
-        newGrid[row][col] = { type: 'treasure', cardId };
-        placedTreasures++;
-      }
-    });
+    }
 
     setGrid(newGrid);
-    setPlayerPos({ row: playerRow, col: playerCol });
-    setTreasuresCollected(0);
-    setTotalTreasures(placedTreasures);
     setMoves(0);
     setIsGameOver(false);
     setIsWin(false);
     setSettlementReceipt(null);
-    rewardedRef.current = false;
     startTimeRef.current = Date.now();
-  }, [playerCardId, getEnemyPatrolCards, getTreasureCards]);
+  }, [level, playerCardId]);
 
   useEffect(() => {
     initGame();
   }, [initGame]);
 
-  const getDangerNeighbors = useCallback((g: GridCell[][]) => {
-    const danger = new Set<string>();
-    for (let r = 0; r < GRID; r++) {
-      for (let c = 0; c < GRID; c++) {
-        if (g[r]?.[c]?.type === 'enemy') {
-          const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
-          dirs.forEach(([dr, dc]) => {
-            const nr = r + dr;
-            const nc = c + dc;
-            if (nr >= 0 && nr < GRID && nc >= 0 && nc < GRID) {
-              danger.add(`${nr},${nc}`);
-            }
+  const movePlayer = useCallback((dRow: number, dCol: number) => {
+    if (isGameOver || isPaused) return;
+
+    setPlayerPos(prev => {
+      const nRow = prev.row + dRow;
+      const nCol = prev.col + dCol;
+
+      if (nRow < 0 || nRow >= GRID || nCol < 0 || nCol >= GRID) return prev;
+
+      setMoves(m => m + 1);
+
+      setGrid(currGrid => {
+        const nextGrid = currGrid.map(row => row.map(cell => ({ ...cell })));
+        const targetCell = nextGrid[nRow][nCol];
+
+        if (targetCell.type === 'enemy') {
+          // Busted by guard
+          setIsGameOver(true);
+          setIsWin(false);
+          const duration = (Date.now() - startTimeRef.current) / 1000;
+          const receipt = calculateAndDepositMissionReward({
+            gameId: '2d_card_heist',
+            gameTitle: '2D 카드 하이스트',
+            durationSeconds: duration,
+            score: treasuresCollected * 500,
+            difficulty: 'HARD',
+            isVictory: false
           });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+          return nextGrid;
         }
-      }
-    }
-    return danger;
-  }, []);
 
-  const moveEnemies = useCallback((currentGrid: GridCell[][]): GridCell[][] => {
-    const newGrid = currentGrid.map(row => row.map(cell => ({ ...cell })));
-    const enemyPositions: { row: number; col: number; cell: GridCell }[] = [];
-
-    for (let r = 0; r < GRID; r++) {
-      for (let c = 0; c < GRID; c++) {
-        if (newGrid[r][c].type === 'enemy') {
-          enemyPositions.push({ row: r, col: c, cell: newGrid[r][c] });
-          newGrid[r][c] = { type: 'empty', cardId: 0 };
+        let newTreasures = treasuresCollected;
+        if (targetCell.type === 'treasure') {
+          newTreasures += 1;
+          setTreasuresCollected(newTreasures);
+          setScore(s => s + 500);
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
         }
-      }
-    }
 
-    for (const { row, col, cell } of enemyPositions) {
-      let dir = cell.patrolDir || 'right';
-      let dc = dir === 'right' ? 1 : -1;
-      let nc = col + dc;
+        nextGrid[prev.row][prev.col] = { type: 'empty', cardId: 0 };
+        nextGrid[nRow][nCol] = { type: 'player', cardId: playerCardId };
 
-      if (nc < 0 || nc >= GRID || newGrid[row][nc].type === 'treasure') {
-        dir = dir === 'right' ? 'left' : 'right';
-        dc = dir === 'right' ? 1 : -1;
-        nc = col + dc;
-      }
+        // Move Patrol Enemies
+        for (let r = 0; r < GRID; r++) {
+          for (let c = 0; c < GRID; c++) {
+            const cell = nextGrid[r][c];
+            if (cell.type === 'enemy') {
+              let dc = cell.patrolDir === 'right' ? 1 : -1;
+              let nextC = c + dc;
+              if (nextC < 0 || nextC >= GRID || nextGrid[r][nextC].type === 'enemy') {
+                cell.patrolDir = cell.patrolDir === 'right' ? 'left' : 'right';
+                dc = cell.patrolDir === 'right' ? 1 : -1;
+                nextC = c + dc;
+              }
+              if (nextC >= 0 && nextC < GRID && nextGrid[r][nextC].type !== 'enemy') {
+                if (nextC === nCol && r === nRow) {
+                  setIsGameOver(true);
+                  setIsWin(false);
+                }
+              }
+            }
+          }
+        }
 
-      if (nc >= 0 && nc < GRID && newGrid[row][nc].type !== 'treasure') {
-        newGrid[row][nc] = { ...cell, patrolDir: dir };
-      } else {
-        newGrid[row][col] = { ...cell, patrolDir: dir };
-      }
-    }
-    return newGrid;
-  }, []);
-
-  const triggerSettlement = useCallback((win: boolean, finalTreasures: number, finalMoves: number) => {
-    if (rewardedRef.current) return;
-    rewardedRef.current = true;
-
-    const durationSeconds = Math.max(10, Math.round((Date.now() - startTimeRef.current) / 1000));
-    const calculatedScore = win
-      ? 1000 + finalTreasures * 200 - finalMoves * 10
-      : finalTreasures * 150;
-
-    const receipt = calculateAndDepositMissionReward({
-      gameId: 'card_heist',
-      gameTitle: isKo ? '2D 카드 하이스트 탈출' : '2D Card Heist Infiltration',
-      durationSeconds,
-      score: Math.max(100, calculatedScore),
-      maxTargetScore: 1600,
-      isVictory: win,
-      difficulty: level >= 3 ? 'NIGHTMARE' : level >= 2 ? 'HARD' : 'NORMAL',
-      comboCount: finalTreasures,
-      perfectClear: win && finalTreasures >= totalTreasures && finalMoves <= 20,
-    });
-
-    setSettlementReceipt(receipt);
-    onReward(receipt.totalSns);
-  }, [isKo, level, totalTreasures, onReward]);
-
-  const movePlayer = useCallback((dr: number, dc: number) => {
-    if (isGameOver || isPaused || showTutorial) return;
-
-    setGrid(prevGrid => {
-      const newGrid = prevGrid.map(row => row.map(cell => ({ ...cell })));
-      const { row, col } = playerPos;
-      const nr = row + dr;
-      const nc = col + dc;
-
-      if (nr < 0 || nr >= GRID || nc < 0 || nc >= GRID) {
-        playSfx('https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3');
-        return prevGrid;
-      }
-
-      const targetCell = newGrid[nr][nc];
-
-      if (targetCell.type === 'enemy') {
-        newGrid[nr][nc] = { type: 'player', cardId: playerCardId };
-        newGrid[row][col] = { type: 'empty', cardId: 0 };
-        setPlayerPos({ row: nr, col: nc });
-        setIsGameOver(true);
-        setIsWin(false);
-        playSfx('https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3');
-        triggerSettlement(false, treasuresCollected, moves + 1);
-        return newGrid;
-      }
-
-      if (targetCell.type === 'treasure') {
-        const newTreasures = treasuresCollected + 1;
-        setTreasuresCollected(newTreasures);
-        setScore(prev => prev + (level * 50) + moves * 2);
-        newGrid[nr][nc] = { type: 'player', cardId: playerCardId };
-        newGrid[row][col] = { type: 'empty', cardId: 0 };
-        setPlayerPos({ row: nr, col: nc });
-        playSfx('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-
-        if (newTreasures >= totalTreasures) {
+        // Check Victory
+        if (newTreasures >= totalTreasures && !isGameOver) {
           setIsGameOver(true);
           setIsWin(true);
-          triggerSettlement(true, newTreasures, moves + 1);
+          const duration = (Date.now() - startTimeRef.current) / 1000;
+          const receipt = calculateAndDepositMissionReward({
+            gameId: '2d_card_heist',
+            gameTitle: '2D 카드 하이스트',
+            durationSeconds: duration,
+            score: newTreasures * 1000 + 2000,
+            difficulty: 'HARD',
+            isVictory: true
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
         }
-        return newGrid;
-      }
 
-      newGrid[nr][nc] = { type: 'player', cardId: playerCardId };
-      newGrid[row][col] = { type: 'empty', cardId: 0 };
-      setPlayerPos({ row: nr, col: nc });
-      setMoves(prev => prev + 1);
-      playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+        return nextGrid;
+      });
 
-      const gridAfterEnemies = moveEnemies(newGrid);
-
-      const { row: pr, col: pc } = { row: nr, col: nc };
-      if (gridAfterEnemies[pr][pc].type === 'enemy') {
-        setIsGameOver(true);
-        setIsWin(false);
-        playSfx('https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3');
-        triggerSettlement(false, treasuresCollected, moves + 1);
-      }
-
-      return gridAfterEnemies;
+      return { row: nRow, col: nCol };
     });
-  }, [playerPos, playerCardId, treasuresCollected, totalTreasures, level, moves, moveEnemies, playSfx, isGameOver, isPaused, showTutorial, triggerSettlement]);
+  }, [isGameOver, isPaused, playerCardId, treasuresCollected, totalTreasures, onReward, playSfx]);
 
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    const touch = e.touches[0];
-    touchStartRef.current = { x: touch.clientX, y: touch.clientY, time: Date.now() };
-  }, []);
-
-  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
-    if (!touchStartRef.current || isGameOver || isPaused || showTutorial) return;
-    const touch = e.changedTouches[0];
-    const dx = touch.clientX - touchStartRef.current.x;
-    const dy = touch.clientY - touchStartRef.current.y;
-    const elapsed = Date.now() - touchStartRef.current.time;
-    const threshold = elapsed < FAST_SWIPE_MS ? SWIPE_THRESHOLD * 0.6 : SWIPE_THRESHOLD;
-
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > threshold) {
-      if (dx > 0) {
-        setSwipeDir('right');
-        movePlayer(0, 1);
-      } else {
-        setSwipeDir('left');
-        movePlayer(0, -1);
-      }
-    } else if (Math.abs(dy) > threshold) {
-      if (dy > 0) {
-        setSwipeDir('down');
-        movePlayer(1, 0);
-      } else {
-        setSwipeDir('up');
-        movePlayer(-1, 0);
-      }
+  const tutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 보물 침투 탈취' : 'STEP 1: INFILTRATION',
+      title: isKo ? '경비병 회피 & 모든 보물 수집' : 'Dodge Guards & Collect Loot',
+      description: isKo
+        ? '순찰 중인 경비 카드들의 시야를 피해 잠입하고 금고의 보물 카드를 모두 수집하세요.'
+        : 'Sneak past patrol guards and collect all target treasure cards.',
+      keyPoints: isKo
+        ? [
+            '보물 전원 수집 시 완승',
+            '경비 카드와 접촉 시 즉시 발각',
+            '최단 경로 이동 시 고득점'
+          ]
+        : [
+            'Collect all loot to win',
+            'Avoid contact with patrol guards',
+            'Fewer moves yield higher scores'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '스와이프 & 원핸드 D-패드' : 'Swipe & One-Hand D-Pad',
+      description: isKo
+        ? '화면 스와이프 또는 하단 컴팩트 D-패드로 4방향 잠입 이동을 완벽하게 수행합니다.'
+        : 'Swipe screen or tap one-handed D-pad to move in 4 orthogonal directions.',
+      keyPoints: isKo
+        ? [
+            '👆 스와이프: 상하좌우 신속 침투',
+            '🕹️ 컴팩트 D-패드 원터치 이동',
+            '⚡ 턴제 잠입 기동 메커니즘'
+          ]
+        : [
+            '👆 Swipe: Quick 4-way infiltration',
+            '🕹️ Compact D-pad one-touch move',
+            '⚡ Turn-based stealth mechanism'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '잠입 성공 즉시 HARD 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Standard payout deposited atomically to your LocalStorage wallet upon heist completion.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '탈취 보물 및 잔여 턴수 보너스',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Treasure and turns bonuses',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
     }
-    setTimeout(() => setSwipeDir(null), 200);
-    touchStartRef.current = null;
-  }, [movePlayer, isGameOver, isPaused, showTutorial]);
-
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (isGameOver || isPaused || showTutorial) return;
-      switch (e.key) {
-        case 'ArrowUp':
-        case 'w':
-        case 'W':
-          e.preventDefault();
-          movePlayer(-1, 0);
-          break;
-        case 'ArrowDown':
-        case 's':
-        case 'S':
-          e.preventDefault();
-          movePlayer(1, 0);
-          break;
-        case 'ArrowLeft':
-        case 'a':
-        case 'A':
-          e.preventDefault();
-          movePlayer(0, -1);
-          break;
-        case 'ArrowRight':
-        case 'd':
-        case 'D':
-          e.preventDefault();
-          movePlayer(0, 1);
-          break;
-      }
-    };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [movePlayer, isGameOver, isPaused, showTutorial]);
-
-  const dangerNeighbors = getDangerNeighbors(grid);
-  const is = (row: number, col: number) => grid[row]?.[col];
-  const tutorialSteps = get2DGameTutorialSteps('card_heist', isKo);
+  ];
 
   return (
-    <div className="h-[100dvh] max-h-[100dvh] bg-[#0f1117] text-slate-100 flex flex-col justify-between font-mono select-none w-full overflow-hidden">
-      {/* Top Safe Area HUD */}
-      <MobileSafeAreaHUD
-        gameTitle={isKo ? '카드 하이스트 탈출' : 'Card Heist Infiltration'}
-        score={isWin ? 1000 + treasuresCollected * 100 : treasuresCollected * 80}
-        customMetricLabel={isKo ? '보물' : 'Treasure'}
-        customMetricValue={`${treasuresCollected}/${totalTreasures}`}
-        isPaused={isPaused}
+    <div className="relative w-full h-[100dvh] bg-[#fdfcfc] text-[#201d1d] font-mono select-none flex flex-col overflow-hidden items-center justify-between">
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '2D 카드 하이스트' : '2D Card Heist'}
         language={language}
+        telemetries={[
+          { label: isKo ? '스테이지' : 'Stage', value: `LV.${level}`, color: 'text-amber-600 font-bold' },
+          { label: isKo ? '보물' : 'Loot', value: `${treasuresCollected}/${totalTreasures}`, color: 'text-emerald-700 font-bold' },
+          { label: isKo ? '이동' : 'Moves', value: `${moves}턴`, color: 'text-slate-700' }
+        ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onTogglePause={() => setIsPaused(prev => !prev)}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
+        isPaused={isPaused}
       />
-
-      {/* Info Status Bar */}
-      <div className="w-full max-w-md mx-auto px-3 flex items-center justify-between text-xs py-1 bg-white/5 border border-white/10 shrink-0">
-        <div className="flex items-center gap-3">
-          <span className="text-slate-400">
-            LV.<span className="text-amber-400 font-bold">{level}</span>
-          </span>
-          <span className="text-slate-400">
-            {isKo ? '이동' : 'MOVES'}: <span className="text-white font-bold">{moves}</span>
-          </span>
-        </div>
-        <button
-          onClick={() => setShowDangerZones(!showDangerZones)}
-          className="inline-flex items-center gap-1 text-[11px] font-mono text-amber-400 hover:text-amber-300 transition-colors"
-        >
-          {showDangerZones ? <EyeOff size={13} /> : <Eye size={13} />}
-          <span>{showDangerZones ? (isKo ? '[위험구역 ON]' : '[DANGER ON]') : (isKo ? '[위험구역 OFF]' : '[DANGER OFF]')}</span>
-        </button>
-      </div>
-
-      {/* Swipe Direction Indicator */}
-      {swipeDir && (
-        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-40 px-3 py-1 rounded-sm text-xs font-mono font-bold bg-amber-500 text-slate-950 shadow-md">
-          {swipeDir === 'up' && '▲ UP'}
-          {swipeDir === 'down' && '▼ DOWN'}
-          {swipeDir === 'left' && '◀ LEFT'}
-          {swipeDir === 'right' && '▶ RIGHT'}
-        </div>
-      )}
 
       {/* Game Grid Viewport */}
       <div className="flex-1 min-h-0 flex items-center justify-center relative overflow-hidden p-2">
         <div
-          ref={gridRef}
-          className="w-full max-w-[340px] aspect-square bg-black/40 border border-white/10 p-1 relative overflow-hidden touch-none select-none"
+          className="w-full max-w-[340px] aspect-square bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-1 relative overflow-hidden touch-none select-none"
           style={{ touchAction: 'none' }}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-          onTouchMove={e => e.preventDefault()}
         >
           <div
             className="grid gap-1 w-full h-full"
@@ -419,44 +297,37 @@ export const CardHeistGame: React.FC<CardHeistGameProps> = ({
               gridTemplateRows: `repeat(${GRID}, 1fr)`,
             }}
           >
-            {Array.from({ length: GRID * GRID }, (_, i) => {
-              const row = Math.floor(i / GRID);
-              const col = i % GRID;
-              const cell = is(row, col);
-              const isDanger = showDangerZones && dangerNeighbors.has(`${row},${col}`);
-
-              return (
+            {grid.flatMap((row, r) =>
+              row.map((cell, c) => (
                 <div
-                  key={`${row}-${col}`}
+                  key={`${r}-${c}`}
                   className={cn(
                     'rounded-sm flex items-center justify-center relative transition-all duration-100 border',
-                    cell?.type === 'empty' && !isDanger && 'bg-slate-900/60 border-white/5',
-                    isDanger && cell?.type === 'empty' && 'bg-red-950/40 border-red-500/30',
-                    cell?.type === 'treasure' && 'bg-amber-950/40 border-amber-400/60',
-                    cell?.type === 'player' && 'bg-amber-500/20 border-amber-400 ring-1 ring-amber-400',
-                    cell?.type === 'enemy' && 'bg-red-950/60 border-red-500/60'
+                    cell.type === 'empty' && 'bg-white border-[rgba(15,0,0,0.06)]',
+                    cell.type === 'treasure' && 'bg-amber-100/60 border-amber-500/60',
+                    cell.type === 'player' && 'bg-cyan-100/60 border-cyan-500 ring-1 ring-cyan-500',
+                    cell.type === 'enemy' && 'bg-rose-100/60 border-rose-500/60'
                   )}
                 >
-                  {(cell?.type === 'player' || cell?.type === 'enemy' || cell?.type === 'treasure') && cell.cardId > 0 && (
+                  {cell.cardId > 0 && (
                     <div
                       className="w-full h-full bg-contain bg-center bg-no-repeat p-0.5"
                       style={getCardSpriteStyle(cell.cardId)}
                     />
                   )}
                 </div>
-              );
-            })}
+              ))
+            )}
           </div>
         </div>
       </div>
 
       {/* Mobile One-Handed D-Pad */}
-      <div className="shrink-0 flex flex-col items-center gap-1 select-none pb-2">
+      <div className="shrink-0 flex flex-col items-center gap-1 select-none pb-3">
         <button
           type="button"
           onClick={() => movePlayer(-1, 0)}
-          className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
-          aria-label="Move Up"
+          className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
         >
           ▲
         </button>
@@ -464,34 +335,28 @@ export const CardHeistGame: React.FC<CardHeistGameProps> = ({
           <button
             type="button"
             onClick={() => movePlayer(0, -1)}
-            className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
-            aria-label="Move Left"
+            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
           >
             ◀
           </button>
           <button
             type="button"
             onClick={() => movePlayer(1, 0)}
-            className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
-            aria-label="Move Down"
+            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
           >
             ▼
           </button>
           <button
             type="button"
             onClick={() => movePlayer(0, 1)}
-            className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
-            aria-label="Move Right"
+            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
           >
             ▶
           </button>
         </div>
-        <p className="text-[10px] text-slate-400 text-center font-mono">
-          {isKo ? 'D-패드 터치 또는 화면 스와이프로 1손 조작' : 'D-Pad or swipe to move'}
-        </p>
       </div>
 
-      {/* 2D Tutorial Modal */}
+      {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
         <UniversalTutorialModal
           gameId="2d_card_heist"
@@ -503,7 +368,7 @@ export const CardHeistGame: React.FC<CardHeistGameProps> = ({
         />
       )}
 
-      {/* Victory / Defeat Reward Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
         <VictoryRewardModal
           receipt={settlementReceipt}
@@ -518,3 +383,4 @@ export const CardHeistGame: React.FC<CardHeistGameProps> = ({
     </div>
   );
 };
+export default CardHeistGame;

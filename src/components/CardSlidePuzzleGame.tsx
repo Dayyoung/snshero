@@ -1,11 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
-import { CARD_DATABASE } from '../cardDatabase';
 import { cn, getCardSpriteStyle } from '../lib/utils';
-import { MobileSafeAreaHUD } from './MobileSafeAreaHUD';
-import { UniversalTutorialModal } from './UniversalTutorialModal';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
-import { get2DGameTutorialSteps } from '../lib/mission2DCardTutorialEngine';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface CardSlidePuzzleGameProps {
@@ -23,22 +21,17 @@ const DIFFICULTY_CONFIG = [
   { size: 5, reward: 60 },
 ];
 
-const SWIPE_THRESHOLD = 15;
-
-// Generate shuffled, solvable puzzle
 const shufflePuzzle = (size: number): number[] => {
   const total = size * size;
   const tiles: number[] = [];
   for (let i = 0; i < total - 1; i++) tiles.push(i);
-  tiles.push(-1); // empty
+  tiles.push(-1);
 
-  // Fisher-Yates shuffle
   for (let i = total - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
   }
 
-  // Count inversions for solvability. Exclude the row containing empty.
   let inversions = 0;
   for (let i = 0; i < total; i++) {
     if (tiles[i] === -1) continue;
@@ -95,23 +88,28 @@ export const CardSlidePuzzleGame: React.FC<CardSlidePuzzleGameProps> = ({
     }
   });
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
-  const [swipeHint, setSwipeHint] = useState<'up' | 'down' | 'left' | 'right' | null>(null);
 
-  const rewardedRef = useRef(false);
-  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
   const startTimeRef = useRef(Date.now());
-
   const { size } = DIFFICULTY_CONFIG[Math.min(level, DIFFICULTY_CONFIG.length - 1)];
   const totalTiles = size * size;
 
+  const cardPool = useRef<number[]>([]);
+  useEffect(() => {
+    const pool: number[] = [];
+    if (deck && deck.length > 0) {
+      deck.forEach(c => pool.push(c.id));
+    }
+    while (pool.length < 25) {
+      pool.push(pool.length + 1);
+    }
+    cardPool.current = pool;
+  }, [deck]);
+
   const initGame = useCallback(() => {
-    const newTiles = shufflePuzzle(size);
-    setTiles(newTiles);
+    setTiles(shufflePuzzle(size));
     setMoves(0);
     setIsComplete(false);
     setSettlementReceipt(null);
-    setSwipeHint(null);
-    rewardedRef.current = false;
     startTimeRef.current = Date.now();
   }, [size]);
 
@@ -119,260 +117,158 @@ export const CardSlidePuzzleGame: React.FC<CardSlidePuzzleGameProps> = ({
     initGame();
   }, [initGame]);
 
-  const checkComplete = useCallback((t: number[]) => {
-    for (let i = 0; i < totalTiles - 1; i++) {
-      if (t[i] !== i) return false;
-    }
-    return t[totalTiles - 1] === -1;
-  }, [totalTiles]);
-
-  const moveTile = useCallback((tileIdx: number) => {
-    if (isComplete || isPaused || showTutorial) return;
+  const moveTile = useCallback((index: number) => {
+    if (isComplete || isPaused) return;
 
     const emptyIdx = tiles.indexOf(-1);
     if (emptyIdx === -1) return;
 
-    const tileRow = Math.floor(tileIdx / size);
-    const tileCol = tileIdx % size;
-    const emptyRow = Math.floor(emptyIdx / size);
-    const emptyCol = emptyIdx % size;
+    const row = Math.floor(index / size);
+    const col = index % size;
+    const eRow = Math.floor(emptyIdx / size);
+    const eCol = emptyIdx % size;
 
-    const isAdjacent =
-      (tileRow === emptyRow && Math.abs(tileCol - emptyCol) === 1) ||
-      (tileCol === emptyCol && Math.abs(tileRow - emptyRow) === 1);
-
+    const isAdjacent = (Math.abs(row - eRow) === 1 && col === eCol) || (Math.abs(col - eCol) === 1 && row === eRow);
     if (!isAdjacent) return;
 
-    playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
 
-    const newTiles = [...tiles];
-    newTiles[emptyIdx] = newTiles[tileIdx];
-    newTiles[tileIdx] = -1;
+    const next = [...tiles];
+    [next[index], next[emptyIdx]] = [next[emptyIdx], next[index]];
+    setTiles(next);
+    setMoves(m => m + 1);
 
-    const nextMoves = moves + 1;
-    setTiles(newTiles);
-    setMoves(nextMoves);
-
-    if (checkComplete(newTiles)) {
+    // Check complete: 0, 1, 2, ..., total-2, -1
+    const won = next.every((val, i) => (i === totalTiles - 1 ? val === -1 : val === i));
+    if (won) {
       setIsComplete(true);
-      playSfx('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-
-      if (!rewardedRef.current) {
-        rewardedRef.current = true;
-        const durationSeconds = Math.max(10, Math.round((Date.now() - startTimeRef.current) / 1000));
-        const score = Math.max(100, 1000 - nextMoves * 15 + level * 200);
-
-        const receipt = calculateAndDepositMissionReward({
-          gameId: 'card_slide',
-          gameTitle: isKo ? '2D 카드 슬라이드 퍼즐' : '2D Card Slide Puzzle',
-          durationSeconds,
-          score,
-          maxTargetScore: 1500,
-          isVictory: true,
-          difficulty: level >= 2 ? 'HARD' : 'NORMAL',
-          comboCount: Math.max(1, 10 - Math.floor(nextMoves / 5)),
-          perfectClear: nextMoves <= size * size * 2,
-        });
-
-        setSettlementReceipt(receipt);
-        onReward(receipt.totalSns);
-      }
+      const duration = (Date.now() - startTimeRef.current) / 1000;
+      const receipt = calculateAndDepositMissionReward({
+        gameId: '2d_card_slide',
+        gameTitle: '2D 카드 슬라이드 퍼즐',
+        durationSeconds: duration,
+        score: (level + 1) * 1000,
+        difficulty: level >= 1 ? 'HARD' : 'NORMAL',
+        isVictory: true
+      });
+      setSettlementReceipt(receipt);
+      onReward(receipt.totalSns);
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
     }
-  }, [tiles, size, playSfx, checkComplete, isComplete, isPaused, showTutorial, moves, level, isKo, onReward]);
+  }, [isComplete, isPaused, level, onReward, playSfx, size, tiles, totalTiles]);
 
-  const onTouchStart = useCallback((e: React.TouchEvent) => {
-    const touch = e.touches[0];
-    touchStartRef.current = { x: touch.clientX, y: touch.clientY, time: Date.now() };
-  }, []);
-
-  const onTouchMove = useCallback((e: React.TouchEvent) => {
-    e.preventDefault();
-    if (!touchStartRef.current) return;
-    const touch = e.touches[0];
-    const dx = touch.clientX - touchStartRef.current.x;
-    const dy = touch.clientY - touchStartRef.current.y;
-    const absDx = Math.abs(dx);
-    const absDy = Math.abs(dy);
-
-    if (absDx > absDy && absDx > SWIPE_THRESHOLD * 0.6) {
-      setSwipeHint(dx > 0 ? 'right' : 'left');
-    } else if (absDy > absDx && absDy > SWIPE_THRESHOLD * 0.6) {
-      setSwipeHint(dy > 0 ? 'down' : 'up');
-    } else {
-      setSwipeHint(null);
+  const tutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 1~N 순차 정렬' : 'STEP 1: SLIDE SOLVE',
+      title: isKo ? '그리드 타일 번호순 슬라이드 정렬' : 'Order Tiles Sequentially',
+      description: isKo
+        ? '빈 공간을 활용하여 카드 타일들을 1번부터 차례대로 올바른 위치로 정렬하세요.'
+        : 'Slide card tiles into the empty space to arrange them sequentially 1 to N.',
+      keyPoints: isKo
+        ? [
+            '모든 타일 정렬 완료 시 즉시 승리',
+            '빈 타일과 인접한 카드만 이동 가능',
+            '최소 이동 횟수로 클리어 시 보너스'
+          ]
+        : [
+            'Arrange all tiles to win',
+            'Only tiles adjacent to empty slot can slide',
+            'Fewer moves yield higher scores'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '타일 터치 & D-패드 원터치' : 'Touch Tile & D-Pad',
+      description: isKo
+        ? '이동하려는 타일을 직접 탭하거나 하단 D-패드를 원터치하여 슬라이딩합니다.'
+        : 'Tap tiles directly or use one-handed D-pad to slide.',
+      keyPoints: isKo
+        ? [
+            '👆 타일 탭: 빈 공간으로 즉시 밀기',
+            '🕹️ 컴팩트 D-패드 4방향 조작',
+            '⚡ 검증된 100% 해법 퍼즐 생성'
+          ]
+        : [
+            '👆 Tap Tile: Slide into empty space',
+            '🕹️ Compact D-pad 4-way move',
+            '⚡ 100% Guaranteed solvable puzzles'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '퍼즐 완성 즉시 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Standard payout deposited atomically to your LocalStorage wallet upon puzzle solve.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '스테이지 난이도 및 이동 횟수 보너스',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Stage difficulty and moves bonuses',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
     }
-  }, []);
-
-  const onTouchEnd = useCallback((e: React.TouchEvent) => {
-    const start = touchStartRef.current;
-    touchStartRef.current = null;
-    setSwipeHint(null);
-    if (!start) return;
-
-    const touch = e.changedTouches[0];
-    const dx = touch.clientX - start.x;
-    const dy = touch.clientY - start.y;
-    const dt = Date.now() - start.time;
-    const absDx = Math.abs(dx);
-    const absDy = Math.abs(dy);
-
-    const threshold = dt < 200 ? SWIPE_THRESHOLD * 0.6 : SWIPE_THRESHOLD;
-
-    const emptyIdx = tiles.indexOf(-1);
-    if (emptyIdx === -1) return;
-    const emptyRow = Math.floor(emptyIdx / size);
-    const emptyCol = emptyIdx % size;
-
-    if (absDx > absDy && absDx > threshold) {
-      if (dx > 0 && emptyCol > 0) {
-        moveTile(emptyIdx - 1);
-      } else if (dx < 0 && emptyCol < size - 1) {
-        moveTile(emptyIdx + 1);
-      }
-    } else if (absDy > absDx && absDy > threshold) {
-      if (dy > 0 && emptyRow > 0) {
-        moveTile(emptyIdx - size);
-      } else if (dy < 0 && emptyRow < size - 1) {
-        moveTile(emptyIdx + size);
-      }
-    }
-  }, [tiles, size, moveTile]);
-
-  // Keyboard controls
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (isComplete || isPaused || showTutorial) return;
-      const emptyIdx = tiles.indexOf(-1);
-      if (emptyIdx === -1) return;
-      const emptyRow = Math.floor(emptyIdx / size);
-      const emptyCol = emptyIdx % size;
-
-      switch (e.key) {
-        case 'ArrowUp':
-        case 'w':
-        case 'W':
-          e.preventDefault();
-          if (emptyRow < size - 1) moveTile(emptyIdx + size);
-          break;
-        case 'ArrowDown':
-        case 's':
-        case 'S':
-          e.preventDefault();
-          if (emptyRow > 0) moveTile(emptyIdx - size);
-          break;
-        case 'ArrowLeft':
-        case 'a':
-        case 'A':
-          e.preventDefault();
-          if (emptyCol < size - 1) moveTile(emptyIdx + 1);
-          break;
-        case 'ArrowRight':
-        case 'd':
-        case 'D':
-          e.preventDefault();
-          if (emptyCol > 0) moveTile(emptyIdx - 1);
-          break;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [tiles, size, moveTile, isComplete, isPaused, showTutorial]);
-
-  const cardPool: number[] = [];
-  for (let i = 0; i < totalTiles - 1; i++) {
-    const deckCard = deck[i % Math.max(deck.length, 1)];
-    const cardId = deckCard?.imageIndex || (deckCard?.id as number) || (i % 110) + 1;
-    cardPool.push(CARD_DATABASE[cardId] ? cardId : (i % 110) + 1);
-  }
-
-  const tutorialSteps = get2DGameTutorialSteps('card_slide', isKo);
+  ];
 
   return (
-    <div className="h-[100dvh] max-h-[100dvh] bg-[#0f1117] text-slate-100 flex flex-col justify-between font-mono select-none w-full overflow-hidden">
-      {/* Top Safe Area HUD */}
-      <MobileSafeAreaHUD
-        gameTitle={isKo ? '카드 슬라이드 퍼즐' : 'Card Slide Puzzle'}
-        score={isComplete ? 1000 : Math.max(0, 500 - moves * 10)}
-        customMetricLabel={isKo ? '이동 수' : 'Moves'}
-        customMetricValue={moves}
-        isPaused={isPaused}
+    <div className="relative w-full h-[100dvh] bg-[#fdfcfc] text-[#201d1d] font-mono select-none flex flex-col overflow-hidden items-center justify-between">
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '2D 카드 슬라이드' : '2D Card Slide'}
         language={language}
+        telemetries={[
+          { label: isKo ? '스테이지' : 'Stage', value: `LV.${level + 1} (${size}x${size})`, color: 'text-amber-600 font-bold' },
+          { label: isKo ? '이동' : 'Moves', value: `${moves}회`, color: 'text-slate-700 font-bold' }
+        ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onTogglePause={() => setIsPaused(prev => !prev)}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
+        isPaused={isPaused}
       />
 
-      {/* Info Stats Banner */}
-      <div className="w-full max-w-sm mx-auto px-3 flex items-center justify-between text-xs py-1.5 bg-white/5 border border-white/10 rounded-none shrink-0">
-        <span className="text-slate-400">
-          {isKo ? '난이도' : 'STAGE'}: <span className="text-amber-400 font-bold">LV.{level + 1} ({size}x{size})</span>
-        </span>
-        <div className="w-px h-3 bg-white/10" />
-        <span className="text-slate-300">
-          {isKo ? '완성 목표' : 'GOAL'}: <span className="text-emerald-400 font-bold">{isKo ? '순서대로 정렬' : 'Sort in order'}</span>
-        </span>
-      </div>
-
-      {/* Swipe direction hint */}
-      {swipeHint && (
-        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-40 px-3 py-1 rounded-sm text-xs font-mono font-bold bg-amber-500 text-slate-950 shadow-md">
-          {swipeHint === 'up' && (isKo ? '↑ 위로 슬라이드' : '↑ SLIDE UP')}
-          {swipeHint === 'down' && (isKo ? '↓ 아래로 슬라이드' : '↓ SLIDE DOWN')}
-          {swipeHint === 'left' && (isKo ? '← 왼쪽으로 슬라이드' : '← SLIDE LEFT')}
-          {swipeHint === 'right' && (isKo ? '→ 오른쪽으로 슬라이드' : '→ SLIDE RIGHT')}
-        </div>
-      )}
-
-      {/* Puzzle Viewport */}
-      <div
-        className="flex-1 min-h-0 flex items-center justify-center p-3 relative overflow-hidden"
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
-        style={{ touchAction: 'none' }}
-      >
+      {/* Grid Viewport */}
+      <div className="flex-1 min-h-0 flex items-center justify-center relative overflow-hidden p-2">
         <div
-          className="w-full max-w-[340px] aspect-square bg-black/40 border border-white/10 p-1 relative overflow-hidden"
+          className="w-full max-w-[340px] aspect-square bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-2 relative overflow-hidden touch-none select-none"
+          style={{ touchAction: 'none' }}
         >
           <div
             className="grid gap-1 w-full h-full"
             style={{
               gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))`,
+              gridTemplateRows: `repeat(${size}, minmax(0, 1fr))`,
             }}
           >
-            {tiles.map((tileVal, idx) => {
-              const isEmpty = tileVal === -1;
-              const isCorrect = !isEmpty && tileVal === idx;
+            {tiles.map((val, idx) => {
+              const isEmpty = val === -1;
+              const cardId = val >= 0 ? cardPool.current[val % cardPool.current.length] : 0;
 
               return (
                 <button
                   key={idx}
-                  onClick={() => {
-                    if (!isEmpty) moveTile(idx);
-                  }}
+                  type="button"
+                  onClick={() => moveTile(idx)}
+                  disabled={isEmpty || isComplete || isPaused}
                   className={cn(
-                    'aspect-square rounded-sm border transition-all duration-100 select-none outline-none relative overflow-hidden',
-                    isEmpty && 'border-white/5 bg-transparent',
-                    !isEmpty && 'border-white/15 bg-slate-900 cursor-pointer active:scale-95',
-                    isCorrect && 'border-emerald-400/60 bg-slate-900',
-                    isComplete && 'border-amber-400 ring-1 ring-amber-400',
-                    !lowSpecMode && !isEmpty && 'hover:border-white/30'
+                    'aspect-square rounded-sm border transition-all duration-100 relative overflow-hidden flex items-center justify-center',
+                    isEmpty && 'bg-[#f1eeee] border-dashed border-[rgba(15,0,0,0.15)] opacity-40 cursor-default',
+                    !isEmpty && 'bg-white border-[#201d1d] active:scale-95 cursor-pointer shadow-xs',
+                    isComplete && 'border-amber-500 ring-1 ring-amber-400'
                   )}
                 >
                   {!isEmpty && (
-                    <div
-                      className="w-full h-full rounded-none"
-                      style={getCardSpriteStyle(cardPool[tileVal])}
-                    >
-                      <span className="absolute bottom-0.5 right-1 text-[9px] font-mono font-bold text-white/70 bg-black/60 px-1 rounded-sm">
-                        {tileVal + 1}
-                      </span>
-                    </div>
-                  )}
-                  {isEmpty && (
-                    <div className="w-full h-full flex items-center justify-center bg-white/5 border border-dashed border-white/10">
-                      <span className="text-[10px] text-slate-500 font-mono">[-]</span>
+                    <div className="w-full h-full p-0.5 flex items-center justify-center">
+                      <div className="w-full h-full" style={getCardSpriteStyle(cardId)} />
+                      <div className="absolute top-0.5 left-1 text-[9px] font-bold text-white bg-black/60 px-1 rounded-xs">
+                        {val + 1}
+                      </div>
                     </div>
                   )}
                 </button>
@@ -382,8 +278,8 @@ export const CardSlidePuzzleGame: React.FC<CardSlidePuzzleGameProps> = ({
         </div>
       </div>
 
-      {/* D-Pad & Controls for One-Handed Mobile Play */}
-      <div className="shrink-0 flex flex-col items-center gap-1 select-none pb-2">
+      {/* Mobile One-Handed D-Pad */}
+      <div className="shrink-0 flex flex-col items-center gap-1 select-none pb-3">
         <button
           type="button"
           onClick={() => {
@@ -392,8 +288,7 @@ export const CardSlidePuzzleGame: React.FC<CardSlidePuzzleGameProps> = ({
               moveTile(emptyIdx + size);
             }
           }}
-          className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
-          aria-label="Slide Up"
+          className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
         >
           ▲
         </button>
@@ -406,8 +301,7 @@ export const CardSlidePuzzleGame: React.FC<CardSlidePuzzleGameProps> = ({
                 moveTile(emptyIdx + 1);
               }
             }}
-            className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
-            aria-label="Slide Left"
+            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
           >
             ◀
           </button>
@@ -419,8 +313,7 @@ export const CardSlidePuzzleGame: React.FC<CardSlidePuzzleGameProps> = ({
                 moveTile(emptyIdx - size);
               }
             }}
-            className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
-            aria-label="Slide Down"
+            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
           >
             ▼
           </button>
@@ -432,18 +325,14 @@ export const CardSlidePuzzleGame: React.FC<CardSlidePuzzleGameProps> = ({
                 moveTile(emptyIdx - 1);
               }
             }}
-            className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
-            aria-label="Slide Right"
+            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
           >
             ▶
           </button>
         </div>
-        <p className="text-[10px] text-slate-400 text-center font-mono">
-          {isKo ? '타일 터치, 화면 스와이프 또는 D-패드로 1손 조작' : 'Tap tiles, swipe, or use D-pad to slide'}
-        </p>
       </div>
 
-      {/* 2D Tutorial Modal */}
+      {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
         <UniversalTutorialModal
           gameId="2d_card_slide"
@@ -473,3 +362,4 @@ export const CardSlidePuzzleGame: React.FC<CardSlidePuzzleGameProps> = ({
     </div>
   );
 };
+export default CardSlidePuzzleGame;

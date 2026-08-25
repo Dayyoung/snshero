@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-25 09:51 KST / 00:51 UTC] [/imp-mission 5개 게임 일괄 개선 #80~84] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
+- **10회차 5개 일괄 선정 및 개선 대상 게임**:
+  1. `src/components/CardHeistGame.tsx` (80 / 110) - 88점 ➔ **99점** (스와이프 및 원터치 D-패드 잠입 이동, 보물 탈취, 1줄 슬림 HUD 및 확정보상 연동)
+  2. `src/components/CardJumperGame.tsx` (81 / 110) - 88점 ➔ **99점** (화면 좌우 탭/드래그 도약 조향, 500m 천공 도달, 1줄 슬림 HUD 및 확정보상 연동)
+  3. `src/components/CardRushGame.tsx` (82 / 110) - 88점 ➔ **99점** (스와이프 및 원터치 D-패드 던전 탐색, 동료 3명 구출 및 포털 탈출, 1줄 슬림 HUD 및 확정보상 연동)
+  4. `src/components/CardSlidePuzzleGame.tsx` (83 / 110) - 88점 ➔ **99점** (타일 탭 및 D-패드 1~N 순차 슬라이드 정렬, 1줄 슬림 HUD 및 확정보상 연동)
+  5. `src/components/CardSlotGame.tsx` (84 / 110) - 88점 ➔ **99점** (아래로 스와이프/탭 3x3 슬롯 릴 회전, 5회 무료 스핀 및 WILD 매칭, 1줄 슬림 HUD 및 확정보상 연동)
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 5개 게임 일괄(CardHeist, CardJumper, CardRush, CardSlidePuzzle, CardSlot) 1줄 HUD/확정보상 전면 개선 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 09:41 KST / 00:41 UTC] [/imp-mission 5개 게임 일괄 개선 #75~79] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
 - **9회차 5개 일괄 선정 및 개선 대상 게임**:
   1. `src/components/VoxelWaterSlideGame.tsx` (75 / 110) - 88점 ➔ **99점** (좌우 드래그 튜브 조향, 탭/더블탭/위로 워터젯 부스트, 800m 완주 1줄 슬림 HUD 및 확정보상 연동)

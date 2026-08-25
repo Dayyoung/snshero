@@ -1,13 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Shield, Navigation } from 'lucide-react';
+import { Shield } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardData, Language } from '../types';
-import { t } from '../lib/i18n';
 import { cn, getCardSpriteStyle } from '../lib/utils';
-import { MobileSafeAreaHUD } from './MobileSafeAreaHUD';
-import { UniversalTutorialModal } from './UniversalTutorialModal';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
-import { get2DGameTutorialSteps } from '../lib/mission2DCardTutorialEngine';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface CardRushGameProps {
@@ -33,8 +31,6 @@ interface Position {
   col: number;
 }
 
-const SWIPE_THRESHOLD = 15;
-const FAST_SWIPE_MS = 200;
 const CARD_POOL = Object.keys(CARD_DATABASE)
   .map(Number)
   .filter((id) => Number.isFinite(id) && id > 0);
@@ -68,9 +64,9 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
-  const boardSize = lowSpecMode ? 5 : 6;
-  const allyTargetCount = lowSpecMode ? 2 : 3;
-  const enemyCount = lowSpecMode ? 2 : 3;
+  const boardSize = 6;
+  const allyTargetCount = 3;
+  const enemyCount = 3;
 
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
@@ -98,589 +94,336 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
       ids.push(fallback);
     }
     return ids;
-  }, [deck, heroCardId, allyTargetCount]);
+  }, [allyTargetCount, deck, heroCardId]);
 
-  const [board, setBoard] = useState<Cell[][]>(() => []);
-  const [playerPos, setPlayerPos] = useState<Position>({ row: boardSize - 1, col: Math.floor(boardSize / 2) });
-  const [collected, setCollected] = useState(0);
-  const [turns, setTurns] = useState(0);
-  const [gateOpen, setGateOpen] = useState(false);
-  const [isGameOver, setIsGameOver] = useState(false);
-  const [isWin, setIsWin] = useState(false);
-  const [swipeHint, setSwipeHint] = useState<Direction | null>(null);
-  const [statusText, setStatusText] = useState<string>('');
+  const enemyCardIds = useMemo(() => {
+    const used = new Set<number>([heroCardId, ...allyCardIds]);
+    const ids: number[] = [];
+    while (ids.length < enemyCount) {
+      const picked = pickRandomCardId(used);
+      used.add(picked);
+      ids.push(picked);
+    }
+    return ids;
+  }, [allyCardIds, enemyCount, heroCardId]);
+
+  const gateCardId = useMemo(() => {
+    const used = new Set<number>([heroCardId, ...allyCardIds, ...enemyCardIds]);
+    return pickRandomCardId(used);
+  }, [allyCardIds, enemyCardIds, heroCardId]);
+
+  const [board, setBoard] = useState<Cell[][]>(() =>
+    Array.from({ length: boardSize }, () =>
+      Array.from({ length: boardSize }, () => createCell(1, 'empty', 1))
+    )
+  );
+  const [playerPos, setPlayerPos] = useState<Position>({ row: 0, col: 0 });
+  const [gatePos, setGatePos] = useState<Position>({ row: boardSize - 1, col: boardSize - 1 });
+  const [rescuedCount, setRescuedCount] = useState<number>(0);
+  const [moves, setMoves] = useState<number>(0);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
-  const rewardedRef = useRef(false);
-  const boardRef = useRef<Cell[][]>([]);
-  const playerPosRef = useRef<Position>(playerPos);
-  const collectedRef = useRef(0);
-  const turnsRef = useRef(0);
-  const gateOpenRef = useRef(false);
-  const isGameOverRef = useRef(false);
-  const isWinRef = useRef(false);
-  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
-  const statusTimerRef = useRef<number | null>(null);
-  const startTimeRef = useRef<number>(Date.now());
-
-  const clearStatusTimer = useCallback(() => {
-    if (statusTimerRef.current) {
-      window.clearTimeout(statusTimerRef.current);
-      statusTimerRef.current = null;
-    }
-  }, []);
-
-  const showStatus = useCallback((message: string) => {
-    clearStatusTimer();
-    setStatusText(message);
-    statusTimerRef.current = window.setTimeout(() => setStatusText(''), 1000);
-  }, [clearStatusTimer]);
+  const startTimeRef = useRef(Date.now());
+  const gateOpen = rescuedCount >= allyTargetCount;
 
   const buildBoard = useCallback(() => {
-    const newBoard: Cell[][] = Array.from({ length: boardSize }, (_, row) =>
-      Array.from({ length: boardSize }, (_, col) => {
-        const backgroundCardId = CARD_POOL[(row * boardSize + col) % CARD_POOL.length] || 1;
-        return createCell(backgroundCardId);
+    const usedBg = new Set<number>();
+    const nextBoard: Cell[][] = Array.from({ length: boardSize }, () =>
+      Array.from({ length: boardSize }, () => {
+        const bgId = pickRandomCardId(usedBg);
+        usedBg.add(bgId);
+        return createCell(bgId, 'empty', bgId);
       })
     );
 
-    const occupied = new Set<string>();
-    const placeCell = (pos: Position, kind: CellKind, cardId: number) => {
-      occupied.add(`${pos.row},${pos.col}`);
-      newBoard[pos.row][pos.col] = createCell(newBoard[pos.row][pos.col].backgroundCardId, kind, cardId);
-    };
+    const pPos: Position = { row: 0, col: 0 };
+    const gPos: Position = { row: boardSize - 1, col: boardSize - 1 };
 
-    const findSpot = (avoid: Position[] = []): Position => {
-      for (let i = 0; i < 200; i += 1) {
-        const row = Math.floor(Math.random() * boardSize);
-        const col = Math.floor(Math.random() * boardSize);
-        const key = `${row},${col}`;
-        const tooClose = avoid.some((pos) => Math.abs(pos.row - row) + Math.abs(pos.col - col) <= 1);
-        if (!occupied.has(key) && !tooClose) {
-          return { row, col };
-        }
+    nextBoard[pPos.row][pPos.col] = createCell(nextBoard[pPos.row][pPos.col].backgroundCardId, 'player', heroCardId);
+    nextBoard[gPos.row][gPos.col] = createCell(nextBoard[gPos.row][gPos.col].backgroundCardId, 'gate', gateCardId);
+
+    const emptySlots: Position[] = [];
+    for (let r = 0; r < boardSize; r += 1) {
+      for (let c = 0; c < boardSize; c += 1) {
+        if ((r === pPos.row && c === pPos.col) || (r === gPos.row && c === gPos.col)) continue;
+        emptySlots.push({ row: r, col: c });
       }
-      for (let row = 0; row < boardSize; row += 1) {
-        for (let col = 0; col < boardSize; col += 1) {
-          const key = `${row},${col}`;
-          const tooClose = avoid.some((pos) => Math.abs(pos.row - row) + Math.abs(pos.col - col) <= 1);
-          if (!occupied.has(key) && !tooClose) {
-            return { row, col };
-          }
-        }
-      }
-      return { row: 1, col: 1 };
-    };
-
-    const playerStart = { row: boardSize - 1, col: Math.floor(boardSize / 2) };
-    const gatePos = { row: 0, col: Math.floor(boardSize / 2) };
-    placeCell(playerStart, 'player', heroCardId);
-    placeCell(gatePos, 'gate', pickRandomCardId(new Set([heroCardId])));
-
-    allyCardIds.forEach((cardId) => {
-      const pos = findSpot([playerStart, gatePos]);
-      placeCell(pos, 'ally', cardId);
-    });
-
-    const usedForEnemies = new Set<number>([heroCardId, ...allyCardIds]);
-    for (let i = 0; i < enemyCount; i += 1) {
-      const pos = findSpot([playerStart, gatePos]);
-      const enemyCardId = pickRandomCardId(usedForEnemies);
-      usedForEnemies.add(enemyCardId);
-      placeCell(pos, 'enemy', enemyCardId);
     }
 
-    boardRef.current = newBoard;
-    playerPosRef.current = playerStart;
-    setBoard(newBoard);
-    setPlayerPos(playerStart);
-    setCollected(0);
-    setTurns(0);
-    setGateOpen(false);
+    // Place Allies
+    allyCardIds.forEach(id => {
+      if (emptySlots.length === 0) return;
+      const idx = Math.floor(Math.random() * emptySlots.length);
+      const { row, col } = emptySlots.splice(idx, 1)[0];
+      nextBoard[row][col] = createCell(nextBoard[row][col].backgroundCardId, 'ally', id);
+    });
+
+    // Place Enemies
+    enemyCardIds.forEach(id => {
+      if (emptySlots.length === 0) return;
+      const idx = Math.floor(Math.random() * emptySlots.length);
+      const { row, col } = emptySlots.splice(idx, 1)[0];
+      nextBoard[row][col] = createCell(nextBoard[row][col].backgroundCardId, 'enemy', id);
+    });
+
+    setBoard(nextBoard);
+    setPlayerPos(pPos);
+    setGatePos(gPos);
+    setRescuedCount(0);
+    setMoves(0);
     setIsGameOver(false);
-    setIsWin(false);
-    setSwipeHint(null);
-    setStatusText('');
     setSettlementReceipt(null);
-    collectedRef.current = 0;
-    turnsRef.current = 0;
-    gateOpenRef.current = false;
-    isGameOverRef.current = false;
-    isWinRef.current = false;
-    rewardedRef.current = false;
     startTimeRef.current = Date.now();
-  }, [allyCardIds, boardSize, enemyCount, heroCardId]);
+  }, [allyCardIds, boardSize, enemyCardIds, gateCardId, heroCardId]);
 
   useEffect(() => {
     buildBoard();
-    return () => clearStatusTimer();
-  }, [buildBoard, clearStatusTimer]);
+  }, [buildBoard]);
 
-  const finalizeWin = useCallback((nextTurns: number, nextCollected: number) => {
-    if (rewardedRef.current) return;
-    rewardedRef.current = true;
+  const movePlayer = useCallback((dir: Direction) => {
+    if (isGameOver || isPaused) return;
 
-    const durationSeconds = Math.max(15, Math.round((Date.now() - startTimeRef.current) / 1000));
-    const score = 1000 + nextCollected * 300 - nextTurns * 20;
+    setPlayerPos(prev => {
+      let nRow = prev.row;
+      let nCol = prev.col;
+      if (dir === 'up') nRow -= 1;
+      if (dir === 'down') nRow += 1;
+      if (dir === 'left') nCol -= 1;
+      if (dir === 'right') nCol += 1;
 
-    const receipt = calculateAndDepositMissionReward({
-      gameId: 'card_rush',
-      gameTitle: isKo ? '2D 카드 러시: 던전 탈출' : '2D Card Rush: Dungeon Escape',
-      durationSeconds,
-      score,
-      maxTargetScore: 2000,
-      isVictory: true,
-      difficulty: 'NORMAL',
-      comboCount: nextCollected,
-      perfectClear: nextTurns <= 15
-    });
+      if (nRow < 0 || nRow >= boardSize || nCol < 0 || nCol >= boardSize) return prev;
 
-    setSettlementReceipt(receipt);
-    onReward(receipt.totalSns);
-    setIsGameOver(true);
-    setIsWin(true);
-    isGameOverRef.current = true;
-    isWinRef.current = true;
-    showStatus(isKo ? '[게이트 탈출 성공!]' : '[Gate escape success!]');
-    playSfx('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-  }, [isKo, onReward, playSfx, showStatus]);
+      setMoves(m => m + 1);
 
-  const finalizeLoss = useCallback(() => {
-    if (rewardedRef.current) return;
-    rewardedRef.current = true;
+      setBoard(curr => {
+        const next = curr.map(r => r.map(c => ({ ...c })));
+        const target = next[nRow][nCol];
 
-    const durationSeconds = Math.max(10, Math.round((Date.now() - startTimeRef.current) / 1000));
-    const receipt = calculateAndDepositMissionReward({
-      gameId: 'card_rush',
-      gameTitle: isKo ? '2D 카드 러시: 던전 탈출' : '2D Card Rush: Dungeon Escape',
-      durationSeconds,
-      score: collectedRef.current * 150,
-      maxTargetScore: 2000,
-      isVictory: false,
-      difficulty: 'NORMAL',
-      comboCount: collectedRef.current
-    });
-
-    setSettlementReceipt(receipt);
-    onReward(receipt.totalSns);
-
-    setIsGameOver(true);
-    setIsWin(false);
-    isGameOverRef.current = true;
-    isWinRef.current = false;
-    showStatus(isKo ? '적 카드에 붙잡혔습니다.' : 'Captured by rogue cards!');
-    playSfx('https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3');
-  }, [isKo, onReward, playSfx, showStatus]);
-
-  const moveEnemies = useCallback((currentBoard: Cell[][], nextPlayerPos: Position) => {
-    const nextBoard = currentBoard.map((row) => row.map((cell) => ({ ...cell })));
-    const enemyPositions: Array<{ pos: Position; cardId: number }> = [];
-
-    for (let row = 0; row < boardSize; row += 1) {
-      for (let col = 0; col < boardSize; col += 1) {
-        const cell = nextBoard[row][col];
-        if (cell.kind === 'enemy') {
-          enemyPositions.push({ pos: { row, col }, cardId: cell.cardId });
+        if (target.kind === 'enemy') {
+          // Busted by Enemy
+          setIsGameOver(true);
+          const duration = (Date.now() - startTimeRef.current) / 1000;
+          const receipt = calculateAndDepositMissionReward({
+            gameId: '2d_card_rush',
+            gameTitle: '2D 카드 러시',
+            durationSeconds: duration,
+            score: rescuedCount * 400,
+            difficulty: 'HARD',
+            isVictory: false
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+          return next;
         }
-      }
-    }
 
-    for (const enemy of enemyPositions) {
-      const { row, col } = enemy.pos;
-      if (nextBoard[row]?.[col]?.kind !== 'enemy') continue;
-
-      const dx = nextPlayerPos.col - col;
-      const dy = nextPlayerPos.row - row;
-      const options: Direction[] = [];
-      if (Math.abs(dx) >= Math.abs(dy)) {
-        options.push(dx > 0 ? 'right' : 'left');
-        options.push(dy > 0 ? 'down' : 'up');
-      } else {
-        options.push(dy > 0 ? 'down' : 'up');
-        options.push(dx > 0 ? 'right' : 'left');
-      }
-      options.push('left', 'right', 'up', 'down');
-
-      let moved = false;
-      for (const dir of options) {
-        let nr = row;
-        let nc = col;
-        if (dir === 'up') nr -= 1;
-        if (dir === 'down') nr += 1;
-        if (dir === 'left') nc -= 1;
-        if (dir === 'right') nc += 1;
-
-        if (nr < 0 || nr >= boardSize || nc < 0 || nc >= boardSize) continue;
-        const target = nextBoard[nr][nc];
-        if (target.kind === 'player') {
-          return { board: nextBoard, hitPlayer: true };
+        let newRescued = rescuedCount;
+        if (target.kind === 'ally') {
+          newRescued += 1;
+          setRescuedCount(newRescued);
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
         }
-        if (target.kind !== 'empty') continue;
 
-        nextBoard[nr][nc] = { ...nextBoard[row][col] };
-        nextBoard[row][col] = createCell(nextBoard[row][col].backgroundCardId);
-        moved = true;
-        break;
-      }
+        if (target.kind === 'gate' && newRescued >= allyTargetCount) {
+          // Escape Victory!
+          setIsGameOver(true);
+          const duration = (Date.now() - startTimeRef.current) / 1000;
+          const receipt = calculateAndDepositMissionReward({
+            gameId: '2d_card_rush',
+            gameTitle: '2D 카드 러시',
+            durationSeconds: duration,
+            score: newRescued * 1000 + 2000,
+            difficulty: 'HARD',
+            isVictory: true
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+        }
 
-      if (!moved) {
-        continue;
-      }
+        next[prev.row][prev.col] = createCell(next[prev.row][prev.col].backgroundCardId, 'empty');
+        next[nRow][nCol] = createCell(next[nRow][nCol].backgroundCardId, 'player', heroCardId);
+
+        return next;
+      });
+
+      return { row: nRow, col: nCol };
+    });
+  }, [allyTargetCount, boardSize, heroCardId, isGameOver, isPaused, onReward, playSfx, rescuedCount]);
+
+  const tutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 동료 구출 & 차원문 탈출' : 'STEP 1: RESCUE & ESCAPE',
+      title: isKo ? '동료 3명 구출 후 포털 탈출' : 'Rescue 3 Allies & Escape',
+      description: isKo
+        ? '던전 격자판을 탐색하여 갇힌 동료 카드 3명을 모두 구출하고 개방된 차원문으로 탈출하세요.'
+        : 'Explore the grid to rescue 3 trapped ally cards and exit via the opened portal.',
+      keyPoints: isKo
+        ? [
+            '동료 3명 구출 시 차원문 개방',
+            '적 몬스터 카드와 접촉 시 패배',
+            '최단 턴수 탈출 시 고득점'
+          ]
+        : [
+            'Rescue 3 allies to open portal',
+            'Avoid monster cards',
+            'Fewer moves yield higher scores'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '스와이프 & 원핸드 D-패드' : 'Swipe & One-Hand D-Pad',
+      description: isKo
+        ? '화면 스와이프 또는 하단 D-패드를 원터치하여 4방향 던전 탐색을 진행합니다.'
+        : 'Swipe screen or tap one-handed D-pad to navigate in 4 directions.',
+      keyPoints: isKo
+        ? [
+            '👆 스와이프: 상하좌우 신속 이동',
+            '🕹️ 컴팩트 D-패드 원터치 조작',
+            '⚡ 턴제 장애물 회피'
+          ]
+        : [
+            '👆 Swipe: Fast 4-way movement',
+            '🕹️ Compact D-pad one-touch move',
+            '⚡ Turn-based obstacle avoidance'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '던전 탈출 즉시 HARD 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Standard payout deposited atomically to your LocalStorage wallet upon dungeon escape.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '구출 동료 및 잔여 턴수 보너스',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Rescue count and turns bonuses',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
     }
-
-    return { board: nextBoard, hitPlayer: false };
-  }, [boardSize]);
-
-  const movePlayer = useCallback((direction: Direction) => {
-    if (isGameOverRef.current || isPaused || showTutorial) return;
-
-    const delta = {
-      up: { row: -1, col: 0 },
-      down: { row: 1, col: 0 },
-      left: { row: 0, col: -1 },
-      right: { row: 0, col: 1 },
-    }[direction];
-
-    const currentPos = playerPosRef.current;
-    const nextPos = { row: currentPos.row + delta.row, col: currentPos.col + delta.col };
-    if (nextPos.row < 0 || nextPos.row >= boardSize || nextPos.col < 0 || nextPos.col >= boardSize) {
-      showStatus(isKo ? '이동할 수 없습니다.' : 'Cannot move there.');
-      playSfx('https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3');
-      return;
-    }
-
-    const currentBoard = boardRef.current.map((row) => row.map((cell) => ({ ...cell })));
-    const currentCell = currentBoard[currentPos.row][currentPos.col];
-    const targetCell = currentBoard[nextPos.row][nextPos.col];
-
-    if (targetCell.kind === 'enemy') {
-      boardRef.current = currentBoard;
-      setBoard(currentBoard);
-      finalizeLoss();
-      return;
-    }
-
-    if (targetCell.kind === 'gate' && !gateOpenRef.current) {
-      showStatus(isKo ? '게이트가 잠겨 있습니다.' : 'The gate is locked.');
-      playSfx('https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3');
-      return;
-    }
-
-    currentBoard[currentPos.row][currentPos.col] = createCell(currentCell.backgroundCardId);
-    currentBoard[nextPos.row][nextPos.col] = createCell(targetCell.backgroundCardId, 'player', heroCardId);
-
-    let nextCollected = collectedRef.current;
-    let nextGateOpen = gateOpenRef.current;
-    const wasGateOpen = gateOpenRef.current;
-    let nextTurns = turnsRef.current + 1;
-    let nextMessage = '';
-
-    if (targetCell.kind === 'ally') {
-      nextCollected += 1;
-      nextGateOpen = nextCollected >= allyTargetCount;
-      nextMessage = isKo ? '동료 카드를 구출했습니다!' : 'Ally card rescued!';
-      playSfx('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-    } else {
-      playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-    }
-
-    const enemyStep = moveEnemies(currentBoard, nextPos);
-    const postEnemyBoard = enemyStep.board;
-
-    if (enemyStep.hitPlayer) {
-      boardRef.current = postEnemyBoard;
-      setBoard(postEnemyBoard);
-      playerPosRef.current = nextPos;
-      setPlayerPos(nextPos);
-      setCollected(nextCollected);
-      setTurns(nextTurns);
-      setGateOpen(nextGateOpen);
-      collectedRef.current = nextCollected;
-      turnsRef.current = nextTurns;
-      gateOpenRef.current = nextGateOpen;
-      finalizeLoss();
-      return;
-    }
-
-    if (nextGateOpen && targetCell.kind === 'gate') {
-      boardRef.current = postEnemyBoard;
-      setBoard(postEnemyBoard);
-      playerPosRef.current = nextPos;
-      setPlayerPos(nextPos);
-      setCollected(nextCollected);
-      setTurns(nextTurns);
-      setGateOpen(nextGateOpen);
-      collectedRef.current = nextCollected;
-      turnsRef.current = nextTurns;
-      gateOpenRef.current = nextGateOpen;
-      finalizeWin(nextTurns, nextCollected);
-      return;
-    }
-
-    boardRef.current = postEnemyBoard;
-    playerPosRef.current = nextPos;
-    collectedRef.current = nextCollected;
-    turnsRef.current = nextTurns;
-    gateOpenRef.current = nextGateOpen;
-    setBoard(postEnemyBoard);
-    setPlayerPos(nextPos);
-    setCollected(nextCollected);
-    setTurns(nextTurns);
-    setGateOpen(nextGateOpen);
-
-    if (nextMessage) showStatus(nextMessage);
-    if (nextGateOpen && !wasGateOpen) {
-      showStatus(isKo ? '게이트가 열렸습니다!' : 'The gate opened!');
-    }
-  }, [allyTargetCount, boardSize, finalizeLoss, finalizeWin, heroCardId, isKo, isPaused, moveEnemies, playSfx, showStatus, showTutorial]);
-
-  const handleKeyDown = useCallback((event: KeyboardEvent) => {
-    if (event.defaultPrevented || isPaused || showTutorial) return;
-    const key = event.key;
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd', 'W', 'A', 'S', 'D'].includes(key)) {
-      event.preventDefault();
-      const direction =
-        key === 'ArrowUp' || key === 'w' || key === 'W' ? 'up'
-          : key === 'ArrowDown' || key === 's' || key === 'S' ? 'down'
-          : key === 'ArrowLeft' || key === 'a' || key === 'A' ? 'left'
-            : 'right';
-      movePlayer(direction);
-    }
-  }, [isPaused, movePlayer, showTutorial]);
-
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown, { passive: false });
-    return () => window.removeEventListener('keydown', handleKeyDown as EventListener);
-  }, [handleKeyDown]);
-
-  const handleTouchStart = useCallback((event: React.TouchEvent) => {
-    const touch = event.touches[0];
-    touchStartRef.current = { x: touch.clientX, y: touch.clientY, time: Date.now() };
-    setSwipeHint(null);
-  }, []);
-
-  const handleTouchMove = useCallback((event: React.TouchEvent) => {
-    event.preventDefault();
-    const start = touchStartRef.current;
-    if (!start) return;
-    const touch = event.touches[0];
-    const dx = touch.clientX - start.x;
-    const dy = touch.clientY - start.y;
-    const absDx = Math.abs(dx);
-    const absDy = Math.abs(dy);
-    const threshold = (Date.now() - start.time) < FAST_SWIPE_MS ? SWIPE_THRESHOLD * 0.6 : SWIPE_THRESHOLD;
-
-    if (absDx < threshold && absDy < threshold) {
-      setSwipeHint(null);
-      return;
-    }
-
-    if (absDx > absDy) {
-      setSwipeHint(dx > 0 ? 'right' : 'left');
-    } else {
-      setSwipeHint(dy > 0 ? 'down' : 'up');
-    }
-  }, []);
-
-  const handleTouchEnd = useCallback((event: React.TouchEvent) => {
-    const start = touchStartRef.current;
-    touchStartRef.current = null;
-    if (!start) return;
-
-    const touch = event.changedTouches[0];
-    const dx = touch.clientX - start.x;
-    const dy = touch.clientY - start.y;
-    const elapsed = Date.now() - start.time;
-    const threshold = elapsed < FAST_SWIPE_MS ? SWIPE_THRESHOLD * 0.6 : SWIPE_THRESHOLD;
-    const absDx = Math.abs(dx);
-    const absDy = Math.abs(dy);
-
-    setSwipeHint(null);
-
-    if (Math.max(absDx, absDy) < threshold) return;
-
-    if (absDx > absDy) {
-      movePlayer(dx > 0 ? 'right' : 'left');
-    } else {
-      movePlayer(dy > 0 ? 'down' : 'up');
-    }
-  }, [movePlayer]);
-
-  const tutorialSteps = get2DGameTutorialSteps('card_rush', isKo);
+  ];
 
   return (
-    <div className="h-[100dvh] max-h-[100dvh] overflow-hidden flex flex-col justify-between select-none font-mono bg-[#0f1117] text-slate-100">
-      {/* Top Safe Area HUD */}
-      <MobileSafeAreaHUD
-        gameTitle={isKo ? '카드 러시' : 'Card Rush'}
-        score={collected * 300}
-        customMetricLabel={isKo ? '턴' : 'Turns'}
-        customMetricValue={turns}
-        isPaused={isPaused}
+    <div className="relative w-full h-[100dvh] bg-[#fdfcfc] text-[#201d1d] font-mono select-none flex flex-col overflow-hidden items-center justify-between">
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '2D 카드 러시' : '2D Card Rush'}
         language={language}
+        telemetries={[
+          { label: isKo ? '구출' : 'Allies', value: `${rescuedCount}/${allyTargetCount}`, color: rescuedCount >= allyTargetCount ? 'text-emerald-700 font-bold' : 'text-amber-600 font-bold' },
+          { label: isKo ? '포털' : 'Gate', value: gateOpen ? 'OPEN' : 'LOCKED', color: gateOpen ? 'text-cyan-700 font-bold' : 'text-slate-500' },
+          { label: isKo ? '이동' : 'Moves', value: `${moves}턴`, color: 'text-slate-700' }
+        ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onTogglePause={() => setIsPaused(prev => !prev)}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
+        isPaused={isPaused}
       />
 
-      <div className="w-full max-w-4xl mx-auto flex-1 flex flex-col justify-between gap-1 sm:gap-2 p-2 sm:p-4">
-        {/* Top Status Banner */}
-        <div className="grid grid-cols-3 gap-1.5 text-center shrink-0 border border-white/10 bg-white/5 p-1.5 rounded-none text-xs">
-          <div>
-            <div className="text-[10px] text-slate-400">{isKo ? '구출 진행' : 'RESCUE'}</div>
-            <div className="font-bold text-amber-400">{collected}/{allyTargetCount}</div>
-          </div>
-          <div>
-            <div className="text-[10px] text-slate-400">{isKo ? '게이트 상태' : 'GATE'}</div>
-            <div className={cn('font-bold', gateOpen ? 'text-emerald-400' : 'text-rose-400')}>
-              {gateOpen ? (isKo ? '개방 [열림]' : 'UNLOCKED') : (isKo ? '잠김 [LOCKED]' : 'LOCKED')}
-            </div>
-          </div>
-          <div>
-            <div className="text-[10px] text-slate-400">{isKo ? '소요 턴' : 'TURNS'}</div>
-            <div className="font-bold text-slate-100">{turns}</div>
-          </div>
-        </div>
-
-        {statusText && (
-          <div className="rounded-sm border border-amber-400/30 bg-amber-500/10 px-3 py-1 text-center text-xs font-mono text-amber-300 shrink-0">
-            {statusText}
-          </div>
-        )}
-
-        {/* Board Container */}
-        <div className="flex-1 min-h-0 flex items-center justify-center relative overflow-hidden">
+      {/* Grid Container */}
+      <div className="flex-1 min-h-0 flex items-center justify-center relative overflow-hidden p-2">
+        <div className="w-full max-w-[340px] aspect-square bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-1.5 relative overflow-hidden touch-none select-none">
           <div
-            className="w-full max-w-[340px] sm:max-w-[400px] aspect-square bg-black/40 border border-white/10 p-1 relative overflow-hidden touch-none"
-            style={{ touchAction: 'none' }}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
+            className="grid gap-1 w-full h-full"
+            style={{ gridTemplateColumns: `repeat(${boardSize}, minmax(0, 1fr))` }}
           >
-            <div className="relative grid gap-1 w-full h-full" style={{ gridTemplateColumns: `repeat(${boardSize}, minmax(0, 1fr))` }}>
-              {board.map((row, rowIndex) => row.map((cell, colIndex) => {
-                const isPlayer = cell.kind === 'player';
-                const isAlly = cell.kind === 'ally';
-                const isEnemy = cell.kind === 'enemy';
-                const isGate = cell.kind === 'gate';
-                const hintActive = swipeHint === 'up' || swipeHint === 'down' || swipeHint === 'left' || swipeHint === 'right';
-                const isHinted = hintActive && (
-                  (swipeHint === 'up' && rowIndex === playerPos.row - 1 && colIndex === playerPos.col) ||
-                  (swipeHint === 'down' && rowIndex === playerPos.row + 1 && colIndex === playerPos.col) ||
-                  (swipeHint === 'left' && rowIndex === playerPos.row && colIndex === playerPos.col - 1) ||
-                  (swipeHint === 'right' && rowIndex === playerPos.row && colIndex === playerPos.col + 1)
-                );
-
-                return (
-                  <div
-                    key={`${rowIndex}-${colIndex}`}
-                    className={cn(
-                      'relative aspect-square rounded-sm overflow-hidden border transition-all duration-100',
-                      'border-white/10 bg-slate-900',
-                      isHinted && 'ring-1 ring-amber-400 scale-[1.02]',
-                      isPlayer && 'ring-2 ring-amber-400 bg-amber-500/20',
-                      isAlly && 'ring-1 ring-emerald-400 bg-emerald-500/20',
-                      isEnemy && 'ring-1 ring-rose-400 bg-rose-500/20',
-                      isGate && (gateOpen ? 'ring-2 ring-indigo-400 bg-indigo-500/20' : 'ring-1 ring-slate-600')
-                    )}
-                  >
-                    <div className="absolute inset-0 opacity-15">
-                      <div className="w-full h-full" style={getCardSpriteStyle(cell.backgroundCardId)} />
-                    </div>
-                    <div className="absolute inset-0 flex items-center justify-center p-0.5">
-                      {isPlayer ? (
-                        <div className="w-[90%] h-[90%] rounded-sm overflow-hidden border border-amber-400">
-                          <div className="w-full h-full" style={getCardSpriteStyle(heroCardId)} />
-                        </div>
-                      ) : isAlly ? (
-                        <div className="w-[85%] h-[85%] rounded-sm overflow-hidden border border-emerald-400">
-                          <div className="w-full h-full" style={getCardSpriteStyle(cell.cardId)} />
-                        </div>
-                      ) : isEnemy ? (
-                        <div className="w-[85%] h-[85%] rounded-sm overflow-hidden border border-rose-400">
-                          <div className="w-full h-full" style={getCardSpriteStyle(cell.cardId)} />
-                        </div>
-                      ) : isGate ? (
-                        <div className={cn('w-[80%] h-[80%] rounded-sm overflow-hidden border', gateOpen ? 'border-indigo-400' : 'border-slate-500')}>
-                          <div className="w-full h-full" style={getCardSpriteStyle(cell.cardId)} />
-                        </div>
-                      ) : null}
-                    </div>
-                    {isGate && !gateOpen && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-slate-950/60">
-                        <Shield size={14} className="text-slate-300" />
+            {board.flatMap((row, r) =>
+              row.map((cell, c) => (
+                <div
+                  key={`${r}-${c}`}
+                  className={cn(
+                    'relative aspect-square rounded-sm overflow-hidden border transition-all duration-100',
+                    cell.kind === 'empty' && 'border-[rgba(15,0,0,0.06)] bg-white',
+                    cell.kind === 'player' && 'border-amber-500 ring-2 ring-amber-400 bg-amber-50',
+                    cell.kind === 'ally' && 'border-emerald-500 ring-1 ring-emerald-400 bg-emerald-50',
+                    cell.kind === 'enemy' && 'border-rose-500 ring-1 ring-rose-400 bg-rose-50',
+                    cell.kind === 'gate' && (gateOpen ? 'border-cyan-500 ring-2 ring-cyan-400 bg-cyan-50' : 'border-slate-400 bg-slate-100')
+                  )}
+                >
+                  <div className="absolute inset-0 flex items-center justify-center p-0.5">
+                    {cell.kind !== 'empty' && (
+                      <div className="w-[88%] h-[88%] rounded-sm overflow-hidden border border-black/10">
+                        <div className="w-full h-full" style={getCardSpriteStyle(cell.cardId)} />
                       </div>
                     )}
                   </div>
-                );
-              }))}
-            </div>
+                  {cell.kind === 'gate' && !gateOpen && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                      <Shield size={14} className="text-white" />
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </div>
+      </div>
 
-        {/* Mobile One-Handed D-Pad & Controls */}
-        <div className="shrink-0 flex flex-col items-center gap-1 select-none pb-1">
+      {/* Mobile One-Handed D-Pad */}
+      <div className="shrink-0 flex flex-col items-center gap-1 select-none pb-3">
+        <button
+          type="button"
+          onClick={() => movePlayer('up')}
+          className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
+        >
+          ▲
+        </button>
+        <div className="flex items-center gap-4">
           <button
             type="button"
-            onClick={() => movePlayer('up')}
-            className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
-            aria-label="Up"
+            onClick={() => movePlayer('left')}
+            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
           >
-            ▲
+            ◀
           </button>
-          <div className="flex items-center gap-4">
-            <button
-              type="button"
-              onClick={() => movePlayer('left')}
-              className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
-              aria-label="Left"
-            >
-              ◀
-            </button>
-            <button
-              type="button"
-              onClick={() => movePlayer('down')}
-              className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
-              aria-label="Down"
-            >
-              ▼
-            </button>
-            <button
-              type="button"
-              onClick={() => movePlayer('right')}
-              className="w-14 h-11 rounded-sm bg-white/10 active:bg-amber-500/30 border border-white/20 flex items-center justify-center text-sm font-mono text-white active:scale-95 touch-manipulation min-h-[44px]"
-              aria-label="Right"
-            >
-              ▶
-            </button>
-          </div>
-          <p className="text-[10px] text-slate-400 text-center font-mono">
-            {isKo ? 'D-패드 터치 또는 화면 스와이프로 1손 조작' : 'D-Pad or swipe to move'}
-          </p>
+          <button
+            type="button"
+            onClick={() => movePlayer('down')}
+            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
+          >
+            ▼
+          </button>
+          <button
+            type="button"
+            onClick={() => movePlayer('right')}
+            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
+          >
+            ▶
+          </button>
         </div>
-
-        {/* 2D Tutorial Modal */}
-        {showTutorial && (
-          <UniversalTutorialModal
-            gameId="2d_card_rush"
-            gameTitle={isKo ? '2D 카드 러시: 던전 탈출' : '2D Card Rush: Dungeon Escape'}
-            customSteps={tutorialSteps}
-            language={language}
-            onStartGame={() => setShowTutorial(false)}
-            onClose={() => setShowTutorial(false)}
-          />
-        )}
-
-        {/* Victory / Reward Settlement Modal */}
-        {isGameOver && settlementReceipt && (
-          <VictoryRewardModal
-            receipt={settlementReceipt}
-            language={language}
-            onPlayAgain={buildBoard}
-            onExit={onExit}
-          />
-        )}
       </div>
+
+      {/* Universal 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="2d_card_rush"
+          gameTitle={isKo ? '2D 카드 러시: 던전 탈출' : '2D Card Rush: Dungeon Escape'}
+          customSteps={tutorialSteps}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
+
+      {/* Victory / Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={buildBoard}
+          onExit={onExit}
+        />
+      )}
     </div>
   );
 };
+export default CardRushGame;
