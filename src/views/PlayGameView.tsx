@@ -7771,7 +7771,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelcastleblaster',
-      title: language === 'ko' ? '3D 복셀 캐슬 블래스터' : 'Voxel Castle Blaster',
+      title: language === 'ko' ? '블리츠 스카이 스택' : 'Blitz Sky Stack',
       icon: Castle,
       color: 'from-amber-700 to-yellow-800',
       image: '/minigame_breakout.png',
@@ -7779,10 +7779,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelcastleblaster');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D BLASTER',
-      guide: language === 'ko' ? '강력한 대포로 적 요새 성벽의 구조적 취약점을 정밀 타격하여 완전 붕괴시키세요.' : 'Physics cannon destruction of enemy castle walls, keeps, and watchtowers!'
+      badgeText: 'SKY-STACK',
+      guide: language === 'ko' ? '화면을 원터치 탭하여 움직이는 블록을 아래 타워에 맞춰 쌓고 20층을 정복하세요.' : 'Tap anywhere to stack moving blocks precisely onto the tower and reach floor 20!'
     },
     {
       id: 'voxelfactorycraft',
@@ -11481,7 +11481,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '캐슬 블래스터 보상', 'Castle Blaster reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 스카이 스택 보상', 'Blitz Sky Stack reward')}
       />
     );
   }
