@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-25 10:11 KST / 01:11 UTC] [/imp-mission 5개 게임 일괄 개선 #90~94] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
+- **12회차 5개 일괄 선정 및 개선 대상 게임**:
+  1. `src/components/MemoryMatchGame.tsx` (90 / 110) - 88점 ➔ **99점** (카드 원터치 플립 짝맞추기, 1줄 슬림 HUD 및 확정보상 연동)
+  2. `src/components/MinesweeperGame.tsx` (91 / 110) - 88점 ➔ **99점** (타일 탭 오픈 / 깃발 토글, 8개 지뢰 회피, 1줄 슬림 HUD 및 확정보상 연동)
+  3. `src/components/PacmanGame.tsx` (92 / 110) - 88점 ➔ **99점** (스와이프 및 원터치 D-패드 팩맨 조향, 유령 회피 및 도트 수집, 1줄 슬림 HUD 및 확정보상 연동)
+  4. `src/components/ShootingBattleGame.tsx` (93 / 110) - 88점 ➔ **99점** (화면 드래그 전투기 기동 및 자동 연사, 5개 편대 격추, 1줄 슬림 HUD 및 확정보상 연동)
+  5. `src/components/Slide2048Game.tsx` (94 / 110) - 88점 ➔ **99점** (스와이프 및 D-패드 4방향 타일 슬라이드 합성, 2048 달성, 1줄 슬림 HUD 및 확정보상 연동)
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 5개 게임 일괄(MemoryMatch, Minesweeper, Pacman, ShootingBattle, Slide2048) 1줄 HUD/확정보상 전면 개선 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 10:01 KST / 01:01 UTC] [/imp-mission 5개 게임 일괄 개선 #85~89] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
 - **11회차 5개 일괄 선정 및 개선 대상 게임**:
   1. `src/components/CardSorceryGame.tsx` (85 / 110) - 88점 ➔ **99점** (카운터 원소 카드 탭 마법 시전, 40초 타임어택, 1줄 슬림 HUD 및 확정보상 연동)

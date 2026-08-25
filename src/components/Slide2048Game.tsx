@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ArrowLeft, RotateCcw, Trophy, ArrowUp, ArrowDown, ArrowLeftIcon, ArrowRight, Swords, Zap } from 'lucide-react';
 import { CardData, Language } from '../types';
-import { t } from '../lib/i18n';
-import { cn, getCardSpriteStyle, getCardSpriteCoords } from '../lib/utils';
-import { CARD_DATABASE } from '../cardDatabase';
+import { cn } from '../lib/utils';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface Slide2048GameProps {
   deck: CardData[];
@@ -14,618 +15,333 @@ interface Slide2048GameProps {
   onReward: (amount: number) => void;
 }
 
-type TileValue = 0 | 2 | 4 | 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096 | 8192;
-
-interface Tile {
-  id: number;
-  value: TileValue;
-  row: number;
-  col: number;
-  mergedFrom?: boolean;
-  isNew?: boolean;
-}
-
 const GRID_SIZE = 4;
-const WIN_VALUE = 2048;
-const SWIPE_THRESHOLD = 15; // lowered for mobile responsiveness
-
-// SNSHero-themed tile colors (indigo/gold/amber palette)
-const TILE_STYLES: Record<number, { bg: string; text: string; glow: string }> = {
-  0: { bg: 'bg-indigo-950/30', text: 'text-transparent', glow: '' },
-  2: { bg: 'bg-indigo-200/80', text: 'text-indigo-900', glow: '' },
-  4: { bg: 'bg-indigo-300/80', text: 'text-indigo-900', glow: '' },
-  8: { bg: 'bg-amber-200/80', text: 'text-amber-900', glow: '' },
-  16: { bg: 'bg-amber-400/80', text: 'text-white', glow: 'shadow-amber-400/30' },
-  32: { bg: 'bg-orange-400/80', text: 'text-white', glow: 'shadow-orange-400/30' },
-  64: { bg: 'bg-orange-500/80', text: 'text-white', glow: 'shadow-orange-500/30' },
-  128: { bg: 'bg-amber-500/80', text: 'text-white', glow: 'shadow-amber-500/30' },
-  256: { bg: 'bg-yellow-500/80', text: 'text-white', glow: 'shadow-yellow-500/30' },
-  512: { bg: 'bg-red-400/80', text: 'text-white', glow: 'shadow-red-400/30' },
-  1024: { bg: 'bg-red-500/80', text: 'text-white', glow: 'shadow-red-500/40' },
-  2048: { bg: 'bg-rose-500/80', text: 'text-white', glow: 'shadow-rose-500/50' },
-  4096: { bg: 'bg-pink-500/80', text: 'text-white', glow: 'shadow-pink-500/50' },
-  8192: { bg: 'bg-purple-500/80', text: 'text-white', glow: 'shadow-purple-500/50' },
-};
-
-const FONT_SIZES: Record<number, string> = {
-  2: 'text-xl', 4: 'text-xl', 8: 'text-xl',
-  16: 'text-lg', 32: 'text-lg', 64: 'text-lg',
-  128: 'text-base', 256: 'text-base', 512: 'text-base',
-  1024: 'text-sm', 2048: 'text-xs', 4096: 'text-[10px]', 8192: 'text-[10px]',
-};
-
-let tileIdCounter = 0;
-function nextTileId(): number { return ++tileIdCounter; }
-
-function getEmptyCells(grid: TileValue[][]): [number, number][] {
-  const empty: [number, number][] = [];
-  for (let r = 0; r < GRID_SIZE; r++)
-    for (let c = 0; c < GRID_SIZE; c++)
-      if (grid[r][c] === 0) empty.push([r, c]);
-  return empty;
-}
-
-function addRandomTile(grid: TileValue[][]): { grid: TileValue[][]; newTile: Tile | null } {
-  const empty = getEmptyCells(grid);
-  if (empty.length === 0) return { grid, newTile: null };
-  const [r, c] = empty[Math.floor(Math.random() * empty.length)];
-  const value: TileValue = Math.random() < 0.9 ? 2 : 4;
-  const newGrid = grid.map(row => [...row]);
-  newGrid[r][c] = value;
-  return { grid: newGrid, newTile: { id: nextTileId(), value, row: r, col: c, isNew: true } };
-}
-
-type Direction = 'up' | 'down' | 'left' | 'right';
-
-function slideRow(row: TileValue[]): { newRow: TileValue[]; score: number; merges: { col: number }[] } {
-  const filtered = row.filter(v => v !== 0) as TileValue[];
-  const merged: TileValue[] = [];
-  let score = 0;
-  const merges: { col: number }[] = [];
-  let mergeIdx = 0;
-  for (let i = 0; i < filtered.length; i++) {
-    if (i < filtered.length - 1 && filtered[i] === filtered[i + 1]) {
-      merged.push((filtered[i] * 2) as TileValue);
-      score += filtered[i] * 2;
-      merges.push({ col: mergeIdx });
-      i++;
-    } else {
-      merged.push(filtered[i]);
-    }
-    mergeIdx++;
-  }
-  while (merged.length < GRID_SIZE) merged.push(0 as TileValue);
-  return { newRow: merged, score, merges };
-}
-
-function moveGrid(grid: TileValue[][], direction: Direction): { newGrid: TileValue[][]; score: number; mergedPositions: [number, number][] } {
-  let score = 0;
-  let newGrid = grid.map(row => [...row]);
-  const mergedPositions: [number, number][] = [];
-  if (direction === 'left') {
-    for (let r = 0; r < GRID_SIZE; r++) {
-      const result = slideRow(newGrid[r]);
-      newGrid[r] = result.newRow;
-      score += result.score;
-      result.merges.forEach(m => mergedPositions.push([r, m.col]));
-    }
-  } else if (direction === 'right') {
-    for (let r = 0; r < GRID_SIZE; r++) {
-      const reversed = [...newGrid[r]].reverse();
-      const result = slideRow(reversed);
-      newGrid[r] = result.newRow.reverse();
-      score += result.score;
-      result.merges.forEach(m => mergedPositions.push([r, GRID_SIZE - 1 - m.col]));
-    }
-  } else if (direction === 'up') {
-    for (let c = 0; c < GRID_SIZE; c++) {
-      const col: TileValue[] = [newGrid[0][c], newGrid[1][c], newGrid[2][c], newGrid[3][c]];
-      const result = slideRow(col);
-      for (let r = 0; r < GRID_SIZE; r++) newGrid[r][c] = result.newRow[r];
-      score += result.score;
-      result.merges.forEach(m => mergedPositions.push([m.col, c]));
-    }
-  } else {
-    for (let c = 0; c < GRID_SIZE; c++) {
-      const col: TileValue[] = [newGrid[3][c], newGrid[2][c], newGrid[1][c], newGrid[0][c]];
-      const result = slideRow(col);
-      for (let r = 0; r < GRID_SIZE; r++) newGrid[GRID_SIZE - 1 - r][c] = result.newRow[r];
-      score += result.score;
-      result.merges.forEach(m => mergedPositions.push([GRID_SIZE - 1 - m.col, c]));
-    }
-  }
-  return { newGrid, score, mergedPositions };
-}
-
-function gridsEqual(a: TileValue[][], b: TileValue[][]): boolean {
-  for (let r = 0; r < GRID_SIZE; r++)
-    for (let c = 0; c < GRID_SIZE; c++)
-      if (a[r][c] !== b[r][c]) return false;
-  return true;
-}
-
-function canMove(grid: TileValue[][]): boolean {
-  for (let r = 0; r < GRID_SIZE; r++) {
-    for (let c = 0; c < GRID_SIZE; c++) {
-      if (grid[r][c] === 0) return true;
-      if (c < GRID_SIZE - 1 && grid[r][c] === grid[r][c + 1]) return true;
-      if (r < GRID_SIZE - 1 && grid[r][c] === grid[r + 1][c]) return true;
-    }
-  }
-  return false;
-}
-
-const BEST_SCORE_KEY = 'hero_2048_best';
 
 export const Slide2048Game: React.FC<Slide2048GameProps> = ({
-  deck,
+  deck: _deck,
   language,
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
-  // ── SNSHero character / card identity ──
-  const playerCard = deck[0];
-  const cardId = typeof playerCard?.id === 'number' ? playerCard.id : 1;
-  const cardData = CARD_DATABASE[cardId] || CARD_DATABASE[1];
-  const cardImageRef = useRef<HTMLImageElement | null>(null);
-
-  useEffect(() => {
-    const img = new Image();
-    img.src = '/card100.png';
-    cardImageRef.current = img;
-  }, []);
-
-  const gridRef = useRef<TileValue[][]>([]);
-  const scoreRef = useRef(0);
-  const bestScoreRef = useRef(0);
-  const gameOverRef = useRef(false);
-  const wonRef = useRef(false);
-  const rewardedRef = useRef(false);
-  const moveCountRef = useRef(0);
-  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [swipeDir, setSwipeDir] = useState<Direction | null>(null);
-
-  const [showTutorial, setShowTutorial] = useState(true);
-  const [grid, setGrid] = useState<TileValue[][]>([]);
+  const isKo = language === 'ko';
+  const [grid, setGrid] = useState<number[][]>(() =>
+    Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(0))
+  );
   const [score, setScore] = useState(0);
-  const [bestScore, setBestScore] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
-  const [won, setWon] = useState(false);
-  const [mergedPositions, setMergedPositions] = useState<Set<string>>(new Set());
-  const [newPositions, setNewPositions] = useState<Set<string>>(new Set());
-  const [animating, setAnimating] = useState(false);
-  const [comboCount, setComboCount] = useState(0);
-  const [showCombo, setShowCombo] = useState(false);
-
-  const initGame = useCallback((forceSkipTutorial = false) => {
-    const emptyGrid: TileValue[][] = Array.from({ length: GRID_SIZE }, () =>
-      Array(GRID_SIZE).fill(0 as TileValue)
-    );
-    const after1 = addRandomTile(emptyGrid);
-    const after2 = addRandomTile(after1.grid);
-    gridRef.current = after2.grid;
-    scoreRef.current = 0;
-    gameOverRef.current = false;
-    wonRef.current = false;
-    rewardedRef.current = false;
-    moveCountRef.current = 0;
-    setGrid(after2.grid);
-    setScore(0);
-    setGameOver(false);
-    setWon(false);
-    setMergedPositions(new Set());
-    setNewPositions(new Set());
-    setComboCount(0);
-    setShowCombo(false);
-    setSwipeDir(null);
-    if (forceSkipTutorial) {
-      setShowTutorial(false);
+  const [maxTile, setMaxTile] = useState(2);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_arcade_2048') !== 'true';
+    } catch {
+      return true;
     }
+  });
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
+
+  const startTimeRef = useRef(Date.now());
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+
+  const addRandomTile = (currentGrid: number[][]): number[][] => {
+    const empty: [number, number][] = [];
+    for (let r = 0; r < GRID_SIZE; r++) {
+      for (let c = 0; c < GRID_SIZE; c++) {
+        if (currentGrid[r][c] === 0) empty.push([r, c]);
+      }
+    }
+    if (empty.length === 0) return currentGrid;
+
+    const [r, c] = empty[Math.floor(Math.random() * empty.length)];
+    const val = Math.random() < 0.9 ? 2 : 4;
+    const next = currentGrid.map(row => [...row]);
+    next[r][c] = val;
+    return next;
+  };
+
+  const initGame = useCallback(() => {
+    let g: number[][] = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(0));
+    g = addRandomTile(g);
+    g = addRandomTile(g);
+    setGrid(g);
+    setScore(0);
+    setMaxTile(4);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+    startTimeRef.current = Date.now();
   }, []);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(BEST_SCORE_KEY);
-      if (saved) {
-        const parsed = parseInt(saved, 10);
-        if (!isNaN(parsed)) {
-          bestScoreRef.current = parsed;
-          setBestScore(parsed);
-        }
-      }
-    } catch { /* ignore */ }
     initGame();
   }, [initGame]);
 
-  const handleMove = useCallback((direction: Direction) => {
-    if (gameOverRef.current || animating) return;
+  const slideRow = (row: number[]): { newRow: number[]; scoreGained: number } => {
+    const filtered = row.filter(v => v !== 0);
+    const merged: number[] = [];
+    let scoreGained = 0;
 
-    const { newGrid, score: gained, mergedPositions: merged } = moveGrid(gridRef.current, direction);
-    if (gridsEqual(gridRef.current, newGrid)) return;
-
-    playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-
-    gridRef.current = newGrid;
-    scoreRef.current += gained;
-    moveCountRef.current++;
-
-    // Combo tracking
-    if (merged.length > 0) {
-      const newCombo = comboCount + 1;
-      setComboCount(newCombo);
-      if (newCombo >= 3) {
-        setShowCombo(true);
-        setTimeout(() => setShowCombo(false), 1000);
+    for (let i = 0; i < filtered.length; i++) {
+      if (i < filtered.length - 1 && filtered[i] === filtered[i + 1]) {
+        const val = filtered[i] * 2;
+        merged.push(val);
+        scoreGained += val;
+        i++;
+      } else {
+        merged.push(filtered[i]);
       }
-    } else {
-      setComboCount(0);
+    }
+    while (merged.length < GRID_SIZE) merged.push(0);
+    return { newRow: merged, scoreGained };
+  };
+
+  const handleMove = (dir: 'up' | 'down' | 'left' | 'right') => {
+    if (isGameOver || isPaused) return;
+
+    let next = grid.map(row => [...row]);
+    let totalScoreGained = 0;
+
+    if (dir === 'left') {
+      for (let r = 0; r < GRID_SIZE; r++) {
+        const { newRow, scoreGained } = slideRow(next[r]);
+        next[r] = newRow;
+        totalScoreGained += scoreGained;
+      }
+    } else if (dir === 'right') {
+      for (let r = 0; r < GRID_SIZE; r++) {
+        const { newRow, scoreGained } = slideRow(next[r].reverse());
+        next[r] = newRow.reverse();
+        totalScoreGained += scoreGained;
+      }
+    } else if (dir === 'up') {
+      for (let c = 0; c < GRID_SIZE; c++) {
+        const col = [next[0][c], next[1][c], next[2][c], next[3][c]];
+        const { newRow, scoreGained } = slideRow(col);
+        for (let r = 0; r < GRID_SIZE; r++) next[r][c] = newRow[r];
+        totalScoreGained += scoreGained;
+      }
+    } else if (dir === 'down') {
+      for (let c = 0; c < GRID_SIZE; c++) {
+        const col = [next[3][c], next[2][c], next[1][c], next[0][c]];
+        const { newRow, scoreGained } = slideRow(col);
+        for (let r = 0; r < GRID_SIZE; r++) next[3 - r][c] = newRow[r];
+        totalScoreGained += scoreGained;
+      }
     }
 
-    const mergedSet = new Set<string>();
-    merged.forEach(([r, c]) => mergedSet.add(`${r},${c}`));
-    setMergedPositions(mergedSet);
+    // Check if moved
+    const moved = JSON.stringify(grid) !== JSON.stringify(next);
+    if (moved) {
+      next = addRandomTile(next);
+      setGrid(next);
+      const newScore = score + totalScoreGained;
+      setScore(newScore);
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
 
-    const afterAdd = addRandomTile(newGrid);
-    gridRef.current = afterAdd.grid;
-
-    const newSet = new Set<string>();
-    if (afterAdd.newTile) newSet.add(`${afterAdd.newTile.row},${afterAdd.newTile.col}`);
-    setNewPositions(newSet);
-
-    setAnimating(true);
-    setTimeout(() => {
-      setGrid([...gridRef.current.map(row => [...row])]);
-      setScore(scoreRef.current);
-      setAnimating(false);
-      setMergedPositions(new Set());
-      setNewPositions(new Set());
-
-      if (!wonRef.current) {
-        for (let r = 0; r < GRID_SIZE; r++)
-          for (let c = 0; c < GRID_SIZE; c++)
-            if (gridRef.current[r][c] >= WIN_VALUE) {
-              wonRef.current = true;
-              setWon(true);
-              playSfx('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-            }
-      }
-
-      if (scoreRef.current > bestScoreRef.current) {
-        bestScoreRef.current = scoreRef.current;
-        setBestScore(scoreRef.current);
-        try { localStorage.setItem(BEST_SCORE_KEY, String(scoreRef.current)); } catch { /* ignore */ }
-      }
-
-      if (!canMove(gridRef.current)) {
-        gameOverRef.current = true;
-        setGameOver(true);
-        if (!rewardedRef.current) {
-          rewardedRef.current = true;
-          const reward = Math.floor(scoreRef.current / 10);
-          if (reward > 0) onReward(reward);
+      // Max tile check
+      let curMax = 2;
+      for (let r = 0; r < GRID_SIZE; r++) {
+        for (let c = 0; c < GRID_SIZE; c++) {
+          if (next[r][c] > curMax) curMax = next[r][c];
         }
       }
-    }, lowSpecMode ? 0 : 100);
-  }, [animating, playSfx, lowSpecMode, onReward, comboCount]);
+      setMaxTile(curMax);
 
-  // ── Keyboard ──
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (gameOverRef.current) return;
-      const map: Record<string, Direction> = { ArrowUp: 'up', w: 'up', W: 'up', ArrowDown: 'down', s: 'down', S: 'down', ArrowLeft: 'left', a: 'left', A: 'left', ArrowRight: 'right', d: 'right', D: 'right' };
-      const dir = map[e.key];
-      if (dir) { e.preventDefault(); handleMove(dir); }
-    };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [handleMove]);
-
-  // ── Enhanced Touch (swipe + visual feedback) ──
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    const touch = e.touches[0];
-    touchStartRef.current = { x: touch.clientX, y: touch.clientY, time: Date.now() };
-    setSwipeDir(null);
-  }, []);
-
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (!touchStartRef.current || gameOverRef.current) return;
-    const touch = e.touches[0];
-    const dx = touch.clientX - touchStartRef.current.x;
-    const dy = touch.clientY - touchStartRef.current.y;
-    const absDx = Math.abs(dx);
-    const absDy = Math.abs(dy);
-    if (Math.max(absDx, absDy) < SWIPE_THRESHOLD) { setSwipeDir(null); return; }
-    setSwipeDir(absDx > absDy ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up'));
-  }, []);
-
-  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
-    if (!touchStartRef.current || gameOverRef.current) { setSwipeDir(null); return; }
-    const touch = e.changedTouches[0];
-    const dx = touch.clientX - touchStartRef.current.x;
-    const dy = touch.clientY - touchStartRef.current.y;
-    const absDx = Math.abs(dx);
-    const absDy = Math.abs(dy);
-    const elapsed = Date.now() - touchStartRef.current.time;
-    touchStartRef.current = null;
-
-    // Fast swipe → lower threshold
-    const threshold = elapsed < 200 ? SWIPE_THRESHOLD * 0.6 : SWIPE_THRESHOLD;
-    if (Math.max(absDx, absDy) < threshold) { setSwipeDir(null); return; }
-
-    const dir: Direction = absDx > absDy ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up');
-    setSwipeDir(dir);
-    handleMove(dir);
-
-    // Clear visual indicator after animation
-    setTimeout(() => setSwipeDir(null), 250);
-  }, [handleMove]);
-
-  // ── Tile rendering with SNSHero card sprite backgrounds ──
-  const tileStyle = (value: TileValue, r: number, c: number): React.CSSProperties & { className: string } => {
-    const styles = TILE_STYLES[value] || TILE_STYLES[0];
-    const fontSize = FONT_SIZES[value] || 'text-sm';
-    const posKey = `${r},${c}`;
-    const isMerged = mergedPositions.has(posKey);
-    const isNew = newPositions.has(posKey);
-
-    // Card sprite background for non-zero tiles
-    const spriteCoords = getCardSpriteCoords(cardId);
-
-    const className = cn(
-      'absolute inset-0 flex items-center justify-center rounded-xl font-extrabold select-none transition-all',
-      styles.bg,
-      styles.text,
-      fontSize,
-      value === 0 ? 'border-2 border-indigo-200/40' : cn('shadow-md', styles.glow),
-      isMerged && !lowSpecMode && 'scale-115 z-10 ring-4 ring-amber-500/80 animate-bounce duration-150',
-      isNew && !lowSpecMode && 'animate-pop',
-      !lowSpecMode && 'duration-100',
-    );
-
-    return {
-      className,
-      style: value !== 0 ? {
-        backgroundImage: `url('${spriteCoords.assetUrl}')`,
-        backgroundSize: `${spriteCoords.cols * 100}% ${spriteCoords.rows * 100}%`,
-        backgroundPosition: `${spriteCoords.xPercent}% ${spriteCoords.yPercent}%`,
-        backgroundBlendMode: 'overlay',
-        backgroundRepeat: 'no-repeat',
-        imageRendering: 'pixelated',
-        opacity: 0.95,
-      } as React.CSSProperties : undefined,
-    };
+      // Check 2048 Win
+      if (curMax >= 2048 && !isGameOver) {
+        setIsGameOver(true);
+        const duration = (Date.now() - startTimeRef.current) / 1000;
+        const receipt = calculateAndDepositMissionReward({
+          gameId: 'arcade_2048',
+          gameTitle: '2048 카드 슬라이드',
+          durationSeconds: duration,
+          score: newScore + 3000,
+          difficulty: 'HARD',
+          isVictory: true
+        });
+        setSettlementReceipt(receipt);
+        onReward(receipt.totalSns);
+      }
+    }
   };
 
-  // ── Swipe direction arrow indicator ──
-  const swipeIndicator = (): React.ReactNode => {
-    if (!swipeDir) return null;
-    const Arrows: Record<Direction, React.ReactNode> = {
-      up: <ArrowUp className="w-8 h-8 animate-bounce" />,
-      down: <ArrowDown className="w-8 h-8 animate-bounce" />,
-      left: <ArrowLeftIcon className="w-8 h-8 animate-bounce" />,
-      right: <ArrowRight className="w-8 h-8 animate-bounce" />,
-    };
-    return (
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-        <div className="bg-indigo-600/30 rounded-full p-3">
-          {Arrows[swipeDir]}
-        </div>
-      </div>
-    );
-  };
+  const tutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 2048 타일 합성' : 'STEP 1: MERGE TO 2048',
+      title: isKo ? '같은 숫자 타일 합성 & 2048 달성' : 'Merge Identical Tiles to 2048',
+      description: isKo
+        ? '4x4 그리드에서 같은 숫자의 타일을 한 방향으로 밀어 2048 타일을 완성하세요.'
+        : 'Slide matching tiles on 4x4 grid to merge them into 2048.',
+      keyPoints: isKo
+        ? [
+            '2048 타일 완성 시 완승',
+            '빈 공간이 없고 합성이 불가능하면 게임 오버',
+            '타일 합성 시 누적 점수 획득'
+          ]
+        : [
+            'Reach 2048 tile to win',
+            'No empty space & no moves causes game over',
+            'Merge tiles to gain score'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '화면 스와이프 & D-패드' : 'Swipe & D-Pad Slide',
+      description: isKo
+        ? '화면을 상하좌우로 스와이프하거나 하단 D-패드를 원터치하여 슬라이딩합니다.'
+        : 'Swipe screen or tap one-handed D-pad in 4 directions.',
+      keyPoints: isKo
+        ? [
+            '👆 스와이프: 4방향 전 타일 일괄 이동',
+            '🕹️ 컴팩트 D-패드 원터치 조작',
+            '⚡ 실시간 타일 합성 애니메이션'
+          ]
+        : [
+            '👆 Swipe: Slide all tiles in 4 directions',
+            '🕹️ Compact D-pad one-touch move',
+            '⚡ Real-time merge animations'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '게임 종료 즉시 HARD 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Standard payout deposited atomically to your LocalStorage wallet upon game completion.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '최고 타일 및 누적 점수 보너스',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Max tile and total score multipliers',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
+    }
+  ];
 
   return (
-    <div className="flex flex-col items-center justify-between w-full h-[100dvh] max-h-[100dvh] bg-slate-50/30 text-slate-800 font-sans select-none overflow-hidden pb-3">
-      {/* Header */}
-      <header className="w-full h-14 flex items-center justify-between border-b border-slate-100 px-4 md:px-6 bg-white shrink-0">
-        <button
-          onClick={onExit}
-          className="p-2 bg-slate-50 border border-slate-200/60 rounded-xl hover:bg-slate-100 hover:text-indigo-600 transition-colors shadow-sm cursor-pointer text-slate-600 flex items-center justify-center"
-        >
-          <ArrowLeft size={20} />
-        </button>
-        <div className="text-center flex items-center gap-2 justify-center">
-          <div
-            className="w-7 h-7 rounded-lg border border-amber-400 bg-cover bg-center"
-            style={getCardSpriteStyle(cardId)}
-          />
-          <h1 className="text-base md:text-lg font-bold text-slate-800 tracking-tight">
-            {t('mode_slide2048', language) || '2048'}
-          </h1>
-        </div>
-        <button
-          onClick={() => { playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'); initGame(true); }}
-          className="p-2 bg-slate-50 border border-slate-200/60 rounded-xl hover:bg-slate-100 hover:text-indigo-600 transition-colors shadow-sm cursor-pointer text-slate-600 flex items-center justify-center"
-        >
-          <RotateCcw size={18} />
-        </button>
-      </header>
+    <div className="relative w-full h-[100dvh] bg-[#fdfcfc] text-[#201d1d] font-mono select-none flex flex-col overflow-hidden items-center justify-between">
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '2048 슬라이드' : '2048 Slide'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '최고' : 'Max', value: `${maxTile}`, color: 'text-amber-600 font-bold' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-cyan-700 font-bold' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
+        isPaused={isPaused}
+      />
 
-      <div className="w-full max-w-md px-4 flex flex-col items-center flex-1 min-h-0 justify-center">
-        {/* Score Board */}
-        <div className="flex items-center gap-3 w-full mb-2 shrink-0">
-          <div className="flex-1 bg-white rounded-2xl border border-slate-100 py-1.5 text-center shadow-xs">
-            <div className="text-[9px] text-indigo-500 uppercase tracking-widest font-bold">
-              {language === 'ko' ? '점수' : 'SCORE'}
-            </div>
-            <div className="text-base sm:text-lg font-extrabold text-slate-850">{score.toLocaleString()}</div>
-          </div>
-          <div className="flex-1 bg-white rounded-2xl border border-slate-100 py-1.5 text-center shadow-xs">
-            <div className="text-[9px] text-amber-500 uppercase tracking-widest font-bold flex items-center justify-center gap-1">
-              <Trophy size={10} />
-              {language === 'ko' ? '최고' : 'BEST'}
-            </div>
-            <div className="text-base sm:text-lg font-extrabold text-slate-850">{bestScore.toLocaleString()}</div>
-          </div>
-        </div>
-
-        {/* Combo */}
-        {showCombo && !lowSpecMode && (
-          <div className="mb-2 px-4 py-0.5 bg-amber-50 border border-amber-250 text-amber-700 font-bold text-xs rounded-full shadow-xs animate-pop shrink-0">
-            🔥 {comboCount}x {language === 'ko' ? '연속 합체!' : 'COMBO!'}
-          </div>
-        )}
-
-        {/* Game Board */}
+      {/* Grid Viewport */}
+      <div className="flex-1 min-h-0 flex items-center justify-center relative overflow-hidden p-2 w-full max-w-sm">
         <div
-          ref={containerRef}
-          className="relative w-full aspect-square max-w-[300px] sm:max-w-[340px] bg-slate-900/90 rounded-3xl border border-slate-950 p-2.5 shadow-xl shrink-0"
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
+          className="w-full max-w-[340px] aspect-square bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-2 relative overflow-hidden touch-none select-none"
+          style={{ touchAction: 'none' }}
+          onTouchStart={(e) => {
+            touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+          }}
+          onTouchEnd={(e) => {
+            if (!touchStartRef.current) return;
+            const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
+            const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 20) {
+              handleMove(dx > 0 ? 'right' : 'left');
+            } else if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 20) {
+              handleMove(dy > 0 ? 'down' : 'up');
+            }
+            touchStartRef.current = null;
+          }}
         >
-          {/* Grid Background */}
-          <div className="absolute inset-2.5 grid grid-cols-4 gap-2.5">
-            {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, i) => (
-              <div key={i} className="rounded-xl bg-slate-800/40" />
-            ))}
-          </div>
-
-          {/* Tiles */}
-          <div className="relative w-full h-full">
-            <div className="absolute inset-0 grid grid-cols-4 gap-2.5 p-0">
-              {Array.from({ length: GRID_SIZE }).map((_, r) =>
-                Array.from({ length: GRID_SIZE }).map((_, c) => {
-                  const value = grid[r]?.[c] ?? 0;
-                  const { className: tileClass, style } = tileStyle(value, r, c);
-                  
-                  // Add high value card premium frames decoration
-                  const borderClass = value >= 64 ? 'ring-2 ring-amber-400 ring-offset-1 shadow-lg' : '';
-
-                  return (
-                    <div key={`${r}-${c}`} className="relative">
-                      <div className="w-full pb-[100%]" />
-                      <div className={cn(tileClass, borderClass)} style={style}>
-                        {value !== 0 && value}
-                      </div>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-            {/* Swipe direction visual */}
-            {swipeIndicator()}
-          </div>
-        </div>
-
-        {/* Mobile One-Handed D-Pad */}
-        <div className="mt-2 flex flex-col items-center justify-center gap-1 select-none shrink-0 sm:hidden">
-          <button
-            type="button"
-            onClick={() => handleMove('up')}
-            className="w-12 h-9 rounded-xl bg-slate-200 active:bg-indigo-500 active:text-white border border-slate-300 flex items-center justify-center text-sm font-black active:scale-95 shadow-sm touch-manipulation text-slate-700"
-            aria-label="Up"
-          >
-            ▲
-          </button>
-          <div className="flex items-center gap-5">
-            <button
-              type="button"
-              onClick={() => handleMove('left')}
-              className="w-12 h-9 rounded-xl bg-slate-200 active:bg-indigo-500 active:text-white border border-slate-300 flex items-center justify-center text-sm font-black active:scale-95 shadow-sm touch-manipulation text-slate-700"
-              aria-label="Left"
-            >
-              ◀
-            </button>
-            <button
-              type="button"
-              onClick={() => handleMove('down')}
-              className="w-12 h-9 rounded-xl bg-slate-200 active:bg-indigo-500 active:text-white border border-slate-300 flex items-center justify-center text-sm font-black active:scale-95 shadow-sm touch-manipulation text-slate-700"
-              aria-label="Down"
-            >
-              ▼
-            </button>
-            <button
-              type="button"
-              onClick={() => handleMove('right')}
-              className="w-12 h-9 rounded-xl bg-slate-200 active:bg-indigo-500 active:text-white border border-slate-300 flex items-center justify-center text-sm font-black active:scale-95 shadow-sm touch-manipulation text-slate-700"
-              aria-label="Right"
-            >
-              ▶
-            </button>
+          <div className="grid grid-cols-4 gap-1.5 w-full h-full">
+            {grid.flatMap((row, r) =>
+              row.map((val, c) => (
+                <div
+                  key={`${r}-${c}`}
+                  className={cn(
+                    'aspect-square rounded-sm border transition-all duration-100 flex items-center justify-center font-bold text-sm select-none',
+                    val === 0 && 'border-[rgba(15,0,0,0.06)] bg-white/40 text-transparent',
+                    val === 2 && 'border-indigo-300 bg-indigo-50 text-indigo-900',
+                    val === 4 && 'border-indigo-400 bg-indigo-100 text-indigo-900',
+                    val === 8 && 'border-amber-400 bg-amber-100 text-amber-900',
+                    val === 16 && 'border-amber-500 bg-amber-200 text-amber-950',
+                    val >= 32 && val < 128 && 'border-rose-400 bg-rose-100 text-rose-900',
+                    val >= 128 && 'border-amber-500 bg-amber-500 text-white shadow-xs'
+                  )}
+                >
+                  {val > 0 && val}
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
 
-      {/* Tutorial Modal */}
+      {/* Mobile One-Handed D-Pad */}
+      <div className="shrink-0 flex flex-col items-center gap-1 select-none pb-3">
+        <button
+          type="button"
+          onClick={() => handleMove('up')}
+          className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
+        >
+          ▲
+        </button>
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => handleMove('left')}
+            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
+          >
+            ◀
+          </button>
+          <button
+            type="button"
+            onClick={() => handleMove('down')}
+            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
+          >
+            ▼
+          </button>
+          <button
+            type="button"
+            onClick={() => handleMove('right')}
+            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
+          >
+            ▶
+          </button>
+        </div>
+      </div>
+
+      {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs px-4">
-          <div className="bg-white text-slate-800 w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl border border-slate-100/80 p-6 animate-in zoom-in-95 duration-200">
-            <div className="flex items-center gap-2.5 mb-3 border-b border-slate-100 pb-3">
-              <span className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg shrink-0">
-                <Zap size={16} />
-              </span>
-              <h3 className="text-base font-bold text-slate-800 uppercase tracking-tight">
-                {t('tutorial_title', language)}
-              </h3>
-            </div>
-            <p className="text-xs sm:text-sm font-medium text-slate-600 leading-relaxed mb-6 whitespace-pre-line">
-              {t('tutorial_slide2048', language)}
-            </p>
-            <button
-              onClick={() => {
-                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                setShowTutorial(false);
-              }}
-              className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-md shadow-indigo-600/10 hover:shadow-lg active:scale-95 transition-all cursor-pointer"
-            >
-              {t('tutorial_start_game', language)}
-            </button>
-          </div>
-        </div>
+        <UniversalTutorialModal
+          gameId="arcade_2048"
+          gameTitle={isKo ? '2048 카드 슬라이드' : '2048 Card Slide'}
+          customSteps={tutorialSteps}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
       )}
 
-      {/* Win Notification Overlay */}
-      {won && !gameOver && (
-        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-40 px-4 py-2.5 bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl shadow-lg text-center animate-bounce text-xs font-bold whitespace-nowrap">
-          {language === 'ko' ? '🎉 2048 달성! 계속해서 점수를 올리세요!' : '🎉 Reached 2048! Keep pushing the limits!'}
-        </div>
-      )}
-
-      {/* Game Over Modal */}
-      {gameOver && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs px-4">
-          <div className="bg-white text-slate-800 w-full max-w-xs rounded-3xl overflow-hidden shadow-2xl border border-slate-100/80 p-6 text-center animate-in zoom-in-95 duration-200">
-            <Trophy className="w-12 h-12 text-amber-500 mx-auto mb-3 animate-bounce" />
-            <h3 className="text-xl font-bold text-slate-800 mb-1">
-              {language === 'ko' ? '게임 오버' : 'Game Over'}
-            </h3>
-            <p className="text-sm font-medium text-slate-500 mb-4">
-              {language === 'ko' ? `최종 점수: ${score.toLocaleString()}` : `Final Score: ${score.toLocaleString()}`}
-            </p>
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <span className="text-3xl font-extrabold text-indigo-600">+{Math.floor(scoreRef.current / 10)}</span>
-              <span className="text-xs font-semibold text-slate-400">SNS</span>
-            </div>
-            <div className="flex flex-col gap-2">
-              <button
-                onClick={() => { playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'); initGame(true); }}
-                className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-md shadow-indigo-600/10 hover:shadow-lg active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
-              >
-                <RotateCcw size={14} />
-                <span>{language === 'ko' ? '다시 하기' : 'Play Again'}</span>
-              </button>
-              <button
-                onClick={onExit}
-                className="w-full py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200/85 text-slate-700 font-semibold rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer"
-              >
-                {language === 'ko' ? '종료' : 'Exit'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Pop animation keyframes */}
-      {!lowSpecMode && (
-        <style>{`
-          @keyframes pop { 0% { transform: scale(0); opacity: 0; } 50% { transform: scale(1.15); } 100% { transform: scale(1); opacity: 1; } }
-          .animate-pop { animation: pop 0.2s ease-out; }
-        `}</style>
+      {/* Victory Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={initGame}
+          onExit={onExit}
+        />
       )}
     </div>
   );
 };
+export default Slide2048Game;
