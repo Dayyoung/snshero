@@ -7501,7 +7501,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelsiege',
-      title: language === 'ko' ? '3D 복셀 중세 공성전' : 'Voxel Medieval Siege',
+      title: language === 'ko' ? '블리츠 시즈 슬링' : 'Blitz Siege Sling',
       icon: Castle,
       color: 'from-amber-700 to-stone-800',
       image: '/minigame_defense.png',
@@ -7509,10 +7509,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelsiege');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D SIEGE',
-      guide: language === 'ko' ? '투석기 궤적을 정밀 조준하여 적 성벽과 방어탑을 물리 파괴하고 아군 군대를 진격시키세요.' : 'Physics-based catapult siege destruction of enemy voxel castles and fortress towers!'
+      badgeText: 'SIEGE-SLING',
+      guide: language === 'ko' ? '바위를 뒤로 당겨 궤적을 조준하고 손을 떼어 요새를 파괴하세요.' : 'Pull back on the boulder and release to shatter enemy fortress structures!'
     },
     {
       id: 'voxeltitan',
@@ -11247,7 +11247,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '중세 공성전 보상', 'Medieval Siege reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 시즈 보상', 'Blitz Siege Sling reward')}
       />
     );
   }

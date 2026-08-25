@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { CardData } from '../types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
@@ -15,16 +14,27 @@ interface VoxelMedievalSiegeGameProps {
   onReward: (amount: number) => void;
 }
 
-interface Boulder {
-  mesh: THREE.Mesh;
-  vx: number;
-  vy: number;
-  vz: number;
-  alive: boolean;
+interface CastleTarget {
+  id: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  hp: number;
+  maxHp: number;
+  type: 'gate' | 'tower' | 'wall' | 'king';
+  icon: string;
+  points: number;
+  isDestroyed: boolean;
 }
 
-interface CastleBlock {
-  mesh: THREE.Mesh;
+interface BoulderProjectile {
+  id: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  radius: number;
   alive: boolean;
 }
 
@@ -34,416 +44,563 @@ export const VoxelMedievalSiegeGame: React.FC<VoxelMedievalSiegeGameProps> = ({
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
+  const [targetsDestroyed, setTargetsDestroyed] = useState<number>(0);
+  const [shotsFired, setShotsFired] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
+  const [siegeCombo, setSiegeCombo] = useState<number>(0);
+  const [maxCombo, setMaxCombo] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(35);
+  const [feedbackText, setFeedbackText] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_medieval_siege') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_siege_sling') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [angle, setAngle] = useState<number>(45);
-  const [power, setPower] = useState<number>(75);
-  const [shotsLeft, setShotsLeft] = useState<number>(8);
-  const [castleHp, setCastleHp] = useState<number>(100);
-  const [score, setScore] = useState<number>(0);
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
-    angle: 45,
-    power: 75,
-    shotsLeft: 8,
-    castleHp: 100,
+    slingshotOrigin: { x: 70, y: 380 },
+    dragPos: { x: 70, y: 380 },
+    isDragging: false,
+    boulders: [] as BoulderProjectile[],
+    targets: [] as CastleTarget[],
+    targetsDestroyed: 0,
+    shotsFired: 0,
     score: 0,
+    combo: 0,
+    maxCombo: 0,
+    timeLeft: 35,
     isGameOver: false,
-    isVictory: false,
     isPaused: false,
     startTime: Date.now(),
-    boulders: [] as Boulder[],
-    castleBlocks: [] as CastleBlock[],
-    armMesh: null as THREE.Mesh | null,
-    scene: null as THREE.Scene | null
+    particles: [] as { x: number; y: number; vx: number; vy: number; color: string; life: number }[],
   });
 
-  const launchBoulder = () => {
+  const setupFortress = () => {
     const s = stateRef.current;
-    if (s.shotsLeft <= 0 || s.isGameOver || s.isVictory || s.isPaused || !s.scene) return;
-
-    s.shotsLeft -= 1;
-    setShotsLeft(s.shotsLeft);
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-
-    const rad = (s.angle * Math.PI) / 180;
-    const vTotal = (s.power / 100) * 35;
-    const vx = 0;
-    const vy = Math.sin(rad) * vTotal;
-    const vz = -Math.cos(rad) * vTotal;
-
-    const bGeo = new THREE.DodecahedronGeometry(0.8);
-    const bMat = new THREE.MeshStandardMaterial({ color: 0xf97316, roughness: 0.3, emissive: 0xe11d48 });
-    const bMesh = new THREE.Mesh(bGeo, bMat);
-    bMesh.position.set(0, 3, 22);
-    s.scene.add(bMesh);
-
-    s.boulders.push({
-      mesh: bMesh,
-      vx,
-      vy,
-      vz,
-      alive: true
-    });
+    s.targets = [
+      // Left Guard Tower
+      { id: 1, x: 230, y: 340, width: 35, height: 70, hp: 50, maxHp: 50, type: 'tower', icon: '🗼', points: 300, isDestroyed: false },
+      // Main Fortress Gate
+      { id: 2, x: 275, y: 355, width: 45, height: 55, hp: 70, maxHp: 70, type: 'gate', icon: '🚪', points: 400, isDestroyed: false },
+      // Right Guard Tower
+      { id: 3, x: 330, y: 340, width: 35, height: 70, hp: 50, maxHp: 50, type: 'tower', icon: '🗼', points: 300, isDestroyed: false },
+      // Upper Bastion Wall
+      { id: 4, x: 250, y: 275, width: 60, height: 40, hp: 60, maxHp: 60, type: 'wall', icon: '🧱', points: 350, isDestroyed: false },
+      // King's Keep Flag at Peak
+      { id: 5, x: 280, y: 215, width: 40, height: 45, hp: 80, maxHp: 80, type: 'king', icon: '👑', points: 800, isDestroyed: false },
+    ];
   };
 
+  const initGame = useCallback(() => {
+    const s = stateRef.current;
+    s.slingshotOrigin = { x: 70, y: 380 };
+    s.dragPos = { x: 70, y: 380 };
+    s.isDragging = false;
+    s.boulders = [];
+    s.targetsDestroyed = 0;
+    s.shotsFired = 0;
+    s.score = 0;
+    s.combo = 0;
+    s.maxCombo = 0;
+    s.timeLeft = 35;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    s.particles = [];
+
+    setupFortress();
+
+    setTargetsDestroyed(0);
+    setShotsFired(0);
+    setScore(0);
+    setSiegeCombo(0);
+    setMaxCombo(0);
+    setTimeLeft(35);
+    setFeedbackText(null);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  }, []);
+
   useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+    initGame();
+  }, [initGame]);
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+  // Timer loop
+  useEffect(() => {
+    if (isGameOver || isPaused) return;
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x87ceeb);
-    scene.fog = new THREE.FogExp2(0x87ceeb, 0.008);
-    stateRef.current.scene = scene;
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          endGame(true);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
 
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 300);
-    camera.position.set(-25, 20, 45);
-    camera.lookAt(0, 8, -10);
+    return () => clearInterval(timer);
+  }, [isGameOver, isPaused]);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    renderer.shadowMap.enabled = !lowSpecMode;
-    container.appendChild(renderer.domElement);
+  // Touch Handlers: Direct Slingshot Drag & Release (Zero Joysticks)
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
 
-    const sun = new THREE.DirectionalLight(0xfffaed, 1.6);
-    sun.position.set(30, 60, 40);
-    sun.castShadow = !lowSpecMode;
-    scene.add(sun);
-    scene.add(new THREE.AmbientLight(0x607d8b, 0.9));
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
 
-    // Green Grass Terrain
-    const groundGeo = new THREE.PlaneGeometry(200, 200);
-    const groundMat = new THREE.MeshLambertMaterial({ color: 0x3f6212 });
-    const ground = new THREE.Mesh(groundGeo, groundMat);
-    ground.rotation.x = -Math.PI / 2;
-    ground.receiveShadow = true;
-    scene.add(ground);
+    const tapX = (e.clientX - rect.left) * scaleX;
+    const tapY = (e.clientY - rect.top) * scaleY;
 
-    // Trebuchet
-    const trebuchetGroup = new THREE.Group();
-    const frame = new THREE.Mesh(new THREE.BoxGeometry(4, 1, 8), new THREE.MeshLambertMaterial({ color: 0x5c3a21 }));
-    frame.position.y = 0.5;
-    trebuchetGroup.add(frame);
+    if (Math.hypot(tapX - s.slingshotOrigin.x, tapY - s.slingshotOrigin.y) < 55) {
+      s.isDragging = true;
+      s.dragPos = { x: tapX, y: tapY };
+    }
+  };
 
-    const arm = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 10), new THREE.MeshLambertMaterial({ color: 0x854d0e }));
-    arm.position.set(0, 3, 0);
-    trebuchetGroup.add(arm);
-    stateRef.current.armMesh = arm;
+  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (!s.isDragging || s.isGameOver || s.isPaused) return;
 
-    trebuchetGroup.position.set(0, 0, 24);
-    scene.add(trebuchetGroup);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
 
-    // Castle Wall Target (5x4 blocks)
-    stateRef.current.castleBlocks = [];
-    const blockGeo = new THREE.BoxGeometry(2.4, 1.8, 1.8);
-    const blockMat = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.8 });
+    const curX = (e.clientX - rect.left) * scaleX;
+    const curY = (e.clientY - rect.top) * scaleY;
 
-    for (let r = 0; r < 4; r++) {
-      for (let c = -2; c <= 2; c++) {
-        const b = new THREE.Mesh(blockGeo, blockMat);
-        b.position.set(c * 2.6, 0.9 + r * 1.9, -15);
-        scene.add(b);
-        stateRef.current.castleBlocks.push({ mesh: b, alive: true });
-      }
+    // Limit sling drag range to 70px
+    const dx = curX - s.slingshotOrigin.x;
+    const dy = curY - s.slingshotOrigin.y;
+    const dist = Math.hypot(dx, dy);
+    const maxDist = 70;
+
+    if (dist > maxDist) {
+      s.dragPos = {
+        x: s.slingshotOrigin.x + (dx / dist) * maxDist,
+        y: s.slingshotOrigin.y + (dy / dist) * maxDist,
+      };
+    } else {
+      s.dragPos = { x: curX, y: curY };
+    }
+  };
+
+  const handlePointerUp = () => {
+    const s = stateRef.current;
+    if (!s.isDragging || s.isGameOver || s.isPaused) return;
+    s.isDragging = false;
+
+    // Launch Boulder in opposite direction of pull
+    const dx = s.slingshotOrigin.x - s.dragPos.x;
+    const dy = s.slingshotOrigin.y - s.dragPos.y;
+    const power = Math.hypot(dx, dy);
+
+    if (power > 15) {
+      s.shotsFired += 1;
+      setShotsFired(s.shotsFired);
+
+      const launchSpeed = power * 12;
+      const angle = Math.atan2(dy, dx);
+
+      s.boulders.push({
+        id: Date.now() + Math.random(),
+        x: s.slingshotOrigin.x,
+        y: s.slingshotOrigin.y,
+        vx: Math.cos(angle) * launchSpeed,
+        vy: Math.sin(angle) * launchSpeed,
+        radius: 10,
+        alive: true,
+      });
+
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
     }
 
-    let animId: number;
+    s.dragPos = { ...s.slingshotOrigin };
+  };
+
+  // Main 60FPS Slingshot & Physics Destruction Loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     let lastTime = performance.now();
 
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const s = stateRef.current;
       if (s.isPaused || s.isGameOver) return;
 
-      // Update Boulders
-      for (let i = s.boulders.length - 1; i >= 0; i--) {
-        const b = s.boulders[i];
-        if (!b.alive) continue;
+      const gravity = 550;
 
-        b.vy -= 9.8 * 2.2 * dt;
-        b.mesh.position.x += b.vx * dt;
-        b.mesh.position.y += b.vy * dt;
-        b.mesh.position.z += b.vz * dt;
+      // Update Boulders Physics
+      for (let bIdx = s.boulders.length - 1; bIdx >= 0; bIdx--) {
+        const b = s.boulders[bIdx];
+        b.vy += gravity * dt;
+        b.x += b.vx * dt;
+        b.y += b.vy * dt;
 
-        // Ground hit
-        if (b.mesh.position.y <= 0.4) {
-          b.alive = false;
-          scene.remove(b.mesh);
-          s.boulders.splice(i, 1);
-          continue;
-        }
+        // Spawn Flame Trail
+        s.particles.push({
+          x: b.x,
+          y: b.y,
+          vx: (Math.random() - 0.5) * 40,
+          vy: (Math.random() - 0.5) * 40,
+          color: '#f97316',
+          life: 0.25,
+        });
 
-        // Castle hit
-        for (const cb of s.castleBlocks) {
-          if (cb.alive) {
-            const dist = b.mesh.position.distanceTo(cb.mesh.position);
-            if (dist < 2.0) {
-              cb.alive = false;
-              cb.mesh.position.y = -10;
+        // Check Target Collisions
+        s.targets.forEach((tgt) => {
+          if (!tgt.isDestroyed) {
+            if (
+              b.x > tgt.x - tgt.width / 2 &&
+              b.x < tgt.x + tgt.width / 2 &&
+              b.y > tgt.y - tgt.height / 2 &&
+              b.y < tgt.y + tgt.height / 2
+            ) {
               b.alive = false;
-              scene.remove(b.mesh);
-              s.boulders.splice(i, 1);
+              tgt.hp -= 40;
 
-              s.score += 250;
-              setScore(s.score);
-              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-
-              const aliveCount = s.castleBlocks.filter(blk => blk.alive).length;
-              s.castleHp = Math.round((aliveCount / s.castleBlocks.length) * 100);
-              setCastleHp(s.castleHp);
-
-              if (s.castleHp <= 0 && !s.isGameOver) {
-                s.isVictory = true;
-                s.isGameOver = true;
-                setIsGameOver(true);
-                const duration = (Date.now() - s.startTime) / 1000;
-                const receipt = calculateAndDepositMissionReward({
-                  gameId: 'voxel_medieval_siege',
-                  gameTitle: '복셀 중세 공성전',
-                  durationSeconds: duration,
-                  score: s.score + 2000,
-                  difficulty: 'NIGHTMARE',
-                  isVictory: true
+              // Explosion Particles
+              for (let p = 0; p < 12; p++) {
+                s.particles.push({
+                  x: b.x,
+                  y: b.y,
+                  vx: (Math.random() - 0.5) * 250,
+                  vy: (Math.random() - 0.5) * 250,
+                  color: '#ef4444',
+                  life: 0.6,
                 });
-                setSettlementReceipt(receipt);
-                onReward(receipt.totalSns);
               }
-              break;
+
+              if (tgt.hp <= 0) {
+                tgt.isDestroyed = true;
+                s.targetsDestroyed += 1;
+                s.combo += 1;
+                if (s.combo > s.maxCombo) s.maxCombo = s.combo;
+
+                const pts = tgt.points + s.combo * 50;
+                s.score += pts;
+
+                setScore(s.score);
+                setTargetsDestroyed(s.targetsDestroyed);
+                setSiegeCombo(s.combo);
+                setMaxCombo(s.maxCombo);
+
+                setFeedbackText(`FORTRESS SMASHED! +${pts}P 💥`);
+                playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+                setTimeout(() => setFeedbackText(null), 350);
+
+                // All Targets Destroyed -> Next Fortress Wave!
+                if (s.targets.every((t) => t.isDestroyed)) {
+                  s.score += 1500;
+                  setScore(s.score);
+                  setFeedbackText(`👑 SIEGE VICTORY! +1500P 👑`);
+                  setTimeout(() => {
+                    setupFortress();
+                  }, 600);
+                }
+              } else {
+                playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              }
             }
           }
+        });
+
+        // Out of Bounds
+        if (b.y > 440 || b.x > 380 || !b.alive) {
+          s.boulders.splice(bIdx, 1);
         }
       }
 
-      // Check failure on 0 shots
-      if (s.shotsLeft <= 0 && s.boulders.length === 0 && s.castleHp > 0 && !s.isGameOver) {
-        s.isGameOver = true;
-        setIsGameOver(true);
-        const duration = (Date.now() - s.startTime) / 1000;
-        const receipt = calculateAndDepositMissionReward({
-          gameId: 'voxel_medieval_siege',
-          gameTitle: '복셀 중세 공성전',
-          durationSeconds: duration,
-          score: s.score,
-          difficulty: 'NIGHTMARE',
-          isVictory: false
-        });
-        setSettlementReceipt(receipt);
-        onReward(receipt.totalSns);
+      // Update Particles
+      for (let i = s.particles.length - 1; i >= 0; i--) {
+        const p = s.particles[i];
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.life -= dt;
+        if (p.life <= 0) s.particles.splice(i, 1);
       }
 
-      renderer.render(scene, camera);
-    };
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
 
-    animId = requestAnimationFrame(animate);
+      // Medieval Battlefield Sky Background
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
+      skyGrad.addColorStop(0, '#1e1b4b');
+      skyGrad.addColorStop(0.6, '#312e81');
+      skyGrad.addColorStop(1, '#431407');
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, w, h);
 
-    return () => {
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
+      // Battlefield Ground
+      ctx.fillStyle = '#1c1917';
+      ctx.fillRect(0, 420, w, 80);
+
+      // Slingshot Base Structure
+      ctx.fillStyle = '#78350f';
+      ctx.fillRect(s.slingshotOrigin.x - 6, s.slingshotOrigin.y, 12, 40);
+
+      // Slingshot Rubber Band
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(s.slingshotOrigin.x - 12, s.slingshotOrigin.y - 10);
+      ctx.lineTo(s.dragPos.x, s.dragPos.y);
+      ctx.lineTo(s.slingshotOrigin.x + 12, s.slingshotOrigin.y - 10);
+      ctx.stroke();
+
+      // Slingshot Boulder (in hand or catapult)
+      ctx.save();
+      ctx.translate(s.dragPos.x, s.dragPos.y);
+      ctx.fillStyle = '#ea580c';
+      ctx.beginPath();
+      ctx.arc(0, 0, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#fde047';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.restore();
+
+      // Trajectory Dot Prediction when Dragging
+      if (s.isDragging) {
+        ctx.fillStyle = 'rgba(253, 224, 71, 0.4)';
+        const dx = s.slingshotOrigin.x - s.dragPos.x;
+        const dy = s.slingshotOrigin.y - s.dragPos.y;
+        const power = Math.hypot(dx, dy);
+        const launchSpeed = power * 12;
+        const angle = Math.atan2(dy, dx);
+        let simX = s.slingshotOrigin.x;
+        let simY = s.slingshotOrigin.y;
+        let simVx = Math.cos(angle) * launchSpeed;
+        let simVy = Math.sin(angle) * launchSpeed;
+
+        for (let step = 0; step < 12; step++) {
+          simVy += gravity * 0.04;
+          simX += simVx * 0.04;
+          simY += simVy * 0.04;
+          ctx.beginPath();
+          ctx.arc(simX, simY, 3, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
-    };
-  }, [lowSpecMode]);
 
-  const handleRestart = () => {
+      // Render Flying Boulders
+      s.boulders.forEach((b) => {
+        ctx.shadowColor = '#f97316';
+        ctx.shadowBlur = 12;
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#fef08a';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+      ctx.shadowBlur = 0;
+
+      // Render Fortress Targets
+      s.targets.forEach((tgt) => {
+        if (!tgt.isDestroyed) {
+          ctx.save();
+          ctx.translate(tgt.x, tgt.y);
+          ctx.font = `${tgt.height * 0.75}px serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(tgt.icon, 0, 0);
+
+          // Mini HP Bar
+          ctx.fillStyle = '#1e293b';
+          ctx.fillRect(-tgt.width / 2, tgt.height / 2 + 2, tgt.width, 4);
+          ctx.fillStyle = '#22c55e';
+          ctx.fillRect(-tgt.width / 2, tgt.height / 2 + 2, tgt.width * (tgt.hp / tgt.maxHp), 4);
+          ctx.restore();
+        }
+      });
+
+      // Render Particles
+      s.particles.forEach((p) => {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 3, 3);
+      });
+    };
+
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, [playSfx]);
+
+  const endGame = (isWin: boolean) => {
     const s = stateRef.current;
-    s.boulders.forEach(b => s.scene?.remove(b.mesh));
-    s.boulders = [];
-    s.castleBlocks.forEach((cb, idx) => {
-      cb.alive = true;
-      const r = Math.floor(idx / 5);
-      const c = (idx % 5) - 2;
-      cb.mesh.position.set(c * 2.6, 0.9 + r * 1.9, -15);
+    if (s.isGameOver) return;
+    s.isGameOver = true;
+    setIsGameOver(true);
+
+    if (isWin) {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    } else {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+
+    const duration = (Date.now() - s.startTime) / 1000;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'arcade_siege_sling',
+      gameTitle: '블리츠 시즈 슬링',
+      durationSeconds: duration,
+      score: s.score + (isWin ? 3500 : s.targetsDestroyed * 200) + s.maxCombo * 40,
+      difficulty: 'NIGHTMARE',
+      isVictory: isWin || s.targetsDestroyed >= 5,
     });
-    s.shotsLeft = 8;
-    s.castleHp = 100;
-    s.score = 0;
-    s.isGameOver = false;
-    s.isVictory = false;
-    s.startTime = Date.now();
-    setShotsLeft(8);
-    setCastleHp(100);
-    setScore(0);
-    setIsGameOver(false);
-    setSettlementReceipt(null);
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
   };
 
-  const customTutorialSteps: TutorialStep[] = [
+  const tutorialSteps: TutorialStep[] = [
     {
-      badge: isKo ? 'STEP 1: 공성 투석 파괴' : 'STEP 1: SIEGE ARTILLERY',
-      title: isKo ? '성벽 요새 완파 격파' : 'Demolish Castle Walls',
+      badge: isKo ? 'STEP 1: 슬링샷 조준 & 요새 파괴' : 'STEP 1: SLINGSHOT AIM & FORTRESS DESTRUCTION',
+      title: isKo ? '바위를 뒤로 당겨 성벽과 타워를 일격에 파괴하세요' : 'Pull Back the Boulder to Shatter Walls & Towers',
       description: isKo
-        ? '거대 투석기의 각도와 장력을 조절하여 제한된 화염탄으로 철벽의 성벽을 완전히 파괴하세요.'
-        : 'Adjust trebuchet launch angle and power to completely demolish the fortified castle wall.',
+        ? '가상 조이스틱 없이 투석기 화염 바위(🪨🔥)를 손가락으로 뒤로 당겨 궤적을 조준하고 손을 떼어 발사하여 적 요새의 수비탑(🗼), 성문(🚪), 왕실 깃발(👑)을 차례로 무너뜨리세요.'
+        : 'Drag the flaming boulder backwards to aim your slingshot trajectory, then release to demolish enemy towers, gates and keeps.',
       keyPoints: isKo
         ? [
-            '성벽 내구도: 100% ➔ 0% 격파',
-            '화염탄 잔여 8발 내에 요새 완파',
-            '벽돌 직격 시 폭발 파편 보너스'
+            '가상 조이스틱 0개 (100% 손가락 뒤로 당기기 슬링샷 발사)',
+            '점선 포물선 궤적 가이드로 정밀한 타격 조준',
+            '35초간 요새의 전 시설을 파괴하고 올클리어'
           ]
         : [
-            'Demolish wall HP from 100% to 0%',
-            'Clear the fortress within 8 fire boulders',
-            'Explosive shatter bonus on direct hits'
+            'Zero Virtual Joysticks: 100% Pull-Back Slingshot Release',
+            'Predictive dotted trajectory guide for pin-point accuracy',
+            'Shatter all defensive structures within 35s'
           ],
-      iconType: 'GOAL'
+      iconType: 'GOAL',
     },
     {
-      badge: isKo ? 'STEP 2: 퓨어 제스처 조준' : 'STEP 2: PURE GESTURES',
-      title: isKo ? '드래그 각도/장력 & 탭 발사' : 'Drag Aim & Tap Fire',
+      badge: isKo ? 'STEP 2: 모바일 퓨어 제스처' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '뒤로 당겨 손 떼기 (Drag & Release)' : 'Pull Back & Release',
       description: isKo
-        ? '슬라이더 없이 화면 좌우 드래그로 각도, 상하 드래그로 장력을 조절하고 탭하여 발사합니다.'
-        : 'Drag horizontally for angle, vertically for tension, and tap anywhere to fire with zero buttons.',
+        ? '바위를 뒤로 당겼다가 목표물을 향해 튕겨냅니다.'
+        : 'Drag backwards to build sling tension and release to fire.',
       keyPoints: isKo
         ? [
-            '👆 좌우 드래그: 발사 각도 미세 조준',
-            '🏹 상하 드래그: 투석 장력 파워 조절',
-            '💥 탭: 대포화염탄 즉시 발사'
+            '🏹 뒤로 드래그: 탄도 파워 및 궤적 실시간 조준',
+            '💥 손 떼기(Release): 고속 화염 바위 발사 및 폭파',
+            '⏱️ 35초 타임어택 고득점 챌린지'
           ]
         : [
-            '👆 Drag L/R: Fine-tune trajectory angle',
-            '🏹 Drag U/D: Adjust catapult power',
-            '💥 Tap: Release fire boulder instantly'
+            '🏹 Drag Back: Adjust launch velocity and trajectory arc',
+            '💥 Release: Fire flaming boulder to trigger chain collapse',
+            '⏱️ 35s time attack siege sprint'
           ],
-      iconType: 'GESTURES'
+      iconType: 'GESTURES',
     },
     {
       badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
       title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
       description: isKo
-        ? '성벽 함락 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
-        : 'Standard payout scaled with Nightmare multiplier deposited atomically to your wallet.',
+        ? '공성 완료 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon match finish.',
       keyPoints: isKo
         ? [
-            '승리 즉시 LocalStorage 영구 지갑 입금',
-            '잔여 화염탄 및 속전속결 가산점',
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '파괴한 요새 부속물 및 최대 콤보 비례 대량 잭팟',
             'VictoryRewardModal 2초 황금 코인 팡파레'
           ]
         : [
             'Instant atomic deposit to LocalStorage wallet',
-            'Remaining boulders and speed bonuses',
+            'Destroyed targets and combo multipliers',
             'VictoryRewardModal golden coin fanfare'
           ],
-      iconType: 'REWARDS'
-    }
+      iconType: 'REWARDS',
+    },
   ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-[#87ceeb] flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
-
+    <div className="relative w-full h-[100dvh] bg-[#1e1b4b] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none">
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
       <MinimalistMissionHUD
-        title={isKo ? '복셀 중세 공성전' : 'Voxel Medieval Siege'}
-        language={language}
-        hp={{ current: castleHp, max: 100 }}
+        title={isKo ? '블리츠 시즈 슬링' : 'Blitz Siege Sling'}
+        language={(language as Language) || 'ko'}
         telemetries={[
-          { label: isKo ? '성벽' : 'Wall', value: `${castleHp}%`, color: castleHp < 30 ? 'text-rose-400 font-black animate-pulse' : 'text-amber-300' },
-          { label: isKo ? '탄약' : 'Shots', value: `${shotsLeft}발`, color: shotsLeft <= 2 ? 'text-rose-400 font-bold' : 'text-cyan-300' },
-          { label: isKo ? '각도' : 'Angle', value: `${angle}°`, color: 'text-emerald-300' },
-          { label: isKo ? '장력' : 'Power', value: `${power}%`, color: 'text-purple-300' }
+          { label: isKo ? '파괴' : 'Demolished', value: `${targetsDestroyed}개`, color: 'text-amber-400 font-bold' },
+          { label: isKo ? '발사' : 'Shots', value: `${shotsFired}발`, color: 'text-cyan-300 font-bold' },
+          { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 10 ? 'text-rose-500 font-bold animate-pulse' : 'text-cyan-400 font-bold' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          stateRef.current.isPaused = !isPaused;
-        }}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
         isPaused={isPaused}
       />
 
-      {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div
-          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
-          style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const startX = e.clientX - rect.left;
-            const startY = e.clientY - rect.top;
-            let moved = false;
-
-            const onMove = (moveEvt: PointerEvent) => {
-              const curX = moveEvt.clientX - rect.left;
-              const curY = moveEvt.clientY - rect.top;
-              const dx = curX - startX;
-              const dy = curY - startY;
-
-              if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
-                moved = true;
-                const newAngle = THREE.MathUtils.clamp(stateRef.current.angle + dx * 0.05, 20, 75);
-                const newPower = THREE.MathUtils.clamp(stateRef.current.power - dy * 0.1, 40, 100);
-                stateRef.current.angle = Math.round(newAngle);
-                stateRef.current.power = Math.round(newPower);
-                setAngle(Math.round(newAngle));
-                setPower(Math.round(newPower));
-              }
-            };
-
-            const onUp = () => {
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-              window.removeEventListener('pointercancel', onUp);
-
-              if (!moved) {
-                // Tap: Launch Boulder
-                launchBoulder();
-              }
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-          }}
+      {/* Pure Touch Siege Slingshot Canvas Viewport */}
+      <div className="flex-1 w-full max-w-md relative overflow-hidden flex items-center justify-center select-none touch-none p-2">
+        <canvas
+          ref={canvasRef}
+          width={360}
+          height={500}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          className="w-full h-full object-contain touch-none cursor-crosshair shadow-2xl"
         />
-      )}
+
+        {/* Floating Feedback Text */}
+        {feedbackText && (
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 pointer-events-none text-base font-bold text-amber-300 drop-shadow-lg animate-bounce whitespace-nowrap">
+            {feedbackText}
+          </div>
+        )}
+      </div>
 
       {/* Minimal Bottom Guide */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/75 border border-amber-500/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
-          {isKo ? '좌우 드래그: 각도 | 상하: 장력 파워 | 탭: 투석기 화염탄 발사 (버튼 없음)' : 'Drag L/R: Angle | Drag U/D: Power | Tap: Fire Boulder (No Buttons)'}
+      <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono">
+          {isKo ? '바위를 뒤로 당겨 궤적을 조준하고 손을 떼어 요새를 파괴하세요' : 'Pull back on the boulder and release to shatter the fortress'}
         </div>
       </div>
 
       {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
         <UniversalTutorialModal
-          gameId="voxel_medieval_siege"
-          gameTitle={isKo ? '3D 복셀 중세 공성전: 성벽 요새 완파' : 'Voxel Medieval Siege: Castle Demolition'}
-          customSteps={customTutorialSteps}
-          language={language}
+          gameId="arcade_siege_sling"
+          gameTitle={isKo ? '블리츠 시즈: 공성 슬링샷' : 'Blitz Siege: Fortress Sling'}
+          customSteps={tutorialSteps}
+          language={(language as Language) || 'ko'}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}
         />
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
         <VictoryRewardModal
           receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
+          language={(language as Language) || 'ko'}
+          onPlayAgain={initGame}
           onExit={onExit}
         />
       )}
