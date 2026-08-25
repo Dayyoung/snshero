@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { CardData } from '../types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
-import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
@@ -15,13 +14,23 @@ interface VoxelBilliardsTrickGameProps {
   onReward: (amount: number) => void;
 }
 
-interface BilliardBall {
-  mesh: THREE.Mesh;
-  num: number;
-  color: number;
-  pos: THREE.Vector3;
-  vel: THREE.Vector3;
+interface PoolBall {
+  id: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  radius: number;
+  color: string;
+  isCue: boolean;
   isPocketed: boolean;
+  num: number;
+}
+
+interface PocketHole {
+  x: number;
+  y: number;
+  radius: number;
 }
 
 export const VoxelBilliardsTrickGame: React.FC<VoxelBilliardsTrickGameProps> = ({
@@ -30,410 +39,560 @@ export const VoxelBilliardsTrickGame: React.FC<VoxelBilliardsTrickGameProps> = (
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
+  const [pocketedCount, setPocketedCount] = useState<number>(0);
+  const [shotsLeft, setShotsLeft] = useState<number>(6);
+  const totalTargetBalls = 6;
+  const [score, setScore] = useState<number>(0);
+  const [comboText, setComboText] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_billiards_trick') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_billiards_trick') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [pocketedCount, setPocketedCount] = useState<number>(0);
-  const totalBalls = 7;
-  const [power, setPower] = useState<number>(50);
-  const [shots, setShots] = useState<number>(0);
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
-    cueAngle: 0,
-    cuePower: 50,
-    balls: [] as BilliardBall[],
-    cueBall: null as BilliardBall | null,
-    isShooting: false,
-    pocketed: 0,
-    shots: 0,
+    balls: [] as PoolBall[],
+    pockets: [] as PocketHole[],
+    isDragging: false,
+    dragStart: { x: 0, y: 0 },
+    dragCurrent: { x: 0, y: 0 },
+    shotsLeft: 6,
+    pocketedCount: 0,
+    score: 0,
     isGameOver: false,
     isPaused: false,
     startTime: Date.now(),
-    cueMesh: null as THREE.Mesh | null
   });
 
-  useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+  const BALL_COLORS = ['#f59e0b', '#3b82f6', '#ef4444', '#8b5cf6', '#10b981', '#ec4899'];
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+  const initGame = useCallback(() => {
+    const s = stateRef.current;
+    s.shotsLeft = 6;
+    s.pocketedCount = 0;
+    s.score = 0;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    s.isDragging = false;
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0e141b);
-
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
-    camera.position.set(0, 8.5, 6);
-    camera.lookAt(0, 0, 0);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    renderer.shadowMap.enabled = !lowSpecMode;
-    container.appendChild(renderer.domElement);
-
-    // Lighting
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x223344, 0.9);
-    scene.add(hemiLight);
-
-    const spotLight = new THREE.SpotLight(0xffffff, 2.8);
-    spotLight.position.set(0, 8, 0);
-    spotLight.angle = Math.PI / 3;
-    spotLight.penumbra = 0.3;
-    scene.add(spotLight);
-
-    // Billiard Pool Table
-    const tableClothGeo = new THREE.BoxGeometry(6, 0.2, 10);
-    const tableClothMat = new THREE.MeshStandardMaterial({ color: 0x1b4d3e, roughness: 0.8 });
-    const tableCloth = new THREE.Mesh(tableClothGeo, tableClothMat);
-    tableCloth.position.y = 0;
-    scene.add(tableCloth);
-
-    // Rails
-    const railMat = new THREE.MeshStandardMaterial({ color: 0x5c3317 });
-    const railL = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 10.4), railMat);
-    railL.position.set(-3.2, 0.2, 0);
-    const railR = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 10.4), railMat);
-    railR.position.set(3.2, 0.2, 0);
-    const railT = new THREE.Mesh(new THREE.BoxGeometry(6.8, 0.4, 0.4), railMat);
-    railT.position.set(0, 0.2, -5.2);
-    const railB = new THREE.Mesh(new THREE.BoxGeometry(6.8, 0.4, 0.4), railMat);
-    railB.position.set(0, 0.2, 5.2);
-    scene.add(railL, railR, railT, railB);
-
-    // Pockets
-    const pocketGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 16);
-    const pocketMat = new THREE.MeshBasicMaterial({ color: 0x050505 });
-    const pocketCoords = [
-      [-2.8, -4.8], [2.8, -4.8],
-      [-2.9, 0], [2.9, 0],
-      [-2.8, 4.8], [2.8, 4.8]
+    // 6 Table Pockets (Corners & Middles)
+    s.pockets = [
+      { x: 30, y: 50, radius: 22 }, // Top-Left
+      { x: 330, y: 50, radius: 22 }, // Top-Right
+      { x: 30, y: 270, radius: 20 }, // Mid-Left
+      { x: 330, y: 270, radius: 20 }, // Mid-Right
+      { x: 30, y: 490, radius: 22 }, // Bot-Left
+      { x: 330, y: 490, radius: 22 }, // Bot-Right
     ];
-    pocketCoords.forEach(([px, pz]) => {
-      const pMesh = new THREE.Mesh(pocketGeo, pocketMat);
-      pMesh.position.set(px, 0.11, pz);
-      scene.add(pMesh);
+
+    // Cue Ball (White)
+    const balls: PoolBall[] = [
+      {
+        id: 0,
+        x: 180,
+        y: 410,
+        vx: 0,
+        vy: 0,
+        radius: 12,
+        color: '#ffffff',
+        isCue: true,
+        isPocketed: false,
+        num: 0,
+      },
+    ];
+
+    // 6 Target Colored Balls (Triangle Rack)
+    const rackPositions = [
+      { x: 180, y: 150 },
+      { x: 166, y: 128 },
+      { x: 194, y: 128 },
+      { x: 152, y: 106 },
+      { x: 180, y: 106 },
+      { x: 208, y: 106 },
+    ];
+
+    rackPositions.forEach((pos, idx) => {
+      balls.push({
+        id: idx + 1,
+        x: pos.x,
+        y: pos.y,
+        vx: 0,
+        vy: 0,
+        radius: 12,
+        color: BALL_COLORS[idx],
+        isCue: false,
+        isPocketed: false,
+        num: idx + 1,
+      });
     });
 
-    // Cue Stick Mesh
-    const cueGeo = new THREE.CylinderGeometry(0.04, 0.08, 4.5, 8);
-    const cueMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.3 });
-    const cueMesh = new THREE.Mesh(cueGeo, cueMat);
-    cueMesh.rotation.x = Math.PI / 2;
-    scene.add(cueMesh);
-    stateRef.current.cueMesh = cueMesh;
+    s.balls = balls;
 
-    // Spawn Balls
-    const colors = [0xffffff, 0xfacc15, 0x3b82f6, 0xef4444, 0xa855f7, 0xf97316, 0x10b981, 0x1e293b];
-    stateRef.current.balls = [];
+    setPocketedCount(0);
+    setShotsLeft(6);
+    setScore(0);
+    setComboText(null);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  }, []);
 
-    // Cue Ball
-    const ballGeo = new THREE.SphereGeometry(0.2, 16, 16);
-    const cueBallMat = new THREE.MeshStandardMaterial({ color: colors[0], roughness: 0.2 });
-    const cueBallMesh = new THREE.Mesh(ballGeo, cueBallMat);
-    cueBallMesh.position.set(0, 0.3, 2.5);
-    scene.add(cueBallMesh);
+  useEffect(() => {
+    initGame();
+  }, [initGame]);
 
-    const cueBallObj: BilliardBall = {
-      mesh: cueBallMesh,
-      num: 0,
-      color: colors[0],
-      pos: new THREE.Vector3(0, 0.3, 2.5),
-      vel: new THREE.Vector3(0, 0, 0),
-      isPocketed: false
-    };
-    stateRef.current.cueBall = cueBallObj;
-    stateRef.current.balls.push(cueBallObj);
+  // Touch / Pointer Cue Pull & Aim Gesture Handlers (Zero Sliders)
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused || s.shotsLeft <= 0) return;
 
-    // Target Balls in Triangle
-    let bIdx = 1;
-    for (let row = 0; row < 3; row++) {
-      for (let col = 0; col <= row; col++) {
-        if (bIdx > 7) break;
-        const bx = (col - row / 2) * 0.45;
-        const bz = -2.0 - row * 0.4;
-        const bMat = new THREE.MeshStandardMaterial({ color: colors[bIdx], roughness: 0.2 });
-        const bMesh = new THREE.Mesh(ballGeo, bMat);
-        bMesh.position.set(bx, 0.3, bz);
-        scene.add(bMesh);
+    // Check if any ball is currently moving
+    const isMoving = s.balls.some((b) => !b.isPocketed && Math.hypot(b.vx, b.vy) > 0.1);
+    if (isMoving) return;
 
-        stateRef.current.balls.push({
-          mesh: bMesh,
-          num: bIdx,
-          color: colors[bIdx],
-          pos: new THREE.Vector3(bx, 0.3, bz),
-          vel: new THREE.Vector3(0, 0, 0),
-          isPocketed: false
-        });
-        bIdx++;
+    const cueBall = s.balls.find((b) => b.isCue && !b.isPocketed);
+    if (!cueBall) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    const touchX = (e.clientX - rect.left) * scaleX;
+    const touchY = (e.clientY - rect.top) * scaleY;
+
+    // Can start drag anywhere on the bottom half
+    s.isDragging = true;
+    s.dragStart = { x: cueBall.x, y: cueBall.y };
+    s.dragCurrent = { x: touchX, y: touchY };
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (!s.isDragging || s.isGameOver || s.isPaused) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    const touchX = (e.clientX - rect.left) * scaleX;
+    const touchY = (e.clientY - rect.top) * scaleY;
+
+    s.dragCurrent = { x: touchX, y: touchY };
+  };
+
+  const handlePointerUp = () => {
+    const s = stateRef.current;
+    if (!s.isDragging || s.isGameOver || s.isPaused) {
+      s.isDragging = false;
+      return;
+    }
+
+    const cueBall = s.balls.find((b) => b.isCue && !b.isPocketed);
+    if (cueBall) {
+      // Calculate strike velocity (opposite direction of drag vector)
+      const dx = cueBall.x - s.dragCurrent.x;
+      const dy = cueBall.y - s.dragCurrent.y;
+      const dist = Math.hypot(dx, dy);
+
+      if (dist > 15) {
+        const power = Math.min(22, dist * 0.18);
+        const angle = Math.atan2(dy, dx);
+
+        cueBall.vx = Math.cos(angle) * power;
+        cueBall.vy = Math.sin(angle) * power;
+
+        s.shotsLeft -= 1;
+        setShotsLeft(s.shotsLeft);
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
       }
     }
 
-    let animId: number;
+    s.isDragging = false;
+  };
+
+  // Main 60FPS Billiards Physics Engine Loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     let lastTime = performance.now();
 
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const s = stateRef.current;
       if (s.isPaused || s.isGameOver) return;
 
-      // Update Cue Stick Position
-      if (s.cueBall && !s.cueBall.isPocketed && !s.isShooting) {
-        if (s.cueMesh) {
-          s.cueMesh.visible = true;
-          const cueDist = 2.8 + (s.cuePower / 100) * 0.6;
-          s.cueMesh.position.set(
-            s.cueBall.pos.x + Math.sin(s.cueAngle) * cueDist,
-            0.55,
-            s.cueBall.pos.z + Math.cos(s.cueAngle) * cueDist
-          );
-          s.cueMesh.rotation.y = s.cueAngle;
+      const friction = 0.985;
+      const cushionLeft = 36;
+      const cushionRight = 324;
+      const cushionTop = 56;
+      const cushionBottom = 484;
+
+      // Update Balls Physics
+      s.balls.forEach((b) => {
+        if (b.isPocketed) return;
+
+        b.x += b.vx * dt * 60;
+        b.y += b.vy * dt * 60;
+        b.vx *= friction;
+        b.vy *= friction;
+
+        if (Math.hypot(b.vx, b.vy) < 0.05) {
+          b.vx = 0;
+          b.vy = 0;
         }
-      } else if (s.cueMesh) {
-        s.cueMesh.visible = false;
-      }
 
-      // Ball Physics & Collisions
-      let anyMoving = false;
-      for (let b of s.balls) {
-        if (b.isPocketed) continue;
+        // Cushion Bounces
+        if (b.x < cushionLeft + b.radius) {
+          b.x = cushionLeft + b.radius;
+          b.vx *= -0.85;
+        } else if (b.x > cushionRight - b.radius) {
+          b.x = cushionRight - b.radius;
+          b.vx *= -0.85;
+        }
 
-        if (b.vel.lengthSq() > 0.0001) {
-          anyMoving = true;
-          b.pos.addScaledVector(b.vel, dt);
-          b.vel.multiplyScalar(0.985); // Friction
-          b.mesh.position.copy(b.pos);
+        if (b.y < cushionTop + b.radius) {
+          b.y = cushionTop + b.radius;
+          b.vy *= -0.85;
+        } else if (b.y > cushionBottom - b.radius) {
+          b.y = cushionBottom - b.radius;
+          b.vy *= -0.85;
+        }
 
-          // Rail Bounce
-          if (Math.abs(b.pos.x) > 2.7) {
-            b.vel.x = -b.vel.x * 0.85;
-            b.pos.x = Math.sign(b.pos.x) * 2.7;
-          }
-          if (Math.abs(b.pos.z) > 4.7) {
-            b.vel.z = -b.vel.z * 0.85;
-            b.pos.z = Math.sign(b.pos.z) * 4.7;
-          }
+        // Pocket Hole Checks
+        s.pockets.forEach((p) => {
+          if (b.isPocketed) return;
+          const dist = Math.hypot(b.x - p.x, b.y - p.y);
 
-          // Pocket Detection
-          for (let [px, pz] of pocketCoords) {
-            if (Math.hypot(b.pos.x - px, b.pos.z - pz) < 0.45) {
-              b.isPocketed = true;
-              b.mesh.position.y = -10;
-              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3');
+          if (dist < p.radius) {
+            b.isPocketed = true;
+            b.vx = 0;
+            b.vy = 0;
 
-              if (b.num !== 0) {
-                s.pocketed += 1;
-                setPocketedCount(s.pocketed);
+            if (b.isCue) {
+              // Scratch (Cue ball in pocket) ➔ Reset cue ball
+              setTimeout(() => {
+                b.isPocketed = false;
+                b.x = 180;
+                b.y = 410;
+                b.vx = 0;
+                b.vy = 0;
+              }, 600);
+              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+            } else {
+              // Target ball pocketed!
+              s.pocketedCount += 1;
+              s.score += 500;
+              setPocketedCount(s.pocketedCount);
+              setScore(s.score);
+              setComboText(`POCKET! +500P ✨`);
+              setTimeout(() => setComboText(null), 500);
+              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
 
-                if (s.pocketed >= totalBalls) {
-                  s.isGameOver = true;
-                  setIsGameOver(true);
-                  const duration = (Date.now() - s.startTime) / 1000;
-                  const receipt = calculateAndDepositMissionReward({
-                    gameId: 'voxel_billiards_trick',
-                    gameTitle: '복셀 당구 트릭샷',
-                    durationSeconds: duration,
-                    score: s.pocketed * 400 + Math.max(0, 1000 - s.shots * 80),
-                    difficulty: 'HARD',
-                    isVictory: true
-                  });
-                  setSettlementReceipt(receipt);
-                  onReward(receipt.totalSns);
-                }
-              } else {
-                // Scratch cue ball -> respawn
-                setTimeout(() => {
-                  b.isPocketed = false;
-                  b.pos.set(0, 0.3, 2.5);
-                  b.vel.set(0, 0, 0);
-                  b.mesh.position.copy(b.pos);
-                }, 800);
+              if (s.pocketedCount >= totalTargetBalls) {
+                endGame(true);
               }
-              break;
             }
           }
-        }
-      }
+        });
+      });
 
-      // Ball to Ball Collisions
+      // Ball-to-Ball Collisions
       for (let i = 0; i < s.balls.length; i++) {
         for (let j = i + 1; j < s.balls.length; j++) {
           const b1 = s.balls[i];
           const b2 = s.balls[j];
           if (b1.isPocketed || b2.isPocketed) continue;
 
-          const diff = new THREE.Vector3().subVectors(b2.pos, b1.pos);
-          const dist = diff.length();
-          if (dist < 0.4 && dist > 0.0001) {
-            const normal = diff.normalize();
-            const relVel = new THREE.Vector3().subVectors(b1.vel, b2.vel);
-            const impulse = relVel.dot(normal);
+          const dx = b2.x - b1.x;
+          const dy = b2.y - b1.y;
+          const dist = Math.hypot(dx, dy);
 
-            if (impulse > 0) {
-              b1.vel.subScaledVector(normal, impulse * 0.95);
-              b2.vel.addScaledVector(normal, impulse * 0.95);
-              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-            }
+          if (dist < b1.radius + b2.radius) {
+            // Elastic Collision Response
+            const normalX = dx / dist;
+            const normalY = dy / dist;
+
+            const kx = b1.vx - b2.vx;
+            const ky = b1.vy - b2.vy;
+            const p = 2 * (normalX * kx + normalY * ky) / 2;
+
+            b1.vx -= p * normalX * 0.95;
+            b1.vy -= p * normalY * 0.95;
+            b2.vx += p * normalX * 0.95;
+            b2.vy += p * normalY * 0.95;
+
+            // Separate overlapping balls
+            const overlap = b1.radius + b2.radius - dist;
+            b1.x -= normalX * (overlap / 2);
+            b1.y -= normalY * (overlap / 2);
+            b2.x += normalX * (overlap / 2);
+            b2.y += normalY * (overlap / 2);
           }
         }
       }
 
-      s.isShooting = anyMoving;
+      // Check Out of Shots & All balls stopped
+      const isMoving = s.balls.some((b) => !b.isPocketed && Math.hypot(b.vx, b.vy) > 0.1);
+      if (s.shotsLeft <= 0 && !isMoving && s.pocketedCount < totalTargetBalls && !s.isGameOver) {
+        endGame(false);
+      }
 
-      renderer.render(scene, camera);
-    };
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
 
-    animId = requestAnimationFrame(animate);
+      // Wooden Rail Frame
+      ctx.fillStyle = '#451a03';
+      ctx.fillRect(10, 30, w - 20, h - 60);
 
-    return () => {
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
+      // Emerald Pool Cloth Mat
+      ctx.fillStyle = '#065f46';
+      ctx.fillRect(26, 46, w - 52, h - 92);
+
+      // Pocket Holes (Black)
+      s.pockets.forEach((p) => {
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#1e293b';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+      });
+
+      // Render Balls
+      s.balls.forEach((b) => {
+        if (b.isPocketed) return;
+
+        ctx.fillStyle = b.color;
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Ball Number Badge
+        if (!b.isCue) {
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, b.radius * 0.45, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = '#000000';
+          ctx.font = 'bold 9px monospace';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(String(b.num), b.x, b.y);
+        }
+      });
+
+      // Render Cue Aiming & Power Guide Line
+      const cueBall = s.balls.find((b) => b.isCue && !b.isPocketed);
+      if (s.isDragging && cueBall) {
+        const dx = cueBall.x - s.dragCurrent.x;
+        const dy = cueBall.y - s.dragCurrent.y;
+        const power = Math.hypot(dx, dy);
+
+        // Aim Trajectory Line (Forward)
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(cueBall.x, cueBall.y);
+        ctx.lineTo(cueBall.x + dx * 2.2, cueBall.y + dy * 2.2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Cue Stick Pull Line (Backward)
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(cueBall.x, cueBall.y);
+        ctx.lineTo(s.dragCurrent.x, s.dragCurrent.y);
+        ctx.stroke();
       }
     };
-  }, [lowSpecMode]);
 
-  const handleShoot = () => {
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, []);
+
+  const endGame = (isWin: boolean) => {
     const s = stateRef.current;
-    if (s.isShooting || !s.cueBall || s.cueBall.isPocketed || s.isGameOver || s.isPaused) return;
+    if (s.isGameOver) return;
+    s.isGameOver = true;
+    setIsGameOver(true);
 
-    s.shots += 1;
-    setShots(s.shots);
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    if (isWin) {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    } else {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
 
-    const shotSpeed = 10 + (s.cuePower / 100) * 25;
-    s.cueBall.vel.set(
-      -Math.sin(s.cueAngle) * shotSpeed,
-      0,
-      -Math.cos(s.cueAngle) * shotSpeed
-    );
+    const duration = (Date.now() - s.startTime) / 1000;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'arcade_billiards_trick',
+      gameTitle: '블리츠 트릭 포켓볼',
+      durationSeconds: duration,
+      score: s.pocketedCount * 600 + (isWin ? 2500 : 500) + s.shotsLeft * 200,
+      difficulty: 'NIGHTMARE',
+      isVictory: isWin || s.pocketedCount >= 4,
+    });
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
   };
 
-  const handleRestart = () => {
-    const s = stateRef.current;
-    s.pocketed = 0;
-    s.shots = 0;
-    s.isGameOver = false;
-    s.startTime = Date.now();
-    setPocketedCount(0);
-    setShots(0);
-    setIsGameOver(false);
-    setSettlementReceipt(null);
-  };
+  const tutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 6개 포켓볼 홀인' : 'STEP 1: POCKET 6 BALLS',
+      title: isKo ? '수구를 당겨 조준하고 샷을 날리세요' : 'Pull Cue Ball & Release to Strike',
+      description: isKo
+        ? '가상 슬라이더 없이 수구(흰색 공)를 손가락으로 당겨 각도와 파워를 조준하고 손을 떼어 포켓볼을 홀에 넣으세요.'
+        : 'Drag backwards from the cue ball to aim trajectory and release to pocket all target balls.',
+      keyPoints: isKo
+        ? [
+            '가상 슬라이더 0개 (100% 손가락 직접 큐대 조준 & 타격)',
+            '점선 궤적으로 경로 예측 및 쿠션 뱅크샷 구사',
+            '6타 이내에 모든 색상 공을 홀인하면 완승'
+          ]
+        : [
+            'Zero Virtual Sliders: 100% Finger Drag & Strike',
+            'Dotted trajectory lines for bank and cushion shots',
+            'Pocket all 6 colored balls within 6 shots to win'
+          ],
+      iconType: 'GOAL',
+    },
+    {
+      badge: isKo ? 'STEP 2: 모바일 퓨어 제스처' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '풀 & 릴리즈 (Pull & Release)' : 'Pull & Release Cue Shot',
+      description: isKo
+        ? '수구 반대 방향으로 손가락을 당겨 파워를 모은 뒤 놓아서 타격합니다.'
+        : 'Drag away from the cue ball to charge power, then release to shoot.',
+      keyPoints: isKo
+        ? [
+            '👆 터치 & 당기기: 실시간 360도 큐대 조준선',
+            '🎯 손 떼기: 경쾌한 포켓볼 당구 타격 사운드',
+            '🎱 흰 공이 홀에 빠지면 제자리로 리셋'
+          ]
+        : [
+            '👆 Touch & Pull: 360-degree real-time trajectory',
+            '🎯 Release Finger: Crisp billiard cue impact sound',
+            '🎱 Scratching cue ball resets it back to center'
+          ],
+      iconType: 'GESTURES',
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '포켓볼 완수 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon match finish.',
+      keyPoints: isKo
+        ? [
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '홀인한 공 수 및 잔여 샷 비례 대량 잭팟',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Pocketed balls and remaining shots multipliers',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS',
+    },
+  ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
-
+    <div className="relative w-full h-[100dvh] bg-[#091510] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none">
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
       <MinimalistMissionHUD
-        title={isKo ? '복셀 당구 트릭샷' : 'Voxel Billiards Trick'}
-        language={language}
+        title={isKo ? '블리츠 트릭 포켓볼' : 'Blitz Trick Pocket'}
+        language={(language as Language) || 'ko'}
         telemetries={[
-          { label: isKo ? '포켓' : 'Pocket', value: `${pocketedCount}/${totalBalls}구`, color: 'text-emerald-300' },
-          { label: isKo ? '파워' : 'Power', value: `${power}%`, color: 'text-amber-300' },
-          { label: isKo ? '샷' : 'Shots', value: `${shots}회`, color: 'text-cyan-300' }
+          { label: isKo ? '잔여샷' : 'Shots', value: `${shotsLeft}/6`, color: shotsLeft <= 2 ? 'text-rose-400 font-bold animate-pulse' : 'text-amber-400 font-bold' },
+          { label: isKo ? '홀인' : 'Pocket', value: `${pocketedCount}/${totalTargetBalls}`, color: 'text-emerald-400 font-bold' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-cyan-300 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          stateRef.current.isPaused = !isPaused;
-        }}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
         isPaused={isPaused}
       />
 
-      {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div
-          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
-          style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const startX = e.clientX - rect.left;
-            const startY = e.clientY - rect.top;
-            let moved = false;
-
-            const onMove = (moveEvt: PointerEvent) => {
-              const curX = moveEvt.clientX - rect.left;
-              const curY = moveEvt.clientY - rect.top;
-              const dx = curX - startX;
-              const dy = curY - startY;
-
-              if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
-                moved = true;
-                // Horizontal drag: rotate cue angle
-                stateRef.current.cueAngle += dx * 0.003;
-                // Vertical drag: adjust power
-                const newPow = Math.max(20, Math.min(100, stateRef.current.cuePower - dy * 0.2));
-                stateRef.current.cuePower = newPow;
-                setPower(Math.round(newPow));
-              }
-            };
-
-            const onUp = () => {
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-              window.removeEventListener('pointercancel', onUp);
-
-              if (!moved) {
-                // Tap: Strike Cue Ball
-                handleShoot();
-              }
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-          }}
+      {/* Pure Touch Billiards Table Canvas Viewport */}
+      <div className="flex-1 w-full max-w-md relative overflow-hidden flex items-center justify-center select-none touch-none p-2">
+        <canvas
+          ref={canvasRef}
+          width={360}
+          height={540}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          className="w-full h-full object-contain touch-none cursor-crosshair shadow-2xl"
         />
-      )}
+
+        {/* Floating Pocket Combo Text */}
+        {comboText && (
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none text-2xl font-bold text-amber-300 drop-shadow-lg animate-bounce">
+            {comboText}
+          </div>
+        )}
+      </div>
 
       {/* Minimal Bottom Guide */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/75 border border-emerald-500/30 rounded-full text-[10px] text-emerald-300 font-mono backdrop-blur-xs">
-          {isKo ? '좌우 드래그: 360° 조준 | 상하: 파워 조절 | 탭: 샷 타격 (버튼 없음)' : 'Drag L/R: 360° Aim | Drag U/D: Power | Tap: Strike (No Buttons)'}
+      <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono">
+          {isKo ? '흰 공을 터치하여 뒤로 당긴 뒤 놓으세요 (풀 & 릴리즈 샷)' : 'Pull back from the white ball and release to shoot'}
         </div>
       </div>
 
-      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
-        <SportsMissionTutorial
-          gameId="voxel_billiards_trick"
-          gameTitle={isKo ? '3D 복셀 당구 트릭샷: 마스터 큐' : 'Voxel Billiards Trick: Master Cue'}
-          sportType="billiards"
-          language={language}
+        <UniversalTutorialModal
+          gameId="arcade_billiards_trick"
+          gameTitle={isKo ? '블리츠 트릭 포켓볼: 물리 당구' : 'Blitz Trick Pocket: Physics Billiards'}
+          customSteps={tutorialSteps}
+          language={(language as Language) || 'ko'}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}
         />
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
         <VictoryRewardModal
           receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
+          language={(language as Language) || 'ko'}
+          onPlayAgain={initGame}
           onExit={onExit}
         />
       )}
     </div>
   );
 };
+export default VoxelBilliardsTrickGame;

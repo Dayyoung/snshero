@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-08-25 12:11 KST / 03:11 UTC] [/imp-mission 제8회차 3D 복셀 폐기 및 신규 물리 당구 스포츠 게임 개발 완료]
+- **심사 대상 게임**: `src/components/VoxelBilliardsTrickGame.tsx` (8 / 78)
+  - **심사 결과**: **폐기 (DECOMMISSION)** (3D 복셀 당구대의 슬라이더 버튼 조작 번거로움 및 템포 저하)
+  - **신규 대체 개발**: **블리츠 트릭 포켓볼 (`BlitzTrickPocket` - 캐주얼/물리 스포츠)**
+  - **신규 게임 특징**: 가상 조이스틱/슬라이더 0개 (100% 모바일 퓨어 터치), 수구를 손가락으로 직접 당겨 조준선과 파워를 제어하고 놓아 발사(Pull & Release Cue Strike)하는 시원한 핑거 당구 손맛, 쿠션 바운스 반사 및 1타 다구 홀인 콤보, 6타 이내 6개 공 올클리어 룰, 1줄 슬림 HUD, 3단계 온보딩, VictoryRewardModal 확정 보상 정산 완벽 내장
+  - **메뉴 및 검색 연동**: `PlayGameView.tsx` 메뉴 메타데이터(타이틀: '블리츠 트릭 포켓볼', 카테고리: 'casual', 배지: 'POCKET-POOL', 가이드, 보상 알림, 검색 키워드) 100% 동기화 등록 완료
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 3D 복셀(VoxelBilliardsTrick) 폐기 및 신규 물리 당구 스포츠 게임(블리츠 트릭 포켓볼) 개발 대체 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 12:01 KST / 03:01 UTC] [/imp-mission 제7회차 3D 복셀 폐기 및 신규 두뇌 퍼즐 게임 개발 완료]
 - **심사 대상 게임**: `src/components/VoxelBeatBlasterGame.tsx` (7 / 78)
   - **심사 결과**: **폐기 (DECOMMISSION)** (3D 복셀 비트 슬래시의 장르 중복 및 부정확한 z-depth 거리 판정)

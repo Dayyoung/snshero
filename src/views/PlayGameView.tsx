@@ -8191,7 +8191,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelbilliardstrick',
-      title: language === 'ko' ? '3D 복셀 트릭 당구 & 포켓볼' : 'Voxel Billiards Trick Shot',
+      title: language === 'ko' ? '블리츠 트릭 포켓볼' : 'Blitz Trick Pocket',
       icon: TargetIcon,
       color: 'from-emerald-600 to-green-800',
       image: '/minigame_pinball.png',
@@ -8199,10 +8199,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelbilliardstrick');
       },
-      category: '3d',
+      category: 'casual',
       isNew: true,
-      badgeText: '3D BILLIARDS',
-      guide: language === 'ko' ? '당구대 큐대의 각도와 파워, 스핀을 조절해 쿠션 바운스와 화려한 트릭샷으로 목적구를 포켓팅하세요.' : 'Adjust cue angle, spin, and shot power to sink trick shots with rail cushions!'
+      badgeText: 'POCKET-POOL',
+      guide: language === 'ko' ? '흰색 수구를 손가락으로 당겨 각도와 파워를 조준하고 손을 떼어 포켓볼을 홀에 넣으세요.' : 'Pull back from the cue ball to aim and release to pocket all colored balls!'
     },
     {
       id: 'voxeldartsbar',
@@ -11845,7 +11845,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '트릭 당구 & 포켓볼 보상', 'Billiards Trick Shot reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 트릭 포켓볼 보상', 'Blitz Trick Pocket reward')}
       />
     );
   }
