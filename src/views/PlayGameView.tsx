@@ -8161,7 +8161,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelflightlanding',
-      title: language === 'ko' ? '3D 복셀 플라이트 랜딩' : 'Voxel Flight Landing',
+      title: language === 'ko' ? '블리츠 플라이트 랜딩' : 'Blitz Flight Landing',
       icon: Compass,
       color: 'from-blue-600 to-cyan-700',
       image: '/minigame_shooting.png',
@@ -8169,10 +8169,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelflightlanding');
       },
-      category: '3d',
+      category: 'casual',
       isNew: true,
-      badgeText: '3D FLIGHT',
-      guide: language === 'ko' ? '강풍과 난기류를 극복하며 항공기의 피치와 활주로 진입 각도를 조절해 퍼펙트 소프트 랜딩을 성공시키세요.' : 'Manage throttle and descent pitch through crosswinds for a smooth runway touchdown!'
+      badgeText: 'FLIGHT-LANDING',
+      guide: language === 'ko' ? '비행기를 터치하여 하단 활주로 및 헬리패드로 드래그해 공중 충돌 없이 착륙시키세요.' : 'Touch aircraft and drag a path to the runway/helipad to land safely!'
     },
     {
       id: 'voxelgachaclaw',
@@ -11819,7 +11819,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '플라이트 랜딩 보상', 'Flight Landing reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 플라이트 랜딩 보상', 'Blitz Flight Landing reward')}
       />
     );
   }
