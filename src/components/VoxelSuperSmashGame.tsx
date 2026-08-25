@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Swords, Shield, Zap, Sparkles, ArrowLeft, Trophy, Crosshair, Award } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelSuperSmashGameProps {
   deck: CardData[];
@@ -20,13 +23,23 @@ export const VoxelSuperSmashGame: React.FC<VoxelSuperSmashGameProps> = ({
   onExit,
   onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_super_smash') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [playerDamage, setPlayerDamage] = useState<number>(0);
   const [stocks, setStocks] = useState<number>(3);
   const [aliveEnemies, setAliveEnemies] = useState<number>(3);
+  const [score, setScore] = useState<number>(0);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [isVictory, setIsVictory] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const gameStateRef = useRef({
     posX: 0,
@@ -35,11 +48,16 @@ export const VoxelSuperSmashGame: React.FC<VoxelSuperSmashGameProps> = ({
     vx: 0,
     vy: 0,
     vz: 0,
-    rotY: 0,
+    steerX: 0,
     damage: 0,
     stocks: 3,
     aliveEnemies: 3,
-    keys: { a: false, d: false, jump: false, smash: false },
+    score: 0,
+    isGameOver: false,
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
+    playerMesh: null as THREE.Group | null,
     opponents: [] as {
       group: THREE.Group;
       x: number;
@@ -49,16 +67,14 @@ export const VoxelSuperSmashGame: React.FC<VoxelSuperSmashGameProps> = ({
       vy: number;
       vz: number;
       damage: number;
-      stocks: number;
       alive: boolean;
     }[],
-    isGameOver: false,
-    isVictory: false
+    scene: null as THREE.Scene | null
   });
 
   const performSmashAttack = () => {
     const s = gameStateRef.current;
-    if (s.isGameOver || s.isVictory) return;
+    if (s.isGameOver || s.isVictory || s.isPaused) return;
 
     playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
 
@@ -67,196 +83,192 @@ export const VoxelSuperSmashGame: React.FC<VoxelSuperSmashGameProps> = ({
       const dist = Math.hypot(op.x - s.posX, op.z - s.posZ);
       if (dist < 4.5) {
         op.damage += 25;
-        const knockbackScale = (op.damage / 40) * 15;
+        const knockback = (op.damage / 40) * 16;
         const angle = Math.atan2(op.x - s.posX, op.z - s.posZ);
-        op.vx += Math.sin(angle) * knockbackScale;
-        op.vy += knockbackScale * 0.8;
-        op.vz += Math.cos(angle) * knockbackScale;
+        op.vx += Math.sin(angle) * knockback;
+        op.vy += knockback * 0.8;
+        op.vz += Math.cos(angle) * knockback;
+
+        s.score += 150;
+        setScore(s.score);
         playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
       }
     });
+  };
+
+  const jump = () => {
+    const s = gameStateRef.current;
+    if (s.posY > 1.4 || s.isGameOver || s.isVictory || s.isPaused) return;
+    s.vy = 16;
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
   };
 
   useEffect(() => {
     const container = mountRef.current;
     if (!container) return;
 
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
+
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x1a0933);
+    gameStateRef.current.scene = scene;
 
-    const camera = new THREE.PerspectiveCamera(55, container.clientWidth / container.clientHeight, 0.1, 300);
+    const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 300);
     camera.position.set(0, 15, 24);
     camera.lookAt(0, 2, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
     container.appendChild(renderer.domElement);
 
-    // Lights
     const ambient = new THREE.AmbientLight(0xffeedd, 0.9);
     scene.add(ambient);
 
     const dirLight = new THREE.DirectionalLight(0xffffff, 1.4);
-    dirLight.position.set(20, 50, 20);
+    dirLight.position.set(10, 30, 20);
     scene.add(dirLight);
 
-    // Floating Arena Stage
-    const stageGeo = new THREE.BoxGeometry(24, 2, 16);
-    const stageMat = new THREE.MeshLambertMaterial({ color: 0x442266 });
-    const stage = new THREE.Mesh(stageGeo, stageMat);
-    stage.position.y = -1;
-    scene.add(stage);
+    // Floating Arena Platform
+    const arena = new THREE.Mesh(
+      new THREE.BoxGeometry(20, 2, 14),
+      new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.6 })
+    );
+    arena.position.y = -1.0;
+    scene.add(arena);
 
-    // Player Hero Mesh
-    const playerGroup = new THREE.Group();
-    const pBody = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.6, 0.8), new THREE.MeshLambertMaterial({ color: 0x00aaff }));
-    pBody.position.y = 0.8;
-    playerGroup.add(pBody);
-    scene.add(playerGroup);
+    // Player Voxel Avatar
+    const pGroup = new THREE.Group();
+    const pBody = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.8, 0.8), new THREE.MeshStandardMaterial({ color: 0x38bdf8 }));
+    pBody.position.y = 0.9;
+    pGroup.add(pBody);
+    pGroup.position.set(0, 1, 0);
+    scene.add(pGroup);
+    gameStateRef.current.playerMesh = pGroup;
 
-    // Spawn 3 AI Brawlers
-    const aiColors = [0xff2244, 0x22cc55, 0xffaa00];
+    // Spawn 3 Opponents
+    gameStateRef.current.opponents = [];
     for (let i = 0; i < 3; i++) {
       const opGroup = new THREE.Group();
-      const opBody = new THREE.Mesh(
-        new THREE.BoxGeometry(1.2, 1.6, 0.8),
-        new THREE.MeshLambertMaterial({ color: aiColors[i] })
-      );
-      opBody.position.y = 0.8;
+      const opBody = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.8, 0.8), new THREE.MeshStandardMaterial({ color: 0xef4444 }));
+      opBody.position.y = 0.9;
       opGroup.add(opBody);
-      const startX = (i - 1) * 6;
-      opGroup.position.set(startX, 0, -2);
+
+      const ox = (i - 1) * 6;
+      opGroup.position.set(ox, 1, -2);
       scene.add(opGroup);
 
       gameStateRef.current.opponents.push({
         group: opGroup,
-        x: startX,
-        y: 0,
+        x: ox,
+        y: 1,
         z: -2,
         vx: 0,
         vy: 0,
         vz: 0,
         damage: 0,
-        stocks: 2,
         alive: true
       });
     }
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const k = e.key.toLowerCase();
-      if (k === 'a' || k === 'arrowleft') gameStateRef.current.keys.a = true;
-      if (k === 'd' || k === 'arrowright') gameStateRef.current.keys.d = true;
-      if (k === 'w' || k === 'arrowup' || k === ' ') {
-        // Jump
-        const s = gameStateRef.current;
-        if (s.posY <= 1.2) {
-          s.vy = 16;
-          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-        }
-      }
-      if (k === 'j' || k === 'e') performSmashAttack();
-    };
-
-    const handleKeyUp = (e: KeyboardEvent) => {
-      const k = e.key.toLowerCase();
-      if (k === 'a' || k === 'arrowleft') gameStateRef.current.keys.a = false;
-      if (k === 'd' || k === 'arrowright') gameStateRef.current.keys.d = false;
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-
     let animId: number;
-    let clock = new THREE.Clock();
+    let lastTime = performance.now();
 
-    const animate = () => {
+    const animate = (now: number) => {
       animId = requestAnimationFrame(animate);
-      const dt = clock.getDelta();
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+
       const s = gameStateRef.current;
+      if (s.isPaused || s.isGameOver) return;
 
-      if (!s.isGameOver && !s.isVictory) {
-        // Player Horizontal Movement
-        if (s.keys.a) s.vx = -14;
-        else if (s.keys.d) s.vx = 14;
-        else s.vx *= 0.85;
+      // Player Movement & Jump Physics
+      s.posX += s.steerX * 12 * dt;
+      s.vy -= 32 * dt;
+      s.posY += s.vy * dt;
 
-        // Player Gravity
-        s.vy -= 35 * dt;
-        s.posX += s.vx * dt;
-        s.posY += s.vy * dt;
+      if (s.posY <= 1.0 && Math.abs(s.posX) <= 10 && Math.abs(s.posZ) <= 7) {
+        s.posY = 1.0;
+        s.vy = 0;
+      }
 
-        // Platform collision
-        if (Math.abs(s.posX) < 12 && Math.abs(s.posZ) < 8 && s.posY <= 0) {
-          s.posY = 0;
-          s.vy = 0;
+      if (pGroup) {
+        pGroup.position.set(s.posX, s.posY, s.posZ);
+      }
+
+      // Opponents Physics & Knockout
+      s.opponents.forEach(op => {
+        if (!op.alive) return;
+
+        op.vy -= 32 * dt;
+        op.x += op.vx * dt;
+        op.y += op.vy * dt;
+        op.z += op.vz * dt;
+
+        op.vx *= 0.95;
+        op.vz *= 0.95;
+
+        if (op.y <= 1.0 && Math.abs(op.x) <= 10 && Math.abs(op.z) <= 7) {
+          op.y = 1.0;
+          op.vy = 0;
         }
 
-        // Ring-out check
-        if (s.posY < -15 || Math.abs(s.posX) > 25 || Math.abs(s.posZ) > 20) {
-          s.stocks -= 1;
-          s.damage = 0;
-          s.posX = 0;
-          s.posY = 8;
-          s.vx = 0;
-          s.vy = 0;
-          setStocks(s.stocks);
-          setPlayerDamage(0);
+        op.group.position.set(op.x, op.y, op.z);
+
+        // Check Ring-out Knockout
+        if (Math.abs(op.x) > 16 || Math.abs(op.z) > 14 || op.y < -15) {
+          op.alive = false;
+          scene.remove(op.group);
+          s.aliveEnemies -= 1;
+          s.score += 500;
+          setAliveEnemies(s.aliveEnemies);
+          setScore(s.score);
           playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
 
-          if (s.stocks <= 0) {
+          if (s.aliveEnemies <= 0 && !s.isGameOver) {
+            s.isVictory = true;
             s.isGameOver = true;
             setIsGameOver(true);
+            const duration = (Date.now() - s.startTime) / 1000;
+            const receipt = calculateAndDepositMissionReward({
+              gameId: 'voxel_super_smash',
+              gameTitle: '복셀 슈퍼 스매시',
+              durationSeconds: duration,
+              score: s.score + 2500,
+              difficulty: 'NIGHTMARE',
+              isVictory: true
+            });
+            setSettlementReceipt(receipt);
+            onReward(receipt.totalSns);
           }
         }
+      });
 
-        playerGroup.position.set(s.posX, s.posY, s.posZ);
-
-        // AI Opponents Physics & AI
-        let activeCount = 0;
-        s.opponents.forEach(op => {
-          if (!op.alive) return;
-          activeCount += 1;
-
-          // AI roam / attack toward player
-          const dx = s.posX - op.x;
-          op.vx += Math.sign(dx) * 8 * dt;
-          op.vx = Math.max(-10, Math.min(10, op.vx));
-
-          op.vy -= 35 * dt;
-          op.x += op.vx * dt;
-          op.y += op.vy * dt;
-          op.z += op.vz * dt;
-
-          if (Math.abs(op.x) < 12 && Math.abs(op.z) < 8 && op.y <= 0) {
-            op.y = 0;
-            op.vy = 0;
-          }
-
-          // AI Ring-out
-          if (op.y < -15 || Math.abs(op.x) > 25 || Math.abs(op.z) > 20) {
-            op.stocks -= 1;
-            op.damage = 0;
-            op.x = 0;
-            op.y = 8;
-            op.vx = 0;
-            op.vy = 0;
-            if (op.stocks <= 0) {
-              op.alive = false;
-              scene.remove(op.group);
-            }
-          }
-
-          op.group.position.set(op.x, op.y, op.z);
-        });
-
-        setAliveEnemies(activeCount);
-        if (activeCount === 0) {
-          s.isVictory = true;
-          setIsVictory(true);
-          const reward = 60 + s.stocks * 10;
-          setRewardSns(reward);
-          onReward(reward);
+      // Player Fall Check
+      if (s.posY < -15 && !s.isGameOver) {
+        s.stocks -= 1;
+        setStocks(s.stocks);
+        if (s.stocks > 0) {
+          s.posX = 0;
+          s.posY = 6;
+          s.vy = 0;
+          s.damage = 0;
+          setPlayerDamage(0);
+        } else {
+          s.isGameOver = true;
+          setIsGameOver(true);
+          const duration = (Date.now() - s.startTime) / 1000;
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'voxel_super_smash',
+            gameTitle: '복셀 슈퍼 스매시',
+            durationSeconds: duration,
+            score: s.score,
+            difficulty: 'NIGHTMARE',
+            isVictory: false
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
         }
       }
 
@@ -265,60 +277,134 @@ export const VoxelSuperSmashGame: React.FC<VoxelSuperSmashGameProps> = ({
 
     animId = requestAnimationFrame(animate);
 
-    const handleResize = () => {
-      if (!container) return;
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      window.removeEventListener('resize', handleResize);
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, playSfx]);
+  }, [lowSpecMode]);
+
+  const handleRestart = () => {
+    const s = gameStateRef.current;
+    s.posX = 0;
+    s.posY = 1;
+    s.posZ = 0;
+    s.damage = 0;
+    s.stocks = 3;
+    s.aliveEnemies = 3;
+    s.score = 0;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    s.opponents.forEach((op, i) => {
+      op.alive = true;
+      op.x = (i - 1) * 6;
+      op.y = 1;
+      op.z = -2;
+      op.vx = 0;
+      op.vy = 0;
+      op.vz = 0;
+      op.damage = 0;
+      op.group.position.set(op.x, op.y, op.z);
+      s.scene?.add(op.group);
+    });
+    setPlayerDamage(0);
+    setStocks(3);
+    setAliveEnemies(3);
+    setScore(0);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
+
+  const customTutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 장외 넉아웃 대난투' : 'STEP 1: SMASH BATTLE',
+      title: isKo ? '라이벌 3명 전원 장외 격퇴' : 'Knock Out 3 Rivals',
+      description: isKo
+        ? '공중 부유 플랫폼에서 라이벌들에게 데미지를 누적시키고 장외로 강타 넉아웃시키세요.'
+        : 'Stack damage on rival heroes and smash them off the floating arena platform.',
+      keyPoints: isKo
+        ? [
+            '적 3명 전원 장외 넉아웃 시 즉시 승리',
+            '누적 데미지가 높을수록 장외 넉백 증가',
+            '잔여 목숨 3개 내에 완료'
+          ]
+        : [
+            'Knock out 3 rivals to win',
+            'Higher % damage yields huge knockback',
+            'Clear within 3 stock lives'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '드래그 이동 & 탭 스매시 타격' : 'Drag Move & Tap Smash',
+      description: isKo
+        ? '가상 버튼 없이 좌우 드래그로 이동하고, 탭하여 스매시 강타, 위로 스와이프로 2단 점프합니다.'
+        : 'Drag left/right to move, tap to smash strike, and swipe up to double jump with zero buttons.',
+      keyPoints: isKo
+        ? [
+            '👆 좌우 드래그: 플랫폼 이동',
+            '💥 탭: 전방 스매시 강타 어택',
+            '⬆️ 위로 스와이프 / 더블탭: 공중 2단 점프'
+          ]
+        : [
+            '👆 Drag L/R: Move along platform',
+            '💥 Tap: Smash strike attack',
+            '⬆️ Swipe Up / Double Tap: Air jump'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '대난투 제패 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare multiplier payout calculated and deposited atomically to your wallet.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '잔여 목숨 및 넉아웃 콤보 보너스',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Remaining stocks and combo bonuses',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
+    }
+  ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 text-white select-none overflow-hidden flex flex-col font-sans">
-      <div ref={mountRef} className="w-full h-full absolute inset-0" />
+    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-      {/* Top HUD */}
-      <div className="relative z-10 p-3 sm:p-4 flex items-center justify-between bg-gradient-to-b from-slate-950/90 to-transparent pointer-events-none">
-        <button
-          onClick={onExit}
-          className="pointer-events-auto p-2 bg-slate-900/80 hover:bg-slate-800 text-white rounded-xl border border-slate-700 active:scale-95 flex items-center gap-1 cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-          <span className="text-xs font-bold">{language === 'ko' ? '나가기' : 'Exit'}</span>
-        </button>
-
-        {/* Player Damage % & Stock Lives */}
-        <div className="flex items-center gap-3 bg-slate-900/80 px-3 py-1.5 rounded-2xl border border-slate-700">
-          <div className="text-rose-400 font-mono font-black text-sm">
-            누적 데미지: {playerDamage}%
-          </div>
-
-          <div className="text-yellow-400 text-xs font-bold">
-            ❤️ 잔여 목숨: {stocks}
-          </div>
-
-          <div className="bg-purple-950 border border-purple-500/40 px-2 py-0.5 rounded text-purple-300 text-xs font-bold">
-            생존 적: {aliveEnemies}
-          </div>
-        </div>
-      </div>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 슈퍼 스매시' : 'Voxel Super Smash'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '목숨' : 'Stocks', value: `❤️x${stocks}`, color: stocks <= 1 ? 'text-rose-400 font-bold' : 'text-cyan-300' },
+          { label: isKo ? '생존' : 'Rivals', value: `${aliveEnemies}명`, color: 'text-amber-400 font-bold' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-yellow-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          gameStateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
       {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isVictory && (
+      {!isGameOver && !isPaused && !showTutorial && (
         <div
-          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
+          className="absolute inset-0 z-10 select-none touch-none cursor-pointer"
           style={{ touchAction: 'none' }}
           onPointerDown={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
@@ -332,18 +418,13 @@ export const VoxelSuperSmashGame: React.FC<VoxelSuperSmashGameProps> = ({
               const dx = curX - startX;
               const dy = curY - startY;
 
-              if (Math.abs(dx) > 10) {
+              if (Math.abs(dx) > 8) {
                 moved = true;
-                gameStateRef.current.keys.a = dx < -10;
-                gameStateRef.current.keys.d = dx > 10;
+                gameStateRef.current.steerX = THREE.MathUtils.clamp(dx * 0.02, -1, 1);
               }
               if (dy < -20) {
                 moved = true;
-                const s = gameStateRef.current;
-                if (s.posY <= 1.2) {
-                  s.vy = 16;
-                  playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                }
+                jump();
               }
             };
 
@@ -351,11 +432,10 @@ export const VoxelSuperSmashGame: React.FC<VoxelSuperSmashGameProps> = ({
               window.removeEventListener('pointermove', onMove);
               window.removeEventListener('pointerup', onUp);
               window.removeEventListener('pointercancel', onUp);
-              gameStateRef.current.keys.a = false;
-              gameStateRef.current.keys.d = false;
+              gameStateRef.current.steerX = 0;
 
               if (!moved) {
-                // Tap: Smash Attack
+                // Tap: Smash Strike
                 performSmashAttack();
               }
             };
@@ -364,57 +444,39 @@ export const VoxelSuperSmashGame: React.FC<VoxelSuperSmashGameProps> = ({
             window.addEventListener('pointerup', onUp);
             window.addEventListener('pointercancel', onUp);
           }}
-          onDoubleClick={() => {
-            const s = gameStateRef.current;
-            if (s.posY <= 1.2) {
-              s.vy = 16;
-              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-            }
-          }}
+          onDoubleClick={jump}
         />
       )}
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/70 border border-rose-500/30 rounded-full text-[10px] text-rose-300 font-mono backdrop-blur-xs">
-          {language === 'ko' ? '좌우 드래그: 이동 | 탭: 스매시 공격 | 위로/더블탭: 점프 (버튼 없음)' : 'Drag L/R: Move | Tap: Smash Strike | Up/Double Tap: Jump (No Buttons)'}
+        <div className="px-3 py-1 bg-black/75 border border-purple-500/30 rounded-full text-[10px] text-purple-300 font-mono backdrop-blur-xs">
+          {isKo ? '좌우 드래그: 이동 | 탭: 스매시 공격 | 위로/더블탭: 점프 (버튼 없음)' : 'Drag L/R: Move | Tap: Smash Strike | Up/Double Tap: Jump (No Buttons)'}
         </div>
       </div>
 
-      {/* Victory / Game Over Modal */}
-      {(isVictory || isGameOver) && (
-        <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
-            <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center ${isVictory ? 'bg-amber-400/20 text-yellow-400' : 'bg-rose-500/20 text-rose-400'}`}>
-              {isVictory ? <Trophy size={36} /> : <Award size={36} />}
-            </div>
+      {/* Universal 3-Step Interactive Tutorial Modal */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          gameId="voxel_super_smash"
+          gameTitle={isKo ? '3D 복셀 슈퍼 스매시: 플랫폼 대난투' : 'Voxel Super Smash: Arena Brawl'}
+          customSteps={customTutorialSteps}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
 
-            <h2 className="text-2xl font-black italic uppercase">{isVictory ? '스매시 챔피언 VICTORY' : '장외 넉아웃! DEFEAT'}</h2>
-
-            <p className="text-xs text-slate-300">
-              {isVictory
-                ? '모든 라이벌 영웅들을 장외로 날려버리고 최종 승리를 차지했습니다!'
-                : '장외로 날아가 모든 목숨을 소진했습니다.'}
-            </p>
-
-            {isVictory && (
-              <div className="bg-slate-950 border border-amber-500/30 p-3 rounded-2xl">
-                <span className="text-xs text-slate-400 block uppercase font-bold">REWARD</span>
-                <span className="text-2xl font-black text-yellow-400 flex items-center justify-center gap-1">
-                  <Sparkles size={20} /> +{rewardSns} SNS
-                </span>
-              </div>
-            )}
-
-            <button
-              onClick={onExit}
-              className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 text-slate-950 font-bold rounded-xl active:scale-95 transition-all cursor-pointer"
-            >
-              {language === 'ko' ? '확인 및 나가기' : 'Confirm & Exit'}
-            </button>
-          </div>
-        </div>
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
 };
+export default VoxelSuperSmashGame;

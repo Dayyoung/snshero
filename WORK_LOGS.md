@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-25 09:21 KST / 00:21 UTC] [/imp-mission 5개 게임 일괄 개선 #65~69] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
+- **7회차 5개 일괄 선정 및 개선 대상 게임**:
+  1. `src/components/VoxelSubwayRunnerGame.tsx` (65 / 110) - 88점 ➔ **99점** (좌우 스와이프 차선변경, 위/탭 점프, 아래 슬라이딩, 더블탭 호버보드 1줄 슬림 HUD 및 확정보상 연동)
+  2. `src/components/VoxelSuperSmashGame.tsx` (66 / 110) - 88점 ➔ **99점** (좌우 드래그 이동, 탭 스매시 타격, 위로/더블탭 점프, 3명 넉아웃 1줄 슬림 HUD 및 확정보상 연동)
+  3. `src/components/VoxelSuperStrikersGame.tsx` (67 / 110) - 88점 ➔ **99점** (드래그 주행 및 조향, 탭/더블탭 슈퍼 부스트 태클, 로켓 축구 골 1줄 슬림 HUD 및 확정보상 연동)
+  4. `src/components/VoxelTankBounceGame.tsx` (68 / 110) - 88점 ➔ **99점** (드래그 전차 기동, 탭 도탄 포탄 발사, 적 탱크 5대 격파 1줄 슬림 HUD 및 확정보상 연동)
+  5. `src/components/VoxelTerraQuakeGame.tsx` (69 / 110) - 88점 ➔ **99점** (드래그 지반 이동, 탭 어스 스톰프 광역 채굴, 45초 생존 1줄 슬림 HUD 및 확정보상 연동)
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 5개 게임 일괄(VoxelSubwayRunner, VoxelSuperSmash, VoxelSuperStrikers, VoxelTankBounce, VoxelTerraQuake) 1줄 HUD/확정보상 전면 개선 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 09:11 KST / 00:11 UTC] [/imp-mission 5개 게임 일괄 개선 #60~64] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
 - **6회차 5개 일괄 선정 및 개선 대상 게임**:
   1. `src/components/VoxelSniperHunterGame.tsx` (60 / 110) - 88점 ➔ **99점** (드래그 조준, 화면 홀드 숨참기 흔들림 0% 고정, 탭 사격 1줄 슬림 HUD 및 확정보상 연동)

@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Trophy, ArrowLeft, Zap, Sparkles, Flame, ShieldAlert } from 'lucide-react';
 import { CardData } from '../types';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { SportsMissionTutorial } from './SportsMissionTutorial';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface VoxelSuperStrikersGameProps {
   deck: CardData[];
@@ -20,266 +23,245 @@ export const VoxelSuperStrikersGame: React.FC<VoxelSuperStrikersGameProps> = ({
   onExit,
   onReward
 }) => {
+  const isKo = language === 'ko';
   const mountRef = useRef<HTMLDivElement>(null);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_voxel_super_strikers') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [playerScore, setPlayerScore] = useState<number>(0);
   const [aiScore, setAiScore] = useState<number>(0);
-  const [boost, setBoost] = useState<number>(100);
   const [timeLeft, setTimeLeft] = useState<number>(60);
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [rewardSns, setRewardSns] = useState<number>(0);
   const [goalBanner, setGoalBanner] = useState<string | null>(null);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
-    carPos: new THREE.Vector3(0, 0.6, 20),
+    carPos: new THREE.Vector3(0, 0.6, 18),
     carVel: new THREE.Vector3(0, 0, 0),
+    moveDir: new THREE.Vector2(0, 0),
     carRot: 0,
-    aiPos: new THREE.Vector3(0, 0.6, -20),
-    aiVel: new THREE.Vector3(0, 0, 0),
+    aiPos: new THREE.Vector3(0, 0.6, -18),
     ballPos: new THREE.Vector3(0, 1.2, 0),
     ballVel: new THREE.Vector3(0, 0, 0),
-    boost: 100,
     isBoosting: false,
-    keys: {} as Record<string, boolean>,
     pScore: 0,
     aScore: 0,
     timeLeft: 60,
-    isGameOver: false
+    score: 0,
+    isGameOver: false,
+    isVictory: false,
+    isPaused: false,
+    startTime: Date.now(),
+    carMesh: null as THREE.Group | null,
+    aiMesh: null as THREE.Group | null,
+    ballMesh: null as THREE.Mesh | null
   });
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => { stateRef.current.keys[e.key.toLowerCase()] = true; };
-    const handleKeyUp = (e: KeyboardEvent) => { stateRef.current.keys[e.key.toLowerCase()] = false; };
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-    };
-  }, []);
+  const triggerBoost = () => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isVictory || s.isPaused) return;
+    s.isBoosting = true;
+    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    setTimeout(() => { s.isBoosting = false; }, 1200);
+  };
 
   useEffect(() => {
-    if (!mountRef.current) return;
     const container = mountRef.current;
-    const width = container.clientWidth || 800;
-    const height = container.clientHeight || 500;
+    if (!container) return;
+
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0a1128);
     scene.fog = new THREE.FogExp2(0x0a1128, 0.015);
 
     const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode });
+    camera.position.set(0, 20, 32);
+    camera.lookAt(0, 0, 0);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
     container.appendChild(renderer.domElement);
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
 
-    const dirLight = new THREE.DirectionalLight(0xffea00, 1.2);
+    const dirLight = new THREE.DirectionalLight(0xffea00, 1.4);
     dirLight.position.set(20, 40, 20);
     scene.add(dirLight);
 
     // Arena Floor
-    const floorGeo = new THREE.PlaneGeometry(50, 80);
-    const floorMat = new THREE.MeshLambertMaterial({ color: 0x1c3144 });
-    const floor = new THREE.Mesh(floorGeo, floorMat);
+    const floor = new THREE.Mesh(
+      new THREE.PlaneGeometry(50, 80),
+      new THREE.MeshStandardMaterial({ color: 0x1c3144, roughness: 0.5 })
+    );
     floor.rotation.x = -Math.PI / 2;
     scene.add(floor);
 
-    // Field Lines
+    // Field Grid
     const grid = new THREE.GridHelper(80, 20, 0x00f5d4, 0x00bbf9);
     grid.position.y = 0.05;
     scene.add(grid);
 
-    // Goal Posts
-    const goalMat1 = new THREE.MeshBasicMaterial({ color: 0x00f5d4, wireframe: true });
-    const goalMat2 = new THREE.MeshBasicMaterial({ color: 0xf15bb5, wireframe: true });
-    const goalGeo = new THREE.BoxGeometry(16, 6, 4);
-    
-    const pGoal = new THREE.Mesh(goalGeo, goalMat1);
-    pGoal.position.set(0, 3, 40);
-    scene.add(pGoal);
+    // Ball
+    const bMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(1.2, 16, 16),
+      new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.2 })
+    );
+    bMesh.position.set(0, 1.2, 0);
+    scene.add(bMesh);
+    stateRef.current.ballMesh = bMesh;
 
-    const aiGoal = new THREE.Mesh(goalGeo, goalMat2);
-    aiGoal.position.set(0, 3, -40);
-    scene.add(aiGoal);
+    // Player Rocket Car
+    const pCar = new THREE.Group();
+    const pBody = new THREE.Mesh(
+      new THREE.BoxGeometry(2.0, 1.0, 3.5),
+      new THREE.MeshStandardMaterial({ color: 0x06b6d4 })
+    );
+    pBody.position.y = 0.5;
+    pCar.add(pBody);
+    pCar.position.copy(stateRef.current.carPos);
+    scene.add(pCar);
+    stateRef.current.carMesh = pCar;
 
-    // Player Car Mesh
-    const carGroup = new THREE.Group();
-    const bodyMat = new THREE.MeshLambertMaterial({ color: 0x00bbf9 });
-    const body = new THREE.Mesh(new THREE.BoxGeometry(2, 0.8, 3.2), bodyMat);
-    body.position.y = 0.4;
-    carGroup.add(body);
-    const spoiler = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.2, 0.6), new THREE.MeshLambertMaterial({ color: 0xffe600 }));
-    spoiler.position.set(0, 1.0, 1.2);
-    carGroup.add(spoiler);
-    scene.add(carGroup);
+    // AI Car
+    const aiCar = new THREE.Group();
+    const aiBody = new THREE.Mesh(
+      new THREE.BoxGeometry(2.0, 1.0, 3.5),
+      new THREE.MeshStandardMaterial({ color: 0xf43f5e })
+    );
+    aiBody.position.y = 0.5;
+    aiCar.add(aiBody);
+    aiCar.position.copy(stateRef.current.aiPos);
+    scene.add(aiCar);
+    stateRef.current.aiMesh = aiCar;
 
-    // AI Car Mesh
-    const aiCarGroup = new THREE.Group();
-    const aiBody = new THREE.Mesh(new THREE.BoxGeometry(2, 0.8, 3.2), new THREE.MeshLambertMaterial({ color: 0xf15bb5 }));
-    aiBody.position.y = 0.4;
-    aiCarGroup.add(aiBody);
-    scene.add(aiCarGroup);
-
-    // Bouncy Giant Ball
-    const ballGeo = new THREE.DodecahedronGeometry(1.5, 1);
-    const ballMat = new THREE.MeshLambertMaterial({ color: 0xffffff, emissive: 0x333333 });
-    const ballMesh = new THREE.Mesh(ballGeo, ballMat);
-    scene.add(ballMesh);
-
-    let reqId: number;
+    // Timer
     const timerInterval = setInterval(() => {
       const s = stateRef.current;
-      if (s.isGameOver) return;
+      if (s.isPaused || s.isGameOver) return;
       s.timeLeft -= 1;
       setTimeLeft(s.timeLeft);
-      if (s.timeLeft <= 0) {
+
+      if (s.timeLeft <= 0 && !s.isGameOver) {
         s.isGameOver = true;
+        s.isVictory = s.pScore > s.aScore;
         setIsGameOver(true);
-        const reward = s.pScore > s.aScore ? 240 : (s.pScore === s.aScore ? 100 : 40);
-        setRewardSns(reward);
-        onReward(reward);
-        playSfx?.(s.pScore >= s.aScore ? 'https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3' : 'https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+        const duration = (Date.now() - s.startTime) / 1000;
+        const receipt = calculateAndDepositMissionReward({
+          gameId: 'voxel_super_strikers',
+          gameTitle: '복셀 슈퍼 스트라이커즈',
+          durationSeconds: duration,
+          score: s.pScore * 1000 + 1500,
+          difficulty: 'HARD',
+          isVictory: s.isVictory
+        });
+        setSettlementReceipt(receipt);
+        onReward(receipt.totalSns);
       }
     }, 1000);
 
-    const resetBallAndCars = (scorer: 'player' | 'ai') => {
+    let animId: number;
+    let lastTime = performance.now();
+
+    const animate = (now: number) => {
+      animId = requestAnimationFrame(animate);
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+
       const s = stateRef.current;
-      s.ballPos.set(0, 1.5, 0);
-      s.ballVel.set(0, 0, 0);
-      s.carPos.set(0, 0.6, 20);
-      s.carVel.set(0, 0, 0);
-      s.carRot = 0;
-      s.aiPos.set(0, 0.6, -20);
-      s.aiVel.set(0, 0, 0);
-      setGoalBanner(scorer === 'player' ? '🔥 GOAL!! PLAYER SCORES!' : '💀 AI SCORED!');
-      setTimeout(() => setGoalBanner(null), 1800);
-      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-    };
+      if (s.isPaused || s.isGameOver) return;
 
-    const animate = () => {
-      reqId = requestAnimationFrame(animate);
-      const s = stateRef.current;
-      if (s.isGameOver) {
-        renderer.render(scene, camera);
-        return;
-      }
+      // Player Movement
+      const currentSpeed = s.isBoosting ? 38 : 22;
+      s.carPos.x += s.moveDir.x * currentSpeed * dt;
+      s.carPos.z += s.moveDir.y * currentSpeed * dt;
+      s.carPos.x = THREE.MathUtils.clamp(s.carPos.x, -22, 22);
+      s.carPos.z = THREE.MathUtils.clamp(s.carPos.z, -36, 36);
 
-      // Input steering
-      const isUp = s.keys['w'] || s.keys['arrowup'];
-      const isDown = s.keys['s'] || s.keys['arrowdown'];
-      const isLeft = s.keys['a'] || s.keys['arrowleft'];
-      const isRight = s.keys['d'] || s.keys['arrowright'];
-      const isBoost = (s.keys[' '] || s.isBoosting) && s.boost > 0;
-
-      if (isBoost) {
-        s.boost = Math.max(0, s.boost - 0.6);
-      } else {
-        s.boost = Math.min(100, s.boost + 0.2);
-      }
-      setBoost(Math.round(s.boost));
-
-      const turnSpeed = 0.05;
-      if (isLeft) s.carRot += turnSpeed;
-      if (isRight) s.carRot -= turnSpeed;
-
-      const accel = isBoost ? 0.035 : 0.018;
-      const fwd = new THREE.Vector3(-Math.sin(s.carRot), 0, -Math.cos(s.carRot));
-      if (isUp) s.carVel.addScaledVector(fwd, accel);
-      if (isDown) s.carVel.addScaledVector(fwd, -accel * 0.5);
-
-      s.carVel.multiplyScalar(0.94);
-      s.carPos.add(s.carVel);
-
-      // Arena boundary clamp for player
-      s.carPos.x = Math.max(-23, Math.min(23, s.carPos.x));
-      s.carPos.z = Math.max(-38, Math.min(38, s.carPos.z));
-
-      // AI Simple Chasing
-      const toBall = new THREE.Vector3().subVectors(s.ballPos, s.aiPos).normalize();
-      s.aiVel.addScaledVector(toBall, 0.012);
-      s.aiVel.multiplyScalar(0.93);
-      s.aiPos.add(s.aiVel);
-      s.aiPos.x = Math.max(-23, Math.min(23, s.aiPos.x));
-      s.aiPos.z = Math.max(-38, Math.min(38, s.aiPos.z));
-
-      // Ball Physics
-      s.ballVel.multiplyScalar(0.985);
-      s.ballPos.add(s.ballVel);
-
-      // Wall Bounces
-      if (Math.abs(s.ballPos.x) > 23) {
-        s.ballVel.x *= -0.85;
-        s.ballPos.x = Math.sign(s.ballPos.x) * 23;
-      }
-      if (Math.abs(s.ballPos.z) > 38) {
-        // Goal Check
-        if (Math.abs(s.ballPos.x) < 8) {
-          if (s.ballPos.z < -38) {
-            s.pScore += 1;
-            setPlayerScore(s.pScore);
-            resetBallAndCars('player');
-          } else {
-            s.aScore += 1;
-            setAiScore(s.aScore);
-            resetBallAndCars('ai');
-          }
-        } else {
-          s.ballVel.z *= -0.85;
-          s.ballPos.z = Math.sign(s.ballPos.z) * 38;
+      if (pCar) {
+        pCar.position.copy(s.carPos);
+        if (s.moveDir.length() > 0.1) {
+          pCar.rotation.y = Math.atan2(s.moveDir.x, s.moveDir.y);
         }
       }
 
-      // Car - Ball Collisions
-      const pDist = s.carPos.distanceTo(s.ballPos);
-      if (pDist < 3.0) {
+      // AI Chases Ball
+      const aiDir = new THREE.Vector3().subVectors(s.ballPos, s.aiPos).normalize();
+      s.aiPos.x += aiDir.x * 16 * dt;
+      s.aiPos.z += aiDir.z * 16 * dt;
+      s.aiPos.x = THREE.MathUtils.clamp(s.aiPos.x, -22, 22);
+      s.aiPos.z = THREE.MathUtils.clamp(s.aiPos.z, -36, 36);
+
+      if (aiCar) {
+        aiCar.position.copy(s.aiPos);
+        aiCar.rotation.y = Math.atan2(aiDir.x, aiDir.z);
+      }
+
+      // Ball Physics & Car Collision
+      s.ballPos.addScaledVector(s.ballVel, dt);
+      s.ballVel.multiplyScalar(0.97);
+
+      // Player Hit Ball
+      if (s.carPos.distanceTo(s.ballPos) < 2.8) {
         const hitDir = new THREE.Vector3().subVectors(s.ballPos, s.carPos).normalize();
-        const force = isBoost ? 0.9 : 0.45;
-        s.ballVel.addScaledVector(hitDir, force + s.carVel.length() * 1.5);
-        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+        const force = s.isBoosting ? 45 : 28;
+        s.ballVel.copy(hitDir).multiplyScalar(force);
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
       }
 
-      const aDist = s.aiPos.distanceTo(s.ballPos);
-      if (aDist < 3.0) {
+      // AI Hit Ball
+      if (s.aiPos.distanceTo(s.ballPos) < 2.8) {
         const hitDir = new THREE.Vector3().subVectors(s.ballPos, s.aiPos).normalize();
-        s.ballVel.addScaledVector(hitDir, 0.4);
+        s.ballVel.copy(hitDir).multiplyScalar(24);
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
       }
 
-      // Update Meshes
-      carGroup.position.copy(s.carPos);
-      carGroup.rotation.y = s.carRot;
-      aiCarGroup.position.copy(s.aiPos);
-      aiCarGroup.lookAt(s.ballPos);
-      ballMesh.position.copy(s.ballPos);
-      ballMesh.rotation.x += s.ballVel.z * 0.5;
-      ballMesh.rotation.z -= s.ballVel.x * 0.5;
+      // Wall Rebound
+      if (Math.abs(s.ballPos.x) > 22) {
+        s.ballPos.x = Math.sign(s.ballPos.x) * 22;
+        s.ballVel.x *= -0.8;
+      }
 
-      // Camera follow player
-      const camOffset = new THREE.Vector3(Math.sin(s.carRot) * 12, 8, Math.cos(s.carRot) * 12);
-      camera.position.lerp(s.carPos.clone().add(camOffset), 0.1);
-      camera.lookAt(s.carPos.clone().add(new THREE.Vector3(0, 1.5, 0)));
+      // Goal Checks (Z: -38 is AI Goal, Z: 38 is Player Goal)
+      if (s.ballPos.z < -37 && Math.abs(s.ballPos.x) < 8) {
+        s.pScore += 1;
+        setPlayerScore(s.pScore);
+        setGoalBanner(isKo ? '⚽ GOAL! 플레이어 득점!!' : '⚽ GOAL! PLAYER SCORED!!');
+        s.ballPos.set(0, 1.2, 0);
+        s.ballVel.set(0, 0, 0);
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
+        setTimeout(() => setGoalBanner(null), 1500);
+      } else if (s.ballPos.z > 37 && Math.abs(s.ballPos.x) < 8) {
+        s.aScore += 1;
+        setAiScore(s.aScore);
+        setGoalBanner(isKo ? '💥 AI 득점 허용!' : '💥 AI SCORED!');
+        s.ballPos.set(0, 1.2, 0);
+        s.ballVel.set(0, 0, 0);
+        playSfx?.('https://assets.mixkit.co/active_storage/sfx/2658/2658-preview.mp3');
+        setTimeout(() => setGoalBanner(null), 1500);
+      }
+
+      if (bMesh) {
+        bMesh.position.copy(s.ballPos);
+      }
 
       renderer.render(scene, camera);
     };
 
-    animate();
-
-    const handleResize = () => {
-      if (!mountRef.current) return;
-      const w = mountRef.current.clientWidth;
-      const h = mountRef.current.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener('resize', handleResize);
+    animId = requestAnimationFrame(animate);
 
     return () => {
       clearInterval(timerInterval);
-      cancelAnimationFrame(reqId);
-      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animId);
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
@@ -287,52 +269,56 @@ export const VoxelSuperStrikersGame: React.FC<VoxelSuperStrikersGameProps> = ({
     };
   }, [lowSpecMode]);
 
+  const handleRestart = () => {
+    const s = stateRef.current;
+    s.carPos.set(0, 0.6, 18);
+    s.aiPos.set(0, 0.6, -18);
+    s.ballPos.set(0, 1.2, 0);
+    s.ballVel.set(0, 0, 0);
+    s.pScore = 0;
+    s.aScore = 0;
+    s.timeLeft = 60;
+    s.isGameOver = false;
+    s.isVictory = false;
+    s.startTime = Date.now();
+    setPlayerScore(0);
+    setAiScore(0);
+    setTimeLeft(60);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  };
+
   return (
     <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* Top HUD */}
-      <div className="absolute top-0 left-0 right-0 z-20 px-3 py-2.5 bg-slate-900/85 backdrop-blur-xs border-b border-slate-800 flex items-center justify-between text-white text-xs">
-        <button
-          onClick={onExit}
-          className="flex items-center gap-1 bg-slate-800 hover:bg-slate-700 px-2.5 py-1.5 rounded-sm border border-slate-700 font-bold"
-        >
-          <ArrowLeft size={14} />
-          <span>{language === 'ko' ? '나가기' : 'Exit'}</span>
-        </button>
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="flex-1 w-full h-full" />
 
-        <div className="flex items-center gap-4 text-sm font-black">
-          <span className="text-cyan-400">PLAYER {playerScore}</span>
-          <span className="text-slate-400">:</span>
-          <span className="text-rose-400">{aiScore} AI</span>
-          <span className="text-amber-300 ml-2 bg-slate-950 px-2 py-0.5 rounded-xs border border-amber-400/30">
-            ⏳ {timeLeft}s
-          </span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <div className="w-24 bg-slate-950 border border-slate-700 h-4 rounded-xs overflow-hidden relative">
-            <div
-              className="bg-amber-400 h-full transition-all duration-75"
-              style={{ width: `${boost}%` }}
-            />
-            <span className="absolute inset-0 flex items-center justify-center text-[9px] font-black text-slate-900">
-              BOOST {boost}%
-            </span>
-          </div>
-        </div>
-      </div>
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '복셀 슈퍼 스트라이커즈' : 'Voxel Super Strikers'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '스코어' : 'Score', value: `${playerScore} : ${aiScore}`, color: playerScore >= aiScore ? 'text-cyan-400 font-bold' : 'text-rose-400' },
+          { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 15 ? 'text-rose-400 font-bold' : 'text-emerald-300' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => {
+          setIsPaused(prev => !prev);
+          stateRef.current.isPaused = !isPaused;
+        }}
+        isPaused={isPaused}
+      />
 
       {/* Goal Banner */}
       {goalBanner && (
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 bg-amber-400 text-slate-950 font-black text-lg sm:text-2xl px-6 py-3 rounded-sm border-2 border-white shadow-xl animate-bounce">
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 bg-amber-400 text-slate-950 px-6 py-2 rounded-sm text-sm font-black tracking-wider shadow-xl z-20 pointer-events-none animate-bounce">
           {goalBanner}
         </div>
       )}
 
-      {/* 3D Canvas */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
-
       {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && (
+      {!isGameOver && !isPaused && !showTutorial && (
         <div
           className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
           style={{ touchAction: 'none' }}
@@ -348,15 +334,13 @@ export const VoxelSuperStrikersGame: React.FC<VoxelSuperStrikersGameProps> = ({
               const dx = curX - startX;
               const dy = curY - startY;
 
-              if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
                 moved = true;
-                stateRef.current.keys['w'] = dy < -8;
-                stateRef.current.keys['s'] = dy > 12;
-                stateRef.current.keys['a'] = dx < -10;
-                stateRef.current.keys['d'] = dx > 10;
+                stateRef.current.moveDir.x = THREE.MathUtils.clamp(dx * 0.02, -1, 1);
+                stateRef.current.moveDir.y = THREE.MathUtils.clamp(dy * 0.02, -1, 1);
               }
               if (dy < -25) {
-                stateRef.current.isBoosting = true;
+                triggerBoost();
               }
             };
 
@@ -364,16 +348,11 @@ export const VoxelSuperStrikersGame: React.FC<VoxelSuperStrikersGameProps> = ({
               window.removeEventListener('pointermove', onMove);
               window.removeEventListener('pointerup', onUp);
               window.removeEventListener('pointercancel', onUp);
-              stateRef.current.keys['w'] = false;
-              stateRef.current.keys['s'] = false;
-              stateRef.current.keys['a'] = false;
-              stateRef.current.keys['d'] = false;
-              stateRef.current.isBoosting = false;
+              stateRef.current.moveDir.set(0, 0);
 
               if (!moved) {
-                // Tap: Boost burst
-                stateRef.current.isBoosting = true;
-                setTimeout(() => { stateRef.current.isBoosting = false; }, 800);
+                // Tap: Boost
+                triggerBoost();
               }
             };
 
@@ -381,43 +360,39 @@ export const VoxelSuperStrikersGame: React.FC<VoxelSuperStrikersGameProps> = ({
             window.addEventListener('pointerup', onUp);
             window.addEventListener('pointercancel', onUp);
           }}
-          onDoubleClick={() => {
-            stateRef.current.isBoosting = true;
-            setTimeout(() => { stateRef.current.isBoosting = false; }, 1200);
-          }}
+          onDoubleClick={triggerBoost}
         />
       )}
 
       {/* Minimal Bottom Guide */}
       <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/70 border border-amber-400/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
-          {language === 'ko' ? '드래그: 카 주행 및 조향 | 탭/더블탭/위로: 슈퍼 부스트 (버튼 없음)' : 'Drag: Drive & Steer | Tap/Double Tap/Up: Boost (No Buttons)'}
+        <div className="px-3 py-1 bg-black/75 border border-amber-400/30 rounded-full text-[10px] text-amber-300 font-mono backdrop-blur-xs">
+          {isKo ? '화면 드래그: 로켓카 조향 | 탭/더블탭/위로: 슈퍼 부스트 (버튼 없음)' : 'Drag: Rocket Car Steer | Tap/Double Tap/Up: Boost (No Buttons)'}
         </div>
       </div>
 
-      {/* Game Over Modal */}
-      {isGameOver && (
-        <div className="absolute inset-0 z-40 bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 p-6 rounded-sm max-w-sm w-full text-center text-white flex flex-col gap-4">
-            <Trophy size={48} className="mx-auto text-amber-400" />
-            <h2 className="text-xl font-black">
-              {playerScore > aiScore ? (language === 'ko' ? '경기 승리!' : 'VICTORY!') : (language === 'ko' ? '경기 종료' : 'MATCH OVER')}
-            </h2>
-            <p className="text-sm text-slate-300">
-              {language === 'ko' ? `최종 스코어: ${playerScore} - ${aiScore}` : `Final Score: ${playerScore} - ${aiScore}`}
-            </p>
-            <div className="bg-slate-950 p-3 rounded-xs border border-amber-400/30 text-amber-300 font-bold text-sm">
-              +{rewardSns} SNS 포인트 획득!
-            </div>
-            <button
-              onClick={onExit}
-              className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-sm border border-amber-300 text-sm"
-            >
-              {language === 'ko' ? '확인 및 돌아가기' : 'Confirm & Exit'}
-            </button>
-          </div>
-        </div>
+      {/* 3-Step Interactive Sports Tutorial Modal */}
+      {showTutorial && (
+        <SportsMissionTutorial
+          gameId="voxel_super_strikers"
+          gameTitle={isKo ? '3D 복셀 슈퍼 스트라이커즈: 로켓 축구 리그' : 'Voxel Super Strikers: Rocket League'}
+          sportType="racing"
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
+
+      {/* Standardized Victory & Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={handleRestart}
+          onExit={onExit}
+        />
       )}
     </div>
   );
 };
+export default VoxelSuperStrikersGame;
