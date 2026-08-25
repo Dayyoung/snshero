@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { CardData } from '../types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
@@ -15,446 +14,528 @@ interface VoxelVampireSurvivalGameProps {
   onReward: (amount: number) => void;
 }
 
+interface UndeadMob {
+  id: number;
+  x: number;
+  y: number;
+  type: 'bat' | 'skeleton' | 'vampire_lord';
+  icon: string;
+  points: number;
+  radius: number;
+  hp: number;
+  maxHp: number;
+  isAlive: boolean;
+}
+
 export const VoxelVampireSurvivalGame: React.FC<VoxelVampireSurvivalGameProps> = ({
   deck: _deck,
   language,
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
   const isKo = language === 'ko';
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
+  const [kills, setKills] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
+  const [vampireCombo, setVampireCombo] = useState<number>(0);
+  const [maxCombo, setMaxCombo] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(35);
+  const [feedbackText, setFeedbackText] = useState<string | null>(null);
+
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_game_voxel_vampire_survival') !== 'true';
+      return localStorage.getItem('hero_tutorial_game_vampire_survival') !== 'true';
     } catch {
       return true;
     }
   });
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [playerHp, setPlayerHp] = useState<number>(100);
-  const [survivalTime, setSurvivalTime] = useState<number>(0);
-  const targetTime = 45;
-  const [kills, setKills] = useState<number>(0);
-  const [score, setScore] = useState<number>(0);
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const stateRef = useRef({
-    pPos: new THREE.Vector3(0, 0.5, 0),
-    moveDir: new THREE.Vector2(0, 0),
-    playerHp: 100,
-    survivalTime: 0,
+    hunterX: 180,
+    hunterY: 260,
+    targetX: 180,
+    targetY: 260,
+    bladeAngle: 0,
+    bladeRadius: 65,
+    enemies: [] as UndeadMob[],
     kills: 0,
     score: 0,
-    scytheAngle: 0,
+    combo: 0,
+    maxCombo: 0,
+    timeLeft: 35,
     isGameOver: false,
-    isVictory: false,
     isPaused: false,
     startTime: Date.now(),
-    enemies: [] as { mesh: THREE.Mesh; hp: number; isAlive: boolean }[],
-    orbs: [] as { mesh: THREE.Mesh; pos: THREE.Vector3 }[],
-    playerMesh: null as THREE.Mesh | null,
-    scytheMesh: null as THREE.Mesh | null,
-    scene: null as THREE.Scene | null
+    enemyCounter: 1,
+    spawnTimer: 0,
+    particles: [] as { x: number; y: number; vx: number; vy: number; color: string; life: number }[],
   });
 
-  const triggerPulse = () => {
+  const initGame = useCallback(() => {
     const s = stateRef.current;
-    if (s.isGameOver || s.isVictory || s.isPaused || !s.scene) return;
+    s.hunterX = 180;
+    s.hunterY = 260;
+    s.targetX = 180;
+    s.targetY = 260;
+    s.bladeAngle = 0;
+    s.bladeRadius = 65;
+    s.enemies = [];
+    s.kills = 0;
+    s.score = 0;
+    s.combo = 0;
+    s.maxCombo = 0;
+    s.timeLeft = 35;
+    s.isGameOver = false;
+    s.startTime = Date.now();
+    s.enemyCounter = 1;
+    s.spawnTimer = 0;
+    s.particles = [];
 
-    playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    // Initial Undead Mobs
+    s.enemies.push(
+      { id: s.enemyCounter++, x: 80, y: 120, type: 'bat', icon: '🦇', points: 300, radius: 20, hp: 1, maxHp: 1, isAlive: true },
+      { id: s.enemyCounter++, x: 280, y: 380, type: 'skeleton', icon: '💀', points: 500, radius: 24, hp: 2, maxHp: 2, isAlive: true }
+    );
 
-    // Knockback and damage surrounding enemies
-    s.enemies.forEach(e => {
-      if (e.isAlive && e.mesh.position.distanceTo(s.pPos) < 6.0) {
-        e.hp -= 35;
-        const pushDir = new THREE.Vector3().subVectors(e.mesh.position, s.pPos).normalize();
-        e.mesh.position.addScaledVector(pushDir, 3.5);
-
-        if (e.hp <= 0) {
-          e.isAlive = false;
-          s.scene?.remove(e.mesh);
-          s.kills += 1;
-          s.score += 150;
-          setKills(s.kills);
-          setScore(s.score);
-        }
-      }
-    });
-  };
+    setKills(0);
+    setScore(0);
+    setVampireCombo(0);
+    setMaxCombo(0);
+    setTimeLeft(35);
+    setFeedbackText(null);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+  }, []);
 
   useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+    initGame();
+  }, [initGame]);
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+  // Timer loop
+  useEffect(() => {
+    if (isGameOver || isPaused) return;
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0612);
-    scene.fog = new THREE.FogExp2(0x0a0612, 0.025);
-    stateRef.current.scene = scene;
-
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
-    camera.position.set(0, 22, 16);
-    camera.lookAt(0, 0, 0);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    container.appendChild(renderer.domElement);
-
-    const ambLight = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambLight);
-
-    const dirLight = new THREE.DirectionalLight(0xa855f7, 1.8);
-    dirLight.position.set(10, 30, 10);
-    scene.add(dirLight);
-
-    // Arena Floor
-    const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(80, 80),
-      new THREE.MeshStandardMaterial({ color: 0x181024, roughness: 0.8 })
-    );
-    floor.rotation.x = -Math.PI / 2;
-    scene.add(floor);
-
-    // Player Hero
-    const playerMesh = new THREE.Mesh(
-      new THREE.BoxGeometry(1.2, 1.8, 1.2),
-      new THREE.MeshStandardMaterial({ color: 0xc084fc })
-    );
-    playerMesh.position.set(0, 0.9, 0);
-    scene.add(playerMesh);
-    stateRef.current.playerMesh = playerMesh;
-
-    // Orbiting Scythe Weapon
-    const scythe = new THREE.Mesh(
-      new THREE.BoxGeometry(0.3, 0.3, 2.2),
-      new THREE.MeshStandardMaterial({ color: 0xf43f5e })
-    );
-    scene.add(scythe);
-    stateRef.current.scytheMesh = scythe;
-
-    // Timer Interval
-    const timerInterval = setInterval(() => {
-      const s = stateRef.current;
-      if (s.isPaused || s.isGameOver) return;
-      s.survivalTime += 1;
-      setSurvivalTime(s.survivalTime);
-      s.score += 25;
-      setScore(s.score);
-
-      // Spawn Swarm Mob every second
-      if (s.enemies.filter(e => e.isAlive).length < 25) {
-        const angle = Math.random() * Math.PI * 2;
-        const dist = 24 + Math.random() * 6;
-        const ex = s.pPos.x + Math.cos(angle) * dist;
-        const ez = s.pPos.z + Math.sin(angle) * dist;
-
-        const mob = new THREE.Mesh(
-          new THREE.BoxGeometry(1.0, 1.4, 1.0),
-          new THREE.MeshStandardMaterial({ color: 0xdc2626 })
-        );
-        mob.position.set(ex, 0.7, ez);
-        scene.add(mob);
-
-        s.enemies.push({
-          mesh: mob,
-          hp: 20 + s.survivalTime,
-          isAlive: true
-        });
-      }
-
-      if (s.survivalTime >= targetTime && !s.isGameOver) {
-        s.isVictory = true;
-        s.isGameOver = true;
-        setIsGameOver(true);
-        const duration = (Date.now() - s.startTime) / 1000;
-        const receipt = calculateAndDepositMissionReward({
-          gameId: 'voxel_vampire_survival',
-          gameTitle: '복셀 뱀파이어 서바이벌',
-          durationSeconds: duration,
-          score: s.score + 2500,
-          difficulty: 'NIGHTMARE',
-          isVictory: true
-        });
-        setSettlementReceipt(receipt);
-        onReward(receipt.totalSns);
-      }
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          endGame(true);
+          return 0;
+        }
+        return t - 1;
+      });
     }, 1000);
 
-    let animId: number;
+    return () => clearInterval(timer);
+  }, [isGameOver, isPaused]);
+
+  // Direct Finger Drag Handlers (Zero Joysticks)
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    s.targetX = Math.max(35, Math.min(325, (e.clientX - rect.left) * scaleX));
+    s.targetY = Math.max(50, Math.min(450, (e.clientY - rect.top) * scaleY));
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const s = stateRef.current;
+    if (s.isGameOver || s.isPaused) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    s.targetX = Math.max(35, Math.min(325, (e.clientX - rect.left) * scaleX));
+    s.targetY = Math.max(50, Math.min(450, (e.clientY - rect.top) * scaleY));
+  };
+
+  // Main 60FPS Vampire Survival Loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     let lastTime = performance.now();
 
-    const animate = (now: number) => {
-      animId = requestAnimationFrame(animate);
+    const loop = (now: number) => {
+      animFrameRef.current = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const s = stateRef.current;
       if (s.isPaused || s.isGameOver) return;
 
-      // Player Movement
-      const speed = 11;
-      s.pPos.x += s.moveDir.x * speed * dt;
-      s.pPos.z += s.moveDir.y * speed * dt;
-      s.pPos.x = THREE.MathUtils.clamp(s.pPos.x, -35, 35);
-      s.pPos.z = THREE.MathUtils.clamp(s.pPos.z, -35, 35);
+      // Hunter Movement Tracking
+      s.hunterX += (s.targetX - s.hunterX) * Math.min(1, dt * 20);
+      s.hunterY += (s.targetY - s.hunterY) * Math.min(1, dt * 20);
 
-      if (playerMesh) {
-        playerMesh.position.set(s.pPos.x, 0.9, s.pPos.z);
+      // Orbiting Holy Blade Rotation
+      s.bladeAngle += dt * 7;
+
+      // Calculate 3 Orbiting Holy Blade positions
+      const bladePositions = [
+        { x: s.hunterX + Math.cos(s.bladeAngle) * s.bladeRadius, y: s.hunterY + Math.sin(s.bladeAngle) * s.bladeRadius },
+        { x: s.hunterX + Math.cos(s.bladeAngle + (Math.PI * 2) / 3) * s.bladeRadius, y: s.hunterY + Math.sin(s.bladeAngle + (Math.PI * 2) / 3) * s.bladeRadius },
+        { x: s.hunterX + Math.cos(s.bladeAngle + (Math.PI * 4) / 3) * s.bladeRadius, y: s.hunterY + Math.sin(s.bladeAngle + (Math.PI * 4) / 3) * s.bladeRadius }
+      ];
+
+      // Spawn Undead Enemies
+      s.spawnTimer += dt;
+      if (s.spawnTimer > 0.8 && s.enemies.length < 9) {
+        s.spawnTimer = 0;
+        const rand = Math.random();
+        const isLord = rand < 0.15;
+        const isSkeleton = rand >= 0.15 && rand < 0.55;
+
+        // Spawn from random edge
+        const spawnX = Math.random() < 0.5 ? 20 : 340;
+        const spawnY = Math.random() < 0.5 ? 30 : 470;
+
+        s.enemies.push({
+          id: s.enemyCounter++,
+          x: spawnX,
+          y: spawnY,
+          type: isLord ? 'vampire_lord' : (isSkeleton ? 'skeleton' : 'bat'),
+          icon: isLord ? '🧛' : (isSkeleton ? '💀' : '🦇'),
+          points: isLord ? 1000 : (isSkeleton ? 500 : 300),
+          radius: isLord ? 32 : (isSkeleton ? 24 : 20),
+          hp: isLord ? 3 : (isSkeleton ? 2 : 1),
+          maxHp: isLord ? 3 : (isSkeleton ? 2 : 1),
+          isAlive: true,
+        });
       }
 
-      // Orbiting Scythe Rotation
-      s.scytheAngle += 5.5 * dt;
-      const scytheRadius = 3.2;
-      const sx = s.pPos.x + Math.cos(s.scytheAngle) * scytheRadius;
-      const sz = s.pPos.z + Math.sin(s.scytheAngle) * scytheRadius;
-      if (scythe) {
-        scythe.position.set(sx, 1.0, sz);
-        scythe.rotation.y = -s.scytheAngle;
-      }
+      // Move Enemies Toward Hunter & Collision Check with Orbiting Blades
+      for (let i = s.enemies.length - 1; i >= 0; i--) {
+        const mob = s.enemies[i];
+        if (mob.isAlive) {
+          const dx = s.hunterX - mob.x;
+          const dy = s.hunterY - mob.y;
+          const dist = Math.hypot(dx, dy);
 
-      // Camera Follow
-      camera.position.set(s.pPos.x * 0.4, 22, s.pPos.z * 0.4 + 16);
-      camera.lookAt(s.pPos.x * 0.4, 0, s.pPos.z * 0.4);
+          const speed = mob.type === 'bat' ? 65 : (mob.type === 'skeleton' ? 45 : 35);
+          if (dist > 5) {
+            mob.x += (dx / dist) * speed * dt;
+            mob.y += (dy / dist) * speed * dt;
+          }
 
-      // Update Enemies
-      s.enemies.forEach(e => {
-        if (!e.isAlive) return;
+          // Check Blade Collision
+          for (const bp of bladePositions) {
+            if (Math.hypot(mob.x - bp.x, mob.y - bp.y) < mob.radius + 18) {
+              mob.hp -= 1;
+              playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
 
-        const dir = new THREE.Vector3().subVectors(s.pPos, e.mesh.position).normalize();
-        e.mesh.position.addScaledVector(dir, 4.5 * dt);
+              // Blade Spark FX
+              for (let p = 0; p < 8; p++) {
+                s.particles.push({
+                  x: mob.x,
+                  y: mob.y,
+                  vx: (Math.random() - 0.5) * 200,
+                  vy: (Math.random() - 0.5) * 200,
+                  color: '#fde047',
+                  life: 0.3,
+                });
+              }
 
-        // Scythe Slash Hit Check
-        if (e.mesh.position.distanceTo(new THREE.Vector3(sx, 1.0, sz)) < 1.8) {
-          e.hp -= 25;
-          playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+              if (mob.hp <= 0) {
+                mob.isAlive = false;
+                s.kills += 1;
+                s.combo += 1;
+                if (s.combo > s.maxCombo) s.maxCombo = s.combo;
 
-          if (e.hp <= 0) {
-            e.isAlive = false;
-            scene.remove(e.mesh);
-            s.kills += 1;
-            s.score += 100;
-            setKills(s.kills);
-            setScore(s.score);
+                const pts = mob.points + s.combo * 40;
+                s.score += pts;
+
+                setKills(s.kills);
+                setScore(s.score);
+                setVampireCombo(s.combo);
+                setMaxCombo(s.maxCombo);
+
+                if (mob.type === 'vampire_lord') {
+                  setFeedbackText(`👑 VAMPIRE LORD SLAIN! +${pts}P 💥`);
+                  playSfx?.('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+                } else {
+                  setFeedbackText(`UNDEAD PURGED! +${pts}P ⚡`);
+                  playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+                }
+                setTimeout(() => setFeedbackText(null), 300);
+
+                // Purge Particles
+                for (let p = 0; p < 14; p++) {
+                  s.particles.push({
+                    x: mob.x,
+                    y: mob.y,
+                    vx: (Math.random() - 0.5) * 240,
+                    vy: (Math.random() - 0.5) * 240,
+                    color: mob.type === 'vampire_lord' ? '#ef4444' : '#a855f7',
+                    life: 0.4,
+                  });
+                }
+              }
+              break;
+            }
           }
         }
+      }
 
-        // Mob Attacks Player
-        if (e.mesh.position.distanceTo(s.pPos) < 1.4) {
-          s.playerHp -= 15 * dt;
-          setPlayerHp(Math.max(0, Math.round(s.playerHp)));
+      // Filter Dead Enemies
+      s.enemies = s.enemies.filter((e) => e.isAlive);
 
-          if (s.playerHp <= 0 && !s.isGameOver) {
-            s.isGameOver = true;
-            setIsGameOver(true);
-            const duration = (Date.now() - s.startTime) / 1000;
-            const receipt = calculateAndDepositMissionReward({
-              gameId: 'voxel_vampire_survival',
-              gameTitle: '복셀 뱀파이어 서바이벌',
-              durationSeconds: duration,
-              score: s.score,
-              difficulty: 'NIGHTMARE',
-              isVictory: false
-            });
-            setSettlementReceipt(receipt);
-            onReward(receipt.totalSns);
+      // Update Particles
+      for (let i = s.particles.length - 1; i >= 0; i--) {
+        const p = s.particles[i];
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.life -= dt;
+        if (p.life <= 0) s.particles.splice(i, 1);
+      }
+
+      // ── Canvas Rendering ──
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Gothic Dungeon Dark Gradient
+      const gothicGrad = ctx.createLinearGradient(0, 0, 0, h);
+      gothicGrad.addColorStop(0, '#0f051d');
+      gothicGrad.addColorStop(0.5, '#1e0b36');
+      gothicGrad.addColorStop(1, '#08020f');
+      ctx.fillStyle = gothicGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Holy Blade Orbit Radius Circle
+      ctx.strokeStyle = 'rgba(250, 204, 21, 0.2)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(s.hunterX, s.hunterY, s.bladeRadius, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Render Orbiting Holy Blades (⚔️)
+      bladePositions.forEach((bp) => {
+        ctx.save();
+        ctx.translate(bp.x, bp.y);
+        ctx.shadowColor = '#fde047';
+        ctx.shadowBlur = 16;
+        ctx.font = '28px serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('⚔️', 0, 0);
+        ctx.restore();
+      });
+
+      // Render Enemies
+      s.enemies.forEach((mob) => {
+        if (mob.isAlive) {
+          ctx.save();
+          ctx.translate(mob.x, mob.y);
+          if (mob.type === 'vampire_lord') {
+            ctx.shadowColor = '#ef4444';
+            ctx.shadowBlur = 20;
+          } else {
+            ctx.shadowColor = '#a855f7';
+            ctx.shadowBlur = 12;
           }
+          ctx.font = `${mob.radius * 1.8}px serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(mob.icon, 0, 0);
+
+          // HP Bar
+          if (mob.maxHp > 1) {
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(-16, mob.radius + 4, 32, 4);
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(-16, mob.radius + 4, 32 * (mob.hp / mob.maxHp), 4);
+          }
+          ctx.restore();
         }
       });
 
-      renderer.render(scene, camera);
+      // Render Vampire Hunter Hero (🧙‍♂️)
+      ctx.save();
+      ctx.translate(s.hunterX, s.hunterY);
+      ctx.shadowColor = '#38bdf8';
+      ctx.shadowBlur = 18;
+      ctx.font = '40px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🧙‍♂️', 0, 0);
+      ctx.restore();
+
+      // Render Particles
+      s.particles.forEach((p) => {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 4, 4);
+      });
     };
 
-    animId = requestAnimationFrame(animate);
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, [playSfx]);
 
-    return () => {
-      clearInterval(timerInterval);
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-    };
-  }, [lowSpecMode]);
-
-  const handleRestart = () => {
+  const endGame = (isWin: boolean) => {
     const s = stateRef.current;
-    s.pPos.set(0, 0.5, 0);
-    s.playerHp = 100;
-    s.survivalTime = 0;
-    s.kills = 0;
-    s.score = 0;
-    s.isGameOver = false;
-    s.isVictory = false;
-    s.startTime = Date.now();
-    s.enemies.forEach(e => s.scene?.remove(e.mesh));
-    s.enemies = [];
-    setPlayerHp(100);
-    setSurvivalTime(0);
-    setKills(0);
-    setScore(0);
-    setIsGameOver(false);
-    setSettlementReceipt(null);
+    if (s.isGameOver) return;
+    s.isGameOver = true;
+    setIsGameOver(true);
+
+    if (isWin) {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    } else {
+      playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    }
+
+    const duration = (Date.now() - s.startTime) / 1000;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'arcade_vampire_survival',
+      gameTitle: '블리츠 뱀파이어 서바이벌',
+      durationSeconds: duration,
+      score: s.score + (isWin ? 3500 : s.kills * 300) + s.maxCombo * 40,
+      difficulty: 'NIGHTMARE',
+      isVictory: isWin || s.kills >= 10,
+    });
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
   };
 
-  const customTutorialSteps: TutorialStep[] = [
+  const tutorialSteps: TutorialStep[] = [
     {
-      badge: isKo ? 'STEP 1: 45초 밤의 서바이벌' : 'STEP 1: VAMPIRE SURVIVAL',
-      title: isKo ? '45초 생존 & 언데드 군단 섬멸' : 'Survive 45s & Slay Undead',
+      badge: isKo ? 'STEP 1: 손가락 드래그 회전 블레이드 토벌' : 'STEP 1: DRAG & ORBIT PURGE',
+      title: isKo ? '헌터를 손가락으로 드래그해 회전 블레이드로 적을 토벌하세요' : 'Drag hunter to slice approaching undead swarms with holy blades',
       description: isKo
-        ? '몰려오는 언데드 몬스터들을 회전하는 낫으로 베어 넘기며 45초 동안 살아남으세요.'
-        : 'Slice through swarming undead mobs with an orbiting scythe and survive 45s.',
+        ? '가상 조이스틱 없이 화면의 헌터(🧙‍♂️)를 손가락으로 직접 드래그하여 주변을 회전하는 3개의 신성 블레이드(⚔️)로 몰려드는 박쥐(🦇), 스켈레톤(💀), 뱀파이어 로드(🧛)를 갈아버리세요.'
+        : 'Slide your finger to direct the hunter, letting the 3 orbiting holy swords slice through undead waves.',
       keyPoints: isKo
         ? [
-            '45초 생존 성공 시 즉시 완승',
-            '회전 사신의 낫으로 적 자동 타격',
-            '플레이어 HP 0% 도달 방어'
+            '가상 조이스틱 0개 (100% 손가락 직접 2D 드래그 이동)',
+            '뱀파이어 로드(🧛) 처치 시 1,000P 잭팟 대박 보너스',
+            '35초간 최대 콤보로 언데드 스웜을 전멸시키고 올클리어'
           ]
         : [
-            'Survive 45s to win',
-            'Orbiting death scythe slashes mobs automatically',
-            'Prevent HP reaching 0%'
+            'Zero Virtual Joysticks: 100% Direct Finger Drag',
+            'Vampire Lord (🧛) awards 1,000P massive survival jackpot',
+            'Eliminate all undead swarms with continuous combos within 35s'
           ],
-      iconType: 'GOAL'
+      iconType: 'GOAL',
     },
     {
-      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
-      title: isKo ? '드래그 카이팅 & 탭 펄스 방출' : 'Drag Kite & Tap Pulse',
+      badge: isKo ? 'STEP 2: 모바일 퓨어 제스처' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '화면 직접 자유 드래그 (Direct Finger Drag)' : 'Direct Drag Gesture',
       description: isKo
-        ? '가상 D-Pad 없이 화면 드래그로 영웅을 360° 카이팅 무빙하고, 위험할 때 탭하여 광역 넉백 펄스를 방출합니다.'
-        : 'Drag anywhere to kite hero smoothly and tap to unleash a knockback energy pulse with zero buttons.',
+        ? '손가락을 원하는 위치로 밀어 헌터의 위치를 조종합니다.'
+        : 'Slide your thumb smoothly anywhere across the arena.',
       keyPoints: isKo
         ? [
-            '👆 드래그: 360° 부드러운 카이팅 기동',
-            '💥 탭: 주변 적 광역 넉백 펄스 폭발',
-            '⚡ 낫 타격 범위 내로 적 유인'
+            '👆 자유 드래그: 60FPS 즉각 반응 초정밀 회피 및 접근',
+            '⚔️ 연속 처치 시 서바이벌 콤보 배수 보너스',
+            '⏱️ 35초 타임어택 고득점 챌린지'
           ]
         : [
-            '👆 Drag: Smooth 360° kiting movement',
-            '💥 Tap: Radial knockback energy pulse',
-            '⚡ Lure mobs into scythe orbit radius'
+            '👆 Free Drag: Instant 60FPS fluid dodge and slicing',
+            '⚔️ Consecutive purges grant survival combo multipliers',
+            '⏱️ 35s time attack vampire survival sprint'
           ],
-      iconType: 'GESTURES'
+      iconType: 'GESTURES',
     },
     {
       badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
       title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
       description: isKo
-        ? '생존 승리 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
-        : 'Nightmare multiplier payout calculated and deposited atomically to your wallet.',
+        ? '토벌 완료 즉시 NIGHTMARE 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Nightmare payout deposited atomically to your LocalStorage wallet upon match finish.',
       keyPoints: isKo
         ? [
-            '승리 즉시 LocalStorage 영구 지갑 입금',
-            '처치 수 및 잔여 체력 보너스',
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '처치한 언데드 수 및 뱀파이어 로드 비례 대량 잭팟',
             'VictoryRewardModal 2초 황금 코인 팡파레'
           ]
         : [
             'Instant atomic deposit to LocalStorage wallet',
-            'Kills and remaining HP bonuses',
+            'Purged undead count and boss multipliers',
             'VictoryRewardModal golden coin fanfare'
           ],
-      iconType: 'REWARDS'
-    }
+      iconType: 'REWARDS',
+    },
   ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col font-mono select-none overflow-hidden">
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="flex-1 w-full h-full" />
-
+    <div className="relative w-full h-[100dvh] bg-[#08020f] text-white font-mono select-none flex flex-col overflow-hidden items-center justify-between touch-none">
       {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
       <MinimalistMissionHUD
-        title={isKo ? '복셀 뱀파이어 서바이벌' : 'Voxel Vampire Survival'}
-        language={language}
-        hp={{ current: playerHp, max: 100 }}
+        title={isKo ? '블리츠 뱀파이어 서바이벌' : 'Blitz Vampire Survival'}
+        language={(language as Language) || 'ko'}
         telemetries={[
-          { label: isKo ? '시간' : 'Time', value: `${survivalTime}s/${targetTime}s`, color: survivalTime >= targetTime ? 'text-emerald-400 font-bold' : 'text-purple-300' },
-          { label: isKo ? '처치' : 'Kills', value: `💀${kills}`, color: 'text-rose-400 font-bold' },
-          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-yellow-300' }
+          { label: isKo ? '토벌' : 'Kills', value: `${kills}마리`, color: 'text-amber-400 font-bold' },
+          { label: isKo ? '콤보' : 'Combo', value: `${vampireCombo}x`, color: vampireCombo > 2 ? 'text-amber-300 font-bold animate-bounce' : 'text-slate-300' },
+          { label: isKo ? '시간' : 'Time', value: `${timeLeft}s`, color: timeLeft <= 10 ? 'text-rose-500 font-bold animate-pulse' : 'text-cyan-400 font-bold' },
+          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-amber-300 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}
-        onPauseToggle={() => {
-          setIsPaused(prev => !prev);
-          stateRef.current.isPaused = !isPaused;
-        }}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
         isPaused={isPaused}
       />
 
-      {/* Screen Gesture Touch Overlay */}
-      {!isGameOver && !isPaused && !showTutorial && (
-        <div
-          className="absolute inset-0 z-10 select-none touch-none cursor-crosshair"
-          style={{ touchAction: 'none' }}
-          onPointerDown={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const startX = e.clientX - rect.left;
-            const startY = e.clientY - rect.top;
-            let moved = false;
-
-            const onMove = (moveEvt: PointerEvent) => {
-              const curX = moveEvt.clientX - rect.left;
-              const curY = moveEvt.clientY - rect.top;
-              const dx = curX - startX;
-              const dy = curY - startY;
-
-              if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
-                moved = true;
-                stateRef.current.moveDir.x = Math.abs(dx) > 8 ? (dx > 0 ? 1 : -1) : 0;
-                stateRef.current.moveDir.y = Math.abs(dy) > 8 ? (dy > 0 ? 1 : -1) : 0;
-              }
-            };
-
-            const onUp = () => {
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-              window.removeEventListener('pointercancel', onUp);
-              stateRef.current.moveDir.set(0, 0);
-
-              if (!moved) {
-                // Tap: Pulse Burst
-                triggerPulse();
-              }
-            };
-
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-          }}
+      {/* Pure Touch Vampire Survival Canvas Viewport */}
+      <div className="flex-1 w-full max-w-md relative overflow-hidden flex items-center justify-center select-none touch-none p-2">
+        <canvas
+          ref={canvasRef}
+          width={360}
+          height={500}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          className="w-full h-full object-contain touch-none cursor-pointer shadow-2xl"
         />
-      )}
+
+        {/* Floating Feedback Text */}
+        {feedbackText && (
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 pointer-events-none text-base font-bold text-amber-300 drop-shadow-lg animate-bounce whitespace-nowrap bg-black/60 px-4 py-1 rounded-full border border-amber-400/30">
+            {feedbackText}
+          </div>
+        )}
+      </div>
 
       {/* Minimal Bottom Guide */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/75 border border-purple-500/30 rounded-full text-[10px] text-purple-300 font-mono backdrop-blur-xs">
-          {isKo ? '화면 드래그: 카이팅 이동 | 탭: 펄스 방출 (자동 낫 공격, 버튼 없음)' : 'Drag: Kite Move | Tap: Pulse Blast (Auto Scythe, No Buttons)'}
+      <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono">
+          {isKo ? '손가락으로 헌터를 드래그해 회전 블레이드로 언데드를 토벌하세요' : 'Drag hunter to slice approaching undead with orbiting blades'}
         </div>
       </div>
 
       {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
         <UniversalTutorialModal
-          gameId="voxel_vampire_survival"
-          gameTitle={isKo ? '3D 복셀 뱀파이어 서바이벌: 밤의 생존' : 'Voxel Vampire Survival: Night Realm'}
-          customSteps={customTutorialSteps}
-          language={language}
+          gameId="arcade_vampire_survival"
+          gameTitle={isKo ? '블리츠 뱀파이어: 언데드 토벌' : 'Blitz Vampire: Undead Purge'}
+          customSteps={tutorialSteps}
+          language={(language as Language) || 'ko'}
           onStartGame={() => setShowTutorial(false)}
           onClose={() => setShowTutorial(false)}
         />
       )}
 
-      {/* Standardized Victory & Reward Settlement Modal */}
+      {/* Victory Reward Settlement Modal */}
       {isGameOver && settlementReceipt && (
         <VictoryRewardModal
           receipt={settlementReceipt}
-          language={language}
-          onPlayAgain={handleRestart}
+          language={(language as Language) || 'ko'}
+          onPlayAgain={initGame}
           onExit={onExit}
         />
       )}

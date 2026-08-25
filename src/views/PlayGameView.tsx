@@ -7861,7 +7861,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelvampiresurvival',
-      title: language === 'ko' ? '3D 복셀 뱀파이어 서바이벌' : 'Voxel Vampire Survival',
+      title: language === 'ko' ? '블리츠 뱀파이어 서바이벌' : 'Blitz Vampire Survival',
       icon: Skull,
       color: 'from-purple-600 to-indigo-950',
       image: '/minigame_cardsorcery.png',
@@ -7869,10 +7869,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelvampiresurvival');
       },
-      category: '3d',
+      category: 'battle',
       isNew: true,
-      badgeText: '3D SURVIVAL',
-      guide: language === 'ko' ? '사방에서 몰려드는 수백 마리의 언데드 스웜을 회전 낫과 자동 탄막으로 휩쓸며 60초간 생존하세요.' : 'Survive the 60-second relentless undead swarm with auto-spinning scythes!'
+      badgeText: 'VAMPIRE-SURVIVAL',
+      guide: language === 'ko' ? '손가락으로 헌터를 드래그해 회전 블레이드로 언데드를 토벌하세요.' : 'Drag hunter to slice approaching undead with orbiting blades!'
     },
     {
       id: 'voxeltankbounce',
@@ -11559,7 +11559,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '뱀파이어 서바이벌 보상', 'Vampire Survival reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 뱀파이어 서바이벌 보상', 'Blitz Vampire Survival reward')}
       />
     );
   }
