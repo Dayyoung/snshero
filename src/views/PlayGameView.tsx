@@ -7621,7 +7621,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelsnowboard',
-      title: language === 'ko' ? '3D 복셀 스노보드 익스트림' : 'Voxel Snowboard Extreme',
+      title: language === 'ko' ? '블리츠 스노보드 익스트림' : 'Blitz Snowboard Extreme',
       icon: Mountain,
       color: 'from-sky-500 to-teal-600',
       image: '/minigame_cardjumper.png',
@@ -7629,10 +7629,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelsnowboard');
       },
-      category: '3d',
+      category: 'sports',
       isNew: true,
-      badgeText: '3D SNOW',
-      guide: language === 'ko' ? '설산 슬로프를 고속 활강하며 점프대 묘기와 눈사태 회피로 최고 점수를 기록하세요.' : 'Extreme downhill snowboarding arcade with big air trick jumps and avalanche evasion!'
+      badgeText: 'SNOWBOARD-EXTREME',
+      guide: language === 'ko' ? '손가락으로 보더를 좌우 드래그해 게이트(🚩)를 통과하고 나무를 피하세요.' : 'Drag snowboarder left & right to clear gates and dodge trees!'
     },
     {
       id: 'voxelpinball',
@@ -11351,7 +11351,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '스노보드 익스트림 보상', 'Snowboard Extreme reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 스노보드 익스트림 보상', 'Blitz Snowboard Extreme reward')}
       />
     );
   }
