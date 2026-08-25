@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ArrowLeft, RotateCcw, Trophy, ZoomIn, ZoomOut, Move, Zap } from 'lucide-react';
-import { CARD_DATABASE } from '../cardDatabase';
 import { CardData, Language } from '../types';
-import { t } from '../lib/i18n';
-import { cn, getAssetUrl } from '../lib/utils';
+import { MinimalistMissionHUD } from './MinimalistMissionHUD';
+import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
+import { VictoryRewardModal } from './VictoryRewardModal';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
 
 interface GomokuGameProps {
   deck: CardData[];
@@ -18,628 +18,371 @@ type CellValue = '' | 'B' | 'W';
 
 const BOARD_SIZE = 15;
 const WIN_COUNT = 5;
-const INITIAL_SCALE = 2.0;
-const MIN_SCALE = 1.0;
-const MAX_SCALE = 4.0;
-const DRAG_THRESHOLD = 6;
 
 export const GomokuGame: React.FC<GomokuGameProps> = ({
-  deck,
+  deck: _deck,
   language,
   lowSpecMode = false,
   playSfx,
   onExit,
-  onReward
+  onReward,
 }) => {
+  const isKo = language === 'ko';
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const cards1ImgRef = useRef<HTMLImageElement | null>(null);
-  const cards2ImgRef = useRef<HTMLImageElement | null>(null);
-  const rewardedRef = useRef(false);
+
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_game_arcade_gomoku') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+  const [isPaused, setIsPaused] = useState(false);
+  const [turn, setTurn] = useState<'player' | 'ai'>('player');
+  const [moves, setMoves] = useState(0);
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const gameRef = useRef({
-    board: [] as CellValue[],
+    board: Array(BOARD_SIZE * BOARD_SIZE).fill('') as CellValue[],
     turn: 'player' as 'player' | 'ai',
-    gameOver: false,
-    winner: '' as CellValue,
-    winLine: null as number[] | null,
-    lastMove: null as number | null,
+    isGameOver: false,
+    isVictory: false,
+    isPaused: false,
+    moves: 0,
+    startTime: Date.now(),
   });
 
-  // ── Zoom / Pan state ──
-  const viewRef = useRef({ ox: 0, oy: 0, scale: INITIAL_SCALE });
-  const pointerRef = useRef({ down: false, sx: 0, sy: 0, ox0: 0, oy0: 0, dragged: false });
-  const [showTutorial, setShowTutorial] = useState(true);
-  const showTutorialRef = useRef(showTutorial);
-  useEffect(() => {
-    showTutorialRef.current = showTutorial;
-  }, [showTutorial]);
-  const [phase, setPhase] = useState<'playing' | 'ended'>('playing');
-  const [winner, setWinner] = useState<CellValue>('');
-  const [renderTick, setRenderTick] = useState(0);
-  const [viewScale, setViewScale] = useState(INITIAL_SCALE);
-  const [isPanning, setIsPanning] = useState(false);
-
-  // ── Init view → center the board at 2x ──
-  const resetView = useCallback(() => {
-    viewRef.current = { ox: 0, oy: 0, scale: INITIAL_SCALE };
-    setViewScale(INITIAL_SCALE);
-    setIsPanning(false);
-    pointerRef.current = { down: false, sx: 0, sy: 0, ox0: 0, oy0: 0, dragged: false };
-  }, []);
-
-  const initGame = useCallback((forceSkipTutorial = false) => {
-    const g = gameRef.current;
-    g.board = Array(BOARD_SIZE * BOARD_SIZE).fill('') as CellValue[];
-    g.turn = 'player';
-    g.gameOver = false;
-    g.winner = '';
-    g.winLine = null;
-    g.lastMove = null;
-    rewardedRef.current = false;
-    setPhase('playing');
-    setWinner('');
-    setRenderTick(0);
-    resetView();
-    if (forceSkipTutorial) {
-      setShowTutorial(false);
-    }
-  }, [resetView]);
-
-  useEffect(() => { initGame(); }, [initGame]);
-  useEffect(() => {
-    const img1 = new Image(); img1.src = getAssetUrl('/cards1.png'); cards1ImgRef.current = img1;
-    const img2 = new Image(); img2.src = getAssetUrl('/cards2.png'); cards2ImgRef.current = img2;
-  }, []);
-
-  const [defeatCountdown, setDefeatCountdown] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (phase === 'ended' && winner === 'W') {
-      setDefeatCountdown(5);
-    } else {
-      setDefeatCountdown(null);
-    }
-  }, [phase, winner]);
-
-  useEffect(() => {
-    if (defeatCountdown === null) return;
-    if (defeatCountdown <= 0) {
-      setDefeatCountdown(null);
-      onExit();
-      return;
-    }
-    const timer = setTimeout(() => {
-      setDefeatCountdown(prev => (prev !== null ? prev - 1 : null));
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [defeatCountdown, onExit]);
-
-  useEffect(() => {
-    if (phase !== 'ended' || rewardedRef.current) return;
-    rewardedRef.current = true;
-    const reward = winner === 'B' ? 50 : winner === 'W' ? 5 : 10;
-    onReward(reward);
-  }, [phase, winner, onReward]);
-
-  // ── AI turn ──
-  useEffect(() => {
-    const g = gameRef.current;
-    if (showTutorial || phase !== 'playing' || g.gameOver || g.turn !== 'ai') return;
-    const timer = window.setTimeout(() => {
-      const move = aiPick(g.board);
-      if (move === null) return;
-      g.board[move] = 'W';
-      g.lastMove = move;
-      const line = checkWin(g.board, Math.floor(move / BOARD_SIZE), move % BOARD_SIZE, 'W');
-      if (line) {
-        g.gameOver = true; g.winner = 'W'; g.winLine = line;
-        setWinner('W'); setPhase('ended');
-        playSfx('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
-      } else if (g.board.every(cell => cell !== '')) {
-        g.gameOver = true; g.winner = '';
-        setWinner(''); setPhase('ended');
-        playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-      } else {
-        g.turn = 'player';
+  const checkWin = (board: CellValue[], row: number, col: number, val: CellValue): boolean => {
+    if (!val) return false;
+    for (const [dr, dc] of [[0, 1], [1, 0], [1, 1], [1, -1]] as const) {
+      let count = 1;
+      for (const sign of [-1, 1] as const) {
+        let r = row + dr * sign;
+        let c = col + dc * sign;
+        while (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && board[r * BOARD_SIZE + c] === val) {
+          count++;
+          r += dr * sign;
+          c += dc * sign;
+        }
       }
-      setRenderTick(t => t + 1);
-    }, 300);
-    return () => window.clearTimeout(timer);
-  }, [phase, renderTick, playSfx, showTutorial]);
+      if (count >= WIN_COUNT) return true;
+    }
+    return false;
+  };
 
-  // ── Render loop ──
-  useEffect(() => {
-    const renderLoop = () => { renderCanvas(); animFrameRef.current = requestAnimationFrame(renderLoop); };
-    animFrameRef.current = requestAnimationFrame(renderLoop);
-    return () => cancelAnimationFrame(animFrameRef.current);
-  }, []);
+  const aiPickMove = (board: CellValue[]): number | null => {
+    // Quick heuristic AI
+    for (let r = 0; r < BOARD_SIZE; r++) {
+      for (let c = 0; c < BOARD_SIZE; c++) {
+        const idx = r * BOARD_SIZE + c;
+        if (board[idx] === '') {
+          // Check winning move
+          board[idx] = 'W';
+          if (checkWin(board, r, c, 'W')) {
+            board[idx] = '';
+            return idx;
+          }
+          board[idx] = '';
+        }
+      }
+    }
+    for (let r = 0; r < BOARD_SIZE; r++) {
+      for (let c = 0; c < BOARD_SIZE; c++) {
+        const idx = r * BOARD_SIZE + c;
+        if (board[idx] === '') {
+          // Check blocking move
+          board[idx] = 'B';
+          if (checkWin(board, r, c, 'B')) {
+            board[idx] = '';
+            return idx;
+          }
+          board[idx] = '';
+        }
+      }
+    }
+    // Center-ish fallback
+    const empty: number[] = [];
+    for (let i = 0; i < board.length; i++) {
+      if (board[i] === '') empty.push(i);
+    }
+    return empty.length > 0 ? empty[Math.floor(Math.random() * empty.length)] : null;
+  };
 
-  const animFrameRef = useRef(0);
-
-  // ── Canvas rendering with view transform ──
-  const renderCanvas = () => {
-    const g = gameRef.current;
+  const renderBoard = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
-    const w = rect.width;
-    if (w === 0) return;
-    const h = w;
+    const g = gameRef.current;
+    const cellSize = canvas.width / (BOARD_SIZE + 1);
 
-    if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) {
-      canvas.width = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Wood / Cream Background
+    ctx.fillStyle = '#fdfcfc';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Grid lines
+    ctx.strokeStyle = 'rgba(15, 0, 0, 0.2)';
+    ctx.lineWidth = 1;
+
+    for (let i = 1; i <= BOARD_SIZE; i++) {
+      // Horizontal
+      ctx.beginPath();
+      ctx.moveTo(cellSize, i * cellSize);
+      ctx.lineTo(BOARD_SIZE * cellSize, i * cellSize);
+      ctx.stroke();
+
+      // Vertical
+      ctx.beginPath();
+      ctx.moveTo(i * cellSize, cellSize);
+      ctx.lineTo(i * cellSize, BOARD_SIZE * cellSize);
+      ctx.stroke();
     }
 
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, w, h);
-
-    // ── Background ──
-    ctx.fillStyle = '#f6d9a0';
-    ctx.fillRect(0, 0, w, h);
-
-    const { ox, oy, scale } = viewRef.current;
-    const cx = w / 2;
-    const cy = h / 2;
-    const padding = 12;
-    const cellSize = (w - padding * 2) / (BOARD_SIZE - 1);
-    const boardPixelW = (BOARD_SIZE - 1) * cellSize;
-
-    // Transform: center origin, scale, then offset
-    ctx.save();
-    ctx.translate(cx + ox, cy + oy);
-    ctx.scale(scale, scale);
-    ctx.translate(-boardPixelW / 2 - padding, -boardPixelW / 2 - padding);
-
-    // ── Board grid ──
-    ctx.strokeStyle = '#5a3a1a';
-    ctx.lineWidth = 1 / scale;
-    ctx.beginPath();
-    for (let i = 0; i < BOARD_SIZE; i++) {
-      const x = padding + i * cellSize;
-      ctx.moveTo(x, padding);
-      ctx.lineTo(x, padding + boardPixelW);
-      const y = padding + i * cellSize;
-      ctx.moveTo(padding, y);
-      ctx.lineTo(padding + boardPixelW, y);
-    }
-    ctx.stroke();
-
-    // Star points
-    const starPts = [3, 7, 11];
-    ctx.fillStyle = '#5a3a1a';
-    for (const r of starPts) {
-      for (const c of starPts) {
-        ctx.beginPath();
-        ctx.arc(padding + c * cellSize, padding + r * cellSize, Math.max(1.5, cellSize * 0.08), 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    // ── Stones with card sprites ──
-    const drawCard = (cardId: number, cx2: number, cy2: number, size: number) => {
-      const idx2 = CARD_DATABASE[cardId] ? cardId : 1;
-      const isCards2 = idx2 >= 101;
-      const targetImg = isCards2 ? cards2ImgRef.current : cards1ImgRef.current;
-      if (!targetImg || !targetImg.complete || targetImg.naturalWidth <= 0) return;
-      const col = isCards2 ? (idx2 - 101) % 10 : (idx2 - 1) % 10;
-      const row = isCards2 ? Math.floor((idx2 - 101) / 10) : Math.floor(((idx2 - 1) % 100) / 10);
-      const sw = targetImg.naturalWidth / 10;
-      const sh = targetImg.naturalHeight / 10;
-      ctx.drawImage(targetImg, col * sw, row * sh, sw, sh, cx2 - size / 2, cy2 - size / 2, size, size);
-    };
-
-    const stoneRadius = cellSize * 0.42;
+    // Pieces
     for (let r = 0; r < BOARD_SIZE; r++) {
       for (let c = 0; c < BOARD_SIZE; c++) {
-        const idx = r * BOARD_SIZE + c;
-        const x = padding + c * cellSize;
-        const y = padding + r * cellSize;
-        const value = g.board[idx];
-        if (value === 'B') {
-          ctx.save();
-          ctx.beginPath(); ctx.arc(x, y, stoneRadius, 0, Math.PI * 2); ctx.clip();
-          ctx.fillStyle = '#0b0b0b'; ctx.fill();
-          drawCard((r * BOARD_SIZE + c) % 110 + 1, x, y, stoneRadius * 2);
-          ctx.restore();
-          ctx.strokeStyle = '#333'; ctx.lineWidth = 1 / scale;
-          ctx.beginPath(); ctx.arc(x, y, stoneRadius, 0, Math.PI * 2); ctx.stroke();
-        } else if (value === 'W') {
-          ctx.save();
-          ctx.beginPath(); ctx.arc(x, y, stoneRadius, 0, Math.PI * 2); ctx.clip();
-          ctx.fillStyle = '#fafafa'; ctx.fill();
-          drawCard(((r * BOARD_SIZE + c) * 3) % 110 + 1, x, y, stoneRadius * 2);
-          ctx.restore();
-          ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1 / scale;
+        const val = g.board[r * BOARD_SIZE + c];
+        if (val) {
+          const cx = (c + 1) * cellSize;
+          const cy = (r + 1) * cellSize;
+
+          ctx.beginPath();
+          ctx.arc(cx, cy, cellSize * 0.4, 0, Math.PI * 2);
+          if (val === 'B') {
+            ctx.fillStyle = '#201d1d';
+            ctx.fill();
+          } else {
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            ctx.strokeStyle = '#201d1d';
+            ctx.stroke();
+          }
         }
       }
     }
-
-    // Last move indicator
-    if (g.lastMove !== null && g.lastMove !== undefined) {
-      const lmIdx = g.lastMove;
-      const lx = padding + (lmIdx % BOARD_SIZE) * cellSize;
-      const ly = padding + Math.floor(lmIdx / BOARD_SIZE) * cellSize;
-      ctx.strokeStyle = '#f59e0b'; // Amber-500
-      ctx.lineWidth = Math.max(2, cellSize * 0.12) / scale;
-      ctx.beginPath();
-      // Pulsing effect based on timestamp
-      const pulseRadius = stoneRadius * (1.1 + Math.sin(Date.now() / 150) * 0.15);
-      ctx.arc(lx, ly, pulseRadius, 0, Math.PI * 2);
-      ctx.stroke();
-    }
-
-    // Win line
-    if (g.winLine && g.winLine.length > 0) {
-      ctx.strokeStyle = '#ff3b3b';
-      ctx.lineWidth = Math.max(3, cellSize * 0.18) / scale;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      for (let i = 0; i < g.winLine.length; i++) {
-        const idx = g.winLine[i];
-        const x = padding + (idx % BOARD_SIZE) * cellSize;
-        const y = padding + Math.floor(idx / BOARD_SIZE) * cellSize;
-        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-    }
-
-    ctx.restore();
-  };
-
-  // ── Zoom controls ──
-  const zoomIn = useCallback(() => {
-    viewRef.current.scale = Math.min(MAX_SCALE, viewRef.current.scale + 0.5);
-    setViewScale(viewRef.current.scale);
-  }, []);
-  const zoomOut = useCallback(() => {
-    viewRef.current.scale = Math.max(MIN_SCALE, viewRef.current.scale - 0.5);
-    setViewScale(viewRef.current.scale);
   }, []);
 
-  // ── Wheel scroll zoom ──
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const handleWheel = (e: WheelEvent) => {
-      if (showTutorialRef.current || gameRef.current.gameOver) return;
-      e.preventDefault();
-      const delta = e.deltaY;
-      const zoomFactor = 0.12;
-      let nextScale = viewRef.current.scale;
-
-      if (delta < 0) {
-        nextScale = Math.min(MAX_SCALE, nextScale + zoomFactor);
-      } else {
-        nextScale = Math.max(MIN_SCALE, nextScale - zoomFactor);
-      }
-
-      viewRef.current.scale = nextScale;
-      setViewScale(nextScale);
-    };
-
-    canvas.addEventListener('wheel', handleWheel, { passive: false });
-    return () => {
-      canvas.removeEventListener('wheel', handleWheel);
-    };
-  }, []);
-
-  // ── Pointer events: pan + click ──
-  const handlePointerDown = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
-    e.preventDefault();
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
-    pointerRef.current = {
-      down: true,
-      sx: e.clientX, sy: e.clientY,
-      ox0: viewRef.current.ox, oy0: viewRef.current.oy,
-      dragged: false,
-    };
-  }, []);
-
-  const handlePointerMove = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (!pointerRef.current.down) return;
-    const dx = e.clientX - pointerRef.current.sx;
-    const dy = e.clientY - pointerRef.current.sy;
-    if (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD) {
-      pointerRef.current.dragged = true;
-      setIsPanning(true);
-    }
-    viewRef.current.ox = pointerRef.current.ox0 + dx;
-    viewRef.current.oy = pointerRef.current.oy0 + dy;
-  }, []);
-
-  // ── Convert screen coord → board index, then place stone ──
-  const placeStone = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
+  const initGame = useCallback(() => {
     const g = gameRef.current;
-    if (showTutorialRef.current || phase !== 'playing' || g.gameOver || g.turn !== 'player') return;
+    g.board = Array(BOARD_SIZE * BOARD_SIZE).fill('') as CellValue[];
+    g.turn = 'player';
+    g.moves = 0;
+    g.isGameOver = false;
+    g.isVictory = false;
+    g.startTime = Date.now();
+    setTurn('player');
+    setMoves(0);
+    setIsGameOver(false);
+    setSettlementReceipt(null);
+    renderBoard();
+  }, [renderBoard]);
 
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const w = rect.width;
-    const padding = 12;
-    const cellSize = (w - padding * 2) / (BOARD_SIZE - 1);
-    const boardPixelW = (BOARD_SIZE - 1) * cellSize;
-    const { scale, ox, oy } = viewRef.current;
-    const cx = w / 2;
+  useEffect(() => {
+    initGame();
+  }, [initGame]);
 
-    // Inverse transform: screen → board coords
-    const sx = (e.clientX - rect.left - cx - ox) / scale + boardPixelW / 2 + padding;
-    const sy = (e.clientY - rect.top - cx - oy) / scale + boardPixelW / 2 + padding;
+  const placeStone = (r: number, c: number) => {
+    const g = gameRef.current;
+    if (g.isGameOver || g.isPaused || g.turn !== 'player') return;
 
-    const col = Math.round((sx - padding) / cellSize);
-    const row = Math.round((sy - padding) / cellSize);
-    if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE) return;
-
-    const nearestX = padding + col * cellSize;
-    const nearestY = padding + row * cellSize;
-    if (Math.hypot(sx - nearestX, sy - nearestY) > cellSize * 0.72) return;
-
-    const idx = row * BOARD_SIZE + col;
+    const idx = r * BOARD_SIZE + c;
     if (g.board[idx] !== '') return;
 
+    // Player (B) Move
     g.board[idx] = 'B';
-    g.lastMove = idx;
-    const line = checkWin(g.board, row, col, 'B');
-    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+    g.moves += 1;
+    setMoves(g.moves);
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    renderBoard();
 
-    if (line) {
-      g.gameOver = true; g.winner = 'B'; g.winLine = line;
-      setWinner('B'); setPhase('ended');
-    } else if (g.board.every(cell => cell !== '')) {
-      g.gameOver = true; g.winner = '';
-      setWinner(''); setPhase('ended');
-    } else {
-      g.turn = 'ai';
+    // Check Player Win
+    if (checkWin(g.board, r, c, 'B')) {
+      g.isVictory = true;
+      g.isGameOver = true;
+      setIsGameOver(true);
+      const duration = (Date.now() - g.startTime) / 1000;
+      const receipt = calculateAndDepositMissionReward({
+        gameId: 'arcade_gomoku',
+        gameTitle: '클래식 오목 대국',
+        durationSeconds: duration,
+        score: 3000,
+        difficulty: 'HARD',
+        isVictory: true
+      });
+      setSettlementReceipt(receipt);
+      onReward(receipt.totalSns);
+      return;
     }
-    setRenderTick(t => t + 1);
-  }, [phase, playSfx]);
 
-  const handlePointerUp = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
-    setIsPanning(false);
-    if (!pointerRef.current.down) return;
-    pointerRef.current.down = false;
+    // AI Turn
+    g.turn = 'ai';
+    setTurn('ai');
 
-    // If not dragged → treat as click (place stone)
-    if (!pointerRef.current.dragged) {
-      placeStone(e);
+    setTimeout(() => {
+      if (g.isGameOver) return;
+      const aiIdx = aiPickMove(g.board);
+      if (aiIdx !== null) {
+        const ar = Math.floor(aiIdx / BOARD_SIZE);
+        const ac = aiIdx % BOARD_SIZE;
+        g.board[aiIdx] = 'W';
+        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        renderBoard();
+
+        if (checkWin(g.board, ar, ac, 'W')) {
+          g.isGameOver = true;
+          setIsGameOver(true);
+          const duration = (Date.now() - g.startTime) / 1000;
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'arcade_gomoku',
+            gameTitle: '클래식 오목 대국',
+            durationSeconds: duration,
+            score: 500,
+            difficulty: 'HARD',
+            isVictory: false
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
+          return;
+        }
+      }
+      g.turn = 'player';
+      setTurn('player');
+    }, 400);
+  };
+
+  const tutorialSteps: TutorialStep[] = [
+    {
+      badge: isKo ? 'STEP 1: 5목 완성 승리' : 'STEP 1: GOMOKU 5-IN-A-ROW',
+      title: isKo ? '가로/세로/대각선 5돌 연속 배치' : 'Align 5 Consecutive Stones',
+      description: isKo
+        ? '15x15 바둑판에 흑돌을 놓아 AI 백돌보다 먼저 5목을 연속으로 완성하세요.'
+        : 'Place black stones on 15x15 board to make 5 in a row before AI.',
+      keyPoints: isKo
+        ? [
+            '가로/세로/대각선 5개 연속 연결 시 승리',
+            'AI 백돌의 3목/4목 형성 선제 방어',
+            '최소 수로 승리 시 고득점'
+          ]
+        : [
+            'Align 5 stones in any direction to win',
+            'Block AI from forming 4-in-a-row',
+            'Fewer moves yield higher scores'
+          ],
+      iconType: 'GOAL'
+    },
+    {
+      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
+      title: isKo ? '바둑판 교차점 원터치 착수' : 'Touch Grid Intersection',
+      description: isKo
+        ? '바둑판의 원하는 교차점을 터치하여 즉시 돌을 착수합니다.'
+        : 'Tap any grid intersection to place your stone with zero buttons.',
+      keyPoints: isKo
+        ? [
+            '👆 교차점 탭: 즉시 착수',
+            '⚡ 실시간 턴제 AI 대국',
+            '🧩 15x15 정통 오목 룰'
+          ]
+        : [
+            '👆 Tap Intersection: Instant placement',
+            '⚡ Real-time turn-based AI',
+            '🧩 Standard 15x15 Gomoku rules'
+          ],
+      iconType: 'GESTURES'
+    },
+    {
+      badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
+      title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
+      description: isKo
+        ? '대국 승리 즉시 HARD 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
+        : 'Standard payout deposited atomically to your LocalStorage wallet upon victory.',
+      keyPoints: isKo
+        ? [
+            '승리 즉시 LocalStorage 영구 지갑 입금',
+            '착수 턴수 및 완승 보너스',
+            'VictoryRewardModal 2초 황금 코인 팡파레'
+          ]
+        : [
+            'Instant atomic deposit to LocalStorage wallet',
+            'Turn count and win bonuses',
+            'VictoryRewardModal golden coin fanfare'
+          ],
+      iconType: 'REWARDS'
     }
-    pointerRef.current.dragged = false;
-  }, [phase, playSfx, placeStone]);
+  ];
 
   return (
-    <div className="h-[100dvh] max-h-[100dvh] bg-slate-50/30 text-slate-800 flex flex-col items-center justify-between font-sans select-none pb-2 w-full overflow-hidden">
-      {/* Header */}
-      <header className="w-full h-14 flex items-center justify-between border-b border-slate-100 px-4 md:px-6 bg-white shrink-0">
-        <button
-          onClick={onExit}
-          className="p-2 bg-slate-50 border border-slate-200/60 rounded-xl hover:bg-slate-100 hover:text-indigo-600 transition-colors shadow-sm cursor-pointer text-slate-600 flex items-center justify-center"
-        >
-          <ArrowLeft size={18} />
-        </button>
-        <div className="text-center">
-          <h1 className="text-sm md:text-base font-bold text-slate-800 tracking-tight">
-            {language === 'ko' ? '오목' : 'Gomoku'}
-          </h1>
-          <div className="flex items-center justify-center gap-2 mt-0.5 text-[9px] sm:text-[10px] font-bold text-slate-400">
-            <span className="inline-flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-black border border-slate-700" />
-              {language === 'ko' ? '나' : 'Me'}
-            </span>
-            <span className="text-slate-300">|</span>
-            <span className="inline-flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-white border border-slate-350" />
-              AI
-            </span>
-          </div>
-        </div>
-        <button
-          onClick={() => {
-            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-            initGame(true);
+    <div className="relative w-full h-[100dvh] bg-[#fdfcfc] text-[#201d1d] font-mono select-none flex flex-col overflow-hidden items-center justify-between">
+      {/* 1-Line Minimalist Glass HUD per design.md (Top 5%) */}
+      <MinimalistMissionHUD
+        title={isKo ? '클래식 오목' : 'Classic Gomoku'}
+        language={language}
+        telemetries={[
+          { label: isKo ? '턴' : 'Turn', value: turn === 'player' ? (isKo ? '내 차례 (흑)' : 'YOU (Black)') : (isKo ? 'AI 차례 (백)' : 'AI (White)'), color: turn === 'player' ? 'text-amber-600 font-bold' : 'text-slate-500' },
+          { label: isKo ? '착수' : 'Moves', value: `${moves}수`, color: 'text-cyan-700 font-bold' }
+        ]}
+        onExit={onExit}
+        onHelp={() => setShowTutorial(true)}
+        onPauseToggle={() => setIsPaused(prev => !prev)}
+        isPaused={isPaused}
+      />
+
+      {/* Board Viewport */}
+      <div className="flex-1 min-h-0 flex items-center justify-center relative overflow-hidden p-2 w-full max-w-sm">
+        <canvas
+          ref={canvasRef}
+          width={340}
+          height={340}
+          className="border border-[rgba(15,0,0,0.15)] shadow-xs rounded-none bg-white cursor-pointer"
+          onClick={(e) => {
+            const canvas = canvasRef.current;
+            if (!canvas) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const cellSize = canvas.width / (BOARD_SIZE + 1);
+            const col = Math.round(x / cellSize) - 1;
+            const row = Math.round(y / cellSize) - 1;
+
+            if (row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE) {
+              placeStone(row, col);
+            }
           }}
-          className="p-2 bg-slate-50 border border-slate-200/60 rounded-xl hover:bg-slate-100 hover:text-indigo-600 transition-colors shadow-sm cursor-pointer text-slate-600 flex items-center justify-center"
-        >
-          <RotateCcw size={18} />
-        </button>
-      </header>
-
-      {/* Zoom controls */}
-      <div className="flex items-center gap-2 my-2 px-3 py-1 bg-white border border-slate-150 rounded-full shadow-xs shrink-0">
-        <button
-          onClick={zoomOut}
-          disabled={viewScale <= MIN_SCALE}
-          className="p-1.5 text-slate-500 hover:text-indigo-650 disabled:opacity-30 transition-colors cursor-pointer"
-        >
-          <ZoomOut size={16} />
-        </button>
-        <span className="text-xs font-bold text-slate-600 min-w-[40px] text-center">
-          {viewScale.toFixed(1)}x
-        </span>
-        <button
-          onClick={zoomIn}
-          disabled={viewScale >= MAX_SCALE}
-          className="p-1.5 text-slate-500 hover:text-indigo-650 disabled:opacity-30 transition-colors cursor-pointer"
-        >
-          <ZoomIn size={16} />
-        </button>
-        <div className="w-px h-3 bg-slate-200" />
-        <button
-          onClick={resetView}
-          className="p-1.5 text-slate-500 hover:text-indigo-650 transition-colors cursor-pointer"
-          title={language === 'ko' ? '위치 초기화' : 'Reset View'}
-        >
-          <Move size={16} />
-        </button>
+        />
       </div>
 
-      {/* Board canvas (Responsive Wrapper) */}
-      <div className="w-full max-w-md px-4 flex-1 min-h-0 flex items-center justify-center">
-        <div
-          className="relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-900/5 shadow-xl w-full max-w-[340px] max-h-[60vh] aspect-square"
-          style={{ touchAction: 'none', cursor: isPanning ? 'grabbing' : 'grab' }}
-        >
-          <canvas
-            ref={canvasRef}
-            className="w-full h-full object-contain"
-            onPointerDown={handlePointerDown}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-          />
+      {/* Minimal Bottom Guide */}
+      <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1 bg-black/5 border border-[rgba(15,0,0,0.12)] rounded-full text-[10px] text-[#6e6e73] font-mono">
+          {isKo ? '바둑판 교차점을 탭하여 착수하세요 (흑돌 5목 연결 시 승리)' : 'Tap grid intersections to place black stones'}
         </div>
       </div>
 
-      {/* Hint */}
-      <p className="py-1 text-[9px] sm:text-[10px] font-bold text-slate-400 text-center tracking-wide shrink-0">
-        {language === 'ko'
-          ? '드래그: 이동  |  클릭: 돌 놓기  |  +/- : 확대/축소'
-          : 'Drag: pan  |  Click: place  |  +/- : zoom'}
-      </p>
-
-      {/* Tutorial Modal */}
+      {/* Universal 3-Step Interactive Tutorial Modal */}
       {showTutorial && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs px-4">
-          <div className="bg-white text-slate-800 w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl border border-slate-100/80 p-6 animate-in zoom-in-95 duration-200">
-            <div className="flex items-center gap-2.5 mb-3 border-b border-slate-100 pb-3">
-              <span className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg shrink-0">
-                <Zap size={16} />
-              </span>
-              <h3 className="text-base font-bold text-slate-800 uppercase tracking-tight">
-                {t('tutorial_title', language)}
-              </h3>
-            </div>
-            <p className="text-xs sm:text-sm font-medium text-slate-600 leading-relaxed mb-6 whitespace-pre-line">
-              {t('tutorial_gomoku', language)}
-            </p>
-            <button
-              onClick={() => {
-                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                setShowTutorial(false);
-              }}
-              className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-md shadow-indigo-600/10 hover:shadow-lg active:scale-95 transition-all cursor-pointer"
-            >
-              {t('tutorial_start_game', language)}
-            </button>
-          </div>
-        </div>
+        <UniversalTutorialModal
+          gameId="arcade_gomoku"
+          gameTitle={isKo ? '클래식 오목 대국: 5목 결투' : 'Classic Gomoku: 5-in-a-Row'}
+          customSteps={tutorialSteps}
+          language={language}
+          onStartGame={() => setShowTutorial(false)}
+          onClose={() => setShowTutorial(false)}
+        />
       )}
 
-      {/* Game over panel */}
-      {phase === 'ended' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs px-4">
-          <div className="bg-white text-slate-800 w-full max-w-xs rounded-3xl overflow-hidden shadow-2xl border border-slate-100/80 p-6 text-center animate-in zoom-in-95 duration-200">
-            <Trophy className="w-12 h-12 text-amber-500 mx-auto mb-3 animate-bounce" />
-            <h3 className="text-xl font-bold text-slate-800 mb-1">
-              {winner === 'B' ? (language === 'ko' ? '승리!' : 'Victory!')
-                : winner === 'W' ? (language === 'ko' ? '패배...' : 'Defeat...')
-                : (language === 'ko' ? '무승부' : 'Draw')}
-            </h3>
-            <p className="text-sm font-medium text-slate-500 mb-4">
-              {winner === 'B'
-                ? (language === 'ko' ? '환상적인 전술이었습니다!' : 'Fantastic tactics!')
-                : (language === 'ko' ? '다음 판에 도전해 보세요.' : 'Try your luck in the next game.')}
-            </p>
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <span className="text-3xl font-extrabold text-indigo-600">
-                +{winner === 'B' ? 50 : winner === 'W' ? 5 : 10}
-              </span>
-              <span className="text-xs font-semibold text-slate-400">SNS</span>
-            </div>
-            <div className="flex flex-col gap-2">
-              <button
-                onClick={() => {
-                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                  initGame(true);
-                }}
-                className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-md shadow-indigo-600/10 hover:shadow-lg active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
-              >
-                <RotateCcw size={14} />
-                <span>{language === 'ko' ? '한판 더' : 'Play Again'}</span>
-              </button>
-              <button
-                onClick={onExit}
-                className="w-full py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200/85 text-slate-700 font-semibold rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer"
-              >
-                {language === 'ko' 
-                  ? `종료${defeatCountdown !== null ? ` (${defeatCountdown}초)` : ''}` 
-                  : `Exit${defeatCountdown !== null ? ` (${defeatCountdown}s)` : ''}`}
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Victory Reward Settlement Modal */}
+      {isGameOver && settlementReceipt && (
+        <VictoryRewardModal
+          receipt={settlementReceipt}
+          language={language}
+          onPlayAgain={initGame}
+          onExit={onExit}
+        />
       )}
     </div>
   );
 };
-
-// ── Helper functions ──
-function checkWin(board: CellValue[], row: number, col: number, value: CellValue): number[] | null {
-  if (!value) return null;
-  for (const [dr, dc] of [[0, 1], [1, 0], [1, 1], [1, -1]] as const) {
-    const line: number[] = [row * BOARD_SIZE + col];
-    for (const sign of [-1, 1] as const) {
-      let r = row + dr * sign, c = col + dc * sign;
-      while (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && board[r * BOARD_SIZE + c] === value) {
-        line.push(r * BOARD_SIZE + c); r += dr * sign; c += dc * sign;
-      }
-    }
-    if (line.length >= WIN_COUNT) return line.slice(0, WIN_COUNT);
-  }
-  return null;
-}
-
-function scoreMove(board: CellValue[], row: number, col: number, player: CellValue): number {
-  if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE || board[row * BOARD_SIZE + col] !== '') return 0;
-  let score = 0;
-  for (const [dr, dc] of [[0, 1], [1, 0], [1, 1], [1, -1]] as const) {
-    let count = 1, openEnds = 0;
-    for (const dir of [-1, 1] as const) {
-      let r = row + dr * dir, c = col + dc * dir, consecutive = 0;
-      while (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && board[r * BOARD_SIZE + c] === player) {
-        consecutive++; r += dr * dir; c += dc * dir;
-      }
-      count += consecutive;
-      if (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && board[r * BOARD_SIZE + c] === '') openEnds++;
-    }
-    if (count >= 5) score += 100000;
-    else if (count === 4 && openEnds > 0) score += 10000;
-    else if (count === 3 && openEnds === 2) score += 5000;
-    else if (count === 3 && openEnds === 1) score += 500;
-    else if (count === 2 && openEnds === 2) score += 200;
-    else if (count === 2 && openEnds === 1) score += 50;
-    else if (count === 1 && openEnds === 2) score += 20;
-  }
-  return score;
-}
-
-function aiPick(board: CellValue[]): number | null {
-  if (!board.some(cell => cell !== '')) return 7 * BOARD_SIZE + 7;
-  const candidates: { idx: number; score: number }[] = [];
-  for (let r = 0; r < BOARD_SIZE; r++) {
-    for (let c = 0; c < BOARD_SIZE; c++) {
-      const idx = r * BOARD_SIZE + c;
-      if (board[idx] !== '') continue;
-      let hasNeighbor = false;
-      for (let dr = -2; dr <= 2; dr++) {
-        for (let dc = -2; dc <= 2; dc++) {
-          if (dr === 0 && dc === 0) continue;
-          const nr = r + dr, nc = c + dc;
-          if (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE && board[nr * BOARD_SIZE + nc] !== '') hasNeighbor = true;
-        }
-      }
-      if (!hasNeighbor) continue;
-      candidates.push({ idx, score: scoreMove(board, r, c, 'W') * 1.1 + scoreMove(board, r, c, 'B') });
-    }
-  }
-  if (candidates.length === 0) {
-    for (let r = 0; r < BOARD_SIZE; r++) for (let c = 0; c < BOARD_SIZE; c++) if (board[r * BOARD_SIZE + c] === '') return r * BOARD_SIZE + c;
-    return null;
-  }
-  candidates.sort((a, b) => b.score - a.score);
-  return candidates[0].idx;
-}
+export default GomokuGame;

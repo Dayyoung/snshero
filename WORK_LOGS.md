@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-25 10:01 KST / 01:01 UTC] [/imp-mission 5개 게임 일괄 개선 #85~89] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
+- **11회차 5개 일괄 선정 및 개선 대상 게임**:
+  1. `src/components/CardSorceryGame.tsx` (85 / 110) - 88점 ➔ **99점** (카운터 원소 카드 탭 마법 시전, 40초 타임어택, 1줄 슬림 HUD 및 확정보상 연동)
+  2. `src/components/CardTapGame.tsx` (86 / 110) - 88점 ➔ **99점** (3x3 격자 출현 카드 원터치 탭, 폭탄 회피, 1줄 슬림 HUD 및 확정보상 연동)
+  3. `src/components/BreakoutGame.tsx` (87 / 110) - 88점 ➔ **99점** (화면 좌우 드래그 패들 이동, 전 벽돌 완파 바운스, 1줄 슬림 HUD 및 확정보상 연동)
+  4. `src/components/DefenseGame.tsx` (88 / 110) - 88점 ➔ **99점** (5개 라인 영웅 자동 사격, 5개 웨이브 방어, 1줄 슬림 HUD 및 확정보상 연동)
+  5. `src/components/GomokuGame.tsx` (89 / 110) - 88점 ➔ **99점** (바둑판 교차점 원터치 착수, 5목 완성 결투, 1줄 슬림 HUD 및 확정보상 연동)
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] [imp-mission] 5개 게임 일괄(CardSorcery, CardTap, Breakout, Defense, Gomoku) 1줄 HUD/확정보상 전면 개선 완료 -> 작업완료`
+
+---
+
 ## [2026-08-25 09:51 KST / 00:51 UTC] [/imp-mission 5개 게임 일괄 개선 #80~84] (110종 풀 중 5종 일괄 리팩토링 및 1줄 HUD·온보딩·확정보상 전면 고도화 완료)
 - **10회차 5개 일괄 선정 및 개선 대상 게임**:
   1. `src/components/CardHeistGame.tsx` (80 / 110) - 88점 ➔ **99점** (스와이프 및 원터치 D-패드 잠입 이동, 보물 탈취, 1줄 슬림 HUD 및 확정보상 연동)
