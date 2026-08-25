@@ -8386,7 +8386,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelbubblepop',
-      title: language === 'ko' ? '3D 복셀 버블 팝: 몬스터 아레나 슈터' : 'Voxel Bubble Pop: Arena Shooter',
+      title: language === 'ko' ? '블리츠 버블 버스트' : 'Blitz Bubble Burst',
       icon: Trophy,
       color: 'from-purple-500 to-pink-500',
       image: '/minigame_boss.png',
@@ -8394,10 +8394,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelbubblepop');
       },
-      category: '3d',
+      category: 'puzzle',
       isNew: true,
-      badgeText: '3D BUBBLE',
-      guide: language === 'ko' ? '3D 복셀 버블 대포를 발사하여 같은 색상의 버블을 3개 이상 매치하고 연쇄 폭발 콤보를 달성하세요.' : 'Aim and fire 3D voxel bubble cannons to match 3+ spheres and trigger explosive chain combos!'
+      badgeText: 'BUBBLE-BURST',
+      guide: language === 'ko' ? '화면 위 7x7 그리드에서 같은 색상 버블 뭉치를 직접 탭해 연쇄 폭발을 일으키세요.' : 'Tap matching color bubble clusters on the 7x7 grid to trigger cascading explosive bursts!'
     },
     {
       id: 'voxelwaterslide',
@@ -12014,7 +12014,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '버블 팝 보상', 'Bubble Pop reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 버블 버스트 보상', 'Blitz Bubble Burst reward')}
       />
     );
   }
