@@ -8476,7 +8476,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     },
     {
       id: 'voxelspikerolling',
-      title: language === 'ko' ? '3D 복셀 스파이크 롤러: 볼더 크러시' : 'Voxel Spike Roller: Boulder Crush',
+      title: language === 'ko' ? '블리츠 스파이크 롤러' : 'Blitz Spike Roller',
       icon: Trophy,
       color: 'from-orange-700 to-yellow-600',
       image: '/minigame_boss.png',
@@ -8484,10 +8484,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       action: () => {
         setGameState('voxelspikerolling');
       },
-      category: '3d',
+      category: 'arcade',
       isNew: true,
-      badgeText: '3D ROLLER',
-      guide: language === 'ko' ? '회전하는 가시 볼더가 되어 협곡 내리막 트랙을 질주하며 크리스탈 블록과 바위를 부수고 전방위 분쇄 콤보를 달성하세요.' : 'Roll down steep canyon slopes as a giant spike boulder, crushing rocks and crystals for massive combo points!'
+      badgeText: 'SPIKE-ROLLER',
+      guide: language === 'ko' ? '손가락으로 스파이크 볼을 좌우 드래그해 골렘과 벽을 분쇄 파괴하세요.' : 'Drag spike boulder left & right to crush golems and walls!'
     },
     {
       id: 'voxelterraquake',
@@ -12092,7 +12092,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         lowSpecMode={lowSpecMode}
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '스파이크 롤러 보상', 'Spike Roller reward')}
+        onReward={(amount) => handleMinigameReward(amount, '블리츠 스파이크 롤러 보상', 'Blitz Spike Roller reward')}
       />
     );
   }
