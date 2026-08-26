@@ -21,6 +21,7 @@ interface PinballBumper {
   y: number;
   radius: number;
   type: 'bumper' | 'star' | 'gem';
+  cardId: number;
   icon: string;
   points: number;
   hitAnim: number;
@@ -95,6 +96,7 @@ export const VoxelPinballClimberGame: React.FC<VoxelPinballClimberGameProps> = (
 
         const isStar = (r + c + floor) % 3 === 0;
         const isGem = (r + c) % 4 === 0;
+        const cardId = isStar ? 100 : (isGem ? 92 : 58);
 
         bumpers.push({
           id: bId++,
@@ -102,6 +104,7 @@ export const VoxelPinballClimberGame: React.FC<VoxelPinballClimberGameProps> = (
           y: by,
           radius: isStar ? 22 : 18,
           type: isStar ? 'star' : (isGem ? 'gem' : 'bumper'),
+          cardId,
           icon: isStar ? '⭐' : (isGem ? '💎' : '🎯'),
           points: isStar ? 500 : (isGem ? 350 : 200),
           hitAnim: 0,
@@ -356,29 +359,31 @@ export const VoxelPinballClimberGame: React.FC<VoxelPinballClimberGameProps> = (
       ctx.strokeRect(12, 12, w - 24, h - 24);
       ctx.shadowBlur = 0;
 
-      // Render Bumpers
+      // Render Bumpers (Card Sprites)
       s.bumpers.forEach((b) => {
         ctx.save();
         ctx.translate(b.x, b.y);
 
         if (b.hitAnim > 0) {
           ctx.scale(1 + b.hitAnim * 0.3, 1 + b.hitAnim * 0.3);
-          ctx.shadowColor = '#fde047';
-          ctx.shadowBlur = 20;
         }
 
-        ctx.fillStyle = '#1e293b';
-        ctx.beginPath();
-        ctx.arc(0, 0, b.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = b.type === 'star' ? '#fde047' : (b.type === 'gem' ? '#38bdf8' : '#f43f5e');
-        ctx.lineWidth = 2.5;
-        ctx.stroke();
+        drawCardSprite(
+          ctx,
+          b.cardId,
+          -b.radius,
+          -b.radius,
+          b.radius * 2,
+          b.radius * 2,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: b.type === 'star' ? '#fde047' : b.type === 'gem' ? '#38bdf8' : '#f43f5e',
+            shadowBlur: b.hitAnim > 0 ? 20 : 6,
+            shadowColor: b.type === 'star' ? 'rgba(253, 224, 71, 0.9)' : b.type === 'gem' ? 'rgba(56, 189, 248, 0.8)' : 'rgba(244, 63, 94, 0.8)',
+          }
+        );
 
-        ctx.font = `${b.radius * 1.3}px serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(b.icon, 0, 0);
         ctx.restore();
       });
 
@@ -394,15 +399,26 @@ export const VoxelPinballClimberGame: React.FC<VoxelPinballClimberGameProps> = (
       ctx.strokeRect(-s.paddleW / 2, -s.paddleH / 2, s.paddleW, s.paddleH);
       ctx.restore();
 
-      // Render Glowing Pinball
+      // Render Glowing Pinball (Player Hero Badge)
       ctx.save();
       ctx.translate(s.ballX, s.ballY);
-      ctx.shadowColor = '#fde047';
-      ctx.shadowBlur = 18;
-      ctx.font = '24px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🟡', 0, 0);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -16,
+        -16,
+        32,
+        32,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 16,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -414,7 +430,7 @@ export const VoxelPinballClimberGame: React.FC<VoxelPinballClimberGameProps> = (
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx, setupFloorBumpers]);
+  }, [playSfx, setupFloorBumpers, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
