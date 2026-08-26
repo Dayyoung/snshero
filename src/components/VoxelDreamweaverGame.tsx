@@ -385,29 +385,33 @@ export const VoxelDreamweaverGame: React.FC<VoxelDreamweaverGameProps> = ({
         }
       }
 
-      // Render Constellation Star Nodes
+      // Render Constellation Star Nodes (Card Sprites)
       currentStage.stars.forEach((star) => {
         const isCurrent = star.id === s.currentStar;
         const isConnected = s.drawnEdges.some((e) => e.from === star.id || e.to === star.id);
+        const starCardId = star.id === 1 ? playerHeroId : isConnected ? 100 : ((star.id * 13) % 40 + 1);
 
-        ctx.fillStyle = isCurrent ? '#fde047' : isConnected ? '#38bdf8' : '#e2e8f0';
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, isCurrent ? 14 : 10, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        ctx.font = '16px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('⭐', star.x, star.y);
+        drawCardSprite(
+          ctx,
+          starCardId,
+          star.x - (isCurrent ? 14 : 11),
+          star.y - (isCurrent ? 14 : 11),
+          isCurrent ? 28 : 22,
+          isCurrent ? 28 : 22,
+          {
+            circleClip: true,
+            borderWidth: isCurrent ? 2 : 1.5,
+            borderColor: isCurrent ? '#fde047' : isConnected ? '#38bdf8' : 'rgba(255, 255, 255, 0.7)',
+            shadowBlur: isCurrent ? 12 : isConnected ? 8 : 4,
+            shadowColor: isCurrent ? 'rgba(253, 224, 71, 0.9)' : isConnected ? 'rgba(56, 189, 248, 0.8)' : 'rgba(255, 255, 255, 0.5)',
+          }
+        );
       });
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, []);
+  }, [playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;

@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-26 20:30 KST / 11:30 UTC] [게임개선 10분 크론작업 20회차: VoxelDreamweaverGame 별자리 스타 노드 및 알파 스타 영웅 배지 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelDreamweaverGame.tsx` (블리츠 스타 트레이서)
+- **개선 내역**:
+  1. 별자리 스타 노드들을 공식 카드 스프라이트(`drawCardSprite`)로 전면 교체.
+  2. 알파 스타(첫 번째 별)에 플레이어 대표 카드 영웅 배지(`playerHeroId`) 장착.
+  3. 드래그 연결된 별에 황금 에너지 카드 스프라이트(ID 100) 오버레이 연동.
+  4. 가상 조이스틱 0개 100% 손가락 직접 잇기 드래그 제스처 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelDreamweaverGame 별자리 노드 카드 스프라이트화 및 퓨어 스타트레이스 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 20:20 KST / 11:20 UTC] [게임개선 10분 크론작업 19회차: VoxelDreadShadowGame 크리스탈, 이미터 및 보스 코어 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelDreadShadowGame.tsx` (블리츠 프리즘 레이저)
 - **개선 내역**:
