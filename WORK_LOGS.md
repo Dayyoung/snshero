@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-08-26 20:40 KST / 11:40 UTC] [게임개선 10분 크론작업 21회차: VoxelDriftMasterGame 트랙 앵커 및 레이서 영웅 배지 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelDriftMasterGame.tsx` (블리츠 슬링 드리프트)
+- **개선 내역**:
+  1. 트랙 앵커 피봇 노드를 공식 카드 에너지/피봇 스프라이트(`drawCardSprite`)로 전면 교체.
+  2. 드리프트 슈퍼카 중심에 플레이어 대표 카드 영웅 배지(`playerHeroId`) 장착.
+  3. 가상 조이스틱 0개 100% 손가락 화면 길게 누르기 & 떼기(Hold & Release) 슬링샷 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelDriftMasterGame 트랙 앵커 카드 스프라이트화 및 퓨어 슬링드리프트 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 20:30 KST / 11:30 UTC] [게임개선 10분 크론작업 20회차: VoxelDreamweaverGame 별자리 스타 노드 및 알파 스타 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelDreamweaverGame.tsx` (블리츠 스타 트레이서)
 - **개선 내역**:

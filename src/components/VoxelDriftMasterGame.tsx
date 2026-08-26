@@ -280,10 +280,22 @@ export const VoxelDriftMasterGame: React.FC<VoxelDriftMasterGameProps> = ({
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        ctx.font = '16px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('⚓', c.x, c.y);
+        // Track Anchor Card Sprite Emblem
+        drawCardSprite(
+          ctx,
+          18,
+          c.x - 12,
+          c.y - 12,
+          24,
+          24,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: s.activeCorner?.id === c.id ? '#fde047' : '#38bdf8',
+            shadowBlur: 8,
+            shadowColor: s.activeCorner?.id === c.id ? 'rgba(253, 224, 71, 0.9)' : 'rgba(56, 189, 248, 0.7)',
+          }
+        );
 
         // Drift Tether Line if Holding
         if (s.isHolding && s.activeCorner && s.activeCorner.id === c.id) {
@@ -319,16 +331,29 @@ export const VoxelDriftMasterGame: React.FC<VoxelDriftMasterGameProps> = ({
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      // Windshield
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(-9, -10, 18, 10);
+      // Hero Driver Emblem on Car
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -9,
+        -9,
+        18,
+        18,
+        {
+          circleClip: true,
+          borderWidth: 1,
+          borderColor: '#ffffff',
+          shadowBlur: 6,
+          shadowColor: 'rgba(244, 63, 94, 0.8)',
+        }
+      );
 
       ctx.restore();
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
