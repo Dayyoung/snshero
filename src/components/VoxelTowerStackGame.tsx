@@ -261,6 +261,25 @@ export const VoxelTowerStackGame: React.FC<VoxelTowerStackGameProps> = ({
         for (let wx = layer.x + 6; wx < layer.x + layer.width - 6; wx += 14) {
           ctx.fillRect(wx, y + 3, 6, blockHeight - 8);
         }
+
+        // Layer Theme Badge (Every 3 floors)
+        if (idx % 3 === 0 && layer.width > 30) {
+          const layerCardId = idx === 0 ? 78 : (idx >= 15 ? 83 : (idx >= 9 ? 100 : 92));
+          drawCardSprite(
+            ctx,
+            layerCardId,
+            layer.x + layer.width / 2 - 8,
+            y,
+            16,
+            16,
+            {
+              circleClip: true,
+              borderWidth: 1,
+              borderColor: '#ffffff',
+              shadowBlur: 6,
+            }
+          );
+        }
       });
       ctx.shadowBlur = 0;
 
@@ -280,6 +299,23 @@ export const VoxelTowerStackGame: React.FC<VoxelTowerStackGameProps> = ({
       }
       ctx.shadowBlur = 0;
 
+      // Active Moving Block Architect Hero Badge
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        s.currentX + s.currentWidth / 2 - 12,
+        activeY - 12,
+        24,
+        24,
+        {
+          circleClip: true,
+          borderWidth: 1.5,
+          borderColor: '#fde047',
+          shadowBlur: 12,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
+
       // Render Particles
       s.particles.forEach((p) => {
         ctx.fillStyle = p.color;
@@ -289,7 +325,7 @@ export const VoxelTowerStackGame: React.FC<VoxelTowerStackGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, []);
+  }, [playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
