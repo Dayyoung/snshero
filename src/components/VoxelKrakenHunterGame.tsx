@@ -317,39 +317,66 @@ export const VoxelKrakenHunterGame: React.FC<VoxelKrakenHunterGameProps> = ({
       });
 
       // Render Kraken Tentacles
+      // Render Kraken Tentacles (Card Sprites)
       s.tentacles.forEach((t) => {
         if (!t.isCut) {
           ctx.save();
           ctx.translate(t.x, t.y);
-          ctx.font = '40px serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('🐙', 0, 0);
+
+          drawCardSprite(
+            ctx,
+            49,
+            -20,
+            -20,
+            40,
+            40,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: '#38bdf8',
+              shadowBlur: 8,
+              shadowColor: 'rgba(56, 189, 248, 0.8)',
+            }
+          );
 
           // Tentacle Mini HP Bar
           ctx.fillStyle = '#1e293b';
-          ctx.fillRect(-15, 22, 30, 4);
+          ctx.fillRect(-15, 24, 30, 4);
           ctx.fillStyle = '#38bdf8';
-          ctx.fillRect(-15, 22, 30 * (t.hp / t.maxHp), 4);
+          ctx.fillRect(-15, 24, 30 * (t.hp / t.maxHp), 4);
           ctx.restore();
         }
       });
 
-      // Render Kraken Central Core Eye
+      // Render Kraken Central Core (Card Sprite)
       const coreX = 180;
       const coreY = 240;
       ctx.save();
       ctx.translate(coreX, coreY);
 
+      drawCardSprite(
+        ctx,
+        98,
+        -36,
+        -36,
+        72,
+        72,
+        {
+          circleClip: true,
+          borderWidth: 2.5,
+          borderColor: s.groggyTimer > 0 ? '#fde047' : '#ef4444',
+          shadowBlur: s.groggyTimer > 0 ? 25 : 12,
+          shadowColor: s.groggyTimer > 0 ? 'rgba(253, 224, 71, 0.9)' : 'rgba(239, 68, 68, 0.8)',
+        }
+      );
+
+      // Groggy Stun Indicator
       if (s.groggyTimer > 0) {
-        ctx.shadowColor = '#fde047';
-        ctx.shadowBlur = 25;
+        ctx.font = '22px serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('💫 GROGGY! 💫', 0, -45);
       }
 
-      ctx.font = s.groggyTimer > 0 ? '70px serif' : '62px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(s.groggyTimer > 0 ? '💫' : '👁️', 0, 0);
       ctx.restore();
 
       // Boss Health Bar at Top
@@ -369,7 +396,24 @@ export const VoxelKrakenHunterGame: React.FC<VoxelKrakenHunterGameProps> = ({
       ctx.font = 'bold 13px monospace';
       ctx.fillStyle = '#fde047';
       ctx.textAlign = 'center';
-      ctx.fillText(`심해의 지배자 크라켄 [${s.krakenHp}/${maxKrakenHp}]`, w / 2, barY - 10);
+      ctx.fillText(`${isKo ? '심해의 지배자 크라켄' : 'Abyssal Lord Kraken'} [${s.krakenHp}/${maxKrakenHp}]`, w / 2, barY - 10);
+
+      // Player Hero Hunter at Bottom
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        w / 2 - 24,
+        420,
+        48,
+        48,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#38bdf8',
+          shadowBlur: 10,
+          shadowColor: 'rgba(56, 189, 248, 0.8)',
+        }
+      );
 
       // Render Floating Hit Effects
       s.hitEffects.forEach((eff) => {
@@ -382,7 +426,7 @@ export const VoxelKrakenHunterGame: React.FC<VoxelKrakenHunterGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
