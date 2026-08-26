@@ -294,18 +294,22 @@ export const VoxelBattlegroundsGame: React.FC<VoxelBattlegroundsGameProps> = ({
         ctx.stroke();
       }
 
-      // Boss Mecha
-      ctx.fillStyle = '#e11d48';
-      ctx.beginPath();
-      ctx.arc(s.bossX, s.bossY, 26, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.font = '24px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('👾', s.bossX, s.bossY);
+      // Boss Mecha (Official Card Boss Monster)
+      drawCardSprite(
+        ctx,
+        142,
+        s.bossX - 28,
+        s.bossY - 28,
+        56,
+        56,
+        {
+          circleClip: true,
+          borderWidth: 2.5,
+          borderColor: '#e11d48',
+          shadowBlur: 14,
+          shadowColor: 'rgba(225, 29, 72, 0.8)',
+        }
+      );
 
       // Bullets
       s.bullets.forEach((b) => {
@@ -318,14 +322,22 @@ export const VoxelBattlegroundsGame: React.FC<VoxelBattlegroundsGameProps> = ({
         ctx.stroke();
       });
 
-      // Player Hero
-      ctx.fillStyle = '#06b6d4';
-      ctx.beginPath();
-      ctx.arc(s.heroX, s.heroY, s.heroRadius, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2;
-      ctx.stroke();
+      // Player Hero (Official Card Hero Sprite)
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        s.heroX - 16,
+        s.heroY - 16,
+        32,
+        32,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#06b6d4',
+          shadowBlur: 10,
+          shadowColor: 'rgba(6, 182, 212, 0.8)',
+        }
+      );
 
       // Shield Barrier Aura
       if (s.shieldActive) {
@@ -334,14 +346,14 @@ export const VoxelBattlegroundsGame: React.FC<VoxelBattlegroundsGameProps> = ({
         ctx.beginPath();
         ctx.arc(s.heroX, s.heroY, 26, 0, Math.PI * 2);
         ctx.stroke();
-        ctx.fillStyle = 'rgba(56, 189, 248, 0.2)';
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.25)';
         ctx.fill();
       }
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
