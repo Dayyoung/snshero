@@ -21,6 +21,7 @@ interface FloatingDebris {
   y: number;
   vx: number;
   type: 'wood' | 'chest' | 'coconut' | 'shark';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -112,8 +113,8 @@ export const VoxelRaftSurvivalGame: React.FC<VoxelRaftSurvivalGameProps> = ({
 
     // Initial Debris on Ocean
     s.debris.push(
-      { id: s.debrisCounter++, x: 80, y: 140, vx: 40, type: 'wood', icon: '🪵', points: 250, radius: 22, hp: 1, collected: false },
-      { id: s.debrisCounter++, x: 270, y: 190, vx: -50, type: 'chest', icon: '📦', points: 600, radius: 24, hp: 1, collected: false }
+      { id: s.debrisCounter++, x: 80, y: 140, vx: 40, type: 'wood', cardId: 34, icon: '🪵', points: 250, radius: 22, hp: 1, collected: false },
+      { id: s.debrisCounter++, x: 270, y: 190, vx: -50, type: 'chest', cardId: 100, icon: '📦', points: 600, radius: 24, hp: 1, collected: false }
     );
 
     setResourcesSalvaged(0);
@@ -254,6 +255,7 @@ export const VoxelRaftSurvivalGame: React.FC<VoxelRaftSurvivalGameProps> = ({
         const isShark = rand < 0.18;
         const isChest = rand < 0.45;
         const isCoconut = rand < 0.7;
+        const cardId = isShark ? 48 : (isChest ? 100 : (isCoconut ? 17 : 34));
 
         s.debris.push({
           id: s.debrisCounter++,
@@ -261,9 +263,10 @@ export const VoxelRaftSurvivalGame: React.FC<VoxelRaftSurvivalGameProps> = ({
           y: 90 + Math.random() * 200,
           vx: (Math.random() < 0.5 ? 1 : -1) * (isShark ? 70 : (isChest ? 40 : 55)),
           type: isShark ? 'shark' : (isChest ? 'chest' : (isCoconut ? 'coconut' : 'wood')),
+          cardId,
           icon: isShark ? '🦈' : (isChest ? '📦' : (isCoconut ? '🥥' : '🪵')),
           points: isShark ? 0 : (isChest ? 600 : (isCoconut ? 350 : 250)),
-          radius: isShark ? 28 : (isChest ? 24 : 20),
+          radius: isShark ? 28 : (isChest ? 24 : 22),
           hp: isShark ? 2 : 1,
           collected: false,
         });
@@ -407,18 +410,27 @@ export const VoxelRaftSurvivalGame: React.FC<VoxelRaftSurvivalGameProps> = ({
         ctx.restore();
       }
 
-      // Render Floating Ocean Debris
+      // Render Floating Ocean Debris (Card Sprites)
       s.debris.forEach((d) => {
         ctx.save();
         ctx.translate(d.x, d.y);
-        if (d.type === 'chest') {
-          ctx.shadowColor = '#fde047';
-          ctx.shadowBlur = 15;
-        }
-        ctx.font = `${d.radius * 1.8}px serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(d.icon, 0, 0);
+
+        drawCardSprite(
+          ctx,
+          d.cardId,
+          -d.radius,
+          -d.radius,
+          d.radius * 2,
+          d.radius * 2,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: d.type === 'chest' ? '#fde047' : (d.type === 'shark' ? '#ef4444' : (d.type === 'coconut' ? '#22c55e' : '#ca8a04')),
+            shadowBlur: d.type === 'chest' ? 16 : 6,
+            shadowColor: d.type === 'chest' ? 'rgba(253, 224, 71, 0.9)' : (d.type === 'shark' ? 'rgba(239, 68, 68, 0.8)' : 'rgba(202, 138, 4, 0.6)'),
+          }
+        );
+
         ctx.restore();
       });
 
@@ -433,11 +445,23 @@ export const VoxelRaftSurvivalGame: React.FC<VoxelRaftSurvivalGameProps> = ({
       ctx.lineWidth = 3;
       ctx.strokeRect(-raftWidth / 2, -raftHeight / 2, raftWidth, raftHeight);
 
-      // Raft Sailor / Hook Base
-      ctx.font = '32px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🧑‍🌾', 0, -5);
+      // Raft Sailor / Hook Base (Player Hero Badge)
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -20,
+        -25,
+        40,
+        40,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 14,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -449,7 +473,7 @@ export const VoxelRaftSurvivalGame: React.FC<VoxelRaftSurvivalGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [isKo, playSfx]);
+  }, [isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
