@@ -23,6 +23,7 @@ interface EnemyKnight {
   hp: number;
   maxHp: number;
   type: 'footman' | 'cavalry' | 'lord';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -113,8 +114,8 @@ export const VoxelPinballKnightsGame: React.FC<VoxelPinballKnightsGameProps> = (
 
     // Initial 3 Knights
     s.knights.push(
-      { id: s.knightCounter++, x: 80, y: 150, vx: 50, hp: 1, maxHp: 1, type: 'footman', icon: '🛡️', points: 200, radius: 22, isHit: false },
-      { id: s.knightCounter++, x: 280, y: 200, vx: -65, hp: 2, maxHp: 2, type: 'cavalry', icon: '🐴', points: 450, radius: 26, isHit: false }
+      { id: s.knightCounter++, x: 80, y: 150, vx: 50, hp: 1, maxHp: 1, type: 'footman', cardId: 34, icon: '🛡️', points: 200, radius: 22, isHit: false },
+      { id: s.knightCounter++, x: 280, y: 200, vx: -65, hp: 2, maxHp: 2, type: 'cavalry', cardId: 55, icon: '🐴', points: 450, radius: 26, isHit: false }
     );
 
     setKnightsDefeated(0);
@@ -242,6 +243,7 @@ export const VoxelPinballKnightsGame: React.FC<VoxelPinballKnightsGameProps> = (
         const rand = Math.random();
         const isLord = rand < 0.18;
         const isCavalry = rand < 0.5;
+        const cardId = isLord ? 83 : (isCavalry ? 55 : 34);
 
         s.knights.push({
           id: s.knightCounter++,
@@ -251,6 +253,7 @@ export const VoxelPinballKnightsGame: React.FC<VoxelPinballKnightsGameProps> = (
           hp: isLord ? 4 : (isCavalry ? 2 : 1),
           maxHp: isLord ? 4 : (isCavalry ? 2 : 1),
           type: isLord ? 'lord' : (isCavalry ? 'cavalry' : 'footman'),
+          cardId,
           icon: isLord ? '👑' : (isCavalry ? '🐴' : '🛡️'),
           points: isLord ? 1000 : (isCavalry ? 450 : 200),
           radius: isLord ? 30 : (isCavalry ? 26 : 22),
@@ -384,51 +387,81 @@ export const VoxelPinballKnightsGame: React.FC<VoxelPinballKnightsGameProps> = (
         ctx.stroke();
       }
 
-      // Render Enemy Knights
+      // Render Enemy Knights (Card Sprites)
       s.knights.forEach((k) => {
         ctx.save();
         ctx.translate(k.x, k.y);
-        if (k.type === 'lord') {
-          ctx.shadowColor = '#fde047';
-          ctx.shadowBlur = 20;
-        }
-        ctx.font = `${k.radius * 1.8}px serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(k.icon, 0, 0);
+
+        drawCardSprite(
+          ctx,
+          k.cardId,
+          -k.radius,
+          -k.radius,
+          k.radius * 2,
+          k.radius * 2,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: k.type === 'lord' ? '#fde047' : (k.type === 'cavalry' ? '#38bdf8' : '#ef4444'),
+            shadowBlur: k.type === 'lord' ? 18 : 6,
+            shadowColor: k.type === 'lord' ? 'rgba(253, 224, 71, 0.9)' : (k.type === 'cavalry' ? 'rgba(56, 189, 248, 0.8)' : 'rgba(239, 68, 68, 0.8)'),
+          }
+        );
 
         // HP Bar for Stronger Knights
         if (k.maxHp > 1) {
           ctx.fillStyle = '#1e293b';
-          ctx.fillRect(-14, k.radius + 2, 28, 4);
+          ctx.fillRect(-14, k.radius + 3, 28, 4);
           ctx.fillStyle = '#ef4444';
-          ctx.fillRect(-14, k.radius + 2, 28 * (k.hp / k.maxHp), 4);
+          ctx.fillRect(-14, k.radius + 3, 28 * (k.hp / k.maxHp), 4);
         }
         ctx.restore();
       });
 
-      // Render Flying Shields
+      // Render Flying Shields (Player Hero Badge)
       s.shields.forEach((sh) => {
         ctx.save();
         ctx.translate(sh.x, sh.y);
-        ctx.shadowColor = '#38bdf8';
-        ctx.shadowBlur = 15;
-        ctx.font = '28px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('🛡️', 0, 0);
+
+        drawCardSprite(
+          ctx,
+          playerHeroId,
+          -16,
+          -16,
+          32,
+          32,
+          {
+            circleClip: true,
+            borderWidth: 2,
+            borderColor: '#38bdf8',
+            shadowBlur: 14,
+            shadowColor: 'rgba(56, 189, 248, 0.8)',
+          }
+        );
+
         ctx.restore();
       });
 
-      // Render Slingshot Base & Ready Shield
+      // Render Slingshot Base & Ready Shield (Player Hero Badge)
       ctx.save();
       ctx.translate(s.isAiming ? s.dragPos.x : originX, s.isAiming ? s.dragPos.y : originY);
-      ctx.shadowColor = '#38bdf8';
-      ctx.shadowBlur = 18;
-      ctx.font = '36px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🛡️', 0, 0);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -20,
+        -20,
+        40,
+        40,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 16,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -440,7 +473,7 @@ export const VoxelPinballKnightsGame: React.FC<VoxelPinballKnightsGameProps> = (
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;

@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-27 01:20 KST / 16:20 UTC] [게임개선 10분 크론작업 49회차: VoxelPinballKnightsGame 적 기사 및 슬링 실드 영웅 배지 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelPinballKnightsGame.tsx` (블리츠 핀볼 나이츠)
+- **개선 내역**:
+  1. 3종 적 기사(보병, 기병, 영주)를 공식 카드 스프라이트(ID 34, 55, 83)로 전면 교체.
+  2. 날아가는 방패 투사체 및 슬링샷 장전 위치에 플레이어 대표 카드 영웅 배지(`playerHeroId`) 장착.
+  3. 조준 점선 궤적 가이드 및 벽면 튕김 물리 반사각 시뮬레이션 고도화.
+  4. 가상 조이스틱 0개 100% 손가락 직접 뒤로 당겼다 놓는 슬링샷 방패 투척(Slingshot Pull & Release) 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelPinballKnightsGame 적기사 및 슬링실드 카드 스프라이트화 및 퓨어 핀볼나이츠 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-27 01:10 KST / 16:10 UTC] [게임개선 10분 크론작업 48회차: VoxelPinballClimberGame 범퍼 및 핀볼 볼 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelPinballClimberGame.tsx` (블리츠 핀볼 클라이머)
 - **개선 내역**:
