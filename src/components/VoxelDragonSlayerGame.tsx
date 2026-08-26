@@ -297,23 +297,26 @@ export const VoxelDragonSlayerGame: React.FC<VoxelDragonSlayerGameProps> = ({
       ctx.lineTo(240, h);
       ctx.stroke();
 
-      // Render Fireballs
+      // Render Fireballs (Card Fire Energy)
       s.fireballs.forEach((fb) => {
-        ctx.fillStyle = '#ef4444';
-        ctx.beginPath();
-        ctx.arc(fb.x, fb.y, fb.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#fef08a';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-
-        ctx.font = '18px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('🔥', fb.x, fb.y);
+        drawCardSprite(
+          ctx,
+          7,
+          fb.x - 14,
+          fb.y - 14,
+          28,
+          28,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: '#fde047',
+            shadowBlur: 8,
+            shadowColor: 'rgba(253, 224, 71, 0.8)',
+          }
+        );
       });
 
-      // Render Boss Dragon (Red Wyvern)
+      // Render Boss Dragon (Red Wyvern Card Sprite)
       const dX = s.dragonX;
       const dY = s.dragonY;
 
@@ -333,28 +336,22 @@ export const VoxelDragonSlayerGame: React.FC<VoxelDragonSlayerGameProps> = ({
       ctx.closePath();
       ctx.fill();
 
-      // Dragon Body
-      ctx.fillStyle = s.isGroggy ? '#991b1b' : '#b91c1c';
-      ctx.beginPath();
-      ctx.ellipse(dX, dY + 10, 36, 26, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      // Dragon Head
-      ctx.fillStyle = s.isGroggy ? '#f59e0b' : '#ef4444';
-      ctx.beginPath();
-      ctx.arc(dX, dY - 20, 22, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#fde047';
-      ctx.lineWidth = 2.5;
-      ctx.stroke();
-
-      ctx.font = '32px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(s.isGroggy ? '😵‍💫' : '🐲', dX, dY - 18);
+      // Dragon Body & Card Sprite Head
+      drawCardSprite(
+        ctx,
+        62,
+        dX - 32,
+        dY - 32,
+        64,
+        64,
+        {
+          circleClip: true,
+          borderWidth: 2.5,
+          borderColor: s.isGroggy ? '#eab308' : '#ef4444',
+          shadowBlur: 14,
+          shadowColor: s.isGroggy ? 'rgba(234, 179, 8, 0.9)' : 'rgba(239, 68, 68, 0.9)',
+        }
+      );
 
       // Boss Health Bar above Dragon
       const barW = 140;
@@ -376,13 +373,28 @@ export const VoxelDragonSlayerGame: React.FC<VoxelDragonSlayerGameProps> = ({
       ctx.strokeStyle = '#06b6d4';
       ctx.lineWidth = 1.5;
       ctx.strokeRect(0, 480, w, 60);
-      ctx.font = '18px serif';
-      ctx.fillText('🏹 HERO BASE DEFENSE 🛡️', w / 2, 510);
+
+      // Player Hero Base Emblem
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        w / 2 - 16,
+        494,
+        32,
+        32,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#06b6d4',
+          shadowBlur: 10,
+          shadowColor: 'rgba(6, 182, 212, 0.8)',
+        }
+      );
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [isKo, playSfx]);
+  }, [isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
