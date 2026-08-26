@@ -20,6 +20,7 @@ interface SkyStep {
   lane: number; // 0: Left, 1: Center, 2: Right
   y: number;
   type: 'normal' | 'cloud' | 'gem' | 'goal';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -90,12 +91,14 @@ export const VoxelSkyParkourGame: React.FC<VoxelSkyParkourGameProps> = ({
       const isGoal = i === maxSteps - 1;
       const isGem = (i + 1) % 4 === 0;
       const isCloud = (i + 1) % 3 === 0;
+      const cardId = isGoal ? 83 : (isGem ? 100 : (isCloud ? 92 : 34));
 
       steps.push({
         id: i + 1,
         lane: curLane,
         y: 420 - i * 75,
         type: isGoal ? 'goal' : (isGem ? 'gem' : (isCloud ? 'cloud' : 'normal')),
+        cardId,
         icon: isGoal ? '🏆' : (isGem ? '💎' : (isCloud ? '☁️' : '🧱')),
         points: isGoal ? 1500 : (isGem ? 400 : 250),
         radius: 28,
@@ -282,41 +285,49 @@ export const VoxelSkyParkourGame: React.FC<VoxelSkyParkourGameProps> = ({
           const isCurrent = idx === s.currentStepIdx;
           const isNext = idx === s.currentStepIdx + 1;
 
-          if (isNext) {
-            ctx.shadowColor = '#fde047';
-            ctx.shadowBlur = 15;
-          }
-
-          // Platform Base
-          ctx.fillStyle = isCurrent ? '#047857' : (isNext ? '#0284c7' : '#1e293b');
-          ctx.beginPath();
-          ctx.arc(0, 0, st.radius, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.strokeStyle = isNext ? '#fde047' : '#ffffff';
-          ctx.lineWidth = 2.5;
-          ctx.stroke();
-
-          ctx.font = `${st.radius * 1.3}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(st.icon, 0, 0);
+          drawCardSprite(
+            ctx,
+            st.cardId,
+            -st.radius,
+            -st.radius,
+            st.radius * 2,
+            st.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: isNext ? 2.5 : 1.5,
+              borderColor: isNext ? '#fde047' : (isCurrent ? '#34d399' : '#94a3b8'),
+              shadowBlur: isNext ? 18 : 6,
+              shadowColor: isNext ? 'rgba(253, 224, 71, 0.9)' : (isCurrent ? 'rgba(52, 211, 153, 0.8)' : 'rgba(148, 163, 184, 0.5)'),
+            }
+          );
 
           ctx.restore();
         }
       });
 
-      // Render Parkour Hero (Jumping Animation)
+      // Render Parkour Hero (Jumping Animation, Player Hero Badge)
       const curX = laneX[s.playerLane];
       const jumpOffset = Math.sin(s.jumpAnim * Math.PI) * 22;
 
       ctx.save();
       ctx.translate(curX, s.playerY - jumpOffset);
-      ctx.shadowColor = '#fde047';
-      ctx.shadowBlur = 18;
-      ctx.font = '36px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🏃', 0, 0);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -20,
+        -20,
+        40,
+        40,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 18,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -328,7 +339,7 @@ export const VoxelSkyParkourGame: React.FC<VoxelSkyParkourGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [laneX]);
+  }, [laneX, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
