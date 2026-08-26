@@ -21,7 +21,7 @@ interface TrafficCar {
   y: number;
   speed: number;
   color: string;
-  icon: string;
+  cardId: number;
   passed: boolean;
 }
 
@@ -176,7 +176,8 @@ export const VoxelCrazyTaxiGame: React.FC<VoxelCrazyTaxiGameProps> = ({
         s.spawnTimer = 0;
         const lanes = [90, 180, 270];
         const chosenLane = lanes[Math.floor(Math.random() * lanes.length)];
-        const icon = TRAFFIC_ICONS[Math.floor(Math.random() * TRAFFIC_ICONS.length)];
+        const trafficPool = [6, 14, 25, 36, 47, 59, 68, 79];
+        const randomCardId = trafficPool[Math.floor(Math.random() * trafficPool.length)];
 
         s.traffic.push({
           id: s.trafficCounter++,
@@ -184,7 +185,7 @@ export const VoxelCrazyTaxiGame: React.FC<VoxelCrazyTaxiGameProps> = ({
           y: -60,
           speed: 160 + Math.random() * 80,
           color: '#ef4444',
-          icon,
+          cardId: randomCardId,
           passed: false,
         });
 
@@ -299,23 +300,42 @@ export const VoxelCrazyTaxiGame: React.FC<VoxelCrazyTaxiGameProps> = ({
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Render Coins (Gold)
+      // Render Coins (Gold Card Energy)
       s.coins.forEach((c) => {
-        ctx.fillStyle = '#fbbf24';
-        ctx.beginPath();
-        ctx.arc(c.x, c.y, 8, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
+        drawCardSprite(
+          ctx,
+          100,
+          c.x - 9,
+          c.y - 9,
+          18,
+          18,
+          {
+            circleClip: true,
+            borderWidth: 1,
+            borderColor: '#fde047',
+            shadowBlur: 6,
+            shadowColor: 'rgba(253, 224, 71, 0.8)',
+          }
+        );
       });
 
-      // Render Traffic Cars
+      // Render Traffic Cars (Card Sprites)
       s.traffic.forEach((car) => {
-        ctx.font = '32px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(car.icon, car.x, car.y);
+        drawCardSprite(
+          ctx,
+          car.cardId,
+          car.x - 16,
+          car.y - 24,
+          32,
+          48,
+          {
+            circleClip: false,
+            borderWidth: 1.5,
+            borderColor: '#ef4444',
+            shadowBlur: 8,
+            shadowColor: 'rgba(239, 68, 68, 0.6)',
+          }
+        );
       });
 
       // Render Player Sports Car (Cyan Supercar)
@@ -327,9 +347,22 @@ export const VoxelCrazyTaxiGame: React.FC<VoxelCrazyTaxiGameProps> = ({
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      // Windshield & Headlights
-      ctx.fillStyle = '#082f49';
-      ctx.fillRect(s.carX - 12, s.carY - 14, 24, 14);
+      // Player Hero Driver Emblem
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        s.carX - 10,
+        s.carY - 10,
+        20,
+        20,
+        {
+          circleClip: true,
+          borderWidth: 1,
+          borderColor: '#38bdf8',
+          shadowBlur: 6,
+          shadowColor: 'rgba(56, 189, 248, 0.8)',
+        }
+      );
 
       // Headlight Beams
       ctx.fillStyle = 'rgba(56, 189, 248, 0.3)';
@@ -343,7 +376,7 @@ export const VoxelCrazyTaxiGame: React.FC<VoxelCrazyTaxiGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
