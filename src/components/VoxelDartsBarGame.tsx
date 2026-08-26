@@ -269,13 +269,29 @@ export const VoxelDartsBarGame: React.FC<VoxelDartsBarGameProps> = ({
       ctx.arc(0, 0, s.targetRadius * 0.3, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Stuck Knives attached to wheel
+      // Target Center Boss Monster Card Emblem
+      const stageBossCardId = 50 + currentStage * 10;
+      drawCardSprite(
+        ctx,
+        stageBossCardId,
+        -32,
+        -32,
+        64,
+        64,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#854d0e',
+          shadowBlur: 8,
+          shadowColor: 'rgba(133, 77, 14, 0.8)',
+        }
+      );
+
+      // Stuck Knives on wheel
       s.stuckKnives.forEach((k) => {
         ctx.save();
         ctx.rotate(k.angle);
-        ctx.translate(0, s.targetRadius);
-
-        // Knife Blade
+        ctx.translate(0, s.targetRadius - 10);
         ctx.fillStyle = '#e2e8f0';
         ctx.fillRect(-3, 0, 6, 28);
         ctx.fillStyle = '#f59e0b';
@@ -283,16 +299,27 @@ export const VoxelDartsBarGame: React.FC<VoxelDartsBarGameProps> = ({
         ctx.restore();
       });
 
-      // Target Apples on wheel
+      // Target Card Sprites on wheel (Bonus Targets)
       s.apples.forEach((a) => {
         if (!a.hit) {
           ctx.save();
           ctx.rotate(a.angle);
           ctx.translate(0, s.targetRadius - 10);
-          ctx.font = '22px serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('🍎', 0, 0);
+          drawCardSprite(
+            ctx,
+            16,
+            -11,
+            -11,
+            22,
+            22,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: '#ef4444',
+              shadowBlur: 6,
+              shadowColor: 'rgba(239, 68, 68, 0.8)',
+            }
+          );
           ctx.restore();
         }
       });
@@ -307,18 +334,34 @@ export const VoxelDartsBarGame: React.FC<VoxelDartsBarGameProps> = ({
         ctx.fillRect(targetX - 6, s.flyingKnife.y + 35, 12, 16);
       }
 
-      // Render Ready Knife at bottom
+      // Render Ready Knife & Player Hero Badge at bottom
       if (s.knivesLeft > 0 && !s.flyingKnife) {
         ctx.fillStyle = '#e2e8f0';
-        ctx.fillRect(targetX - 4, 450, 8, 35);
+        ctx.fillRect(targetX - 4, 440, 8, 32);
         ctx.fillStyle = '#38bdf8';
-        ctx.fillRect(targetX - 6, 485, 12, 16);
+        ctx.fillRect(targetX - 6, 472, 12, 14);
+
+        drawCardSprite(
+          ctx,
+          playerHeroId,
+          targetX - 12,
+          490,
+          24,
+          24,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: '#38bdf8',
+            shadowBlur: 8,
+            shadowColor: 'rgba(56, 189, 248, 0.8)',
+          }
+        );
       }
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [setupStage]);
+  }, [setupStage, currentStage, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
