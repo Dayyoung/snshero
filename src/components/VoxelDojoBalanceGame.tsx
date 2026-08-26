@@ -19,13 +19,14 @@ interface RivalFighter {
   name: string;
   enName: string;
   avatar: string;
+  cardId: number;
   pushPower: number; // Opponent pushing strength
 }
 
 const RIVALS: RivalFighter[] = [
-  { name: '도장 수련생', enName: 'Trainee', avatar: '🥋', pushPower: 38 },
-  { name: '붉은 오니', enName: 'Red Oni', avatar: '👹', pushPower: 50 },
-  { name: '천하장사 요코즈나', enName: 'Yokozuna', avatar: '🤼', pushPower: 65 },
+  { name: '도장 수련생', enName: 'Trainee', avatar: '🥋', cardId: 4, pushPower: 38 },
+  { name: '붉은 오니', enName: 'Red Oni', avatar: '👹', cardId: 27, pushPower: 50 },
+  { name: '천하장사 요코즈나', enName: 'Yokozuna', avatar: '🤼', cardId: 65, pushPower: 65 },
 ];
 
 export const VoxelDojoBalanceGame: React.FC<VoxelDojoBalanceGameProps> = ({
@@ -219,47 +220,55 @@ export const VoxelDojoBalanceGame: React.FC<VoxelDojoBalanceGameProps> = ({
       const pushOffset = ((s.power - 50) / 50) * 110;
       const shakeX = (Math.random() - 0.5) * s.shakeAnim;
 
-      // Render Player Sumo Fighter (Left Side, Cyan)
+      // Render Player Sumo Fighter (Left Side, Hero Card Sprite)
       const playerX = centerX - 45 + pushOffset + shakeX;
       const playerY = centerY;
 
-      ctx.fillStyle = '#0284c7';
-      ctx.beginPath();
-      ctx.arc(playerX, playerY, 32, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.font = '32px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🥊', playerX, playerY);
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        playerX - 32,
+        playerY - 32,
+        64,
+        64,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#38bdf8',
+          shadowBlur: 12,
+          shadowColor: 'rgba(56, 189, 248, 0.8)',
+        }
+      );
 
-      // Render Rival Fighter (Right Side, Amber/Red)
+      // Render Rival Fighter (Right Side, Rival Card Sprite)
       const rivalX = centerX + 45 + pushOffset - shakeX;
       const rivalY = centerY;
 
-      ctx.fillStyle = '#dc2626';
-      ctx.beginPath();
-      ctx.arc(rivalX, rivalY, 32, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.font = '32px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(currentRival.avatar, rivalX, rivalY);
+      drawCardSprite(
+        ctx,
+        currentRival.cardId,
+        rivalX - 32,
+        rivalY - 32,
+        64,
+        64,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#ef4444',
+          shadowBlur: 12,
+          shadowColor: 'rgba(239, 68, 68, 0.8)',
+        }
+      );
 
       // Impact Clash Sparks in Middle
       const clashX = (playerX + rivalX) / 2;
-      ctx.font = '24px serif';
-      ctx.fillText('⚡', clashX, centerY - 30);
+      ctx.font = '28px serif';
+      ctx.fillText('💥', clashX, centerY - 35);
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, currentRivalIdx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;

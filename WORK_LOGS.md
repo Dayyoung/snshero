@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-08-26 20:00 KST / 11:00 UTC] [게임개선 10분 크론작업 17회차: VoxelDojoBalanceGame 영웅 리키시 및 라이벌 파이터 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelDojoBalanceGame.tsx` (블리츠 스모 태클)
+- **개선 내역**:
+  1. 플레이어 영웅 리키시 아바타를 대표 카드 영웅 스프라이트(`playerHeroId`)로 전면 교체.
+  2. 3인의 라이벌 파이터(수련생, 오니, 요코즈나)를 공식 몬스터 카드 스프라이트(ID 4, 27, 65)로 전면 고도화.
+  3. 가상 조이스틱 0개 100% 손가락 직접 광속 탭 연타 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelDojoBalanceGame 영웅 및 라이벌 카드 스프라이트화 및 퓨어 탭러시 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 19:50 KST / 10:50 UTC] [게임개선 10분 크론작업 16회차: VoxelDeepSeaOdysseyGame 심해 오브젝트 및 잠수함 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelDeepSeaOdysseyGame.tsx` (블리츠 딥씨 다이버)
 - **개선 내역**:
