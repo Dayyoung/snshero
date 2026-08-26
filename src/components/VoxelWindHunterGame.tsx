@@ -21,6 +21,7 @@ interface FlyingTarget {
   y: number;
   vx: number;
   type: 'balloon' | 'bird' | 'eagle';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -118,8 +119,8 @@ export const VoxelWindHunterGame: React.FC<VoxelWindHunterGameProps> = ({
 
     // Initial Flying Targets
     s.targets.push(
-      { id: s.targetCounter++, x: 60, y: 130, vx: 50, type: 'balloon', icon: '🎈', points: 300, radius: 22, hit: false },
-      { id: s.targetCounter++, x: 300, y: 200, vx: -60, type: 'bird', icon: '🕊️', points: 500, radius: 24, hit: false }
+      { id: s.targetCounter++, x: 60, y: 130, vx: 50, type: 'balloon', cardId: 78, icon: '🎈', points: 300, radius: 22, hit: false },
+      { id: s.targetCounter++, x: 300, y: 200, vx: -60, type: 'bird', cardId: 26, icon: '🕊️', points: 500, radius: 24, hit: false }
     );
 
     setTargetsHit(0);
@@ -244,6 +245,7 @@ export const VoxelWindHunterGame: React.FC<VoxelWindHunterGameProps> = ({
         const rand = Math.random();
         const isEagle = rand < 0.2;
         const isBird = rand >= 0.2 && rand < 0.55;
+        const cardId = isEagle ? 83 : (isBird ? 26 : 78);
 
         s.targets.push({
           id: s.targetCounter++,
@@ -251,6 +253,7 @@ export const VoxelWindHunterGame: React.FC<VoxelWindHunterGameProps> = ({
           y: 70 + Math.random() * 180,
           vx: (Math.random() < 0.5 ? 1 : -1) * (isEagle ? 85 : (isBird ? 60 : 45)),
           type: isEagle ? 'eagle' : (isBird ? 'bird' : 'balloon'),
+          cardId,
           icon: isEagle ? '🦅' : (isBird ? '🕊️' : '🎈'),
           points: isEagle ? 800 : (isBird ? 500 : 300),
           radius: isEagle ? 28 : (isBird ? 24 : 22),
@@ -391,41 +394,52 @@ export const VoxelWindHunterGame: React.FC<VoxelWindHunterGameProps> = ({
         ctx.restore();
       });
 
-      // Render Targets
+      // Render Targets (Card Sprites)
       s.targets.forEach((t) => {
         if (!t.hit) {
           ctx.save();
           ctx.translate(t.x, t.y);
-          if (t.type === 'eagle') {
-            ctx.shadowColor = '#f59e0b';
-            ctx.shadowBlur = 18;
-          } else {
-            ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 12;
-          }
-          ctx.font = `${t.radius * 1.8}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(t.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            t.cardId,
+            -t.radius,
+            -t.radius,
+            t.radius * 2,
+            t.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: t.type === 'eagle' ? '#f59e0b' : '#38bdf8',
+              shadowBlur: t.type === 'eagle' ? 18 : 8,
+              shadowColor: t.type === 'eagle' ? 'rgba(245, 158, 11, 0.9)' : 'rgba(56, 189, 248, 0.8)',
+            }
+          );
+
           ctx.restore();
         }
       });
 
-      // Render Hunter Archer at Bottom (🏹)
+      // Render Hunter Archer at Bottom (Player Hero Badge)
       ctx.save();
       ctx.translate(bowOriginX, bowOriginY);
-      ctx.shadowColor = '#fde047';
-      ctx.shadowBlur = 18;
-      ctx.font = '44px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      drawCardSprite(ctx, playerHeroId, -22, -22, 44, 44, {
-        circleClip: true,
-        borderWidth: 2,
-        borderColor: '#fde047',
-        shadowBlur: 14,
-        shadowColor: 'rgba(253, 224, 71, 0.6)',
-      });
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -22,
+        -22,
+        44,
+        44,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 16,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -437,7 +451,7 @@ export const VoxelWindHunterGame: React.FC<VoxelWindHunterGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [bowOriginX, bowOriginY, playSfx]);
+  }, [bowOriginX, bowOriginY, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
