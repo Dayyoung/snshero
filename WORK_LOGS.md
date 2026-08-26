@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-26 21:20 KST / 12:20 UTC] [게임개선 10분 크론작업 25회차: VoxelFishingMasterGame 심해 어종 및 강태공 영웅 배지 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelFishingMasterGame.tsx` (블리츠 피싱 슬링)
+- **개선 내역**:
+  1. 4종 심해 어종(고등어, 참치, 청새치, 황금 고래)을 공식 카드 스프라이트(`drawCardSprite`)로 전면 교체.
+  2. 상단 낚싯배 중심에 플레이어 대표 카드 영웅 강태공 배지(`playerHeroId`) 장착.
+  3. 물고기 낚아챔(Hooked) 시 황금 테두리 및 펄스 글로우 광원 피드백 연동.
+  4. 가상 조이스틱 0개 100% 손가락 직접 탭 바늘 투척 및 윗방향 스와이프 챔질 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelFishingMasterGame 어종 및 낚싯배 카드 스프라이트화 및 퓨어 피싱 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 21:10 KST / 12:10 UTC] [게임개선 10분 크론작업 24회차: VoxelFireRescueGame 화염, 시민 및 소방대장 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelFireRescueGame.tsx` (블리츠 파이어 레스큐)
 - **개선 내역**:

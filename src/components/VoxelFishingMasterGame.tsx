@@ -21,6 +21,7 @@ interface SwimmingFish {
   y: number;
   vx: number;
   type: 'mackerel' | 'tuna' | 'marlin' | 'whale';
+  cardId: number;
   icon: string;
   name: string;
   enName: string;
@@ -103,6 +104,7 @@ export const VoxelFishingMasterGame: React.FC<VoxelFishingMasterGameProps> = ({
         y: 180 + Math.random() * 240,
         vx: isRight ? 60 + Math.random() * 40 : -(60 + Math.random() * 40),
         type: 'mackerel',
+        cardId: 9,
         icon: '🐟',
         name: '고등어',
         enName: 'Mackerel',
@@ -232,6 +234,7 @@ export const VoxelFishingMasterGame: React.FC<VoxelFishingMasterGameProps> = ({
         const randVal = Math.random();
 
         let type: 'mackerel' | 'tuna' | 'marlin' | 'whale' = 'mackerel';
+        let cardId = 9;
         let icon = '🐟';
         let name = '고등어';
         let enName = 'Mackerel';
@@ -240,6 +243,7 @@ export const VoxelFishingMasterGame: React.FC<VoxelFishingMasterGameProps> = ({
 
         if (randVal < 0.1) {
           type = 'whale';
+          cardId = 49;
           icon = '🐋';
           name = '황금 고래';
           enName = 'Golden Whale';
@@ -247,6 +251,7 @@ export const VoxelFishingMasterGame: React.FC<VoxelFishingMasterGameProps> = ({
           rad = 32;
         } else if (randVal < 0.35) {
           type = 'marlin';
+          cardId = 34;
           icon = '🦈';
           name = '청새치';
           enName = 'Marlin';
@@ -254,6 +259,7 @@ export const VoxelFishingMasterGame: React.FC<VoxelFishingMasterGameProps> = ({
           rad = 26;
         } else if (randVal < 0.65) {
           type = 'tuna';
+          cardId = 21;
           icon = '🐠';
           name = '참치';
           enName = 'Tuna';
@@ -267,6 +273,7 @@ export const VoxelFishingMasterGame: React.FC<VoxelFishingMasterGameProps> = ({
           y: 160 + Math.random() * 260,
           vx: isRight ? 70 + Math.random() * 50 : -(70 + Math.random() * 50),
           type,
+          cardId,
           icon,
           name,
           enName,
@@ -319,11 +326,22 @@ export const VoxelFishingMasterGame: React.FC<VoxelFishingMasterGameProps> = ({
       ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
       ctx.fillRect(0, 90, w, 6);
 
-      // Fishing Boat at Top-Center
-      ctx.font = '28px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('⛵', 180, 75);
+      // Fishing Boat & Angler Hero Badge at Top-Center
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        164,
+        60,
+        32,
+        32,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#38bdf8',
+          shadowBlur: 10,
+          shadowColor: 'rgba(56, 189, 248, 0.8)',
+        }
+      );
 
       // Fishing Line from Boat to Hook
       ctx.strokeStyle = '#ffffff';
@@ -335,20 +353,42 @@ export const VoxelFishingMasterGame: React.FC<VoxelFishingMasterGameProps> = ({
 
       // Fishing Hook (⚓)
       ctx.font = '18px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
       ctx.fillText('⚓', s.hookPos.x, s.hookPos.y);
 
-      // Render Swimming Fishes
+      // Render Swimming Fishes (Card Sprites)
       s.fishes.forEach((fish) => {
-        ctx.font = `${fish.radius * 1.5}px serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(fish.icon, fish.x, fish.y);
+        const borderColor =
+          fish.type === 'whale'
+            ? '#fde047'
+            : fish.type === 'marlin'
+            ? '#ec4899'
+            : fish.type === 'tuna'
+            ? '#38bdf8'
+            : '#94a3b8';
+
+        drawCardSprite(
+          ctx,
+          fish.cardId,
+          fish.x - fish.radius,
+          fish.y - fish.radius,
+          fish.radius * 2,
+          fish.radius * 2,
+          {
+            circleClip: true,
+            borderWidth: fish.isHooked ? 2 : 1.5,
+            borderColor: fish.isHooked ? '#fde047' : borderColor,
+            shadowBlur: fish.isHooked ? 12 : 6,
+            shadowColor: fish.isHooked ? 'rgba(253, 224, 71, 0.9)' : `${borderColor}88`,
+          }
+        );
       });
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [isKo, playSfx]);
+  }, [isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
