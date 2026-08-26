@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-26 21:10 KST / 12:10 UTC] [게임개선 10분 크론작업 24회차: VoxelFireRescueGame 화염, 시민 및 소방대장 배지 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelFireRescueGame.tsx` (블리츠 파이어 레스큐)
+- **개선 내역**:
+  1. 창문 화염 및 진화 완료 물방울을 공식 카드 몬스터/에너지 스프라이트(`drawCardSprite`)로 전면 교체.
+  2. 탈출하는 시민을 공식 카드 캐릭터 스프라이트(ID 46)로 연동.
+  3. 하단 소방 호스 노즐에 플레이어 대표 카드 영웅 소방대장 배지(`playerHeroId`) 장착.
+  4. 가상 조이스틱 0개 100% 손가락 직접 2D 드래그 조준 방수 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelFireRescueGame 화염 및 시민 카드 스프라이트화 및 퓨어 소방방수 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 21:00 KST / 12:00 UTC] [게임개선 10분 크론작업 23회차: VoxelFactoryCraftGame 반도체 칩 및 엔지니어 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelFactoryCraftGame.tsx` (블리츠 칩 머지)
 - **개선 내역**:

@@ -341,7 +341,7 @@ export const VoxelFireRescueGame: React.FC<VoxelFireRescueGameProps> = ({
       ctx.lineWidth = 2;
       ctx.strokeRect(40, 80, 280, 320);
 
-      // Render Windows & Fires
+      // Render Windows & Fires (Card Sprites)
       s.fires.forEach((f) => {
         // Window Frame
         ctx.fillStyle = f.extinguished ? '#0284c7' : '#0f172a';
@@ -351,10 +351,21 @@ export const VoxelFireRescueGame: React.FC<VoxelFireRescueGameProps> = ({
         ctx.strokeRect(f.x - 24, f.y - 24, 48, 48);
 
         if (!f.extinguished) {
-          ctx.font = '28px serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('🔥', f.x, f.y);
+          drawCardSprite(
+            ctx,
+            7,
+            f.x - 14,
+            f.y - 14,
+            28,
+            28,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: '#f97316',
+              shadowBlur: 6,
+              shadowColor: 'rgba(249, 115, 22, 0.8)',
+            }
+          );
 
           // Fire Health Bar
           const barW = 36;
@@ -367,20 +378,42 @@ export const VoxelFireRescueGame: React.FC<VoxelFireRescueGameProps> = ({
           ctx.fillStyle = '#f97316';
           ctx.fillRect(barX, barY, barW * (f.hp / f.maxHp), barH);
         } else {
-          ctx.font = '20px serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('💧', f.x, f.y);
+          drawCardSprite(
+            ctx,
+            12,
+            f.x - 12,
+            f.y - 12,
+            24,
+            24,
+            {
+              circleClip: true,
+              borderWidth: 1,
+              borderColor: '#38bdf8',
+              shadowBlur: 6,
+              shadowColor: 'rgba(56, 189, 248, 0.8)',
+            }
+          );
         }
       });
 
-      // Render Civilians
+      // Render Civilians (Card Sprites)
       s.civilians.forEach((civ) => {
         if (!civ.rescued) {
-          ctx.font = '26px serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('🏃', civ.x, civ.y);
+          drawCardSprite(
+            ctx,
+            46,
+            civ.x - 13,
+            civ.y - 13,
+            26,
+            26,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: '#10b981',
+              shadowBlur: 6,
+              shadowColor: 'rgba(16, 185, 129, 0.8)',
+            }
+          );
         }
       });
 
@@ -392,24 +425,27 @@ export const VoxelFireRescueGame: React.FC<VoxelFireRescueGameProps> = ({
         ctx.fill();
       });
 
-      // Fire Truck Nozzle at bottom
-      ctx.fillStyle = '#ef4444';
-      ctx.beginPath();
-      ctx.arc(180, 480, 26, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      ctx.font = '18px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🚒', 180, 480);
+      // Firefighter Hero Nozzle at bottom
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        164,
+        464,
+        32,
+        32,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#ef4444',
+          shadowBlur: 10,
+          shadowColor: 'rgba(239, 68, 68, 0.8)',
+        }
+      );
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [setupBuilding, playSfx]);
+  }, [setupBuilding, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
