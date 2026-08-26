@@ -326,33 +326,60 @@ export const VoxelLifeFlameGame: React.FC<VoxelLifeFlameGameProps> = ({
         ctx.stroke();
       });
 
-      // Sacred Flame Dragon Tree at Center
+      // Sacred Flame Dragon Tree at Center (Player Hero Guardian)
       ctx.save();
       ctx.translate(treeX, treeY);
-      ctx.shadowColor = '#10b981';
-      ctx.shadowBlur = 20;
-      ctx.font = '54px serif';
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -24,
+        -24,
+        48,
+        48,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#10b981',
+          shadowBlur: 18,
+          shadowColor: 'rgba(16, 185, 129, 0.9)',
+        }
+      );
+
+      ctx.font = '22px serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('🌳', 0, 0);
-      ctx.font = '28px serif';
-      ctx.fillText('🔥', 0, -25);
+      ctx.fillText('🔥', 0, -32);
       ctx.restore();
 
-      // Render Shadow Creeps
+      // Render Shadow Creeps (Card Sprites)
       s.creeps.forEach((c) => {
         ctx.save();
         ctx.translate(c.x, c.y);
-        ctx.font = `${c.radius * 1.8}px serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(c.icon, 0, 0);
+
+        const creepCardId = c.type === 'crawler' ? 27 : c.type === 'wraith' ? 41 : 65;
+
+        drawCardSprite(
+          ctx,
+          creepCardId,
+          -c.radius,
+          -c.radius,
+          c.radius * 2,
+          c.radius * 2,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: '#f43f5e',
+            shadowBlur: 8,
+            shadowColor: 'rgba(244, 63, 94, 0.8)',
+          }
+        );
 
         // Mini HP Bar
         ctx.fillStyle = '#1e293b';
-        ctx.fillRect(-12, c.radius + 2, 24, 4);
+        ctx.fillRect(-12, c.radius + 3, 24, 4);
         ctx.fillStyle = '#f43f5e';
-        ctx.fillRect(-12, c.radius + 2, 24 * (c.hp / c.maxHp), 4);
+        ctx.fillRect(-12, c.radius + 3, 24 * (c.hp / c.maxHp), 4);
         ctx.restore();
       });
 
@@ -376,7 +403,7 @@ export const VoxelLifeFlameGame: React.FC<VoxelLifeFlameGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [isKo, playSfx]);
+  }, [isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
