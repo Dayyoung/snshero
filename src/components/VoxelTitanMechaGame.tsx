@@ -21,6 +21,7 @@ interface EnemyMech {
   y: number;
   vx: number;
   type: 'drone' | 'assault' | 'titan_boss';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -112,8 +113,8 @@ export const VoxelTitanMechaGame: React.FC<VoxelTitanMechaGameProps> = ({
 
     // Initial enemy mechas
     s.enemies.push(
-      { id: s.enemyCounter++, x: 90, y: 140, vx: 45, type: 'drone', icon: '🛸', points: 350, radius: 24, hp: 1, maxHp: 1, isAlive: true },
-      { id: s.enemyCounter++, x: 270, y: 200, vx: -40, type: 'assault', icon: '🦹', points: 600, radius: 28, hp: 2, maxHp: 2, isAlive: true }
+      { id: s.enemyCounter++, x: 90, y: 140, vx: 45, type: 'drone', cardId: 26, icon: '🛸', points: 350, radius: 24, hp: 1, maxHp: 1, isAlive: true },
+      { id: s.enemyCounter++, x: 270, y: 200, vx: -40, type: 'assault', cardId: 78, icon: '🦹', points: 600, radius: 28, hp: 2, maxHp: 2, isAlive: true }
     );
 
     setMechasDestroyed(0);
@@ -243,6 +244,7 @@ export const VoxelTitanMechaGame: React.FC<VoxelTitanMechaGameProps> = ({
         const rand = Math.random();
         const isBoss = rand < 0.2;
         const isAssault = rand >= 0.2 && rand < 0.6;
+        const cardId = isBoss ? 83 : (isAssault ? 78 : 26);
 
         s.enemies.push({
           id: s.enemyCounter++,
@@ -250,6 +252,7 @@ export const VoxelTitanMechaGame: React.FC<VoxelTitanMechaGameProps> = ({
           y: 80 + Math.random() * 190,
           vx: (Math.random() < 0.5 ? 1 : -1) * (isBoss ? 30 : 55),
           type: isBoss ? 'titan_boss' : (isAssault ? 'assault' : 'drone'),
+          cardId,
           icon: isBoss ? '👾' : (isAssault ? '🦹' : '🛸'),
           points: isBoss ? 1000 : (isAssault ? 600 : 350),
           radius: isBoss ? 32 : (isAssault ? 28 : 24),
@@ -378,22 +381,27 @@ export const VoxelTitanMechaGame: React.FC<VoxelTitanMechaGameProps> = ({
         ctx.restore();
       });
 
-      // Render Enemies
+      // Render Enemies (Card Sprites)
       s.enemies.forEach((enemy) => {
         if (enemy.isAlive) {
           ctx.save();
           ctx.translate(enemy.x, enemy.y);
-          if (enemy.type === 'titan_boss') {
-            ctx.shadowColor = '#f59e0b';
-            ctx.shadowBlur = 20;
-          } else {
-            ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 14;
-          }
-          ctx.font = `${enemy.radius * 1.8}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(enemy.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            enemy.cardId,
+            -enemy.radius,
+            -enemy.radius,
+            enemy.radius * 2,
+            enemy.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: enemy.type === 'titan_boss' ? '#f59e0b' : '#38bdf8',
+              shadowBlur: enemy.type === 'titan_boss' ? 20 : 8,
+              shadowColor: enemy.type === 'titan_boss' ? 'rgba(245, 158, 11, 0.9)' : 'rgba(56, 189, 248, 0.8)',
+            }
+          );
 
           // HP Bar
           if (enemy.maxHp > 1) {
@@ -406,21 +414,26 @@ export const VoxelTitanMechaGame: React.FC<VoxelTitanMechaGameProps> = ({
         }
       });
 
-      // Render Player Titan Mecha Hero (🤖)
+      // Render Player Titan Mecha Hero (Player Hero Badge)
       ctx.save();
       ctx.translate(s.titanX, titanY);
-      ctx.shadowColor = '#38bdf8';
-      ctx.shadowBlur = 20;
-      ctx.font = '42px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      drawCardSprite(ctx, playerHeroId, -22, -22, 44, 44, {
-        circleClip: true,
-        borderWidth: 2,
-        borderColor: '#fde047',
-        shadowBlur: 14,
-        shadowColor: 'rgba(253, 224, 71, 0.6)',
-      });
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -22,
+        -22,
+        44,
+        44,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 16,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -432,7 +445,7 @@ export const VoxelTitanMechaGame: React.FC<VoxelTitanMechaGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [titanY, playSfx]);
+  }, [titanY, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
