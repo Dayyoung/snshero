@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-08-26 19:50 KST / 10:50 UTC] [게임개선 10분 크론작업 16회차: VoxelDeepSeaOdysseyGame 심해 오브젝트 및 잠수함 영웅 배지 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelDeepSeaOdysseyGame.tsx` (블리츠 딥씨 다이버)
+- **개선 내역**:
+  1. 심해 부유 오브젝트(크리스탈, 산소통, 해파리/상어 몬스터)들을 공식 카드 스프라이트(`drawCardSprite`)로 전면 교체.
+  2. 잠수함 콕핏에 플레이어 대표 카드 영웅 배지(`playerHeroId`) 렌더링.
+  3. 가상 조이스틱 0개 100% 손가락 직접 2D 드래그 잠항 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelDeepSeaOdysseyGame 심해 오브젝트 카드 스프라이트화 및 퓨어 잠항 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 19:40 KST / 10:40 UTC] [게임개선 10분 크론작업 15회차: VoxelDartsBarGame 보스 타깃 및 보너스 오브젝트 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelDartsBarGame.tsx` (블리츠 플릭 나이프)
 - **개선 내역**:

@@ -20,6 +20,7 @@ interface DeepSeaItem {
   x: number;
   y: number;
   type: 'crystal' | 'oxygen' | 'jellyfish' | 'shark';
+  cardId: number;
   icon: string;
   radius: number;
   collected: boolean;
@@ -166,19 +167,24 @@ export const VoxelDeepSeaOdysseyGame: React.FC<VoxelDeepSeaOdysseyGameProps> = (
         s.spawnTimer = 0;
         const rand = Math.random();
         let type: 'crystal' | 'oxygen' | 'jellyfish' | 'shark' = 'crystal';
+        let cardId = 100;
         let icon = '💎';
 
         if (rand < 0.35) {
           type = 'crystal';
+          cardId = 100;
           icon = '💎';
         } else if (rand < 0.65) {
           type = 'oxygen';
+          cardId = 12;
           icon = '🫧';
         } else if (rand < 0.85) {
           type = 'jellyfish';
+          cardId = 38;
           icon = '🪼';
         } else {
           type = 'shark';
+          cardId = 49;
           icon = '🦈';
         }
 
@@ -187,6 +193,7 @@ export const VoxelDeepSeaOdysseyGame: React.FC<VoxelDeepSeaOdysseyGameProps> = (
           x: 40 + Math.random() * 280,
           y: 560, // Floating up from bottom
           type,
+          cardId,
           icon,
           radius: 18,
           collected: false,
@@ -267,12 +274,32 @@ export const VoxelDeepSeaOdysseyGame: React.FC<VoxelDeepSeaOdysseyGameProps> = (
         ctx.fill();
       }
 
-      // Render Floating Items
+      // Render Floating Items (Card Sprites)
       s.items.forEach((item) => {
-        ctx.font = '28px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(item.icon, item.x, item.y);
+        const borderColor =
+          item.type === 'crystal'
+            ? '#38bdf8'
+            : item.type === 'oxygen'
+            ? '#34d399'
+            : item.type === 'jellyfish'
+            ? '#c084fc'
+            : '#f43f5e';
+
+        drawCardSprite(
+          ctx,
+          item.cardId,
+          item.x - 14,
+          item.y - 14,
+          28,
+          28,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor,
+            shadowBlur: 6,
+            shadowColor: `${borderColor}88`,
+          }
+        );
       });
 
       // Render Submarine (Yellow Explorer)
@@ -284,11 +311,22 @@ export const VoxelDeepSeaOdysseyGame: React.FC<VoxelDeepSeaOdysseyGameProps> = (
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      // Submarine Cockpit Glass
-      ctx.fillStyle = '#38bdf8';
-      ctx.beginPath();
-      ctx.arc(s.subX + 8, s.subY - 2, 8, 0, Math.PI * 2);
-      ctx.fill();
+      // Submarine Cockpit Hero Pilot Emblem
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        s.subX - 8,
+        s.subY - 8,
+        16,
+        16,
+        {
+          circleClip: true,
+          borderWidth: 1,
+          borderColor: '#fde047',
+          shadowBlur: 6,
+          shadowColor: 'rgba(253, 224, 71, 0.8)',
+        }
+      );
 
       // Submarine Headlight Beam
       ctx.fillStyle = 'rgba(254, 240, 138, 0.25)';
@@ -302,7 +340,7 @@ export const VoxelDeepSeaOdysseyGame: React.FC<VoxelDeepSeaOdysseyGameProps> = (
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [isKo, playSfx]);
+  }, [isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
