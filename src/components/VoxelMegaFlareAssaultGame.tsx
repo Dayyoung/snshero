@@ -382,32 +382,44 @@ export const VoxelMegaFlareAssaultGame: React.FC<VoxelMegaFlareAssaultGameProps>
       // Render Player Starfighter at Bottom Center
       ctx.save();
       ctx.translate(180, 460);
-      ctx.font = '36px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
+
       drawCardSprite(ctx, playerHeroId, -22, -22, 44, 44, {
         circleClip: true,
         borderWidth: 2,
-        borderColor: '#fde047',
-        shadowBlur: 14,
-        shadowColor: 'rgba(253, 224, 71, 0.6)',
+        borderColor: s.megaGauge >= 100 ? '#f59e0b' : '#38bdf8',
+        shadowBlur: s.megaGauge >= 100 ? 18 : 10,
+        shadowColor: s.megaGauge >= 100 ? 'rgba(245, 158, 11, 0.9)' : 'rgba(56, 189, 248, 0.7)',
       });
       ctx.restore();
 
-      // Render Alien Enemies
+      // Render Alien Enemies (Card Sprites)
       s.enemies.forEach((enemy) => {
         ctx.save();
         ctx.translate(enemy.x, enemy.y);
-        ctx.font = `${enemy.radius * 1.8}px serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(enemy.icon, 0, 0);
+
+        const enemyCardId = enemy.type === 'drone' ? 26 : enemy.type === 'cruiser' ? 57 : 96;
+
+        drawCardSprite(
+          ctx,
+          enemyCardId,
+          -enemy.radius,
+          -enemy.radius,
+          enemy.radius * 2,
+          enemy.radius * 2,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: enemy.type === 'flagship' ? '#ef4444' : '#38bdf8',
+            shadowBlur: 8,
+            shadowColor: enemy.type === 'flagship' ? 'rgba(239, 68, 68, 0.8)' : 'rgba(56, 189, 248, 0.8)',
+          }
+        );
 
         // Mini HP Bar
         ctx.fillStyle = '#1e293b';
-        ctx.fillRect(-12, enemy.radius + 2, 24, 4);
+        ctx.fillRect(-12, enemy.radius + 3, 24, 4);
         ctx.fillStyle = '#ef4444';
-        ctx.fillRect(-12, enemy.radius + 2, 24 * (enemy.hp / enemy.maxHp), 4);
+        ctx.fillRect(-12, enemy.radius + 3, 24 * (enemy.hp / enemy.maxHp), 4);
         ctx.restore();
       });
 
@@ -431,7 +443,7 @@ export const VoxelMegaFlareAssaultGame: React.FC<VoxelMegaFlareAssaultGameProps>
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
