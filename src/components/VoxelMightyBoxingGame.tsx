@@ -315,29 +315,46 @@ export const VoxelMightyBoxingGame: React.FC<VoxelMightyBoxingGameProps> = ({
         ctx.stroke();
       });
 
-      // Render Rival Boxer
+      // Render Rival Boxer (Card Sprite)
       const enemyX = 180;
       const enemyY = 260;
 
       ctx.save();
       ctx.translate(enemyX, enemyY);
 
-      if (s.enemyState === 'windup') {
-        ctx.shadowColor = '#fde047';
-        ctx.shadowBlur = 20;
+      if (s.enemyState === 'down') {
+        ctx.rotate(0.3);
       }
 
-      ctx.font = s.enemyState === 'down' ? '50px serif' : '68px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
+      drawCardSprite(
+        ctx,
+        54,
+        -36,
+        -36,
+        72,
+        72,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: s.enemyState === 'windup' ? '#fde047' : s.enemyState === 'punch' ? '#ef4444' : '#94a3b8',
+          shadowBlur: s.enemyState === 'windup' ? 20 : 8,
+          shadowColor: s.enemyState === 'windup' ? 'rgba(253, 224, 71, 0.9)' : s.enemyState === 'punch' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(148, 163, 184, 0.5)',
+        }
+      );
 
-      let boxerIcon = '🥊';
-      if (s.enemyState === 'down') boxerIcon = '😵';
-      else if (s.enemyState === 'windup') boxerIcon = '😤';
-      else if (s.enemyState === 'punch') boxerIcon = '💥';
-      else if (s.enemyState === 'hit') boxerIcon = '😫';
+      // Status Badge
+      if (s.enemyState === 'down') {
+        ctx.font = 'bold 16px monospace';
+        ctx.fillStyle = '#ef4444';
+        ctx.textAlign = 'center';
+        ctx.fillText('💫 DOWN!', 0, -45);
+      } else if (s.enemyState === 'windup') {
+        ctx.font = 'bold 14px monospace';
+        ctx.fillStyle = '#fde047';
+        ctx.textAlign = 'center';
+        ctx.fillText('⚡ COUNTER!', 0, -45);
+      }
 
-      ctx.fillText(boxerIcon, 0, 0);
       ctx.restore();
 
       // Enemy HP Bar at Top
@@ -357,7 +374,24 @@ export const VoxelMightyBoxingGame: React.FC<VoxelMightyBoxingGameProps> = ({
       ctx.font = 'bold 12px monospace';
       ctx.fillStyle = '#fde047';
       ctx.textAlign = 'center';
-      ctx.fillText(`라이벌 챔피언 [DOWN: ${s.enemyDowns}/${maxDowns}]`, w / 2, barY - 10);
+      ctx.fillText(`${isKo ? '라이벌 챔피언' : 'Rival Champion'} [DOWN: ${s.enemyDowns}/${maxDowns}]`, w / 2, barY - 10);
+
+      // Player Hero Boxer at Bottom
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        w / 2 - 28,
+        410,
+        56,
+        56,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#38bdf8',
+          shadowBlur: 14,
+          shadowColor: 'rgba(56, 189, 248, 0.8)',
+        }
+      );
 
       // Render Floating Hit Effects
       s.hitEffects.forEach((eff) => {
@@ -376,7 +410,7 @@ export const VoxelMightyBoxingGame: React.FC<VoxelMightyBoxingGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [isKo, playSfx]);
+  }, [isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
