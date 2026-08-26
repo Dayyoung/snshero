@@ -20,6 +20,7 @@ interface ArenaObstacle {
   x: number;
   y: number;
   type: 'scrap_car' | 'barrel' | 'ramp' | 'nitro';
+  cardId: number;
   icon: string;
   isCrushed: boolean;
   points: number;
@@ -195,23 +196,28 @@ export const VoxelMonsterTruckGame: React.FC<VoxelMonsterTruckGameProps> = ({
         s.spawnTimer = 0;
         const rand = Math.random();
         let type: 'scrap_car' | 'barrel' | 'ramp' | 'nitro' = 'scrap_car';
+        let cardId = 46;
         let icon = '🚗';
         let points = 250;
 
         if (rand < 0.45) {
           type = 'scrap_car';
+          cardId = 46;
           icon = '🚗';
           points = 250;
         } else if (rand < 0.65) {
           type = 'barrel';
+          cardId = 17;
           icon = '🛢️';
           points = 150;
         } else if (rand < 0.85) {
           type = 'ramp';
+          cardId = 34;
           icon = '🚀';
           points = 600;
         } else {
           type = 'nitro';
+          cardId = 48;
           icon = '⚡';
           points = 300;
         }
@@ -221,6 +227,7 @@ export const VoxelMonsterTruckGame: React.FC<VoxelMonsterTruckGameProps> = ({
           x: 60 + Math.random() * 240,
           y: -30,
           type,
+          cardId,
           icon,
           isCrushed: false,
           points,
@@ -345,37 +352,47 @@ export const VoxelMonsterTruckGame: React.FC<VoxelMonsterTruckGameProps> = ({
         ctx.stroke();
       });
 
-      // Render Obstacles
+      // Render Obstacles (Card Sprites)
       s.obstacles.forEach((obs) => {
         if (!obs.isCrushed) {
           ctx.save();
           ctx.translate(obs.x, obs.y);
-          ctx.font = '32px serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(obs.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            obs.cardId,
+            -16,
+            -16,
+            32,
+            32,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: obs.type === 'nitro' ? '#38bdf8' : obs.type === 'ramp' ? '#fde047' : '#ef4444',
+              shadowBlur: obs.type === 'nitro' || obs.type === 'ramp' ? 8 : 4,
+              shadowColor: obs.type === 'nitro' ? 'rgba(56, 189, 248, 0.8)' : obs.type === 'ramp' ? 'rgba(253, 224, 71, 0.8)' : 'rgba(239, 68, 68, 0.8)',
+            }
+          );
+
           ctx.restore();
         }
       });
 
-      // Render Monster Truck
+      // Render Monster Truck (Card Sprite)
       ctx.save();
       ctx.translate(s.truckX, s.truckY);
 
       if (s.jumpTimer > 0) {
-        // High Air Stunt Scale & Shadow
         ctx.scale(1.35, 1.35);
-        ctx.shadowColor = '#fde047';
-        ctx.shadowBlur = 25;
-      } else if (s.nitroTimer > 0) {
-        ctx.shadowColor = '#38bdf8';
-        ctx.shadowBlur = 20;
       }
 
-      ctx.font = '44px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🛻', 0, 0);
+      drawCardSprite(ctx, playerHeroId, -24, -24, 48, 48, {
+        circleClip: true,
+        borderWidth: 2,
+        borderColor: s.jumpTimer > 0 ? '#fde047' : s.nitroTimer > 0 ? '#38bdf8' : '#ffffff',
+        shadowBlur: s.jumpTimer > 0 ? 25 : s.nitroTimer > 0 ? 20 : 10,
+        shadowColor: s.jumpTimer > 0 ? 'rgba(253, 224, 71, 0.9)' : s.nitroTimer > 0 ? 'rgba(56, 189, 248, 0.9)' : 'rgba(255, 255, 255, 0.7)',
+      });
       ctx.restore();
 
       // Render Particles
@@ -387,7 +404,7 @@ export const VoxelMonsterTruckGame: React.FC<VoxelMonsterTruckGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
