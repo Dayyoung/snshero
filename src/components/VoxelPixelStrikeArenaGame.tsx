@@ -22,6 +22,7 @@ interface StrikeTarget {
   vx: number;
   vy: number;
   type: 'terrorist' | 'drone' | 'boss';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -98,8 +99,8 @@ export const VoxelPixelStrikeArenaGame: React.FC<VoxelPixelStrikeArenaGameProps>
 
     // Initial Targets
     s.targets.push(
-      { id: s.targetCounter++, x: 90, y: 150, vx: 50, vy: 0, type: 'terrorist', icon: '🦹', points: 300, radius: 24, hp: 1, maxHp: 1, isHit: false },
-      { id: s.targetCounter++, x: 270, y: 110, vx: -70, vy: 20, type: 'drone', icon: '🤖', points: 450, radius: 20, hp: 1, maxHp: 1, isHit: false }
+      { id: s.targetCounter++, x: 90, y: 150, vx: 50, vy: 0, type: 'terrorist', cardId: 78, icon: '🦹', points: 300, radius: 24, hp: 1, maxHp: 1, isHit: false },
+      { id: s.targetCounter++, x: 270, y: 110, vx: -70, vy: 20, type: 'drone', cardId: 26, icon: '🤖', points: 450, radius: 20, hp: 1, maxHp: 1, isHit: false }
     );
 
     setTargetsEliminated(0);
@@ -243,6 +244,7 @@ export const VoxelPixelStrikeArenaGame: React.FC<VoxelPixelStrikeArenaGameProps>
         const rand = Math.random();
         const isBoss = rand < 0.18;
         const isDrone = rand < 0.55;
+        const cardId = isBoss ? 83 : (isDrone ? 26 : 78);
 
         s.targets.push({
           id: s.targetCounter++,
@@ -251,6 +253,7 @@ export const VoxelPixelStrikeArenaGame: React.FC<VoxelPixelStrikeArenaGameProps>
           vx: (Math.random() < 0.5 ? 1 : -1) * (isBoss ? 45 : (isDrone ? 95 : 65)),
           vy: isDrone ? (Math.random() - 0.5) * 60 : 0,
           type: isBoss ? 'boss' : (isDrone ? 'drone' : 'terrorist'),
+          cardId,
           icon: isBoss ? '👾' : (isDrone ? '🤖' : '🦹'),
           points: isBoss ? 800 : (isDrone ? 450 : 300),
           radius: isBoss ? 30 : (isDrone ? 20 : 24),
@@ -311,25 +314,33 @@ export const VoxelPixelStrikeArenaGame: React.FC<VoxelPixelStrikeArenaGameProps>
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, w, h);
 
-      // Render Targets
+      // Render Targets (Card Sprites)
       s.targets.forEach((t) => {
         ctx.save();
         ctx.translate(t.x, t.y);
-        if (t.type === 'boss') {
-          ctx.shadowColor = '#a855f7';
-          ctx.shadowBlur = 20;
-        }
-        ctx.font = `${t.radius * 1.8}px serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(t.icon, 0, 0);
+
+        drawCardSprite(
+          ctx,
+          t.cardId,
+          -t.radius,
+          -t.radius,
+          t.radius * 2,
+          t.radius * 2,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: t.type === 'boss' ? '#a855f7' : (t.type === 'drone' ? '#38bdf8' : '#ef4444'),
+            shadowBlur: t.type === 'boss' ? 18 : 6,
+            shadowColor: t.type === 'boss' ? 'rgba(168, 85, 247, 0.9)' : (t.type === 'drone' ? 'rgba(56, 189, 248, 0.8)' : 'rgba(239, 68, 68, 0.8)'),
+          }
+        );
 
         // HP Bar for Boss
         if (t.maxHp > 1) {
           ctx.fillStyle = '#1e293b';
-          ctx.fillRect(-14, t.radius + 2, 28, 4);
+          ctx.fillRect(-14, t.radius + 3, 28, 4);
           ctx.fillStyle = '#ef4444';
-          ctx.fillRect(-14, t.radius + 2, 28 * (t.hp / t.maxHp), 4);
+          ctx.fillRect(-14, t.radius + 3, 28 * (t.hp / t.maxHp), 4);
         }
         ctx.restore();
       });
@@ -350,6 +361,23 @@ export const VoxelPixelStrikeArenaGame: React.FC<VoxelPixelStrikeArenaGameProps>
         ctx.restore();
       });
 
+      // Render Sniper Hero Badge at Bottom
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        w / 2 - 24,
+        430,
+        48,
+        48,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#38bdf8',
+          shadowBlur: 14,
+          shadowColor: 'rgba(56, 189, 248, 0.8)',
+        }
+      );
+
       // Render Particles
       s.particles.forEach((p) => {
         ctx.fillStyle = p.color;
@@ -359,7 +387,7 @@ export const VoxelPixelStrikeArenaGame: React.FC<VoxelPixelStrikeArenaGameProps>
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, []);
+  }, [playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
