@@ -21,6 +21,7 @@ interface CityItem {
   y: number;
   size: number;
   reqRadius: number;
+  cardId: number;
   icon: string;
   points: number;
   isSwallowed: boolean;
@@ -81,14 +82,14 @@ export const VoxelMagnetHoleGame: React.FC<VoxelMagnetHoleGameProps> = ({
 
   const spawnCityItems = (count: number) => {
     const s = stateRef.current;
-    const types: { icon: string; size: number; reqRadius: number; points: number }[] = [
-      { icon: '📮', size: 14, reqRadius: 18, points: 50 }, // 우체통 (소형)
-      { icon: '🪑', size: 16, reqRadius: 20, points: 70 }, // 벤치 (소형)
-      { icon: '🚲', size: 18, reqRadius: 24, points: 100 }, // 자전거 (소형)
-      { icon: '🚗', size: 24, reqRadius: 32, points: 250 }, // 승용차 (중형)
-      { icon: '🚌', size: 30, reqRadius: 42, points: 450 }, // 버스 (중형)
-      { icon: '🏠', size: 36, reqRadius: 52, points: 800 }, // 주택 (대형)
-      { icon: '🏢', size: 44, reqRadius: 65, points: 1500 }, // 빌딩 (초대형)
+    const types: { cardId: number; icon: string; size: number; reqRadius: number; points: number }[] = [
+      { cardId: 7, icon: '📮', size: 14, reqRadius: 18, points: 50 }, // 우체통 (소형)
+      { cardId: 15, icon: '🪑', size: 16, reqRadius: 20, points: 70 }, // 벤치 (소형)
+      { cardId: 28, icon: '🚲', size: 18, reqRadius: 24, points: 100 }, // 자전거 (소형)
+      { cardId: 46, icon: '🚗', size: 24, reqRadius: 32, points: 250 }, // 승용차 (중형)
+      { cardId: 60, icon: '🚌', size: 30, reqRadius: 42, points: 450 }, // 버스 (중형)
+      { cardId: 74, icon: '🏠', size: 36, reqRadius: 52, points: 800 }, // 주택 (대형)
+      { cardId: 95, icon: '🏢', size: 44, reqRadius: 65, points: 1500 }, // 빌딩 (초대형)
     ];
 
     for (let i = 0; i < count; i++) {
@@ -99,6 +100,7 @@ export const VoxelMagnetHoleGame: React.FC<VoxelMagnetHoleGameProps> = ({
         y: 40 + Math.random() * 420,
         size: type.size,
         reqRadius: type.reqRadius,
+        cardId: type.cardId,
         icon: type.icon,
         points: type.points,
         isSwallowed: false,
@@ -319,7 +321,7 @@ export const VoxelMagnetHoleGame: React.FC<VoxelMagnetHoleGameProps> = ({
       ctx.arc(0, 0, s.holeRadius + 14, 0, Math.PI * 2);
       ctx.fill();
 
-      // Deep Blackhole Center
+      // Deep Blackhole Center (Player Hero Void Core)
       ctx.fillStyle = '#000000';
       ctx.beginPath();
       ctx.arc(0, 0, s.holeRadius, 0, Math.PI * 2);
@@ -327,17 +329,47 @@ export const VoxelMagnetHoleGame: React.FC<VoxelMagnetHoleGameProps> = ({
       ctx.strokeStyle = '#38bdf8';
       ctx.lineWidth = 2.5;
       ctx.stroke();
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -s.holeRadius * 0.55,
+        -s.holeRadius * 0.55,
+        s.holeRadius * 1.1,
+        s.holeRadius * 1.1,
+        {
+          circleClip: true,
+          borderWidth: 1.5,
+          borderColor: '#fde047',
+          shadowBlur: 14,
+          shadowColor: 'rgba(253, 224, 71, 0.8)',
+        }
+      );
+
       ctx.restore();
 
-      // Render City Items
+      // Render City Items (Card Sprites)
       s.items.forEach((item) => {
         ctx.save();
         ctx.translate(item.x, item.y);
         ctx.scale(Math.max(0.1, item.scale), Math.max(0.1, item.scale));
-        ctx.font = `${item.size * 1.5}px serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(item.icon, 0, 0);
+
+        drawCardSprite(
+          ctx,
+          item.cardId,
+          -item.size,
+          -item.size,
+          item.size * 2,
+          item.size * 2,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: s.holeRadius >= item.reqRadius ? '#10b981' : '#ef4444',
+            shadowBlur: 6,
+            shadowColor: s.holeRadius >= item.reqRadius ? 'rgba(16, 185, 129, 0.8)' : 'rgba(239, 68, 68, 0.8)',
+          }
+        );
+
         ctx.restore();
       });
 
@@ -352,7 +384,7 @@ export const VoxelMagnetHoleGame: React.FC<VoxelMagnetHoleGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
