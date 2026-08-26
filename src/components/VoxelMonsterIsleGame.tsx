@@ -332,47 +332,80 @@ export const VoxelMonsterIsleGame: React.FC<VoxelMonsterIsleGameProps> = ({
       ctx.fillStyle = '#166534';
       ctx.fillRect(0, 360, w, 140);
 
-      // Render Wild Monsters
+      // Render Wild Monsters (Card Sprites)
       s.monsters.forEach((m) => {
         if (!m.isCaptured) {
           ctx.save();
           ctx.translate(m.x, m.y);
-          if (m.type === 'legend') {
-            ctx.shadowColor = '#fde047';
-            ctx.shadowBlur = 20;
-          }
-          ctx.font = `${m.radius * 1.8}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(m.icon, 0, 0);
+
+          const monsterCardId = m.type === 'legend' ? 88 : m.type === 'rare' ? 41 : 27;
+
+          drawCardSprite(
+            ctx,
+            monsterCardId,
+            -m.radius,
+            -m.radius,
+            m.radius * 2,
+            m.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: m.type === 'legend' ? '#fde047' : m.type === 'rare' ? '#a855f7' : '#38bdf8',
+              shadowBlur: m.type === 'legend' ? 18 : 8,
+              shadowColor: m.type === 'legend' ? 'rgba(253, 224, 71, 0.9)' : m.type === 'rare' ? 'rgba(168, 85, 247, 0.8)' : 'rgba(56, 189, 248, 0.8)',
+            }
+          );
+
           ctx.restore();
         }
       });
 
-      // Render Tossing Balls
+      // Render Tossing Balls (Card Sprites)
       s.balls.forEach((b) => {
         ctx.save();
         ctx.translate(b.x, b.y);
         ctx.scale(b.scale, b.scale);
-        ctx.shadowColor = '#a855f7';
-        ctx.shadowBlur = 12;
-        ctx.font = '28px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('🔮', 0, 0);
+
+        drawCardSprite(
+          ctx,
+          100,
+          -14,
+          -14,
+          28,
+          28,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: '#a855f7',
+            shadowBlur: 10,
+            shadowColor: 'rgba(168, 85, 247, 0.8)',
+          }
+        );
+
         ctx.restore();
       });
 
-      // Render Ready Ball at Bottom Center
+      // Render Ready Ball & Hero Tamer at Bottom Center
       if (s.ballsLeft > 0) {
         ctx.save();
         ctx.translate(180, 440);
-        ctx.shadowColor = '#38bdf8';
-        ctx.shadowBlur = 14;
-        ctx.font = '40px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('🔮', 0, 0);
+
+        drawCardSprite(
+          ctx,
+          playerHeroId,
+          -22,
+          -22,
+          44,
+          44,
+          {
+            circleClip: true,
+            borderWidth: 2,
+            borderColor: '#38bdf8',
+            shadowBlur: 14,
+            shadowColor: 'rgba(56, 189, 248, 0.8)',
+          }
+        );
+
         ctx.restore();
       }
 
@@ -385,7 +418,7 @@ export const VoxelMonsterIsleGame: React.FC<VoxelMonsterIsleGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
