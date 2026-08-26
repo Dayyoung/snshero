@@ -254,17 +254,43 @@ export const VoxelLumberjackTycoonGame: React.FC<VoxelLumberjackTycoonGameProps>
         ctx.fillRect(treeX - 10, ty + 10, 20, 4);
         ctx.fillRect(treeX - 18, ty + 28, 14, 4);
 
-        // Branch
+        // Branch (Card Sprite Dangerous Branch)
         if (trk.branch === 'left') {
           ctx.fillStyle = '#92400e';
           ctx.fillRect(treeX - trunkW / 2 - 50, ty + 12, 50, 18);
-          ctx.font = '22px serif';
-          ctx.fillText('🌿', treeX - trunkW / 2 - 40, ty + 24);
+          drawCardSprite(
+            ctx,
+            21,
+            treeX - trunkW / 2 - 42,
+            ty + 10,
+            22,
+            22,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: '#ef4444',
+              shadowBlur: 6,
+              shadowColor: 'rgba(239, 68, 68, 0.8)',
+            }
+          );
         } else if (trk.branch === 'right') {
           ctx.fillStyle = '#92400e';
           ctx.fillRect(treeX + trunkW / 2, ty + 12, 50, 18);
-          ctx.font = '22px serif';
-          ctx.fillText('🌿', treeX + trunkW / 2 + 15, ty + 24);
+          drawCardSprite(
+            ctx,
+            21,
+            treeX + trunkW / 2 + 20,
+            ty + 10,
+            22,
+            22,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: '#ef4444',
+              shadowBlur: 6,
+              shadowColor: 'rgba(239, 68, 68, 0.8)',
+            }
+          );
         }
       });
 
@@ -278,15 +304,12 @@ export const VoxelLumberjackTycoonGame: React.FC<VoxelLumberjackTycoonGameProps>
         ctx.scale(-1, 1);
       }
 
-      ctx.font = '36px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
       drawCardSprite(ctx, playerHeroId, -22, -22, 44, 44, {
         circleClip: true,
         borderWidth: 2,
         borderColor: '#fde047',
         shadowBlur: 14,
-        shadowColor: 'rgba(253, 224, 71, 0.6)',
+        shadowColor: 'rgba(253, 224, 71, 0.7)',
       });
       ctx.restore();
 
@@ -316,7 +339,7 @@ export const VoxelLumberjackTycoonGame: React.FC<VoxelLumberjackTycoonGameProps>
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;

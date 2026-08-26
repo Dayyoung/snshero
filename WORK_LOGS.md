@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-26 23:10 KST / 14:10 UTC] [게임개선 10분 크론작업 36회차: VoxelLumberjackTycoonGame 나뭇가지 및 벌목꾼 영웅 배지 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelLumberjackTycoonGame.tsx` (블리츠 럼버잭 찹)
+- **개선 내역**:
+  1. 좌우 나뭇가지 끝에 위험 가시/몬스터 카드 스프라이트(ID 21) 장착.
+  2. 벌목꾼 플레이어 위치에 플레이어 대표 카드 영웅 배지(`playerHeroId`) 장착.
+  3. 벌목 타격 시 나무 파편 및 콤보 텍스트 피드백 연동.
+  4. 가상 조이스틱 0개 100% 손가락 직접 화면 좌우 탭(Left & Right Tap Chop) 벌목 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelLumberjackTycoonGame 나뭇가지 및 벌목꾼 카드 스프라이트화 및 퓨어 럼버잭찹 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 23:00 KST / 14:00 UTC] [게임개선 10분 크론작업 35회차: VoxelLifeFlameGame 그림자 크립 몬스터 및 수호목 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelLifeFlameGame.tsx` (블리츠 플레임 디펜스)
 - **개선 내역**:
