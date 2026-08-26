@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-08-26 18:30 KST / 09:30 UTC] [게임개선 10분 크론작업 8회차: VoxelBilliardsTrickGame 큐볼 영웅/목적구 몬스터 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelBilliardsTrickGame.tsx` (블리츠 트릭 포켓볼)
+- **개선 내역**:
+  1. 큐볼(수구)을 플레이어 대표 카드 영웅 배지(`playerHeroId`)로 교체하여 황금 글로우 림 렌더링.
+  2. 1~6번 목적구를 각각 고유한 공식 카드 몬스터 스프라이트(`cards1.png`)와 고대비 번호 뱃지로 렌더링하여 포켓팅 타격감 및 시각성 극대화.
+  3. 가상 조이스틱 0개 100% 손가락 큐 당김 및 릴리즈 샷 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelBilliardsTrickGame 큐볼 및 목적구 카드 스프라이트화 및 퓨어 당구샷 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 18:20 KST / 09:20 UTC] [게임개선 10분 크론작업 7회차: VoxelBeatBlasterGame 연산 노드 카드 스프라이트 엠블럼화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelBeatBlasterGame.tsx` (아케인 체인 넘버)
 - **개선 내역**:

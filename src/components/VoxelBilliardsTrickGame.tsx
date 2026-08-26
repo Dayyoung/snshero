@@ -385,28 +385,57 @@ export const VoxelBilliardsTrickGame: React.FC<VoxelBilliardsTrickGameProps> = (
         ctx.stroke();
       });
 
-      // Render Balls
+      // Render Balls (Card Hero Cue Ball & Monster Target Balls)
       s.balls.forEach((b) => {
         if (b.isPocketed) return;
 
-        ctx.fillStyle = b.color;
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
-        ctx.fill();
+        if (b.isCue) {
+          // Player Hero Cue Ball
+          drawCardSprite(
+            ctx,
+            playerHeroId,
+            b.x - b.radius,
+            b.y - b.radius,
+            b.radius * 2,
+            b.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 2,
+              borderColor: '#fde047',
+              shadowBlur: 10,
+              shadowColor: 'rgba(253, 224, 71, 0.8)',
+            }
+          );
+        } else {
+          // Monster Target Ball
+          const monsterCardId = b.num * 8;
+          drawCardSprite(
+            ctx,
+            monsterCardId,
+            b.x - b.radius,
+            b.y - b.radius,
+            b.radius * 2,
+            b.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: b.color,
+              shadowBlur: 6,
+              shadowColor: b.color,
+            }
+          );
 
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-
-        // Ball Number Badge
-        if (!b.isCue) {
-          ctx.fillStyle = '#ffffff';
+          // Ball Number Badge
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
           ctx.beginPath();
           ctx.arc(b.x, b.y, b.radius * 0.45, 0, Math.PI * 2);
           ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1;
+          ctx.stroke();
 
-          ctx.fillStyle = '#000000';
-          ctx.font = 'bold 9px monospace';
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 8px monospace';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.fillText(String(b.num), b.x, b.y);
@@ -418,7 +447,6 @@ export const VoxelBilliardsTrickGame: React.FC<VoxelBilliardsTrickGameProps> = (
       if (s.isDragging && cueBall) {
         const dx = cueBall.x - s.dragCurrent.x;
         const dy = cueBall.y - s.dragCurrent.y;
-        const power = Math.hypot(dx, dy);
 
         // Aim Trajectory Line (Forward)
         ctx.strokeStyle = '#fbbf24';
@@ -442,7 +470,7 @@ export const VoxelBilliardsTrickGame: React.FC<VoxelBilliardsTrickGameProps> = (
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, []);
+  }, [playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
