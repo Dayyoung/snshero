@@ -127,6 +127,7 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const startTimeRef = useRef(Date.now());
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const gateOpen = rescuedCount >= allyTargetCount;
 
   const buildBoard = useCallback(() => {
@@ -276,19 +277,19 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
     },
     {
       badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
-      title: isKo ? '스와이프 & 원핸드 D-패드' : 'Swipe & One-Hand D-Pad',
+      title: isKo ? '스와이프 & 원핸드 스와이프 제스처' : 'Swipe & One-Hand Swipe Gesture',
       description: isKo
-        ? '화면 스와이프 또는 하단 D-패드를 원터치하여 4방향 던전 탐색을 진행합니다.'
-        : 'Swipe screen or tap one-handed D-pad to navigate in 4 directions.',
+        ? '화면 스와이프 또는 하단 스와이프 제스처를 원터치하여 4방향 던전 탐색을 진행합니다.'
+        : 'Swipe screen or tap one-handed Swipe gesture to navigate in 4 directions.',
       keyPoints: isKo
         ? [
             '👆 스와이프: 상하좌우 신속 이동',
-            '🕹️ 컴팩트 D-패드 원터치 조작',
+            '🕹️ 컴팩트 스와이프 제스처 원터치 조작',
             '⚡ 턴제 장애물 회피'
           ]
         : [
             '👆 Swipe: Fast 4-way movement',
-            '🕹️ Compact D-pad one-touch move',
+            '🕹️ Compact Swipe gesture one-touch move',
             '⚡ Turn-based obstacle avoidance'
           ],
       iconType: 'GESTURES'
@@ -331,12 +332,34 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
         isPaused={isPaused}
       />
 
-      {/* Grid Container */}
-      <div className="flex-1 min-h-0 flex items-center justify-center relative overflow-hidden p-2">
-        <div className="w-full max-w-[340px] aspect-square bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-1.5 relative overflow-hidden touch-none select-none">
+      {/* Board Viewport with 100% Pure Swipe Gesture Controller */}
+      <div 
+        className="flex-1 min-h-0 flex items-center justify-center relative overflow-hidden p-2"
+        onTouchStart={(e) => {
+          touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        }}
+        onTouchEnd={(e) => {
+          if (!touchStartRef.current) return;
+          const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
+          const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
+          if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 15) {
+            movePlayer(dx > 0 ? 'right' : 'left');
+          } else if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 15) {
+            movePlayer(dy > 0 ? 'down' : 'up');
+          }
+          touchStartRef.current = null;
+        }}
+      >
+        <div
+          className="w-full max-w-[340px] aspect-square bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-1.5 relative overflow-hidden touch-none select-none shadow-xs"
+          style={{ touchAction: 'none' }}
+        >
           <div
             className="grid gap-1 w-full h-full"
-            style={{ gridTemplateColumns: `repeat(${boardSize}, minmax(0, 1fr))` }}
+            style={{
+              gridTemplateColumns: `repeat(${boardSize}, minmax(0, 1fr))`,
+              gridTemplateRows: `repeat(${boardSize}, minmax(0, 1fr))`,
+            }}
           >
             {board.flatMap((row, r) =>
               row.map((cell, c) => (
@@ -370,37 +393,10 @@ export const CardRushGame: React.FC<CardRushGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile One-Handed D-Pad */}
-      <div className="shrink-0 flex flex-col items-center gap-1 select-none pb-3">
-        <button
-          type="button"
-          onClick={() => movePlayer('up')}
-          className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-        >
-          ▲
-        </button>
-        <div className="flex items-center gap-4">
-          <button
-            type="button"
-            onClick={() => movePlayer('left')}
-            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-          >
-            ◀
-          </button>
-          <button
-            type="button"
-            onClick={() => movePlayer('down')}
-            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-          >
-            ▼
-          </button>
-          <button
-            type="button"
-            onClick={() => movePlayer('right')}
-            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-          >
-            ▶
-          </button>
+      {/* Minimal Bottom Guide (Zero Virtual Buttons per Pure Touch Principle) */}
+      <div className="w-full pb-4 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1.5 bg-black/5 border border-[rgba(15,0,0,0.12)] rounded-full text-[11px] text-[#6e6e73] font-mono shadow-xs">
+          {isKo ? '화면 어디든 상하좌우 스와이프하여 던전을 탈출하세요' : 'Swipe anywhere to move hero and escape the dungeon'}
         </div>
       </div>
 

@@ -181,19 +181,19 @@ export const CardSlidePuzzleGame: React.FC<CardSlidePuzzleGameProps> = ({
     },
     {
       badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
-      title: isKo ? '타일 터치 & D-패드 원터치' : 'Touch Tile & D-Pad',
+      title: isKo ? '타일 터치 & 스와이프 제스처 원터치' : 'Touch Tile & Swipe Gesture',
       description: isKo
-        ? '이동하려는 타일을 직접 탭하거나 하단 D-패드를 원터치하여 슬라이딩합니다.'
-        : 'Tap tiles directly or use one-handed D-pad to slide.',
+        ? '이동하려는 타일을 직접 탭하거나 하단 스와이프 제스처를 원터치하여 슬라이딩합니다.'
+        : 'Tap tiles directly or use one-handed Swipe gesture to slide.',
       keyPoints: isKo
         ? [
             '👆 타일 탭: 빈 공간으로 즉시 밀기',
-            '🕹️ 컴팩트 D-패드 4방향 조작',
+            '🕹️ 컴팩트 스와이프 제스처 4방향 조작',
             '⚡ 검증된 100% 해법 퍼즐 생성'
           ]
         : [
             '👆 Tap Tile: Slide into empty space',
-            '🕹️ Compact D-pad 4-way move',
+            '🕹️ Compact Swipe gesture 4-way move',
             '⚡ 100% Guaranteed solvable puzzles'
           ],
       iconType: 'GESTURES'
@@ -280,57 +280,10 @@ export const CardSlidePuzzleGame: React.FC<CardSlidePuzzleGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile One-Handed D-Pad */}
-      <div className="shrink-0 flex flex-col items-center gap-1 select-none pb-3">
-        <button
-          type="button"
-          onClick={() => {
-            const emptyIdx = tiles.indexOf(-1);
-            if (emptyIdx !== -1 && Math.floor(emptyIdx / size) < size - 1) {
-              moveTile(emptyIdx + size);
-            }
-          }}
-          className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-        >
-          ▲
-        </button>
-        <div className="flex items-center gap-4">
-          <button
-            type="button"
-            onClick={() => {
-              const emptyIdx = tiles.indexOf(-1);
-              if (emptyIdx !== -1 && emptyIdx % size < size - 1) {
-                moveTile(emptyIdx + 1);
-              }
-            }}
-            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-          >
-            ◀
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              const emptyIdx = tiles.indexOf(-1);
-              if (emptyIdx !== -1 && Math.floor(emptyIdx / size) > 0) {
-                moveTile(emptyIdx - size);
-              }
-            }}
-            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-          >
-            ▼
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              const emptyIdx = tiles.indexOf(-1);
-              if (emptyIdx !== -1 && emptyIdx % size > 0) {
-                moveTile(emptyIdx - 1);
-              }
-            }}
-            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-          >
-            ▶
-          </button>
+      {/* Minimal Bottom Guide (Zero Virtual Buttons per Pure Touch Principle) */}
+      <div className="w-full pb-4 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1.5 bg-black/5 border border-[rgba(15,0,0,0.12)] rounded-full text-[11px] text-[#6e6e73] font-mono shadow-xs">
+          {isKo ? '빈 공간과 인접한 카드 타일을 직접 탭하여 슬라이딩하세요' : 'Tap adjacent card tiles to slide them into the empty slot'}
         </div>
       </div>
 

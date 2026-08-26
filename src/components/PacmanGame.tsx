@@ -63,6 +63,7 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
     }
   });
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
 
   const gameRef = useRef({
     px: 1,
@@ -322,19 +323,19 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
     },
     {
       badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
-      title: isKo ? '스와이프 & 원핸드 D-패드' : 'Swipe & D-Pad Move',
+      title: isKo ? '스와이프 & 원핸드 스와이프 제스처' : 'Swipe & Swipe Gesture Move',
       description: isKo
-        ? '화면 스와이프 또는 하단 D-패드로 4방향 미로 이동을 신속하게 조작합니다.'
-        : 'Swipe screen or tap one-handed D-pad for 4-way maze navigation.',
+        ? '화면 스와이프 또는 하단 스와이프 제스처로 4방향 미로 이동을 신속하게 조작합니다.'
+        : 'Swipe screen or tap one-handed Swipe gesture for 4-way maze navigation.',
       keyPoints: isKo
         ? [
             '👆 스와이프: 상하좌우 신속 방향 전환',
-            '🕹️ 컴팩트 D-패드 원터치 조작',
+            '🕹️ 컴팩트 스와이프 제스처 원터치 조작',
             '⚡ 코너 자동 턴 메커니즘'
           ]
         : [
             '👆 Swipe: Quick 4-way direction shifts',
-            '🕹️ Compact D-pad one-touch move',
+            '🕹️ Compact Swipe gesture one-touch move',
             '⚡ Responsive corner turns'
           ],
       iconType: 'GESTURES'
@@ -377,47 +378,36 @@ export const PacmanGame: React.FC<PacmanGameProps> = ({
         isPaused={isPaused}
       />
 
-      {/* Maze Viewport */}
-      <div className="flex-1 min-h-0 flex items-center justify-center relative overflow-hidden p-2 w-full max-w-sm">
+      {/* Maze Viewport with 100% Pure Swipe Gesture Controller */}
+      <div 
+        className="flex-1 min-h-0 flex items-center justify-center relative overflow-hidden p-2 w-full max-w-sm"
+        onTouchStart={(e) => {
+          touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        }}
+        onTouchEnd={(e) => {
+          if (!touchStartRef.current) return;
+          const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
+          const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
+          if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 15) {
+            movePlayer(dx > 0 ? 'right' : 'left');
+          } else if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 15) {
+            movePlayer(dy > 0 ? 'down' : 'up');
+          }
+          touchStartRef.current = null;
+        }}
+      >
         <canvas
           ref={canvasRef}
           width={CANVAS_SIZE}
           height={CANVAS_SIZE}
-          className="border border-[rgba(15,0,0,0.15)] shadow-xs rounded-none bg-white"
+          className="border border-[rgba(15,0,0,0.15)] shadow-xs rounded-none bg-white touch-none"
         />
       </div>
 
-      {/* Mobile One-Handed D-Pad */}
-      <div className="shrink-0 flex flex-col items-center gap-1 select-none pb-3">
-        <button
-          type="button"
-          onClick={() => movePlayer('up')}
-          className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-        >
-          ▲
-        </button>
-        <div className="flex items-center gap-4">
-          <button
-            type="button"
-            onClick={() => movePlayer('left')}
-            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-          >
-            ◀
-          </button>
-          <button
-            type="button"
-            onClick={() => movePlayer('down')}
-            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-          >
-            ▼
-          </button>
-          <button
-            type="button"
-            onClick={() => movePlayer('right')}
-            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-          >
-            ▶
-          </button>
+      {/* Minimal Bottom Guide (Zero Virtual Buttons per Pure Touch Principle) */}
+      <div className="w-full pb-4 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1.5 bg-black/5 border border-[rgba(15,0,0,0.12)] rounded-full text-[11px] text-[#6e6e73] font-mono shadow-xs">
+          {isKo ? '화면 어디든 상하좌우 스와이프하여 영웅 팩맨을 이동하세요' : 'Swipe anywhere to move hero pacman in 4 directions'}
         </div>
       </div>
 

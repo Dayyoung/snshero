@@ -1,4 +1,3 @@
-import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { cn, getCardSpriteStyle } from '../lib/utils';
@@ -48,6 +47,7 @@ export const SnakeBattleGame: React.FC<SnakeBattleGameProps> = ({
   const playerHeroId = deck[0]?.id || 6;
   const [snake, setSnake] = useState<SnakeSegment[]>([]);
   const [food, setFood] = useState<Point>({ x: 5, y: 5 });
+  const [foodCardId, setFoodCardId] = useState<number>(10);
   const [direction, setDirection] = useState<Direction>('right');
   const [score, setScore] = useState(0);
   const [length, setLength] = useState(3);
@@ -67,7 +67,7 @@ export const SnakeBattleGame: React.FC<SnakeBattleGameProps> = ({
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
 
   const initGame = useCallback(() => {
-    const playerCardId = deck[0]?.imageIndex || (deck[0]?.id as number) || 1;
+    const playerCardId = deck[0]?.imageIndex || (deck[0]?.id as number) || 6;
     const initialSnake: SnakeSegment[] = [
       { x: 8, y: 8, cardId: playerCardId },
       { x: 7, y: 8, cardId: playerCardId },
@@ -75,6 +75,7 @@ export const SnakeBattleGame: React.FC<SnakeBattleGameProps> = ({
     ];
     setSnake(initialSnake);
     setFood({ x: 4, y: 4 });
+    setFoodCardId(Math.floor(Math.random() * 80) + 1);
     setDirection('right');
     dirRef.current = 'right';
     setScore(0);
@@ -102,6 +103,18 @@ export const SnakeBattleGame: React.FC<SnakeBattleGameProps> = ({
     setDirection(newDir);
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
   };
+
+  // Keyboard support for desktop
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'ArrowUp' || e.code === 'KeyW') changeDirection('up');
+      else if (e.code === 'ArrowDown' || e.code === 'KeyS') changeDirection('down');
+      else if (e.code === 'ArrowLeft' || e.code === 'KeyA') changeDirection('left');
+      else if (e.code === 'ArrowRight' || e.code === 'KeyD') changeDirection('right');
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Game Loop
   useEffect(() => {
@@ -144,62 +157,79 @@ export const SnakeBattleGame: React.FC<SnakeBattleGameProps> = ({
         const newHead: SnakeSegment = { x: nx, y: ny, cardId: head.cardId };
         const newSnake = [newHead, ...prev];
 
-        // Eat food
+        // Eat food (Card Monster Object)
         if (nx === food.x && ny === food.y) {
           setScore(s => s + 100);
           setLength(l => l + 1);
-          setFood({
-            x: Math.floor(Math.random() * BOARD_SIZE),
-            y: Math.floor(Math.random() * BOARD_SIZE),
-          });
-          playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+
+          // Respawn food with new card monster ID
+          let rx = Math.floor(Math.random() * BOARD_SIZE);
+          let ry = Math.floor(Math.random() * BOARD_SIZE);
+          setFood({ x: rx, y: ry });
+          setFoodCardId(Math.floor(Math.random() * 80) + 1);
+
+          if (newSnake.length >= 25) {
+            setIsGameOver(true);
+            const duration = (Date.now() - startTimeRef.current) / 1000;
+            const receipt = calculateAndDepositMissionReward({
+              gameId: 'arcade_snake',
+              gameTitle: '클래식 스네이크 배틀',
+              durationSeconds: duration,
+              score: 5000,
+              difficulty: 'HARD',
+              isVictory: true
+            });
+            setSettlementReceipt(receipt);
+            onReward(receipt.totalSns);
+          }
         } else {
           newSnake.pop();
         }
 
         return newSnake;
       });
-    }, 140);
+    }, 120);
 
     return () => clearInterval(interval);
   }, [food, isGameOver, isPaused, onReward, playSfx]);
 
   const tutorialSteps: TutorialStep[] = [
     {
-      badge: isKo ? 'STEP 1: 먹이 수집 & 꼬리 성장' : 'STEP 1: GROW SNAKE',
-      title: isKo ? '황금 사과 섭취 & 몸체 확장' : 'Eat Apples & Extend Body',
+      badge: isKo ? 'STEP 1: 25개 카드 몬스터 포식' : 'STEP 1: DEVOUR 25 CARDS',
+      title: isKo ? '카드 몬스터 포식 & 무한 성장' : 'Devour Card Objects & Grow',
       description: isKo
-        ? '보드 위에 나타나는 황금 먹이를 섭취하여 꼬리를 늘리고 최고 점수를 달성하세요.'
-        : 'Eat golden food items to extend your snake body and score high.',
+        ? '화면에 출몰하는 카드 몬스터 오브젝트를 포식하여 영웅 지렁이의 길이를 25마디 이상으로 늘리세요.'
+        : 'Devour spawning monster card objects to grow your hero snake up to 25 segments.',
       keyPoints: isKo
         ? [
-            '먹이 섭취 시 +100P 및 길이 +1',
-            '자신의 꼬리와 충돌 시 게임 오버',
-            '보드 경계 통과 시 반대편으로 루프'
+            '25마디 도달 시 완승 잭팟 보상',
+            '벽을 통과하여 반대편으로 루프 이동',
+            '자신의 몸통과 충돌 시 게임 오버'
           ]
         : [
-            'Food items give +100P and +1 length',
-            'Colliding with self causes game over',
-            'Screen edge wrap-around loop'
+            'Reach 25 length to win jackpot',
+            'Pass through walls to loop around',
+            'Colliding with self causes game over'
           ],
       iconType: 'GOAL'
     },
     {
-      badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
-      title: isKo ? '스와이프 & 원핸드 D-패드' : 'Swipe & D-Pad Steer',
+      badge: isKo ? 'STEP 2: 100% 퓨어 스와이프 제스처' : 'STEP 2: PURE SWIPE GESTURES',
+      title: isKo ? '화면 어디든 상하좌우 스와이프' : 'Swipe Screen Anywhere to Turn',
       description: isKo
-        ? '화면 스와이프 또는 하단 D-패드로 4방향 이동을 빠르고 정확하게 조작합니다.'
-        : 'Swipe screen or tap one-handed D-pad to change direction.',
+        ? '가상 버튼 없이 화면 아무 곳이나 상하좌우로 스와이프하여 즉각 방향을 전환합니다.'
+        : 'Swipe in 4 directions anywhere on screen to turn with zero buttons.',
       keyPoints: isKo
         ? [
-            '👆 스와이프: 상하좌우 즉시 턴',
-            '🕹️ 컴팩트 D-패드 원터치 조작',
-            '⚡ 140ms 고속 반응 틱'
+            '👆 스와이프: 상/하/좌/우 즉각 조향',
+            '🚫 가상 키보드/스와이프 제스처 100% 제거',
+            '⚡ 60FPS 즉각적 반응 속도'
           ]
         : [
-            '👆 Swipe: Instant 4-way turn',
-            '🕹️ Compact D-pad one-touch move',
-            '⚡ 140ms fast game loop'
+            '👆 Swipe: Instant 4-way turning',
+            '🚫 Zero virtual buttons or Swipe gesture',
+            '⚡ Instant fluid 60FPS responsiveness'
           ],
       iconType: 'GESTURES'
     },
@@ -207,17 +237,17 @@ export const SnakeBattleGame: React.FC<SnakeBattleGameProps> = ({
       badge: isKo ? 'STEP 3: 100% 확정 SNS 보상' : 'STEP 3: GUARANTEED REWARDS',
       title: isKo ? '원자적 지갑 입금 & 정산' : 'Atomic Wallet Settlement',
       description: isKo
-        ? '게임 종료 즉시 HARD 난이도 표준 정산이 적용되어 지갑에 즉시 입금됩니다.'
-        : 'Standard payout deposited atomically to your LocalStorage wallet upon game finish.',
+        ? '게임 종료 즉시 길이에 비례하여 확정 SNS 포인트가 로컬스토리지 지갑에 안전하게 입금됩니다.'
+        : 'Length-based payout deposited atomically to your LocalStorage wallet upon match finish.',
       keyPoints: isKo
         ? [
-            '승리 즉시 LocalStorage 영구 지갑 입금',
-            '최종 몸체 길이 및 먹이 수집 보너스',
+            '완료 즉시 LocalStorage 영구 지갑 입금',
+            '길이 및 몬스터 포식 수 비례 잭팟',
             'VictoryRewardModal 2초 황금 코인 팡파레'
           ]
         : [
             'Instant atomic deposit to LocalStorage wallet',
-            'Snake length and food bonuses',
+            'Length multiplier payout',
             'VictoryRewardModal golden coin fanfare'
           ],
       iconType: 'REWARDS'
@@ -240,27 +270,28 @@ export const SnakeBattleGame: React.FC<SnakeBattleGameProps> = ({
         isPaused={isPaused}
       />
 
-      {/* Board Viewport */}
-      <div className="flex-1 min-h-0 flex items-center justify-center relative overflow-hidden p-2 w-full max-w-sm">
+      {/* Board Viewport with 100% Pure Swipe Gesture Controller */}
+      <div 
+        className="flex-1 min-h-0 flex items-center justify-center relative overflow-hidden p-2 w-full max-w-sm"
+        onTouchStart={(e) => {
+          touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        }}
+        onTouchEnd={(e) => {
+          if (!touchStartRef.current) return;
+          const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
+          const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
+          if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 15) {
+            changeDirection(dx > 0 ? 'right' : 'left');
+          } else if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 15) {
+            changeDirection(dy > 0 ? 'down' : 'up');
+          }
+          touchStartRef.current = null;
+        }}
+      >
         <div
-          className="w-full max-w-[340px] aspect-square bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] relative overflow-hidden touch-none select-none p-1"
-          style={{ touchAction: 'none' }}
-          onTouchStart={(e) => {
-            touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-          }}
-          onTouchEnd={(e) => {
-            if (!touchStartRef.current) return;
-            const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
-            const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
-            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 15) {
-              changeDirection(dx > 0 ? 'right' : 'left');
-            } else if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 15) {
-              changeDirection(dy > 0 ? 'down' : 'up');
-            }
-            touchStartRef.current = null;
-          }}
+          className="w-full max-w-[340px] aspect-square bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] relative overflow-hidden touch-none select-none p-1 shadow-inner"
         >
-          {/* Food */}
+          {/* Card Food / Target Monster Object */}
           <div
             style={{
               left: `${(food.x / BOARD_SIZE) * 100}%`,
@@ -268,12 +299,15 @@ export const SnakeBattleGame: React.FC<SnakeBattleGameProps> = ({
               width: `${100 / BOARD_SIZE}%`,
               height: `${100 / BOARD_SIZE}%`,
             }}
-            className="absolute p-0.5"
+            className="absolute p-0.5 z-10"
           >
-            <div className="w-full h-full bg-amber-500 rounded-full animate-pulse shadow-xs" />
+            <div 
+              className="w-full h-full rounded-full border-2 border-amber-500 shadow-md animate-bounce" 
+              style={getCardSpriteStyle(foodCardId)}
+            />
           </div>
 
-          {/* Snake Segments */}
+          {/* Snake Segments (Head: Player Hero Card Sprite, Body: Emerald Badges) */}
           {snake.map((seg, i) => (
             <div
               key={i}
@@ -285,48 +319,27 @@ export const SnakeBattleGame: React.FC<SnakeBattleGameProps> = ({
               }}
               className="absolute p-0.5"
             >
-              <div
-                className={cn(
-                  'w-full h-full rounded-xs border transition-all',
-                  i === 0 ? 'bg-[#201d1d] border-[#201d1d] shadow-xs' : 'bg-cyan-600 border-cyan-700'
-                )}
-              />
+              {i === 0 ? (
+                <div
+                  className="w-full h-full rounded-full border-2 border-cyan-600 shadow-md z-20"
+                  style={getCardSpriteStyle(playerHeroId)}
+                />
+              ) : (
+                <div
+                  className="w-full h-full rounded-full bg-cyan-600 border border-cyan-800 shadow-xs flex items-center justify-center text-[6px] font-black text-white"
+                >
+                  •
+                </div>
+              )}
             </div>
           ))}
         </div>
       </div>
 
-      {/* Mobile One-Handed D-Pad */}
-      <div className="shrink-0 flex flex-col items-center gap-1 select-none pb-3">
-        <button
-          type="button"
-          onClick={() => changeDirection('up')}
-          className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-        >
-          ▲
-        </button>
-        <div className="flex items-center gap-4">
-          <button
-            type="button"
-            onClick={() => changeDirection('left')}
-            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-          >
-            ◀
-          </button>
-          <button
-            type="button"
-            onClick={() => changeDirection('down')}
-            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-          >
-            ▼
-          </button>
-          <button
-            type="button"
-            onClick={() => changeDirection('right')}
-            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-          >
-            ▶
-          </button>
+      {/* Minimal Bottom Guide (Zero Virtual Buttons per Pure Touch Principle) */}
+      <div className="w-full pb-4 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1.5 bg-black/5 border border-[rgba(15,0,0,0.12)] rounded-full text-[11px] text-[#6e6e73] font-mono shadow-xs">
+          {isKo ? '화면 어디든 상하좌우 스와이프하여 영웅 지렁이를 조향하세요' : 'Swipe anywhere to steer hero snake in 4 directions'}
         </div>
       </div>
 

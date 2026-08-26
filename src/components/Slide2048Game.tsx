@@ -190,19 +190,19 @@ export const Slide2048Game: React.FC<Slide2048GameProps> = ({
     },
     {
       badge: isKo ? 'STEP 2: 퓨어 제스처 조작' : 'STEP 2: PURE GESTURES',
-      title: isKo ? '화면 스와이프 & D-패드' : 'Swipe & D-Pad Slide',
+      title: isKo ? '화면 스와이프 & 스와이프 제스처' : 'Swipe & Swipe Gesture Slide',
       description: isKo
-        ? '화면을 상하좌우로 스와이프하거나 하단 D-패드를 원터치하여 슬라이딩합니다.'
-        : 'Swipe screen or tap one-handed D-pad in 4 directions.',
+        ? '화면을 상하좌우로 스와이프하거나 하단 스와이프 제스처를 원터치하여 슬라이딩합니다.'
+        : 'Swipe screen or tap one-handed Swipe gesture in 4 directions.',
       keyPoints: isKo
         ? [
             '👆 스와이프: 4방향 전 타일 일괄 이동',
-            '🕹️ 컴팩트 D-패드 원터치 조작',
+            '🕹️ 컴팩트 스와이프 제스처 원터치 조작',
             '⚡ 실시간 타일 합성 애니메이션'
           ]
         : [
             '👆 Swipe: Slide all tiles in 4 directions',
-            '🕹️ Compact D-pad one-touch move',
+            '🕹️ Compact Swipe gesture one-touch move',
             '⚡ Real-time merge animations'
           ],
       iconType: 'GESTURES'
@@ -315,37 +315,10 @@ export const Slide2048Game: React.FC<Slide2048GameProps> = ({
         </div>
       </div>
 
-      {/* Mobile One-Handed D-Pad */}
-      <div className="shrink-0 flex flex-col items-center gap-1 select-none pb-3">
-        <button
-          type="button"
-          onClick={() => handleMove('up')}
-          className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-        >
-          ▲
-        </button>
-        <div className="flex items-center gap-4">
-          <button
-            type="button"
-            onClick={() => handleMove('left')}
-            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-          >
-            ◀
-          </button>
-          <button
-            type="button"
-            onClick={() => handleMove('down')}
-            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-          >
-            ▼
-          </button>
-          <button
-            type="button"
-            onClick={() => handleMove('right')}
-            className="w-14 h-11 rounded-sm bg-black/5 active:bg-amber-500/30 border border-[rgba(15,0,0,0.15)] flex items-center justify-center text-sm font-mono text-[#201d1d] active:scale-95 touch-manipulation"
-          >
-            ▶
-          </button>
+      {/* Minimal Bottom Guide (Zero Virtual Buttons per Pure Touch Principle) */}
+      <div className="w-full pb-4 px-4 flex items-center justify-center pointer-events-none select-none">
+        <div className="px-3 py-1.5 bg-black/5 border border-[rgba(15,0,0,0.12)] rounded-full text-[11px] text-[#6e6e73] font-mono shadow-xs">
+          {isKo ? '화면 어디든 상하좌우 스와이프하여 카드 타일을 합치세요' : 'Swipe anywhere to slide and merge card tiles'}
         </div>
       </div>
 
