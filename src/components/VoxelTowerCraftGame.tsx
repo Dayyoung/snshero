@@ -20,6 +20,7 @@ interface PlacedTower {
   x: number;
   y: number;
   type: 'flame' | 'frost' | 'tesla';
+  cardId: number;
   icon: string;
   range: number;
   damage: number;
@@ -33,6 +34,7 @@ interface MobEnemy {
   y: number;
   vx: number;
   type: 'goblin' | 'bat' | 'dragon';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -108,8 +110,8 @@ export const VoxelTowerCraftGame: React.FC<VoxelTowerCraftGameProps> = ({
   const initGame = useCallback(() => {
     const s = stateRef.current;
     s.towers = [
-      { id: s.towerCounter++, x: 90, y: 320, type: 'flame', icon: '🔥', range: 110, damage: 1, cooldown: 0.8, cooldownTimer: 0 },
-      { id: s.towerCounter++, x: 270, y: 320, type: 'tesla', icon: '⚡', range: 120, damage: 2, cooldown: 1.2, cooldownTimer: 0 }
+      { id: s.towerCounter++, x: 90, y: 320, type: 'flame', cardId: 55, icon: '🔥', range: 110, damage: 1, cooldown: 0.8, cooldownTimer: 0 },
+      { id: s.towerCounter++, x: 270, y: 320, type: 'tesla', cardId: 100, icon: '⚡', range: 120, damage: 2, cooldown: 1.2, cooldownTimer: 0 }
     ];
     s.enemies = [];
     s.shots = [];
@@ -128,8 +130,8 @@ export const VoxelTowerCraftGame: React.FC<VoxelTowerCraftGameProps> = ({
 
     // Initial Enemy Mob
     s.enemies.push(
-      { id: s.enemyCounter++, x: 50, y: 130, vx: 55, type: 'goblin', icon: '👹', points: 300, radius: 22, hp: 1, maxHp: 1, isAlive: true },
-      { id: s.enemyCounter++, x: 310, y: 190, vx: -45, type: 'bat', icon: '🦇', points: 400, radius: 24, hp: 2, maxHp: 2, isAlive: true }
+      { id: s.enemyCounter++, x: 50, y: 130, vx: 55, type: 'goblin', cardId: 78, icon: '👹', points: 300, radius: 22, hp: 1, maxHp: 1, isAlive: true },
+      { id: s.enemyCounter++, x: 310, y: 190, vx: -45, type: 'bat', cardId: 26, icon: '🦇', points: 400, radius: 24, hp: 2, maxHp: 2, isAlive: true }
     );
 
     setEnemiesDefeated(0);
@@ -231,8 +233,9 @@ export const VoxelTowerCraftGame: React.FC<VoxelTowerCraftGameProps> = ({
         setMana(s.mana);
 
         const icon = selectedTowerType === 'flame' ? '🔥' : (selectedTowerType === 'frost' ? '❄️' : '⚡');
-        const range = selectedTowerType === 'tesla' ? 130 : 110;
-        const damage = selectedTowerType === 'tesla' ? 2 : 1;
+        const cardId = selectedTowerType === 'flame' ? 55 : (selectedTowerType === 'frost' ? 92 : 100);
+        const range = selectedTowerType === 'flame' ? 110 : (selectedTowerType === 'frost' ? 130 : 120);
+        const damage = selectedTowerType === 'flame' ? 1 : (selectedTowerType === 'frost' ? 1 : 2);
         const cooldown = selectedTowerType === 'flame' ? 0.8 : (selectedTowerType === 'frost' ? 1.0 : 1.2);
 
         s.towers.push({
@@ -240,6 +243,7 @@ export const VoxelTowerCraftGame: React.FC<VoxelTowerCraftGameProps> = ({
           x: tapX,
           y: tapY,
           type: selectedTowerType,
+          cardId,
           icon,
           range,
           damage,
@@ -285,6 +289,7 @@ export const VoxelTowerCraftGame: React.FC<VoxelTowerCraftGameProps> = ({
         const rand = Math.random();
         const isDragon = rand < 0.2;
         const isBat = rand >= 0.2 && rand < 0.6;
+        const cardId = isDragon ? 83 : (isBat ? 26 : 78);
 
         s.enemies.push({
           id: s.enemyCounter++,
@@ -292,6 +297,7 @@ export const VoxelTowerCraftGame: React.FC<VoxelTowerCraftGameProps> = ({
           y: 70 + Math.random() * 140,
           vx: (Math.random() < 0.5 ? 1 : -1) * (isDragon ? 35 : (isBat ? 55 : 45)),
           type: isDragon ? 'dragon' : (isBat ? 'bat' : 'goblin'),
+          cardId,
           icon: isDragon ? '🐲' : (isBat ? '🦇' : '👹'),
           points: isDragon ? 1000 : (isBat ? 500 : 300),
           radius: isDragon ? 32 : (isBat ? 24 : 22),
@@ -433,22 +439,27 @@ export const VoxelTowerCraftGame: React.FC<VoxelTowerCraftGameProps> = ({
         ctx.shadowBlur = 0;
       });
 
-      // Render Enemies
+      // Render Enemies (Card Sprites)
       s.enemies.forEach((enemy) => {
         if (enemy.isAlive) {
           ctx.save();
           ctx.translate(enemy.x, enemy.y);
-          if (enemy.type === 'dragon') {
-            ctx.shadowColor = '#f59e0b';
-            ctx.shadowBlur = 18;
-          } else {
-            ctx.shadowColor = '#ef4444';
-            ctx.shadowBlur = 12;
-          }
-          ctx.font = `${enemy.radius * 1.8}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(enemy.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            enemy.cardId,
+            -enemy.radius,
+            -enemy.radius,
+            enemy.radius * 2,
+            enemy.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: enemy.type === 'dragon' ? '#f59e0b' : '#ef4444',
+              shadowBlur: enemy.type === 'dragon' ? 18 : 8,
+              shadowColor: enemy.type === 'dragon' ? 'rgba(245, 158, 11, 0.9)' : 'rgba(239, 68, 68, 0.8)',
+            }
+          );
 
           // HP Bar
           if (enemy.maxHp > 1) {
@@ -461,7 +472,7 @@ export const VoxelTowerCraftGame: React.FC<VoxelTowerCraftGameProps> = ({
         }
       });
 
-      // Render Placed Towers
+      // Render Placed Towers (Card Sprites)
       s.towers.forEach((tower) => {
         ctx.save();
         ctx.translate(tower.x, tower.y);
@@ -470,14 +481,46 @@ export const VoxelTowerCraftGame: React.FC<VoxelTowerCraftGameProps> = ({
         ctx.arc(0, 0, tower.range, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.shadowColor = tower.type === 'flame' ? '#ef4444' : (tower.type === 'frost' ? '#38bdf8' : '#fde047');
-        ctx.shadowBlur = 16;
-        ctx.font = '36px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(tower.icon, 0, 0);
+        drawCardSprite(
+          ctx,
+          tower.cardId,
+          -18,
+          -18,
+          36,
+          36,
+          {
+            circleClip: true,
+            borderWidth: 2,
+            borderColor: tower.type === 'flame' ? '#ef4444' : (tower.type === 'frost' ? '#38bdf8' : '#fde047'),
+            shadowBlur: 14,
+            shadowColor: tower.type === 'flame' ? 'rgba(239, 68, 68, 0.8)' : (tower.type === 'frost' ? 'rgba(56, 189, 248, 0.8)' : 'rgba(253, 224, 71, 0.8)'),
+          }
+        );
+
         ctx.restore();
       });
+
+      // Render Commander Hero Badge at Base
+      ctx.save();
+      ctx.translate(w / 2, 430);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -20,
+        -20,
+        40,
+        40,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#38bdf8',
+          shadowBlur: 16,
+          shadowColor: 'rgba(56, 189, 248, 0.9)',
+        }
+      );
+
+      ctx.restore();
 
       // Render Particles
       s.particles.forEach((p) => {
@@ -488,7 +531,7 @@ export const VoxelTowerCraftGame: React.FC<VoxelTowerCraftGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
