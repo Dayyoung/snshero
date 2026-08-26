@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-26 20:50 KST / 11:50 UTC] [게임개선 10분 크론작업 22회차: VoxelDungeonCrawlerGame 몬스터, 루팅 및 방어 영웅 배지 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelDungeonCrawlerGame.tsx` (블리츠 던전 슬래셔)
+- **개선 내역**:
+  1. 던전 몬스터 및 보스 몬스터를 공식 카드 스프라이트(`drawCardSprite`)로 전면 교체.
+  2. 드롭 루팅 아이템(보물상자, 포션)을 공식 카드 오브젝트 스프라이트로 연동.
+  3. 하단 방어 게이트에 플레이어 대표 카드 영웅 배지(`playerHeroId`) 장착.
+  4. 가상 조이스틱 0개 100% 손가락 직접 탭 슬래시 베기 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelDungeonCrawlerGame 몬스터 및 루팅 카드 스프라이트화 및 퓨어 슬래시 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 20:40 KST / 11:40 UTC] [게임개선 10분 크론작업 21회차: VoxelDriftMasterGame 트랙 앵커 및 레이서 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelDriftMasterGame.tsx` (블리츠 슬링 드리프트)
 - **개선 내역**:

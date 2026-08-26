@@ -21,6 +21,7 @@ interface DungeonMonster {
   y: number;
   hp: number;
   maxHp: number;
+  cardId: number;
   avatar: string;
   name: string;
   enName: string;
@@ -265,6 +266,8 @@ export const VoxelDungeonCrawlerGame: React.FC<VoxelDungeonCrawlerGameProps> = (
       ) {
         s.spawnTimer = 0;
         const isBossSpawn = s.floor === 5 && s.monsters.length === 0;
+        const monsterPool = [11, 23, 35, 48, 56, 67];
+        const cardId = isBossSpawn ? 88 : monsterPool[Math.floor(Math.random() * monsterPool.length)];
 
         s.monsters.push({
           id: s.monsterCounter++,
@@ -272,6 +275,7 @@ export const VoxelDungeonCrawlerGame: React.FC<VoxelDungeonCrawlerGameProps> = (
           y: 40, // Spawn from top dungeon gate
           hp: isBossSpawn ? 180 : 30 + s.floor * 15,
           maxHp: isBossSpawn ? 180 : 30 + s.floor * 15,
+          cardId,
           avatar: isBossSpawn ? '👿' : s.floor % 2 === 0 ? '🧟' : '💀',
           name: isBossSpawn ? '던전 군주' : '던전 몬스터',
           enName: isBossSpawn ? 'Dungeon Lord' : 'Dungeon Monster',
@@ -329,20 +333,43 @@ export const VoxelDungeonCrawlerGame: React.FC<VoxelDungeonCrawlerGameProps> = (
         ctx.stroke();
       }
 
-      // Render Dropped Loots
+      // Render Dropped Loots (Card Sprites)
       s.loots.forEach((loot) => {
-        ctx.font = '26px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(loot.icon, loot.x, loot.y);
+        drawCardSprite(
+          ctx,
+          loot.type === 'chest' ? 100 : 12,
+          loot.x - 12,
+          loot.y - 12,
+          24,
+          24,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: loot.type === 'chest' ? '#fde047' : '#34d399',
+            shadowBlur: 6,
+            shadowColor: loot.type === 'chest' ? 'rgba(253, 224, 71, 0.8)' : 'rgba(52, 211, 153, 0.8)',
+          }
+        );
       });
 
-      // Render Monsters
+      // Render Monsters (Card Sprites)
       s.monsters.forEach((m) => {
-        ctx.font = m.isBoss ? '40px serif' : '30px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(m.avatar, m.x, m.y);
+        const size = m.isBoss ? 44 : 32;
+        drawCardSprite(
+          ctx,
+          m.cardId,
+          m.x - size / 2,
+          m.y - size / 2,
+          size,
+          size,
+          {
+            circleClip: true,
+            borderWidth: m.isBoss ? 2 : 1.5,
+            borderColor: m.isBoss ? '#fde047' : '#ef4444',
+            shadowBlur: m.isBoss ? 10 : 6,
+            shadowColor: m.isBoss ? 'rgba(253, 224, 71, 0.9)' : 'rgba(239, 68, 68, 0.7)',
+          }
+        );
 
         // Monster Health Bar
         const barW = m.isBoss ? 45 : 30;
@@ -365,14 +392,28 @@ export const VoxelDungeonCrawlerGame: React.FC<VoxelDungeonCrawlerGameProps> = (
       ctx.strokeStyle = '#0284c7';
       ctx.lineWidth = 2;
       ctx.strokeRect(0, 450, w, 50);
-      ctx.font = '18px serif';
-      ctx.fillStyle = '#ffffff';
-      ctx.fillText(`🛡️ DUNGEON B${s.floor}F HERO DEFENSE ⚔️`, w / 2, 475);
+
+      // Hero Guardian Emblem
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        w / 2 - 16,
+        459,
+        32,
+        32,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#0284c7',
+          shadowBlur: 10,
+          shadowColor: 'rgba(2, 132, 199, 0.8)',
+        }
+      );
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [isKo, playSfx, setupFloor]);
+  }, [isKo, playSfx, setupFloor, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
