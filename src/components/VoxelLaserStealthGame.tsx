@@ -352,7 +352,7 @@ export const VoxelLaserStealthGame: React.FC<VoxelLaserStealthGameProps> = ({
         ctx.stroke();
       }
 
-      // Render Exit Vault Door at Top
+      // Render Exit Vault Door at Top (Card Sprite Emblem)
       ctx.fillStyle = '#065f46';
       ctx.beginPath();
       ctx.arc(lvl.exit.x, lvl.exit.y, lvl.exit.radius, 0, Math.PI * 2);
@@ -360,18 +360,41 @@ export const VoxelLaserStealthGame: React.FC<VoxelLaserStealthGameProps> = ({
       ctx.strokeStyle = '#34d399';
       ctx.lineWidth = 3;
       ctx.stroke();
-      ctx.font = '20px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🚪', lvl.exit.x, lvl.exit.y);
 
-      // Render Jewels (Diamonds)
+      drawCardSprite(
+        ctx,
+        100,
+        lvl.exit.x - 14,
+        lvl.exit.y - 14,
+        28,
+        28,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#34d399',
+          shadowBlur: 10,
+          shadowColor: 'rgba(52, 211, 153, 0.8)',
+        }
+      );
+
+      // Render Jewels (Card Sprites)
       s.jewels.forEach((j) => {
         if (!j.isCollected) {
-          ctx.font = '26px serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('💎', j.x, j.y);
+          drawCardSprite(
+            ctx,
+            38,
+            j.x - 12,
+            j.y - 12,
+            24,
+            24,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: '#38bdf8',
+              shadowBlur: 8,
+              shadowColor: 'rgba(56, 189, 248, 0.8)',
+            }
+          );
         }
       });
 
@@ -393,19 +416,32 @@ export const VoxelLaserStealthGame: React.FC<VoxelLaserStealthGameProps> = ({
       });
       ctx.shadowBlur = 0;
 
-      // Render Agent (Secret Infiltrator)
+      // Render Agent (Card Sprite)
       ctx.save();
       ctx.translate(s.agentX, s.agentY);
-      ctx.font = '32px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🕵️', 0, 0);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -16,
+        -16,
+        32,
+        32,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: alarmAlert ? '#ef4444' : '#38bdf8',
+          shadowBlur: alarmAlert ? 16 : 8,
+          shadowColor: alarmAlert ? 'rgba(239, 68, 68, 0.9)' : 'rgba(56, 189, 248, 0.7)',
+        }
+      );
+
       ctx.restore();
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [isKo, playSfx, setupLevel]);
+  }, [isKo, playSfx, setupLevel, playerHeroId, alarmAlert]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
