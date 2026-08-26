@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-27 05:40 KST / 20:40 UTC] [게임개선 10분 크론작업 75회차: VoxelWaterSlideGame 슬라이드 아이템 및 튜브라이더 영웅 배지 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelWaterSlideGame.tsx` (블리츠 워터 슬라이드)
+- **개선 내역**:
+  1. 4종 슬라이드 요소(불가사리, 스피드 부스터, 트로피칼 칵테일, 바위)를 공식 카드 스프라이트(ID 100, 58, 92, 34)로 전면 교체.
+  2. 튜브 라이더 캐릭터에 플레이어 대표 카드 영웅 배지(`playerHeroId`) 장착.
+  3. 아쿠아파크 급류 수로 배경 및 실시간 좌우 조향 물리 시뮬레이션 고도화.
+  4. 가상 조이스틱 0개 100% 손가락 직접 좌우 드래그 조향(Direct Horizontal Drag Steering) 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelWaterSlideGame 슬라이드아이템 및 튜브라이더카드 스프라이트화 및 퓨어 워터슬라이드 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-27 05:30 KST / 20:30 UTC] [게임개선 10분 크론작업 74회차: VoxelVampireSurvivalGame 언데드몹/성검 및 헌터 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelVampireSurvivalGame.tsx` (블리츠 뱀파이어 서바이벌)
 - **개선 내역**:

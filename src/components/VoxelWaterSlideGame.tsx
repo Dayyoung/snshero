@@ -20,6 +20,7 @@ interface SlideItem {
   x: number;
   y: number;
   type: 'star' | 'booster' | 'cocktail' | 'rock';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -100,8 +101,8 @@ export const VoxelWaterSlideGame: React.FC<VoxelWaterSlideGameProps> = ({
 
     // Initial items on water slide
     s.items.push(
-      { id: s.itemCounter++, x: 100, y: 120, type: 'star', icon: '⭐', points: 350, radius: 22, speed: 280, collected: false },
-      { id: s.itemCounter++, x: 260, y: 200, type: 'booster', icon: '🌀', points: 600, radius: 26, speed: 280, collected: false }
+      { id: s.itemCounter++, x: 100, y: 120, type: 'star', cardId: 100, icon: '⭐', points: 350, radius: 22, speed: 280, collected: false },
+      { id: s.itemCounter++, x: 260, y: 200, type: 'booster', cardId: 58, icon: '🌀', points: 600, radius: 26, speed: 280, collected: false }
     );
 
     setItemsCollected(0);
@@ -194,12 +195,14 @@ export const VoxelWaterSlideGame: React.FC<VoxelWaterSlideGameProps> = ({
         const isCocktail = rand < 0.18;
         const isBooster = rand >= 0.18 && rand < 0.45;
         const isRock = rand >= 0.45 && rand < 0.65;
+        const cardId = isCocktail ? 92 : (isBooster ? 58 : (isRock ? 34 : 100));
 
         s.items.push({
           id: s.itemCounter++,
           x: 55 + Math.random() * 250,
           y: -30,
           type: isCocktail ? 'cocktail' : (isBooster ? 'booster' : (isRock ? 'rock' : 'star')),
+          cardId,
           icon: isCocktail ? '🍹' : (isBooster ? '🌀' : (isRock ? '🪨' : '⭐')),
           points: isCocktail ? 800 : (isBooster ? 600 : (isRock ? -200 : 350)),
           radius: isCocktail ? 26 : (isBooster ? 26 : 22),
@@ -327,35 +330,52 @@ export const VoxelWaterSlideGame: React.FC<VoxelWaterSlideGameProps> = ({
         ctx.stroke();
       }
 
-      // Render Sliding Items
+      // Render Sliding Items (Card Sprites)
       s.items.forEach((item) => {
         if (!item.collected) {
           ctx.save();
           ctx.translate(item.x, item.y);
-          if (item.type === 'booster') {
-            ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 18;
-          } else if (item.type === 'cocktail') {
-            ctx.shadowColor = '#f59e0b';
-            ctx.shadowBlur = 18;
-          }
-          ctx.font = `${item.radius * 1.8}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(item.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            item.cardId,
+            -item.radius,
+            -item.radius,
+            item.radius * 2,
+            item.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: item.type === 'cocktail' ? '#f59e0b' : (item.type === 'booster' ? '#38bdf8' : (item.type === 'star' ? '#fde047' : '#ef4444')),
+              shadowBlur: item.type === 'cocktail' || item.type === 'booster' ? 16 : 8,
+              shadowColor: item.type === 'cocktail' ? 'rgba(245, 158, 11, 0.9)' : (item.type === 'booster' ? 'rgba(56, 189, 248, 0.9)' : 'rgba(253, 224, 71, 0.8)'),
+            }
+          );
+
           ctx.restore();
         }
       });
 
-      // Render Tube Rider Hero (🛟)
+      // Render Tube Rider Hero (Player Hero Badge)
       ctx.save();
       ctx.translate(s.tubeX, tubeY);
-      ctx.shadowColor = '#fde047';
-      ctx.shadowBlur = 20;
-      ctx.font = '44px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🛟', 0, 0);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -22,
+        -22,
+        44,
+        44,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 16,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -367,7 +387,7 @@ export const VoxelWaterSlideGame: React.FC<VoxelWaterSlideGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [tubeY, isKo, playSfx]);
+  }, [tubeY, isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
