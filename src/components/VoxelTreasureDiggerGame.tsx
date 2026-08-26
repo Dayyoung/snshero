@@ -20,6 +20,7 @@ interface MineTreasure {
   x: number;
   y: number;
   type: 'gold' | 'diamond' | 'chest' | 'rock';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -101,10 +102,10 @@ export const VoxelTreasureDiggerGame: React.FC<VoxelTreasureDiggerGameProps> = (
 
     // Initial Mine Treasures
     s.treasures.push(
-      { id: s.treasureCounter++, x: 80, y: 220, type: 'gold', icon: '🪙', points: 300, radius: 22, weight: 1.0, collected: false },
-      { id: s.treasureCounter++, x: 280, y: 260, type: 'diamond', icon: '💎', points: 600, radius: 20, weight: 0.8, collected: false },
-      { id: s.treasureCounter++, x: 180, y: 380, type: 'chest', icon: '📦', points: 1000, radius: 26, weight: 1.4, collected: false },
-      { id: s.treasureCounter++, x: 140, y: 240, type: 'rock', icon: '🪨', points: -150, radius: 24, weight: 2.2, collected: false }
+      { id: s.treasureCounter++, x: 80, y: 220, type: 'gold', cardId: 78, icon: '🪙', points: 300, radius: 22, weight: 1.0, collected: false },
+      { id: s.treasureCounter++, x: 280, y: 260, type: 'diamond', cardId: 100, icon: '💎', points: 600, radius: 20, weight: 0.8, collected: false },
+      { id: s.treasureCounter++, x: 180, y: 380, type: 'chest', cardId: 58, icon: '📦', points: 1000, radius: 26, weight: 1.4, collected: false },
+      { id: s.treasureCounter++, x: 140, y: 240, type: 'rock', cardId: 34, icon: '🪨', points: -150, radius: 24, weight: 2.2, collected: false }
     );
 
     setTreasuresDug(0);
@@ -292,12 +293,14 @@ export const VoxelTreasureDiggerGame: React.FC<VoxelTreasureDiggerGameProps> = (
         const isChest = rand < 0.15;
         const isDiamond = rand >= 0.15 && rand < 0.45;
         const isRock = rand >= 0.45 && rand < 0.65;
+        const cardId = isChest ? 58 : (isDiamond ? 100 : (isRock ? 34 : 78));
 
         s.treasures.push({
           id: s.treasureCounter++,
           x: 40 + Math.random() * 280,
           y: 180 + Math.random() * 240,
           type: isChest ? 'chest' : (isDiamond ? 'diamond' : (isRock ? 'rock' : 'gold')),
+          cardId,
           icon: isChest ? '📦' : (isDiamond ? '💎' : (isRock ? '🪨' : '🪙')),
           points: isChest ? 1000 : (isDiamond ? 600 : (isRock ? -150 : 300)),
           radius: isChest ? 26 : (isDiamond ? 20 : (isRock ? 24 : 22)),
@@ -356,35 +359,52 @@ export const VoxelTreasureDiggerGame: React.FC<VoxelTreasureDiggerGameProps> = (
       ctx.fillText('🪝', 0, 0);
       ctx.restore();
 
-      // Render Mine Treasures
+      // Render Mine Treasures (Card Sprites)
       s.treasures.forEach((item) => {
         if (!item.collected) {
           ctx.save();
           ctx.translate(item.x, item.y);
-          if (item.type === 'chest') {
-            ctx.shadowColor = '#f59e0b';
-            ctx.shadowBlur = 18;
-          } else if (item.type === 'diamond') {
-            ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 15;
-          }
-          ctx.font = `${item.radius * 1.8}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(item.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            item.cardId,
+            -item.radius,
+            -item.radius,
+            item.radius * 2,
+            item.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: item.type === 'chest' ? '#f59e0b' : (item.type === 'diamond' ? '#06b6d4' : (item.type === 'rock' ? '#6b7280' : '#fde047')),
+              shadowBlur: item.type === 'chest' || item.type === 'diamond' ? 16 : 6,
+              shadowColor: item.type === 'chest' ? 'rgba(245, 158, 11, 0.9)' : (item.type === 'diamond' ? 'rgba(6, 182, 212, 0.9)' : 'rgba(253, 224, 71, 0.8)'),
+            }
+          );
+
           ctx.restore();
         }
       });
 
-      // Render Crane Cart at Top (🏗️)
+      // Render Crane Cart at Top (Player Hero Badge)
       ctx.save();
       ctx.translate(craneOriginX, craneOriginY);
-      ctx.shadowColor = '#fde047';
-      ctx.shadowBlur = 16;
-      ctx.font = '36px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🏗️', 0, -10);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -20,
+        -28,
+        40,
+        40,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 14,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -396,7 +416,7 @@ export const VoxelTreasureDiggerGame: React.FC<VoxelTreasureDiggerGameProps> = (
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;

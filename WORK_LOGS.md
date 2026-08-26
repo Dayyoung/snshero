@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-27 05:20 KST / 20:20 UTC] [게임개선 10분 크론작업 73회차: VoxelTreasureDiggerGame 광물/보물 및 크레인 영웅 배지 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelTreasureDiggerGame.tsx` (블리츠 트레저 디거)
+- **개선 내역**:
+  1. 4종 지하 광물/보물(금광석, 다이아몬드, 보물 상자, 암석)을 공식 카드 스프라이트(ID 78, 100, 58, 34)로 전면 교체.
+  2. 상단 크레인 카트에 채굴 사령관 플레이어 대표 카드 영웅 배지(`playerHeroId`) 장착.
+  3. 지하 광산 배경 및 각도 조준 & 릴리즈 집게발(Crane Claw) 투하/인양 물리 시뮬레이션 고도화.
+  4. 가상 조이스틱 0개 100% 손가락 직접 드래그 조준 & 릴리즈 크레인 발사(Direct Drag & Release Crane Mining) 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelTreasureDiggerGame 광물/보물 및 크레인카드 스프라이트화 및 퓨어 트레저디거 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-27 05:10 KST / 20:10 UTC] [게임개선 10분 크론작업 72회차: VoxelTowerStackGame 층별 테마 및 건축가 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelTowerStackGame.tsx` (블리츠 타워 스택)
 - **개선 내역**:
