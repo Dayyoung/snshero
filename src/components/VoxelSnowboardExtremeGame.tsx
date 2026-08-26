@@ -20,6 +20,7 @@ interface SlopeObstacle {
   x: number;
   y: number;
   type: 'gate' | 'ramp' | 'tree' | 'crystal';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -105,8 +106,8 @@ export const VoxelSnowboardExtremeGame: React.FC<VoxelSnowboardExtremeGameProps>
 
     // Initial items on slope
     s.obstacles.push(
-      { id: s.obsCounter++, x: 120, y: 140, type: 'gate', icon: '🚩', points: 400, radius: 24, cleared: false },
-      { id: s.obsCounter++, x: 240, y: 220, type: 'crystal', icon: '❄️', points: 300, radius: 20, cleared: false }
+      { id: s.obsCounter++, x: 120, y: 140, type: 'gate', cardId: 58, icon: '🚩', points: 400, radius: 24, cleared: false },
+      { id: s.obsCounter++, x: 240, y: 220, type: 'crystal', cardId: 100, icon: '❄️', points: 300, radius: 20, cleared: false }
     );
 
     setGatesCleared(0);
@@ -209,12 +210,14 @@ export const VoxelSnowboardExtremeGame: React.FC<VoxelSnowboardExtremeGameProps>
         const isTree = rand < 0.35;
         const isGate = rand >= 0.35 && rand < 0.65;
         const isRamp = rand >= 0.65 && rand < 0.8;
+        const cardId = isRamp ? 92 : (isGate ? 58 : (isTree ? 34 : 100));
 
         s.obstacles.push({
           id: s.obsCounter++,
           x: 50 + Math.random() * 260,
           y: -40,
           type: isRamp ? 'ramp' : (isGate ? 'gate' : (isTree ? 'tree' : 'crystal')),
+          cardId,
           icon: isRamp ? '🎿' : (isGate ? '🚩' : (isTree ? '🌲' : '❄️')),
           points: isRamp ? 800 : (isGate ? 400 : (isTree ? -300 : 250)),
           radius: isRamp ? 26 : (isGate ? 24 : (isTree ? 22 : 18)),
@@ -360,39 +363,56 @@ export const VoxelSnowboardExtremeGame: React.FC<VoxelSnowboardExtremeGameProps>
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Render Slope Obstacles
+      // Render Slope Obstacles (Card Sprites)
       s.obstacles.forEach((obs) => {
         if (!obs.cleared) {
           ctx.save();
           ctx.translate(obs.x, obs.y);
-          if (obs.type === 'ramp') {
-            ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 16;
-          } else if (obs.type === 'gate') {
-            ctx.shadowColor = '#ef4444';
-            ctx.shadowBlur = 14;
-          }
-          ctx.font = `${obs.radius * 1.8}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(obs.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            obs.cardId,
+            -obs.radius,
+            -obs.radius,
+            obs.radius * 2,
+            obs.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: obs.type === 'ramp' ? '#38bdf8' : (obs.type === 'gate' ? '#ef4444' : (obs.type === 'crystal' ? '#06b6d4' : '#22c55e')),
+              shadowBlur: obs.type === 'ramp' || obs.type === 'crystal' ? 16 : 6,
+              shadowColor: obs.type === 'ramp' ? 'rgba(56, 189, 248, 0.8)' : (obs.type === 'crystal' ? 'rgba(6, 182, 212, 0.9)' : 'rgba(239, 68, 68, 0.7)'),
+            }
+          );
+
           ctx.restore();
         }
       });
 
-      // Render Snowboarder Hero
+      // Render Snowboarder Hero (Player Hero Badge)
       ctx.save();
       ctx.translate(s.boarderX, boarderY);
       ctx.rotate(s.boarderAngle);
       if (s.isAirborne) {
         ctx.scale(1.3, 1.3);
-        ctx.shadowColor = '#38bdf8';
-        ctx.shadowBlur = 20;
       }
-      ctx.font = '36px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🏂', 0, 0);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -20,
+        -20,
+        40,
+        40,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: s.isAirborne ? '#38bdf8' : '#0284c7',
+          shadowBlur: s.isAirborne ? 20 : 12,
+          shadowColor: 'rgba(56, 189, 248, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -404,7 +424,7 @@ export const VoxelSnowboardExtremeGame: React.FC<VoxelSnowboardExtremeGameProps>
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [boarderY, isKo, playSfx]);
+  }, [boarderY, isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
