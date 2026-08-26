@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-26 18:00 KST / 09:00 UTC] [게임개선 10분 크론작업 5회차: VoxelBaseballDerbyGame 낙하 아이템/절단 모션 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelBaseballDerbyGame.tsx` (블리츠 슬라이스 닌자)
+- **개선 내역**:
+  1. 공중으로 솟구치는 타깃/과일/폭탄/보석을 공식 카드 몬스터/오브젝트 스프라이트(`cards1.png`/`cards2.png`)로 전면 교체하여 타격감과 카타르시스 대폭 강화.
+  2. 칼날로 절단 시 카드 스프라이트가 양쪽으로 분할되어 회전 낙하하는 모션 연출 구현.
+  3. 좌측 하단 도장 코너에 플레이어 대표 카드 영웅 배지(`playerHeroId`) 렌더링.
+  4. 가상 조이스틱 0개 100% 손가락 핑거 슬래시(Finger Slash) 제스처 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelBaseballDerbyGame 타깃 및 절단 모션 카드 스프라이트화 및 퓨어 슬라이스 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 17:50 KST / 08:50 UTC] [게임개선 10분 크론작업 4회차: VoxelBadmintonBlitzGame 아군/AI 패들 및 핑퐁 볼 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelBadmintonBlitzGame.tsx` (블리츠 핑퐁 랠리)
 - **개선 내역**:

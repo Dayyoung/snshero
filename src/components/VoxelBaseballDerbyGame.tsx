@@ -22,7 +22,7 @@ interface FlyingItem {
   vx: number;
   vy: number;
   type: 'fruit' | 'bomb' | 'gem';
-  icon: string;
+  cardId: number;
   radius: number;
   sliced: boolean;
   points: number;
@@ -246,7 +246,8 @@ export const VoxelBaseballDerbyGame: React.FC<VoxelBaseballDerbyGameProps> = ({
         for (let k = 0; k < count; k++) {
           const isBomb = Math.random() < 0.22;
           const isGem = !isBomb && Math.random() < 0.15;
-          const fruit = FRUIT_ICONS[Math.floor(Math.random() * FRUIT_ICONS.length)];
+          const monsterPool = [4, 8, 12, 16, 22, 28, 35, 41, 49, 58];
+          const randomMonsterId = monsterPool[Math.floor(Math.random() * monsterPool.length)];
 
           s.items.push({
             id: s.itemCounter++,
@@ -255,7 +256,7 @@ export const VoxelBaseballDerbyGame: React.FC<VoxelBaseballDerbyGameProps> = ({
             vx: (Math.random() - 0.5) * 120,
             vy: -(380 + Math.random() * 120),
             type: isBomb ? 'bomb' : isGem ? 'gem' : 'fruit',
-            icon: isBomb ? '💣' : isGem ? '💎' : fruit,
+            cardId: isBomb ? 4 : isGem ? playerHeroId : randomMonsterId,
             radius: 22,
             sliced: false,
             points: isGem ? 300 : 100,
@@ -304,32 +305,88 @@ export const VoxelBaseballDerbyGame: React.FC<VoxelBaseballDerbyGameProps> = ({
         ctx.stroke();
       }
 
-      // Render Flying Items
+      // Render Flying Items (Card Sprites)
       s.items.forEach((item) => {
+        const itemBorder = item.type === 'bomb' ? '#ef4444' : item.type === 'gem' ? '#38bdf8' : '#eab308';
+        const shadowColor = item.type === 'bomb' ? 'rgba(239, 68, 68, 0.6)' : 'rgba(234, 179, 8, 0.6)';
+
         if (item.sliced) {
           // Half 1
-          ctx.font = `${item.radius * 1.3}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
           ctx.save();
-          ctx.translate(item.x - 12, item.y);
-          ctx.rotate(-0.3);
-          ctx.fillText(item.icon, 0, 0);
+          ctx.translate(item.x - 14, item.y);
+          ctx.rotate(-0.35);
+          drawCardSprite(
+            ctx,
+            item.cardId,
+            -item.radius * 0.8,
+            -item.radius * 0.8,
+            item.radius * 1.6,
+            item.radius * 1.6,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: itemBorder,
+              shadowBlur: 6,
+              shadowColor,
+            }
+          );
           ctx.restore();
 
           // Half 2
           ctx.save();
-          ctx.translate(item.x + 12, item.y);
-          ctx.rotate(0.3);
-          ctx.fillText(item.icon, 0, 0);
+          ctx.translate(item.x + 14, item.y);
+          ctx.rotate(0.35);
+          drawCardSprite(
+            ctx,
+            item.cardId,
+            -item.radius * 0.8,
+            -item.radius * 0.8,
+            item.radius * 1.6,
+            item.radius * 1.6,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: itemBorder,
+              shadowBlur: 6,
+              shadowColor,
+            }
+          );
           ctx.restore();
         } else {
-          ctx.font = `${item.radius * 1.6}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(item.icon, item.x, item.y);
+          drawCardSprite(
+            ctx,
+            item.cardId,
+            item.x - item.radius,
+            item.y - item.radius,
+            item.radius * 2,
+            item.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 2,
+              borderColor: itemBorder,
+              shadowBlur: 10,
+              shadowColor,
+            }
+          );
         }
       });
+
+      // Bottom Dojo Corner Hero Badge
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        14,
+        h - 52,
+        38,
+        38,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 10,
+          shadowColor: 'rgba(253, 224, 71, 0.6)',
+        }
+      );
 
       // Render Blade Slice Trail (Glowing Katana Slash)
       if (s.trail.length > 1) {
