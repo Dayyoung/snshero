@@ -394,18 +394,28 @@ export const VoxelMiningDefenseGame: React.FC<VoxelMiningDefenseGameProps> = ({
         ctx.stroke();
       });
 
-      // Render Central Crystal Mine Core
+      // Render Central Crystal Mine Core (Player Hero Badge)
       ctx.save();
       ctx.translate(coreX, coreY);
-      ctx.shadowColor = '#38bdf8';
-      ctx.shadowBlur = 20;
-      ctx.font = '50px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('💎', 0, 0);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -24,
+        -24,
+        48,
+        48,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#38bdf8',
+          shadowBlur: 18,
+          shadowColor: 'rgba(56, 189, 248, 0.9)',
+        }
+      );
       ctx.restore();
 
-      // Render Turret Slots
+      // Render Turret Slots (Card Sprites)
       s.turrets.forEach((slot) => {
         ctx.save();
         ctx.translate(slot.x, slot.y);
@@ -423,24 +433,30 @@ export const VoxelMiningDefenseGame: React.FC<VoxelMiningDefenseGameProps> = ({
           ctx.fillText('BUILD', 0, 4);
           ctx.fillText('50💎', 0, 16);
         } else {
-          // Active Turret
-          ctx.fillStyle = '#1e293b';
-          ctx.beginPath();
-          ctx.arc(0, 0, 26, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.strokeStyle = '#38bdf8';
-          ctx.lineWidth = 2;
-          ctx.stroke();
+          // Active Turret Card Sprite
+          const turretCardId = slot.type === 'cannon' ? 58 : slot.type === 'tesla' ? 76 : 34;
 
-          ctx.font = '28px serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(slot.type === 'cannon' ? '💣' : (slot.type === 'tesla' ? '⚡' : '🏹'), 0, -2);
+          drawCardSprite(
+            ctx,
+            turretCardId,
+            -22,
+            -22,
+            44,
+            44,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: slot.type === 'tesla' ? '#fde047' : '#38bdf8',
+              shadowBlur: 8,
+              shadowColor: slot.type === 'tesla' ? 'rgba(253, 224, 71, 0.8)' : 'rgba(56, 189, 248, 0.8)',
+            }
+          );
 
           // Level Stars
           ctx.font = 'bold 10px monospace';
           ctx.fillStyle = '#fde047';
-          ctx.fillText(`Lv.${slot.level}`, 0, 16);
+          ctx.textAlign = 'center';
+          ctx.fillText(`Lv.${slot.level}`, 0, 26);
         }
         ctx.restore();
       });
@@ -458,20 +474,34 @@ export const VoxelMiningDefenseGame: React.FC<VoxelMiningDefenseGameProps> = ({
       });
       ctx.shadowBlur = 0;
 
-      // Render Monsters
+      // Render Monsters (Card Sprites)
       s.monsters.forEach((m) => {
         ctx.save();
         ctx.translate(m.x, m.y);
-        ctx.font = `${m.radius * 1.8}px serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(m.icon, 0, 0);
+
+        const monsterCardId = m.type === 'goblin' ? 25 : m.type === 'golem' ? 65 : 43;
+
+        drawCardSprite(
+          ctx,
+          monsterCardId,
+          -m.radius,
+          -m.radius,
+          m.radius * 2,
+          m.radius * 2,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: '#ef4444',
+            shadowBlur: 8,
+            shadowColor: 'rgba(239, 68, 68, 0.8)',
+          }
+        );
 
         // Mini HP Bar
         ctx.fillStyle = '#1e293b';
-        ctx.fillRect(-12, m.radius + 2, 24, 4);
+        ctx.fillRect(-12, m.radius + 3, 24, 4);
         ctx.fillStyle = '#ef4444';
-        ctx.fillRect(-12, m.radius + 2, 24 * (m.hp / m.maxHp), 4);
+        ctx.fillRect(-12, m.radius + 3, 24 * (m.hp / m.maxHp), 4);
         ctx.restore();
       });
 
@@ -484,7 +514,7 @@ export const VoxelMiningDefenseGame: React.FC<VoxelMiningDefenseGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [isKo, playSfx]);
+  }, [isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
