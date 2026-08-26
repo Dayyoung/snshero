@@ -20,6 +20,7 @@ interface StreetElement {
   x: number;
   y: number;
   type: 'rail' | 'cone' | 'star' | 'ramp';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -106,8 +107,8 @@ export const VoxelSkateboardStreetGame: React.FC<VoxelSkateboardStreetGameProps>
 
     // Initial items on road
     s.elements.push(
-      { id: s.elemCounter++, x: 200, y: groundY - 20, type: 'star', icon: '⭐', points: 250, radius: 20, cleared: false },
-      { id: s.elemCounter++, x: 380, y: groundY - 10, type: 'rail', icon: '🛹', points: 600, radius: 28, cleared: false }
+      { id: s.elemCounter++, x: 200, y: groundY - 20, type: 'star', cardId: 100, icon: '⭐', points: 250, radius: 20, cleared: false },
+      { id: s.elemCounter++, x: 380, y: groundY - 10, type: 'rail', cardId: 58, icon: '🛹', points: 600, radius: 28, cleared: false }
     );
 
     setTricksPerformed(0);
@@ -261,12 +262,14 @@ export const VoxelSkateboardStreetGame: React.FC<VoxelSkateboardStreetGameProps>
         const rand = Math.random();
         const isRail = rand < 0.35;
         const isCone = rand >= 0.35 && rand < 0.65;
+        const cardId = isRail ? 58 : (isCone ? 34 : 100);
 
         s.elements.push({
           id: s.elemCounter++,
           x: 400,
           y: isRail ? groundY - 15 : (isCone ? groundY - 5 : groundY - 60),
           type: isRail ? 'rail' : (isCone ? 'cone' : 'star'),
+          cardId,
           icon: isRail ? '🛹' : (isCone ? '🚧' : '⭐'),
           points: isRail ? 600 : (isCone ? -250 : 300),
           radius: isRail ? 28 : (isCone ? 20 : 18),
@@ -388,33 +391,53 @@ export const VoxelSkateboardStreetGame: React.FC<VoxelSkateboardStreetGameProps>
       ctx.lineTo(w, groundY + 15);
       ctx.stroke();
 
-      // Render Street Elements
+      // Render Street Elements (Card Sprites)
       s.elements.forEach((elem) => {
         if (!elem.cleared) {
           ctx.save();
           ctx.translate(elem.x, elem.y);
-          if (elem.type === 'rail') {
-            ctx.shadowColor = '#f97316';
-            ctx.shadowBlur = 15;
-          }
-          ctx.font = `${elem.radius * 1.8}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(elem.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            elem.cardId,
+            -elem.radius,
+            -elem.radius,
+            elem.radius * 2,
+            elem.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: elem.type === 'rail' ? '#f97316' : (elem.type === 'star' ? '#fde047' : '#ef4444'),
+              shadowBlur: elem.type === 'rail' || elem.type === 'star' ? 16 : 6,
+              shadowColor: elem.type === 'rail' ? 'rgba(249, 115, 22, 0.9)' : (elem.type === 'star' ? 'rgba(253, 224, 71, 0.9)' : 'rgba(239, 68, 68, 0.7)'),
+            }
+          );
+
           ctx.restore();
         }
       });
 
-      // Render Skateboard Hero
+      // Render Skateboard Hero (Player Hero Badge)
       ctx.save();
       ctx.translate(100, s.skaterY);
       ctx.rotate(s.boardFlipAngle);
-      ctx.shadowColor = '#fde047';
-      ctx.shadowBlur = 18;
-      ctx.font = '36px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🛹', 0, 0);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -20,
+        -20,
+        40,
+        40,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 18,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -426,7 +449,7 @@ export const VoxelSkateboardStreetGame: React.FC<VoxelSkateboardStreetGameProps>
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [groundY, isKo, playSfx]);
+  }, [groundY, isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
