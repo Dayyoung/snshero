@@ -22,6 +22,7 @@ interface NetherGem {
   x: number;
   y: number;
   type: 'purple' | 'blue' | 'red' | 'gold';
+  cardId: number;
   icon: string;
   color: string;
 }
@@ -86,16 +87,20 @@ export const VoxelNetherPortalGame: React.FC<VoxelNetherPortalGameProps> = ({
     const types: ('purple' | 'blue' | 'red' | 'gold')[] = ['purple', 'blue', 'red', 'purple', 'blue', 'gold'];
     const randType = types[Math.floor(Math.random() * types.length)];
 
+    let cardId = 92;
     let icon = '🟣';
     let color = '#a855f7';
 
     if (randType === 'blue') {
+      cardId = 62;
       icon = '🔵';
       color = '#38bdf8';
     } else if (randType === 'red') {
+      cardId = 53;
       icon = '🔴';
       color = '#f43f5e';
     } else if (randType === 'gold') {
+      cardId = 100;
       icon = '⭐';
       color = '#fde047';
     }
@@ -107,6 +112,7 @@ export const VoxelNetherPortalGame: React.FC<VoxelNetherPortalGameProps> = ({
       x: gridOffsetX + col * gemSize + gemSize / 2,
       y: gridOffsetY + row * gemSize + gemSize / 2,
       type: randType,
+      cardId,
       icon,
       color,
     };
@@ -354,7 +360,7 @@ export const VoxelNetherPortalGame: React.FC<VoxelNetherPortalGameProps> = ({
         ctx.shadowBlur = 0;
       }
 
-      // Render 5x5 Gems Grid
+      // Render 5x5 Gems Grid (Card Sprites)
       for (let r = 0; r < gridRows; r++) {
         for (let c = 0; c < gridCols; c++) {
           const gem = s.grid[r]?.[c];
@@ -365,25 +371,51 @@ export const VoxelNetherPortalGame: React.FC<VoxelNetherPortalGameProps> = ({
             ctx.translate(gem.x, gem.y);
 
             if (isSelected) {
-              ctx.shadowColor = gem.color;
-              ctx.shadowBlur = 20;
               ctx.scale(1.2, 1.2);
             }
 
-            // Cell Frame
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
-            ctx.beginPath();
-            ctx.arc(0, 0, 22, 0, Math.PI * 2);
-            ctx.fill();
+            drawCardSprite(
+              ctx,
+              gem.cardId,
+              -20,
+              -20,
+              40,
+              40,
+              {
+                circleClip: true,
+                borderWidth: isSelected ? 2.5 : 1.2,
+                borderColor: isSelected ? '#fde047' : gem.color,
+                shadowBlur: isSelected ? 18 : 6,
+                shadowColor: isSelected ? 'rgba(253, 224, 71, 0.9)' : gem.color,
+              }
+            );
 
-            ctx.font = '28px serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(gem.icon, 0, 0);
             ctx.restore();
           }
         }
       }
+
+      // Render Bottom Hero Nether Guardian Badge
+      ctx.save();
+      ctx.translate(180, 450);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -22,
+        -22,
+        44,
+        44,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: s.portalEnergy >= 100 ? '#fde047' : '#a855f7',
+          shadowBlur: s.portalEnergy >= 100 ? 20 : 10,
+          shadowColor: s.portalEnergy >= 100 ? 'rgba(253, 224, 71, 0.9)' : 'rgba(168, 85, 247, 0.8)',
+        }
+      );
+
+      ctx.restore();
 
       // Render Particles
       s.particles.forEach((p) => {
@@ -394,7 +426,7 @@ export const VoxelNetherPortalGame: React.FC<VoxelNetherPortalGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [gridRows, gridCols]);
+  }, [gridRows, gridCols, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
