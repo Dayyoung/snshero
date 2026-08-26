@@ -1,4 +1,5 @@
 import { drawCardSprite } from '../lib/canvasCardRenderer';
+import { getCardSpriteStyle } from '../lib/utils';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
@@ -319,12 +320,15 @@ export const VoxelPixelOvercookedGame: React.FC<VoxelPixelOvercookedGameProps> =
         {currentOrder && (
           <div className={`w-full p-3 rounded-xl border ${currentOrder.isVip ? 'bg-amber-950/60 border-amber-400 shadow-amber-500/20' : 'bg-slate-900/80 border-slate-700'} shadow-lg flex flex-col items-center gap-2`}>
             <div className="flex items-center justify-between w-full">
-              <div className="flex items-center gap-2">
-                <span className="text-3xl">{currentOrder.targetDish}</span>
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-full border-2 border-amber-400 shadow-md flex-shrink-0 relative overflow-hidden" style={getCardSpriteStyle(playerHeroId)}>
+                  <div className="absolute -top-1 -right-1 text-xs">👨‍🍳</div>
+                </div>
                 <div>
-                  <div className="text-xs text-slate-400 font-bold flex items-center gap-1">
+                  <div className="text-xs text-slate-400 font-bold flex items-center gap-1.5">
                     {currentOrder.isVip && <span className="text-amber-400">👑 VIP ORDER</span>}
                     <span>{currentOrder.name}</span>
+                    <span className="text-lg">{currentOrder.targetDish}</span>
                   </div>
                   <div className="text-sm font-bold text-amber-300">+{currentOrder.points}P</div>
                 </div>

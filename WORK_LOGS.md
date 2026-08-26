@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-27 01:40 KST / 16:40 UTC] [게임개선 10분 크론작업 51회차: VoxelPixelOvercookedGame 마스터 셰프 영웅 배지 및 레시피 고도화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelPixelOvercookedGame.tsx` (블리츠 셰프 타이쿤)
+- **개선 내역**:
+  1. 상단 주문서 티켓 및 주방 플레이트 상단에 플레이어 대표 카드 마스터 셰프 영웅 배지(`playerHeroId`) 장착.
+  2. 5종 디럭스 레시피(버거, 피자, 스시, 라멘, 케이크) 및 8종 식재료 서빙 매칭 피드백 연동.
+  3. VIP 골든 오더(👑) 서빙 보너스 및 연속 콤보 배수 시뮬레이션 고도화.
+  4. 가상 조이스틱 0개 100% 손가락 직접 식재료 탭 조리(Direct Ingredient Tap) 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelPixelOvercookedGame 셰프영웅배지 및 레시피 카드 연동 및 퓨어 오버쿡드 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-27 01:30 KST / 16:30 UTC] [게임개선 10분 크론작업 50회차: VoxelPirateBattlesGame 해적 함선 및 기함 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelPirateBattlesGame.tsx` (블리츠 대해적 함포전)
 - **개선 내역**:
