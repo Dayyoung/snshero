@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-08-26 17:50 KST / 08:50 UTC] [게임개선 10분 크론작업 4회차: VoxelBadmintonBlitzGame 아군/AI 패들 및 핑퐁 볼 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelBadmintonBlitzGame.tsx` (블리츠 핑퐁 랠리)
+- **개선 내역**:
+  1. 상단 AI 패들에 몬스터 카드 배지, 하단 아군 패들에 플레이어 대표 카드 영웅 배지(`playerHeroId`)를 연동하여 시각적 개성과 결투 몰입도 강화.
+  2. 핑퐁 볼을 카드 에너지 오브젝트 스프라이트로 렌더링.
+  3. 가상 조이스틱 0개 100% 손가락 직접 좌우 드래그 랠리 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelBadmintonBlitzGame 아군/AI 패들 및 공 카드 스프라이트화 및 퓨어 랠리 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 17:40 KST / 08:40 UTC] [게임개선 10분 크론작업 3회차: VoxelArcherHeroGame 비행 타깃 및 궁수 베이스 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelArcherHeroGame.tsx` (아케인 슬링샷 궁수)
 - **개선 내역**:

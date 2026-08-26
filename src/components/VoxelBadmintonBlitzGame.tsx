@@ -283,33 +283,73 @@ export const VoxelBadmintonBlitzGame: React.FC<VoxelBadmintonBlitzGameProps> = (
       ctx.lineTo(w / 2, h - 10);
       ctx.stroke();
 
-      // Render AI Paddle (Red)
+      // Render AI Paddle & Monster Avatar
       ctx.fillStyle = '#ef4444';
       ctx.fillRect(s.aiPaddleX - s.aiPaddleW / 2, s.aiPaddleY - s.paddleH / 2, s.aiPaddleW, s.paddleH);
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 1.5;
       ctx.strokeRect(s.aiPaddleX - s.aiPaddleW / 2, s.aiPaddleY - s.paddleH / 2, s.aiPaddleW, s.paddleH);
 
-      // Render Player Paddle (Cyan Blue)
+      drawCardSprite(
+        ctx,
+        30,
+        s.aiPaddleX - 16,
+        s.aiPaddleY - 16,
+        32,
+        32,
+        {
+          circleClip: true,
+          borderWidth: 1.5,
+          borderColor: '#ef4444',
+          shadowBlur: 6,
+          shadowColor: 'rgba(239, 68, 68, 0.6)',
+        }
+      );
+
+      // Render Player Paddle & Hero Avatar
       ctx.fillStyle = '#06b6d4';
       ctx.fillRect(s.paddleX - s.paddleW / 2, s.paddleY - s.paddleH / 2, s.paddleW, s.paddleH);
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 2;
       ctx.strokeRect(s.paddleX - s.paddleW / 2, s.paddleY - s.paddleH / 2, s.paddleW, s.paddleH);
 
-      // Render Ping Pong Ball (Golden Orange)
-      ctx.fillStyle = '#fbbf24';
-      ctx.beginPath();
-      ctx.arc(s.ballX, s.ballY, 8, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        s.paddleX - 18,
+        s.paddleY - 18,
+        36,
+        36,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#06b6d4',
+          shadowBlur: 10,
+          shadowColor: 'rgba(6, 182, 212, 0.6)',
+        }
+      );
+
+      // Render Energy Ball (Card Sprite)
+      drawCardSprite(
+        ctx,
+        100,
+        s.ballX - 10,
+        s.ballY - 10,
+        20,
+        20,
+        {
+          circleClip: true,
+          borderWidth: 1.5,
+          borderColor: '#fbbf24',
+          shadowBlur: 8,
+          shadowColor: 'rgba(251, 191, 36, 0.8)',
+        }
+      );
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [onReward, playSfx, resetBall]);
+  }, [onReward, playSfx, resetBall, playerHeroId]);
 
   const checkEndMatch = (pScore: number, aScore: number) => {
     const s = stateRef.current;
