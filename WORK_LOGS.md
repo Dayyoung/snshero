@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-08-26 21:00 KST / 12:00 UTC] [게임개선 10분 크론작업 23회차: VoxelFactoryCraftGame 반도체 칩 및 엔지니어 영웅 배지 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelFactoryCraftGame.tsx` (블리츠 칩 머지)
+- **개선 내역**:
+  1. 7종 반도체 칩/코어 타일을 공식 카드 소자/오브젝트 스프라이트(`getCardSpriteStyle`)로 전면 교체.
+  2. 하단 퓨어 터치 안내 바 좌측에 수석 엔지니어 영웅 배지(`playerHeroId`) 장착.
+  3. 가상 조이스틱 0개 100% 손가락 직접 4방향 스와이프 머지 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelFactoryCraftGame 칩 타일 카드 스프라이트화 및 퓨어 칩머지 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 20:50 KST / 11:50 UTC] [게임개선 10분 크론작업 22회차: VoxelDungeonCrawlerGame 몬스터, 루팅 및 방어 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelDungeonCrawlerGame.tsx` (블리츠 던전 슬래셔)
 - **개선 내역**:

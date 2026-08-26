@@ -1,10 +1,10 @@
-import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
+import { getCardSpriteStyle } from '../lib/utils';
 
 interface VoxelFactoryCraftGameProps {
   deck: CardData[];
@@ -18,13 +18,13 @@ interface VoxelFactoryCraftGameProps {
 type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
 
 const CHIP_TIERS = [
-  { level: 1, val: 2, icon: '💾', name: '실리콘', color: '#64748b' },
-  { level: 2, val: 4, icon: '⚡', name: '트랜지스터', color: '#0ea5e9' },
-  { level: 3, val: 8, icon: '🔋', name: '커패시터', color: '#10b981' },
-  { level: 4, val: 16, icon: '📟', name: '마이크로칩', color: '#f59e0b' },
-  { level: 5, val: 32, icon: '🧠', name: 'AI 프로세서', color: '#a855f7' },
-  { level: 6, val: 64, icon: '🔮', name: '양자 코어', color: '#ec4899' },
-  { level: 7, val: 128, icon: '☀️', name: '초지능 코어', color: '#eab308' },
+  { level: 1, val: 2, cardId: 5, icon: '💾', name: '실리콘', color: '#64748b' },
+  { level: 2, val: 4, cardId: 17, icon: '⚡', name: '트랜지스터', color: '#0ea5e9' },
+  { level: 3, val: 8, cardId: 29, icon: '🔋', name: '커패시터', color: '#10b981' },
+  { level: 4, val: 16, cardId: 41, icon: '📟', name: '마이크로칩', color: '#f59e0b' },
+  { level: 5, val: 32, cardId: 53, icon: '🧠', name: 'AI 프로세서', color: '#a855f7' },
+  { level: 6, val: 64, cardId: 75, icon: '🔮', name: '양자 코어', color: '#ec4899' },
+  { level: 7, val: 128, cardId: 100, icon: '☀️', name: '초지능 코어', color: '#eab308' },
 ];
 
 export const VoxelFactoryCraftGame: React.FC<VoxelFactoryCraftGameProps> = ({
@@ -377,7 +377,7 @@ export const VoxelFactoryCraftGame: React.FC<VoxelFactoryCraftGameProps> = ({
               return (
                 <div
                   key={`${rIdx}-${cIdx}`}
-                  className="w-full h-full rounded-sm flex flex-col items-center justify-center relative transition-all duration-100"
+                  className="w-full h-full rounded-sm flex flex-col items-center justify-center p-1 relative transition-all duration-100"
                   style={{
                     backgroundColor: chipInfo ? `${chipInfo.color}33` : '#0f172a',
                     border: chipInfo ? `1.5px solid ${chipInfo.color}` : '1px solid #1e293b',
@@ -385,9 +385,12 @@ export const VoxelFactoryCraftGame: React.FC<VoxelFactoryCraftGameProps> = ({
                 >
                   {chipInfo && (
                     <>
-                      <span className="text-2xl animate-pulse">{chipInfo.icon}</span>
-                      <span className="text-[9px] font-bold mt-0.5" style={{ color: chipInfo.color }}>
-                        {isKo ? chipInfo.name : chipInfo.level}
+                      <div
+                        className="w-10 h-10 rounded-full border border-white/30 shadow-md"
+                        style={getCardSpriteStyle(chipInfo.cardId)}
+                      />
+                      <span className="text-[9px] font-bold mt-0.5 truncate w-full text-center" style={{ color: chipInfo.color }}>
+                        {isKo ? chipInfo.name : chipInfo.name}
                       </span>
                     </>
                   )}
@@ -407,8 +410,9 @@ export const VoxelFactoryCraftGame: React.FC<VoxelFactoryCraftGameProps> = ({
 
       {/* Minimal Bottom Guide */}
       <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono">
-          {isKo ? '화면을 상/하/좌/우로 스와이프하여 칩을 합성하세요' : 'Swipe 4 directions to merge matching semiconductor chips'}
+        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono flex items-center gap-2">
+          <div className="w-4 h-4 rounded-full border border-cyan-400" style={getCardSpriteStyle(playerHeroId)} />
+          <span>{isKo ? '화면을 상/하/좌/우로 스와이프하여 칩을 합성하세요' : 'Swipe 4 directions to merge matching semiconductor chips'}</span>
         </div>
       </div>
 
