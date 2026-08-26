@@ -308,6 +308,7 @@ export const VoxelBeatBlasterGame: React.FC<VoxelBeatBlasterGameProps> = ({
         const radius = cellSize * 0.36;
 
         const isSelected = selectedChain.some((cn) => cn.id === node.id);
+        const nodeCardId = node.isSpecial ? playerHeroId : ((node.val * 7) % 30 + 1);
 
         ctx.fillStyle = isSelected
           ? currentSum === targetSum
@@ -321,19 +322,45 @@ export const VoxelBeatBlasterGame: React.FC<VoxelBeatBlasterGameProps> = ({
         ctx.arc(cx, cy, radius, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.strokeStyle = isSelected ? '#ffffff' : node.isSpecial ? '#a855f7' : 'rgba(255,255,255,0.2)';
+        // Card Sprite inside Node
+        drawCardSprite(
+          ctx,
+          nodeCardId,
+          cx - radius * 0.7,
+          cy - radius * 0.7,
+          radius * 1.4,
+          radius * 1.4,
+          {
+            circleClip: true,
+            borderWidth: 1,
+            borderColor: isSelected ? '#ffffff' : 'rgba(255,255,255,0.4)',
+            shadowBlur: 6,
+            shadowColor: isSelected ? '#38bdf8' : 'rgba(0,0,0,0.5)',
+          }
+        );
+
+        ctx.strokeStyle = isSelected ? '#ffffff' : node.isSpecial ? '#a855f7' : 'rgba(255,255,255,0.3)';
         ctx.lineWidth = isSelected ? 3 : 2;
+        ctx.stroke();
+
+        // High-contrast Value Badge
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius * 0.45, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1;
         ctx.stroke();
 
         // Node Value
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 22px monospace';
+        ctx.font = 'bold 20px monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(String(node.val), cx, cy);
+        ctx.fillText(node.val.toString(), cx, cy);
       });
     });
-  }, [currentSum, grid, selectedChain, targetSum]);
+  }, [grid, selectedChain, currentSum, targetSum, playerHeroId]);
 
   const endGame = () => {
     const s = stateRef.current;
