@@ -21,6 +21,7 @@ interface EnemyTank {
   y: number;
   vx: number;
   type: 'patrol' | 'heavy' | 'barrel';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -112,9 +113,9 @@ export const VoxelTankBounceGame: React.FC<VoxelTankBounceGameProps> = ({
 
     // Initial Opponents in Maze
     s.enemies.push(
-      { id: s.enemyCounter++, x: 90, y: 150, vx: 45, type: 'patrol', icon: '🤖', points: 400, radius: 24, hp: 1, isAlive: true },
-      { id: s.enemyCounter++, x: 270, y: 220, vx: -35, type: 'heavy', icon: '🛡️', points: 600, radius: 28, hp: 2, isAlive: true },
-      { id: s.enemyCounter++, x: 180, y: 110, vx: 0, type: 'barrel', icon: '🛢️', points: 800, radius: 22, hp: 1, isAlive: true }
+      { id: s.enemyCounter++, x: 90, y: 150, vx: 45, type: 'patrol', cardId: 78, icon: '🤖', points: 400, radius: 24, hp: 1, isAlive: true },
+      { id: s.enemyCounter++, x: 270, y: 220, vx: -35, type: 'heavy', cardId: 34, icon: '🛡️', points: 600, radius: 28, hp: 2, isAlive: true },
+      { id: s.enemyCounter++, x: 180, y: 110, vx: 0, type: 'barrel', cardId: 55, icon: '🛢️', points: 800, radius: 22, hp: 1, isAlive: true }
     );
 
     setTanksDestroyed(0);
@@ -256,6 +257,7 @@ export const VoxelTankBounceGame: React.FC<VoxelTankBounceGameProps> = ({
         const rand = Math.random();
         const isBarrel = rand < 0.25;
         const isHeavy = rand >= 0.25 && rand < 0.55;
+        const cardId = isBarrel ? 55 : (isHeavy ? 34 : 78);
 
         s.enemies.push({
           id: s.enemyCounter++,
@@ -263,6 +265,7 @@ export const VoxelTankBounceGame: React.FC<VoxelTankBounceGameProps> = ({
           y: 90 + Math.random() * 180,
           vx: (Math.random() < 0.5 ? 1 : -1) * (isHeavy ? 30 : 50),
           type: isBarrel ? 'barrel' : (isHeavy ? 'heavy' : 'patrol'),
+          cardId,
           icon: isBarrel ? '🛢️' : (isHeavy ? '🛡️' : '🤖'),
           points: isBarrel ? 800 : (isHeavy ? 600 : 400),
           radius: isBarrel ? 22 : (isHeavy ? 28 : 24),
@@ -421,41 +424,52 @@ export const VoxelTankBounceGame: React.FC<VoxelTankBounceGameProps> = ({
         ctx.restore();
       });
 
-      // Render Enemies
+      // Render Enemies (Card Sprites)
       s.enemies.forEach((enemy) => {
         if (enemy.isAlive) {
           ctx.save();
           ctx.translate(enemy.x, enemy.y);
-          if (enemy.type === 'barrel') {
-            ctx.shadowColor = '#ef4444';
-            ctx.shadowBlur = 18;
-          } else {
-            ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 14;
-          }
-          ctx.font = `${enemy.radius * 1.8}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(enemy.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            enemy.cardId,
+            -enemy.radius,
+            -enemy.radius,
+            enemy.radius * 2,
+            enemy.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: enemy.type === 'barrel' ? '#ef4444' : (enemy.type === 'heavy' ? '#38bdf8' : '#fde047'),
+              shadowBlur: enemy.type === 'barrel' ? 16 : 8,
+              shadowColor: enemy.type === 'barrel' ? 'rgba(239, 68, 68, 0.9)' : (enemy.type === 'heavy' ? 'rgba(56, 189, 248, 0.8)' : 'rgba(253, 224, 71, 0.8)'),
+            }
+          );
+
           ctx.restore();
         }
       });
 
-      // Render Player Tank Hero (🚜)
+      // Render Player Tank Hero (Player Hero Badge)
       ctx.save();
       ctx.translate(tankX, tankY);
-      ctx.shadowColor = '#38bdf8';
-      ctx.shadowBlur = 18;
-      ctx.font = '40px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      drawCardSprite(ctx, playerHeroId, -22, -22, 44, 44, {
-        circleClip: true,
-        borderWidth: 2,
-        borderColor: '#fde047',
-        shadowBlur: 14,
-        shadowColor: 'rgba(253, 224, 71, 0.6)',
-      });
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -22,
+        -22,
+        44,
+        44,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 16,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -467,7 +481,7 @@ export const VoxelTankBounceGame: React.FC<VoxelTankBounceGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [tankX, tankY, playSfx]);
+  }, [tankX, tankY, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;

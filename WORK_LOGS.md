@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-27 04:30 KST / 19:30 UTC] [게임개선 10분 크론작업 68회차: VoxelTankBounceGame 적 탱크 및 플레이어 탱크 영웅 배지 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelTankBounceGame.tsx` (블리츠 탱크 바운스)
+- **개선 내역**:
+  1. 3종 적 탱크/오브젝트(정찰 탱크, 헤비 탱크, 폭발 드럼통)를 공식 카드 스프라이트(ID 78, 34, 55)로 전면 교체.
+  2. 플레이어 탱크에 플레이어 대표 카드 영웅 배지(`playerHeroId`) 장착.
+  3. 콘크리트 포트리스 아레나 및 3회 벽면 도탄(Ricochet Shell) 궤적 물리 시뮬레이션 고도화.
+  4. 가상 조이스틱 0개 100% 손가락 직접 드래그 조준 & 릴리즈 도탄 사격(Drag & Release Ricochet Shot) 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelTankBounceGame 적탱크 및 플레이어탱크카드 스프라이트화 및 퓨어 탱크바운스 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-27 04:20 KST / 19:20 UTC] [게임개선 10분 크론작업 67회차: VoxelSuperStrikersGame 키퍼/수비벽 및 축구공 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelSuperStrikersGame.tsx` (블리츠 슈퍼 스트라이커)
 - **개선 내역**:
