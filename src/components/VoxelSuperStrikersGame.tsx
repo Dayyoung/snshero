@@ -334,51 +334,95 @@ export const VoxelSuperStrikersGame: React.FC<VoxelSuperStrikersGameProps> = ({
       ctx.lineWidth = 4;
       ctx.strokeRect(goalLeftX, goalTopY, goalRightX - goalLeftX, goalBottomY - goalTopY);
 
-      // Render Goalkeeper (🧤)
+      // Render Goalkeeper (Card Sprite)
       ctx.save();
       ctx.translate(s.keeperX, goalTopY + 35);
-      ctx.shadowColor = '#fde047';
-      ctx.shadowBlur = 14;
-      ctx.font = '36px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🧤', 0, 0);
+
+      drawCardSprite(
+        ctx,
+        78,
+        -20,
+        -20,
+        40,
+        40,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 14,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
+
       ctx.restore();
 
-      // Render Defender Wall (🛡️)
+      // Render Defender Wall (Card Sprite)
       ctx.save();
       ctx.translate(s.defenderX, 280);
-      ctx.shadowColor = '#ef4444';
-      ctx.shadowBlur = 12;
-      ctx.font = '32px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🛡️', 0, 0);
+
+      drawCardSprite(
+        ctx,
+        34,
+        -18,
+        -18,
+        36,
+        36,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#ef4444',
+          shadowBlur: 12,
+          shadowColor: 'rgba(239, 68, 68, 0.8)',
+        }
+      );
+
       ctx.restore();
 
-      // Render Flying Balls
+      // Render Flying Balls (Player Hero Badge)
       s.balls.forEach((b) => {
         ctx.save();
         ctx.translate(b.x, b.y);
         ctx.scale(b.scale, b.scale);
-        ctx.shadowColor = '#ffffff';
-        ctx.shadowBlur = 14;
-        ctx.font = '36px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('⚽', 0, 0);
+
+        drawCardSprite(
+          ctx,
+          playerHeroId,
+          -18,
+          -18,
+          36,
+          36,
+          {
+            circleClip: true,
+            borderWidth: 2,
+            borderColor: '#ffffff',
+            shadowBlur: 14,
+            shadowColor: 'rgba(255, 255, 255, 0.9)',
+          }
+        );
+
         ctx.restore();
       });
 
-      // Render Ready Soccer Ball at Bottom
+      // Render Ready Soccer Ball at Bottom (Player Hero Badge)
       ctx.save();
       ctx.translate(ballOriginX, ballOriginY);
-      ctx.shadowColor = '#ffffff';
-      ctx.shadowBlur = 18;
-      ctx.font = '42px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('⚽', 0, 0);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -22,
+        -22,
+        44,
+        44,
+        {
+          circleClip: true,
+          borderWidth: 2.5,
+          borderColor: '#fde047',
+          shadowBlur: 18,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -390,7 +434,7 @@ export const VoxelSuperStrikersGame: React.FC<VoxelSuperStrikersGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [goalBottomY, goalLeftX, goalRightX, goalTopY, isKo, playSfx]);
+  }, [goalBottomY, goalLeftX, goalRightX, goalTopY, isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;

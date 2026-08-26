@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-27 04:20 KST / 19:20 UTC] [게임개선 10분 크론작업 67회차: VoxelSuperStrikersGame 키퍼/수비벽 및 축구공 영웅 배지 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelSuperStrikersGame.tsx` (블리츠 슈퍼 스트라이커)
+- **개선 내역**:
+  1. 골키퍼 및 수비벽을 공식 카드 스프라이트(ID 78, 34)로 전면 교체.
+  2. 날아가는 축구공 및 하단 대기 축구공에 플레이어 대표 카드 영웅 배지(`playerHeroId`) 장착.
+  3. 야간 축구장 페널티 박스 및 탑코너 궤적 스와이프 커브 슈팅 물리 시뮬레이션 고도화.
+  4. 가상 조이스틱 0개 100% 손가락 직접 스와이프 플릭 슛(Swipe Flick Curve Kick) 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelSuperStrikersGame 키퍼/수비벽 및 축구공카드 스프라이트화 및 퓨어 슈퍼스트라이커 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-27 04:10 KST / 19:10 UTC] [게임개선 10분 크론작업 66회차: VoxelSuperSmashGame 파이터 및 링 엠블럼 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelSuperSmashGame.tsx` (블리츠 슈퍼 스매시)
 - **개선 내역**:
