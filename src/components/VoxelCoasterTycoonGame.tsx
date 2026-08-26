@@ -1,10 +1,10 @@
-import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
+import { getCardSpriteStyle } from '../lib/utils';
 
 interface VoxelCoasterTycoonGameProps {
   deck: CardData[];
@@ -17,18 +17,20 @@ interface VoxelCoasterTycoonGameProps {
 
 interface CustomerOrder {
   id: number;
+  customerCardId: number;
   item: string; // '☕' | '🍩' | '🥞' | '🍦' | '🍰'
+  itemCardId: number;
   name: string;
   patience: number; // 0 ~ 100
   maxPatience: number;
 }
 
 const MENU_ITEMS = [
-  { icon: '☕', name: '아메리카노', enName: 'Americano', color: '#78350f' },
-  { icon: '🍩', name: '도넛', enName: 'Donut', color: '#db2777' },
-  { icon: '🥞', name: '팬케이크', enName: 'Pancake', color: '#d97706' },
-  { icon: '🍦', name: '아이스크림', enName: 'Ice Cream', color: '#0284c7' },
-  { icon: '🍰', name: '케이크', enName: 'Cake', color: '#e11d48' },
+  { icon: '☕', cardId: 7, name: '아메리카노', enName: 'Americano', color: '#78350f' },
+  { icon: '🍩', cardId: 18, name: '도넛', enName: 'Donut', color: '#db2777' },
+  { icon: '🥞', cardId: 24, name: '팬케이크', enName: 'Pancake', color: '#d97706' },
+  { icon: '🍦', cardId: 12, name: '아이스크림', enName: 'Ice Cream', color: '#0284c7' },
+  { icon: '🍰', cardId: 57, name: '케이크', enName: 'Cake', color: '#e11d48' },
 ];
 
 export const VoxelCoasterTycoonGame: React.FC<VoxelCoasterTycoonGameProps> = ({
@@ -90,11 +92,15 @@ export const VoxelCoasterTycoonGame: React.FC<VoxelCoasterTycoonGameProps> = ({
 
     // Initial 3 customers
     const initialOrders: CustomerOrder[] = [];
+    const customerPool = [3, 8, 15, 22, 33, 44, 55, 66];
     for (let i = 0; i < 3; i++) {
       const item = MENU_ITEMS[Math.floor(Math.random() * MENU_ITEMS.length)];
+      const cCardId = customerPool[Math.floor(Math.random() * customerPool.length)];
       initialOrders.push({
         id: s.orderCounter++,
+        customerCardId: cCardId,
         item: item.icon,
+        itemCardId: item.cardId,
         name: isKo ? item.name : item.enName,
         patience: 100,
         maxPatience: 100,
@@ -130,9 +136,13 @@ export const VoxelCoasterTycoonGame: React.FC<VoxelCoasterTycoonGameProps> = ({
       if (s.spawnTimer >= 1.2 && s.orders.length < 4) {
         s.spawnTimer = 0;
         const item = MENU_ITEMS[Math.floor(Math.random() * MENU_ITEMS.length)];
+        const customerPool = [3, 8, 15, 22, 33, 44, 55, 66];
+        const cCardId = customerPool[Math.floor(Math.random() * customerPool.length)];
         s.orders.push({
           id: s.orderCounter++,
+          customerCardId: cCardId,
           item: item.icon,
+          itemCardId: item.cardId,
           name: isKo ? item.name : item.enName,
           patience: 100,
           maxPatience: 100,
@@ -320,12 +330,20 @@ export const VoxelCoasterTycoonGame: React.FC<VoxelCoasterTycoonGameProps> = ({
             {orders.map((order) => (
               <div
                 key={order.id}
-                className="flex flex-col items-center justify-between bg-black/40 border border-amber-500/30 p-2 rounded-sm"
+                className="flex flex-col items-center justify-between bg-black/40 border border-amber-500/30 p-1.5 rounded-sm relative"
               >
-                <div className="text-2xl animate-bounce">{order.item}</div>
-                <div className="text-[10px] text-amber-200 text-center truncate w-full">
-                  {order.name}
+                {/* Customer Card Avatar */}
+                <div
+                  className="w-10 h-10 rounded-full border border-amber-400/40 shadow-xs"
+                  style={getCardSpriteStyle(order.customerCardId)}
+                />
+
+                {/* Ordered Item Badge */}
+                <div className="flex items-center gap-1 bg-black/60 px-1.5 py-0.5 rounded border border-white/10">
+                  <div className="w-4 h-4 rounded-full" style={getCardSpriteStyle(order.itemCardId)} />
+                  <span className="text-[9px] text-amber-200 truncate">{order.name}</span>
                 </div>
+
                 {/* Patience Bar */}
                 <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
                   <div
@@ -343,7 +361,13 @@ export const VoxelCoasterTycoonGame: React.FC<VoxelCoasterTycoonGameProps> = ({
 
           {/* Barista Counter Line */}
           <div className="w-full border-t border-amber-800/80 pt-2 flex items-center justify-between text-xs text-amber-300/80 font-mono">
-            <span>☕ BARISTA COUNTER</span>
+            <div className="flex items-center gap-1.5">
+              <div
+                className="w-5 h-5 rounded-full border border-cyan-400"
+                style={getCardSpriteStyle(playerHeroId)}
+              />
+              <span>BARISTA COUNTER</span>
+            </div>
             <span>WAITING: {orders.length}/4</span>
           </div>
 
@@ -361,9 +385,12 @@ export const VoxelCoasterTycoonGame: React.FC<VoxelCoasterTycoonGameProps> = ({
             <button
               key={item.icon}
               onClick={() => handleServeItem(item.icon)}
-              className="flex flex-col items-center justify-center p-2.5 bg-amber-950/80 border border-amber-500/40 rounded-sm active:scale-90 transition-transform shadow-lg"
+              className="flex flex-col items-center justify-center p-2 bg-amber-950/80 border border-amber-500/40 rounded-sm active:scale-90 transition-transform shadow-lg gap-1"
             >
-              <span className="text-2xl mb-1">{item.icon}</span>
+              <div
+                className="w-8 h-8 rounded-full border border-white/20 shadow-xs"
+                style={getCardSpriteStyle(item.cardId)}
+              />
               <span className="text-[9px] text-amber-200 truncate w-full text-center">
                 {isKo ? item.name : item.enName}
               </span>

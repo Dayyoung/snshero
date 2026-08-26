@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-26 19:00 KST / 10:00 UTC] [게임개선 10분 크론작업 11회차: VoxelCoasterTycoonGame 손님 및 메뉴 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelCoasterTycoonGame.tsx` (블리츠 카페 타이쿤)
+- **개선 내역**:
+  1. 대기 손님 원형 아바타를 공식 카드 캐릭터 스프라이트(`getCardSpriteStyle`)로 렌더링.
+  2. 주문 메뉴 및 하단 서빙 터치 패드를 5종 디저트/음료 공식 카드 오브젝트 스프라이트로 전면 교체.
+  3. 바리스타 카운터에 플레이어 대표 카드 영웅 배지(`playerHeroId`) 연동.
+  4. 가상 조이스틱 0개 100% 손가락 직접 탭 서빙 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelCoasterTycoonGame 손님 및 메뉴 카드 스프라이트화 및 퓨어 탭서빙 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 18:50 KST / 09:50 UTC] [게임개선 10분 크론작업 10회차: VoxelCastleBlasterGame 스택 블록 카드 스프라이트 엠블럼화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelCastleBlasterGame.tsx` (블리츠 스카이 스택)
 - **개선 내역**:
