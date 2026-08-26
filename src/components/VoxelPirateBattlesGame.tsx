@@ -23,6 +23,7 @@ interface PirateFleet {
   hp: number;
   maxHp: number;
   type: 'sloop' | 'frigate' | 'galleon';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -107,8 +108,8 @@ export const VoxelPirateBattlesGame: React.FC<VoxelPirateBattlesGameProps> = ({
 
     // Initial 3 Pirate Ships
     s.fleet.push(
-      { id: s.shipCounter++, x: 90, y: 130, vx: 50, hp: 1, maxHp: 1, type: 'sloop', icon: '⛵', points: 200, radius: 22, isSunk: false },
-      { id: s.shipCounter++, x: 260, y: 180, vx: -65, hp: 2, maxHp: 2, type: 'frigate', icon: '🏴‍☠️', points: 450, radius: 26, isSunk: false }
+      { id: s.shipCounter++, x: 90, y: 130, vx: 50, hp: 1, maxHp: 1, type: 'sloop', cardId: 47, icon: '⛵', points: 200, radius: 22, isSunk: false },
+      { id: s.shipCounter++, x: 260, y: 180, vx: -65, hp: 2, maxHp: 2, type: 'frigate', cardId: 75, icon: '🏴‍☠️', points: 450, radius: 26, isSunk: false }
     );
 
     setShipsSunk(0);
@@ -270,8 +271,9 @@ export const VoxelPirateBattlesGame: React.FC<VoxelPirateBattlesGameProps> = ({
       if (s.spawnTimer > 1.2 && s.fleet.length < 5) {
         s.spawnTimer = 0;
         const rand = Math.random();
-        const isGalleon = rand < 0.2;
-        const isFrigate = rand < 0.55;
+        const isGalleon = rand < 0.18;
+        const isFrigate = rand < 0.5;
+        const cardId = isGalleon ? 83 : (isFrigate ? 75 : 47);
 
         s.fleet.push({
           id: s.shipCounter++,
@@ -281,6 +283,7 @@ export const VoxelPirateBattlesGame: React.FC<VoxelPirateBattlesGameProps> = ({
           hp: isGalleon ? 4 : (isFrigate ? 2 : 1),
           maxHp: isGalleon ? 4 : (isFrigate ? 2 : 1),
           type: isGalleon ? 'galleon' : (isFrigate ? 'frigate' : 'sloop'),
+          cardId,
           icon: isGalleon ? '🏴‍☠️' : (isFrigate ? '⛵' : '🚤'),
           points: isGalleon ? 800 : (isFrigate ? 400 : 200),
           radius: isGalleon ? 32 : (isFrigate ? 26 : 22),
@@ -409,25 +412,33 @@ export const VoxelPirateBattlesGame: React.FC<VoxelPirateBattlesGameProps> = ({
         barY - 8
       );
 
-      // Render Enemy Pirate Fleet
+      // Render Enemy Pirate Fleet (Card Sprites)
       s.fleet.forEach((ship) => {
         ctx.save();
         ctx.translate(ship.x, ship.y);
-        if (ship.type === 'galleon') {
-          ctx.shadowColor = '#fde047';
-          ctx.shadowBlur = 20;
-        }
-        ctx.font = `${ship.radius * 1.8}px serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(ship.icon, 0, 0);
+
+        drawCardSprite(
+          ctx,
+          ship.cardId,
+          -ship.radius,
+          -ship.radius,
+          ship.radius * 2,
+          ship.radius * 2,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: ship.type === 'galleon' ? '#fde047' : (ship.type === 'frigate' ? '#ef4444' : '#38bdf8'),
+            shadowBlur: ship.type === 'galleon' ? 18 : 6,
+            shadowColor: ship.type === 'galleon' ? 'rgba(253, 224, 71, 0.9)' : (ship.type === 'frigate' ? 'rgba(239, 68, 68, 0.8)' : 'rgba(56, 189, 248, 0.8)'),
+          }
+        );
 
         // HP Bar for Bigger Ships
         if (ship.maxHp > 1) {
           ctx.fillStyle = '#1e293b';
-          ctx.fillRect(-14, ship.radius + 2, 28, 4);
+          ctx.fillRect(-14, ship.radius + 3, 28, 4);
           ctx.fillStyle = '#ef4444';
-          ctx.fillRect(-14, ship.radius + 2, 28 * (ship.hp / ship.maxHp), 4);
+          ctx.fillRect(-14, ship.radius + 3, 28 * (ship.hp / ship.maxHp), 4);
         }
         ctx.restore();
       });
@@ -448,15 +459,26 @@ export const VoxelPirateBattlesGame: React.FC<VoxelPirateBattlesGameProps> = ({
         ctx.restore();
       });
 
-      // Render Flagship Cannon at Bottom
+      // Render Flagship Cannon at Bottom (Player Hero Badge)
       ctx.save();
       ctx.translate(180, 450);
-      ctx.shadowColor = '#38bdf8';
-      ctx.shadowBlur = 18;
-      ctx.font = '44px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('💣', 0, 0);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -24,
+        -24,
+        48,
+        48,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: s.salvoGauge >= 100 ? '#fde047' : '#38bdf8',
+          shadowBlur: s.salvoGauge >= 100 ? 20 : 10,
+          shadowColor: s.salvoGauge >= 100 ? 'rgba(253, 224, 71, 0.9)' : 'rgba(56, 189, 248, 0.8)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -468,7 +490,7 @@ export const VoxelPirateBattlesGame: React.FC<VoxelPirateBattlesGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [isKo, playSfx]);
+  }, [isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;

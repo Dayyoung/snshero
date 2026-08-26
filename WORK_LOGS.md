@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-27 01:30 KST / 16:30 UTC] [게임개선 10분 크론작업 50회차: VoxelPirateBattlesGame 해적 함선 및 기함 영웅 배지 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelPirateBattlesGame.tsx` (블리츠 대해적 함포전)
+- **개선 내역**:
+  1. 3종 해적 함선(슬루프, 프리깃, 갈레온)을 공식 카드 스프라이트(ID 47, 75, 83)로 전면 교체.
+  2. 하단 기함 함포 위치에 플레이어 대표 카드 영웅 배지(`playerHeroId`) 장착 및 살보 완충 시 황금 림 연동.
+  3. 날아가는 포탄 궤적 및 타격 폭발 파편 피드백 연동.
+  4. 가상 조이스틱 0개 100% 손가락 직접 탭 함포 사격 & 하향 스와이프 전탄 일제사격(Broadside Salvo) 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelPirateBattlesGame 해적함선 및 기함함포 카드 스프라이트화 및 퓨어 해적배틀 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-27 01:20 KST / 16:20 UTC] [게임개선 10분 크론작업 49회차: VoxelPinballKnightsGame 적 기사 및 슬링 실드 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelPinballKnightsGame.tsx` (블리츠 핀볼 나이츠)
 - **개선 내역**:
