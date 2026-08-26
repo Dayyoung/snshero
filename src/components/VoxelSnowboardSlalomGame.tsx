@@ -20,6 +20,7 @@ interface SlalomGate {
   x: number;
   y: number;
   type: 'red_gate' | 'blue_gate' | 'boost_pad' | 'snow_gem';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -103,8 +104,8 @@ export const VoxelSnowboardSlalomGame: React.FC<VoxelSnowboardSlalomGameProps> =
 
     // Initial Gates on Slope
     s.gates.push(
-      { id: s.gateCounter++, x: 100, y: 130, type: 'red_gate', icon: '🚩', points: 350, radius: 26, cleared: false },
-      { id: s.gateCounter++, x: 260, y: 220, type: 'blue_gate', icon: '🔷', points: 350, radius: 26, cleared: false }
+      { id: s.gateCounter++, x: 100, y: 130, type: 'red_gate', cardId: 58, icon: '🚩', points: 350, radius: 26, cleared: false },
+      { id: s.gateCounter++, x: 260, y: 220, type: 'blue_gate', cardId: 76, icon: '🔷', points: 350, radius: 26, cleared: false }
     );
 
     setGatesPassed(0);
@@ -198,12 +199,14 @@ export const VoxelSnowboardSlalomGame: React.FC<VoxelSnowboardSlalomGameProps> =
         const isBoost = Math.random() < 0.2;
 
         const gateX = isRed ? 70 + Math.random() * 80 : 210 + Math.random() * 80;
+        const cardId = isBoost ? 92 : (isRed ? 58 : 76);
 
         s.gates.push({
           id: s.gateCounter++,
           x: isBoost ? 180 : gateX,
           y: -40,
           type: isBoost ? 'boost_pad' : (isRed ? 'red_gate' : 'blue_gate'),
+          cardId,
           icon: isBoost ? '⚡' : (isRed ? '🚩' : '🔷'),
           points: isBoost ? 600 : 350,
           radius: isBoost ? 24 : 26,
@@ -296,39 +299,53 @@ export const VoxelSnowboardSlalomGame: React.FC<VoxelSnowboardSlalomGameProps> =
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Render Slalom Gates
+      // Render Slalom Gates (Card Sprites)
       s.gates.forEach((g) => {
         if (!g.cleared) {
           ctx.save();
           ctx.translate(g.x, g.y);
-          if (g.type === 'boost_pad') {
-            ctx.shadowColor = '#fde047';
-            ctx.shadowBlur = 18;
-          } else if (g.type === 'red_gate') {
-            ctx.shadowColor = '#ef4444';
-            ctx.shadowBlur = 14;
-          } else {
-            ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 14;
-          }
-          ctx.font = `${g.radius * 1.8}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(g.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            g.cardId,
+            -g.radius,
+            -g.radius,
+            g.radius * 2,
+            g.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: g.type === 'red_gate' ? '#ef4444' : (g.type === 'blue_gate' ? '#0284c7' : '#fde047'),
+              shadowBlur: g.type === 'boost_pad' ? 18 : 10,
+              shadowColor: g.type === 'boost_pad' ? 'rgba(253, 224, 71, 0.9)' : (g.type === 'red_gate' ? 'rgba(239, 68, 68, 0.8)' : 'rgba(2, 132, 199, 0.8)'),
+            }
+          );
+
           ctx.restore();
         }
       });
 
-      // Render Alpine Rider Hero
+      // Render Alpine Rider Hero (Player Hero Badge)
       ctx.save();
       ctx.translate(s.riderX, riderY);
       ctx.rotate(s.carveAngle);
-      ctx.shadowColor = '#0284c7';
-      ctx.shadowBlur = 16;
-      ctx.font = '36px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('⛷️', 0, 0);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -20,
+        -20,
+        40,
+        40,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#0284c7',
+          shadowBlur: 16,
+          shadowColor: 'rgba(2, 132, 199, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -340,7 +357,7 @@ export const VoxelSnowboardSlalomGame: React.FC<VoxelSnowboardSlalomGameProps> =
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [riderY, playSfx]);
+  }, [riderY, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
