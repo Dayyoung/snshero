@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-27 05:30 KST / 20:30 UTC] [게임개선 10분 크론작업 74회차: VoxelVampireSurvivalGame 언데드몹/성검 및 헌터 영웅 배지 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelVampireSurvivalGame.tsx` (블리츠 뱀파이어 서바이벌)
+- **개선 내역**:
+  1. 3종 언데드 몬스터(박쥐, 스켈레톤, 뱀파이어 로드)를 공식 카드 스프라이트(ID 26, 78, 83)로 전면 교체.
+  2. 회전하는 성스러운 홀리 블레이드(ID 55) 및 뱀파이어 헌터 캐릭터에 플레이어 대표 카드 영웅 배지(`playerHeroId`) 장착.
+  3. 고딕 던전 배경 및 360도 궤도 회전 성검 탄막 베기 물리 시뮬레이션 고도화.
+  4. 가상 조이스틱 0개 100% 손가락 직접 2D 드래그 이동 & 자동 탄막 베기(Direct 2D Drag Hunter Survival) 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelVampireSurvivalGame 언데드몹/성검 및 헌터카드 스프라이트화 및 퓨어 뱀파이어고도화 -> 작업완료`
+
+---
+
 ## [2026-08-27 05:20 KST / 20:20 UTC] [게임개선 10분 크론작업 73회차: VoxelTreasureDiggerGame 광물/보물 및 크레인 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelTreasureDiggerGame.tsx` (블리츠 트레저 디거)
 - **개선 내역**:

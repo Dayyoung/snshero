@@ -20,6 +20,7 @@ interface UndeadMob {
   x: number;
   y: number;
   type: 'bat' | 'skeleton' | 'vampire_lord';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -102,8 +103,8 @@ export const VoxelVampireSurvivalGame: React.FC<VoxelVampireSurvivalGameProps> =
 
     // Initial Undead Mobs
     s.enemies.push(
-      { id: s.enemyCounter++, x: 80, y: 120, type: 'bat', icon: '🦇', points: 300, radius: 20, hp: 1, maxHp: 1, isAlive: true },
-      { id: s.enemyCounter++, x: 280, y: 380, type: 'skeleton', icon: '💀', points: 500, radius: 24, hp: 2, maxHp: 2, isAlive: true }
+      { id: s.enemyCounter++, x: 80, y: 120, type: 'bat', cardId: 26, icon: '🦇', points: 300, radius: 20, hp: 1, maxHp: 1, isAlive: true },
+      { id: s.enemyCounter++, x: 280, y: 380, type: 'skeleton', cardId: 78, icon: '💀', points: 500, radius: 24, hp: 2, maxHp: 2, isAlive: true }
     );
 
     setKills(0);
@@ -202,18 +203,20 @@ export const VoxelVampireSurvivalGame: React.FC<VoxelVampireSurvivalGameProps> =
       if (s.spawnTimer > 0.8 && s.enemies.length < 9) {
         s.spawnTimer = 0;
         const rand = Math.random();
-        const isLord = rand < 0.15;
-        const isSkeleton = rand >= 0.15 && rand < 0.55;
-
+        
         // Spawn from random edge
         const spawnX = Math.random() < 0.5 ? 20 : 340;
         const spawnY = Math.random() < 0.5 ? 30 : 470;
+        const isLord = rand < 0.18;
+        const isSkeleton = rand >= 0.18 && rand < 0.55;
+        const cardId = isLord ? 83 : (isSkeleton ? 78 : 26);
 
         s.enemies.push({
           id: s.enemyCounter++,
           x: spawnX,
           y: spawnY,
           type: isLord ? 'vampire_lord' : (isSkeleton ? 'skeleton' : 'bat'),
+          cardId,
           icon: isLord ? '🧛' : (isSkeleton ? '💀' : '🦇'),
           points: isLord ? 1000 : (isSkeleton ? 500 : 300),
           radius: isLord ? 32 : (isSkeleton ? 24 : 20),
@@ -328,35 +331,51 @@ export const VoxelVampireSurvivalGame: React.FC<VoxelVampireSurvivalGameProps> =
       ctx.arc(s.hunterX, s.hunterY, s.bladeRadius, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Render Orbiting Holy Blades (⚔️)
+      // Render Orbiting Holy Blades (Card Sprites)
       bladePositions.forEach((bp) => {
         ctx.save();
         ctx.translate(bp.x, bp.y);
-        ctx.shadowColor = '#fde047';
-        ctx.shadowBlur = 16;
-        ctx.font = '28px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('⚔️', 0, 0);
+
+        drawCardSprite(
+          ctx,
+          55,
+          -12,
+          -12,
+          24,
+          24,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: '#fde047',
+            shadowBlur: 14,
+            shadowColor: 'rgba(253, 224, 71, 0.9)',
+          }
+        );
+
         ctx.restore();
       });
 
-      // Render Enemies
+      // Render Enemies (Card Sprites)
       s.enemies.forEach((mob) => {
         if (mob.isAlive) {
           ctx.save();
           ctx.translate(mob.x, mob.y);
-          if (mob.type === 'vampire_lord') {
-            ctx.shadowColor = '#ef4444';
-            ctx.shadowBlur = 20;
-          } else {
-            ctx.shadowColor = '#a855f7';
-            ctx.shadowBlur = 12;
-          }
-          ctx.font = `${mob.radius * 1.8}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(mob.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            mob.cardId,
+            -mob.radius,
+            -mob.radius,
+            mob.radius * 2,
+            mob.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: mob.type === 'vampire_lord' ? '#ef4444' : '#a855f7',
+              shadowBlur: mob.type === 'vampire_lord' ? 20 : 10,
+              shadowColor: mob.type === 'vampire_lord' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(168, 85, 247, 0.8)',
+            }
+          );
 
           // HP Bar
           if (mob.maxHp > 1) {
@@ -369,15 +388,26 @@ export const VoxelVampireSurvivalGame: React.FC<VoxelVampireSurvivalGameProps> =
         }
       });
 
-      // Render Vampire Hunter Hero (🧙‍♂️)
+      // Render Vampire Hunter Hero (Player Hero Badge)
       ctx.save();
       ctx.translate(s.hunterX, s.hunterY);
-      ctx.shadowColor = '#38bdf8';
-      ctx.shadowBlur = 18;
-      ctx.font = '40px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🧙‍♂️', 0, 0);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -20,
+        -20,
+        40,
+        40,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 16,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -389,7 +419,7 @@ export const VoxelVampireSurvivalGame: React.FC<VoxelVampireSurvivalGameProps> =
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
