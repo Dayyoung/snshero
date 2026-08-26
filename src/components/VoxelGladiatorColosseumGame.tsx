@@ -19,15 +19,16 @@ interface RivalGladiator {
   id: number;
   name: string;
   enName: string;
+  cardId: number;
   avatar: string;
   maxHp: number;
   attackInterval: number; // seconds
 }
 
 const RIVALS: RivalGladiator[] = [
-  { id: 1, name: '철벽의 트레보', enName: 'Trevor the Iron', avatar: '🛡️', maxHp: 180, attackInterval: 1.8 },
-  { id: 2, name: '화염검의 이그니스', enName: 'Ignis the Flame', avatar: '⚔️', maxHp: 260, attackInterval: 1.4 },
-  { id: 3, name: '패왕 막시무스', enName: 'Maximus the Warlord', avatar: '👑', maxHp: 380, attackInterval: 1.1 },
+  { id: 1, name: '철벽의 트레보', enName: 'Trevor the Iron', cardId: 36, avatar: '🛡️', maxHp: 180, attackInterval: 1.8 },
+  { id: 2, name: '화염검의 이그니스', enName: 'Ignis the Flame', cardId: 54, avatar: '⚔️', maxHp: 260, attackInterval: 1.4 },
+  { id: 3, name: '패왕 막시무스', enName: 'Maximus the Warlord', cardId: 78, avatar: '👑', maxHp: 380, attackInterval: 1.1 },
 ];
 
 export const VoxelGladiatorColosseumGame: React.FC<VoxelGladiatorColosseumGameProps> = ({
@@ -332,20 +333,23 @@ export const VoxelGladiatorColosseumGame: React.FC<VoxelGladiatorColosseumGamePr
       ctx.lineWidth = 3;
       ctx.stroke();
 
-      // Render Enemy Gladiator
+      // Render Enemy Gladiator (Card Sprite)
       const enemyY = 240;
-      ctx.save();
-      if (s.isEnemyAttacking) {
-        // Red Flashing Rage
-        ctx.shadowColor = '#ef4444';
-        ctx.shadowBlur = 20;
-      }
-
-      ctx.font = s.isEnemyAttacking ? '70px serif' : '60px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(rival.avatar, w / 2, enemyY);
-      ctx.restore();
+      drawCardSprite(
+        ctx,
+        rival.cardId,
+        w / 2 - 40,
+        enemyY - 40,
+        80,
+        80,
+        {
+          circleClip: true,
+          borderWidth: s.isEnemyAttacking ? 3 : 2,
+          borderColor: s.isEnemyAttacking ? '#ef4444' : '#fde047',
+          shadowBlur: s.isEnemyAttacking ? 20 : 8,
+          shadowColor: s.isEnemyAttacking ? 'rgba(239, 68, 68, 0.9)' : 'rgba(253, 224, 71, 0.7)',
+        }
+      );
 
       // Enemy Stunned Stars
       if (s.enemyStunTimer > 0) {
@@ -380,11 +384,22 @@ export const VoxelGladiatorColosseumGame: React.FC<VoxelGladiatorColosseumGamePr
       ctx.textAlign = 'center';
       ctx.fillText(`${isKo ? rival.name : rival.enName} [${s.enemyHp}/${rival.maxHp}]`, w / 2, barY - 10);
 
-      // Player Sword at Bottom-Right
-      ctx.font = '40px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🗡️', w / 2 + 50, 420);
+      // Player Hero Gladiator at Bottom
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        w / 2 - 28,
+        390,
+        56,
+        56,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#38bdf8',
+          shadowBlur: 10,
+          shadowColor: 'rgba(56, 189, 248, 0.8)',
+        }
+      );
 
       // Render Floating Hit Effects
       s.hitEffects.forEach((eff) => {
@@ -397,7 +412,7 @@ export const VoxelGladiatorColosseumGame: React.FC<VoxelGladiatorColosseumGamePr
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [isKo, playSfx]);
+  }, [isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;

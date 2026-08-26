@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-26 21:50 KST / 12:50 UTC] [게임개선 10분 크론작업 28회차: VoxelGladiatorColosseumGame 라이벌 검투사 및 영웅 배지 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelGladiatorColosseumGame.tsx` (블리츠 글래디에이터 결투)
+- **개선 내역**:
+  1. 3인의 라이벌 검투사(트레보, 이그니스, 막시무스)를 공식 카드 스프라이트(`drawCardSprite`)로 전면 교체.
+  2. 하단 플레이어 검투사에 대표 카드 영웅 배지(`playerHeroId`) 장착.
+  3. 적 분노 공격 시 붉은 테두리 및 패링 경고 피드백 연동.
+  4. 가상 조이스틱 0개 100% 손가락 직접 탭 공격 연타 & 스와이프 패링 반격 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelGladiatorColosseumGame 검투사 카드 스프라이트화 및 퓨어 콜로세움 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 21:40 KST / 12:40 UTC] [게임개선 10분 크론작업 27회차: VoxelGachaClawGame 가챠 캡슐 및 마스터 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelGachaClawGame.tsx` (블리츠 가챠 버스트)
 - **개선 내역**:
