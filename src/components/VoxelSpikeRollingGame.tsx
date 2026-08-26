@@ -20,6 +20,7 @@ interface CrushTarget {
   x: number;
   y: number;
   type: 'golem' | 'wall' | 'gem' | 'tnt';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -102,8 +103,8 @@ export const VoxelSpikeRollingGame: React.FC<VoxelSpikeRollingGameProps> = ({
 
     // Initial crush targets
     s.targets.push(
-      { id: s.targetCounter++, x: 100, y: 140, type: 'golem', icon: '🗿', points: 400, radius: 26, crushed: false },
-      { id: s.targetCounter++, x: 260, y: 220, type: 'gem', icon: '💎', points: 300, radius: 20, crushed: false }
+      { id: s.targetCounter++, x: 100, y: 140, type: 'golem', cardId: 78, icon: '🗿', points: 400, radius: 26, crushed: false },
+      { id: s.targetCounter++, x: 260, y: 220, type: 'gem', cardId: 100, icon: '💎', points: 300, radius: 20, crushed: false }
     );
 
     setTargetsCrushed(0);
@@ -190,14 +191,16 @@ export const VoxelSpikeRollingGame: React.FC<VoxelSpikeRollingGameProps> = ({
         s.spawnTimer = 0;
         const rand = Math.random();
         const isTnt = rand < 0.2;
-        const isGolem = rand >= 0.2 && rand < 0.55;
-        const isGem = rand >= 0.55 && rand < 0.75;
+        const isGolem = rand >= 0.2 && rand < 0.5;
+        const isGem = rand >= 0.5 && rand < 0.7;
+        const cardId = isTnt ? 55 : (isGolem ? 78 : (isGem ? 100 : 34));
 
         s.targets.push({
           id: s.targetCounter++,
           x: 50 + Math.random() * 260,
           y: -40,
           type: isTnt ? 'tnt' : (isGolem ? 'golem' : (isGem ? 'gem' : 'wall')),
+          cardId,
           icon: isTnt ? '🧨' : (isGolem ? '🗿' : (isGem ? '💎' : '🧱')),
           points: isTnt ? 800 : (isGolem ? 400 : (isGem ? 300 : 250)),
           radius: isTnt ? 24 : (isGolem ? 26 : 22),
@@ -283,38 +286,54 @@ export const VoxelSpikeRollingGame: React.FC<VoxelSpikeRollingGameProps> = ({
       ctx.lineWidth = 4;
       ctx.strokeRect(20, 0, w - 40, h);
 
-      // Render Targets
+      // Render Targets (Card Sprites)
       s.targets.forEach((t) => {
         if (!t.crushed) {
           ctx.save();
           ctx.translate(t.x, t.y);
-          if (t.type === 'tnt') {
-            ctx.shadowColor = '#ef4444';
-            ctx.shadowBlur = 18;
-          } else if (t.type === 'gem') {
-            ctx.shadowColor = '#06b6d4';
-            ctx.shadowBlur = 15;
-          }
-          ctx.font = `${t.radius * 1.8}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(t.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            t.cardId,
+            -t.radius,
+            -t.radius,
+            t.radius * 2,
+            t.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: t.type === 'tnt' ? '#ef4444' : (t.type === 'gem' ? '#06b6d4' : '#f59e0b'),
+              shadowBlur: t.type === 'tnt' || t.type === 'gem' ? 16 : 6,
+              shadowColor: t.type === 'tnt' ? 'rgba(239, 68, 68, 0.9)' : (t.type === 'gem' ? 'rgba(6, 182, 212, 0.9)' : 'rgba(245, 158, 11, 0.8)'),
+            }
+          );
+
           ctx.restore();
         }
       });
 
-      // Render Giant Spike Roller
+      // Render Giant Spike Roller (Player Hero Badge)
+      const renderRollerRadius = 24 + (s.boulderLevel - 1) * 5;
       ctx.save();
       ctx.translate(s.rollerX, rollerY);
       ctx.rotate(s.rollerAngle);
-      ctx.shadowColor = '#f59e0b';
-      ctx.shadowBlur = 18;
 
-      const baseFontSize = 32 + (s.boulderLevel - 1) * 6;
-      ctx.font = `${baseFontSize}px serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('⚙️', 0, 0);
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -renderRollerRadius,
+        -renderRollerRadius,
+        renderRollerRadius * 2,
+        renderRollerRadius * 2,
+        {
+          circleClip: true,
+          borderWidth: 2.5,
+          borderColor: '#f59e0b',
+          shadowBlur: 18,
+          shadowColor: 'rgba(245, 158, 11, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -326,7 +345,7 @@ export const VoxelSpikeRollingGame: React.FC<VoxelSpikeRollingGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [rollerY, playSfx]);
+  }, [rollerY, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;

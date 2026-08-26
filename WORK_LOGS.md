@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-27 03:50 KST / 18:50 UTC] [게임개선 10분 크론작업 64회차: VoxelSpikeRollingGame 분쇄 타깃 및 스파이크볼 영웅 배지 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelSpikeRollingGame.tsx` (블리츠 스파이크 롤러)
+- **개선 내역**:
+  1. 4종 타깃(스톤 골렘, 방어벽, 파워 젬, TNT 폭탄)을 공식 카드 스프라이트(ID 78, 34, 100, 55)로 전면 교체.
+  2. 거대 스파이크 롤러에 플레이어 대표 카드 영웅 배지(`playerHeroId`) 장착 및 레벨업 시 크기 동적 확장 연동.
+  3. 던전 트랙 분쇄 물리 및 롤링볼 회전각 시뮬레이션 고도화.
+  4. 가상 조이스틱 0개 100% 손가락 직접 좌우 드래그 분쇄 진격(Direct Horizontal Drag Smashing) 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelSpikeRollingGame 분쇄타깃 및 스파이크볼카드 스프라이트화 및 퓨어 스파이크롤러 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-27 03:40 KST / 18:40 UTC] [게임개선 10분 크론작업 63회차: VoxelSpaceOdysseyGame 함선/광물 및 전투기 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelSpaceOdysseyGame.tsx` (블리츠 스페이스 오디세이)
 - **개선 내역**:
