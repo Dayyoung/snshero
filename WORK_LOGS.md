@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-08-26 18:40 KST / 09:40 UTC] [게임개선 10분 크론작업 9회차: VoxelBubblePopGame 7x7 버블 셀 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelBubblePopGame.tsx` (블리츠 버블 버스트)
+- **개선 내역**:
+  1. 7x7 그리드의 원형 버블들을 5종 원소 공식 카드 캐릭터/몬스터 스프라이트(`getCardSpriteStyle`)로 전면 교체하여 타일 시각성 및 팝핑 피드백 강화.
+  2. 5개 이상 매치 시 생성되는 폭탄 버블(💣)에 메카 보스 몬스터 스프라이트 오버레이 연동.
+  3. 가상 조이스틱 0개 100% 손가락 직접 탭 버블 폭발 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelBubblePopGame 버블 셀 카드 스프라이트화 및 퓨어 탭팝 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 18:30 KST / 09:30 UTC] [게임개선 10분 크론작업 8회차: VoxelBilliardsTrickGame 큐볼 영웅/목적구 몬스터 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelBilliardsTrickGame.tsx` (블리츠 트릭 포켓볼)
 - **개선 내역**:

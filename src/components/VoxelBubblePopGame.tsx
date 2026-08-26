@@ -1,10 +1,10 @@
-import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
+import { getCardSpriteStyle } from '../lib/utils';
 
 interface VoxelBubblePopGameProps {
   deck: CardData[];
@@ -452,17 +452,28 @@ export const VoxelBubblePopGame: React.FC<VoxelBubblePopGameProps> = ({
           {grid.map((row, rIdx) =>
             row.map((cell, cIdx) => {
               const colorInfo = BUBBLE_COLORS[cell.colorIdx] || BUBBLE_COLORS[0];
+              const bubbleCardIds = [7, 12, 24, 18, 57];
+              const cardId = cell.isBomb ? 4 : (bubbleCardIds[cell.colorIdx] || 1);
+
               return (
                 <button
                   key={cell.id}
                   onClick={() => handleBubbleTap(rIdx, cIdx)}
-                  className="w-full h-full flex items-center justify-center rounded-sm transition-transform active:scale-90 border font-mono text-base shadow-sm"
+                  className="w-full h-full flex items-center justify-center p-0.5 rounded-full transition-transform active:scale-90 border font-mono text-base shadow-sm relative overflow-hidden"
                   style={{
                     backgroundColor: cell.isBomb ? '#1e293b' : colorInfo.bg,
                     borderColor: cell.isBomb ? '#fbbf24' : colorInfo.border,
                   }}
                 >
-                  {cell.isBomb ? '💣' : colorInfo.icon}
+                  <div
+                    className="w-full h-full rounded-full border border-white/20 shadow-xs"
+                    style={getCardSpriteStyle(cardId)}
+                  />
+                  {cell.isBomb && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-xs font-bold text-amber-300">
+                      💣
+                    </div>
+                  )}
                 </button>
               );
             })
