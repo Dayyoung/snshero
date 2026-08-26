@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-26 22:00 KST / 13:00 UTC] [게임개선 10분 크론작업 29회차: VoxelGolfMasterGame 홀컵 엠블럼 및 골퍼 영웅 볼 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelGolfMasterGame.tsx` (블리츠 골프 슬링)
+- **개선 내역**:
+  1. 홀컵 깃발 중심을 공식 황금 챔피언십 카드 스프라이트(ID 100)로 전면 교체.
+  2. 골프공 중심에 플레이어 대표 카드 영웅 배지(`playerHeroId`) 장착.
+  3. 조준 및 슬링샷 당길 시 황금 궤적 가이드 및 펄스 광원 피드백 연동.
+  4. 가상 조이스틱 0개 100% 손가락 직접 당겼다 놓기(Slingshot Pull & Release) 퍼팅 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelGolfMasterGame 홀컵 및 골프볼 카드 스프라이트화 및 퓨어 골프슬링 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 21:50 KST / 12:50 UTC] [게임개선 10분 크론작업 28회차: VoxelGladiatorColosseumGame 라이벌 검투사 및 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelGladiatorColosseumGame.tsx` (블리츠 글래디에이터 결투)
 - **개선 내역**:

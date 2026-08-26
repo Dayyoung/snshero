@@ -351,7 +351,7 @@ export const VoxelGolfMasterGame: React.FC<VoxelGolfMasterGameProps> = ({
         ctx.strokeRect(obs.x, obs.y, obs.w, obs.h);
       });
 
-      // Render Hole Cup
+      // Render Hole Cup (Card Sprite Emblem)
       ctx.fillStyle = '#022c22';
       ctx.beginPath();
       ctx.arc(course.hole.x, course.hole.y, course.hole.radius, 0, Math.PI * 2);
@@ -360,11 +360,21 @@ export const VoxelGolfMasterGame: React.FC<VoxelGolfMasterGameProps> = ({
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      // Flag Pin
-      ctx.font = '22px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('⛳', course.hole.x, course.hole.y - 12);
+      drawCardSprite(
+        ctx,
+        100,
+        course.hole.x - 10,
+        course.hole.y - 10,
+        20,
+        20,
+        {
+          circleClip: true,
+          borderWidth: 1.5,
+          borderColor: '#fde047',
+          shadowBlur: 8,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
 
       // Render Aiming Slingshot Guide Line
       if (s.isAiming) {
@@ -389,19 +399,27 @@ export const VoxelGolfMasterGame: React.FC<VoxelGolfMasterGameProps> = ({
         ctx.stroke();
       }
 
-      // Render Golf Ball
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.arc(s.ballX, s.ballY, 8, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#0f172a';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
+      // Render Golfer Hero Ball (Card Sprite)
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        s.ballX - 11,
+        s.ballY - 11,
+        22,
+        22,
+        {
+          circleClip: true,
+          borderWidth: 1.5,
+          borderColor: '#ffffff',
+          shadowBlur: s.isAiming ? 10 : 4,
+          shadowColor: s.isAiming ? 'rgba(253, 224, 71, 0.9)' : 'rgba(255, 255, 255, 0.6)',
+        }
+      );
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx, setupCourse]);
+  }, [playSfx, setupCourse, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
