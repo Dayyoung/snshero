@@ -303,43 +303,64 @@ export const VoxelAceFighterGame: React.FC<VoxelAceFighterGameProps> = ({
       ctx.lineTo(w, targetY);
       ctx.stroke();
 
-      // Render Target Rings
+      // Render Target Rings with Hero Emblems
       for (let i = 0; i < 4; i++) {
         const cx = i * laneW + laneW / 2;
+        const radius = laneW * 0.35;
+        
         ctx.strokeStyle = s.isFever ? 'rgba(244, 114, 182, 0.6)' : 'rgba(56, 189, 248, 0.5)';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(cx, targetY, laneW * 0.35, 0, Math.PI * 2);
+        ctx.arc(cx, targetY, radius, 0, Math.PI * 2);
         ctx.stroke();
+
+        // Hero pulse silhouette in target ring
+        drawCardSprite(
+          ctx,
+          playerHeroId,
+          cx - radius * 0.75,
+          targetY - radius * 0.75,
+          radius * 1.5,
+          radius * 1.5,
+          {
+            circleClip: true,
+            borderWidth: 1,
+            borderColor: s.isFever ? '#ec4899' : '#38bdf8',
+            shadowBlur: 6,
+            shadowColor: s.isFever ? 'rgba(236, 72, 153, 0.5)' : 'rgba(56, 189, 248, 0.5)',
+          }
+        );
       }
 
-      // Render Falling Notes
+      // Render Falling Card Monster Notes
       s.notes.forEach((note) => {
         if (note.hit) return;
         const nx = note.lane * laneW + laneW / 2;
         const ny = (note.y / 100) * h;
-        const radius = laneW * 0.32;
+        const radius = laneW * 0.36;
+        const noteCardId = note.type === 'fever' || s.isFever ? 100 : ((note.id % 30) + 1);
 
-        ctx.fillStyle = note.type === 'fever' || s.isFever ? '#f43f5e' : '#38bdf8';
-        ctx.beginPath();
-        ctx.arc(nx, ny, radius, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 14px monospace';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('⚡', nx, ny);
+        drawCardSprite(
+          ctx,
+          noteCardId,
+          nx - radius,
+          ny - radius,
+          radius * 2,
+          radius * 2,
+          {
+            circleClip: true,
+            borderWidth: 2,
+            borderColor: note.type === 'fever' || s.isFever ? '#f43f5e' : '#38bdf8',
+            shadowBlur: 10,
+            shadowColor: note.type === 'fever' || s.isFever ? 'rgba(244, 63, 94, 0.8)' : 'rgba(56, 189, 248, 0.8)',
+          }
+        );
       });
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [isPaused, onReward, playSfx]);
+  }, [isPaused, onReward, playSfx, playerHeroId]);
 
   const tutorialSteps: TutorialStep[] = [
     {
