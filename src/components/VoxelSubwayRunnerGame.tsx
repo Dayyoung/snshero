@@ -20,6 +20,7 @@ interface TrackItem {
   lane: number; // 0: Left, 1: Center, 2: Right
   y: number;
   type: 'train' | 'barrier' | 'coin' | 'board';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -118,8 +119,8 @@ export const VoxelSubwayRunnerGame: React.FC<VoxelSubwayRunnerGameProps> = ({
 
     // Initial items on tracks
     s.items.push(
-      { id: s.itemCounter++, lane: 0, y: 140, type: 'coin', icon: '🪙', points: 250, radius: 20, cleared: false },
-      { id: s.itemCounter++, lane: 2, y: 220, type: 'board', icon: '🛹', points: 600, radius: 24, cleared: false }
+      { id: s.itemCounter++, lane: 0, y: 140, type: 'coin', cardId: 100, icon: '🪙', points: 250, radius: 20, cleared: false },
+      { id: s.itemCounter++, lane: 2, y: 220, type: 'board', cardId: 58, icon: '🛹', points: 600, radius: 24, cleared: false }
     );
 
     setCoinsCollected(0);
@@ -275,6 +276,7 @@ export const VoxelSubwayRunnerGame: React.FC<VoxelSubwayRunnerGameProps> = ({
         const isTrain = rand < 0.35;
         const isBarrier = rand >= 0.35 && rand < 0.6;
         const isBoard = rand >= 0.6 && rand < 0.72;
+        const cardId = isBoard ? 58 : (isTrain ? 78 : (isBarrier ? 34 : 100));
 
         const targetLane = Math.floor(Math.random() * 3);
 
@@ -283,6 +285,7 @@ export const VoxelSubwayRunnerGame: React.FC<VoxelSubwayRunnerGameProps> = ({
           lane: targetLane,
           y: -40,
           type: isBoard ? 'board' : (isTrain ? 'train' : (isBarrier ? 'barrier' : 'coin')),
+          cardId,
           icon: isBoard ? '🛹' : (isTrain ? '🚆' : (isBarrier ? '🚧' : '🪙')),
           points: isBoard ? 600 : (isTrain ? -300 : (isBarrier ? -200 : 250)),
           radius: isBoard ? 24 : (isTrain ? 30 : 22),
@@ -416,37 +419,52 @@ export const VoxelSubwayRunnerGame: React.FC<VoxelSubwayRunnerGameProps> = ({
       });
       ctx.setLineDash([]);
 
-      // Render Items
+      // Render Items (Card Sprites)
       s.items.forEach((item) => {
         if (!item.cleared) {
           ctx.save();
           ctx.translate(laneX[item.lane], item.y);
-          if (item.type === 'board') {
-            ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 18;
-          } else if (item.type === 'coin') {
-            ctx.shadowColor = '#fde047';
-            ctx.shadowBlur = 14;
-          }
-          ctx.font = `${item.radius * 1.8}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(item.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            item.cardId,
+            -item.radius,
+            -item.radius,
+            item.radius * 2,
+            item.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: item.type === 'board' ? '#38bdf8' : (item.type === 'coin' ? '#fde047' : '#ef4444'),
+              shadowBlur: item.type === 'board' || item.type === 'coin' ? 16 : 6,
+              shadowColor: item.type === 'board' ? 'rgba(56, 189, 248, 0.9)' : (item.type === 'coin' ? 'rgba(253, 224, 71, 0.9)' : 'rgba(239, 68, 68, 0.7)'),
+            }
+          );
+
           ctx.restore();
         }
       });
 
-      // Render Subway Runner Hero
+      // Render Subway Runner Hero (Player Hero Badge)
       ctx.save();
       ctx.translate(s.playerX, playerY + s.jumpOffset);
-      if (s.hasHoverboard) {
-        ctx.shadowColor = '#38bdf8';
-        ctx.shadowBlur = 20;
-      }
-      ctx.font = s.isSliding ? '28px serif' : '38px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(s.hasHoverboard ? '🛹' : (s.isSliding ? '🧎' : '🏃'), 0, 0);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -20,
+        -20,
+        40,
+        40,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: s.hasHoverboard ? '#38bdf8' : '#fde047',
+          shadowBlur: s.hasHoverboard ? 20 : 12,
+          shadowColor: s.hasHoverboard ? 'rgba(56, 189, 248, 0.9)' : 'rgba(253, 224, 71, 0.8)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -458,7 +476,7 @@ export const VoxelSubwayRunnerGame: React.FC<VoxelSubwayRunnerGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [laneX, playerY, isKo, playSfx]);
+  }, [laneX, playerY, isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
