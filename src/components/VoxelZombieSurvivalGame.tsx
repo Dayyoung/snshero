@@ -21,6 +21,7 @@ interface ZombieTarget {
   y: number;
   vx: number;
   type: 'runner' | 'brute' | 'king';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -102,8 +103,8 @@ export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = (
 
     // Initial Zombies
     s.zombies.push(
-      { id: s.zombieCounter++, x: 80, y: 130, vx: 50, type: 'runner', icon: '🧟', points: 300, radius: 22, hp: 1, maxHp: 1, isAlive: true },
-      { id: s.zombieCounter++, x: 280, y: 200, vx: -35, type: 'brute', icon: '🧟‍♂️', points: 600, radius: 26, hp: 2, maxHp: 2, isAlive: true }
+      { id: s.zombieCounter++, x: 80, y: 130, vx: 50, type: 'runner', cardId: 78, icon: '🧟', points: 300, radius: 22, hp: 1, maxHp: 1, isAlive: true },
+      { id: s.zombieCounter++, x: 280, y: 200, vx: -35, type: 'brute', cardId: 34, icon: '🧟‍♂️', points: 600, radius: 26, hp: 2, maxHp: 2, isAlive: true }
     );
 
     setZombiesKilled(0);
@@ -251,6 +252,7 @@ export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = (
         const rand = Math.random();
         const isKing = rand < 0.18;
         const isBrute = rand >= 0.18 && rand < 0.55;
+        const cardId = isKing ? 83 : (isBrute ? 34 : 78);
 
         s.zombies.push({
           id: s.zombieCounter++,
@@ -258,6 +260,7 @@ export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = (
           y: 70 + Math.random() * 200,
           vx: (Math.random() < 0.5 ? 1 : -1) * (isKing ? 30 : (isBrute ? 40 : 60)),
           type: isKing ? 'king' : (isBrute ? 'brute' : 'runner'),
+          cardId,
           icon: isKing ? '👑' : (isBrute ? '🧟‍♂️' : '🧟'),
           points: isKing ? 1000 : (isBrute ? 600 : 300),
           radius: isKing ? 30 : (isBrute ? 26 : 22),
@@ -317,22 +320,27 @@ export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = (
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Render Zombies
+      // Render Zombies (Card Sprites)
       s.zombies.forEach((z) => {
         if (z.isAlive) {
           ctx.save();
           ctx.translate(z.x, z.y);
-          if (z.type === 'king') {
-            ctx.shadowColor = '#f59e0b';
-            ctx.shadowBlur = 18;
-          } else {
-            ctx.shadowColor = '#22c55e';
-            ctx.shadowBlur = 12;
-          }
-          ctx.font = `${z.radius * 1.8}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(z.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            z.cardId,
+            -z.radius,
+            -z.radius,
+            z.radius * 2,
+            z.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: z.type === 'king' ? '#f59e0b' : '#22c55e',
+              shadowBlur: z.type === 'king' ? 18 : 8,
+              shadowColor: z.type === 'king' ? 'rgba(245, 158, 11, 0.9)' : 'rgba(34, 197, 94, 0.8)',
+            }
+          );
 
           // HP Bar
           if (z.maxHp > 1) {
@@ -345,21 +353,25 @@ export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = (
         }
       });
 
-      // Render Shooter Hero (🤠)
+      // Render Shooter Hero (Player Hero Badge)
       ctx.save();
       ctx.translate(s.shooterX, shooterY);
-      ctx.shadowColor = '#fde047';
-      ctx.shadowBlur = 18;
-      ctx.font = '42px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      drawCardSprite(ctx, playerHeroId, -22, -22, 44, 44, {
-        circleClip: true,
-        borderWidth: 2,
-        borderColor: '#fde047',
-        shadowBlur: 14,
-        shadowColor: 'rgba(253, 224, 71, 0.6)',
-      });
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -22,
+        -22,
+        44,
+        44,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 16,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
 
       // Muzzle Flash Spark
       if (s.muzzleFlash) {
@@ -379,7 +391,7 @@ export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = (
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [shooterY, playSfx]);
+  }, [shooterY, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
