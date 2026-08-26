@@ -19,6 +19,7 @@ interface BreakTarget {
   id: number;
   name: string;
   enName: string;
+  cardId: number;
   icon: string;
   color: string;
   layers: number;
@@ -26,11 +27,11 @@ interface BreakTarget {
 }
 
 const BREAK_TARGETS: BreakTarget[] = [
-  { id: 1, name: '삼나무 송판 (10단)', enName: 'Cedar Wood (10x)', icon: '🪵', color: '#b45309', layers: 10, points: 200 },
-  { id: 2, name: '붉은 점토 벽돌 (10단)', enName: 'Clay Bricks (10x)', icon: '🧱', color: '#b91c1c', layers: 10, points: 350 },
-  { id: 3, name: '화강암 암석 (10단)', enName: 'Granite Rock (10x)', icon: '🪨', color: '#64748b', layers: 10, points: 550 },
-  { id: 4, name: '강철 모루 블록 (10단)', enName: 'Steel Anvil (10x)', icon: '⚙️', color: '#334155', layers: 10, points: 800 },
-  { id: 5, name: '흑요석 크리스탈 (10단)', enName: 'Obsidian Crystal (10x)', icon: '💎', color: '#7e22ce', layers: 10, points: 1200 },
+  { id: 1, name: '삼나무 송판 (10단)', enName: 'Cedar Wood (10x)', cardId: 8, icon: '🪵', color: '#b45309', layers: 10, points: 200 },
+  { id: 2, name: '붉은 점토 벽돌 (10단)', enName: 'Clay Bricks (10x)', cardId: 22, icon: '🧱', color: '#b91c1c', layers: 10, points: 350 },
+  { id: 3, name: '화강암 암석 (10단)', enName: 'Granite Rock (10x)', cardId: 37, icon: '🪨', color: '#64748b', layers: 10, points: 550 },
+  { id: 4, name: '강철 모루 블록 (10단)', enName: 'Steel Anvil (10x)', cardId: 58, icon: '⚙️', color: '#334155', layers: 10, points: 800 },
+  { id: 5, name: '흑요석 크리스탈 (10단)', enName: 'Obsidian Crystal (10x)', cardId: 92, icon: '💎', color: '#7e22ce', layers: 10, points: 1200 },
 ];
 
 export const VoxelKarateBreakGame: React.FC<VoxelKarateBreakGameProps> = ({
@@ -290,6 +291,18 @@ export const VoxelKarateBreakGame: React.FC<VoxelKarateBreakGameProps> = ({
       ctx.fillRect(w / 2 - 90, standY, 20, 50);
       ctx.fillRect(w / 2 + 70, standY, 20, 50);
 
+      // Stand Card Sprite Emblems
+      drawCardSprite(ctx, target.cardId, w / 2 - 88, standY + 10, 16, 16, {
+        circleClip: true,
+        borderWidth: 1,
+        borderColor: '#fde047',
+      });
+      drawCardSprite(ctx, target.cardId, w / 2 + 72, standY + 10, 16, 16, {
+        circleClip: true,
+        borderWidth: 1,
+        borderColor: '#fde047',
+      });
+
       // Render Remaining Layers
       const remainingLayers = target.layers - s.brokenCount;
       for (let l = 0; l < remainingLayers; l++) {
@@ -301,10 +314,18 @@ export const VoxelKarateBreakGame: React.FC<VoxelKarateBreakGameProps> = ({
         ctx.strokeRect((w - blockW) / 2, by, blockW, blockH);
       }
 
-      // Target Label
-      ctx.font = 'bold 16px monospace';
+      // Target Label with Card Sprite
+      drawCardSprite(ctx, target.cardId, w / 2 - 14, 75, 28, 28, {
+        circleClip: true,
+        borderWidth: 1.5,
+        borderColor: '#fde047',
+        shadowBlur: 8,
+        shadowColor: 'rgba(253, 224, 71, 0.8)',
+      });
+
+      ctx.font = 'bold 15px monospace';
       ctx.fillStyle = '#ffffff';
-      ctx.fillText(`${isKo ? target.name : target.enName} ${target.icon}`, w / 2, 100);
+      ctx.fillText(`${isKo ? target.name : target.enName}`, w / 2, 115);
 
       // Downward Chop Guide Arrow
       if (!s.isChopping) {
@@ -313,13 +334,15 @@ export const VoxelKarateBreakGame: React.FC<VoxelKarateBreakGameProps> = ({
         ctx.fillText('⬇️ SWIPE DOWN! ⬇️', w / 2, 160);
       }
 
-      // Karate Chop Arm Animation
+      // Karate Chop Martial Hero Arm Animation
       if (s.isChopping) {
-        ctx.save();
-        ctx.font = '70px serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('✋', w / 2, 230);
-        ctx.restore();
+        drawCardSprite(ctx, playerHeroId, w / 2 - 32, 198, 64, 64, {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 18,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        });
       }
 
       // Render Shard Particles
@@ -331,7 +354,7 @@ export const VoxelKarateBreakGame: React.FC<VoxelKarateBreakGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [isKo, playSfx]);
+  }, [isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
