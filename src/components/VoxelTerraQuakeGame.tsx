@@ -20,6 +20,7 @@ interface QuakeHazard {
   x: number;
   y: number;
   type: 'fissure' | 'rock' | 'gem' | 'chest';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -98,8 +99,8 @@ export const VoxelTerraQuakeGame: React.FC<VoxelTerraQuakeGameProps> = ({
 
     // Initial Hazards and Gems
     s.hazards.push(
-      { id: s.hazardCounter++, x: 100, y: 160, type: 'gem', icon: '💎', points: 350, radius: 22, collected: false },
-      { id: s.hazardCounter++, x: 260, y: 340, type: 'chest', icon: '📦', points: 800, radius: 26, collected: false }
+      { id: s.hazardCounter++, x: 100, y: 160, type: 'gem', cardId: 100, icon: '💎', points: 350, radius: 22, collected: false },
+      { id: s.hazardCounter++, x: 260, y: 340, type: 'chest', cardId: 58, icon: '📦', points: 800, radius: 26, collected: false }
     );
 
     setGemsCollected(0);
@@ -191,15 +192,17 @@ export const VoxelTerraQuakeGame: React.FC<VoxelTerraQuakeGameProps> = ({
       if (s.spawnTimer > 0.75 && s.hazards.length < 7) {
         s.spawnTimer = 0;
         const rand = Math.random();
-        const isChest = rand < 0.18;
-        const isGem = rand >= 0.18 && rand < 0.55;
-        const isFissure = rand >= 0.55 && rand < 0.8;
+        const isChest = rand < 0.15;
+        const isGem = rand >= 0.15 && rand < 0.45;
+        const isFissure = rand >= 0.45 && rand < 0.75;
+        const cardId = isChest ? 58 : (isGem ? 100 : (isFissure ? 78 : 34));
 
         s.hazards.push({
           id: s.hazardCounter++,
           x: 45 + Math.random() * 270,
           y: 60 + Math.random() * 380,
           type: isChest ? 'chest' : (isGem ? 'gem' : (isFissure ? 'fissure' : 'rock')),
+          cardId,
           icon: isChest ? '📦' : (isGem ? '💎' : (isFissure ? '🕳️' : '🪨')),
           points: isChest ? 800 : (isGem ? 350 : -250),
           radius: isChest ? 26 : (isGem ? 22 : 24),
@@ -318,35 +321,52 @@ export const VoxelTerraQuakeGame: React.FC<VoxelTerraQuakeGameProps> = ({
       }
       ctx.restore();
 
-      // Render Hazards & Items
+      // Render Hazards & Items (Card Sprites)
       s.hazards.forEach((haz) => {
         if (!haz.collected) {
           ctx.save();
           ctx.translate(haz.x, haz.y);
-          if (haz.type === 'chest') {
-            ctx.shadowColor = '#f59e0b';
-            ctx.shadowBlur = 18;
-          } else if (haz.type === 'gem') {
-            ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 15;
-          }
-          ctx.font = `${haz.radius * 1.8}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(haz.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            haz.cardId,
+            -haz.radius,
+            -haz.radius,
+            haz.radius * 2,
+            haz.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: haz.type === 'chest' ? '#f59e0b' : (haz.type === 'gem' ? '#06b6d4' : '#ef4444'),
+              shadowBlur: haz.type === 'chest' || haz.type === 'gem' ? 16 : 6,
+              shadowColor: haz.type === 'chest' ? 'rgba(245, 158, 11, 0.9)' : (haz.type === 'gem' ? 'rgba(6, 182, 212, 0.9)' : 'rgba(239, 68, 68, 0.7)'),
+            }
+          );
+
           ctx.restore();
         }
       });
 
-      // Render Survivor Hero (🧗)
+      // Render Survivor Hero (Player Hero Badge)
       ctx.save();
       ctx.translate(s.survivorX, s.survivorY);
-      ctx.shadowColor = '#38bdf8';
-      ctx.shadowBlur = 18;
-      ctx.font = '38px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🧗', 0, 0);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -20,
+        -20,
+        40,
+        40,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 16,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -358,7 +378,7 @@ export const VoxelTerraQuakeGame: React.FC<VoxelTerraQuakeGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [isKo, playSfx]);
+  }, [isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
