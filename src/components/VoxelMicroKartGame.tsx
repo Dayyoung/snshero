@@ -20,6 +20,7 @@ interface TrackObstacle {
   x: number;
   y: number;
   type: 'rival' | 'oil' | 'turbo' | 'coin';
+  cardId: number;
   icon: string;
   isHit: boolean;
 }
@@ -200,16 +201,20 @@ export const VoxelMicroKartGame: React.FC<VoxelMicroKartGameProps> = ({
         s.spawnTimer = 0;
         const rand = Math.random();
         let type: 'rival' | 'oil' | 'turbo' | 'coin' = 'coin';
+        let cardId = 100;
         let icon = '🪙';
 
         if (rand < 0.25) {
           type = 'rival';
+          cardId = 36;
           icon = '🚙';
         } else if (rand < 0.45) {
           type = 'oil';
+          cardId = 17;
           icon = '🛢️';
         } else if (rand < 0.65) {
           type = 'turbo';
+          cardId = 48;
           icon = '⚡';
         }
 
@@ -218,6 +223,7 @@ export const VoxelMicroKartGame: React.FC<VoxelMicroKartGameProps> = ({
           x: 60 + Math.random() * 240,
           y: -30,
           type,
+          cardId,
           icon,
           isHit: false,
         });
@@ -344,15 +350,28 @@ export const VoxelMicroKartGame: React.FC<VoxelMicroKartGameProps> = ({
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Render Obstacles
+      // Render Obstacles (Card Sprites)
       s.obstacles.forEach((obs) => {
         if (!obs.isHit) {
           ctx.save();
           ctx.translate(obs.x, obs.y);
-          ctx.font = '30px serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(obs.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            obs.cardId,
+            -16,
+            -16,
+            32,
+            32,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: obs.type === 'turbo' ? '#38bdf8' : obs.type === 'coin' ? '#fde047' : '#ef4444',
+              shadowBlur: obs.type === 'turbo' || obs.type === 'coin' ? 8 : 4,
+              shadowColor: obs.type === 'turbo' ? 'rgba(56, 189, 248, 0.8)' : obs.type === 'coin' ? 'rgba(253, 224, 71, 0.8)' : 'rgba(239, 68, 68, 0.8)',
+            }
+          );
+
           ctx.restore();
         }
       });
@@ -361,20 +380,16 @@ export const VoxelMicroKartGame: React.FC<VoxelMicroKartGameProps> = ({
       ctx.save();
       ctx.translate(s.kartX, s.kartY);
 
-      if (s.turboTimer > 0) {
-        ctx.shadowColor = '#38bdf8';
-        ctx.shadowBlur = 20;
+      if (s.oilSpinTimer > 0) {
+        ctx.rotate((Date.now() / 100) % (Math.PI * 2));
       }
 
-      ctx.font = '38px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
       drawCardSprite(ctx, playerHeroId, -22, -22, 44, 44, {
         circleClip: true,
         borderWidth: 2,
-        borderColor: '#fde047',
-        shadowBlur: 14,
-        shadowColor: 'rgba(253, 224, 71, 0.6)',
+        borderColor: s.turboTimer > 0 ? '#38bdf8' : s.oilSpinTimer > 0 ? '#ef4444' : '#fde047',
+        shadowBlur: s.turboTimer > 0 ? 18 : 10,
+        shadowColor: s.turboTimer > 0 ? 'rgba(56, 189, 248, 0.9)' : s.oilSpinTimer > 0 ? 'rgba(239, 68, 68, 0.9)' : 'rgba(253, 224, 71, 0.6)',
       });
       ctx.restore();
 
@@ -387,7 +402,7 @@ export const VoxelMicroKartGame: React.FC<VoxelMicroKartGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [isKo, playSfx]);
+  }, [isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
