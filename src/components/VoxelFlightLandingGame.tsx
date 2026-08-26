@@ -18,6 +18,7 @@ interface VoxelFlightLandingGameProps {
 interface Aircraft {
   id: number;
   type: 'plane' | 'heli' | 'jet';
+  cardId: number;
   icon: string;
   x: number;
   y: number;
@@ -96,6 +97,7 @@ export const VoxelFlightLandingGame: React.FC<VoxelFlightLandingGameProps> = ({
     s.aircrafts.push({
       id: s.craftCounter++,
       type: 'plane',
+      cardId: 84,
       icon: '✈️',
       x: 50,
       y: 60,
@@ -229,10 +231,12 @@ export const VoxelFlightLandingGame: React.FC<VoxelFlightLandingGameProps> = ({
         const targetY = 250 + Math.random() * 80;
         const angle = Math.atan2(targetY - startY, targetX - startX);
         const spd = isHeli ? 35 : 48;
+        const cardId = isHeli ? 72 : 84;
 
         s.aircrafts.push({
           id: s.craftCounter++,
           type: isHeli ? 'heli' : 'plane',
+          cardId,
           icon: isHeli ? '🚁' : '✈️',
           x: startX,
           y: startY,
@@ -371,18 +375,22 @@ export const VoxelFlightLandingGame: React.FC<VoxelFlightLandingGameProps> = ({
       ctx.lineWidth = 2;
       ctx.strokeRect(runwayX - runwayW / 2, runwayY - runwayH / 2, runwayW, runwayH);
 
-      // Runway Strip Lines
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([8, 8]);
-      ctx.beginPath();
-      ctx.moveTo(runwayX - runwayW / 2 + 10, runwayY);
-      ctx.lineTo(runwayX + runwayW / 2 - 10, runwayY);
-      ctx.stroke();
-      ctx.setLineDash([]);
-
-      ctx.font = '16px serif';
-      ctx.fillText('🛫 RUNWAY', runwayX, runwayY - 14);
+      // Hero ATC Controller Emblem on Runway Zone
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        runwayX - 12,
+        runwayY - 12,
+        24,
+        24,
+        {
+          circleClip: true,
+          borderWidth: 1.5,
+          borderColor: '#38bdf8',
+          shadowBlur: 6,
+          shadowColor: 'rgba(56, 189, 248, 0.8)',
+        }
+      );
 
       // Render Flight Paths (Glowing Cyan Line)
       s.aircrafts.forEach((craft) => {
@@ -398,16 +406,27 @@ export const VoxelFlightLandingGame: React.FC<VoxelFlightLandingGameProps> = ({
         }
       });
 
-      // Render Aircrafts
+      // Render Aircrafts (Card Sprites)
       s.aircrafts.forEach((craft) => {
         ctx.save();
         ctx.translate(craft.x, craft.y);
         ctx.rotate(craft.angle + Math.PI / 2);
 
-        ctx.font = '26px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(craft.icon, 0, 0);
+        drawCardSprite(
+          ctx,
+          craft.cardId,
+          -craft.radius,
+          -craft.radius,
+          craft.radius * 2,
+          craft.radius * 2,
+          {
+            circleClip: true,
+            borderWidth: s.selectedCraft?.id === craft.id ? 2 : 1.5,
+            borderColor: s.selectedCraft?.id === craft.id ? '#fde047' : craft.type === 'heli' ? '#fde047' : '#38bdf8',
+            shadowBlur: s.selectedCraft?.id === craft.id ? 10 : 4,
+            shadowColor: s.selectedCraft?.id === craft.id ? 'rgba(253, 224, 71, 0.9)' : 'rgba(56, 189, 248, 0.6)',
+          }
+        );
 
         ctx.restore();
       });
@@ -415,7 +434,7 @@ export const VoxelFlightLandingGame: React.FC<VoxelFlightLandingGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;

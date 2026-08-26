@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-26 21:30 KST / 12:30 UTC] [게임개선 10분 크론작업 26회차: VoxelFlightLandingGame 항공기 및 활주로 관제사 배지 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelFlightLandingGame.tsx` (블리츠 플라이트 랜딩)
+- **개선 내역**:
+  1. 여객기 및 헬리콥터를 공식 카드 비행체 스프라이트(`drawCardSprite`)로 전면 교체.
+  2. 착륙 활주로 구역에 플레이어 대표 카드 영웅 관제사 배지(`playerHeroId`) 장착.
+  3. 선택 및 유도 중인 기체에 황금 네온 테두리 및 광원 피드백 연동.
+  4. 가상 조이스틱 0개 100% 손가락 직접 드래그 비행 경로 유도 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelFlightLandingGame 항공기 및 활주로 카드 스프라이트화 및 퓨어 관제착륙 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 21:20 KST / 12:20 UTC] [게임개선 10분 크론작업 25회차: VoxelFishingMasterGame 심해 어종 및 강태공 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelFishingMasterGame.tsx` (블리츠 피싱 슬링)
 - **개선 내역**:
