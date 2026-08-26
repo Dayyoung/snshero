@@ -259,18 +259,22 @@ export const VoxelCyberNinjaGame: React.FC<VoxelCyberNinjaGameProps> = ({
       ctx.arc(centerX, centerY, 55, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Center Hero Ninja
-      ctx.fillStyle = '#0284c7';
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, 24, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.font = '22px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🥷', centerX, centerY);
+      // Center Hero Ninja (Official Card Sprite)
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        centerX - 24,
+        centerY - 24,
+        48,
+        48,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#38bdf8',
+          shadowBlur: 12,
+          shadowColor: 'rgba(56, 189, 248, 0.8)',
+        }
+      );
 
       // Slash Flash Effect
       if (slashFlashDir) {
@@ -297,7 +301,7 @@ export const VoxelCyberNinjaGame: React.FC<VoxelCyberNinjaGameProps> = ({
         ctx.fill();
       }
 
-      // Render Shadow Attackers
+      // Render Shadow Attackers (Card Monster Sprites)
       s.attackers.forEach((a) => {
         let ax = centerX;
         let ay = centerY;
@@ -309,24 +313,27 @@ export const VoxelCyberNinjaGame: React.FC<VoxelCyberNinjaGameProps> = ({
         else if (a.dir === 'LEFT') ax = centerX - dist;
         else if (a.dir === 'RIGHT') ax = centerX + dist;
 
-        ctx.fillStyle = '#e11d48';
-        ctx.beginPath();
-        ctx.arc(ax, ay, 14, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-
-        ctx.font = '14px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('🗡️', ax, ay);
+        drawCardSprite(
+          ctx,
+          33,
+          ax - 16,
+          ay - 16,
+          32,
+          32,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: '#e11d48',
+            shadowBlur: 8,
+            shadowColor: 'rgba(225, 29, 72, 0.8)',
+          }
+        );
       });
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [isKo, playSfx, slashFlashDir]);
+  }, [isKo, playSfx, slashFlashDir, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
