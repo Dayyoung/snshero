@@ -21,6 +21,7 @@ interface SniperTarget {
   y: number;
   vx: number;
   type: 'agent' | 'vip' | 'barrel' | 'drone';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -98,8 +99,8 @@ export const VoxelSniperHunterGame: React.FC<VoxelSniperHunterGameProps> = ({
 
     // Initial Targets
     s.targets.push(
-      { id: s.targetCounter++, x: 80, y: 140, vx: 45, type: 'agent', icon: '🦹', points: 300, radius: 24, hp: 1, maxHp: 1, isHit: false },
-      { id: s.targetCounter++, x: 260, y: 190, vx: -35, type: 'barrel', icon: '🛢️', points: 500, radius: 22, hp: 1, maxHp: 1, isHit: false }
+      { id: s.targetCounter++, x: 80, y: 140, vx: 45, type: 'agent', cardId: 78, icon: '🦹', points: 300, radius: 24, hp: 1, maxHp: 1, isHit: false },
+      { id: s.targetCounter++, x: 260, y: 190, vx: -35, type: 'barrel', cardId: 34, icon: '🛢️', points: 500, radius: 22, hp: 1, maxHp: 1, isHit: false }
     );
 
     setTargetsEliminated(0);
@@ -268,6 +269,7 @@ export const VoxelSniperHunterGame: React.FC<VoxelSniperHunterGameProps> = ({
         const isVip = rand < 0.18;
         const isBarrel = rand >= 0.18 && rand < 0.45;
         const isDrone = rand >= 0.45 && rand < 0.7;
+        const cardId = isVip ? 83 : (isBarrel ? 34 : (isDrone ? 26 : 78));
 
         s.targets.push({
           id: s.targetCounter++,
@@ -275,6 +277,7 @@ export const VoxelSniperHunterGame: React.FC<VoxelSniperHunterGameProps> = ({
           y: 90 + Math.random() * 210,
           vx: (Math.random() < 0.5 ? 1 : -1) * (isVip ? 40 : (isDrone ? 80 : 50)),
           type: isVip ? 'vip' : (isBarrel ? 'barrel' : (isDrone ? 'drone' : 'agent')),
+          cardId,
           icon: isVip ? '👑' : (isBarrel ? '🛢️' : (isDrone ? '🤖' : '🦹')),
           points: isVip ? 1000 : (isBarrel ? 500 : (isDrone ? 400 : 300)),
           radius: isVip ? 28 : (isBarrel ? 22 : 24),
@@ -330,28 +333,33 @@ export const VoxelSniperHunterGame: React.FC<VoxelSniperHunterGameProps> = ({
       ctx.lineWidth = 1;
       ctx.strokeRect(10, 10, w - 20, h - 20);
 
-      // Render Sniper Targets
+      // Render Sniper Targets (Card Sprites)
       s.targets.forEach((t) => {
         ctx.save();
         ctx.translate(t.x, t.y);
-        if (t.type === 'vip') {
-          ctx.shadowColor = '#fde047';
-          ctx.shadowBlur = 20;
-        } else if (t.type === 'barrel') {
-          ctx.shadowColor = '#f97316';
-          ctx.shadowBlur = 15;
-        }
-        ctx.font = `${t.radius * 1.8}px serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(t.icon, 0, 0);
+
+        drawCardSprite(
+          ctx,
+          t.cardId,
+          -t.radius,
+          -t.radius,
+          t.radius * 2,
+          t.radius * 2,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: t.type === 'vip' ? '#fde047' : (t.type === 'barrel' ? '#f97316' : (t.type === 'drone' ? '#38bdf8' : '#ef4444')),
+            shadowBlur: t.type === 'vip' ? 18 : 6,
+            shadowColor: t.type === 'vip' ? 'rgba(253, 224, 71, 0.9)' : (t.type === 'barrel' ? 'rgba(249, 115, 22, 0.8)' : 'rgba(239, 68, 68, 0.8)'),
+          }
+        );
 
         // HP Bar for VIP
         if (t.maxHp > 1) {
           ctx.fillStyle = '#1e293b';
-          ctx.fillRect(-14, t.radius + 2, 28, 4);
+          ctx.fillRect(-14, t.radius + 3, 28, 4);
           ctx.fillStyle = '#ef4444';
-          ctx.fillRect(-14, t.radius + 2, 28 * (t.hp / t.maxHp), 4);
+          ctx.fillRect(-14, t.radius + 3, 28 * (t.hp / t.maxHp), 4);
         }
         ctx.restore();
       });
@@ -372,6 +380,23 @@ export const VoxelSniperHunterGame: React.FC<VoxelSniperHunterGameProps> = ({
         ctx.restore();
       });
 
+      // Render Sniper Hero Badge at Bottom
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        w / 2 - 24,
+        430,
+        48,
+        48,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#38bdf8',
+          shadowBlur: 14,
+          shadowColor: 'rgba(56, 189, 248, 0.8)',
+        }
+      );
+
       // Render Particles
       s.particles.forEach((p) => {
         ctx.fillStyle = p.color;
@@ -381,7 +406,7 @@ export const VoxelSniperHunterGame: React.FC<VoxelSniperHunterGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, []);
+  }, [playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
