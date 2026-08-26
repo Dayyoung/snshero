@@ -47,7 +47,7 @@ import { type LocalAiCapabilityStatus, getLocalAiCapabilityStatus, requestLocalA
 import { trackCreatorEvent } from './content/creatorCampaigns';
 import { WEBTOON_SEASONS, getWebtoonSeasonById, getWebtoonEpisodesForSeason } from './content/webtoonEpisodes';
 import { saveWebtoonProgress, type WebtoonProgressState } from './lib/webtoonProgress';
-import { BGM_TRACKS } from './lib/audioConstants';
+import { BGM_TRACKS, DEFAULT_BGM_TRACK_ID } from './lib/audioConstants';
 import { getSeasonItem, setSeasonItem, removeSeasonItem } from './lib/seasonStorage';
 import { getDeckUpgradeRecommendation } from './lib/deckUpgrade';
 import { incrementMissionProgress } from './lib/dailyMissions';
@@ -3189,11 +3189,12 @@ function AppContent() {
 
   const [bgmTrackId, setBgmTrackId] = useState(() => {
     const saved = localStorage.getItem('hero_bgm_track');
-    return saved || 'helix-1';
+    const matched = BGM_TRACKS.find(t => t.id === saved);
+    return matched ? matched.id : DEFAULT_BGM_TRACK_ID;
   });
 
   const [bgmAudio] = useState(() => {
-    const savedTrackId = localStorage.getItem('hero_bgm_track') || 'helix-1';
+    const savedTrackId = localStorage.getItem('hero_bgm_track');
     const track = BGM_TRACKS.find(t => t.id === savedTrackId) || BGM_TRACKS[0];
     const audio = new Audio(track.url);
     audio.loop = true;
