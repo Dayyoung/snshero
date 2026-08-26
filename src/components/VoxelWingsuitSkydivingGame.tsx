@@ -20,6 +20,7 @@ interface SkyItem {
   x: number;
   y: number;
   type: 'ring' | 'feather' | 'balloon' | 'storm';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -102,8 +103,8 @@ export const VoxelWingsuitSkydivingGame: React.FC<VoxelWingsuitSkydivingGameProp
 
     // Initial Sky Items
     s.items.push(
-      { id: s.itemCounter++, x: 120, y: 120, type: 'ring', icon: '🌀', points: 600, radius: 28, speed: 320, collected: false },
-      { id: s.itemCounter++, x: 240, y: 220, type: 'feather', icon: '🪶', points: 400, radius: 22, speed: 300, collected: false }
+      { id: s.itemCounter++, x: 120, y: 120, type: 'ring', cardId: 58, icon: '🌀', points: 600, radius: 28, speed: 320, collected: false },
+      { id: s.itemCounter++, x: 240, y: 220, type: 'feather', cardId: 100, icon: '🪶', points: 400, radius: 22, speed: 300, collected: false }
     );
 
     setRingsPassed(0);
@@ -199,12 +200,14 @@ export const VoxelWingsuitSkydivingGame: React.FC<VoxelWingsuitSkydivingGameProp
         const isBalloon = rand < 0.18;
         const isRing = rand >= 0.18 && rand < 0.5;
         const isStorm = rand >= 0.5 && rand < 0.7;
+        const cardId = isBalloon ? 92 : (isRing ? 58 : (isStorm ? 34 : 100));
 
         s.items.push({
           id: s.itemCounter++,
           x: 45 + Math.random() * 270,
           y: -30,
           type: isBalloon ? 'balloon' : (isRing ? 'ring' : (isStorm ? 'storm' : 'feather')),
+          cardId,
           icon: isBalloon ? '🎈' : (isRing ? '🌀' : (isStorm ? '⚡' : '🪶')),
           points: isBalloon ? 800 : (isRing ? 600 : (isStorm ? -200 : 400)),
           radius: isBalloon ? 26 : (isRing ? 28 : 22),
@@ -327,35 +330,52 @@ export const VoxelWingsuitSkydivingGame: React.FC<VoxelWingsuitSkydivingGameProp
         ctx.stroke();
       }
 
-      // Render Sky Items
+      // Render Sky Items (Card Sprites)
       s.items.forEach((item) => {
         if (!item.collected) {
           ctx.save();
           ctx.translate(item.x, item.y);
-          if (item.type === 'ring') {
-            ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 20;
-          } else if (item.type === 'balloon') {
-            ctx.shadowColor = '#f59e0b';
-            ctx.shadowBlur = 18;
-          }
-          ctx.font = `${item.radius * 1.8}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(item.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            item.cardId,
+            -item.radius,
+            -item.radius,
+            item.radius * 2,
+            item.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: item.type === 'ring' ? '#38bdf8' : (item.type === 'balloon' ? '#f59e0b' : (item.type === 'feather' ? '#fde047' : '#ef4444')),
+              shadowBlur: item.type === 'ring' || item.type === 'balloon' ? 18 : 8,
+              shadowColor: item.type === 'ring' ? 'rgba(56, 189, 248, 0.9)' : (item.type === 'balloon' ? 'rgba(245, 158, 11, 0.9)' : 'rgba(253, 224, 71, 0.8)'),
+            }
+          );
+
           ctx.restore();
         }
       });
 
-      // Render Wingsuit Glider Hero (🪂)
+      // Render Wingsuit Glider Hero (Player Hero Badge)
       ctx.save();
       ctx.translate(s.diverX, s.diverY);
-      ctx.shadowColor = '#fde047';
-      ctx.shadowBlur = 20;
-      ctx.font = '44px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🪂', 0, 0);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -22,
+        -22,
+        44,
+        44,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 16,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -367,7 +387,7 @@ export const VoxelWingsuitSkydivingGame: React.FC<VoxelWingsuitSkydivingGameProp
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [isKo, playSfx]);
+  }, [isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
