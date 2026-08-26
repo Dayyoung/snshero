@@ -1,10 +1,10 @@
-import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
+import { getCardSpriteStyle } from '../lib/utils';
 
 interface VoxelCraneMasterGameProps {
   deck: CardData[];
@@ -21,16 +21,17 @@ interface ParcelBox {
   id: number;
   direction: BoxDirection;
   color: string;
+  cardId: number;
   label: string;
   enLabel: string;
   icon: string;
 }
 
-const BOX_TYPES: { direction: BoxDirection; color: string; label: string; enLabel: string; icon: string }[] = [
-  { direction: 'LEFT', color: '#ef4444', label: '서부 물류', enLabel: 'West Depot', icon: '🔴' },
-  { direction: 'RIGHT', color: '#3b82f6', label: '동부 물류', enLabel: 'East Depot', icon: '🔵' },
-  { direction: 'UP', color: '#10b981', label: '북부 특송', enLabel: 'North Air', icon: '🟢' },
-  { direction: 'DOWN', color: '#f59e0b', label: '남부 해운', enLabel: 'South Port', icon: '🟡' },
+const BOX_TYPES: { direction: BoxDirection; color: string; cardId: number; label: string; enLabel: string; icon: string }[] = [
+  { direction: 'LEFT', color: '#ef4444', cardId: 7, label: '서부 물류', enLabel: 'West Depot', icon: '🔴' },
+  { direction: 'RIGHT', color: '#3b82f6', cardId: 12, label: '동부 물류', enLabel: 'East Depot', icon: '🔵' },
+  { direction: 'UP', color: '#10b981', cardId: 24, label: '북부 특송', enLabel: 'North Air', icon: '🟢' },
+  { direction: 'DOWN', color: '#f59e0b', cardId: 18, label: '남부 해운', enLabel: 'South Port', icon: '🟡' },
 ];
 
 export const VoxelCraneMasterGame: React.FC<VoxelCraneMasterGameProps> = ({
@@ -86,6 +87,7 @@ export const VoxelCraneMasterGame: React.FC<VoxelCraneMasterGameProps> = ({
       id: stateRef.current.boxCounter++,
       direction: type.direction,
       color: type.color,
+      cardId: type.cardId,
       label: type.label,
       enLabel: type.enLabel,
       icon: type.icon,
@@ -320,32 +322,36 @@ export const VoxelCraneMasterGame: React.FC<VoxelCraneMasterGameProps> = ({
 
       {/* 4-Way Sorting Depot Viewport */}
       <div className="flex-1 w-full max-w-sm relative overflow-hidden flex items-center justify-center p-3">
-        {/* Destination Depot Indicators */}
+        {/* Destination Depot Indicators with Card Sprites */}
         {/* Top: North */}
-        <div className="absolute top-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-emerald-950/80 border border-emerald-500/40 rounded-sm text-xs text-emerald-300 flex items-center gap-1 font-bold">
-          ⬆️ 🟢 {isKo ? '북부 특송' : 'North Air'}
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-emerald-950/80 border border-emerald-500/40 rounded-sm text-xs text-emerald-300 flex items-center gap-1.5 font-bold shadow-md">
+          <span>⬆️</span>
+          <div className="w-4 h-4 rounded-full border border-emerald-400" style={getCardSpriteStyle(24)} />
+          <span>{isKo ? '북부 특송' : 'North Air'}</span>
         </div>
         {/* Bottom: South */}
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-amber-950/80 border border-amber-500/40 rounded-sm text-xs text-amber-300 flex items-center gap-1 font-bold">
-          ⬇️ 🟡 {isKo ? '남부 해운' : 'South Port'}
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-amber-950/80 border border-amber-500/40 rounded-sm text-xs text-amber-300 flex items-center gap-1.5 font-bold shadow-md">
+          <span>⬇️</span>
+          <div className="w-4 h-4 rounded-full border border-amber-400" style={getCardSpriteStyle(18)} />
+          <span>{isKo ? '남부 해운' : 'South Port'}</span>
         </div>
         {/* Left: West */}
-        <div className="absolute left-2 top-1/2 -translate-y-1/2 px-2 py-3 bg-rose-950/80 border border-rose-500/40 rounded-sm text-xs text-rose-300 flex flex-col items-center gap-1 font-bold writing-mode-vertical">
+        <div className="absolute left-2 top-1/2 -translate-y-1/2 px-2 py-2.5 bg-rose-950/80 border border-rose-500/40 rounded-sm text-xs text-rose-300 flex flex-col items-center gap-1 font-bold shadow-md">
           <span>⬅️</span>
-          <span>🔴</span>
-          <span>{isKo ? '서부' : 'West'}</span>
+          <div className="w-4 h-4 rounded-full border border-rose-400" style={getCardSpriteStyle(7)} />
+          <span className="text-[10px]">{isKo ? '서부' : 'West'}</span>
         </div>
         {/* Right: East */}
-        <div className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-3 bg-blue-950/80 border border-blue-500/40 rounded-sm text-xs text-blue-300 flex flex-col items-center gap-1 font-bold writing-mode-vertical">
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-2.5 bg-blue-950/80 border border-blue-500/40 rounded-sm text-xs text-blue-300 flex flex-col items-center gap-1 font-bold shadow-md">
           <span>➡️</span>
-          <span>🔵</span>
-          <span>{isKo ? '동부' : 'East'}</span>
+          <div className="w-4 h-4 rounded-full border border-blue-400" style={getCardSpriteStyle(12)} />
+          <span className="text-[10px]">{isKo ? '동부' : 'East'}</span>
         </div>
 
         {/* Central Conveyor Box */}
         {currentBox && (
           <div
-            className={`w-44 h-44 rounded-none flex flex-col items-center justify-center p-4 border-2 shadow-2xl transition-all duration-150 relative ${
+            className={`w-44 h-44 rounded-none flex flex-col items-center justify-center p-3 border-2 shadow-2xl transition-all duration-150 relative ${
               swipeAnim === 'LEFT'
                 ? '-translate-x-32 opacity-0'
                 : swipeAnim === 'RIGHT'
@@ -361,11 +367,14 @@ export const VoxelCraneMasterGame: React.FC<VoxelCraneMasterGameProps> = ({
               borderColor: currentBox.color,
             }}
           >
-            <span className="text-4xl mb-2 animate-pulse">{currentBox.icon}</span>
+            <div
+              className="w-16 h-16 rounded-full border-2 border-white/40 shadow-lg mb-2"
+              style={getCardSpriteStyle(currentBox.cardId)}
+            />
             <span className="text-sm font-bold text-center" style={{ color: currentBox.color }}>
               {isKo ? currentBox.label : currentBox.enLabel}
             </span>
-            <span className="text-[10px] text-slate-400 mt-1">
+            <span className="text-[10px] text-slate-400 mt-1 font-mono">
               {currentBox.direction === 'LEFT'
                 ? '⬅️ SWIPE LEFT'
                 : currentBox.direction === 'RIGHT'
@@ -386,17 +395,18 @@ export const VoxelCraneMasterGame: React.FC<VoxelCraneMasterGameProps> = ({
 
         {/* Next Box Preview Badge */}
         {nextBox && (
-          <div className="absolute top-12 right-4 flex items-center gap-1 bg-black/60 border border-white/10 px-2 py-1 rounded-sm text-[10px] text-slate-400">
+          <div className="absolute top-12 right-4 flex items-center gap-1.5 bg-black/60 border border-white/10 px-2 py-1 rounded-sm text-[10px] text-slate-400">
             <span>NEXT:</span>
-            <span>{nextBox.icon}</span>
+            <div className="w-4 h-4 rounded-full" style={getCardSpriteStyle(nextBox.cardId)} />
           </div>
         )}
       </div>
 
       {/* Minimal Bottom Guide */}
       <div className="w-full pb-3 px-4 flex items-center justify-center pointer-events-none select-none">
-        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono">
-          {isKo ? '상자를 해당 목적지 방향(상/하/좌/우)으로 스와이프하세요' : 'Swipe parcel toward matching direction (Up/Down/Left/Right)'}
+        <div className="px-3 py-1 bg-black/50 border border-white/10 rounded-full text-[10px] text-slate-300 font-mono flex items-center gap-2">
+          <div className="w-4 h-4 rounded-full border border-cyan-400" style={getCardSpriteStyle(playerHeroId)} />
+          <span>{isKo ? '화면을 상하좌우로 스와이프하여 택배를 분류하세요' : 'Swipe screen 4-way to sort parcels quickly'}</span>
         </div>
       </div>
 

@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-08-26 19:10 KST / 10:10 UTC] [게임개선 10분 크론작업 12회차: VoxelCraneMasterGame 4방향 물류 및 상자 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelCraneMasterGame.tsx` (블리츠 택배 분류 타이쿤)
+- **개선 내역**:
+  1. 4방향 택배 목적지 허브(동/서/남/북) 및 컨베이어 상자를 4종 공식 카드 몬스터/오브젝트 스프라이트(`getCardSpriteStyle`)로 전면 교체.
+  2. 하단 가이드 바에 마스터 분류사 영웅 배지(`playerHeroId`) 렌더링.
+  3. 가상 조이스틱 0개 100% 손가락 직접 4방향 스와이프 분류 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelCraneMasterGame 물류 및 상자 카드 스프라이트화 및 퓨어 스와이프분류 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 19:00 KST / 10:00 UTC] [게임개선 10분 크론작업 11회차: VoxelCoasterTycoonGame 손님 및 메뉴 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelCoasterTycoonGame.tsx` (블리츠 카페 타이쿤)
 - **개선 내역**:
