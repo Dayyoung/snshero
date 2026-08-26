@@ -294,6 +294,22 @@ export const VoxelHalfpipeSkaterGame: React.FC<VoxelHalfpipeSkaterGameProps> = (
       ctx.closePath();
       ctx.fill();
 
+      // Left & Right Ramp Coping Card Sprite Emblems
+      drawCardSprite(ctx, 100, 18, 208, 24, 24, {
+        circleClip: true,
+        borderWidth: 1.5,
+        borderColor: '#fde047',
+        shadowBlur: 8,
+        shadowColor: 'rgba(253, 224, 71, 0.8)',
+      });
+      drawCardSprite(ctx, 100, w - 42, 208, 24, 24, {
+        circleClip: true,
+        borderWidth: 1.5,
+        borderColor: '#fde047',
+        shadowBlur: 8,
+        shadowColor: 'rgba(253, 224, 71, 0.8)',
+      });
+
       // Skater Position
       let skaterX = w / 2;
       let skaterY = 380;
@@ -317,15 +333,12 @@ export const VoxelHalfpipeSkaterGame: React.FC<VoxelHalfpipeSkaterGameProps> = (
       ctx.translate(skaterX, skaterY);
       ctx.rotate(skaterAngle);
 
-      ctx.font = '36px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
       drawCardSprite(ctx, playerHeroId, -22, -22, 44, 44, {
         circleClip: true,
         borderWidth: 2,
-        borderColor: '#fde047',
-        shadowBlur: 14,
-        shadowColor: 'rgba(253, 224, 71, 0.6)',
+        borderColor: s.isAirborne ? '#38bdf8' : '#fde047',
+        shadowBlur: s.isAirborne ? 18 : 10,
+        shadowColor: s.isAirborne ? 'rgba(56, 189, 248, 0.9)' : 'rgba(253, 224, 71, 0.7)',
       });
 
       ctx.restore();
@@ -341,7 +354,7 @@ export const VoxelHalfpipeSkaterGame: React.FC<VoxelHalfpipeSkaterGameProps> = (
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
