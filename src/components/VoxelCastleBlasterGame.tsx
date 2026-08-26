@@ -275,8 +275,27 @@ export const VoxelCastleBlasterGame: React.FC<VoxelCastleBlasterGameProps> = ({
         ctx.fillRect(b.x, b.y, b.width, b.height);
 
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 1;
         ctx.strokeRect(b.x, b.y, b.width, b.height);
+
+        // Card Sprite Emblem on block
+        if (b.width >= 24) {
+          const cardId = b.id === 0 ? playerHeroId : ((b.id * 9) % 50 + 1);
+          drawCardSprite(
+            ctx,
+            cardId,
+            b.x + b.width / 2 - 9,
+            b.y + b.height / 2 - 9,
+            18,
+            18,
+            {
+              circleClip: true,
+              borderWidth: 1,
+              borderColor: '#ffffff',
+              shadowBlur: 4,
+            }
+          );
+        }
       });
 
       // Render Moving Block
@@ -287,12 +306,31 @@ export const VoxelCastleBlasterGame: React.FC<VoxelCastleBlasterGameProps> = ({
       ctx.lineWidth = 2;
       ctx.strokeRect(mb.x, mb.y, mb.width, mb.height);
 
+      // Moving Hero Builder Emblem
+      if (mb.width >= 24) {
+        drawCardSprite(
+          ctx,
+          playerHeroId,
+          mb.x + mb.width / 2 - 10,
+          mb.y + mb.height / 2 - 10,
+          20,
+          20,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: '#fde047',
+            shadowBlur: 8,
+            shadowColor: 'rgba(253, 224, 71, 0.8)',
+          }
+        );
+      }
+
       ctx.restore();
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, []);
+  }, [playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;

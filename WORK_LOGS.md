@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-08-26 18:50 KST / 09:50 UTC] [게임개선 10분 크론작업 10회차: VoxelCastleBlasterGame 스택 블록 카드 스프라이트 엠블럼화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelCastleBlasterGame.tsx` (블리츠 스카이 스택)
+- **개선 내역**:
+  1. 각 층 스택 블록 및 무빙 블록 중앙에 공식 카드 몬스터/영웅 스프라이트 엠블럼을 렌더링하여 고층 건설의 비주얼과 몰입감 강화.
+  2. 무빙 블록 중앙에 플레이어 대표 카드 영웅 배지(`playerHeroId`)를 황금 글로우 림과 함께 렌더링.
+  3. 가상 조이스틱 0개 100% 화면 어디든 원터치 탭 착지 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelCastleBlasterGame 스택 블록 카드 스프라이트화 및 퓨어 탭착지 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 18:40 KST / 09:40 UTC] [게임개선 10분 크론작업 9회차: VoxelBubblePopGame 7x7 버블 셀 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelBubblePopGame.tsx` (블리츠 버블 버스트)
 - **개선 내역**:
