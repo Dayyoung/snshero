@@ -20,6 +20,7 @@ interface TrackObstacle {
   x: number;
   y: number;
   type: 'star' | 'boost' | 'rock' | 'laser';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -102,8 +103,8 @@ export const VoxelRollingHeroGame: React.FC<VoxelRollingHeroGameProps> = ({
 
     // Initial items on track
     s.obstacles.push(
-      { id: s.obsCounter++, x: 120, y: 150, type: 'star', icon: '⭐', points: 300, radius: 22, collected: false },
-      { id: s.obsCounter++, x: 240, y: 220, type: 'boost', icon: '⚡', points: 500, radius: 24, collected: false }
+      { id: s.obsCounter++, x: 120, y: 150, type: 'star', cardId: 100, icon: '⭐', points: 300, radius: 22, collected: false },
+      { id: s.obsCounter++, x: 240, y: 220, type: 'boost', cardId: 92, icon: '⚡', points: 500, radius: 24, collected: false }
     );
 
     setStarsCollected(0);
@@ -196,12 +197,14 @@ export const VoxelRollingHeroGame: React.FC<VoxelRollingHeroGameProps> = ({
         const isRock = rand < 0.35;
         const isBoost = rand > 0.8;
         const isLaser = rand >= 0.35 && rand < 0.5;
+        const cardId = isBoost ? 92 : (isRock ? 34 : (isLaser ? 65 : 100));
 
         s.obstacles.push({
           id: s.obsCounter++,
           x: 50 + Math.random() * 260,
           y: -40,
           type: isBoost ? 'boost' : (isRock ? 'rock' : (isLaser ? 'laser' : 'star')),
+          cardId,
           icon: isBoost ? '⚡' : (isRock ? '🪨' : (isLaser ? '🚧' : '⭐')),
           points: isBoost ? 500 : (isRock ? -300 : (isLaser ? -200 : 300)),
           radius: isBoost ? 24 : (isRock ? 22 : 20),
@@ -324,36 +327,53 @@ export const VoxelRollingHeroGame: React.FC<VoxelRollingHeroGameProps> = ({
       ctx.lineWidth = 4;
       ctx.strokeRect(20, 0, w - 40, h);
 
-      // Render Obstacles
+      // Render Obstacles (Card Sprites)
       s.obstacles.forEach((obs) => {
         if (!obs.collected) {
           ctx.save();
           ctx.translate(obs.x, obs.y);
-          if (obs.type === 'boost') {
-            ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 18;
-          } else if (obs.type === 'star') {
-            ctx.shadowColor = '#fde047';
-            ctx.shadowBlur = 15;
-          }
-          ctx.font = `${obs.radius * 1.8}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(obs.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            obs.cardId,
+            -obs.radius,
+            -obs.radius,
+            obs.radius * 2,
+            obs.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: obs.type === 'boost' ? '#38bdf8' : (obs.type === 'star' ? '#fde047' : '#ef4444'),
+              shadowBlur: obs.type === 'boost' || obs.type === 'star' ? 16 : 6,
+              shadowColor: obs.type === 'boost' ? 'rgba(56, 189, 248, 0.8)' : (obs.type === 'star' ? 'rgba(253, 224, 71, 0.9)' : 'rgba(239, 68, 68, 0.7)'),
+            }
+          );
+
           ctx.restore();
         }
       });
 
-      // Render Glowing Rolling Ball Hero
+      // Render Glowing Rolling Ball Hero (Player Hero Badge)
       ctx.save();
       ctx.translate(s.ballX, ballY);
       ctx.rotate(s.ballRollAngle);
-      ctx.shadowColor = '#fde047';
-      ctx.shadowBlur = 20;
-      ctx.font = '36px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('⚽', 0, 0);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -20,
+        -20,
+        40,
+        40,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 20,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -365,7 +385,7 @@ export const VoxelRollingHeroGame: React.FC<VoxelRollingHeroGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [ballY, isKo, playSfx]);
+  }, [ballY, isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
