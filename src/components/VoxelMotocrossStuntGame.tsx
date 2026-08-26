@@ -303,20 +303,27 @@ export const VoxelMotocrossStuntGame: React.FC<VoxelMotocrossStuntGameProps> = (
       ctx.lineWidth = 4;
       ctx.stroke();
 
-      // Render Stunt Motocross Bike
+      // Render Stunt Motocross Bike (Card Sprite)
       ctx.save();
       ctx.translate(s.bikeX, s.bikeY);
       ctx.rotate(s.bikeAngle);
 
-      if (s.isInAir && s.isHolding) {
-        ctx.shadowColor = '#fde047';
-        ctx.shadowBlur = 20;
-      }
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -24,
+        -30,
+        48,
+        48,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: s.isInAir && s.isHolding ? '#fde047' : '#38bdf8',
+          shadowBlur: s.isInAir && s.isHolding ? 22 : 10,
+          shadowColor: s.isInAir && s.isHolding ? 'rgba(253, 224, 71, 0.9)' : 'rgba(56, 189, 248, 0.8)',
+        }
+      );
 
-      ctx.font = '40px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🏍️', 0, -12);
       ctx.restore();
 
       // Render Particles
@@ -328,7 +335,7 @@ export const VoxelMotocrossStuntGame: React.FC<VoxelMotocrossStuntGameProps> = (
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [isKo, playSfx]);
+  }, [isKo, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
