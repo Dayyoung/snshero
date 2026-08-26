@@ -22,6 +22,7 @@ interface QuantumNode {
   x: number;
   y: number;
   type: 'blue_portal' | 'orange_portal' | 'quantum_gem' | 'star_core';
+  cardId: number;
   icon: string;
   points: number;
   connected: boolean;
@@ -83,22 +84,27 @@ export const VoxelQuantumPortalGame: React.FC<VoxelQuantumPortalGameProps> = ({
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
         let type: 'blue_portal' | 'orange_portal' | 'quantum_gem' | 'star_core' = 'quantum_gem';
+        let cardId = 53;
         let icon = '🟣';
         let points = 250;
 
         if (r === 0 && c === 0) {
           type = 'blue_portal';
+          cardId = 92;
           icon = '🌀';
           points = 500;
         } else if (r === 3 && c === 3) {
           type = 'orange_portal';
+          cardId = 95;
           icon = '🟠';
           points = 500;
         } else if ((r + c) % 3 === 0) {
           type = 'star_core';
+          cardId = 100;
           icon = '⭐';
           points = 400;
         } else if ((r * c) % 2 === 1) {
+          cardId = 62;
           icon = '🔵';
           points = 300;
         }
@@ -110,6 +116,7 @@ export const VoxelQuantumPortalGame: React.FC<VoxelQuantumPortalGameProps> = ({
           x: 55 + c * 82,
           y: 95 + r * 82,
           type,
+          cardId,
           icon,
           points,
           connected: false,
@@ -332,7 +339,7 @@ export const VoxelQuantumPortalGame: React.FC<VoxelQuantumPortalGameProps> = ({
         ctx.shadowBlur = 0;
       }
 
-      // Render Quantum Nodes
+      // Render Quantum Nodes (Card Sprites)
       s.grid.forEach((n) => {
         const isSelected = s.selectedNodes.includes(n.id);
         ctx.save();
@@ -340,24 +347,43 @@ export const VoxelQuantumPortalGame: React.FC<VoxelQuantumPortalGameProps> = ({
 
         if (isSelected) {
           ctx.scale(1.2, 1.2);
-          ctx.shadowColor = n.type === 'orange_portal' ? '#f97316' : '#38bdf8';
-          ctx.shadowBlur = 20;
         }
 
-        ctx.fillStyle = '#1e293b';
-        ctx.beginPath();
-        ctx.arc(0, 0, 26, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = n.type === 'blue_portal' ? '#06b6d4' : (n.type === 'orange_portal' ? '#f97316' : '#64748b');
-        ctx.lineWidth = 2.5;
-        ctx.stroke();
+        drawCardSprite(
+          ctx,
+          n.cardId,
+          -22,
+          -22,
+          44,
+          44,
+          {
+            circleClip: true,
+            borderWidth: isSelected ? 2.5 : 1.5,
+            borderColor: n.type === 'orange_portal' ? '#f97316' : (n.type === 'blue_portal' ? '#06b6d4' : (n.type === 'star_core' ? '#fde047' : '#a855f7')),
+            shadowBlur: isSelected ? 20 : 6,
+            shadowColor: n.type === 'orange_portal' ? 'rgba(249, 115, 22, 0.9)' : (n.type === 'blue_portal' ? 'rgba(6, 182, 212, 0.9)' : 'rgba(168, 85, 247, 0.8)'),
+          }
+        );
 
-        ctx.font = '24px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(n.icon, 0, 0);
         ctx.restore();
       });
+
+      // Render Quantum Explorer Hero Badge at Bottom
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        w / 2 - 22,
+        440,
+        44,
+        44,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#38bdf8',
+          shadowBlur: 14,
+          shadowColor: 'rgba(56, 189, 248, 0.8)',
+        }
+      );
 
       // Render Particles
       s.particles.forEach((p) => {
@@ -368,7 +394,7 @@ export const VoxelQuantumPortalGame: React.FC<VoxelQuantumPortalGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, []);
+  }, [playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
