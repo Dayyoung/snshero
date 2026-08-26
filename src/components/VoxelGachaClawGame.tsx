@@ -21,6 +21,7 @@ interface GachaCapsule {
   y: number;
   vy: number;
   tier: 'NORMAL' | 'RARE' | 'HERO' | 'LEGENDARY';
+  cardId: number;
   color: string;
   icon: string;
   prizeIcon: string;
@@ -32,10 +33,10 @@ interface GachaCapsule {
 }
 
 const CAPSULE_TIERS = [
-  { tier: 'NORMAL', weight: 0.5, color: '#ef4444', icon: '🔴', prizeIcon: '🧸', prizeName: '곰인형', prizeEnName: 'Teddy Bear', points: 100, radius: 24 },
-  { tier: 'RARE', weight: 0.3, color: '#0ea5e9', icon: '🔵', prizeIcon: '🤖', prizeName: '로봇 피규어', prizeEnName: 'Robot Figure', points: 250, radius: 26 },
-  { tier: 'HERO', weight: 0.15, color: '#a855f7', icon: '🟣', prizeIcon: '🐉', prizeName: '드래곤 피규어', prizeEnName: 'Dragon Figure', points: 500, radius: 28 },
-  { tier: 'LEGENDARY', weight: 0.05, color: '#eab308', icon: '🟡', prizeIcon: '👑', prizeName: '황금 왕관 피규어', prizeEnName: 'Golden Crown', points: 1000, radius: 32 },
+  { tier: 'NORMAL', weight: 0.5, cardId: 13, color: '#ef4444', icon: '🔴', prizeIcon: '🧸', prizeName: '곰인형', prizeEnName: 'Teddy Bear', points: 100, radius: 24 },
+  { tier: 'RARE', weight: 0.3, cardId: 31, color: '#0ea5e9', icon: '🔵', prizeIcon: '🤖', prizeName: '로봇 피규어', prizeEnName: 'Robot Figure', points: 250, radius: 26 },
+  { tier: 'HERO', weight: 0.15, cardId: 62, color: '#a855f7', icon: '🟣', prizeIcon: '🐉', prizeName: '드래곤 피규어', prizeEnName: 'Dragon Figure', points: 500, radius: 28 },
+  { tier: 'LEGENDARY', weight: 0.05, cardId: 100, color: '#eab308', icon: '🟡', prizeIcon: '👑', prizeName: '황금 왕관 피규어', prizeEnName: 'Golden Crown', points: 1000, radius: 32 },
 ];
 
 export const VoxelGachaClawGame: React.FC<VoxelGachaClawGameProps> = ({
@@ -236,6 +237,7 @@ export const VoxelGachaClawGame: React.FC<VoxelGachaClawGameProps> = ({
           y: 40, // Drop from Gacha Machine Dispenser
           vy: 80 + Math.random() * 80 + (tierTemplate.tier === 'LEGENDARY' ? 40 : 0),
           tier: tierTemplate.tier as 'NORMAL' | 'RARE' | 'HERO' | 'LEGENDARY',
+          cardId: tierTemplate.cardId,
           color: tierTemplate.color,
           icon: tierTemplate.icon,
           prizeIcon: tierTemplate.prizeIcon,
@@ -284,11 +286,28 @@ export const VoxelGachaClawGame: React.FC<VoxelGachaClawGameProps> = ({
       ctx.lineWidth = 2;
       ctx.strokeRect(20, 10, w - 40, 45);
 
+      // Hero Gacha Master Emblem
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        28,
+        16,
+        32,
+        32,
+        {
+          circleClip: true,
+          borderWidth: 1.5,
+          borderColor: '#c084fc',
+          shadowBlur: 8,
+          shadowColor: 'rgba(192, 132, 252, 0.8)',
+        }
+      );
+
       ctx.font = 'bold 16px monospace';
       ctx.fillStyle = '#fde047';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('🎰 LUCKY GACHA BURST 🎁', w / 2, 32);
+      ctx.fillText('🎰 LUCKY GACHA BURST 🎁', w / 2 + 16, 32);
 
       // Bottom Collection Tray
       ctx.fillStyle = '#1e1b4b';
@@ -299,30 +318,24 @@ export const VoxelGachaClawGame: React.FC<VoxelGachaClawGameProps> = ({
       ctx.fillStyle = '#cbd5e1';
       ctx.fillText('🔻 GACHA DROP TRAY 🔻', w / 2, 465);
 
-      // Render Falling Gacha Capsules
+      // Render Falling Gacha Capsules (Card Sprites)
       s.capsules.forEach((cap) => {
-        // Capsule Outer Glow for Legendary/Hero
-        if (cap.tier === 'LEGENDARY' || cap.tier === 'HERO') {
-          ctx.shadowColor = cap.color;
-          ctx.shadowBlur = 14;
-        }
-
-        // Capsule Body
-        ctx.fillStyle = cap.color;
-        ctx.beginPath();
-        ctx.arc(cap.x, cap.y, cap.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        ctx.shadowBlur = 0;
-
-        // Inside Toy Icon
-        ctx.font = `${cap.radius * 1.1}px serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(cap.prizeIcon, cap.x, cap.y);
+        const rad = cap.radius;
+        drawCardSprite(
+          ctx,
+          cap.cardId,
+          cap.x - rad,
+          cap.y - rad,
+          rad * 2,
+          rad * 2,
+          {
+            circleClip: true,
+            borderWidth: cap.tier === 'LEGENDARY' ? 2.5 : cap.tier === 'HERO' ? 2 : 1.5,
+            borderColor: cap.color,
+            shadowBlur: cap.tier === 'LEGENDARY' ? 14 : cap.tier === 'HERO' ? 10 : 4,
+            shadowColor: cap.color,
+          }
+        );
       });
 
       // Render Pop Floating Effects
@@ -337,7 +350,7 @@ export const VoxelGachaClawGame: React.FC<VoxelGachaClawGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
