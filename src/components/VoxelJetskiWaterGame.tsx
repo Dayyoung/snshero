@@ -367,19 +367,32 @@ export const VoxelJetskiWaterGame: React.FC<VoxelJetskiWaterGameProps> = ({
         ctx.stroke();
       }
 
-      // Render Wave Ramps
+      // Render Wave Ramps (Card Sprite Emblem)
       s.ramps.forEach((ramp) => {
         ctx.fillStyle = '#0284c7';
         ctx.fillRect(ramp.x - ramp.w / 2, ramp.y - ramp.h / 2, ramp.w, ramp.h);
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 2;
         ctx.strokeRect(ramp.x - ramp.w / 2, ramp.y - ramp.h / 2, ramp.w, ramp.h);
-        ctx.font = '16px serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('🌊', ramp.x, ramp.y + 4);
+
+        drawCardSprite(
+          ctx,
+          100,
+          ramp.x - 12,
+          ramp.y - 12,
+          24,
+          24,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: '#38bdf8',
+            shadowBlur: 8,
+            shadowColor: 'rgba(56, 189, 248, 0.8)',
+          }
+        );
       });
 
-      // Render Buoy Gates (Red 🔴 & Green 🟢)
+      // Render Buoy Gates (Red 🔴 & Green 🟢 Card Sprites)
       s.gates.forEach((gate) => {
         // Connecting Water Gate Line
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
@@ -390,14 +403,39 @@ export const VoxelJetskiWaterGame: React.FC<VoxelJetskiWaterGameProps> = ({
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // Left Red Buoy
-        ctx.font = '22px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('🚩', gate.leftX, gate.y);
+        // Left Red Buoy Card Sprite
+        drawCardSprite(
+          ctx,
+          16,
+          gate.leftX - 11,
+          gate.y - 11,
+          22,
+          22,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: '#ef4444',
+            shadowBlur: 6,
+            shadowColor: 'rgba(239, 68, 68, 0.8)',
+          }
+        );
 
-        // Right Green Buoy
-        ctx.fillText('🚩', gate.rightX, gate.y);
+        // Right Green Buoy Card Sprite
+        drawCardSprite(
+          ctx,
+          16,
+          gate.rightX - 11,
+          gate.y - 11,
+          22,
+          22,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: '#10b981',
+            shadowBlur: 6,
+            shadowColor: 'rgba(16, 185, 129, 0.8)',
+          }
+        );
       });
 
       // Render Jetski Foam Wake
@@ -410,26 +448,32 @@ export const VoxelJetskiWaterGame: React.FC<VoxelJetskiWaterGameProps> = ({
       ctx.closePath();
       ctx.fill();
 
-      // Render Jetski Vehicle
+      // Render Jetski Hero Rider
       ctx.save();
       ctx.translate(s.jetskiX, jetskiY - s.airY * 0.5);
 
-      if (s.isTurbo) {
-        ctx.shadowColor = '#38bdf8';
-        ctx.shadowBlur = 18;
-      }
-
-      ctx.font = s.isAirborne ? '38px serif' : '32px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🚤', 0, 0);
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -16,
+        -16,
+        32,
+        32,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: s.isTurbo ? '#38bdf8' : '#ffffff',
+          shadowBlur: s.isTurbo ? 16 : 8,
+          shadowColor: s.isTurbo ? 'rgba(56, 189, 248, 0.9)' : 'rgba(255, 255, 255, 0.7)',
+        }
+      );
 
       ctx.restore();
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;

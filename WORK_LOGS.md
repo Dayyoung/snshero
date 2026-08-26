@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-26 22:20 KST / 13:20 UTC] [게임개선 10분 크론작업 31회차: VoxelJetskiWaterGame 부이 게이트, 램프 및 제트스키 영웅 배지 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelJetskiWaterGame.tsx` (블리츠 제트스키 서프)
+- **개선 내역**:
+  1. 슬라롬 부이 게이트 좌우 부이를 공식 카드 스프라이트(`drawCardSprite`)로 전면 교체.
+  2. 점프 웨이브 램프 중심에 황금 파도 엠블럼(ID 100) 장착.
+  3. 제트스키 기체에 플레이어 대표 카드 영웅 서퍼 배지(`playerHeroId`) 장착 및 터보 시 사이안 네온 림 연동.
+  4. 가상 조이스틱 0개 100% 손가락 직접 좌우 드래그 조향 & 터보 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelJetskiWaterGame 부이 및 제트스키 카드 스프라이트화 및 퓨어 제트스키서프 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 22:10 KST / 13:10 UTC] [게임개선 10분 크론작업 30회차: VoxelHalfpipeSkaterGame 램프 코핑 엠블럼 및 스케이터 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelHalfpipeSkaterGame.tsx` (블리츠 하프파이프 에어)
 - **개선 내역**:
