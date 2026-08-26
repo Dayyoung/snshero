@@ -299,6 +299,23 @@ export const VoxelSlamDunkGame: React.FC<VoxelSlamDunkGameProps> = ({
       ctx.lineWidth = 2;
       ctx.strokeRect(-18, -20, 36, 20);
 
+      // Backboard Championship Star Badge
+      drawCardSprite(
+        ctx,
+        100,
+        -10,
+        -30,
+        20,
+        20,
+        {
+          circleClip: true,
+          borderWidth: 1,
+          borderColor: '#fde047',
+          shadowBlur: 8,
+          shadowColor: 'rgba(253, 224, 71, 0.8)',
+        }
+      );
+
       // Orange Metal Rim
       ctx.strokeStyle = '#f97316';
       ctx.lineWidth = 4;
@@ -317,29 +334,51 @@ export const VoxelSlamDunkGame: React.FC<VoxelSlamDunkGameProps> = ({
       ctx.stroke();
       ctx.restore();
 
-      // Render Flying Basketballs
+      // Render Flying Basketballs (Player Hero Badge)
       s.balls.forEach((b) => {
         ctx.save();
         ctx.translate(b.x, b.y);
         ctx.scale(b.scale, b.scale);
-        ctx.shadowColor = '#f97316';
-        ctx.shadowBlur = 15;
-        ctx.font = '32px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('🏀', 0, 0);
+
+        drawCardSprite(
+          ctx,
+          playerHeroId,
+          -18,
+          -18,
+          36,
+          36,
+          {
+            circleClip: true,
+            borderWidth: 2,
+            borderColor: '#f97316',
+            shadowBlur: 16,
+            shadowColor: 'rgba(249, 115, 22, 0.9)',
+          }
+        );
+
         ctx.restore();
       });
 
-      // Render Ready Basketball at Bottom
+      // Render Ready Basketball at Bottom (Player Hero Badge)
       ctx.save();
       ctx.translate(ballOriginX, ballOriginY);
-      ctx.shadowColor = '#f97316';
-      ctx.shadowBlur = 18;
-      ctx.font = '40px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🏀', 0, 0);
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -22,
+        -22,
+        44,
+        44,
+        {
+          circleClip: true,
+          borderWidth: 2.5,
+          borderColor: '#fde047',
+          shadowBlur: 18,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -351,7 +390,7 @@ export const VoxelSlamDunkGame: React.FC<VoxelSlamDunkGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
