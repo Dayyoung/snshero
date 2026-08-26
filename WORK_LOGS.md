@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-08-26 23:30 KST / 14:30 UTC] [게임개선 10분 크론작업 38회차: VoxelMedievalSiegeGame 요새 타깃 및 영웅 불돌 투석기 카드 스프라이트화 완료]
+- **심사 및 개선 대상 게임**: `src/components/VoxelMedievalSiegeGame.tsx` (블리츠 시즈 슬링)
+- **개선 내역**:
+  1. 4종 요새 방어물(탑, 성문, 성벽, 국왕 깃발)을 공식 카드 스프라이트(ID 55, 12, 34, 100)로 전면 교체.
+  2. 투석기 발사 암 및 날아가는 불돌 투사체에 플레이어 대표 카드 영웅 배지(`playerHeroId`) 장착.
+  3. 조준 슬링샷 점선 궤적 가이드 및 타격 시 화염 파편 피드백 연동.
+  4. 가상 조이스틱 0개 100% 손가락 직접 당겼다 놓기(Slingshot Pull & Release) 공성 포격 조작 무결점 검증.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 통과 (PASS).
+- **Git 커밋 & 푸시**: `origin/main` 완료.
+- **구글 폼 제출**: `[개발] 게임개선 10분 크론: VoxelMedievalSiegeGame 요새 및 투석기 카드 스프라이트화 및 퓨어 시즈슬링 고도화 -> 작업완료`
+
+---
+
 ## [2026-08-26 23:20 KST / 14:20 UTC] [게임개선 10분 크론작업 37회차: VoxelMagnetHoleGame 도시 아이템 및 보이드 코어 영웅 배지 카드 스프라이트화 완료]
 - **심사 및 개선 대상 게임**: `src/components/VoxelMagnetHoleGame.tsx` (블리츠 블랙홀 싱크)
 - **개선 내역**:

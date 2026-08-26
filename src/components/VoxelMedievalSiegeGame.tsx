@@ -24,6 +24,7 @@ interface CastleTarget {
   hp: number;
   maxHp: number;
   type: 'gate' | 'tower' | 'wall' | 'king';
+  cardId: number;
   icon: string;
   points: number;
   isDestroyed: boolean;
@@ -93,15 +94,15 @@ export const VoxelMedievalSiegeGame: React.FC<VoxelMedievalSiegeGameProps> = ({
     const s = stateRef.current;
     s.targets = [
       // Left Guard Tower
-      { id: 1, x: 230, y: 340, width: 35, height: 70, hp: 50, maxHp: 50, type: 'tower', icon: '🗼', points: 300, isDestroyed: false },
+      { id: 1, x: 230, y: 340, width: 35, height: 70, hp: 50, maxHp: 50, type: 'tower', cardId: 55, icon: '🗼', points: 300, isDestroyed: false },
       // Main Fortress Gate
-      { id: 2, x: 275, y: 355, width: 45, height: 55, hp: 70, maxHp: 70, type: 'gate', icon: '🚪', points: 400, isDestroyed: false },
+      { id: 2, x: 275, y: 355, width: 45, height: 55, hp: 70, maxHp: 70, type: 'gate', cardId: 12, icon: '🚪', points: 400, isDestroyed: false },
       // Right Guard Tower
-      { id: 3, x: 330, y: 340, width: 35, height: 70, hp: 50, maxHp: 50, type: 'tower', icon: '🗼', points: 300, isDestroyed: false },
+      { id: 3, x: 330, y: 340, width: 35, height: 70, hp: 50, maxHp: 50, type: 'tower', cardId: 55, icon: '🗼', points: 300, isDestroyed: false },
       // Upper Bastion Wall
-      { id: 4, x: 250, y: 275, width: 60, height: 40, hp: 60, maxHp: 60, type: 'wall', icon: '🧱', points: 350, isDestroyed: false },
+      { id: 4, x: 250, y: 275, width: 60, height: 40, hp: 60, maxHp: 60, type: 'wall', cardId: 34, icon: '🧱', points: 350, isDestroyed: false },
       // King's Keep Flag at Peak
-      { id: 5, x: 280, y: 215, width: 40, height: 45, hp: 80, maxHp: 80, type: 'king', icon: '👑', points: 800, isDestroyed: false },
+      { id: 5, x: 280, y: 215, width: 40, height: 45, hp: 80, maxHp: 80, type: 'king', cardId: 100, icon: '👑', points: 800, isDestroyed: false },
     ];
   };
 
@@ -379,13 +380,22 @@ export const VoxelMedievalSiegeGame: React.FC<VoxelMedievalSiegeGameProps> = ({
       // Slingshot Boulder (in hand or catapult)
       ctx.save();
       ctx.translate(s.dragPos.x, s.dragPos.y);
-      ctx.fillStyle = '#ea580c';
-      ctx.beginPath();
-      ctx.arc(0, 0, 10, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#fde047';
-      ctx.lineWidth = 2;
-      ctx.stroke();
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -12,
+        -12,
+        24,
+        24,
+        {
+          circleClip: true,
+          borderWidth: 1.5,
+          borderColor: '#fde047',
+          shadowBlur: 10,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
       ctx.restore();
 
       // Trajectory Dot Prediction when Dragging
@@ -411,29 +421,46 @@ export const VoxelMedievalSiegeGame: React.FC<VoxelMedievalSiegeGameProps> = ({
         }
       }
 
-      // Render Flying Boulders
+      // Render Flying Boulders (Player Hero Fireball Boulder)
       s.boulders.forEach((b) => {
-        ctx.shadowColor = '#f97316';
-        ctx.shadowBlur = 12;
-        ctx.fillStyle = '#ef4444';
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#fef08a';
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        drawCardSprite(
+          ctx,
+          playerHeroId,
+          b.x - b.radius,
+          b.y - b.radius,
+          b.radius * 2,
+          b.radius * 2,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: '#fde047',
+            shadowBlur: 12,
+            shadowColor: 'rgba(249, 115, 22, 0.9)',
+          }
+        );
       });
-      ctx.shadowBlur = 0;
 
-      // Render Fortress Targets
+      // Render Fortress Targets (Card Sprites)
       s.targets.forEach((tgt) => {
         if (!tgt.isDestroyed) {
           ctx.save();
           ctx.translate(tgt.x, tgt.y);
-          ctx.font = `${tgt.height * 0.75}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(tgt.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            tgt.cardId,
+            -tgt.width / 2,
+            -tgt.height / 2,
+            tgt.width,
+            tgt.height,
+            {
+              circleClip: tgt.type === 'king',
+              borderWidth: 1.5,
+              borderColor: tgt.type === 'king' ? '#fde047' : '#94a3b8',
+              shadowBlur: tgt.type === 'king' ? 10 : 4,
+              shadowColor: tgt.type === 'king' ? 'rgba(253, 224, 71, 0.8)' : 'rgba(148, 163, 184, 0.5)',
+            }
+          );
 
           // Mini HP Bar
           ctx.fillStyle = '#1e293b';
@@ -453,7 +480,7 @@ export const VoxelMedievalSiegeGame: React.FC<VoxelMedievalSiegeGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
