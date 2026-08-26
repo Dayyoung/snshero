@@ -22,6 +22,7 @@ interface FlyingTarget {
   vx: number;
   vy: number;
   type: 'shuriken' | 'bamboo' | 'scroll' | 'bomb' | 'boss';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -240,27 +241,32 @@ export const VoxelNinjaSlashGame: React.FC<VoxelNinjaSlashGameProps> = ({
         s.spawnTimer = 0;
         const rand = Math.random();
         let type: 'shuriken' | 'bamboo' | 'scroll' | 'bomb' | 'boss' = 'bamboo';
+        let cardId = 22;
         let icon = '🎋';
         let points = 200;
         let radius = 22;
 
         if (rand < 0.15) {
           type = 'boss';
+          cardId = 83;
           icon = '🥷';
           points = 1000;
           radius = 32;
         } else if (rand < 0.35) {
           type = 'shuriken';
+          cardId = 78;
           icon = '💠';
           points = 350;
           radius = 20;
         } else if (rand < 0.55) {
           type = 'scroll';
+          cardId = 95;
           icon = '📜';
           points = 400;
           radius = 24;
         } else if (rand < 0.75) {
           type = 'bomb';
+          cardId = 17;
           icon = '💣';
           points = 0;
           radius = 22;
@@ -274,6 +280,7 @@ export const VoxelNinjaSlashGame: React.FC<VoxelNinjaSlashGameProps> = ({
           vx: (180 - startX) * 0.9 + (Math.random() - 0.5) * 80,
           vy: -480 - Math.random() * 120,
           type,
+          cardId,
           icon,
           points,
           radius,
@@ -328,19 +335,28 @@ export const VoxelNinjaSlashGame: React.FC<VoxelNinjaSlashGameProps> = ({
       ctx.arc(280, 110, 42, 0, Math.PI * 2);
       ctx.fill();
 
-      // Render Flying Targets
+      // Render Flying Targets (Card Sprites)
       s.targets.forEach((t) => {
         if (!t.isSliced) {
           ctx.save();
           ctx.translate(t.x, t.y);
-          if (t.type === 'boss') {
-            ctx.shadowColor = '#fde047';
-            ctx.shadowBlur = 20;
-          }
-          ctx.font = `${t.radius * 1.8}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(t.icon, 0, 0);
+
+          drawCardSprite(
+            ctx,
+            t.cardId,
+            -t.radius,
+            -t.radius,
+            t.radius * 2,
+            t.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: t.type === 'bomb' ? '#ef4444' : t.type === 'boss' ? '#fde047' : '#38bdf8',
+              shadowBlur: t.type === 'boss' ? 18 : 6,
+              shadowColor: t.type === 'boss' ? 'rgba(253, 224, 71, 0.9)' : t.type === 'bomb' ? 'rgba(239, 68, 68, 0.8)' : 'rgba(56, 189, 248, 0.8)',
+            }
+          );
+
           ctx.restore();
         }
       });
@@ -361,6 +377,23 @@ export const VoxelNinjaSlashGame: React.FC<VoxelNinjaSlashGameProps> = ({
         ctx.shadowBlur = 0;
       }
 
+      // Render Player Hero Ninja Master Badge at Bottom
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        w / 2 - 24,
+        430,
+        48,
+        48,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#38bdf8',
+          shadowBlur: 14,
+          shadowColor: 'rgba(56, 189, 248, 0.8)',
+        }
+      );
+
       // Render Particles
       s.particles.forEach((p) => {
         ctx.fillStyle = p.color;
@@ -370,7 +403,7 @@ export const VoxelNinjaSlashGame: React.FC<VoxelNinjaSlashGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playSfx]);
+  }, [playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
