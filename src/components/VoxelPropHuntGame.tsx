@@ -19,6 +19,7 @@ interface RoomProp {
   id: number;
   x: number;
   y: number;
+  cardId: number;
   icon: string;
   isFake: boolean;
   wigglePhase: number;
@@ -27,7 +28,7 @@ interface RoomProp {
   radius: number;
 }
 
-const PROP_ICONS = ['📦', '🪑', '📺', '🌵', '🏺', '🧸', '🧯', '🎁', '⏰', '📻', '💡', '🛋️'];
+const PROP_CARD_IDS = [9, 13, 21, 34, 46, 52, 60, 68, 77, 85, 91, 100];
 
 export const VoxelPropHuntGame: React.FC<VoxelPropHuntGameProps> = ({
   deck = [],
@@ -89,14 +90,15 @@ export const VoxelPropHuntGame: React.FC<VoxelPropHuntGameProps> = ({
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
         const index = r * cols + c;
-        const icon = PROP_ICONS[Math.floor(Math.random() * PROP_ICONS.length)];
+        const cardId = PROP_CARD_IDS[index % PROP_CARD_IDS.length];
         const isFake = fakeIndices.has(index);
 
         props.push({
           id: id++,
           x: 65 + c * 115,
           y: 90 + r * 105,
-          icon,
+          cardId,
+          icon: '📦',
           isFake,
           wigglePhase: Math.random() * Math.PI * 2,
           revealed: false,
@@ -261,7 +263,7 @@ export const VoxelPropHuntGame: React.FC<VoxelPropHuntGameProps> = ({
       ctx.fillStyle = roomGrad;
       ctx.fillRect(0, 0, w, h);
 
-      // Render Room Props
+      // Render Room Props (Card Sprites)
       s.props.forEach((p) => {
         ctx.save();
         ctx.translate(p.x, p.y);
@@ -273,22 +275,43 @@ export const VoxelPropHuntGame: React.FC<VoxelPropHuntGameProps> = ({
           ctx.rotate((wobble * Math.PI) / 180);
         }
 
-        // Prop Platter / Pedestal
-        ctx.fillStyle = p.revealed ? (p.isFake ? '#065f46' : '#1e293b') : '#334155';
-        ctx.strokeStyle = p.revealed ? (p.isFake ? '#34d399' : '#64748b') : '#94a3b8';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
+        const propCardId = p.revealed && p.isFake ? 43 : p.cardId;
 
-        ctx.font = `${p.radius * 1.3}px serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(p.revealed && p.isFake ? '👻' : p.icon, 0, 0);
+        drawCardSprite(
+          ctx,
+          propCardId,
+          -24,
+          -24,
+          48,
+          48,
+          {
+            circleClip: true,
+            borderWidth: p.revealed ? (p.isFake ? 2.5 : 1) : 1.5,
+            borderColor: p.revealed ? (p.isFake ? '#34d399' : '#64748b') : '#94a3b8',
+            shadowBlur: p.revealed && p.isFake ? 18 : 6,
+            shadowColor: p.revealed && p.isFake ? 'rgba(52, 211, 153, 0.9)' : 'rgba(148, 163, 184, 0.5)',
+          }
+        );
 
         ctx.restore();
       });
+
+      // Render Detective Hunter Hero Badge at Bottom
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        w / 2 - 22,
+        450,
+        44,
+        44,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#38bdf8',
+          shadowBlur: 14,
+          shadowColor: 'rgba(56, 189, 248, 0.8)',
+        }
+      );
 
       // Render Particles
       s.particles.forEach((p) => {
@@ -299,7 +322,7 @@ export const VoxelPropHuntGame: React.FC<VoxelPropHuntGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [setupRoomProps]);
+  }, [setupRoomProps, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
