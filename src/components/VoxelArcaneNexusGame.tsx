@@ -1,10 +1,10 @@
-import { drawCardSprite } from '../lib/canvasCardRenderer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CardData, Language } from '../types';
 import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
+import { getCardSpriteStyle } from '../lib/utils';
 
 interface VoxelArcaneNexusGameProps {
   deck: CardData[];
@@ -364,18 +364,30 @@ export const VoxelArcaneNexusGame: React.FC<VoxelArcaneNexusGameProps> = ({
           {grid.flatMap((row, r) =>
             row.map((cell, c) => {
               const isSelected = selectedCell?.r === r && selectedCell?.c === c;
+              const gemCardMap: Record<GemType, number> = {
+                '🔥': 7,
+                '💧': 12,
+                '⚡': 18,
+                '🌿': 24,
+                '💎': playerHeroId,
+              };
+              const cardId = gemCardMap[cell.type] || 1;
+
               return (
                 <div
                   key={cell.id}
                   onPointerDown={(e) => handlePointerDown(r, c, e)}
                   onPointerUp={(e) => handlePointerUp(r, c, e)}
-                  className={`aspect-square flex items-center justify-center text-2xl rounded-none border transition-all cursor-pointer select-none active:scale-95 touch-none ${
+                  className={`aspect-square flex items-center justify-center p-1 rounded-sm border transition-all cursor-pointer select-none active:scale-95 touch-none relative ${
                     isSelected
                       ? 'bg-amber-100 border-amber-500 scale-105 shadow-md ring-2 ring-amber-400'
                       : 'bg-white border-[rgba(15,0,0,0.12)] shadow-xs hover:border-[#201d1d]'
                   }`}
                 >
-                  {cell.type}
+                  <div
+                    className="w-full h-full rounded-full border border-black/15 shadow-xs"
+                    style={getCardSpriteStyle(cardId)}
+                  />
                 </div>
               );
             })
