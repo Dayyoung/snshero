@@ -31,7 +31,7 @@ interface TargetMonster {
   vx: number;
   hp: number;
   maxHp: number;
-  icon: string;
+  cardId: number;
   points: number;
   radius: number;
 }
@@ -218,6 +218,8 @@ export const VoxelArcherHeroGame: React.FC<VoxelArcherHeroGameProps> = ({
       s.spawnTimer += dt;
       if (s.spawnTimer >= 1.2 && s.monsters.length < 6) {
         s.spawnTimer = 0;
+        const monsterPool = [6, 8, 12, 18, 24, 30, 45, 52, 68, 99];
+        const randomCardId = monsterPool[Math.floor(Math.random() * monsterPool.length)];
         const isDragon = Math.random() < 0.25;
         const isOrc = Math.random() < 0.4;
 
@@ -228,9 +230,10 @@ export const VoxelArcherHeroGame: React.FC<VoxelArcherHeroGameProps> = ({
           vx: (Math.random() < 0.5 ? 1 : -1) * (30 + Math.random() * 35),
           hp: isDragon ? 3 : isOrc ? 2 : 1,
           maxHp: isDragon ? 3 : isOrc ? 2 : 1,
-          icon: isDragon ? '🐲' : isOrc ? '👹' : '👺',
+          cardId: isDragon ? 62 : randomCardId,
           points: isDragon ? 500 : isOrc ? 250 : 100,
-          radius: isDragon ? 26 : isOrc ? 22 : 18,
+          radius: isDragon ? 24 : isOrc ? 20 : 16,
+          icon: isDragon ? '🐲' : isOrc ? '👹' : '👺',
         });
       }
 
@@ -314,12 +317,23 @@ export const VoxelArcherHeroGame: React.FC<VoxelArcherHeroGameProps> = ({
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, w, h);
 
-      // Target Monsters
+      // Target Monsters (Card Monster Sprites)
       s.monsters.forEach((m) => {
-        ctx.font = `${m.radius * 1.5}px serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(m.icon, m.x, m.y);
+        drawCardSprite(
+          ctx,
+          m.cardId,
+          m.x - m.radius,
+          m.y - m.radius,
+          m.radius * 2,
+          m.radius * 2,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: '#ef4444',
+            shadowBlur: 8,
+            shadowColor: 'rgba(239, 68, 68, 0.6)',
+          }
+        );
 
         // HP bar
         if (m.maxHp > 1) {
@@ -356,7 +370,7 @@ export const VoxelArcherHeroGame: React.FC<VoxelArcherHeroGameProps> = ({
         ctx.restore();
       });
 
-      // Slingshot Bow Base
+      // Slingshot Bow Base & Player Hero Badge
       const bx = s.bowPos.x;
       const by = s.bowPos.y;
 
@@ -365,6 +379,23 @@ export const VoxelArcherHeroGame: React.FC<VoxelArcherHeroGameProps> = ({
       ctx.beginPath();
       ctx.arc(bx, by, 32, Math.PI * 0.8, Math.PI * 2.2);
       ctx.stroke();
+
+      // Slingshot Hero Avatar
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        bx - 18,
+        by - 18,
+        36,
+        36,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 10,
+          shadowColor: 'rgba(253, 224, 71, 0.6)',
+        }
+      );
 
       // Slingshot String & Drag Pulling Indicator
       if (s.isDragging && s.dragPos) {
