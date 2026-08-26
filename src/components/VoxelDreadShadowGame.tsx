@@ -366,41 +366,69 @@ export const VoxelDreadShadowGame: React.FC<VoxelDreadShadowGameProps> = ({
         ctx.restore();
       });
 
-      // Render Shadow Crystals
+      // Render Shadow Crystals (Card Sprites)
       s.crystals.forEach((c) => {
         const cx = gridStartX + c.col * cellSize + cellSize / 2;
         const cy = gridStartY + c.row * cellSize + cellSize / 2;
 
-        ctx.font = '22px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(c.purified ? '✨' : '💎', cx, cy - 18);
+        drawCardSprite(
+          ctx,
+          c.purified ? 100 : 38,
+          cx - 12,
+          cy - 24,
+          24,
+          24,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: c.purified ? '#fde047' : '#c084fc',
+            shadowBlur: 8,
+            shadowColor: c.purified ? 'rgba(253, 224, 71, 0.8)' : 'rgba(192, 132, 252, 0.8)',
+          }
+        );
       });
 
-      // Laser Emitter at Top-Left
-      ctx.fillStyle = '#06b6d4';
-      ctx.fillRect(gridStartX - 30, gridStartY + cellSize / 2 - 8, 20, 16);
-      ctx.font = '12px serif';
-      ctx.fillText('⚡', gridStartX - 20, gridStartY + cellSize / 2);
+      // Laser Emitter at Top-Left with Hero Badge
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        gridStartX - 28,
+        gridStartY + cellSize / 2 - 12,
+        24,
+        24,
+        {
+          circleClip: true,
+          borderWidth: 1.5,
+          borderColor: '#06b6d4',
+          shadowBlur: 8,
+          shadowColor: 'rgba(6, 182, 212, 0.8)',
+        }
+      );
 
       // Target Shadow Core at Bottom-Right (row 3, col 3)
       const coreX = gridStartX + 3 * cellSize + cellSize / 2;
       const coreY = gridStartY + 3 * cellSize + cellSize / 2;
 
-      ctx.fillStyle = s.coreLit ? '#eab308' : '#7c3aed';
-      ctx.beginPath();
-      ctx.arc(coreX, coreY, 20, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.font = '18px serif';
-      ctx.fillText(s.coreLit ? '☀️' : '🔮', coreX, coreY);
+      drawCardSprite(
+        ctx,
+        44,
+        coreX - 16,
+        coreY - 16,
+        32,
+        32,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: s.coreLit ? '#fde047' : '#a855f7',
+          shadowBlur: 10,
+          shadowColor: s.coreLit ? 'rgba(253, 224, 71, 0.9)' : 'rgba(168, 85, 247, 0.8)',
+        }
+      );
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [setupStage, playSfx]);
+  }, [setupStage, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
