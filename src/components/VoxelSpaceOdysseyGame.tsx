@@ -21,6 +21,7 @@ interface SpaceTarget {
   y: number;
   vx: number;
   type: 'pirate' | 'boss' | 'asteroid' | 'gem';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -111,8 +112,8 @@ export const VoxelSpaceOdysseyGame: React.FC<VoxelSpaceOdysseyGameProps> = ({
 
     // Initial space fleet
     s.targets.push(
-      { id: s.targetCounter++, x: 100, y: 140, vx: 50, type: 'pirate', icon: '🛸', points: 400, radius: 24, hp: 1, maxHp: 1, cleared: false },
-      { id: s.targetCounter++, x: 260, y: 190, vx: -40, type: 'gem', icon: '💎', points: 300, radius: 20, hp: 1, maxHp: 1, cleared: false }
+      { id: s.targetCounter++, x: 100, y: 140, vx: 50, type: 'pirate', cardId: 78, icon: '🛸', points: 400, radius: 24, hp: 1, maxHp: 1, cleared: false },
+      { id: s.targetCounter++, x: 260, y: 190, vx: -40, type: 'gem', cardId: 100, icon: '💎', points: 300, radius: 20, hp: 1, maxHp: 1, cleared: false }
     );
 
     setPiratesDefeated(0);
@@ -277,16 +278,18 @@ export const VoxelSpaceOdysseyGame: React.FC<VoxelSpaceOdysseyGameProps> = ({
         const isBoss = rand < 0.15;
         const isAsteroid = rand >= 0.15 && rand < 0.4;
         const isGem = rand >= 0.4 && rand < 0.65;
+        const cardId = isBoss ? 83 : (isGem ? 100 : (isAsteroid ? 34 : 78));
 
         s.targets.push({
           id: s.targetCounter++,
           x: Math.random() < 0.5 ? 40 : 320,
           y: 70 + Math.random() * 190,
           vx: (Math.random() < 0.5 ? 1 : -1) * (isBoss ? 40 : (isGem ? 60 : 50)),
-          type: isBoss ? 'boss' : (isAsteroid ? 'asteroid' : (isGem ? 'gem' : 'pirate')),
-          icon: isBoss ? '👾' : (isAsteroid ? '🪨' : (isGem ? '💎' : '🛸')),
-          points: isBoss ? 1000 : (isAsteroid ? 200 : (isGem ? 300 : 400)),
-          radius: isBoss ? 32 : (isAsteroid ? 22 : 24),
+          type: isBoss ? 'boss' : (isGem ? 'gem' : (isAsteroid ? 'asteroid' : 'pirate')),
+          cardId,
+          icon: isBoss ? '👾' : (isGem ? '💎' : (isAsteroid ? '🪨' : '🛸')),
+          points: isBoss ? 1000 : (isGem ? 300 : (isAsteroid ? 200 : 400)),
+          radius: isBoss ? 30 : (isGem ? 20 : (isAsteroid ? 24 : 24)),
           hp: isBoss ? 3 : (isAsteroid ? 2 : 1),
           maxHp: isBoss ? 3 : (isAsteroid ? 2 : 1),
           cleared: false,
@@ -336,21 +339,26 @@ export const VoxelSpaceOdysseyGame: React.FC<VoxelSpaceOdysseyGameProps> = ({
       });
       ctx.shadowBlur = 0;
 
-      // Render Space Targets
+      // Render Space Targets (Card Sprites)
       s.targets.forEach((t) => {
         ctx.save();
         ctx.translate(t.x, t.y);
-        if (t.type === 'boss') {
-          ctx.shadowColor = '#f59e0b';
-          ctx.shadowBlur = 20;
-        } else if (t.type === 'gem') {
-          ctx.shadowColor = '#06b6d4';
-          ctx.shadowBlur = 15;
-        }
-        ctx.font = `${t.radius * 1.8}px serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(t.icon, 0, 0);
+
+        drawCardSprite(
+          ctx,
+          t.cardId,
+          -t.radius,
+          -t.radius,
+          t.radius * 2,
+          t.radius * 2,
+          {
+            circleClip: true,
+            borderWidth: 1.5,
+            borderColor: t.type === 'boss' ? '#f59e0b' : (t.type === 'gem' ? '#06b6d4' : (t.type === 'asteroid' ? '#64748b' : '#ef4444')),
+            shadowBlur: t.type === 'boss' || t.type === 'gem' ? 18 : 6,
+            shadowColor: t.type === 'boss' ? 'rgba(245, 158, 11, 0.9)' : (t.type === 'gem' ? 'rgba(6, 182, 212, 0.9)' : 'rgba(239, 68, 68, 0.7)'),
+          }
+        );
 
         // HP Bar for Boss & Asteroids
         if (t.maxHp > 1) {
@@ -362,21 +370,26 @@ export const VoxelSpaceOdysseyGame: React.FC<VoxelSpaceOdysseyGameProps> = ({
         ctx.restore();
       });
 
-      // Render Player Starfighter
+      // Render Player Starfighter (Player Hero Badge)
       ctx.save();
       ctx.translate(s.playerX, playerY);
-      ctx.shadowColor = '#38bdf8';
-      ctx.shadowBlur = 18;
-      ctx.font = '38px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      drawCardSprite(ctx, playerHeroId, -22, -22, 44, 44, {
-        circleClip: true,
-        borderWidth: 2,
-        borderColor: '#fde047',
-        shadowBlur: 14,
-        shadowColor: 'rgba(253, 224, 71, 0.6)',
-      });
+
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -22,
+        -22,
+        44,
+        44,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#fde047',
+          shadowBlur: 16,
+          shadowColor: 'rgba(253, 224, 71, 0.9)',
+        }
+      );
+
       ctx.restore();
 
       // Render Particles
@@ -388,7 +401,7 @@ export const VoxelSpaceOdysseyGame: React.FC<VoxelSpaceOdysseyGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [playerY, playSfx]);
+  }, [playerY, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
