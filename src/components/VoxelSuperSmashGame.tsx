@@ -22,6 +22,7 @@ interface SmashFighter {
   vx: number;
   vy: number;
   type: 'minion' | 'brawler' | 'champion';
+  cardId: number;
   icon: string;
   points: number;
   radius: number;
@@ -98,8 +99,8 @@ export const VoxelSuperSmashGame: React.FC<VoxelSuperSmashGameProps> = ({
 
     // Initial Opponents in Ring
     s.fighters.push(
-      { id: s.fighterCounter++, x: 120, y: 220, vx: 20, vy: 15, type: 'minion', icon: '🥊', points: 300, radius: 24, damagePct: 20, isKnockedOut: false },
-      { id: s.fighterCounter++, x: 240, y: 280, vx: -20, vy: -15, type: 'brawler', icon: '🥋', points: 500, radius: 26, damagePct: 40, isKnockedOut: false }
+      { id: s.fighterCounter++, x: 120, y: 220, vx: 20, vy: 15, type: 'minion', cardId: 78, icon: '🥊', points: 300, radius: 24, damagePct: 20, isKnockedOut: false },
+      { id: s.fighterCounter++, x: 240, y: 280, vx: -20, vy: -15, type: 'brawler', cardId: 55, icon: '🥋', points: 500, radius: 26, damagePct: 40, isKnockedOut: false }
     );
 
     setFightersKnockedOut(0);
@@ -228,7 +229,8 @@ export const VoxelSuperSmashGame: React.FC<VoxelSuperSmashGameProps> = ({
         s.spawnTimer = 0;
         const rand = Math.random();
         const isChampion = rand < 0.2;
-        const isBrawler = rand >= 0.2 && rand < 0.6;
+        const isBrawler = rand >= 0.2 && rand < 0.55;
+        const cardId = isChampion ? 83 : (isBrawler ? 55 : 78);
 
         s.fighters.push({
           id: s.fighterCounter++,
@@ -237,6 +239,7 @@ export const VoxelSuperSmashGame: React.FC<VoxelSuperSmashGameProps> = ({
           vx: (Math.random() - 0.5) * 40,
           vy: (Math.random() - 0.5) * 40,
           type: isChampion ? 'champion' : (isBrawler ? 'brawler' : 'minion'),
+          cardId,
           icon: isChampion ? '👑' : (isBrawler ? '🥋' : '🥊'),
           points: isChampion ? 1000 : (isBrawler ? 500 : 300),
           radius: isChampion ? 28 : (isBrawler ? 26 : 24),
@@ -330,31 +333,45 @@ export const VoxelSuperSmashGame: React.FC<VoxelSuperSmashGameProps> = ({
       ctx.shadowBlur = 16;
       ctx.stroke();
 
-      // Center Smash Logo Ring
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(0, 0, 50, 0, Math.PI * 2);
-      ctx.stroke();
+      // Center Smash Ring (Player Hero Badge)
+      drawCardSprite(
+        ctx,
+        playerHeroId,
+        -24,
+        -24,
+        48,
+        48,
+        {
+          circleClip: true,
+          borderWidth: 2,
+          borderColor: '#ef4444',
+          shadowBlur: 16,
+          shadowColor: 'rgba(239, 68, 68, 0.8)',
+        }
+      );
       ctx.restore();
 
-      // Render Opponent Fighters
+      // Render Opponent Fighters (Card Sprites)
       s.fighters.forEach((f) => {
         if (!f.isKnockedOut) {
           ctx.save();
           ctx.translate(f.x, f.y);
-          if (f.type === 'champion') {
-            ctx.shadowColor = '#fde047';
-            ctx.shadowBlur = 18;
-          } else {
-            ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 12;
-          }
 
-          ctx.font = `${f.radius * 1.8}px serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(f.icon, 0, 0);
+          drawCardSprite(
+            ctx,
+            f.cardId,
+            -f.radius,
+            -f.radius,
+            f.radius * 2,
+            f.radius * 2,
+            {
+              circleClip: true,
+              borderWidth: 1.5,
+              borderColor: f.type === 'champion' ? '#fde047' : '#38bdf8',
+              shadowBlur: f.type === 'champion' ? 18 : 8,
+              shadowColor: f.type === 'champion' ? 'rgba(253, 224, 71, 0.9)' : 'rgba(56, 189, 248, 0.8)',
+            }
+          );
 
           // Damage Percentage Tag
           ctx.fillStyle = f.damagePct > 80 ? '#ef4444' : '#fde047';
@@ -373,7 +390,7 @@ export const VoxelSuperSmashGame: React.FC<VoxelSuperSmashGameProps> = ({
 
     animFrameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [ringCenterX, ringCenterY, ringRadius, playSfx]);
+  }, [ringCenterX, ringCenterY, ringRadius, playSfx, playerHeroId]);
 
   const endGame = (isWin: boolean) => {
     const s = stateRef.current;
