@@ -26,6 +26,8 @@ export interface SkillTimingButtonProps {
   lang?: string;
   /** 컴팩트 모드 (작은 UI) */
   compact?: boolean;
+  /** 추가 커스텀 컨테이너 클래스 */
+  className?: string;
 }
 
 /**
@@ -51,6 +53,7 @@ const SkillTimingButton: React.FC<SkillTimingButtonProps> = ({
   isPlaying = true,
   lang = 'en',
   compact = false,
+  className = '',
 }) => {
   const [state, setState] = useState<QTEState>('idle');
   const [progress, setProgress] = useState(0); // 0-100
@@ -225,7 +228,7 @@ const SkillTimingButton: React.FC<SkillTimingButtonProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center gap-1">
+    <div className={`flex flex-col items-center gap-1 select-none pointer-events-auto ${className}`}>
       {/* QTE 버튼 */}
       <button
         type="button"

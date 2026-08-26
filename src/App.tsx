@@ -6282,10 +6282,11 @@ function AppContent() {
                          }, 1500);
                        }, 2000);
                      }}
-                     className="w-12 h-12 border border-slate-200 rounded-xl flex items-center justify-center transition-all bg-white active:scale-95 relative shadow-xl hover:scale-105 hover:text-indigo-600 text-slate-700"
-                     title="랜덤 플레이"
+                     className="w-13 h-13 sm:w-14 sm:h-14 border-2 border-amber-400/70 rounded-2xl flex items-center justify-center transition-all bg-[#141212] active:scale-95 relative shadow-[0_8px_28px_rgba(0,0,0,0.65),0_0_16px_rgba(245,158,11,0.3)] hover:scale-105 hover:border-amber-300 hover:text-white text-amber-300 cursor-pointer touch-target"
+                     title={language === 'ko' ? '랜덤 미니게임 플레이' : 'Random Game Play'}
+                     aria-label={language === 'ko' ? '랜덤 미니게임 플레이' : 'Random Game Play'}
                    >
-                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" className="text-amber-300 drop-shadow-[0_2px_8px_rgba(245,158,11,0.5)]">
                        <rect x="3" y="3" width="18" height="18" rx="3" />
                        <circle cx="8" cy="8" r="1.5" fill="currentColor" />
                        <circle cx="16" cy="8" r="1.5" fill="currentColor" />
@@ -6304,12 +6305,23 @@ function AppContent() {
                       if (!isChatOpen) setUnreadCount(0);
                     }}
                     className={cn(
-                      "w-12 h-12 border border-slate-200 rounded-lg flex items-center justify-center transition-all bg-white active:scale-95 relative shadow-xl hover:scale-105",
-                      isChatOpen ? "bg-black text-white" : "hover:bg-gray-800 hover:text-white",
-                      (!isChatOpen && unreadCount > 0) && "ring-4 ring-yellow-400 ring-offset-2 animate-bounce"
+                      "w-13 h-13 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all active:scale-95 relative shadow-2xl hover:scale-105 border-2 cursor-pointer touch-target",
+                      isChatOpen
+                        ? "bg-[#2b0e0e] border-rose-500/90 text-rose-300 shadow-[0_0_24px_rgba(244,63,94,0.55)] ring-2 ring-rose-400/40"
+                        : "bg-[#141212] border-cyan-400/80 text-cyan-300 shadow-[0_8px_28px_rgba(0,0,0,0.65),0_0_16px_rgba(6,182,212,0.35)] hover:bg-[#1f1b1b] hover:border-cyan-300 hover:text-white hover:shadow-[0_0_25px_rgba(6,182,212,0.6)]",
+                      (!isChatOpen && unreadCount > 0) && "ring-4 ring-yellow-400 ring-offset-2 ring-offset-slate-900 animate-bounce"
                     )}
+                    aria-label={isChatOpen ? (language === 'ko' ? '채팅창 닫기' : 'Close Chat') : (language === 'ko' ? '실시간 통신망 채팅 열기' : 'Open Live Chat')}
+                    title={isChatOpen ? (language === 'ko' ? '채팅창 닫기' : 'Close Chat') : (language === 'ko' ? '실시간 통신망 채팅 열기' : 'Open Live Chat')}
                   >
-                    {isChatOpen ? <X size={24} /> : <MessageCircle size={24} />}
+                    {isChatOpen ? (
+                      <X size={28} strokeWidth={2.8} className="text-rose-300 drop-shadow-[0_2px_8px_rgba(244,63,94,0.8)]" />
+                    ) : (
+                      <div className="relative flex items-center justify-center">
+                        <MessageCircle size={28} strokeWidth={2.5} className="text-cyan-300 fill-cyan-400/20 drop-shadow-[0_2px_8px_rgba(6,182,212,0.6)]" />
+                        <span className="absolute -bottom-1 -right-1 w-2.5 h-2.5 rounded-full bg-cyan-400 ring-2 ring-[#141212] shadow-[0_0_8px_rgba(6,182,212,1)]" />
+                      </div>
+                    )}
                     <AnimatePresence>
                       {!isChatOpen && unreadCount > 0 && (
                         <motion.span 

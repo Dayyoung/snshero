@@ -13595,6 +13595,35 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       {/* Floating Circular Robot Auto-Battle Button, Speed Toggle & Grid Skills */}
       {gameState === 'playing' && !gameOver && (
         <div className="fixed bottom-28 right-3 sm:right-4 z-[160] pointer-events-auto flex flex-col items-end gap-2.5">
+          {/* QTE Skill Timing Button - neatly docked in the battle action stack so it NEVER overlaps with turn indicators, turn timers, or board tiles */}
+          <SkillTimingButton
+            chargeTime={1500}
+            inputWindow={3000}
+            successMultiplier={1.10}
+            cooldownTime={8000}
+            lowSpecMode={lowSpecMode}
+            disabled={turn !== 'player'}
+            isPlaying={gameState === 'playing' && !gameOver}
+            lang={language}
+            onSuccess={(multiplier) => {
+              setPendingQteMultiplier(multiplier);
+              setQteMatchSummary(prev => ({
+                attempted: true,
+                successCount: prev.successCount + 1,
+                lastMultiplier: multiplier,
+              }));
+              addLog(t('synergy_qte_success', language, { multiplier: multiplier.toFixed(2) }), 'system');
+            }}
+            onFail={() => {
+              setPendingQteMultiplier(null);
+              setQteMatchSummary(prev => ({
+                ...prev,
+                attempted: true,
+              }));
+              addLog(t('synergy_qte_failed', language), 'system');
+            }}
+          />
+
           {/* 1. Auto-Battle Speed & Robot Toggle */}
           <div className="flex items-center gap-2">
             {/* Item 346: 3-Speed Turbo Mode Toggle (Visible during Auto Battle) */}
@@ -13950,13 +13979,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 className={cn(
                   "h-8 w-8 border rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0",
                   isChatOpen
-                    ? "bg-indigo-600 border-indigo-400 text-white shadow-[0_0_12px_rgba(99,102,241,0.6)] animate-pulse"
-                    : "bg-slate-900/90 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700"
+                    ? "bg-rose-600 border-rose-400 text-white shadow-[0_0_12px_rgba(244,63,94,0.6)] animate-pulse"
+                    : "bg-[#181414] border-cyan-400/70 text-cyan-300 hover:text-white hover:border-cyan-300 shadow-[0_0_8px_rgba(6,182,212,0.3)]"
                 )}
                 title={language === 'ko' ? '전투 채팅 열기/닫기' : 'Toggle Battle Chat'}
                 aria-label="Toggle Battle Chat"
               >
-                <MessageCircle size={15} className={cn(isChatOpen ? "text-white" : "text-slate-400")} />
+                <MessageCircle size={18} strokeWidth={2.4} className={cn(isChatOpen ? "text-white" : "text-cyan-300 fill-cyan-400/20")} />
               </button>
             )}
 
@@ -15330,39 +15359,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                      </div>
                   </div>
                 </div>
-              </div>
-            )}
-
-            {/* QTE Skill Timing Button */}
-            {!gameOver && gameState === 'playing' && (
-              <div className="absolute left-2 md:left-4 bottom-2 sm:bottom-4 md:bottom-[120px] z-20">
-                <SkillTimingButton
-                  chargeTime={1500}
-                  inputWindow={3000}
-                  successMultiplier={1.10}
-                  cooldownTime={8000}
-                  lowSpecMode={lowSpecMode}
-                  disabled={turn !== 'player'}
-                  isPlaying={gameState === 'playing' && !gameOver}
-                  lang={language}
-                  onSuccess={(multiplier) => {
-                    setPendingQteMultiplier(multiplier);
-                    setQteMatchSummary(prev => ({
-                      attempted: true,
-                      successCount: prev.successCount + 1,
-                      lastMultiplier: multiplier,
-                    }));
-                    addLog(t('synergy_qte_success', language, { multiplier: multiplier.toFixed(2) }), 'system');
-                  }}
-                  onFail={() => {
-                    setPendingQteMultiplier(null);
-                    setQteMatchSummary(prev => ({
-                      ...prev,
-                      attempted: true,
-                    }));
-                    addLog(t('synergy_qte_failed', language), 'system');
-                  }}
-                />
               </div>
             )}
          </div>
