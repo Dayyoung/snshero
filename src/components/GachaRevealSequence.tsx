@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Gift, Info, Package2, Share2, SkipForward, Sparkles, Star, Trophy, X, Zap } from 'lucide-react';
+import { Gift, Info, Package2, Share2, Sparkles, Trophy, X, Zap } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardItem } from './CardItem';
 import { PityGauge } from './PityGauge';
@@ -75,35 +75,37 @@ const rarityBadgeClass = (rarity: string): string => {
 
 const getRarityGlowColor = (rarity: string): string => {
   const norm = rarity.toLowerCase();
-  if (norm === 'legendary') return 'rgba(236,72,153,0.8)';
-  if (norm === 'diamond' || norm === 'platinum') return 'rgba(56,189,248,0.7)';
-  if (norm === 'gold') return 'rgba(251,191,36,0.8)';
-  if (norm === 'silver') return 'rgba(203,213,225,0.5)';
-  return 'rgba(217,119,6,0.4)';
+  if (norm === 'legendary') return 'rgba(236,72,153,0.85)';
+  if (norm === 'diamond' || norm === 'platinum') return 'rgba(56,189,248,0.8)';
+  if (norm === 'gold') return 'rgba(251,191,36,0.85)';
+  if (norm === 'silver') return 'rgba(203,213,225,0.6)';
+  return 'rgba(217,119,6,0.45)';
 };
 
-// 빛나는 파티클 및 광선 배경 애니메이션 컴포넌트
+// 모바일 뷰포트 전체(100dvh)를 가득 채우는 풀스크린 배경 오라 & 빛의 파동
 const GachaAuraRays: React.FC<{ highestRarity: string; lowSpecMode: boolean }> = ({ highestRarity, lowSpecMode }) => {
   if (lowSpecMode) return null;
 
   const color = getRarityGlowColor(highestRarity);
 
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden z-0">
-      {/* 회전하는 빛 광선 */}
+    <div className="pointer-events-none fixed inset-0 w-screen h-[100dvh] min-h-[100dvh] overflow-hidden z-0 select-none">
+      {/* 1. 360도 회전하는 풀스크린 12채널 매지컬 광선 빔 */}
       <motion.div
         animate={{ rotate: 360 }}
-        transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] opacity-20"
+        transition={{ duration: 28, repeat: Infinity, ease: 'linear' }}
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[160vw] h-[160vw] min-w-[850px] min-h-[850px] opacity-25"
         style={{
-          background: `conic-gradient(from 0deg at 50% 50%, ${color} 0deg, transparent 30deg, ${color} 60deg, transparent 90deg, ${color} 120deg, transparent 150deg, ${color} 180deg, transparent 210deg, ${color} 240deg, transparent 270deg, ${color} 300deg, transparent 330deg, ${color} 360deg)`,
+          background: `conic-gradient(from 0deg at 50% 50%, ${color} 0deg, transparent 25deg, ${color} 50deg, transparent 75deg, ${color} 100deg, transparent 125deg, ${color} 150deg, transparent 175deg, ${color} 200deg, transparent 225deg, ${color} 250deg, transparent 275deg, ${color} 300deg, transparent 325deg, ${color} 350deg, transparent 360deg)`,
         }}
       />
-      {/* 중앙 서클 광채 */}
+      {/* 2. 중앙 펄스 글로우 및 앰비언스 오라 */}
       <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] rounded-full blur-[100px] opacity-40 animate-pulse"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] max-w-[650px] max-h-[650px] rounded-full blur-[120px] opacity-35 animate-pulse"
         style={{ backgroundColor: color }}
       />
+      {/* 3. 모바일 상하단 그라데이션 비네트 */}
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950/90 pointer-events-none" />
     </div>
   );
 };
@@ -187,15 +189,11 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
         if (rarityDiff !== 0) {
           return rarityDiff;
         }
-
         return (CARD_DATABASE[right.imageIndex]?.power ?? 0) - (CARD_DATABASE[left.imageIndex]?.power ?? 0);
       })[0] ?? null;
   }, [cards]);
 
   const canShareBestCard = Boolean(bestCard && SHAREABLE_RARITIES.has(bestCard.rarity.toLowerCase()));
-  const summaryTitle = autoDrawProgress
-    ? t('shop_gacha_summary_auto_title', language, { current: autoDrawProgress.current, total: autoDrawProgress.total })
-    : t('shop_gacha_summary_title', language);
   const topCardName = bestCard ? getFormattedCardName(CARD_DATABASE[bestCard.imageIndex], language) : null;
   const stageMotion = instantMode ? {} : { initial: { opacity: 0, scale: 0.96 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 1.04 } };
 
@@ -215,7 +213,6 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
     }
 
     if (hasUnrevealed) {
-      // 새 팩 소환(다시 뽑기 포함) 시 상태를 초기화하고 팩 봉인 상태로 진입
       setRevealedIds(new Set());
       setCutInInfo(null);
       setPhase('sealed-pack');
@@ -232,27 +229,37 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
     if (instantMode) return;
 
     if (phase === 'intro') {
-      const timer = window.setTimeout(() => setPhase('sealed-pack'), 600);
+      const timer = window.setTimeout(() => setPhase('sealed-pack'), 500);
       return () => window.clearTimeout(timer);
     }
   }, [instantMode, phase]);
 
-  // 팩 개봉 클릭/진입 -> 즉시 모든 카드를 공개 상태로 전환
+  // 팩 개봉 클릭/진입 -> 풀스크린 개봉 이펙트 실행 및 순차적 공개
   const handleOpenPack = () => {
-    onSkip();
-    const allSet = new Set<number>();
-    cards.forEach((_, idx) => allSet.add(idx));
-    setRevealedIds(allSet);
-
     if (instantMode) {
+      onSkip();
+      const allSet = new Set<number>();
+      cards.forEach((_, idx) => allSet.add(idx));
+      setRevealedIds(allSet);
       setPhase('summary');
       return;
     }
 
     setPhase('tearing');
 
-    // 팩 찢어지는 연출 후 바로 전체 공개 화면(summary)으로 전환 (최상위 카드 컷인 연출 포함)
+    try {
+      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2012/2012-preview.mp3');
+      audio.volume = 0.7;
+      audio.play().catch(() => {});
+    } catch {}
+
+    // 팩 찢어지는 풀스크린 연출 후 컷인 또는 summary로 전환
     window.setTimeout(() => {
+      onSkip();
+      const allSet = new Set<number>();
+      cards.forEach((_, idx) => allSet.add(idx));
+      setRevealedIds(allSet);
+
       if (bestCard) {
         const r = bestCard.rarity.toLowerCase();
         const isGoldCondition = (EXTENDED_RARITY_RANK[r] ?? 0) >= EXTENDED_RARITY_RANK['gold'];
@@ -267,11 +274,11 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
         window.setTimeout(() => {
           setCutInInfo(null);
           setPhase('summary');
-        }, isGoldCondition ? 1400 : 900);
+        }, isGoldCondition ? 1500 : 1000);
       } else {
         setPhase('summary');
       }
-    }, 800);
+    }, 1100);
   };
 
   // 다시 뽑기 핸들러 (특수 소환 마법진 & 버스트 연출)
@@ -301,8 +308,6 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
     newSet.add(index);
     setRevealedIds(newSet);
 
-    // 카드 종류에 상관없이 매번 특수 연출 발동!
-    // 기존 특수효과 조건(골드 이상)을 만족하면 금빛 테두리로 더 화려한 연출
     const r = card.rarity.toLowerCase();
     const isGoldCondition = (EXTENDED_RARITY_RANK[r] ?? 0) >= EXTENDED_RARITY_RANK['gold'];
     const dbCard = CARD_DATABASE[card.imageIndex];
@@ -336,7 +341,6 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
     cards.forEach((_, idx) => allSet.add(idx));
     setRevealedIds(allSet);
 
-    // 카드 종류에 상관없이 최상위 카드로 매번 컷인 연출 발동!
     if (bestCard && !instantMode) {
       const r = bestCard.rarity.toLowerCase();
       const isGoldCondition = (EXTENDED_RARITY_RANK[r] ?? 0) >= EXTENDED_RARITY_RANK['gold'];
@@ -357,18 +361,24 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
     }
   };
 
+  // 모바일 전체화면 파티클 생성용 데이터
+  const particleAngles = useMemo(() => [
+    0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165,
+    180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345
+  ], []);
+
   return (
     <motion.div
       key="shop-gacha-reveal-sequence"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[200] overflow-y-auto bg-slate-950/98 px-3 py-4 text-white backdrop-blur-2xl select-none"
+      className="fixed inset-0 z-[200] w-screen h-[100dvh] min-h-[100dvh] overflow-y-auto bg-slate-950/98 px-3 py-4 text-white backdrop-blur-2xl select-none overscroll-none"
     >
-      {/* 백그라운드 빛 빔 & 파티클 오라 */}
+      {/* 1. 백그라운드 풀스크린 빛 빔 & 파티클 오라 */}
       <GachaAuraRays highestRarity={highestRarity} lowSpecMode={lowSpecMode} />
 
-      {/* 다시 뽑기 전용 초화려 마법진 소환 특수 연출 (Re-Summoning Ritual Overlay) */}
+      {/* 2. 다시 뽑기 전용 초화려 마법진 소환 특수 연출 (Re-Summoning Ritual Overlay) - 모바일 전체화면 */}
       <AnimatePresence>
         {isReSummoning && (
           <motion.div
@@ -376,19 +386,19 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[280] flex flex-col items-center justify-center bg-slate-950/95 backdrop-blur-2xl pointer-events-auto overflow-hidden p-4"
+            className="fixed inset-0 z-[280] w-screen h-[100dvh] min-h-[100dvh] flex flex-col items-center justify-center bg-slate-950/95 backdrop-blur-2xl pointer-events-auto overflow-hidden p-4"
           >
-            {/* 1. 배경 회전 다채색 광선 & 오라 */}
+            {/* 배경 회전 다채색 광선 & 오라 */}
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-              className="absolute w-[600px] h-[600px] rounded-full opacity-40 blur-2xl"
+              className="absolute w-[120vw] h-[120vw] min-w-[650px] min-h-[650px] rounded-full opacity-40 blur-2xl"
               style={{
                 background: `conic-gradient(from 0deg, rgba(251,191,36,0.8), rgba(244,63,94,0.6), rgba(59,130,246,0.7), rgba(168,85,247,0.8), rgba(251,191,36,0.8))`,
               }}
             />
 
-            {/* 2. 외곽 대형 마법진 링 */}
+            {/* 외곽 대형 마법진 링 */}
             <motion.div
               animate={{ rotate: 360, scale: [0.95, 1.05, 0.95] }}
               transition={{ rotate: { duration: 12, repeat: Infinity, ease: 'linear' }, scale: { duration: 2, repeat: Infinity, ease: 'easeInOut' } }}
@@ -398,7 +408,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
               <div className="absolute inset-8 rounded-full border border-dashed border-amber-400/30" />
             </motion.div>
 
-            {/* 3. 내측 반대방향 회전 소환진 및 룬 문자 교차선 */}
+            {/* 내측 반대방향 회전 소환진 및 룬 문자 교차선 */}
             <motion.div
               animate={{ rotate: -360 }}
               transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
@@ -410,21 +420,15 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
               <div className="absolute w-full h-[1px] -rotate-45 bg-gradient-to-r from-transparent via-yellow-200 to-transparent" />
             </motion.div>
 
-            {/* 4. 폭발하는 동심원 충격파 링 */}
+            {/* 폭발하는 동심원 충격파 링 */}
             <motion.div
               initial={{ scale: 0.3, opacity: 1 }}
               animate={{ scale: 2.4, opacity: 0 }}
               transition={{ duration: 1.2, repeat: Infinity, ease: 'easeOut' }}
               className="absolute w-48 h-48 rounded-full border-4 border-amber-300 blur-[1px]"
             />
-            <motion.div
-              initial={{ scale: 0.1, opacity: 0.9 }}
-              animate={{ scale: 1.9, opacity: 0 }}
-              transition={{ duration: 1.0, delay: 0.3, repeat: Infinity, ease: 'easeOut' }}
-              className="absolute w-56 h-56 rounded-full border-2 border-yellow-200 blur-[2px]"
-            />
 
-            {/* 5. 중앙 코어 소환 심볼 */}
+            {/* 중앙 코어 소환 심볼 */}
             <motion.div
               animate={{ scale: [1, 1.25, 1], rotate: [0, 8, -8, 0] }}
               transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
@@ -439,7 +443,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
               <div className="flex flex-col items-center gap-2 mt-4 text-center">
                 <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full border border-amber-300/70 bg-amber-400/20 text-amber-200 text-[11px] font-mono font-black tracking-[0.25em] uppercase shadow-[0_0_15px_rgba(245,158,11,0.6)]">
                   <Sparkles size={12} className="animate-spin text-yellow-300" />
-                  <span>[ RE-DRAW SUMMONING ]</span>
+                  <span>[ RE-DRAW SUMMON ]</span>
                   <Sparkles size={12} className="animate-spin text-yellow-300" />
                 </div>
                 <h3 className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-100 via-amber-300 to-yellow-500 tracking-wider animate-pulse drop-shadow-[0_2px_20px_rgba(250,204,21,0.8)]">
@@ -454,56 +458,164 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
         )}
       </AnimatePresence>
 
-      {/* 컷인 (Cut-In) 스플래시 오버레이 - 모든 카드 매번 발동, 골드 조건 시 금빛 테두리로 화려한 연출 */}
+      {/* 3. 모바일 뷰포트 맞춤 전체화면 개봉 이펙트 (Full-Screen Mobile Tearing & Nova Explosion Effect) */}
+      <AnimatePresence>
+        {phase === 'tearing' && !instantMode && (
+          <motion.div
+            key="gacha-fullscreen-tearing-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[260] w-screen h-[100dvh] min-h-[100dvh] flex flex-col items-center justify-center bg-slate-950/92 backdrop-blur-xl pointer-events-none overflow-hidden"
+          >
+            {/* 3-1. 전체화면 슈퍼노바 화이트/골드 플래시 */}
+            <motion.div
+              initial={{ opacity: 0.95, scale: 0.8 }}
+              animate={{ opacity: 0, scale: 1.5 }}
+              transition={{ duration: 0.9, ease: 'easeOut' }}
+              className="absolute inset-0 bg-gradient-to-tr from-amber-300 via-yellow-100 to-white pointer-events-none z-10"
+            />
+
+            {/* 3-2. 전체화면을 뒤덮는 4단계 방사형 충격파 링 */}
+            <motion.div
+              initial={{ scale: 0.1, opacity: 1 }}
+              animate={{ scale: 3.8, opacity: 0 }}
+              transition={{ duration: 1.0, ease: 'easeOut' }}
+              className="absolute w-64 h-64 rounded-full border-8 border-amber-300/90 shadow-[0_0_60px_rgba(251,191,36,1)] z-15"
+            />
+            <motion.div
+              initial={{ scale: 0.1, opacity: 1 }}
+              animate={{ scale: 3.2, opacity: 0 }}
+              transition={{ duration: 0.9, delay: 0.15, ease: 'easeOut' }}
+              className="absolute w-72 h-72 rounded-full border-4 border-yellow-200/80 shadow-[0_0_40px_rgba(250,204,21,0.8)] z-15"
+            />
+            <motion.div
+              initial={{ scale: 0.1, opacity: 0.9 }}
+              animate={{ scale: 2.6, opacity: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
+              className="absolute w-80 h-80 rounded-full border-2 border-cyan-300/70 shadow-[0_0_30px_rgba(34,211,238,0.7)] z-15"
+            />
+
+            {/* 3-3. 모바일 화면 사방으로 퍼져나가는 풀스크린 폭발 파티클 (360도 방사형) */}
+            {particleAngles.map((angle, idx) => {
+              const rad = (angle * Math.PI) / 180;
+              const dist = 280 + (idx % 3) * 80;
+              const targetX = Math.cos(rad) * dist;
+              const targetY = Math.sin(rad) * dist;
+              return (
+                <motion.div
+                  key={`burst-p-${angle}-${idx}`}
+                  initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}
+                  animate={{
+                    x: targetX,
+                    y: targetY,
+                    scale: [0, 1.6, 0.2],
+                    opacity: [1, 1, 0],
+                  }}
+                  transition={{ duration: 0.95, ease: 'easeOut' }}
+                  className="absolute z-20 flex items-center justify-center"
+                >
+                  <div className="w-3 h-3 rounded-full bg-gradient-to-r from-yellow-200 to-amber-400 shadow-[0_0_12px_rgba(250,204,21,1)]" />
+                </motion.div>
+              );
+            })}
+
+            {/* 3-4. 대각선 교차 네온 에너지 슬래시 */}
+            <motion.div
+              initial={{ scaleX: 0, opacity: 0 }}
+              animate={{ scaleX: [0, 1.4, 0], opacity: [0, 1, 0] }}
+              transition={{ duration: 0.85, ease: 'easeInOut' }}
+              className="absolute w-[300%] h-32 rotate-[-25deg] bg-gradient-to-r from-transparent via-amber-300/60 to-transparent blur-md z-15"
+            />
+            <motion.div
+              initial={{ scaleX: 0, opacity: 0 }}
+              animate={{ scaleX: [0, 1.4, 0], opacity: [0, 1, 0] }}
+              transition={{ duration: 0.85, delay: 0.1, ease: 'easeInOut' }}
+              className="absolute w-[300%] h-24 rotate-[25deg] bg-gradient-to-r from-transparent via-yellow-200/50 to-transparent blur-md z-15"
+            />
+
+            {/* 3-5. 중앙 대형 3D 카드팩 파열 컷씬 */}
+            <motion.div
+              animate={{
+                scale: [1, 1.35, 0.85],
+                rotate: [0, -8, 8, 0],
+                y: [0, -20, 0],
+              }}
+              transition={{ duration: 1.0, ease: 'easeInOut' }}
+              className="relative z-30 flex flex-col items-center justify-center gap-4 text-center px-4"
+            >
+              <div className="relative flex items-center justify-center w-36 h-36 rounded-3xl bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 shadow-[0_0_80px_rgba(250,204,21,1)] p-6">
+                <Package2 size={72} className="text-slate-950 animate-bounce" />
+                <Sparkles size={36} className="absolute -top-3 -right-3 text-white animate-spin" />
+                <Zap size={32} className="absolute -bottom-2 -left-2 text-yellow-100 animate-pulse" />
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full border border-amber-300 bg-amber-400/20 text-amber-200 text-xs font-mono font-black tracking-[0.25em] uppercase shadow-[0_0_20px_rgba(245,158,11,0.8)]">
+                  <Sparkles size={14} className="animate-spin text-yellow-300" />
+                  <span>[ CRITICAL PACK OPENING ]</span>
+                  <Sparkles size={14} className="animate-spin text-yellow-300" />
+                </div>
+                <h3 className="text-2xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-100 via-amber-300 to-yellow-500 tracking-wider animate-pulse drop-shadow-[0_4px_25px_rgba(250,204,21,0.95)]">
+                  {t('shop_gacha_reveal_opening_now', language)}...
+                </h3>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 4. 컷인 (Cut-In) 풀스크린 스플래시 오버레이 - 모바일 뷰포트 전체(100dvh) 커버 */}
       <AnimatePresence>
         {cutInInfo && !instantMode && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.85 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.08 }}
+            exit={{ opacity: 0, scale: 1.06 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[250] flex flex-col items-center justify-center bg-slate-950/92 backdrop-blur-lg pointer-events-none overflow-hidden p-4"
+            className="fixed inset-0 z-[270] w-screen h-[100dvh] min-h-[100dvh] flex flex-col items-center justify-center bg-slate-950/94 backdrop-blur-2xl pointer-events-none overflow-hidden p-4 select-none"
           >
-            {/* 극적인 대각선 광선 슬래시 */}
+            {/* 4-1. 화면 전체를 가로지르는 와이드 네온 블레이드 슬래시 */}
             <motion.div
-              initial={{ x: '-120%' }}
-              animate={{ x: '120%' }}
-              transition={{ duration: 0.7, ease: 'easeOut' }}
+              initial={{ x: '-150%' }}
+              animate={{ x: '150%' }}
+              transition={{ duration: 0.75, ease: 'easeOut' }}
               className={cn(
-                'absolute w-[220%] h-40 rotate-[-15deg]',
+                'absolute w-[350%] h-72 sm:h-96 rotate-[-18deg]',
                 cutInInfo.isGoldSpecial
-                  ? 'bg-gradient-to-r from-transparent via-amber-300/50 to-transparent blur-sm'
+                  ? 'bg-gradient-to-r from-transparent via-amber-300/50 to-transparent blur-md'
                   : cutInInfo.rarity.toLowerCase() === 'silver'
-                  ? 'bg-gradient-to-r from-transparent via-cyan-200/40 to-transparent'
-                  : 'bg-gradient-to-r from-transparent via-amber-500/35 to-transparent'
+                  ? 'bg-gradient-to-r from-transparent via-cyan-200/40 to-transparent blur-sm'
+                  : 'bg-gradient-to-r from-transparent via-amber-500/35 to-transparent blur-sm'
               )}
             />
 
-            {/* 골드 특수 연출 시 확장하는 금빛 충격파 링 */}
+            {/* 4-2. 골드 특수 연출 시 확장하는 풀스크린 금빛 충격파 링 */}
             {cutInInfo.isGoldSpecial && (
               <>
                 <motion.div
-                  initial={{ scale: 0.5, opacity: 1 }}
-                  animate={{ scale: 2.2, opacity: 0 }}
+                  initial={{ scale: 0.4, opacity: 1 }}
+                  animate={{ scale: 2.8, opacity: 0 }}
                   transition={{ duration: 1.1, repeat: Infinity, ease: 'easeOut' }}
-                  className="absolute w-72 h-72 rounded-full border-4 border-amber-300/80 blur-[2px]"
+                  className="absolute w-80 h-80 rounded-full border-4 border-amber-300/90 blur-[2px]"
                 />
                 <motion.div
                   initial={{ scale: 0.2, opacity: 0.9 }}
-                  animate={{ scale: 1.8, opacity: 0 }}
+                  animate={{ scale: 2.2, opacity: 0 }}
                   transition={{ duration: 0.9, delay: 0.2, repeat: Infinity, ease: 'easeOut' }}
-                  className="absolute w-96 h-96 rounded-full bg-gradient-to-tr from-amber-400/20 via-yellow-300/30 to-transparent blur-xl"
+                  className="absolute w-[110vw] h-[110vw] max-w-[550px] max-h-[550px] rounded-full bg-gradient-to-tr from-amber-400/25 via-yellow-300/35 to-transparent blur-2xl"
                 />
               </>
             )}
 
-            {/* 메인 컷인 카드 박스 - 골드 조건 시 화려한 금빛 테두리 적용 */}
+            {/* 4-3. 메인 컷인 카드 박스 - 골드 조건 시 화려한 금빛 테두리 적용 */}
             <motion.div
-              initial={{ y: 30, opacity: 0 }}
+              initial={{ y: 25, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.08, type: 'spring', damping: 18 }}
               className={cn(
-                'relative z-10 flex flex-col items-center gap-4 text-center max-w-lg w-full rounded-3xl p-6 sm:p-8 backdrop-blur-md transition-all',
+                'relative z-10 flex flex-col items-center gap-4 text-center max-w-lg w-full rounded-3xl p-6 sm:p-8 backdrop-blur-md transition-all shadow-2xl',
                 cutInInfo.isGoldSpecial
                   ? 'border-4 border-amber-300 shadow-[0_0_80px_rgba(251,191,36,0.95),inset_0_0_40px_rgba(251,191,36,0.45)] ring-4 ring-amber-400/60 ring-offset-4 ring-offset-slate-950 bg-radial from-amber-500/20 via-slate-950/95 to-black/95'
                   : cutInInfo.rarity.toLowerCase() === 'silver'
@@ -547,13 +659,28 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                 {cutInInfo.name}
               </h2>
 
-              {/* 파워 등급 / 속성 힌트 */}
+              {/* 컷인 카드 일러스트 미리보기 */}
+              <div className="relative w-36 h-48 sm:w-44 sm:h-60 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 my-1">
+                <CardItem
+                  card={{
+                    ...CARD_DATABASE[cutInInfo.imageIndex],
+                    id: `cutin-${cutInInfo.imageIndex}`,
+                    owner: null,
+                    level: 1,
+                    imageIndex: cutInInfo.imageIndex,
+                  }}
+                  className="h-full w-full"
+                  customImage={customCardImage}
+                  processedImage={cutInInfo.imageIndex ? processedCardImages?.[cutInInfo.imageIndex - 1] : undefined}
+                  lowSpecMode={lowSpecMode}
+                />
+              </div>
+
+              {/* 파워 스탯 뱃지 */}
               {cutInInfo.power !== undefined && (
-                <div className="flex items-center gap-3 text-xs font-mono font-bold text-white/80">
-                  <span className="text-amber-300">POWER: {cutInInfo.power}</span>
-                  {cutInInfo.isGoldSpecial && (
-                    <span className="text-yellow-400 animate-pulse font-black">★ HIGH TIER ★</span>
-                  )}
+                <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-black/60 border border-white/20 text-xs font-mono text-amber-200">
+                  <Zap size={14} className="text-amber-400" />
+                  <span>POWER: <strong className="text-white font-black text-sm">{cutInInfo.power}</strong></span>
                 </div>
               )}
             </motion.div>
@@ -561,7 +688,8 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
         )}
       </AnimatePresence>
 
-      <div className="relative z-10 mx-auto flex min-h-full w-full max-w-6xl flex-col">
+      {/* 5. 메인 리빌 UI 컨테이너 (모바일 뷰포트 최적화 100dvh) */}
+      <div className="relative z-10 mx-auto flex min-h-full w-full max-w-6xl flex-col pb-8">
         {/* 헤더 바 */}
         <div className="flex items-center justify-between gap-3 pb-3 border-b border-white/10">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
@@ -680,34 +808,11 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                       <button
                         type="button"
                         onClick={handleOpenPack}
-                        className="w-full py-2.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 text-xs font-black uppercase tracking-wider shadow-md hover:brightness-110 active:scale-95 transition-all"
+                        className="w-full py-2.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 text-xs font-black uppercase tracking-wider shadow-md hover:brightness-110 active:scale-95 transition-all cursor-pointer"
                       >
                         {t('shop_gacha_tap_pack_to_open', language)}
                       </button>
                     </div>
-                  </motion.div>
-                </motion.div>
-              )}
-
-              {/* PHASE 2: tearing (팩 개봉 폭발 컷씬) */}
-              {phase === 'tearing' && (
-                <motion.div
-                  key="gacha-tearing-stage"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 1.2 }}
-                  className="my-auto flex flex-col items-center justify-center py-12 z-20"
-                >
-                  <motion.div
-                    animate={{ scale: [1, 1.2, 0.8], rotate: [0, -5, 5, 0] }}
-                    transition={{ duration: 0.9 }}
-                    className="relative flex flex-col items-center justify-center"
-                  >
-                    <div className="w-32 h-32 rounded-full bg-yellow-300 blur-3xl opacity-90 animate-ping" />
-                    <Package2 size={80} className="text-yellow-300 relative z-10 animate-bounce" />
-                    <span className="mt-6 text-2xl font-black text-yellow-300 tracking-widest uppercase animate-pulse">
-                      {t('shop_gacha_reveal_opening_now', language)}...
-                    </span>
                   </motion.div>
                 </motion.div>
               )}
@@ -748,23 +853,21 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                               </div>
                             )}
 
-                            {/* 3D Flip Container - 골드 조건 시 금빛 테두리 적용 */}
+                            {/* 카드 플립 컨테이너 */}
                             <motion.div
                               animate={{ rotateY: isRevealed ? 180 : 0 }}
-                              transition={{ duration: 0.5, ease: 'easeOut' }}
+                              transition={{ duration: 0.6, type: 'spring', damping: 15 }}
                               style={{ transformStyle: 'preserve-3d' }}
                               className={cn(
                                 'relative w-full h-full rounded-2xl border transition-all duration-300 shadow-xl',
-                                isRevealed && isCardGoldCondition
-                                  ? 'border-3 sm:border-4 border-amber-300 shadow-[0_0_30px_rgba(251,191,36,0.9),inset_0_0_15px_rgba(251,191,36,0.3)] ring-2 ring-amber-400/80 ring-offset-2 ring-offset-slate-950'
-                                  : isBest
-                                  ? 'border-amber-300 shadow-[0_0_25px_rgba(245,158,11,0.6)]'
-                                  : isRevealed && card.rarity.toLowerCase() === 'silver'
-                                  ? 'border-2 border-slate-300 shadow-[0_0_15px_rgba(203,213,225,0.4)]'
-                                  : 'border-white/15 hover:border-white/40',
+                                isRevealed
+                                  ? isCardGoldCondition
+                                    ? 'border-amber-300/80 shadow-[0_0_20px_rgba(251,191,36,0.6)] ring-2 ring-amber-400/40'
+                                    : 'border-white/20 shadow-[0_4px_20px_rgba(0,0,0,0.5)]'
+                                  : 'border-amber-400/30 hover:border-amber-400/70 hover:scale-[1.03] shadow-lg'
                               )}
                             >
-                              {/* 카드 뒷면 (Sealed) */}
+                              {/* 카드 뒷면 (Unrevealed) */}
                               <div
                                 style={{ backfaceVisibility: 'hidden' }}
                                 className="absolute inset-0 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 p-3 flex flex-col items-center justify-between text-center overflow-hidden border border-white/10"
