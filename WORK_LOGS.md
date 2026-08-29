@@ -4,22 +4,6 @@
 
 ---
 
-## [2026-08-27 13:50 KST / 04:50 UTC] [/gemini-ex 스프레드시트 동기화 & 110종 미션게임 4대 핵심개선 및 리포트 시트 34건 일괄 보고 완료]
-- **작업 개요**: 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 미작업 항목 확인 및 전체 110종 미션 게임 4대 핵심개선 전수 검증
-- **개선 및 검증 내역**:
-  1. **순수 제스처 컨트롤러**: 가상 조이스틱/D-패드 100% 제거 및 썸존 슬라이드 조향 & 릴리즈 드리프트(`VehicleGestureController.ts`) 등 모바일 네이티브 퓨어 터치 조작 무결점 검증.
-  2. **표준 3단계 온보딩 튜토리얼**: 미션 게임 진입 시 목표/룰, 퓨어 제스처 시연, 100% 확정 SNS 보상 안내 3단계 모달(`UniversalTutorialModal.tsx`) 및 다시 보지 않기 로컬스토리지 저장 완비.
-  3. **상단 70% 시야 개방 1줄 미니멀 HUD**: `MinimalistMissionHUD.tsx` 기반 상단 70% 시야 확보 및 최상단 1줄 반투명 글래스 바 초소형 집약.
-  4. **100% 확정 SNS 포인트 정산**: `standardizedRewardGateway.ts` 및 `VictoryRewardModal.tsx` 기반 분당 50P 표준 정산 + 스코어/스피드/콤보/난이도 가산 및 로컬스토리지 원자적 입금 연동.
-  5. **복셀 78종 심사대체 & 110종 전수 카드 스프라이트화 100% 완공**: 78종 복셀 게임 심사 대체 및 `canvasCardRenderer.ts` 기반 공식 카드 스프라이트 연동 검증.
-- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 에러 통과 및 `npm run build` 컴파일 성공.
-- **구글 폼 보고**:
-  - `/report-ex` 대기 항목 34건 일괄 자동 제출 완료 (34/34 SUCCESS).
-  - `/gemini-ex` 110종 미션 게임 4대 핵심개선 완료 단일 보고 제출 완료.
-- **최종 상태**: Row 630 / CSV Row 642 전수 작업 완료 및 동기화 달성.
-
----
-
 ## [2026-08-27 06:10 KST / 21:10 UTC] [게임개선 10분 크론작업 78회차: VoxelZombieSurvivalGame 좀비타깃 및 사수 영웅 배지 카드 스프라이트화 완료 / 78종 복셀 전수 개선 100% 달성!]
 - **심사 및 개선 대상 게임**: `src/components/VoxelZombieSurvivalGame.tsx` (블리츠 좀비 서바이벌)
 - **개선 내역**:

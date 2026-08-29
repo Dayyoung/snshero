@@ -54,7 +54,6 @@ import { SkillActivationOverlay, SkillEvent } from '../components/SkillActivatio
 import { PingIndicator } from '../components/PingIndicator';
 import { LuckyMatchModal } from '../components/LuckyMatchModal';
 import { TreasureChestUnlockModal } from '../components/TreasureChestUnlockModal';
-import { parseCardAvatarId } from '../lib/monsterPet';
 import { ExpeditionModal } from '../components/ExpeditionModal';
 import { MonsterBeastariumModal } from '../components/MonsterBeastariumModal';
 import { TacticianMasteryModal } from '../components/TacticianMasteryModal';
@@ -313,7 +312,6 @@ interface Character {
   targetY: number;
   name: string;
   avatarUrl?: string;
-  avatarCardId?: number;
   deck?: CardData[];
   totalPower?: number;
   sns?: number;
@@ -3457,7 +3455,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       return;
     }
 
-    const assignedCardId = pvpOpponent.deck?.[0]?.imageIndex || (Math.floor(Math.random() * 110) + 1);
     const oppChar: Character = {
       id: `ranking-${pvpOpponent.id}`,
       type: 'user',
@@ -3468,7 +3465,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       targetX: 50,
       targetY: 50,
       avatarUrl: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${pvpOpponent.name}&backgroundColor=badeff`,
-      avatarCardId: assignedCardId,
       totalPower: pvpOpponent.totalPower,
       sns: pvpOpponent.sns,
       wins: pvpOpponent.wins,
@@ -3555,7 +3551,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         // Generate SNS that correlates with power (some randomness)
         const snsBase = botTotalPower * (0.5 + Math.random() * 1.5);
         const botSns = Math.max(0, Math.floor(snsBase));
-        const assignedCardId = Math.floor(Math.random() * 110) + 1;
 
         return {
           id: `bot-${i}`,
@@ -3566,7 +3561,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           targetY: Math.random() * 70 + 15,
           name: generateAiName(`bot-${i}-${Date.now()}`),
           avatarUrl: `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Robot-${i}&backgroundColor=dc2626`,
-          avatarCardId: assignedCardId,
           totalPower: botTotalPower,
           sns: botSns,
           wins: Math.floor(Math.random() * 50),
@@ -3591,7 +3585,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         const botTotalPower = Math.max(100, Math.floor(playerPower * powerVariance));
         const snsBase = botTotalPower * (0.5 + Math.random() * 1.5);
         const botSns = Math.max(0, Math.floor(snsBase));
-        const assignedCardId = Math.floor(Math.random() * 110) + 1;
         const freshBot: Character = {
           id: `bot-${Date.now()}`,
           type: 'robot',
@@ -3599,7 +3592,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           targetX: 50, targetY: 50,
           name: generateAiName(`bot-${Date.now()}`),
           avatarUrl: `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Robot-${Date.now()}&backgroundColor=dc2626`,
-          avatarCardId: assignedCardId,
           totalPower: botTotalPower,
           sns: botSns,
           wins: Math.floor(Math.random() * 50),
@@ -4309,10 +4301,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   };
 
   const startRobotMatch = (char: Character) => {
-    if (!char.avatarCardId) {
-      char.avatarCardId = char.deck?.[0]?.imageIndex || (Math.floor(Math.random() * 110) + 1);
-    }
-    setLastOpponent(char);
     const isMatgo = char.id === 'matgo-ai' || battleType === 'matgo';
     setBattleType(isMatgo ? 'matgo' : (char.id.startsWith('ranking-') ? 'pvp_attack' : 'robot'));
     setGameState('searching');
@@ -6917,7 +6905,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             const botTotalPower = Math.max(100, Math.floor(playerPower * powerVariance));
             const snsBase = botTotalPower * (0.5 + Math.random() * 1.5);
             const botSns = Math.max(0, Math.floor(snsBase));
-            const assignedCardId = Math.floor(Math.random() * 110) + 1;
             return {
               id: `bot-${i}`,
               type: 'robot',
@@ -6927,7 +6914,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               targetY: Math.random() * 70 + 15,
               name: generateAiName(`bot-${i}-${Date.now()}`),
               avatarUrl: `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Robot-${i}&backgroundColor=dc2626`,
-              avatarCardId: assignedCardId,
               totalPower: botTotalPower,
               sns: botSns,
               wins: Math.floor(Math.random() * 50),
@@ -9810,34 +9796,22 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               >
                  <div className="relative pointer-events-auto">
                     <div className="p-1 bg-indigo-600 text-white rounded-2xl animate-bounce-subtle w-12 h-12 overflow-hidden flex items-center justify-center shadow-lg shadow-indigo-600/35">
-                       {(() => {
-                         const cardAvatarId = typeof window !== 'undefined' ? parseCardAvatarId(localStorage.getItem('hero_user_avatar') || effectiveUser?.photoURL) : parseCardAvatarId(effectiveUser?.photoURL);
-                         if (cardAvatarId) {
-                           return (
-                             <div className="w-full h-full scale-[1.3] relative" style={getCardSpriteStyle(cardAvatarId)} />
-                           );
-                         }
-                         if (!effectiveUser) {
-                           return <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check text-white" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>;
-                         }
-                         if (effectiveUser?.photoURL?.startsWith('preset:')) {
-                           return (
-                             <img 
-                               src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Hero-${effectiveUser.photoURL.split(':')[1]}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`}
-                               alt="Hero"
-                               className="w-full h-full object-cover pixelated"
-                             />
-                           );
-                         }
-                         return (
-                           <img 
-                              src={effectiveUser?.photoURL || `https://api.dicebear.com/7.x/pixel-art/svg?seed=Hero&backgroundColor=3b82f6`} 
-                              alt="Hero" 
-                              className="w-full h-full object-cover pixelated"
-                              referrerPolicy="no-referrer"
-                           />
-                         );
-                       })()}
+                       {!effectiveUser ? (
+                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-check text-white" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
+                       ) : effectiveUser?.photoURL?.startsWith('preset:') ? (
+                         <img 
+                           src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Hero-${effectiveUser.photoURL.split(':')[1]}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`}
+                           alt="Hero"
+                           className="w-full h-full object-cover pixelated"
+                         />
+                       ) : (
+                         <img 
+                            src={effectiveUser?.photoURL || `https://api.dicebear.com/7.x/pixel-art/svg?seed=Hero&backgroundColor=3b82f6`} 
+                            alt="Hero" 
+                            className="w-full h-full object-cover pixelated"
+                            referrerPolicy="no-referrer"
+                         />
+                       )}
                     </div>
                  </div>
                  <div className="mt-1 text-xs font-bold bg-indigo-600 text-white px-2.5 py-0.5 text-center tracking-tight w-max rounded-full absolute left-1/2 -translate-x-1/2 top-full shadow-md shadow-indigo-600/20">
