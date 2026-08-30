@@ -82,26 +82,33 @@ const getRarityGlowColor = (rarity: string): string => {
   return 'rgba(217,119,6,0.4)';
 };
 
-// 빛나는 파티클 및 광선 배경 애니메이션 컴포넌트
+// 빛나는 파티클 및 광선 배경 애니메이션 컴포넌트 (모바일/데스크톱 뷰포트 전체 커버)
 const GachaAuraRays: React.FC<{ highestRarity: string; lowSpecMode: boolean }> = ({ highestRarity, lowSpecMode }) => {
   if (lowSpecMode) return null;
 
   const color = getRarityGlowColor(highestRarity);
 
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden z-0">
-      {/* 회전하는 빛 광선 */}
+    <div className="pointer-events-none fixed inset-0 overflow-hidden z-0 w-full h-[100dvh]">
+      {/* 화면 전체를 덮는 앰비언트 글로우 */}
+      <div 
+        className="absolute inset-0 opacity-30 mix-blend-screen"
+        style={{
+          background: `radial-gradient(circle at 50% 40%, ${color} 0%, transparent 75%)`
+        }}
+      />
+      {/* 회전하는 거대 빛 광선 */}
       <motion.div
         animate={{ rotate: 360 }}
         transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] opacity-20"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[220vmax] h-[220vmax] opacity-25"
         style={{
           background: `conic-gradient(from 0deg at 50% 50%, ${color} 0deg, transparent 30deg, ${color} 60deg, transparent 90deg, ${color} 120deg, transparent 150deg, ${color} 180deg, transparent 210deg, ${color} 240deg, transparent 270deg, ${color} 300deg, transparent 330deg, ${color} 360deg)`,
         }}
       />
-      {/* 중앙 서클 광채 */}
+      {/* 중앙/상단 코어 광채 */}
       <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] rounded-full blur-[100px] opacity-40 animate-pulse"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] max-w-[650px] max-h-[650px] rounded-full blur-[110px] opacity-45 animate-pulse"
         style={{ backgroundColor: color }}
       />
     </div>
@@ -363,7 +370,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[200] overflow-y-auto bg-slate-950/98 px-3 py-4 text-white backdrop-blur-2xl select-none"
+      className="fixed inset-0 z-[200] overflow-y-auto w-full h-[100dvh] min-h-[100dvh] bg-slate-950/98 px-2.5 sm:px-4 py-3 sm:py-4 text-white backdrop-blur-2xl select-none flex flex-col justify-between"
     >
       {/* 백그라운드 빛 빔 & 파티클 오라 */}
       <GachaAuraRays highestRarity={highestRarity} lowSpecMode={lowSpecMode} />
@@ -561,7 +568,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
         )}
       </AnimatePresence>
 
-      <div className="relative z-10 mx-auto flex min-h-full w-full max-w-6xl flex-col">
+      <div className="relative z-10 mx-auto flex min-h-full w-full max-w-6xl flex-1 flex-col justify-between">
         {/* 헤더 바 */}
         <div className="flex items-center justify-between gap-3 pb-3 border-b border-white/10">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
@@ -594,8 +601,8 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
         </div>
 
         {/* 메인 뽑기 컨테이너 */}
-        <div className="mt-4 grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <div className="relative min-h-[500px] flex flex-col justify-between rounded-[32px] border border-white/15 bg-slate-900/90 p-5 sm:p-7 shadow-2xl backdrop-blur-xl overflow-hidden">
+        <div className="mt-2 sm:mt-4 grid gap-4 lg:gap-6 lg:grid-cols-[minmax(0,1fr)_320px] flex-1">
+          <div className="relative flex-1 min-h-[460px] sm:min-h-[520px] flex flex-col justify-between rounded-2xl sm:rounded-[32px] border border-white/15 bg-slate-900/90 p-4 sm:p-7 shadow-2xl backdrop-blur-xl overflow-hidden">
             
             {/* 상단 팩 타이틀 정보 */}
             <div className="flex flex-wrap items-center justify-between gap-3 z-10">
@@ -714,9 +721,9 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
 
               {/* PHASE 3 & 4: spread & summary (카드 5장 펼쳐짐 및 리빌) */}
               {(phase === 'spread' || phase === 'summary') && (
-                <motion.div key="gacha-spread-stage" {...stageMotion} className="my-auto space-y-6 z-10 py-2">
+                <motion.div key="gacha-spread-stage" {...stageMotion} className="my-auto space-y-4 sm:space-y-6 z-10 py-1 sm:py-2">
                   {/* 카드 5장 그리드 */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-2.5 sm:gap-4 max-w-5xl mx-auto w-full items-center justify-center">
                     {cards.map((card, index) => {
                       const dbCard = CARD_DATABASE[card.imageIndex];
                       const isRevealed = revealedIds.has(index) || card.isRevealed;
