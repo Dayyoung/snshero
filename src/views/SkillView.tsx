@@ -31,6 +31,7 @@ import { t } from '../lib/i18n';
 import { INITIAL_SKILLS, getSkillTier, getRequiredLevelForSkill } from '../constants';
 import { PageHeader } from '../components/PageHeader';
 import { getSkillResetCost, getSkillUpgradeCost } from '../content/snsEconomy';
+import { playSfx as defaultPlaySfx } from '../lib/sound';
 
 interface SkillViewProps {
   skills: Skill[];
@@ -46,6 +47,7 @@ interface SkillViewProps {
   selectedCard?: CardData | null;
   cardId?: string;
   allCards?: CardData[];
+  playSfx?: (url: string) => void;
 }
 
 const iconMap: Record<string, React.ComponentType<any>> = {
@@ -121,6 +123,7 @@ export const SkillView: React.FC<SkillViewProps> = ({
   selectedCard,
   cardId,
   allCards = [],
+  playSfx = defaultPlaySfx,
 }) => {
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
@@ -171,9 +174,7 @@ export const SkillView: React.FC<SkillViewProps> = ({
         onUpgradeSkill(plan.skillId);
       }
     });
-    try {
-      new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3').play().catch(() => {});
-    } catch {}
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
   };
 
   // Target card context (from props or URL query ?cardId=)
@@ -554,9 +555,7 @@ export const SkillView: React.FC<SkillViewProps> = ({
                     onClick={() => {
                       onUpgradeSkill(skill.id);
                       setUpgradingSkillId(skill.id);
-                      try {
-                        new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3').play().catch(() => {});
-                      } catch {}
+                      playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                       setTimeout(() => setUpgradingSkillId(null), 1000);
                     }}
                     id={`skill-upgrade-${skill.id}`}

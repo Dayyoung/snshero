@@ -5,6 +5,7 @@ import LZString from 'lz-string';
 import { Play, Pause, ChevronLeft, ChevronRight, Copy, Check, Download, Upload, FileText, Camera, ShieldCheck, RefreshCw, AlertCircle, Zap } from 'lucide-react';
 import { Language } from '../types';
 import { t } from '../lib/i18n';
+import { playSfx } from '../lib/sound';
 
 interface BackupRestoreModalProps {
   mode: 'backup' | 'restore' | null;
@@ -64,15 +65,6 @@ export const BackupRestoreModal: React.FC<BackupRestoreModalProps> = ({ mode, on
   const animFrameIdRef = useRef<number | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const timerRef = useRef<any>(null);
-
-  // 사운드 효과
-  const playSfx = (url: string) => {
-    try {
-      const audio = new Audio(url);
-      audio.volume = 0.4;
-      audio.play().catch(() => {});
-    } catch {}
-  };
 
   // 1. 스마트 필터링 및 고밀도 LZ 압축 백업 데이터 생성
   useEffect(() => {

@@ -23,6 +23,7 @@ import { CARD_DATABASE } from '../cardDatabase';
 import { INITIAL_CARDS, getCardPower } from '../constants';
 import type { KadanBattleResult } from '../lib/kadanRpgBattle';
 import { KADAN_RPG_NOVEL_SCRIPTS } from '../content/kadanRpgNovelScript';
+import { playSfx as defaultPlaySfx } from '../lib/sound';
 
 interface KadanRpgViewProps {
   language: Language;
@@ -36,6 +37,7 @@ interface KadanRpgViewProps {
   addCard: (rarity: CardRarity, indexOverride?: number, isSilent?: boolean) => void;
   addItem: (rarity?: ItemRarity, idOverride?: string) => unknown;
   showCustomAlert: (title: string, message: string) => void;
+  playSfx?: (url: string) => void;
 }
 
 const sameTile = (a: KadanRpgTile | null, b: KadanRpgTile | null): boolean => (
@@ -70,6 +72,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
   addCard,
   addItem,
   showCustomAlert,
+  playSfx = defaultPlaySfx,
 }) => {
   const {
     progress,
@@ -447,13 +450,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
                 recordMatchResult={(result) => {
                   handleBattleComplete(result);
                 }}
-                playSfx={(url) => {
-                  try {
-                    const audio = new Audio(url);
-                    audio.volume = 0.5;
-                    audio.play().catch(() => {});
-                  } catch (e) {}
-                }}
+                playSfx={playSfx}
                 sns={sns}
                 updateSns={updateSns}
               />

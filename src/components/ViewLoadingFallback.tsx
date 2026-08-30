@@ -203,7 +203,7 @@ const VIEW_METAS: Record<string, ViewLoadingMeta> = {
 export const ViewLoadingFallback: React.FC<ViewLoadingFallbackProps> = ({
   view = 'home',
   language = 'ko',
-  targetDurationMs = 2000,
+  targetDurationMs = 350,
   onResetCache,
   customMessage,
   minProgress = 0,
@@ -211,8 +211,17 @@ export const ViewLoadingFallback: React.FC<ViewLoadingFallbackProps> = ({
   const [progress, setProgress] = useState(minProgress);
   const [isResetting, setIsResetting] = useState(false);
   const [resetCompleted, setResetCompleted] = useState(false);
+  const [showDirectEnter, setShowDirectEnter] = useState(false);
 
-  // 2초 동안 부드럽게 0% -> 100% 로딩 게이지 애니메이션
+  // 1.5초 이상 지연될 경우 수동 진입/새로고침 버튼 활성화
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowDirectEnter(true);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // 부드럽고 신속하게 0% -> 100% 로딩 게이지 완료
   useEffect(() => {
     const startTime = performance.now();
     let animationFrameId: number;
@@ -220,8 +229,7 @@ export const ViewLoadingFallback: React.FC<ViewLoadingFallbackProps> = ({
     const updateProgress = (now: number) => {
       const elapsed = now - startTime;
       const rawPct = Math.min(100, Math.floor((elapsed / targetDurationMs) * 100));
-      // 지수 감속 곡선으로 자연스러운 게이지 채움
-      const displayPct = Math.max(minProgress, Math.min(99, rawPct));
+      const displayPct = Math.max(minProgress, Math.min(100, rawPct));
       setProgress(displayPct);
 
       if (elapsed < targetDurationMs) {
@@ -345,6 +353,17 @@ export const ViewLoadingFallback: React.FC<ViewLoadingFallbackProps> = ({
 
         {/* Bottom Actions & Cache Reset Button */}
         <div className="flex flex-col items-center gap-2 pt-1">
+          {showDirectEnter && (
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="w-full h-9 bg-[#201d1d] hover:bg-black text-[#fdfcfc] text-[11px] font-bold tracking-wider uppercase rounded-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-[0.99] mb-1"
+            >
+              <RotateCw className="w-3.5 h-3.5" />
+              <span>[{isKo ? '화면 새로고침' : 'REFRESH VIEW'}]</span>
+            </button>
+          )}
+
           <button
             type="button"
             onClick={handlePurgeCache}
