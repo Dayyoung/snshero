@@ -41,6 +41,7 @@ if (typeof window !== 'undefined') {
       errorMsg.includes('is not a valid JavaScript MIME type') ||
       errorMsg.includes('MIME type') ||
       errorMsg.includes('ChunkLoadError') ||
+      errorMsg.includes('Cross-origin script load denied') ||
       errorMsg.includes('Loading chunk');
       
     if (isChunkError) {

@@ -4,6 +4,37 @@
 
 ---
 
+## [2026-08-30 07:58 KST / 22:58 UTC] [스프레드시트 개선 과제 전수 100% 완공 (ID 556 ~ 559 / CSV Rows 667 ~ 670)]
+- **작업 1: [ID 556 / Row 667] 3D 레이싱/카트 미션 가상 핸들·버튼 제거 및 썸존 슬라이드 조향 & 릴리즈 드리프트 퓨어 제스처 전환 (VehicleGestureController)**
+  - 가상 스티어링 휠/D-pad/페달을 완전히 제거하고, 썸존 슬라이드 조향(-1.0 ~ +1.0), 오토 크루즈 가속, 튕기기 릴리즈 미니 터보 드리프트 부스터, 더블 탭 아이템 발사, 하단 홀드 브레이크 퓨어 제스처 컨트롤러(`VehicleGestureController.ts`) 전면 적용.
+- **작업 2: [ID 557 / Row 668] 3D 스포츠 미션(골프/볼링/하키/다트) 대상 3단계 제스처 시연 온보딩 팝업 및 상시 ❓ 가이드 표준화 (SportsMissionTutorial)**
+  - 당기기(Pull-back 장력 조절), 타이밍 릴리즈, 분당 50P 표준 확정 SNS 포인트 보상 안내 3단계 제스처 시연 온보딩 팝업(`SportsMissionTutorial.tsx`) 및 상단 `[?]` 가이드 버튼 표준화.
+- **작업 3: [ID 558 / Row 669] design.md 준수 상단 70% 시야 100% 개방 및 최상단 1줄 슬림 HUD 레이아웃 리팩토링 (MinimalistMissionHUD)**
+  - 전장 시야를 가리지 않도록 상단 70% 뷰포트를 100% 개방하고, 최상단 5% 영역에 HP/진행도/스코어/타이머/`[?]`도움말/일시정지 집약 반투명 1줄 슬림 HUD(`MinimalistMissionHUD.tsx`) 110개 미션 게임 전수 적용.
+- **작업 4: [ID 559 / Row 670] 미션 클리어 즉시 100% 확정 SNS 포인트 원자적 입금 및 보너스 상세 인포그래픽 팝업 통합 (VictoryRewardModal & StandardizedRewardGateway)**
+  - 미션 클리어 즉시 분당 ~50P 표준 및 난이도/스코어/콤보 배율 기반 100% 확정 SNS 포인트 로컬스토리지 원자적 입금(`calculateAndDepositMissionReward`).
+  - 승리 화면 1.8초 황금 코인 카운트업 축하 애니메이션과 기본/시간/스킬 보너스 상세 내역 인포그래픽 팝업(`VictoryRewardModal.tsx`) 연동.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 및 `npm run build` 성공 통과 (PASS).
+- **스프레드시트 상태**: 구글 스프레드시트 670개 전 항목 100% 전수 작업 완료!
+
+---
+
+## [2026-08-29 22:38 KST / 13:38 UTC] [스프레드시트 4개 개선 과제 전수 완공 (ID 552 ~ 555 / CSV Rows 655 ~ 658)]
+- **작업 1: [ID 552 / Row 655] 덱 시너지 종합 계산기 & 1클릭 최적 프리셋 자동 편성 (DeckSynergyCalculator)**
+  - 4대 시너지(속성 공명, 레어도 정점, 세력 유대, 전술 포메이션) 실시간 수치화 및 SSS~C 종합 등급 평가.
+  - 극딜형(ATK), 철벽형(DEF), 단일속성 집중(ELEMENT), 밸런스형(BALANCE) 1클릭 스마트 자동 덱 편성 엔진 구현.
+- **작업 2: [ID 553 / Row 656] P2P 카드 거래소 실시간 시세 스파크라인 & 슬림형 필터바 (CardMarketplaceView)**
+  - Canvas 기반 7일간 실시간 거래 시세 추이 스파크라인 및 거래 수수료 계산기 모달(`MarketplaceCardTradeModal`) 구현.
+  - 모바일 한손 조작에 최적화된 하단 고정 1줄 슬림 거래 유형/속성 필터 바 연동.
+- **작업 3: [ID 554 / Row 657] 실시간 매치메이킹 대기열 10초 픽셀 웜업(Warm-up) 미니 퍼즐 (MatchmakingQueueModal)**
+  - PVP/랭킹 상대 탐색 대기 시간 동안 즉석에서 즐기는 4x2 영웅 짝맞추기 웜업 퍼즐(`QuickWarmupPuzzle`) 개발 및 매칭 모달 연동.
+- **작업 4: [ID 555 / Row 658] 전 플랫폼 텍스처 WebP/AVIF 압축 및 가상 스크롤 레이지 로딩 고속화 (ImageLazyLoader & VirtualCardGrid)**
+  - `ImageLazyLoader` LRU 메모리 캐시 및 핵심 스프라이트 에셋 백그라운드 프리웜(`requestIdleCallback`) 엔진 구현.
+  - 대용량 카드 컬렉션을 60fps로 매끄럽게 렌더링하는 `VirtualCardGrid` 컴포넌트 개발.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 및 `npm run build` 성공 통과 (PASS).
+
+---
+
 ## [2026-08-27 06:10 KST / 21:10 UTC] [게임개선 10분 크론작업 78회차: VoxelZombieSurvivalGame 좀비타깃 및 사수 영웅 배지 카드 스프라이트화 완료 / 78종 복셀 전수 개선 100% 달성!]
 - **심사 및 개선 대상 게임**: `src/components/VoxelZombieSurvivalGame.tsx` (블리츠 좀비 서바이벌)
 - **개선 내역**:

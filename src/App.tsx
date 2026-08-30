@@ -89,6 +89,7 @@ import { CortanaCommandButton } from './components/CortanaCommandButton';
 import { TutorialCoachMark } from './components/TutorialCoachMark';
 import { AppLoadingGate } from './components/AppLoadingGate';
 import { ViewLoadingFallback } from './components/ViewLoadingFallback';
+import { ImageLazyLoader } from './lib/ImageLazyLoader';
 
 const HomeView = lazy(() => import('./views/HomeView').then(m => ({ default: m.HomeView })));
 const KadanRpgView = lazy(() => import('./views/KadanRpgView').then(m => ({ default: m.KadanRpgView })));
@@ -514,6 +515,10 @@ function AppContent() {
 
     handleUrlParams();
     window.addEventListener('popstate', handleUrlParams);
+
+    // Pre-warm high-speed WebP/PNG card sprites asynchronously (Row 658 / ID 555)
+    ImageLazyLoader.prewarmSpriteAssets(['/cards1.png', '/cards2.png']);
+
     return () => window.removeEventListener('popstate', handleUrlParams);
   }, []);
 

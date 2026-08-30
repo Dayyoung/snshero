@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { HelpCircle, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { HelpCircle, X, ChevronLeft, ChevronRight, TrendingUp, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { getMarketplaceFeePolicy, calculateMarketplaceSettlement } from '../content/marketplaceFees';
 import { PageHeader } from '../components/PageHeader';
+import { MarketplaceCardTradeModal } from '../components/MarketplaceCardTradeModal';
 import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
 import type { DatabaseCard, InventoryRecord, Language, Listing, Offer, TradeAuditLog, TradeStatus, ViewType } from '../types';
@@ -160,6 +161,9 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
   }, [helpOpen]);
 
   const [helpStep, setHelpStep] = useState(0);
+  const [tradeModalListing, setTradeModalListing] = useState<Listing | null>(null);
+  const [tradeTypeFilter, setTradeTypeFilter] = useState<'all' | 'instant' | 'auction'>('all');
+  const [elementFilter, setElementFilter] = useState<'all' | 'FIRE' | 'WATER' | 'EARTH' | 'WIND'>('all');
 
   const userId = user?.uid || 'guest-id';
   const userName = user?.displayName?.trim() || (language === 'ko' ? '플레이어' : 'Player');
@@ -217,6 +221,15 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
     return marketState.listings
       .filter((listing) => listing.status === 'active' || listing.status === 'pending' || listing.status === 'escrow')
       .filter((listing) => {
+        if (tradeTypeFilter === 'instant') return listing.status === 'active';
+        if (tradeTypeFilter === 'auction') return listing.status === 'pending' || listing.status === 'escrow';
+        return true;
+      })
+      .filter((listing) => {
+        if (elementFilter === 'all') return true;
+        return (CARD_DATABASE[listing.cardId]?.element || 'FIRE') === elementFilter;
+      })
+      .filter((listing) => {
         if (rarityFilter === 'all') return true;
         return CARD_DATABASE[listing.cardId]?.rarity === rarityFilter;
       })
@@ -225,7 +238,7 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
         return getCardBuildFocus(CARD_DATABASE[listing.cardId]) === buildFocusFilter;
       })
       .sort((a, b) => b.askPrice - a.askPrice);
-  }, [buildFocusFilter, marketState.listings, rarityFilter]);
+  }, [buildFocusFilter, elementFilter, marketState.listings, rarityFilter, tradeTypeFilter]);
 
   const myListings = useMemo(() => {
     return marketState.listings
@@ -588,29 +601,49 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                   );
 
                   return (
-                    <div key={listing.id} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                    <div
+                      key={listing.id}
+                      onClick={() => setTradeModalListing(listing)}
+                      className="rounded-xl border border-slate-200 bg-slate-50 hover:bg-white hover:border-indigo-300 p-3 transition-all cursor-pointer shadow-xs"
+                    >
                       <div className="flex items-center justify-between gap-3">
-                        <div className="min-w-0">
-                          <h3 className="text-sm font-black text-slate-900 truncate">{getCardTitle(listing.cardId)}</h3>
-                          <div className="text-lg font-black text-slate-900 mt-0.5">{listing.askPrice.toLocaleString()} SNS</div>
+                        <div className="min-w-0 flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center justify-center text-xs font-black shrink-0">
+                            {String(CARD_DATABASE[listing.cardId]?.element || '').toLowerCase() === 'fire' ? '🔥' : String(CARD_DATABASE[listing.cardId]?.element || '').toLowerCase() === 'water' ? '💧' : String(CARD_DATABASE[listing.cardId]?.element || '').toLowerCase() === 'earth' ? '🌿' : '⚡'}
+                          </div>
+                          <div className="min-w-0">
+                            <h3 className="text-sm font-black text-slate-900 truncate">{getCardTitle(listing.cardId)}</h3>
+                            <div className="text-xs font-black text-indigo-700 mt-0.5">{listing.askPrice.toLocaleString()} SNS</div>
+                          </div>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => handleRequestPurchase(listing)}
-                          disabled={isMine || hasOpenOffer || listing.status !== 'active' || isGuest || isOfflineMode}
-                          className={cn(
-                            'min-h-9 px-4 rounded-lg font-bold text-xs transition-all shrink-0',
-                            isMine || hasOpenOffer || listing.status !== 'active' || isGuest || isOfflineMode
-                              ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
-                              : 'bg-slate-900 text-white hover:bg-slate-800',
-                          )}
-                        >
-                          {isMine
-                            ? t('marketplace_my_listing_badge', language)
-                            : hasOpenOffer
-                              ? t('marketplace_request_exists', language)
-                              : t('marketplace_request_purchase', language)}
-                        </button>
+                        <div className="flex items-center gap-1.5 shrink-0" onClick={(e) => e.stopPropagation()}>
+                          <button
+                            type="button"
+                            onClick={() => setTradeModalListing(listing)}
+                            className="min-h-9 px-2.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1 cursor-pointer"
+                            title={language === 'ko' ? '실시간 시세 차트 및 상세' : 'Price Chart & Details'}
+                          >
+                            <TrendingUp size={13} className="text-indigo-600" />
+                            <span className="hidden sm:inline">{language === 'ko' ? '시세' : 'Chart'}</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleRequestPurchase(listing)}
+                            disabled={isMine || hasOpenOffer || listing.status !== 'active' || isGuest || isOfflineMode}
+                            className={cn(
+                              'min-h-9 px-3.5 rounded-lg font-bold text-xs transition-all shrink-0',
+                              isMine || hasOpenOffer || listing.status !== 'active' || isGuest || isOfflineMode
+                                ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
+                                : 'bg-slate-900 text-white hover:bg-slate-800 cursor-pointer',
+                            )}
+                          >
+                            {isMine
+                              ? t('marketplace_my_listing_badge', language)
+                              : hasOpenOffer
+                                ? t('marketplace_request_exists', language)
+                                : t('marketplace_request_purchase', language)}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   );
@@ -809,6 +842,66 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Sticky Ergonomic Bottom 1-Line Slim Filter Bar (Row 656 / ID 553) */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#fdfcfc]/95 backdrop-blur-md border-t border-black/15 px-3 py-2 select-none font-mono shadow-md">
+        <div className="max-w-5xl mx-auto flex items-center justify-between gap-2 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-1 shrink-0">
+            <span className="text-[10px] font-black text-black/60 uppercase px-1">
+              [FILTER]
+            </span>
+            {(['all', 'instant', 'auction'] as const).map((mode) => (
+              <button
+                key={mode}
+                onClick={() => setTradeTypeFilter(mode)}
+                className={cn(
+                  "px-2.5 py-1 text-[11px] font-bold rounded-sm border transition-all cursor-pointer whitespace-nowrap",
+                  tradeTypeFilter === mode
+                    ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                    : "bg-white text-black/70 border-black/15 hover:bg-black/5"
+                )}
+              >
+                {mode === 'all'
+                  ? (language === 'ko' ? '전체 매물' : 'All')
+                  : mode === 'instant'
+                  ? (language === 'ko' ? '즉시 구매' : 'Instant Buy')
+                  : (language === 'ko' ? '경매/입찰' : 'Auction')}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-1 shrink-0">
+            {(['all', 'FIRE', 'WATER', 'EARTH', 'WIND'] as const).map((elem) => (
+              <button
+                key={elem}
+                onClick={() => setElementFilter(elem)}
+                className={cn(
+                  "px-2 py-1 text-[11px] font-bold rounded-sm border transition-all cursor-pointer whitespace-nowrap flex items-center gap-1",
+                  elementFilter === elem
+                    ? "bg-blue-600 text-white border-blue-700 font-black"
+                    : "bg-white text-black/70 border-black/15 hover:bg-black/5"
+                )}
+              >
+                <span>{elem === 'all' ? (language === 'ko' ? '전체속성' : 'All Elem') : elem === 'FIRE' ? '🔥' : elem === 'WATER' ? '💧' : elem === 'EARTH' ? '🌿' : '⚡'}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Real-time Price History & Trade Modal (Row 656 / ID 553) */}
+      <MarketplaceCardTradeModal
+        listing={tradeModalListing}
+        isOpen={!!tradeModalListing}
+        onClose={() => setTradeModalListing(null)}
+        language={language}
+        currentSeason={currentSeason}
+        userId={userId}
+        isGuest={isGuest}
+        onRequestPurchase={(listing) => {
+          handleRequestPurchase(listing);
+        }}
+      />
     </div>
   );
 };

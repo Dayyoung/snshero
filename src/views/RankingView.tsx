@@ -15,6 +15,7 @@ import axios from 'axios';
 import { useGameSettings } from '../contexts/GameSettingsContext';
 import { joinMatchmaking, leaveMatchmaking, type MatchmakingState } from '../lib/pvpMatchmaking';
 import { getProfileBadgeByKey, getProfileEmoticonByKey, getProfileTitleByKey } from '../content/profileEmoticons';
+import { MatchmakingQueueModal } from '../components/MatchmakingQueueModal';
 
 interface RankingUser {
   id: string;
@@ -1661,139 +1662,27 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
         )}
       </AnimatePresence>
 
-      {/* PvP 실시간 매치메이킹 오버레이 */}
-      <AnimatePresence>
-        {isPvpSearching && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[10001] flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md"
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 30 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 30 }}
-              className="bg-slate-900 border-4 border-red-600 rounded-3xl p-8 max-w-sm w-full shadow-[0_0_60px_rgba(220,38,38,0.25)] text-center space-y-6 select-none relative overflow-hidden text-white"
-              onClick={e => e.stopPropagation()}
-            >
-              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-red-500 via-rose-400 to-red-500" />
-              
-              <div className="relative w-28 h-28 mx-auto flex items-center justify-center">
-                <div className="absolute inset-0 rounded-full border-4 border-dashed border-red-500/30 animate-spin-slow" />
-                <div className="absolute inset-2 rounded-full border border-rose-500/20" />
-                <div className="w-20 h-20 rounded-full bg-slate-950/60 border-2 border-red-500 flex items-center justify-center shadow-lg shadow-red-500/10">
-                  <Zap size={40} className="text-yellow-400" />
-                </div>
-                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-red-400 animate-ping" />
-                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-red-400 animate-ping delay-300" />
-              </div>
+      {/* Real-Time PVP Matchmaking Modal with Mini Warmup Puzzle (Row 657 / ID 554) */}
+      <MatchmakingQueueModal
+        isOpen={isPvpSearching}
+        isRealTimePvp={true}
+        searchTimer={searchTimer}
+        queuePosition={pvpQueuePos}
+        error={pvpError}
+        isCancelling={isPvpCancelling}
+        onCancel={cancelRealTimePvp}
+        language={language}
+      />
 
-              <div className="space-y-2">
-                <h3 className="text-lg font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-red-300 via-rose-200 to-red-300 uppercase">
-                  {t('pvp_matchmaking_title', language)}
-                </h3>
-                <p className="text-slate-400 text-[11px] font-bold tracking-widest uppercase">
-                  {t('pvp_matchmaking_searching', language)}
-                </p>
-              </div>
-
-              {/* 대기열 위치 */}
-              <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-4.5 text-center min-h-[90px] flex flex-col justify-center items-center">
-                <div className="flex items-center gap-2 text-slate-400">
-                  <Clock size={14} />
-                  <span className="text-[10px] font-bold uppercase tracking-wider">
-                    {t('pvp_matchmaking_queue_position', language, { position: pvpQueuePos })}
-                  </span>
-                </div>
-              </div>
-
-              {/* 에러 메시지 */}
-              {pvpError && (
-                <div className="bg-red-950/50 border border-red-900/50 rounded-xl p-3 text-center">
-                  <p className="text-xs font-semibold text-red-400">{pvpError}</p>
-                </div>
-              )}
-
-              <button
-                onClick={cancelRealTimePvp}
-                disabled={isPvpCancelling}
-                className={cn(
-                  "w-full bg-gradient-to-r from-slate-950 to-slate-900 border border-slate-800 hover:from-red-950 hover:to-red-900 hover:border-red-900 hover:text-red-300 text-slate-400 py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-md active:scale-[0.98] transition-all cursor-pointer touch-target flex items-center justify-center gap-2",
-                  isPvpCancelling && "opacity-75 cursor-wait"
-                )}
-              >
-                {isPvpCancelling ? (
-                  <>
-                    <Loader2 size={16} className="animate-spin text-red-400" />
-                    <span>{language === 'ko' ? '대기열 취소 중...' : 'Cancelling Match...'}</span>
-                  </>
-                ) : (
-                  t('pvp_matchmaking_cancel', language)
-                )}
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Hearthstone-style Matchmaking Modal */}
-      <AnimatePresence>
-        {isSearching && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md"
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 30 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 30 }}
-              className="bg-white border-2 border-amber-100 rounded-3xl p-8 max-w-sm w-full shadow-[0_20px_50px_rgba(217,119,6,0.15)] text-center space-y-6 select-none relative overflow-hidden text-slate-800"
-              onClick={e => e.stopPropagation()}
-            >
-              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400" />
-              
-              <div className="relative w-28 h-28 mx-auto flex items-center justify-center">
-                <div className="absolute inset-0 rounded-full border-4 border-dashed border-amber-400/20 animate-spin-slow" />
-                <div className="absolute inset-2 rounded-full border border-yellow-400/20" />
-                <div className="w-20 h-20 rounded-full bg-amber-50/80 border-2 border-amber-400 flex items-center justify-center shadow-lg shadow-amber-200/20">
-                  <Compass size={40} className="text-amber-500 animate-spin-slow" />
-                </div>
-                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-amber-500 animate-ping" />
-                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-amber-500 animate-ping delay-300" />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-lg font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 uppercase animate-pulse">
-                  {t('searching_optimal', language)}
-                </h3>
-                <div className="flex justify-center items-center gap-1 text-slate-500 text-[11px] font-bold tracking-widest uppercase">
-                  <span>ESTIMATED TIME:</span>
-                  <span className="text-amber-600 font-black text-sm">{searchTimer}s</span>
-                </div>
-              </div>
-
-              <div className="bg-amber-50/30 border border-amber-100/70 rounded-2xl p-4.5 text-left relative overflow-hidden shadow-sm min-h-[90px] flex flex-col justify-center">
-                <div className="absolute top-0 left-0 bg-amber-500 text-white font-black uppercase text-[8px] tracking-wider px-2 py-0.5 rounded-br-lg">
-                  {t('matching_tip', language)}
-                </div>
-                <p className="text-xs font-semibold leading-relaxed text-slate-600 pt-2 text-center italic">
-                  "{currentTip}"
-                </p>
-              </div>
-
-              <button
-                onClick={cancelMatchmaking}
-                className="w-full bg-slate-50 hover:bg-red-50 hover:text-red-600 hover:border-red-200 text-slate-500 border border-slate-200 py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-sm active:scale-[0.98] transition-all cursor-pointer touch-target"
-              >
-                {language === 'ko' ? '취소' : 'CANCEL'}
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Optimal Matchmaking Search Modal with Mini Warmup Puzzle (Row 657 / ID 554) */}
+      <MatchmakingQueueModal
+        isOpen={isSearching}
+        isRealTimePvp={false}
+        searchTimer={searchTimer}
+        tip={currentTip}
+        onCancel={cancelMatchmaking}
+        language={language}
+      />
 
       {/* 1. Nearby Search Type Modal */}
       <AnimatePresence>

@@ -47,6 +47,7 @@ import { MonsterPetBadge } from '../components/MonsterPetBadge';
 import { useMonsterPet } from '../hooks/useMonsterPet';
 import { getMonsterPetGroup, isMonsterPetCandidate, parseCardAvatarId } from '../lib/monsterPet';
 import { CardCombineModal } from '../components/CardCombineModal';
+import { DeckSynergyCalculator } from '../components/DeckSynergyCalculator';
 
 interface MyDeckViewProps {
   currentDeck: CardData[];
@@ -1097,38 +1098,16 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
       <div className="flex flex-col gap-4 md:gap-6">
         <div className="flex flex-col items-center gap-3 sm:gap-4 w-full">
-          {/* Real-time Deck Synergy Bar (Row 23) */}
-          <div className="w-full max-w-4xl bg-slate-900/90 border border-slate-800 text-white px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl flex flex-wrap items-center justify-between gap-2 shadow-md">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-indigo-500/20 border border-indigo-500/40 rounded-lg text-indigo-400 shrink-0">
-                <Sparkles size={14} className="animate-pulse" />
-              </div>
-              <span className="text-[11px] font-black uppercase tracking-wider text-slate-200">
-                {language === 'ko' ? '실시간 덱 시너지' : 'Active Synergies'}
-              </span>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-1.5">
-              {activeSynergies.length === 0 ? (
-                <span className="text-[10px] font-medium text-slate-400 italic">
-                  {language === 'ko' ? '동일 속성 2장 이상 배치 시 공명 활성화' : 'Equip 2+ cards of same element to activate resonance'}
-                </span>
-              ) : (
-                activeSynergies.map((syn, idx) => (
-                  <div
-                    key={idx}
-                    className="px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-mono font-bold flex items-center gap-1.5 border bg-indigo-950/80 border-indigo-500/50 text-indigo-300 shadow-xs cursor-help transition-all hover:bg-indigo-900"
-                    title={syn.desc}
-                  >
-                    <span>{syn.icon}</span>
-                    <span>{syn.name}</span>
-                    <span className="px-1 py-0.2 rounded text-[8px] font-black bg-indigo-500/30 text-indigo-200">
-                      {syn.effect}
-                    </span>
-                  </div>
-                ))
-              )}
-            </div>
+          {/* Real-time Deck Synergy Score & Smart Presets (Row 655 / ID 552) */}
+          <div className="w-full max-w-4xl">
+            <DeckSynergyCalculator
+              currentDeck={currentDeck}
+              ownedCards={ownedCards}
+              inventory={inventory}
+              language={language}
+              updateDeck={updateDeck}
+              playSfx={playSfx}
+            />
           </div>
 
           <div id="deck-list" className="mx-auto flex w-full max-w-full flex-nowrap sm:flex-wrap justify-center items-center gap-1 xs:gap-2 sm:gap-4 md:gap-6 px-0.5 sm:px-1">
