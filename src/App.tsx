@@ -49,7 +49,6 @@ import { WEBTOON_SEASONS, getWebtoonSeasonById, getWebtoonEpisodesForSeason } fr
 import { saveWebtoonProgress, type WebtoonProgressState } from './lib/webtoonProgress';
 import { BGM_TRACKS, DEFAULT_BGM_TRACK_ID } from './lib/audioConstants';
 import { getSeasonItem, setSeasonItem, removeSeasonItem } from './lib/seasonStorage';
-import { resetAllCaches } from './lib/cacheManager';
 import { getDeckUpgradeRecommendation } from './lib/deckUpgrade';
 import { incrementMissionProgress } from './lib/dailyMissions';
 import { 
@@ -451,11 +450,15 @@ function AppContent() {
   const [adBannerHeight, setAdBannerHeight] = useState(0);
   const [autoStartPvp, setAutoStartPvp] = useState(false);
   const [view, setView] = useState<ViewType>(() => getViewFromPathAndUrl());
-  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(false);
+  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
 
-  // 최초 접속 시 딜레이 없이 즉시 화면 렌더링
+  // 최초 접속 시에만 3초 동안 로딩화면 표시 (이후 캐시된 화면은 즉시 표시)
   useEffect(() => {
-    setIsInitialLoading(false);
+    const timer = window.setTimeout(() => {
+      setIsInitialLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const [creatorCode, setCreatorCode] = useState<string>(() => {
@@ -645,21 +648,12 @@ function AppContent() {
   const [targetProgress, setTargetProgress] = useState(10);
   const loadStartTimeRef = useRef(Date.now());
 
-  // 절대적 안전 보장: 350ms 후 무조건 게임 화면으로 진입 (무한로딩 완벽 방지)
-  useEffect(() => {
-    const safetyTimer = setTimeout(() => {
-      setAuthProgress(100);
-      setAuthInitialized(true);
-    }, 350);
-    return () => clearTimeout(safetyTimer);
-  }, []);
-
   useEffect(() => {
     let timer: any;
     const updateProgress = () => {
       setAuthProgress((prev) => {
         if (prev < targetProgress) {
-          const step = Math.max(15, Math.ceil((targetProgress - prev) * 0.4));
+          const step = Math.max(2, Math.ceil((targetProgress - prev) * 0.25));
           const next = prev + step;
           return next >= targetProgress ? targetProgress : next;
         }
@@ -672,10 +666,10 @@ function AppContent() {
   }, [targetProgress]);
 
   useEffect(() => {
-    if (authProgress >= 100) {
+    if (authProgress === 100) {
       const elapsed = Date.now() - loadStartTimeRef.current;
-      const minDisplayTime = 50; // 초고속 전환
-      const remainingTime = Math.max(20, minDisplayTime - elapsed);
+      const minDisplayTime = 100; // Fast loading: transition as soon as assets are ready
+      const remainingTime = Math.max(50, minDisplayTime - elapsed);
 
       const t = setTimeout(() => {
         setAuthInitialized(true);
@@ -1175,109 +1169,104 @@ function AppContent() {
 
   // Initialize App Data & User Profile directly from LocalStorage
   useEffect(() => {
-    try {
-      setTargetProgress(10);
-      const storedProfile = localStorage.getItem('hero_user_profile');
-      if (storedProfile) {
-        try {
-          setUser(JSON.parse(storedProfile));
-        } catch (e) {
-          setUser(getStoredGuestProfile());
-        }
-      } else {
+    setTargetProgress(10);
+    const storedProfile = localStorage.getItem('hero_user_profile');
+    if (storedProfile) {
+      try {
+        setUser(JSON.parse(storedProfile));
+      } catch (e) {
         setUser(getStoredGuestProfile());
       }
+    } else {
+      setUser(getStoredGuestProfile());
+    }
 
-      const season = localStorage.getItem('hero_current_season') || 'season1';
-      setTargetProgress(30);
+    const season = localStorage.getItem('hero_current_season') || 'season1';
+    setTargetProgress(30);
 
-      // 1. sns
-      const savedSns = getSeasonItem('hero_sns_guest', season) || getSeasonItem('hero_sns', season) || localStorage.getItem('hero_sns');
-      if (savedSns) {
-        const parsed = parseInt(savedSns, 10);
-        if (!isNaN(parsed)) setSns(parsed);
-      } else {
-        setSns(1000);
+    // 1. sns
+    const savedSns = getSeasonItem('hero_sns_guest', season) || getSeasonItem('hero_sns', season) || localStorage.getItem('hero_sns');
+    if (savedSns) {
+      const parsed = parseInt(savedSns, 10);
+      if (!isNaN(parsed)) setSns(parsed);
+    } else {
+      setSns(1000);
+    }
+    setTargetProgress(50);
+
+    // 2. inventory
+    const defaultInv: Record<number, InventoryRecord> = {};
+    INITIAL_CARDS.forEach(c => {
+      if (c.imageIndex !== undefined) {
+        defaultInv[c.imageIndex] = { cardIndex: c.imageIndex, quantity: 1, rarity: c.rarity || 'bronze' };
       }
-      setTargetProgress(50);
+    });
+    const savedInvGuest = getSeasonItem('hero_inventory_guest', season);
+    const savedInvStandard = getSeasonItem('hero_inventory', season);
+    const rawStandard = localStorage.getItem('hero_inventory');
+    let parsedInvGuest = {};
+    let parsedInvStandard = {};
+    let parsedRaw = {};
+    if (savedInvGuest) try { parsedInvGuest = JSON.parse(savedInvGuest); } catch (e) {}
+    if (savedInvStandard) try { parsedInvStandard = JSON.parse(savedInvStandard); } catch (e) {}
+    if (rawStandard) try { parsedRaw = JSON.parse(rawStandard); } catch (e) {}
+    const finalInv = { ...defaultInv, ...parsedRaw, ...parsedInvStandard, ...parsedInvGuest };
+    setInventory(finalInv);
+    setTargetProgress(65);
 
-      // 2. inventory
-      const defaultInv: Record<number, InventoryRecord> = {};
-      INITIAL_CARDS.forEach(c => {
-        if (c.imageIndex !== undefined) {
-          defaultInv[c.imageIndex] = { cardIndex: c.imageIndex, quantity: 1, rarity: c.rarity || 'bronze' };
-        }
+    // 3. totalPower
+    const savedPower = getSeasonItem('hero_totalPower_guest', season) || getSeasonItem('hero_totalPower', season) || localStorage.getItem('hero_totalPower');
+    if (savedPower) {
+      const parsed = parseInt(savedPower, 10);
+      if (!isNaN(parsed)) setTotalPower(parsed);
+    } else {
+      const defaultPower = INITIAL_CARDS.reduce((acc, c) => acc + (CARD_DATABASE[c.imageIndex || 0]?.power || 0), 0);
+      setTotalPower(defaultPower);
+    }
+    setTargetProgress(75);
+
+    // 4. itemInventory
+    const savedItemGuest = getSeasonItem('hero_itemInventory_guest', season);
+    const savedItemStandard = getSeasonItem('hero_itemInventory', season);
+    let parsedItems = [];
+    if (savedItemGuest && savedItemGuest !== '[]') {
+      try { parsedItems = JSON.parse(savedItemGuest); } catch (e) {}
+    } else if (savedItemStandard && savedItemStandard !== '[]') {
+      try { parsedItems = JSON.parse(savedItemStandard); } catch (e) {}
+    }
+    if (parsedItems.length > 0) setItemInventory(parsedItems);
+    setTargetProgress(85);
+
+    // 5. stats
+    const savedStats = getSeasonItem('hero_stats_guest', season) || getSeasonItem('hero_stats', season) || localStorage.getItem('hero_stats');
+    if (savedStats) {
+      try {
+        setStats(JSON.parse(savedStats));
+      } catch (e) {}
+    } else {
+      setStats({ 
+        wins: 0, losses: 0, draws: 0, skillPoints: 0, winStreak: 0, lossStreak: 0, 
+        unlockedAchievements: [], claimedAchievements: [], achievementProgress: {} 
       });
-      const savedInvGuest = getSeasonItem('hero_inventory_guest', season);
-      const savedInvStandard = getSeasonItem('hero_inventory', season);
-      const rawStandard = localStorage.getItem('hero_inventory');
-      let parsedInvGuest = {};
-      let parsedInvStandard = {};
-      let parsedRaw = {};
-      if (savedInvGuest) try { parsedInvGuest = JSON.parse(savedInvGuest); } catch (e) {}
-      if (savedInvStandard) try { parsedInvStandard = JSON.parse(savedInvStandard); } catch (e) {}
-      if (rawStandard) try { parsedRaw = JSON.parse(rawStandard); } catch (e) {}
-      const finalInv = { ...defaultInv, ...parsedRaw, ...parsedInvStandard, ...parsedInvGuest };
-      setInventory(finalInv);
-      setTargetProgress(65);
+    }
 
-      // 3. totalPower
-      const savedPower = getSeasonItem('hero_totalPower_guest', season) || getSeasonItem('hero_totalPower', season) || localStorage.getItem('hero_totalPower');
-      if (savedPower) {
-        const parsed = parseInt(savedPower, 10);
-        if (!isNaN(parsed)) setTotalPower(parsed);
-      } else {
-        const defaultPower = INITIAL_CARDS.reduce((acc, c) => acc + (CARD_DATABASE[c.imageIndex || 0]?.power || 0), 0);
-        setTotalPower(defaultPower);
-      }
-      setTargetProgress(75);
-
-      // 4. itemInventory
-      const savedItemGuest = getSeasonItem('hero_itemInventory_guest', season);
-      const savedItemStandard = getSeasonItem('hero_itemInventory', season);
-      let parsedItems = [];
-      if (savedItemGuest && savedItemGuest !== '[]') {
-        try { parsedItems = JSON.parse(savedItemGuest); } catch (e) {}
-      } else if (savedItemStandard && savedItemStandard !== '[]') {
-        try { parsedItems = JSON.parse(savedItemStandard); } catch (e) {}
-      }
-      if (parsedItems.length > 0) setItemInventory(parsedItems);
-      setTargetProgress(85);
-
-      // 5. stats
-      const savedStats = getSeasonItem('hero_stats_guest', season) || getSeasonItem('hero_stats', season) || localStorage.getItem('hero_stats');
-      if (savedStats) {
-        try {
-          setStats(JSON.parse(savedStats));
-        } catch (e) {}
-      } else {
-        setStats({ 
-          wins: 0, losses: 0, draws: 0, skillPoints: 0, winStreak: 0, lossStreak: 0, 
-          unlockedAchievements: [], claimedAchievements: [], achievementProgress: {} 
-        });
-      }
-
-      // 6. currentDeck
-      const savedDeck = getSeasonItem('hero_deck_guest', season) || getSeasonItem('hero_deck', season) || getSeasonItem('hero_currentDeck_guest', season) || getSeasonItem('hero_currentDeck', season) || localStorage.getItem('hero_deck');
-      if (savedDeck) {
-        try {
-          const parsed = JSON.parse(savedDeck);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setCurrentDeck(parsed.map((c: any) => syncCardWithDatabase(c, finalInv)));
-          } else {
-            setCurrentDeck(INITIAL_CARDS.slice(0, 5).map(c => syncCardWithDatabase(c, finalInv)));
-          }
-        } catch (e) {
+    // 6. currentDeck
+    const savedDeck = getSeasonItem('hero_deck_guest', season) || getSeasonItem('hero_deck', season) || getSeasonItem('hero_currentDeck_guest', season) || getSeasonItem('hero_currentDeck', season) || localStorage.getItem('hero_deck');
+    if (savedDeck) {
+      try {
+        const parsed = JSON.parse(savedDeck);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setCurrentDeck(parsed.map((c: any) => syncCardWithDatabase(c, finalInv)));
+        } else {
           setCurrentDeck(INITIAL_CARDS.slice(0, 5).map(c => syncCardWithDatabase(c, finalInv)));
         }
-      } else {
+      } catch (e) {
         setCurrentDeck(INITIAL_CARDS.slice(0, 5).map(c => syncCardWithDatabase(c, finalInv)));
       }
-    } catch (e) {
-      console.warn('[AppInit] Handled graceful local state error:', e);
-    } finally {
-      setTargetProgress(100);
+    } else {
+      setCurrentDeck(INITIAL_CARDS.slice(0, 5).map(c => syncCardWithDatabase(c, finalInv)));
     }
+    setTargetProgress(100);
   }, []);
 
   // Version Log
@@ -3259,12 +3248,12 @@ function AppContent() {
   }, [audioStarted, bgmEnabled, bgmAudio]);
 
   const playSfx = useCallback((url: string) => {
-    if (!sfxEnabled || !url || sfxVolume <= 0) return;
+    if (!sfxEnabled || !url) return;
     
     try {
       const audio = new Audio();
       audio.src = url;
-      audio.volume = Math.max(0, Math.min(1, sfxVolume));
+      audio.volume = sfxVolume;
       
       // Attempt to play and handle promise
       const playPromise = audio.play();
@@ -3282,7 +3271,7 @@ function AppContent() {
         console.warn("[SFX] Initialization failed:", err);
       }
     }
-  }, [sfxEnabled, sfxVolume, testMode]);
+  }, [sfxEnabled, testMode]);
 
   const updateSns = useCallback(async (amount: number, reason?: string, typeOrTarget?: 'earned' | 'purchased' | string, targetName?: string) => {
     let nextPurchased = purchasedSns;
@@ -4513,7 +4502,6 @@ function AppContent() {
   useEffect(() => {
     localStorage.setItem('hero_bgm', bgmEnabled.toString());
     localStorage.setItem('hero_sfx', sfxEnabled.toString());
-    localStorage.setItem('hero_sfx_muted', (!sfxEnabled).toString());
     localStorage.setItem('hero_bgm_volume', bgmVolume.toString());
     localStorage.setItem('hero_sfx_volume', sfxVolume.toString());
     try {
@@ -4862,7 +4850,6 @@ function AppContent() {
             addCard={addCard}
             addItem={addItem}
             showCustomAlert={showCustomAlert}
-            playSfx={playSfx}
           />
         );
       case 'mydeck':
@@ -5059,7 +5046,6 @@ function AppContent() {
             skillPoints={stats.skillPoints || 0}
             sns={sns}
             isImpersonating={false}
-            playSfx={playSfx}
           />
         );
       case 'shop':
@@ -5672,28 +5658,13 @@ function AppContent() {
             <span className="font-mono font-black text-sm">{authProgress}%</span>
           </div>
 
-          {/* Direct Launch Button */}
-          <button
-            type="button"
-            id="auth-gate-instant-launch-btn"
-            onClick={() => {
-              setAuthProgress(100);
-              setAuthInitialized(true);
-            }}
-            className="w-full py-2.5 px-4 bg-[#201d1d] hover:bg-black text-[#fdfcfc] text-xs font-bold rounded-sm flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-[0.99] transition-all mb-2"
-          >
-            <span>{language === 'ko' ? '[ 지금 바로 게임 시작하기 ]' : '[ Enter Game Now ]'}</span>
-            <ArrowRight size={14} />
-          </button>
-
           {/* Notice & Force Reset */}
-          <div className="mt-2 pt-3 border-t border-[#201d1d]/10 flex flex-col items-center gap-2">
+          <div className="mt-4 pt-4 border-t border-[#201d1d]/10 flex flex-col items-center gap-2">
             <p className="text-[10px] text-[#201d1d]/50 leading-relaxed max-w-xs">
               {t('session_corrupted_notice', language)}
             </p>
             <div className="flex items-center justify-center gap-2 mt-1">
               <button
-                type="button"
                 onClick={() => window.location.reload()}
                 className="px-3 py-1.5 bg-[#201d1d] hover:bg-black text-[#fdfcfc] text-[11px] font-bold rounded-sm transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
               >
@@ -5701,15 +5672,7 @@ function AppContent() {
                 {language === 'ko' ? '새로고침' : 'Refresh'}
               </button>
               <button
-                type="button"
-                onClick={() => {
-                  try {
-                    resetAllCaches();
-                  } catch (e) {
-                    console.error(e);
-                  }
-                  window.location.reload();
-                }}
+                onClick={() => window.location.href = '/logout'}
                 className="px-3 py-1.5 bg-white text-[#201d1d] hover:bg-[#f0eded] text-[11px] font-bold rounded-sm border border-[#201d1d]/20 transition-all cursor-pointer"
               >
                 {t('force_reset_session', language)}
@@ -6230,12 +6193,20 @@ function AppContent() {
                     <ViewLoadingFallback
                       view={view}
                       language={language}
-                      targetDurationMs={400}
+                      targetDurationMs={800}
                     />
                   }
                 >
                   <SnsProvider sns={sns} updateSns={updateSns} setCurrentDeck={setCurrentDeck} selectedCompanionIndex={selectedCompanionIndex}>
-                    {renderView()}
+                    {isInitialLoading ? (
+                      <ViewLoadingFallback
+                        view={view}
+                        language={language}
+                        targetDurationMs={3000}
+                      />
+                    ) : (
+                      renderView()
+                    )}
                   </SnsProvider>
                 </Suspense>
               </motion.div>

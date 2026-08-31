@@ -44,22 +44,6 @@ export default defineConfig(({mode}) => {
   return {
     publicDir: 'public',
     plugins: [
-      {
-        name: 'cors-headers-plugin',
-        configureServer(server) {
-          server.middlewares.use((req, res, next) => {
-            res.setHeader('Access-Control-Allow-Origin', '*');
-            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-            res.setHeader('Access-Control-Allow-Headers', '*');
-            if (req.method === 'OPTIONS') {
-              res.statusCode = 204;
-              res.end();
-              return;
-            }
-            next();
-          });
-        }
-      },
       react(), 
       tailwindcss(),
       {
@@ -146,7 +130,7 @@ export default defineConfig(({mode}) => {
         }
       }
     ],
-    base: process.env.VITE_BASE_PATH || '/',
+    base: process.env.VITE_BASE_PATH || './',
     build: {
       outDir: 'dist',
       assetsDir: 'assets',
@@ -184,16 +168,6 @@ export default defineConfig(({mode}) => {
       // Do not modify—file watching is disabled to prevent flickering during agent edits.
       host: '0.0.0.0',
       port: 3000,
-      cors: {
-        origin: '*',
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-        allowedHeaders: ['*'],
-      },
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-        'Access-Control-Allow-Headers': '*',
-      },
       hmr: process.env.DISABLE_HMR !== 'true' ? { port: 24680 } : false,
       allowedHosts: true,
       fs: {

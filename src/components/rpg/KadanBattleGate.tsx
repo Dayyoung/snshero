@@ -3,7 +3,6 @@ import { CheckCircle2, ScrollText, Swords, X, XCircle, ChevronLeft, ArrowRight, 
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../../lib/utils';
 import { t } from '../../lib/i18n';
-import { playSfx } from '../../lib/sound';
 import type { CardData, Language } from '../../types';
 import { CardItem } from '../CardItem';
 import type { KadanRpgEncounter } from '../../content/kadanRpgStory';
@@ -197,6 +196,23 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
     if (autoBattle || state.turn !== 'player' || state.result) return;
     setState((previous) => placeKadanBattleCard(previous, 'player', selectedCardIndex, boardIndex, language));
     setSelectedCardIndex(0);
+  };
+
+  const audioCache = React.useRef<Map<string, HTMLAudioElement>>(new Map());
+  const playSfx = (url: string) => {
+    try {
+      let audio = audioCache.current.get(url);
+      if (!audio) {
+        audio = new Audio(url);
+        audio.volume = 0.5;
+        audioCache.current.set(url, audio);
+      } else {
+        audio.currentTime = 0;
+      }
+      audio.play().catch(() => {});
+    } catch (e) {
+      // ignore
+    }
   };
 
   const resultIcon = state.result === 'win'

@@ -1936,15 +1936,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
   };
 
   useEffect(() => {
-    if (!gachaState.isActive) return;
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = originalOverflow;
-    };
-  }, [gachaState.isActive]);
-
-  useEffect(() => {
     const handleGlobalBack = (e: Event) => {
       if (!gachaState.isActive) return;
       e.preventDefault();
@@ -1983,7 +1974,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
             setGachaState(prev => ({ ...prev, isActive: false }));
           }
         }
-      }, 1500);
+      }, 800);
       return () => clearTimeout(timer);
     }
   }, [gachaState.isActive, gachaState.packType, gachaState.cards, tutorialStep, triggerDeckUpgradeCheck, setTutorialStep, onNavigate]);
@@ -2436,7 +2427,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[200] flex flex-col items-center justify-between w-full h-[100dvh] max-h-[100dvh] bg-black/95 backdrop-blur-2xl p-3 sm:p-4 overflow-hidden select-none cursor-pointer"
+                className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-black/95 backdrop-blur-xl p-3 sm:p-4 overflow-y-auto cursor-pointer"
                 onClick={(e) => {
                   const target = e.target as HTMLElement;
                   if (target.closest('.gacha-card-wrapper') || target.closest('button')) {
