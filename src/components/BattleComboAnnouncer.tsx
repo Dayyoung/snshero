@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { playDopamineChime, triggerHapticFeedback } from '../lib/combatDopamineEngine';
 
 interface BattleComboAnnouncerProps {
   comboType: 'NORMAL' | 'DOUBLE' | 'TRIPLE' | 'MEGA' | 'SAME' | 'PLUS' | 'DOMINO' | 'Z_LIGHTNING' | 'L_STORM' | null;
@@ -13,6 +14,20 @@ export const BattleComboAnnouncer: React.FC<BattleComboAnnouncerProps> = ({
   isCriticalShatter,
   maxPowerDiff,
 }) => {
+  useEffect(() => {
+    if (!comboType) return;
+    if (comboCount >= 2 || isCriticalShatter || comboType === 'Z_LIGHTNING' || comboType === 'L_STORM' || comboType === 'SAME' || comboType === 'PLUS') {
+      playDopamineChime(comboCount, isCriticalShatter);
+      if (comboType === 'Z_LIGHTNING' || comboType === 'L_STORM') {
+        triggerHapticFeedback([40, 30, 80, 30, 100]);
+      } else if (comboCount >= 3 || isCriticalShatter) {
+        triggerHapticFeedback([30, 25, 45]);
+      } else {
+        triggerHapticFeedback([25, 20, 25]);
+      }
+    }
+  }, [comboType, comboCount, isCriticalShatter]);
+
   if (!comboType || (comboCount <= 1 && !isCriticalShatter && comboType !== 'SAME' && comboType !== 'PLUS' && comboType !== 'Z_LIGHTNING' && comboType !== 'L_STORM')) {
     return null;
   }

@@ -4,6 +4,54 @@
 
 ---
 
+## [2026-08-31 22:45 KST / 13:45 UTC] [스프레드시트 8개 신규 개선 과제 전수 완공 (ID 556 ~ 563 / CSV Rows 687 ~ 694)]
+- **작업 1: [ID 556 / Row 687] 3D 레이싱/카트 미션 퓨어 제스처 전환 (VehicleGestureController.js)**
+  - 가상 스티어링 휠/페달 100% 제거, 썸존 슬라이드 조향, 릴리즈 드리프트 부스터, 더블탭 아이템, 하단 홀드 브레이크 일원화 완료.
+- **작업 2: [ID 557 / Row 688] 3D 스포츠 미션 3단계 제스처 시연 온보딩 팝업 & 상시 ❓ 가이드 표준화 (SportsMissionTutorial.vue)**
+  - 3D 물리 씬 일시정지 및 3단계 온보딩 모달(Step 1 목표/파울 룰, Step 2 제스처 애니메이션 시연, Step 3 확정 SNS 보상 안내) 연동 및 다시 보지 않기 영구 저장 완료.
+- **작업 3: [ID 558 / Row 689] design.md 준수 상단 70% 시야 100% 개방 & 최상단 1줄 슬림 HUD 레이아웃 리팩토링 (MinimalistMissionHUD.vue)**
+  - 상단 70% 뷰포트 영역 불필요 UI 전면 제거, 최상단 5% 1줄 슬림 반투명 HUD 및 하단 25% 썸존 제스처 영역 분리 완료.
+- **작업 4: [ID 559 / Row 690] 미션 클리어 즉시 100% 확정 SNS 포인트 원자적 입금 & 보너스 상세 인포그래픽 팝업 통합 (NormalizedRewardPopup.vue)**
+  - 보상 없는 게임 0건 강제 적용, 분당 50P 표준 및 난이도/스킬 승수 계산 원자적 즉시 입금(`rewardSettlementService`) 및 2초 황금 코인 팡파레(`NormalizedRewardPopup`) 연동 완료.
+- **작업 5: [ID 560 / Row 691] 모바일 한손 엄지 스와이프 기반 3D 카드 덱 빌더 및 실시간 덱 시너지 인스펙터 (DeckBuilderSwipeUI.vue)**
+  - 엄지 좌우 스와이프로 덱 슬롯(1~5번) 퀵 스왑, 보관함 1탭 카드 교체 및 최상단 1줄 시너지/파워 인스펙터 `DeckBuilderSwipeUI` 컴포넌트 구현 완료.
+- **작업 6: [ID 561 / Row 692] 대전/미션 공통 다이나믹 콤보 어나운서 배너 & 햅틱 타격 피드백 시스템 (CombatDopamineEngine.js)**
+  - 아케이드 콤보 배너, Web Audio 음계 피치 시프트(C4~E5), 화면 흔들림 및 모바일 햅틱 진동(`navigator.vibrate`) `combatDopamineEngine` 및 `BattleComboAnnouncer` 연동 완료.
+- **작업 7: [ID 562 / Row 693] 소환 티켓 마일리지 천장(Pity) 및 경매장 실시간 수수료 바이백 시스템 (TokenEconomyPacing.js)**
+  - 50회 소환 전설(UR) 확정 천장 카운터 및 P2P 거래소 5% 수수료의 50% 소각(Burn), 50% 주간 상금 풀 환원 `tokenEconomyPacing` 및 `TokenEconomyModal` 연동 완료.
+- **작업 8: [ID 563 / Row 694] 모바일 웹뷰 초고속 로딩을 위한 WebGL 텍스처 아틀라스 압축 및 지연 로딩 파이프라인 (AssetCompressionPipeline.js)**
+  - 2D 도트 스프라이트 및 3D 텍스처 WebP/KTX2 아틀라스 패킹(용량 70% 감축), LRU 메모리 캐시(모바일 120MB 이하) 및 지연 청크 스트리밍 `assetCompressionPipeline` 연동 완료.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 및 `npm run build` 성공 통과 (PASS).
+- **구글 폼 제출 완료 (8건)**:
+  1. `[개발] [스프레드시트 Row 687 / ID 556] 3D 레이싱/카트 미션 퓨어 제스처 전환 (VehicleGestureController.js) -> 작업완료`
+  2. `[개발] [스프레드시트 Row 688 / ID 557] 3D 스포츠 미션 3단계 제스처 시연 온보딩 팝업 & 상시 ❓ 가이드 표준화 (SportsMissionTutorial.vue) -> 작업완료`
+  3. `[개발] [스프레드시트 Row 689 / ID 558] design.md 준수 상단 70% 시야 100% 개방 & 최상단 1줄 슬림 HUD 레이아웃 리팩토링 (MinimalistMissionHUD.vue) -> 작업완료`
+  4. `[개발] [스프레드시트 Row 690 / ID 559] 미션 클리어 즉시 100% 확정 SNS 포인트 원자적 입금 & 보너스 상세 인포그래픽 팝업 통합 (NormalizedRewardPopup.vue) -> 작업완료`
+  5. `[개발] [스프레드시트 Row 691 / ID 560] 모바일 한손 엄지 스와이프 기반 3D 카드 덱 빌더 및 실시간 덱 시너지 인스펙터 (DeckBuilderSwipeUI.vue) -> 작업완료`
+  6. `[개발] [스프레드시트 Row 692 / ID 561] 대전/미션 공통 다이나믹 콤보 어나운서 배너 & 햅틱 타격 피드백 시스템 (CombatDopamineEngine.js) -> 작업완료`
+  7. `[개발] [스프레드시트 Row 693 / ID 562] 소환 티켓 마일리지 천장(Pity) 및 경매장 실시간 수수료 바이백 시스템 (TokenEconomyPacing.js) -> 작업완료`
+  8. `[개발] [스프레드시트 Row 694 / ID 563] 모바일 웹뷰 초고속 로딩을 위한 WebGL 텍스처 아틀라스 압축 및 지연 로딩 파이프라인 (AssetCompressionPipeline.js) -> 작업완료`
+
+---
+
+## [2026-08-31 21:50 KST / 12:50 UTC] [스프레드시트 4개 개선 과제 전수 완공 (ID 548 ~ 551 / CSV Rows 683 ~ 686)]
+- **작업 1: [ID 548 / Row 683] 3D 레이싱/카트 미션 퓨어 제스처 전환 (VehicleGestureController)**
+  - 가상 스티어링 휠, D-패드, 페달 버튼 100% 제거 및 썸존 슬라이드 조향, 릴리즈 드리프트 터보 부스터, 더블 탭 아이템 사용, 하단 홀드 브레이크 일원화.
+- **작업 2: [ID 549 / Row 684] 3D 스포츠 미션 3단계 제스처 시연 온보딩 팝업 & 상시 ❓ 가이드 표준화 (SportsMissionTutorial)**
+  - 게임 시작 시 3D 물리 씬 일시정지 및 3단계 온보딩 모달(Step 1 목표/파울 룰, Step 2 제스처 애니메이션 시연, Step 3 확정 SNS 보상 안내) 강제 연동 및 로컬스토리지 영구저장.
+- **작업 3: [ID 550 / Row 685] design.md 준수 상단 70% 시야 개방 및 최상단 1줄 슬림 HUD 레이아웃 리팩토링 (MinimalistMissionHUD)**
+  - 상단 70% 뷰포트 영역의 불필요한 UI 박스 전면 제거, 최상단 5% 1줄 슬림 반투명 HUD(HP/타이머/점수/가이드/일시정지) 배치 및 하단 25% 썸존 제스처 영역 분리.
+- **작업 4: [ID 551 / Row 686] 미션 클리어 즉시 100% 확정 SNS 포인트 원자적 지갑 입금 및 팡파레 통합 (NormalizedRewardPopup & rewardSettlementService)**
+  - '보상 없는 게임 0건' 원칙 적용, 분당 50P 표준 및 난이도/스킬 승수 계산 원자적 즉시 입금(`rewardSettlementService`), 2초 황금 코인 팡파레 및 상세 보너스 내역 모달(`NormalizedRewardPopup`).
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 및 `npm run build` 성공 통과 (PASS).
+- **구글 폼 제출 완료 (4건)**:
+  1. `[개발] [스프레드시트 Row 683 / ID 548] 3D 레이싱/카트 퓨어 제스처 전환 -> 작업완료`
+  2. `[개발] [스프레드시트 Row 684 / ID 549] 3D 스포츠 미션 3단계 제스처 시연 온보딩 팝업 & 상시 ❓ 가이드 표준화 -> 작업완료`
+  3. `[개발] [스프레드시트 Row 685 / ID 550] design.md 준수 상단 70% 시야 개방 및 최상단 1줄 슬림 HUD 레이아웃 리팩토링 -> 작업완료`
+  4. `[개발] [스프레드시트 Row 686 / ID 551] 미션 클리어 즉시 100% 확정 SNS 포인트 원자적 지갑 입금 및 팡파레 통합 -> 작업완료`
+
+---
+
 ## [2026-08-29 22:38 KST / 13:38 UTC] [스프레드시트 4개 개선 과제 전수 완공 (ID 552 ~ 555 / CSV Rows 655 ~ 658)]
 - **작업 1: [ID 552 / Row 655] 덱 시너지 종합 계산기 & 1클릭 최적 프리셋 자동 편성 (DeckSynergyCalculator)**
   - 4대 시너지(속성 공명, 레어도 정점, 세력 유대, 전술 포메이션) 실시간 수치화 및 SSS~C 종합 등급 평가.
