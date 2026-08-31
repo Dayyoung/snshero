@@ -22,6 +22,28 @@ import { useGameSettings } from '../contexts/GameSettingsContext';
 import { useCardSkins } from '../hooks/useCardSkins';
 import { getCharacterArtPrompt } from '../content/characterArtPrompts';
 import { ENGLISH_NOVEL_MAP } from '../content/englishNovelMapping';
+import WEBTOON_MANIFEST from '../content/webtoonEpisodeManifest.json';
+
+interface WebtoonManifestImage {
+  index: number;
+  fileName: string;
+  imageUrl: string;
+  type: string;
+  narrationEn?: string;
+  narrationKo?: string;
+  background?: string;
+  characters?: string[];
+}
+
+interface WebtoonManifestEpisode {
+  episodeNumber: number;
+  episodeTitle: string;
+  episodeTitleKo?: string;
+  totalImages: number;
+  images: WebtoonManifestImage[];
+}
+
+const WEBTOON_DATA = WEBTOON_MANIFEST as unknown as Record<string, WebtoonManifestEpisode>;
 
 interface NovelViewProps {
   language: Language;
@@ -156,23 +178,26 @@ export const NovelView: React.FC<NovelViewProps> = ({
   const [cartoonDisplayMode, setCartoonDisplayMode] = useState<'scroll' | 'slides'>('scroll');
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(1);
 
+  // Get cartoon image info for a specific episode and scene index (0..20)
+  const getCartoonImageInfo = (epNum: number, sceneIdx: number): WebtoonManifestImage | undefined => {
+    const epData = WEBTOON_DATA[String(epNum)];
+    if (!epData || !epData.images) return undefined;
+    return epData.images.find(img => img.index === sceneIdx);
+  };
+
   // Get cartoon scene image URL candidate based on attempt count using external GitHub Pages CDN
   const getCartoonSceneUrl = (epNum: number, sceneIdx: number, attempt = 0): string => {
+    const epData = WEBTOON_DATA[String(epNum)];
+    const imgInfo = epData?.images?.find(img => img.index === sceneIdx);
+    if (imgInfo && imgInfo.imageUrl) {
+      if (attempt === 0) return imgInfo.imageUrl;
+      if (attempt === 1) return imgInfo.imageUrl.replace('.jpeg', '.jpg');
+      if (attempt === 2) return imgInfo.imageUrl.replace('.jpeg', '.png');
+    }
     const epPad = pad2(epNum);
     const scPad = pad2(sceneIdx);
     const baseUrl = 'https://dayyoung.github.io/image/cartoon';
-    switch (attempt) {
-      case 0:
-        return `${baseUrl}/episode_${epPad}/scene_${scPad}.jpeg`;
-      case 1:
-        return `${baseUrl}/episode_${epPad}/scene_${scPad}.jpg`;
-      case 2:
-        return `${baseUrl}/episode_${epPad}/scene_${scPad}.png`;
-      case 3:
-        return `${baseUrl}/episode_${epNum}/scene_${scPad}.jpeg`;
-      default:
-        return `${baseUrl}/episode_01/scene_${scPad}.jpeg`;
-    }
+    return `${baseUrl}/episode_${epPad}/${scPad}.jpeg`;
   };
 
   // Reader Customization Settings
@@ -1408,19 +1433,25 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
               {/* Vertical Scroll Webtoon Strip View */}
               {cartoonDisplayMode === 'scroll' ? (
-                <div className="space-y-6">
-                  {[1, 2, 3, 4, 5].map((scNum) => {
+                <div className="space-y-8">
+                  {Array.from({ length: 21 }, (_, i) => i).map((scNum) => {
                     const attempt = sceneImgAttempts[`${currentEpisodeNum}_${scNum}`] || 0;
                     const isFailedAll = attempt > 10;
                     const imgUrl = getCartoonSceneUrl(currentEpisodeNum, scNum, attempt);
+                    const imgInfo = getCartoonImageInfo(currentEpisodeNum, scNum);
+                    const sentenceText = imgInfo
+                      ? (language === 'ko' ? (imgInfo.narrationKo || imgInfo.narrationEn) : (imgInfo.narrationEn || imgInfo.narrationKo))
+                      : (narrationData?.scenes?.[scNum - 1]
+                          ? (language === 'ko' ? narrationData.scenes[scNum - 1].narrationKo : narrationData.scenes[scNum - 1].narrationEn)
+                          : '');
 
                     return (
                       <div key={scNum} className="border border-stone-300 rounded-sm bg-white overflow-hidden shadow-xs hover:border-amber-400 transition-all">
                         {/* Scene Card Header */}
                         <div className="bg-stone-100 border-b border-stone-200 px-4 py-2 flex items-center justify-between text-xs font-mono">
                           <span className="font-bold text-amber-900 flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
-                            SCENE {pad2(scNum)} / 05
+                            <span className={cn("w-2 h-2 rounded-full inline-block", scNum === 0 ? "bg-stone-800" : "bg-amber-500")} />
+                            {scNum === 0 ? `[ TITLE CARD ]` : `SCENE ${pad2(scNum)} / 20`}
                           </span>
                           <button
                             onClick={() => setLightboxSceneIndex(scNum)}
@@ -1450,7 +1481,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                                   [`${currentEpisodeNum}_${scNum}`]: (prev[`${currentEpisodeNum}_${scNum}`] || 0) + 1
                                 }));
                               }}
-                              className="w-full h-auto max-h-[800px] object-contain transition-transform duration-300 group-hover:scale-[1.005]"
+                              className="w-full h-auto max-h-[850px] object-contain transition-transform duration-300 group-hover:scale-[1.003]"
                             />
                           ) : (
                             /* Fallback Character Card Panel */
@@ -1460,7 +1491,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                                 className="w-28 h-28 rounded-lg mb-3 border border-stone-700 bg-stone-950 drop-shadow-md"
                               />
                               <span className="text-xs font-bold text-amber-300 uppercase tracking-widest">
-                                [ EPISODE {currentEpisodeNum} · SCENE {pad2(scNum)} ]
+                                [ EPISODE {currentEpisodeNum} · {scNum === 0 ? 'TITLE' : `SCENE ${pad2(scNum)}`} ]
                               </span>
                             </div>
                           )}
@@ -1473,6 +1504,20 @@ export const NovelView: React.FC<NovelViewProps> = ({
                             </span>
                           </div>
                         </div>
+
+                        {/* Scene Bottom Novel Sentence Card */}
+                        {sentenceText && (
+                          <div className="bg-stone-50 border-t border-stone-200 px-4 py-3.5 sm:px-5 sm:py-4 font-mono">
+                            <div className="flex items-start gap-2.5">
+                              <span className="text-amber-700 font-bold text-[11px] bg-amber-100 border border-amber-300/80 px-2 py-0.5 rounded-xs mt-0.5 shrink-0 select-none">
+                                {scNum === 0 ? 'TITLE' : `#${pad2(scNum)}`}
+                              </span>
+                              <p className="text-xs sm:text-[13px] leading-relaxed text-stone-800 font-medium select-text">
+                                {sentenceText}
+                              </p>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -1485,27 +1530,33 @@ export const NovelView: React.FC<NovelViewProps> = ({
                     const attempt = sceneImgAttempts[`${currentEpisodeNum}_${scNum}`] || 0;
                     const isFailedAll = attempt > 10;
                     const imgUrl = getCartoonSceneUrl(currentEpisodeNum, scNum, attempt);
+                    const imgInfo = getCartoonImageInfo(currentEpisodeNum, scNum);
+                    const sentenceText = imgInfo
+                      ? (language === 'ko' ? (imgInfo.narrationKo || imgInfo.narrationEn) : (imgInfo.narrationEn || imgInfo.narrationKo))
+                      : (narrationData?.scenes?.[scNum - 1]
+                          ? (language === 'ko' ? narrationData.scenes[scNum - 1].narrationKo : narrationData.scenes[scNum - 1].narrationEn)
+                          : '');
 
                     return (
                       <div className="space-y-4 font-mono">
                         {/* Slide Navigation Header */}
-                        <div className="flex items-center justify-between border-b border-stone-200 pb-3 text-xs">
+                        <div className="flex items-center justify-between border-b border-stone-200 pb-3 text-xs flex-wrap gap-2">
                           <span className="font-bold text-amber-900">
-                            SCENE {pad2(scNum)} / 05
+                            {scNum === 0 ? `[ TITLE CARD ]` : `SCENE ${pad2(scNum)} / 20`}
                           </span>
-                          <div className="flex items-center gap-1">
-                            {[1, 2, 3, 4, 5].map(n => (
+                          <div className="flex items-center gap-1 overflow-x-auto max-w-full pb-1">
+                            {Array.from({ length: 21 }, (_, i) => i).map(n => (
                               <button
                                 key={n}
                                 onClick={() => setActiveSlideIndex(n)}
                                 className={cn(
-                                  "w-6 h-6 rounded-xs text-[10px] font-bold cursor-pointer transition-all border",
+                                  "w-6 h-6 rounded-xs text-[10px] font-bold cursor-pointer transition-all border shrink-0",
                                   activeSlideIndex === n
                                     ? "bg-amber-600 text-white border-amber-700"
                                     : "bg-stone-100 text-stone-700 border-stone-300 hover:bg-stone-200"
                                 )}
                               >
-                                {n}
+                                {n === 0 ? 'T' : n}
                               </button>
                             ))}
                           </div>
@@ -1538,34 +1589,51 @@ export const NovelView: React.FC<NovelViewProps> = ({
                                 className="w-32 h-32 rounded-lg mb-3 border border-stone-700 bg-stone-950 drop-shadow-md"
                               />
                               <span className="text-xs font-bold text-amber-300 uppercase tracking-widest">
-                                [ SCENE {pad2(scNum)} ]
+                                [ {scNum === 0 ? 'TITLE' : `SCENE ${pad2(scNum)}`} ]
                               </span>
                             </div>
                           )}
                         </div>
 
+                        {/* Slide Bottom Novel Sentence Card */}
+                        {sentenceText && (
+                          <div className="bg-stone-50 border border-stone-200 p-4 rounded-sm">
+                            <div className="flex items-start gap-2.5">
+                              <span className="text-amber-700 font-bold text-[11px] bg-amber-100 border border-amber-300/80 px-2 py-0.5 rounded-xs mt-0.5 shrink-0 select-none">
+                                {scNum === 0 ? 'TITLE' : `#${pad2(scNum)}`}
+                              </span>
+                              <p className="text-xs sm:text-[13px] leading-relaxed text-stone-800 font-medium select-text">
+                                {sentenceText}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
                         {/* Prev / Next Slide Navigation Buttons */}
                         <div className="flex items-center justify-between pt-2">
                           <button
-                            onClick={() => setActiveSlideIndex(prev => Math.max(1, prev - 1))}
-                            disabled={activeSlideIndex <= 1}
+                            onClick={() => setActiveSlideIndex(prev => Math.max(0, prev - 1))}
+                            disabled={activeSlideIndex <= 0}
                             className={cn(
                               "px-3 py-1.5 border rounded-sm font-bold text-xs flex items-center gap-1 cursor-pointer transition-all",
-                              activeSlideIndex <= 1 ? "opacity-50 cursor-not-allowed bg-stone-100" : "bg-white hover:bg-stone-100"
+                              activeSlideIndex <= 0 ? "opacity-50 cursor-not-allowed bg-stone-100" : "bg-white hover:bg-stone-100"
                             )}
                           >
                             <ChevronLeft size={14} />
-                            <span>{language === 'ko' ? '이전 장면' : 'Prev Scene'}</span>
+                            <span>{language === 'ko' ? '이전 장면' : 'Prev'}</span>
                           </button>
+                          <span className="text-xs text-stone-500 font-bold">
+                            {activeSlideIndex === 0 ? 'TITLE (00/20)' : `${activeSlideIndex} / 20`}
+                          </span>
                           <button
-                            onClick={() => setActiveSlideIndex(prev => Math.min(5, prev + 1))}
-                            disabled={activeSlideIndex >= 5}
+                            onClick={() => setActiveSlideIndex(prev => Math.min(20, prev + 1))}
+                            disabled={activeSlideIndex >= 20}
                             className={cn(
                               "px-3 py-1.5 border rounded-sm font-bold text-xs flex items-center gap-1 cursor-pointer transition-all",
-                              activeSlideIndex >= 5 ? "opacity-50 cursor-not-allowed bg-stone-100" : "bg-white hover:bg-stone-100"
+                              activeSlideIndex >= 20 ? "opacity-50 cursor-not-allowed bg-stone-100" : "bg-white hover:bg-stone-100"
                             )}
                           >
-                            <span>{language === 'ko' ? '다음 장면' : 'Next Scene'}</span>
+                            <span>{language === 'ko' ? '다음 장면' : 'Next'}</span>
                             <ChevronRight size={14} />
                           </button>
                         </div>
@@ -1938,7 +2006,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
           <div className="w-full max-w-5xl flex items-center justify-between text-white border-b border-stone-800 pb-3" onClick={e => e.stopPropagation()}>
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-amber-400 bg-amber-950/80 px-2.5 py-0.5 border border-amber-800/80 rounded-sm uppercase">
-                EPISODE {currentEpisodeNum} · SCENE {pad2(lightboxSceneIndex)} / 05
+                {lightboxSceneIndex === 0 ? `EPISODE ${currentEpisodeNum} · [ TITLE CARD ]` : `EPISODE ${currentEpisodeNum} · SCENE ${pad2(lightboxSceneIndex)} / 20`}
               </span>
               <span className="text-xs text-stone-300 font-bold hidden sm:inline">
                 {parsedContent.title}
@@ -1974,7 +2042,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
             {/* Prev Scene Arrow */}
             <button
-              onClick={() => setLightboxSceneIndex(prev => (prev && prev > 1 ? prev - 1 : 5))}
+              onClick={() => setLightboxSceneIndex(prev => (prev !== null && prev > 0 ? prev - 1 : 20))}
               className="absolute left-2 top-1/2 -translate-y-1/2 p-3 bg-black/70 hover:bg-black/90 text-white rounded-full border border-stone-700 cursor-pointer transition-all hover:scale-105"
               title="Previous Scene"
             >
@@ -1983,7 +2051,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
             {/* Next Scene Arrow */}
             <button
-              onClick={() => setLightboxSceneIndex(prev => (prev && prev < 5 ? prev + 1 : 1))}
+              onClick={() => setLightboxSceneIndex(prev => (prev !== null && prev < 20 ? prev + 1 : 0))}
               className="absolute right-2 top-1/2 -translate-y-1/2 p-3 bg-black/70 hover:bg-black/90 text-white rounded-full border border-stone-700 cursor-pointer transition-all hover:scale-105"
               title="Next Scene"
             >
@@ -1992,17 +2060,23 @@ export const NovelView: React.FC<NovelViewProps> = ({
           </div>
 
           {/* Lightbox Footer Caption */}
-          <div className="w-full max-w-3xl bg-stone-900/90 border border-stone-800 p-3 rounded-sm text-center text-xs text-stone-200 leading-relaxed" onClick={e => e.stopPropagation()}>
-            {narrationData?.scenes?.[lightboxSceneIndex - 1] ? (
-              <p>
-                <span className="text-amber-400 font-bold mr-1">#{lightboxSceneIndex}</span>
-                {language === 'ko'
-                  ? narrationData.scenes[lightboxSceneIndex - 1].narrationKo
-                  : narrationData.scenes[lightboxSceneIndex - 1].narrationEn}
-              </p>
-            ) : (
-              <p>{parsedContent.title} — Scene #{lightboxSceneIndex}</p>
-            )}
+          <div className="w-full max-w-3xl bg-stone-900/90 border border-stone-800 p-3.5 rounded-sm text-center text-xs text-stone-200 leading-relaxed font-mono select-text" onClick={e => e.stopPropagation()}>
+            {(() => {
+              const imgInfo = getCartoonImageInfo(currentEpisodeNum, lightboxSceneIndex);
+              const txt = imgInfo
+                ? (language === 'ko' ? (imgInfo.narrationKo || imgInfo.narrationEn) : (imgInfo.narrationEn || imgInfo.narrationKo))
+                : (narrationData?.scenes?.[lightboxSceneIndex - 1]
+                    ? (language === 'ko' ? narrationData.scenes[lightboxSceneIndex - 1].narrationKo : narrationData.scenes[lightboxSceneIndex - 1].narrationEn)
+                    : '');
+              return txt ? (
+                <p>
+                  <span className="text-amber-400 font-bold mr-1.5">{lightboxSceneIndex === 0 ? '[TITLE]' : `#${pad2(lightboxSceneIndex)}`}</span>
+                  {txt}
+                </p>
+              ) : (
+                <p>{parsedContent.title} — {lightboxSceneIndex === 0 ? 'Title Card' : `Scene #${lightboxSceneIndex}`}</p>
+              );
+            })()}
           </div>
         </div>
       )}

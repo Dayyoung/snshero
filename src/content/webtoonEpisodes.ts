@@ -3,7 +3,7 @@
  * Webtoon seasons, episodes, and release metadata
  */
 
-import { getAssetUrl } from '../lib/utils';
+import WEBTOON_MANIFEST from './webtoonEpisodeManifest.json';
 
 export type WebtoonReleaseStatus = 'live' | 'upcoming' | 'draft';
 
@@ -11,6 +11,8 @@ export interface WebtoonPanel {
   id: string;
   imageUrl?: string;
   captionKey?: string;
+  narrationEn?: string;
+  narrationKo?: string;
   focusCardId?: number;
 }
 
@@ -31,56 +33,67 @@ export interface WebtoonSeason {
   episodes: WebtoonEpisode[];
 }
 
+const buildSeasonEpisodes = (): WebtoonEpisode[] => {
+  const manifest = WEBTOON_MANIFEST as Record<string, {
+    episodeNumber: number;
+    episodeTitle: string;
+    episodeTitleKo?: string;
+    totalImages: number;
+    images: Array<{
+      index: number;
+      fileName: string;
+      imageUrl: string;
+      type: string;
+      narrationEn?: string;
+      narrationKo?: string;
+    }>;
+  }>;
+
+  return Array.from({ length: 40 }, (_, i) => {
+    const epNum = i + 1;
+    const pad = String(epNum).padStart(2, '0');
+    const epData = manifest[String(epNum)];
+    const epImages = epData?.images || [];
+
+    const panels: WebtoonPanel[] = epImages.map((img) => ({
+      id: `ep_${pad}_p${img.index}`,
+      imageUrl: img.imageUrl,
+      captionKey: img.index === 0 ? `webtoon_ep_${pad}_title` : `webtoon_ep_${pad}_caption${img.index}`,
+      narrationEn: img.narrationEn,
+      narrationKo: img.narrationKo,
+      focusCardId: (epNum % 110) || 1,
+    }));
+
+    return {
+      id: `ep_${pad}`,
+      episodeNumber: epNum,
+      titleKey: `webtoon_ep_${pad}_title`,
+      loglineKey: `webtoon_ep_${pad}_logline`,
+      releaseDate: '2026-01-01',
+      characterIds: [(epNum % 110) || 1],
+      releaseStatus: 'live' as const,
+      panels: panels.length > 0 ? panels : [
+        {
+          id: `ep_${pad}_p0`,
+          imageUrl: `https://dayyoung.github.io/image/cartoon/episode_${pad}/00_SNSHERO_Episode_${pad}_title_card_202608311350.jpeg`,
+          captionKey: `webtoon_ep_${pad}_title`,
+          focusCardId: (epNum % 110) || 1,
+        }
+      ],
+    };
+  });
+};
+
 export const WEBTOON_SEASONS: WebtoonSeason[] = [
   {
     id: 's1',
     titleKey: 'webtoon_season1_title',
-    episodes: Array.from({ length: 40 }, (_, i) => {
-      const epNum = i + 1;
-      const pad = String(epNum).padStart(2, '0');
-      return {
-        id: `ep_${pad}`,
-        episodeNumber: epNum,
-        titleKey: `webtoon_ep_${pad}_title`,
-        loglineKey: `webtoon_ep_${pad}_logline`,
-        releaseDate: '2026-01-01',
-        characterIds: [(epNum % 110) || 1],
-        releaseStatus: 'live',
-        panels: [
-          {
-            id: `ep_${pad}_p1`,
-            imageUrl: getAssetUrl('/banner/010.png'),
-            captionKey: `webtoon_ep_${pad}_caption1`,
-            focusCardId: (epNum % 110) || 1,
-          },
-        ],
-      };
-    }),
+    episodes: buildSeasonEpisodes(),
   },
   {
     id: 'season1',
     titleKey: 'webtoon_season1_title',
-    episodes: Array.from({ length: 40 }, (_, i) => {
-      const epNum = i + 1;
-      const pad = String(epNum).padStart(2, '0');
-      return {
-        id: `ep_${pad}`,
-        episodeNumber: epNum,
-        titleKey: `webtoon_ep_${pad}_title`,
-        loglineKey: `webtoon_ep_${pad}_logline`,
-        releaseDate: '2026-01-01',
-        characterIds: [(epNum % 110) || 1],
-        releaseStatus: 'live',
-        panels: [
-          {
-            id: `ep_${pad}_p1`,
-            imageUrl: getAssetUrl('/banner/010.png'),
-            captionKey: `webtoon_ep_${pad}_caption1`,
-            focusCardId: (epNum % 110) || 1,
-          },
-        ],
-      };
-    }),
+    episodes: buildSeasonEpisodes(),
   },
 ];
 
