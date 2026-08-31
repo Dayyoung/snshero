@@ -11,7 +11,8 @@ import { calculateDeckSynergies } from './DeckSynergyCalculator';
 import { CardItem } from './CardItem';
 import { cn, getCardSpriteStyle } from '../lib/utils';
 import { t } from '../lib/i18n';
-import { ChevronLeft, ChevronRight, Zap, Shield, Sparkles, RefreshCw, Layers, Check, ArrowLeftRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Zap, Shield, Sparkles, RefreshCw, Layers, Check, ArrowLeftRight, RotateCw } from 'lucide-react';
+import { SpinningProfileShowcase } from './SpinningProfileShowcase';
 
 interface DeckBuilderSwipeUIProps {
   currentDeck: CardData[];
@@ -33,6 +34,7 @@ export const DeckBuilderSwipeUI: React.FC<DeckBuilderSwipeUIProps> = ({
   const isKo = language === 'ko';
   const [activeSlotIndex, setActiveSlotIndex] = useState<number>(0);
   const [selectedVaultFilter, setSelectedVaultFilter] = useState<string>('ALL');
+  const [showOrbitMode, setShowOrbitMode] = useState<boolean>(false);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
 
@@ -143,8 +145,22 @@ export const DeckBuilderSwipeUI: React.FC<DeckBuilderSwipeUIProps> = ({
           </span>
         </div>
 
-        <div className="flex items-center gap-1">
-          {[0, 1, 2, 3, 4].map((slotIdx) => {
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setShowOrbitMode(!showOrbitMode)}
+            className={cn(
+              'px-2 py-1 border text-[10px] font-black flex items-center gap-1 cursor-pointer transition-all',
+              showOrbitMode
+                ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
+                : 'bg-[#fdfcfc] text-[#201d1d] border-[#201d1d]/40 hover:bg-[#201d1d]/10'
+            )}
+          >
+            <RotateCw size={11} className={cn(showOrbitMode && 'animate-spin')} />
+            <span>{showOrbitMode ? (isKo ? '스와이프 뷰' : 'Swipe View') : (isKo ? '3D 궤도 회전' : '3D Orbit')}</span>
+          </button>
+
+          {!showOrbitMode && [0, 1, 2, 3, 4].map((slotIdx) => {
             const card = currentDeck[slotIdx];
             const isSelected = activeSlotIndex === slotIdx;
             return (
@@ -153,7 +169,7 @@ export const DeckBuilderSwipeUI: React.FC<DeckBuilderSwipeUIProps> = ({
                 type="button"
                 onClick={() => setActiveSlotIndex(slotIdx)}
                 className={cn(
-                  'w-8 h-8 flex flex-col items-center justify-center text-[10px] font-bold border transition-all cursor-pointer rounded-none',
+                  'w-7 h-7 flex flex-col items-center justify-center text-[10px] font-bold border transition-all cursor-pointer rounded-none',
                   isSelected
                     ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] scale-105 shadow-xs'
                     : 'bg-[#fdfcfc] text-[#201d1d] border-[#201d1d]/30 hover:bg-[#201d1d]/10'
@@ -161,7 +177,7 @@ export const DeckBuilderSwipeUI: React.FC<DeckBuilderSwipeUIProps> = ({
               >
                 <span>#{slotIdx + 1}</span>
                 {card && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-0.5" />
+                  <span className="w-1 h-1 rounded-full bg-amber-500 mt-0.5" />
                 )}
               </button>
             );
@@ -169,145 +185,161 @@ export const DeckBuilderSwipeUI: React.FC<DeckBuilderSwipeUIProps> = ({
         </div>
       </div>
 
-      {/* 3. Main 3D Perspective Swipeable Card Viewport */}
-      <div
-        className="relative w-full py-6 px-4 flex flex-col items-center justify-center bg-gradient-to-b from-[#fdfcfc] to-stone-100 touch-pan-y"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        {/* Navigation Arrow Controls */}
-        <button
-          type="button"
-          disabled={activeSlotIndex === 0}
-          onClick={() => setActiveSlotIndex((prev) => Math.max(0, prev - 1))}
-          className={cn(
-            'absolute left-2 top-1/2 -translate-y-1/2 p-2 border border-[#201d1d] bg-[#fdfcfc] text-[#201d1d] z-20 cursor-pointer disabled:opacity-30',
-            activeSlotIndex === 0 && 'pointer-events-none'
-          )}
-        >
-          <ChevronLeft size={18} />
-        </button>
-
-        <button
-          type="button"
-          disabled={activeSlotIndex === 4}
-          onClick={() => setActiveSlotIndex((prev) => Math.min(4, prev + 1))}
-          className={cn(
-            'absolute right-2 top-1/2 -translate-y-1/2 p-2 border border-[#201d1d] bg-[#fdfcfc] text-[#201d1d] z-20 cursor-pointer disabled:opacity-30',
-            activeSlotIndex === 4 && 'pointer-events-none'
-          )}
-        >
-          <ChevronRight size={18} />
-        </button>
-
-        {/* 3D Holographic Card Stage */}
-        <div className="w-48 sm:w-56 h-72 sm:h-80 relative flex items-center justify-center perspective-[1000px]">
-          {activeCard ? (
-            <div className="w-full h-full transform transition-all duration-300 hover:rotate-y-6 hover:rotate-x-3 shadow-xl border-2 border-[#201d1d] bg-[#fdfcfc] p-2 flex flex-col justify-between">
-              <div className="flex justify-between items-center text-[10px] font-bold border-b border-[#201d1d]/20 pb-1">
-                <span className="text-amber-800">{activeCard.rarity || 'SSR'}</span>
-                <span>{activeCard.element || 'FIRE'}</span>
-              </div>
-
-              {/* Card Sprite / Image */}
-              <div className="w-full h-40 bg-stone-200 border border-[#201d1d]/30 relative overflow-hidden flex items-center justify-center">
-                <div
-                  className="w-24 h-24 bg-contain bg-no-repeat bg-center"
-                  style={getCardSpriteStyle(activeCard.imageIndex || 0)}
-                />
-              </div>
-
-              <div className="text-center">
-                <div className="text-xs font-black truncate">{activeCard.name}</div>
-                <div className="flex justify-center gap-3 text-[10px] font-bold text-[#201d1d]/80 mt-1">
-                  <span>ATK {activeCard.atk || 100}</span>
-                  <span>DEF {activeCard.def || 100}</span>
-                  <span>HP {activeCard.hp || 500}</span>
-                </div>
-              </div>
-
-              <div className="text-[9px] text-center text-[#201d1d]/60 border-t border-[#201d1d]/10 pt-1">
-                {isKo ? '좌우 스와이프로 슬롯 이동' : 'Swipe left/right to switch slots'}
-              </div>
-            </div>
-          ) : (
-            <div className="w-full h-full border-2 border-dashed border-[#201d1d]/40 flex flex-col items-center justify-center p-4 text-center">
-              <span className="text-sm font-bold text-[#201d1d]/60 mb-2">
-                {isKo ? '빈 슬롯' : 'Empty Slot'}
-              </span>
-              <span className="text-[10px] text-[#201d1d]/40">
-                {isKo ? '아래 카드 보관함에서 카드를 선택하세요' : 'Select a card from the vault below'}
-              </span>
-            </div>
-          )}
+      {showOrbitMode ? (
+        <div className="p-3 bg-slate-950 flex flex-col items-center">
+          <SpinningProfileShowcase
+            playerCard={currentDeck[0] || null}
+            opponentCard={CARD_DATABASE[22] || null}
+            playerName={isKo ? '내 대표 히어로' : 'My Leader Hero'}
+            opponentName={isKo ? '가상 대전 상대' : 'Training Bot'}
+            playerDeck={currentDeck}
+            onReorderDeck={onUpdateDeck}
+            language={language}
+          />
         </div>
-      </div>
+      ) : (
+        <>
+          {/* 3. Main 3D Perspective Swipeable Card Viewport */}
+          <div
+            className="relative w-full py-6 px-4 flex flex-col items-center justify-center bg-gradient-to-b from-[#fdfcfc] to-stone-100 touch-pan-y"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            {/* Navigation Arrow Controls */}
+            <button
+              type="button"
+              disabled={activeSlotIndex === 0}
+              onClick={() => setActiveSlotIndex((prev) => Math.max(0, prev - 1))}
+              className={cn(
+                'absolute left-2 top-1/2 -translate-y-1/2 p-2 border border-[#201d1d] bg-[#fdfcfc] text-[#201d1d] z-20 cursor-pointer disabled:opacity-30',
+                activeSlotIndex === 0 && 'pointer-events-none'
+              )}
+            >
+              <ChevronLeft size={18} />
+            </button>
 
-      {/* 4. Vault Card Selector (Bottom 1-Tap Swapper) */}
-      <div className="p-3 bg-[#fdfcfc] border-t-2 border-[#201d1d] flex flex-col gap-2">
-        <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-1.5 font-black uppercase">
-            <ArrowLeftRight size={13} />
-            <span>{isKo ? '보관함 카드 교체' : 'SWAP FROM VAULT'}</span>
-          </div>
+            <button
+              type="button"
+              disabled={activeSlotIndex === 4}
+              onClick={() => setActiveSlotIndex((prev) => Math.min(4, prev + 1))}
+              className={cn(
+                'absolute right-2 top-1/2 -translate-y-1/2 p-2 border border-[#201d1d] bg-[#fdfcfc] text-[#201d1d] z-20 cursor-pointer disabled:opacity-30',
+                activeSlotIndex === 4 && 'pointer-events-none'
+              )}
+            >
+              <ChevronRight size={18} />
+            </button>
 
-          <div className="flex items-center gap-1 text-[10px]">
-            {['ALL', 'FIRE', 'WATER', 'EARTH', 'WIND', 'LIGHT', 'DARK'].map((filter) => (
-              <button
-                key={filter}
-                type="button"
-                onClick={() => setSelectedVaultFilter(filter)}
-                className={cn(
-                  'px-1.5 py-0.5 border text-[9px] font-bold cursor-pointer',
-                  selectedVaultFilter === filter
-                    ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
-                    : 'bg-[#fdfcfc] text-[#201d1d] border-[#201d1d]/20 hover:bg-[#201d1d]/10'
-                )}
-              >
-                {filter}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Horizontal Scrollable Card Vault */}
-        <div className="w-full flex items-center gap-2 overflow-x-auto py-1 scrollbar-thin">
-          {filteredVaultCards.map((card, idx) => {
-            const isEquipped = currentDeck.some((c) => c && c.imageIndex === card.imageIndex);
-            const isEquippedInActive = activeCard && activeCard.imageIndex === card.imageIndex;
-
-            return (
-              <div
-                key={idx}
-                onClick={() => handleSelectVaultCard(card)}
-                className={cn(
-                  'min-w-[80px] max-w-[80px] p-1.5 border border-[#201d1d] bg-[#fdfcfc] flex flex-col items-center justify-between cursor-pointer transition-all hover:scale-105 active:scale-95 select-none relative',
-                  isEquippedInActive && 'ring-2 ring-amber-500 bg-amber-500/10'
-                )}
-              >
-                {isEquipped && (
-                  <div className="absolute top-0.5 right-0.5 bg-[#201d1d] text-[#fdfcfc] text-[8px] px-1 font-bold">
-                    IN DECK
+            {/* 3D Holographic Card Stage */}
+            <div className="w-48 sm:w-56 h-72 sm:h-80 relative flex items-center justify-center perspective-[1000px]">
+              {activeCard ? (
+                <div className="w-full h-full transform transition-all duration-300 hover:rotate-y-6 hover:rotate-x-3 shadow-xl border-2 border-[#201d1d] bg-[#fdfcfc] p-2 flex flex-col justify-between">
+                  <div className="flex justify-between items-center text-[10px] font-bold border-b border-[#201d1d]/20 pb-1">
+                    <span className="text-amber-800">{activeCard.rarity || 'SSR'}</span>
+                    <span>{activeCard.element || 'FIRE'}</span>
                   </div>
-                )}
 
-                <div
-                  className="w-12 h-12 bg-contain bg-no-repeat bg-center my-1"
-                  style={getCardSpriteStyle(card.imageIndex || 0)}
-                />
+                  {/* Card Sprite / Image */}
+                  <div className="w-full h-40 bg-stone-200 border border-[#201d1d]/30 relative overflow-hidden flex items-center justify-center">
+                    <div
+                      className="w-24 h-24 bg-contain bg-no-repeat bg-center"
+                      style={getCardSpriteStyle(activeCard.imageIndex || 0)}
+                    />
+                  </div>
 
-                <div className="text-[10px] font-bold truncate w-full text-center">
-                  {card.name}
+                  <div className="text-center">
+                    <div className="text-xs font-black truncate">{activeCard.name}</div>
+                    <div className="flex justify-center gap-3 text-[10px] font-bold text-[#201d1d]/80 mt-1">
+                      <span>ATK {activeCard.atk || 100}</span>
+                      <span>DEF {activeCard.def || 100}</span>
+                      <span>HP {activeCard.hp || 500}</span>
+                    </div>
+                  </div>
+
+                  <div className="text-[9px] text-center text-[#201d1d]/60 border-t border-[#201d1d]/10 pt-1">
+                    {isKo ? '좌우 스와이프로 슬롯 이동' : 'Swipe left/right to switch slots'}
+                  </div>
                 </div>
-                <div className="text-[8px] text-[#201d1d]/70 font-semibold">
-                  {card.rarity || 'SSR'} | {card.element || 'FIRE'}
+              ) : (
+                <div className="w-full h-full border-2 border-dashed border-[#201d1d]/40 flex flex-col items-center justify-center p-4 text-center">
+                  <span className="text-sm font-bold text-[#201d1d]/60 mb-2">
+                    {isKo ? '빈 슬롯' : 'Empty Slot'}
+                  </span>
+                  <span className="text-[10px] text-[#201d1d]/40">
+                    {isKo ? '아래 카드 보관함에서 카드를 선택하세요' : 'Select a card from the vault below'}
+                  </span>
                 </div>
+              )}
+            </div>
+          </div>
+
+          {/* 4. Vault Card Selector (Bottom 1-Tap Swapper) */}
+          <div className="p-3 bg-[#fdfcfc] border-t-2 border-[#201d1d] flex flex-col gap-2">
+            <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center gap-1.5 font-black uppercase">
+                <ArrowLeftRight size={13} />
+                <span>{isKo ? '보관함 카드 교체' : 'SWAP FROM VAULT'}</span>
               </div>
-            );
-          })}
-        </div>
-      </div>
+
+              <div className="flex items-center gap-1 text-[10px]">
+                {['ALL', 'FIRE', 'WATER', 'EARTH', 'WIND', 'LIGHT', 'DARK'].map((filter) => (
+                  <button
+                    key={filter}
+                    type="button"
+                    onClick={() => setSelectedVaultFilter(filter)}
+                    className={cn(
+                      'px-1.5 py-0.5 border text-[9px] font-bold cursor-pointer',
+                      selectedVaultFilter === filter
+                        ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
+                        : 'bg-[#fdfcfc] text-[#201d1d] border-[#201d1d]/20 hover:bg-[#201d1d]/10'
+                    )}
+                  >
+                    {filter}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Horizontal Scrollable Card Vault */}
+            <div className="w-full flex items-center gap-2 overflow-x-auto py-1 scrollbar-thin">
+              {filteredVaultCards.map((card, idx) => {
+                const isEquipped = currentDeck.some((c) => c && c.imageIndex === card.imageIndex);
+                const isEquippedInActive = activeCard && activeCard.imageIndex === card.imageIndex;
+
+                return (
+                  <div
+                    key={idx}
+                    onClick={() => handleSelectVaultCard(card)}
+                    className={cn(
+                      'min-w-[80px] max-w-[80px] p-1.5 border border-[#201d1d] bg-[#fdfcfc] flex flex-col items-center justify-between cursor-pointer transition-all hover:scale-105 active:scale-95 select-none relative',
+                      isEquippedInActive && 'ring-2 ring-amber-500 bg-amber-500/10'
+                    )}
+                  >
+                    {isEquipped && (
+                      <div className="absolute top-0.5 right-0.5 bg-[#201d1d] text-[#fdfcfc] text-[8px] px-1 font-bold">
+                        IN DECK
+                      </div>
+                    )}
+
+                    <div
+                      className="w-12 h-12 bg-contain bg-no-repeat bg-center my-1"
+                      style={getCardSpriteStyle(card.imageIndex || 0)}
+                    />
+
+                    <div className="text-[10px] font-bold truncate w-full text-center">
+                      {card.name}
+                    </div>
+                    <div className="text-[8px] text-[#201d1d]/70 font-semibold">
+                      {card.rarity || 'SSR'} | {card.element || 'FIRE'}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
