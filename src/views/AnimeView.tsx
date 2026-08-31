@@ -39,8 +39,8 @@ interface AnimeViewProps {
 }
 
 const TOTAL_EPISODES = 40;
-const YOUTUBE_PLAYLIST_ID = 'PLM4FMYy7mS8w';
-const YOUTUBE_PLAYLIST_URL = 'https://youtube.com/playlist?list=PLM4FMYy7mS8w&si=DvP5SUT70GNOAq2g';
+const YOUTUBE_PLAYLIST_ID = 'PLMZVaaVQfrcU';
+const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/playlist?list=PLMZVaaVQfrcU';
 
 export const AnimeView: React.FC<AnimeViewProps> = ({
   language,

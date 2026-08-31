@@ -1353,8 +1353,32 @@ export const NovelView: React.FC<NovelViewProps> = ({
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2 self-end sm:self-auto">
-                  <span className="text-[10px] text-stone-500 font-bold hidden sm:inline">[ VIEW MODE ]:</span>
+                <div className="flex flex-wrap items-center gap-2 self-end sm:self-auto">
+                  <button
+                    onClick={() => {
+                      if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                      onNavigate('anime');
+                    }}
+                    className="px-2.5 py-1 text-xs font-bold border border-purple-300 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-sm transition-all cursor-pointer flex items-center gap-1"
+                    title={language === 'ko' ? '공식 영상 애니메이션 감상하기' : 'Watch Official Anime Video'}
+                  >
+                    <Play size={13} className="text-purple-600 fill-current" />
+                    <span>{language === 'ko' ? '영상 보기' : 'Watch Video'}</span>
+                  </button>
+                  <a
+                    href="https://www.youtube.com/playlist?list=PLMZVaaVQfrcU"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => {
+                      if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    }}
+                    className="px-2.5 py-1 text-xs font-bold border border-stone-300 bg-white hover:bg-stone-100 text-stone-700 rounded-sm transition-all cursor-pointer flex items-center gap-1"
+                    title="YouTube Playlist"
+                  >
+                    <ExternalLink size={13} />
+                    <span>YouTube</span>
+                  </a>
+                  <span className="text-[10px] text-stone-500 font-bold hidden sm:inline ml-1">[ VIEW MODE ]:</span>
                   <button
                     onClick={() => setCartoonDisplayMode('scroll')}
                     className={cn(
