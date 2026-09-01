@@ -4,6 +4,26 @@
 
 ---
 
+## [2026-09-01 19:50 KST / 10:50 UTC] [스프레드시트 12개 항목 전수 구현 및 검증 완료 (ID 552 ~ 555 / CSV Rows 699 ~ 710)]
+- **작업 1: [ID 552 / Row 703] 마이덱 화면 내 1탭 드래그 앤 드롭 카드 편성 & 실시간 속성 시너지 프리뷰 HUD (DeckSynergyCalculator.ts)**
+  - 5대 속성(불/물/대지/바람/빛/어둠/인간/언데드/엘프 등) 덱 시너지 실시간 계산식, 지배율(Dominance Ratio) 및 전투력 보너스 뱃지 연산 `deckSynergyCalculator` 구현 및 `DeckBuilderSwipeUI` 연동 완료.
+- **작업 2: [ID 553 / Row 704] 로비/컬렉션 일일 럭키 출석 룰렛 & 7일 스트릭 보너스 모듈 (DailyLuckyRoulette.tsx & attendanceService.ts)**
+  - 매일 1회 무료 3D 럭키 룰렛 스핀 휠(`DailyLuckyRoulette`), 골드/다이아/스태미나 AP 즉시 입금 및 7일 연속 출석 시 신화 확정 소환권/황금 뱃지 지급 리텐션 도파민 루프 구축 완료.
+- **작업 3: [ID 554 / Row 705] 마켓플레이스 및 상점 스태미나 AP 페이싱 & P2P 카드 거래 수수료 밸런스 엔진 (MarketplaceEconomyEngine.ts & StaminaAPBar.tsx)**
+  - 최대 100 AP 5분당 1 자연회복 페이싱(`marketplaceEconomyService`), 카드 등급별 공정 가격 가이드라인(`RARITY_PRICE_RANGES`) 및 5% 거래 수수료(소각 2.5% + 시즌풀 2.5%) 밸런스 엔진, 슬림 HUD `StaminaAPBar` 구현 완료.
+- **작업 4: [ID 555 / Row 706] 플랫폼 전역 WebP 텍스처 아틀라스 압축 & WebGL 메모리 자동 가비지 컬렉션 (PlatformAssetOptimizer.js)**
+  - 씬/뷰 전환 시 Three.js 지오메트리/재질/텍스처 메모리 재귀 해제(`platformAssetOptimizer.purgeSceneResources`), 2D 카드 스프라이트 WebP 아틀라스 관리 및 모바일 RAM 최적화 완료.
+- **작업 5~8: [ID 548~551 / Row 699~702 & 707~710] 3D 레이싱 퓨어 제스처 / 3D 스포츠 3단계 튜토리얼 / 70% 시야개방 슬림 HUD / 100% 확정 SNS 보상 검증**
+  - `VehicleGestureController`, `SportsMissionTutorial`, `MinimalistMissionHUD`, `NormalizedRewardPopup` 정상 동작 전수 재검증 완료.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 성공 통과 (PASS).
+- **구글 폼 제출 완료 (4건)**:
+  1. `[개발] [스프레드시트 Row 703 / ID 552] 마이덱 1탭 드래그 앤 드롭 카드 편성 & 실시간 속성 시너지 프리뷰 HUD (DeckSynergyCalculator.ts) -> 작업완료`
+  2. `[개발] [스프레드시트 Row 704 / ID 553] 로비/컬렉션 일일 럭키 출석 룰렛 & 7일 스트릭 보너스 모듈 (DailyLuckyRoulette.tsx) -> 작업완료`
+  3. `[개발] [스프레드시트 Row 705 / ID 554] 마켓플레이스 및 상점 스태미나 AP 페이싱 & P2P 카드 거래 수수료 밸런스 엔진 (MarketplaceEconomyEngine.ts) -> 작업완료`
+  4. `[개발] [스프레드시트 Row 706 / ID 555] 플랫폼 전역 WebP 텍스처 아틀라스 압축 & WebGL 메모리 자동 가비지 컬렉션 (PlatformAssetOptimizer.js) -> 작업완료`
+
+---
+
 ## [2026-09-01 14:10 KST / 05:10 UTC] [스프레드시트 4개 신규 항목 전수 구현 및 검증 완료 (ID 694 ~ 697 / CSV Rows 695 ~ 698)]
 - **작업 1: [ID 694 / Row 695] 3D 레이싱/카트 미션 가상 핸들·버튼 제거 ➔ '썸존 슬라이드 조향 & 릴리즈 드리프트' 퓨어 제스처 전환 (VehicleGestureController.js)**
   - 가상 스티어링 휠/D-Pad/페달 100% 제거, 썸존 좌우 슬라이드 조향, 릴리즈 튕기기 미니 터보 부스터, 더블탭 아이템 발동, 하단 홀드 브레이크 일원화 완료.
