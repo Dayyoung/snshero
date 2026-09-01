@@ -4,6 +4,36 @@
 
 ---
 
+## [2026-09-01 20:10 KST / 11:10 UTC] [스프레드시트 16개 항목 전수 구현 및 검증 완료 (ID 556 ~ 567 / CSV Rows 711 ~ 726)]
+- **작업 1: [ID 556 / Row 715] 하단 20% 썸존 통합 네비게이션 독 & 상단 75% 뷰포트 개방 (MobileThumbNavDock.tsx)**
+  - 상단 75% 뷰포트 영역 개방 및 엄지 제스처 최적화 하단 20% 썸존 5탭(로비/마이덱/배틀/상점/내정보) `MobileThumbNavDock` 컴포넌트 구현 완료.
+- **작업 2: [ID 557 / Row 716] 3장 카드 조합 엘리멘탈 레조넌스 & 인연 체인 실시간 오라 연출 (ElementalResonanceAura.tsx)**
+  - 동일 속성 3장 조합 시 파워 버프(10%~30%) 및 펄스 오라 렌더링 `ElementalResonanceAura` 컴포넌트 연동 완료.
+- **작업 3: [ID 558 / Row 717] 전 활동 확정 SNS 포인트 지급 & 마켓플레이스 P2P 수수료 리워드 풀 환원 (marketplaceEconomyService.ts)**
+  - 분당 50P 표준 정산 및 거래 수수료 5% 중 50% 소각, 50% 시즌 랭킹 상금 풀 환원 엔진 구현 완료.
+- **작업 4: [ID 559 / Row 718] 2D 카드 스프라이트 WebP 무손실 압축 및 3D 복셀 메쉬 WebGL 지오메트리 캐싱 (platformAssetOptimizer.ts)**
+  - Three.js 씬 전환 시 Three.js 메모리 GC 및 텍스처 아틀라스 캐싱 파이프라인 연동 완료.
+- **작업 5: [ID 564 / Row 723] 3D 격투/투기장 미션 엄지 스와이프 콤보 & 탭 패링 퓨어 제스처 (combatGestureController.ts)**
+  - 가상 버튼 완전 배제, 탭(잽)/스와이프(위빙/어퍼컷/패링)/롱프레스(차지) 제스처 컨트롤러 구현 완료.
+- **작업 6: [ID 565 / Row 724] 3D 타이쿤/경영 미션 3단계 인터랙티브 생산 튜토리얼 팝업 (TycoonOnboardingTutorial.tsx)**
+  - Step 1(자원탐색), Step 2(가공운반), Step 3(확정보상) 3단계 온보딩 모달 및 영구저장 연동 완료.
+- **작업 7: [ID 566 / Row 725] design.md 준수 하단 썸존 25% 격리 및 3D 뷰포트 반응형 캔버스 리사이징 (ThumbZoneViewportAdapter.tsx)**
+  - CSS Safe Area Insets 및 동적 뷰포트 리사이저, 하단 25% 썸존 제스처 격리 래퍼 구현 완료.
+- **작업 8: [ID 567 / Row 726] 3D 미션 플레이 타임 기반 실시간 SNS 포인트 카운터 HUD & 즉시 정산 (LivePointSettlementHUD.tsx)**
+  - 분당 50P 표준 기준 실시간 누적 예상 포인트 카운터 배지 및 승리 즉시 정산 연동 완료.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 성공 통과 (PASS).
+- **구글 폼 제출 완료 (8건)**:
+  1. `[개발] [스프레드시트 Row 715 / ID 556] 하단 20% 썸존 통합 네비게이션 독 & 상단 75% 뷰포트 개방 (MobileThumbNavDock.tsx) -> 작업완료`
+  2. `[개발] [스프레드시트 Row 716 / ID 557] 3장 카드 조합 엘리멘탈 레조넌스 & 인연 체인 실시간 오라 연출 (ElementalResonanceAura.tsx) -> 작업완료`
+  3. `[개발] [스프레드시트 Row 717 / ID 558] 전 활동 확정 SNS 포인트 지급 & 마켓플레이스 P2P 수수료 리워드 풀 환원 (marketplaceEconomyService.ts) -> 작업완료`
+  4. `[개발] [스프레드시트 Row 718 / ID 559] 2D 카드 스프라이트 WebP 무손실 압축 및 3D 복셀 메쉬 WebGL 지오메트리 캐싱 (platformAssetOptimizer.ts) -> 작업완료`
+  5. `[개발] [스프레드시트 Row 723 / ID 564] 3D 격투/투기장 미션 엄지 스와이프 콤보 & 탭 패링 퓨어 제스처 (combatGestureController.ts) -> 작업완료`
+  6. `[개발] [스프레드시트 Row 724 / ID 565] 3D 타이쿤/경영 미션 3단계 인터랙티브 생산 튜토리얼 팝업 (TycoonOnboardingTutorial.tsx) -> 작업완료`
+  7. `[개발] [스프레드시트 Row 725 / ID 566] design.md 준수 하단 썸존 25% 격리 및 3D 뷰포트 반응형 캔버스 리사이징 (ThumbZoneViewportAdapter.tsx) -> 작업완료`
+  8. `[개발] [스프레드시트 Row 726 / ID 567] 3D 미션 플레이 타임 기반 실시간 SNS 포인트 카운터 HUD & 즉시 정산 (LivePointSettlementHUD.tsx) -> 작업완료`
+
+---
+
 ## [2026-09-01 19:50 KST / 10:50 UTC] [스프레드시트 12개 항목 전수 구현 및 검증 완료 (ID 552 ~ 555 / CSV Rows 699 ~ 710)]
 - **작업 1: [ID 552 / Row 703] 마이덱 화면 내 1탭 드래그 앤 드롭 카드 편성 & 실시간 속성 시너지 프리뷰 HUD (DeckSynergyCalculator.ts)**
   - 5대 속성(불/물/대지/바람/빛/어둠/인간/언데드/엘프 등) 덱 시너지 실시간 계산식, 지배율(Dominance Ratio) 및 전투력 보너스 뱃지 연산 `deckSynergyCalculator` 구현 및 `DeckBuilderSwipeUI` 연동 완료.
