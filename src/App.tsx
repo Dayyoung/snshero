@@ -3408,6 +3408,8 @@ function AppContent() {
     setUpgradeDeckPrompt(null);
   }, [inventory, effectiveUser, syncUserData, playSfx]);
 
+  const upgradePromptTimerRef = useRef<NodeJS.Timeout | null>(null);
+
   const checkAndRecommendDeckUpgrade = useCallback((newCardImageIndexes: number[], isSilent = false) => {
     if (!recommendMode) return [];
     if (!newCardImageIndexes || newCardImageIndexes.length === 0) return [];
@@ -3419,7 +3421,13 @@ function AppContent() {
         return upgradedCardsToApply;
       }
       
-      setUpgradeDeckPrompt({ upgradedCardsToApply });
+      // 1.5초 딜레이를 주어 팩 개봉 이펙트를 충분히 표시한 후 추천 팝업 표시
+      if (upgradePromptTimerRef.current) {
+        clearTimeout(upgradePromptTimerRef.current);
+      }
+      upgradePromptTimerRef.current = setTimeout(() => {
+        setUpgradeDeckPrompt({ upgradedCardsToApply });
+      }, 1500);
     }
     return [];
   }, [recommendMode, currentDeck, inventory, effectiveUser, syncUserData, playSfx]);
@@ -3428,7 +3436,13 @@ function AppContent() {
     if (!recommendMode) return false;
     const upgradedCardsToApply = getDeckUpgradeRecommendation(currentDeck, newCardImageIndexes);
     if (upgradedCardsToApply.length > 0) {
-      setUpgradeDeckPrompt({ upgradedCardsToApply });
+      // 1.5초 딜레이를 주어 팩 개봉 이펙트를 충분히 표시한 후 추천 팝업 표시
+      if (upgradePromptTimerRef.current) {
+        clearTimeout(upgradePromptTimerRef.current);
+      }
+      upgradePromptTimerRef.current = setTimeout(() => {
+        setUpgradeDeckPrompt({ upgradedCardsToApply });
+      }, 1500);
       return true;
     }
     return false;

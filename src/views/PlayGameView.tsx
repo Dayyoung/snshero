@@ -2962,6 +2962,38 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [isCoinFlipping, setIsCoinFlipping] = useState(false);
   const [coinWinner, setCoinWinner] = useState<'player' | 'ai' | null>(null);
 
+  // Player avatar card ID resolution from /profile (localStorage or effectiveUser)
+  const playerAvatarCardId = useMemo(() => {
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('hero_user_avatar') : null;
+    const raw = stored || effectiveUser?.photoURL || 'card:1';
+    if (typeof raw === 'string' && raw.startsWith('card:')) {
+      const parsed = parseInt(raw.replace('card:', ''), 10);
+      if (!isNaN(parsed) && parsed >= 1 && parsed <= 110) return parsed;
+    }
+    if (typeof raw === 'string' && raw.startsWith('preset:')) {
+      const parsed = parseInt(raw.replace('preset:', ''), 10);
+      if (!isNaN(parsed)) return (parsed % 110) + 1;
+    }
+    return 1; // Default to Aquaris (No.01)
+  }, [effectiveUser?.photoURL]);
+
+  // Opponent avatar card ID resolution (deterministic from opponent deck, ID, or fallback)
+  const opponentAvatarCardId = useMemo(() => {
+    const opp = lastOpponent || selectedOpponent;
+    if (opp?.deck && opp.deck.length > 0 && opp.deck[0].imageIndex) {
+      return opp.deck[0].imageIndex;
+    }
+    if (opp?.id) {
+      let hash = 0;
+      for (let i = 0; i < opp.id.length; i++) {
+        hash = (hash << 5) - hash + opp.id.charCodeAt(i);
+        hash |= 0;
+      }
+      return (Math.abs(hash) % 110) + 1;
+    }
+    return 2; // Default to Ignis (No.02)
+  }, [lastOpponent, selectedOpponent]);
+
   const renderCustomAlertModal = () => (
     <AnimatePresence>
       {customAlertModal.isOpen && (
@@ -13442,44 +13474,54 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     className="w-full h-full relative rounded-2xl"
                     style={{ transformStyle: 'preserve-3d' }}
                   >
+                    {/* 앞면: 플레이어 프로필 캐릭터 */}
                     <div 
                       className={cn(
-                        "absolute inset-0 bg-gradient-to-br from-blue-600 to-indigo-850 border flex items-center justify-center p-4 transition-all duration-300 shadow-[0_0_25px_rgba(59,130,246,0.3)]",
-                        coinWinner === 'player' ? "border-yellow-400 border-4 scale-105" : "border-slate-700 border"
+                        "absolute inset-0 bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 border flex flex-col items-center justify-between p-3.5 transition-all duration-300 shadow-[0_0_35px_rgba(99,102,241,0.45)] overflow-hidden",
+                        coinWinner === 'player' ? "border-yellow-400 border-4 scale-105 shadow-[0_0_45px_rgba(234,179,8,0.9)]" : "border-indigo-500/60 border-2"
                       )} 
-                      style={{ backfaceVisibility: 'hidden', borderRadius: '16px' }}
+                      style={{ backfaceVisibility: 'hidden', borderRadius: '20px' }}
                     >
-                      {effectiveUser?.photoURL?.startsWith('preset:') ? (
-                        <img 
-                          src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Hero-${effectiveUser.photoURL.split(':')[1]}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`}
-                          alt="Hero"
-                          className="w-full h-full object-cover pixelated rounded-lg"
-                        />
-                      ) : (
-                        <img 
-                          src={effectiveUser?.photoURL || `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Hero&backgroundColor=3b82f6`} 
-                          alt="Hero" 
-                          className="w-full h-full object-cover pixelated rounded-lg" 
-                        />
-                      )}
+                      <div className="w-full flex items-center justify-between px-1 text-[9px] font-mono text-indigo-300/90 font-black">
+                        <span>YOU (PLAYER)</span>
+                        <span className="text-yellow-400">No.{String(playerAvatarCardId).padStart(2, '0')}</span>
+                      </div>
+                      <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 border-indigo-400/60 shadow-lg bg-slate-950 flex items-center justify-center">
+                        <div className="w-[130%] h-[130%] shrink-0" style={getCardSpriteStyle(playerAvatarCardId)} />
+                      </div>
+                      <div className="w-full text-center">
+                        <p className="text-xs font-black text-white truncate px-1">
+                          {effectiveUser?.displayName || (language === 'ko' ? '히어로' : 'Hero')}
+                        </p>
+                        <span className="text-[10px] font-mono text-indigo-300/90 font-bold block truncate">
+                          {CARD_DATABASE[playerAvatarCardId] ? (language === 'ko' ? CARD_DATABASE[playerAvatarCardId].title : CARD_DATABASE[playerAvatarCardId].title_en) : 'Aquaris'}
+                        </span>
+                      </div>
                     </div>
+
+                    {/* 뒷면: 상대방 / AI 캐릭터 */}
                     <div 
                       className={cn(
-                        "absolute inset-0 bg-gradient-to-br from-rose-600 to-red-850 border flex items-center justify-center p-4 transition-all duration-300 shadow-[0_0_25px_rgba(244,63,94,0.3)]",
-                        coinWinner === 'ai' ? "border-yellow-400 border-4 scale-105" : "border-slate-700 border"
+                        "absolute inset-0 bg-gradient-to-br from-rose-950 via-slate-900 to-red-950 border flex flex-col items-center justify-between p-3.5 transition-all duration-300 shadow-[0_0_35px_rgba(244,63,94,0.45)] overflow-hidden",
+                        coinWinner === 'ai' ? "border-yellow-400 border-4 scale-105 shadow-[0_0_45px_rgba(234,179,8,0.9)]" : "border-rose-500/60 border-2"
                       )} 
-                      style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', borderRadius: '16px' }}
+                      style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', borderRadius: '20px' }}
                     >
-                      <img 
-                        src={lastOpponent ? 
-                          (lastOpponent.type === 'robot' 
-                            ? `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${lastOpponent.id}&backgroundColor=dc2626` 
-                            : `https://api.dicebear.com/7.x/pixel-art/svg?seed=${lastOpponent.id}&backgroundColor=c0aede`) 
-                          : `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=OpponentBot&backgroundColor=dc2626`} 
-                        alt="Opponent" 
-                        className="w-full h-full object-cover pixelated rounded-lg" 
-                        referrerPolicy="no-referrer"
-                      />
+                      <div className="w-full flex items-center justify-between px-1 text-[9px] font-mono text-rose-300/90 font-black">
+                        <span>OPPONENT (AI)</span>
+                        <span className="text-yellow-400">No.{String(opponentAvatarCardId).padStart(2, '0')}</span>
+                      </div>
+                      <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 border-rose-400/60 shadow-lg bg-slate-950 flex items-center justify-center">
+                        <div className="w-[130%] h-[130%] shrink-0" style={getCardSpriteStyle(opponentAvatarCardId)} />
+                      </div>
+                      <div className="w-full text-center">
+                        <p className="text-xs font-black text-white truncate px-1">
+                          {lastOpponent?.name || selectedOpponent?.name || (language === 'ko' ? '상대 도전자' : 'Challenger')}
+                        </p>
+                        <span className="text-[10px] font-mono text-rose-300/90 font-bold block truncate">
+                          {CARD_DATABASE[opponentAvatarCardId] ? (language === 'ko' ? CARD_DATABASE[opponentAvatarCardId].title : CARD_DATABASE[opponentAvatarCardId].title_en) : 'Ignis'}
+                        </span>
+                      </div>
                     </div>
                   </motion.div>
                 </div>

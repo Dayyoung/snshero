@@ -2427,7 +2427,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-black/95 backdrop-blur-xl p-3 sm:p-4 overflow-y-auto cursor-pointer"
+                className="fixed inset-0 z-[200] w-full h-[100dvh] min-h-[100dvh] flex flex-col items-center justify-center bg-black/95 backdrop-blur-xl p-2 sm:p-4 overflow-y-auto cursor-pointer"
                 onClick={(e) => {
                   const target = e.target as HTMLElement;
                   if (target.closest('.gacha-card-wrapper') || target.closest('button')) {

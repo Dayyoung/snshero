@@ -363,7 +363,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[200] overflow-y-auto bg-slate-950/98 px-3 py-4 text-white backdrop-blur-2xl select-none"
+      className="fixed inset-0 z-[200] w-full h-[100dvh] min-h-[100dvh] overflow-y-auto bg-slate-950/98 px-2 py-2.5 sm:px-4 sm:py-4 text-white backdrop-blur-2xl select-none flex flex-col justify-between"
     >
       {/* 백그라운드 빛 빔 & 파티클 오라 */}
       <GachaAuraRays highestRarity={highestRarity} lowSpecMode={lowSpecMode} />
@@ -561,41 +561,41 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
         )}
       </AnimatePresence>
 
-      <div className="relative z-10 mx-auto flex min-h-full w-full max-w-6xl flex-col">
+      <div className="relative z-10 mx-auto flex flex-1 min-h-0 w-full max-w-6xl flex-col justify-between">
         {/* 헤더 바 */}
-        <div className="flex items-center justify-between gap-3 pb-3 border-b border-white/10">
-          <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <span className={cn('rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.24em]', rarityBadgeClass(packRarity))}>
+        <div className="flex items-center justify-between gap-2 sm:gap-3 pb-2.5 sm:pb-3 border-b border-white/10 shrink-0">
+          <div className="flex min-w-0 flex-wrap items-center gap-1.5 sm:gap-2">
+            <span className={cn('rounded-full border px-2.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.24em]', rarityBadgeClass(packRarity))}>
               {t(`rarity_${packRarity}` as const, language)} PACK
             </span>
-            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-black uppercase tracking-[0.24em] text-white/60">
+            <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.24em] text-white/60">
               {currentSeason}
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <button
               type="button"
               onClick={onOpenProbability}
-              className="flex min-h-10 items-center gap-1.5 rounded-full border border-sky-300/30 bg-sky-500/10 px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-sky-200 transition hover:bg-sky-500/20 active:scale-95 cursor-pointer"
+              className="flex min-h-9 sm:min-h-10 items-center gap-1 sm:gap-1.5 rounded-full border border-sky-300/30 bg-sky-500/10 px-2.5 py-1 sm:px-3.5 sm:py-1.5 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-sky-200 transition hover:bg-sky-500/20 active:scale-95 cursor-pointer"
             >
-              <Info size={14} />
+              <Info size={13} />
               {t('shop_gacha_probability_button', language)}
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="flex min-h-10 min-w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80 transition hover:bg-white/15 hover:text-white cursor-pointer"
+              className="flex min-h-9 min-w-9 sm:min-h-10 sm:min-w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80 transition hover:bg-white/15 hover:text-white cursor-pointer"
               aria-label={t('close', language)}
             >
-              <X size={18} />
+              <X size={16} />
             </button>
           </div>
         </div>
 
         {/* 메인 뽑기 컨테이너 */}
-        <div className="mt-4 grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <div className="relative min-h-[500px] flex flex-col justify-between rounded-[32px] border border-white/15 bg-slate-900/90 p-5 sm:p-7 shadow-2xl backdrop-blur-xl overflow-hidden">
+        <div className="mt-2 sm:mt-4 grid gap-3 sm:gap-6 flex-1 min-h-0 lg:grid-cols-[minmax(0,1fr)_320px] overflow-y-auto">
+          <div className="relative flex-1 min-h-[380px] sm:min-h-[500px] flex flex-col justify-between rounded-2xl sm:rounded-[32px] border border-white/15 bg-slate-900/90 p-3 sm:p-7 shadow-2xl backdrop-blur-xl overflow-hidden">
             
             {/* 상단 팩 타이틀 정보 */}
             <div className="flex flex-wrap items-center justify-between gap-3 z-10">
