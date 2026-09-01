@@ -2962,38 +2962,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [isCoinFlipping, setIsCoinFlipping] = useState(false);
   const [coinWinner, setCoinWinner] = useState<'player' | 'ai' | null>(null);
 
-  // Player avatar card ID resolution from /profile (localStorage or effectiveUser)
-  const playerAvatarCardId = useMemo(() => {
-    const stored = typeof window !== 'undefined' ? localStorage.getItem('hero_user_avatar') : null;
-    const raw = stored || effectiveUser?.photoURL || 'card:1';
-    if (typeof raw === 'string' && raw.startsWith('card:')) {
-      const parsed = parseInt(raw.replace('card:', ''), 10);
-      if (!isNaN(parsed) && parsed >= 1 && parsed <= 110) return parsed;
-    }
-    if (typeof raw === 'string' && raw.startsWith('preset:')) {
-      const parsed = parseInt(raw.replace('preset:', ''), 10);
-      if (!isNaN(parsed)) return (parsed % 110) + 1;
-    }
-    return 1; // Default to Aquaris (No.01)
-  }, [effectiveUser?.photoURL]);
-
-  // Opponent avatar card ID resolution (deterministic from opponent deck, ID, or fallback)
-  const opponentAvatarCardId = useMemo(() => {
-    const opp = lastOpponent || selectedOpponent;
-    if (opp?.deck && opp.deck.length > 0 && opp.deck[0].imageIndex) {
-      return opp.deck[0].imageIndex;
-    }
-    if (opp?.id) {
-      let hash = 0;
-      for (let i = 0; i < opp.id.length; i++) {
-        hash = (hash << 5) - hash + opp.id.charCodeAt(i);
-        hash |= 0;
-      }
-      return (Math.abs(hash) % 110) + 1;
-    }
-    return 2; // Default to Ignis (No.02)
-  }, [lastOpponent, selectedOpponent]);
-
   const renderCustomAlertModal = () => (
     <AnimatePresence>
       {customAlertModal.isOpen && (
@@ -3369,6 +3337,38 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [isShadowMatch, setIsShadowMatch] = useState(false);
   const [selectedCardSide, setSelectedCardSide] = useState<'player' | 'ai'>('player');
   const [lastOpponent, setLastOpponent] = useState<Character | null>(null);
+
+  // Player avatar card ID resolution from /profile (localStorage or effectiveUser)
+  const playerAvatarCardId = useMemo(() => {
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('hero_user_avatar') : null;
+    const raw = stored || effectiveUser?.photoURL || 'card:1';
+    if (typeof raw === 'string' && raw.startsWith('card:')) {
+      const parsed = parseInt(raw.replace('card:', ''), 10);
+      if (!isNaN(parsed) && parsed >= 1 && parsed <= 110) return parsed;
+    }
+    if (typeof raw === 'string' && raw.startsWith('preset:')) {
+      const parsed = parseInt(raw.replace('preset:', ''), 10);
+      if (!isNaN(parsed)) return (parsed % 110) + 1;
+    }
+    return 1; // Default to Aquaris (No.01)
+  }, [effectiveUser?.photoURL]);
+
+  // Opponent avatar card ID resolution (deterministic from opponent deck, ID, or fallback)
+  const opponentAvatarCardId = useMemo(() => {
+    const opp = lastOpponent || selectedOpponent;
+    if (opp?.deck && opp.deck.length > 0 && opp.deck[0].imageIndex) {
+      return opp.deck[0].imageIndex;
+    }
+    if (opp?.id) {
+      let hash = 0;
+      for (let i = 0; i < opp.id.length; i++) {
+        hash = (hash << 5) - hash + opp.id.charCodeAt(i);
+        hash |= 0;
+      }
+      return (Math.abs(hash) % 110) + 1;
+    }
+    return 2; // Default to Ignis (No.02)
+  }, [lastOpponent, selectedOpponent]);
   const [isDeckPreviewing, setIsDeckPreviewing] = useState(false);
   const [previewCountdown, setPreviewCountdown] = useState(3);
   const [lastAiDeck, setLastAiDeck] = useState<CardData[] | null>(null);
