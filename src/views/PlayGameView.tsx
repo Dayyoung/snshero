@@ -14691,27 +14691,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   [ ⚡ OVERCLOCK +2 ]
                 </span>
               )}
-
-              {/* Item 361: 9-Turn LED Micro-Dots (Shows filled player/enemy slots & remaining turns) */}
-              {battleType !== 'matgo' && (
-                <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-slate-900 border border-slate-800" title={`Round Progress: ${board.filter(c => c !== null).length}/9 Turns`}>
-                  {board.map((cell, idx) => {
-                    const isPlayer = cell?.owner === 'player';
-                    const isAi = cell?.owner === 'ai';
-                    return (
-                      <span
-                        key={idx}
-                        className={cn(
-                          "w-1.5 h-1.5 rounded-full transition-all duration-300",
-                          isPlayer ? "bg-indigo-400 shadow-[0_0_4px_rgba(99,102,241,0.8)] scale-110" :
-                          isAi ? "bg-rose-400 shadow-[0_0_4px_rgba(244,63,94,0.8)] scale-110" :
-                          "bg-slate-700/60"
-                        )}
-                      />
-                    );
-                  })}
-                </div>
-              )}
             </div>
 
             {/* Opponent Score */}
@@ -15616,6 +15595,34 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           })}
           </AnimatePresence>
         </div>
+
+        {/* Item 361: 9-Turn LED Micro-Dots (Shows filled player/enemy slots & remaining turns) - Relocated Below Player Hand */}
+        {battleType !== 'matgo' && (
+          <div className="w-full flex items-center justify-center pb-1 z-20 pointer-events-none select-none">
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-sm bg-slate-900/90 border border-slate-800 shadow-xs backdrop-blur-xs pointer-events-auto" title={`Round Progress: ${board.filter(c => c !== null).length}/9 Turns`}>
+              <span className="text-[8px] sm:text-[9px] font-mono text-slate-400 font-bold">
+                {language === 'ko' ? '진행도' : 'ROUND'} {board.filter(c => c !== null).length}/9
+              </span>
+              <div className="flex items-center gap-1">
+                {board.map((cell, idx) => {
+                  const isPlayer = cell?.owner === 'player';
+                  const isAi = cell?.owner === 'ai';
+                  return (
+                    <span
+                      key={idx}
+                      className={cn(
+                        "w-1.5 h-1.5 rounded-full transition-all duration-300",
+                        isPlayer ? "bg-indigo-400 shadow-[0_0_4px_rgba(99,102,241,0.8)] scale-110" :
+                        isAi ? "bg-rose-400 shadow-[0_0_4px_rgba(244,63,94,0.8)] scale-110" :
+                        "bg-slate-700/60"
+                      )}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       </div>
 
