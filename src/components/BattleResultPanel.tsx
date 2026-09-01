@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Trophy, Zap, Sparkles, ArrowUpRight, Coins, ChevronDown, ChevronUp, Share2, Check, Layers, Shield, Flame, BarChart3, UserPlus, UserCheck, Eye, User, X } from 'lucide-react';
+import { Trophy, Zap, Sparkles, ArrowUpRight, Coins, ChevronDown, ChevronUp, Share2, Check, Layers, Shield, ShieldAlert, Flame, BarChart3, UserPlus, UserCheck, Eye, User, X } from 'lucide-react';
 import { CardData } from '../types';
 import { getCardSpriteStyle } from '../lib/utils';
 
@@ -215,6 +215,18 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Tough Opponent Defeat Warning Banner */}
+      {result === 'loss' && (
+        <div className="bg-rose-950/70 border border-rose-500/40 rounded-xl p-2.5 flex items-center gap-2 text-rose-200 text-xs font-mono shadow-sm">
+          <ShieldAlert size={16} className="text-rose-400 shrink-0 animate-pulse" />
+          <span className="leading-snug">
+            {isKo
+              ? '[ ⚠️ 버거운 상대 패배 ] 상대 전투력이 높아 패배했습니다. 덱을 강화하거나 전술 상성을 점검해보세요!'
+              : '[ ⚠️ Tough Opponent Warning ] Defeated by strong enemy forces. Try upgrading your cards and tactical stances!'}
+          </span>
+        </div>
+      )}
 
       {/* Bonus Badges: Speed Attack / Underdog / Loot Goblin / Mana Spring / Elemental Combo / Ironclad Defender */}
       {(isSpeedAttackBonus || isUnderdogBonus || isGoblinBonus || isManaSpringBonus || isElementalComboBonus || isIroncladBonus) && (

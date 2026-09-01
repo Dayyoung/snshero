@@ -35,7 +35,7 @@ interface KadanRpgViewProps {
   updateSns: (amount: number, reason?: string, typeOrTarget?: 'earned' | 'purchased' | string, targetName?: string) => Promise<void>;
   addCard: (rarity: CardRarity, indexOverride?: number, isSilent?: boolean) => void;
   addItem: (rarity?: ItemRarity, idOverride?: string) => unknown;
-  showCustomAlert: (title: string, message: string) => void;
+  showCustomAlert: (title: string, message: string, autoCloseSeconds?: number) => void;
 }
 
 const sameTile = (a: KadanRpgTile | null, b: KadanRpgTile | null): boolean => (
@@ -297,7 +297,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
 
     setBattleEvent(null);
     setActiveEvent(battleEvent);
-    showCustomAlert(t('kadan_rpg_battle_loss_title', language), t('kadan_rpg_battle_loss_desc', language));
+    showCustomAlert(t('kadan_rpg_battle_loss_title', language), t('kadan_rpg_battle_loss_desc', language), 3);
   }, [battleEvent, completeActiveEvent, language, markEncounterCleared, progress.claimedRewardIds, progress.rebirthLevel, showCustomAlert]);
 
   const autoRunner = useKadanRpgAutoRunner({

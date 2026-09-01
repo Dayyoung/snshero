@@ -4,6 +4,23 @@
 
 ---
 
+## [2026-09-01 20:28 KST / 11:28 UTC] [전투 패배 및 버거운 상대 팝업 3초 자동 닫힘 기능 구현 및 검증 완료]
+- **요청 사항**: "전투 패배 / 이번 상대는 아직 버겁습니다. 자동 진행을 끄고 직접 다시 도전해 보세요 이 팝업을 3초후에 자동으로 닫아줘"
+- **작업 내역**:
+  1. `src/App.tsx`:
+     - `customPopup` 상태에 `autoCloseSeconds` 및 `countdown` 카운트다운 타이머 상태 추가.
+     - `showCustomAlert` 함수에 `autoCloseSeconds` 파라미터 지원 및 패배/버거운 상대 팝업(`kadan_rpg_battle_loss_desc`) 감지 시 3초 자동 닫힘 타이머 기본 설정.
+     - `useEffect` 기반 1초 단위 실시간 카운트다운 타이머 및 0초 도달 시 모달 자동 닫힘 처리.
+     - 커스텀 팝업 모달 UI에 `⏱️ N초 후 자동으로 닫힙니다` 안내 뱃지 및 확인 버튼 내 실시간 잔여 초(`확인 (3초)`) 표시 연동.
+  2. `src/views/KadanRpgView.tsx`:
+     - `KadanRpgViewProps`의 `showCustomAlert` 타입 시그니처에 `autoCloseSeconds?: number` 추가.
+     - `handleBattleComplete`에서 패배 시 `showCustomAlert(t('kadan_rpg_battle_loss_title', language), t('kadan_rpg_battle_loss_desc', language), 3)`로 3초 자동 닫힘 명시 전달.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 성공 통과, `npm run build` 컴파일 완료.
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] 전투 패배 및 버거운 상대 팝업 3초 자동 닫힘 타이머 및 UI 뱃지 구현 -> 작업완료`
+
+---
+
 ## [2026-09-01 20:10 KST / 11:10 UTC] [스프레드시트 16개 항목 전수 구현 및 검증 완료 (ID 556 ~ 567 / CSV Rows 711 ~ 726)]
 - **작업 1: [ID 556 / Row 715] 하단 20% 썸존 통합 네비게이션 독 & 상단 75% 뷰포트 개방 (MobileThumbNavDock.tsx)**
   - 상단 75% 뷰포트 영역 개방 및 엄지 제스처 최적화 하단 20% 썸존 5탭(로비/마이덱/배틀/상점/내정보) `MobileThumbNavDock` 컴포넌트 구현 완료.

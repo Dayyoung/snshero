@@ -20,6 +20,31 @@ export const VictoryRewardModal: React.FC<VictoryRewardModalProps> = ({
   const isKo = language === 'ko';
   const [animatedSns, setAnimatedSns] = useState<number>(0);
   const [isAnimationComplete, setIsAnimationComplete] = useState<boolean>(false);
+  const [autoCloseCountdown, setAutoCloseCountdown] = useState<number | null>(null);
+
+  // 전투 패배(isVictory === false) 시 5초 후 자동으로 닫기
+  useEffect(() => {
+    if (receipt.isVictory === false) {
+      setAutoCloseCountdown(5);
+    } else {
+      setAutoCloseCountdown(null);
+    }
+  }, [receipt.isVictory]);
+
+  useEffect(() => {
+    if (autoCloseCountdown === null) return;
+    if (autoCloseCountdown <= 0) {
+      setAutoCloseCountdown(null);
+      onExit();
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setAutoCloseCountdown(prev => (prev !== null ? prev - 1 : null));
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [autoCloseCountdown, onExit]);
 
   useEffect(() => {
     let startTimestamp: number | null = null;
@@ -49,15 +74,23 @@ export const VictoryRewardModal: React.FC<VictoryRewardModalProps> = ({
       <div className="bg-[#fdfcfc] text-[#201d1d] border-2 border-[#201d1d] w-full max-w-md p-5 flex flex-col justify-between shadow-2xl relative">
         {/* Top Header Banner */}
         <div className="text-center border-b border-[#201d1d]/20 pb-3">
-          <div className="inline-flex items-center gap-1.5 bg-amber-500/15 border border-amber-600/30 px-2.5 py-1 text-xs font-bold text-amber-900 mb-2">
-            <Trophy size={14} className="text-amber-700 fill-amber-500" />
-            <span>{isKo ? '★ MISSION COMPLETED ★' : '★ MISSION COMPLETED ★'}</span>
-          </div>
+          {receipt.isVictory === false ? (
+            <div className="inline-flex items-center gap-1.5 bg-rose-500/20 border border-rose-600/40 px-2.5 py-1 text-xs font-bold text-rose-900 mb-2">
+              <span>{isKo ? `⚠️ 버거운 상대 패배 [${autoCloseCountdown ?? 5}초 후 자동 퇴장] ⚠️` : `⚠️ TOUGH OPPONENT DEFEAT [Auto-exit ${autoCloseCountdown ?? 5}s] ⚠️`}</span>
+            </div>
+          ) : (
+            <div className="inline-flex items-center gap-1.5 bg-amber-500/15 border border-amber-600/30 px-2.5 py-1 text-xs font-bold text-amber-900 mb-2">
+              <Trophy size={14} className="text-amber-700 fill-amber-500" />
+              <span>{isKo ? '★ MISSION COMPLETED ★' : '★ MISSION COMPLETED ★'}</span>
+            </div>
+          )}
           <h2 className="text-base sm:text-lg font-black tracking-tight uppercase">
             {receipt.gameTitle}
           </h2>
           <p className="text-[11px] text-[#201d1d]/70">
-            {isKo ? '100% 확정 SNS 포인트 즉시 정산 완료' : '100% Guaranteed SNS Points Settled'}
+            {receipt.isVictory === false
+              ? (isKo ? `${autoCloseCountdown ?? 5}초 후 자동으로 이전 화면으로 돌아갑니다.` : `Auto closing in ${autoCloseCountdown ?? 5}s...`)
+              : (isKo ? '100% 확정 SNS 포인트 즉시 정산 완료' : '100% Guaranteed SNS Points Settled')}
           </p>
         </div>
 

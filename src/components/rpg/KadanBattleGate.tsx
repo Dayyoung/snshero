@@ -57,6 +57,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
     color: string;
     icon: any;
   } | null>(null);
+  const [defeatCountdown, setDefeatCountdown] = useState<number | null>(null);
   const score = countBattleScore(state.board);
 
   useEffect(() => {
@@ -181,6 +182,31 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
     }, lowSpecMode ? 400 : 600);
     return () => window.clearTimeout(timer);
   }, [autoBattle, encounter.difficulty, language, lowSpecMode, state]);
+
+  // 패배 시 5초 후 자동으로 닫기 (버거운 상대 대결 포함)
+  useEffect(() => {
+    if (state.result === 'loss') {
+      setDefeatCountdown(5);
+    } else {
+      setDefeatCountdown(null);
+    }
+  }, [state.result]);
+
+  useEffect(() => {
+    if (defeatCountdown === null || hasReported) return;
+    if (defeatCountdown <= 0) {
+      setDefeatCountdown(null);
+      setHasReported(true);
+      onComplete('loss');
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setDefeatCountdown(prev => (prev !== null ? prev - 1 : null));
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [defeatCountdown, hasReported, onComplete]);
 
   useEffect(() => {
     if (!autoBattle || !state.result || hasReported) return;
@@ -572,9 +598,12 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
             <button
               type="button"
               onClick={() => onComplete(state.result!)}
-              className="min-h-10 rounded-xl bg-indigo-650 px-6 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-indigo-600/10 transition-all hover:bg-indigo-600 active:scale-95 cursor-pointer"
+              className="min-h-10 rounded-xl bg-indigo-650 px-6 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-indigo-600/10 transition-all hover:bg-indigo-600 active:scale-95 cursor-pointer flex items-center gap-1.5"
             >
-              {t('kadan_rpg_continue', language)}
+              <span>
+                {t('kadan_rpg_continue', language)}
+                {state.result === 'loss' && defeatCountdown !== null ? ` (${defeatCountdown}s)` : ''}
+              </span>
             </button>
           )}
         </div>

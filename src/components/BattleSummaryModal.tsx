@@ -129,6 +129,7 @@ export const BattleSummaryModal: React.FC<BattleSummaryModalProps> = ({
   const [activeTab, setActiveTab] = useState<'overview' | 'cards' | 'tactics'>('overview');
   const [confettiBurstKey, setConfettiBurstKey] = useState<number>(1);
   const [showConfetti, setShowConfetti] = useState<boolean>(true);
+  const [autoCloseCountdown, setAutoCloseCountdown] = useState<number | null>(null);
 
   // Check low spec mode from localStorage if prop is false
   const isLowSpec = useMemo(() => {
@@ -200,6 +201,30 @@ export const BattleSummaryModal: React.FC<BattleSummaryModalProps> = ({
       isElementalCombo: true
     }
   };
+
+  // 전투 패배 (summary.result === 'loss' 또는 버거운 상대 대결) 시 5초 자동 닫힘 카운트다운
+  useEffect(() => {
+    if (isOpen && summary.result === 'loss') {
+      setAutoCloseCountdown(5);
+    } else {
+      setAutoCloseCountdown(null);
+    }
+  }, [isOpen, summary.result]);
+
+  useEffect(() => {
+    if (autoCloseCountdown === null) return;
+    if (autoCloseCountdown <= 0) {
+      setAutoCloseCountdown(null);
+      onClose();
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setAutoCloseCountdown(prev => (prev !== null ? prev - 1 : null));
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [autoCloseCountdown, onClose]);
 
   const isWin = summary.result === 'win';
 
@@ -437,12 +462,42 @@ export const BattleSummaryModal: React.FC<BattleSummaryModalProps> = ({
             <button
               onClick={onClose}
               className="p-1.5 rounded-sm bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer min-w-[36px] min-h-[36px] flex items-center justify-center border border-slate-700"
-              aria-label="Close"
+              aria-label={autoCloseCountdown !== null ? (isKo ? `닫기 (${autoCloseCountdown}초)` : `Close (${autoCloseCountdown}s)`) : "Close"}
               id="btn-close-battle-summary"
             >
               <X size={18} />
             </button>
           </div>
+
+          {/* 전투 패배 버거운 상대 만났을 때 5초 자동 닫힘 안내 배너 */}
+          {summary.result === 'loss' && autoCloseCountdown !== null && (
+            <div className="px-4 py-2 bg-rose-950/90 border-b border-rose-500/50 flex flex-col sm:flex-row items-center justify-between gap-2 text-rose-200 text-xs font-mono relative z-20">
+              <div className="flex items-center gap-2">
+                <ShieldAlert size={16} className="text-rose-400 animate-pulse shrink-0" />
+                <span className="font-bold">
+                  {isKo
+                    ? `[ ⚠️ 버거운 상대 패배 ] ${autoCloseCountdown}초 후 자동으로 팝업이 닫힙니다.`
+                    : `[ ⚠️ Tough Opponent Defeat ] Auto-closing in ${autoCloseCountdown}s.`}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                {/* 5초 진행 프로그레스 바 */}
+                <div className="w-24 h-2 bg-rose-900/60 rounded-full overflow-hidden border border-rose-500/30">
+                  <div 
+                    className="h-full bg-rose-500 transition-all duration-1000 ease-linear"
+                    style={{ width: `${(autoCloseCountdown / 5) * 100}%` }}
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setAutoCloseCountdown(null)}
+                  className="text-[10px] px-2 py-0.5 rounded-sm bg-rose-900/60 hover:bg-rose-800 border border-rose-500/40 text-rose-100 transition-all cursor-pointer font-bold"
+                >
+                  {isKo ? '자동 닫기 일시정지' : 'Pause'}
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Result Banner with Victory Sparks & Celebration Trigger */}
           <div className={`relative px-4 py-3 flex items-center justify-between border-b overflow-hidden z-20 ${
@@ -927,10 +982,14 @@ export const BattleSummaryModal: React.FC<BattleSummaryModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="min-h-[44px] py-2.5 px-4 rounded-sm bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-bold transition-all cursor-pointer"
+              className="min-h-[44px] py-2.5 px-4 rounded-sm bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1"
               id="btn-close-footer-battle-summary"
             >
-              {isKo ? '닫기' : 'Close'}
+              <span>
+                {isKo 
+                  ? (summary.result === 'loss' && autoCloseCountdown !== null ? `닫기 (${autoCloseCountdown}초)` : '닫기') 
+                  : (summary.result === 'loss' && autoCloseCountdown !== null ? `Close (${autoCloseCountdown}s)` : 'Close')}
+              </span>
             </button>
           </div>
         </motion.div>

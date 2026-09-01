@@ -584,21 +584,33 @@ function AppContent() {
     title: string;
     message: string;
     type: 'confirm' | 'alert';
+    autoCloseSeconds?: number;
+    countdown?: number | null;
     onConfirm?: () => void;
     onCancel?: () => void;
   }>({
     isOpen: false,
     title: '',
     message: '',
-    type: 'alert'
+    type: 'alert',
+    countdown: null
   });
 
-  const showCustomAlert = (title: string, message: string) => {
+  const showCustomAlert = (title: string, message: string, autoCloseSeconds?: number) => {
+    const isDefeatOrOverwhelmed = 
+      autoCloseSeconds !== undefined 
+        ? autoCloseSeconds 
+        : (message.includes('버겁') || title.includes('패배') || message.includes('difficult') || title.includes('Battle Lost'))
+          ? 3
+          : undefined;
+
     setCustomPopup({
       isOpen: true,
       title,
       message,
-      type: 'alert'
+      type: 'alert',
+      autoCloseSeconds: isDefeatOrOverwhelmed,
+      countdown: isDefeatOrOverwhelmed ?? null
     });
   };
 
@@ -608,9 +620,35 @@ function AppContent() {
       title,
       message,
       type: 'confirm',
-      onConfirm
+      onConfirm,
+      countdown: null
     });
   };
+
+  // 커스텀 팝업 자동 닫힘 카운트다운 타이머 (패배/버거운 상대 팝업 3초 자동 닫힘 지원)
+  useEffect(() => {
+    if (!customPopup.isOpen || customPopup.countdown === undefined || customPopup.countdown === null) {
+      return;
+    }
+
+    if (customPopup.countdown <= 0) {
+      setCustomPopup(prev => ({ ...prev, isOpen: false, countdown: null }));
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setCustomPopup(prev => {
+        if (!prev.isOpen || prev.countdown === null || prev.countdown === undefined) return prev;
+        const nextVal = prev.countdown - 1;
+        if (nextVal <= 0) {
+          return { ...prev, isOpen: false, countdown: null };
+        }
+        return { ...prev, countdown: nextVal };
+      });
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [customPopup.isOpen, customPopup.countdown]);
 
   useEffect(() => {
     localStorage.setItem('hero_ad_removed', String(isAdRemoved));
@@ -7251,13 +7289,21 @@ function AppContent() {
               <p className="text-sm font-bold text-gray-700 my-4 whitespace-pre-wrap leading-relaxed">
                 {customPopup.message}
               </p>
-              <div className="flex gap-3 mt-6">
+
+              {/* 자동 닫힘 카운트다운 뱃지 */}
+              {customPopup.countdown !== undefined && customPopup.countdown !== null && customPopup.countdown > 0 && (
+                <div className="mb-4 py-1.5 px-3 bg-amber-50 border border-amber-300 rounded-lg text-amber-900 text-xs font-black flex items-center justify-center gap-1.5 animate-pulse">
+                  <span>⏱️ {language === 'ko' ? `${customPopup.countdown}초 후 자동으로 닫힙니다` : `Auto closing in ${customPopup.countdown}s...`}</span>
+                </div>
+              )}
+
+              <div className="flex gap-3 mt-4">
                 {customPopup.type === 'confirm' ? (
                   <>
                     <button
                       onClick={() => {
                         playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                        setCustomPopup(prev => ({ ...prev, isOpen: false }));
+                        setCustomPopup(prev => ({ ...prev, isOpen: false, countdown: null }));
                         customPopup.onConfirm?.();
                       }}
                       className="flex-1 py-2.5 bg-red-600 hover:bg-red-500 text-white font-black uppercase rounded-xl border-2 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer text-center"
@@ -7267,7 +7313,7 @@ function AppContent() {
                     <button
                       onClick={() => {
                         playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                        setCustomPopup(prev => ({ ...prev, isOpen: false }));
+                        setCustomPopup(prev => ({ ...prev, isOpen: false, countdown: null }));
                         customPopup.onCancel?.();
                       }}
                       className="flex-1 py-2.5 bg-gray-200 hover:bg-gray-100 text-black font-black uppercase rounded-xl border-2 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer text-center"
@@ -7279,11 +7325,13 @@ function AppContent() {
                   <button
                     onClick={() => {
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                      setCustomPopup(prev => ({ ...prev, isOpen: false }));
+                      setCustomPopup(prev => ({ ...prev, isOpen: false, countdown: null }));
                     }}
                     className="w-full py-2.5 bg-yellow-400 hover:bg-yellow-300 text-black font-black uppercase rounded-xl border-2 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer text-center"
                   >
-                    {language === 'ko' ? '확인' : 'OK'}
+                    {customPopup.countdown !== undefined && customPopup.countdown !== null && customPopup.countdown > 0
+                      ? (language === 'ko' ? `확인 (${customPopup.countdown}초)` : `OK (${customPopup.countdown}s)`)
+                      : (language === 'ko' ? '확인' : 'OK')}
                   </button>
                 )}
               </div>
