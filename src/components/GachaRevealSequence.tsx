@@ -568,7 +568,12 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
             <span className={cn('rounded-full border px-2.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.24em]', rarityBadgeClass(packRarity))}>
               {t(`rarity_${packRarity}` as const, language)} PACK
             </span>
-            <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.24em] text-white/60">
+            {/* 컴팩트 천장 진행도 칩 (모바일/PC 공통 상시 노출) */}
+            <div className="flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-500/10 px-2 sm:px-3 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-amber-300">
+              <Sparkles size={11} className="text-amber-400 shrink-0" />
+              <span>{t('shop_gacha_pity_title', language)} {pityView.current}/{pityView.threshold} ({pityView.remaining} left)</span>
+            </div>
+            <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.24em] text-white/60 hidden sm:inline-block">
               {currentSeason}
             </span>
           </div>
@@ -828,13 +833,13 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                   </div>
 
                   {/* 하단 컨트롤 및 요약 바 */}
-                  <div className="pt-2 flex flex-wrap items-center justify-between gap-4 border-t border-white/10">
+                  <div className="pt-3 pb-1 flex flex-wrap items-center justify-between gap-3 border-t border-white/15 sticky bottom-0 bg-slate-900/95 z-20">
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
                         disabled={isReSummoning}
                         onClick={handleDrawAgainClick}
-                        className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 text-xs font-black uppercase tracking-wider shadow-lg hover:brightness-110 active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex items-center gap-2 px-5 sm:px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 text-xs font-black uppercase tracking-wider shadow-lg hover:brightness-110 active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Package2 size={16} className={isReSummoning ? 'animate-spin' : ''} />
                         {t('draw_again', language)} ({packCost} SNS)
@@ -843,7 +848,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                         <button
                           type="button"
                           onClick={() => onShareBestCard(bestCard.imageIndex)}
-                          className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-fuchsia-400/40 bg-fuchsia-500/20 text-fuchsia-200 text-xs font-black uppercase tracking-wider transition hover:bg-fuchsia-500/30 active:scale-95 cursor-pointer shadow-md"
+                          className="flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full border border-fuchsia-400/40 bg-fuchsia-500/20 text-fuchsia-200 text-xs font-black uppercase tracking-wider transition hover:bg-fuchsia-500/30 active:scale-95 cursor-pointer shadow-md"
                         >
                           <Share2 size={15} />
                           {t('shop_gacha_share_cta', language)}
@@ -854,7 +859,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                     <button
                       type="button"
                       onClick={onClose}
-                      className="px-5 py-2.5 rounded-full border border-white/20 bg-white/10 text-white text-xs font-bold uppercase tracking-wider hover:bg-white/20 active:scale-95 transition-all cursor-pointer"
+                      className="px-6 py-2.5 rounded-full border border-white/30 bg-white/15 text-white text-xs font-black uppercase tracking-wider hover:bg-white/25 active:scale-95 transition-all cursor-pointer shadow-md"
                     >
                       {t('close', language)}
                     </button>
@@ -864,8 +869,8 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
             </AnimatePresence>
           </div>
 
-          {/* 우측 천장 가이드 및 확률 피드 */}
-          <div className="space-y-4">
+          {/* 우측 천장 가이드 및 확률 피드 (데스크톱 전용 — 모바일에서는 카드 결과와 조작 버튼을 가리지 않도록 분리) */}
+          <div className="hidden lg:block space-y-4 shrink-0">
             <PityGauge
               packRarity={packRarity}
               language={language}
