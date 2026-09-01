@@ -3374,6 +3374,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [lastAiDeck, setLastAiDeck] = useState<CardData[] | null>(null);
   const hasRecordedResult = useRef(false);
 
+  // Match searching real-time seconds counter (Active search indicator)
+  const [searchingSeconds, setSearchingSeconds] = useState(0);
+  useEffect(() => {
+    if (gameState === 'searching' && !isCoinFlipping) {
+      setSearchingSeconds(0);
+      const interval = setInterval(() => {
+        setSearchingSeconds(prev => prev + 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    } else {
+      setSearchingSeconds(0);
+    }
+  }, [gameState, isCoinFlipping]);
+
   // Turn Countdown Timer (Row 26)
   useEffect(() => {
     if (gameState !== 'playing' || gameOver || isEvaluating) {
@@ -12528,9 +12542,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             </div>
                           )}
                         </div>
-                      </div>
-
-                      {/* Game Title & Mission Info Bar */}
+{/* Game Title & Mission Info Bar */}
                       <div className="p-1.5 sm:p-2.5 bg-slate-950 border-t border-slate-800 flex flex-col gap-1 sm:gap-1.5">
                         <div className="flex items-center justify-between gap-1">
                           <span className="flex-1 text-left font-black text-[10px] sm:text-xs text-white truncate drop-shadow-xs">
@@ -12833,32 +12845,80 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
   if (gameState === 'preMatch' && selectedOpponent) {
     return (
-      <div className="flex flex-col min-h-screen bg-black text-white overflow-y-auto relative pb-20">
-        <header className="h-16 flex items-center justify-between border-b border-white/10 px-6 z-50 bg-black/50 backdrop-blur-md relative">
-          <div className="w-10" />
-          <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center gap-0.5 pointer-events-none">
-            <h2 className="text-xl font-bold italic tracking-tight leading-none uppercase text-center">{t('pre_match_setup', language)}</h2>
-            <div className="flex items-center justify-center gap-2 mt-1">
-              <p className="text-[10px] font-black opacity-40 tracking-widest uppercase text-center">{t('matrix_calibration', language)}</p>
+      <div className="flex flex-col min-h-screen bg-slate-950 text-white overflow-y-auto relative pb-20 font-mono select-none">
+        {/* Cyber Grid Background */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(99,102,241,0.18),transparent_65%)] pointer-events-none" />
+
+        {/* Header Bar with Back Button */}
+        <header className="h-16 flex items-center justify-between border-b border-white/10 px-4 sm:px-6 z-50 bg-slate-950/90 backdrop-blur-md sticky top-0">
+          <button
+            onClick={() => {
+              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              setGameState('lobby');
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/15 bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white text-xs font-bold transition-all cursor-pointer"
+          >
+            <ChevronLeft size={16} />
+            <span>{language === 'ko' ? '로비로' : 'Lobby'}</span>
+          </button>
+
+          <div className="flex flex-col items-center gap-0.5">
+            <div className="inline-flex items-center gap-1.5 text-xs font-black text-amber-400 uppercase tracking-widest">
+              <Swords size={14} className="animate-pulse" />
+              <span>{language === 'ko' ? '[ 대전 도전자 발견 ]' : '[ CHALLENGER FOUND ]'}</span>
             </div>
+            <p className="text-[10px] text-slate-400 tracking-wider">
+              {language === 'ko' ? '배틀 전력 분석 및 매칭 준비' : 'Pre-Battle Intel & Match Prep'}
+            </p>
           </div>
+
+          <div className="w-16" />
         </header>
 
-        <div className="flex-1 flex flex-col items-center justify-center p-6 gap-8 overflow-y-auto">
-          {/* Opponent Identity */}
-          <div className="flex flex-col items-center gap-4">
-             <div className="w-32 h-32 rounded-3xl border-4 border-red-500/50 bg-red-500/10 flex items-center justify-center overflow-hidden shadow-[0_0_40px_rgba(239,68,68,0.2)]">
-               <img 
-                 src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${selectedOpponent.id}&backgroundColor=b6e3f4`} 
-                 alt="Robot" 
-                 className="w-full h-full object-cover pixelated"
-                 referrerPolicy="no-referrer"
-               />
-             </div>
-             <div className="text-center">
-                <div className="text-xs font-black text-red-500 uppercase tracking-widest mb-1">{t('opponent_detected', language)}</div>
-                <div className="text-2xl font-black italic uppercase">{selectedOpponent.name}</div>
-             </div>
+        <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 gap-6 max-w-lg mx-auto w-full z-10">
+          {/* Opponent Hero Card Portrait & Info */}
+          <div className="w-full flex flex-col items-center gap-4 bg-slate-900/90 border border-slate-800 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-md relative overflow-hidden">
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-rose-500/10 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
+
+            <div className="relative">
+              {/* 캐릭터 포트레이트 */}
+              <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl border-3 border-rose-500/60 bg-slate-950 flex items-center justify-center overflow-hidden shadow-[0_0_30px_rgba(244,63,94,0.35)] ring-2 ring-rose-400/30">
+                <div className="w-[130%] h-[130%] shrink-0" style={getCardSpriteStyle(opponentAvatarCardId)} />
+              </div>
+              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-rose-600 border border-rose-400 text-white text-[9px] font-black uppercase tracking-widest shadow-md">
+                OPPONENT
+              </div>
+            </div>
+
+            <div className="text-center space-y-1 mt-1">
+              <span className="text-[10px] font-mono text-rose-400 uppercase tracking-widest font-black">
+                {CARD_DATABASE[opponentAvatarCardId] ? `No.${String(opponentAvatarCardId).padStart(2, '0')} ${language === 'ko' ? CARD_DATABASE[opponentAvatarCardId].title : CARD_DATABASE[opponentAvatarCardId].title_en}` : 'Hero Challenger'}
+              </span>
+              <h3 className="text-xl sm:text-2xl font-black text-white italic tracking-wide">
+                {selectedOpponent.name}
+              </h3>
+            </div>
+
+            {/* 전투력 & 보상 스탯 바 */}
+            <div className="grid grid-cols-2 gap-3 w-full pt-1">
+              <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-3 text-center">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
+                  {language === 'ko' ? '상대 총 전투력' : 'Opponent Power'}
+                </span>
+                <span className="text-base sm:text-lg font-black text-cyan-400">
+                  ⚡ {(selectedOpponent.totalPower || 1200).toLocaleString()} TP
+                </span>
+              </div>
+              <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-3 text-center">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
+                  {language === 'ko' ? '예상 획득 보상' : 'Est. Reward'}
+                </span>
+                <span className="text-base sm:text-lg font-black text-amber-300">
+                  🪙 +{Math.max(10, Math.floor((selectedOpponent.sns || 50) * 0.4)).toLocaleString()} SNS
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Faction Matchup Info — 세력 상성 정보 */}
@@ -12879,122 +12939,90 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               ? `${EQUIPMENT_SET_ICONS[synergyPreview.equipmentSetName] || ''} ${synergyPreview.equipmentSetName.toUpperCase()} +${synergyPreview.equipmentPowerBonus}⚡`
               : t('synergy_no_bonus', language);
             return (
-              <div className={`w-full max-w-sm rounded-xl border px-4 py-3 text-center ${advantage === 'advantage' ? 'border-green-500/30 bg-green-950/20' : advantage === 'disadvantage' ? 'border-red-500/30 bg-red-950/20' : 'border-slate-700 bg-slate-900/30'}`}>
+              <div className={`w-full rounded-2xl border px-4 py-3 text-center ${advantage === 'advantage' ? 'border-green-500/40 bg-green-950/30 shadow-[0_0_20px_rgba(34,197,94,0.15)]' : advantage === 'disadvantage' ? 'border-red-500/40 bg-red-950/30' : 'border-slate-800 bg-slate-900/50'}`}>
                 <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">
-                  {t('matchup_faction_hint', language)}
+                  {language === 'ko' ? '[ 상성 분석 결과 ]' : '[ MATCHUP ANALYSIS ]'}
                 </p>
                 <p className={`text-sm font-black ${colorClass}`}>
                   {icon} {label} · x{synergyPreview.factionMultiplier.toFixed(2)}
                 </p>
-                <p className="mt-2 text-[10px] font-semibold text-slate-300">
+                <p className="mt-1.5 text-[10px] font-semibold text-slate-300">
                   {t('synergy_equipment_bonus', language)} · {equipmentLabel}
                 </p>
               </div>
             );
           })()}
 
-          <div className="w-full max-w-sm space-y-6">
-            {weeklyWebtoon && (
-              <div className="rounded-3xl border border-indigo-500/20 bg-gradient-to-br from-indigo-500/15 via-slate-950 to-slate-900 p-4 shadow-[0_0_30px_rgba(99,102,241,0.08)]">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.35em] text-indigo-300/80 mb-1">{t('webtoon_hub_title', language)}</p>
-                    <h3 className="text-lg font-black italic uppercase leading-tight text-white">{weeklyWebtoon.titleKo}</h3>
-                    <p className="mt-2 text-xs font-medium leading-relaxed text-slate-300">{language === 'ko' ? weeklyWebtoon.summaryKo : weeklyWebtoon.summaryEn}</p>
-                  </div>
-                  <div className="shrink-0 rounded-2xl border border-white/10 bg-black/30 px-3 py-2 text-right">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t('home_story_progress', language)}</p>
-                    <p className="text-sm font-black text-indigo-300">{storyProgressCount}/{totalStoryEpisodes}</p>
-                    <p className="text-[10px] font-bold text-slate-500">{storyProgressPercent}%</p>
-                  </div>
+          {/* Deck Preview & Counter Deck Section */}
+          {battleType !== 'matgo' && (
+            <div className="w-full space-y-3">
+              <button
+                onClick={() => {
+                  setShowPreviewDeck(!showPreviewDeck);
+                  playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+                }}
+                className="w-full flex items-center justify-between p-3.5 bg-slate-900/90 border border-slate-800 rounded-2xl hover:bg-slate-850 hover:border-slate-700 transition-all font-black uppercase tracking-wider text-xs text-slate-200 cursor-pointer shadow-sm"
+              >
+                <div className="flex items-center gap-2.5">
+                  <Eye size={16} className="text-cyan-400" />
+                  <span>{language === 'ko' ? '상대 덱 정보 미리보기' : 'Preview Opponent Deck'}</span>
                 </div>
-                <div className="mt-4 flex items-center gap-3">
-                  <button
-                    onClick={() => setView?.('webtoon')}
-                    className="flex-1 min-h-11 rounded-2xl bg-white text-slate-950 font-black uppercase tracking-wider text-[11px] px-4 py-3 hover:bg-slate-100 transition-all cursor-pointer"
+                {showPreviewDeck ? <ChevronUp size={16} /> : <EyeOff size={16} />}
+              </button>
+              
+              <AnimatePresence>
+                {showPreviewDeck && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden space-y-2.5 pt-1"
                   >
-                    {t('world_open_webtoon', language)}
-                  </button>
-                  <button
-                    onClick={() => setIsStoryStageModalOpen(true)}
-                    className="flex-1 min-h-11 rounded-2xl border border-indigo-400/30 bg-indigo-500/10 text-indigo-200 font-black uppercase tracking-wider text-[11px] px-4 py-3 hover:bg-indigo-500/20 transition-all cursor-pointer"
-                  >
-                    {t('story_title', language)}
-                  </button>
-                </div>
-              </div>
-            )}
+                    <div className="flex justify-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                      {previewDeck.map((card, idx) => (
+                        <div key={idx} className="w-[18%] max-w-[70px] shrink-0 aspect-[5/7]">
+                           <CardItem 
+                             card={card} 
+                             isLocked={true} 
+                             className="w-full h-full"
+                             lowSpecMode={lowSpecMode}
+                           />
+                        </div>
+                      ))}
+                    </div>
 
+                    {/* 카운터 덱 자동 장착 */}
+                    {previewDeck.length > 0 && (
+                      <button
+                        onClick={() => {
+                          const counterDeckIds = generateCounterDeck(previewDeck, CARD_DATABASE);
+                          const season = localStorage.getItem('hero_current_season') || 'season1';
+                          setSeasonItem('hero_deck', season, JSON.stringify(counterDeckIds));
+                          setSeasonItem('hero_deck_guest', season, JSON.stringify(counterDeckIds));
+                          window.dispatchEvent(new Event('snshero_deck_updated'));
+                          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                          triggerHaptic('medium');
+                          triggerAlert(
+                            language === 'ko'
+                              ? `상대 덱에 가장 유리한 상성 5장의 카드(#${counterDeckIds.join(', #')})가 자동으로 장착되었습니다!`
+                              : `Recommended counter deck (#${counterDeckIds.join(', #')}) has been equipped!`,
+                            language === 'ko' ? '카운터 덱 자동 장착' : 'Counter Deck Equipped'
+                          );
+                        }}
+                        className="w-full py-2.5 px-3 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer text-xs font-bold shadow-xs"
+                      >
+                        <Zap size={14} className="text-amber-400 animate-pulse" />
+                        <span>{language === 'ko' ? '⚡ 추천 상성 카운터 덱 원클릭 장착' : '⚡ Auto-Equip Counter Deck'}</span>
+                      </button>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
 
-            {/* Deck Preview Toggle */}
-            {battleType !== 'matgo' && (
-              <div className="space-y-3 pb-4 pt-2">
-                <button
-                  onClick={() => {
-                    setShowPreviewDeck(!showPreviewDeck);
-                    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-                  }}
-                  className="w-full flex items-center justify-between p-4 bg-slate-900/90 border border-slate-800 rounded-xl hover:bg-slate-850 hover:border-slate-700 transition-all font-black uppercase tracking-widest text-sm text-slate-100 cursor-pointer"
-                >
-                  <div className="flex items-center gap-3">
-                    <Eye size={18} className="text-blue-400" />
-                    <span>{t('opponent_deck_preview', language)}</span>
-                  </div>
-                  {showPreviewDeck ? <ChevronUp size={16} /> : <EyeOff size={16} />}
-                </button>
-                
-                <AnimatePresence>
-                  {showPreviewDeck && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="flex justify-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
-                        {previewDeck.map((card, idx) => (
-                          <div key={idx} className="w-[18%] max-w-[80px] shrink-0 aspect-[5/7]">
-                             <CardItem 
-                               card={card} 
-                               isLocked={true} 
-                               className="w-full h-full"
-                               lowSpecMode={lowSpecMode}
-                             />
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Item 354: PreMatch Counter Deck Auto-Equip */}
-                      {previewDeck.length > 0 && (
-                        <button
-                          onClick={() => {
-                            const counterDeckIds = generateCounterDeck(previewDeck, CARD_DATABASE);
-                            const season = localStorage.getItem('hero_current_season') || 'season1';
-                            setSeasonItem('hero_deck', season, JSON.stringify(counterDeckIds));
-                            setSeasonItem('hero_deck_guest', season, JSON.stringify(counterDeckIds));
-                            window.dispatchEvent(new Event('snshero_deck_updated'));
-                            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                            triggerHaptic('medium');
-                            triggerAlert(
-                              language === 'ko'
-                                ? `상대 덱에 가장 유리한 상성 5장의 카드(#${counterDeckIds.join(', #')})가 자동으로 장착되었습니다!`
-                                : `Recommended counter deck (#${counterDeckIds.join(', #')}) has been equipped!`,
-                              language === 'ko' ? '카운터 덱 자동 장착' : 'Counter Deck Equipped'
-                            );
-                          }}
-                          className="w-full mt-2 py-2 px-3 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer font-mono text-xs font-bold shadow-xs"
-                        >
-                          <Zap size={14} className="text-amber-400 animate-pulse" />
-                          <span>{language === 'ko' ? '⚡ 추천 상성 카운터 덱 자동 장착' : '⚡ Equip Counter Deck'}</span>
-                        </button>
-                      )}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            )}
-
-            {/* Launch Button */}
+          {/* Action Launch Buttons */}
+          <div className="w-full space-y-3 pt-2">
             <button
               onClick={() => {
                 const autoSetting = localStorage.getItem('hero_auto_battle_setting');
@@ -13002,11 +13030,23 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 if (autoEnabled) setIsAutoBattle?.(true);
                 startRobotMatch(selectedOpponent);
               }}
-              className="w-full h-16 bg-gradient-to-r from-blue-600 to-indigo-650 hover:from-blue-500 hover:to-indigo-600 text-white rounded-2xl flex items-center justify-center gap-4 group transition-all shadow-[0_0_25px_rgba(59,130,246,0.35)] hover:scale-[1.02] active:scale-[0.98] cursor-pointer mb-8 border border-blue-500/30 font-sans"
+              className="w-full h-14 sm:h-16 bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 hover:brightness-110 text-white rounded-2xl flex items-center justify-center gap-3 group transition-all shadow-[0_0_30px_rgba(99,102,241,0.4)] active:scale-[0.98] cursor-pointer border border-indigo-400/40 font-mono"
             >
-              <Swords className="group-hover:rotate-12 transition-transform" />
-              <span className="text-lg font-black italic uppercase tracking-wider">{t('initiate_battle', language)}</span>
-              <Zap size={20} className="text-yellow-400 group-hover:scale-125 transition-transform animate-pulse" />
+              <Swords className="group-hover:rotate-12 transition-transform text-white" size={22} />
+              <span className="text-base sm:text-lg font-black uppercase tracking-wider">
+                {language === 'ko' ? '⚔️ 배틀 개시 (START BATTLE)' : '⚔️ INITIATE BATTLE'}
+              </span>
+              <Zap size={20} className="text-yellow-300 group-hover:scale-125 transition-transform animate-pulse" />
+            </button>
+
+            <button
+              onClick={() => {
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                setGameState('lobby');
+              }}
+              className="w-full py-3 rounded-2xl border border-slate-800 bg-slate-900/60 hover:bg-slate-800 text-slate-400 hover:text-white text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+            >
+              {language === 'ko' ? '← 대전 취소하고 로비로 나가기' : '← Cancel & Return to Lobby'}
             </button>
           </div>
           {renderCustomAlertModal()}
@@ -13542,34 +13582,64 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 </AnimatePresence>
               </motion.div>
             ) : (
-              <div className="flex flex-col items-center">
-                <div className="relative w-36 h-36 mb-10 flex items-center justify-center">
-                  {/* Radar scanning Sweep */}
-                  <div className="absolute inset-0 rounded-full border border-blue-500/20 animate-pulse"></div>
-                  <div className="absolute inset-2 rounded-full border border-blue-500/10"></div>
-                  <div className="absolute inset-6 rounded-full border border-dashed border-blue-500/15 animate-spin [animation-duration:10s]"></div>
+              <div className="flex flex-col items-center max-w-md w-full px-4 font-mono z-10">
+                {/* 대형 서칭 레이더 & 실시간 타이머 */}
+                <div className="relative w-44 h-44 mb-6 flex items-center justify-center">
+                  {/* 레이더 링 & 펄스 애니메이션 */}
+                  <div className="absolute inset-0 rounded-full border border-indigo-500/30 animate-ping [animation-duration:3s]" />
+                  <div className="absolute inset-2 rounded-full border border-indigo-400/20" />
+                  <div className="absolute inset-5 rounded-full border border-dashed border-cyan-400/40 animate-spin [animation-duration:8s]" />
+                  <div className="absolute inset-0 rounded-full border-2 border-t-cyan-400 border-r-transparent border-b-indigo-500 border-l-transparent animate-spin [animation-duration:2s]" />
                   
-                  {/* Outer Glow ring */}
-                  <div className="absolute inset-0 w-full h-full rounded-full border-2 border-t-blue-500 border-r-transparent border-b-transparent border-l-transparent animate-spin"></div>
-                  {/* Inner Glow ring reversed */}
-                  <div className="absolute w-24 h-24 rounded-full border-2 border-b-purple-500 border-t-transparent border-r-transparent border-l-transparent animate-spin [animation-direction:reverse] [animation-duration:1.5s]"></div>
-                  
-                  <div className="text-blue-400 animate-pulse">
-                    <Swords size={36} className="drop-shadow-[0_0_10px_rgba(59,130,246,0.6)]" />
+                  {/* 중앙 대형 실시간 경과 시간 카운트업 */}
+                  <div className="flex flex-col items-center justify-center z-10 bg-slate-950/90 rounded-full w-28 h-28 border-2 border-cyan-500/40 shadow-[0_0_30px_rgba(6,182,212,0.35)]">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-cyan-300 animate-pulse">
+                      {language === 'ko' ? '매칭 탐색' : 'MATCHING'}
+                    </span>
+                    <span className="text-3xl font-black text-white tracking-wider font-mono my-0.5">
+                      00:{String(searchingSeconds).padStart(2, '0')}
+                    </span>
+                    <span className="text-[9px] text-slate-400 font-bold">
+                      {language === 'ko' ? '실시간 탐색 중' : 'SEARCHING'}
+                    </span>
                   </div>
                 </div>
-                <div className="space-y-4 text-center">
-                  <motion.h2 
-                    animate={{ opacity: [1, 0.5, 1] }} 
-                    transition={{ duration: 0.5, repeat: Infinity }}
-                    className="text-3xl font-black tracking-widest text-blue-400 italic drop-shadow-[0_0_12px_rgba(59,130,246,0.4)]"
-                  >
-                    BATTLE_MATCHMAKING
-                  </motion.h2>
-                  <div className="text-xs font-black text-slate-400/85 tracking-widest leading-loose bg-slate-900/60 px-6 py-4 border border-slate-800 rounded-2xl backdrop-blur-md shadow-inner">
-                    SYNCHRONIZING COMBAT DATA...<br/>
-                    LOADING BATTLE MATRIX_0xAF<br/>
-                    PREPARING DEPLOYMENT...
+
+                {/* 명확한 탐색 안내 메시지 */}
+                <div className="space-y-3 text-center w-full">
+                  <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full border border-cyan-400/40 bg-cyan-500/10 text-cyan-200 text-xs font-black tracking-widest uppercase">
+                    <Sparkles size={13} className="text-cyan-300 animate-spin" />
+                    <span>{language === 'ko' ? '[ 대전 상대 매칭 중 ]' : '[ BATTLE MATCHING ]'}</span>
+                  </div>
+                  
+                  <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white italic">
+                    {language === 'ko' ? '상대 도전자를 탐색하고 있습니다' : 'Searching For Challenger...'}
+                  </h2>
+                  
+                  <div className="text-xs text-slate-300 leading-relaxed max-w-sm mx-auto bg-slate-900/90 border border-slate-800 p-3.5 rounded-2xl shadow-inner">
+                    <p className="font-semibold text-slate-200">
+                      {language === 'ko' 
+                        ? '내 전투력(TP)에 알맞은 라이벌 영웅을 검색하고 있습니다.' 
+                        : 'Finding a balanced rival hero matching your combat power.'}
+                    </p>
+                    <p className="text-[11px] text-cyan-400 mt-1 font-mono">
+                      {language === 'ko' ? '⚡ 매칭 완료 즉시 선공/후공 플립으로 전환됩니다' : '⚡ Turn order coin flip will begin once matched'}
+                    </p>
+                  </div>
+
+                  {/* 매칭 취소 버튼 */}
+                  <div className="pt-3">
+                    <button
+                      onClick={() => {
+                        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                        setGameState('lobby');
+                        setIsCoinFlipping(false);
+                        setCoinWinner(null);
+                      }}
+                      className="px-6 py-2.5 rounded-full border border-slate-700 bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-md active:scale-95"
+                    >
+                      {language === 'ko' ? '✕ 매칭 취소 (로비로 돌아가기)' : '✕ Cancel Match (Lobby)'}
+                    </button>
                   </div>
                 </div>
               </div>
