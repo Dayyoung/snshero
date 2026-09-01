@@ -14620,89 +14620,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           />
         </div>
 
-        {/* Item 349 & 361: TOP COMPACT 1-LINE SCORE & 9-ROUND LED MICRO-DOT STATUS BAR */}
-        {!gameOver && gameState === 'playing' && (
-          <div className="flex flex-wrap items-center justify-between w-full max-w-sm sm:max-w-md px-3 py-1.5 bg-slate-950/90 border border-slate-800 rounded-sm shadow-md text-xs font-mono font-bold z-20 mb-1 backdrop-blur-md gap-2">
-            {/* Player Score */}
-            <div className="flex items-center gap-1.5 text-indigo-400">
-              <span className="text-[10px] text-slate-400">[YOU]</span>
-              <span className="px-1.5 py-0.5 rounded-sm bg-indigo-950/80 border border-indigo-500/50 font-black text-indigo-300 text-xs">
-                {battleType === 'matgo' ? matgoScores.player : boardScore.player}
-              </span>
-            </div>
-
-            {/* 1-Line Turn Status + Turn Countdown Timer + 9-Turn LED Micro-Dots */}
-            <div className="flex items-center gap-1.5">
-              <div className={cn(
-                "px-2 py-0.5 rounded-sm text-[10px] uppercase font-mono font-black flex items-center gap-1 border",
-                turn === 'player'
-                  ? "bg-indigo-950/80 border-indigo-500/70 text-indigo-300 shadow-[0_0_8px_rgba(99,102,241,0.4)]"
-                  : "bg-rose-950/80 border-rose-500/70 text-rose-300"
-              )}>
-                {turn === 'player' ? (
-                  <><Zap size={11} className="text-yellow-400 animate-pulse" /> [ YOUR TURN ]</>
-                ) : (
-                  <><Cpu size={11} className="text-rose-400 animate-spin" /> [ ENEMY TURN ]</>
-                )}
-              </div>
-
-              {/* Turn Countdown Timer SVG (Row 26) */}
-              <div
-                className={cn(
-                  "flex items-center gap-1 px-1.5 py-0.5 rounded-sm font-mono text-[9px] font-bold border transition-all",
-                  turnTimerSeconds <= 5
-                    ? "bg-rose-950/90 border-rose-500 text-rose-300 animate-pulse shadow-[0_0_10px_rgba(244,63,94,0.6)]"
-                    : "bg-slate-900 border-slate-700/70 text-slate-300"
-                )}
-                title={language === 'ko' ? `남은 턴 시간: ${turnTimerSeconds}초` : `Turn Time: ${turnTimerSeconds}s`}
-              >
-                <div className="relative w-3.5 h-3.5 flex items-center justify-center shrink-0">
-                  <svg className="w-3.5 h-3.5 -rotate-90" viewBox="0 0 20 20">
-                    <circle
-                      cx="10"
-                      cy="10"
-                      r="7.5"
-                      fill="none"
-                      stroke="#334155"
-                      strokeWidth="2.5"
-                    />
-                    <circle
-                      cx="10"
-                      cy="10"
-                      r="7.5"
-                      fill="none"
-                      stroke={turnTimerSeconds <= 5 ? "#f43f5e" : turn === 'player' ? "#6366f1" : "#f59e0b"}
-                      strokeWidth="2.5"
-                      strokeDasharray={47.12}
-                      strokeDashoffset={47.12 * (1 - turnTimerSeconds / turnMaxSeconds)}
-                      strokeLinecap="round"
-                      className="transition-all duration-1000 ease-linear"
-                    />
-                  </svg>
-                </div>
-                <span className={cn("font-black tracking-tighter", turnTimerSeconds <= 5 ? "text-rose-400 font-extrabold" : "text-slate-200")}>
-                  {turnTimerSeconds}s
-                </span>
-              </div>
-
-              {/* Item 351: Sudden Death Overclock Badge */}
-              {isSuddenDeathOverclock && (
-                <span className="px-1.5 py-0.5 rounded-sm bg-amber-950/80 border border-amber-500/70 text-amber-300 text-[9px] font-mono font-bold animate-pulse">
-                  [ ⚡ OVERCLOCK +2 ]
-                </span>
-              )}
-            </div>
-
-            {/* Opponent Score */}
-            <div className="flex items-center gap-1.5 text-rose-400">
-              <span className="px-1.5 py-0.5 rounded-sm bg-rose-950/80 border border-rose-500/50 font-black text-rose-300 text-xs">
-                {battleType === 'matgo' ? matgoScores.ai : boardScore.ai}
-              </span>
-              <span className="text-[10px] text-slate-400">[ENEMY]</span>
-            </div>
-          </div>
-        )}
-
         {/* Main Board Area with Turn Indicator and Score flanking it */}
         <div className="relative flex flex-col items-center justify-center w-full max-w-6xl md:px-2 min-h-0 gap-1 md:gap-2 mt-0.5">
           
@@ -15479,6 +15396,89 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       </div>
 
     </div>
+
+      {/* COMPACT 1-LINE SCORE & TURN STATUS BAR (Relocated Below Board / Above Player Hand) */}
+      {!gameOver && gameState === 'playing' && (
+        <div className="flex flex-wrap items-center justify-between w-full max-w-sm sm:max-w-md px-3 py-1.5 bg-slate-950/90 border border-slate-800 rounded-sm shadow-md text-xs font-mono font-bold z-20 mb-1 backdrop-blur-md gap-2">
+          {/* Player Score */}
+          <div className="flex items-center gap-1.5 text-indigo-400">
+            <span className="text-[10px] text-slate-400">[YOU]</span>
+            <span className="px-1.5 py-0.5 rounded-sm bg-indigo-950/80 border border-indigo-500/50 font-black text-indigo-300 text-xs">
+              {battleType === 'matgo' ? matgoScores.player : boardScore.player}
+            </span>
+          </div>
+
+          {/* 1-Line Turn Status + Turn Countdown Timer */}
+          <div className="flex items-center gap-1.5">
+            <div className={cn(
+              "px-2 py-0.5 rounded-sm text-[10px] uppercase font-mono font-black flex items-center gap-1 border",
+              turn === 'player'
+                ? "bg-indigo-950/80 border-indigo-500/70 text-indigo-300 shadow-[0_0_8px_rgba(99,102,241,0.4)]"
+                : "bg-rose-950/80 border-rose-500/70 text-rose-300"
+            )}>
+              {turn === 'player' ? (
+                <><Zap size={11} className="text-yellow-400 animate-pulse" /> [ YOUR TURN ]</>
+              ) : (
+                <><Cpu size={11} className="text-rose-400 animate-spin" /> [ ENEMY TURN ]</>
+              )}
+            </div>
+
+            {/* Turn Countdown Timer SVG (Row 26) */}
+            <div
+              className={cn(
+                "flex items-center gap-1 px-1.5 py-0.5 rounded-sm font-mono text-[9px] font-bold border transition-all",
+                turnTimerSeconds <= 5
+                  ? "bg-rose-950/90 border-rose-500 text-rose-300 animate-pulse shadow-[0_0_10px_rgba(244,63,94,0.6)]"
+                  : "bg-slate-900 border-slate-700/70 text-slate-300"
+              )}
+              title={language === 'ko' ? `남은 턴 시간: ${turnTimerSeconds}초` : `Turn Time: ${turnTimerSeconds}s`}
+            >
+              <div className="relative w-3.5 h-3.5 flex items-center justify-center shrink-0">
+                <svg className="w-3.5 h-3.5 -rotate-90" viewBox="0 0 20 20">
+                  <circle
+                    cx="10"
+                    cy="10"
+                    r="7.5"
+                    fill="none"
+                    stroke="#334155"
+                    strokeWidth="2.5"
+                  />
+                  <circle
+                    cx="10"
+                    cy="10"
+                    r="7.5"
+                    fill="none"
+                    stroke={turnTimerSeconds <= 5 ? "#f43f5e" : turn === 'player' ? "#6366f1" : "#f59e0b"}
+                    strokeWidth="2.5"
+                    strokeDasharray={47.12}
+                    strokeDashoffset={47.12 * (1 - turnTimerSeconds / turnMaxSeconds)}
+                    strokeLinecap="round"
+                    className="transition-all duration-1000 ease-linear"
+                  />
+                </svg>
+              </div>
+              <span className={cn("font-black tracking-tighter", turnTimerSeconds <= 5 ? "text-rose-400 font-extrabold" : "text-slate-200")}>
+                {turnTimerSeconds}s
+              </span>
+            </div>
+
+            {/* Item 351: Sudden Death Overclock Badge */}
+            {isSuddenDeathOverclock && (
+              <span className="px-1.5 py-0.5 rounded-sm bg-amber-950/80 border border-amber-500/70 text-amber-300 text-[9px] font-mono font-bold animate-pulse">
+                [ ⚡ OVERCLOCK +2 ]
+              </span>
+            )}
+          </div>
+
+          {/* Opponent Score */}
+          <div className="flex items-center gap-1.5 text-rose-400">
+            <span className="px-1.5 py-0.5 rounded-sm bg-rose-950/80 border border-rose-500/50 font-black text-rose-300 text-xs">
+              {battleType === 'matgo' ? matgoScores.ai : boardScore.ai}
+            </span>
+            <span className="text-[10px] text-slate-400">[ENEMY]</span>
+          </div>
+        </div>
+      )}
 
       {/* 3. 내 덱/패 영역 (카드 높이에 맞춰 컴팩트 조정) */}
       <div 
