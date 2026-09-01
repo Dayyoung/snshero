@@ -12542,7 +12542,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             </div>
                           )}
                         </div>
-{/* Game Title & Mission Info Bar */}
+                      </div>
+
+                      {/* Game Title & Mission Info Bar */}
                       <div className="p-1.5 sm:p-2.5 bg-slate-950 border-t border-slate-800 flex flex-col gap-1 sm:gap-1.5">
                         <div className="flex items-center justify-between gap-1">
                           <span className="flex-1 text-left font-black text-[10px] sm:text-xs text-white truncate drop-shadow-xs">
