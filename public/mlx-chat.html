@@ -1487,10 +1487,10 @@
         
         this.theme = localStorage.getItem('hero_tron_theme') || 'cyan';
         this.themeColors = {
-          cyan: { line: '#00f0ff', glow: '#00c3ff', pupil: '#00ffff', node: '#e6ffff', bgLine: 'rgba(0, 240, 255, 0.15)' },
-          orange: { line: '#ff7700', glow: '#ff3300', pupil: '#ffaa00', node: '#fff2e6', bgLine: 'rgba(255, 119, 0, 0.15)' },
-          green: { line: '#00ff66', glow: '#00cc44', pupil: '#33ff88', node: '#e6ffe6', bgLine: 'rgba(0, 255, 102, 0.15)' },
-          purple: { line: '#c44dff', glow: '#9900ff', pupil: '#e066ff', node: '#f5e6ff', bgLine: 'rgba(196, 77, 255, 0.15)' }
+          cyan: { line: '#00f0ff', glow: '#00c3ff', pupil: '#00ffff', node: '#e6ffff', bgLine: 'rgba(0, 240, 255, 0.28)', tileA: 'rgba(0, 240, 255, 0.10)', tileB: 'rgba(0, 30, 60, 0.35)' },
+          orange: { line: '#ff7700', glow: '#ff3300', pupil: '#ffaa00', node: '#fff2e6', bgLine: 'rgba(255, 119, 0, 0.28)', tileA: 'rgba(255, 119, 0, 0.10)', tileB: 'rgba(50, 20, 0, 0.35)' },
+          green: { line: '#00ff66', glow: '#00cc44', pupil: '#33ff88', node: '#e6ffe6', bgLine: 'rgba(0, 255, 102, 0.28)', tileA: 'rgba(0, 255, 102, 0.10)', tileB: 'rgba(0, 40, 20, 0.35)' },
+          purple: { line: '#c44dff', glow: '#9900ff', pupil: '#e066ff', node: '#f5e6ff', bgLine: 'rgba(196, 77, 255, 0.28)', tileA: 'rgba(196, 77, 255, 0.10)', tileB: 'rgba(40, 0, 60, 0.35)' }
         };
 
         this.rotX = 0.04;
@@ -1498,9 +1498,14 @@
         this.targetRotX = 0.04;
         this.targetRotY = 0;
         this.audioLevel = 0;
-        this.speechPhonemeTime = 0;
-        this.mouthAperture = 0;
+        
+        // 👄 최소 1.5초 주기 묵직한 립싱크 상태 머신
+        this.mouthState = 'closed';  // 'closed' | 'open'
+        this.mouthStateTimer = 0;    // 현재 상태 유지 시간
+        this.minMouthDuration = 1.5; // 최소 깜빡임/상태 유지 시간: 1.5초!
+        this.mouthAperture = 0;      // 0.0 (완전 다묾) ~ 1.0 (벌림)
         this.targetMouthAperture = 0;
+
         this.idleTimer = 0;
         this.blinkTimer = 0;
         this.blinkFactor = 1.0; // 1 = open, 0 = closed
@@ -1662,27 +1667,36 @@
 
         this.audioLevel += (currentVol - this.audioLevel) * 0.4;
 
-        // 👄 음파에 따라 입을 계속 벌리고 있지 않고, 말하는 음절 리듬에 맞춰 다물었다가 벌렸다가 반복
-        if (this.isSpeaking && currentVol > 0.06) {
-          // 초당 약 4.5~5음절의 자연스러운 발음 템포
-          this.speechPhonemeTime += 0.24;
-          const tempo = 13.5 + Math.sin(this.speechPhonemeTime * 1.6) * 3.5;
-          const rawPulse = Math.sin(this.speechPhonemeTime * tempo * 0.5);
-          // 0(완전히 다묾)에서 1(벌림)으로 빠르게 왕복하는 음절 게이트
-          const syllableGate = Math.pow(Math.max(0, rawPulse), 1.65);
+        // 👄 최소 깜빡임(상태 유지) 1.5초 제한 묵직한 립싱크 엔진
+        this.mouthStateTimer += 0.016;
 
-          // 순간 음압과 음절 게이트를 결합하여 발음 정점에서만 크게 벌어지고,
-          // 음절 사이와 묵음에서는 0으로 깔끔하게 다물어짐!
-          const speechVol = Math.min(1.4, currentVol * 1.35);
-          this.targetMouthAperture = speechVol * syllableGate;
-          
-          // 신속한 개폐 반응 (스냅 클로징 & 어택)
-          this.mouthAperture += (this.targetMouthAperture - this.mouthAperture) * 0.55;
+        if (this.isSpeaking && currentVol > 0.05) {
+          // 상태가 변경된 후 최소 1.5초가 경과했을 때만 상태 전환
+          if (this.mouthStateTimer >= this.minMouthDuration) {
+            if (this.mouthState === 'closed') {
+              this.mouthState = 'open';
+              this.mouthStateTimer = 0;
+            } else {
+              this.mouthState = 'closed';
+              this.mouthStateTimer = 0;
+            }
+          }
+
+          if (this.mouthState === 'open') {
+            // 열림 상태: 웅장하고 부드럽게 벌어짐
+            this.targetMouthAperture = Math.min(1.0, 0.45 + currentVol * 0.7);
+          } else {
+            // 닫힘 상태: 완전히 0
+            this.targetMouthAperture = 0.0;
+          }
         } else {
-          // 소리가 멈추거나 묵음일 때는 완전히 다문 상태(0.0)로 신속히 복귀
-          this.mouthAperture += (0 - this.mouthAperture) * 0.35;
-          if (this.mouthAperture < 0.02) this.mouthAperture = 0;
+          this.mouthState = 'closed';
+          this.targetMouthAperture = 0.0;
         }
+
+        // 묵직하고 중후한 시네마틱 보간 (절대 잘게 떨리지 않음)
+        this.mouthAperture += (this.targetMouthAperture - this.mouthAperture) * 0.12;
+        if (this.mouthAperture < 0.01) this.mouthAperture = 0;
 
         // Eye Blink Animation (every 3~5 seconds)
         this.blinkTimer += 0.016;
@@ -1761,51 +1775,157 @@
         ctx.save();
 
         // =====================================================================
-        // LAYER 1: Background TRON Cyber Wall Matrix Grid (Perspective Wall)
+        // LAYER 1: 바둑판 타일 벽면에서 튀어나온 3D 사이버 페이스 (Extruded Checkerboard Wall)
         // =====================================================================
-        const wallCols = 28;
-        const wallRows = 16;
-        const wallSpacingX = Math.min(w / (wallCols - 2), 34);
-        const wallSpacingY = Math.min(h / (wallRows - 2), 20);
+        const mouthOpen = this.mouthAperture * 28;
+        const jawDrop = this.mouthAperture * 15;
 
-        ctx.strokeStyle = colors.bgLine;
-        ctx.lineWidth = 0.7;
-        ctx.shadowBlur = 0;
-        ctx.globalAlpha = 0.35;
+        const wallCols = 38;
+        const wallRows = 24;
+        const wallSpacingX = Math.min(w / (wallCols - 2), 24);
+        const wallSpacingY = Math.min(h / (wallRows - 2), 15);
 
+        // 그리드 점들의 3D 위치 및 얼굴 돌출 맵 계산
+        const wallGrid = [];
+
+        for (let r = 0; r < wallRows; r++) {
+          wallGrid[r] = [];
+          for (let c = 0; c < wallCols; c++) {
+            let wx = (c - wallCols / 2) * wallSpacingX;
+            let wy = (r - wallRows / 2) * wallSpacingY;
+            let wz = 0;
+
+            const nx = wx / 68;
+            const ny = wy / 92;
+            const distSq = nx * nx + ny * ny;
+
+            let isFace = false;
+
+            // 계란형 얼굴 영역: 벽면에서 앞으로 솟아오름!
+            if (distSq < 1.15) {
+              isFace = true;
+              // 두상 릴리프 (최대 +62px 돌출)
+              wz = Math.cos(Math.min(1, distSq) * Math.PI * 0.5) * 62;
+
+              // 이마 곡면
+              if (ny < -0.3) wz += Math.sin((ny + 0.3) * Math.PI) * 10;
+
+              // 콧대 (앞으로 가장 높게 돌출: +85px)
+              const noseW = Math.abs(nx);
+              if (noseW < 0.18 && ny > -0.2 && ny < 0.35) {
+                wz += (0.18 - noseW) * 115;
+              }
+
+              // 광대뼈
+              if (Math.abs(nx) > 0.35 && Math.abs(nx) < 0.75 && ny > -0.1 && ny < 0.35) {
+                wz += 12;
+              }
+
+              // 턱 & 입 (1.5초 립싱크 연동: 벌어질 때 아래로 이동)
+              if (ny > 0.35) {
+                wy += jawDrop * ((ny - 0.35) / 0.65);
+                wz -= jawDrop * 0.15;
+              }
+            }
+
+            // 음파 타임도메인 파형 리플 (벽면 전체 진동)
+            const waveIdx = Math.floor((c / wallCols) * this.timeDomainArray.length);
+            const waveVal = (this.timeDomainArray[waveIdx] - 128) / 128;
+            wz += waveVal * (isFace ? 14 : 9) * (this.isSpeaking ? 1.4 : 0.4);
+
+            wallGrid[r][c] = {
+              x: wx,
+              y: wy,
+              z: wz,
+              isFace: isFace,
+              proj: project(wx, wy, wz)
+            };
+          }
+        }
+
+        // 1. 바둑판 사각 타일(Checkerboard Tiles) 면 채우기 (3D 타일 쉐이딩)
+        for (let r = 0; r < wallRows - 1; r++) {
+          for (let c = 0; c < wallCols - 1; c++) {
+            const p0 = wallGrid[r][c].proj;
+            const p1 = wallGrid[r][c + 1].proj;
+            const p2 = wallGrid[r + 1][c + 1].proj;
+            const p3 = wallGrid[r + 1][c].proj;
+
+            const isTileA = (c + r) % 2 === 0;
+            const avgZ = (wallGrid[r][c].z + wallGrid[r][c + 1].z + wallGrid[r + 1][c + 1].z + wallGrid[r + 1][c].z) / 4;
+
+            ctx.beginPath();
+            ctx.moveTo(p0.x, p0.y);
+            ctx.lineTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.lineTo(p3.x, p3.y);
+            ctx.closePath();
+
+            if (isTileA) {
+              // 솟아나온 얼굴 부위는 빛을 더 받아 타일이 입체적으로 돋보임!
+              const tileAlpha = 0.06 + Math.max(0, avgZ / 70) * 0.18;
+              ctx.fillStyle = colors.tileA;
+              ctx.globalAlpha = tileAlpha;
+              ctx.fill();
+            } else {
+              ctx.fillStyle = colors.tileB;
+              ctx.globalAlpha = 0.22;
+              ctx.fill();
+            }
+          }
+        }
+
+        // 2. 바둑판 타일 와이어프레임 선 (Horizontal & Vertical Neon Lines)
+        // 수평 타일선
         for (let r = 0; r < wallRows; r++) {
           ctx.beginPath();
           for (let c = 0; c < wallCols; c++) {
-            const wx = (c - wallCols / 2) * wallSpacingX;
-            const wy = (r - wallRows / 2) * wallSpacingY;
-            const waveIdx = Math.floor((c / wallCols) * this.timeDomainArray.length);
-            const waveVal = (this.timeDomainArray[waveIdx] - 128) / 128;
-            const wz = -30 + waveVal * (this.isSpeaking ? 14 : 4);
-            const pt = project(wx, wy, wz);
-            if (c === 0) ctx.moveTo(pt.x, pt.y);
-            else ctx.lineTo(pt.x, pt.y);
+            const p = wallGrid[r][c].proj;
+            if (c === 0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
           }
+          ctx.strokeStyle = colors.bgLine;
+          ctx.lineWidth = 0.9;
+          ctx.shadowColor = colors.glow;
+          ctx.shadowBlur = this.isSpeaking ? 4 : 1;
+          ctx.globalAlpha = 0.6;
           ctx.stroke();
         }
 
-        for (let c = 0; c < wallCols; c += 2) {
+        // 수직 타일선
+        for (let c = 0; c < wallCols; c++) {
           ctx.beginPath();
           for (let r = 0; r < wallRows; r++) {
-            const wx = (c - wallCols / 2) * wallSpacingX;
-            const wy = (r - wallRows / 2) * wallSpacingY;
-            const pt = project(wx, wy, -30);
-            if (r === 0) ctx.moveTo(pt.x, pt.y);
-            else ctx.lineTo(pt.x, pt.y);
+            const p = wallGrid[r][c].proj;
+            if (r === 0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
           }
+          ctx.strokeStyle = colors.bgLine;
+          ctx.lineWidth = (c >= wallCols / 2 - 4 && c <= wallCols / 2 + 4) ? 1.2 : 0.8;
+          ctx.shadowColor = colors.glow;
+          ctx.shadowBlur = this.isSpeaking ? 4 : 1;
+          ctx.globalAlpha = 0.6;
           ctx.stroke();
+        }
+
+        // 3. 솟아오른 얼굴 부위의 네온 노드(Glow Nodes)
+        ctx.fillStyle = colors.node;
+        ctx.shadowBlur = this.isSpeaking ? 10 : 4;
+        for (let r = 0; r < wallRows; r += 2) {
+          for (let c = 0; c < wallCols; c += 2) {
+            const cell = wallGrid[r][c];
+            if (cell.isFace && cell.z > 20) {
+              const p = cell.proj;
+              const dotSize = 1.6 + (cell.z / 70) * 1.5;
+              ctx.globalAlpha = Math.min(1.0, 0.4 + (cell.z / 70) * 0.6);
+              ctx.fillRect(p.x - dotSize / 2, p.y - dotSize / 2, dotSize, dotSize);
+            }
+          }
         }
 
         // =====================================================================
         // LAYER 2: 계란형 사람 얼굴 윤곽선 (Egg-Shaped Oval Head Contour)
         // =====================================================================
-        // 👄 음절 리듬에 따라 다물었다가 벌렸다가를 반복하는 실시간 립싱크 값
-        const mouthOpen = this.mouthAperture * 28;
-        const jawDrop = this.mouthAperture * 15;
 
         // 수학적 완벽한 계란형(Oval) 헤드 윤곽 좌표 계산
         const getOvalPoint = (angle, scaleFactor = 1.0) => {
