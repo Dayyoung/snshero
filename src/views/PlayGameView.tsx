@@ -12282,6 +12282,250 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     );
   }
 
+  const renderCommonModals = () => {
+    return (
+      <>
+        {/* Story Stage Select & Sweep Modal (Item 56, 60, 68) */}
+        <StoryStageSelectModal
+          isOpen={isStoryStageModalOpen}
+          onClose={() => setIsStoryStageModalOpen(false)}
+          language={language}
+          currentProgress={storyProgressCount}
+          onStartBattle={(epId) => {
+            setIsStoryStageModalOpen(false);
+            setIsStoryActive(true);
+            setGameState('single');
+          }}
+          onSweepStage={(epId) => {
+            const currentGold = Number(localStorage.getItem('hero_gold') || 0);
+            localStorage.setItem('hero_gold', String(currentGold + 600));
+            window.dispatchEvent(new Event('snshero_gold_updated'));
+          }}
+        />
+
+        {/* Item 384: Lucky Card Match 5-Win Streak Mini-Game Modal */}
+        <LuckyMatchModal
+          isOpen={isLuckyMatchOpen}
+          onClose={() => setIsLuckyMatchOpen(false)}
+          language={language}
+          onClaimReward={(snsReward, cardRarity) => {
+            if (addItem && cardRarity) {
+              addItem(cardRarity);
+            }
+            addLog(language === 'ko'
+              ? `🎁 [럭키 카드 매치 보상] +${snsReward} SNS 및 [${cardRarity.toUpperCase()}] 카드 팩을 획득했습니다!`
+              : `🎁 [LUCKY MATCH REWARD] Claimed +${snsReward} SNS & [${cardRarity.toUpperCase()}] Card Pack!`,
+              'victory'
+            );
+          }}
+        />
+
+        {/* Item 387: Post-Boss Manual Victory 3-Chest Unlock Modal */}
+        <TreasureChestUnlockModal
+          isOpen={isBossChestUnlockOpen}
+          onClose={() => setIsBossChestUnlockOpen(false)}
+          language={language}
+          onClaimReward={(snsReward, itemType) => {
+            if (addItem) {
+              addItem('epic');
+            }
+            addLog(language === 'ko'
+              ? `👑 [보스 토벌 전리품 상자] +${snsReward} SNS 및 [${itemType.toUpperCase()}] 획득 완료!`
+              : `👑 [BOSS VICTORY CHEST] Claimed +${snsReward} SNS & [${itemType.toUpperCase()}]!`,
+              'victory'
+            );
+          }}
+        />
+
+        {/* Item 385: Offline Expedition 8-Hour Patrol Modal */}
+        <ExpeditionModal
+          isOpen={isExpeditionOpen}
+          onClose={() => setIsExpeditionOpen(false)}
+          language={language}
+          userDeck={playerDeck}
+          onClaimReward={(snsReward, expReward) => {
+            addLog(language === 'ko'
+              ? `🧭 [원정대 순찰 보고] +${snsReward} SNS 및 +${expReward} EXP 보상을 수령했습니다!`
+              : `🧭 [EXPEDITION REWARDS] Claimed +${snsReward} SNS & +${expReward} EXP!`,
+              'victory'
+            );
+          }}
+        />
+
+        {/* Item 383: Monster Beastarium & Mini-Pet Modal */}
+        <MonsterBeastariumModal
+          isOpen={isBeastariumOpen}
+          onClose={() => setIsBeastariumOpen(false)}
+          language={language}
+          onSelectPet={(pet) => {
+            addLog(language === 'ko'
+              ? `🐾 [동행 펫 출격] ${pet.name} (${pet.skillDescription}) 동행 활성화!`
+              : `🐾 [PET COMPANION] ${pet.nameEn} (${pet.skillDescriptionEn}) now following!`,
+              'system'
+            );
+          }}
+        />
+
+        {/* Item 389: Tactician Mastery & Board Auras Modal */}
+        <TacticianMasteryModal
+          isOpen={isTacticianMasteryOpen}
+          onClose={() => setIsTacticianMasteryOpen(false)}
+          language={language}
+          onSelectAura={(skin) => {
+            addLog(language === 'ko'
+              ? `👑 [전술가 아우라 적용] ${skin.name} 테마가 전장에 적용되었습니다!`
+              : `👑 [AURA APPLIED] ${skin.nameEn} Aura Skin activated!`,
+              'system'
+            );
+          }}
+        />
+
+        {/* Item 392: Tower of Trials 50-Floor Challenge Modal */}
+        <TowerOfTrialsModal
+          isOpen={isTowerTrialsOpen}
+          onClose={() => setIsTowerTrialsOpen(false)}
+          language={language}
+          onStartFloor={(floor) => {
+            setIsTowerTrialsOpen(false);
+            setIsStoryActive(false);
+            setGameState('single');
+            addLog(language === 'ko'
+              ? `🗼 [시련의 탑 ${floor}층] 도전 시작! (${floor}F 보스: 가디언)`
+              : `🗼 [TOWER OF TRIALS FLOOR ${floor}] Ascent commenced!`,
+              'system'
+            );
+          }}
+          onStartTowerFloor={(floor) => {
+            setIsTowerTrialsOpen(false);
+            setIsStoryActive(false);
+            setGameState('single');
+            addLog(language === 'ko'
+              ? `🗼 [시련의 탑 ${floor}층] 도전 시작! (${floor}F 보스: 가디언)`
+              : `🗼 [TOWER OF TRIALS FLOOR ${floor}] Ascent commenced!`,
+              'system'
+            );
+          }}
+        />
+
+        {/* Item 393 & Item 405: Battle Gambit & Smart Filter Modal */}
+        <BattleGambitModal
+          isOpen={isGambitModalOpen}
+          onClose={() => setIsGambitModalOpen(false)}
+          config={gambitConfig}
+          onSaveConfig={handleSaveGambitConfig}
+          language={language}
+          isAutoBattle={isAutoBattle}
+          onToggleAutoBattle={onToggleAutoBattle}
+        />
+
+        {/* Item 397: Secret Stamp Book Modal */}
+        <SecretStampBookModal
+          isOpen={isSecretStampModalOpen}
+          onClose={() => setIsSecretStampModalOpen(false)}
+        />
+
+        {/* Item 404: Golden Treasure Dart Mini-Game Modal */}
+        <TreasureDartModal
+          isOpen={isTreasureDartOpen}
+          onClose={() => setIsTreasureDartOpen(false)}
+        />
+
+        {/* Item 408: Golden Pirate Roulette Mini-Game Modal */}
+        <GoldenPirateRouletteModal
+          isOpen={isPirateRouletteOpen}
+          onClose={() => setIsPirateRouletteOpen(false)}
+          language={language}
+          playSfx={playSfx}
+          onReward={(amount, reason) => {
+            handleMinigameReward(amount, reason, reason);
+          }}
+        />
+
+        {/* Item 412: Golden Archery Challenge Mini-Game Modal */}
+        <GoldenArcheryModal
+          isOpen={isArcheryOpen}
+          onClose={() => setIsArcheryOpen(false)}
+          language={language}
+          playSfx={playSfx}
+          onReward={(amount, reason) => {
+            handleMinigameReward(amount, reason, reason);
+          }}
+        />
+
+        {/* Row 51: Hand Card Long-Press Zoom Preview Modal */}
+        <CardLongPressPreviewModal
+          card={longPressPreviewCard}
+          isOpen={Boolean(longPressPreviewCard)}
+          onClose={() => setLongPressPreviewCard(null)}
+          language={language}
+          customImage={customCardImage}
+        />
+
+        {/* Battle Summary Modal (Post-Battle Analytics & Stats) */}
+        <BattleSummaryModal
+          isOpen={showPostBattleSummaryModal}
+          onClose={() => setShowPostBattleSummaryModal(false)}
+          summaryData={lastBattleSummaryData}
+          language={language}
+          lowSpecMode={lowSpecMode}
+          onRematch={() => {
+            setShowPostBattleSummaryModal(false);
+            handleRematch();
+          }}
+          onResumeAutoBattle={() => {
+            setShowPostBattleSummaryModal(false);
+            if (setIsAutoBattle) {
+              setIsAutoBattle(true);
+              try {
+                localStorage.setItem('hero_auto_battle_setting', JSON.stringify(true));
+              } catch {
+                // ignore
+              }
+            }
+            if (gameState === 'gameOver' || gameState === 'lobby') {
+              handleRematch();
+            }
+          }}
+          onShareToCommunity={() => {
+            setShowPostBattleSummaryModal(false);
+            setShowBattleShareTemplate(true);
+          }}
+        />
+
+        {/* Element Advantage Quick Reference Modal */}
+        <ElementAdvantageModal
+          isOpen={showElementAdvantageModal}
+          onClose={() => setShowElementAdvantageModal(false)}
+          language={language}
+          lowSpecMode={lowSpecMode}
+        />
+
+        {/* Item 34: In-Battle Emote Floating Speech Bubble */}
+        <AnimatePresence>
+          {activeEmoteBubble && (
+            <motion.div
+              key={`bubble-${activeEmoteBubble.id}`}
+              initial={{ opacity: 0, scale: 0.6, y: activeEmoteBubble.side === 'player' ? 24 : -24 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.7, y: activeEmoteBubble.side === 'player' ? -16 : 16 }}
+              className={cn(
+                "fixed z-[250] pointer-events-none flex items-center gap-2.5 px-4 py-2.5 rounded-2xl shadow-2xl border backdrop-blur-md",
+                activeEmoteBubble.side === 'player'
+                  ? "bottom-28 left-1/2 -translate-x-1/2 bg-indigo-950/95 border-indigo-500/80 text-white shadow-indigo-500/30"
+                  : "top-28 left-1/2 -translate-x-1/2 bg-rose-950/95 border-rose-500/80 text-white shadow-rose-500/30"
+              )}
+            >
+              <span className="text-xl leading-none select-none">{activeEmoteBubble.icon}</span>
+              <span className="text-xs font-bold font-mono tracking-tight whitespace-nowrap">
+                {language === 'ko' ? activeEmoteBubble.textKo : activeEmoteBubble.textEn}
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </>
+    );
+  };
+
   if (gameState === 'modeSelect') {
     // 오늘의 미션 게임 ID 생성 (날짜 기반 해시로 매일 교체)
     const getDailyMissionIds = (): string[] => {
@@ -12893,6 +13137,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           )}
         </AnimatePresence>
         {renderCustomAlertModal()}
+        {renderCommonModals()}
       </div>
       </div>
     );
@@ -16720,232 +16965,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         </div>
       )}
 
-      {/* Story Stage Select & Sweep Modal (Item 56, 60, 68) */}
-      <StoryStageSelectModal
-        isOpen={isStoryStageModalOpen}
-        onClose={() => setIsStoryStageModalOpen(false)}
-        language={language}
-        currentProgress={storyProgressCount}
-        onStartBattle={(epId) => {
-          setIsStoryStageModalOpen(false);
-          setIsStoryActive(true);
-          setGameState('single');
-        }}
-        onSweepStage={(epId) => {
-          // Add Sweep rewards to gold
-          const currentGold = Number(localStorage.getItem('hero_gold') || 0);
-          localStorage.setItem('hero_gold', String(currentGold + 600));
-          window.dispatchEvent(new Event('snshero_gold_updated'));
-        }}
-      />
-
-      {/* Item 384: Lucky Card Match 5-Win Streak Mini-Game Modal */}
-      <LuckyMatchModal
-        isOpen={isLuckyMatchOpen}
-        onClose={() => setIsLuckyMatchOpen(false)}
-        language={language}
-        onClaimReward={(snsReward, cardRarity) => {
-          if (addItem && cardRarity) {
-            addItem(cardRarity);
-          }
-          addLog(language === 'ko'
-            ? `🎁 [럭키 카드 매치 보상] +${snsReward} SNS 및 [${cardRarity.toUpperCase()}] 카드 팩을 획득했습니다!`
-            : `🎁 [LUCKY MATCH REWARD] Claimed +${snsReward} SNS & [${cardRarity.toUpperCase()}] Card Pack!`,
-            'victory'
-          );
-        }}
-      />
-
-      {/* Item 387: Post-Boss Manual Victory 3-Chest Unlock Modal */}
-      <TreasureChestUnlockModal
-        isOpen={isBossChestUnlockOpen}
-        onClose={() => setIsBossChestUnlockOpen(false)}
-        language={language}
-        onClaimReward={(snsReward, itemType) => {
-          if (addItem) {
-            addItem('epic');
-          }
-          addLog(language === 'ko'
-            ? `👑 [보스 토벌 전리품 상자] +${snsReward} SNS 및 [${itemType.toUpperCase()}] 획득 완료!`
-            : `👑 [BOSS VICTORY CHEST] Claimed +${snsReward} SNS & [${itemType.toUpperCase()}]!`,
-            'victory'
-          );
-        }}
-      />
-
-      {/* Item 385: Offline Expedition 8-Hour Patrol Modal */}
-      <ExpeditionModal
-        isOpen={isExpeditionOpen}
-        onClose={() => setIsExpeditionOpen(false)}
-        language={language}
-        userDeck={playerDeck}
-        onClaimReward={(snsReward, expReward) => {
-          addLog(language === 'ko'
-            ? `🧭 [원정대 순찰 보고] +${snsReward} SNS 및 +${expReward} EXP 보상을 수령했습니다!`
-            : `🧭 [EXPEDITION REWARDS] Claimed +${snsReward} SNS & +${expReward} EXP!`,
-            'victory'
-          );
-        }}
-      />
-
-      {/* Item 383: Monster Beastarium & Mini-Pet Modal */}
-      <MonsterBeastariumModal
-        isOpen={isBeastariumOpen}
-        onClose={() => setIsBeastariumOpen(false)}
-        language={language}
-        onSelectPet={(pet) => {
-          addLog(language === 'ko'
-            ? `🐾 [동행 펫 출격] ${pet.name} (${pet.skillDescription}) 동행 활성화!`
-            : `🐾 [PET COMPANION] ${pet.nameEn} (${pet.skillDescriptionEn}) now following!`,
-            'system'
-          );
-        }}
-      />
-
-      {/* Item 389: Tactician Mastery & Board Auras Modal */}
-      <TacticianMasteryModal
-        isOpen={isTacticianMasteryOpen}
-        onClose={() => setIsTacticianMasteryOpen(false)}
-        language={language}
-        onSelectAura={(skin) => {
-          addLog(language === 'ko'
-            ? `👑 [전술가 아우라 적용] ${skin.name} 테마가 전장에 적용되었습니다!`
-            : `👑 [AURA APPLIED] ${skin.nameEn} Aura Skin activated!`,
-            'system'
-          );
-        }}
-      />
-
-      {/* Item 392: Tower of Trials 50-Floor Challenge Modal */}
-      <TowerOfTrialsModal
-        isOpen={isTowerTrialsOpen}
-        onClose={() => setIsTowerTrialsOpen(false)}
-        language={language}
-        onStartTowerFloor={(floor) => {
-          setIsTowerTrialsOpen(false);
-          setIsStoryActive(false);
-          setGameState('single');
-          addLog(language === 'ko'
-            ? `🗼 [시련의 탑 ${floor}층] 도전 시작! (${floor}F 보스: 가디언)`
-            : `🗼 [TOWER OF TRIALS FLOOR ${floor}] Ascent commenced!`,
-            'system'
-          );
-        }}
-      />
-
-      {/* Item 393 & Item 405: Battle Gambit & Smart Filter Modal */}
-      <BattleGambitModal
-        isOpen={isGambitModalOpen}
-        onClose={() => setIsGambitModalOpen(false)}
-        config={gambitConfig}
-        onSaveConfig={handleSaveGambitConfig}
-        language={language}
-        isAutoBattle={isAutoBattle}
-        onToggleAutoBattle={onToggleAutoBattle}
-      />
-
-      {/* Item 397: Secret Stamp Book Modal */}
-      <SecretStampBookModal
-        isOpen={isSecretStampModalOpen}
-        onClose={() => setIsSecretStampModalOpen(false)}
-      />
-
-      {/* Item 404: Golden Treasure Dart Mini-Game Modal */}
-      <TreasureDartModal
-        isOpen={isTreasureDartOpen}
-        onClose={() => setIsTreasureDartOpen(false)}
-      />
-
-      {/* Item 408: Golden Pirate Roulette Mini-Game Modal */}
-      <GoldenPirateRouletteModal
-        isOpen={isPirateRouletteOpen}
-        onClose={() => setIsPirateRouletteOpen(false)}
-        language={language}
-        playSfx={playSfx}
-        onReward={(amount, reason) => {
-          handleMinigameReward(amount, reason, reason);
-        }}
-      />
-
-      {/* Item 412: Golden Archery Challenge Mini-Game Modal */}
-      <GoldenArcheryModal
-        isOpen={isArcheryOpen}
-        onClose={() => setIsArcheryOpen(false)}
-        language={language}
-        playSfx={playSfx}
-        onReward={(amount, reason) => {
-          handleMinigameReward(amount, reason, reason);
-        }}
-      />
-
-      {/* Row 51: Hand Card Long-Press Zoom Preview Modal */}
-      <CardLongPressPreviewModal
-        card={longPressPreviewCard}
-        isOpen={Boolean(longPressPreviewCard)}
-        onClose={() => setLongPressPreviewCard(null)}
-        language={language}
-        customImage={customCardImage}
-      />
-
-      {/* Battle Summary Modal (Post-Battle Analytics & Stats) */}
-      <BattleSummaryModal
-        isOpen={showPostBattleSummaryModal}
-        onClose={() => setShowPostBattleSummaryModal(false)}
-        summaryData={lastBattleSummaryData}
-        language={language}
-        lowSpecMode={lowSpecMode}
-        onRematch={() => {
-          setShowPostBattleSummaryModal(false);
-          handleRematch();
-        }}
-        onResumeAutoBattle={() => {
-          setShowPostBattleSummaryModal(false);
-          if (setIsAutoBattle) {
-            setIsAutoBattle(true);
-            try {
-              localStorage.setItem('hero_auto_battle_setting', JSON.stringify(true));
-            } catch {
-              // ignore
-            }
-          }
-          if (gameState === 'gameOver' || gameState === 'lobby') {
-            handleRematch();
-          }
-        }}
-        onShareToCommunity={() => {
-          setShowPostBattleSummaryModal(false);
-          setShowBattleShareTemplate(true);
-        }}
-      />
-
-      {/* Element Advantage Quick Reference Modal */}
-      <ElementAdvantageModal
-        isOpen={showElementAdvantageModal}
-        onClose={() => setShowElementAdvantageModal(false)}
-        language={language}
-        lowSpecMode={lowSpecMode}
-      />
-
-      {/* Item 34: In-Battle Emote Floating Speech Bubble */}
-      <AnimatePresence>
-        {activeEmoteBubble && (
-          <motion.div
-            key={`bubble-${activeEmoteBubble.id}`}
-            initial={{ opacity: 0, scale: 0.6, y: activeEmoteBubble.side === 'player' ? 24 : -24 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.7, y: activeEmoteBubble.side === 'player' ? -16 : 16 }}
-            className={cn(
-              "fixed z-[250] pointer-events-none flex items-center gap-2.5 px-4 py-2.5 rounded-2xl shadow-2xl border backdrop-blur-md",
-              activeEmoteBubble.side === 'player'
-                ? "bottom-28 left-1/2 -translate-x-1/2 bg-indigo-950/95 border-indigo-500/80 text-white shadow-indigo-500/30"
-                : "top-24 left-1/2 -translate-x-1/2 bg-rose-950/95 border-rose-500/80 text-white shadow-rose-500/30"
-            )}
-          >
-            <span className="text-2xl animate-bounce">{activeEmoteBubble.emoji}</span>
-            <span className="text-xs font-black font-mono tracking-tight">{activeEmoteBubble.text}</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Common Modals for Battle Views */}
+      {renderCommonModals()}
 
       {/* Item 34: In-Battle Emote Modal */}
       <InBattleEmoteModal

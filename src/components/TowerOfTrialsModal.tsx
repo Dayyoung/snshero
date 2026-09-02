@@ -7,7 +7,8 @@ interface TowerOfTrialsModalProps {
   isOpen: boolean;
   onClose: () => void;
   language: string;
-  onStartFloor: (floor: number) => void;
+  onStartFloor?: (floor: number) => void;
+  onStartTowerFloor?: (floor: number) => void;
 }
 
 interface FloorData {
@@ -27,6 +28,7 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
   onClose,
   language,
   onStartFloor,
+  onStartTowerFloor,
 }) => {
   const [clearedFloor, setClearedFloor] = useState<number>(() => {
     try {
@@ -53,7 +55,12 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
   const handleSelectFloor = (floor: number, isUnlocked: boolean) => {
     if (!isUnlocked) return;
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-    onStartFloor(floor);
+    if (onStartFloor) {
+      onStartFloor(floor);
+    }
+    if (onStartTowerFloor) {
+      onStartTowerFloor(floor);
+    }
     onClose();
   };
 
@@ -61,7 +68,7 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xs font-mono">
+      <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xs font-mono">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
