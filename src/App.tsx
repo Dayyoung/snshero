@@ -2531,10 +2531,19 @@ function AppContent() {
 
     void syncLocalAiStatus();
 
+    // Poll every 3 seconds while chat is open for real-time status updates
+    let interval: ReturnType<typeof setInterval> | null = null;
+    if (isChatOpen) {
+      interval = setInterval(() => {
+        void syncLocalAiStatus();
+      }, 3000);
+    }
+
     return () => {
       cancelled = true;
+      if (interval) clearInterval(interval);
     };
-  }, []);
+  }, [isChatOpen]);
 
   useEffect(() => {
     // Real-time chat listener
@@ -6440,11 +6449,46 @@ function AppContent() {
                   ? "bg-slate-950/90 text-white border-slate-800"
                   : "bg-gradient-to-r from-slate-900 to-slate-800 text-white border-slate-700/10"
               )}>
-                 <div className="flex items-center gap-2">
-                    <MessageCircle size={18} className={view === 'play' ? "text-indigo-400" : "text-white"} />
-                    <span className="text-xs sm:text-sm font-bold tracking-wider uppercase font-mono">
-                      {view === 'play' ? (language === 'ko' ? '전투 통신망' : 'BATTLE COMMS') : t('global_network_persistent', language)}
-                    </span>
+                 <div className="flex items-center gap-1.5 flex-wrap">
+                    <div className="flex items-center gap-1.5">
+                      <MessageCircle size={18} className={view === 'play' ? "text-indigo-400" : "text-white"} />
+                      <span className="text-xs sm:text-sm font-bold tracking-wider uppercase font-mono">
+                        {view === 'play' ? (language === 'ko' ? '전투 통신망' : 'BATTLE COMMS') : t('global_network_persistent', language)}
+                      </span>
+                    </div>
+                    {/* Real-time Local AI Live Status Indicator */}
+                    <div 
+                      title={
+                        localAiStatus.state === 'ready' 
+                          ? (language === 'ko' ? '온디바이스 Gemini Nano 로컬 LLM 활성화됨 (실시간 로컬 답변)' : 'On-Device Gemini Nano Local LLM Active')
+                          : localAiStatus.state === 'downloadable' || localAiStatus.state === 'downloading'
+                          ? (language === 'ko' ? '로컬 AI 모델 다운로드 중/대기 중' : 'Local AI Model Downloading/Pending')
+                          : (language === 'ko' ? '로컬 AI 미지원 브라우저: 클라우드 지식베이스 모드' : 'Local AI Unsupported: Cloud Knowledge Mode')
+                      }
+                      className={cn(
+                        "inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[8px] sm:text-[9px] font-mono font-bold tracking-tight border select-none transition-all cursor-help",
+                        localAiStatus.state === 'ready'
+                          ? "bg-emerald-950/90 text-emerald-300 border-emerald-500/70 shadow-[0_0_8px_rgba(16,185,129,0.4)]"
+                          : localAiStatus.state === 'downloadable' || localAiStatus.state === 'downloading'
+                          ? "bg-amber-950/90 text-amber-300 border-amber-500/70"
+                          : "bg-slate-800/90 text-slate-300 border-slate-600/70"
+                      )}
+                    >
+                      <span className={cn(
+                        "w-1.5 h-1.5 rounded-full shrink-0",
+                        localAiStatus.state === 'ready' ? "bg-emerald-400 animate-pulse" :
+                        localAiStatus.state === 'downloadable' || localAiStatus.state === 'downloading' ? "bg-amber-400 animate-ping" : "bg-slate-400"
+                      )} />
+                      <span>
+                        {localAiStatus.state === 'ready' 
+                          ? '⚡ Local AI: ON' 
+                          : localAiStatus.state === 'downloadable'
+                          ? '⬇️ Local AI: DL Ready'
+                          : localAiStatus.state === 'downloading'
+                          ? '⏳ Local AI: DL...'
+                          : '🌐 Knowledge AI'}
+                      </span>
+                    </div>
                  </div>
                  <div className="flex items-center gap-1.5 sm:gap-2">
                    <label className="flex items-center gap-1 text-[10px] font-bold uppercase cursor-pointer hover:text-yellow-400 select-none text-slate-300 shrink-0 mr-1">
@@ -6646,6 +6690,35 @@ function AppContent() {
                     );
                  })}
                  <div ref={messagesEndRef} />
+              </div>
+
+              {/* Real-time Local AI Status Hint */}
+              <div className={cn(
+                "px-3 py-1 text-[10px] font-mono flex items-center justify-between border-t select-none",
+                view === 'play' ? "bg-slate-950/80 border-slate-800/80 text-slate-400" : "bg-slate-100 border-t border-slate-200 text-slate-600"
+              )}>
+                <div className="flex items-center gap-1.5 truncate">
+                  <span className={cn(
+                    "w-1.5 h-1.5 rounded-full shrink-0",
+                    localAiStatus.state === 'ready' ? "bg-emerald-400 animate-pulse" :
+                    localAiStatus.state === 'downloadable' || localAiStatus.state === 'downloading' ? "bg-amber-400" : "bg-slate-400"
+                  )} />
+                  <span className="truncate">
+                    {localAiStatus.state === 'ready'
+                      ? (language === 'ko' ? '⚡ 온디바이스 로컬 AI가 실시간으로 게임 공략을 답변합니다' : '⚡ On-device Local AI answers live with Game KB')
+                      : localAiStatus.state === 'downloadable'
+                      ? (language === 'ko' ? '⬇️ 브라우저 내장 AI 다운로드 대기 중' : '⬇️ Browser Local AI Download Pending')
+                      : localAiStatus.state === 'downloading'
+                      ? (language === 'ko' ? '⏳ 로컬 AI 모델 다운로드 진행 중...' : '⏳ Local AI Model Downloading...')
+                      : (language === 'ko' ? '💡 게임 질문을 입력하시면 지식베이스 스마트 답변이 제공됩니다' : '💡 Ask game questions for Knowledge Base tactical guide')}
+                  </span>
+                </div>
+                <span className={cn(
+                  "font-bold text-[9px] px-1.5 py-0.2 rounded shrink-0",
+                  localAiStatus.state === 'ready' ? "text-emerald-400 bg-emerald-950/50" : "text-slate-400"
+                )}>
+                  {localAiStatus.state === 'ready' ? 'ON-DEVICE' : 'KNOWLEDGE-RAG'}
+                </span>
               </div>
 
               <form onSubmit={handleSendChat} className={cn(
