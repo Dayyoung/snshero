@@ -2914,9 +2914,12 @@ rgb(var(--color-border-rgb) / 1.0); --border-radius:
 </button>
 </add-to-cart-component>
 </span>
-<div class="accelerated-checkout-block" ref="acceleratedCheckoutButtonContainer">
-<div class="shopify-payment-button" data-shopify="payment-button"> <shopify-accelerated-checkout access-token="21dd2022ff110d4961811de384a58b45" buyer-country="KR" buyer-currency="USD" buyer-locale="en" enabled-flags='["a1d1f9a1"]' fallback='{"supports_subs":true,"supports_def_opts":true,"name":"buy_it_now","wallet_params":{}}' recommended='{"supports_subs":false,"supports_def_opts":false,"name":"paypal","wallet_params":{"shopId":77976502410,"countryCode":"KR","merchantName":"SNSHero.com","phoneRequired":false,"companyRequired":false,"shippingType":"shipping","shopifyPaymentsEnabled":false,"hasManagedSellingPlanState":null,"requiresBillingAgreement":false,"gatewayType":"CONNECTED","merchantId":"TDRGZCLFPHD9N","sdkUrl":"https://www.paypal.com/sdk/js?components=buttons\u0026commit=false\u0026currency=USD\u0026locale=en_US\u0026client-id=AexZEtAxk09Ncgj6FSWFFyGKbxxAZ_LTyJ2DPdJWl1YUlecinmc5AfIaRF2qYjWlusWahlzz6SVkY5Ci\u0026merchant-id=TDRGZCLFPHD9N\u0026intent=authorize","serviceableCountryCodes":["AE","AT","AU","BE","CA","CH","CZ","DE","DK","ES","FI","FR","GB","HK","IE","IL","IT","JP","KR","MY","NL","NO","NZ","PL","PT","SE","SG","US"]}}' shop-id="77976502410" variant-params='[{"id":49555810484362,"requiresShipping":true}]'> <div aria-hidden="true" class="shopify-payment-button__button" disabled="" role="button" style="background-color: transparent; border: none"> <div class="shopify-payment-button__skeleton"> </div> </div> <div aria-hidden="true" class="shopify-payment-button__more-options shopify-payment-button__skeleton" disabled="" role="button"> </div> </shopify-accelerated-checkout> </div>
-</div>
+
+    <div class="accelerated-checkout-block" ref="acceleratedCheckoutButtonContainer" style="margin-top: 10px;">
+  <button type="button" class="snshero-custom-checkout-btn button" style="width: 100%; min-height: 48px; background: #181515; color: #fde047; border: 1px solid #181515; padding: 14px 20px; font-family: monospace; font-size: 14px; font-weight: bold; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.2s ease;">
+    <span>💳 Checkout / Buy Now</span>
+  </button>
+</div></div>
 </div><input name="product-id" type="hidden" value="9114635632778"/><input name="section-id" type="hidden" value="template--21545535733898__main"/></form></product-form-component></span>
 <rte-formatter class="spacing-style text-block text-block--AbHNaTWpVa0EyaWF5d__text_aEtTtq rte text-block--align-left rte" style="    --padding-block-start: 0px; --padding-block-end:0px; --padding-inline-start:0px; --padding-inline-end:0px;         --width: 100%;    --max-width: var(--max-width--body-normal);          --text-align: left;          ">
 <ul>
