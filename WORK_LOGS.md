@@ -4,6 +4,28 @@
 
 ---
 
+## [2026-09-02 16:53 KST] [/gemini-ex 스프레드시트 신규 4개 행(Row 743~746 / ID 580~583) 전수 구현 및 746개 행 100% 완료]
+- **요청 사항**:
+  - `/gemini-ex` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 743~746) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 743 (ID 580) [3D 레이싱 퓨어제스처 전환]**:
+     - `src/lib/vehicleGestureController.ts` 가상 버튼 완전 배제 및 슬라이드 조향, 릴리즈 터보 부스터 연동 검증.
+  2. **Row 744 (ID 581) [3D 스포츠 3단계 튜토리얼 팝업]**:
+     - `src/components/SportsMissionTutorial.tsx` 제스처 시연 온보딩 팝업 및 상시 ❓ 가이드 연동 검증.
+  3. **Row 745 (ID 582) [상단 70% 시야개방 슬림HUD]**:
+     - `src/components/MinimalistMissionHUD.tsx` 상단 1줄 슬림 HUD 레이아웃 연동 검증.
+  4. **Row 746 (ID 583) [100% 확정 SNS 포인트 원자적 입금]**:
+     - `src/components/NormalizedRewardPopup.tsx` 및 `src/lib/rewardSettlementService.ts` 연동 검증.
+  5. **스프레드시트 746개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 항목 번호 `[Row 746 / ID 583]` 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /gemini-ex 스프레드시트 신규 4개 행(Row 743~746 / ID 580~583) 전수 구현 및 746개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-02 16:46 KST] [시련의 탑/원정대/보물다트 모달 createPortal DOM 최상위 마운트 & z-index 999999 보강 완료]
 - **요청 사항**:
   - `/play` 화면에서 `#27 시련의 탑 50층` 클릭 시 모달이 정상적으로 표시되도록 렌더링 파이프라인 및 계층 구조 보강.
