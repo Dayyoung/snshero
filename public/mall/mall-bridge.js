@@ -618,6 +618,18 @@
     if (target.closest && target.closest('#snshero-mall-checkout-modal')) return;
     if (target.closest && target.closest('#snshero-mall-success-modal')) return;
 
+    // Check if clicked element is Show All / View All / 모두 보기 button
+    const isShowAllTrigger = target.closest && target.closest(
+      '.predictive-search__search-button, [ref="viewAllButton"], .facets__see-results'
+    );
+    if (isShowAllTrigger) {
+      e.preventDefault();
+      e.stopPropagation();
+      const isEn = isEnglishPage();
+      window.location.href = isEn ? '/mall/en/collections/all' : '/mall/collections/all';
+      return;
+    }
+
     // Check if clicked element is a Checkout / Buy button
     const isCheckoutTrigger = target.closest && target.closest(
       '.snshero-custom-checkout-btn, .paypal-button, .paypal-button-container, .paypal-button-label-container, shopify-accelerated-checkout, shopify-accelerated-checkout-cart, .shopify-payment-button, .shopify-payment-button__button'

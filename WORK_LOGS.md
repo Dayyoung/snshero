@@ -4,6 +4,27 @@
 
 ---
 
+## [2026-09-02 14:33 KST] [쇼핑몰 Show all 동작 정상화 및 전체 41개 HTML 페이지 링크 전수 검증·무결성 확보 완료]
+- **요청 사항**:
+  - `Show all` (모두 보기) 버튼 동작 불능 해결.
+  - 쇼핑몰 내의 모든 링크가 정상 이동하는지 전수 점검 및 수정.
+- **조치 사항**:
+  1. **Show all / 모두 보기 / 결과 보기 액션 전면 연동**:
+     - 검색창 하단의 `viewAllButton`, 필터 서랍의 `facets__see-results`, 컬렉션 `Show all` 버튼 클릭 시 `/mall/collections/all` (영문: `/mall/en/collections/all`)로 즉시 이동하도록 이벤트 핸들러 및 HTML 속성 전면 동기화.
+  2. **개인정보처리방침 정적 페이지 신규 구축**:
+     - `public/mall/policies/privacy-policy.html` 및 `public/mall/en/policies/privacy-policy.html` 생성하여 푸터 정책 링크 완벽 대응.
+  3. **전체 HTML 파일(41개) 링크 전수 크롤링 및 감사·교정 (`audit_mall_links.py`)**:
+     - 41개 HTML 파일 내의 수백 개 앵커 태그(`<a>`), 폼 액션, 버튼을 전수 스캔.
+     - 잘못된 경로(`/mall/shop` ➔ `/shop`, `/customer_authentication` ➔ `/shop`, 누락된 프리픽스 등)를 자동 교정하여 **깨진 링크 0건 (100% 무결성) 달성**.
+- **품질 검증**:
+  - `audit_mall_links.py` 전수 검사 결과: 잔여 깨진 링크 0건 (Total remaining broken links: 0)
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] 쇼핑몰 Show all 동작 정상화 및 전체 41개 HTML 페이지 링크 전수 검증·무결성 확보 -> 작업완료`
+
+---
+
 ## [2026-09-02 14:26 KST] [쇼핑몰 문의하기 버튼 정상화, 카탈로그 /collections/all 구축, 다국어 전환 및 Shopify 브랜딩 전면 제거 완료]
 - **요청 사항**:
   1. 문의하기 페이지(`pages/contact`)의 버튼 깨짐 현상 수정.
