@@ -42,7 +42,7 @@ export function GoogleAd({
       {isVertical ? (
         /* Vertical Skyscraper Banner (Left side) */
         <a 
-          href="https://shop.snshero.com/" 
+          href="/mall" 
           target="_blank" 
           rel="noopener noreferrer"
           className="relative flex-1 block w-full overflow-hidden group cursor-pointer bg-slate-900"
@@ -70,7 +70,7 @@ export function GoogleAd({
       ) : (
         /* Horizontal Banner (Mobile / Top / Bottom) */
         <a 
-          href="https://shop.snshero.com/" 
+          href="/mall" 
           target="_blank" 
           rel="noopener noreferrer"
           className="relative block w-full overflow-hidden group cursor-pointer aspect-[468/66] md:aspect-[468/50] min-h-[50px] bg-slate-900"

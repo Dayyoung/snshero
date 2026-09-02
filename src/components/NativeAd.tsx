@@ -18,7 +18,7 @@ export function NativeAd({ className = '', language, variant = 'card' }: NativeA
   if (variant === 'banner') {
     return (
       <a
-        href="https://shop.snshero.com/"
+        href="/mall"
         target="_blank"
         rel="noopener noreferrer"
         className={`relative block w-full overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm hover:shadow-md active:scale-[0.99] transition-all cursor-pointer group ${className}`}
@@ -61,7 +61,7 @@ export function NativeAd({ className = '', language, variant = 'card' }: NativeA
   // Card variant — 게임 모드 카드와 유사한 그리드 스타일
   return (
     <a
-      href="https://shop.snshero.com/"
+      href="/mall"
       target="_blank"
       rel="noopener noreferrer"
       className={`group border border-amber-200/80 rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all flex flex-col bg-gradient-to-br from-white to-amber-50/30 cursor-pointer active:scale-[0.98] ${className}`}

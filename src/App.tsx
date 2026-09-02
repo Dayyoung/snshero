@@ -135,6 +135,7 @@ const MovieView = lazy(() => import('./views/MovieView').then(m => ({ default: m
 const ModooView = lazy(() => import('./views/ModooView').then(m => ({ default: m.ModooView })));
 const GridToolView = lazy(() => import('./views/GridToolView').then(m => ({ default: m.GridToolView })));
 const GridCheckerView = lazy(() => import('./views/GridCheckerView').then(m => ({ default: m.GridCheckerView })));
+const MallView = lazy(() => import('./views/MallView').then(m => ({ default: m.MallView })));
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -359,10 +360,12 @@ function getViewFromPathAndUrl(): ViewType {
   if (queryView === 'anime') return 'anime';
   if (queryView === 'movie') return 'movie';
   if (queryView === 'modoo') return 'modoo';
+  if (queryView === 'mall') return 'mall';
   if (queryView === 'grid' || queryView === 'tool-grid' || queryView === 'tool/grid' || queryView === 'too/grid' || queryView === 'makegrid' || queryView === 'tool/makegrid' || queryView === 'tool-makegrid') return 'tool-makegrid';
   if (queryView === 'checkgrid' || queryView === 'tool-checkgrid' || queryView === 'tool/checkgrid' || queryView === 'gridcheck') return 'tool-checkgrid';
 
   const path = window.location.pathname.replace(/\/$/, '').toLowerCase() || '/';
+  if (path === '/mall' || path.startsWith('/mall')) return 'mall';
   if (path === '/tool/checkgrid' || path === '/tool/check-grid' || path === '/checkgrid' || path.startsWith('/tool/checkgrid')) return 'tool-checkgrid';
   if (path === '/tool/makegrid' || path === '/tool/make-grid' || path === '/makegrid' || path === '/tool/grid' || path === '/too/grid' || path === '/grid' || path.startsWith('/tool/makegrid') || path.startsWith('/tool/grid') || path.startsWith('/too/grid')) return 'tool-makegrid';
   if (path === '/book' || path === '/novel' || path.startsWith('/novel/s1-')) return 'novel';
@@ -1676,6 +1679,10 @@ function AppContent() {
       targetPath = '/movie';
       title = `${t('movie_title', language)} - SNS히어로`;
       description = t('movie_subtitle', language);
+    } else if (view === 'mall') {
+      targetPath = '/mall';
+      title = language === 'ko' ? 'SNSHero 공식 굿즈 몰' : 'SNSHero Official Goods Mall';
+      description = language === 'ko' ? 'SNS히어로 공식 머천다이즈 및 굿즈 컬렉션' : 'Official SNSHero Merch and Goods Collection';
     } else if (view === 'novel' || view === 'book') {
       targetPath = '/book';
       title = '눈히어로 40부작 웹소설 - 카단과 아케인의 메아리 (/public/book)';
@@ -5604,6 +5611,14 @@ function AppContent() {
             showCustomAlert={showCustomAlert}
           />
         );
+      case 'mall':
+        return (
+          <MallView
+            language={language}
+            onNavigate={setView}
+            playSfx={playSfx}
+          />
+        );
       case 'modoo':
         return (
           <ModooView
@@ -5906,7 +5921,7 @@ function AppContent() {
                         <Settings size={18} />
                       </button>
                       <a
-                        href="https://shop.snshero.com/"
+                        href="/mall"
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => {

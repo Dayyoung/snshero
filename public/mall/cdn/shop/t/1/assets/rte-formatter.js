@@ -1,0 +1,2 @@
+import{Component}from"@theme/component";class RTEFormatter extends Component{connectedCallback(){super.connectedCallback(),this.querySelectorAll("table").forEach(this.#formatTable)}#formatTable(table){const wrapper=document.createElement("div");wrapper.classList.add("rte-table-wrapper");const parent=table.parentNode;parent&&(parent.insertBefore(wrapper,table),wrapper.appendChild(table))}}customElements.get("rte-formatter")||customElements.define("rte-formatter",RTEFormatter);
+//# sourceMappingURL=/cdn/shop/t/1/assets/rte-formatter.js.map?v=40306132146590816021781486205

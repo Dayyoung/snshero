@@ -1,0 +1,2 @@
+(function(){var __sections__={};(function(){for(var i=0,s=document.getElementById("sections-script").getAttribute("data-sections").split(",");i<s.length;i++)__sections__[s[i]]=!0})(),(function(){if(__sections__["main-collection"])try{const url=new URL(window.location.href);url.hash&&document.addEventListener("DOMContentLoaded",()=>{const card=document.getElementById(url.hash.slice(1));card&&card.scrollIntoView({behavior:"instant"})},{once:!0})}catch(e){console.error(e)}})()})();
+//# sourceMappingURL=/cdn/shop/t/1/compiled_assets/scripts.js.map?v=47368013396670054441781486209

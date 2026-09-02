@@ -4,6 +4,34 @@
 
 ---
 
+## [2026-09-02 11:40 KST] [shop.snshero.com 쇼핑몰 전 화면 /public/mall 정적화, 구매하기 버튼 /shop 결제 연동 및 /mall 라우팅 전면 전환 완료]
+- **요청 사항**:
+  - `http://shop.snshero.com/` Shopify 쇼핑몰 사용 중단.
+  - 해당 반응형 서비스의 모든 화면과 리소스(HTML, CSS, JS, 이미지 등)를 다운로드하여 `/public/mall` 폴더에 정적 파일로 구축.
+  - 구매하기/Add to cart 버튼 클릭 시 `/shop` 결제 모달/프로세스로 즉시 연동.
+  - 기존의 모든 `http://shop.snshero.com/` 링크를 `/mall`로 전면 교체.
+- **조치 사항**:
+  1. **전체 화면 및 에셋 미러링 (`public/mall/`)**:
+     - 메인 홈 (`index.html`, `en.html`), 4종 상품 상세 페이지(110 카드 덱, 머그컵, 티셔츠, 게임테이블), 2종 컬렉션 페이지, 2종 일반 페이지 및 모든 CSS, 이미지, JS 파일을 다운로드하고 로컬 경로(`/mall/...`)로 완전 치환.
+     - Shopify 트래킹/비콘을 안전하게 비활성화하여 오프라인 및 로컬 정적 서빙 시 콘솔 에러 0건 보장.
+  2. **구매하기 버튼의 `/shop` 인게임 결제 브릿지 구축 (`mall-bridge.js`)**:
+     - 쇼핑몰 내 '구매하기 / Buy it now / Add to cart / 주문하기' 버튼 및 폼 제출 인터셉트.
+     - 상품 종류(머그컵, 티셔츠, 카드덱, 테이블), 수량, 사이즈 옵션을 자동 파싱하여 메인 게임 `/shop?goods={item}&qty={qty}&size={size}` 및 `window.parent.postMessage` 연동.
+     - `ShopView.tsx`에서 쿼리 파라미터 및 `SNSHERO_MALL_BUY` 메시지를 수신하여 해당 상품의 결제 모달이 즉시 자동으로 열리도록 구현.
+  3. **SPA `/mall` 라우팅 & `MallView.tsx` 지원**:
+     - `src/types.ts`: `ViewType`에 `'mall'` 추가.
+     - `src/views/MallView.tsx`: 상단 `[SNSHero 게임으로 돌아가기]` 및 `[인게임 상점]` 이동 헤더와 반응형 정적 쇼핑몰 뷰 컴포넌트 개발.
+     - `src/App.tsx`: `/mall` 및 `?view=mall` 딥링크 지원.
+  4. **기존 `shop.snshero.com` 링크 전면 교체**:
+     - `src/App.tsx`, `src/components/GoogleAd.tsx`, `src/components/NativeAd.tsx` 등 프로젝트 내 모든 외부 `shop.snshero.com` 링크를 `/mall`로 100% 교체 완료.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공 (`dist/mall` 정적 배포 번들 포함)
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] shop.snshero.com 전 화면 /public/mall 정적화, 구매하기 /shop 결제 연동 및 /mall 라우팅 전면 전환 -> 작업완료`
+
+---
+
 ## [2026-09-02 10:38 KST] [MovieView 최신 공개 8화(EP8) 공식 등록 및 실시간 플레이리스트 다중 동기화 파이프라인 구축]
 - **요청 사항**:
   - `https://www.youtube.com/playlist?list=PLOLtCtApKgp8` 재생목록에 8화까지 공개되었으나 클라이언트에 7화까지만 표시되던 문제 해결 및 신규 영상 업로드 시 실시간 감지/반영 요청.

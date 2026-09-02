@@ -1,0 +1,201 @@
+/* stylelint-disable selector-no-qualifying-type */
+/* stylelint-disable selector-max-type */
+/* stylelint-disable selector-max-specificity */
+/* stylelint-disable selector-max-compound-selectors */
+/* stylelint-disable selector-max-combinators */
+
+:root {
+  --pc-duration-short: 100ms;
+  --pc-inputs-border-width: 1px;
+  --pc-buttons-border-width: 1px;
+}
+
+.pc--opt-out-initial {
+  color: inherit;
+  font-family: var(--font-body-family, inherit);
+  font-size: var(--font-body-size, inherit);
+  font-style: var(--font-body-style, inherit);
+  font-weight: var(--font-body-weight, inherit);
+  margin-bottom: 40px;
+}
+
+.pc--opt-out-form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.pc--opt-out-form-container {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  max-width: 375px;
+  width: 100%;
+  gap: 16px;
+}
+
+.pc--show-email-field label {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  width: max-content;
+  cursor: pointer;
+}
+
+.pc--show-email-field input[type='checkbox'] {
+  accent-color: rgb(var(--color-foreground, from inherit));
+}
+
+.pc--opt-out-form-wrapper {
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.pc--opt-out-form-wrapper .pc--opt-out-form-field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1;
+}
+
+.pc--opt-out-form-wrapper .pc--opt-out-form-field input {
+  background-color: inherit;
+  border-radius: var(--inputs-radius, 0);
+  border-style: solid;
+  border-width: var(--inputs-border-width, --pc-inputs-border-width);
+  color: inherit;
+  font-family: var(--font-body-family, inherit);
+  font-size: var(--font-body-size, inherit);
+  font-style: var(--font-body-style, inherit);
+  font-weight: var(--font-body-weight, inherit);
+  height: 4.5rem;
+  padding: 0 1rem;
+  max-height: 45px;
+  margin: var(--inputs-border-width, --pc-inputs-border-width);
+  width: 100%;
+}
+
+/* Used to allow for border color flipping when variable is not used */
+.pc--border-color {
+  border-color: rgb(var(--color-foreground, from inherit));
+  filter: invert(
+    var(--color-foreground),
+    0.75
+  ); /* Invert color when color-foreground is not present (should indicate custom theme) */
+}
+
+.pc--opt-out-form-wrapper .pc--opt-out-form-field input:hover {
+  border-color: rgb(var(--color-foreground, from inherit));
+  filter: invert(var(--color-foreground), 0.75);
+}
+
+.pc--opt-out-form-wrapper .pc--opt-out-form-field input:focus {
+  box-shadow: none;
+}
+
+.pc--opt-out-form-wrapper .pc--opt-out-form-field input:focus-visible {
+  box-shadow: none;
+  outline: none;
+}
+
+.pc--opt-out-form-wrapper .pc--opt-out-form-field label {
+  margin-bottom: 0;
+  pointer-events: none;
+  color: inherit;
+  font-family: var(--font-body-family, inherit);
+  font-size: var(--font-body-size, inherit);
+  font-style: var(--font-body-style, inherit);
+  font-weight: var(--font-body-weight, inherit);
+  letter-spacing: 0.1rem;
+  line-height: 1.5;
+}
+
+.pc--opt-out-form-wrapper .pc--opt-out-form-field input::placeholder {
+  opacity: 0;
+}
+
+.pc--opt-out-form-wrapper .pc--opt-out-form-field input:disabled,
+.pc--opt-out-form-wrapper .pc--opt-out-form-field input:disabled ~ label {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.pc--opt-out-form-container .pc--opt-out-form-button {
+  position: relative;
+  width: 100%;
+  color: inherit;
+  font-family: var(--font-body-family, inherit);
+  font-size: var(--font-body-size, inherit);
+  font-style: var(--font-body-style, inherit);
+  font-weight: var(--font-body-weight, inherit);
+  letter-spacing: 0.1rem;
+  line-height: calc(1 + 0.2 / var(--font-body-scale, 1));
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 2rem;
+  appearance: none;
+  border-radius: var(--buttons-radius, 0);
+  border-style: solid;
+  border-width: var(--buttons-border-width, --pc-buttons-border-width);
+  cursor: pointer;
+  height: 4.5rem;
+  max-height: 45px;
+  overflow: hidden;
+  text-decoration: none;
+  transition: box-shadow var(--duration-short) ease;
+  background-color: inherit;
+}
+
+.pc--opt-out-form-container .pc--opt-out-form-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.pc--opt-out-form-message {
+  position: relative;
+  align-items: center;
+  flex-direction: row;
+  color: inherit;
+  font-family: var(--font-body-family, inherit);
+  font-size: var(--font-body-size, inherit);
+  font-style: var(--font-body-style, inherit);
+  font-weight: var(--font-body-weight, inherit);
+  justify-content: center;
+  margin-top: 0;
+  width: 100%;
+}
+
+.pc--opt-out-form-message svg {
+  height: 20px;
+  margin-right: 16px;
+}
+
+.pc--opt-out-form-message:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+@media screen and (min-width: 750px) {
+  .pc--opt-out-form {
+    align-items: flex-start;
+    max-width: 495px;
+  }
+
+  .pc--opt-out-form-message {
+    justify-content: flex-start;
+  }
+}
+
+@media screen and (min-width: 495px) {
+  .pc--opt-out-form-container .pc--opt-out-form-button {
+    width: fit-content;
+  }
+}

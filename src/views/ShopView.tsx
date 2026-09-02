@@ -648,19 +648,66 @@ export const ShopView: React.FC<ShopViewProps> = ({
     if (typeof window === 'undefined') return;
 
     const params = new URLSearchParams(window.location.search);
-    const merchProductId = params.get('merchProductId');
-    if (merchProductId && ipMerchProducts.some(product => product.id === merchProductId)) {
-      setSelectedIpProductId(merchProductId);
+    
+    // Mall에서 전달된 굿즈 구매 파라미터 처리 (?goods=mug|tshirt|table|deck&qty=1&size=M)
+    const goodsParam = params.get('goods');
+    if (goodsParam) {
+      const gType = goodsParam.toLowerCase();
+      if (gType.includes('mug') || gType.includes('머그')) {
+        setSelectedGoods('mug');
+        setGoodsModalOpen(true);
+      } else if (gType.includes('tshirt') || gType.includes('shirt') || gType.includes('티셔츠')) {
+        setSelectedGoods('tshirt');
+        setGoodsModalOpen(true);
+      } else {
+        setSelectedGoods('tshirt');
+        setGoodsModalOpen(true);
+      }
+
+      const qParam = parseInt(params.get('qty') || '1', 10);
+      if (!isNaN(qParam) && qParam > 0) {
+        setGoodsQuantity(qParam);
+      }
+
+      const sParam = params.get('size');
+      if (sParam === 'S' || sParam === 'M' || sParam === 'L') {
+        setGoodsSize(sParam);
+      }
       return;
     }
 
-    const merchCardId = Number(params.get('merchCardId') || '');
-    if (!Number.isFinite(merchCardId) || merchCardId <= 0) return;
+    // PostMessage listener from embedded mall iframe
+    const handleMallMessage = (event: MessageEvent) => {
+      if (event.data && event.data.type === 'SNSHERO_MALL_BUY') {
+        const { goodsType, quantity, size } = event.data;
+        const gType = String(goodsType).toLowerCase();
+        if (gType.includes('mug') || gType.includes('머그')) {
+          setSelectedGoods('mug');
+        } else {
+          setSelectedGoods('tshirt');
+        }
+        if (quantity && quantity > 0) setGoodsQuantity(quantity);
+        if (size === 'S' || size === 'M' || size === 'L') setGoodsSize(size);
+        setGoodsModalOpen(true);
+      }
+    };
+    window.addEventListener('message', handleMallMessage);
 
-    const matchedProduct = findBestIpMerchProductForCardId(merchCardId, currentSeason);
-    if (matchedProduct) {
-      setSelectedIpProductId(matchedProduct.id);
+    const merchProductId = params.get('merchProductId');
+    if (merchProductId && ipMerchProducts.some(product => product.id === merchProductId)) {
+      setSelectedIpProductId(merchProductId);
+      return () => window.removeEventListener('message', handleMallMessage);
     }
+
+    const merchCardId = Number(params.get('merchCardId') || '');
+    if (Number.isFinite(merchCardId) && merchCardId > 0) {
+      const matchedProduct = findBestIpMerchProductForCardId(merchCardId, currentSeason);
+      if (matchedProduct) {
+        setSelectedIpProductId(matchedProduct.id);
+      }
+    }
+
+    return () => window.removeEventListener('message', handleMallMessage);
   }, [currentSeason, ipMerchProducts]);
 
   useEffect(() => {
