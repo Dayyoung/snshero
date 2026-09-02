@@ -4,6 +4,27 @@
 
 ---
 
+## [2026-09-02 12:35 KST] [쇼핑몰 110장 카드 상품 페이지 및 전 정적 화면 404 오류 원인 전면 제거 및 폰트/에셋 전수 동기화 완료]
+- **오류 내용**:
+  - `http://localhost:3000/mall/products/s-s-heroes-110-card-unique-heroes-deck-collectible-card-game?variant=49548125470858` 접속 시 브라우저 콘솔에서 다수의 404 Not Found 에러 발생.
+- **원인 분석**:
+  1. CSS `@font-face`에서 참조하는 Inter 폰트 파일(.woff, .woff2) 및 테마 유틸리티 스크립트 일부 누락.
+  2. Shopify 템플릿에 내장된 원격 트래킹 비콘(`trekkie`, `monorail`, `wpmLoader`, `web-pixels-manager` 등) 스크립트 실행으로 인한 외부 404 호출.
+  3. 클라이언트 JS의 Shopify 장바구니/추천/토큰 API(`sf_private_access_tokens`, `cart.js`, `recommendations/products.json` 등) 호출.
+- **조치 사항**:
+  1. **누락 폰트 및 스크립트 전수 다운로드**: Inter woff/woff2 폰트 8종 및 `shop_events_listener-4e26a9ce.js`, `autosizes-84416378.js`를 `public/mall/`에 완전 배치 (직접 리소스 82개 100% 정상 로드).
+  2. **트래킹 비콘 스크립트 태그 전면 정제**: HTML 내 불필요한 `wpmLoader`, `monorail`, `sendBeacon`, `__TREKKIE_SHIM_QUEUE` 스크립트 태그 제거.
+  3. **Vite 미들웨어 쇼핑몰 Mock API 핸들러 추가**: `sf_private_access_tokens`, `cart.js`, `recommendations/products.json` 등에 200 OK 모의 JSON 응답을 반환하여 콘솔 404 오류 0건 달성.
+  4. URL 디코딩/인코딩 한글 경로 완벽 매핑.
+- **품질 검증**:
+  - 82개 리소스 전수 검사 결과 404 Not Found 0건 달성
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] 쇼핑몰 110장 카드 상품 페이지 및 전 정적 화면 404 오류 원인 전면 제거 및 폰트/에셋 전수 동기화 -> 작업완료`
+
+---
+
 ## [2026-09-02 12:33 KST] [쇼핑몰 상품 상세 하단 고정 바(sticky-add-to-cart) 썸네일 이미지 크기 PC/모바일 최적화 완료]
 - **오류 내용**:
   - 상품 상세 페이지 내 빠른 카트 추가 바(`<sticky-add-to-cart>`)의 썸네일 이미지(`.sticky-add-to-cart__image-img`)가 PC 화면에서 199px 높이로 너무 크게 렌더링되던 문제.

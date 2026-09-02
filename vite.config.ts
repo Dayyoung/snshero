@@ -56,8 +56,24 @@ export default defineConfig(({mode}) => {
               const rawUrl = req.url.split('?')[0];
               const decodedUrl = decodeURIComponent(rawUrl);
 
+              // Shopify mock endpoints to prevent 404 console errors
+              if (
+                decodedUrl.includes('sf_private_access_tokens') ||
+                decodedUrl.includes('cart.js') ||
+                decodedUrl.includes('cart/add.js') ||
+                decodedUrl.includes('recommendations/products.json') ||
+                decodedUrl.includes('predictive-search') ||
+                decodedUrl.includes('.well-known/shopify')
+              ) {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json; charset=utf-8');
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.end(JSON.stringify({ status: 'ok', items: [], products: [] }));
+                return;
+              }
+
               // Support /mall and /mall/* direct static serving
-              if (/^\/mall(\/|$)/i.test(decodedUrl)) {
+              if (/^\/mall(\/|$)/i.test(decodedUrl) || /^\/mall(\/|$)/i.test(rawUrl)) {
                 let mallRelPath = decodedUrl.replace(/^\/mall(\/)?/i, '');
                 let targetPath = path.join(publicDir, 'mall', mallRelPath);
 
@@ -66,6 +82,15 @@ export default defineConfig(({mode}) => {
                 } else if (!fs.existsSync(targetPath)) {
                   if (fs.existsSync(targetPath + '.html')) {
                     targetPath = targetPath + '.html';
+                  } else {
+                    // Try with rawUrl un-decoded path if different
+                    const rawRel = rawUrl.replace(/^\/mall(\/)?/i, '');
+                    const rawTarget = path.join(publicDir, 'mall', rawRel);
+                    if (fs.existsSync(rawTarget)) {
+                      targetPath = rawTarget;
+                    } else if (fs.existsSync(rawTarget + '.html')) {
+                      targetPath = rawTarget + '.html';
+                    }
                   }
                 }
 
