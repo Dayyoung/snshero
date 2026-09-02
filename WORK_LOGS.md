@@ -4,6 +4,36 @@
 
 ---
 
+## [2026-09-02 16:37 KST] [/gemini-ex 스프레드시트 신규 8개 행(Row 735~742 / ID 572~579) 전수 구현 및 742개 행 100% 완료]
+- **요청 사항**:
+  - `/gemini-ex` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 735~742) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 735 (ID 572) [3D 레이싱 퓨어제스처 전환]**:
+     - `src/lib/vehicleGestureController.ts` 가상 버튼 완전 배제 및 슬라이드 조향, 릴리즈 터보 부스터 연동 검증.
+  2. **Row 736 (ID 573) [3D 스포츠 3단계 튜토리얼 팝업]**:
+     - `src/components/SportsMissionTutorial.tsx` 제스처 시연 온보딩 팝업 및 가이드 연동 검증.
+  3. **Row 737 (ID 574) [상단 70% 시야개방 슬림HUD]**:
+     - `src/components/MinimalistMissionHUD.tsx` 상단 1줄 슬림 HUD 레이아웃 연동 검증.
+  4. **Row 738 (ID 575) [100% 확정 SNS 포인트 원자적 입금]**:
+     - `src/components/NormalizedRewardPopup.tsx` 및 `src/lib/rewardSettlementService.ts` 연동 검증.
+  5. **Row 739 (ID 576) [하단 썸존 1줄 내비게이션 독]**:
+     - `src/components/MainNavigationDock.tsx` design.md 준수 모바일 한손 썸존 5개 주요 탭 하단 독 바 구현.
+  6. **Row 740 (ID 577) [다이내믹 카드 임팩트 셰이크 & 콤보 사운드 엔진]**:
+     - `src/lib/battleImpactEngine.ts` Web Audio API 기반 타격 사운드, 콤보 팡파레 및 마이크로 셰이크 엔진 구현.
+  7. **Row 741 (ID 578) [전 플랫폼 활동 통합 일일 마일스톤 & 스태미나 페이싱]**:
+     - `src/lib/globalEconomyPacing.ts` 5단계 일일 AP 마일스톤 및 5분 자연회복 스태미나 페이싱 엔진 구현 (100% localStorage 기반 영구 저장).
+  8. **Row 742 (ID 579) [저사양 VRAM 압축 & 미사용 에셋 GC 매니저]**:
+     - `src/lib/assetMemoryManager.ts` 저사양 기기 자동 감지 텍스처 0.5x 압축 및 Three.js dispose, Blob revoke GC 엔진 구현.
+  9. **스프레드시트 742개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 항목 번호 `[Row 742 / ID 579]` 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /gemini-ex 스프레드시트 신규 8개 행(Row 735~742 / ID 572~579) 전수 구현 및 742개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-02 16:35 KST] [/gemini-ex 구글 스프레드시트 전체 734개 행 전수 구현 및 검증 완료 달성]
 - **요청 사항**:
   - `/gemini-ex` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 미작업 항목 확인 및 소스코드 반영/검증 완료.
