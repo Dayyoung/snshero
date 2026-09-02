@@ -121,7 +121,8 @@ export const VoxelSuperStrikersGame: React.FC<VoxelSuperStrikersGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.goalsScored >= 6;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -455,7 +456,7 @@ export const VoxelSuperStrikersGame: React.FC<VoxelSuperStrikersGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.goalsScored * 350) + s.maxStreak * 50,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.goalsScored >= 6,
+      isVictory: isWin && s.goalsScored >= 6,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

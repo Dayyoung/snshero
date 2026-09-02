@@ -111,7 +111,8 @@ export const VoxelTowerStackGame: React.FC<VoxelTowerStackGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.floorsStacked >= 15;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -346,7 +347,7 @@ export const VoxelTowerStackGame: React.FC<VoxelTowerStackGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.floorsStacked * 300) + s.maxCombo * 50,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.floorsStacked >= 15,
+      isVictory: isWin && s.floorsStacked >= 15,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

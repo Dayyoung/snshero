@@ -139,7 +139,8 @@ export const VoxelPixelOvercookedGame: React.FC<VoxelPixelOvercookedGameProps> =
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.ordersServed >= 6;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -223,7 +224,7 @@ export const VoxelPixelOvercookedGame: React.FC<VoxelPixelOvercookedGameProps> =
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.ordersServed * 400) + s.maxCombo * 50,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.ordersServed >= 6,
+      isVictory: isWin && s.ordersServed >= 6,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

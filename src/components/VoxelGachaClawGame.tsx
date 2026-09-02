@@ -124,7 +124,8 @@ export const VoxelGachaClawGame: React.FC<VoxelGachaClawGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.popped >= 15;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -371,7 +372,7 @@ export const VoxelGachaClawGame: React.FC<VoxelGachaClawGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3000 : s.popped * 150) + s.legendary * 500,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.popped >= 15,
+      isVictory: isWin && s.popped >= 15,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

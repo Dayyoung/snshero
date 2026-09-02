@@ -87,6 +87,7 @@ export const VoxelSubwayRunnerGame: React.FC<VoxelSubwayRunnerGameProps> = ({
     itemCounter: 1,
     spawnTimer: 0,
     speed: 430,
+    crashes: 0,
     touchStart: { x: 0, y: 0, time: 0 },
     particles: [] as { x: number; y: number; vx: number; vy: number; color: string; life: number }[],
   });
@@ -146,7 +147,8 @@ export const VoxelSubwayRunnerGame: React.FC<VoxelSubwayRunnerGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.distanceRun >= 400;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -323,12 +325,18 @@ export const VoxelSubwayRunnerGame: React.FC<VoxelSubwayRunnerGameProps> = ({
               // Hit Penalty
               s.score = Math.max(0, s.score - 250);
               s.combo = 0;
+              s.crashes += 1;
               setScore(s.score);
               setSubwayCombo(0);
 
-              setFeedbackText(isKo ? '충돌! 감속 발생 💥' : 'CRASH! 💥');
+              setFeedbackText(isKo ? `충돌! (${s.crashes}/3) 💥` : `CRASH! (${s.crashes}/3) 💥`);
               playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
               setTimeout(() => setFeedbackText(null), 300);
+
+              if (s.crashes >= 3 && !s.isGameOver) {
+                endGame(false);
+                return;
+              }
 
               // Sparks
               for (let p = 0; p < 10; p++) {
@@ -497,7 +505,7 @@ export const VoxelSubwayRunnerGame: React.FC<VoxelSubwayRunnerGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : (s.coinsCollected * 200 + s.distanceRun * 2)) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.distanceRun >= 400,
+      isVictory: isWin && s.distanceRun >= 400,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

@@ -103,7 +103,8 @@ export const VoxelHalfpipeSkaterGame: React.FC<VoxelHalfpipeSkaterGameProps> = (
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.score >= 2000;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -375,7 +376,7 @@ export const VoxelHalfpipeSkaterGame: React.FC<VoxelHalfpipeSkaterGameProps> = (
       durationSeconds: duration,
       score: s.score + (isWin ? 3000 : 1000) + s.maxCombo * 50,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.score >= 2000,
+      isVictory: isWin && s.score >= 2000,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

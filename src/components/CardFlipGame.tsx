@@ -18,10 +18,10 @@ interface CardFlipGameProps {
 }
 
 const DIFFICULTY_CONFIG = [
-  { size: 3, shuffleMoves: 5, reward: 15 },
-  { size: 4, shuffleMoves: 10, reward: 30 },
-  { size: 5, shuffleMoves: 18, reward: 45 },
-  { size: 6, shuffleMoves: 28, reward: 60 },
+  { size: 3, shuffleMoves: 5, maxMoves: 15, reward: 15 },
+  { size: 4, shuffleMoves: 10, maxMoves: 25, reward: 30 },
+  { size: 5, shuffleMoves: 18, maxMoves: 40, reward: 45 },
+  { size: 6, shuffleMoves: 28, maxMoves: 60, reward: 60 },
 ];
 
 interface FlipTile {
@@ -88,7 +88,8 @@ export const CardFlipGame: React.FC<CardFlipGameProps> = ({
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const startTimeRef = useRef(Date.now());
-  const { size, shuffleMoves } = DIFFICULTY_CONFIG[Math.min(level, DIFFICULTY_CONFIG.length - 1)];
+  const curDiff = DIFFICULTY_CONFIG[Math.min(level, DIFFICULTY_CONFIG.length - 1)];
+  const { size, shuffleMoves, maxMoves } = curDiff;
   const totalTiles = size * size;
 
   const initGame = useCallback(() => {
@@ -114,6 +115,9 @@ export const CardFlipGame: React.FC<CardFlipGameProps> = ({
 
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
 
+    const nextMoves = moves + 1;
+    setMoves(nextMoves);
+
     setTiles(prev => {
       const next = prev.map(t => ({ ...t }));
       const row = Math.floor(index / size);
@@ -133,19 +137,32 @@ export const CardFlipGame: React.FC<CardFlipGameProps> = ({
           gameId: '2d_card_flip',
           gameTitle: '2D 카드 플립 퍼즐',
           durationSeconds: duration,
-          score: (level + 1) * 1000,
+          score: (level + 1) * 1000 + Math.max(0, (maxMoves - nextMoves) * 50),
           difficulty: level >= 2 ? 'HARD' : 'NORMAL',
           isVictory: true
         });
         setSettlementReceipt(receipt);
         onReward(receipt.totalSns);
         playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+      } else if (nextMoves >= maxMoves) {
+        // Moves Exceeded -> Game Over!
+        setIsComplete(true);
+        const duration = (Date.now() - startTimeRef.current) / 1000;
+        const receipt = calculateAndDepositMissionReward({
+          gameId: '2d_card_flip',
+          gameTitle: '2D 카드 플립 퍼즐',
+          durationSeconds: duration,
+          score: next.filter(t => t.active).length * 50,
+          difficulty: level >= 2 ? 'HARD' : 'NORMAL',
+          isVictory: false
+        });
+        setSettlementReceipt(receipt);
+        onReward(receipt.totalSns);
+        playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
       }
 
       return next;
     });
-
-    setMoves(m => m + 1);
   };
 
   const activeCount = tiles.filter(t => t.active).length;
@@ -220,7 +237,7 @@ export const CardFlipGame: React.FC<CardFlipGameProps> = ({
         telemetries={[
           { label: isKo ? '스테이지' : 'Stage', value: `LV.${level + 1}`, color: 'text-amber-600 font-bold' },
           { label: isKo ? '활성' : 'Active', value: `${activeCount}/${totalTiles}`, color: 'text-cyan-700 font-bold' },
-          { label: isKo ? '이동' : 'Moves', value: `${moves}회`, color: 'text-slate-700' }
+          { label: isKo ? '남은 턴' : 'Moves', value: `${Math.max(0, maxMoves - moves)}/${maxMoves}`, color: (maxMoves - moves) <= 5 ? 'text-rose-600 font-bold' : 'text-slate-700 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}

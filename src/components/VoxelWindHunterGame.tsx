@@ -146,7 +146,8 @@ export const VoxelWindHunterGame: React.FC<VoxelWindHunterGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.targetsHit >= 8;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -472,7 +473,7 @@ export const VoxelWindHunterGame: React.FC<VoxelWindHunterGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.targetsHit * 300) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.targetsHit >= 8,
+      isVictory: isWin && s.targetsHit >= 8,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

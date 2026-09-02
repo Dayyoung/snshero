@@ -157,7 +157,8 @@ export const VoxelTowerCraftGame: React.FC<VoxelTowerCraftGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.enemiesDefeated >= 8;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -552,7 +553,7 @@ export const VoxelTowerCraftGame: React.FC<VoxelTowerCraftGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.enemiesDefeated * 350) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.enemiesDefeated >= 8,
+      isVictory: isWin && s.enemiesDefeated >= 8,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

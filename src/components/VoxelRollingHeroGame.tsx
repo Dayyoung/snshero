@@ -129,7 +129,8 @@ export const VoxelRollingHeroGame: React.FC<VoxelRollingHeroGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.distanceRun >= 400;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -406,7 +407,7 @@ export const VoxelRollingHeroGame: React.FC<VoxelRollingHeroGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : (s.starsCollected * 200 + s.distanceRun * 2)) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.distanceRun >= 400,
+      isVictory: isWin && s.distanceRun >= 400,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

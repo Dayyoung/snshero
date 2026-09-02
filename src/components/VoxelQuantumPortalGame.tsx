@@ -161,7 +161,8 @@ export const VoxelQuantumPortalGame: React.FC<VoxelQuantumPortalGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.loopsCompleted >= 5;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -415,7 +416,7 @@ export const VoxelQuantumPortalGame: React.FC<VoxelQuantumPortalGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.loopsCompleted * 600) + s.maxCombo * 50,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.loopsCompleted >= 5,
+      isVictory: isWin && s.loopsCompleted >= 5,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

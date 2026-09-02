@@ -125,7 +125,8 @@ export const VoxelPixelStrikeArenaGame: React.FC<VoxelPixelStrikeArenaGameProps>
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.targetsEliminated >= 10;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -408,7 +409,7 @@ export const VoxelPixelStrikeArenaGame: React.FC<VoxelPixelStrikeArenaGameProps>
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.targetsEliminated * 300) + s.maxCombo * 50,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.targetsEliminated >= 10,
+      isVictory: isWin && s.targetsEliminated >= 10,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

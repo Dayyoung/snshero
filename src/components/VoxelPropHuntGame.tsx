@@ -143,7 +143,8 @@ export const VoxelPropHuntGame: React.FC<VoxelPropHuntGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.propsFound >= 6;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -343,7 +344,7 @@ export const VoxelPropHuntGame: React.FC<VoxelPropHuntGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.propsFound * 400) + s.maxCombo * 50,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.propsFound >= 6,
+      isVictory: isWin && s.propsFound >= 6,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

@@ -17,9 +17,9 @@ interface CardSlidePuzzleGameProps {
 }
 
 const DIFFICULTY_CONFIG = [
-  { size: 3, reward: 20 },
-  { size: 4, reward: 40 },
-  { size: 5, reward: 60 },
+  { size: 3, maxMoves: 50, reward: 20 },
+  { size: 4, maxMoves: 100, reward: 40 },
+  { size: 5, maxMoves: 160, reward: 60 },
 ];
 
 const shufflePuzzle = (size: number): number[] => {
@@ -138,7 +138,10 @@ export const CardSlidePuzzleGame: React.FC<CardSlidePuzzleGameProps> = ({
     const next = [...tiles];
     [next[index], next[emptyIdx]] = [next[emptyIdx], next[index]];
     setTiles(next);
-    setMoves(m => m + 1);
+    const nextMoves = moves + 1;
+    setMoves(nextMoves);
+
+    const maxMoves = DIFFICULTY_CONFIG[Math.min(level, DIFFICULTY_CONFIG.length - 1)].maxMoves;
 
     // Check complete: 0, 1, 2, ..., total-2, -1
     const won = next.every((val, i) => (i === totalTiles - 1 ? val === -1 : val === i));
@@ -149,15 +152,30 @@ export const CardSlidePuzzleGame: React.FC<CardSlidePuzzleGameProps> = ({
         gameId: '2d_card_slide',
         gameTitle: '2D 카드 슬라이드 퍼즐',
         durationSeconds: duration,
-        score: (level + 1) * 1000,
+        score: (level + 1) * 1000 + Math.max(0, (maxMoves - nextMoves) * 20),
         difficulty: level >= 1 ? 'HARD' : 'NORMAL',
         isVictory: true
       });
       setSettlementReceipt(receipt);
       onReward(receipt.totalSns);
       playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    } else if (nextMoves >= maxMoves) {
+      // Moves Exceeded -> Game Over!
+      setIsComplete(true);
+      const duration = (Date.now() - startTimeRef.current) / 1000;
+      const receipt = calculateAndDepositMissionReward({
+        gameId: '2d_card_slide',
+        gameTitle: '2D 카드 슬라이드 퍼즐',
+        durationSeconds: duration,
+        score: 300,
+        difficulty: level >= 1 ? 'HARD' : 'NORMAL',
+        isVictory: false
+      });
+      setSettlementReceipt(receipt);
+      onReward(receipt.totalSns);
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
     }
-  }, [isComplete, isPaused, level, onReward, playSfx, size, tiles, totalTiles]);
+  }, [isComplete, isPaused, level, moves, onReward, playSfx, size, tiles, totalTiles]);
 
   const tutorialSteps: TutorialStep[] = [
     {
@@ -227,7 +245,7 @@ export const CardSlidePuzzleGame: React.FC<CardSlidePuzzleGameProps> = ({
         language={language}
         telemetries={[
           { label: isKo ? '스테이지' : 'Stage', value: `LV.${level + 1} (${size}x${size})`, color: 'text-amber-600 font-bold' },
-          { label: isKo ? '이동' : 'Moves', value: `${moves}회`, color: 'text-slate-700 font-bold' }
+          { label: isKo ? '남은 턴' : 'Moves', value: `${Math.max(0, DIFFICULTY_CONFIG[Math.min(level, DIFFICULTY_CONFIG.length - 1)].maxMoves - moves)}/${DIFFICULTY_CONFIG[Math.min(level, DIFFICULTY_CONFIG.length - 1)].maxMoves}`, color: (DIFFICULTY_CONFIG[Math.min(level, DIFFICULTY_CONFIG.length - 1)].maxMoves - moves) <= 10 ? 'text-rose-600 font-bold' : 'text-slate-700 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}

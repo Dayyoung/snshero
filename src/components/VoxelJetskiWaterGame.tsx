@@ -144,7 +144,8 @@ export const VoxelJetskiWaterGame: React.FC<VoxelJetskiWaterGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.distance >= 350;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -494,7 +495,7 @@ export const VoxelJetskiWaterGame: React.FC<VoxelJetskiWaterGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3000 : Math.round(s.distance * 8)) + s.maxCombo * 50,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.distance >= 350,
+      isVictory: isWin && s.distance >= 350,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

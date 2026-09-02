@@ -129,7 +129,8 @@ export const VoxelSpikeRollingGame: React.FC<VoxelSpikeRollingGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.targetsCrushed >= 10;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -366,7 +367,7 @@ export const VoxelSpikeRollingGame: React.FC<VoxelSpikeRollingGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : (s.targetsCrushed * 300 + s.boulderLevel * 400)) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.targetsCrushed >= 10,
+      isVictory: isWin && s.targetsCrushed >= 10,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

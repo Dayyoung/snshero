@@ -127,7 +127,8 @@ export const VoxelWaterSlideGame: React.FC<VoxelWaterSlideGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.itemsCollected >= 8;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -408,7 +409,7 @@ export const VoxelWaterSlideGame: React.FC<VoxelWaterSlideGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.itemsCollected * 300) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.itemsCollected >= 8,
+      isVictory: isWin && s.itemsCollected >= 8,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

@@ -17,9 +17,9 @@ interface MemoryMatchGameProps {
 }
 
 const DIFFICULTY_CONFIG = [
-  { cols: 4, rows: 4 },
-  { cols: 6, rows: 4 },
-  { cols: 6, rows: 6 },
+  { cols: 4, rows: 4, maxTurns: 18 },
+  { cols: 6, rows: 4, maxTurns: 28 },
+  { cols: 6, rows: 6, maxTurns: 42 },
 ];
 
 interface CardTile {
@@ -112,7 +112,10 @@ export const MemoryMatchGame: React.FC<MemoryMatchGameProps> = ({
 
     if (newFlipped.length === 2) {
       setIsChecking(true);
-      setMoves(m => m + 1);
+      const nextMoves = moves + 1;
+      setMoves(nextMoves);
+
+      const maxTurns = DIFFICULTY_CONFIG[Math.min(level, DIFFICULTY_CONFIG.length - 1)].maxTurns;
 
       const first = newTiles.find(t => t.id === newFlipped[0]);
       const second = newTiles.find(t => t.id === newFlipped[1]);
@@ -139,12 +142,27 @@ export const MemoryMatchGame: React.FC<MemoryMatchGameProps> = ({
               gameId: 'arcade_memory_match',
               gameTitle: '클래식 메모리 매칭',
               durationSeconds: duration,
-              score: (level + 1) * 1000,
+              score: (level + 1) * 1000 + Math.max(0, (maxTurns - nextMoves) * 50),
               difficulty: level >= 1 ? 'HARD' : 'NORMAL',
               isVictory: true
             });
             setSettlementReceipt(receipt);
             onReward(receipt.totalSns);
+          } else if (nextMoves >= maxTurns) {
+            // Out of turns
+            setIsComplete(true);
+            const duration = (Date.now() - startTimeRef.current) / 1000;
+            const receipt = calculateAndDepositMissionReward({
+              gameId: 'arcade_memory_match',
+              gameTitle: '클래식 메모리 매칭',
+              durationSeconds: duration,
+              score: nextMatched * 100,
+              difficulty: level >= 1 ? 'HARD' : 'NORMAL',
+              isVictory: false
+            });
+            setSettlementReceipt(receipt);
+            onReward(receipt.totalSns);
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
           }
         }, 500);
       } else {
@@ -157,6 +175,23 @@ export const MemoryMatchGame: React.FC<MemoryMatchGameProps> = ({
           );
           setFlippedIds([]);
           setIsChecking(false);
+
+          if (nextMoves >= maxTurns) {
+            // Out of turns on mismatch -> Game Over!
+            setIsComplete(true);
+            const duration = (Date.now() - startTimeRef.current) / 1000;
+            const receipt = calculateAndDepositMissionReward({
+              gameId: 'arcade_memory_match',
+              gameTitle: '클래식 메모리 매칭',
+              durationSeconds: duration,
+              score: matchedCount * 100,
+              difficulty: level >= 1 ? 'HARD' : 'NORMAL',
+              isVictory: false
+            });
+            setSettlementReceipt(receipt);
+            onReward(receipt.totalSns);
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+          }
         }, 800);
       }
     }
@@ -231,7 +266,7 @@ export const MemoryMatchGame: React.FC<MemoryMatchGameProps> = ({
         telemetries={[
           { label: isKo ? '스테이지' : 'Stage', value: `LV.${level + 1}`, color: 'text-amber-600 font-bold' },
           { label: isKo ? '매칭' : 'Pairs', value: `${matchedCount}/${totalPairs}`, color: matchedCount >= totalPairs ? 'text-emerald-700 font-bold' : 'text-cyan-700 font-bold' },
-          { label: isKo ? '이동' : 'Moves', value: `${moves}회`, color: 'text-slate-700' }
+          { label: isKo ? '남은 턴' : 'Turns', value: `${Math.max(0, DIFFICULTY_CONFIG[Math.min(level, DIFFICULTY_CONFIG.length - 1)].maxTurns - moves)}/${DIFFICULTY_CONFIG[Math.min(level, DIFFICULTY_CONFIG.length - 1)].maxTurns}`, color: (DIFFICULTY_CONFIG[Math.min(level, DIFFICULTY_CONFIG.length - 1)].maxTurns - moves) <= 5 ? 'text-rose-600 font-bold' : 'text-slate-700 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}

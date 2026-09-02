@@ -128,7 +128,8 @@ export const VoxelMegaFlareAssaultGame: React.FC<VoxelMegaFlareAssaultGameProps>
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.destroyedCount >= 20;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -464,7 +465,7 @@ export const VoxelMegaFlareAssaultGame: React.FC<VoxelMegaFlareAssaultGameProps>
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.destroyedCount * 120) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.destroyedCount >= 20,
+      isVictory: isWin && s.destroyedCount >= 20,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

@@ -133,7 +133,8 @@ export const VoxelSkateboardStreetGame: React.FC<VoxelSkateboardStreetGameProps>
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.tricksPerformed >= 8;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -470,7 +471,7 @@ export const VoxelSkateboardStreetGame: React.FC<VoxelSkateboardStreetGameProps>
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : (s.tricksPerformed * 300 + s.distanceRun * 2)) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.tricksPerformed >= 8,
+      isVictory: isWin && s.tricksPerformed >= 8,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

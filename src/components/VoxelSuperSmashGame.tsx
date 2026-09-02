@@ -124,7 +124,8 @@ export const VoxelSuperSmashGame: React.FC<VoxelSuperSmashGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.fightersKnockedOut >= 8;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -411,7 +412,7 @@ export const VoxelSuperSmashGame: React.FC<VoxelSuperSmashGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.fightersKnockedOut * 350) + s.maxCombo * 50,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.fightersKnockedOut >= 8,
+      isVictory: isWin && s.fightersKnockedOut >= 8,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

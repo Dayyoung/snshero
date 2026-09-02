@@ -138,7 +138,8 @@ export const VoxelSpaceOdysseyGame: React.FC<VoxelSpaceOdysseyGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.piratesDefeated >= 8;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -422,7 +423,7 @@ export const VoxelSpaceOdysseyGame: React.FC<VoxelSpaceOdysseyGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : (s.piratesDefeated * 300 + s.mineralsGathered * 200)) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.piratesDefeated >= 8,
+      isVictory: isWin && s.piratesDefeated >= 8,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

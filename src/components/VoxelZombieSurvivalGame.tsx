@@ -129,7 +129,8 @@ export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = (
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.zombiesKilled >= 8;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -270,9 +271,12 @@ export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = (
         });
       }
 
-      // Move Zombies
-      s.zombies.forEach((z) => {
+      // Move Zombies (Advance Downward toward Barricade)
+      for (const z of s.zombies) {
+        if (!z.isAlive) continue;
         z.x += z.vx * dt;
+        z.y += 14 * dt; // Advance downward
+
         if (z.x > 325) {
           z.x = 325;
           z.vx = -Math.abs(z.vx);
@@ -280,7 +284,13 @@ export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = (
           z.x = 35;
           z.vx = Math.abs(z.vx);
         }
-      });
+
+        // Barricade Breach Check -> Instant Defeat Game Over!
+        if (z.y >= shooterY - 30 && !s.isGameOver) {
+          endGame(false);
+          return;
+        }
+      }
 
       // Update Muzzle Flash
       if (s.muzzleFlash) {
@@ -412,7 +422,7 @@ export const VoxelZombieSurvivalGame: React.FC<VoxelZombieSurvivalGameProps> = (
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.zombiesKilled * 300) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.zombiesKilled >= 8,
+      isVictory: isWin && s.zombiesKilled >= 8,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

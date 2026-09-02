@@ -124,7 +124,8 @@ export const VoxelTerraQuakeGame: React.FC<VoxelTerraQuakeGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.gemsCollected >= 8;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -399,7 +400,7 @@ export const VoxelTerraQuakeGame: React.FC<VoxelTerraQuakeGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.gemsCollected * 300) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.gemsCollected >= 8,
+      isVictory: isWin && s.gemsCollected >= 8,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

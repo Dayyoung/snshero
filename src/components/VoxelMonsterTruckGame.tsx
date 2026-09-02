@@ -123,7 +123,8 @@ export const VoxelMonsterTruckGame: React.FC<VoxelMonsterTruckGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.carsCrushed >= 15;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -425,7 +426,7 @@ export const VoxelMonsterTruckGame: React.FC<VoxelMonsterTruckGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : (s.carsCrushed * 150 + s.stuntsLanded * 400)) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.carsCrushed >= 15,
+      isVictory: isWin && s.carsCrushed >= 15,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

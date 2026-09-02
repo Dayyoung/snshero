@@ -4,6 +4,35 @@
 
 ---
 
+## [2026-09-03 07:08 KST] [2D 카드 점퍼 추락 판정 오류 수정 및 전체 미션 게임(97종) 게임오버 결함 전수조사·개선 완료]
+- **요청 사항**:
+  - 2D 카드 점퍼에서 아래로 떨어져도 게임오버가 되지 않는 문제 해결.
+  - 전체 미션 게임 전수조사를 통해 게임오버/패배 처리가 누락되거나 정상 작동하지 않는 모든 게임 수정.
+- **원인 분석**:
+  1. **2D 카드 점퍼 (`CardJumperGame.tsx`)**:
+     - 플레이어 화면 좌표 계산식 부호 오류: `g.playerY - g.cameraY > CANVAS_H + 40` (위로 올라갈수록 cameraY가 커지므로 영원히 만족 불가).
+     - 올바른 공식 `g.playerY + g.cameraY > CANVAS_H + 20`으로 수정하여 화면 아래 추락 시 즉시 게임오버(`isVictory: false`) 트리거 및 정산 모달 출력.
+  2. **클래식 퍼즐 5종 턴/이동 제한 누락**:
+     - `CardFlipGame.tsx`: 난이도별 최대 조작수(15~60수) 제한 추가 및 초과 시 게임오버.
+     - `CardSlidePuzzleGame.tsx`: 난이도별 최대 이동수(50~160수) 제한 추가 및 초과 시 게임오버.
+     - `CardSlotGame.tsx`: 5회 스핀 종료 시 목표 점수(1200P) 미달 시 패배 게임오버 분기 추가.
+     - `MemoryMatchGame.tsx`: 최대 시도 턴(18~42턴) 제한 추가 및 초과 시 게임오버.
+     - `Slide2048Game.tsx`: 판이 꽉 차고 인접 합체가 불가능할 때 `checkNoMovesLeft` 게임오버 트리거 추가.
+  3. **블리츠 46개 게임 무조건 승리 및 게임오버 누락 결함 전수 수정**:
+     - `if (t <= 1)` 타이머 종료 시 무조건 `endGame(true)`를 호출하던 것을 목표 달성 여부에 따라 `endGame(isTargetMet)` 전달로 전면 교체.
+     - `isVictory: isWin || (목표조건)`으로 작성되어 무조건 승리하던 판정식을 `isVictory: isWin && (목표조건)`으로 전면 정규화.
+     - `VoxelSubwayRunnerGame.tsx`: 장애물 3회 충돌 시 즉시 탈락 게임오버(`endGame(false)`).
+     - `VoxelZombieSurvivalGame.tsx`: 좀비 하강 및 방어선 돌파 시 즉시 게임오버(`endGame(false)`).
+     - `VoxelVampireSurvivalGame.tsx`: 몬스터 접촉 시 즉시 피격 및 게임오버(`endGame(false)`).
+- **품질 검증**:
+  - 97개 전체 게임 대상 자동화 검사: 게임오버 미발동 게임 0건 확인 완료 (`Games that CANNOT result in game over: 0`).
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 번들 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] 2D 카드 점퍼 추락 판정 및 전체 미션 게임 97종 게임오버 결함 전수조사·개선 완료 -> 작업완료`
+
+---
+
 ## [2026-09-03 07:01 KST] [/ge 스프레드시트 신규 8개 행(Row 779~786 / ID 548~555) 전수 구현 및 786개 행 100% 완료]
 - **요청 사항**:
   - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 779~786) 확인 및 소스코드 반영/검증 완료.

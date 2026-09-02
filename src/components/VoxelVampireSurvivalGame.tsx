@@ -128,7 +128,8 @@ export const VoxelVampireSurvivalGame: React.FC<VoxelVampireSurvivalGameProps> =
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.kills >= 10;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -238,6 +239,19 @@ export const VoxelVampireSurvivalGame: React.FC<VoxelVampireSurvivalGameProps> =
           if (dist > 5) {
             mob.x += (dx / dist) * speed * dt;
             mob.y += (dy / dist) * speed * dt;
+          }
+
+          // Check Monster bite Player -> Player damage & Game Over!
+          if (dist < mob.radius + 14) {
+            s.combo = 0;
+            setVampireCombo(0);
+            playSfx?.('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+            setFeedbackText(isKo ? '피격! 언데드 습격 💥' : 'BITTEN! -HP 💥');
+            setTimeout(() => setFeedbackText(null), 300);
+
+            // Trigger Defeat Game Over on contact if overwhelmed
+            endGame(false);
+            return;
           }
 
           // Check Blade Collision
@@ -440,7 +454,7 @@ export const VoxelVampireSurvivalGame: React.FC<VoxelVampireSurvivalGameProps> =
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.kills * 300) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.kills >= 10,
+      isVictory: isWin && s.kills >= 10,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

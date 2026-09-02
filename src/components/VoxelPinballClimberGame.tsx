@@ -155,7 +155,8 @@ export const VoxelPinballClimberGame: React.FC<VoxelPinballClimberGameProps> = (
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.currentFloor >= 3;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -451,7 +452,7 @@ export const VoxelPinballClimberGame: React.FC<VoxelPinballClimberGameProps> = (
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : (s.currentFloor * 800 + s.bumpersHit * 150)) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.currentFloor >= 3,
+      isVictory: isWin && s.currentFloor >= 3,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

@@ -123,7 +123,8 @@ export const VoxelKarateBreakGame: React.FC<VoxelKarateBreakGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.targetIdx >= 3;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -375,7 +376,7 @@ export const VoxelKarateBreakGame: React.FC<VoxelKarateBreakGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : (s.targetIdx + 1) * 600) + s.maxCombo * 50,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.targetIdx >= 3,
+      isVictory: isWin && s.targetIdx >= 3,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

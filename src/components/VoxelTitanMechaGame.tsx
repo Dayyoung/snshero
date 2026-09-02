@@ -139,7 +139,8 @@ export const VoxelTitanMechaGame: React.FC<VoxelTitanMechaGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.mechasDestroyed >= 7;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -466,7 +467,7 @@ export const VoxelTitanMechaGame: React.FC<VoxelTitanMechaGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.mechasDestroyed * 350) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.mechasDestroyed >= 7,
+      isVictory: isWin && s.mechasDestroyed >= 7,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

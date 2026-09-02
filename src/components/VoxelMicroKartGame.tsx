@@ -124,7 +124,8 @@ export const VoxelMicroKartGame: React.FC<VoxelMicroKartGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.distance >= 400;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -423,7 +424,7 @@ export const VoxelMicroKartGame: React.FC<VoxelMicroKartGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : Math.round(s.distance) * 2) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.distance >= 400,
+      isVictory: isWin && s.distance >= 400,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

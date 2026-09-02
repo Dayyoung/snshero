@@ -140,7 +140,8 @@ export const VoxelPinballKnightsGame: React.FC<VoxelPinballKnightsGameProps> = (
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.knightsDefeated >= 8;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -494,7 +495,7 @@ export const VoxelPinballKnightsGame: React.FC<VoxelPinballKnightsGameProps> = (
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.knightsDefeated * 250) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.knightsDefeated >= 8,
+      isVictory: isWin && s.knightsDefeated >= 8,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

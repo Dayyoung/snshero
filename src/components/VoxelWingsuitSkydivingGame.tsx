@@ -129,7 +129,8 @@ export const VoxelWingsuitSkydivingGame: React.FC<VoxelWingsuitSkydivingGameProp
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.ringsPassed >= 8;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -408,7 +409,7 @@ export const VoxelWingsuitSkydivingGame: React.FC<VoxelWingsuitSkydivingGameProp
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.ringsPassed * 300) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.ringsPassed >= 8,
+      isVictory: isWin && s.ringsPassed >= 8,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

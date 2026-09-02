@@ -177,8 +177,9 @@ export const CardJumperGame: React.FC<CardJumperGameProps> = ({
         }
       }
 
-      // Fall Below Camera -> Game Over
-      if (g.playerY - g.cameraY > CANVAS_H + 40 && !g.isGameOver) {
+      // Fall Below Camera -> Game Over (screenY = g.playerY + g.cameraY)
+      const screenPlayerY = g.playerY + g.cameraY;
+      if (screenPlayerY > CANVAS_H + 20 && !g.isGameOver) {
         g.isGameOver = true;
         setIsGameOver(true);
         const duration = (Date.now() - g.startTime) / 1000;

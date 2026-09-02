@@ -164,6 +164,38 @@ export const Slide2048Game: React.FC<Slide2048GameProps> = ({
         });
         setSettlementReceipt(receipt);
         onReward(receipt.totalSns);
+      } else if (!isGameOver) {
+        // Check if no moves left -> Game Over!
+        let hasEmpty = false;
+        let canMerge = false;
+
+        for (let r = 0; r < GRID_SIZE; r++) {
+          for (let c = 0; c < GRID_SIZE; c++) {
+            if (next[r][c] === 0) {
+              hasEmpty = true;
+              break;
+            }
+            if (c < GRID_SIZE - 1 && next[r][c] === next[r][c + 1]) canMerge = true;
+            if (r < GRID_SIZE - 1 && next[r][c] === next[r + 1][c]) canMerge = true;
+          }
+          if (hasEmpty) break;
+        }
+
+        if (!hasEmpty && !canMerge) {
+          setIsGameOver(true);
+          const duration = (Date.now() - startTimeRef.current) / 1000;
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'arcade_2048',
+            gameTitle: '2048 카드 슬라이드',
+            durationSeconds: duration,
+            score: newScore,
+            difficulty: 'HARD',
+            isVictory: false
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+        }
       }
     }
   };

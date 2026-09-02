@@ -135,7 +135,8 @@ export const VoxelFishingMasterGame: React.FC<VoxelFishingMasterGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.fishCaught >= 6;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -409,7 +410,7 @@ export const VoxelFishingMasterGame: React.FC<VoxelFishingMasterGameProps> = ({
       durationSeconds: duration,
       score: s.score + s.fishCaught * 250 + s.maxCombo * 50,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.fishCaught >= 6,
+      isVictory: isWin && s.fishCaught >= 6,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

@@ -112,7 +112,8 @@ export const VoxelMotocrossStuntGame: React.FC<VoxelMotocrossStuntGameProps> = (
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.flips >= 3;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -356,7 +357,7 @@ export const VoxelMotocrossStuntGame: React.FC<VoxelMotocrossStuntGameProps> = (
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : (Math.round(s.distance / 10) * 8 + s.flips * 300)) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.flips >= 3,
+      isVictory: isWin && s.flips >= 3,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

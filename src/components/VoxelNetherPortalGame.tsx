@@ -165,7 +165,8 @@ export const VoxelNetherPortalGame: React.FC<VoxelNetherPortalGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.portalEnergy >= 60;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -447,7 +448,7 @@ export const VoxelNetherPortalGame: React.FC<VoxelNetherPortalGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.linesCleared * 300) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.portalEnergy >= 60,
+      isVictory: isWin && s.portalEnergy >= 60,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

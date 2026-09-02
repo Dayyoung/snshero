@@ -125,7 +125,8 @@ export const VoxelSniperHunterGame: React.FC<VoxelSniperHunterGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.targetsEliminated >= 8;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -427,7 +428,7 @@ export const VoxelSniperHunterGame: React.FC<VoxelSniperHunterGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.targetsEliminated * 350) + s.maxCombo * 50,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.targetsEliminated >= 8,
+      isVictory: isWin && s.targetsEliminated >= 8,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

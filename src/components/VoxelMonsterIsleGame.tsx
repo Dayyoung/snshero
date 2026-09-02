@@ -133,7 +133,8 @@ export const VoxelMonsterIsleGame: React.FC<VoxelMonsterIsleGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.capturedCount >= 6;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -439,7 +440,7 @@ export const VoxelMonsterIsleGame: React.FC<VoxelMonsterIsleGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.capturedCount * 300) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.capturedCount >= 6,
+      isVictory: isWin && s.capturedCount >= 6,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

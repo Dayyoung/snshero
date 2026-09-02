@@ -114,7 +114,8 @@ export const VoxelNinjaSlashGame: React.FC<VoxelNinjaSlashGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.targetsSliced >= 15;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -424,7 +425,7 @@ export const VoxelNinjaSlashGame: React.FC<VoxelNinjaSlashGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.targetsSliced * 150) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.targetsSliced >= 15,
+      isVictory: isWin && s.targetsSliced >= 15,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

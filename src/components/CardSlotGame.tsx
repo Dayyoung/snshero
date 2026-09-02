@@ -132,23 +132,29 @@ export const CardSlotGame: React.FC<CardSlotGameProps> = ({
         }
       }
 
-      setScore(s => s + spinWin);
+      const finalScore = score + spinWin;
+      setScore(finalScore);
       playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
 
       // Final Spin Settlement
+      const TARGET_SCORE = 1200;
       if (spinsLeft - 1 <= 0) {
         setTimeout(() => {
           const duration = (Date.now() - startTimeRef.current) / 1000;
+          const isVictory = finalScore >= TARGET_SCORE;
           const receipt = calculateAndDepositMissionReward({
             gameId: '2d_card_slot',
             gameTitle: '2D 카드 슬롯 머신',
             durationSeconds: duration,
-            score: score + spinWin + 1000,
+            score: finalScore,
             difficulty: 'HARD',
-            isVictory: true
+            isVictory: isVictory
           });
           setSettlementReceipt(receipt);
           onReward(receipt.totalSns);
+          if (!isVictory) {
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+          }
         }, 800);
       }
     }, 1200);
@@ -222,7 +228,7 @@ export const CardSlotGame: React.FC<CardSlotGameProps> = ({
         language={language}
         telemetries={[
           { label: isKo ? '스핀' : 'Spins', value: `${spinsLeft}/${FREE_SPINS}`, color: spinsLeft <= 1 ? 'text-rose-600 font-bold' : 'text-amber-600 font-bold' },
-          { label: isKo ? '점수' : 'Score', value: `${score}P`, color: 'text-emerald-700 font-bold' }
+          { label: isKo ? '목표' : 'Goal', value: `${score}/1200P`, color: score >= 1200 ? 'text-emerald-700 font-bold' : 'text-slate-700 font-bold' }
         ]}
         onExit={onExit}
         onHelp={() => setShowTutorial(true)}

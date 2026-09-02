@@ -136,7 +136,8 @@ export const VoxelFactoryCraftGame: React.FC<VoxelFactoryCraftGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.maxLevel >= 5;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -275,7 +276,7 @@ export const VoxelFactoryCraftGame: React.FC<VoxelFactoryCraftGameProps> = ({
       durationSeconds: duration,
       score: s.score + s.maxLevel * 500 + s.maxCombo * 60,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.maxLevel >= 5,
+      isVictory: isWin && s.maxLevel >= 5,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);

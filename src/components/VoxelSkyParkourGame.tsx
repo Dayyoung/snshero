@@ -144,7 +144,8 @@ export const VoxelSkyParkourGame: React.FC<VoxelSkyParkourGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          endGame(true);
+          const isTargetMet = stateRef.current.stepsClimbed >= 15;
+          endGame(isTargetMet);
           return 0;
         }
         return t - 1;
@@ -360,7 +361,7 @@ export const VoxelSkyParkourGame: React.FC<VoxelSkyParkourGameProps> = ({
       durationSeconds: duration,
       score: s.score + (isWin ? 3500 : s.stepsClimbed * 250) + s.maxCombo * 40,
       difficulty: 'NIGHTMARE',
-      isVictory: isWin || s.stepsClimbed >= 15,
+      isVictory: isWin && s.stepsClimbed >= 15,
     });
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);
