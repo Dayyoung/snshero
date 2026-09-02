@@ -4,6 +4,28 @@
 
 ---
 
+## [2026-09-02 20:02 KST] [/ge 스프레드시트 신규 4개 행(Row 763~766 / ID 556~559) 전수 구현 및 766개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 763~766) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 763 (ID 556) [3D 레이싱 퓨어제스처 전환]**:
+     - `src/lib/vehicleGestureController.ts` 가상 조이스틱 완전 배제 및 슬라이드 조향, 릴리즈 드리프트 터보 부스터 연동 검증.
+  2. **Row 764 (ID 557) [3D 스포츠 3단계 튜토리얼 팝업]**:
+     - `src/components/SportsMissionTutorial.tsx` 제스처 시연 온보딩 팝업 및 상시 ❓ 가이드 연동 검증.
+  3. **Row 765 (ID 558) [상단 70% 시야개방 슬림HUD]**:
+     - `src/components/MinimalistMissionHUD.tsx` 상단 1줄 슬림 HUD 레이아웃 연동 검증.
+  4. **Row 766 (ID 559) [100% 확정 SNS 포인트 원자적 입금]**:
+     - `src/components/NormalizedRewardPopup.tsx` 및 `src/lib/rewardSettlementService.ts` 연동 검증.
+  5. **스프레드시트 766개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 항목 번호 `[Row 766 / ID 559]` 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /ge 스프레드시트 신규 4개 행(Row 763~766 / ID 556~559) 전수 구현 및 766개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-02 19:40 KST] [/ge 스프레드시트 신규 12개 행(Row 751~762 / ID 548~555) 전수 구현 및 762개 행 100% 완료]
 - **요청 사항**:
   - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 751~762) 확인 및 소스코드 반영/검증 완료.
