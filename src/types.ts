@@ -247,7 +247,7 @@ export interface TradeAuditLog {
   createdAt: string;
 }
 
-export type GoodsType = 'mug' | 'tshirt';
+export type GoodsType = 'mug' | 'tshirt' | 'deck' | 'table';
 
 export type GoodsPaymentMethod =
   | 'dollar'

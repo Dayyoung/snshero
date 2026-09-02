@@ -348,7 +348,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const [tshirtCardId, setTshirtCardId] = useState<number>(1);
 
   const [goodsModalOpen, setGoodsModalOpen] = useState(false);
-  const [selectedGoods, setSelectedGoods] = useState<'mug' | 'tshirt' | null>(null);
+  const [selectedGoods, setSelectedGoods] = useState<GoodsType | null>(null);
   const [goodsQuantity, setGoodsQuantity] = useState(1);
   const [goodsSize, setGoodsSize] = useState<'S' | 'M' | 'L'>('M');
   
@@ -655,14 +655,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
       const gType = goodsParam.toLowerCase();
       if (gType.includes('mug') || gType.includes('머그')) {
         setSelectedGoods('mug');
-        setGoodsModalOpen(true);
-      } else if (gType.includes('tshirt') || gType.includes('shirt') || gType.includes('티셔츠')) {
-        setSelectedGoods('tshirt');
-        setGoodsModalOpen(true);
+      } else if (gType.includes('table') || gType.includes('테이블')) {
+        setSelectedGoods('table');
+      } else if (gType.includes('deck') || gType.includes('110') || gType.includes('카드')) {
+        setSelectedGoods('deck');
       } else {
         setSelectedGoods('tshirt');
-        setGoodsModalOpen(true);
       }
+      setGoodsModalOpen(true);
 
       const qParam = parseInt(params.get('qty') || '1', 10);
       if (!isNaN(qParam) && qParam > 0) {
@@ -683,6 +683,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
         const gType = String(goodsType).toLowerCase();
         if (gType.includes('mug') || gType.includes('머그')) {
           setSelectedGoods('mug');
+        } else if (gType.includes('table') || gType.includes('테이블')) {
+          setSelectedGoods('table');
+        } else if (gType.includes('deck') || gType.includes('110') || gType.includes('카드')) {
+          setSelectedGoods('deck');
         } else {
           setSelectedGoods('tshirt');
         }
@@ -985,10 +989,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
 
   const handleGoodsDollarCheckout = () => {
-    const priceVal = selectedGoods === 'mug' ? 10 : 35;
+    const priceVal = selectedGoods === 'mug' ? 10 : 30;
     const totalPrice = priceVal * goodsQuantity;
     const goodsCardId = selectedGoods === 'mug' ? mugCardId : tshirtCardId;
     const cardInfo = CARD_DATABASE[goodsCardId];
+    const goodsLabel = selectedGoods === 'mug' ? 'Custom Mug Cup' : (selectedGoods === 'deck' ? '110 Heroes Card Deck' : (selectedGoods === 'table' ? 'Hero Game Table' : 'Custom T-Shirt'));
 
     setSelectedGoodsGatewayId('paypal');
     localStorage.setItem('hero_goods_pending_payment', JSON.stringify({
@@ -1005,7 +1010,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
     setSelectedPackage({
       amount: 0,
       price: totalPrice.toString(),
-      label: selectedGoods === 'mug' ? 'Custom Mug Cup' : 'Custom T-Shirt',
+      label: goodsLabel,
       isGoods: true,
       goodsType: selectedGoods,
       quantity: goodsQuantity,
@@ -4001,7 +4006,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     {/* Total billing amount display */}
                     <div className="border-t border-dashed border-slate-200 pt-4 flex justify-between items-center font-bold">
                       <span className="uppercase text-xs">{t('goods_total_price', language)}</span>
-                      <span className="text-xl tracking-tighter">${(selectedGoods === 'mug' ? 10 : 35) * goodsQuantity}.00 USD</span>
+                      <span className="text-xl tracking-tighter">${(selectedGoods === 'mug' ? 10 : 30) * goodsQuantity}.00 USD</span>
                     </div>
 
                     <button
@@ -4243,8 +4248,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       {t('goods_payment_summary_title', language)}
                     </p>
                     <div className="flex items-center justify-between gap-3 text-sm font-semibold text-slate-700">
-                      <span>{selectedGoods === 'mug' ? 'Custom Mug Cup' : 'Custom T-Shirt'}</span>
-                      <span>${((selectedGoods === 'mug' ? 10 : 35) * goodsQuantity).toFixed(2)} USD</span>
+                      <span>{selectedGoods === 'mug' ? 'Custom Mug Cup' : (selectedGoods === 'deck' ? '110 Heroes Card Deck' : (selectedGoods === 'table' ? 'Hero Game Table' : 'Custom T-Shirt'))}</span>
+                      <span>${((selectedGoods === 'mug' ? 10 : 30) * goodsQuantity).toFixed(2)} USD</span>
                     </div>
                     {goodsSelectedCountry && (
                       <p className="text-xs text-slate-500 font-semibold">
@@ -4268,8 +4273,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     {selectedGoodsGatewayId === 'paypal' && (
                       <PayPalButtonWrapper
                         item={{
-                          label: selectedGoods === 'mug' ? 'Custom Mug Cup' : 'Custom T-Shirt',
-                          price: ((selectedGoods === 'mug' ? 10 : 35) * goodsQuantity).toString(),
+                          label: selectedGoods === 'mug' ? 'Custom Mug Cup' : (selectedGoods === 'deck' ? '110 Heroes Card Deck' : (selectedGoods === 'table' ? 'Hero Game Table' : 'Custom T-Shirt')),
+                          price: ((selectedGoods === 'mug' ? 10 : 30) * goodsQuantity).toString(),
                           isGoods: true,
                           goodsType: selectedGoods,
                           quantity: goodsQuantity,

@@ -4,6 +4,25 @@
 
 ---
 
+## [2026-09-02 12:38 KST] [쇼핑몰 PayPal 빠른 결제 버튼 클릭 시 /shop 인게임 PayPal 결제 프로세스 연동 완료]
+- **요청 사항**:
+  - 쇼핑몰 상세 페이지 내 PayPal 빠른 결제 버튼(`.paypal-button-label-container`, `로 지불하기` 등)을 클릭했을 때 `/shop` 굿즈 결제 화면으로 이동하여 해당 금액 및 결제가 즉시 진행되도록 변경.
+- **조치 사항**:
+  1. **`mall-bridge.js` 브릿지 스크립트 대폭 고도화**:
+     - `.paypal-button`, `.paypal-button-label-container`, `shopify-accelerated-checkout` 및 `지불하기` 텍스트 요소 클릭을 캡처 단계에서 완벽하게 인터셉트.
+     - 현재 상품 종류(`deck`, `table`, `mug`, `tshirt`), 수량(`qty`), 사이즈 옵션(`size`)을 파싱하여 `/shop?goods=...&qty=...&size=...&method=paypal` 및 `postMessage` 전송.
+     - DOM 로드 및 동적 주입 시 모든 페이팔 버튼에 직접 이벤트 리스너 바인딩 보장.
+  2. **`types.ts` 및 `ShopView.tsx` 4종 굿즈 전면 지원**:
+     - `GoodsType`에 `'deck'`, `'table'` 추가.
+     - `ShopView.tsx`에서 4종 상품의 정확한 가격(머그컵 $10, 카드덱/테이블/티셔츠 $30)과 명칭, 페이팔 결제 버튼 렌더링 연동 완료.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] 쇼핑몰 PayPal 빠른 결제 버튼 클릭 시 /shop 인게임 PayPal 결제 프로세스 연동 -> 작업완료`
+
+---
+
 ## [2026-09-02 12:36 KST] [쇼핑몰 상품 상세 페이지 'You may also like' 추천 상품 목록 정적 렌더링 구축 완료]
 - **오류 내용**:
   - 상품 상세 페이지 하단의 "You may also like" (추천 상품) 섹션에 상품들이 표시되지 않고 빈 스켈레톤 상태로 유지되던 문제.
