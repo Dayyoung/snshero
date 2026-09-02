@@ -1774,6 +1774,8 @@ function AppContent() {
   const [chatInput, setChatInput] = useState("");
   const [chatHistory, setChatHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState<number>(-1);
+  const [isAiTyping, setIsAiTyping] = useState(false);
+  const [aiTypingName, setAiTypingName] = useState<string>('');
 
   const [translatedTexts, setTranslatedTexts] = useState<Record<string, string>>({});
   const [translatingIds, setTranslatingIds] = useState<Set<string>>(new Set());
@@ -3085,49 +3087,63 @@ function AppContent() {
       }
     }
 
+    // Trigger typing indicator immediately
+    const typingBotLabel = localAiStatus.state === 'ready' 
+      ? t('local_ai_bot_name', language) 
+      : (language === 'ko' ? 'SNS히어로 AI' : 'SNSHero AI');
+    setIsAiTyping(true);
+    setAiTypingName(typingBotLabel);
+    scrollToBottom();
+
     window.setTimeout(() => {
       void (async () => {
-        const localAiReply = await requestLocalAiReply({ prompt: text, language });
+        try {
+          const localAiReply = await requestLocalAiReply({ prompt: text, language });
 
-        if (localAiReply.capability.availability !== localAiStatus.availability || localAiReply.capability.state !== localAiStatus.state) {
-          setLocalAiStatus(localAiReply.capability);
-        }
+          if (localAiReply.capability.availability !== localAiStatus.availability || localAiReply.capability.state !== localAiStatus.state) {
+            setLocalAiStatus(localAiReply.capability);
+          }
 
-        if (localAiReply.ok && localAiReply.provider === 'chrome-built-in-ai') {
+          if (localAiReply.ok && localAiReply.provider === 'chrome-built-in-ai') {
+            appendBotMessage({
+              id: `bot-local-ai-${Date.now()}`,
+              userId: 'bot-chrome-local-ai',
+              name: t('local_ai_bot_name', language),
+              text: localAiReply.text,
+              isBot: true,
+              isAiReply: true,
+              isLocalAiReply: true,
+              aiBadgeLabel: t('local_ai_badge', language),
+              createdAt: new Date().toISOString(),
+              language,
+            });
+            return;
+          }
+
+          const aiNames = ['Google AI', 'DeepMind AI', 'Antigravity AI', 'Gemini Bot', 'SNSHero Bot'];
+          const randomAiName = aiNames[Math.floor(Math.random() * aiNames.length)];
+          const isQuestion = text.includes('?') || text.includes('어떻게') || text.includes('뭐') || text.includes('how') || text.includes('what') || text.includes('팁') || text.includes('추천') || text.includes('알려');
+          const botReplyText = isQuestion 
+            ? generateSmartKnowledgeReply({ prompt: text, language }) 
+            : t('ai_reply_msg', language);
+
           appendBotMessage({
-            id: `bot-local-ai-${Date.now()}`,
-            userId: 'bot-chrome-local-ai',
-            name: t('local_ai_bot_name', language),
-            text: localAiReply.text,
+            id: `bot-res-${Date.now()}`,
+            userId: `bot-${randomAiName.replace(/\s+/g, '_')}`,
+            name: randomAiName,
+            text: botReplyText,
             isBot: true,
             isAiReply: true,
-            isLocalAiReply: true,
-            aiBadgeLabel: t('local_ai_badge', language),
             createdAt: new Date().toISOString(),
             language,
           });
-          return;
+        } finally {
+          setIsAiTyping(false);
+          setAiTypingName('');
+          scrollToBottom();
         }
-
-        const aiNames = ['Google AI', 'DeepMind AI', 'Antigravity AI', 'Gemini Bot', 'SNSHero Bot'];
-        const randomAiName = aiNames[Math.floor(Math.random() * aiNames.length)];
-        const isQuestion = text.includes('?') || text.includes('어떻게') || text.includes('뭐') || text.includes('how') || text.includes('what') || text.includes('팁') || text.includes('추천') || text.includes('알려');
-        const botReplyText = isQuestion 
-          ? generateSmartKnowledgeReply({ prompt: text, language }) 
-          : t('ai_reply_msg', language);
-
-        appendBotMessage({
-          id: `bot-res-${Date.now()}`,
-          userId: `bot-${randomAiName.replace(/\s+/g, '_')}`,
-          name: randomAiName,
-          text: botReplyText,
-          isBot: true,
-          isAiReply: true,
-          createdAt: new Date().toISOString(),
-          language,
-        });
       })();
-    }, 1000);
+    }, 400);
   };
 
   // Robot Taunts Logic (Persistent too)
@@ -6689,6 +6705,51 @@ function AppContent() {
                       </div>
                     );
                  })}
+                 {/* Real-time AI Typing Indicator Bubble */}
+                 <AnimatePresence>
+                   {isAiTyping && (
+                     <motion.div
+                       initial={{ opacity: 0, y: 6, scale: 0.96 }}
+                       animate={{ opacity: 1, y: 0, scale: 1 }}
+                       exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                       transition={{ duration: 0.15 }}
+                       className="flex flex-col max-w-[85%] self-start items-start text-left shrink-0 my-1"
+                     >
+                       <div className={cn(
+                         "text-[10px] mb-0.5 px-1 font-bold flex items-center gap-1.5",
+                         view === 'play' ? "text-emerald-400" : "text-emerald-700"
+                       )}>
+                         <Bot size={12} className="animate-spin text-emerald-500" />
+                         <span>{aiTypingName || (language === 'ko' ? '로컬 AI' : 'Local AI')}</span>
+                         <span className={cn(
+                           "inline-flex items-center rounded px-1.5 py-0.2 text-[8px] font-bold uppercase tracking-tight",
+                           view === 'play'
+                             ? "border border-emerald-500/40 bg-emerald-950/60 text-emerald-300"
+                             : "border border-emerald-300 bg-emerald-50 text-emerald-700"
+                         )}>
+                           {localAiStatus.state === 'ready' ? '⚡ Gemini Nano Thinking...' : '💬 작성 중...'}
+                         </span>
+                       </div>
+                       <div className={cn(
+                         "px-3.5 py-2 rounded-2xl text-[12px] shadow-sm border rounded-tl-none flex items-center gap-2",
+                         view === 'play'
+                           ? "bg-slate-900/90 text-slate-200 border-slate-700 shadow-[0_0_12px_rgba(16,185,129,0.15)]"
+                           : "bg-emerald-50/80 text-emerald-950 border-emerald-200 shadow-sm"
+                       )}>
+                         <span className="inline-flex gap-1 items-center py-0.5">
+                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '150ms' }} />
+                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+                         </span>
+                         <span className="text-[11px] font-mono opacity-80">
+                           {localAiStatus.state === 'ready'
+                             ? (language === 'ko' ? '로컬 AI가 지식베이스 답변을 생성 중입니다...' : 'Generating Local AI response...')
+                             : (language === 'ko' ? '답변을 작성하고 있습니다...' : 'Writing response...')}
+                         </span>
+                       </div>
+                     </motion.div>
+                   )}
+                 </AnimatePresence>
                  <div ref={messagesEndRef} />
               </div>
 
