@@ -4,6 +4,20 @@
 
 ---
 
+## [2026-09-02 09:40 KST] [/gemini-ex 구글 스프레드시트 Row 727~730 (ID 568~571) 4대 핵심 개선 전수 점검 및 검증 완료]
+- **작업 대상 항목**:
+  1. **[Row 727 / ID 568] [기존게임개선 / 순수제스처]**: 3D 레이싱/카트 미션 가상 핸들·버튼 제거 ➔ '썸존 슬라이드 조향 & 릴리즈 드리프트' 퓨어 제스처 전환 (`src/lib/vehicleGestureController.ts`, `VoxelMicroKartGame.tsx`)
+  2. **[Row 728 / ID 569] [기존게임개선 / 튜토리얼]**: 3D 스포츠 미션(골프/볼링/하키/다트) 대상 '3단계 제스처 시연 온보딩 팝업 & 상시 ❓ 가이드' 표준화 (`src/components/SportsMissionTutorial.tsx`, `UniversalTutorialModal.tsx`)
+  3. **[Row 729 / ID 570] [기존게임개선 / 화면정리]**: design.md 준수 상단 70% 시야 개방 및 최상단 1줄 슬림 HUD 레이아웃 리팩토링 (`src/components/MinimalistMissionHUD.tsx`)
+  4. **[Row 730 / ID 571] [기존게임개선 / 확정보상]**: 미션 클리어 즉시 100% 확정 SNS 포인트 원자적 지갑 입금 및 팡파레 연동 (`src/components/NormalizedRewardPopup.tsx`, `src/lib/rewardSettlementService.ts`)
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] [스프레드시트 Row 727~730] 3D 레이싱 퓨어제스처, 3D 스포츠 튜토리얼, 상단 70% 시야개방 슬림HUD, 확정보상 원자적 입금 전수 점검 및 검증 완료 -> 작업완료`
+
+---
+
 ## [2026-09-02 08:55 KST / 23:55 UTC] [KadanRpgView 런타임 훅 호출 오류 해결 및 PlayGameView 지연 로딩 최적화 완료]
 - **오류 내용**: `Invalid hook call. Hooks can only be called inside of the body of a function component. Cannot read properties of null (reading 'useState') in <KadanRpgView>`
 - **원인 분석**:
