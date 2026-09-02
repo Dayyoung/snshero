@@ -598,29 +598,29 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
           </div>
         </div>
 
-        {/* 메인 뽑기 컨테이너 */}
+            {/* 메인 뽑기 컨테이너 */}
         <div className="mt-2 sm:mt-4 grid gap-3 sm:gap-6 flex-1 min-h-0 lg:grid-cols-[minmax(0,1fr)_320px] overflow-y-auto">
-          <div className="relative flex-1 min-h-[380px] sm:min-h-[500px] flex flex-col justify-between rounded-2xl sm:rounded-[32px] border border-white/15 bg-slate-900/90 p-3 sm:p-7 shadow-2xl backdrop-blur-xl overflow-hidden">
+          <div className="relative flex-1 min-h-[380px] sm:min-h-[500px] flex flex-col justify-between rounded-2xl sm:rounded-[32px] border border-white/15 bg-slate-900/90 p-2.5 sm:p-7 shadow-2xl backdrop-blur-xl overflow-hidden">
             
             {/* 상단 팩 타이틀 정보 */}
-            <div className="flex flex-wrap items-center justify-between gap-3 z-10">
+            <div className="flex items-center justify-between gap-2 z-10 shrink-0 pb-1">
               <div>
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-yellow-300/90">
+                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.25em] text-yellow-300/90">
                   {t('shop_gacha_reveal_title', language)}
                 </span>
-                <h3 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
+                <h3 className="text-lg sm:text-2xl lg:text-3xl font-black tracking-tight text-white">
                   {t('shop_gacha_reveal_pack_name', language, {
                     pack: t(`rarity_${packRarity}` as const, language),
                   })}
                 </h3>
               </div>
 
-              <div className="flex items-center gap-3">
-                <div className="rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-2 text-right">
-                  <div className="text-[9px] font-black uppercase tracking-[0.2em] text-white/50">
+              <div className="flex items-center gap-2">
+                <div className="rounded-xl sm:rounded-2xl border border-white/10 bg-slate-950/80 px-2.5 sm:px-4 py-1 sm:py-2 text-right">
+                  <div className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.2em] text-white/50">
                     {t('shop_gacha_cost_label', language)}
                   </div>
-                  <div className="text-base font-black text-amber-300">{packCost.toLocaleString()} SNS</div>
+                  <div className="text-xs sm:text-base font-black text-amber-300">{packCost.toLocaleString()} SNS</div>
                 </div>
               </div>
             </div>
@@ -632,7 +632,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                 <motion.div
                   key="gacha-sealed-stage"
                   {...stageMotion}
-                  className="my-auto flex flex-col items-center justify-center py-8 z-10"
+                  className="my-auto flex flex-col items-center justify-center py-6 sm:py-8 z-10"
                 >
                   {/* 다시 뽑기 시 표시되는 특별 소환 배지 */}
                   {reDrawCount > 0 && (
@@ -661,31 +661,31 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                       style={{ backgroundColor: getRarityGlowColor(highestRarity) }}
                     />
 
-                    <div className="relative flex flex-col items-center justify-between w-56 h-80 rounded-[32px] border-2 border-amber-300/40 bg-gradient-to-b from-slate-900 via-slate-950 to-amber-950/40 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center overflow-hidden">
+                    <div className="relative flex flex-col items-center justify-between w-48 sm:w-56 h-72 sm:h-80 rounded-[28px] sm:rounded-[32px] border-2 border-amber-300/40 bg-gradient-to-b from-slate-900 via-slate-950 to-amber-950/40 p-5 sm:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center overflow-hidden">
                       {/* 카드팩 리본 / 엠블럼 */}
-                      <div className="w-full flex items-center justify-between border-b border-white/15 pb-3">
-                        <Sparkles size={18} className="text-yellow-300 animate-spin" />
-                        <span className="text-[10px] font-black tracking-[0.25em] text-amber-200 uppercase">
+                      <div className="w-full flex items-center justify-between border-b border-white/15 pb-2.5 sm:pb-3">
+                        <Sparkles size={16} className="text-yellow-300 animate-spin" />
+                        <span className="text-[9px] sm:text-[10px] font-black tracking-[0.2em] text-amber-200 uppercase">
                           SEALED PACK
                         </span>
-                        <Zap size={18} className="text-yellow-300" />
+                        <Zap size={16} className="text-yellow-300" />
                       </div>
 
-                      <div className="my-auto space-y-3">
-                        <div className="mx-auto w-20 h-20 rounded-2xl bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/30 group-hover:scale-110 transition-transform">
-                          <Gift size={44} className="text-slate-950" />
+                      <div className="my-auto space-y-2 sm:space-y-3">
+                        <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/30 group-hover:scale-110 transition-transform">
+                          <Gift size={36} className="text-slate-950 sm:w-11 sm:h-11" />
                         </div>
-                        <h4 className="text-xl font-black text-white tracking-wide">
+                        <h4 className="text-lg sm:text-xl font-black text-white tracking-wide">
                           {t(`rarity_${packRarity}` as const, language)} PACK
                         </h4>
-                        <p className="text-xs text-amber-200/80 font-bold">5 CARDS INSIDE</p>
+                        <p className="text-[11px] sm:text-xs text-amber-200/80 font-bold">5 CARDS INSIDE</p>
                       </div>
 
                       {/* 하단 개봉 유도 버튼 */}
                       <button
                         type="button"
                         onClick={handleOpenPack}
-                        className="w-full py-2.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 text-xs font-black uppercase tracking-wider shadow-md hover:brightness-110 active:scale-95 transition-all"
+                        className="w-full py-2.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 text-xs font-black uppercase tracking-wider shadow-md hover:brightness-110 active:scale-95 transition-all cursor-pointer"
                       >
                         {t('shop_gacha_tap_pack_to_open', language)}
                       </button>
@@ -701,16 +701,16 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 1.2 }}
-                  className="my-auto flex flex-col items-center justify-center py-12 z-20"
+                  className="my-auto flex flex-col items-center justify-center py-8 sm:py-12 z-20"
                 >
                   <motion.div
                     animate={{ scale: [1, 1.2, 0.8], rotate: [0, -5, 5, 0] }}
                     transition={{ duration: 0.9 }}
                     className="relative flex flex-col items-center justify-center"
                   >
-                    <div className="w-32 h-32 rounded-full bg-yellow-300 blur-3xl opacity-90 animate-ping" />
-                    <Package2 size={80} className="text-yellow-300 relative z-10 animate-bounce" />
-                    <span className="mt-6 text-2xl font-black text-yellow-300 tracking-widest uppercase animate-pulse">
+                    <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-yellow-300 blur-3xl opacity-90 animate-ping" />
+                    <Package2 size={64} className="text-yellow-300 relative z-10 animate-bounce sm:w-20 sm:h-20" />
+                    <span className="mt-4 sm:mt-6 text-xl sm:text-2xl font-black text-yellow-300 tracking-widest uppercase animate-pulse">
                       {t('shop_gacha_reveal_opening_now', language)}...
                     </span>
                   </motion.div>
@@ -719,9 +719,10 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
 
               {/* PHASE 3 & 4: spread & summary (카드 5장 펼쳐짐 및 리빌) */}
               {(phase === 'spread' || phase === 'summary') && (
-                <motion.div key="gacha-spread-stage" {...stageMotion} className="my-auto space-y-6 z-10 py-2">
-                  {/* 카드 5장 그리드 */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
+                <motion.div key="gacha-spread-stage" {...stageMotion} className="flex-1 min-h-0 flex flex-col justify-between z-10 py-1 sm:py-2">
+                  {/* 카드 5장 그리드 (모바일 3장+2장 또는 5열 컴팩트 레이아웃) */}
+                  <div className="flex-1 min-h-0 overflow-y-auto py-1 sm:py-2 scrollbar-thin">
+                    <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5 sm:gap-3 xl:gap-4 items-center justify-center max-w-full">
                     {cards.map((card, index) => {
                       const dbCard = CARD_DATABASE[card.imageIndex];
                       const isRevealed = revealedIds.has(index) || card.isRevealed;
@@ -729,26 +730,26 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                       const isCardGoldCondition = (EXTENDED_RARITY_RANK[card.rarity.toLowerCase()] ?? 0) >= EXTENDED_RARITY_RANK['gold'];
 
                       return (
-                        <div key={card.id ?? `${card.imageIndex}-${index}`} className="flex flex-col items-center gap-2">
+                        <div key={card.id ?? `${card.imageIndex}-${index}`} className="flex flex-col items-center gap-1 sm:gap-2">
                           <motion.div
                             initial={instantMode ? undefined : { y: 20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: index * 0.08 }}
-                            className="relative w-full aspect-[3/4] group cursor-pointer"
+                            className="relative w-full max-w-[120px] sm:max-w-none aspect-[5/7] group cursor-pointer"
                             onClick={() => handleFlipCardIndex(index)}
                           >
                             {/* BEST PULL 하이라이트 배지 */}
                             {isBest && (
-                              <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 text-[10px] font-black uppercase tracking-wider shadow-lg animate-bounce">
-                                <Trophy size={12} />
+                              <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 text-[8px] sm:text-[9px] font-black uppercase tracking-wider shadow-lg animate-bounce whitespace-nowrap">
+                                <Trophy size={10} />
                                 <span>{t('shop_gacha_best_pull', language)}</span>
                               </div>
                             )}
 
                             {/* 골드 조건 만족 시 금빛 배지 */}
                             {isRevealed && isCardGoldCondition && !isBest && (
-                              <div className="absolute -top-2.5 right-2 z-30 flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-gradient-to-r from-yellow-300 via-amber-400 to-amber-500 text-amber-950 text-[9px] font-black uppercase tracking-wider shadow-md border border-yellow-200 animate-pulse">
-                                <Sparkles size={10} />
+                              <div className="absolute -top-2 right-1 z-30 flex items-center gap-0.5 px-1.5 py-0.2 rounded-full bg-gradient-to-r from-yellow-300 via-amber-400 to-amber-500 text-amber-950 text-[8px] font-black uppercase tracking-wider shadow-md border border-yellow-200 animate-pulse">
+                                <Sparkles size={9} />
                                 <span>GOLD+</span>
                               </div>
                             )}
@@ -759,39 +760,39 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                               transition={{ duration: 0.5, ease: 'easeOut' }}
                               style={{ transformStyle: 'preserve-3d' }}
                               className={cn(
-                                'relative w-full h-full rounded-2xl border transition-all duration-300 shadow-xl',
+                                'relative w-full h-full rounded-xl sm:rounded-2xl border transition-all duration-300 shadow-xl',
                                 isRevealed && isCardGoldCondition
-                                  ? 'border-3 sm:border-4 border-amber-300 shadow-[0_0_30px_rgba(251,191,36,0.9),inset_0_0_15px_rgba(251,191,36,0.3)] ring-2 ring-amber-400/80 ring-offset-2 ring-offset-slate-950'
+                                  ? 'border-2 sm:border-4 border-amber-300 shadow-[0_0_20px_rgba(251,191,36,0.9),inset_0_0_10px_rgba(251,191,36,0.3)] ring-1 sm:ring-2 ring-amber-400/80'
                                   : isBest
-                                  ? 'border-amber-300 shadow-[0_0_25px_rgba(245,158,11,0.6)]'
+                                  ? 'border-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.6)]'
                                   : isRevealed && card.rarity.toLowerCase() === 'silver'
-                                  ? 'border-2 border-slate-300 shadow-[0_0_15px_rgba(203,213,225,0.4)]'
+                                  ? 'border-2 border-slate-300 shadow-[0_0_12px_rgba(203,213,225,0.4)]'
                                   : 'border-white/15 hover:border-white/40',
                               )}
                             >
                               {/* 카드 뒷면 (Sealed) */}
                               <div
                                 style={{ backfaceVisibility: 'hidden' }}
-                                className="absolute inset-0 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 p-3 flex flex-col items-center justify-between text-center overflow-hidden border border-white/10"
+                                className="absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 p-2 sm:p-3 flex flex-col items-center justify-between text-center overflow-hidden border border-white/10"
                               >
-                                <div className="w-full flex justify-between items-center text-[9px] text-white/40 font-mono">
+                                <div className="w-full flex justify-between items-center text-[8px] sm:text-[9px] text-white/40 font-mono">
                                   <span>#{index + 1}</span>
-                                  <Sparkles size={12} className="text-yellow-400/60" />
+                                  <Sparkles size={10} className="text-yellow-400/60" />
                                 </div>
 
-                                <div className="my-auto flex flex-col items-center gap-2">
+                                <div className="my-auto flex flex-col items-center gap-1 sm:gap-2">
                                   <div
-                                    className="w-12 h-12 rounded-full flex items-center justify-center border border-white/20 bg-white/5 shadow-inner"
-                                    style={{ boxShadow: `inset 0 0 15px ${getRarityGlowColor(card.rarity)}` }}
+                                    className="w-8 h-8 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border border-white/20 bg-white/5 shadow-inner"
+                                    style={{ boxShadow: `inset 0 0 12px ${getRarityGlowColor(card.rarity)}` }}
                                   >
-                                    <Package2 size={24} className="text-amber-200" />
+                                    <Package2 size={16} className="text-amber-200 sm:w-6 sm:h-6" />
                                   </div>
-                                  <span className="text-[10px] font-black tracking-widest text-white/70 uppercase">
+                                  <span className="text-[8px] sm:text-[10px] font-black tracking-wider text-white/70 uppercase">
                                     {t('shop_gacha_card_back_label', language)}
                                   </span>
                                 </div>
 
-                                <span className="text-[9px] font-bold text-amber-300/80 animate-pulse">
+                                <span className="text-[8px] sm:text-[9px] font-bold text-amber-300/80 animate-pulse">
                                   TAP TO REVEAL
                                 </span>
                               </div>
@@ -799,7 +800,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                               {/* 카드 앞면 (Revealed) */}
                               <div
                                 style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
-                                className="absolute inset-0 rounded-2xl overflow-hidden bg-slate-950"
+                                className="absolute inset-0 rounded-xl sm:rounded-2xl overflow-hidden bg-slate-950"
                               >
                                 <CardItem
                                   card={{
@@ -814,12 +815,12 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                                   processedImage={card.imageIndex ? processedCardImages?.[card.imageIndex - 1] : undefined}
                                   lowSpecMode={lowSpecMode}
                                 />
-                                <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent p-2.5 pt-6">
+                                <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent p-1.5 sm:p-2.5 pt-4">
                                   <div className="flex items-center justify-between gap-1">
-                                    <span className={cn('rounded-full border px-2 py-0.5 text-[8px] font-black uppercase tracking-wider', rarityBadgeClass(card.rarity))}>
+                                    <span className={cn('rounded-full border px-1.5 py-0.2 text-[7px] sm:text-[8px] font-black uppercase tracking-wider', rarityBadgeClass(card.rarity))}>
                                       {card.rarity}
                                     </span>
-                                    <span className="text-[10px] font-black text-white truncate">
+                                    <span className="text-[8px] sm:text-[10px] font-black text-white truncate max-w-[65%]">
                                       {getFormattedCardName(dbCard, language)}
                                     </span>
                                   </div>
@@ -830,28 +831,29 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                         </div>
                       );
                     })}
+                    </div>
                   </div>
 
-                  {/* 하단 컨트롤 및 요약 바 */}
-                  <div className="pt-3 pb-1 flex flex-wrap items-center justify-between gap-3 border-t border-white/15 sticky bottom-0 bg-slate-900/95 z-20">
-                    <div className="flex items-center gap-2">
+                  {/* 하단 컨트롤 및 요약 바 (모바일에서도 항상 화면 하단에 선명하게 고정) */}
+                  <div className="pt-2 sm:pt-3 pb-1 flex items-center justify-between gap-2 border-t border-white/15 sticky bottom-0 bg-slate-950/95 backdrop-blur-md z-30 shrink-0 mt-auto">
+                    <div className="flex items-center gap-1.5 sm:gap-2 flex-1 sm:flex-initial">
                       <button
                         type="button"
                         disabled={isReSummoning}
                         onClick={handleDrawAgainClick}
-                        className="flex items-center gap-2 px-5 sm:px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 text-xs font-black uppercase tracking-wider shadow-lg hover:brightness-110 active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 text-xs sm:text-sm font-black uppercase tracking-wider shadow-lg hover:brightness-110 active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed touch-target"
                       >
-                        <Package2 size={16} className={isReSummoning ? 'animate-spin' : ''} />
-                        {t('draw_again', language)} ({packCost} SNS)
+                        <Package2 size={16} className={isReSummoning ? 'animate-spin' : 'shrink-0'} />
+                        <span className="whitespace-nowrap">{t('draw_again', language)} ({packCost} SNS)</span>
                       </button>
                       {canShareBestCard && bestCard && (
                         <button
                           type="button"
                           onClick={() => onShareBestCard(bestCard.imageIndex)}
-                          className="flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full border border-fuchsia-400/40 bg-fuchsia-500/20 text-fuchsia-200 text-xs font-black uppercase tracking-wider transition hover:bg-fuchsia-500/30 active:scale-95 cursor-pointer shadow-md"
+                          className="flex items-center justify-center gap-1.5 px-3 sm:px-5 py-2.5 sm:py-3 rounded-full border border-fuchsia-400/40 bg-fuchsia-500/20 text-fuchsia-200 text-xs font-black uppercase tracking-wider transition hover:bg-fuchsia-500/30 active:scale-95 cursor-pointer shadow-md touch-target"
                         >
                           <Share2 size={15} />
-                          {t('shop_gacha_share_cta', language)}
+                          <span className="hidden sm:inline">{t('shop_gacha_share_cta', language)}</span>
                         </button>
                       )}
                     </div>
@@ -859,7 +861,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                     <button
                       type="button"
                       onClick={onClose}
-                      className="px-6 py-2.5 rounded-full border border-white/30 bg-white/15 text-white text-xs font-black uppercase tracking-wider hover:bg-white/25 active:scale-95 transition-all cursor-pointer shadow-md"
+                      className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-full border border-white/30 bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm font-black uppercase tracking-wider active:scale-95 transition-all cursor-pointer shadow-md shrink-0 touch-target"
                     >
                       {t('close', language)}
                     </button>

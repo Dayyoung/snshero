@@ -2778,8 +2778,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
                 {/* Draw Again Info (visible only if packType is gacha) */}
                 {gachaState.packType !== 'item' && gachaState.packType !== 'roulette' && (
-                  <div className="mt-12 flex flex-col items-center gap-6">
-
+                  <div className="mt-4 sm:mt-8 flex flex-wrap items-center justify-center gap-3 w-full max-w-sm px-4 sticky bottom-2 z-50">
                     <button
                       onClick={(e) => {
                         const target = e.currentTarget;
@@ -2798,20 +2797,20 @@ export const ShopView: React.FC<ShopViewProps> = ({
                           setTimeout(() => {
                             buyPack(pack.cost, pack.rarity);
                             target.disabled = false;
-                          }, 2000);
+                          }, 1000);
                         }
                       }}
-                      className="flex items-center gap-2 text-white/40 hover:text-yellow-500 transition-colors font-black tracking-widest text-[10px] uppercase group disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 min-h-[44px] flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 font-black tracking-wider text-xs uppercase rounded-full shadow-xl hover:brightness-110 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer touch-target"
                     >
-                      <Package size={14} className="group-hover:animate-bounce" />
-                      {t('draw_again', language)} ({(cardPacks.find(p => p.rarity === gachaState.packType)?.cost || 0)} SNS)
+                      <Package size={16} />
+                      <span>{t('draw_again', language)} ({(cardPacks.find(p => p.rarity === gachaState.packType)?.cost || 0)} SNS)</span>
                     </button>
 
                     <button
                       onClick={() => {
                         handleCloseGacha();
                       }}
-                      className="bg-white/10 hover:bg-white/20 text-white px-8 py-3 rounded-full font-black uppercase tracking-widest text-xs transition-all"
+                      className="min-h-[44px] bg-white/15 hover:bg-white/25 text-white px-6 py-2.5 rounded-full font-black uppercase tracking-wider text-xs transition-all border border-white/20 active:scale-95 cursor-pointer touch-target"
                     >
                       {language === 'ko' ? '닫기' : 'CLOSE'}
                     </button>
