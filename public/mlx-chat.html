@@ -1498,6 +1498,9 @@
         this.targetRotX = 0.04;
         this.targetRotY = 0;
         this.audioLevel = 0;
+        this.speechPhonemeTime = 0;
+        this.mouthAperture = 0;
+        this.targetMouthAperture = 0;
         this.idleTimer = 0;
         this.blinkTimer = 0;
         this.blinkFactor = 1.0; // 1 = open, 0 = closed
@@ -1659,6 +1662,28 @@
 
         this.audioLevel += (currentVol - this.audioLevel) * 0.4;
 
+        // 👄 음파에 따라 입을 계속 벌리고 있지 않고, 말하는 음절 리듬에 맞춰 다물었다가 벌렸다가 반복
+        if (this.isSpeaking && currentVol > 0.06) {
+          // 초당 약 4.5~5음절의 자연스러운 발음 템포
+          this.speechPhonemeTime += 0.24;
+          const tempo = 13.5 + Math.sin(this.speechPhonemeTime * 1.6) * 3.5;
+          const rawPulse = Math.sin(this.speechPhonemeTime * tempo * 0.5);
+          // 0(완전히 다묾)에서 1(벌림)으로 빠르게 왕복하는 음절 게이트
+          const syllableGate = Math.pow(Math.max(0, rawPulse), 1.65);
+
+          // 순간 음압과 음절 게이트를 결합하여 발음 정점에서만 크게 벌어지고,
+          // 음절 사이와 묵음에서는 0으로 깔끔하게 다물어짐!
+          const speechVol = Math.min(1.4, currentVol * 1.35);
+          this.targetMouthAperture = speechVol * syllableGate;
+          
+          // 신속한 개폐 반응 (스냅 클로징 & 어택)
+          this.mouthAperture += (this.targetMouthAperture - this.mouthAperture) * 0.55;
+        } else {
+          // 소리가 멈추거나 묵음일 때는 완전히 다문 상태(0.0)로 신속히 복귀
+          this.mouthAperture += (0 - this.mouthAperture) * 0.35;
+          if (this.mouthAperture < 0.02) this.mouthAperture = 0;
+        }
+
         // Eye Blink Animation (every 3~5 seconds)
         this.blinkTimer += 0.016;
         if (this.blinkTimer > 3.8) {
@@ -1778,8 +1803,9 @@
         // =====================================================================
         // LAYER 2: 계란형 사람 얼굴 윤곽선 (Egg-Shaped Oval Head Contour)
         // =====================================================================
-        const mouthOpen = this.audioLevel * 32; // 실시간 립싱크 입 벌림
-        const jawDrop = this.audioLevel * 18;   // 턱 하강
+        // 👄 음절 리듬에 따라 다물었다가 벌렸다가를 반복하는 실시간 립싱크 값
+        const mouthOpen = this.mouthAperture * 28;
+        const jawDrop = this.mouthAperture * 15;
 
         // 수학적 완벽한 계란형(Oval) 헤드 윤곽 좌표 계산
         const getOvalPoint = (angle, scaleFactor = 1.0) => {
