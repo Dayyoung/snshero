@@ -4,6 +4,29 @@
 
 ---
 
+## [2026-09-02 19:40 KST] [/ge 스프레드시트 신규 12개 행(Row 751~762 / ID 548~555) 전수 구현 및 762개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 751~762) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 756 (ID 553) [크로스 하모니(Cross-Harmony) 공명 시너지 엔진 및 전장 연출]**:
+     - `src/lib/deckSynergyEngine.ts` 5대 속성 교차 공명 조합(폭염 폭발, 폭풍우 쇄도, 용암 강타, 성역 정화, 지옥불 낙인) 계산 엔진 구현.
+     - `src/components/DeckSynergyVisualizer.tsx` 크로스 하모니 공명 뱃지, 특수 오라 및 사운드 트리거 연동.
+  2. **Row 757 (ID 554) [스태미나(AP) 소모 대비 SNS 표준화 및 마일리지 페이백 루프]**:
+     - `src/lib/dailyActivityMileageGateway.ts` 1 AP당 10~12 SNS 포인트 표준 적립 및 100 AP 초과 마일리지 페이백 루프 연동 검증.
+  3. **Row 758 (ID 555) [WebP 가변 해상도 & GPU 메모리 풀링 최적화]**:
+     - `src/lib/assetMemoryManager.ts` WebP/가상 스크롤 메모리 보호 헬퍼 및 3D 씬 dispose GC 매니저 연동 검증.
+  4. **Row 751~755, Row 759~762 (ID 548~552) [3D 제스처, 튜토리얼, 슬림HUD, 확정보상, 썸존독]**:
+     - `vehicleGestureController.ts`, `SportsMissionTutorial.tsx`, `MinimalistMissionHUD.tsx`, `NormalizedRewardPopup.tsx`, `MainNavigationDock.tsx` 전수 검증 완료.
+  5. **스프레드시트 762개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 항목 번호 `[Row 762 / ID 551]` 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /ge 스프레드시트 신규 12개 행(Row 751~762 / ID 548~555) 전수 구현 및 762개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-02 18:00 KST] [/ge 스프레드시트 신규 4개 행(Row 747~750 / ID 584~587) 전수 구현 및 750개 행 100% 완료]
 - **요청 사항**:
   - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 747~750) 확인 및 소스코드 반영/검증 완료.

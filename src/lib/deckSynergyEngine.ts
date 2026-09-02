@@ -20,8 +20,22 @@ export interface SynergyBonus {
   badgeStyle: string;
 }
 
+export interface CrossHarmonySynergy {
+  id: string;
+  elements: string[];
+  nameKo: string;
+  nameEn: string;
+  effectKo: string;
+  effectEn: string;
+  bonusPower: number;
+  bonusHp: number;
+  auraStyle: string;
+  color: string;
+}
+
 export interface DeckSynergyAnalysis {
   activeSynergies: SynergyBonus[];
+  crossHarmonies: CrossHarmonySynergy[];
   totalBonusPower: number;
   totalBonusHp: number;
   elementCounts: Record<string, number>;
@@ -91,6 +105,80 @@ export const ELEMENT_SYNERGY_INFO: Record<string, { nameKo: string; nameEn: stri
   },
 };
 
+export const CROSS_HARMONY_RECIPES: Array<{
+  id: string;
+  elements: string[][]; // Each array contains equivalent alias names
+  nameKo: string;
+  nameEn: string;
+  effectKo: string;
+  effectEn: string;
+  bonusPower: number;
+  bonusHp: number;
+  auraStyle: string;
+  color: string;
+}> = [
+  {
+    id: 'conflagration',
+    elements: [['fire'], ['air', 'wind']],
+    nameKo: '🔥🌪️ 폭염 폭발 (Conflagration)',
+    nameEn: '🔥🌪️ Conflagration Burst',
+    effectKo: '화염+질풍 공명: 공격력 +30 및 전장 화염 오라 발동',
+    effectEn: 'Fire+Wind Resonance: Attack +30 & Blazing Field Aura',
+    bonusPower: 30,
+    bonusHp: 20,
+    auraStyle: 'border-orange-500 bg-orange-950/60 text-orange-300 shadow-[0_0_15px_rgba(249,115,22,0.4)]',
+    color: '#f97316',
+  },
+  {
+    id: 'tempest',
+    elements: [['water'], ['air', 'wind']],
+    nameKo: '💧🌪️ 폭풍우 쇄도 (Tempest Surge)',
+    nameEn: '💧🌪️ Tempest Surge',
+    effectKo: '수류+질풍 공명: 체력 +40 및 회피 기동 활성화',
+    effectEn: 'Water+Wind Resonance: HP +40 & Evasion Boost',
+    bonusPower: 15,
+    bonusHp: 40,
+    auraStyle: 'border-cyan-400 bg-cyan-950/60 text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.4)]',
+    color: '#06b6d4',
+  },
+  {
+    id: 'magma',
+    elements: [['earth', 'land'], ['fire']],
+    nameKo: '⛰️🔥 용암 강타 (Magma Tremor)',
+    nameEn: '⛰️🔥 Magma Tremor',
+    effectKo: '대지+화염 공명: 공격력 +25, 방어막 +30',
+    effectEn: 'Earth+Fire Resonance: Attack +25 & Barrier +30',
+    bonusPower: 25,
+    bonusHp: 30,
+    auraStyle: 'border-amber-600 bg-amber-950/60 text-amber-300 shadow-[0_0_15px_rgba(217,119,6,0.4)]',
+    color: '#d97706',
+  },
+  {
+    id: 'sanctuary',
+    elements: [['holy', 'dragon'], ['water']],
+    nameKo: '✦💧 성역 정화 (Sanctuary Renewal)',
+    nameEn: '✦💧 Sanctuary Renewal',
+    effectKo: '성휘+수류 공명: 방어력 +35 및 매 턴 지속 회복',
+    effectEn: 'Holy+Water Resonance: Defense +35 & Regen Wave',
+    bonusPower: 20,
+    bonusHp: 45,
+    auraStyle: 'border-yellow-400 bg-yellow-950/60 text-yellow-300 shadow-[0_0_15px_rgba(234,179,8,0.4)]',
+    color: '#eab308',
+  },
+  {
+    id: 'hellfire',
+    elements: [['undead', 'monster'], ['fire']],
+    nameKo: '💀🔥 지옥불 낙인 (Hellfire Brand)',
+    nameEn: '💀🔥 Hellfire Brand',
+    effectKo: '암영+화염 공명: 공격력 +35 및 적 공격력 감소',
+    effectEn: 'Shadow+Fire Resonance: Attack +35 & Weaken Aura',
+    bonusPower: 35,
+    bonusHp: 25,
+    auraStyle: 'border-purple-500 bg-purple-950/60 text-purple-300 shadow-[0_0_15px_rgba(168,85,247,0.4)]',
+    color: '#a855f7',
+  },
+];
+
 /**
  * 덱에 편성된 카드들의 속성/종족 시너지 세트 보너스 정밀 분석
  */
@@ -138,10 +226,36 @@ export function analyzeDeckSynergy(deck: CardData[]): DeckSynergyAnalysis {
     }
   });
 
-  const synergyScore = totalBonusPower * 2 + totalBonusHp + activeSynergies.length * 15;
+  // Cross-Harmony Hybrid Synergies Check (Row 756 / ID 553)
+  const crossHarmonies: CrossHarmonySynergy[] = [];
+  CROSS_HARMONY_RECIPES.forEach((recipe) => {
+    const satisfies = recipe.elements.every((aliasGroup) =>
+      aliasGroup.some((elem) => (elementCounts[elem] || 0) >= 2)
+    );
+
+    if (satisfies) {
+      totalBonusPower += recipe.bonusPower;
+      totalBonusHp += recipe.bonusHp;
+      crossHarmonies.push({
+        id: recipe.id,
+        elements: recipe.elements.map((g) => g[0]),
+        nameKo: recipe.nameKo,
+        nameEn: recipe.nameEn,
+        effectKo: recipe.effectKo,
+        effectEn: recipe.effectEn,
+        bonusPower: recipe.bonusPower,
+        bonusHp: recipe.bonusHp,
+        auraStyle: recipe.auraStyle,
+        color: recipe.color,
+      });
+    }
+  });
+
+  const synergyScore = totalBonusPower * 2 + totalBonusHp + activeSynergies.length * 15 + crossHarmonies.length * 30;
 
   return {
     activeSynergies,
+    crossHarmonies,
     totalBonusPower,
     totalBonusHp,
     elementCounts,

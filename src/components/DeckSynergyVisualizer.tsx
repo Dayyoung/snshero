@@ -68,28 +68,58 @@ export const DeckSynergyVisualizer: React.FC<DeckSynergyVisualizerProps> = ({
           </span>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-          {analysis.activeSynergies.map((syn) => (
-            <div
-              key={syn.element}
-              className={`p-2 rounded-xs border flex items-center justify-between gap-2 shadow-xs transition-all ${syn.badgeStyle}`}
-            >
-              <div className="flex flex-col">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xs font-black">
-                    {language === 'ko' ? syn.nameKo : syn.nameEn}
-                  </span>
-                  <span className="text-[9px] font-black px-1 rounded-xs bg-black/40 border border-white/20">
-                    {syn.count} CARDS
+        <div className="space-y-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+            {analysis.activeSynergies.map((syn) => (
+              <div
+                key={syn.element}
+                className={`p-2 rounded-xs border flex items-center justify-between gap-2 shadow-xs transition-all ${syn.badgeStyle}`}
+              >
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-black">
+                      {language === 'ko' ? syn.nameKo : syn.nameEn}
+                    </span>
+                    <span className="text-[9px] font-black px-1 rounded-xs bg-black/40 border border-white/20">
+                      {syn.count} CARDS
+                    </span>
+                  </div>
+                  <span className="text-[9px] text-white/80 mt-0.5">
+                    {language === 'ko' ? syn.descriptionKo : syn.descriptionEn}
                   </span>
                 </div>
-                <span className="text-[9px] text-white/80 mt-0.5">
-                  {language === 'ko' ? syn.descriptionKo : syn.descriptionEn}
+                <Zap size={14} className="shrink-0 text-amber-300 animate-pulse" />
+              </div>
+            ))}
+          </div>
+
+          {/* Cross-Harmony Hybrid Resonance Section (Row 756 / ID 553) */}
+          {analysis.crossHarmonies.length > 0 && (
+            <div className="pt-2 border-t border-white/10 mt-2">
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <Sparkles size={13} className="text-amber-400 animate-bounce" />
+                <span className="text-[11px] font-black text-amber-300 uppercase tracking-wide">
+                  {language === 'ko' ? '⚡ [크로스 하모니 공명 발동!]' : '⚡ [CROSS-HARMONY RESONANCE ACTIVE!]'}
                 </span>
               </div>
-              <Zap size={14} className="shrink-0 text-amber-300 animate-pulse" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {analysis.crossHarmonies.map((ch) => (
+                  <div
+                    key={ch.id}
+                    className={`p-2 rounded-xs border flex items-center justify-between gap-2 transition-all ${ch.auraStyle}`}
+                  >
+                    <div className="flex flex-col">
+                      <span className="text-xs font-black">{language === 'ko' ? ch.nameKo : ch.nameEn}</span>
+                      <span className="text-[9px] opacity-90 mt-0.5">{language === 'ko' ? ch.effectKo : ch.effectEn}</span>
+                    </div>
+                    <span className="text-[9px] font-black px-1.5 py-0.5 bg-black/60 rounded-xs border border-white/20 shrink-0">
+                      +{ch.bonusPower} PWR
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
+          )}
         </div>
       )}
     </div>
