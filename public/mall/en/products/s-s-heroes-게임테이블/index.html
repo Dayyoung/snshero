@@ -1460,7 +1460,45 @@ first.parentNode.insertBefore(script, first);
 })();</script>
 <script async="" crossorigin="" fetchpriority="low" src="/mall/storefront/web-components/account.js" type="module"></script><script id="shopify-customer-account-data" type="application/json">{"customer":null,"shop":{"id":"77976502410","customerAccountTranslations":[{"key":"account_menu.signed_out_state.sheet_title","value":"Sign in or create account"},{"key":"account_menu.signed_out_state.section_divider","value":"More ways to sign in"},{"key":"account_menu.signed_out_state.alternate_divider","value":"OR"},{"key":"account_menu.signed_out_state.email_field_label","value":"Email"},{"key":"account_menu.signed_out_state.orders_button","value":"Orders"},{"key":"account_menu.signed_out_state.profile_button","value":"Profile"},{"key":"account_menu.signed_out_state.shop_login_button","value":"Sign in with Shop"},{"key":"account_menu.signed_out_state.continue_with_google","value":"Continue with Google"},{"key":"account_menu.signed_out_state.continue_with_facebook","value":"Continue with Facebook"},{"key":"account_menu.signed_out_state.marketing_consent_label","value":"Email me with news and offers"},{"key":"account_menu.signed_in_state.greeting_with_name","value":"Hi, {{first_name}}"},{"key":"account_menu.signed_in_state.greeting_without_name","value":"Account"},{"key":"account_menu.signed_in_state.orders_button","value":"Orders"},{"key":"account_menu.signed_in_state.profile_button","value":"Profile"},{"key":"account_menu.location_picker.sheet_title","value":"Locations"},{"key":"account_menu.location_picker.search_field_placeholder","value":"Search"},{"key":"account_menu.aria_labels.close_menu","value":"Close menu"},{"key":"account_menu.aria_labels.back_to_main_menu","value":"Back to main menu from {{title}}"},{"key":"account_menu.aria_labels.open_submenu","value":"{{title}}, opens submenu"},{"key":"account_menu.aria_labels.loading_menu","value":"Loading menu"},{"key":"account_menu.aria_labels.account","value":"Account"},{"key":"account_menu.aria_labels.sign_in_with_email","value":"Sign in with email"},{"key":"account_menu.aria_labels.sign_in","value":"Sign in"}],"socialLoginProviders":[{"handle":"Shop"}],"legacyCustomerAccounts":false,"signInLinksVisible":true,"b2bEnabled":false,"marketingConsentSigninEnabled":true,"marketingConsentPreselected":false},"visitor":{"country":"KR","language":"en"}}</script>
 <meta content="ce3413d3-93d4-47ff-9a67-19cb63848409" data-expiration="1819874195000" name="shopify-y"/><meta content="d0a6cb15-d689-4a2c-8590-5eea0fc25320" data-expiration="1788318395000" name="shopify-s"/><meta content="f" name="new-cookie-storage-activated"/>
-</link></head>
+</link>
+<style>
+/* Sticky thumbnail override */
+.sticky-add-to-cart__image {
+  width: 48px !important;
+  height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+  flex-shrink: 0 !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #f4f4f5 !important;
+}
+.sticky-add-to-cart__image-img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+@media (max-width: 749px) {
+  .sticky-add-to-cart__image {
+    width: 40px !important;
+    height: 40px !important;
+    max-width: 40px !important;
+    max-height: 40px !important;
+  }
+  .sticky-add-to-cart__image-img {
+    max-width: 40px !important;
+    max-height: 40px !important;
+  }
+}
+</style>
+
+</head>
 <body class="page-width-narrow card-hover-effect-none"><div id="snshero-mall-topbar" style="position:sticky;top:0;z-index:999999;background:#1e1b1b;color:#fdfcfc;padding:8px 16px;display:flex;align-items:center;justify-content:between;font-family:monospace;font-size:12px;border-bottom:1px solid rgba(255,255,255,0.15);">
 <div style="display:flex;align-items:center;gap:12px;width:100%;justify-content:space-between;">
 <a href="/" style="color:#fde047;text-decoration:none;font-weight:bold;display:flex;align-items:center;gap:6px;">

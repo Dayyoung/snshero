@@ -4,6 +4,22 @@
 
 ---
 
+## [2026-09-02 12:33 KST] [쇼핑몰 상품 상세 하단 고정 바(sticky-add-to-cart) 썸네일 이미지 크기 PC/모바일 최적화 완료]
+- **오류 내용**:
+  - 상품 상세 페이지 내 빠른 카트 추가 바(`<sticky-add-to-cart>`)의 썸네일 이미지(`.sticky-add-to-cart__image-img`)가 PC 화면에서 199px 높이로 너무 크게 렌더링되던 문제.
+- **원인 분석**:
+  - `sticky-add-to-cart` 전용 스타일이 테마 기본 CSS에서 누락되어 `<img>` 태그의 `height="199"` 속성이 강제 적용됨.
+- **조치 사항**:
+  1. `public/mall/cdn/shop/t/1/assets/base.css` 및 `styles.css`에 표준 `sticky-add-to-cart` 컴포넌트 스타일(스크롤 시 하단 슬라이드업 고정, PC 48px/모바일 40px 정규 썸네일 규격, `object-fit: contain`) 추가.
+  2. 전체 상품 페이지 HTML `<head>`에 `.sticky-add-to-cart__image-img` 크기 오버라이드 스타일 주입 완료.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] 쇼핑몰 상품 상세 하단 고정 바(sticky-add-to-cart) 썸네일 이미지 크기 PC/모바일 최적화 -> 작업완료`
+
+---
+
 ## [2026-09-02 12:17 KST] [쇼핑몰 110장 카드 상품 페이지 및 전 화면 고화질 원본 일치화 & 웹 컴포넌트 모듈 전수 동기화 완료]
 - **오류 내용**:
   - `http://localhost:3000/mall/products/s-s-heroes-110-card-unique-heroes-deck-collectible-card-game?variant=49548125470858` 페이지 접속 시 원본 대비 미디어 갤러리/레이아웃이 상이하게 렌더링되던 문제.
