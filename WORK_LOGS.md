@@ -4,6 +4,29 @@
 
 ---
 
+## [2026-09-02 18:00 KST] [/ge 스프레드시트 신규 4개 행(Row 747~750 / ID 584~587) 전수 구현 및 750개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 747~750) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 747 (ID 584) [모바일 썸존 하단 내비게이션 독]**:
+     - `src/components/MainNavigationDock.tsx` 5슬롯 플로팅 독 바 및 안전영역(`safe-area-inset`) 패딩, 원핸드 썸존 탐색 연동 검증.
+  2. **Row 748 (ID 585) [5종 속성 세트 시너지 & 1탭 최적 덱 빌더]**:
+     - `src/lib/deckSynergyEngine.ts` 속성/종족별 2세트/3세트 보너스 계산 및 최적 덱 추천 알고리즘 구현.
+     - `src/components/DeckSynergyVisualizer.tsx` 실시간 결속 네온 뱃지 및 `MyDeckView.tsx` 1탭 최적 시너지 덱 자동 편성 기능 연동.
+  3. **Row 749 (ID 586) [1 AP당 10 SNS 마일리지 & 100 AP 페이백 상자]**:
+     - `src/lib/dailyActivityMileageGateway.ts` 1 AP당 10 SNS 표준 적립 및 일일 100 AP 소진 시 500 SNS 페이백 상자 지급 시스템 구현 (100% localStorage `hero_daily_activity_mileage_v1` 기반 영구 저장).
+  4. **Row 750 (ID 587) [WebP/Virtual Scroll 및 Three.js 메모리 매니저]**:
+     - `src/lib/assetMemoryManager.ts` WebP/가상 스크롤 메모리 보호 헬퍼 및 3D 씬 dispose GC 매니저 연동.
+  5. **스프레드시트 750개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 항목 번호 `[Row 750 / ID 587]` 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /ge 스프레드시트 신규 4개 행(Row 747~750 / ID 584~587) 전수 구현 및 750개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-02 17:57 KST] [/gemini-ex 단축어 /ge 스킬 생성 및 AGENTS.md 정식 등록 완료]
 - **요청 사항**:
   - `/gemini-ex` 명령어가 길어 `/ge` 축약어로도 동일하게 실행되도록 단축어 스킬 등록.

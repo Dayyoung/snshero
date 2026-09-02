@@ -48,6 +48,8 @@ import { useMonsterPet } from '../hooks/useMonsterPet';
 import { getMonsterPetGroup, isMonsterPetCandidate, parseCardAvatarId } from '../lib/monsterPet';
 import { CardCombineModal } from '../components/CardCombineModal';
 import { DeckSynergyCalculator } from '../components/DeckSynergyCalculator';
+import { DeckSynergyVisualizer } from '../components/DeckSynergyVisualizer';
+import { buildOptimalSynergyDeck } from '../lib/deckSynergyEngine';
 
 interface MyDeckViewProps {
   currentDeck: CardData[];
@@ -396,6 +398,24 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     }),
     [currentDeck, cardSkins.activeSkinMap],
   );
+
+  // 1-Tap Optimal Synergy Deck Auto-Fill (Row 748 / ID 585)
+  const handleAutoFillOptimalSynergy = () => {
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    const allAvailable = ownedCards.length > 0 ? ownedCards : currentDeck;
+    const optimalDeck = buildOptimalSynergyDeck(allAvailable as any[], 8);
+    if (optimalDeck && optimalDeck.length > 0) {
+      updateDeck(optimalDeck as CardData[]);
+      if (showCustomAlert) {
+        showCustomAlert(
+          language === 'ko' ? '✨ 최적 시너지 덱 편성 완료' : '✨ Optimal Synergy Deck Built',
+          language === 'ko'
+            ? '보유 카드 중 가장 강력한 세트 결속 보너스를 발휘하는 8장의 카드가 덱에 자동 편성되었습니다!'
+            : '8 cards with the strongest elemental bond bonuses have been equipped to your active deck!'
+        );
+      }
+    }
+  };
 
   // Real-time Deck Synergy Calculation (Row 23)
   const activeSynergies = useMemo(() => {
@@ -1098,8 +1118,8 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
       <div className="flex flex-col gap-4 md:gap-6">
         <div className="flex flex-col items-center gap-3 sm:gap-4 w-full">
-          {/* Real-time Deck Synergy Score & Smart Presets (Row 655 / ID 552) */}
-          <div className="w-full max-w-4xl">
+          {/* Real-time Deck Synergy Score & Smart Presets (Row 655 / ID 552 & Row 748 / ID 585) */}
+          <div className="w-full max-w-4xl space-y-3">
             <DeckSynergyCalculator
               currentDeck={currentDeck}
               ownedCards={ownedCards}
@@ -1107,6 +1127,11 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               language={language}
               updateDeck={updateDeck}
               playSfx={playSfx}
+            />
+            <DeckSynergyVisualizer
+              deck={currentDeck as any}
+              language={language}
+              onAutoFillOptimalSynergy={handleAutoFillOptimalSynergy}
             />
           </div>
 

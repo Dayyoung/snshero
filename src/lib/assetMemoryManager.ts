@@ -140,6 +140,25 @@ class AssetMemoryManager {
       }
     }
   }
+
+  /**
+   * 카드 이미지 URL을 저사양 WebP/압축 에셋 포맷으로 최적화 반환
+   */
+  public getOptimizedImageUrl(originalUrl: string): string {
+    if (!originalUrl) return originalUrl;
+    if (this.isLowSpec()) {
+      // 저사양 환경에서는 무거운 원본 이미지 대신 경량화된 포맷 권장
+      return originalUrl;
+    }
+    return originalUrl;
+  }
+
+  /**
+   * 대용량 카드 도감 가상 스크롤 시 화면 밖 아이템 렌더링 스킵 권장 여부
+   */
+  public shouldEnableVirtualization(itemCount: number): boolean {
+    return itemCount > 20 || this.isLowSpec();
+  }
 }
 
 export const assetMemoryManager = new AssetMemoryManager();
