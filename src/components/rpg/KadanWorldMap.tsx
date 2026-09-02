@@ -12,6 +12,7 @@ interface KadanWorldMapProps {
   targetTile: KadanRpgTile | null;
   activeEventId?: string;
   completedEventIds: string[];
+  rebirthLevel?: number;
   language: Language;
   lowSpecMode: boolean;
   onTilePress: (tile: KadanRpgTile) => void;
@@ -67,6 +68,7 @@ export const KadanWorldMap: React.FC<KadanWorldMapProps> = ({
   targetTile,
   activeEventId,
   completedEventIds,
+  rebirthLevel = 0,
   language,
   lowSpecMode,
   onTilePress,
@@ -80,9 +82,25 @@ export const KadanWorldMap: React.FC<KadanWorldMapProps> = ({
       'relative min-h-[420px] overflow-hidden rounded-lg border bg-gradient-to-br p-3 shadow-sm',
       terrainClass[region.terrain],
     )}>
-      <div className="mb-3 flex items-center justify-between gap-3">
+      <div className="mb-3 flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <p className="text-xs font-bold uppercase tracking-normal text-slate-500/90">{t('kadan_rpg_world_map', language)}</p>
+          <div className="flex items-center gap-2">
+            <p className="text-xs font-bold uppercase tracking-normal text-slate-500/90">{t('kadan_rpg_world_map', language)}</p>
+            {/* Reincarnation Badge on World Map */}
+            <span className={cn(
+              "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-black tracking-tight border select-none shadow-xs font-mono",
+              rebirthLevel > 0
+                ? "bg-amber-950/90 text-amber-300 border-amber-500/80 shadow-[0_0_8px_rgba(245,158,11,0.3)] animate-pulse"
+                : "bg-slate-900/80 text-emerald-300 border-slate-700/80"
+            )}>
+              <span>{rebirthLevel > 0 ? '👑' : '🌱'}</span>
+              <span>
+                {rebirthLevel > 0
+                  ? t('kadan_rpg_reincarnation_badge', language, { count: rebirthLevel })
+                  : t('kadan_rpg_first_journey_badge', language)}
+              </span>
+            </span>
+          </div>
           <h2 className="text-lg font-extrabold tracking-normal">{t(region.nameKey, language)}</h2>
         </div>
         <div className="flex items-center gap-1 rounded-lg bg-white/80 px-3 py-2 text-xs font-bold text-slate-700 shadow-sm">

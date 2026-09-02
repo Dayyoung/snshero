@@ -373,7 +373,23 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
             <ArrowLeft size={20} />
           </button>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-xs font-black uppercase tracking-normal text-indigo-600">{t('kadan_rpg_title_badge', language)}</p>
+            <div className="flex items-center gap-2">
+              <p className="truncate text-xs font-black uppercase tracking-normal text-indigo-600">{t('kadan_rpg_title_badge', language)}</p>
+              {/* Reincarnation Badge in Top Header */}
+              <span className={cn(
+                "inline-flex items-center gap-1 px-2 py-0.2 rounded-full text-[10px] font-mono font-bold tracking-tight border select-none",
+                progress.rebirthLevel > 0
+                  ? "bg-amber-950/90 text-amber-300 border-amber-500/70 shadow-[0_0_8px_rgba(245,158,11,0.25)] animate-pulse"
+                  : "bg-slate-100 text-slate-700 border-slate-300"
+              )}>
+                <span>{progress.rebirthLevel > 0 ? '👑' : '🌱'}</span>
+                <span>
+                  {progress.rebirthLevel > 0
+                    ? t('kadan_rpg_reincarnation_badge', language, { count: progress.rebirthLevel })
+                    : t('kadan_rpg_first_journey_badge', language)}
+                </span>
+              </span>
+            </div>
             <h1 className="truncate text-base font-extrabold tracking-normal text-slate-900 md:text-lg">{t('kadan_rpg_title', language)}</h1>
           </div>
           <div className={cn(
@@ -409,6 +425,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
             targetTile={targetTile}
             activeEventId={activeEvent?.id}
             completedEventIds={completedIds}
+            rebirthLevel={progress.rebirthLevel}
             language={language}
             lowSpecMode={lowSpecMode}
             onTilePress={handleTilePress}
@@ -423,6 +440,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
               isCompleted={completedIds.includes(activeEvent.id)}
               canStartBattle={true}
               canClaimReward={Boolean(activeEvent.rewardId && !progress.claimedRewardIds.includes(activeEvent.rewardId) && progress.clearedEncounterIds.includes(activeEvent.encounterId || `enc-ch${String(activeEvent.chapterNumber).padStart(2, '0')}`))}
+              rebirthLevel={progress.rebirthLevel}
               onStartBattle={() => setBattleEvent(activeEvent)}
               onClaimReward={() => setRewardEvent(activeEvent)}
               onComplete={() => completeActiveEvent(activeEvent)}

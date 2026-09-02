@@ -14,6 +14,7 @@ interface KadanNpcDialogProps {
   autoMode: boolean;
   canStartBattle: boolean;
   canClaimReward: boolean;
+  rebirthLevel?: number;
   onStartBattle: () => void;
   onClaimReward: () => void;
   onComplete: () => void;
@@ -41,6 +42,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
   autoMode,
   canStartBattle,
   canClaimReward,
+  rebirthLevel = 0,
   onStartBattle,
   onClaimReward,
   onComplete,
@@ -165,7 +167,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
     >
       {/* ─── 대사 텍스트 박스 (중앙 팝업 모달) ─── */}
       <div className="relative z-20 w-full max-w-2xl sm:max-w-3xl overflow-hidden rounded-xl border-2 border-slate-900/90 bg-slate-950/95 text-white shadow-2xl backdrop-blur-md">
-        {/* 상단 오버레이 헤더 (화자 뱃지 & 에피소드 태그) */}
+        {/* 상단 오버레이 헤더 (화자 뱃지 & 에피소드 태그 & 환생 뱃지) */}
         <div className="flex items-center justify-between border-b border-slate-800/80 bg-slate-900/80 px-4 py-2.5">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="inline-flex items-center gap-1.5 rounded-md bg-indigo-600 px-3 py-1 text-xs font-black uppercase tracking-wider text-white shadow-sm">
@@ -174,6 +176,20 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
             </span>
             <span className="rounded-md border border-slate-700 bg-slate-800/90 px-2.5 py-1 text-xs font-bold text-indigo-300">
               {t(event.chapterTitleKey, language)}
+            </span>
+            {/* Reincarnation Badge */}
+            <span className={cn(
+              "inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-extrabold font-mono tracking-tight border select-none",
+              rebirthLevel > 0
+                ? "bg-amber-950/90 text-amber-300 border-amber-500/70 shadow-[0_0_8px_rgba(245,158,11,0.25)] animate-pulse"
+                : "bg-slate-800/90 text-emerald-300 border-slate-700"
+            )}>
+              <span>{rebirthLevel > 0 ? '👑' : '🌱'}</span>
+              <span>
+                {rebirthLevel > 0
+                  ? t('kadan_rpg_reincarnation_badge', language, { count: rebirthLevel })
+                  : t('kadan_rpg_first_journey_badge', language)}
+              </span>
             </span>
             {isCompleted && (
               <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/20 border border-emerald-500/40 px-2 py-0.5 text-xs font-bold text-emerald-400">
