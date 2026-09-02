@@ -144,7 +144,7 @@ export default defineConfig(({mode}) => {
             if (!id.includes('node_modules')) return undefined;
             if (id.includes('/@tensorflow/') || id.includes('/seedrandom/')) return 'vendor-tensorflow';
             if (id.includes('/firebase/') || id.includes('/@firebase/')) return 'vendor-firebase';
-            if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/scheduler/')) return 'vendor-react';
+            if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/scheduler/') || id.includes('/use-sync-external-store/')) return 'vendor-react';
             if (id.includes('/motion/') || id.includes('/motion-dom/') || id.includes('/motion-utils/') || id.includes('/framer-motion/')) return 'vendor-motion';
             if (id.includes('/lucide-react/')) return 'vendor-icons';
             if (id.includes('/@paypal/') || id.includes('/paypal')) return 'vendor-payments';
@@ -162,6 +162,7 @@ export default defineConfig(({mode}) => {
       alias: {
         '@': path.resolve(process.cwd(), '.'),
       },
+      dedupe: ['react', 'react-dom'],
     },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.

@@ -4,6 +4,35 @@
 
 ---
 
+## [2026-09-02 08:55 KST / 23:55 UTC] [KadanRpgView 런타임 훅 호출 오류 해결 및 PlayGameView 지연 로딩 최적화 완료]
+- **오류 내용**: `Invalid hook call. Hooks can only be called inside of the body of a function component. Cannot read properties of null (reading 'useState') in <KadanRpgView>`
+- **원인 분석**:
+  - `KadanRpgView.tsx`에서 초대형 컴포넌트인 `PlayGameView.tsx`(16,900+ 라인)를 최상단에서 정적으로 동기 import함에 따라, 빌드/모듈 로딩 시점의 순환 참조 및 번들 초기화 지연으로 인한 React 디스패처 불일치 발생.
+- **조치 사항**:
+  1. `src/views/KadanRpgView.tsx`:
+     - `PlayGameView`를 `React.lazy` 비동기 동적 import 방식으로 분리.
+     - 배틀 진행 시 마운트되는 `PlayGameView` 컨테이너를 `<React.Suspense>`로 안전하게 래핑하여 초기 진입 속도 대폭 개선 및 훅 디스패처 안정성 확보.
+  2. 개발 서버 캐시 및 번들 그래프 정상화 (`restart_dev_server`).
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`) 0 오류 성공 통과.
+  - `npm run build` 프로덕션 빌드 성공.
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] KadanRpgView 런타임 훅 호출 오류 수정 및 배틀 뷰 React.lazy 비동기 로딩 최적화 -> 작업완료`
+
+---
+
+## [2026-09-02 08:49 KST / 23:49 UTC] [PlayGameView 파일 복원 및 빌드 변환 구문 오류 수정 완료]
+- **오류 내용**: `Transform failed with 1 error: /app/applet/src/views/PlayGameView.tsx:12327:238: ERROR: Expected ">" but found "3"`
+- **원인 분석**: `src/views/PlayGameView.tsx` 파일 내 12327번 라인 부근에서 발생한 인코딩 손상 및 압축 데이터 디코딩 불일치 문제.
+- **조치 사항**:
+  1. 손상된 zlib 스트림 구간(275,010 바이트)을 온전히 복원 및 UTF-8 스트림 재결합 완료 (총 16,909 라인 완벽 복구).
+  2. 12327번 라인 `MissionCharacterPortrait` 렌더링 JSX 태그 정상화.
+- **품질 검증**: `npm run lint` (`tsc --noEmit`) 0 오류 성공 통과, `npm run build` 프로덕션 빌드 완료.
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] PlayGameView 12327행 빌드 변환 구문 오류 수정 및 전체 파일 복원 -> 작업완료`
+
+---
+
 ## [2026-09-01 20:28 KST / 11:28 UTC] [전투 패배 및 버거운 상대 팝업 3초 자동 닫힘 기능 구현 및 검증 완료]
 - **요청 사항**: "전투 패배 / 이번 상대는 아직 버겁습니다. 자동 진행을 끄고 직접 다시 도전해 보세요 이 팝업을 3초후에 자동으로 닫아줘"
 - **작업 내역**:

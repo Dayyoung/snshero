@@ -18,11 +18,12 @@ import { useKadanRpgAutoRunner } from '../hooks/useKadanRpgAutoRunner';
 import { KadanWorldMap } from '../components/rpg/KadanWorldMap';
 import { KadanNpcDialog } from '../components/rpg/KadanNpcDialog';
 import { KadanRewardModal } from '../components/rpg/KadanRewardModal';
-import { PlayGameView } from './PlayGameView';
 import { CARD_DATABASE } from '../cardDatabase';
 import { INITIAL_CARDS, getCardPower } from '../constants';
 import type { KadanBattleResult } from '../lib/kadanRpgBattle';
 import { KADAN_RPG_NOVEL_SCRIPTS } from '../content/kadanRpgNovelScript';
+
+const PlayGameView = React.lazy(() => import('./PlayGameView').then(m => ({ default: m.PlayGameView })));
 
 interface KadanRpgViewProps {
   language: Language;
@@ -432,31 +433,33 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
 
           {activeEncounter && battleEvent && rpgOpponent && (
             <div className="fixed inset-0 z-[10000] bg-slate-950 flex flex-col overflow-hidden">
-              <PlayGameView
-                playerDeck={currentDeck.filter((c): c is CardData => Boolean(c))}
-                pvpOpponent={rpgOpponent}
-                initialMode="card"
-                language={language}
-                isAutoBattle={progress.autoMode}
-                onToggleAutoBattle={() => setAutoMode(!progress.autoMode)}
-                setIsAutoBattle={(val) => setAutoMode(val)}
-                onBack={() => {
-                  setBattleEvent(null);
-                  if (progress.autoMode) setAutoMode(false);
-                }}
-                recordMatchResult={(result) => {
-                  handleBattleComplete(result);
-                }}
-                playSfx={(url) => {
-                  try {
-                    const audio = new Audio(url);
-                    audio.volume = 0.5;
-                    audio.play().catch(() => {});
-                  } catch (e) {}
-                }}
-                sns={sns}
-                updateSns={updateSns}
-              />
+              <React.Suspense fallback={<div className="flex h-full w-full items-center justify-center text-white font-mono text-sm">Loading Battle Arena...</div>}>
+                <PlayGameView
+                  playerDeck={currentDeck.filter((c): c is CardData => Boolean(c))}
+                  pvpOpponent={rpgOpponent}
+                  initialMode="card"
+                  language={language}
+                  isAutoBattle={progress.autoMode}
+                  onToggleAutoBattle={() => setAutoMode(!progress.autoMode)}
+                  setIsAutoBattle={(val) => setAutoMode(val)}
+                  onBack={() => {
+                    setBattleEvent(null);
+                    if (progress.autoMode) setAutoMode(false);
+                  }}
+                  recordMatchResult={(result) => {
+                    handleBattleComplete(result);
+                  }}
+                  playSfx={(url) => {
+                    try {
+                      const audio = new Audio(url);
+                      audio.volume = 0.5;
+                      audio.play().catch(() => {});
+                    } catch (e) {}
+                  }}
+                  sns={sns}
+                  updateSns={updateSns}
+                />
+              </React.Suspense>
             </div>
           )}
 

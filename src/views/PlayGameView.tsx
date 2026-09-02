@@ -144,6 +144,7 @@ import { VoxelDreamweaverGame } from '../components/VoxelDreamweaverGame';
 import { VoxelLifeFlameGame } from '../components/VoxelLifeFlameGame';
 import { VoxelArcaneNexusGame } from '../components/VoxelArcaneNexusGame';
 import { VoxelDreadShadowGame } from '../components/VoxelDreadShadowGame';
+import { checkFlips, checkFlipsWithDetails, findBestMove, Board, CardInstance } from '../lib/gameEngine';
 import { GambitConfig, TacticalStance } from '../types';
 import { getSecretStamps, unlockSecretStamp } from '../lib/secretStampHelper';
 import { recordHeroBattleResult } from '../lib/heroMasteryHelper';
@@ -254,24 +255,22 @@ const MissionCharacterPortrait: React.FC<{
   const safeCardId = CARD_DATABASE[cardId] ? cardId : 41;
   const dbCard = CARD_DATABASE[safeCardId];
 
-  const cardData: CardData = useMemo(() => {
-    return {
-      id: String(safeCardId),
-      title: dbCard?.title || name || `Hero #${safeCardId}`,
-      title_en: dbCard?.title_en || name || `Hero #${safeCardId}`,
-      title_dis: dbCard?.title_dis,
-      stats: dbCard?.stats || [3, 3, 3, 3],
-      power: dbCard?.power || 10,
-      rarity: dbCard?.rarity || 'bronze',
-      element: dbCard?.element || 'monster',
-      race: dbCard?.race,
-      imageIndex: safeCardId,
-      imageUrl: dbCard?.imageUrl,
-      level: 1,
-      skills: [],
-      owner: null,
-    };
-  }, [safeCardId, dbCard, name]);
+  const cardData: CardData = {
+    id: String(safeCardId),
+    title: dbCard?.title || name || `Hero #${safeCardId}`,
+    title_en: dbCard?.title_en || name || `Hero #${safeCardId}`,
+    title_dis: dbCard?.title_dis,
+    stats: dbCard?.stats || [3, 3, 3, 3],
+    power: dbCard?.power || 10,
+    rarity: dbCard?.rarity || 'bronze',
+    element: dbCard?.element || 'monster',
+    race: dbCard?.race,
+    imageIndex: safeCardId,
+    imageUrl: dbCard?.imageUrl,
+    level: 1,
+    skills: [],
+    owner: null,
+  };
 
   return (
     <div className={cn('relative flex h-full w-full items-center justify-center p-1', className)} title={name || dbCard?.title}>
@@ -282,6 +281,116 @@ const MissionCharacterPortrait: React.FC<{
         hideStats={hideStats}
       />
     </div>
+  );
+};
+
+interface BossCardItemProps {
+  boss: { id: number; reward: number };
+  lowSpecMode: boolean;
+  language: Language;
+  onChallenge: (bossId: number) => void;
+  playSfx: (url: string) => void;
+}
+
+const BossCardItem: React.FC<BossCardItemProps> = ({ boss, lowSpecMode, language, onChallenge, playSfx }) => {
+  const bossCard = CARD_DATABASE[boss.id];
+  const [timeLeft, setTimeLeft] = useState<number>(0);
+
+  useEffect(() => {
+    const checkCooldown = () => {
+      const cooldowns = JSON.parse(localStorage.getItem('hero_boss_cooldowns') || '{}');
+      const lastKilled = cooldowns[boss.id] || 0;
+      const now = Date.now();
+      const tenHours = 10 * 60 * 60 * 1000;
+      const diff = tenHours - (now - lastKilled);
+      setTimeLeft(diff > 0 ? diff : 0);
+    };
+
+    checkCooldown();
+    const interval = setInterval(checkCooldown, 1000);
+    return () => clearInterval(interval);
+  }, [boss.id]);
+
+  if (!bossCard) return null;
+
+  const isCooldown = timeLeft > 0;
+  const hours = Math.floor(timeLeft / (60 * 60 * 1000));
+  const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
+  const seconds = Math.floor((timeLeft % (60 * 1000)) / 1000);
+
+  return (
+    <motion.div
+      whileHover={!isCooldown ? { y: -6, scale: 1.02 } : {}}
+      className={cn(
+        "flex flex-col rounded-3xl border bg-slate-900 overflow-hidden shadow-xl transition-all relative",
+        isCooldown ? "border-slate-800 opacity-70" : "border-purple-600/30 hover:border-purple-500 shadow-[0_0_20px_rgba(147,51,234,0.05)] hover:shadow-[0_0_30px_rgba(147,51,234,0.15)]"
+      )}
+    >
+      {/* Reward Tag */}
+      <div className="absolute top-3 right-3 bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 font-black text-xs px-3 py-1 rounded-full shadow-md z-10 animate-pulse">
+        +{boss.reward} SNS
+      </div>
+
+      {/* Boss Card Display */}
+      <div className="h-64 bg-slate-950 relative border-b border-slate-800 flex items-center justify-center p-4">
+        <CardItem 
+          card={{
+            ...bossCard,
+            id: `boss-preview-${boss.id}`,
+            owner: 'ai',
+            bonusPower: 0,
+            xp: 0,
+            imageIndex: boss.id,
+            isFinalBoss: true
+          }} 
+          isLocked={true} 
+          className="w-40 h-56"
+          lowSpecMode={lowSpecMode}
+          language={language}
+        />
+        {isCooldown && (
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-xs flex flex-col items-center justify-center p-4 text-center z-55">
+            <ShieldAlert size={40} className="text-red-500 animate-bounce mb-2" />
+            <span className="text-xs font-black text-red-500 uppercase tracking-widest bg-red-950/80 px-2.5 py-1 border border-red-500 rounded-md">
+              COOLDOWN (íœ´ì‹ ì¤‘)
+            </span>
+            <span className="text-sm font-bold mt-2 text-gray-300">
+              {hours}h {minutes}m {seconds}s
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Details */}
+      <div className="p-5 flex-1 flex flex-col justify-between gap-4">
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <h3 className="text-lg font-black italic tracking-wide text-white uppercase truncate">
+              {language === 'ko' ? bossCard.title : (bossCard.title_dis || bossCard.title_en)}
+            </h3>
+          </div>
+          <p className="text-xs text-slate-400 line-clamp-2">
+            {language === 'ko' ? bossCard.desc : (bossCard.desc_dis || bossCard.desc_en)}
+          </p>
+        </div>
+
+        <button
+          disabled={isCooldown}
+          onClick={() => {
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            onChallenge(boss.id);
+          }}
+          className={cn(
+            "w-full py-3 font-black uppercase italic tracking-wider rounded-xl transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98] shadow-md",
+            isCooldown 
+              ? "bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed" 
+              : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-purple-600/20"
+          )}
+        >
+          {isCooldown ? "WAITING..." : "CHALLENGE (ëŒ€ê²°í•˜ê¸°)"}
+        </button>
+      </div>
+    </motion.div>
   );
 };
 
@@ -346,8 +455,6 @@ interface DamagePopup {
   amount: number;
   direction: string;
 }
-
-import { checkFlips, checkFlipsWithDetails, findBestMove, Board, CardInstance } from '../lib/gameEngine';
 
 interface TruncatableDescriptionProps {
   text: string;
@@ -495,15 +602,47 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     isOpen: boolean;
     title: string;
     message: string;
-  }>({ isOpen: false, title: '', message: '' });
+    autoCloseSeconds?: number;
+    countdown?: number | null;
+  }>({ isOpen: false, title: '', message: '', countdown: null });
 
-  const triggerAlert = (message: string, title?: string) => {
+  const triggerAlert = (message: string, title?: string, autoCloseSeconds?: number) => {
+    const isDefeatOrOverwhelmed = 
+      autoCloseSeconds !== undefined 
+        ? autoCloseSeconds 
+        : (message.includes('ë²„ê²') || (title && title.includes('íŒ¨ë°°')) || message.includes('difficult') || (title && title.includes('Battle Lost')))
+          ? 3
+          : undefined;
+
     setCustomAlertModal({
       isOpen: true,
       title: title || (language === 'ko' ? 'ì•Œë¦¼' : 'Notice'),
-      message
+      message,
+      autoCloseSeconds: isDefeatOrOverwhelmed,
+      countdown: isDefeatOrOverwhelmed ?? null
     });
   };
+
+  useEffect(() => {
+    if (!customAlertModal.isOpen || customAlertModal.countdown === undefined || customAlertModal.countdown === null) {
+      return;
+    }
+    if (customAlertModal.countdown <= 0) {
+      setCustomAlertModal(prev => ({ ...prev, isOpen: false, countdown: null }));
+      return;
+    }
+    const timer = setTimeout(() => {
+      setCustomAlertModal(prev => {
+        if (!prev.isOpen || prev.countdown === null || prev.countdown === undefined) return prev;
+        const nextVal = prev.countdown - 1;
+        if (nextVal <= 0) {
+          return { ...prev, isOpen: false, countdown: null };
+        }
+        return { ...prev, countdown: nextVal };
+      });
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [customAlertModal.isOpen, customAlertModal.countdown]);
 
   // =========================================================================
   // BATTLE GAMBIT & TACTICAL STANCE & SECRET STAMPS (Items 393-405)
@@ -2993,6 +3132,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <p className="text-sm font-bold text-slate-300 leading-relaxed whitespace-pre-line">
                 {customAlertModal.message}
               </p>
+
+              {/* ìë™ ë‹«í˜ ì¹´ìš´íŠ¸ë‹¤ìš´ ë±ƒì§€ */}
+              {customAlertModal.countdown !== undefined && customAlertModal.countdown !== null && customAlertModal.countdown > 0 && (
+                <div className="mt-4 py-1.5 px-3 bg-indigo-950/80 border border-indigo-500/40 rounded-lg text-indigo-300 text-xs font-black flex items-center justify-center gap-1.5 animate-pulse">
+                  <span>â±ï¸ {language === 'ko' ? `${customAlertModal.countdown}ì´ˆ í›„ ìë™ìœ¼ë¡œ ë‹«í™ë‹ˆë‹¤` : `Auto closing in ${customAlertModal.countdown}s...`}</span>
+                </div>
+              )}
             </div>
 
             {/* Actions */}
@@ -3000,11 +3146,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <button
                 onClick={() => {
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                  setCustomAlertModal(prev => ({ ...prev, isOpen: false }));
+                  setCustomAlertModal(prev => ({ ...prev, isOpen: false, countdown: null }));
                 }}
                 className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold uppercase tracking-wider text-xs rounded-xl shadow-lg shadow-indigo-600/25 active:scale-95 transition-all cursor-pointer text-center"
               >
-                {language === 'ko' ? 'í™•ì¸' : 'Confirm'}
+                {customAlertModal.countdown !== undefined && customAlertModal.countdown !== null && customAlertModal.countdown > 0
+                  ? (language === 'ko' ? `í™•ì¸ (${customAlertModal.countdown}ì´ˆ)` : `Confirm (${customAlertModal.countdown}s)`)
+                  : (language === 'ko' ? 'í™•ì¸' : 'Confirm')}
               </button>
             </div>
           </motion.div>
@@ -10103,108 +10251,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   }
 
   if (gameState === 'boss') {
-    const BossCardItem = ({ boss }: { boss: { id: number; reward: number }; key?: number }) => {
-      const bossCard = CARD_DATABASE[boss.id];
-      const [timeLeft, setTimeLeft] = useState<number>(0);
-
-      useEffect(() => {
-        const checkCooldown = () => {
-          const cooldowns = JSON.parse(localStorage.getItem('hero_boss_cooldowns') || '{}');
-          const lastKilled = cooldowns[boss.id] || 0;
-          const now = Date.now();
-          const tenHours = 10 * 60 * 60 * 1000;
-          const diff = tenHours - (now - lastKilled);
-          setTimeLeft(diff > 0 ? diff : 0);
-        };
-
-        checkCooldown();
-        const interval = setInterval(checkCooldown, 1000);
-        return () => clearInterval(interval);
-      }, [boss.id]);
-
-      if (!bossCard) return null;
-
-      const isCooldown = timeLeft > 0;
-      const hours = Math.floor(timeLeft / (60 * 60 * 1000));
-      const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
-      const seconds = Math.floor((timeLeft % (60 * 1000)) / 1000);
-
-      return (
-        <motion.div
-          whileHover={!isCooldown ? { y: -6, scale: 1.02 } : {}}
-          className={cn(
-            "flex flex-col rounded-3xl border bg-slate-900 overflow-hidden shadow-xl transition-all relative",
-            isCooldown ? "border-slate-800 opacity-70" : "border-purple-600/30 hover:border-purple-500 shadow-[0_0_20px_rgba(147,51,234,0.05)] hover:shadow-[0_0_30px_rgba(147,51,234,0.15)]"
-          )}
-        >
-          {/* Reward Tag */}
-          <div className="absolute top-3 right-3 bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 font-black text-xs px-3 py-1 rounded-full shadow-md z-10 animate-pulse">
-            +{boss.reward} SNS
-          </div>
-
-          {/* Boss Card Display */}
-          <div className="h-64 bg-slate-950 relative border-b border-slate-800 flex items-center justify-center p-4">
-            <CardItem 
-              card={{
-                ...bossCard,
-                id: `boss-preview-${boss.id}`,
-                owner: 'ai',
-                bonusPower: 0,
-                xp: 0,
-                imageIndex: boss.id,
-                isFinalBoss: true
-              }} 
-              isLocked={true} 
-              className="w-40 h-56"
-              lowSpecMode={lowSpecMode}
-              language={language}
-            />
-            {isCooldown && (
-              <div className="absolute inset-0 bg-black/80 backdrop-blur-xs flex flex-col items-center justify-center p-4 text-center z-55">
-                <ShieldAlert size={40} className="text-red-500 animate-bounce mb-2" />
-                <span className="text-xs font-black text-red-500 uppercase tracking-widest bg-red-950/80 px-2.5 py-1 border border-red-500 rounded-md">
-                  COOLDOWN (íœ´ì‹ ì¤‘)
-                </span>
-                <span className="text-sm font-bold mt-2 text-gray-300">
-                  {hours}h {minutes}m {seconds}s
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Details */}
-          <div className="p-5 flex-1 flex flex-col justify-between gap-4">
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <h3 className="text-lg font-black italic tracking-wide text-white uppercase truncate">
-                  {language === 'ko' ? bossCard.title : (bossCard.title_dis || bossCard.title_en)}
-                </h3>
-              </div>
-              <p className="text-xs text-slate-400 line-clamp-2">
-                {language === 'ko' ? bossCard.desc : (bossCard.desc_dis || bossCard.desc_en)}
-              </p>
-            </div>
-
-            <button
-              disabled={isCooldown}
-              onClick={() => {
-                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                startBossMatch(boss.id);
-              }}
-              className={cn(
-                "w-full py-3 font-black uppercase italic tracking-wider rounded-xl transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98] shadow-md",
-                isCooldown 
-                  ? "bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed" 
-                  : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-purple-600/20"
-              )}
-            >
-              {isCooldown ? "WAITING..." : "CHALLENGE (ëŒ€ê²°í•˜ê¸°)"}
-            </button>
-          </div>
-        </motion.div>
-      );
-    };
-
     return (
       <div className="flex-1 flex flex-col w-full h-full min-h-0 bg-[#1a1a2e] text-white overflow-y-auto relative pb-20"
         style={{
@@ -10247,7 +10293,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           {/* Boss Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full py-4">
             {bossList.map((boss) => (
-              <BossCardItem key={boss.id} boss={boss} />
+              <BossCardItem
+                key={boss.id}
+                boss={boss}
+                lowSpecMode={lowSpecMode}
+                language={language}
+                onChallenge={startBossMatch}
+                playSfx={playSfx}
+              />
             ))}
           </div>
         </main>
@@ -12324,247 +12377,4586 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.24),transparent_32%),linear-gradient(135deg,rgba(15,23,42,0.96),rgba(67,56,202,0.92),rgba(14,165,233,0.70))]" />
             <div className="relative flex min-h-[132px] items-stretch gap-3 p-3 sm:min-h-[150px] sm:p-4">
-              <div className="w-[112px] shrink-0 overflow-hidden rounded-lg boxœì½{wÇ‘'úÿ|Šô@cŒnô0|„$¬I  k¼X°Ğ] jØİÕ®ê& a°‡² H¯¨±hQ)Ñ;´¾òX¢mjV¾÷œ½ßD²gô6"3«*++³ªºAÊ”½mì®g>""#"#~áÔL‡¬Ûü“İŞ²ÚæX1OÖ7ù÷B¸©íìj¡œoí\$us‡À‰†›­šÍ6ÜúO·mmìz?[ÙÂĞé¿#ÒçäËu-»9³e8F®[´¶cXmR5œÚ\íÔ^¹°OšFÃ<µwÙ¨ÍyøºOêFs³clÂAïÛ>©Ö×ÅÓ§†ZÙü“ßvr¬f]‰„câ­´«™İÎæi§²öOÕ®Ë]Ú4ZÙ"iíÂ%ms§ÍFFÕIéV³n5Í,}Õvv:8|l!W!İiÖÌZ¶QãÓB%4­P[VlZìf;»^7ª—I§Õ2ªáš¸zÙjÂÍ>•^_İ5šÙB>¯h>t`yŞì×z†¼PÜ.~öÚ™aÇhâ£×Öv»núS5²Õ„°áR¶b«("mv}Sìbİ4jØ¯¶µ¹ÕFú¤×wêÊ^±7®o6Mg­m%6;°UT¶´%6´Ñ†I¡3H2´Y;.kºk6¬u»^ó[ï˜ucÇ¬±«ÜºÑ6qbÆ&*~ÜFÿª™n5¹?-ÅtègIGÔÈ?[ÙÕÒ8’ †Â‹!úæ„ŒT\B*–ÆˆM¯0 “?[FÍŞÖFÌPTÛFâHÌl™W»¹Ä(‰Ñ}YI÷j±=9trl½ÓnÛÍÓ'Üû{rÎ°ê»„KF—ÌØ–İ„‘#?&¶õ$½Î»,¸j,òÀMÇ&3 P½‡’F»ºCB®˜ÎËÜ&géØÈ¯&æ²S¯û3ç6$ÉÄ&g"OŠ`¦Z0©@»­lY”ŞüysÜ°›¶4“JáìKcx"ıîØÛø]¹ø¬›ímÓlRŠ+EèDùü¥FïSˆà-ü#ÍfÖh¬Ã°T€}Q\‡ÆŠ*Ã©R>yù¤ãæßcçXÍË¸DIì±ã*¹áÛşÇıcËßT£UÔˆ¦“nËhFäw¿ËT0şàâÂ¸ë·H—F\OA¬ä…eU3Røyqvi\˜[^[˜'Ë?Y^™½ îÓvª¿ş°¿‚$+kÖ\ü¬’ÂT·fzeæÅ¹ùÈÅ>[¢™d\NK‘æ/kL„¶ÛÂrÃ¨[€<©JN:E†/ÛÃDÓ·3äRïşòÌ^Ã†¥)W7››í­ıŞÿ|½wçéşûƒŞë·ÈÃ/®÷>< ÿÿ»dŞÎåÿı™½å6ĞıfF¼g$×2jËmÃigŠ£d8?<²O>|£÷«ûİ_ß&½¯îw	ÿÜ=è^»OºŸÜë}õ»Kº6M‘K+vÛ¨Ë­òÅæ0Tî í	ğò®sI£M”_^Ró§ šó2ÛòÛ[ˆEEHÂ—;®YßÈºØK¤úËè´eN›Õ#(èçö&ñİÃî[ïuswfj˜çyhYŞ×Ñ¿úå
-µÂl˜Q¯QÑ",G x=K2ajÿQ¿; kŠú‘A®+ÂTÈ:"Ÿ·vdÇ&`Û
-iáÈ kvûi÷—wÃ|Ø»s•º_¼Áy*Cy XefzéÜÚ¹é•é³ÓË³«…‹grTy&ÿüÏ0s7zÿß]øÛıøóŞ›÷†÷Gº¼ztpHzoÜîÜî^¿ŠLúğË»½ÛwE®ıİG¯£ïzxx• ÿv¯}7Ş:ºõ ÷á¼®{xØûù/º7nÁ}¤·¿ù‡îµ7º×îå.EzÌ=ÊÎ.áZ!pCÃ$–K`ø­Í&¦A:Më§S`WJá¨'m8vƒq=Éh»¼šözú§Ã±\è-<œÀh;5Ëhæ$®—´mN’êvH,›†Sİ"ÏA›Úæ¦}xŞª#C¯ën‚ÊÖ™¨ :âŠPˆl•'K•n¥³tÒÅ‹³²QGMŠÒZ{©igİªc×ëë†¶1¹e®6{«*[€X5F½Nõşu³şCÈ…Ş÷q>Ã}‰_4Û„‹¦a˜¢WıQı{JµĞkJçH÷Ë?ô^¿<gƒN_¦AN&\Õ›UÊ‘p÷ˆº)ğ Û;f}çÄ6X0Ö½Fg]KÙb~»¦ÕgéÙAŸÛnà
-£n7
-œ¯¯öîĞ#Õ;ùC4­Ÿ¦g}Rlë[W^‘Fıè_÷>¾‘îmüvM»éÙAŸÛnPÎ;†ÄIÿq£÷o_÷~õuºò'hš>CÏú$U­.æF+7âö«‚ıÜ&Fµm]eu³Ú6k3â«àöœUûÅİÙî8M’Q+æÌÆ×(œ—ÍİS{ìÉ*?vs¦nU/ŸÚËŒèšÏ>­º±»¼±“Şj·[îÔØˆ^³íæÖÎe««Úc¬ƒknÛv`ıs7vÆŠ•ñ	ú'ÛrLôä­Òğˆª›ì\–†'Ã:€KÑÜÕŞ»¯ëa°HìU›êQÄÏF%¥V	h`U3Û´·£Åu;t©	Ùt­6¬öYş¤Úq\ÛÉ¶l‹.@\÷õV—×*É R1û°aÖFıj(¤ƒÆUH›Ìç'ÉPÌ§èÙ½ñ„¯ßóE8°…Ëí”ÿ~tùj¬tŒ¢3V•ª;’ĞJÿ×lSıìÀ%¦hN”°ö#MÔkİ¡c¨Yı¨lôLU«°Õ^Pß¦Ò)NQm‡«h§P¸”4»Ş¹©›m á¶ŠÏX‘d)yÒiØ¥$kH±…a5[vdÚ»-n=DçòŠQï@“X?Ô8:ôtÿ¥‰Û)“JÊåş3jğ¦ÙÎÑ‡)èdOÕÜ3Sj›òÔ® ½ıÖî›ïˆ
-?,Ø€¡qµ÷Ú¿är9jáñ1¥z:]
-ˆí-ÔÍqCÈÅË¢M‰z+[õìi9øg—™¿"¯E9D-h&†ÇAwmÃ®vÜ)»Ó¦ğ¦İ4ù¡ĞÂ¦ÔüÈ„‹óF{N±ÈèiåætxXÉß*²uĞ	NÍ†””Ë…ŒppGöÈ•©ŒßiÒI‰Ù¾Š8ÜµÖy€XÅ²ÌğãZëÊ–	Ä÷¼ƒ$¸ÜŞEªD·&]ÒÚqìíÙşjVS6|À Õ+¦M™4jSğï_ÜñÙ`d•ĞòÃ‰™:¤ñøE°v³W,×Z¯Ëû² ÛÄ>â|Ÿb>!·1zrÙ·w¹ï~±¹mĞx€/u^{V¦²™µTCí+ÓíqG£Ã0lşÁmPÁ9~D%>»îîĞ+«ŞŞñ\­ï¼†ü€ë¿®§s|Š„íxÿ±ñ9ás™LğÒ,<œ<K
-…ü¾èbÜ‹pÔáEş;ÏŒräç¹ëdJ:°f6Gà`ƒıŠ–ùNãyÛi õšØAîŸôÛuNF906FfëÀÍ6"CİŞ·amjšê!èê$ãuáLÎäw£o¤iv@x€Êú¢K›§ëŞvÖ¨mšŒóN©Ü¶ìe8Û gºÖ€„§ÛÙ“êö·KBDƒ‚46‡µ&öÁ–czÏul×=—K§{®aAsaH„.XÍš÷&÷ònèEø[xşL÷ùí-éE@‚ş‹ØV‰ø*vDx;îu5°-ì¦ô>X+w½÷íšuXâù!áüÈxªWârmÔ¤W6„‚huœV=<uüğV~$®£ÃQÍı,ÉÊ6<eXeÅ;
-ÀôdşíGÿúIjÚıö£w~s‚üö£ë¿ıÏo‹Ö¾ùà0Å#âéç›Û›`Ü®Rıò›÷ßÁıÃßEcÒŸlØhOæ`]Uš0Ô¤ohz«	æ¨Q?µ·Gl°Y­öîÉø[¨èLd£i@7C÷è=yİ-á‹wÕÀz«/í­X¹t…ü{’ÏåK£ğ·4¢{
-èÉuóEÔ1@«··—[f•jKgÈŞ>à6!ÏŞ†kÇ`ßó9ì”úéš]Sİ°ÂœØuĞ_˜æ§3YÛÆ:]æNíå¿'şÇ¬‚ĞÀQ]„÷epb®näğv3Ó¿—ÅnşĞÜ=go7}#Oßukƒ€Í”Ì˜g¶IY*8H`×?2‡# «ş9sÃèÔÛú&ãç»ì~‡;Í€…Ã‘Ovxy&*w=&h4¨Ûü@±HÀš³út¡\(Ì‹Ú[Álå>9bÂ3Ì¸S©q…­ß¸Ø²j5ÜèW´d'Ã37®ö1ËÈR¯Ï©½KÏìqv´èy;÷Ì¬´î8Æç}å>yŒ
-Ì¹•™˜÷"¬Ğ¾³†Ô$~dóˆ‡Š Á³C-^QÉì<!†5Mú+şztÿu2.¨GÜ:ó6'ùÔ‹q1±a¥º>hvÚ<»Ñv:Mt¤Ç<U±w.ï™ŒS¡Á8,§(„âÁ><vÓ‹3`£1©Ø–$­(eÅõ5&’G3º–É¾pgª‘JöYàÖ†şğÓ©è&ÏØ“Ÿ–¾è½úúÑÒĞ§ ä´Í•,Å‘ıøÁ¥<½çiÜÚà‘¸N	qj´3'B]£åbeù*PšbQ²Cìå)^œ|Å^`f·ìm¥—0¶+ñ”XƒÁ¾JÈl,«ù…`9¯™ßò'd1çwŒõ+ÒŒ“f7ƒİÃ'ªíƒàƒ+Ÿ»ÀÖ?ƒá¬½ÓÇÊ#ä$åQğ*["ş¶„¼ToeKÔ©·•-S‡#ü;ákEIË(Œ{ZÆ¦cÔ,xO¶mÃš†1/‚±{ÖqPCJ…|±´aÃ¼‘Ÿ(”ã„1ĞY`ßM:÷d¹³ş­¹æeæmÕOt„|´Õİ0KWUl°Q÷©ZNµn®íµJşÙµrşÙQgsİÈLNB³G‹åÂ(%#£TñiÜ³v"ÿì"¦Ğd©ÒêRÿ½b&øè»,:ûâx;1÷Åç °&yŒ¿.$åÀpÍr‹íWÅu=‹±íôı²Ì+_ßH–†
-fÍ±[Y®_Ö7Ic7[ù¾µ8íØ`ï5h˜:(ìä<ê‘H ˜¡tŒ§9.^j½ŠÖé“15wå
-|—#=­MA)äLÏŠ_¥Ö 	ÓÕ³;Öá_:|ëõ#¬rÖO Q+!*VŠ³-/qgœé!¤aìd·aùÊ?{1!£"ø<­ĞÚSj,±	Ly#·ëø
-´9ÅJÍ@'•²EM"v ë¸6$İ¯tŠ‘ÜÁ¤%-a¬ßŠ†aÎd…îD<çÇ>Ï57ì~­©`­*JÆ“>r•D#EÛåX†ÒşêÓbë´oöF"‰¹éæ‘GX<:Ãc;QN&ªC¾Ñ|<&6‰}ïX’ˆ}ÌœÛ¶[‹ĞcÓHr”°ÏwåêÁ<ø…°*:|2„Ëµşö	­­XX+,vœéYã!ëeS g)âæ„&êşDt?AØF÷È'ê®‰SU¾¥£A b_”Å†èÕQÇìÜëşöuÒıòşÃ‡,œcËŞ&çL·êX-ì‚"x#øÄ3Ä™XFĞÇyWÓ.–ÅH‚'9Ñ‡¾6b–y²Br(èùæöÇğ¶c77#ê[üâk`£ú+:Èzßñ,UµİI¼ êI¢ÿ'Æ??X_V§wæCj-³ÔÅ±¯@©4ËùÒÙ¡ª„Àœôë(G±ºï1=81'õI_cÁöUô|D@FìP=èİypôÎ×4ëà^ïÎı£k‡İ×ÉÃûo?üò®—qõÍÕwÈb1[T¨'ç©Ñ:]SÚ0WP´4Û§†PÇŒŒŸ"¨n)¯õ˜â­NKÏ™f»i‹éšÍª~üB
-ïe·*4Ğ¸ı?åæj]Qîè©.4w¬vòãDaeaZg!¿’]-æ'S¡3”ey¯NUĞT‚‰ÎìÔøBöŠg)bÖÄ	ÉluW€¨Š‹İ¨¦Ê­u7+'éjQ³©*Ì¿#vÖ›¹”OcM¹QÚ©kcƒ„yTC˜Y„ë™5†·—©í9ˆ
-y¾Ğ» R†âõ½60ÄU/ïÒpA$Â‚Ø`UR™"#uÍ.ÚhøåÌvEcjåıŞÍrÔ?+ÚI^+j5YRàjïàîÑkw¨:C$…ñ¨ÑŒh?E­)ôİ¯TÆÒfĞ 'Ä}»æq_Şï½ö*}Î’¹Í¢‹ÌV%§Ò3±fÅ Í>"ŠÅdáÑù¡P}_(Á‹í²æ]Ì§H´—Uæ`QkÔv4qøÚ5ÚeU8Í|µB«%Äé²ú5>šSê…2Á¸r")°­6§»>RÑm‘w¯İëıêí£›4•Î÷Ş»Š¹§İkopöëİ{»÷îŞş7nŞÂèqvi÷7_s®„Ã½ƒ½÷ßÉ‘‡‡¯z§áB–^Š/áO;zçz÷î ¹à{Pd|Ğ»/º{ûá—8ºùÏ#Õ·S·lÅæ†¢ÚbwÀôcÃ,^İhÖV­M¯Nfê=CìÓq½|S<f1½Ûã0fÌiYº/qÒï¤àè1	ƒƒ{ôÚïpÀ?»OnÒÜDdY¸ïĞşOz¾Ÿ{ÿşaïÁ¯1­ÿé~qpôæ×8Ğİ7º¿¹Å‘?x@˜ÁHO}ù5¦ù†zc'bÅhaîuœÃªC8fÆ–Ñ²rä%ôàmaøã*NÄÄ)¡·ºNjfÛ°êLó‹
-õØYè“Ú÷Şü
-Ó¡#4şŞA÷ß®“ŞµÛ”z~í‡8l~ñç£woõ¾ºEgåı_t	$·Ï‘zÙj61Ÿ™‘)£ĞªİhÕMšæì+ŒÓtÉ®İ¡©‚8äãXıãbN½P(„P#t‚ê9IÁ½Õü(êjE–˜±èJ¤÷,ÇÄ á‡øYq¾‹”	møµl	`Ht‹,:Ãúl3üX”ú$‰Àâ^­fÍÚ´QäÓU^\õtë[Ö´#ZÕAo§êæS§"FW£Ó €Çn$»=£:Ê‹¡wdĞçˆgè¿ıŸnö=…!äq…ıxtöyC‹è[…EL}¬3ƒ;UÎ£W<IëÑzèÃ¼xÚ)éã$)ÆîÃ>jòøÁã €‹úàÇ*áÒïŒVæ•Ù†Ş'„œoãLA~K5Äna2ÅıX)ø	Ç–ıTÃô3çoÔÅmZ®½>k±»­jÏ=ÕCèrqÎnš1nú™4Æ;©$‹qZêÏ…^~rLáöóÏ£Ãğ¥&:Zfì@ñãîC0°zÈ‰çB¤Dñ)ìöÈ
-¥÷N¥t"¦t!¦q Æ¹aIÊâ?TÂÁÄ9.õ®Ã	…ë0ú(5GfBÃÊÑLëtnŞTŞ½¾<‡}ùÃ±BdrEBõüÌ?Ø¨ÑÉ(qâj~-¿Võh†PË•ÑBeb´@C¨*#1‘èÓ1¼“Ï¨©ãƒLÆYDw§§æ°85i#Ó‚ô±HH¢Sé’ßŠtÜãá".oYf½6]7o1,–uZö€SS¶ÕBÖ{ÁrQ-,öÚsÑ¸Óˆ£Š¤â¬U^RàãjÁpµÒ[áÊö§LÓù.‚	D‰ú¶ı}u¿t[Œhşx´¡_/~¿¿8€>Ö%Tšƒ†¤’}™“•Š†"õª‚G)xœ0œ—]H–c±¤áÊílaZÇ#Êub$s%VnğŸ^&
-ÏBE)<‹ ;=.^‡ÆTuÙ '§‘xaÙöÃDtàı€7íÀ÷ÿ–VÛ ÔæzpõÔ]–'²sÅï !
-cÉ¡¢×ëvõ²Îçìc0…¹N¥Û›P;Â¥|Œpl…ìÙ­"Éxl ít‹ 2|nRB^ç”+Åˆã¿Riœ$Œ¸‹P¤bÔ#3QÑ£¦ê‚iô!¤ÇYyl”¦¨
-˜ŒˆûA¸†`«uÛMuŸ$¿¥ƒ:³LwFx«ÂXKg{mz±~öV` HŠ­HÂæ”m¯!…5ÄQ6QFîšï£ÉÁL›ĞVš€•ÿóÍ¥ü(ı_®äJèFé±šJš­qñX—[TLëKôm%)eH‹ç³e:«"W¨óõçWİèß©õSŠÉ
-vCâdĞ=Ä,òTµ¢&I&f¯_¿M2°1ö[Ğ<CşXí4… HZy[&æûË­?5ÂŒ¥r|&™/
--:njú\ú”†‹ZãêO?=¡ĞOğKĞ²,¹T½øt@¿=êú/tER*¥EQ)­H
-©Ù¬W„ævÀ–D½¬ë)s¥ú“uA¼E&IÏiß‡b¦ôÃ½w³wçõÃ/üPé…ÿ^(e+ÌiP%=g¹-X7¾·êÙ$|•;|0ox¢²‡Ÿ(‡Ì³àoXföH.GqZF	›™)BÍ(²İÌ?¶¾7Q¡jYé1(|±c!!V*p”ÛBä9°zpŞ6š¦ëÂí•ü(©œõqâzÜA®âq/—F'Ë©îÜ€ˆ‹óÊ
-.OÁRT©}ºàÁÀonšò&§ì\çW3Ø~T¼¨‚7	úİ$Ñ(‰,›Á©rÓçûÕ#ú(lÄ=ëüag½§í…¤mœÂ§õ6±¬ëÚnJbx$ªp^:Õ&Ü¿°-æŒôçNÃN³Ğ¾t}¤ÊÂ:üñÃ“4$Ù—Îr|‰Ì>
-¨YÄl}.,óCš²F¬Fîã¿¡âw\¨÷§O{?¿Îëı€fQïSz$nÍÍ!ı©Ïthru\Js.Ä›ÈºlÜ,*cSbg– ü[ğjÄy’|˜Pæcû$jÄ~ı¬3°ÄØºf0JğïµFøAÉ€Bb Fâ.·1”ÕépLZ·qõgoƒd¡ÅÊ>zh|te|9 tæVîÌ	öâ0¦é—¯m€L,
-`æ¼I|ß8„ÈÙÍ€!¾`0¡˜šãƒ½S½ŒWâÀ^B­ä¶­öm:9Ëœ!¡¶o±…æÓÆşcÄj¾eB7Z]EÚÖ™”€F-”sZT0Aò=Î4×=ºÎ×íõõ]ù"Iê¥ª"¥ªÂvxj'WdS¡"/‚Ñ<üP¹ÄJ#¢ğ“ÄŒ:fVNze€eê®_ßî~u ©l<O‡S,¦,6/R$WÇVÎ’®ü^°½¬Ù)sÛŠš¡ªÔRÍ„(™¸!]%İëW{wH÷­¬öáÒ=¼ığ‹ÏÉE:È«dæÅéóçgç_˜]"Ï/¼4N(ÁÜÒVüS`H…)êø‰&wºwCº<èÜÆ¿Å+_’Ş½«@-´°jey•ƒ9˜£:B½àêBàDKZ\KÕ©¢-B£F’¢×(MM„ŠM0
-.3Nék<È~õ‚1¸¨¡Déî-œBµ?€ë9†v“ªrÓ”Cšx€ªpEA+[ñº&d÷Fd¾ÿ-MıÅ5KzäI–ƒ_¡×¢Œû$eºàP0û
-³ÍÃ2ß-Jš¦»Á` \Òûe´ÿÄ6Á·(W!¼_|òè­ÏŞ|ÀRá‹
-Ê BÅ	Ìç™`Ø0_©H¢Yİ¨°E*u>¬…%z-âI%¥#©„$ô}aÒµ·ñå¬uªB×«…b…my_|Ç	h »uÄ›`ş 7-·h9äÌØœ×¦¯mi7WSn!§©k¡Ÿ"‡p¦Ù¡ß|D1à} òxCBä%ŸC$V«vÛA4‡bPægçW’{¯Âê’ÇCˆ„óãã
-X06Šl•\„›*òAe‹ØYU%Îp	\ÄR³š×)QÒ‰¢ò3ÊÕ/Åıú*©¯]3›û—p½dËÄhwfsÓt"æ§¦°ªÊvİÇ²)úÙr™m/øNrÕ(Ëv`®©Àà‹FÈéª¢æpôÆç¨<<Ç³¢IïÍ{G¯ı;fù&–I“ªy¹"}µÙè#BvÎDòjI× ,ªª!|Á€Ú -}ä¢Æ‹õÚ« Q¬wî/Û×ótE„¸Ux4ú«kMÆi…‚"8:ªoŞÿ5ÙËDÈ©Ñió° @¡˜ÏÀ±ó6úu8×C®,¦lz*	ÿWI·Ş@fbyÛD Ş˜uÛ9ÂĞ7;øXÎÊ†ûÑoß#?ØceBŒL!?Êj†€†a;™(m¸M‰¢’¡åDÊ#*ÒX_œ6RÖp{Ui`L§Å´wD ê<@YF!~Ìw^’b{,~e·e’§h­£½iSºALçœY½ÌëËzÙÆÜÁ¡8“Q9TX…ö´%ë›O^ÍKõÃØÅŞŠÄ/Ş¹…OÏ†ùxJ¸yÄsb`„êEînÓt6wÙ°T™Q¯vş™q¸ÌÎgü7ŒŠmz•3Ú±ZXçkDõ£vÅh¶)WHïÌm°Ù›ö®Pİn±ÒHÏOÏ¬Ì-Ì¯MŸûñôüÊô³ks3óË«şÓ•ƒIİ×3È+ÊGÌ,œ_XJzM{…Û…~ĞšIŞO9›şig”×‚«„0[é†)ùÑ5ËM÷ôĞ…q/îñÊ°	—«zíÏéyŞ}iêüóËfåP¤™—Ù›ıÑKs‹@İ][]áó•ğZ€ox½„+Aà¼„"z$J›èï ‹ØY»Ùq÷a­»¤~ëZÓ^[ÇõÃ£©%a^òp¸„•Š¯f^ŞDhÙ‚k	Œ":°%pöÔbd†2ûÍ2D°èÛ€¥òhaòDL0œ@pÂÛhxğ.üÅŞÄ%äE9äî¨ä‡÷/)Â;U^0i!Ö›ÒİX×`øê¼{|5àŞ±‡_"ÈŠçÚ»0½2óâK‹dz~úüO–ç–Ñµ§X¿TÎ­ĞÌ‡6½ÙüÌ^ ‰”ÃmFA·M~Û'ÿûOdG&h../têm«U·LxàyTÊ[ÄÉMBSÑóÍŠ¶ r§^£;ì	Üãs\”‰höÂR%U›ºAˆ#÷G2a(yTp½$ŞÊö™&D£‡—d[ze@
-XS;=û;  Û‡N±ÍS^% ó”> Ü>pçD‰şIJÇ‰£ñ`ú‘„›4>Ò¢"³’¾`•¥tÉDÿMP^Êè‘pÀ|i,’iš,aÑÉÙ]3&ûÒ7ì4‘G1›Ü6íşÂW”êãÏàfƒ|k)N½áAß¦sÚ“H^îí~½Ô
-í}Á;±¿¡ÃQ§†z¯_¾,ğUÙ2PRéG!èqËD‡:-íİŠ!öÑ»o·/†GĞañãÅBöõF~"d.Á¨×´­*ÙW»1Bá’¿šU›ößÉ·i0€¸UÇ®××[¢¯µ'Ú^ÏÉ‚âÒñ¸^½«¶³/;µ'½ÔÂ pÓµá¶0¬aµ2v"cû$õOë‹Ã°á‡ËNÑš,qÿc¹`N_6áê¶Ó1“®Ö–‰¿M(íªó‹‡‹ÖƒZ€¦<G“_İï½we¨¨úğF÷­÷àŸßô?ÓV¤Ø‹±Ó5ÍKÂ
-J]>4°=©ÒM˜«¡ı¹i‚–ì>œÈí»¦ckpŞ4\j×Ñó²ÌÖòÜ¦ÙFJ„Åßtì5X·hô»vx„ÚWìGAY¥Øû îA/VCñ?Êß;JşËòÂ|UòNÏ„;¬l‹úÚfıGó¬aloƒĞÉ¶ï,îfš°œ±oÃnÓŞÛiÕ`jjÃñü®JX@77MçE£Õ¶ª`»›5«ÓHu9‹‡L\É>`ËºBïİäááUà?Ò»}ÔDWåvU¹òÎ-[™y­qºrÿÚS&÷éá‘ıx
-çæŞí¯)Œ(åéî[½wPË§ds]şL‘KKfÕn40ğ®æqÁI%IM [†KÖQ¥†IË¬=u)pQ­Ié%[ÌYş¦XÆ˜š³zÙ¬Lj/zR>zİTbŸ‚£ÅŠ¤~§Ê‘
-ñı„Ø³Å_RÆCq¢«ùÜäÄEeÙ’P´UP8G31‹Ó5Zê!))Î}dŒz»*½?¾ÓûÂg‰L>¸qôêıîÇ¿)ošÅ(K©$d·êÕnŞ–XH6MjlMˆ¨Ú«PGÿ¨YÎ‚ïÉy£Ó¬nñ€J9?É¾V!s¨×îÄ›û§a¼—Í6EÁ]JñÂ5æ&€å”Ş ÉÁSg›Æ:b
-Ÿ
-¿ˆ}òèÊÕ¦®q-ÃqÍŒpá½/‰¾]ÿÂFp=s‘r˜ïşL.ƒ7*Zçâ~ú’½n·é–Idk'Z	$&KÎ×5eîR×d	ÑéXMr½Şaáp5a˜D‘„yYÙBA‰“XL+rJ¼pµ$xÔ¡2¡Øá2õ$Ë§°´ä},3qéU$äòXÆĞ^zPjÆ±Û4­,$=ı"3b™h!ı\óØÏ¡Î;¢ŠCĞH¿wşóÁ[¶ûÃÃÛnY^™^Z!g§WVÎÏpG¯››Ÿ[™›^™åçÒ†X]•’Å±àJRõ6¡…¢ºnO‚ôWFÓ,€¯:™"Ş:{Ó­
-Å>FüÀx4ù(œdTN_­wÔ¥ÇÆIBûÍÏoxñ¿,ûèèæ-¬käZ“îÏnÖêyÇğz–›D#Kl[¨m‰­!ñ˜´^&æ˜=Âg>}šH$w[‚«öóD‚¤Wm®Ë4÷QT—:P—*.»C¬\ñï9t*şàR£ÏRÁRgoÃªØövH“@È?Ö¾b+»:‘¿²¥Éğ®DÒ(SaÄë`“•
-ª]>ncŸÀ?Râ’©ıxPR‹{†¦{Å€¤ök¼©¯½€Ì ÜT¶N;3ŒRvÍA^y4h¨)˜Q…a…V»”ÇTF´P}e‰4À¡ºÙøGAß3'Ë«‰gıMğÊÍhZtŞµªäE{ãE,®£öËïõFû)A¥cÆN- ‡¢±j2‘ÖÏ E+U#<C	¨f,UT.eÊÔUòJ_¨C¿Ïí}öV±äÊ()’2+¼Òì4ÒnĞÀ¥2•‹1%4ØS‹5ê«™°üõUŒ]‘ÕDa¨YĞ	Œó%äıµgh“*ò%b`©œİğ Ç–œÕ´eµPó©ó74!Ú"D# AÇÙÂÑĞpêôºU‘º:&C7Dß9§
-ÃGÉ¨íÿî"ÓD‘ã³ª“_Hª¯“Y¶;mÌã\s)æÉ°O>ş‰†Ò­­Û¶ÛVœİ6ËfSqÂ1-vNÕôÎ]Ä©§l„Š‚øm5æVCŸÑ9Eñ|r–O«‚yë½	†q8n£D¾G*ğûJb®¥%Sˆj§ƒv?`´cÚDxõO‚£NšÎñ.ñû#D˜!´==B:C†¨mÒáe§úzJˆêØ£ü­‰~ŸåÑ({L«ã´êfv¼‚Ï¡G¼²Ô5†IğQƒWŠŸ“Ë-Ã¹Œ¶¬~Û!ÒRÒ*2à:Rñ×·ÙÙL FëwÉZÏìyãº¯Zf×„´ü-[ğ<má™ôºjj@î8è ´›Iö9ûÄÁ[{øŠ¢.QEïoïÛ'CYÇ¢Æôç÷
-¸Z Á2ŠsBIX0´reÃØ± &àK‹\±\‹ñYêDÁÃ,÷…–K«P¬ëÍ–;cÓ„p©3xç‹Ë´Jñ9o° ´Éxr…%fÛû}×E(¬(!ë{Œïš¢1`QÂËÑ·9æÆ©=è­Ù’¹±¯ İ-!—?’àï‚Ao h{Ùv.ƒ@¯Ûİj;g¸[ë6&øÓ,ÿ¤$Fß†ÉñÅ2a¹ñeÃ"¥›S³Ô‡øÛÎ®Çiğ˜çØ€	ï#ë1¯@w‰(t³¬’gõ i"Ş¨rkg­XöüQã£…‰âh±PôĞÊjÄÖı×ãÛ¬kTĞ¾”öØ|F)Ÿ!ÿ¦ô%¦L'd+°DŞ¡Ó//,ıpá¥²¼2½²¬ßÄ×¯QQ¨håP?¤":Á 5ÊşiŞ•8ñÊ4_µ1ïÆ‰OÙ”¬)æ#ã¦„3†NŸ³Ü6nÖÄEQ¨ß^ÿÒĞˆ¥m&‹¼·ú™0î”oÙqI£N±
-è»š¶Ó0êbOÀÛ±­9ÇÄ¤$âº¸Ú4á¹*`’)ä#ÚhJMHÆ¬"~wˆyjIüB!½Boû‰øZ¹G<ÜÔ¾(aåh€eWŠSğ9¢ÅZjoMa6Ëµš0VùQ’‘&˜Œ‘Í†…³#ûÏ^Òjõ‹¯=ñ=`º£n;–é>¦ã±iØÎ{¯˜ u¶»Jì œ§¶Ë&|Ü'ße“8Eè¦‘ú”w"wbÄïjid“l`tœfû;5‡z	‰IdWú]Yk‹™È{5¥8j‹TUJ4aS Æ†R+ãõÛŞzM0RK®?üıƒŞ¯î“îµ{İk7H÷æõî'šúßš<c¾ºŞ{ÿ>™Ãâîá¨VŠû@ƒ]¯İî}øv÷Æg<²•z^6ê—Af4P(£N™åq¼ÿ­É"Í !¯oš†ƒjÅôÜSCªÌ9¥M“
-WÆÓ×Ìá	õ/‚¶›^aæx<ã1x<¯ph'ßQ‰e(¨¦~5İØÅĞ¢Ø˜
-p(@9hı4ímFBå«ÄĞÑ·ıòê}rÑäîÜ"İ¯>}xx@€xzÿëÒÕÑk¿;ºy«ûÙ}1"9ºy—ôŞ¸”DBç(½¬L/’¥ÙsäÂôÒg—–ÉÊ™aú…Y ²´pvaeH=Q)x?å
-Ê@4‚­)ß,9KÍ †äÙê4/“yöÕk
-ò¤0$C- vBA/tÊwpli\7é‹é‘XHÑ.EtĞ§FÁ(š#ûó<&¨êØ.†%Eyk¼4—ë¾…<×€É„µ_>J@ÄVòÏâ£äé¢Q4Ê&¡ßYsPxv$O¾nï,S2"Ã4lƒäápmk‡ğúA¤X©ğ?ù\±2)QÃ›MV4 W`\T¡‰Ø«<&[ŠØ¿n-*N}ÅIµğD‡eµáCût~cƒZ;£D€nÅ#£D¾v2_37a¸µ·¨cùƒF,ƒq³0C†•×7÷2oîp
-J`”ô«ØÉÊ³#Š¹Z¨Ê½±Œ’‰,¬ÿ“Ym»Àt™'+v«?‡F…	çÕBåY¾<—1¤…Ïğ¸:qúÛ>8üÏo©Ö¸×Lp·ÉjÑOEx¨ŒTà‡ªexu@óŞ “\Äf¼µß680Üj9ïµ¡(´¡œÇÇ^¿ŞïcÇ½®üÇ–Â]÷„µÎŞ–22½çL`6ò|§İq,„òe’õlÇª£’EªïùX™xˆŠ´'Âs, 5+×ÈÈÜ…ºfÁÌL°™yë½Äob‰;sÆCSÓ…b«Ø8ŞÄqŞÄÿÙoûV)¸¡7Ó>ŸÏô1Rl%Èw¿î¿•• •JN;ŞPæ£|øÖçı4Òƒø+yJaùqL7LºùëÚXö…V^5ßyÆá-e´Éd›rÒK‰-íŸ)¼wŠëø1ùB='!`VËÊÊÅ.å(©è½f„fäãPlÆ;}¯SŒŠ; ß¼¯â¥èòem¢£›,W&nõ¼4×çŠâ*0 Š˜Ä>èÑ˜£V¿¼W.Ø¹ŠÚåÅ>ƒ)|ãÄSÜ–ÕäÊ@
-§]4ª›ï0…öVŸŞÈKÍÒ!€DºZ –˜NØ9tÈx¯LıRÑsÿüèvJ WÈ‡]bã‘}•Àp÷ÃİËÌs$¡ı¾0½¸¶<3=??»´v¥¨önõá$Ag¯cUÛ„Âõ©š1¤‰ˆÉ§R3*0X
-èó…0´K¤^úì–ƒ{ncg;kùÂÚËFÛµ›ƒ,‚`{@'ëÑõ á¿V]ìAymnŞ°ªƒt¡,hw%q6ò²ë¡YÀg·hà(u¬¡Š¿6C¥…Ö0Ş)ì×SS¾o^,²½Mx}XÍç
-êê(‘ä©iÇ1v3…ry$·aÕë¬ò&CdY%–Œ%ˆª»DğÌµ)ërº½‹^a…4‘ÃPuCøbIÀÖ6q8¸[+õ R2/SÖ-K«‹ |%»:Ãì=enl˜4Bã%ú£ÄQ„EôBNPVÜDAš©ÊËK~QşMÈùØı
-Ñ==·Æ3×æÏÿ„d^xivyEF™Ôø SÎæ.^•Iß%ÏÁ¿—²¹Û¿ÿÊÃ‡/“FmŠÿ(½)…côÛ‹ìPi4MšG¤b
-KÈ¾ÖLy\¦”&…m”ìL‘¬:¥I“ÎFoÑÜ:î¤QÓ&y¶¤dP)}Ê÷‘‡ÖÇ–òX	*Ä_*Ó+á5ÑİYåX,ú”ÂrHQ)B¯tP’D·A)$$³ãĞéé—V8ÅìêãS÷²˜ĞË4˜ªN6^ÌÎ	.Ò®»¶dVcÑ*"O†0ºÃŠ°Ä+İ†ıás•¹mXÿö_¯Û®kºûç£gj±íîŸÓ4ø±ÍYÈpnÔûôá!˜¿¡Ó/Ãj¸/éo´d3-™ŒjbÈÉ`ã£DyÍ"‡ÙÜ)NĞ©ñÂ/Ä`›gá|îÁX´ù{;†áì3ÚF¨X¦¦€$¦×hCQ‚`3	xÌÌ¹ ­,‚76iŒ‹¾R%	ÀEm©O,é\Â?z¢h˜k *5ÑB¥*qË_BgùJlEä­? Ğè¡üù-Ş™
--¤(¤@¤©pIbˆN5œ™-Ğ/J^xb!š ¤%Å$Ä}ûÑ/ß$½O^¥xt™Sğzö¼Aõcœüx¡Xt!%ø°Z(¥F8o\±k‚Ÿlï8„\K»ô@
-€Úû‹J~*06˜?ÂÆJnE¦¤fÊ"Ìf¦…úr”ÁÉ’Â\¦ä?DñF4 ¾Ù¾èD>^Ô&¡¯ˆºyŠád§‰J[@FËíÏ_¦
-­Ö©Ÿ)#qklfÕ¼&{I/Ûğ–Ë<ĞÆ¯›4şÂû®x‚”~°håÇ’
-´'6ƒá±šÕÌ°Â/p7›Hu?è“êNŸ"á‡ü_
-LM‘±û‹P£ T=ª	õJ¤&Ò4åËÖz|øXŠÌ„~ÉÄ2#ùáeiàÈu™
-q…à°éèrc°½“U ¶ü/bô—À}À­ NÈ¨a$5Ò|·vm^œqI†ÂÈ¡>N{ß®@EÇåpÍğU©Âr¼\†Tú(æ1×F~QsWñîœU£BöĞÇAìPÌúu—ìËúª®VGœ7õPòwÅÂÈøÔST¬‹y–)õÊt¨ ôÚ(0tFC"ä `ngÿÙK8é-ùÄ®&4]‰¼#:•É[‚›	·çÇåSçÈ¶=şJñLq”˜`Ú‚àÃæšöÙçMH¾PÕ¤í-«n¾ˆ’ûÔŞSr›¼¡ÈÁ ³ÄÛ§xX[ÍÌ!lÔ9sÃèÔÛj-¥)ÇÂ&g½<Æb)*6$R“A(Jèj*iÄBÕL“"{®¯Ó¸PÕº¿·NÏ
-­5 “Vf_®g'b°£S‚{ò~6ãQ¬'®AeĞ¨¿Š:•ÃÉxb\ı"LêCüåÊa+ó
-§ú·³Î°²ÑZ¨Œ€hÎårhğ)¯×Yñ4”ÍáŠaÕµ‰A13”¦Dëv+şæƒm¿Õq´ãıŸbü¤¿ÎR'üŸÁœøÛŸ¡§8âS†NÇ&–'vfµ‚Oî§CåWth2/v¨<P‡´§”éÒØÔ±2¥¦¶­à B ¨™“<Àh¦—â¹ËOW¢¥yeæ-U—åIkECÓsg(Óy¡*Ò)"šFğg¹)¢µT´S)K_”–‘púÀK'âé¾ÊAÓ$)ªÉéŒ¾fƒÕØÔgºNõÔŞ%ZµeÂW5×MxGÕnŒÈíŒ!_£;‡ÕÄs¯lqM°eŸñUÀç‚pñ,áuj}Ü,m”/ÅTä0êíSCT7VÈóOjP)Ş¦aà j^A³ÕÚÁeÚT2ûÄ q8æ†	*›³hƒÒ²{j¨ig½Cºçi<‘r‰ø9öÑNf§jzªyÃ¬™‰ÓLªÉ9æè?Â!VC\¤OõbJ:.MÖªm;ŠËÀ/•ø°æ]z©CÏ‚Àg8(«©ìÇ/Û¢d‹•$ˆÀú¦ˆˆ6Şe=¥Í·›˜9â!şøYòà4)ë’UÅêÙñôÃ>wÌqº”bÚJ¾
-lå ÒR}šy+?>âÅ‰‘R*jcÇ+‚4A•œ¶ÓiV†Ò88F¹RãlŠA'ÚÅ–QY‡LúKsçÖ|¶Î¹À.&è°ã#R™ÏK1l }VÂú9,GÌÊ?]&h<²ø‘TsrCùó”DúÎS˜ÌĞìMÒÙëg¢LÒÌéö†Û5³åJEÜ^œÚË°‘•WÕO¨o¡|ePê¯±ƒ£7túŸyŒzW{Ùk;/wİo£ûÑûÄ$ÙW×à¤NK2²%Ã£¥d-wú‡	ÑÕÂ_¡$ø‡|O+ uÇÕ~ Ñòûä&Bnæ´‰ŞNã‚S…¿‚UTÇßÖ;ETÑJÄ'2ìšõáGà‰ó¥{H|ãùdkJã
-¡‹f1ŸÂ’ìåà}qr„®Höqˆ—?±YüWâ´ğÉéqú,RhI-–“ T›ÑàÙÉ‰šuŠµà¸²é›ÖàUÂÛ•Ô¥]I4VXoêÂÂue“ì4êM÷ÔÚK`.mooç¶K9ÛÙVÌ£}4Ä kN•ŠC¼2(û…BÎÚ;§†0Û¼X†ÿŒŞF›3¹¥ìË0‚Ü‹O)ïh–?³è@…ºj´psÆ4t¬ùÇ…©©wªVúO¶ºez¹Óp,ƒ6,ÊNÇ:i 
-j§†.€¼'“¤p¢­d+HAx
-ş.k†mÒĞàÉµ¶lĞ&—ÎŸÉÑğ^÷e«½•n!d_{jx$vôc­Øã¸^4;ûÌ^¨©~Ksn«nµ3ÃĞºÕÂE3b”½£µB­¼19º±Q«ÔªøÏÆú†Raæj	ãûc€N•)¬‹aŠs$:vÍ$S£¢_ÇFdKëÅñ8—‚8”qW=2¿Â@ı¤÷-hjÕ¨ºV2¨?©Õãš¤šƒ49â'/¥°ÖşwÚk…aO,ı“¶Ö^İÂÊtHÿ–;ÒøùºÕjÑ‚rê
-@§åfP€ÙE»Õi…jÅc‹1\NÏAÁ Õ§ó¥ü‰Bñ¢_g"D òBì«àÂÚ!?jÜTM™
-AÆ•T•ÓY•QGÚöõ]>]Ø(N–N¬!ôˆ Ş¬Q°Å]L‹½í"}#F„L•³±†.’UD ÉZ‚D 1ë0¹®¹6v­ÿmúÂ<*ÁÚ	øzbÒ\ôƒÁ‹5®KHR¤œ€/ÛÙÉq ÉqßÄ ÅF%ßÅY-UyÔ>‹ÃçLŸËiÇú>~“È*û‰Û)5 Çİ©‚{Q†¦¯>¿fM…êÑwa¥‰¤úï	1)j,rÅ¤—hD(#{ğp„ílSµáâĞ@ÉÆÄ÷„â©*ÌÁËÍ[ÇxÍÂÉ"à~2EVÁâ,LÀŸÒ8Úeøs¢&²Ç3…"*”Ëù‹:5L,“B#Küµwì²Wéÿ_íÕ"ÂB¡¿˜E|)şÿ\II“4Âà1”~ê÷A?{î§ã”4¹
-öıı[©\ÔŞ@#’»«k‘V:ÃFÿ+‡G©2	m*!Wy‡j²22J¼k1œƒT¼K‹œ¼É’^:1óÆ)í‹%xåøû¯ßª§Q­û‹ş7™oUUÒ»õJ
-·^m„Ÿ İl[Óe|Ï•)·xOE…?5™F¤õi†N«ÀûòIp2¨õp?ìÏß„§ z@Ôu®˜ÙRmXİ =¶oïæ‡İÏîO‘£w®wï¾Ñ»s+ŞÁª•G7Hï?nt?ş–ÅøÕí¨¥Û«VêO"Jïº\ˆàïœïKŠsîF26èŞaào¸öoE]û!ÒeÜb}Õ½ä	í^Úrà+^„6_	µ¨`á”Ê£…“£Ğ É‘‹l¯2’
-5î?±¨3úF´f«OˆÈ>FÕü±_t ˆ‘õ{x”¿`	f±ì7ŒòJCú”'€tªœBdS‹*‡R¼JlO- lˆ)dÂB¦Á#™ÅóÓ?™]‰ß/Òí“:tzŞÎíñ!6ûÓWŒ¶á`Í¹ÚH®eÔ–Ñß”åi8?œ¸ÑÕ·WĞ‹Še„°¡…¸)-È]œ¹=ekJ†»JX‹™¡Ê¯ÖTÂj‚ply_¼BDC}nšmÈå–¯¤¢R5ÈqU¹úÏíÈöj\oZú"r–ß\ñöÓ‘¤cíÈ­šåb‡çùFyF™ìwôá ñAÚÓä>tDÇDşœkõKïbÔA<ROOİÆîó>ÇwwfzéÜÚ¹é•é³ÓË³«Ñ¹½ˆÆ‘ªÓ‰7æhU>”W®™MtGOÿ´c8–©B.à€¬U`ëx÷_ÿD×ñŞk¯v¯_í~FÆ0óÉZ¿é>¿rõÆÍÉÊw¹tËåÑñÒèdùø+·a=ÆU›Ùwµfûª%BÖ2<öXÍÜyÂWt:Lı¯ç‹‹ó³ó+$3=÷ht»Õ²›Ğ•ïí’Î‚rì]9ÈMK:G,ğNñcŞXz˜Y‹Q/òlQ '÷ ÷áºÖÏl¤4››`s|+~”A·Ş«¦>åŠ¯¼U³æÇ\ë­ús›ÍÇºæ«NèA´·É~eÒ°kHå†¥†ÇÙyx4AE‚¯Yp-ÃšRÌK_Ñ‹¼ÎED²HE>è“>Œ0T†•“!ªTªÅ®‚àsÒ É2Üİ"¬Æ£q¶:}o(Ôe3[­[­,HQnHˆ ŒiTerŠèSd°Ê¨!òjjé+]ŞW.ìcFĞ˜°	quL÷bFmèå•é¥Ú	¦‡–J<ªŞ*jÉ!•ğeëV%/ÔZÍçJfãâĞéÅ¥…•…™…óksós+sÓ+³ç´‚/ùâDnÁtaÊ{´Òš‚øõC˜ø%Â×ãNÊ Qéáô˜rxnvfîÜÜüdå¥¥ù\.wüùğ÷ùN„g¤ˆ{—Ò–:Åb…·¯¥,-,şdğÙQEĞÆî¸ÅFÓ*æ:~»;¤-±ĞëFÍÛö¦ ÁºIWF;AÍ½ëWnİ$½ƒÛ½¯~G˜ç¶û‹wÈs¤wí^ïÚm¬sôÚU<úé¥í·Q†Ú#üi¬gÇÓñhıFu?yvô?zoŞ#½›w±,Ígï ¯ùõ[)³"fxVùT
-—4í¿zÎüß‚í»r!EU#Ê¬Hí@Ï¯Ä=¿f¸[¦3á×Ë¢hÊv´²ÃƒvX9êÁ –íR„o ·Á©ƒE{PÔö@C‹½{o÷n¾çsÏ"¿øóÃ/ií$üÕûê~ïıûGo>è½ûzJºLá¨à?‘™Ã…'¥ñÔƒ‰ûÅ[Ë’7#¯*ÕZªhSÄS”&¥òY_›4(ÏVÊ§A€¥3 4JºŸÜCÙuôÚŞkÿB-’Ó+3/‚×èÒı×,…WÅ	­>Henc—eƒhº’ÏOy¾1µlVífÍU÷¨Ba<F=é@ÕÃ.®8òÈtô—g§—ş>‹ÿÑÅá·¯½wóèæm¿7ßèşì>ÁuáÚíŞ'WS­Y®T’Òš(¬}gÑ¿¬ˆÇù)ÄIbQözå
-y¨PÀ,E/nQÒƒtõ:ş]y¹núè?¥(úO„9QŒÆ+Ö ®¢À¤(€ÜÀ8†\¤$³J0-ñ8Çx´ú*HªPri­êÆ”’µÃá§{Å”ÕóTîVrÉôèæ­‡_ŞU×c¼ãÉò¼íÀ³‚ù%êYµòœ‚d=*’”y¹´¥_a¼±ÃQÉdÜf=L³P@S(N9]†şpc8c±i}ƒÂ‚?¼û›ÌÊâHïİ D®w?ù°wæîÎ×¨|~qôn½ÚûàõŞ\ì¯ª§0vó<ê+0µY7êX²·FëŠQ'[¦ƒ¥ÜÛlæwíCªvcİh“¦+ª§>Æ¥¦0›V…hQÔ à+.Y}ÊÿoŞÿµÏÈïtÿFèã™¶Äİ‡_şaìèƒø‡Æƒ|üg¡é{·ü¤”äñ9+Ìèí}P„¬Ù¶PDš›ğÛ¦n& ³Öß`ÄgæzíÿÓ§½Ÿ_'İ/Şü:¥ÂÖÑ¡#âXĞİ ¢)M=Ë;™a?‡ÀåÙÍ5¬ËV;WµÇvÆšÛ¶˜1wcg¬XŸ °-¦Üä­Òp
-/<ò/‚;3L1Ü.Ÿf6PÙâï˜ñ}8¬Tƒîb-¨¯8î;`Kò¢¬1‹i–+Ë«(H¢,Ùr^b(‘@r
-ÁõT¾}2äí›Ag€çº_a¬A×{7°NğƒÃÆwpùJ¡:oV·H†ÂqhùK¿¯·%é·
-'Šp™ÖÛ¬ ç0ƒk‘‘9Y±77#Ù­{×/2;óÑìÖÄ¨î|,4$X>ù‹q»Íş?"/âC´iÜ-{[ïõS“—›q¬)îÀì~÷dEÇ„šRì1^t¶îf/Š{°W§.±£•ˆçõêÈ*wM—ó2Bnæ# AşÊöE®Õ7Yj³û¡h²fYP™ü±[ÕğªMMêASÓ
-İôè+Q/·T+Ô±Pw}ÊgÅµåŸvŒšÖáŞ?‚`©²Ú×¥|¢Mƒ0¡;–6:»Û‚'N‘i*ghYÜvšj"™¡çï…se¹…U˜Üªc×ëë†ƒ;ä1Ş°b€¥†S%VmGSÒ(Ô"
-
-×†,¹m¬_Ö¨áî}Şß	'–ã¶§uøŠÃS¾nS W+c'ôÈ€ômt÷7.ÓØ®:µ‡cA6¹çíêepÆ¬Û„‹µĞ>¾qìíÀf4&I5ı>>@®•xSüCäiñK%½‚?O§ŠØ£BM^-ŠéÕ+F+”ô£Ûi´\^ÿAXİ2OIËZU|Ìš±ª?Él
-yÎªt%i¬|¢¥ŒÂÚ£ ¨5b=ìöQ‡šÉ„’&4• î†Ğ!x†¼òN†aqŒŠwbjk(­¨x5Bå
-½ryã»®ÊûÒìÈö6×=Œˆ`Ï›":Âu¨OD÷‚›[¾0·¼¼67¿2{>hqiöÇs³/¯yûÏkçfg~Ù}öY;«\3‰©¹ÒN…ÓtÿNJ¸¥‹…U;5„™»`Î€€’—3ô„”ÙP>íxŞ(”Cä«íT&`
-è\Ã/Âz¸ËÖCskoqÁ-i=şÒC1`Y9³%h$yÙ€û–Àê„³4BYQ–M¯QïY.>†)²­SŸ•j³, ”ª±|QT–¯§ ‹ù›e¯ĞÄPuZh",ˆ*¼R"B´U7©äÙò¿q>öw˜<Õ2œÏ•I†=ë°‰óò~XşÇj Èùæ¦Ù_ÆƒÀ=âï£ù´d8Ÿ+¹•úH›Éc<ûjf9¡™ãŠfª5	!™_§9 Ó=_·'!3–SíÔõ(–(­˜åÉ
-âŒRl©šg|?ÇÒİ—/[õPmÚ=	# ×oŠ \øC>³dDÇ¦á!#MğëJö•Ê)(*åP¹£²ÌAª2­]Ú¦Ã!øÑÊ,ëY±8¬¿$Kš¦Ñ®ï’ÕX±¨g{;6(¨uÀEn×B×†÷ùÙÏ.Q&¬-—l[í-Be±åA`º£ì ¦â­WÉp ÷g$À Ú(Ö¦³Q¥q×6M8ë"Ù¾$ÌZöËğb{ûÔ^)/Ÿv;Õªéº:õ¶Õª[¨ré¢ªm×áş&{ÇDä!éôë díúSB`—Ôdw‘ÑÊ©T4$µÅÀû<_Yøœİ\fİµá÷X©«‚^4©çşGm3ñ6Y‰„[ğZt«ñšfT:©U…xÌF«mÖ¦0€ÕŒ*q|ffcŠà“râ!¬·½	» µS$h®|íşH¤F­vŞŞÌ´3ÃînÓt6w×~Úuš½tx”xƒ:Jö„‹/ñKàGà£äB7e…{_–ç«®³t3¡t*÷7¹­ŠÆ„ÉI=vĞ/³&]Ê1‹ø?¹$fø9.£•nĞdÏ•ƒ’ÑOcÑÊ/•Ç§H)ËE}ÇY·	-PÁß•ù1«„É2(*…BºŠŠ,Ieju›'ñ¥
-}s³MÛ„¯ Íƒ‡ĞrCPA°ØÜ†ŸSGç;k‚U¦E=—vÔÓPˆì¨¬:Ãë!	*K;ê$|fÚy)SÁ–­Ÿ«Šª İñÙS¨±­,Æ¶’•…7S*KÍ~–tpÉÌUìP[BR‘ÓdOêŸRn¼\êö~ş¾¹9Enô>üœ<³ê½#½DON‘†x—tG
-Ãø¿"v.³Š‹²U¬¦ß8²ÍÂñ­ÌÆ½¬µ–y ˆö5Ã«¤ôô{vE}\ZMè1¹xI¢ŞŒŠ ÒfìæŠ/¸È¡Y/í9A
-(ÅP|5š‚Yõ»ÂIUXSí?şİbûŠèˆv;z­®ì>1Ô_™İÓYÉ®&Pæ:9Eİ³ôô¿]»!]G¨åe6`9¼fFØtì5$Ü5¦÷¯Á´—`qÿ/Ëó9Äà?_×oÅÑ„²éi*Òd½B™%ëÊš`[Áí˜èDˆËŠ•xH‹\ÛîT·²m´KÚ¾ûG“+N¡fF<ı ¥ÍR˜|B\?L
-[‘Ië/"âZ0Y	/~E!c¥2Z¨LŒc÷q†1pÿñ66¡İ}-K•4ËRØcäœD¢ü‚ö)‹0ú‹YHÓ$¼cØÚ[ïñò½ó$sôêıîÇ¿#4ÒçŞÛİkŸ²p,/OÏÏœŸ›ù!Ë+‹#Ã4³!Å“Ÿ>üèk·{¾->/=½´2¢Œ¥8®ucİ¬ŸtQ®®FI¹sÖn+g’­®Åñ¤ê¸7ùyÒÚ,qi’†B1íñŠ‰8Z°tÇ¨:øQ¢:®ãcô<]ğëpDv«Zµ¦É6„ÃÅ•b6SÊÓ	‹sš±Ö\R§E¼iO{3…ŠŒQ4Lä%¹0–1UB‡5±ªIQş¢Œ<¦‰2ÕÕëôÔ°è)—”M7‰w¨¡¥-ím+aÑ¼p G£¦oU(¡”¯ËVyG,•ÏcJ~X'¯òÀ‡#Nüı.8Õ”È‚Å^¡~â‹‚Wæ@%’¥NvûÑ½_‘˜eCWò*ìp	JjB¥,ÃÑ˜V©_C¥wô5 ´ÃïI]†")hLòDçE1òGg–è>šY#5Ë1«èÅe•pĞƒË¼'Œœe¯Å^F¥x3Ô¸bXuôeò—œ" çL‡Êj/ê¹Ò}^l­ş=âí×¡_ëÂ¼ÅÏÈ·c´ˆ‹_çj*¡º=ÌøCZ9<,«¤¡kf›Úkæ ãpòù:\¦:_EÈêä|şÙ/·mÑhCŞ\•†Oy¥0¥ B©o½÷9ºùiïà÷‘Ö†n`=ZõİÆtGQyC\÷hÛBİoyÅiBt^ˆ5åÍåMÙ„uÇ4.GOĞQ)¦•ŞÍ?ã¨ôî^íıÛ×iFåexŸÙD?„«n”s €aŠİÔãâgæzã'¬û#ãn8öĞ”RM÷Ë«ıÌò–µÑN¤/›&õÀû€şĞFŠ?8üØ#rúáIO9lx	.3ë5»zˆ°doˆø¡Ğñcdˆ*é™)èîÍ>˜kô‡¸!Z¡2şx’Gh¼?¡œn„¨P~ôİ‰åi(ç‹û½;0%‘å…õ¾ºßıåíT\¶ºçlÓlìÆĞÅÙš©n§Ÿ hÂ"~(4JüØ#¨‰¾ªû³û}Ò2^z¤ƒä—kôÇˆ	;t¼ŠÔb¦ˆ¾xŠ¨pqø¦ÄQ‰è^Rá…àsµlÿÑ:¿Q‰¦Oáñî*ÑEV×fehÑ"€Z,ôÀÍ¶¹Ë“º>cqhÉ°ñ¼‡*¸äşx8“=¡²—bÇ¶ûâ£ôOïi`ß¬„Ÿ¦Ÿü³-£Y«›³;f¬sjMøš¹.&:ˆŞCê’s·â±ûÔ`—µ_÷u‚Ç:p;äc°Ÿû®½
-mó@ªÄ\&T‚|@ô÷‰•¢˜7¸i·±?ö¶¾Pv¹X.}Â/RyÊ÷'ä½Æ§äXKß6©UÀCaç˜k/.ïL]6èÉò<q¥ï³
-„wô“ (»„~ïhÃšƒİ]e‘ ïÖ»¤{Ó,oÖP§Ã¾Ÿ5(Xªha&$P)¥ÙÇ‰¦¹n´dFLÖÄ@ùuš¼º¤wEâ*‘Š	“““<îÙ‹à”ª©ğ®øĞYõX$î“¿Ô\èÇ$Ä$÷‰è6¡}¼îã%'áÑÌÍ vT4‡3]p•&ªØ pÏ„´âm
-CQÌË=´”Ú&4‡Ë1_.Õî›÷ÕuÙ}~‰Wä†@Á~Å'ıÉ\J•âmjp¯µÑDåRucZÍÛ©šì2W½ÆÓk-Çn´ÚkˆXoÅ>Ÿ\º±º…”xŸÊï­tQyÃ5ú¤Ù¹f{:Ôu'[1)ToW¤»‚`ì„¨QG~QBeÑû¨©G³Ÿü(ƒb òpq“\¾i¦ J³Û×ÖÛÍ¸¡W+‘?^D½íl˜V›ÌØÍËaü„fñ¤[Œ0‰?ƒ?â{•À’ó
-aËKÉO /ÎWY^ôËTåÊ&yz4äFY§L]oLªO÷Tm»\ÚZØ
-–ÓÛ=nAÔ¢Vv<@çÙÕ—„eAÕ×*ÁÊWšŸÀÿçsE\øD +şj\›×´èÑ4ã-üÃ½j"p•œ”*äÈ‡
-÷è¢¦ZÑõSµè
-ŞhnÁ”Š
-ûC-{5Èaªı“[¥ÈÒ‡æª&ÓÑdé«W>åN,Â>8$ğßÃ?^'Gïİìİy â‘å—––fçÏÍ.)vùOm•]ˆ"	y‹·
-—I •²õšx¨w÷f÷“„uñ³Xß8øR÷g·^Eº/î2¦‡_]?C2G×?íRÄ¡/nu?ş¼{ãV÷³CŒĞíİ}º‡·z·^õˆF´±ÄÓ‰€LÄíğ/ÛF³M0£ˆ‹ôö–å2h¢3¸Ãìvêí)rŞvİ±¤(•ù*È!®¨²s£Árd%á >ña‡^RhD’k—„1‰Y“@x&é€’ÍGâ‹[ #P¿ŠÛš vg ªĞ´×jf1üDUµÇ!†‘£œLg"ıŒ¨£[ãæIIêyñ¬6MxÉ`ªŠæÒÇ(œÀ*P’
-UœoÈxHâ'|âñO1v†%ĞV:B
-–2¬úD³ •òñÉéIo×t×ŒjÕlµ#¤Ç	 ÚK,t<¥B»b·P™m;vİ%ggŠÖ8C%Ìfg”¥±˜ËQB}5£dC/Òå…&¥‚R—óX”ülPæ¦˜LcÖ+³DÃ™=èÛ§2XMb9Gô<¼ô‡¨}Øï1¯óìu«nÂ:°ÉàLå.@ûËmL©Ò²ÔÖ_¢\Á #?ORV¯;QÂcöUÏ‘…‘NpEÉúqÊ¦8}}.è{I‹m
-Í–w™}ˆÊè²'ˆ¦ P51+,e0~QŒï×¾‘ú“Î4Ì”*/r§1¢.
-!Ö>#Š„æ8ö6g)º©P‰"Òòıû(r€:u@Nál0×D\Ddg|/©U µÿ«!ØÏŞéşË}fçÀt@­±ˆ*^C¥bÿwC¨l­Á¥†Á'¿ŸšUnı„Ì÷;'6?®Á§:Eî}hDU*½˜¹rŠj3Wµ)¶ÂîD	kó(Ş–”ßšÏ4
-*³[ÄŒã?ôæöÃ?1wÏ-€ëŸûxZ„3WL§a5zwi¬QÕGqšc¡Bé›ä} ³…n*i-ÛYZ%äMW:ÍK2&Œ­xƒ_yÁÛÖnZiz;9‰309ùwétÚ-‰tT–Š:\‰nø0…zzBÔÉsd¹¶êúˆ33[FÛ·+Ğ àÖÅ£Ö³=3GÛ’Yh™M×¿`Ì;ÍûÏÎ®ŸİvXQQDµğË	N³0Ì¹ ½¬[*Ûù„)1úc*(€‹­8ÖÚàMñ ˆ`ŠV`t…HHÏI±< 'm ‚åŸÄ4TV@BåÏ|„+‡”¹:ğêiår	Ø©ûÛO»¿x@º‡oQ—íwIïà^ïîM’aØ
-Sä^ëÜHİÌ±9dÆKé¶„‰Õ¿óŸŞ"¿üÃÃ/>;ºu“Ë¶¸»kæp¶É³›>ø5Şß=ü¬÷«ûü~xè¯ØÁİ{oŞŞ'cĞ*UjY˜¥±ï\Št|Šv\4.<êğôÊìê¹ÙçÅN>ßg÷bı!è& ë­Ñ¬yıMØs:k«C”%Éi²nˆ”«ƒ´Ğa+Kp/ªÂjıÎÕ`ó$ÌQDÍÒ„¤„‹æ•|wÜ)VØæ}TJDu!ãPFL@»#jõ7í8õñbÆÚôÅHúškı§»L@>Q„¨&"I;W^4Ë‚ö£cÃ
-¦¨%*ªq)õAdàãêxaÊC ¡*[XO)6IÄG«aEï>‡b—#Yê/mïÆ˜¹¨ÆàX¢ª¨Û‹Õ¥½—Ãû/?jˆâÍ&
-eÄ›•ëdc%«+şeb'”…ïÀö´¨?P(ÏŒíışàèúë¤÷îı‡Çº×şÏ'ÊÁÓ¸À¡WlÊ‹ëfô†ä(¨“L×…–!'Ü„k»mÇ¾l¾lÕÚ[§öŠ¹„r@>@Ç€öÖN47¬z=˜“¢f-MØtÍ¹9Óß0C¡~]÷1Yğ€é6[7hvM×®Í6ÎÎ: SÈ¬-[ıâKç<K.M–Ö!Ç_í¿™Á5?YöW`jäEö‹ÓUyğ–Ûc÷÷~ş‹ŞÁï1ş9zû69ºú‚%whÒİ»ˆĞÑ«fà×’Ş¥~z’‡‹Å.%UíS»·Rh¸3Uş´Õí0‰švãüìuÁ¾Ç¸5C½>O"[}—K|:‹^¨¯wó‹Æõ;FƒíÎ¼uĞûà*q¡=ÿğO·{_½G‰æE³ŞBÜRœÆölxl„!ğÚğÚX‰â}ë˜ÊŸá\”¹fi•†ôñì@şõEûVRFû
-^¸şRMşvb‹4¸Âcw\)˜Ö´s°Zî/À79 ÆƒüPT]WÇ-„JÌï÷`'úÚƒåÇæ«Ÿ-&…æ&ŸJÜX›Ï¾0}a–\˜IWÊU€«É«Ñ¦øªC>…`†Tá¨|)
-%z$‡ĞÆ	Ñ@ÍAäNş£0É*ĞÙø8¸¢öƒ·•ÉY(¾>Ùe³İié‡¾æ&6ø32cêhÎ~¶zğó—şä²‰—C¢u±CëÅx¢S¸SĞ¶’å•Äò 7Ci²Çí<tûºÇûÛÄæˆ)ÇDím²k6Z˜VrÔû,0PiîXãCÚüŠu®ãç	p°³Îö‹¸§€¤Ö•ôŒqHYD8=ów XŞ3:T!8v÷ ù#×?ĞĞøMàr:€{üÈhÂãi·rãb~Ø§ Ñã‰¸0\ıxÒ†¤ùSnéùo‘ÈÒ—_İíşæ9úùİ‡®2±“‡11A&Rç\é6À¥(§’
-¤W¾U«ÃyÕK´¸lÙ‹K¯şu ”^!üüíj@¬DíãÖ{¢>…“lŸÅpèÃ/®÷><à>¦¼ÜëşöuJÛÔÛÂ?ƒ¬Ï~Ñ›‰Ò(>MGî¬i¸mÃ±:Ğ‚ZÅ?hW¼Ş?Mrà@$Ê²L”üÜ[·d¬AteŒ‡!	‹]ú¹×bèô·İøc—ƒÂîşöóŞ›÷aÙ9Ào×{7ºŞû€­=:|Lª¸ #éûß†N¯.,ÎÎ_<SU¦ÈÂÆn+Ù–Y£“ø„pSĞ ÇÁMfÃtŒzMÍNŞI™Ÿü›†òıípÔ'¿”£z·î½sĞ½óuïÎÒûà¦“_g¼%ÃÇÄLŞ|ÉÜ´8½²´pş˜ü49Å­rZqÁÀÕj÷	a'¿]¼Yƒ©‚za–b§d†â7ìÄüí0ÓÛoÌLÔEôğğ*é~ò[¨`m‚•¿ÿìSÖ"ãcuÉ,5ıÒÒôñj²eocáä²âXFıIÑõh«X‹'q\ÉJüœÌKŞ-3ñC;Üôî×sÓµÛİ»ŸöîÜ"G¯½M*ùŞƒ?ğÀ°õ=&ş"B´<3;¿rL:1E–ÍªcÒœ—F‹œµíËO±vÑf¥Ø.ù¿kRxºıòöÀ&ÓW]Xzï¾Ş»û*]ˆ^û5¾?¾J™)B‡ßér´¼2}aqù˜ÜTšò¼l›¬tšaá‰OîÖã`¼D«ƒ(Y‰‘9‰].0=ğ·ÂGß¼ÿŞ>xëxÚé}rµ÷Õ§6¯#äèÍÛİkw<Ï’ßô§ÀÇÄJ~‰‘“^˜¾pvnàuiÑvÛ^¹ìsf›Vâ&¼(8É@‡fìÆºÑ&Ï›fÃl¢Išô%Ÿ6¶œ5œ776–ø1ê~•¿Uİï¬áÌlN»tov<çÁú÷&éıáöÃ?}M‚½ùŞÏ>?úà€tÿxĞ;¸Ã‹¨Áu"-sšønUDXÔV^Ó’£òitõÃ}…òÊ~4d[É|~˜½Èzìrñè¿2¶Ç¹+x.&Î?"–ãX¢kŠøïRmÀcá=¯w!ÎÃ(ûAï/Á8é@ÄğódîÇ"Ô”’%ñ„¬vÒ‹†ÄßOÈnlëVÅL:`-şØ½XŠ8{ôÖçøÏ	y¸×c!P8¸4Û²òqe0gjô”°jš ¡ívi^Qµ[œóts›*<Vª¶‡ƒÃ™ºíFó”tpç
-$’àÿPê6ê$€ñá‰cdÑhš}$D8Lß§„/ß!11"EBD‰B£€ŒŠÅ¯L•!†2-¢òxò"ôí31âD^1’E	(] EG˜×q=?Jÿ—›ñ*šà­œù·²«ù+[ìüÏ³<9œ#Ša|KPl`HOšà9âS.Y^4Z¨B?o’:ë­;$`Š<ŒDpà$Uz‡¢ÍĞG*+S¿DÌp‘â5:Ÿ VÌk‚ õª™>XO•1@rÅ¤ŒˆKDA9	q’ñ^j,¾öêÑ{ŸqĞ´ŞáŸÙNÂôÌÊÜÌôy^m›œ_x!>T±ÿˆÄÄ
-5ápî˜ÉÖö>
-T¶¯C¿ÿ=Kµ~.kâã"u)8ôL_T×ƒ<&‚Í†è4Ú8TúèLe'îw¿<`[ªŸ“îáíî[ï’îõ«İgµC?ë„E½ÑÒ˜¤w÷F÷îW	 Lş¯™¿`¥ã4³ë»YZó‘V`µ67MÇ%5£¯®YğAxª†ƒZp¹"!Ó¡€=;Wÿk@¡¢Éü:~T<¬Ê/pŠÊ¬^ÔÄ×mX¯–™Ñ‘sÌÈztÉƒ¡b:öÒäZ1p´»\l§-3.Ë^Õ=¸ê‰Ÿ¾’Ş¨"½ûo -½÷WFMÃÑ$Qèüõ1ÙQ0T}¢›”ê–¬ãË£ûHóŞ´áõ	¹oqC§®*¡dG
-e:ùyËm§P<8|¿¯øì2ÕUR!:æz#ëV»^_7œ°šRV‰û%•®(¬Ü¬-¶…µ³Ø¤ú`1³=ÖEËhaAÆ ZŒğj¯ˆc9ÁYA¼ZXaşìs½`ò¾{ã6	§>¤›¢?gEQº×îå(ÎÛ *S+%qÌ*.Ä5²k¶sd(…¾®.­?»£•ÉÀû)ÛêşjF)†»sVí¸gÑšUL®œxs#²Ñ"1ê"ºƒ°˜a¬nÛ/ÿ§¯%‹İAÀO6±|	V"˜yŸ3^¹XUEà•Ç¹±|´zÑWUĞN
-Õ0°^¢’ØûLIqw]†Ø~Äô$£`}á¹?áŞd8t"¦Gr	ÈØ.E;uÅª‚J°«.X”¢[b0ëXÛ4êR·¼‹*Š°ßB\b˜ºÍ˜Úh´“šÓh!€µYµcè]U‰ÿ§hsŸt">©­¨¦fÑÈè	ğ'<9_	pPH+^Å'du¯in“sĞà«aºŒ2’kÛçQÁ4W,¬‚® Œ’=P):N¡8E¨ş2J‚è.faÄ-¬n§m†¹ È›5áÙÙ¿8€¤]ïiÅúì6Ì‡Lš}¨`ÆÑÓ[_zûZ[è<ZeS²¨Sm·ív_•RHUñH°=€;ÅÓÄaM\ÊST(ot~–ç—_CÃs›Î671ZıJ9WÔúÏû…H¥+‡G¨,Ø+Q¼ M+(Æ8ñŸ0*¥~M¨¶Ò`şñÄmˆğ¡ÇP[‰f°a•º±+k›Ó"HEÒ¨MÑoeZiµRÁ:Íµ)úc‹6GÊœ‡µe¶!õ
-^”M3¦q,7ÃérÚ1›­e }‚¤:gRü>P˜~l™Û-4 ¸ÆÀ‚yd¡Õ²›¸‹ú¢Ñ¬’Æ6gmÃ_‹Ğ_ø…§ä^[5 >öŞ,S`³¾wH±iÃV¸o2g†Ø–¹~+@^ÑI±Ù-ï~ˆW`	¤>§ã¸ñ…üÇ*äĞÓ½~•tñû±£ëŸ’Ş­W{ïşd¸Ç¦ûóíİ¹Oë~òaï‡¤÷¿î]ÿìèM°š}Ø»{3€äÍ‡/‹– _|Ì‡t/XEÌ8c>;Ü9ÀJõ@œ‹ış%ï<„Œ¾+–k­Ãäoûş¿Õ§ó…Eƒîr¬¢J§Id.˜ÅÉÒúHÂQJ„-œ¾6ş¹HVÑ}¿I…D-¬)ª­áóLt{'ëy7³ÕºÕÊ¶Œ*èªºßnCvJa Â¢EÆü‚XTõ‰”sz”šZ­>ŠáÉ¡‘ı`şC„À"8+'¦Â/dÏ£_®[Ì.µ©ÍLVŒM’ù1TZ˜–{˜É½<_ÙÃÊSäò<G‰J>°Š\J`Ÿbò=ŒW¾™ÀL<PôD:C Zb¿&ÃJ’Êá¤òÓ	âÕ)äv|z‘@¯Âº‡Zoó!iÅùÕ…ÅEEèDô	N§‰Â‹Ë„Õ‰<ï,ÿ](N_ˆŠ~y·íÍï™\¥÷?ÿ3Ÿ½ğ•¿]Àé¹"†Nÿï?in:½²HöÀv½0Pó;®é3ëàb¸Ähî¢¾Ù6ê‹4¹`Šà$l !Öh¡AO®¬—`İtkÙjt°Yµğ	„| ¿rİuDÑSihÜ¦K‚†ú/G/¡W(k®œŒ,Æƒ¢şÆ sãô·ıö½=¹Uiz‹‹¥ø;¤N©t3}__c¥ô³{íAş×í<+C:‚…ïPö–0ÃÕ%fB
-™¸£¥ƒi•¡XcW\:7â±\±“µˆj&P«P,½²¡Q%Q´/“RNDÊôhÊ]HZ3‡Â”z¢…çŠÂÃCLM=zûöÑ­Üâé^û”İ¼ß»Ë‚Ğ^j6P{ÑÂÑëŸÇÊ›…#6=LÊŠœü1,'Ó÷Jç£qD#zì4¼‹_^Œ¹Ü|¼EhËÿ  ÿÿä½}sÇ¹'úÿ~Š,‡`€xçK‰RQ$$sÃ·CP’}¹,jI¬ Ió°ÊI”\ŸXY;g­ÄÎ•¥Ö>q²>ueG'Ç¹›ÔVíGÉŸ"X'áöÓİ3Ó=ÓİÓ !ÇŞÄ6Ìt÷ôËóşüäû<§‘¼âÙ{Á[Öu“ôÑ£ş½øâ™÷˜ì@G
- d½L.¢L£Ì	–±r=PXB£Ò8àZÌÊ.Ê£”¥Š,1¤X –SÍÍé,YÇÎA/\ãÈ£ü tSÃlÈâú‘Ô…V@|L«¤"^YVÇ®ÏãëGd¢ñã@ÃùŸªÖëÉ^aYèc×&’Z¤\€Ó“Ù…ağ`şÎÜ½üàĞ‹Ù,M‰¬¿L>ã•Dƒæÿ™ün¹(´Yš˜Ü’ı¦}%Â_K¼7@2‚–AÈ00ışÜãN¼‰¹V}È@,ù:‰W,E–Fò¨4ˆ*†9MËÂy„8!ÉÛàç¸º!AĞ¶äNÖ›pw.“Bx$3yø‘\‘%£ŒFwqï7å½_Šãl3èÄGb†›r%t*k9xÚ?½“Ğ¦ığ"|¿ÉŒ‘`Êrp&[ŠŸ‰…‰rPDd–"ü=‚’óKP÷m|Ë%<""xP(Éq¿Äˆƒâiï%fO†¡8fAÀÌ‹ÈAÙcÄµ¹Ø"•	è2øBÖV˜«˜( ˆ"x®ü²{.“=gö„ä¢wH
-+È-P@DTªâjQƒO>CBâùüì§ÏXÌÉù£÷›Æ“§ı_<;üÁ‹/‘"[Ï¢ó÷?şt\c¼’Ziô¡	ƒY0<uuó•l9kA}Ÿ¢FìÌÜA yf 7µç#"¡šÛÔS	œT"â‚í7Ë‡jN©z88¿g”-F7|"F0×L±÷Lù^Ã‰¡8ÑH%óØÆaŠºÍ >ÿğğ0Ãq@’ƒˆ¡LÍiMt,ü¹Ûv'zNÇÙëZıãL§½7†gĞsŸlf3ÙòVÈUn4Š°UÉn6×Ş¶zÛt“¤È²MO§rÙ|*__vj|;ûª`tšÌ¾:>Tÿ cuƒş%½Æ¥6®TøÑélİŞ“WÑ 5«ãXŒcğ/ãwØqz‹‘¥& ¼]HiR¬ñ¤;GHîğãúGŸX NËàÓa€êkCHJÇJ˜–Ùù
-ëF›§£S9g;?"_€à¥8˜	‰zê0»B9¢KùâœË©à¾«EV–:&Á´/K+v,©>ğ"˜TK¾3…)ø6SŒTc
-)	½äXÇŸÀ±”_—l@·¡ëyÜurü-ÏmÌ¿†’+«h½2¿º¾€&ùûîÜúÂ¸À‹ä~²V·ÍúğıZË7&8¼GKb’ü[®V)•ŸNMæWk¦p›‚ oS	şO»mw5«gº>k:Äaó5.QpBõÇø –¿áòpA2F‡éAg{¦0X¢‘¬àÕsà´œPq§Û²º"‹¶aGÄ:+õ+ˆkÉùµÂ\T(Çc:·‘_øÚ»ÊTM‰‰F—Ëäµù,Á#XM
-Ò&«°Í”·õ=«×|9FÉöÂQÉnm!²qieÛ9ÄÂŞ¯=˜U<1%,/lÅäà­V"ïÄ»Çîv÷ M ø­åvš|kfl|3».ä¨òg‡7¸ëèÜÕÑü1fkèV·Q÷Øƒ	²oBHdo„7…'K†Ò†’âğ„a$¥sRF8˜f"ViãÄ¶"¨EBl6[–{?İ }qF%Ó–³¯n—ğ?X¶-Ñ?S¯d³Y^Å^²2iVu2ÔÆ˜£´‰OH1»•
-ÿtìÿ$ş:*CG!…³mõfĞb{Næq
-Ùø Ì Õ„&“nÀ%,Š¹Rià%Ô<&_BoæJü™ŒÊ Â1Y¶mì@#"½}I(¨yÁÕšÓ—¼Õò€iˆö‰>|#]:j®“rë~ÜCÈ
--IdùšcgUà„t»™¼­ô‹BŞcÎŞ%ò^l°ğG5ÉSa‹ç~¡RıŞÆêZªÜÜ@ÕÅ…Ê¹õt§²N3¤6n¯¯ Å•üacu%q“dğ«+KoDÑ`N‚¸Ì5áï*ĞijlQH®´àm8j’3¯7£ÅóÈÄ“/£–j–éÍF.£|uòXìæqG71mêÀ–TU¬ĞèáRğå#¥õ.iz.yHùq€Q16ûÃxŞÈÛY_Ô‚Æç1£K*2U9”fÇŠ\ÈrzG.'ÊòF$&ÁBù&ÑE«™†ĞaÛ<ìâÇp›àYšÁG€$w§›İ-e€{vÓ!Ö-MDx4y‡ê œjÆ……ˆ°¿†¤±/²F—RDfWpF5@^¤4Ñ*ÉFCã%GG&€$^'Ñ¹—çÓĞË01ÏßšP`$”÷3fğã‡t“ïãÿ/ˆø:˜Ü+SjXÔMŒÅÙcç »oËËº1Ù®Úxdu&ËË˜«ùÎÁ såb2Ìa0OÇwÔs¥ÊRåY+ıÒÖ$íˆeGâˆn ”øşƒ¼w<‹‚º¦³õ\yK^QUQµÀHiá%p~®a%ÆÁj8øåÁwËŸÿ’” ÔJÃ½‰Ù||Gäùˆ-‘o°”R.•›Î¥
-eiéõpËZ×©î[÷£Oğ–šM”Éëû›ibŠ½¯¡|t‰¥(a2`ø¡ÈÜ±œKÂÁ¸ Nï»‰’8a,D	3‡B3˜°<Ğ`Ù´™Ëds[‰h:ÂŒv,jTHªoRŠ!S—›#f
-Ê
-Ï‡y‡-_Aó˜u¹hÁPR©¡˜¾‹•úyš¢†ªûNíş¡õÀ–ªûä\*½¬;,YBA$ÙRQM^W\œÂ”\\TÈ—¾±(+õÓkc¤&¸ôÆÍ¼_×Hˆ”EËJµÖ‡äæ¡š
-c²”È3¹æù€_Šlf‹A€Í`N±äêÉ·ya) áaNˆä¦£)‘õ—'Ÿ¡M4¿¾Z­¢…ÕåÅ•¹ÅÕ$ÏŠ…V•¥ø†mÒÌM%¯IãÕŠgÏ~{şóOÑÙ»ößy‚úïüKÿã÷Ğ‹/{şèÑ%ÃF%‰×íYmÛ9pƒ³yiT™½:=6$ª2\Ø{T† î÷¬&ªÔˆé‹§6Ó3YtTj5¹AVú5§i£;NOì0ä†tÆúº‹¥¨—@h#†ĞG1ÊƒRzv§å¦ƒşŒ«…^ùa)RKù¬R‚°K1jí@–ş_õ(¾ˆÅ ´CVó(âÒ“M´±º1·„*óK‹kÕÊË$(\U­a©
-. }şøSVdÔÿğ!şˆğçşãQ²B¾ç  x´QõĞ¶;ßª"¼&¤{6ÌÒÙAx®'ıOŸâ É»™¶s˜Giäÿ¤ò¢«(‡ğø0”„¢DÛ”Æ†I ÚJ))@ÕàŠâµmbÚ“ƒ°´²•H„;iÄ<}’ïi™ï–xäîE {YLöâlŸC05-š–MŠÔ†÷	ò1.^Zü rsx{·ˆ¯Ô+»¥i;»ƒõ"ö)Jœ.Hw®™¯ˆÏQID^çöi³‰Ş)š_]¾±ziT”-˜°‚„<S	ŠÍÜ‰JLœ¡‰ O}1¬ZƒBeşâ`5©Áko×ö­†`3ØUiŠA¢ÿçOÎ~ÿ¼ÿåóşG_]"ªßüks‹+è&æ—JkÉßV"ó¡:I
-2€­Ø«:1q¢}»K3#²|Eíi».LF’i„ïIçGšñ¥ñæ¦Y@[IN‚r›{3ÌÉ‚©Æ¤œhÈV^‘Hqh5Â9şZB!öŞËof·46
-	¨³Òé¡0å¨œŞ%£ç”Š«Ÿ1FØ9JhÖY^êÊC|z¶¶À:šmš))aÍ8ÉÓOãØ4<ü²H x¼Ô~ oÙŸ&–8ä6ïäx­ú³ Pûí«':”N5˜‘VIø„Q+Q=ô¦Ü8¡MiÛ•PGËø8cZ!÷h¡koz¢q2şr´ }b—„çïÒ%ëß
->’ş¿1FªE5eG:ãRÖS6tÌrØ"å¶†¶8i€}˜`Æ‡x€¯fÑKõb,!0Mi#ùüÁê±İÂÆ©"õ Z¥ö–AÈæÛn‘İ·]Ç;ßHçn ³ú¤ÿ›Ÿy((ëswWn¡åÅ……¥
-šŸ[_å€‘7ÕÉt‘H/W^Èˆã`"~Á´s â
-«!r½Ä$%‰¤ÙI¡¬âo|¶”.Ğİ·Ú&ºqÜƒdyM³\ 9R?¨ÊkR±h¡«IQƒJ!µs¬y…ò¯£{—ÃK™!‰×§(yùdÏî­€¦ÙxÓ®³ºÉĞíã§ã÷t^~UÛv{ >¾y‚~|xŠ¨§»àWÂÖÎÈw]|J½ïâR™‹û;—Ò³<ªÚh£]«Nşë;Q!½>Š
-0åşÚ~µ	˜UÔuê»Ãò˜#5šĞàát±ŠŠû ÈŸà—\µá$şÇòìAÔ+ü&ÍMÂAtø(6zˆwC‹p(¢[Y)ªbÑä èå‚mõöAô©Ãhàò‹B#†¼Œ|¨	‡…HÜŒBùÊœBÔ„›e‹dM1›÷+R£Ú\»_»Şa4ÑD rV÷Iê˜Ršã:!Ê¸×È‚Õ³TñhliçóüS]åİãoj;í)ãÿ¨&¿¬…y°‘(› ¿êÚ ¿(63²¦"7éZÄÂpYhìîÊãW·£3?}Ó+Øå–U;GhÍî6Z6,÷:Øj±‹’t  ¾•á£Wl ·Î·Ïšª”–XÃbÉ›"Â¢É£Ûfº2\’hgI«	9‘4Ôz.\‘°
-íİˆeğÊR6§@RüÀ…B1•Çä$O2Ë
- ¯Ó8áá>)çCãâÚVÈ°p)·°
-¯^°ã¸ûinø]|wewËÀ1dj˜=í™Âc•²ğ¶qm\Ú ^Á°çïÆµü¤§|) ‹¥çt·Ñé4ãömd>ÉîÚõ1>â…ÅÖxE¼Xh„<Ö*dªˆ'àùõkµC‚†—FÁB(Ù8‚OºÉ(¦r“Ó©‹LuK
-	Pa F°r 9¼S%<%“l$Úcøk•¥—Ì¹–Kiª=…/‰¸çòğ¯,ï_ƒdšù?>¸1­ª’jˆß%ÑÀVz‘,šğ5À)æÏ1˜Î¹8Iş$çƒ¬¦§ÖÇ©˜7(ğÃcKÂ¬iõÙJßºşÔòĞÃ÷¡?|(A)£[ÃQÕ6dzEY¡°rWo6ÁáDãŸ‹"P˜Ç&vˆ 
-3ìÊ_É«xw6í«ïåÙ·²W««{¿i¿Ôş¸U–T|¼H—1Æ}ÿ.}hxœb0YœA"
-"®†ë´Ñdô‘J÷k$1ÀC@-fĞ²˜Ãní «Ô7_7Æ®ºöâb©rSÙ-$"i“QºŒV5°w]-{¢>ş[ÌÅOP~›Ş‹“÷†Ÿè(7›È¾š@Çì¿GùÙçào¼¿ô'ğ*Ş6äìîâ·¥MÀóP¡f6ÁÂèw«”Oá›2Ó1YáfKávS;õİ©P»¹[¥ïÉ7K£îÕ	q¶µ÷2£’° ·ğªã¹ŸM¤ódê½?õŞ>h>ìÛp;ûó»ö-ëÀuVûf—ø}êöƒáñ³‰Bum÷ ‰Ûf?k»`ãè8.	”ÀTƒn6Pg¿QKà¯ò^KNÇîBºél6sì´Ñ¹Ğí>ç øğÒ, œa Ev5Ç·AAFá)ö«$S£ŸR¨¶¨ -ä/
-`¸i¥~`Í"öx¶†ªXğ u„¹wù$™´Ğ«¨0®@Ö8ú.*2…BáôÕ{³F–­Ş~“§‹››¶¹š?¦ÚğcªIÆT~L ¹ÃM®sØÆg‰79èšPÀ?Š×Õ=Oq¯…wDšu”¾|»àôÒBé?ës²{béY2\Çpßqü}˜lŸÔLÚƒûÚs{]ç>A›ÅÓ}%^É–wÊõ"‰7zÅ®§¦§¦­Ü¥D¬_¨…ŞG¶fufD)ˆJ%ø¹ôÓYI›_·§œÊMåSù\>^'„+†Vşo¶0'—éÚ±µ†Ò†O,XxYº]ó¼"úZ÷H€Ş™ŒoœØÓİ ¬‰Ğ©Fı9YİùÏXÏ`™¢Û°İ$ØÖ­ŞkX ¢ƒ;N9Õ¦ÛêTíuS¨Şèº[†ÜŠ>†ÉéÊøf’~3šárÏ®;‡øY®³ö€¸5€Å.Àù¥OaÿĞQqöô0,ä˜k^AÖ†‰ü6™»Í-¶øk¼&BX[D½½]ƒtN7t„»¤OV¼ Iéğ¯¡ìxĞ
-›Ì´~2²@òMæX“0«WQ>Úä3ÀH“yn”Š&e¥âÅsÚÕ£óÈº
--°õlc­,æIº}ğ³‘ÏÚ‹Ûø\të³çb¶¾¿ùólã²çÛüşöçZbûJQœE‰Vz¿‰…(ºJ§ø/úêğ^[ò3ùÊ”ÁR{”‹gu”Éİ	lö(oÔ&¾óØèNÕê+Q}<»…¸oÙü‰Aù(b1áÑ‚k4P¥¹(öÙXÁëßa,„…6BŞü	N+£ÂËÜ@q¢Ø”AEÇx!\/i2É†×®N¸”½\F“JÁœJJÌ Ê‹ãZ)ÃLçób±ÜgÜ¾å–—Æ,ÙÍ&z	%bÓ~@”*¨WIÊg9pv®@`ñ›•^¨Û»ÖA³§ßª±»4Ö3/”¶Â{ÛMb¦7àÖÄ¤ºòŒqm´öLÈB·6AŒs.~…Û ï=ÁUaÛsšuŠÛmBÿ,0QÒàü»v@ê"Ü¢I¥k0ƒŞŒ„éĞpN_LÚ‘ìŠƒÖÎ1<ëœà•ætHÃóÂ¥Ô|ÜZ¿fS°½Zuƒ] }c“µÔzr‚+v_´{‹¼+aöÇÖÕ7€ˆ_Ï¬ÍE<}G¡d×-üÎÕFSwO;étšÏ-ıpÓéÎE„sxu×®gÄÛÔ°€X`Fşåµ`ğàıZ01ëë´—×®´I\"ßJğ=´gŞÔ’m=°½zgÁ7ĞÈ(£^”®ó·åx¡¨¾ãJ€HÀxñDnú¡Í3~şc¡NÓ\¡®æa£ÙL×ğœîÙ3ş­)&ÁÅøĞ”	-\œw…²ÀE]]‘ÅÃsÂ7×õp°3_320"×êAÈŒ3‰ íô`¶C¾Â…'†x1–E0›«K,^z<9ïòÆ=gëIà*£„‰”+%ß1ô¥hy<ÍDÉ4,¤¤(†±BîrÓ;A$pèœzï¾›j**Šï|?ß´-£W•¾¬°J’ëáoí‹
-Á«£xSÉş©c3Yè1_wÉ*²;f£.~å¿œ_ºĞÅüÀ{3\ª±„G¢!mt­»‰—qKfäGùM±"®BÜ—Şš%Aú^ƒÈ/ë)öç¼³ÑÒ3>öÊß˜vËîZÍº·7½°vát²*š'Û3W* ùi^Ïj¬Û–ë€Aèz†Ll¨ŠV¤NrBØ„!š+Ô.Äªfš»vÍiµl`´pø2>×35îmÂí«ŸÒO‚nÉ‰+ğF’p3%%0±^Ì‹ÜM|Õxr
-P×X°lø†6¬.Öúü€)§VkµƒN“¤jÓééc0HË/ïÄšªãËHk[ŸğÕ¶<¯Ç›¨ÛÒLÈÍIUUì E %¶ùÃ3•¥uÖÅ*½ú
-Ù~m#­PÕú^ÿÉS¯zêêüüíµÅÊ‚&ÃÔûÈXï®X]P#ÈÆÍös9?ƒîDvs Ÿ¸%ÏÈ–¢â«·ã÷õK¤ş#ÜØF(o"[Îó$fT‡éÚO—TAàZ¾ÆâıcÏ&ojx#ƒàüiÉŞ°
-^–ƒ³4:}Ü+‚ÔÖ³O C-âÂN¨ÛºÀ	İ<{ö¬ÿÇ¶Èİ\[š›¯l}ÍçS;h?À¯89ƒn-U;Öaİ°ê{°‘iUb!1?ŠæºĞ·ø˜Ae/:<ŸVÉæ61>.5¥Êå¹ÀQšÒ%ª]8I<+©/ƒ7ó’9,mşõW¿û]ÁÌ»ºR•C-
-oúµ‹R‰­S­v4§ÂX{şPö„ì|øj°€ª>!üå^;ìhø™¶>ÿô|0Pucnãy2&ñÉXvGVš(!£9]Ü(išôÇ·ôğ	R²3àÙ:`bæëË;¤@Å0G€½ÓÅOÀûŸ¢+´>w«òM< e,1­9$å©zp²¯Yo°ë!·÷;¤=ÒœÀ†ŞıœÕwr*ôl
-x2Ü?á†LP†]ÛÌ÷0ì¶© ¼n:ì«å%şIåîõ£ı³xg>úŸ¨ÿôñù‡ï£+¹ø½iº;©§á’±ûfè“ÍÌ‚#2y~ñ#ƒ™3\‹Ìã_>øoÿşÕ»èìİ½øêJ|&Aù¿Û€"0 )«‰HŠWÁÕœÿÙ^–ŒZË?úÎT^	ğ4	v
-hu%1=>7ˆ5'#éåùÊŞxMR¢‹¤k—¡|x	ªt«D?òéİE‰7/…k( ãT£rÆo·Á°Eù2ÇltNÜ¶¡ñy,Q9<­_tt‡v}p•wXnvyS}…m5Épƒà)©ò%rëSJåòÓ#x‹¦÷¶ÕííïAs&Ã1-¼‡\+x‹©ljªÅ;ì`•.¡{ÿØ›Ö 8ÏpKA»a§ñ>ÅNÃkÕƒ2Oß4«xç¤wjûnÃò› İ^à°@.:N»¹r¯kÛmîÀy[³,L$½K»]ÁÔ2=ÉP‰.8Âú¡ÕåÆøf£]K—KŞ4Şâ`É-ú)ÌRäŸ|~#lAèOUÙù&ÒCİ	&‘İ¢§\ELYsx¥G1È®³ãô¸Cæ- LtZÅCnÑ“¥lŸ›Â(Îtë§w¨‰˜4)Lâ”Hû=§z
-óxú¦S“Ì ??„‚pû¬@?T şéØ`“ôØò‰2Mšâ‰†ÔÚ€BãO Ÿ6hdz$ ^ 7<kT!ÕÄ‰‘'(fñpqıR!Œ"ëöË€½&/ÈùÇé|à{5ãò¨êÈÆfÊÏéè–fÊn«GHYù¨VŒ±jèû¶uÎ”ı‹U¯&ø/÷	ˆµ²ß rĞHº&<ú]²­]M·”‘ªWÆ'¡ß×¬VK;Ñ„ÚªcŸıA×·ö·§é™ñ½QõÍ¸ô|ÃÑõKiõÈæšq*è7(é+%BÀ¢éV¸ÈŠ“Øİ.œäNûÀEÓì5:ÌJæ´Ñk$c NM&ÆÕ™ÔÔ˜ (Òè±–,$NÓ<ïÛœ—S‰ã	e¼¢ã0ì}¨Ä¡*Ÿ (É'€ĞRe\4¾øÑ#ÍHíÈaÕ†‘š÷.Ë6\¦çÜOú¼åÚÉñSÔÿñOû¿ ÿÅÚİu^7Í¶Í5Ş¤¾ÉÀş³aáV²Õ¬4iÄµ®ı a¥.’5+«ÃÈe­’i×Á~
-pÓÅ¹øÖ¤¡-Æi0OÅœ¤²¢Š—ô,xEßK¦‡¡è!Ümæ²JK&œŠh’ªC¡‹?ùå¯!T'°ÕãóŒB·¥õîı¿_ıóçg¿şâ«g3è²¼“S¨ê×ÿÿ~İÿòƒK÷àH¬­Wî,VîÎTèŠê±{ã&C›Q”šğ
-LXôâÙ[g?ù”D¬€mm	nG&ZLõXİ'•ÏĞ>PÎ~c‡PbîP- É)ƒ#5’@±8"7sÅì–‡s+ØŞƒx,“Ï%Ìyé¹¹¢˜Òlµh~…¼@=Tv[S‚›†×í«éû>ªO‰ó}Ò`ıÖèáüš’òr=p}Áˆ7_ßRÄh±mö‡·ñÎER~mnÅĞ±Æ¢oó n»$kdÛ.¯ ÛÃl²!(ééb”ü‹{‚ŸP:»5Û'†XÂô’ 
-Ç!ôÒKŠ$<e:582˜^ÜtùùfoBM7ÍÂ!o²Zßa¹’ş•_&¢æÕê!îØ³¼ä¦TŠ|4
-ÂhmòâºVÎLÑp!
-ª OZ¨éüãPÿƒ·û?ü>¡)„oÌ­ßªl€š;:Í€^½{G!ìÎ-2¾,y±†9±¹“3’¡›ÓKø8ÜCÖp/YE7rÎõ5İÄË„R“wfö][²®Ìb ˆ[Şm¨T2
-T2ßÉ›t=HÅnåÀovöÓ·ä¸LÿŸu\|øyõyşSõï§Æ§Ë¾Í.îàÄîŒt›ä¨ˆÄç7’Ò‰që“ü¶åq°#$@áò°{ç z§a±q“¬¸º‚M]íuqo¤ÓëB£¤úŒêE»ä>X»DÂ´;†J,é~!Ic3P;8ÒÛº!Ô\ƒéĞã^œôe‚ía`³„KWCzPê—ºº4º£Ãpi‹Ó–L[‘Qt­Í‘”K‚„Ãe&ÌIG¯DÔî	´A¹Ê‰ S¾™'0àó–ÎV}FR…¶Ñ³š’X7HulEDo|Ş¼wy(Ô^İ£r|ïÖq^|RÍŒWÜ¹‰»Ñ¨{“˜zyhÙáÜ’\^_&÷ê|ç@7ä`-ê˜ùİÈˆzIRÔ ®°¯iÃï:>Óså5‡è0]Dû¤P„*Ùqg€mc´qô»Ål‹ÄW‹
-.C¬Áôæ<C¸NÇ“f!Ç1eÕãCXÍê]òªLßû6¡ƒj&VÅ’¡U1&´˜Ğ.pÉ·
-Jò(MÃÌ¯Vm«[Û×Hæ\á&^6oÕäïAïÄgÔ‚šÓ‰ÓY²ƒ^ìûg&ÍPYæò	…\«›É1œctp¹&eö@ Ü>¨w!çÌ&'{İ4ƒ™‰ÛÃòmÍ¡ë¤]ºœBeÿ?ø‚ fÔğ›$­håG6qBµ»A¦/—Íä°ô8à\ÛÀQøÑ‚š0¸4á3ĞÌD
-óÍu¬xÍ‘Â8†ÔÒÜ…PÁ4-—“0Œ¸Ñ<!èÀL*ÇwÏ’s~jö@Ã]rj÷mü¨_Æ­¶I|{Êğ¡pñC7°Ve[íd~!]ÊPèRÆğN‰O†Cœ1$Z(ºö„AÀ¨·ô¦ò<Ààäıawõ,Ì5œ]TµIÉZá÷Ì¾8¤»=`|°ÖÆ=’pZ]—âbŸä7®SCíÀlEIu=‚Ó9ËJí‘_˜µ ‚}ÎH1Bª"BkvóßÍjÖ®jÇ®-ƒ(pÂ}0
-4ËM›•ÅV™=<{²ka±Ëä#a¤Ù›MÇ"–yZE@^ò…iÀTÁ ºƒ^ƒš ÙHvÙ0`7_7Î½ó{Ğ8ªğÂ‡ÿ(}Y6cY‹^»Q3ÑLššhàÒØòœíˆp^óVe&$h²PÆ¾—ºŞnvàz»ü5¤b.¨æPWˆ	¨#‘êˆ6ßlNå=rÃÆ .øÍ,BO•îûÎ0`¦$ÛÆî7Ä¼m€†3,pé]ádÄ‚`nR@÷	I‰ÓñÈÄ‹/ >š·^x	Ô±½ó•ïêÜØ~dj=c×¤„ŞÃ0ÖÉom û	\F¯c‘_ÀI(=¦§øhìàr3q¢.Aş"Ì²
-Íº>_ş„‰æÌy‡>ŒÇiJ8ğ_˜NLÒ¸A¸ÂmHß~G÷"·-ÃƒšÓe,É–E*k¥a{¼¹7T¾?ÖºNt3g¶ã|FÛx>wMÌ…84BÃCì!{Ú|É.nö7C¡»©œUlù®2ßp~3=ÿ®­Ş­¬oßX]­nŒ1F˜M$cÚ¿[™û^eÅkš¥V•GÒôzeqåæêú|ÅkfP•FÒxõµÅÊÒÂotÑ„Ì--¶IÕ’šålü	41Ö+x
-ŒÍû†7ö˜TÏJ£î„÷ªÛn­ÛèÀ9Û¾ï`.®üÕn›õmì¤Š™ß«7‰i—ù¢$QÑÌÇn+ÓÉW!²¤ÓHÊˆz¸âtÍšÒ÷Áä
-c2`´ÜD<0Â€‹†+´n«xÎWğßVONõOŠŒÄº“èª.ÑÖB…M º®Ñ:"sàbÀh†c3-s»ò—DD—ñHh‰@:Bîøö|4F/ÖÍáuŸ‹µH3¯i‹HÊğí¨&xÎ0M†o!	Xñô…šôğB|æ[¾Ps¸nd%_ly(Ü"Ä1|›r†Ÿp±]Ãá\xğàoíKl‹ËæZí‰äh‡ñr¹³¥HWrˆ‡—Ñ¥!Ì†—Ñ%ø…—Ñ™páeô¤Yx}ÉP^F?*…—Ñ—:áet&ÅJx)3(EGIOÆ&
-ƒ¸"¸ ¶ÈTÊeØ¤Ó3¨Ú´íûP†Ğ¼Ómã-Â$P4·»¾‚c´fÔÍšV ª%\2ËCbÒKj
-&r"`f™-£´% Tú¨µ\ËPyN”Ê”B©²\i úÒÈÊnl"3À#Ğ¸Wò&…âæœQ«Ç‚Fıîß¿zw4íúŠ´ûÅ…½$Ì«ò`’Ô·xo¬¼Ãû½M<nC·Ş(ƒ(ÖfïÈ¥~L»Õéûaîü©õ UJáb:PWƒÜoô’1/8Û ¦C%MVÕ¦V¶'ÿAò-Pî…Jõ{«kh}ñÖk¨º¸P¹1·>ƒîTÖ7çç–Pu~u½rcun}%›{3DM^]Yz#ê?¹´‡§\è„Dã¿Á×Ã%°4Ú{R,ƒ0ÅeU½ŞŒ°Üın£}ß\—"	¤ú7¸â’Ïğï,ãSR,:”ÔÎ”Ş|%ŸÍÕsõ-Ÿš“Pû¸È)6©¯TJyÿ@ˆÙø_ËSJØ‰¹©m·QµætU¦&ıè#YàjZ©˜«Ú&¾…Á™ÖÖSğŸA«`q)>npÒÍÃn|ŠiYÁ¯×¨YÍt³»%º§İ^âÚfe¥²üÆ–ÎÛ­`4‰öñ?â»’ÒÛÅ\>—ß’½ø$…\4Ã't[ÒZ_~†’‡«\ˆ×©£ì7c50Q%	Wäüy$ÔI£Š	Ai< f»ÉM¹Î+·Ldm
-xm6s°e¼(nEì4÷Š!³d®—sj8"ı¹a7êOÎ·(ëã‚›4ÀÙ6íxùtÜV¥ß¸]/L]¸—ˆ¾¼±z[C]ã•~-ù2aÄsîüëKWfĞÆÜ<eØK«·Pò.dVk`…D«íæñËçÖù£æL”æõŒÙ:èÉ6y;Û½5.9°;V-9{FÌ\µÿ·ˆdÂT£‡hé7ã‚hêîN‘"5ß›=¥H”Slß»Ûj´­&çÜR6ÒĞoå·ñÊ¼å”R®ÍW²»¹É¼µè."àV@=’!_‡ÊD.”(g{D\OP_äC1:¿åc²‡UzY¦‹¦±¸i·ÖušMØ=ş_0]äH$Æo¤Q¨:ÿ„Ub¿…GŠ·«›iYd²éìW^±1Ï šnÂ4cnU„f’$ŒøpDEæ‘2Ñ ¥!8ô|x9È°¦M@Ø(¢Õ¨[Lªæ¿6Òanw6CÈâ=m",½ç{+e…F8`Wî±‹‰D(ğDì,Èóûó*ê•Œ\$ŸfZÀ…§ßMyæ)¾;»[{Clî™ŒÑ³ÍŒãšá˜êê:5=LZ= 8½ d©¡jkÇîödß‚?9%±
-¼FGºé¿“)fòq1•WI"Øb¥‘\ægêâÂügÿWÄ‰a~uy³B”K/-®T¨¾ƒ6n¯¯zv·«èÆÜ:J®ÛM§fA‘ßø¯CDLfhÍí`®âé¯Yí:/4!.©U ­İ,ë§eá›IÉ£Öı»UrüƒÓ,«¥jiõ$!ç?$i­µ‚@˜ñG…—*»ŸØL2¥° Úì
-Á
-gÙ"O*åñH+`¿ÀCE!Ay›
-Ï.ûÑâ°pÈ~õÃµ%É£ÕŒ¢ï…Ë†…ÂÇ£•ÄÒ=|à¢+ôÓ<¸_ñŞh£F+¢Á¯bxÕb|2H@<ÿüòÜ^
-Ë«Ê&P…Š òDhåÁ²åç×}2Yl)ÊÒôt*—Í§òÅ\*›)Êò¹ˆ±7¿‡×——ÑÌÈîŠBÉr´¯^‹ñC*óà!doác¶Ni,>má1Èú¸KCÒ¥oãa2XÄŒ§î0|&¢€ñ^¶İ«w°âUãóå¨º|5*˜Çˆ¸ª‚”ôF™$™Q^"ÏÂº“7ªÚ5§]wÑÕYT’péëâ–›l¹PÙ>UH<ÉÊOÊòÄ“QyÕ$·Ñı²2áV"B&>÷ŞÙ>ëô:øõßyòâÙC ÁOÑiÿùÛ÷šløEz—òŸEd™‰ô¡T±x—zŸüÛ ĞZL$¢ŞU÷Á^È
-ê·›f +*`¾7œ£ÙDëjyø¿ÜØQ#`ÉRé®†ŸÎ)ÄÿÚ±ú·îlbó éo»fs6¡†Or{]ç>~­W
-…b®¤h„Şt·QïíÏ&òò®ävàoæÛF¶9¯p:_Ù-vKùHFË¯”åòn`İ¼²[š¶³;	¹şc2gŞ]>Úİ®u<{RœÌäòºá^gw×µ{ìfô]”Ì¡t”M¯–­#ö…BQ£Í‚€‚õn|€€8*V…ãŠ2¹,&/~™nâ­®áNÁ‚Ôƒ=5%*Jà^Ã§äÄSâıñqƒÉ
-‹¥Z²`E	ÅŠ¼†D V0IVŠ>7ƒªÄ|·`[½}’#]ÃÔ}E@ûIÃ¥÷“Ûƒ»e¦äADq1#•ÄhîÉHxM˜•†ôœ¸Œ²MRšaõNe}~iuş{P$\/V6§Âö–Ëá«&íŞ(T&oßÄ)LºùÊ²RrÊ¢¾Srâ¼”FŠœVT¹C[øx]`Á
-töƒçèì§_Lœ?úõ?ø~ÿÿ‚’^‹ÿSÿ£çı_¼‡Î~óqÿÏPÿ<?ôÛóŸ|…ú¿~Öú˜—)Éòú}6êxeYOï[íz]ˆ‚µ9‚¥5ûÔüÍÔmÍ€] ğü<@OñæÌF=@Y‡ß6TUgœw€|€½VÓ/Ô›|%gç§;Pl/EèsÇêâïáóøÚÜñK§A˜!U	á_Ã’˜ÔÒŞFÜK×šNºcÕIEŞ÷T ö§@&–Â¯¦eÊ<X?(„+¿å³‚%áo`çøp´jµSõiİÕf£…–1	"´aí¡ä¶"Nÿ²…œ¿ãy¿Æk$åò±HM,ØøàÅ·¥¿1ÙIäbÕeÏ«ê²‡mQqÚÍiU¨*¨<ç³‚ıï·Ò˜öÏ¹äª7` U²2ğQÊ)OØ+N¨ä †¨^÷ †IföÛœÌ²‰`Ÿsù€´Ñ€‡k'öî®Mğ{ šız¦Şpa£C{¤è¡øk›}=†‡$/2"3?±#qíı›ò±kkè$Ycu¨ìúÖGškÎ!xÜ'cã™³ä ÒFµ‡ê^r\:ˆ·í’èEXÉ]|lhùü%ÔB’É2Mi¨Q?êK‰kıÕï>„1š½ğp€Ş9èõœvX§Ås6A
-®N{¾Ù¨İŸ=¡I‚Xü^t+-§g/;u«¹Ú±ÛI@¸ŠÈØ¼ç¢²Däı"oÁ)…TZ©.ø®$âOD<*ßœ36‡(ÕAaIC-Q¤gÅ‚ØÉÀFÜğÌh,c/½‡ÙğùÏœğış9fæ/¾zFªdTív‘‹ÑğÉúşõWÿô¹b©)Ø…¦ÒëJ.Ó57äzŒóX €Ÿr	ÿÀ«@°ĞºİÂÂpM5ß0&â¡¢/aKÍ`\A¶e>°•³<EÕ®[íÍË°RËRÿÇïxù„Š0ÿ\95bN‚ïf¤wÜV¾åHØ„ùSAöÁà¯ùñûı_|_b«sÌŠ’ÙVYÓ(9ÿEdöÌn£‰ç>YjTóáìÇ=l’4r˜²ÃMÁø¸?M°[g^J±Ó,ÿUUÈĞ›Üte,Œ¶¨@®:>X2÷¢xÁ	ì”ÎšáÂ\<¹]Œd3TÄÒİAmÇíôË7µ¼ø.øy³e¹÷Ó ˜›¡†‘@lï9ÛD:äeöÙ-Û¹2åéŸÀã¡¾ù«iørœ¿y|K°HG6>fáÄÜá	™nÏêöàıCe¾@ø}å7R7Oõèküá#9'”¢Å$öô?_“bÖ¤è‚¤×V•Õc@ÑÒŠ›‘Êá¦CI÷º¨"GäaëF~‰ —6mùàSşØ$¶<§½Féñ‚sØ…€†¸hê–¦•ÛÙéÓ·;š§–lë=Ìƒó /ÙàÉ¸’5ÓhN6¥GÿÕ£÷âï¹ÍuÀñTx¼l(Âí¹Lv
-tâf'ßğ÷¹ñH;’ñkë2LQ€=( Ht2ø\YË*p½¬ö¤x±€d*&3:]ğú0:ã	Ë!îu§©Æ³auø’~™iéĞc£å ş•nyºaiJÔËS¬û<ETÅæÿ™ün¹`›¥‰É­°PMlA~´®ÏF0Gcª—\Pİæa£ÙL×xæY¬]§ÛJ±°%´ã¦ÀYßLË"Ì"”@bé÷¬"¹3.¨RWòDâ¨†¦T>¢Z+ëÊ&Èjûåä˜WÇ#¯¬‰P–™„C2¸_Cîô-L¦¦§Sù$*Mo!XÕ·Ø°‚Š<Ğl½2¿º¼\YY¨,ÈY(á*f{'®Áf:ÏrO|ã`Ñ³‚Ôàtn+qM	'Öè‚Ê
- fŒ×¯‹üãH 2¬H¡<5Jp@úæ|V‹øÚPWæÍ´<ı,$ÄöØŞã#¼d8ÉìD4:„ñ<q=„¦KÜœ(î÷VavèÉ–Qƒéü·(Üó8àrúŞè	á —üğ¤r*W†TÃ,+'im\:5ƒ"`¸Ò°‡kXÃT~,qÉˆl59lOC:¥
-Ö9´ƒÜšN“ˆ‘¥ÊZn`Í,½àô\”¬î;‡.	 €²ÖdLØ$3ÓmÂPÍ³ÊÀtÇ±Kåí:üÁç=j—DèP~EcÌĞ6;;=+>‹Vç§q¨ì>!Ó’*–u@#g¼·]A)÷=¼È.ØLL§Ó$\Ì½q¸ëJ «¬_¢_20†É² ¤VÄşoÿüÏŞ}H‰ë«·W0Õ2}•Èa‘1ÍVR6d:ªfÛÍ¦ZÍ†+¨²G6ú,Á¿Á
-!|Ò(¿üÃ¤ø`äA«!}H‹MG–SúS–5@ñ»aº>„9°Åç§c©Ša‡ƒ:eÅŸ;!\5,©¥a¨ ©Q{{.§Maõı`Aeó|ğŸqëA0 µñªNCÒH/	”BDA"šE¾
-}á·¡ÌJ`™N·gµ-(nzƒàB*¦ƒ—µ
-Ş8oÀóß?ûísÔÿ×'ç?8{ç3ˆèÿä“óï~öëOğW`q=ÿğqÿ£¯„$¼˜¤İ ô_ôdG3 ª F’¶@¢KGpª)–8+f«‡U”N/¨‰Õ‹Pcˆ!		 ¶H`y]t4¼QæS{À¢ş/`¸lÖ_;¨';]ûür	ş­<÷â6Ø?ÓŠüLi1E	Ÿò=d‹Rú›ıNCyE"Ù¢-Ğä>"agš¨è‹S©s˜õÿüşùß:ûÁ°‘ûOöß~Š^»½€ú¿ ÇÙDÿéÏ<ÿÙ†³·‡w$·ïñ}‚Ì:h\üw!ÿ­Ñ®ÊÖ‰+,äğ_GIén¢¿üüK¤|Mò~h‹¼!½u~uiin­ZÁ¬oÌ­Ì±7Å÷Dme3šNÿ$íôìû?ê?û3JªhA0˜?ñcğ“¿a0Éêü:'ZX½»ODbâ£>ÏåhnTg\ê”×_†—}”ßxC)oxñŠ5fj¡Ôö¤6<æõÆ;Ÿ’ö0á%?‡ùš<ëÖ/>ºşiZÅàÃÃâš¤Àë“Âäš{
-w`òÍ3öBV*8ä1kfƒGÍ¤9ß­:	À‚Ä!!²Ei\ºä+bqšXv·ZèV·Q÷kõ˜áuDJHÊ”d{Äh5©ô(§²ãWJÙWSäK¬,Ãÿğ|Àwã©ğ“ÓÙº½—ŠÎ_¶8.4À>ñÒ¾eœÆÕÑè¸löU³Reˆ’Ã¶¨ÀË-JRsÌ§uÉŞÅ'Á§&˜’Ü© ×V—Vo­Ï-£¹;ssëƒ ¢D8iÁ·#Âúû%_³Ü'ÙîÄ/ˆ…‰q²»;]²E™:ä4CLár2r ´…ÄVÔ3{…½…ß…q9…·<ëÖ†‚Êîp!Öá“@‘#¼êtšÒ¼‘T(kóúUTq*…Ç¶ğZlS„G¿ö‹»×5«;£Ô)
-MtQ¤cdÅCÑ­²PØ°s—rò DÖË™½œ½LY32{…¬€JÄ—á¨[î¾]÷æ2«ÈÑÌ%Ó„l4÷ÀêY]´†IÓhw®òß}·‰%„\f9·¥C~Øqªä¨âGHÒÈçH–»™H!šUU’Ş0éß naK=ğ!¶P>SÒì!øÏb;®ş˜ Â`º»Ï›—½€o±¥{Nº×E»]¬Nr‚o€À7yd2k€4¥’T»NƒmèyU]¡è²˜ª+âîÃÁ¤‚ÉxwœFŸ„@ÃÁîêÎ†Ò+ã—> “ì¡ÑÉ†¸ÆĞLSU‡#Á^ƒX7¹ÓæÉÌ›Å¡[Å-¼¥4Â²t[Öñ:><,î;$š°øı§-‹;à20,¾Ğ€ÚF:`˜áâEg8?ªÖa­i~Òƒ«ûEIâNN²Å“Á’¸ÆDÖÌÜâÕ‰ı¢²¯N§ä-0!¹orIX[Õ7ªÛTT¾:Ñpnd	wô"å0İkÚL*¿»¸‚ÖÖWoÌİX\ZÜxc 1‚m’6@óDE,œä1J	İP'
-Cà‘4x)¼†:¶ğK"xÜ€ÂşSH¡=”Nx›2HæL9LõßŞ?¨o6ÚÛø“=–BaI	w¤ Š¾¸èŸâ2rDW.«ˆñ“°×Nğ8×ºÎ«uúªrUO?$¶;@Qö}ES²UóQ4ºNz“„p°±7Úm¥i(šrf­CÈµAc¥ì«R£”wqÔŸ=rïrdïÊnûRYMÕJ:Qm2Ì¥Q0Õã—u;Ş÷'œéİ6ñ²Na&U·ZüVw4õzU‡š"¡ìSÊîAÈŒy„7+Ùí®İj(¯ô’ÚÄß,·/½…?|röûçèìÙ»øŸgı?~€Î~ú¬ÿÑóó‡ÏÎ>ıê¿ó	@/¾|«ÿô1êò³‰mœDµ}›-èÑ5‚åQPÁÛq3Š¬~ç1b/ëTÒØxm½2·*•ùÕAÌ<ÁdâÉ_4ÜÃ÷cªy‡:|!«ÄU½ãAmğ.uC9Ü:Ìzû],ıÅ3Í!:¡mĞAK‚Ô{@â4£Y~.y^™K¢Æb¹¬÷Xä
-±Ê¦¢:­¸5”ãÖÕ¦3ÓìG$¡ÏP{ìôÃà,pÉ[,ÿóp<ø›•ÕcñlĞJ’5~ËÅVRF&„CĞ4e¯®öâ>åì"éÓ„Ê;;ÿÙ®õÆâ‘;¡¹{¬„/„É˜ERÖO¸Hè?üƒt8”ÀgÅ6‚©«¶‘Ó{o3#¼¬±Ó{Qg¸±*fiu`c¤4‹®­–wb~Ãú–}14™'W%•|« |
-¤²#p«ßBWó$æ†±Û‰cef\%"$&¾rÉ©á/¹tÔòğüƒŸ!ÈtıÍ[èìÑ[à@™'C¥»ÁS'‘Ít¹ğ“Z‹QO›TNÑJ>LäYZ½UÅ¢ÕâÊFe9»°†½¼¶ÖV×n¯U‘6s™Â–/ä ÏÎyqÆHGwøZtd	¤ù 1ÂB†E ¦³÷bŒNÖÄµêÆÜÊ|eXu«ËXíF¾‡)­sa/‚À‰±ÊË;òD$q‡V©éBÖ'ŞûéÍ"M
-±àC™lNn:Ax1ÃH?ñ¦Ÿ@œûYYìylÜ3n³Q³!Ç·0îC¤‘¢:°ğ ôÄb†‘·¢õÓ<%ÏWÛ¤j,h*h%ƒ -ëCrÇ,ŒÂUV pÅo,NçÓ±O×Ú­£lu“Òûò j4WŒJÅëõ%ºääKÂYğä[x$®­84\$°&líÀôê\¿áâ1©Ûåï0e„(Ìµ®Óê`Åƒ[Rz_ô±P\_Ş6g-kkY”RKË$ùlJÉ¯b­Ää¯ÑK›èi6
-­¯_Z
-×ÄâœıS!Å‘–|(2ã@8ô4ÌîŞLQz”µ¡¶z®äD«9†-¬¢4:{%½‡XìôĞ®ĞFÎü=;2äÒ¬oTé¼dxXQ€Xü!…œE.B#İ‰^„Ù@«ñ•¥)ó4sÌá£±}0ÔŒË$‚Ç´c5!ª.K¥_ÒR-ADR°g:&™İ>g
-dSÑ9rwš{² e>"™"­0§N3æõ[®˜Ï¦µc7ãfO®½tU$Öø( %3à3ƒÕVPæÂ–ıæ?ÄşR3ÄyF‚:XJÃ>L»­–Õ=&šÖ±¸9¤¼0Ìr¤¬.|ˆààØPPÀWL/ƒÜV0v‡U<=v"eLé)şğo
-oWÜË‡p%dÅ|¸YˆcòR…#K˜°\¦¯
-†W‹‚9å<5¢Ì³Ve-
-U¨0ŸzqDâÿI½°šÓ¥íŞğÁ%½ÚÓ²À}gVåùù·y…[ÍËş&NµÎA·Ód–LÇ«$á¶1Cñ«YÉ Àµ˜Ü&ñCKœ&Ï$ñŒl9:ô’ùÿÔÿ—à~Òˆy)]ÛÏ%D“MB’”ØÀ.i0—9ãôÕª+Òê‰8‚µÍ¡h•4Åø§­Æ˜ì¬{Ş†÷×1Ğ$÷¨TÍùˆ{É±–9yóî>:D|kİŞ9’ t<	åêãÌ+W'öó2†¤ãƒ2×m¨Ü_É[ÓÍl¦`·¶øˆœy§µcõ¶«¶ë‚1Üƒ¥¾ÑÈ@8úO¿ı9:ôÙÙ³gèìË‡/¾xÖÿåsÔÿá÷Ï½…Î~óèìŸ÷?zˆÎ?B¥şó·Qÿã÷ÎŞı½óßÏ?ş õ¿M`¿ø!Ø<¥á)Ç¬‘NxëTA
-/_wp&<‡P³Jï’25óô®H!¬c/½»(XÕ#)(< tØM~ó±`½êD1°’q:Tˆ+{•)½BHASÉ{*LuÕı†İ¬Ï5ínÏ³j5•Lü¬G}-G•a!bmWÊŸ×Ï©
-ç&¼×†{Ãq]şóÂA{ÏvÚüWÎA bÛ=ú­VD¾î2úÓÿêİè‘aGi]>‘ls¨µÎÿŸ‡ìõŸüéì×O`g?}ˆh^,ûîìİGıÇ_<ûÙÙ;oŸ½óI&“Ñ{²fF=(üÏÙ²áá¯Ïÿ6ŠÚ6óµ/~po?@”_ /ˆß²…ñtHÜ}£­xww ™ÕöEì	¬…ƒšÎÎÎqL·JUH]Çt@¸9Ñüøìİ‡ı§ßGıŸüñìŸ?'<ı_<ÃŸ<J~ö£¯úxâÁ¼ÇÒuT’#A:Ü·›˜íU3¬1üRíµ–~7n
-Â#«d«#q„ p1
-ÛÊ‰b°Û¥I­R/*™ğ"¸†äGpéåR..³^NÕG¬ PäŠïI_H$*€PJ‰ê6¡ToÌâ¾&¦1QÕÜóş
-ê\HÛ=[šcªx+£Ú±º÷›¶ëñµ¼2|‰Ç"×¼SXdğİq;m[" ¢ä•|öUT]©ÇV±õ@ãm7
-ru>×ÿÇ>³Cä9àYâ1Ç@ÕÉaƒƒÕv÷ÁÏWOO¾#wğÀj¶X¾|Oñ 8º†ÇÉ%{Î;HÛ;NûÀåS¦k“€ÒäØ	½õÿÊàêYOwmºshí€ñÁÎàK~Ù!¤)îÜsf¾{oÿæëbÆªJ]—8ğ¹\a€ÔÂ;^]8]Ü’\L½€ .ÌÙôƒ³a	²…\,¶…óI»,zæ¿ZóíÆsõ®ÑAÕ®¾êëè¢ññ«ú%ããYGµ`’èä`¹¬ÆË[,E©Á–*®”ÓàK$?¤ Æ3$¤uÛ=höP•úĞšÕ¶›(‰ÉEypñy…*")DJ’ ÛUºn[ÍŞD×®ÙXDÆ?ÒÚ	Mû¨}hP<Ú#íôy….ùmVa–Ã_I­pcXMs	¼1ºE'Ím»«ÛÊ®}ˆK?IğKà-ÈK.À;Î„¿añ:‘¯±æ9`è»hª„® ¤ü…
-s:—ÏÊ¼f\ël…Áx_FÇãÿ"	o.Ùpèj‡ÂÖõv‡,óì‰øY7ÓlBYò«‡8{"û6ú,&©uÖ(x&z[pœf¹£%:;íL“Ü­vl»>×ƒš7@ |Mî;ÌæeOİÆt­[wöØ#şG¬¥Ï7­FK¶Ãî-g§Ùh³§öÈ‡y«ƒ•ùíËVÛª1’=Òò¿ĞtÂ¼7VŒ¼{rßr7º½=w%Ş kb±ë´1¬ûSâ}!¯ˆõA`âÙóìAñ¤d˜
-v§GNğÜ"1=ÿ¿áKÁŸÎ>ú˜’¾|„ú?øüìé_<‹â86ÄLÀ`¤úl$M!<:‹|«~j	¶{ø!rHq¦’úÉe–¶[ß HaŞ×°¥7³[×3AŒLŒDìÏÏŞùSãêú8yÕïYu«Í>K1ÿ«ûV×Şp`2 ¥9óF)0½ÉnuÀ­(¯vmA-¤»g5ğQgì!ÔÜšãöX“ôwRCIŞâ„”	-[½Ú>šk[Íc·áúQæaÜJ/-¨SYÊ‹* “WNÜš¾»¶` ÂÆgéú©]‘±tv¤.Le¼-[.VxÇ5‡Ë;’5ØöÖ@c=”TlÕøã8Ÿ”J
-èµ4A 'ÃMÌ­(*YùB¤Æ|B*?rk!Z?¾®[‰[È’õkœ’É¤ö.ŠŞÚ¡¥Og£R½¼5xÎ’<g5ôÏÔ»»ø	RbÈÚq“¬ï4kLJ¯Æ®(jálÜC’MT7æ–*Ës•„®ÒùµYT
-¼¹4ww©R­nßY„ÌË7Œ/Ï/ÏıÇÕõíùÕ•õÕ%åÃŞİ+•ÛësKÛPÇv}qA5ØÓñ¤B›VTÊ“ñ±4Eß`Hä#T7^ãiã;ğ<Íå,ïX&•·oĞÈ¼mD¿4^Ÿ\ÕcÑÚF%i,BW’Y|ù5²r©è±Ár±p$Æ±•ÇO_GwªB·X/Ów‰eít7°[ÇPåğÛXdNQˆi²PÊ:KÊí§Íû×Øg¥ÿ£[j-Z€+€ÏFPzÎH8ŸÜ:L^Ôˆë¥¼±z[ŸCgüÚWmøÓ2øŠù^%õzÑ´–¯mÅ˜hAj—x S Ë3ü{PD•Ãe+uŒâÚÕ¹õ…í…ÕåÅ’üË	”4?©0¡DwJÈ€6·Ö4#­™s"V“@e_‘õi+sÍ¼Dêª9 1Ô*¡zÎí7MèëtüTë:ê şo¸1ê2ìx‡°µŠ_ßŞzoõïå½ã@óıË[ï£şÃ¯Î~
-A7ı‡_Ğ¨Š?=ûãCÔçÉÙÃ·!°¢ÿË÷ûÿ<˜~˜ÑøŒCüoıôÍÑ©¿&­ú%èÕ*RÖKÑÅÚ¦æîm—n†í}Ûª‡üI)å[(tñp%ïÈ±XlAö&3ˆÓöÕbö•š 4·2·ôFu±ú²¨®¯ñÚÊc¤`ÿ}Ï^‚¼¬øâ?‰‘„Y¹2îA­f».	ÇòNLø°.ãÕmtš»«ô“boà6¶YÛÜ.H¡Ôò[š‰éÉçqùq¬“*û6x%­NÏ– Pu—Øù«é/ôlÛémƒ­Ÿ:F7Ï%z µ’›¸öwƒá°©ì^@@.ŸÄn§ëhŒìb»ew­fÈÉ˜nÅü<'$1‹ôhì4Z„I¼N¼¯ÏàŠ‰iĞ¦ f:aá†WT¥Í+\·;øPlq3»¥·yŒ’>²âëlO—‚ÿáĞ%®ßAëúŞÙ©ñ<´³JHÀº2Û;ı=é÷•âœ
-^:cÿıA£NåIc6Âú«İ#ŞˆPï™]‹Xèç¼;ô5 Èkİ¬Õ•í¹…;s+s·*Û‹ó«+ÕM¿Ÿ˜ù¯9M§Kàp¤Í¯.­®›·ÖdT{Kb	ö>êâÃ1kÁ<èl÷›Ñ¿Pwõ†;hÂ#ÆD×{ºm`‰¥ùm£·'ß`›/ªeÚ %ÉÁ‹'“°©O!­ H%ú_ÿ†Nä‡DÊ”¿aÄ5¬`\Œ¾vÍ)+!øşëU2§‰dà®öì^Å{¼j÷ˆ§:Ù5"ud ¤Œk¯õø7vãûo3’­Ÿı‰ÎÂwÚv†èm˜-úÍ%8/wŞiHºNW¤×Iåïn/®-WV6¶«•Æ;…»Eh-KîëS”d_ó´SGWØ×c‘šÓ¿üò×ßÊ4ˆÉEn]ùë¯şË?¢uç…æí¦½Caß©‘…å¬üş9–(Ñùû:û¯OÎ}^<{|şáû2ËÊ%Z)’eEêÏdJô&ã\c?F}*>F}¨èô¾ÉŸ4õI}IaC¦hğ)éşI£¨İDß—aàğAğ;¡„€ö"µ7ğ\t,œ™5‚;‚ÑJ_ÛlÍêöµ¦vº˜'Ù4{AÎAO63™Ì\·k'§Æ·(êÊv
-54L•Éâm¨8‹’`Åœ+f¡œ•(Æƒ­:ÜNŸû.u«¬-‚<7¥x0†üš$]¬—{İNúòI‹PÊûd0x‘´ùcƒäyzÉ€*²¤ò¾5KVf«T"í’¯İF›ÿZŸÙO/eñ¡LKÛ€ Jˆ®Ìf²%¡|Ì Åc…ÜD¢(ÀÊÂ·xÏ<DÑ‡Â
-/¥ÉÑB¯pQ°F‘d :óò -¸â6K0á´	xvåì–j¦Ì¡`<ó22FŠÂBıÕ}ø—®€ÏË°a®DÙCY“œV”.ä ¶^L²®ıõW¿ûpØ4PøI¹§Õ"F©ÃFoQ6qá@(…>.P ‰¸8ğ´²A^>}D†İf¸áüce™ê´.e&—r÷‘å+„ 9A1Z{)(Œ—/åR¹é\ªP&•²¶Ì÷Ñq9äÛÊmqNV3ó]ÂS î¹R~¿y;¦·BcˆOÚS¬òäp'ó±p«W ºeî£Íl&o·X/¢¡´İmºjñ#Şô4"G«4k =';H{:§ƒ‰³±+sÌ‡’ñ0¿|yj€İ¹:'éO!}z(ÑVQ@å¶’C%Û8ğ]-p†ş¨K6,ARû7u‰0;şç(JÙ&‰¼\>šÆåM”2ĞâDÔø(Äí½+—Eºy¿ğ…ŠA»á**1ÔS¡k®<æ Ò\Ci_F<Á@>úï<APAûÇOAMîÿæáùÏÿ‘Öh¡3ƒì1Ñ“%ÔƒŒÏ“¼ğKK3Ëòr‹æV§i÷ ëŠ¥Úrƒ÷”=O7ËÍŸ^ç’=ëÂ]^v1ØÌD¿“ÒEH #T:×©Û.K¾“ö¹ïÒÍÕ(]½á8MÛj'e/Ş†M,=¤ â‰_Œ6%Ÿ5ò0ØKˆŞ[ƒÛ…-Oª{ÍĞ™]¬í *¾ÛPÈ6}]–wƒ©øıæñ]{§ç`±UQÑ^¸‰fæ|Ïı¾Ò€Ó^±4ö0#`Or©3wöáõLrìş"Ëä‰Ğkù‘^wQ!;ãê;4•U^_C·¬ü~sa]	Á2<ÓçEôcµ¬@TV	
-_ŒåùB”Ò”ÌU©ÔªK#•†gíÃ….ÁèuÑK"$x @.Nß5®ëªª
-—«T¢“qU~ğ¢c îÅ—>ÿÅPb,‰ÏÍ¥»1·±±T³RY_¬¬ÌW”¥V†­HPFª¢–,"«UMŸÔlâb4İI5aWrXZÅï>œ¬¥2ˆÒèP ?»Â¤I…¯
-áRcY[34åæ;DqÅç¦(÷¡—±ŠÎ¾}öågdú)«héÁØi†æ’ì6§›Lú1u’wOjH¶i6›[n	şsåFY³ƒ»0zÓ¸Q¾JFyJG«ÜlÃŸ¯Øì–‚¦âeØm¡ˆ_5)jibìf¡É‰BéU­A8š+‘˜ÌëQ[G‹œu´<¬]Ú¤0f™š@kÇV;R9(Û£èMãU4púœ
-@]©ñ!‹¿fw„A Àf¨|AB€„îÊ¼„•Gû:½t.Z–/¨Rg@äğD”›““™ÀšÉQ™MyÙ<a¦xÁV¬GZOË×¼•ºú˜ñd<C\Ü'?GW¦Jñ–´É—eËóeL<ÑV©(a ò™ÃçOÑ°T¹SYB·×.©_aØ5Qş$Ñ±· ,â¥E¥ÂÃE={ö[Ôò´ÿô-Ôÿã“ÿú9ê¿ó´ÿå¿ ï ó÷úôüñCÔÿõ³ó_>Bçoı+àªÿäOpê† ¼À©dKÑ“)2ˆeíğl`…‰ü,#Õ¡:ŸµÓéÀ‹@(ØƒNdÌ@’9¦sfã–n7êá†ğ7Ğş1=†… üÆ™¶s˜Tšô°J·fâ>šNZK0…É@Z¼É±}<Æíİ.f|uw,&p–İ¶ÔÀÏ’V¯£ÿX]]É`åÊµ“ø0lêƒâ¸F2®ƒ‰`rwŸ®c2í»™˜ÙY65ããÊWCüp2w?©¾!ÜîkTÃ@/XÄo…u7zV´ƒv´{ÍÀ@-h<XOİSµ‹ÑêèÙSår!q±]éb§èÚ¹òŸ¾$7ŸãÊ¦UBUïÔku ›L{¸wù„Í÷éÙ;ôñŞÀÀá)Xÿıó³¾İÿÉ¿R˜åK`¾W…SF‡å0RŠĞ…ƒ/İSÏ±“†§tıı·GD›¹I{Yg½@Ïª•Q„¡ƒIÚêMçÌiÚ»ÛÅj’*„Y¶q¦"Ì%À#óœÂ]Êü_—D];¯«TŒBµ‚³ëÄ/¡JPí ë:İ4Ál"Ü­gÏwzZÉ)to»vw­yÀ[ƒäaPñ{„l¹zÑ"±²¨+}û¸Uƒ$Q/:è‰*s^eB8Á¸¿·éÁºB
-I+İúOí³wşñìá'ıÎp4â?µ©íìé§ìk2jüK@Dm†‰Š5ıµ»¸‰Goÿì	¢ØUøIòÁĞ‚¸ÂduıÊ8nñ'ıÆTìáı§ßŸAù" ‡—Î}†’àúô)šÊg&_…;ü¨ÿãŸ¢_}uö_Ÿ`æYİBç|ÿìw?ÂÍ«‘×uİ_¸µ®³ÛhÚÈ!~ÏÂÅøW$¯dğzK$I“èyÑ·ªbİÚicXsàç|ñ.*-¡$yt+„ë˜µáûn4šuú.ëöĞiñ9VRbù‹¬!4Éi[l»Edï-ßò°AˆdVëH)şQ”6·}ËèbåØ$­“9i4ÃŞ• ßƒØ“ú|§˜Ÿñ
-»°`iZYßw‹ıñAå	€ûö>)ô@ÅÉğñU!Ki|ŒÀÇ÷üıGgOßÆ÷«µ A<R>kcQ¤CÅÛµ°«”ñØƒQè³çx´ó˜'h%Äu›dq©œøx%fÅ'· ÷¬1¼g[MbØ£‡[¸%øÚ»Ñ?ò<ÆILáñ†O.ï‹LrcÈ—L«Ö„ˆH“8£‹¢©Âä ^(LpîÙóaÏC^™Ò)'ùùĞ §l†>†	IÍ¶ë â?KıZj™+jú¡68¥jÇC2´ÃwopÎ	ÛİçìÇp	^ÿ™ÈF¦ó~É&C>D¦.ïíº²ŠA  Ü¹İc³¼- Oè£®bÅrí5¢¼x,D‹Ú$!íOAá(„ÛI¼–hIÕ‡£éƒRt|ÿ¼¼v@2;”DöM8Ä‘ìL„A2#ğFªSQ
-™‰”ÛğÌïÛº–Øw{±'eÀ2sÒµ•iô°¯©Ğ•W	ì­_=CIe¯ñØ*VAE/ã&¿u¾  ©jŒnüK“Ç1;]"õ¸ÔíŒË_u&
-yİyĞÙ¶¬ø˜ºv=Şø>E‰Ã¸W¾tJÎ3jªtù$Ü4¼€¾Uª«hr\ı(yêÑn÷œmRÒLxpá¥ÜöÀçó’¸è7â¡ß…·|ÍÎû%MC!÷éd¬ƒ ¨!ÈP?@JÉx‰`èäIº)“	ÛKA9¸ˆ´Ï™]ó\qËa„ş×IŠÚ|íĞc %!wëı²']ºJ†Ü„^×iŒ<yp»æ=i„şA/¾Š‘]sÚu—+c‘‚ŠI[ƒe€¦‚ñ	g[ÓĞŒâ™áâïtUéOX´­¶¤˜R·¡Wœ†C/óÓ>„ôK¯Ad`¿§¡	ËĞ6îÙìì©ÁdcîAXe(ÅŒ¹ªöVh­º{”Ûïõ:îÌÄ&~vÏÍ´G÷½LÍ™ „jÛ¥®Á	w÷h"_*O‘¥;]ûî)Óêtı˜EVä6‘CRóT6˜¡	Áx	J@@‹_ÙÕWRlÂX]Âë‘^¹=åì§_ óÿòUÿ7?;üÁÙ¯>GTp%F“J½eXñ®‰ÁóĞÓEâÔ¸¾ÉÄÛéy‰jÚhW/‘)_Š„ï¸x…eÉ‰Z¼J:«¯o/.Ì ì;ÇdÈi%L—q‘\y<ãbêg'ó)”#0»·aëÍã­—Ô ¥Ğæ«•ùÛë•íê+óÛó«ËkKÂ$¸GÃ#ÿŞŸı«41Â^ëÚ®İ®ÙŞ=Wß³2•Jf-W…_ÁM$Ø3ÄlP®BÚKSkŒxFâR•ï!Âü`±½ë\g ½Ô«xı:’èŠíxÊhSÂ/Ğ˜Ä§‰¿Ëâô„ß²b_;\â×ˆó»š˜ÛtìÚ²S‡>„^siÇµ¬‘”[‰OÃØpğëâç[îiBpÎÂ—ü##ÚzX­Á$jòÈÁï9E,2¤Ú'€'z|+ÜOµ¸ÕŒ2¬2«ACÔ7Ã{§ å¥VÌ@c$™î;Íƒ.aCo¦71ïÛÒÉ„¸P']¦áAq£‘U1àpd)
-GÖ‹)‡¼ V}¦“Ò‘c !¨zï÷¤2jÔ ¢8 ğ+¾ª‹½ŠkKsoTÖ1•¯¬l,Ş\¬,(‹–ìç%x0#bn-7ª9zH÷B
-1^%~l4œµ¬£ô!~©y+Ü4ı¢	Œ4ªô„âî`‚V®ãC@DÆ¾úÕêxcõ¶ÔßºŸ7`;f‹	áP#YÊ®]7\ÉÕµµÕ 
-[ZÿŞ·lå%ãÆ*+•å7†_*™€¥Ê<š‚aúiHyïĞÓX%fxÏšÔ·5’£åˆè‘¶öÓ#!€lTnÇ«û…ÈâÓÕ5‹ÀØÌfJ€WAk’³Û6³ÍØL'o¿0â—¶v’@²m¯;©K¤¥­ƒ*U‘&æµ´[ë:Íæ%GôËû½†%dŠğUÃâŸò¥ÈñˆM#¢ÈZ¿|mfõS=Ò–:)@9|ä¥i³²-á,]®MÒ¬]
-“…Û	•8`1
-¬3fTÔ¨KùÁá–Gj¦DJ³™Ë“/,d“Ş,MLnùºm`\$0:…¬£“Ï¦
-Sğÿl&?N%´»Gu?­ ÙRêŒ ı“šMˆÇÿ>EwÉ©İ'Å\»ö©Ä @3®j™V	ç“Ú$·¸WˆÚékÑMíÛ3ñ^f<ğIH·v71—)½$ÜÄ0,qr2CF€šòÁ+•RŞ?xëËš¤ä%2C’µÔ­¿¼ˆvÎ;4ìc^&€P’\”Ãå03 D(ò‡œ2BH¶øşí†`½–›§Ã¯ØİÂ’¯„ï êmÂ5iê(Şí6hXµFÃQjjrÁµ›H»èÎRekæ¨ÚÛêÍ ¬ÃF?öR6Çš¶mu%TQ—ÉLoiûæI.¼ül¡ qˆ.mXZ7s™<ÙşÇRh¯
-thp›ËÖ`ö¢·T°ğvucuÍ¯®Ü\\_FË«sK(Vl'}£{ gÔm¡*
-ï&ÿå 5ª>>»n‹ÒÍ4\¨Ákªí#Ôx¬¨Oãk+ŞLŒ¥-½R>ÀV÷€ ÜV˜ºF#Òæ¹9Oé!âÚ	Êd2ğ	pdf1
-¡Ó0
-qc5¢şR|Ò‚„TH¹–œÉy+fÒ¬HD¹K 4,”x@Ãü”–ü^
-:>sœÃp>ã— ~*ËIÀ{›€2åìÛâJ‡MÑ&Áûñ˜ \,’õ.#‹ÙF{ZY¸Wc¸°»Ê…XºnRNú0=eÃiAGââç`G™«)lØÍ:1dÊñä‚7D)“™v@€ˆ‡˜CM¼\àœH	Ó©Æ
- YÿNıØhõË²åè(‘òd>ğÕy/ »¨$™=*6cÊ’¶~­>z`ì¿:ÁkT¿ÅírM^í(]¡2İ.Ê­§tŠ|Ò+¤¦§sÔ›©p
-9ICH-¡Uiñ‡EÈyAI9×—Îô™.ÏÕù·Ïú?¦)óP¹9¢$8Ó$·`wá'èGU¨ĞPë9LÜjh‘åGæËÈEé×1&ºè"Ë|şáãşG_1h2‡ƒgôˆ_Ê¹ÉÉ±4Å§ J†{°»Û¨C4î¢vŒ(ı'kOQŸ«ûNgb‹S·;h	³31\e|kNç ó­d}‘r*ìjÕG&å$)N‰.?bAQİªFOàÀËæ‹v^<‹‚DsÒç˜ó!õÊ\ 'jheº¨„”+~{™ÔÅcd,å¶ÅL»±k'¾sÂ@s>2 ŒsFå¨B>*Gy.8Ô"#ç“ï²GbíÇ´Ooâ§âÇSs
-$,¿ûøóóßOVWªãèìoõıMw\©Ş¾ysq~±²²ğr§ÄY ‘¼Â º&ÕWÁe'í¶s°·¿í¶İ¸•¦_IÚ¥*ér™4U©ÕFÛ˜LãÁ•bšŞ‘½æ¨(Tb2”v”Vğ“Ù¡Lc OÜÎfézpI¼“8" ıŒ	’åšEÅgw9PºoX{±‰+ªäğşÓ÷&úømÿéC,z¢şGÏÏŞı%o9Ì íÓ¤Áà3š@”Ë#›ìß˜j¼ƒâC%õÕñúDDJv‚6Y”YM/"-½óß½(D”ôM•K¹M
-m÷9N±H$&&	„Ì¢‘v¾¢`ØºxQPvBÖÄY¢1áü(G`iµ ©i6xA›¼¡q{NgOŸµG²h8•E1®¼¼JL¯Ô×$+*0+#çP¡™±°‘·ÂĞğ€@"Ãÿ=LOaw*~Cxc·fÈzÂ¸¬B—¹«¯sğ!Ö£c±òûfn*ê´ç‘#Ğr×À³„ÆK;„½ó!
-Å;ê	‹Â2<4§µØ"Q¹ôi¾¾µ‰İÛ§bızeËxqŞ ´$‡µùÿ  ÿÿÔ]ëoÙÿŞ¿â–e7‰çE!(­Œã«»¶)ZE8Î$q‰=–Çæ±‘%è)â±…]¬+±bi…–nÕªP<–ú'ôœsïŒgî½3cCú¡@ÎÌ¹ÏùİsÏ=÷<¼±6ı!kåôím|2|`@RÅHÎ‡zM¸ìÃ_'7ôœf›âVY;À"îœ’Ñ.ÆóÉì€lİ®ëvpøìëü0l¡F[šŒáá½è§AZ|í	LbÂô#46¥•_aÃ¬—®˜øBiè3¼mµïİ´Ÿí²Îó]8sğş«öÃ¤z¸g?¿Íããkå­uîÿKÆßuèç¡ZBT£$Ôö­5¡ñ¹ıP5§^p=|µd¡Õ¾b¯ğ!½8wÂ½®>Õ‡e¹»”H ( ?á;1tí/¼‰H}{µ£¢d‹åe%+­á°uÇÑ•šùUîl<›:?)“Îå‡‡‡eàãîÇØ„Ã´û‘’‹ßt£ÆPª¡+%
-y[óì#iîwÀÎÈ«cŸ,&†¼‡*Ô-#Š¸ı!3–™M~,'Ú$>éB/Ìcï=xÆÏÚŒKUùçˆï(”‡ùl ‡Æ…â:bnÁ¤Û=–+ÖĞöÕ¬Á£k14ÓcMp‡¸²tµ^*—¾”ó° zE­N…}€Ø. ğ¼øÉêÊjqµ(~/~2>:¶2¶âK3ñ¡0S(Š)†Û’Œ+;×Ô’ìîvÃä8ĞrlÖ*“k…¥MÚ'äK¼AÄ›â}™EH-(Êw×M›3ObÚœYÄ-ŒGÌóv–£zYº8ŸgÎ¦9–É&c‰xâlrIb{êi]s)õÃğ¥ûñn’2éÃBWTmoP4NÜøHô÷wHêÕ£ö_ ô^ÿÚ±ï¾aö‹À ˆ£#¾‹´¿Î×
-ÕõRÑBÉN¹z×H	âƒø{œ0é1İèq(­›öÖ›öïÙÁ»}>‚aõZÛöó-†i¼ÿòšg*»uçà=ÆËz…£µÚ³[·:OÑøÄZÄáázµÊ¦Y_g'Fç29òÆó½2Îj„ÿ@W;5 -K”}ÂÀ50®œc`fÆ»P²9L|ğÁZänT—îu(æ€AÃ˜Ù¨«ª,­ã<‰(.å °À§Ñ'¼Ëp²½5?½¬ªdû¨<2¢Sø}ô+D]¬¡n7HOzò%D'?Ôvq!Ÿ]bÛ÷í;/ìwYûş>,ÄÎÖ>k¿½Ùy²‹k€)()‚›e!>Å[éJë+MN1„r:mh¾[óS]Ú¥•|U¹7%ímj^ÍöQç‡ 1.üz°ìÈ¶GŞ÷dîïY€¡êûË±à0}"$ß]8W w¹£ĞÅw9råK•ËÆJ	º
-[Qedi«E0¯„E‰Ş(¾ËÑÍ>c9XU¡•"Ö‰cÀÜàß”_ÔÂÒT˜—¥"n³Ü¾cfSÄ×!:¢ÀÇ>™Jr¦Mé
-(_>LNa\†ç>4+4ÇÜ}•ŒUÌ(İ•Etë´–”K†<$¡D1`Í¡}÷à ®ÒÃ{%Öôu¿5Ô·‘†±ùgã¹-¼YìzÈxpi15óˆëv¾:Á”XÉÀ‰ıÁ3BßS78Œ·ÁÏE£~CŸkpÆ4¯‘»%Ş"
-	Ú¸Æø/ÌPìVz©Q]A'ô!İd¨—Ç§&¦ÙB£xå—Bè¢’MÆ0†2ÂÎ•*¥~õ‚
-R‘ `w)¢1í§íÎRFÌA˜şû)¹ŞFf(¬pİ$	¼”ş[`A4è¡ğ~!/¿Òs-">İ¯Ùåÿ|÷õ-¶Øşîuç/„Ê„µ_¾ÀÔy<ìûüè¦;&Şã“ĞµÈ=Óx7$Ù’SSçŞ+LUĞyz¿ığYç[o¶_G¦,\Hüæv.OœeÙäÅx¶H‘=UÓÏ"zAPÊÀî!g=¸Ê3gz§£g¤œfÓªÇ0: µÒ 0:™8Çëxì¸P¡3Š‚Ô<@ÙÂ]©8Qd±zY4n5¼(™a‹0èuÀ¨–Š‡ Ô ¨€É;/f+Æœ­-8Õtş´	zìç;!XuF `„cS$¶ĞÁ›=“ÎåØïR‰|:ûƒ_.	Ë Š“Ó,½ºŠ‡b–¼^ÁƒTS±³f£À¯×àè¯`°K½.E4êü´}®añT_3i=ÁÑ¸^å?<ö¦—¯Ù¢ıç»õ†Õ··÷ì}”Ñÿqğ¶#xê¶Ü¤¤oœE"‹³·wÛ­÷Q,Å¤³©|*}^p¸\8–”VAÇ§  nÀ‰ë°&¯JØ…øn›1ê*|y—:¹=ğ.mŸl‹Ë´ĞY¨²jÔ?;ÿóÇ'o»óõß˜ıÏ½ƒ_-±£›P-E(àá4áµˆ³†U¬•ªşæs
->Ù³·Şt<Ò È$óÅÏ¼•'+Õ'±ŠyÎ:hâš‚ë|–òàÔ4Ë£µX‚å¹~Ş€3&îŸñF­`iv2§€ BL]‰Böœã?ÈÿÑªj»u°Œâ›-ûé~ûÙÏ°ùÜ²Ÿ8°Îí{í—ÛDEo?Ş„í]ûq8wÀ–â²qÏdRÉY_İêÚ+ÜX%ìC„Á©q€Er2WY¾V‚g“£±9LPËëpŠ6*ké›Ê¤Wy‰@ 'é~â~?>©
-ê:ÔL9võ'E}S¡§D-Iè1±¸=şàvw¯İú®4¿z   ş7íw?-“Ùd	Ä/‘]ğ—sŒ‹FÓí®ıè‘ıí»!Ä°ö|úb2ËÒs,ŸMÅrln!Îº­,±¸…*88…–Ëxûv¨;l…{$ŒNºiìaî–K¤Ï(£
-e®´Û‘‚3NÍ‰ƒ`æy3‰XyÒ¬Íl®İ}®ù€V¸j$·±Å'óZê0È–¬x£n:jï_ŞÖòæÀÊK©>{8·äŒbÍ 4å*°wSsBá$Dš¢.Y¯ª"M	iÊ5İ˜f¨’0*Ì9<±Y„Iˆ>À!Dº@†ä¡é#IÔ½t|Êíx¦TÃIY³±aÔáGH×y	^À¡‚Ÿ*z*}_œU„RåÒ:üğ6æJé…2êì0´fÆRx._&8~XT/%•qËöÆS&ÆÆİy×Šë(ºx6«¨™E‚¦X¼[áÿ÷¤fAÈô› /˜•µÚbXÖÀHÄD+¨üË-ï6$2¿S&¸Ï†Q¨ê¨‡Â>†ÜN¸N:ÄìO;gbéæ…<WñWñJaãHµîr &XCêÎ&Šë¡ˆvX¡J6¹ÀR
-H-şr¶P/Ìlv3´æº{›½èÀœl
-;ªsué¥Ó§ìkâá7ıÂğ|{çÇ·Œª/¾ôİje˜ôZ½_Ğç*ÑØ£#›“ÓŞÔy)m-5#µãäZ•Ûa¥µŠYóçÕğ*èšÒ˜×I—±ø'šîàÍƒôg€g%$…ASÿùx¨V3iãäÆç‹ÊLÉ(…Q)‹¯\-Tè^î·Rñ
-Ë«úÖj¶QÄ-¼Ôµ”Q+][¨¯İ(jñêäÊ	t-vø\²lÂÇ‡sW¡N–RUÃ Ği,/û‚+…8p{/ªGë#øíæåe*;ªÖƒ1ô¤cAó\W‡äé Öd•V9ñøœ°bğ/Î*Ç"Ü.TçO¯NöÑ+t…VNû¾l+r¤Bazöelq|rtIWJÔ„l¨®c EnÌª	,ïõ"¹Ö‘ó¡ö0D©¡,›uØ²cãS<–ïØÈ8ãæ—d|tMfÑcø”“¿Í›ÄyÊg~ë03pšA÷@AhÓ5X»RÃô(°Y÷­Üh˜³Öôçß19]†ÏSÄ€$êDeó÷%m$w}µş ¢Áf4š¦(¯ˆÚÒÇ;²é8“Â’Sş^Ş‡¸/{¸ñÑö­·¬¬P®BÁyà•Ï5êè¥‚ıãHéª+ÀÇNEü‰·@ôDØq¹V)°'6Oÿâ¿   ÿÿ û=KZ
+              <div className="w-[112px] shrink-0 overflow-hidden rounded-lg border border-white/20 bg-white/10 sm:w-[140px] flex items-center justify-center p-1">
+                <MissionCharacterPortrait cardId={41} name={kadanName} language={language} className="p-0" />
+              </div>
+              <div className="flex min-w-0 flex-1 flex-col justify-center gap-2 py-1 text-white">
+                <div className="inline-flex w-fit items-center gap-1.5 rounded-md border border-white/15 bg-white/10 px-2 py-1 text-[10px] font-black uppercase tracking-wider text-cyan-100">
+                  <Swords size={12} />
+                  {t('ranking_battle', language)}
+                </div>
+                <div>
+                  <h2 className="text-lg font-black leading-tight sm:text-2xl">
+                    {t('mission_ranking_banner_title', language)}
+                  </h2>
+                  <p className="mt-1 line-clamp-2 text-xs font-semibold leading-relaxed text-slate-100/85 sm:text-sm">
+                    {t('mission_ranking_banner_desc', language)}
+                  </p>
+                </div>
+                <div className="inline-flex min-h-[36px] w-fit items-center gap-2 rounded-md bg-white px-3 py-2 text-xs font-black text-slate-950 shadow-sm">
+                  {t('mission_ranking_banner_cta', language)}
+                  <ChevronRight size={14} />
+                </div>
+              </div>
+            </div>
+          </button>
+
+          {/* Daily Missions Component */}
+          <DailyMissionsComponent />
+
+          {/* Hero Card Mission Matching Overview Banner */}
+          <div className="w-full rounded-sm border border-slate-800 bg-slate-950 p-3 sm:p-4 text-white shadow-xs font-mono">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-sm bg-amber-500/15 border border-amber-400/30 flex items-center justify-center text-amber-400 shrink-0 font-black text-xs">
+                  ğŸ´
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-400/10 border border-amber-400/20 px-1.5 py-0.5 rounded-xs">
+                      HERO MISSION SYSTEM
+                    </span>
+                    <span className="text-[11px] text-slate-400">
+                      [ 1:1 HERO MATCHING ]
+                    </span>
+                  </div>
+                  <h3 className="text-xs sm:text-sm font-black text-white mt-0.5">
+                    {language === 'ko' 
+                      ? `ì´ ${modes.length}ì¢…ì˜ ë¯¸ì…˜ ê²Œì„ Ã— No.01~${String(modes.length).padStart(2, '0')} íˆì–´ë¡œ ì¹´ë“œ ì „ë‹´ ë§¤ì¹­` 
+                      : `Total ${modes.length} Mission Games Ã— No.01~${String(modes.length).padStart(2, '0')} Hero Card System`}
+                  </h3>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-sm shrink-0 self-start sm:self-auto">
+                <span className="text-[11px] text-slate-400">{language === 'ko' ? 'ì¹´ë“œ ì—°ë™ë¥ ' : 'Card Linked'}</span>
+                <span className="text-xs font-black text-emerald-400 font-mono">100% ({modes.length}/{modes.length})</span>
+              </div>
+            </div>
+            <p className="text-[11px] text-slate-400 mt-2.5 leading-relaxed border-t border-slate-800/80 pt-2">
+              {language === 'ko'
+                ? `ëª¨ë“  ë¯¸ì…˜ ê²Œì„ì€ 1ë²ˆ ì¹´ë“œ(No.01 ${CARD_DATABASE[1]?.title || 'ì•„ì¿ ì•„ë¦¬ìŠ¤'})ë¶€í„° ìˆœì„œëŒ€ë¡œ ê³ ìœ  íˆì–´ë¡œ ìºë¦­í„° ì¹´ë“œê°€ ë‹´ë‹¹ ìˆ˜í˜¸ìë¡œ ë°°ì†ë˜ì–´ ìˆìŠµë‹ˆë‹¤.`
+                : `Every mission game is assigned a unique Hero Card starting from No.01 (${CARD_DATABASE[1]?.title_en || 'Aquaris'}) as guardian.`}
+            </p>
+          </div>
+
+          {/* Mode Search & Category Filter Tabs */}
+          <div className="flex flex-col gap-2.5 w-full pt-1">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs font-mono flex-1">
+                {[
+                  { id: 'all', labelKo: `ì „ì²´ (${modes.length})`, labelEn: `All (${modes.length})` },
+                  { id: '3d', labelKo: `3D ë³µì…€ (${modes.filter(m => m.category === '3d').length})`, labelEn: `3D Voxel (${modes.filter(m => m.category === '3d').length})` },
+                  { id: 'battle', labelKo: `ë°°í‹€ (${modes.filter(m => m.category === 'battle').length})`, labelEn: `Battle (${modes.filter(m => m.category === 'battle').length})` },
+                  { id: 'arcade', labelKo: `ì•„ì¼€ì´ë“œ (${modes.filter(m => m.category === 'arcade').length})`, labelEn: `Arcade (${modes.filter(m => m.category === 'arcade').length})` },
+                  { id: 'puzzle', labelKo: `í¼ì¦ (${modes.filter(m => m.category === 'puzzle').length})`, labelEn: `Puzzle (${modes.filter(m => m.category === 'puzzle').length})` },
+                  { id: 'casual', labelKo: `ìºì£¼ì–¼ (${modes.filter(m => m.category === 'casual').length})`, labelEn: `Casual (${modes.filter(m => m.category === 'casual').length})` }
+                ].map(cat => {
+                  const active = selectedCategory === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => {
+                        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                        setSelectedCategory(cat.id as any);
+                      }}
+                      className={cn(
+                        "px-3 py-1.5 rounded-sm whitespace-nowrap font-bold transition-all cursor-pointer border text-xs min-h-[36px] flex items-center justify-center",
+                        active
+                          ? "bg-slate-900 text-white border-slate-900 shadow-xs"
+                          : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100"
+                      )}
+                    >
+                      {language === 'ko' ? cat.labelKo : cat.labelEn}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Quick search */}
+            <div className="relative w-full">
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={language === 'ko' ? 'ê²Œì„ ëª¨ë“œ ë˜ëŠ” íˆì–´ë¡œ ì´ë¦„ ê²€ìƒ‰...' : 'Search game modes or hero names...'}
+                className="w-full pl-8 pr-8 py-2 bg-white border border-slate-200 rounded-sm text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 font-mono"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                >
+                  <X size={12} />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Mode List Grid - Card Battle Theme Frame Style (3 cards per row) */}
+          <main className="flex-1 px-0 pb-4 md:pb-8 pt-0 flex flex-col justify-start items-center w-full gap-3 md:gap-5 overflow-y-visible">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 w-full py-3 sm:py-4 items-stretch font-mono">
+              {filteredModes.map((m, idx) => {
+                const IconComp = m.icon;
+                const cardIndex = m.characterId || (idx + 1);
+                const charCard = CARD_DATABASE[cardIndex] || CARD_DATABASE[((cardIndex - 1) % 110) + 1];
+                const charName = charCard ? (language === 'ko' ? charCard.title : charCard.title_en) : m.title;
+                const cardNumFormatted = String(cardIndex).padStart(2, '0');
+                
+                // Element visual config
+                const elem = (charCard?.element || 'neutral') as string;
+                const elemBadgeStyle = 
+                  elem === 'water' ? 'bg-cyan-950/80 text-cyan-300 border-cyan-700/60' :
+                  elem === 'fire' ? 'bg-rose-950/80 text-rose-300 border-rose-700/60' :
+                  elem === 'air' || elem === 'wind' ? 'bg-sky-950/80 text-sky-300 border-sky-700/60' :
+                  elem === 'earth' || elem === 'land' ? 'bg-amber-950/80 text-amber-300 border-amber-700/60' :
+                  elem === 'dragon' || elem === 'holy' ? 'bg-yellow-950/80 text-yellow-300 border-yellow-600/60' :
+                  elem === 'undead' || elem === 'monster' ? 'bg-purple-950/80 text-purple-300 border-purple-700/60' :
+                  'bg-slate-900 text-slate-300 border-slate-700';
+                  
+                const elemIcon = 
+                  elem === 'water' ? 'ğŸ’§' :
+                  elem === 'fire' ? 'ğŸ”¥' :
+                  elem === 'air' || elem === 'wind' ? 'ğŸŒªï¸' :
+                  elem === 'earth' || elem === 'land' ? 'â›°ï¸' :
+                  elem === 'dragon' || elem === 'holy' ? 'âœ¦' :
+                  elem === 'undead' || elem === 'monster' ? 'ğŸ’€' : 'âš”ï¸';
+
+                return (
+                  <motion.div
+                    key={m.id}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: Math.min(idx * 0.03, 0.3) }}
+                    whileHover={lowSpecMode ? {} : { y: -3, transition: { duration: 0.15 } }}
+                  >
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => {
+                        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                        recordModePlay(m.id);
+                        m.action();
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                          recordModePlay(m.id);
+                          m.action();
+                        }
+                      }}
+                      className="w-full min-h-[180px] sm:min-h-[220px] bg-[#14121e] border border-slate-800 rounded-sm hover:border-amber-400/80 hover:shadow-md transition-all flex flex-col overflow-hidden group cursor-pointer text-left"
+                      aria-label={`${m.title} - No.${cardNumFormatted} ${charName}`}
+                    >
+                      {/* TCG Card Header Bar */}
+                      <div className="px-1.5 sm:px-2.5 py-1 sm:py-1.5 bg-slate-950/90 border-b border-slate-800/90 flex items-center justify-between gap-1 text-[9px] sm:text-[10px] text-white">
+                        <div className="flex items-center gap-1 sm:gap-1.5 truncate">
+                          <span className="font-black text-amber-400 bg-amber-400/10 border border-amber-400/25 px-1 py-0.2 rounded-xs tracking-tight shrink-0 text-[8px] sm:text-[9px]">
+                            No.{cardNumFormatted}
+                          </span>
+                          <span className="text-[8px] sm:text-[9px] text-slate-400 font-semibold truncate">
+                            {charName}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
+                          <span className={cn("text-[8px] sm:text-[9px] px-1 py-0.2 rounded-xs border font-black flex items-center gap-0.5", elemBadgeStyle)}>
+                            <span>{elemIcon}</span>
+                            <span className="uppercase text-[7px] sm:text-[8px] hidden min-[400px]:inline">{elem}</span>
+                          </span>
+                          {charCard?.power && (
+                            <span className="text-[8px] sm:text-[9px] text-amber-300 font-bold bg-amber-950/40 border border-amber-800/40 px-1 py-0.2 rounded-xs">
+                              P.{charCard.power}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Character Card Portrait Box */}
+                      <div className="flex-1 flex items-center justify-center p-1.5 sm:p-3 relative overflow-hidden h-32 sm:h-44 md:h-48 min-h-[120px] sm:min-h-[160px] bg-gradient-to-b from-slate-900 via-[#131024] to-[#0a0814]">
+                        {/* Background Subtle Ink Grid */}
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(99,102,241,0.18),transparent_70%)] pointer-events-none" />
+                        
+                        {charCard ? (
+                          <MissionCharacterPortrait cardId={charCard.id} name={charName} language={language} className="w-full h-full" />
+                        ) : (
+                          <IconComp size={36} className="text-white/80 drop-shadow-lg my-4" />
+                        )}
+
+                        {/* Bottom Overlay Label inside Card Art */}
+                        <div className="absolute bottom-1 left-1 right-1 flex items-center justify-between pointer-events-none z-30 gap-1">
+                          <div className="bg-black/85 backdrop-blur-xs border border-white/15 px-1 py-0.5 rounded-xs text-[8px] sm:text-[9px] text-white font-bold truncate max-w-[70%] shadow-sm">
+                            #{cardNumFormatted} {charName}
+                          </div>
+                          {m.badgeText && (
+                            <div className="bg-amber-400 text-slate-950 font-black px-1 py-0.5 rounded-xs text-[7px] sm:text-[8px] uppercase tracking-wider shadow-sm shrink-0">
+                              {m.badgeText}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Game Title & Mission Info Bar */}
+                      <div className="p-1.5 sm:p-2.5 bg-slate-950 border-t border-slate-800 flex flex-col gap-1 sm:gap-1.5">
+                        <div className="flex items-center justify-between gap-1">
+                          <span className="flex-1 text-left font-black text-[10px] sm:text-xs text-white truncate drop-shadow-xs">
+                            {m.title}
+                          </span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                              setGuideMode(m);
+                            }}
+                            className="w-5 h-5 sm:w-6 sm:h-6 rounded-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition-all flex items-center justify-center cursor-pointer text-[9px] sm:text-[10px] font-black shrink-0"
+                            aria-label={language === 'ko' ? 'ì„¤ëª… ë³´ê¸°' : 'Show Description'}
+                          >
+                            ?
+                          </button>
+                        </div>
+                        <div className="flex items-center justify-between text-[9px] sm:text-[10px] text-slate-400">
+                          <span className="truncate text-slate-400 text-[8px] sm:text-[9px]">
+                            âœ¦ <strong className="text-slate-200 font-bold">{charName}</strong>
+                          </span>
+                          <span className="text-emerald-400 font-bold shrink-0 text-[8px] sm:text-[9px] flex items-center gap-0.5">
+                            +SNS <ChevronRight size={10} className="inline text-slate-500 group-hover:translate-x-0.5 transition-transform" />
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+              {/* ì¸í”¼ë“œ ë„¤ì´í‹°ë¸Œ ê´‘ê³  ì¹´ë“œ â€” P2-2 */}
+              <NativeAd language={language} variant="card" />
+            </div>
+          </main>
+
+          {/* Help Popup */}
+          <AnimatePresence>
+            {showHelpPopup && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[209] flex items-center justify-center p-4"
+              >
+                <div
+                  className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                  onClick={() => setShowHelpPopup(false)}
+                />
+                <motion.div
+                  initial={{ scale: 0.9, y: 20 }}
+                  animate={{ scale: 1, y: 0 }}
+                  exit={{ scale: 0.9, y: 20 }}
+                  className="rounded-3xl border border-slate-200 bg-white p-5 shadow-2xl max-w-lg w-full relative z-[210] font-sans"
+                >
+                  <div className="flex items-center justify-between mb-4 sticky top-0 z-10 bg-white pt-2">
+                    <h3 className="text-base font-extrabold text-slate-800">
+                      {helpSlideIndex === 0
+                        ? (language === 'ko' ? 'ê²Œì„ ëª¨ë“œ ì„ íƒ' : 'Game Mode Selection')
+                        : helpSlideIndex === 1
+                        ? (language === 'ko' ? 'ëª¨ë“œ ì¹´ë“œ' : 'Mode Cards')
+                        : (language === 'ko' ? 'ë³´ìƒ' : 'Rewards')}
+                    </h3>
+                    <button
+                      onClick={() => setShowHelpPopup(false)}
+                      className="min-w-[36px] min-h-[36px] rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center cursor-pointer transition-colors"
+                    >
+                      <X size={16} className="text-slate-500" />
+                    </button>
+                  </div>
+                  <p className="text-sm text-slate-600 leading-relaxed mb-5">
+                    {helpSlideIndex === 0
+                      ? (language === 'ko'
+                        ? 'ë‹¤ì–‘í•œ ë°°í‹€ ëª¨ë“œì™€ ë¯¸ë‹ˆê²Œì„ ì¤‘ì—ì„œ ì›í•˜ëŠ” ëª¨ë“œë¥¼ ì„ íƒí•˜ì„¸ìš”. ê° ëª¨ë“œëŠ” ê³ ìœ í•œ ê²Œì„ í”Œë ˆì´ì™€ SNS ë³´ìƒì„ ì œê³µí•©ë‹ˆë‹¤.'
+                        : 'Choose from various battle modes and minigames. Each mode offers unique gameplay and SNS rewards.')
+                      : helpSlideIndex === 1
+                      ? (language === 'ko'
+                        ? 'ê° ì¹´ë“œë¥¼ íƒ­í•˜ë©´ í•´ë‹¹ ê²Œì„ ëª¨ë“œë¡œ ë°”ë¡œ ì§„ì…í•©ë‹ˆë‹¤. ì¹´ë“œ ìš°ì¸¡ì˜ ? ë²„íŠ¼ì„ ëˆ„ë¥´ë©´ ìƒì„¸ ì„¤ëª…ì„ ë³¼ ìˆ˜ ìˆìŠµë‹ˆë‹¤.'
+                        : 'Tap any card to enter that game mode. Use the ? button on each card for detailed instructions.')
+                      : (language === 'ko'
+                        ? 'ë°°í‹€ ìŠ¹ë¦¬ì™€ ë¯¸ë‹ˆê²Œì„ ì™„ë£Œ ì‹œ SNS ì½”ì¸ê³¼ ì¹´ë“œ ê²½í—˜ì¹˜ë¥¼ íšë“í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.'
+                        : 'Winning battles and completing minigames earns you SNS coins and card XP.')}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex gap-1.5">
+                      {[0, 1, 2].map((i) => (
+                        <div
+                          key={i}
+                          className={cn(
+                            'w-2 h-2 rounded-full transition-colors',
+                            i === helpSlideIndex ? 'bg-indigo-600' : 'bg-slate-200'
+                          )}
+                        />
+                      ))}
+                    </div>
+                    <div className="flex gap-2">
+                      {helpSlideIndex > 0 && (
+                        <button
+                          onClick={() => setHelpSlideIndex(prev => prev - 1)}
+                          className="min-w-[40px] min-h-[40px] rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center cursor-pointer transition-colors"
+                          aria-label="Previous"
+                        >
+                          <ChevronLeft size={16} className="text-slate-600" />
+                        </button>
+                      )}
+                      {helpSlideIndex < 2 ? (
+                        <button
+                          onClick={() => setHelpSlideIndex(prev => prev + 1)}
+                          className="min-w-[40px] min-h-[40px] rounded-full bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center cursor-pointer transition-colors"
+                          aria-label="Next"
+                        >
+                          <ChevronRight size={16} />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => setShowHelpPopup(false)}
+                          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-sm cursor-pointer transition-colors"
+                        >
+                          {language === 'ko' ? 'ì™„ë£Œ' : 'Done'}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+  
+        {/* Under Construction Popup Modal */}
+        <AnimatePresence>
+          {showConstructionModal && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[1000] flex items-center justify-center p-4"
+            >
+              <div 
+                className="absolute inset-0 bg-black/80 backdrop-blur-sm" 
+                onClick={() => setShowConstructionModal(false)}
+              />
+              <motion.div
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                className="bg-slate-950/95 text-slate-100 w-full max-w-md rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(245,158,11,0.15)] border border-slate-800 relative flex flex-col z-[1001] font-sans"
+              >
+                <div className="p-5 bg-gradient-to-r from-amber-500 to-yellow-600 text-slate-950 flex items-center justify-between border-b border-amber-700/20">
+                  <div className="flex items-center gap-2">
+                    <ShieldAlert size={24} className="text-slate-950 animate-pulse" />
+                    <h2 className="text-lg font-black uppercase tracking-tight leading-none">{t('under_construction_title', language)}</h2>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                      setShowConstructionModal(false);
+                    }} 
+                    className="bg-slate-950/20 hover:bg-slate-950/30 text-slate-950 p-1.5 transition-all flex items-center justify-center rounded-full cursor-pointer"
+                  >
+                    <X size={16} className="text-slate-955" />
+                  </button>
+                </div>
+ 
+                <div className="p-6 space-y-4 text-center">
+                  <div className="w-16 h-16 rounded-full bg-amber-950/40 border border-amber-550 flex items-center justify-center mx-auto shadow-[0_0_15px_rgba(245,158,11,0.2)] animate-bounce">
+                    <Activity size={28} className="text-amber-400" />
+                  </div>
+                  <h3 className="text-lg font-black italic text-amber-400 bg-amber-950/30 px-4 py-1.5 rounded-xl border border-amber-900/50 inline-block">
+                    {selectedConstructionMode}
+                  </h3>
+                  <p className="text-sm font-semibold text-slate-400 leading-relaxed pt-2">
+                     {t('under_construction_desc', language)}
+                  </p>
+                </div>
+ 
+                <div className="p-5 border-t border-slate-900 bg-slate-950/60 flex justify-center">
+                  <button
+                    onClick={() => {
+                      playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                      setShowConstructionModal(false);
+                    }}
+                    className="w-full py-3.5 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-slate-200 font-bold uppercase tracking-wider rounded-xl shadow-md active:scale-95 transition-all cursor-pointer"
+                  >
+                    {t('under_construction_close', language)}
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {guideMode && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+            >
+              <div className="absolute inset-0" onClick={() => setGuideMode(null)} />
+              <motion.div
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                className="bg-white text-slate-800 w-full max-w-md rounded-3xl overflow-hidden shadow-[8px_8px_0px_rgba(0,0,0,0.3)] border-2 border-slate-300 relative flex flex-col z-[1001] font-sans"
+              >
+                <div className={cn(
+                  "p-5 border-b-2 border-slate-200 text-white flex items-center justify-between bg-gradient-to-br",
+                  guideMode.color
+                )}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                      <guideMode.icon size={22} className="text-white" />
+                    </div>
+                    <h2 className="text-lg font-black uppercase tracking-tight">{guideMode.title}</h2>
+                  </div>
+                  <button 
+                    onClick={() => setGuideMode(null)}
+                    className="p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-colors"
+                  >
+                    <X size={18} className="text-white" />
+                  </button>
+                </div>
+                <div className="p-6">
+                  <p className="text-sm font-semibold text-slate-700 leading-relaxed whitespace-pre-line">
+                    {guideMode.guide}
+                  </p>
+                </div>
+                <div className="p-4 border-t border-slate-200 bg-slate-50 flex justify-end">
+                  <button
+                    onClick={() => setGuideMode(null)}
+                    className="px-6 py-2.5 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-colors text-sm"
+                  >
+                    {language === 'ko' ? 'í™•ì¸' : 'OK'}
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {confirmModal.isOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+            >
+              <div
+                className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+                onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+              />
+              <motion.div
+                initial={{ scale: 0.85, y: 30 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.85, y: 30 }}
+                transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+                className="bg-slate-950/95 text-slate-100 w-full max-w-sm rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(244,63,94,0.15)] border border-slate-800 relative z-[10000] font-sans"
+              >
+                {/* Header */}
+                <div className="p-5 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-b border-orange-600/10 flex items-center gap-3">
+                  <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
+                    <ShieldAlert size={20} className="text-white" />
+                  </div>
+                  <h2 className="text-base font-bold uppercase tracking-tight leading-tight">{confirmModal.title}</h2>
+                </div>
+ 
+                {/* Body */}
+                <div className="p-6">
+                  <p className="text-sm font-semibold text-slate-350 leading-relaxed whitespace-pre-line">{confirmModal.message}</p>
+                </div>
+ 
+                {/* Actions */}
+                <div className="px-6 pb-6 flex gap-3">
+                  <button
+                    onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+                    className="flex-1 py-3 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-slate-300 font-semibold text-sm rounded-xl transition-colors duration-200"
+                  >
+                    {language === 'ko' ? 'ì·¨ì†Œ' : 'Cancel'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      confirmModal.onConfirm();
+                      setConfirmModal(prev => ({ ...prev, isOpen: false }));
+                    }}
+                    className="flex-1 py-3 bg-indigo-600 text-white font-semibold text-sm rounded-xl hover:bg-indigo-500 transition-colors duration-200 shadow-lg shadow-indigo-600/25 active:scale-95"
+                  >
+                    {language === 'ko' ? 'í™•ì¸' : 'Confirm'}
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        {renderCustomAlertModal()}
+      </div>
+      </div>
+    );
+  }
+
+  if (gameState === 'preMatch' && selectedOpponent) {
+    return (
+      <div className="flex flex-col min-h-screen bg-slate-950 text-white overflow-y-auto relative pb-20 font-mono select-none">
+        {/* Cyber Grid Background */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(99,102,241,0.18),transparent_65%)] pointer-events-none" />
+
+        {/* Header Bar with Back Button */}
+        <header className="h-16 flex items-center justify-between border-b border-white/10 px-4 sm:px-6 z-50 bg-slate-950/90 backdrop-blur-md sticky top-0">
+          <button
+            onClick={() => {
+              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              setGameState('lobby');
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/15 bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white text-xs font-bold transition-all cursor-pointer"
+          >
+            <ChevronLeft size={16} />
+            <span>{language === 'ko' ? 'ë¡œë¹„ë¡œ' : 'Lobby'}</span>
+          </button>
+
+          <div className="flex flex-col items-center gap-0.5">
+            <div className="inline-flex items-center gap-1.5 text-xs font-black text-amber-400 uppercase tracking-widest">
+              <Swords size={14} className="animate-pulse" />
+              <span>{language === 'ko' ? '[ ëŒ€ì „ ë„ì „ì ë°œê²¬ ]' : '[ CHALLENGER FOUND ]'}</span>
+            </div>
+            <p className="text-[10px] text-slate-400 tracking-wider">
+              {language === 'ko' ? 'ë°°í‹€ ì „ë ¥ ë¶„ì„ ë° ë§¤ì¹­ ì¤€ë¹„' : 'Pre-Battle Intel & Match Prep'}
+            </p>
+          </div>
+
+          <div className="w-16" />
+        </header>
+
+        <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 gap-6 max-w-lg mx-auto w-full z-10">
+          {/* Opponent Hero Card Portrait & Info */}
+          <div className="w-full flex flex-col items-center gap-4 bg-slate-900/90 border border-slate-800 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-md relative overflow-hidden">
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-rose-500/10 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
+
+            <div className="relative">
+              {/* ìºë¦­í„° í¬íŠ¸ë ˆì´íŠ¸ */}
+              <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl border-3 border-rose-500/60 bg-slate-950 flex items-center justify-center overflow-hidden shadow-[0_0_30px_rgba(244,63,94,0.35)] ring-2 ring-rose-400/30">
+                <div className="w-[130%] h-[130%] shrink-0" style={getCardSpriteStyle(opponentAvatarCardId)} />
+              </div>
+              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-rose-600 border border-rose-400 text-white text-[9px] font-black uppercase tracking-widest shadow-md">
+                OPPONENT
+              </div>
+            </div>
+
+            <div className="text-center space-y-1 mt-1">
+              <span className="text-[10px] font-mono text-rose-400 uppercase tracking-widest font-black">
+                {CARD_DATABASE[opponentAvatarCardId] ? `No.${String(opponentAvatarCardId).padStart(2, '0')} ${language === 'ko' ? CARD_DATABASE[opponentAvatarCardId].title : CARD_DATABASE[opponentAvatarCardId].title_en}` : 'Hero Challenger'}
+              </span>
+              <h3 className="text-xl sm:text-2xl font-black text-white italic tracking-wide">
+                {selectedOpponent.name}
+              </h3>
+            </div>
+
+            {/* ì „íˆ¬ë ¥ & ë³´ìƒ ìŠ¤íƒ¯ ë°” */}
+            <div className="grid grid-cols-2 gap-3 w-full pt-1">
+              <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-3 text-center">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
+                  {language === 'ko' ? 'ìƒëŒ€ ì´ ì „íˆ¬ë ¥' : 'Opponent Power'}
+                </span>
+                <span className="text-base sm:text-lg font-black text-cyan-400">
+                  âš¡ {(selectedOpponent.totalPower || 1200).toLocaleString()} TP
+                </span>
+              </div>
+              <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-3 text-center">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
+                  {language === 'ko' ? 'ì˜ˆìƒ íšë“ ë³´ìƒ' : 'Est. Reward'}
+                </span>
+                <span className="text-base sm:text-lg font-black text-amber-300">
+                  ğŸª™ +{Math.max(10, Math.floor((selectedOpponent.sns || 50) * 0.4)).toLocaleString()} SNS
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Faction Matchup Info â€” ì„¸ë ¥ ìƒì„± ì •ë³´ */}
+          {battleType !== 'matgo' && playerDeck.length > 0 && previewDeck.length > 0 && (() => {
+            const playerRep = playerDeck[0];
+            const opponentRep = previewDeck[0];
+            if (!playerRep || !opponentRep) return null;
+            const synergyPreview = calculateBattleSynergy(playerRep, opponentRep, playerRep.equipment);
+            const advantage = synergyPreview.factionAdvantage;
+            const icon = FACTION_ADVANTAGE_ICONS[advantage];
+            const colorClass = FACTION_ADVANTAGE_COLORS[advantage];
+            const label = advantage === 'advantage'
+              ? t('matchup_advantage', language)
+              : advantage === 'disadvantage'
+              ? t('matchup_disadvantage', language)
+              : t('matchup_neutral', language);
+            const equipmentLabel = synergyPreview.equipmentSetName
+              ? `${EQUIPMENT_SET_ICONS[synergyPreview.equipmentSetName] || ''} ${synergyPreview.equipmentSetName.toUpperCase()} +${synergyPreview.equipmentPowerBonus}âš¡`
+              : t('synergy_no_bonus', language);
+            return (
+              <div className={`w-full rounded-2xl border px-4 py-3 text-center ${advantage === 'advantage' ? 'border-green-500/40 bg-green-950/30 shadow-[0_0_20px_rgba(34,197,94,0.15)]' : advantage === 'disadvantage' ? 'border-red-500/40 bg-red-950/30' : 'border-slate-800 bg-slate-900/50'}`}>
+                <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">
+                  {language === 'ko' ? '[ ìƒì„± ë¶„ì„ ê²°ê³¼ ]' : '[ MATCHUP ANALYSIS ]'}
+                </p>
+                <p className={`text-sm font-black ${colorClass}`}>
+                  {icon} {label} Â· x{synergyPreview.factionMultiplier.toFixed(2)}
+                </p>
+                <p className="mt-1.5 text-[10px] font-semibold text-slate-300">
+                  {t('synergy_equipment_bonus', language)} Â· {equipmentLabel}
+                </p>
+              </div>
+            );
+          })()}
+
+          {/* Deck Preview & Counter Deck Section */}
+          {battleType !== 'matgo' && (
+            <div className="w-full space-y-3">
+              <button
+                onClick={() => {
+                  setShowPreviewDeck(!showPreviewDeck);
+                  playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+                }}
+                className="w-full flex items-center justify-between p-3.5 bg-slate-900/90 border border-slate-800 rounded-2xl hover:bg-slate-850 hover:border-slate-700 transition-all font-black uppercase tracking-wider text-xs text-slate-200 cursor-pointer shadow-sm"
+              >
+                <div className="flex items-center gap-2.5">
+                  <Eye size={16} className="text-cyan-400" />
+                  <span>{language === 'ko' ? 'ìƒëŒ€ ë± ì •ë³´ ë¯¸ë¦¬ë³´ê¸°' : 'Preview Opponent Deck'}</span>
+                </div>
+                {showPreviewDeck ? <ChevronUp size={16} /> : <EyeOff size={16} />}
+              </button>
+              
+              <AnimatePresence>
+                {showPreviewDeck && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden space-y-2.5 pt-1"
+                  >
+                    <div className="flex justify-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                      {previewDeck.map((card, idx) => (
+                        <div key={idx} className="w-[18%] max-w-[70px] shrink-0 aspect-[5/7]">
+                           <CardItem 
+                             card={card} 
+                             isLocked={true} 
+                             className="w-full h-full"
+                             lowSpecMode={lowSpecMode}
+                           />
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* ì¹´ìš´í„° ë± ìë™ ì¥ì°© */}
+                    {previewDeck.length > 0 && (
+                      <button
+                        onClick={() => {
+                          const counterDeckIds = generateCounterDeck(previewDeck, CARD_DATABASE);
+                          const season = localStorage.getItem('hero_current_season') || 'season1';
+                          setSeasonItem('hero_deck', season, JSON.stringify(counterDeckIds));
+                          setSeasonItem('hero_deck_guest', season, JSON.stringify(counterDeckIds));
+                          window.dispatchEvent(new Event('snshero_deck_updated'));
+                          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                          triggerHaptic('medium');
+                          triggerAlert(
+                            language === 'ko'
+                              ? `ìƒëŒ€ ë±ì— ê°€ì¥ ìœ ë¦¬í•œ ìƒì„± 5ì¥ì˜ ì¹´ë“œ(#${counterDeckIds.join(', #')})ê°€ ìë™ìœ¼ë¡œ ì¥ì°©ë˜ì—ˆìŠµë‹ˆë‹¤!`
+                              : `Recommended counter deck (#${counterDeckIds.join(', #')}) has been equipped!`,
+                            language === 'ko' ? 'ì¹´ìš´í„° ë± ìë™ ì¥ì°©' : 'Counter Deck Equipped'
+                          );
+                        }}
+                        className="w-full py-2.5 px-3 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer text-xs font-bold shadow-xs"
+                      >
+                        <Zap size={14} className="text-amber-400 animate-pulse" />
+                        <span>{language === 'ko' ? 'âš¡ ì¶”ì²œ ìƒì„± ì¹´ìš´í„° ë± ì›í´ë¦­ ì¥ì°©' : 'âš¡ Auto-Equip Counter Deck'}</span>
+                      </button>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
+
+          {/* Action Launch Buttons */}
+          <div className="w-full space-y-3 pt-2">
+            <button
+              onClick={() => {
+                const autoSetting = localStorage.getItem('hero_auto_battle_setting');
+                const autoEnabled = autoSetting === null ? true : JSON.parse(autoSetting) === true;
+                if (autoEnabled) setIsAutoBattle?.(true);
+                startRobotMatch(selectedOpponent);
+              }}
+              className="w-full h-14 sm:h-16 bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 hover:brightness-110 text-white rounded-2xl flex items-center justify-center gap-3 group transition-all shadow-[0_0_30px_rgba(99,102,241,0.4)] active:scale-[0.98] cursor-pointer border border-indigo-400/40 font-mono"
+            >
+              <Swords className="group-hover:rotate-12 transition-transform text-white" size={22} />
+              <span className="text-base sm:text-lg font-black uppercase tracking-wider">
+                {language === 'ko' ? 'âš”ï¸ ë°°í‹€ ê°œì‹œ (START BATTLE)' : 'âš”ï¸ INITIATE BATTLE'}
+              </span>
+              <Zap size={20} className="text-yellow-300 group-hover:scale-125 transition-transform animate-pulse" />
+            </button>
+
+            <button
+              onClick={() => {
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                setGameState('lobby');
+              }}
+              className="w-full py-3 rounded-2xl border border-slate-800 bg-slate-900/60 hover:bg-slate-800 text-slate-400 hover:text-white text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+            >
+              {language === 'ko' ? 'â† ëŒ€ì „ ì·¨ì†Œí•˜ê³  ë¡œë¹„ë¡œ ë‚˜ê°€ê¸°' : 'â† Cancel & Return to Lobby'}
+            </button>
+          </div>
+          {renderCustomAlertModal()}
+        </div>
+      </div>
+    );
+  }
+
+  if (gameState === 'lobby') {
+    return (
+      <div className="flex-1 flex flex-col w-full bg-slate-950 text-slate-100 overflow-y-auto relative min-h-0">
+        <AnimatePresence>
+          {showRules && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[1000] flex items-center justify-center p-4"
+            >
+              <div 
+                className="absolute inset-0 bg-black/80 backdrop-blur-sm" 
+                onClick={() => setShowRules(false)}
+              />
+              <motion.div 
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                className="bg-slate-950/95 text-slate-100 w-full max-w-lg rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(99,102,241,0.2)] relative flex flex-col max-h-[80vh] border border-slate-850"
+              >
+                <div className="p-6 bg-gradient-to-r from-indigo-955 to-slate-955 text-white flex items-center justify-between border-b border-indigo-500/20">
+                  <div className="flex items-center gap-2">
+                    <HelpCircle size={24} className="text-amber-400 animate-pulse" />
+                    <h2 className="text-xl font-extrabold uppercase tracking-tight">{t('game_rules', language)}</h2>
+                  </div>
+                  <button onClick={() => setShowRules(false)} className="bg-white/25 hover:bg-white/40 p-2 rounded-full transition-all flex items-center justify-center">
+                    <X size={20} />
+                  </button>
+                </div>
+
+                <div className="p-6 overflow-y-auto space-y-8 font-sans">
+                  {/* Basic How to Play */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 text-indigo-400">
+                      <Info size={18} />
+                      <h3 className="font-bold uppercase text-sm">{t('how_to_play', language)}</h3>
+                    </div>
+                    <div className="space-y-3">
+                      {[1, 2, 3, 4].map(num => (
+                        <div key={num} className="bg-slate-900/50 p-3 rounded-xl border border-slate-800/80">
+                          <div className="text-xs font-bold text-indigo-400 uppercase mb-1">{t(`rule_${num}_title` as any, language)}</div>
+                          <div className="text-[11px] font-medium text-slate-350 leading-relaxed">{t(`rule_${num}_desc` as any, language)}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Abilities Section */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 text-indigo-400">
+                      <Zap size={18} />
+                      <h3 className="font-bold uppercase text-sm">{t('ability_types', language)}</h3>
+                    </div>
+                    <div className="grid grid-cols-1 gap-2">
+                      {(['outline_shield' as any, 'outline_power_boost' as any, 'outline_weaken' as any, 'outline_reinforce' as any] as const).map(type => {
+                        const baseType = type.replace('outline_', '');
+                        return (
+                          <div key={type} className="flex gap-3 bg-slate-900/50 p-3 rounded-xl border border-slate-800/80 items-center">
+                            <div className={cn(
+                              "w-8 h-8 rounded-full flex items-center justify-center shrink-0 border border-white/10 shadow-sm",
+                              baseType === 'shield' ? "bg-blue-500" :
+                              baseType === 'power_boost' ? "bg-amber-500" :
+                              baseType === 'weaken' ? "bg-purple-650" : "bg-emerald-500"
+                            )}>
+                              <Sparkles size={14} className="text-white" />
+                            </div>
+                            <div className="text-[11px] font-medium text-slate-355 leading-snug">
+                              {t(`ability_${baseType}` as any, language)}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-6 border-t border-slate-900 bg-slate-950/60">
+                  <button 
+                    onClick={() => setShowRules(false)}
+                    className="w-full py-3.5 bg-indigo-650 hover:bg-indigo-550 text-white rounded-2xl font-bold uppercase tracking-wider transition-all active:scale-95 shadow-lg shadow-indigo-600/20"
+                  >
+                    {t('close', language)}
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Header and Instructions removed to maximize map visibility. */}
+
+        {isGpsActive && gpsCoords ? (
+          /* GPS Mode: Leaflet Map Background */
+          <div className="flex-1 relative w-full h-full overflow-hidden">
+            {/* Map Container */}
+            <div ref={mapContainerRef} className="w-full h-full z-10" />
+
+            {/* Premium Workout Floating Dashboard Card */}
+            <div className="absolute top-24 right-4 z-50 pointer-events-auto max-w-sm w-[260px] animate-fade-in">
+              <div className="bg-slate-900/90 backdrop-blur-xl border border-cyan-500/30 p-4 rounded-2xl shadow-[0_4px_24px_rgba(6,182,212,0.15)] text-white space-y-4 font-sans">
+                <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                  <div className="flex items-center gap-2 text-cyan-400">
+                    <Activity size={18} className="animate-pulse" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest italic">WORKOUT STATS</span>
+                  </div>
+                  <div className="w-2 h-2 rounded-full bg-green-500 animate-ping" />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col font-sans">
+                    <span className="text-[9px] uppercase text-white/50 tracking-wider font-semibold">Distance</span>
+                    <span className="text-2xl font-bold text-cyan-400">
+                      {workoutDistance.toFixed(1)}<span className="text-xs ml-0.5 font-normal text-white/70">m</span>
+                    </span>
+                    {/* Progress to next encounter (10m) */}
+                    <div className="w-full h-1 bg-white/10 rounded-full mt-1.5 overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-blue-400 to-cyan-400 transition-all duration-300"
+                        style={{ width: `${Math.min(100, (workoutDistance / 10) * 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col font-sans">
+                    <span className="text-[9px] uppercase text-white/50 tracking-wider font-semibold">Calories</span>
+                    <span className="text-2xl font-bold text-orange-400">
+                      {workoutCalories.toFixed(2)}<span className="text-xs ml-0.5 font-normal text-white/70">kcal</span>
+                    </span>
+                    <div className="text-[8px] text-white/40 mt-1 font-sans">
+                      {(workoutCalories / 7.7).toFixed(3)}g fat burnt
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-[9px] text-cyan-400 bg-cyan-950/40 border border-cyan-800/30 px-2.5 py-1.5 rounded-xl font-medium leading-relaxed whitespace-pre-line text-center font-sans">
+                  ğŸƒ {language === 'ko' ? "10më¥¼ ê±¸ì–´ ë‹¤ë‹ ë•Œë§ˆë‹¤\nê°€ì¥ ê°€ê¹Œìš´ AIì™€ ìë™ìœ¼ë¡œ ì „íˆ¬ê°€ ì‹œì‘ë©ë‹ˆë‹¤!" : "Walk 10m to auto-trigger\nbattle with the nearest AI!"}
+                </div>
+              </div>
+            </div>
+
+            {/* Map Interaction Hint */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-955/90 backdrop-blur-md text-white px-4 py-2.5 text-[10px] font-semibold rounded-full shadow-lg pointer-events-none tracking-tight uppercase whitespace-nowrap border border-white/5 font-sans">
+              ğŸ“ {language === 'ko' ? "ì§€ë„ì˜ ë¹¨ê°„ ë§ˆì»¤ë¥¼ íƒ­í•˜ë©´ ì „íˆ¬ë¥¼ ì‹œì‘í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤." : "TAP RED MARKERS TO ENGAGE AI ROBOT"}
+            </div>
+          </div>
+        ) : (
+          /* Lobby World - Bright Cyberpunk Night City Style */
+          <div 
+            ref={lobbyRef}
+            onClick={handleLobbyClick}
+            className="flex-1 relative bg-[#1a1a2e] overflow-hidden cursor-crosshair"
+            style={{
+              backgroundImage: `radial-gradient(circle at 50% 50%, #2a2a4e 0%, #1a1a2e 100%)`,
+              boxShadow: 'inset 0 0 100px rgba(0, 255, 255, 0.25)'
+            }}
+          >
+            {/* Brighter Cyber Grid Overlay */}
+            <div className="absolute inset-0 opacity-30 pointer-events-none" 
+                 style={{ 
+                   backgroundImage: `linear-gradient(#0ff 1px, transparent 1px), linear-gradient(90deg, #0ff 1px, transparent 1px)`,
+                   backgroundSize: '80px 80px',
+                   maskImage: 'radial-gradient(circle at 50% 50%, black 50%, transparent 95%)'
+                 }} 
+            />
+
+            {/* Space Objects - Fixed Top */}
+            <div className="absolute top-5 left-[15%] text-4xl opacity-60 animate-pulse">ğŸ›°ï¸</div>
+            <div className="absolute top-8 right-[25%] text-5xl opacity-50 drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">ğŸš€</div>
+            <div className="absolute top-12 left-[40%] text-2xl opacity-40">ğŸŒŒ</div>
+            <div className="absolute top-6 right-[10%] text-3xl opacity-50 animate-bounce-slow">ğŸ›°ï¸</div>
+
+            {/* Dense Futuristic City Buildings */}
+            <div className="absolute top-1/4 left-10 text-7xl opacity-60 select-none pointer-events-none drop-shadow-[0_0_20px_rgba(0,255,255,0.8)]">ğŸ™ï¸</div>
+            <div className="absolute top-1/4 left-32 text-6xl opacity-40 select-none pointer-events-none drop-shadow-[0_0_15px_rgba(255,0,255,0.6)]">ğŸ¢</div>
+            <div className="absolute top-[30%] right-[15%] text-7xl opacity-50 select-none pointer-events-none drop-shadow-[0_0_20px_rgba(255,0,255,0.8)]">ğŸ—¼</div>
+            <div className="absolute top-[35%] right-[5%] text-5xl opacity-40 select-none pointer-events-none drop-shadow-[0_0_15px_rgba(0,255,255,0.5)]">ğŸ¬</div>
+            <div className="absolute bottom-1/3 left-1/4 text-6xl opacity-40 select-none pointer-events-none drop-shadow-[0_0_15px_rgba(255,255,0,0.6)]">ğŸ“¡</div>
+            <div className="absolute bottom-1/4 right-[20%] text-7xl opacity-60 select-none pointer-events-none drop-shadow-[0_0_20px_rgba(0,255,255,0.8)]">ğŸ™ï¸</div>
+            <div className="absolute bottom-[30%] left-[5%] text-5xl opacity-30 select-none pointer-events-none">ğŸ¢</div>
+            <div className="absolute bottom-[15%] right-[40%] text-6xl opacity-50 select-none pointer-events-none drop-shadow-[0_0_15px_rgba(255,255,0,0.7)]">ğŸ™ï¸</div>
+            <div className="absolute top-[45%] left-[45%] text-4xl opacity-30 select-none pointer-events-none">ğŸ¬</div>
+            
+            <div className="absolute top-[15%] left-[40%] text-5xl opacity-40 select-none pointer-events-none">ğŸ”Œ</div>
+            <div className="absolute top-[20%] left-[45%] text-4xl opacity-30 select-none pointer-events-none">âš¡</div>
+            
+            {/* Digital Scanner UI */}
+            <div className="absolute top-12 left-1/2 -translate-x-1/2 opacity-60 pointer-events-none select-none flex flex-col items-center">
+               <div className="w-28 h-28 border-2 border-[#0ff] rounded-full flex items-center justify-center relative animate-spin-slow">
+                  <div className="absolute inset-0 border-t-4 border-[#f0f] rounded-full" />
+                  <div className="w-1 h-32 bg-[#0ff]/40 absolute" />
+                  <div className="w-32 h-1 bg-[#0ff]/40 absolute" />
+                  <div className="text-[10px] font-black text-[#0ff] mt-16 tracking-widest uppercase bg-black/40 px-2 py-0.5 rounded">MAP_SCANNER_v2</div>
+               </div>
+            </div>
+
+            {/* District Labels */}
+            <div className="absolute top-[18%] right-[10%] text-[#f0f] text-[10px] font-black italic tracking-widest opacity-60 uppercase border-r-2 border-[#f0f] pr-2">Sector_01_Watson</div>
+            <div className="absolute bottom-[20%] left-[10%] text-[#0ff] text-[10px] font-black italic tracking-widest opacity-60 uppercase border-l-2 border-[#0ff] pl-2">Sector_04_Pacific</div>
+            <div className="absolute bottom-[40%] right-[30%] text-[#ff0] text-[10px] font-black italic tracking-widest opacity-60 uppercase border-b-2 border-[#ff0] pb-1">Night_City_Center</div>
+
+            {/* Static Background Grid */}
+            <div className="absolute inset-0 grid grid-cols-12 grid-rows-12 opacity-[0.1] pointer-events-none">
+              {Array(144).fill(null).map((_, i) => (
+                <div key={`grid-${i}`} className="border border-gray-800" />
+              ))}
+            </div>
+
+            {/* Guest Badge in Lobby */}
+            <div className="absolute left-4 top-4 flex flex-col gap-3 z-[60]">
+              {!effectiveUser && (
+                <div className="bg-amber-500 text-white px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full shadow-lg shadow-amber-500/20 animate-pulse">
+                  AI_BATTLE_ONLY (GUEST)
+                </div>
+              )}
+            </div>
+
+            {/* Auto Battle Stats & Strategy Overlay */}
+            <div className="absolute bottom-24 md:bottom-32 left-4 md:left-8 z-50 flex flex-col items-start gap-2 pointer-events-none">
+              {isAutoBattle && (
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="bg-slate-900/90 backdrop-blur-md border border-slate-800 p-3 rounded-2xl text-slate-100 font-sans text-[10px] space-y-2 shadow-xl min-w-[140px] pointer-events-auto"
+                >
+                   <div className="flex justify-between gap-4 border-b border-slate-800 pb-1">
+                     <span className="text-indigo-400 font-bold uppercase tracking-wider">AUTO_BATTLE</span>
+                   </div>
+                   <div className="flex justify-between gap-2 border-b border-slate-800 pb-1 text-slate-300">
+                     <span className="opacity-50 uppercase whitespace-nowrap">Sess_Rec</span>
+                     <span className="font-bold whitespace-nowrap text-right">
+                       {autoBattleStats.wins}W {autoBattleStats.losses}L {autoBattleStats.draws}D
+                     </span>
+                   </div>
+                   <div className="flex justify-between items-center text-slate-300">
+                     <span className="text-[9px] uppercase tracking-wider opacity-50">Win Rate</span>
+                     <span className="text-indigo-400 font-bold">
+                       {((autoBattleStats.wins / (Math.max(1, autoBattleStats.wins + autoBattleStats.losses + autoBattleStats.draws))) * 100).toFixed(1)}%
+                     </span>
+                   </div>
+                   {lastBattleSummaryData && (
+                     <button
+                       type="button"
+                       onClick={(e) => {
+                         e.stopPropagation();
+                         setShowPostBattleSummaryModal(true);
+                       }}
+                       className="w-full mt-1 py-1 px-2 bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 rounded-lg text-[9px] font-bold text-indigo-200 flex items-center justify-center gap-1 transition-all cursor-pointer shadow-sm active:scale-95"
+                     >
+                       <BarChart3 size={11} className="text-indigo-400" />
+                       <span>{language === 'ko' ? 'ğŸ“Š ì§ì „ ì „íˆ¬ ë¶„ì„' : 'ğŸ“Š Last Battle'}</span>
+                     </button>
+                   )}
+                </motion.div>
+              )}
+            </div>
+
+            {/* Navigation Buttons */}
+            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-between px-4 z-[60] pointer-events-none">
+                <button 
+                  onClick={(e) => { e.stopPropagation(); setLobbyPage(p => Math.max(0, p - 1)); }}
+                  disabled={lobbyPage === 0}
+                  className={cn(
+                    "w-12 h-12 bg-slate-900/85 backdrop-blur-sm text-slate-200 rounded-full flex items-center justify-center pointer-events-auto border border-slate-800 shadow-lg transition-all hover:bg-slate-800/85 active:scale-90",
+                    lobbyPage === 0 ? "opacity-0 invisible" : "visible"
+                  )}
+                >
+                  <ChevronLeft size={32} />
+                </button>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); setLobbyPage(p => Math.min(totalPages - 1, p + 1)); }}
+                  disabled={lobbyPage >= totalPages - 1}
+                  className={cn(
+                    "w-12 h-12 bg-slate-900/85 backdrop-blur-sm text-slate-200 rounded-full flex items-center justify-center pointer-events-auto border border-slate-800 shadow-lg transition-all hover:bg-slate-800/85 active:scale-90",
+                    lobbyPage >= totalPages - 1 ? "opacity-0 invisible" : "visible"
+                  )}
+                >
+                  <ChevronLeft size={32} className="rotate-180" />
+                </button>
+            </div>
+
+            <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-40">
+                <div className="bg-slate-900/85 backdrop-blur-sm text-slate-200 px-4 py-2 text-xs font-semibold border border-slate-800 rounded-2xl flex items-center gap-2 shadow-md">
+                   <Users size={16} className="text-indigo-400" />
+                   <span>PAGE {lobbyPage + 1} / {Math.max(1, totalPages)}</span>
+                </div>
+            </div>
+
+            {/* NPCs (Robots + Users) */}
+            {allChars.map((char) => {
+              const currentPos = animatedPositions[char.id] || { x: char.x, y: char.y };
+              return (
+              <motion.div
+                key={char.id}
+                className="absolute flex flex-col items-center select-none"
+                style={{ zIndex: 10 }}
+                initial={{ scale: 0, opacity: 0, left: `${currentPos.x}%`, top: `${currentPos.y}%` }}
+                animate={{ scale: 1, opacity: 1, left: `${currentPos.x}%`, top: `${currentPos.y}%` }}
+                transition={lowSpecMode ? { duration: 0 } : { left: { duration: 2, ease: "easeInOut" }, top: { duration: 2, ease: "easeInOut" } }}
+                whileHover={!lowSpecMode ? { scale: 1.1, zIndex: 100 } : {}}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleEncounter(char);
+                }}
+              >
+                <div className="relative group cursor-pointer">
+                  {/* Speech Bubble */}
+                  {bubbles[char.id] && (
+                    <div className="absolute bottom-full mb-8 left-1/2 -translate-x-1/2 bg-slate-900/95 text-slate-105 text-sm font-bold px-3 py-1.5 border border-slate-850 rounded-lg whitespace-nowrap z-50 shadow-[0_4px_15px_rgba(0,0,0,0.4)]">
+                      {bubbles[char.id].text.length > 5 ? bubbles[char.id].text.substring(0, 5) + '...' : bubbles[char.id].text}
+                      {/* Bubble Tail */}
+                      <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-t-[8px] border-t-slate-850 border-r-[6px] border-r-transparent"></div>
+                      <div className="absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[4px] border-l-transparent border-t-[6px] border-t-slate-900 border-r-[4px] border-r-transparent"></div>
+                    </div>
+                  )}
+                  
+                  {/* AI Tag */}
+                  {char.type === 'robot' && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-red-650 text-white text-sm font-bold px-1.5 py-0.5 shadow-sm z-50 rounded-sm">
+                      AI
+                    </div>
+                  )}
+                  
+                  <div className={cn(
+                    "p-1 border border-slate-800 rounded-2xl group-hover:border-indigo-400 hover:shadow-lg transition-all transform active:scale-95 bg-slate-900 overflow-hidden w-12 h-12 flex items-center justify-center shadow-md"
+                  )}>
+                    {char.type === 'robot' ? (
+                      <img 
+                        src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${char.id}&backgroundColor=b6e3f4`} 
+                        alt="Robot" 
+                        className={cn(
+                          "w-full h-full object-cover pixelated"
+                        )}
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <img 
+                        src={`https://api.dicebear.com/7.x/pixel-art/svg?seed=${char.id}&backgroundColor=c0aede`} 
+                        alt="NPC" 
+                        className="w-full h-full object-cover pixelated"
+                        referrerPolicy="no-referrer"
+                      />
+                    )}
+                  </div>
+                  
+                  {/* Status Indicator */}
+                  {char.type === 'user' && (
+                    <div className={cn(
+                      "absolute -right-1.5 -top-1.5 w-3.5 h-3.5 border border-slate-800 rounded-lg",
+                      char.status === 'online' ? "bg-green-500" : "bg-gray-400"
+                    )} />
+                  )}
+                  
+                  {/* ID / Name Tag under character */}
+                  <div className="mt-1 text-[10px] font-bold bg-slate-900/90 text-white px-2 py-0.5 text-center tracking-tight w-max max-w-[85px] truncate rounded-full absolute left-1/2 -translate-x-1/2 top-full shadow-sm">
+                    {char.name || `ID_${char.id.slice(0,6).toUpperCase()}`}
+                  </div>
+
+                  {/* Power & SNS Info */}
+                  {char.type === 'robot' && (
+                    <div className="mt-6 text-[9px] font-semibold bg-slate-900/90 text-slate-200 px-2 py-0.5 border border-slate-800 rounded-full text-center w-max max-w-[95px] absolute left-1/2 -translate-x-1/2 top-full whitespace-nowrap shadow-sm">
+                      <span className="text-rose-455 font-bold">P:{(char.totalPower || 0).toLocaleString()}</span>
+                      <span className="text-slate-700 mx-0.5">|</span>
+                      <span className="text-indigo-400 font-bold">S:{(char.sns || 0).toLocaleString()}</span>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )})}
+
+            {/* Player character (Static center-ish for focus) */}
+            <motion.div 
+              animate={{ left: `${playerPos.x}%`, top: `${playerPos.y}%` }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="absolute flex flex-col items-center pointer-events-none z-20 group"
+            >
+               <div className="relative pointer-events-auto">
+                  {/* Speech Bubble */}
+                  {bubbles['self'] && (
+                    <div className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-sm font-bold px-3 py-1.5 border border-gray-200 rounded-lg whitespace-nowrap z-50">
+                      {bubbles['self'].text.length > 5 ? bubbles['self'].text.substring(0, 5) + '...' : bubbles['self'].text}
+                      <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-t-[8px] border-t-black border-r-[6px] border-r-transparent"></div>
+                      <div className="absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[4px] border-l-transparent border-t-[6px] border-t-blue-600 border-r-[4px] border-r-transparent"></div>
+                    </div>
+                  )}
+
+                  <div className="p-1 bg-indigo-600 text-white rounded-2xl animate-bounce-subtle w-12 h-12 overflow-hidden flex items-center justify-center shadow-lg shadow-indigo-600/35">
+                     {!effectiveUser ? (
+                       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-check text-white" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
+                     ) : effectiveUser?.photoURL?.startsWith('preset:') ? (
+                       <img 
+                         src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Hero-${effectiveUser.photoURL.split(':')[1]}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`}
+                         alt="Hero"
+                         className="w-full h-full object-cover pixelated"
+                       />
+                     ) : (
+                       <img 
+                          src={effectiveUser?.photoURL || `https://api.dicebear.com/7.x/pixel-art/svg?seed=Hero&backgroundColor=3b82f6`} 
+                          alt="Hero" 
+                          className="w-full h-full object-cover pixelated"
+                          referrerPolicy="no-referrer"
+                       />
+                     )}
+                  </div>
+               </div>
+               <div className="mt-1 text-xs font-bold bg-indigo-600 text-white px-2.5 py-0.5 text-center tracking-tight w-max rounded-full absolute left-1/2 -translate-x-1/2 top-full shadow-md shadow-indigo-600/20 animate-pulse">
+                 YOU
+               </div>
+            </motion.div>
+
+          </div>
+        )}
+        {renderCustomAlertModal()}
+      </div>
+    );
+  }
+
+  if (gameState === 'searching' || isCoinFlipping) {
+    return (
+      <>
+        {renderRulesPopup()}
+        <div className="flex flex-col flex-1 h-full w-full bg-[#030712] font-sans items-center justify-center p-8 text-center overflow-hidden relative text-white">
+          {/* Cyberpunk Grid Background */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f2937_1px,transparent_1px),linear-gradient(to_bottom,#1f2937_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-25 pointer-events-none" />
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse [animation-delay:1s]" />
+
+          <AnimatePresence>
+            {isCoinFlipping ? (
+              <motion.div 
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 1.2, opacity: 0 }}
+                className="flex flex-col items-center"
+              >
+                <div className="relative w-48 h-48 mb-12">
+                  <motion.div
+                    animate={!coinWinner ? { 
+                      rotateY: [0, 180, 360, 540, 720, 900, 1080, 1260, 1440],
+                      scale: [1, 1.1, 1, 1.1, 1],
+                      y: [0, -50, 0, -50, 0],
+                      boxShadow: '0px 10px 20px rgba(0, 0, 0, 0.3)'
+                    } : { 
+                      rotateY: coinWinner === 'player' ? 0 : 180, 
+                      scale: [1.5, 1.75, 1.55], 
+                      y: 0,
+                      boxShadow: coinWinner === 'player' 
+                        ? '0px 0px 40px 20px rgba(59, 130, 246, 0.95), 0px 0px 15px 5px rgba(251, 191, 36, 0.8)' 
+                        : '0px 0px 40px 20px rgba(239, 68, 68, 0.95), 0px 0px 15px 5px rgba(251, 191, 36, 0.8)'
+                    }}
+                    transition={!coinWinner ? { duration: 1.5, ease: "easeInOut" } : { 
+                      rotateY: { duration: 0.3, ease: "easeOut" }, 
+                      scale: { duration: 0.6, times: [0, 0.4, 1], ease: "backOut" },
+                      boxShadow: { duration: 0.6 }
+                    }}
+                    className="w-full h-full relative rounded-2xl"
+                    style={{ transformStyle: 'preserve-3d' }}
+                  >
+                    {/* ì•ë©´: í”Œë ˆì´ì–´ í”„ë¡œí•„ ìºë¦­í„° */}
+                    <div 
+                      className={cn(
+                        "absolute inset-0 bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 border flex flex-col items-center justify-between p-3.5 transition-all duration-300 shadow-[0_0_35px_rgba(99,102,241,0.45)] overflow-hidden",
+                        coinWinner === 'player' ? "border-yellow-400 border-4 scale-105 shadow-[0_0_45px_rgba(234,179,8,0.9)]" : "border-indigo-500/60 border-2"
+                      )} 
+                      style={{ backfaceVisibility: 'hidden', borderRadius: '20px' }}
+                    >
+                      <div className="w-full flex items-center justify-between px-1 text-[9px] font-mono text-indigo-300/90 font-black">
+                        <span>YOU (PLAYER)</span>
+                        <span className="text-yellow-400">No.{String(playerAvatarCardId).padStart(2, '0')}</span>
+                      </div>
+                      <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 border-indigo-400/60 shadow-lg bg-slate-950 flex items-center justify-center">
+                        <div className="w-[130%] h-[130%] shrink-0" style={getCardSpriteStyle(playerAvatarCardId)} />
+                      </div>
+                      <div className="w-full text-center">
+                        <p className="text-xs font-black text-white truncate px-1">
+                          {effectiveUser?.displayName || (language === 'ko' ? 'íˆì–´ë¡œ' : 'Hero')}
+                        </p>
+                        <span className="text-[10px] font-mono text-indigo-300/90 font-bold block truncate">
+                          {CARD_DATABASE[playerAvatarCardId] ? (language === 'ko' ? CARD_DATABASE[playerAvatarCardId].title : CARD_DATABASE[playerAvatarCardId].title_en) : 'Aquaris'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* ë’·ë©´: ìƒëŒ€ë°© / AI ìºë¦­í„° */}
+                    <div 
+                      className={cn(
+                        "absolute inset-0 bg-gradient-to-br from-rose-950 via-slate-900 to-red-950 border flex flex-col items-center justify-between p-3.5 transition-all duration-300 shadow-[0_0_35px_rgba(244,63,94,0.45)] overflow-hidden",
+                        coinWinner === 'ai' ? "border-yellow-400 border-4 scale-105 shadow-[0_0_45px_rgba(234,179,8,0.9)]" : "border-rose-500/60 border-2"
+                      )} 
+                      style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', borderRadius: '20px' }}
+                    >
+                      <div className="w-full flex items-center justify-between px-1 text-[9px] font-mono text-rose-300/90 font-black">
+                        <span>OPPONENT (AI)</span>
+                        <span className="text-yellow-400">No.{String(opponentAvatarCardId).padStart(2, '0')}</span>
+                      </div>
+                      <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 border-rose-400/60 shadow-lg bg-slate-950 flex items-center justify-center">
+                        <div className="w-[130%] h-[130%] shrink-0" style={getCardSpriteStyle(opponentAvatarCardId)} />
+                      </div>
+                      <div className="w-full text-center">
+                        <p className="text-xs font-black text-white truncate px-1">
+                          {lastOpponent?.name || selectedOpponent?.name || (language === 'ko' ? 'ìƒëŒ€ ë„ì „ì' : 'Challenger')}
+                        </p>
+                        <span className="text-[10px] font-mono text-rose-300/90 font-bold block truncate">
+                          {CARD_DATABASE[opponentAvatarCardId] ? (language === 'ko' ? CARD_DATABASE[opponentAvatarCardId].title : CARD_DATABASE[opponentAvatarCardId].title_en) : 'Ignis'}
+                        </span>
+                      </div>
+                    </div>
+                  </motion.div>
+                </div>
+                <AnimatePresence mode="wait">
+                  {coinWinner ? (
+                    <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="space-y-2">
+                      <h2 className={cn("text-4xl font-extrabold italic tracking-wider drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]", coinWinner === 'player' ? "text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" : "text-transparent bg-clip-text bg-gradient-to-r from-rose-450 to-red-450 to-rose-400 drop-shadow-[0_0_15px_rgba(244,63,94,0.5)]")}>
+                        {coinWinner === 'player' ? "YOU START" : "OPPONENT STARTS"}
+                      </h2>
+                      <p className="text-xs font-black text-slate-500 tracking-[0.3em]">PROTOCOL_INITIATED</p>
+                    </motion.div>
+                  ) : (
+                    <motion.div key="waiting" className="space-y-1">
+                      <h2 className="text-4xl font-black italic tracking-wider text-slate-300 drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]">DECIDING TURN...</h2>
+                      <p className="text-xs font-black text-blue-500/70 tracking-[0.2em] animate-pulse">SCANNING_ENTROPY</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ) : (
+              <div className="flex flex-col items-center max-w-md w-full px-4 font-mono z-10">
+                {/* ëŒ€í˜• ì„œì¹­ ë ˆì´ë” & ì‹¤ì‹œê°„ íƒ€ì´ë¨¸ */}
+                <div className="relative w-44 h-44 mb-6 flex items-center justify-center">
+                  {/* ë ˆì´ë” ë§ & í„ìŠ¤ ì• ë‹ˆë©”ì´ì…˜ */}
+                  <div className="absolute inset-0 rounded-full border border-indigo-500/30 animate-ping [animation-duration:3s]" />
+                  <div className="absolute inset-2 rounded-full border border-indigo-400/20" />
+                  <div className="absolute inset-5 rounded-full border border-dashed border-cyan-400/40 animate-spin [animation-duration:8s]" />
+                  <div className="absolute inset-0 rounded-full border-2 border-t-cyan-400 border-r-transparent border-b-indigo-500 border-l-transparent animate-spin [animation-duration:2s]" />
+                  
+                  {/* ì¤‘ì•™ ëŒ€í˜• ì‹¤ì‹œê°„ ê²½ê³¼ ì‹œê°„ ì¹´ìš´íŠ¸ì—… */}
+                  <div className="flex flex-col items-center justify-center z-10 bg-slate-950/90 rounded-full w-28 h-28 border-2 border-cyan-500/40 shadow-[0_0_30px_rgba(6,182,212,0.35)]">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-cyan-300 animate-pulse">
+                      {language === 'ko' ? 'ë§¤ì¹­ íƒìƒ‰' : 'MATCHING'}
+                    </span>
+                    <span className="text-3xl font-black text-white tracking-wider font-mono my-0.5">
+                      00:{String(searchingSeconds).padStart(2, '0')}
+                    </span>
+                    <span className="text-[9px] text-slate-400 font-bold">
+                      {language === 'ko' ? 'ì‹¤ì‹œê°„ íƒìƒ‰ ì¤‘' : 'SEARCHING'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* ëª…í™•í•œ íƒìƒ‰ ì•ˆë‚´ ë©”ì‹œì§€ */}
+                <div className="space-y-3 text-center w-full">
+                  <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full border border-cyan-400/40 bg-cyan-500/10 text-cyan-200 text-xs font-black tracking-widest uppercase">
+                    <Sparkles size={13} className="text-cyan-300 animate-spin" />
+                    <span>{language === 'ko' ? '[ ëŒ€ì „ ìƒëŒ€ ë§¤ì¹­ ì¤‘ ]' : '[ BATTLE MATCHING ]'}</span>
+                  </div>
+                  
+                  <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white italic">
+                    {language === 'ko' ? 'ìƒëŒ€ ë„ì „ìë¥¼ íƒìƒ‰í•˜ê³  ìˆìŠµë‹ˆë‹¤' : 'Searching For Challenger...'}
+                  </h2>
+                  
+                  <div className="text-xs text-slate-300 leading-relaxed max-w-sm mx-auto bg-slate-900/90 border border-slate-800 p-3.5 rounded-2xl shadow-inner">
+                    <p className="font-semibold text-slate-200">
+                      {language === 'ko' 
+                        ? 'ë‚´ ì „íˆ¬ë ¥(TP)ì— ì•Œë§ì€ ë¼ì´ë²Œ ì˜ì›…ì„ ê²€ìƒ‰í•˜ê³  ìˆìŠµë‹ˆë‹¤.' 
+                        : 'Finding a balanced rival hero matching your combat power.'}
+                    </p>
+                    <p className="text-[11px] text-cyan-400 mt-1 font-mono">
+                      {language === 'ko' ? 'âš¡ ë§¤ì¹­ ì™„ë£Œ ì¦‰ì‹œ ì„ ê³µ/í›„ê³µ í”Œë¦½ìœ¼ë¡œ ì „í™˜ë©ë‹ˆë‹¤' : 'âš¡ Turn order coin flip will begin once matched'}
+                    </p>
+                  </div>
+
+                  {/* ë§¤ì¹­ ì·¨ì†Œ ë²„íŠ¼ */}
+                  <div className="pt-3">
+                    <button
+                      onClick={() => {
+                        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                        setGameState('lobby');
+                        setIsCoinFlipping(false);
+                        setCoinWinner(null);
+                      }}
+                      className="px-6 py-2.5 rounded-full border border-slate-700 bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-md active:scale-95"
+                    >
+                      {language === 'ko' ? 'âœ• ë§¤ì¹­ ì·¨ì†Œ (ë¡œë¹„ë¡œ ëŒì•„ê°€ê¸°)' : 'âœ• Cancel Match (Lobby)'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </AnimatePresence>
+
+          {/* Opponent Deck Preview Toggle */}
+          {opponentDeck.length > 0 && (
+            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[100] flex flex-col items-center gap-4">
+              <AnimatePresence>
+                {showDeckPreview && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                    className="bg-slate-900/90 backdrop-blur-xl border border-slate-700/50 p-4 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.5)] w-[90vw] max-w-lg mb-4 text-white"
+                  >
+                    <div className="flex items-center justify-between mb-3 px-2">
+                      <span className="text-[10px] font-black text-red-500 uppercase tracking-[0.2em] animate-pulse">
+                        Intel: Opponent_Squad
+                      </span>
+                      <span className="text-[9px] text-white/30 uppercase">
+                        Security_Bypass: Active
+                      </span>
+                    </div>
+                    <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                      {opponentDeck.map((card, idx) => (
+                        <div key={idx} className="w-16 md:w-20 shrink-0 first:ml-0 last:mr-0 aspect-[5/7]">
+                          <CardItem 
+                            card={card} 
+                            isLocked={true} 
+                            className="w-full h-full scale-90"
+                            lowSpecMode={lowSpecMode}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <motion.button
+                 whileHover={{ scale: 1.05 }}
+                 whileTap={{ scale: 0.95 }}
+                 onClick={() => {
+                   setShowDeckPreview(!showDeckPreview);
+                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                 }}
+                 className={cn(
+                   "flex items-center gap-3 px-6 py-2.5 rounded-full border shadow-2xl transition-all uppercase text-[10px] font-black tracking-widest",
+                   showDeckPreview 
+                    ? "bg-white text-black border-white" 
+                    : "bg-black text-white border-white/20 hover:border-white/50"
+                 )}
+              >
+                <Swords size={14} className={cn(showDeckPreview ? "text-blue-600" : "text-red-600")} />
+                {showDeckPreview ? "DISMISS_INTEL" : "PREVIEW_OPPONENT_DECK"}
+              </motion.button>
+            </div>
+          )}
+          {renderCustomAlertModal()}
+        </div>
+      </>
+    );
+  }
+
+
+  return (
+    <div id="game-board" className="flex-1 flex flex-col w-full bg-[#060a14] text-slate-100 pb-4 pt-11 sm:pt-12 overflow-y-auto relative min-h-full justify-between">
+      {/* Battle Roar Wave Ripple Effect Overlay */}
+      <AnimatePresence>
+        {isRoarActive && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[120] pointer-events-none flex items-center justify-center overflow-hidden"
+          >
+            <div className="absolute w-[200px] h-[200px] border-8 border-red-500 rounded-full animate-roar-ripple opacity-80" />
+            <div className="absolute w-[200px] h-[200px] border-8 border-orange-500 rounded-full animate-roar-ripple opacity-60" style={{ animationDelay: '0.3s' }} />
+            <div className="absolute w-[200px] h-[200px] border-8 border-yellow-500 rounded-full animate-roar-ripple opacity-40" style={{ animationDelay: '0.6s' }} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Circular Robot Auto-Battle Button, Speed Toggle & Grid Skills */}
+      {gameState === 'playing' && !gameOver && (
+        <div className="fixed bottom-28 right-3 sm:right-4 z-[160] pointer-events-auto flex flex-col items-end gap-2.5">
+          {/* QTE Skill Timing Button - neatly docked in the battle action stack so it NEVER overlaps with turn indicators, turn timers, or board tiles */}
+          <SkillTimingButton
+            chargeTime={1500}
+            inputWindow={3000}
+            successMultiplier={1.10}
+            cooldownTime={8000}
+            lowSpecMode={lowSpecMode}
+            disabled={turn !== 'player'}
+            isPlaying={gameState === 'playing' && !gameOver}
+            lang={language}
+            onSuccess={(multiplier) => {
+              setPendingQteMultiplier(multiplier);
+              setQteMatchSummary(prev => ({
+                attempted: true,
+                successCount: prev.successCount + 1,
+                lastMultiplier: multiplier,
+              }));
+              addLog(t('synergy_qte_success', language, { multiplier: multiplier.toFixed(2) }), 'system');
+            }}
+            onFail={() => {
+              setPendingQteMultiplier(null);
+              setQteMatchSummary(prev => ({
+                ...prev,
+                attempted: true,
+              }));
+              addLog(t('synergy_qte_failed', language), 'system');
+            }}
+          />
+
+          {/* 1. Auto-Battle Speed & Robot Toggle */}
+          <div className="flex items-center gap-2">
+            {/* Item 346: 3-Speed Turbo Mode Toggle (Visible during Auto Battle) */}
+            {isAutoBattle && (
+              <button
+                type="button"
+                onClick={toggleAutoSpeed}
+                className={cn(
+                  "px-2.5 py-1.5 rounded-sm border font-mono text-[11px] font-black shadow-lg transition-all cursor-pointer flex items-center gap-1 active:scale-95",
+                  autoSpeedMode === '3x'
+                    ? "bg-rose-950/90 border-rose-500 text-rose-300 shadow-[0_0_12px_rgba(244,63,94,0.6)] animate-pulse"
+                    : autoSpeedMode === '2x'
+                    ? "bg-amber-950/90 border-amber-500 text-amber-300"
+                    : "bg-slate-900/90 border-slate-700 text-slate-300"
+                )}
+                title={language === 'ko' ? `ë°°ì† ì „í™˜: í˜„ì¬ ${autoSpeedMode.toUpperCase()}` : `Speed: Current ${autoSpeedMode.toUpperCase()}`}
+              >
+                <Zap size={12} className={cn(autoSpeedMode === '3x' ? "text-yellow-400 animate-spin" : "text-amber-400")} />
+                <span>{autoSpeedMode === '3x' ? '[ 3X TURBO ]' : `[ ${autoSpeedMode.toUpperCase()} ]`}</span>
+              </button>
+            )}
+
+            {(onToggleAutoBattle || setIsAutoBattle) && (
+              <div className="relative group flex items-center justify-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    if (onToggleAutoBattle) {
+                      onToggleAutoBattle();
+                    } else if (setIsAutoBattle) {
+                      const nextVal = !isAutoBattle;
+                      setIsAutoBattle(nextVal);
+                      localStorage.setItem('hero_auto_battle_setting', JSON.stringify(nextVal));
+                    }
+                  }}
+                  className={cn(
+                    "w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 shadow-2xl flex items-center justify-center transition-all duration-300 active:scale-95 cursor-pointer touch-target relative",
+                    isAutoBattle
+                      ? "bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 border-amber-300 text-slate-950 shadow-[0_0_25px_rgba(245,158,11,0.85)] ring-2 ring-amber-300/80"
+                      : "bg-slate-950/90 border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white shadow-xl"
+                  )}
+                  title={isAutoBattle ? (language === 'ko' ? 'ìë™ì „íˆ¬ ON (í´ë¦­ ì‹œ ì¤‘ë‹¨)' : 'AUTO ON (CLICK TO STOP)') : (language === 'ko' ? 'ìë™ì „íˆ¬ OFF (í´ë¦­ ì‹œ ì‹œì‘)' : 'AUTO OFF (CLICK TO START)')}
+                  aria-label="Auto Battle Toggle"
+                >
+                  <Bot
+                    size={26}
+                    className={cn(
+                      "transition-transform",
+                      isAutoBattle ? "animate-spin text-slate-950 drop-shadow-md" : "text-slate-300"
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      "absolute -bottom-1 -right-1 font-black text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded-full border shadow-md uppercase tracking-tighter",
+                      isAutoBattle
+                        ? "bg-rose-600 border-rose-300 text-white animate-pulse"
+                        : "bg-slate-800 border-slate-600 text-slate-400"
+                    )}
+                  >
+                    {isAutoBattle ? 'AUTO' : 'OFF'}
+                  </span>
+                </button>
+
+                <div className="absolute right-full mr-2.5 top-1/2 -translate-y-1/2 bg-black/95 backdrop-blur-md text-white px-2.5 py-1 text-[10px] font-black opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-md uppercase tracking-wider z-[200] shadow-xl">
+                  {isAutoBattle
+                    ? (language === 'ko' ? 'ğŸ¤– ìë™ì „íˆ¬ ì¤‘ë‹¨í•˜ê¸°' : 'ğŸ¤– STOP AUTO BATTLE')
+                    : (language === 'ko' ? 'ğŸ¤– ìë™ì „íˆ¬ ì‹œì‘í•˜ê¸°' : 'ğŸ¤– START AUTO BATTLE')}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 2. Grid Skills (Rendered directly under the Robot button) */}
+          {(() => {
+            const availableSkills = getAvailableSkills();
+            if (availableSkills.length === 0) return null;
+
+            return availableSkills.map(skillId => {
+              let skillNameKo = '';
+              let skillNameEn = '';
+              let Icon = Flame;
+              let colorClass = '';
+
+              switch (skillId) {
+                case 1:
+                  skillNameKo = 'ê°•í™” í•¨ì„±';
+                  skillNameEn = 'Rallying Roar';
+                  Icon = Flame;
+                  colorClass = 'border-red-500/50 text-red-400 hover:bg-red-600 hover:text-white';
+                  break;
+                case 2:
+                  skillNameKo = 'ì•½í™” ì €ì£¼';
+                  skillNameEn = 'Weaken Curse';
+                  Icon = Droplets;
+                  colorClass = 'border-blue-500/50 text-blue-400 hover:bg-blue-600 hover:text-white';
+                  break;
+                case 3:
+                  skillNameKo = 'ë³€í™” í•¨ì„±';
+                  skillNameEn = 'Shift Roar';
+                  Icon = Sparkles;
+                  colorClass = 'border-yellow-500/50 text-yellow-400 hover:bg-yellow-600 hover:text-white';
+                  break;
+                case 4:
+                  skillNameKo = 'ë³€í™” ì €ì£¼';
+                  skillNameEn = 'Shift Curse';
+                  Icon = ShieldAlert;
+                  colorClass = 'border-purple-500/50 text-purple-400 hover:bg-purple-600 hover:text-white';
+                  break;
+                case 5:
+                  skillNameKo = 'ì•½í™” í•¨ì •';
+                  skillNameEn = 'Weaken Trap';
+                  Icon = TargetIcon;
+                  colorClass = 'border-purple-500/50 text-purple-400 hover:bg-purple-600 hover:text-white';
+                  break;
+                case 6:
+                  skillNameKo = 'ê°•í™” í•¨ì •';
+                  skillNameEn = 'Rally Trap';
+                  Icon = TargetIcon;
+                  colorClass = 'border-red-500/50 text-red-400 hover:bg-red-600 hover:text-white';
+                  break;
+                case 7:
+                  skillNameKo = 'ì²´ì¸ì§€ ìƒëŒ€ì¹´ë“œ';
+                  skillNameEn = 'Swap Enemy';
+                  Icon = RotateCcw;
+                  colorClass = 'border-orange-500/50 text-orange-400 hover:bg-orange-600 hover:text-white';
+                  break;
+                case 8:
+                  skillNameKo = 'ì²´ì¸ì§€ ë‚´ì¹´ë“œ';
+                  skillNameEn = 'Swap Self';
+                  Icon = RotateCcw;
+                  colorClass = 'border-green-500/50 text-green-400 hover:bg-green-600 hover:text-white';
+                  break;
+              }
+
+              const displayName = language === 'ko' ? skillNameKo : skillNameEn;
+
+              return (
+                <div key={skillId} className="relative group flex items-center justify-center">
+                  {(skillCooldowns[skillId] || 0) > 0 ? (
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 border-gray-600 bg-gray-800 text-gray-400 flex items-center justify-center font-black text-xs shadow-lg">
+                      <span>{skillCooldowns[skillId]}s</span>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => handleExecuteSkill(skillId)}
+                      disabled={isRoarActive}
+                      className={cn(
+                        "w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 shadow-lg flex items-center justify-center transition-all active:scale-95 cursor-pointer bg-black/90",
+                        !isRoarActive
+                          ? colorClass
+                          : "bg-gray-800 border-gray-700 text-gray-500 cursor-not-allowed"
+                      )}
+                      title={displayName}
+                    >
+                      <Icon size={18} className={cn(!isRoarActive && skillId === 1 && "animate-pulse")} />
+                    </button>
+                  )}
+                  <div className="absolute right-full mr-2.5 top-1/2 -translate-y-1/2 bg-black/95 backdrop-blur-md text-white px-2.5 py-1 text-[10px] font-black italic opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-md uppercase tracking-wider z-[200] shadow-xl">
+                    {displayName}
+                  </div>
+                </div>
+              );
+            });
+          })()}
+        </div>
+      )}
+
+      {renderRulesPopup()}
+
+      {/* Skill Action Instruction Banner */}
+      <AnimatePresence>
+        {activeTrapMode && (
+          <motion.div
+            initial={{ opacity: 0, y: -50, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -50, scale: 0.95 }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-[999] w-[90%] max-w-md pointer-events-auto"
+          >
+            <div className="bg-slate-950/90 border border-amber-500/30 backdrop-blur-md text-amber-400 p-4 rounded-2xl shadow-[0_0_30px_rgba(245,158,11,0.15)] flex items-center justify-between gap-4 font-sans">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center font-bold animate-pulse text-base">
+                  âš¡
+                </div>
+                <span className="text-sm font-black tracking-tight leading-tight uppercase">
+                  {activeTrapMode === 'weaken_trap' || activeTrapMode === 'reinforce_trap'
+                    ? t('trap_prompt_install', language)
+                    : t('trap_prompt_change', language)}
+                </span>
+              </div>
+              <button
+                onClick={() => setActiveTrapMode(null)}
+                className="px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 text-xs font-semibold rounded-xl transition-all duration-200 cursor-pointer"
+              >
+                {t('cancel_btn', language)}
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Forfeit Confirmation Modal */}
+      <AnimatePresence>
+        {showForfeitConfirm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[300] flex items-center justify-center p-4"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-slate-900/95 border border-slate-800 backdrop-blur-xl rounded-3xl p-6 max-w-sm w-full shadow-[0_20px_50px_rgba(239,68,68,0.25)] text-center space-y-6 text-white"
+            >
+              <div className="w-16 h-16 bg-red-500/10 text-red-500 rounded-2xl flex items-center justify-center mx-auto border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.25)]">
+                <ShieldAlert size={32} />
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-lg font-black tracking-wider text-red-500 uppercase">
+                  {language === 'ko' ? 'ê²½ê¸° ê¸°ê¶Œ í™•ì¸' : 'MATCH SURRENDER'}
+                </h3>
+                <p className="text-sm font-semibold text-slate-300 leading-relaxed">
+                  {language === 'ko'
+                    ? "ì •ë§ ê²½ê¸°ë¥¼ ê¸°ê¶Œí•˜ê³  ë‚˜ê°€ì‹œê² ìŠµë‹ˆê¹Œ? (íŒ¨ë°°ë¡œ ì²˜ë¦¬ë˜ë©° ì „ì ì— ë°˜ì˜ë©ë‹ˆë‹¤)"
+                    : "Are you sure you want to forfeit this match? (Result: Loss)"}
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <button 
+                  onClick={() => setShowForfeitConfirm(false)}
+                  className="flex-1 bg-slate-950/80 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-900 rounded-xl py-3 text-sm font-semibold transition-colors duration-200 cursor-pointer"
+                >
+                  {t('no_decline', language) || "Cancel"}
+                </button>
+                <button 
+                  onClick={() => {
+                    setShowForfeitConfirm(false);
+                    handleExitMatch(true);
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                  }}
+                  className="flex-1 bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white rounded-xl py-3 text-sm font-semibold shadow-[0_4px_15px_rgba(239,68,68,0.25)] border border-red-500/30 transition-all cursor-pointer"
+                >
+                  {t('yes_accept', language) || "Forfeit"}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Top Controls Bar: Back/Exit, Menu, Auto Toggle, Rules, Ping */}
+      {gameState === 'playing' && (
+        <div className="fixed top-2 left-3 right-3 z-[9999] flex items-center justify-between pointer-events-auto font-mono text-xs select-none">
+          {/* Left side: Exit/Back, Menu, Mobile Logs */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <button
+              onClick={() => {
+                if (!gameOver) {
+                  setShowForfeitConfirm(true);
+                } else {
+                  handleExitMatch(false);
+                }
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              }}
+              className="h-8 w-8 bg-slate-900/90 border border-slate-800 hover:border-red-500/50 text-slate-200 hover:text-white rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0"
+              title={language === 'ko' ? 'ë‚˜ê°€ê¸°' : 'Exit'}
+              aria-label={language === 'ko' ? 'ë‚˜ê°€ê¸°' : 'Exit'}
+            >
+              <ArrowLeft size={15} className="text-red-400" />
+            </button>
+
+            <button
+              onClick={() => {
+                setShowInGameMenu(true);
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              }}
+              className="h-8 w-8 bg-slate-900/90 border border-slate-800 hover:border-indigo-500/50 text-slate-200 hover:text-white rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0"
+              title={language === 'ko' ? 'ë©”ë‰´' : 'Menu'}
+              aria-label={language === 'ko' ? 'ë©”ë‰´' : 'Menu'}
+            >
+              <Menu size={15} className="text-indigo-400" />
+            </button>
+
+            <button
+              onClick={() => {
+                setShowMobileLogs(!showMobileLogs);
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              }}
+              className={cn(
+                "h-8 w-8 border rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-95 relative shrink-0",
+                showMobileLogs 
+                  ? "bg-amber-500/20 border-amber-500 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.3)]" 
+                  : "bg-slate-900/90 border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800"
+              )}
+              title={language === 'ko' ? 'ì „íˆ¬ ë¡œê·¸' : 'Battle Log'}
+              aria-label={language === 'ko' ? 'ì „íˆ¬ ë¡œê·¸' : 'Battle Log'}
+            >
+              <Terminal size={15} className="text-amber-400" />
+              {gameLogs.length > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 border border-amber-300 rounded-full text-[8px] font-black text-black flex items-center justify-center shadow-xs">
+                  {gameLogs.length > 99 ? '99+' : gameLogs.length}
+                </span>
+              )}
+            </button>
+          </div>
+
+          {/* Right side: AI Model & Tactics Button, Chat Toggle, Ping, Rules */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            {/* Top AI Model & Tactics Button (Opens AI Model/Tactics Modal & Shows Current Stance) */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsGambitModalOpen(true);
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              }}
+              className={cn(
+                "h-8 px-2 sm:px-2.5 border rounded-xl shadow-md cursor-pointer flex items-center gap-1.5 transition-all duration-200 active:scale-95 shrink-0 font-mono select-none",
+                isAutoBattle
+                  ? "bg-amber-500/20 border-amber-500/80 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.3)] ring-1 ring-amber-400/40"
+                  : "bg-slate-900/90 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700"
+              )}
+              title={language === 'ko'
+                ? `AI ëª¨ë¸ ë° ì „ìˆ  ì„¤ì • (í˜„ì¬: ${gambitConfig.activeStance === 'attack' ? 'âš”ï¸ ê³µê²©í˜•' : gambitConfig.activeStance === 'defense' ? 'ğŸ›¡ï¸ ë°©ì–´í˜•' : 'âš–ï¸ ë°¸ëŸ°ìŠ¤'} / ${isAutoBattle ? 'AUTO ON' : 'AUTO OFF'})`
+                : `AI Model & Tactics (Current: ${gambitConfig.activeStance === 'attack' ? 'âš”ï¸ ATK' : gambitConfig.activeStance === 'defense' ? 'ğŸ›¡ï¸ DEF' : 'âš–ï¸ BAL'} / ${isAutoBattle ? 'AUTO ON' : 'AUTO OFF'})`}
+              aria-label="AI Battle Model and Tactics"
+            >
+              <Bot size={15} className={cn(isAutoBattle ? "animate-spin text-amber-300" : "text-slate-400")} />
+              <span className="text-[11px] font-black">
+                {gambitConfig.activeStance === 'attack' ? 'âš”ï¸' : gambitConfig.activeStance === 'defense' ? 'ğŸ›¡ï¸' : 'âš–ï¸'}
+              </span>
+              <span className="text-[10px] font-black hidden xs:inline">
+                {gambitConfig.activeStance === 'attack' 
+                  ? (language === 'ko' ? 'ê³µê²©' : 'ATK') 
+                  : gambitConfig.activeStance === 'defense' 
+                  ? (language === 'ko' ? 'ë°©ì–´' : 'DEF') 
+                  : (language === 'ko' ? 'ê· í˜•' : 'BAL')}
+              </span>
+              {isAutoBattle && (
+                <span className="text-[8px] px-1 py-0.2 rounded bg-amber-500 text-black font-black uppercase">
+                  AUTO
+                </span>
+              )}
+            </button>
+
+            {onToggleChat && (
+              <button
+                onClick={() => {
+                  onToggleChat();
+                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                }}
+                className={cn(
+                  "h-8 w-8 border rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0",
+                  isChatOpen
+                    ? "bg-rose-600 border-rose-400 text-white shadow-[0_0_12px_rgba(244,63,94,0.6)] animate-pulse"
+                    : "bg-[#181414] border-cyan-400/70 text-cyan-300 hover:text-white hover:border-cyan-300 shadow-[0_0_8px_rgba(6,182,212,0.3)]"
+                )}
+                title={language === 'ko' ? 'ì „íˆ¬ ì±„íŒ… ì—´ê¸°/ë‹«ê¸°' : 'Toggle Battle Chat'}
+                aria-label="Toggle Battle Chat"
+              >
+                <MessageCircle size={18} strokeWidth={2.4} className={cn(isChatOpen ? "text-white" : "text-cyan-300 fill-cyan-400/20")} />
+              </button>
+            )}
+
+            <PingIndicator language={language} className="shrink-0" />
+
+            {/* Element Advantage Quick Reference HUD Button */}
+            <button
+              onClick={() => {
+                setShowElementAdvantageModal(true);
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              }}
+              className="h-8 px-2 bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 text-cyan-300 hover:text-white rounded-xl shadow-md cursor-pointer flex items-center gap-1 transition-all duration-200 active:scale-95 shrink-0"
+              title={language === 'ko' ? 'ì†ì„± ìƒì„±í‘œ í€µ ê°€ì´ë“œ' : 'Element Advantage Guide'}
+              aria-label={language === 'ko' ? 'ì†ì„± ìƒì„±í‘œ' : 'Element Advantage'}
+            >
+              <Shield size={13} className="text-cyan-400" />
+              <span className="text-[10px] font-bold hidden xs:inline">{language === 'ko' ? 'ìƒì„±' : 'ELEM'}</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setShowInGameRules(true);
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              }}
+              className="h-8 w-8 border rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 bg-slate-900/90 border-slate-800 text-indigo-400 hover:text-white hover:bg-indigo-600 hover:border-indigo-500 shrink-0"
+              title={language === 'ko' ? 'ë„ì›€ë§ ë° ê·œì¹™' : 'Help & Rules'}
+              aria-label={language === 'ko' ? 'ë„ì›€ë§ ë° ê·œì¹™' : 'Help & Rules'}
+            >
+              <HelpCircle size={15} />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* In-Game Menu Modal */}
+      <AnimatePresence>
+        {showInGameMenu && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[350] flex items-center justify-center p-4 font-mono pointer-events-auto"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-slate-900/95 border border-slate-800 backdrop-blur-xl rounded-2xl p-5 max-w-xs w-full shadow-2xl text-white space-y-4"
+            >
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div className="flex items-center gap-2">
+                  <Menu size={18} className="text-indigo-400" />
+                  <h3 className="font-bold text-sm tracking-wider uppercase">
+                    {language === 'ko' ? 'ë©”ë‰´' : 'IN-GAME MENU'}
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setShowInGameMenu(false)}
+                  className="p-1 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition-colors cursor-pointer"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="space-y-2.5">
+                {/* AI Model & Tactics Setup Button */}
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setIsGambitModalOpen(true);
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                  }}
+                  className="w-full py-2.5 px-4 bg-slate-950/60 border border-slate-800 hover:bg-slate-800 text-slate-300 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <Bot size={16} className="text-amber-400" />
+                    <span>{language === 'ko' ? 'AI ì „íˆ¬ ëª¨ë¸ ë° ì „ìˆ  ì„¤ì •' : 'AI Battle Model & Tactics'}</span>
+                  </div>
+                  <span className="text-[10px] text-amber-300 font-black">
+                    {gambitConfig.activeStance === 'attack' ? 'âš”ï¸' : gambitConfig.activeStance === 'defense' ? 'ğŸ›¡ï¸' : 'âš–ï¸'}
+                  </span>
+                </button>
+
+                {onToggleAutoBattle && (
+                  <button
+                    onClick={() => {
+                      onToggleAutoBattle();
+                      playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    }}
+                    className={cn(
+                      "w-full py-2.5 px-4 rounded-xl border flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer",
+                      isAutoBattle
+                        ? "bg-amber-500/20 border-amber-500/40 text-amber-300"
+                        : "bg-slate-950/60 border-slate-800 text-slate-300 hover:bg-slate-800"
+                    )}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Zap size={16} className={cn(isAutoBattle ? "text-yellow-400 animate-pulse" : "text-slate-400")} />
+                      <span>{language === 'ko' ? 'ìë™ ì „íˆ¬ ë¹ ë¥¸ í† ê¸€' : 'Auto Battle Toggle'}</span>
+                    </div>
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-black/40 font-black">
+                      {isAutoBattle ? 'ON' : 'OFF'}
+                    </span>
+                  </button>
+                )}
+
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setShowInGameRules(true);
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                  }}
+                  className="w-full py-2.5 px-4 bg-slate-950/60 border border-slate-800 hover:bg-slate-800 text-slate-300 rounded-xl flex items-center gap-2 font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <HelpCircle size={16} className="text-indigo-400" />
+                  <span>{language === 'ko' ? 'ê²Œì„ ê·œì¹™ ë° ì„¤ëª…' : 'Game Rules'}</span>
+                </button>
+
+                {/* Item 383: Monster Beastarium & Pets */}
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setIsBeastariumOpen(true);
+                  }}
+                  className="w-full py-2.5 px-4 bg-purple-950/40 border border-purple-800/40 hover:bg-purple-900/60 text-purple-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">ğŸ¾</span>
+                    <span>{language === 'ko' ? 'ëª¬ìŠ¤í„° ë¹„ìŠ¤í‹°ì•„ë¦¬ì›€' : 'Beastarium & Pets'}</span>
+                  </div>
+                  <span className="text-[10px] text-purple-400 font-mono">[OPEN]</span>
+                </button>
+
+                {/* Item 385: Offline Expedition */}
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setIsExpeditionOpen(true);
+                  }}
+                  className="w-full py-2.5 px-4 bg-emerald-950/40 border border-emerald-800/40 hover:bg-emerald-900/60 text-emerald-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">ğŸ§­</span>
+                    <span>{language === 'ko' ? 'ì˜¤í”„ë¼ì¸ ì›ì •ëŒ€' : 'Offline Expedition'}</span>
+                  </div>
+                  <span className="text-[10px] text-emerald-400 font-mono">[PATROL]</span>
+                </button>
+
+                {/* Item 389: Tactician Mastery */}
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setIsTacticianMasteryOpen(true);
+                  }}
+                  className="w-full py-2.5 px-4 bg-amber-950/40 border border-amber-800/40 hover:bg-amber-900/60 text-amber-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">ğŸ‘‘</span>
+                    <span>{language === 'ko' ? 'ì „ìˆ ê°€ ë§ˆìŠ¤í„°ë¦¬ & ìŠ¤í‚¨' : 'Tactician Mastery'}</span>
+                  </div>
+                  <span className="text-[10px] text-amber-400 font-mono">[AURA]</span>
+                </button>
+
+                {/* Item 392: Tower of Trials */}
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setIsTowerTrialsOpen(true);
+                  }}
+                  className="w-full py-2.5 px-4 bg-indigo-950/40 border border-indigo-800/40 hover:bg-indigo-900/60 text-indigo-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">ğŸ—¼</span>
+                    <span>{language === 'ko' ? 'ì‹œë ¨ì˜ íƒ‘ 50ì¸µ' : 'Tower of Trials'}</span>
+                  </div>
+                  <span className="text-[10px] text-indigo-400 font-mono">[ASCENT]</span>
+                </button>
+
+                {/* Item 397: Secret Stamp Book */}
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setIsSecretStampModalOpen(true);
+                  }}
+                  className="w-full py-2.5 px-4 bg-amber-950/40 border border-amber-800/40 hover:bg-amber-900/60 text-amber-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">ğŸ“œ</span>
+                    <span>{language === 'ko' ? 'ë¹„ë°€ ì—…ì  ìŠ¤íƒ¬í”„ë¶' : 'Secret Stamp Book'}</span>
+                  </div>
+                  <span className="text-[10px] text-amber-400 font-mono">[STAMPS]</span>
+                </button>
+
+                {/* Item 393: Battle Gambit Tuning */}
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setIsGambitModalOpen(true);
+                  }}
+                  className="w-full py-2.5 px-4 bg-blue-950/40 border border-blue-800/40 hover:bg-blue-900/60 text-blue-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">âš™ï¸</span>
+                    <span>{language === 'ko' ? 'ì „ìˆ  ì§€ì¹¨(Gambit) íŠœë‹' : 'Gambit AI Tuning'}</span>
+                  </div>
+                  <span className="text-[10px] text-blue-400 font-mono">[GAMBIT]</span>
+                </button>
+
+                {/* Post-Battle Detailed Summary (AI Combat Feedback) */}
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setShowPostBattleSummaryModal(true);
+                  }}
+                  className="w-full py-2.5 px-4 bg-indigo-950/40 border border-indigo-500/40 hover:bg-indigo-900/60 text-indigo-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <BarChart3 size={16} className="text-indigo-400" />
+                    <span>{language === 'ko' ? 'ğŸ“Š ìµœê·¼ AI ì „íˆ¬ ì‚¬í›„ ë¶„ì„' : 'ğŸ“Š Post-Battle Summary'}</span>
+                  </div>
+                  <span className="text-[10px] text-indigo-400 font-mono">[STATS]</span>
+                </button>
+
+                {/* Element Advantage Quick Reference Guide */}
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setShowElementAdvantageModal(true);
+                  }}
+                  className="w-full py-2.5 px-4 bg-cyan-950/40 border border-cyan-500/40 hover:bg-cyan-900/60 text-cyan-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <Shield size={16} className="text-cyan-400" />
+                    <span>{language === 'ko' ? 'ğŸ›¡ï¸ ì†ì„± ìƒì„±í‘œ í€µ ê°€ì´ë“œ' : 'ğŸ›¡ï¸ Element Advantage Guide'}</span>
+                  </div>
+                  <span className="text-[10px] text-cyan-400 font-mono">[ELEM]</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setShowForfeitConfirm(true);
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                  }}
+                  className="w-full py-2.5 px-4 bg-red-950/40 border border-red-800/40 hover:bg-red-900/60 text-red-300 rounded-xl flex items-center gap-2 font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <ShieldAlert size={16} className="text-red-400" />
+                  <span>{language === 'ko' ? 'ê²½ê¸° í¬ê¸° / ë‚˜ê°€ê¸°' : 'Forfeit / Exit Match'}</span>
+                </button>
+              </div>
+
+              <button
+                onClick={() => setShowInGameMenu(false)}
+                className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold text-xs uppercase transition-colors cursor-pointer"
+              >
+                {language === 'ko' ? 'ë‹«ê¸°' : 'Close'}
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
+      {/* Tactical Battle Log Modal / Panel */}
+      <AnimatePresence>
+        {showMobileLogs && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[350] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 pointer-events-auto font-mono"
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              className="bg-slate-900/95 border border-slate-700/80 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.8)] max-w-2xl w-full h-[80vh] max-h-[600px] flex flex-col overflow-hidden text-white border-amber-500/30"
+            >
+              {/* Header */}
+              <div className="px-5 py-4 bg-slate-950/90 border-b border-slate-800 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-2xl text-amber-400">
+                    <Terminal size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-black text-sm tracking-wider uppercase text-slate-100 flex items-center gap-2">
+                      <span>{language === 'ko' ? 'ì „íˆ¬ ìƒí™© ë¡œê·¸ì°½' : 'TACTICAL BATTLE LOG'}</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-black border border-amber-500/30">
+                        {gameLogs.length} {language === 'ko' ? 'ê±´' : 'LOGS'}
+                      </span>
+                    </h3>
+                    <p className="text-[10px] text-slate-400 font-medium mt-0.5">
+                      {language === 'ko' ? 'í„´ë³„ ìŠ¤í‚¬ ë°œë™, ëŒ€ë¯¸ì§€ ì°¨ì´ ë° ì¹´ë“œ ì ë ¹ ìƒí™© ê¸°ë¡' : 'Turn-by-turn skill triggers, damage diffs, and card captures'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      setGameLogs([]);
+                      localStorage.removeItem('hero_game_logs');
+                    }}
+                    className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl text-[10px] font-bold uppercase transition-colors cursor-pointer"
+                  >
+                    {language === 'ko' ? 'ë¡œê·¸ ì´ˆê¸°í™”' : 'Clear'}
+                  </button>
+                  <button
+                    onClick={() => setShowMobileLogs(false)}
+                    className="p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Log List */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-2.5 custom-scrollbar bg-slate-950/40">
+                {gameLogs.length === 0 ? (
+                  <div className="h-full flex flex-col items-center justify-center text-slate-500 gap-2">
+                    <Activity size={32} className="opacity-40" />
+                    <span className="text-xs font-bold uppercase">
+                      {language === 'ko' ? 'ê¸°ë¡ëœ ì „íˆ¬ ë¡œê·¸ê°€ ì—†ìŠµë‹ˆë‹¤.' : 'No battle logs recorded yet.'}
+                    </span>
+                  </div>
+                ) : (
+                  gameLogs.map((log) => (
+                    <div
+                      key={log.id}
+                      className={cn(
+                        "p-3 rounded-2xl border text-xs leading-relaxed font-semibold transition-all shadow-md flex items-start gap-2.5",
+                        log.type === 'capture' 
+                          ? "bg-gradient-to-r from-red-950/60 to-rose-950/40 border-red-500/60 text-red-100 shadow-[0_0_12px_rgba(239,68,68,0.15)]" 
+                          : log.type === 'system' 
+                            ? "bg-gradient-to-r from-amber-950/60 to-yellow-950/40 border-amber-500/60 text-amber-100 shadow-[0_0_12px_rgba(245,158,11,0.15)]" 
+                            : log.type === 'victory'
+                              ? "bg-gradient-to-r from-emerald-950/60 to-teal-950/40 border-emerald-500/60 text-emerald-100"
+                              : log.type === 'defeat'
+                                ? "bg-gradient-to-r from-purple-950/60 to-indigo-950/40 border-purple-500/60 text-purple-100"
+                                : "bg-slate-900/80 border-slate-800 text-slate-200"
+                      )}
+                    >
+                      <span className="text-[10px] font-mono opacity-50 shrink-0 pt-0.5">
+                        [{new Date(log.timestamp).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}]
+                      </span>
+                      <div className="flex-1 break-words">
+                        {log.text}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Footer */}
+              <div className="px-5 py-3 bg-slate-950 border-t border-slate-800 flex items-center justify-between text-[11px] font-bold text-slate-400">
+                <span>SNSHero Battle Engine v4.2</span>
+                <button
+                  onClick={() => setShowMobileLogs(false)}
+                  className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-black uppercase transition-all shadow-md cursor-pointer"
+                >
+                  {language === 'ko' ? 'ë‹«ê¸°' : 'Close'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Game Overlays */}
+      <div className="absolute left-2 md:left-4 top-[55%] md:top-[60%] -translate-y-1/2 flex flex-col gap-2 z-[60]">
+      </div>
+
+      {/* Primary Battle Arena Container: Dedicated Viewport Area for Opponent Hand, Center Board, Player Hand */}
+      <div id="primary-battle-arena" className="w-full flex-1 flex flex-col justify-between items-center max-w-5xl mx-auto min-h-0 relative z-10 shrink-0 gap-1 sm:gap-1.5">
+        {/* 1. ìƒëŒ€ ë±/íŒ¨ ì˜ì—­ (ì¹´ë“œ ë†’ì´ì— ë§ì¶° ì»´íŒ©íŠ¸ ì¡°ì •) */}
+        <div id="opponent-hand-container" className={cn(
+        "h-auto py-0.5 sm:py-1 md:py-1.5 relative flex items-center justify-center px-1 overflow-visible w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm shrink-0",
+        turn === 'ai' && !gameOver ? "border-red-500/50 z-20" : "border-red-500/20 z-10"
+      )}>
+        
+        {/* Item 357: Opponent 1-Line Slim Monospace Tag (Visible on Mobile & Desktop) & Item 34: Mute Toggle */}
+        <div className="absolute top-1 left-2 z-20 flex items-center gap-1.5 bg-rose-950/90 text-rose-200 text-[8px] sm:text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-sm shadow-xs border border-rose-500/40 backdrop-blur-xs">
+          <span className="text-rose-400 font-black">[OPP]</span>
+          <span className="truncate max-w-[80px] sm:max-w-[120px] text-white">{lastOpponent?.name || 'ENEMY'}</span>
+          <span className="text-slate-500">Â·</span>
+          <span>TP {((lastOpponent?.type === 'user' ? (lastOpponent as any).totalPower : undefined) || opponentTotalPower || aiSimulatedTotalPower || 1200).toLocaleString()}</span>
+          {lastOpponent?.sns !== undefined && lastOpponent.sns > 0 && (
+            <>
+              <span className="text-slate-500">Â·</span>
+              <span className="text-amber-300">ğŸª™{lastOpponent.sns.toLocaleString()}</span>
+            </>
+          )}
+          <button
+            type="button"
+            onClick={handleToggleOpponentMute}
+            className={cn(
+              "ml-1 px-1.5 py-0.2 rounded text-[8px] font-black uppercase tracking-wider flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-2xs",
+              isOpponentMuted
+                ? "bg-rose-600 text-white hover:bg-rose-700"
+                : "bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700"
+            )}
+            title={isOpponentMuted ? (language === 'ko' ? 'ìƒëŒ€ ê°ì •í‘œí˜„ ì°¨ë‹¨ í•´ì œ' : 'Unmute Opponent') : (language === 'ko' ? 'ìƒëŒ€ ê°ì •í‘œí˜„ ì°¨ë‹¨' : 'Mute Opponent')}
+          >
+            {isOpponentMuted ? <VolumeX size={10} className="text-white" /> : <Volume2 size={10} className="text-slate-300" />}
+            <span>{isOpponentMuted ? (language === 'ko' ? 'ì°¨ë‹¨ë¨' : 'Muted') : (language === 'ko' ? 'ìŒì†Œê±°' : 'Mute')}</span>
+          </button>
+        </div>
+        
+        <div className="w-full max-w-6xl mx-auto flex items-center justify-center gap-1 md:gap-2 h-auto my-auto relative z-10 py-0.5">
+          <AnimatePresence mode="popLayout">
+            {opponentHand.map((card, idx) => {
+              const isSelected = selectedCardIdx === idx && selectedCardSide === 'ai';
+              
+              return (
+              <motion.div 
+                key={card.id} 
+                className={cn(
+                  "w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg",
+                  isSelected && "z-50"
+                )}
+                onClick={() => handleCardClick(idx, 'ai')}
+                initial={{ opacity: 0, scale: 0.9, y: -20 }}
+                animate={{ 
+                  y: isSelected ? 20 : 0,
+                  scale: isSelected ? 1.08 : 1,
+                  opacity: 1
+                }}
+                exit={{ opacity: 0, scale: 0.8, y: -20, transition: { duration: 0.15 } }}
+                transition={{ duration: 0.15 }}
+                whileHover={{
+                  y: isSelected ? 28 : 10,
+                  scale: isSelected ? 1.1 : 1.05
+                }}
+              >
+                <CardItem 
+                  card={card} 
+                  isLocked={!isShadowMatch || turn !== 'ai'} 
+                  isSelected={selectedCardIdx === idx && selectedCardSide === 'ai'}
+                  className="w-full h-full rounded-lg"
+                  customImage={customCardImage}
+                  lowSpecMode={lowSpecMode}
+                  isMatgo={false}
+                />
+              </motion.div>
+            )})}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* 2. ê°€ìš´ë° ì¹´ë“œíŒ ì˜ì—­ (ìœ ì—°í•˜ê²Œ ê³µê°„ í™•ì¥) */}
+      <div className="flex-1 flex flex-col items-center justify-center p-0.5 sm:p-1 md:p-1.5 bg-[#060a14] relative overflow-visible py-1.5 sm:py-2 md:py-2.5 shadow-[inset_0_0_120px_rgba(0,0,0,0.9)] border border-slate-800 rounded-2xl md:rounded-3xl mx-1 md:mx-2 my-0.5 shrink-0">
+        {/* Background layers */}
+        <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/topography.png')] opacity-[0.06]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.08)_0%,transparent_70%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(99,102,241,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.03)_1px,transparent_1px)] bg-[size:32px_32px]" />
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
+        </div>
+        {isPlayground && (
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-red-600 to-amber-600 border border-amber-400 text-white font-black px-4 py-1 rounded-full text-[10px] md:text-xs uppercase tracking-widest shadow-[0_4px_15px_rgba(220,38,38,0.4)] animate-pulse">
+            {t('playground', language).toUpperCase()} MATCH (NO RECORD / NO REWARD)
+          </div>
+        )}
+        {isGuildAttack && (
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-rose-600 to-indigo-600 border border-rose-400 text-white font-black px-4 py-1 rounded-full text-[10px] md:text-xs uppercase tracking-widest shadow-[0_4px_15px_rgba(225,29,72,0.4)] animate-pulse">
+            {t('guild_attack_battle_banner', language).toUpperCase()}
+          </div>
+        )}
+        {isPvpBoardAttack && (
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-red-600 to-rose-600 border border-red-400 text-white font-black px-4 py-1 rounded-full text-[10px] md:text-xs uppercase tracking-widest shadow-[0_4px_15px_rgba(239,68,68,0.4)] animate-pulse">
+            {t('pvp_board_attack_banner', language).toUpperCase()}
+          </div>
+        )}
+        {/* Auto Battle Background Watermark */}
+        {isAutoBattle && (
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none z-[-1] overflow-hidden select-none">
+            <motion.div 
+              initial={{ opacity: 0, scale: 1.2 }}
+              animate={{ opacity: 0.05, scale: 1 }}
+              className="text-[12vw] font-black italic text-black uppercase tracking-[0.5em] whitespace-nowrap rotate-[-15deg]"
+            >
+              {t('auto_battle_sys_running', language).split('.')[0]}
+            </motion.div>
+          </div>
+        )}
+
+        {/* Animated Cyber Grid Overlay */}
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-30">
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
+          <motion.div 
+            animate={{ 
+              x: [0, 40], 
+              y: [0, 40] 
+            }}
+            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-0 bg-[linear-gradient(to_right,#334155_1px,transparent_1px),linear-gradient(to_bottom,#334155_1px,transparent_1px)] bg-[size:40px_40px] opacity-15"
+          />
+        </div>
+
+        {/* Main Board Area with Turn Indicator and Score flanking it */}
+        <div className="relative flex flex-col items-center justify-center w-full max-w-6xl md:px-2 min-h-0 gap-1 md:gap-2 mt-0.5">
+          
+
+          <div className="relative flex items-center justify-center w-full min-h-[280px] sm:min-h-[320px] md:min-h-[350px] gap-2 md:gap-4 lg:gap-6 xl:gap-8">
+            {/* DESKTOP LEFT SIDEBAR: VERTICAL TURN INDICATOR (lg:flex ONLY) */}
+            {!gameOver && gameState === 'playing' && (
+              <div className="hidden lg:flex flex-col items-center justify-center shrink-0 z-20 pointer-events-none select-none">
+                {/* 1. VERTICAL TURN INDICATOR */}
+                {!isCoinFlipping && (
+                  <motion.div 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    key={turn}
+                    className="flex flex-col items-center justify-center"
+                  >
+                    <div className={cn(
+                      "w-auto px-2 md:px-3 py-4 md:py-6 rounded-full border font-bold uppercase text-[8px] md:text-xs tracking-[0.2em] shadow-lg transition-all flex flex-col items-center gap-2 md:gap-4 [writing-mode:vertical-lr]",
+                      turn === 'player' 
+                        ? "bg-gradient-to-b from-indigo-600 to-indigo-900 border-indigo-400/40 text-white shadow-[0_0_15px_rgba(99,102,241,0.5)] animate-pulse" 
+                        : "bg-gradient-to-b from-rose-600 to-rose-900 border-rose-400/40 text-white shadow-[0_0_15px_rgba(244,63,94,0.5)] animate-pulse"
+                    )}>
+                      {turn === 'player' ? (
+                        <div className="flex items-center gap-2 md:gap-4">
+                          <Zap size={12} className="md:w-4 md:h-4 animate-pulse text-yellow-350" />
+                          <span>{t('your_turn', language)}</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 md:gap-4">
+                          <Cpu size={12} className="md:w-4 md:h-4 animate-spin text-red-350" />
+                          <span>{t('opponent_turn', language)}</span>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+            )}
+
+          <div className={cn(
+            "relative p-1 md:p-2 border-4 rounded-3xl bg-[#090d16]/90 border-slate-800 transition-all duration-300 shrink-0",
+            !isLowPerformance && "shadow-[0_0_50px_rgba(0,0,0,0.8)]",
+            isFeverMode && "border-amber-400 shadow-[0_0_35px_rgba(251,191,36,0.6)] animate-pulse",
+            isMicroShaking && "translate-x-[2px] translate-y-[-2px]",
+            !gameOver && gameState === 'playing' && !isFeverMode ? (
+              turn === 'player' 
+                ? (isLowPerformance ? "border-blue-500" : "border-blue-500/50 shadow-[0_0_60px_rgba(59,130,246,0.25)] scale-[1.01]")
+                : (isLowPerformance ? "border-red-500" : "border-red-500/50 shadow-[0_0_60px_rgba(239,68,68,0.25)] scale-[1.01]")
+            ) : (!isFeverMode && "border-slate-700 shadow-2xl")
+          )}>
+            {/* Item 386: Cross Domination 4-Way Capture Shockwave Overlay */}
+            <AnimatePresence>
+              {isCrossDominationActive && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1.05 }}
+                  exit={{ opacity: 0, scale: 1.2 }}
+                  className="absolute inset-0 z-[250] flex flex-col items-center justify-center bg-amber-500/20 backdrop-blur-xs pointer-events-none rounded-3xl"
+                >
+                  <div className="bg-black/85 border border-amber-400 px-4 py-2 rounded-sm text-center shadow-2xl">
+                    <span className="text-lg md:text-2xl font-black text-amber-300 font-mono block">
+                      âœ¨ [ CROSS DOMINATION ]
+                    </span>
+                    <span className="text-xs text-white font-mono">
+                      {language === 'ko' ? '4ë°©í–¥ ë™ì‹œ ì‹­ì ê²©íŒŒ!' : '4-Way Simultaneous Shockwave!'}
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Item 382: Total Eclipse Domination 9:0 Full Board Black Hole Vortex */}
+            <AnimatePresence>
+              {isTotalEclipseWin && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="absolute inset-0 z-[260] flex flex-col items-center justify-center bg-black/90 pointer-events-none rounded-3xl"
+                >
+                  <div className="text-center p-4">
+                    <span className="text-4xl md:text-6xl animate-spin block mb-2">ğŸŒ‘</span>
+                    <span className="text-lg md:text-2xl font-black text-purple-400 font-mono tracking-widest block">
+                      [ TOTAL ECLIPSE DOMINATION ]
+                    </span>
+                    <span className="text-xs text-purple-200 font-mono">
+                      {language === 'ko' ? '9:0 ì „ì¥ 100% ì™„ì „ ì¥ì•…!' : '100% Full Board Clean Sweep!'}
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            {/* Floating Combo Text */}
+            <AnimatePresence>
+              {lastCombo && (Date.now() - lastCombo.timestamp < 1500) && (
+                <motion.div
+                  key={lastCombo.timestamp}
+                  initial={{ scale: 0.5, opacity: 0, y: 20 }}
+                  animate={{ scale: [1, 1.5, 1.2], opacity: 1, y: -40 }}
+                  exit={{ opacity: 0, scale: 2, y: -100 }}
+                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[200] pointer-events-none select-none"
+                >
+                  <div className="flex flex-col items-center">
+                    <span className="text-4xl md:text-7xl font-black italic text-transparent bg-clip-text bg-[linear-gradient(to_bottom,#ef4444,#f59e0b)] drop-shadow-[0_0_15px_rgba(239,68,68,0.8)] leading-none whitespace-nowrap">
+                      X{lastCombo.count} COMBO!
+                    </span>
+                    <span className="text-xl md:text-3xl font-black text-white italic uppercase tracking-[0.2em] drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] whitespace-nowrap">
+                      {t('combo_chain', language) || (language === 'ko' ? "ì½¤ë³´ì²´ì¸!" : "CHAIN FLIP!")}
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Tactical Game Log Removed from here */}
+
+            {/* Mobile Log Message (Overlay) */}
+            {gameLogs.length > 0 && (
+              <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-[90%] lg:hidden z-[70] pointer-events-none">
+                 <AnimatePresence mode="wait">
+                    <motion.div
+                      key={gameLogs[0].id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className={cn(
+                        "px-3.5 py-2 rounded-full border bg-slate-900/95 border-slate-850 shadow-lg text-[9.5px] font-bold uppercase text-center truncate tracking-wider",
+                        gameLogs[0].type === 'capture' ? "text-rose-400 border-rose-900/50" : 
+                        gameLogs[0].type === 'system' ? "text-amber-400 border-amber-900/50" :
+                        "text-slate-300"
+                      )}
+                    >
+                      {gameLogs[0].text}
+                    </motion.div>
+                 </AnimatePresence>
+              </div>
+            )}
+
+
+
+            {/* Matgo Middle Card Draw Overlay */}
+            <AnimatePresence>
+              {battleType === 'matgo' && isShowingMatgoMiddle && matgoMiddleCard && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  className="fixed inset-0 z-[500] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+                >
+                  <div className="bg-slate-900/95 border border-amber-500 rounded-3xl p-6 flex flex-col items-center gap-4 max-w-[280px] w-full shadow-2xl animate-pulse">
+                    <span className="text-xs font-black text-amber-400 tracking-widest uppercase">
+                      {t('matgo_middle_draw', language) || (language === 'ko' ? 'ê°€ìš´ë° ì¹´ë“œ ë’¤ì§‘ê¸°' : 'DRAWING MIDDLE CARD')}
+                    </span>
+                    <div className="w-[120px] aspect-[5/7] rounded-xl overflow-hidden shadow-2xl border-2 border-amber-500">
+                      <CardItem
+                        card={matgoMiddleCard}
+                        isLocked={true}
+                        isOnBoard={true}
+                        lowSpecMode={lowSpecMode}
+                        isMatgo={battleType === 'matgo'}
+                        className="w-full h-full"
+                      />
+                    </div>
+                    <span className="text-sm font-black text-white text-center">
+                      {language === 'ko' 
+                        ? `${matgoMiddleCard.title} (${getNormalizedElement(matgoMiddleCard)})` 
+                        : `${matgoMiddleCard.title_en} (${getNormalizedElement(matgoMiddleCard)})`}
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <div className={cn(
+              "flex flex-col-reverse md:flex-row-reverse items-center justify-center gap-4 md:gap-12 relative animate-in fade-in duration-700",
+              isClutchSlowMo && "scale-[1.02] filter contrast-125 transition-transform duration-300"
+            )}>
+                    <div className={cn(
+                      "grid grid-cols-3 gap-1 md:gap-2 w-fit relative p-1.5 rounded-sm transition-all",
+                      isSuddenDeathOverclock && "border border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.25)] bg-amber-950/10"
+                    )}>
+                      {/* Item 394 & Item 402: Battle Combo Announcer & Critical Shatter Overlay */}
+                      {comboAnnounceData && (
+                        <BattleComboAnnouncer
+                          comboType={comboAnnounceData.comboType}
+                          comboCount={comboAnnounceData.comboCount}
+                          isCriticalShatter={comboAnnounceData.isCriticalShatter}
+                          maxPowerDiff={comboAnnounceData.maxPowerDiff}
+                        />
+                      )}
+
+                      {/* Item 365: 1px Perimeter Ring Timer (BattleTurnRing) */}
+                      <div className="absolute inset-0 pointer-events-none rounded-sm border border-slate-700/60 overflow-hidden z-[100]">
+                        <div
+                          className={cn(
+                            "absolute inset-0 border transition-all duration-300 pointer-events-none",
+                            turn === 'player'
+                              ? "border-cyan-400/80 shadow-[0_0_10px_rgba(34,211,238,0.35)]"
+                              : "border-rose-500/80 shadow-[0_0_10px_rgba(244,63,94,0.35)]"
+                          )}
+                        />
+                      </div>
+
+                      {/* Shockwave Overlay */}
+                      {customWaveEffect && (
+                        <div className="absolute inset-0 pointer-events-none z-[200] flex items-center justify-center overflow-hidden rounded-xl">
+                           <div className={cn(
+                            "absolute w-12 h-12 rounded-full border-8 animate-roar-ripple",
+                            customWaveEffect === 'red' && "border-red-500 bg-red-500/20 shadow-[0_0_50px_rgba(239,68,68,0.8)]",
+                            customWaveEffect === 'blue' && "border-blue-500 bg-blue-500/20 shadow-[0_0_50px_rgba(59,130,246,0.8)]",
+                            customWaveEffect === 'yellow' && "border-yellow-500 bg-yellow-500/20 shadow-[0_0_50px_rgba(234,179,8,0.8)]",
+                            customWaveEffect === 'purple' && "border-purple-500 bg-purple-500/20 shadow-[0_0_50px_rgba(168,85,247,0.8)]"
+                          )} />
+                          <motion.div
+                            initial={{ scale: 0.1, opacity: 0 }}
+                            animate={{ scale: [0.5, 2.5, 0], opacity: [0, 1, 1, 0] }}
+                            transition={{ duration: 1.5, ease: "easeOut" }}
+                            className={cn(
+                              "absolute z-[210] p-4 rounded-full border-2 bg-black/80 backdrop-blur-md shadow-2xl flex items-center justify-center",
+                              customWaveEffect === 'red' && "border-red-500 text-red-500",
+                              customWaveEffect === 'blue' && "border-blue-500 text-blue-500",
+                              customWaveEffect === 'yellow' && "border-yellow-500 text-yellow-500",
+                              customWaveEffect === 'purple' && "border-purple-500 text-purple-500"
+                            )}
+                          >
+                            {customWaveEffect === 'red' && <Flame size={40} className="animate-bounce" />}
+                            {customWaveEffect === 'blue' && <Droplets size={40} className="animate-pulse" />}
+                            {customWaveEffect === 'yellow' && <Sparkles size={40} className="animate-pulse" />}
+                            {customWaveEffect === 'purple' && <ShieldAlert size={40} className="animate-pulse" />}
+                          </motion.div>
+                        </div>
+                      )}
+
+                      {/* Item 74: Stat Comparison Lightning Pulse & Item 363: Mana Circuit FX Overlay */}
+                      <svg className="absolute inset-0 z-[180] w-full h-full pointer-events-none overflow-visible">
+                        <defs>
+                          <linearGradient id="lightningPulseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.9" />
+                            <stop offset="50%" stopColor="#38bdf8" stopOpacity="1" />
+                            <stop offset="100%" stopColor="#ef4444" stopOpacity="0.9" />
+                          </linearGradient>
+                          <filter id="lightningGlow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="3" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                          </filter>
+                        </defs>
+                        {/* Item 363: 3-Tile Mana Circuit Lines */}
+                        {activeManaCircuits.map((circuit, cIdx) => {
+                          const [a, , c] = circuit.line;
+                          const ax = `${((a % 3) + 0.5) * 33.333}%`;
+                          const ay = `${(Math.floor(a / 3) + 0.5) * 33.333}%`;
+                          const cx = `${((c % 3) + 0.5) * 33.333}%`;
+                          const cy = `${(Math.floor(c / 3) + 0.5) * 33.333}%`;
+                          const isPl = circuit.owner === 'player';
+                          return (
+                            <g key={`mana-circuit-${cIdx}`}>
+                              <line
+                                x1={ax}
+                                y1={ay}
+                                x2={cx}
+                                y2={cy}
+                                stroke={isPl ? "#06b6d4" : "#ec4899"}
+                                strokeWidth="4"
+                                strokeLinecap="round"
+                                className="animate-pulse opacity-90 drop-shadow-[0_0_12px_rgba(6,182,212,0.8)]"
+                              />
+                              <line
+                                x1={ax}
+                                y1={ay}
+                                x2={cx}
+                                y2={cy}
+                                stroke="#ffffff"
+                                strokeWidth="1.5"
+                                strokeDasharray="4 4"
+                                strokeLinecap="round"
+                                className="animate-ping opacity-75"
+                              />
+                            </g>
+                          );
+                        })}
+                        {Object.entries(combatHighlights).map(([srcIdxStr, dirs]) => {
+                          const srcIdx = Number(srcIdxStr);
+                          const srcRow = Math.floor(srcIdx / 3);
+                          const srcCol = srcIdx % 3;
+                          const x1 = `${(srcCol + 0.5) * 33.333}%`;
+                          const y1 = `${(srcRow + 0.5) * 33.333}%`;
+
+                          return (dirs as number[]).map((dir, dIdx) => {
+                            let tgtIdx = -1;
+                            if (dir === 0 && srcRow > 0) tgtIdx = srcIdx - 3;
+                            else if (dir === 1 && srcCol < 2) tgtIdx = srcIdx + 1;
+                            else if (dir === 2 && srcRow < 2) tgtIdx = srcIdx + 3;
+                            else if (dir === 3 && srcCol > 0) tgtIdx = srcIdx - 1;
+
+                            if (tgtIdx < 0) return null;
+
+                            const tgtRow = Math.floor(tgtIdx / 3);
+                            const tgtCol = tgtIdx % 3;
+                            const x2 = `${(tgtCol + 0.5) * 33.333}%`;
+                            const y2 = `${(tgtRow + 0.5) * 33.333}%`;
+
+                            return (
+                              <g key={`combat-hl-${srcIdx}-${tgtIdx}-${dir}-${dIdx}`}>
+                                <line
+                                  x1={x1}
+                                  y1={y1}
+                                  x2={x2}
+                                  y2={y2}
+                                  stroke="url(#lightningPulseGrad)"
+                                  strokeWidth="6"
+                                  strokeLinecap="round"
+                                  filter="url(#lightningGlow)"
+                                  className="animate-pulse"
+                                />
+                                <line
+                                  x1={x1}
+                                  y1={y1}
+                                  x2={x2}
+                                  y2={y2}
+                                  stroke="#ffffff"
+                                  strokeWidth="2"
+                                  strokeDasharray="6 3"
+                                  strokeLinecap="round"
+                                  className="animate-ping opacity-80"
+                                />
+                              </g>
+                            );
+                          });
+                        })}
+                      </svg>
+                      {board.map((card, idx) => {
+                        if (battleType === 'matgo' && idx === 4) {
+                          return (
+                            <div
+                              key={idx}
+                              className="grid-cell w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] flex items-center justify-center relative border border-amber-500 bg-amber-950/20 rounded-lg shadow-md overflow-visible cursor-default"
+                            >
+                              <div className="absolute inset-0 p-0.5 rounded-lg overflow-hidden flex items-center justify-center bg-[#1e293b]/70 border border-slate-700">
+                                <img
+                                  src={getAssetUrl('/background-gold.png')}
+                                  alt="Matgo Deck"
+                                  className="w-full h-full object-cover rounded"
+                                />
+                                {matgoDeck.length > 0 && (
+                                  <div className="absolute bottom-1 right-1 bg-black/80 text-amber-400 border border-amber-500/50 text-[9px] font-black px-1.5 py-0.5 rounded-md">
+                                    {matgoDeck.length}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        }
+                        const imgIdx = card?.imageIndex !== undefined ? card.imageIndex : undefined;
+                        const processedImageForCell = (card as any)?.processedImage;
+                        return (
+                          <div
+                            key={idx}
+                            onClick={() => handleCellClick(idx)}
+                            onMouseEnter={() => handleMouseEnterCell(idx)}
+                            onMouseLeave={handleMouseLeaveCell}
+                            className={cn(
+                              "grid-cell group w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] flex items-center justify-center relative transition-all overflow-visible rounded-lg font-mono shadow-none [transform:translate3d(0,0,0)] [will-change:transform,opacity]",
+                              card ? (
+                                selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player'
+                                  ? "border border-rose-500/40 opacity-75 saturate-75 cursor-not-allowed"
+                                  : "border border-slate-750/70 cursor-pointer"
+                              ) : (
+                                idx === goblinTileIndex && !goblinCaptured
+                                  ? "border-2 border-yellow-400 bg-yellow-950/40 shadow-[0_0_12px_rgba(234,179,8,0.5)] animate-pulse cursor-pointer"
+                                  : idx === manaSpringTileIndex && !manaSpringClaimed
+                                    ? "border-2 border-cyan-400 bg-cyan-950/40 shadow-[0_0_12px_rgba(34,211,238,0.5)] animate-pulse cursor-pointer"
+                                    : "border border-dashed border-slate-700/60 bg-slate-950/40 hover:border-solid hover:border-cyan-400 hover:bg-cyan-950/20 cursor-pointer"
+                              ),
+                              !card && boardTraps[idx] === 'purple' && "bg-purple-800/40 border-purple-400 border-2",
+                              !card && boardTraps[idx] === 'red' && "bg-red-800/40 border-red-400 border-2",
+                              !card && selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player' && "border-2 border-emerald-400 bg-emerald-950/50 shadow-[0_0_16px_rgba(52,211,153,0.6)] animate-pulse",
+                              !card && aiReasoning?.boardIdx === idx && turn === 'ai' && "border-solid border-rose-500 bg-rose-950/30",
+                              !card && selectedCardIdx !== null && selectedCardSide === 'player' && recommendedPlayerMove?.cardIdx === selectedCardIdx && recommendedPlayerMove?.boardIdx === idx && turn === 'player' && "border-2 border-cyan-300 bg-cyan-900/50 shadow-[0_0_18px_rgba(34,211,238,0.8)]"
+                            )}
+                          >
+                            {/* Row 78: Invalid Drop Target Overlay on Occupied Slots */}
+                            {card && selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player' && (
+                              <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none bg-black/25 rounded-lg">
+                                <span className="text-[7px] font-mono font-bold text-rose-300/90 bg-rose-950/80 px-1 py-0.2 rounded-xs border border-rose-500/40 shadow-xs">
+                                  {language === 'ko' ? 'ì ìœ ë¨' : 'OCCUPIED'}
+                                </span>
+                              </div>
+                            )}
+
+                            {/* Row 62: Valid Drop Target Indicator when player card selected */}
+                            {!card && selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player' && (
+                              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-1 pointer-events-none">
+                                <div className="w-5 h-5 rounded-full border-2 border-emerald-400 bg-emerald-500/20 flex items-center justify-center animate-ping" />
+                                <span className="text-[7px] font-mono font-black text-emerald-300 bg-black/85 px-1 py-0.2 rounded-xs border border-emerald-400/60 mt-1 uppercase whitespace-nowrap shadow-sm">
+                                  {language === 'ko' ? '[ë°°ì¹˜]' : '[PLACE]'}
+                                </span>
+                              </div>
+                            )}
+                            {/* Item 347: Goblin Spawn Badge in Grid Cell */}
+                            {!card && idx === goblinTileIndex && !goblinCaptured && (
+                              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-1 pointer-events-none">
+                                <Coins size={22} className="text-yellow-400 animate-bounce drop-shadow-[0_0_8px_rgba(234,179,8,0.8)]" />
+                                <span className="text-[8px] font-mono font-black text-yellow-300 bg-black/80 px-1 py-0.5 rounded-sm border border-yellow-400/60 mt-1 whitespace-nowrap">
+                                  [ğŸª™ +25 SNS]
+                                </span>
+                              </div>
+                            )}
+                            {/* Item 355: Mana Spring Badge in Grid Cell */}
+                            {!card && idx === manaSpringTileIndex && !manaSpringClaimed && (
+                              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-1 pointer-events-none">
+                                <Sparkles size={22} className="text-cyan-400 animate-spin drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+                                <span className="text-[8px] font-mono font-black text-cyan-300 bg-black/80 px-1 py-0.5 rounded-sm border border-cyan-400/60 mt-1 whitespace-nowrap">
+                                  [ğŸ’§ +2 STATS]
+                                </span>
+                              </div>
+                            )}
+                            {/* Item 375: Rage Spark Slot Badge in Grid Cell */}
+                            {!card && idx === rageSparkSlotIndex && (
+                              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-1 pointer-events-none">
+                                <Flame size={22} className="text-red-400 animate-bounce drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
+                                <span className="text-[8px] font-mono font-black text-red-300 bg-black/80 px-1 py-0.5 rounded-sm border border-red-400/60 mt-1 whitespace-nowrap">
+                                  [ğŸ”¥ +3 RAGE]
+                                </span>
+                              </div>
+                            )}
+                            {/* Item 367: Poison Swamp Hazard Badge in Grid Cell */}
+                            {idx === poisonSwampTileIndex && (
+                              <div className="absolute top-1 right-1 z-20 flex items-center gap-1 pointer-events-none">
+                                {poisonSwampCleansed ? (
+                                  <span className="text-[8px] font-mono font-black text-emerald-300 bg-emerald-950/90 border border-emerald-400/70 px-1 py-0.5 rounded-sm shadow-md">
+                                    [ğŸŒ¿ ì •í™” +1]
+                                  </span>
+                                ) : !card ? (
+                                  <span className="text-[8px] font-mono font-black text-rose-300 bg-rose-950/90 border border-rose-400/70 px-1 py-0.5 rounded-sm shadow-md animate-pulse">
+                                    [â˜£ï¸ ë…ê¸° -1]
+                                  </span>
+                                ) : null}
+                              </div>
+                            )}
+                            {/* Elemental Tile Background */}
+                            {!card && elementalBoard[idx] && (
+                              <div className={cn(
+                                "absolute inset-0 z-0 flex items-center justify-center bg-gradient-to-br rounded-lg shadow-sm border",
+                                elementalBoard[idx] === 'water' ? "from-blue-600/35 to-cyan-500/35 border-blue-400/50 shadow-[0_0_12px_rgba(59,130,246,0.3)]" :
+                                elementalBoard[idx] === 'fire' ? "from-red-600/35 to-orange-500/35 border-red-400/50 shadow-[0_0_12px_rgba(239,68,68,0.3)]" :
+                                elementalBoard[idx] === 'wind' || elementalBoard[idx] === 'air' ? "from-emerald-500/35 to-teal-400/35 border-emerald-400/50 shadow-[0_0_12px_rgba(16,185,129,0.3)]" :
+                                elementalBoard[idx] === 'land' || elementalBoard[idx] === 'earth' ? "from-amber-700/35 to-orange-900/35 border-amber-500/50 shadow-[0_0_12px_rgba(180,83,9,0.3)]" :
+                                elementalBoard[idx] === 'human' ? "from-sky-400/35 to-indigo-400/35 border-sky-300/50 shadow-[0_0_12px_rgba(56,189,248,0.3)]" :
+                                elementalBoard[idx] === 'undead' ? "from-purple-900/40 to-fuchsia-950/40 border-purple-500/50 shadow-[0_0_12px_rgba(168,85,247,0.3)]" :
+                                elementalBoard[idx] === 'elf' ? "from-green-600/35 to-emerald-600/35 border-green-400/50 shadow-[0_0_12px_rgba(34,197,94,0.3)]" :
+                                elementalBoard[idx] === 'dwarf' ? "from-zinc-650/40 to-slate-700/40 border-zinc-500/50 shadow-[0_0_12px_rgba(113,113,122,0.3)]" :
+                                elementalBoard[idx] === 'monster' ? "from-orange-600/35 to-red-500/35 border-orange-400/50 shadow-[0_0_12px_rgba(249,115,22,0.3)]" :
+                                elementalBoard[idx] === 'robot' ? "from-slate-500/35 to-zinc-600/35 border-slate-400/50 shadow-[0_0_12px_rgba(100,116,139,0.3)]" :
+                                elementalBoard[idx] === 'dragon' ? "from-rose-700/35 to-red-800/35 border-rose-500/50 shadow-[0_0_12px_rgba(225,29,72,0.3)]" :
+                                "from-slate-400/30 to-slate-300/30 border-slate-350/50"
+                              )}>
+                                <div className="flex items-center justify-center text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] opacity-75">
+                                  {elementalBoard[idx] === 'water' && <Waves size={30} className="text-blue-200/80" />}
+                                  {elementalBoard[idx] === 'fire' && <Flame size={30} className="text-red-200/80" />}
+                                  {(elementalBoard[idx] === 'wind' || elementalBoard[idx] === 'air') && <Wind size={30} className="text-emerald-200/80" />}
+                                  {(elementalBoard[idx] === 'land' || elementalBoard[idx] === 'earth') && <Mountain size={30} className="text-amber-200/80" />}
+                                  {elementalBoard[idx] === 'human' && <User size={30} className="text-sky-200/80" />}
+                                  {elementalBoard[idx] === 'undead' && <Skull size={30} className="text-purple-200/80" />}
+                                  {elementalBoard[idx] === 'elf' && <Leaf size={30} className="text-green-200/80" />}
+                                  {elementalBoard[idx] === 'dwarf' && <Hammer size={30} className="text-zinc-200/80" />}
+                                  {elementalBoard[idx] === 'monster' && <Ghost size={30} className="text-orange-200/80" />}
+                                  {elementalBoard[idx] === 'robot' && <Bot size={30} className="text-slate-200/80" />}
+                                  {elementalBoard[idx] === 'dragon' && <Zap size={30} className="text-rose-200/80" />}
+                                </div>
+
+                                {/* Terrain Bonus Tooltip Badge on Hover */}
+                                <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 z-[150] opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap bg-slate-900/95 text-amber-300 border border-amber-500/40 text-[9px] font-bold px-2 py-0.5 rounded shadow-xl backdrop-blur-xs">
+                                  {language === 'ko' 
+                                    ? `${elementalBoard[idx].toUpperCase()} ì†ì„± +2 PWR` 
+                                    : `${elementalBoard[idx].toUpperCase()} +2 PWR`}
+                                </div>
+                              </div>
+                            )}
+                            {/* Live Battle Calculation Preview Overlay (Item 70) */}
+                            {hoveredCellIdx === idx && selectedCardIdx !== null && !card && (
+                              <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-[160] pointer-events-none whitespace-nowrap bg-indigo-950/95 text-amber-300 border border-amber-400 text-[10px] font-mono font-black px-2.5 py-0.5 rounded-full shadow-2xl animate-bounce">
+                                âš¡ {capturePreview.length > 0 
+                                  ? (language === 'ko' ? `ë¯¸ë¦¬ë³´ê¸°: ${capturePreview.length}ì¥ ìº¡ì²˜!` : `PREVIEW: FLIP +${capturePreview.length}`) 
+                                  : (language === 'ko' ? 'ì¹´ë“œ ë°°ì¹˜ ê°€ëŠ¥' : 'PLACE CARD')}
+                              </div>
+                            )}
+
+                            {/* Invalid Drop Target Shading / Prohibition Overlay (ID 78) */}
+                            {card && selectedCardIdx !== null && selectedCardSide === 'player' && (
+                              <div className="absolute inset-0 z-[140] bg-red-950/90 border-2 border-red-500 rounded-lg flex flex-col items-center justify-center text-red-400 font-mono text-[9px] font-black cursor-not-allowed pointer-events-none shadow-inner">
+                                <XCircle size={20} className="text-red-500 animate-pulse mb-0.5" />
+                                <span className="uppercase tracking-tighter">[X] {language === 'ko' ? 'ë°°ì¹˜ ë¶ˆê°€' : 'OCCUPIED'}</span>
+                              </div>
+                            )}
+                            {capturePreview.includes(idx) && (
+                              <div className="absolute inset-0 z-[120] pointer-events-none rounded-lg flex flex-col items-center justify-center">
+                                <div className="absolute inset-0 border-4 border-amber-400 animate-pulse rounded-lg bg-amber-500/30" />
+                                <motion.div
+                                  initial={{ scale: 0 }}
+                                  animate={{ scale: [0.8, 1.1, 1] }}
+                                  className="relative z-10 flex flex-col items-center bg-slate-900/95 text-amber-300 border border-amber-400 px-2 py-0.5 rounded-md shadow-xl"
+                                >
+                                  <Swords size={18} className="text-amber-400 animate-bounce" />
+                                  <span className="text-[8px] font-mono font-extrabold text-amber-300 whitespace-nowrap">
+                                    {language === 'ko' ? 'ë’¤ì§‘í˜ ì˜ˆìƒ' : 'FLIP TARGET'}
+                                  </span>
+                                </motion.div>
+                              </div>
+                            )}
+                            {/* AI Targeting Icon */}
+                            {!card && turn === 'ai' && aiReasoning?.boardIdx === idx && (
+                              <motion.div
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 0.8, scale: 1 }}
+                                className="absolute inset-0 z-[120] flex items-center justify-center pointer-events-none"
+                              >
+                                <TargetIcon size={32} className="text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
+                              </motion.div>
+                            )}
+                            {/* Recommended Targeting Icon */}
+                            {!card && turn === 'player' && selectedCardIdx !== null && selectedCardSide === 'player' && recommendedPlayerMove?.cardIdx === selectedCardIdx && recommendedPlayerMove?.boardIdx === idx && (
+                              <motion.div
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 0.9, scale: 1 }}
+                                className="absolute inset-0 z-[120] flex items-center justify-center pointer-events-none"
+                              >
+                                <TargetIcon size={32} className="text-blue-500 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+                              </motion.div>
+                            )}
+                            {/* AI & Recommended Reasoning Tooltip */}
+                            <AnimatePresence>
+                              {(aiReasoning && aiReasoning.boardIdx === idx && turn === 'ai') || 
+                               (!card && turn === 'player' && selectedCardIdx !== null && selectedCardSide === 'player' && recommendedPlayerMove?.cardIdx === selectedCardIdx && recommendedPlayerMove?.boardIdx === idx) ? (() => {
+                                const isAi = turn === 'ai' && aiReasoning && aiReasoning.boardIdx === idx;
+                                const textStr = isAi ? aiReasoning.text : recommendedPlayerMove?.reason || "";
+                                const isPl = isAi ? aiReasoning.isPlayer : true;
+            
+                                return (
+                                  <motion.div
+                                    key={`tooltip-${idx}`}
+                                    initial={{ opacity: 0, y: 10, scale: 0.8 }}
+                                    animate={{ opacity: 1, y: -40, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.5 }}
+                                    className="absolute left-1/2 -translate-x-1/2 z-[200] pointer-events-none"
+                                  >
+                                    <div className={cn(
+                                      "whitespace-nowrap px-3 py-1.5 rounded-lg border-2 shadow-xl text-[10px] md:text-xs font-black italic uppercase tracking-wider flex items-center gap-2",
+                                      isPl ? "bg-blue-600 border-blue-400 text-white" : "bg-red-600 border-red-400 text-white"
+                                    )}>
+                                      {isPl ? <Sparkles size={12} className="animate-pulse" /> : <Cpu size={12} className="animate-spin-slow" />}
+                                      {t(textStr as any, language)}
+                                      <div className={cn(
+                                        "absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 rotate-45 border-r-2 border-b-2",
+                                        isPl ? "bg-blue-600 border-blue-400" : "bg-red-600 border-red-400"
+                                      )} />
+                                    </div>
+                                  </motion.div>
+                                );
+                              })() : null}
+                            </AnimatePresence>
+            
+                            {/* Evaluation Highlight */}
+                            {checkingIdx === idx && (
+                              <div className="absolute inset-0 z-[150] pointer-events-none rounded-lg flex items-center justify-center bg-white/30 border-4 border-yellow-400 animate-pulse">
+                                <Search size={32} className="text-yellow-500 drop-shadow-md" />
+                              </div>
+                            )}
+            
+                            <AnimatePresence mode="popLayout">
+                              {card ? (
+                                <motion.div
+                                  key={`${card.id}`}
+                                  initial={{ 
+                                    scale: 0.8, 
+                                    opacity: 0
+                                  }}
+                                  animate={{ 
+                                    scale: 1,
+                                    opacity: 1,
+                                    x: lastPlacedIdx === idx ? [0, -6, 6, -6, 6, 0] : 0,
+                                    zIndex: 20
+                                  }}
+                                  transition={{
+                                    scale: { duration: 0.15 },
+                                    opacity: { duration: 0.15 },
+                                    x: { duration: 0.3 }
+                                  }}
+                                  className={cn("absolute inset-0", isRoarActive && "roar-flame-active")}
+                                >
+                                  <CardItem 
+                                    card={card} 
+                                    isLocked={true} 
+                                    isOnBoard={true}
+                                    isDamaged={Boolean(damagedCells[idx])}
+                                    className={cn(
+                                      "w-full h-full z-10 rounded-lg", 
+                                      isRoarActive && "text-fire-active",
+                                      fireGlowCells instanceof Set && fireGlowCells.has(idx) && "fire-glow-card",
+                                      waterGlowCells instanceof Set && waterGlowCells.has(idx) && "water-glow-card"
+                                    )}
+                                    customImage={customCardImage}
+                                    processedImage={processedImageForCell}
+                                    combatHighlights={combatHighlights[idx]}
+                                    lowSpecMode={lowSpecMode}
+                                    cellElement={elementalBoard[idx]}
+                                    isMatgo={false}
+                                  />
+                                  {/* Floating Stat Change FX Overlay (Item 38) */}
+                                  <AnimatePresence>
+                                    {floatingStatFX[idx] && (
+                                      <motion.div
+                                        key={`stat-fx-${floatingStatFX[idx].id}`}
+                                        initial={{ opacity: 0, y: 12, scale: 0.7 }}
+                                        animate={{ opacity: 1, y: -20, scale: 1.15 }}
+                                        exit={{ opacity: 0, y: -36, scale: 0.8 }}
+                                        transition={{ duration: 1.0, ease: "easeOut" }}
+                                        className={cn(
+                                          "absolute -top-3 left-1/2 -translate-x-1/2 z-[120] px-2.5 py-0.5 rounded-full border-2 font-black text-xs tracking-wider shadow-2xl pointer-events-none whitespace-nowrap flex items-center gap-1 font-mono",
+                                          floatingStatFX[idx].isPositive
+                                            ? "bg-emerald-600 border-emerald-300 text-white shadow-[0_0_18px_rgba(16,185,129,0.9)]"
+                                            : "bg-rose-600 border-rose-300 text-white shadow-[0_0_18px_rgba(244,63,94,0.9)]"
+                                        )}
+                                      >
+                                        <span>{floatingStatFX[idx].text}</span>
+                                      </motion.div>
+                                    )}
+                                  </AnimatePresence>
+                                  {/* Matgo stack badge */}
+                                  {battleType === 'matgo' && matgoBoardStacks[idx] && matgoBoardStacks[idx].length > 1 && (
+                                    <div className="absolute -top-1.5 -left-1.5 z-[70] bg-amber-600 border-2 border-white text-white font-black text-[10px] w-6 h-6 rounded-full flex items-center justify-center shadow-lg animate-pulse">
+                                      x{matgoBoardStacks[idx].length}
+                                    </div>
+                                  )}
+                                  {/* Ability Indicator */}
+                                  {card.ability && (
+                                    <motion.div
+                                      className={cn(
+                                        "absolute -top-1.5 -right-1.5 z-[60] w-6 h-6 rounded-full border-2 border-white flex items-center justify-center shadow-lg",
+                                        card.ability.type === 'POWER_BOOST' ? "bg-yellow-400" :
+                                        card.ability.type === 'WEAKEN' ? "bg-purple-600" :
+                                        card.ability.type === 'REINFORCE' ? "bg-green-500" :
+                                        card.ability.type === 'SHIELD' ? "bg-blue-400" :
+                                        card.ability.type === 'WALL' ? "bg-gray-700" :
+                                        "bg-red-600" // PIERCE
+                                      )}
+                                      title={language === 'ko' ? card.ability.description_ko : card.ability.description_en}
+                                    >
+                                      {card.ability.type === 'WALL' ? <Fence size={10} className="text-white" /> :
+                                       card.ability.type === 'PIERCE' ? <TargetIcon size={10} className="text-white" /> :
+                                       <Sparkles size={10} className="text-white" />}
+                                    </motion.div>
+                                  )}
+                                  {/* Elemental Badge */}
+                                  {(() => {
+                                    const normEl = getNormalizedElement(card);
+                                    if (!normEl) return null;
+                                    return (
+                                      <div className={cn(
+                                        "absolute -bottom-1 -left-1 z-[60] w-6 h-6 rounded-full border border-white flex items-center justify-center shadow-md",
+                                        normEl === 'water' ? "bg-blue-500/90" :
+                                        normEl === 'fire' ? "bg-red-500/90" :
+                                        normEl === 'wind' ? "bg-emerald-500/90" :
+                                        normEl === 'land' ? "bg-amber-700/90" :
+                                        normEl === 'human' ? "bg-sky-400/90" :
+                                        normEl === 'undead' ? "bg-purple-900/90" :
+                                        normEl === 'elf' ? "bg-green-600/90" :
+                                        normEl === 'dwarf' ? "bg-zinc-700/90" :
+                                        normEl === 'monster' ? "bg-orange-600/90" :
+                                        normEl === 'robot' ? "bg-slate-500/90" :
+                                        normEl === 'dragon' ? "bg-rose-700/90" :
+                                        "bg-gray-400/90"
+                                      )}>
+                                        {normEl === 'water' && <Waves size={11} className="text-white" />}
+                                        {normEl === 'fire' && <Flame size={11} className="text-white" />}
+                                        {normEl === 'wind' && <Wind size={11} className="text-white" />}
+                                        {normEl === 'land' && <Mountain size={11} className="text-white" />}
+                                        {normEl === 'human' && <User size={11} className="text-white" />}
+                                        {normEl === 'undead' && <Skull size={11} className="text-white" />}
+                                        {normEl === 'elf' && <Leaf size={11} className="text-white" />}
+                                        {normEl === 'dwarf' && <Hammer size={11} className="text-white" />}
+                                        {normEl === 'monster' && <Ghost size={11} className="text-white" />}
+                                        {normEl === 'robot' && <Bot size={11} className="text-white" />}
+                                        {normEl === 'dragon' && <Zap size={11} className="text-white" />}
+                                      </div>
+                                    );
+                                  })()}
+                                  {/* Item 369: Sleek 12px Corner Element Affinity Pip */}
+                                  {elementalBoard[idx] && getNormalizedElement(card) === elementalBoard[idx] && (
+                                    <div className="absolute top-0.5 left-0.5 z-[65] px-1 py-0.5 bg-black/90 border border-amber-400 text-amber-300 font-mono text-[8.5px] font-black rounded-xs shadow-md pointer-events-none whitespace-nowrap">
+                                      {elementalBoard[idx] === 'fire' && '[ğŸ”¥+2]'}
+                                      {elementalBoard[idx] === 'water' && '[ğŸ’§+2]'}
+                                      {elementalBoard[idx] === 'wind' && '[ğŸŒªï¸+2]'}
+                                      {elementalBoard[idx] === 'land' && '[ğŸŒ±+2]'}
+                                      {elementalBoard[idx] !== 'fire' && elementalBoard[idx] !== 'water' && elementalBoard[idx] !== 'wind' && elementalBoard[idx] !== 'land' && `[+2]`}
+                                    </div>
+                                  )}
+                                </motion.div>
+                              ) : (
+                                <div key={`empty-${idx}`} className="opacity-5 font-bold text-sm">{idx}</div>
+                              )}
+                            </AnimatePresence>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+               </div>
+            {/* DESKTOP RIGHT SIDEBAR: VERTICAL SCOREBOARD (lg:flex ONLY) */}
+            {!gameOver && gameState === 'playing' && (
+              <div className="hidden lg:flex flex-col items-center justify-center shrink-0 z-20 pointer-events-none select-none gap-3">
+                {/* 2. SCOREBOARD */}
+                <div className="flex flex-col gap-1 items-center bg-[#201d1d] rounded-none p-1.5 border border-[rgba(255,255,255,0.15)] shadow-none">
+                  {/* Enemy Score */}
+                  <div className="flex flex-col items-center gap-0.5 p-1 bg-rose-950/30 rounded-none border border-rose-800/40">
+                    <span className="text-[7px] font-mono font-bold uppercase text-rose-400 [writing-mode:vertical-lr] tracking-widest">[ENEMY]</span>
+                    <div className="w-7 h-7 rounded-none bg-[#141212] border border-rose-700/50 flex items-center justify-center text-sm font-bold text-rose-400 font-mono">
+                      {battleType === 'matgo' ? matgoScores.ai : boardScore.ai}
+                    </div>
+                  </div>
+                  
+                  {/* Divider */}
+                  <div className="py-0.5 opacity-20">
+                    <div className="w-3 h-[1px] bg-white" />
+                  </div>
+    
+                  {/* Player Score */}
+                  <div className="flex flex-col items-center gap-0.5 p-1 bg-indigo-950/30 rounded-none border border-indigo-800/40">
+                    <div className="w-7 h-7 rounded-none bg-[#141212] border border-indigo-700/50 flex items-center justify-center text-sm font-bold text-indigo-400 font-mono">
+                      {battleType === 'matgo' ? matgoScores.player : boardScore.player}
+                    </div>
+                    <span className="text-[7px] font-mono font-bold uppercase text-indigo-400 [writing-mode:vertical-lr] tracking-widest">[YOU]</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* DESKTOP 2XL+: TACTICAL LOG (Wide Screen Only) */}
+            {!gameOver && gameState === 'playing' && (
+              <div className="hidden 2xl:flex flex-col gap-2 shrink-0 z-20 pointer-events-auto">
+                {/* Desktop Sidebar Log */}
+                <div className="w-40 xl:w-44 flex flex-col gap-2 h-[320px]">
+                  <div className="text-[10px] font-black text-white/40 uppercase tracking-widest pl-2 flex items-center gap-2">
+                    <Terminal size={10} />
+                    <span>TACTICAL_LOG</span>
+                  </div>
+                  <div className="flex-1 bg-[#0f172a]/95 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden flex flex-col p-3 shadow-xl">
+                     <div className="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar scrollbar-hide">
+                        <AnimatePresence initial={false}>
+                          {visibleGameLogs.map((log) => (
+                            <motion.div
+                              key={log.id}
+                              initial={{ opacity: 0, x: 20 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              className={cn(
+                                "text-[8px] xl:text-[9px] leading-tight font-black uppercase tracking-tighter p-1.5 rounded-lg border-l-2",
+                                log.type === 'capture' ? "bg-red-950/40 border-red-500/50 text-red-300" : 
+                                log.type === 'system' ? "bg-yellow-950/40 border-yellow-500/50 text-yellow-350" :
+                                "bg-slate-900/40 border-slate-800 text-slate-350"
+                              )}
+                            >
+                              {log.text}
+                            </motion.div>
+                          ))}
+                        </AnimatePresence>
+                     </div>
+                     <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between opacity-30 text-[8px] font-bold text-white/40">
+                        <span>V.4.2</span>
+                        <Activity size={10} className="animate-pulse" />
+                     </div>
+                  </div>
+                </div>
+              </div>
+            )}
+         </div>
+      </div>
+
+    </div>
+
+      {/* COMPACT 1-LINE SCORE & TURN STATUS BAR (Relocated Below Board / Above Player Hand) */}
+      {!gameOver && gameState === 'playing' && (
+        <div className="flex flex-wrap items-center justify-between w-full max-w-sm sm:max-w-md px-3 py-1.5 bg-slate-950/90 border border-slate-800 rounded-sm shadow-md text-xs font-mono font-bold z-20 mb-1 backdrop-blur-md gap-2">
+          {/* Player Score */}
+          <div className="flex items-center gap-1.5 text-indigo-400">
+            <span className="text-[10px] text-slate-400">[YOU]</span>
+            <span className="px-1.5 py-0.5 rounded-sm bg-indigo-950/80 border border-indigo-500/50 font-black text-indigo-300 text-xs">
+              {battleType === 'matgo' ? matgoScores.player : boardScore.player}
+            </span>
+          </div>
+
+          {/* 1-Line Turn Status + Turn Countdown Timer */}
+          <div className="flex items-center gap-1.5">
+            <div className={cn(
+              "px-2 py-0.5 rounded-sm text-[10px] uppercase font-mono font-black flex items-center gap-1 border",
+              turn === 'player'
+                ? "bg-indigo-950/80 border-indigo-500/70 text-indigo-300 shadow-[0_0_8px_rgba(99,102,241,0.4)]"
+                : "bg-rose-950/80 border-rose-500/70 text-rose-300"
+            )}>
+              {turn === 'player' ? (
+                <><Zap size={11} className="text-yellow-400 animate-pulse" /> [ YOUR TURN ]</>
+              ) : (
+                <><Cpu size={11} className="text-rose-400 animate-spin" /> [ ENEMY TURN ]</>
+              )}
+            </div>
+
+            {/* Turn Countdown Timer SVG (Row 26) */}
+            <div
+              className={cn(
+                "flex items-center gap-1 px-1.5 py-0.5 rounded-sm font-mono text-[9px] font-bold border transition-all",
+                turnTimerSeconds <= 5
+                  ? "bg-rose-950/90 border-rose-500 text-rose-300 animate-pulse shadow-[0_0_10px_rgba(244,63,94,0.6)]"
+                  : "bg-slate-900 border-slate-700/70 text-slate-300"
+              )}
+              title={language === 'ko' ? `ë‚¨ì€ í„´ ì‹œê°„: ${turnTimerSeconds}ì´ˆ` : `Turn Time: ${turnTimerSeconds}s`}
+            >
+              <div className="relative w-3.5 h-3.5 flex items-center justify-center shrink-0">
+                <svg className="w-3.5 h-3.5 -rotate-90" viewBox="0 0 20 20">
+                  <circle
+                    cx="10"
+                    cy="10"
+                    r="7.5"
+                    fill="none"
+                    stroke="#334155"
+                    strokeWidth="2.5"
+                  />
+                  <circle
+                    cx="10"
+                    cy="10"
+                    r="7.5"
+                    fill="none"
+                    stroke={turnTimerSeconds <= 5 ? "#f43f5e" : turn === 'player' ? "#6366f1" : "#f59e0b"}
+                    strokeWidth="2.5"
+                    strokeDasharray={47.12}
+                    strokeDashoffset={47.12 * (1 - turnTimerSeconds / turnMaxSeconds)}
+                    strokeLinecap="round"
+                    className="transition-all duration-1000 ease-linear"
+                  />
+                </svg>
+              </div>
+              <span className={cn("font-black tracking-tighter", turnTimerSeconds <= 5 ? "text-rose-400 font-extrabold" : "text-slate-200")}>
+                {turnTimerSeconds}s
+              </span>
+            </div>
+
+            {/* Item 351: Sudden Death Overclock Badge */}
+            {isSuddenDeathOverclock && (
+              <span className="px-1.5 py-0.5 rounded-sm bg-amber-950/80 border border-amber-500/70 text-amber-300 text-[9px] font-mono font-bold animate-pulse">
+                [ âš¡ OVERCLOCK +2 ]
+              </span>
+            )}
+          </div>
+
+          {/* Opponent Score */}
+          <div className="flex items-center gap-1.5 text-rose-400">
+            <span className="px-1.5 py-0.5 rounded-sm bg-rose-950/80 border border-rose-500/50 font-black text-rose-300 text-xs">
+              {battleType === 'matgo' ? matgoScores.ai : boardScore.ai}
+            </span>
+            <span className="text-[10px] text-slate-400">[ENEMY]</span>
+          </div>
+        </div>
+      )}
+
+      {/* 3. ë‚´ ë±/íŒ¨ ì˜ì—­ (ì¹´ë“œ ë†’ì´ì— ë§ì¶° ì»´íŒ©íŠ¸ ì¡°ì •) */}
+      <div 
+        id="player-hand-container"
+        className={cn(
+        "h-auto py-0.5 sm:py-1 md:py-1.5 relative overflow-visible flex flex-col items-center justify-center p-0.5 sm:p-1 w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm shrink-0",
+        turn === 'player' && !gameOver ? "border-indigo-500/50 z-20" : "border-blue-500/20 z-10"
+      )}>
+        
+        {/* Item 357: Player 1-Line Slim Monospace Tag (Visible on Mobile & Desktop) & Row 66: Hand/Deck Counter Badge */}
+        <div className="absolute top-1 left-2 right-2 z-20 flex items-center justify-between pointer-events-none">
+          <div className="flex items-center gap-1.5 bg-indigo-950/90 text-indigo-200 text-[8px] sm:text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-sm shadow-xs border border-indigo-500/40 backdrop-blur-xs pointer-events-auto">
+            <span className="text-indigo-400 font-black">[YOU]</span>
+            <span className="truncate max-w-[70px] sm:max-w-[120px] text-white">{effectiveUser?.displayName || effectiveUser?.name || 'YOU'}</span>
+            <span className="text-slate-500">Â·</span>
+            <span>TP {(calculatedTotalPower || 1000).toLocaleString()}</span>
+            {sns !== undefined && sns > 0 && (
+              <>
+                <span className="text-slate-500">Â·</span>
+                <span className="text-amber-300">ğŸª™{sns.toLocaleString()}</span>
+              </>
+            )}
+            <button
+              type="button"
+              onClick={() => setIsEmoteModalOpen(true)}
+              className="ml-1 px-1.5 py-0.2 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-[8px] font-black uppercase tracking-wider flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-2xs"
+              title={language === 'ko' ? 'ê°ì •í‘œí˜„ ë³´ë‚´ê¸°' : 'Send Emote'}
+            >
+              <span>ğŸ’¬</span>
+              <span>{language === 'ko' ? 'ê°ì •' : 'Emote'}</span>
+            </button>
+          </div>
+
+          {/* Row 66: Player Hand Cards & Deck Stack Remaining Counter Badge */}
+          <div className="flex items-center gap-1 bg-slate-900/90 text-slate-300 text-[8px] sm:text-[9px] font-mono font-bold px-2 py-0.5 rounded-sm border border-slate-700/60 shadow-xs backdrop-blur-xs pointer-events-auto">
+            <span className="text-cyan-400 font-black">
+              {language === 'ko' ? `ì†íŒ¨ ${playerHand.length}ì¥` : `Hand: ${playerHand.length}`}
+            </span>
+            <span className="text-slate-500">/</span>
+            <span className="text-amber-400 font-black">
+              {language === 'ko' ? `ì”ì—¬ ${Math.max(0, 5 - (9 - board.filter(c => c !== null).length - opponentHand.length))}ì¥` : `Deck: ${Math.max(0, 5 - (9 - board.filter(c => c !== null).length - opponentHand.length))}`}
+            </span>
+          </div>
+        </div>
+
+        <div className={cn(
+          "w-full max-w-6xl mx-auto flex items-center gap-1 md:gap-2 h-auto py-0.5 md:py-1 overflow-x-auto overflow-y-visible scrollbar-hide px-4 touch-pan-x relative z-10 my-auto select-none [mask-image:linear-gradient(to_right,transparent,black_16px,black_calc(100%-16px),transparent)]",
+          playerHand.length > 5 ? "justify-start md:justify-center" : "justify-center"
+        )}>
+
+
+          <AnimatePresence>
+            {playerHand.map((card, idx) => {
+              const isRecommended = recommendedPlayerMove?.cardIdx === idx;
+              const isSelected = selectedCardIdx === idx && selectedCardSide === 'player';
+              
+              return (
+              <motion.div
+                key={card.id}
+                onClick={() => handleCardClick(idx, 'player')}
+                onPointerDown={() => handleHandCardPointerDown(card)}
+                onPointerUp={handleHandCardPointerUp}
+                onPointerLeave={handleHandCardPointerUp}
+                onPointerCancel={handleHandCardPointerUp}
+                initial={{ opacity: 0, scale: 0.9, y: 0 }}
+                animate={{ 
+                  opacity: 1,
+                  y: isSelected ? -20 : 0,
+                  scale: isSelected ? 1.08 : (isRecommended ? 1.03 : 1)
+                }}
+                exit={{ opacity: 0, scale: 0.8, y: -10, transition: { duration: 0.15 } }}
+                transition={{ duration: 0.15 }}
+                whileHover={{ 
+                  y: isSelected ? -28 : -10,
+                  scale: isSelected ? 1.1 : 1.05
+                }}
+                whileTap={{ scale: 0.95 }}
+                className={cn(
+                  "w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg [will-change:transform,opacity]",
+                  isSelected && "z-50"
+                )}
+              >
+                {isRecommended && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-blue-600 text-white text-[8px] md:text-[10px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded border border-blue-400 shadow-[0_0_10px_rgba(37,99,235,0.8)] z-50 animate-pulse pointer-events-none"
+                  >
+                    RECOMMENDED
+                  </motion.div>
+                )}
+                {isRecommended && (
+                   <div className="absolute inset-[-2px] bg-blue-500/40 rounded z-[-1]"></div>
+                )}
+                {/* Highlight Glow for Selected Card */}
+                {selectedCardIdx === idx && selectedCardSide === 'player' && (
+                  <div className="absolute -inset-1 bg-indigo-500/40 rounded-xl z-0 pointer-events-none ring-2 ring-indigo-400" />
+                )}
+                
+                <CardItem 
+                  card={card} 
+                  isLocked={turn !== 'player'} 
+                  isSelected={selectedCardIdx === idx && selectedCardSide === 'player'}
+                  className={cn(
+                    "w-full h-full relative z-10 rounded-lg",
+                    isRecommended && "shadow-[0_0_15px_rgba(96,165,250,0.5)]"
+                  )} 
+                  customImage={customCardImage}
+                  lowSpecMode={isLowPerformance}
+                  isMatgo={false}
+                />
+              </motion.div>
+            );
+          })}
+          </AnimatePresence>
+        </div>
+
+        {/* Item 361: 9-Turn LED Micro-Dots (Shows filled player/enemy slots & remaining turns) - Relocated Below Player Hand */}
+        {battleType !== 'matgo' && (
+          <div className="w-full flex items-center justify-center pb-1 z-20 pointer-events-none select-none">
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-sm bg-slate-900/90 border border-slate-800 shadow-xs backdrop-blur-xs pointer-events-auto" title={`Round Progress: ${board.filter(c => c !== null).length}/9 Turns`}>
+              <span className="text-[8px] sm:text-[9px] font-mono text-slate-400 font-bold">
+                {language === 'ko' ? 'ì§„í–‰ë„' : 'ROUND'} {board.filter(c => c !== null).length}/9
+              </span>
+              <div className="flex items-center gap-1">
+                {board.map((cell, idx) => {
+                  const isPlayer = cell?.owner === 'player';
+                  const isAi = cell?.owner === 'ai';
+                  return (
+                    <span
+                      key={idx}
+                      className={cn(
+                        "w-1.5 h-1.5 rounded-full transition-all duration-300",
+                        isPlayer ? "bg-indigo-400 shadow-[0_0_4px_rgba(99,102,241,0.8)] scale-110" :
+                        isAi ? "bg-rose-400 shadow-[0_0_4px_rgba(244,63,94,0.8)] scale-110" :
+                        "bg-slate-700/60"
+                      )}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+      </div>
+
+      {/* Cortana AI Bottom Scroll Section (í™”ë©´ ìµœí•˜ë‹¨ì— ìŠ¤í¬ë¡¤í•˜ì—¬ í™•ì¸) */}
+      {isAutoBattle && !gameOver && (
+        <div id="cortana-ai-bottom-section" className="w-full max-w-5xl mx-auto mt-6 pt-4 border-t border-slate-800/80 px-3 sm:px-4 pb-12 flex flex-col items-center shrink-0">
+          <button
+            type="button"
+            onClick={() => setShowCortanaHud(prev => !prev)}
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm bg-slate-900/90 hover:bg-slate-800 border border-indigo-500/30 text-[10px] font-mono font-bold text-indigo-300 tracking-wider uppercase shadow-xs transition-all active:scale-95 cursor-pointer"
+            title={language === 'ko' ? 'ì½”íƒ€ë‚˜ AI ì „ìˆ  HUD ì—´ê¸°/ì ‘ê¸°' : 'Toggle Cortana AI HUD'}
+          >
+            <Cpu size={13} className="text-indigo-400" />
+            <span>
+              {showCortanaHud
+                ? (language === 'ko' ? '[ â–² ì½”íƒ€ë‚˜ AI ì „ìˆ  HUD ì ‘ê¸° ]' : '[ â–² COLLAPSE CORTANA AI HUD ]')
+                : (language === 'ko' ? '[ â–¼ ì½”íƒ€ë‚˜ AI ì „ìˆ  ë¶„ì„ì°½ (ìŠ¤í¬ë¡¤í•˜ì—¬ í™•ì¸) ]' : '[ â–¼ CORTANA AI TACTICAL HUD (SCROLL DOWN) ]')}
+            </span>
+          </button>
+
+          <AnimatePresence>
+            {showCortanaHud && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+                className="w-full mt-3 overflow-hidden"
+              >
+                {/* AI Tactical Cortana Operator HUD */}
+                <div className="bg-slate-950/90 border border-indigo-500/40 rounded-3xl p-4 shadow-[0_0_30px_rgba(99,102,241,0.2)] backdrop-blur-md relative overflow-hidden flex flex-col md:flex-row gap-4">
+                  
+                  {/* Hologram Grid Overlay */}
+                  <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)+50%,rgba(0,0,0,0.2)+50%),linear-gradient(90deg,rgba(99,102,241,0.04),rgba(0,0,0,0),rgba(244,63,94,0.04))] bg-[size:100%_4px,6px_100%] z-10 opacity-40 animate-pulse" />
+                  
+                  {/* Left: CORTANA ACTIVE HOLOGRAM AVATAR */}
+                  <div className="flex items-center gap-3 border-b md:border-b-0 md:border-r border-indigo-500/10 pb-3 md:pb-0 md:pr-4 shrink-0 justify-center">
+                    <div className="relative w-16 h-16 rounded-full flex items-center justify-center bg-indigo-950/40 border border-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.3)]">
+                      {/* Rotating External Ring */}
+                      <motion.div 
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-0 border-t-2 border-b-2 border-indigo-400/40 rounded-full scale-110"
+                      />
+                      <motion.div 
+                        animate={{ rotate: -360 }}
+                        transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-1 border-r-2 border-l-2 border-indigo-300/30 rounded-full border-dashed scale-105"
+                      />
+                      {/* Core Avatar Pulsing */}
+                      <motion.div 
+                        animate={{ 
+                          scale: [1, 1.12, 1],
+                          boxShadow: ["0 0 10px rgba(99,102,241,0.4)", "0 0 25px rgba(99,102,241,0.7)", "0 0 10px rgba(99,102,241,0.4)"] 
+                        }}
+                        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                        className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-600 via-indigo-400 to-indigo-900 flex items-center justify-center relative overflow-hidden"
+                      >
+                        <Cpu size={20} className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] animate-pulse" />
+                      </motion.div>
+                      {/* AI Voice Activity Waveforms */}
+                      <div className="absolute -bottom-1 flex gap-0.5 items-end justify-center w-full">
+                        <motion.span animate={{ height: [4, 12, 4] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.1 }} className="w-1 bg-indigo-400 rounded-full" />
+                        <motion.span animate={{ height: [6, 16, 6] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.3 }} className="w-1 bg-indigo-300 rounded-full" />
+                        <motion.span animate={{ height: [4, 14, 4] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.2 }} className="w-1 bg-indigo-400 rounded-full" />
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="text-[11px] font-black text-indigo-400 tracking-wider">CORTANA.AI</h4>
+                      <p className="text-[7px] text-slate-500 font-bold tracking-widest uppercase">TACTICAL_SYS_ACTIVE</p>
+                    </div>
+                  </div>
+
+                  {/* Middle Left: WIN PROBABILITY */}
+                  <div className="flex-1 min-w-[170px] flex flex-col justify-between border-b md:border-b-0 md:border-r border-indigo-500/10 pb-3 md:pb-0 md:pr-4">
+                    <div className="flex justify-between items-center text-[9px] font-black text-indigo-300 uppercase tracking-widest mb-1.5">
+                      <span className="flex items-center gap-1.5">
+                        <Activity size={10} className="text-indigo-400 animate-pulse" />
+                        {t('operator_hud_win_rate', language)}
+                      </span>
+                      <span className="font-mono text-indigo-200 bg-indigo-500/10 px-1.5 py-0.5 rounded shadow-sm">{winProbability}%</span>
+                    </div>
+                    <div className="w-full bg-slate-900 rounded-full h-3 border border-indigo-500/20 overflow-hidden p-[2px] shadow-inner">
+                      <motion.div 
+                        initial={{ width: '50%' }}
+                        animate={{ width: `${winProbability}%` }}
+                        className="h-full bg-gradient-to-r from-indigo-500 via-indigo-400 to-indigo-700 rounded-full"
+                        transition={{ type: 'spring', stiffness: 85, damping: 15 }}
+                      />
+                    </div>
+                    <p className="text-[8px] text-slate-500 leading-relaxed font-semibold">
+                      {language === 'ko' ? "* ì½”íƒ€ë‚˜ê°€ ì½¤ë³´ ë° ë°°ì¹˜ ë°ì´í„°ë¥¼ ì‹¤ì‹œê°„ ê²€ì • ì¤‘." : "* Cortana checking board placements & combos."}
+                    </p>
+                  </div>
+
+                  {/* Middle Right: THREAT DETECTOR */}
+                  <div className="flex-1 min-w-[200px] flex flex-col justify-between border-b md:border-b-0 md:border-r border-indigo-500/10 pb-3 md:pb-0 md:pr-4">
+                    <div className="text-[9px] font-black text-rose-400 uppercase tracking-widest flex items-center gap-1.5 mb-1.5">
+                      <TargetIcon size={10} className="animate-spin-slow text-rose-400" />
+                      {t('operator_hud_threat', language)}
+                    </div>
+                    {threatTarget ? (
+                      <div className="flex items-center gap-2.5 bg-rose-950/20 border border-rose-500/20 rounded-xl p-1.5">
+                        <div className="w-7 h-7 rounded bg-slate-900 flex items-center justify-center font-black text-[10px] text-rose-400 border border-rose-500/20">
+                          {threatTarget.power}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[9px] font-black text-slate-300 truncate">{getFormattedCardName(threatTarget, language)}</div>
+                          <div className="text-[7px] text-slate-500 truncate">
+                            {threatTarget.ability 
+                              ? (typeof threatTarget.ability === 'object' 
+                                  ? `Ability: ${language === 'ko' ? (threatTarget.ability.description_ko || threatTarget.ability.type) : (threatTarget.ability.description_en || threatTarget.ability.type)}`
+                                  : `Ability: ${threatTarget.ability}`)
+                              : 'Standard Threat Class'}
+                          </div>
+                        </div>
+                        <span className="text-[7px] font-black text-rose-400 animate-pulse bg-rose-950/50 px-1.5 py-0.5 rounded border border-rose-500/30">LOCKED</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center h-10 border border-dashed border-slate-800 rounded-xl text-[8px] text-slate-600">
+                        {language === 'ko' ? "ìœ„í˜‘ ê°ì§€ ëŒ€ê¸° ì¤‘..." : "Waiting for threats..."}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Right: LOGS & INTERACTIVE PROMPT POPUPS */}
+                  <div className="flex-[1.3] min-w-[240px] flex flex-col justify-between relative">
+                    <div className="text-[9px] font-black text-indigo-300 uppercase tracking-widest flex items-center justify-between mb-1.5">
+                      <span className="flex items-center gap-1.5">
+                        <Terminal size={10} className="text-indigo-400" />
+                        {t('operator_hud_log', language)}
+                      </span>
+                      <span className="text-[7px] opacity-40">STANCE: {adaptiveStrategy.toUpperCase()}</span>
+                    </div>
+                    <div className="bg-slate-950 p-2 rounded-xl border border-indigo-500/10 min-h-[48px] max-h-[60px] overflow-y-auto space-y-0.5 scrollbar-hide">
+                      {operatorLogs.length > 0 ? (
+                        operatorLogs.slice(0, 3).map((log, idx) => (
+                          <div key={idx} className={cn("text-[8.5px] font-semibold leading-normal flex items-start gap-1", idx === 0 ? "text-indigo-300" : "text-slate-600")}>
+                            <span className="text-indigo-500 font-black">{">"}</span>
+                            <span className="break-all">{log}</span>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-[8px] text-slate-600 italic">No activity logs.</div>
+                      )}
+                    </div>
+
+                    {/* Cortana Voice Question Prompt Container */}
+                    <AnimatePresence>
+                      {operatorPrompt && (
+                        <motion.div 
+                          initial={{ opacity: 0, scale: 0.96, y: 8 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.96, y: 8 }}
+                          className="absolute inset-0 bg-slate-950/95 border border-indigo-400/80 rounded-xl p-2 pr-14 md:pr-2 flex flex-col justify-between z-30 shadow-2xl shadow-indigo-500/30"
+                        >
+                          <div className="text-[8.5px] font-black text-indigo-200 animate-pulse flex items-center gap-1.5">
+                            <Terminal size={9} className="text-indigo-400" />
+                            {operatorPrompt.question}
+                          </div>
+                          <div className="flex gap-1.5 mt-1.5">
+                            {operatorPrompt.options.map((opt, oIdx) => (
+                              <button
+                                key={oIdx}
+                                onClick={() => handleSelectOperatorTactic(opt.strategy || 'balanced')}
+                                className="flex-1 bg-indigo-950 hover:bg-indigo-900 border border-indigo-500/30 hover:border-indigo-400 text-[8px] font-black py-1 px-0.5 rounded-lg text-indigo-300 transition-all text-center tracking-tighter"
+                              >
+                                {opt.label}
+                              </button>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
+
+      <AnimatePresence>
+        {gameOver && (
+          <motion.div
+            key="game-over-summary-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 bg-black/90 backdrop-blur-xl z-[200] flex flex-col items-center justify-center p-4 md:p-8 text-center"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              className="bg-slate-900/95 rounded-3xl p-6 md:p-10 max-w-md w-full space-y-6 shadow-2xl border border-slate-800 relative overflow-hidden text-white backdrop-blur-xl"
+            >
+              {/* Decorative Background Elements */}
+              <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-red-500" />
+              
+              <div className="space-y-2">
+                <motion.div
+                  initial={{ rotate: -5, scale: 0 }}
+                  animate={{ rotate: 0, scale: 1 }}
+                  transition={{ type: "spring", damping: 12 }}
+                >
+                  <h2 className={cn(
+                    "text-5xl md:text-6xl font-black tracking-tighter uppercase drop-shadow-md",
+                    winner === 'player' ? "text-amber-500" : 
+                    winner === 'ai' ? "text-rose-500" : 
+                    "text-gray-400"
+                  )}>
+                    {winner === 'player' ? t('victory', language) : winner === 'ai' ? t('defeat', language) : t('draw', language)}
+                  </h2>
+                </motion.div>
+                <p className="text-[9px] font-bold opacity-30 tracking-[0.3em] uppercase">Combat_Session_Terminal</p>
+                
+                {/* ì „íˆ¬ íŒ¨ë°° ë²„ê±°ìš´ ìƒëŒ€ ë§Œë‚¬ì„ ë•Œ 5ì´ˆ ìë™ ë‹«í˜ ì•ˆë‚´ ë±ƒì§€ */}
+                {winner === 'ai' && defeatExitCountdown !== null && (
+                  <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="mt-2 py-1.5 px-4 bg-rose-950/90 border border-rose-500/50 rounded-xl text-rose-200 text-xs font-black uppercase tracking-wider animate-pulse flex items-center justify-center gap-2 shadow-md font-mono"
+                  >
+                    <ShieldAlert size={14} className="text-rose-400 shrink-0" />
+                    <span>
+                      {language === 'ko'
+                        ? (isStoryActive || isBossActive || isDungeonActive || isTournamentActive
+                            ? `[ âš ï¸ ë²„ê±°ìš´ ìƒëŒ€ íŒ¨ë°° ] ${defeatExitCountdown}ì´ˆ í›„ ìë™ìœ¼ë¡œ ì´ì „ í™”ë©´ìœ¼ë¡œ ëŒì•„ê°‘ë‹ˆë‹¤...`
+                            : `[ âš ï¸ ë²„ê±°ìš´ ìƒëŒ€ íŒ¨ë°° ] ${defeatExitCountdown}ì´ˆ í›„ ìë™ìœ¼ë¡œ ë¡œë¹„ë¡œ ì´ë™í•©ë‹ˆë‹¤...`)
+                        : (isStoryActive || isBossActive || isDungeonActive || isTournamentActive
+                            ? `[ âš ï¸ Tough Opponent Defeat ] Auto closing in ${defeatExitCountdown}s...`
+                            : `[ âš ï¸ Tough Opponent Defeat ] Auto returning to lobby in ${defeatExitCountdown}s...`)}
+                    </span>
+                  </motion.div>
+                )}
+                
+                {/* ì••ë„ì  ìŠ¹ë¦¬ ë° ì—°ìŠ¹ ë±ƒì§€ ë…¸ì¶œ ì˜ì—­ */}
+                {winner === 'player' && (showOverwhelmingEffect || showStreakEffect) && (
+                  <div className="flex flex-col gap-2 items-center justify-center mt-2 relative z-10">
+                    {showOverwhelmingEffect && (
+                      <motion.div
+                        initial={{ scale: 0.5, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: "spring", stiffness: 200, damping: 10 }}
+                        className="px-4 py-1.5 bg-gradient-to-r from-amber-500 to-rose-500 text-white font-bold text-xs uppercase rounded-full shadow-lg shadow-amber-500/20 flex items-center gap-1.5 animate-pulse"
+                      >
+                        <Sparkles size={12} className="animate-spin text-white" />
+                        <span>{t('overwhelming_victory', language)} (+20% SNS)</span>
+                        <Sparkles size={12} className="animate-spin text-white" />
+                      </motion.div>
+                    )}
+                    {showStreakEffect && (
+                      <motion.div
+                        initial={{ scale: 0.5, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: "spring", stiffness: 200, damping: 10, delay: 0.15 }}
+                        className="px-4 py-1.5 bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-bold text-xs uppercase rounded-full shadow-lg shadow-indigo-500/20 flex items-center gap-1.5"
+                      >
+                        <Zap size={12} className="animate-bounce text-yellow-300 fill-current" />
+                        <span>{t('streak_victory_bonus', language).replace('{streak}', String(currentWinStreakDisplay))} (+20% SNS)</span>
+                        <Zap size={12} className="animate-bounce text-yellow-300 fill-current" />
+                      </motion.div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-indigo-950/20 p-4 rounded-2xl border border-indigo-500/20 shadow-sm">
+                  <div className="text-[8px] font-bold text-indigo-400 uppercase mb-1">{t('user', language)}</div>
+                  <div className="text-4xl font-extrabold italic text-indigo-400">
+                    {battleType === 'matgo' ? matgoScores.player : boardScore.player}
+                  </div>
+                </div>
+                <div className="bg-rose-950/20 p-4 rounded-2xl border border-rose-500/20 shadow-sm">
+                  <div className="text-[8px] font-bold text-rose-400 uppercase mb-1">{t('ai', language)}</div>
+                  <div className="text-4xl font-extrabold italic text-rose-400">
+                    {battleType === 'matgo' ? matgoScores.ai : boardScore.ai}
+                  </div>
+                </div>
+              </div>
+
+              {/* Battle Result Summary Panel (SNS points gained, Total damage dealt/received, Cards leveled up) */}
+              <BattleResultPanel
+                result={winner === 'player' ? 'win' : winner === 'ai' ? 'loss' : 'draw'}
+                snsEarned={rewardEarned}
+                totalDamageDealt={totalDamageDealt > 0 ? totalDamageDealt : (boardScore.player * 85 + (winner === 'player' ? 320 : 120))}
+                totalDamageReceived={totalDamageReceived > 0 ? totalDamageReceived : (boardScore.ai * 85 + (winner === 'ai' ? 320 : 120))}
+                leveledUpCards={leveledUpCards}
+                allDeckCardsProgress={allDeckCardsProgress}
+                usedCards={playerDeck}
+                battleType={battleType}
+                language={language}
+                isSpeedAttackBonus={isSpeedAttackWin}
+                isUnderdogBonus={underdogBountyClaimed}
+                isGoblinBonus={goblinCaptured}
+                isManaSpringBonus={manaSpringClaimed}
+                isElementalComboBonus={hasTriggeredElementalCombo}
+                isIroncladBonus={isIroncladWin}
+                opponentName={lastOpponent?.name || (battleType === 'robot' ? 'AI ë¡œë´‡' : language === 'ko' ? 'ë¼ì´ë²Œ ì‚¬ë ¹ê´€' : 'Rival Commander')}
+                opponentAvatar={lastOpponent?.avatar}
+                opponentLevel={lastOpponent?.level || 15}
+                opponentMainCardTitle={opponentDeck[0]?.title || (language === 'ko' ? 'ì¹´ë‹¨ (SSR)' : 'Kadan (SSR)')}
+                onShareToCommunity={() => setShowBattleShareTemplate(true)}
+                onOpenDetailedSummary={() => setShowPostBattleSummaryModal(true)}
+              />
+
+              {/* Match Analysis Section */}
+              {battleType !== 'matgo' && (
+                <div className="bg-slate-950/60 border border-slate-800 rounded-2xl p-4 shadow-sm text-left space-y-3">
+                <div className="flex justify-between items-center border-b border-slate-800 pb-2">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Match_Analysis</span>
+                  <span className={cn(
+                    "text-[9px] font-semibold px-2.5 py-1 rounded-full border",
+                    winner === 'player' ? "bg-indigo-950/30 border-indigo-500/30 text-indigo-300" : winner === 'ai' ? "bg-rose-950/30 border-rose-500/30 text-rose-300" : "bg-slate-900 border-slate-700 text-slate-350"
+                  )}>
+                    {(() => {
+                      const pScore = boardScore.player;
+                      const aScore = boardScore.ai;
+                      const diff = Math.abs(pScore - aScore);
+                      if (winner === 'draw') return "STALEMATE";
+                      if (diff >= 5) return "FLAWLESS_VICTORY";
+                      if (diff >= 3) return "MAJOR_CONTROL";
+                      return "NEURAL_OVERRIDE";
+                    })()}
+                  </span>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex justify-between text-[10px] font-bold text-slate-300">
+                    <span className="opacity-60 uppercase">Power_Balance:</span>
+                    <span className="font-bold">
+                      {boardScore.player} PTS ({Math.round((boardScore.player / Math.max(1, boardScore.player + boardScore.ai)) * 100)}%) VS {boardScore.ai} PTS ({Math.round((boardScore.ai / Math.max(1, boardScore.player + boardScore.ai)) * 100)}%)
+                    </span>
+                  </div>
+                  <div className="relative w-full h-4 bg-slate-950 rounded-full overflow-hidden flex border border-slate-850">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: `${(boardScore.player / Math.max(1, boardScore.player + boardScore.ai)) * 100}%` }}
+                      className="h-full bg-indigo-500 flex items-center justify-end px-2"
+                    >
+                      <span className="text-[7px] text-white font-bold italic">YOU</span>
+                    </motion.div>
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: `${(boardScore.ai / Math.max(1, boardScore.player + boardScore.ai)) * 100}%` }}
+                      className="h-full bg-rose-500 flex items-center justify-start px-2"
+                    >
+                      <span className="text-[7px] text-white font-bold italic text-right w-full">AI</span>
+                    </motion.div>
+                  </div>
+                  <div className="flex justify-between text-[9px] font-bold opacity-60 text-slate-300">
+                    <span>BOARD_DOMINANCE:</span>
+                    <span>
+                      {((winner === 'player' ? boardScore.player : boardScore.ai) / 9 * 100).toFixed(0)}%
+                    </span>
+                  </div>
+                  <div className="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden flex border border-slate-850">
+                    <div 
+                      className="h-full bg-indigo-500" 
+                      style={{ width: `${(boardScore.player / 9) * 100}%` }}
+                    />
+                    <div 
+                      className="h-full bg-rose-500" 
+                      style={{ width: `${(boardScore.ai / 9) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+              )}
+
+              {/* Synergy Analysis â€” ì„¸ë ¥ ìƒì„± ë° ì¥ë¹„ ì‹œë„ˆì§€ ìš”ì•½ */}
+              {battleType !== 'matgo' && playerDeck.length > 0 && opponentDeck.length > 0 && (
+                <div className="bg-slate-950/60 border border-slate-800 rounded-2xl p-4 shadow-sm text-left space-y-3">
+                  <div className="flex justify-between items-center border-b border-slate-800 pb-2">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                      {t('battle_result_synergy_header', language)}
+                    </span>
+                    <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-300">
+                      ANALYSIS
+                    </span>
+                  </div>
+                  <div className="space-y-2 text-[10px]">
+                    {(() => {
+                      const qteLabel = qteMatchSummary.successCount > 0 && qteMatchSummary.lastMultiplier
+                        ? t('synergy_qte_success', language, { multiplier: qteMatchSummary.lastMultiplier.toFixed(2) })
+                        : qteMatchSummary.attempted
+                        ? t('synergy_qte_failed', language)
+                        : t('synergy_qte_not_used', language);
+                      return (
+                        <div className="flex justify-between items-center">
+                          <span className="opacity-60">QTE</span>
+                          <span className={`font-bold ${qteMatchSummary.successCount > 0 ? 'text-emerald-400' : qteMatchSummary.attempted ? 'text-rose-400' : 'text-slate-400'}`}>
+                            {qteLabel}
+                          </span>
+                        </div>
+                      );
+                    })()}
+                    {/* ì„¸ë ¥ ìƒì„± */}
+                    {(() => {
+                      const playerRep = playerDeck[0];
+                      const opponentRep = opponentDeck[0];
+                      if (!playerRep || !opponentRep) return null;
+                      const synergySummary = calculateBattleSynergy(playerRep, opponentRep, playerRep.equipment);
+                      const advantage = synergySummary.factionAdvantage;
+                      const icon = FACTION_ADVANTAGE_ICONS[advantage];
+                      const colorClass = FACTION_ADVANTAGE_COLORS[advantage];
+                      const label = advantage === 'advantage'
+                        ? t('matchup_advantage', language)
+                        : advantage === 'disadvantage'
+                        ? t('matchup_disadvantage', language)
+                        : t('matchup_neutral', language);
+                      return (
+                        <div className="flex justify-between items-center">
+                          <span className="opacity-60">{t('synergy_faction_bonus', language)}</span>
+                          <span className={`font-bold ${colorClass}`}>
+                            {icon} {label} Â· x{synergySummary.factionMultiplier.toFixed(2)}
+                          </span>
+                        </div>
+                      );
+                    })()}
+                    {/* ì¥ë¹„ ì‹œë„ˆì§€ */}
+                    {(() => {
+                      const rep = playerDeck[0];
+                      if (!rep?.equipment) return null;
+                      const bonus = getEquipmentSetBonus(rep.equipment);
+                      if (!bonus.setName) return (
+                        <div className="flex justify-between items-center">
+                          <span className="opacity-60">{t('synergy_equipment_bonus', language)}</span>
+                          <span className="font-bold text-slate-400">{t('synergy_no_bonus', language)}</span>
+                        </div>
+                      );
+                      return (
+                        <div className="flex justify-between items-center">
+                          <span className="opacity-60">{t('synergy_equipment_bonus', language)}</span>
+                          <span className="font-bold text-amber-400">
+                            {EQUIPMENT_SET_ICONS[bonus.setName] || ''} {bonus.setName} ({bonus.bonusCount}pc) +{bonus.powerBonus}âš¡
+                          </span>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                </div>
+              )}
+
+              {/* ğŸ‰ Reward Celebration â€” ìŠ¹ë¦¬ ë³´ìƒ í”¼ë“œë°± ê°•í™” */}
+              {!isPlayground && rewardEarned > 0 ? (
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.3, type: "spring", damping: 12 }}
+                  className="relative overflow-hidden rounded-2xl p-5 flex flex-col items-center gap-3"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-b from-amber-500/10 to-transparent border border-amber-500/30 rounded-2xl" />
+                  {/* Particle burst effect */}
+                  {[...Array(8)].map((_, i) => {
+                    const angle = (i / 8) * 360;
+                    const rad = (angle * Math.PI) / 180;
+                    return (
+                      <motion.div
+                        key={`rp-${i}`}
+                        initial={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+                        animate={{ opacity: 0, x: Math.cos(rad) * 55, y: Math.sin(rad) * 55, scale: 0 }}
+                        transition={{ duration: 1.2, delay: 0.5 + i * 0.05, ease: "easeOut" }}
+                        className="absolute top-1/2 left-1/2 w-1.5 h-1.5 rounded-full bg-amber-400"
+                      />
+                    );
+                  })}
+                  {/* Coin spin animation */}
+                  <motion.div
+                    animate={{ rotateY: [0, 360] }}
+                    transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
+                    className="relative z-10 w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/40"
+                  >
+                    <span className="text-xl">ğŸª™</span>
+                  </motion.div>
+                  {/* Reward amount with spring animation */}
+                  <motion.div
+                    key={rewardEarned}
+                    initial={{ y: 15, opacity: 0, scale: 0.6 }}
+                    animate={{ y: 0, opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.5, type: "spring", stiffness: 200, damping: 15 }}
+                    className="relative z-10 text-3xl font-black text-amber-400 drop-shadow-[0_0_15px_rgba(251,191,36,0.4)]"
+                  >
+                    +{rewardEarned}<span className="text-sm font-bold ml-1 opacity-80">SNS</span>
+                  </motion.div>
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.7 }}
+                    className="relative z-10 text-[9px] font-semibold text-amber-300/60 uppercase tracking-[0.2em]"
+                  >
+                    {t('sns_reward', language)}
+                  </motion.p>
+                </motion.div>
+              ) : (
+                <motion.div
+                  initial={{ x: -50, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="w-full rounded-2xl p-4 flex items-center justify-between bg-slate-800/50 border border-slate-700/50 text-slate-400"
+                >
+                  <div className="flex items-center gap-2">
+                    <Zap size={20} className="opacity-40" />
+                    <span className="text-sm font-bold uppercase tracking-tight">
+                      {isPlayground ? t('playground', language) : t('reward', language)}
+                    </span>
+                  </div>
+                  <div className="text-2xl font-extrabold opacity-50">
+                    {rewardEarned >= 0 ? `+${rewardEarned}` : rewardEarned} <span className="text-xs font-semibold">SNS</span>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Story Battle Result â€” ìŠ¹ë¦¬/íŒ¨ë°° ì‹œ ìŠ¤í† ë¦¬ ì§„í–‰ ë° ë³´ìƒ ì•ˆë‚´ */}
+              {!isPlayground && (
+                <StoryBattleResult
+                  result={winner === 'player' ? 'win' : winner === 'ai' ? 'loss' : 'draw'}
+                  language={language}
+                  battleCompleted={currentStoryBattleCompleted}
+                  rewardClaimed={currentStoryRewardClaimed}
+                  storyProgressCount={storyProgressCount}
+                  totalStoryEpisodes={totalStoryEpisodes}
+                  showRewardAction={Boolean(currentStoryBattleContext)}
+                  onClaimReward={currentStoryBattleContext ? () => claimStoryBattleReward(currentStoryBattleContext.rewardId) : undefined}
+                  episodeTitle={weeklyWebtoon ? (language === 'ko' ? weeklyWebtoon.titleKo : weeklyWebtoon.titleEn) : undefined}
+                  onNavigateWebtoon={() => setView?.('webtoon')}
+                />
+              )}
+
+              {/* Row 30: Battle Victory EXP Gauge Animation */}
+              {winner === 'player' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="bg-slate-950/80 border border-indigo-500/30 rounded-2xl p-4 shadow-md text-left space-y-3"
+                >
+                  <div className="flex justify-between items-center border-b border-slate-800/80 pb-2">
+                    <div className="flex items-center gap-2">
+                      <Sparkles size={14} className="text-yellow-400 animate-pulse" />
+                      <span className="text-[11px] font-black uppercase tracking-wider text-slate-200">
+                        {language === 'ko' ? 'ì „íˆ¬ ê²½í—˜ì¹˜ (EXP)' : 'BATTLE EXPERIENCE'}
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-indigo-950/70 border border-indigo-500/40 text-indigo-300">
+                      +150 EXP
+                    </span>
+                  </div>
+
+                  {/* Player EXP Progress Bar */}
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between items-center text-[10px] font-mono">
+                      <span className="text-slate-400 font-bold">
+                        {language === 'ko' ? 'ì‚¬ë ¹ê´€ ë ˆë²¨' : 'Commander Lv'}.{Math.floor((calculatedTotalPower || 1000) / 500) + 1}
+                      </span>
+                      <span className="text-indigo-400 font-bold">
+                        {((calculatedTotalPower || 1000) % 500)} / 500 EXP
+                      </span>
+                    </div>
+                    <div className="relative w-full h-3 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                      <motion.div
+                        initial={{ width: "35%" }}
+                        animate={{ width: "72%" }}
+                        transition={{ duration: 1.4, delay: 0.6, ease: "easeOut" }}
+                        className="h-full bg-gradient-to-r from-indigo-600 to-cyan-400 rounded-full relative"
+                      >
+                        <div className="absolute inset-0 bg-white/20 animate-pulse" />
+                      </motion.div>
+                    </div>
+                  </div>
+
+                  {/* Hero Card EXP gain */}
+                  {playerDeck[0] && (
+                    <div className="flex items-center justify-between pt-1 text-[10px] text-slate-300 font-mono">
+                      <div className="flex items-center gap-1.5 truncate">
+                        <span className="text-amber-400 font-bold">[{getFormattedCardName(playerDeck[0], language)}]</span>
+                        <span className="text-slate-400">Card EXP</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="text-emerald-400 font-bold">+85 EXP</span>
+                        <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[8px] font-black border border-amber-500/40 animate-pulse">
+                          LEVEL UP!
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+
+              {/* Item 53: ìƒëŒ€ë°© ìœ ì € ì¹œêµ¬ ì‹ ì²­ & í”„ë¡œí•„ ì¡°íšŒ í€µ ë²„íŠ¼ */}
+              <div className="flex items-center justify-center gap-2 pt-2 border-t border-slate-800/80">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const oppName = pvpOpponent?.name || 'Opponent Hero';
+                    const oppUid = pvpOpponent?.id || 'opp-' + Date.now();
+                    try {
+                      const raw = localStorage.getItem('hero_friends');
+                      const friendsList = raw ? JSON.parse(raw) : [];
+                      if (!friendsList.some((f: any) => f.uid === oppUid)) {
+                        friendsList.push({
+                          uid: oppUid,
+                          name: oppName,
+                          battleCount: 1,
+                          lastBattleTime: Date.now(),
+                          avatar: ''
+                        });
+                        localStorage.setItem('hero_friends', JSON.stringify(friendsList));
+                      }
+                      triggerAlert(
+                        language === 'ko' ? `${oppName}ë‹˜ì—ê²Œ ì¹œêµ¬ ì‹ ì²­ì„ ë³´ëƒˆìŠµë‹ˆë‹¤!` : `Sent friend request to ${oppName}!`,
+                        language === 'ko' ? 'ì¹œêµ¬ ì‹ ì²­ ì™„ë£Œ' : 'Friend Request Sent'
+                      );
+                    } catch (e) {
+                      console.error(e);
+                    }
+                  }}
+                  className="px-3 py-2 bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border border-indigo-500/40 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
+                >
+                  <UserPlus size={14} />
+                  {language === 'ko' ? 'ì¹œêµ¬ ì‹ ì²­' : 'Add Friend'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const oppName = pvpOpponent?.name || 'Opponent Hero';
+                    const oppPower = opponentTotalPower || pvpOpponent?.totalPower || 1280;
+                    triggerAlert(
+                      language === 'ko'
+                        ? `[ìƒëŒ€ í”„ë¡œí•„ ìš”ì•½]\në‹‰ë„¤ì„: ${oppName}\nì „íˆ¬ë ¥: ${oppPower.toLocaleString()} PW\nëŒ€í‘œ ì¹´ë‹¨/ì „ë ¥: Level 12 (SR+)\nì‹œì¦Œ ì„±ì : 24ìŠ¹ 5íŒ¨ (ìŠ¹ë¥  82.7%)\nì†Œì† ê¸¸ë“œ: [S] í˜ëª…ë‹¨`
+                        : `[Opponent Profile Summary]\nName: ${oppName}\nPower: ${oppPower.toLocaleString()} PW\nLeader Card: Level 12 (SR+)\nSeason Record: 24W 5L (82.7% Win Rate)\nGuild: [S] Revolution`,
+                      language === 'ko' ? 'ìƒëŒ€ í”„ë¡œí•„ ì¡°íšŒ' : 'Inspect Profile'
+                    );
+                  }}
+                  className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
+                >
+                  <Eye size={14} />
+                  {language === 'ko' ? 'í”„ë¡œí•„ ì¡°íšŒ' : 'Inspect Profile'}
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-2.5 pt-2">
+                {/* Item 42: ì „íˆ¬ ìŠ¹ë¦¬ í™”ë©´ ë‚´ 'ë‹¤ìŒ ìŠ¤í…Œì´ì§€ ë°”ë¡œ ì§„í–‰ (Next Stage)' ì—°ì† í”Œë ˆì´ ë²„íŠ¼ */}
+                {winner === 'player' && (
+                  <button 
+                    onClick={() => {
+                      setShowBattleShareTemplate(false);
+                      setShowOverwhelmingEffect(false);
+                      setShowStreakEffect(false);
+                      handleRematch();
+                    }}
+                    className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black uppercase tracking-wider active:scale-95 transition-all rounded-2xl shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 cursor-pointer border border-emerald-400/30"
+                  >
+                    <Play size={18} fill="currentColor" />
+                    {language === 'ko' ? 'â–¶ ë‹¤ìŒ ìŠ¤í…Œì´ì§€ ë°”ë¡œ ì§„í–‰ (Next Stage)' : 'â–¶ Proceed to Next Stage'}
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => setShowBattleShareTemplate(true)}
+                  className="w-full py-3 font-bold uppercase tracking-wider active:scale-95 transition-all rounded-2xl flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/15 border border-white/10 shadow-lg shadow-black/20 text-xs"
+                >
+                  <Share2 size={16} />
+                  {t('share_template_battle_result', language)}
+                </button>
+                <button 
+                  onClick={() => {
+                    setDefeatExitCountdown(null);
+                    handleExitMatch(false);
+                    setShowBattleShareTemplate(false);
+                    setShowOverwhelmingEffect(false);
+                    setShowStreakEffect(false);
+                    setCurrentWinStreakDisplay(0);
+                  }}
+                  className="w-full py-3 font-bold uppercase tracking-wider active:scale-95 transition-all rounded-2xl flex items-center justify-center gap-2 bg-slate-950 text-white hover:bg-slate-900 border border-slate-850 shadow-lg shadow-black/30 text-xs cursor-pointer"
+                >
+                  <ChevronLeft size={16} />
+                  {winner === 'ai' && defeatExitCountdown !== null
+                    ? (language === 'ko'
+                        ? (isStoryActive || isBossActive || isDungeonActive || isTournamentActive
+                            ? `ëŒì•„ê°€ê¸° (${defeatExitCountdown}ì´ˆ)`
+                            : `ë¡œë¹„ë¡œ ëŒì•„ê°€ê¸° (${defeatExitCountdown}ì´ˆ)`)
+                        : (isStoryActive || isBossActive || isDungeonActive || isTournamentActive
+                            ? `Back (${defeatExitCountdown}s)`
+                            : `Back to Lobby (${defeatExitCountdown}s)`))
+                    : (battleType === 'pvp_attack' 
+                        ? (pvpExitCountdown !== null 
+                            ? `${t('exit_battle', language)} (${pvpExitCountdown}s)` 
+                            : t('exit_battle', language)) 
+                        : t('back_to_lobby', language))}
+                </button>
+                {!isBossActive && !isStoryActive && !isDungeonActive && !isTournamentActive && winner !== 'player' && (
+                  <>
+                    <button 
+                       onClick={() => {
+                         setShowBattleShareTemplate(false);
+                         handleRematch();
+                       }}
+                       className="w-full bg-indigo-600 text-white py-3 font-bold uppercase tracking-wider hover:bg-indigo-700 active:scale-95 transition-all rounded-2xl shadow-lg shadow-indigo-600/20 text-xs flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <RotateCcw size={15} />
+                      <span>
+                        {rematchCountdown !== null
+                          ? t('rematch_countdown', language)
+                              .replace('{seconds}', String(rematchCountdown))
+                              .replace('{text}', t('rematch', language))
+                          : t('rematch', language)}
+                      </span>
+                    </button>
+                    {setView && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDefeatExitCountdown(null);
+                          handleExitMatch(false);
+                          setShowBattleShareTemplate(false);
+                          setShowOverwhelmingEffect(false);
+                          setShowStreakEffect(false);
+                          setCurrentWinStreakDisplay(0);
+                          setView('deck');
+                          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                        }}
+                        className="w-full bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/40 py-3 font-bold uppercase tracking-wider active:scale-95 transition-all rounded-2xl shadow-lg text-xs flex items-center justify-center gap-2 cursor-pointer"
+                      >
+                        <Sliders size={15} />
+                        <span>{language === 'ko' ? 'ë± í¸ì§‘í•˜ëŸ¬ ê°€ê¸°' : 'Edit Deck'}</span>
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+
+              <div className="pt-4 flex justify-between items-center opacity-25 text-[8px] font-sans font-semibold text-slate-400">
+                 <span>TX_ID: 0x{Math.random().toString(16).slice(2, 10).toUpperCase()}</span>
+                 <span>SECURE_SYNC_COMPLETE</span>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {showBattleShareTemplate && (
+          <ShareTemplateCard
+            templateType="battle-result"
+            language={language}
+            totalPower={matchInfo?.playerPower ?? calculatedTotalPower}
+            opponentPower={matchInfo?.opponentPower ?? opponentTotalPower ?? lastOpponent?.totalPower ?? 0}
+            battleResult={winner === 'player' ? 'win' : winner === 'ai' ? 'loss' : 'draw'}
+            lowSpecMode={lowSpecMode}
+            onClose={() => setShowBattleShareTemplate(false)}
+            showToast={(msg) => triggerAlert(msg)}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {isDeckPreviewing && (
+          <motion.div
+            key="deck-preview-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/95 backdrop-blur-2xl z-[300] flex flex-col items-center justify-center p-6 text-center"
+          >
+            <div className="absolute top-0 left-0 w-full p-4 md:p-8 flex justify-between items-start">
+              <div className="flex flex-col items-start gap-1">
+                <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest italic">PLAYER_IDENTIFIED</span>
+                <h2 className="text-xl md:text-2xl font-black text-white italic tracking-tighter uppercase truncate max-w-[150px] md:max-w-none">
+                  {effectiveUser?.displayName || effectiveUser?.name || 'YOU'}
+                </h2>
+              </div>
+              <div className="flex flex-col items-end gap-1">
+                <span className="text-[10px] font-black text-red-500 uppercase tracking-widest italic">OPPONENT_LOCKED</span>
+                <h2 className="text-xl md:text-2xl font-black text-white italic tracking-tighter uppercase truncate max-w-[150px] md:max-w-none">
+                  {lastOpponent?.name || 'ENEMY'}
+                </h2>
+              </div>
+            </div>
+
+            <div className="space-y-8 md:space-y-12 w-full max-w-4xl">
+              <div className="space-y-4">
+                <div className="flex items-center justify-center gap-3">
+                   <div className="h-px bg-white/20 w-12" />
+                   <h3 className="text-white text-xs font-black uppercase tracking-[0.5em]">{t('opponent_deck_preview', language)}</h3>
+                   <div className="h-px bg-white/20 w-12" />
+                </div>
+                
+                <div className="flex justify-center gap-2 md:gap-4 overflow-x-auto py-4 px-2 no-scrollbar">
+                  {opponentHand.map((card, i) => (
+                    <motion.div
+                      key={`preview-${card.id}-${i}`}
+                      initial={{ opacity: 0, y: 50, rotateY: 90 }}
+                      animate={{ opacity: 1, y: 0, rotateY: 0 }}
+                      transition={{ delay: i * 0.1, duration: 0.5, type: 'spring' }}
+                      className="w-[16vw] max-w-[80px] md:max-w-[120px] aspect-[5/7] rounded-lg shadow-[0_0_30px_rgba(220,38,38,0.2)] flex-shrink-0"
+                    >
+                      <CardItem card={card} isLocked={true} className="w-full h-full" lowSpecMode={lowSpecMode} />
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <motion.div 
+                  key={`countdown-${previewCountdown}`}
+                  initial={{ scale: 1.5, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="text-5xl md:text-7xl font-black text-white italic drop-shadow-[0_0_20px_rgba(255,255,255,0.5)]"
+                >
+                  {previewCountdown}
+                </motion.div>
+                <div className="text-[10px] md:text-[12px] font-black text-white/40 uppercase tracking-[1em] ml-[1em]">
+                  {t('starting_in', language).replace('{seconds}', previewCountdown.toString())}
+                </div>
+              </div>
+            </div>
+
+            {/* Decorative scanning circle */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+              className="absolute inset-0 pointer-events-none border-t-2 border-white/5 rounded-full scale-[1.2] md:scale-[1.5]"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ================================================================= */}
+      {/* CUSTOM CONFIRM MODAL - Neo-Brutalism Style                         */}
+      {/* ================================================================= */}
+      <AnimatePresence>
+        {confirmModal.isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+          >
+            <div
+              className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+              onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+            />
+            <motion.div
+              initial={{ scale: 0.85, y: 30 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.85, y: 30 }}
+              transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+              className="bg-slate-900 text-white w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl border border-slate-800 relative z-[10000] font-sans"
+            >
+              {/* Header */}
+              <div className="p-5 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-b border-orange-600/10 flex items-center gap-3">
+                <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
+                  <ShieldAlert size={20} className="text-white" />
+                </div>
+                <h2 className="text-base font-bold uppercase tracking-tight leading-tight">{confirmModal.title}</h2>
+              </div>
+
+              {/* Body */}
+              <div className="p-6">
+                <p className="text-sm font-semibold text-slate-300 leading-relaxed whitespace-pre-line">{confirmModal.message}</p>
+              </div>
+
+              {/* Actions */}
+              <div className="px-6 pb-6 flex gap-3">
+                <button
+                  onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+                  className="flex-1 py-3 bg-slate-950/80 border border-slate-800 text-slate-400 font-semibold text-sm rounded-xl hover:bg-slate-900 transition-colors duration-200"
+                >
+                  {language === 'ko' ? 'ì·¨ì†Œ' : 'Cancel'}
+                </button>
+                <button
+                  onClick={() => {
+                    confirmModal.onConfirm();
+                    setConfirmModal(prev => ({ ...prev, isOpen: false }));
+                  }}
+                  className="flex-1 py-3 bg-indigo-600 text-white font-semibold text-sm rounded-xl hover:bg-indigo-700 transition-colors duration-200 shadow-lg shadow-indigo-600/20"
+                >
+                  {language === 'ko' ? 'í™•ì¸' : 'Confirm'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Item 43: Insufficient Currency Alert Modal with Shop/Top-Up Link */}
+      <AnimatePresence>
+        {showInsufficientPopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/85 backdrop-blur-md z-[9999] flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-slate-950 rounded-3xl p-6 max-w-sm w-full border border-slate-800 shadow-2xl text-center space-y-6 font-sans text-white"
+            >
+              <div className="w-16 h-16 bg-red-950/30 rounded-full mx-auto flex items-center justify-center border border-red-500/30 shadow-md">
+                <ShieldAlert size={32} className="text-red-500 animate-pulse" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-lg font-black uppercase tracking-tight text-slate-100">
+                  {language === 'ko' ? 'ì¬í™”(SNS) ë¶€ì¡±' : 'INSUFFICIENT SNS'}
+                </h3>
+                <p className="text-xs font-semibold text-slate-400">
+                  {t('not_enough_sns', language)}
+                </p>
+              </div>
+              <div className="flex flex-col gap-2 pt-2">
+                <button 
+                  onClick={() => {
+                    setShowInsufficientPopup(false);
+                    handleExitMatch(false);
+                    setView?.('shop');
+                  }}
+                  className="w-full bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-slate-950 font-black py-3.5 uppercase tracking-wider text-xs rounded-xl shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <ShoppingBag size={16} />
+                  {language === 'ko' ? 'ìƒì /ì¶©ì „ì†Œ ì´ë™ (Go to Shop)' : 'Go to Shop / Top-Up'}
+                </button>
+                <button 
+                  onClick={() => setShowInsufficientPopup(false)}
+                  className="w-full bg-slate-900 hover:bg-slate-800 text-slate-300 py-2.5 font-bold uppercase tracking-wider text-xs rounded-xl cursor-pointer border border-white/5"
+                >
+                  {language === 'ko' ? 'ë‹«ê¸°' : 'Close'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Item 51: Hand Card Zoom Preview Modal */}
+      <AnimatePresence>
+        {previewHandCard && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-md z-[9999] flex items-center justify-center p-4"
+            onClick={() => setPreviewHandCard(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.85, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.85, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-sm w-full shadow-2xl text-white flex flex-col items-center gap-4 relative"
+            >
+              <button
+                onClick={() => setPreviewHandCard(null)}
+                className="absolute top-4 right-4 w-8 h-8 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-slate-400 hover:text-white"
+              >
+                <X size={18} />
+              </button>
+
+              <div className="w-[180px] aspect-[5/7] shadow-2xl rounded-xl overflow-hidden border-2 border-amber-500/50">
+                <CardItem card={previewHandCard} isLocked={false} customImage={customCardImage} />
+              </div>
+
+              <div className="w-full space-y-2 text-center">
+                <h3 className="text-lg font-black text-amber-400">
+                  {getFormattedCardName(previewHandCard, language)}
+                </h3>
+                <div className="flex justify-center gap-2 text-xs font-mono">
+                  <span className="bg-slate-800 px-2 py-0.5 rounded text-indigo-300">
+                    Element: {String((previewHandCard as any).element || 'WATER').toUpperCase()}
+                  </span>
+                  <span className="bg-slate-800 px-2 py-0.5 rounded text-amber-300">
+                    Rarity: {previewHandCard.rarity}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 italic px-2 pt-2 border-t border-slate-800">
+                  {(previewHandCard as any).lore_ko || (previewHandCard as any).lore || 'ê³ ëŒ€ì˜ í˜ì´ ê¹ƒë“  ì¹´ë“œì…ë‹ˆë‹¤.'}
+                </p>
+              </div>
+
+              <button
+                onClick={() => setPreviewHandCard(null)}
+                className="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors text-xs"
+              >
+                {language === 'ko' ? 'í™•ì¸' : 'Confirm'}
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {isSharing && (
+        <div className="fixed inset-0 bg-black/60 z-[99999] flex flex-col items-center justify-center">
+          <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin mb-4" />
+          <span className="text-white font-black text-sm uppercase tracking-widest">SHARING_POST...</span>
+        </div>
+      )}
+      {renderCustomAlertModal()}
+
+      {/* Skill Activation Overlay Banner (Item 54) */}
+      <SkillActivationOverlay
+        event={activeSkillEvent}
+        language={language}
+        onComplete={() => setActiveSkillEvent(null)}
+      />
+
+      {/* Texture Pre-Caching Loading Screen for Low-Spec Performance Optimization */}
+      {isTextureCaching && (
+        <div className="fixed inset-0 z-[999999] bg-[#fdfcfc] text-[#201d1d] font-mono flex flex-col items-center justify-center p-6 text-center select-none">
+          <div className="w-full max-w-sm bg-white border border-[#201d1d]/15 rounded-sm p-6 sm:p-8 shadow-sm">
+            <div className="inline-block text-[11px] font-bold tracking-widest uppercase bg-[#201d1d] text-[#fdfcfc] px-2.5 py-1 rounded-sm mb-3">
+              [GRAPHICS PRE-CACHE]
+            </div>
+            <h2 className="text-sm sm:text-base font-extrabold text-[#201d1d] mb-1">
+              {language === 'ko' ? 'ì¹´ë“œ ì´ë¯¸ì§€ ë©”ëª¨ë¦¬ ìºì‹± ì¤‘...' : 'Pre-caching Card Graphics...'}
+            </h2>
+            <p className="text-[11px] text-[#201d1d]/60 mb-5 font-sans">
+              {language === 'ko' ? 'ì €ì„±ëŠ¥ ê¸°ê¸° í”„ë ˆì„ ë“œë¡­ ë° ëŠê¹€ ë°©ì§€ ìµœì í™”' : 'Optimizing for smooth 60FPS playback'}
+            </p>
+
+            <div className="w-full bg-[#f0eded] h-3 rounded-sm border border-[#201d1d]/12 overflow-hidden mb-2 relative">
+              <div
+                className="bg-[#201d1d] h-full transition-all duration-150 ease-out"
+                style={{ width: `${Math.max(8, textureCacheProgress)}%` }}
+              />
+            </div>
+
+            <div className="flex items-center justify-between text-xs font-bold text-[#201d1d] mb-3">
+              <span className="text-[10px] text-[#201d1d]/70 font-mono tracking-tight">
+                {language === 'ko' ? '[LOAD] í…ìŠ¤ì²˜ ë°ì´í„° ë³€í™˜ ì¤‘' : '[LOAD] Processing textures'}
+              </span>
+              <span className="font-mono font-black">{textureCacheProgress}%</span>
+            </div>
+
+            <button
+              onClick={() => setIsTextureCaching(false)}
+              className="w-full mt-2 py-1.5 bg-[#201d1d] hover:bg-black text-[#fdfcfc] text-[11px] font-bold rounded-sm transition-all cursor-pointer"
+            >
+              {language === 'ko' ? 'â–¶ ë°”ë¡œ ì‹œì‘í•˜ê¸°' : 'â–¶ Start Immediately'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Story Stage Select & Sweep Modal (Item 56, 60, 68) */}
+      <StoryStageSelectModal
+        isOpen={isStoryStageModalOpen}
+        onClose={() => setIsStoryStageModalOpen(false)}
+        language={language}
+        currentProgress={storyProgressCount}
+        onStartBattle={(epId) => {
+          setIsStoryStageModalOpen(false);
+          setIsStoryActive(true);
+          setGameState('single');
+        }}
+        onSweepStage={(epId) => {
+          // Add Sweep rewards to gold
+          const currentGold = Number(localStorage.getItem('hero_gold') || 0);
+          localStorage.setItem('hero_gold', String(currentGold + 600));
+          window.dispatchEvent(new Event('snshero_gold_updated'));
+        }}
+      />
+
+      {/* Item 384: Lucky Card Match 5-Win Streak Mini-Game Modal */}
+      <LuckyMatchModal
+        isOpen={isLuckyMatchOpen}
+        onClose={() => setIsLuckyMatchOpen(false)}
+        language={language}
+        onClaimReward={(snsReward, cardRarity) => {
+          if (addItem && cardRarity) {
+            addItem(cardRarity);
+          }
+          addLog(language === 'ko'
+            ? `ğŸ [ëŸ­í‚¤ ì¹´ë“œ ë§¤ì¹˜ ë³´ìƒ] +${snsReward} SNS ë° [${cardRarity.toUpperCase()}] ì¹´ë“œ íŒ©ì„ íšë“í–ˆìŠµë‹ˆë‹¤!`
+            : `ğŸ [LUCKY MATCH REWARD] Claimed +${snsReward} SNS & [${cardRarity.toUpperCase()}] Card Pack!`,
+            'victory'
+          );
+        }}
+      />
+
+      {/* Item 387: Post-Boss Manual Victory 3-Chest Unlock Modal */}
+      <TreasureChestUnlockModal
+        isOpen={isBossChestUnlockOpen}
+        onClose={() => setIsBossChestUnlockOpen(false)}
+        language={language}
+        onClaimReward={(snsReward, itemType) => {
+          if (addItem) {
+            addItem('epic');
+          }
+          addLog(language === 'ko'
+            ? `ğŸ‘‘ [ë³´ìŠ¤ í† ë²Œ ì „ë¦¬í’ˆ ìƒì] +${snsReward} SNS ë° [${itemType.toUpperCase()}] íšë“ ì™„ë£Œ!`
+            : `ğŸ‘‘ [BOSS VICTORY CHEST] Claimed +${snsReward} SNS & [${itemType.toUpperCase()}]!`,
+            'victory'
+          );
+        }}
+      />
+
+      {/* Item 385: Offline Expedition 8-Hour Patrol Modal */}
+      <ExpeditionModal
+        isOpen={isExpeditionOpen}
+        onClose={() => setIsExpeditionOpen(false)}
+        language={language}
+        userDeck={playerDeck}
+        onClaimReward={(snsReward, expReward) => {
+          addLog(language === 'ko'
+            ? `ğŸ§­ [ì›ì •ëŒ€ ìˆœì°° ë³´ê³ ] +${snsReward} SNS ë° +${expReward} EXP ë³´ìƒì„ ìˆ˜ë ¹í–ˆìŠµë‹ˆë‹¤!`
+            : `ğŸ§­ [EXPEDITION REWARDS] Claimed +${snsReward} SNS & +${expReward} EXP!`,
+            'victory'
+          );
+        }}
+      />
+
+      {/* Item 383: Monster Beastarium & Mini-Pet Modal */}
+      <MonsterBeastariumModal
+        isOpen={isBeastariumOpen}
+        onClose={() => setIsBeastariumOpen(false)}
+        language={language}
+        onSelectPet={(pet) => {
+          addLog(language === 'ko'
+            ? `ğŸ¾ [ë™í–‰ í« ì¶œê²©] ${pet.name} (${pet.skillDescription}) ë™í–‰ í™œì„±í™”!`
+            : `ğŸ¾ [PET COMPANION] ${pet.nameEn} (${pet.skillDescriptionEn}) now following!`,
+            'system'
+          );
+        }}
+      />
+
+      {/* Item 389: Tactician Mastery & Board Auras Modal */}
+      <TacticianMasteryModal
+        isOpen={isTacticianMasteryOpen}
+        onClose={() => setIsTacticianMasteryOpen(false)}
+        language={language}
+        onSelectAura={(skin) => {
+          addLog(language === 'ko'
+            ? `ğŸ‘‘ [ì „ìˆ ê°€ ì•„ìš°ë¼ ì ìš©] ${skin.name} í…Œë§ˆê°€ ì „ì¥ì— ì ìš©ë˜ì—ˆìŠµë‹ˆë‹¤!`
+            : `ğŸ‘‘ [AURA APPLIED] ${skin.nameEn} Aura Skin activated!`,
+            'system'
+          );
+        }}
+      />
+
+      {/* Item 392: Tower of Trials 50-Floor Challenge Modal */}
+      <TowerOfTrialsModal
+        isOpen={isTowerTrialsOpen}
+        onClose={() => setIsTowerTrialsOpen(false)}
+        language={language}
+        onStartTowerFloor={(floor) => {
+          setIsTowerTrialsOpen(false);
+          setIsStoryActive(false);
+          setGameState('single');
+          addLog(language === 'ko'
+            ? `ğŸ—¼ [ì‹œë ¨ì˜ íƒ‘ ${floor}ì¸µ] ë„ì „ ì‹œì‘! (${floor}F ë³´ìŠ¤: ê°€ë””ì–¸)`
+            : `ğŸ—¼ [TOWER OF TRIALS FLOOR ${floor}] Ascent commenced!`,
+            'system'
+          );
+        }}
+      />
+
+      {/* Item 393 & Item 405: Battle Gambit & Smart Filter Modal */}
+      <BattleGambitModal
+        isOpen={isGambitModalOpen}
+        onClose={() => setIsGambitModalOpen(false)}
+        config={gambitConfig}
+        onSaveConfig={handleSaveGambitConfig}
+        language={language}
+        isAutoBattle={isAutoBattle}
+        onToggleAutoBattle={onToggleAutoBattle}
+      />
+
+      {/* Item 397: Secret Stamp Book Modal */}
+      <SecretStampBookModal
+        isOpen={isSecretStampModalOpen}
+        onClose={() => setIsSecretStampModalOpen(false)}
+      />
+
+      {/* Item 404: Golden Treasure Dart Mini-Game Modal */}
+      <TreasureDartModal
+        isOpen={isTreasureDartOpen}
+        onClose={() => setIsTreasureDartOpen(false)}
+      />
+
+      {/* Item 408: Golden Pirate Roulette Mini-Game Modal */}
+      <GoldenPirateRouletteModal
+        isOpen={isPirateRouletteOpen}
+        onClose={() => setIsPirateRouletteOpen(false)}
+        language={language}
+        playSfx={playSfx}
+        onReward={(amount, reason) => {
+          handleMinigameReward(amount, reason, reason);
+        }}
+      />
+
+      {/* Item 412: Golden Archery Challenge Mini-Game Modal */}
+      <GoldenArcheryModal
+        isOpen={isArcheryOpen}
+        onClose={() => setIsArcheryOpen(false)}
+        language={language}
+        playSfx={playSfx}
+        onReward={(amount, reason) => {
+          handleMinigameReward(amount, reason, reason);
+        }}
+      />
+
+      {/* Row 51: Hand Card Long-Press Zoom Preview Modal */}
+      <CardLongPressPreviewModal
+        card={longPressPreviewCard}
+        isOpen={Boolean(longPressPreviewCard)}
+        onClose={() => setLongPressPreviewCard(null)}
+        language={language}
+        customImage={customCardImage}
+      />
+
+      {/* Battle Summary Modal (Post-Battle Analytics & Stats) */}
+      <BattleSummaryModal
+        isOpen={showPostBattleSummaryModal}
+        onClose={() => setShowPostBattleSummaryModal(false)}
+        summaryData={lastBattleSummaryData}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        onRematch={() => {
+          setShowPostBattleSummaryModal(false);
+          handleRematch();
+        }}
+        onResumeAutoBattle={() => {
+          setShowPostBattleSummaryModal(false);
+          if (setIsAutoBattle) {
+            setIsAutoBattle(true);
+            try {
+              localStorage.setItem('hero_auto_battle_setting', JSON.stringify(true));
+            } catch {
+              // ignore
+            }
+          }
+          if (gameState === 'gameOver' || gameState === 'lobby') {
+            handleRematch();
+          }
+        }}
+        onShareToCommunity={() => {
+          setShowPostBattleSummaryModal(false);
+          setShowBattleShareTemplate(true);
+        }}
+      />
+
+      {/* Element Advantage Quick Reference Modal */}
+      <ElementAdvantageModal
+        isOpen={showElementAdvantageModal}
+        onClose={() => setShowElementAdvantageModal(false)}
+        language={language}
+        lowSpecMode={lowSpecMode}
+      />
+
+      {/* Item 34: In-Battle Emote Floating Speech Bubble */}
+      <AnimatePresence>
+        {activeEmoteBubble && (
+          <motion.div
+            key={`bubble-${activeEmoteBubble.id}`}
+            initial={{ opacity: 0, scale: 0.6, y: activeEmoteBubble.side === 'player' ? 24 : -24 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.7, y: activeEmoteBubble.side === 'player' ? -16 : 16 }}
+            className={cn(
+              "fixed z-[250] pointer-events-none flex items-center gap-2.5 px-4 py-2.5 rounded-2xl shadow-2xl border backdrop-blur-md",
+              activeEmoteBubble.side === 'player'
+                ? "bottom-28 left-1/2 -translate-x-1/2 bg-indigo-950/95 border-indigo-500/80 text-white shadow-indigo-500/30"
+                : "top-24 left-1/2 -translate-x-1/2 bg-rose-950/95 border-rose-500/80 text-white shadow-rose-500/30"
+            )}
+          >
+            <span className="text-2xl animate-bounce">{activeEmoteBubble.emoji}</span>
+            <span className="text-xs font-black font-mono tracking-tight">{activeEmoteBubble.text}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Item 34: In-Battle Emote Modal */}
+      <InBattleEmoteModal
+        isOpen={isEmoteModalOpen}
+        onClose={() => setIsEmoteModalOpen(false)}
+        language={language}
+        onSendEmote={handleSendEmote}
+        isMuted={isOpponentMuted}
+        onToggleMute={handleToggleOpponentMute}
+        playSfx={playSfx}
+      />
+    </div>
+  );
+};
