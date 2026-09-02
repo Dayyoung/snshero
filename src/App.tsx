@@ -4681,6 +4681,7 @@ function AppContent() {
       setView('community');
     } else if (isPvpActive) {
       setIsPvpActive(false);
+      setAutoStartPvp(false);
       setView('ranking');
     } else {
       setView('home');
@@ -4902,9 +4903,6 @@ function AppContent() {
             currentDeck={currentDeck}
             currentSeason={currentSeason}
             onNavigate={(targetView) => {
-              if (targetView === 'ranking') {
-                setAutoStartPvp(true);
-              }
               setView(targetView);
             }} 
             language={language} 
@@ -5694,9 +5692,6 @@ function AppContent() {
             currentSeason={currentSeason}
             language={language} 
             onNavigate={(targetView) => {
-              if (targetView === 'ranking') {
-                setAutoStartPvp(true);
-              }
               setView(targetView);
             }} 
             playSfx={playSfx} 

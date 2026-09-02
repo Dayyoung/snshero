@@ -601,14 +601,8 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
   const cancelMatchmaking = () => {
     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
     setIsSearching(false);
+    setAutoBattleCountdown(null);
   };
-
-  useEffect(() => {
-    if (!hasAutoMatchedRef.current) {
-      hasAutoMatchedRef.current = true;
-      handleOptimalBattle();
-    }
-  }, []);
 
   // Safe matchmaking timer effect
   useEffect(() => {
@@ -1494,10 +1488,14 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                 {autoBattleCountdown}
               </div>
               <button 
-                onClick={onBack}
+                onClick={() => {
+                  playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+                  setAutoBattleCountdown(null);
+                  setIsSearching(false);
+                }}
                 className="w-full bg-red-600 hover:bg-red-700 text-white rounded-xl py-3 text-sm font-bold uppercase transition-colors shadow-sm active:scale-95 cursor-pointer border border-red-500/20"
               >
-                {language === 'ko' ? '취소 및 로비로' : 'Cancel & Lobby'}
+                {language === 'ko' ? '취소' : 'Cancel'}
               </button>
             </motion.div>
           </div>

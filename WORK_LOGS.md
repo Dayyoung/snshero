@@ -4,6 +4,26 @@
 
 ---
 
+## [2026-09-03 07:15 KST] [랭킹대전 화면 이동 시 자동 상대 검색 방지 및 화면 이동 개선]
+- **요청 사항**:
+  - 랭킹대전에서 뒤로가기 했을 때 상대 검색을 자동으로 시작하지 않고 랭킹대전 화면으로 이동만 하도록 개선.
+- **원인 분석**:
+  1. `RankingView.tsx` 내부 606~611행 `useEffect`: 컴포넌트 마운트 시 `handleOptimalBattle()`을 무조건 자동 실행하고 있어, 게임 플레이 후 뒤로가기나 화면 재진입 시 항상 상대 검색 카운트다운 팝업이 강제 시작됨.
+  2. `App.tsx` 4905행 및 5697행 `HomeView` 네비게이션: `targetView === 'ranking'`일 때 `setAutoStartPvp(true)`를 강제 호출하여 화면 진입 즉시 매칭이 개시됨.
+  3. `RankingView.tsx` 1496행 자동 매칭 팝업의 취소 버튼: `onClick={onBack}`으로 연결되어 취소 시 랭킹대전에 머무르지 못하고 로비로 튕겨 나감.
+- **조치 사항**:
+  1. `RankingView.tsx`: 마운트 시 무조건 `handleOptimalBattle()`을 호출하던 `useEffect` 완전 제거. 유저가 직접 '매칭 시작' 버튼을 누를 때만 검색하도록 변경.
+  2. `RankingView.tsx`: 매칭 팝업의 취소 버튼 핸들러를 `onClick={() => { setAutoBattleCountdown(null); setIsSearching(false); }}`로 수정하여 취소 시 랭킹대전 화면에 그대로 머무르도록 개선.
+  3. `App.tsx`: 배틀 종료 후 랭킹으로 돌아올 때(`isPvpActive`) `setAutoStartPvp(false)`를 명시적으로 초기화.
+  4. `App.tsx`: 홈 화면 `onNavigate`에서 랭킹 진입 시 `setAutoStartPvp(true)` 제거하여 단순 화면 이동만 수행하도록 수정.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] 랭킹대전 화면 이동 시 자동 상대 검색 방지 및 화면 이동 개선 -> 작업완료`
+
+---
+
 ## [2026-09-03 07:08 KST] [2D 카드 점퍼 추락 판정 오류 수정 및 전체 미션 게임(97종) 게임오버 결함 전수조사·개선 완료]
 - **요청 사항**:
   - 2D 카드 점퍼에서 아래로 떨어져도 게임오버가 되지 않는 문제 해결.
