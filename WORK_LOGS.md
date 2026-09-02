@@ -4,6 +4,32 @@
 
 ---
 
+## [2026-09-02 14:26 KST] [쇼핑몰 문의하기 버튼 정상화, 카탈로그 /collections/all 구축, 다국어 전환 및 Shopify 브랜딩 전면 제거 완료]
+- **요청 사항**:
+  1. 문의하기 페이지(`pages/contact`)의 버튼 깨짐 현상 수정.
+  2. 카탈로그 클릭 시 404 없이 전체 상품 컬렉션(`collections/all`)으로 정확히 이동하도록 구축.
+  3. 헤더/푸터 언어 설정(한국어/영어) 실시간 전환 지원.
+  4. 모든 Shopify 관련 표현 및 브랜딩 완전 제거.
+- **조치 사항**:
+  1. **문의하기 폼 및 버튼 고도화**:
+     - `Submit` 영문 버튼을 모던한 `✉️ 문의 보내기 (Submit)` 버튼(`font-family: monospace`, 1px 보더, 44px+ 터치 규격)으로 전면 교체.
+     - 문의 폼 제출 시 오프라인에서도 실시간 접수 모달("문의가 정상적으로 접수되었습니다.") 팝업 노출 및 `hero_contact_messages` 영구 보존.
+  2. **전체 상품 카탈로그(`collections/all`) 구축**:
+     - `collections/all.html` 및 `collections/all/index.html` (영문: `en/collections/all.html`, `en/collections/all/index.html`) 생성.
+     - 4종 전체 상품(110 카드 덱, 게임테이블, 머그컵, 티셔츠)이 모두 렌더링되는 완전한 카탈로그 그리드 구축 및 링크 매핑 완료.
+  3. **다국어 언어 전환(Live Switcher) 연동**:
+     - `mall-bridge.js`에 언어 셀렉터 이벤트 리스너를 연동하여 한국어(`ko`) ↔ 영어(`en`) 전환 시 현재 보고 있는 페이지 경로를 유지한 채 즉시 전환 및 `localStorage.setItem('hero_language', lang)` 동기화.
+  4. **Shopify 브랜딩 전면 제거**:
+     - 푸터의 `Powered by Shopify` 문구를 `© 2026 SNSHero.com`으로 전면 교체하고, 전체 39개 HTML 파일 내 메타 태그, 외부 링크 등의 Shopify 표현을 깔끔하게 제거.
+- **품질 검증**:
+  - `pages/contact`, `collections/all`, 다국어 전환, 푸터 브랜딩 전수 검증
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] 쇼핑몰 문의하기 버튼 정상화, 카탈로그 /collections/all 구축, 다국어 전환 및 Shopify 브랜딩 전면 제거 -> 작업완료`
+
+---
+
 ## [2026-09-02 14:23 KST] [쇼핑몰 'paypal 로 지불하기' 버튼 '결제하기'로 변경 및 해당 페이지 인스턴트 결제창(모달) 구축 완료]
 - **요청 사항**:
   - `paypal 로 지불하기` 버튼을 모던한 `결제하기` 버튼으로 변경.

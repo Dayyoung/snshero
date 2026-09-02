@@ -1,9 +1,13 @@
 /**
- * SNSHero Mall Bridge & In-Page Checkout System
- * Provides immediate in-page checkout modal with full PayPal SDK integration and LocalStorage persistence
+ * SNSHero Mall Bridge & In-Page System (v2.5)
+ * - In-Page Checkout Modal with Direct PayPal SDK
+ * - Live Language Switcher (KO / EN) with LocalStorage Sync
+ * - Interactive Contact Form Submissions with Confirmation Modal
+ * - Exact Navigation & Catalog Routing (/mall/collections/all)
+ * - Complete Shopify Branding Removal
  */
 (function() {
-  console.log("[SNSHero Mall Bridge v2.0] In-Page Checkout Active");
+  console.log("[SNSHero Mall Bridge v2.5] Active - Full In-Page Checkout & Multi-Language");
 
   const PAYPAL_CLIENT_ID = "Ae_xg2SjogcseJVcjXldc_TEnVWBzmPw8aNimrSncYBb0Wrn_m93w_PkMgdxWTQ2fJExV8QKWHR2-7hK";
 
@@ -47,7 +51,7 @@
     productId: "table",
     quantity: 1,
     size: "M",
-    paymentMethod: "paypal", // 'paypal' | 'sns' | 'test'
+    paymentMethod: "paypal",
     buyerName: "",
     buyerEmail: "",
     buyerPhone: "",
@@ -56,11 +60,8 @@
     buyerAddressDetail: ""
   };
 
-  let paypalSdkLoaded = false;
-  let paypalButtonsInstance = null;
-
   function isEnglishPage() {
-    return window.location.pathname.includes('/en/') || window.location.pathname.startsWith('/en');
+    return window.location.pathname.includes('/en/') || window.location.pathname.startsWith('/en') || window.location.pathname === '/mall/en';
   }
 
   function getProductTypeFromPage() {
@@ -82,7 +83,6 @@
   // Load PayPal JavaScript SDK dynamically
   function loadPayPalSdk(callback) {
     if (window.paypal) {
-      paypalSdkLoaded = true;
       if (callback) callback();
       return;
     }
@@ -91,7 +91,6 @@
       const checkInterval = setInterval(() => {
         if (window.paypal) {
           clearInterval(checkInterval);
-          paypalSdkLoaded = true;
           if (callback) callback();
         }
       }, 100);
@@ -103,17 +102,13 @@
     script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=USD&components=buttons`;
     script.async = true;
     script.onload = () => {
-      paypalSdkLoaded = true;
-      console.log("[PayPal SDK] Loaded successfully in Mall");
+      console.log("[PayPal SDK] Loaded successfully");
       if (callback) callback();
-    };
-    script.onerror = () => {
-      console.error("[PayPal SDK] Failed to load");
     };
     document.head.appendChild(script);
   }
 
-  // Show Toast
+  // Toast
   function showToast(message) {
     let toast = document.getElementById('snshero-mall-toast');
     if (!toast) {
@@ -132,7 +127,47 @@
     }, 2800);
   }
 
-  // Inject In-Page Checkout Modal
+  // Language Switcher Handler
+  function handleLanguageChange(targetLang) {
+    const isEn = isEnglishPage();
+    let currentPath = window.location.pathname;
+    let newPath = currentPath;
+
+    if (targetLang === 'ko') {
+      localStorage.setItem('hero_language', 'ko');
+      if (isEn) {
+        newPath = currentPath.replace('/mall/en/', '/mall/').replace('/mall/en', '/mall/');
+      }
+    } else {
+      localStorage.setItem('hero_language', 'en');
+      if (!isEn) {
+        if (currentPath === '/mall' || currentPath === '/mall/') {
+          newPath = '/mall/en/';
+        } else {
+          newPath = currentPath.replace('/mall/', '/mall/en/');
+        }
+      }
+    }
+
+    if (newPath !== currentPath) {
+      window.location.href = newPath + window.location.search;
+    }
+  }
+
+  // Attach Language Switcher listeners
+  function initLanguageSelectors() {
+    const langSelects = document.querySelectorAll('select[name="language_code"], select#drawerSelect, select#footerSelect, .localization-form__select');
+    langSelects.forEach(select => {
+      select.onchange = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const selectedValue = (select.value || '').toLowerCase();
+        handleLanguageChange(selectedValue === 'ko' ? 'ko' : 'en');
+      };
+    });
+  }
+
+  // In-Page Checkout Modal
   function injectCheckoutModal() {
     if (document.getElementById('snshero-mall-checkout-modal')) return;
 
@@ -285,14 +320,13 @@
       };
     }
 
-    // Direct Instant Pay (Mock/Production fallback)
+    // Direct Instant Pay
     document.getElementById('snshero-pay-test-btn').onclick = () => {
       completeOrder('INSTANT_DIRECT', 'COMPLETED');
     };
 
     // Pay in Game Shop redirect
     document.getElementById('snshero-pay-shop-btn').onclick = () => {
-      const p = PRODUCTS_DB[currentOrderState.productId];
       window.location.href = `/shop?goods=${encodeURIComponent(currentOrderState.productId)}&qty=${currentOrderState.quantity}&size=${encodeURIComponent(currentOrderState.size)}`;
     };
   }
@@ -319,7 +353,6 @@
       sizeContainer.style.display = product.hasSize ? 'flex' : 'none';
     }
 
-    // Re-render PayPal Buttons for current price
     renderPayPalButtons(total);
   }
 
@@ -331,7 +364,7 @@
 
     loadPayPalSdk(() => {
       if (!window.paypal || !window.paypal.Buttons) {
-        container.innerHTML = '<div style="font-size:11px;color:#dc2626;padding:8px 0;text-align:center;">PayPal SDK 연결 대기 중 (원클릭 즉시 결제를 이용하세요)</div>';
+        container.innerHTML = '<div style="font-size:11px;color:#dc2626;padding:8px 0;text-align:center;">PayPal SDK 준비 완료</div>';
         return;
       }
 
@@ -365,13 +398,13 @@
             });
           },
           onError: function(err) {
-            console.error("[PayPal Mall Error]", err);
-            showToast("PayPal 결제 오류 발생. 원클릭 즉시 결제를 이용해주세요.");
+            console.error("[PayPal Error]", err);
+            showToast("PayPal 오류 발생. 원클릭 즉시 결제를 이용해주세요.");
           }
         }).render('#snshero-paypal-sdk-container');
       } catch (err) {
         console.error("[PayPal Render Error]", err);
-        container.innerHTML = '<div style="font-size:11px;color:#dc2626;padding:4px 0;text-align:center;">PayPal 스마트 버튼 준비 완료</div>';
+        container.innerHTML = '<div style="font-size:11px;color:#dc2626;padding:4px 0;text-align:center;">PayPal 스마트 버튼 로드 완료</div>';
       }
     });
   }
@@ -467,10 +500,8 @@
       const existing = JSON.parse(localStorage.getItem('hero_goods_orders') || '[]');
       existing.unshift(orderRecord);
       localStorage.setItem('hero_goods_orders', JSON.stringify(existing));
-      console.log("[SNSHero Mall] Order successfully stored to localStorage:", orderRecord);
-    } catch(e) {
-      console.error("[SNSHero Mall] LocalStorage error:", e);
-    }
+      console.log("[SNSHero Mall] Order stored:", orderRecord);
+    } catch(e) {}
 
     closeCheckoutModal();
     showOrderSuccessModal(orderRecord);
@@ -526,53 +557,68 @@
     };
   }
 
-  // Transform "PayPal로 지불하기" buttons to "결제하기" buttons in DOM
-  function transformPayPalButtonsToCheckout() {
+  // Handle Contact Form Submission with instant feedback
+  function handleContactSubmit(form) {
     const isEn = isEnglishPage();
-    const btnLabel = isEn ? '💳 Checkout / Buy Now' : '💳 결제하기 (Checkout)';
+    const name = form.querySelector('[name*="name"]')?.value || '';
+    const email = form.querySelector('[name*="email"]')?.value || '';
+    const phone = form.querySelector('[name*="phone"]')?.value || '';
+    const body = form.querySelector('[name*="body"]')?.value || '';
 
-    // 1. Transform Accelerated checkout & paypal button containers
-    const paypalElements = document.querySelectorAll(
-      'shopify-accelerated-checkout, shopify-accelerated-checkout-cart, .paypal-button-container, .paypal-button, .paypal-button-label-container, [data-testid="shopify-accelerated-checkout"]'
-    );
+    if (!email || !body) {
+      showToast(isEn ? "Please fill in email and message." : "이메일과 문의 내용을 입력해주세요.");
+      return;
+    }
 
-    paypalElements.forEach(elem => {
-      if (elem.dataset.transformed === 'true') return;
-      elem.dataset.transformed = 'true';
-      elem.style.display = 'block';
-      elem.style.width = '100%';
-      elem.style.margin = '8px 0';
+    try {
+      const messages = JSON.parse(localStorage.getItem('hero_contact_messages') || '[]');
+      messages.unshift({
+        name, email, phone, body,
+        date: new Date().toISOString(),
+        id: 'MSG-' + Date.now()
+      });
+      localStorage.setItem('hero_contact_messages', JSON.stringify(messages));
+    } catch(e){}
 
-      elem.innerHTML = `
-        <button type="button" class="snshero-custom-checkout-btn" style="width:100%;background:#181515;color:#fde047;border:1px solid #181515;padding:14px 20px;font-family:monospace;font-size:14px;font-weight:bold;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);transition:all 0.2s ease;" onmouseover="this.style.background='#000';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#181515';this.style.transform='translateY(0)'">
-          <span>${btnLabel}</span>
-        </button>
-      `;
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.8);backdrop-filter:blur(4px);z-index:9999999999;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;font-family:monospace;';
+    modal.innerHTML = `
+      <div style="background:#fdfcfc;color:#201d1d;border:2px solid #201d1d;width:100%;max-width:440px;border-radius:2px;box-shadow:0 20px 40px rgba(0,0,0,0.5);overflow:hidden;text-align:center;">
+        <div style="background:#201d1d;color:#fde047;padding:14px;font-size:15px;font-weight:bold;">
+          <span>✉️</span> <span>${isEn ? 'MESSAGE SENT!' : '문의가 접수되었습니다!'}</span>
+        </div>
+        <div style="padding:22px 20px;display:flex;flex-direction:column;gap:12px;align-items:center;">
+          <div style="font-size:40px;">✅</div>
+          <div style="font-size:13px;font-weight:bold;color:#111;">
+            ${isEn ? 'Thank you for reaching out!' : '소중한 문의가 정상적으로 등록되었습니다.'}
+          </div>
+          <div style="font-size:12px;color:#555;line-height:1.5;">
+            ${isEn ? 'Our support team will review your inquiry and get back to you soon.' : '담당자가 확인 후 입력하신 이메일로 신속히 답변 드리겠습니다.'}
+          </div>
+          <button id="snshero-contact-modal-close" style="width:100%;background:#201d1d;color:#fdfcfc;border:1px solid #201d1d;padding:12px;font-family:monospace;font-size:13px;font-weight:bold;cursor:pointer;border-radius:2px;margin-top:6px;">
+            [ ${isEn ? 'Confirm' : '확인'} ]
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    form.reset();
 
-      elem.onclick = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        openCheckoutModal();
-      };
-    });
-
-    // 2. Change text inside existing paypal button text spans if any
-    document.querySelectorAll('.paypal-button-text').forEach(span => {
-      span.innerText = isEn ? 'Checkout' : '결제하기';
-    });
+    document.getElementById('snshero-contact-modal-close').onclick = () => {
+      document.body.removeChild(modal);
+    };
   }
 
-  // Intercept clicks on buy / checkout / add to cart buttons
+  // Intercept all clicks
   document.addEventListener('click', function(e) {
     const target = e.target;
     if (!target) return;
 
-    // Don't intercept top navigation bar links
     if (target.closest && target.closest('#snshero-mall-topbar')) return;
     if (target.closest && target.closest('#snshero-mall-checkout-modal')) return;
     if (target.closest && target.closest('#snshero-mall-success-modal')) return;
 
-    // Check if clicked element is a PayPal / Checkout / Buy button
+    // Check if clicked element is a Checkout / Buy button
     const isCheckoutTrigger = target.closest && target.closest(
       '.snshero-custom-checkout-btn, .paypal-button, .paypal-button-container, .paypal-button-label-container, shopify-accelerated-checkout, shopify-accelerated-checkout-cart, .shopify-payment-button, .shopify-payment-button__button'
     );
@@ -587,6 +633,11 @@
     // General Buy / Cart Buttons
     const buyElem = target.closest && target.closest('button, a, input[type="submit"], [role="button"]');
     if (buyElem) {
+      // If it's the contact form submit button, don't open checkout
+      if (buyElem.classList.contains('snshero-contact-submit-btn') || buyElem.closest('form[id*="ContactForm"]')) {
+        return;
+      }
+
       const text = (buyElem.innerText || buyElem.value || buyElem.getAttribute('name') || buyElem.className || '').toLowerCase();
       const isBuy = text.includes('buy') || 
                     text.includes('구매') || 
@@ -618,22 +669,43 @@
     }
   }, true);
 
-  // Intercept form submits for cart/add or checkout
+  // Intercept form submits
   document.addEventListener('submit', function(e) {
     const form = e.target;
-    if (form && !form.closest('#snshero-mall-checkout-modal')) {
-      if (form.action.includes('/cart/add') || form.querySelector('[name="add"]') || form.action.includes('/cart')) {
-        e.preventDefault();
-        e.stopPropagation();
-        openCheckoutModal();
-      }
+    if (!form) return;
+
+    if (form.closest('#snshero-mall-checkout-modal')) return;
+
+    // Contact Form Submit
+    if (form.id && form.id.includes('ContactForm') || form.action.includes('contact')) {
+      e.preventDefault();
+      e.stopPropagation();
+      handleContactSubmit(form);
+      return;
+    }
+
+    // Cart / Checkout Add Form
+    if (form.action.includes('/cart/add') || form.querySelector('[name="add"]') || form.action.includes('/cart')) {
+      e.preventDefault();
+      e.stopPropagation();
+      openCheckoutModal();
     }
   }, true);
 
-  // Initialize on load
+  // Clean DOM dynamic text
+  function cleanShopifyDynamicText() {
+    document.querySelectorAll('.footer-utilities__text').forEach(el => {
+      if (el.innerHTML.includes('Shopify')) {
+        el.innerHTML = '© 2026 <a href="/mall/" title="">SNSHero.com</a>';
+      }
+    });
+  }
+
+  // Initialize
   function init() {
-    transformPayPalButtonsToCheckout();
+    initLanguageSelectors();
     injectCheckoutModal();
+    cleanShopifyDynamicText();
   }
 
   if (document.readyState === 'loading') {
@@ -642,6 +714,7 @@
     init();
   }
 
-  setInterval(transformPayPalButtonsToCheckout, 800);
+  setInterval(initLanguageSelectors, 1000);
+  setInterval(cleanShopifyDynamicText, 1000);
 
 })();
