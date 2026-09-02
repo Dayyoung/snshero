@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Compass, Clock, Sparkles, X, Shield, Award } from 'lucide-react';
 import { playSfx } from '../lib/sound';
@@ -7,7 +8,9 @@ interface ExpeditionModalProps {
   isOpen: boolean;
   onClose: () => void;
   language: string;
-  onClaimRewards: (snsEarned: number, expEarned: number) => void;
+  userDeck?: any[];
+  onClaimReward?: (snsReward: number, expReward: number) => void;
+  onClaimRewards?: (snsEarned: number, expEarned: number) => void;
 }
 
 interface ExpeditionState {
@@ -22,8 +25,11 @@ export const ExpeditionModal: React.FC<ExpeditionModalProps> = ({
   isOpen,
   onClose,
   language,
+  userDeck,
+  onClaimReward,
   onClaimRewards,
 }) => {
+  const [mounted, setMounted] = useState<boolean>(false);
   const [expedition, setExpedition] = useState<ExpeditionState>(() => {
     try {
       const saved = localStorage.getItem(EXPEDITION_STORAGE_KEY);
@@ -33,6 +39,10 @@ export const ExpeditionModal: React.FC<ExpeditionModalProps> = ({
     }
     return { isDispatched: false, dispatchTimestamp: null, stageName: 'Chapter 1: Forest of Trials' };
   });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [elapsedMinutes, setElapsedMinutes] = useState<number>(0);
 
@@ -69,7 +79,8 @@ export const ExpeditionModal: React.FC<ExpeditionModalProps> = ({
   const handleClaim = () => {
     if (calculatedSns > 0) {
       playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-      onClaimRewards(calculatedSns, calculatedExp);
+      if (onClaimReward) onClaimReward(calculatedSns, calculatedExp);
+      if (onClaimRewards) onClaimRewards(calculatedSns, calculatedExp);
     }
     const newState: ExpeditionState = {
       isDispatched: false,
@@ -80,17 +91,17 @@ export const ExpeditionModal: React.FC<ExpeditionModalProps> = ({
     onClose();
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted || typeof document === 'undefined') return null;
 
-  return (
-    <AnimatePresence>
-      <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs font-mono">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          className="relative w-full max-w-sm bg-[#201d1d] border border-[rgba(255,255,255,0.2)] rounded-none p-4 text-[#fdfcfc] shadow-2xl"
-        >
+  const content = (
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md font-mono select-none pointer-events-auto">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+        transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+        className="relative w-full max-w-sm bg-[#201d1d] border border-[rgba(255,255,255,0.2)] rounded-none p-4 sm:p-5 text-[#fdfcfc] shadow-2xl pointer-events-auto"
+      >
           {/* Header */}
           <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.12)] pb-2 mb-3">
             <div className="flex items-center gap-1.5">
@@ -168,7 +179,8 @@ export const ExpeditionModal: React.FC<ExpeditionModalProps> = ({
             </button>
           )}
         </motion.div>
-      </div>
-    </AnimatePresence>
+    </div>
   );
+
+  return createPortal(content, document.body);
 };

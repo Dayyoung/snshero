@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useSns } from '../contexts/SnsContext';
 
 interface TreasureDartModalProps {
@@ -10,6 +11,7 @@ export const TreasureDartModal: React.FC<TreasureDartModalProps> = ({
   isOpen,
   onClose,
 }) => {
+  const [mounted, setMounted] = useState<boolean>(false);
   const [dartPos, setDartPos] = useState<number>(0); // 0 to 100 (%)
   const [isAiming, setIsAiming] = useState<boolean>(true);
   const [rewardResult, setRewardResult] = useState<{
@@ -17,6 +19,10 @@ export const TreasureDartModal: React.FC<TreasureDartModalProps> = ({
     rewardText: string;
     points: number;
   } | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const { addSns } = useSns();
   const dirRef = useRef<number>(1);
@@ -88,9 +94,11 @@ export const TreasureDartModal: React.FC<TreasureDartModalProps> = ({
     onClose();
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs font-mono">
-      <div className="w-full max-w-md bg-[#fdfcfc] border-2 border-amber-500 rounded-none p-5 shadow-2xl space-y-4">
+  if (!isOpen || !mounted || typeof document === 'undefined') return null;
+
+  const content = (
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md font-mono select-none pointer-events-auto">
+      <div className="w-full max-w-md bg-[#fdfcfc] border-2 border-amber-500 rounded-none p-5 shadow-2xl space-y-4 pointer-events-auto">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-black/10 pb-3">
           <div className="flex items-center gap-2">
@@ -156,7 +164,7 @@ export const TreasureDartModal: React.FC<TreasureDartModalProps> = ({
           {isAiming ? (
             <button
               onClick={handleThrowDart}
-              className="min-h-[48px] w-full px-6 py-3 bg-[#201d1d] text-[#fdfcfc] hover:bg-black font-bold text-sm rounded-sm flex items-center justify-center gap-2 border border-black"
+              className="min-h-[48px] w-full px-6 py-3 bg-[#201d1d] text-[#fdfcfc] hover:bg-black font-bold text-sm rounded-sm flex items-center justify-center gap-2 border border-black cursor-pointer active:scale-95"
             >
               <span>🎯</span>
               <span>[지금 다트 던지기!]</span>
@@ -164,7 +172,7 @@ export const TreasureDartModal: React.FC<TreasureDartModalProps> = ({
           ) : (
             <button
               onClick={handleResetOrClose}
-              className="min-h-[44px] w-full px-6 py-2.5 bg-amber-500 text-[#201d1d] hover:bg-amber-400 font-bold text-sm rounded-sm border border-black"
+              className="min-h-[44px] w-full px-6 py-2.5 bg-amber-500 text-[#201d1d] hover:bg-amber-400 font-bold text-sm rounded-sm border border-black cursor-pointer active:scale-95"
             >
               [보상 수령 완료]
             </button>
@@ -173,4 +181,6 @@ export const TreasureDartModal: React.FC<TreasureDartModalProps> = ({
       </div>
     </div>
   );
+
+  return createPortal(content, document.body);
 };

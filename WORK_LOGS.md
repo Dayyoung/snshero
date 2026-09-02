@@ -4,6 +4,22 @@
 
 ---
 
+## [2026-09-02 16:46 KST] [시련의 탑/원정대/보물다트 모달 createPortal DOM 최상위 마운트 & z-index 999999 보강 완료]
+- **요청 사항**:
+  - `/play` 화면에서 `#27 시련의 탑 50층` 클릭 시 모달이 정상적으로 표시되도록 렌더링 파이프라인 및 계층 구조 보강.
+- **조치 사항**:
+  1. **React Portal(`createPortal(content, document.body)`) 전면 적용**:
+     - `TowerOfTrialsModal.tsx`, `ExpeditionModal.tsx`, `TreasureDartModal.tsx` 등에 React Portal을 도입하여, 부모 컨테이너(`modeSelect` 뷰)의 CSS transform, overflow, containing block 제약에 갇히지 않고 `document.body` 최상단에 100% 독립 마운트되도록 리팩토링.
+  2. **z-index 최상위(`z-[999999]`) 및 pointer-events 보장**:
+     - 모달 오버레이 및 다이얼로그 창의 z-index를 최상위 레벨로 격상하고 인터랙티브 터치 이벤트(`pointer-events-auto`)를 보장하여 클릭 즉시 선명하게 노출되도록 개선.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] 시련의 탑/원정대/보물다트 모달 createPortal DOM 최상위 마운트 & z-index 999999 보강 -> 작업완료`
+
+---
+
 ## [2026-09-02 16:42 KST] [시련의 탑 50층 실제 배틀 필드(playing) 진입 로직 구현 및 110개 게임 심층 전수감사 완료]
 - **요청 사항**:
   - 시련의 탑 플레이 불가 원인 규명 및 층 선택 시 실제 배틀 필드 즉시 시작 연동, 110개 전체 게임의 실제 플레이 가능 여부 심층 전수조사.

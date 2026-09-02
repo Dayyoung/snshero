@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Trophy, Sparkles, X, Shield, Swords, Gem, Award, Lock, Play } from 'lucide-react';
 import { playSfx } from '../lib/sound';
@@ -30,6 +31,7 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
   onStartFloor,
   onStartTowerFloor,
 }) => {
+  const [mounted, setMounted] = useState<boolean>(false);
   const [clearedFloor, setClearedFloor] = useState<number>(() => {
     try {
       return parseInt(localStorage.getItem(TOWER_PROGRESS_KEY) || '14', 10);
@@ -37,6 +39,10 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
       return 14;
     }
   });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const floors: FloorData[] = Array.from({ length: 50 }, (_, i) => {
     const fl = i + 1;
@@ -64,17 +70,17 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
     onClose();
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted || typeof document === 'undefined') return null;
 
-  return (
-    <AnimatePresence>
-      <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xs font-mono">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          className="relative w-full max-w-md bg-[#201d1d] border border-[rgba(255,255,255,0.2)] rounded-none p-4 text-[#fdfcfc] shadow-2xl max-h-[85vh] flex flex-col"
-        >
+  const content = (
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md font-mono select-none pointer-events-auto">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+        transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+        className="relative w-full max-w-md bg-[#201d1d] border border-[rgba(255,255,255,0.2)] rounded-none p-4 sm:p-5 text-[#fdfcfc] shadow-2xl max-h-[88vh] flex flex-col pointer-events-auto"
+      >
           {/* Header */}
           <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.12)] pb-2 mb-3">
             <div className="flex items-center gap-1.5">
@@ -152,13 +158,14 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
 
           <button
             onClick={onClose}
-            className="w-full py-2 bg-[#fdfcfc] text-[#201d1d] hover:bg-amber-300 transition-colors text-xs font-bold uppercase rounded-sm flex items-center justify-center gap-1.5"
+            className="w-full py-2.5 bg-[#fdfcfc] text-[#201d1d] hover:bg-amber-300 transition-colors text-xs font-bold uppercase rounded-sm flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
           >
             <Sparkles size={13} />
             <span>{language === 'ko' ? '[ 닫기 ]' : '[ Close ]'}</span>
           </button>
         </motion.div>
-      </div>
-    </AnimatePresence>
+    </div>
   );
+
+  return createPortal(content, document.body);
 };
