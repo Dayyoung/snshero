@@ -4,6 +4,26 @@
 
 ---
 
+## [2026-09-02 16:35 KST] [/gemini-ex 구글 스프레드시트 전체 734개 행 전수 구현 및 검증 완료 달성]
+- **요청 사항**:
+  - `/gemini-ex` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 미작업 항목 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **스프레드시트 734개 전체 행 전수 파싱 및 감사 완료**:
+     - Row 731 ~ 734 (ID 548 ~ 551) 4대 핵심 개선 항목 전수 점검:
+       - **Row 731 (ID 548)**: 3D 레이싱 퓨어제스처 전환 (`src/lib/vehicleGestureController.ts`) ➔ 구현 완료
+       - **Row 732 (ID 549)**: 3D 스포츠 미션 3단계 튜토리얼 팝업 (`src/components/SportsMissionTutorial.tsx`) ➔ 구현 완료
+       - **Row 733 (ID 550)**: 상단 70% 시야 개방 1줄 슬림 HUD (`src/components/MinimalistMissionHUD.tsx`) ➔ 구현 완료
+       - **Row 734 (ID 551)**: 미션 클리어 즉시 100% 확정 SNS 포인트 원자적 입금 및 팡파레 (`src/components/NormalizedRewardPopup.tsx` & `src/lib/rewardSettlementService.ts`) ➔ 구현 완료
+  2. **스프레드시트 전체 734개 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 항목 번호 `[Row 734 / ID 551]` 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /gemini-ex 스프레드시트 전체 734개 행 전수 구현 및 검증 완료 달성 -> 작업완료`
+
+---
+
 ## [2026-09-02 15:15 KST] [카단 RPG(/main) 지도 화면 및 대화창 다이얼로그 현재 환생 횟수 뱃지 실시간 표시 완료]
 - **요청 사항**:
   - `/main` 카단 RPG에서 현재 환생 횟수를 지도(World Map) 화면과 NPC 대화(Dialog) 화면에 표시.
