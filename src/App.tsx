@@ -43,7 +43,7 @@ import {
 } from './content/profileEmoticons';
 import { useContextualTutorial } from './hooks/useContextualTutorial';
 import { processIncomingReferral, createPendingReferralReward } from './lib/referral';
-import { type LocalAiCapabilityStatus, getLocalAiCapabilityStatus, requestLocalAiReply } from './lib/localAi';
+import { type LocalAiCapabilityStatus, getLocalAiCapabilityStatus, requestLocalAiReply, generateSmartKnowledgeReply } from './lib/localAi';
 import { trackCreatorEvent } from './content/creatorCampaigns';
 import { WEBTOON_SEASONS, getWebtoonSeasonById, getWebtoonEpisodesForSeason } from './content/webtoonEpisodes';
 import { saveWebtoonProgress, type WebtoonProgressState } from './lib/webtoonProgress';
@@ -3102,11 +3102,16 @@ function AppContent() {
 
         const aiNames = ['Google AI', 'DeepMind AI', 'Antigravity AI', 'Gemini Bot', 'SNSHero Bot'];
         const randomAiName = aiNames[Math.floor(Math.random() * aiNames.length)];
+        const isQuestion = text.includes('?') || text.includes('어떻게') || text.includes('뭐') || text.includes('how') || text.includes('what') || text.includes('팁') || text.includes('추천') || text.includes('알려');
+        const botReplyText = isQuestion 
+          ? generateSmartKnowledgeReply({ prompt: text, language }) 
+          : t('ai_reply_msg', language);
+
         appendBotMessage({
           id: `bot-res-${Date.now()}`,
           userId: `bot-${randomAiName.replace(/\s+/g, '_')}`,
           name: randomAiName,
-          text: t('ai_reply_msg', language),
+          text: botReplyText,
           isBot: true,
           isAiReply: true,
           createdAt: new Date().toISOString(),

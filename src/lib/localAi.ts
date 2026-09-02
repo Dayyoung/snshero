@@ -1,6 +1,7 @@
 import { Language } from '../types';
+import { getRelevantGameKnowledge, getUserGameStateContext } from './gameKnowledgeBase';
 
-export type LocalAiProvider = 'chrome-built-in-ai';
+export type LocalAiProvider = 'chrome-built-in-ai' | 'smart-fallback';
 export type LocalAiState = 'ready' | 'downloadable' | 'downloading' | 'unavailable' | 'error';
 
 export interface LocalAiCapabilityStatus {
@@ -47,7 +48,7 @@ const FALLBACK_CAPABILITY: LocalAiCapabilityStatus = {
   availability: 'unavailable',
 };
 
-const RESPONSE_LIMIT = 320;
+const RESPONSE_LIMIT = 450;
 
 const getApi = (): BuiltInLanguageModelAPI | null => {
   if (typeof window === 'undefined') return null;
@@ -94,18 +95,30 @@ const normalizeAvailability = (value: string | undefined): LocalAiCapabilityStat
   };
 };
 
+/**
+ * Build rich prompt incorporating SNSHero Game Knowledge Base & User State
+ */
 const buildPrompt = ({ prompt, language }: LocalAiPromptOptions): string => {
   const responseLanguage = language === 'ko' ? 'Korean' : 'English';
+  const gameKnowledge = getRelevantGameKnowledge(prompt, language);
+  const userContext = getUserGameStateContext(language);
 
   return [
-    'You are the SNSHero in-app assistant.',
-    `Reply in ${responseLanguage}.`,
-    'Keep the answer short, friendly, and practical.',
-    'Limit to at most 2 short paragraphs or 4 bullet points.',
-    'If the request is unclear, give a safe gameplay/help fallback instead of inventing details.',
+    'You are the official SNSHero AI Gaming Guide and tactical assistant.',
+    `Reply strictly in ${responseLanguage}.`,
+    'Answer the user message accurately and concisely using ONLY the provided SNSHero game knowledge base below.',
+    'Be enthusiastic, tactical, and friendly like a battle companion.',
+    'Keep your response under 3 short sentences or bullet points.',
     '',
-    `User message: ${prompt}`,
-  ].join('\n');
+    '=== OFFICIAL SNSHERO GAME KNOWLEDGE BASE ===',
+    gameKnowledge,
+    '',
+    userContext ? `=== CURRENT PLAYER STATE ===\n${userContext}\n` : '',
+    '=== USER MESSAGE ===',
+    prompt,
+    '',
+    `Your concise ${responseLanguage} answer:`
+  ].filter(Boolean).join('\n');
 };
 
 const trimResponse = (value: string): string => {
@@ -131,6 +144,22 @@ export const getLocalAiCapabilityStatus = async (): Promise<LocalAiCapabilitySta
       provider: null,
       availability: 'error',
     };
+  }
+};
+
+/**
+ * Generate smart knowledge-base guided reply for fallback environments
+ */
+export const generateSmartKnowledgeReply = (options: LocalAiPromptOptions): string => {
+  const { prompt, language } = options;
+  const isEn = language !== 'ko';
+  const knowledge = getRelevantGameKnowledge(prompt, language);
+
+  if (isEn) {
+    return `[SNSHero Tactical Guide] 💡 ${knowledge.split('\n')[1] || knowledge}`;
+  } else {
+    const firstDetail = knowledge.split('\n')[1] || knowledge;
+    return `[SNS히어로 가이드] 💡 ${firstDetail.replace(/^-\s*/, '')}`;
   }
 };
 
