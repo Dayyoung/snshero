@@ -1,0 +1,1929 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ChatGPT - MLX Local Studio (Gemma 4 & FLUX & TTS)</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            gpt: {
+              sidebar: '#171717',
+              sidebarHover: '#212121',
+              main: '#212121',
+              messageAi: '#212121',
+              messageUser: '#2f2f2f',
+              inputBg: '#2f2f2f',
+              border: '#424242',
+              accent: '#10a37f',
+              accentHover: '#1a7f64',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Marked for Markdown -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Highlight.js for Code Highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <style>
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #4a4a4a; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #606060; }
+    
+    /* Markdown Styles in Chat */
+    .prose p { margin-bottom: 0.75rem; line-height: 1.65; }
+    .prose p:last-child { margin-bottom: 0; }
+    .prose pre { margin-top: 0.5rem; margin-bottom: 0.75rem; border-radius: 0.5rem; overflow-x: auto; }
+    .prose code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    .prose ul { list-style-type: disc; margin-left: 1.25rem; margin-bottom: 0.75rem; }
+    .prose ol { list-style-type: decimal; margin-left: 1.25rem; margin-bottom: 0.75rem; }
+    .prose table { width: 100%; border-collapse: collapse; margin-bottom: 0.75rem; }
+    .prose th, .prose td { border: 1px solid #4a4a4a; padding: 0.5rem; }
+    .prose blockquote { border-left: 3px solid #10a37f; padding-left: 0.75rem; color: #a3a3a3; }
+
+    /* Typing cursor */
+    .typing-cursor::after {
+      content: '▋';
+      display: inline-block;
+      vertical-align: middle;
+      animation: blink 1s infinite;
+      color: #10a37f;
+      margin-left: 2px;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* Audio wave animation */
+    .sound-wave { display: flex; align-items: flex-end; height: 16px; gap: 2px; }
+    .sound-wave span {
+      display: block; width: 3px; background: #10a37f; border-radius: 1px;
+      animation: wave 1.2s infinite ease-in-out;
+    }
+    .sound-wave span:nth-child(1) { height: 6px; animation-delay: 0.1s; }
+    .sound-wave span:nth-child(2) { height: 14px; animation-delay: 0.3s; }
+    .sound-wave span:nth-child(3) { height: 10px; animation-delay: 0.2s; }
+    .sound-wave span:nth-child(4) { height: 16px; animation-delay: 0.4s; }
+    .sound-wave span:nth-child(5) { height: 8px; animation-delay: 0.15s; }
+    @keyframes wave {
+      0%, 100% { transform: scaleY(0.4); }
+      50% { transform: scaleY(1); }
+    }
+  </style>
+</head>
+<body class="bg-gpt-main text-gray-100 flex h-screen w-screen overflow-hidden font-sans select-text">
+
+  <!-- Mobile Sidebar Overlay Backdrop -->
+  <div id="sidebar-backdrop" class="fixed inset-0 bg-black/60 z-30 hidden md:hidden" onclick="toggleSidebar()"></div>
+
+  <!-- Left Sidebar (ChatGPT Style) -->
+  <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-40 w-72 bg-gpt-sidebar flex flex-col border-r border-gpt-border/50 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out">
+    <!-- Top New Chat & Logo -->
+    <div class="p-3 flex items-center justify-between border-b border-gpt-border/40">
+      <button onclick="createNewChat()" class="flex-1 flex items-center gap-2 px-3 py-2.5 rounded-lg border border-gpt-border/70 hover:bg-gpt-sidebarHover text-sm font-medium transition text-gray-200">
+        <i data-lucide="plus" class="w-4 h-4 text-gpt-accent"></i>
+        <span>새로운 채팅</span>
+      </button>
+      <button onclick="toggleSidebar()" class="md:hidden ml-2 p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gpt-sidebarHover">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Chat History List -->
+    <div class="flex-1 overflow-y-auto px-2 py-3 space-y-1" id="chat-history-list">
+      <!-- Injected by JS -->
+    </div>
+
+    <!-- Server & Capabilities Status -->
+    <div class="p-3 border-t border-gpt-border/40 bg-gpt-sidebar/70 space-y-2 text-xs">
+      <div class="flex items-center justify-between font-semibold text-gray-300">
+        <span>MLX 엔진 통신 상태</span>
+        <span id="server-status-pill" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-800/60 font-mono">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          연결됨
+        </span>
+      </div>
+
+      <!-- Server API Endpoint Setting (For External Access) -->
+      <div class="space-y-1 bg-gpt-main/80 p-2 rounded border border-gpt-border/40">
+        <div class="flex items-center justify-between text-[11px] text-gray-400">
+          <span>MLX API 서버 주소</span>
+          <button onclick="resetApiBase()" class="text-[10px] text-gpt-accent hover:underline">자동감지</button>
+        </div>
+        <input
+          type="text"
+          id="api-base-input"
+          class="w-full bg-gpt-sidebar border border-gpt-border/70 rounded px-2 py-1 text-gray-200 text-xs font-mono focus:outline-none focus:border-gpt-accent"
+          placeholder="http://192.168.x.x:11234"
+          onchange="updateApiBase(this.value)"
+        />
+        <div class="text-[10px] text-gray-500 truncate" id="detected-host-hint"></div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-1.5 text-[11px] text-gray-400">
+        <div class="bg-gpt-main/60 p-1.5 rounded border border-gpt-border/40 text-center">
+          <div class="text-gpt-accent font-semibold">채팅 (Gemma)</div>
+          <div class="truncate text-[10px] text-emerald-400">Gemma 4</div>
+        </div>
+        <div class="bg-gpt-main/60 p-1.5 rounded border border-gpt-border/40 text-center">
+          <div class="text-indigo-400 font-semibold">이미지</div>
+          <div class="truncate text-[10px] text-gray-300">FLUX.2-4B</div>
+        </div>
+        <div class="bg-gpt-main/60 p-1.5 rounded border border-gpt-border/40 text-center">
+          <div class="text-amber-400 font-semibold">음성TTS</div>
+          <div class="truncate text-[10px] text-gray-300">Qwen3-TTS</div>
+        </div>
+      </div>
+
+      <!-- Settings: Auto-TTS Toggle & Voice Select -->
+      <div class="pt-2 border-t border-gpt-border/30 space-y-2">
+        <div class="flex items-center justify-between">
+          <label class="flex items-center gap-2 cursor-pointer text-gray-300">
+            <i data-lucide="volume-2" class="w-3.5 h-3.5 text-gpt-accent"></i>
+            <span>답변 자동 음성 읽기</span>
+          </label>
+          <input type="checkbox" id="auto-tts-toggle" checked onchange="toggleAutoTts(this.checked)" class="w-4 h-4 accent-gpt-accent cursor-pointer rounded">
+        </div>
+
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-gray-400">
+            <span>우선 음성 엔진</span>
+            <select id="tts-engine-select" class="bg-gpt-main border border-gpt-border/60 text-gray-300 text-xs rounded px-1.5 py-0.5 focus:outline-none focus:border-gpt-accent">
+              <option value="mlx" selected>Qwen3-TTS (로컬 딥러닝)</option>
+              <option value="browser">브라우저 Web Speech (시스템)</option>
+            </select>
+          </div>
+          <div class="flex items-center justify-between text-gray-400 pt-1">
+            <span class="text-[10px]">Qwen3-TTS 실패 시 브라우저 폴백</span>
+            <input type="checkbox" id="allow-browser-fallback" checked onchange="saveStorage()" class="w-3.5 h-3.5 accent-gpt-accent cursor-pointer rounded">
+          </div>
+        </div>
+      </div>
+
+      <!-- Clear All Chats -->
+      <button onclick="clearAllHistory()" class="w-full text-left flex items-center gap-2 px-2 py-1.5 text-gray-400 hover:text-red-400 hover:bg-gpt-sidebarHover rounded transition text-xs">
+        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+        <span>모든 대화 기록 삭제</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Chat Content -->
+  <main class="flex-1 flex flex-col h-full overflow-hidden bg-gpt-main relative">
+    <!-- Top Header Bar -->
+    <header class="h-14 border-b border-gpt-border/40 flex items-center justify-between px-4 z-10 bg-gpt-main/90 backdrop-blur">
+      <div class="flex items-center gap-3">
+        <button onclick="toggleSidebar()" class="md:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gpt-messageUser">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+        <div class="flex items-center gap-2">
+          <span class="font-semibold text-base text-gray-100 flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-gpt-accent inline-block"></span>
+            ChatGPT MLX
+          </span>
+          <span class="text-xs text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-800/60 font-mono hidden sm:inline-block">
+            Gemma 4 (4-bit) • 초당 약 40 토큰
+          </span>
+        </div>
+      </div>
+
+      <!-- Audio & Mode Action Controls in Header -->
+      <div class="flex items-center gap-2">
+        <!-- Live Audio Playing Status Indicator with Engine Name -->
+        <div id="audio-playing-indicator" class="hidden items-center gap-2 px-2.5 py-1 rounded-full bg-gpt-accent/15 border border-gpt-accent/40 text-gpt-accent text-xs">
+          <div class="sound-wave">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <span id="audio-playing-source" class="font-medium text-xs">음성 읽는 중...</span>
+          <button onclick="stopAudioPlayback()" class="ml-1 text-gray-300 hover:text-white p-0.5" title="음성 멈추기">
+            <i data-lucide="square" class="w-3 h-3 fill-current"></i>
+          </button>
+        </div>
+
+        <!-- Stop Speaking Button -->
+        <button id="btn-stop-audio" onclick="stopAudioPlayback()" class="hidden items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-950/60 hover:bg-red-900/80 border border-red-700/60 text-red-300 text-xs transition">
+          <i data-lucide="volume-x" class="w-3.5 h-3.5"></i>
+          <span>음성 정지</span>
+        </button>
+
+        <!-- Quick Mode Filter Buttons -->
+        <div class="flex bg-gpt-inputBg p-0.5 rounded-lg border border-gpt-border/40 text-xs">
+          <button onclick="setPromptMode('chat')" id="mode-btn-chat" class="px-2.5 py-1 rounded font-medium bg-gpt-accent text-white transition">💬 Gemma 대화</button>
+          <button onclick="setPromptMode('image')" id="mode-btn-image" class="px-2.5 py-1 rounded font-medium text-gray-400 hover:text-white transition">🎨 이미지</button>
+          <button onclick="setPromptMode('tts')" id="mode-btn-tts" class="px-2.5 py-1 rounded font-medium text-gray-400 hover:text-white transition">🎙️ 음성</button>
+        </div>
+
+        <!-- Tron Cyber Face Quick Toggle Button -->
+        <button onclick="toggleTronHud()" id="header-tron-btn" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-cyan-950/70 border border-cyan-500/50 hover:bg-cyan-900/60 text-cyan-300 text-xs font-mono transition" title="트론 사이버 벽면 얼굴 켜기/끄기">
+          <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span class="hidden sm:inline">TRON FACE</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- TRON Cyber Wall Face HUD Visualizer -->
+    <div id="tron-hud-container" class="relative w-full bg-black/95 border-b border-cyan-500/40 overflow-hidden select-none transition-all duration-300 shadow-[0_4px_25px_rgba(0,240,255,0.12)]">
+      <!-- HUD Top Status Bar -->
+      <div class="h-7 bg-black/80 border-b border-cyan-500/20 px-3 flex items-center justify-between text-[11px] font-mono tracking-wider">
+        <div class="flex items-center gap-2 text-cyan-400">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+          <span class="font-bold text-xs tracking-wider">TRON // MCP CYBER-WALL FACE</span>
+          <span id="tron-speech-badge" class="px-1.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-700/60 text-[10px]">STANDBY</span>
+        </div>
+        <div class="flex items-center gap-3 text-gray-400">
+          <!-- Color Themes -->
+          <div class="flex items-center gap-1.5">
+            <button onclick="setTronTheme('cyan')" class="w-2.5 h-2.5 rounded-full bg-cyan-400 hover:scale-125 transition" title="Neon Cyan"></button>
+            <button onclick="setTronTheme('orange')" class="w-2.5 h-2.5 rounded-full bg-orange-500 hover:scale-125 transition" title="Tron Orange"></button>
+            <button onclick="setTronTheme('green')" class="w-2.5 h-2.5 rounded-full bg-emerald-400 hover:scale-125 transition" title="Matrix Green"></button>
+            <button onclick="setTronTheme('purple')" class="w-2.5 h-2.5 rounded-full bg-purple-400 hover:scale-125 transition" title="Cyberpunk Purple"></button>
+          </div>
+          <button onclick="toggleTronSize()" id="tron-size-btn" class="hover:text-cyan-300 p-0.5 text-xs transition" title="화면 크기 확대/축소">
+            <i data-lucide="maximize-2" class="w-3.5 h-3.5"></i>
+          </button>
+          <button onclick="toggleTronHud()" id="tron-toggle-btn" class="hover:text-cyan-300 p-0.5 text-xs transition" title="HUD 접기/펼치기">
+            <i data-lucide="chevron-up" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Canvas Area -->
+      <div class="relative w-full h-56 sm:h-64 flex items-center justify-center bg-black overflow-hidden" id="tron-canvas-wrapper">
+        <canvas id="tron-canvas" class="w-full h-full block cursor-crosshair"></canvas>
+        <!-- CRT scanlines overlay -->
+        <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.3)_50%)] bg-[length:100%_4px] opacity-40"></div>
+        <!-- Vignette -->
+        <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(0,0,0,0.85)_100%)]"></div>
+        <!-- Bottom Waveform Oscilloscope Label -->
+        <div class="pointer-events-none absolute bottom-1.5 left-3 text-[10px] font-mono text-cyan-500/70 tracking-widest flex items-center gap-2">
+          <span>WAVEFORM: REALTIME AUDIO FFT</span>
+          <span id="tron-freq-label" class="text-cyan-400">0.0 Hz</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Messages Stream Area -->
+    <div id="messages-container" class="flex-1 overflow-y-auto px-4 py-6 md:px-0 space-y-6">
+      <!-- Welcome Empty State -->
+      <div id="empty-state" class="max-w-2xl mx-auto text-center my-auto py-12 px-4 space-y-8">
+        <div class="space-y-3">
+          <div class="w-16 h-16 rounded-2xl bg-gpt-accent/15 border border-gpt-accent/40 text-gpt-accent mx-auto flex items-center justify-center shadow-lg shadow-gpt-accent/10">
+            <i data-lucide="sparkles" class="w-8 h-8"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-100">Gemma 4가 준비되었습니다!</h2>
+          <p class="text-sm text-gray-400 max-w-md mx-auto">
+            Google DeepMind의 고성능 <strong class="text-emerald-400">Gemma 4</strong> 모델로 구동되며, 대화 완료 시 <strong class="text-gpt-accent">자동으로 음성을 읽어줍니다</strong>. 이미지 생성과 음성 합성도 함께 사용하실 수 있습니다.
+          </p>
+        </div>
+
+        <!-- Suggestion Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
+          <button onclick="fillPrompt('오늘 하루를 힘차게 시작할 수 있는 따뜻한 응원의 메시지를 작성해줘.')" class="p-3 rounded-xl bg-gpt-sidebar border border-gpt-border/60 hover:border-gpt-accent/70 hover:bg-gpt-sidebarHover transition text-xs space-y-1 group">
+            <div class="flex items-center gap-1.5 text-gpt-accent font-semibold">
+              <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
+              <span>Gemma 응원 메시지</span>
+            </div>
+            <div class="text-gray-400 group-hover:text-gray-300">초고속 Gemma 4로 따뜻한 하루 격려글 생성</div>
+          </button>
+
+          <button onclick="fillPrompt('/image 사이버펑크 서울의 네온사인 가득한 골목길, 초고화질 8k')" class="p-3 rounded-xl bg-gpt-sidebar border border-gpt-border/60 hover:border-indigo-500/70 hover:bg-gpt-sidebarHover transition text-xs space-y-1 group">
+            <div class="flex items-center gap-1.5 text-indigo-400 font-semibold">
+              <i data-lucide="image" class="w-3.5 h-3.5"></i>
+              <span>FLUX 이미지 생성</span>
+            </div>
+            <div class="text-gray-400 group-hover:text-gray-300">네온사인 가득한 사이버펑크 서울 골목길</div>
+          </button>
+
+          <button onclick="fillPrompt('/tts 안녕하세요! 로컬 Qwen3-TTS 음성 합성 모델이 직접 발화 중입니다.')" class="p-3 rounded-xl bg-gpt-sidebar border border-gpt-border/60 hover:border-amber-400/70 hover:bg-gpt-sidebarHover transition text-xs space-y-1 group">
+            <div class="flex items-center gap-1.5 text-amber-400 font-semibold">
+              <i data-lucide="mic" class="w-3.5 h-3.5"></i>
+              <span>순수 Qwen3-TTS 생성</span>
+            </div>
+            <div class="text-gray-400 group-hover:text-gray-300">Qwen3-TTS 모델로 원하는 문장 즉시 발화</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Chat Messages will be rendered here -->
+      <div id="chat-messages-inner" class="max-w-3xl mx-auto space-y-6"></div>
+      <div id="messages-bottom-anchor"></div>
+    </div>
+
+    <!-- Bottom Input Container (ChatGPT Style Floating Box) -->
+    <div class="p-4 md:pt-0 max-w-3xl w-full mx-auto relative z-10">
+      <!-- Input Mode Hint Banner -->
+      <div id="input-mode-badge" class="hidden mb-2 items-center justify-between text-xs px-3 py-1.5 rounded-lg bg-gpt-sidebar border border-gpt-border/60 text-gray-300">
+        <span id="input-mode-text" class="flex items-center gap-1.5">
+          <i data-lucide="image" class="w-3.5 h-3.5 text-indigo-400"></i>
+          <span>이미지 생성 모드 (/image)</span>
+        </span>
+        <button onclick="setPromptMode('chat')" class="text-gray-400 hover:text-white">✕ 일반 대화로 복귀</button>
+      </div>
+
+      <!-- Main Input Box -->
+      <div class="bg-gpt-inputBg rounded-2xl border border-gpt-border/70 shadow-2xl focus-within:border-gpt-accent transition-all p-3 relative">
+        <textarea
+          id="chat-input"
+          rows="1"
+          placeholder="Gemma 4에게 메시지를 입력하세요... (이미지: /image 프롬프트, 음성: /tts 문장)"
+          class="w-full bg-transparent text-gray-100 text-sm md:text-base resize-none focus:outline-none max-h-48 overflow-y-auto leading-relaxed placeholder-gray-500"
+          onkeydown="handleTextareaKeyDown(event)"
+          oninput="handleTextareaInput(this)"
+        ></textarea>
+
+        <!-- Bottom Action Buttons inside Input -->
+        <div class="flex items-center justify-between pt-2 border-t border-gpt-border/30 text-gray-400">
+          <div class="flex items-center gap-1">
+            <!-- STT Voice Input Button -->
+            <button id="btn-stt" onclick="toggleSTT()" class="p-2 rounded-lg hover:text-white hover:bg-gpt-messageUser transition relative" title="음성으로 입력하기 (마이크)">
+              <i data-lucide="mic" class="w-4 h-4"></i>
+              <span id="stt-recording-dot" class="hidden absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+            </button>
+
+            <!-- Quick Image Button -->
+            <button onclick="setPromptMode('image')" class="p-2 rounded-lg hover:text-indigo-400 hover:bg-gpt-messageUser transition flex items-center gap-1 text-xs" title="FLUX 이미지 생성">
+              <i data-lucide="image" class="w-4 h-4"></i>
+              <span class="hidden sm:inline">이미지</span>
+            </button>
+
+            <!-- Quick TTS Button -->
+            <button onclick="setPromptMode('tts')" class="p-2 rounded-lg hover:text-amber-400 hover:bg-gpt-messageUser transition flex items-center gap-1 text-xs" title="음성 합성">
+              <i data-lucide="volume-2" class="w-4 h-4"></i>
+              <span class="hidden sm:inline">음성</span>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <!-- Stop Generating Button -->
+            <button id="btn-stop-gen" onclick="abortGeneration()" class="hidden items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-950/70 border border-red-700/60 hover:bg-red-900/80 text-red-300 text-xs font-medium transition">
+              <i data-lucide="square" class="w-3 h-3 fill-current"></i>
+              <span>생성 중단</span>
+            </button>
+
+            <!-- Send Button -->
+            <button id="btn-send" onclick="submitPrompt()" class="p-2 rounded-xl bg-gpt-accent hover:bg-gpt-accentHover disabled:opacity-40 disabled:hover:bg-gpt-accent text-white transition flex items-center justify-center">
+              <i data-lucide="arrow-up" class="w-4 h-4 stroke-[2.5]"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Disclaimer -->
+      <div class="text-[11px] text-center text-gray-500 mt-2 flex items-center justify-center gap-3">
+        <span>기본 LLM: <strong class="text-emerald-400">Gemma 4 (4-bit)</strong></span>
+        <span>•</span>
+        <span id="footer-api-host">호스트 연결 중...</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- Image Modal View -->
+  <div id="image-modal" class="fixed inset-0 z-50 bg-black/90 hidden items-center justify-center p-4 backdrop-blur" onclick="closeImageModal()">
+    <div class="relative max-w-4xl max-h-full flex flex-col items-center" onclick="event.stopPropagation()">
+      <img id="modal-img" src="" alt="Generated Preview" class="max-h-[85vh] max-w-full rounded-lg shadow-2xl object-contain border border-gpt-border">
+      <div class="mt-3 flex items-center gap-3">
+        <a id="modal-download" href="" download="flux_generated.png" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-gpt-accent hover:bg-gpt-accentHover text-white text-xs font-semibold">
+          <i data-lucide="download" class="w-4 h-4"></i>
+          <span>고화질 다운로드 (PNG)</span>
+        </a>
+        <button onclick="closeImageModal()" class="px-4 py-2 rounded-lg bg-gpt-inputBg hover:bg-gpt-border text-gray-200 text-xs">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // Dynamic API Base Configuration (Crucial for External & LAN Access)
+    // =========================================================================
+    function getAutoDetectedApiBase() {
+      if (location.protocol === 'file:') return 'http://127.0.0.1:11234';
+      const hostname = location.hostname || '127.0.0.1';
+      return `http://${hostname}:11234`;
+    }
+
+    let API_BASE = localStorage.getItem('hero_mlx_api_base') || getAutoDetectedApiBase();
+    const MODEL_CHAT = 'mlx-community/gemma-4-e4b-it-4bit'; // 🔥 Default: Gemma 4
+    const MODEL_IMAGE = 'Runpod/FLUX.2-klein-4B-mflux-4bit';
+    const MODEL_TTS = 'mlx-community/Qwen3-TTS-12Hz-0.6B-Base-8bit';
+
+    let currentChatId = null;
+    let chats = {};
+    let promptMode = 'chat';
+    let autoTTS = true;
+    let ttsEngine = 'mlx';
+    let allowBrowserFallback = true;
+    let activeAudio = null;
+    let currentSpeakGen = 0;
+    let ttsAbortController = null;
+    let abortController = null;
+    let isGenerating = false;
+    let speechRecognition = null;
+    let isRecordingSTT = false;
+
+    marked.setOptions({
+      highlight: function(code, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          return hljs.highlight(code, { language: lang }).value;
+        }
+        return hljs.highlightAuto(code).value;
+      },
+      breaks: true
+    });
+
+    function updateApiBase(newUrl) {
+      if (!newUrl) return;
+      API_BASE = newUrl.trim().replace(/\/+$/, '');
+      localStorage.setItem('hero_mlx_api_base', API_BASE);
+      updateHostDisplay();
+      checkServerHealth();
+    }
+
+    function resetApiBase() {
+      localStorage.removeItem('hero_mlx_api_base');
+      API_BASE = getAutoDetectedApiBase();
+      document.getElementById('api-base-input').value = API_BASE;
+      updateHostDisplay();
+      checkServerHealth();
+    }
+
+    function updateHostDisplay() {
+      document.getElementById('api-base-input').value = API_BASE;
+      document.getElementById('footer-api-host').textContent = `MLX 서버: ${API_BASE}`;
+      document.getElementById('detected-host-hint').textContent = `현재 접속지 기준: ${getAutoDetectedApiBase()}`;
+    }
+
+    // =========================================================================
+    // Storage & Session Management
+    // =========================================================================
+    function loadStorage() {
+      try {
+        const savedChats = localStorage.getItem('hero_mlx_chats_v1');
+        if (savedChats) chats = JSON.parse(savedChats);
+        
+        const savedAutoTTS = localStorage.getItem('hero_mlx_auto_tts');
+        if (savedAutoTTS !== null) autoTTS = (savedAutoTTS === 'true');
+        
+        const savedEngine = localStorage.getItem('hero_mlx_tts_engine');
+        if (savedEngine) ttsEngine = savedEngine;
+
+        const savedFallback = localStorage.getItem('hero_mlx_fallback');
+        if (savedFallback !== null) allowBrowserFallback = (savedFallback === 'true');
+
+        document.getElementById('auto-tts-toggle').checked = autoTTS;
+        document.getElementById('tts-engine-select').value = ttsEngine;
+        document.getElementById('allow-browser-fallback').checked = allowBrowserFallback;
+        updateHostDisplay();
+      } catch (e) {
+        console.error('Failed to load storage:', e);
+      }
+    }
+
+    function saveStorage() {
+      try {
+        localStorage.setItem('hero_mlx_chats_v1', JSON.stringify(chats));
+        localStorage.setItem('hero_mlx_auto_tts', autoTTS.toString());
+        localStorage.setItem('hero_mlx_tts_engine', ttsEngine);
+        allowBrowserFallback = document.getElementById('allow-browser-fallback').checked;
+        localStorage.setItem('hero_mlx_fallback', allowBrowserFallback.toString());
+      } catch (e) {
+        console.error('Failed to save storage:', e);
+      }
+    }
+
+    function createNewChat() {
+      stopAudioPlayback();
+      const id = 'chat_' + Date.now();
+      chats[id] = {
+        title: '새로운 대화',
+        messages: [],
+        createdAt: Date.now()
+      };
+      currentChatId = id;
+      saveStorage();
+      renderChatHistory();
+      renderCurrentChat();
+      setPromptMode('chat');
+      document.getElementById('chat-input').focus();
+    }
+
+    function selectChat(id) {
+      if (!chats[id]) return;
+      stopAudioPlayback();
+      currentChatId = id;
+      renderChatHistory();
+      renderCurrentChat();
+      if (window.innerWidth < 768) toggleSidebar(false);
+    }
+
+    function deleteChat(id, event) {
+      if (event) event.stopPropagation();
+      delete chats[id];
+      saveStorage();
+      if (currentChatId === id) {
+        const remaining = Object.keys(chats);
+        if (remaining.length > 0) {
+          selectChat(remaining[0]);
+        } else {
+          createNewChat();
+        }
+      } else {
+        renderChatHistory();
+      }
+    }
+
+    function clearAllHistory() {
+      if (!confirm('모든 대화 기록을 삭제하시겠습니까?')) return;
+      stopAudioPlayback();
+      chats = {};
+      localStorage.removeItem('hero_mlx_chats_v1');
+      createNewChat();
+    }
+
+    // =========================================================================
+    // UI Renderers
+    // =========================================================================
+    function renderChatHistory() {
+      const listEl = document.getElementById('chat-history-list');
+      listEl.innerHTML = '';
+
+      const sortedIds = Object.keys(chats).sort((a, b) => (chats[b].createdAt || 0) - (chats[a].createdAt || 0));
+
+      sortedIds.forEach(id => {
+        const chat = chats[id];
+        const isActive = id === currentChatId;
+        const item = document.createElement('div');
+        item.className = `group flex items-center justify-between px-3 py-2 rounded-lg text-sm cursor-pointer transition ${
+          isActive ? 'bg-gpt-sidebarHover text-white font-medium' : 'text-gray-400 hover:text-gray-200 hover:bg-gpt-sidebarHover/60'
+        }`;
+        item.onclick = () => selectChat(id);
+
+        item.innerHTML = `
+          <div class="flex items-center gap-2.5 truncate flex-1 mr-2">
+            <i data-lucide="message-square" class="w-4 h-4 shrink-0 ${isActive ? 'text-gpt-accent' : 'text-gray-500'}"></i>
+            <span class="truncate text-xs">${escapeHtml(chat.title || '새로운 대화')}</span>
+          </div>
+          <button onclick="deleteChat('${id}', event)" class="opacity-0 group-hover:opacity-100 p-1 rounded hover:text-red-400 transition" title="삭제">
+            <i data-lucide="trash" class="w-3.5 h-3.5"></i>
+          </button>
+        `;
+        listEl.appendChild(item);
+      });
+
+      lucide.createIcons();
+    }
+
+    function renderCurrentChat() {
+      const container = document.getElementById('chat-messages-inner');
+      const emptyState = document.getElementById('empty-state');
+      container.innerHTML = '';
+
+      const chat = chats[currentChatId];
+      if (!chat || chat.messages.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      chat.messages.forEach((msg, idx) => {
+        renderMessageItem(msg, idx, container);
+      });
+
+      scrollToBottom();
+      lucide.createIcons();
+    }
+
+    function renderMessageItem(msg, idx, container) {
+      const isUser = msg.role === 'user';
+      const wrapper = document.createElement('div');
+      wrapper.className = `flex gap-3.5 text-sm md:text-base ${isUser ? 'justify-end' : 'justify-start'}`;
+
+      if (isUser) {
+        wrapper.innerHTML = `
+          <div class="max-w-[85%] sm:max-w-[75%] bg-gpt-messageUser text-gray-100 px-4 py-2.5 rounded-2xl rounded-tr-sm border border-gpt-border/40 shadow-sm leading-relaxed whitespace-pre-wrap select-text">
+            ${escapeHtml(msg.content)}
+          </div>
+          <div class="w-8 h-8 rounded-full bg-gpt-border/70 flex items-center justify-center text-gray-300 shrink-0">
+            <i data-lucide="user" class="w-4 h-4"></i>
+          </div>
+        `;
+      } else {
+        const inner = document.createElement('div');
+        inner.className = 'flex gap-3.5 w-full';
+
+        let contentHtml = '';
+        if (msg.type === 'image') {
+          contentHtml = `
+            <div class="space-y-2 mt-1">
+              <div class="text-xs text-indigo-400 font-medium flex items-center gap-1.5">
+                <i data-lucide="image" class="w-3.5 h-3.5"></i>
+                <span>FLUX.2 Klein 생성 이미지</span>
+              </div>
+              <div class="relative group inline-block rounded-xl overflow-hidden border border-gpt-border shadow-lg cursor-pointer max-w-md" onclick="openImageModal('${msg.imageData}')">
+                <img src="${msg.imageData}" alt="Generated Image" class="w-full h-auto object-cover max-h-[420px]">
+                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-3">
+                  <span class="text-xs bg-black/70 px-3 py-1.5 rounded-full text-white font-medium">크게 보기</span>
+                  <a href="${msg.imageData}" download="flux_${Date.now()}.png" onclick="event.stopPropagation()" class="p-2 rounded-full bg-gpt-accent text-white hover:bg-gpt-accentHover">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="text-xs text-gray-400 italic">프롬프트: "${escapeHtml(msg.prompt || '')}"</div>
+            </div>
+          `;
+        } else if (msg.type === 'tts') {
+          contentHtml = `
+            <div class="space-y-2.5 p-3.5 rounded-xl bg-gpt-inputBg/80 border border-gpt-border/60 max-w-md mt-1">
+              <div class="text-xs text-amber-400 font-medium flex items-center justify-between">
+                <span class="flex items-center gap-1.5">
+                  <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+                  <span>Qwen3-TTS 공식 AI 음성 (WAV)</span>
+                </span>
+                <a href="${msg.audioUrl}" download="qwen3_tts_${Date.now()}.wav" class="text-[10px] text-gray-400 hover:text-white underline">WAV 다운로드</a>
+              </div>
+              <audio controls autoplay class="w-full h-10 accent-gpt-accent" src="${msg.audioUrl}"></audio>
+              <div class="text-xs text-gray-300">"${escapeHtml(msg.content)}"</div>
+            </div>
+          `;
+        } else {
+          contentHtml = `
+            <div class="prose prose-invert max-w-none text-gray-100 leading-relaxed overflow-hidden">
+              ${marked.parse(msg.content || '')}
+            </div>
+          `;
+        }
+
+        inner.innerHTML = `
+          <div class="w-8 h-8 rounded-full bg-emerald-600/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5" title="Gemma 4">
+            <i data-lucide="bot" class="w-4 h-4"></i>
+          </div>
+          <div class="flex-1 space-y-2 overflow-hidden">
+            ${contentHtml}
+            <div class="flex items-center gap-2 pt-1 text-xs text-gray-400">
+              <button onclick="speakText(\`${escapeForAttr(msg.content || '')}\`)" class="flex items-center gap-1 hover:text-gpt-accent transition p-1 rounded hover:bg-gpt-messageUser" title="음성으로 다시 듣기">
+                <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+                <span>다시 듣기</span>
+              </button>
+              <button onclick="copyToClipboard(\`${escapeForAttr(msg.content || '')}\`)" class="flex items-center gap-1 hover:text-white transition p-1 rounded hover:bg-gpt-messageUser" title="텍스트 복사">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>복사</span>
+              </button>
+              <span class="text-[10px] text-gray-500 ml-auto">Gemma 4</span>
+            </div>
+          </div>
+        `;
+        wrapper.appendChild(inner);
+      }
+
+      container.appendChild(wrapper);
+    }
+
+    // =========================================================================
+    // Core Logic: Send / Stream / Image / TTS
+    // =========================================================================
+    async function submitPrompt() {
+      if (isGenerating) return;
+      const inputEl = document.getElementById('chat-input');
+      let text = inputEl.value.trim();
+      if (!text) return;
+
+      // 🔥 새 질문 제출 즉시 기존 재생 및 TTS 요청 즉각 취소
+      stopAudioPlayback();
+
+      inputEl.value = '';
+      resetTextareaHeight(inputEl);
+
+      if (!currentChatId || !chats[currentChatId]) {
+        createNewChat();
+      }
+
+      const chat = chats[currentChatId];
+
+      if (chat.messages.length === 0) {
+        chat.title = text.slice(0, 24) + (text.length > 24 ? '...' : '');
+        renderChatHistory();
+      }
+
+      let effectiveMode = promptMode;
+      if (text.startsWith('/image ') || text.startsWith('/img ')) {
+        effectiveMode = 'image';
+        text = text.replace(/^\/(image|img)\s+/, '').trim();
+      } else if (text.startsWith('/tts ') || text.startsWith('/voice ')) {
+        effectiveMode = 'tts';
+        text = text.replace(/^\/(tts|voice)\s+/, '').trim();
+      }
+
+      chat.messages.push({
+        role: 'user',
+        content: (effectiveMode === 'image' ? '🎨 [이미지 생성 요청] ' : effectiveMode === 'tts' ? '🎙️ [음성 생성 요청] ' : '') + text,
+        timestamp: Date.now()
+      });
+      saveStorage();
+      renderCurrentChat();
+
+      if (effectiveMode === 'image') {
+        await executeImageGeneration(text);
+      } else if (effectiveMode === 'tts') {
+        await executeDirectTTS(text);
+      } else {
+        await executeChatCompletion();
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // 1. Text Chat with SSE Streaming via Gemma 4
+    // -------------------------------------------------------------------------
+    async function executeChatCompletion() {
+      setGeneratingState(true);
+      const chat = chats[currentChatId];
+      const container = document.getElementById('chat-messages-inner');
+
+      const assistantMsg = {
+        role: 'assistant',
+        content: '',
+        type: 'text',
+        timestamp: Date.now()
+      };
+      chat.messages.push(assistantMsg);
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'flex gap-3.5 text-sm md:text-base justify-start';
+      wrapper.innerHTML = `
+        <div class="w-8 h-8 rounded-full bg-emerald-600/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+          <i data-lucide="bot" class="w-4 h-4"></i>
+        </div>
+        <div class="flex-1 space-y-2 overflow-hidden">
+          <div id="live-stream-content" class="prose prose-invert max-w-none text-gray-100 leading-relaxed overflow-hidden typing-cursor"></div>
+        </div>
+      `;
+      container.appendChild(wrapper);
+      lucide.createIcons();
+      scrollToBottom();
+
+      const liveContentEl = document.getElementById('live-stream-content');
+      abortController = new AbortController();
+
+      const apiMessages = [
+        { role: 'system', content: 'You are Gemma, a brilliant and friendly AI assistant developed by Google DeepMind. Always reply clearly in fluent Korean. Use clean markdown formatting.' },
+        ...chat.messages.slice(0, -1).map(m => ({
+          role: m.role,
+          content: m.content || ''
+        }))
+      ];
+
+      let fullText = '';
+
+      try {
+        let response = await fetch(`${API_BASE}/v1/chat/completions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: MODEL_CHAT,
+            messages: apiMessages,
+            stream: true,
+            temperature: 0.7,
+            max_tokens: 2048
+          }),
+          signal: abortController.signal
+        });
+
+        if (response.status === 503) {
+          liveContentEl.innerHTML = '<span class="text-emerald-400 text-xs italic">Gemma 4 모델을 메모리에 로드하는 중입니다. 잠시만 기다려주세요...</span>';
+          await fetch(`${API_BASE}/v1/load-model`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ model: MODEL_CHAT })
+          });
+          response = await fetch(`${API_BASE}/v1/chat/completions`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model: MODEL_CHAT,
+              messages: apiMessages,
+              stream: true,
+              temperature: 0.7,
+              max_tokens: 2048
+            }),
+            signal: abortController.signal
+          });
+        }
+
+        if (!response.ok) {
+          const errBody = await response.text();
+          throw new Error(`HTTP ${response.status}: ${errBody}`);
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        let buffer = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop();
+
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed || trimmed.startsWith(':')) continue;
+            if (trimmed === 'data: [DONE]') break;
+            if (trimmed.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(trimmed.slice(6));
+                const delta = data.choices?.[0]?.delta?.content || '';
+                if (delta) {
+                  fullText += delta;
+                  liveContentEl.innerHTML = marked.parse(fullText);
+                  scrollToBottom();
+                }
+              } catch (e) {}
+            }
+          }
+        }
+
+        liveContentEl.classList.remove('typing-cursor');
+        assistantMsg.content = fullText;
+        saveStorage();
+        renderCurrentChat();
+
+        if (autoTTS && fullText.trim()) {
+          speakText(fullText);
+        }
+
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          assistantMsg.content = fullText + ' *(생성이 중단되었습니다)*';
+        } else {
+          assistantMsg.content = fullText + `\n\n*(오류 발생: ${err.message} - API 주소: ${API_BASE})*`;
+        }
+        liveContentEl?.classList.remove('typing-cursor');
+        saveStorage();
+        renderCurrentChat();
+      } finally {
+        setGeneratingState(false);
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // 2. Image Generation (FLUX.2-klein-4B)
+    // -------------------------------------------------------------------------
+    async function executeImageGeneration(prompt) {
+      setGeneratingState(true);
+      const chat = chats[currentChatId];
+      const container = document.getElementById('chat-messages-inner');
+
+      const liveWrapper = document.createElement('div');
+      liveWrapper.className = 'flex gap-3.5 text-sm md:text-base justify-start';
+      liveWrapper.innerHTML = `
+        <div class="w-8 h-8 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-400 flex items-center justify-center shrink-0 mt-0.5">
+          <i data-lucide="image" class="w-4 h-4"></i>
+        </div>
+        <div class="flex-1 space-y-2">
+          <div class="flex items-center gap-2 text-indigo-400 text-sm font-medium">
+            <span class="w-2 h-2 rounded-full bg-indigo-400 animate-ping"></span>
+            <span>FLUX.2 모델로 고화질 이미지 생성 중입니다... (약 10~30초 소요)</span>
+          </div>
+          <div class="text-xs text-gray-400 italic">"${escapeHtml(prompt)}"</div>
+        </div>
+      `;
+      container.appendChild(liveWrapper);
+      lucide.createIcons();
+      scrollToBottom();
+
+      abortController = new AbortController();
+
+      try {
+        const response = await fetch(`${API_BASE}/v1/images/generations`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: MODEL_IMAGE,
+            prompt: prompt,
+            size: '1024x1024',
+            steps: 4
+          }),
+          signal: abortController.signal
+        });
+
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(`이미지 생성 실패 (${response.status}): ${errText}`);
+        }
+
+        const data = await response.json();
+        const b64 = data.data?.[0]?.b64_json;
+        if (!b64) throw new Error('서버로부터 이미지 데이터를 받지 못했습니다.');
+
+        const imageDataUrl = `data:image/png;base64,${b64}`;
+        chat.messages.push({
+          role: 'assistant',
+          type: 'image',
+          imageData: imageDataUrl,
+          prompt: prompt,
+          timestamp: Date.now()
+        });
+
+        saveStorage();
+        renderCurrentChat();
+
+        if (autoTTS) {
+          speakText(`"${prompt}"에 대한 이미지가 성공적으로 생성되었습니다.`);
+        }
+
+      } catch (err) {
+        chat.messages.push({
+          role: 'assistant',
+          content: `❌ 이미지 생성 오류: ${err.message}`,
+          type: 'text',
+          timestamp: Date.now()
+        });
+        saveStorage();
+        renderCurrentChat();
+      } finally {
+        setGeneratingState(false);
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. Direct TTS Generation (Qwen3-TTS)
+    // -------------------------------------------------------------------------
+    async function executeDirectTTS(text) {
+      setGeneratingState(true);
+      const chat = chats[currentChatId];
+
+      try {
+        const audioUrl = await generateTTSAudioUrl(text);
+        if (!audioUrl) throw new Error('Qwen3-TTS 오디오 생성 실패');
+
+        chat.messages.push({
+          role: 'assistant',
+          type: 'tts',
+          content: text,
+          audioUrl: audioUrl,
+          timestamp: Date.now()
+        });
+        saveStorage();
+        renderCurrentChat();
+
+        playAudio(audioUrl, 'Qwen3-TTS (WAV)');
+      } catch (err) {
+        chat.messages.push({
+          role: 'assistant',
+          content: `❌ Qwen3-TTS 음성 생성 오류: ${err.message}`,
+          type: 'text',
+          timestamp: Date.now()
+        });
+        saveStorage();
+        renderCurrentChat();
+      } finally {
+        setGeneratingState(false);
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // Audio Engine: Qwen3-TTS with Transparent UI Indicator
+    // -------------------------------------------------------------------------
+    async function generateTTSAudioUrl(text, gen) {
+      const cleanText = prepareTextForSpeech(text);
+      if (!cleanText) return null;
+
+      const ttsInput = cleanText.length > 150 ? cleanText.slice(0, 150) + '...' : cleanText;
+      updateAudioStatusUI(true, 'Qwen3-TTS 합성 요청 중...');
+
+      // 이전 요청이 있었다면 취소하고 새 AbortController 생성
+      if (ttsAbortController) {
+        try { ttsAbortController.abort(); } catch(e) {}
+      }
+      ttsAbortController = new AbortController();
+
+      try {
+        const res = await fetch(`${API_BASE}/v1/audio/speech`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: MODEL_TTS,
+            input: ttsInput,
+            voice: 'default'
+          }),
+          signal: ttsAbortController.signal
+        });
+
+        // 기다리는 도중 새로운 응답이 도착했으면 즉시 폐기
+        if (gen !== currentSpeakGen) return null;
+
+        if (res.ok) {
+          const blob = await res.blob();
+          if (gen !== currentSpeakGen) return null;
+          return URL.createObjectURL(blob);
+        } else {
+          console.warn('MLX TTS returned non-OK status:', res.status);
+        }
+      } catch (e) {
+        if (e.name !== 'AbortError') {
+          console.warn('MLX TTS fetch error:', e);
+        }
+      }
+      return null;
+    }
+
+    async function speakText(text) {
+      // 🔥 핵심: 기존 TTS 재생 및 진행 중인 모든 합성 요청을 즉시 강제 취소!
+      stopAudioPlayback();
+      const thisGen = currentSpeakGen;
+
+      const clean = prepareTextForSpeech(text);
+      if (!clean) return;
+
+      // 1. MLX Qwen3-TTS 시도
+      if (ttsEngine === 'mlx') {
+        updateAudioStatusUI(true, 'Qwen3-TTS 모델 음성 합성 중...');
+        const audioUrl = await generateTTSAudioUrl(clean, thisGen);
+        
+        // 이 사이에 또 다른 새로운 응답이 도착했으면 재생하지 않고 바로 취소
+        if (thisGen !== currentSpeakGen) {
+          if (audioUrl) URL.revokeObjectURL(audioUrl);
+          return;
+        }
+
+        if (audioUrl) {
+          playAudio(audioUrl, 'Qwen3-TTS 로컬 음성', thisGen, clean);
+          return;
+        }
+
+        if (!allowBrowserFallback) {
+          updateAudioStatusUI(false);
+          return;
+        }
+      }
+
+      // 2. 브라우저 Web Speech 폴백
+      if (thisGen !== currentSpeakGen) return;
+      updateAudioStatusUI(true, '브라우저 기본 음성 (Web Speech)');
+      speakWithBrowserTTS(clean, thisGen);
+    }
+
+    function playAudio(url, label, gen, fallbackText) {
+      if (gen !== undefined && gen !== currentSpeakGen) {
+        URL.revokeObjectURL(url);
+        return;
+      }
+
+      if (activeAudio) {
+        try {
+          activeAudio.pause();
+          activeAudio.currentTime = 0;
+          activeAudio.src = '';
+        } catch(e) {}
+        activeAudio = null;
+      }
+
+      const audio = new Audio(url);
+      activeAudio = audio;
+
+      audio.onplay = () => {
+        if (gen !== undefined && gen !== currentSpeakGen) {
+          audio.pause();
+          audio.src = '';
+          return;
+        }
+        updateAudioStatusUI(true, label || 'Qwen3-TTS 음성');
+        // 🌟 트론 사이버 페이스 실시간 오디오 분석기 연결
+        if (window.tronEngine) window.tronEngine.connectAudio(audio);
+      };
+      audio.onended = () => {
+        URL.revokeObjectURL(url);
+        if (activeAudio === audio) {
+          activeAudio = null;
+          updateAudioStatusUI(false);
+          if (window.tronEngine) window.tronEngine.stopSpeech();
+        }
+      };
+      audio.onerror = () => {
+        URL.revokeObjectURL(url);
+        if (activeAudio === audio) {
+          activeAudio = null;
+          updateAudioStatusUI(false);
+          if (window.tronEngine) window.tronEngine.stopSpeech();
+        }
+      };
+
+      audio.play().catch(e => {
+        console.warn('Auto-play blocked or error:', e);
+        if ((gen === undefined || gen === currentSpeakGen) && allowBrowserFallback && fallbackText) {
+          speakWithBrowserTTS(fallbackText, gen);
+        } else {
+          updateAudioStatusUI(false);
+          if (window.tronEngine) window.tronEngine.stopSpeech();
+        }
+      });
+    }
+
+    function speakWithBrowserTTS(text, gen) {
+      if (!('speechSynthesis' in window)) {
+        updateAudioStatusUI(false);
+        return;
+      }
+
+      // 이전 진행 중이던 모든 브라우저 음성 발화 즉시 강제 취소
+      window.speechSynthesis.cancel();
+
+      if (gen !== undefined && gen !== currentSpeakGen) return;
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'ko-KR';
+      utterance.rate = 1.05;
+      utterance.pitch = 1.0;
+
+      const voices = window.speechSynthesis.getVoices();
+      const koVoice = voices.find(v => v.lang.includes('ko') || v.name.includes('Korean'));
+      if (koVoice) utterance.voice = koVoice;
+
+      utterance.onstart = () => {
+        if (gen !== undefined && gen !== currentSpeakGen) {
+          window.speechSynthesis.cancel();
+          return;
+        }
+        updateAudioStatusUI(true, '브라우저 음성 (시스템 TTS)');
+        // 🌟 트론 사이버 페이스 음성 립싱크 시뮬레이션 가동
+        if (window.tronEngine) window.tronEngine.startSyntheticSpeech();
+      };
+      utterance.onend = () => {
+        if (gen === undefined || gen === currentSpeakGen) {
+          updateAudioStatusUI(false);
+          if (window.tronEngine) window.tronEngine.stopSpeech();
+        }
+      };
+      utterance.onerror = () => {
+        updateAudioStatusUI(false);
+        if (window.tronEngine) window.tronEngine.stopSpeech();
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function stopAudioPlayback() {
+      // 새로운 세대 번호 부여 -> 이전 비동기 작업 모두 무효화
+      currentSpeakGen++;
+
+      // 🌟 트론 사이버 페이스 정지
+      if (window.tronEngine) window.tronEngine.stopSpeech();
+
+      // 1. 진행 중인 TTS fetch 요청 즉시 취소
+      if (ttsAbortController) {
+        try { ttsAbortController.abort(); } catch(e) {}
+        ttsAbortController = null;
+      }
+
+      // 2. 현재 재생 중인 Audio 요소 즉시 정지 및 음소거
+      if (activeAudio) {
+        try {
+          activeAudio.pause();
+          activeAudio.currentTime = 0;
+          activeAudio.src = '';
+        } catch(e) {}
+        activeAudio = null;
+      }
+
+      // 3. 브라우저 Web Speech 발화 즉시 취소
+      if ('speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.pause();
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.resume();
+        } catch(e) {}
+      }
+
+      updateAudioStatusUI(false);
+    }
+
+    function updateAudioStatusUI(isPlaying, sourceLabel) {
+      const pill = document.getElementById('audio-playing-indicator');
+      const stopBtn = document.getElementById('btn-stop-audio');
+      const labelEl = document.getElementById('audio-playing-source');
+      if (isPlaying) {
+        pill.classList.remove('hidden');
+        pill.classList.add('flex');
+        stopBtn.classList.remove('hidden');
+        stopBtn.classList.add('flex');
+        if (sourceLabel) labelEl.textContent = sourceLabel;
+      } else {
+        pill.classList.add('hidden');
+        pill.classList.remove('flex');
+        stopBtn.classList.add('hidden');
+        stopBtn.classList.remove('flex');
+      }
+    }
+
+    function prepareTextForSpeech(text) {
+      if (!text) return '';
+      return text
+        .replace(/```[\s\S]*?```/g, ' 코드 블록을 참고해주세요. ')
+        .replace(/`([^`]+)`/g, '$1')
+        .replace(/!\[.*?\]\(.*?\)/g, '')
+        .replace(/\[([^\]]+)\]\((.*?)\)/g, '$1')
+        .replace(/[#*>\-_~]/g, '')
+        .replace(/\n+/g, ' ')
+        .trim();
+    }
+
+    // -------------------------------------------------------------------------
+    // STT (Speech-to-Text) via Web Speech API
+    // -------------------------------------------------------------------------
+    function toggleSTT() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert('이 브라우저는 음성 인식(STT)을 지원하지 않습니다. Chrome/Safari를 권장합니다.');
+        return;
+      }
+
+      if (isRecordingSTT) {
+        stopSTT();
+      } else {
+        startSTT();
+      }
+    }
+
+    function startSTT() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      speechRecognition = new SpeechRecognition();
+      speechRecognition.lang = 'ko-KR';
+      speechRecognition.interimResults = true;
+      speechRecognition.continuous = false;
+
+      const input = document.getElementById('chat-input');
+      const dot = document.getElementById('stt-recording-dot');
+
+      speechRecognition.onstart = () => {
+        isRecordingSTT = true;
+        dot.classList.remove('hidden');
+      };
+
+      speechRecognition.onresult = (e) => {
+        let transcript = '';
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          transcript += e.results[i][0].transcript;
+        }
+        input.value = transcript;
+        handleTextareaInput(input);
+      };
+
+      speechRecognition.onend = () => {
+        isRecordingSTT = false;
+        dot.classList.add('hidden');
+      };
+
+      speechRecognition.onerror = (e) => {
+        console.warn('STT Error:', e);
+        isRecordingSTT = false;
+        dot.classList.add('hidden');
+      };
+
+      speechRecognition.start();
+    }
+
+    function stopSTT() {
+      if (speechRecognition) {
+        speechRecognition.stop();
+        speechRecognition = null;
+      }
+      isRecordingSTT = false;
+      document.getElementById('stt-recording-dot').classList.add('hidden');
+    }
+
+    // =========================================================================
+    // UI Helpers & Event Handlers
+    // =========================================================================
+    function setPromptMode(mode) {
+      promptMode = mode;
+      const chatBtn = document.getElementById('mode-btn-chat');
+      const imgBtn = document.getElementById('mode-btn-image');
+      const ttsBtn = document.getElementById('mode-btn-tts');
+      const badge = document.getElementById('input-mode-badge');
+      const badgeText = document.getElementById('input-mode-text');
+      const input = document.getElementById('chat-input');
+
+      [chatBtn, imgBtn, ttsBtn].forEach(b => {
+        b.className = 'px-2.5 py-1 rounded font-medium text-gray-400 hover:text-white transition';
+      });
+
+      if (mode === 'image') {
+        imgBtn.className = 'px-2.5 py-1 rounded font-medium bg-indigo-600 text-white transition';
+        badge.classList.remove('hidden');
+        badge.classList.add('flex');
+        badgeText.innerHTML = '<i data-lucide="image" class="w-3.5 h-3.5 text-indigo-400"></i><span>FLUX 이미지 생성 모드 (/image)</span>';
+        input.placeholder = '생성할 이미지 설명을 입력하세요... (예: 사이버펑크 고양이)';
+      } else if (mode === 'tts') {
+        ttsBtn.className = 'px-2.5 py-1 rounded font-medium bg-amber-600 text-white transition';
+        badge.classList.remove('hidden');
+        badge.classList.add('flex');
+        badgeText.innerHTML = '<i data-lucide="volume-2" class="w-3.5 h-3.5 text-amber-400"></i><span>Qwen3-TTS 음성 생성 모드 (/tts)</span>';
+        input.placeholder = '음성으로 읽을 텍스트를 입력하세요...';
+      } else {
+        chatBtn.className = 'px-2.5 py-1 rounded font-medium bg-gpt-accent text-white transition';
+        badge.classList.add('hidden');
+        badge.classList.remove('flex');
+        input.placeholder = 'Gemma 4에게 메시지를 입력하세요... (이미지: /image 프롬프트, 음성: /tts 문장)';
+      }
+      lucide.createIcons();
+      input.focus();
+    }
+
+    function toggleAutoTts(checked) {
+      autoTTS = checked;
+      saveStorage();
+      if (!checked) stopAudioPlayback();
+    }
+
+    document.getElementById('tts-engine-select').addEventListener('change', (e) => {
+      ttsEngine = e.target.value;
+      saveStorage();
+    });
+
+    function setGeneratingState(generating) {
+      isGenerating = generating;
+      const sendBtn = document.getElementById('btn-send');
+      const stopBtn = document.getElementById('btn-stop-gen');
+
+      if (generating) {
+        sendBtn.classList.add('hidden');
+        stopBtn.classList.remove('hidden');
+        stopBtn.classList.add('flex');
+      } else {
+        sendBtn.classList.remove('hidden');
+        stopBtn.classList.add('hidden');
+        stopBtn.classList.remove('flex');
+      }
+    }
+
+    function abortGeneration() {
+      if (abortController) {
+        abortController.abort();
+        abortController = null;
+      }
+      setGeneratingState(false);
+    }
+
+    function handleTextareaKeyDown(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        submitPrompt();
+      }
+    }
+
+    function handleTextareaInput(el) {
+      el.style.height = 'auto';
+      el.style.height = Math.min(el.scrollHeight, 180) + 'px';
+    }
+
+    function resetTextareaHeight(el) {
+      el.style.height = 'auto';
+    }
+
+    function fillPrompt(prompt) {
+      const input = document.getElementById('chat-input');
+      input.value = prompt;
+      handleTextareaInput(input);
+      input.focus();
+    }
+
+    function toggleSidebar(force) {
+      const sidebar = document.getElementById('sidebar');
+      const backdrop = document.getElementById('sidebar-backdrop');
+      const isOpen = force !== undefined ? force : sidebar.classList.contains('-translate-x-full');
+
+      if (isOpen) {
+        sidebar.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      }
+    }
+
+    function openImageModal(dataUrl) {
+      const modal = document.getElementById('image-modal');
+      const img = document.getElementById('modal-img');
+      const dl = document.getElementById('modal-download');
+      img.src = dataUrl;
+      dl.href = dataUrl;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeImageModal() {
+      const modal = document.getElementById('image-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function scrollToBottom() {
+      const container = document.getElementById('messages-container');
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('클립보드에 복사되었습니다.');
+      });
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function escapeForAttr(str) {
+      return str.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+    }
+
+    async function checkServerHealth() {
+      const pill = document.getElementById('server-status-pill');
+      try {
+        const res = await fetch(`${API_BASE}/v1/models`);
+        if (res.ok) {
+          pill.className = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-800/60 font-mono';
+          pill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>연결됨';
+        } else {
+          throw new Error();
+        }
+      } catch (e) {
+        pill.className = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-950/80 text-amber-400 border border-amber-800/60 font-mono';
+        pill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>서버 응답 대기';
+      }
+    }
+
+    // =========================================================================
+    // TRON Cyber Wall Face Visualizer Engine (TRON Legacy Cyber Face)
+    // =========================================================================
+    class TronCyberFaceEngine {
+      constructor() {
+        this.canvas = document.getElementById('tron-canvas');
+        this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
+        this.container = document.getElementById('tron-hud-container');
+        this.wrapper = document.getElementById('tron-canvas-wrapper');
+        
+        this.audioCtx = null;
+        this.analyser = null;
+        this.audioSourceNode = null;
+        this.connectedAudioEl = null;
+        this.dataArray = new Uint8Array(128);
+        this.timeDomainArray = new Uint8Array(128);
+        for (let i = 0; i < 128; i++) this.timeDomainArray[i] = 128;
+        
+        this.isSpeaking = false;
+        this.isSynthetic = false;
+        this.syntheticTime = 0;
+        
+        this.theme = localStorage.getItem('hero_tron_theme') || 'cyan';
+        this.themeColors = {
+          cyan: { line: '#00f0ff', glow: '#00c3ff', node: '#e6ffff', bgLine: 'rgba(0, 240, 255, 0.12)' },
+          orange: { line: '#ff7700', glow: '#ff3300', node: '#fff2e6', bgLine: 'rgba(255, 119, 0, 0.12)' },
+          green: { line: '#00ff66', glow: '#00cc44', node: '#e6ffe6', bgLine: 'rgba(0, 255, 102, 0.12)' },
+          purple: { line: '#c44dff', glow: '#9900ff', node: '#f5e6ff', bgLine: 'rgba(196, 77, 255, 0.12)' }
+        };
+
+        this.cols = 38;
+        this.rows = 24;
+        this.rotX = 0.05;
+        this.rotY = 0;
+        this.targetRotX = 0.05;
+        this.targetRotY = 0;
+        this.audioLevel = 0;
+        this.idleTimer = 0;
+        this.isExpanded = false;
+        this.isCollapsed = false;
+
+        this.initCanvas();
+        this.initEvents();
+        this.startRenderLoop();
+      }
+
+      initCanvas() {
+        if (!this.canvas || !this.wrapper) return;
+        const rect = this.wrapper.getBoundingClientRect();
+        this.width = this.canvas.width = rect.width || 800;
+        this.height = this.canvas.height = rect.height || 256;
+      }
+
+      initEvents() {
+        window.addEventListener('resize', () => this.initCanvas());
+
+        // Mouse 3D Head Tracking (Looking at cursor)
+        window.addEventListener('mousemove', (e) => {
+          if (!this.canvas) return;
+          const rect = this.canvas.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const mx = (e.clientX - cx) / (window.innerWidth / 2);
+          const my = (e.clientY - cy) / (window.innerHeight / 2);
+          this.targetRotY = Math.max(-0.45, Math.min(0.45, mx * 0.38)); // Yaw
+          this.targetRotX = Math.max(-0.25, Math.min(0.25, -my * 0.22 + 0.05)); // Pitch
+        });
+      }
+
+      ensureAudioContext() {
+        if (!this.audioCtx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (AudioContextClass) {
+            this.audioCtx = new AudioContextClass();
+            this.analyser = this.audioCtx.createAnalyser();
+            this.analyser.fftSize = 256;
+            this.analyser.smoothingTimeConstant = 0.65;
+            this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+            this.timeDomainArray = new Uint8Array(this.analyser.fftSize);
+          }
+        }
+        if (this.audioCtx && this.audioCtx.state === 'suspended') {
+          this.audioCtx.resume().catch(() => {});
+        }
+      }
+
+      connectAudio(audioEl) {
+        this.ensureAudioContext();
+        if (!this.audioCtx || !this.analyser || !audioEl) return;
+
+        if (this.connectedAudioEl !== audioEl) {
+          try {
+            this.audioSourceNode = this.audioCtx.createMediaElementSource(audioEl);
+            this.audioSourceNode.connect(this.analyser);
+            this.analyser.connect(this.audioCtx.destination);
+            this.connectedAudioEl = audioEl;
+          } catch (e) {
+            // Already connected or cross-origin
+          }
+        }
+        this.isSpeaking = true;
+        this.isSynthetic = false;
+        this.updateBadge(true, 'ACTIVE (Qwen3-TTS)');
+        this.autoExpandIfCollapsed();
+      }
+
+      startSyntheticSpeech() {
+        this.isSpeaking = true;
+        this.isSynthetic = true;
+        this.updateBadge(true, 'ACTIVE (Web Speech)');
+        this.autoExpandIfCollapsed();
+      }
+
+      stopSpeech() {
+        this.isSpeaking = false;
+        this.isSynthetic = false;
+        this.updateBadge(false, 'STANDBY');
+      }
+
+      autoExpandIfCollapsed() {
+        if (this.isCollapsed) {
+          toggleTronHud(true);
+        }
+      }
+
+      updateBadge(speaking, text) {
+        const badge = document.getElementById('tron-speech-badge');
+        if (badge) {
+          badge.textContent = text;
+          badge.className = speaking 
+            ? 'px-1.5 py-0.5 rounded bg-cyan-900 text-cyan-200 border border-cyan-400 font-bold animate-pulse text-[10px]'
+            : 'px-1.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-700/60 text-[10px]';
+        }
+      }
+
+      setTheme(name) {
+        if (this.themeColors[name]) {
+          this.theme = name;
+          localStorage.setItem('hero_tron_theme', name);
+        }
+      }
+
+      startRenderLoop() {
+        const loop = () => {
+          this.render();
+          requestAnimationFrame(loop);
+        };
+        requestAnimationFrame(loop);
+      }
+
+      render() {
+        if (!this.ctx || !this.canvas || this.isCollapsed) return;
+        const ctx = this.ctx;
+        const w = this.width;
+        const h = this.height;
+
+        ctx.clearRect(0, 0, w, h);
+
+        let currentVol = 0;
+        let freqAvg = 0;
+
+        if (this.isSpeaking) {
+          if (!this.isSynthetic && this.analyser) {
+            this.analyser.getByteFrequencyData(this.dataArray);
+            this.analyser.getByteTimeDomainData(this.timeDomainArray);
+
+            // Vocal / Bass band for mouth lip-sync
+            let bassSum = 0;
+            for (let i = 2; i < 18; i++) bassSum += this.dataArray[i];
+            currentVol = Math.min(1.4, (bassSum / 16) / 100);
+
+            let totalSum = 0;
+            for (let i = 0; i < this.dataArray.length; i++) totalSum += this.dataArray[i];
+            freqAvg = totalSum / this.dataArray.length;
+          } else if (this.isSynthetic) {
+            // Speech Formant simulation for Web Speech
+            this.syntheticTime += 0.22;
+            const s1 = Math.sin(this.syntheticTime * 4.5);
+            const s2 = Math.cos(this.syntheticTime * 8.2);
+            const s3 = Math.sin(this.syntheticTime * 2.1);
+            const rawVol = Math.max(0, s1 * 0.5 + s2 * 0.35 + s3 * 0.4);
+            currentVol = rawVol > 0.12 ? rawVol * 1.1 : 0.08;
+            freqAvg = currentVol * 170;
+
+            for (let i = 0; i < this.timeDomainArray.length; i++) {
+              this.timeDomainArray[i] = 128 + Math.sin(i * 0.25 + this.syntheticTime * 5.5) * (currentVol * 65);
+            }
+          }
+        } else {
+          // Idle breathing
+          this.idleTimer += 0.025;
+          currentVol = 0.03 + Math.sin(this.idleTimer) * 0.025;
+          freqAvg = 6;
+          for (let i = 0; i < this.timeDomainArray.length; i++) {
+            this.timeDomainArray[i] = 128 + Math.sin(i * 0.12 + this.idleTimer * 1.5) * 4;
+          }
+        }
+
+        this.audioLevel += (currentVol - this.audioLevel) * 0.38;
+
+        const freqLabel = document.getElementById('tron-freq-label');
+        if (freqLabel && (this.idleTimer % 6 < 1 || this.isSpeaking)) {
+          freqLabel.textContent = (freqAvg * 15.2).toFixed(1) + ' Hz';
+        }
+
+        this.rotX += (this.targetRotX - this.rotX) * 0.08;
+        this.rotY += (this.targetRotY - this.rotY) * 0.08;
+
+        const colors = this.themeColors[this.theme] || this.themeColors.cyan;
+        const cx = w / 2;
+        const cy = h / 2 + 8;
+        const focal = 350;
+        const camZ = 430;
+
+        const cols = this.cols;
+        const rows = this.rows;
+        const spacingX = Math.min(w / (cols - 2), 26);
+        const spacingY = Math.min(h / (rows - 2), 15);
+
+        // Calculate 3D Matrix Vertices
+        const gridPoints = [];
+
+        for (let r = 0; r < rows; r++) {
+          gridPoints[r] = [];
+          for (let c = 0; c < cols; c++) {
+            let posX = (c - cols / 2) * spacingX;
+            let posY = (r - rows / 2) * spacingY;
+            let posZ = 0;
+
+            const nx = (c - cols / 2) / (cols / 3.4);
+            const ny = (r - rows / 2.1) / (rows / 2.9);
+            const distSq = nx * nx + ny * ny;
+
+            let isFace = false;
+
+            // 3D Cyber Face Emerging from Wall Grid
+            if (distSq < 1.08) {
+              isFace = true;
+              posZ = Math.cos(Math.min(1, distSq) * Math.PI * 0.5) * 72;
+
+              // Forehead
+              if (ny < -0.35) {
+                posZ += Math.sin((ny + 0.35) * Math.PI) * 12;
+              }
+
+              // Eye Sockets
+              const eyeDistL = Math.hypot(nx + 0.36, ny + 0.12);
+              const eyeDistR = Math.hypot(nx - 0.36, ny + 0.12);
+              if (eyeDistL < 0.25) posZ -= Math.cos((eyeDistL / 0.25) * Math.PI * 0.5) * 22;
+              if (eyeDistR < 0.25) posZ -= Math.cos((eyeDistR / 0.25) * Math.PI * 0.5) * 22;
+
+              // Eyebrow ridge
+              if (Math.abs(ny + 0.24) < 0.08 && Math.abs(nx) < 0.6) {
+                posZ += 10;
+              }
+
+              // Nose Bridge & Tip
+              const noseW = Math.abs(nx);
+              if (noseW < 0.16 && ny > -0.15 && ny < 0.38) {
+                const noseH = 1 - Math.abs(ny - 0.2) / 0.25;
+                posZ += (0.16 - noseW) * 125 * Math.max(0, noseH);
+              }
+
+              // Cheeks
+              if (Math.abs(nx) > 0.35 && Math.abs(nx) < 0.75 && ny > -0.05 && ny < 0.4) {
+                posZ += 14 * Math.sin((Math.abs(nx) - 0.35) / 0.4 * Math.PI);
+              }
+
+              // 👄 TRON Realtime Lip-Sync & Jaw Dynamics
+              const mouthDistX = Math.abs(nx);
+              const mouthDistY = ny - 0.52;
+
+              if (mouthDistX < 0.32 && Math.abs(mouthDistY) < 0.24) {
+                const lipCurve = Math.sin(Math.max(0, 1 - mouthDistX / 0.32) * Math.PI);
+                const openAperture = this.audioLevel * 36; // Mouth aperture responds to audio!
+
+                if (mouthDistY < 0) {
+                  // Upper lip
+                  posZ += lipCurve * 16 - (openAperture * 0.25);
+                  posY -= openAperture * 0.15;
+                } else {
+                  // Lower lip & Jaw Drops
+                  posZ += lipCurve * 15 - (openAperture * 0.65);
+                  posY += openAperture * 0.95; // JAW DROP!
+                }
+              }
+
+              // Chin
+              if (Math.abs(nx) < 0.22 && ny > 0.68 && ny < 0.95) {
+                posZ += 18 * (1 - Math.abs(nx) / 0.22);
+                posY += this.audioLevel * 20;
+              }
+            }
+
+            // Audio Waveform Ripple across Cyber Wall Grid
+            const waveIdx = Math.floor((c / cols) * this.timeDomainArray.length);
+            const waveVal = (this.timeDomainArray[waveIdx] - 128) / 128;
+            posZ += waveVal * (isFace ? 18 : 9) * (this.isSpeaking ? 1.5 : 0.4);
+
+            // 3D Matrix Rotation (Yaw & Pitch)
+            const cosY = Math.cos(this.rotY);
+            const sinY = Math.sin(this.rotY);
+            const rx1 = posX * cosY + posZ * sinY;
+            const rz1 = -posX * sinY + posZ * cosY;
+
+            const cosX = Math.cos(this.rotX);
+            const sinX = Math.sin(this.rotX);
+            const ry2 = posY * cosX - rz1 * sinX;
+            const rz2 = posY * sinX + rz1 * cosX;
+
+            // 3D Perspective Projection
+            const zDist = camZ - rz2;
+            const scale = focal / Math.max(15, zDist);
+            const projX = cx + rx1 * scale;
+            const projY = cy + ry2 * scale;
+
+            gridPoints[r][c] = {
+              x: projX,
+              y: projY,
+              z: rz2,
+              isFace: isFace,
+              scale: scale
+            };
+          }
+        }
+
+        // Render TRON Wireframe Lines & Neon Nodes
+        ctx.save();
+
+        // 1. Horizontal Lines (Latitudinal)
+        for (let r = 0; r < rows; r++) {
+          ctx.beginPath();
+          let started = false;
+          for (let c = 0; c < cols; c++) {
+            const pt = gridPoints[r][c];
+            if (!started) { ctx.moveTo(pt.x, pt.y); started = true; }
+            else { ctx.lineTo(pt.x, pt.y); }
+          }
+          ctx.strokeStyle = colors.line;
+          ctx.lineWidth = 1.0;
+          ctx.shadowColor = colors.glow;
+          ctx.shadowBlur = this.isSpeaking ? 9 : 4;
+          ctx.globalAlpha = 0.65 + (this.audioLevel * 0.35);
+          ctx.stroke();
+        }
+
+        // 2. Vertical Lines (Longitudinal)
+        for (let c = 0; c < cols; c++) {
+          ctx.beginPath();
+          let started = false;
+          for (let r = 0; r < rows; r++) {
+            const pt = gridPoints[r][c];
+            if (!started) { ctx.moveTo(pt.x, pt.y); started = true; }
+            else { ctx.lineTo(pt.x, pt.y); }
+          }
+          ctx.strokeStyle = colors.line;
+          ctx.lineWidth = (c >= cols / 2 - 4 && c <= cols / 2 + 4) ? 1.5 : 0.8;
+          ctx.shadowColor = colors.glow;
+          ctx.shadowBlur = this.isSpeaking ? 9 : 3;
+          ctx.globalAlpha = 0.55 + (this.audioLevel * 0.35);
+          ctx.stroke();
+        }
+
+        // 3. Facial Neon Nodes / Glow Dots
+        ctx.shadowBlur = this.isSpeaking ? 14 : 6;
+        ctx.fillStyle = colors.node;
+        for (let r = 0; r < rows; r += 2) {
+          for (let c = 0; c < cols; c += 2) {
+            const pt = gridPoints[r][c];
+            if (pt.isFace) {
+              const dotSize = (pt.z > 25 ? 2.4 : 1.4) + (this.audioLevel * 1.6);
+              ctx.globalAlpha = Math.min(1.0, 0.45 + (pt.z / 75) * 0.55 + this.audioLevel * 0.4);
+              ctx.fillRect(pt.x - dotSize / 2, pt.y - dotSize / 2, dotSize, dotSize);
+            }
+          }
+        }
+
+        // 4. Oscilloscope Waveform at the Bottom HUD
+        ctx.beginPath();
+        const waveY = h - 18;
+        const step = w / this.timeDomainArray.length;
+        for (let i = 0; i < this.timeDomainArray.length; i++) {
+          const v = (this.timeDomainArray[i] - 128) / 128;
+          const y = waveY + v * (this.isSpeaking ? 24 : 6);
+          if (i === 0) ctx.moveTo(0, y);
+          else ctx.lineTo(i * step, y);
+        }
+        ctx.strokeStyle = colors.line;
+        ctx.lineWidth = 1.6;
+        ctx.shadowColor = colors.glow;
+        ctx.shadowBlur = 12;
+        ctx.globalAlpha = 0.85;
+        ctx.stroke();
+
+        ctx.restore();
+      }
+    }
+
+    // Global HUD Control Helpers
+    function setTronTheme(name) {
+      if (window.tronEngine) {
+        window.tronEngine.setTheme(name);
+      }
+    }
+
+    function toggleTronHud(forceOpen) {
+      const container = document.getElementById('tron-hud-container');
+      const toggleBtn = document.getElementById('tron-toggle-btn');
+      if (!container) return;
+
+      const shouldOpen = forceOpen !== undefined ? forceOpen : container.classList.contains('hidden');
+      if (shouldOpen) {
+        container.classList.remove('hidden');
+        if (window.tronEngine) {
+          window.tronEngine.isCollapsed = false;
+          window.tronEngine.initCanvas();
+        }
+        if (toggleBtn) toggleBtn.innerHTML = '<i data-lucide="chevron-up" class="w-3.5 h-3.5"></i>';
+      } else {
+        container.classList.add('hidden');
+        if (window.tronEngine) window.tronEngine.isCollapsed = true;
+        if (toggleBtn) toggleBtn.innerHTML = '<i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>';
+      }
+      lucide.createIcons();
+    }
+
+    function toggleTronSize() {
+      const wrapper = document.getElementById('tron-canvas-wrapper');
+      const sizeBtn = document.getElementById('tron-size-btn');
+      if (!wrapper || !window.tronEngine) return;
+
+      window.tronEngine.isExpanded = !window.tronEngine.isExpanded;
+      if (window.tronEngine.isExpanded) {
+        wrapper.className = 'relative w-full h-80 sm:h-96 flex items-center justify-center bg-black overflow-hidden';
+        if (sizeBtn) sizeBtn.innerHTML = '<i data-lucide="minimize-2" class="w-3.5 h-3.5"></i>';
+      } else {
+        wrapper.className = 'relative w-full h-56 sm:h-64 flex items-center justify-center bg-black overflow-hidden';
+        if (sizeBtn) sizeBtn.innerHTML = '<i data-lucide="maximize-2" class="w-3.5 h-3.5"></i>';
+      }
+      window.tronEngine.initCanvas();
+      lucide.createIcons();
+    }
+
+    // =========================================================================
+    // Bootstrapping
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      loadStorage();
+      const ids = Object.keys(chats);
+      if (ids.length > 0) {
+        selectChat(ids[0]);
+      } else {
+        createNewChat();
+      }
+      lucide.createIcons();
+      checkServerHealth();
+      setInterval(checkServerHealth, 10000);
+
+      // 🌟 Initialize TRON Cyber Wall Face Visualizer Engine
+      window.tronEngine = new TronCyberFaceEngine();
+    });
+  </script>
+</body>
+</html>
