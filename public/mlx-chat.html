@@ -960,11 +960,13 @@
     // -------------------------------------------------------------------------
     async function executeDirectTTS(text) {
       setGeneratingState(true);
+      stopAudioPlayback();
+      const thisGen = currentSpeakGen;
       const chat = chats[currentChatId];
 
       try {
-        const audioUrl = await generateTTSAudioUrl(text);
-        if (!audioUrl) throw new Error('Qwen3-TTS 오디오 생성 실패');
+        const audioUrl = await generateTTSAudioUrl(text, thisGen);
+        if (!audioUrl) throw new Error('Qwen3-TTS 오디오 생성에 실패했습니다. (응답 없음)');
 
         chat.messages.push({
           role: 'assistant',
@@ -976,7 +978,7 @@
         saveStorage();
         renderCurrentChat();
 
-        playAudio(audioUrl, 'Qwen3-TTS (WAV)');
+        playAudio(audioUrl, 'Qwen3-TTS (WAV)', thisGen, text);
       } catch (err) {
         chat.messages.push({
           role: 'assistant',
@@ -998,10 +1000,10 @@
       const cleanText = prepareTextForSpeech(text);
       if (!cleanText) return null;
 
-      const ttsInput = cleanText.length > 150 ? cleanText.slice(0, 150) + '...' : cleanText;
+      const ttsInput = cleanText.length > 250 ? cleanText.slice(0, 250) + '...' : cleanText;
       updateAudioStatusUI(true, 'Qwen3-TTS 합성 요청 중...');
 
-      // 이전 요청이 있었다면 취소하고 새 AbortController 생성
+      // 이전 진행 중이던 TTS HTTP 요청이 있다면 안전하게 중단
       if (ttsAbortController) {
         try { ttsAbortController.abort(); } catch(e) {}
       }
@@ -1019,19 +1021,22 @@
           signal: ttsAbortController.signal
         });
 
-        // 기다리는 도중 새로운 응답이 도착했으면 즉시 폐기
-        if (gen !== currentSpeakGen) return null;
+        // 기다리는 도중 새로운 다른 응답이 도착했으면 폐기
+        if (gen !== undefined && gen !== currentSpeakGen) return null;
 
         if (res.ok) {
           const blob = await res.blob();
-          if (gen !== currentSpeakGen) return null;
+          if (gen !== undefined && gen !== currentSpeakGen) return null;
           return URL.createObjectURL(blob);
         } else {
-          console.warn('MLX TTS returned non-OK status:', res.status);
+          const errBody = await res.text();
+          console.warn('MLX TTS returned error:', res.status, errBody);
+          throw new Error(`HTTP ${res.status}: ${errBody}`);
         }
       } catch (e) {
         if (e.name !== 'AbortError') {
           console.warn('MLX TTS fetch error:', e);
+          throw e;
         }
       }
       return null;
@@ -1048,17 +1053,21 @@
       // 1. MLX Qwen3-TTS 시도
       if (ttsEngine === 'mlx') {
         updateAudioStatusUI(true, 'Qwen3-TTS 모델 음성 합성 중...');
-        const audioUrl = await generateTTSAudioUrl(clean, thisGen);
-        
-        // 이 사이에 또 다른 새로운 응답이 도착했으면 재생하지 않고 바로 취소
-        if (thisGen !== currentSpeakGen) {
-          if (audioUrl) URL.revokeObjectURL(audioUrl);
-          return;
-        }
+        try {
+          const audioUrl = await generateTTSAudioUrl(clean, thisGen);
+          
+          // 이 사이에 또 다른 새로운 응답이 도착했으면 재생하지 않고 바로 취소
+          if (thisGen !== currentSpeakGen) {
+            if (audioUrl) URL.revokeObjectURL(audioUrl);
+            return;
+          }
 
-        if (audioUrl) {
-          playAudio(audioUrl, 'Qwen3-TTS 로컬 음성', thisGen, clean);
-          return;
+          if (audioUrl) {
+            playAudio(audioUrl, 'Qwen3-TTS 로컬 음성', thisGen, clean);
+            return;
+          }
+        } catch (e) {
+          console.warn('Qwen3-TTS error in speakText:', e);
         }
 
         if (!allowBrowserFallback) {
