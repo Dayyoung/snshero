@@ -53,7 +53,8 @@ export const MOVIE_EPISODES: Record<number, MovieEpisodeMeta> = {
     episodeNumber: 7,
     titleKo: "배신자들의 천막",
     titleJa: "裏切り者たちの天幕",
-    titleEn: "The Traitors Camp"
+    titleEn: "The Traitors Camp",
+    videoId: "qbN4ngzVvIw"
   },
   8: {
     episodeNumber: 8,

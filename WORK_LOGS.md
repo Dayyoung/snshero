@@ -4,6 +4,29 @@
 
 ---
 
+## [2026-09-02 10:35 KST] [MovieView 에피소드 동영상 이동 시 항상 E01로 초기화되는 오류 해결 및 직접 시청 링크 연동 완료]
+- **오류 내용**:
+  - `https://snshero.com/movie`에서 특정 에피소드(EP.02~EP.07 등)를 선택하거나 이동했을 때, 항상 1화(E01) 영상이 표시/재생되거나 외부 이동 시 1화로 리셋되는 현상.
+- **원인 분석**:
+  1. `MovieView.tsx`에서 `getVideoId(epNum)` 호출 시 RSS 동적 배열(`playlistVideoIds`)이 `MOVIE_EPISODES` 정적 매핑보다 우선되어, RSS 업로드 순서 불일치 시 잘못된 비디오 ID로 덮어쓰여지는 문제.
+  2. `<iframe>` 태그에 고유 `key` prop이 없어 에피소드 변경 시 YouTube IFrame 플레이어 내부의 비동기 API 통신 및 DOM 재사용 간 race condition 발생으로 초기 비디오(E01)로 복귀.
+  3. URL 쿼리 파라미터(`?ep=`, `?episode=`) 파싱 로직이 부재하여 브라우저 주소창 동기화 및 딥링크 지원 미흡.
+  4. 외부 YouTube 이동 링크가 특정 에피소드 URL이 아닌 전체 재생목록 기본 URL(`https://www.youtube.com/playlist?list=...`)로만 연결되어 외부 이동 시 항상 1화부터 재생되던 문제.
+- **조치 사항**:
+  1. `src/content/movieEpisodeMapping.ts`: 최신 공개된 EP7 (`qbN4ngzVvIw`) 공식 Video ID 등록.
+  2. `src/views/MovieView.tsx`:
+     - URL 쿼리 파라미터(`?ep=`) 파싱을 최우선으로 적용하고, 에피소드 변경 시 `window.history.replaceState`로 URL 실시간 동기화.
+     - `getVideoId`에서 `MOVIE_EPISODES` 정적 비디오 ID를 최우선 적용.
+     - `iframe`에 `key={`movie-yt-player-ep-${currentEpisodeNum}-${currentVideoId || 'playlist'}`}` 적용하여 에피소드 전환 시 깨끗한 플레이어 인스턴스 렌더링 보장.
+     - `getDirectYouTubeWatchUrl` 함수를 구현하여 상단 배너, 플레이어 컨트롤 바, 회차 서랍 목록에 `[YouTube 제{ep}화 바로보기]` 직접 링크 버튼 연동 (`https://www.youtube.com/watch?v={videoId}&list={listId}&index={ep}`).
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] MovieView 에피소드 동영상 이동 시 항상 E01로 초기화되는 오류 해결 및 YouTube 해당 회차 직행 링크 연동 -> 작업완료`
+
+---
+
 ## [2026-09-02 09:40 KST] [/gemini-ex 구글 스프레드시트 Row 727~730 (ID 568~571) 4대 핵심 개선 전수 점검 및 검증 완료]
 - **작업 대상 항목**:
   1. **[Row 727 / ID 568] [기존게임개선 / 순수제스처]**: 3D 레이싱/카트 미션 가상 핸들·버튼 제거 ➔ '썸존 슬라이드 조향 & 릴리즈 드리프트' 퓨어 제스처 전환 (`src/lib/vehicleGestureController.ts`, `VoxelMicroKartGame.tsx`)

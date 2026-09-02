@@ -47,7 +47,7 @@ const YOUTUBE_PLAYLIST_ID = 'PLOLtCtApKgp8';
 const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/playlist?list=PLOLtCtApKgp8';
 
 // 기본 공개 완료 에피소드 기본값 (현재 최소 6화까지 공개됨)
-const DEFAULT_RELEASED_COUNT = 6;
+const DEFAULT_RELEASED_COUNT = 7;
 
 export const MovieView: React.FC<MovieViewProps> = ({
   language,
@@ -57,14 +57,28 @@ export const MovieView: React.FC<MovieViewProps> = ({
   updateSns,
   showCustomAlert,
 }) => {
-  // 현재 시청 중인 에피소드 번호 (1~40)
+  // 현재 시청 중인 에피소드 번호 (1~40) - URL 쿼리 파라미터(?ep=, ?episode=) 최우선 반영
   const [currentEpisodeNum, setCurrentEpisodeNum] = useState<number>(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        const epParam = params.get('ep') || params.get('episode');
+        if (epParam) {
+          const parsedEp = parseInt(epParam, 10);
+          if (!isNaN(parsedEp) && parsedEp >= 1 && parsedEp <= TOTAL_EPISODES) {
+            return parsedEp;
+          }
+        }
+      }
+    } catch {
+      // ignore
+    }
     const saved = getSeasonItem('hero_movie_progress', currentSeason);
     const parsed = saved ? parseInt(saved, 10) : 1;
     return isNaN(parsed) || parsed < 1 || parsed > TOTAL_EPISODES ? 1 : parsed;
   });
 
-  // 공개된 에피소드 개수 (최소 6화부터 시작하여 유동 감지)
+  // 공개된 에피소드 개수 (최소 7화부터 시작하여 유동 감지)
   const [releasedCount, setReleasedCount] = useState<number>(() => {
     const saved = getSeasonItem('hero_movie_released_count', currentSeason);
     const parsed = saved ? parseInt(saved, 10) : DEFAULT_RELEASED_COUNT;
@@ -81,9 +95,18 @@ export const MovieView: React.FC<MovieViewProps> = ({
   const playerRef = useRef<any>(null);
   const [isPlayerReady, setIsPlayerReady] = useState<boolean>(false);
 
-  // 에피소드 번호별 정확한 YouTube Video ID 도출
+  // 에피소드 번호별 정확한 YouTube Video ID 도출 (정적 매핑 MOVIE_EPISODES 최우선)
   const getVideoId = (epNum: number): string | undefined => {
-    return playlistVideoIds[epNum - 1] || MOVIE_EPISODES[epNum]?.videoId;
+    return MOVIE_EPISODES[epNum]?.videoId || playlistVideoIds[epNum - 1];
+  };
+
+  // 해당 에피소드의 정확한 YouTube 직접 시청 URL (YouTube 앱/웹에서 해당 회차 바로 열기)
+  const getDirectYouTubeWatchUrl = (epNum: number): string => {
+    const vId = getVideoId(epNum);
+    if (vId) {
+      return `https://www.youtube.com/watch?v=${vId}&list=${YOUTUBE_PLAYLIST_ID}&index=${epNum}`;
+    }
+    return `https://www.youtube.com/watch?list=${YOUTUBE_PLAYLIST_ID}&index=${epNum}`;
   };
 
   // 에피소드 제목 헬퍼
@@ -310,9 +333,20 @@ export const MovieView: React.FC<MovieViewProps> = ({
     }
   });
 
-  // 에피소드 변경 시 진행도 저장
+  // 에피소드 변경 시 진행도 저장 및 브라우저 URL 쿼리 파라미터 동기화
   useEffect(() => {
     setSeasonItem('hero_movie_progress', currentEpisodeNum.toString(), currentSeason);
+    if (typeof window !== 'undefined') {
+      try {
+        const url = new URL(window.location.href);
+        if (url.searchParams.get('ep') !== currentEpisodeNum.toString()) {
+          url.searchParams.set('ep', currentEpisodeNum.toString());
+          window.history.replaceState(window.history.state, '', url.pathname + url.search);
+        }
+      } catch {
+        // ignore
+      }
+    }
   }, [currentEpisodeNum, currentSeason]);
 
   const handleSelectEpisode = (epNum: number) => {
@@ -362,11 +396,11 @@ export const MovieView: React.FC<MovieViewProps> = ({
   const currentRewardClaimed = Boolean(claimedRewards[currentEpisodeNum]);
   const isCurrentReleased = currentEpisodeNum <= releasedCount;
 
-  // 에피소드 번호 기반 YouTube 임베드 URL (정확한 Video ID 우선, 없을 경우 1-based index 플레이리스트 폴백)
+  // 에피소드 번호 기반 YouTube 임베드 URL (정확한 Video ID 우선, 없을 경우 0-based index 플레이리스트 폴백)
   const currentVideoId = getVideoId(currentEpisodeNum);
   const embedUrl = currentVideoId
-    ? `https://www.youtube-nocookie.com/embed/${currentVideoId}?enablejsapi=1&rel=0`
-    : `https://www.youtube-nocookie.com/embed?listType=playlist&list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum}&enablejsapi=1&rel=0`;
+    ? `https://www.youtube-nocookie.com/embed/${currentVideoId}?autoplay=1&rel=0&enablejsapi=1`
+    : `https://www.youtube-nocookie.com/embed?listType=playlist&list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum - 1}&autoplay=1&rel=0&enablejsapi=1`;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#fdfcfc] text-[#201d1d] font-sans p-3 sm:p-4 md:p-8 pb-32 max-w-5xl mx-auto w-full overflow-x-hidden">
@@ -436,13 +470,23 @@ export const MovieView: React.FC<MovieViewProps> = ({
               <span>{isCheckingPlaylist ? '동기화 중...' : '최신 회차 동기화'}</span>
             </button>
             <a
+              href={getDirectYouTubeWatchUrl(currentEpisodeNum)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-rose-600 hover:bg-rose-700 text-white font-mono text-xs font-bold transition active:scale-95 shrink-0 shadow-xs"
+              title={`YouTube에서 제 ${currentEpisodeNum}화 직접 시청하기`}
+            >
+              <ExternalLink size={14} />
+              <span>YouTube 제{currentEpisodeNum}화 바로보기</span>
+            </a>
+            <a
               href={YOUTUBE_PLAYLIST_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-rose-600 hover:bg-rose-700 text-white font-mono text-xs font-bold transition active:scale-95 shrink-0"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 font-mono text-xs font-bold transition active:scale-95 shrink-0"
             >
-              <ExternalLink size={14} />
-              <span>YouTube 전체 재생목록</span>
+              <List size={13} />
+              <span>전체 재생목록</span>
             </a>
           </div>
         </div>
@@ -458,6 +502,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
           )}
         >
           <iframe
+            key={`movie-yt-player-ep-${currentEpisodeNum}-${currentVideoId || 'playlist'}`}
             id="movie-yt-player"
             src={embedUrl}
             title={`SNSHero Movie Ep.${currentEpisodeNum}`}
@@ -506,7 +551,20 @@ export const MovieView: React.FC<MovieViewProps> = ({
             </span>
           </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end flex-wrap">
+            {/* Direct YouTube Link Button */}
+            <a
+              href={getDirectYouTubeWatchUrl(currentEpisodeNum)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-sm border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-800 text-xs font-bold font-mono transition cursor-pointer"
+              title={`YouTube 앱/웹에서 제 ${currentEpisodeNum}화 직접 열기`}
+            >
+              <ExternalLink size={13} />
+              <span className="hidden xs:inline">YouTube</span>
+              <span>EP.{currentEpisodeNum}</span>
+            </a>
+
             {/* Prev Ep */}
             <button
               type="button"
@@ -727,9 +785,21 @@ export const MovieView: React.FC<MovieViewProps> = ({
 
                       <div className="flex items-center gap-2 shrink-0">
                         {isReleased ? (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                            공개 완료
-                          </span>
+                          <>
+                            <a
+                              href={getDirectYouTubeWatchUrl(ep)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              title={`YouTube에서 제 ${ep}화 직접 시청하기`}
+                              className="p-1 rounded hover:bg-rose-100 text-rose-600 transition"
+                            >
+                              <ExternalLink size={12} />
+                            </a>
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                              공개 완료
+                            </span>
+                          </>
                         ) : (
                           <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200 flex items-center gap-1">
                             <Lock size={10} />
