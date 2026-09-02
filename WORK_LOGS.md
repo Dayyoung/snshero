@@ -4,6 +4,24 @@
 
 ---
 
+## [2026-09-02 12:17 KST] [쇼핑몰 110장 카드 상품 페이지 및 전 화면 고화질 원본 일치화 & 웹 컴포넌트 모듈 전수 동기화 완료]
+- **오류 내용**:
+  - `http://localhost:3000/mall/products/s-s-heroes-110-card-unique-heroes-deck-collectible-card-game?variant=49548125470858` 페이지 접속 시 원본 대비 미디어 갤러리/레이아웃이 상이하게 렌더링되던 문제.
+- **원인 분석**:
+  1. Shopify Horizon 테마의 Web Components/Custom Elements(`<media-gallery>`, `<product-form>`, `<variant-picker>`, `<component-quantity-selector>` 등)를 구동하는 13개 핵심 JS 모듈(`utilities.js`, `component.js`, `section-renderer.js`, `morph.js`, `focus.js`, `events.js`, `paginated-list.js` 등)이 로컬에 누락되어 커스텀 엘리먼트 등록 실패.
+  2. `<script type="importmap">` 내 모듈 매핑 URL이 원격 CDN을 가리켜 로컬 실행 시 스크립트 로드 블로킹 발생.
+- **조치 사항**:
+  1. 원본 `importmap` 내 25개 전 모듈 및 테마 스크립트를 `public/mall/cdn/shop/t/1/assets/`에 완전 다운로드 및 로컬화.
+  2. `public/mall/` 내 모든 상품 페이지(110 카드 덱, 머그컵, 티셔츠, 게임테이블) 및 컬렉션 페이지의 `importmap`과 `<link rel="modulepreload">`를 로컬 경로(`/mall/cdn/...`)로 전면 동기화.
+  3. `public/mall/cdn/shop/files/pro_ico.png` 파비콘 및 고해상도 제품 이미지/CSS 완벽 매핑.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] 쇼핑몰 110장 카드 상품 페이지 및 전 화면 고화질 원본 일치화 & 웹 컴포넌트 모듈 전수 동기화 -> 작업완료`
+
+---
+
 ## [2026-09-02 11:40 KST] [shop.snshero.com 쇼핑몰 전 화면 /public/mall 정적화, 구매하기 버튼 /shop 결제 연동 및 /mall 라우팅 전면 전환 완료]
 - **요청 사항**:
   - `http://shop.snshero.com/` Shopify 쇼핑몰 사용 중단.
