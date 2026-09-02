@@ -4,6 +4,30 @@
 
 ---
 
+## [2026-09-02 10:38 KST] [MovieView 최신 공개 8화(EP8) 공식 등록 및 실시간 플레이리스트 다중 동기화 파이프라인 구축]
+- **요청 사항**:
+  - `https://www.youtube.com/playlist?list=PLOLtCtApKgp8` 재생목록에 8화까지 공개되었으나 클라이언트에 7화까지만 표시되던 문제 해결 및 신규 영상 업로드 시 실시간 감지/반영 요청.
+- **원인 분석**:
+  1. YouTube RSS 피드(`feeds/videos.xml?playlist_id=...`)는 Google/YouTube 서버 자체에서 수십 분~수 시간 캐싱되므로 새로 업로드된 8화가 RSS에 즉시 노출되지 않아 지연 발생.
+  2. `src/content/movieEpisodeMapping.ts`에 EP8 (`S8kgVJdYtP4`) 정적 매핑 및 `DEFAULT_RELEASED_COUNT = 8` 반영 필요.
+- **조치 사항**:
+  1. `src/content/movieEpisodeMapping.ts`:
+     - EP8 (`S8kgVJdYtP4`, 붉은 갈기의 기수 / Rider of the Crimson Mane / 紅いたてがみの騎手) 공식 Video ID 등록 완료.
+  2. `src/views/MovieView.tsx`:
+     - `DEFAULT_RELEASED_COUNT`를 8로 상향.
+     - `fetchLatestPlaylistStatus` 실시간 파이프라인 구축:
+       - 1단계: YouTube 플레이리스트 웹페이지 HTML 직접 파싱(CORS 프록시 fallback 경유)을 통해 새로 업로드된 영상의 `videoId`를 지연 없이 실시간 추출.
+       - 2단계: IFrame Player API `player.getPlaylist()` 동적 연동으로 브라우저 마운트 시 최신 플레이리스트 목록 자동 갱신.
+       - 3단계: RSS XML 피드 보조 동기화 및 LocalStorage(`hero_movie_released_count`) 자동 저장.
+     - 향후 9화, 10화 등 추가 업로드 시에도 '동기화' 버튼 또는 페이지 진입 시 실시간으로 공개 회차 수가 확장되도록 개선.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] MovieView 8화(EP8) 공식 등록 및 YouTube 플레이리스트 HTML 실시간 동적 감지 파이프라인 구축 -> 작업완료`
+
+---
+
 ## [2026-09-02 10:35 KST] [MovieView 에피소드 동영상 이동 시 항상 E01로 초기화되는 오류 해결 및 직접 시청 링크 연동 완료]
 - **오류 내용**:
   - `https://snshero.com/movie`에서 특정 에피소드(EP.02~EP.07 등)를 선택하거나 이동했을 때, 항상 1화(E01) 영상이 표시/재생되거나 외부 이동 시 1화로 리셋되는 현상.

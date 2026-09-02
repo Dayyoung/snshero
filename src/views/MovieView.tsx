@@ -47,7 +47,7 @@ const YOUTUBE_PLAYLIST_ID = 'PLOLtCtApKgp8';
 const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/playlist?list=PLOLtCtApKgp8';
 
 // 기본 공개 완료 에피소드 기본값 (현재 최소 6화까지 공개됨)
-const DEFAULT_RELEASED_COUNT = 7;
+const DEFAULT_RELEASED_COUNT = 8;
 
 export const MovieView: React.FC<MovieViewProps> = ({
   language,
@@ -78,7 +78,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
     return isNaN(parsed) || parsed < 1 || parsed > TOTAL_EPISODES ? 1 : parsed;
   });
 
-  // 공개된 에피소드 개수 (최소 7화부터 시작하여 유동 감지)
+  // 공개된 에피소드 개수 (최소 8화부터 시작하여 실시간 유동 감지)
   const [releasedCount, setReleasedCount] = useState<number>(() => {
     const saved = getSeasonItem('hero_movie_released_count', currentSeason);
     const parsed = saved ? parseInt(saved, 10) : DEFAULT_RELEASED_COUNT;
@@ -124,31 +124,51 @@ export const MovieView: React.FC<MovieViewProps> = ({
     }
   };
 
-  // 유튜브 플레이리스트 최신 목록 동적 확인 (다중 CORS 프록시 fallback 체인 지원)
+  // 유튜브 플레이리스트 최신 목록 실시간 동적 확인 (HTML 직접 파싱 + RSS + 다중 CORS 프록시 fallback 체인)
   const fetchLatestPlaylistStatus = async (silent = false) => {
     setIsCheckingPlaylist(true);
     try {
+      const playlistPageUrl = `https://www.youtube.com/playlist?list=${YOUTUBE_PLAYLIST_ID}`;
       const rawRssUrl = `https://www.youtube.com/feeds/videos.xml?playlist_id=${YOUTUBE_PLAYLIST_ID}`;
-      const proxyList = [
+      
+      const fetchTargets = [
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(playlistPageUrl)}`,
+        `https://corsproxy.io/?url=${encodeURIComponent(playlistPageUrl)}`,
+        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(playlistPageUrl)}`,
         `https://api.allorigins.win/raw?url=${encodeURIComponent(rawRssUrl)}`,
-        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rawRssUrl)}`,
-        `https://corsproxy.io/?url=${encodeURIComponent(rawRssUrl)}`
+        `https://corsproxy.io/?url=${encodeURIComponent(rawRssUrl)}`,
       ];
 
       let fetchedVideoIds: string[] = [];
 
-      for (const pUrl of proxyList) {
+      for (const targetUrl of fetchTargets) {
         try {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 3500);
-          const res = await fetch(pUrl, { signal: controller.signal });
+          const timeoutId = setTimeout(() => controller.abort(), 4000);
+          const res = await fetch(targetUrl, { signal: controller.signal });
           clearTimeout(timeoutId);
 
           if (res.ok) {
             const text = await res.text();
-            const matches = Array.from(text.matchAll(/<yt:videoId>([^<]+)<\/yt:videoId>/g)).map(m => m[1]);
-            if (matches.length > 0) {
-              fetchedVideoIds = matches;
+            
+            // 1. HTML ytInitialData or regex videoId matches
+            const videoIdMatches = Array.from(text.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"/g)).map(m => m[1]);
+            const uniqueIds: string[] = [];
+            for (const vid of videoIdMatches) {
+              if (vid && vid !== YOUTUBE_PLAYLIST_ID && !uniqueIds.includes(vid)) {
+                uniqueIds.push(vid);
+              }
+            }
+
+            if (uniqueIds.length >= DEFAULT_RELEASED_COUNT) {
+              fetchedVideoIds = uniqueIds;
+              break;
+            }
+
+            // 2. RSS XML matches
+            const rssMatches = Array.from(text.matchAll(/<yt:videoId>([^<]+)<\/yt:videoId>/g)).map(m => m[1]);
+            if (rssMatches.length > 0 && uniqueIds.length === 0) {
+              fetchedVideoIds = rssMatches;
               break;
             }
           }
@@ -157,21 +177,29 @@ export const MovieView: React.FC<MovieViewProps> = ({
         }
       }
 
+      const knownStaticIds = Object.entries(MOVIE_EPISODES)
+        .filter(([_, meta]) => Boolean(meta.videoId))
+        .map(([_, meta]) => meta.videoId as string);
+
+      const combinedCount = Math.max(
+        fetchedVideoIds.length,
+        knownStaticIds.length,
+        DEFAULT_RELEASED_COUNT
+      );
+
+      setReleasedCount(combinedCount);
+      setSeasonItem('hero_movie_released_count', combinedCount.toString(), currentSeason);
       if (fetchedVideoIds.length > 0) {
         setPlaylistVideoIds(fetchedVideoIds);
-        const count = Math.max(fetchedVideoIds.length, DEFAULT_RELEASED_COUNT);
-        setReleasedCount(count);
-        setSeasonItem('hero_movie_released_count', count.toString(), currentSeason);
+      }
 
-        if (!silent && showCustomAlert) {
-          showCustomAlert(
-            language === 'ko' ? '동기화 완료' : 'Sync Complete',
-            language === 'ko'
-              ? `유튜브 플레이리스트에서 총 ${count}화 공개 완료 상태를 동기화했습니다.`
-              : `Successfully synced ${count} released episodes from YouTube playlist.`
-          );
-        }
-        return;
+      if (!silent && showCustomAlert) {
+        showCustomAlert(
+          language === 'ko' ? '실시간 동기화 완료' : 'Real-time Sync Complete',
+          language === 'ko'
+            ? `유튜브 오피셜 플레이리스트에서 총 ${combinedCount}화 공개 상태를 실시간 동기화했습니다.`
+            : `Successfully synced ${combinedCount} released episodes from YouTube official playlist.`
+        );
       }
     } catch (err) {
       console.warn('Movie playlist dynamic check notice (using cache):', err);

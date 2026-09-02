@@ -60,7 +60,8 @@ export const MOVIE_EPISODES: Record<number, MovieEpisodeMeta> = {
     episodeNumber: 8,
     titleKo: "붉은 갈기의 기수",
     titleJa: "紅いたてがみの騎手",
-    titleEn: "Rider of the Crimson Mane"
+    titleEn: "Rider of the Crimson Mane",
+    videoId: "S8kgVJdYtP4"
   },
   9: {
     episodeNumber: 9,
