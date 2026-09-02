@@ -12388,22 +12388,100 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           onStartFloor={(floor) => {
             setIsTowerTrialsOpen(false);
             setIsStoryActive(false);
-            setGameState('single');
-            addLog(language === 'ko'
-              ? `🗼 [시련의 탑 ${floor}층] 도전 시작! (${floor}F 보스: 가디언)`
-              : `🗼 [TOWER OF TRIALS FLOOR ${floor}] Ascent commenced!`,
+            setIsDirectAiBattle(false);
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+
+            const isBossFloor = floor % 5 === 0;
+            const bossPower = 120 + floor * 15;
+            const bossName = language === 'ko'
+              ? (isBossFloor ? `👑 [${floor}층 보스] 아케인 로드` : `🗼 [${floor}층] 탑의 수호자`)
+              : (isBossFloor ? `👑 [F${floor} BOSS] Arcane Lord` : `🗼 [F${floor}] Tower Guardian`);
+
+            const towerBoss: Character = {
+              id: `tower-boss-floor-${floor}`,
+              type: 'robot',
+              name: bossName,
+              avatarUrl: `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=TowerBoss-${floor}&backgroundColor=dc2626`,
+              totalPower: bossPower,
+              sns: 50 + floor * 10,
+              wins: floor * 2,
+              losses: 0,
+              draws: 0,
+              x: 50,
+              y: 50,
+              targetX: 50,
+              targetY: 50,
+            };
+
+            setSelectedOpponent(towerBoss);
+            setBattleType('robot');
+
+            if (floor > 30) {
+              if (setIsAutoBattle) setIsAutoBattle(false);
+            }
+
+            addLog(
+              language === 'ko'
+                ? `🗼 [시련의 탑 ${floor}층] 도전 시작! (보스 전투력: ${bossPower})`
+                : `🗼 [TOWER OF TRIALS FLOOR ${floor}] Battle commenced! (Boss Power: ${bossPower})`,
               'system'
             );
+
+            const oppDeck = generateAIOpponentDeck(bossPower);
+            setLastAiDeck(oppDeck);
+            setPreviewDeck(oppDeck);
+
+            startGame(towerBoss, 'player');
+            setGameState('playing');
           }}
           onStartTowerFloor={(floor) => {
             setIsTowerTrialsOpen(false);
             setIsStoryActive(false);
-            setGameState('single');
-            addLog(language === 'ko'
-              ? `🗼 [시련의 탑 ${floor}층] 도전 시작! (${floor}F 보스: 가디언)`
-              : `🗼 [TOWER OF TRIALS FLOOR ${floor}] Ascent commenced!`,
+            setIsDirectAiBattle(false);
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+
+            const isBossFloor = floor % 5 === 0;
+            const bossPower = 120 + floor * 15;
+            const bossName = language === 'ko'
+              ? (isBossFloor ? `👑 [${floor}층 보스] 아케인 로드` : `🗼 [${floor}층] 탑의 수호자`)
+              : (isBossFloor ? `👑 [F${floor} BOSS] Arcane Lord` : `🗼 [F${floor}] Tower Guardian`);
+
+            const towerBoss: Character = {
+              id: `tower-boss-floor-${floor}`,
+              type: 'robot',
+              name: bossName,
+              avatarUrl: `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=TowerBoss-${floor}&backgroundColor=dc2626`,
+              totalPower: bossPower,
+              sns: 50 + floor * 10,
+              wins: floor * 2,
+              losses: 0,
+              draws: 0,
+              x: 50,
+              y: 50,
+              targetX: 50,
+              targetY: 50,
+            };
+
+            setSelectedOpponent(towerBoss);
+            setBattleType('robot');
+
+            if (floor > 30) {
+              if (setIsAutoBattle) setIsAutoBattle(false);
+            }
+
+            addLog(
+              language === 'ko'
+                ? `🗼 [시련의 탑 ${floor}층] 도전 시작! (보스 전투력: ${bossPower})`
+                : `🗼 [TOWER OF TRIALS FLOOR ${floor}] Battle commenced! (Boss Power: ${bossPower})`,
               'system'
             );
+
+            const oppDeck = generateAIOpponentDeck(bossPower);
+            setLastAiDeck(oppDeck);
+            setPreviewDeck(oppDeck);
+
+            startGame(towerBoss, 'player');
+            setGameState('playing');
           }}
         />
 
