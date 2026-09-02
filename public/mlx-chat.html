@@ -1464,7 +1464,7 @@
     }
 
     // =========================================================================
-    // TRON Cyber Wall Face Visualizer Engine (TRON Legacy Cyber Face)
+    // TRON Cyber Wall Face Visualizer Engine (Realistic Oval Head, Eyes, Nose, Lips)
     // =========================================================================
     class TronCyberFaceEngine {
       constructor() {
@@ -1487,20 +1487,20 @@
         
         this.theme = localStorage.getItem('hero_tron_theme') || 'cyan';
         this.themeColors = {
-          cyan: { line: '#00f0ff', glow: '#00c3ff', node: '#e6ffff', bgLine: 'rgba(0, 240, 255, 0.12)' },
-          orange: { line: '#ff7700', glow: '#ff3300', node: '#fff2e6', bgLine: 'rgba(255, 119, 0, 0.12)' },
-          green: { line: '#00ff66', glow: '#00cc44', node: '#e6ffe6', bgLine: 'rgba(0, 255, 102, 0.12)' },
-          purple: { line: '#c44dff', glow: '#9900ff', node: '#f5e6ff', bgLine: 'rgba(196, 77, 255, 0.12)' }
+          cyan: { line: '#00f0ff', glow: '#00c3ff', pupil: '#00ffff', node: '#e6ffff', bgLine: 'rgba(0, 240, 255, 0.15)' },
+          orange: { line: '#ff7700', glow: '#ff3300', pupil: '#ffaa00', node: '#fff2e6', bgLine: 'rgba(255, 119, 0, 0.15)' },
+          green: { line: '#00ff66', glow: '#00cc44', pupil: '#33ff88', node: '#e6ffe6', bgLine: 'rgba(0, 255, 102, 0.15)' },
+          purple: { line: '#c44dff', glow: '#9900ff', pupil: '#e066ff', node: '#f5e6ff', bgLine: 'rgba(196, 77, 255, 0.15)' }
         };
 
-        this.cols = 38;
-        this.rows = 24;
-        this.rotX = 0.05;
+        this.rotX = 0.04;
         this.rotY = 0;
-        this.targetRotX = 0.05;
+        this.targetRotX = 0.04;
         this.targetRotY = 0;
         this.audioLevel = 0;
         this.idleTimer = 0;
+        this.blinkTimer = 0;
+        this.blinkFactor = 1.0; // 1 = open, 0 = closed
         this.isExpanded = false;
         this.isCollapsed = false;
 
@@ -1519,7 +1519,7 @@
       initEvents() {
         window.addEventListener('resize', () => this.initCanvas());
 
-        // Mouse 3D Head Tracking (Looking at cursor)
+        // Mouse 3D Head & Eyes Tracking
         window.addEventListener('mousemove', (e) => {
           if (!this.canvas) return;
           const rect = this.canvas.getBoundingClientRect();
@@ -1527,8 +1527,8 @@
           const cy = rect.top + rect.height / 2;
           const mx = (e.clientX - cx) / (window.innerWidth / 2);
           const my = (e.clientY - cy) / (window.innerHeight / 2);
-          this.targetRotY = Math.max(-0.45, Math.min(0.45, mx * 0.38)); // Yaw
-          this.targetRotX = Math.max(-0.25, Math.min(0.25, -my * 0.22 + 0.05)); // Pitch
+          this.targetRotY = Math.max(-0.4, Math.min(0.4, mx * 0.35)); // Yaw
+          this.targetRotX = Math.max(-0.25, Math.min(0.25, -my * 0.2 + 0.04)); // Pitch
         });
       }
 
@@ -1559,9 +1559,7 @@
             this.audioSourceNode.connect(this.analyser);
             this.analyser.connect(this.audioCtx.destination);
             this.connectedAudioEl = audioEl;
-          } catch (e) {
-            // Already connected or cross-origin
-          }
+          } catch (e) {}
         }
         this.isSpeaking = true;
         this.isSynthetic = false;
@@ -1621,6 +1619,7 @@
 
         ctx.clearRect(0, 0, w, h);
 
+        // 1. Audio Processing
         let currentVol = 0;
         let freqAvg = 0;
 
@@ -1629,232 +1628,458 @@
             this.analyser.getByteFrequencyData(this.dataArray);
             this.analyser.getByteTimeDomainData(this.timeDomainArray);
 
-            // Vocal / Bass band for mouth lip-sync
             let bassSum = 0;
             for (let i = 2; i < 18; i++) bassSum += this.dataArray[i];
-            currentVol = Math.min(1.4, (bassSum / 16) / 100);
+            currentVol = Math.min(1.5, (bassSum / 16) / 95);
 
             let totalSum = 0;
             for (let i = 0; i < this.dataArray.length; i++) totalSum += this.dataArray[i];
             freqAvg = totalSum / this.dataArray.length;
           } else if (this.isSynthetic) {
-            // Speech Formant simulation for Web Speech
-            this.syntheticTime += 0.22;
-            const s1 = Math.sin(this.syntheticTime * 4.5);
-            const s2 = Math.cos(this.syntheticTime * 8.2);
-            const s3 = Math.sin(this.syntheticTime * 2.1);
+            this.syntheticTime += 0.24;
+            const s1 = Math.sin(this.syntheticTime * 4.6);
+            const s2 = Math.cos(this.syntheticTime * 8.4);
+            const s3 = Math.sin(this.syntheticTime * 2.2);
             const rawVol = Math.max(0, s1 * 0.5 + s2 * 0.35 + s3 * 0.4);
-            currentVol = rawVol > 0.12 ? rawVol * 1.1 : 0.08;
-            freqAvg = currentVol * 170;
+            currentVol = rawVol > 0.12 ? rawVol * 1.15 : 0.08;
+            freqAvg = currentVol * 175;
 
             for (let i = 0; i < this.timeDomainArray.length; i++) {
-              this.timeDomainArray[i] = 128 + Math.sin(i * 0.25 + this.syntheticTime * 5.5) * (currentVol * 65);
+              this.timeDomainArray[i] = 128 + Math.sin(i * 0.25 + this.syntheticTime * 5.8) * (currentVol * 65);
             }
           }
         } else {
-          // Idle breathing
           this.idleTimer += 0.025;
           currentVol = 0.03 + Math.sin(this.idleTimer) * 0.025;
-          freqAvg = 6;
+          freqAvg = 5;
           for (let i = 0; i < this.timeDomainArray.length; i++) {
-            this.timeDomainArray[i] = 128 + Math.sin(i * 0.12 + this.idleTimer * 1.5) * 4;
+            this.timeDomainArray[i] = 128 + Math.sin(i * 0.12 + this.idleTimer * 1.6) * 4;
           }
         }
 
-        this.audioLevel += (currentVol - this.audioLevel) * 0.38;
+        this.audioLevel += (currentVol - this.audioLevel) * 0.4;
+
+        // Eye Blink Animation (every 3~5 seconds)
+        this.blinkTimer += 0.016;
+        if (this.blinkTimer > 3.8) {
+          const blinkProgress = (this.blinkTimer - 3.8) / 0.18;
+          if (blinkProgress <= 0.5) {
+            this.blinkFactor = 1.0 - (blinkProgress * 2.0); // closing
+          } else if (blinkProgress <= 1.0) {
+            this.blinkFactor = (blinkProgress - 0.5) * 2.0; // opening
+          } else {
+            this.blinkFactor = 1.0;
+            this.blinkTimer = Math.random() * 1.2; // reset
+          }
+        } else {
+          this.blinkFactor = 1.0;
+        }
 
         const freqLabel = document.getElementById('tron-freq-label');
         if (freqLabel && (this.idleTimer % 6 < 1 || this.isSpeaking)) {
-          freqLabel.textContent = (freqAvg * 15.2).toFixed(1) + ' Hz';
+          freqLabel.textContent = (freqAvg * 15.4).toFixed(1) + ' Hz';
         }
 
+        // Smooth Head 3D Rotations
         this.rotX += (this.targetRotX - this.rotX) * 0.08;
         this.rotY += (this.targetRotY - this.rotY) * 0.08;
 
         const colors = this.themeColors[this.theme] || this.themeColors.cyan;
         const cx = w / 2;
-        const cy = h / 2 + 8;
-        const focal = 350;
+        const cy = h / 2 + 5;
+        const focal = 360;
         const camZ = 430;
 
-        const cols = this.cols;
-        const rows = this.rows;
-        const spacingX = Math.min(w / (cols - 2), 26);
-        const spacingY = Math.min(h / (rows - 2), 15);
+        // 3D Projection Helper
+        const project = (x, y, z) => {
+          // Rotate Y (Yaw)
+          const cosY = Math.cos(this.rotY);
+          const sinY = Math.sin(this.rotY);
+          const rx1 = x * cosY + z * sinY;
+          const rz1 = -x * sinY + z * cosY;
 
-        // Calculate 3D Matrix Vertices
-        const gridPoints = [];
+          // Rotate X (Pitch)
+          const cosX = Math.cos(this.rotX);
+          const sinX = Math.sin(this.rotX);
+          const ry2 = y * cosX - rz1 * sinX;
+          const rz2 = y * sinX + rz1 * cosX;
 
-        for (let r = 0; r < rows; r++) {
-          gridPoints[r] = [];
-          for (let c = 0; c < cols; c++) {
-            let posX = (c - cols / 2) * spacingX;
-            let posY = (r - rows / 2) * spacingY;
-            let posZ = 0;
+          const zDist = camZ - rz2;
+          const scale = focal / Math.max(20, zDist);
+          return {
+            x: cx + rx1 * scale,
+            y: cy + ry2 * scale,
+            z: rz2,
+            scale: scale
+          };
+        };
 
-            const nx = (c - cols / 2) / (cols / 3.4);
-            const ny = (r - rows / 2.1) / (rows / 2.9);
-            const distSq = nx * nx + ny * ny;
-
-            let isFace = false;
-
-            // 3D Cyber Face Emerging from Wall Grid
-            if (distSq < 1.08) {
-              isFace = true;
-              posZ = Math.cos(Math.min(1, distSq) * Math.PI * 0.5) * 72;
-
-              // Forehead
-              if (ny < -0.35) {
-                posZ += Math.sin((ny + 0.35) * Math.PI) * 12;
-              }
-
-              // Eye Sockets
-              const eyeDistL = Math.hypot(nx + 0.36, ny + 0.12);
-              const eyeDistR = Math.hypot(nx - 0.36, ny + 0.12);
-              if (eyeDistL < 0.25) posZ -= Math.cos((eyeDistL / 0.25) * Math.PI * 0.5) * 22;
-              if (eyeDistR < 0.25) posZ -= Math.cos((eyeDistR / 0.25) * Math.PI * 0.5) * 22;
-
-              // Eyebrow ridge
-              if (Math.abs(ny + 0.24) < 0.08 && Math.abs(nx) < 0.6) {
-                posZ += 10;
-              }
-
-              // Nose Bridge & Tip
-              const noseW = Math.abs(nx);
-              if (noseW < 0.16 && ny > -0.15 && ny < 0.38) {
-                const noseH = 1 - Math.abs(ny - 0.2) / 0.25;
-                posZ += (0.16 - noseW) * 125 * Math.max(0, noseH);
-              }
-
-              // Cheeks
-              if (Math.abs(nx) > 0.35 && Math.abs(nx) < 0.75 && ny > -0.05 && ny < 0.4) {
-                posZ += 14 * Math.sin((Math.abs(nx) - 0.35) / 0.4 * Math.PI);
-              }
-
-              // 👄 TRON Realtime Lip-Sync & Jaw Dynamics
-              const mouthDistX = Math.abs(nx);
-              const mouthDistY = ny - 0.52;
-
-              if (mouthDistX < 0.32 && Math.abs(mouthDistY) < 0.24) {
-                const lipCurve = Math.sin(Math.max(0, 1 - mouthDistX / 0.32) * Math.PI);
-                const openAperture = this.audioLevel * 36; // Mouth aperture responds to audio!
-
-                if (mouthDistY < 0) {
-                  // Upper lip
-                  posZ += lipCurve * 16 - (openAperture * 0.25);
-                  posY -= openAperture * 0.15;
-                } else {
-                  // Lower lip & Jaw Drops
-                  posZ += lipCurve * 15 - (openAperture * 0.65);
-                  posY += openAperture * 0.95; // JAW DROP!
-                }
-              }
-
-              // Chin
-              if (Math.abs(nx) < 0.22 && ny > 0.68 && ny < 0.95) {
-                posZ += 18 * (1 - Math.abs(nx) / 0.22);
-                posY += this.audioLevel * 20;
-              }
-            }
-
-            // Audio Waveform Ripple across Cyber Wall Grid
-            const waveIdx = Math.floor((c / cols) * this.timeDomainArray.length);
-            const waveVal = (this.timeDomainArray[waveIdx] - 128) / 128;
-            posZ += waveVal * (isFace ? 18 : 9) * (this.isSpeaking ? 1.5 : 0.4);
-
-            // 3D Matrix Rotation (Yaw & Pitch)
-            const cosY = Math.cos(this.rotY);
-            const sinY = Math.sin(this.rotY);
-            const rx1 = posX * cosY + posZ * sinY;
-            const rz1 = -posX * sinY + posZ * cosY;
-
-            const cosX = Math.cos(this.rotX);
-            const sinX = Math.sin(this.rotX);
-            const ry2 = posY * cosX - rz1 * sinX;
-            const rz2 = posY * sinX + rz1 * cosX;
-
-            // 3D Perspective Projection
-            const zDist = camZ - rz2;
-            const scale = focal / Math.max(15, zDist);
-            const projX = cx + rx1 * scale;
-            const projY = cy + ry2 * scale;
-
-            gridPoints[r][c] = {
-              x: projX,
-              y: projY,
-              z: rz2,
-              isFace: isFace,
-              scale: scale
-            };
+        // Draw Line in 3D Helper
+        const draw3DPath = (pts, isClosed = false, strokeColor = colors.line, lineWidth = 1.2, glow = 6, alpha = 0.85) => {
+          if (!pts || pts.length < 2) return;
+          ctx.beginPath();
+          const p0 = project(pts[0].x, pts[0].y, pts[0].z);
+          ctx.moveTo(p0.x, p0.y);
+          for (let i = 1; i < pts.length; i++) {
+            const p = project(pts[i].x, pts[i].y, pts[i].z);
+            ctx.lineTo(p.x, p.y);
           }
-        }
+          if (isClosed) ctx.closePath();
+          ctx.strokeStyle = strokeColor;
+          ctx.lineWidth = lineWidth;
+          ctx.shadowColor = colors.glow;
+          ctx.shadowBlur = glow;
+          ctx.globalAlpha = alpha;
+          ctx.stroke();
+        };
 
-        // Render TRON Wireframe Lines & Neon Nodes
         ctx.save();
 
-        // 1. Horizontal Lines (Latitudinal)
-        for (let r = 0; r < rows; r++) {
+        // =====================================================================
+        // LAYER 1: Background TRON Cyber Wall Matrix Grid (Perspective Wall)
+        // =====================================================================
+        const wallCols = 28;
+        const wallRows = 16;
+        const wallSpacingX = Math.min(w / (wallCols - 2), 34);
+        const wallSpacingY = Math.min(h / (wallRows - 2), 20);
+
+        ctx.strokeStyle = colors.bgLine;
+        ctx.lineWidth = 0.7;
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 0.35;
+
+        for (let r = 0; r < wallRows; r++) {
           ctx.beginPath();
-          let started = false;
-          for (let c = 0; c < cols; c++) {
-            const pt = gridPoints[r][c];
-            if (!started) { ctx.moveTo(pt.x, pt.y); started = true; }
-            else { ctx.lineTo(pt.x, pt.y); }
+          for (let c = 0; c < wallCols; c++) {
+            const wx = (c - wallCols / 2) * wallSpacingX;
+            const wy = (r - wallRows / 2) * wallSpacingY;
+            const waveIdx = Math.floor((c / wallCols) * this.timeDomainArray.length);
+            const waveVal = (this.timeDomainArray[waveIdx] - 128) / 128;
+            const wz = -30 + waveVal * (this.isSpeaking ? 14 : 4);
+            const pt = project(wx, wy, wz);
+            if (c === 0) ctx.moveTo(pt.x, pt.y);
+            else ctx.lineTo(pt.x, pt.y);
           }
-          ctx.strokeStyle = colors.line;
-          ctx.lineWidth = 1.0;
-          ctx.shadowColor = colors.glow;
-          ctx.shadowBlur = this.isSpeaking ? 9 : 4;
-          ctx.globalAlpha = 0.65 + (this.audioLevel * 0.35);
           ctx.stroke();
         }
 
-        // 2. Vertical Lines (Longitudinal)
-        for (let c = 0; c < cols; c++) {
+        for (let c = 0; c < wallCols; c += 2) {
           ctx.beginPath();
-          let started = false;
-          for (let r = 0; r < rows; r++) {
-            const pt = gridPoints[r][c];
-            if (!started) { ctx.moveTo(pt.x, pt.y); started = true; }
-            else { ctx.lineTo(pt.x, pt.y); }
+          for (let r = 0; r < wallRows; r++) {
+            const wx = (c - wallCols / 2) * wallSpacingX;
+            const wy = (r - wallRows / 2) * wallSpacingY;
+            const pt = project(wx, wy, -30);
+            if (r === 0) ctx.moveTo(pt.x, pt.y);
+            else ctx.lineTo(pt.x, pt.y);
           }
-          ctx.strokeStyle = colors.line;
-          ctx.lineWidth = (c >= cols / 2 - 4 && c <= cols / 2 + 4) ? 1.5 : 0.8;
-          ctx.shadowColor = colors.glow;
-          ctx.shadowBlur = this.isSpeaking ? 9 : 3;
-          ctx.globalAlpha = 0.55 + (this.audioLevel * 0.35);
           ctx.stroke();
         }
 
-        // 3. Facial Neon Nodes / Glow Dots
-        ctx.shadowBlur = this.isSpeaking ? 14 : 6;
-        ctx.fillStyle = colors.node;
-        for (let r = 0; r < rows; r += 2) {
-          for (let c = 0; c < cols; c += 2) {
-            const pt = gridPoints[r][c];
-            if (pt.isFace) {
-              const dotSize = (pt.z > 25 ? 2.4 : 1.4) + (this.audioLevel * 1.6);
-              ctx.globalAlpha = Math.min(1.0, 0.45 + (pt.z / 75) * 0.55 + this.audioLevel * 0.4);
-              ctx.fillRect(pt.x - dotSize / 2, pt.y - dotSize / 2, dotSize, dotSize);
-            }
-          }
-        }
+        // =====================================================================
+        // LAYER 2: 계란형 사람 얼굴 윤곽선 (Egg-Shaped Oval Head Contour)
+        // =====================================================================
+        const mouthOpen = this.audioLevel * 32; // 실시간 립싱크 입 벌림
+        const jawDrop = this.audioLevel * 18;   // 턱 하강
 
-        // 4. Oscilloscope Waveform at the Bottom HUD
+        // 수학적 완벽한 계란형(Oval) 헤드 윤곽 좌표 계산
+        const getOvalPoint = (angle, scaleFactor = 1.0) => {
+          // angle: 0 (상단 정수리) -> PI/2 (오른쪽 광대) -> PI (턱끝) -> 3PI/2 (왼쪽 광대)
+          const normY = -Math.cos(angle); // -1 (이마) ~ +1 (턱)
+          
+          let rx = 68 * scaleFactor;
+          let ry = 92 * scaleFactor;
+          
+          // 계란형 곡률: 이마는 넓고 둥글며, 광대는 완만하고, 턱선은 갸름하게 좁아짐!
+          if (normY < -0.1) {
+            // 이마/정수리 (넓고 둥근 반구)
+            rx *= (1.0 + 0.06 * Math.sin(angle));
+          } else {
+            // 턱선 (V-라인 / 계란형 끝으로 갸름하게 좁아짐)
+            const jawT = (normY + 0.1) / 1.1; // 0 to 1
+            rx *= (1.0 - jawT * 0.44); // 턱으로 갈수록 약 44% 갸름해짐!
+          }
+
+          let px = Math.sin(angle) * rx;
+          let py = normY * ry;
+          let pz = Math.cos(angle * 0.5) * 45 * scaleFactor;
+
+          // 턱 부분 오디오 하강
+          if (normY > 0.4) {
+            py += jawDrop * ((normY - 0.4) / 0.6);
+            pz -= jawDrop * 0.2;
+          }
+
+          return { x: px, y: py, z: pz };
+        };
+
+        // 1. 메인 계란형 외곽선 (Outer Oval)
+        const outerOvalPts = [];
+        const numOvalSteps = 48;
+        for (let i = 0; i <= numOvalSteps; i++) {
+          const ang = (i / numOvalSteps) * Math.PI * 2;
+          outerOvalPts.push(getOvalPoint(ang, 1.0));
+        }
+        draw3DPath(outerOvalPts, true, colors.line, 2.0, this.isSpeaking ? 12 : 6, 0.95);
+
+        // 2. 내부 입체 등고선 (Inner Oval Contours: 볼살, 이마 곡면)
+        const innerOvalPts1 = [];
+        const innerOvalPts2 = [];
+        for (let i = 0; i <= numOvalSteps; i++) {
+          const ang = (i / numOvalSteps) * Math.PI * 2;
+          innerOvalPts1.push(getOvalPoint(ang, 0.85));
+          innerOvalPts2.push(getOvalPoint(ang, 0.70));
+        }
+        draw3DPath(innerOvalPts1, true, colors.line, 0.9, 4, 0.45);
+        draw3DPath(innerOvalPts2, true, colors.line, 0.7, 3, 0.3);
+
+        // =====================================================================
+        // LAYER 3: 눈 (Eyes) & 눈썹 (Eyebrows) & 빛나는 눈동자 (Pupils)
+        // =====================================================================
+        const eyeY = -16;
+        const eyeSpacing = 32; // 좌우 중심
+        const eyeWidth = 19;
+        const eyeHeight = 9 * this.blinkFactor; // 눈 깜빡임 적용!
+        const eyeZ = 46;
+
+        [-1, 1].forEach(side => {
+          const eyeCenterX = side * eyeSpacing;
+
+          // 눈썹 (Eyebrows): 우아한 아치형
+          const browY = -31;
+          const browPts = [
+            { x: eyeCenterX - side * 18, y: browY + 4, z: eyeZ - 3 },
+            { x: eyeCenterX - side * 10, y: browY - 2, z: eyeZ + 2 },
+            { x: eyeCenterX,            y: browY - 4, z: eyeZ + 4 },
+            { x: eyeCenterX + side * 10, y: browY - 2, z: eyeZ + 2 },
+            { x: eyeCenterX + side * 17, y: browY + 3, z: eyeZ - 2 },
+          ];
+          draw3DPath(browPts, false, colors.line, 1.6, 7, 0.85);
+
+          // 눈꺼풀 윤곽 (Almond Eye Shape)
+          const eyePts = [];
+          const eyeSteps = 16;
+          for (let i = 0; i <= eyeSteps; i++) {
+            const t = (i / eyeSteps) * Math.PI * 2;
+            const ex = eyeCenterX + Math.cos(t) * eyeWidth;
+            // 상안검(윗눈꺼풀)을 더 아치형으로, 하안검은 부드럽게
+            const ey = eyeY + Math.sin(t) * eyeHeight + (Math.sin(t) > 0 ? 1.5 : -1.0);
+            const ez = eyeZ + (1 - Math.abs(Math.cos(t))) * 8;
+            eyePts.push({ x: ex, y: ey, z: ez });
+          }
+          draw3DPath(eyePts, true, colors.line, 1.4, 8, 0.9);
+
+          // 쌍꺼풀 라인 (Eyelid Crease)
+          if (this.blinkFactor > 0.4) {
+            const creasePts = [
+              { x: eyeCenterX - side * 15, y: eyeY - 7 * this.blinkFactor, z: eyeZ + 2 },
+              { x: eyeCenterX,            y: eyeY - 11 * this.blinkFactor, z: eyeZ + 5 },
+              { x: eyeCenterX + side * 15, y: eyeY - 6 * this.blinkFactor, z: eyeZ + 2 }
+            ];
+            draw3DPath(creasePts, false, colors.line, 0.8, 3, 0.5);
+          }
+
+          // 빛나는 눈동자 (Glowing Iris & Pupil)
+          if (this.blinkFactor > 0.25) {
+            // 마우스 위치에 따른 시선 이동 (Look-At Pupil)
+            const pupilOffsetX = this.rotY * 16;
+            const pupilOffsetY = -this.rotX * 12;
+            const pupil3D = project(eyeCenterX + pupilOffsetX, eyeY + pupilOffsetY, eyeZ + 6);
+
+            // 외곽 홍채 링 (Iris Ring)
+            ctx.beginPath();
+            ctx.arc(pupil3D.x, pupil3D.y, 4.8 * pupil3D.scale, 0, Math.PI * 2);
+            ctx.strokeStyle = colors.pupil;
+            ctx.lineWidth = 1.2;
+            ctx.shadowColor = colors.glow;
+            ctx.shadowBlur = 10;
+            ctx.globalAlpha = 0.9;
+            ctx.stroke();
+
+            // 중심 발광 동공 (Pupil Core)
+            ctx.beginPath();
+            ctx.arc(pupil3D.x, pupil3D.y, 2.2 * pupil3D.scale, 0, Math.PI * 2);
+            ctx.fillStyle = colors.node;
+            ctx.shadowColor = colors.glow;
+            ctx.shadowBlur = 14;
+            ctx.globalAlpha = 1.0;
+            ctx.fill();
+
+            // 사이버 타깃 조준선 (Target Reticle)
+            ctx.beginPath();
+            ctx.moveTo(pupil3D.x - 7 * pupil3D.scale, pupil3D.y);
+            ctx.lineTo(pupil3D.x + 7 * pupil3D.scale, pupil3D.y);
+            ctx.moveTo(pupil3D.x, pupil3D.y - 7 * pupil3D.scale);
+            ctx.lineTo(pupil3D.x, pupil3D.y + 7 * pupil3D.scale);
+            ctx.strokeStyle = colors.line;
+            ctx.lineWidth = 0.6;
+            ctx.globalAlpha = 0.45;
+            ctx.stroke();
+          }
+        });
+
+        // =====================================================================
+        // LAYER 4: 코 (Nose: 날렵한 콧대, 오똑한 코끝, 콧망울)
+        // =====================================================================
+        const noseTopY = -18;
+        const noseTipY = 17;
+        const noseZ = 58;
+
+        // 1. 콧대 중심 능선 (Dorsal Ridge)
+        const noseRidgePts = [
+          { x: 0,  y: noseTopY,     z: 42 },
+          { x: 0,  y: -5,           z: 49 },
+          { x: 0,  y: 8,            z: 57 },
+          { x: 0,  y: noseTipY,     z: noseZ } // 코끝 (가장 돌출)
+        ];
+        draw3DPath(noseRidgePts, false, colors.line, 1.8, 8, 0.95);
+
+        // 2. 코끝 둥근 하이라이트 (Nose Tip Node)
+        const noseTipPt = project(0, noseTipY, noseZ);
         ctx.beginPath();
-        const waveY = h - 18;
+        ctx.arc(noseTipPt.x, noseTipPt.y, 2.5 * noseTipPt.scale, 0, Math.PI * 2);
+        ctx.fillStyle = colors.node;
+        ctx.shadowColor = colors.glow;
+        ctx.shadowBlur = 12;
+        ctx.globalAlpha = 1.0;
+        ctx.fill();
+
+        // 3. 좌우 콧망울 & 콧구멍 음영 라인 (Nose Wings & Nostrils)
+        const noseWingL = [
+          { x: 0,   y: noseTipY,     z: noseZ },
+          { x: -7,  y: noseTipY + 2, z: noseZ - 4 },
+          { x: -12, y: noseTipY + 1, z: 46 },
+          { x: -8,  y: noseTipY - 5, z: 47 }
+        ];
+        const noseWingR = [
+          { x: 0,   y: noseTipY,     z: noseZ },
+          { x: 7,   y: noseTipY + 2, z: noseZ - 4 },
+          { x: 12,  y: noseTipY + 1, z: 46 },
+          { x: 8,   y: noseTipY - 5, z: 47 }
+        ];
+        draw3DPath(noseWingL, false, colors.line, 1.2, 5, 0.8);
+        draw3DPath(noseWingR, false, colors.line, 1.2, 5, 0.8);
+
+        // 4. 인중 (Philtrum: 코끝에서 윗입술로 이어지는 세로선)
+        const philtrumL = [{ x: -3.5, y: noseTipY + 4, z: 49 }, { x: -3.5, y: 36, z: 48 }];
+        const philtrumR = [{ x: 3.5,  y: noseTipY + 4, z: 49 }, { x: 3.5,  y: 36, z: 48 }];
+        draw3DPath(philtrumL, false, colors.line, 0.7, 3, 0.5);
+        draw3DPath(philtrumR, false, colors.line, 0.7, 3, 0.5);
+
+        // =====================================================================
+        // LAYER 5: 입 (Lips & Mouth with Realtime Lip-sync & Waveform)
+        // =====================================================================
+        const mouthCenterY = 44;
+        const mouthCornerX = 24;
+        const lipZ = 48;
+
+        // 윗입술 상단: 큐피트의 활 (Cupid's Bow)
+        const upperLipTopPts = [
+          { x: -mouthCornerX,       y: mouthCenterY + 1, z: lipZ - 4 },
+          { x: -mouthCornerX * 0.5, y: mouthCenterY - 4, z: lipZ + 1 },
+          { x: -3.5,                y: mouthCenterY - 6, z: lipZ + 4 },
+          { x: 0,                   y: mouthCenterY - 4, z: lipZ + 3 }, // 활 중앙 딥
+          { x: 3.5,                 y: mouthCenterY - 6, z: lipZ + 4 },
+          { x: mouthCornerX * 0.5,  y: mouthCenterY - 4, z: lipZ + 1 },
+          { x: mouthCornerX,        y: mouthCenterY + 1, z: lipZ - 4 }
+        ];
+        draw3DPath(upperLipTopPts, false, colors.line, 1.8, 8, 0.95);
+
+        // 윗입술 하단 (Upper Lip Bottom Edge)
+        const upperLipBottomPts = [
+          { x: -mouthCornerX, y: mouthCenterY + 1, z: lipZ - 4 },
+          { x: -10,           y: mouthCenterY - (mouthOpen * 0.12), z: lipZ },
+          { x: 0,             y: mouthCenterY + 1 - (mouthOpen * 0.15), z: lipZ + 1 },
+          { x: 10,            y: mouthCenterY - (mouthOpen * 0.12), z: lipZ },
+          { x: mouthCornerX,  y: mouthCenterY + 1, z: lipZ - 4 }
+        ];
+        draw3DPath(upperLipBottomPts, false, colors.line, 1.2, 5, 0.8);
+
+        // 아랫입술 상단 (Lower Lip Top Edge: 소리가 나면 아래로 벌어짐!)
+        const lowerLipTopPts = [
+          { x: -mouthCornerX, y: mouthCenterY + 1, z: lipZ - 4 },
+          { x: -11,           y: mouthCenterY + 1 + (mouthOpen * 0.8), z: lipZ - 2 },
+          { x: 0,             y: mouthCenterY + 2 + (mouthOpen * 0.95), z: lipZ - 2 },
+          { x: 11,            y: mouthCenterY + 1 + (mouthOpen * 0.8), z: lipZ - 2 },
+          { x: mouthCornerX,  y: mouthCenterY + 1, z: lipZ - 4 }
+        ];
+        draw3DPath(lowerLipTopPts, false, colors.line, 1.4, 7, 0.9);
+
+        // 아랫입술 하단 (Lower Lip Bottom Contour: 도톰하고 입체적)
+        const lowerLipBottomY = mouthCenterY + 11 + (mouthOpen * 0.65);
+        const lowerLipBottomPts = [
+          { x: -mouthCornerX,       y: mouthCenterY + 1, z: lipZ - 4 },
+          { x: -mouthCornerX * 0.5, y: lowerLipBottomY - 2, z: lipZ + 1 },
+          { x: 0,                   y: lowerLipBottomY,     z: lipZ + 3 },
+          { x: mouthCornerX * 0.5,  y: lowerLipBottomY - 2, z: lipZ + 1 },
+          { x: mouthCornerX,        y: mouthCenterY + 1, z: lipZ - 4 }
+        ];
+        draw3DPath(lowerLipBottomPts, false, colors.line, 1.6, 7, 0.85);
+
+        // 👄 입 안쪽의 오디오 음파 반응 파형 (Voice inside Mouth!)
+        if (mouthOpen > 3) {
+          const mouthWavePts = [];
+          const numWaveSamples = 14;
+          for (let i = 0; i <= numWaveSamples; i++) {
+            const t = (i / numWaveSamples);
+            const wx = -mouthCornerX * 0.8 + t * (mouthCornerX * 1.6);
+            const wIdx = Math.floor(t * this.timeDomainArray.length);
+            const wVal = (this.timeDomainArray[wIdx] - 128) / 128;
+            const wy = mouthCenterY + 1 + (mouthOpen * 0.45) + wVal * (mouthOpen * 0.4);
+            mouthWavePts.push({ x: wx, y: wy, z: lipZ - 8 });
+          }
+          draw3DPath(mouthWavePts, false, colors.pupil, 1.8, 12, 1.0);
+        }
+
+        // 턱 끝 둥근 라인 (Chin highlight)
+        const chinY = 76 + jawDrop;
+        const chinPts = [
+          { x: -14, y: chinY - 3, z: 40 },
+          { x: 0,   y: chinY,     z: 48 },
+          { x: 14,  y: chinY - 3, z: 40 }
+        ];
+        draw3DPath(chinPts, false, colors.line, 1.4, 5, 0.7);
+
+        // =====================================================================
+        // LAYER 6: 안면 연결 와이어프레임 선 (Facial Feature Lattice Curves)
+        // =====================================================================
+        // 1. 광대뼈에서 입꼬리로 흐르는 곡면선
+        [-1, 1].forEach(side => {
+          const cheekPts = [
+            { x: side * 42, y: 0,  z: 38 },
+            { x: side * 34, y: 22, z: 44 },
+            { x: side * mouthCornerX, y: mouthCenterY + 1, z: lipZ - 4 },
+            { x: side * 14, y: chinY - 4, z: 40 }
+          ];
+          draw3DPath(cheekPts, false, colors.line, 0.8, 4, 0.4);
+        });
+
+        // 2. 이마에서 관자놀이로 흐르는 세로 보조선
+        [-1, 1].forEach(side => {
+          const templePts = [
+            { x: side * 22, y: -70, z: 32 },
+            { x: side * 44, y: -45, z: 34 },
+            { x: side * 50, y: -15, z: 36 }
+          ];
+          draw3DPath(templePts, false, colors.line, 0.7, 3, 0.35);
+        });
+
+        // =====================================================================
+        // LAYER 7: 하단 오실로스코프 파형 (Bottom Oscilloscope HUD)
+        // =====================================================================
+        ctx.beginPath();
+        const waveY = h - 16;
         const step = w / this.timeDomainArray.length;
         for (let i = 0; i < this.timeDomainArray.length; i++) {
           const v = (this.timeDomainArray[i] - 128) / 128;
-          const y = waveY + v * (this.isSpeaking ? 24 : 6);
+          const y = waveY + v * (this.isSpeaking ? 22 : 6);
           if (i === 0) ctx.moveTo(0, y);
           else ctx.lineTo(i * step, y);
         }
         ctx.strokeStyle = colors.line;
         ctx.lineWidth = 1.6;
         ctx.shadowColor = colors.glow;
-        ctx.shadowBlur = 12;
-        ctx.globalAlpha = 0.85;
+        ctx.shadowBlur = 10;
+        ctx.globalAlpha = 0.8;
         ctx.stroke();
 
         ctx.restore();
