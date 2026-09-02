@@ -75,14 +75,42 @@ export const MainNavigationDock: React.FC<MainNavigationDockProps> = ({
   marketAlertBadge = false,
 }) => {
   const isKo = language === 'ko';
+  const touchStartXRef = React.useRef<number | null>(null);
 
   // 특정 전체화면 뷰에서는 내비게이션 바 숨김 (필요시)
   const isFullScreenGame = currentView === 'game' || currentView === 'main';
   if (isFullScreenGame) return null;
 
+  // 좌우 스와이프 뷰 전환 핸들러 (Row 775 / ID 564)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diffX = touchStartXRef.current - touchEndX;
+    touchStartXRef.current = null;
+
+    if (Math.abs(diffX) > 50) {
+      const currentIndex = NAV_ITEMS.findIndex((item) => item.id === currentView);
+      if (currentIndex === -1) return;
+
+      if (diffX > 0 && currentIndex < NAV_ITEMS.length - 1) {
+        // 스와이프 왼쪽 ➔ 다음 탭 이동
+        onNavigate(NAV_ITEMS[currentIndex + 1].id);
+      } else if (diffX < 0 && currentIndex > 0) {
+        // 스와이프 오른쪽 ➔ 이전 탭 이동
+        onNavigate(NAV_ITEMS[currentIndex - 1].id);
+      }
+    }
+  };
+
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 bg-[#fdfcfc]/95 dark:bg-[#201d1d]/95 backdrop-blur-md border-t border-slate-900/10 dark:border-white/10 shadow-lg pb-[env(safe-area-inset-bottom,0px)] select-none font-mono"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      className="fixed bottom-0 left-0 right-0 z-40 bg-[#fdfcfc]/95 dark:bg-[#201d1d]/95 backdrop-blur-md border-t border-slate-900/10 dark:border-white/10 shadow-lg pb-[env(safe-area-inset-bottom,0px)] select-none font-mono transition-transform"
       role="navigation"
       aria-label="Main Navigation Dock"
     >
@@ -100,7 +128,7 @@ export const MainNavigationDock: React.FC<MainNavigationDockProps> = ({
               type="button"
               onClick={() => onNavigate(item.id)}
               className={cn(
-                "relative flex-1 flex flex-col items-center justify-center h-full min-h-[44px] transition-all duration-150 active:scale-95 group focus:outline-none",
+                "relative flex-1 flex flex-col items-center justify-center h-full min-h-[44px] transition-all duration-150 active:scale-95 group focus:outline-none touch-target",
                 isActive
                   ? "text-indigo-600 dark:text-indigo-400 font-extrabold"
                   : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"

@@ -4,6 +4,30 @@
 
 ---
 
+## [2026-09-03 06:54 KST] [/ge 스프레드시트 신규 12개 행(Row 767~778 / ID 548~551, 560~567) 전수 구현 및 778개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 767~778) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 775 (ID 564) [메인 로비/마켓/덱/미션 공통 하단 썸존 독 & 좌우 스와이프 라우팅]**:
+     - `src/components/MainNavigationDock.tsx` 48~56px 썸존 최적화 및 터치 스타트/엔드 기반 좌우 스와이프 뷰 전환 라우팅 구현 완료.
+  2. **Row 776 (ID 565) [전 플랫폼 카드 시너지 도감 연동 및 대전 중 '연쇄 시너지 버스트' 연출 & 전용 아우라 이펙트]**:
+     - `src/lib/cardSynergyBurstEngine.ts` 동일 속성 3장 이상 배치 시 전장 원소 아우라 및 `detectSynergyBurst` 파워 증폭/배너 연출 구현 완료.
+  3. **Row 777 (ID 566) [마켓플레이스 수수료 바이백-소각 연동 및 활동별 일일 SNS 포인트 정규화 게이트웨이]**:
+     - `src/lib/platformTokenEconomyGate.ts` 마켓 거래 수수료 50% 자동 소각 로그 관리 및 활동별(PVP/미션/스토리/출석) 일일 획득 상한선(Daily Cap) 정규화 게이트웨이 구현 완료.
+  4. **Row 778 (ID 567) [2D/3D 하이브리드 리소스 지연 로딩 및 저사양 모바일 메모리 누수 방지 텍스처 풀러]**:
+     - `src/lib/webGLTexturePoolManager.ts` LRU 기반 텍스처 풀러 도입 및 씬 전환 시 미사용 GPU 버퍼 즉시 파기로 모바일 RAM 180MB 이하 엄격 제한 구현 완료.
+  5. **Row 767~774 (ID 548~551, 560~563) [3D 제스처, 튜토리얼, 슬림HUD, 확정보상 팡파레]**:
+     - `vehicleGestureController.ts`, `SportsMissionTutorial.tsx`, `MinimalistMissionHUD.tsx`, `NormalizedRewardPopup.tsx`, `rewardSettlementService.ts` 전수 검증 완료.
+  6. **스프레드시트 778개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 항목 번호 `[Row 778 / ID 567]` 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /ge 스프레드시트 신규 12개 행(Row 767~778 / ID 548~551, 560~567) 전수 구현 및 778개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-02 20:26 KST] [상점 모바일 카드 뽑기 결과 화면 '다시 뽑기' 버튼 가림 현상 수정 & 하단 고정 액션 바 개선]
 - **요청 사항**:
   - 모바일 환경에서 상점 카드 뽑기 후 "다시 뽑기" 버튼이 카드에 가려지거나 화면 밖으로 밀려나서 안 보이는 결함 수정.
