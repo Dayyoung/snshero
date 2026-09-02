@@ -4,6 +4,30 @@
 
 ---
 
+## [2026-09-03 07:01 KST] [/ge 스프레드시트 신규 8개 행(Row 779~786 / ID 548~555) 전수 구현 및 786개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 779~786) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 783 (ID 552) [3D 격투/콜로세움 미션 퓨어 격투 제스처 전환 (MeleeGestureAdapter.js)]**:
+     - `src/lib/meleeGestureAdapter.ts` 가상 버튼 완전 배제, 엄지 탭 연타, 롱프레스 차지 강타, 스와이프 패링 및 더블탭 회피 연동 완료.
+  2. **Row 784 (ID 553) [3D 시뮬레이션/타이쿤 미션 3단계 온보딩 & 상시 ❓ 가이드 (TycoonMissionTutorial.vue)]**:
+     - `src/components/TycoonMissionTutorial.tsx` 자원 수집/가공/납품 3단계 시연 모달 및 상시 ❓ 가이드 연동 완료.
+  3. **Row 785 (ID 554) [모바일 뷰포트 전환 시 UI 왜곡 방지 및 3D 캔버스 자동 스케일러 (AdaptiveViewportScaler.js)]**:
+     - `src/lib/adaptiveViewportScaler.ts` Three.js 카메라 aspect 및 렌더러 해상도 실시간 반응형 보정 엔진 구현 완료.
+  4. **Row 786 (ID 555) [미션 플레이 시간 및 난이도별 분당 SNS 포인트 실시간 계산기 & 동기화 (RealtimePointSyncGateway.js)]**:
+     - `src/lib/realtimePointSyncGateway.ts` 분당 50P 표준 기반 시간 추적, 실시간 보상 산정 및 클리어 즉시 지갑 원자적 동기화 구현 완료.
+  5. **Row 779~782 (ID 548~551) [3D 레이싱 퓨어제스처, 스포츠 튜토리얼, 슬림HUD, 확정보상 팡파레]**:
+     - `vehicleGestureController.ts`, `SportsMissionTutorial.tsx`, `MinimalistMissionHUD.tsx`, `NormalizedRewardPopup.tsx` 전수 검증 완료.
+  6. **스프레드시트 786개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 항목 번호 `[Row 786 / ID 555]` 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /ge 스프레드시트 신규 8개 행(Row 779~786 / ID 548~555) 전수 구현 및 786개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-03 06:54 KST] [/ge 스프레드시트 신규 12개 행(Row 767~778 / ID 548~551, 560~567) 전수 구현 및 778개 행 100% 완료]
 - **요청 사항**:
   - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 767~778) 확인 및 소스코드 반영/검증 완료.
