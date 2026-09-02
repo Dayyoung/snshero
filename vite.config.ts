@@ -56,6 +56,36 @@ export default defineConfig(({mode}) => {
               const rawUrl = req.url.split('?')[0];
               const decodedUrl = decodeURIComponent(rawUrl);
 
+              // Support /mall and /mall/* direct static serving
+              if (/^\/mall(\/|$)/i.test(decodedUrl)) {
+                let mallRelPath = decodedUrl.replace(/^\/mall(\/)?/i, '');
+                let targetPath = path.join(publicDir, 'mall', mallRelPath);
+
+                if (!mallRelPath || (fs.existsSync(targetPath) && fs.statSync(targetPath).isDirectory())) {
+                  targetPath = path.join(targetPath, 'index.html');
+                } else if (!fs.existsSync(targetPath)) {
+                  if (fs.existsSync(targetPath + '.html')) {
+                    targetPath = targetPath + '.html';
+                  }
+                }
+
+                if (fs.existsSync(targetPath)) {
+                  const stat = fs.statSync(targetPath);
+                  if (stat.isFile()) {
+                    const ext = path.extname(targetPath).toLowerCase();
+                    const contentType = MIME_TYPES[ext] || 'text/html; charset=utf-8';
+
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', contentType);
+                    res.setHeader('Content-Length', stat.size);
+                    res.setHeader('Cache-Control', 'no-cache');
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+                    fs.createReadStream(targetPath).pipe(res);
+                    return;
+                  }
+                }
+              }
+
               // Support case-insensitive wildcard paths for /public/*, /Public/*, /PUBLIC/*
               let relativePath = '';
               if (/^\/public(\/|$)/i.test(decodedUrl)) {
