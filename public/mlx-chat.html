@@ -407,11 +407,22 @@
     // =========================================================================
     function getAutoDetectedApiBase() {
       if (location.protocol === 'file:') return 'http://127.0.0.1:11234';
+      // 🚀 웹 서버(3000)를 통한 접속 시 Same-Origin 리버스 프록시(/api-mlx) 우선 적용
+      // 외부 스마트폰, Tailscale, LAN 접속 시 CORS 및 포트 11234 방화벽 차단 완벽 방지!
+      if (location.port === '3000' || location.pathname.endsWith('.html')) {
+        return '/api-mlx';
+      }
       const hostname = location.hostname || '127.0.0.1';
       return `http://${hostname}:11234`;
     }
 
-    let API_BASE = localStorage.getItem('hero_mlx_api_base') || getAutoDetectedApiBase();
+    let savedApiBase = localStorage.getItem('hero_mlx_api_base');
+    // 이전에 잘못 저장된 11234 직접 접속 캐시가 있다면 리버스 프록시(/api-mlx)로 안전하게 자동 마이그레이션
+    if (savedApiBase && savedApiBase.includes(':11234') && location.port === '3000') {
+      savedApiBase = '/api-mlx';
+      localStorage.setItem('hero_mlx_api_base', '/api-mlx');
+    }
+    let API_BASE = savedApiBase || getAutoDetectedApiBase();
     const MODEL_CHAT = 'mlx-community/gemma-4-e4b-it-4bit'; // 🔥 Default: Gemma 4
     const MODEL_IMAGE = 'Runpod/FLUX.2-klein-4B-mflux-4bit';
     const MODEL_TTS = 'mlx-community/Qwen3-TTS-12Hz-0.6B-Base-8bit';

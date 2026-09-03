@@ -229,6 +229,13 @@ export default defineConfig(({mode}) => {
       fs: {
         allow: ['.', 'public'],
       },
+      proxy: {
+        '/api-mlx': {
+          target: 'http://127.0.0.1:11234',
+          changeOrigin: true,
+          rewrite: (p) => p.replace(/^\/api-mlx/, ''),
+        }
+      }
     },
   };
 });
