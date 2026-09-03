@@ -699,6 +699,14 @@
       // 🔥 새 질문 제출 즉시 기존 재생 및 TTS 요청 즉각 취소
       stopAudioPlayback();
 
+      // 🔥 브라우저 오디오 언락 (사용자 제스처 동기화로 비동기 에러 시에도 로컬 음성 발화 보장)
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.resume();
+      }
+      if (window.tronEngine) {
+        window.tronEngine.ensureAudioContext();
+      }
+
       inputEl.value = '';
       resetTextareaHeight(inputEl);
 
@@ -862,14 +870,34 @@
         }
 
       } catch (err) {
+        liveContentEl?.classList.remove('typing-cursor');
+
         if (err.name === 'AbortError') {
           assistantMsg.content = fullText + ' *(생성이 중단되었습니다)*';
+          saveStorage();
+          renderCurrentChat();
         } else {
-          assistantMsg.content = fullText + `\n\n*(오류 발생: ${err.message} - API 주소: ${API_BASE})*`;
+          // 🔥 핵심: 서버 접속 불가(Failed to fetch 등) 시에도 로컬 TTS로 즉각 음성 발화!
+          const userMsgs = chat.messages.filter(m => m.role === 'user');
+          const lastUserText = userMsgs.length > 0 ? userMsgs[userMsgs.length - 1].content : '';
+          const cleanUserText = lastUserText.replace(/^(\S+)\s*\[.*?\]\s*/, '').trim();
+
+          const fallbackSpokenText = cleanUserText 
+            ? `서버에 연결할 수 없어 로컬 음성으로 읽어드립니다. ${cleanUserText}`
+            : `서버 연결에 실패했습니다. API 주소를 확인해주세요.`;
+
+          assistantMsg.content = fullText 
+            ? (fullText + `\n\n*(오류 발생: ${err.message} - API 주소: ${API_BASE})*`)
+            : `⚠️ **[서버 미연결 - 로컬 브라우저 음성 발화]**\n\nMLX AI 서버(\`${API_BASE}\`)에 연결할 수 없습니다.\n로컬 시스템 음성으로 입력하신 내용을 읽어드립니다:\n\n> "${cleanUserText || '내용 없음'}"\n\n*(서버가 켜져 있는지 확인해주세요)*`;
+
+          saveStorage();
+          renderCurrentChat();
+
+          if (autoTTS) {
+            updateAudioStatusUI(true, '로컬 시스템 음성 (서버 미연결)');
+            speakWithBrowserTTS(fallbackSpokenText, currentSpeakGen);
+          }
         }
-        liveContentEl?.classList.remove('typing-cursor');
-        saveStorage();
-        renderCurrentChat();
       } finally {
         setGeneratingState(false);
       }
