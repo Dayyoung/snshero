@@ -741,6 +741,19 @@
       inputEl.value = '';
       resetTextareaHeight(inputEl);
 
+      // 🔥 한글 IME 조합 잔여 글자("워") 완벽 제거:
+      // 브라우저 IME 엔진이 keydown 이후 비동기로 밀어넣는 조합 글자를 0ms 및 35ms 틱에서 완전히 클리어
+      setTimeout(() => {
+        inputEl.value = '';
+        resetTextareaHeight(inputEl);
+      }, 0);
+      setTimeout(() => {
+        if (inputEl.value) {
+          inputEl.value = '';
+          resetTextareaHeight(inputEl);
+        }
+      }, 35);
+
       if (!currentChatId || !chats[currentChatId]) {
         createNewChat();
       }
