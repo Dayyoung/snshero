@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Trophy, ArrowUp, ArrowDown, Users, Gift, ShieldAlert, Swords, X, Bell, List, AlertCircle, Wifi, Bluetooth, Compass, Zap, Clock, HelpCircle, ChevronLeft, ChevronRight, Crown, Sparkles, ShoppingBag, Loader2 } from 'lucide-react';
 import { RankRewardsModal } from '../components/RankRewardsModal';
 import { MatchHistoryModal } from '../components/MatchHistoryModal';
@@ -47,6 +47,8 @@ interface RankingViewProps {
   isAutoBattle?: boolean;
   autoStartPvp?: boolean;
   onClearAutoStartPvp?: () => void;
+  fromBackNavigation?: boolean;
+  onClearFromBackNavigation?: () => void;
 }
 
 type SortBy = 'winRate' | 'wins';
@@ -114,7 +116,7 @@ const DEFAULT_DUMMY_RANKING_USERS: (RankingUser & { deck?: any[] })[] = [
   { id: 'rank-bot-12', name: 'BitConqueror', wins: 45, losses: 55, draws: 1, totalPower: 4100, winRate: 44.6, sns: 3100, language: 'en' },
 ];
 
-export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playSfx, language, user, onAttackUser, sns, onLogin, setIsGlobalLoading, currentSeason, isAutoBattle, autoStartPvp, onClearAutoStartPvp }) => {
+export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playSfx, language, user, onAttackUser, sns, onLogin, setIsGlobalLoading, currentSeason, isAutoBattle, autoStartPvp, onClearAutoStartPvp, fromBackNavigation, onClearFromBackNavigation }) => {
   const { theme } = useGameSettings();
   const [rawUsers, setRawUsers] = useState<(RankingUser & { deck?: any[] })[]>([]);
   
@@ -665,6 +667,66 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
     const randomKey = tipKeys[Math.floor(Math.random() * tipKeys.length)];
     setCurrentTip(t(randomKey as any, language));
   };
+
+  const triggerAutoSearch = useCallback(() => {
+    if (isSearching || isPvpSearching || autoBattleCountdown !== null) return;
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    setAutoBattleCountdown(3);
+  }, [isSearching, isPvpSearching, autoBattleCountdown, playSfx]);
+
+  // Auto-Battle Countdown timer (3... 2... 1... ➔ handleOptimalBattle)
+  useEffect(() => {
+    if (autoBattleCountdown === null) return;
+    if (autoBattleCountdown <= 1) {
+      const timer = setTimeout(() => {
+        setAutoBattleCountdown(null);
+        handleOptimalBattle();
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+    const timer = setTimeout(() => {
+      setAutoBattleCountdown((prev) => (prev !== null && prev > 1 ? prev - 1 : null));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [autoBattleCountdown]);
+
+  // 1. http://localhost:3000/ranking 입장 시 자동 상대검색 팝업 (단, 뒤로가기로 왔을 때만 제외)
+  useEffect(() => {
+    if (fromBackNavigation) {
+      // 뒤로가기 했을 때만 상대검색 팝업 안 뜨게 처리
+      onClearFromBackNavigation?.();
+      return;
+    }
+    triggerAutoSearch();
+  }, []);
+
+  // 2. 30초 동안 아무것도 안 할 때도 자동 상대검색 팝업 트리거
+  useEffect(() => {
+    if (isSearching || isPvpSearching || autoBattleCountdown !== null) return;
+
+    let idleTimeoutId: NodeJS.Timeout;
+
+    const resetIdleTimer = () => {
+      clearTimeout(idleTimeoutId);
+      idleTimeoutId = setTimeout(() => {
+        triggerAutoSearch();
+      }, 30000); // 30 seconds idle
+    };
+
+    resetIdleTimer();
+
+    const activityEvents = ['pointerdown', 'keydown', 'touchstart', 'wheel'];
+    const handleActivity = () => {
+      resetIdleTimer();
+    };
+
+    activityEvents.forEach((ev) => window.addEventListener(ev, handleActivity, { passive: true }));
+
+    return () => {
+      clearTimeout(idleTimeoutId);
+      activityEvents.forEach((ev) => window.removeEventListener(ev, handleActivity));
+    };
+  }, [isSearching, isPvpSearching, autoBattleCountdown, triggerAutoSearch]);
 
   // 홈화면 등에서 랭킹대전 바로 시작 요청(autoStartPvp)이 있을 시 처리
   useEffect(() => {

@@ -452,6 +452,7 @@ function AppContent() {
   const adBannerRef = React.useRef<HTMLDivElement>(null);
   const [adBannerHeight, setAdBannerHeight] = useState(0);
   const [autoStartPvp, setAutoStartPvp] = useState(false);
+  const [fromBackToRanking, setFromBackToRanking] = useState(false);
   const [view, setView] = useState<ViewType>(() => getViewFromPathAndUrl());
   const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
 
@@ -4682,6 +4683,7 @@ function AppContent() {
     } else if (isPvpActive) {
       setIsPvpActive(false);
       setAutoStartPvp(false);
+      setFromBackToRanking(true);
       setView('ranking');
     } else {
       setView('home');
@@ -5379,6 +5381,8 @@ function AppContent() {
             isAutoBattle={isAutoBattle}
             autoStartPvp={autoStartPvp}
             onClearAutoStartPvp={() => setAutoStartPvp(false)}
+            fromBackNavigation={fromBackToRanking}
+            onClearFromBackNavigation={() => setFromBackToRanking(false)}
           />
         );
       case 'admin':

@@ -4,6 +4,29 @@
 
 ---
 
+## [2026-09-04 08:45 KST] [랭킹대전 입장 시 자동 상대검색 팝업, 30초 유휴 시 자동 팝업, 뒤로가기 시 팝업 방지 구현]
+- **요청 사항**:
+  - `http://localhost:3000/ranking` 입장 시 자동 상대검색 팝업 노출.
+  - 랭킹대전 화면에서 30초 동안 아무것도 안 할 때(Idle)도 자동 상대검색 팝업 노출.
+  - 대전 플레이 중 뒤로가기(Back) 했을 때만 상대검색 팝업이 뜨지 않도록 처리.
+- **원인 및 설계**:
+  - 기존에는 뒤로가기 시 자동 시작을 방지하기 위해 마운트 시 실행되던 검색 로직을 완전히 제거했었음.
+  - 이를 고도화하여:
+    1. `App.tsx`에서 대전 뒤로가기(`onBackFromGame`) 시 `fromBackToRanking` 플래그를 `true`로 세팅하여 `RankingView`로 전달.
+    2. `RankingView.tsx`에서 마운트 시 `fromBackNavigation`이 `true`이면 팝업을 스킵하고 플래그 리셋.
+    3. `fromBackNavigation`이 `false`인 경우(직접 URL 접속, 메뉴 입장 등)에는 즉시 3초 카운트다운 팝업(`autoBattleCountdown: 3`)을 띄우고 카운트다운 완료 시 최적 대전 매칭으로 연결.
+    4. 화면 내 30초 유휴 타이머(Idle timer: 터치, 마우스, 키보드, 휠 이벤트 감지)를 추가하여 30초 무조작 시 자동으로 상대검색 팝업 트리거.
+- **조치 사항**:
+  - `src/App.tsx`: `fromBackToRanking` 상태 추가, `onBackFromGame`에서 `true` 설정, `RankingView`에 prop 전달.
+  - `src/views/RankingView.tsx`: `fromBackNavigation` prop 수신, 마운트 시 자동 팝업 분기 처리, 3초 카운트다운 팝업 연동, 30초 idle 타이머 및 유저 이벤트 리셋 핸들러 구현.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] 랭킹대전 입장 시 자동 상대검색 팝업, 30초 유휴 시 자동 팝업, 뒤로가기 시 팝업 방지 구현 -> 작업완료`
+
+---
+
 ## [2026-09-04 08:32 KST] [/ge 스프레드시트 신규 8개 행(Row 827~834 / ID 548~555) 전수 구현 및 834개 행 100% 완료]
 - **요청 사항**:
   - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 827~834) 확인 및 소스코드 반영/검증 완료.
