@@ -4,11 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ChatGPT - MLX Local Studio (Gemma 4 & FLUX & TTS)</title>
-  <script>
-    if (location.pathname.endsWith('mlx-chat.html')) {
-      location.replace('/ai');
-    }
-  </script>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -670,6 +665,26 @@
               <div class="text-xs text-gray-300">"${escapeHtml(msg.content)}"</div>
             </div>
           `;
+        } else if (msg.type === 'local_tts') {
+          const safeText = escapeHtml(msg.content).replace(/'/g, "\\'");
+          contentHtml = `
+            <div class="space-y-2.5 p-3.5 rounded-xl bg-gpt-inputBg/80 border border-emerald-500/40 max-w-md mt-1">
+              <div class="text-xs text-emerald-400 font-medium flex items-center justify-between">
+                <span class="flex items-center gap-1.5">
+                  <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+                  <span>로컬 브라우저 시스템 음성 (Web Speech)</span>
+                </span>
+                <span class="text-[10px] text-emerald-400/80 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/50">오프라인 모드</span>
+              </div>
+              <div class="text-xs text-gray-200 leading-relaxed font-sans">"${escapeHtml(msg.content)}"</div>
+              <div class="pt-1">
+                <button onclick="window.speakWithBrowserTTS('${safeText}', currentSpeakGen)" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 border border-emerald-500/40 rounded-lg text-xs font-medium transition cursor-pointer">
+                  <i data-lucide="play" class="w-3 h-3"></i>
+                  <span>🔊 음성 다시 듣기</span>
+                </button>
+              </div>
+            </div>
+          `;
         } else {
           contentHtml = `
             <div class="prose prose-invert max-w-none text-gray-100 leading-relaxed overflow-hidden">
@@ -1032,8 +1047,8 @@
         // 🔥 TTS 서버 무응답/실패 시에도 절대 에러로 멈추지 않고 로컬 브라우저 TTS로 즉시 발화!
         chat.messages.push({
           role: 'assistant',
-          type: 'text',
-          content: `🎙️ **[로컬 내장 음성 발화]**\n\n"${text}"\n\n*(TTS 서버 미응답으로 인해 브라우저 로컬 TTS로 발화합니다)*`,
+          type: 'local_tts',
+          content: text,
           timestamp: Date.now()
         });
         saveStorage();
@@ -1201,48 +1216,92 @@
       });
     }
 
+    let _activeSpeechUtterance = null;
+    let _speechKeepAliveTimer = null;
+
     function speakWithBrowserTTS(text, gen) {
       if (!('speechSynthesis' in window)) {
+        console.warn('SpeechSynthesis is not supported in this browser.');
         updateAudioStatusUI(false);
         return;
       }
 
-      // 이전 진행 중이던 모든 브라우저 음성 발화 즉시 강제 취소
+      if (_speechKeepAliveTimer) {
+        clearInterval(_speechKeepAliveTimer);
+        _speechKeepAliveTimer = null;
+      }
+
+      // 1. 이전 발화 취소
       window.speechSynthesis.cancel();
 
       if (gen !== undefined && gen !== currentSpeakGen) return;
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'ko-KR';
-      utterance.rate = 1.05;
-      utterance.pitch = 1.0;
+      // 2. 🔥 Chrome/Safari 버그 픽스: cancel() 직후 바로 speak()를 부르면 큐가 씹혀서 침묵함!
+      // 80ms 지연을 주어 브라우저 음성 큐를 초기화한 후 발화
+      setTimeout(() => {
+        if (gen !== undefined && gen !== currentSpeakGen) return;
 
-      const voices = window.speechSynthesis.getVoices();
-      const koVoice = voices.find(v => v.lang.includes('ko') || v.name.includes('Korean'));
-      if (koVoice) utterance.voice = koVoice;
+        try { window.speechSynthesis.resume(); } catch (e) {}
 
-      utterance.onstart = () => {
-        if (gen !== undefined && gen !== currentSpeakGen) {
-          window.speechSynthesis.cancel();
-          return;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ko-KR';
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+
+        // 한국어 음성 선택
+        const voices = window.speechSynthesis.getVoices();
+        if (voices && voices.length > 0) {
+          const koVoice = voices.find(v => v.lang === 'ko-KR' || v.lang.startsWith('ko') || (v.name && v.name.toLowerCase().includes('korean')));
+          if (koVoice) utterance.voice = koVoice;
         }
-        updateAudioStatusUI(true, '브라우저 음성 (시스템 TTS)');
-        // 🌟 트론 사이버 페이스 음성 립싱크 시뮬레이션 가동
-        if (window.tronEngine) window.tronEngine.startSyntheticSpeech();
-      };
-      utterance.onend = () => {
-        if (gen === undefined || gen === currentSpeakGen) {
+
+        // 🔥 필수 버그 픽스: GC(Garbage Collector)에 의해 음성이 중간에 잘리거나 침묵하는 현상 방지
+        _activeSpeechUtterance = utterance;
+
+        utterance.onstart = () => {
+          if (gen !== undefined && gen !== currentSpeakGen) {
+            window.speechSynthesis.cancel();
+            _activeSpeechUtterance = null;
+            return;
+          }
+          console.log('🗣️ [Browser TTS] 발화 시작:', text.slice(0, 30));
+          updateAudioStatusUI(true, '로컬 시스템 음성 발화 중...');
+          if (window.tronEngine) window.tronEngine.startSyntheticSpeech();
+
+          // Chrome 15초 발화 멈춤 버그 방지 킵얼라이브
+          _speechKeepAliveTimer = setInterval(() => {
+            if (!window.speechSynthesis.speaking) {
+              clearInterval(_speechKeepAliveTimer);
+            } else {
+              window.speechSynthesis.pause();
+              window.speechSynthesis.resume();
+            }
+          }, 10000);
+        };
+
+        utterance.onend = () => {
+          if (_speechKeepAliveTimer) clearInterval(_speechKeepAliveTimer);
+          _activeSpeechUtterance = null;
+          if (gen === undefined || gen === currentSpeakGen) {
+            updateAudioStatusUI(false);
+            if (window.tronEngine) window.tronEngine.stopSpeech();
+          }
+        };
+
+        utterance.onerror = (e) => {
+          console.warn('⚠️ [Browser TTS Error]:', e);
+          if (_speechKeepAliveTimer) clearInterval(_speechKeepAliveTimer);
+          _activeSpeechUtterance = null;
           updateAudioStatusUI(false);
           if (window.tronEngine) window.tronEngine.stopSpeech();
-        }
-      };
-      utterance.onerror = () => {
-        updateAudioStatusUI(false);
-        if (window.tronEngine) window.tronEngine.stopSpeech();
-      };
+        };
 
-      window.speechSynthesis.speak(utterance);
+        window.speechSynthesis.speak(utterance);
+        // speak 직후 즉시 resume 호출 (iOS / Android / Safari 필수)
+        try { window.speechSynthesis.resume(); } catch (e) {}
+      }, 80);
     }
+    window.speakWithBrowserTTS = speakWithBrowserTTS;
 
     function stopAudioPlayback() {
       // 새로운 세대 번호 부여 -> 이전 비동기 작업 모두 무효화
