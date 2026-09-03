@@ -4,6 +4,38 @@
 
 ---
 
+## [2026-09-03 20:23 KST] [/ge 스프레드시트 신규 32개 행(Row 787~818 / ID 548~563, 548~555) 전수 구현 및 818개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 787~818) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 807 (ID 560) [3D 격투/복싱 제스처 전환 (BrawlerGestureAdapter.js)]**:
+     - `src/lib/brawlerGestureAdapter.ts` 탭 연속 콤보, 스와이프 위빙 회피, 저스트 가드 패링, 롱프레스 차지 강타 100% 순수 제스처 어댑터 구현.
+  2. **Row 808 (ID 561) [타이쿤 미션 3단계 온보딩 가이드 (TycoonTutorialModal.vue)]**:
+     - `src/components/TycoonTutorialModal.tsx` 목표 생산량, 제스처 조작, 확정보상 3단계 인터랙티브 온보딩 모달 및 다시보지않기 구현.
+  3. **Row 809 (ID 562) [뷰포트 70% 시야 & 썸존 25% 격리 (MobileViewportSafeArea.vue)]**:
+     - `src/components/MobileViewportSafeArea.tsx` design.md 기준 70% 뷰포트 클리어 및 하단 25% 썸존 터치 리스너 격리 레이아웃 컴포넌트 구현.
+  4. **Row 810 (ID 563) [미션 시간별 경제 밸런서 (MissionDifficultyEconomyBalancer.js)]**:
+     - `src/lib/missionDifficultyEconomyBalancer.ts` 1분/3분/5분 미션별 분당 50~65P 기대 수익 밸런싱 및 장기전 완주 마스터리 보너스 계산기 구현.
+  5. **Row 815 (ID 552) [2D 카드 배치 제스처 최적화 (CardGestureAdapter.js)]**:
+     - `src/lib/cardGestureAdapter.ts` 1-finger 드래그 자석 슬롯 스냅 및 1-tap 카드선택 후 1-tap 슬롯배치 듀얼 모드 지원.
+  6. **Row 816 (ID 553) [2D 카드 대전 상성&콤보 3단계 튜토리얼 (CardBattleTutorialModal.vue)]**:
+     - `src/components/CardBattleTutorialModal.tsx` 4대 원소 상성(+2 파워), 연쇄 콤보 캡처, 확정보상 3단계 온보딩 모달 구현.
+  7. **Row 817 (ID 554) [2D 카드 대전 세로 모드 최적화 (MobileCardBoardLayout.vue)]**:
+     - `src/components/MobileCardBoardLayout.tsx` 손패 하단 25% 썸존 도킹, 중앙 60% 3x3 배틀 그리드, 상단 5% 1줄 슬림 HUD 레이아웃 구현.
+  8. **Row 818 (ID 555) [미션 실패 시 시간비례 위로보상 게이트 (ConsolationRewardGate.js)]**:
+     - `src/lib/consolationRewardGate.ts` 미션 패배 시에도 시간 비례 30%(~15P/min) 확정 보상 원자적 지갑 입금 게이트웨이 구현.
+  9. **Row 787~806, 811~814 항목 전수 검증 및 통합 완료**:
+     - 3D 레이싱 퓨어제스처, 스포츠 튜토리얼, 1줄 슬림HUD, 확정보상, 썸존 네비독, 전투 콤보 팡파레, 토큰 소각/AP 밸런서, WebGL 텍스처 풀러 전수 검증 완료.
+  10. **스프레드시트 818개 전체 행 100% 전수 완료 달성**:
+      - `AGENTS.md` 마지막 완료 번호 `[Row 818 / ID 555]`로 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /ge 스프레드시트 신규 32개 행(Row 787~818 / ID 548~563, 548~555) 전수 구현 및 818개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-03 07:15 KST] [랭킹대전 화면 이동 시 자동 상대 검색 방지 및 화면 이동 개선]
 - **요청 사항**:
   - 랭킹대전에서 뒤로가기 했을 때 상대 검색을 자동으로 시작하지 않고 랭킹대전 화면으로 이동만 하도록 개선.
