@@ -4,6 +4,31 @@
 
 ---
 
+## [2026-09-03 21:09 KST] [/ge 스프레드시트 신규 8개 행(Row 819~826 / ID 548~555) 전수 구현 및 826개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 819~826) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 823 (ID 552) [플랫폼 UX / 썸존 내비게이션 독 & 스와이프 전환 (GlobalThumbNavDock.vue)]**:
+     - `src/components/GlobalThumbNavDock.tsx` 5-tab 플로팅 썸존 내비게이션 도크 및 가로 스와이프 전환 모듈 연동.
+  2. **Row 824 (ID 553) [속성 시너지 오라 & 콤보 어나운서 배너 (DeckSynergyAmplifier.js & ComboAnnouncerOverlay.vue)]**:
+     - `src/lib/deckSynergyAmplifier.ts` 4대 속성 공명 오라 파워 증폭 엔진 구현.
+     - `src/components/ComboAnnouncerOverlay.tsx` 연속 콤보 플립 시 화면 햅틱 진동 및 단계별 아케이드 어나운서 배너 오버레이 구현.
+  3. **Row 825 (ID 554) [통합 SNS 토큰 기여도 보상 엔진 및 AP 페이싱 (PlatformEconomyPacingEngine.js)]**:
+     - `src/lib/platformEconomyPacingEngine.ts` 대전/미션/거래/출석 통합 활동별 정규화 보상(~50P/min, 10P/AP) 및 일일 상한 캡/어뷰징 방지 페이싱 엔진 구현.
+  4. **Row 826 (ID 555) [WebGL 텍스처 아틀라스 가상화 & 백그라운드 슬립 GC (LowSpecResourceOptimizer.js)]**:
+     - `src/lib/lowSpecResourceOptimizer.ts` 2048x2048 텍스처 아틀라스 가상화 및 백그라운드 탭 전환 시 렌더 루프 슬립 & 미참조 VRAM 자동 가비지 컬렉터 구현.
+  5. **Row 819~822 (ID 548~551) [4대 핵심개선: 퓨어 제스처, 튜토리얼 표준화, 1줄 슬림 HUD, 확정보상 정산]**:
+     - `vehicleGestureController.ts`, `SportsMissionTutorial.tsx`, `MinimalistMissionHUD.tsx`, `NormalizedRewardPopup.tsx` 전수 검증 및 통합 완료.
+  6. **스프레드시트 826개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 번호 `[Row 826 / ID 555]`로 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /ge 스프레드시트 신규 8개 행(Row 819~826 / ID 548~555) 전수 구현 및 826개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-03 20:23 KST] [/ge 스프레드시트 신규 32개 행(Row 787~818 / ID 548~563, 548~555) 전수 구현 및 818개 행 100% 완료]
 - **요청 사항**:
   - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 787~818) 확인 및 소스코드 반영/검증 완료.
