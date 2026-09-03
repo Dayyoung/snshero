@@ -4,6 +4,32 @@
 
 ---
 
+## [2026-09-04 08:32 KST] [/ge 스프레드시트 신규 8개 행(Row 827~834 / ID 548~555) 전수 구현 및 834개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 827~834) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 827 (ID 548) [3D 레이싱 퓨어제스처 조향/드리프트 (OneThumbKartController.js)]**:
+     - `src/lib/oneThumbKartController.ts` 썸존 슬라이드 조향, 릴리즈 드리프트 점화, 더블탭 아이템, 하단 홀드 브레이크 100% 제스처 어댑터 구현.
+  2. **Row 831 (ID 552) [마이덱 1줄 슬림 시너지 필터 도크 (DeckSynergyFilter.vue)]**:
+     - `src/components/DeckSynergyFilter.tsx` 상단 1줄 슬림 수평 속성(화염/수속/대지/질풍) 필터 도크 및 실시간 시너지 점수 계산기 구현.
+  3. **Row 832 (ID 553) [마켓플레이스 호가 시세 차트 & 원클릭 즉시 구매 (PriceChartWidget.vue)]**:
+     - `src/components/PriceChartWidget.tsx` 실시간 호가 시세 스파크라인 트렌드 차트 및 하단 썸존 원클릭 에스크로 즉시 구매 바 구현.
+  4. **Row 833 (ID 554) [실시간 PvP 백그라운드 비동기 큐 1줄 바 (MatchmakingQueueBar.vue)]**:
+     - `src/components/MatchmakingQueueBar.tsx` 매칭 대기 시간 동안 로비/덱/마켓/미션 자유 탐색을 지원하는 상단 1줄 논블로킹 큐 바 구현.
+  5. **Row 834 (ID 555) [저사양 모바일 에셋 지연로딩 & VRAM 가비지 컬렉터 (AssetOptimizationManager.js)]**:
+     - `src/lib/assetOptimizationManager.ts` Three.js 지오메트리/텍스처 재귀적 메모리 회수 dispose() 가비지 컬렉터 및 devicePixelRatio 클램핑 엔진 구현.
+  6. **Row 828~830 (ID 549~551) [3D 스포츠 튜토리얼, 1줄 슬림 HUD, 확정보상 정산]**:
+     - `SportsMissionTutorial.tsx`, `MinimalistMissionHUD.tsx`, `NormalizedRewardPopup.tsx` 전수 검증 및 통합 완료.
+  7. **스프레드시트 834개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 번호 `[Row 834 / ID 555]`로 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /ge 스프레드시트 신규 8개 행(Row 827~834 / ID 548~555) 전수 구현 및 834개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-03 21:09 KST] [/ge 스프레드시트 신규 8개 행(Row 819~826 / ID 548~555) 전수 구현 및 826개 행 100% 완료]
 - **요청 사항**:
   - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 819~826) 확인 및 소스코드 반영/검증 완료.
