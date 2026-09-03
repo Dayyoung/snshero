@@ -72,6 +72,24 @@ export default defineConfig(({mode}) => {
                 return;
               }
 
+              // Support /ai, /ai/, and /ai.html direct serving for MLX AI Chat
+              if (/^\/ai(\/|\.html|\?|$)/i.test(decodedUrl) || /^\/ai(\/|\.html|\?|$)/i.test(rawUrl)) {
+                let targetPath = path.join(publicDir, 'ai.html');
+                if (!fs.existsSync(targetPath)) {
+                  targetPath = path.join(publicDir, 'mlx-chat.html');
+                }
+                if (fs.existsSync(targetPath)) {
+                  const stat = fs.statSync(targetPath);
+                  res.statusCode = 200;
+                  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+                  res.setHeader('Content-Length', stat.size);
+                  res.setHeader('Cache-Control', 'no-cache');
+                  res.setHeader('Access-Control-Allow-Origin', '*');
+                  fs.createReadStream(targetPath).pipe(res);
+                  return;
+                }
+              }
+
               // Support /mall and /mall/* direct static serving
               if (/^\/mall(\/|$)/i.test(decodedUrl) || /^\/mall(\/|$)/i.test(rawUrl)) {
                 let mallRelPath = decodedUrl.replace(/^\/mall(\/)?/i, '');
