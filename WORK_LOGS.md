@@ -4,6 +4,30 @@
 
 ---
 
+## [2026-09-05 07:33 KST] [/ge 스프레드시트 신규 12개 행(Row 852~863 / ID 548~555) 전수 구현 및 863개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 852~863) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 860 (ID 552) [3D 격투 스와이프 위빙 & 탭 카운터 퓨어 터치 (BrawlerGestureController.js)]**:
+     - `src/lib/brawlerGestureController.ts` 가상 버튼 완전 삭제, 엄지 좌우 스와이프(상체 위빙 회피), 상향 플릭(어퍼컷), 화면 탭(잽), 롱프레스(차지 스트레이트) 순수 제스처 컨트롤러 구현.
+  2. **Row 861 (ID 553) [3D 아케이드 3단계 탄도각 조준 튜토리얼 팝업 (ArcadeMissionTutorial.vue)]**:
+     - `src/components/ArcadeMissionTutorial.tsx` 타깃/도탄 룰, 드래그 반사각 조준 제스처 시연, 콤보 배수 및 확정 SNS 포인트 3단계 온보딩 모달 및 다시보지않기 구현.
+  3. **Row 862 (ID 554) [모바일 화면 회전 대응 & Safe-Area 반응형 뷰포트 (AdaptiveMobileViewport.vue)]**:
+     - `src/components/AdaptiveMobileViewport.tsx` CSS Safe-Area(`env(safe-area-inset-*)`) 자동 패딩 및 가로/세로 회전 시 뷰포트 종횡비 즉시 재계산 레이아웃 컴포넌트 구현.
+  4. **Row 863 (ID 555) [일일 3회 미션 완주 보너스(+100P) 자동 정산 모듈 (DailyMissionRewardBonus.js)]**:
+     - `src/lib/dailyMissionRewardBonus.ts` 하루 3회 이상 미션 클리어 시 기본 확정보상 외 +100 SNS 포인트 자동 지갑 입금 및 UI 동기화 모듈 구현.
+  5. **Row 852~859 (ID 548~551) [4대 핵심개선: 레이싱 퓨어제스처, 스포츠 튜토리얼, 1줄 슬림 HUD, 확정보상]**:
+     - `vehicleGestureController.ts`, `SportsMissionTutorial.tsx`, `MinimalistMissionHUD.tsx`, `NormalizedRewardPopup.tsx` 전수 검증 및 통합 완료.
+  6. **스프레드시트 863개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 번호 `[Row 863 / ID 555]`로 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /ge 스프레드시트 신규 12개 행(Row 852~863 / ID 548~555) 전수 구현 및 863개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-04 20:53 KST] [/ge 스프레드시트 신규 9개 행(Row 843~851 / ID 564~572) 전수 구현 및 851개 행 100% 완료]
 - **요청 사항**:
   - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 843~851) 확인 및 소스코드 반영/검증 완료.
