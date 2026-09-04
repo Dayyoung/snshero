@@ -19,12 +19,48 @@ export default class ErrorBoundary extends React.Component<Props, State> {
     super(props);
   }
 
+  componentDidMount() {
+    // If the component mounted successfully, clear any previous recovery flag
+    try {
+      if (typeof window !== 'undefined' && window.sessionStorage) {
+        window.sessionStorage.removeItem('hero_auto_reload_for_hook_error');
+      }
+    } catch {
+      // ignore
+    }
+  }
+
   static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('Uncaught error:', error, errorInfo);
+
+    try {
+      const errMsg = error?.message || String(error);
+      const isStaleBundleError = 
+        errMsg.includes('Invalid hook call') ||
+        errMsg.includes("reading 'useMemo'") ||
+        errMsg.includes("reading 'useState'") ||
+        errMsg.includes("reading 'useCallback'") ||
+        errMsg.includes("reading 'useEffect'") ||
+        errMsg.includes("reading 'useRef'") ||
+        errMsg.includes("Failed to fetch dynamically imported module") ||
+        errMsg.includes('Loading chunk');
+
+      if (isStaleBundleError && typeof window !== 'undefined' && window.sessionStorage) {
+        const alreadyReloaded = window.sessionStorage.getItem('hero_auto_reload_for_hook_error');
+        if (alreadyReloaded !== 'true') {
+          window.sessionStorage.setItem('hero_auto_reload_for_hook_error', 'true');
+          console.warn('[ErrorBoundary] Stale dependency bundle detected. Auto-reloading page for fresh modules...');
+          window.location.reload();
+          return;
+        }
+      }
+    } catch {
+      // ignore
+    }
   }
 
   render() {

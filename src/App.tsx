@@ -92,7 +92,7 @@ import { ViewLoadingFallback } from './components/ViewLoadingFallback';
 import { ImageLazyLoader } from './lib/ImageLazyLoader';
 
 const HomeView = lazy(() => import('./views/HomeView').then(m => ({ default: m.HomeView })));
-const KadanRpgView = lazy(() => import('./views/KadanRpgView').then(m => ({ default: m.KadanRpgView })));
+const KadanRpgView = lazy(() => import('./views/KadanRpgView').then(m => ({ default: m.default || m.KadanRpgView })));
 const MyDeckView = lazy(() => import('./views/MyDeckView').then(m => ({ default: m.MyDeckView })));
 const ShareView = lazy(() => import('./views/ShareView').then(m => ({ default: m.ShareView })));
 const ShopView = lazy(() => import('./views/ShopView').then(m => ({ default: m.ShopView })));

@@ -578,3 +578,5 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
     </div>
   );
 };
+
+export default KadanRpgView;
