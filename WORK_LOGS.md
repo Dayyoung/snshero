@@ -4,6 +4,32 @@
 
 ---
 
+## [2026-09-04 19:23 KST] [/ge 스프레드시트 신규 8개 행(Row 835~842 / ID 556~563) 전수 구현 및 842개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 835~842) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 839 (ID 560) [5탭 썸존 내비게이션 독 & 마이덱 1~5번 스와이프 전환 (MainBottomNav.vue & MyDeckSwipeView.vue)]**:
+     - `src/components/MainBottomNav.tsx` 하단 5탭(로비/마이덱/대전/상점/거래소) 고정 썸존 내비게이션 독 구현.
+     - `src/components/MyDeckSwipeView.tsx` 마이덱 좌우 터치 스와이프(40px) 1~5번 실시간 덱 전환 래퍼 구현.
+  2. **Row 840 (ID 561) [3카드 6종 속성 공명 시너지 엔진 & 대전 팡파레 연출 (DeckSynergyEngine.js & CardResonanceFX.vue)]**:
+     - `src/lib/deckResonanceEngine.ts` 불/물/바람/땅/빛/어둠 3카드 편성 시 발동하는 6종 속성 공명 버프 연산 엔진 구현.
+     - `src/components/CardResonanceFX.tsx` 대전 진입 시 속성 공명 배너 및 팡파레 연출 컴포넌트 구현.
+  3. **Row 841 (ID 562) [마켓 수수료 50% 풀 환원 & 일일 3회 무료 스태미나 충전 게이트웨이 (TokenCashbackGateway.js)]**:
+     - `src/lib/tokenCashbackGateway.ts` 거래 수수료 50% 커뮤니티 풀 적립 및 일일 3회 무료 AP(+50AP) 충전 게이트웨이 구현.
+  4. **Row 842 (ID 563) [WebP 압축 & WebGL/Canvas2D 듀얼 렌더링 저사양 자동 폴백 엔진 (PerformanceFallbackEngine.js)]**:
+     - `src/lib/performanceFallbackEngine.ts` GPU 벤치마크 기반 파티클 70% 감축, 1024 WebP 텍스처 다운스케일 및 저사양 Canvas2D 자동 폴백 엔진 구현.
+  5. **Row 835~838 (ID 556~559) [4대 핵심개선: 레이싱 퓨어제스처, 스포츠 튜토리얼, 1줄 슬림 HUD, 확정보상]**:
+     - `vehicleGestureController.ts`, `SportsMissionTutorial.tsx`, `MinimalistMissionHUD.tsx`, `NormalizedRewardPopup.tsx` 전수 검증 및 통합 완료.
+  6. **스프레드시트 842개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 번호 `[Row 842 / ID 563]`로 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /ge 스프레드시트 신규 8개 행(Row 835~842 / ID 556~563) 전수 구현 및 842개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-04 08:45 KST] [랭킹대전 입장 시 자동 상대검색 팝업, 30초 유휴 시 자동 팝업, 뒤로가기 시 팝업 방지 구현]
 - **요청 사항**:
   - `http://localhost:3000/ranking` 입장 시 자동 상대검색 팝업 노출.
