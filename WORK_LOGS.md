@@ -4,6 +4,30 @@
 
 ---
 
+## [2026-09-04 20:53 KST] [/ge 스프레드시트 신규 9개 행(Row 843~851 / ID 564~572) 전수 구현 및 851개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 843~851) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 848 (ID 569) [모바일 한손 드래그앤드롭 덱빌딩 & 썸존 스마트 장착 (MobileDeckBuilder.vue)]**:
+     - `src/components/MobileDeckBuilder.tsx` 하단 35% 썸존 5슬롯 덱 독 고정 및 상단 보관함 원터치 빈 슬롯 스마트 자동 장착(Smart Auto-Equip), 1줄 컴팩트 필터 칩 구현.
+  2. **Row 849 (ID 570) [실시간 연승 콤보 티어 오라 및 도파민 연승 배지 (MatchStreakAuraEngine.js)]**:
+     - `src/lib/matchStreakAuraEngine.ts` 3연승 이상 달성 시 네온 연승 오라(Blaze, Inferno, Godlike) 점등, 대전 진입 배너 및 보너스 점수 승수 연동 엔진 구현.
+  3. **Row 850 (ID 571) [전 플랫폼 통합 SNS 토큰 마일리지 & 스태미나 페이싱 (DailyMileageEconomy.js)]**:
+     - `src/lib/dailyMileageEconomy.ts` 거래/업그레이드/대전/미션 통합 일일 마일리지 게이지 적립 및 100P 만점 시 30 AP 포션 + 100 SNS 토큰 캐시 자동 지급 구현.
+  4. **Row 851 (ID 572) [2D/3D 에셋 WebP 압축 & 스마트 500ms 메모리 GC (AssetMemoryOptimizer.js)]**:
+     - `src/lib/assetMemoryOptimizer.ts` 2D/3D WebP 압축 포맷 헬퍼 및 라우트/화면 전환 시 500ms 내 Three.js 리소스 자동 해제 스마트 가비지 컬렉터 구현.
+  5. **Row 843~847 (ID 564~568) [4대 핵심개선: 레이싱 퓨어제스처, 스포츠 튜토리얼, 1줄 슬림 HUD, 확정보상]**:
+     - `vehicleGestureController.ts`, `SportsMissionTutorial.tsx`, `MinimalistMissionHUD.tsx`, `NormalizedRewardPopup.tsx` 전수 검증 및 통합 완료.
+  6. **스프레드시트 851개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 번호 `[Row 851 / ID 572]`로 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /ge 스프레드시트 신규 9개 행(Row 843~851 / ID 564~572) 전수 구현 및 851개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-04 19:23 KST] [/ge 스프레드시트 신규 8개 행(Row 835~842 / ID 556~563) 전수 구현 및 842개 행 100% 완료]
 - **요청 사항**:
   - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 835~842) 확인 및 소스코드 반영/검증 완료.
