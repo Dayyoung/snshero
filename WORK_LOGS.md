@@ -4,6 +4,30 @@
 
 ---
 
+## [2026-09-05 19:35 KST] [/ge 스프레드시트 신규 8개 행(Row 908~915 / ID 556~563) 전수 구현 및 915개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 908~915) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 912 (ID 560) [플랫폼 UX 상단 70% 시야 개방 & 하단 30% 썸존 내비게이션 독 통일]**:
+     - `src/components/GlobalMobileDock.tsx`: 로비, 마이덱, 미션, 상점, 설정 5개 탭을 통일된 하단 썸존 바로 배치하여 상단 70% 시야 100% 개방 및 Safe Area 인셋 완벽 대응.
+  2. **Row 913 (ID 561) [5속성 복합 덱 구성 시 발동하는 '크로스 엘리멘탈 하모니' 시너지 엔진]**:
+     - `src/lib/crossElementalSynergy.ts`: 화염+바람(인페르노 번), 수류+대지(머드 슬로우), 화염+수류(스팀 익스플로전), 대지+바람(모래 폭풍), 4원소 이상(프리즈마틱 무지개 하모니) 덱 결속 엔진 구현.
+  3. **Row 914 (ID 562) [활동별 표준 시간당 SNS 포인트 상한선 및 일일 AP 마일스톤 리베이트 모듈]**:
+     - `src/lib/unifiedEconomyBalancer.ts`: 시간당 SNS 수익 정규화(~50P/min) 및 일일 30/60/100 AP 소모 마일스톤 달성 시 브론즈/실버/골드 리베이트 상자(SNS 포인트 및 소환 티켓) 환급 모듈 구현.
+  4. **Row 915 (ID 563) [WebP/KTX2 텍스처 70% 압축 및 온디맨드 청크 레이지 로더]**:
+     - `src/lib/smartAssetChunkLoader.ts`: 라우트별 에셋 청크(로비/덱/미션/마켓/소셜) 온디맨드 분할, WebP/KTX2 하드웨어 지원 자동 감지 및 백그라운드 프리페치 파이프라인 구축.
+  5. **Row 908~911 (ID 556~559) [기존 4대 핵심개선: 레이싱 제스처, 스포츠 튜토리얼, 1줄 슬림 HUD, 확정보상]**:
+     - `vehicleGestureController.ts`, `SportsMissionTutorial.tsx`, `MinimalistMissionHUD.tsx`, `NormalizedRewardPopup.tsx` 전수 호환성 검증 완료.
+  6. **스프레드시트 915개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 번호 `[Row 915 / ID 563]`로 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공 (built in 8.75s)
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /ge 스프레드시트 신규 8개 행(Row 908~915 / ID 556~563) 전수 구현 및 915개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-05 17:40 KST] [/ge 스프레드시트 신규 8개 행(Row 900~907 / ID 548~555) 전수 구현 및 907개 행 100% 완료]
 - **요청 사항**:
   - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 900~907) 확인 및 소스코드 반영/검증 완료.
