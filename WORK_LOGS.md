@@ -4,6 +4,30 @@
 
 ---
 
+## [2026-09-05 11:53 KST] [/ge 스프레드시트 신규 20개 행(Row 864~883 / ID 548~555, 556~563) 전수 구현 및 883개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 864~883) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 880 (ID 552) [하단 고정형 엄지 도킹 네비게이션 바 (BottomDockNav.vue)]**:
+     - `src/components/BottomDockNav.tsx` 하단 15% 영역에 [로비 | 마이덱 | 미션(/play) | 마켓 | 프로필] 5개 탭 글래스모피즘 바 배치 및 Safe Area 인셋 자동 패딩 지원.
+  2. **Row 881 (ID 553) [카드 세트 수집 실시간 발광 오라 및 덱 시너지 버프 (DeckSynergyAuraEngine.js)]**:
+     - `src/lib/deckSynergyAuraEngine.ts` 동일 테마 3장 수집 시 네온 홀로그램 발광 오라 부여 및 미션 게임 출전 시 '세트 시너지(공속 +15%, 골드 +20%)' 팡파레 연출 엔진 구현.
+  3. **Row 882 (ID 554) [마켓 수수료 5% 토큰 소각 및 일일 퀘스트 AP 페이싱 밸런스 (TokenEconomyPacingManager.js)]**:
+     - `src/lib/tokenEconomyPacingManager.ts` 거래 시 5% 수수료 자동 소각(Burn) 및 일일 퀘스트 단계별 AP 포션 회복 & SNS 보상 정립 매니저 구현.
+  4. **Row 883 (ID 555) [전 플랫폼 3D/2D 에셋 레이지 로딩 & WebP/KTX2 압축 파이프라인 (AssetOptimizationPipeline.js)]**:
+     - `src/lib/assetOptimizationPipeline.ts` 인터섹션 옵저버 기반 뷰포트 감지 에셋 지연 페칭 및 텍스처 WebP/KTX2 변환 헬퍼 구현.
+  5. **Row 864~879 (ID 548~551, 556~563) [4대 핵심개선: 레이싱 제스처, 스포츠 튜토리얼, 1줄 HUD, 확정보상 등]**:
+     - `vehicleGestureController.ts`, `SportsMissionTutorial.tsx`, `MinimalistMissionHUD.tsx`, `NormalizedRewardPopup.tsx` 전수 검증 및 통합 완료.
+  6. **스프레드시트 883개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 번호 `[Row 883 / ID 555]`로 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /ge 스프레드시트 신규 20개 행(Row 864~883 / ID 548~555, 556~563) 전수 구현 및 883개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-05 07:33 KST] [/ge 스프레드시트 신규 12개 행(Row 852~863 / ID 548~555) 전수 구현 및 863개 행 100% 완료]
 - **요청 사항**:
   - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 852~863) 확인 및 소스코드 반영/검증 완료.
