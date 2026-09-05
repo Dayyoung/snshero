@@ -4,6 +4,30 @@
 
 ---
 
+## [2026-09-06 08:08 KST] [/ge 스프레드시트 신규 8개 행(Row 960~967 / ID 548~555) 전수 구현 및 967개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 960~967) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 964 (ID 552) [플랫폼 UX 모바일 썸존 특화 하단 5단 독 내비게이션 바 및 상단 슬림 재화 스트립]**:
+     - `src/components/MainBottomDock.tsx`: 로비, 카드도감, 미션, 마켓, 프로필 5개 탭을 하단 15% 썸존에 배치하고 상단 1줄 글래스모피즘 재화 스트립과 Safe Area 인셋 완벽 대응.
+  2. **Row 965 (ID 553) [마이덱 카드 속성 및 진영 실시간 엘리멘탈 레조넌스 세트 효과 계산기]**:
+     - `src/lib/deckSynergyCalculator.ts`: 5장 덱 대상 모노 속성(+10%~25% ATK), 무지개 하모니(+5% 전 스탯), 진영/종족 결속 보너스 실시간 계산 및 덱 빌더용 발광 배지 산출.
+  3. **Row 966 (ID 554) [플랫폼 전역 활동 SNS 포인트 획득량 표준 밸런싱 및 스태미나 자연 충전 가속]**:
+     - `src/lib/platformEconomyPacing.ts`: PvP/스토리/미션 전역 분당 50P 공식 표준 정산 및 3연승 스트릭 달성 시 +10 AP 즉시 보너스 리필 메커니즘 연동.
+  4. **Row 967 (ID 555) [WebP 및 3D 텍스처 KTX2 GPU 압축 에셋 파이프라인]**:
+     - `src/lib/assetOptimizationPipeline.ts`: 2D 카드 이미지 WebP 변환, 3D 텍스처 KTX2 GPU 압축 경로 지원 및 VRAM 80MB 상한 보호 가비지 컬렉션 파이프라인 구축.
+  5. **Row 960~963 (ID 548~551) [4대 핵심개선: 레이싱 제스처, 스포츠 튜토리얼, 1줄 슬림 HUD, 확정보상]**:
+     - `vehicleGestureController.ts`, `SportsMissionTutorial.tsx`, `MinimalistMissionHUD.tsx`, `NormalizedRewardPopup.tsx` 전수 호환성 검증 완료.
+  6. **스프레드시트 967개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 번호 `[Row 967 / ID 555]`로 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공 (built in 8.28s)
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /ge 스프레드시트 신규 8개 행(Row 960~967 / ID 548~555) 전수 구현 및 967개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-06 07:36 KST] [/ge 스프레드시트 신규 44개 행(Row 916~959) 전수 구현 및 959개 행 100% 완료]
 - **요청 사항**:
   - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 916~959) 확인 및 소스코드 반영/검증 완료.
