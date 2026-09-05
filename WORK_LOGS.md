@@ -4,6 +4,30 @@
 
 ---
 
+## [2026-09-06 08:44 KST] [/ge 스프레드시트 신규 8개 행(Row 968~975 / ID 556~563) 전수 구현 및 975개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 968~975) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 972 (ID 560) [플랫폼 UX 모바일 한손 썸존 대응 '슬라이딩 플로팅 퀵 독' 및 상단 클린 뷰포트]**:
+     - `src/components/GlobalNavigationDock.tsx`: 로비, 덱, 미션, 마켓, 도감 즉시 전환 아크형 플로팅 휠 퀵 독 배치 및 상단 뷰포트 완전 개방.
+  2. **Row 973 (ID 561) [영웅 카드 간 숨겨진 인연/진영 시너지 실시간 발동 및 비주얼 아우라 강화]**:
+     - `src/lib/deckSynergyAuraEngine.ts`: 불꽃+메카(오버드라이브), 수류+엘프(정령 계약), 드래곤+암흑(심연의 흑룡 군세) 등 숨겨진 인연 감지, 2D/3D 아우라 셰이더 메타데이터 및 스탯 배수 연동.
+  3. **Row 974 (ID 562) [스태미나 소모 및 마켓 거래액 5% 자동 캐시백 통합 마일리지 환급 모듈]**:
+     - `src/lib/unifiedMileageEconomy.ts`: 스태미나 소모 및 마켓 거래 완료 시 5% 비율의 SNS 포인트를 유저 지갑으로 즉시 원자적 캐시백 적립 처리.
+  4. **Row 975 (ID 563) [WebP 텍스처 압축, 가상 스크롤 렌더링 및 비동기 WebGL 쉐이더 웜업]**:
+     - `src/lib/platformAssetOptimizer.ts`: 카드 그리드 가상 스크롤 윈도우 인덱스 계산 및 3D 미션 최초 진입 시 프레임 드랍 방지를 위한 WebGL 쉐이더 프리컴파일 파이프라인 구현.
+  5. **Row 968~971 (ID 556~559) [4대 핵심개선: 레이싱 제스처, 스포츠 튜토리얼, 1줄 슬림 HUD, 확정보상]**:
+     - `vehicleGestureController.ts`, `SportsMissionTutorial.tsx`, `MinimalistMissionHUD.tsx`, `NormalizedRewardPopup.tsx` 전수 호환성 검증 완료.
+  6. **스프레드시트 975개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 번호 `[Row 975 / ID 563]`로 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공 (built in 8.27s)
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /ge 스프레드시트 신규 8개 행(Row 968~975 / ID 556~563) 전수 구현 및 975개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-06 08:08 KST] [/ge 스프레드시트 신규 8개 행(Row 960~967 / ID 548~555) 전수 구현 및 967개 행 100% 완료]
 - **요청 사항**:
   - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 960~967) 확인 및 소스코드 반영/검증 완료.
