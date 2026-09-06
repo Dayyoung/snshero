@@ -4,6 +4,31 @@
 
 ---
 
+## [2026-09-06 13:06 KST] [/ge 스프레드시트 신규 8개 행(Row 1008~1015 / ID 548~555) 전수 구현 및 1015개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 1008~1015) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 1012 (ID 552) [모바일 한손 엄지 그립 최적화 하단 통합 플로팅 도크 및 상단 70% 클린 뷰포트]**:
+     - `src/components/MainLobbyDock.tsx`: 엄지 반경(35% 썸존) 맞춤 5개 퀵 액션(배틀, 덱편성, 미션, 마켓, 영웅), 스크롤 자동 숨김/표시, 햅틱 및 안전영역(safe-area-inset-bottom) 완벽 지원 플로팅 독 컴포넌트 구현.
+  2. **Row 1013 (ID 553) [마이덱(My Deck) 속성/종족 콤보 시너지 실시간 시각화 & 덱 빌딩 인터랙션]**:
+     - `src/components/DeckSynergyVisualizer.tsx`: 덱 내 5대 속성/종족 카운트 실시간 감지, 활성 시너지 티어(2/4/6세트) 보너스 배수 및 추천 카드 가이드 인포그래픽 시각화 패널 구현.
+  3. **Row 1014 (ID 554) [마켓 거래 수수료 50% 환급 캐시백 금고 및 일일 활동(로그인/공유/PvP) 통합 SNS 마일리지 풀]**:
+     - `src/lib/tokenRewardPoolManager.ts`: P2P 마켓 거래 수수료의 50%를 누적 환급하는 캐시백 금고, 일일 3대 활동(출석 30P, 공유 20P, PvP 50P) 완료 시 추가 50P 잭팟 마일리지 풀 및 로컬 영구 보존 엔진 구현.
+  4. **Row 1015 (ID 555) [로비/카드 컬렉션 WebGL 텍스처 가상 스크롤 및 저사양 모바일 WebP 지연 로딩]**:
+     - `src/lib/assetVirtualLoader.ts`: 저사양 모바일 기기 감지 및 WebP/AVIF 우선 지연 로딩 캐시 매니저.
+     - `src/components/CardGridVirtualizer.tsx`: 화면 뷰포트 가시 영역 카드만 DOM 렌더링하고 비가시 텍스처 메모리를 동적 회수하는 초경량 가상 스크롤 그리드 컴포넌트 구현.
+  5. **Row 1008~1011 (ID 548~551) [4대 핵심개선: 레이싱 제스처, 스포츠 튜토리얼, 1줄 슬림 HUD, 확정보상]**:
+     - `vehicleGestureController.ts`, `SportsMissionTutorial.tsx`, `MinimalistMissionHUD.tsx`, `NormalizedRewardPopup.tsx` 전수 호환성 검증 완료.
+  6. **스프레드시트 1015개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 번호 `[Row 1015 / ID 555]`로 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공 (built in 8.21s)
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /ge 스프레드시트 신규 8개 행(Row 1008~1015 / ID 548~555) 전수 구현 및 1015개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-06 12:25 KST] [/ge 스프레드시트 신규 8개 행(Row 1000~1007 / ID 548~555) 전수 구현 및 1007개 행 100% 완료]
 - **요청 사항**:
   - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 1000~1007) 확인 및 소스코드 반영/검증 완료.
