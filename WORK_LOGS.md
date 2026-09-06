@@ -4,6 +4,30 @@
 
 ---
 
+## [2026-09-06 19:40 KST] [/ge 스프레드시트 신규 8개 행(Row 1028~1035 / ID 548~555) 전수 구현 및 1035개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 1028~1035) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 1032 (ID 552) [플랫폼 UX / 반응형 뷰포트: 바텀 내비게이션 바 슬림 1줄 도킹 및 상단 헤더 글래스모피즘 압축]**:
+     - `src/components/LobbyAppLayout.tsx`: 상단 44px 반투명 글래스모피즘 헤더(유저 아바타, 골드/SNS 잔액, 햄버거 메뉴) 및 하단 50px 인체공학적 썸존 5탭 바(로비, 덱편성, 미션, 상점, 마켓) 도킹 레이아웃 구현 (중앙 메인 뷰포트 75% 이상 확보).
+  2. **Row 1033 (ID 553) [게이미피케이션 / 덱 빌딩 시너지: 5개 원소 복합 듀얼 시너지 및 원소 공명 풀 이펙트 강화]**:
+     - `src/lib/deckSynergyCalculator.ts`: 수+화(증기폭발), 지+풍(모래폭풍), 화+풍(열풍폭풍), 수+지(대지철벽), 광+암(카오스 이클립스) 듀얼 원소 공명 버프 계산 엔진 및 발광 원소 오라 테두리 클래스(`getCardAuraClass`) 통합 구현.
+  3. **Row 1034 (ID 554) [토큰 경제 / AP 페이싱: 전 플랫폼 활동 스태미나 유연 충전 및 활동별 SNS 토큰 지급 표준화]**:
+     - `src/lib/staminaPacingManager.ts`: 플레이 타임 분당 5 AP 소모 표준화, 매일 최대 30 AP 충전 가능한 친구 하트 선물 시스템, 및 AP 0 소진 상태에서도 50% 정규화된 SNS 포인트 파밍을 허용하여 무과금 유저의 일일 잔존율(Retention)을 유지하는 페이싱 매니저 구현.
+  4. **Row 1035 (ID 555) [저사양 성능 최적화: WebP 카드 일러스트 온디맨드 스트리밍 및 Three.js 자동 GC 풀링]**:
+     - `src/lib/assetMemoryOptimizer.ts`: 카드 일러스트 40KB 이하 경량 WebP 썸네일 온디맨드 스트리밍 변환 및 화면 밖으로 나간 Three.js 지오메트리/재질/텍스처를 3초 디바운스 후 자동 dispose하는 VRAM GC 풀링 매니저 구현.
+  5. **Row 1028~1031 (ID 548~551) [4대 핵심개선: 레이싱 제스처, 스포츠 튜토리얼, 1줄 슬림 HUD, 확정보상]**:
+     - `vehicleGestureController.ts`, `SportsMissionTutorial.tsx`, `MinimalistMissionHUD.tsx`, `NormalizedRewardPopup.tsx`, `rewardSettlementService.ts` 전수 호환성 검증 완료.
+  6. **스프레드시트 1035개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 번호 `[Row 1035 / ID 555]`로 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공 (built in 8.52s)
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /ge 스프레드시트 신규 8개 행(Row 1028~1035 / ID 548~555) 전수 구현 및 1035개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-06 17:28 KST] [/ge 스프레드시트 신규 12개 행(Row 1016~1027 / ID 556~563, 548~551) 전수 구현 및 1027개 행 100% 완료]
 - **요청 사항**:
   - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 1016~1027) 확인 및 소스코드 반영/검증 완료.
