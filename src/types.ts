@@ -163,6 +163,11 @@ export interface CardData {
   unlockedTitleKeys?: string[];
   /** 현재 장착된 칭호 키 */
   activeTitleKey?: string;
+  name?: string;
+  image?: string;
+  attack?: number;
+  defense?: number;
+  faction?: string;
 }
 
 export type Language = string;

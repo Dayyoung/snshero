@@ -149,3 +149,189 @@ export const DeckSynergyVisualizer: React.FC<DeckSynergyVisualizerProps> = ({
     </div>
   );
 };
+
+export interface Synergy3SetEffect {
+  type: 'element' | 'faction';
+  key: string;
+  nameKo: string;
+  nameEn: string;
+  buffKo: string;
+  buffEn: string;
+  auraClass: string;
+}
+
+export function evaluate3CardDeckSynergy(deck: (CardData | null | undefined)[]): {
+  activeSet: Synergy3SetEffect | null;
+  progressHint: string;
+} {
+  const cards = deck.filter((c): c is CardData => !!c);
+  const elementCounts: Record<string, number> = {};
+  const factionCounts: Record<string, number> = {};
+
+  cards.forEach((c) => {
+    if (c.element) {
+      elementCounts[c.element] = (elementCounts[c.element] || 0) + 1;
+    }
+    if (c.faction) {
+      factionCounts[c.faction] = (factionCounts[c.faction] || 0) + 1;
+    }
+  });
+
+  const SYNERGY_MAP: Record<string, Synergy3SetEffect> = {
+    fire: {
+      type: 'element',
+      key: 'fire',
+      nameKo: '화염 3세트',
+      nameEn: 'Fire 3-Set',
+      buffKo: '공격력 +20%',
+      buffEn: 'ATK +20%',
+      auraClass: 'ring-2 ring-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.6)] animate-pulse',
+    },
+    water: {
+      type: 'element',
+      key: 'water',
+      nameKo: '수류 3세트',
+      nameEn: 'Water 3-Set',
+      buffKo: '방어력 +20%',
+      buffEn: 'DEF +20%',
+      auraClass: 'ring-2 ring-cyan-500 shadow-[0_0_12px_rgba(6,182,212,0.6)] animate-pulse',
+    },
+    wind: {
+      type: 'element',
+      key: 'wind',
+      nameKo: '바람 3세트',
+      nameEn: 'Wind 3-Set',
+      buffKo: '공격속도 +20%',
+      buffEn: 'ASPD +20%',
+      auraClass: 'ring-2 ring-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.6)] animate-pulse',
+    },
+    earth: {
+      type: 'element',
+      key: 'earth',
+      nameKo: '대지 3세트',
+      nameEn: 'Earth 3-Set',
+      buffKo: '실드 +25%',
+      buffEn: 'SHIELD +25%',
+      auraClass: 'ring-2 ring-yellow-600 shadow-[0_0_12px_rgba(202,138,4,0.6)] animate-pulse',
+    },
+    undead: {
+      type: 'faction',
+      key: 'undead',
+      nameKo: '언데드 3세트',
+      nameEn: 'Undead 3-Set',
+      buffKo: '흡혈 15%',
+      buffEn: 'LIFESTEAL +15%',
+      auraClass: 'ring-2 ring-purple-600 shadow-[0_0_12px_rgba(147,51,234,0.6)] animate-pulse',
+    },
+    human: {
+      type: 'faction',
+      key: 'human',
+      nameKo: '인간연합 3세트',
+      nameEn: 'Human 3-Set',
+      buffKo: 'HP재생 초당 5%',
+      buffEn: 'HP REGEN +5%/s',
+      auraClass: 'ring-2 ring-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.6)] animate-pulse',
+    },
+    mecha: {
+      type: 'faction',
+      key: 'mecha',
+      nameKo: '기계혁명 3세트',
+      nameEn: 'Mecha 3-Set',
+      buffKo: '치명타율 +20%',
+      buffEn: 'CRIT +20%',
+      auraClass: 'ring-2 ring-zinc-400 shadow-[0_0_12px_rgba(161,161,170,0.6)] animate-pulse',
+    },
+  };
+
+  // 1. 완성된 3세트 확인
+  for (const [key, count] of Object.entries(elementCounts)) {
+    if (count >= 3 && SYNERGY_MAP[key]) {
+      return { activeSet: SYNERGY_MAP[key], progressHint: '' };
+    }
+  }
+  for (const [key, count] of Object.entries(factionCounts)) {
+    if (count >= 3 && SYNERGY_MAP[key]) {
+      return { activeSet: SYNERGY_MAP[key], progressHint: '' };
+    }
+  }
+
+  // 2. 2장 편성 시 힌트 제공
+  for (const [key, count] of Object.entries(elementCounts)) {
+    if (count === 2 && SYNERGY_MAP[key]) {
+      return {
+        activeSet: null,
+        progressHint: `${SYNERGY_MAP[key].nameKo} (2/3) - 1장 추가 시 ${SYNERGY_MAP[key].buffKo}`,
+      };
+    }
+  }
+  for (const [key, count] of Object.entries(factionCounts)) {
+    if (count === 2 && SYNERGY_MAP[key]) {
+      return {
+        activeSet: null,
+        progressHint: `${SYNERGY_MAP[key].nameKo} (2/3) - 1장 추가 시 ${SYNERGY_MAP[key].buffKo}`,
+      };
+    }
+  }
+
+  return { activeSet: null, progressHint: '' };
+}
+
+export function getDeckSynergyAuraClass(
+  card: CardData | null | undefined,
+  deck: (CardData | null | undefined)[]
+): string {
+  if (!card) return '';
+  const { activeSet } = evaluate3CardDeckSynergy(deck);
+  if (!activeSet) return '';
+  if (activeSet.type === 'element' && card.element === activeSet.key) {
+    return activeSet.auraClass;
+  }
+  if (activeSet.type === 'faction' && card.faction === activeSet.key) {
+    return activeSet.auraClass;
+  }
+  return '';
+}
+
+export const DeckSynergyBadge: React.FC<{
+  deck: (CardData | null | undefined)[];
+  language?: string;
+  className?: string;
+  onClick?: () => void;
+}> = ({ deck, language = 'ko', className = '', onClick }) => {
+  const isKo = language === 'ko';
+  const { activeSet, progressHint } = evaluate3CardDeckSynergy(deck);
+
+  if (!activeSet && !progressHint) {
+    return null;
+  }
+
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full flex items-center justify-between px-3 py-1.5 font-mono text-[11px] rounded-sm border transition-all cursor-pointer select-none ${
+        activeSet
+          ? 'bg-purple-950/20 dark:bg-purple-900/30 border-purple-500/50 text-purple-900 dark:text-purple-200'
+          : 'bg-amber-500/10 border-amber-500/30 text-amber-900 dark:text-amber-200'
+      } ${className}`}
+    >
+      <div className="flex items-center gap-1.5 font-bold">
+        <Sparkles size={13} className={activeSet ? 'text-purple-500 animate-spin' : 'text-amber-500'} />
+        <span>
+          {activeSet
+            ? `[${isKo ? activeSet.nameKo : activeSet.nameEn}] 발동`
+            : `[시너지 조합 팁]`}
+        </span>
+      </div>
+      <div className="text-[10px] font-black">
+        {activeSet ? (
+          <span className="text-emerald-600 dark:text-emerald-400">
+            {isKo ? activeSet.buffKo : activeSet.buffEn}
+          </span>
+        ) : (
+          <span className="text-[#666] dark:text-[#aaa]">{progressHint}</span>
+        )}
+      </div>
+    </button>
+  );
+};
+
