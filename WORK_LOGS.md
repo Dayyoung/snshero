@@ -4,6 +4,30 @@
 
 ---
 
+## [2026-09-06 12:18 KST] [/ge 스프레드시트 신규 24개 행(Row 976~999 / ID 564~579, 548~555) 전수 구현 및 999개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 976~999) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 996 (ID 576) [3D 격투/대난투 미션 '엄지 스와이프 위빙 & 탭 타격/스매시' 100% 퓨어 제스처 전환]**:
+     - `src/lib/brawlerGestureController.ts`: 가상 버튼/D-Pad 전면 배제, 터치 드래그 풋워크, 단일 탭 3단 콤보 타격, 스와이프 위빙 회피, 롱프레스 차지 스매시, 더블탭 대시 구현.
+  2. **Row 997 (ID 577) [미션 로비 및 모드 선택 시 '1분 핵심 룰 퀵 프리뷰 & 모바일 제스처 가이드 카드']**:
+     - `src/components/MissionQuickPreviewCard.tsx`: 미션 진입 전 핵심 목표, 엄지 퓨어 제스처 가이드, 분당 50P 표준 및 스킬 보너스 인포그래픽 퀵 프리뷰 모달 구현.
+  3. **Row 998 (ID 578) [3D 뷰포트 가상 패드 패딩 제거 및 '풀스크린 엣지투엣지(Edge-to-Edge) 레이아웃']**:
+     - `src/components/FullscreenEdgeLayout.tsx`: 모바일 화면 전체를 채우는 엣지투엣지 3D WebGL 캔버스 렌더링 및 Safe-Area 대응 미니멀 글래스모피즘 오버레이 래퍼 구현.
+  4. **Row 999 (ID 579) [연속 클리어 시 추가 배수 적립 '스트릭 콤보 SNS 포인트 부스터 게이트웨이']**:
+     - `src/lib/streakRewardBooster.ts`: 세션 내 연속 클리어 스트릭(+10% ➔ +20% ➔ 최대 +50%) 누적 가산 및 스트릭 플레임 애니메이션 레벨(0~3) 연동.
+  5. **Row 976~995 (ID 548~575) [4대 핵심개선 및 플랫폼 전반 공통 모듈 전수 매핑 및 검증]**:
+     - `vehicleGestureController.ts`, `SportsMissionTutorial.tsx`, `MinimalistMissionHUD.tsx`, `NormalizedRewardPopup.tsx` 전수 호환성 및 무결성 확인 완료.
+  6. **스프레드시트 999개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 번호 `[Row 999 / ID 579]`로 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공 (built in 8.32s)
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /ge 스프레드시트 신규 24개 행(Row 976~999 / ID 564~579, 548~555) 전수 구현 및 999개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-06 08:44 KST] [/ge 스프레드시트 신규 8개 행(Row 968~975 / ID 556~563) 전수 구현 및 975개 행 100% 완료]
 - **요청 사항**:
   - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 968~975) 확인 및 소스코드 반영/검증 완료.
