@@ -37,7 +37,6 @@ import { MinesweeperGame } from '../components/MinesweeperGame';
 import { PacmanGame } from '../components/PacmanGame';
 import { TictactoeGame } from '../components/TictactoeGame';
 import { TrexRunnerGame } from '../components/TrexRunnerGame';
-import { NativeAd } from '../components/NativeAd';
 import SkillTimingButton from '../components/SkillTimingButton';
 import { getEquipmentSetBonus, calculateBattleSynergy, FACTION_ADVANTAGE_COLORS, FACTION_ADVANTAGE_ICONS, EQUIPMENT_SET_ICONS, generateCounterDeck, calculateElementalComboBonus } from '../lib/battleSynergy';
 import { incrementMissionProgress } from '../lib/dailyMissions';
@@ -12950,8 +12949,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   </motion.div>
                 );
               })}
-              {/* 인피드 네이티브 광고 카드 — P2-2 */}
-              <NativeAd language={language} variant="card" />
             </div>
           </main>
 

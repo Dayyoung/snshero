@@ -4,6 +4,35 @@
 
 ---
 
+## [2026-09-07 08:30 KST] [기존 mock 광고 배너 전면 제거 및 구글 애드센스 자동광고 전역 최적화]
+- **요청 사항**:
+  - 구글 애드센스 광고가 노출되지 않는 문제 해결.
+  - 기존에 임의로 구현된 모든 광고 배너(데스크톱 고정 배너, 모바일 상단 배너, 인피드 카드 등)를 전면 제거.
+  - 구글 애드센스 자동광고(Auto Ads) 및 SPA 페이지 전환에 맞춰 모든 페이지 최적화.
+- **조치 사항**:
+  - `index.html`:
+    - 애드센스 자동광고 활성화 파라미터 `enable_page_level_ads: true` 초기화 스크립트 추가.
+    - AMP 자동광고 라이브러리 및 `<amp-auto-ads>` 태그 최적 배치.
+  - `src/hooks/useAdSenseAutoAds.ts`:
+    - React SPA 환경에서 `view` 라우팅 전환 시 구글 애드센스 자동광고 재스캔(`window.adsbygoogle.push({})`)을 수행하는 커스텀 훅 신규 작성.
+  - `src/components/AdSenseBanner.tsx`:
+    - 필요 시 특정 슬롯에 반응형 애드센스 유닛을 삽입할 수 있는 표준 컴포넌트 추가 (`ca-pub-6937094123258335`).
+  - `src/App.tsx`:
+    - `useAdSenseAutoAds(view)` 연결로 전 페이지 자동광고 스캔 자동화.
+    - 데스크톱 좌측 고정 사이드바 목(Mock) 배너 제거.
+    - 모바일/태블릿 상단 네이티브 목(Mock) 배너 및 관련 `adBannerRef`, `adBannerHeight` 제거.
+    - 상단 컨트롤 버튼(`mute`, `hamburger`, `back`) 위치를 상단 10px 고정으로 정리하여 레이아웃 시프트 방지.
+  - `src/views/PlayGameView.tsx`:
+    - 미션 게임 리스트 내 인피드 목(Mock) 네이티브 광고 카드 제거.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 번들 빌드 성공 (built in 8.89s)
+- **Git 배포 및 보고**:
+  - 커밋 및 GitHub 원격 리포지토리(`origin/main`) 푸시 완료.
+  - 구글 폼 보고 완료.
+
+---
+
 ## [2026-09-07 08:23 KST] [랭킹대전 매칭 대기 웜업 팝업 제거 및 3초 카운터 후 즉시 게임 시작 적용]
 - **요청 사항**:
   - 랭킹대전을 할 때마다 3초 카운터 팝업만 표시하고, AI/랭킹 최적 상대 탐색 및 대기열 웜업 퍼즐 팝업은 제거하여 바로 게임이 시작되도록 개선 요청.

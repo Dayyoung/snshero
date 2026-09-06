@@ -84,7 +84,7 @@ import {
 } from 'lucide-react';
 
 import { Meta } from './components/Meta';
-import { NativeAd } from './components/NativeAd';
+import { useAdSenseAutoAds } from './hooks/useAdSenseAutoAds';
 import { CortanaCommandButton } from './components/CortanaCommandButton';
 import { TutorialCoachMark } from './components/TutorialCoachMark';
 import { AppLoadingGate } from './components/AppLoadingGate';
@@ -449,8 +449,6 @@ function AppContent() {
   const diceTimeoutRef = useRef<number | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUtilityOpen, setIsUtilityOpen] = useState(false);
-  const adBannerRef = React.useRef<HTMLDivElement>(null);
-  const [adBannerHeight, setAdBannerHeight] = useState(0);
   const [autoStartPvp, setAutoStartPvp] = useState(false);
   const [fromBackToRanking, setFromBackToRanking] = useState(false);
   const [view, setView] = useState<ViewType>(() => getViewFromPathAndUrl());
@@ -658,31 +656,8 @@ function AppContent() {
     localStorage.setItem('hero_ad_removed', String(isAdRemoved));
   }, [isAdRemoved]);
 
-  // 광고 배너 높이 동적 측정 (ResizeObserver)
-  // 광고가 비동기로 로드되거나 화면 크기가 변해도 항상 정확한 위치 유지
-  useEffect(() => {
-    const el = adBannerRef.current;
-    if (!el || isAdRemoved) {
-      setAdBannerHeight(0);
-      return;
-    }
-
-    const update = () => {
-      const rect = el.getBoundingClientRect();
-      // 버튼을 광고 배너 바로 아래에 배치하기 위해 광고의 bottom 위치 사용
-      setAdBannerHeight(rect.bottom);
-    };
-    const observer = new ResizeObserver(update);
-    observer.observe(el);
-    // scroll 시에도 위치 갱신
-    window.addEventListener('scroll', update, { passive: true });
-    update(); // 초기값 즉시 설정
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('scroll', update);
-    };
-  }, [isAdRemoved]);
+  // 구글 애드센스 자동광고(Auto Ads) SPA 화면 전환 재스캔 훅
+  useAdSenseAutoAds(view);
 
   const [user, setUser] = useState<any | null>(() => getStoredGuestProfile());
   const [authInitialized, setAuthInitialized] = useState(false);
@@ -5808,23 +5783,6 @@ function AppContent() {
         )}
         <Meta view={view} language={language} />
 
-        {/* Desktop Fixed Left Sidebar Ad (min-1420px screens only to prevent 1024px container overlap) — sticky, doesn't scroll away */}
-        {!isAdRemoved && (
-          <div className="hidden min-[1420px]:block fixed left-0 top-0 h-screen w-[184px] z-40 pointer-events-none">
-            <div className="h-full bg-slate-950 border-r border-slate-800 p-3 pointer-events-auto overflow-y-auto flex flex-col gap-3">
-              <div className="w-full flex items-center justify-between border-b border-slate-800 pb-2 shrink-0">
-                <span className="text-[10px] font-black text-cyan-400 tracking-widest">{t('ad_notice', language)}</span>
-                <span className="text-[8px] text-slate-600">AD</span>
-              </div>
-              <NativeAd
-                language={language}
-                variant="card"
-                className="w-full"
-              />
-            </div>
-          </div>
-        )}
-
         {/* Main Content */}
         <div className={cn(
           "flex-1 w-full max-w-[1024px] mx-auto relative flex flex-col shadow-2xl border-x transition-colors duration-200",
@@ -5849,11 +5807,7 @@ function AppContent() {
                     ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
                     : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
                 )}
-                style={{
-                  top: adBannerHeight > 0
-                    ? `${adBannerHeight + 4}px`
-                    : '10px'
-                }}
+                style={{ top: '10px' }}
                 title={isAudioMuted ? t('hud_audio_unmute', language) : t('hud_audio_mute', language)}
                 aria-label={isAudioMuted ? t('hud_audio_unmute', language) : t('hud_audio_mute', language)}
               >
@@ -5876,12 +5830,7 @@ function AppContent() {
                     ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
                     : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
                 )}
-                style={{
-                  // 광고 배너 바로 아래에 버튼 배치
-                  top: adBannerHeight > 0
-                    ? `${adBannerHeight + 4}px`
-                    : '10px'
-                }}
+                style={{ top: '10px' }}
                 title={t('menu_title', language)}
               >
                 <Menu size={20} />
@@ -5898,11 +5847,7 @@ function AppContent() {
                   ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
                   : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
               )}
-              style={{
-                top: adBannerHeight > 0
-                  ? `${adBannerHeight + 4}px`
-                  : '10px'
-              }}
+              style={{ top: '10px' }}
               title={language === 'ko' ? '뒤로가기' : 'Back'}
             >
               <ChevronLeft size={20} />
@@ -6255,16 +6200,6 @@ function AppContent() {
             )}
           </AnimatePresence>
 
-          {/* Mobile/Tablet Native Ad (Top-side) — P2-2: 인피드 네이티브 광고로 교체 */}
-          {!isAdRemoved && (
-            <div ref={adBannerRef} className="block xl:hidden w-full bg-white/80 backdrop-blur-sm border-b border-slate-200 p-2 shrink-0 select-none">
-              <NativeAd 
-                language={language}
-                variant="banner"
-                className="w-full max-w-[468px] mx-auto"
-              />
-            </div>
-          )}
           {/* Simulation Mode Floating Stop Button (Removed) */}
 
           {/* Simulation Indicator (Removed) */}
