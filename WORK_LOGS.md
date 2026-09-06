@@ -4,6 +4,21 @@
 
 ---
 
+## [2026-09-07 08:10 KST] [구글 애드센스(Google AdSense) 전역 스크립트 적용 및 배포]
+- **요청 사항**:
+  - `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6937094123258335` 스크립트 적용 및 푸시 요청.
+- **조치 사항**:
+  - `index.html`의 `<head>` 영역에 구글 애드센스 비동기 스크립트 태그 삽입.
+  - React SPA 전역 적용으로 메인 로비, 마이덱, 미션, 상점, 마켓 등 전체 화면에서 애드센스 구동 활성화.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공 (built in 9.39s)
+- **Git 푸시 완료**:
+  - 커밋: `feat: add Google AdSense script to index.html for global monetization`
+  - 원격 리포지토리(`origin/main`) 푸시 완료 (`877215d`)
+
+---
+
 ## [2026-09-06 19:40 KST] [/ge 스프레드시트 신규 8개 행(Row 1028~1035 / ID 548~555) 전수 구현 및 1035개 행 100% 완료]
 - **요청 사항**:
   - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 1028~1035) 확인 및 소스코드 반영/검증 완료.
