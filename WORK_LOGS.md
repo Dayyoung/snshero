@@ -4,6 +4,30 @@
 
 ---
 
+## [2026-09-06 12:25 KST] [/ge 스프레드시트 신규 8개 행(Row 1000~1007 / ID 548~555) 전수 구현 및 1007개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 1000~1007) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 1004 (ID 552) [전 플랫폼 모바일 뷰포트 최적화 & 하단 네비게이션 독 인체공학 통합]**:
+     - `src/components/AppMobileNavigation.tsx`: 100dvh 동적 뷰포트 스케일링, safe-area-inset-bottom 패딩, [로비/마이덱/미션/마켓/프로필] 5개 탭을 갖춘 1줄 고정 바텀독 구축.
+  2. **Row 1005 (ID 553) [마이덱 덱빌딩 '영웅 카드 인연(Bond) 시너지 프리뷰 & 콤보 덱 빌더']**:
+     - `src/components/DeckSynergyBuilder.tsx`: 마이덱 덱 편성 시 진영/종족/속성 시너지 및 영웅 인연(Bond) 활성화 황금빛 오라 및 전투 스탯 배수 실시간 프리뷰 패널 구현.
+  3. **Row 1006 (ID 554) [일일 퀘스트 마일스톤 및 스태미나 페이싱 연동 '통합 SNS 보상 정산 허브']**:
+     - `src/components/UnifiedEconomyHub.tsx` & `src/lib/staminaPacingService.ts`: 일일 활동 점수(20/40/60/80/100점) 티어별 SNS 포인트 및 AP 포션 보상 지급, 50회 가챠 확정 천장 카운터 연동.
+  4. **Row 1007 (ID 555) [모바일 웹뷰 메모리 누수 방지 'Three.js 텍스처/지오메트리 자동 디스포즈 & 동적 해상도 스케일링']**:
+     - `src/lib/assetLifecycleOptimizer.ts`: 씬 언마운트 시 Three.js 리소스 재귀적 자동 dispose 및 실시간 35 FPS 이하 저하 시 렌더링 DPR(0.65~1.0) 동적 스케일링 엔진 구현.
+  5. **Row 1000~1003 (ID 548~551) [4대 핵심개선: 레이싱 제스처, 스포츠 튜토리얼, 1줄 슬림 HUD, 확정보상]**:
+     - `vehicleGestureController.ts`, `SportsMissionTutorial.tsx`, `MinimalistMissionHUD.tsx`, `NormalizedRewardPopup.tsx` 전수 호환성 검증 완료.
+  6. **스프레드시트 1007개 전체 행 100% 전수 완료 달성**:
+     - `AGENTS.md` 마지막 완료 번호 `[Row 1007 / ID 555]`로 갱신.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공 (built in 8.07s)
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] /ge 스프레드시트 신규 8개 행(Row 1000~1007 / ID 548~555) 전수 구현 및 1007개 행 100% 완료 -> 작업완료`
+
+---
+
 ## [2026-09-06 12:18 KST] [/ge 스프레드시트 신규 24개 행(Row 976~999 / ID 564~579, 548~555) 전수 구현 및 999개 행 100% 완료]
 - **요청 사항**:
   - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 976~999) 확인 및 소스코드 반영/검증 완료.
