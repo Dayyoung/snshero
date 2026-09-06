@@ -4,6 +4,21 @@
 
 ---
 
+## [2026-09-07 08:18 KST] [구글 애드센스(Google AdSense) AMP 자동 광고(amp-auto-ads) 코드 적용 및 배포]
+- **요청 사항**:
+  - 1단계: `<head>` 태그 내 `amp-auto-ads-0.1.js` 라이브러리 스크립트 삽입.
+  - 2단계: `<body>` 태그 바로 다음 `<amp-auto-ads type="adsense" data-ad-client="ca-pub-6937094123258335"></amp-auto-ads>` 태그 삽입.
+- **조치 사항**:
+  - `index.html`의 `<head>` 영역에 `https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js` 스크립트 추가.
+  - `index.html`의 `<body>` 직후에 `<amp-auto-ads>` 태그 배치 완료.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공 (built in 9.03s)
+- **Git 배포**:
+  - 커밋 및 GitHub 원격 리포지토리(`origin/main`) 푸시 완료.
+
+---
+
 ## [2026-09-07 08:10 KST] [구글 애드센스(Google AdSense) 전역 스크립트 적용 및 배포]
 - **요청 사항**:
   - `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6937094123258335` 스크립트 적용 및 푸시 요청.
