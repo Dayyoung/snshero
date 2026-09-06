@@ -606,66 +606,47 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
     setAutoBattleCountdown(null);
   };
 
-  // Safe matchmaking timer effect
-  useEffect(() => {
-    if (!isSearching) return;
-
-    if (searchTimer <= 0) {
-      setIsSearching(false);
-
-      const myPower = currentUserData?.totalPower || 0;
-      
-      // 1순위: 자기 자신 제외 + SNS 보유
-      let candidates = users.filter(u => u.id !== user?.uid && u.sns !== undefined && u.sns > 0);
-      
-      // 2순위: 1순위 후보가 없을 시 자기 자신 제외 (SNS 무관)
-      if (candidates.length === 0) {
-        candidates = users.filter(u => u.id !== user?.uid);
-      }
-
-      let optimal: any = null;
-      if (candidates.length === 0) {
-        // 3순위: 그마저도 없을 시 가상 AI 봇 생성
-        optimal = generateMockOpponent(myPower);
-      } else {
-        optimal = candidates.reduce((prev, curr) => {
-          const diffCurr = Math.abs(curr.totalPower - myPower);
-          const diffPrev = Math.abs(prev.totalPower - myPower);
-          return diffCurr < diffPrev ? curr : prev;
-        });
-      }
-
-      playSfx('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
-      onAttackUser?.({
-        id: optimal.id,
-        name: optimal.name,
-        deck: optimal.deck || [],
-        totalPower: optimal.totalPower,
-        sns: optimal.sns,
-        wins: optimal.wins,
-        losses: optimal.losses,
-        draws: optimal.draws
-      });
-      return;
+  const startOptimalBattleNow = useCallback(() => {
+    const myPower = currentUserData?.totalPower || 0;
+    
+    // 1순위: 자기 자신 제외 + SNS 보유
+    let candidates = users.filter(u => u.id !== user?.uid && u.sns !== undefined && u.sns > 0);
+    
+    // 2순위: 1순위 후보가 없을 시 자기 자신 제외 (SNS 무관)
+    if (candidates.length === 0) {
+      candidates = users.filter(u => u.id !== user?.uid);
     }
 
-    const timerId = setTimeout(() => {
-      setSearchTimer(prev => prev - 1);
-    }, 1000);
+    let optimal: any = null;
+    if (candidates.length === 0) {
+      // 3순위: 그마저도 없을 시 가상 AI 봇 생성
+      optimal = generateMockOpponent(myPower);
+    } else {
+      optimal = candidates.reduce((prev, curr) => {
+        const diffCurr = Math.abs(curr.totalPower - myPower);
+        const diffPrev = Math.abs(prev.totalPower - myPower);
+        return diffCurr < diffPrev ? curr : prev;
+      });
+    }
 
-    return () => clearTimeout(timerId);
-  }, [isSearching, searchTimer, users, currentUserData, user, onAttackUser, playSfx]);
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
+    onAttackUser?.({
+      id: optimal.id,
+      name: optimal.name,
+      deck: optimal.deck || [],
+      totalPower: optimal.totalPower,
+      sns: optimal.sns,
+      wins: optimal.wins,
+      losses: optimal.losses,
+      draws: optimal.draws
+    });
+  }, [currentUserData, users, user, playSfx, onAttackUser]);
 
   const handleOptimalBattle = () => {
+    // 3초 카운터팝업만 표시하고 바로 게임 시작
+    if (isSearching || isPvpSearching || autoBattleCountdown !== null) return;
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-
-    setIsSearching(true);
-    setSearchTimer(5);
-
-    // Select random tip
-    const tipKeys = ['game_tip_1', 'game_tip_2', 'game_tip_3', 'game_tip_4', 'game_tip_5'];
-    const randomKey = tipKeys[Math.floor(Math.random() * tipKeys.length)];
-    setCurrentTip(t(randomKey as any, language));
+    setAutoBattleCountdown(3);
   };
 
   const triggerAutoSearch = useCallback(() => {
@@ -674,13 +655,13 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
     setAutoBattleCountdown(3);
   }, [isSearching, isPvpSearching, autoBattleCountdown, playSfx]);
 
-  // Auto-Battle Countdown timer (3... 2... 1... ➔ handleOptimalBattle)
+  // Auto-Battle Countdown timer (3... 2... 1... ➔ 바로 게임 시작)
   useEffect(() => {
     if (autoBattleCountdown === null) return;
     if (autoBattleCountdown <= 1) {
       const timer = setTimeout(() => {
         setAutoBattleCountdown(null);
-        handleOptimalBattle();
+        startOptimalBattleNow();
       }, 1000);
       return () => clearTimeout(timer);
     }
@@ -688,7 +669,7 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
       setAutoBattleCountdown((prev) => (prev !== null && prev > 1 ? prev - 1 : null));
     }, 1000);
     return () => clearTimeout(timer);
-  }, [autoBattleCountdown]);
+  }, [autoBattleCountdown, startOptimalBattleNow]);
 
   // 1. http://localhost:3000/ranking 입장 시 자동 상대검색 팝업 (단, 뒤로가기로 왔을 때만 제외)
   useEffect(() => {
@@ -1734,15 +1715,6 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
         language={language}
       />
 
-      {/* Optimal Matchmaking Search Modal with Mini Warmup Puzzle (Row 657 / ID 554) */}
-      <MatchmakingQueueModal
-        isOpen={isSearching}
-        isRealTimePvp={false}
-        searchTimer={searchTimer}
-        tip={currentTip}
-        onCancel={cancelMatchmaking}
-        language={language}
-      />
 
       {/* 1. Nearby Search Type Modal */}
       <AnimatePresence>
