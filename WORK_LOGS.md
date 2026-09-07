@@ -4,6 +4,31 @@
 
 ---
 
+## [2026-09-07 16:03 KST] [Poki 110선 리마스터 7/110] No.007 Vectaria.io Three.js 3D 마인크래프트풍 복셀 서바이벌 & 채굴 배틀 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/vectaria-io`) 분석 및 프롬프트(`src/components/poki/prompts/No007_VectariaIo_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 3D 스티브 아바타(머리/몸통/양팔/양다리/무기스윙), 76개 3D 복셀 광석/나무/크리스털 채굴 루팅, 4마리 적대적 복셀 몬스터 근접 전투, 3슬롯 도구 핫바(곡괭이/검/물약) 전면 재개발.
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(다이나믹 플로팅 조이스틱, 우측 80px [⛏️ MINE/ATTACK] 버튼, [▲ JUMP] 버튼, 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 인기 마인크래프트풍 3D 샌드박스 서바이벌 .io 게임. 자원 채굴(다이아, 금, 철, 목재, 석재), 몬스터 및 라이벌과의 전투, 체력 관리 및 샌드박스 탐험.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiVectariaGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera`, 80x80 잔디 복셀 지형 & 그리드, 중앙 거대 에인션트 크리스털 오벨리스크 부유 회전.
+     - 3D 스티브 아바타: 머리, 헤어, 눈, No.07 카드 영웅 배지, 몸통, 스윙 무기 장착 오른팔/왼팔, 양다리 보행 애니메이션.
+     - 76개 3D 복셀 블록(다이아몬드, 금, 철, 목재, 석재): 채굴 시 파편 파티클 및 자원 획득, 7초 후 자동 리스폰.
+     - 4종 적대적 복셀 몬스터(크리퍼, 네더 골렘, 좀비 헌터, 스켈레톤 워리어): 플레이어 추적 및 근접 공격, 플레이어 검 타격 시 넉백 및 처치 다이아몬드 보너스(+250점).
+     - 3슬롯 도구 핫바: 1: 다이아 곡괭이 (블록 데미지 2배), 2: 네더라이트 검 (몬스터 데미지 2.5배), 3: 치유 물약 (HP 40 즉시 회복).
+     - 모바일 퓨어 터치: 다이나믹 플로팅 가상 조이스틱 (360° 이동) + 우측 80px 대형 `[⛏️ MINE/ATTACK]` 버튼 + 68px `[▲ JUMP]` 점프 버튼 + 햅틱 진동 피드백.
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 확인 팝업 및 채굴/처치 점수 비례 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No007_VectariaIo_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 7개 완료 (No.008 Cryzen.io 대기).
+
+---
+
 ## [2026-09-07 15:55 KST] [Poki 110선 리마스터 6/110] No.006 Snake vs Worms Three.js 3D 실시간 지렁이 vs 뱀 배틀로얄 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/snake-vs-worms`) 분석 및 프롬프트(`src/components/poki/prompts/No006_SnakeVsWorms_Prompt.md`) 작성.

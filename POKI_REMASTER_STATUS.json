@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 7,
-  "completed_count": 6,
-  "last_updated": "2026-09-07T15:54:00+09:00",
+  "current_game_index": 8,
+  "completed_count": 7,
+  "last_updated": "2026-09-07T16:02:00+09:00",
   "history": [
     {
       "id": 1,
@@ -71,6 +71,17 @@
       "component": "src/components/poki/PokiSnakeVsWormsGame.tsx",
       "completed_at": "2026-09-07T15:54:00+09:00",
       "details": "Three.js 기반 3D 실시간 지렁이 vs 뱀 배틀로얄 구현, 3D 에메랄드 스네이크 바디(머리+카툰 눈+낼름 혀+추종 세그먼트), 3D 회전 음식 오브 110개(도넛/피자/에너지), 헤드-바디 충돌 킬 및 폭발 파티클 분출, 7종 고유 AI 봇 지렁이 배틀, 우측 80px 대형 [⚡ BOOST] 버튼, 다이나믹 플로팅 조이스틱, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 7,
+      "name": "Vectaria.io",
+      "poki_url": "https://poki.com/kr/g/vectaria-io",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No007_VectariaIo_Prompt.md",
+      "component": "src/components/poki/PokiVectariaGame.tsx",
+      "completed_at": "2026-09-07T16:02:00+09:00",
+      "details": "Three.js 기반 3D 마인크래프트풍 복셀 서바이벌 & 채굴 배틀 구현, 3D 스티브 아바타 & No.07 영웅 배지, 76개 3D 복셀 광석/나무/크리스털 채굴 루팅, 4마리 적대적 복셀 몬스터 근접 전투, 3슬롯 도구 핫바(곡괭이/검/물약), 다이나믹 플로팅 조이스틱 + 80px 채굴/공격 버튼, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
