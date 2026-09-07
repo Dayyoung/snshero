@@ -4,6 +4,31 @@
 
 ---
 
+## [2026-09-07 11:45 KST] [PC 좌우 광고배너 스킬창 겹침/가림 방지: 1024px 게임 콘텐츠 영역 내 도킹 완료]
+- **요청 사항**:
+  - 카드 배틀 화면의 스킬창(QTE 스킬, 배속/자동전투 버튼, 강화/약화/체인지 함성 스킬 아이콘들)이 PC 환경에서 좌우 날개 광고 배너에 가려져 표시되지 않거나 겹치는 현상 완벽 해결 요청.
+- **원인 분석**:
+  1. `src/views/PlayGameView.tsx` (라인 14114) 및 `src/components/rpg/KadanBattleGate.tsx` (라인 707):
+     - 플로팅 스킬/자동전투 컨트롤 스택이 `fixed bottom-28 right-3 sm:right-4`로 선언되어 있어, 브라우저 창 뷰포트의 맨 오른쪽 모서리를 기준으로 위치했음.
+     - PC 화면(>= 1024px, 특히 1066px~1300px)에서 중앙 게임 영역(`max-w-[1024px] mx-auto`) 바깥 오른쪽에 위치한 Google AdSense 우측 날개 배너(`aside aria-label="Google AdSense Right Wing"`)와 스킬창이 완전히 동일한 수평 좌표에 놓이게 되어 배너 뒤에 가려지거나 겹쳐 클릭 및 시인성이 차단되었음.
+- **조치 사항**:
+  - `src/views/PlayGameView.tsx`:
+    - 기존 `fixed bottom-28 right-3 sm:right-4` 구조를 화면 중앙 1024px 게임 콘텐츠 영역 내로 한정하는 래퍼 컨테이너로 개선:
+      `<div className="fixed inset-x-0 bottom-28 max-w-[1024px] mx-auto z-[160] pointer-events-none flex justify-end px-3 sm:px-4">`
+      `<div className="pointer-events-auto flex flex-col items-end gap-2.5">`
+    - 모바일/태블릿 화면(< 1024px)에서는 화면 너비 100% 기준으로 우측 모서리 안쪽에 기존과 동일하게 위치 유지.
+    - PC 모니터(>= 1024px)에서는 중앙 1024px 게임 영역의 우측 안쪽 여백에 정렬되어, 1024px 바깥에 위치한 우측 광고 배너와 **물리적으로 완전히 분리되어 절대로 겹치거나 가려지지 않음**.
+  - `src/components/rpg/KadanBattleGate.tsx`:
+    - RPG 배틀 게이트의 스킬창 UI 역시 동일하게 `fixed inset-x-0 bottom-28 max-w-[1024px] mx-auto z-[150] pointer-events-none flex justify-end px-3 sm:px-4`로 래핑하여 우측 배너 간섭을 원천 차단.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과.
+  - `npm run build`: 프로덕션 빌드 성공 (built in 8.84s).
+- **Git 배포 및 보고**:
+  - 커밋 및 GitHub 원격 리포지토리(`origin/main`) 푸시.
+  - 구글 폼 보고서 제출.
+
+---
+
 ## [2026-09-07 11:42 KST] [카드 전투 화면 상하 터치 스크롤 복구 및 상단/하단 패딩 반응형 최적화 완료]
 - **요청 사항**:
   - 카드 전투 화면에서 모바일/작은 화면 시 상하 스크롤이 동작하지 않아 상대방 손패나 내 손패 등 카드가 다 표시되지 않고 잘리는 현상 완벽 해결 요청.

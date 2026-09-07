@@ -704,7 +704,8 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
 
       {/* Floating Active Skills UI */}
       {!state.result && (
-        <div className="fixed bottom-28 right-3 sm:right-4 z-[150] pointer-events-auto flex flex-col items-end gap-2">
+        <div className="fixed inset-x-0 bottom-28 max-w-[1024px] mx-auto z-[150] pointer-events-none flex justify-end px-3 sm:px-4">
+          <div className="pointer-events-auto flex flex-col items-end gap-2">
           {/* 강화 함성 */}
           <div className="relative group">
             <button
@@ -769,6 +770,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
             <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 bg-black/95 text-white px-2.5 py-1 text-[10px] font-black italic opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-lg uppercase tracking-widest z-[200] shadow-xl">
               {language === 'ko' ? '체인지 내카드' : 'Swap Self'}
             </div>
+          </div>
           </div>
         </div>
       )}
