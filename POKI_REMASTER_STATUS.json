@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 23,
-  "completed_count": 22,
-  "last_updated": "2026-09-07T21:51:00+09:00",
+  "current_game_index": 24,
+  "completed_count": 23,
+  "last_updated": "2026-09-07T22:01:00+09:00",
   "history": [
     {
       "id": 1,
@@ -247,6 +247,17 @@
       "component": "src/components/poki/PokiLongcatGame.tsx",
       "completed_at": "2026-09-07T21:51:00+09:00",
       "details": "Three.js 기반 3D 롱캣 몸통 늘리기 공간 채우기 퍼즐 구현, 아이소메트릭 쿼터뷰 3D 그리드 보드 & 3D 큐브 벽 장애물, 3D 오렌지 롱캣 머리(카툰 눈/귀/수염 & No.22 영웅 배지), 슬라이딩 시 뱀처럼 매끄럽게 늘어나는 3D 몸통 세그먼트 & 꼬리, 3단계 레벨(5x5, 6x5, 6x6), 100% 빈칸 완충 시 무지개 팡파르 3D 파티클 분출, 스와이프 및 하단 4방향 D-패드 + 한 수 되돌리기(Undo) + 리셋 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 23,
+      "name": "Guns Guns Guns",
+      "poki_url": "https://poki.com/kr/g/guns-guns-guns",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No023_GunsGunsGuns_Prompt.md",
+      "component": "src/components/poki/PokiGunsGunsGunsGame.tsx",
+      "completed_at": "2026-09-07T22:01:00+09:00",
+      "details": "Three.js 기반 3D 택티컬 군사 아레나 슈터 구현, 34x28m 콘크리트 기지 & 서쪽 안전 엄폐 스폰 구역(시작 급사 원천 차단), 4대 군사 컨테이너 & 모래주머니 벙커 & 2대 폭발 TNT 배럴, 3D 특수요원 아바타 & No.23 영웅 배지, 2종 무기(M4A1 돌격소총 연사 / SPAS-12 산탄총 5발 확산), 5명 적 AI 용병 분대 교전 & 머리 위 3D 체력바, 총구 화염 Flash & 탄도 트레이서, 좌측 플로팅 조이스틱 + 우측 80px 사격/재장전/무기교체 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
