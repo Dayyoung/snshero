@@ -4,6 +4,39 @@
 
 ---
 
+## [2026-09-08 02:13 KST] [Poki 110선 리마스터 100/110] No.100 Undead Slayer Three.js 3D 다크 판타지 핵앤슬래시 언데드 토벌전 전면 고도화 (100개 달성! 90.9%)
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/undead-slayer`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No100_UndeadSlayer_Prompt.md`) 작성.
+  - Three.js 3D 기반 20m x 20m 고대 사원 전장 아레나(석벽/횃불 기둥 4기/중앙 제단 No.100 공식 영웅 배지 엠블럼).
+  - 3D 슬레이어 무사(블랙 아머/레드 스카프/대검 언월도/슬래시 아크 검기 궤적).
+  - 3D 언데드 몬스터 군단(스켈레톤/좀비 AI 추적 및 피격 넉백), 360도 광역 회오리 베기(WHIRLWIND), 25마리 토벌 승리.
+  - 모바일 퓨어 터치 조작계(360도 플로팅 가상 조이스틱 이동 + 76px BLADE SLASH 대형 참격 버튼 + 64px WHIRLWIND 필살기 + 햅틱), MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 최고 인기 삼국 다크 판타지 액션 명작 Undead Slayer. 어두운 전장을 가득 메운 무자비한 언데드 군단과 맞서 대검을 휘둘러 화려한 검기와 회오리 베기(Whirlwind)로 적들을 일망타진하고 대지에 평화를 되찾는 3D 핵앤슬래시 액션 RPG.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiUndeadSlayerGame.tsx`)**:
+     - 20m x 20m 고대 사원 전장 씬 (다크 스톤 플로어, 4기 플리커링 횃불 조명, 중앙 제단 No.100 공식 카드 영웅 배지 모놀리스).
+     - 3D 슬레이어 무사 모델링:
+       - 다크 플레이트 아머, 붉은 전포 스카프, 등 뒤 No.100 공식 영웅 배지 문장, 대형 언월도 대검.
+       - 공격 시 시안빛 반투명 아크 슬래시 메쉬 및 검기 파티클 방출.
+     - 3D 언데드 몬스터 군단 (스켈레톤 & 좀비) AI:
+       - 붉은 안광, 실시간 플레이어 추적 및 근접 타격 판정.
+       - 참격 피격 시 넉백 물리 및 HP 게이지 감소.
+     - [🌪️ WHIRLWIND] 360° 광역 회오리 베기 필살기:
+       - 반경 4.8m 내 모든 적을 일격에 휩쓸며 대규모 넉백 및 골드 파티클 폭발.
+     - 25마리 언데드 토벌(TARGET_KILLS = 25) 시 대지 정화 승리.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 좌측 터치 지점 360° 다이나믹 플로팅 가상 조이스틱 이동 (Screen-relative 완벽 일치).
+       - 76px [⚔️ BLADE SLASH] 대형 연속 참격 공격 버튼 + 64px [🌪️ WHIRLWIND] 광역 회전 필살기 버튼 + 햅틱 피드백.
+       - MinimalistMissionHUD (토벌 수 0/25, HP %, 콤보 카운트, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (100/110 완료 - 90.9% 달성!, current_game_index: 101) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 100/110] No.100 Undead Slayer Three.js 3D 다크 판타지 핵앤슬래시 언데드 토벌전 전면 고도화`)
+
 ## [2026-09-08 02:11 KST] [Poki 110선 리마스터 99/110] No.099 Perfect Landing Three.js 3D 항공기 조종 & 정밀 활주로 착륙 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/perfect-landing-plane-pilot`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No099_PerfectLanding_Prompt.md`) 작성.

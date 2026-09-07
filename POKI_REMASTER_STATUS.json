@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 100,
-  "completed_count": 99,
-  "last_updated": "2026-09-08T02:11:00+09:00",
+  "current_game_index": 101,
+  "completed_count": 100,
+  "last_updated": "2026-09-08T02:13:00+09:00",
   "history": [
     {
       "id": 1,
@@ -1094,6 +1094,17 @@
       "component": "src/components/poki/PokiPerfectLandingGame.tsx",
       "completed_at": "2026-09-08T02:11:00+09:00",
       "details": "Three.js 기반 3D 항공기 조종 & 정밀 활주로 착륙 시뮬레이터 구현, 해상 공항 75m 아스팔트 활주로(센터라인/터치다운 마킹 존/관제탑 No.099 공식 영웅 배지 엠블럼/해상 회전 풍력 터빈 3기), 3D 제트 여객기(화이트 동체/듀얼 터빈 엔진/주익 윙렛/날개 No.099 영웅 배지 데칼/제트 배기 파티클), 정밀 활공각(Glide Slope) & 하강속도 제어 및 터치다운 판정, 3회 성공 착륙 승리, 모바일 퓨어 터치 조작계(360도 플로팅 비행 요크 조이스틱 + 76px FLAPS/LAND 대형 착륙 감속 버튼 + 64px THRUST 엔진 가속 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 100,
+      "name": "Undead Slayer",
+      "poki_url": "https://poki.com/kr/g/undead-slayer",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No100_UndeadSlayer_Prompt.md",
+      "component": "src/components/poki/PokiUndeadSlayerGame.tsx",
+      "completed_at": "2026-09-08T02:13:00+09:00",
+      "details": "Three.js 기반 3D 다크 판타지 핵앤슬래시 언데드 토벌전 구현, 20m x 20m 고대 사원 전장 아레나(석벽/횃불 기둥 4기/중앙 제단 No.100 공식 영웅 배지 엠블럼), 3D 슬레이어 무사(블랙 아머/레드 스카프/대검 언월도/슬래시 아크 검기 궤적), 3D 언데드 몬스터 군단(스켈레톤/좀비 AI 추적 및 피격 넉백), 360도 광역 회오리 베기(WHIRLWIND), 25마리 토벌 승리, 모바일 퓨어 터치 조작계(360도 플로팅 가상 조이스틱 이동 + 76px BLADE SLASH 대형 참격 버튼 + 64px WHIRLWIND 필살기 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
