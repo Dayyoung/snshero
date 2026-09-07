@@ -58,7 +58,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 w-full bg-[#fdfcfc] border-t border-[rgba(15,0,0,0.12)] shadow-xl z-[9999] pointer-events-auto pb-[env(safe-area-inset-bottom)] font-mono">
+    <nav className="fixed bottom-0 left-0 right-0 w-full bg-[#fdfcfc] border-t border-[rgba(15,0,0,0.12)] shadow-xl z-[10005] pointer-events-auto pb-[env(safe-area-inset-bottom)] font-mono">
       <div className="max-w-[1024px] mx-auto w-full h-16 sm:h-[72px] flex items-stretch">
         {items.map((item) => {
         const isActive = currentView === item.id;

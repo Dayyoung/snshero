@@ -143,6 +143,16 @@ import { VoxelDreamweaverGame } from '../components/VoxelDreamweaverGame';
 import { VoxelLifeFlameGame } from '../components/VoxelLifeFlameGame';
 import { VoxelArcaneNexusGame } from '../components/VoxelArcaneNexusGame';
 import { VoxelDreadShadowGame } from '../components/VoxelDreadShadowGame';
+import { PokiSlimeKeyboardGame } from '../components/poki/PokiSlimeKeyboardGame';
+import { PokiHideAndPaintGame } from '../components/poki/PokiHideAndPaintGame';
+import { PokiMineFunGame } from '../components/poki/PokiMineFunGame';
+import { PokiPaperIoGame } from '../components/poki/PokiPaperIoGame';
+import { PokiLevelDevilGame } from '../components/poki/PokiLevelDevilGame';
+import { PokiSnakeVsWormsGame } from '../components/poki/PokiSnakeVsWormsGame';
+import { PokiVectariaGame } from '../components/poki/PokiVectariaGame';
+import { PokiCryzenGame } from '../components/poki/PokiCryzenGame';
+import { PokiBlockyBlastGame } from '../components/poki/PokiBlockyBlastGame';
+import { PokiRagdollChaosGame } from '../components/poki/PokiRagdollChaosGame';
 import { checkFlips, checkFlipsWithDetails, findBestMove, Board, CardInstance } from '../lib/gameEngine';
 import { GambitConfig, TacticalStance } from '../types';
 import { getSecretStamps, unlockSecretStamp } from '../lib/secretStampHelper';
@@ -394,7 +404,7 @@ const BossCardItem: React.FC<BossCardItemProps> = ({ boss, lowSpecMode, language
   );
 };
 
-type GameState = 'modeSelect' | 'lobby' | 'searching' | 'playing' | 'gameOver' | 'preMatch' | 'tournament' | 'story' | 'boss' | 'dungeon' | 'defense' | 'running' | 'shooting' | 'snake' | 'gomoku' | 'memorymatch' | 'slide2048' | 'cardjumper' | 'cardtap' | 'cardflip' | 'cardslide' | 'cardsorcery' | 'cardslot' | 'cardheist' | 'cardrush' | 'breakout' | 'minesweeper' | 'pacman' | 'tictactoe' | 'trexrunner' | 'voxeldefense' | 'pixelstrike' | 'voxelparkour' | 'voxelbattlegrounds' | 'voxeldungeon' | 'voxelspace' | 'voxelzombie' | 'voxelsiege' | 'voxeltitan' | 'voxelsuperstrikers' | 'voxelgladiatorcolosseum' | 'voxeldragonslayer' | 'voxelarcherhero' | 'voxelvampiresurvival' | 'voxeltankbounce' | 'voxelninjaslash' | 'voxelgolfmaster' | 'voxellumberjacktycoon' | 'voxelfishingmaster' | 'voxelfirerescue' | 'voxelwindhunter' | 'voxelsubwayrunner' | 'voxelcranemaster' | 'voxelmonstertruck' | 'voxeltowerstack' | 'voxelslamdunk' | 'voxelcoastertycoon' | 'voxelsniperhunter' | 'voxeljetskiwater' | 'voxelbaseballderby' | 'voxelboxingmighty' | 'voxelmicrokart' | 'voxeltreasuredigger' | 'voxelflightlanding' | 'voxelgachaclaw' | 'voxelbilliardstrick' | 'voxeldartsbar' | 'voxelwingsuitskydiving' | 'voxelbadmintonblitz' | 'voxelmagnethole' | 'voxelmotocrossstunt' | 'voxelskateboardstreet' | 'voxelsnowboardslalom' | 'voxelkaratebreak' | 'voxelpinballclimber' | 'voxelcrazytaxi' | 'voxellaserstealth' | 'voxeldojobalance' | 'voxelbubblepop' | 'voxelwaterslide' | 'voxelkrakenhunter' | 'voxelhalfpipeskater' | 'voxelnetherportal' | 'voxelmegaflareassault' | 'voxelspikerolling' | 'voxelterraquake' | 'voxeldreamweaver' | 'voxellifeflame' | 'voxelarcanenexus' | 'voxeldreadshadow';
+type GameState = 'modeSelect' | 'lobby' | 'searching' | 'playing' | 'gameOver' | 'preMatch' | 'tournament' | 'story' | 'boss' | 'dungeon' | 'defense' | 'running' | 'shooting' | 'snake' | 'gomoku' | 'memorymatch' | 'slide2048' | 'cardjumper' | 'cardtap' | 'cardflip' | 'cardslide' | 'cardsorcery' | 'cardslot' | 'cardheist' | 'cardrush' | 'breakout' | 'minesweeper' | 'pacman' | 'tictactoe' | 'trexrunner' | 'voxeldefense' | 'pixelstrike' | 'voxelparkour' | 'voxelbattlegrounds' | 'voxeldungeon' | 'voxelspace' | 'voxelzombie' | 'voxelsiege' | 'voxeltitan' | 'voxelsuperstrikers' | 'voxelgladiatorcolosseum' | 'voxeldragonslayer' | 'voxelarcherhero' | 'voxelvampiresurvival' | 'voxeltankbounce' | 'voxelninjaslash' | 'voxelgolfmaster' | 'voxellumberjacktycoon' | 'voxelfishingmaster' | 'voxelfirerescue' | 'voxelwindhunter' | 'voxelsubwayrunner' | 'voxelcranemaster' | 'voxelmonstertruck' | 'voxeltowerstack' | 'voxelslamdunk' | 'voxelcoastertycoon' | 'voxelsniperhunter' | 'voxeljetskiwater' | 'voxelbaseballderby' | 'voxelboxingmighty' | 'voxelmicrokart' | 'voxeltreasuredigger' | 'voxelflightlanding' | 'voxelgachaclaw' | 'voxelbilliardstrick' | 'voxeldartsbar' | 'voxelwingsuitskydiving' | 'voxelbadmintonblitz' | 'voxelmagnethole' | 'voxelmotocrossstunt' | 'voxelskateboardstreet' | 'voxelsnowboardslalom' | 'voxelkaratebreak' | 'voxelpinballclimber' | 'voxelcrazytaxi' | 'voxellaserstealth' | 'voxeldojobalance' | 'voxelbubblepop' | 'voxelwaterslide' | 'voxelkrakenhunter' | 'voxelhalfpipeskater' | 'voxelnetherportal' | 'voxelmegaflareassault' | 'voxelspikerolling' | 'voxelterraquake' | 'voxeldreamweaver' | 'voxellifeflame' | 'voxelarcanenexus' | 'voxeldreadshadow' | 'pokislimekeyboard' | 'pokihideandpaint' | 'pokiminefun' | 'pokipaperio' | 'pokileveldevil' | 'pokisnakevsworms' | 'pokivectaria' | 'pokicryzen' | 'pokiblockyblast' | 'pokiragdollchaos';
 
 interface TournamentParticipant {
   id: string;
@@ -7100,192 +7110,154 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
   const modes = [
     {
-      id: 'ai_battle',
-      title: t('mode_ai_battle', language),
-      icon: Cpu,
-      color: 'from-red-500 to-orange-500',
+      id: 'poki_slime_keyboard',
+      title: language === 'ko' ? '슬라임 키보드 탈출' : 'Slime Keyboard Escape',
+      icon: Trophy,
+      color: 'from-emerald-500 to-teal-700',
       image: '/minigame_ai_battle.png',
       characterId: 1,
       action: () => {
-        setIsDirectAiBattle(true);
-        setGameState('lobby');
-        
-        let activeRobots = chars.filter(c => c.type === 'robot');
-        if (activeRobots.length === 0) {
-          activeRobots = Array(5).fill(null).map((_, i) => {
-            const sector = i % 4;
-            const baseX = sector === 1 || sector === 3 ? 60 : 15;
-            const baseY = sector >= 2 ? 60 : 15;
-            const playerPower = calculatedTotalPower || 1000;
-            const powerVariance = 0.7 + Math.random() * 0.6;
-            const botTotalPower = Math.max(100, Math.floor(playerPower * powerVariance));
-            const snsBase = botTotalPower * (0.5 + Math.random() * 1.5);
-            const botSns = Math.max(0, Math.floor(snsBase));
-            return {
-              id: `bot-${i}`,
-              type: 'robot',
-              x: baseX + Math.random() * 25,
-              y: baseY + Math.random() * 25,
-              targetX: Math.random() * 70 + 15,
-              targetY: Math.random() * 70 + 15,
-              name: generateAiName(`bot-${i}-${Date.now()}`),
-              avatarUrl: `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Robot-${i}&backgroundColor=dc2626`,
-              totalPower: botTotalPower,
-              sns: botSns,
-              wins: Math.floor(Math.random() * 50),
-              losses: Math.floor(Math.random() * 30),
-              draws: Math.floor(Math.random() * 10)
-            };
-          });
-          setChars(activeRobots);
-        }
-
-        const playerPower = calculatedTotalPower || 1000;
-        const bestMatch = findBestMatchingRobot(activeRobots, playerPower, sns || 0) || activeRobots[0];
-        
-        if (bestMatch) {
-          setTimeout(() => {
-            handleEncounter(bestMatch);
-          }, 50);
-        }
+        setGameState('pokislimekeyboard');
       },
-      badgeText: 'AI',
-      guide: t('mode_ai_battle_guide', language)
+      category: 'arcade',
+      isNew: true,
+      badgeText: 'KEY-ESCAPE',
+      guide: language === 'ko' ? '거대 키보드 블록 위를 탭 점프하며 슬라임 트랩을 피해 탈출하세요.' : 'Tap jump on giant keyboard keys and avoid sticky slime traps to escape!'
     },
     {
-      id: 'tournament',
-      title: t('mode_tournament', language),
+      id: 'poki_hide_and_paint',
+      title: language === 'ko' ? '하이드 앤 페인트' : 'Hide and Paint',
       icon: Trophy,
-      color: 'from-yellow-400 to-amber-500',
+      color: 'from-sky-500 to-indigo-700',
       image: '/minigame_tournament.png',
       characterId: 2,
       action: () => {
-        startTournament();
+        setGameState('pokihideandpaint');
       },
-      badgeText: 'CUP',
-      guide: t('mode_tournament_guide', language)
+      category: 'action',
+      isNew: true,
+      badgeText: 'HIDE-PAINT',
+      guide: language === 'ko' ? '손가락으로 드래그해 바닥을 칠하고, 순찰자가 오면 페인트 위에서 멈춰 위장하세요.' : 'Drag to paint the floor and stop on your paint to camouflage from guards!'
     },
-
     {
-      id: 'boss',
-      title: t('mode_boss', language),
-      icon: ShieldAlert,
-      color: 'from-purple-600 to-rose-600',
+      id: 'poki_minefun',
+      title: language === 'ko' ? '마인펀 샌드박스' : 'MineFun.io',
+      icon: Trophy,
+      color: 'from-amber-600 to-emerald-800',
       image: '/minigame_boss.png',
       characterId: 3,
       action: () => {
-        setIsBossActive(true);
-        setGameState('boss');
-        saveBossState(true);
+        setGameState('pokiminefun');
       },
-      badgeText: 'BOSS',
-      guide: t('mode_boss_guide', language)
+      category: 'action',
+      isNew: true,
+      badgeText: 'MINE-FUN',
+      guide: language === 'ko' ? '광석 블록과 야간 몬스터를 직접 탭하여 채광하고 도구를 업그레이드하세요.' : 'Tap ore blocks and night monsters to mine minerals and upgrade weapons!'
     },
     {
-      id: 'dungeon',
-      title: t('mode_dungeon', language),
-      icon: ShieldCheck,
-      color: 'from-emerald-500 to-teal-600',
+      id: 'poki_paperio',
+      title: language === 'ko' ? '페이퍼 io 2' : 'Paper.io 2',
+      icon: Trophy,
+      color: 'from-cyan-500 to-blue-700',
       image: '/minigame_dungeon.png',
       characterId: 4,
       action: () => {
-        setIsDungeonActive(true);
-        setGameState('dungeon');
-        setDungeonPlayerPos({ x: 50, y: 50 });
-        setDungeonTargetPos(null);
-        saveDungeonState(true, { x: 50, y: 50 });
-        
-        // 지도를 거치지 않고 곧바로 일반 던전 5대5 카드 배틀 시작
-        const randomCardId = Math.floor(Math.random() * 110) + 1;
-        startDungeonBattle(false, randomCardId);
+        setGameState('pokipaperio');
       },
-      badgeText: 'DUNGEON',
-      guide: t('mode_dungeon_guide', language)
+      category: 'action',
+      isNew: true,
+      badgeText: 'PAPER-IO',
+      guide: language === 'ko' ? '내 영역 밖으로 선을 그리고 복귀하여 영토를 정복하세요. 꼬리를 밟히지 마세요!' : 'Steer outside your base to draw lines and enclose huge territory!'
     },
     {
-      id: 'defense',
-      title: t('mode_defense', language),
-      icon: Shield,
-      color: 'from-pink-500 to-orange-400',
+      id: 'poki_leveldevil',
+      title: language === 'ko' ? '레벨 데빌' : 'Level Devil',
+      icon: Trophy,
+      color: 'from-rose-600 to-red-900',
       image: '/minigame_defense.png',
       characterId: 5,
       action: () => {
-        setGameState('defense');
-        saveDefenseState(true);
+        setGameState('pokileveldevil');
       },
+      category: 'arcade',
       isNew: true,
-      badgeText: 'DEF',
-      guide: t('mode_defense_guide', language)
+      badgeText: 'LEVEL-DEVIL',
+      guide: language === 'ko' ? '바닥 꺼짐, 튀어나오는 가시, 도망가는 문 등 악마의 낚시 트랩을 돌파하세요.' : 'Dodge unexpected troll traps, fake floors and moving doors to reach the exit!'
     },
     {
-      id: 'snake',
-      title: t('mode_snake', language),
-      icon: TargetIcon,
-      color: 'from-lime-500 to-emerald-600',
+      id: 'poki_snakevsworms',
+      title: language === 'ko' ? '스네이크 vs 웜스' : 'Snake vs Worms',
+      icon: Trophy,
+      color: 'from-lime-500 to-emerald-700',
       image: '/minigame_snake.png',
       characterId: 6,
       action: () => {
-        setGameState('snake');
+        setGameState('pokisnakevsworms');
       },
+      category: 'arcade',
       isNew: true,
-      badgeText: 'SNAKE',
-      guide: t('mode_snake_guide', language)
+      badgeText: 'WORM-BATTLE',
+      guide: language === 'ko' ? '피자와 버거를 먹어 몸집을 키우고, 부스터로 상대 지렁이를 막아서 폭파시키세요.' : 'Eat treats to grow longer and boost ahead of enemy worms to blast them!'
     },
     {
-      id: 'shooting',
-      title: t('mode_shooting', language),
-      icon: Navigation,
-      color: 'from-sky-500 to-indigo-600',
+      id: 'poki_vectaria',
+      title: language === 'ko' ? '벡타리아 io' : 'Vectaria.io',
+      icon: Trophy,
+      color: 'from-blue-600 to-cyan-700',
       image: '/minigame_shooting.png',
       characterId: 7,
       action: () => {
-        setGameState('shooting');
+        setGameState('pokivectaria');
       },
+      category: 'action',
       isNew: true,
-      badgeText: 'RAIL',
-      guide: t('mode_shooting_guide', language)
+      badgeText: 'VECTARIA',
+      guide: language === 'ko' ? '화면을 탭해 마법 탄환을 쏘고 크리스탈을 모아 적 복셀 웨이브를 격파하세요.' : 'Tap to shoot magic bolts and collect gems to conquer enemy voxel waves!'
     },
     {
-      id: 'gomoku',
-      title: t('mode_gomoku', language),
-      icon: TargetIcon,
-      color: 'from-amber-500 to-orange-600',
+      id: 'poki_cryzen',
+      title: language === 'ko' ? '크라이젠 io' : 'Cryzen.io',
+      icon: Trophy,
+      color: 'from-slate-700 to-blue-900',
       image: '/minigame_gomoku.png',
       characterId: 8,
       action: () => {
-        setGameState('gomoku');
+        setGameState('pokicryzen');
       },
+      category: 'battle',
       isNew: true,
-      badgeText: 'OMK',
-      guide: t('mode_gomoku_guide', language)
+      badgeText: 'CRYZEN-FPS',
+      guide: language === 'ko' ? '엄폐물 사이로 나타나는 적 저격수를 탭하여 즉시 헤드샷으로 제압하세요.' : 'Tap emerging enemy snipers to eliminate them with precision headshots!'
     },
     {
-      id: 'memorymatch',
-      title: t('mode_memorymatch', language),
-      icon: TargetIcon,
-      color: 'from-violet-500 to-purple-600',
+      id: 'poki_blockyblast',
+      title: language === 'ko' ? '블로키 블래스트' : 'Blocky Blast',
+      icon: Sparkles,
+      color: 'from-amber-500 to-orange-700',
       image: '/minigame_memorymatch.png',
       characterId: 9,
       action: () => {
-        setGameState('memorymatch');
+        setGameState('pokiblockyblast');
       },
+      category: 'puzzle',
       isNew: true,
-      badgeText: 'MEM',
-      guide: t('mode_memorymatch_guide', language)
+      badgeText: 'BLOCKY-BLAST',
+      guide: language === 'ko' ? '하단의 블록을 그리드로 드래그해 가로/세로 라인을 꽉 채워 연쇄 폭파시키세요.' : 'Drag blocks to the grid and clear rows/columns for massive cascade combos!'
     },
     {
-      id: 'slide2048',
-      title: t('mode_slide2048', language),
-      icon: TargetIcon,
-      color: 'from-amber-400 to-orange-500',
+      id: 'poki_ragdollchaos',
+      title: language === 'ko' ? '래그돌 카오스' : 'Ragdoll Chaos',
+      icon: Trophy,
+      color: 'from-purple-600 to-pink-800',
       image: '/minigame_slide2048.png',
       characterId: 10,
       action: () => {
-        setGameState('slide2048');
+        setGameState('pokiragdollchaos');
       },
+      category: 'arcade',
       isNew: true,
-      badgeText: '2048',
-      guide: t('mode_slide2048_guide', language)
+      badgeText: 'RAGDOLL',
+      guide: language === 'ko' ? '래그돌 영웅을 화면에 시원하게 날려 범퍼와 폭발물에 연속 충돌시키세요.' : 'Fling your ragdoll hero into bumpers, bombs and portals for crazy chaos!'
     },
     {
       id: 'cardjumper',
@@ -12279,6 +12251,136 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         playSfx={playSfx}
         onExit={() => setGameState('modeSelect')}
         onReward={(amount) => handleMinigameReward(amount, '블리츠 프리즘 레이저 보상', 'Blitz Prism Laser reward')}
+      />
+    );
+  }
+
+  if (gameState === 'pokislimekeyboard') {
+    return (
+      <PokiSlimeKeyboardGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '슬라임 키보드 탈출 보상', 'Slime Keyboard Escape reward')}
+      />
+    );
+  }
+
+  if (gameState === 'pokihideandpaint') {
+    return (
+      <PokiHideAndPaintGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '하이드 앤 페인트 보상', 'Hide and Paint reward')}
+      />
+    );
+  }
+
+  if (gameState === 'pokiminefun') {
+    return (
+      <PokiMineFunGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '마인펀 샌드박스 보상', 'MineFun.io reward')}
+      />
+    );
+  }
+
+  if (gameState === 'pokipaperio') {
+    return (
+      <PokiPaperIoGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '페이퍼 io 2 보상', 'Paper.io 2 reward')}
+      />
+    );
+  }
+
+  if (gameState === 'pokileveldevil') {
+    return (
+      <PokiLevelDevilGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '레벨 데빌 보상', 'Level Devil reward')}
+      />
+    );
+  }
+
+  if (gameState === 'pokisnakevsworms') {
+    return (
+      <PokiSnakeVsWormsGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '스네이크 vs 웜스 보상', 'Snake vs Worms reward')}
+      />
+    );
+  }
+
+  if (gameState === 'pokivectaria') {
+    return (
+      <PokiVectariaGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '벡타리아 io 보상', 'Vectaria.io reward')}
+      />
+    );
+  }
+
+  if (gameState === 'pokicryzen') {
+    return (
+      <PokiCryzenGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '크라이젠 io 보상', 'Cryzen.io reward')}
+      />
+    );
+  }
+
+  if (gameState === 'pokiblockyblast') {
+    return (
+      <PokiBlockyBlastGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '블로키 블래스트 보상', 'Blocky Blast reward')}
+      />
+    );
+  }
+
+  if (gameState === 'pokiragdollchaos') {
+    return (
+      <PokiRagdollChaosGame
+        deck={playerDeck}
+        language={language}
+        lowSpecMode={lowSpecMode}
+        playSfx={playSfx}
+        onExit={() => setGameState('modeSelect')}
+        onReward={(amount) => handleMinigameReward(amount, '래그돌 카오스 보상', 'Ragdoll Chaos reward')}
       />
     );
   }

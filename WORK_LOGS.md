@@ -4,6 +4,33 @@
 
 ---
 
+## [2026-09-07 12:25 KST] [카단 RPG(/main) 카드 배틀 중 데스크톱 좌우 애드센스 날개 광고 및 하단 네비게이션 메뉴 100% 온전 노출 개선]
+- **요청 사항**:
+  - `https://snshero.com/main` (카단 & 아케인 에코즈 모드)에서 몬스터 조우 또는 스토리 진행 중 카드 게임(배틀 모달)을 진행할 때, PC 좌우 배너 광고와 하단 네비게이션 메뉴가 가려지지 않고 정상 노출되도록 개선 요청.
+- **원인 분석**:
+  1. `src/views/KadanRpgView.tsx`의 카드 배틀 모달 컨테이너가 `fixed inset-0 z-[10000]`로 화면 전체(0~100vh)를 검은색 딤드 레이어로 덮고 있었음.
+  2. `src/components/Navbar.tsx`의 z-index가 `z-[9999]`였기 때문에 배틀 모달(`z-[10000]`) 밑에 가려졌음.
+  3. `src/App.tsx`의 데스크톱 좌/우 애드센스 날개 배너(`<aside>`) z-index가 `z-40`으로 배틀 모달의 불투명 배경 아래에 묻혀 보이지 않고 클릭도 불가능했음.
+- **조치 사항**:
+  1. `src/App.tsx`:
+     - 좌우 데스크톱 애드센스 날개 배너(`<aside aria-label="Google AdSense Left Wing">`, `<aside aria-label="Google AdSense Right Wing">`)의 z-index를 `z-40`에서 `z-[10002]`로 상향 조정.
+  2. `src/components/Navbar.tsx`:
+     - 하단 네비게이션 바(`<nav>`)의 z-index를 `z-[9999]`에서 `z-[10005]`로 상향하여 배틀 모달 위로 항상 최상위 노출되도록 보장. 배틀 중에도 탭 전환 자유 보장.
+  3. `src/views/KadanRpgView.tsx`:
+     - 카드 배틀 모달 래퍼의 위치를 `fixed inset-x-0 top-0 bottom-16 sm:bottom-[72px] z-[10000]`로 변경하여 하단 네비게이션 바 바로 위까지 정확하게 도킹되도록 구현.
+     - PC 화면(`lg:` 이상)에서는 배경 딤드를 투명(`lg:bg-transparent`) 및 `pointer-events-none`으로 설정하여, 중앙 1024px 배틀 아레나 바깥의 좌우 애드센스 날개 광고 배너가 모달에 가려지지 않고 선명하게 노출 및 클릭 가능하도록 최적화.
+     - 중앙 아레나는 `pointer-events-auto`로 카드 터치, 공격 조작, 스킬 사용 완벽 유지.
+  4. 미션 게임 튜토리얼 스텝 타입 정의 보완 (`PokiBlockyBlastGame.tsx`, `PokiRagdollChaosGame.tsx`):
+     - `TutorialStep` 필수 프로퍼티인 `badge` 및 `keyPoints` 보완으로 타입 체커 무결점 통과.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 완벽 통과.
+  - `npm run build`: 프로덕션 빌드 성공 (built in 10.56s).
+- **Git 배포 및 보고**:
+  - 커밋 및 GitHub 원격 리포지토리(`origin/main`) 푸시.
+  - 구글 폼 보고서 제출.
+
+---
+
 ## [2026-09-07 12:08 KST] [미션 메뉴 진입 시 검은 화면 플래시 완전 제거 & PlayGameView 번들 백그라운드 스마트 프리페치 구현]
 - **요청 사항**:
   - 미션(`play`) 메뉴로 이동할 때 검은 화면이 잠깐 깜빡이는 현상(Black Flash) 원인 규명 및 최적화 요청.

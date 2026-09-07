@@ -453,9 +453,9 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
           )}
 
           {activeEncounter && battleEvent && rpgOpponent && (
-            <div className="fixed inset-0 z-[10000] bg-black/80 backdrop-blur-xs flex flex-col items-center justify-center overflow-hidden pointer-events-auto">
-              {/* 다른 화면들과 100% 동일한 최대너비(1024px) 중앙 배틀 아레나 (PC 좌우 여백에 날개 광고 배너 완벽 노출) */}
-              <div className="w-full max-w-[1024px] h-full flex flex-col min-h-0 relative bg-[#060a14] shadow-2xl border-x border-slate-800 overflow-y-auto overscroll-contain touch-pan-y">
+            <div className="fixed inset-x-0 top-0 bottom-16 sm:bottom-[72px] z-[10000] bg-black/80 lg:bg-transparent backdrop-blur-xs lg:backdrop-blur-none flex flex-col items-center justify-center overflow-hidden pointer-events-none pb-[env(safe-area-inset-bottom)]">
+              {/* 다른 화면들과 100% 동일한 최대너비(1024px) 중앙 배틀 아레나 (PC 좌우 여백에 날개 광고 배너 완벽 노출 & 하단 메뉴 온전 노출) */}
+              <div className="w-full max-w-[1024px] h-full flex flex-col min-h-0 relative bg-[#060a14] shadow-2xl border-x border-slate-800 pointer-events-auto overflow-hidden">
                 {/* 모바일/태블릿 화면용 상단 애드센스 배너 (1024px 이상 PC에서는 숨김: 슬림 배너 높이 제한) */}
                 {!isAdRemoved && (
                   <div className="block lg:hidden w-full px-2 py-0.5 shrink-0 select-none z-20 bg-[#060a14]/95 border-b border-slate-800 overflow-hidden">
