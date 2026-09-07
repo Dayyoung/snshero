@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 80,
-  "completed_count": 79,
-  "last_updated": "2026-09-08T01:37:00+09:00",
+  "current_game_index": 81,
+  "completed_count": 80,
+  "last_updated": "2026-09-08T01:38:00+09:00",
   "history": [
     {
       "id": 1,
@@ -874,6 +874,17 @@
       "component": "src/components/poki/PokiAnycolorGame.tsx",
       "completed_at": "2026-09-08T01:37:00+09:00",
       "details": "Three.js 기반 3D 힐링 아트 피규어 컬러링 & 팔레트 스튜디오 시뮬레이션 구현, 3D 아뜰리에 룸(회전 디스플레이 턴테이블/벽면 No.079 공식 영웅 배지 액자 데코), 32개 정밀 3D 분할 파츠 메카 가디언 피규어(헬멧/바이저/크레스트/아크 코어/윙/숄더/건틀릿/부츠 등), 1~6번 프리미엄 6색 팔레트 바(루비 레드/로열 블루/골든 앰버/에메랄드 그린/네온 바이올렛/펄 화이트), 3D 파츠 직접 터치 레이캐스팅 채색 & 바운스 팝업 및 스파클 파티클, 100% 완성 시 360도 공중 부유 스핀 쇼케이스, 모바일 퓨어 터치 조작계(화면 드래그 360° 궤도 회전 + 76px PAINT 번호별 채색 버튼 + 64px MAGIC FILL 일괄 채색 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 80,
+      "name": "Scary Teacher 3D",
+      "poki_url": "https://poki.com/kr/g/scary-teacher-3d",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No080_ScaryTeacher3D_Prompt.md",
+      "component": "src/components/poki/PokiScaryTeacher3DGame.tsx",
+      "completed_at": "2026-09-08T01:38:00+09:00",
+      "details": "Three.js 기반 3D 미스 티 대저택 잠입 & 기상천외 장난 탈출 어드벤처 구현, 30m x 24m 호화 대저택(로비/주방/거실/서재/현관 게이트/중앙 No.080 공식 영웅 배지 카펫), 장난꾸러기 닉(블루 후드티/등 뒤 No.080 공식 영웅 배지 백팩), 거대한 미스 티 AI(핑크 드레스/롤러 헤어/돋보기 안경/8m 70° 부채꼴 시야각 Vision Cone/경보 시 붉은색 전환 및 고속 추격), 3종 기상천외 장난 미션(주방 칠리 시리얼 + 거실 소파 방귀쿠션 + 서재 TV 페인트 낙서) + 은신용 옷장 HIDE(완전 은신) + SNEAK/RUN 소음 관리 시스템, 100% 모바일 퓨어 터치 조작계(화면 좌측 360° 플로팅 조이스틱 + 76px PRANK! 대형 장난 실행 버튼 + 64px HIDE/SNEAK 버튼 군 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
