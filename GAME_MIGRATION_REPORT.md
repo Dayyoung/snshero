@@ -8,7 +8,7 @@
   3. **일관된 보상 체계**: `standardizedRewardGateway.ts` 경유 20~50 SNS 포인트 공정 지급 및 `VictoryRewardModal`
   4. **일관된 그래픽 엔진**: HTML5 Canvas 2D 60fps 부드러운 애니메이션 및 파티클
   5. **SNSHero 캐릭터 연동**: `drawCardSprite` 기반 `cards1.png`, `cards2.png` 영웅/몬스터 스프라이트 100% 적용
-- **전체 진행 현황**: **30 / 110 완료 (27.3%)**
+- **전체 진행 현황**: **40 / 110 완료 (36.4%)**
 
 ---
 
@@ -46,16 +46,16 @@
 | No.028 | **[Perfect Shape](https://poki.com/kr/g/perfect-shape)** | 스킬 게임, 달리기 게임 | 카드 No.28 마법 화가 | 원터치 드로잉 후 손 떼기 판정 | 20~50 SNS | ✅ 완료 (Canvas 2D, 원/삼각/사각 75%+ 정밀도 판정) |
 | No.029 | **[Murder](https://poki.com/kr/g/murder)** | 액션 게임, 어드벤쳐 게임 | 카드 No.29 왕실 암살자 | 롱탭 단검 들기 & 릴리즈 시치미/뒤돌기 | 20~50 SNS | ✅ 완료 (Canvas 2D, 코믹 암살 스릴러 및 왕좌 방어) |
 | No.030 | **[Disaster Arena](https://poki.com/kr/g/disaster-arena)** | 액션 게임, 어드벤쳐 게임 | 카드 No.30 아레나 서바이버 | 원터치 화면 탭/드래그 회피 기동 | 20~50 SNS | ✅ 완료 (Canvas 2D, 메테오 폭격 붕괴 아레나 30초 생존) |
-| No.031 | **[Slice Master](https://poki.com/kr/g/slice-master)** | 두뇌 게임, 스킬 게임 | 카드 No.31 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.032 | **[Brain Test: Tricky Puzzles](https://poki.com/kr/g/brain-test-tricky-puzzles)** | 숨은 그림 찾기 게임, 마우스 게임 | 카드 No.32 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.033 | **[Stunt Bike Extreme](https://poki.com/kr/g/stunt-bike-extreme)** | 레이싱 게임, 스킬 게임 | 카드 No.33 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.034 | **[Sushi Party](https://poki.com/kr/g/sushi-party-io)** | 뱀 게임, 동물 게임 | 카드 No.34 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.035 | **[Drive Mad](https://poki.com/kr/g/drive-mad)** | 레이싱 게임, 멀티플레이어 게임 | 카드 No.35 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.036 | **[Temple Run 2](https://poki.com/kr/g/temple-run-2)** | 액션 게임, 어드벤쳐 게임 | 카드 No.36 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.037 | **[Escape From School](https://poki.com/kr/g/escape-from-school)** | 액션 게임, 어드벤쳐 게임 | 카드 No.37 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.038 | **[Count War](https://poki.com/kr/g/count-war)** | 스킬 게임, 슈팅 게임 | 카드 No.38 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.039 | **[Party Time](https://poki.com/kr/g/party-time)** | 액션 게임, 플랫폼 게임 | 카드 No.39 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.040 | **[Punchy Guy](https://poki.com/kr/g/punchy-guy)** | 액션 게임, 마우스 게임 | 카드 No.40 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
+| No.031 | **[Slice Master](https://poki.com/kr/g/slice-master)** | 두뇌 게임, 스킬 게임 | 카드 No.31 요리 검객 | 원터치 탭 공중제비 플립 & 슬라이스 | 20~50 SNS | ✅ 완료 (Canvas 2D, 나이프 회전 절단 & 기둥 착지) |
+| No.032 | **[Brain Test: Tricky Puzzles](https://poki.com/kr/g/brain-test-tricky-puzzles)** | 숨은 그림 찾기 게임, 마우스 게임 | 카드 No.32 지혜의 현자 | 드래그 결합, 탭 문지르기, 트릭 풀이 | 20~50 SNS | ✅ 완료 (Canvas 2D, 상식파괴 넌센스 두뇌 퍼즐 3제) |
+| No.033 | **[Stunt Bike Extreme](https://poki.com/kr/g/stunt-bike-extreme)** | 레이싱 게임, 스킬 게임 | 카드 No.33 모토 라이더 | 탭 가속 스로틀 & 좌우 드래그 바이크 틸트 | 20~50 SNS | ✅ 완료 (Canvas 2D, 360도 백플립 묘기 & 착지 점프) |
+| No.034 | **[Sushi Party](https://poki.com/kr/g/sushi-party-io)** | 뱀 게임, 동물 게임 | 카드 No.34 미식 냥이 | 원터치 드래그 방향 조타 & 롱탭 부스터 | 20~50 SNS | ✅ 완료 (Canvas 2D, 스시 뷔페 먹방 & 상대 차단 폭파 io) |
+| No.035 | **[Drive Mad](https://poki.com/kr/g/drive-mad)** | 레이싱 게임, 멀티플레이어 게임 | 카드 No.35 매드 드라이버 | 화면 우측 탭 전진 & 좌측 탭 후진 | 20~50 SNS | ✅ 완료 (Canvas 2D, 서스펜션 휠 물리 & 험로 전복 방지) |
+| No.036 | **[Temple Run 2](https://poki.com/kr/g/temple-run-2)** | 액션 게임, 어드벤쳐 게임 | 카드 No.36 고대 탐험가 | 4방향 스와이프 (좌우 회전, 점프, 슬라이드) | 20~50 SNS | ✅ 완료 (Canvas 2D, 악마 원숭이 추격 & 35루비 수집) |
+| No.037 | **[Escape From School](https://poki.com/kr/g/escape-from-school)** | 액션 게임, 어드벤쳐 게임 | 카드 No.37 장난꾸러기 학생 | 원터치 탭/드래그 잠입 & 교장/선생 시야 회피 | 20~50 SNS | ✅ 완료 (Canvas 2D, 교실 복도 탈출 & 3개 열쇠 탈취) |
+| No.038 | **[Count War](https://poki.com/kr/g/count-war)** | 스킬 게임, 슈팅 게임 | 카드 No.38 군단 지휘관 | 좌우 수평 드래그 배수 게이트 통과 | 20~50 SNS | ✅ 완료 (Canvas 2D, 군단 증식 게이트 통과 & 보스 돌파) |
+| No.039 | **[Party Time](https://poki.com/kr/g/party-time)** | 액션 게임, 플랫폼 게임 | 카드 No.39 파티 마스코트 | 원터치 탭 타이밍 점프 | 20~50 SNS | ✅ 완료 (Canvas 2D, 회전 장애물 봉 회피 25회 파티 생존) |
+| No.040 | **[Punchy Guy](https://poki.com/kr/g/punchy-guy)** | 액션 게임, 마우스 게임 | 카드 No.40 펀치 복서 | 좌우 화면 탭 펀치 & 가드/회피 | 20~50 SNS | ✅ 완료 (Canvas 2D, 타이밍 카운터 펀치 3명 KO 챔피언) |
 | No.041 | **[Blacktop Police Chase](https://poki.com/kr/g/blacktop-police-chase)** | 레이싱 게임, 멀티플레이어 게임 | 카드 No.41 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
 | No.042 | **[Family Life Simulator](https://poki.com/kr/g/family-life-simulator)** | 어드벤쳐 게임 | 카드 No.42 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
 | No.043 | **[Petnest.io](https://poki.com/kr/g/petnest-io)** | 동물 게임, 멀티플레이어 게임 | 카드 No.43 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
@@ -264,5 +264,51 @@
     - 원형 경기장에 쏟아지는 하늘의 메테오 폭격과 폭발 충격파를 예측 회피하며 끝까지 버티는 배틀로얄 생존 게임.
     - 플레이어: 카드 No.30 아레나 서바이버 스프라이트 (`cards1.png`).
     - 원터치 터치/드래그 회피 기동, 붉은 낙하 표식 회피, 30초 극한 생존 승리 연동 완료.
+
+---
+
+## Phase 3-B 상세 작업 내역 (No.031 ~ No.040)
+
+31. **No.031 Slice Master (`PokiSliceMasterGame.tsx`)**:
+    - 공중에 떠오르고 뒤집히는 나이프를 원터치로 점프/회전시켜 오렌지, 수박, 빵, 도넛 등 다양한 대상을 자르고 기둥에 칼을 꽂으며 전진하는 글로벌 메가히트 슬라이스 아케이드.
+    - 플레이어/오브젝트: 카드 No.31 요리 검객 스프라이트 (`cards1.png`).
+    - 원터치 탭 공중제비 플립, 과일/오브젝트 정밀 절단 파티클 및 기둥 착지 보너스, 1,000점 달성 승리 연동 완료.
+32. **No.032 Brain Test: Tricky Puzzles (`PokiBrainTestGame.tsx`)**:
+    - 상식을 뒤엎는 유쾌한 트릭 질문과 물리 드래그 상호작용으로 두뇌를 자극하는 글로벌 인기 퍼즐.
+    - 플레이어: 카드 No.32 지혜의 현자 스프라이트 (`cards1.png`).
+    - 물체 드래그 합성, 숨은 요소 탭 문지르기, 3단계 넌센스 트릭 퀴즈 클리어 승리 연동 완료.
+33. **No.033 Stunt Bike Extreme (`PokiStuntBikeExtremeGame.tsx`)**:
+    - 굴곡진 산악 지형과 점프대에서 바이크의 균형과 스로틀을 조절하며 360도 공중제비 묘기를 펼치는 익스트림 모토 레이싱.
+    - 플레이어: 카드 No.33 모토 라이더 스프라이트 (`cards1.png`).
+    - 우측 탭 스로틀 가속 & 좌우 드래그 틸트 회전, 공중 회전 백플립 스턴 및 안전 착지, 결승선 통과 승리 연동 완료.
+34. **No.034 Sushi Party (`PokiSushiPartyGame.tsx`)**:
+    - 회전초밥, 마키, 롤을 먹으며 몸집을 불리고, 상대 고양이 뱀의 진로를 가로막아 스시로 폭파시켜 흡수하는 카와이 스타일 지렁이 배틀로얄.
+    - 플레이어: 카드 No.34 미식 냥이 스프라이트 (`cards1.png`).
+    - 원터치 드래그 방향 조타 & 롱탭 부스터 질주, 상대 뱀 차단 폭파 및 길이 1,000pt 달성 승리 연동 완료.
+35. **No.035 Drive Mad (`PokiDriveMadGame.tsx`)**:
+    - 험난한 오프로드와 튀어나오는 장애물 코스에서 전복되지 않도록 속도와 바퀴 서스펜션을 조절하여 완주하는 물리 트럭 챌린지.
+    - 플레이어: 카드 No.35 매드 드라이버 스프라이트 (`cards1.png`).
+    - 화면 우측 탭 전진 가속 & 좌측 탭 후진/제동, 차량 밸런스 물리 및 전복 방지, 3코스 완주 승리 연동 완료.
+36. **No.036 Temple Run 2 (`PokiTempleRun2Game.tsx`)**:
+    - 고대 사원에서 저주받은 악마 원숭이(Demon Monkey)의 추격을 피해 절벽, 외나무다리, 장애물을 질주하는 전설의 러너.
+    - 플레이어: 카드 No.36 고대 탐험가 스프라이트 (`cards1.png`).
+    - 4방향 모바일 퓨어 스와이프 (좌우 방향 전환, 상향 점프, 하향 슬라이딩), 루비 35개 수집 및 생존 승리 연동 완료.
+37. **No.037 Escape From School (`PokiEscapeSchoolGame.tsx`)**:
+    - 순찰을 도는 완고한 교장선생님과 당직 교사의 시야를 피해 교실 복도에 숨겨진 3개의 비상 열쇠를 찾아 정문으로 탈출하는 잠입 어드벤처.
+    - 플레이어: 카드 No.37 장난꾸러기 학생 스프라이트 (`cards1.png`).
+    - 원터치 탭/드래그 이동 & 사물함/책상 뒤 은폐, 시야각 회피 및 열쇠 3개 획득 후 교문 탈출 승리 연동 완료.
+38. **No.038 Count War (`PokiCountWarGame.tsx`)**:
+    - 달리는 도중 배수 게이트(+5, x2, -10 등)를 통과하여 아군 군단 수를 폭발적으로 불리고, 관문의 적 수비군과 거대 보스를 압도적인 물량으로 돌파하는 군단 전략 러너.
+    - 플레이어: 카드 No.38 군단 지휘관 스프라이트 (`cards1.png`).
+    - 좌우 수평 드래그로 최적의 증식 게이트 조타, 군단 병력 집결 및 적 수비대 돌파 승리 연동 완료.
+39. **No.039 Party Time (`PokiPartyTimeGame.tsx`)**:
+    - 흥겨운 파티 음악 속에서 시계 방향과 반시계 방향으로 불규칙하게 회전하는 장애물 봉을 점프로 뛰어넘는 파티 아케이드.
+    - 플레이어: 카드 No.39 파티 마스코트 스프라이트 (`cards1.png`).
+    - 원터치 탭 도약 타이밍 판정, 회전 속도 가속 페이싱 돌파, 25회 연속 회피 생존 승리 연동 완료.
+40. **No.040 Punchy Guy (`PokiPunchyGuyGame.tsx`)**:
+    - 링 위에서 상대 복서의 공격 패턴과 텔레그래프 모션을 읽고 타이밍에 맞춰 카운터 펀치와 위빙 가드를 날리는 타격 액션.
+    - 플레이어: 카드 No.40 펀치 복서 스프라이트 (`cards1.png`).
+    - 좌/우 탭 스트레이트 & 훅 타격, 중앙 탭 가드/회피, 3명의 복싱 챔피언 연속 KO 승리 연동 완료.
+
 
 
