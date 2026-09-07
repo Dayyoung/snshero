@@ -5804,7 +5804,7 @@ function AppContent() {
     
     return (
       <div className={cn(
-        "w-full app-bg text-slate-800 font-sans selection:bg-indigo-500 selection:text-white flex flex-col xl:flex-row min-h-screen",
+        "w-full app-bg text-slate-800 font-sans selection:bg-indigo-500 selection:text-white flex flex-col lg:flex-row justify-center items-start min-h-screen",
         view === 'play' ? "bg-[#060a14] text-slate-100" : "bg-slate-50/30",
         (view === 'play' && playGameState === 'playing') ? "min-h-screen overflow-y-auto" : "min-h-screen",
         simulationUser ? "pt-[36px]" : "",
@@ -5828,28 +5828,11 @@ function AppContent() {
         )}
         <Meta view={view} language={language} />
 
-        {/* Desktop Left Skyscraper Ad Banner (1300px+ screens) */}
+        {/* Desktop Left Skyscraper Ad Banner (lg: 1024px+ PC screens: 1066px 포함 완벽 지원) */}
         {!isAdRemoved && view !== 'landing' && (
           <aside 
             aria-label="Google AdSense Left Wing"
-            className="hidden min-[1300px]:flex flex-col items-center fixed right-[calc(50vw+512px+12px)] top-16 w-[120px] min-[1400px]:w-[160px] z-30 pointer-events-auto"
-          >
-            <div className="w-full bg-[#fdfcfc]/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 p-1.5 shadow-xs rounded-none">
-              <AdSenseBanner 
-                format="vertical"
-                className="w-full min-h-[600px]"
-                style={{ width: '100%', minHeight: '600px' }}
-                showLabel
-              />
-            </div>
-          </aside>
-        )}
-
-        {/* Desktop Right Skyscraper Ad Banner (1300px+ screens) */}
-        {!isAdRemoved && view !== 'landing' && (
-          <aside 
-            aria-label="Google AdSense Right Wing"
-            className="hidden min-[1300px]:flex flex-col items-center fixed left-[calc(50vw+512px+12px)] top-16 w-[120px] min-[1400px]:w-[160px] z-30 pointer-events-auto"
+            className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-16 mr-2 xl:mr-3 z-30 pointer-events-auto"
           >
             <div className="w-full bg-[#fdfcfc]/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 p-1.5 shadow-xs rounded-none">
               <AdSenseBanner 
@@ -6283,10 +6266,10 @@ function AppContent() {
 
           {/* Simulation Indicator (Removed) */}
 
-          {/* Mobile/Tablet Content Top Google AdSense Banner (1300px 미만 화면 전용: 모든 화면 일관된 상단 배너 제공) */}
+          {/* Mobile/Tablet Content Top Google AdSense Banner (1024px 미만 모바일/태블릿 화면 전용: 모든 화면 일관된 상단 배너 제공) */}
           {!isAdRemoved && view !== 'landing' && (
             <div className={cn(
-              "block min-[1300px]:hidden w-full px-2 py-1 shrink-0 select-none z-20",
+              "block lg:hidden w-full px-2 py-1 shrink-0 select-none z-20",
               view === 'play'
                 ? "bg-[#060a14]/95 border-b border-slate-800"
                 : "bg-[#fdfcfc]/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800"
@@ -7664,9 +7647,26 @@ function AppContent() {
         />
       )}
       </div>
-    </div>
-  );
-}
+
+        {/* Desktop Right Skyscraper Ad Banner (lg: 1024px+ PC screens: 1066px 포함 완벽 지원) */}
+        {!isAdRemoved && view !== 'landing' && (
+          <aside 
+            aria-label="Google AdSense Right Wing"
+            className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-16 ml-2 xl:ml-3 z-30 pointer-events-auto"
+          >
+            <div className="w-full bg-[#fdfcfc]/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 p-1.5 shadow-xs rounded-none">
+              <AdSenseBanner 
+                format="vertical"
+                className="w-full min-h-[600px]"
+                style={{ width: '100%', minHeight: '600px' }}
+                showLabel
+              />
+            </div>
+          </aside>
+        )}
+      </div>
+    );
+  }
 
 export default function App() {
   return (

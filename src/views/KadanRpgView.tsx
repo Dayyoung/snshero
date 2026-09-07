@@ -453,6 +453,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
             <div className="fixed inset-0 z-[10000] bg-slate-950 flex flex-col overflow-hidden">
               <React.Suspense fallback={<div className="flex h-full w-full items-center justify-center text-white font-mono text-sm">Loading Battle Arena...</div>}>
                 <PlayGameView
+                  isAdRemoved={true}
                   playerDeck={currentDeck.filter((c): c is CardData => Boolean(c))}
                   pvpOpponent={rpgOpponent}
                   initialMode="card"

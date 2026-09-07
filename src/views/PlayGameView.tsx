@@ -14389,8 +14389,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       {/* Top Controls Bar: Back/Exit, Menu, Auto Toggle, Rules, Ping */}
       {gameState === 'playing' && (
         <div className={cn(
-          "fixed left-3 right-3 z-[9999] flex items-center justify-between pointer-events-auto font-mono text-xs select-none",
-          !isAdRemoved ? "top-[60px] sm:top-[98px] min-[1300px]:top-2" : "top-2"
+          "fixed left-3 right-3 max-w-[1024px] mx-auto inset-x-0 z-[9999] flex items-center justify-between pointer-events-auto font-mono text-xs select-none",
+          !isAdRemoved ? "top-[60px] sm:top-[98px] lg:top-2" : "top-2"
         )}>
           {/* Left side: Exit/Back, Menu, Mobile Logs */}
           <div className="flex items-center gap-1.5 sm:gap-2">
