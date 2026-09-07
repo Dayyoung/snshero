@@ -8,7 +8,7 @@
   3. **일관된 보상 체계**: `standardizedRewardGateway.ts` 경유 20~50 SNS 포인트 공정 지급 및 `VictoryRewardModal`
   4. **일관된 그래픽 엔진**: HTML5 Canvas 2D 60fps 부드러운 애니메이션 및 파티클
   5. **SNSHero 캐릭터 연동**: `drawCardSprite` 기반 `cards1.png`, `cards2.png` 영웅/몬스터 스프라이트 100% 적용
-- **전체 진행 현황**: **80 / 110 완료 (72.7%)**
+- **전체 진행 현황**: **90 / 110 완료 (81.8%)**
 
 ---
 
@@ -96,16 +96,16 @@
 | No.078 | **[Dog's Life](https://poki.com/kr/g/dogs-life)** | 동물 게임, 멀티플레이어 게임 | 카드 No.78 강아지 | 터치 산책 이동 & 짖기 / 허들 점프 | 20~50 SNS | ✅ 완료 (Canvas 2D, 공원 모험 & 황금 뼈다귀 5개 수집) |
 | No.079 | **[Anycolor](https://poki.com/kr/g/anycolor)** | 스킬 게임, 장식 게임 | 카드 No.79 일러스트레이터 | 번호 팔레트 선택 & 파츠 터치 채색 | 20~50 SNS | ✅ 완료 (Canvas 2D, 레트로 팝아트 10개 파츠 100%) |
 | No.080 | **[Scary Teacher 3D](https://poki.com/kr/g/scary-teacher-3d)** | 액션 게임, 두뇌 게임 | 카드 No.80 장난 천재 | 잠입 이동 & 3대 장난 설치 & EXIT 탈출 | 20~50 SNS | ✅ 완료 (Canvas 2D, 저택 침투 트릭 & 현관 탈출) |
-| No.081 | **[Penalty Shooters 2](https://poki.com/kr/g/penalty-shooters-2)** | 운동 게임, 스킬 게임 | 카드 No.81 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.082 | **[Boomy World](https://poki.com/kr/g/boomy-world)** | 액션 게임, 두뇌 게임 | 카드 No.82 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.083 | **[SnapStyle Dress Up](https://poki.com/kr/g/snapstyle-dress-up)** | 옷입히기 게임, 패션 게임 | 카드 No.83 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.084 | **[Fashion Legends](https://poki.com/kr/g/fashion-legends)** | 옷입히기 게임, 메이크업 게임 | 카드 No.84 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.085 | **[Vortella's Dress Up](https://poki.com/kr/g/vortellas-dress-up)** | 옷입히기 게임, 마우스 게임 | 카드 No.85 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.086 | **[MR RACER - Car Racing](https://poki.com/kr/g/mr-racer-car-racing)** | 액션 게임, 스킬 게임 | 카드 No.86 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.087 | **[School Cleaning](https://poki.com/kr/g/school-cleaning)** | 마우스 게임, 자동차 게임 | 카드 No.87 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.088 | **[Hill Climb Racing Lite](https://poki.com/kr/g/hill-climb-racing-lite)** | 레이싱 게임, 스킬 게임 | 카드 No.88 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.089 | **[Stickman Crazy Box](https://poki.com/kr/g/stickman-crazy-box)** | 액션 게임, 스킬 게임 | 카드 No.89 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.090 | **[Goods Master](https://poki.com/kr/g/goods-master)** | 두뇌 게임, 퍼즐 게임 | 카드 No.90 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
+| No.081 | **[Penalty Shooters 2](https://poki.com/kr/g/penalty-shooters-2)** | 운동 게임, 스킬 게임 | 카드 No.81 페널티 키커 | 슬링샷 슈팅 & 키퍼 드래그 선방 | 20~50 SNS | ✅ 완료 (Canvas 2D, 승부차기 3라운드 토너먼트 우승) |
+| No.082 | **[Boomy World](https://poki.com/kr/g/boomy-world)** | 액션 게임, 두뇌 게임 | 카드 No.82 폭파 마스터 | 폭탄 배치 & 격발 연쇄 폭발 | 20~50 SNS | ✅ 완료 (Canvas 2D, 화약통 연쇄 반응 10몬스터 폭파) |
+| No.083 | **[SnapStyle Dress Up](https://poki.com/kr/g/snapstyle-dress-up)** | 옷입히기 게임, 패션 게임 | 카드 No.83 패션 인플루언서 | 5개 파츠 스타일링 & 셔터 촬영 | 20~50 SNS | ✅ 완료 (Canvas 2D, 100점 매거진 표지 스냅샷) |
+| No.084 | **[Fashion Legends](https://poki.com/kr/g/fashion-legends)** | 옷입히기 게임, 메이크업 게임 | 카드 No.84 캣워크 모델 | 좌우 스와이프 의상 게이트 수집 | 20~50 SNS | ✅ 완료 (Canvas 2D, 런웨이 워킹 80점 이상 심사 우승) |
+| No.085 | **[Vortella's Dress Up](https://poki.com/kr/g/vortellas-dress-up)** | 옷입히기 게임, 마우스 게임 | 카드 No.85 고딕 마녀 | 4개 마법 파츠 코디 & 주술 각성 | 20~50 SNS | ✅ 완료 (Canvas 2D, 고딕 마녀 100% 룬 주술 시전) |
+| No.086 | **[MR RACER - Car Racing](https://poki.com/kr/g/mr-racer-car-racing)** | 액션 게임, 스킬 게임 | 카드 No.86 레이서 | 좌우 차선 이동 & 니트로 부스터 | 20~50 SNS | ✅ 완료 (Canvas 2D, 4차선 고속도로 1,500m 질주) |
+| No.087 | **[School Cleaning](https://poki.com/kr/g/school-cleaning)** | 마우스 게임, 자동차 게임 | 카드 No.87 환경 반장 | 쓰레기 탭 & 칠판 닦기 & 책상 정렬 | 20~50 SNS | ✅ 완료 (Canvas 2D, 방과 후 교실 100% 정리정돈) |
+| No.088 | **[Hill Climb Racing Lite](https://poki.com/kr/g/hill-climb-racing-lite)** | 레이싱 게임, 스킬 게임 | 카드 No.88 오프로드 드라이버 | 가속/브레이크 차량 밸런스 조절 | 20~50 SNS | ✅ 완료 (Canvas 2D, 2D 물리 구릉 지형 300m 언덕 완주) |
+| No.089 | **[Stickman Crazy Box](https://poki.com/kr/g/stickman-crazy-box)** | 액션 게임, 스킬 게임 | 카드 No.89 스틱맨 파이터 | 좌우 회피 & 점프 도약 & 스타 수집 | 20~50 SNS | ✅ 완료 (Canvas 2D, 낙하 상자 회피 & 황금 스타 8개) |
+| No.090 | **[Goods Master](https://poki.com/kr/g/goods-master)** | 두뇌 게임, 퍼즐 게임 | 카드 No.90 마켓 매니저 | 선반 상품 탭 & 카트 3매칭 정리 | 20~50 SNS | ✅ 완료 (Canvas 2D, 편의점 선반 3세트 100% 클리어) |
 | No.091 | **[Hexellent](https://poki.com/kr/g/hexellent)** | 두뇌 게임, 마우스 게임 | 카드 No.91 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
 | No.092 | **[Harvest Simulator](https://poki.com/kr/g/harvest-simulator)** | 시뮬레이션 게임, 농장 게임 | 카드 No.92 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
 | No.093 | **[Car Circle](https://poki.com/kr/g/car-circle)** | 두뇌 게임, 스킬 게임 | 카드 No.93 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
@@ -488,3 +488,49 @@
     - 미스 T 선생님의 저택에 잠입해 순찰 시야(붉은 부채꼴 콘)를 피해 주방(소금통 설탕 바꾸기), 욕실(샴푸에 페인트), 거실(방귀쿠션) 3대 장난을 설치하고 현관 EXIT로 탈출하는 코믹 잠입 스릴러.
     - 플레이어: 카드 No.80 장난 천재 스프라이트 (`cards2.png`).
     - 터치/드래그 은밀 잠입 & 장난 포인트 근접 설치, 경보 시스템 및 EXIT 무사 탈출 승리 연동 완료.
+
+---
+
+## Phase 6-A 상세 작업 내역 (No.081 ~ No.090)
+
+81. **No.081 Penalty Shooters 2 (`PokiPenaltyShooters2Game.tsx`)**:
+    - 슬링샷 슈팅과 골키퍼 다이빙 방어를 공수 교대로 진행하는 축구 승부차기 토너먼트 (3라운드 2점 선취 승리).
+    - 플레이어: 카드 No.81 페널티 킥커 스프라이트 (`cards2.png`).
+    - 슬링샷 드래그 궤적 슈팅 조준 & 골키퍼 다이빙 터치 블로킹, 3R 토너먼트 우승 연동 완료.
+82. **No.082 Boomy World (`PokiBoomyWorldGame.tsx`)**:
+    - 9x9 미로 전장에서 TNT 폭탄을 배치해 장애물 블록을 부수고 폭발 화염으로 몰려오는 몬스터 10마리를 퇴치하는 클래식 폭탄 배틀.
+    - 플레이어: 카드 No.82 부머 영웅 스프라이트 (`cards2.png`).
+    - 스와이프 이동 & 폭탄 설치 버튼, 십자 폭발 연쇄 반응 및 10마리 몬스터 전멸 승리 연동 완료.
+83. **No.083 SnapStyle Dress Up (`PokiSnapStyleDressUpGame.tsx`)**:
+    - 헤어, 의상, 슈즈, 안경, 모자 5개 카테고리 아이템을 자유롭게 코디하고 패션 매거진 표지 셔터로 베스트 컷을 촬영하는 포토제닉 드레스업.
+    - 플레이어: 카드 No.83 패션 모델 스프라이트 (`cards2.png`).
+    - 카테고리 탭 & 아이템 선택, 100점 매거진 표지 셔터 스냅샷 및 촬영 완성 승리 연동 완료.
+84. **No.084 Fashion Legends (`PokiFashionLegendsGame.tsx`)**:
+    - 런웨이를 전진하며 좌우 스와이프로 긍정(+스타일) 의상 게이트를 수집하고 부정(-오염) 게이트를 피해 80점 이상의 매혹적인 스타일로 캣워크를 질주하는 런웨이 러너.
+    - 플레이어: 카드 No.84 런웨이 모델 스프라이트 (`cards2.png`).
+    - 좌우 스와이프 레인 이동 & 의상 게이트 수집, 80점 이상 캣워크 피날레 우승 연동 완료.
+85. **No.085 Vortella's Gothic Dress Up (`PokiVortellasDressUpGame.tsx`)**:
+    - 고딕 마법사 보르텔라의 마녀 모자, 로브, 마법 오브, 마법봉 4개 신비한 파츠를 조합하여 고딕 룬 주술을 각성시키는 판타지 코디.
+    - 플레이어: 카드 No.85 고딕 마녀 스프라이트 (`cards2.png`).
+    - 파츠별 옵션 터치 교체 & 보라빛 마법 오라 이펙트, 4개 부위 완벽 코디 및 룬 각성 승리 연동 완료.
+86. **No.086 MR RACER - Car Racing (`PokiMrRacerGame.tsx`)**:
+    - 4차선 도심 고속도로에서 일반 차량 사이를 아슬아슬하게 추월하며 니트로 부스터로 폭발적 가속을 펼치는 하이퍼 스피드 레이서.
+    - 플레이어: 카드 No.86 MR 레이서 스프라이트 (`cards2.png`).
+    - 좌우 스와이프 차선 변경 & 화면 터치 유지 니트로 부스터 가속, 1,500m 무사고 질주 완주 승리 연동 완료.
+87. **No.087 School Cleaning (`PokiSchoolCleaningGame.tsx`)**:
+    - 어질러진 교실에서 바닥 쓰레기 분리수거(5개), 지저분한 칠판 지우기(스펀지 드래그), 삐뚤어진 책상 바르게 정렬하기 3단계를 수행하는 클리닝 시뮬레이션.
+    - 플레이어: 카드 No.87 환경 반장 스프라이트 (`cards2.png`).
+    - 3단계 탭/드래그 청소 인터랙션, 반짝임 파티클 및 100% 교실 청소 완벽 클리어 승리 연동 완료.
+88. **No.088 Hill Climb Racing Lite (`PokiHillClimbRacingLiteGame.tsx`)**:
+    - 거친 험로와 언덕을 지프차로 주파하며 가속과 브레이크 2개 버튼으로 차량의 피치 기울기를 제어해 전복 없이 코인을 수집하며 300m를 완주하는 물리 힐 레이싱.
+    - 플레이어: 카드 No.88 힐 드라이버 스프라이트 (`cards2.png`).
+    - 좌/우 탭 가속·감속 물리 밸런스 제어 & 연료 캔 수집, 300m 완주 승리 연동 완료.
+89. **No.089 Stickman Crazy Box (`PokiStickmanCrazyBoxGame.tsx`)**:
+    - 하늘에서 끝없이 떨어지는 위험한 나무 상자들을 회피하고, 쌓여가는 상자들을 발판 삼아 점프하며 황금 스타 8개를 수집하는 서바이벌 점프 아케이드.
+    - 플레이어: 카드 No.89 스틱맨 스프라이트 (`cards2.png`).
+    - 좌우 드래그 이동 & 원터치 점프, 낙하 상자 물리 충돌 회피 및 황금 스타 8개 수집 승리 연동 완료.
+90. **No.090 Goods Master 3D (`PokiGoodsMasterGame.tsx`)**:
+    - 3단 편의점 선반에 진열된 다양한 상품들을 터치해 하단 정리 카트에 담고, 동일 상품 3개를 일치시켜 선반을 말끔하게 비우는 트리플 매치 3D 퍼즐.
+    - 플레이어: 카드 No.90 굿즈 마스터 스프라이트 (`cards2.png`).
+    - 상품 터치 카트 이동 & 3개 동일 상품 매칭 제거, 3세트 선반 완전 정리 승리 연동 완료.
+
