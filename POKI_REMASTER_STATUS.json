@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 54,
-  "completed_count": 53,
-  "last_updated": "2026-09-08T00:43:00+09:00",
+  "current_game_index": 55,
+  "completed_count": 54,
+  "last_updated": "2026-09-08T00:44:00+09:00",
   "history": [
     {
       "id": 1,
@@ -588,6 +588,17 @@
       "component": "src/components/poki/PokiPlanetDestructionGame.tsx",
       "completed_at": "2026-09-08T00:43:00+09:00",
       "details": "Three.js 기반 3D 코스믹 행성 파괴 시뮬레이터 구현, 심우주 800개 별빛 필드 & 대기권 발광 아우라 & 3D 지구형 행성(대양/대륙/구름층/내부 마그마 코어), Raycaster 기반 4대 파괴 무기(운석 폭격/궤도 레이저/핵미사일/블랙홀) 지표면 다이렉트 탭 폭격 & 실시간 자전 크레이터 분화구 데칼, 파괴율 100% 도달 시 내부 핵 팽창 및 40개 암석 파편 산산조각 슈퍼노바 대폭발 피날레, 모바일 퓨어 터치 조작계(드래그 360도 행성 회전 + 탭 폭격 + 하단 무기 바), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 54,
+      "name": "You Monster!",
+      "poki_url": "https://poki.com/kr/g/you-monster",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No054_YouMonster_Prompt.md",
+      "component": "src/components/poki/PokiYouMonsterGame.tsx",
+      "completed_at": "2026-09-08T00:44:00+09:00",
+      "details": "Three.js 기반 3D 거대 괴수 도시 침공 람페이지 구현, 60x60m 대도시 메트로폴리스(도로망/16개 고층 스카이스크래퍼 빌딩/탱크 3기 & 헬기 2기 방위군), 거대 카이주 괴수 3D 아바타 & No.54 영웅 배지, 람페이지 스코어에 따른 3단계 거대화 성장(1.0x ➔ 1.5x ➔ 2.0x), 3대 파괴 액션(주먹 강타 SMASH/360도 꼬리치기 TAIL/초고열 관통 광선 ATOMIC BREATH), 빌딩 산산조각 붕괴 및 전차 스톰프 파괴 물리, 360도 플로팅 조이스틱(Screen-relative 완벽 준수) + 우측 대형 파괴 버튼군 + 햅틱, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
