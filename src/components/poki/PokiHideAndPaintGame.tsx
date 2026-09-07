@@ -989,6 +989,11 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
           <button
             type="button"
             onClick={handlePaint}
+            onTouchStart={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handlePaint();
+            }}
             className="flex flex-col items-center justify-center w-20 h-20 rounded-sm bg-indigo-600 active:bg-indigo-700 text-white font-black border-2 border-indigo-300 shadow-2xl active:scale-90 transition-transform cursor-pointer"
           >
             <span className="text-2xl">🎨</span>
@@ -999,6 +1004,11 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
           <button
             type="button"
             onClick={handleToggleFreeze}
+            onTouchStart={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleToggleFreeze();
+            }}
             className={`flex flex-col items-center justify-center w-20 h-20 rounded-sm font-black border-2 shadow-2xl active:scale-90 transition-transform cursor-pointer ${
               isFrozen
                 ? 'bg-amber-500 border-amber-300 text-slate-950 animate-pulse'

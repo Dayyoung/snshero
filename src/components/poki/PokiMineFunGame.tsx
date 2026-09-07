@@ -803,6 +803,11 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
         <button
           type="button"
           onClick={handleJump}
+          onTouchStart={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleJump();
+          }}
           className="pointer-events-auto flex flex-col items-center justify-center w-24 h-24 rounded-sm bg-emerald-500 active:bg-emerald-600 text-slate-950 font-black border-2 border-emerald-300 shadow-2xl active:scale-90 transition-transform cursor-pointer"
         >
           <span className="text-3xl">🚀</span>
