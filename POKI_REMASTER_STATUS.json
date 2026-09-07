@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 14,
-  "completed_count": 13,
-  "last_updated": "2026-09-07T17:02:00+09:00",
+  "current_game_index": 15,
+  "completed_count": 14,
+  "last_updated": "2026-09-07T20:31:00+09:00",
   "history": [
     {
       "id": 1,
@@ -148,6 +148,17 @@
       "component": "src/components/poki/PokiTalkingTomGoldRunGame.tsx",
       "completed_at": "2026-09-07T17:02:00+09:00",
       "details": "Three.js 기반 3D 3레인 엔드리스 골드 러너 구현, 35m 광폭 안전 시작 고속도로(시작 급사 방지), 무한 루핑 아스팔트 트랙, 3종 장애물(대형 택배 트럭 회피, 낮은 공사 바리케이드 점프, 높은 도로 표지판 슬라이딩 롤링), 3D 골드 잉곳 & 자석 파워업(6초간 전 레인 금괴 흡수), 3D 토킹톰 캣 아바타 & No.13 영웅 배지, 4방향 스와이프 제스처 + 하단 양손 버튼, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 14,
+      "name": "Monkey Tag IO",
+      "poki_url": "https://poki.com/kr/g/monkey-tag-io",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No014_MonkeyTagIO_Prompt.md",
+      "component": "src/components/poki/PokiMonkeyTagGame.tsx",
+      "completed_at": "2026-09-07T20:31:00+09:00",
+      "details": "Three.js 기반 3D 정글 아레나 원숭이 술래잡기 구현, 32x28m 정글 잔디 아레나 & 울타리, 중앙 거대 2층 우드 타워 데크, 4개 부유 플랫폼 & 4개 수퍼 점프 패드, 15개 황금 바나나 파밍(+40점 및 1.6배 가속), 3D 원숭이 아바타 & No.14 영웅 배지, 3마리 스마트 AI 원숭이 봇(추격/도망 AI), 감염형 용암 술래 전환 시스템, 다이나믹 플로팅 조이스틱 + 80px 점프 버튼 + 태그 버튼, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

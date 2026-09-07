@@ -4,6 +4,34 @@
 
 ---
 
+## [2026-09-07 20:31 KST] [Poki 110선 리마스터 14/110] No.014 Monkey Tag IO Three.js 3D 정글 아레나 원숭이 술래잡기 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/monkey-tag-io`) 분석 및 프롬프트(`src/components/poki/prompts/No014_MonkeyTagIO_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 32x28m 정글 잔디 아레나 & 울타리, 중앙 거대 2층 우드 타워 데크, 4개 부유 플랫폼 & 4개 수퍼 점프 패드, 15개 황금 바나나 파밍(+40점 및 1.6배 가속), 3D 원숭이 아바타 & No.14 영웅 배지, 3마리 스마트 AI 원숭이 봇(추격/도망 AI), 감염형 용암 술래 전환 시스템, 다이나믹 플로팅 조이스틱 + 80px 점프 버튼 + 태그 버튼 전면 재개발.
+  - AGENTS.md 카메라 기준 조작 방향(좌우/상하) 100% 일치 절대 원칙 준수 (화면 기준 오른쪽=우측, 왼쪽=좌측).
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(다이나믹 플로팅 조이스틱 + 80px 대형 점프 버튼 + 태그 버튼 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 인기 3D 멀티플레이어 술래잡기/감염 배틀 게임. 감염된 붉은 용암 원숭이의 추격을 피해 3D 정글 아레나의 타워와 점프 패드를 넘나들며 생존하거나, 술래가 되어 다른 원숭이들을 전원 태그 감염시키는 박진감 넘치는 액션.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiMonkeyTagGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 3인칭 쿼터뷰 카메라, 32x28m 정글 아레나 & 목재 펜스 경계.
+     - 중앙 거대 나무 & 2층 우드 타워(8.5x8.5m 데크) 및 4개 외곽 부유 플랫폼.
+     - 4개 수퍼 점프 패드: 밟으면 `vy = 20.5` 수퍼 점프로 2층 타워로 단숨에 도약.
+     - 15개 황금 바나나: 수집 시 +40점 및 4초간 1.6배 스피드 부스트.
+     - 3D 원숭이 아바타: 고릴라 스타일 긴 팔, 꼬리, No.14 영웅 배지, 보행 및 점프 스윙 애니메이션.
+     - 3마리 스마트 AI 봇(Kong, Cheetah, Bono): 술래일 땐 최단거리 생존자 맹추격, 생존자일 땐 술래를 피해 파쿠르 회피.
+     - 실시간 감염형 태그 시스템: 1.8m 접촉 시 태그 전환 및 붉은 용암 메쉬 발광, 태그 성공 시 +200점 획득.
+     - 모바일 퓨어 터치: 다이나믹 플로팅 조이스틱 (360° 이동) + 80px 대형 점프 버튼 + 술래 전용 68px 태그 스매시 버튼 + 햅틱 피드백.
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 확인 팝업 및 생존 시간/태그 실적 비례 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No014_MonkeyTagIO_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 무결점 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 14개 완료 (No.015 Stickman Battle 대기).
+
+---
+
 ## [2026-09-07 17:02 KST] [Poki 110선 리마스터 13/110] No.013 Talking Tom Gold Run Three.js 3D 3레인 엔드리스 골드 러너 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/talking-tom-gold-run`) 분석 및 프롬프트(`src/components/poki/prompts/No013_TalkingTomGoldRun_Prompt.md`) 작성.
