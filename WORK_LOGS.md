@@ -4,6 +4,40 @@
 
 ---
 
+## [2026-09-07 23:05 KST] [Poki 110선 리마스터 31/110] No.031 Slice Master Three.js 3D 피직스 나이프 플립 & 슬라이스 액션 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/slice-master`) 분석 및 프롬프트(`src/components/poki/prompts/No031_SliceMaster_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 95m 롱 트랙 & 네온 사이드 레일(시작 15m 안전 꽂힘 안착), 고광택 스틸 블레이드 & 우드 핸들 3D 나이프 & No.31 영웅 배지, 탭 시 시계방향 공중 회전 플립 & 지면 착 칼끝 꽂힘 물리, 19개 3D 슬라이스 타깃(수박, 오렌지, 버거, 치즈, 식빵 분리 낙하 & 18개 과즙 파티클 분출), 보라색 스파이크 함정 회피, 결승 4단 배율 타워(x2, x3, x5, x10) 적중 보너스, 100% 모바일 퓨어 원터치 탭 + 80px FLIP 버튼 조작계 전면 재개발.
+  - AGENTS.md 카메라 기준 조작 방향(좌우/상하) 100% 일치 절대 원칙 준수 (사이드 횡스크롤 트랙 상에서 진행 방향 일치).
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(화면 원터치 탭 + 80px FLIP 버튼 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 인기 칼날 액션 게임 Slice Master. 화면을 탭하여 칼을 회전시키며 전진하고 트랙 위의 다양한 과일과 음식을 두 동강 내며 점수를 얻고, 보라색 스파이크를 피해 결승 배율 타워에 칼을 꽂는 피직스 스킬 아케이드 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiSliceMasterGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 사이드 쿼터 뷰, 95m 롱 트랙 & 네온 사이드 레일 & 심연 그리드.
+     - 정교한 3D 나이프 메쉬 (고광택 스틸 칼날, 황금 가드, 우드 손잡이 & No.031 공식 영웅 배지).
+     - 회전 플립 & 착지 꽂힘 물리 시뮬레이션:
+       - 탭 시 즉각 도약 및 시계방향 회전 (`vy = 9.8`, `angularVel = -9.2`).
+       - 칼끝(Tip)이 트랙 상단에 도달 시 각도가 아래쪽을 향하면 탁-! 하고 지면에 기분 좋게 꽂힘.
+     - 19개 슬라이스 대상 3D 오브젝트 배치:
+       - 수박, 오렌지, 햄버거, 치즈, 식빵: 칼날 충돌 시 실시간 분리 낙하 및 18개 과즙/부스러기 파티클 분출.
+       - 보라색 스파이크 함정: 접촉 시 즉각 실패 위험.
+     - 결승 4단 배율 타워(x2, x3, x5, x10):
+       - 높은 구간에 칼이 꽂힐수록 최종 점수 대폭 증폭 (최대 x10배).
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 어디든 탭하여 점프 플립.
+       - 우측 하단 80px 대형 [🔪 FLIP] 버튼.
+       - 플립, 슬라이스, 꽂힘 시 생생한 햅틱(`navigator.vibrate`) 피드백.
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 슬라이스 개수 및 점수 비례 20~50 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No031_SliceMaster_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 무결점 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 31개 완료 (No.032 Drive Mad 대기).
+
+---
+
 ## [2026-09-07 23:04 KST] [Poki 110선 리마스터 30/110] No.030 Disaster Arena Three.js 3D 멀티플레이어 자연재해 서바이벌 배틀로얄 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/disaster-arena`) 분석 및 프롬프트(`src/components/poki/prompts/No030_DisasterArena_Prompt.md`) 작성.

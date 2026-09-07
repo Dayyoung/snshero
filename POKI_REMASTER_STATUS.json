@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 31,
-  "completed_count": 30,
-  "last_updated": "2026-09-07T23:04:00+09:00",
+  "current_game_index": 32,
+  "completed_count": 31,
+  "last_updated": "2026-09-07T23:05:00+09:00",
   "history": [
     {
       "id": 1,
@@ -335,6 +335,17 @@
       "component": "src/components/poki/PokiDisasterArenaGame.tsx",
       "completed_at": "2026-09-07T23:04:00+09:00",
       "details": "Three.js 기반 3D 멀티플레이어 자연재해 서바이벌 배틀로얄 구현, 36m 원형 플로팅 아레나 & 중앙 3단 대피 타워 & 4대 부유 발판 & 용암 바다(시작 1단 타워 안전 안착), 4대 재난 페이즈(메테오 샤워 붉은 경고링 & 35개 폭발 파티클 / 바닥 용암 상승 The Floor is Lava 고지대 대피 / 회전 메가 토네이도 흡인 / 카타클리즘 최종 혼돈), 3D 복셀 아바타 & No.30 영웅 배지, 3명 AI 서바이버 봇, 황금 트로피 & 네온 코인 루팅, 360도 플로팅 조이스틱 + 80px 점프 + 64px 대시 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 31,
+      "name": "Slice Master",
+      "poki_url": "https://poki.com/kr/g/slice-master",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No031_SliceMaster_Prompt.md",
+      "component": "src/components/poki/PokiSliceMasterGame.tsx",
+      "completed_at": "2026-09-07T23:05:00+09:00",
+      "details": "Three.js 기반 3D 피직스 나이프 플립 & 슬라이스 액션 구현, 95m 롱 트랙 & 네온 사이드 레일(시작 15m 안전 꽂힘 안착), 고광택 스틸 블레이드 & 우드 핸들 3D 나이프 & No.31 영웅 배지, 탭 시 시계방향 공중 회전 플립 & 지면 착 칼끝 꽂힘 물리, 19개 3D 슬라이스 타깃(수박, 오렌지, 버거, 치즈, 식빵 분리 낙하 & 18개 과즙 파티클 분출), 보라색 스파이크 함정 회피, 결승 4단 배율 타워(x2, x3, x5, x10) 적중 보너스, 100% 모바일 퓨어 원터치 탭 + 80px FLIP 버튼 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
