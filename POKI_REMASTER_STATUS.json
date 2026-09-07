@@ -1,0 +1,21 @@
+{
+  "scheduler_active": true,
+  "interval_minutes": 10,
+  "total_games": 110,
+  "current_game_index": 2,
+  "completed_count": 1,
+  "last_updated": "2026-09-07T15:15:00+09:00",
+  "history": [
+    {
+      "id": 1,
+      "name": "Slime Keyboard Escape",
+      "poki_url": "https://poki.com/kr/g/slime-keyboard-escape",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No001_SlimeKeyboardEscape_Prompt.md",
+      "component": "src/components/poki/PokiSlimeKeyboardGame.tsx",
+      "completed_at": "2026-09-07T15:15:00+09:00",
+      "details": "Three.js 기반 3D 기계식 키보드 플랫폼 오비 탈출 러너 구현, 3D 키캡 트랙/슬라임 점액 감속 트랩/ESC 탈출 게이트/모바일 퓨어 제스처/중도 포기 보상 정산 HUD 연동 완료"
+    }
+  ]
+}
