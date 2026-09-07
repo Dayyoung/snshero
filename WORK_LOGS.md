@@ -4,6 +4,40 @@
 
 ---
 
+## [2026-09-08 01:49 KST] [Poki 110선 리마스터 87/110] No.087 School Cleaning Three.js 3D 교실 정리정돈 & 힐링 클리닝 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/school-cleaning`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No087_SchoolCleaning_Prompt.md`) 작성.
+  - Three.js 3D 기반 따뜻한 원목 교실(햇살 창문/칠판/교탁/쓰레기통/전면 No.087 공식 카드 영웅 배지 액자).
+  - 4단계 청소 퀘스트(바닥 쓰레기 5종 수거 & 쓰레기통 비행 골인/어질러진 학생 책상 3개 정렬/칠판 분필 낙서 지우개 세척/바닥 얼룩 대걸레 폴리싱).
+  - 100% 달성 시 축하 콘페티 분출 & 360도 교실 쇼케이스 회전.
+  - 모바일 퓨어 터치 조작계(3D 레이캐스팅 직접 터치 + 360도 궤도 회전 드래그 + 76px AUTO CLEAN 원터치 청소 버튼 + 햅틱), MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 캐주얼/청소 시뮬레이션 인기작 School Cleaning. 지저분한 교실과 복도를 정리하고, 먼지를 닦으며, 질서를 되찾는 평온하고 힐링 가득한 3D 클리닝 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiSchoolCleaningGame.tsx`)**:
+     - 3D 교실 건축 구조 (원목 마루 바닥, 크림 톤 벽면, 햇살 대형 창문 3기, 칠판 위 No.087 공식 영웅 배지 액자 각인).
+     - 6세트 원목 학생 책상 및 의자 (3개는 삐뚤빼뚤하게 어질러진 상태 ➔ 탭 시 반듯한 열로 정렬 및 스파클 방출).
+     - 4단계 인터랙티브 청소 퀘스트:
+       - 바닥 쓰레기 5종 수거 (캔, 구겨진 종이, 우유팩, 바나나 껍질, 과자 봉지 ➔ 탭 시 쓰레기통으로 비행 골인).
+       - 비뚤어진 책상 3개 정렬 (터치 시 정위치 스냅 및 원목 탁 소리 햅틱).
+       - 칠판 분필 낙서 세척 (분필 낙서 텍스처 ➔ 반짝이는 'CLEAN & SHINY' 텍스처 변환).
+       - 바닥 얼룩 닦기 (대걸레 왁싱 및 광택 스파클 파티클).
+     - 100% 완수 축하 세레모니:
+       - 60개 무지개 축하 콘페티 파티클 분출.
+       - 360도 교실 쇼케이스 자동 파노라마 회전.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 3D 레이캐스팅 터치 판정 (쓰레기/책상/칠판/얼룩 원터치 탭).
+       - 화면 터치 드래그 360° 교실 둘러보기 궤도 회전 (Screen-relative 완벽 일치).
+       - 76px [🧹 AUTO CLEAN] 대형 원터치 자동 청소 버튼 + 햅틱.
+       - MinimalistMissionHUD (청소 퀘스트 10/10 진행도, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (87/110 완료, current_game_index: 88) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 87/110] No.087 School Cleaning Three.js 3D 교실 정리정돈 & 힐링 클리닝 전면 고도화`)
+
 ## [2026-09-08 01:48 KST] [Poki 110선 리마스터 86/110] No.086 MR RACER - Car Racing Three.js 3D 초고속 고속도로 트래픽 레이싱 & 아크로바틱 추월 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/mr-racer-car-racing`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No086_MrRacer_Prompt.md`) 작성.
