@@ -1,324 +1,699 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import * as THREE from 'three';
 import { MinimalistMissionHUD } from '../MinimalistMissionHUD';
 import { VictoryRewardModal } from '../VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../../lib/standardizedRewardGateway';
 import { drawCardSprite } from '../../lib/canvasCardRenderer';
 
 interface PokiHexellentGameProps {
-  onBack: () => void;
+  onBack?: () => void;
+  onClose?: () => void;
+  cardId?: number;
 }
 
-interface HexTile {
+interface HexTile3D {
   q: number;
   r: number;
-  color: number; // 0..4
-  highlight: boolean;
-  popProgress: number; // 0 = normal, >0 = popping
+  colorIdx: number;
+  mesh: THREE.Mesh;
+  targetY: number;
+  currentY: number;
+  popping: boolean;
+  scale: number;
 }
 
-const COLORS = [
-  '#ef4444', // Red
-  '#3b82f6', // Blue
-  '#10b981', // Green
-  '#f59e0b', // Amber
-  '#8b5cf6', // Purple
+const HEX_RADIUS = 0.65;
+const HEX_SPACING = HEX_RADIUS * 1.75;
+const TARGET_SCORE = 1500;
+
+const PALETTE = [
+  { color: 0xef4444, name: '루비 레드', emissive: 0x991b1b },
+  { color: 0x3b82f6, name: '사파이어 블루', emissive: 0x1e40af },
+  { color: 0x10b981, name: '에메랄드 그린', emissive: 0x065f46 },
+  { color: 0xf59e0b, name: '앰버 골드', emissive: 0x92400e },
+  { color: 0x8b5cf6, name: '아메시스트 바이올렛', emissive: 0x5b21b6 },
 ];
 
-const TARGET_SCORE = 1000;
+export default function PokiHexellentGame({
+  onBack,
+  onClose,
+  cardId = 91,
+}: PokiHexellentGameProps) {
+  const mountRef = useRef<HTMLDivElement | null>(null);
+  const handleExit = onBack || onClose || (() => {});
 
-export const PokiHexellentGame: React.FC<PokiHexellentGameProps> = ({ onBack }) => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
+  // 게임 상태
+  const [gameState, setGameState] = useState<'ready' | 'playing' | 'victory'>('ready');
   const [score, setScore] = useState(0);
   const [combo, setCombo] = useState(0);
+  const [comboBanner, setComboBanner] = useState<string | null>(null);
   const [rewardReceipt, setRewardReceipt] = useState<RewardReceipt | null>(null);
-  const [gameWon, setGameWon] = useState(false);
-  const [startTime] = useState<number>(() => Date.now());
 
-  const stateRef = useRef<{
-    tiles: Map<string, HexTile>;
-    score: number;
-    gameWon: boolean;
-    hexRadius: number;
-    originX: number;
-    originY: number;
-    particles: Array<{ x: number; y: number; vx: number; vy: number; color: string; life: number }>;
-  }>({
-    tiles: new Map(),
+  // Three.js 인스턴스 레프
+  const threeRef = useRef<{
+    scene: THREE.Scene;
+    camera: THREE.PerspectiveCamera;
+    renderer: THREE.WebGLRenderer;
+    boardGroup: THREE.Group;
+    tiles: Map<string, HexTile3D>;
+    sparks: THREE.Points;
+    sparkGeo: THREE.BufferGeometry;
+    confetti: THREE.Points;
+    confettiGeo: THREE.BufferGeometry;
+    animId: number;
+    clock: THREE.Clock;
+  } | null>(null);
+
+  // 제어 및 점수 레프
+  const controlRef = useRef({
+    isDragging: false,
+    prevX: 0,
+    prevY: 0,
+    tiltX: 0,
+    tiltY: 0,
+    targetTiltX: 0,
+    targetTiltY: 0,
     score: 0,
-    gameWon: false,
-    hexRadius: 28,
-    originX: 200,
-    originY: 250,
-    particles: [],
+    combo: 0,
+    comboTimer: 0,
   });
 
-  // Hex grid axial coordinates: radius 3 circle
+  const triggerHaptic = useCallback((ms: number = 30) => {
+    try {
+      if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+        navigator.vibrate(ms);
+      }
+    } catch {
+      // 무시
+    }
+  }, []);
+
+  // 승리 처리
+  const handleVictory = useCallback(() => {
+    setGameState('victory');
+    triggerHaptic([100, 50, 150]);
+
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'pokihexellent',
+      gameTitle: 'Hexellent 3D',
+      isVictory: true,
+      score: controlRef.current.score,
+      maxTargetScore: TARGET_SCORE,
+      durationSeconds: 35,
+    });
+    setRewardReceipt(receipt);
+  }, [triggerHaptic]);
+
+  // 스파클 파티클 생성
+  const spawnSparklesAt = useCallback((x: number, y: number, z: number, colorHex: number) => {
+    if (!threeRef.current) return;
+    const { sparks, sparkGeo } = threeRef.current;
+    const pos = sparkGeo.attributes.position.array as Float32Array;
+    for (let i = 0; i < pos.length / 3; i++) {
+      pos[i * 3] = x + (Math.random() - 0.5) * 1.4;
+      pos[i * 3 + 1] = y + Math.random() * 0.8;
+      pos[i * 3 + 2] = z + (Math.random() - 0.5) * 1.4;
+    }
+    sparkGeo.attributes.position.needsUpdate = true;
+    (sparks.material as THREE.PointsMaterial).color.setHex(colorHex);
+    (sparks.material as THREE.PointsMaterial).opacity = 1.0;
+  }, []);
+
+  // Three.js 씬 구축
   useEffect(() => {
-    const tiles = new Map<string, HexTile>();
+    const container = mountRef.current;
+    if (!container) return;
+
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0f172a); // 세련된 사이버 딥 블루 스페이스
+
+    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
+    camera.position.set(0, 10.5, 7.5);
+    camera.lookAt(0, 0, 0);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.25;
+    container.appendChild(renderer.domElement);
+
+    // 조명
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+    scene.add(ambientLight);
+
+    const mainLight = new THREE.DirectionalLight(0x38bdf8, 1.4);
+    mainLight.position.set(10, 20, 10);
+    scene.add(mainLight);
+
+    const rimLight = new THREE.DirectionalLight(0xa855f7, 0.8);
+    rimLight.position.set(-10, 12, -10);
+    scene.add(rimLight);
+
+    // No.091 공식 카드 영웅 배지 텍스처
+    const heroCanvas = document.createElement('canvas');
+    heroCanvas.width = 256;
+    heroCanvas.height = 256;
+    const heroCtx = heroCanvas.getContext('2d');
+    if (heroCtx) {
+      drawCardSprite(heroCtx, cardId, 18, 18, 220, 220, { circleClip: true });
+    }
+    const heroTexture = new THREE.CanvasTexture(heroCanvas);
+    heroTexture.needsUpdate = true;
+
+    // --- 3D 허니컴 보드 그룹 ---
+    const boardGroup = new THREE.Group();
+    scene.add(boardGroup);
+
+    // 보드 베이스 플랫폼
+    const baseGeo = new THREE.CylinderGeometry(5.2, 5.5, 0.6, 6);
+    const baseMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.7, roughness: 0.3 });
+    const baseMesh = new THREE.Mesh(baseGeo, baseMat);
+    baseMesh.position.y = -0.35;
+    boardGroup.add(baseMesh);
+
+    // 보드 상단 No.091 공식 영웅 배지 간판
+    const signBoard = new THREE.Mesh(
+      new THREE.BoxGeometry(3.0, 1.0, 0.12),
+      new THREE.MeshStandardMaterial({ color: 0x090d16, metalness: 0.8 })
+    );
+    signBoard.position.set(0, 0.5, -4.8);
+
+    const badgeMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.85, 0.85),
+      new THREE.MeshBasicMaterial({ map: heroTexture, transparent: true })
+    );
+    badgeMesh.position.set(0, 0, 0.07);
+    signBoard.add(badgeMesh);
+    boardGroup.add(signBoard);
+
+    // --- 반경 3 육각 허니컴 그리드 (37개 타일) ---
+    const tiles = new Map<string, HexTile3D>();
+    const hexGeo = new THREE.CylinderGeometry(HEX_RADIUS, HEX_RADIUS, 0.4, 6); // 6각 프리즘 메쉬
+
     const radius = 3;
     for (let q = -radius; q <= radius; q++) {
       const r1 = Math.max(-radius, -q - radius);
       const r2 = Math.min(radius, -q + radius);
       for (let r = r1; r <= r2; r++) {
+        const colorIdx = Math.floor(Math.random() * PALETTE.length);
+        const colData = PALETTE[colorIdx];
+
+        const mat = new THREE.MeshStandardMaterial({
+          color: colData.color,
+          metalness: 0.5,
+          roughness: 0.25,
+          emissive: colData.emissive,
+          emissiveIntensity: 0.2,
+        });
+
+        const mesh = new THREE.Mesh(hexGeo, mat);
+
+        // 축 좌표계 ➔ 3D 직교 좌표계 변환
+        const posX = HEX_SPACING * (Math.sqrt(3) * q + (Math.sqrt(3) / 2) * r);
+        const posZ = HEX_SPACING * ((3 / 2) * r);
+
+        mesh.position.set(posX, 0.2, posZ);
+        mesh.userData = { q, r };
+        boardGroup.add(mesh);
+
         const key = `${q},${r}`;
         tiles.set(key, {
           q,
           r,
-          color: Math.floor(Math.random() * COLORS.length),
-          highlight: false,
-          popProgress: 0,
+          colorIdx,
+          mesh,
+          targetY: 0.2,
+          currentY: 0.2,
+          popping: false,
+          scale: 1,
         });
       }
     }
-    stateRef.current.tiles = tiles;
-  }, []);
 
-  const handleHexTap = (pixelX: number, pixelY: number) => {
-    if (stateRef.current.gameWon) return;
+    // --- 파티클 시스템 (스파클 & 콘페티) ---
+    // 1) 스파클
+    const sparkCount = 60;
+    const sparkGeo = new THREE.BufferGeometry();
+    const sparkPos = new Float32Array(sparkCount * 3);
+    for (let i = 0; i < sparkCount * 3; i++) sparkPos[i] = 0;
+    sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPos, 3));
+    const sparkMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.4, transparent: true, opacity: 0 });
+    const sparks = new THREE.Points(sparkGeo, sparkMat);
+    scene.add(sparks);
 
-    const { originX, originY, hexRadius, tiles } = stateRef.current;
-    const relX = pixelX - originX;
-    const relY = pixelY - originY;
-
-    // Convert pixel to axial coords
-    const qF = ((Math.sqrt(3) / 3) * relX - (1 / 3) * relY) / hexRadius;
-    const rF = ((2 / 3) * relY) / hexRadius;
-
-    // Round axial coords
-    const sF = -qF - rF;
-    let q = Math.round(qF);
-    let r = Math.round(rF);
-    let s = Math.round(sF);
-    const qDiff = Math.abs(q - qF);
-    const rDiff = Math.abs(r - rF);
-    const sDiff = Math.abs(s - sF);
-
-    if (qDiff > rDiff && qDiff > sDiff) {
-      q = -r - s;
-    } else if (rDiff > sDiff) {
-      r = -q - s;
+    // 2) 콘페티
+    const confettiCount = 80;
+    const confettiGeo = new THREE.BufferGeometry();
+    const confettiPos = new Float32Array(confettiCount * 3);
+    for (let i = 0; i < confettiCount; i++) {
+      confettiPos[i * 3] = (Math.random() - 0.5) * 12;
+      confettiPos[i * 3 + 1] = Math.random() * 8 + 1;
+      confettiPos[i * 3 + 2] = (Math.random() - 0.5) * 12;
     }
+    confettiGeo.setAttribute('position', new THREE.BufferAttribute(confettiPos, 3));
+    const confettiMat = new THREE.PointsMaterial({ color: 0x38bdf8, size: 0.35, transparent: true, opacity: 0 });
+    const confetti = new THREE.Points(confettiGeo, confettiMat);
+    scene.add(confetti);
 
-    const clickedKey = `${q},${r}`;
-    const startTile = tiles.get(clickedKey);
-    if (!startTile) return;
+    const clock = new THREE.Clock();
 
-    // Find connected matching tiles (Flood Fill)
-    const targetColor = startTile.color;
-    const visited = new Set<string>();
-    const toVisit: HexTile[] = [startTile];
-    const matchGroup: HexTile[] = [];
+    threeRef.current = {
+      scene,
+      camera,
+      renderer,
+      boardGroup,
+      tiles,
+      sparks,
+      sparkGeo,
+      confetti,
+      confettiGeo,
+      animId: 0,
+      clock,
+    };
 
-    const neighbors = [
-      [1, 0], [1, -1], [0, -1],
-      [-1, 0], [-1, 1], [0, 1]
-    ];
+    // 리사이즈
+    const handleResize = () => {
+      if (!container || !threeRef.current) return;
+      const w = container.clientWidth || window.innerWidth;
+      const h = container.clientHeight || window.innerHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h, false);
+    };
 
-    while (toVisit.length > 0) {
-      const curr = toVisit.pop()!;
-      const key = `${curr.q},${curr.r}`;
-      if (visited.has(key)) continue;
-      visited.add(key);
-      matchGroup.push(curr);
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
 
-      for (const [dq, dr] of neighbors) {
-        const nKey = `${curr.q + dq},${curr.r + dr}`;
-        const neighbor = tiles.get(nKey);
-        if (neighbor && !visited.has(nKey) && neighbor.color === targetColor) {
-          toVisit.push(neighbor);
+    // 애니메이션 루프
+    const animate = () => {
+      const delta = Math.min(clock.getDelta(), 0.1);
+      const ctrl = controlRef.current;
+
+      // 보드 틸트 보간 (Screen-relative 완벽 일치)
+      ctrl.tiltX = THREE.MathUtils.lerp(ctrl.tiltX, ctrl.targetTiltX, delta * 6);
+      ctrl.tiltY = THREE.MathUtils.lerp(ctrl.tiltY, ctrl.targetTiltY, delta * 6);
+      boardGroup.rotation.y = ctrl.tiltX;
+      boardGroup.rotation.x = ctrl.tiltY;
+
+      // 타일 낙하 및 팝업 애니메이션
+      tiles.forEach((t) => {
+        if (t.popping) {
+          t.scale = Math.max(0, t.scale - delta * 5);
+          t.mesh.scale.set(t.scale, t.scale, t.scale);
+          t.currentY += delta * 4;
+          t.mesh.position.y = t.currentY;
+        } else {
+          // 리필 낙하 스냅
+          t.currentY = THREE.MathUtils.lerp(t.currentY, t.targetY, delta * 10);
+          t.scale = THREE.MathUtils.lerp(t.scale, 1, delta * 8);
+          t.mesh.position.y = t.currentY;
+          t.mesh.scale.set(t.scale, t.scale, t.scale);
         }
-      }
-    }
-
-    // Minimum match is 2 tiles
-    if (matchGroup.length >= 2) {
-      const points = matchGroup.length * 20 * (1 + matchGroup.length * 0.1);
-      const newScore = Math.floor(stateRef.current.score + points);
-      stateRef.current.score = newScore;
-      setScore(newScore);
-      setCombo((prev) => prev + 1);
-
-      // Create burst particles
-      matchGroup.forEach((tile) => {
-        const cx = originX + hexRadius * (Math.sqrt(3) * tile.q + (Math.sqrt(3) / 2) * tile.r);
-        const cy = originY + hexRadius * ((3 / 2) * tile.r);
-        for (let i = 0; i < 6; i++) {
-          const angle = Math.random() * Math.PI * 2;
-          const speed = 2 + Math.random() * 4;
-          stateRef.current.particles.push({
-            x: cx,
-            y: cy,
-            vx: Math.cos(angle) * speed,
-            vy: Math.sin(angle) * speed,
-            color: COLORS[tile.color],
-            life: 1.0,
-          });
-        }
-        // Repopulate with new random color
-        tile.color = Math.floor(Math.random() * COLORS.length);
       });
 
-      if (newScore >= TARGET_SCORE && !stateRef.current.gameWon) {
-        stateRef.current.gameWon = true;
-        setGameWon(true);
-        const duration = Math.max(1, Math.floor((Date.now() - startTime) / 1000));
-        const receipt = calculateAndDepositMissionReward({
-          gameId: 'hexellent',
-          gameTitle: 'Hexellent',
-          score: newScore,
-          durationSeconds: duration,
+      // 콤보 타이머
+      if (ctrl.comboTimer > 0) {
+        ctrl.comboTimer -= delta;
+        if (ctrl.comboTimer <= 0) {
+          ctrl.combo = 0;
+          setCombo(0);
+        }
+      }
+
+      // 스파클 감쇠
+      if ((sparkMat as THREE.PointsMaterial).opacity > 0) {
+        (sparkMat as THREE.PointsMaterial).opacity -= delta * 2;
+      }
+
+      // 승리 시 콘페티 낙하 & 360도 보드 회전
+      if (ctrl.score >= TARGET_SCORE) {
+        ctrl.targetTiltX += delta * 0.4;
+        (confettiMat as THREE.PointsMaterial).opacity = 0.9;
+        const pos = confettiGeo.attributes.position.array as Float32Array;
+        for (let i = 0; i < confettiCount; i++) {
+          pos[i * 3 + 1] -= delta * 2.5;
+          if (pos[i * 3 + 1] < 0.2) pos[i * 3 + 1] = 8;
+        }
+        confettiGeo.attributes.position.needsUpdate = true;
+      }
+
+      renderer.render(scene, camera);
+      threeRef.current!.animId = requestAnimationFrame(animate);
+    };
+
+    threeRef.current.animId = requestAnimationFrame(animate);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+      if (threeRef.current) {
+        cancelAnimationFrame(threeRef.current.animId);
+        renderer.dispose();
+      }
+      if (container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
+      }
+    };
+  }, [cardId]);
+
+  // 육각 인접 이웃 좌표 (6방향)
+  const getHexNeighbors = (q: number, r: number) => {
+    return [
+      { q: q + 1, r: r },
+      { q: q + 1, r: r - 1 },
+      { q: q, r: r - 1 },
+      { q: q - 1, r: r },
+      { q: q - 1, r: r + 1 },
+      { q: q, r: r + 1 },
+    ];
+  };
+
+  // 클러스터 폭파 (BFS 탐색)
+  const popClusterAt = (startQ: number, startR: number) => {
+    if (!threeRef.current || gameState !== 'playing') return;
+    const { tiles } = threeRef.current;
+    const startKey = `${startQ},${startR}`;
+    const startTile = tiles.get(startKey);
+    if (!startTile || startTile.popping) return;
+
+    const targetColor = startTile.colorIdx;
+    const queue = [{ q: startQ, r: startR }];
+    const visited = new Set<string>([startKey]);
+    const cluster: HexTile3D[] = [startTile];
+
+    while (queue.length > 0) {
+      const cur = queue.shift()!;
+      const neighbors = getHexNeighbors(cur.q, cur.r);
+      for (const n of neighbors) {
+        const nKey = `${n.q},${n.r}`;
+        if (!visited.has(nKey) && tiles.has(nKey)) {
+          visited.add(nKey);
+          const neighborTile = tiles.get(nKey)!;
+          if (neighborTile.colorIdx === targetColor && !neighborTile.popping) {
+            cluster.push(neighborTile);
+            queue.push(n);
+          }
+        }
+      }
+    }
+
+    // 최소 2개 이상일 때 폭파
+    if (cluster.length >= 2) {
+      controlRef.current.combo += 1;
+      controlRef.current.comboTimer = 2.0;
+      setCombo(controlRef.current.combo);
+
+      const pointsEarned = cluster.length * 40 * controlRef.current.combo;
+      controlRef.current.score += pointsEarned;
+      setScore(controlRef.current.score);
+
+      setComboBanner(`💥 HEX BLAST! +${pointsEarned} (${cluster.length} Blocks, COMBO x${controlRef.current.combo})`);
+      triggerHaptic([40, 20, 40]);
+
+      // 스파클 분출
+      spawnSparklesAt(startTile.mesh.position.x, 0.5, startTile.mesh.position.z, PALETTE[targetColor].color);
+
+      // 클러스터 팝 애니메이션 & 리필
+      cluster.forEach((tile) => {
+        tile.popping = true;
+      });
+
+      setTimeout(() => {
+        cluster.forEach((tile) => {
+          tile.popping = false;
+          tile.scale = 0.2;
+          tile.currentY = 4.5 + Math.random() * 2; // 상공에서 리필 낙하
+          tile.colorIdx = Math.floor(Math.random() * PALETTE.length);
+
+          const colData = PALETTE[tile.colorIdx];
+          const mat = tile.mesh.material as THREE.MeshStandardMaterial;
+          mat.color.setHex(colData.color);
+          mat.emissive.setHex(colData.emissive);
         });
-        setRewardReceipt(receipt);
+
+        setTimeout(() => setComboBanner(null), 1200);
+
+        // 승리 검사
+        if (controlRef.current.score >= TARGET_SCORE) {
+          handleVictory();
+        }
+      }, 200);
+    } else {
+      triggerHaptic(20);
+    }
+  };
+
+  // 3D 터치 레이캐스팅 탭
+  const handlePointerDown = (e: React.PointerEvent) => {
+    controlRef.current.isDragging = true;
+    controlRef.current.prevX = e.clientX;
+    controlRef.current.prevY = e.clientY;
+
+    if (!threeRef.current || !mountRef.current || gameState !== 'playing') return;
+    const rect = mountRef.current.getBoundingClientRect();
+    const mouse = new THREE.Vector2(
+      ((e.clientX - rect.left) / rect.width) * 2 - 1,
+      -((e.clientY - rect.top) / rect.height) * 2 + 1
+    );
+
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse, threeRef.current.camera);
+
+    const intersects = raycaster.intersectObjects(threeRef.current.boardGroup.children, true);
+    if (intersects.length > 0) {
+      for (const hit of intersects) {
+        let cur: THREE.Object3D | null = hit.object;
+        while (cur && cur !== threeRef.current.boardGroup) {
+          if (cur.userData?.q !== undefined && cur.userData?.r !== undefined) {
+            popClusterAt(cur.userData.q, cur.userData.r);
+            return;
+          }
+          cur = cur.parent;
+        }
       }
     }
   };
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!controlRef.current.isDragging) return;
+    const dx = e.clientX - controlRef.current.prevX;
+    const dy = e.clientY - controlRef.current.prevY;
+    controlRef.current.prevX = e.clientX;
+    controlRef.current.prevY = e.clientY;
 
-    let animId: number;
+    // 화면 기준 보드 틸트 (Screen-relative 완벽 일치)
+    controlRef.current.targetTiltX = THREE.MathUtils.clamp(
+      controlRef.current.targetTiltX + dx * 0.003,
+      -0.3,
+      0.3
+    );
+    controlRef.current.targetTiltY = THREE.MathUtils.clamp(
+      controlRef.current.targetTiltY + dy * 0.002,
+      -0.25,
+      0.25
+    );
+  };
 
-    const render = () => {
-      const w = canvas.width;
-      const h = canvas.height;
-      stateRef.current.originX = w / 2;
-      stateRef.current.originY = h / 2 + 30;
+  const handlePointerUp = () => {
+    controlRef.current.isDragging = false;
+  };
 
-      ctx.fillStyle = '#fdfcfc';
-      ctx.fillRect(0, 0, w, h);
+  // 최대 클러스터 자동 폭파 ([💥 MEGA BLAST])
+  const handleMegaBlast = () => {
+    if (!threeRef.current || gameState !== 'playing') return;
+    const { tiles } = threeRef.current;
 
-      // Draw subtle grid texture
-      ctx.strokeStyle = 'rgba(15,0,0,0.04)';
-      ctx.lineWidth = 1;
-      for (let x = 0; x < w; x += 40) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, h);
-        ctx.stroke();
+    let bestCluster: { q: number; r: number; count: number } | null = null;
+    const checked = new Set<string>();
+
+    tiles.forEach((startTile) => {
+      const key = `${startTile.q},${startTile.r}`;
+      if (checked.has(key) || startTile.popping) return;
+
+      const queue = [{ q: startTile.q, r: startTile.r }];
+      const visited = new Set<string>([key]);
+      let count = 0;
+
+      while (queue.length > 0) {
+        const cur = queue.shift()!;
+        count++;
+        const neighbors = getHexNeighbors(cur.q, cur.r);
+        for (const n of neighbors) {
+          const nKey = `${n.q},${n.r}`;
+          if (!visited.has(nKey) && tiles.has(nKey)) {
+            visited.add(nKey);
+            checked.add(nKey);
+            const nt = tiles.get(nKey)!;
+            if (nt.colorIdx === startTile.colorIdx && !nt.popping) {
+              queue.push(n);
+            }
+          }
+        }
       }
 
-      // Draw Hero Banner at top
-      ctx.fillStyle = '#201d1d';
-      ctx.fillRect(16, 12, w - 32, 60);
-      drawCardSprite(ctx, 91, 24, 18, 48, 48);
-
-      ctx.font = 'bold 15px monospace';
-      ctx.fillStyle = '#ffffff';
-      ctx.fillText('HEXELLENT // 육각 콤보 블래스터', 84, 38);
-      ctx.font = '11px monospace';
-      ctx.fillStyle = '#a3a3a3';
-      ctx.fillText(`연결 육각 블록 탭 | 목표: ${TARGET_SCORE} pt`, 84, 56);
-
-      const { originX, originY, hexRadius, tiles, particles } = stateRef.current;
-
-      // Draw Hexagonal Grid
-      tiles.forEach((tile) => {
-        const cx = originX + hexRadius * (Math.sqrt(3) * tile.q + (Math.sqrt(3) / 2) * tile.r);
-        const cy = originY + hexRadius * ((3 / 2) * tile.r);
-
-        ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-          const angle = (Math.PI / 180) * (60 * i + 30);
-          const px = cx + (hexRadius - 2) * Math.cos(angle);
-          const py = cy + (hexRadius - 2) * Math.sin(angle);
-          if (i === 0) ctx.moveTo(px, py);
-          else ctx.lineTo(px, py);
-        }
-        ctx.closePath();
-
-        ctx.fillStyle = COLORS[tile.color];
-        ctx.fill();
-        ctx.strokeStyle = '#201d1d';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        // Hex center shine
-        ctx.beginPath();
-        ctx.arc(cx - 5, cy - 5, 4, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-        ctx.fill();
-      });
-
-      // Update and draw particles
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vy += 0.1;
-        p.life -= 0.03;
-
-        if (p.life <= 0) {
-          particles.splice(i, 1);
-          continue;
-        }
-
-        ctx.globalAlpha = p.life;
-        ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 4 * p.life, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 1.0;
+      if (count >= 2 && (!bestCluster || count > bestCluster.count)) {
+        bestCluster = { q: startTile.q, r: startTile.r, count };
       }
+    });
 
-      // Bottom Instructions
-      ctx.fillStyle = '#201d1d';
-      ctx.font = '12px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText('[ 인접한 같은 색상 육각 블록을 터치해 연쇄 폭발을 일으키세요 ]', w / 2, h - 20);
-      ctx.textAlign = 'left';
+    if (bestCluster) {
+      popClusterAt(bestCluster.q, bestCluster.r);
+    }
+  };
 
-      animId = requestAnimationFrame(render);
-    };
+  // 보드 셔플 ([🎲 SHUFFLE])
+  const handleShuffle = () => {
+    if (!threeRef.current || gameState !== 'playing') return;
+    const { tiles } = threeRef.current;
 
-    animId = requestAnimationFrame(render);
-    return () => cancelAnimationFrame(animId);
-  }, []);
+    tiles.forEach((t) => {
+      t.colorIdx = Math.floor(Math.random() * PALETTE.length);
+      t.scale = 0.4;
+      t.currentY = 1.2;
+      const colData = PALETTE[t.colorIdx];
+      const mat = t.mesh.material as THREE.MeshStandardMaterial;
+      mat.color.setHex(colData.color);
+      mat.emissive.setHex(colData.emissive);
+    });
 
-  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const x = (e.clientX - rect.left) * scaleX;
-    const y = (e.clientY - rect.top) * scaleY;
-    handleHexTap(x, y);
+    triggerHaptic(50);
+  };
+
+  // 게임 시작
+  const startGame = () => {
+    setGameState('playing');
+    setScore(0);
+    setCombo(0);
+    controlRef.current.score = 0;
+    controlRef.current.combo = 0;
+    setRewardReceipt(null);
+    triggerHaptic(50);
   };
 
   return (
-    <div className="relative w-full h-[100dvh] bg-[#fdfcfc] flex flex-col font-mono select-none overflow-hidden">
+    <div
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 text-white font-mono flex flex-col"
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+    >
+      {/* Three.js 3D 뷰포트 */}
+      <div ref={mountRef} className="absolute inset-0 w-full h-full pointer-events-none" />
+
+      {/* 상단 미니멀 HUD */}
       <MinimalistMissionHUD
-        gameTitle="Hexellent"
-        score={score}
-        targetScore={TARGET_SCORE}
-        combo={combo}
-        onBack={onBack}
+        gameTitle="HEXELLENT 3D"
+        onQuit={handleExit}
+        progressPercent={Math.min(100, Math.round((score / TARGET_SCORE) * 100))}
+        customScore={score}
+        scoreLabel="SCORE"
+        rewardPreview={35}
       />
 
-      <div className="flex-1 relative flex items-center justify-center p-2">
-        <canvas
-          ref={canvasRef}
-          width={400}
-          height={550}
-          onPointerDown={handlePointerDown}
-          className="max-w-full max-h-full border border-black/10 bg-[#fdfcfc] touch-none shadow-sm"
-        />
-      </div>
+      {/* 콤보 배너 */}
+      {comboBanner && (
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-30 pointer-events-none animate-bounce">
+          <div className="bg-cyan-500 text-black px-4 py-1.5 rounded-sm font-black text-xs tracking-wider shadow-lg border border-cyan-300">
+            {comboBanner}
+          </div>
+        </div>
+      )}
 
-      {rewardReceipt && (
+      {/* 게임 상태 바 (점수 및 콤보) */}
+      {gameState === 'playing' && (
+        <div className="absolute top-14 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">
+          {/* 점수 게이지 */}
+          <div className="bg-slate-900/80 backdrop-blur-sm border border-slate-700/60 px-3 py-1.5 rounded-sm flex items-center gap-2">
+            <div>
+              <div className="text-[9px] text-slate-400">TARGET: {TARGET_SCORE}</div>
+              <div className="text-base font-black text-amber-400 leading-none">{score} PTS</div>
+            </div>
+          </div>
+
+          {/* 콤보 카운트 */}
+          {combo > 1 && (
+            <div className="bg-purple-900/80 backdrop-blur-sm border border-purple-500/60 px-3 py-1.5 rounded-sm text-purple-300 font-bold text-xs">
+              COMBO x{combo} 🔥
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 게임 시작 대기 오버레이 */}
+      {gameState === 'ready' && (
+        <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/75 backdrop-blur-xs p-6 text-center">
+          <div className="max-w-md w-full bg-slate-900 border border-cyan-500/50 p-6 rounded-none shadow-2xl">
+            <div className="text-xs text-cyan-400 font-bold tracking-widest uppercase mb-1">
+              [POKI POPULAR 110: NO.091]
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-black text-white mb-2 tracking-tight">
+              HEXELLENT 3D
+            </h1>
+            <p className="text-xs text-slate-300 leading-relaxed mb-5">
+              3D 허니컴 보드에서 인접한 같은 색상의 육각 블록을 터치해 팡팡 터뜨리세요! 연속 콤보를 노려 1,500점을 달성하세요.
+            </p>
+
+            <div className="bg-slate-950/80 border border-slate-800 p-3 mb-6 rounded-sm text-left text-xs space-y-2 text-slate-300">
+              <div className="flex items-center gap-2 text-cyan-300 font-bold">
+                <span>[✦] 공식 배지:</span> No.091 허니컴 보드 상단 간판 각인
+              </div>
+              <div className="flex items-center gap-2">
+                <span>[💎 클러스터 폭파]</span> 같은 색 블록 2개 이상 모인 곳을 탭
+              </div>
+              <div className="flex items-center gap-2">
+                <span>[🔄 연쇄 콤보]</span> 연속으로 터뜨릴수록 점수 배율 폭증
+              </div>
+              <div className="flex items-center gap-2">
+                <span>[💥 MEGA BLAST]</span> 가장 큰 블록 뭉치를 한 번에 자동 폭파
+              </div>
+            </div>
+
+            <button
+              onClick={startGame}
+              className="w-full py-4 bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-600 text-black font-black text-lg rounded-sm tracking-wider uppercase shadow-lg transition-transform active:scale-95"
+            >
+              START BLAST 💎
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 승리 모달 */}
+      {gameState === 'victory' && (
         <VictoryRewardModal
-          isOpen={gameWon}
+          isOpen={true}
+          onClose={handleExit}
           receipt={rewardReceipt}
-          onConfirm={onBack}
+          title="HEXELLENT MASTER!"
+          subtitle="목표 점수 1,500점을 완벽하게 돌파했습니다!"
         />
+      )}
+
+      {/* 하단 모바일 퓨어 터치 액션 버튼 */}
+      {gameState === 'playing' && (
+        <div className="mt-auto z-20 pb-6 px-4 flex items-center justify-between pointer-events-auto max-w-md w-full mx-auto">
+          <button
+            onClick={handleShuffle}
+            className="flex-1 py-3.5 bg-slate-900 active:bg-slate-800 border border-slate-700 text-slate-300 font-bold text-xs rounded-sm flex items-center justify-center gap-1.5 shadow-lg"
+          >
+            <span className="text-base">🎲</span>
+            <span>SHUFFLE</span>
+          </button>
+
+          <button
+            onClick={handleMegaBlast}
+            className="flex-2 py-3.5 bg-cyan-500 active:bg-cyan-600 border border-cyan-300 text-black font-black text-sm rounded-sm flex items-center justify-center gap-2 shadow-xl transition-transform active:scale-95 ml-3"
+          >
+            <span className="text-xl">💥</span>
+            <span>MEGA BLAST (HINT)</span>
+          </button>
+        </div>
       )}
     </div>
   );
-};
-
-export default PokiHexellentGame;
-
+}

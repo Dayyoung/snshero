@@ -4,6 +4,37 @@
 
 ---
 
+## [2026-09-08 02:01 KST] [Poki 110선 리마스터 91/110] No.091 Hexellent Three.js 3D 육각 허니컴 블록 매칭 & 클러스터 블래스트 퍼즐 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/hexellent`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No091_Hexellent_Prompt.md`) 작성.
+  - Three.js 3D 기반 37개 육각 슬롯 허니컴 챔버(보드 상단 No.091 공식 영웅 배지 네온 간판 엠블럼), 5종 보석 육각 프리즘 타일(루비/사파이어/에메랄드/앰버/아메시스트).
+  - BFS 클러스터 매치 폭발 파티클 & 중력 낙하 리필, 연쇄 콤보 시스템.
+  - 모바일 퓨어 터치 조작계(3D 레이캐스팅 다이렉트 탭 + 보드 미세 틸트 드래그 + 76px MEGA BLAST 힌트 버튼 + 64px SHUFFLE + 햅틱), MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 두뇌 퍼즐/매칭 인기작 Hexellent. 육각 그리드 보드에서 인접한 동일 색상 육각 블록을 터뜨리고, 연쇄 콤보를 노려 한 번에 대량의 블록을 제거하며 최고 점수를 획득하는 3D 육각 매치 퍼즐 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiHexellentGame.tsx`)**:
+     - 37개 육각 슬롯 허니컴 챔버 (원형 베이스 플랫폼, 상단 No.091 공식 카드 영웅 배지 네온 간판 각인).
+     - 5종 보석 육각 프리즘 타일 (루비 레드, 사파이어 블루, 에메랄드 그린, 앰버 골드, 아메시스트 바이올렛).
+     - BFS 클러스터 매치 & 연쇄 폭발 시스템:
+       - 6방향 인접 타일 탐색 알고리즘(축 좌표계 q, r 기반 이웃 노드 탐색).
+       - 2개 이상 동일 색상 클러스터 탭 시 화려한 폭발 파티클 및 상공 팝업 제거.
+       - 상공(Y=4.5m)에서 새로운 육각 프리즘 타일이 중력 낙하하며 빈 슬롯 리필.
+       - 콤보 카운터(COMBO x2, x3, x4...) 배율에 따른 폭발적인 스코어 획득.
+       - 1,500점 목표 달성 시 승리 세레모니 및 콘페티 폭발.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 3D 레이캐스팅 다이렉트 탭 터치 판정.
+       - 화면 터치 드래그로 보드 3D 쿼터뷰 미세 틸트 각도 조절 (Screen-relative 완벽 일치).
+       - 76px [💥 MEGA BLAST] 대형 원터치 최대 클러스터 자동 폭파 힌트 버튼 + 64px [🎲 SHUFFLE] 보드 셔플 + 햅틱.
+       - MinimalistMissionHUD (목표 점수 1500점 진행도, 콤보 배너, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (91/110 완료, current_game_index: 92) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 91/110] No.091 Hexellent Three.js 3D 육각 허니컴 블록 매칭 & 클러스터 블래스트 퍼즐 전면 고도화`)
+
 ## [2026-09-08 01:53 KST] [Poki 110선 리마스터 90/110] No.090 Goods Master Three.js 3D 슈퍼마켓 선반 정리 & 트리플 매치 퍼즐 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/goods-master`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No090_GoodsMaster_Prompt.md`) 작성.

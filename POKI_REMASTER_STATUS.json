@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 91,
-  "completed_count": 90,
-  "last_updated": "2026-09-08T01:53:00+09:00",
+  "current_game_index": 92,
+  "completed_count": 91,
+  "last_updated": "2026-09-08T02:01:00+09:00",
   "history": [
     {
       "id": 1,
@@ -995,6 +995,17 @@
       "component": "src/components/poki/PokiGoodsMasterGame.tsx",
       "completed_at": "2026-09-08T01:53:00+09:00",
       "details": "Three.js 기반 3D 슈퍼마켓 선반 정리 & 트리플 매치 퍼즐 구현, 3단 3열 우드 마켓 랙(상단 No.090 공식 영웅 배지 네온 간판 엠블럼), 6종 3D 상품 18개(콜라/칩스/우유/도넛/에너지/쥬스 & 2단 깊이 레이어드 노출), 하단 7칸 카트 슬롯 & 트리플 매치 폭발 제거, 모바일 퓨어 터치 조작계(3D 레이캐스팅 터치 픽 + 화면 드래그 미세 틸트 + 76px AUTO MATCH 힌트 버튼 + 64px UNDO 되돌리기 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 91,
+      "name": "Hexellent",
+      "poki_url": "https://poki.com/kr/g/hexellent",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No091_Hexellent_Prompt.md",
+      "component": "src/components/poki/PokiHexellentGame.tsx",
+      "completed_at": "2026-09-08T02:01:00+09:00",
+      "details": "Three.js 기반 3D 육각 허니컴 블록 매칭 & 클러스터 블래스트 퍼즐 구현, 37개 육각 슬롯 허니컴 챔버(보드 상단 No.091 공식 영웅 배지 네온 간판 엠블럼), 5종 보석 육각 프리즘 타일(루비/사파이어/에메랄드/앰버/아메시스트), BFS 클러스터 매치 폭발 파티클 & 중력 낙하 리필, 연쇄 콤보 시스템, 모바일 퓨어 터치 조작계(3D 레이캐스팅 다이렉트 탭 + 보드 미세 틸트 드래그 + 76px MEGA BLAST 힌트 버튼 + 64px SHUFFLE + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
