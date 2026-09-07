@@ -9051,7 +9051,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
   if (gameState === 'running' || gameState === 'treasure') {
     return (
-      <div className="flex-1 flex flex-col w-full h-full min-h-0 bg-[#1a1a2e] text-white overflow-y-auto relative pb-20 select-none"
+      <div className="flex-1 flex flex-col w-full max-w-[1024px] mx-auto h-full min-h-0 bg-[#1a1a2e] text-white overflow-y-auto relative pb-20 select-none"
         style={{
           backgroundImage: `radial-gradient(circle at 50% 50%, #2a2a4e 0%, #1a1a2e 100%)`,
           boxShadow: 'inset 0 0 100px rgba(0, 255, 255, 0.25)'
@@ -9531,7 +9531,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   if (gameState === 'dungeon') {
     if (isDungeonBattleActive) {
       return (
-        <div className="flex-1 flex flex-col w-full h-full min-h-0 bg-slate-950 text-white overflow-y-auto relative pb-20 select-none">
+        <div className="flex-1 flex flex-col w-full max-w-[1024px] mx-auto h-full min-h-0 bg-slate-950 text-white overflow-y-auto relative pb-20 select-none">
           {/* Header */}
           <header className="h-16 flex items-center justify-between border-b border-slate-800 px-6 bg-slate-950 z-50 shrink-0 relative font-sans">
             <div className="w-10" />
@@ -9831,7 +9831,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     }
 
     return (
-        <div className="flex-1 flex flex-col w-full bg-slate-950 text-slate-100 overflow-y-auto relative min-h-0">
+        <div className="flex-1 flex flex-col w-full max-w-[1024px] mx-auto bg-slate-950 text-slate-100 overflow-y-auto relative min-h-0">
           {/* Header */}
           <header className="h-16 flex items-center justify-between border-b border-white/10 px-6 z-50 bg-black/50 backdrop-blur-md relative shrink-0">
             <div className="w-10" />
@@ -10253,7 +10253,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
   if (gameState === 'boss') {
     return (
-      <div className="flex-1 flex flex-col w-full h-full min-h-0 bg-[#1a1a2e] text-white overflow-y-auto relative pb-20"
+      <div className="flex-1 flex flex-col w-full max-w-[1024px] mx-auto h-full min-h-0 bg-[#1a1a2e] text-white overflow-y-auto relative pb-20"
         style={{
           backgroundImage: `radial-gradient(circle at 50% 50%, #2a2a4e 0%, #1a1a2e 100%)`,
           boxShadow: 'inset 0 0 100px rgba(0, 255, 255, 0.25)'
@@ -10323,7 +10323,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     const currentBossCard = CARD_DATABASE[currentBossId];
 
     return (
-      <div className="flex-1 flex flex-col w-full h-full min-h-0 bg-[#1a1a2e] text-white overflow-y-auto relative pb-20 select-none"
+      <div className="flex-1 flex flex-col w-full max-w-[1024px] mx-auto h-full min-h-0 bg-[#1a1a2e] text-white overflow-y-auto relative pb-20 select-none"
         style={{
           backgroundImage: `radial-gradient(circle at 50% 50%, #2a2a4e 0%, #1a1a2e 100%)`,
           boxShadow: 'inset 0 0 100px rgba(0, 255, 255, 0.25)'
@@ -10696,7 +10696,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
   if (gameState === 'tournament') {
     return (
-      <div className="flex-1 flex flex-col w-full h-full min-h-0 bg-[#1a1a2e] text-white overflow-y-auto relative pb-24 select-none"
+      <div className="flex-1 flex flex-col w-full max-w-[1024px] mx-auto h-full min-h-0 bg-[#1a1a2e] text-white overflow-y-auto relative pb-24 select-none"
         style={{
           backgroundImage: `radial-gradient(circle at 50% 50%, #2a2a4e 0%, #1a1a2e 100%)`,
           boxShadow: 'inset 0 0 100px rgba(0, 255, 255, 0.15)'
@@ -13854,7 +13854,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     return (
       <>
         {renderRulesPopup()}
-        <div className="flex flex-col flex-1 h-full w-full bg-[#030712] font-sans items-center justify-center p-8 text-center overflow-hidden relative text-white">
+        <div className="flex flex-col flex-1 h-full w-full max-w-[1024px] mx-auto bg-[#030712] font-sans items-center justify-center p-8 text-center overflow-hidden relative text-white">
           {/* Cyberpunk Grid Background */}
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f2937_1px,transparent_1px),linear-gradient(to_bottom,#1f2937_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-25 pointer-events-none" />
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse" />
@@ -14085,7 +14085,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
 
   return (
-    <div id="game-board" className="flex-1 flex flex-col w-full bg-[#060a14] text-slate-100 pb-4 pt-11 sm:pt-12 overflow-y-auto relative min-h-full justify-between">
+    <div id="game-board" className="flex-1 flex flex-col w-full max-w-[1024px] mx-auto bg-[#060a14] text-slate-100 pb-4 pt-11 sm:pt-12 overflow-y-auto relative min-h-full justify-between">
       {/* Battle Roar Wave Ripple Effect Overlay */}
       <AnimatePresence>
         {isRoarActive && (

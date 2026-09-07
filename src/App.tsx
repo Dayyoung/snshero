@@ -4947,6 +4947,7 @@ function AppContent() {
       case 'main':
         return (
           <KadanRpgView
+            isAdRemoved={isAdRemoved}
             language={language}
             currentSeason={currentSeason}
             currentDeck={currentDeck}
@@ -5832,7 +5833,7 @@ function AppContent() {
         {!isAdRemoved && view !== 'landing' && (
           <aside 
             aria-label="Google AdSense Left Wing"
-            className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-16 mr-2 xl:mr-3 z-30 pointer-events-auto"
+            className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-16 mr-2 xl:mr-3 z-40 pointer-events-auto"
           >
             <div className="w-full bg-[#fdfcfc]/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 p-1.5 shadow-xs rounded-none">
               <AdSenseBanner 
@@ -7652,7 +7653,7 @@ function AppContent() {
         {!isAdRemoved && view !== 'landing' && (
           <aside 
             aria-label="Google AdSense Right Wing"
-            className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-16 ml-2 xl:ml-3 z-30 pointer-events-auto"
+            className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-16 ml-2 xl:ml-3 z-40 pointer-events-auto"
           >
             <div className="w-full bg-[#fdfcfc]/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 p-1.5 shadow-xs rounded-none">
               <AdSenseBanner 

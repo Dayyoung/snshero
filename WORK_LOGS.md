@@ -4,6 +4,34 @@
 
 ---
 
+## [2026-09-07 11:25 KST] [카드게임 플레이화면 최대너비(max-w-[1024px]) 제한 통일 및 Kadan RPG 배틀 모달 광고 연동 완료]
+- **요청 사항**:
+  - 카드게임 플레이화면(특히 Kadan RPG 배틀 화면)에 최대너비 제한이 없어 풀스크린으로 표시되어 좌우 광고가 표시되지 않거나 가려지는 현상 해결.
+  - 다른 일반 화면들과 동일한 최대너비(`max-w-[1024px]`)를 적용하여 PC에서는 좌우 날개 광고 배너가, 모바일/태블릿에서는 상단 광고가 정상적으로 노출되도록 개선.
+- **원인 분석**:
+  1. `KadanRpgView.tsx`의 배틀 모달이 `fixed inset-0 z-[10000] bg-slate-950`로 전체 뷰포트(0~100vw, 0~100vh)를 풀스크린으로 덮어버림으로써 최대너비 제한이 없었고, 높은 z-index로 인해 `App.tsx`의 좌우 날개 배너와 상단 배너를 통째로 가려버림.
+  2. `PlayGameView.tsx` 내부 메인 배틀 보드(`id="game-board"`) 및 서브 뷰들(searching, story, boss, dungeon, running, tournament)의 최상위 컨테이너에 `max-w-[1024px] mx-auto`가 명시되지 않아 부모 폭에 따라 100% 무제한 확장되었음.
+- **조치 사항**:
+  - `src/views/KadanRpgView.tsx`:
+    - 배틀 모달을 `fixed inset-0 z-30 bg-black/80 backdrop-blur-xs flex flex-col items-center justify-center overflow-hidden` 구조로 개편.
+    - 배틀 콘텐츠를 `w-full max-w-[1024px] h-full flex flex-col relative bg-[#060a14] shadow-2xl border-x border-slate-800`로 감싸 다른 화면들과 100% 동일한 최대너비(1024px) 중앙 집중 배치.
+    - 모바일/태블릿 전용 상단 애드센스 가로 배너(`block lg:hidden`)를 배틀 모달 상단에 삽입하여 모바일에서도 광고가 정상 노출되도록 보장.
+    - `isAdRemoved` prop을 지원하도록 props 및 컴포넌트 시그니처 확장.
+  - `src/App.tsx`:
+    - `<KadanRpgView>`에 `isAdRemoved={isAdRemoved}` 전달.
+    - 좌우 날개 배너의 z-index를 `z-40`으로 상향하여 배틀 모달(`z-30`) 위에서도 좌우 여백에 날개 광고 배너가 가림 없이 상시 선명하게 표시되도록 보장.
+  - `src/views/PlayGameView.tsx`:
+    - `id="game-board"`에 `max-w-[1024px] mx-auto` 추가.
+    - `searching`, `story`, `boss`, `dungeon`, `running`, `tournament` 최상위 컨테이너에 `max-w-[1024px] mx-auto` 통일 적용.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과.
+  - `npm run build`: 프로덕션 빌드 성공 (built in 12.79s).
+- **Git 배포 및 보고**:
+  - 커밋 및 GitHub 원격 리포지토리(`origin/main`) 푸시.
+  - 구글 폼 보고서 제출.
+
+---
+
 ## [2026-09-07 11:15 KST] [PC 반응형 분기점 표준화(lg: 1024px) 및 좌우 날개 배너 3단 Flex 구조 최적화: 1066px 포함 완벽 안착]
 - **요청 사항**:
   - PC 브라우저(1066px 등 윈도우 배율 125% 및 개발자도구 분할 환경)에서 상단 배너가 표시되고 좌우 배너가 숨겨지며, 상단 컨트롤 바가 98px 아래로 밀려나는 어색함 완전 해결.

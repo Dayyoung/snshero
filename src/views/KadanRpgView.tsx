@@ -22,10 +22,12 @@ import { CARD_DATABASE } from '../cardDatabase';
 import { INITIAL_CARDS, getCardPower } from '../constants';
 import type { KadanBattleResult } from '../lib/kadanRpgBattle';
 import { KADAN_RPG_NOVEL_SCRIPTS } from '../content/kadanRpgNovelScript';
+import { AdSenseBanner } from '../components/AdSenseBanner';
 
 const PlayGameView = React.lazy(() => import('./PlayGameView').then(m => ({ default: m.PlayGameView })));
 
 interface KadanRpgViewProps {
+  isAdRemoved?: boolean;
   language: Language;
   currentSeason: string;
   currentDeck: Array<CardData | null>;
@@ -60,6 +62,7 @@ const formatStageTitle = (event: KadanRpgEvent | null, language: Language): stri
 };
 
 export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
+  isAdRemoved = false,
   language,
   currentSeason,
   currentDeck,
@@ -450,35 +453,51 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
           )}
 
           {activeEncounter && battleEvent && rpgOpponent && (
-            <div className="fixed inset-0 z-[10000] bg-slate-950 flex flex-col overflow-hidden">
-              <React.Suspense fallback={<div className="flex h-full w-full items-center justify-center text-white font-mono text-sm">Loading Battle Arena...</div>}>
-                <PlayGameView
-                  isAdRemoved={true}
-                  playerDeck={currentDeck.filter((c): c is CardData => Boolean(c))}
-                  pvpOpponent={rpgOpponent}
-                  initialMode="card"
-                  language={language}
-                  isAutoBattle={progress.autoMode}
-                  onToggleAutoBattle={() => setAutoMode(!progress.autoMode)}
-                  setIsAutoBattle={(val) => setAutoMode(val)}
-                  onBack={() => {
-                    setBattleEvent(null);
-                    if (progress.autoMode) setAutoMode(false);
-                  }}
-                  recordMatchResult={(result) => {
-                    handleBattleComplete(result);
-                  }}
-                  playSfx={(url) => {
-                    try {
-                      const audio = new Audio(url);
-                      audio.volume = 0.5;
-                      audio.play().catch(() => {});
-                    } catch (e) {}
-                  }}
-                  sns={sns}
-                  updateSns={updateSns}
-                />
-              </React.Suspense>
+            <div className="fixed inset-0 z-30 bg-black/80 backdrop-blur-xs flex flex-col items-center justify-center overflow-hidden pointer-events-auto">
+              {/* 다른 화면들과 100% 동일한 최대너비(1024px) 중앙 배틀 아레나 (PC 좌우 여백에 날개 광고 배너 완벽 노출) */}
+              <div className="w-full max-w-[1024px] h-full flex flex-col relative bg-[#060a14] shadow-2xl border-x border-slate-800 overflow-hidden">
+                {/* 모바일/태블릿 화면용 상단 애드센스 배너 (1024px 이상 PC에서는 숨김) */}
+                {!isAdRemoved && (
+                  <div className="block lg:hidden w-full px-2 py-1 shrink-0 select-none z-20 bg-[#060a14]/95 border-b border-slate-800">
+                    <div className="max-w-[728px] mx-auto min-h-[50px] sm:min-h-[90px] flex items-center justify-center">
+                      <AdSenseBanner 
+                        format="horizontal"
+                        className="w-full"
+                        style={{ minHeight: '50px' }}
+                        showLabel
+                      />
+                    </div>
+                  </div>
+                )}
+                <React.Suspense fallback={<div className="flex h-full w-full items-center justify-center text-white font-mono text-sm">Loading Battle Arena...</div>}>
+                  <PlayGameView
+                    isAdRemoved={isAdRemoved}
+                    playerDeck={currentDeck.filter((c): c is CardData => Boolean(c))}
+                    pvpOpponent={rpgOpponent}
+                    initialMode="card"
+                    language={language}
+                    isAutoBattle={progress.autoMode}
+                    onToggleAutoBattle={() => setAutoMode(!progress.autoMode)}
+                    setIsAutoBattle={(val) => setAutoMode(val)}
+                    onBack={() => {
+                      setBattleEvent(null);
+                      if (progress.autoMode) setAutoMode(false);
+                    }}
+                    recordMatchResult={(result) => {
+                      handleBattleComplete(result);
+                    }}
+                    playSfx={(url) => {
+                      try {
+                        const audio = new Audio(url);
+                        audio.volume = 0.5;
+                        audio.play().catch(() => {});
+                      } catch (e) {}
+                    }}
+                    sns={sns}
+                    updateSns={updateSns}
+                  />
+                </React.Suspense>
+              </div>
             </div>
           )}
 
