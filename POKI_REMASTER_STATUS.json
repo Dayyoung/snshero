@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 44,
-  "completed_count": 43,
-  "last_updated": "2026-09-07T23:52:00+09:00",
+  "current_game_index": 45,
+  "completed_count": 44,
+  "last_updated": "2026-09-08T00:02:00+09:00",
   "history": [
     {
       "id": 1,
@@ -478,6 +478,17 @@
       "component": "src/components/poki/PokiPetnestGame.tsx",
       "completed_at": "2026-09-07T23:52:00+09:00",
       "details": "Three.js 기반 3D 동물 구조 & 펫 쉘터 시뮬레이션 구현, 26x20m 푸른 잔디 파크 & 목재 울타리(시작 입구 잔디밭 안전 안착), 중앙 펫 쉘터 하우스 & 하트 아치 게이트, 3D 강아지/고양이/토끼 AI 및 플레이어 궤적 추종 스네이크 체인 메커니즘, 진흙 웅덩이 감속 장애물, 360도 플로팅 조이스틱 + 76px WHISTLE 휘파람 유인 + 64px SPRINT 질주 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 44,
+      "name": "Cuboy Adventure",
+      "poki_url": "https://poki.com/kr/g/cuboy-adventure",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No044_CuboyAdventure_Prompt.md",
+      "component": "src/components/poki/PokiCuboyAdventureGame.tsx",
+      "completed_at": "2026-09-08T00:02:00+09:00",
+      "details": "Three.js 기반 3D 큐브 영웅 플랫포머 & 보스 어드벤처 구현, 90m 공중 부유 아일랜드 코스(시작 20m 안전 광폭 스타트 섬 안착), 큐보이 플레이어(펄럭이는 레드 망토 & 카툰 눈 & No.44 영웅 배지), 좌우 왕복 부유 발판 & 회전 가시 롤러 & 스프링 바운스 패드, 3D 황금 별 3개 수집, 결승 3.5m 거대 큐브 골렘 보스(HP 60) 머리 스탬프 어택 3회 격파 및 차원 탈출 포털 시스템, 360도 플로팅 조이스틱 + 76px JUMP 2단 점프 + 64px DASH 공중 대시 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
