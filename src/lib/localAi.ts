@@ -18,7 +18,7 @@ interface BuiltInLanguageModelSession {
 
 interface BuiltInLanguageModelAPI {
   availability?: () => Promise<string> | string;
-  create?: () => Promise<BuiltInLanguageModelSession>;
+  create?: (options?: { outputLanguage?: string }) => Promise<BuiltInLanguageModelSession>;
 }
 
 interface BuiltInAiWindow extends Window {
@@ -180,7 +180,8 @@ export const requestLocalAiReply = async (options: LocalAiPromptOptions): Promis
   let session: BuiltInLanguageModelSession | null = null;
 
   try {
-    session = await api.create();
+    const outputLanguage = options.language || 'en';
+    session = await api.create({ outputLanguage });
     const rawResponse = await session.prompt(buildPrompt(options));
     const text = trimResponse(rawResponse);
 

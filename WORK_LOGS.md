@@ -4,6 +4,39 @@
 
 ---
 
+## [2026-09-07 09:45 KST] [브라우저 콘솔 4대 에러/경고(TagError, metadata 404, PWA 메타태그, AI 언어 경고) 전면 수정 및 정적 라우팅 최적화]
+- **요청 사항**:
+  - 브라우저 개발자 도구 콘솔에 노출되는 에러 및 경고 4종 해결 요청:
+    1. `<meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">`
+    2. `Uncaught TagError: adsbygoogle.push() error: Only one 'enable_page_level_ads' allowed per page.`
+    3. `HEAD https://snshero.com/metadata.json net::ERR_ABORTED 404 (Not Found)`
+    4. `home:1 GET https://snshero.com/home 404 (Not Found)`
+    5. *(추가 브라우저 경고)* `No output language was specified in a LanguageModel API request.`
+- **원인 분석**:
+  1. **PWA 메타태그 Deprecation**: 최신 크롬 표준에서 `mobile-web-app-capable` 메타태그를 필수로 요구함.
+  2. **애드센스 TagError**: 공식 `<script async src="...adsbygoogle.js?client=ca-pub-...">`가 이미 페이지 레벨 광고를 자동 활성화하는데, 인라인 스크립트에서 `enable_page_level_ads: true`를 중복 push하여 발생.
+  3. **metadata.json 404**: 프로젝트 루트에만 파일이 위치하고 `public/` 디렉토리에 없어 배포 산출물에 누락됨.
+  4. **GET /home 404**: 정적 호스팅 환경에서 서브 디렉토리(`/home`) 직접 접근 시 정적 파일이 없어 404.html로 리디렉션 처리되는 로그 발생.
+  5. **AI 언어 미지정 경고**: Chrome 내장 언어모델 API 호출 시 `outputLanguage` 옵션이 전달되지 않아 발생.
+- **조치 사항**:
+  - `index.html`:
+    - `<meta name="mobile-web-app-capable" content="yes">` 추가.
+    - 중복된 `enable_page_level_ads: true` `adsbygoogle.push()` 블록 제거 (단일 태그로 정상 동작 보장 및 TagError 완전 제거).
+  - `public/metadata.json`:
+    - 루트의 `metadata.json`을 `public/` 디렉토리로 배치하여 빌드 시 `dist/metadata.json`으로 자동 복사되도록 구성 (HEAD/GET 200 OK 보장).
+  - `scripts/post-build.js`:
+    - 빌드 후처리 단계에서 `/home`, `/play`, `/deck` 등 주요 22개 SPA 라우트 경로에 `index.html`을 정적 폴더 구조로 복사 생성하도록 자동화하여 직접 URL 접근 시에도 404 없이 200 OK로 서빙되도록 개선.
+  - `src/lib/localAi.ts`:
+    - `BuiltInLanguageModelAPI`의 `create` 시그니처에 `outputLanguage` 옵션을 추가하고, 세션 생성 시 유저 설정 언어(`options.language || 'en'`)를 전달하여 언어 미지정 콘솔 경고 해결.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과.
+  - `npm run build`: 프로덕션 빌드 성공 및 `dist/metadata.json`, `dist/home/index.html` 정상 생성 검증 완료.
+- **Git 배포 및 보고**:
+  - 커밋 및 GitHub 원격 리포지토리(`origin/main`) 푸시 완료.
+  - 구글 폼 보고서 제출.
+
+---
+
 ## [2026-09-07 09:30 KST] [카드 게임 플레이 화면 전용 구글 애드센스 배너 연동 및 레이아웃 최적화]
 - **요청 사항**:
   - 카드 게임 플레이 화면에서 광고가 표시되지 않는 현상 해결 요청.

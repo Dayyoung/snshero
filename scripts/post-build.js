@@ -9,6 +9,16 @@ try {
 
   if (fs.existsSync(indexHtml)) {
     fs.copyFileSync(indexHtml, notFoundHtml);
+
+    // 주요 SPA 경로(home, play, deck 등)에 200 OK 정적 index.html 복사 생성 (404 방지)
+    const spaRoutes = ['home', 'play', 'deck', 'shop', 'setting', 'ranking', 'game', 'event', 'community', 'wiki', 'novel', 'anime', 'movie', 'modoo', 'playground', 'status', 'admin', 'profile', 'companion', 'stock-market', 'prediction-market', 'card-marketplace', 'season-hub'];
+    spaRoutes.forEach((route) => {
+      const routeDir = path.join(distDir, route);
+      if (!fs.existsSync(routeDir)) {
+        fs.mkdirSync(routeDir, { recursive: true });
+      }
+      fs.copyFileSync(indexHtml, path.join(routeDir, 'index.html'));
+    });
   }
 
   const versionData = {
