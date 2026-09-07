@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 65,
-  "completed_count": 64,
-  "last_updated": "2026-09-08T00:59:00+09:00",
+  "current_game_index": 66,
+  "completed_count": 65,
+  "last_updated": "2026-09-08T01:01:00+09:00",
   "history": [
     {
       "id": 1,
@@ -709,6 +709,17 @@
       "component": "src/components/poki/PokiSprintLeagueGame.tsx",
       "completed_at": "2026-09-08T00:59:00+09:00",
       "details": "Three.js 기반 3D 올림픽 육상 100m 스프린트 & 허들 레이싱 구현, 100m 4레인 우레탄 트랙 & 15m 안전 광폭 스타트 존 & 100m 피니시 아치 게이트 및 골든 리본 테이프, 대한민국 블루 스프린터 & No.64 영웅 배지 vs 3인의 AI 러너(옐로우/레드/그린), 35m/70m 허들 장애물 점프 도약 및 52m 네온 시안 터보 가속 패드, TPS 숄더뷰 트래킹 카메라, 모바일 퓨어 터치 조작계(L/R 발걸음 교차 리듬 탭 가속 + 우측 대형 76px JUMP 허들 점프 + 64px BURST 폭풍 스퍼트 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 65,
+      "name": "Real City Bikes",
+      "poki_url": "https://poki.com/kr/g/real-city-bikes",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No065_RealCityBikes_Prompt.md",
+      "component": "src/components/poki/PokiRealCityBikesGame.tsx",
+      "completed_at": "2026-09-08T01:01:00+09:00",
+      "details": "Three.js 기반 3D 도심 모터사이클 라이딩 시뮬레이션 구현, 4차선 무한 고속도로 & 20여 동의 네온 고층 스카이스크래퍼 빌딩 숲 & 20m 안전 광폭 스폰 존, 네온 시안 슈퍼바이크(휠 회전/라이더/니트로 블루 플레임/뱅킹 틸트) & No.65 영웅 배지, 도로 위 트래픽 차량들(세단/SUV) 및 칼치기(Near Miss) 판정, 스턴트 점프대 공중 도약 에어타임, TPS 숄더뷰 팔로우 카메라, 모바일 퓨어 터치 조작계(화면 터치 슬라이드 조향 + 우측 대형 76px NITRO 부스트 + 64px 감속 브레이크 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

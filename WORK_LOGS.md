@@ -4,6 +4,43 @@
 
 ---
 
+## [2026-09-08 01:01 KST] [Poki 110선 리마스터 65/110] No.065 Real City Bikes Three.js 3D 도심 모터사이클 라이딩 시뮬레이션 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/real-city-bikes`) 분석 및 프롬프트(`src/components/poki/prompts/No065_RealCityBikes_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 4차선 무한 고속도로 & 20여 동의 네온 고층 스카이스크래퍼 빌딩 숲 & 20m 안전 광폭 스폰 존, 네온 시안 슈퍼바이크(휠 회전/라이더/니트로 블루 플레임/뱅킹 틸트) & No.65 영웅 배지, 도로 위 트래픽 차량들(세단/SUV) 및 칼치기(Near Miss) 판정, 스턴트 점프대 공중 도약 에어타임, TPS 숄더뷰 팔로우 카메라, 모바일 퓨어 터치 조작계(화면 터치 슬라이드 조향 + 우측 대형 76px NITRO 부스트 + 64px 감속 브레이크 + 햅틱) 전면 재개발.
+  - AGENTS.md 카메라 기준 조작 방향(좌우/상하) 100% 일치 절대 원칙 준수 (TPS 숄더뷰 팔로우 카메라 기준 화면 슬라이드와 바이크 조향 1:1 완벽 정렬).
+  - AGENTS.md 시작 지점 안전 안착 절대 원칙 준수 (20m 안전 광폭 고속도로 스폰 존 안착).
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(터치 슬라이드/대형 NITRO 버튼 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 최고 인기 도심 모터사이클 라이딩 Real City Bikes. 도심 메트로폴리스 아스팔트 고속도로를 배경으로 고성능 슈퍼바이크를 타고 혼잡한 교통 체증 속을 아슬아슬하게 칼치기(Near Miss)하며, 스턴트 점프대로 도약하고 니트로 부스터로 200km/h를 돌파하는 짜릿한 3D 바이크 레이싱 시뮬레이션 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiRealCityBikesGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` TPS 숄더뷰 팔로우 카메라, 4차선 아스팔트 무한 순환 고속도로 및 20여 동의 고층 빌딩 군락.
+     - 3D 슈퍼바이크 모델링:
+       - 네온 시안 에어로 프레임, 회전하는 전후륜 휠, 핸들바, 라이더 헬멧 모델.
+       - 카드 No.065 공식 영웅 배지 부착.
+       - 좌우 조향 시 바이크 차체가 자연스럽게 기울어지는 뱅킹 틸트(Banking Tilt) 물리 적용.
+       - 니트로 부스터 발동 시 후방 푸른색 배기 화염(Exhaust Flame) 분출.
+     - 도로 위 트래픽 & 인터랙션 기믹:
+       - 5대의 3D 세단/SUV 트래픽 차량 순환 주행.
+       - 칼치기(Near Miss): 차량 바로 옆(1.1m~2.4m)을 스칠 때 슬로우모션 줌 & 황금빛 스파클 분출 + 햅틱 진동 + 점수 획득.
+       - 스턴트 램프: 점프대 통과 시 공중 12m/s 에어타임 도약 및 스턴트 보너스.
+       - 직접 충돌 시 생명 차감 및 무적 깜빡임.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 좌측/중앙 터치 슬라이드로 차선 변경 및 미세 조향.
+       - 우측 대형 76px [NITRO 니트로] 버튼 + 64px [감속 브레이크] 버튼.
+       - MinimalistMissionHUD (실시간 시속 km/h, 주행 거리, 칼치기 카운트, 생명, 중도 포기 시 비례 SNS 안전 정산).
+       - 1,500m 돌파 또는 칼치기 5회 성공 시 VictoryRewardModal 연동 완료.
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 실행 결과 110/110 전체 SSR 안전 렌더링 무결점 통과.
+  4. **문서 및 형상 관리**:
+     - `POKI_REMASTER_STATUS.json` (65/110 완료, current_game_index: 66) 갱신.
+     - `WORK_LOGS.md` 갱신, Git 커밋/푸시 및 구글 폼 보고 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 65/110] No.065 Real City Bikes Three.js 3D 도심 모터사이클 라이딩 시뮬레이션 전면 고도화`)
+
+---
+
 ## [2026-09-08 00:59 KST] [Poki 110선 리마스터 64/110] No.064 Sprint League Three.js 3D 올림픽 육상 100m 스프린트 & 허들 레이싱 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/sprint-league`) 분석 및 프롬프트(`src/components/poki/prompts/No064_SprintLeague_Prompt.md`) 작성.
