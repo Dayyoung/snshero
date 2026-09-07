@@ -8,7 +8,7 @@
   3. **일관된 보상 체계**: `standardizedRewardGateway.ts` 경유 20~50 SNS 포인트 공정 지급 및 `VictoryRewardModal`
   4. **일관된 그래픽 엔진**: HTML5 Canvas 2D 60fps 부드러운 애니메이션 및 파티클
   5. **SNSHero 캐릭터 연동**: `drawCardSprite` 기반 `cards1.png`, `cards2.png` 영웅/몬스터 스프라이트 100% 적용
-- **전체 진행 현황**: **70 / 110 완료 (63.6%)**
+- **전체 진행 현황**: **80 / 110 완료 (72.7%)**
 
 ---
 
@@ -86,16 +86,16 @@
 | No.068 | **[Monkey Mart](https://poki.com/kr/g/monkey-mart)** | 쇼핑 게임, 동물 게임 | 카드 No.68 마켓 원숭이 | 터치/드래그 오토 수확·진열·수거 | 20~50 SNS | ✅ 완료 (Canvas 2D, 바나나/옥수수 30판매 & $500) |
 | No.069 | **[Carnado Stunt Car](https://poki.com/kr/g/carnado-stunt-car)** | 레이싱 게임, 자동차 게임 | 카드 No.69 스턴트 드라이버 | 터치 가속 & 공중 스와이프 수평 조절 | 20~50 SNS | ✅ 완료 (Canvas 2D, 360도 공중제비 묘기 & 1,500점) |
 | No.070 | **[Diva Hair Salon](https://poki.com/kr/g/diva-hair-salon)** | 장식 게임, 옷입히기 게임 | 카드 No.70 헤어 디자이너 | 도구 선택 & 모발 드래그 스타일링 | 20~50 SNS | ✅ 완료 (Canvas 2D, 샴푸/드라이/커트/염색 4단계) |
-| No.071 | **[Scary Teacher Hide & Seek Games](https://poki.com/kr/g/scary-teacher-hide-seek-games)** | 어드벤쳐 게임 | 카드 No.71 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.072 | **[Supercar Legends](https://poki.com/kr/g/supercar-legends)** | 마우스 게임, 자동차 게임 | 카드 No.72 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.073 | **[Nails DIY: Manicure Master](https://poki.com/kr/g/nails-diy-manicure-master)** | 옷입히기 게임, 뷰티 게임 | 카드 No.73 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.074 | **[Ping Pong Go!](https://poki.com/kr/g/ping-pong-go)** | 스킬 게임, 마우스 게임 | 카드 No.74 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.075 | **[Color Artist](https://poki.com/kr/g/color-artist)** | 장식 게임, 그리기 게임 | 카드 No.75 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.076 | **[Going Up Rooftop](https://poki.com/kr/g/going-up-rooftop)** | 어드벤쳐 게임, 플랫폼 게임 | 카드 No.76 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.077 | **[Stickman Dragon Fight](https://poki.com/kr/g/stickman-dragon-fight)** | 액션 게임, 어드벤쳐 게임 | 카드 No.77 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.078 | **[Dog's Life](https://poki.com/kr/g/dogs-life)** | 동물 게임, 멀티플레이어 게임 | 카드 No.78 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.079 | **[Anycolor](https://poki.com/kr/g/anycolor)** | 스킬 게임, 장식 게임 | 카드 No.79 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.080 | **[Scary Teacher 3D](https://poki.com/kr/g/scary-teacher-3d)** | 액션 게임, 두뇌 게임 | 카드 No.80 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
+| No.071 | **[Scary Teacher Hide & Seek Games](https://poki.com/kr/g/scary-teacher-hide-seek-games)** | 어드벤쳐 게임 | 카드 No.71 은신 잠입자 | 터치 이동 & 은신처 탭 숨기 | 20~50 SNS | ✅ 완료 (Canvas 2D, 시야 회피 잠입 & 3대 비밀 아이템) |
+| No.072 | **[Supercar Legends](https://poki.com/kr/g/supercar-legends)** | 마우스 게임, 자동차 게임 | 카드 No.72 슈퍼카 레이서 | 좌우 스와이프 차선 & 니트로 부스터 | 20~50 SNS | ✅ 완료 (Canvas 2D, 3차선 서킷 3랩 1위 주파) |
+| No.073 | **[Nails DIY: Manicure Master](https://poki.com/kr/g/nails-diy-manicure-master)** | 옷입히기 게임, 뷰티 게임 | 카드 No.73 네일 아티스트 | 컬러/스티커 선택 & 손톱 터치 아트 | 20~50 SNS | ✅ 완료 (Canvas 2D, 5개 손톱 DIY 매니큐어 살롱) |
+| No.074 | **[Ping Pong Go!](https://poki.com/kr/g/ping-pong-go)** | 스킬 게임, 마우스 게임 | 카드 No.74 핑퐁 챔피언 | 수직 드래그 패들 & 스매시 반격 | 20~50 SNS | ✅ 완료 (Canvas 2D, 고속 랠리 & 5점 선취 승리) |
+| No.075 | **[Color Artist](https://poki.com/kr/g/color-artist)** | 장식 게임, 그리기 게임 | 카드 No.75 픽셀 아티스트 | 번호 매칭 컬러 탭 채색 | 20~50 SNS | ✅ 완료 (Canvas 2D, 영웅 도안 8구역 100% 페인팅) |
+| No.076 | **[Going Up Rooftop](https://poki.com/kr/g/going-up-rooftop)** | 어드벤쳐 게임, 플랫폼 게임 | 카드 No.76 루프탑 러너 | 좌우 이동 & 탭 점프 / 벽점프 | 20~50 SNS | ✅ 완료 (Canvas 2D, 50m 고층 빌딩 파쿠르 헬리패드) |
+| No.077 | **[Stickman Dragon Fight](https://poki.com/kr/g/stickman-dragon-fight)** | 액션 게임, 어드벤쳐 게임 | 카드 No.77 드래곤 파이터 | 터치 비행 이동 & 콤보 / 드래곤 빔 | 20~50 SNS | ✅ 완료 (Canvas 2D, 공중 격투 & 악의 전사 2명 KO) |
+| No.078 | **[Dog's Life](https://poki.com/kr/g/dogs-life)** | 동물 게임, 멀티플레이어 게임 | 카드 No.78 강아지 | 터치 산책 이동 & 짖기 / 허들 점프 | 20~50 SNS | ✅ 완료 (Canvas 2D, 공원 모험 & 황금 뼈다귀 5개 수집) |
+| No.079 | **[Anycolor](https://poki.com/kr/g/anycolor)** | 스킬 게임, 장식 게임 | 카드 No.79 일러스트레이터 | 번호 팔레트 선택 & 파츠 터치 채색 | 20~50 SNS | ✅ 완료 (Canvas 2D, 레트로 팝아트 10개 파츠 100%) |
+| No.080 | **[Scary Teacher 3D](https://poki.com/kr/g/scary-teacher-3d)** | 액션 게임, 두뇌 게임 | 카드 No.80 장난 천재 | 잠입 이동 & 3대 장난 설치 & EXIT 탈출 | 20~50 SNS | ✅ 완료 (Canvas 2D, 저택 침투 트릭 & 현관 탈출) |
 | No.081 | **[Penalty Shooters 2](https://poki.com/kr/g/penalty-shooters-2)** | 운동 게임, 스킬 게임 | 카드 No.81 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
 | No.082 | **[Boomy World](https://poki.com/kr/g/boomy-world)** | 액션 게임, 두뇌 게임 | 카드 No.82 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
 | No.083 | **[SnapStyle Dress Up](https://poki.com/kr/g/snapstyle-dress-up)** | 옷입히기 게임, 패션 게임 | 카드 No.83 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
@@ -443,3 +443,48 @@
     - 샴푸 거품 세발 ➔ 드라이어 수분 건조 ➔ 가위 모발 커트 ➔ 컬러 염색약 칠하기 및 티아라 착용 4단계를 거쳐 완벽한 디바를 완성하는 뷰티 헤어 살롱.
     - 플레이어: 카드 No.70 헤어 디자이너 스프라이트 (`cards2.png`).
     - 도구 탭 선택 & 모발 부위 원터치 드래그 스타일링 제스처, 4단계 살롱 케어 완료 및 런웨이 데뷔 승리 연동 완료.
+
+---
+
+## Phase 5-B 상세 작업 내역 (No.071 ~ No.080)
+
+71. **No.071 Scary Teacher Hide & Seek Games (`PokiScaryTeacherHideSeekGame.tsx`)**:
+    - 미스 T 선생님의 순찰 시야콘과 발소리를 피해 거실/복도의 옷장과 소파 뒤로 숨고, 3가지 비밀 아이템(시험지, 열쇠, 비밀수첩)을 수집하는 스텔스 잠입 어드벤처.
+    - 플레이어: 카드 No.71 은신 잠입자 스프라이트 (`cards2.png`).
+    - 화면 터치/드래그 이동 & 은신처 근접 시 은신 탭, 시야각 회피 및 3대 아이템 수집 승리 연동 완료.
+72. **No.072 Supercar Legends (`PokiSupercarLegendsGame.tsx`)**:
+    - 3차선 서킷 트랙을 질주하며 다른 레이서들을 추월하고, 도로 위의 니트로 부스터를 획득해 폭발적인 가속력으로 3랩을 1위로 완주하는 하이퍼 슈퍼카 레이싱.
+    - 플레이어: 카드 No.72 슈퍼카 레이서 스프라이트 (`cards2.png`).
+    - 좌우 스와이프 차선 변경 & 니트로 부스터 가속, 서킷 랩타임 기록 및 3랩 1위 주파 승리 연동 완료.
+73. **No.073 Nails DIY: Manicure Master (`PokiNailsDIYGame.tsx`)**:
+    - 5가지 다채로운 매니큐어 컬러와 귀여운 네일 스티커(하트, 별, 다이아몬드, 꽃)를 선택해 5개 손톱을 아름답게 스타일링하는 네일 살롱 DIY 아트.
+    - 플레이어: 카드 No.73 네일 아티스트 스프라이트 (`cards2.png`).
+    - 컬러/스티커 팔레트 탭 & 손톱 터치 아트 제스처, 5개 손톱 100% 매니큐어 완성 승리 연동 완료.
+74. **No.074 Ping Pong Go! (`PokiPingPongGoGame.tsx`)**:
+    - 상대 AI와 테이블 위에서 팽팽한 고속 랠리를 주고받으며 각도 조절과 스매시 반격으로 먼저 5점을 선취하는 다이내믹 탁구 스포츠 액션.
+    - 플레이어: 카드 No.74 핑퐁 챔피언 스프라이트 (`cards2.png`).
+    - 수직 터치/드래그 패들 조작 & 반사 각도 물리, 고속 랠리 및 5점 선취 승리 연동 완료.
+75. **No.075 Color Artist (`PokiColorArtistGame.tsx`)**:
+    - 번호가 매겨진 영웅 캐릭터 일러스트 도안에서 해당 번호의 색상을 선택해 터치하여 8개 영역을 완벽하게 채색하는 픽셀 컬러링 퍼즐.
+    - 플레이어: 카드 No.75 픽셀 아티스트 스프라이트 (`cards2.png`).
+    - 컬러 팔레트 선택 & 번호 영역 터치 채색 제스처, 8개 영역 100% 완성 승리 연동 완료.
+76. **No.076 Going Up Rooftop (`PokiGoingUpRooftopGame.tsx`)**:
+    - 고층 빌딩 옥상을 향해 에어컨 실외기, 철골 빔, 비상 사다리를 타고 수직 상승하며, 벽면에 닿았을 때 반대편으로 솟구치는 벽점프(Wall Jump)를 구사해 50m 정상 헬리패드에 도달하는 버티컬 파쿠르 러너.
+    - 플레이어: 카드 No.76 루프탑 러너 스프라이트 (`cards2.png`).
+    - 좌우 드래그 이동 & 탭 점프 및 벽점프 콤보, 50m 정상 헬리패드 착봉 승리 연동 완료.
+77. **No.077 Stickman Dragon Fight (`PokiStickmanDragonFightGame.tsx`)**:
+    - 우주 아레나를 자유롭게 비행하며 연속 콤보 타격으로 기(Ki) 게이지를 모으고, 50 기를 소모해 전방을 관통하는 거대 '드래곤 빔(기공포)'을 발사하여 2인의 다크 드래곤 전사를 격퇴하는 공중 격투 액션.
+    - 플레이어: 카드 No.77 드래곤 파이터 스프라이트 (`cards2.png`).
+    - 터치 비행 조타 & 콤보 타격/드래곤 빔 발사 액션, 에너지 파티클 및 적 2명 KO 승리 연동 완료.
+78. **No.078 Dog's Life (`PokiDogsLifeGame.tsx`)**:
+    - 햇살 가득한 공원을 신나게 달리는 귀여운 강아지가 되어 나비를 쫓고, 멍멍 짖으며 어질리티 허들을 뛰어넘고, 공원 곳곳에 숨겨진 황금 뼈다귀 5개를 모두 찾아내는 힐링 애견 어드벤처.
+    - 플레이어: 카드 No.78 강아지 스프라이트 (`cards2.png`).
+    - 터치/드래그 자유 산책 & 멍멍 짖기/허들 점프 액션, 5개 황금 뼈다귀 수집 승리 연동 완료.
+79. **No.079 Anycolor (`PokiAnycolorGame.tsx`)**:
+    - 5색 테마 팔레트(루비, 스카이, 웜앰버, 에메랄드, 바이올렛)에서 번호를 선택하고 기하학적 스테인드글라스 도안의 일치 구역을 터치하여 레트로 메카 로봇 일러스트 10개 파츠를 완성하는 팝아트 컬러링.
+    - 플레이어: 카드 No.79 일러스트레이터 스프라이트 (`cards2.png`).
+    - 번호 팔레트 선택 & SVG 기하학 파츠 터치 채색, 10개 구역 100% 완성 승리 연동 완료.
+80. **No.080 Scary Teacher 3D (`PokiScaryTeacher3DGame.tsx`)**:
+    - 미스 T 선생님의 저택에 잠입해 순찰 시야(붉은 부채꼴 콘)를 피해 주방(소금통 설탕 바꾸기), 욕실(샴푸에 페인트), 거실(방귀쿠션) 3대 장난을 설치하고 현관 EXIT로 탈출하는 코믹 잠입 스릴러.
+    - 플레이어: 카드 No.80 장난 천재 스프라이트 (`cards2.png`).
+    - 터치/드래그 은밀 잠입 & 장난 포인트 근접 설치, 경보 시스템 및 EXIT 무사 탈출 승리 연동 완료.
