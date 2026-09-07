@@ -4,6 +4,41 @@
 
 ---
 
+## [2026-09-08 01:51 KST] [Poki 110선 리마스터 88/110] No.088 Hill Climb Racing Lite Three.js 3D 피직스 힐 클라이밍 & 오프로드 밸런스 드라이빙 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/hill-climb-racing-lite`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No088_HillClimbRacingLite_Prompt.md`) 작성.
+  - Three.js 3D 기반 400m 연속 롤링 힐스 지형(20m 안전 광폭 스타트 존/시작 지점 No.088 공식 영웅 배지 엠블럼), 3D 클래식 레드 힐 클라이머 지프(도어 No.088 공식 영웅 배지 데칼/롤케이지/드라이버 피규어/4개 오프로드 빅 타이어/독립 서스펜션 접지 물리).
+  - 완급 조절 물리 엔진 & 전복(Neck Snap) 판정, 연료(Fuel 제리캔 리필) 및 3D 골드 코인 수집, 공중 체공(Air Time) 보너스.
+  - 모바일 퓨어 터치 페달(64px BRAKE + 76px GAS + 햅틱), MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 피직스 레이싱 인기작 Hill Climb Racing Lite. 험준한 언덕길을 완급 조절하며 달리는 드라이빙 게임으로, 차가 뒤집히지 않도록 균형을 잡고 연료를 관리하며 결승선에 도달하는 정통 물리 힐 클라이밍 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiHillClimbRacingLiteGame.tsx`)**:
+     - 400m 연속 3D 롤링 힐스 지형 (삼각함수 복합파 기반 오르막/내리막/둔덕 지형, 20m 안전 광폭 스타트 존, 350m 결승 아치, 시작 지점 No.088 공식 영웅 배지 바닥 엠블럼).
+     - 3D 클래식 레드 힐 클라이머 지프 메쉬 모델링:
+       - 레드 섀시 바디, 블랙 롤케이지 프레임, 노출형 드라이버 머리 & 캡, 도어 No.088 공식 영웅 배지 데칼.
+       - 4개 독립 오프로드 빅 타이어 회전 및 지형 경사 접지 반응.
+     - 정밀 2.5D 물리 엔진 & 전복 판정:
+       - 지면 가속 시 차체 뒤 젖힘 토크(앞바퀴 들림), 제동 시 차체 앞 쏠림 토크(앞바퀴 숙임).
+       - 공중에서 GAS 홀드 시 시계반대방향 백플립, BRAKE 홀드 시 시계방향 프론트플립.
+       - 차체가 135° 이상 뒤집혀 드라이버 머리가 지면에 충돌 시 전복(Driver Down) 판정 및 게임오버.
+       - 체공 시간 1.2초 이상 시 `🚀 AIR TIME!` 보너스 배너 연출.
+     - 연료(Fuel) & 코인 수집 시스템:
+       - 실시간 연료 소모 (0% 시 엔진 정지), 70m 간격 붉은 제리캔(Gas Can) 획득 시 "FUEL 100%" 리필.
+       - 25m 간격 3D 회전 골든 코인 수집(+50점).
+     - 100% 모바일 퓨어 터치 조작계:
+       - 좌측 64px [🛑 BRAKE] (감속/공중 앞 틸트) 버튼.
+       - 우측 76px [⛽ GAS] (가속/공중 뒤 틸트) 대형 버튼.
+       - 원터치 터치 홀드 & 릴리즈 감도 최적화, 햅틱 연동.
+       - MinimalistMissionHUD (주행 거리 350m 진행도, 연료 게이지, 코인 수, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (88/110 완료, current_game_index: 89) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 88/110] No.088 Hill Climb Racing Lite Three.js 3D 피직스 힐 클라이밍 & 오프로드 밸런스 드라이빙 전면 고도화`)
+
 ## [2026-09-08 01:49 KST] [Poki 110선 리마스터 87/110] No.087 School Cleaning Three.js 3D 교실 정리정돈 & 힐링 클리닝 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/school-cleaning`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No087_SchoolCleaning_Prompt.md`) 작성.

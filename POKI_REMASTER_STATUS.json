@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 88,
-  "completed_count": 87,
-  "last_updated": "2026-09-08T01:49:00+09:00",
+  "current_game_index": 89,
+  "completed_count": 88,
+  "last_updated": "2026-09-08T01:51:00+09:00",
   "history": [
     {
       "id": 1,
@@ -962,6 +962,17 @@
       "component": "src/components/poki/PokiSchoolCleaningGame.tsx",
       "completed_at": "2026-09-08T01:49:00+09:00",
       "details": "Three.js 기반 3D 교실 정리정돈 & 힐링 클리닝 시뮬레이션 구현, 따뜻한 원목 교실(햇살 창문/칠판/교탁/쓰레기통/전면 No.087 공식 카드 영웅 배지 액자), 4단계 청소 퀘스트(바닥 쓰레기 5종 수거 & 쓰레기통 비행 골인/어질러진 학생 책상 3개 정렬/칠판 분필 낙서 지우개 세척/바닥 얼룩 대걸레 폴리싱), 100% 달성 시 축하 콘페티 분출 & 360도 교실 쇼케이스 회전, 모바일 퓨어 터치 조작계(3D 레이캐스팅 직접 터치 + 360도 궤도 회전 드래그 + 76px AUTO CLEAN 원터치 청소 버튼 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 88,
+      "name": "Hill Climb Racing Lite",
+      "poki_url": "https://poki.com/kr/g/hill-climb-racing-lite",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No088_HillClimbRacingLite_Prompt.md",
+      "component": "src/components/poki/PokiHillClimbRacingLiteGame.tsx",
+      "completed_at": "2026-09-08T01:51:00+09:00",
+      "details": "Three.js 기반 3D 피직스 힐 클라이밍 & 오프로드 밸런스 드라이빙 구현, 400m 연속 롤링 힐스 지형(20m 안전 광폭 스타트 존/시작 지점 No.088 공식 영웅 배지 엠블럼), 3D 클래식 레드 힐 클라이머 지프(도어 No.088 공식 영웅 배지 데칼/롤케이지/드라이버 피규어/4개 오프로드 빅 타이어/독립 서스펜션 접지 물리), 완급 조절 물리 엔진 & 전복(Neck Snap) 판정, 연료(Fuel 제리캔 리필) 및 3D 골드 코인 수집, 공중 체공(Air Time) 보너스, 모바일 퓨어 터치 페달(64px BRAKE + 76px GAS + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
