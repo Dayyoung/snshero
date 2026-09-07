@@ -4,6 +4,39 @@
 
 ---
 
+## [2026-09-08 02:20 KST] [Poki 110선 리마스터 101/110] No.101 Watermelon Drop Three.js 3D 수박게임 과일 머지 & 드롭 물리 퍼즐 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/watermelon-drop`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No101_WatermelonDrop_Prompt.md`) 작성.
+  - Three.js 3D 기반 가로 7.4m 투명 글래스 챔버(바닥/유리벽/상단 No.101 공식 영웅 배지 홀로그램 간판/클라우드 드롭퍼/조준선).
+  - 6단계 3D 과일(체리➔딸기➔포도➔오렌지➔사과➔거대 수박), 구체 중력 및 탄성 충돌 물리.
+  - 동일 티어 접촉 시 팡! 과즙 파티클 분출 및 상위 과일 합성 머지, 목표 800점 달성 승리.
+  - 모바일 퓨어 터치 조작계(화면 드래그 투하 위치 조준 + 76px DROP FRUIT 대형 버튼 + 64px SHAKE 박스 흔들기 + 햅틱), MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 대히트 물리 머지 퍼즐 Watermelon Drop (수박게임 Suika Game). 투명한 컨테이너 안에 체리, 딸기, 포도 등 다양한 과일을 투하하여 동일한 과일끼리 부딪히면 하나로 합쳐져 더 거대한 과일로 진화시키고, 최고 단계인 거대 수박(Watermelon)을 완성하여 최고 점수를 달성하는 3D 물리 드롭 퍼즐 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiWatermelonDropGame.tsx`)**:
+     - 가로 7.4m 투명 아크릴/글래스 박스 챔버 씬 (에메랄드 림 프레임, 반투명 유리 벽면, 하단 바닥 지지대).
+     - 챔버 상단 중앙 No.101 공식 카드 영웅 배지 홀로그램 네온 간판.
+     - 상단 구름 드롭퍼 메쉬 & 하향 레이저 조준 가이드라인.
+     - 6단계 3D 과일 구체 모델링:
+       - 체리(0.38m, 레드), 딸기(0.52m, 핑크 & 잎사귀), 포도(0.72m, 퍼플), 오렌지(0.98m, 주황), 사과(1.28m, 진홍), 수박(1.68m, 에메랄드 줄무늬 거대 수박).
+     - 구체 탄성 충돌 & 합성 머지(Merge) 물리 엔진:
+       - 중력 낙하 및 바닥/벽면 반발 물리, 구름 마찰.
+       - 동일 티어의 두 과일이 접촉하면 두 과일 제거 ➔ 중심점에 상위 티어 과일 스폰 점프!
+       - 팡! 소리와 함께 쥬시 팝 스파클 파티클 분출.
+       - 목표 스코어 800점 달성 또는 거대 수박 머지 시 승리 콘페티 폭발.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 터치 드래그로 드롭퍼 좌우 이동 조준 (Screen-relative 완벽 일치).
+       - 76px [🍉 DROP FRUIT!] 대형 투하 버튼 + 64px [🔀 SHAKE] 박스 충격 흔들기 버튼 + 햅틱 피드백.
+       - MinimalistMissionHUD (목표 800점 진행률, 다음 과일 프리뷰, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (101/110 완료, current_game_index: 102) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 101/110] No.101 Watermelon Drop Three.js 3D 수박게임 과일 머지 & 드롭 물리 퍼즐 전면 고도화`)
+
 ## [2026-09-08 02:13 KST] [Poki 110선 리마스터 100/110] No.100 Undead Slayer Three.js 3D 다크 판타지 핵앤슬래시 언데드 토벌전 전면 고도화 (100개 달성! 90.9%)
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/undead-slayer`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No100_UndeadSlayer_Prompt.md`) 작성.
