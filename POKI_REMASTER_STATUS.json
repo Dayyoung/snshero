@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 86,
-  "completed_count": 85,
-  "last_updated": "2026-09-08T01:46:00+09:00",
+  "current_game_index": 87,
+  "completed_count": 86,
+  "last_updated": "2026-09-08T01:48:00+09:00",
   "history": [
     {
       "id": 1,
@@ -940,6 +940,17 @@
       "component": "src/components/poki/PokiVortellasDressUpGame.tsx",
       "completed_at": "2026-09-08T01:46:00+09:00",
       "details": "Three.js 기반 3D 고딕 마녀 스타일링 & 룬 마법 의식 시뮬레이션 구현, 3D 고딕 제단 성소(석조 바닥/원형 퍼플 룬 마법진 링/촛대 4기/중앙 No.085 공식 카드 영웅 배지 엠블럼), 3D 보르텔라 마녀 아바타(고딕 모자 4종/주술 로브 4종/부유 마법 오브 4종/마법 스태프 4종 실시간 3D 착용 및 스파클 파티클), 76px CAST RITUAL 마법 의식 시전(공중 부유 및 룬 마법 폭발 세레모니), 64px AURA BOOST, 모바일 퓨어 터치 조작계(화면 드래그 360° 궤도 회전 + 4개 카테고리 탭 & 4개 아이템 캐러셀 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 86,
+      "name": "MR RACER - Car Racing",
+      "poki_url": "https://poki.com/kr/g/mr-racer-car-racing",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No086_MrRacer_Prompt.md",
+      "component": "src/components/poki/PokiMrRacerGame.tsx",
+      "completed_at": "2026-09-08T01:48:00+09:00",
+      "details": "Three.js 기반 3D 초고속 고속도로 트래픽 레이싱 & 아크로바틱 추월 시뮬레이션 구현, 4차선 무한 고속도로 트랙(25m 안전 광폭 스타트 존/가드레일/가로등/시작 지점 No.086 공식 영웅 배지 엠블럼), 3D 플레이어 하이퍼카(보닛 No.086 공식 영웅 배지 데칼/리어 윙 스포일러/회전 휠/헤드라이트 스포트라이트/듀얼 머플러 배기 화염), 4종 AI 트래픽 차량(택시/세단/스포츠카/카고 트럭) & 근접 추월(Close Overtake) 콤보 시스템, 76px NITRO 부스트(260km/h 초광속 질주 & FOV 워프 & 스트릭 파티클) + 64px BRAKE 급감속 + 🎥 시점 전환(체이스 뷰/본넷 뷰), 모바일 퓨어 터치 조작계(터치 스와이프 조향 + 좌우 퀵 레인 시프트 버튼 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

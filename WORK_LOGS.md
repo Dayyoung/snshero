@@ -4,6 +4,43 @@
 
 ---
 
+## [2026-09-08 01:48 KST] [Poki 110선 리마스터 86/110] No.086 MR RACER - Car Racing Three.js 3D 초고속 고속도로 트래픽 레이싱 & 아크로바틱 추월 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/mr-racer-car-racing`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No086_MrRacer_Prompt.md`) 작성.
+  - Three.js 3D 기반 4차선 무한 고속도로 트랙(25m 안전 광폭 스타트 존/가드레일/가로등/시작 지점 No.086 공식 영웅 배지 엠블럼), 3D 플레이어 하이퍼카(보닛 No.086 공식 영웅 배지 데칼/리어 윙 스포일러/회전 휠/헤드라이트 스포트라이트/듀얼 머플러 배기 화염).
+  - 4종 AI 트래픽 차량(택시/세단/스포츠카/카고 트럭) & 근접 추월(Close Overtake) 콤보 시스템.
+  - 76px NITRO 부스트(260km/h 초광속 질주 & FOV 워프 & 스트릭 파티클) + 64px BRAKE 급감속 + 🎥 시점 전환(체이스 뷰/본넷 뷰).
+  - 모바일 퓨어 터치 조작계(터치 스와이프 조향 + 좌우 퀵 레인 시프트 버튼 + 햅틱), MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 초고속 레이싱 인기작 MR RACER - Car Racing. 복잡한 고속도로 트래픽 속에서 초고속 슈퍼카를 몰고 다른 차량들을 아슬아슬하게 근접 추월하며 니트로 부스트로 결승선을 돌파하는 3D 하이웨이 레이싱 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiMrRacerGame.tsx`)**:
+     - 4차선 무한 루핑 고속도로 시스템 (25m 안전 광폭 스타트 존, 메탈릭 가드레일, 가로등 조명 폴, 시작 지점 아스팔트 No.086 공식 영웅 배지 대형 엠블럼 각인).
+     - 3D 플레이어 하이퍼카 메쉬 모델링:
+       - 핫 레드 레이싱 섀시 바디, 틴티드 콕핏 캐빈, 보닛 No.086 공식 영웅 배지 데칼, 리어 윙 스포일러.
+       - 4개 독립 알로이 휠 & 고무 타이어 고속 회전 물리, 헤드라이트 스포트라이트 빔, 테일라이트 LED, 듀얼 머플러 니트로 화염 콘.
+       - 좌우 조향 시 바디 롤링 및 피치 틸트 역학.
+     - 3D AI 트래픽 차량 & 근접 추월(Close Overtake) 시스템:
+       - 4종 트래픽 차량(옐로우 택시, 블루 세단, 에메랄드 스포츠카, 오렌지 대형 카고 트럭).
+       - 차선별 독립 속도 순항 및 플레이어와 2.8m 이내 고속 스칠 시 "CLOSE OVERTAKE! +200" 콤보 배너 팝업 및 보너스 점수.
+       - 3회 충돌 허용 하트 실드 및 충돌 스파크 파티클/무적 시간.
+     - 니트로 부스트 & 뷰포트 다이나믹스:
+       - 76px [🔥 NITRO] 버튼 홀드 시 시속 260km/h 초광속 돌파, 카메라 FOV 65° ➔ 78° 확대, 120개 블루 워프 스트릭 파티클.
+       - 64px [🛑 BRAKE] 긴급 감속.
+       - [🎥 VIEW] 시점 전환: 3인칭 체이스 뷰(Chase View) vs 본넷 콕핏 뷰(Hood View).
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 터치 스와이프 정밀 조향 (Screen-relative 완벽 일치).
+       - 좌우 원터치 퀵 레인 시프트(◀ / ▶) 버튼.
+       - 76px [🔥 NITRO] 대형 부스트 버튼 + 64px [🛑 BRAKE] 버튼 + 햅틱.
+       - MinimalistMissionHUD (주행 거리 1500m 진행도, 실시간 시속 km/h, 추월 횟수, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (86/110 완료, current_game_index: 87) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 86/110] No.086 MR RACER - Car Racing Three.js 3D 초고속 고속도로 트래픽 레이싱 & 아크로바틱 추월 전면 고도화`)
+
 ## [2026-09-08 01:46 KST] [Poki 110선 리마스터 85/110] No.085 Vortella's Dress Up Three.js 3D 고딕 마녀 스타일링 & 룬 마법 의식 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/vortellas-dress-up`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No085_VortellasDressUp_Prompt.md`) 작성.
