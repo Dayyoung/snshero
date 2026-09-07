@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 105,
-  "completed_count": 104,
-  "last_updated": "2026-09-08T02:26:00+09:00",
+  "current_game_index": 106,
+  "completed_count": 105,
+  "last_updated": "2026-09-08T02:27:00+09:00",
   "history": [
     {
       "id": 1,
@@ -1149,6 +1149,17 @@
       "component": "src/components/poki/PokiBrainTest5Game.tsx",
       "completed_at": "2026-09-08T02:26:00+09:00",
       "details": "Three.js 기반 3D 창의적 두뇌 인터랙티브 퍼즐 구현, 3D 스튜디오 룸 및 No.104 공식 카드 영웅 배지 액자, 3단계 발상 전환 3D 수수께끼(Stage 1: 사과 탭 확대 거대 수박 변신, Stage 2: 참치캔 뚜껑 개봉 드래그 잠든 고양이 깨우기, Stage 3: 성냥갑 마찰 발화 및 양초 점등 촛불 밝히기), 레이캐스팅 기반 3D 터치 드래그 물리, 76px HINT 대형 버튼 + 64px RETRY/HELP + 햅틱, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 105,
+      "name": "Blumgi Merge",
+      "poki_url": "https://poki.com/kr/g/blumgi-merge",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No105_BlumgiMerge_Prompt.md",
+      "component": "src/components/poki/PokiBlumgiMergeGame.tsx",
+      "completed_at": "2026-09-08T02:27:00+09:00",
+      "details": "Three.js 기반 3D 동물 크리처 합체 진화 & 보스 레이드 배틀 구현, 3x3 원형 플랫폼 그리드, 3D 거대 스톤 보스 골렘(붉은 안광/플로팅 주먹/HP 게이지 바) 및 상단 No.105 공식 카드 영웅 배지 홀로그램 깃발, 5단계 3D 크리처 모델링(치킨/펭귄/부엉이/피닉스/드래곤), 레이캐스팅 기반 3D 터치 드래그 머지 진화 물리, 76px ALL OUT ATTACK 일제 포물선 돌진 맹공 대형 버튼 + 64px SPAWN 소환 버튼 + 햅틱, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
