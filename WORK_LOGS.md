@@ -4,6 +4,43 @@
 
 ---
 
+## [2026-09-08 00:57 KST] [Poki 110선 리마스터 62/110] No.062 Blast Buddies Three.js 3D 봄버 아레나 배틀로얄 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/blast-buddies`) 분석 및 프롬프트(`src/components/poki/prompts/No062_BlastBuddies_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 11x11 3D 블록 아레나(16개 불괴 석재 기둥/25개 파괴 가능 우드 크레이트) & 남서쪽 안전 스폰 진지, 블루 바이저 버디 & No.62 영웅 배지 vs 3인의 라이벌 AI 버디(레드/옐로우/퍼플), 시한폭탄 설치(2.5초 카운트다운 & 팽창 펄스) 및 십자형(Crossfire) 3D 화염 폭발 물리, 3종 파워업 아이템(화력 증가/폭탄 추가/이동속도 증가), 360도 다이나믹 플로팅 조이스틱(Screen-relative 완벽 일치) + 우측 대형 76px BOMB 버튼 + 햅틱 전면 재개발.
+  - AGENTS.md 카메라 기준 조작 방향(좌우/상하) 100% 일치 절대 원칙 준수 (탑다운 쿼터뷰 카메라 기준 화면 조이스틱 입력과 아레나 그리드 이동 1:1 완벽 정렬).
+  - AGENTS.md 시작 지점 안전 안착 절대 원칙 준수 (남서쪽 코너 안전 스폰 구역 안착).
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(플로팅 조이스틱/대형 BOMB 버튼 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 최고 인기 실시간 봄버 아레나 슈팅 Blast Buddies. 3D 격자 블록 전장에서 폭탄을 설치하여 상자를 부수고 파워업을 획득하며, 십자형 화염 폭발로 3명의 라이벌 버디를 폭파시키고 최후의 생존자가 되는 스릴 넘치는 3D 봄버맨 서바이벌 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiBlastBuddiesGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 탑다운 쿼터뷰 아레나 카메라, 11x11 타일 체커보드 바닥(가로 22m x 세로 22m) 및 사이버 조명 연출.
+     - 16개의 불괴 석재 기둥 및 25개의 파괴 가능 우드 크레이트(Destructible Crates) 절차적 생성.
+     - 4인의 3D 버디 캐릭터 모델링:
+       - 플레이어 (블루 바이저 헬멧, 3D 캡슐형 바디) & 카드 No.062 공식 영웅 배지.
+       - 라이벌 AI 3인 (레드, 옐로우, 퍼플 버디)의 자율 배회 및 폭탄 드롭 AI.
+     - 폭탄 물리 & 십자형(Crossfire) 폭발 시스템:
+       - 2.5초 시한폭탄 설치, 폭발 직전 팽창 펄스 바운스 애니메이션.
+       - 폭발 시 상하좌우 4방향으로 화염 빔 분출, 범위 내 크레이트 파괴 및 버디 즉사 판정.
+     - 3종 파워업 아이템 시스템:
+       - 크레이트 파괴 시 45% 확률로 3D 큐브 아이템 드롭.
+       - 1) 화력 증가 (Fire Range +1), 2) 폭탄 개수 (Extra Bomb +1), 3) 속도 부스트 (Speed Up).
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 좌측 360도 다이나믹 플로팅 조이스틱(Screen-relative 완벽 일치).
+       - 우측 대형 76px [BOMB 폭탄] 버튼 + 햅틱 진동.
+       - MinimalistMissionHUD (생존 버디 수, 화력/폭탄/속도 인디케이터, 중도 포기 시 비례 SNS 안전 정산).
+       - 최후의 1인 생존 시 VictoryRewardModal 연동 완료.
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 실행 결과 110/110 전체 SSR 안전 렌더링 무결점 통과.
+  4. **문서 및 형상 관리**:
+     - `POKI_REMASTER_STATUS.json` (62/110 완료, current_game_index: 63) 갱신.
+     - `WORK_LOGS.md` 갱신, Git 커밋/푸시 및 구글 폼 보고 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 62/110] No.062 Blast Buddies Three.js 3D 봄버 아레나 배틀로얄 전면 고도화`)
+
+---
+
 ## [2026-09-08 00:55 KST] [Poki 110선 리마스터 61/110] No.061 Magic Battleground Three.js 3D 원소 마법 링아웃 배틀로얄 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/magic-battleground`) 분석 및 프롬프트(`src/components/poki/prompts/No061_MagicBattleground_Prompt.md`) 작성.
