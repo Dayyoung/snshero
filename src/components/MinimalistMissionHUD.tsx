@@ -97,7 +97,7 @@ export const MinimalistMissionHUD: React.FC<MinimalistMissionHUDProps> = ({
     return Math.max(15, Math.min(50, raw));
   }, [curVal, tgtVal, showExitConfirm]);
 
-  // Intercept browser back button (popstate) to prevent going home unexpectedly
+  // Intercept browser back button (popstate) and global top-left back button (global-back)
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -111,9 +111,17 @@ export const MinimalistMissionHUD: React.FC<MinimalistMissionHUDProps> = ({
       window.history.pushState({ missionInGame: true }, '');
     };
 
+    const handleGlobalBack = (e: Event) => {
+      // Prevent App.tsx from executing onBackFromGame (which exits to home)
+      e.preventDefault();
+      setShowExitConfirm(true);
+    };
+
     window.addEventListener('popstate', handlePopState);
+    window.addEventListener('global-back', handleGlobalBack);
     return () => {
       window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('global-back', handleGlobalBack);
     };
   }, []);
 

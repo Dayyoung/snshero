@@ -9102,6 +9102,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         setGameState('modeSelect');
         return;
       }
+
+      // 11. Poki 및 110개 미션 게임 진행 중 (홈으로 빠져나가지 않도록 차단)
+      if (gameState.startsWith('poki') || gameState !== 'modeSelect') {
+        e.preventDefault();
+        return;
+      }
     };
 
     window.addEventListener('global-back', handleGlobalBackEvent);
