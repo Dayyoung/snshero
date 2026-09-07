@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 56,
-  "completed_count": 55,
-  "last_updated": "2026-09-08T00:46:00+09:00",
+  "current_game_index": 57,
+  "completed_count": 56,
+  "last_updated": "2026-09-08T00:48:00+09:00",
   "history": [
     {
       "id": 1,
@@ -610,6 +610,17 @@
       "component": "src/components/poki/PokiSatisBoxGame.tsx",
       "completed_at": "2026-09-08T00:46:00+09:00",
       "details": "Three.js 기반 3D ASMR 힐링 정리정돈 오거나이저 퍼즐 구현, 웜우드 데스크탑 & 오거나이저 트레이 박스, 3단계 테마 미니 스테이지(1단계 문구류 필통 박스 5종, 2단계 뷰티 코스메틱 트레이 5종, 3단계 벤토 정갈한 도시락 5종), Raycaster 3D 터치 드래그 앤 드롭 & 마그네틱 스냅(Snapping) 도킹 물리 & 황금빛 스파클 파티클, 3단계 총 15개 완벽 정리 피날레, 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 56,
+      "name": "Soccer Skills 2 World Cup",
+      "poki_url": "https://poki.com/kr/g/soccer-skills-2-world-cup",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No056_SoccerSkillsWorldCup_Prompt.md",
+      "component": "src/components/poki/PokiSoccerSkillsWorldCupGame.tsx",
+      "completed_at": "2026-09-08T00:48:00+09:00",
+      "details": "Three.js 기반 3D 월드컵 축구 토너먼트 구현, 투톤 잔디 스트라이프 피치 & 3D 골대 및 네트 & 원형 관중석 & 4기 코너 플러드라이트 타워, 대한민국 붉은 악마 유니폼 키커 & No.56 영웅 배지, 3D 텔스타 축구공(자전 스핀 & 탄도학 궤적 물리), 3D AI 골키퍼(좌우 순찰 & 다이빙 세이브) 및 점프 수비벽, 황금빛 3D 월드컵 트로피 쇼케이스 & 대형 컨페티 축포, 3단계 토너먼트 로드맵(8강전 호주 2골 ➔ 4강전 브라질 3골 ➔ 결승전 프랑스 3골로 월드컵 우승), 모바일 퓨어 터치 조작계(화면 터치 드래그 3D 포물선 조준선 & 릴리스 슈팅 킥 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
