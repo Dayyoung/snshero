@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 2,
-  "completed_count": 1,
-  "last_updated": "2026-09-07T15:15:00+09:00",
+  "current_game_index": 3,
+  "completed_count": 2,
+  "last_updated": "2026-09-07T15:18:00+09:00",
   "history": [
     {
       "id": 1,
@@ -16,6 +16,17 @@
       "component": "src/components/poki/PokiSlimeKeyboardGame.tsx",
       "completed_at": "2026-09-07T15:15:00+09:00",
       "details": "Three.js 기반 3D 기계식 키보드 플랫폼 오비 탈출 러너 구현, 3D 키캡 트랙/슬라임 점액 감속 트랩/ESC 탈출 게이트/모바일 퓨어 제스처/중도 포기 보상 정산 HUD 연동 완료"
+    },
+    {
+      "id": 2,
+      "name": "Hide and Paint",
+      "poki_url": "https://poki.com/kr/g/hide-and-paint",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No002_HideAndPaint_Prompt.md",
+      "component": "src/components/poki/PokiHideAndPaintGame.tsx",
+      "completed_at": "2026-09-07T15:18:00+09:00",
+      "details": "Three.js 기반 3D 잠입 숨바꼭질 구현, 4개 색상 존 및 3D 가구 은신 오브젝트, 카멜레온 [PAINT] 색상 동화 및 [FREEZE] 정지 포즈 위장 100%, 사냥꾼 AI 시야각(Vision Cone) 및 페인트탄 발사, 모바일 퓨어 터치 드래그, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
