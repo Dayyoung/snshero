@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 103,
-  "completed_count": 102,
-  "last_updated": "2026-09-08T02:22:00+09:00",
+  "current_game_index": 104,
+  "completed_count": 103,
+  "last_updated": "2026-09-08T02:25:00+09:00",
   "history": [
     {
       "id": 1,
@@ -1127,6 +1127,17 @@
       "component": "src/components/poki/PokiKawaiiFruits3DGame.tsx",
       "completed_at": "2026-09-08T02:22:00+09:00",
       "details": "Three.js 기반 3D 카와이 페이스 과일 머지 & 힐링 드롭 퍼즐 구현, 가로 7.0m 투명 핑크 글래스 믹싱 볼(바닥/유리벽/상단 No.102 공식 영웅 배지 홀로그램 간판/클라우드 드롭퍼/조준선), 5단계 카와이 페이스 과일(체리➔라임➔오렌지➔복숭아➔멜론 & 깜빡이는 만화 눈/미소/볼터치 데칼), 구체 중력 및 탄성 충돌 물리, 동일 티어 접촉 시 하트 팝 파티클 분출 및 합성 머지, 10회 머지 달성 승리, 모바일 퓨어 터치 조작계(화면 드래그 투하 위치 조준 + 76px DROP KAWAII 대형 버튼 + 64px TICKLE 볼 간지럽히기 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 103,
+      "name": "Blumgi Bounce",
+      "poki_url": "https://poki.com/kr/g/blumgi-bounce",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No103_BlumgiBounce_Prompt.md",
+      "component": "src/components/poki/PokiBlumgiBounceGame.tsx",
+      "completed_at": "2026-09-08T02:25:00+09:00",
+      "details": "Three.js 기반 3D 아케이드 바운스 농구 & 슬링샷 덩크 퍼즐 구현, 네온 하드우드 코트(3점슛 라인/관중석 네온 바), 3D 아크릴 백보드 & 네온 림(Torus) & 와이어 네트 및 No.103 공식 카드 영웅 배지 전광판, 3D 카와이 Blumgi 젤리 캐릭터(스쿼시/스트레치 탄성 애니메이션/No.103 배지 데칼), 3D 동적 스프링 바운스 패드 기믹, 실시간 3D 포물선 탄도 점선 궤적, 림 골인 감지 & SWISH 축하 컨페티 파티클 폭죽, 5회 골인 우승, 모바일 퓨어 터치 조작계(화면 드래그 슬링샷 조준 + 76px BOUNCE 대형 버튼 + 64px RESET + HIGH ARC SLAM + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

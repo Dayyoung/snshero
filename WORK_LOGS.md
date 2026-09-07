@@ -4,6 +4,38 @@
 
 ---
 
+## [2026-09-08 02:25 KST] [Poki 110선 리마스터 103/110] No.103 Blumgi Bounce Three.js 3D 아케이드 바운스 농구 & 슬링샷 덩크 퍼즐 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/blumgi-bounce`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No103_BlumgiBounce_Prompt.md`) 작성.
+  - Three.js 3D 기반 네온 하드우드 농구 아레나 코트(3점슛 라인/관중석 네온 바).
+  - 3D 아크릴 백보드 & 네온 림(Torus) & 와이어 네트 및 No.103 공식 카드 영웅 배지 전광판.
+  - 3D 카와이 Blumgi 젤리 캐릭터(스쿼시/스트레치 탄성 애니메이션/귀/눈/No.103 배지 데칼).
+  - 3D 동적 스프링 바운스 패드 기믹 및 실시간 3D 포물선 탄도 점선 궤적 라인.
+  - 림 골인 감지 & SWISH 축하 컨페티 파티클 폭죽, 5회 골인 우승.
+  - 모바일 퓨어 터치 조작계(화면 드래그 슬링샷 조준 + 76px BOUNCE 대형 버튼 + 64px RESET + HIGH ARC SLAM + 햅틱), MinimalistMissionHUD 안전 정산.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 최고 인기 바운스 농구 액션 Blumgi Bounce. 귀여운 동물 캐릭터를 슬링샷으로 튕겨 바닥과 벽, 스프링 패드를 통통 튕기며 농구 골대에 멋지게 덩크/골인시키는 중독성 만점의 아케이드 물리 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiBlumgiBounceGame.tsx`)**:
+     - 26m x 12m 네온 하드우드 코트 씬 및 백월 아레나 관중석 네온 라이트.
+     - 3D 농구 골대(금속 폴, 투명 아크릴 백보드, 타깃 레드 프레임, 오렌지 네온 림 Torus, 원뿔형 와이어프레임 네트) 및 상단 No.103 공식 카드 영웅 배지 엠블럼.
+     - 3D 카와이 Blumgi 캐릭터(몸체 구체, 깜찍한 귀 2개, 표정 눈망울 2개, 가슴 No.103 공식 카드 배지).
+     - 착지 및 충돌 시 쫀득한 스쿼시 & 스트레치 애니메이션 및 공중 회전 모션.
+     - 3D 동적 스프링 바운스 패드(핑크 젤리 윗면, 충돌 시 슈퍼 바운스 부스트).
+     - 실시간 3D 포물선 점선 탄도 궤적 라인(Line).
+     - 림 골인 판정: 상단에서 하단으로 통과 시 SWISH 골인 판정, 네트 출렁임 리액션, 45개 컨페티 파티클 분출.
+     - 5회 골인(TARGET_GOALS = 5) 달성 시 챔피언십 우승 및 빅토리 모달 호출.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 터치 드래그로 슬링샷 각도 및 파워 조준.
+       - 76px [🏀 BOUNCE!] 대형 발사 버튼 + 64px [🔄 RESET] 원위치 버튼 + [⚡ HIGH] 슈퍼 점프 버튼 + 햅틱 피드백.
+       - MinimalistMissionHUD (골인 달성 수, 점수, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `npm run build` 프로덕션 번들 빌드 성공.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (103/110 완료, current_game_index: 104) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출 완료.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 103/110] No.103 Blumgi Bounce Three.js 3D 아케이드 바운스 농구 & 슬링샷 덩크 퍼즐 전면 고도화`)
+
 ## [2026-09-08 02:22 KST] [Poki 110선 리마스터 102/110] No.102 Kawaii Fruits 3D Three.js 3D 카와이 페이스 과일 머지 & 힐링 드롭 퍼즐 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/kawaii-fruits-3d`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No102_KawaiiFruits3D_Prompt.md`) 작성.
