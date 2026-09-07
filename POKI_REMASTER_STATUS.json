@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 26,
-  "completed_count": 25,
-  "last_updated": "2026-09-07T22:21:00+09:00",
+  "current_game_index": 27,
+  "completed_count": 26,
+  "last_updated": "2026-09-07T22:31:00+09:00",
   "history": [
     {
       "id": 1,
@@ -280,6 +280,17 @@
       "component": "src/components/poki/PokiSoccerRealGame.tsx",
       "completed_at": "2026-09-07T22:21:00+09:00",
       "details": "Three.js 기반 3D 현실적 프리킥 토너먼트 축구 구현, 36x28m 2톤 그린 스트라이프 잔디 구장 & 7.32x2.44m 정규 골대 & 3D 격자 골네트(시작 페널티 스팟 안전 안착), 3D 텔스타 축구공 포물선 탄도학 & 바나나킥 커브 스핀 & 골포스트 리바운드 물리, 3D 키커(다리 킥 모션 & No.25 영웅 배지), 골키퍼 다이빙 AI & 3인 점프 수비벽, 득점 시 60개 3D 축하 콘페티 파티클 분출, 화면 위로 쓸어올리는 스와이프 슈팅 & 커브 조절 & 프리셋 슈팅 버튼 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 26,
+      "name": "Subway Surfers",
+      "poki_url": "https://poki.com/kr/g/subway-surfers",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No026_SubwaySurfers_Prompt.md",
+      "component": "src/components/poki/PokiSubwaySurfersGame.tsx",
+      "completed_at": "2026-09-07T22:31:00+09:00",
+      "details": "Three.js 기반 3D 엔드리스 3레인 지하철 러너 구현, 무한 루핑 3레인 철길 트랙(자갈/침목/강철 레일/터널 방음벽, 시작 25m 안전 안착 철로), 3D 지하철 전동차(실버 메탈릭 8.5m 열차/헤드라이트), 낮은 공사 바리케이드(점프 회피) & 높은 고가 표지판(구르기 슬라이딩 회피), 3D 서퍼 아바타 & No.26 영웅 배지, 추격하는 3D 경비원 & 불독, 회전 황금 코인 & 자석 흡수 파워업, 4방향 스와이프 및 하단 좌/우 레인 이동 + 80px 점프/구르기 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
