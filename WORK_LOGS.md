@@ -4,6 +4,40 @@
 
 ---
 
+## [2026-09-08 01:07 KST] [Poki 110선 리마스터 69/110] No.069 Carnado Stunt Car Three.js 3D 익스트림 스턴트 레이싱 & 공중 플립 액션 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/carnado-stunt-car`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No069_CarnadoStuntCar_Prompt.md`) 작성.
+  - Three.js 3D 기반 160m 메가 스턴트 아레나, 메가 도약 램프 2기, 불의 고리(Ring of Fire), 옐로우&블랙 Carnado GT 머슬카 & No.069 공식 카드 영웅 배지 장착.
+  - 공중 체공(Airtime) 물리, 360도 공중제비(AIR FLIP) 회전 트릭, 링 관통 및 클린 착지 vs 전복 판정.
+  - 모바일 퓨어 터치 조작계(76px GAS 가속 + 64px BRAKE 제동 + 64px NITRO 부스트 + 64px AIR FLIP 회전 + 햅틱) 및 MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 자동차 스턴트 인기작 Carnado Stunt Car. 거대한 도약 램프와 불의 고리로 가득한 오픈 스턴트 맵에서 머슬카를 전속력으로 질주시켜 초고공 점프와 공중 플립을 성공시키는 3D 드라이빙 액션 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiCarnadoStuntGame.tsx`)**:
+     - 160m 아스팔트 활주로(네온 펜스, 1차 메가 램프 41m 지점, 2차 슈퍼 램프 87m 지점, 125m 상공 불의 고리 TorusGeometry, 155m 결승 아치 게이트) & -15m 안전 광폭 스타트 존.
+     - Carnado GT 머슬카 모델링:
+       - 옐로우 & 블랙 레이싱 바디, 틴티드 캐빈 유리, 리어 스포일러 윙, 회전하는 4개 크롬 휠.
+       - 루프 상단 No.069 공식 카드 영웅 배지 장착.
+       - 지상 가속/제동 및 니트로 블루 배기 화염 파티클.
+     - 공중 스턴트 트릭 시스템:
+       - 램프 도약 시 상향 리프트 및 공중 체공 진입.
+       - 공중에서 AIR FLIP 버튼으로 피치 360도 공중제비 회전 달성 시 [360 AIR FLIP (+300점)] 연출.
+       - 불의 고리 링 관통 시 [RING OF FIRE PASS (+500점)] 팡파레.
+       - 수평 오차 40도 이내 안착 시 [CLEAN LANDING (+200점)] 및 성공 착지 카운트 증가.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 76px [가속 GAS] 메인 버튼 (최고 187 km/h 니트로 가속).
+       - 64px [제동 BRAKE] 버튼.
+       - 64px [니트로 NITRO] 부스터 버튼.
+       - 64px [공중제비 AIR FLIP] 버튼.
+       - MinimalistMissionHUD (스턴트 점수, 착지 횟수, 속도계, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (69/110 완료, current_game_index: 70) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 69/110] No.069 Carnado Stunt Car Three.js 3D 익스트림 스턴트 레이싱 & 공중 플립 액션 전면 고도화`)
+
 ## [2026-09-08 01:06 KST] [Poki 110선 리마스터 68/110] No.068 Monkey Mart Three.js 3D 동물 마트 타이쿤 & 경영 시뮬레이션 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/monkey-mart`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No068_MonkeyMart_Prompt.md`) 작성.

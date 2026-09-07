@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 69,
-  "completed_count": 68,
-  "last_updated": "2026-09-08T01:06:00+09:00",
+  "current_game_index": 70,
+  "completed_count": 69,
+  "last_updated": "2026-09-08T01:07:00+09:00",
   "history": [
     {
       "id": 1,
@@ -753,6 +753,17 @@
       "component": "src/components/poki/PokiMonkeyMartGame.tsx",
       "completed_at": "2026-09-08T01:06:00+09:00",
       "details": "Three.js 기반 3D 동물 마트 타이쿤 & 경영 시뮬레이션 구현, 34x34m 아늑한 슈퍼마켓 매장(바나나 야자수 농장/옥수수 밭/진열대 2종/계산대) & 중앙 15m 안전 스폰 존, 브라운 몽키 매니저 & No.068 영웅 배지 모자, 등 뒤 8단 상품 스택 흔들림 물리, 손님 동물 AI 4종(판다/고양이/펭귄/여우) 쇼핑 & 줄서기 & $25 지폐 드랍, $100 알바 원숭이 고용 자동화 시스템, 모바일 퓨어 터치 조작계(360도 다이나믹 플로팅 조이스틱 + 접근 시 100% 자동 수확/진열/계산/수금 + 64px DASH 대시 + 64px HIRE 고용 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 69,
+      "name": "Carnado Stunt Car",
+      "poki_url": "https://poki.com/kr/g/carnado-stunt-car",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No069_CarnadoStuntCar_Prompt.md",
+      "component": "src/components/poki/PokiCarnadoStuntGame.tsx",
+      "completed_at": "2026-09-08T01:07:00+09:00",
+      "details": "Three.js 기반 3D 익스트림 스턴트 레이싱 & 공중 플립 액션 구현, 160m 아스팔트 트랙 & 메가 도약 램프 2기 & 불의 고리(Ring of Fire) & -15m 안전 스타트 존, 옐로우&블랙 Carnado GT 머슬카 & No.069 공식 카드 영웅 배지, 공중 체공(Airtime) 물리 및 360도 공중제비(AIR FLIP) 회전 트릭, 링 오브 파이어 관통(+500점) & 클린 착지(+200점) vs 전복 충돌 판정, 모바일 퓨어 터치 조작계(76px GAS 가속 + 64px BRAKE 제동 + 64px NITRO 부스트 + 64px AIR FLIP 회전 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
