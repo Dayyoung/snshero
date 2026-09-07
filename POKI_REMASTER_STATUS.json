@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 89,
-  "completed_count": 88,
-  "last_updated": "2026-09-08T01:51:00+09:00",
+  "current_game_index": 90,
+  "completed_count": 89,
+  "last_updated": "2026-09-08T01:52:00+09:00",
   "history": [
     {
       "id": 1,
@@ -973,6 +973,17 @@
       "component": "src/components/poki/PokiHillClimbRacingLiteGame.tsx",
       "completed_at": "2026-09-08T01:51:00+09:00",
       "details": "Three.js 기반 3D 피직스 힐 클라이밍 & 오프로드 밸런스 드라이빙 구현, 400m 연속 롤링 힐스 지형(20m 안전 광폭 스타트 존/시작 지점 No.088 공식 영웅 배지 엠블럼), 3D 클래식 레드 힐 클라이머 지프(도어 No.088 공식 영웅 배지 데칼/롤케이지/드라이버 피규어/4개 오프로드 빅 타이어/독립 서스펜션 접지 물리), 완급 조절 물리 엔진 & 전복(Neck Snap) 판정, 연료(Fuel 제리캔 리필) 및 3D 골드 코인 수집, 공중 체공(Air Time) 보너스, 모바일 퓨어 터치 페달(64px BRAKE + 76px GAS + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 89,
+      "name": "Stickman Crazy Box",
+      "poki_url": "https://poki.com/kr/g/stickman-crazy-box",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No089_StickmanCrazyBox_Prompt.md",
+      "component": "src/components/poki/PokiStickmanCrazyBoxGame.tsx",
+      "completed_at": "2026-09-08T01:52:00+09:00",
+      "details": "Three.js 기반 3D 스틱맨 낙하 상자 회피 & 파쿠르 클라이밍 서바이벌 구현, 18m x 18m 사이버 네온 팔각형 아레나(중앙 안전 스폰/No.089 공식 영웅 배지 엠블럼), 3D 스틱맨 모델링(보행 달리기/점프 애니메이션/등 뒤 No.089 공식 영웅 배지 백팩), 다이나믹 3종 낙하 상자(우드 박스 착지 발판/TNT 2초 폭발 상자/골드 박스), 황금 별 8개 파쿠르 수집 퀘스트, 모바일 퓨어 터치 조작계(화면 터치 지점 다이나믹 플로팅 조이스틱 + 76px JUMP + 64px DASH 무적 대시 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

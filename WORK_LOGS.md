@@ -4,6 +4,40 @@
 
 ---
 
+## [2026-09-08 01:52 KST] [Poki 110선 리마스터 89/110] No.089 Stickman Crazy Box Three.js 3D 스틱맨 낙하 상자 회피 & 파쿠르 클라이밍 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/stickman-crazy-box`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No089_StickmanCrazyBox_Prompt.md`) 작성.
+  - Three.js 3D 기반 18m x 18m 사이버 네온 팔각형 아레나(중앙 안전 스폰/No.089 공식 영웅 배지 엠블럼), 3D 스틱맨 모델링(보행 달리기/점프 애니메이션/등 뒤 No.089 공식 영웅 배지 백팩).
+  - 다이나믹 3종 낙하 상자(우드 박스 착지 발판/TNT 2초 폭발 상자/골드 박스), 황금 별 8개 파쿠르 수집 퀘스트.
+  - 모바일 퓨어 터치 조작계(화면 터치 지점 다이나믹 플로팅 조이스틱 + 76px JUMP + 64px DASH 무적 대시 + 햅틱), MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 파티/액션 인기작 Stickman Crazy Box. 하늘에서 끝없이 쏟아지는 크레이지 상자들을 피하면서, 상자를 밟고 뛰어오르는 파쿠르 클라이밍과 TNT 폭발을 회피하여 황금 별을 모으는 3D 아케이드 서바이벌 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiStickmanCrazyBoxGame.tsx`)**:
+     - 18m x 18m 사이버 팔각형 아레나 (사이드 네온 림, 8대 네온 라이트 기둥, 중앙 바닥 No.089 공식 영웅 배지 엠블럼).
+     - 3D 스틱맨 캐릭터 메쉬 모델링:
+       - 관절형 스틱맨 바디, 등 뒤 No.089 공식 영웅 배지 백팩 데칼 장착.
+       - 이동 방향 자동 회전 및 실시간 보행 팔다리 스윙 애니메이션.
+     - 3종 다이나믹 낙하 상자 물리 시스템:
+       - Y=14m 상공에서 지면 경고 그림자(Warning Shadow)와 함께 낙하.
+       - 우드 상자: 안전 착지하여 단단한 3D 발판으로 전환 (밟고 올라탈 수 있는 박스 스태킹).
+       - TNT 상자: 지면 착지 2.2초 카운트다운 후 붉은 점멸과 함께 폭발(주변 파편 및 넉백 이펙트).
+       - 골드 상자: 황금 별 드롭.
+     - 황금 별(Star Gems) 8개 파쿠르 수집 퀘스트:
+       - 아레나 바닥 및 높은 상자 위 상공에 배치된 8개 회전 옥타헤드론 황금 별.
+       - 상자 발판을 타고 점프하여 8개 수집 시 승리 세레모니 및 콘페티 폭발.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 터치 시 즉시 생성되는 360° 다이나믹 플로팅 조이스틱 (Screen-relative 완벽 일치).
+       - 76px [⬆️ JUMP] 대형 점프 버튼 + 64px [💨 DASH] 순간 무적 대시 버튼 + 햅틱.
+       - MinimalistMissionHUD (별 8개 진행도, 생존 시간, 하트 3개 실드, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (89/110 완료, current_game_index: 90) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 89/110] No.089 Stickman Crazy Box Three.js 3D 스틱맨 낙하 상자 회피 & 파쿠르 클라이밍 전면 고도화`)
+
 ## [2026-09-08 01:51 KST] [Poki 110선 리마스터 88/110] No.088 Hill Climb Racing Lite Three.js 3D 피직스 힐 클라이밍 & 오프로드 밸런스 드라이빙 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/hill-climb-racing-lite`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No088_HillClimbRacingLite_Prompt.md`) 작성.
