@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 102,
-  "completed_count": 101,
-  "last_updated": "2026-09-08T02:20:00+09:00",
+  "current_game_index": 103,
+  "completed_count": 102,
+  "last_updated": "2026-09-08T02:22:00+09:00",
   "history": [
     {
       "id": 1,
@@ -1116,6 +1116,17 @@
       "component": "src/components/poki/PokiWatermelonDropGame.tsx",
       "completed_at": "2026-09-08T02:20:00+09:00",
       "details": "Three.js 기반 3D 수박게임 과일 머지 & 드롭 물리 퍼즐 구현, 가로 7.4m 투명 글래스 챔버(바닥/유리벽/상단 No.101 공식 영웅 배지 홀로그램 간판/클라우드 드롭퍼/조준선), 6단계 3D 과일(체리➔딸기➔포도➔오렌지➔사과➔거대 수박), 구체 중력 및 탄성 충돌 물리, 동일 티어 접촉 시 팡! 과즙 파티클 분출 및 상위 과일 합성 머지, 목표 800점 달성 승리, 모바일 퓨어 터치 조작계(화면 드래그 투하 위치 조준 + 76px DROP FRUIT 대형 버튼 + 64px SHAKE 박스 흔들기 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 102,
+      "name": "Kawaii Fruits 3D",
+      "poki_url": "https://poki.com/kr/g/kawaii-fruits-3d",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No102_KawaiiFruits3D_Prompt.md",
+      "component": "src/components/poki/PokiKawaiiFruits3DGame.tsx",
+      "completed_at": "2026-09-08T02:22:00+09:00",
+      "details": "Three.js 기반 3D 카와이 페이스 과일 머지 & 힐링 드롭 퍼즐 구현, 가로 7.0m 투명 핑크 글래스 믹싱 볼(바닥/유리벽/상단 No.102 공식 영웅 배지 홀로그램 간판/클라우드 드롭퍼/조준선), 5단계 카와이 페이스 과일(체리➔라임➔오렌지➔복숭아➔멜론 & 깜빡이는 만화 눈/미소/볼터치 데칼), 구체 중력 및 탄성 충돌 물리, 동일 티어 접촉 시 하트 팝 파티클 분출 및 합성 머지, 10회 머지 달성 승리, 모바일 퓨어 터치 조작계(화면 드래그 투하 위치 조준 + 76px DROP KAWAII 대형 버튼 + 64px TICKLE 볼 간지럽히기 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
