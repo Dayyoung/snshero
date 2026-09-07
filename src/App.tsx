@@ -100,6 +100,13 @@ const ShareView = lazy(() => import('./views/ShareView').then(m => ({ default: m
 const ShopView = lazy(() => import('./views/ShopView').then(m => ({ default: m.ShopView })));
 const EventView = lazy(() => import('./views/EventView').then(m => ({ default: m.EventView })));
 const SettingView = lazy(() => import('./views/SettingView').then(m => ({ default: m.SettingView })));
+export const prefetchPlayGameView = () => {
+  try {
+    import('./views/PlayGameView');
+  } catch (e) {
+    // Ignore prefetch error
+  }
+};
 const PlayGameView = lazy(() => import('./views/PlayGameView').then(m => ({ default: m.PlayGameView })));
 const RankingView = lazy(() => import('./views/RankingView').then(m => ({ default: m.RankingView })));
 const AdminView = lazy(() => import('./views/AdminView').then(m => ({ default: m.AdminView })));
@@ -530,6 +537,25 @@ function AppContent() {
 
   useEffect(() => {
     processIncomingReferral();
+
+    // 유휴 시간 백그라운드 프리페치: PlayGameView 대형 번들 사전 로딩 (미션 탭 전환 시 0초 즉시 마운트)
+    if (typeof window !== 'undefined') {
+      if ('requestIdleCallback' in window) {
+        const handle = (window as any).requestIdleCallback(() => {
+          prefetchPlayGameView();
+        }, { timeout: 1500 });
+        return () => {
+          if ('cancelIdleCallback' in window) {
+            (window as any).cancelIdleCallback(handle);
+          }
+        };
+      } else {
+        const timer = setTimeout(() => {
+          prefetchPlayGameView();
+        }, 1500);
+        return () => clearTimeout(timer);
+      }
+    }
   }, []);
 
   const [initialPostId, setInitialPostId] = useState<string | undefined>(undefined);
@@ -5802,12 +5828,13 @@ function AppContent() {
   }
 
     const showNavbar = (view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie') && !isGlobalPopupOpen;
+    const isPlayingBattle = view === 'play' && playGameState === 'playing';
     
     return (
       <div className={cn(
         "w-full app-bg text-slate-800 font-sans selection:bg-indigo-500 selection:text-white flex flex-col lg:flex-row justify-center items-start min-h-screen",
-        view === 'play' ? "bg-[#060a14] text-slate-100" : "bg-slate-50/30",
-        (view === 'play' && playGameState === 'playing') ? "min-h-screen overflow-y-auto" : "min-h-screen",
+        isPlayingBattle ? "bg-[#060a14] text-slate-100" : "bg-slate-50/30",
+        isPlayingBattle ? "min-h-screen overflow-y-auto" : "min-h-screen",
         simulationUser ? "pt-[36px]" : "",
         theme === 'dark' ? "theme-dark" : "",
         theme === 'metal' ? "theme-metal" : ""
@@ -5849,12 +5876,12 @@ function AppContent() {
         {/* Main Content */}
         <div className={cn(
           "flex-1 w-full max-w-[1024px] mx-auto relative flex flex-col shadow-2xl border-x transition-colors duration-200",
-          view === 'play'
+          isPlayingBattle
             ? "bg-[#060a14] border-slate-800/80"
             : (theme === 'dark' || theme === 'metal'
                 ? "bg-slate-900 border-slate-800/80"
                 : "bg-slate-50/30 border-slate-200/80"),
-          (view === 'play' && playGameState === 'playing') ? "min-h-screen overflow-y-auto" : "min-h-screen"
+          isPlayingBattle ? "min-h-screen overflow-y-auto" : "min-h-screen"
         )}>
           {view !== 'landing' && (
             <>
@@ -6271,7 +6298,7 @@ function AppContent() {
           {!isAdRemoved && view !== 'landing' && (
             <div className={cn(
               "block lg:hidden w-full px-2 py-0.5 shrink-0 select-none z-20 overflow-hidden",
-              view === 'play'
+              isPlayingBattle
                 ? "bg-[#060a14]/95 border-b border-slate-800"
                 : "bg-[#fdfcfc]/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800"
             )}>
@@ -6289,7 +6316,7 @@ function AppContent() {
 
           <div className={cn(
             "flex-1 flex flex-col min-h-0",
-            view === 'play' ? "h-full overflow-y-auto overscroll-contain touch-pan-y" : "overflow-x-hidden",
+            isPlayingBattle ? "h-full overflow-y-auto overscroll-contain touch-pan-y" : "overflow-x-hidden",
             (view !== 'play' && view !== 'home') && "pt-4",
             showNavbar ? "pb-20" : "pb-0"
           )}>
@@ -6580,8 +6607,8 @@ function AppContent() {
                     className={cn(
                       "px-2 py-0.5 text-[9px] font-bold font-mono uppercase tracking-tighter truncate rounded border transition-all shrink-0 cursor-pointer",
                       botRole === role 
-                        ? (view === 'play' ? "bg-indigo-600 text-white border-indigo-500 shadow-xs" : "bg-black text-white border-black shadow-sm")
-                        : (view === 'play' ? "bg-slate-900 text-slate-400 border-slate-800 hover:text-white" : "bg-white text-black/40 border-black/10 hover:border-black/30")
+                        ? (isPlayingBattle ? "bg-indigo-600 text-white border-indigo-500 shadow-xs" : "bg-black text-white border-black shadow-sm")
+                        : (isPlayingBattle ? "bg-slate-900 text-slate-400 border-slate-800 hover:text-white" : "bg-white text-black/40 border-black/10 hover:border-black/30")
                     )}
                   >
                     {role}
@@ -6591,7 +6618,7 @@ function AppContent() {
               
               <div className={cn(
                 "flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 flex flex-col text-[12px] sm:text-[13px] font-mono",
-                view === 'play' ? "bg-[#060a14]/90 text-slate-200" : "bg-white text-slate-900"
+                isPlayingBattle ? "bg-[#060a14]/90 text-slate-200" : "bg-white text-slate-900"
               )}>
                  {allMessages.map((msg, idx) => {
                     const isMe = msg.userId === (effectiveUser?.uid || effectiveUser?.id);

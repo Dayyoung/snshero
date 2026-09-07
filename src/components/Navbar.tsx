@@ -6,6 +6,7 @@ import { t } from '../lib/i18n';
 import { motion } from 'framer-motion';
 import { useGameSettings } from '../contexts/GameSettingsContext';
 import { getClaimableCount, getTodayStr, hasUnfinishedMissions } from '../lib/dailyMissions';
+import { prefetchPlayGameView } from '../App';
 
 interface NavbarProps {
   currentView: ViewType;
@@ -64,6 +65,16 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
         return (
           <button
             key={item.id}
+            onMouseEnter={() => {
+              if (item.id === 'play') {
+                prefetchPlayGameView();
+              }
+            }}
+            onTouchStart={() => {
+              if (item.id === 'play') {
+                prefetchPlayGameView();
+              }
+            }}
             onClick={() => {
               if (item.id === 'main') {
                 if (typeof window !== 'undefined') {
