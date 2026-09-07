@@ -8,7 +8,7 @@
   3. **일관된 보상 체계**: `standardizedRewardGateway.ts` 경유 20~50 SNS 포인트 공정 지급 및 `VictoryRewardModal`
   4. **일관된 그래픽 엔진**: HTML5 Canvas 2D 60fps 부드러운 애니메이션 및 파티클
   5. **SNSHero 캐릭터 연동**: `drawCardSprite` 기반 `cards1.png`, `cards2.png` 영웅/몬스터 스프라이트 100% 적용
-- **전체 진행 현황**: **60 / 110 완료 (54.5%)**
+- **전체 진행 현황**: **70 / 110 완료 (63.6%)**
 
 ---
 
@@ -76,16 +76,16 @@
 | No.058 | **[Tear Blocks Down](https://poki.com/kr/g/tear-blocks-down)** | 액션 게임, 좀비 게임 | 카드 No.58 공성 포병대장 | 대포 뒤로 당겨 각도/파워 조절 발사 | 20~50 SNS | ✅ 완료 (Canvas 2D, 블록 타워 물리 붕괴 & 좀비 전멸 3단계) |
 | No.059 | **[Red Ball 4](https://poki.com/kr/g/red-ball-4)** | 액션 게임, 어드벤쳐 게임 | 카드 No.59 레드볼 | 좌우 이동 & 상단 탭 바운스 점프 | 20~50 SNS | ✅ 완료 (Canvas 2D, 큐브 몬스터 스톰프 & 별 3개 골인) |
 | No.060 | **[Tank Stars](https://poki.com/kr/g/tank-stars)** | 액션 게임, 전쟁 게임 | 카드 No.60 기갑 전차장 | 조준 드래그 각도 조절 & FIRE 발사 | 20~50 SNS | ✅ 완료 (Canvas 2D, 곡사포 탄도학 & 적 전차 100% 폭파) |
-| No.061 | **[Magic Battleground](https://poki.com/kr/g/magic-battleground)** | 액션 게임, 랙돌 게임 | 카드 No.61 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.062 | **[Blast Buddies](https://poki.com/kr/g/blast-buddies)** | 액션 게임, 멀티플레이어 게임 | 카드 No.62 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.063 | **[Sword Masters](https://poki.com/kr/g/sword-masters)** | 어드벤쳐 게임, 스킬 게임 | 카드 No.63 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.064 | **[Sprint League](https://poki.com/kr/g/sprint-league)** | 레이싱 게임, 운동 게임 | 카드 No.64 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.065 | **[Real City Bikes](https://poki.com/kr/g/real-city-bikes)** | 레이싱 게임, 오토바이 게임 | 카드 No.65 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.066 | **[Hills of Steel](https://poki.com/kr/g/hills-of-steel)** | 어드벤쳐 게임, 전쟁 게임 | 카드 No.66 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.067 | **[Rail in the Air](https://poki.com/kr/g/rail-in-the-air)** | 시뮬레이션 게임, 운전 게임 | 카드 No.67 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.068 | **[Monkey Mart](https://poki.com/kr/g/monkey-mart)** | 쇼핑 게임, 동물 게임 | 카드 No.68 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.069 | **[Carnado Stunt Car](https://poki.com/kr/g/carnado-stunt-car)** | 레이싱 게임, 자동차 게임 | 카드 No.69 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.070 | **[Diva Hair Salon](https://poki.com/kr/g/diva-hair-salon)** | 장식 게임, 옷입히기 게임 | 카드 No.70 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
+| No.061 | **[Magic Battleground](https://poki.com/kr/g/magic-battleground)** | 액션 게임, 랙돌 게임 | 카드 No.61 아케인 마법사 | 조준 드래그 & 스펠(화염/빙결/전격) 전환 | 20~50 SNS | ✅ 완료 (Canvas 2D, 아레나 링아웃/마법탄 3KO) |
+| No.062 | **[Blast Buddies](https://poki.com/kr/g/blast-buddies)** | 액션 게임, 멀티플레이어 게임 | 카드 No.62 블래스터 | 스와이프 이동 & 탭 폭탄 설치 | 20~50 SNS | ✅ 완료 (Canvas 2D, 상자 폭파 파워업 & 적 2KO) |
+| No.063 | **[Sword Masters](https://poki.com/kr/g/sword-masters)** | 어드벤쳐 게임, 스킬 게임 | 카드 No.63 소드 마스터 | 터치/드래그 이동 & 소드 스톰 탭 | 20~50 SNS | ✅ 완료 (Canvas 2D, 몬스터 20마리 & 데몬로드 격파) |
+| No.064 | **[Sprint League](https://poki.com/kr/g/sprint-league)** | 레이싱 게임, 운동 게임 | 카드 No.64 스프린트 챔피언 | 좌/우 발 번갈아 탭 & 점프 버튼 | 20~50 SNS | ✅ 완료 (Canvas 2D, 허들 도약 & 100m 1위 주파) |
+| No.065 | **[Real City Bikes](https://poki.com/kr/g/real-city-bikes)** | 레이싱 게임, 오토바이 게임 | 카드 No.65 시티 라이더 | 좌우 스와이프 차선 & 롱터치 부스터 | 20~50 SNS | ✅ 완료 (Canvas 2D, 차량 니어미스 5회 & 2,000m 완주) |
+| No.066 | **[Hills of Steel](https://poki.com/kr/g/hills-of-steel)** | 어드벤쳐 게임, 전쟁 게임 | 카드 No.66 강철 전차 | 좌우 탭 전/후진 & 공중 폭격 지원 | 20~50 SNS | ✅ 완료 (Canvas 2D, 언덕 물리 & 전차4/헬기2 전멸) |
+| No.067 | **[Rail in the Air](https://poki.com/kr/g/rail-in-the-air)** | 시뮬레이션 게임, 운전 게임 | 카드 No.67 열차 기관사 | 순항/풀가속 탭 & 비상 제동 정차 | 20~50 SNS | ✅ 완료 (Canvas 2D, 커브 감속 & 3개역 승객 수송) |
+| No.068 | **[Monkey Mart](https://poki.com/kr/g/monkey-mart)** | 쇼핑 게임, 동물 게임 | 카드 No.68 마켓 원숭이 | 터치/드래그 오토 수확·진열·수거 | 20~50 SNS | ✅ 완료 (Canvas 2D, 바나나/옥수수 30판매 & $500) |
+| No.069 | **[Carnado Stunt Car](https://poki.com/kr/g/carnado-stunt-car)** | 레이싱 게임, 자동차 게임 | 카드 No.69 스턴트 드라이버 | 터치 가속 & 공중 스와이프 수평 조절 | 20~50 SNS | ✅ 완료 (Canvas 2D, 360도 공중제비 묘기 & 1,500점) |
+| No.070 | **[Diva Hair Salon](https://poki.com/kr/g/diva-hair-salon)** | 장식 게임, 옷입히기 게임 | 카드 No.70 헤어 디자이너 | 도구 선택 & 모발 드래그 스타일링 | 20~50 SNS | ✅ 완료 (Canvas 2D, 샴푸/드라이/커트/염색 4단계) |
 | No.071 | **[Scary Teacher Hide & Seek Games](https://poki.com/kr/g/scary-teacher-hide-seek-games)** | 어드벤쳐 게임 | 카드 No.71 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
 | No.072 | **[Supercar Legends](https://poki.com/kr/g/supercar-legends)** | 마우스 게임, 자동차 게임 | 카드 No.72 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
 | No.073 | **[Nails DIY: Manicure Master](https://poki.com/kr/g/nails-diy-manicure-master)** | 옷입히기 게임, 뷰티 게임 | 카드 No.73 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
@@ -398,3 +398,48 @@
     - 지형 굴곡이 있는 전장에서 전차 포신의 각도와 사격 파워를 정밀 조절하여 적 전차를 곡사포로 정밀 타격하는 전차 포격 결투.
     - 플레이어: 카드 No.60 기갑 전차장 스프라이트 (`cards2.png`).
     - 포신 각도 드래그 & 파워 게이지 릴리즈 발사, 탄도 궤적 및 지형 폭파, 적 전차 격파 승리 연동 완료.
+
+---
+
+## Phase 5-A 상세 작업 내역 (No.061 ~ No.070)
+
+61. **No.061 Magic Battleground (`PokiMagicBattlegroundGame.tsx`)**:
+    - 공중에 떠 있는 마법 아레나 링에서 화염(중형 데미지), 빙결(연사), 전격(초강력 넉백) 스펠을 조준 발사해 적 마법사 3명을 장외로 밀어내거나 제압하는 랙돌 마법 액션.
+    - 플레이어: 카드 No.61 아케인 마법사 스프라이트 (`cards2.png`).
+    - 터치 조준 드래그 & 스펠 원소 전환 버튼, 링아웃 물리 및 3인 KO 승리 연동 완료.
+62. **No.062 Blast Buddies (`PokiBlastBuddiesGame.tsx`)**:
+    - 9x9 격자 미로에서 폭탄을 설치하여 장애물 상자를 부수고 범위 증가/폭탄 추가/스피드업 아이템을 획득하며 적 버디 2명을 폭파시키는 배틀 아케이드.
+    - 플레이어: 카드 No.62 블래스터 스프라이트 (`cards2.png`).
+    - 스와이프 그리드 이동 & 원터치 탭 폭탄 설치, 십자 폭발 화염 및 적 2명 폭파 승리 연동 완료.
+63. **No.063 Sword Masters (`PokiSwordMastersGame.tsx`)**:
+    - 던전에서 검을 휘두르며 슬라임과 스켈레톤 20마리를 베어넘기고 거대 던전 보스인 심연의 데몬 로드를 격파하는 소드 액션 RPG.
+    - 플레이어: 카드 No.63 소드 마스터 스프라이트 (`cards2.png`).
+    - 원터치 드래그 이동 & 자동 검 휘두르기, '소드 스톰' 광역 회전 참격 스킬, 보스 토벌 승리 연동 완료.
+64. **No.064 Sprint League (`PokiSprintLeagueGame.tsx`)**:
+    - 100m 육상 트랙에서 왼발과 오른발을 번갈아 박자에 맞춰 빠른 탭으로 가속하고, 장애물 허들을 점프로 뛰어넘어 4명의 스프린터 중 1위로 골인하는 육상 스프린트.
+    - 플레이어: 카드 No.64 스프린트 챔피언 스프라이트 (`cards2.png`).
+    - 좌/우 발 교차 탭 가속 & 점프 버튼, 허들 충돌 감속 물리, 100m 1위 골인 승리 연동 완료.
+65. **No.065 Real City Bikes (`PokiRealCityBikesGame.tsx`)**:
+    - 4차선 도심 고속도로를 질주하며 일반 차량 사이를 아슬아슬하게 통과하는 니어미스(Near Miss) 5회를 성공시키고 2,000m를 완주하는 슈퍼바이크 레이싱.
+    - 플레이어: 카드 No.65 시티 라이더 스프라이트 (`cards2.png`).
+    - 좌우 스와이프 차선 변경 & 화면 터치 유지 니트로 부스터 가속, 충돌 판정 및 2,000m 완주 승리 연동 완료.
+66. **No.066 Hills of Steel (`PokiHillsOfSteelGame.tsx`)**:
+    - 기복이 심한 언덕 지형을 서스펜션 탄성으로 주파하며, 적 지상 전차 4대와 상공의 전투 헬기 2대를 포탄과 긴급 공중 폭격으로 격파하는 힐 탱크 슈터.
+    - 플레이어: 카드 No.66 강철 전차 스프라이트 (`cards2.png`).
+    - 화면 좌/우 탭 전진·후진 이동, 지형 탄도학 곡사포 & '공중 폭격' 지원, 적 6기 전멸 승리 연동 완료.
+67. **No.067 Rail in the Air (`PokiRailInAirGame.tsx`)**:
+    - 구름 위 고공 모노레일 레일을 달리며 급커브 구간에서 적정 속도를 유지해 탈선을 방지하고, 3개 공중 정거장에 정확히 정차하여 승객을 수송하는 열차 시뮬레이션.
+    - 플레이어: 카드 No.67 열차 기관사 스프라이트 (`cards2.png`).
+    - 스로틀 가속 & 긴급 제동 브레이크 조작, 탈선 위험도(%) 게이지 관리, 3개역 완벽 정차 승리 연동 완료.
+68. **No.068 Monkey Mart (`PokiMonkeyMartGame.tsx`)**:
+    - 바나나 나무와 옥수수 밭에서 작물을 수확해 진열대에 채우고, 몰려드는 동물 손님들에게 판매하여 지폐를 수거해 $500 수익을 달성하는 인기 마켓 타이쿤.
+    - 플레이어: 카드 No.68 마켓 원숭이 스프라이트 (`cards2.png`).
+    - 원터치 터치/드래그 오토 파밍 상호작용, 손님 결제 지폐 드롭 & 30개 판매 및 $500 수익 달성 승리 연동 완료.
+69. **No.069 Carnado Stunt Car (`PokiCarnadoStuntGame.tsx`)**:
+    - 메가 램프를 도약해 공중에서 360도 공중제비 묘기를 성공시키고 안전하게 착지하여 1,500점 스턴트 점수를 달성하는 익스트림 카 스턴트.
+    - 플레이어: 카드 No.69 스턴트 드라이버 스프라이트 (`cards2.png`).
+    - 터치 유지 풀악셀 가속 & 공중 좌우 스와이프 각운동량 회전 조절, 3연속 안전 착지 승리 연동 완료.
+70. **No.070 Diva Hair Salon (`PokiDivaHairSalonGame.tsx`)**:
+    - 샴푸 거품 세발 ➔ 드라이어 수분 건조 ➔ 가위 모발 커트 ➔ 컬러 염색약 칠하기 및 티아라 착용 4단계를 거쳐 완벽한 디바를 완성하는 뷰티 헤어 살롱.
+    - 플레이어: 카드 No.70 헤어 디자이너 스프라이트 (`cards2.png`).
+    - 도구 탭 선택 & 모발 부위 원터치 드래그 스타일링 제스처, 4단계 살롱 케어 완료 및 런웨이 데뷔 승리 연동 완료.

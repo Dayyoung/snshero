@@ -203,6 +203,16 @@ import { PokiDinoSimulatorGame } from '../components/poki/PokiDinoSimulatorGame'
 import { PokiTearBlocksDownGame } from '../components/poki/PokiTearBlocksDownGame';
 import { PokiRedBall4Game } from '../components/poki/PokiRedBall4Game';
 import { PokiTankStarsGame } from '../components/poki/PokiTankStarsGame';
+import PokiMagicBattlegroundGame from '../components/poki/PokiMagicBattlegroundGame';
+import PokiBlastBuddiesGame from '../components/poki/PokiBlastBuddiesGame';
+import PokiSwordMastersGame from '../components/poki/PokiSwordMastersGame';
+import PokiSprintLeagueGame from '../components/poki/PokiSprintLeagueGame';
+import PokiRealCityBikesGame from '../components/poki/PokiRealCityBikesGame';
+import PokiHillsOfSteelGame from '../components/poki/PokiHillsOfSteelGame';
+import PokiRailInAirGame from '../components/poki/PokiRailInAirGame';
+import PokiMonkeyMartGame from '../components/poki/PokiMonkeyMartGame';
+import PokiCarnadoStuntGame from '../components/poki/PokiCarnadoStuntGame';
+import PokiDivaHairSalonGame from '../components/poki/PokiDivaHairSalonGame';
 import { checkFlips, checkFlipsWithDetails, findBestMove, Board, CardInstance } from '../lib/gameEngine';
 import { GambitConfig, TacticalStance } from '../types';
 import { getSecretStamps, unlockSecretStamp } from '../lib/secretStampHelper';
@@ -454,7 +464,7 @@ const BossCardItem: React.FC<BossCardItemProps> = ({ boss, lowSpecMode, language
   );
 };
 
-type GameState = 'modeSelect' | 'lobby' | 'searching' | 'playing' | 'gameOver' | 'preMatch' | 'tournament' | 'story' | 'boss' | 'dungeon' | 'defense' | 'running' | 'shooting' | 'snake' | 'gomoku' | 'memorymatch' | 'slide2048' | 'cardjumper' | 'cardtap' | 'cardflip' | 'cardslide' | 'cardsorcery' | 'cardslot' | 'cardheist' | 'cardrush' | 'breakout' | 'minesweeper' | 'pacman' | 'tictactoe' | 'trexrunner' | 'voxeldefense' | 'pixelstrike' | 'voxelparkour' | 'voxelbattlegrounds' | 'voxeldungeon' | 'voxelspace' | 'voxelzombie' | 'voxelsiege' | 'voxeltitan' | 'voxelsuperstrikers' | 'voxelgladiatorcolosseum' | 'voxeldragonslayer' | 'voxelarcherhero' | 'voxelvampiresurvival' | 'voxeltankbounce' | 'voxelninjaslash' | 'voxelgolfmaster' | 'voxellumberjacktycoon' | 'voxelfishingmaster' | 'voxelfirerescue' | 'voxelwindhunter' | 'voxelsubwayrunner' | 'voxelcranemaster' | 'voxelmonstertruck' | 'voxeltowerstack' | 'voxelslamdunk' | 'voxelcoastertycoon' | 'voxelsniperhunter' | 'voxeljetskiwater' | 'voxelbaseballderby' | 'voxelboxingmighty' | 'voxelmicrokart' | 'voxeltreasuredigger' | 'voxelflightlanding' | 'voxelgachaclaw' | 'voxelbilliardstrick' | 'voxeldartsbar' | 'voxelwingsuitskydiving' | 'voxelbadmintonblitz' | 'voxelmagnethole' | 'voxelmotocrossstunt' | 'voxelskateboardstreet' | 'voxelsnowboardslalom' | 'voxelkaratebreak' | 'voxelpinballclimber' | 'voxelcrazytaxi' | 'voxellaserstealth' | 'voxeldojobalance' | 'voxelbubblepop' | 'voxelwaterslide' | 'voxelkrakenhunter' | 'voxelhalfpipeskater' | 'voxelnetherportal' | 'voxelmegaflareassault' | 'voxelspikerolling' | 'voxelterraquake' | 'voxeldreamweaver' | 'voxellifeflame' | 'voxelarcanenexus' | 'voxeldreadshadow' | 'pokislimekeyboard' | 'pokihideandpaint' | 'pokiminefun' | 'pokipaperio' | 'pokileveldevil' | 'pokisnakevsworms' | 'pokivectaria' | 'pokicryzen' | 'pokiblockyblast' | 'pokiragdollchaos' | 'pokirainbowobby' | 'pokimyhotel' | 'pokitalkingtomgoldrun' | 'pokimonkeytag' | 'pokistickmanbattle' | 'pokidecorlife' | 'pokineonchallenge' | 'pokiplonky' | 'pokibackroomsrecovery' | 'pokistickmanhook' | 'pokistealbrainrot' | 'pokilongcat' | 'pokigunsgunsguns' | 'pokiragdollhit' | 'pokisoccerreal' | 'pokisubwaysurfers' | 'pokimasterchess' | 'pokiperfectshape' | 'pokimurder' | 'pokidisasterarena' | 'pokislicemaster' | 'pokibraintest' | 'pokistuntbike' | 'pokisushiparty' | 'pokidrivemad' | 'pokitemplerun2' | 'pokiescapeschool' | 'pokicountwar' | 'pokipartytime' | 'pokipunchyguy' | 'pokiblacktoppolice' | 'pokifamilylife' | 'pokipetnest' | 'pokicuboyadventure' | 'pokibubblestorm' | 'pokikickthebuddy' | 'pokicountcontrol' | 'pokirepuls' | 'pokishenzhenmahjong' | 'pokibeautysalon' | 'pokisuperdress' | 'pokikaratefighter' | 'pokiplanetdestruction' | 'pokiyoumonster' | 'pokisatisbox' | 'pokisoccerskills2' | 'pokidinosimulator' | 'pokitearblocksdown' | 'pokiredball4' | 'pokitankstars';
+type GameState = 'modeSelect' | 'lobby' | 'searching' | 'playing' | 'gameOver' | 'preMatch' | 'tournament' | 'story' | 'boss' | 'dungeon' | 'defense' | 'running' | 'shooting' | 'snake' | 'gomoku' | 'memorymatch' | 'slide2048' | 'cardjumper' | 'cardtap' | 'cardflip' | 'cardslide' | 'cardsorcery' | 'cardslot' | 'cardheist' | 'cardrush' | 'breakout' | 'minesweeper' | 'pacman' | 'tictactoe' | 'trexrunner' | 'voxeldefense' | 'pixelstrike' | 'voxelparkour' | 'voxelbattlegrounds' | 'voxeldungeon' | 'voxelspace' | 'voxelzombie' | 'voxelsiege' | 'voxeltitan' | 'voxelsuperstrikers' | 'voxelgladiatorcolosseum' | 'voxeldragonslayer' | 'voxelarcherhero' | 'voxelvampiresurvival' | 'voxeltankbounce' | 'voxelninjaslash' | 'voxelgolfmaster' | 'voxellumberjacktycoon' | 'voxelfishingmaster' | 'voxelfirerescue' | 'voxelwindhunter' | 'voxelsubwayrunner' | 'voxelcranemaster' | 'voxelmonstertruck' | 'voxeltowerstack' | 'voxelslamdunk' | 'voxelcoastertycoon' | 'voxelsniperhunter' | 'voxeljetskiwater' | 'voxelbaseballderby' | 'voxelboxingmighty' | 'voxelmicrokart' | 'voxeltreasuredigger' | 'voxelflightlanding' | 'voxelgachaclaw' | 'voxelbilliardstrick' | 'voxeldartsbar' | 'voxelwingsuitskydiving' | 'voxelbadmintonblitz' | 'voxelmagnethole' | 'voxelmotocrossstunt' | 'voxelskateboardstreet' | 'voxelsnowboardslalom' | 'voxelkaratebreak' | 'voxelpinballclimber' | 'voxelcrazytaxi' | 'voxellaserstealth' | 'voxeldojobalance' | 'voxelbubblepop' | 'voxelwaterslide' | 'voxelkrakenhunter' | 'voxelhalfpipeskater' | 'voxelnetherportal' | 'voxelmegaflareassault' | 'voxelspikerolling' | 'voxelterraquake' | 'voxeldreamweaver' | 'voxellifeflame' | 'voxelarcanenexus' | 'voxeldreadshadow' | 'pokislimekeyboard' | 'pokihideandpaint' | 'pokiminefun' | 'pokipaperio' | 'pokileveldevil' | 'pokisnakevsworms' | 'pokivectaria' | 'pokicryzen' | 'pokiblockyblast' | 'pokiragdollchaos' | 'pokirainbowobby' | 'pokimyhotel' | 'pokitalkingtomgoldrun' | 'pokimonkeytag' | 'pokistickmanbattle' | 'pokidecorlife' | 'pokineonchallenge' | 'pokiplonky' | 'pokibackroomsrecovery' | 'pokistickmanhook' | 'pokistealbrainrot' | 'pokilongcat' | 'pokigunsgunsguns' | 'pokiragdollhit' | 'pokisoccerreal' | 'pokisubwaysurfers' | 'pokimasterchess' | 'pokiperfectshape' | 'pokimurder' | 'pokidisasterarena' | 'pokislicemaster' | 'pokibraintest' | 'pokistuntbike' | 'pokisushiparty' | 'pokidrivemad' | 'pokitemplerun2' | 'pokiescapeschool' | 'pokicountwar' | 'pokipartytime' | 'pokipunchyguy' | 'pokiblacktoppolice' | 'pokifamilylife' | 'pokipetnest' | 'pokicuboyadventure' | 'pokibubblestorm' | 'pokikickthebuddy' | 'pokicountcontrol' | 'pokirepuls' | 'pokishenzhenmahjong' | 'pokibeautysalon' | 'pokisuperdress' | 'pokikaratefighter' | 'pokiplanetdestruction' | 'pokiyoumonster' | 'pokisatisbox' | 'pokisoccerskills2' | 'pokidinosimulator' | 'pokitearblocksdown' | 'pokiredball4' | 'pokitankstars' | 'pokimagicbattleground' | 'pokiblastbuddies' | 'pokiswordmasters' | 'pokisprintleague' | 'pokirealcitybikes' | 'pokihillsofsteel' | 'pokirailinair' | 'pokimonkeymart' | 'pokicarnadostunt' | 'pokidivahairsalon';
 
 interface TournamentParticipant {
   id: string;
@@ -8060,154 +8070,154 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       guide: language === 'ko' ? '곡사 각도와 파워를 조절해 포탄을 발사하여 상대 전차를 격파하세요.' : 'Aim ballistic angle and firepower to destroy enemy tanks with shells!'
     },
     {
-      id: 'voxelgladiatorcolosseum',
-      title: language === 'ko' ? '블리츠 글래디에이터' : 'Blitz Gladiator Duel',
-      icon: Swords,
-      color: 'from-amber-600 to-red-800',
-      image: '/minigame_cardrush.png',
+      id: 'pokimagicbattleground',
+      title: language === 'ko' ? '매직 배틀그라운드' : 'Magic Battleground',
+      icon: Sparkles,
+      color: 'from-indigo-600 to-purple-900',
+      image: '/minigame_cardsorcery.png',
       characterId: 61,
       action: () => {
-        setGameState('voxelgladiatorcolosseum');
+        setGameState('pokimagicbattleground');
       },
       category: 'battle',
       isNew: true,
-      badgeText: 'GLADIATOR-DUEL',
-      guide: language === 'ko' ? '화면을 탭해 연속 공격하고, 적 공격(⚠️) 시 스와이프해 패링 쳐내며 챔피언을 쓰러뜨리세요.' : 'Tap to attack rapidly and swipe when enemy strikes (⚠️) to parry and defeat champions!'
+      badgeText: 'MAGIC-BATTLE',
+      guide: language === 'ko' ? '마법탄을 조준 발사하고 화염/빙결/전격 스펠을 전환해 상대 마법사를 장외로 날려버리세요.' : 'Aim and cast spells, switch elements, and knock rival mages out of the magic arena!'
     },
     {
-      id: 'voxeldragonslayer',
-      title: language === 'ko' ? '블리츠 드래곤 레이드' : 'Blitz Dragon Raid',
+      id: 'pokiblastbuddies',
+      title: language === 'ko' ? '블래스트 버디즈' : 'Blast Buddies',
       icon: Flame,
-      color: 'from-red-600 to-rose-900',
-      image: '/minigame_boss.png',
+      color: 'from-blue-600 to-indigo-900',
+      image: '/minigame_cardrush.png',
       characterId: 62,
       action: () => {
-        setGameState('voxeldragonslayer');
+        setGameState('pokiblastbuddies');
       },
       category: 'battle',
       isNew: true,
-      badgeText: 'DRAGON-RAID',
-      guide: language === 'ko' ? '비행하는 드래곤을 직접 탭해 화살을 쏘고 날아오는 화염탄을 탭으로 요격하세요.' : 'Tap flying dragon head directly to shoot & tap incoming fireballs to intercept!'
+      badgeText: 'BLAST-BUDDIES',
+      guide: language === 'ko' ? '격자 미로에서 폭탄을 설치해 상자를 폭파하고 파워업을 획득해 적 버디 2명을 제압하세요.' : 'Drop bombs in grid maze, blast crates for powerups, and eliminate 2 rival buddies!'
     },
     {
-      id: 'voxelarcherhero',
-      title: language === 'ko' ? '아케인 슬링샷 궁수' : 'Arcane Slingshot Archer',
-      icon: TargetIcon,
-      color: 'from-lime-600 to-emerald-800',
-      image: '/minigame_shooting.png',
+      id: 'pokiswordmasters',
+      title: language === 'ko' ? '소드 마스터즈' : 'Sword Masters',
+      icon: Swords,
+      color: 'from-sky-600 to-blue-950',
+      image: '/minigame_boss.png',
       characterId: 63,
       action: () => {
-        setGameState('voxelarcherhero');
+        setGameState('pokiswordmasters');
       },
-      category: 'casual',
+      category: 'battle',
       isNew: true,
-      badgeText: 'SLINGSHOT',
-      guide: language === 'ko' ? '화면의 활시위를 손가락으로 직접 당겨 각도를 조준하고 놓아서 몰려오는 몬스터들을 격추하세요.' : 'Drag and release the bowstring to aim and shoot flying monsters in physics archery!'
+      badgeText: 'SWORD-MASTERS',
+      guide: language === 'ko' ? '검사를 조작해 몬스터 20마리를 베어넘기고 심연의 데몬 로드 보스를 처치하세요.' : 'Slash 20 dungeon monsters and defeat the giant Demon Lord boss with sword skills!'
     },
     {
-      id: 'voxelvampiresurvival',
-      title: language === 'ko' ? '블리츠 뱀파이어 서바이벌' : 'Blitz Vampire Survival',
-      icon: Skull,
-      color: 'from-purple-600 to-indigo-950',
-      image: '/minigame_cardsorcery.png',
+      id: 'pokisprintleague',
+      title: language === 'ko' ? '스프린트 리그' : 'Sprint League',
+      icon: Activity,
+      color: 'from-red-600 to-rose-900',
+      image: '/minigame_running.png',
       characterId: 64,
       action: () => {
-        setGameState('voxelvampiresurvival');
-      },
-      category: 'battle',
-      isNew: true,
-      badgeText: 'VAMPIRE-SURVIVAL',
-      guide: language === 'ko' ? '손가락으로 헌터를 드래그해 회전 블레이드로 언데드를 토벌하세요.' : 'Drag hunter to slice approaching undead with orbiting blades!'
-    },
-    {
-      id: 'voxeltankbounce',
-      title: language === 'ko' ? '블리츠 탱크 바운스' : 'Blitz Tank Bounce',
-      icon: Crosshair,
-      color: 'from-sky-600 to-blue-900',
-      image: '/minigame_running.png',
-      characterId: 65,
-      action: () => {
-        setGameState('voxeltankbounce');
-      },
-      category: 'battle',
-      isNew: true,
-      badgeText: 'TANK-BOUNCE',
-      guide: language === 'ko' ? '화면을 드래그해 각도를 맞추고 손을 떼어 도탄 포탄을 발사하세요.' : 'Drag to aim ricochet angle and release to fire bouncing shell!'
-    },
-    {
-      id: 'voxelninjaslash',
-      title: language === 'ko' ? '블리츠 닌자 슬래시' : 'Blitz Ninja Slash',
-      icon: Zap,
-      color: 'from-pink-600 to-rose-950',
-      image: '/minigame_cardslide.png',
-      characterId: 66,
-      action: () => {
-        setGameState('voxelninjaslash');
-      },
-      category: 'battle',
-      isNew: true,
-      badgeText: 'NINJA-SLASH',
-      guide: language === 'ko' ? '손가락으로 화면을 슥 그어 날아오는 표적들을 베어가르세요.' : 'Swipe screen like a blade to slice flying ninja targets!'
-    },
-    {
-      id: 'voxelgolfmaster',
-      title: language === 'ko' ? '블리츠 미니골프' : 'Blitz Mini Golf',
-      icon: Wind,
-      color: 'from-emerald-700 to-teal-900',
-      image: '/minigame_pinball.png',
-      characterId: 67,
-      action: () => {
-        setGameState('voxelgolfmaster');
+        setGameState('pokisprintleague');
       },
       category: 'sports',
       isNew: true,
-      badgeText: 'GOLF-SLING',
-      guide: language === 'ko' ? '골프공을 뒤로 당겨 파워를 조준하고 손을 떼어 홀인원 퍼팅을 성공시키세요.' : 'Pull back on the golf ball and release to sink a hole-in-one!'
+      badgeText: 'SPRINT-LEAGUE',
+      guide: language === 'ko' ? '왼발/오른발 박자 탭으로 전력 질주하고 허들을 점프로 뛰어넘어 100m 1위를 차지하세요.' : 'Tap alternating feet to sprint fast, jump over hurdles, and win 1st place in 100m sprint!'
     },
     {
-      id: 'voxellumberjacktycoon',
-      title: language === 'ko' ? '블리츠 럼버잭' : 'Blitz Lumberjack Chop',
-      icon: Axe,
-      color: 'from-amber-600 to-stone-800',
-      image: '/minigame_towercraft.png',
+      id: 'pokirealcitybikes',
+      title: language === 'ko' ? '리얼 시티 바이크' : 'Real City Bikes',
+      icon: Zap,
+      color: 'from-blue-600 to-cyan-900',
+      image: '/minigame_running.png',
+      characterId: 65,
+      action: () => {
+        setGameState('pokirealcitybikes');
+      },
+      category: 'racing',
+      isNew: true,
+      badgeText: 'CITY-BIKES',
+      guide: language === 'ko' ? '차선을 신속히 변경하며 차량을 아슬아슬하게 스치는 니어미스 5회와 2,000m를 완주하세요.' : 'Switch lanes swiftly, perform 5 near-miss passes, and complete 2,000m high-speed ride!'
+    },
+    {
+      id: 'pokihillsofsteel',
+      title: language === 'ko' ? '힐스 오브 스틸' : 'Hills of Steel',
+      icon: Crosshair,
+      color: 'from-emerald-700 to-stone-900',
+      image: '/minigame_running.png',
+      characterId: 66,
+      action: () => {
+        setGameState('pokihillsofsteel');
+      },
+      category: 'battle',
+      isNew: true,
+      badgeText: 'HILLS-OF-STEEL',
+      guide: language === 'ko' ? '기복 있는 언덕을 오르내리며 적 지상 전차 4대와 공중 헬기 2대를 전멸시키세요.' : 'Navigate rough terrain hills and annihilate 4 enemy tanks and 2 battle helicopters!'
+    },
+    {
+      id: 'pokirailinair',
+      title: language === 'ko' ? '레일 인 디 에어' : 'Rail in the Air',
+      icon: Navigation,
+      color: 'from-sky-600 to-indigo-900',
+      image: '/minigame_pacman.png',
+      characterId: 67,
+      action: () => {
+        setGameState('pokirailinair');
+      },
+      category: 'casual',
+      isNew: true,
+      badgeText: 'AIR-RAIL',
+      guide: language === 'ko' ? '급커브에서 안전 속도를 유지하고 탈선 없이 3개 고공 정거장에 안전하게 정차하세요.' : 'Control monorail throttle, avoid overspeed on curves, and stop safely at 3 air stations!'
+    },
+    {
+      id: 'pokimonkeymart',
+      title: language === 'ko' ? '몽키 마트' : 'Monkey Mart',
+      icon: ShoppingBag,
+      color: 'from-amber-600 to-yellow-900',
+      image: '/minigame_cardtap.png',
       characterId: 68,
       action: () => {
-        setGameState('voxellumberjacktycoon');
+        setGameState('pokimonkeymart');
       },
-      category: 'arcade',
+      category: 'casual',
       isNew: true,
-      badgeText: 'LUMBER-CHOP',
-      guide: language === 'ko' ? '화면 좌우를 탭해 나뭇가지를 피하며 빠르게 나무를 벌목하세요.' : 'Tap left/right to chop wood and dodge falling branches!'
+      badgeText: 'MONKEY-MART',
+      guide: language === 'ko' ? '바나나와 옥수수를 수확해 진열대에 채우고 손님에게 판매해 $500 수익을 올리세요.' : 'Harvest bananas and corn, stock shelves, serve animal customers, and earn $500 profit!'
     },
     {
-      id: 'voxelfishingmaster',
-      title: language === 'ko' ? '블리츠 피싱 슬링' : 'Blitz Fishing Sling',
-      icon: Fish,
-      color: 'from-cyan-600 to-blue-900',
-      image: '/minigame_cardflip.png',
+      id: 'pokicarnadostunt',
+      title: language === 'ko' ? '카나도 스턴트 카' : 'Carnado Stunt Car',
+      icon: Flame,
+      color: 'from-orange-600 to-red-900',
+      image: '/minigame_running.png',
       characterId: 69,
       action: () => {
-        setGameState('voxelfishingmaster');
+        setGameState('pokicarnadostunt');
       },
-      category: 'arcade',
+      category: 'racing',
       isNew: true,
-      badgeText: 'FISHING-SLING',
-      guide: language === 'ko' ? '물고기를 향해 탭하여 바늘을 던지고, 걸리면 위로 스와이프 챔질하여 낚아 올리세요.' : 'Tap to cast hook at fishes, swipe up upon bite to catch!'
+      badgeText: 'CARNADO-STUNT',
+      guide: language === 'ko' ? '메가 램프를 도약해 360도 공중제비 묘기를 펼치고 1,500점 스턴트 점수를 달성하세요.' : 'Launch off mega ramps, perform 360 air flips, and achieve 1,500 stunt points!'
     },
     {
-      id: 'voxelfirerescue',
-      title: language === 'ko' ? '블리츠 파이어 레스큐' : 'Blitz Fire Rescue',
-      icon: Flame,
-      color: 'from-red-600 to-amber-800',
-      image: '/minigame_castleblaster.png',
+      id: 'pokidivahairsalon',
+      title: language === 'ko' ? '디바 헤어 살롱' : 'Diva Hair Salon',
+      icon: Sparkles,
+      color: 'from-pink-600 to-purple-900',
+      image: '/minigame_cardflip.png',
       characterId: 70,
       action: () => {
-        setGameState('voxelfirerescue');
+        setGameState('pokidivahairsalon');
       },
-      category: 'arcade',
+      category: 'casual',
       isNew: true,
-      badgeText: 'FIRE-RESCUE',
-      guide: language === 'ko' ? '불타는 창문을 눌러 물대포를 직접 분사해 화재를 진압하고 탈출 시민(🏃)을 구조하세요.' : 'Hold on burning windows to spray water jets and tap escaping citizens to rescue!'
+      badgeText: 'DIVA-SALON',
+      guide: language === 'ko' ? '세발, 드라이, 커트, 컬러링 4단계 살롱 케어를 통해 완벽한 디바 런웨이를 완성하세요.' : 'Wash, dry, cut, and color hair across 4 styling stages to create a dazzling runway diva!'
     },
     {
       id: 'voxelwindhunter',
@@ -12888,6 +12898,86 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       <PokiTankStarsGame
         onBack={() => setGameState('modeSelect')}
         cardId={playerDeck[0]?.id || 60}
+      />
+    );
+  }
+
+  if (gameState === 'pokimagicbattleground') {
+    return (
+      <PokiMagicBattlegroundGame
+        onClose={() => setGameState('modeSelect')}
+      />
+    );
+  }
+
+  if (gameState === 'pokiblastbuddies') {
+    return (
+      <PokiBlastBuddiesGame
+        onClose={() => setGameState('modeSelect')}
+      />
+    );
+  }
+
+  if (gameState === 'pokiswordmasters') {
+    return (
+      <PokiSwordMastersGame
+        onClose={() => setGameState('modeSelect')}
+      />
+    );
+  }
+
+  if (gameState === 'pokisprintleague') {
+    return (
+      <PokiSprintLeagueGame
+        onClose={() => setGameState('modeSelect')}
+      />
+    );
+  }
+
+  if (gameState === 'pokirealcitybikes') {
+    return (
+      <PokiRealCityBikesGame
+        onClose={() => setGameState('modeSelect')}
+      />
+    );
+  }
+
+  if (gameState === 'pokihillsofsteel') {
+    return (
+      <PokiHillsOfSteelGame
+        onClose={() => setGameState('modeSelect')}
+      />
+    );
+  }
+
+  if (gameState === 'pokirailinair') {
+    return (
+      <PokiRailInAirGame
+        onClose={() => setGameState('modeSelect')}
+      />
+    );
+  }
+
+  if (gameState === 'pokimonkeymart') {
+    return (
+      <PokiMonkeyMartGame
+        onClose={() => setGameState('modeSelect')}
+      />
+    );
+  }
+
+  if (gameState === 'pokicarnadostunt') {
+    return (
+      <PokiCarnadoStuntGame
+        onClose={() => setGameState('modeSelect')}
+      />
+    );
+  }
+
+  if (gameState === 'pokidivahairsalon') {
+    return (
+      <PokiDivaHairSalonGame
+        onClose={() => setGameState('modeSelect')}
       />
     );
   }
