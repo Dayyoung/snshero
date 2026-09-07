@@ -4,6 +4,31 @@
 
 ---
 
+## [2026-09-07 15:55 KST] [Poki 110선 리마스터 6/110] No.006 Snake vs Worms Three.js 3D 실시간 지렁이 vs 뱀 배틀로얄 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/snake-vs-worms`) 분석 및 프롬프트(`src/components/poki/prompts/No006_SnakeVsWorms_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 3D 스네이크 바디/세그먼트 추종, 3D 회전 음식 오브(도넛, 피자, 에너지), 헤드 충돌 킬 및 폭발 파티클, 7종 AI 지렁이 봇 배틀로얄 전면 재개발.
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(다이나믹 플로팅 조이스틱, 우측 80px 대형 [⚡ BOOST] 버튼, 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 인기 배틀 서바이벌 .io 게임. 다양한 음식(피자, 도넛, 에너지)을 섭취해 몸집을 키우고, 상대방의 이동 경로를 몸통으로 가로막아 폭발시키는 헤드-바디 충돌 배틀로얄.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiSnakeVsWormsGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera`, 반경 65 네온 원형 아레나, 다크 메탈릭 플로어 & 사이언 그리드 바닥, 레드 배리어 링.
+     - 3D 에메랄드 스네이크 바디: 머리 구체 + 카툰 눈 + 낼름 혀 + No.06 카드 영웅 배지 + 90개 세그먼트 구체 메쉬 풀 & 위치 히스토리 큐 역기구학 인터폴레이션.
+     - 110개의 3D 회전 부유 음식 오브 (도넛 `TorusGeometry`, 피자 `ConeGeometry`, 에너지 `IcosahedronGeometry`).
+     - 헤드 충돌 킬 & 파티클 폭발: 플레이어 머리가 봇 몸에 닿으면 사망, 봇 머리가 플레이어 몸에 닿으면 봇 사망 및 15개 이상의 에너지 오브 분출 + 킬 피드 및 스코어 보너스.
+     - 7종 고유 테마 AI 봇 지렁이 (골든 렉스, 바이퍼 독사, 심해 크라켄, 화염 살라맨더 등) 실시간 인공지능 배틀.
+     - 모바일 퓨어 터치: 다이나믹 플로팅 가상 조이스틱 (반경 50px 링 & 놉 시각화) + 우측 하단 80px 대형 `[⚡ BOOST]` 터치 버튼 (0ms 즉각 반응, 햅틱 `navigator.vibrate([20])`, 속도 1.8배 가속 및 스파크 파티클).
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 확인 팝업 및 길이/처치 수 비례 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No006_SnakeVsWorms_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 6개 완료 (No.007 Vectaria.io 대기).
+
+---
+
 ## [2026-09-07 15:42 KST] [Poki 110선 리마스터 5/110] No.005 Level Devil Three.js 3D 얄미운 트롤 플랫포머 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(, Unept 제작) 분석 및 프롬프트() 작성.
