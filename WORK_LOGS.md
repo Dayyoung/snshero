@@ -4,6 +4,41 @@
 
 ---
 
+## [2026-09-08 00:59 KST] [Poki 110선 리마스터 64/110] No.064 Sprint League Three.js 3D 올림픽 육상 100m 스프린트 & 허들 레이싱 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/sprint-league`) 분석 및 프롬프트(`src/components/poki/prompts/No064_SprintLeague_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 100m 4레인 우레탄 트랙 & 15m 안전 광폭 스타트 존 & 100m 피니시 아치 게이트 및 골든 리본 테이프, 대한민국 블루 스프린터 & No.64 영웅 배지 vs 3인의 AI 러너(옐로우/레드/그린), 35m/70m 허들 장애물 점프 도약 및 52m 네온 시안 터보 가속 패드, TPS 숄더뷰 트래킹 카메라, 모바일 퓨어 터치 조작계(L/R 발걸음 교차 리듬 탭 가속 + 우측 대형 76px JUMP 허들 점프 + 64px BURST 폭풍 스퍼트 + 햅틱) 전면 재개발.
+  - AGENTS.md 카메라 기준 조작 방향(좌우/상하) 100% 일치 절대 원칙 준수 (TPS 숄더뷰 카메라 기준 전방 질주 트래킹 1:1 완벽 정렬).
+  - AGENTS.md 시작 지점 안전 안착 절대 원칙 준수 (0~15m 안전 광폭 스타트 존 안착).
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(L/R 교차 탭/대형 JUMP 버튼 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 최고 인기 육상 스프린트 시뮬레이션 Sprint League. 올림픽 100m 트랙에서 4명의 스프린터가 치열하게 질주하고, 허들 장애물을 점프로 넘으며, 부스트 패드와 스퍼트로 1위를 차지하는 역동적인 3D 육상 레이싱 스포츠 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiSprintLeagueGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` TPS 숄더뷰 트래킹 카메라, 100m 붉은 테라코타 우레탄 4레인 트랙 및 백색 레인 구분선.
+     - 0~15m 안전 광폭 스타트 존 및 100m 지점 대형 피니시 아치 게이트와 붉은 피니시 리본 테이프 모델링.
+     - 4인의 3D 러너 캐릭터 모델링:
+       - 플레이어 (레인 1, 대한민국 블루&화이트 유니폼, 러닝 스파이크) & 카드 No.064 공식 영웅 배지.
+       - 라이벌 러너 3명 (레인 0 옐로우, 레인 2 레드, 레인 3 그린)의 자율 가속 및 허들 점프 AI.
+       - 달리기 속도에 동기화되는 역동적인 팔다리 스윙 및 허들 도약 애니메이션.
+     - 트랙 인터랙션 기믹:
+       - 35m 및 70m 지점 허들 장애물: 점프로 넘지 못하고 걸리면 속도 45% 감속 페널티 + 햅틱 진동.
+       - 52m 지점 네온 시안 터보 패드: 밟으면 2초간 최고 16m/s 초고속 부스트 가속.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 좌측 [L] / [R] 발걸음 교차 리듬 탭으로 무한 가속.
+       - 우측 대형 76px [JUMP 허들 점프] 버튼 + 64px [BURST 폭풍 스퍼트] 버튼.
+       - MinimalistMissionHUD (실시간 순위, 주행 거리, 주행 속도 km/h, 중도 포기 시 비례 SNS 안전 정산).
+       - 상위권 결승선 돌파 시 축포 팡파르 및 VictoryRewardModal 연동 완료.
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 실행 결과 110/110 전체 SSR 안전 렌더링 무결점 통과.
+  4. **문서 및 형상 관리**:
+     - `POKI_REMASTER_STATUS.json` (64/110 완료, current_game_index: 65) 갱신.
+     - `WORK_LOGS.md` 갱신, Git 커밋/푸시 및 구글 폼 보고 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 64/110] No.064 Sprint League Three.js 3D 올림픽 육상 100m 스프린트 & 허들 레이싱 전면 고도화`)
+
+---
+
 ## [2026-09-08 00:58 KST] [Poki 110선 리마스터 63/110] No.063 Sword Masters Three.js 3D 핵앤슬래시 검술 어드벤처 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/sword-masters`) 분석 및 프롬프트(`src/components/poki/prompts/No063_SwordMasters_Prompt.md`) 작성.
