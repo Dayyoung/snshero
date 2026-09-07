@@ -8,7 +8,7 @@
   3. **일관된 보상 체계**: `standardizedRewardGateway.ts` 경유 20~50 SNS 포인트 공정 지급 및 `VictoryRewardModal`
   4. **일관된 그래픽 엔진**: HTML5 Canvas 2D 60fps 부드러운 애니메이션 및 파티클
   5. **SNSHero 캐릭터 연동**: `drawCardSprite` 기반 `cards1.png`, `cards2.png` 영웅/몬스터 스프라이트 100% 적용
-- **전체 진행 현황**: **20 / 110 완료 (18.2%)**
+- **전체 진행 현황**: **30 / 110 완료 (27.3%)**
 
 ---
 
@@ -36,16 +36,16 @@
 | No.018 | **[Plonky](https://poki.com/kr/g/plonky)** | 스킬 게임, 크리스마스 게임 | 카드 No.18 윈드 레인저 | 좌우 드래그 회전 링 틈새 통과 | 20~50 SNS | ✅ 완료 (Canvas 2D, 헬릭스 스타일 심층 낙하 드롭) |
 | No.019 | **[Backrooms Recovery](https://poki.com/kr/g/backrooms-recovery)** | 액션 게임, 어드벤쳐 게임 | 카드 No.19 어스 퀘이커 | 원터치 화면 탭/드래그 이동 & 손전등 | 20~50 SNS | ✅ 완료 (Canvas 2D, 옐로우 미로 3키카드 회수 탈출) |
 | No.020 | **[Stickman Hook](https://poki.com/kr/g/stickman-hook)** | 레이싱 게임, 액션 게임 | 카드 No.20 라이트닝 로드 | 롱탭 로프 그래플링 & 릴리즈 점프 | 20~50 SNS | ✅ 완료 (Canvas 2D, 물리 기반 진자 스윙 & 바운스 러너) |
-| No.021 | **[Steal a Brainrot](https://poki.com/kr/g/steal-a-brainrot)** | 어드벤쳐 게임, 멀티플레이어 게임 | 카드 No.21 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.022 | **[Longcat](https://poki.com/kr/g/longcat)** | 두뇌 게임, 스킬 게임 | 카드 No.22 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.023 | **[Guns Guns Guns](https://poki.com/kr/g/guns-guns-guns)** | 슈팅 게임, 총 게임 | 카드 No.23 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.024 | **[Ragdoll Hit](https://poki.com/kr/g/ragdoll-hit)** | 액션 게임, 랙돌 게임 | 카드 No.24 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.025 | **[Soccer REAL](https://poki.com/kr/g/soccer-real)** | 운동 게임, 축구 게임 | 카드 No.25 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.026 | **[Subway Surfers](https://poki.com/kr/g/subway-surfers)** | 액션 게임, 어드벤쳐 게임 | 카드 No.26 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.027 | **[Master Chess](https://poki.com/kr/g/master-chess)** | 두뇌 게임, 보드 게임 | 카드 No.27 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.028 | **[Perfect Shape](https://poki.com/kr/g/perfect-shape)** | 스킬 게임, 달리기 게임 | 카드 No.28 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.029 | **[Murder](https://poki.com/kr/g/murder)** | 액션 게임, 어드벤쳐 게임 | 카드 No.29 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.030 | **[Disaster Arena](https://poki.com/kr/g/disaster-arena)** | 액션 게임, 어드벤쳐 게임 | 카드 No.30 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
+| No.021 | **[Steal a Brainrot](https://poki.com/kr/g/steal-a-brainrot)** | 어드벤쳐 게임, 멀티플레이어 게임 | 카드 No.21 그림자 도둑 | 원터치 탭/드래그 잠입 & 안전지대 질주 | 20~50 SNS | ✅ 완료 (Canvas 2D, CCTV 경비망 잠입 및 트로피 탈취) |
+| No.022 | **[Longcat](https://poki.com/kr/g/longcat)** | 두뇌 게임, 스킬 게임 | 카드 No.22 롱캣 고양이 | 상하좌우 스와이프 롱캣 스트레치 | 20~50 SNS | ✅ 완료 (Canvas 2D, 100% 그리드 채우기 한붓그리기) |
+| No.023 | **[Guns Guns Guns](https://poki.com/kr/g/guns-guns-guns)** | 슈팅 게임, 총 게임 | 카드 No.23 전술 특전사 | 탭 엄폐 이동 & 적군 타깃 탭 사격 | 20~50 SNS | ✅ 완료 (Canvas 2D, 전술 아레나 3:3 엄폐 총격전) |
+| No.024 | **[Ragdoll Hit](https://poki.com/kr/g/ragdoll-hit)** | 액션 게임, 랙돌 게임 | 카드 No.24 격투 챔피언 | 터치 드래그 반동 스윙 & 래그돌 넉아웃 | 20~50 SNS | ✅ 완료 (Canvas 2D, 물리 래그돌 3명 연속 KO 격투) |
+| No.025 | **[Soccer REAL](https://poki.com/kr/g/soccer-real)** | 운동 게임, 축구 게임 | 카드 No.25 스트라이커 | 슬링샷 터치 드래그 슛 조준 & 발사 | 20~50 SNS | ✅ 완료 (Canvas 2D, 수비수/골키퍼 뚫는 3골 축구) |
+| No.026 | **[Subway Surfers](https://poki.com/kr/g/subway-surfers)** | 액션 게임, 어드벤쳐 게임 | 카드 No.26 서프 러너 | 4방향 스와이프 레인 이동, 점프, 구르기 | 20~50 SNS | ✅ 완료 (Canvas 2D, 3선로 기차 회피 & 35코인 러너) |
+| No.027 | **[Master Chess](https://poki.com/kr/g/master-chess)** | 두뇌 게임, 보드 게임 | 카드 No.27 체스 마스터 | 기물 탭 후 하이라이트 행마 칸 탭 | 20~50 SNS | ✅ 완료 (Canvas 2D, 정통 체스 룰 AI 체크메이트) |
+| No.028 | **[Perfect Shape](https://poki.com/kr/g/perfect-shape)** | 스킬 게임, 달리기 게임 | 카드 No.28 마법 화가 | 원터치 드로잉 후 손 떼기 판정 | 20~50 SNS | ✅ 완료 (Canvas 2D, 원/삼각/사각 75%+ 정밀도 판정) |
+| No.029 | **[Murder](https://poki.com/kr/g/murder)** | 액션 게임, 어드벤쳐 게임 | 카드 No.29 왕실 암살자 | 롱탭 단검 들기 & 릴리즈 시치미/뒤돌기 | 20~50 SNS | ✅ 완료 (Canvas 2D, 코믹 암살 스릴러 및 왕좌 방어) |
+| No.030 | **[Disaster Arena](https://poki.com/kr/g/disaster-arena)** | 액션 게임, 어드벤쳐 게임 | 카드 No.30 아레나 서바이버 | 원터치 화면 탭/드래그 회피 기동 | 20~50 SNS | ✅ 완료 (Canvas 2D, 메테오 폭격 붕괴 아레나 30초 생존) |
 | No.031 | **[Slice Master](https://poki.com/kr/g/slice-master)** | 두뇌 게임, 스킬 게임 | 카드 No.31 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
 | No.032 | **[Brain Test: Tricky Puzzles](https://poki.com/kr/g/brain-test-tricky-puzzles)** | 숨은 그림 찾기 게임, 마우스 게임 | 카드 No.32 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
 | No.033 | **[Stunt Bike Extreme](https://poki.com/kr/g/stunt-bike-extreme)** | 레이싱 게임, 스킬 게임 | 카드 No.33 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
@@ -219,4 +219,50 @@
     - 공중 앵커 포인트에 로프를 걸고 원심력 진자 스윙과 탄력 점프로 장애물을 넘어 결승선까지 주파하는 글로벌 메가히트 스킬 액션.
     - 플레이어: 카드 No.20 라이트닝 로드 스프라이트 (`cards1.png`).
     - 롱탭 로프 그래플링 & 릴리즈 점프 물리, 트램펄린 바운스, 결승선 통과 연동 완료.
+
+---
+
+## Phase 3-A 상세 작업 내역 (No.021 ~ No.030)
+
+21. **No.021 Steal a Brainrot (`PokiStealBrainrotGame.tsx`)**:
+    - 경비 로봇들의 순찰 경로와 전방 시야 콘(FOV)을 피해 적 금고의 Brainrot 트로피를 탈취하고 그린 세이프존으로 탈출하는 스텔스 잠입 액션.
+    - 플레이어: 카드 No.21 그림자 도둑 스프라이트 (`cards1.png`).
+    - 원터치 탭/드래그 이동 조작, 경보 발령 시 붉은 화면 점멸 및 가속 탈출 연동 완료.
+22. **No.022 Longcat (`PokiLongcatGame.tsx`)**:
+    - 롱캣 고양이의 머리를 상하좌우로 스와이프하여 벽이나 몸통에 닿을 때까지 몸을 늘려, 모든 빈칸을 100% 틈새 없이 채우는 두뇌 힐링 퍼즐.
+    - 플레이어: 카드 No.22 롱캣 고양이 스프라이트 (`cards1.png`).
+    - 퓨어 4방향 스와이프 조작, 3개 난이도 스테이지 한붓그리기 연동 완료.
+23. **No.023 Guns Guns Guns (`PokiGunsGunsGunsGame.tsx`)**:
+    - 콘크리트 엄폐물이 배치된 전술 아레나에서 적 분대원 3명과 교전하는 3:3 전술 총격전.
+    - 플레이어: 카드 No.23 전술 특전사 스프라이트 (`cards1.png`).
+    - 좌측 탭 엄폐 이동 & 우측 적 타깃 조준 사격, 30발 탄창 재장전, 적 5명 사살 승리 연동 완료.
+24. **No.024 Ragdoll Hit (`PokiRagdollHitGame.tsx`)**:
+    - 래그돌 물리 관절 캐릭터가 배트를 휘두르며 상대 래그돌을 쳐날리는 물리 기반 1:1 격투 배틀.
+    - 플레이어: 카드 No.24 격투 챔피언 스프라이트 (`cards1.png`).
+    - 터치 드래그 반동 스윙, 충돌 각속도 데미지 및 3명 연속 KO 승리 연동 완료.
+25. **No.025 Soccer REAL (`PokiSoccerRealGame.tsx`)**:
+    - 녹색 필드에서 골대를 가로막는 수비수와 골키퍼의 궤적을 뚫고 슛을 날리는 정밀 축구 아케이드.
+    - 플레이어: 카드 No.25 스트라이커 스프라이트 (`cards1.png`).
+    - 슬링샷 드래그 조준선 궤적 & 파워 슛 발사, 5회 기회 중 3골 득점 승리 연동 완료.
+26. **No.026 Subway Surfers (`PokiSubwaySurfersGame.tsx`)**:
+    - 달려오는 지하철 기차와 바리케이드, 상단 장애물을 피하며 끝없이 질주하는 글로벌 메가히트 3레인 러너.
+    - 플레이어: 카드 No.26 서프 러너 스프라이트 (`cards1.png`).
+    - 4방향 모바일 퓨어 스와이프 (좌우 레인 변경, 점프, 슬라이딩 구르기), 골드 코인 35개 수집 승리 연동 완료.
+27. **No.027 Master Chess (`PokiMasterChessGame.tsx`)**:
+    - 8x8 체스판에서 정통 체스 행마법(폰, 나이트, 비숍, 룩, 퀸, 킹)을 준수하며 인공지능과 두뇌 싸움을 펼치는 클래식 보드 게임.
+    - 플레이어: 카드 No.27 체스 마스터 스프라이트 (`cards1.png`).
+    - 기물 탭 후 유효 행마 초록 하이라이트 탭 이동, 적 기물 4개 캡처 또는 체크메이트 승리 연동 완료.
+28. **No.028 Perfect Shape (`PokiPerfectShapeGame.tsx`)**:
+    - 화면의 점선 가이드를 따라 완벽한 원, 삼각형, 사각형을 한 획의 붓질로 정밀하게 그리는 드로잉 챌린지.
+    - 플레이어: 카드 No.28 마법 화가 스프라이트 (`cards1.png`).
+    - 원터치 드로잉 후 수학적 반지름/변 오차 기반 정밀도(%) 판정, 3라운드 평균 75%+ 달성 승리 연동 완료.
+29. **No.029 Murder (`PokiMurderGame.tsx`)**:
+    - 왕의 뒤를 밟으며 단검을 치켜들고, 왕이 뒤돌아볼 때 시치미를 떼며 암살에 성공한 뒤, 왕이 되어 침입자를 감옥에 보내는 코믹 스릴러.
+    - 플레이어: 카드 No.29 왕실 암살자 & 국왕 스프라이트 (`cards1.png`).
+    - 화면 길게 누르기(단검 충전/뒤돌아보기) & 손 떼기(시치미), 암살 후 3명 방어 승리 연동 완료.
+30. **No.030 Disaster Arena (`PokiDisasterArenaGame.tsx`)**:
+    - 원형 경기장에 쏟아지는 하늘의 메테오 폭격과 폭발 충격파를 예측 회피하며 끝까지 버티는 배틀로얄 생존 게임.
+    - 플레이어: 카드 No.30 아레나 서바이버 스프라이트 (`cards1.png`).
+    - 원터치 터치/드래그 회피 기동, 붉은 낙하 표식 회피, 30초 극한 생존 승리 연동 완료.
+
 

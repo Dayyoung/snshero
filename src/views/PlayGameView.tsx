@@ -163,6 +163,16 @@ import { PokiNeonChallengeGame } from '../components/poki/PokiNeonChallengeGame'
 import { PokiPlonkyGame } from '../components/poki/PokiPlonkyGame';
 import { PokiBackroomsRecoveryGame } from '../components/poki/PokiBackroomsRecoveryGame';
 import { PokiStickmanHookGame } from '../components/poki/PokiStickmanHookGame';
+import { PokiStealBrainrotGame } from '../components/poki/PokiStealBrainrotGame';
+import { PokiLongcatGame } from '../components/poki/PokiLongcatGame';
+import { PokiGunsGunsGunsGame } from '../components/poki/PokiGunsGunsGunsGame';
+import { PokiRagdollHitGame } from '../components/poki/PokiRagdollHitGame';
+import { PokiSoccerRealGame } from '../components/poki/PokiSoccerRealGame';
+import { PokiSubwaySurfersGame } from '../components/poki/PokiSubwaySurfersGame';
+import { PokiMasterChessGame } from '../components/poki/PokiMasterChessGame';
+import { PokiPerfectShapeGame } from '../components/poki/PokiPerfectShapeGame';
+import { PokiMurderGame } from '../components/poki/PokiMurderGame';
+import { PokiDisasterArenaGame } from '../components/poki/PokiDisasterArenaGame';
 import { checkFlips, checkFlipsWithDetails, findBestMove, Board, CardInstance } from '../lib/gameEngine';
 import { GambitConfig, TacticalStance } from '../types';
 import { getSecretStamps, unlockSecretStamp } from '../lib/secretStampHelper';
@@ -414,7 +424,7 @@ const BossCardItem: React.FC<BossCardItemProps> = ({ boss, lowSpecMode, language
   );
 };
 
-type GameState = 'modeSelect' | 'lobby' | 'searching' | 'playing' | 'gameOver' | 'preMatch' | 'tournament' | 'story' | 'boss' | 'dungeon' | 'defense' | 'running' | 'shooting' | 'snake' | 'gomoku' | 'memorymatch' | 'slide2048' | 'cardjumper' | 'cardtap' | 'cardflip' | 'cardslide' | 'cardsorcery' | 'cardslot' | 'cardheist' | 'cardrush' | 'breakout' | 'minesweeper' | 'pacman' | 'tictactoe' | 'trexrunner' | 'voxeldefense' | 'pixelstrike' | 'voxelparkour' | 'voxelbattlegrounds' | 'voxeldungeon' | 'voxelspace' | 'voxelzombie' | 'voxelsiege' | 'voxeltitan' | 'voxelsuperstrikers' | 'voxelgladiatorcolosseum' | 'voxeldragonslayer' | 'voxelarcherhero' | 'voxelvampiresurvival' | 'voxeltankbounce' | 'voxelninjaslash' | 'voxelgolfmaster' | 'voxellumberjacktycoon' | 'voxelfishingmaster' | 'voxelfirerescue' | 'voxelwindhunter' | 'voxelsubwayrunner' | 'voxelcranemaster' | 'voxelmonstertruck' | 'voxeltowerstack' | 'voxelslamdunk' | 'voxelcoastertycoon' | 'voxelsniperhunter' | 'voxeljetskiwater' | 'voxelbaseballderby' | 'voxelboxingmighty' | 'voxelmicrokart' | 'voxeltreasuredigger' | 'voxelflightlanding' | 'voxelgachaclaw' | 'voxelbilliardstrick' | 'voxeldartsbar' | 'voxelwingsuitskydiving' | 'voxelbadmintonblitz' | 'voxelmagnethole' | 'voxelmotocrossstunt' | 'voxelskateboardstreet' | 'voxelsnowboardslalom' | 'voxelkaratebreak' | 'voxelpinballclimber' | 'voxelcrazytaxi' | 'voxellaserstealth' | 'voxeldojobalance' | 'voxelbubblepop' | 'voxelwaterslide' | 'voxelkrakenhunter' | 'voxelhalfpipeskater' | 'voxelnetherportal' | 'voxelmegaflareassault' | 'voxelspikerolling' | 'voxelterraquake' | 'voxeldreamweaver' | 'voxellifeflame' | 'voxelarcanenexus' | 'voxeldreadshadow' | 'pokislimekeyboard' | 'pokihideandpaint' | 'pokiminefun' | 'pokipaperio' | 'pokileveldevil' | 'pokisnakevsworms' | 'pokivectaria' | 'pokicryzen' | 'pokiblockyblast' | 'pokiragdollchaos' | 'pokirainbowobby' | 'pokimyhotel' | 'pokitalkingtomgoldrun' | 'pokimonkeytag' | 'pokistickmanbattle' | 'pokidecorlife' | 'pokineonchallenge' | 'pokiplonky' | 'pokibackroomsrecovery' | 'pokistickmanhook';
+type GameState = 'modeSelect' | 'lobby' | 'searching' | 'playing' | 'gameOver' | 'preMatch' | 'tournament' | 'story' | 'boss' | 'dungeon' | 'defense' | 'running' | 'shooting' | 'snake' | 'gomoku' | 'memorymatch' | 'slide2048' | 'cardjumper' | 'cardtap' | 'cardflip' | 'cardslide' | 'cardsorcery' | 'cardslot' | 'cardheist' | 'cardrush' | 'breakout' | 'minesweeper' | 'pacman' | 'tictactoe' | 'trexrunner' | 'voxeldefense' | 'pixelstrike' | 'voxelparkour' | 'voxelbattlegrounds' | 'voxeldungeon' | 'voxelspace' | 'voxelzombie' | 'voxelsiege' | 'voxeltitan' | 'voxelsuperstrikers' | 'voxelgladiatorcolosseum' | 'voxeldragonslayer' | 'voxelarcherhero' | 'voxelvampiresurvival' | 'voxeltankbounce' | 'voxelninjaslash' | 'voxelgolfmaster' | 'voxellumberjacktycoon' | 'voxelfishingmaster' | 'voxelfirerescue' | 'voxelwindhunter' | 'voxelsubwayrunner' | 'voxelcranemaster' | 'voxelmonstertruck' | 'voxeltowerstack' | 'voxelslamdunk' | 'voxelcoastertycoon' | 'voxelsniperhunter' | 'voxeljetskiwater' | 'voxelbaseballderby' | 'voxelboxingmighty' | 'voxelmicrokart' | 'voxeltreasuredigger' | 'voxelflightlanding' | 'voxelgachaclaw' | 'voxelbilliardstrick' | 'voxeldartsbar' | 'voxelwingsuitskydiving' | 'voxelbadmintonblitz' | 'voxelmagnethole' | 'voxelmotocrossstunt' | 'voxelskateboardstreet' | 'voxelsnowboardslalom' | 'voxelkaratebreak' | 'voxelpinballclimber' | 'voxelcrazytaxi' | 'voxellaserstealth' | 'voxeldojobalance' | 'voxelbubblepop' | 'voxelwaterslide' | 'voxelkrakenhunter' | 'voxelhalfpipeskater' | 'voxelnetherportal' | 'voxelmegaflareassault' | 'voxelspikerolling' | 'voxelterraquake' | 'voxeldreamweaver' | 'voxellifeflame' | 'voxelarcanenexus' | 'voxeldreadshadow' | 'pokislimekeyboard' | 'pokihideandpaint' | 'pokiminefun' | 'pokipaperio' | 'pokileveldevil' | 'pokisnakevsworms' | 'pokivectaria' | 'pokicryzen' | 'pokiblockyblast' | 'pokiragdollchaos' | 'pokirainbowobby' | 'pokimyhotel' | 'pokitalkingtomgoldrun' | 'pokimonkeytag' | 'pokistickmanbattle' | 'pokidecorlife' | 'pokineonchallenge' | 'pokiplonky' | 'pokibackroomsrecovery' | 'pokistickmanhook' | 'pokistealbrainrot' | 'pokilongcat' | 'pokigunsgunsguns' | 'pokiragdollhit' | 'pokisoccerreal' | 'pokisubwaysurfers' | 'pokimasterchess' | 'pokiperfectshape' | 'pokimurder' | 'pokidisasterarena';
 
 interface TournamentParticipant {
   id: string;
@@ -7420,154 +7430,154 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       guide: language === 'ko' ? '화면을 길게 눌러 로프를 걸고 스윙 탄력으로 결승선까지 질주하세요.' : 'Tap and hold to grapple swing and fling past the finish line!'
     },
     {
-      id: 'pacman',
-      title: t('mode_pacman', language),
-      icon: Ghost,
-      color: 'from-yellow-400 to-amber-500',
+      id: 'pokistealbrainrot',
+      title: 'Steal a Brainrot (브레인롯 탈취)',
+      icon: EyeOff,
+      color: 'from-purple-600 to-indigo-700',
       image: '/minigame_pacman.png',
       characterId: 21,
       action: () => {
-        setGameState('pacman');
+        setGameState('pokistealbrainrot');
       },
-      category: 'arcade',
+      category: 'action',
       isNew: true,
-      badgeText: 'PAC',
-      guide: t('mode_pacman_guide', language)
+      badgeText: 'STEAL',
+      guide: language === 'ko' ? '경비 로봇의 시야를 피해 Brainrot 유물을 훔치고 안전 구역으로 탈출하세요.' : 'Sneak past guard cones to steal the Brainrot trophy and sprint to safety!'
     },
     {
-      id: 'tictactoe',
-      title: t('mode_tictactoe', language),
+      id: 'pokilongcat',
+      title: 'Longcat (롱캣 퍼즐)',
       icon: Hash,
-      color: 'from-emerald-500 to-teal-600',
+      color: 'from-rose-500 to-pink-600',
       image: '/minigame_tictactoe.png',
       characterId: 22,
       action: () => {
-        setGameState('tictactoe');
+        setGameState('pokilongcat');
       },
       category: 'puzzle',
       isNew: true,
-      badgeText: 'TIC',
-      guide: t('mode_tictactoe_guide', language)
+      badgeText: 'CAT',
+      guide: language === 'ko' ? '상하좌우 스와이프로 롱캣을 쭉 늘려 보드의 모든 칸을 100% 채우세요.' : 'Swipe to stretch Longcat and fill every single tile on the puzzle board!'
     },
     {
-      id: 'trexrunner',
-      title: t('mode_trex', language),
-      icon: Navigation,
-      color: 'from-teal-500 to-cyan-600',
+      id: 'pokigunsgunsguns',
+      title: 'Guns Guns Guns (건즈 건즈)',
+      icon: Crosshair,
+      color: 'from-zinc-700 to-slate-800',
       image: '/minigame_trexrunner.png',
       characterId: 23,
       action: () => {
-        setGameState('trexrunner');
+        setGameState('pokigunsgunsguns');
       },
-      category: 'arcade',
+      category: 'battle',
       isNew: true,
-      badgeText: 'DINO',
-      guide: t('mode_trex_guide', language)
+      badgeText: 'GUNS',
+      guide: language === 'ko' ? '엄폐물을 활용해 적의 사격을 피하고 적 분대원을 조준 사격해 제압하세요.' : 'Use tactical cover to dodge bullets and eliminate enemy squads!'
     },
     {
-      id: 'voxeldefense',
-      title: language === 'ko' ? '블리츠 마이닝 디펜스' : 'Blitz Mining Defense',
-      icon: Pickaxe,
-      color: 'from-emerald-600 to-teal-700',
+      id: 'pokiragdollhit',
+      title: 'Ragdoll Hit (래그돌 히트)',
+      icon: Swords,
+      color: 'from-amber-500 to-orange-600',
       image: '/minigame_defense.png',
       characterId: 24,
       action: () => {
-        setGameState('voxeldefense');
+        setGameState('pokiragdollhit');
       },
-      category: 'puzzle',
+      category: 'battle',
       isNew: true,
-      badgeText: 'MINING-DEF',
-      guide: language === 'ko' ? '슬롯을 탭해 포탑을 강화하고, 몬스터를 직접 탭해 번개 벼락으로 코어를 지키세요.' : 'Tap slots to build turrets and tap monsters to strike holy lightning!'
+      badgeText: 'HIT',
+      guide: language === 'ko' ? '화면을 드래그해 래그돌 몸체를 날려 강력한 배트 공격으로 상대를 KO시키세요.' : 'Fling your ragdoll into high-impact bat strikes to knock out all rivals!'
     },
     {
-      id: 'pixelstrike',
-      title: language === 'ko' ? '블리츠 픽셀 스트라이크' : 'Blitz Pixel Strike',
-      icon: Crosshair,
-      color: 'from-rose-600 to-red-700',
+      id: 'pokisoccerreal',
+      title: 'Soccer REAL (사커 리얼)',
+      icon: Trophy,
+      color: 'from-emerald-500 to-green-600',
       image: '/minigame_shooting.png',
       characterId: 25,
       action: () => {
-        setGameState('pixelstrike');
+        setGameState('pokisoccerreal');
       },
-      category: 'battle',
+      category: 'casual',
       isNew: true,
-      badgeText: 'PIXEL-STRIKE',
-      guide: language === 'ko' ? '적 타깃을 손가락으로 직접 탭해 사격하고 헤드샷을 터뜨리세요.' : 'Tap enemy targets directly to shoot with precision headshots!'
+      badgeText: 'GOAL',
+      guide: language === 'ko' ? '슬링샷으로 수비수와 골키퍼의 빈틈을 노려 환상적인 골을 성공시키세요.' : 'Aim and slingshot powerful curve shots past defenders into the goal!'
     },
     {
-      id: 'voxelparkour',
-      title: language === 'ko' ? '블리츠 스카이 파쿠르' : 'Blitz Sky Parkour',
-      icon: Footprints,
-      color: 'from-sky-500 to-indigo-600',
+      id: 'pokisubwaysurfers',
+      title: 'Subway Surfers (서브웨이 서퍼)',
+      icon: Navigation,
+      color: 'from-indigo-500 to-blue-600',
       image: '/minigame_cardjumper.png',
       characterId: 26,
       action: () => {
-        setGameState('voxelparkour');
+        setGameState('pokisubwaysurfers');
       },
       category: 'arcade',
       isNew: true,
-      badgeText: 'SKY-PARKOUR',
-      guide: language === 'ko' ? '다음 발판의 레인(좌측/중앙/우측)을 손가락으로 직접 탭하세요.' : 'Tap matching platform lane (left/center/right) to jump!'
+      badgeText: 'SURF',
+      guide: language === 'ko' ? '3개 선로를 질주하며 기차와 장애물을 점프/구르기로 피하고 코인을 모으세요.' : 'Dodge incoming trains and barriers with 4-way swipes while snatching coins!'
     },
     {
-      id: 'tower_trials',
-      title: language === 'ko' ? '시련의 탑 50층' : 'Tower of Trials',
-      icon: Castle,
-      color: 'from-amber-600 to-orange-700',
+      id: 'pokimasterchess',
+      title: 'Master Chess (마스터 체스)',
+      icon: Award,
+      color: 'from-slate-600 to-zinc-700',
       image: '/minigame_dungeon.png',
       characterId: 27,
       action: () => {
-        setIsTowerTrialsOpen(true);
+        setGameState('pokimasterchess');
       },
-      category: 'battle',
+      category: 'puzzle',
       isNew: true,
-      badgeText: 'TOWER',
-      guide: language === 'ko' ? '50층 무한 타워를 정복하고 층별 대량의 SNS 포인트와 희귀 룬 보상을 획득하세요.' : 'Climb 50 floors of trial tower for massive SNS and rare rune rewards!'
+      badgeText: 'CHESS',
+      guide: language === 'ko' ? '정통 체스 룰로 AI의 기물을 잡고 킹을 체크메이트하세요.' : 'Command your chess pieces with deep strategy to checkmate the AI king!'
     },
     {
-      id: 'treasure_dart',
-      title: language === 'ko' ? '황금 보물 다트' : 'Treasure Dart',
+      id: 'pokiperfectshape',
+      title: 'Perfect Shape (퍼펙트 셰이프)',
       icon: TargetIcon,
-      color: 'from-yellow-500 to-amber-600',
+      color: 'from-cyan-500 to-teal-600',
       image: '/minigame_cardslot.png',
       characterId: 28,
       action: () => {
-        setIsTreasureDartOpen(true);
+        setGameState('pokiperfectshape');
       },
       category: 'casual',
       isNew: true,
-      badgeText: 'DART',
-      guide: language === 'ko' ? '정밀한 타이밍으로 회전하는 황금 과녁에 다트를 던져 잭팟 보상을 획득하세요.' : 'Hit the rotating golden bullseye to claim jackpot rewards!'
+      badgeText: 'DRAW',
+      guide: language === 'ko' ? '원, 삼각형, 사각형을 한 획으로 정밀하게 그려 정확도 75% 이상을 달성하세요.' : 'Draw precise geometric shapes in one smooth stroke to hit 75%+ accuracy!'
     },
     {
-      id: 'expedition',
-      title: language === 'ko' ? '8시간 원정대' : 'Offline Expedition',
-      icon: Compass,
-      color: 'from-cyan-600 to-blue-700',
+      id: 'pokimurder',
+      title: 'Murder (머더)',
+      icon: Skull,
+      color: 'from-red-600 to-stone-800',
       image: '/minigame_boss.png',
       characterId: 29,
       action: () => {
-        setIsExpeditionOpen(true);
+        setGameState('pokimurder');
       },
-      category: 'casual',
+      category: 'arcade',
       isNew: true,
-      badgeText: 'EXP',
-      guide: language === 'ko' ? '히어로 파티를 원정에 파견하여 오프라인 상태에서도 자동으로 전리품을 파밍하세요.' : 'Dispatch hero party to automatically farm offline loot for up to 8 hours!'
+      badgeText: 'STAB',
+      guide: language === 'ko' ? '왕이 뒤돌아볼 때 시치미를 떼고 몰래 단검을 들어 왕좌를 차지하세요.' : 'Charge your dagger when the king looks away, then defend the crown!'
     },
     {
-      id: 'beastarium',
-      title: language === 'ko' ? '몬스터 비스티아리움' : 'Monster Beastarium',
-      icon: BookOpen,
-      color: 'from-purple-600 to-indigo-700',
+      id: 'pokidisasterarena',
+      title: 'Disaster Arena (재난 아레나)',
+      icon: Flame,
+      color: 'from-orange-600 to-red-700',
       image: '/minigame_memorymatch.png',
       characterId: 30,
       action: () => {
-        setIsBeastariumOpen(true);
+        setGameState('pokidisasterarena');
       },
-      category: 'casual',
+      category: 'battle',
       isNew: true,
-      badgeText: 'PET',
-      guide: language === 'ko' ? '전투에서 조우한 몬스터를 도감에 수집하고 귀여운 동행 펫으로 육성하세요.' : 'Collect monsters into your beastarium and summon companion pets!'
+      badgeText: 'SURVIVE',
+      guide: language === 'ko' ? '하늘에서 쏟아지는 메테오 폭격을 회피하며 30초간 끝까지 생존하세요.' : 'Dodge rain of explosive meteors in a crumbling arena to survive 30s!'
     },
     {
       id: 'tactician_mastery',
@@ -12488,6 +12498,96 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       <PokiStickmanHookGame
         onBack={() => setGameState('modeSelect')}
         cardId={playerDeck[0]?.id || 20}
+      />
+    );
+  }
+
+  if (gameState === 'pokistealbrainrot') {
+    return (
+      <PokiStealBrainrotGame
+        onBack={() => setGameState('modeSelect')}
+        cardId={playerDeck[0]?.id || 21}
+      />
+    );
+  }
+
+  if (gameState === 'pokilongcat') {
+    return (
+      <PokiLongcatGame
+        onBack={() => setGameState('modeSelect')}
+        cardId={playerDeck[0]?.id || 22}
+      />
+    );
+  }
+
+  if (gameState === 'pokigunsgunsguns') {
+    return (
+      <PokiGunsGunsGunsGame
+        onBack={() => setGameState('modeSelect')}
+        cardId={playerDeck[0]?.id || 23}
+      />
+    );
+  }
+
+  if (gameState === 'pokiragdollhit') {
+    return (
+      <PokiRagdollHitGame
+        onBack={() => setGameState('modeSelect')}
+        cardId={playerDeck[0]?.id || 24}
+      />
+    );
+  }
+
+  if (gameState === 'pokisoccerreal') {
+    return (
+      <PokiSoccerRealGame
+        onBack={() => setGameState('modeSelect')}
+        cardId={playerDeck[0]?.id || 25}
+      />
+    );
+  }
+
+  if (gameState === 'pokisubwaysurfers') {
+    return (
+      <PokiSubwaySurfersGame
+        onBack={() => setGameState('modeSelect')}
+        cardId={playerDeck[0]?.id || 26}
+      />
+    );
+  }
+
+  if (gameState === 'pokimasterchess') {
+    return (
+      <PokiMasterChessGame
+        onBack={() => setGameState('modeSelect')}
+        cardId={playerDeck[0]?.id || 27}
+      />
+    );
+  }
+
+  if (gameState === 'pokiperfectshape') {
+    return (
+      <PokiPerfectShapeGame
+        onBack={() => setGameState('modeSelect')}
+        cardId={playerDeck[0]?.id || 28}
+      />
+    );
+  }
+
+  if (gameState === 'pokimurder') {
+    return (
+      <PokiMurderGame
+        onBack={() => setGameState('modeSelect')}
+        cardId={playerDeck[0]?.id || 29}
+      />
+    );
+  }
+
+  if (gameState === 'pokidisasterarena') {
+    return (
+      <PokiDisasterArenaGame
+        onBack={() => setGameState('modeSelect')}
+        cardId={playerDeck[0]?.id || 30}
       />
     );
   }
