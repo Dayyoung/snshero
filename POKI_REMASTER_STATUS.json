@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 79,
-  "completed_count": 78,
-  "last_updated": "2026-09-08T01:36:00+09:00",
+  "current_game_index": 80,
+  "completed_count": 79,
+  "last_updated": "2026-09-08T01:37:00+09:00",
   "history": [
     {
       "id": 1,
@@ -863,6 +863,17 @@
       "component": "src/components/poki/PokiDogsLifeGame.tsx",
       "completed_at": "2026-09-08T01:36:00+09:00",
       "details": "Three.js 기반 3D 반려견 시뮬레이션 & 냄새 탐색 뼈다귀 수집 어드벤처 구현, 32m x 32m 거실 마루 & 잔디 정원 하우스(원목 플로어/그린 잔디/화단/나무 울타리/블루 소파/물리 장난감 공/거실 러그 No.078 공식 영웅 배지 엠블럼), 3D 시바/리트리버 강아지(골든 바디/쫑긋한 귀/목걸이 No.078 영웅 배지 펜던트/4족 보행 러닝 및 흔들리는 꼬리), 냄새 맡기(SNIFF 파티클 나침반 가이드) + 땅파기(DIG 흙더미 속 5개 황금 뼈다귀 발굴) + 짖기(BARK 음파 방출 및 장난감 공 튀기기 인터랙션) + 전력 질주(SPRINT 부스트), 100% 모바일 퓨어 터치 조작계(화면 좌측 360° 플로팅 조이스틱 + 76px DIG 대형 발굴 버튼 + 64px SNIFF/BARK/SPRINT 액션 버튼 군 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 79,
+      "name": "Anycolor",
+      "poki_url": "https://poki.com/kr/g/anycolor",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No079_Anycolor_Prompt.md",
+      "component": "src/components/poki/PokiAnycolorGame.tsx",
+      "completed_at": "2026-09-08T01:37:00+09:00",
+      "details": "Three.js 기반 3D 힐링 아트 피규어 컬러링 & 팔레트 스튜디오 시뮬레이션 구현, 3D 아뜰리에 룸(회전 디스플레이 턴테이블/벽면 No.079 공식 영웅 배지 액자 데코), 32개 정밀 3D 분할 파츠 메카 가디언 피규어(헬멧/바이저/크레스트/아크 코어/윙/숄더/건틀릿/부츠 등), 1~6번 프리미엄 6색 팔레트 바(루비 레드/로열 블루/골든 앰버/에메랄드 그린/네온 바이올렛/펄 화이트), 3D 파츠 직접 터치 레이캐스팅 채색 & 바운스 팝업 및 스파클 파티클, 100% 완성 시 360도 공중 부유 스핀 쇼케이스, 모바일 퓨어 터치 조작계(화면 드래그 360° 궤도 회전 + 76px PAINT 번호별 채색 버튼 + 64px MAGIC FILL 일괄 채색 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

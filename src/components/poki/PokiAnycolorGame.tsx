@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import * as THREE from 'three';
 import { MinimalistMissionHUD } from '../MinimalistMissionHUD';
 import { VictoryRewardModal } from '../VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../../lib/standardizedRewardGateway';
@@ -7,366 +8,616 @@ import { drawCardSprite } from '../../lib/canvasCardRenderer';
 interface PokiAnycolorGameProps {
   onBack?: () => void;
   onClose?: () => void;
+  cardId?: number;
 }
 
-interface ColorZone {
+interface PartData {
   id: number;
   name: string;
-  requiredNum: number;
-  poly: { x: number; y: number }[];
-  center: { x: number; y: number };
-  currentColor: string | null;
+  reqNum: number;
+  mesh: THREE.Mesh;
+  colored: boolean;
+  baseScale: THREE.Vector3;
+}
+
+interface Particle {
+  mesh: THREE.Mesh;
+  vx: number;
+  vy: number;
+  vz: number;
+  life: number;
+  maxLife: number;
 }
 
 const PALETTE = [
-  { num: 1, col: '#f43f5e', name: '루비 핑크' },
-  { num: 2, col: '#0ea5e9', name: '스카이 시안' },
-  { num: 3, col: '#eab308', name: '웜 앰버' },
-  { num: 4, col: '#10b981', name: '에메랄드' },
-  { num: 5, col: '#8b5cf6', name: '바이올렛' },
+  { num: 1, col: '#ef4444', hex: 0xef4444, name: '루비 레드' },
+  { num: 2, col: '#3b82f6', hex: 0x3b82f6, name: '로열 블루' },
+  { num: 3, col: '#f59e0b', hex: 0xf59e0b, name: '골든 앰버' },
+  { num: 4, col: '#10b981', hex: 0x10b981, name: '에메랄드 그린' },
+  { num: 5, col: '#8b5cf6', hex: 0x8b5cf6, name: '네온 바이올렛' },
+  { num: 6, col: '#f8fafc', hex: 0xf8fafc, name: '펄 화이트' },
 ];
 
-function pointInPoly(pt: { x: number; y: number }, poly: { x: number; y: number }[]): boolean {
-  let inside = false;
-  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-    const xi = poly[i].x, yi = poly[i].y;
-    const xj = poly[j].x, yj = poly[j].y;
-    const intersect = ((yi > pt.y) !== (yj > pt.y)) &&
-      (pt.x < (xj - xi) * (pt.y - yi) / (yj - yi) + xi);
-    if (intersect) inside = !inside;
-  }
-  return inside;
-}
+export default function PokiAnycolorGame({
+  onBack,
+  onClose,
+  cardId = 79,
+}: PokiAnycolorGameProps) {
+  const handleExit = onClose || onBack || (() => {});
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
-export const PokiAnycolorGame: React.FC<PokiAnycolorGameProps> = ({ onBack, onClose }) => {
-  const handleExit = onBack || onClose || (() => {});
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [selectedNum, setSelectedNum] = useState<number>(1);
-  const [completedCount, setCompletedCount] = useState<number>(0);
+  // 게임 상태
   const [gameState, setGameState] = useState<'ready' | 'playing' | 'victory'>('ready');
+  const [selectedNum, setSelectedNum] = useState<number>(1);
+  const [coloredCount, setColoredCount] = useState<number>(0);
+  const [totalParts, setTotalParts] = useState<number>(32);
+  const [showExitModal, setShowExitModal] = useState<boolean>(false);
   const [rewardReceipt, setRewardReceipt] = useState<RewardReceipt | null>(null);
 
-  const zonesRef = useRef<ColorZone[]>([
-    {
-      id: 1,
-      name: '크라운 젬',
-      requiredNum: 1,
-      poly: [{ x: 160, y: 80 }, { x: 200, y: 40 }, { x: 240, y: 80 }, { x: 200, y: 110 }],
-      center: { x: 200, y: 75 },
-      currentColor: null,
-    },
-    {
-      id: 2,
-      name: '레프트 바이저',
-      requiredNum: 2,
-      poly: [{ x: 130, y: 125 }, { x: 195, y: 125 }, { x: 195, y: 175 }, { x: 140, y: 165 }],
-      center: { x: 165, y: 145 },
-      currentColor: null,
-    },
-    {
-      id: 3,
-      name: '라이트 바이저',
-      requiredNum: 2,
-      poly: [{ x: 205, y: 125 }, { x: 270, y: 125 }, { x: 260, y: 165 }, { x: 205, y: 175 }],
-      center: { x: 235, y: 145 },
-      currentColor: null,
-    },
-    {
-      id: 4,
-      name: '레프트 윙',
-      requiredNum: 3,
-      poly: [{ x: 110, y: 110 }, { x: 130, y: 125 }, { x: 120, y: 185 }, { x: 90, y: 155 }],
-      center: { x: 115, y: 145 },
-      currentColor: null,
-    },
-    {
-      id: 5,
-      name: '라이트 윙',
-      requiredNum: 3,
-      poly: [{ x: 290, y: 110 }, { x: 310, y: 155 }, { x: 280, y: 185 }, { x: 270, y: 125 }],
-      center: { x: 285, y: 145 },
-      currentColor: null,
-    },
-    {
-      id: 6,
-      name: '페이스 마스크',
-      requiredNum: 4,
-      poly: [{ x: 160, y: 185 }, { x: 240, y: 185 }, { x: 225, y: 225 }, { x: 175, y: 225 }],
-      center: { x: 200, y: 205 },
-      currentColor: null,
-    },
-    {
-      id: 7,
-      name: '코어 넥',
-      requiredNum: 5,
-      poly: [{ x: 180, y: 245 }, { x: 220, y: 245 }, { x: 210, y: 285 }, { x: 190, y: 285 }],
-      center: { x: 200, y: 265 },
-      currentColor: null,
-    },
-    {
-      id: 8,
-      name: '레프트 숄더',
-      requiredNum: 1,
-      poly: [{ x: 120, y: 255 }, { x: 175, y: 255 }, { x: 180, y: 350 }, { x: 110, y: 330 }],
-      center: { x: 145, y: 295 },
-      currentColor: null,
-    },
-    {
-      id: 9,
-      name: '라이트 숄더',
-      requiredNum: 1,
-      poly: [{ x: 225, y: 255 }, { x: 280, y: 255 }, { x: 290, y: 330 }, { x: 220, y: 350 }],
-      center: { x: 255, y: 295 },
-      currentColor: null,
-    },
-    {
-      id: 10,
-      name: '파워 리액터',
-      requiredNum: 3,
-      poly: [{ x: 185, y: 300 }, { x: 215, y: 300 }, { x: 210, y: 360 }, { x: 190, y: 360 }],
-      center: { x: 200, y: 330 },
-      currentColor: null,
-    },
-  ]);
+  // 3D 내부 참조
+  const stateRef = useRef({
+    scene: null as THREE.Scene | null,
+    camera: null as THREE.PerspectiveCamera | null,
+    renderer: null as THREE.WebGLRenderer | null,
+    animFrame: 0,
+    clock: new THREE.Clock(),
 
-  const particlesRef = useRef<{ x: number; y: number; vx: number; vy: number; color: string; life: number }[]>([]);
+    // 모델 그룹 및 회전
+    modelGroup: null as THREE.Group | null,
+    turntableMesh: null as THREE.Mesh | null,
+    rotX: 0.2,
+    rotY: 0,
+    targetRotX: 0.2,
+    targetRotY: 0,
+    isDragging: false,
+    lastTouch: { x: 0, y: 0 },
 
-  const handleStart = () => {
-    zonesRef.current.forEach((z) => (z.currentColor = null));
-    setCompletedCount(0);
-    setGameState('playing');
-    setRewardReceipt(null);
+    // 파츠 목록
+    parts: [] as PartData[],
+    particles: [] as Particle[],
+    particleGeo: new THREE.SphereGeometry(0.06, 6, 6),
+
+    // 쇼케이스 연출
+    isCompleted: false,
+    celebrateTimer: 0,
+
+    startTime: Date.now(),
+  });
+
+  // 파티클 생성
+  const spawnParticles = (pos: THREE.Vector3, colorHex: number, count: number) => {
+    const scene = stateRef.current.scene;
+    if (!scene) return;
+    const mat = new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 0.85 });
+    for (let i = 0; i < count; i++) {
+      const mesh = new THREE.Mesh(stateRef.current.particleGeo, mat);
+      mesh.position.copy(pos);
+      scene.add(mesh);
+      stateRef.current.particles.push({
+        mesh,
+        vx: (Math.random() - 0.5) * 3,
+        vy: (Math.random() * 0.8 + 0.3) * 3,
+        vz: (Math.random() - 0.5) * 3,
+        life: 0,
+        maxLife: 0.35 + Math.random() * 0.25,
+      });
+    }
   };
 
-  const handleVictory = useCallback(() => {
-    setGameState('victory');
-    const receipt = calculateAndDepositMissionReward({
-      gameId: 'pokianycolor',
-      gameTitle: 'Anycolor: Pop Art Palette',
-      isVictory: true,
-      score: 10,
-      maxTargetScore: 10,
-      durationSeconds: 25,
+  // 개별 파츠 채색 함수
+  const colorizePart = (part: PartData) => {
+    if (part.colored) return;
+    const colorInfo = PALETTE.find((p) => p.num === part.reqNum);
+    if (!colorInfo) return;
+
+    part.colored = true;
+    const newMat = new THREE.MeshStandardMaterial({
+      color: colorInfo.hex,
+      roughness: 0.3,
+      metalness: 0.2,
     });
-    setRewardReceipt(receipt);
-  }, []);
+    part.mesh.material = newMat;
 
-  // Main Render Loop
-  useEffect(() => {
-    let animId: number;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    // 바운스 팝업 효과
+    part.mesh.scale.copy(part.baseScale).multiplyScalar(1.3);
+    setTimeout(() => {
+      part.mesh.scale.copy(part.baseScale);
+    }, 200);
 
-    const render = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // 파티클 및 햅틱
+    const worldPos = new THREE.Vector3();
+    part.mesh.getWorldPosition(worldPos);
+    spawnParticles(worldPos, colorInfo.hex, 12);
 
-      // Background Canvas Grid
-      ctx.fillStyle = '#18181b';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (navigator.vibrate) navigator.vibrate(20);
 
-      // Frame Shadow & Border
-      ctx.fillStyle = '#27272a';
-      ctx.strokeStyle = '#3f3f46';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.roundRect(40, 20, 320, 370, 12);
-      ctx.fill();
-      ctx.stroke();
+    // 완성 수량 체크
+    const newCount = stateRef.current.parts.filter((p) => p.colored).length;
+    setColoredCount(newCount);
 
-      // Draw Zones
-      zonesRef.current.forEach((z) => {
-        const isPainted = z.currentColor !== null;
-        const isMatched = z.requiredNum === selectedNum;
+    if (newCount >= stateRef.current.parts.length) {
+      stateRef.current.isCompleted = true;
+      if (navigator.vibrate) navigator.vibrate([40, 60, 40, 80]);
+      setTimeout(() => {
+        handleVictory();
+      }, 1500);
+    }
+  };
 
-        ctx.beginPath();
-        ctx.moveTo(z.poly[0].x, z.poly[0].y);
-        for (let i = 1; i < z.poly.length; i++) {
-          ctx.lineTo(z.poly[i].x, z.poly[i].y);
-        }
-        ctx.closePath();
-
-        if (isPainted) {
-          ctx.fillStyle = z.currentColor!;
-        } else if (isMatched) {
-          ctx.fillStyle = '#52525b';
-        } else {
-          ctx.fillStyle = '#3f3f46';
-        }
-        ctx.fill();
-
-        ctx.strokeStyle = '#18181b';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-
-        // If not painted, draw required number
-        if (!isPainted) {
-          ctx.font = 'bold 14px monospace';
-          ctx.fillStyle = isMatched ? '#fbbf24' : '#a1a1aa';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(String(z.requiredNum), z.center.x, z.center.y);
-        }
-      });
-
-      // SNSHero No.79 Artist Hero Badge
-      drawCardSprite(ctx, 79, 48, 28, 44, 44);
-      ctx.font = 'bold 11px monospace';
-      ctx.fillStyle = '#38bdf8';
-      ctx.textAlign = 'left';
-      ctx.fillText('HERO #079 ARTIST', 98, 45);
-      ctx.fillStyle = '#a1a1aa';
-      ctx.font = '9px monospace';
-      ctx.fillText('POP ART COLORING', 98, 60);
-
-      // Render Particles
-      for (let i = particlesRef.current.length - 1; i >= 0; i--) {
-        const p = particlesRef.current[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life -= 0.04;
-        if (p.life <= 0) {
-          particlesRef.current.splice(i, 1);
-        } else {
-          ctx.fillStyle = p.color;
-          ctx.globalAlpha = p.life;
-          ctx.fillRect(p.x - 3, p.y - 3, 6, 6);
-          ctx.globalAlpha = 1;
-        }
-      }
-
-      animId = requestAnimationFrame(render);
-    };
-
-    render();
-    return () => cancelAnimationFrame(animId);
-  }, [selectedNum]);
-
-  const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-    if (gameState !== 'playing') return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
-    const clientY = 'touches' in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
-
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const clickX = (clientX - rect.left) * scaleX;
-    const clickY = (clientY - rect.top) * scaleY;
-
-    // Check collision with zones
-    for (const zone of zonesRef.current) {
-      if (zone.currentColor === null && pointInPoly({ x: clickX, y: clickY }, zone.poly)) {
-        if (zone.requiredNum === selectedNum) {
-          const color = PALETTE[selectedNum - 1].col;
-          zone.currentColor = color;
-
-          // Spawn celebration particles
-          for (let i = 0; i < 14; i++) {
-            const ang = (Math.PI * 2 * i) / 14;
-            const spd = 2 + Math.random() * 3;
-            particlesRef.current.push({
-              x: zone.center.x,
-              y: zone.center.y,
-              vx: Math.cos(ang) * spd,
-              vy: Math.sin(ang) * spd,
-              color,
-              life: 1.0,
-            });
-          }
-
-          const done = zonesRef.current.filter((z) => z.currentColor !== null).length;
-          setCompletedCount(done);
-
-          if (done === 10) {
-            setTimeout(() => {
-              handleVictory();
-            }, 400);
-          }
-        }
-        break;
+  // 선택된 번호의 파츠 1개 자동 채색 (PAINT 버튼)
+  const triggerPaint = () => {
+    if (gameState !== 'playing' || stateRef.current.isCompleted) return;
+    const s = stateRef.current;
+    const targetPart = s.parts.find((p) => !p.colored && p.reqNum === selectedNum);
+    if (targetPart) {
+      colorizePart(targetPart);
+    } else {
+      // 해당 번호 완료 시 다른 미채색 파츠 탐색
+      const anyPart = s.parts.find((p) => !p.colored);
+      if (anyPart) {
+        setSelectedNum(anyPart.reqNum);
+        colorizePart(anyPart);
       }
     }
   };
 
+  // 매직 필 (선택 번호 모든 파츠 일괄 채색)
+  const triggerMagicFill = () => {
+    if (gameState !== 'playing' || stateRef.current.isCompleted) return;
+    const s = stateRef.current;
+    const matchParts = s.parts.filter((p) => !p.colored && p.reqNum === selectedNum);
+    if (matchParts.length > 0) {
+      matchParts.forEach((p, idx) => {
+        setTimeout(() => {
+          colorizePart(p);
+        }, idx * 60);
+      });
+    } else {
+      // 다음 미완성 번호로 자동 전환
+      const nextPart = s.parts.find((p) => !p.colored);
+      if (nextPart) {
+        setSelectedNum(nextPart.reqNum);
+      }
+    }
+  };
+
+  // 화면 터치 드래그 (3D 모델 회전)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      stateRef.current.isDragging = true;
+      stateRef.current.lastTouch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!stateRef.current.isDragging || e.touches.length !== 1) return;
+    const touch = e.touches[0];
+    const dx = touch.clientX - stateRef.current.lastTouch.x;
+    const dy = touch.clientY - stateRef.current.lastTouch.y;
+    stateRef.current.lastTouch = { x: touch.clientX, y: touch.clientY };
+
+    stateRef.current.targetRotY += dx * 0.015;
+    stateRef.current.targetRotX = Math.max(-0.6, Math.min(0.8, stateRef.current.targetRotX + dy * 0.015));
+  };
+
+  const handleTouchEnd = () => {
+    stateRef.current.isDragging = false;
+  };
+
+  // 3D 파츠 직접 터치 레이캐스팅
+  const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (gameState !== 'playing' || stateRef.current.isCompleted) return;
+    const container = containerRef.current;
+    const camera = stateRef.current.camera;
+    if (!container || !camera) return;
+
+    const rect = container.getBoundingClientRect();
+    const mouse = new THREE.Vector2(
+      ((e.clientX - rect.left) / rect.width) * 2 - 1,
+      -((e.clientY - rect.top) / rect.height) * 2 + 1
+    );
+
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse, camera);
+
+    const meshes = stateRef.current.parts.map((p) => p.mesh);
+    const intersects = raycaster.intersectObjects(meshes, true);
+
+    if (intersects.length > 0) {
+      const hitMesh = intersects[0].object as THREE.Mesh;
+      const part = stateRef.current.parts.find((p) => p.mesh === hitMesh);
+      if (part && !part.colored) {
+        setSelectedNum(part.reqNum);
+        colorizePart(part);
+      }
+    }
+  };
+
+  // 승리 처리
+  const handleVictory = () => {
+    setGameState('victory');
+    const s = stateRef.current;
+    const duration = Math.max(1, Math.floor((Date.now() - s.startTime) / 1000));
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'anycolor',
+      gameTitle: '애니컬러 3D (Anycolor)',
+      isVictory: true,
+      score: 1000,
+      maxTargetScore: 1000,
+      durationSeconds: duration,
+    });
+    setRewardReceipt(receipt);
+  };
+
+  // 중도 포기 정산
+  const confirmExit = () => {
+    setShowExitModal(false);
+    const s = stateRef.current;
+    const duration = Math.max(1, Math.floor((Date.now() - s.startTime) / 1000));
+    calculateAndDepositMissionReward({
+      gameId: 'anycolor',
+      gameTitle: '애니컬러 3D (Anycolor)',
+      isVictory: false,
+      score: Math.floor((coloredCount / totalParts) * 1000),
+      maxTargetScore: 1000,
+      durationSeconds: duration,
+    });
+    handleExit();
+  };
+
+  // Three.js 초기화
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x1e1b4b); // 딥 인디고 아트 스튜디오 룸
+    stateRef.current.scene = scene;
+
+    const w = container.clientWidth || window.innerWidth;
+    const h = container.clientHeight || window.innerHeight;
+    const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
+    camera.position.set(0, 3, 9.5);
+    camera.lookAt(0, 0.6, 0);
+    stateRef.current.camera = camera;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setSize(w, h, false);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    container.appendChild(renderer.domElement);
+    stateRef.current.renderer = renderer;
+
+    // 조명
+    const ambLight = new THREE.AmbientLight(0xffffff, 0.9);
+    scene.add(ambLight);
+
+    const dirLight = new THREE.DirectionalLight(0xffedd5, 1.2);
+    dirLight.position.set(5, 10, 8);
+    dirLight.castShadow = true;
+    scene.add(dirLight);
+
+    const backLight = new THREE.DirectionalLight(0x818cf8, 0.8);
+    backLight.position.set(-5, 5, -8);
+    scene.add(backLight);
+
+    // 원형 회전 디스플레이 턴테이블
+    const turntableGeo = new THREE.CylinderGeometry(3.5, 3.8, 0.4, 32);
+    const turntableMat = new THREE.MeshStandardMaterial({ color: 0x312e81, metalness: 0.5, roughness: 0.2 });
+    const turntable = new THREE.Mesh(turntableGeo, turntableMat);
+    turntable.position.y = -0.2;
+    scene.add(turntable);
+    stateRef.current.turntableMesh = turntable;
+
+    // No.079 공식 영웅 배지 액자 데코
+    const frameCanvas = document.createElement('canvas');
+    frameCanvas.width = 256;
+    frameCanvas.height = 256;
+    const frameCtx = frameCanvas.getContext('2d');
+    if (frameCtx) {
+      drawCardSprite(frameCtx, cardId, 0, 0, 256, 256);
+      const frameTex = new THREE.CanvasTexture(frameCanvas);
+      const framePlane = new THREE.Mesh(
+        new THREE.PlaneGeometry(2.4, 2.4),
+        new THREE.MeshBasicMaterial({ map: frameTex, transparent: true })
+      );
+      framePlane.position.set(0, 3.8, -4.5);
+      scene.add(framePlane);
+    }
+
+    // --- 32개 정밀 파츠 3D 메카 가디언 피규어 모델링 ---
+    const modelGroup = new THREE.Group();
+    const uncoloredMat = new THREE.MeshStandardMaterial({
+      color: 0xe2e8f0,
+      roughness: 0.6,
+      metalness: 0.1,
+    });
+
+    const parts: PartData[] = [];
+    let partId = 1;
+
+    const addPart = (geo: THREE.BufferGeometry, pos: THREE.Vector3, reqNum: number, name: string) => {
+      const mesh = new THREE.Mesh(geo, uncoloredMat.clone());
+      mesh.position.copy(pos);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      modelGroup.add(mesh);
+
+      parts.push({
+        id: partId++,
+        name,
+        reqNum,
+        mesh,
+        colored: false,
+        baseScale: mesh.scale.clone(),
+      });
+    };
+
+    // 1. 머리 & 헬멧 파츠 (6개)
+    addPart(new THREE.SphereGeometry(0.55, 16, 16), new THREE.Vector3(0, 2.2, 0), 1, '헬멧 본체');
+    addPart(new THREE.BoxGeometry(0.65, 0.22, 0.4), new THREE.Vector3(0, 2.2, 0.35), 2, '사이버 바이저');
+    addPart(new THREE.ConeGeometry(0.18, 0.55, 6), new THREE.Vector3(0, 2.8, 0), 3, '골든 크레스트');
+    addPart(new THREE.ConeGeometry(0.12, 0.4, 4), new THREE.Vector3(-0.45, 2.4, 0), 1, '좌측 이어 안테나');
+    addPart(new THREE.ConeGeometry(0.12, 0.4, 4), new THREE.Vector3(0.45, 2.4, 0), 1, '우측 이어 안테나');
+    addPart(new THREE.BoxGeometry(0.4, 0.2, 0.25), new THREE.Vector3(0, 1.8, 0.2), 6, '페이스 가드');
+
+    // 2. 체스트 코어 & 몸통 (6개)
+    addPart(new THREE.CylinderGeometry(0.7, 0.5, 0.9, 8), new THREE.Vector3(0, 1.35, 0), 2, '체스트 아머');
+    addPart(new THREE.SphereGeometry(0.28, 12, 12), new THREE.Vector3(0, 1.45, 0.4), 4, '에너지 아크 코어');
+    addPart(new THREE.BoxGeometry(0.9, 0.2, 0.55), new THREE.Vector3(0, 1.75, 0), 3, '칼라 넥 칼라');
+    addPart(new THREE.CylinderGeometry(0.5, 0.55, 0.45, 8), new THREE.Vector3(0, 0.75, 0), 5, '웨이스트 벨트');
+    addPart(new THREE.BoxGeometry(0.3, 0.3, 0.2), new THREE.Vector3(0, 0.75, 0.32), 3, '벨트 버클');
+    addPart(new THREE.BoxGeometry(0.7, 0.3, 0.2), new THREE.Vector3(0, 1.1, -0.3), 6, '백팩 슬러스터');
+
+    // 3. 날개 윙 바인더 (4개)
+    addPart(new THREE.BoxGeometry(0.15, 1.0, 0.4), new THREE.Vector3(-0.7, 1.6, -0.4), 4, '좌상단 윙');
+    addPart(new THREE.BoxGeometry(0.15, 1.0, 0.4), new THREE.Vector3(0.7, 1.6, -0.4), 4, '우상단 윙');
+    addPart(new THREE.BoxGeometry(0.12, 0.7, 0.3), new THREE.Vector3(-0.9, 1.0, -0.4), 5, '좌하단 윙');
+    addPart(new THREE.BoxGeometry(0.12, 0.7, 0.3), new THREE.Vector3(0.9, 1.0, -0.4), 5, '우하단 윙');
+
+    // 4. 양팔 파츠 (8개)
+    addPart(new THREE.SphereGeometry(0.32, 10, 10), new THREE.Vector3(-0.95, 1.6, 0), 1, '좌측 숄더 가드');
+    addPart(new THREE.SphereGeometry(0.32, 10, 10), new THREE.Vector3(0.95, 1.6, 0), 1, '우측 숄더 가드');
+    addPart(new THREE.CylinderGeometry(0.16, 0.14, 0.55, 6), new THREE.Vector3(-0.95, 1.15, 0), 2, '좌측 상완');
+    addPart(new THREE.CylinderGeometry(0.16, 0.14, 0.55, 6), new THREE.Vector3(0.95, 1.15, 0), 2, '우측 상완');
+    addPart(new THREE.BoxGeometry(0.32, 0.55, 0.32), new THREE.Vector3(-0.95, 0.65, 0), 5, '좌측 건틀릿');
+    addPart(new THREE.BoxGeometry(0.32, 0.55, 0.32), new THREE.Vector3(0.95, 0.65, 0), 5, '우측 건틀릿');
+    addPart(new THREE.SphereGeometry(0.18, 8, 8), new THREE.Vector3(-0.95, 0.25, 0), 6, '좌측 피스트');
+    addPart(new THREE.SphereGeometry(0.18, 8, 8), new THREE.Vector3(0.95, 0.25, 0), 6, '우측 피스트');
+
+    // 5. 양다리 & 부츠 (8개)
+    addPart(new THREE.SphereGeometry(0.25, 8, 8), new THREE.Vector3(-0.35, 0.45, 0), 3, '좌측 고관절');
+    addPart(new THREE.SphereGeometry(0.25, 8, 8), new THREE.Vector3(0.35, 0.45, 0), 3, '우측 고관절');
+    addPart(new THREE.CylinderGeometry(0.18, 0.16, 0.65, 6), new THREE.Vector3(-0.35, -0.05, 0), 2, '좌측 허벅지');
+    addPart(new THREE.CylinderGeometry(0.18, 0.16, 0.65, 6), new THREE.Vector3(0.35, -0.05, 0), 2, '우측 허벅지');
+    addPart(new THREE.BoxGeometry(0.38, 0.7, 0.4), new THREE.Vector3(-0.35, -0.65, 0), 1, '좌측 정강이 아머');
+    addPart(new THREE.BoxGeometry(0.38, 0.7, 0.4), new THREE.Vector3(0.35, -0.65, 0), 1, '우측 정강이 아머');
+    addPart(new THREE.BoxGeometry(0.42, 0.25, 0.6), new THREE.Vector3(-0.35, -1.05, 0.1), 6, '좌측 부츠');
+    addPart(new THREE.BoxGeometry(0.42, 0.25, 0.6), new THREE.Vector3(0.35, -1.05, 0.1), 6, '우측 부츠');
+
+    modelGroup.position.set(0, 1.2, 0);
+    scene.add(modelGroup);
+    stateRef.current.modelGroup = modelGroup;
+    stateRef.current.parts = parts;
+    setTotalParts(parts.length);
+
+    // 리사이즈
+    const handleResize = () => {
+      if (!container || !stateRef.current.renderer || !stateRef.current.camera) return;
+      const nw = container.clientWidth || window.innerWidth;
+      const nh = container.clientHeight || window.innerHeight;
+      stateRef.current.camera.aspect = nw / nh;
+      stateRef.current.camera.updateProjectionMatrix();
+      stateRef.current.renderer.setSize(nw, nh, false);
+    };
+
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+
+    // 렌더링 루프
+    const animate = () => {
+      stateRef.current.animFrame = requestAnimationFrame(animate);
+      const dt = Math.min(stateRef.current.clock.getDelta(), 0.1);
+      const s = stateRef.current;
+
+      // 모델 회전 인터폴레이션
+      s.rotX += (s.targetRotX - s.rotX) * 0.1;
+      s.rotY += (s.targetRotY - s.rotY) * 0.1;
+
+      if (s.modelGroup) {
+        if (s.isCompleted) {
+          // 완성 시 360도 공중 부유 스핀
+          s.celebrateTimer += dt;
+          s.modelGroup.rotation.y += 1.5 * dt;
+          s.modelGroup.position.y = 1.2 + Math.sin(s.celebrateTimer * 2) * 0.4;
+        } else {
+          s.modelGroup.rotation.x = s.rotX;
+          s.modelGroup.rotation.y = s.rotY;
+        }
+      }
+
+      // 턴테이블 동반 회전
+      if (s.turntableMesh) {
+        s.turntableMesh.rotation.y = s.modelGroup ? s.modelGroup.rotation.y : 0;
+      }
+
+      // 파티클
+      for (let i = s.particles.length - 1; i >= 0; i--) {
+        const p = s.particles[i];
+        p.life += dt;
+        p.mesh.position.x += p.vx * dt;
+        p.mesh.position.y += p.vy * dt;
+        p.mesh.position.z += p.vz * dt;
+        p.vy -= 4.0 * dt;
+        const scale = Math.max(0.01, 1 - p.life / p.maxLife);
+        p.mesh.scale.set(scale, scale, scale);
+
+        if (p.life >= p.maxLife) {
+          scene.remove(p.mesh);
+          s.particles.splice(i, 1);
+        }
+      }
+
+      renderer.render(scene, camera);
+    };
+
+    stateRef.current.animFrame = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(stateRef.current.animFrame);
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+      if (renderer.domElement && renderer.domElement.parentElement) {
+        renderer.domElement.parentElement.removeChild(renderer.domElement);
+      }
+      renderer.dispose();
+    };
+  }, [cardId]);
+
   return (
-    <div className="flex flex-col items-center justify-between w-full h-[100dvh] bg-[#18181b] text-[#fdfcfc] select-none overflow-hidden font-mono">
+    <div
+      ref={containerRef}
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onClick={handleCanvasClick}
+    >
+      {/* 상단 HUD */}
       <MinimalistMissionHUD
-        gameTitle="Anycolor: Pop Art Palette"
-        missionTarget="10개 파츠 완벽 채색"
-        currentScore={completedCount}
-        maxScore={10}
-        scoreUnit="구역"
-        onBack={handleExit}
+        title="ANYCOLOR 3D STUDIO"
+        scoreDisplay={`PROGRESS: ${Math.floor((coloredCount / totalParts) * 100)}% | ${coloredCount}/${totalParts}`}
+        onExitClick={() => setShowExitModal(true)}
       />
 
-      {/* Main Canvas Drawing Area */}
-      <div className="relative flex-1 w-full max-w-md flex flex-col items-center justify-center p-2">
-        <canvas
-          ref={canvasRef}
-          width={400}
-          height={420}
-          onClick={handleCanvasClick}
-          onTouchStart={handleCanvasClick}
-          className="w-full max-w-[380px] aspect-[400/420] border border-white/20 rounded-md cursor-pointer shadow-2xl bg-zinc-950 touch-none"
-        />
+      {/* 화면 조작 안내 툴팁 */}
+      <div className="absolute top-16 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-3 py-1 border border-slate-700 rounded-full text-[11px] text-slate-300 pointer-events-none z-10">
+        화면 드래그: 3D 회전 | 파츠 터치: 즉시 채색
+      </div>
 
-        {gameState === 'ready' && (
-          <div className="absolute inset-0 bg-black/85 flex flex-col items-center justify-center p-6 text-center">
-            <h2 className="text-2xl font-bold text-violet-400 mb-2">[ Anycolor: Pop Art ]</h2>
-            <p className="text-sm text-slate-300 mb-6 leading-relaxed">
-              감각적인 컬러링으로 레트로 로봇 일러스트를 완성하세요!<br />
-              1. 하단에서 색상 번호(1~5)를 선택합니다.<br />
-              2. 도안에서 <b>동일한 번호의 구역</b>을 터치하여 채색합니다.<br />
-              10개 구역을 100% 채색하면 갤러리 전시 & 보상 획득!
-            </p>
+      {/* 하단 6색 팔레트 바 */}
+      {gameState === 'playing' && (
+        <div className="absolute bottom-6 left-4 right-4 flex justify-between items-center z-20 pointer-events-auto">
+          {/* 컬러 팔레트 버튼 군 */}
+          <div className="flex gap-2 p-1.5 bg-black/70 backdrop-blur-md border border-slate-700 rounded-sm">
+            {PALETTE.map((item) => {
+              const countLeft = stateRef.current.parts.filter(
+                (p) => !p.colored && p.reqNum === item.num
+              ).length;
+              const isSelected = selectedNum === item.num;
+              return (
+                <button
+                  key={item.num}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedNum(item.num);
+                    if (navigator.vibrate) navigator.vibrate(15);
+                  }}
+                  className={`relative w-11 h-12 rounded-sm flex flex-col items-center justify-center font-bold text-xs transition-all ${
+                    isSelected
+                      ? 'ring-2 ring-white scale-110 shadow-lg'
+                      : 'opacity-80 active:scale-95'
+                  }`}
+                  style={{ backgroundColor: item.col }}
+                >
+                  <span className="text-white drop-shadow font-black">{item.num}</span>
+                  <span className="text-[9px] bg-black/60 text-white px-1 rounded-full font-normal">
+                    {countLeft}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* 우측 액션 버튼 군 */}
+          <div className="flex gap-2 items-center">
+            {/* 매직 필 */}
             <button
-              onClick={handleStart}
-              className="px-8 py-3 bg-violet-500 hover:bg-violet-600 text-slate-950 font-black text-lg rounded-sm active:scale-95 transition-all shadow-lg"
+              onClick={(e) => {
+                e.stopPropagation();
+                triggerMagicFill();
+              }}
+              className="w-14 h-14 rounded-full bg-gradient-to-b from-purple-500 to-indigo-600 text-white font-black text-xs shadow-lg active:scale-95 flex flex-col items-center justify-center border-2 border-purple-300"
             >
-              컬러링 시작 [START]
+              <span>MAGIC</span>
+              <span className="text-[8px]">FILL</span>
+            </button>
+
+            {/* 76px 대형 PAINT 버튼 */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                triggerPaint();
+              }}
+              className="w-[76px] h-[76px] rounded-full bg-gradient-to-b from-amber-400 to-yellow-500 text-black font-black text-base shadow-xl active:scale-90 flex flex-col items-center justify-center border-4 border-white"
+            >
+              <span>PAINT</span>
+              <span className="text-[10px] font-bold">#{selectedNum} 칠하기</span>
             </button>
           </div>
-        )}
-
-        {gameState === 'victory' && rewardReceipt && (
-          <VictoryRewardModal
-            receipt={rewardReceipt}
-            language="ko"
-            onPlayAgain={handleStart}
-            onExit={handleExit}
-          />
-        )}
-      </div>
-
-      {/* Color Palette Selector Footer */}
-      <div className="w-full max-w-md p-3 bg-zinc-900 border-t border-white/10 flex flex-col gap-2">
-        <div className="flex justify-between items-center text-xs text-zinc-400 px-1">
-          <span>선택된 색상: {PALETTE[selectedNum - 1].name}</span>
-          <span>진행도: {completedCount} / 10 ({Math.round((completedCount / 10) * 100)}%)</span>
         </div>
-        <div className="flex items-center justify-between gap-2">
-          {PALETTE.map((pal) => {
-            const isSelected = pal.num === selectedNum;
-            return (
+      )}
+
+      {/* 시작(Ready) 모달 */}
+      {gameState === 'ready' && (
+        <div className="absolute inset-0 bg-black/80 flex items-center justify-center p-4 z-30 pointer-events-auto">
+          <div className="bg-slate-900 border-2 border-amber-400 p-6 max-w-sm w-full text-center rounded-sm">
+            <h2 className="text-2xl font-black text-amber-400 mb-2">ANYCOLOR 3D</h2>
+            <p className="text-xs text-slate-300 mb-4 leading-relaxed">
+              나만의 3D 메카 가디언 피규어를 완성하세요!
+              <br />
+              <span className="text-amber-300">화면 터치 드래그</span>로 피규어를 돌려보고,
+              <br />
+              하단 <span className="text-yellow-400 font-bold">1~6번 컬러 팔레트</span>를 골라
+              <br />
+              파츠를 직접 터치하거나 <span className="text-cyan-400 font-bold">[PAINT]</span>로 모든 조각을 칠해보세요!
+            </p>
+            <button
+              onClick={() => setGameState('playing')}
+              className="w-full py-3.5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-sm shadow-lg active:scale-95"
+            >
+              [ 컬러링 시작하기 ]
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 승리 보상 모달 */}
+      {gameState === 'victory' && rewardReceipt && (
+        <VictoryRewardModal
+          isOpen={true}
+          receipt={rewardReceipt}
+          onClose={handleExit}
+        />
+      )}
+
+      {/* 중도 포기 확인 모달 */}
+      {showExitModal && (
+        <div className="absolute inset-0 bg-black/80 flex items-center justify-center p-4 z-40 pointer-events-auto">
+          <div className="bg-slate-900 border border-slate-700 p-5 max-w-xs w-full text-center rounded-sm">
+            <h3 className="text-lg font-bold text-white mb-2">컬러링을 마칠까요?</h3>
+            <p className="text-xs text-slate-400 mb-4">
+              현재까지 채색한 파츠 완성도에 따라 SNS 보상이 안전하게 정산됩니다.
+            </p>
+            <div className="flex gap-2">
               <button
-                key={pal.num}
-                onClick={() => setSelectedNum(pal.num)}
-                className={`flex-1 py-3.5 rounded-sm flex flex-col items-center justify-center font-bold text-sm transition-all shadow ${
-                  isSelected ? 'ring-2 ring-white scale-105' : 'opacity-80'
-                }`}
-                style={{ backgroundColor: pal.col }}
+                onClick={confirmExit}
+                className="flex-1 py-2 bg-red-600 text-white font-bold text-xs rounded-sm active:scale-95"
               >
-                <span className="text-white drop-shadow font-black">{pal.num}</span>
+                마치기
               </button>
-            );
-          })}
+              <button
+                onClick={() => setShowExitModal(false)}
+                className="flex-1 py-2 bg-slate-700 text-slate-200 font-bold text-xs rounded-sm active:scale-95"
+              >
+                계속하기
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
-};
+}
 
-export default PokiAnycolorGame;
+export { PokiAnycolorGame };
