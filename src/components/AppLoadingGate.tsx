@@ -90,6 +90,14 @@ export const AppLoadingGate: React.FC<AppLoadingGateProps> = ({
       }
     }, isSubpage ? 150 : 350);
 
+    // 30초 이상 게이트에서 무한 로딩 발생 시 캐시 제거 후 강제 새로고침
+    const emergencyWatchdog = setTimeout(() => {
+      if (!completedRef.current) {
+        console.warn('[AppLoadingGate] 30초 이상 부팅 지연 감지. 캐시 제거 후 강제 새로고침 실행.');
+        forcePurgeAndReload();
+      }
+    }, 30000);
+
     async function runVersionCheckSequence() {
       try {
         setProgress(70);
@@ -144,6 +152,7 @@ export const AppLoadingGate: React.FC<AppLoadingGateProps> = ({
     return () => {
       isMounted = false;
       clearTimeout(safetyTimer);
+      clearTimeout(emergencyWatchdog);
     };
   }, [language, isSubpage, targetTitle]);
 

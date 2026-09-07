@@ -115,4 +115,12 @@ if (!isApiRoute) {
       </ErrorBoundary>
     </StrictMode>,
   );
+
+  // 정상 마운트 완료 시 HTML 레벨 30초 무한로딩 워치독 해제
+  if (typeof window !== 'undefined') {
+    const clearWatchdog = (window as unknown as { __SNSHERO_CLEAR_WATCHDOG__?: () => void }).__SNSHERO_CLEAR_WATCHDOG__;
+    if (typeof clearWatchdog === 'function') {
+      clearWatchdog();
+    }
+  }
 }

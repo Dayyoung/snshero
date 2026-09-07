@@ -506,6 +506,34 @@
               if (el) el.style.display = 'none';
             }
           } catch (e) {}
+
+          // 30초 무한 로딩 방지 워치독: 다운로드/파싱 30초 초과 시 캐시 초기화 후 강제 새로고침
+          (function() {
+            var watchdogTimer = setTimeout(function() {
+              if (!window.__SNSHERO_LOADED__) {
+                console.warn('[Watchdog] 30초 이상 로딩 지속. 캐시 제거 후 강제 새로고침을 실행합니다.');
+                try {
+                  for (var i = localStorage.length - 1; i >= 0; i--) {
+                    var k = localStorage.key(i);
+                    if (k && (k.indexOf('_cache') !== -1 || k.indexOf('hero_build_version') !== -1 || k.indexOf('hero_app_version') !== -1 || k.indexOf('hero_boot_gate_shown') !== -1)) {
+                      localStorage.removeItem(k);
+                    }
+                  }
+                  if ('caches' in window) {
+                    caches.keys().then(function(names) {
+                      names.forEach(function(name) { caches.delete(name); });
+                    });
+                  }
+                } catch (err) {}
+                window.location.href = window.location.pathname + '?_fresh=' + Date.now();
+              }
+            }, 30000);
+
+            window.__SNSHERO_CLEAR_WATCHDOG__ = function() {
+              clearTimeout(watchdogTimer);
+              window.__SNSHERO_LOADED__ = true;
+            };
+          })();
         </script>
         <div class="loader-card">
           <div class="loader-badge">[SYSTEM STARTUP]</div>

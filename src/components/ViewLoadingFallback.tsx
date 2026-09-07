@@ -235,6 +235,29 @@ export const ViewLoadingFallback: React.FC<ViewLoadingFallbackProps> = ({
     return () => cancelAnimationFrame(animationFrameId);
   }, [targetDurationMs, minProgress]);
 
+  // 30초 이상 로딩 지속 시 캐시 제거 후 강제 새로고침 (무한 로딩 방지 워치독)
+  useEffect(() => {
+    const watchdogTimer = setTimeout(() => {
+      console.warn(`[ViewLoadingFallback] ${view} 화면 30초 이상 로딩 지연 감지. 캐시 제거 후 강제 새로고침을 실행합니다.`);
+      try {
+        if (onResetCache) {
+          onResetCache();
+        } else {
+          resetAllCaches();
+        }
+      } catch (e) {
+        console.error('[ViewLoadingFallback] Watchdog reset failed:', e);
+      } finally {
+        if (typeof window !== 'undefined') {
+          // 브라우저 캐시 우회 파라미터와 함께 강제 새로고침
+          window.location.href = window.location.pathname + '?_fresh=' + Date.now();
+        }
+      }
+    }, 30000);
+
+    return () => clearTimeout(watchdogTimer);
+  }, [view, onResetCache]);
+
   const meta = useMemo<ViewLoadingMeta>(() => {
     const key = String(view).toLowerCase();
     if (VIEW_METAS[key]) return VIEW_METAS[key];
@@ -371,12 +394,19 @@ export const ViewLoadingFallback: React.FC<ViewLoadingFallbackProps> = ({
           </button>
 
           {/* Safety & Integrity Guarantee Notice */}
-          <div className="flex items-center gap-1 text-[10px] text-[#201d1d]/60 leading-tight text-center">
-            <ShieldCheck className="w-3 h-3 text-emerald-600 shrink-0" />
-            <span>
+          <div className="flex flex-col items-center gap-1 text-[10px] text-[#201d1d]/60 leading-tight text-center">
+            <div className="flex items-center gap-1">
+              <ShieldCheck className="w-3 h-3 text-emerald-600 shrink-0" />
+              <span>
+                {isKo
+                  ? '* 로그인 세션과 게임 플레이 데이터는 안전하게 보존됩니다.'
+                  : '* Login session & saved game data are 100% preserved.'}
+              </span>
+            </div>
+            <span className="text-[9px] text-[#201d1d]/40">
               {isKo
-                ? '* 로그인 세션과 게임 플레이 데이터는 안전하게 보존됩니다.'
-                : '* Login session & saved game data are 100% preserved.'}
+                ? '(30초 이상 로딩 지연 시 자동으로 캐시를 제거하고 새로고침합니다)'
+                : '(Auto-purges cache and reloads if loading exceeds 30s)'}
             </span>
           </div>
         </div>
