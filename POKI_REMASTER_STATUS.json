@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 93,
-  "completed_count": 92,
-  "last_updated": "2026-09-08T02:02:00+09:00",
+  "current_game_index": 94,
+  "completed_count": 93,
+  "last_updated": "2026-09-08T02:04:00+09:00",
   "history": [
     {
       "id": 1,
@@ -1017,6 +1017,17 @@
       "component": "src/components/poki/PokiHarvestSimulatorGame.tsx",
       "completed_at": "2026-09-08T02:02:00+09:00",
       "details": "Three.js 기반 3D 대형 콤바인 농장 수확 & 사일로 곡물 하역 시뮬레이션 구현, 28m x 24m 농장 필드(사일로 타워/하역장/목재 울타리/사일로 No.092 공식 영웅 배지 엠블럼), 3D 대형 콤바인 수확기(전면 고속 회전 커터 릴/도어 No.092 영웅 배지 데칼/4개 빅 타이어), 70여개 3D 밀·해바라기 작물 수확 & 볏짚 파티클, 사일로 곡물 하역 캐시 머니 정산 시스템, 모바일 퓨어 터치 조작계(360도 플로팅 조이스틱 + 76px BOOST + 64px UNLOAD + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 93,
+      "name": "Car Circle",
+      "poki_url": "https://poki.com/kr/g/car-circle",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No093_CarCircle_Prompt.md",
+      "component": "src/components/poki/PokiCarCircleGame.tsx",
+      "completed_at": "2026-09-08T02:04:00+09:00",
+      "details": "Three.js 기반 3D 원형 로터리 교차로 차량 합류 & 타이밍 트래픽 컨트롤 구현, 반경 6.0m 아스팔트 원형 트랙(4방향 진입로/중앙 잔디 아일랜드 No.093 공식 영웅 배지 엠블럼 기념탑), 3D 플레이어 레드 스포츠카(보닛 No.093 배지 데칼/스포일러/듀얼 머플러 배기 파티클), 3대 로터리 순환 트래픽 차량(블루 세단, 그린 택시, 앰버 SUV), 충돌 회피 및 정밀 타이밍 합류(PERFECT MERGE! +100), 모바일 퓨어 터치 조작계(화면 탭 / 76px MERGE NOW! 대형 버튼 + 64px SLOW-MO 슬로우모션 지원 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
