@@ -4,6 +4,33 @@
 
 ---
 
+## [2026-09-07 20:41 KST] [Poki 110선 리마스터 16/110] No.016 Decor Life Three.js 3D 오픈 코너 디오라마 룸 데코레이션 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/decor-life`) 분석 및 프롬프트(`src/components/poki/prompts/No016_DecorLife_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 8x8m 오픈 코너 디오라마 룸 & 우드 파켓 바닥 & 벽면 창문 및 영웅 No.16 스프라이트 액자, 2단계 룸 스테이지(코지 베드룸 5종 가구, 모던 리빙룸 5종 가구), 3D 가구별 정교한 메쉬 모델링, 하단 원터치 언박싱 & 팝업 안착 탄성 애니메이션, 3D 가구 90도 회전, 화면 드래그 360도 궤도 뷰 회전 모바일 퓨어 터치 조작계 전면 재개발.
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(하단 원터치 가구 트레이 슬롯 + 화면 터치 드래그 3D 뷰 회전 + [회전] 버튼 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 인기 3D 방 꾸미기/인테리어 힐링 시뮬레이션 게임. 빈 방에 택배 상자를 언박싱하여 침대, 소파, 조명, 식물, 책상, 러그 등 다양한 3D 가구를 어울리는 위치에 배치하여 안락한 공간을 완성하는 힐링 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiDecorLifeGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 3인칭 쿼터뷰 아이소메트릭 카메라, 8x8m L자형 오픈 코너 디오라마 룸 & 햇살 창문.
+     - 2단계 룸 테마 스테이지:
+       - 1단계 (코지 베드룸): 럭셔리 우드 더블 침대(베개 2개 & 블루 블랭킷), 원목 책상&의자&노트북, 무드 스탠드 조명, 몬스테라 화분, 옐로우 원형 패턴 러그.
+       - 2단계 (모던 리빙룸): 3인용 패브릭 소파&옐로우 쿠션, 미디어 콘솔 TV장&네온 디스플레이 TV, 원형 티 테이블&찻잔, 플로어 아치 램프, 미니멀 북쉘프&책 오브젝트들.
+     - 벽면 액자에 플레이어의 공식 No.016 영웅 카드 스프라이트 렌더링.
+     - 배치 가이드 시스템: 반투명 네온 와이어프레임 고스트 메쉬(Ghost Preview)로 최적 배치 스팟 가이드.
+     - 하단 퓨어 터치 언박싱 & 인테리어 트레이: 원탭으로 택배 상자 언박싱(`isUnboxed: true`) 후 룸으로 팝업 탄성 도약 안착(`isPlaced: true`), 반짝이 콘페티 파티클 및 햅틱 피드백.
+     - 3D 가구 90도 회전(`[🔄 회전]` 버튼) 및 상단 터치 드래그로 룸 360° 자유 궤도 회전.
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 확인 팝업 및 완공률 비례 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No016_DecorLife_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 무결점 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 16개 완료 (No.017 Neon Challenge Legends 대기).
+
+---
+
 ## [2026-09-07 20:34 KST] [Poki 110선 리마스터 15/110] No.015 Stickman Battle Three.js 3D 랙돌 격투 배틀 아레나 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/stickman-battle`) 분석 및 프롬프트(`src/components/poki/prompts/No015_StickmanBattle_Prompt.md`) 작성.
