@@ -235,10 +235,11 @@ export const ViewLoadingFallback: React.FC<ViewLoadingFallbackProps> = ({
     return () => cancelAnimationFrame(animationFrameId);
   }, [targetDurationMs, minProgress]);
 
-  // 30초 이상 로딩 지속 시 캐시 제거 후 강제 새로고침 (무한 로딩 방지 워치독)
+  // 8초 이상 로딩 지속 시 캐시 제거 후 안전 복구 (무한 로딩/새로고침 방지 워치독)
   useEffect(() => {
     const watchdogTimer = setTimeout(() => {
-      console.warn(`[ViewLoadingFallback] ${view} 화면 30초 이상 로딩 지연 감지. 캐시 제거 후 강제 새로고침을 실행합니다.`);
+      console.warn(`[ViewLoadingFallback] ${view} 화면 8초 이상 로딩 지연 감지. 안전 복구를 실행합니다.`);
+      const retryCount = parseInt(sessionStorage.getItem('hero_view_retries') || '0', 10);
       try {
         if (onResetCache) {
           onResetCache();
@@ -249,11 +250,15 @@ export const ViewLoadingFallback: React.FC<ViewLoadingFallbackProps> = ({
         console.error('[ViewLoadingFallback] Watchdog reset failed:', e);
       } finally {
         if (typeof window !== 'undefined') {
-          // 브라우저 캐시 우회 파라미터와 함께 강제 새로고침
-          window.location.href = window.location.pathname + '?_fresh=' + Date.now();
+          if (retryCount < 1) {
+            try { sessionStorage.setItem('hero_view_retries', '1'); } catch {}
+            window.location.href = window.location.pathname + '?_fresh=' + Date.now();
+          } else {
+            console.error('[ViewLoadingFallback] Max retry limit reached. Halting auto-reload to prevent loop.');
+          }
         }
       }
-    }, 30000);
+    }, 8000);
 
     return () => clearTimeout(watchdogTimer);
   }, [view, onResetCache]);
@@ -405,8 +410,8 @@ export const ViewLoadingFallback: React.FC<ViewLoadingFallbackProps> = ({
             </div>
             <span className="text-[9px] text-[#201d1d]/40">
               {isKo
-                ? '(30초 이상 로딩 지연 시 자동으로 캐시를 제거하고 새로고침합니다)'
-                : '(Auto-purges cache and reloads if loading exceeds 30s)'}
+                ? '(로딩 지연 시 자동으로 캐시를 정리하고 안전하게 복구합니다)'
+                : '(Auto-purges cache and safely recovers if loading is delayed)'}
             </span>
           </div>
         </div>

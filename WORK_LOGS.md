@@ -4,6 +4,39 @@
 
 ---
 
+## [2026-09-07 15:05 KST] [404/429 네트워크 에러 시 엔진 초기화 무한 로딩 및 30초 무한 새로고침 루프 방지 자가치유 복구 시스템 구축]
+- **문의 및 요청 사항**:
+  - `GET .../src/main.tsx net::ERR_ABORTED 404 (Not Found)`
+  - `POST .../GenerateCodeAssistantSuggestionChips 429 (Too Many Requests)`
+  - 404나 429 에러가 발생할 경우 엔진 초기화 로딩화면("[LOADING RES] 엔진 초기화...")에서 무한로딩 되고, 30초 후에 재시도하지만 여전히 무한로딩되는 현상 방지 요청.
+- **원인 분석**:
+  1. 배포/프리뷰 환경(Cloud Run 등)에서 정적 라우팅 매핑 문제로 루트 `index.html`이 응답되어 브라우저가 `/src/main.tsx`를 요청할 때 404가 발생하거나, 외부 API 지연 발생 시 React 앱이 마운트되지 못함.
+  2. 기존 `index.html`의 워치독 타이머가 30초라는 너무 긴 시간으로 설정되어 있었고, 스크립트 404 로드 실패를 즉각 감지하지 못함.
+  3. 30초 타임아웃 발생 시 재시도 횟수 제한 없이 무조건 새로고침(`?_fresh=`)을 실행하여 영구 무한 새로고침 루프에 갇히는 치명적 결함이 존재했음.
+  4. 서드파티 외부 API(Google Ads 403, MakerSuite 429 등) 오류가 전역 에러 핸들러를 자극할 우려가 있었음.
+- **조치 사항**:
+  1. **`index.html` 자가 치유(Self-Healing) 및 워치독 전면 개편**:
+     - 타임아웃 대기 시간을 기존 30초에서 **6초로 대폭 단축**하여 지연 시 즉각 대응.
+     - `sessionStorage` 기반 재시도 횟수 카운터(`hero_boot_retries`) 도입: 최대 1회만 자동 재시도하고, 2회 이상 연속 실패 시 **자동 새로고침을 즉시 중단(HALT)**하여 무한 루프 원천 차단.
+     - 스크립트 로드 실패(404, 네트워크 실패 등) 실시간 즉각 캡처 리스너 등록 (`window.addEventListener('error', ..., true)`).
+     - `/src/main.tsx` 404 실패 시 비동기로 `/version.json`을 조회하여 빌드된 최신 엔트리 번들(`/assets/index-*.js`)을 동적으로 주입/실행하는 자동 복구 메커니즘 탑재.
+     - 최종 복구 실패 시 화면 내 **[비상 복구 콘솔 UI]** (`[🔄 캐시 완전 초기화 후 다시 시작]`, `[🏠 메인 홈 이동]`, `[⚡ 안전 모드 실행]`)를 즉각 노출.
+  2. **`scripts/post-build.js` 최신 번들 매핑 보강**:
+     - 빌드 시 `dist/assets/index-*.js` 파일명을 동적으로 감지하여 `version.json`에 `entryScript` 속성을 영구 기록 및 `public/` 디렉토리 자동 동기화.
+  3. **`src/main.tsx` 외부 API 403/429 안전 필터링 및 리로드 방어**:
+     - `alkalimakersuite`, `googleads`, `doubleclick`, `429`, `403` 등 외부 서드파티 비필수 네트워크 실패를 감지하여 번들 에러로 오인되지 않도록 안전 억제.
+     - 정상 마운트 시 부팅 재시도 카운터 자동 초기화.
+  4. **`AppLoadingGate.tsx` & `ViewLoadingFallback.tsx` 게이트 워치독 최적화**:
+     - 30초 타임아웃 ➔ 8초로 단축 및 무한 새로고침 방지 가드 적용.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 완벽 통과.
+  - `npm run build`: 프로덕션 빌드 성공 (`built in 9.54s`, `version.json` 및 `404.html` 정상 생성).
+- **Git 배포 및 보고**:
+  - 커밋 및 GitHub 원격 저장소(`origin/main`) 푸시 완료.
+  - 구글 폼 보고서 제출 완료.
+
+---
+
 ## [2026-09-07 14:40 KST] [화면 좌측 상단 글로벌 뒤로가기 버튼(ChevronLeft) 클릭 시 미션 종료 및 정산 확인 모달 동일 연동]
 - **요청 사항**:
   - 화면 좌측 상단 고정 뒤로가기 버튼(`<button class="fixed left-4 min-[1024px]:left-[calc(50vw-496px)] ... title="뒤로가기"><ChevronLeft /></button>`)을 퍼즐/미션 게임 진행 중에 눌렀을 때도 동일하게 미션 종료 확인 및 진행도 정산 후 미션 리스트로 이동하도록 개선.

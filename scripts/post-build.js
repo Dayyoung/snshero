@@ -21,16 +21,35 @@ try {
     });
   }
 
+  // 메인 엔트리 스크립트 파일(assets/index-*.js) 자동 탐색
+  let entryScript = '';
+  const assetsDir = path.join(distDir, 'assets');
+  if (fs.existsSync(assetsDir)) {
+    const assetFiles = fs.readdirSync(assetsDir);
+    const mainScript = assetFiles.find(file => file.startsWith('index-') && file.endsWith('.js'));
+    if (mainScript) {
+      entryScript = `/assets/${mainScript}`;
+    }
+  }
+
   const versionData = {
     version: '2.1.0',
     buildTime: new Date().toISOString(),
     buildTimestamp: Date.now(),
     service: 'snshero-revolution',
-    minRequiredVersion: '2.0.0'
+    minRequiredVersion: '2.0.0',
+    entryScript: entryScript || ''
   };
 
   fs.writeFileSync(versionJson, JSON.stringify(versionData, null, 2));
-  console.log('Post-build completed successfully: 404.html & version.json created.');
+
+  // public/version.json에도 동기화하여 개발/정적 서버에서도 항상 최신 번들 매핑 보장
+  const publicDir = path.resolve(process.cwd(), 'public');
+  if (fs.existsSync(publicDir)) {
+    fs.writeFileSync(path.join(publicDir, 'version.json'), JSON.stringify(versionData, null, 2));
+  }
+
+  console.log('Post-build completed successfully: 404.html & version.json (entryScript: ' + entryScript + ') created.');
 } catch (err) {
   console.error('Post-build error:', err);
   process.exit(1);

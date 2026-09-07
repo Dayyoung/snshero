@@ -35,6 +35,21 @@ if (typeof window !== 'undefined') {
 
   const handleChunkError = (error: any) => {
     const errorMsg = error?.message || error?.stack || String(error || '');
+
+    // 외부 서드파티 API(Google Ads 403, MakerSuite 429, GTM 등) 에러는 앱 구동과 무관하므로 절대 페이지를 리로드하지 않음
+    if (
+      errorMsg.includes('alkalimakersuite') ||
+      errorMsg.includes('googleads') ||
+      errorMsg.includes('doubleclick') ||
+      errorMsg.includes('googletagmanager') ||
+      errorMsg.includes('GenerateCodeAssistantSuggestionChips') ||
+      errorMsg.includes('429') ||
+      errorMsg.includes('403')
+    ) {
+      console.warn('[Network] Third-party non-blocking error safely suppressed:', errorMsg.slice(0, 100));
+      return;
+    }
+
     const isChunkError = 
       errorMsg.includes('Failed to fetch dynamically imported module') ||
       errorMsg.includes('Expected a JavaScript-or-Wasm module script') ||
@@ -44,13 +59,19 @@ if (typeof window !== 'undefined') {
       errorMsg.includes('Loading chunk');
       
     if (isChunkError) {
-      console.warn("[ChunkError] Detected dynamic import failure. Forcing page reload for latest bundle...");
-      const lastReload = sessionStorage.getItem('last_chunk_reload');
+      console.warn("[ChunkError] Detected dynamic import failure. Forcing safe reload for latest bundle...");
+      const reloadKey = 'last_chunk_reload_count';
+      const lastCount = parseInt(sessionStorage.getItem(reloadKey) || '0', 10);
+      const lastTime = parseInt(sessionStorage.getItem('last_chunk_reload_time') || '0', 10);
       const now = Date.now();
       
-      if (!lastReload || now - parseInt(lastReload, 10) > 4000) {
-        sessionStorage.setItem('last_chunk_reload', now.toString());
+      // 최대 2회까지만 자동 새로고침 시도 (무한 루프 원천 방지)
+      if (lastCount < 2 && now - lastTime > 3000) {
+        sessionStorage.setItem(reloadKey, String(lastCount + 1));
+        sessionStorage.setItem('last_chunk_reload_time', now.toString());
         window.location.reload();
+      } else {
+        console.error('[ChunkError] Max reload attempts reached. Halting auto-reload to prevent loop.');
       }
     }
   };
@@ -116,8 +137,12 @@ if (!isApiRoute) {
     </StrictMode>,
   );
 
-  // 정상 마운트 완료 시 HTML 레벨 30초 무한로딩 워치독 해제
+  // 정상 마운트 완료 시 HTML 레벨 자가치유 워치독 해제
   if (typeof window !== 'undefined') {
+    try {
+      sessionStorage.removeItem('hero_boot_retries');
+      sessionStorage.removeItem('last_chunk_reload_count');
+    } catch (e) {}
     const clearWatchdog = (window as unknown as { __SNSHERO_CLEAR_WATCHDOG__?: () => void }).__SNSHERO_CLEAR_WATCHDOG__;
     if (typeof clearWatchdog === 'function') {
       clearWatchdog();

@@ -90,13 +90,20 @@ export const AppLoadingGate: React.FC<AppLoadingGateProps> = ({
       }
     }, isSubpage ? 150 : 350);
 
-    // 30초 이상 게이트에서 무한 로딩 발생 시 캐시 제거 후 강제 새로고침
+    // 8초 이상 게이트에서 무한 로딩 발생 시 캐시 제거 후 강제 복구 (무한 루프 방지)
     const emergencyWatchdog = setTimeout(() => {
       if (!completedRef.current) {
-        console.warn('[AppLoadingGate] 30초 이상 부팅 지연 감지. 캐시 제거 후 강제 새로고침 실행.');
-        forcePurgeAndReload();
+        console.warn('[AppLoadingGate] 8초 이상 부팅 지연 감지. 안전 자동 복구 실행.');
+        const retryCount = parseInt(sessionStorage.getItem('hero_gate_retries') || '0', 10);
+        if (retryCount < 1) {
+          try { sessionStorage.setItem('hero_gate_retries', '1'); } catch {}
+          forcePurgeAndReload();
+        } else {
+          // 2회 이상 시 무한 새로고침 방지: 게이트 강제 해제하고 본문 진입 허용
+          dismissGate();
+        }
       }
-    }, 30000);
+    }, 8000);
 
     async function runVersionCheckSequence() {
       try {
