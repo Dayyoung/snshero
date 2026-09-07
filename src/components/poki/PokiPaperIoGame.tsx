@@ -26,7 +26,7 @@ interface Character {
   name: string;
   colorHex: string;
   colorThree: number;
-  gridId: number; // 1 for player, 2,3,4 for bots
+  gridId: number;
   x: number;
   z: number;
   angle: number;
@@ -60,6 +60,21 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
   const [isVictory, setIsVictory] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
+  // Floating Virtual Joystick Visual Feedback State
+  const [joystickData, setJoystickData] = useState<{
+    active: boolean;
+    startX: number;
+    startY: number;
+    currentX: number;
+    currentY: number;
+  }>({
+    active: false,
+    startX: 0,
+    startY: 0,
+    currentX: 0,
+    currentY: 0,
+  });
+
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
       return localStorage.getItem('hero_tutorial_paperio2_v2') !== 'true';
@@ -69,8 +84,8 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
   });
 
   const arenaSize = 36;
-  const gridResolution = 90; // 90x90 territory cells
-  const targetConquerPct = 20; // 20% to win
+  const gridResolution = 90;
+  const targetConquerPct = 20;
 
   const threeRef = useRef<{
     renderer: THREE.WebGLRenderer | null;
@@ -91,7 +106,7 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
   });
 
   const stateRef = useRef({
-    grid: new Uint8Array(gridResolution * gridResolution), // 0: neutral, 1: player, 2: bot1, 3: bot2, 4: bot3
+    grid: new Uint8Array(gridResolution * gridResolution),
     characters: [] as Character[],
     touch: {
       active: false,
@@ -110,7 +125,6 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
     kills: 0,
   });
 
-  // World Pos to Grid Coord
   const worldToGrid = useCallback((x: number, z: number) => {
     const half = arenaSize / 2;
     const gx = Math.floor(((x + half) / arenaSize) * gridResolution);
@@ -121,7 +135,6 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
     };
   }, [arenaSize, gridResolution]);
 
-  // Fill Initial Home Bases
   const initTerritory = useCallback(() => {
     const s = stateRef.current;
     s.grid.fill(0);
@@ -140,12 +153,11 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
       }
     };
 
-    // Characters
     const chars: Character[] = [
       {
         id: 1,
         name: isKo ? '나 (히어로)' : 'You (Hero)',
-        colorHex: '#0284c7', // Sky Blue
+        colorHex: '#0284c7',
         colorThree: 0x0284c7,
         gridId: 1,
         x: 0,
@@ -160,7 +172,7 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
       {
         id: 2,
         name: 'CrimsonBot',
-        colorHex: '#ef4444', // Red
+        colorHex: '#ef4444',
         colorThree: 0xef4444,
         gridId: 2,
         x: -9,
@@ -175,7 +187,7 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
       {
         id: 3,
         name: 'EmeraldBot',
-        colorHex: '#22c55e', // Green
+        colorHex: '#22c55e',
         colorThree: 0x22c55e,
         gridId: 3,
         x: 9,
@@ -190,7 +202,7 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
       {
         id: 4,
         name: 'AmberBot',
-        colorHex: '#f59e0b', // Yellow
+        colorHex: '#f59e0b',
         colorThree: 0xf59e0b,
         gridId: 4,
         x: 0,
@@ -212,7 +224,6 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
     s.characters = chars;
   }, [isKo, worldToGrid, gridResolution]);
 
-  // Polygon Fill & Territory Capture
   const captureTerritory = useCallback((char: Character) => {
     const s = stateRef.current;
     if (char.trail.length < 3) {
@@ -220,11 +231,9 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
       return;
     }
 
-    // Convert trail to grid polygon
     const poly: Array<{ gx: number; gz: number }> = char.trail.map((p) => worldToGrid(p.x, p.z));
     char.trail = [];
 
-    // Calculate bounding box of polygon
     let minGx = gridResolution;
     let maxGx = 0;
     let minGz = gridResolution;
@@ -242,7 +251,6 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
     minGz = Math.max(0, minGz - 2);
     maxGz = Math.min(gridResolution - 1, maxGz + 2);
 
-    // Point in polygon test (Ray Casting)
     const isPointInPoly = (px: number, pz: number) => {
       let inside = false;
       for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
@@ -254,7 +262,6 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
       return inside;
     };
 
-    // Fill captured grid
     for (let gz = minGz; gz <= maxGz; gz++) {
       for (let gx = minGx; gx <= maxGx; gx++) {
         const idx = gz * gridResolution + gx;
@@ -264,7 +271,6 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
       }
     }
 
-    // Also fill trail line cells
     poly.forEach((p) => {
       for (let dy = -1; dy <= 1; dy++) {
         for (let dx = -1; dx <= 1; dx++) {
@@ -279,36 +285,34 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
 
     if (char.gridId === 1) {
       playSfx?.('sounds/conquer.mp3');
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        navigator.vibrate(15);
+      }
     }
   }, [worldToGrid, gridResolution, playSfx]);
 
-  // Initialize Three.js Scene
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+    const initialW = container.clientWidth || window.innerWidth;
+    const initialH = container.clientHeight || window.innerHeight;
 
-    // Scene & Sky
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a); // Slate deep dark
+    scene.background = new THREE.Color(0x0f172a);
 
-    // Camera
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(50, initialW / initialH, 0.1, 1000);
     camera.position.set(0, 24, 16);
     camera.lookAt(0, 0, 0);
 
-    // Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
+    renderer.setSize(initialW, initialH);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = !lowSpecMode;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
-    // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
     scene.add(ambientLight);
 
@@ -317,7 +321,6 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
     dirLight.castShadow = !lowSpecMode;
     scene.add(dirLight);
 
-    // Dynamic Floor Canvas for 90x90 Territory Map
     const floorCanvas = document.createElement('canvas');
     floorCanvas.width = 512;
     floorCanvas.height = 512;
@@ -327,7 +330,6 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
     floorTexture.minFilter = THREE.LinearFilter;
     floorTexture.magFilter = THREE.LinearFilter;
 
-    // Floor Mesh
     const floorGeo = new THREE.PlaneGeometry(arenaSize, arenaSize);
     const floorMat = new THREE.MeshStandardMaterial({
       map: floorTexture,
@@ -339,7 +341,6 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
     floorMesh.receiveShadow = !lowSpecMode;
     scene.add(floorMesh);
 
-    // Arena Perimeter Wall
     const wallThick = 0.8;
     const wallHeight = 1.5;
     const half = arenaSize / 2;
@@ -357,11 +358,9 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
 
     initTerritory();
 
-    // Create 3D Meshes for Characters
     stateRef.current.characters.forEach((char) => {
       const charGroup = new THREE.Group();
 
-      // 3D Cubie Box Mesh
       const bodyGeo = new THREE.BoxGeometry(1.0, 0.7, 1.0);
       const bodyMat = new THREE.MeshStandardMaterial({
         color: char.colorThree,
@@ -373,7 +372,6 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
       body.castShadow = !lowSpecMode;
       charGroup.add(body);
 
-      // Cute Eyes on Front (+Z)
       const eyeMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
       const pupilMat = new THREE.MeshBasicMaterial({ color: 0x0f172a });
 
@@ -389,7 +387,6 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
 
       charGroup.add(eyeL, pupL, eyeR, pupR);
 
-      // Player Hero Badge
       if (char.gridId === 1) {
         const badgeCanvas = document.createElement('canvas');
         badgeCanvas.width = 128;
@@ -426,19 +423,25 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
       floorTexture,
     };
 
-    // Resize Handler
-    const handleResize = () => {
-      if (!containerRef.current || !renderer || !camera) return;
-      const w = containerRef.current.clientWidth;
-      const h = containerRef.current.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
+    const updateSize = () => {
+      if (!container || !renderer || !camera) return;
+      const w = container.clientWidth || window.innerWidth;
+      const h = container.clientHeight || window.innerHeight;
+      if (w > 0 && h > 0) {
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h, false);
+      }
     };
-    window.addEventListener('resize', handleResize);
+
+    const resizeObserver = new ResizeObserver(() => updateSize());
+    resizeObserver.observe(container);
+    window.addEventListener('resize', updateSize);
+    window.addEventListener('orientationchange', () => setTimeout(updateSize, 100));
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', updateSize);
       if (renderer.domElement.parentNode) {
         renderer.domElement.parentNode.removeChild(renderer.domElement);
       }
@@ -446,7 +449,7 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
     };
   }, [lowSpecMode, playerHeroId, initTerritory]);
 
-  // Main Simulation & Render Loop
+  // Main Render Loop
   useEffect(() => {
     let lastTime = performance.now();
 
@@ -460,7 +463,6 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
       if (renderer && scene && camera && !isGameOver && !isVictory) {
         s.timeAlive += dt;
 
-        // 1. Update Player Input Steering
         const player = s.characters[0];
         if (player && player.isAlive) {
           let steerX = 0;
@@ -485,23 +487,19 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
             player.targetAngle = Math.atan2(steerX, steerZ);
           }
 
-          // Smooth turn
           let diff = player.targetAngle - player.angle;
           while (diff < -Math.PI) diff += Math.PI * 2;
           while (diff > Math.PI) diff -= Math.PI * 2;
           player.angle += diff * 0.15;
         }
 
-        // 2. Update AI Characters Steering
         s.characters.slice(1).forEach((bot) => {
           if (!bot.isAlive) return;
 
-          // AI behavior: If in open neutral territory, try to turn back to own base after 12 steps
           const botGrid = worldToGrid(bot.x, bot.z);
           const owner = s.grid[botGrid.gz * gridResolution + botGrid.gx];
 
           if (owner !== bot.gridId && bot.trail.length > 18) {
-            // Seek base center
             const diffX = -bot.x;
             const diffZ = -bot.z;
             bot.targetAngle = Math.atan2(diffX, diffZ) + (Math.random() - 0.5) * 0.4;
@@ -509,23 +507,19 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
             bot.targetAngle += (Math.random() - 0.5) * 1.5;
           }
 
-          // Steer towards target angle
           let diff = bot.targetAngle - bot.angle;
           while (diff < -Math.PI) diff += Math.PI * 2;
           while (diff > Math.PI) diff -= Math.PI * 2;
           bot.angle += diff * 0.1;
         });
 
-        // 3. Move Characters & Record Trails
         const half = arenaSize / 2 - 0.6;
         s.characters.forEach((char) => {
           if (!char.isAlive) return;
 
-          // Forward motion
           char.x += Math.sin(char.angle) * char.speed * dt;
           char.z += Math.cos(char.angle) * char.speed * dt;
 
-          // Boundary bounce
           if (char.x < -half || char.x > half) {
             char.x = THREE.MathUtils.clamp(char.x, -half, half);
             char.angle = -char.angle;
@@ -542,18 +536,14 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
             char.mesh.rotation.y = char.angle;
           }
 
-          // Territory Check
           const g = worldToGrid(char.x, char.z);
           const currentCellOwner = s.grid[g.gz * gridResolution + g.gx];
 
           if (currentCellOwner === char.gridId) {
-            // Inside own territory
             if (char.trail.length > 0) {
-              // Loop completed! Capture territory!
               captureTerritory(char);
             }
           } else {
-            // Outside territory: Record trail
             const lastP = char.trail[char.trail.length - 1];
             if (!lastP || Math.hypot(char.x - lastP.x, char.z - lastP.z) > 0.45) {
               char.trail.push({ x: char.x, z: char.z });
@@ -561,36 +551,29 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
           }
         });
 
-        // 4. Tail Collision Detection
-        // Check if any character hits another character's trail
         s.characters.forEach((killer) => {
           if (!killer.isAlive) return;
 
           s.characters.forEach((victim) => {
             if (!victim.isAlive || victim.trail.length < 2) return;
 
-            // Check collision with victim's trail
             const headX = killer.x;
             const headZ = killer.z;
 
-            // Skip very recent tail points if checking self-collision
             const maxCheckIdx = killer === victim ? victim.trail.length - 6 : victim.trail.length;
 
             for (let i = 0; i < maxCheckIdx; i++) {
               const tp = victim.trail[i];
               if (Math.hypot(headX - tp.x, headZ - tp.z) < 0.6) {
-                // TAIL HIT! Victim is eliminated!
                 victim.isAlive = false;
                 victim.trail = [];
                 if (victim.mesh) victim.mesh.visible = false;
 
-                // Wipe victim's territory
                 for (let idx = 0; idx < s.grid.length; idx++) {
                   if (s.grid[idx] === victim.gridId) s.grid[idx] = 0;
                 }
 
                 if (killer.gridId === 1) {
-                  // Player killed bot!
                   playSfx?.('sounds/laser.mp3');
                   s.kills += 1;
                   setKills(s.kills);
@@ -598,7 +581,6 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
                 }
 
                 if (victim.gridId === 1) {
-                  // Player died!
                   playSfx?.('sounds/hit.mp3');
                   setIsGameOver(true);
                   const currentScore = Math.round(s.kills * 250 + s.characters[0].territoryCount * 2);
@@ -620,16 +602,13 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
           });
         });
 
-        // 5. Update Dynamic Canvas Texture for Territory & Trails
         if (floorCtx && floorCanvas && floorTexture) {
-          // Clear background to neutral grid
-          floorCtx.fillStyle = '#1e293b'; // Slate dark floor
+          floorCtx.fillStyle = '#1e293b';
           floorCtx.fillRect(0, 0, 512, 512);
 
           const cellW = 512 / gridResolution;
           const cellH = 512 / gridResolution;
 
-          // Count territories
           const counts = [0, 0, 0, 0, 0];
           for (let gz = 0; gz < gridResolution; gz++) {
             for (let gx = 0; gx < gridResolution; gx++) {
@@ -646,7 +625,6 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
             }
           }
 
-          // Draw Trails on floor
           s.characters.forEach((char) => {
             if (!char.isAlive || char.trail.length < 2) return;
             floorCtx.strokeStyle = char.colorHex;
@@ -666,7 +644,6 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
 
           floorTexture.needsUpdate = true;
 
-          // Update Territory % Leaderboard
           const totalCells = gridResolution * gridResolution;
           const playerCells = counts[1];
           const curPct = Math.round((playerCells / totalCells) * 100);
@@ -683,7 +660,6 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
             .sort((a, b) => b.pct - a.pct);
           setLeaderboard(leaderData);
 
-          // Check Victory Condition
           if (curPct >= targetConquerPct && !isVictory) {
             setIsVictory(true);
             playSfx?.('sounds/victory.mp3');
@@ -701,7 +677,6 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
           }
         }
 
-        // Camera Smooth Follow Player
         const p = s.characters[0];
         if (p && p.mesh) {
           camera.position.x = THREE.MathUtils.lerp(camera.position.x, p.x * 0.4, 0.1);
@@ -748,7 +723,7 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
     };
   }, []);
 
-  // Touch Handlers for Mobile Pure Gestures
+  // Floating Virtual Joystick Handlers
   const handleTouchStart = (e: React.TouchEvent) => {
     const touch = e.touches[0];
     const s = stateRef.current;
@@ -757,20 +732,35 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
     s.touch.startY = touch.clientY;
     s.touch.currentX = touch.clientX;
     s.touch.currentY = touch.clientY;
+
+    setJoystickData({
+      active: true,
+      startX: touch.clientX,
+      startY: touch.clientY,
+      currentX: touch.clientX,
+      currentY: touch.clientY,
+    });
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    const touch = e.touches[0];
     const s = stateRef.current;
     if (s.touch.active) {
+      const touch = e.touches[0];
       s.touch.currentX = touch.clientX;
       s.touch.currentY = touch.clientY;
+
+      setJoystickData((prev) => ({
+        ...prev,
+        currentX: touch.clientX,
+        currentY: touch.clientY,
+      }));
     }
   };
 
   const handleTouchEnd = () => {
     const s = stateRef.current;
     s.touch.active = false;
+    setJoystickData((prev) => ({ ...prev, active: false }));
   };
 
   const tutorialSteps: TutorialStep[] = [
@@ -806,9 +796,17 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
     },
   ];
 
+  // Joystick Math
+  const jDx = joystickData.currentX - joystickData.startX;
+  const jDy = joystickData.currentY - joystickData.startY;
+  const jDist = Math.hypot(jDx, jDy);
+  const maxRadius = 38;
+  const knobX = jDist > 0 ? (jDx / Math.max(jDist, 1)) * Math.min(jDist, maxRadius) : 0;
+  const knobY = jDist > 0 ? (jDy / Math.max(jDist, 1)) * Math.min(jDist, maxRadius) : 0;
+
   return (
     <div
-      className="relative w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none"
+      className="fixed inset-0 w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none touch-none"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -843,7 +841,7 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
       {/* Top Status & Territory Progress Bar */}
       <div className="absolute top-16 left-4 right-4 flex flex-col gap-2 pointer-events-none z-10">
         <div className="flex items-center justify-between text-xs sm:text-sm text-slate-200">
-          <div className="flex items-center gap-2 bg-slate-900/85 px-3 py-1.5 rounded-sm border border-slate-700/80 backdrop-blur-sm">
+          <div className="flex items-center gap-2 bg-slate-900/85 px-3 py-1.5 rounded-sm border border-slate-700/80 backdrop-blur-md shadow-md">
             <span className="text-cyan-400 font-bold">
               👑 {territoryPct}% / {targetConquerPct}%
             </span>
@@ -851,8 +849,7 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
             <span className="text-rose-400 font-bold">⚔️ {kills} KILLS</span>
           </div>
 
-          {/* Mini Live Leaderboard */}
-          <div className="bg-slate-900/85 px-2.5 py-1 rounded-sm border border-slate-700/80 backdrop-blur-sm flex items-center gap-2 text-[11px]">
+          <div className="bg-slate-900/85 px-2.5 py-1 rounded-sm border border-slate-700/80 backdrop-blur-md shadow-md flex items-center gap-2 text-[11px]">
             {leaderboard.slice(0, 3).map((l, i) => (
               <span
                 key={i}
@@ -865,7 +862,6 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
           </div>
         </div>
 
-        {/* Territory Conquer Progress Bar */}
         <div className="w-full h-2 bg-slate-800/90 rounded-full overflow-hidden border border-slate-700/80">
           <div
             className="h-full bg-cyan-500 transition-all duration-200"
@@ -874,11 +870,32 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
         </div>
       </div>
 
+      {/* Dynamic Floating Touch Joystick Visual Feedback */}
+      {joystickData.active && (
+        <div
+          className="pointer-events-none fixed z-30"
+          style={{
+            left: `${joystickData.startX}px`,
+            top: `${joystickData.startY}px`,
+            transform: 'translate(-50%, -50%)',
+          }}
+        >
+          <div className="w-24 h-24 rounded-full border-2 border-cyan-400/60 bg-cyan-950/40 backdrop-blur-xs flex items-center justify-center shadow-2xl relative">
+            <div
+              className="w-10 h-10 rounded-full bg-cyan-400 border border-white/80 shadow-lg absolute"
+              style={{
+                transform: `translate(${knobX}px, ${knobY}px)`,
+              }}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Mobile Pure Gesture Guide Hint */}
       <div className="absolute bottom-6 left-4 pointer-events-none z-20">
-        <div className="bg-slate-900/80 px-3 py-2 rounded-sm border border-slate-700/80 text-[11px] text-slate-300 backdrop-blur-sm">
-          <div className="text-slate-400 font-bold mb-0.5">{isKo ? '🕹️ 360° 조향 제스처' : '🕹️ 360° STEERING'}</div>
-          <div>{isKo ? '화면을 터치 & 드래그하여 방향을 바꾸세요' : 'Drag screen to steer cubie'}</div>
+        <div className="bg-slate-900/85 px-3 py-2 rounded-sm border border-slate-700/80 text-[11px] text-slate-300 backdrop-blur-md shadow-md">
+          <div className="text-slate-400 font-bold mb-0.5">{isKo ? '🕹️ 360° 터치 조향' : '🕹️ TOUCH STEER'}</div>
+          <div>{isKo ? '화면 어디든 터치 & 드래그하세요' : 'Touch & drag anywhere to steer'}</div>
         </div>
       </div>
 
@@ -919,7 +936,7 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
             <button
               type="button"
               onClick={onExit}
-              className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-sm border border-slate-600 text-sm"
+              className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-sm border border-slate-600 text-sm cursor-pointer"
             >
               {isKo ? '미션 목록으로' : 'Back to Missions'}
             </button>

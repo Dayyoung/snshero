@@ -60,6 +60,21 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
   const [isVictory, setIsVictory] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
+  // Floating Virtual Joystick Visual Feedback State
+  const [joystickData, setJoystickData] = useState<{
+    active: boolean;
+    startX: number;
+    startY: number;
+    currentX: number;
+    currentY: number;
+  }>({
+    active: false,
+    startX: 0,
+    startY: 0,
+    currentX: 0,
+    currentY: 0,
+  });
+
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
       return localStorage.getItem('hero_tutorial_minefun_v2') !== 'true';
@@ -128,6 +143,9 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
       s.player.vy = 12.8;
       s.player.isGrounded = false;
       playSfx?.('sounds/jump.mp3');
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        navigator.vibrate(20);
+      }
     }
   }, [isGameOver, isVictory, playSfx]);
 
@@ -136,21 +154,21 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
     const container = containerRef.current;
     if (!container) return;
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+    const initialW = container.clientWidth || window.innerWidth;
+    const initialH = container.clientHeight || window.innerHeight;
 
     // Scene & Sky
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x38bdf8); // Vibrant Voxel Sky Blue
+    scene.background = new THREE.Color(0x38bdf8);
     scene.fog = new THREE.FogExp2(0x38bdf8, 0.015);
 
     // Camera
-    const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(55, initialW / initialH, 0.1, 1000);
     camera.position.set(0, 5, -7);
 
     // Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
+    renderer.setSize(initialW, initialH);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = !lowSpecMode;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -170,12 +188,12 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
 
     // Materials Palette
     const mats = {
-      grass: new THREE.MeshStandardMaterial({ color: 0x4ade80, roughness: 0.8 }), // Light grass
-      dirt: new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.9 }), // Dirt
-      stone: new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.7 }), // Stone
-      wood: new THREE.MeshStandardMaterial({ color: 0xb45309, roughness: 0.8 }), // Wood Planks
-      lava: new THREE.MeshBasicMaterial({ color: 0xef4444 }), // Glowing Lava
-      slime: new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.2, metalness: 0.4 }), // Bouncy Slime
+      grass: new THREE.MeshStandardMaterial({ color: 0x4ade80, roughness: 0.8 }),
+      dirt: new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.9 }),
+      stone: new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.7 }),
+      wood: new THREE.MeshStandardMaterial({ color: 0xb45309, roughness: 0.8 }),
+      lava: new THREE.MeshBasicMaterial({ color: 0xef4444 }),
+      slime: new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.2, metalness: 0.4 }),
       goldCoin: new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.3, metalness: 0.8 }),
       portal: new THREE.MeshStandardMaterial({ color: 0x06b6d4, roughness: 0.1, metalness: 0.9, wireframe: false }),
     };
@@ -183,7 +201,6 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
     const blocks: VoxelBlock[] = [];
     const coins: VoxelCoin[] = [];
 
-    // Helper: Add Voxel Block Platform
     const addBlock = (
       type: 'grass' | 'stone' | 'wood' | 'lava' | 'slime' | 'moving',
       x: number,
@@ -202,7 +219,6 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
       mesh.receiveShadow = !lowSpecMode;
       scene.add(mesh);
 
-      // If grass block, add dirt underside for authentic voxel style
       if (type === 'grass' && h >= 1) {
         const dirtGeo = new THREE.BoxGeometry(w, h * 0.7, d);
         const dirtMesh = new THREE.Mesh(dirtGeo, mats.dirt);
@@ -213,7 +229,6 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
       blocks.push({ mesh, type, x, y, z, w, h, d, moveRange, moveSpeed, initialX: x });
     };
 
-    // Helper: Add Coin
     const addCoin = (x: number, y: number, z: number) => {
       const coinGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.15, 12);
       const mesh = new THREE.Mesh(coinGeo, mats.goldCoin);
@@ -224,11 +239,9 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
       coins.push({ mesh, x, y: y + 0.6, z, collected: false });
     };
 
-    // --- Build Course Obby Track ---
-    // Start Area (z: -4 ~ 4)
+    // Track Layout
     addBlock('grass', 0, 0, 0, 6, 2, 8);
 
-    // Section 1: Stepping Grass Blocks (z: 8 ~ 24)
     addBlock('grass', -1.5, 0.5, 8, 2, 1, 2);
     addCoin(-1.5, 0.5, 8);
     addBlock('grass', 1.5, 1.0, 13, 2, 1, 2);
@@ -237,28 +250,25 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
     addBlock('grass', 0, 2.0, 24, 3, 1, 3);
     addCoin(0, 2.0, 24);
 
-    // Checkpoint 1 (z = 30)
+    // Checkpoint 1
     addBlock('stone', 0, 2.0, 30, 4, 1, 4);
 
-    // Section 2: Moving Platform over the Void (z: 36 ~ 46)
+    // Section 2
     addBlock('moving', 0, 2.0, 37, 2.5, 0.8, 2.5, 4.0, 2.0);
     addCoin(0, 2.0, 37);
     addBlock('moving', 0, 2.5, 45, 2.5, 0.8, 2.5, 4.0, -2.5);
 
-    // Section 3: Slime Super Jumper Pad over Lava Gap (z: 52 ~ 68)
+    // Section 3: Slime & Lava
     addBlock('stone', 0, 3.0, 52, 3, 1, 3);
-    // Slime Pad
     addBlock('slime', 0, 3.2, 56, 2.5, 0.5, 2.5);
-    // Lava Pit Far Below
     addBlock('lava', 0, -2.0, 64, 14, 1, 14);
-    // Landing Platform
     addBlock('grass', 0, 4.0, 72, 4, 1, 4);
     addCoin(0, 4.0, 72);
 
-    // Checkpoint 2 (z = 78)
+    // Checkpoint 2
     addBlock('stone', 0, 4.5, 78, 4, 1, 4);
 
-    // Section 4: Stairway to Heaven (z: 84 ~ 105)
+    // Section 4
     addBlock('wood', -2, 5.5, 84, 2, 1, 2);
     addCoin(-2, 5.5, 84);
     addBlock('wood', 2, 6.8, 90, 2, 1, 2);
@@ -266,27 +276,23 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
     addBlock('stone', 0, 8.0, 96, 2, 1, 2);
     addBlock('slime', 0, 8.2, 102, 2.5, 0.5, 2.5);
 
-    // Goal Platform & Portal (z: 114 ~ 122)
+    // Goal Platform
     addBlock('grass', 0, 10.0, 116, 8, 2, 8);
 
-    // 3D Goal Portal Ring
     const portalGeo = new THREE.TorusGeometry(2.5, 0.4, 16, 32);
     const portalMesh = new THREE.Mesh(portalGeo, mats.portal);
     portalMesh.position.set(0, 13.0, 118);
     scene.add(portalMesh);
 
-    // Player 3D Voxel Mesh (Steve-like Voxel Avatar)
+    // Player Mesh
     const playerGroup = new THREE.Group();
-
-    // Body
-    const pBodyMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.5 }); // Cyan shirt
+    const pBodyMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.5 });
     const pBody = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.0, 0.5), pBodyMat);
     pBody.position.y = 1.0;
     pBody.castShadow = !lowSpecMode;
     playerGroup.add(pBody);
 
-    // Legs
-    const pLegMat = new THREE.MeshStandardMaterial({ color: 0x1e3a8a, roughness: 0.6 }); // Dark blue pants
+    const pLegMat = new THREE.MeshStandardMaterial({ color: 0x1e3a8a, roughness: 0.6 });
     const pLegL = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.8, 0.45), pLegMat);
     pLegL.position.set(-0.2, 0.4, 0);
     pLegL.castShadow = !lowSpecMode;
@@ -297,14 +303,13 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
     pLegR.castShadow = !lowSpecMode;
     playerGroup.add(pLegR);
 
-    // Head
-    const pHeadMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.4 }); // Skin
+    const pHeadMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.4 });
     const pHead = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.65, 0.65), pHeadMat);
     pHead.position.y = 1.75;
     pHead.castShadow = !lowSpecMode;
     playerGroup.add(pHead);
 
-    // Card Hero No.03 Badge
+    // Badge
     const badgeCanvas = document.createElement('canvas');
     badgeCanvas.width = 128;
     badgeCanvas.height = 128;
@@ -320,8 +325,7 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
       drawCardSprite(bCtx, playerHeroId, 16, 16, 96, 96);
     }
     const badgeTexture = new THREE.CanvasTexture(badgeCanvas);
-    const badgeSpriteMat = new THREE.SpriteMaterial({ map: badgeTexture });
-    const badgeSprite = new THREE.Sprite(badgeSpriteMat);
+    const badgeSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: badgeTexture }));
     badgeSprite.position.set(0, 2.6, 0);
     badgeSprite.scale.set(1.2, 1.2, 1.2);
     playerGroup.add(badgeSprite);
@@ -338,19 +342,26 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
       coins,
     };
 
-    // Resize Handler
-    const handleResize = () => {
-      if (!containerRef.current || !renderer || !camera) return;
-      const w = containerRef.current.clientWidth;
-      const h = containerRef.current.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
+    // Robust ResizeObserver
+    const updateSize = () => {
+      if (!container || !renderer || !camera) return;
+      const w = container.clientWidth || window.innerWidth;
+      const h = container.clientHeight || window.innerHeight;
+      if (w > 0 && h > 0) {
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h, false);
+      }
     };
-    window.addEventListener('resize', handleResize);
+
+    const resizeObserver = new ResizeObserver(() => updateSize());
+    resizeObserver.observe(container);
+    window.addEventListener('resize', updateSize);
+    window.addEventListener('orientationchange', () => setTimeout(updateSize, 100));
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', updateSize);
       if (renderer.domElement.parentNode) {
         renderer.domElement.parentNode.removeChild(renderer.domElement);
       }
@@ -372,7 +383,6 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
       if (renderer && scene && camera && playerGroup && !isGameOver && !isVictory) {
         s.timeAlive += dt;
 
-        // Rotate Portal & Coins
         if (portalMesh) portalMesh.rotation.z += 0.03;
         coins.forEach((c) => {
           if (!c.collected) {
@@ -380,7 +390,6 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
           }
         });
 
-        // Update Moving Platforms
         blocks.forEach((b) => {
           if (b.type === 'moving' && b.moveRange && b.moveSpeed && b.initialX !== undefined) {
             b.x = b.initialX + Math.sin(s.timeAlive * b.moveSpeed) * b.moveRange;
@@ -388,7 +397,6 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
           }
         });
 
-        // Player Controls Input
         let moveX = 0;
         let moveZ = 0;
 
@@ -401,9 +409,9 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
           const dx = s.touch.currentX - s.touch.startX;
           const dy = s.touch.currentY - s.touch.startY;
           const dist = Math.hypot(dx, dy);
-          if (dist > 10) {
-            moveX = dx / Math.max(dist, 50);
-            moveZ = -dy / Math.max(dist, 50);
+          if (dist > 8) {
+            moveX = dx / Math.max(dist, 45);
+            moveZ = -dy / Math.max(dist, 45);
           }
         }
 
@@ -411,11 +419,9 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
         s.player.vx = THREE.MathUtils.lerp(s.player.vx, moveX * moveSpeed, 0.2);
         s.player.vz = THREE.MathUtils.lerp(s.player.vz, moveZ * moveSpeed, 0.2);
 
-        // Apply Gravity
         const gravity = -28.0;
         s.player.vy += gravity * dt;
 
-        // Proposed Next Positions
         const nextX = s.player.x + s.player.vx * dt;
         const nextY = s.player.y + s.player.vy * dt;
         const nextZ = s.player.z + s.player.vz * dt;
@@ -423,7 +429,6 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
         s.player.x = nextX;
         s.player.z = nextZ;
 
-        // Collision Check with Voxel Platforms
         s.player.isGrounded = false;
         const playerRadius = 0.4;
         const playerBottom = nextY;
@@ -437,20 +442,17 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
           if (s.player.x >= minX && s.player.x <= maxX && s.player.z >= minZ && s.player.z <= maxZ) {
             const blockTop = b.y;
 
-            // Landing on top
             if (s.player.y >= blockTop - 0.2 && playerBottom <= blockTop + 0.3 && s.player.vy <= 0) {
               s.player.y = blockTop;
               s.player.vy = 0;
               s.player.isGrounded = true;
 
-              // Slime Pad Super Jump
               if (b.type === 'slime') {
                 s.player.vy = 22.0;
                 s.player.isGrounded = false;
                 playSfx?.('sounds/boost.mp3');
               }
 
-              // Lava Hazard
               if (b.type === 'lava' && s.player.invulnerableTimer <= 0) {
                 s.player.invulnerableTimer = 1.5;
                 s.player.vy = 8.0;
@@ -475,7 +477,6 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
                 });
               }
 
-              // Moving Platform Carry
               if (b.type === 'moving' && b.moveSpeed && b.moveRange) {
                 s.player.x += Math.cos(s.timeAlive * b.moveSpeed) * b.moveRange * b.moveSpeed * dt;
               }
@@ -488,7 +489,6 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
           s.player.y += s.player.vy * dt;
         }
 
-        // Collect Coins
         coins.forEach((c) => {
           if (!c.collected) {
             const dist = Math.hypot(s.player.x - c.x, s.player.y - c.y, s.player.z - c.z);
@@ -504,7 +504,6 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
           }
         });
 
-        // Checkpoint Trigger
         if (s.player.z >= 30 && s.player.lastCheckpoint.z < 30) {
           s.player.lastCheckpoint = { x: 0, y: 3.5, z: 30 };
           setCheckpointZ(30);
@@ -516,7 +515,6 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
           playSfx?.('sounds/powerup.mp3');
         }
 
-        // Void Fall Hazard
         if (s.player.y < -12) {
           playSfx?.('sounds/hit.mp3');
           setLives((prev) => {
@@ -535,7 +533,6 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
               setSettlementReceipt(receipt);
               onReward(receipt.totalSns);
             } else {
-              // Respawn at Checkpoint
               s.player.x = s.player.lastCheckpoint.x;
               s.player.y = s.player.lastCheckpoint.y;
               s.player.z = s.player.lastCheckpoint.z;
@@ -547,7 +544,6 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
           });
         }
 
-        // Goal Portal Victory Trigger
         if (s.player.z >= 116 && s.player.y >= 9.5) {
           setIsVictory(true);
           playSfx?.('sounds/victory.mp3');
@@ -565,7 +561,6 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
           return;
         }
 
-        // Update Mesh & Tracking
         playerGroup.position.set(s.player.x, s.player.y, s.player.z);
 
         if (Math.hypot(moveX, moveZ) > 0.1) {
@@ -573,7 +568,6 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
           playerGroup.rotation.y = THREE.MathUtils.lerp(playerGroup.rotation.y, targetHeading, 0.2);
         }
 
-        // Invulnerable Flash
         if (s.player.invulnerableTimer > 0) {
           s.player.invulnerableTimer -= dt;
           playerGroup.visible = Math.floor(currentTime / 80) % 2 === 0;
@@ -581,7 +575,6 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
           playerGroup.visible = true;
         }
 
-        // Camera Smooth Follow
         const camTargetX = s.player.x * 0.6;
         const camTargetY = s.player.y + 4.2;
         const camTargetZ = s.player.z - 7.5;
@@ -604,7 +597,7 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
     };
   }, [isGameOver, isVictory, playSfx, onReward]);
 
-  // 4. Keyboard Controls
+  // Keyboard Controls
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const s = stateRef.current;
@@ -634,29 +627,46 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
     };
   }, [handleJump]);
 
-  // Touch Handlers for Mobile Pure Gestures
+  // Touch Handlers for Dynamic Floating Joystick
   const handleTouchStart = (e: React.TouchEvent) => {
     const touch = e.touches[0];
+    if (touch.clientX > window.innerWidth * 0.65) return;
+
     const s = stateRef.current;
     s.touch.active = true;
     s.touch.startX = touch.clientX;
     s.touch.startY = touch.clientY;
     s.touch.currentX = touch.clientX;
     s.touch.currentY = touch.clientY;
+
+    setJoystickData({
+      active: true,
+      startX: touch.clientX,
+      startY: touch.clientY,
+      currentX: touch.clientX,
+      currentY: touch.clientY,
+    });
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    const touch = e.touches[0];
     const s = stateRef.current;
     if (s.touch.active) {
+      const touch = e.touches[0];
       s.touch.currentX = touch.clientX;
       s.touch.currentY = touch.clientY;
+
+      setJoystickData((prev) => ({
+        ...prev,
+        currentX: touch.clientX,
+        currentY: touch.clientY,
+      }));
     }
   };
 
   const handleTouchEnd = () => {
     const s = stateRef.current;
     s.touch.active = false;
+    setJoystickData((prev) => ({ ...prev, active: false }));
   };
 
   const tutorialSteps: TutorialStep[] = [
@@ -692,9 +702,17 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
     },
   ];
 
+  // Joystick Math
+  const jDx = joystickData.currentX - joystickData.startX;
+  const jDy = joystickData.currentY - joystickData.startY;
+  const jDist = Math.hypot(jDx, jDy);
+  const maxRadius = 38;
+  const knobX = jDist > 0 ? (jDx / Math.max(jDist, 1)) * Math.min(jDist, maxRadius) : 0;
+  const knobY = jDist > 0 ? (jDy / Math.max(jDist, 1)) * Math.min(jDist, maxRadius) : 0;
+
   return (
     <div
-      className="relative w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none"
+      className="fixed inset-0 w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none touch-none"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -728,7 +746,7 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
 
       {/* Top Status HUD */}
       <div className="absolute top-16 left-4 right-4 flex items-center justify-between text-xs sm:text-sm text-slate-200 pointer-events-none z-10">
-        <div className="flex items-center gap-2 bg-slate-900/80 px-3 py-1.5 rounded-sm border border-slate-700/80 backdrop-blur-sm">
+        <div className="flex items-center gap-2 bg-slate-900/85 px-3 py-1.5 rounded-sm border border-slate-700/80 backdrop-blur-md shadow-md">
           <span className="text-emerald-400 font-bold">{distance}m / {totalCourseLength}m</span>
           <span className="text-slate-400">|</span>
           <span className="text-amber-400 font-bold">🪙 {coinsCollected}</span>
@@ -740,7 +758,7 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
           )}
         </div>
 
-        <div className="flex items-center gap-1.5 bg-slate-900/80 px-3 py-1.5 rounded-sm border border-slate-700/80 backdrop-blur-sm">
+        <div className="flex items-center gap-1.5 bg-slate-900/85 px-3 py-1.5 rounded-sm border border-slate-700/80 backdrop-blur-md shadow-md">
           <span className="text-slate-400 text-xs">HP</span>
           <div className="flex gap-1">
             {[...Array(3)].map((_, i) => (
@@ -753,22 +771,42 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Pure Gesture Guide & Jump Touch Control */}
+      {/* Dynamic Floating Touch Joystick Visual Feedback */}
+      {joystickData.active && (
+        <div
+          className="pointer-events-none fixed z-30"
+          style={{
+            left: `${joystickData.startX}px`,
+            top: `${joystickData.startY}px`,
+            transform: 'translate(-50%, -50%)',
+          }}
+        >
+          <div className="w-24 h-24 rounded-full border-2 border-emerald-400/60 bg-emerald-950/40 backdrop-blur-xs flex items-center justify-center shadow-2xl relative">
+            <div
+              className="w-10 h-10 rounded-full bg-emerald-400 border border-white/80 shadow-lg absolute"
+              style={{
+                transform: `translate(${knobX}px, ${knobY}px)`,
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Pure Gesture Guide & Giant Jump Touch Control */}
       <div className="absolute bottom-6 left-4 right-4 flex items-end justify-between pointer-events-none z-20">
-        {/* Left: Drag Joystick Hint */}
-        <div className="bg-slate-900/80 px-3 py-2 rounded-sm border border-slate-700/80 text-[11px] text-slate-300 backdrop-blur-sm">
-          <div className="text-slate-400 font-bold mb-0.5">{isKo ? '🕹️ 이동 제스처' : '🕹️ MOVE'}</div>
+        <div className="bg-slate-900/85 px-3 py-2 rounded-sm border border-slate-700/80 text-[11px] text-slate-300 backdrop-blur-md shadow-md">
+          <div className="text-slate-400 font-bold mb-0.5">{isKo ? '🕹️ 360° 터치 조향' : '🕹️ TOUCH STEER'}</div>
           <div>{isKo ? '화면을 터치 & 드래그하세요' : 'Drag screen to steer'}</div>
         </div>
 
-        {/* Right: Big Jump Action Button */}
+        {/* Right: Giant Jump Action Button */}
         <button
           type="button"
           onClick={handleJump}
-          className="pointer-events-auto flex flex-col items-center justify-center w-20 h-20 rounded-sm bg-emerald-500 active:bg-emerald-600 text-slate-950 font-black border-2 border-emerald-300 shadow-2xl active:scale-95 transition-transform"
+          className="pointer-events-auto flex flex-col items-center justify-center w-24 h-24 rounded-sm bg-emerald-500 active:bg-emerald-600 text-slate-950 font-black border-2 border-emerald-300 shadow-2xl active:scale-90 transition-transform cursor-pointer"
         >
-          <span className="text-2xl">🚀</span>
-          <span className="text-xs tracking-wider mt-0.5">JUMP</span>
+          <span className="text-3xl">🚀</span>
+          <span className="text-xs tracking-wider mt-1 font-mono">JUMP</span>
         </button>
       </div>
 
@@ -809,7 +847,7 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
             <button
               type="button"
               onClick={onExit}
-              className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-sm border border-slate-600 text-sm"
+              className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-sm border border-slate-600 text-sm cursor-pointer"
             >
               {isKo ? '미션 목록으로' : 'Back to Missions'}
             </button>

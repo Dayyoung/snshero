@@ -57,6 +57,21 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
   const [isVictory, setIsVictory] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
+  // Floating Virtual Joystick Visual Feedback State
+  const [joystickData, setJoystickData] = useState<{
+    active: boolean;
+    startX: number;
+    startY: number;
+    currentX: number;
+    currentY: number;
+  }>({
+    active: false,
+    startX: 0,
+    startY: 0,
+    currentX: 0,
+    currentY: 0,
+  });
+
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
       return localStorage.getItem('hero_tutorial_hide_and_paint_v2') !== 'true';
@@ -93,7 +108,7 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
       z: 0,
       vx: 0,
       vz: 0,
-      speed: 0.12,
+      speed: 0.13,
       currentColor: 0xffffff,
       targetColor: 0xffffff,
       isFrozen: false,
@@ -174,8 +189,8 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
     const container = containerRef.current;
     if (!container) return;
 
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+    const initialW = container.clientWidth || window.innerWidth;
+    const initialH = container.clientHeight || window.innerHeight;
 
     // Scene
     const scene = new THREE.Scene();
@@ -183,13 +198,13 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
     scene.fog = new THREE.FogExp2(0x0f172a, 0.025);
 
     // Camera
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
+    const camera = new THREE.PerspectiveCamera(50, initialW / initialH, 0.1, 100);
     camera.position.set(0, 15, 13);
     camera.lookAt(0, 0, 0);
 
     // Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
+    renderer.setSize(initialW, initialH);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = !lowSpecMode;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -268,28 +283,27 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
     };
 
     // Blue Zone Props (North)
-    createProp(new THREE.BoxGeometry(4, 2, 1.5), 0x1e40af, -4, -8); // Blue Sofa
-    createProp(new THREE.BoxGeometry(2, 3, 1), 0x3b82f6, 5, -8.5); // Blue Bookcase
+    createProp(new THREE.BoxGeometry(4, 2, 1.5), 0x1e40af, -4, -8);
+    createProp(new THREE.BoxGeometry(2, 3, 1), 0x3b82f6, 5, -8.5);
 
     // Red Zone Props (East)
-    createProp(new THREE.BoxGeometry(2, 2, 2), 0xb91c1c, 8, -4); // Red Crate
-    createProp(new THREE.BoxGeometry(2.5, 1.5, 2.5), 0xef4444, 8, 4); // Red Platform
+    createProp(new THREE.BoxGeometry(2, 2, 2), 0xb91c1c, 8, -4);
+    createProp(new THREE.BoxGeometry(2.5, 1.5, 2.5), 0xef4444, 8, 4);
 
     // Green Zone Props (South)
-    createProp(new THREE.CylinderGeometry(1.2, 1.2, 2.5, 16), 0x15803d, -5, 8); // Green Planter
-    createProp(new THREE.BoxGeometry(3, 1.8, 1.8), 0x22c55e, 4, 7.5); // Green Bench
+    createProp(new THREE.CylinderGeometry(1.2, 1.2, 2.5, 16), 0x15803d, -5, 8);
+    createProp(new THREE.BoxGeometry(3, 1.8, 1.8), 0x22c55e, 4, 7.5);
 
     // Yellow Zone Props (West)
-    createProp(new THREE.BoxGeometry(2, 2.8, 2), 0xb45309, -8, -3); // Yellow Locker
-    createProp(new THREE.BoxGeometry(2.5, 1.2, 3.5), 0xf59e0b, -7.5, 5); // Yellow Counter
+    createProp(new THREE.BoxGeometry(2, 2.8, 2), 0xb45309, -8, -3);
+    createProp(new THREE.BoxGeometry(2.5, 1.2, 3.5), 0xf59e0b, -7.5, 5);
 
-    // Center Purple Pillars (Purple Zone)
+    // Center Purple Pillars
     createProp(new THREE.BoxGeometry(1.8, 3.5, 1.8), 0x7e22ce, -3.5, -3.5);
     createProp(new THREE.BoxGeometry(1.8, 3.5, 1.8), 0x9333ea, 3.5, 3.5);
 
-    // Player 3D Group (Chameleon Mannequin)
+    // Player 3D Group
     const playerGroup = new THREE.Group();
-    // Body
     const pBodyGeo = new THREE.CapsuleGeometry(0.5, 0.8, 8, 16);
     const pBodyMat = new THREE.MeshStandardMaterial({
       color: 0xffffff,
@@ -301,7 +315,6 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
     playerBodyMesh.castShadow = !lowSpecMode;
     playerGroup.add(playerBodyMesh);
 
-    // Head
     const pHeadGeo = new THREE.SphereGeometry(0.45, 16, 16);
     const pHead = new THREE.Mesh(pHeadGeo, pBodyMat);
     pHead.position.y = 1.7;
@@ -338,26 +351,22 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
 
     const createHunterMesh = () => {
       const hGroup = new THREE.Group();
-      // Body (Black Seeker Armor)
       const hBodyMat = new THREE.MeshStandardMaterial({ color: 0x020617, roughness: 0.3, metalness: 0.8 });
       const hBody = new THREE.Mesh(new THREE.CapsuleGeometry(0.6, 1.0, 8, 16), hBodyMat);
       hBody.position.y = 1.1;
       hBody.castShadow = !lowSpecMode;
       hGroup.add(hBody);
 
-      // Visor (Glowing Red Eye)
       const visorMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
       const visor = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.2, 0.3), visorMat);
       visor.position.set(0, 1.8, 0.4);
       hGroup.add(visor);
 
-      // Paint Gun
       const gunMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.7 });
       const gun = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.25, 0.9), gunMat);
       gun.position.set(0.6, 1.1, 0.5);
       hGroup.add(gun);
 
-      // Vision Spotlight Cone (Semi-transparent)
       const coneGeo = new THREE.ConeGeometry(3.5, 8, 16, 1, true);
       const coneMat = new THREE.MeshBasicMaterial({
         color: 0xfef08a,
@@ -377,7 +386,6 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
       return hGroup;
     };
 
-    // Pre-create 2 hunter instances
     createHunterMesh();
     createHunterMesh();
 
@@ -392,21 +400,28 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
       bulletMeshes: [],
     };
 
-    // Resize Handler
-    const handleResize = () => {
-      if (!containerRef.current || !renderer || !camera) return;
-      const w = containerRef.current.clientWidth;
-      const h = containerRef.current.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
+    // 5. Robust ResizeObserver for Mobile Screen Adaptation
+    const updateSize = () => {
+      if (!container || !renderer || !camera) return;
+      const w = container.clientWidth || window.innerWidth;
+      const h = container.clientHeight || window.innerHeight;
+      if (w > 0 && h > 0) {
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h, false);
+      }
     };
-    window.addEventListener('resize', handleResize);
+
+    const resizeObserver = new ResizeObserver(() => updateSize());
+    resizeObserver.observe(container);
+    window.addEventListener('resize', updateSize);
+    window.addEventListener('orientationchange', () => setTimeout(updateSize, 100));
 
     initStage(1);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', updateSize);
       if (renderer.domElement.parentNode) {
         renderer.domElement.parentNode.removeChild(renderer.domElement);
       }
@@ -414,12 +429,15 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
     };
   }, [lowSpecMode, playerHeroId, initStage]);
 
-  // 3. Paint Chameleon Action (Color Morphing to Closest Zone)
+  // 3. Paint Chameleon Action
   const handlePaint = useCallback(() => {
     if (isGameOver || isVictory) return;
     const s = stateRef.current;
     s.player.targetColor = s.closestZone.colorThree;
     playSfx?.('sounds/paint.mp3');
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      navigator.vibrate(15);
+    }
   }, [isGameOver, isVictory, playSfx]);
 
   // 4. Freeze Action Toggle
@@ -429,6 +447,9 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
     s.player.isFrozen = !s.player.isFrozen;
     setIsFrozen(s.player.isFrozen);
     playSfx?.('sounds/click.mp3');
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      navigator.vibrate(25);
+    }
   }, [isGameOver, isVictory, playSfx]);
 
   // 5. Game Loop
@@ -457,19 +478,18 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
             const dx = s.touch.currentX - s.touch.startX;
             const dy = s.touch.currentY - s.touch.startY;
             const dist = Math.hypot(dx, dy);
-            if (dist > 10) {
-              moveX = dx / Math.max(dist, 50);
-              moveZ = dy / Math.max(dist, 50);
+            if (dist > 8) {
+              moveX = dx / Math.max(dist, 45);
+              moveZ = dy / Math.max(dist, 45);
             }
           }
 
-          // Apply velocity with smooth damping
+          // Apply velocity
           s.player.vx = THREE.MathUtils.lerp(s.player.vx, moveX * s.player.speed, 0.2);
           s.player.vz = THREE.MathUtils.lerp(s.player.vz, moveZ * s.player.speed, 0.2);
           s.player.x += s.player.vx;
           s.player.z += s.player.vz;
 
-          // Boundary clamp (Room walls)
           const limit = 9.8;
           s.player.x = THREE.MathUtils.clamp(s.player.x, -limit, limit);
           s.player.z = THREE.MathUtils.clamp(s.player.z, -limit, limit);
@@ -495,21 +515,21 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
           (playerBodyMesh.material as THREE.MeshStandardMaterial).color.copy(curC);
         }
 
-        // Determine Closest Color Zone
+        // Closest Color Zone
         const px = s.player.x;
         const pz = s.player.z;
         let bestZone = COLOR_ZONES[0];
 
         if (pz < -4) {
-          bestZone = COLOR_ZONES[0]; // Blue
+          bestZone = COLOR_ZONES[0];
         } else if (px > 4) {
-          bestZone = COLOR_ZONES[1]; // Red
+          bestZone = COLOR_ZONES[1];
         } else if (pz > 4) {
-          bestZone = COLOR_ZONES[2]; // Green
+          bestZone = COLOR_ZONES[2];
         } else if (px < -4) {
-          bestZone = COLOR_ZONES[3]; // Yellow
+          bestZone = COLOR_ZONES[3];
         } else {
-          bestZone = COLOR_ZONES[4]; // Purple
+          bestZone = COLOR_ZONES[4];
         }
         s.closestZone = bestZone;
 
@@ -520,9 +540,9 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
         if (isColorMatch && isStill) {
           camou = 100;
         } else if (isColorMatch && !isStill) {
-          camou = 45; // Matching color but moving
+          camou = 45;
         } else if (!isColorMatch && isStill) {
-          camou = 15; // Still but mismatched color
+          camou = 15;
         } else {
           camou = 0;
         }
@@ -536,24 +556,20 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
           const cone = visionCones[idx];
           if (!hGroup || !cone) return;
 
-          // Patrol Movement (Wander or Seek)
           h.patrolTimer -= dt;
           if (h.patrolTimer <= 0) {
             h.patrolTimer = 2.5 + Math.random() * 2.0;
             h.targetAngle = (Math.random() * Math.PI * 2);
           }
 
-          // Smooth turning towards target angle
           let diffAngle = h.targetAngle - h.angle;
           while (diffAngle < -Math.PI) diffAngle += Math.PI * 2;
           while (diffAngle > Math.PI) diffAngle -= Math.PI * 2;
           h.angle += diffAngle * 0.05;
 
-          // Forward motion
           h.x += Math.sin(h.angle) * h.speed;
           h.z += Math.cos(h.angle) * h.speed;
 
-          // Bounce off boundary
           const hLimit = 9.0;
           if (h.x < -hLimit || h.x > hLimit) {
             h.angle = -h.angle;
@@ -567,7 +583,6 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
           hGroup.position.set(h.x, 0, h.z);
           hGroup.rotation.y = h.angle;
 
-          // Vision Cone Check to Player
           const toPlayerX = s.player.x - h.x;
           const toPlayerZ = s.player.z - h.z;
           const distToPlayer = Math.hypot(toPlayerX, toPlayerZ);
@@ -576,18 +591,15 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
           const hunterForwardZ = Math.cos(h.angle);
           const dot = (toPlayerX * hunterForwardX + toPlayerZ * hunterForwardZ) / Math.max(distToPlayer, 0.001);
 
-          // Within 8 units and in front FOV (> 0.65 cos angle ~ 49 deg)
           const inVisionCone = distToPlayer < 8.0 && dot > 0.65;
 
           if (inVisionCone) {
             if (s.camouflage < 80) {
-              // Spotted!
               h.alert = Math.min(100, h.alert + dt * 120);
-              h.targetAngle = Math.atan2(toPlayerX, toPlayerZ); // Turn to face player
+              h.targetAngle = Math.atan2(toPlayerX, toPlayerZ);
               (cone.material as THREE.MeshBasicMaterial).color.setHex(0xef4444);
               (cone.material as THREE.MeshBasicMaterial).opacity = 0.45;
             } else {
-              // Camouflaged! Hunter loses interest
               h.alert = Math.max(0, h.alert - dt * 50);
               (cone.material as THREE.MeshBasicMaterial).color.setHex(0x22c55e);
               (cone.material as THREE.MeshBasicMaterial).opacity = 0.2;
@@ -600,12 +612,10 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
 
           if (h.alert > maxAlert) maxAlert = h.alert;
 
-          // Shoot Paint Projectile when Alert = 100
           h.shootCooldown -= dt;
           if (h.alert >= 95 && h.shootCooldown <= 0) {
             h.shootCooldown = 1.2;
             playSfx?.('sounds/laser.mp3');
-            // Spawn bullet
             const bSpeed = 0.35;
             s.bullets.push({
               x: h.x,
@@ -617,7 +627,6 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
           }
         });
 
-        // Hide inactive hunters if stage has fewer
         hunterGroups.forEach((hg, idx) => {
           hg.visible = idx < s.hunters.length;
         });
@@ -632,7 +641,6 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
           b.z += b.vz;
           b.life -= 1;
 
-          // Check hit player
           const hitDist = Math.hypot(b.x - s.player.x, b.z - s.player.z);
           if (hitDist < 0.8 && s.player.invulnerableTimer <= 0) {
             s.player.invulnerableTimer = 1.5;
@@ -697,7 +705,6 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          // Round Clear!
           if (stage < totalStages) {
             setStage((s) => s + 1);
             setScore((sc) => sc + 50);
@@ -705,7 +712,6 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
             playSfx?.('sounds/victory.mp3');
             return 35 + (stage + 1) * 5;
           } else {
-            // Full Victory!
             setIsVictory(true);
             const receipt = calculateAndDepositMissionReward({
               gameId: 'pokihideandpaint',
@@ -729,7 +735,7 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
     return () => clearInterval(timer);
   }, [isGameOver, isVictory, stage, totalStages, score, initStage, playSfx, onReward]);
 
-  // 7. Keyboard & Touch Controls
+  // 7. Keyboard Controls
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const s = stateRef.current;
@@ -763,29 +769,47 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
     };
   }, [handlePaint, handleToggleFreeze]);
 
-  // Touch Handlers for Mobile Pure Gestures
+  // Floating Touch Joystick Handlers
   const handleTouchStart = (e: React.TouchEvent) => {
+    // Only capture touch on left 65% area so right action buttons are untouched
     const touch = e.touches[0];
+    if (touch.clientX > window.innerWidth * 0.65) return;
+
     const s = stateRef.current;
     s.touch.active = true;
     s.touch.startX = touch.clientX;
     s.touch.startY = touch.clientY;
     s.touch.currentX = touch.clientX;
     s.touch.currentY = touch.clientY;
+
+    setJoystickData({
+      active: true,
+      startX: touch.clientX,
+      startY: touch.clientY,
+      currentX: touch.clientX,
+      currentY: touch.clientY,
+    });
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    const touch = e.touches[0];
     const s = stateRef.current;
     if (s.touch.active) {
+      const touch = e.touches[0];
       s.touch.currentX = touch.clientX;
       s.touch.currentY = touch.clientY;
+
+      setJoystickData((prev) => ({
+        ...prev,
+        currentX: touch.clientX,
+        currentY: touch.clientY,
+      }));
     }
   };
 
   const handleTouchEnd = () => {
     const s = stateRef.current;
     s.touch.active = false;
+    setJoystickData((prev) => ({ ...prev, active: false }));
   };
 
   const tutorialSteps: TutorialStep[] = [
@@ -821,9 +845,17 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
     },
   ];
 
+  // Calculate Joystick Knob Offset
+  const jDx = joystickData.currentX - joystickData.startX;
+  const jDy = joystickData.currentY - joystickData.startY;
+  const jDist = Math.hypot(jDx, jDy);
+  const maxRadius = 38;
+  const knobX = jDist > 0 ? (jDx / Math.max(jDist, 1)) * Math.min(jDist, maxRadius) : 0;
+  const knobY = jDist > 0 ? (jDy / Math.max(jDist, 1)) * Math.min(jDist, maxRadius) : 0;
+
   return (
     <div
-      className="relative w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none"
+      className="fixed inset-0 w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none touch-none"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -857,19 +889,19 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
       {/* Top Status Panel: Timer, Stage, Lives, Camouflage, Alert */}
       <div className="absolute top-16 left-4 right-4 flex flex-col gap-2 pointer-events-none z-10">
         <div className="flex items-center justify-between text-xs sm:text-sm text-slate-200">
-          <div className="flex items-center gap-2 bg-slate-900/80 px-3 py-1.5 rounded-sm border border-slate-700/80 backdrop-blur-sm">
+          <div className="flex items-center gap-2 bg-slate-900/85 px-3 py-1.5 rounded-sm border border-slate-700/80 backdrop-blur-sm shadow-md">
             <span className="text-emerald-400 font-bold">ROUND {stage}/{totalStages}</span>
             <span className="text-slate-400">|</span>
             <span className="text-amber-300 font-bold">{timeLeft}s</span>
           </div>
 
-          <div className="flex items-center gap-1.5 bg-slate-900/80 px-3 py-1.5 rounded-sm border border-slate-700/80 backdrop-blur-sm">
+          <div className="flex items-center gap-1.5 bg-slate-900/85 px-3 py-1.5 rounded-sm border border-slate-700/80 backdrop-blur-sm shadow-md">
             <span className="text-slate-400 text-xs">HP</span>
             <div className="flex gap-1">
               {[...Array(3)].map((_, i) => (
                 <div
                   key={i}
-                  className={`w-3 h-3 rounded-full ${i < lives ? 'bg-rose-500' : 'bg-slate-700'}`}
+                  className={`w-3.5 h-3.5 rounded-full ${i < lives ? 'bg-rose-500' : 'bg-slate-700'}`}
                 />
               ))}
             </div>
@@ -879,7 +911,7 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
         {/* Camouflage & Hunter Alert Bar */}
         <div className="grid grid-cols-2 gap-2 text-xs">
           {/* Camouflage */}
-          <div className="bg-slate-900/85 p-2 rounded-sm border border-slate-700/80 backdrop-blur-sm">
+          <div className="bg-slate-900/85 p-2 rounded-sm border border-slate-700/80 backdrop-blur-sm shadow-md">
             <div className="flex justify-between items-center mb-1">
               <span className="text-slate-300 flex items-center gap-1">
                 <span>🎨</span> {isKo ? '위장도' : 'CAMOU'}
@@ -899,7 +931,7 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
           </div>
 
           {/* Hunter Alert */}
-          <div className="bg-slate-900/85 p-2 rounded-sm border border-slate-700/80 backdrop-blur-sm">
+          <div className="bg-slate-900/85 p-2 rounded-sm border border-slate-700/80 backdrop-blur-sm shadow-md">
             <div className="flex justify-between items-center mb-1">
               <span className="text-slate-300 flex items-center gap-1">
                 <span>🚨</span> {isKo ? '경계도' : 'ALERT'}
@@ -920,38 +952,61 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
         </div>
       </div>
 
-      {/* Mobile Pure Gesture Guide & Action Touch Controls */}
+      {/* Dynamic Floating Touch Joystick Visual Feedback */}
+      {joystickData.active && (
+        <div
+          className="pointer-events-none fixed z-30"
+          style={{
+            left: `${joystickData.startX}px`,
+            top: `${joystickData.startY}px`,
+            transform: 'translate(-50%, -50%)',
+          }}
+        >
+          {/* Base Ring */}
+          <div className="w-24 h-24 rounded-full border-2 border-cyan-400/60 bg-cyan-950/40 backdrop-blur-xs flex items-center justify-center shadow-2xl relative">
+            {/* Center Thumb Knob */}
+            <div
+              className="w-10 h-10 rounded-full bg-cyan-400 border border-white/80 shadow-lg absolute"
+              style={{
+                transform: `translate(${knobX}px, ${knobY}px)`,
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Pure Gesture Guide & Large Action Touch Controls */}
       <div className="absolute bottom-6 left-4 right-4 flex items-end justify-between pointer-events-none z-20">
         {/* Left: Drag Joystick Hint */}
-        <div className="bg-slate-900/80 px-3 py-2 rounded-sm border border-slate-700/80 text-[11px] text-slate-300 backdrop-blur-sm">
-          <div className="text-slate-400 font-bold mb-0.5">{isKo ? '🕹️ 이동 제스처' : '🕹️ MOVE'}</div>
-          <div>{isKo ? '화면을 터치 & 드래그하세요' : 'Drag screen to move'}</div>
+        <div className="bg-slate-900/85 px-3 py-2 rounded-sm border border-slate-700/80 text-[11px] text-slate-300 backdrop-blur-md shadow-lg">
+          <div className="text-slate-400 font-bold mb-0.5">{isKo ? '🕹️ 360° 터치 조향' : '🕹️ TOUCH STEER'}</div>
+          <div>{isKo ? '화면을 터치 & 드래그하세요' : 'Drag screen to steer'}</div>
         </div>
 
-        {/* Right: Interactive Action Buttons */}
-        <div className="flex gap-2.5 pointer-events-auto">
+        {/* Right: Interactive Large Action Buttons for Mobile Thumbs */}
+        <div className="flex gap-3 pointer-events-auto">
           {/* Paint Button */}
           <button
             type="button"
             onClick={handlePaint}
-            className="flex flex-col items-center justify-center w-16 h-16 rounded-sm bg-indigo-600 active:bg-indigo-700 text-white font-bold border-2 border-indigo-400/80 shadow-lg active:scale-95 transition-transform"
+            className="flex flex-col items-center justify-center w-20 h-20 rounded-sm bg-indigo-600 active:bg-indigo-700 text-white font-black border-2 border-indigo-300 shadow-2xl active:scale-90 transition-transform cursor-pointer"
           >
-            <span className="text-xl">🎨</span>
-            <span className="text-[10px] tracking-wider mt-0.5">PAINT</span>
+            <span className="text-2xl">🎨</span>
+            <span className="text-xs tracking-wider mt-0.5 font-mono">PAINT</span>
           </button>
 
           {/* Freeze Button */}
           <button
             type="button"
             onClick={handleToggleFreeze}
-            className={`flex flex-col items-center justify-center w-16 h-16 rounded-sm font-bold border-2 shadow-lg active:scale-95 transition-transform ${
+            className={`flex flex-col items-center justify-center w-20 h-20 rounded-sm font-black border-2 shadow-2xl active:scale-90 transition-transform cursor-pointer ${
               isFrozen
                 ? 'bg-amber-500 border-amber-300 text-slate-950 animate-pulse'
-                : 'bg-slate-800 active:bg-slate-700 border-slate-600 text-white'
+                : 'bg-slate-900/90 active:bg-slate-800 border-slate-600 text-white'
             }`}
           >
-            <span className="text-xl">🗿</span>
-            <span className="text-[10px] tracking-wider mt-0.5">{isFrozen ? 'FROZEN' : 'FREEZE'}</span>
+            <span className="text-2xl">🗿</span>
+            <span className="text-xs tracking-wider mt-0.5 font-mono">{isFrozen ? 'FROZEN' : 'FREEZE'}</span>
           </button>
         </div>
       </div>
@@ -986,14 +1041,14 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
               <div className="bg-slate-800/80 p-3 rounded-sm border border-slate-700 mb-4 text-xs text-slate-300">
                 <div className="text-slate-400 mb-1">{isKo ? '생존 진행 보상' : 'Survival Reward'}</div>
                 <div className="text-base font-bold text-amber-400">
-                  +{settlementReceipt.rewardAmount} SNS
+                  +{settlementReceipt.totalSns} SNS
                 </div>
               </div>
             )}
             <button
               type="button"
               onClick={onExit}
-              className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-sm border border-slate-600 text-sm"
+              className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-sm border border-slate-600 text-sm cursor-pointer"
             >
               {isKo ? '미션 목록으로' : 'Back to Missions'}
             </button>
@@ -1018,3 +1073,5 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
     </div>
   );
 };
+
+export default PokiHideAndPaintGame;
