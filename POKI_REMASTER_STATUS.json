@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 63,
-  "completed_count": 62,
-  "last_updated": "2026-09-08T00:57:00+09:00",
+  "current_game_index": 64,
+  "completed_count": 63,
+  "last_updated": "2026-09-08T00:58:00+09:00",
   "history": [
     {
       "id": 1,
@@ -687,6 +687,17 @@
       "component": "src/components/poki/PokiBlastBuddiesGame.tsx",
       "completed_at": "2026-09-08T00:57:00+09:00",
       "details": "Three.js 기반 3D 봄버 아레나 배틀로얄 구현, 11x11 3D 블록 아레나(16개 불괴 석재 기둥/25개 파괴 가능 우드 크레이트) & 남서쪽 안전 스폰 진지, 블루 바이저 버디 & No.62 영웅 배지 vs 3인의 라이벌 AI 버디(레드/옐로우/퍼플), 시한폭탄 설치(2.5초 카운트다운 & 팽창 펄스) 및 십자형(Crossfire) 3D 화염 폭발 물리, 3종 파워업 아이템(화력 증가/폭탄 추가/이동속도 증가), 360도 다이나믹 플로팅 조이스틱(Screen-relative 완벽 일치) + 우측 대형 76px BOMB 버튼 + 햅틱, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 63,
+      "name": "Sword Masters",
+      "poki_url": "https://poki.com/kr/g/sword-masters",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No063_SwordMasters_Prompt.md",
+      "component": "src/components/poki/PokiSwordMastersGame.tsx",
+      "completed_at": "2026-09-08T00:58:00+09:00",
+      "details": "Three.js 기반 3D 핵앤슬래시 검술 어드벤처 구현, 50x50m 판타지 아레나 초원 & 8개 고대 신전 대리석 기둥 & 남쪽 14m 안전 스폰 진지, 실버 플레이트 아머 & 블루 망토 소드 마스터 & No.63 영웅 배지, 3대 검술 액션(76px 대검 휘두르기 SLASH/64px 관통 돌진 DASH/64px 게이지 완충 시 360도 검풍 회전베기 SWORD STORM), 일반 몬스터(슬라임/고블린) 10마리 토벌 시 거대 보스 [골렘 로드] 강림 및 보스전, 360도 다이나믹 플로팅 조이스틱(Screen-relative 완벽 일치) + 우측 3대 검술 버튼군 + 햅틱, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
