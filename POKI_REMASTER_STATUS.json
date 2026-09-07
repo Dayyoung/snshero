@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 48,
-  "completed_count": 47,
-  "last_updated": "2026-09-08T00:32:00+09:00",
+  "current_game_index": 49,
+  "completed_count": 48,
+  "last_updated": "2026-09-08T00:35:00+09:00",
   "history": [
     {
       "id": 1,
@@ -522,6 +522,17 @@
       "component": "src/components/poki/PokiCountControlGame.tsx",
       "completed_at": "2026-09-08T00:32:00+09:00",
       "details": "Three.js 기반 3D 수학 연산 군단 돌파 & 공성전 러너 구현, 170m 석조 런웨이 트랙 & 사이드 가이드 레일(시작 20m 안전 광폭 플랫폼 안착), 지휘관 스틱맨 & No.47 영웅 배지, 4쌍 3D 수학 게이트(+20, x2, x3, +50 등) 실시간 피보나치 나선형 군단 증폭(1~180명), 회전 톱니 날 트랩 회피, 결승 적군 성채 요새(HP 150) 군단 돌격 공성전 함락, 화면 좌우 드래그 스티어링 + 하단 레인 버튼 + 76px RUSH 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 48,
+      "name": "Repuls.io",
+      "poki_url": "https://poki.com/kr/g/repuls-io",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No048_Repuls_Prompt.md",
+      "component": "src/components/poki/PokiRepulsGame.tsx",
+      "completed_at": "2026-09-08T00:35:00+09:00",
+      "details": "Three.js 기반 3D 사이버네틱 아레나 FPS/TPS 슈터 구현, 60x60m 사이버 네온 콜로세움 & 네온 그리드 전장(남쪽 18m 안전 광폭 스폰 안착), 블루 사이버 솔저 & No.48 영웅 배지, 3대 무기 아스널(플라즈마 소총/펄스 샷건/볼텍스 레일건), 4체 AI 사이버 봇 순찰·추적·사격 및 리스폰, 점프 패드 2개(높이 17m 도약), 360도 플로팅 조이스틱(Screen-relative 완벽 준수) + 우측 숄더뷰 에임 회전 + 76px FIRE 연속 사격 + 64px JUMP 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
