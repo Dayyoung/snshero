@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 52,
-  "completed_count": 51,
-  "last_updated": "2026-09-08T00:40:00+09:00",
+  "current_game_index": 53,
+  "completed_count": 52,
+  "last_updated": "2026-09-08T00:42:00+09:00",
   "history": [
     {
       "id": 1,
@@ -566,6 +566,17 @@
       "component": "src/components/poki/PokiSuperDressGame.tsx",
       "completed_at": "2026-09-08T00:40:00+09:00",
       "details": "Three.js 기반 3D 오뜨 꾸뛰르 패션위크 런웨이 드레스업 구현, T자형 블랙 하이글로시 런웨이 & 레드 카펫 & 골든 LED 레일 & 파파라치 플래시 효과, 3D 슈퍼모델 아바타 & No.51 영웅 배지, 4대 패션 카테고리 풀 코디네이션(헤어 3종, 가운 3종, 액세서리 3종, 슈즈 3종), 화면 스와이프 모델 360도 런웨이 턴 회전, 런웨이 피날레 3회 연속 셔터 플래시 & 360도 피날레 스핀 턴 & 황금빛/핑크빛 대형 컨페티 축포 팡파르, 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 52,
+      "name": "Karate Fighter",
+      "poki_url": "https://poki.com/kr/g/karate-fighter",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No052_KarateFighter_Prompt.md",
+      "component": "src/components/poki/PokiKarateFighterGame.tsx",
+      "completed_at": "2026-09-08T00:42:00+09:00",
+      "details": "Three.js 기반 3D 정통 무도관 가라테 대전 격투 구현, 16x16m 다다미 경기장 바닥 & 쇼지 미닫이벽 & 4기 붉은 제등 램프 조명, 횡스크롤 3D 대전 카메라(두 파이터 거리 기준 자동 센터링/줌), 3D 가라테 무술가 파이터(백색 도복 플레이어 & No.52 영웅 배지 vs 흑색 도복 라이벌), 정권 찌르기(-14)/돌려차기(-26)/가드 방어 및 패링 카운터 스턴 시스템, 기(Ki) 게이지 100% 충전 시 승룡 기합파(-50) 필살기, 모바일 퓨어 터치 조작계(좌측 대시 + 우측 대형 펀치/킥/방어/필살기 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
