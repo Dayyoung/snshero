@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 41,
-  "completed_count": 40,
-  "last_updated": "2026-09-07T23:30:00+09:00",
+  "current_game_index": 42,
+  "completed_count": 41,
+  "last_updated": "2026-09-07T23:32:00+09:00",
   "history": [
     {
       "id": 1,
@@ -445,6 +445,17 @@
       "component": "src/components/poki/PokiPunchyGuyGame.tsx",
       "completed_at": "2026-09-07T23:30:00+09:00",
       "details": "Three.js 기반 3D 래그돌 복싱 배틀 구현, 12x12m 사각 복싱 링 & 4개 코너 포스트 & 3단 탄성 로프 & 스포트라이트 조명, 블루 복서 플레이어 & No.40 영웅 배지, 3라운드 순차 도전자 AI(루키 그린/헤비 옐로우/챔피언 블랙), 원투 잽 콤보 & 위빙 회피 카운터 & 차징 파워 어퍼컷 피니시, 슬로우모션 래그돌 링 밖 넉아웃 물리, 360도 플로팅 조이스틱 + 76px PUNCH + 64px WEAVE + 64px UPPER 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 41,
+      "name": "Blacktop Police Chase",
+      "poki_url": "https://poki.com/kr/g/blacktop-police-chase",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No041_BlacktopPolice_Prompt.md",
+      "component": "src/components/poki/PokiBlacktopPoliceGame.tsx",
+      "completed_at": "2026-09-07T23:32:00+09:00",
+      "details": "Three.js 기반 3D 하이웨이 카 체이스 & 겟어웨이 탈주 드라이빙 구현, 4차선 무한 루핑 아스팔트 고속도로 & 가드레일(시작 25m 안전 광폭 도로), 블랙/오렌지 스트라이프 머슬카 & No.41 영웅 배지, 갓길 은행 강도 픽업($1,000) & 전방 130m 안전가옥 게이트 탈출($2,500) 3회 완수 시스템, 흑백 패트롤 경찰차 AI(경광등 점멸 & 바디슬램 충돌) 및 니트로 급가속 시 경찰차 공중 전복 테이크다운(TAKEDOWN), 360도 플로팅 조이스틱 + 하단 레인 조향 버튼 + 76px NITRO + 64px BRAKE 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
