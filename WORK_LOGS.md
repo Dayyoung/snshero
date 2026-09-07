@@ -4,6 +4,33 @@
 
 ---
 
+## [2026-09-07 16:52 KST] [Poki 110선 리마스터 12/110] No.012 My Perfect Hotel Three.js 3D 호텔 경영 타이쿤 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/my-perfect-hotel`) 분석 및 프롬프트(`src/components/poki/prompts/No012_MyPerfectHotel_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 28x22m 우드 파켓 로비 & 레드 벨벳 카펫, 체크인 대리석 리셉션 데스크(손님 대기열 및 벨보이 골든 벨 소리), 4개 럭셔리 객실(더블 침대/협탁/스탠드), 투숙객 AI 순차 안내/투숙/퇴실 팁 현금 뭉치 드롭, 침대 시트 청소(반짝이 파티클), 3·4호실 $120/$250 단계별 해금 확장, 커피 바 이동속도 부스트 전면 재개발.
+  - AGENTS.md 카메라 기준 조작 방향(좌우/상하) 100% 일치 절대 원칙 준수 (화면 기준 오른쪽=우측, 왼쪽=좌측).
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(다이나믹 플로팅 조이스틱 + 80px 대형 RUSH 버튼 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 인기 호텔 경영 아케이드 타이쿤 시뮬레이션. 손님 체크인, 빈 방 안내, 침대 정리 청소, 팁 현금 수거, 객실 증축 확장을 통해 번창하는 5성급 호텔을 만드는 타이쿤.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiMyHotelGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 쿼터뷰 아이소메트릭 시점, 28x22m 웜우드 파켓 바닥 & 레드 카펫 런너.
+     - 체크인 리셉션 데스크: 대리석 상판 카운터 및 벨보이 황금 종, 플레이어가 데스크 존에 서면 대기열 손님 순차 체크인.
+     - 투숙객 AI 라이프사이클: 로비 입장 대기열 -> 체크인 완료 후 배정된 객실 이동 -> 침대 투숙(4.5초) -> 퇴실 시 $40 현금 뭉치 드롭 & 객실 [DIRTY] 전환.
+     - 객실 청소 & 시트 교체: 더러워진 침대 옆에 서면 청소 게이지(1.1초) 상승 및 반짝이 파티클 분출, 청소 완료 시 보너스 현금 지급 및 새 손님 수용 가능.
+     - 호텔 확장 시스템: 잠긴 3호실($120), 4호실($250) 발판에 서면 보유 캐시를 소모하여 실시간 3D 건축 해금.
+     - 커피 바 부스터 존: 로비 중앙 커피 바를 밟으면 4초간 1.7배 폭풍 질주 부스트.
+     - 3D 호텔 지배인 아바타 & No.12 영웅 배지, 다이나믹 플로팅 조이스틱 + 80px RUSH 버튼, 햅틱 진동 피드백.
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 확인 팝업 및 누적 현금/손님 수 비례 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No012_MyPerfectHotel_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 무결점 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 12개 완료 (No.013 Talking Tom Gold Run 대기).
+
+---
+
 ## [2026-09-07 16:45 KST] [Poki 110선 리마스터 11/110] No.011 Rainbow Obby Three.js 3D 거대 무지개 오비 파쿠르 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/rainbow-obby`) 분석 및 프롬프트(`src/components/poki/prompts/No011_RainbowObby_Prompt.md`) 작성.
