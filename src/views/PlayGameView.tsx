@@ -14635,7 +14635,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       id="game-board" 
       className={cn(
         "flex-1 flex flex-col w-full max-w-[1024px] mx-auto bg-[#060a14] text-slate-100 min-h-0 justify-between relative overflow-y-auto overscroll-contain touch-pan-y",
-        !isAdRemoved ? "pt-[96px] sm:pt-[136px] lg:pt-12" : "pt-12 sm:pt-14",
+        !isAdRemoved ? "pt-[116px] sm:pt-[148px] lg:pt-12" : "pt-12 sm:pt-14",
         "pb-28 sm:pb-32 md:pb-36"
       )}
     >
@@ -14945,7 +14945,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       {gameState === 'playing' && (
         <div className={cn(
           "fixed left-3 right-3 max-w-[1024px] mx-auto inset-x-0 z-[9999] flex items-center justify-between pointer-events-auto font-mono text-xs select-none",
-          !isAdRemoved ? "top-[60px] sm:top-[98px] lg:top-2" : "top-2"
+          !isAdRemoved ? "top-[78px] sm:top-[106px] lg:top-2" : "top-2"
         )}>
           {/* Left side: Exit/Back, Menu, Mobile Logs */}
           <div className="flex items-center gap-1.5 sm:gap-2">

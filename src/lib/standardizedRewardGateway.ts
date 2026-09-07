@@ -34,6 +34,7 @@ export interface RewardReceipt {
   totalSns: number;
   previousBalance: number;
   newBalance: number;
+  isVictory?: boolean;
 }
 
 export interface SnsHistoryItem {
@@ -123,7 +124,8 @@ export function calculateAndDepositMissionReward(options: RewardCalculationOptio
     perfectBonus,
     totalSns,
     previousBalance: currentBalance,
-    newBalance
+    newBalance,
+    isVictory
   };
 
   // Update user balance & history atomically

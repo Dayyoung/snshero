@@ -5883,21 +5883,42 @@ function AppContent() {
                 : "bg-slate-50/30 border-slate-200/80"),
           isPlayingBattle ? "min-h-screen overflow-y-auto" : "min-h-screen"
         )}>
+          {/* Top AdSense Banner (Mobile/Tablet 1024px 미만 전용: 높이 확대 및 버튼과 겹침 없는 1행 배치) */}
+          {!isAdRemoved && view !== 'landing' && (
+            <div className={cn(
+              "block lg:hidden w-full px-2 py-1 shrink-0 select-none z-20 overflow-hidden",
+              isPlayingBattle
+                ? "bg-[#060a14]/95 border-b border-slate-800"
+                : "bg-[#fdfcfc]/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800"
+            )}>
+              <div className="max-w-[728px] mx-auto h-[70px] max-h-[76px] sm:h-[96px] sm:max-h-[102px] flex items-center justify-center overflow-hidden">
+                <AdSenseBanner 
+                  format="horizontal"
+                  responsive={false}
+                  className="w-full h-full overflow-hidden"
+                  style={{ maxHeight: '72px', height: '68px', minHeight: '62px' }}
+                  showLabel
+                />
+              </div>
+            </div>
+          )}
+
+          {/* 광고 다음 줄에 정렬되는 전역 헤더 버튼 (음소거, 메뉴, 뒤로가기) */}
           {view !== 'landing' && (
             <>
-              {/* Dedicated HUD Quick Audio Mute / Unmute Button */}
+              {/* Dedicated HUD Quick Audio Mute / Unmute Button (광고 다음 줄에 배치) */}
               <button
                 onClick={toggleAudioMute}
                 id="hud-audio-toggle"
                 className={cn(
                   "fixed right-[3.75rem] min-[1024px]:right-[calc(50vw-444px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center touch-target",
+                  (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px] lg:top-[12px]" : "top-[10px] lg:top-[12px]",
                   isAudioMuted
                     ? "bg-rose-500/10 border border-rose-500/50 text-rose-500 hover:bg-rose-500/20"
                     : (theme === 'dark' || theme === 'metal')
                     ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
                     : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
                 )}
-                style={{ top: '10px' }}
                 title={isAudioMuted ? t('hud_audio_unmute', language) : t('hud_audio_mute', language)}
                 aria-label={isAudioMuted ? t('hud_audio_unmute', language) : t('hud_audio_mute', language)}
               >
@@ -5908,7 +5929,7 @@ function AppContent() {
                 )}
               </button>
 
-              {/* HUD Main Hamburger Menu Button */}
+              {/* HUD Main Hamburger Menu Button (광고 다음 줄에 배치) */}
               <button
                 onClick={() => {
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
@@ -5916,11 +5937,11 @@ function AppContent() {
                 }}
                 className={cn(
                   "fixed right-4 min-[1024px]:right-[calc(50vw-496px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center touch-target",
+                  (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px] lg:top-[12px]" : "top-[10px] lg:top-[12px]",
                   (theme === 'dark' || theme === 'metal')
                     ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
                     : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
                 )}
-                style={{ top: '10px' }}
                 title={t('menu_title', language)}
               >
                 <Menu size={20} />
@@ -5933,11 +5954,11 @@ function AppContent() {
               onClick={handleGlobalBack}
               className={cn(
                 "fixed left-4 min-[1024px]:left-[calc(50vw-496px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md flex items-center justify-center active:scale-95 transition-all cursor-pointer touch-target",
+                (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px] lg:top-[12px]" : "top-[10px] lg:top-[12px]",
                 (theme === 'dark' || theme === 'metal')
                   ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
                   : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
               )}
-              style={{ top: '10px' }}
               title={language === 'ko' ? '뒤로가기' : 'Back'}
             >
               <ChevronLeft size={20} />
@@ -6294,30 +6315,10 @@ function AppContent() {
 
           {/* Simulation Indicator (Removed) */}
 
-          {/* Mobile/Tablet Content Top Google AdSense Banner (1024px 미만 모바일/태블릿 화면 전용: 슬림 배너 높이 제한) */}
-          {!isAdRemoved && view !== 'landing' && (
-            <div className={cn(
-              "block lg:hidden w-full px-2 py-0.5 shrink-0 select-none z-20 overflow-hidden",
-              isPlayingBattle
-                ? "bg-[#060a14]/95 border-b border-slate-800"
-                : "bg-[#fdfcfc]/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800"
-            )}>
-              <div className="max-w-[728px] mx-auto h-[54px] max-h-[58px] sm:h-[94px] sm:max-h-[98px] flex items-center justify-center overflow-hidden">
-                <AdSenseBanner 
-                  format="horizontal"
-                  responsive={false}
-                  className="w-full h-full overflow-hidden"
-                  style={{ maxHeight: '52px', height: '50px' }}
-                  showLabel
-                />
-              </div>
-            </div>
-          )}
-
           <div className={cn(
             "flex-1 flex flex-col min-h-0",
             isPlayingBattle ? "h-full overflow-y-auto overscroll-contain touch-pan-y" : "overflow-x-hidden",
-            (view !== 'play' && view !== 'home') && "pt-4",
+            (view !== 'play' && view !== 'home') && ((!isAdRemoved && view !== 'landing') ? "pt-12 sm:pt-14 lg:pt-4" : "pt-4"),
             showNavbar ? "pb-20" : "pb-0"
           )}>
             <AnimatePresence mode="wait">
