@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 18,
-  "completed_count": 17,
-  "last_updated": "2026-09-07T20:50:00+09:00",
+  "current_game_index": 19,
+  "completed_count": 18,
+  "last_updated": "2026-09-07T21:00:00+09:00",
   "history": [
     {
       "id": 1,
@@ -192,6 +192,17 @@
       "component": "src/components/poki/PokiNeonChallengeGame.tsx",
       "completed_at": "2026-09-07T20:50:00+09:00",
       "details": "Three.js 기반 3D 네온 사이버 러너 구현, 120m 네온 하이웨이 트랙 & 20m 안전 안착 플랫폼(시작 급사 원천 차단), 사이버 호버 스피더 메쉬 & No.17 영웅 배지, 8개 네온 링 터널 통과 가속(+100점), 붉은 네온 레이저 장벽(점프 회피) & 회전 사이버 큐브(좌우 스티어링 회피), 20개 황금 네온 코어 수집(+50점), 3.5초 무적 초고속 네온 부스트, 결승 사이버 포털 게이트 도달 승리, 화면 기준 좌우 조향 100% 일치 및 80px 점프 + 68px 부스트 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 18,
+      "name": "Plonky",
+      "poki_url": "https://poki.com/kr/g/plonky",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No018_Plonky_Prompt.md",
+      "component": "src/components/poki/PokiPlonkyGame.tsx",
+      "completed_at": "2026-09-07T21:00:00+09:00",
+      "details": "Three.js 기반 3D 물리 플랫포머 & 로프 스윙 어드벤처 구현, 90m 모험 코스 & 18m 광폭 안전 대지(시작 급사 원천 차단), 귀여운 오렌지 젤리 Plonky 메쉬 & No.18 영웅 배지, 3하트 체력 시스템, 공중 황금 앵커 물리 로프 시계추 스윙(Pendulum Swing & 도약 가속), 상하 승강 회전 강철 톱날 & 가시밭 계곡 함정, 15개 황금 별 수집(+60점), 골 플래그 도달 승리, 화면 기준 좌우 이동 100% 일치 및 80px 점프 + 68px 로프 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

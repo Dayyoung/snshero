@@ -4,6 +4,40 @@
 
 ---
 
+## [2026-09-07 21:00 KST] [Poki 110선 리마스터 18/110] No.018 Plonky Three.js 3D 물리 플랫포머 & 로프 스윙 어드벤처 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/plonky`) 분석 및 프롬프트(`src/components/poki/prompts/No018_Plonky_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 90m 모험 코스 & 18m 광폭 안전 대지(시작 급사 원천 차단), 귀여운 오렌지 젤리 Plonky 메쉬 & No.18 영웅 배지, 3하트 체력 시스템, 공중 황금 앵커 물리 로프 시계추 스윙(Pendulum Swing & 도약 가속), 상하 승강 회전 강철 톱날 & 가시밭 계곡 함정, 15개 황금 별 수집(+60점), 골 플래그 도달 승리, 화면 기준 좌우 이동 100% 일치 및 80px 점프 + 68px 로프 퓨어 터치 조작계 전면 재개발.
+  - AGENTS.md 카메라 기준 조작 방향(좌우/상하) 100% 일치 절대 원칙 준수 (화면 기준 오른쪽=우측, 왼쪽=좌측).
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(다이나믹 조이스틱/좌우 터치 + 80px 대형 점프 + 68px 로프 스윙 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 인기 3D 물리 플랫포머 게임. 주인공 Plonky를 조종하여 회전하는 거대 톱날과 바닥 가시밭을 피하고, 공중 앵커에 로프를 걸어 진자 스윙으로 깊은 계곡을 건너 골 플래그에 도달하는 정통 물리 액션 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiPlonkyGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 3인칭 사이드 쿼터뷰 트래킹 카메라, 깊이감 있는 3D 숲속 배경 & 안개.
+     - 90m 코스 & 18m 광폭 안전 플랫폼: 게임 시작 직후 추락/급사 없는 여유로운 스타트 구간 확보.
+     - 오렌지 젤리 Plonky 아바타: 라운드 큐브, 동그란 눈알 2개, No.018 공식 영웅 스프라이트 HUD 배지.
+     - 진자 운동 물리 로프 스윙 시스템:
+       - 공중 황금 앵커(X = 49, 56) 근처에서 [ROPE] 홀드 시 38bdf8 에너지 로프가 발사되어 시계추 진자 물리(`angularAcc = -(g/L)*sin(θ)`)로 공중 활강.
+       - 스윙 도중 점프 또는 로프 해제 시 전방으로 강한 탈출 가속 도약.
+     - 다이나믹 장애물 & 기믹:
+       - 3개 회전 강철 톱날 (상하 승강 왕복 운동).
+       - 바닥 계곡 붉은 가시밭 함정 (Y < -6 추락 및 접촉 시 데미지).
+       - 좌우 왕복 이동 플랫폼 (X = 24m).
+       - 15개 황금 스타 코인 (+60점 수집).
+       - 골 플래그 & 녹색 아우라 포털 (X = 92m 도달 시 승리).
+     - 3 하트 체력 시스템 & 피격 시 넉백 및 안전 발판 부활.
+     - 모바일 퓨어 터치: 화면 좌측 터치 드래그로 좌우 정밀 이동 + 우측 80px 대형 점프 버튼 + 68px 로프 스윙 홀드 버튼 + 햅틱 진동.
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 확인 팝업 및 진행 거리/스타 수집 비례 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No018_Plonky_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 무결점 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 18개 완료 (No.019 Backrooms Recovery 대기).
+
+---
+
 ## [2026-09-07 20:50 KST] [Poki 110선 리마스터 17/110] No.017 Neon Challenge Legends Three.js 3D 네온 사이버 러너 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/neon-challenge-legends`) 분석 및 프롬프트(`src/components/poki/prompts/No017_NeonChallengeLegends_Prompt.md`) 작성.
