@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 40,
-  "completed_count": 39,
-  "last_updated": "2026-09-07T23:28:00+09:00",
+  "current_game_index": 41,
+  "completed_count": 40,
+  "last_updated": "2026-09-07T23:30:00+09:00",
   "history": [
     {
       "id": 1,
@@ -434,6 +434,17 @@
       "component": "src/components/poki/PokiPartyTimeGame.tsx",
       "completed_at": "2026-09-07T23:28:00+09:00",
       "details": "Three.js 기반 3D 파티 서바이벌 오비 배틀 구현, 직경 30m 부유 디스코 아레나 & 네온 림(시작 안전 안착), 중앙 회전 타워 & 반대 회전 듀얼 스위퍼 바(하단 점프 회피 & 상단 다이브 회피), 4-6초 주기 공중 낙하 파티 케이크 폭탄(경고 원 & 넉백 파티클), 4명 AI 파티 친구들 서바이벌 대결 & 낙하 탈락 메커니즘, 360도 플로팅 조이스틱 + 80px JUMP + 64px DIVE 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 40,
+      "name": "Punchy Guy",
+      "poki_url": "https://poki.com/kr/g/punchy-guy",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No040_PunchyGuy_Prompt.md",
+      "component": "src/components/poki/PokiPunchyGuyGame.tsx",
+      "completed_at": "2026-09-07T23:30:00+09:00",
+      "details": "Three.js 기반 3D 래그돌 복싱 배틀 구현, 12x12m 사각 복싱 링 & 4개 코너 포스트 & 3단 탄성 로프 & 스포트라이트 조명, 블루 복서 플레이어 & No.40 영웅 배지, 3라운드 순차 도전자 AI(루키 그린/헤비 옐로우/챔피언 블랙), 원투 잽 콤보 & 위빙 회피 카운터 & 차징 파워 어퍼컷 피니시, 슬로우모션 래그돌 링 밖 넉아웃 물리, 360도 플로팅 조이스틱 + 76px PUNCH + 64px WEAVE + 64px UPPER 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
