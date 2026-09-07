@@ -4,6 +4,46 @@
 
 ---
 
+## [2026-09-08 00:50 KST] [Poki 110선 리마스터 57/110] No.057 Dino Simulator Three.js 3D 선사시대 공룡 시뮬레이션 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/dino-simulator`) 분석 및 프롬프트(`src/components/poki/prompts/No057_DinoSimulator_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 60x60m 선사시대 원시림 & 활화산 배경 & 14그루 거목 및 공룡 뼈화석 아치 & 중앙 오아시스 호수(체력 자연 재생), 3D T-Rex 아바타 & No.57 영웅 배지, 3대 액션 시스템(76px 물어뜯기 BITE/64px 360도 꼬리치기 TAIL SWIPE/분노 100% 충전 시 제왕의 포효 ROAR 전체 기절), 5마리 초식공룡 도주 사냥 & 고기 드롭/포식 및 3마리 벨로키랍토르 팩 추격 전투 AI, 360도 다이나믹 플로팅 조이스틱(Screen-relative 완벽 일치) + 우측 대형 액션 버튼군 + 햅틱 전면 재개발.
+  - AGENTS.md 카메라 기준 조작 방향(좌우/상하) 100% 일치 절대 원칙 준수 (TPS 숄더뷰 카메라 기준 Screen-relative 360도 플로팅 조이스틱 이동 1:1 완벽 정렬).
+  - AGENTS.md 시작 지점 안전 안착 절대 원칙 준수 (원시림 남쪽 18m 안전 스폰 구역 안착).
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(플로팅 조이스틱/대형 액션 버튼군 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 최고 인기 공룡 시뮬레이션 Dino Simulator. 선사시대 백악기/쥐라기 대지를 무대로 최상위 포식자 티라노사우루스(T-Rex)가 되어 거친 야생에서 살아남고, 도망치는 초식공룡을 사냥해 체력을 유지하며, 영역을 위협하는 사나운 랩터 무리를 격퇴하는 3D 오픈월드 야생 서바이벌 액션 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiDinoSimulatorGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 숄더뷰 팔로우 카메라, 60x60m 선사시대 쥐라기 대지(이끼/황토 투톤 텍스처, 원시 안개 및 일몰 엠비언트 조명).
+     - 배경 활화산(붉은 마그마 분화구 및 화염 조명)과 14그루의 선사시대 거목 군락 및 공룡 뼈화석 아치 조형물 배치.
+     - 중앙 오아시스 호수(진입 시 T-Rex 체력 지속 재생 회복 구역).
+     - 3D T-Rex 플레이어 모델링:
+       - 맹수 다크 에메랄드/올리브 투톤 비늘 바디, 붉은 눈, 아랫턱 개폐 메쉬, 육중한 양다리 및 꼬리.
+       - 카드 No.057 공식 영웅 배지 부착.
+       - 보행 시 좌우 다리 교차 스윙 및 꼬리 흔들림 보행 사이클 애니메이션.
+     - 3대 액션 전투 시스템:
+       - 1) BITE (76px 대형 물어뜯기): 전방 턱관절 물기 + 타격 시 붉은 파티클 & 화면 셰이크 + 햅틱 피드백.
+       - 2) TAIL SWIPE (64px 360도 꼬리치기): 360도 고속 회전으로 반경 4m 내 모든 적 넉백 및 기절.
+       - 3) ROAR (제왕의 포효): 분노 100% 충전 시 발동, 거대한 황금 충격파 링 팽창 및 맵 전체 적 3.5초간 공포 마비.
+     - 사냥 및 적대 AI 시스템:
+       - 초식공룡 갈리미무스 5마리: T-Rex 접근 시 공포에 질려 도망치는 회피 AI 탑재, 사냥 성공 시 고기(Meat) 아이템 드롭 및 체력/점수 회복.
+       - 라이벌 랩터 3마리: T-Rex를 발견하면 무리지어 맹렬히 추격하여 발톱으로 기습하는 적대 공격 AI 탑재.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 좌측 360도 다이나믹 플로팅 조이스틱(Screen-relative 완벽 준수).
+       - 우측 3대 액션 버튼군(BITE/TAIL/ROAR).
+       - MinimalistMissionHUD (체력바, 분노 게이지, 사냥 카운트, 중도 포기 시 비례 SNS 안전 정산).
+       - 1,000점 달성 시 "쥐라기 제왕 등극" 및 VictoryRewardModal 연동 완료.
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 실행 결과 110/110 전체 SSR 안전 렌더링 무결점 통과.
+  4. **문서 및 형상 관리**:
+     - `POKI_REMASTER_STATUS.json` (57/110 완료, current_game_index: 58) 갱신.
+     - `WORK_LOGS.md` 갱신, Git 커밋/푸시 및 구글 폼 보고 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 57/110] No.057 Dino Simulator Three.js 3D 선사시대 공룡 시뮬레이션 전면 고도화`)
+
+---
+
 ## [2026-09-08 00:48 KST] [Poki 110선 리마스터 56/110] No.056 Soccer Skills 2 World Cup Three.js 3D 축구 토너먼트 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/soccer-skills-2-world-cup`) 분석 및 프롬프트(`src/components/poki/prompts/No056_SoccerSkillsWorldCup_Prompt.md`) 작성.
