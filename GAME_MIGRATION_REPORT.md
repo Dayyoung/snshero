@@ -8,7 +8,7 @@
   3. **일관된 보상 체계**: `standardizedRewardGateway.ts` 경유 20~50 SNS 포인트 공정 지급 및 `VictoryRewardModal`
   4. **일관된 그래픽 엔진**: HTML5 Canvas 2D 60fps 부드러운 애니메이션 및 파티클
   5. **SNSHero 캐릭터 연동**: `drawCardSprite` 기반 `cards1.png`, `cards2.png` 영웅/몬스터 스프라이트 100% 적용
-- **전체 진행 현황**: **40 / 110 완료 (36.4%)**
+- **전체 진행 현황**: **50 / 110 완료 (45.5%)**
 
 ---
 
@@ -56,16 +56,16 @@
 | No.038 | **[Count War](https://poki.com/kr/g/count-war)** | 스킬 게임, 슈팅 게임 | 카드 No.38 군단 지휘관 | 좌우 수평 드래그 배수 게이트 통과 | 20~50 SNS | ✅ 완료 (Canvas 2D, 군단 증식 게이트 통과 & 보스 돌파) |
 | No.039 | **[Party Time](https://poki.com/kr/g/party-time)** | 액션 게임, 플랫폼 게임 | 카드 No.39 파티 마스코트 | 원터치 탭 타이밍 점프 | 20~50 SNS | ✅ 완료 (Canvas 2D, 회전 장애물 봉 회피 25회 파티 생존) |
 | No.040 | **[Punchy Guy](https://poki.com/kr/g/punchy-guy)** | 액션 게임, 마우스 게임 | 카드 No.40 펀치 복서 | 좌우 화면 탭 펀치 & 가드/회피 | 20~50 SNS | ✅ 완료 (Canvas 2D, 타이밍 카운터 펀치 3명 KO 챔피언) |
-| No.041 | **[Blacktop Police Chase](https://poki.com/kr/g/blacktop-police-chase)** | 레이싱 게임, 멀티플레이어 게임 | 카드 No.41 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.042 | **[Family Life Simulator](https://poki.com/kr/g/family-life-simulator)** | 어드벤쳐 게임 | 카드 No.42 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.043 | **[Petnest.io](https://poki.com/kr/g/petnest-io)** | 동물 게임, 멀티플레이어 게임 | 카드 No.43 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.044 | **[Cuboy Adventure](https://poki.com/kr/g/cuboy-adventure)** | 스킬 게임, 플랫폼 게임 | 카드 No.44 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.045 | **[Bubble Storm](https://poki.com/kr/g/bubble-storm)** | 스킬 게임, 퍼즐 게임 | 카드 No.45 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.046 | **[Kick The Buddy](https://poki.com/kr/g/kick-the-buddy)** | 랙돌 게임 | 카드 No.46 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.047 | **[Count Control Legends](https://poki.com/kr/g/count-control-legends)** | 두뇌 게임, 스킬 게임 | 카드 No.47 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.048 | **[Repuls.io](https://poki.com/kr/g/repuls-io)** | 액션 게임, 멀티플레이어 게임 | 카드 No.48 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.049 | **[Shenzhen Mahjong](https://poki.com/kr/g/shenzhen-mahjong)** | 두뇌 게임, 마작 게임 | 카드 No.49 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.050 | **[Beauty Salon](https://poki.com/kr/g/beauty-salon)** | 옷입히기 게임, 뷰티 게임 | 카드 No.50 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
+| No.041 | **[Blacktop Police Chase](https://poki.com/kr/g/blacktop-police-chase)** | 레이싱 게임, 멀티플레이어 게임 | 카드 No.41 강도 드라이버 | 화면 좌/우 터치 조타 & 롱터치 니트로 | 20~50 SNS | ✅ 완료 (Canvas 2D, 경찰차 추격 회피 & 탈옥범 $1,000 이송) |
+| No.042 | **[Family Life Simulator](https://poki.com/kr/g/family-life-simulator)** | 어드벤쳐 게임 | 카드 No.42 가족 가장 | [A] / [B] 선택지 탭 & 라이프 분기 | 20~50 SNS | ✅ 완료 (Canvas 2D, 10대 인생 마일스톤 가족 화목도 300pt) |
+| No.043 | **[Petnest.io](https://poki.com/kr/g/petnest-io)** | 동물 게임, 멀티플레이어 게임 | 카드 No.43 동물 구조대원 | 원터치 드래그 이동 & 보금자리 유도 | 20~50 SNS | ✅ 완료 (Canvas 2D, 강아지/고양이/토끼 구조 & 1,000pt 힐링) |
+| No.044 | **[Cuboy Adventure](https://poki.com/kr/g/cuboy-adventure)** | 스킬 게임, 플랫폼 게임 | 카드 No.44 큐브 모험가 | 화면 상단 탭 2단점프 & 하단 좌우 이동 | 20~50 SNS | ✅ 완료 (Canvas 2D, 가시/무빙 플랫폼 돌파 & 별 3개 포털) |
+| No.045 | **[Bubble Storm](https://poki.com/kr/g/bubble-storm)** | 스킬 게임, 퍼즐 게임 | 카드 No.45 버블 캐논포 | 드래그 조준선 정렬 & 손 떼기 발사 | 20~50 SNS | ✅ 완료 (Canvas 2D, 3매칭 연쇄 폭파 & 30버블 클리어) |
+| No.046 | **[Kick The Buddy](https://poki.com/kr/g/kick-the-buddy)** | 랙돌 게임 | 카드 No.46 래그돌 버디 | 화면 터치 타격 & 하단 4종 도구 선택 | 20~50 SNS | ✅ 완료 (Canvas 2D, 펀치/다트/폭탄/전기 1,500pt 스트레스 해소) |
+| No.047 | **[Count Control Legends](https://poki.com/kr/g/count-control-legends)** | 두뇌 게임, 스킬 게임 | 카드 No.47 군단 지휘관 | 좌우 수평 드래그 증식 게이트 조타 | 20~50 SNS | ✅ 완료 (Canvas 2D, 배수 관문 군단 증식 & 50명 성 함락) |
+| No.048 | **[Repuls.io](https://poki.com/kr/g/repuls-io)** | 액션 게임, 멀티플레이어 게임 | 카드 No.48 사이버 워리어 | 터치/드래그 이동 & 자동 조준 플라즈마 사격 | 20~50 SNS | ✅ 완료 (Canvas 2D, SF 아레나 사이버 드론 10킬 제압) |
+| No.049 | **[Shenzhen Mahjong](https://poki.com/kr/g/shenzhen-mahjong)** | 두뇌 게임, 마작 게임 | 카드 No.49 마작 도사 | 패 탭 선택 & 짝맞추기 매칭 | 20~50 SNS | ✅ 완료 (Canvas 2D, 24개 패 12쌍 매칭 보드 클리어) |
+| No.050 | **[Beauty Salon](https://poki.com/kr/g/beauty-salon)** | 옷입히기 게임, 뷰티 게임 | 카드 No.50 뷰티 스타일리스트 | 스펀지 드래그 세안 & 뷰티 도구 탭 | 20~50 SNS | ✅ 완료 (Canvas 2D, 클렌징/헤어/메이크업/드레스업 4단계) |
 | No.051 | **[Super Dress](https://poki.com/kr/g/super-dress)** | 옷입히기 게임, 패션 게임 | 카드 No.51 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
 | No.052 | **[Karate Fighter](https://poki.com/kr/g/karate-fighter)** | 액션 게임, 스킬 게임 | 카드 No.52 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
 | No.053 | **[Planet Destruction](https://poki.com/kr/g/planet-destruction)** | 마우스 게임, 시뮬레이션 게임 | 카드 No.53 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
@@ -309,6 +309,52 @@
     - 링 위에서 상대 복서의 공격 패턴과 텔레그래프 모션을 읽고 타이밍에 맞춰 카운터 펀치와 위빙 가드를 날리는 타격 액션.
     - 플레이어: 카드 No.40 펀치 복서 스프라이트 (`cards1.png`).
     - 좌/우 탭 스트레이트 & 훅 타격, 중앙 탭 가드/회피, 3명의 복싱 챔피언 연속 KO 승리 연동 완료.
+
+---
+
+## Phase 4-A 상세 작업 내역 (No.041 ~ No.050)
+
+41. **No.041 Blacktop Police Chase (`PokiBlacktopPoliceGame.tsx`)**:
+    - 도로 위를 순찰하며 플레이어 차량을 들이받는 경찰차들을 따돌리고, 탈옥범 승객을 태워 그린 세이프존 은신처로 안전하게 이송하는 드라이빙 탈출 액션.
+    - 플레이어/차량: 카드 No.41 강도 드라이버 스프라이트 (`cards1.png`).
+    - 좌/우 터치 레인 조타, 화면 터치 유지 니트로 부스터 가속, 충돌 파티클 및 $1,000 은신처 이송 승리 연동 완료.
+42. **No.042 Family Life Simulator (`PokiFamilyLifeGame.tsx`)**:
+    - 청년기 보금자리 장만부터 황혼의 은혼식까지, 10대 인생 주요 마일스톤에서 [A]/[B] 선택지를 골라 가족의 행복, 자산, 화목도를 가꾸는 인생 시뮬레이터.
+    - 플레이어: 카드 No.42 가족 가장 스프라이트 (`cards1.png`).
+    - 선택지 카드 원터치 탭 조작, 실시간 3대 지표 게이지 반영, 10단계 마일스톤 완료 및 화목도 300pt 달성 승리 연동 완료.
+43. **No.043 Petnest.io (`PokiPetnestGame.tsx`)**:
+    - 평화로운 공원을 돌아다니는 유기견 🐶, 아기 고양이 🐱, 토끼 🐰를 구조하여 뒤를 따르게 하고, 하단의 따뜻한 보금자리 둥지로 안전하게 인도하는 동물 힐링 타이쿤.
+    - 플레이어: 카드 No.43 동물 구조대원 스프라이트 (`cards1.png`).
+    - 원터치 터치/드래그 이동 조작, 하트 파티클 및 1,000pt 러브 포인트 수집 보호소 확장 승리 연동 완료.
+44. **No.044 Cuboy Adventure (`PokiCuboyAdventureGame.tsx`)**:
+    - 가시 트랩, 공중 무빙 플랫폼, 점프대를 돌파하며 스테이지 곳곳에 숨겨진 황금 별(⭐) 3개를 모아 골 포털로 탈출하는 큐브 플랫포머.
+    - 플레이어: 카드 No.44 큐브 모험가 스프라이트 (`cards1.png`).
+    - 화면 상단 탭 2단 점프 & 하단 좌우 이동 제어, 별 3개 수집 및 포털 골인 승리 연동 완료.
+45. **No.045 Bubble Storm (`PokiBubbleStormGame.tsx`)**:
+    - 하단 캐논에서 조준선을 조절하여 같은 색상의 버블을 3개 이상 맞춰 연쇄 폭파시키는 클래식 아케이드 버블 슈터.
+    - 플레이어: 카드 No.45 버블 캐논포 영웅 스프라이트 (`cards1.png`).
+    - 터치 드래그 레이저 궤적 조준 & 손 떼기 발사, 3매칭 연쇄 폭파 및 30개 버블 격추 승리 연동 완료.
+46. **No.046 Kick The Buddy (`PokiKickTheBuddyGame.tsx`)**:
+    - 천장에 매달린 래그돌 버디 인형에게 펀치 글러브, 다트, 다이너마이트 폭탄, 전기 충격을 가하며 스트레스를 해소하는 인터랙티브 물리 샌드박스.
+    - 플레이어/버디: 카드 No.46 래그돌 버디 스프라이트 (`cards1.png`).
+    - 화면 터치 타격, 하단 4종 물리 도구 핫키 전환, 코인 파티클 및 1,500점 달성 승리 연동 완료.
+47. **No.047 Count Control Legends (`PokiCountControlGame.tsx`)**:
+    - 스틱맨 분대를 이끌고 도로 위를 질주하며 배수 게이트(+15, x2, x3 등)를 통과해 대군단을 편성하고 전방의 붉은 요새를 돌파하는 군단 제어 러너.
+    - 플레이어: 카드 No.47 군단 지휘관 스프라이트 (`cards1.png`).
+    - 좌우 수평 드래그 조타, 회전 톱날 장애물 회피, 50명 이상의 군단으로 최종 성채 함락 승리 연동 완료.
+48. **No.048 Repuls.io (`PokiRepulsGame.tsx`)**:
+    - 사이버네틱 미래 전장에서 사이버 워리어가 플라즈마 소총을 발사하여 공중 순찰 드론과 적 사이버 전투원을 제압하는 탑다운 SF 슈팅 io.
+    - 플레이어: 카드 No.48 사이버 워리어 스프라이트 (`cards1.png`).
+    - 터치/드래그 이동 & 자동 조준 플라즈마 사격, 에너지 실드 재생, 적 10킬 프래그 달성 승리 연동 완료.
+49. **No.049 Shenzhen Mahjong (`PokiShenzhenMahjongGame.tsx`)**:
+    - 녹색 모직 매트 위에 배치된 24개의 고급 마작패(홍중, 발재, 백판, 대나무, 금전 등) 중 동일한 패를 2개씩 짝지어 제거하는 전통 선전 마작 솔리테어.
+    - 플레이어: 카드 No.49 마작 도사 스프라이트 (`cards1.png`).
+    - 패 원터치 탭 선택 및 짝맞추기 판정, 대나무 스파크 파티클, 12쌍 전수 클리어 승리 연동 완료.
+50. **No.050 Beauty Salon (`PokiBeautySalonGame.tsx`)**:
+    - 스펀지로 얼굴의 오염을 씻어내는 클렌징부터 헤어스타일/컬러 선택, 립스틱/블러셔 메이크업, 오트쿠튀르 갈라 드레스업까지 4단계를 거쳐 완벽한 런웨이 스타로 변신시키는 뷰티 메이크오버.
+    - 플레이어: 카드 No.50 뷰티 스타일리스트 스프라이트 (`cards1.png`).
+    - 스펀지 드래그 클렌징 제스처 & 뷰티 팔레트 원터치 탭, 컨페티 축하 파티클 및 런웨이 데뷔 승리 연동 완료.
+
 
 
 
