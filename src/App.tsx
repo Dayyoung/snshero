@@ -6288,8 +6288,8 @@ function AppContent() {
           )}
 
           <div className={cn(
-            "flex-1 flex flex-col",
-            view === 'play' ? "h-full overflow-hidden" : "overflow-x-hidden",
+            "flex-1 flex flex-col min-h-0",
+            view === 'play' ? "h-full overflow-y-auto overscroll-contain touch-pan-y" : "overflow-x-hidden",
             (view !== 'play' && view !== 'home') && "pt-4",
             (showNavbar && view !== 'play') ? "pb-20" : "pb-0"
           )}>
@@ -6300,7 +6300,7 @@ function AppContent() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.1 }}
-                className="flex-1 flex flex-col"
+                className="flex-1 flex flex-col min-h-0 h-full"
               >
                 <Suspense
                   fallback={

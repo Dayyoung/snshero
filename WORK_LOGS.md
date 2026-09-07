@@ -4,6 +4,39 @@
 
 ---
 
+## [2026-09-07 11:42 KST] [카드 전투 화면 상하 터치 스크롤 복구 및 상단/하단 패딩 반응형 최적화 완료]
+- **요청 사항**:
+  - 카드 전투 화면에서 모바일/작은 화면 시 상하 스크롤이 동작하지 않아 상대방 손패나 내 손패 등 카드가 다 표시되지 않고 잘리는 현상 완벽 해결 요청.
+- **원인 분석**:
+  1. `src/App.tsx` (라인 6292):
+     - `view === 'play' ? "h-full overflow-hidden" : "overflow-x-hidden"`로 인해 `play` 뷰 진입 시 부모 컨테이너가 `overflow-hidden`으로 잠겨 있고 Flex 자식 높이 계산을 위한 `min-h-0`이 누락되어 자식 컴포넌트의 스크롤 제스처 이벤트가 차단됨.
+     - `motion.div`에도 `min-h-0 h-full`이 누락되어 Flex 높이 상속 체인이 끊김.
+  2. `src/views/PlayGameView.tsx` (라인 14088):
+     - 메인 배틀 보드 `<div id="game-board">`에 `min-h-full`이 지정되어 Flex 자식의 축소 및 스크롤 영역 계산을 방해함 (`min-h-0` 필요).
+     - 모바일 터치 제스처(`overscroll-contain touch-pan-y`)가 지정되지 않아 모바일 브라우저의 스크롤 인식이 불안정했음.
+     - 상단 패딩이 `pt-11` (44px)로 고정되어 있어, 상단 배너(54px) + 상단 컨트롤 바(32px, `top-[60px]`) 뒤로 상대방 손패 카드(Opponent Hand) 상단이 파묻혀 가려짐.
+     - 하단 패딩이 `pb-4` (16px)로 너무 짧아, 모바일 하단 브라우저 UI/홈 바로 인해 내 손패(Player Hand) 카드 5장과 라운드 진행도 점들이 하단에 붙어 잘림.
+  3. `src/views/KadanRpgView.tsx` (라인 458):
+     - 배틀 모달 컨테이너에 `overflow-hidden`이 걸려 있고 `min-h-0`이 없어 RPG 배틀 시에도 스크롤 차단 발생.
+- **조치 사항**:
+  - `src/App.tsx`:
+    - 라인 6290: `flex-1 flex flex-col min-h-0` 및 `view === 'play' ? "h-full overflow-y-auto overscroll-contain touch-pan-y" : "overflow-x-hidden"`로 전환하여 터치 스크롤을 전면 개방.
+    - 라인 6297 `motion.div`: `className="flex-1 flex flex-col min-h-0 h-full"` 적용.
+  - `src/views/PlayGameView.tsx`:
+    - `id="game-board"`: `min-h-0 overflow-y-auto overscroll-contain touch-pan-y` 적용.
+    - 상단 패딩 반응형 확장: `!isAdRemoved ? "pt-[96px] sm:pt-[136px] lg:pt-12" : "pt-12 sm:pt-14"` (상단 배너 및 상단 컨트롤 바 뒤에 카드가 가려지지 않도록 충분한 간격 확보).
+    - 하단 패딩 확장: `pb-16 sm:pb-8` (내 손패 5장과 라운드 인디케이터가 모바일 화면 하단에서 잘림 없이 100% 온전히 보이고 터치되도록 여백 보장).
+  - `src/views/KadanRpgView.tsx`:
+    - 배틀 모달 아레나 컨테이너를 `min-h-0 overflow-y-auto overscroll-contain touch-pan-y`로 전환.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 완벽 통과.
+  - `npm run build`: 프로덕션 빌드 성공 (built in 10.04s).
+- **Git 배포 및 보고**:
+  - 커밋 및 GitHub 원격 리포지토리(`origin/main`) 푸시.
+  - 구글 폼 보고서 제출.
+
+---
+
 ## [2026-09-07 11:35 KST] [모바일 상단 배너 슬림 높이 제한(h-[54px] max-h-[58px]) 및 오버플로우 방어 적용]
 - **요청 사항**:
   - 모바일에서 상단 광고 배너가 너무 비대하게(250px 이상) 세로로 길게 표시되어 하단 게임 콘텐츠를 가리고 밀어내는 문제 해결.
