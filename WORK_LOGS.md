@@ -4,6 +4,33 @@
 
 ---
 
+## [2026-09-08 02:27 KST] [Poki 110선 리마스터 106/110] No.106 Stickman Climb 3D Three.js 3D 항아리 곡괭이 지렛대 파쿠르 클라이밍 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/stickman-climb-3d`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No106_StickmanClimb3D_Prompt.md`) 작성.
+  - Three.js 3D 기반 설산 암벽 렛지 오비 코스 (고도 0m ~ 55m, 시작 지점 16m 광폭 안전 발판 안착 절대 원칙 준수).
+  - 정상 55m 서밋 골든 플랫폼 및 No.106 공식 카드 영웅 배지 모놀리스 타워.
+  - 3D 항아리 탑승 스틱맨 피규어 (메탈 팟 바디, 블랙 스틱맨 상체, No.106 배지 데칼, 360도 회전 3D 강철 곡괭이).
+  - 곡괭이 날과 발판 접촉 지렛대 반동(Leverage Vault) 점프 물리 및 타격 스파크 파티클.
+  - 모바일 퓨어 터치 조작계(화면 터치 각도 조향 + 76px VAULT JUMP 대형 버튼 + 64px REVERT 체크포인트 복귀 + 햅틱), MinimalistMissionHUD 안전 정산.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 최고 인기 항아리 클라이밍 스킬 게임 Stickman Climb 3D. Getting Over It 식의 지렛대 물리학을 활용해 곡괭이를 암벽 발판에 걸치거나 밀어내며 아슬아슬한 산악 오비를 정복해 나가는 도전형 파쿠르 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiStickmanClimb3DGame.tsx`)**:
+     - 설산 암벽 파노라마 및 9단계 3D 암벽 렛지 배치 (0m~55m, 16m 광폭 스타트 베이스 보장).
+     - 정상 55m 서밋 타워 및 No.106 공식 카드 영웅 배지 모놀리스.
+     - 3D 항아리 스틱맨 피규어: 메탈 실린더 팟, 스틱맨 바디/헤드, 가슴 No.106 배지, 2.2m 나무 자루 곡괭이 및 스틸 블레이드.
+     - 3D 지렛대 도약 물리: 곡괭이 팁과 암벽 발판의 거리 및 방향 벡터를 계산하여 지렛대 반동 반작용 충격력(`vy += 15.5`) 부여, 암벽 마찰 스파크 파티클 분출.
+     - 부드러운 플레이어 추적 카메라 시스템.
+     - 고도 55m 이상 도달 시 정상 정복 승리.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 76px [⛏️ VAULT!] 대형 도약 버튼 + 64px [🔄 REVERT] 최근 안전 발판 복귀 버튼 + [🚀 POWER] 슈퍼 점프 + 햅틱 피드백.
+       - MinimalistMissionHUD (현재 고도 m, 점수, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (106/110 완료, current_game_index: 107) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출 완료.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 106/110] No.106 Stickman Climb 3D Three.js 3D 항아리 곡괭이 지렛대 파쿠르 클라이밍 전면 고도화`)
+
 ## [2026-09-08 02:27 KST] [Poki 110선 리마스터 105/110] No.105 Blumgi Merge Three.js 3D 동물 크리처 합체 진화 & 보스 레이드 배틀 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/blumgi-merge`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No105_BlumgiMerge_Prompt.md`) 작성.

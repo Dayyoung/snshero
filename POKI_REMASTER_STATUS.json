@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 106,
-  "completed_count": 105,
-  "last_updated": "2026-09-08T02:27:00+09:00",
+  "current_game_index": 107,
+  "completed_count": 106,
+  "last_updated": "2026-09-08T02:27:30+09:00",
   "history": [
     {
       "id": 1,
@@ -1160,6 +1160,17 @@
       "component": "src/components/poki/PokiBlumgiMergeGame.tsx",
       "completed_at": "2026-09-08T02:27:00+09:00",
       "details": "Three.js 기반 3D 동물 크리처 합체 진화 & 보스 레이드 배틀 구현, 3x3 원형 플랫폼 그리드, 3D 거대 스톤 보스 골렘(붉은 안광/플로팅 주먹/HP 게이지 바) 및 상단 No.105 공식 카드 영웅 배지 홀로그램 깃발, 5단계 3D 크리처 모델링(치킨/펭귄/부엉이/피닉스/드래곤), 레이캐스팅 기반 3D 터치 드래그 머지 진화 물리, 76px ALL OUT ATTACK 일제 포물선 돌진 맹공 대형 버튼 + 64px SPAWN 소환 버튼 + 햅틱, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 106,
+      "name": "Stickman Climb 3D",
+      "poki_url": "https://poki.com/kr/g/stickman-climb-3d",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No106_StickmanClimb3D_Prompt.md",
+      "component": "src/components/poki/PokiStickmanClimb3DGame.tsx",
+      "completed_at": "2026-09-08T02:27:30+09:00",
+      "details": "Three.js 기반 3D 항아리 곡괭이 파쿠르 클라이밍 구현, 설산 암벽 렛지 오비 코스(0m~55m, 16m 시작 광폭 안전 발판 준수), 3D 항아리 탑승 스틱맨 피규어(메탈 팟/상체/No.106 공식 카드 영웅 배지 데칼) 및 긴 3D 강철 곡괭이 지렛대 물리, 정상 55m 서밋 타워 및 승리 깃발, 암벽 타격 스파크 파티클 분출, 76px VAULT JUMP 대형 지렛대 도약 버튼 + 64px REVERT 체크포인트 복귀 + 햅틱, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
