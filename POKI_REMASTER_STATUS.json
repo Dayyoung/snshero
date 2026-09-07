@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 108,
-  "completed_count": 107,
-  "last_updated": "2026-09-08T02:28:30+09:00",
+  "current_game_index": 109,
+  "completed_count": 108,
+  "last_updated": "2026-09-08T02:29:30+09:00",
   "history": [
     {
       "id": 1,
@@ -1182,6 +1182,17 @@
       "component": "src/components/poki/PokiBrainTestSpecialGame.tsx",
       "completed_at": "2026-09-08T02:28:30+09:00",
       "details": "Three.js 기반 3D 창의적 스페셜 두뇌 퍼즐 & 수수께끼 구현, 상단 No.107 공식 카드 영웅 배지 홀로그램 프레임, 3대 스페셜 트릭 수수께끼(Stage 1: 안개 속 먹구름 드래그 치우기 및 제트 비행기 안전 착륙, Stage 2: UFO 투명 돔 위로 들어올려 숨은 3D 외계인 발견, Stage 3: 황금 금고 비밀번호 다이얼 회전 및 금화 보물 개봉), 레이캐스팅 기반 3D 터치 드래그 인터랙션, 76px HINT 대형 버튼 + 64px RETRY/HELP + 햅틱, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 108,
+      "name": "11-11",
+      "poki_url": "https://poki.com/kr/g/11-11",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No108_ElevenEleven_Prompt.md",
+      "component": "src/components/poki/PokiElevenElevenGame.tsx",
+      "completed_at": "2026-09-08T02:29:30+09:00",
+      "details": "Three.js 기반 3D 11x11 블록 매트릭스 라인 클리어 퍼즐 구현, 11x11 입체 3D 슬롯 타일 보드(총 121개 셀) 및 상단 No.108 공식 카드 영웅 배지 전광판, 5종 다채로운 3D 네온 테트로미노 블록(1x1/2x2/3x1/1x3/L자), 가로/세로 11칸 라인 완성 폭발 분쇄 파티클 물리, 76px PLACE BLOCK 대형 원클릭 퀵배치 버튼 + 64px REROLL 블록 리롤 + 햅틱, 목표 600점 달성 승리, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
