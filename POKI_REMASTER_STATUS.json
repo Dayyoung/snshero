@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 95,
-  "completed_count": 94,
-  "last_updated": "2026-09-08T02:05:00+09:00",
+  "current_game_index": 96,
+  "completed_count": 95,
+  "last_updated": "2026-09-08T02:07:00+09:00",
   "history": [
     {
       "id": 1,
@@ -1039,6 +1039,17 @@
       "component": "src/components/poki/PokiPhoneCaseDIYGame.tsx",
       "completed_at": "2026-09-08T02:05:00+09:00",
       "details": "Three.js 기반 3D 스마트폰 케이스 커스텀 공방 & 아크릴 페인팅 시뮬레이션 구현, 3D 스마트폰 모델링(메탈릭 섀시/글래스 스크린/트리플 카메라 범프 섬/스튜디오 턴테이블 작업대/No.094 공식 영웅 배지 홀로그램 펜던트), 4단계 DIY 프로세스(거품 세척/아크릴 스프레이 그라데이션 도색/열풍 건조 및 광택 레진 코팅/3D 하트·스타·썬더·다이아몬드 참 부착), 모바일 퓨어 터치 조작계(3D 표면 레이캐스팅 직접 터치 + 빈 화면 360도 궤도 회전 + 76px 단계별 원터치 대형 액션 버튼 + 5종 컬러/참 팔레트 바 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 95,
+      "name": "Soccer League",
+      "poki_url": "https://poki.com/kr/g/soccer-league",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No095_SoccerLeague_Prompt.md",
+      "component": "src/components/poki/PokiSoccerLeagueGame.tsx",
+      "completed_at": "2026-09-08T02:07:00+09:00",
+      "details": "Three.js 기반 3D 3v3 아케이드 풋살 챔피언십 경기 구현, 20m x 32m 잔디 스트라이프 피치 필드(화이트 라인 마킹/메탈 골대 2기 및 컬러 그물망/경기장 조명 타워 4기/대형 LED 전광판 No.095 공식 영웅 배지 엠블럼), 3v3 선수 피규어(블루 팀 플레이어 스트라이커 유니폼 No.095 영웅 배지 데칼/윙어 AI/골키퍼 AI vs 레드 팀 3인 AI), 3D 축구공 물리(구름 회전/벽면 반발력/드리블 밀림), 골인 판정 및 폭죽 세레모니, 3골 선제 득점 승리, 모바일 퓨어 터치 조작계(360도 플로팅 가상 조이스틱 드리블 + 76px POWER SHOOT 대형 슛 버튼 + 64px PASS/TACKLE + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

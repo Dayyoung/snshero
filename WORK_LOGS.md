@@ -4,6 +4,39 @@
 
 ---
 
+## [2026-09-08 02:07 KST] [Poki 110선 리마스터 95/110] No.095 Soccer League Three.js 3D 3v3 아케이드 풋살 챔피언십 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/soccer-league`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No095_SoccerLeague_Prompt.md`) 작성.
+  - Three.js 3D 기반 20m x 32m 잔디 스트라이프 피치 필드(화이트 라인 마킹/메탈 골대 2기 및 컬러 그물망/조명 타워 4기/대형 LED 전광판 No.095 공식 영웅 배지 엠블럼).
+  - 3v3 선수 피규어(블루 팀 플레이어 스트라이커 유니폼 No.095 영웅 배지 데칼/윙어 AI/골키퍼 AI vs 레드 팀 3인 AI).
+  - 3D 축구공 물리(구름 회전/벽면 반발력/드리블 밀림), 골인 판정 및 폭죽 세레모니, 3골 선제 득점 승리.
+  - 모바일 퓨어 터치 조작계(360도 플로팅 가상 조이스틱 드리블 + 76px POWER SHOOT 대형 슛 버튼 + 64px PASS/TACKLE + 햅틱), MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 축구 아케이드 스포츠 인기작 Soccer League. 경기장에서 3대3으로 펼쳐지는 박진감 넘치는 풋살 매치로, 상대 수비를 제치고 날카로운 패스 연계와 강력한 캐논 슛으로 3골을 먼저 득점하여 우승 트로피를 차지하는 3D 액션 축구 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiSoccerLeagueGame.tsx`)**:
+     - 20m x 32m 잔디 피치 필드 (체커보드 그린 스트라이프, 센터 서클, 페널티 라인, 화이트 마킹 텍스처).
+     - 양쪽 엔드라인 메탈 골대 2기 (메탈 골포스트, 크로스바, 팀 컬러 와이어프레임 그물망).
+     - 4기 스포트라이트 조명 타워 & 경기장 LED 전광판 (No.095 공식 카드 영웅 배지 엠블럼 각인).
+     - 3v3 팀 모델링:
+       - 블루 팀: 플레이어 스트라이커 (블루 유니폼, 유니폼 전면 No.095 영웅 배지 데칼, 발 아래 황금 링 인디케이터), 서포트 윙어 AI, 수문장 골키퍼 AI.
+       - 레드 팀: AI 포워드, 미드필더, 골키퍼 3인.
+     - 3D 축구공 물리 및 골 판정:
+       - 지름 0.52m 축구공 구름 회전, 드리블 가속, 바운스, 사이드라인 반발 물리.
+       - 공이 레드 골문 라인을 통과하면 [⚽ BLUE GOAL!!] 세레모니 및 화려한 골드/블루 불꽃 파티클 분출.
+       - 선제 3골(TARGET_GOALS = 3) 달성 시 승리 트로피 세레모니.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 좌측 터치 지점 360° 다이나믹 플로팅 가상 조이스틱 드리블 (Screen-relative 완벽 일치).
+       - 76px [⚽ POWER SHOOT] 대형 캐논 슈팅 버튼 + 64px [🎯 PASS/TACKLE] 패스/슬라이딩 태클 버튼 + 햅틱 피드백.
+       - MinimalistMissionHUD (실시간 스코어보드 BLUE vs RED, 경기 시간, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (95/110 완료, current_game_index: 96) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 95/110] No.095 Soccer League Three.js 3D 3v3 아케이드 풋살 챔피언십 전면 고도화`)
+
 ## [2026-09-08 02:05 KST] [Poki 110선 리마스터 94/110] No.094 Phone CASE DIY Three.js 3D 스마트폰 케이스 커스텀 공방 & 아크릴 페인팅 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/phone-case-diy`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No094_PhoneCaseDIY_Prompt.md`) 작성.
