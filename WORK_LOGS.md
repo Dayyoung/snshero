@@ -4,6 +4,40 @@
 
 ---
 
+## [2026-09-08 01:11 KST] [Poki 110선 리마스터 71/110] No.071 Scary Teacher Hide & Seek Games Three.js 3D 스텔스 잠입 & 숨바꼭질 탈출 어드벤처 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/scary-teacher-hide-seek-games`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No071_ScaryTeacherHideSeek_Prompt.md`) 작성.
+  - Three.js 3D 기반 28x28m 대저택 실내 룸 및 남서쪽 안전 스폰 구역, 무서운 선생님 미스 티 & 전방 60도 7.5m 시야각 원뿔(Vision Cone 3D 스포트 메쉬) 순찰/추격 AI.
+  - 4개 은신처(우드 옷장/가죽 소파/식탁/책장) 완전 은폐 시스템, 3종 장난 아이템(거미/방귀쿠션/압정) 수집 및 북쪽 현관 대문 탈출 미션.
+  - 모바일 퓨어 터치 조작계(360도 다이나믹 플로팅 조이스틱 + 76px HIDE 숨기 토글 + 64px SNEAK 살금살금 + 햅틱) 및 MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 스텔스 어드벤처 인기작 Scary Teacher Hide & Seek Games. 미스 티의 저택에 잠입해 장난 아이템을 모으고, 옷장과 가구 밑에 몸을 숨기며 선생님의 시야각을 피해 탈출하는 3D 숨바꼭질 잠입 액션 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiScaryTeacherHideSeekGame.tsx`)**:
+     - 28x28m 대저택 구조(목재 마루 바닥, 외벽 및 내부 칸막이 벽, 북쪽 메인 현관 대문) 및 남서쪽 안전 스폰 구역.
+     - 무서운 선생님 미스 티(Miss T) AI:
+       - 보라색 드레스, 파마 머리, 손에 든 회초리.
+       - 전방 60도, 사거리 7.5m 붉은색 시야각 원뿔(Vision Cone) 실시간 투광 렌더링.
+       - 순찰(Patrol) 중 플레이어가 시야각 원뿔 내에 들어오면 즉시 [발각! SPOTTED!] 경보음과 함께 추격 모드 전환.
+       - 은신처에 숨어있을 때는 시야각에 닿아도 발각되지 않고 추격 해제.
+     - 4개 은신처 가구 오브젝트:
+       - 대형 우드 옷장(-8, 2), 가죽 소파(0, -2), 다이닝 식탁(8, 4), 서재 책장(-4, -8).
+       - 반경 내 접근 시 상단 안내 배너 노출 및 [HIDE 숨기] 버튼 활성화.
+     - 3종 장난 아이템 수집 & 탈출:
+       - 장난 거미(-6, -8), 방귀 쿠션(8, -6), 장난 압정(6, 8) 3개 수집 후 북쪽 대문으로 이동 시 탈출 성공!
+     - 100% 모바일 퓨어 터치 조작계:
+       - 360° 다이나믹 플로팅 가상 조이스틱 (Screen-relative 완벽 일치).
+       - 76px [숨기 HIDE / 나오기] 토글 메인 버튼.
+       - 64px [살금살금 SNEAK] 버튼 (이동속도 50%, 발각 반경 감소).
+       - MinimalistMissionHUD (아이템 수집 진행도, 은신/발각 상태, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (71/110 완료, current_game_index: 72) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 71/110] No.071 Scary Teacher Hide & Seek Games Three.js 3D 스텔스 잠입 & 숨바꼭질 탈출 어드벤처 전면 고도화`)
+
 ## [2026-09-08 01:09 KST] [Poki 110선 리마스터 70/110] No.070 Diva Hair Salon Three.js 3D 헤어 스타일링 & 뷰티 살롱 시뮬레이션 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/diva-hair-salon`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No070_DivaHairSalon_Prompt.md`) 작성.
