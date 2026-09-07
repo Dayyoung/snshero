@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 55,
-  "completed_count": 54,
-  "last_updated": "2026-09-08T00:44:00+09:00",
+  "current_game_index": 56,
+  "completed_count": 55,
+  "last_updated": "2026-09-08T00:46:00+09:00",
   "history": [
     {
       "id": 1,
@@ -599,6 +599,17 @@
       "component": "src/components/poki/PokiYouMonsterGame.tsx",
       "completed_at": "2026-09-08T00:44:00+09:00",
       "details": "Three.js 기반 3D 거대 괴수 도시 침공 람페이지 구현, 60x60m 대도시 메트로폴리스(도로망/16개 고층 스카이스크래퍼 빌딩/탱크 3기 & 헬기 2기 방위군), 거대 카이주 괴수 3D 아바타 & No.54 영웅 배지, 람페이지 스코어에 따른 3단계 거대화 성장(1.0x ➔ 1.5x ➔ 2.0x), 3대 파괴 액션(주먹 강타 SMASH/360도 꼬리치기 TAIL/초고열 관통 광선 ATOMIC BREATH), 빌딩 산산조각 붕괴 및 전차 스톰프 파괴 물리, 360도 플로팅 조이스틱(Screen-relative 완벽 준수) + 우측 대형 파괴 버튼군 + 햅틱, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 55,
+      "name": "SatisBox Mini Games",
+      "poki_url": "https://poki.com/kr/g/satisbox-mini-games",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No055_SatisBox_Prompt.md",
+      "component": "src/components/poki/PokiSatisBoxGame.tsx",
+      "completed_at": "2026-09-08T00:46:00+09:00",
+      "details": "Three.js 기반 3D ASMR 힐링 정리정돈 오거나이저 퍼즐 구현, 웜우드 데스크탑 & 오거나이저 트레이 박스, 3단계 테마 미니 스테이지(1단계 문구류 필통 박스 5종, 2단계 뷰티 코스메틱 트레이 5종, 3단계 벤토 정갈한 도시락 5종), Raycaster 3D 터치 드래그 앤 드롭 & 마그네틱 스냅(Snapping) 도킹 물리 & 황금빛 스파클 파티클, 3단계 총 15개 완벽 정리 피날레, 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
