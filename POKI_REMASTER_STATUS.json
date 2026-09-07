@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 37,
-  "completed_count": 36,
-  "last_updated": "2026-09-07T23:20:00+09:00",
+  "current_game_index": 38,
+  "completed_count": 37,
+  "last_updated": "2026-09-07T23:22:00+09:00",
   "history": [
     {
       "id": 1,
@@ -401,6 +401,17 @@
       "component": "src/components/poki/PokiTempleRun2Game.tsx",
       "completed_at": "2026-09-07T23:20:00+09:00",
       "details": "Three.js 기반 3D 3인칭 엔드리스 신전 유적 러너 구현, 3레인 고대 석조 회랑 & 무한 루핑 타일링 & 절벽 낭떠러지(시작 25m 안전 안착 돌다리), 3D 탐험가 러너(점프/슬라이딩 모션 & No.36 영웅 배지), 뒤따라오는 거대 데몬 몽키 추격 AI, 통나무 허들(점프 회피) & 불타는 석조 아치(슬라이딩 회피), 회전 황금 코인 행렬 & 스파크 파티클, 4방향 스와이프 + 하단 좌/우 레인 이동 + 80px 점프 + 64px 슬라이드 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 37,
+      "name": "Escape From School",
+      "poki_url": "https://poki.com/kr/g/escape-from-school",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No037_EscapeSchool_Prompt.md",
+      "component": "src/components/poki/PokiEscapeSchoolGame.tsx",
+      "completed_at": "2026-09-07T23:22:00+09:00",
+      "details": "Three.js 기반 3D 잠입 스텔스 학교 탈출 액션 구현, 32x22m 학교 복도 & 교실 & 책상 엄폐물 & 사물함 & 잠긴 교문(시작 빈 교실 안전 안착), 학생 플레이어(책가방 & No.37 영웅 배지), 2명 당직 교사 AI(순찰 경로 & 3D 반투명 시야각 Vision Cone & 발각 시 붉은 경보 추격), 황금 교문 열쇠 3개 수집 및 자물쇠 해제 탈출, 360도 플로팅 조이스틱 + 76px SNEAK 은신 + 64px SPRINT 질주 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

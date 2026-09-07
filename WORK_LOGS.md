@@ -4,6 +4,41 @@
 
 ---
 
+## [2026-09-07 23:22 KST] [Poki 110선 리마스터 37/110] No.037 Escape From School Three.js 3D 잠입 스텔스 학교 탈출 액션 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/escape-from-school`) 분석 및 프롬프트(`src/components/poki/prompts/No037_EscapeSchool_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 32x22m 학교 복도 & 교실 & 책상 엄폐물 & 사물함 & 잠긴 교문(시작 빈 교실 안전 안착), 학생 플레이어(책가방 & No.37 영웅 배지), 2명 당직 교사 AI(순찰 경로 & 3D 반투명 시야각 Vision Cone & 발각 시 붉은 경보 추격), 황금 교문 열쇠 3개 수집 및 자물쇠 해제 탈출, 360도 플로팅 조이스틱 + 76px SNEAK 은신 + 64px SPRINT 질주 모바일 퓨어 터치 조작계 전면 재개발.
+  - AGENTS.md 카메라 기준 조작 방향(좌우/상하) 100% 일치 절대 원칙 준수 (탑다운 쿼터뷰 기준 화면 조이스틱 방향과 학생 이동 벡터 1:1 일치).
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(360° 플로팅 조이스틱 + 76px SNEAK + 64px SPRINT + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 인기 잠입 스텔스 탈출 게임 Escape From School. 엄격한 당직 교사들의 시야를 피해 교실과 복도를 탐색하며 3개의 황금 열쇠를 찾아내고, 책상과 사물함 뒤에 은신하며 교문을 뚫고 탈출하는 서바이벌 잠입 액션 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiEscapeSchoolGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 탑다운 쿼터뷰 추종 카메라, 32x22m 학교 복도 & 교실 & 대리석 타일 & 벽면.
+     - 학생 플레이어 아바타:
+       - 파란 교복 슈트, 책가방, No.037 공식 영웅 카드 스프라이트 HUD 배지.
+       - 은신(SNEAK) 웅크리기 및 질주(SPRINT) 모션.
+     - 2명 당직 교사 AI (순찰 & 감시):
+       - 복도 및 교무실 왕복 순찰.
+       - 3D 반투명 원뿔 시야각(Vision Cone) 투사: 평상시 노란색 ➔ 플레이어 포착 시 붉은색 전환 및 호각 맹추격!
+       - 책상 뒤 엄폐 및 은신 걷기 시 시야 감지 거리 50% 축소.
+     - 황금 열쇠 3개 수집 & 교문 개방:
+       - 교실 A, 교실 B, 교무실에서 3D 회전 황금 열쇠 루팅.
+       - 3개 수집 완료 시 상단 철제 교문 빗장이 찰그랑 해제되며 탈출 가능!
+     - 100% 모바일 퓨어 터치 조작계:
+       - 좌측 360° 다이나믹 플로팅 가상 조이스틱.
+       - 우측 76px 대형 [🤫 SNEAK] 은신 걷기 & 64px [⚡ SPRINT] 질주 버튼.
+       - 열쇠 획득, 발각 경고, 탈출 시 다채로운 햅틱(`navigator.vibrate`) 피드백.
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 열쇠 획득 및 잠입 실적 비례 20~50 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No037_EscapeSchool_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 무결점 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 37개 완료 (No.038 Count War 대기).
+
+---
+
 ## [2026-09-07 23:20 KST] [Poki 110선 리마스터 36/110] No.036 Temple Run 2 Three.js 3D 3인칭 엔드리스 신전 유적 러너 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/temple-run-2`) 분석 및 프롬프트(`src/components/poki/prompts/No036_TempleRun2_Prompt.md`) 작성.
