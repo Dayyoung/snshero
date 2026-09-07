@@ -366,16 +366,20 @@ export const PokiMyHotelGame: React.FC<PokiMyHotelGameProps> = ({
 
   const tutorialSteps: TutorialStep[] = [
     {
+      badge: 'GOAL',
       title: isKo ? '마이 퍼펙트 호텔 (타이쿤)' : 'My Perfect Hotel',
       description: isKo
         ? '체크인 데스크로 다가가 손님에게 방을 배정하고, 손님이 나간 방을 청소하여 현금을 수집하세요!'
         : 'Walk to the reception desk to check in guests, then clean rooms and collect cash!',
+      keyPoints: isKo ? ['손님 체크인', '룸 청소 & 소독', '현금 수거'] : ['Check in guests', 'Clean rooms', 'Collect cash'],
     },
     {
+      badge: 'MANAGEMENT',
       title: isKo ? '객실 확장 & 호텔 경영' : 'Expand & Upgrade Rooms',
       description: isKo
         ? '수집한 현금으로 하단의 룸 확장 버튼을 눌러 새 객실을 오픈하고 스코어 1,000점을 달성하세요.'
         : 'Use your earned revenue to unlock new rooms and reach 1,000 points to win!',
+      keyPoints: isKo ? ['신규 객실 오픈', '수익 증대', '1,000점 달성'] : ['Unlock rooms', 'Boost revenue', 'Reach 1,000 pts'],
     }
   ];
 

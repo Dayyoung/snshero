@@ -8,7 +8,7 @@
   3. **일관된 보상 체계**: `standardizedRewardGateway.ts` 경유 20~50 SNS 포인트 공정 지급 및 `VictoryRewardModal`
   4. **일관된 그래픽 엔진**: HTML5 Canvas 2D 60fps 부드러운 애니메이션 및 파티클
   5. **SNSHero 캐릭터 연동**: `drawCardSprite` 기반 `cards1.png`, `cards2.png` 영웅/몬스터 스프라이트 100% 적용
-- **전체 진행 현황**: **10 / 110 완료 (9.1%)**
+- **전체 진행 현황**: **20 / 110 완료 (18.2%)**
 
 ---
 
@@ -26,16 +26,16 @@
 | No.008 | **Cryzen.io** | 액션/전술 슈팅 | 카드 No.08 프로스트 아처 | 원터치 타깃 조준 사격 & 재장전 | 20~50 SNS | ✅ 완료 (Canvas 2D, 엄폐 스나이퍼 헤드샷) |
 | No.009 | **Blocky Blast Puzzle** | 두뇌/블록 퍼즐 | 카드 No.09 블레이즈 버서커 | 원터치 블록 드래그 앤 드롭 | 20~50 SNS | ✅ 완료 (Canvas 2D, 8x8 라인 클리어 폭파 콤보) |
 | No.010 | **Ragdoll Chaos** | 액션/물리 샌드박스 | 카드 No.10 섀도우 네크로맨서 | 원터치 래그돌 잡기 & 슬링 날리기 | 20~50 SNS | ✅ 완료 (Canvas 2D, 범퍼/폭탄/포털 물리 바운스) |
-| No.011 | **[Rainbow Obby](https://poki.com/kr/g/rainbow-obby)** | 액션 게임, 어드벤쳐 게임 | 카드 No.11 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.012 | **[My Perfect Hotel](https://poki.com/kr/g/my-perfect-hotel)** | 장식 게임, 마우스 게임 | 카드 No.12 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.013 | **[Talking Tom Gold Run](https://poki.com/kr/g/talking-tom-gold-run)** | 어드벤쳐 게임, 스킬 게임 | 카드 No.13 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.014 | **[Monkey Tag IO](https://poki.com/kr/g/monkey-tag-io)** | 액션 게임, 동물 게임 | 카드 No.14 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.015 | **[Stickman Battle](https://poki.com/kr/g/stickman-battle)** | 액션 게임, 랙돌 게임 | 카드 No.15 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.016 | **[Decor Life](https://poki.com/kr/g/decor-life)** | 방치 게임, 아늑한 게임 | 카드 No.16 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.017 | **[Neon Challenge Legends](https://poki.com/kr/g/neon-challenge-legends)** | 스킬 게임, 마우스 게임 | 카드 No.17 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.018 | **[Plonky](https://poki.com/kr/g/plonky)** | 스킬 게임, 크리스마스 게임 | 카드 No.18 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.019 | **[Backrooms Recovery](https://poki.com/kr/g/backrooms-recovery)** | 액션 게임, 어드벤쳐 게임 | 카드 No.19 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.020 | **[Stickman Hook](https://poki.com/kr/g/stickman-hook)** | 레이싱 게임, 액션 게임 | 카드 No.20 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
+| No.011 | **[Rainbow Obby](https://poki.com/kr/g/rainbow-obby)** | 액션 게임, 어드벤쳐 게임 | 카드 No.11 성스러운 성기사 | 원터치 탭 점프 & 수평 드래그 | 20~50 SNS | ✅ 완료 (Canvas 2D, 무지개 고공 발판 점프 파쿠르) |
+| No.012 | **[My Perfect Hotel](https://poki.com/kr/g/my-perfect-hotel)** | 장식 게임, 마우스 게임 | 카드 No.12 홀리 프리스트 | 원터치 드래그 이동 & 객실 확장 탭 | 20~50 SNS | ✅ 완료 (Canvas 2D, 호텔 체크인/룸클리닝 타이쿤) |
+| No.013 | **[Talking Tom Gold Run](https://poki.com/kr/g/talking-tom-gold-run)** | 어드벤쳐 게임, 스킬 게임 | 카드 No.13 샤이닝 엔젤 | 좌우 스와이프 레인 이동 & 상향 점프 | 20~50 SNS | ✅ 완료 (Canvas 2D, 3레인 고속 금괴 추격 러너) |
+| No.014 | **[Monkey Tag IO](https://poki.com/kr/g/monkey-tag-io)** | 액션 게임, 동물 게임 | 카드 No.14 대지 골렘 | 원터치 터치 드래그 스윙 & 대시 | 20~50 SNS | ✅ 완료 (Canvas 2D, 정글 캐노피 술래잡기 태그 io) |
+| No.015 | **[Stickman Battle](https://poki.com/kr/g/stickman-battle)** | 액션 게임, 랙돌 게임 | 카드 No.15 블러드 나이트 | 터치 드래그 칼날 베기 & 래그돌 도약 | 20~50 SNS | ✅ 완료 (Canvas 2D, 래그돌 소드 파이팅 대결) |
+| No.016 | **[Decor Life](https://poki.com/kr/g/decor-life)** | 방치 게임, 아늑한 게임 | 카드 No.16 섀도우 닌자 | 탭 언박싱 & 드래그 가구 배치 | 20~50 SNS | ✅ 완료 (Canvas 2D, 감성 인테리어 룸 메이크오버) |
+| No.017 | **[Neon Challenge Legends](https://poki.com/kr/g/neon-challenge-legends)** | 스킬 게임, 마우스 게임 | 카드 No.17 플레임 소서러 | 원터치 탭 점프 & 콤보 대시 | 20~50 SNS | ✅ 완료 (Canvas 2D, 리듬 네온 플랫폼 연속 도약) |
+| No.018 | **[Plonky](https://poki.com/kr/g/plonky)** | 스킬 게임, 크리스마스 게임 | 카드 No.18 윈드 레인저 | 좌우 드래그 회전 링 틈새 통과 | 20~50 SNS | ✅ 완료 (Canvas 2D, 헬릭스 스타일 심층 낙하 드롭) |
+| No.019 | **[Backrooms Recovery](https://poki.com/kr/g/backrooms-recovery)** | 액션 게임, 어드벤쳐 게임 | 카드 No.19 어스 퀘이커 | 원터치 화면 탭/드래그 이동 & 손전등 | 20~50 SNS | ✅ 완료 (Canvas 2D, 옐로우 미로 3키카드 회수 탈출) |
+| No.020 | **[Stickman Hook](https://poki.com/kr/g/stickman-hook)** | 레이싱 게임, 액션 게임 | 카드 No.20 라이트닝 로드 | 롱탭 로프 그래플링 & 릴리즈 점프 | 20~50 SNS | ✅ 완료 (Canvas 2D, 물리 기반 진자 스윙 & 바운스 러너) |
 | No.021 | **[Steal a Brainrot](https://poki.com/kr/g/steal-a-brainrot)** | 어드벤쳐 게임, 멀티플레이어 게임 | 카드 No.21 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
 | No.022 | **[Longcat](https://poki.com/kr/g/longcat)** | 두뇌 게임, 스킬 게임 | 카드 No.22 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
 | No.023 | **[Guns Guns Guns](https://poki.com/kr/g/guns-guns-guns)** | 슈팅 게임, 총 게임 | 카드 No.23 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
@@ -174,3 +174,49 @@
     - 래그돌 영웅을 자유롭게 잡고 던져 범퍼(⚡), 폭발물(💥), 포털(🌀)에 연속 충돌시키는 물리 샌드박스.
     - 플레이어: 카드 No.10 섀도우 네크로맨서 스프라이트 (`cards1.png`).
     - 래그돌 각운동량 및 탄성 물리 충돌, 슬링샷 투척 조작 연동 완료.
+
+---
+
+## Phase 2 상세 작업 내역 (No.011 ~ No.020)
+
+11. **No.011 Rainbow Obby (`PokiRainbowObbyGame.tsx`)**:
+    - 공중에 떠 있는 7색 무지개 발판을 순차 도약하여 고공 정상 결승선에 도달하는 정통 오비 파쿠르.
+    - 플레이어: 카드 No.11 성스러운 성기사 스프라이트 (`cards1.png`).
+    - 원터치 탭 점프 & 좌우 수평 드래그 조타, 추락 시 체크포인트 리스폰 연동 완료.
+12. **No.012 My Perfect Hotel (`PokiMyHotelGame.tsx`)**:
+    - 프론트 데스크 손님 체크인, 퇴실 객실 청소 및 화장실 소독, 현금 수거 및 룸 확장을 진행하는 호텔 타이쿤.
+    - 플레이어: 카드 No.12 홀리 프리스트 스프라이트 (`cards1.png`).
+    - 원터치 드래그 이동 기반 자동 상호작용 및 수익 1,000점 경영 클리어 연동 완료.
+13. **No.013 Talking Tom Gold Run (`PokiTalkingTomGoldRunGame.tsx`)**:
+    - 도둑 라쿤을 추격하며 3개 레인에서 장애물/바리케이드를 점프/회피하고 골드바를 수집하는 고속 3레인 러너.
+    - 플레이어: 카드 No.13 샤이닝 엔젤 스프라이트 (`cards1.png`).
+    - 좌우 스와이프 레인 이동 & 상향 스와이프 점프, 금괴 35개 수집 연동 완료.
+14. **No.014 Monkey Tag IO (`PokiMonkeyTagGame.tsx`)**:
+    - 울창한 정글 캐노피 나무 위에서 감염 술래 원숭이를 피해 도망치거나, 술래가 되었을 때 상대에게 태그를 넘기는 멀티플레이 io.
+    - 플레이어: 카드 No.14 대지 골렘 스프라이트 (`cards1.png`).
+    - 원터치 드래그 스윙 & 바나나 부스터, 30초 생존 경쟁 연동 완료.
+15. **No.015 Stickman Battle (`PokiStickmanBattleGame.tsx`)**:
+    - 래그돌 물리 관절을 가진 스틱맨 검사들이 검을 휘두르며 결투를 벌이는 1:1 아레나 격투 액션.
+    - 플레이어: 카드 No.15 블러드 나이트 스프라이트 (`cards1.png`).
+    - 터치 드래그 각속도 칼날 휘두르기, 급소 타격 데미지, 5명 연속 토너먼트 격파 연동 완료.
+16. **No.016 Decor Life (`PokiDecorLifeGame.tsx`)**:
+    - 방별 가구 택배 박스를 탭하여 개봉하고, 가구/소품을 실내 점선 슬롯에 맞추어 드래그 배치하는 감성 인테리어 퍼즐.
+    - 플레이어: 카드 No.16 섀도우 닌자 스프라이트 (`cards1.png`).
+    - 탭 언박싱 & 드래그 앤 드롭 방 꾸미기, 침실/거실 2스테이지 연동 완료.
+17. **No.017 Neon Challenge Legends (`PokiNeonChallengeGame.tsx`)**:
+    - 비트와 리듬에 반응하는 형광 사이버 네온 타일 위를 정확한 타이밍에 탭/점프하여 콤보를 잇는 리듬 러너.
+    - 플레이어: 카드 No.17 플레임 소서러 스프라이트 (`cards1.png`).
+    - 원터치 비트 탭 점프 & 네온 충격파 파티클, 20연속 콤보 연동 완료.
+18. **No.018 Plonky (`PokiPlonkyGame.tsx`)**:
+    - 회전하는 타워 링의 열린 틈새를 향해 동글동글 플롱키 캐릭터를 안전하게 낙하시키는 헬릭스 스타일 드롭 아케이드.
+    - 플레이어: 카드 No.18 윈드 레인저 스프라이트 (`cards1.png`).
+    - 좌우 드래그 회전 조향 & 보석 수집, 3층 심층 낙하 클리어 연동 완료.
+19. **No.019 Backrooms Recovery (`PokiBackroomsRecoveryGame.tsx`)**:
+    - 기묘한 옐로우 벽지 미로에서 제한된 배터리의 손전등을 켜고, 배회하는 그림자 엔티티를 피해 3개 비상 키카드를 회수하여 탈출하는 호러 어드벤처.
+    - 플레이어: 카드 No.19 어스 퀘이커 스프라이트 (`cards1.png`).
+    - 퓨어 탭/드래그 시야 이동, 손전등 비네팅 & 심장박동 적 경고, 키카드 3개 수집 후 EXIT 개방 연동 완료.
+20. **No.020 Stickman Hook (`PokiStickmanHookGame.tsx`)**:
+    - 공중 앵커 포인트에 로프를 걸고 원심력 진자 스윙과 탄력 점프로 장애물을 넘어 결승선까지 주파하는 글로벌 메가히트 스킬 액션.
+    - 플레이어: 카드 No.20 라이트닝 로드 스프라이트 (`cards1.png`).
+    - 롱탭 로프 그래플링 & 릴리즈 점프 물리, 트램펄린 바운스, 결승선 통과 연동 완료.
+

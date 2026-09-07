@@ -6,7 +6,7 @@ import { UniversalTutorialModal, TutorialStep } from '../UniversalTutorialModal'
 import { drawCardSprite } from '../../lib/canvasCardRenderer';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../../lib/standardizedRewardGateway';
 
-interface PokiRainbowObbyGameProps {
+interface PokiNeonChallengeGameProps {
   deck: CardData[];
   language: string;
   lowSpecMode?: boolean;
@@ -15,18 +15,15 @@ interface PokiRainbowObbyGameProps {
   onReward: (amount: number) => void;
 }
 
-interface Platform {
+interface NeonTile {
   x: number;
   y: number;
   width: number;
-  height: number;
   color: string;
-  isMoving?: boolean;
-  vx?: number;
   isGoal?: boolean;
 }
 
-export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
+export const PokiNeonChallengeGame: React.FC<PokiNeonChallengeGameProps> = ({
   deck = [],
   language,
   lowSpecMode = false,
@@ -35,7 +32,7 @@ export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
   onReward,
 }) => {
   const isKo = language === 'ko';
-  const playerHeroId = deck[0]?.id || 11;
+  const playerHeroId = deck[0]?.id || 17;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
 
@@ -49,7 +46,7 @@ export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
 
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_rainbow_obby') !== 'true';
+      return localStorage.getItem('hero_tutorial_neon_challenge') !== 'true';
     } catch {
       return true;
     }
@@ -61,48 +58,44 @@ export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
       y: 350,
       vx: 0,
       vy: 0,
-      width: 38,
-      height: 38,
+      width: 36,
+      height: 36,
       isGrounded: false,
       targetX: 50,
     },
     cameraX: 0,
-    platforms: [] as Platform[],
+    tiles: [] as NeonTile[],
     combo: 0,
     isTouchActive: false,
     particles: [] as { x: number; y: number; vx: number; vy: number; color: string; alpha: number }[],
   });
 
   const initStage = useCallback((s: number) => {
-    const rainbowColors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#06b6d4', '#3b82f6', '#8b5cf6'];
-    const plats: Platform[] = [];
+    const neonColors = ['#06b6d4', '#ec4899', '#3b82f6', '#10b981', '#f59e0b'];
+    const tiles: NeonTile[] = [];
 
     let curX = 20;
-    const count = 18 + s * 4;
+    const count = 16 + s * 4;
 
     for (let i = 0; i < count; i++) {
       const isGoal = i === count - 1;
-      const col = rainbowColors[i % rainbowColors.length];
-      const pW = isGoal ? 90 : (i === 0 ? 90 : 65);
-      const isMoving = !isGoal && i > 3 && i % 3 === 0;
-      const yOffset = Math.sin(i * 0.9) * 45;
-      const pY = 340 + yOffset;
+      const tW = isGoal ? 90 : (i === 0 ? 80 : 55);
+      const col = neonColors[i % neonColors.length];
+      const yOffset = Math.sin(i * 1.1) * 50;
+      const tY = 340 + yOffset;
 
-      plats.push({
+      tiles.push({
         x: curX,
-        y: pY,
-        width: pW,
-        height: 20,
+        y: tY,
+        width: tW,
         color: isGoal ? '#facc15' : col,
-        isMoving,
-        vx: isMoving ? (Math.random() < 0.5 ? 1.5 : -1.5) : 0,
         isGoal,
       });
 
-      curX += pW + 28 + Math.random() * 15;
+      curX += tW + 30 + Math.random() * 20;
     }
 
-    stateRef.current.platforms = plats;
+    stateRef.current.tiles = tiles;
     stateRef.current.player.x = 40;
     stateRef.current.player.y = 250;
     stateRef.current.player.vx = 0;
@@ -137,8 +130,8 @@ export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
 
     const finalScore = score + (victory ? 500 : 100);
     const receipt = calculateAndDepositMissionReward({
-      gameId: 'poki_rainbow_obby',
-      gameTitle: isKo ? '레인보우 오비 파쿠르' : 'Rainbow Obby',
+      gameId: 'poki_neon_challenge',
+      gameTitle: isKo ? '네온 챌린지 레전드' : 'Neon Challenge Legends',
       durationSeconds: 45 - timeLeft,
       score: finalScore,
       maxTargetScore: 1000,
@@ -158,18 +151,18 @@ export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
   const triggerJump = useCallback(() => {
     const p = stateRef.current.player;
     if (p.isGrounded) {
-      p.vy = -14.2;
+      p.vy = -14.5;
       p.isGrounded = false;
       if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
 
-      // Sparkle particles
+      // Neon trail particles
       for (let i = 0; i < 5; i++) {
         stateRef.current.particles.push({
           x: p.x + p.width / 2,
           y: p.y + p.height,
           vx: (Math.random() - 0.5) * 6,
           vy: Math.random() * -3,
-          color: '#facc15',
+          color: '#ec4899',
           alpha: 1,
         });
       }
@@ -188,49 +181,36 @@ export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
     canvas.width = width;
     canvas.height = height;
 
-    const gravity = 0.62;
+    const gravity = 0.65;
 
     const updateAndRender = () => {
       if (isGameOver || isVictory || showTutorial) return;
 
       const p = stateRef.current.player;
-      const plats = stateRef.current.platforms;
+      const tiles = stateRef.current.tiles;
       const particles = stateRef.current.particles;
 
-      // Player seek targetX
-      p.vx = (p.targetX - p.x) * 0.14;
+      p.vx = (p.targetX - p.x) * 0.15;
       p.x += p.vx;
 
-      // Gravity
       p.vy += gravity;
       p.y += p.vy;
       p.isGrounded = false;
 
-      // Move moving platforms
-      for (const pl of plats) {
-        if (pl.isMoving && pl.vx) {
-          pl.x += pl.vx;
-          if (pl.x < 100 || pl.x > 1800) pl.vx *= -1;
-        }
-
-        // Platform collision
+      // Platform collision
+      for (const t of tiles) {
         if (
-          p.x + p.width > pl.x &&
-          p.x < pl.x + pl.width &&
-          p.y + p.height >= pl.y &&
-          p.y + p.height <= pl.y + 22 &&
+          p.x + p.width > t.x &&
+          p.x < t.x + t.width &&
+          p.y + p.height >= t.y &&
+          p.y + p.height <= t.y + 22 &&
           p.vy >= 0
         ) {
-          p.y = pl.y - p.height;
+          p.y = t.y - p.height;
           p.vy = 0;
           p.isGrounded = true;
 
-          if (pl.isMoving && pl.vx) {
-            p.x += pl.vx;
-            p.targetX += pl.vx;
-          }
-
-          if (pl.isGoal) {
+          if (t.isGoal) {
             if (stage < totalStages) {
               setStage(s => s + 1);
               setScore(s => s + 250);
@@ -247,58 +227,58 @@ export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
       if (p.y > height + 80) {
         p.y = 200;
         p.vy = 0;
-        p.x = Math.max(40, p.x - 140);
+        p.x = Math.max(40, p.x - 120);
         p.targetX = p.x;
         setScore(s => Math.max(0, s - 30));
         stateRef.current.combo = 0;
       }
 
       // Smooth camera follow
-      const targetCamX = p.x - width * 0.28;
+      const targetCamX = p.x - width * 0.3;
       stateRef.current.cameraX += (targetCamX - stateRef.current.cameraX) * 0.1;
       const camX = stateRef.current.cameraX;
 
       // ---------------- RENDER ----------------
       ctx.clearRect(0, 0, width, height);
 
-      // Sky gradient background
-      ctx.fillStyle = '#0284c7'; // Vibrant sky blue
+      // Cyber Synthwave dark grid background
+      ctx.fillStyle = '#050510';
       ctx.fillRect(0, 0, width, height);
 
-      // Fluffy clouds
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
-      for (let i = 0; i < 6; i++) {
-        const cx = (i * 220 - camX * 0.3) % (width + 200);
+      // Neon horizon grid lines
+      ctx.strokeStyle = 'rgba(236, 72, 153, 0.25)';
+      ctx.lineWidth = 1;
+      for (let x = - (camX % 50); x < width; x += 50) {
         ctx.beginPath();
-        ctx.arc(cx, 120 + (i % 3) * 40, 36, 0, Math.PI * 2);
-        ctx.arc(cx + 25, 110 + (i % 3) * 40, 48, 0, Math.PI * 2);
-        ctx.arc(cx + 55, 125 + (i % 3) * 40, 32, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
       }
 
-      // Draw Rainbow Platforms
-      for (const pl of plats) {
-        const scrX = pl.x - camX;
-        if (scrX + pl.width < -50 || scrX > width + 50) continue;
+      // Draw Neon Tiles
+      for (const t of tiles) {
+        const scrX = t.x - camX;
+        if (scrX + t.width < -50 || scrX > width + 50) continue;
 
-        // Platform 3D shadow block
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
-        ctx.fillRect(scrX + 4, pl.y + 6, pl.width, pl.height + 10);
+        ctx.fillStyle = t.color;
+        ctx.fillRect(scrX, t.y, t.width, 16);
 
-        // Platform face
-        ctx.fillStyle = pl.color;
-        ctx.fillRect(scrX, pl.y, pl.width, pl.height);
-
-        // Shiny border
+        // Bright neon border
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 1.5;
-        ctx.strokeRect(scrX, pl.y, pl.width, pl.height);
+        ctx.strokeRect(scrX, t.y, t.width, 16);
 
-        if (pl.isGoal) {
-          ctx.fillStyle = '#713f12';
-          ctx.font = 'bold 11px monospace';
+        // Neon glow bar below
+        ctx.fillStyle = t.color;
+        ctx.globalAlpha = 0.4;
+        ctx.fillRect(scrX + 4, t.y + 16, t.width - 8, 8);
+        ctx.globalAlpha = 1.0;
+
+        if (t.isGoal) {
+          ctx.fillStyle = '#000000';
+          ctx.font = 'bold 10px monospace';
           ctx.textAlign = 'center';
-          ctx.fillText('🏆 GOAL', scrX + pl.width / 2, pl.y + pl.height / 2 + 4);
+          ctx.fillText('FINISH', scrX + t.width / 2, t.y + 12);
         }
       }
 
@@ -325,9 +305,9 @@ export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
       drawCardSprite(ctx, playerHeroId, pScrX, p.y, p.width, p.height, {
         circleClip: true,
         borderWidth: 2,
-        borderColor: '#facc15',
-        shadowBlur: 8,
-        shadowColor: '#facc15',
+        borderColor: '#06b6d4',
+        shadowBlur: 10,
+        shadowColor: '#06b6d4',
       });
 
       animFrameRef.current = requestAnimationFrame(updateAndRender);
@@ -367,26 +347,26 @@ export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
   const tutorialSteps: TutorialStep[] = [
     {
       badge: 'GOAL',
-      title: isKo ? '레인보우 오비 파쿠르' : 'Rainbow Obby',
+      title: isKo ? '네온 챌린지 레전드' : 'Neon Challenge Legends',
       description: isKo
-        ? '무지개 빛깔의 고공 발판 위를 점프하며 결승점(GOAL)까지 안전하게 도달하세요!'
-        : 'Jump across colorful floating rainbow platforms and conquer the sky-high obby course!',
-      keyPoints: isKo ? ['고공 발판 점프', '낙사 회피', '결승점 도착'] : ['Jump platforms', 'Avoid falling', 'Reach goal'],
+        ? '빛나는 사이버 네온 발판 위를 연속으로 도약하여 결승선(FINISH)까지 질주하세요!'
+        : 'Dash across glowing cyber neon platforms and reach the finish line!',
+      keyPoints: isKo ? ['사이버 네온 발판 도약', '낙사 방지', '결승선 도달'] : ['Dash neon platforms', 'Avoid falling', 'Reach finish line'],
     },
     {
       badge: 'CONTROLS',
-      title: isKo ? '원터치 탭 점프 & 드래그' : 'Tap to Jump & Drag',
+      title: isKo ? '원터치 탭 점프 & 드래그' : 'One-Touch Jump',
       description: isKo
-        ? '화면을 탭하면 점프하고, 손가락을 좌우로 드래그하여 움직이는 발판 위에 정확하게 착지하세요.'
-        : 'Tap to jump up, and drag horizontally to land precisely on moving platforms.',
-      keyPoints: isKo ? ['탭하여 점프', '좌우 드래그 이동', '착지 타이밍'] : ['Tap to jump', 'Drag to steer', 'Land accurately'],
+        ? '화면을 탭하면 점프하며, 누른 채 좌우로 드래그하여 정확하게 착지할 수 있습니다.'
+        : 'Tap to jump and drag left/right to position your landing smoothly.',
+      keyPoints: isKo ? ['탭하여 도약', '좌우 드래그 조향', '콤보 부스트'] : ['Tap to jump', 'Drag to steer', 'Combo speed boost'],
     }
   ];
 
   return (
     <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col items-center select-none overflow-hidden font-mono">
       <MinimalistMissionHUD
-        title={isKo ? 'No.11 레인보우 오비' : 'No.11 Rainbow Obby'}
+        title={isKo ? 'No.17 네온 챌린지' : 'No.17 Neon Challenge'}
         currentScore={score}
         targetScore={1000}
         timeLeft={timeLeft}
@@ -407,7 +387,7 @@ export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
 
         {/* Action Guide */}
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none text-center bg-slate-900/80 px-4 py-1.5 rounded-full border border-slate-700/60 backdrop-blur-sm">
-          <p className="text-xs text-yellow-300 font-bold tracking-wider animate-pulse">
+          <p className="text-xs text-cyan-400 font-bold tracking-wider animate-pulse">
             {isKo ? '👆 탭: 점프 | ↔️ 드래그: 이동' : '👆 TAP: JUMP | ↔️ DRAG: MOVE'}
           </p>
         </div>
@@ -438,12 +418,12 @@ export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
       {showTutorial && (
         <UniversalTutorialModal
           isOpen={showTutorial}
-          gameTitle={isKo ? 'No.11 레인보우 오비' : 'No.11 Rainbow Obby'}
+          gameTitle={isKo ? 'No.17 네온 챌린지' : 'No.17 Neon Challenge'}
           steps={tutorialSteps}
           onComplete={() => {
             setShowTutorial(false);
             try {
-              localStorage.setItem('hero_tutorial_rainbow_obby', 'true');
+              localStorage.setItem('hero_tutorial_neon_challenge', 'true');
             } catch {}
           }}
           language={language}
