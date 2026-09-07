@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 75,
-  "completed_count": 74,
-  "last_updated": "2026-09-08T01:14:00+09:00",
+  "current_game_index": 76,
+  "completed_count": 75,
+  "last_updated": "2026-09-08T01:30:00+09:00",
   "history": [
     {
       "id": 1,
@@ -819,6 +819,17 @@
       "component": "src/components/poki/PokiPingPongGoGame.tsx",
       "completed_at": "2026-09-08T01:14:00+09:00",
       "details": "Three.js 기반 3D 실시간 스포츠 탁구 배틀 & 랠리 챌린지 구현, 블루 탑 코트 탁구대(네트/라인/금속 다리) & 스타디움 우드 플로어, 플레이어 레드 패들 & No.074 공식 카드 영웅 배지 부착 vs AI 블랙 패들 리턴 AI, 3D 탄성 테이블 바운스 및 포물선 탄도학, 찬스 볼 시 32m/s 초고속 강스파이크(SMASH) 및 사이드 커브 스핀(SPIN) 물리, 5점 선취승 매치 규칙, 모바일 퓨어 터치 조작계(화면 하단 터치 슬라이드 라켓 좌우 이동 + 76px SMASH 대형 버튼 + 64px SPIN 버튼 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 75,
+      "name": "Color Artist",
+      "poki_url": "https://poki.com/kr/g/color-artist",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No075_ColorArtist_Prompt.md",
+      "component": "src/components/poki/PokiColorArtistGame.tsx",
+      "completed_at": "2026-09-08T01:30:00+09:00",
+      "details": "Three.js 기반 3D 입체 복셀 컬러링 & 아트 갤러리 시뮬레이션 구현, 3D 아틀리에 갤러리 룸(원형 페데스탈 받침대/스튜디오 조명) & No.075 공식 카드 영웅 배지 엠블럼, 48개 복셀 블록으로 구성된 입체 마스코트 조각상, 1~6번 넘버별 6색 팔레트 매핑(옐로우/오렌지/스카이블루/바이올렛/그린/화이트), 채색 시 팝업 바운스 스케일 & 스파클 파티클, 100% 완성 시 360도 공중 부유 쇼케이스, 모바일 퓨어 터치 조작계(화면 터치 드래그 3D 궤도 회전 + 76px PAINT 연속 자동 채색 + 64px SPRAY 광역 분사 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

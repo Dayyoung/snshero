@@ -4,6 +4,38 @@
 
 ---
 
+## [2026-09-08 01:30 KST] [Poki 110선 리마스터 75/110] No.075 Color Artist Three.js 3D 입체 복셀 컬러링 & 아트 갤러리 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/color-artist`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No075_ColorArtist_Prompt.md`) 작성.
+  - Three.js 3D 기반 아틀리에 갤러리 룸, 원형 페데스탈 받침대, 48개 복셀 블록 입체 마스코트 조각상 & No.075 공식 카드 영웅 배지 엠블럼 장착.
+  - 1~6번 넘버별 6색 팔레트 매핑(옐로우/오렌지/스카이블루/바이올렛/그린/화이트), 채색 시 팝업 바운스 스케일 & 스파클 파티클, 100% 완성 시 360도 공중 부유 쇼케이스.
+  - 모바일 퓨어 터치 조작계(화면 터치 드래그 3D 궤도 회전 + 76px PAINT 연속 자동 채색 + 64px SPRAY 광역 분사 + 햅틱) 및 MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 픽셀/컬러링 아트 인기작 Color Artist. 번호에 맞춰 조각상을 칠하고, 360도로 돌려가며 빈틈없이 색을 입혀 나만의 걸작 3D 조각상을 완성하는 힐링 3D 아트 시뮬레이션 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiColorArtistGame.tsx`)**:
+     - 아틀리에 갤러리 룸(스튜디오 조명, 원형 받침대, 카드 No.075 공식 영웅 배지 엠블럼 부착).
+     - 48개 복셀 블록 조각상 모델링:
+       - 1~6번 넘버 배정 및 6색 팔레트(썬 옐로우, 네온 오렌지, 스카이 블루, 로열 바이올렛, 에메랄드 그린, 펄 화이트).
+       - 손가락 드래그 시 상하좌우 부드러운 3D 궤도 회전(Orbit Rotation)으로 모든 면의 블록 관찰.
+     - 인터랙션 & 채색 시스템:
+       - 채색 시 1.2배 팝업 바운스 스케일 애니메이션 및 컬러 스파클 파티클 방출.
+       - 64px [SPRAY 스프레이] 버튼 ➔ 현재 선택 번호 4개 블록 일괄 채색.
+       - 76px [PAINT 페인트] 버튼 ➔ 누르고 있을 시 0.15초마다 자동 연속 채색.
+       - 100% 완주 시 조각상 공중 부유 360도 회전 쇼케이스.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 터치 드래그로 3D 조각상 360도 자유 회전.
+       - 6색 넘버 팔레트 바.
+       - 76px [연속 채색 PAINT] 대형 버튼 + 64px [광역 스프레이 SPRAY] 버튼.
+       - MinimalistMissionHUD (진행도 %, 남은 블록 수, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (75/110 완료, current_game_index: 76) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 75/110] No.075 Color Artist Three.js 3D 입체 복셀 컬러링 & 아트 갤러리 전면 고도화`)
+
 ## [2026-09-08 01:14 KST] [Poki 110선 리마스터 74/110] No.074 Ping Pong Go! Three.js 3D 실시간 스포츠 탁구 배틀 & 랠리 챌린지 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/ping-pong-go`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No074_PingPongGo_Prompt.md`) 작성.
