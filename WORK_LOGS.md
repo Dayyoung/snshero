@@ -4,6 +4,37 @@
 
 ---
 
+## [2026-09-08 01:12 KST] [Poki 110선 리마스터 72/110] No.072 Supercar Legends Three.js 3D 슈퍼카 고속 레이싱 & 배수 게이트 액션 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/supercar-legends`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No072_SupercarLegends_Prompt.md`) 작성.
+  - Three.js 3D 기반 4차선 아스팔트 서킷, 레드&카본 에어로 하이퍼카 & No.072 공식 카드 영웅 배지 장착.
+  - 3대의 AI 라이벌 슈퍼카(블루 썬더, 골드 바이퍼, 그린 팬텀) 실시간 순위 추월 경쟁, 트랙 위 3D 배수 게이트(그린 x2 SPEED / +50 km/h vs 레드 SLOW), 3랩 토너먼트 레이스.
+  - 모바일 퓨어 터치 조작계(화면 터치 슬라이드 조향 + 76px NITRO 부스트 + 햅틱) 및 MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 자동차 게임 인기작 Supercar Legends. 서킷 트랙에서 고급 슈퍼카를 최고 시속 240km/h로 운전하며, 배수 게이트를 통과해 폭발적인 부스터를 얻고 경쟁 라이벌들을 제치며 우승을 차지하는 3D 고속 레이싱 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiSupercarLegendsGame.tsx`)**:
+     - 4차선 고속 서킷(아스팔트 바닥, 백색 차선 점선, 레드&화이트 체커 연석, 350m 랩 피니시 아치 게이트) 및 15m 안전 광폭 스타트 존.
+     - 레드 & 카본 하이퍼카 모델링:
+       - 날렵한 에어로 바디, 틴티드 캐빈 유리, 리어 GT 윙 스포일러, 4개 크롬 휠 회전.
+       - 루프 상단 No.072 공식 카드 영웅 배지 장착.
+       - 니트로 부스트 발동 시 후방 시안 블루 배기 화염 파티클 분출.
+     - 배수 게이트 & 라이벌 AI 시스템:
+       - 트랙 곳곳에 실시간 3D 배수 게이트(그린 x2 SPEED / +50 km/h vs 레드 -30 km/h) 배치.
+       - 3대의 AI 라이벌(블루 썬더, 골드 바이퍼, 그린 팬텀)과 실시간 거리 비교 기반 순위(1st~4th) 판정.
+       - 350m 랩 단위 총 3랩(LAP 1/3 ➔ LAP 2/3 ➔ FINAL LAP) 완주 레이스.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 직접 터치 슬라이드로 좌우 차선 부드러운 변경 (Screen-relative 완벽 일치).
+       - 76px [NITRO 부스트] 대형 버튼 (최고 234 km/h 가속).
+       - MinimalistMissionHUD (실시간 순위 1/4, 랩 수, 디지털 속도계, 니트로 게이지 바, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (72/110 완료, current_game_index: 73) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 72/110] No.072 Supercar Legends Three.js 3D 슈퍼카 고속 레이싱 & 배수 게이트 액션 전면 고도화`)
+
 ## [2026-09-08 01:11 KST] [Poki 110선 리마스터 71/110] No.071 Scary Teacher Hide & Seek Games Three.js 3D 스텔스 잠입 & 숨바꼭질 탈출 어드벤처 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/scary-teacher-hide-seek-games`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No071_ScaryTeacherHideSeek_Prompt.md`) 작성.
