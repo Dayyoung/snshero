@@ -4,6 +4,44 @@
 
 ---
 
+## [2026-09-08 00:22 KST] [Poki 110선 리마스터 46/110] No.046 Kick The Buddy Three.js 3D 래그돌 물리 인터랙티브 샌드박스 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/kick-the-buddy`) 분석 및 프롬프트(`src/components/poki/prompts/No046_KickTheBuddy_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 12x9x10m 3D 골판지 박스 룸 & 스포트라이트 조명(시작 중앙 안전 안착), 마포 헝겊 인형 래그돌 버디(단추 눈/스티치 입술 & No.46 영웅 배지), 화면 터치 드래그 잡기 & 패대기 던지기(Grab & Throw) 스프링 물리, 4대 무기 콤보 시스템(권투 글러브/다트/다이너마이트/테슬라 감전) 및 골드 코인 분출 파티클, 하단 무기 선택 바 + 76px [ATTACK] 모바일 퓨어 터치 조작계 전면 재개발.
+  - AGENTS.md 카메라 기준 조작 방향(좌우/상하) 100% 일치 절대 원칙 준수 (정면 쿼터뷰 카메라 기준 화면 터치 드래그 위치와 버디 이동 벡터 1:1 일치).
+  - AGENTS.md 시작 지점 안전 안착 절대 원칙 준수 (골판지 룸 중앙 안전 안착).
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(화면 드래그/패대기 + 무기 탭/공격 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 최고 인기 스트레스 해소 래그돌 샌드박스 Kick The Buddy. 골판지 룸에서 헝겊 인형 버디를 직접 손으로 붙잡고 벽면에 내던지며, 권투 글러브, 다트, 폭탄, 번개 감전 등 다양한 도구로 타격하여 코인을 모으는 인터랙티브 물리 액션 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiKickTheBuddyGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 정면 쿼터뷰 카메라, 12x9x10m 골판지 박스 룸(바닥, 뒷벽, 좌우 벽면 및 솔기 디테일) & 스포트라이트 조명.
+     - 3D 헝겊 인형 래그돌 버디:
+       - 마포 질감의 베이지 바디, 단추 눈 2개, 스티치 입술, 관절 몸통 & No.046 공식 영웅 카드 스프라이트 HUD 배지.
+       - 스프링 복원력 & 중력 & 벽면 바운스 물리(벽면 충돌 시 0.65 탄성 계수 반사).
+       - 손가락 터치 드래그로 버디를 직접 붙잡아 공중에 띄우고 벽면에 패대기치는(Fling / Slam) 3D 물리 제어 구현.
+     - 4대 인터랙티브 무기 시스템:
+       - [🥊 GLOVE]: 스프링 권투 글러브 어퍼컷 펀치 넉백 (+$15)
+       - [🎯 DART]: 다트 핀 타격 및 스핀 (+$25)
+       - [💣 BOMB]: 다이너마이트 폭발 충격파 및 래그돌 공중 3회전 (+$50 & 화염 파티클)
+       - [⚡ TESLA]: 테슬라 번개 감전 지지직 쇼크 (+$40 & 전기 스파크)
+       - 타격 시마다 사방으로 튀어 오르는 회전 골드 코인 파티클 분출.
+       - 누적 코인 $1,500 달성 시 "BUDDY MASTER!" 최종 승리.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 터치 드래그로 버디 직접 조작 & 무기 조준.
+       - 하단 4대 무기 셀렉터 [🥊 PUNCH] [🎯 DART] [💣 BOMB] [⚡ ZAP].
+       - 우측 하단 76px 특대형 [💥 ATTACK] 연속 타격 버튼.
+       - 펀치 강타, 폭발, 감전, 벽면 충돌 시 다채로운 햅틱(`navigator.vibrate`) 피드백.
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 획득 코인 실적 비례 20~50 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No046_KickTheBuddy_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 무결점 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 46개 완료 (No.047 Count Control Legends 대기).
+
+---
+
 ## [2026-09-08 00:12 KST] [Poki 110선 리마스터 45/110] No.045 Bubble Storm Three.js 3D 버블 슈팅 & 매치 퍼즐 아케이드 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/bubble-storm`) 분석 및 프롬프트(`src/components/poki/prompts/No045_BubbleStorm_Prompt.md`) 작성.
