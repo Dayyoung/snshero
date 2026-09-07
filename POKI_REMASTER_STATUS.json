@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 34,
-  "completed_count": 33,
-  "last_updated": "2026-09-07T23:11:00+09:00",
+  "current_game_index": 35,
+  "completed_count": 34,
+  "last_updated": "2026-09-07T23:12:00+09:00",
   "history": [
     {
       "id": 1,
@@ -368,6 +368,17 @@
       "component": "src/components/poki/PokiStuntBikeExtremeGame.tsx",
       "completed_at": "2026-09-07T23:11:00+09:00",
       "details": "Three.js 기반 3D 피직스 모토크로스 스턴트 레이싱 구현, 140m 3D 사막 협곡 트랙 & 4단 점프 힐 & 결승 체커기 게이트(시작 20m 안전 광폭 플랫폼 안착), 회전 전/후륜 휠 & 엔진 블록 & 배기구 & 라이더 & No.33 영웅 배지, 독립 전후륜 지형 접지 & 서스펜션 물리, 공중 360도 플립 스턴트 감지 (+500점 보너스 배너 연출), 배기 흙먼지 파티클, 우측 76px GAS / 60px BRAKE + 좌측 틸트 밸런스 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 34,
+      "name": "Sushi Party",
+      "poki_url": "https://poki.com/kr/g/sushi-party-io",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No034_SushiParty_Prompt.md",
+      "component": "src/components/poki/PokiSushiPartyGame.tsx",
+      "completed_at": "2026-09-07T23:12:00+09:00",
+      "details": "Three.js 기반 3D 카와이 스시 스네이크 IO 배틀 구현, 60m 원형 회전초밥 다다미 아레나 & 황금 림(시작 중앙 안전 안착), 카와이 핑크 스네이크(고양이 귀/카툰 눈/20~60마디 구체 세그먼트 추종) & No.34 영웅 배지, 75개 3D 스시 아이템(연어/참치/새우/김밥 롤 루팅), 4마리 AI 라이벌 스네이크 봇 & 헤드-바디 충돌 킬/스시 드롭 메커니즘, 360도 플로팅 조이스틱 + 76px BOOST 가속 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

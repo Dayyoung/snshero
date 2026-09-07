@@ -4,6 +4,38 @@
 
 ---
 
+## [2026-09-07 23:12 KST] [Poki 110선 리마스터 34/110] No.034 Sushi Party Three.js 3D 카와이 스시 스네이크 IO 배틀 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/sushi-party-io`) 분석 및 프롬프트(`src/components/poki/prompts/No034_SushiParty_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 60m 원형 회전초밥 다다미 아레나 & 황금 림(시작 중앙 안전 안착), 카와이 핑크 스네이크(고양이 귀/카툰 눈/20~60마디 구체 세그먼트 추종) & No.34 영웅 배지, 75개 3D 스시 아이템(연어/참치/새우/김밥 롤 루팅), 4마리 AI 라이벌 스네이크 봇 & 헤드-바디 충돌 킬/스시 드롭 메커니즘, 360도 플로팅 조이스틱 + 76px BOOST 가속 모바일 퓨어 터치 조작계 전면 재개발.
+  - AGENTS.md 카메라 기준 조작 방향(좌우/상하) 100% 일치 절대 원칙 준수 (화면 기준 360도 방향 벡터와 스네이크 선회각 1:1 일치).
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(360° 플로팅 조이스틱 + 76px BOOST 버튼 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 최고 인기 카와이 스네이크 게임 Sushi Party. 회전초밥 아레나에서 다양한 스시를 먹으며 뱀의 몸집을 키우고, 부스트 컷오프로 상대 뱀을 제압하여 스시를 독식하는 IO 배틀로얄 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiSushiPartyGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 탑다운 쿼터뷰 추종 카메라, 60m 원형 다다미 플랫폼 & 황금 난간 림.
+     - 4종 3D 스시 아이템 (연어 초밥, 참치 초밥, 새우 초밥, 김밥 롤) 75개 분산 스폰 & 실시간 리스폰.
+     - 3D 카와이 스네이크 모델링:
+       - 플레이어: 핑크 카와이 구체 헤드, 고양이 귀, 카툰 눈망울, No.034 공식 영웅 카드 스프라이트 HUD 배지.
+       - 몸통: 20~60마디 구체 세그먼트 실시간 추종(Inverse Kinematics) 시스템.
+       - 4마리 AI 라이벌 봇 (민트, 옐로우, 퍼플, 와사비) & 스시 탐색 및 능동 회피 AI.
+     - 헤드-투-바디 킬 판정 & 스시 폭발 드롭 연출:
+       - 적 뱀의 머리가 내 몸통에 닿으면 즉시 제압되고 10개의 보너스 스시가 사방으로 분출!
+     - 100% 모바일 퓨어 터치 조작계:
+       - 좌측 360° 다이나믹 플로팅 가상 조이스틱.
+       - 우측 76px 대형 [⚡ BOOST] 부스트 버튼.
+       - 스시 섭취, 킬 제압, 부스트 질주 시 생생한 햅틱(`navigator.vibrate`) 피드백.
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 길이 및 킬 점수 비례 20~50 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No034_SushiParty_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 무결점 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 34개 완료 (No.035 Drive Mad 대기).
+
+---
+
 ## [2026-09-07 23:11 KST] [Poki 110선 리마스터 33/110] No.033 Stunt Bike Extreme Three.js 3D 피직스 모토크로스 스턴트 레이싱 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/stunt-bike-extreme`) 분석 및 프롬프트(`src/components/poki/prompts/No033_StuntBikeExtreme_Prompt.md`) 작성.
