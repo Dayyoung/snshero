@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 43,
-  "completed_count": 42,
-  "last_updated": "2026-09-07T23:42:00+09:00",
+  "current_game_index": 44,
+  "completed_count": 43,
+  "last_updated": "2026-09-07T23:52:00+09:00",
   "history": [
     {
       "id": 1,
@@ -467,6 +467,17 @@
       "component": "src/components/poki/PokiFamilyLifeGame.tsx",
       "completed_at": "2026-09-07T23:42:00+09:00",
       "details": "Three.js 기반 3D 홈 패밀리 라이프 & 육아 시뮬레이션 구현, 16x12m 원목 바닥 스위트 홈 & 거실 소파/주방 식탁/아기 요람/반려견 하우스(시작 거실 안전 안착), 아빠 큐비 플레이어 & No.42 영웅 배지, 꼬리 흔드는 골든 리트리버 AI, 4대 가족 퀘스트 존(아기 우유 먹이기/가족 피자 준비/반려견 공놀이/거실 정리 대화) 및 핑크 하트 파티클 분출, 360도 플로팅 조이스틱 + 76px CARE 상호작용 + 64px DASH 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 43,
+      "name": "Petnest.io",
+      "poki_url": "https://poki.com/kr/g/petnest-io",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No043_Petnest_Prompt.md",
+      "component": "src/components/poki/PokiPetnestGame.tsx",
+      "completed_at": "2026-09-07T23:52:00+09:00",
+      "details": "Three.js 기반 3D 동물 구조 & 펫 쉘터 시뮬레이션 구현, 26x20m 푸른 잔디 파크 & 목재 울타리(시작 입구 잔디밭 안전 안착), 중앙 펫 쉘터 하우스 & 하트 아치 게이트, 3D 강아지/고양이/토끼 AI 및 플레이어 궤적 추종 스네이크 체인 메커니즘, 진흙 웅덩이 감속 장애물, 360도 플로팅 조이스틱 + 76px WHISTLE 휘파람 유인 + 64px SPRINT 질주 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

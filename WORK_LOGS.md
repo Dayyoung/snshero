@@ -4,6 +4,41 @@
 
 ---
 
+## [2026-09-07 23:52 KST] [Poki 110선 리마스터 43/110] No.043 Petnest.io Three.js 3D 동물 구조 & 펫 쉘터 시뮬레이션 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/petnest-io`) 분석 및 프롬프트(`src/components/poki/prompts/No043_Petnest_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 26x20m 푸른 잔디 파크 & 목재 울타리 & 중앙 펫 쉘터 하우스 & 하트 아치 게이트(시작 입구 잔디밭 안전 안착), 펫 가디언 큐비 플레이어 & No.43 영웅 배지, 3D 강아지/고양이/토끼 AI 및 플레이어 이동 궤적 추종 스네이크 팔로워 체인(최대 4마리 연쇄 추종), 진흙 웅덩이 감속 장애물, 360도 플로팅 가상 조이스틱 + 76px [WHISTLE] 휘파람 유인 + 64px [SPRINT] 질주 모바일 퓨어 터치 조작계 전면 재개발.
+  - AGENTS.md 카메라 기준 조작 방향(좌우/상하) 100% 일치 절대 원칙 준수 (아이소메트릭 쿼터뷰 추종 카메라 기준 화면 조이스틱 방향과 가디언 이동 벡터 1:1 일치).
+  - AGENTS.md 시작 지점 안전 안착 절대 원칙 준수 (공원 입구 잔디밭 안전 안착).
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(360° 플로팅 조이스틱 + 휘파람/질주 버튼 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 최고 인기 동물 시뮬레이션 게임 Petnest.io. 푸른 잔디 공원에서 길 잃은 강아지, 고양이, 토끼를 찾아내어 뒤를 따르게 하고, 중앙의 펫 쉘터로 안전하게 인도하여 러브 포인트를 모아 나만의 파라다이스 보호소를 완성하는 힐링 타이쿤 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiPetnestGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 아이소메트릭 쿼터뷰 추종 카메라, 26x20m 잔디 바닥 & 외곽 목재 울타리 & 햇살 조명.
+     - 중앙 상단 펫 쉘터 하우스 & 네스트:
+       - 붉은 삼각 지붕 쉘터, 핑크 하트 아치 게이트, 네스트 인도 반경(3.6m).
+     - 3D 동물들 & 팔로워 체인(Follower Chain) 물리:
+       - 골든 브라운 강아지, 화이트 냥이, 핑크 토끼 (자율 배회 및 보행 애니메이션).
+       - 플레이어 접촉 시 "FOLLOWING" 상태로 전환되어 플레이어 이동 궤적(History Buffer)을 따라 줄줄이 따라오는 스네이크 트레인 물리 구현 (최대 4마리).
+       - 네스트 존 인도 시 "SAFE HOME!" 환호와 함께 핑크 하트 파티클 분출 (+100 러브 포인트 & 구조 카운트 +1).
+     - 진흙 웅덩이 장애물:
+       - 접촉 시 이동 속도 50% 감속.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 공원 어디서나 터치 이동 가능한 360° 플로팅 가상 조이스틱.
+       - 우측 하단 76px 특대형 [🐾 WHISTLE] 휘파람 호출 버튼 (반경 6.5m 내 동물 플레이어 쪽으로 유인, 3.5초 쿨다운).
+       - 64px [⚡ SPRINT] 질주 버튼.
+       - 동물 접촉, 쉘터 인도, 휘파람 사용 시 다채로운 햅틱(`navigator.vibrate`) 피드백.
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 구조 동물 수 및 러브 포인트 비례 20~50 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No043_Petnest_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 무결점 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 43개 완료 (No.044 Cuboy Adventure 대기).
+
+---
+
 ## [2026-09-07 23:42 KST] [Poki 110선 리마스터 42/110] No.042 Family Life Simulator Three.js 3D 홈 패밀리 라이프 & 육아 시뮬레이션 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/family-life-simulator`) 분석 및 프롬프트(`src/components/poki/prompts/No042_FamilyLife_Prompt.md`) 작성.
