@@ -465,7 +465,6 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
                         responsive={false}
                         className="w-full h-full overflow-hidden"
                         style={{ maxHeight: '72px', height: '68px', minHeight: '62px' }}
-                        showLabel
                       />
                     </div>
                   </div>

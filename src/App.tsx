@@ -5867,7 +5867,6 @@ function AppContent() {
                 format="vertical"
                 className="w-full min-h-[600px]"
                 style={{ width: '100%', minHeight: '600px' }}
-                showLabel
               />
             </div>
           </aside>
@@ -5897,7 +5896,6 @@ function AppContent() {
                   responsive={false}
                   className="w-full h-full overflow-hidden"
                   style={{ maxHeight: '72px', height: '68px', minHeight: '62px' }}
-                  showLabel
                 />
               </div>
             </div>
@@ -7689,7 +7687,6 @@ function AppContent() {
                 format="vertical"
                 className="w-full min-h-[600px]"
                 style={{ width: '100%', minHeight: '600px' }}
-                showLabel
               />
             </div>
           </aside>
