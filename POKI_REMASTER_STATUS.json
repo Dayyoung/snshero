@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 22,
-  "completed_count": 21,
-  "last_updated": "2026-09-07T21:30:00+09:00",
+  "current_game_index": 23,
+  "completed_count": 22,
+  "last_updated": "2026-09-07T21:51:00+09:00",
   "history": [
     {
       "id": 1,
@@ -236,6 +236,17 @@
       "component": "src/components/poki/PokiStealBrainrotGame.tsx",
       "completed_at": "2026-09-07T21:30:00+09:00",
       "details": "Three.js 기반 3D 잠입 침투 탈취 & 고속 탈출 어드벤처 구현, 32x26m 보안 기지 볼트 & 서쪽 안전 헬리패드(시작 급사 원천 차단), 중앙 볼트 챔버 & 황금 Brainrot Core(+600점), 3대 보안 가드 드론(부채꼴 시야각 탐지 콘 & 순찰 경로), 코어 탈취 즉시 전 구역 붉은 비상 알람 발령 & 가드 드론 맹추격 모드 전환, 화면 기준 360도 이동 100% 일치 및 80px 스프린트 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 22,
+      "name": "Longcat",
+      "poki_url": "https://poki.com/kr/g/longcat",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No022_Longcat_Prompt.md",
+      "component": "src/components/poki/PokiLongcatGame.tsx",
+      "completed_at": "2026-09-07T21:51:00+09:00",
+      "details": "Three.js 기반 3D 롱캣 몸통 늘리기 공간 채우기 퍼즐 구현, 아이소메트릭 쿼터뷰 3D 그리드 보드 & 3D 큐브 벽 장애물, 3D 오렌지 롱캣 머리(카툰 눈/귀/수염 & No.22 영웅 배지), 슬라이딩 시 뱀처럼 매끄럽게 늘어나는 3D 몸통 세그먼트 & 꼬리, 3단계 레벨(5x5, 6x5, 6x6), 100% 빈칸 완충 시 무지개 팡파르 3D 파티클 분출, 스와이프 및 하단 4방향 D-패드 + 한 수 되돌리기(Undo) + 리셋 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
