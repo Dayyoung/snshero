@@ -4,7 +4,53 @@
 
 ---
 
+## [2026-09-07 14:00 KST] [Poki 글로벌 Top 110 인기 웹게임 110선 전면 전환 및 100% 모바일 퓨어 제스처 완료 달성]
+- **요청 사항**:
+  - `http://localhost:3000/play`의 110개 전체 미션 게임을 `poki_popular_games_110.csv`에 정의된 글로벌 웹게임 플랫폼 Poki의 인기 Top 110 게임으로 1:1 전면 대체 개발.
+  - 가상 D-패드/방향키 버튼 100% 완전 배제 및 모바일 퓨어 제스처(원터치, 스와이프, 드래그) 통일.
+  - Monospace 폰트, 웜크림/잉크 팔레트, 1px 보더 `DESIGN.md` 및 `MinimalistMissionHUD`, `VictoryRewardModal` 통일.
+  - 110개 게임 공식 카드 캐릭터(No.01~No.110) 스프라이트 100% 연동.
+- **작업 내역**:
+  1. **Phase 6-B (No.091 ~ No.100) 10종 개발 및 연동**:
+     - No.091 Hexellent (`PokiHexellentGame.tsx`): 축 좌표 육각 그리드 플러드필 연쇄 폭발 퍼즐 (1,000pt).
+     - No.092 Harvest Simulator (`PokiHarvestSimulatorGame.tsx`): 콤바인 주행 수확 & 사일로 하역 타이쿤 ($500).
+     - No.093 Car Circle (`PokiCarCircleGame.tsx`): 바쁜 원형 로터리 무사고 타이밍 합류 스킬 (12대).
+     - No.094 Phone CASE DIY (`PokiPhoneCaseDIYGame.tsx`): 스프레이 도색/드라이/스티커 3단계 폰케이스 공방.
+     - No.095 Soccer League (`PokiSoccerLeagueGame.tsx`): 3대3 실시간 풋살 드리블 & 슬링샷 슈팅 (3골 선취).
+     - No.096 Capitalist Bus Driver (`PokiCapitalistBusDriverGame.tsx`): 정류장 승객 탑승 & 고속도로 안전 수송 (20명).
+     - No.097 EvoWorld io (`PokiEvoWorldIoGame.tsx`): 파리에서 피닉스 드래곤까지 진화 io 시뮬레이터.
+     - No.098 Bullet Bros (`PokiBulletBrosGame.tsx`): 도탄(리코셰) 물리 총탄으로 엄폐한 적 소탕 슈터.
+     - No.099 Perfect Landing (`PokiPerfectLandingGame.tsx`): 비행기 피치 제어 터빈 회피 & 활주로 완벽 착륙 (3회).
+     - No.100 Undead Slayer (`PokiUndeadSlayerGame.tsx`): 연속 검격 & 광역 회전참격 스킬 언데드 토벌 (25마리).
+  2. **Phase 7 (No.101 ~ No.110 - 최종 피날레) 10종 개발 및 연동**:
+     - No.101 Watermelon Drop (`PokiWatermelonDropGame.tsx`): 수박게임 스타일 6단계 과일 투하 머지 (800pt).
+     - No.102 Kawaii Fruits 3D (`PokiKawaiiFruits3DGame.tsx`): 깜빡이는 카와이 표정 과일 10회 머지 콤보.
+     - No.103 Blumgi Bounce (`PokiBlumgiBounceGame.tsx`): 슬링샷 탄성 조절 & 플랫폼 바운스 농구 (5골).
+     - No.104 Brain Test 5 (`PokiBrainTest5Game.tsx`): 기발한 상식 파괴 넌센스 두뇌 퍼즐 3스테이지 돌파.
+     - No.105 Blumgi Merge (`PokiBlumgiMergeGame.tsx`): 그리드 크리처 머지 진화 & 500HP 보스 아레나 토벌.
+     - No.106 Stickman Climb 3D (`PokiStickmanClimb3DGame.tsx`): 원형 곡괭이 회전 반발력 도약 100m 등반.
+     - No.107 Brain Test Special (`PokiBrainTestSpecialGame.tsx`): 먹구름/UFO/자물쇠 3종 스페셜 트릭 퍼즐.
+     - No.108 11-11 (`PokiElevenElevenGame.tsx`): 11x11 대형 보드 블록 배치 & 11줄 라인 폭파 (600pt).
+     - No.109 Blumgi Slime (`PokiBlumgiSlimeGame.tsx`): 롱탭 탄성 충전 점프 & 에어 슬램 300m 결승 완주.
+     - No.110 Obby Roads (`PokiObbyRoadsGame.tsx`): 공중 로드 레이스 회전 롤러 회피 & 500m 질주 피날레!
+  3. **`PlayGameView.tsx` 110개 모드 전수 연동 및 메뉴 메타데이터 100% 개편**:
+     - 상단 import, `GameState` union type, `modes` 배열 슬롯 및 조건부 렌더링 블록 전수 1:1 완벽 교체.
+  4. **보고서 및 규정 문서 최신화**:
+     - `GAME_MIGRATION_REPORT.md` 110/110 (100.0% 전수 완료) 및 세부 로그 갱신 완료.
+     - `AGENTS.md` 누적 전환 건수 110건/110건 갱신 완료.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 완벽 통과.
+- **Git 커밋**:
+  - Phase 6-A 커밋: `426a9a3`
+  - Phase 6-B 커밋: `07f6204`
+  - Phase 7 커밋: `32b8738`
+- **구글 폼 보고 완료 (1건)**:
+  - `[개발] Poki 글로벌 Top 110 인기 웹게임 110선 전면 전환 및 100% 모바일 퓨어 제스처 완료 달성 -> 작업완료`
+
+---
+
 ## [2026-09-07 12:25 KST] [카단 RPG(/main) 카드 배틀 중 데스크톱 좌우 애드센스 날개 광고 및 하단 네비게이션 메뉴 100% 온전 노출 개선]
+
 - **요청 사항**:
   - `https://snshero.com/main` (카단 & 아케인 에코즈 모드)에서 몬스터 조우 또는 스토리 진행 중 카드 게임(배틀 모달)을 진행할 때, PC 좌우 배너 광고와 하단 네비게이션 메뉴가 가려지지 않고 정상 노출되도록 개선 요청.
 - **원인 분석**:
