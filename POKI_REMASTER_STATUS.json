@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 33,
-  "completed_count": 32,
-  "last_updated": "2026-09-07T23:07:00+09:00",
+  "current_game_index": 34,
+  "completed_count": 33,
+  "last_updated": "2026-09-07T23:11:00+09:00",
   "history": [
     {
       "id": 1,
@@ -357,6 +357,17 @@
       "component": "src/components/poki/PokiBrainTestGame.tsx",
       "completed_at": "2026-09-07T23:07:00+09:00",
       "details": "Three.js 기반 3D 인터랙티브 피직스 트릭 퍼즐 구현, 코지한 3D 스튜디오 룸 & 원목 테이블 & No.32 영웅 배지, 4대 트릭 스테이지(구름 드래그로 숨은 초거대 황금 수박 찾기 / 나무 판자 드래그로 절벽 다리 연결 및 고양이 생선 먹기 / 3D 손전등 드래그로 어두운 방 숨은 스위치 비추고 켜기 / 손거울 드래그로 금고 뒤 암호 7-3-9 확인 및 다이얼 오픈), Raycaster 기반 100% 모바일 퓨어 터치 드래그 & 탭, 힌트 툴팁, 40개 콘페티 파티클 분출, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 33,
+      "name": "Stunt Bike Extreme",
+      "poki_url": "https://poki.com/kr/g/stunt-bike-extreme",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No033_StuntBikeExtreme_Prompt.md",
+      "component": "src/components/poki/PokiStuntBikeExtremeGame.tsx",
+      "completed_at": "2026-09-07T23:11:00+09:00",
+      "details": "Three.js 기반 3D 피직스 모토크로스 스턴트 레이싱 구현, 140m 3D 사막 협곡 트랙 & 4단 점프 힐 & 결승 체커기 게이트(시작 20m 안전 광폭 플랫폼 안착), 회전 전/후륜 휠 & 엔진 블록 & 배기구 & 라이더 & No.33 영웅 배지, 독립 전후륜 지형 접지 & 서스펜션 물리, 공중 360도 플립 스턴트 감지 (+500점 보너스 배너 연출), 배기 흙먼지 파티클, 우측 76px GAS / 60px BRAKE + 좌측 틸트 밸런스 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

@@ -4,6 +4,45 @@
 
 ---
 
+## [2026-09-07 23:11 KST] [Poki 110선 리마스터 33/110] No.033 Stunt Bike Extreme Three.js 3D 피직스 모토크로스 스턴트 레이싱 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/stunt-bike-extreme`) 분석 및 프롬프트(`src/components/poki/prompts/No033_StuntBikeExtreme_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 140m 3D 사막 협곡 트랙 & 4단 점프 힐 & 결승 체커기 게이트(시작 20m 안전 광폭 플랫폼 안착), 회전 전/후륜 휠 & 엔진 블록 & 배기구 & 라이더 & No.33 영웅 배지, 독립 전후륜 지형 접지 & 서스펜션 물리, 공중 360도 플립 스턴트 감지 (+500점 보너스 배너 연출), 배기 흙먼지 파티클, 우측 76px GAS / 60px BRAKE + 좌측 틸트 밸런스 모바일 퓨어 터치 조작계 전면 재개발.
+  - AGENTS.md 카메라 기준 조작 방향(좌우/상하) 100% 일치 절대 원칙 준수 (횡스크롤 진행 방향 및 카메라 부드러운 전방 lerp 트래킹).
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(76px GAS + 60px BRAKE + 틸트 밸런스 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 인기 오토바이 스턴트 레이싱 게임 Stunt Bike Extreme. 험난한 산악 협곡 트랙에서 공중 360° 플립 스턴트를 구사하며 넘어지지 않고 결승선까지 완주하는 피직스 모토크로스 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiStuntBikeExtremeGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 사이드 추종 시네마틱 카메라, 사막 일몰 협곡 지형 & 흙먼지 안개.
+     - 140m 연속 3D 서피스 지형 트랙:
+       - 0~20m: 평탄한 안전 광폭 스타트 플랫폼 (스폰 즉시 낙하 원천 차단).
+       - 20~45m: 제1 언덕 & 램프 점프대 (Y: 1.0 -> 5.2m).
+       - 45~75m: 롤러코스터 다운힐 & 급상승 2차 메가 점프대 (Y: 6.8m).
+       - 75~105m: 연속 3단 요철 (Whoops 지형).
+       - 105~130m: 라스트 롱 갭 점프대 (Y: 7.2m).
+       - 130~150m: 결승 체커기 게이트 아치 (X: 135m).
+     - 3D 모토크로스 바이크 & 라이더 모델링:
+       - 회전하는 전/후륜 휠, 오렌지 프레임, 엔진 블록, 배기 머플러 파이프.
+       - 3D 라이더 아바타 & No.033 공식 영웅 스프라이트 HUD 배지.
+       - 가속 시 배기구에서 뿜어져 나오는 흙먼지 파티클 분출.
+     - 독립 전후륜 서스펜션 접지 물리 & 공중 360° 플립 스턴트 감지:
+       - 앞뒤 바퀴의 지면 높이를 각각 계산하여 지형 기울기 추종.
+       - 공중에서 좌우 틸트로 360° 회전 완료 시마다 "🔥 360° FLIP! +500 PTS" 대형 배너 연출.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 우측 대형 76px [🚀 GAS] 및 60px [🛑 BRAKE].
+       - 좌측 [↩️ BACK] 및 [↪️ FWD] 틸트 밸런스 제어.
+       - 스로틀, 착지, 플립 성공, 전복 시 다채로운 햅틱(`navigator.vibrate`) 피드백.
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 진행도 및 스턴트 점수 비례 20~50 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No033_StuntBikeExtreme_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 무결점 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 33개 완료 (No.034 Sushi Party 대기).
+
+---
+
 ## [2026-09-07 23:07 KST] [Poki 110선 리마스터 32/110] No.032 Brain Test Three.js 3D 인터랙티브 피직스 트릭 퍼즐 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/brain-test-tricky-puzzles`) 분석 및 프롬프트(`src/components/poki/prompts/No032_BrainTest_Prompt.md`) 작성.
