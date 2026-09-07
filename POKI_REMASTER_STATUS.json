@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 30,
-  "completed_count": 29,
-  "last_updated": "2026-09-07T23:02:00+09:00",
+  "current_game_index": 31,
+  "completed_count": 30,
+  "last_updated": "2026-09-07T23:04:00+09:00",
   "history": [
     {
       "id": 1,
@@ -324,6 +324,17 @@
       "component": "src/components/poki/PokiMurderGame.tsx",
       "completed_at": "2026-09-07T23:02:00+09:00",
       "details": "Three.js 기반 3D 왕 암살과 수호 코믹 액션 구현, 24x8m 궁전 레드 카펫 복도 & 대리석 기둥 & 황금 촛대(시작 안전 간격 안착), 3D 왕 & 암살자 메쉬(왕관/단도/망토 & No.29 영웅 배지), 왕 걸어가기 & 수시로 기습 뒤돌아보기 AI, 암살자 모드(게이지 충전 기습 찌르기 vs 뒤돌아볼 때 들키면 지하 감옥 투옥), 왕 모드(뒤돌아보기로 뒤따라오는 암살자 색출 및 친위대 체포), 45개 3D 단검 스파크/성공 축하 콘페티 파티클 분출, 100% 모바일 퓨어 홀드&릴리즈 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 30,
+      "name": "Disaster Arena",
+      "poki_url": "https://poki.com/kr/g/disaster-arena",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No030_DisasterArena_Prompt.md",
+      "component": "src/components/poki/PokiDisasterArenaGame.tsx",
+      "completed_at": "2026-09-07T23:04:00+09:00",
+      "details": "Three.js 기반 3D 멀티플레이어 자연재해 서바이벌 배틀로얄 구현, 36m 원형 플로팅 아레나 & 중앙 3단 대피 타워 & 4대 부유 발판 & 용암 바다(시작 1단 타워 안전 안착), 4대 재난 페이즈(메테오 샤워 붉은 경고링 & 35개 폭발 파티클 / 바닥 용암 상승 The Floor is Lava 고지대 대피 / 회전 메가 토네이도 흡인 / 카타클리즘 최종 혼돈), 3D 복셀 아바타 & No.30 영웅 배지, 3명 AI 서바이버 봇, 황금 트로피 & 네온 코인 루팅, 360도 플로팅 조이스틱 + 80px 점프 + 64px 대시 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
