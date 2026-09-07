@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 24,
-  "completed_count": 23,
-  "last_updated": "2026-09-07T22:01:00+09:00",
+  "current_game_index": 25,
+  "completed_count": 24,
+  "last_updated": "2026-09-07T22:11:00+09:00",
   "history": [
     {
       "id": 1,
@@ -258,6 +258,17 @@
       "component": "src/components/poki/PokiGunsGunsGunsGame.tsx",
       "completed_at": "2026-09-07T22:01:00+09:00",
       "details": "Three.js 기반 3D 택티컬 군사 아레나 슈터 구현, 34x28m 콘크리트 기지 & 서쪽 안전 엄폐 스폰 구역(시작 급사 원천 차단), 4대 군사 컨테이너 & 모래주머니 벙커 & 2대 폭발 TNT 배럴, 3D 특수요원 아바타 & No.23 영웅 배지, 2종 무기(M4A1 돌격소총 연사 / SPAS-12 산탄총 5발 확산), 5명 적 AI 용병 분대 교전 & 머리 위 3D 체력바, 총구 화염 Flash & 탄도 트레이서, 좌측 플로팅 조이스틱 + 우측 80px 사격/재장전/무기교체 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 24,
+      "name": "Ragdoll Hit",
+      "poki_url": "https://poki.com/kr/g/ragdoll-hit",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No024_RagdollHit_Prompt.md",
+      "component": "src/components/poki/PokiRagdollHitGame.tsx",
+      "completed_at": "2026-09-07T22:11:00+09:00",
+      "details": "Three.js 기반 3D 물리 랙돌 격투 액션 배틀 구현, 22x15m 사이버 옥타곤 링 & 4대 코너 포스트 & 3단 탄성 바운스 로프(시작 8m 안전 간격 안착), 다관절 3D 랙돌 파이터 메쉬 & No.24 영웅 배지, 3라운드 챔피언십 AI(블러드 스틱맨, 아이언 브루저 야구배트, 쉐도우 챔피언 거대 워해머), 연타 펀치 스매시 / 플라잉 점프킥 / 가드 방어, 타격 시 30개 3D 불꽃 스파크 파티클 & 로프 반발 바운스 넉백 물리, 좌측 플로팅 조이스틱 + 우측 80px 스매시/점프킥/가드 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
