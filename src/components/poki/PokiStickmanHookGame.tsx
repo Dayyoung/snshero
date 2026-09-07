@@ -1,405 +1,739 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
+import { CardData } from '../../types';
 import { MinimalistMissionHUD } from '../MinimalistMissionHUD';
 import { VictoryRewardModal } from '../VictoryRewardModal';
-import { calculateAndDepositMissionReward } from '../../lib/standardizedRewardGateway';
+import { UniversalTutorialModal, TutorialStep } from '../UniversalTutorialModal';
 import { drawCardSprite } from '../../lib/canvasCardRenderer';
+import { calculateAndDepositMissionReward, RewardReceipt } from '../../lib/standardizedRewardGateway';
 
 interface PokiStickmanHookGameProps {
   onBack: () => void;
   cardId?: number;
+  deck?: CardData[];
+  language?: string;
+  lowSpecMode?: boolean;
+  playSfx?: (url: string) => void;
+  onExit?: () => void;
+  onReward?: (amount: number) => void;
 }
 
-interface HookPoint {
+interface HookAnchor {
   x: number;
   y: number;
-  radius: number;
+  mesh: THREE.Mesh;
+  pulseRing: THREE.Mesh;
 }
 
 interface Trampoline {
   x: number;
   y: number;
   w: number;
-  h: number;
+  mesh: THREE.Mesh;
 }
 
-export const PokiStickmanHookGame: React.FC<PokiStickmanHookGameProps> = ({ onBack, cardId = 20 }) => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [gameOver, setGameOver] = useState(false);
-  const [gameWon, setGameWon] = useState(false);
-  const [progressPct, setProgressPct] = useState(0);
-  const [rewardResult, setRewardResult] = useState<any>(null);
+interface StarCoin {
+  x: number;
+  y: number;
+  mesh: THREE.Mesh;
+  collected: boolean;
+}
 
-  const gameStateRef = useRef({
+export const PokiStickmanHookGame: React.FC<PokiStickmanHookGameProps> = ({
+  onBack,
+  cardId = 20,
+  deck = [],
+  language = 'ko',
+  lowSpecMode = false,
+  playSfx,
+  onExit,
+  onReward,
+}) => {
+  const isKo = language === 'ko';
+  const playerHeroId = deck[0]?.id || cardId || 20;
+  const handleExit = onExit || onBack;
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const heroSpriteCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  // 게임 상태
+  const [score, setScore] = useState<number>(0);
+  const [progressPct, setProgressPct] = useState<number>(0);
+  const [isHooked, setIsHooked] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
+  const [isVictory, setIsVictory] = useState<boolean>(false);
+  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
+
+  // 튜토리얼
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_tutorial_stickman_hook') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+
+  // 물리 시뮬레이션 상태 Ref
+  const stateRef = useRef({
     player: {
-      x: 100,
-      y: 300,
-      vx: 6,
-      vy: 0,
-      radius: 16,
-      angle: 0,
-      angularVel: 0.1,
+      pos: new THREE.Vector3(2, 3.5, 0),
+      vel: new THREE.Vector3(8.5, 0, 0),
+      rotZ: 0,
     },
     hook: {
       active: false,
-      anchorIndex: -1,
-      anchorX: 0,
-      anchorY: 0,
+      anchor: null as HookAnchor | null,
       length: 0,
+      angle: 0,
+      angularVel: 0,
+      lineMesh: null as THREE.Line | null,
     },
-    anchors: [
-      { x: 250, y: 160, radius: 10 },
-      { x: 500, y: 140, radius: 10 },
-      { x: 800, y: 180, radius: 10 },
-      { x: 1150, y: 150, radius: 10 },
-      { x: 1500, y: 170, radius: 10 },
-      { x: 1900, y: 140, radius: 10 },
-      { x: 2300, y: 180, radius: 10 },
-      { x: 2700, y: 150, radius: 10 },
-      { x: 3100, y: 160, radius: 10 },
-    ] as HookPoint[],
-    trampolines: [
-      { x: 650, y: 460, w: 100, h: 18 },
-      { x: 1300, y: 480, w: 120, h: 18 },
-      { x: 2100, y: 470, w: 110, h: 18 },
-      { x: 2900, y: 490, w: 130, h: 18 },
-    ] as Trampoline[],
-    finishX: 3500,
-    cameraX: 0,
-    cameraY: 0,
-    isPointerDown: false,
-    gravity: 0.35,
-    damping: 0.992,
+    isHoldingHook: false,
+    anchors: [] as HookAnchor[],
+    trampolines: [] as Trampoline[],
+    stars: [] as StarCoin[],
+    particles: [] as { mesh: THREE.Mesh; vel: THREE.Vector3; life: number }[],
+    finishX: 105,
   });
 
+  // 영웅 카드 스프라이트 페이스 캐싱
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    if (!heroSpriteCanvasRef.current) return;
+    const ctx = heroSpriteCanvasRef.current.getContext('2d');
     if (!ctx) return;
+    drawCardSprite(ctx, playerHeroId, 0, 0, 64, 64);
+  }, [playerHeroId]);
 
-    let animId: number;
+  // Three.js 씬 초기화 및 메인 루프
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
-    const render = () => {
-      const state = gameStateRef.current;
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
 
-      if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+    // 씬, 카메라, 렌더러
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0a0c1a);
+    scene.fog = new THREE.FogExp2(0x0a0c1a, 0.012);
+
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 150);
+    camera.position.set(0, 6.5, 20);
+    camera.lookAt(0, 2.5, 0);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = !lowSpecMode;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    container.appendChild(renderer.domElement);
+
+    // 조명
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+    scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0x00f3ff, 1.4);
+    dirLight.position.set(20, 30, 20);
+    dirLight.castShadow = !lowSpecMode;
+    scene.add(dirLight);
+
+    // 1. 시작 18m 안전 광폭 대지 (시작 급사 원천 차단)
+    const startPlatformGeo = new THREE.BoxGeometry(22, 2, 4);
+    const platMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.5, metalness: 0.4 });
+    const startPlat = new THREE.Mesh(startPlatformGeo, platMat);
+    startPlat.position.set(9, 0, 0);
+    scene.add(startPlat);
+
+    // 상단 네온 엣지
+    const edgeGeo = new THREE.BoxGeometry(22, 0.1, 4.05);
+    const edgeMat = new THREE.MeshBasicMaterial({ color: 0x00f3ff });
+    const edge = new THREE.Mesh(edgeGeo, edgeMat);
+    edge.position.set(9, 1.05, 0);
+    scene.add(edge);
+
+    // 2. 10개의 공중 네온 앵커 피벗
+    stateRef.current.anchors = [];
+    const anchorConfigs = [
+      { x: 22, y: 8.5 },
+      { x: 32, y: 9.0 },
+      { x: 42, y: 8.2 },
+      { x: 52, y: 9.5 },
+      { x: 62, y: 8.8 },
+      { x: 72, y: 9.2 },
+      { x: 82, y: 8.6 },
+      { x: 92, y: 9.4 },
+      { x: 100, y: 8.5 },
+    ];
+
+    anchorConfigs.forEach((cfg) => {
+      const aGeo = new THREE.SphereGeometry(0.45, 16, 16);
+      const aMat = new THREE.MeshBasicMaterial({ color: 0xfacc15 });
+      const aMesh = new THREE.Mesh(aGeo, aMat);
+      aMesh.position.set(cfg.x, cfg.y, 0);
+      scene.add(aMesh);
+
+      const rGeo = new THREE.RingGeometry(0.65, 0.8, 24);
+      const rMat = new THREE.MeshBasicMaterial({ color: 0xfde047, side: THREE.DoubleSide });
+      const pulseRing = new THREE.Mesh(rGeo, rMat);
+      pulseRing.position.set(cfg.x, cfg.y, 0);
+      scene.add(pulseRing);
+
+      stateRef.current.anchors.push({
+        x: cfg.x,
+        y: cfg.y,
+        mesh: aMesh,
+        pulseRing,
+      });
+    });
+
+    // 3. 고탄성 트램펄린 패드 4개
+    stateRef.current.trampolines = [];
+    const trampConfigs = [
+      { x: 27, y: 0.5, w: 4.5 },
+      { x: 47, y: 0.8, w: 5.0 },
+      { x: 67, y: 0.5, w: 5.0 },
+      { x: 87, y: 0.8, w: 5.5 },
+    ];
+
+    const trampMat = new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.3 });
+    const trampBedMat = new THREE.MeshBasicMaterial({ color: 0xff007f });
+
+    trampConfigs.forEach((cfg) => {
+      const tGroup = new THREE.Group();
+      tGroup.position.set(cfg.x, cfg.y, 0);
+
+      const base = new THREE.Mesh(new THREE.BoxGeometry(cfg.w, 0.4, 3), trampMat);
+      tGroup.add(base);
+
+      const bed = new THREE.Mesh(new THREE.BoxGeometry(cfg.w - 0.4, 0.15, 2.6), trampBedMat);
+      bed.position.y = 0.25;
+      tGroup.add(bed);
+
+      scene.add(tGroup);
+
+      stateRef.current.trampolines.push({
+        x: cfg.x,
+        y: cfg.y + 0.3,
+        w: cfg.w,
+        mesh: base,
+      });
+    });
+
+    // 4. 황금 스타 코인 15개
+    stateRef.current.stars = [];
+    const starGeo = new THREE.OctahedronGeometry(0.38, 0);
+    const starMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, metalness: 0.8, roughness: 0.2 });
+
+    const starCoords = [
+      { x: 15, y: 4.5 }, { x: 20, y: 6.0 }, { x: 26, y: 4.0 }, { x: 30, y: 6.8 },
+      { x: 36, y: 5.5 }, { x: 41, y: 6.2 }, { x: 46, y: 4.2 }, { x: 51, y: 7.0 },
+      { x: 57, y: 5.8 }, { x: 62, y: 6.5 }, { x: 68, y: 4.5 }, { x: 74, y: 6.8 },
+      { x: 80, y: 5.5 }, { x: 89, y: 5.0 }, { x: 97, y: 6.2 }
+    ];
+
+    starCoords.forEach((coord) => {
+      const sMesh = new THREE.Mesh(starGeo, starMat);
+      sMesh.position.set(coord.x, coord.y, 0);
+      scene.add(sMesh);
+      stateRef.current.stars.push({ x: coord.x, y: coord.y, mesh: sMesh, collected: false });
+    });
+
+    // 5. 결승 포털 & 체커 플래그 (X = 105m)
+    const finishGroup = new THREE.Group();
+    finishGroup.position.set(105, 0, 0);
+
+    const fBase = new THREE.Mesh(new THREE.BoxGeometry(10, 2, 4), platMat);
+    finishGroup.add(fBase);
+
+    const fArchGeo = new THREE.TorusGeometry(3.5, 0.35, 16, 32);
+    const fArchMat = new THREE.MeshBasicMaterial({ color: 0x4ade80 });
+    const fArch = new THREE.Mesh(fArchGeo, fArchMat);
+    fArch.position.set(0, 3.5, 0);
+    finishGroup.add(fArch);
+
+    const fPortal = new THREE.Mesh(
+      new THREE.CircleGeometry(3.2, 32),
+      new THREE.MeshBasicMaterial({ color: 0x22c55e, transparent: true, opacity: 0.7, side: THREE.DoubleSide })
+    );
+    fPortal.position.set(0, 3.5, 0);
+    finishGroup.add(fPortal);
+
+    scene.add(finishGroup);
+
+    // 6. 훅 에너지 와이어 라인 메쉬
+    const ropeGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0)]);
+    const ropeMat = new THREE.LineBasicMaterial({ color: 0x00f3ff, linewidth: 3 });
+    const ropeLine = new THREE.Line(ropeGeo, ropeMat);
+    ropeLine.visible = false;
+    scene.add(ropeLine);
+    stateRef.current.hook.lineMesh = ropeLine;
+
+    // 7. 3D 스틱맨 아바타 메쉬
+    const stickmanGroup = new THREE.Group();
+
+    // 머리
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.4, 16, 16), new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.3 }));
+    head.position.y = 0.9;
+    stickmanGroup.add(head);
+
+    // 몸통
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.9, 8), new THREE.MeshStandardMaterial({ color: 0x0284c7 }));
+    body.position.y = 0.2;
+    stickmanGroup.add(body);
+
+    // 팔다리
+    const limbGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.7, 8);
+    const limbMat = new THREE.MeshStandardMaterial({ color: 0x0369a1 });
+
+    const armL = new THREE.Mesh(limbGeo, limbMat);
+    armL.position.set(0.35, 0.4, 0);
+    armL.rotation.z = -0.5;
+    const armR = new THREE.Mesh(limbGeo, limbMat);
+    armR.position.set(-0.35, 0.4, 0);
+    armR.rotation.z = 0.5;
+    stickmanGroup.add(armL, armR);
+
+    const legL = new THREE.Mesh(limbGeo, limbMat);
+    legL.position.set(0.2, -0.5, 0);
+    const legR = new THREE.Mesh(limbGeo, limbMat);
+    legR.position.set(-0.2, -0.5, 0);
+    stickmanGroup.add(legL, legR);
+
+    stickmanGroup.position.set(2, 3.5, 0);
+    scene.add(stickmanGroup);
+
+    // 파티클 생성 함수
+    const spawnSparks = (pos: THREE.Vector3, color: number, count = 10) => {
+      for (let i = 0; i < (lowSpecMode ? count / 2 : count); i++) {
+        const p = new THREE.Mesh(new THREE.SphereGeometry(0.09, 6, 6), new THREE.MeshBasicMaterial({ color }));
+        p.position.copy(pos);
+        scene.add(p);
+        stateRef.current.particles.push({
+          mesh: p,
+          vel: new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 5 + 2, (Math.random() - 0.5) * 4),
+          life: 0.5 + Math.random() * 0.3,
+        });
       }
+    };
 
-      const cw = canvas.width;
-      const ch = canvas.height;
+    // 키보드 리스너
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space' || e.key === ' ') {
+        startHookAction();
+      }
+    };
 
-      if (!gameOver && !gameWon) {
-        const p = state.player;
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.code === 'Space' || e.key === ' ') {
+        releaseHookAction();
+      }
+    };
 
-        // If pointer is held, try to hook to closest forward anchor
-        if (state.isPointerDown) {
-          if (!state.hook.active) {
-            // Find closest available anchor in reasonable distance
-            let closestIdx = -1;
-            let minDist = 320;
-            state.anchors.forEach((anc, idx) => {
-              const d = Math.hypot(anc.x - p.x, anc.y - p.y);
-              if (d < minDist && anc.x >= p.x - 80) {
-                minDist = d;
-                closestIdx = idx;
-              }
-            });
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
 
-            if (closestIdx !== -1) {
-              const anc = state.anchors[closestIdx];
-              state.hook.active = true;
-              state.hook.anchorIndex = closestIdx;
-              state.hook.anchorX = anc.x;
-              state.hook.anchorY = anc.y;
-              state.hook.length = Math.hypot(anc.x - p.x, anc.y - p.y);
+    // 리사이즈
+    const handleResize = () => {
+      if (!container) return;
+      const w = container.clientWidth || window.innerWidth;
+      const h = container.clientHeight || window.innerHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h, false);
+    };
+
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+
+    // 메인 물리 루프
+    let animId = 0;
+    let lastTime = performance.now();
+
+    const loop = (time: number) => {
+      animId = requestAnimationFrame(loop);
+      const dt = Math.min((time - lastTime) / 1000, 0.08);
+      lastTime = time;
+
+      const p = stateRef.current.player;
+      const hook = stateRef.current.hook;
+
+      // 앵커 펄스 애니메이션
+      stateRef.current.anchors.forEach((a) => {
+        const s = 1.0 + Math.sin(time * 0.006 + a.x) * 0.15;
+        a.pulseRing.scale.set(s, s, 1);
+      });
+
+      // 1. 와이어 그래플링 물리 vs 공중 자유 비행 물리
+      if (hook.active && hook.anchor) {
+        // 원심력 각가속도 스윙
+        const gravity = 24;
+        const angularAcc = -(gravity / hook.length) * Math.sin(hook.angle);
+        hook.angularVel += angularAcc * dt;
+        hook.angularVel *= 0.996; // 공기 저항 미약 감쇠
+        hook.angle += hook.angularVel * dt;
+
+        // 플레이어 위치 갱신
+        p.pos.x = hook.anchor.x + Math.sin(hook.angle) * hook.length;
+        p.pos.y = hook.anchor.y - Math.cos(hook.angle) * hook.length;
+
+        // 선 속도 계산
+        p.vel.x = Math.cos(hook.angle) * hook.angularVel * hook.length;
+        p.vel.y = Math.sin(hook.angle) * hook.angularVel * hook.length;
+
+        // 스틱맨 회전각 동기화
+        p.rotZ = -hook.angle;
+
+        // 와이어 라인 렌더링
+        if (hook.lineMesh) {
+          const posAttr = hook.lineMesh.geometry.attributes.position as THREE.BufferAttribute;
+          posAttr.setXYZ(0, hook.anchor.x, hook.anchor.y, 0);
+          posAttr.setXYZ(1, p.pos.x, p.pos.y, 0);
+          posAttr.needsUpdate = true;
+          hook.lineMesh.visible = true;
+        }
+      } else {
+        if (hook.lineMesh) hook.lineMesh.visible = false;
+
+        // 자유 비행 물리
+        p.vel.y -= 22 * dt; // 중력
+        p.pos.x += p.vel.x * dt;
+        p.pos.y += p.vel.y * dt;
+
+        // 공중제비 롤링
+        p.rotZ -= 7 * dt;
+
+        // 시작 플랫폼 착지 검사
+        if (p.pos.x >= -2 && p.pos.x <= 20 && p.pos.y <= 1.5 && p.vel.y <= 0) {
+          p.pos.y = 1.5;
+          p.vel.y = 0;
+          p.vel.x = Math.max(8.0, p.vel.x);
+          p.rotZ = 0;
+        }
+
+        // 트램펄린 바운스 검사
+        stateRef.current.trampolines.forEach((tr) => {
+          if (p.pos.x >= tr.x - tr.w / 2 && p.pos.x <= tr.x + tr.w / 2) {
+            if (p.pos.y >= tr.y - 0.4 && p.pos.y <= tr.y + 0.8 && p.vel.y <= 0) {
+              p.pos.y = tr.y + 0.6;
+              p.vel.y = 18.0; // 슈퍼 바운스!
+              p.vel.x = Math.max(10.0, p.vel.x * 1.1);
+              spawnSparks(new THREE.Vector3(tr.x, tr.y, 0), 0xff007f, 18);
+              if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+              if (navigator.vibrate) navigator.vibrate([30, 40]);
             }
           }
-        } else {
-          state.hook.active = false;
-        }
-
-        if (state.hook.active) {
-          // Pendulum swing physics
-          const dx = p.x - state.hook.anchorX;
-          const dy = p.y - state.hook.anchorY;
-          let currentDist = Math.hypot(dx, dy) || 1;
-
-          // Apply gravity
-          p.vy += state.gravity;
-
-          // Constrain to rope length
-          p.x += p.vx;
-          p.y += p.vy;
-
-          const nDx = p.x - state.hook.anchorX;
-          const nDy = p.y - state.hook.anchorY;
-          const nDist = Math.hypot(nDx, nDy) || 1;
-
-          if (nDist > state.hook.length) {
-            const excess = nDist - state.hook.length;
-            p.x -= (nDx / nDist) * excess;
-            p.y -= (nDy / nDist) * excess;
-
-            // Project velocity perpendicular to the rope (tension force)
-            const unitX = nDx / nDist;
-            const unitY = nDy / nDist;
-            const dot = p.vx * unitX + p.vy * unitY;
-            p.vx -= dot * unitX;
-            p.vy -= dot * unitY;
-
-            // Centrifugal boost when swinging forward
-            p.vx += 0.12;
-          }
-
-          p.vx *= state.damping;
-          p.vy *= state.damping;
-          p.angle += Math.hypot(p.vx, p.vy) * 0.04;
-        } else {
-          // Free airborne flight
-          p.vy += state.gravity;
-          p.vx *= state.damping;
-          p.vy *= state.damping;
-          p.x += p.vx;
-          p.y += p.vy;
-          p.angle += p.vx * 0.03;
-        }
-
-        // Trampoline bounce
-        state.trampolines.forEach(t => {
-          if (
-            p.x >= t.x &&
-            p.x <= t.x + t.w &&
-            p.y + p.radius >= t.y &&
-            p.y - p.radius <= t.y + t.h &&
-            p.vy > 0
-          ) {
-            p.vy = -14.5;
-            p.vx = Math.max(p.vx, 7.5);
-          }
         });
-
-        // Track progress %
-        const progress = Math.min(100, Math.max(0, Math.round((p.x / state.finishX) * 100)));
-        setProgressPct(progress);
-
-        // Win check
-        if (p.x >= state.finishX) {
-          setGameWon(true);
-          const deposit = calculateAndDepositMissionReward({
-            gameId: 'poki_stickman_hook',
-            gameTitle: 'Stickman Hook',
-            isVictory: true,
-            score: 100,
-            maxTargetScore: 100,
-            durationSeconds: 30,
-          });
-          setRewardResult(deposit);
-          return;
-        }
-
-        // Fall death
-        if (p.y > 680) {
-          setGameOver(true);
-        }
-
-        // Camera follow
-        state.cameraX = p.x - cw * 0.35;
-        state.cameraY = Math.min(100, Math.max(-100, (p.y - ch * 0.5) * 0.4));
       }
 
-      // Render
-      ctx.fillStyle = '#18181b';
-      ctx.fillRect(0, 0, cw, ch);
-
-      ctx.save();
-      ctx.translate(-state.cameraX, -state.cameraY);
-
-      // Background grid lines
-      ctx.strokeStyle = '#27272a';
-      ctx.lineWidth = 1;
-      const startX = Math.floor(state.cameraX / 60) * 60;
-      for (let x = startX; x < state.cameraX + cw + 60; x += 60) {
-        ctx.beginPath();
-        ctx.moveTo(x, -200);
-        ctx.lineTo(x, 800);
-        ctx.stroke();
-      }
-
-      // Finish line
-      ctx.fillStyle = '#22c55e';
-      ctx.fillRect(state.finishX, 0, 16, 700);
-      ctx.font = 'bold 16px monospace';
-      ctx.fillStyle = '#86efac';
-      ctx.fillText('FINISH LINE', state.finishX + 24, 250);
-
-      // Trampolines (Bouncy pads)
-      state.trampolines.forEach(t => {
-        ctx.fillStyle = '#f59e0b';
-        ctx.fillRect(t.x, t.y, t.w, t.h);
-        ctx.fillStyle = '#fbbf24';
-        ctx.fillRect(t.x + 4, t.y + 3, t.w - 8, 4);
-
-        ctx.font = 'bold 10px monospace';
-        ctx.fillStyle = '#000';
-        ctx.textAlign = 'center';
-        ctx.fillText('BOUNCE', t.x + t.w / 2, t.y + 13);
+      // 2. 스타 코인 수집
+      stateRef.current.stars.forEach((star) => {
+        if (!star.collected) {
+          star.mesh.rotation.y += 3.0 * dt;
+          const dist = p.pos.distanceTo(new THREE.Vector3(star.x, star.y, 0));
+          if (dist < 1.4) {
+            star.collected = true;
+            star.mesh.visible = false;
+            setScore((s) => s + 50);
+            spawnSparks(new THREE.Vector3(star.x, star.y, 0), 0xfacc15, 12);
+            if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
+            if (navigator.vibrate) navigator.vibrate(20);
+          }
+        }
       });
 
-      // Anchors
-      state.anchors.forEach((anc, idx) => {
-        const isCurrent = state.hook.active && state.hook.anchorIndex === idx;
-        ctx.beginPath();
-        ctx.arc(anc.x, anc.y, anc.radius, 0, Math.PI * 2);
-        ctx.fillStyle = isCurrent ? '#ec4899' : '#e4e4e7';
-        ctx.fill();
-        ctx.strokeStyle = isCurrent ? '#f472b6' : '#71717a';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-
-        // Ring around anchor
-        ctx.beginPath();
-        ctx.arc(anc.x, anc.y, anc.radius + 6, 0, Math.PI * 2);
-        ctx.strokeStyle = isCurrent ? 'rgba(236, 72, 153, 0.4)' : 'rgba(255, 255, 255, 0.15)';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-      });
-
-      // Grappling Hook Rope
-      if (state.hook.active) {
-        ctx.beginPath();
-        ctx.moveTo(state.hook.anchorX, state.hook.anchorY);
-        ctx.lineTo(state.player.x, state.player.y);
-        ctx.strokeStyle = '#f43f5e';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-
-        // Rope tension dots
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc((state.hook.anchorX + state.player.x) / 2, (state.hook.anchorY + state.player.y) / 2, 2, 0, Math.PI * 2);
-        ctx.fill();
+      // 3. 결승선 통과 검사 (X >= 105m)
+      if (p.pos.x >= 105 && !isVictory && !isGameOver) {
+        handleVictory();
       }
 
-      // Player
-      ctx.save();
-      ctx.translate(state.player.x, state.player.y);
-      ctx.rotate(state.player.angle);
-      drawCardSprite(ctx, cardId, -16, -16, 32, 32);
-      ctx.restore();
+      // 4. 낙하 리스폰 검사 (Y < -9m)
+      if (p.pos.y < -9 && !isGameOver && !isVictory) {
+        hook.active = false;
+        setIsHooked(false);
+        // 안전 위치로 리스폰
+        p.pos.set(Math.max(2, p.pos.x - 15), 5.0, 0);
+        p.vel.set(8.5, 4.0, 0);
+        spawnSparks(p.pos, 0xef4444, 15);
+      }
 
-      ctx.restore();
+      // 진행도 업데이트
+      const pct = Math.min(100, Math.max(0, Math.floor((p.pos.x / 105) * 100)));
+      setProgressPct(pct);
 
-      animId = requestAnimationFrame(render);
+      // 스틱맨 메쉬 위치 & 회전 동기화
+      stickmanGroup.position.set(p.pos.x, p.pos.y, 0);
+      stickmanGroup.rotation.z = p.rotZ;
+
+      // 카메라 사이드뷰 부드러운 트래킹
+      camera.position.x += (p.pos.x + 3.5 - camera.position.x) * 0.12;
+      camera.position.y += (Math.max(4.5, p.pos.y + 1.5) - camera.position.y) * 0.08;
+      camera.lookAt(p.pos.x + 1.5, p.pos.y + 0.8, 0);
+
+      // 파티클 업데이트
+      for (let i = stateRef.current.particles.length - 1; i >= 0; i--) {
+        const pt = stateRef.current.particles[i];
+        pt.vel.y -= 9.8 * dt;
+        pt.mesh.position.addScaledVector(pt.vel, dt);
+        pt.life -= dt;
+        if (pt.life <= 0) {
+          scene.remove(pt.mesh);
+          stateRef.current.particles.splice(i, 1);
+        }
+      }
+
+      renderer.render(scene, camera);
     };
 
-    animId = requestAnimationFrame(render);
-    return () => cancelAnimationFrame(animId);
-  }, [gameOver, gameWon, cardId]);
+    animId = requestAnimationFrame(loop);
 
-  const handlePointerDown = () => {
-    gameStateRef.current.isPointerDown = true;
-  };
+    // 훅 액션 시작
+    const startHookAction = () => {
+      const p = stateRef.current.player;
+      const hook = stateRef.current.hook;
+      stateRef.current.isHoldingHook = true;
 
-  const handlePointerUp = () => {
-    gameStateRef.current.isPointerDown = false;
-  };
+      // 전방 가장 가까운 앵커 찾기 (거리 < 13.5m)
+      let targetAnchor: HookAnchor | null = null;
+      let minD = 13.5;
 
-  const handleRestart = () => {
-    gameStateRef.current = {
-      ...gameStateRef.current,
-      player: {
-        x: 100,
-        y: 300,
-        vx: 6,
-        vy: 0,
-        radius: 16,
-        angle: 0,
-        angularVel: 0.1,
-      },
-      hook: {
-        active: false,
-        anchorIndex: -1,
-        anchorX: 0,
-        anchorY: 0,
-        length: 0,
-      },
-      cameraX: 0,
-      cameraY: 0,
-      isPointerDown: false,
+      stateRef.current.anchors.forEach((a) => {
+        const d = Math.hypot(p.pos.x - a.x, p.pos.y - a.y);
+        // 플레이어보다 앞쪽 또는 근처에 있는 앵커 우선
+        if (d < minD && a.x > p.pos.x - 3.0) {
+          minD = d;
+          targetAnchor = a;
+        }
+      });
+
+      if (targetAnchor) {
+        hook.active = true;
+        hook.anchor = targetAnchor;
+        hook.length = minD;
+        hook.angle = Math.atan2(p.pos.x - (targetAnchor as HookAnchor).x, (targetAnchor as HookAnchor).y - p.pos.y);
+        hook.angularVel = (p.vel.x / minD) * 1.6;
+        setIsHooked(true);
+
+        spawnSparks(new THREE.Vector3((targetAnchor as HookAnchor).x, (targetAnchor as HookAnchor).y, 0), 0x00f3ff, 14);
+        if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+        if (navigator.vibrate) navigator.vibrate(30);
+      }
     };
-    setGameOver(false);
-    setGameWon(false);
-    setProgressPct(0);
-    setRewardResult(null);
-  };
+
+    // 훅 액션 해제
+    const releaseHookAction = () => {
+      stateRef.current.isHoldingHook = false;
+      const hook = stateRef.current.hook;
+      const p = stateRef.current.player;
+
+      if (hook.active) {
+        hook.active = false;
+        setIsHooked(false);
+        // 강력한 도약 가속
+        p.vel.x = Math.max(p.vel.x, 9.0);
+        p.vel.y = Math.max(p.vel.y, 4.0);
+        spawnSparks(p.pos, 0x38bdf8, 12);
+        if (navigator.vibrate) navigator.vibrate(25);
+      }
+    };
+
+    // 승리 처리
+    const handleVictory = () => {
+      setIsVictory(true);
+      const finalScore = score + 1200;
+      setScore(finalScore);
+      const receipt = calculateAndDepositMissionReward({
+        gameId: 'poki_stickman_hook',
+        gameTitle: 'Stickman Hook 3D',
+        durationSeconds: 40,
+        score: finalScore,
+        maxTargetScore: 1800,
+        isVictory: true,
+      });
+      setSettlementReceipt(receipt);
+      if (onReward) onReward(receipt.totalSns);
+    };
+
+    (container as any).__startHook = startHookAction;
+    (container as any).__releaseHook = releaseHookAction;
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+      renderer.dispose();
+      if (container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
+      }
+    };
+  }, [lowSpecMode, onReward, playSfx, score]);
+
+  // 터치 핸들러
+  const handleTouchStart = useCallback(() => {
+    if (containerRef.current && (containerRef.current as any).__startHook) {
+      (containerRef.current as any).__startHook();
+    }
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    if (containerRef.current && (containerRef.current as any).__releaseHook) {
+      (containerRef.current as any).__releaseHook();
+    }
+  }, []);
+
+  // 튜토리얼 스텝
+  const tutorialSteps: TutorialStep[] = [
+    {
+      title: isKo ? '스틱맨 훅 3D 와이어 액션' : 'Stickman Hook 3D Action',
+      badge: 'HOOK 3D',
+      description: isKo
+        ? '공중에 떠 있는 네온 앵커에 와이어를 걸어 시계추 스윙으로 가속하고 피니시 라인에 도달하세요!'
+        : 'Hook onto glowing anchors to swing like a pendulum and race toward the finish line!',
+      keyPoints: isKo
+        ? ['화면을 길게 누르면 와이어 걸기 & 스윙', '손을 떼면 전방으로 높이 도약']
+        : ['Hold screen to hook & swing', 'Release to launch forward with high momentum'],
+      iconType: 'GOAL',
+    },
+    {
+      title: isKo ? '트램펄린 & 연속 점프' : 'Trampolines & Chain Swings',
+      badge: 'CONTROLS',
+      description: isKo
+        ? '바닥의 빨간 트램펄린을 밟으면 슈퍼 바운스로 튀어 오르며 다시 공중으로 도약합니다.'
+        : 'Bounce on red trampolines for super jumps and chain multiple swings together!',
+      keyPoints: isKo
+        ? ['우측 80px [훅] 버튼으로 원터치 편의 조작', '황금 스타 코인을 모아 추가 점수를 획득하세요']
+        : ['80px [HOOK] button for easy one-thumb controls', 'Collect golden star coins for extra score'],
+      iconType: 'GESTURES',
+    },
+  ];
 
   return (
     <div
-      className="relative w-full h-[100dvh] bg-[#18181b] overflow-hidden select-none font-mono touch-none"
-      onPointerDown={handlePointerDown}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerUp}
+      ref={containerRef}
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
+      onMouseDown={handleTouchStart}
+      onMouseUp={handleTouchEnd}
+      onTouchStart={(e) => { e.preventDefault(); handleTouchStart(); }}
+      onTouchEnd={(e) => { e.preventDefault(); handleTouchEnd(); }}
     >
+      {/* 상단 미션 HUD */}
       <MinimalistMissionHUD
-        title="STICKMAN HOOK"
-        score={progressPct}
-        goalScore={100}
-        onBack={onBack}
-        unit="%"
+        gameTitle="Stickman Hook 3D"
+        score={score}
+        targetScore={1500}
+        timeLeft={0}
+        onQuit={handleExit}
+        isKo={isKo}
+        rewardUnit="SNS"
+        customStatLabel={isKo ? '피니시 진행' : 'FINISH'}
+        customStatValue={`${progressPct}% (105m)`}
       />
 
-      {/* Progress Bar Header */}
-      <div className="absolute top-14 left-4 right-4 z-10 flex items-center gap-3 bg-[#09090b]/80 border border-[#27272a] px-3 py-1.5 rounded-sm">
-        <span className="text-xs text-zinc-400">DISTANCE:</span>
-        <div className="flex-1 h-2.5 bg-zinc-800 rounded-xs overflow-hidden">
-          <div
-            className="h-full bg-rose-500 transition-all duration-150"
-            style={{ width: `${progressPct}%` }}
-          />
+      {/* 영웅 카드 배지 & 스윙 상태 HUD */}
+      <div className="absolute top-16 left-4 z-20 flex items-center gap-3 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 border border-cyan-500/40">
+        <canvas ref={heroSpriteCanvasRef} width={40} height={40} className="w-10 h-10 border border-cyan-400 bg-slate-800" />
+        <div className="flex flex-col">
+          <span className="text-[10px] text-cyan-300 font-bold">{isKo ? '스틱맨 훅 레이서' : 'STICKMAN HOOK'}</span>
+          <span className="text-xs text-slate-300">
+            {isHooked ? '🪝 SWINGING' : '⚡ AIR FLIP'}
+          </span>
         </div>
-        <span className="text-xs font-bold text-rose-400">{progressPct}%</span>
       </div>
 
-      {/* Floating Control Tip */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-xs text-zinc-300 bg-zinc-900/90 border border-zinc-700 px-4 py-2 rounded-sm shadow-md pointer-events-none text-center">
-        화면을 <span className="text-rose-400 font-bold">길게 누르면 로프 연결 (스윙)</span> • 손을 <span className="text-emerald-400 font-bold">떼면 전방 가속 점프</span>
+      {/* 훅 스윙 상태 오버레이 */}
+      {isHooked && (
+        <div className="absolute top-16 right-4 z-20 bg-cyan-950/80 backdrop-blur-md px-3 py-1.5 border border-cyan-400 text-xs font-black text-cyan-300 animate-pulse">
+          🪝 HOOKED & SWINGING!
+        </div>
+      )}
+
+      {/* 우측 하단 대형 훅 버튼 (80px 최적 터치 타깃) */}
+      <div className="absolute bottom-6 right-6 z-30 pointer-events-auto">
+        <button
+          type="button"
+          onMouseDown={(e) => { e.stopPropagation(); handleTouchStart(); }}
+          onMouseUp={(e) => { e.stopPropagation(); handleTouchEnd(); }}
+          onTouchStart={(e) => { e.stopPropagation(); handleTouchStart(); }}
+          onTouchEnd={(e) => { e.stopPropagation(); handleTouchEnd(); }}
+          className={`w-20 h-20 rounded-sm border-2 font-black text-sm flex flex-col items-center justify-center active:scale-90 shadow-lg transition-transform ${
+            isHooked
+              ? 'bg-cyan-500 border-cyan-200 text-slate-950 shadow-[0_0_20px_rgba(6,182,212,0.8)]'
+              : 'bg-slate-900/90 border-cyan-400 text-cyan-300 active:bg-cyan-700'
+          }`}
+        >
+          <span className="text-2xl">🪝</span>
+          <span className="mt-0.5 tracking-wider font-extrabold">{isKo ? '훅' : 'HOOK'}</span>
+        </button>
       </div>
 
-      <canvas ref={canvasRef} className="w-full h-full block cursor-pointer" />
+      {/* 좌측 하단 데스크톱 가이드 */}
+      <div className="absolute bottom-6 left-6 z-20 pointer-events-none hidden sm:block text-slate-400 text-xs bg-slate-900/80 px-3 py-2 border border-slate-700">
+        <div>[화면 홀드 / Space]: 훅 와이어 스윙</div>
+        <div>[화면 릴리즈]: 와이어 해제 & 도약</div>
+      </div>
 
-      {/* Game Over Modal */}
-      {gameOver && (
-        <div className="absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-30 p-6 text-center">
-          <div className="text-rose-500 font-bold text-2xl mb-2 tracking-widest">[ FALL DOWN ]</div>
-          <p className="text-sm text-zinc-400 mb-6 max-w-xs">
-            추락했습니다! 앵커 포인트를 제때 잡고 공중 탄력을 유지하세요.
-          </p>
-          <div className="flex gap-4">
+      {/* 튜토리얼 모달 */}
+      {showTutorial && (
+        <UniversalTutorialModal
+          steps={tutorialSteps}
+          onClose={() => {
+            setShowTutorial(false);
+            try {
+              localStorage.setItem('hero_tutorial_stickman_hook', 'true');
+            } catch {
+              // ignore
+            }
+          }}
+          isKo={isKo}
+        />
+      )}
+
+      {/* 패배 모달 */}
+      {isGameOver && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="bg-slate-900 border-2 border-red-500 p-6 max-w-sm w-full text-center">
+            <h2 className="text-2xl font-black text-red-500 mb-2">{isKo ? '도전 실패' : 'FAILED'}</h2>
+            <p className="text-slate-300 text-sm mb-4">
+              {isKo ? '결승선에 도달하지 못했습니다!' : 'Failed to reach the finish gate!'}
+            </p>
+            <div className="bg-slate-800 p-3 mb-4 text-xs space-y-1 text-slate-300">
+              <div className="flex justify-between">
+                <span>{isKo ? '도달 진행도' : 'Progress'}:</span>
+                <span className="text-cyan-400 font-bold">{progressPct}% (105m)</span>
+              </div>
+              <div className="flex justify-between">
+                <span>{isKo ? '최종 점수' : 'Score'}:</span>
+                <span className="text-amber-400 font-bold">{score}</span>
+              </div>
+              {settlementReceipt && (
+                <div className="flex justify-between text-cyan-300 pt-1 border-t border-slate-700">
+                  <span>{isKo ? '지급 보상' : 'Reward'}:</span>
+                  <span className="font-bold">+{settlementReceipt.totalSns} SNS</span>
+                </div>
+              )}
+            </div>
             <button
-              onClick={handleRestart}
-              className="px-6 py-2.5 bg-rose-500 hover:bg-rose-600 text-white font-bold text-sm rounded-sm transition-colors cursor-pointer"
+              type="button"
+              onClick={handleExit}
+              className="w-full py-3 bg-red-600 hover:bg-red-500 text-white font-bold rounded-sm border border-red-400 transition-colors"
             >
-              다시 스윙
-            </button>
-            <button
-              onClick={onBack}
-              className="px-6 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-sm rounded-sm transition-colors cursor-pointer"
-            >
-              미션 목록
+              {isKo ? '확인 및 나가기' : 'CONFIRM & EXIT'}
             </button>
           </div>
         </div>
       )}
 
-      {/* Victory Reward Modal */}
-      {gameWon && (
+      {/* 승리 및 보상 모달 */}
+      {isVictory && settlementReceipt && (
         <VictoryRewardModal
-          isOpen={true}
-          onClose={onBack}
-          rewardAmount={rewardResult?.rewardAmount || 38}
-          message="화려한 스윙과 가속 점프로 결승선 통과를 완수했습니다!"
+          isOpen={isVictory}
+          receipt={settlementReceipt}
+          onClaim={() => {
+            setIsVictory(false);
+            handleExit();
+          }}
+          isKo={isKo}
         />
       )}
     </div>

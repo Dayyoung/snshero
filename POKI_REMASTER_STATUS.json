@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 20,
-  "completed_count": 19,
-  "last_updated": "2026-09-07T21:10:00+09:00",
+  "current_game_index": 21,
+  "completed_count": 20,
+  "last_updated": "2026-09-07T21:20:00+09:00",
   "history": [
     {
       "id": 1,
@@ -214,6 +214,17 @@
       "component": "src/components/poki/PokiBackroomsRecoveryGame.tsx",
       "completed_at": "2026-09-07T21:10:00+09:00",
       "details": "Three.js 기반 3D 백룸 미로 생존 탈출 어드벤처 구현, 28x28m 노란 복도 미로 & 베이지 카펫 바닥 & 천장 타일 & 6대 형광등 조명, 안전 시작 구역(시작 급사 원천 차단), 플레이어 손전등 스포트라이트 & 배터리 시스템, 3개 마그네틱 키카드 & 2개 배터리 팩 수거, 2마리 그림자 엔티티(순찰/7m 추격 AI & 붉은 눈빛), 비상구 철제 게이트 개방 탈출, 화면 기준 360도 이동 100% 일치 및 80px 스프린트 + 68px 손전등 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 20,
+      "name": "Stickman Hook",
+      "poki_url": "https://poki.com/kr/g/stickman-hook",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No020_StickmanHook_Prompt.md",
+      "component": "src/components/poki/PokiStickmanHookGame.tsx",
+      "completed_at": "2026-09-07T21:20:00+09:00",
+      "details": "Three.js 기반 3D 와이어 그래플링 스윙 레이싱 구현, 100m 코스 & 18m 광폭 안전 플랫폼(시작 급사 원천 차단), 3D 스틱맨 아바타 & No.20 영웅 배지, 10개 공중 네온 앵커 피벗 기반 원심력 각가속도 와이어 스윙 물리, 화면 릴리즈 시 전방 탄도 궤적 도약 & 공중 360도 플립 롤링, 4개 고탄성 트램펄린 슈퍼 바운스, 15개 황금 스타 코인(+50점), 105m 결승 포털 도달 승리, 화면 터치 홀드/릴리즈 및 80px 대형 훅 버튼 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
