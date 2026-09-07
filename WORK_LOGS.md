@@ -4,6 +4,35 @@
 
 ---
 
+## [2026-09-08 02:30 KST] [Poki 110선 리마스터 109/110] No.109 Blumgi Slime Three.js 3D 쫀득 슬라임 탄성 차지 도약 & 림 덩크 챌린지 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/blumgi-slime`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No109_BlumgiSlime_Prompt.md`) 작성.
+  - Three.js 3D 기반 네온 젤리 월드 부유 플랫폼 코스 (16m 시작 광폭 안전 플랫폼 안착 절대 원칙 준수).
+  - 결승 50m 지점 거대 3D 네온 림(Torus) 골대 및 No.109 공식 카드 영웅 배지 전광판.
+  - 3D 카와이 에메랄드 슬라임 피규어 (반투명 젤리 돔 바디, 만화 눈망울, No.109 배지 데칼).
+  - 스쿼시 & 스트레치 충전 탄성 점프 물리(Squash on charge, Stretch on jump).
+  - 결승 림 덩크 골인 판정 및 축하 컨페티 파티클 분출.
+  - 모바일 퓨어 터치 조작계(화면 터치 홀드/릴리스 + 76px SLIME JUMP 대형 버튼 + 64px REVERT 안전 발판 복귀 + 햅틱), MinimalistMissionHUD 안전 정산.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 최고 인기 슬라임 점프 게임 Blumgi Slime. 쫀득한 슬라임을 꾹 눌러 에너지를 모았다가 팡! 하고 튕겨 올라 부유 플랫폼을 건너고 최종 골대에 멋지게 덩크하는 쾌감 만점의 탄성 점프 액션.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiBlumgiSlimeGame.tsx`)**:
+     - 젤리 월드 코스 (16m 시작 안전 광폭 플랫폼 및 이어지는 부유 발판 6개).
+     - 결승 50m 지점 3D 네온 림(Torus) 및 상단 No.109 공식 카드 영웅 배지 홀로그램 전광판.
+     - 3D 카와이 슬라임 모델링: 반투명 에메랄드 젤리 바디, 표정 눈망울, 가슴 No.109 공식 카드 배지.
+     - 스쿼시 & 스트레치 물리:
+       - 터치 홀드 시 바닥에 납작하게 찌그러지며 파워 충전 (`scale.y = 1 - c * 0.5`, `scale.x,z = 1 + c * 0.45`).
+       - 릴리스 시 전방 상공으로 높게 도약 (`vel.x = 8 + c * 14`, `vel.y = 7 + c * 12.5`).
+     - 결승 림 내부 통과 덩크 골인 판정 및 45개 컨페티 파티클 폭죽 분출.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 76px [🟢 JUMP!] 대형 차지 버튼 + 64px [🔄 REVERT] 안전 발판 복귀 버튼 + [❓ HELP] + 햅틱 피드백.
+       - MinimalistMissionHUD (도약 거리 m, 골대 목표, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (109/110 완료, current_game_index: 110) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출 완료.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 109/110] No.109 Blumgi Slime Three.js 3D 쫀득 슬라임 탄성 차지 도약 & 림 덩크 챌린지 전면 고도화`)
+
 ## [2026-09-08 02:29 KST] [Poki 110선 리마스터 108/110] No.108 11-11 Three.js 3D 11x11 블록 매트릭스 라인 클리어 퍼즐 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/11-11`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No108_ElevenEleven_Prompt.md`) 작성.
