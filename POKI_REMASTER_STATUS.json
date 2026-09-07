@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 28,
-  "completed_count": 27,
-  "last_updated": "2026-09-07T22:41:00+09:00",
+  "current_game_index": 29,
+  "completed_count": 28,
+  "last_updated": "2026-09-07T22:51:00+09:00",
   "history": [
     {
       "id": 1,
@@ -302,6 +302,17 @@
       "component": "src/components/poki/PokiMasterChessGame.tsx",
       "completed_at": "2026-09-07T22:41:00+09:00",
       "details": "Three.js 기반 3D 클래식 체스 보드 게임 구현, 아이소메트릭 쿼터뷰 8x8 대리석 체스보드 & 월넛 베벨 프레임, 정교한 풀 3D 체스 기물 세트(폰/룩/나이트/비숍/퀸/킹 & 백색 킹 No.27 영웅 배지), 기물 선택 시 0.35m 부유 및 초록색 이동 인디케이터 링 시각화, 포획 시 35개 3D 스파크 파티클 분출, 스마트 AI 체스 엔진(기물 가치 평가 휴리스틱), 3D 터치 레이캐스팅 기물 선택 + 하단 한 수 물리기(Undo) + 리셋 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 28,
+      "name": "Perfect Shape",
+      "poki_url": "https://poki.com/kr/g/perfect-shape",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No028_PerfectShape_Prompt.md",
+      "component": "src/components/poki/PokiPerfectShapeGame.tsx",
+      "completed_at": "2026-09-07T22:51:00+09:00",
+      "details": "Three.js 기반 3D 정밀 윤곽선 드로잉 스킬 퍼즐 구현, 3D 원형 아틀리에 작업대 플랫폼 & 4종 네온 가이드라인(원, 정삼각형, 정사각형, 5각 황금별 & No.28 영웅 배지), 실시간 입체 네온 튜브 브러시 스트로크 & 스파크 파티클, 정밀 기하학적 거리 편차 분석 기반 정확도(Accuracy 0~100%) 실시간 채점, 80% 이상 달성 시 50개 무지개 축하 콘페티 파티클 분출, 100% 모바일 퓨어 원터치 드로잉 + 다시그리기 버튼, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
