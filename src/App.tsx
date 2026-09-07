@@ -91,6 +91,7 @@ import { TutorialCoachMark } from './components/TutorialCoachMark';
 import { AppLoadingGate } from './components/AppLoadingGate';
 import { ViewLoadingFallback } from './components/ViewLoadingFallback';
 import { ImageLazyLoader } from './lib/ImageLazyLoader';
+import { checkAndSyncAppVersion } from './lib/versionManager';
 
 const HomeView = lazy(() => import('./views/HomeView').then(m => ({ default: m.HomeView })));
 const KadanRpgView = lazy(() => import('./views/KadanRpgView').then(m => ({ default: m.default || m.KadanRpgView })));
@@ -418,7 +419,13 @@ function AppContent() {
   const [showInitialGate, setShowInitialGate] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       try {
-        if (sessionStorage.getItem('hero_boot_gate_shown') === 'true' || localStorage.getItem('hero_boot_gate_shown') === 'true') {
+        // 이미 앱 버전이 캐시되어 있거나 이전에 부팅 게이트를 본 경우 바로 스킵 (새로고침 시 0ms 즉시 진입)
+        if (
+          sessionStorage.getItem('hero_boot_gate_shown') === 'true' || 
+          localStorage.getItem('hero_boot_gate_shown') === 'true' ||
+          localStorage.getItem('hero_app_version')
+        ) {
+          sessionStorage.setItem('hero_boot_gate_shown', 'true');
           return false;
         }
         const initialView = getViewFromPathAndUrl();
@@ -453,15 +460,51 @@ function AppContent() {
   const [autoStartPvp, setAutoStartPvp] = useState(false);
   const [fromBackToRanking, setFromBackToRanking] = useState(false);
   const [view, setView] = useState<ViewType>(() => getViewFromPathAndUrl());
-  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
 
-  // 최초 접속 시에만 3초 동안 로딩화면 표시 (이후 캐시된 화면은 즉시 표시)
+  // 이미 캐시 버전이 있는 경우 새로고침 시 0ms 즉시 진입 (로딩화면 완전 스킵)
+  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const hasCachedVersion = localStorage.getItem('hero_app_version') || sessionStorage.getItem('hero_cached_ready');
+        if (hasCachedVersion) {
+          return false;
+        }
+      } catch {
+        return false;
+      }
+    }
+    return true;
+  });
+
+  // 순수 최초 1회 접속 시에만 짧은 리소스 초기화 (이후에는 기존 캐싱으로 즉시 플레이)
   useEffect(() => {
+    if (!isInitialLoading) return;
     const timer = window.setTimeout(() => {
       setIsInitialLoading(false);
-    }, 3000);
+      try {
+        sessionStorage.setItem('hero_cached_ready', 'true');
+      } catch {}
+    }, 600);
 
     return () => clearTimeout(timer);
+  }, [isInitialLoading]);
+
+  // 최초 접속 및 새로고침 시 백그라운드에서 조용히 서버 버전 비교 (화면 블로킹 없이 기존 캐시 사용)
+  // 최신이 아닌 경우에만 백그라운드 캐시 업데이트
+  useEffect(() => {
+    const syncVersionInBackground = async () => {
+      try {
+        const result = await checkAndSyncAppVersion();
+        if (result.isUpdated) {
+          console.log(`[VersionSync] App updated to v${result.newVersion}. Cache refreshed in background.`);
+        }
+      } catch (err) {
+        // 네트워크 실패 시 기존 캐시로 안전 유지
+      }
+    };
+
+    const syncTimer = window.setTimeout(syncVersionInBackground, 1200);
+    return () => clearTimeout(syncTimer);
   }, []);
 
   const [creatorCode, setCreatorCode] = useState<string>(() => {

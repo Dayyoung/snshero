@@ -499,6 +499,14 @@
         }
       </style>
       <div id="hero-fast-loader">
+        <script>
+          try {
+            if (localStorage.getItem('hero_app_version')) {
+              var el = document.getElementById('hero-fast-loader');
+              if (el) el.style.display = 'none';
+            }
+          } catch (e) {}
+        </script>
         <div class="loader-card">
           <div class="loader-badge">[SYSTEM STARTUP]</div>
           <h1>SNSHERO REVOLUTION</h1>

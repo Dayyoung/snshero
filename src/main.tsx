@@ -77,18 +77,6 @@ if (typeof window !== 'undefined') {
       console.warn('[ServiceWorker] Unregister failed:', err);
     });
   }
-
-  if ('caches' in window) {
-    caches.keys().then((names) => {
-      for (const name of names) {
-        caches.delete(name).then(() => {
-          console.log('[CacheStorage] Cleared stale cache:', name);
-        });
-      }
-    }).catch((err) => {
-      console.warn('[CacheStorage] Clear failed:', err);
-    });
-  }
 }
 
 // API Path Interceptor (SPA Static Hosting Fallback)
