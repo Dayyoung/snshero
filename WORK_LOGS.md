@@ -4,6 +4,27 @@
 
 ---
 
+## [2026-09-07 14:40 KST] [화면 좌측 상단 글로벌 뒤로가기 버튼(ChevronLeft) 클릭 시 미션 종료 및 정산 확인 모달 동일 연동]
+- **요청 사항**:
+  - 화면 좌측 상단 고정 뒤로가기 버튼(`<button class="fixed left-4 min-[1024px]:left-[calc(50vw-496px)] ... title="뒤로가기"><ChevronLeft /></button>`)을 퍼즐/미션 게임 진행 중에 눌렀을 때도 동일하게 미션 종료 확인 및 진행도 정산 후 미션 리스트로 이동하도록 개선.
+- **원인 분석**:
+  - 해당 버튼은 `App.tsx`의 `handleGlobalBack`에 바인딩되어 있으며, `CustomEvent('global-back', { cancelable: true })`를 디스패치한 뒤 취소되지 않으면 기본 동작으로 `onBackFromGame()`(`setView('home')`)을 실행하여 홈 화면으로 직행하는 구조였음.
+- **구현 및 개선 내역**:
+  1. **`MinimalistMissionHUD.tsx`에서 `global-back` 이벤트 가로채기 연동**:
+     - `window.addEventListener('global-back', (e) => { e.preventDefault(); setShowExitConfirm(true); })` 추가.
+     - 글로벌 뒤로가기 버튼을 클릭했을 때 홈 화면으로 튕기지 않고 **[미션 종료 및 진행도 정산 확인 모달]**이 즉시 노출되도록 구현.
+     - 확인 모달에서 '정산 후 나가기' 클릭 시 지금까지의 진행도 비례 SNS 포인트 지갑 입금 및 미션 리스트(`modeSelect`)로 안전 복귀.
+  2. **`PlayGameView.tsx` 2차 방어 가드 강화**:
+     - `gameState.startsWith('poki')` 또는 `gameState !== 'modeSelect'` 상태일 때 `handleGlobalBackEvent`에서 `e.preventDefault()`를 호출하여 홈 이동 차단 보장.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 완벽 통과.
+  - `npm run build`: 12.90초 번들 빌드 성공.
+- **Git 커밋**: `86f6eda` (원격 `main` 동기화 완료).
+- **구글 폼 보고**:
+  - `[개발] 화면 좌측 상단 글로벌 뒤로가기 버튼(ChevronLeft) 클릭 시 미션 종료 및 정산 확인 모달 동일 연동 -> 작업완료`
+
+---
+
 ## [2026-09-07 14:35 KST] [110개 미션 게임 뒤로가기 시 확인 모달 표시 및 진행도 비례 SNS 보상 정산 후 미션리스트 복귀 연동]
 - **요청 사항**:
   - 미션 게임(예: 슬라임 키보드 탈출) 플레이 중 뒤로가기 시 홈 화면으로 튕기지 않고 미션 리스트 화면으로 이동하도록 개선.
