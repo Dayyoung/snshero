@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 10,
-  "completed_count": 9,
-  "last_updated": "2026-09-07T16:21:00+09:00",
+  "current_game_index": 11,
+  "completed_count": 10,
+  "last_updated": "2026-09-07T16:23:00+09:00",
   "history": [
     {
       "id": 1,
@@ -104,6 +104,17 @@
       "component": "src/components/poki/PokiBlockyBlastGame.tsx",
       "completed_at": "2026-09-07T16:21:00+09:00",
       "details": "Three.js 기반 3D 블록 블래스트 퍼즐 구현, 8x8 3D 슬롯 보드, 3D 루비/사파이어/에메랄드/토파즈/애메시스트/호박 보석 블록, 손가락 가림 방지 Y-오프셋(-70px) 터치 드래그 앤 드롭 및 3D 보드 슬롯 스냅 안착, 행/열 가로세로 동시 클리어 및 3D 복셀 블록 폭파 파티클 30개 분출, HOLD 임시 보관 슬롯, 연쇄 콤보 시스템 및 MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 10,
+      "name": "Ragdoll Chaos",
+      "poki_url": "https://poki.com/kr/g/ragdoll-chaos",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No010_RagdollChaos_Prompt.md",
+      "component": "src/components/poki/PokiRagdollChaosGame.tsx",
+      "completed_at": "2026-09-07T16:23:00+09:00",
+      "details": "Three.js 기반 3D 물리 래그돌 샌드박스 구현, 28x22m 메탈릭 혼돈 실험실 & 네온 역장 방호벽, 3D 다관절 더미 봇(몸통/머리/팔다리 관절 모션 & No.10 영웅 배지), 12개 실험 장치(TNT 폭발 배럴, 슈퍼 점프 스프링 바운서, 고속 회전 톱날, 테슬라 방전 타워), 슬링샷 포물선 궤적 조준 & 발사, 공중 터치 슬랩, 모바일 대형 [💣 TNT]/[⚡ SLAP] 액션 버튼 및 MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

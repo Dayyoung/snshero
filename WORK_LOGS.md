@@ -4,6 +4,34 @@
 
 ---
 
+## [2026-09-07 16:23 KST] [Poki 110선 리마스터 10/110] No.010 Ragdoll Chaos Three.js 3D 물리 래그돌 샌드박스 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/ragdoll-chaos`) 분석 및 프롬프트(`src/components/poki/prompts/No010_RagdollChaos_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 28x22m 메탈릭 혼돈 실험실 & 네온 역장 방호벽, 3D 다관절 더미 봇(몸통/머리/팔다리 관절 시뮬레이션 & No.10 영웅 배지), 12개 실험 장치(TNT 폭발 배럴, 슈퍼 점프 스프링 바운서, 고속 회전 톱날, 테슬라 방전 타워), 슬링샷 포물선 궤적 조준 & 발사, 공중 터치 슬랩, 모바일 대형 [💣 TNT]/[⚡ SLAP] 액션 버튼 전면 재개발.
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(슬링샷 드래그 조준선 + 공중 탭 슬랩 + 하단 80px 대형 버튼 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 인기 물리 래그돌 샌드박스 파괴 액션 게임. 미친 과학자의 실험실에서 래그돌을 기발한 트랩(TNT 배럴, 점프 패드, 회전 톱날, 전기 타워)에 날려보내 연쇄 충돌과 파괴 점수를 극대화하는 재미.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiRagdollChaosGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 쿼터뷰 아이소메트릭 시점, 30x24 메탈릭 바닥 그리드 및 네온 경계 역장 케이지.
+     - 3D 다관절 래그돌 더미 봇: 머리(충격 표정 O_O / X_X), 몸통(No.10 카드 영웅 스프라이트 텍스처 배지), 양팔 및 양다리 관절 각운동 및 충격 리액션.
+     - 12개 실시간 반응형 실험 장치:
+       - 3개 TNT 폭발 배럴: 접촉 시 거대한 3D 화염 폭발 + 24개 파편 파티클 + 강력한 넉백.
+       - 4개 슈퍼 점프 스프링 바운서: 닿으면 고탄성 수퍼 점프 튕김 (`vy = 18`).
+       - 3개 회전 톱날: y/z축 고속 회전 + 스파크 파티클 + 높은 타격 점수.
+       - 2개 테슬라 방전 타워: 접근 시 지지직 전기 아크 빔 방전 및 감전 넉다운.
+     - 모바일 퓨어 터치 슬링샷 조준: 화면을 터치하여 뒤로 당기면 3D 궤적 아크 점(14개 도트)이 시각화되고, 손을 놓으면 초강력 발사. 공중에서 탭하면 직접 슬랩 타격.
+     - 모바일 엄지 최적화 하단 대형 액션 버튼: `[💣 TNT SPAWN]`, `[⚡ MEGA SLAP]`, `[🔄 RESET]`.
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 확인 팝업 및 누적 파괴 점수/충돌 비례 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No010_RagdollChaos_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 무결점 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 10개 완료 (No.011 Rainbow Obby 대기).
+
+---
+
 ## [2026-09-07 16:21 KST] [Poki 110선 리마스터 9/110] No.009 Blocky Blast Puzzle Three.js 3D 블록 퍼즐 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/blocky-blast-puzzle`) 분석 및 프롬프트(`src/components/poki/prompts/No009_BlockyBlastPuzzle_Prompt.md`) 작성.
