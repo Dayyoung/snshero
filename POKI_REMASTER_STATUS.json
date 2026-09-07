@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 59,
-  "completed_count": 58,
-  "last_updated": "2026-09-08T00:52:00+09:00",
+  "current_game_index": 60,
+  "completed_count": 59,
+  "last_updated": "2026-09-08T00:53:00+09:00",
   "history": [
     {
       "id": 1,
@@ -643,6 +643,17 @@
       "component": "src/components/poki/PokiTearBlocksDownGame.tsx",
       "completed_at": "2026-09-08T00:52:00+09:00",
       "details": "Three.js 기반 3D 물리 엔진 블록 붕괴 슈팅 퍼즐 구현, 36x48m 시험장 그리드 전장 & 남쪽 15m 안전 사격 포대 진지, 3D 캐논 바렐 & No.58 영웅 배지, 3종 물리 블록(목재/석재/TNT 폭약 블록 연쇄 대폭발) 및 복셀 좀비 타겟들(낙하 시 래그돌 추락 사망 판정), 3단계 스테이지(1단계 우드 타워 ➔ 2단계 TNT 연쇄 폭발 ➔ 3단계 메가 캐슬 요새), 모바일 퓨어 터치 조작계(화면 드래그 3D 포물선 탄도 궤적 아크 실시간 조준 + 우측 대형 76px FIRE 발사 버튼 + 반동 및 폭발 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 59,
+      "name": "Red Ball 4",
+      "poki_url": "https://poki.com/kr/g/red-ball-4",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No059_RedBall4_Prompt.md",
+      "component": "src/components/poki/PokiRedBall4Game.tsx",
+      "completed_at": "2026-09-08T00:53:00+09:00",
+      "details": "Three.js 기반 3D 볼 롤링 플랫포머 어드벤처 구현, 100m 3D 초록 언덕 롤링 트랙 & 15m 안전 광폭 스타트 존 & 경사 램프 & 공중 부유 발판 & 피니시 깃발, 3D 레드 볼(만화풍 표정 텍스처 & 롤링 회전 물리) & No.59 영웅 배지, 5개 3D 황금 별 수집 & 3마리 블랙 스퀘어 미니언(머리 위 점프 스톰프 납작해짐 처치 vs 정면 충돌 하트 감소), 횡스크롤 3.5D 팔로우 카메라, 모바일 퓨어 터치 조작계(화면 좌측 터치 슬라이드 롤링 조향 + 우측 대형 76px JUMP 점프 버튼 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
