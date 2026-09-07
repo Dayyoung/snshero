@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 94,
-  "completed_count": 93,
-  "last_updated": "2026-09-08T02:04:00+09:00",
+  "current_game_index": 95,
+  "completed_count": 94,
+  "last_updated": "2026-09-08T02:05:00+09:00",
   "history": [
     {
       "id": 1,
@@ -1028,6 +1028,17 @@
       "component": "src/components/poki/PokiCarCircleGame.tsx",
       "completed_at": "2026-09-08T02:04:00+09:00",
       "details": "Three.js 기반 3D 원형 로터리 교차로 차량 합류 & 타이밍 트래픽 컨트롤 구현, 반경 6.0m 아스팔트 원형 트랙(4방향 진입로/중앙 잔디 아일랜드 No.093 공식 영웅 배지 엠블럼 기념탑), 3D 플레이어 레드 스포츠카(보닛 No.093 배지 데칼/스포일러/듀얼 머플러 배기 파티클), 3대 로터리 순환 트래픽 차량(블루 세단, 그린 택시, 앰버 SUV), 충돌 회피 및 정밀 타이밍 합류(PERFECT MERGE! +100), 모바일 퓨어 터치 조작계(화면 탭 / 76px MERGE NOW! 대형 버튼 + 64px SLOW-MO 슬로우모션 지원 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 94,
+      "name": "Phone CASE DIY",
+      "poki_url": "https://poki.com/kr/g/phone-case-diy",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No094_PhoneCaseDIY_Prompt.md",
+      "component": "src/components/poki/PokiPhoneCaseDIYGame.tsx",
+      "completed_at": "2026-09-08T02:05:00+09:00",
+      "details": "Three.js 기반 3D 스마트폰 케이스 커스텀 공방 & 아크릴 페인팅 시뮬레이션 구현, 3D 스마트폰 모델링(메탈릭 섀시/글래스 스크린/트리플 카메라 범프 섬/스튜디오 턴테이블 작업대/No.094 공식 영웅 배지 홀로그램 펜던트), 4단계 DIY 프로세스(거품 세척/아크릴 스프레이 그라데이션 도색/열풍 건조 및 광택 레진 코팅/3D 하트·스타·썬더·다이아몬드 참 부착), 모바일 퓨어 터치 조작계(3D 표면 레이캐스팅 직접 터치 + 빈 화면 360도 궤도 회전 + 76px 단계별 원터치 대형 액션 버튼 + 5종 컬러/참 팔레트 바 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

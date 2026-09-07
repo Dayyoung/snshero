@@ -4,6 +4,40 @@
 
 ---
 
+## [2026-09-08 02:05 KST] [Poki 110선 리마스터 94/110] No.094 Phone CASE DIY Three.js 3D 스마트폰 케이스 커스텀 공방 & 아크릴 페인팅 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/phone-case-diy`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No094_PhoneCaseDIY_Prompt.md`) 작성.
+  - Three.js 3D 기반 스마트폰 모델링(메탈릭 프레임/디스플레이 패널/트리플 카메라 범프 섬/스튜디오 턴테이블 작업대/No.094 공식 영웅 배지 홀로그램 펜던트).
+  - 4단계 DIY 커스텀 프로세스(거품 세척/아크릴 스프레이 그라데이션 도색/열풍 건조 및 광택 레진 코팅/3D 하트·스타·썬더·다이아몬드 참 부착).
+  - 모바일 퓨어 터치 조작계(3D 표면 레이캐스팅 직접 터치 + 빈 화면 360도 궤도 회전 + 76px 단계별 원터치 대형 액션 버튼 + 5종 컬러/참 팔레트 바 + 햅틱), MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 크리에이티브 시뮬레이션 인기작 Phone CASE DIY. 더러워진 구형 스마트폰 케이스를 깨끗하게 세척하고, 다채로운 아크릴 페인트 스프레이로 마블링 및 그라데이션 도색을 한 뒤, 열풍기로 건조하여 광택을 내고, 귀여운 스티커와 참(Charm) 액세서리로 나만의 개성 넘치는 휴대폰 케이스를 완성하는 힐링 공방 시뮬레이션 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiPhoneCaseDIYGame.tsx`)**:
+     - 3D 스튜디오 턴테이블 작업대 및 조명 세팅 (앰비언트, 디렉셔널 라이트, 림라이트, 키라이트).
+     - 3D 스마트폰 및 분리형 케이스 정밀 모델링:
+       - 메탈릭 섀시, 글래스 전면 디스플레이, 상단 다이나믹 아일랜드 노치.
+       - 후면 트리플 카메라 범프 섬 및 3개 원형 렌즈.
+       - 512x1024 동적 캔버스 텍스처를 맵핑한 3D 폰 케이스 표면 메쉬.
+     - 4단계 DIY 공방 프로세스:
+       - 1단계 [🧼 CLEAN & PREP]: 얼룩진 표면 문지르기 세척 & 3D 거품 파티클 + 76px [AUTO CLEAN] 원터치 지원.
+       - 2단계 [🎨 ACRYLIC SPRAY]: 5종 컬러 팔레트(Rose, Sky, Mint, Purple, Amber) 선택 및 부드러운 방사형 그라데이션 스프레이 도포 + 76px [AUTO COAT] 지원.
+       - 3단계 [💨 BLOW DRY]: 3D 헤어드라이어 열풍 파티클 & PBR 고광택 레진 코팅(`roughness: 0.05, metalness: 0.25`) + 76px [INSTANT DRY] 지원.
+       - 4단계 [✨ CHARM & DECOR]: 5종 3D 참(하트, 별, 번개, 다이아몬드, No.094 공식 카드 영웅 배지 펜던트) 3D 레이캐스팅 다이렉트 부착 + 76px [FINISH DIY!] 세레모니.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 3D 케이스 표면 레이캐스팅 다이렉트 탭/드래그.
+       - 빈 공간 드래그 시 폰 케이스 360° 부드러운 궤도 회전(Screen-relative 완벽 일치).
+       - 76px 대형 액션 버튼 + 64px 팔레트/참 버튼 + 햅틱 피드백.
+       - 완성 시 축하 스파클 콘페티 분출 및 턴테이블 360° 우아한 자전 쇼케이스.
+       - MinimalistMissionHUD (단계별 진행도, 힌트 가이드, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (94/110 완료, current_game_index: 95) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 94/110] No.094 Phone CASE DIY Three.js 3D 스마트폰 케이스 커스텀 공방 & 아크릴 페인팅 전면 고도화`)
+
 ## [2026-09-08 02:04 KST] [Poki 110선 리마스터 93/110] No.093 Car Circle Three.js 3D 원형 로터리 교차로 차량 합류 & 타이밍 트래픽 컨트롤 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/car-circle`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No093_CarCircle_Prompt.md`) 작성.
