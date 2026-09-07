@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 97,
-  "completed_count": 96,
-  "last_updated": "2026-09-08T02:08:00+09:00",
+  "current_game_index": 98,
+  "completed_count": 97,
+  "last_updated": "2026-09-08T02:09:00+09:00",
   "history": [
     {
       "id": 1,
@@ -1061,6 +1061,17 @@
       "component": "src/components/poki/PokiCapitalistBusDriverGame.tsx",
       "completed_at": "2026-09-08T02:08:00+09:00",
       "details": "Three.js 기반 3D 해안도로 대중교통 제국 버스 드라이빙 시뮬레이터 구현, 3차선 무한 스크롤 해안도로(바다 수면/모래사장/야자수/가드레일/시작 아치 No.096 공식 영웅 배지 엠블럼), 3D 대형 럭셔리 투어 버스(옐로우 섀시/파노라마 글래스/루프 공조기/6개 회전 휠/측면 No.096 영웅 배지 데칼/듀얼 헤드라이트), 3D 버스 정류장 승객 탑승(PICKUP! +5명 & +$120) 및 3종 AI 트래픽 차량 회피, 20명 수송 및 $500 매출 달성 승리, 모바일 퓨어 터치 조작계(화면 좌우 스와이프 차선 변경 + 76px GAS ACCEL 대형 가속 페달 + 68px BRAKE 감속 페달 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 97,
+      "name": "EvoWorld io (FlyOrDie io)",
+      "poki_url": "https://poki.com/kr/g/flyordie-io",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No097_EvoWorldIo_Prompt.md",
+      "component": "src/components/poki/PokiEvoWorldIoGame.tsx",
+      "completed_at": "2026-09-08T02:09:00+09:00",
+      "details": "Three.js 기반 3D 비행 생태계 진화 IO 서바이벌 구현, 28m x 24m 오픈 스카이 생태 챔버 필드(하단 호수 수면/중앙 부유섬 No.097 공식 영웅 배지 기념탑/하늘 구름), 5단계 생물 진화(플라이➔버터플라이➔모기➔매➔피닉스), 날개 진동 애니메이션 및 No.097 영웅 배지 엠블럼, 30여개 3D 먹이(이슬/베리/꽃) 섭취 & 수분(Water %) 호수 잠수 리필 메커니즘, 상위 포식자 AI 회피, 1000 EXP 피닉스 진화 승리, 모바일 퓨어 터치 조작계(360도 플로팅 가상 조이스틱 3D 비행 + 76px FLY BOOST 대형 가속 버튼 + 64px DIVE 급강하 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

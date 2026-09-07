@@ -4,6 +4,40 @@
 
 ---
 
+## [2026-09-08 02:09 KST] [Poki 110선 리마스터 97/110] No.097 EvoWorld io Three.js 3D 비행 생태계 진화 IO 서바이벌 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/flyordie-io`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No097_EvoWorldIo_Prompt.md`) 작성.
+  - Three.js 3D 기반 28m x 24m 오픈 스카이 생태 챔버 필드(하단 호수 수면/중앙 부유섬 No.097 공식 영웅 배지 기념탑/하늘 구름).
+  - 5단계 생물 진화(플라이➔버터플라이➔모기➔매➔피닉스), 날개 진동 애니메이션 및 No.097 영웅 배지 엠블럼.
+  - 30여개 3D 먹이(이슬/베리/꽃) 섭취 & 수분(Water %) 호수 잠수 리필 메커니즘, 상위 포식자 AI 회피, 1000 EXP 피닉스 진화 승리.
+  - 모바일 퓨어 터치 조작계(360도 플로팅 가상 조이스틱 3D 비행 + 76px FLY BOOST 대형 가속 버튼 + 64px DIVE 급강하 + 햅틱), MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 최고 인기 생태계 진화 IO 대작 EvoWorld io (FlyOrDie io). 연약한 파리(Fly)로 시작하여 이슬방울, 열매, 작은 곤충을 먹고 생명수(Water)를 보충하며 나비, 모기, 매를 거쳐 최상위 포식자인 불새 피닉스(Phoenix)로 승천하는 3D 비행 서바이벌 IO 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiEvoWorldIoGame.tsx`)**:
+     - 28m x 24m 오픈 스카이 생태 챔버 씬 (딥 블루 스카이, 구름, 하단 Y=-7.0 호수 수면 및 중앙 부유섬 No.097 공식 영웅 배지 기념 모놀리스).
+     - 5단계 3D 생물 모델링 & 진화 시스템:
+       - 1단계: 플라이 (Fly - 슬레이트 바디, 반투명 날개 고속 펄럭임, No.097 공식 영웅 배지).
+       - 2단계: 버터플라이 (Butterfly - 핑크/에메랄드 날개, 스케일 업).
+       - 3단계: 모기 (Mosquito - 고속 침투형 붉은 메쉬).
+       - 4단계: 매 (Falcon - 앰버 컬러 맹금류 바디).
+       - 5단계: 피닉스 (Phoenix - 타오르는 오렌지 불꽃 아우라 대형 불새).
+     - 30여 개 3D 먹이 오브젝트 (이슬방울, 보라색 베리, 황금 꽃) 및 섭취 파티클 (+35 EXP).
+     - 수분(Water %) 생존 시스템: 초당 감소, 하단 호수면에 착수하거나 이슬을 섭취하여 100% 수분 보충.
+     - 2마리 상위 포식자 AI (붉은 경고 아우라 링 비행체) 순찰 및 충돌 넉백 판정.
+     - 1,000 EXP 달성 및 피닉스 진화 시 승리 세레모니 및 콘페티 폭발.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 좌측 터치 지점 360° 다이나믹 플로팅 가상 조이스틱 3D 비행 (Screen-relative 완벽 일치).
+       - 76px [🔥 FLY BOOST] 대형 터보 가속 비행 버튼 + 64px [💧 DIVE] 급강하 수분 섭취 버튼 + 햅틱 피드백.
+       - MinimalistMissionHUD (현재 티어명 1/5~5/5, EXP 게이지, Water % 수분도, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (97/110 완료, current_game_index: 98) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 97/110] No.097 EvoWorld io Three.js 3D 비행 생태계 진화 IO 서바이벌 전면 고도화`)
+
 ## [2026-09-08 02:08 KST] [Poki 110선 리마스터 96/110] No.096 Capitalist Bus Driver Three.js 3D 대중교통 제국 버스 드라이빙 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/capitalist-bus-driver`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No096_CapitalistBusDriver_Prompt.md`) 작성.
