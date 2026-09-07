@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
 import { CardData } from '../../types';
 import { MinimalistMissionHUD } from '../MinimalistMissionHUD';
 import { VictoryRewardModal } from '../VictoryRewardModal';
@@ -17,19 +18,25 @@ interface PokiPaperIoGameProps {
 
 interface Point {
   x: number;
-  y: number;
+  z: number;
 }
 
-interface AiOpponent {
+interface Character {
   id: number;
+  name: string;
+  colorHex: string;
+  colorThree: number;
+  gridId: number; // 1 for player, 2,3,4 for bots
   x: number;
-  y: number;
+  z: number;
   angle: number;
+  targetAngle: number;
   speed: number;
-  color: string;
   trail: Point[];
-  charId: number;
   isAlive: boolean;
+  territoryCount: number;
+  mesh?: THREE.Group;
+  trailMesh?: THREE.Line;
 }
 
 export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
@@ -42,447 +49,898 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
 }) => {
   const isKo = language === 'ko';
   const playerHeroId = deck[0]?.id || 4;
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const animFrameRef = useRef<number>(0);
 
   const [score, setScore] = useState<number>(0);
+  const [kills, setKills] = useState<number>(0);
   const [territoryPct, setTerritoryPct] = useState<number>(5);
-  const [timeLeft, setTimeLeft] = useState<number>(45);
+  const [leaderboard, setLeaderboard] = useState<Array<{ name: string; pct: number; color: string; isPlayer: boolean }>>([]);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [isVictory, setIsVictory] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_paperio2') !== 'true';
+      return localStorage.getItem('hero_tutorial_paperio2_v2') !== 'true';
     } catch {
       return true;
     }
   });
 
-  const stateRef = useRef({
-    gridCols: 40,
-    gridRows: 50,
-    gridOwners: [] as number[], // 0: neutral, 1: player, 2+: AI
-    player: {
-      x: 100,
-      y: 150,
-      angle: 0,
-      speed: 3.2,
-      trail: [] as Point[],
-      isOutside: false,
-      kills: 0,
-    },
-    targetAngle: 0,
-    opponents: [] as AiOpponent[],
-    combo: 0,
+  const arenaSize = 36;
+  const gridResolution = 90; // 90x90 territory cells
+  const targetConquerPct = 20; // 20% to win
+
+  const threeRef = useRef<{
+    renderer: THREE.WebGLRenderer | null;
+    scene: THREE.Scene | null;
+    camera: THREE.PerspectiveCamera | null;
+    floorMesh: THREE.Mesh | null;
+    floorCanvas: HTMLCanvasElement | null;
+    floorCtx: CanvasRenderingContext2D | null;
+    floorTexture: THREE.CanvasTexture | null;
+  }>({
+    renderer: null,
+    scene: null,
+    camera: null,
+    floorMesh: null,
+    floorCanvas: null,
+    floorCtx: null,
+    floorTexture: null,
   });
 
-  const initGame = useCallback(() => {
-    const cols = 40;
-    const rows = 50;
-    const owners = new Array(cols * rows).fill(0);
+  const stateRef = useRef({
+    grid: new Uint8Array(gridResolution * gridResolution), // 0: neutral, 1: player, 2: bot1, 3: bot2, 4: bot3
+    characters: [] as Character[],
+    touch: {
+      active: false,
+      startX: 0,
+      startY: 0,
+      currentX: 0,
+      currentY: 0,
+    },
+    keys: {
+      left: false,
+      right: false,
+      up: false,
+      down: false,
+    },
+    timeAlive: 0,
+    kills: 0,
+  });
 
-    // Initial base for player (3x3 at col 10, row 15)
-    for (let r = 13; r <= 17; r++) {
-      for (let c = 8; c <= 12; c++) {
-        owners[r * cols + c] = 1;
+  // World Pos to Grid Coord
+  const worldToGrid = useCallback((x: number, z: number) => {
+    const half = arenaSize / 2;
+    const gx = Math.floor(((x + half) / arenaSize) * gridResolution);
+    const gz = Math.floor(((z + half) / arenaSize) * gridResolution);
+    return {
+      gx: Math.max(0, Math.min(gridResolution - 1, gx)),
+      gz: Math.max(0, Math.min(gridResolution - 1, gz)),
+    };
+  }, [arenaSize, gridResolution]);
+
+  // Fill Initial Home Bases
+  const initTerritory = useCallback(() => {
+    const s = stateRef.current;
+    s.grid.fill(0);
+
+    const claimCircle = (cx: number, cz: number, radiusCells: number, ownerId: number) => {
+      for (let z = -radiusCells; z <= radiusCells; z++) {
+        for (let x = -radiusCells; x <= radiusCells; x++) {
+          if (x * x + z * z <= radiusCells * radiusCells) {
+            const gx = cx + x;
+            const gz = cz + z;
+            if (gx >= 0 && gx < gridResolution && gz >= 0 && gz < gridResolution) {
+              s.grid[gz * gridResolution + gx] = ownerId;
+            }
+          }
+        }
       }
-    }
+    };
 
-    // Spawn 3 AI opponents with small bases
-    const opps: AiOpponent[] = [
-      { id: 2, x: 250, y: 150, angle: Math.PI, speed: 2.8, color: '#ef4444', trail: [], charId: 105, isAlive: true },
-      { id: 3, x: 120, y: 350, angle: -Math.PI / 2, speed: 2.7, color: '#a855f7', trail: [], charId: 110, isAlive: true },
-      { id: 4, x: 260, y: 360, angle: -Math.PI / 2, speed: 2.6, color: '#eab308', trail: [], charId: 115, isAlive: true },
+    // Characters
+    const chars: Character[] = [
+      {
+        id: 1,
+        name: isKo ? '나 (히어로)' : 'You (Hero)',
+        colorHex: '#0284c7', // Sky Blue
+        colorThree: 0x0284c7,
+        gridId: 1,
+        x: 0,
+        z: -6,
+        angle: 0,
+        targetAngle: 0,
+        speed: 5.5,
+        trail: [],
+        isAlive: true,
+        territoryCount: 0,
+      },
+      {
+        id: 2,
+        name: 'CrimsonBot',
+        colorHex: '#ef4444', // Red
+        colorThree: 0xef4444,
+        gridId: 2,
+        x: -9,
+        z: 8,
+        angle: Math.PI / 2,
+        targetAngle: Math.PI / 2,
+        speed: 4.8,
+        trail: [],
+        isAlive: true,
+        territoryCount: 0,
+      },
+      {
+        id: 3,
+        name: 'EmeraldBot',
+        colorHex: '#22c55e', // Green
+        colorThree: 0x22c55e,
+        gridId: 3,
+        x: 9,
+        z: 8,
+        angle: -Math.PI / 2,
+        targetAngle: -Math.PI / 2,
+        speed: 4.9,
+        trail: [],
+        isAlive: true,
+        territoryCount: 0,
+      },
+      {
+        id: 4,
+        name: 'AmberBot',
+        colorHex: '#f59e0b', // Yellow
+        colorThree: 0xf59e0b,
+        gridId: 4,
+        x: 0,
+        z: 11,
+        angle: -Math.PI / 2,
+        targetAngle: -Math.PI / 2,
+        speed: 4.6,
+        trail: [],
+        isAlive: true,
+        territoryCount: 0,
+      },
     ];
 
-    opps.forEach(op => {
-      const baseC = Math.floor(op.x / 8);
-      const baseR = Math.floor(op.y / 8);
-      for (let r = Math.max(0, baseR - 2); r <= Math.min(rows - 1, baseR + 2); r++) {
-        for (let c = Math.max(0, baseC - 2); c <= Math.min(cols - 1, baseC + 2); c++) {
-          owners[r * cols + c] = op.id;
+    chars.forEach((c) => {
+      const g = worldToGrid(c.x, c.z);
+      claimCircle(g.gx, g.gz, 4, c.gridId);
+    });
+
+    s.characters = chars;
+  }, [isKo, worldToGrid, gridResolution]);
+
+  // Polygon Fill & Territory Capture
+  const captureTerritory = useCallback((char: Character) => {
+    const s = stateRef.current;
+    if (char.trail.length < 3) {
+      char.trail = [];
+      return;
+    }
+
+    // Convert trail to grid polygon
+    const poly: Array<{ gx: number; gz: number }> = char.trail.map((p) => worldToGrid(p.x, p.z));
+    char.trail = [];
+
+    // Calculate bounding box of polygon
+    let minGx = gridResolution;
+    let maxGx = 0;
+    let minGz = gridResolution;
+    let maxGz = 0;
+
+    poly.forEach((p) => {
+      if (p.gx < minGx) minGx = p.gx;
+      if (p.gx > maxGx) maxGx = p.gx;
+      if (p.gz < minGz) minGz = p.gz;
+      if (p.gz > maxGz) maxGz = p.gz;
+    });
+
+    minGx = Math.max(0, minGx - 2);
+    maxGx = Math.min(gridResolution - 1, maxGx + 2);
+    minGz = Math.max(0, minGz - 2);
+    maxGz = Math.min(gridResolution - 1, maxGz + 2);
+
+    // Point in polygon test (Ray Casting)
+    const isPointInPoly = (px: number, pz: number) => {
+      let inside = false;
+      for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+        const xi = poly[i].gx, zi = poly[i].gz;
+        const xj = poly[j].gx, zj = poly[j].gz;
+        const intersect = (zi > pz) !== (zj > pz) && px < ((xj - xi) * (pz - zi)) / (zj - zi) + xi;
+        if (intersect) inside = !inside;
+      }
+      return inside;
+    };
+
+    // Fill captured grid
+    for (let gz = minGz; gz <= maxGz; gz++) {
+      for (let gx = minGx; gx <= maxGx; gx++) {
+        const idx = gz * gridResolution + gx;
+        if (s.grid[idx] !== char.gridId && isPointInPoly(gx, gz)) {
+          s.grid[idx] = char.gridId;
+        }
+      }
+    }
+
+    // Also fill trail line cells
+    poly.forEach((p) => {
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          const gx = p.gx + dx;
+          const gz = p.gz + dy;
+          if (gx >= 0 && gx < gridResolution && gz >= 0 && gz < gridResolution) {
+            s.grid[gz * gridResolution + gx] = char.gridId;
+          }
         }
       }
     });
 
-    stateRef.current.gridCols = cols;
-    stateRef.current.gridRows = rows;
-    stateRef.current.gridOwners = owners;
-    stateRef.current.player = {
-      x: 80,
-      y: 120,
-      angle: 0,
-      speed: 3.2,
-      trail: [],
-      isOutside: false,
-      kills: 0,
+    if (char.gridId === 1) {
+      playSfx?.('sounds/conquer.mp3');
+    }
+  }, [worldToGrid, gridResolution, playSfx]);
+
+  // Initialize Three.js Scene
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
+
+    // Scene & Sky
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0f172a); // Slate deep dark
+
+    // Camera
+    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
+    camera.position.set(0, 24, 16);
+    camera.lookAt(0, 0, 0);
+
+    // Renderer
+    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = !lowSpecMode;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    container.innerHTML = '';
+    container.appendChild(renderer.domElement);
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+    scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0xfffbeb, 1.1);
+    dirLight.position.set(15, 30, 20);
+    dirLight.castShadow = !lowSpecMode;
+    scene.add(dirLight);
+
+    // Dynamic Floor Canvas for 90x90 Territory Map
+    const floorCanvas = document.createElement('canvas');
+    floorCanvas.width = 512;
+    floorCanvas.height = 512;
+    const floorCtx = floorCanvas.getContext('2d');
+
+    const floorTexture = new THREE.CanvasTexture(floorCanvas);
+    floorTexture.minFilter = THREE.LinearFilter;
+    floorTexture.magFilter = THREE.LinearFilter;
+
+    // Floor Mesh
+    const floorGeo = new THREE.PlaneGeometry(arenaSize, arenaSize);
+    const floorMat = new THREE.MeshStandardMaterial({
+      map: floorTexture,
+      roughness: 0.7,
+      metalness: 0.1,
+    });
+    const floorMesh = new THREE.Mesh(floorGeo, floorMat);
+    floorMesh.rotation.x = -Math.PI / 2;
+    floorMesh.receiveShadow = !lowSpecMode;
+    scene.add(floorMesh);
+
+    // Arena Perimeter Wall
+    const wallThick = 0.8;
+    const wallHeight = 1.5;
+    const half = arenaSize / 2;
+    const wallMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.5 });
+
+    const createWall = (w: number, d: number, x: number, z: number) => {
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, wallHeight, d), wallMat);
+      mesh.position.set(x, wallHeight / 2, z);
+      scene.add(mesh);
     };
-    stateRef.current.targetAngle = 0;
-    stateRef.current.opponents = opps;
-    setTerritoryPct(5);
-  }, []);
+    createWall(arenaSize + wallThick * 2, wallThick, 0, -half);
+    createWall(arenaSize + wallThick * 2, wallThick, 0, half);
+    createWall(wallThick, arenaSize, -half, 0);
+    createWall(wallThick, arenaSize, half, 0);
 
-  useEffect(() => {
-    initGame();
-  }, [initGame]);
+    initTerritory();
 
-  // Timer
-  useEffect(() => {
-    if (isGameOver || isVictory || showTutorial) return;
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev <= 1) {
-          handleGameOver(territoryPct >= 25);
-          return 0;
-        }
-        return prev - 1;
+    // Create 3D Meshes for Characters
+    stateRef.current.characters.forEach((char) => {
+      const charGroup = new THREE.Group();
+
+      // 3D Cubie Box Mesh
+      const bodyGeo = new THREE.BoxGeometry(1.0, 0.7, 1.0);
+      const bodyMat = new THREE.MeshStandardMaterial({
+        color: char.colorThree,
+        roughness: 0.3,
+        metalness: 0.2,
       });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [isGameOver, isVictory, showTutorial, territoryPct]);
+      const body = new THREE.Mesh(bodyGeo, bodyMat);
+      body.position.y = 0.35;
+      body.castShadow = !lowSpecMode;
+      charGroup.add(body);
 
-  const handleGameOver = useCallback((victory: boolean) => {
-    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-    setIsGameOver(true);
-    setIsVictory(victory);
+      // Cute Eyes on Front (+Z)
+      const eyeMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const pupilMat = new THREE.MeshBasicMaterial({ color: 0x0f172a });
 
-    const finalScore = score + (victory ? 500 : 100) + stateRef.current.player.kills * 150;
-    const receipt = calculateAndDepositMissionReward({
-      gameId: 'poki_paperio2',
-      gameTitle: isKo ? '페이퍼 io 2' : 'Paper.io 2',
-      durationSeconds: 45 - timeLeft,
-      score: finalScore,
-      maxTargetScore: 1000,
-      isVictory: victory,
-      difficulty: 'NORMAL',
-      comboCount: stateRef.current.combo,
-      perfectClear: victory && territoryPct >= 35,
+      const eyeL = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.25, 0.1), eyeMat);
+      eyeL.position.set(-0.25, 0.45, 0.5);
+      const pupL = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.12, 0.11), pupilMat);
+      pupL.position.set(-0.25, 0.45, 0.51);
+
+      const eyeR = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.25, 0.1), eyeMat);
+      eyeR.position.set(0.25, 0.45, 0.5);
+      const pupR = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.12, 0.11), pupilMat);
+      pupR.position.set(0.25, 0.45, 0.51);
+
+      charGroup.add(eyeL, pupL, eyeR, pupR);
+
+      // Player Hero Badge
+      if (char.gridId === 1) {
+        const badgeCanvas = document.createElement('canvas');
+        badgeCanvas.width = 128;
+        badgeCanvas.height = 128;
+        const bCtx = badgeCanvas.getContext('2d');
+        if (bCtx) {
+          bCtx.fillStyle = '#0f172a';
+          bCtx.beginPath();
+          bCtx.arc(64, 64, 60, 0, Math.PI * 2);
+          bCtx.fill();
+          bCtx.lineWidth = 6;
+          bCtx.strokeStyle = '#38bdf8';
+          bCtx.stroke();
+          drawCardSprite(bCtx, playerHeroId, 16, 16, 96, 96);
+        }
+        const badgeTexture = new THREE.CanvasTexture(badgeCanvas);
+        const badgeSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: badgeTexture }));
+        badgeSprite.position.set(0, 1.8, 0);
+        badgeSprite.scale.set(1.1, 1.1, 1.1);
+        charGroup.add(badgeSprite);
+      }
+
+      scene.add(charGroup);
+      char.mesh = charGroup;
     });
 
-    setSettlementReceipt(receipt);
-    onReward(receipt.totalSns);
-    if (playSfx) {
-      playSfx(victory ? 'https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3' : 'https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-    }
-  }, [score, timeLeft, territoryPct, isKo, onReward, playSfx]);
+    threeRef.current = {
+      renderer,
+      scene,
+      camera,
+      floorMesh,
+      floorCanvas,
+      floorCtx,
+      floorTexture,
+    };
 
-  // Main Canvas Loop
+    // Resize Handler
+    const handleResize = () => {
+      if (!containerRef.current || !renderer || !camera) return;
+      const w = containerRef.current.clientWidth;
+      const h = containerRef.current.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    };
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (renderer.domElement.parentNode) {
+        renderer.domElement.parentNode.removeChild(renderer.domElement);
+      }
+      renderer.dispose();
+    };
+  }, [lowSpecMode, playerHeroId, initTerritory]);
+
+  // Main Simulation & Render Loop
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    let lastTime = performance.now();
 
-    let width = canvas.clientWidth;
-    let height = canvas.clientHeight;
-    canvas.width = width;
-    canvas.height = height;
+    const loop = (currentTime: number) => {
+      const dt = Math.min((currentTime - lastTime) / 1000, 0.08);
+      lastTime = currentTime;
 
-    const cols = stateRef.current.gridCols;
-    const rows = stateRef.current.gridRows;
-    const cellW = width / cols;
-    const cellH = height / rows;
+      const { renderer, scene, camera, floorCtx, floorCanvas, floorTexture } = threeRef.current;
+      const s = stateRef.current;
 
-    const updateAndRender = () => {
-      if (isGameOver || isVictory || showTutorial) return;
+      if (renderer && scene && camera && !isGameOver && !isVictory) {
+        s.timeAlive += dt;
 
-      const p = stateRef.current.player;
-      const owners = stateRef.current.gridOwners;
-      const opps = stateRef.current.opponents;
+        // 1. Update Player Input Steering
+        const player = s.characters[0];
+        if (player && player.isAlive) {
+          let steerX = 0;
+          let steerZ = 0;
 
-      // Smooth rotate player toward targetAngle
-      let diff = stateRef.current.targetAngle - p.angle;
-      while (diff < -Math.PI) diff += Math.PI * 2;
-      while (diff > Math.PI) diff -= Math.PI * 2;
-      p.angle += diff * 0.15;
+          if (s.keys.up) steerZ -= 1;
+          if (s.keys.down) steerZ += 1;
+          if (s.keys.left) steerX -= 1;
+          if (s.keys.right) steerX += 1;
 
-      // Move player
-      p.x += Math.cos(p.angle) * p.speed;
-      p.y += Math.sin(p.angle) * p.speed;
+          if (s.touch.active) {
+            const dx = s.touch.currentX - s.touch.startX;
+            const dy = s.touch.currentY - s.touch.startY;
+            const dist = Math.hypot(dx, dy);
+            if (dist > 8) {
+              steerX = dx;
+              steerZ = dy;
+            }
+          }
 
-      // Boundary clamp
-      p.x = Math.max(10, Math.min(width - 10, p.x));
-      p.y = Math.max(10, Math.min(height - 10, p.y));
+          if (Math.hypot(steerX, steerZ) > 0.1) {
+            player.targetAngle = Math.atan2(steerX, steerZ);
+          }
 
-      const cCol = Math.floor(p.x / cellW);
-      const cRow = Math.floor(p.y / cellH);
-      const curCellOwner = (cCol >= 0 && cCol < cols && cRow >= 0 && cRow < rows) ? owners[cRow * cols + cCol] : 0;
+          // Smooth turn
+          let diff = player.targetAngle - player.angle;
+          while (diff < -Math.PI) diff += Math.PI * 2;
+          while (diff > Math.PI) diff -= Math.PI * 2;
+          player.angle += diff * 0.15;
+        }
 
-      if (curCellOwner === 1) {
-        // Player returned to own territory
-        if (p.trail.length > 0) {
-          // Fill enclosed territory (bounding box flood/fill heuristic)
-          let minC = cols, maxC = 0, minR = rows, maxR = 0;
-          p.trail.forEach(pt => {
-            const tc = Math.floor(pt.x / cellW);
-            const tr = Math.floor(pt.y / cellH);
-            if (tc < minC) minC = tc;
-            if (tc > maxC) maxC = tc;
-            if (tr < minR) minR = tr;
-            if (tr > maxR) maxR = tr;
+        // 2. Update AI Characters Steering
+        s.characters.slice(1).forEach((bot) => {
+          if (!bot.isAlive) return;
+
+          // AI behavior: If in open neutral territory, try to turn back to own base after 12 steps
+          const botGrid = worldToGrid(bot.x, bot.z);
+          const owner = s.grid[botGrid.gz * gridResolution + botGrid.gx];
+
+          if (owner !== bot.gridId && bot.trail.length > 18) {
+            // Seek base center
+            const diffX = -bot.x;
+            const diffZ = -bot.z;
+            bot.targetAngle = Math.atan2(diffX, diffZ) + (Math.random() - 0.5) * 0.4;
+          } else if (Math.random() < 0.03) {
+            bot.targetAngle += (Math.random() - 0.5) * 1.5;
+          }
+
+          // Steer towards target angle
+          let diff = bot.targetAngle - bot.angle;
+          while (diff < -Math.PI) diff += Math.PI * 2;
+          while (diff > Math.PI) diff -= Math.PI * 2;
+          bot.angle += diff * 0.1;
+        });
+
+        // 3. Move Characters & Record Trails
+        const half = arenaSize / 2 - 0.6;
+        s.characters.forEach((char) => {
+          if (!char.isAlive) return;
+
+          // Forward motion
+          char.x += Math.sin(char.angle) * char.speed * dt;
+          char.z += Math.cos(char.angle) * char.speed * dt;
+
+          // Boundary bounce
+          if (char.x < -half || char.x > half) {
+            char.x = THREE.MathUtils.clamp(char.x, -half, half);
+            char.angle = -char.angle;
+            char.targetAngle = char.angle;
+          }
+          if (char.z < -half || char.z > half) {
+            char.z = THREE.MathUtils.clamp(char.z, -half, half);
+            char.angle = Math.PI - char.angle;
+            char.targetAngle = char.angle;
+          }
+
+          if (char.mesh) {
+            char.mesh.position.set(char.x, 0, char.z);
+            char.mesh.rotation.y = char.angle;
+          }
+
+          // Territory Check
+          const g = worldToGrid(char.x, char.z);
+          const currentCellOwner = s.grid[g.gz * gridResolution + g.gx];
+
+          if (currentCellOwner === char.gridId) {
+            // Inside own territory
+            if (char.trail.length > 0) {
+              // Loop completed! Capture territory!
+              captureTerritory(char);
+            }
+          } else {
+            // Outside territory: Record trail
+            const lastP = char.trail[char.trail.length - 1];
+            if (!lastP || Math.hypot(char.x - lastP.x, char.z - lastP.z) > 0.45) {
+              char.trail.push({ x: char.x, z: char.z });
+            }
+          }
+        });
+
+        // 4. Tail Collision Detection
+        // Check if any character hits another character's trail
+        s.characters.forEach((killer) => {
+          if (!killer.isAlive) return;
+
+          s.characters.forEach((victim) => {
+            if (!victim.isAlive || victim.trail.length < 2) return;
+
+            // Check collision with victim's trail
+            const headX = killer.x;
+            const headZ = killer.z;
+
+            // Skip very recent tail points if checking self-collision
+            const maxCheckIdx = killer === victim ? victim.trail.length - 6 : victim.trail.length;
+
+            for (let i = 0; i < maxCheckIdx; i++) {
+              const tp = victim.trail[i];
+              if (Math.hypot(headX - tp.x, headZ - tp.z) < 0.6) {
+                // TAIL HIT! Victim is eliminated!
+                victim.isAlive = false;
+                victim.trail = [];
+                if (victim.mesh) victim.mesh.visible = false;
+
+                // Wipe victim's territory
+                for (let idx = 0; idx < s.grid.length; idx++) {
+                  if (s.grid[idx] === victim.gridId) s.grid[idx] = 0;
+                }
+
+                if (killer.gridId === 1) {
+                  // Player killed bot!
+                  playSfx?.('sounds/laser.mp3');
+                  s.kills += 1;
+                  setKills(s.kills);
+                  setScore((prev) => prev + 250);
+                }
+
+                if (victim.gridId === 1) {
+                  // Player died!
+                  playSfx?.('sounds/hit.mp3');
+                  setIsGameOver(true);
+                  const currentScore = Math.round(s.kills * 250 + s.characters[0].territoryCount * 2);
+                  const receipt = calculateAndDepositMissionReward({
+                    gameId: 'pokipaperio2',
+                    gameTitle: 'Paper.io 2 3D',
+                    durationSeconds: Math.round(s.timeAlive),
+                    score: currentScore,
+                    maxTargetScore: 1000,
+                    isVictory: false,
+                    difficulty: 'NORMAL',
+                  });
+                  setSettlementReceipt(receipt);
+                  onReward(receipt.totalSns);
+                }
+                break;
+              }
+            }
           });
+        });
 
-          // Expand bounding box slightly and fill
-          minC = Math.max(0, minC - 1);
-          maxC = Math.min(cols - 1, maxC + 1);
-          minR = Math.max(0, minR - 1);
-          maxR = Math.min(rows - 1, maxR + 1);
+        // 5. Update Dynamic Canvas Texture for Territory & Trails
+        if (floorCtx && floorCanvas && floorTexture) {
+          // Clear background to neutral grid
+          floorCtx.fillStyle = '#1e293b'; // Slate dark floor
+          floorCtx.fillRect(0, 0, 512, 512);
 
-          let newFilled = 0;
-          for (let r = minR; r <= maxR; r++) {
-            for (let c = minC; c <= maxC; c++) {
-              const idx = r * cols + c;
-              if (owners[idx] !== 1) {
-                owners[idx] = 1;
-                newFilled++;
+          const cellW = 512 / gridResolution;
+          const cellH = 512 / gridResolution;
+
+          // Count territories
+          const counts = [0, 0, 0, 0, 0];
+          for (let gz = 0; gz < gridResolution; gz++) {
+            for (let gx = 0; gx < gridResolution; gx++) {
+              const owner = s.grid[gz * gridResolution + gx];
+              counts[owner]++;
+
+              if (owner > 0) {
+                const c = s.characters.find((ch) => ch.gridId === owner);
+                if (c) {
+                  floorCtx.fillStyle = c.colorHex;
+                  floorCtx.fillRect(gx * cellW, gz * cellH, cellW + 0.5, cellH + 0.5);
+                }
               }
             }
           }
 
-          p.trail = [];
-          setScore(s => s + newFilled * 8 + 50);
-          stateRef.current.combo++;
+          // Draw Trails on floor
+          s.characters.forEach((char) => {
+            if (!char.isAlive || char.trail.length < 2) return;
+            floorCtx.strokeStyle = char.colorHex;
+            floorCtx.lineWidth = 3.5;
+            floorCtx.lineCap = 'round';
+            floorCtx.lineJoin = 'round';
+            floorCtx.beginPath();
 
-          // Recalc territory %
-          const myTotal = owners.filter(o => o === 1).length;
-          const pct = Math.round((myTotal / (cols * rows)) * 100);
-          setTerritoryPct(pct);
+            char.trail.forEach((p, idx) => {
+              const canvasX = ((p.x + arenaSize / 2) / arenaSize) * 512;
+              const canvasY = ((p.z + arenaSize / 2) / arenaSize) * 512;
+              if (idx === 0) floorCtx.moveTo(canvasX, canvasY);
+              else floorCtx.lineTo(canvasX, canvasY);
+            });
+            floorCtx.stroke();
+          });
 
-          if (pct >= 40) {
-            handleGameOver(true);
-            return;
+          floorTexture.needsUpdate = true;
+
+          // Update Territory % Leaderboard
+          const totalCells = gridResolution * gridResolution;
+          const playerCells = counts[1];
+          const curPct = Math.round((playerCells / totalCells) * 100);
+          setTerritoryPct(curPct);
+          s.characters[0].territoryCount = playerCells;
+
+          const leaderData = s.characters
+            .map((c) => ({
+              name: c.name,
+              pct: Math.round((counts[c.gridId] / totalCells) * 100),
+              color: c.colorHex,
+              isPlayer: c.gridId === 1,
+            }))
+            .sort((a, b) => b.pct - a.pct);
+          setLeaderboard(leaderData);
+
+          // Check Victory Condition
+          if (curPct >= targetConquerPct && !isVictory) {
+            setIsVictory(true);
+            playSfx?.('sounds/victory.mp3');
+            const receipt = calculateAndDepositMissionReward({
+              gameId: 'pokipaperio2',
+              gameTitle: 'Paper.io 2 3D',
+              durationSeconds: Math.round(s.timeAlive),
+              score: 500 + curPct * 20 + s.kills * 200,
+              maxTargetScore: 1000,
+              isVictory: true,
+              difficulty: 'NORMAL',
+            });
+            setSettlementReceipt(receipt);
+            onReward(receipt.totalSns);
           }
         }
-      } else {
-        // Player is outside own territory -> add trail
-        const lastPt = p.trail[p.trail.length - 1];
-        if (!lastPt || Math.hypot(p.x - lastPt.x, p.y - lastPt.y) > 6) {
-          p.trail.push({ x: p.x, y: p.y });
-        }
-      }
 
-      // AI Opponents logic
-      for (const op of opps) {
-        if (!op.isAlive) continue;
-
-        op.angle += (Math.random() - 0.5) * 0.2;
-        op.x += Math.cos(op.angle) * op.speed;
-        op.y += Math.sin(op.angle) * op.speed;
-
-        // Bounce walls
-        if (op.x < 20 || op.x > width - 20) op.angle = Math.PI - op.angle;
-        if (op.y < 20 || op.y > height - 20) op.angle = -op.angle;
-
-        // Player cuts AI trail?
-        for (let tIdx = 0; tIdx < op.trail.length; tIdx++) {
-          const tp = op.trail[tIdx];
-          if (Math.hypot(p.x - tp.x, p.y - tp.y) < 16) {
-            // Cut AI trail! AI dies
-            op.isAlive = false;
-            p.kills++;
-            setScore(s => s + 200);
-            stateRef.current.combo += 2;
-            if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-            break;
-          }
+        // Camera Smooth Follow Player
+        const p = s.characters[0];
+        if (p && p.mesh) {
+          camera.position.x = THREE.MathUtils.lerp(camera.position.x, p.x * 0.4, 0.1);
+          camera.position.z = THREE.MathUtils.lerp(camera.position.z, p.z * 0.4 + 18, 0.1);
+          camera.lookAt(p.x * 0.2, 0, p.z * 0.2);
         }
 
-        // AI cuts Player trail?
-        if (op.isAlive) {
-          for (const pt of p.trail) {
-            if (Math.hypot(op.x - pt.x, op.y - pt.y) < 14) {
-              // Player trail cut! Game over
-              handleGameOver(false);
-              return;
-            }
-          }
-        }
+        renderer.render(scene, camera);
       }
 
-      // ---------------- RENDER ----------------
-      ctx.clearRect(0, 0, width, height);
-
-      // Background grid
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(0, 0, width, height);
-
-      // Draw Grid Ownership
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          const owner = owners[r * cols + c];
-          if (owner === 1) {
-            ctx.fillStyle = '#0284c7'; // Player blue
-            ctx.fillRect(c * cellW, r * cellH, cellW + 0.5, cellH + 0.5);
-          } else if (owner === 2) {
-            ctx.fillStyle = 'rgba(239, 68, 68, 0.45)';
-            ctx.fillRect(c * cellW, r * cellH, cellW + 0.5, cellH + 0.5);
-          } else if (owner === 3) {
-            ctx.fillStyle = 'rgba(168, 85, 247, 0.45)';
-            ctx.fillRect(c * cellW, r * cellH, cellW + 0.5, cellH + 0.5);
-          } else if (owner === 4) {
-            ctx.fillStyle = 'rgba(234, 179, 8, 0.45)';
-            ctx.fillRect(c * cellW, r * cellH, cellW + 0.5, cellH + 0.5);
-          }
-        }
-      }
-
-      // Draw Player Trail
-      if (p.trail.length > 1) {
-        ctx.strokeStyle = '#38bdf8';
-        ctx.lineWidth = 6;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.beginPath();
-        ctx.moveTo(p.trail[0].x, p.trail[0].y);
-        for (let i = 1; i < p.trail.length; i++) {
-          ctx.lineTo(p.trail[i].x, p.trail[i].y);
-        }
-        ctx.lineTo(p.x, p.y);
-        ctx.stroke();
-      }
-
-      // Draw AI Opponents
-      for (const op of opps) {
-        if (!op.isAlive) continue;
-        drawCardSprite(ctx, op.charId, op.x - 14, op.y - 14, 28, 28, {
-          circleClip: true,
-          borderWidth: 2,
-          borderColor: op.color,
-          shadowBlur: 6,
-          shadowColor: op.color,
-        });
-      }
-
-      // Draw Player Hero Sprite
-      drawCardSprite(ctx, playerHeroId, p.x - 18, p.y - 18, 36, 36, {
-        circleClip: true,
-        borderWidth: 2,
-        borderColor: '#38bdf8',
-        shadowBlur: 8,
-        shadowColor: '#38bdf8',
-      });
-
-      animFrameRef.current = requestAnimationFrame(updateAndRender);
+      animFrameRef.current = requestAnimationFrame(loop);
     };
 
-    animFrameRef.current = requestAnimationFrame(updateAndRender);
+    animFrameRef.current = requestAnimationFrame(loop);
 
     return () => {
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      cancelAnimationFrame(animFrameRef.current);
     };
-  }, [isGameOver, isVictory, showTutorial, playerHeroId, handleGameOver]);
+  }, [isGameOver, isVictory, playSfx, captureTerritory, worldToGrid, arenaSize, gridResolution, targetConquerPct, onReward]);
 
-  // Touch Direction Drag
-  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const touchX = e.clientX - rect.left;
-    const touchY = e.clientY - rect.top;
+  // Keyboard Controls
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const s = stateRef.current;
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') s.keys.up = true;
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') s.keys.down = true;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') s.keys.left = true;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') s.keys.right = true;
+    };
 
-    const p = stateRef.current.player;
-    stateRef.current.targetAngle = Math.atan2(touchY - p.y, touchX - p.x);
+    const handleKeyUp = (e: KeyboardEvent) => {
+      const s = stateRef.current;
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') s.keys.up = false;
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') s.keys.down = false;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') s.keys.left = false;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') s.keys.right = false;
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
+
+  // Touch Handlers for Mobile Pure Gestures
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    const s = stateRef.current;
+    s.touch.active = true;
+    s.touch.startX = touch.clientX;
+    s.touch.startY = touch.clientY;
+    s.touch.currentX = touch.clientX;
+    s.touch.currentY = touch.clientY;
   };
 
-  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const touchX = e.clientX - rect.left;
-    const touchY = e.clientY - rect.top;
+  const handleTouchMove = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    const s = stateRef.current;
+    if (s.touch.active) {
+      s.touch.currentX = touch.clientX;
+      s.touch.currentY = touch.clientY;
+    }
+  };
 
-    const p = stateRef.current.player;
-    stateRef.current.targetAngle = Math.atan2(touchY - p.y, touchX - p.x);
+  const handleTouchEnd = () => {
+    const s = stateRef.current;
+    s.touch.active = false;
   };
 
   const tutorialSteps: TutorialStep[] = [
     {
-      title: isKo ? '페이퍼 io 2 영토 전쟁' : 'Paper.io 2 Territory',
-      badge: 'MISSION 04',
+      badge: 'EXPAND',
+      title: isKo ? '🎨 영토 정복 & 루프 닫기' : '🎨 Conquer Land & Close Loops',
       description: isKo
-        ? '손가락으로 원하는 방향을 터치/드래그하여 내 영역 밖으로 선을 그리고 다시 내 땅으로 복귀하면 땅이 넓어집니다!'
-        : 'Touch or drag in any direction to draw lines outside and return to claim massive territory!',
+        ? '안전지대 밖으로 나가 선(꼬리)을 그린 뒤 다시 자신의 영토로 돌아오면 둘러싸인 면적이 모두 내 땅이 됩니다!'
+        : 'Leave your base to draw a trail, then return to your zone to capture everything enclosed!',
       keyPoints: isKo
-        ? ['원터치 드래그로 영역 확장', '내 땅으로 복귀하여 영토 확보', '목표 점유율 40% 달성 시 승리']
-        : ['Drag finger to steer and expand', 'Return to safe base to claim', 'Reach 40% territory to win'],
+        ? ['자신의 영토 밖으로 나가 꼬리 그리기', '다시 안전지대로 복귀 시 즉시 점령']
+        : ['Draw trail outside base', 'Return to safe zone to conquer'],
     },
     {
-      title: isKo ? '꼬리 방어 & 적 처치' : 'Trail Defense & Kills',
-      badge: 'TRAIL BATTLE',
+      badge: 'COMBAT',
+      title: isKo ? '⚔️ 적의 꼬리 자르기' : '⚔️ Cut Enemy Trails',
       description: isKo
-        ? '선이 이어져 있을 때 적이 내 꼬리를 밟으면 즉사합니다! 반대로 적의 꼬리를 들이받아 적을 제압하세요.'
-        : 'If an enemy crosses your trail while outside, you lose! Strike their trail instead to eliminate them.',
+        ? '적이 영토 밖에서 그리고 있는 꼬리를 들이받으면 적을 즉시 처치할 수 있습니다. 반대로 내 꼬리가 밟히면 탈락합니다!'
+        : 'Crash into an enemy trail to eliminate them instantly. But guard your own tail at all costs!',
       keyPoints: isKo
-        ? ['적에게 꼬리를 보이지 않고 방어', '적의 꼬리를 들이받아 처치', '한 손으로 100% 플레이 가능']
-        : ['Protect your exposed trail', 'Bite enemy trails to eliminate', '100% one-hand friendly'],
-    }
+        ? ['적 꼬리를 공격하여 킬 획득', '내 꼬리가 노출되었을 때 조심']
+        : ['Attack exposed enemy trails', 'Protect your own ribbon trail'],
+    },
+    {
+      badge: 'VICTORY',
+      title: isKo ? '👑 맵 20% 점유 시 승리' : '👑 Reach 20% Territory to Win',
+      description: isKo
+        ? '영토를 점진적으로 넓혀 맵 점유율 20%를 달성하면 영광의 우승과 대량의 SNS 보상을 획득합니다!'
+        : 'Expand strategically to control 20% of the entire map to claim victory and SNS rewards!',
+      keyPoints: isKo
+        ? ['리더보드 1위 달성', '20% 점유율 도달 시 승리']
+        : ['Climb the live leaderboard', 'Hit 20% conquer rate to win'],
+    },
   ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col items-center select-none overflow-hidden font-mono">
+    <div
+      className="relative w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* 3D WebGL Canvas */}
+      <div ref={containerRef} className="absolute inset-0 w-full h-full" />
+
+      {/* Minimalist Mission HUD */}
       <MinimalistMissionHUD
-        title={isKo ? 'No.04 페이퍼 io 2' : 'No.04 Paper.io 2'}
-        currentScore={score}
+        gameTitle="PAPER.IO 2 3D"
+        score={score}
         targetScore={1000}
-        timeLeft={timeLeft}
-        stageInfo={`영토: ${territoryPct}% (목표 40%)`}
-        combo={stateRef.current.combo}
-        onExit={onExit}
+        language={language}
+        onExit={() => {
+          const s = stateRef.current;
+          const currentProgress = territoryPct * 15 + s.kills * 100;
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'pokipaperio2',
+            gameTitle: 'Paper.io 2 3D',
+            durationSeconds: Math.round(s.timeAlive),
+            score: currentProgress,
+            maxTargetScore: 1000,
+            isVictory: false,
+            difficulty: 'NORMAL',
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
+          onExit();
+        }}
       />
 
-      <div className="relative flex-1 w-full max-w-md flex items-center justify-center p-2">
-        <canvas
-          ref={canvasRef}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          className="w-full h-full rounded-sm border border-slate-800 touch-none shadow-inner"
-        />
+      {/* Top Status & Territory Progress Bar */}
+      <div className="absolute top-16 left-4 right-4 flex flex-col gap-2 pointer-events-none z-10">
+        <div className="flex items-center justify-between text-xs sm:text-sm text-slate-200">
+          <div className="flex items-center gap-2 bg-slate-900/85 px-3 py-1.5 rounded-sm border border-slate-700/80 backdrop-blur-sm">
+            <span className="text-cyan-400 font-bold">
+              👑 {territoryPct}% / {targetConquerPct}%
+            </span>
+            <span className="text-slate-400">|</span>
+            <span className="text-rose-400 font-bold">⚔️ {kills} KILLS</span>
+          </div>
 
-        {/* Control Guide */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none text-center bg-slate-900/80 px-4 py-1.5 rounded-full border border-slate-700/60 backdrop-blur-sm">
-          <p className="text-xs text-sky-400 font-bold tracking-wider animate-pulse">
-            {isKo ? '👆 터치/드래그: 이동 방향 조절 (땅따먹기)' : '👆 TOUCH/DRAG: STEER & EXPAND'}
-          </p>
+          {/* Mini Live Leaderboard */}
+          <div className="bg-slate-900/85 px-2.5 py-1 rounded-sm border border-slate-700/80 backdrop-blur-sm flex items-center gap-2 text-[11px]">
+            {leaderboard.slice(0, 3).map((l, i) => (
+              <span
+                key={i}
+                className={`flex items-center gap-1 font-bold ${l.isPlayer ? 'text-cyan-300 underline' : 'text-slate-400'}`}
+              >
+                <span>{i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉'}</span>
+                <span>{l.pct}%</span>
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Territory Conquer Progress Bar */}
+        <div className="w-full h-2 bg-slate-800/90 rounded-full overflow-hidden border border-slate-700/80">
+          <div
+            className="h-full bg-cyan-500 transition-all duration-200"
+            style={{ width: `${Math.min(100, (territoryPct / targetConquerPct) * 100)}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Mobile Pure Gesture Guide Hint */}
+      <div className="absolute bottom-6 left-4 pointer-events-none z-20">
+        <div className="bg-slate-900/80 px-3 py-2 rounded-sm border border-slate-700/80 text-[11px] text-slate-300 backdrop-blur-sm">
+          <div className="text-slate-400 font-bold mb-0.5">{isKo ? '🕹️ 360° 조향 제스처' : '🕹️ 360° STEERING'}</div>
+          <div>{isKo ? '화면을 터치 & 드래그하여 방향을 바꾸세요' : 'Drag screen to steer cubie'}</div>
         </div>
       </div>
 
       {/* Victory Reward Modal */}
       {settlementReceipt && (
         <VictoryRewardModal
-          isOpen={isGameOver}
-          isVictory={isVictory}
-          score={score}
+          isOpen={isVictory}
           receipt={settlementReceipt}
-          onConfirm={onExit}
-          onRestart={() => {
-            setIsGameOver(false);
-            setIsVictory(false);
-            setSettlementReceipt(null);
-            setScore(0);
-            setTimeLeft(45);
-            initGame();
-          }}
           language={language}
+          onConfirm={() => {
+            setIsVictory(false);
+            onExit();
+          }}
         />
       )}
 
-      {/* Universal Tutorial Modal */}
-      {showTutorial && (
-        <UniversalTutorialModal
-          isOpen={showTutorial}
-          gameTitle={isKo ? 'No.04 페이퍼 io 2' : 'No.04 Paper.io 2'}
-          steps={tutorialSteps}
-          onComplete={() => {
-            setShowTutorial(false);
-            try {
-              localStorage.setItem('hero_tutorial_paperio2', 'true');
-            } catch {}
-          }}
-          language={language}
-        />
+      {/* Game Over Modal */}
+      {isGameOver && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-700 p-6 max-w-sm w-full rounded-sm text-center font-mono">
+            <div className="text-3xl mb-2">💥</div>
+            <h2 className="text-xl font-bold text-rose-500 mb-2">
+              {isKo ? '꼬리가 밟혀 탈락했습니다!' : 'Your Tail Was Cut!'}
+            </h2>
+            <p className="text-sm text-slate-400 mb-4">
+              {isKo
+                ? `최종 점유율: ${territoryPct}% | 처치: ${kills}명`
+                : `Final Territory: ${territoryPct}% | Kills: ${kills}`}
+            </p>
+            {settlementReceipt && (
+              <div className="bg-slate-800/80 p-3 rounded-sm border border-slate-700 mb-4 text-xs text-slate-300">
+                <div className="text-slate-400 mb-1">{isKo ? '영토 쟁탈전 보상' : 'Conquest Reward'}</div>
+                <div className="text-base font-bold text-amber-400">
+                  +{settlementReceipt.totalSns} SNS
+                </div>
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={onExit}
+              className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-sm border border-slate-600 text-sm"
+            >
+              {isKo ? '미션 목록으로' : 'Back to Missions'}
+            </button>
+          </div>
+        </div>
       )}
+
+      {/* Universal Tutorial Modal */}
+      <UniversalTutorialModal
+        isOpen={showTutorial}
+        steps={tutorialSteps}
+        language={language}
+        onClose={() => {
+          setShowTutorial(false);
+          try {
+            localStorage.setItem('hero_tutorial_paperio2_v2', 'true');
+          } catch {
+            // ignore
+          }
+        }}
+      />
     </div>
   );
 };

@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 4,
-  "completed_count": 3,
-  "last_updated": "2026-09-07T15:22:00+09:00",
+  "current_game_index": 5,
+  "completed_count": 4,
+  "last_updated": "2026-09-07T15:32:00+09:00",
   "history": [
     {
       "id": 1,
@@ -38,6 +38,17 @@
       "component": "src/components/poki/PokiMinefunGame.tsx",
       "completed_at": "2026-09-07T15:22:00+09:00",
       "details": "Three.js 기반 3D 마인크래프트 복셀 파쿠르 오비 구현, 120m 부유 복셀 트랙(잔디/돌/나무/용암/움직이는 발판/슬라임 패드), 3D 스티브 아바타 및 No.03 카드 영웅 배지, 체크포인트 부활 시스템, 회전 다이아몬드 포털 및 MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 4,
+      "name": "Paper.io 2",
+      "poki_url": "https://poki.com/kr/g/paperio-2",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No004_PaperIo2_Prompt.md",
+      "component": "src/components/poki/PokiPaperIoGame.tsx",
+      "completed_at": "2026-09-07T15:32:00+09:00",
+      "details": "Three.js 기반 3D 영토 쟁탈전 IO 구현, 90x90 동적 캔버스 텍스처 영토 매핑, 다각형 루프(Polygon Loop) 안전지대 귀환 시 자동 영토 점령(Conquer), 3D 페이퍼 큐비 아바타 & No.04 영웅 배지, 적 꼬리 자르기(Tail Cut) 킬 시스템, 실시간 리더보드 & 점유율 20% 승리, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
