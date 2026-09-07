@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
 import { CardData } from '../../types';
 import { MinimalistMissionHUD } from '../MinimalistMissionHUD';
 import { VictoryRewardModal } from '../VictoryRewardModal';
@@ -15,12 +16,26 @@ interface PokiBlockyBlastGameProps {
   onReward: (amount: number) => void;
 }
 
-interface Piece {
+interface PieceTemplate {
   id: number;
-  shape: number[][]; // 2D array representing filled cells
-  color: string;
-  charId: number;
+  shape: number[][]; // 2D matrix
+  color: number;
+  colorHex: string;
 }
+
+const PIECE_TEMPLATES: PieceTemplate[] = [
+  { id: 1, shape: [[1]], color: 0x38bdf8, colorHex: '#38bdf8' }, // 1x1
+  { id: 2, shape: [[1, 1]], color: 0x34d399, colorHex: '#34d399' }, // 1x2
+  { id: 3, shape: [[1, 1, 1]], color: 0xfbbf24, colorHex: '#fbbf24' }, // 1x3
+  { id: 4, shape: [[1, 1, 1, 1]], color: 0xf87171, colorHex: '#f87171' }, // 1x4
+  { id: 5, shape: [[1], [1]], color: 0x34d399, colorHex: '#34d399' }, // 2x1
+  { id: 6, shape: [[1], [1], [1]], color: 0xfbbf24, colorHex: '#fbbf24' }, // 3x1
+  { id: 7, shape: [[1, 1], [1, 1]], color: 0xa78bfa, colorHex: '#a78bfa' }, // 2x2
+  { id: 8, shape: [[1, 1, 1], [1, 1, 1], [1, 1, 1]], color: 0xf43f5e, colorHex: '#f43f5e' }, // 3x3
+  { id: 9, shape: [[1, 0], [1, 0], [1, 1]], color: 0xf97316, colorHex: '#f97316' }, // L-shape
+  { id: 10, shape: [[0, 1], [0, 1], [1, 1]], color: 0x06b6d4, colorHex: '#06b6d4' }, // J-shape
+  { id: 11, shape: [[1, 1, 1], [0, 1, 0]], color: 0xec4899, colorHex: '#ec4899' }, // T-shape
+];
 
 export const PokiBlockyBlastGame: React.FC<PokiBlockyBlastGameProps> = ({
   deck = [],
@@ -32,14 +47,24 @@ export const PokiBlockyBlastGame: React.FC<PokiBlockyBlastGameProps> = ({
 }) => {
   const isKo = language === 'ko';
   const playerHeroId = deck[0]?.id || 9;
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const animFrameRef = useRef<number>(0);
 
+  // HUD & Game States
   const [score, setScore] = useState<number>(0);
   const [linesCleared, setLinesCleared] = useState<number>(0);
-  const [timeLeft, setTimeLeft] = useState<number>(50);
+  const [combo, setCombo] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(75);
+  const [comboFeed, setComboFeed] = useState<string | null>(null);
+
+  const [availablePieces, setAvailablePieces] = useState<PieceTemplate[]>([]);
+  const [holdPiece, setHoldPiece] = useState<PieceTemplate | null>(null);
+  const [activeDragIdx, setActiveDragIdx] = useState<number | null>(null);
+  const [dragPos, setDragPos] = useState<{ x: number; y: number } | null>(null);
+
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [isVictory, setIsVictory] = useState<boolean>(false);
+  const [showExitConfirm, setShowExitConfirm] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
@@ -50,108 +75,166 @@ export const PokiBlockyBlastGame: React.FC<PokiBlockyBlastGameProps> = ({
     }
   });
 
+  // Core 8x8 Grid State
   const stateRef = useRef({
-    gridSize: 8,
-    grid: Array(8).fill(null).map(() => Array(8).fill(0)), // 0: empty, 1+: charId
-    availablePieces: [] as Piece[],
-    selectedPieceIdx: -1,
-    dragPos: { x: 0, y: 0 },
+    isRunning: true,
+    grid: Array(8).fill(0).map(() => Array(8).fill(0)), // 0 = empty, color = filled
+    gridMeshes: Array(8).fill(null).map(() => Array(8).fill(null as THREE.Mesh | null)),
+    slotMeshes: Array(8).fill(null).map(() => Array(8).fill(null as THREE.Mesh | null)),
+    particles: [] as Array<{
+      mesh: THREE.Mesh;
+      vx: number;
+      vy: number;
+      vz: number;
+      life: number;
+    }>,
+    score: 0,
+    linesCleared: 0,
     combo: 0,
-    particles: [] as { x: number; y: number; vx: number; vy: number; color: string; alpha: number }[],
+    boardScene: null as THREE.Scene | null,
+    camera: null as THREE.PerspectiveCamera | null,
   });
 
-  const generatePieces = useCallback(() => {
-    const shapes = [
-      [[1]], // 1x1
-      [[1, 1]], // 2x1
-      [[1], [1]], // 1x2
-      [[1, 1], [1, 1]], // 2x2
-      [[1, 1, 1]], // 3x1
-      [[1], [1], [1]], // 1x3
-      [[1, 0], [1, 1]], // L small
-      [[0, 1], [1, 1]], // J small
-      [[1, 1, 1], [0, 1, 0]], // T shape
-    ];
-    const colors = ['#f59e0b', '#38bdf8', '#10b981', '#a855f7', '#ef4444'];
-    const chars = [101, 105, 109, 115, 120];
-
-    const pieces: Piece[] = [];
-    for (let i = 0; i < 3; i++) {
-      const sh = shapes[Math.floor(Math.random() * shapes.length)];
-      pieces.push({
-        id: Date.now() + i,
-        shape: sh,
-        color: colors[i % colors.length],
-        charId: chars[i % chars.length],
-      });
-    }
-    stateRef.current.availablePieces = pieces;
-  }, []);
-
-  const initGame = useCallback(() => {
-    stateRef.current.grid = Array(8).fill(null).map(() => Array(8).fill(0));
-    stateRef.current.combo = 0;
-    generatePieces();
-  }, [generatePieces]);
-
-  useEffect(() => {
-    initGame();
-  }, [initGame]);
-
-  // Timer
+  // Timer Countdown
   useEffect(() => {
     if (isGameOver || isVictory || showTutorial) return;
     const timer = setInterval(() => {
-      setTimeLeft(prev => {
+      setTimeLeft((prev) => {
         if (prev <= 1) {
-          handleGameOver(score >= 600);
+          clearInterval(timer);
+          triggerVictory();
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [isGameOver, isVictory, showTutorial, score]);
+  }, [isGameOver, isVictory, showTutorial]);
 
-  const handleGameOver = useCallback((victory: boolean) => {
-    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-    setIsGameOver(true);
-    setIsVictory(victory);
+  // Generate 3 random pieces
+  const generateNewPieces = useCallback(() => {
+    const newPieces: PieceTemplate[] = [];
+    for (let i = 0; i < 3; i++) {
+      const tmpl = PIECE_TEMPLATES[Math.floor(Math.random() * PIECE_TEMPLATES.length)];
+      newPieces.push({ ...tmpl, id: Math.random() });
+    }
+    setAvailablePieces(newPieces);
+  }, []);
 
-    const finalScore = score + (victory ? 400 : 80);
+  useEffect(() => {
+    generateNewPieces();
+  }, [generateNewPieces]);
+
+  // Settlement and quit handlers
+  const handleQuitWithSettlement = useCallback(() => {
+    stateRef.current.isRunning = false;
+    setShowExitConfirm(true);
+  }, []);
+
+  const confirmExitAndSettle = useCallback(() => {
+    setShowExitConfirm(false);
+    const finalScore = stateRef.current.score;
     const receipt = calculateAndDepositMissionReward({
-      gameId: 'poki_blockyblast',
-      gameTitle: isKo ? '블로키 블래스트 퍼즐' : 'Blocky Blast Puzzle',
-      durationSeconds: 50 - timeLeft,
+      gameId: 'pokiblockyblast',
+      gameTitle: isKo ? '블록키 블라스트 3D 퍼즐' : 'Blocky Blast Puzzle 3D',
+      durationSeconds: Math.max(1, 75 - timeLeft),
       score: finalScore,
       maxTargetScore: 1000,
-      isVictory: victory,
+      isVictory: false,
       difficulty: 'NORMAL',
-      comboCount: stateRef.current.combo,
-      perfectClear: victory && linesCleared >= 10,
     });
-
     setSettlementReceipt(receipt);
     onReward(receipt.totalSns);
-    if (playSfx) {
-      playSfx(victory ? 'https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3' : 'https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-    }
-  }, [score, timeLeft, linesCleared, isKo, onReward, playSfx]);
+  }, [isKo, onReward, timeLeft]);
 
-  // Check and clear filled lines
-  const checkLines = useCallback((gridOriginX: number, gridOriginY: number, cellSize: number) => {
+  const cancelExit = useCallback(() => {
+    setShowExitConfirm(false);
+    stateRef.current.isRunning = true;
+  }, []);
+
+  const triggerGameOver = useCallback(() => {
+    if (isGameOver || isVictory) return;
+    stateRef.current.isRunning = false;
+    setIsGameOver(true);
+    if (playSfx) playSfx('/sounds/game_over.mp3');
+    if (navigator.vibrate) navigator.vibrate([100, 50, 150]);
+
+    const finalScore = stateRef.current.score;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'pokiblockyblast',
+      gameTitle: isKo ? '블록키 블라스트 3D 퍼즐' : 'Blocky Blast Puzzle 3D',
+      durationSeconds: Math.max(1, 75 - timeLeft),
+      score: finalScore,
+      maxTargetScore: 1000,
+      isVictory: false,
+      difficulty: 'NORMAL',
+    });
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
+  }, [isGameOver, isKo, isVictory, onReward, playSfx, timeLeft]);
+
+  const triggerVictory = useCallback(() => {
+    if (isGameOver || isVictory) return;
+    stateRef.current.isRunning = false;
+    setIsVictory(true);
+    if (playSfx) playSfx('/sounds/victory.mp3');
+    if (navigator.vibrate) navigator.vibrate([60, 60, 120]);
+
+    const finalScore = stateRef.current.score;
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'pokiblockyblast',
+      gameTitle: isKo ? '블록키 블라스트 3D 퍼즐' : 'Blocky Blast Puzzle 3D',
+      durationSeconds: Math.max(1, 75 - timeLeft),
+      score: Math.max(1000, finalScore),
+      maxTargetScore: 1000,
+      isVictory: true,
+      difficulty: 'NORMAL',
+    });
+    setSettlementReceipt(receipt);
+    onReward(receipt.totalSns);
+  }, [isGameOver, isKo, isVictory, onReward, playSfx, timeLeft]);
+
+  // Particle burst helper
+  const spawnBlockBlastParticles = useCallback((wx: number, wz: number, color: number) => {
+    const scene = stateRef.current.boardScene;
+    if (!scene) return;
+    const pGeo = new THREE.BoxGeometry(0.35, 0.35, 0.35);
+    const pMat = new THREE.MeshStandardMaterial({ color, roughness: 0.3, metalness: 0.2 });
+
+    for (let i = 0; i < 8; i++) {
+      const pMesh = new THREE.Mesh(pGeo, pMat);
+      pMesh.position.set(wx + (Math.random() - 0.5) * 0.8, 0.6, wz + (Math.random() - 0.5) * 0.8);
+      scene.add(pMesh);
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 4 + Math.random() * 6;
+      stateRef.current.particles.push({
+        mesh: pMesh,
+        vx: Math.cos(angle) * speed,
+        vy: 4 + Math.random() * 6,
+        vz: Math.sin(angle) * speed,
+        life: 0.65,
+      });
+    }
+  }, []);
+
+  // Check lines and clear
+  const checkLinesAndClear = useCallback(() => {
     const grid = stateRef.current.grid;
+    const gridMeshes = stateRef.current.gridMeshes;
+    const scene = stateRef.current.boardScene;
+    if (!scene) return;
+
     const rowsToClear: number[] = [];
     const colsToClear: number[] = [];
 
-    // Check rows
+    // Check Rows
     for (let r = 0; r < 8; r++) {
-      if (grid[r].every(v => v !== 0)) {
+      if (grid[r].every((val) => val !== 0)) {
         rowsToClear.push(r);
       }
     }
 
-    // Check cols
+    // Check Cols
     for (let c = 0; c < 8; c++) {
       let full = true;
       for (let r = 0; r < 8; r++) {
@@ -163,384 +246,644 @@ export const PokiBlockyBlastGame: React.FC<PokiBlockyBlastGameProps> = ({
       if (full) colsToClear.push(c);
     }
 
-    if (rowsToClear.length > 0 || colsToClear.length > 0) {
-      // Clear rows
-      rowsToClear.forEach(r => {
-        for (let c = 0; c < 8; c++) {
-          grid[r][c] = 0;
-          // Blast particles
-          for (let p = 0; p < 3; p++) {
-            stateRef.current.particles.push({
-              x: gridOriginX + c * cellSize + cellSize / 2,
-              y: gridOriginY + r * cellSize + cellSize / 2,
-              vx: (Math.random() - 0.5) * 6,
-              vy: (Math.random() - 0.5) * 6,
-              color: '#38bdf8',
-              alpha: 1,
-            });
-          }
+    const totalCleared = rowsToClear.length + colsToClear.length;
+    if (totalCleared > 0) {
+      // Blast Cells
+      const clearedSet = new Set<string>();
+      rowsToClear.forEach((r) => {
+        for (let c = 0; c < 8; c++) clearedSet.add(`${r},${c}`);
+      });
+      colsToClear.forEach((c) => {
+        for (let r = 0; r < 8; r++) clearedSet.add(`${r},${c}`);
+      });
+
+      clearedSet.forEach((key) => {
+        const [rStr, cStr] = key.split(',');
+        const r = parseInt(rStr, 10);
+        const c = parseInt(cStr, 10);
+        const color = grid[r][c];
+        grid[r][c] = 0;
+
+        const mesh = gridMeshes[r][c];
+        if (mesh) {
+          const wx = (c - 3.5) * 1.5;
+          const wz = (r - 3.5) * 1.5;
+          spawnBlockBlastParticles(wx, wz, color);
+          scene.remove(mesh);
+          gridMeshes[r][c] = null;
         }
       });
 
-      // Clear cols
-      colsToClear.forEach(c => {
-        for (let r = 0; r < 8; r++) {
-          grid[r][c] = 0;
-          for (let p = 0; p < 3; p++) {
-            stateRef.current.particles.push({
-              x: gridOriginX + c * cellSize + cellSize / 2,
-              y: gridOriginY + r * cellSize + cellSize / 2,
-              vx: (Math.random() - 0.5) * 6,
-              vy: (Math.random() - 0.5) * 6,
-              color: '#f59e0b',
-              alpha: 1,
-            });
-          }
+      const newCombo = stateRef.current.combo + 1;
+      stateRef.current.combo = newCombo;
+      setCombo(newCombo);
+
+      const earnedPoints = totalCleared * 150 + (newCombo > 1 ? newCombo * 100 : 0);
+      stateRef.current.score += earnedPoints;
+      stateRef.current.linesCleared += totalCleared;
+      setScore(stateRef.current.score);
+      setLinesCleared(stateRef.current.linesCleared);
+
+      if (newCombo > 1) {
+        setComboFeed(`COMBO x${newCombo}! (+${earnedPoints})`);
+      } else {
+        setComboFeed(totalCleared > 1 ? `MULTI BLAST x${totalCleared}! (+${earnedPoints})` : `LINE BLAST! (+${earnedPoints})`);
+      }
+      setTimeout(() => setComboFeed(null), 2000);
+
+      if (playSfx) playSfx('/sounds/crit.mp3');
+      if (navigator.vibrate) navigator.vibrate([30, 20, 60]);
+
+      if (stateRef.current.score >= 1000) {
+        triggerVictory();
+      }
+    } else {
+      stateRef.current.combo = 0;
+      setCombo(0);
+    }
+  }, [playSfx, spawnBlockBlastParticles, triggerVictory]);
+
+  // Place Piece on Board
+  const canPlacePiece = useCallback((shape: number[][], startR: number, startC: number): boolean => {
+    const grid = stateRef.current.grid;
+    for (let r = 0; r < shape.length; r++) {
+      for (let c = 0; c < shape[r].length; c++) {
+        if (shape[r][c] === 1) {
+          const gr = startR + r;
+          const gc = startC + c;
+          if (gr < 0 || gr >= 8 || gc < 0 || gc >= 8) return false;
+          if (grid[gr][gc] !== 0) return false;
         }
-      });
-
-      const totalLines = rowsToClear.length + colsToClear.length;
-      setLinesCleared(l => l + totalLines);
-      const points = totalLines * 120 * totalLines;
-      setScore(s => s + points);
-      stateRef.current.combo += totalLines;
-
-      if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-
-      if (score + points >= 1000) {
-        handleGameOver(true);
       }
     }
-  }, [playSfx, score, handleGameOver]);
+    return true;
+  }, []);
 
-  // Main Canvas Loop
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let width = canvas.clientWidth;
-    let height = canvas.clientHeight;
-    canvas.width = width;
-    canvas.height = height;
-
-    const gridSize = 8;
-    const cellSize = Math.min((width - 40) / gridSize, 38);
-    const gridOriginX = (width - cellSize * gridSize) / 2;
-    const gridOriginY = 70;
-
-    const updateAndRender = () => {
-      if (isGameOver || isVictory || showTutorial) return;
-
+  const placePieceOnBoard = useCallback(
+    (piece: PieceTemplate, startR: number, startC: number) => {
       const grid = stateRef.current.grid;
-      const pieces = stateRef.current.availablePieces;
-      const particles = stateRef.current.particles;
+      const gridMeshes = stateRef.current.gridMeshes;
+      const scene = stateRef.current.boardScene;
+      if (!scene) return;
 
-      // ---------------- RENDER ----------------
-      ctx.clearRect(0, 0, width, height);
-
-      // Dark board background
-      ctx.fillStyle = '#0a0e1a';
-      ctx.fillRect(0, 0, width, height);
-
-      // Draw Grid Board Frame
-      ctx.fillStyle = '#1e293b';
-      ctx.fillRect(gridOriginX - 6, gridOriginY - 6, cellSize * gridSize + 12, cellSize * gridSize + 12);
-      ctx.strokeStyle = '#334155';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(gridOriginX - 6, gridOriginY - 6, cellSize * gridSize + 12, cellSize * gridSize + 12);
-
-      // Draw Grid Cells
-      for (let r = 0; r < gridSize; r++) {
-        for (let c = 0; c < gridSize; c++) {
-          const cellX = gridOriginX + c * cellSize;
-          const cellY = gridOriginY + r * cellSize;
-
-          ctx.fillStyle = '#0f172a';
-          ctx.fillRect(cellX + 1, cellY + 1, cellSize - 2, cellSize - 2);
-
-          const cellVal = grid[r][c];
-          if (cellVal > 0) {
-            // Draw card sprite block
-            drawCardSprite(ctx, cellVal, cellX + 2, cellY + 2, cellSize - 4, cellSize - 4, {
-              roundedRadius: 4,
-              borderWidth: 1,
-              borderColor: '#f59e0b',
-            });
-          }
-        }
-      }
-
-      // Draw Bottom Piece Slots
-      const slotY = gridOriginY + cellSize * gridSize + 40;
-      const pieceSlotW = width / 3;
-
-      pieces.forEach((p, idx) => {
-        if (stateRef.current.selectedPieceIdx === idx) return; // Being dragged
-        const centerX = pieceSlotW * idx + pieceSlotW / 2;
-        const pRows = p.shape.length;
-        const pCols = p.shape[0].length;
-        const pBlockSize = 20;
-        const startX = centerX - (pCols * pBlockSize) / 2;
-        const startY = slotY - (pRows * pBlockSize) / 2;
-
-        for (let r = 0; r < pRows; r++) {
-          for (let c = 0; c < pCols; c++) {
-            if (p.shape[r][c]) {
-              drawCardSprite(ctx, p.charId, startX + c * pBlockSize, startY + r * pBlockSize, pBlockSize - 2, pBlockSize - 2, {
-                roundedRadius: 3,
-                borderWidth: 1,
-                borderColor: p.color,
-              });
-            }
-          }
-        }
+      const cubeGeo = new THREE.BoxGeometry(1.35, 0.9, 1.35);
+      const cubeMat = new THREE.MeshStandardMaterial({
+        color: piece.color,
+        roughness: 0.25,
+        metalness: 0.3,
       });
 
-      // Draw Dragged Piece
-      if (stateRef.current.selectedPieceIdx >= 0) {
-        const selP = pieces[stateRef.current.selectedPieceIdx];
-        if (selP) {
-          const dragX = stateRef.current.dragPos.x;
-          const dragY = stateRef.current.dragPos.y;
-          const pRows = selP.shape.length;
-          const pCols = selP.shape[0].length;
+      let placedBlocksCount = 0;
+      for (let r = 0; r < piece.shape.length; r++) {
+        for (let c = 0; c < piece.shape[r].length; c++) {
+          if (piece.shape[r][c] === 1) {
+            const gr = startR + r;
+            const gc = startC + c;
+            grid[gr][gc] = piece.color;
 
-          for (let r = 0; r < pRows; r++) {
-            for (let c = 0; c < pCols; c++) {
-              if (selP.shape[r][c]) {
-                const bX = dragX + (c - pCols / 2) * cellSize;
-                const bY = dragY + (r - pRows / 2) * cellSize - 40; // Offset above finger
-                drawCardSprite(ctx, selP.charId, bX, bY, cellSize - 2, cellSize - 2, {
-                  roundedRadius: 4,
-                  borderWidth: 2,
-                  borderColor: '#38bdf8',
-                  shadowBlur: 10,
-                  shadowColor: '#38bdf8',
-                });
-              }
-            }
+            const wx = (gc - 3.5) * 1.5;
+            const wz = (gr - 3.5) * 1.5;
+            const mesh = new THREE.Mesh(cubeGeo, cubeMat);
+            mesh.position.set(wx, 0.5, wz);
+            scene.add(mesh);
+            gridMeshes[gr][gc] = mesh;
+            placedBlocksCount++;
           }
         }
       }
 
-      // Draw Particles
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const pt = particles[i];
-        pt.x += pt.vx;
-        pt.y += pt.vy;
-        pt.alpha -= 0.04;
-        if (pt.alpha <= 0) {
-          particles.splice(i, 1);
-          continue;
+      stateRef.current.score += placedBlocksCount * 10;
+      setScore(stateRef.current.score);
+      if (playSfx) playSfx('/sounds/tap.mp3');
+      if (navigator.vibrate) navigator.vibrate(20);
+
+      checkLinesAndClear();
+    },
+    [checkLinesAndClear, playSfx]
+  );
+
+  // Check if any piece can be placed
+  const checkAnyPieceCanBePlaced = useCallback(
+    (pieces: PieceTemplate[]) => {
+      for (const p of pieces) {
+        for (let r = 0; r <= 8 - p.shape.length; r++) {
+          for (let c = 0; c <= 8 - p.shape[0].length; c++) {
+            if (canPlacePiece(p.shape, r, c)) {
+              return true;
+            }
+          }
         }
-        ctx.fillStyle = pt.color;
-        ctx.globalAlpha = pt.alpha;
-        ctx.fillRect(pt.x, pt.y, 5, 5);
-        ctx.globalAlpha = 1;
       }
+      return false;
+    },
+    [canPlacePiece]
+  );
 
-      animFrameRef.current = requestAnimationFrame(updateAndRender);
-    };
-
-    animFrameRef.current = requestAnimationFrame(updateAndRender);
-
-    return () => {
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-    };
-  }, [isGameOver, isVictory, showTutorial]);
-
-  // Touch drag handlers
-  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const touchX = e.clientX - rect.left;
-    const touchY = e.clientY - rect.top;
-
-    const width = canvas.clientWidth;
-    const slotW = width / 3;
-    const slotY = 70 + Math.min((width - 40) / 8, 38) * 8 + 40;
-
-    // Check which piece touched
-    if (touchY > slotY - 40 && touchY < slotY + 60) {
-      const idx = Math.floor(touchX / slotW);
-      if (idx >= 0 && idx < stateRef.current.availablePieces.length) {
-        stateRef.current.selectedPieceIdx = idx;
-        stateRef.current.dragPos = { x: touchX, y: touchY };
-      }
-    }
+  // Handle Drag Start
+  const handlePieceDragStart = (idx: number, e: React.TouchEvent | React.MouseEvent) => {
+    e.stopPropagation();
+    setActiveDragIdx(idx);
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    // Y-Offset 70px above finger so finger doesn't block block vision!
+    setDragPos({ x: clientX, y: clientY - 70 });
+    if (navigator.vibrate) navigator.vibrate(15);
   };
 
-  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (stateRef.current.selectedPieceIdx < 0) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    stateRef.current.dragPos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  // Screen Touch Drag Move
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (activeDragIdx === null) return;
+    const touch = e.touches[0];
+    setDragPos({ x: touch.clientX, y: touch.clientY - 70 });
   };
 
-  const handlePointerUp = () => {
-    const selIdx = stateRef.current.selectedPieceIdx;
-    if (selIdx < 0) return;
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (activeDragIdx === null) return;
+    setDragPos({ x: e.clientX, y: e.clientY - 60 });
+  };
 
-    const canvas = canvasRef.current;
-    if (!canvas) {
-      stateRef.current.selectedPieceIdx = -1;
+  // Drop Piece
+  const handleDropPiece = () => {
+    if (activeDragIdx === null || !dragPos) {
+      setActiveDragIdx(null);
+      setDragPos(null);
       return;
     }
 
-    const width = canvas.clientWidth;
-    const cellSize = Math.min((width - 40) / 8, 38);
-    const gridOriginX = (width - cellSize * 8) / 2;
-    const gridOriginY = 70;
+    const container = containerRef.current;
+    const piece = availablePieces[activeDragIdx];
+    if (!container || !piece) {
+      setActiveDragIdx(null);
+      setDragPos(null);
+      return;
+    }
 
-    const piece = stateRef.current.availablePieces[selIdx];
-    const dragX = stateRef.current.dragPos.x;
-    const dragY = stateRef.current.dragPos.y - 40;
+    // Convert screen drag position to 8x8 Board Grid (Row, Col)
+    const rect = container.getBoundingClientRect();
+    const normX = ((dragPos.x - rect.left) / rect.width) * 2 - 1;
+    const normY = -((dragPos.y - rect.top) / rect.height) * 2 + 1;
 
-    // Calculate snapped grid coordinate
-    const pCols = piece.shape[0].length;
-    const pRows = piece.shape.length;
-    const snappedCol = Math.round((dragX - gridOriginX - (pCols * cellSize) / 2) / cellSize);
-    const snappedRow = Math.round((dragY - gridOriginY - (pRows * cellSize) / 2) / cellSize);
+    // Board in 3D center spans around normX [-0.6 ~ +0.6], normY [-0.45 ~ +0.55]
+    const boardLeft = rect.left + rect.width * 0.15;
+    const boardRight = rect.left + rect.width * 0.85;
+    const boardTop = rect.top + rect.height * 0.15;
+    const boardBottom = rect.top + rect.height * 0.65;
 
-    // Validate placement
-    const grid = stateRef.current.grid;
-    let canPlace = true;
+    if (
+      dragPos.x >= boardLeft &&
+      dragPos.x <= boardRight &&
+      dragPos.y >= boardTop &&
+      dragPos.y <= boardBottom
+    ) {
+      const colFraction = (dragPos.x - boardLeft) / (boardRight - boardLeft);
+      const rowFraction = (dragPos.y - boardTop) / (boardBottom - boardTop);
 
-    for (let r = 0; r < pRows; r++) {
-      for (let c = 0; c < pCols; c++) {
-        if (piece.shape[r][c]) {
-          const gr = snappedRow + r;
-          const gc = snappedCol + c;
-          if (gr < 0 || gr >= 8 || gc < 0 || gc >= 8 || grid[gr][gc] !== 0) {
-            canPlace = false;
-            break;
+      const targetC = Math.floor(colFraction * 8);
+      const targetR = Math.floor(rowFraction * 8);
+
+      // Adjust offset so center of piece aligns with target cell
+      const startC = targetC - Math.floor(piece.shape[0].length / 2);
+      const startR = targetR - Math.floor(piece.shape.length / 2);
+
+      if (canPlacePiece(piece.shape, startR, startC)) {
+        placePieceOnBoard(piece, startR, startC);
+
+        // Remove placed piece
+        const nextPieces = [...availablePieces];
+        nextPieces.splice(activeDragIdx, 1);
+        if (nextPieces.length === 0) {
+          generateNewPieces();
+        } else {
+          setAvailablePieces(nextPieces);
+          if (!checkAnyPieceCanBePlaced(nextPieces) && (!holdPiece || !checkAnyPieceCanBePlaced([holdPiece]))) {
+            triggerGameOver();
           }
         }
       }
-      if (!canPlace) break;
     }
 
-    if (canPlace) {
-      // Place piece on grid
-      for (let r = 0; r < pRows; r++) {
-        for (let c = 0; c < pCols; c++) {
-          if (piece.shape[r][c]) {
-            grid[snappedRow + r][snappedCol + c] = piece.charId;
-          }
-        }
-      }
-
-      setScore(s => s + 25);
-      stateRef.current.availablePieces.splice(selIdx, 1);
-      if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-
-      // Check filled lines
-      checkLines(gridOriginX, gridOriginY, cellSize);
-
-      // If all 3 pieces used, spawn new ones!
-      if (stateRef.current.availablePieces.length === 0) {
-        generatePieces();
-      }
-    }
-
-    stateRef.current.selectedPieceIdx = -1;
+    setActiveDragIdx(null);
+    setDragPos(null);
   };
+
+  // Hold Slot Swap
+  const handleHoldSwap = () => {
+    if (activeDragIdx !== null) return;
+    if (availablePieces.length === 0) return;
+
+    if (holdPiece === null) {
+      // Store first piece
+      setHoldPiece(availablePieces[0]);
+      const nextPieces = availablePieces.slice(1);
+      setAvailablePieces(nextPieces);
+      if (nextPieces.length === 0) generateNewPieces();
+    } else {
+      // Swap first piece with hold
+      const temp = holdPiece;
+      setHoldPiece(availablePieces[0]);
+      const nextPieces = [temp, ...availablePieces.slice(1)];
+      setAvailablePieces(nextPieces);
+    }
+    if (navigator.vibrate) navigator.vibrate(25);
+    if (playSfx) playSfx('/sounds/powerup.mp3');
+  };
+
+  // --- Three.js 3D Engine Setup ---
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
+
+    // 1. Scene
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0a0f1d);
+    stateRef.current.boardScene = scene;
+
+    // 2. Camera (Angled Top-down 3D View)
+    const camera = new THREE.PerspectiveCamera(46, width / height, 0.5, 100);
+    camera.position.set(0, 15.5, 12.5);
+    camera.lookAt(0, -0.5, 0);
+    stateRef.current.camera = camera;
+
+    // 3. Renderer
+    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
+    renderer.setSize(width, height, false);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, lowSpecMode ? 1 : 2));
+    renderer.shadowMap.enabled = false;
+    container.appendChild(renderer.domElement);
+
+    // 4. Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+    scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0xfffbeb, 1.2);
+    dirLight.position.set(10, 25, 15);
+    scene.add(dirLight);
+
+    // 5. 8x8 Board Slate Plate & 64 Slots
+    const plateGeo = new THREE.BoxGeometry(13.5, 0.6, 13.5);
+    const plateMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.7, metalness: 0.2 });
+    const plateMesh = new THREE.Mesh(plateGeo, plateMat);
+    plateMesh.position.set(0, -0.3, 0);
+    scene.add(plateMesh);
+
+    // Board Rim
+    const rimGeo = new THREE.BoxGeometry(14.0, 0.8, 14.0);
+    const rimMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true });
+    const rimMesh = new THREE.Mesh(rimGeo, rimMat);
+    rimMesh.position.set(0, -0.2, 0);
+    scene.add(rimMesh);
+
+    // 64 Slots
+    const slotGeo = new THREE.BoxGeometry(1.4, 0.1, 1.4);
+    const slotMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.9 });
+
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        const slot = new THREE.Mesh(slotGeo, slotMat);
+        const wx = (c - 3.5) * 1.5;
+        const wz = (r - 3.5) * 1.5;
+        slot.position.set(wx, 0.05, wz);
+        scene.add(slot);
+        stateRef.current.slotMeshes[r][c] = slot;
+      }
+    }
+
+    // Center Badge
+    const badgeCanvas = document.createElement('canvas');
+    badgeCanvas.width = 128;
+    badgeCanvas.height = 128;
+    const bCtx = badgeCanvas.getContext('2d');
+    if (bCtx) {
+      bCtx.fillStyle = '#0f172a';
+      bCtx.beginPath();
+      bCtx.arc(64, 64, 60, 0, Math.PI * 2);
+      bCtx.fill();
+      bCtx.lineWidth = 6;
+      bCtx.strokeStyle = '#38bdf8';
+      bCtx.stroke();
+      drawCardSprite(bCtx, playerHeroId, 16, 16, 96, 96);
+    }
+    const badgeTexture = new THREE.CanvasTexture(badgeCanvas);
+    const badgeSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: badgeTexture, transparent: true, opacity: 0.3 }));
+    badgeSprite.position.set(0, 0.1, 0);
+    badgeSprite.scale.set(6, 6, 1);
+    badgeSprite.rotation.x = -Math.PI / 2;
+    scene.add(badgeSprite);
+
+    // 6. Animation Loop
+    let lastTime = performance.now();
+    const animate = (time: number) => {
+      animFrameRef.current = requestAnimationFrame(animate);
+      const dt = Math.min((time - lastTime) / 1000, 0.1);
+      lastTime = time;
+
+      // Update Particle FX
+      const particles = stateRef.current.particles;
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.life -= dt;
+        p.mesh.position.x += p.vx * dt;
+        p.mesh.position.y += p.vy * dt;
+        p.mesh.position.z += p.vz * dt;
+        p.vy -= 18.0 * dt; // gravity
+        p.mesh.scale.multiplyScalar(0.96);
+
+        if (p.life <= 0 || p.mesh.position.y < -2) {
+          scene.remove(p.mesh);
+          particles.splice(i, 1);
+        }
+      }
+
+      renderer.render(scene, camera);
+    };
+
+    animFrameRef.current = requestAnimationFrame(animate);
+
+    // ResizeObserver
+    const handleResize = () => {
+      if (!container) return;
+      const w = container.clientWidth || window.innerWidth;
+      const h = container.clientHeight || window.innerHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h, false);
+    };
+
+    const resizeObserver = new ResizeObserver(() => handleResize());
+    resizeObserver.observe(container);
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+
+    return () => {
+      cancelAnimationFrame(animFrameRef.current);
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+
+      scene.clear();
+      renderer.dispose();
+      if (renderer.domElement && renderer.domElement.parentNode) {
+        renderer.domElement.parentNode.removeChild(renderer.domElement);
+      }
+    };
+  }, [lowSpecMode, playerHeroId]);
 
   const tutorialSteps: TutorialStep[] = [
     {
-      title: isKo ? '블로키 블래스트 퍼즐' : 'Blocky Blast Puzzle',
-      badge: 'MISSION 09',
+      badge: 'PUZZLE-3D',
+      title: isKo ? '3D 복셀 블록키 블라스트' : '3D Voxel Blocky Blast',
       description: isKo
-        ? '하단의 블록을 8x8 보드로 드래그하여 배치하세요! 가로줄 또는 세로줄을 가득 채우면 한 번에 폭파되며 콤보 점수를 얻습니다.'
-        : 'Drag pieces onto the 8x8 grid! Fill entire rows or columns to trigger explosive blasts and combo scores.',
+        ? '하단의 3D 블록 조각들을 8x8 보드로 드래그하여 가로/세로 한 줄을 완성하세요!'
+        : 'Drag 3D block pieces onto the 8x8 board to complete full horizontal or vertical lines!',
       keyPoints: isKo
-        ? ['블록을 드래그하여 8x8 배치', '가로/세로 라인 폭파 클리어', '콤보 시 보너스 점수']
-        : ['Drag blocks onto 8x8 grid', 'Clear horizontal/vertical lines', 'Combo bonuses for multi-clears'],
+        ? ['가로/세로 8칸이 꽉 차면 화려한 폭파(Blast)', '동시 클리어 시 강력한 콤보 보너스']
+        : ['Full lines blast into particles', 'Clear multiple lines for combo bonus'],
     },
     {
-      title: isKo ? '라인 클리어 & 1,000점 달성' : 'Line Clears & Win',
-      badge: 'LINE CLEAR',
+      badge: 'HOLD',
+      title: isKo ? '보관(HOLD) 슬롯 활용' : 'Use the HOLD Slot',
       description: isKo
-        ? '여러 줄을 동시에 클리어하면 엄청난 폭발과 함께 고득점을 획득합니다. 스코어 1,000점을 달성하여 승리하세요!'
-        : 'Clear multiple lines simultaneously for huge combo bonuses and reach 1,000 points to win!',
+        ? '놓기 힘든 큰 조각은 우측 [📦 HOLD] 버튼을 눌러 보관해두고 위기 상황을 탈출하세요!'
+        : 'Store awkward shapes in the HOLD slot to prevent getting stuck!',
       keyPoints: isKo
-        ? ['다중 라인 동시 파괴', '목표 1,000점 달성', '100% 모바일 원터치 조작']
-        : ['Multi-line explosive clear', 'Reach 1,000 pts goal', '100% pure touch controls'],
-    }
+        ? ['까다로운 조각 1개 임시 저장', '1000점 달성 시 승리']
+        : ['Store 1 difficult piece', 'Reach 1000 score for victory'],
+    },
+    {
+      badge: 'FINGER-OFFSET',
+      title: isKo ? '손가락 가림 방지 편의성' : 'Finger-Offset Touch',
+      description: isKo
+        ? '모바일 터치 시 손가락 위쪽으로 블록이 떠올라 드래그되므로 보드의 칸을 정확히 확인하고 배치할 수 있습니다.'
+        : 'Blocks hover slightly above your finger for unobstructed view and precise drops!',
+      keyPoints: isKo
+        ? ['손가락에 가려지지 않는 스마트 터치', '초록색 하이라이트 칸에 즉각 안착']
+        : ['No finger blockage', 'Precise visual ghost highlight'],
+    },
   ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col items-center select-none overflow-hidden font-mono">
-      <MinimalistMissionHUD
-        title={isKo ? 'No.09 블로키 블래스트' : 'No.09 Blocky Blast'}
-        currentScore={score}
-        targetScore={1000}
-        timeLeft={timeLeft}
-        stageInfo={`라인: ${linesCleared}줄 클리어`}
-        combo={stateRef.current.combo}
-        onExit={onExit}
-      />
+    <div
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleDropPiece}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleDropPiece}
+    >
+      {/* Three.js Viewport */}
+      <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-none" />
 
-      <div className="relative flex-1 w-full max-w-md flex items-center justify-center p-2">
-        <canvas
-          ref={canvasRef}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onPointerCancel={handlePointerUp}
-          className="w-full h-full rounded-sm border border-slate-800 touch-none shadow-inner"
+      {/* Top HUD: MinimalistMissionHUD */}
+      <div className="relative z-20 pointer-events-auto">
+        <MinimalistMissionHUD
+          missionTitle={isKo ? '블록키 블라스트 3D' : 'Blocky Blast 3D'}
+          currentScore={score}
+          targetScore={1000}
+          onExit={handleQuitWithSettlement}
+          onShowRules={() => setShowTutorial(true)}
+          stats={[
+            { label: isKo ? '라인' : 'Lines', value: `${linesCleared}줄` },
+            { label: isKo ? '콤보' : 'Combo', value: combo > 1 ? `x${combo}` : '-' },
+            { label: isKo ? '남은시간' : 'Time', value: `${timeLeft}s` },
+          ]}
         />
-
-        {/* Action Guide */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none text-center bg-slate-900/80 px-4 py-1.5 rounded-full border border-slate-700/60 backdrop-blur-sm">
-          <p className="text-xs text-amber-400 font-bold tracking-wider animate-pulse">
-            {isKo ? '🧩 하단 블록을 그리드로 드래그하여 배치' : '🧩 DRAG BLOCKS ONTO GRID'}
-          </p>
-        </div>
       </div>
 
-      {/* Victory Reward Modal */}
+      {/* Combo / Blast Feed Notification */}
+      {comboFeed && (
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-20 pointer-events-none animate-bounce">
+          <div className="px-4 py-1.5 bg-gradient-to-r from-amber-500 to-rose-500 text-white font-black text-xs sm:text-sm rounded-full shadow-lg border border-amber-300 flex items-center gap-1.5">
+            <span>💥</span>
+            <span>{comboFeed}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Hold Slot Button (Top Right) */}
+      <div className="absolute top-16 right-4 z-20 pointer-events-auto">
+        <button
+          type="button"
+          onClick={handleHoldSwap}
+          className="flex flex-col items-center bg-slate-900/85 hover:bg-slate-800 border-2 border-sky-400/80 rounded-lg p-2.5 shadow-xl active:scale-95 transition-transform cursor-pointer"
+        >
+          <span className="text-[10px] font-bold text-sky-300 uppercase">📦 HOLD</span>
+          <div className="w-10 h-10 flex items-center justify-center mt-1">
+            {holdPiece ? (
+              <div
+                className="grid gap-0.5"
+                style={{
+                  gridTemplateColumns: `repeat(${holdPiece.shape[0].length}, minmax(0, 1fr))`,
+                }}
+              >
+                {holdPiece.shape.map((row, r) =>
+                  row.map((cell, c) => (
+                    <div
+                      key={`${r}-${c}`}
+                      className="w-2.5 h-2.5 rounded-xs"
+                      style={{
+                        backgroundColor: cell ? holdPiece.colorHex : 'transparent',
+                      }}
+                    />
+                  ))
+                )}
+              </div>
+            ) : (
+              <span className="text-xs text-slate-500 font-mono">[EMPTY]</span>
+            )}
+          </div>
+        </button>
+      </div>
+
+      {/* Bottom 3 Available Pieces Tray */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 pointer-events-auto flex items-center justify-center gap-4 sm:gap-6 bg-slate-900/90 backdrop-blur-md px-5 py-3 rounded-2xl border border-slate-700/80 shadow-2xl">
+        {availablePieces.map((p, idx) => (
+          <div
+            key={p.id}
+            onTouchStart={(e) => handlePieceDragStart(idx, e)}
+            onMouseDown={(e) => handlePieceDragStart(idx, e)}
+            className={`w-18 h-18 sm:w-20 sm:h-20 flex items-center justify-center bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 rounded-xl cursor-grab active:cursor-grabbing transition-all active:scale-95 ${
+              activeDragIdx === idx ? 'opacity-30' : 'opacity-100'
+            }`}
+          >
+            <div
+              className="grid gap-1"
+              style={{
+                gridTemplateColumns: `repeat(${p.shape[0].length}, minmax(0, 1fr))`,
+              }}
+            >
+              {p.shape.map((row, r) =>
+                row.map((cell, c) => (
+                  <div
+                    key={`${r}-${c}`}
+                    className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-xs shadow-sm"
+                    style={{
+                      backgroundColor: cell ? p.colorHex : 'transparent',
+                      border: cell ? '1px solid rgba(255,255,255,0.4)' : 'none',
+                    }}
+                  />
+                ))
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Floating Dragged Piece Preview (with Smart Finger-Offset) */}
+      {activeDragIdx !== null && dragPos && availablePieces[activeDragIdx] && (
+        <div
+          className="fixed pointer-events-none z-50 transition-transform duration-75"
+          style={{
+            left: dragPos.x,
+            top: dragPos.y,
+            transform: 'translate(-50%, -50%) scale(1.15)',
+          }}
+        >
+          <div
+            className="grid gap-1.5 p-2 bg-slate-900/60 rounded-lg backdrop-blur-xs border border-white/30 shadow-2xl"
+            style={{
+              gridTemplateColumns: `repeat(${availablePieces[activeDragIdx].shape[0].length}, minmax(0, 1fr))`,
+            }}
+          >
+            {availablePieces[activeDragIdx].shape.map((row, r) =>
+              row.map((cell, c) => (
+                <div
+                  key={`${r}-${c}`}
+                  className="w-7 h-7 rounded-sm shadow-md"
+                  style={{
+                    backgroundColor: cell ? availablePieces[activeDragIdx].colorHex : 'transparent',
+                    border: cell ? '2px solid rgba(255,255,255,0.8)' : 'none',
+                  }}
+                />
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Exit & Settle Confirmation Modal */}
+      {showExitConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-slate-900 border-2 border-sky-500/80 rounded-lg max-w-sm w-full p-5 text-center shadow-2xl">
+            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-sky-400 text-2xl font-bold">
+              [?]
+            </div>
+            <h3 className="text-lg font-bold text-white mb-1">
+              {isKo ? '게임을 중단하시겠습니까?' : 'Exit Game?'}
+            </h3>
+            <p className="text-xs text-slate-300 mb-4 leading-relaxed">
+              {isKo
+                ? '지금까지 획득한 점수와 폭파한 라인 수에 비례한 SNS 포인트 보상이 안전하게 정산됩니다.'
+                : 'Your reward will be calculated and deposited based on your score and lines cleared.'}
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={confirmExitAndSettle}
+                className="flex-1 py-2.5 px-3 rounded bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition-colors cursor-pointer"
+              >
+                {isKo ? '정산받고 나가기' : 'Settle & Exit'}
+              </button>
+              <button
+                type="button"
+                onClick={cancelExit}
+                className="flex-1 py-2.5 px-3 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold border border-slate-700 transition-colors cursor-pointer"
+              >
+                {isKo ? '계속 플레이' : 'Keep Playing'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Game Over Modal */}
+      {isGameOver && !settlementReceipt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-slate-900 border border-rose-500/60 rounded-lg max-w-sm w-full p-5 text-center shadow-2xl">
+            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-rose-500/20 border border-rose-400/40 flex items-center justify-center text-rose-400 text-2xl font-bold">
+              ✕
+            </div>
+            <h3 className="text-lg font-bold text-white mb-1">
+              {isKo ? '더 이상 놓을 자리가 없음!' : 'No More Moves!'}
+            </h3>
+            <p className="text-xs text-slate-400 mb-3">
+              {isKo ? `최종 점수: ${score}점 | 클리어 라인: ${linesCleared}줄` : `Score: ${score} | Lines: ${linesCleared}`}
+            </p>
+            <button
+              type="button"
+              onClick={confirmExitAndSettle}
+              className="w-full py-2.5 rounded bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition-colors cursor-pointer"
+            >
+              {isKo ? '보상 수령 및 복귀' : 'Claim Reward & Exit'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Victory / Settlement Receipt Modal */}
       {settlementReceipt && (
         <VictoryRewardModal
-          isOpen={isGameOver}
-          isVictory={isVictory}
-          score={score}
+          isOpen={true}
           receipt={settlementReceipt}
-          onConfirm={onExit}
-          onRestart={() => {
-            setIsGameOver(false);
-            setIsVictory(false);
-            setSettlementReceipt(null);
-            setScore(0);
-            setLinesCleared(0);
-            setTimeLeft(50);
-            initGame();
-          }}
-          language={language}
+          onClose={onExit}
+          isKo={isKo}
         />
       )}
 
-      {/* Universal Tutorial Modal */}
-      {showTutorial && (
-        <UniversalTutorialModal
-          isOpen={showTutorial}
-          gameTitle={isKo ? 'No.09 블로키 블래스트' : 'No.09 Blocky Blast'}
-          steps={tutorialSteps}
-          onComplete={() => {
-            setShowTutorial(false);
-            try {
-              localStorage.setItem('hero_tutorial_blocky_blast', 'true');
-            } catch {}
-          }}
-          language={language}
-        />
-      )}
+      {/* Tutorial Modal */}
+      <UniversalTutorialModal
+        isOpen={showTutorial}
+        onClose={() => {
+          setShowTutorial(false);
+          try {
+            localStorage.setItem('hero_tutorial_blocky_blast', 'true');
+          } catch {}
+        }}
+        title={isKo ? '블록키 블라스트 3D 가이드' : 'Blocky Blast 3D Guide'}
+        steps={tutorialSteps}
+        storageKey="hero_tutorial_blocky_blast"
+      />
     </div>
   );
 };
-
-export default PokiBlockyBlastGame;

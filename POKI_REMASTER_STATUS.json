@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 9,
-  "completed_count": 8,
-  "last_updated": "2026-09-07T16:12:00+09:00",
+  "current_game_index": 10,
+  "completed_count": 9,
+  "last_updated": "2026-09-07T16:21:00+09:00",
   "history": [
     {
       "id": 1,
@@ -93,6 +93,17 @@
       "component": "src/components/poki/PokiCryzenGame.tsx",
       "completed_at": "2026-09-07T16:11:00+09:00",
       "details": "Three.js 기반 3D 택티컬 전술 FPS/TPS 아레나 구현, 3D 군사 기지/컨테이너/모래주머니 엄폐물 전장, 3D 택티컬 용병 아바타 & No.08 영웅 배지, AKM 돌격소총(탄창 30발/총구 화염/탄도 트레이서), 5명 적 AI 특수부대 용병 봇 교전, 좌측 플로팅 조이스틱 + 우측 스와이프 조준 + 80px 사격 버튼, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 9,
+      "name": "Blocky Blast Puzzle",
+      "poki_url": "https://poki.com/kr/g/blocky-blast-puzzle",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No009_BlockyBlastPuzzle_Prompt.md",
+      "component": "src/components/poki/PokiBlockyBlastGame.tsx",
+      "completed_at": "2026-09-07T16:21:00+09:00",
+      "details": "Three.js 기반 3D 블록 블래스트 퍼즐 구현, 8x8 3D 슬롯 보드, 3D 루비/사파이어/에메랄드/토파즈/애메시스트/호박 보석 블록, 손가락 가림 방지 Y-오프셋(-70px) 터치 드래그 앤 드롭 및 3D 보드 슬롯 스냅 안착, 행/열 가로세로 동시 클리어 및 3D 복셀 블록 폭파 파티클 30개 분출, HOLD 임시 보관 슬롯, 연쇄 콤보 시스템 및 MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

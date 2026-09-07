@@ -4,6 +4,30 @@
 
 ---
 
+## [2026-09-07 16:21 KST] [Poki 110선 리마스터 9/110] No.009 Blocky Blast Puzzle Three.js 3D 블록 퍼즐 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/blocky-blast-puzzle`) 분석 및 프롬프트(`src/components/poki/prompts/No009_BlockyBlastPuzzle_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 8x8 3D 슬롯 보드, 3D 보석 블록 큐브(루비/사파이어/에메랄드/토파즈/애메시스트/호박), 손가락 가림 방지 Y-오프셋(-70px) 터치 드래그 앤 드롭, 가로/세로 동시 클리어 및 3D 복셀 폭파 파티클, HOLD 보관 슬롯 전면 재개발.
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(터치 드래그 앤 드롭 + 오프셋 뷰 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 인기 블록 블래스트 퍼즐 게임. 다양한 폴리오미노(1x1, 2x2, 3x3, 1x3, 1x4, L자, T자 등)를 8x8 보드에 배치하여 가로행/세로열을 꽉 채워 폭파시키고 연쇄 콤보를 노리는 중독성 높은 3D 퍼즐.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiBlockyBlastGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 탑다운 아이소메트릭 시점(보드 중앙 집중), 8x8 3D 슬롯 타일 바닥 그리드(64개 음각 베벨 슬롯).
+     - 3D 보석 블록 큐브 렌더링: 8종 블록 형상, 6종 보석 컬러 매터리얼(루비, 에메랄드, 사파이어, 토파즈, 애메시스트, 호박) 및 상단 반사 하이라이트.
+     - 모바일 시야 확보 터치 드래그: 터치 지점에서 Y축 위로 70px 띄워 손가락이 슬롯을 가리지 않는 `finger offset` 드래그 앤 드롭 시스템.
+     - 3D 복셀 블록 폭파 파티클: 행/열 완성 시 블록이 산산조각 나며 30여 개의 3D 큐브 파편이 사방으로 튀는 역동적 물리 애니메이션.
+     - 전략적 HOLD 슬롯: 현재 맞지 않는 까다로운 블록을 1개 임시 보관해두고 필요할 때 꺼내 쓰는 기능.
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 확인 팝업 및 누적 점수/콤보 비례 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No009_BlockyBlastPuzzle_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 9개 완료 (No.010 Ragdoll Chaos 대기).
+
+---
+
 ## [2026-09-07 16:18 KST] [Poki 게임 키보드/가상 조이스틱 좌우 방향 정상화 및 1번 게임 모바일 낙하 방지 전면 개선]
 - **요청 사항**:
   1. 키보드와 가상 조이스틱의 좌우 방향이 반대로 되어 있는 현상 전수 점검 및 개선.
