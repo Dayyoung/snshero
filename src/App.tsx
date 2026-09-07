@@ -5801,7 +5801,7 @@ function AppContent() {
     );
   }
 
-    const showNavbar = (view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie') && (view !== 'play' || playGameState === 'modeSelect') && !isGlobalPopupOpen;
+    const showNavbar = (view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie') && !isGlobalPopupOpen;
     
     return (
       <div className={cn(
@@ -6291,7 +6291,7 @@ function AppContent() {
             "flex-1 flex flex-col min-h-0",
             view === 'play' ? "h-full overflow-y-auto overscroll-contain touch-pan-y" : "overflow-x-hidden",
             (view !== 'play' && view !== 'home') && "pt-4",
-            (showNavbar && view !== 'play') ? "pb-20" : "pb-0"
+            showNavbar ? "pb-20" : "pb-0"
           )}>
             <AnimatePresence mode="wait">
               <motion.div

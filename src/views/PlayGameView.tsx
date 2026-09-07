@@ -14090,7 +14090,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       className={cn(
         "flex-1 flex flex-col w-full max-w-[1024px] mx-auto bg-[#060a14] text-slate-100 min-h-0 justify-between relative overflow-y-auto overscroll-contain touch-pan-y",
         !isAdRemoved ? "pt-[96px] sm:pt-[136px] lg:pt-12" : "pt-12 sm:pt-14",
-        "pb-16 sm:pb-8"
+        "pb-28 sm:pb-32 md:pb-36"
       )}
     >
       {/* Battle Roar Wave Ripple Effect Overlay */}
