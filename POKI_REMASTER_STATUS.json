@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 84,
-  "completed_count": 83,
-  "last_updated": "2026-09-08T01:43:00+09:00",
+  "current_game_index": 85,
+  "completed_count": 84,
+  "last_updated": "2026-09-08T01:44:00+09:00",
   "history": [
     {
       "id": 1,
@@ -918,6 +918,17 @@
       "component": "src/components/poki/PokiSnapStyleDressUpGame.tsx",
       "completed_at": "2026-09-08T01:43:00+09:00",
       "details": "Three.js 기반 3D 런웨이 패션 스타일링 & 포토 스냅샷 시뮬레이션 구현, 3D 런웨이 턴테이블 무대(미러 플로어/네온 조명/배경 No.083 공식 카드 영웅 배지 엠블럼), 3D 패션 아바타 모델링(헤어 4종/상의 4종/하의 4종/액세서리 4종 실시간 3D 착용 및 스파클 파티클), 3가지 런웨이 포즈 전환 시스템(스탠딩/핸즈온힙/모델윙크), 76px SNAP PHOTO 셔터 플래시 스냅샷 촬영 & 폴라로이드 룩북 완성, 모바일 퓨어 터치 조작계(화면 드래그 360° 궤도 회전 + 4개 카테고리 탭 & 아이템 캐러셀 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 84,
+      "name": "Fashion Legends",
+      "poki_url": "https://poki.com/kr/g/fashion-legends",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No084_FashionLegends_Prompt.md",
+      "component": "src/components/poki/PokiFashionLegendsGame.tsx",
+      "completed_at": "2026-09-08T01:44:00+09:00",
+      "details": "Three.js 기반 3D 캣워크 런웨이 러너 & 오뜨 꾸뛰르 심사 배틀 구현, 80m 글래스 런웨이 트랙(15m 안전 광폭 스타트 존/사이드 네온 레일/스포트라이트/시작 지점 No.084 공식 영웅 배지/75m 종점 심사위원 포디움), 3D 슈퍼모델 아바타(보행 애니메이션/목걸이 No.084 영웅 배지 펜던트), 3쌍의 스타일 선택 게이트(골드 실크 드레스/크리스털 하이힐/다이아 티아라 실시간 변신 및 황금 스파클 폭발), 종점 360도 런웨이 턴 포즈 & 심사위원 만점 세레모니, 모바일 퓨어 터치 슬라이더 조향 + 76px STRUT 가속 버튼 + 햅틱, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
