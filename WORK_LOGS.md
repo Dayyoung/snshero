@@ -4,6 +4,42 @@
 
 ---
 
+## [2026-09-08 00:12 KST] [Poki 110선 리마스터 45/110] No.045 Bubble Storm Three.js 3D 버블 슈팅 & 매치 퍼즐 아케이드 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/bubble-storm`) 분석 및 프롬프트(`src/components/poki/prompts/No045_BubbleStorm_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 폭 14.5m 사이버 네온 돔 룸 & 좌우 반사 가이드 벽 & 천장(시작 상단 4행 버블 안전 로드), 6행 8열 육각형 그리드 3D 유리 구체 버블(5가지 네온 컬러), 하단 회전 캐논 포탑 & 장전/대기 버블 & 벽면 반사 3D 조준 레이저 점선 궤적, BFS 기반 동일 색상 3매치 연쇄 폭발(Cluster Pop) 및 천장 미연결 고립 버블 낙하(Avalanche) 물리 파티클, 화면 드래그 조준 & 릴리즈 발사 + 76px [FIRE] + 64px [SWAP] 모바일 퓨어 터치 조작계 전면 재개발.
+  - AGENTS.md 카메라 기준 조작 방향(좌우/상하) 100% 일치 절대 원칙 준수 (정면 쿼터뷰 카메라 기준 화면 터치 드래그 위치로 캐논 조준 및 레이저 궤적 1:1 일치).
+  - AGENTS.md 시작 지점 안전 안착 절대 원칙 준수 (버블 그리드 안정적 배치 및 발사 대기 상태).
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(화면 드래그 조준 + 파이어/스왑 버튼 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 최고 인기 버블 슈터 퍼즐 Bubble Storm. 사이버 아케이드 돔에서 캐논을 정밀 조준해 같은 색상의 구체 버블을 3개 이상 연결하여 연쇄 폭발시키고, 벽면 반사 트릭샷과 고립 버블 일괄 낙하를 활용해 보드를 비우는 3D 버블 슈팅 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiBubbleStormGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 정면 쿼터뷰 카메라, 폭 14.5m 네온 아케이드 돔 룸 & 블루/퍼플 조명.
+     - 6행 8열 육각형 그리드 3D 유리 버블 시스템:
+       - 5가지 네온 컬러(레드, 블루, 그린, 옐로우, 퍼플)의 3D 반투명 유리 구체.
+       - BFS(너비 우선 탐색) 알고리즘으로 충돌 지점과 연결된 동일 색상 버블 그룹 탐색.
+       - 3개 이상 연결 시 유리 파편 파티클 분출과 함께 시원하게 팝(POP) 폭발!
+       - 천장(0행)과 연결이 끊긴 고립 버블(Floating Orphan)을 자동 탐색해 중력 가속도로 우수수 떨어뜨리는 Avalanche 낙하 물리 구현.
+     - 하단 3D 캐논 포탑 & 조준 레이저:
+       - 베이스 원반, 회전 포신, 현재 장전 버블, 다음 대기 버블.
+       - 좌우 벽면 반사(Bounce)를 실시간 계산하여 투사하는 3D 점선 레이저 궤적(Dashed Aim Line).
+       - No.045 공식 영웅 카드 스프라이트 HUD 배지 연동 (`cards1.png`).
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 어디서나 터치 드래그로 캐논 각도 실시간 미세 조준.
+       - 손가락을 떼거나 우측 하단 76px [🚀 FIRE] 버튼 탭 시 즉시 발사!
+       - 64px [🔄 SWAP] 버튼으로 장전 버블과 대기 버블 색상 스왑.
+       - 버블 팝, 벽면 반사, 스왑, 발사 시 다채로운 햅틱(`navigator.vibrate`) 피드백.
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 터뜨린 버블 수 및 점수 비례 20~50 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No045_BubbleStorm_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 무결점 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 45개 완료 (No.046 Kick The Buddy 대기).
+
+---
+
 ## [2026-09-08 00:02 KST] [Poki 110선 리마스터 44/110] No.044 Cuboy Adventure Three.js 3D 큐브 영웅 플랫포머 & 보스 어드벤처 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/cuboy-adventure`) 분석 및 프롬프트(`src/components/poki/prompts/No044_CuboyAdventure_Prompt.md`) 작성.

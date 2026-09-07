@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 45,
-  "completed_count": 44,
-  "last_updated": "2026-09-08T00:02:00+09:00",
+  "current_game_index": 46,
+  "completed_count": 45,
+  "last_updated": "2026-09-08T00:12:00+09:00",
   "history": [
     {
       "id": 1,
@@ -489,6 +489,17 @@
       "component": "src/components/poki/PokiCuboyAdventureGame.tsx",
       "completed_at": "2026-09-08T00:02:00+09:00",
       "details": "Three.js 기반 3D 큐브 영웅 플랫포머 & 보스 어드벤처 구현, 90m 공중 부유 아일랜드 코스(시작 20m 안전 광폭 스타트 섬 안착), 큐보이 플레이어(펄럭이는 레드 망토 & 카툰 눈 & No.44 영웅 배지), 좌우 왕복 부유 발판 & 회전 가시 롤러 & 스프링 바운스 패드, 3D 황금 별 3개 수집, 결승 3.5m 거대 큐브 골렘 보스(HP 60) 머리 스탬프 어택 3회 격파 및 차원 탈출 포털 시스템, 360도 플로팅 조이스틱 + 76px JUMP 2단 점프 + 64px DASH 공중 대시 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 45,
+      "name": "Bubble Storm",
+      "poki_url": "https://poki.com/kr/g/bubble-storm",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No045_BubbleStorm_Prompt.md",
+      "component": "src/components/poki/PokiBubbleStormGame.tsx",
+      "completed_at": "2026-09-08T00:12:00+09:00",
+      "details": "Three.js 기반 3D 버블 슈팅 & 매치 퍼즐 아케이드 구현, 폭 14.5m 사이버 네온 돔 룸 & 좌우 반사 가이드 벽, 6행 8열 육각형 그리드 3D 유리 구체 버블(5가지 네온 컬러), 하단 회전 캐논 포탑 & 장전/대기 버블 & 벽면 반사 3D 조준 레이저 궤적, BFS 기반 3매치 연쇄 폭발(Cluster Pop) 및 고립 버블 낙하(Avalanche) 물리 파티클, 화면 드래그 조준 & 릴리즈 발사 + 76px FIRE + 64px SWAP 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
