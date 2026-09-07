@@ -4,6 +4,40 @@
 
 ---
 
+## [2026-09-08 01:05 KST] [Poki 110선 리마스터 67/110] No.067 Rail in the Air Three.js 3D 공중 고속철도 운전 시뮬레이션 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/rail-in-the-air`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No067_RailInAir_Prompt.md`) 작성.
+  - Three.js 3D 기반 2,400m 공중 듀얼 레일 트랙, 25m 안전 광폭 스타트 플랫폼, 미래형 Sky Bullet Express(기관차 + 객차 2량 연접 편성) & No.067 공식 카드 영웅 배지 장착.
+  - 급커브 원심력 기반 탈선 위험도(Derail Risk 0~100%) 물리 및 3개 스테이션 승객 승하차 보너스 시스템.
+  - 모바일 퓨어 터치 조작계(76px THROTTLE 가속 + 64px BRAKE 제동 + 64px HORN 경적 + 햅틱) 및 MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 기차/철도 시뮬레이션 인기작 Rail in the Air. 하늘 높이 가설된 공중 레일 위를 달리는 고속열차 기관사가 되어, 위험한 급커브와 구름 터널을 적정 속도로 감속 주파하며 각 역마다 안전하게 승객을 운송하는 3D 열차 운전 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiRailInAirGame.tsx`)**:
+     - 2,400m 3D 듀얼 레일 트랙(TubeGeometry + CatmullRomCurve3 + 목재 침목 + 매 48m 지지 교각 메탈 기둥) 및 하단 웅장한 구름 바다(Cloud Sea).
+     - 미래형 Sky Bullet Express 모델링:
+       - 유선형 기관차 바디, LED 헤드라이트, 네온 창문 띠, 객차 2량 연접 주행.
+       - 차체 상단 No.067 공식 카드 영웅 배지 장착.
+       - 트랙 곡률에 따른 차체 뱅킹 틸트(Banking Tilt) 및 제동 시 바퀴 마찰 스파크 파티클.
+     - 탈선 위험도(Derail Risk) 및 물리:
+       - 급커브 구간(제1 급커브 480~680m, 제2 헤어핀 1280~1520m)에서 기준 안전 속도(75 km/h) 초과 시 위험도 게이지 상승 및 경고음/진동 발령.
+       - 위험도 100% 도달 시 공중으로 이탈 추락(Derailed GameOver).
+     - 3개 스테이션 정차 보너스 시스템:
+       - 스카이 하버 역(600m), 클라우드 피크 역(1450m), 센트럴 에어 터미널(2200m 완주).
+       - 정차 구역에 0 km/h로 정차 시 승객 승하차 완료(+300점) 딩동 차임음.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 76px [가속 THROTTLE] 버튼 (최고 162 km/h 가속).
+       - 64px [제동 BRAKE] 버튼 (공기압 급제동).
+       - 64px [경적 HORN] 버튼 (2단 에어 혼 사운드 + 새 떼 산란 효과).
+       - MinimalistMissionHUD (디지털 속도계, 주행 거리, 탈선 위험도 바, 역 안내, 중도 포기 확인 모달).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (67/110 완료, current_game_index: 68) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 67/110] No.067 Rail in the Air Three.js 3D 공중 고속철도 운전 시뮬레이션 전면 고도화`)
+
 ## [2026-09-08 01:04 KST] [Poki 110선 리마스터 66/110] No.066 Hills of Steel Three.js 3D 탱크 힐 클라이밍 슈팅 & 배틀 액션 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/hills-of-steel`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No066_HillsOfSteel_Prompt.md`) 작성.

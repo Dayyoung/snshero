@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 67,
-  "completed_count": 66,
-  "last_updated": "2026-09-08T01:04:00+09:00",
+  "current_game_index": 68,
+  "completed_count": 67,
+  "last_updated": "2026-09-08T01:05:00+09:00",
   "history": [
     {
       "id": 1,
@@ -731,6 +731,17 @@
       "component": "src/components/poki/PokiHillsOfSteelGame.tsx",
       "completed_at": "2026-09-08T01:04:00+09:00",
       "details": "Three.js 기반 3D 탱크 힐 클라이밍 슈팅 & 배틀 액션 구현, 120m 3D 굴곡 언덕 지형 & 좌측 -20m 안전 스타트 평지 진지, 블루 사이버 코브라 탱크(차체/궤도/휠/각도 피벗 포탑/주포 바렐) & No.66 영웅 배지, 3개 웨이브(스카우트 탱크/타이거 탱크/공중 공격 헬리콥터/결전 보스 [골리앗 메가 탱크]), 모바일 퓨어 터치 조작계(전후진 스로틀 조향 패드 + 76px 주포 CANNON + 64px 공중폭격 AIRSTRIKE + 64px 부스트 BOOST + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 67,
+      "name": "Rail in the Air",
+      "poki_url": "https://poki.com/kr/g/rail-in-the-air",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No067_RailInAir_Prompt.md",
+      "component": "src/components/poki/PokiRailInAirGame.tsx",
+      "completed_at": "2026-09-08T01:05:00+09:00",
+      "details": "Three.js 기반 3D 공중 고속철도 운전 시뮬레이션 구현, 2,400m 3D 듀얼 레일 트랙(좌우 커브/구름 바다/교각) & 25m 안전 광폭 스타트 플랫폼, 미래형 Sky Bullet Express(기관차+객차 2량 연접 편성/헤드라이트/뱅킹 틸트) & No.067 영웅 배지, 급커브 원심력 기반 탈선 위험도(Derail Risk 0~100%) 물리, 3개 스테이션 정차 및 승객 승하차 보너스 시스템, 모바일 퓨어 터치 조작계(76px THROTTLE 가속 + 64px BRAKE 제동 + 64px HORN 경적 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
