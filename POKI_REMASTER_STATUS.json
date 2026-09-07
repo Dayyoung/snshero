@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 51,
-  "completed_count": 50,
-  "last_updated": "2026-09-08T00:38:00+09:00",
+  "current_game_index": 52,
+  "completed_count": 51,
+  "last_updated": "2026-09-08T00:40:00+09:00",
   "history": [
     {
       "id": 1,
@@ -555,6 +555,17 @@
       "component": "src/components/poki/PokiBeautySalonGame.tsx",
       "completed_at": "2026-09-08T00:38:00+09:00",
       "details": "Three.js 기반 3D 럭셔리 뷰티 살롱 & 메이크오버 시뮬레이션 구현, 헐리우드 베니티 거울 & 8개 전구 라이트 & 로즈골드 대리석 바닥, 3D 스타일리시 모델 아바타 & No.50 영웅 배지, 4단계 완벽 메이크오버(1단계 터치 스와이프 버블 클렌징 스파, 2단계 3종 헤어스타일 및 4색 염색, 3단계 4색 글램 립스틱 메이크업, 4단계 3종 럭셔리 드레스업 & 모델 360도 런웨이 턴), 런웨이 화보 촬영 플래시 & 다이아 티아라 장착 & 황금빛 컨페티 폭죽 팡파르, 모바일 퓨어 터치 인터랙션, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 51,
+      "name": "Super Dress",
+      "poki_url": "https://poki.com/kr/g/super-dress",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No051_SuperDress_Prompt.md",
+      "component": "src/components/poki/PokiSuperDressGame.tsx",
+      "completed_at": "2026-09-08T00:40:00+09:00",
+      "details": "Three.js 기반 3D 오뜨 꾸뛰르 패션위크 런웨이 드레스업 구현, T자형 블랙 하이글로시 런웨이 & 레드 카펫 & 골든 LED 레일 & 파파라치 플래시 효과, 3D 슈퍼모델 아바타 & No.51 영웅 배지, 4대 패션 카테고리 풀 코디네이션(헤어 3종, 가운 3종, 액세서리 3종, 슈즈 3종), 화면 스와이프 모델 360도 런웨이 턴 회전, 런웨이 피날레 3회 연속 셔터 플래시 & 360도 피날레 스핀 턴 & 황금빛/핑크빛 대형 컨페티 축포 팡파르, 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
