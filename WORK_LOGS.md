@@ -4,6 +4,34 @@
 
 ---
 
+## [2026-09-08 01:04 KST] [Poki 110선 리마스터 66/110] No.066 Hills of Steel Three.js 3D 탱크 힐 클라이밍 슈팅 & 배틀 액션 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/hills-of-steel`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No066_HillsOfSteel_Prompt.md`) 작성.
+  - Three.js 3D 기반 120m 굴곡 언덕 지형, 블루 사이버 코브라 탱크 & No.066 공식 카드 영웅 배지 장착, 3개 웨이브(스카우트 탱크/타이거 탱크/공중 공격 헬리콥터/결전 보스 [골리앗 메가 탱크]) 전면 개발.
+  - 모바일 퓨어 터치 조작계(전후진 스로틀 패드 + 76px 주포 FIRE + 64px 공중폭격 AIRSTRIKE + 64px 부스트 BOOST + 햅틱) 및 MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 밀리터리 액션 1위 Hills of Steel. 굴곡진 언덕 지형을 오르내리며 적 전차와 헬리콥터를 포격으로 격침시키고 보스 골리앗을 처치하는 3D 물리 탱크 배틀 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiHillsOfSteelGame.tsx`)**:
+     - 120m 3D 굴곡 언덕 지형(PlaneGeometry + Sine/Cosine 파동 + 법선 기반 경사도 각도 계산) 및 좌측 -20m 안전 스타트 평지 진지.
+     - 블루 사이버 코브라 탱크: 다각형 섀시, 4쌍의 로드 휠, 각도 적응형 피벗 포탑, 주포 바렐, 카드 No.066 공식 영웅 배지 부착.
+     - 3개 웨이브 적 유닛 군단:
+       - Wave 1: 날렵한 레드 스카우트 탱크 2대 (경량 고속 기동 포격).
+       - Wave 2: 중장갑 타이거 탱크 1대 + 공중 공격 헬리콥터 1대 (회전 프로펠러, 체공 미사일 투하).
+       - Wave 3: 거대 결전 요새 [골리앗 메가 탱크] (거대 차체, 듀얼 바렐 연속 포격).
+     - 3대 액션 스킬:
+       - 76px CANNON: 주포 일제 사격 (포구 화염 + 곡사 포탄 탄도학 + 반동 셰이크, 0.8초 쿨다운).
+       - 64px AIRSTRIKE: 전술 공중 폭격기 호출 (아군 폭격기가 날아와 3발 융단 폭격, 12초 쿨다운).
+       - 64px BOOST: 니트로 부스트 돌진 (전방 급가속 + 적 탱크 들이받기 데미지 + 배기 불꽃 파티클, 8초 쿨다운).
+     - MinimalistMissionHUD (HP 실시간 표시, 웨이브/격파수 표시, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산) 및 VictoryRewardModal 연동.
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (66/110 완료, current_game_index: 67) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 66/110] No.066 Hills of Steel Three.js 3D 탱크 힐 클라이밍 슈팅 & 배틀 액션 전면 고도화`)
+
 ## [2026-09-08 01:01 KST] [Poki 110선 리마스터 65/110] No.065 Real City Bikes Three.js 3D 도심 모터사이클 라이딩 시뮬레이션 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/real-city-bikes`) 분석 및 프롬프트(`src/components/poki/prompts/No065_RealCityBikes_Prompt.md`) 작성.
