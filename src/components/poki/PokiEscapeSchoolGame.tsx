@@ -163,7 +163,7 @@ export const PokiEscapeSchoolGame: React.FC<PokiEscapeSchoolGameProps> = ({
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.shadowMap.enabled = !lowSpecMode;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    container.innerHTML = '';
+    while (container.firstChild) { container.removeChild(container.firstChild); }
     container.appendChild(renderer.domElement);
 
     // 조명

@@ -8,12 +8,15 @@ import { calculateAndDepositMissionReward, RewardReceipt } from '../../lib/stand
 import { drawCardSprite } from '../../lib/canvasCardRenderer';
 
 interface PokiRainbowObbyGameProps {
-  deck: CardData[];
-  language: string;
+  deck?: CardData[];
+  language?: string;
   lowSpecMode?: boolean;
   playSfx?: (url: string) => void;
-  onExit: () => void;
-  onReward: (amount: number) => void;
+  handleExit?: () => void;
+  onBack?: () => void;
+  onClose?: () => void;
+  cardId?: number | string;
+  onReward?: (amount: number) => void;
 }
 
 interface Platform {
@@ -41,14 +44,18 @@ interface LaserBar {
 
 export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
   deck = [],
-  language,
+  language = 'ko',
   lowSpecMode = false,
   playSfx,
   onExit,
+  onBack,
+  onClose,
+  cardId,
   onReward,
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const isKo = language === 'ko';
-  const playerHeroId = deck[0]?.id || 11;
+  const playerHeroId = (cardId ? Number(cardId) : deck[0]?.id) || 11;
   const containerRef = useRef<HTMLDivElement>(null);
 
   // HUD & Game States
@@ -148,17 +155,17 @@ export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
     });
 
     setSettlementReceipt(receipt);
-    onReward(receipt.totalSns);
+    if (onReward) { onReward(receipt.totalSns); }
   }, [isKo, onReward, timeLeft]);
 
   // Back button confirmation & settlement
   const handleBackRequest = useCallback(() => {
     if (isGameOver || isVictory) {
-      onExit();
+      handleExit();
       return;
     }
     setShowExitConfirm(true);
-  }, [isGameOver, isVictory, onExit]);
+  }, [isGameOver, isVictory, handleExit]);
 
   const confirmExitAndSettle = useCallback(() => {
     setShowExitConfirm(false);
@@ -173,9 +180,9 @@ export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
       difficulty: 'NORMAL',
     });
     setSettlementReceipt(receipt);
-    onReward(receipt.totalSns);
-    onExit();
-  }, [isKo, onExit, onReward, timeLeft]);
+    if (onReward) { onReward(receipt.totalSns); }
+    handleExit();
+  }, [isKo, handleExit, onReward, timeLeft]);
 
   const cancelExit = useCallback(() => {
     setShowExitConfirm(false);
@@ -1033,7 +1040,7 @@ export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
         <VictoryRewardModal
           isOpen={true}
           receipt={settlementReceipt}
-          onConfirm={onExit}
+          onConfirm={handleExit}
           isVictory={isVictory}
         />
       )}

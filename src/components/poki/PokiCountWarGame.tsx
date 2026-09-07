@@ -202,7 +202,7 @@ export const PokiCountWarGame: React.FC<PokiCountWarGameProps> = ({
     renderer.setSize(width, height, false);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.shadowMap.enabled = !lowSpecMode;
-    container.innerHTML = '';
+    while (container.firstChild) { container.removeChild(container.firstChild); }
     container.appendChild(renderer.domElement);
 
     // 조명

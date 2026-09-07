@@ -1,709 +1,717 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import * as THREE from 'three';
-import { CardData } from '../../types';
 import { MinimalistMissionHUD } from '../MinimalistMissionHUD';
 import { VictoryRewardModal } from '../VictoryRewardModal';
-import { drawCardSprite } from '../../lib/canvasCardRenderer';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../../lib/standardizedRewardGateway';
+import { drawCardSprite } from '../../lib/canvasCardRenderer';
 
 interface PokiSlimeKeyboardGameProps {
-  deck?: CardData[];
+  onBack?: () => void;
+  onExit?: () => void;
+  onClose?: () => void;
+  deck?: any[];
   language?: string;
   lowSpecMode?: boolean;
   playSfx?: (url: string) => void;
-  onExit?: () => void;
-  onBack?: () => void;
-  onClose?: () => void;
   onReward?: (amount: number) => void;
 }
 
-interface KeycapData {
+const TOTAL_TRACK_DISTANCE = 300;
+
+interface KeycapItem {
   mesh: THREE.Mesh;
   type: 'normal' | 'slime' | 'booster' | 'goal';
-  label: string;
   originalY: number;
+  label: string;
+}
+
+interface ConfettiParticle {
+  mesh: THREE.Mesh;
+  vx: number;
+  vy: number;
+  vz: number;
+  life: number;
+  maxLife: number;
 }
 
 export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
+  onBack,
+  onExit,
+  onClose,
   deck = [],
   language = 'ko',
-  lowSpecMode = false,
-  onExit,
-  onBack,
-  onClose,
   onReward,
 }) => {
-  const isKo = language === 'ko';
-  const playerHeroId = deck[0]?.id || 1;
-  const handleExit = onExit || onBack || onClose || (() => {});
-  const containerRef = useRef<HTMLDivElement>(null);
+  const mountRef = useRef<HTMLDivElement | null>(null);
+  const handleExit = onBack || onExit || onClose || (() => {});
 
-  // Game Play States
-  const [score, setScore] = useState<number>(0);
-  const [speedLevel, setSpeedLevel] = useState<number>(1);
-  const [distance, setDistance] = useState<number>(0);
-  const totalTrackLength = 350; // Total distance to reach ESC goal
-  const [gameState, setGameState] = useState<'ready' | 'playing' | 'victory' | 'gameover'>('ready');
-  const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
+  // 게임 진행 상태
+  const [currentDist, setCurrentDist] = useState(0);
+  const [currentScore, setCurrentScore] = useState(0);
+  const [speedLevel, setSpeedLevel] = useState(1);
+  const [isBoosting, setIsBoosting] = useState(false);
+  const [gameWon, setGameWon] = useState(false);
+  const [rewardReceipt, setRewardReceipt] = useState<RewardReceipt | null>(null);
+  const [toastText, setToastText] = useState('');
 
-  // Mobile Touch Feedback State
-  const [touchSteerVal, setTouchSteerVal] = useState<number>(0); // -1 (left) ~ +1 (right)
-  const [isBoosting, setIsBoosting] = useState<boolean>(false);
+  const startTimeRef = useRef<number>(Date.now());
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const animFrameId = useRef<number>(0);
 
-  // References for Three.js Loop
-  const stateRef = useRef({
-    gameState: 'ready',
-    score: 0,
-    speedLevel: 1,
-    playerPos: new THREE.Vector3(0, 2, 0),
-    playerVel: new THREE.Vector3(0, 0, 0),
-    isGrounded: false,
-    inputLeft: false,
-    inputRight: false,
+  // 3D 오브젝트 레퍼런스
+  const slimeGroupRef = useRef<THREE.Group | null>(null);
+  const slimeBodyRef = useRef<THREE.Mesh | null>(null);
+  const keycapsRef = useRef<KeycapItem[]>([]);
+  const confettiRef = useRef<ConfettiParticle[]>([]);
+
+  // 슬라임 물리 상태
+  const physics = useRef({
+    pos: new THREE.Vector3(0, 1.2, 0),
+    vel: new THREE.Vector3(0, 0, 0),
+    speed: 16, // 전진 기본 속도 (m/s)
+    steerAngle: 0,
+    targetSteer: 0,
+    isGrounded: true,
     inputJump: false,
     inputBoost: false,
-    touchStartX: 0,
-    touchStartY: 0,
-    touchCurrentX: 0,
-    touchCurrentY: 0,
-    isTouchingSteer: false,
   });
 
-  // Sound generator
-  const playBeep = useCallback((freq: number, dur: number) => {
-    try {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-      if (!AudioCtx) return;
-      const ctx = new AudioCtx();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.frequency.setValueAtTime(freq, ctx.currentTime);
-      gain.gain.setValueAtTime(0.12, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + dur);
-      osc.start();
-      osc.stop(ctx.currentTime + dur);
-    } catch {
-      // ignore
+  // 터치 스와이프 조향 상태
+  const touchState = useRef({
+    active: false,
+    startX: 0,
+    currentX: 0,
+  });
+
+  // 햅틱 피드백
+  const triggerHaptic = (duration = 40) => {
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      navigator.vibrate(duration);
     }
+  };
+
+  const showToast = (text: string) => {
+    setToastText(text);
+    setTimeout(() => {
+      setToastText((prev) => (prev === text ? '' : prev));
+    }, 1800);
+  };
+
+  // 점프 실행
+  const triggerJump = useCallback(() => {
+    const phys = physics.current;
+    if (phys.isGrounded && !gameWon) {
+      phys.vel.y = 15.0;
+      phys.isGrounded = false;
+      triggerHaptic(40);
+      showToast('🦘 SLIME JUMP!');
+    }
+  }, [gameWon]);
+
+  // 안전 리스폰
+  const respawnSlime = useCallback(() => {
+    const phys = physics.current;
+    phys.pos.x = 0;
+    phys.pos.y = 1.2;
+    phys.vel.set(0, 0, 0);
+    phys.steerAngle = 0;
+    phys.targetSteer = 0;
+    phys.isGrounded = true;
+    triggerHaptic(50);
+    showToast('🔄 키보드 중앙으로 복귀했습니다.');
   }, []);
 
-  // Helper to create keyboard keycap texture with embossed letter
-  const createKeycapTexture = (text: string, bgColor: string, textColor: string) => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 128;
-    canvas.height = 128;
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      ctx.fillStyle = bgColor;
-      ctx.fillRect(0, 0, 128, 128);
-      ctx.lineWidth = 6;
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-      ctx.strokeRect(6, 6, 116, 116);
-      ctx.fillStyle = textColor;
-      ctx.font = 'bold 36px monospace';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(text, 64, 64);
+  // 컨페티 폭죽
+  const spawnConfetti = (pos: THREE.Vector3) => {
+    if (!sceneRef.current) return;
+    const colors = [0x10b981, 0x34d399, 0xfbbf24, 0x38bdf8, 0xec4899, 0xffffff];
+    const geo = new THREE.PlaneGeometry(0.25, 0.25);
+
+    for (let i = 0; i < 50; i++) {
+      const col = colors[Math.floor(Math.random() * colors.length)];
+      const mat = new THREE.MeshBasicMaterial({ color: col, side: THREE.DoubleSide });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.copy(pos);
+
+      const p: ConfettiParticle = {
+        mesh,
+        vx: (Math.random() - 0.5) * 10,
+        vy: Math.random() * 10 + 4,
+        vz: (Math.random() - 0.5) * 10,
+        life: 0,
+        maxLife: 1.6 + Math.random() * 0.6,
+      };
+      sceneRef.current.add(mesh);
+      confettiRef.current.push(p);
     }
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.needsUpdate = true;
-    return texture;
   };
 
-  const handleStartGame = () => {
-    stateRef.current.gameState = 'playing';
-    stateRef.current.score = 0;
-    stateRef.current.speedLevel = 1;
-    stateRef.current.playerPos.set(0, 0.6, 2);
-    stateRef.current.playerVel.set(0, 0, 0);
-    setScore(0);
-    setSpeedLevel(1);
-    setDistance(0);
-    setGameState('playing');
-    setSettlementReceipt(null);
-  };
-
-  const handleVictory = useCallback(() => {
-    stateRef.current.gameState = 'victory';
-    setGameState('victory');
-    playBeep(880, 0.4);
-
-    const receipt = calculateAndDepositMissionReward({
-      gameId: 'pokislimekeyboard',
-      gameTitle: 'Slime Keyboard Escape 3D',
-      durationSeconds: 35,
-      score: stateRef.current.score + 500,
-      maxTargetScore: 1000,
-      isVictory: true,
-      difficulty: 'NORMAL',
-    });
-    setSettlementReceipt(receipt);
-    if (onReward) onReward(receipt.totalSns);
-  }, [playBeep, onReward]);
-
-  // Main Jump Trigger
-  const triggerJump = useCallback(() => {
-    const s = stateRef.current;
-    if (s.isGrounded && s.gameState === 'playing') {
-      s.inputJump = true;
-      playBeep(440, 0.08);
-      if (typeof navigator !== 'undefined' && navigator.vibrate) {
-        navigator.vibrate(20);
-      }
-    }
-  }, [playBeep]);
-
-  // Main Three.js Scene Setup & Animation Loop
+  // Three.js 씬 빌드
   useEffect(() => {
-    const container = containerRef.current;
+    const container = mountRef.current;
     if (!container) return;
 
-    // 1. Scene, Camera, Renderer
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
+
+    // 씬 & 카메라
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a); // Deep slate midnight
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.012);
+    scene.background = new THREE.Color(0x0a0f1d);
+    scene.fog = new THREE.FogExp2(0x0a0f1d, 0.012);
+    sceneRef.current = scene;
 
-    const initialW = container.clientWidth || window.innerWidth;
-    const initialH = container.clientHeight || window.innerHeight;
+    const camera = new THREE.PerspectiveCamera(54, width / height, 0.1, 250);
+    camera.position.set(0, 3.8, 8.5);
+    camera.lookAt(0, 1.0, -10);
+    cameraRef.current = camera;
 
-    const camera = new THREE.PerspectiveCamera(60, initialW / initialH, 0.1, 1000);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
-    renderer.setSize(initialW, initialH);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowSpecMode ? 1 : 2));
-    renderer.shadowMap.enabled = !lowSpecMode;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    container.innerHTML = '';
+    // 렌더러
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+    renderer.setSize(width, height, false);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    rendererRef.current = renderer;
     container.appendChild(renderer.domElement);
 
-    // 2. Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+    // 조명
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
     scene.add(ambientLight);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
-    dirLight.position.set(20, 40, 20);
-    dirLight.castShadow = !lowSpecMode;
-    dirLight.shadow.mapSize.width = 1024;
-    dirLight.shadow.mapSize.height = 1024;
+    const dirLight = new THREE.DirectionalLight(0xfff7ed, 1.8);
+    dirLight.position.set(15, 30, 20);
+    dirLight.castShadow = true;
     scene.add(dirLight);
 
-    // 3. Build 3D Keyboard Track with Wide Safe Start Platform
-    const keycaps: KeycapData[] = [];
+    // ==========================================
+    // 3D 키보드 섀시 베이스 & 키캡 트랙
+    // ==========================================
+    const trackGroup = new THREE.Group();
+    scene.add(trackGroup);
 
-    // Safe Starting Big Spacebar Platform (Z: -6 to +16)
-    const startPlateGeo = new THREE.BoxGeometry(20, 1.2, 24);
-    const startPlateMat = new THREE.MeshStandardMaterial({
-      color: 0x1e293b,
-      roughness: 0.4,
+    // 키보드 알루미늄 하우징 베이스 바닥
+    const baseGeo = new THREE.BoxGeometry(18, 1.2, TOTAL_TRACK_DISTANCE + 40);
+    const baseMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.8, metalness: 0.3 });
+    const baseMesh = new THREE.Mesh(baseGeo, baseMat);
+    baseMesh.position.set(0, -0.6, -(TOTAL_TRACK_DISTANCE / 2));
+    baseMesh.receiveShadow = true;
+    trackGroup.add(baseMesh);
+
+    // 좌우 RGB 네온 스트립
+    const rgbGeo = new THREE.BoxGeometry(0.3, 0.4, TOTAL_TRACK_DISTANCE + 40);
+    const rgbMatL = new THREE.MeshBasicMaterial({ color: 0x10b981 });
+    const rgbL = new THREE.Mesh(rgbGeo, rgbMatL);
+    rgbL.position.set(-8.8, 0.1, -(TOTAL_TRACK_DISTANCE / 2));
+    trackGroup.add(rgbL);
+
+    const rgbMatR = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+    const rgbR = new THREE.Mesh(rgbGeo, rgbMatR);
+    rgbR.position.set(8.8, 0.1, -(TOTAL_TRACK_DISTANCE / 2));
+    trackGroup.add(rgbR);
+
+    // ==========================================
+    // 키캡 머티리얼 캐싱 (1,320개 생성 방지!)
+    // ==========================================
+    const createKeyTex = (text: string, bgColor: string, textColor: string) => {
+      const c = document.createElement('canvas');
+      c.width = 128;
+      c.height = 128;
+      const ctx = c.getContext('2d');
+      if (ctx) {
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, 128, 128);
+        ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+        ctx.lineWidth = 6;
+        ctx.strokeRect(6, 6, 116, 116);
+        ctx.fillStyle = textColor;
+        ctx.font = 'bold 36px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, 64, 64);
+      }
+      return new THREE.CanvasTexture(c);
+    };
+
+    const matNormal = new THREE.MeshStandardMaterial({
+      color: 0x334155,
+      roughness: 0.3,
       metalness: 0.2,
-      map: createKeycapTexture('SPACE START', '#1e293b', '#38bdf8'),
+      map: createKeyTex('KEY', '#334155', '#94a3b8'),
     });
-    const startPlateMesh = new THREE.Mesh(startPlateGeo, startPlateMat);
-    startPlateMesh.position.set(0, 0, 5);
-    startPlateMesh.receiveShadow = !lowSpecMode;
-    scene.add(startPlateMesh);
-    keycaps.push({ mesh: startPlateMesh, type: 'normal', label: 'SPACE START', originalY: 0 });
 
-    const keyboardLayout = [
-      ['ESC', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'DEL'],
-      ['~', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'BKSP'],
-      ['TAB', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'ENTER'],
-      ['CAPS', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', '\''],
-      ['SHIFT', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', 'SHIFT'],
-      ['CTRL', 'ALT', 'CMD', 'SPACE', 'SPACE', 'SPACE', 'CMD', 'ALT', 'CTRL'],
-    ];
+    const matSpace = new THREE.MeshStandardMaterial({
+      color: 0x1e293b,
+      roughness: 0.3,
+      metalness: 0.3,
+      map: createKeyTex('SPACE START', '#1e293b', '#38bdf8'),
+    });
 
-    const keyGeo = new THREE.BoxGeometry(2.8, 1.2, 2.8);
+    const matSlime = new THREE.MeshStandardMaterial({
+      color: 0x15803d,
+      roughness: 0.2,
+      metalness: 0.1,
+      map: createKeyTex('SLIME', '#15803d', '#86efac'),
+    });
 
-    let currentZ = 18;
-    const rowSpacing = 3.0;
-    const colSpacing = 2.9;
+    const matBooster = new THREE.MeshStandardMaterial({
+      color: 0xd97706,
+      roughness: 0.2,
+      metalness: 0.4,
+      map: createKeyTex('BOOST', '#d97706', '#fef08a'),
+    });
 
-    while (currentZ < totalTrackLength) {
-      const rowIndex = Math.floor((currentZ / rowSpacing) % keyboardLayout.length);
-      const rowKeys = keyboardLayout[rowIndex];
-      const startX = -((rowKeys.length - 1) * colSpacing) / 2;
+    const matEsc = new THREE.MeshStandardMaterial({
+      color: 0xdc2626,
+      roughness: 0.2,
+      metalness: 0.5,
+      map: createKeyTex('ESC GOAL', '#dc2626', '#ffffff'),
+    });
 
-      for (let col = 0; col < rowKeys.length; col++) {
-        const keyLabel = rowKeys[col];
-        const isGoal = currentZ >= totalTrackLength - 10 && col === Math.floor(rowKeys.length / 2);
+    // 시작 광폭 스페이스바 안전 플랫폼 (20m)
+    const startPlateGeo = new THREE.BoxGeometry(16, 1.2, 22);
+    const startPlate = new THREE.Mesh(startPlateGeo, matSpace);
+    startPlate.position.set(0, 0.4, 0);
+    startPlate.receiveShadow = true;
+    trackGroup.add(startPlate);
+
+    const keycaps: KeycapItem[] = [];
+    keycaps.push({ mesh: startPlate, type: 'normal', originalY: 0.4, label: 'SPACE START' });
+
+    // 정규 키캡 그리드 생성
+    const keyGeo = new THREE.BoxGeometry(2.6, 1.2, 2.6);
+    const colXs = [-6.2, -3.1, 0, 3.1, 6.2];
+    const rowStep = 3.6;
+
+    for (let z = -16; z >= -TOTAL_TRACK_DISTANCE + 10; z -= rowStep) {
+      for (const colX of colXs) {
+        // 일부 키캡 갭(낙하 함정) 연출
+        if (Math.random() < 0.12 && z < -30) continue;
 
         let type: 'normal' | 'slime' | 'booster' | 'goal' = 'normal';
-        let keyColor = '#1e293b';
-        let textColor = '#94a3b8';
+        let keyMat = matNormal;
 
-        if (isGoal) {
-          type = 'goal';
-          keyColor = '#10b981';
-          textColor = '#ffffff';
-        } else if (Math.random() < 0.18 && currentZ > 30) {
+        const rand = Math.random();
+        if (rand < 0.15 && z < -25) {
           type = 'slime';
-          keyColor = '#16a34a';
-          textColor = '#86efac';
-        } else if (Math.random() < 0.15 && currentZ > 25) {
+          keyMat = matSlime;
+        } else if (rand < 0.30 && z < -25) {
           type = 'booster';
-          keyColor = '#f59e0b';
-          textColor = '#fef08a';
+          keyMat = matBooster;
         }
 
-        const mat = new THREE.MeshStandardMaterial({
-          color: type === 'goal' ? 0x10b981 : type === 'slime' ? 0x22c55e : type === 'booster' ? 0xf59e0b : 0x334155,
-          roughness: 0.3,
-          metalness: 0.2,
-          map: createKeycapTexture(keyLabel, keyColor, textColor),
-        });
+        const keyMesh = new THREE.Mesh(keyGeo, keyMat);
+        keyMesh.position.set(colX, 0.4, z);
+        keyMesh.castShadow = true;
+        keyMesh.receiveShadow = true;
+        trackGroup.add(keyMesh);
 
-        const keyMesh = new THREE.Mesh(keyGeo, mat);
-        const posX = startX + col * colSpacing;
-        const posY = 0;
-        const posZ = currentZ;
-
-        keyMesh.position.set(posX, posY, posZ);
-        keyMesh.castShadow = !lowSpecMode;
-        keyMesh.receiveShadow = !lowSpecMode;
-        scene.add(keyMesh);
-
-        keycaps.push({ mesh: keyMesh, type, label: keyLabel, originalY: posY });
+        keycaps.push({ mesh: keyMesh, type, originalY: 0.4, label: type });
       }
-
-      currentZ += rowSpacing;
     }
 
-    // 4. Player Slime Mesh
+    // 결승 ESC 골 포털 플랫폼
+    const escGeo = new THREE.BoxGeometry(14, 1.2, 10);
+    const escMesh = new THREE.Mesh(escGeo, matEsc);
+    escMesh.position.set(0, 0.4, -TOTAL_TRACK_DISTANCE);
+    escMesh.receiveShadow = true;
+    trackGroup.add(escMesh);
+    keycaps.push({ mesh: escMesh, type: 'goal', originalY: 0.4, label: 'ESC' });
+
+    // 결승 No.01 공식 카드 영웅 배지 홀로그램 아치
+    const finishArch = new THREE.Group();
+    finishArch.position.set(0, 0, -TOTAL_TRACK_DISTANCE);
+    trackGroup.add(finishArch);
+
+    const badgeCanvas = document.createElement('canvas');
+    badgeCanvas.width = 256;
+    badgeCanvas.height = 256;
+    const bctx = badgeCanvas.getContext('2d');
+    if (bctx) {
+      bctx.fillStyle = '#064e3b';
+      bctx.fillRect(0, 0, 256, 256);
+      bctx.strokeStyle = '#10b981';
+      bctx.lineWidth = 14;
+      bctx.strokeRect(7, 7, 242, 242);
+      drawCardSprite(bctx, 1, 28, 28, 200, 200, { circleClip: true });
+    }
+    const badgeTex = new THREE.CanvasTexture(badgeCanvas);
+    const badgeMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(2.4, 2.4),
+      new THREE.MeshBasicMaterial({ map: badgeTex })
+    );
+    badgeMesh.position.set(0, 4.5, 0);
+    finishArch.add(badgeMesh);
+
+    keycapsRef.current = keycaps;
+
+    // ==========================================
+    // 3D 쫀득 슬라임 플레이어 모델링
+    // ==========================================
     const slimeGroup = new THREE.Group();
-    const slimeGeo = new THREE.SphereGeometry(0.85, 24, 24);
-    const slimeMat = new THREE.MeshStandardMaterial({
+    slimeGroup.position.copy(physics.current.pos);
+    scene.add(slimeGroup);
+    slimeGroupRef.current = slimeGroup;
+
+    // 반투명 에메랄드 젤리 바디
+    const slimeGeo = new THREE.SphereGeometry(0.8, 24, 24);
+    const slimeMat = new THREE.MeshPhysicalMaterial({
       color: 0x10b981,
+      transmission: 0.75,
+      opacity: 0.95,
+      transparent: true,
       roughness: 0.15,
       metalness: 0.1,
-      transparent: true,
-      opacity: 0.92,
     });
     const slimeBody = new THREE.Mesh(slimeGeo, slimeMat);
-    slimeBody.position.y = 0.85;
-    slimeBody.castShadow = !lowSpecMode;
+    slimeBody.castShadow = true;
     slimeGroup.add(slimeBody);
+    slimeBodyRef.current = slimeBody;
 
-    // Hero Badge Sprite
+    // 눈망울 2개
+    const eyeGeo = new THREE.SphereGeometry(0.14, 16, 16);
+    const eyeMat = new THREE.MeshBasicMaterial({ color: 0x064e3b });
+    const eyeL = new THREE.Mesh(eyeGeo, eyeMat);
+    eyeL.position.set(-0.26, 0.18, -0.68);
+    slimeGroup.add(eyeL);
+
+    const eyeR = new THREE.Mesh(eyeGeo, eyeMat);
+    eyeR.position.set(0.26, 0.18, -0.68);
+    slimeGroup.add(eyeR);
+
+    // 슬라임 가슴 No.01 공식 카드 영웅 배지 데칼
     const heroCanvas = document.createElement('canvas');
     heroCanvas.width = 128;
     heroCanvas.height = 128;
-    const heroCtx = heroCanvas.getContext('2d');
-    if (heroCtx) {
-      heroCtx.fillStyle = '#0f172a';
-      heroCtx.beginPath();
-      heroCtx.arc(64, 64, 60, 0, Math.PI * 2);
-      heroCtx.fill();
-      heroCtx.lineWidth = 6;
-      heroCtx.strokeStyle = '#10b981';
-      heroCtx.stroke();
-      drawCardSprite(heroCtx, playerHeroId, 16, 16, 96, 96);
+    const hctx = heroCanvas.getContext('2d');
+    if (hctx) {
+      drawCardSprite(hctx, 1, 8, 8, 112, 112, { circleClip: true });
     }
     const heroTex = new THREE.CanvasTexture(heroCanvas);
-    const heroSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: heroTex }));
-    heroSprite.position.set(0, 2.3, 0);
-    heroSprite.scale.set(1.4, 1.4, 1.4);
-    slimeGroup.add(heroSprite);
+    const heroBadge = new THREE.Mesh(
+      new THREE.CircleGeometry(0.26, 16),
+      new THREE.MeshBasicMaterial({ map: heroTex, transparent: true })
+    );
+    heroBadge.rotation.y = Math.PI;
+    heroBadge.position.set(0, -0.2, -0.74);
+    slimeGroup.add(heroBadge);
 
-    scene.add(slimeGroup);
-
-    // Goal Portal Mesh
-    const portalGeo = new THREE.TorusGeometry(3.5, 0.4, 16, 32);
-    const portalMat = new THREE.MeshStandardMaterial({ color: 0x34d399, roughness: 0.2, metalness: 0.8 });
-    const portalMesh = new THREE.Mesh(portalGeo, portalMat);
-    portalMesh.position.set(0, 3, totalTrackLength);
-    scene.add(portalMesh);
-
-    // 5. Robust ResizeObserver for Zero-Distortion on Mobile Screen/Viewport Changes
-    const updateSize = () => {
-      if (!container || !renderer || !camera) return;
-      const w = container.clientWidth || window.innerWidth;
-      const h = container.clientHeight || window.innerHeight;
-      if (w > 0 && h > 0) {
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-        renderer.setSize(w, h, false);
+    // 리사이즈 옵저버
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const w = entry.contentRect.width;
+        const h = entry.contentRect.height;
+        if (w > 0 && h > 0 && rendererRef.current && cameraRef.current) {
+          cameraRef.current.aspect = w / h;
+          cameraRef.current.updateProjectionMatrix();
+          rendererRef.current.setSize(w, h, false);
+        }
       }
-    };
-
-    const resizeObserver = new ResizeObserver(() => updateSize());
+    });
     resizeObserver.observe(container);
-    window.addEventListener('resize', updateSize);
-    window.addEventListener('orientationchange', () => setTimeout(updateSize, 100));
 
-    // 6. Keyboard Controls
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') stateRef.current.inputLeft = true;
-      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') stateRef.current.inputRight = true;
-      if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') triggerJump();
-      if (e.key === 'Shift') stateRef.current.inputBoost = true;
-    };
-
-    const handleKeyUp = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') stateRef.current.inputLeft = false;
-      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') stateRef.current.inputRight = false;
-      if (e.key === 'Shift') stateRef.current.inputBoost = false;
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-
-    // 7. Physics & Game Loop
-    let animId: number;
-    let clock = new THREE.Clock();
-
+    // ==========================================
+    // 애니메이션 렌더 루프
+    // ==========================================
+    let lastTime = performance.now();
     const animate = () => {
-      animId = requestAnimationFrame(animate);
-      const delta = Math.min(0.05, clock.getDelta());
-      const s = stateRef.current;
+      animFrameId.current = requestAnimationFrame(animate);
+      const now = performance.now();
+      const dt = Math.min((now - lastTime) / 1000, 0.05);
+      lastTime = now;
 
-      // Rotate goal portal
-      portalMesh.rotation.z += 0.03;
+      const phys = physics.current;
 
-      if (s.gameState === 'playing') {
-        // Base forward speed scales with speedLevel and boost
-        const boostMult = s.inputBoost ? 1.65 : 1.0;
-        const forwardSpeed = (12 + s.speedLevel * 2.2) * boostMult;
-        s.playerPos.z += forwardSpeed * delta;
+      // 1. 속도 제어
+      let targetSpeed = 16 + (speedLevel - 1) * 2.5;
+      if (phys.inputBoost) targetSpeed *= 1.6;
+      phys.speed += (targetSpeed - phys.speed) * 0.1;
 
-        // Horizontal steer (Camera faces +Z, so screen-left is +X, screen-right is -X)
-        const steerSpeed = 9.5;
-        if (s.inputLeft) s.playerPos.x += steerSpeed * delta;
-        if (s.inputRight) s.playerPos.x -= steerSpeed * delta;
-        s.playerPos.x = THREE.MathUtils.clamp(s.playerPos.x, -7.5, 7.5);
+      // 2. 좌우 조향 (Screen-relative 100% 일치)
+      phys.steerAngle += (phys.targetSteer - phys.steerAngle) * 0.2;
+      phys.pos.x += phys.steerAngle * phys.speed * 0.45 * dt;
 
-        // Jump & Gravity Physics
-        const gravity = -32.0;
-        s.playerVel.y += gravity * delta;
-        s.playerPos.y += s.playerVel.y * delta;
+      // 전진 이동 (Z축 음수 방향)
+      phys.pos.z -= phys.speed * dt;
 
-        // Check Collision with Keycaps
-        s.isGrounded = false;
+      // 3. 중력 및 점프 물리
+      const gravity = -26;
+      phys.vel.y += gravity * dt;
+      phys.pos.y += phys.vel.y * dt;
 
-        for (const k of keycaps) {
-          const isBigPlate = k.label === 'SPACE START';
-          const maxDx = isBigPlate ? 10.0 : 1.7;
-          const maxDz = isBigPlate ? 12.0 : 1.7;
-          const dx = Math.abs(s.playerPos.x - k.mesh.position.x);
-          const dz = Math.abs(s.playerPos.z - k.mesh.position.z);
+      // 키캡 착지 판정
+      let onGround = false;
+      const keycapsList = keycapsRef.current;
 
-          if (dx < maxDx && dz < maxDz) {
-            const keyTopY = k.mesh.position.y + 0.6;
-            if (s.playerPos.y >= keyTopY - 0.2 && s.playerPos.y + s.playerVel.y * delta <= keyTopY + 0.5) {
-              s.playerPos.y = keyTopY;
-              s.playerVel.y = 0;
-              s.isGrounded = true;
+      for (const k of keycapsList) {
+        // 가까운 키캡만 충돌 검사
+        if (Math.abs(phys.pos.z - k.mesh.position.z) > 3.0) continue;
 
-              k.mesh.position.y = -0.25;
+        const isBig = k.label === 'SPACE START' || k.label === 'ESC';
+        const halfW = isBig ? 8.0 : 1.4;
+        const halfD = isBig ? 11.0 : 1.4;
 
-              if (k.type === 'booster') {
-                s.speedLevel = Math.min(10, s.speedLevel + 1);
-                s.score += 50;
-                setSpeedLevel(s.speedLevel);
-                playBeep(660, 0.15);
-              } else if (k.type === 'slime') {
-                s.speedLevel = Math.max(1, s.speedLevel - 1);
-                setSpeedLevel(s.speedLevel);
-                playBeep(220, 0.2);
-              }
-              break;
-            }
-          } else {
-            k.mesh.position.y = THREE.MathUtils.lerp(k.mesh.position.y, k.originalY, 0.2);
+        if (
+          phys.pos.x >= k.mesh.position.x - halfW &&
+          phys.pos.x <= k.mesh.position.x + halfW &&
+          phys.pos.z >= k.mesh.position.z - halfD &&
+          phys.pos.z <= k.mesh.position.z + halfD &&
+          phys.pos.y >= 0.9 &&
+          phys.pos.y <= 1.8 &&
+          phys.vel.y <= 0
+        ) {
+          phys.pos.y = 1.0;
+          phys.vel.y = 0;
+          phys.isGrounded = true;
+          onGround = true;
+
+          // 키캡 눌림 애니메이션
+          k.mesh.position.y = k.originalY - 0.2;
+
+          if (k.type === 'booster') {
+            setSpeedLevel((lvl) => Math.min(10, lvl + 1));
+            triggerHaptic(50);
+            showToast('⚡ SPEED BOOSTER!');
+          } else if (k.type === 'slime') {
+            setSpeedLevel((lvl) => Math.max(1, lvl - 1));
+            triggerHaptic(60);
+            showToast('🟢 SLIME TRAP! 감속!');
           }
+          break;
         }
+      }
 
-        if (s.isGrounded) {
-          if (s.inputJump) {
-            s.playerVel.y = 15.0;
-            s.inputJump = false;
-          } else {
-            s.playerVel.y = 7.5; // Natural bouncy hop
-          }
+      if (!onGround && phys.pos.y > 1.2) {
+        phys.isGrounded = false;
+      }
+
+      // 키캡 위치 부드럽게 복귀
+      keycapsList.forEach((k) => {
+        if (k.mesh.position.y < k.originalY) {
+          k.mesh.position.y += dt * 1.5;
         }
+      });
 
-        const stretchY = 0.85 + (s.playerVel.y > 0 ? 0.25 : -0.15);
-        slimeBody.scale.set(1.1 / Math.sqrt(stretchY), stretchY, 1.1 / Math.sqrt(stretchY));
+      // 추락 낙하 복귀
+      if (phys.pos.y < -8.0) {
+        respawnSlime();
+      }
 
-        if (s.playerPos.y < -12) {
-          s.gameState = 'gameover';
-          setGameState('gameover');
-          playBeep(180, 0.5);
+      // 거리 및 점수 갱신
+      const dist = Math.min(TOTAL_TRACK_DISTANCE, Math.max(0, Math.floor(-phys.pos.z)));
+      setCurrentDist(dist);
+      setCurrentScore(dist * 10 + (speedLevel - 1) * 50);
+
+      // 결승 ESC 골인 승리 판정!
+      if (dist >= TOTAL_TRACK_DISTANCE && !gameWon) {
+        setGameWon(true);
+        triggerHaptic(180);
+        spawnConfetti(phys.pos);
+        showToast('🏆 ESC 탈출 성공! 3D 슬라임 키보드 정복!');
+
+        setTimeout(() => {
+          const dur = Math.floor((Date.now() - startTimeRef.current) / 1000);
           const receipt = calculateAndDepositMissionReward({
             gameId: 'pokislimekeyboard',
             gameTitle: 'Slime Keyboard Escape 3D',
-            durationSeconds: 25,
-            score: s.score + Math.round(s.playerPos.z * 2),
-            maxTargetScore: 1000,
-            isVictory: false,
-            difficulty: 'NORMAL',
+            isVictory: true,
+            score: 500,
+            maxTargetScore: 500,
+            durationSeconds: dur,
           });
-          setSettlementReceipt(receipt);
+          setRewardReceipt(receipt);
           if (onReward) onReward(receipt.totalSns);
-        }
-
-        if (s.playerPos.z >= totalTrackLength - 2) {
-          handleVictory();
-          return;
-        }
-
-        s.score += Math.round(forwardSpeed * delta * 2);
-        setScore(s.score);
-        setDistance(Math.min(totalTrackLength, Math.round(s.playerPos.z)));
+        }, 900);
       }
 
-      slimeGroup.position.copy(s.playerPos);
+      // 슬라임 스쿼시 앤 스트레치 애니메이션
+      if (slimeGroupRef.current && slimeBodyRef.current) {
+        slimeGroupRef.current.position.copy(phys.pos);
+        slimeGroupRef.current.rotation.z = -phys.steerAngle * 0.25;
 
-      const targetCamX = s.playerPos.x * 0.5;
-      const targetCamY = s.playerPos.y + 4.5;
-      const targetCamZ = s.playerPos.z - 7.5;
+        if (!phys.isGrounded) {
+          const stretch = Math.min(Math.abs(phys.vel.y) / 25, 0.35);
+          slimeBodyRef.current.scale.set(1 - stretch * 0.5, 1 + stretch, 1 - stretch * 0.5);
+        } else {
+          // 통통 바운스
+          const bounce = Math.sin(now * 0.01) * 0.1;
+          slimeBodyRef.current.scale.set(1 + bounce, 1 - bounce, 1 + bounce);
+        }
+      }
 
-      camera.position.x = THREE.MathUtils.lerp(camera.position.x, targetCamX, 0.12);
-      camera.position.y = THREE.MathUtils.lerp(camera.position.y, targetCamY, 0.12);
-      camera.position.z = THREE.MathUtils.lerp(camera.position.z, targetCamZ, 0.12);
-      camera.lookAt(s.playerPos.x, s.playerPos.y + 1, s.playerPos.z + 8);
+      // 체이스 카메라 위치 추적
+      if (cameraRef.current) {
+        cameraRef.current.position.x = phys.pos.x * 0.6;
+        cameraRef.current.position.y = phys.pos.y + 3.2;
+        cameraRef.current.position.z = phys.pos.z + 7.5;
+        cameraRef.current.lookAt(phys.pos.x, phys.pos.y + 0.5, phys.pos.z - 8);
+      }
+
+      // 컨페티 파티클 시뮬레이션
+      const conf = confettiRef.current;
+      for (let i = conf.length - 1; i >= 0; i--) {
+        const p = conf[i];
+        p.life += dt;
+        p.vy -= 12 * dt;
+        p.mesh.position.x += p.vx * dt;
+        p.mesh.position.y += p.vy * dt;
+        p.mesh.position.z += p.vz * dt;
+
+        if (p.life >= p.maxLife) {
+          scene.remove(p.mesh);
+          p.mesh.geometry.dispose();
+          if (Array.isArray(p.mesh.material)) {
+            p.mesh.material.forEach((m) => m.dispose());
+          } else {
+            p.mesh.material.dispose();
+          }
+          conf.splice(i, 1);
+        }
+      }
 
       renderer.render(scene, camera);
     };
-
-    animate();
+    animFrameId.current = requestAnimationFrame(animate);
 
     return () => {
-      cancelAnimationFrame(animId);
+      cancelAnimationFrame(animFrameId.current);
       resizeObserver.disconnect();
-      window.removeEventListener('resize', updateSize);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
+      if (renderer.domElement && container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
+      }
       renderer.dispose();
     };
-  }, [lowSpecMode, handleVictory, playBeep, totalTrackLength, playerHeroId, triggerJump, onReward]);
+  }, [speedLevel, respawnSlime, gameWon, onReward]);
 
-  // Touch Handlers on Left Steer Zone
-  const handleSteerTouchStart = (e: React.TouchEvent) => {
-    const touch = e.touches[0];
-    const s = stateRef.current;
-    s.isTouchingSteer = true;
-    s.touchStartX = touch.clientX;
-    s.touchStartY = touch.clientY;
-    s.touchCurrentX = touch.clientX;
-    s.touchCurrentY = touch.clientY;
+  // 터치 스와이프 조향
+  const handleTouchStart = (e: React.TouchEvent | React.MouseEvent) => {
+    const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
+    touchState.current = { active: true, startX: clientX, currentX: clientX };
   };
 
-  const handleSteerTouchMove = (e: React.TouchEvent) => {
-    const touch = e.touches[0];
-    const s = stateRef.current;
-    if (!s.isTouchingSteer) return;
+  const handleTouchMove = (e: React.TouchEvent | React.MouseEvent) => {
+    if (!touchState.current.active) return;
+    const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
+    touchState.current.currentX = clientX;
 
-    s.touchCurrentX = touch.clientX;
-    const diffX = s.touchCurrentX - s.touchStartX;
-
-    // Normalizing -1 ~ +1
-    const clampedDiff = Math.max(-50, Math.min(50, diffX));
-    setTouchSteerVal(clampedDiff / 50);
-
-    if (diffX < -10) {
-      s.inputLeft = true;
-      s.inputRight = false;
-    } else if (diffX > 10) {
-      s.inputRight = true;
-      s.inputLeft = false;
-    } else {
-      s.inputLeft = false;
-      s.inputRight = false;
-    }
+    const diffX = clientX - touchState.current.startX;
+    // Screen-relative 조향 (오른쪽 스와이프 시 오른쪽, 왼쪽 스와이프 시 왼쪽)
+    const steer = Math.max(-1.0, Math.min(1.0, diffX / 80));
+    physics.current.targetSteer = steer;
   };
 
-  const handleSteerTouchEnd = () => {
-    const s = stateRef.current;
-    s.isTouchingSteer = false;
-    s.inputLeft = false;
-    s.inputRight = false;
-    setTouchSteerVal(0);
+  const handleTouchEnd = () => {
+    touchState.current.active = false;
+    physics.current.targetSteer = 0;
+  };
+
+  // 포기 시 보상 정산
+  const handleForfeit = () => {
+    const dur = Math.floor((Date.now() - startTimeRef.current) / 1000);
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'pokislimekeyboard',
+      gameTitle: 'Slime Keyboard Escape 3D',
+      isVictory: false,
+      score: currentScore,
+      maxTargetScore: 500,
+      durationSeconds: dur,
+    });
+    setRewardReceipt(receipt);
+    if (onReward) onReward(receipt.totalSns);
   };
 
   return (
-    <div className="fixed inset-0 w-full h-[100dvh] bg-slate-950 select-none overflow-hidden font-mono touch-none">
-      {/* 3D WebGL Canvas Viewport - Absolute Inset for Zero Pixel Misalignment */}
-      <div ref={containerRef} className="absolute inset-0 w-full h-full" />
+    <div
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#0a0f1d]"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onMouseDown={handleTouchStart}
+      onMouseMove={handleTouchMove}
+      onMouseUp={handleTouchEnd}
+    >
+      {/* 3D 뷰포트 마운트 */}
+      <div ref={mountRef} className="absolute inset-0 w-full h-full" />
 
-      {/* Minimalist Mission HUD */}
+      {/* 상단 미션 HUD */}
       <MinimalistMissionHUD
-        gameTitle={isKo ? 'No.01 슬라임 키보드 탈출 3D' : 'No.01 Slime Keyboard Escape 3D'}
-        score={score}
-        targetScore={1000}
-        language={language}
-        onExit={() => {
-          const receipt = calculateAndDepositMissionReward({
-            gameId: 'pokislimekeyboard',
-            gameTitle: 'Slime Keyboard Escape 3D',
-            durationSeconds: 20,
-            score: score + Math.round(distance * 2),
-            maxTargetScore: 1000,
-            isVictory: false,
-            difficulty: 'NORMAL',
-          });
-          setSettlementReceipt(receipt);
-          if (onReward) onReward(receipt.totalSns);
-          handleExit();
-        }}
+        gameTitle="SLIME KEYBOARD ESCAPE 3D"
+        missionTarget={`[ESC] 탈출: ${currentDist}m/${TOTAL_TRACK_DISTANCE}m`}
+        currentScore={currentScore}
+        onBack={handleExit}
+        onForfeit={handleForfeit}
       />
 
-      {/* Speed & Momentum Status Bar */}
-      {gameState === 'playing' && (
-        <div className="absolute top-16 left-4 right-4 flex items-center justify-between pointer-events-none z-20">
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-900/85 backdrop-blur-md border border-slate-700/80 rounded-sm text-xs text-amber-300 shadow-md">
-            <span>⚡ SPEED:</span>
-            <span className="text-emerald-400 font-bold">+{speedLevel}x</span>
-            <div className="w-16 bg-slate-800 h-2 rounded-full overflow-hidden border border-slate-700">
-              <div
-                className="bg-emerald-500 h-full transition-all duration-150"
-                style={{ width: `${(speedLevel / 10) * 100}%` }}
-              />
-            </div>
+      {/* 상단 스피드 게이지 & 토스트 피드백 */}
+      <div className="absolute top-18 left-0 right-0 flex flex-col items-center pointer-events-none z-10 px-4">
+        {toastText ? (
+          <div className="bg-emerald-400 text-black font-black text-sm px-4 py-1.5 rounded-full shadow-lg animate-bounce border border-white/50">
+            {toastText}
           </div>
-
-          <div className="px-3 py-1.5 bg-slate-900/85 backdrop-blur-md border border-slate-700/80 rounded-sm text-xs text-slate-200 shadow-md">
-            <span className="text-emerald-400 font-bold">{distance}m</span>
-            <span className="text-slate-400"> / {totalTrackLength}m</span>
+        ) : (
+          <div className="bg-black/60 backdrop-blur-md px-4 py-1.5 rounded-xl text-xs text-emerald-300 border border-emerald-500/30 font-mono flex items-center gap-3">
+            <span>⚡ SPEED: {speedLevel}x</span>
+            <span>|</span>
+            <span>화면을 좌우로 스와이프해 키캡 위를 질주하세요!</span>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* Full-Screen Touch Control Zones for 100% Mobile Playability */}
-      {gameState === 'playing' && (
-        <div className="absolute inset-0 pointer-events-none z-20 flex">
-          {/* Left 50% Touch Steer Pad with Visual Joystick Indicator */}
-          <div
-            className="w-1/2 h-full pointer-events-auto flex items-end p-6"
-            onTouchStart={handleSteerTouchStart}
-            onTouchMove={handleSteerTouchMove}
-            onTouchEnd={handleSteerTouchEnd}
-          >
-            <div className="bg-slate-900/80 backdrop-blur-md border border-slate-700/80 rounded-sm p-3 flex flex-col items-center gap-2 shadow-xl">
-              <div className="text-[10px] text-slate-400 font-bold tracking-wider">
-                {isKo ? '◀ 좌우 슬라이드 조향 ▶' : '◀ SLIDE TO STEER ▶'}
-              </div>
-              <div className="w-28 h-3 bg-slate-800 rounded-full overflow-hidden relative border border-slate-700">
-                <div
-                  className="absolute top-0 bottom-0 w-6 bg-emerald-400 rounded-full transition-all duration-75"
-                  style={{
-                    left: `${50 + touchSteerVal * 40}%`,
-                    transform: 'translateX(-50%)',
-                  }}
-                />
-              </div>
-            </div>
-          </div>
+      {/* 하단 모바일 퓨어 터치 컨트롤 패널 */}
+      <div className="absolute bottom-6 left-0 right-0 flex justify-center items-center gap-4 px-6 z-20 pointer-events-auto">
+        {/* 부스트 버튼 */}
+        <button
+          onPointerDown={(e) => {
+            e.stopPropagation();
+            physics.current.inputBoost = true;
+            setIsBoosting(true);
+            triggerHaptic(60);
+          }}
+          onPointerUp={(e) => {
+            e.stopPropagation();
+            physics.current.inputBoost = false;
+            setIsBoosting(false);
+          }}
+          className={`w-16 h-16 rounded-full font-mono text-xs border flex flex-col items-center justify-center shadow-lg active:scale-95 transition-all ${
+            isBoosting
+              ? 'bg-amber-500 text-black border-amber-300 animate-pulse'
+              : 'bg-slate-800/80 active:bg-slate-700 text-amber-300 border-amber-500/40'
+          }`}
+        >
+          <span className="text-base">⚡</span>
+          <span className="text-[10px]">BOOST</span>
+        </button>
 
-          {/* Right 50% Action Controls: Giant JUMP & BOOST Buttons */}
-          <div className="w-1/2 h-full pointer-events-none flex flex-col justify-end items-end p-6 gap-3">
-            {/* Boost Toggle/Hold Button */}
-            <button
-              type="button"
-              className={`pointer-events-auto w-20 h-14 rounded-sm font-black text-xs flex flex-col items-center justify-center border-2 shadow-2xl transition-all active:scale-95 cursor-pointer ${
-                isBoosting
-                  ? 'bg-amber-500 border-amber-300 text-slate-950 animate-pulse'
-                  : 'bg-slate-900/90 border-amber-500/80 text-amber-400 active:bg-amber-600'
-              }`}
-              onTouchStart={() => {
-                stateRef.current.inputBoost = true;
-                setIsBoosting(true);
-              }}
-              onTouchEnd={() => {
-                stateRef.current.inputBoost = false;
-                setIsBoosting(false);
-              }}
-              onMouseDown={() => {
-                stateRef.current.inputBoost = true;
-                setIsBoosting(true);
-              }}
-              onMouseUp={() => {
-                stateRef.current.inputBoost = false;
-                setIsBoosting(false);
-              }}
-            >
-              <span className="text-base">⚡</span>
-              <span>BOOST</span>
-            </button>
+        {/* 대형 점프 버튼 */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            triggerJump();
+          }}
+          className="w-24 h-24 rounded-full bg-gradient-to-b from-emerald-500 to-teal-700 active:from-emerald-600 active:to-teal-800 text-white font-black text-sm border-2 border-emerald-300 flex flex-col items-center justify-center shadow-2xl active:scale-95 transition-all animate-pulse"
+        >
+          <span className="text-2xl">🦘</span>
+          <span className="tracking-wider text-xs font-mono font-bold">JUMP!</span>
+        </button>
 
-            {/* Giant Jump Button */}
-            <button
-              type="button"
-              onClick={triggerJump}
-              className="pointer-events-auto w-24 h-24 rounded-sm bg-emerald-500 active:bg-emerald-600 text-slate-950 font-black border-2 border-emerald-300 shadow-2xl flex flex-col items-center justify-center transition-all active:scale-90 cursor-pointer"
-            >
-              <span className="text-3xl">🦘</span>
-              <span className="text-xs tracking-wider mt-1 font-mono">JUMP</span>
-            </button>
-          </div>
-        </div>
-      )}
+        {/* 복귀 리셋 버튼 */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            respawnSlime();
+          }}
+          className="w-16 h-16 rounded-full bg-slate-800/80 active:bg-slate-700 text-white font-mono text-xs border border-white/20 flex flex-col items-center justify-center shadow-lg active:scale-95 transition-all"
+        >
+          <span className="text-base">🔄</span>
+          <span className="text-[10px]">RESET</span>
+        </button>
+      </div>
 
-      {/* Ready Start Screen */}
-      {gameState === 'ready' && (
-        <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center font-mono">
-          <div className="w-16 h-16 mb-3 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-3xl shadow-xl animate-bounce">
-            ⌨️
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-emerald-400 tracking-tight mb-2 uppercase">
-            [ Slime Keyboard Escape 3D ]
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-300 max-w-md mb-6 leading-relaxed">
-            {isKo
-              ? '거대한 3D 기계식 키보드 자판 위를 점프하며 탈출하세요! 멈추지 않고 달릴수록 스피드가 폭발적으로 증가합니다. 슬라임 트랩을 피하고 +SPEED 부스터를 밟아 [ESC] 골 포털에 도달하세요!'
-              : 'Jump across massive 3D computer keyboard keys! Build insane speed as you dodge slime traps and reach the final [ESC] portal!'}
-          </p>
-          <button
-            onClick={handleStartGame}
-            className="px-8 py-3.5 bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-black text-base rounded-sm shadow-xl transition-all cursor-pointer"
-          >
-            {isKo ? '3D 탈출 시작 [START]' : 'ESCAPE NOW [START]'}
-          </button>
-        </div>
-      )}
-
-      {/* Game Over Screen */}
-      {gameState === 'gameover' && (
-        <div className="absolute inset-0 z-30 bg-black/85 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center font-mono">
-          <div className="text-4xl mb-2">💥</div>
-          <h2 className="text-2xl font-black text-rose-500 tracking-tight mb-2 uppercase">
-            {isKo ? '[ 키보드 틈새로 낙사! ]' : '[ FALLEN OFF KEYBOARD ]'}
-          </h2>
-          <p className="text-xs text-slate-300 mb-4">
-            {isKo ? `도달 거리: ${distance}m | 획득 점수: ${score} PT` : `Distance: ${distance}m | Score: ${score} PT`}
-          </p>
-          {settlementReceipt && (
-            <div className="bg-slate-900/90 border border-slate-700 p-3 rounded-sm mb-5 text-xs text-slate-300">
-              <span className="text-slate-400">{isKo ? '탈출 진행 보상: ' : 'Progress Reward: '}</span>
-              <span className="text-amber-400 font-bold">+{settlementReceipt.totalSns} SNS</span>
-            </div>
-          )}
-          <div className="flex gap-3">
-            <button
-              onClick={handleStartGame}
-              className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-sm cursor-pointer transition-all"
-            >
-              {isKo ? '다시 도전' : 'Try Again'}
-            </button>
-            <button
-              onClick={handleExit}
-              className="px-6 py-2.5 border border-white/20 hover:bg-white/10 text-white font-bold text-xs rounded-sm cursor-pointer transition-all"
-            >
-              {isKo ? '미션 리스트' : 'Mission List'}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Victory Reward Modal */}
-      {gameState === 'victory' && settlementReceipt && (
+      {/* 승리 및 정산 모달 */}
+      {rewardReceipt && (
         <VictoryRewardModal
-          isOpen={true}
-          receipt={settlementReceipt}
-          language={language}
-          onConfirm={handleExit}
+          receipt={rewardReceipt}
+          onClose={handleExit}
         />
       )}
     </div>

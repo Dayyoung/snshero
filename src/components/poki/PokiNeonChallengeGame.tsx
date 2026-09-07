@@ -8,12 +8,15 @@ import { drawCardSprite } from '../../lib/canvasCardRenderer';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../../lib/standardizedRewardGateway';
 
 interface PokiNeonChallengeGameProps {
-  deck: CardData[];
-  language: string;
+  deck?: CardData[];
+  language?: string;
   lowSpecMode?: boolean;
   playSfx?: (url: string) => void;
-  onExit: () => void;
-  onReward: (amount: number) => void;
+  handleExit?: () => void;
+  onBack?: () => void;
+  onClose?: () => void;
+  cardId?: number | string;
+  onReward?: (amount: number) => void;
 }
 
 interface Obstacle {
@@ -37,14 +40,18 @@ interface SpeedRing {
 
 export const PokiNeonChallengeGame: React.FC<PokiNeonChallengeGameProps> = ({
   deck = [],
-  language,
+  language = 'ko',
   lowSpecMode = false,
   playSfx,
   onExit,
+  onBack,
+  onClose,
+  cardId,
   onReward,
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const isKo = language === 'ko';
-  const playerHeroId = deck[0]?.id || 17;
+  const playerHeroId = (cardId ? Number(cardId) : deck[0]?.id) || 17;
   const containerRef = useRef<HTMLDivElement>(null);
   const heroSpriteCanvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -571,7 +578,7 @@ export const PokiNeonChallengeGame: React.FC<PokiNeonChallengeGameProps> = ({
         isVictory: true,
       });
       setSettlementReceipt(receipt);
-      onReward(receipt.totalSns);
+      if (onReward) { onReward(receipt.totalSns); }
     };
 
     // 게임 오버 처리
@@ -586,7 +593,7 @@ export const PokiNeonChallengeGame: React.FC<PokiNeonChallengeGameProps> = ({
         isVictory: false,
       });
       setSettlementReceipt(receipt);
-      onReward(receipt.totalSns);
+      if (onReward) { onReward(receipt.totalSns); }
     };
 
     (container as any).__executeJump = executeJump;
@@ -693,7 +700,7 @@ export const PokiNeonChallengeGame: React.FC<PokiNeonChallengeGameProps> = ({
         score={score}
         targetScore={1500}
         timeLeft={0}
-        onQuit={onExit}
+        onQuit={handleExit}
         isKo={isKo}
         rewardUnit="SNS"
         customStatLabel={isKo ? '트랙 진행' : 'TRACK'}
@@ -835,7 +842,7 @@ export const PokiNeonChallengeGame: React.FC<PokiNeonChallengeGameProps> = ({
             </div>
             <button
               type="button"
-              onClick={onExit}
+              onClick={handleExit}
               className="w-full py-3 bg-red-600 hover:bg-red-500 text-white font-bold rounded-sm border border-red-400 transition-colors"
             >
               {isKo ? '확인 및 나가기' : 'CONFIRM & EXIT'}
@@ -851,7 +858,7 @@ export const PokiNeonChallengeGame: React.FC<PokiNeonChallengeGameProps> = ({
           receipt={settlementReceipt}
           onClaim={() => {
             setIsVictory(false);
-            onExit();
+            handleExit();
           }}
           isKo={isKo}
         />

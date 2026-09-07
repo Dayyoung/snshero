@@ -8,12 +8,15 @@ import { drawCardSprite } from '../../lib/canvasCardRenderer';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../../lib/standardizedRewardGateway';
 
 interface PokiDecorLifeGameProps {
-  deck: CardData[];
-  language: string;
+  deck?: CardData[];
+  language?: string;
   lowSpecMode?: boolean;
   playSfx?: (url: string) => void;
-  onExit: () => void;
-  onReward: (amount: number) => void;
+  handleExit?: () => void;
+  onBack?: () => void;
+  onClose?: () => void;
+  cardId?: number | string;
+  onReward?: (amount: number) => void;
 }
 
 interface FurnitureItem {
@@ -31,14 +34,18 @@ interface FurnitureItem {
 
 export const PokiDecorLifeGame: React.FC<PokiDecorLifeGameProps> = ({
   deck = [],
-  language,
+  language = 'ko',
   lowSpecMode = false,
   playSfx,
   onExit,
+  onBack,
+  onClose,
+  cardId,
   onReward,
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const isKo = language === 'ko';
-  const playerHeroId = deck[0]?.id || 16;
+  const playerHeroId = (cardId ? Number(cardId) : deck[0]?.id) || 16;
   const containerRef = useRef<HTMLDivElement>(null);
   const heroSpriteCanvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -628,7 +635,7 @@ export const PokiDecorLifeGame: React.FC<PokiDecorLifeGameProps> = ({
               isVictory: true,
             });
             setSettlementReceipt(receipt);
-            onReward(receipt.totalSns);
+            if (onReward) { onReward(receipt.totalSns); }
           }
         }, 800);
       }
@@ -709,7 +716,7 @@ export const PokiDecorLifeGame: React.FC<PokiDecorLifeGameProps> = ({
         score={score}
         targetScore={1500}
         timeLeft={0}
-        onQuit={onExit}
+        onQuit={handleExit}
         isKo={isKo}
         rewardUnit="SNS"
         customStatLabel={isKo ? '룸 진행도' : 'PROGRESS'}
@@ -816,7 +823,7 @@ export const PokiDecorLifeGame: React.FC<PokiDecorLifeGameProps> = ({
           receipt={settlementReceipt}
           onClaim={() => {
             setIsVictory(false);
-            onExit();
+            handleExit();
           }}
           isKo={isKo}
         />

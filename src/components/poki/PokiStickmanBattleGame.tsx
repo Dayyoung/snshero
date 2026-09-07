@@ -8,12 +8,15 @@ import { drawCardSprite } from '../../lib/canvasCardRenderer';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../../lib/standardizedRewardGateway';
 
 interface PokiStickmanBattleGameProps {
-  deck: CardData[];
-  language: string;
+  deck?: CardData[];
+  language?: string;
   lowSpecMode?: boolean;
   playSfx?: (url: string) => void;
-  onExit: () => void;
-  onReward: (amount: number) => void;
+  handleExit?: () => void;
+  onBack?: () => void;
+  onClose?: () => void;
+  cardId?: number | string;
+  onReward?: (amount: number) => void;
 }
 
 type WeaponType = 'blade' | 'axe' | 'blaster';
@@ -50,14 +53,18 @@ interface Particle {
 
 export const PokiStickmanBattleGame: React.FC<PokiStickmanBattleGameProps> = ({
   deck = [],
-  language,
+  language = 'ko',
   lowSpecMode = false,
   playSfx,
   onExit,
+  onBack,
+  onClose,
+  cardId,
   onReward,
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const isKo = language === 'ko';
-  const playerHeroId = deck[0]?.id || 15;
+  const playerHeroId = (cardId ? Number(cardId) : deck[0]?.id) || 15;
   const containerRef = useRef<HTMLDivElement>(null);
   const heroSpriteCanvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -788,7 +795,7 @@ export const PokiStickmanBattleGame: React.FC<PokiStickmanBattleGameProps> = ({
           isVictory: true,
         });
         setSettlementReceipt(receipt);
-        onReward(receipt.totalSns);
+        if (onReward) { onReward(receipt.totalSns); }
       } else {
         setIsGameOver(true);
         const receipt = calculateAndDepositMissionReward({
@@ -800,7 +807,7 @@ export const PokiStickmanBattleGame: React.FC<PokiStickmanBattleGameProps> = ({
           isVictory: false,
         });
         setSettlementReceipt(receipt);
-        onReward(receipt.totalSns);
+        if (onReward) { onReward(receipt.totalSns); }
       }
     };
 
@@ -926,7 +933,7 @@ export const PokiStickmanBattleGame: React.FC<PokiStickmanBattleGameProps> = ({
         score={score}
         targetScore={2000}
         timeLeft={0}
-        onQuit={onExit}
+        onQuit={handleExit}
         isKo={isKo}
         rewardUnit="SNS"
         customStatLabel={isKo ? '처치' : 'DEFEATS'}
@@ -1074,7 +1081,7 @@ export const PokiStickmanBattleGame: React.FC<PokiStickmanBattleGameProps> = ({
             </div>
             <button
               type="button"
-              onClick={onExit}
+              onClick={handleExit}
               className="w-full py-3 bg-red-600 hover:bg-red-500 text-white font-bold rounded-sm border border-red-400 transition-colors"
             >
               {isKo ? '확인 및 나가기' : 'CONFIRM & EXIT'}
@@ -1090,7 +1097,7 @@ export const PokiStickmanBattleGame: React.FC<PokiStickmanBattleGameProps> = ({
           receipt={settlementReceipt}
           onClaim={() => {
             setIsVictory(false);
-            onExit();
+            handleExit();
           }}
           isKo={isKo}
         />
