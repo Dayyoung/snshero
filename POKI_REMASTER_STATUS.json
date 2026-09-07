@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 104,
-  "completed_count": 103,
-  "last_updated": "2026-09-08T02:25:00+09:00",
+  "current_game_index": 105,
+  "completed_count": 104,
+  "last_updated": "2026-09-08T02:26:00+09:00",
   "history": [
     {
       "id": 1,
@@ -1138,6 +1138,17 @@
       "component": "src/components/poki/PokiBlumgiBounceGame.tsx",
       "completed_at": "2026-09-08T02:25:00+09:00",
       "details": "Three.js 기반 3D 아케이드 바운스 농구 & 슬링샷 덩크 퍼즐 구현, 네온 하드우드 코트(3점슛 라인/관중석 네온 바), 3D 아크릴 백보드 & 네온 림(Torus) & 와이어 네트 및 No.103 공식 카드 영웅 배지 전광판, 3D 카와이 Blumgi 젤리 캐릭터(스쿼시/스트레치 탄성 애니메이션/No.103 배지 데칼), 3D 동적 스프링 바운스 패드 기믹, 실시간 3D 포물선 탄도 점선 궤적, 림 골인 감지 & SWISH 축하 컨페티 파티클 폭죽, 5회 골인 우승, 모바일 퓨어 터치 조작계(화면 드래그 슬링샷 조준 + 76px BOUNCE 대형 버튼 + 64px RESET + HIGH ARC SLAM + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 104,
+      "name": "Brain Test 5",
+      "poki_url": "https://poki.com/kr/g/brain-test-5",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No104_BrainTest5_Prompt.md",
+      "component": "src/components/poki/PokiBrainTest5Game.tsx",
+      "completed_at": "2026-09-08T02:26:00+09:00",
+      "details": "Three.js 기반 3D 창의적 두뇌 인터랙티브 퍼즐 구현, 3D 스튜디오 룸 및 No.104 공식 카드 영웅 배지 액자, 3단계 발상 전환 3D 수수께끼(Stage 1: 사과 탭 확대 거대 수박 변신, Stage 2: 참치캔 뚜껑 개봉 드래그 잠든 고양이 깨우기, Stage 3: 성냥갑 마찰 발화 및 양초 점등 촛불 밝히기), 레이캐스팅 기반 3D 터치 드래그 물리, 76px HINT 대형 버튼 + 64px RETRY/HELP + 햅틱, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

@@ -4,6 +4,34 @@
 
 ---
 
+## [2026-09-08 02:26 KST] [Poki 110선 리마스터 104/110] No.104 Brain Test 5 Three.js 3D 창의적 두뇌 인터랙티브 퍼즐 & 수수께끼 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/brain-test-5`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No104_BrainTest5_Prompt.md`) 작성.
+  - Three.js 3D 기반 스튜디오 룸 환경(하드우드 바닥, 파스텔 백월, 조명) 및 No.104 공식 카드 영웅 배지 액자.
+  - 3단계 발상 전환 3D 수수께끼 스테이지:
+    - Stage 1: 사과 탭 확대 결합 ➔ 마법의 거대 수박 변신.
+    - Stage 2: 3D 소파 잠든 고양이, 참치 캔 뚜껑 개봉 및 드래그 냄새 깨우기.
+    - Stage 3: 어두운 룸, 성냥갑 마찰 발화 및 양초 점등 전체 조명 밝히기.
+  - 레이캐스팅 기반 3D 모바일 퓨어 터치 조작계(화면 터치 드래그 + 76px HINT 대형 버튼 + 64px RETRY/HELP + 햅틱), MinimalistMissionHUD 안전 정산.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 최고 인기 두뇌 퍼즐 프랜차이즈 Brain Test 5. 뻔한 정답을 거부하고 기발한 발상 전환과 직관적 오브젝트 인터랙션으로 수수께끼를 해결하는 인터랙티브 퍼즐 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiBrainTest5Game.tsx`)**:
+     - 3D 룸 스튜디오 씬 및 상단 No.104 공식 카드 영웅 배지 골든 프레임 액자.
+     - 3단계 수수께끼 스테이지 동적 로드:
+       - Stage 1: 3D 우드 테이블, 체리, 바나나, 사과. 사과 탭 시 점진적 확대(`scale.set(3,3,3)`) 및 초록 수박 변신 통과.
+       - Stage 2: 3D 럭셔리 소파, 잠든 냥이 피규어, 메탈 참치 캔. 캔을 드래그해 고양이 코앞 접근 시 냥이 번쩍 기상 및 통과.
+       - Stage 3: 앰비언트 라이트 어두운 방, 촛대 & 화이트 양초, 성냥갑, 3D 성냥개비. 성냥 드래그 마찰 발화 후 양초 심지 점등, 룸 전체 1.8배 황금빛 점등 및 우승.
+     - Raycasting 기반 3D 터치 드래그 인터랙션: 모바일 화면 터치 시 드래그 평면(Z=0)과 실시간 연동.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 76px [💡 HINT!] 스마트 힌트/솔브 액션 버튼 + 64px [🔄 RETRY] + 햅틱 피드백.
+       - MinimalistMissionHUD (스테이지 진행도, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (104/110 완료, current_game_index: 105) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출 완료.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 104/110] No.104 Brain Test 5 Three.js 3D 창의적 두뇌 인터랙티브 퍼즐 & 수수께끼 전면 고도화`)
+
 ## [2026-09-08 02:25 KST] [Poki 110선 리마스터 103/110] No.103 Blumgi Bounce Three.js 3D 아케이드 바운스 농구 & 슬링샷 덩크 퍼즐 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/blumgi-bounce`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No103_BlumgiBounce_Prompt.md`) 작성.
