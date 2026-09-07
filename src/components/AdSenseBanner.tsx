@@ -1,16 +1,17 @@
 /**
  * AdSenseBanner.tsx
- * 구글 애드센스 반응형 광고 유닛 컴포넌트
+ * 구글 애드센스 반응형 디스플레이 광고 유닛 컴포넌트
  */
 
 import React, { useEffect, useRef } from 'react';
 
 interface AdSenseBannerProps {
   slot?: string;
-  format?: 'auto' | 'fluid' | 'rectangle' | 'horizontal';
+  format?: 'auto' | 'fluid' | 'rectangle' | 'horizontal' | 'vertical';
   responsive?: boolean;
   className?: string;
   style?: React.CSSProperties;
+  showLabel?: boolean;
 }
 
 export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
@@ -19,27 +20,50 @@ export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
   responsive = true,
   className = '',
   style = {},
+  showLabel = false,
 }) => {
-  const isLoaded = useRef(false);
+  const insRef = useRef<HTMLModElement>(null);
+  const isLoadedRef = useRef(false);
 
   useEffect(() => {
-    if (isLoaded.current) return;
-    try {
-      if (typeof window !== 'undefined') {
+    if (isLoadedRef.current) return;
+    if (typeof window === 'undefined') return;
+
+    const timer = setTimeout(() => {
+      try {
+        const ins = insRef.current;
+        if (!ins) return;
+
+        // 이미 광고가 채워졌거나 adsbygoogle 상태가 완료된 경우 방지
+        const status = ins.getAttribute('data-adsbygoogle-status');
+        if (status === 'done' || ins.children.length > 0) {
+          isLoadedRef.current = true;
+          return;
+        }
+
         const adsbygoogle = (window as unknown as { adsbygoogle?: Array<Record<string, unknown>> }).adsbygoogle || [];
         adsbygoogle.push({});
-        isLoaded.current = true;
+        isLoadedRef.current = true;
+      } catch (e) {
+        // AdSense push safe catch
       }
-    } catch (e) {
-      // AdSense initialization fallback
-    }
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
-    <div className={`adsense-wrapper w-full overflow-hidden text-center my-2 select-none ${className}`}>
+    <div className={`adsense-container overflow-hidden text-center select-none ${className}`}>
+      {showLabel && (
+        <div className="flex items-center justify-between px-1 py-0.5 text-[9px] font-mono text-slate-400/80 uppercase tracking-wider">
+          <span>[AD]</span>
+          <span>Google Ads</span>
+        </div>
+      )}
       <ins
+        ref={insRef}
         className="adsbygoogle"
-        style={{ display: 'block', minHeight: '50px', ...style }}
+        style={{ display: 'block', ...style }}
         data-ad-client="ca-pub-6937094123258335"
         {...(slot ? { 'data-ad-slot': slot } : {})}
         data-ad-format={format}
@@ -48,3 +72,4 @@ export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
     </div>
   );
 };
+

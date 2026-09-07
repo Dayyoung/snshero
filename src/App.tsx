@@ -85,6 +85,7 @@ import {
 
 import { Meta } from './components/Meta';
 import { useAdSenseAutoAds } from './hooks/useAdSenseAutoAds';
+import { AdSenseBanner } from './components/AdSenseBanner';
 import { CortanaCommandButton } from './components/CortanaCommandButton';
 import { TutorialCoachMark } from './components/TutorialCoachMark';
 import { AppLoadingGate } from './components/AppLoadingGate';
@@ -5783,6 +5784,40 @@ function AppContent() {
         )}
         <Meta view={view} language={language} />
 
+        {/* Desktop Left Skyscraper Ad Banner (1380px+ screens) */}
+        {!isAdRemoved && view !== 'landing' && (
+          <aside 
+            aria-label="Google AdSense Left Wing"
+            className="hidden min-[1380px]:flex flex-col items-center fixed right-[calc(50vw+512px+16px)] top-16 w-[160px] z-30 pointer-events-auto"
+          >
+            <div className="w-full bg-[#fdfcfc]/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 p-1.5 shadow-xs rounded-none">
+              <AdSenseBanner 
+                format="vertical"
+                className="w-full min-h-[600px]"
+                style={{ width: '160px', minHeight: '600px' }}
+                showLabel
+              />
+            </div>
+          </aside>
+        )}
+
+        {/* Desktop Right Skyscraper Ad Banner (1380px+ screens) */}
+        {!isAdRemoved && view !== 'landing' && (
+          <aside 
+            aria-label="Google AdSense Right Wing"
+            className="hidden min-[1380px]:flex flex-col items-center fixed left-[calc(50vw+512px+16px)] top-16 w-[160px] z-30 pointer-events-auto"
+          >
+            <div className="w-full bg-[#fdfcfc]/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 p-1.5 shadow-xs rounded-none">
+              <AdSenseBanner 
+                format="vertical"
+                className="w-full min-h-[600px]"
+                style={{ width: '160px', minHeight: '600px' }}
+                showLabel
+              />
+            </div>
+          </aside>
+        )}
+
         {/* Main Content */}
         <div className={cn(
           "flex-1 w-full max-w-[1024px] mx-auto relative flex flex-col shadow-2xl border-x transition-colors duration-200",
@@ -6203,6 +6238,20 @@ function AppContent() {
           {/* Simulation Mode Floating Stop Button (Removed) */}
 
           {/* Simulation Indicator (Removed) */}
+
+          {/* Mobile/Tablet Content Top Google AdSense Banner (1380px 미만 화면 전용) */}
+          {!isAdRemoved && view !== 'landing' && (
+            <div className="block min-[1380px]:hidden w-full bg-[#fdfcfc]/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 px-2 py-1 shrink-0 select-none z-20">
+              <div className="max-w-[728px] mx-auto min-h-[50px] sm:min-h-[90px] flex items-center justify-center">
+                <AdSenseBanner 
+                  format="horizontal"
+                  className="w-full"
+                  style={{ minHeight: '50px' }}
+                  showLabel
+                />
+              </div>
+            </div>
+          )}
 
           <div className={cn(
             "flex-1 flex flex-col",
