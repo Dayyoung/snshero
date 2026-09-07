@@ -4,6 +4,41 @@
 
 ---
 
+## [2026-09-08 02:08 KST] [Poki 110선 리마스터 96/110] No.096 Capitalist Bus Driver Three.js 3D 대중교통 제국 버스 드라이빙 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/capitalist-bus-driver`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No096_CapitalistBusDriver_Prompt.md`) 작성.
+  - Three.js 3D 기반 3차선 무한 스크롤 해안도로(바다 수면/모래사장/야자수/가드레일/시작 아치 No.096 공식 영웅 배지 엠블럼).
+  - 3D 대형 럭셔리 투어 버스(옐로우 섀시/파노라마 글래스/루프 공조기/6개 회전 휠/측면 No.096 영웅 배지 데칼/듀얼 헤드라이트).
+  - 3D 버스 정류장 승객 탑승(PICKUP! +5명 & +$120) 및 3종 AI 트래픽 차량 회피, 20명 수송 및 $500 매출 달성 승리.
+  - 모바일 퓨어 터치 조작계(화면 좌우 스와이프 차선 변경 + 76px GAS ACCEL 대형 가속 페달 + 68px BRAKE 감속 페달 + 햅틱), MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 버스 시뮬레이션 타이쿤 인기작 Capitalist Bus Driver. 대형 관광버스를 운전하여 끝없이 펼쳐진 해안도로를 질주하며, 정류장에 대기 중인 승객들을 태워 해변 럭셔리 리조트까지 안전하게 운송하고 요금을 징수하여 대중교통 제국을 확장해 나가는 3D 드라이빙 시뮬레이션 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiCapitalistBusDriverGame.tsx`)**:
+     - 3차선 무한 스크롤 해안도로 씬 (푸른 바다 수면, 백사장, 야자수 가로수, 가드레일, 옐로우/화이트 차선).
+     - 시작 게이트 No.096 공식 카드 영웅 배지 환영 아치탑 각인.
+     - 3D 대형 투어 버스 모델링:
+       - 옐로우/골드 바디 섀시, 전면 틴티드 와이드 글래스, 파노라마 측면 창문, 루프 공조기 에어컨 유닛.
+       - 6개 회전 휠 타이어 물리 연동.
+       - 버스 양 측면 No.096 공식 카드 영웅 배지 데칼 각인.
+     - 3D 버스 정류장 & 승객 탑승 타이쿤 메커니즘:
+       - 갓길에 배치된 3D 정류장 부스 및 대기 승객 피규어.
+       - 정류장 접근 시 [🚏 승객 +5명 탑승! (+$120)] 캐시 머니 징수 & 황금 코인 파티클 분출.
+     - 3종 3D AI 트래픽 차량 (세단, SUV, 스포츠카) 및 충돌 회피 판정:
+       - 차선별 상이한 순항 속도 주행. 추돌 시 스파크 및 하트(-1) 감소.
+     - 목표 승객 20명 수송 & $500 매출 달성 시 피날레 골인 승리.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 좌우 스와이프/탭으로 신속한 3차선 변경(Screen-relative 완벽 일치).
+       - 76px [🚀 GAS ACCEL] 대형 가속 페달 버튼 + 68px [🛑 BRAKE] 브레이크 페달 버튼 + 햅틱 피드백.
+       - MinimalistMissionHUD (승객 20명 진행도, 매출 $, 속도계 km/h, 하트 3개, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (96/110 완료, current_game_index: 97) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 96/110] No.096 Capitalist Bus Driver Three.js 3D 대중교통 제국 버스 드라이빙 전면 고도화`)
+
 ## [2026-09-08 02:07 KST] [Poki 110선 리마스터 95/110] No.095 Soccer League Three.js 3D 3v3 아케이드 풋살 챔피언십 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/soccer-league`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No095_SoccerLeague_Prompt.md`) 작성.

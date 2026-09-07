@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 96,
-  "completed_count": 95,
-  "last_updated": "2026-09-08T02:07:00+09:00",
+  "current_game_index": 97,
+  "completed_count": 96,
+  "last_updated": "2026-09-08T02:08:00+09:00",
   "history": [
     {
       "id": 1,
@@ -1050,6 +1050,17 @@
       "component": "src/components/poki/PokiSoccerLeagueGame.tsx",
       "completed_at": "2026-09-08T02:07:00+09:00",
       "details": "Three.js 기반 3D 3v3 아케이드 풋살 챔피언십 경기 구현, 20m x 32m 잔디 스트라이프 피치 필드(화이트 라인 마킹/메탈 골대 2기 및 컬러 그물망/경기장 조명 타워 4기/대형 LED 전광판 No.095 공식 영웅 배지 엠블럼), 3v3 선수 피규어(블루 팀 플레이어 스트라이커 유니폼 No.095 영웅 배지 데칼/윙어 AI/골키퍼 AI vs 레드 팀 3인 AI), 3D 축구공 물리(구름 회전/벽면 반발력/드리블 밀림), 골인 판정 및 폭죽 세레모니, 3골 선제 득점 승리, 모바일 퓨어 터치 조작계(360도 플로팅 가상 조이스틱 드리블 + 76px POWER SHOOT 대형 슛 버튼 + 64px PASS/TACKLE + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 96,
+      "name": "Capitalist Bus Driver",
+      "poki_url": "https://poki.com/kr/g/capitalist-bus-driver",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No096_CapitalistBusDriver_Prompt.md",
+      "component": "src/components/poki/PokiCapitalistBusDriverGame.tsx",
+      "completed_at": "2026-09-08T02:08:00+09:00",
+      "details": "Three.js 기반 3D 해안도로 대중교통 제국 버스 드라이빙 시뮬레이터 구현, 3차선 무한 스크롤 해안도로(바다 수면/모래사장/야자수/가드레일/시작 아치 No.096 공식 영웅 배지 엠블럼), 3D 대형 럭셔리 투어 버스(옐로우 섀시/파노라마 글래스/루프 공조기/6개 회전 휠/측면 No.096 영웅 배지 데칼/듀얼 헤드라이트), 3D 버스 정류장 승객 탑승(PICKUP! +5명 & +$120) 및 3종 AI 트래픽 차량 회피, 20명 수송 및 $500 매출 달성 승리, 모바일 퓨어 터치 조작계(화면 좌우 스와이프 차선 변경 + 76px GAS ACCEL 대형 가속 페달 + 68px BRAKE 감속 페달 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
