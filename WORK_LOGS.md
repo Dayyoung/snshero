@@ -4,6 +4,40 @@
 
 ---
 
+## [2026-09-07 16:18 KST] [Poki 게임 키보드/가상 조이스틱 좌우 방향 정상화 및 1번 게임 모바일 낙하 방지 전면 개선]
+- **요청 사항**:
+  1. 키보드와 가상 조이스틱의 좌우 방향이 반대로 되어 있는 현상 전수 점검 및 개선.
+  2. 특히 No.001 슬라임 키보드 게임에서 모바일 시작 직후 발판 사이로 빠져서 허무하게 사망하는 문제 완전 해결.
+  3. 모바일 적합성 전수 검증 및 AGENTS.md 표준 지침 등재.
+- **원인 분석**:
+  1. **좌우 반전 원인**:
+     - Three.js 카메라는 기본 방향이 `-Z`이며, 카메라가 플레이어 뒤쪽에서 `+Z`를 바라보도록 설정된 경우(No.001 Slime Keyboard, No.003 MineFun.io) 화면 기준 오른쪽은 `-X`, 화면 기준 왼쪽은 `+X`가 됨.
+     - 기존 코드가 월드 `+X`를 오른쪽으로 매핑하여, 키보드 D/우측 조이스틱 입력 시 화면 왼쪽으로 이동하는 180도 반전 현상 발생.
+     - No.006 Snake vs Worms의 경우 플레이어가 화면 아래쪽(+Z)으로 갈 때 상대 조향으로 인해 A(Left)키를 누르면 화면 오른쪽으로 회전하는 현상 발생.
+     - No.008 Cryzen.io의 경우 카메라 전방/우측 벡터의 삼각함수 부호 역전으로 좌우 이동이 꼬였음.
+  2. **1번 게임 시작 직후 낙하 원인**:
+     - 키캡 가로/세로 간격(3.8m, 3.2m) 대비 키캡 크기(2.4m)로 인해 키캡 사이에 0.8~1.4m의 빈 틈 발생.
+     - 시작 시 `X = 0`에 스폰되는데 첫 번째 행의 4번째/5번째 키캡 사이 빈 공간에 스폰되어 시작 즉시 심연으로 낙하 사망함.
+- **개선 및 조치 내역**:
+  1. **No.001 Slime Keyboard Escape 3D (`PokiSlimeKeyboardGame.tsx`)**:
+     - `Z: -6 ~ +16` 구간에 20m x 24m 와이드 'SPACE START' 안전 플랫폼 긴급 배치 및 플레이어 안전 안착(`playerPos: 0, 0.6, 2`).
+     - 키캡 간격을 촘촘하게 좁히고(`rowSpacing = 3.0`, `colSpacing = 2.9`, `size = 2.8`), 충돌 감지 반경 여유 있게 확장.
+     - 화면 기준 좌우 이동(`Left: +X`, `Right: -X`)으로 반전 완벽 수정.
+  2. **No.003 MineFun.io 3D (`PokiMineFunGame.tsx`)**:
+     - 카메라 +Z 뷰포트에 맞추어 `moveX` 화면 기준 정렬 (`Left: +X`, `Right: -X`, 터치 `moveX = -dx/dist`).
+     - 아바타 회전 각도 및 이동 방향 100% 동기화.
+  3. **No.006 Snake vs Worms 3D (`PokiSnakeVsWormsGame.tsx`)**:
+     - 키보드 입력을 상대 조향에서 화면 절대 방향(`ArrowLeft/A: Math.PI`, `ArrowRight/D: 0`, `ArrowUp/W: -PI/2`, `ArrowDown/S: PI/2`)으로 개편하여 조이스틱과 키보드 조작 방향 완전 일치.
+  4. **No.008 Cryzen.io 3D (`PokiCryzenGame.tsx`)**:
+     - 전방 및 우측 이동 벡터 공식 정상화(`worldMoveX = moveDirX*cos + moveDirZ*sin`, `worldMoveZ = -moveDirX*sin + moveDirZ*cos`)로 W/A/S/D 및 360도 조이스틱 이동 100% 일치.
+  5. **AGENTS.md 표준 등재**:
+     - [카메라 시점 기준 조작 방향(좌우/상하) 100% 일치 절대 원칙] 및 [시작 지점 안전 안착 절대 원칙] 영구 등재.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 무결점 통과.
+  - `scripts/audit_110_games.ts`: 110/110 전수 SSR 렌더링 통과.
+
+---
+
 ## [2026-09-07 16:12 KST] [Poki 110선 리마스터 8/110] No.008 Cryzen.io Three.js 3D 택티컬 전술 FPS 아레나 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/cryzen-io`) 분석 및 프롬프트(`src/components/poki/prompts/No008_CryzenIo_Prompt.md`) 작성.

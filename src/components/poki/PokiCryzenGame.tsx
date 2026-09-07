@@ -630,8 +630,10 @@ export const PokiCryzenGame: React.FC<PokiCryzenGameProps> = ({
 
       // Translate local movement to world based on yaw
       if (Math.abs(moveDirX) > 0.05 || Math.abs(moveDirZ) > 0.05) {
-        const worldMoveX = moveDirX * Math.cos(p.yaw) - moveDirZ * Math.sin(p.yaw);
-        const worldMoveZ = moveDirX * Math.sin(p.yaw) + moveDirZ * Math.cos(p.yaw);
+        // Forward: (-sin, -cos), Right: (cos, -sin)
+        // moveDirZ < 0 is forward, moveDirX > 0 is right
+        const worldMoveX = moveDirX * Math.cos(p.yaw) + moveDirZ * Math.sin(p.yaw);
+        const worldMoveZ = -moveDirX * Math.sin(p.yaw) + moveDirZ * Math.cos(p.yaw);
         p.x += worldMoveX * p.speed * dt;
         p.z += worldMoveZ * p.speed * dt;
       }

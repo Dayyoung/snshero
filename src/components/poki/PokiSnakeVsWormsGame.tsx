@@ -661,21 +661,24 @@ export const PokiSnakeVsWormsGame: React.FC<PokiSnakeVsWormsGameProps> = ({
         return;
       }
 
-      // --- Keyboard Controls Update ---
+      // --- Controls Update (Keyboard & Joystick Absolute Direction) ---
       const keys = keysRef.current;
-      let keyTurn = 0;
-      if (keys['KeyA'] || keys['ArrowLeft']) keyTurn -= 1;
-      if (keys['KeyD'] || keys['ArrowRight']) keyTurn += 1;
-      if (keyTurn !== 0) {
-        stateRef.current.player.angle += keyTurn * 3.5 * dt;
-        stateRef.current.player.targetAngle = stateRef.current.player.angle;
-      } else if (touchTrackingRef.current.touchId !== null) {
-        // Smoothly interpolate angle toward joystick target angle
-        let diff = stateRef.current.player.targetAngle - stateRef.current.player.angle;
-        while (diff > Math.PI) diff -= Math.PI * 2;
-        while (diff < -Math.PI) diff += Math.PI * 2;
-        stateRef.current.player.angle += diff * Math.min(1, 10 * dt);
+      let keyX = 0;
+      let keyZ = 0;
+      if (keys['KeyA'] || keys['ArrowLeft']) keyX -= 1;
+      if (keys['KeyD'] || keys['ArrowRight']) keyX += 1;
+      if (keys['KeyW'] || keys['ArrowUp']) keyZ -= 1;
+      if (keys['KeyS'] || keys['ArrowDown']) keyZ += 1;
+
+      if (keyX !== 0 || keyZ !== 0) {
+        stateRef.current.player.targetAngle = Math.atan2(keyZ, keyX);
       }
+
+      // Smoothly interpolate angle toward target angle
+      let diff = stateRef.current.player.targetAngle - stateRef.current.player.angle;
+      while (diff > Math.PI) diff -= Math.PI * 2;
+      while (diff < -Math.PI) diff += Math.PI * 2;
+      stateRef.current.player.angle += diff * Math.min(1, 9 * dt);
 
       const player = stateRef.current.player;
       const currentSpeed = player.isBoosting && player.length > 6 ? player.boostSpeed : player.speed;

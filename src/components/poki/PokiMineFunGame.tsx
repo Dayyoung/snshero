@@ -402,15 +402,15 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
 
         if (s.keys.up) moveZ += 1;
         if (s.keys.down) moveZ -= 1;
-        if (s.keys.left) moveX -= 1;
-        if (s.keys.right) moveX += 1;
+        if (s.keys.left) moveX += 1;  // Screen left is +X
+        if (s.keys.right) moveX -= 1; // Screen right is -X
 
         if (s.touch.active) {
           const dx = s.touch.currentX - s.touch.startX;
           const dy = s.touch.currentY - s.touch.startY;
           const dist = Math.hypot(dx, dy);
           if (dist > 8) {
-            moveX = dx / Math.max(dist, 45);
+            moveX = -dx / Math.max(dist, 45); // Screen right (dx>0) -> -X
             moveZ = -dy / Math.max(dist, 45);
           }
         }

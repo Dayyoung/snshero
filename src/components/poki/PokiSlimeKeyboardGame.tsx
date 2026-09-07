@@ -116,7 +116,7 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
     stateRef.current.gameState = 'playing';
     stateRef.current.score = 0;
     stateRef.current.speedLevel = 1;
-    stateRef.current.playerPos.set(0, 2, 0);
+    stateRef.current.playerPos.set(0, 0.6, 2);
     stateRef.current.playerVel.set(0, 0, 0);
     setScore(0);
     setSpeedLevel(1);
@@ -189,8 +189,23 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
     dirLight.shadow.mapSize.height = 1024;
     scene.add(dirLight);
 
-    // 3. Build 3D Keyboard Track
+    // 3. Build 3D Keyboard Track with Wide Safe Start Platform
     const keycaps: KeycapData[] = [];
+
+    // Safe Starting Big Spacebar Platform (Z: -6 to +16)
+    const startPlateGeo = new THREE.BoxGeometry(20, 1.2, 24);
+    const startPlateMat = new THREE.MeshStandardMaterial({
+      color: 0x1e293b,
+      roughness: 0.4,
+      metalness: 0.2,
+      map: createKeycapTexture('SPACE START', '#1e293b', '#38bdf8'),
+    });
+    const startPlateMesh = new THREE.Mesh(startPlateGeo, startPlateMat);
+    startPlateMesh.position.set(0, 0, 5);
+    startPlateMesh.receiveShadow = !lowSpecMode;
+    scene.add(startPlateMesh);
+    keycaps.push({ mesh: startPlateMesh, type: 'normal', label: 'SPACE START', originalY: 0 });
+
     const keyboardLayout = [
       ['ESC', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'DEL'],
       ['~', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'BKSP'],
@@ -200,11 +215,11 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
       ['CTRL', 'ALT', 'CMD', 'SPACE', 'SPACE', 'SPACE', 'CMD', 'ALT', 'CTRL'],
     ];
 
-    const keyGeo = new THREE.BoxGeometry(2.4, 1.2, 2.4);
+    const keyGeo = new THREE.BoxGeometry(2.8, 1.2, 2.8);
 
-    let currentZ = 0;
-    const rowSpacing = 3.8;
-    const colSpacing = 3.2;
+    let currentZ = 18;
+    const rowSpacing = 3.0;
+    const colSpacing = 2.9;
 
     while (currentZ < totalTrackLength) {
       const rowIndex = Math.floor((currentZ / rowSpacing) % keyboardLayout.length);
@@ -223,11 +238,11 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
           type = 'goal';
           keyColor = '#10b981';
           textColor = '#ffffff';
-        } else if (Math.random() < 0.18 && currentZ > 20) {
+        } else if (Math.random() < 0.18 && currentZ > 30) {
           type = 'slime';
           keyColor = '#16a34a';
           textColor = '#86efac';
-        } else if (Math.random() < 0.15 && currentZ > 15) {
+        } else if (Math.random() < 0.15 && currentZ > 25) {
           type = 'booster';
           keyColor = '#f59e0b';
           textColor = '#fef08a';
@@ -241,7 +256,7 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
         });
 
         const keyMesh = new THREE.Mesh(keyGeo, mat);
-        const posX = startX + col * colSpacing + (Math.random() - 0.5) * 0.4;
+        const posX = startX + col * colSpacing;
         const posY = 0;
         const posZ = currentZ;
 
@@ -353,10 +368,10 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
         const forwardSpeed = (12 + s.speedLevel * 2.2) * boostMult;
         s.playerPos.z += forwardSpeed * delta;
 
-        // Horizontal steer
+        // Horizontal steer (Camera faces +Z, so screen-left is +X, screen-right is -X)
         const steerSpeed = 9.5;
-        if (s.inputLeft) s.playerPos.x -= steerSpeed * delta;
-        if (s.inputRight) s.playerPos.x += steerSpeed * delta;
+        if (s.inputLeft) s.playerPos.x += steerSpeed * delta;
+        if (s.inputRight) s.playerPos.x -= steerSpeed * delta;
         s.playerPos.x = THREE.MathUtils.clamp(s.playerPos.x, -7.5, 7.5);
 
         // Jump & Gravity Physics
@@ -368,12 +383,15 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
         s.isGrounded = false;
 
         for (const k of keycaps) {
+          const isBigPlate = k.label === 'SPACE START';
+          const maxDx = isBigPlate ? 10.0 : 1.7;
+          const maxDz = isBigPlate ? 12.0 : 1.7;
           const dx = Math.abs(s.playerPos.x - k.mesh.position.x);
           const dz = Math.abs(s.playerPos.z - k.mesh.position.z);
 
-          if (dx < 1.4 && dz < 1.4) {
+          if (dx < maxDx && dz < maxDz) {
             const keyTopY = k.mesh.position.y + 0.6;
-            if (s.playerPos.y >= keyTopY && s.playerPos.y + s.playerVel.y * delta <= keyTopY + 0.3) {
+            if (s.playerPos.y >= keyTopY - 0.2 && s.playerPos.y + s.playerVel.y * delta <= keyTopY + 0.5) {
               s.playerPos.y = keyTopY;
               s.playerVel.y = 0;
               s.isGrounded = true;
