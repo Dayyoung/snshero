@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 83,
-  "completed_count": 82,
-  "last_updated": "2026-09-08T01:42:00+09:00",
+  "current_game_index": 84,
+  "completed_count": 83,
+  "last_updated": "2026-09-08T01:43:00+09:00",
   "history": [
     {
       "id": 1,
@@ -907,6 +907,17 @@
       "component": "src/components/poki/PokiBoomyWorldGame.tsx",
       "completed_at": "2026-09-08T01:42:00+09:00",
       "details": "Three.js 기반 3D 봄버 아레나 & 십자 화염 연쇄 폭발 배틀 구현, 11x11 블록 미로 필드(외벽/석조 기둥/파괴가능 나무 상자/중앙 No.082 공식 카드 영웅 배지 엠블럼), 3D 봄버 히어로(블루 수트/헬멧/등 뒤 No.082 영웅 배지 백팩), 3D 구형 폭탄 설치 & 십자 4방향 화염 전파(Cross Fire Stream), 상자 파괴 및 연쇄 기폭(Chain Reaction), 5마리 젤리 몬스터 AI 배회 및 소탕 시스템, 100% 모바일 퓨어 터치 조작계(화면 좌측 360° 플로팅 조이스틱 + 76px BOMB 대형 폭탄 설치 버튼 + 64px DETONATE 즉시 기폭 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 83,
+      "name": "SnapStyle Dress Up",
+      "poki_url": "https://poki.com/kr/g/snapstyle-dress-up",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No083_SnapStyleDressUp_Prompt.md",
+      "component": "src/components/poki/PokiSnapStyleDressUpGame.tsx",
+      "completed_at": "2026-09-08T01:43:00+09:00",
+      "details": "Three.js 기반 3D 런웨이 패션 스타일링 & 포토 스냅샷 시뮬레이션 구현, 3D 런웨이 턴테이블 무대(미러 플로어/네온 조명/배경 No.083 공식 카드 영웅 배지 엠블럼), 3D 패션 아바타 모델링(헤어 4종/상의 4종/하의 4종/액세서리 4종 실시간 3D 착용 및 스파클 파티클), 3가지 런웨이 포즈 전환 시스템(스탠딩/핸즈온힙/모델윙크), 76px SNAP PHOTO 셔터 플래시 스냅샷 촬영 & 폴라로이드 룩북 완성, 모바일 퓨어 터치 조작계(화면 드래그 360° 궤도 회전 + 4개 카테고리 탭 & 아이템 캐러셀 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
