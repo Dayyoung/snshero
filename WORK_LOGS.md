@@ -4,6 +4,39 @@
 
 ---
 
+## [2026-09-08 01:53 KST] [Poki 110선 리마스터 90/110] No.090 Goods Master Three.js 3D 슈퍼마켓 선반 정리 & 트리플 매치 퍼즐 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/goods-master`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No090_GoodsMaster_Prompt.md`) 작성.
+  - Three.js 3D 기반 3단 3열 우드 마켓 랙(상단 No.090 공식 영웅 배지 네온 간판 엠블럼), 6종 3D 상품 18개(콜라/칩스/우유/도넛/에너지/쥬스 & 2단 깊이 레이어드 노출).
+  - 하단 7칸 카트 슬롯 & 트리플 매치 폭발 제거, 18개 전원 클리어 세레모니.
+  - 모바일 퓨어 터치 조작계(3D 레이캐스팅 터치 픽 + 화면 드래그 미세 틸트 + 76px AUTO MATCH 힌트 버튼 + 64px UNDO 되돌리기 + 햅틱), MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 두뇌 퍼즐/트리플 매치 인기작 Goods Master. 복잡한 슈퍼마켓 선반에 진열된 다양한 상품들을 탐색하고, 같은 종류의 상품 3개를 골라 매칭하며 공간을 확보해 나가는 3D 선반 정리 퍼즐 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiGoodsMasterGame.tsx`)**:
+     - 3단 3열 3D 우드 마켓 랙 (금속 기둥, 우드 선반 평판, 최상단 No.090 공식 카드 영웅 배지 대형 네온 간판).
+     - 6종 정교한 3D 상품 모델링 (총 18개, 각 3개씩):
+       - 레드 콜라 캔, 골든 포테이토 칩, 블루 밀크 보틀, 퍼플 도넛 박스, 그린 에너지 드링크, 오렌지 쥬스 팩.
+     - 2단 깊이 레이어드 진열 시스템:
+       - 앞줄(Front Layer) 상품이 제거되면 뒷줄(Back Layer) 상품이 자동으로 전면으로 이동 및 활성화.
+     - 하단 7칸 카트 트레이 슬롯 & 3매치 룰:
+       - 선반 상품 터치 시 3D 레이캐스팅 감지 ➔ 공중 비행 및 축소 애니메이션과 함께 카트 트레이에 안착.
+       - 동일 상품 3개 모이면 "TRIPLE MATCH! +300" 배너 및 황금 스파클 폭발 제거.
+       - 카트 7칸 초과 시 게임오버 방지 밸런스.
+       - 6세트(18개) 전원 클리어 시 승리 세레모니 및 콘페티 폭발.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 3D 터치 레이캐스팅 다이렉트 탭 선택.
+       - 화면 터치 드래그로 선반 3D 미세 틸트 각도 조절 (Screen-relative 완벽 일치).
+       - 76px [✨ AUTO MATCH] 대형 원터치 자동 3매치 힌트/완료 버튼 + 64px [↩️ UNDO] 버튼 + 햅틱.
+       - MinimalistMissionHUD (정리 완료 세트 수, 카트 상태, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (90/110 완료, current_game_index: 91) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 90/110] No.090 Goods Master Three.js 3D 슈퍼마켓 선반 정리 & 트리플 매치 퍼즐 전면 고도화`)
+
 ## [2026-09-08 01:52 KST] [Poki 110선 리마스터 89/110] No.089 Stickman Crazy Box Three.js 3D 스틱맨 낙하 상자 회피 & 파쿠르 클라이밍 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/stickman-crazy-box`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No089_StickmanCrazyBox_Prompt.md`) 작성.

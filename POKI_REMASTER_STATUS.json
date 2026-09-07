@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 90,
-  "completed_count": 89,
-  "last_updated": "2026-09-08T01:52:00+09:00",
+  "current_game_index": 91,
+  "completed_count": 90,
+  "last_updated": "2026-09-08T01:53:00+09:00",
   "history": [
     {
       "id": 1,
@@ -984,6 +984,17 @@
       "component": "src/components/poki/PokiStickmanCrazyBoxGame.tsx",
       "completed_at": "2026-09-08T01:52:00+09:00",
       "details": "Three.js 기반 3D 스틱맨 낙하 상자 회피 & 파쿠르 클라이밍 서바이벌 구현, 18m x 18m 사이버 네온 팔각형 아레나(중앙 안전 스폰/No.089 공식 영웅 배지 엠블럼), 3D 스틱맨 모델링(보행 달리기/점프 애니메이션/등 뒤 No.089 공식 영웅 배지 백팩), 다이나믹 3종 낙하 상자(우드 박스 착지 발판/TNT 2초 폭발 상자/골드 박스), 황금 별 8개 파쿠르 수집 퀘스트, 모바일 퓨어 터치 조작계(화면 터치 지점 다이나믹 플로팅 조이스틱 + 76px JUMP + 64px DASH 무적 대시 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 90,
+      "name": "Goods Master",
+      "poki_url": "https://poki.com/kr/g/goods-master",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No090_GoodsMaster_Prompt.md",
+      "component": "src/components/poki/PokiGoodsMasterGame.tsx",
+      "completed_at": "2026-09-08T01:53:00+09:00",
+      "details": "Three.js 기반 3D 슈퍼마켓 선반 정리 & 트리플 매치 퍼즐 구현, 3단 3열 우드 마켓 랙(상단 No.090 공식 영웅 배지 네온 간판 엠블럼), 6종 3D 상품 18개(콜라/칩스/우유/도넛/에너지/쥬스 & 2단 깊이 레이어드 노출), 하단 7칸 카트 슬롯 & 트리플 매치 폭발 제거, 모바일 퓨어 터치 조작계(3D 레이캐스팅 터치 픽 + 화면 드래그 미세 틸트 + 76px AUTO MATCH 힌트 버튼 + 64px UNDO 되돌리기 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
