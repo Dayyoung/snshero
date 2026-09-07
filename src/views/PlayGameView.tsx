@@ -37,7 +37,6 @@ import { MinesweeperGame } from '../components/MinesweeperGame';
 import { PacmanGame } from '../components/PacmanGame';
 import { TictactoeGame } from '../components/TictactoeGame';
 import { TrexRunnerGame } from '../components/TrexRunnerGame';
-import { AdSenseBanner } from '../components/AdSenseBanner';
 import SkillTimingButton from '../components/SkillTimingButton';
 import { getEquipmentSetBonus, calculateBattleSynergy, FACTION_ADVANTAGE_COLORS, FACTION_ADVANTAGE_ICONS, EQUIPMENT_SET_ICONS, generateCounterDeck, calculateElementalComboBonus } from '../lib/battleSynergy';
 import { incrementMissionProgress } from '../lib/dailyMissions';
@@ -213,6 +212,7 @@ interface PlayGameViewProps {
   onShowRewardSelectionChange?: (show: boolean) => void;
   currentSeason?: string;
   initialMode?: string;
+  isAdRemoved?: boolean;
 }
 
 interface QteMatchSummary {
@@ -530,7 +530,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   randomPlayTrigger = 0,
   preselectedGameId = null,
   currentSeason,
-  initialMode
+  initialMode,
+  isAdRemoved = false
 }) => {
   const { language, lowSpecMode, targetFps, batterySaver } = useGameSettings();
   const isIOSDevice = useMemo(() => {
@@ -12723,16 +12724,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             </div>
           </button>
 
-          {/* Google AdSense Lobby Banner */}
-          <div className="w-full select-none">
-            <AdSenseBanner
-              format="horizontal"
-              className="w-full max-w-4xl mx-auto rounded-lg overflow-hidden border border-slate-200/80 bg-white/80 backdrop-blur-xs p-1"
-              style={{ minHeight: '60px' }}
-              showLabel
-            />
-          </div>
-
           {/* Daily Missions Component */}
           <DailyMissionsComponent />
 
@@ -14397,7 +14388,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
       {/* Top Controls Bar: Back/Exit, Menu, Auto Toggle, Rules, Ping */}
       {gameState === 'playing' && (
-        <div className="fixed top-2 left-3 right-3 z-[9999] flex items-center justify-between pointer-events-auto font-mono text-xs select-none">
+        <div className={cn(
+          "fixed left-3 right-3 z-[9999] flex items-center justify-between pointer-events-auto font-mono text-xs select-none",
+          !isAdRemoved ? "top-[60px] sm:top-[98px] min-[1300px]:top-2" : "top-2"
+        )}>
           {/* Left side: Exit/Back, Menu, Mobile Logs */}
           <div className="flex items-center gap-1.5 sm:gap-2">
             <button
@@ -14875,18 +14869,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       {/* Game Overlays */}
       <div className="absolute left-2 md:left-4 top-[55%] md:top-[60%] -translate-y-1/2 flex flex-col gap-2 z-[60]">
       </div>
-
-      {/* Card Battle Top Google AdSense Banner (Visible on all devices during battle) */}
-      {!gameOver && (
-        <div className="w-full max-w-4xl mx-auto px-2 pt-0.5 pb-1 shrink-0 z-20 select-none">
-          <AdSenseBanner
-            format="horizontal"
-            className="w-full bg-[#060a14]/90 border border-slate-800/80 rounded-sm"
-            style={{ minHeight: '50px' }}
-            showLabel
-          />
-        </div>
-      )}
 
       {/* Primary Battle Arena Container: Dedicated Viewport Area for Opponent Hand, Center Board, Player Hand */}
       <div id="primary-battle-arena" className="w-full flex-1 flex flex-col justify-between items-center max-w-5xl mx-auto min-h-0 relative z-10 shrink-0 gap-1 sm:gap-1.5">
@@ -16658,16 +16640,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   <Eye size={14} />
                   {language === 'ko' ? '프로필 조회' : 'Inspect Profile'}
                 </button>
-              </div>
-
-              {/* Post-Battle AdSense Banner */}
-              <div className="w-full select-none py-1">
-                <AdSenseBanner
-                  format="horizontal"
-                  className="w-full bg-slate-900/90 border border-slate-800 rounded-xl overflow-hidden p-1 shadow-sm"
-                  style={{ minHeight: '60px' }}
-                  showLabel
-                />
               </div>
 
               <div className="flex flex-col gap-2.5 pt-2">

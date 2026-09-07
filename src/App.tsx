@@ -5292,6 +5292,7 @@ function AppContent() {
       case 'play':
         return (
           <PlayGameView 
+            isAdRemoved={isAdRemoved}
             initialMode={playInitialMode}
             calculatedTotalPower={calculatedBattlePower}
             playerDeck={isPlaygroundMode ? playgroundDeck : currentDeck} 
@@ -6282,9 +6283,14 @@ function AppContent() {
 
           {/* Simulation Indicator (Removed) */}
 
-          {/* Mobile/Tablet Content Top Google AdSense Banner (1300px 미만 화면 전용, 카드 배틀 플레이 중에는 PlayGameView 내부 전용 배너 사용) */}
-          {!isAdRemoved && view !== 'landing' && !(view === 'play' && playGameState === 'playing') && (
-            <div className="block min-[1300px]:hidden w-full bg-[#fdfcfc]/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 px-2 py-1 shrink-0 select-none z-20">
+          {/* Mobile/Tablet Content Top Google AdSense Banner (1300px 미만 화면 전용: 모든 화면 일관된 상단 배너 제공) */}
+          {!isAdRemoved && view !== 'landing' && (
+            <div className={cn(
+              "block min-[1300px]:hidden w-full px-2 py-1 shrink-0 select-none z-20",
+              view === 'play'
+                ? "bg-[#060a14]/95 border-b border-slate-800"
+                : "bg-[#fdfcfc]/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800"
+            )}>
               <div className="max-w-[728px] mx-auto min-h-[50px] sm:min-h-[90px] flex items-center justify-center">
                 <AdSenseBanner 
                   format="horizontal"
