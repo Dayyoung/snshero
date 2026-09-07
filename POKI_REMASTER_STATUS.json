@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 36,
-  "completed_count": 35,
-  "last_updated": "2026-09-07T23:14:00+09:00",
+  "current_game_index": 37,
+  "completed_count": 36,
+  "last_updated": "2026-09-07T23:20:00+09:00",
   "history": [
     {
       "id": 1,
@@ -390,6 +390,17 @@
       "component": "src/components/poki/PokiDriveMadGame.tsx",
       "completed_at": "2026-09-07T23:14:00+09:00",
       "details": "Three.js 기반 3D 복셀 피직스 트럭 밸런스 드라이빙 구현, 120m 복셀 트랙 & 3단 계단 험로 & 목재 흔들다리 & 점프 램프 & 바위 요철 & 결승 체커기 게이트(시작 18m 안전 광폭 플랫폼 안착), 옐로우 4x4 복셀 몬스터 트럭(캐빈/본넷/4대 오프로드 타이어 회전) & No.35 영웅 배지, 전후륜 서스펜션 접지 & 가속/후진 피치 틸트 물리, 전복 사고 감지 시 크래시 파티클 및 1초 뒤 안전 리스폰, 76px GAS / REV 원터치 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 36,
+      "name": "Temple Run 2",
+      "poki_url": "https://poki.com/kr/g/temple-run-2",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No036_TempleRun2_Prompt.md",
+      "component": "src/components/poki/PokiTempleRun2Game.tsx",
+      "completed_at": "2026-09-07T23:20:00+09:00",
+      "details": "Three.js 기반 3D 3인칭 엔드리스 신전 유적 러너 구현, 3레인 고대 석조 회랑 & 무한 루핑 타일링 & 절벽 낭떠러지(시작 25m 안전 안착 돌다리), 3D 탐험가 러너(점프/슬라이딩 모션 & No.36 영웅 배지), 뒤따라오는 거대 데몬 몽키 추격 AI, 통나무 허들(점프 회피) & 불타는 석조 아치(슬라이딩 회피), 회전 황금 코인 행렬 & 스파크 파티클, 4방향 스와이프 + 하단 좌/우 레인 이동 + 80px 점프 + 64px 슬라이드 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
