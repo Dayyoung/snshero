@@ -4,6 +4,39 @@
 
 ---
 
+## [2026-09-08 01:14 KST] [Poki 110선 리마스터 74/110] No.074 Ping Pong Go! Three.js 3D 실시간 스포츠 탁구 배틀 & 랠리 챌린지 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/ping-pong-go`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No074_PingPongGo_Prompt.md`) 작성.
+  - Three.js 3D 기반 국제 규격 블루 탑 코트 탁구대, 스타디움 우드 플로어, 플레이어 레드 패들 & No.074 공식 카드 영웅 배지 장착 vs AI 블랙 패들.
+  - 3D 탄성 테이블 바운스 및 포물선 탄도학, 찬스 볼 시 초고속 강스파이크(SMASH) 및 사이드 커브 스핀(SPIN) 물리, 5점 선취승 매치.
+  - 모바일 퓨어 터치 조작계(화면 하단 터치 슬라이드 조향 + 76px SMASH 파워 스매시 + 64px SPIN 스핀 + 햅틱) 및 MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 탁구/스포츠 게임 인기작 Ping Pong Go!. 실제 탁구대에 마주선 듯한 시점에서 상대 AI와 실시간 랠리를 펼치고, 강력한 스매시와 스핀 샷으로 5점을 먼저 따내는 3D 스포츠 배틀 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiPingPongGoGame.tsx`)**:
+     - 블루 탑 코트 탁구대(상판, 백색 라인, 센터 라인, 중앙 반투명 메쉬 네트, 금속 다리 4개) 및 스포츠 마루 코트.
+     - 라켓 및 공 모델링:
+       - 플레이어 레드 러버 라켓 + No.074 공식 카드 영웅 배지 장착.
+       - AI 블랙 러버 라켓: 공의 X/Y 궤적을 예측하여 랠리를 유지하는 리턴 AI.
+       - 3D 오렌지 탁구공: 중력, 탄성 상판 바운스(0.88 탄성 계수), 공중 포물선 궤적.
+     - 스킬 및 타구 물리 시스템:
+       - 패들 접촉 오프셋에 따른 반사각 계산.
+       - 찬스 볼(높이 뜬 공) 감지 시 76px [CHANCE! SMASH] 버튼 발동 ➔ 32m/s 초고속 스파이크 + 불꽃 파티클.
+       - 64px [SPIN] 버튼 ➔ 사이드 스핀 커브 타구.
+       - 5점 선취승 토너먼트 매치 룰.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 하단 터치 슬라이드로 라켓을 좌우 1:1 직관적 이동 (Screen-relative 완벽 일치).
+       - 76px [파워 스매시 SMASH] 대형 버튼.
+       - 64px [스핀 슬라이스 SPIN] 버튼.
+       - MinimalistMissionHUD (전광판 스코어보드, 랠리 카운트, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (74/110 완료, current_game_index: 75) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 74/110] No.074 Ping Pong Go! Three.js 3D 실시간 스포츠 탁구 배틀 & 랠리 챌린지 전면 고도화`)
+
 ## [2026-09-08 01:13 KST] [Poki 110선 리마스터 73/110] No.073 Nails DIY: Manicure Master Three.js 3D 네일 아트 & 매니큐어 살롱 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/nails-diy-manicure-master`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No073_NailsDIY_Prompt.md`) 작성.
