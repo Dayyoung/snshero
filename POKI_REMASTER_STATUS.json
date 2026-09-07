@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 15,
-  "completed_count": 14,
-  "last_updated": "2026-09-07T20:31:00+09:00",
+  "current_game_index": 16,
+  "completed_count": 15,
+  "last_updated": "2026-09-07T20:34:00+09:00",
   "history": [
     {
       "id": 1,
@@ -159,6 +159,17 @@
       "component": "src/components/poki/PokiMonkeyTagGame.tsx",
       "completed_at": "2026-09-07T20:31:00+09:00",
       "details": "Three.js 기반 3D 정글 아레나 원숭이 술래잡기 구현, 32x28m 정글 잔디 아레나 & 울타리, 중앙 거대 2층 우드 타워 데크, 4개 부유 플랫폼 & 4개 수퍼 점프 패드, 15개 황금 바나나 파밍(+40점 및 1.6배 가속), 3D 원숭이 아바타 & No.14 영웅 배지, 3마리 스마트 AI 원숭이 봇(추격/도망 AI), 감염형 용암 술래 전환 시스템, 다이나믹 플로팅 조이스틱 + 80px 점프 버튼 + 태그 버튼, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 15,
+      "name": "Stickman Battle",
+      "poki_url": "https://poki.com/kr/g/stickman-battle",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No015_StickmanBattle_Prompt.md",
+      "component": "src/components/poki/PokiStickmanBattleGame.tsx",
+      "completed_at": "2026-09-07T20:34:00+09:00",
+      "details": "Three.js 기반 3D 랙돌 격투 배틀 아레나 구현, 반경 14m 팔각형 서스펜션 플랫폼 & 네온 에너지 림 & 4대 에너지 펜스 기둥, 3D 스틱맨 메쉬 & No.15 영웅 배지, 3종 무기 시스템(에너지 블레이드 콤보 / 배틀 액스 슈퍼 넉백 / 플라즈마 블래스터 사격), 아레나 밖 번지(Ring-out) 즉사 넉백 물리, 5단계 적 AI(단검 닌자, 쌍검, 도끼 버서커, 건너, 섀도우 챔피언 보스), 다이나믹 플로팅 조이스틱 + 80px 공격 + 68px 무적 대시 + 68px 무기 교체 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
