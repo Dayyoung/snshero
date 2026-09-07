@@ -4,6 +4,31 @@
 
 ---
 
+## [2026-09-07 11:35 KST] [모바일 상단 배너 슬림 높이 제한(h-[54px] max-h-[58px]) 및 오버플로우 방어 적용]
+- **요청 사항**:
+  - 모바일에서 상단 광고 배너가 너무 비대하게(250px 이상) 세로로 길게 표시되어 하단 게임 콘텐츠를 가리고 밀어내는 문제 해결.
+  - 이전 표준 띠배너 규격처럼 높이에 엄격한 상한 제한을 적용하여 콘텐츠 시인성 완벽 확보 요청.
+- **원인 분석**:
+  1. 구글 애드센스 반응형 엔진이 모바일 화면(< 640px)에서 `data-full-width-responsive="true"`와 `min-h-[50px]`(상한선 없음) 조건일 때 직사각형(300x250 등) 형태의 대형 광고를 임의 삽입하여 높이가 250px~280px로 팽창함.
+  2. 상단 배너 래퍼 컨테이너에 `max-height`와 `overflow: hidden`이 없어 광고 팽창 시 하단 배틀 필드 및 메뉴가 화면 밖으로 밀려남.
+- **조치 사항**:
+  - `src/components/AdSenseBanner.tsx`:
+    - 가로 배너(`format="horizontal"`) 렌더링 시 기본 인라인 스타일에 `maxHeight: '90px'`, `overflow: 'hidden'`을 필수로 병합 주입하여 애드센스 iframe이 임의로 팽창하는 것을 엔진 레벨에서 원천 차단.
+  - `src/App.tsx`:
+    - 모바일/태블릿 상단 배너 래퍼를 `h-[54px] max-h-[58px] sm:h-[94px] sm:max-h-[98px] overflow-hidden`으로 고정 제한.
+    - `AdSenseBanner`에 `responsive={false}`를 적용하여 높이가 비정상 팽창하는 풀너비 모바일 사각형 광고 삽입을 방지하고, 슬림한 320x50(모바일) / 728x90(태블릿) 띠배너 규격으로 제한 (`style={{ maxHeight: '52px', height: '50px' }}`).
+  - `src/views/KadanRpgView.tsx`:
+    - 배틀 모달 상단 배너 역시 동일하게 `h-[54px] max-h-[58px] sm:h-[94px] sm:max-h-[98px] overflow-hidden` 및 `responsive={false}`, `maxHeight: '52px'` 적용.
+    - 이를 통해 모바일에서 배너 높이가 최대 58px를 절대 초과할 수 없어, 하단 배틀 컨트롤 바(`top-[60px]`) 및 게임 화면이 시원하고 깨끗하게 노출됨.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과.
+  - `npm run build`: 프로덕션 빌드 성공 (built in 13.55s).
+- **Git 배포 및 보고**:
+  - 커밋 및 GitHub 원격 리포지토리(`origin/main`) 푸시.
+  - 구글 폼 보고서 제출.
+
+---
+
 ## [2026-09-07 11:25 KST] [카드게임 플레이화면 최대너비(max-w-[1024px]) 제한 통일 및 Kadan RPG 배틀 모달 광고 연동 완료]
 - **요청 사항**:
   - 카드게임 플레이화면(특히 Kadan RPG 배틀 화면)에 최대너비 제한이 없어 풀스크린으로 표시되어 좌우 광고가 표시되지 않거나 가려지는 현상 해결.

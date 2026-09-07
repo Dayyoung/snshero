@@ -6267,19 +6267,20 @@ function AppContent() {
 
           {/* Simulation Indicator (Removed) */}
 
-          {/* Mobile/Tablet Content Top Google AdSense Banner (1024px 미만 모바일/태블릿 화면 전용: 모든 화면 일관된 상단 배너 제공) */}
+          {/* Mobile/Tablet Content Top Google AdSense Banner (1024px 미만 모바일/태블릿 화면 전용: 슬림 배너 높이 제한) */}
           {!isAdRemoved && view !== 'landing' && (
             <div className={cn(
-              "block lg:hidden w-full px-2 py-1 shrink-0 select-none z-20",
+              "block lg:hidden w-full px-2 py-0.5 shrink-0 select-none z-20 overflow-hidden",
               view === 'play'
                 ? "bg-[#060a14]/95 border-b border-slate-800"
                 : "bg-[#fdfcfc]/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800"
             )}>
-              <div className="max-w-[728px] mx-auto min-h-[50px] sm:min-h-[90px] flex items-center justify-center">
+              <div className="max-w-[728px] mx-auto h-[54px] max-h-[58px] sm:h-[94px] sm:max-h-[98px] flex items-center justify-center overflow-hidden">
                 <AdSenseBanner 
                   format="horizontal"
-                  className="w-full"
-                  style={{ minHeight: '50px' }}
+                  responsive={false}
+                  className="w-full h-full overflow-hidden"
+                  style={{ maxHeight: '52px', height: '50px' }}
                   showLabel
                 />
               </div>

@@ -52,6 +52,12 @@ export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
     return () => clearTimeout(timer);
   }, []);
 
+  const mergedStyle: React.CSSProperties = {
+    display: 'block',
+    ...(format === 'horizontal' ? { maxHeight: '90px', overflow: 'hidden' } : {}),
+    ...style,
+  };
+
   return (
     <div className={`adsense-container overflow-hidden text-center select-none ${className}`}>
       {showLabel && (
@@ -63,7 +69,7 @@ export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
       <ins
         ref={insRef}
         className="adsbygoogle"
-        style={{ display: 'block', ...style }}
+        style={mergedStyle}
         data-ad-client="ca-pub-6937094123258335"
         {...(slot ? { 'data-ad-slot': slot } : {})}
         data-ad-format={format}
