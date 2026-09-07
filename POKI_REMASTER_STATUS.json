@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 21,
-  "completed_count": 20,
-  "last_updated": "2026-09-07T21:20:00+09:00",
+  "current_game_index": 22,
+  "completed_count": 21,
+  "last_updated": "2026-09-07T21:30:00+09:00",
   "history": [
     {
       "id": 1,
@@ -225,6 +225,17 @@
       "component": "src/components/poki/PokiStickmanHookGame.tsx",
       "completed_at": "2026-09-07T21:20:00+09:00",
       "details": "Three.js 기반 3D 와이어 그래플링 스윙 레이싱 구현, 100m 코스 & 18m 광폭 안전 플랫폼(시작 급사 원천 차단), 3D 스틱맨 아바타 & No.20 영웅 배지, 10개 공중 네온 앵커 피벗 기반 원심력 각가속도 와이어 스윙 물리, 화면 릴리즈 시 전방 탄도 궤적 도약 & 공중 360도 플립 롤링, 4개 고탄성 트램펄린 슈퍼 바운스, 15개 황금 스타 코인(+50점), 105m 결승 포털 도달 승리, 화면 터치 홀드/릴리즈 및 80px 대형 훅 버튼 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 21,
+      "name": "Steal a Brainrot",
+      "poki_url": "https://poki.com/kr/g/steal-a-brainrot",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No021_StealABrainrot_Prompt.md",
+      "component": "src/components/poki/PokiStealBrainrotGame.tsx",
+      "completed_at": "2026-09-07T21:30:00+09:00",
+      "details": "Three.js 기반 3D 잠입 침투 탈취 & 고속 탈출 어드벤처 구현, 32x26m 보안 기지 볼트 & 서쪽 안전 헬리패드(시작 급사 원천 차단), 중앙 볼트 챔버 & 황금 Brainrot Core(+600점), 3대 보안 가드 드론(부채꼴 시야각 탐지 콘 & 순찰 경로), 코어 탈취 즉시 전 구역 붉은 비상 알람 발령 & 가드 드론 맹추격 모드 전환, 화면 기준 360도 이동 100% 일치 및 80px 스프린트 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
