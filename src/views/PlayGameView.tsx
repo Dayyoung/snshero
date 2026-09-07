@@ -233,6 +233,16 @@ import PokiSchoolCleaningGame from '../components/poki/PokiSchoolCleaningGame';
 import PokiHillClimbRacingLiteGame from '../components/poki/PokiHillClimbRacingLiteGame';
 import PokiStickmanCrazyBoxGame from '../components/poki/PokiStickmanCrazyBoxGame';
 import PokiGoodsMasterGame from '../components/poki/PokiGoodsMasterGame';
+import PokiHexellentGame from '../components/poki/PokiHexellentGame';
+import PokiHarvestSimulatorGame from '../components/poki/PokiHarvestSimulatorGame';
+import PokiCarCircleGame from '../components/poki/PokiCarCircleGame';
+import PokiPhoneCaseDIYGame from '../components/poki/PokiPhoneCaseDIYGame';
+import PokiSoccerLeagueGame from '../components/poki/PokiSoccerLeagueGame';
+import PokiCapitalistBusDriverGame from '../components/poki/PokiCapitalistBusDriverGame';
+import PokiEvoWorldIoGame from '../components/poki/PokiEvoWorldIoGame';
+import PokiBulletBrosGame from '../components/poki/PokiBulletBrosGame';
+import PokiPerfectLandingGame from '../components/poki/PokiPerfectLandingGame';
+import PokiUndeadSlayerGame from '../components/poki/PokiUndeadSlayerGame';
 import { checkFlips, checkFlipsWithDetails, findBestMove, Board, CardInstance } from '../lib/gameEngine';
 import { GambitConfig, TacticalStance } from '../types';
 import { getSecretStamps, unlockSecretStamp } from '../lib/secretStampHelper';
@@ -484,7 +494,8 @@ const BossCardItem: React.FC<BossCardItemProps> = ({ boss, lowSpecMode, language
   );
 };
 
-type GameState = 'modeSelect' | 'lobby' | 'searching' | 'playing' | 'gameOver' | 'preMatch' | 'tournament' | 'story' | 'boss' | 'dungeon' | 'defense' | 'running' | 'shooting' | 'snake' | 'gomoku' | 'memorymatch' | 'slide2048' | 'cardjumper' | 'cardtap' | 'cardflip' | 'cardslide' | 'cardsorcery' | 'cardslot' | 'cardheist' | 'cardrush' | 'breakout' | 'minesweeper' | 'pacman' | 'tictactoe' | 'trexrunner' | 'voxeldefense' | 'pixelstrike' | 'voxelparkour' | 'voxelbattlegrounds' | 'voxeldungeon' | 'voxelspace' | 'voxelzombie' | 'voxelsiege' | 'voxeltitan' | 'voxelsuperstrikers' | 'voxelgladiatorcolosseum' | 'voxeldragonslayer' | 'voxelarcherhero' | 'voxelvampiresurvival' | 'voxeltankbounce' | 'voxelninjaslash' | 'voxelgolfmaster' | 'voxellumberjacktycoon' | 'voxelfishingmaster' | 'voxelfirerescue' | 'voxelwindhunter' | 'voxelsubwayrunner' | 'voxelcranemaster' | 'voxelmonstertruck' | 'voxeltowerstack' | 'voxelslamdunk' | 'voxelcoastertycoon' | 'voxelsniperhunter' | 'voxeljetskiwater' | 'voxelbaseballderby' | 'voxelboxingmighty' | 'voxelmicrokart' | 'voxeltreasuredigger' | 'voxelflightlanding' | 'voxelgachaclaw' | 'voxelbilliardstrick' | 'voxeldartsbar' | 'voxelwingsuitskydiving' | 'voxelbadmintonblitz' | 'voxelmagnethole' | 'voxelmotocrossstunt' | 'voxelskateboardstreet' | 'voxelsnowboardslalom' | 'voxelkaratebreak' | 'voxelpinballclimber' | 'voxelcrazytaxi' | 'voxellaserstealth' | 'voxeldojobalance' | 'voxelbubblepop' | 'voxelwaterslide' | 'voxelkrakenhunter' | 'voxelhalfpipeskater' | 'voxelnetherportal' | 'voxelmegaflareassault' | 'voxelspikerolling' | 'voxelterraquake' | 'voxeldreamweaver' | 'voxellifeflame' | 'voxelarcanenexus' | 'voxeldreadshadow' | 'pokislimekeyboard' | 'pokihideandpaint' | 'pokiminefun' | 'pokipaperio' | 'pokileveldevil' | 'pokisnakevsworms' | 'pokivectaria' | 'pokicryzen' | 'pokiblockyblast' | 'pokiragdollchaos' | 'pokirainbowobby' | 'pokimyhotel' | 'pokitalkingtomgoldrun' | 'pokimonkeytag' | 'pokistickmanbattle' | 'pokidecorlife' | 'pokineonchallenge' | 'pokiplonky' | 'pokibackroomsrecovery' | 'pokistickmanhook' | 'pokistealbrainrot' | 'pokilongcat' | 'pokigunsgunsguns' | 'pokiragdollhit' | 'pokisoccerreal' | 'pokisubwaysurfers' | 'pokimasterchess' | 'pokiperfectshape' | 'pokimurder' | 'pokidisasterarena' | 'pokislicemaster' | 'pokibraintest' | 'pokistuntbike' | 'pokisushiparty' | 'pokidrivemad' | 'pokitemplerun2' | 'pokiescapeschool' | 'pokicountwar' | 'pokipartytime' | 'pokipunchyguy' | 'pokiblacktoppolice' | 'pokifamilylife' | 'pokipetnest' | 'pokicuboyadventure' | 'pokibubblestorm' | 'pokikickthebuddy' | 'pokicountcontrol' | 'pokirepuls' | 'pokishenzhenmahjong' | 'pokibeautysalon' | 'pokisuperdress' | 'pokikaratefighter' | 'pokiplanetdestruction' | 'pokiyoumonster' | 'pokisatisbox' | 'pokisoccerskills2' | 'pokidinosimulator' | 'pokitearblocksdown' | 'pokiredball4' | 'pokitankstars' | 'pokimagicbattleground' | 'pokiblastbuddies' | 'pokiswordmasters' | 'pokisprintleague' | 'pokirealcitybikes' | 'pokihillsofsteel' | 'pokirailinair' | 'pokimonkeymart' | 'pokicarnadostunt' | 'pokidivahairsalon' | 'pokiscaryteacherhideseek' | 'pokisupercarlegends' | 'pokinailsdiy' | 'pokipingponggo' | 'pokicolorartist' | 'pokigoinguprooftop' | 'pokistickmandragonfight' | 'pokidogslife' | 'pokianycolor' | 'pokiscaryteacher3d' | 'pokipenaltyshooters2' | 'pokiboomyworld' | 'pokisnapstyledressup' | 'pokifashionlegends' | 'pokivortellasdressup' | 'pokimrracer' | 'pokischoolcleaning' | 'pokihillclimbracinglite' | 'pokistickmancrazybox' | 'pokigoodsmaster';
+type GameState = 'modeSelect' | 'lobby' | 'searching' | 'playing' | 'gameOver' | 'preMatch' | 'tournament' | 'story' | 'boss' | 'dungeon' | 'defense' | 'running' | 'shooting' | 'snake' | 'gomoku' | 'memorymatch' | 'slide2048' | 'cardjumper' | 'cardtap' | 'cardflip' | 'cardslide' | 'cardsorcery' | 'cardslot' | 'cardheist' | 'cardrush' | 'breakout' | 'minesweeper' | 'pacman' | 'tictactoe' | 'trexrunner' | 'voxeldefense' | 'pixelstrike' | 'voxelparkour' | 'voxelbattlegrounds' | 'voxeldungeon' | 'voxelspace' | 'voxelzombie' | 'voxelsiege' | 'voxeltitan' | 'voxelsuperstrikers' | 'voxelgladiatorcolosseum' | 'voxeldragonslayer' | 'voxelarcherhero' | 'voxelvampiresurvival' | 'voxeltankbounce' | 'voxelninjaslash' | 'voxelgolfmaster' | 'voxellumberjacktycoon' | 'voxelfishingmaster' | 'voxelfirerescue' | 'voxelwindhunter' | 'voxelsubwayrunner' | 'voxelcranemaster' | 'voxelmonstertruck' | 'voxeltowerstack' | 'voxelslamdunk' | 'voxelcoastertycoon' | 'voxelsniperhunter' | 'voxeljetskiwater' | 'voxelbaseballderby' | 'voxelboxingmighty' | 'voxelmicrokart' | 'voxeltreasuredigger' | 'voxelflightlanding' | 'voxelgachaclaw' | 'voxelbilliardstrick' | 'voxeldartsbar' | 'voxelwingsuitskydiving' | 'voxelbadmintonblitz' | 'voxelmagnethole' | 'voxelmotocrossstunt' | 'voxelskateboardstreet' | 'voxelsnowboardslalom' | 'voxelkaratebreak' | 'voxelpinballclimber' | 'voxelcrazytaxi' | 'voxellaserstealth' | 'voxeldojobalance' | 'voxelbubblepop' | 'voxelwaterslide' | 'voxelkrakenhunter' | 'voxelhalfpipeskater' | 'voxelnetherportal' | 'voxelmegaflareassault' | 'voxelspikerolling' | 'voxelterraquake' | 'voxeldreamweaver' | 'voxellifeflame' | 'voxelarcanenexus' | 'voxeldreadshadow' | 'pokislimekeyboard' | 'pokihideandpaint' | 'pokiminefun' | 'pokipaperio' | 'pokileveldevil' | 'pokisnakevsworms' | 'pokivectaria' | 'pokicryzen' | 'pokiblockyblast' | 'pokiragdollchaos' | 'pokirainbowobby' | 'pokimyhotel' | 'pokitalkingtomgoldrun' | 'pokimonkeytag' | 'pokistickmanbattle' | 'pokidecorlife' | 'pokineonchallenge' | 'pokiplonky' | 'pokibackroomsrecovery' | 'pokistickmanhook' | 'pokistealbrainrot' | 'pokilongcat' | 'pokigunsgunsguns' | 'pokiragdollhit' | 'pokisoccerreal' | 'pokisubwaysurfers' | 'pokimasterchess' | 'pokiperfectshape' | 'pokimurder' | 'pokidisasterarena' | 'pokislicemaster' | 'pokibraintest' | 'pokistuntbike' | 'pokisushiparty' | 'pokidrivemad' | 'pokitemplerun2' | 'pokiescapeschool' | 'pokicountwar' | 'pokipartytime' | 'pokipunchyguy' | 'pokiblacktoppolice' | 'pokifamilylife' | 'pokipetnest' | 'pokicuboyadventure' | 'pokibubblestorm' | 'pokikickthebuddy' | 'pokicountcontrol' | 'pokirepuls' | 'pokishenzhenmahjong' | 'pokibeautysalon' | 'pokisuperdress' | 'pokikaratefighter' | 'pokiplanetdestruction' | 'pokiyoumonster' | 'pokisatisbox' | 'pokisoccerskills2' | 'pokidinosimulator' | 'pokitearblocksdown' | 'pokiredball4' | 'pokitankstars' | 'pokimagicbattleground' | 'pokiblastbuddies' | 'pokiswordmasters' | 'pokisprintleague' | 'pokirealcitybikes' | 'pokihillsofsteel' | 'pokirailinair' | 'pokimonkeymart' | 'pokicarnadostunt' | 'pokidivahairsalon' | 'pokiscaryteacherhideseek' | 'pokisupercarlegends' | 'pokinailsdiy' | 'pokipingponggo' | 'pokicolorartist' | 'pokigoinguprooftop' | 'pokistickmandragonfight' | 'pokidogslife' | 'pokianycolor' | 'pokiscaryteacher3d' | 'pokipenaltyshooters2' | 'pokiboomyworld' | 'pokisnapstyledressup' | 'pokifashionlegends' | 'pokivortellasdressup' | 'pokimrracer' | 'pokischoolcleaning' | 'pokihillclimbracinglite' | 'pokistickmancrazybox' | 'pokigoodsmaster' | 'pokihexellent' | 'pokiharvestsimulator' | 'pokicarcircle' | 'pokiphonecasediy' | 'pokisoccerleague' | 'pokicapitalistbusdriver' | 'pokievoworldio' | 'pokibulletbros' | 'pokiperfectlanding' | 'pokiundeadslayer';
+
 
 interface TournamentParticipant {
   id: string;
@@ -8540,154 +8551,154 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       guide: language === 'ko' ? '선반의 상품들을 탭하여 카트에서 3개씩 매칭하고 3개 선반을 완전히 비워 정돈하세요.' : 'Tap goods on messy shelves, match 3 identical items in your cart, and clear all 3 shelves!'
     },
     {
-      id: 'voxelmotocrossstunt',
-      title: language === 'ko' ? '블리츠 모토크로스' : 'Blitz Motocross',
-      icon: Flame,
-      color: 'from-amber-500 to-orange-700',
-      image: '/minigame_monstertruck.png',
+      id: 'pokihexellent',
+      title: language === 'ko' ? '헥셀런트' : 'Hexellent',
+      icon: Gem,
+      color: 'from-purple-600 to-indigo-800',
+      image: '/minigame_cardslot.png',
       characterId: 91,
       action: () => {
-        setGameState('voxelmotocrossstunt');
+        setGameState('pokihexellent');
       },
-      category: 'sports',
+      category: 'puzzle',
       isNew: true,
-      badgeText: 'MOTOCROSS',
-      guide: language === 'ko' ? '화면 홀드로 가속하고 공중에서 360° 백플립 스턴트를 성공시키세요.' : 'Hold to accelerate on ground and hold in air for 360° backflips!'
+      badgeText: 'HEXELLENT',
+      guide: language === 'ko' ? '인접한 동일 색상 육각 블록을 터치해 연쇄 폭발을 일으키고 1,000점을 달성하세요.' : 'Tap matching adjacent hex tiles to trigger cascading combos and reach 1,000 points!'
     },
     {
-      id: 'voxelskateboardstreet',
-      title: language === 'ko' ? '블리츠 스케이트 스트리트' : 'Blitz Skate Street',
+      id: 'pokiharvestsimulator',
+      title: language === 'ko' ? '하베스트 시뮬레이터' : 'Harvest Simulator',
       icon: Sparkles,
-      color: 'from-sky-500 to-blue-700',
-      image: '/minigame_subway.png',
+      color: 'from-amber-600 to-yellow-700',
+      image: '/minigame_monstertruck.png',
       characterId: 92,
       action: () => {
-        setGameState('voxelskateboardstreet');
+        setGameState('pokiharvestsimulator');
       },
-      category: 'sports',
+      category: 'casual',
       isNew: true,
-      badgeText: 'SKATE-STREET',
-      guide: language === 'ko' ? '위로 스와이프해 점프하고, 공중에서 좌우 스와이프로 360 킥플립을 구사하세요.' : 'Swipe up to Ollie jump, swipe left/right in air for 360 kickflip!'
+      badgeText: 'HARVEST-SIM',
+      guide: language === 'ko' ? '콤바인을 운전해 해바라기와 밀을 수확하고 저장고에 하역해 $500를 달성하세요.' : 'Drive combine harvester to reap sunflowers and wheat, unload at silo to earn $500!'
     },
     {
-      id: 'voxelsnowboardslalom',
-      title: language === 'ko' ? '블리츠 알파인 슬라롬' : 'Blitz Alpine Slalom',
-      icon: Mountain,
-      color: 'from-cyan-500 to-blue-600',
-      image: '/minigame_jetski.png',
+      id: 'pokicarcircle',
+      title: language === 'ko' ? '카 서클' : 'Car Circle',
+      icon: Flame,
+      color: 'from-blue-600 to-cyan-700',
+      image: '/minigame_subway.png',
       characterId: 93,
       action: () => {
-        setGameState('voxelsnowboardslalom');
-      },
-      category: 'sports',
-      isNew: true,
-      badgeText: 'ALPINE-SLALOM',
-      guide: language === 'ko' ? '손가락으로 라이더를 좌우 드래그해 레드(🚩)/블루(🔷) 깃발을 통과하세요.' : 'Drag rider left & right to clear red/blue slalom gates!'
-    },
-    {
-      id: 'voxelkaratebreak',
-      title: language === 'ko' ? '블리츠 가라테 찹' : 'Blitz Karate Chop',
-      icon: Trophy,
-      color: 'from-rose-600 to-amber-600',
-      image: '/minigame_boss.png',
-      characterId: 94,
-      action: () => {
-        setGameState('voxelkaratebreak');
+        setGameState('pokicarcircle');
       },
       category: 'arcade',
       isNew: true,
-      badgeText: 'KARATE-CHOP',
-      guide: language === 'ko' ? '위에서 아래로 빠르게 스와이프하여 수도로 10단 송판과 흑요석 블록을 격파하세요.' : 'Swipe down rapidly to execute a powerful karate chop and shatter blocks!'
+      badgeText: 'CAR-CIRCLE',
+      guide: language === 'ko' ? '타이밍에 맞춰 탭하여 충돌 없이 바쁜 원형 로터리에 차량 12대를 안전하게 합류시키세요.' : 'Tap with perfect timing to merge 12 cars into the busy roundabout without crashing!'
     },
     {
-      id: 'voxelpinballclimber',
-      title: language === 'ko' ? '블리츠 핀볼 클라이머' : 'Blitz Pinball Climber',
+      id: 'pokiphonecasediy',
+      title: language === 'ko' ? '폰 케이스 DIY' : 'Phone CASE DIY',
+      icon: Sparkles,
+      color: 'from-rose-500 to-pink-600',
+      image: '/minigame_cardslot.png',
+      characterId: 94,
+      action: () => {
+        setGameState('pokiphonecasediy');
+      },
+      category: 'casual',
+      isNew: true,
+      badgeText: 'CASE-DIY',
+      guide: language === 'ko' ? '스프레이 도색, 열풍 건조, 귀여운 스티커 4종 데코레이션으로 나만의 케이스를 완성하세요.' : 'Spray vibrant colors, heat dry, and customize with 4 cute stickers to craft your dream phone case!'
+    },
+    {
+      id: 'pokisoccerleague',
+      title: language === 'ko' ? '사커 리그' : 'Soccer League',
       icon: Trophy,
-      color: 'from-amber-500 to-rose-500',
+      color: 'from-emerald-600 to-teal-800',
       image: '/minigame_boss.png',
       characterId: 95,
       action: () => {
-        setGameState('voxelpinballclimber');
+        setGameState('pokisoccerleague');
       },
-      category: 'arcade',
+      category: 'sports',
       isNew: true,
-      badgeText: 'PINBALL-CLIMB',
-      guide: language === 'ko' ? '손가락으로 패들을 좌우 드래그해 핀볼을 튕겨 타워를 오르세요.' : 'Drag paddle left & right to bounce pinball and climb the tower!'
+      badgeText: 'SOCCER-LEAGUE',
+      guide: language === 'ko' ? '드래그로 패스와 슛을 조율하여 3대3 실시간 풋살에서 먼저 3골을 득점해 승리하세요.' : 'Coordinate passes and slingshot shots to score 3 winning goals in 3v3 real-time soccer!'
     },
     {
-      id: 'voxelcrazytaxi',
-      title: language === 'ko' ? '블리츠 하이웨이 레이서' : 'Blitz Highway Racer',
+      id: 'pokicapitalistbusdriver',
+      title: language === 'ko' ? '캐피털리스트 버스 드라이버' : 'Capitalist Bus Driver',
       icon: Trophy,
-      color: 'from-cyan-500 to-blue-700',
-      image: '/minigame_boss.png',
+      color: 'from-amber-500 to-orange-700',
+      image: '/minigame_subway.png',
       characterId: 96,
       action: () => {
-        setGameState('voxelcrazytaxi');
+        setGameState('pokicapitalistbusdriver');
       },
       category: 'casual',
       isNew: true,
-      badgeText: 'HIGHWAY-RACE',
-      guide: language === 'ko' ? '화면을 손가락으로 좌우 드래그하여 차선을 변경하고 장애물 차량을 아슬아슬하게 추월하세요.' : 'Drag finger across screen to steer lanes and near-miss traffic at high speed!'
+      badgeText: 'BUS-CAPITALIST',
+      guide: language === 'ko' ? '차선을 이동하고 정류장에서 승객을 태워 목적지까지 안전하게 총 20명을 수송하세요.' : 'Steer lanes, pick up waiting passengers at bus stops, and deliver 20 commuters safely!'
     },
     {
-      id: 'voxellaserstealth',
-      title: language === 'ko' ? '블리츠 레이저 잠입' : 'Blitz Laser Infiltration',
-      icon: Trophy,
-      color: 'from-rose-500 to-slate-800',
+      id: 'pokievoworldio',
+      title: language === 'ko' ? '에보월드 io' : 'EvoWorld io',
+      icon: Sparkles,
+      color: 'from-sky-500 to-indigo-700',
       image: '/minigame_boss.png',
       characterId: 97,
       action: () => {
-        setGameState('voxellaserstealth');
+        setGameState('pokievoworldio');
       },
-      category: 'puzzle',
+      category: 'action',
       isNew: true,
-      badgeText: 'LASER-INFIL',
-      guide: language === 'ko' ? '손가락으로 요원을 드래그해 레이저를 피해 다이아몬드를 털고 탈출구로 가세요.' : 'Drag agent with finger to dodge lasers, hack diamonds and reach the exit vault!'
+      badgeText: 'EVOWORLD-IO',
+      guide: language === 'ko' ? '터치로 비행하며 이슬과 음식을 먹고 포식자를 피해 최종 피닉스 드래곤으로 진화하세요.' : 'Fly with pure touch, feast on dew and berries, and evolve into the supreme Phoenix!'
     },
     {
-      id: 'voxeldojobalance',
-      title: language === 'ko' ? '블리츠 스모 태클' : 'Blitz Sumo Tackle',
-      icon: Trophy,
-      color: 'from-zinc-700 to-amber-600',
+      id: 'pokibulletbros',
+      title: language === 'ko' ? '불릿 브로스' : 'Bullet Bros',
+      icon: Flame,
+      color: 'from-red-600 to-slate-900',
       image: '/minigame_boss.png',
       characterId: 98,
       action: () => {
-        setGameState('voxeldojobalance');
+        setGameState('pokibulletbros');
       },
-      category: 'casual',
+      category: 'action',
       isNew: true,
-      badgeText: 'SUMO-TACKLE',
-      guide: language === 'ko' ? '화면을 광속으로 연타하여 상대를 도효(링) 밖으로 밀어내고 3인의 라이벌을 제패하세요.' : 'Tap rapidly anywhere to build push momentum and shove rival fighters out of the dohyo ring!'
+      badgeText: 'BULLET-BROS',
+      guide: language === 'ko' ? '도탄 물리 궤적을 조준 발사하여 장애물 뒤에 숨은 적들을 격파하고 3개 스테이지를 완파하세요.' : 'Aim ricochet bullet trajectories to defeat sheltered foes and conquer all 3 stages!'
     },
     {
-      id: 'voxelbubblepop',
-      title: language === 'ko' ? '블리츠 버블 버스트' : 'Blitz Bubble Burst',
+      id: 'pokiperfectlanding',
+      title: language === 'ko' ? '퍼펙트 랜딩' : 'Perfect Landing, Plane Pilot',
       icon: Trophy,
-      color: 'from-purple-500 to-pink-500',
-      image: '/minigame_boss.png',
+      color: 'from-cyan-500 to-sky-700',
+      image: '/minigame_jetski.png',
       characterId: 99,
       action: () => {
-        setGameState('voxelbubblepop');
+        setGameState('pokiperfectlanding');
       },
-      category: 'puzzle',
+      category: 'sports',
       isNew: true,
-      badgeText: 'BUBBLE-BURST',
-      guide: language === 'ko' ? '화면 위 7x7 그리드에서 같은 색상 버블 뭉치를 직접 탭해 연쇄 폭발을 일으키세요.' : 'Tap matching color bubble clusters on the 7x7 grid to trigger cascading explosive bursts!'
+      badgeText: 'PERFECT-LANDING',
+      guide: language === 'ko' ? '상하 터치로 비행기 피치를 제어해 터빈을 피하고 활주로에 3회 완벽 착륙을 성공시키세요.' : 'Control aircraft pitch to dodge turbines and execute 3 smooth runway landings!'
     },
     {
-      id: 'voxelwaterslide',
-      title: language === 'ko' ? '블리츠 워터 슬라이드' : 'Blitz Water Slide',
+      id: 'pokiundeadslayer',
+      title: language === 'ko' ? '언데드 슬레이어' : 'Undead Slayer',
       icon: Trophy,
-      color: 'from-cyan-400 to-blue-600',
+      color: 'from-rose-700 to-zinc-900',
       image: '/minigame_boss.png',
       characterId: 100,
       action: () => {
-        setGameState('voxelwaterslide');
+        setGameState('pokiundeadslayer');
       },
-      category: 'casual',
+      category: 'action',
       isNew: true,
-      badgeText: 'WATER-SLIDE',
-      guide: language === 'ko' ? '손가락으로 튜브를 좌우 드래그해 부스터를 타고 아이템을 수집하세요.' : 'Drag tube left & right to catch boosters and items!'
+      badgeText: 'UNDEAD-SLAYER',
+      guide: language === 'ko' ? '몰려오는 언데드 군단을 연속 검격과 회전 참격으로 베어넘기고 25마리를 토벌하세요.' : 'Slay oncoming hordes of skeletons and zombies with slashing combos and whirlwind blade!'
     },
     {
       id: 'voxelkrakenhunter',
@@ -11982,135 +11993,86 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     );
   }
 
-  if (gameState === 'voxelmotocrossstunt') {
+  if (gameState === 'pokihexellent') {
     return (
-      <VoxelMotocrossStuntGame
-        deck={playerDeck}
-        language={language}
-        lowSpecMode={lowSpecMode}
-        playSfx={playSfx}
-        onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '블리츠 모토크로스 보상', 'Blitz Motocross reward')}
+      <PokiHexellentGame
+        onBack={() => setGameState('modeSelect')}
       />
     );
   }
 
-  if (gameState === 'voxelskateboardstreet') {
+  if (gameState === 'pokiharvestsimulator') {
     return (
-      <VoxelSkateboardStreetGame
-        deck={playerDeck}
-        language={language}
-        lowSpecMode={lowSpecMode}
-        playSfx={playSfx}
-        onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '블리츠 스케이트 스트리트 보상', 'Blitz Skate Street reward')}
+      <PokiHarvestSimulatorGame
+        onBack={() => setGameState('modeSelect')}
       />
     );
   }
 
-  if (gameState === 'voxelsnowboardslalom') {
+  if (gameState === 'pokicarcircle') {
     return (
-      <VoxelSnowboardSlalomGame
-        deck={playerDeck}
-        language={language}
-        lowSpecMode={lowSpecMode}
-        playSfx={playSfx}
-        onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '블리츠 알파인 슬라롬 보상', 'Blitz Alpine Slalom reward')}
+      <PokiCarCircleGame
+        onBack={() => setGameState('modeSelect')}
       />
     );
   }
 
-  if (gameState === 'voxelkaratebreak') {
+  if (gameState === 'pokiphonecasediy') {
     return (
-      <VoxelKarateBreakGame
-        deck={playerDeck}
-        language={language}
-        lowSpecMode={lowSpecMode}
-        playSfx={playSfx}
-        onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '블리츠 가라테 찹 보상', 'Blitz Karate Chop reward')}
+      <PokiPhoneCaseDIYGame
+        onBack={() => setGameState('modeSelect')}
       />
     );
   }
 
-  if (gameState === 'voxelpinballclimber') {
+  if (gameState === 'pokisoccerleague') {
     return (
-      <VoxelPinballClimberGame
-        deck={playerDeck}
-        language={language}
-        lowSpecMode={lowSpecMode}
-        playSfx={playSfx}
-        onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '블리츠 핀볼 클라이머 보상', 'Blitz Pinball Climber reward')}
+      <PokiSoccerLeagueGame
+        onBack={() => setGameState('modeSelect')}
       />
     );
   }
 
-  if (gameState === 'voxelcrazytaxi') {
+  if (gameState === 'pokicapitalistbusdriver') {
     return (
-      <VoxelCrazyTaxiGame
-        deck={playerDeck}
-        language={language}
-        lowSpecMode={lowSpecMode}
-        playSfx={playSfx}
-        onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '블리츠 하이웨이 레이서 보상', 'Blitz Highway Racer reward')}
+      <PokiCapitalistBusDriverGame
+        onBack={() => setGameState('modeSelect')}
       />
     );
   }
 
-  if (gameState === 'voxellaserstealth') {
+  if (gameState === 'pokievoworldio') {
     return (
-      <VoxelLaserStealthGame
-        deck={playerDeck}
-        language={language}
-        lowSpecMode={lowSpecMode}
-        playSfx={playSfx}
-        onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '블리츠 레이저 잠입 보상', 'Blitz Laser Infiltration reward')}
+      <PokiEvoWorldIoGame
+        onBack={() => setGameState('modeSelect')}
       />
     );
   }
 
-  if (gameState === 'voxeldojobalance') {
+  if (gameState === 'pokibulletbros') {
     return (
-      <VoxelDojoBalanceGame
-        deck={playerDeck}
-        language={language}
-        lowSpecMode={lowSpecMode}
-        playSfx={playSfx}
-        onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '블리츠 스모 태클 보상', 'Blitz Sumo Tackle reward')}
+      <PokiBulletBrosGame
+        onBack={() => setGameState('modeSelect')}
       />
     );
   }
 
-  if (gameState === 'voxelbubblepop') {
+  if (gameState === 'pokiperfectlanding') {
     return (
-      <VoxelBubblePopGame
-        deck={playerDeck}
-        language={language}
-        lowSpecMode={lowSpecMode}
-        playSfx={playSfx}
-        onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '블리츠 버블 버스트 보상', 'Blitz Bubble Burst reward')}
+      <PokiPerfectLandingGame
+        onBack={() => setGameState('modeSelect')}
       />
     );
   }
 
-  if (gameState === 'voxelwaterslide') {
+  if (gameState === 'pokiundeadslayer') {
     return (
-      <VoxelWaterSlideGame
-        deck={playerDeck}
-        language={language}
-        lowSpecMode={lowSpecMode}
-        playSfx={playSfx}
-        onExit={() => setGameState('modeSelect')}
-        onReward={(amount) => handleMinigameReward(amount, '블리츠 워터 슬라이드 보상', 'Blitz Water Slide reward')}
+      <PokiUndeadSlayerGame
+        onBack={() => setGameState('modeSelect')}
       />
     );
   }
+
 
   if (gameState === 'voxelkrakenhunter') {
     return (

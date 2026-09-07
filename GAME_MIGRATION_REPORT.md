@@ -8,7 +8,7 @@
   3. **일관된 보상 체계**: `standardizedRewardGateway.ts` 경유 20~50 SNS 포인트 공정 지급 및 `VictoryRewardModal`
   4. **일관된 그래픽 엔진**: HTML5 Canvas 2D 60fps 부드러운 애니메이션 및 파티클
   5. **SNSHero 캐릭터 연동**: `drawCardSprite` 기반 `cards1.png`, `cards2.png` 영웅/몬스터 스프라이트 100% 적용
-- **전체 진행 현황**: **90 / 110 완료 (81.8%)**
+- **전체 진행 현황**: **100 / 110 완료 (90.9%)**
 
 ---
 
@@ -106,16 +106,17 @@
 | No.088 | **[Hill Climb Racing Lite](https://poki.com/kr/g/hill-climb-racing-lite)** | 레이싱 게임, 스킬 게임 | 카드 No.88 오프로드 드라이버 | 가속/브레이크 차량 밸런스 조절 | 20~50 SNS | ✅ 완료 (Canvas 2D, 2D 물리 구릉 지형 300m 언덕 완주) |
 | No.089 | **[Stickman Crazy Box](https://poki.com/kr/g/stickman-crazy-box)** | 액션 게임, 스킬 게임 | 카드 No.89 스틱맨 파이터 | 좌우 회피 & 점프 도약 & 스타 수집 | 20~50 SNS | ✅ 완료 (Canvas 2D, 낙하 상자 회피 & 황금 스타 8개) |
 | No.090 | **[Goods Master](https://poki.com/kr/g/goods-master)** | 두뇌 게임, 퍼즐 게임 | 카드 No.90 마켓 매니저 | 선반 상품 탭 & 카트 3매칭 정리 | 20~50 SNS | ✅ 완료 (Canvas 2D, 편의점 선반 3세트 100% 클리어) |
-| No.091 | **[Hexellent](https://poki.com/kr/g/hexellent)** | 두뇌 게임, 마우스 게임 | 카드 No.91 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.092 | **[Harvest Simulator](https://poki.com/kr/g/harvest-simulator)** | 시뮬레이션 게임, 농장 게임 | 카드 No.92 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.093 | **[Car Circle](https://poki.com/kr/g/car-circle)** | 두뇌 게임, 스킬 게임 | 카드 No.93 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.094 | **[Phone CASE DIY](https://poki.com/kr/g/phone-case-diy)** | 장식 게임, 그리기 게임 | 카드 No.94 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.095 | **[Soccer League](https://poki.com/kr/g/soccer-league)** | 운동 게임, 스킬 게임 | 카드 No.95 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.096 | **[Capitalist Bus Driver](https://poki.com/kr/g/capitalist-bus-driver)** | 시뮬레이션 게임, 버스 게임 | 카드 No.96 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.097 | **[EvoWorld io (FlyOrDie io)](https://poki.com/kr/g/flyordie-io)** | 스킬 게임, 마우스 게임 | 카드 No.97 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.098 | **[Bullet Bros](https://poki.com/kr/g/bullet-bros)** | 액션 게임, 플랫폼 게임 | 카드 No.98 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.099 | **[Perfect Landing, Plane Pilot](https://poki.com/kr/g/perfect-landing-plane-pilot)** | 스킬 게임, 시뮬레이션 게임 | 카드 No.99 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
-| No.100 | **[Undead Slayer](https://poki.com/kr/g/undead-slayer)** | 액션 게임, 스킬 게임 | 카드 No.100 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
+| No.091 | **[Hexellent](https://poki.com/kr/g/hexellent)** | 두뇌 게임, 마우스 게임 | 카드 No.91 헥사 마스터 | 동일 색상 인접 육각 블록 탭 연쇄 폭발 | 20~50 SNS | ✅ 완료 (Canvas 2D, 육각 블록 콤보 1,000pt) |
+| No.092 | **[Harvest Simulator](https://poki.com/kr/g/harvest-simulator)** | 시뮬레이션 게임, 농장 게임 | 카드 No.92 농부 드라이버 | 콤바인 주행 수확 & 저장고 하역 | 20~50 SNS | ✅ 완료 (Canvas 2D, 밀/해바라기 수확 & $500 수익) |
+| No.093 | **[Car Circle](https://poki.com/kr/g/car-circle)** | 두뇌 게임, 스킬 게임 | 카드 No.93 교통 관제관 | 원형 교차로 타이밍 탭 합류 | 20~50 SNS | ✅ 완료 (Canvas 2D, 로터리 무사고 차량 12대 합류) |
+| No.094 | **[Phone CASE DIY](https://poki.com/kr/g/phone-case-diy)** | 장식 게임, 그리기 게임 | 카드 No.94 케이스 디자이너 | 스프레이 도색 & 드라이 & 스티커 데코 | 20~50 SNS | ✅ 완료 (Canvas 2D, 3단계 케이스 DIY 완성) |
+| No.095 | **[Soccer League](https://poki.com/kr/g/soccer-league)** | 운동 게임, 스킬 게임 | 카드 No.95 풋살 챔피언 | 드리블 & 슬링샷 패스/슈팅 | 20~50 SNS | ✅ 완료 (Canvas 2D, 3v3 실시간 풋살 3골 승리) |
+| No.096 | **[Capitalist Bus Driver](https://poki.com/kr/g/capitalist-bus-driver)** | 시뮬레이션 게임, 버스 게임 | 카드 No.96 버스 운전사 | 차선 변경 & 정류장 승객 탑승 수송 | 20~50 SNS | ✅ 완료 (Canvas 2D, 도심-해변 20명 승객 수송) |
+| No.097 | **[EvoWorld io (FlyOrDie io)](https://poki.com/kr/g/flyordie-io)** | 스킬 게임, 마우스 게임 | 카드 No.97 에보 크리처 | 터치 비행 조타 & 먹이 섭취 진화 | 20~50 SNS | ✅ 완료 (Canvas 2D, 파리에서 피닉스 드래곤 최종 진화) |
+| No.098 | **[Bullet Bros](https://poki.com/kr/g/bullet-bros)** | 액션 게임, 플랫폼 게임 | 카드 No.98 불릿 브라더 | 도탄 물리 궤적 조준 & 발사 | 20~50 SNS | ✅ 완료 (Canvas 2D, 리코셰 총탄 적 소탕 3개 스테이지) |
+| No.099 | **[Perfect Landing, Plane Pilot](https://poki.com/kr/g/perfect-landing-plane-pilot)** | 스킬 게임, 시뮬레이션 게임 | 카드 No.99 파일럿 기장 | 상하 피치 제어 터빈 회피 & 착륙 | 20~50 SNS | ✅ 완료 (Canvas 2D, 활주로 완벽 터치다운 3회 성공) |
+| No.100 | **[Undead Slayer](https://poki.com/kr/g/undead-slayer)** | 액션 게임, 스킬 게임 | 카드 No.100 언데드 슬레이어 | 터치 이동 연속 검격 & 회전 참격 스킬 | 20~50 SNS | ✅ 완료 (Canvas 2D, 언데드 군단 25마리 및 보스 토벌) |
+
 | No.101 | **[Watermelon Drop](https://poki.com/kr/g/watermelon-drop)** | 두뇌 게임, 스킬 게임 | 카드 No.101 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
 | No.102 | **[Kawaii Fruits 3D](https://poki.com/kr/g/kawaii-fruits-3d)** | 두뇌 게임, 스킬 게임 | 카드 No.102 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
 | No.103 | **[Blumgi Bounce](https://poki.com/kr/g/blumgi-bounce)** | 스킬 게임, 농구 게임 | 카드 No.103 | 원터치/스와이프/드래그 | 20~50 SNS | ⏳ 대기중 |
@@ -533,4 +534,50 @@
     - 3단 편의점 선반에 진열된 다양한 상품들을 터치해 하단 정리 카트에 담고, 동일 상품 3개를 일치시켜 선반을 말끔하게 비우는 트리플 매치 3D 퍼즐.
     - 플레이어: 카드 No.90 굿즈 마스터 스프라이트 (`cards2.png`).
     - 상품 터치 카트 이동 & 3개 동일 상품 매칭 제거, 3세트 선반 완전 정리 승리 연동 완료.
+
+---
+
+## Phase 6-B 상세 작업 내역 (No.091 ~ No.100)
+
+91. **No.091 Hexellent (`PokiHexellentGame.tsx`)**:
+    - 육각 격자(Hexagonal Grid)에서 인접한 같은 색상 블록들을 터치해 연쇄 폭발을 일으키고 1,000pt를 달성하는 헥사 콤보 퍼즐.
+    - 플레이어: 카드 No.91 헥사 마스터 스프라이트 (`cards2.png`).
+    - 축 좌표(Axial Coordinates) 플러드 필 알고리즘 & 연쇄 폭발 파티클, 1,000점 달성 승리 연동 완료.
+92. **No.092 Harvest Simulator (`PokiHarvestSimulatorGame.tsx`)**:
+    - 콤바인 수확기를 운전하여 해바라기와 밀 밭을 수확하고 적재함이 가득 차면 곡물 저장고에 하역하여 $500 수익을 달성하는 농업 시뮬레이터.
+    - 플레이어: 카드 No.92 농부 드라이버 스프라이트 (`cards2.png`).
+    - 원터치 터치/드래그 주행 & 작물 수확 메커니즘, 저장고 하역 정산 및 $500 달성 승리 연동 완료.
+93. **No.093 Car Circle (`PokiCarCircleGame.tsx`)**:
+    - 차량들이 끊임없이 회전하는 바쁜 원형 로터리(Roundabout)에 진입 대기 차량을 타이밍에 맞춰 안전하게 합류시키는 교통 통제 스킬 게임.
+    - 플레이어: 카드 No.93 교통 관제관 스프라이트 (`cards2.png`).
+    - 원터치 진입 탭 제스처, 차량 충돌 판정 및 라이프 시스템, 12대 무사고 합류 승리 연동 완료.
+94. **No.094 Phone CASE DIY (`PokiPhoneCaseDIYGame.tsx`)**:
+    - 스프레이 페인트 분사(1단계) ➔ 헤어드라이어 열풍 건조(2단계) ➔ 귀여운 이모지 스티커 4종 부착(3단계)을 거쳐 나만의 스마트폰 케이스를 디자인하는 DIY 크래프트.
+    - 플레이어: 카드 No.94 케이스 디자이너 스프라이트 (`cards2.png`).
+    - 3단계 터치/드래그 제작 인터랙션, 반짝임 파티클 및 100% 케이스 완성 승리 연동 완료.
+95. **No.095 Soccer League (`PokiSoccerLeagueGame.tsx`)**:
+    - 3대3 실시간 풋살 경기에서 드리블과 슬링샷 드래그 슛/패스로 상대 AI 수비와 골키퍼를 뚫고 먼저 3골을 득점하는 스포츠 아케이드.
+    - 플레이어: 카드 No.95 풋살 챔피언 스프라이트 (`cards2.png`).
+    - 슬링샷 드래그 조준 & 킥 발사, 공 물리 반사 및 3골 선취 리그 우승 연동 완료.
+96. **No.096 Capitalist Bus Driver (`PokiCapitalistBusDriverGame.tsx`)**:
+    - 3차선 도로를 운전하며 차량 장애물을 피하고 우측 버스 정류장에서 대기 중인 승객들을 태워 목적지까지 안전하게 총 20명을 수송하는 버스 타이쿤.
+    - 플레이어: 카드 No.96 버스 운전사 스프라이트 (`cards2.png`).
+    - 좌/우 탭 차선 변경 & 정류장 감속 탑승, 20명 수송 완료 승리 연동 완료.
+97. **No.097 EvoWorld io (FlyOrDie io) (`PokiEvoWorldIoGame.tsx`)**:
+    - 작은 파리로 시작해 이슬과 음식을 먹고 수분을 보충하며 나비, 모기, 매, 최종 불사조 피닉스로 진화하고 상위 포식자를 회피하는 생존 진화 io.
+    - 플레이어: 카드 No.97 에보 크리처 스프라이트 (`cards2.png`).
+    - 터치 비행 조타, 수분/경험치 게이지 관리, 피닉스 드래곤 최종 진화 승리 연동 완료.
+98. **No.098 Bullet Bros (`PokiBulletBrosGame.tsx`)**:
+    - 벽과 장애물에 도탄(Ricochet)되는 물리 총탄을 조준 발사하여 엄폐한 적들을 격파하는 2인조 브라더스 트릭샷 슈터.
+    - 플레이어: 카드 No.98 불릿 브라더 스프라이트 (`cards2.png`).
+    - 슬링샷 궤적 조준 & 도탄 물리 판정, 3개 스테이지 적 전멸 클리어 승리 연동 완료.
+99. **No.099 Perfect Landing, Plane Pilot (`PokiPerfectLandingGame.tsx`)**:
+    - 풍력 터빈과 난기류를 피해 비행기 피치를 정밀 제어하고 활주로에 부드럽게 글라이드 터치다운을 성공시키는 항공기 착륙 시뮬레이션.
+    - 플레이어: 카드 No.99 파일럿 기장 스프라이트 (`cards2.png`).
+    - 화면 상/하 탭 피치 각도 조절, 풍력 터빈 회피 및 3회 퍼펙트 랜딩 승리 연동 완료.
+100. **No.100 Undead Slayer (`PokiUndeadSlayerGame.tsx`)**:
+    - 묘지와 어두운 던전에서 몰려오는 스켈레톤과 좀비 군단을 연속 검격과 360도 회전 참격 스킬로 베어넘기고 언데드 보스를 처단하는 핵앤슬래시.
+    - 플레이어: 카드 No.100 언데드 슬레이어 스프라이트 (`cards2.png`).
+    - 원터치 드래그 이동 & 자동 연속 참격, 광역 '회전참격' 쿨다운 스킬, 25마리 토벌 승리 연동 완료.
+
 
