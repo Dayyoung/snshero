@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 13,
-  "completed_count": 12,
-  "last_updated": "2026-09-07T16:52:00+09:00",
+  "current_game_index": 14,
+  "completed_count": 13,
+  "last_updated": "2026-09-07T17:02:00+09:00",
   "history": [
     {
       "id": 1,
@@ -137,6 +137,17 @@
       "component": "src/components/poki/PokiMyHotelGame.tsx",
       "completed_at": "2026-09-07T16:52:00+09:00",
       "details": "Three.js 기반 3D 호텔 경영 타이쿤 구현, 28x22m 우드 파켓 로비 & 레드 벨벳 카펫, 체크인 대리석 리셉션 데스크(손님 대기열 및 벨보이 골든 벨 소리), 4개 럭셔리 객실(더블 침대/협탁/스탠드), 투숙객 AI 순차 안내/투숙/퇴실 팁 현금 뭉치 드롭, 침대 시트 청소(반짝이 파티클), 3·4호실 $120/$250 단계별 해금 확장, 커피 바 이동속도 부스트, 다이나믹 플로팅 조이스틱 + 80px RUSH 버튼, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 13,
+      "name": "Talking Tom Gold Run",
+      "poki_url": "https://poki.com/kr/g/talking-tom-gold-run",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No013_TalkingTomGoldRun_Prompt.md",
+      "component": "src/components/poki/PokiTalkingTomGoldRunGame.tsx",
+      "completed_at": "2026-09-07T17:02:00+09:00",
+      "details": "Three.js 기반 3D 3레인 엔드리스 골드 러너 구현, 35m 광폭 안전 시작 고속도로(시작 급사 방지), 무한 루핑 아스팔트 트랙, 3종 장애물(대형 택배 트럭 회피, 낮은 공사 바리케이드 점프, 높은 도로 표지판 슬라이딩 롤링), 3D 골드 잉곳 & 자석 파워업(6초간 전 레인 금괴 흡수), 3D 토킹톰 캣 아바타 & No.13 영웅 배지, 4방향 스와이프 제스처 + 하단 양손 버튼, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

@@ -4,6 +4,37 @@
 
 ---
 
+## [2026-09-07 17:02 KST] [Poki 110선 리마스터 13/110] No.013 Talking Tom Gold Run Three.js 3D 3레인 엔드리스 골드 러너 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/talking-tom-gold-run`) 분석 및 프롬프트(`src/components/poki/prompts/No013_TalkingTomGoldRun_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 35m 광폭 안전 시작 고속도로(시작 급사 방지), 무한 루핑 3차선 아스팔트 트랙, 3종 장애물(대형 택배 트럭 회피, 낮은 공사 바리케이드 점프, 높은 도로 표지판 슬라이딩 롤링), 3D 골드 잉곳 & 자석 파워업(6초간 전 레인 금괴 흡수), 3D 토킹톰 캣 아바타 & No.13 영웅 배지 전면 재개발.
+  - AGENTS.md 카메라 기준 조작 방향(좌우/상하) 100% 일치 절대 원칙 준수 (화면 기준 오른쪽=우측, 왼쪽=좌측).
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(4방향 스와이프 제스처 + 하단 양손 최적화 버튼 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 인기 3D 엔드리스 러너. 도둑 라쿤을 추격하며 3개 차선을 스와이프로 오가며 차량, 바리케이드, 고가 표지판을 회피하고 금괴와 자석을 획득하는 박진감 넘치는 러너 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiTalkingTomGoldRunGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 3인칭 백뷰 러너 시점, 3차선 고속도로 아스팔트 트랙 & 점선 분할선.
+     - 35m 광폭 안전 시작 플랫폼: 게임 시작 직후 장애물 없이 안전하게 가속할 수 있는 여유 구간 확보.
+     - 3종 실시간 충돌 장애물 시스템:
+       - 대형 택배 트럭: 차선 1개를 완전히 막는 거대 차량 (점프로 넘을 수 없으며 차선 변경 필수).
+       - 낮은 공사 바리케이드: 높이 0.9m (점프로 뛰어넘어야 함).
+       - 높은 도로 표지판: 높이 2.4m 상단 차단봉 (몸을 숙여 슬라이딩 롤링 통과).
+     - 황금 금괴 & 자석 파워업:
+       - 레인마다 늘어선 3D 골드 잉곳 수집 (+25점).
+       - 붉은 말굽 자석 획득 시 6초간 3차선 전체의 금괴가 플레이어에게 날아와 자동 수거.
+     - 3D 토킹톰 캣 아바타 & No.13 영웅 배지, 귀여운 고양이 귀/카툰 눈/핑크 코, 전력 질주 및 롤링 애니메이션.
+     - 모바일 퓨어 터치: 화면 4방향 스와이프 제스처(좌우 레인 이동, 위 점프, 아래 롤) + 하단 양손 최적화 대형 버튼([◀]/[▶] 및 [▲ JUMP]/[▼ ROLL]) 동시 지원.
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 확인 팝업 및 주행 거리/금괴 수집량 비례 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No013_TalkingTomGoldRun_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 무결점 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 13개 완료 (No.014 Monkey Tag IO 대기).
+
+---
+
 ## [2026-09-07 16:52 KST] [Poki 110선 리마스터 12/110] No.012 My Perfect Hotel Three.js 3D 호텔 경영 타이쿤 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/my-perfect-hotel`) 분석 및 프롬프트(`src/components/poki/prompts/No012_MyPerfectHotel_Prompt.md`) 작성.
