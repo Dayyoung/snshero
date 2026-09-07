@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 60,
-  "completed_count": 59,
-  "last_updated": "2026-09-08T00:53:00+09:00",
+  "current_game_index": 61,
+  "completed_count": 60,
+  "last_updated": "2026-09-08T00:54:00+09:00",
   "history": [
     {
       "id": 1,
@@ -654,6 +654,17 @@
       "component": "src/components/poki/PokiRedBall4Game.tsx",
       "completed_at": "2026-09-08T00:53:00+09:00",
       "details": "Three.js 기반 3D 볼 롤링 플랫포머 어드벤처 구현, 100m 3D 초록 언덕 롤링 트랙 & 15m 안전 광폭 스타트 존 & 경사 램프 & 공중 부유 발판 & 피니시 깃발, 3D 레드 볼(만화풍 표정 텍스처 & 롤링 회전 물리) & No.59 영웅 배지, 5개 3D 황금 별 수집 & 3마리 블랙 스퀘어 미니언(머리 위 점프 스톰프 납작해짐 처치 vs 정면 충돌 하트 감소), 횡스크롤 3.5D 팔로우 카메라, 모바일 퓨어 터치 조작계(화면 좌측 터치 슬라이드 롤링 조향 + 우측 대형 76px JUMP 점프 버튼 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 60,
+      "name": "Tank Stars",
+      "poki_url": "https://poki.com/kr/g/tank-stars",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No060_TankStars_Prompt.md",
+      "component": "src/components/poki/PokiTankStarsGame.tsx",
+      "completed_at": "2026-09-08T00:54:00+09:00",
+      "details": "Three.js 기반 3D 턴제 전차 포격 배틀 구현, 60m 굴곡진 3D 언덕 지형 & 좌측 -18m 안전 포대 진지, 블루 사이버 전차(듀얼 궤도/회전 포탑/주포 앙각 피벗) & No.60 영웅 배지 vs 레드 네온 AI 전차, 3대 무기 아스널(고폭탄/정점 3발 분열 클러스터 밤/거대 버섯구름 전술핵 미사일), 실시간 3D 탄도 궤적 아크 & 포탄 비행 추적 카메라 & 착탄 대폭발 셰이크, 모바일 퓨어 터치 조작계(각도/파워 조절 슬라이더 + 무기 선택 바 + 우측 대형 76px FIRE 발사 버튼 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
