@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
 import { CardData } from '../../types';
 import { MinimalistMissionHUD } from '../MinimalistMissionHUD';
 import { VictoryRewardModal } from '../VictoryRewardModal';
@@ -15,23 +16,26 @@ interface PokiLevelDevilGameProps {
   onReward: (amount: number) => void;
 }
 
-interface Platform {
+interface BlockData {
+  mesh: THREE.Mesh;
   x: number;
   y: number;
-  width: number;
-  height: number;
-  isFake?: boolean;
-  fallDelay?: number;
-  falling?: boolean;
+  w: number;
+  h: number;
+  isCrumbling?: boolean;
+  isTriggered?: boolean;
+  fallTimer?: number;
+  fallSpeed?: number;
 }
 
-interface SpikeTrap {
+interface SpikeData {
+  mesh: THREE.Mesh;
   x: number;
   y: number;
-  width: number;
-  height: number;
-  hidden: boolean;
-  triggerDist: number;
+  targetY: number;
+  initialY: number;
+  triggerX: number;
+  isPopped: boolean;
 }
 
 export const PokiLevelDevilGame: React.FC<PokiLevelDevilGameProps> = ({
@@ -44,447 +48,829 @@ export const PokiLevelDevilGame: React.FC<PokiLevelDevilGameProps> = ({
 }) => {
   const isKo = language === 'ko';
   const playerHeroId = deck[0]?.id || 5;
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const animFrameRef = useRef<number>(0);
 
   const [score, setScore] = useState<number>(0);
   const [stage, setStage] = useState<number>(1);
-  const totalStages = 3;
+  const totalStages = 4;
   const [deaths, setDeaths] = useState<number>(0);
-  const [timeLeft, setTimeLeft] = useState<number>(45);
+  const [isControlsInverted, setIsControlsInverted] = useState<boolean>(false);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [isVictory, setIsVictory] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
+  // Mobile Touch Steer Visual Indicator (-1 ~ +1)
+  const [touchSteerVal, setTouchSteerVal] = useState<number>(0);
+
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_leveldevil') !== 'true';
+      return localStorage.getItem('hero_tutorial_leveldevil_v2') !== 'true';
     } catch {
       return true;
     }
   });
 
-  const stateRef = useRef({
-    player: {
-      x: 40,
-      y: 350,
-      vx: 0,
-      vy: 0,
-      width: 36,
-      height: 36,
-      isGrounded: false,
-      targetX: 40,
-    },
-    goal: {
-      x: 280,
-      y: 120,
-      width: 44,
-      height: 44,
-      isTrolling: false,
-    },
-    platforms: [] as Platform[],
-    spikes: [] as SpikeTrap[],
-    isTouchActive: false,
-    combo: 0,
+  // Three.js References
+  const threeRef = useRef<{
+    renderer: THREE.WebGLRenderer | null;
+    scene: THREE.Scene | null;
+    camera: THREE.PerspectiveCamera | null;
+    playerGroup: THREE.Group | null;
+    playerMesh: THREE.Mesh | null;
+    doorGroup: THREE.Group | null;
+    blocks: BlockData[];
+    spikes: SpikeData[];
+  }>({
+    renderer: null,
+    scene: null,
+    camera: null,
+    playerGroup: null,
+    playerMesh: null,
+    doorGroup: null,
+    blocks: [],
+    spikes: [],
   });
 
-  const initStage = useCallback((s: number) => {
-    stateRef.current.player.x = 40;
-    stateRef.current.player.y = 350;
-    stateRef.current.player.vx = 0;
-    stateRef.current.player.vy = 0;
-    stateRef.current.player.targetX = 40;
-    stateRef.current.goal.isTrolling = false;
+  // Gameplay Physics State
+  const stateRef = useRef({
+    player: {
+      x: -12,
+      y: 1.5,
+      vx: 0,
+      vy: 0,
+      isGrounded: false,
+      isDead: false,
+      deathTimer: 0,
+    },
+    door: {
+      x: 12,
+      y: 1.5,
+      targetX: 12,
+      targetY: 1.5,
+      hasEscaped: false,
+      escapeCount: 0,
+    },
+    keys: {
+      left: false,
+      right: false,
+    },
+    touch: {
+      active: false,
+      startX: 0,
+      currentX: 0,
+    },
+    blocks: [] as BlockData[],
+    spikes: [] as SpikeData[],
+    stageConfig: {
+      inverted: false,
+      titleKo: '',
+      titleEn: '',
+    },
+    timeAlive: 0,
+  });
 
-    const plats: Platform[] = [];
-    const spks: SpikeTrap[] = [];
-
-    if (s === 1) {
-      // Stage 1: Fake floor that drops when stepped on
-      plats.push({ x: 20, y: 390, width: 90, height: 20 });
-      plats.push({ x: 130, y: 390, width: 80, height: 20, isFake: true, fallDelay: 12 });
-      plats.push({ x: 230, y: 390, width: 100, height: 20 });
-      plats.push({ x: 180, y: 260, width: 80, height: 20 });
-      plats.push({ x: 260, y: 170, width: 80, height: 20 });
-
-      spks.push({ x: 140, y: 440, width: 60, height: 16, hidden: false, triggerDist: 0 });
-      spks.push({ x: 190, y: 244, width: 40, height: 16, hidden: true, triggerDist: 60 });
-      stateRef.current.goal = { x: 280, y: 120, width: 44, height: 44, isTrolling: false };
-    } else if (s === 2) {
-      // Stage 2: Goal runs away once!
-      plats.push({ x: 20, y: 390, width: 100, height: 20 });
-      plats.push({ x: 140, y: 320, width: 70, height: 20 });
-      plats.push({ x: 60, y: 240, width: 80, height: 20 });
-      plats.push({ x: 180, y: 160, width: 100, height: 20 });
-
-      spks.push({ x: 150, y: 304, width: 30, height: 16, hidden: true, triggerDist: 50 });
-      stateRef.current.goal = { x: 220, y: 110, width: 44, height: 44, isTrolling: true };
-    } else {
-      // Stage 3: Devil traps everywhere
-      plats.push({ x: 20, y: 390, width: 70, height: 20 });
-      plats.push({ x: 110, y: 350, width: 50, height: 20, isFake: true, fallDelay: 8 });
-      plats.push({ x: 180, y: 300, width: 60, height: 20 });
-      plats.push({ x: 110, y: 220, width: 60, height: 20 });
-      plats.push({ x: 210, y: 150, width: 90, height: 20 });
-
-      spks.push({ x: 190, y: 284, width: 30, height: 16, hidden: true, triggerDist: 40 });
-      spks.push({ x: 120, y: 204, width: 30, height: 16, hidden: true, triggerDist: 40 });
-      stateRef.current.goal = { x: 240, y: 100, width: 44, height: 44, isTrolling: false };
+  // Sound Synthesizer
+  const playTone = useCallback((freq: number, dur: number, type: OscillatorType = 'sine') => {
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + dur);
+      osc.start();
+      osc.stop(ctx.currentTime + dur);
+    } catch {
+      // ignore
     }
-
-    stateRef.current.platforms = plats;
-    stateRef.current.spikes = spks;
   }, []);
 
-  useEffect(() => {
-    initStage(stage);
-  }, [stage, initStage]);
-
-  // Timer
-  useEffect(() => {
-    if (isGameOver || isVictory || showTutorial) return;
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev <= 1) {
-          handleGameOver(false);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [isGameOver, isVictory, showTutorial]);
-
-  const handleGameOver = useCallback((victory: boolean) => {
-    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-    setIsGameOver(true);
-    setIsVictory(victory);
-
-    const finalScore = score + (victory ? 500 : 80) - deaths * 30;
-    const receipt = calculateAndDepositMissionReward({
-      gameId: 'poki_leveldevil',
-      gameTitle: isKo ? '레벨 데빌' : 'Level Devil',
-      durationSeconds: 45 - timeLeft,
-      score: Math.max(100, finalScore),
-      maxTargetScore: 1000,
-      isVictory: victory,
-      difficulty: 'NORMAL',
-      comboCount: stateRef.current.combo,
-      perfectClear: victory && deaths === 0,
-    });
-
-    setSettlementReceipt(receipt);
-    onReward(receipt.totalSns);
-    if (playSfx) {
-      playSfx(victory ? 'https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3' : 'https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+  // 1. Jump Action
+  const handleJump = useCallback(() => {
+    const s = stateRef.current;
+    if (s.player.isGrounded && !s.player.isDead && !isGameOver && !isVictory) {
+      s.player.vy = 12.5;
+      s.player.isGrounded = false;
+      playTone(480, 0.1, 'square');
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        navigator.vibrate(20);
+      }
     }
-  }, [score, timeLeft, deaths, isKo, onReward, playSfx]);
+  }, [isGameOver, isVictory, playTone]);
 
-  const respawn = () => {
-    setDeaths(d => d + 1);
-    setScore(s => Math.max(0, s - 30));
-    stateRef.current.combo = 0;
-    initStage(stage);
-    if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-  };
+  // 2. Kill and Respawn Player
+  const killPlayer = useCallback(() => {
+    const s = stateRef.current;
+    if (s.player.isDead) return;
 
-  // Jump
-  const triggerJump = useCallback(() => {
-    const p = stateRef.current.player;
-    if (p.isGrounded) {
-      p.vy = -13.5;
-      p.isGrounded = false;
-      if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    s.player.isDead = true;
+    s.player.deathTimer = 0.5; // 0.5s rapid respawn
+    playTone(180, 0.4, 'sawtooth');
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      navigator.vibrate(50);
     }
-  }, [playSfx]);
 
-  // Main Canvas Loop
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    setDeaths((prev) => prev + 1);
+  }, [playTone]);
 
-    let width = canvas.clientWidth;
-    let height = canvas.clientHeight;
-    canvas.width = width;
-    canvas.height = height;
+  // 3. Setup Stage Blocks and Traps
+  const setupStage = useCallback((stageNum: number) => {
+    const { scene } = threeRef.current;
+    const s = stateRef.current;
+    if (!scene) return;
 
-    const gravity = 0.65;
+    // Clear old stage blocks and spikes
+    s.blocks.forEach((b) => scene.remove(b.mesh));
+    s.spikes.forEach((sp) => scene.remove(sp.mesh));
+    s.blocks = [];
+    s.spikes = [];
 
-    const updateAndRender = () => {
-      if (isGameOver || isVictory || showTutorial) return;
+    // Reset Player
+    s.player.x = -12;
+    s.player.y = 1.8;
+    s.player.vx = 0;
+    s.player.vy = 0;
+    s.player.isGrounded = false;
+    s.player.isDead = false;
 
-      const p = stateRef.current.player;
-      const plats = stateRef.current.platforms;
-      const spikes = stateRef.current.spikes;
-      const goal = stateRef.current.goal;
+    // Reset Door
+    s.door.x = 12;
+    s.door.y = 1.5;
+    s.door.targetX = 12;
+    s.door.targetY = 1.5;
+    s.door.hasEscaped = false;
+    s.door.escapeCount = 0;
 
-      // Player horizontal seek
-      p.vx = (p.targetX - p.x) * 0.15;
-      p.x += p.vx;
+    const blockMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.5, metalness: 0.2 });
+    const spikeMat = new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.3, emissive: 0x991b1b });
 
-      // Vertical physics
-      p.vy += gravity;
-      p.y += p.vy;
-      p.isGrounded = false;
-
-      // Platforms collision
-      for (const pl of plats) {
-        if (pl.falling) {
-          pl.y += 6;
-          continue;
-        }
-
-        if (
-          p.x + p.width > pl.x &&
-          p.x < pl.x + pl.width &&
-          p.y + p.height >= pl.y &&
-          p.y + p.height <= pl.y + 20 &&
-          p.vy >= 0
-        ) {
-          p.y = pl.y - p.height;
-          p.vy = 0;
-          p.isGrounded = true;
-
-          // Fake trap trigger
-          if (pl.isFake && !pl.falling) {
-            pl.fallDelay = (pl.fallDelay || 10) - 1;
-            if (pl.fallDelay <= 0) {
-              pl.falling = true;
-            }
-          }
-        }
-      }
-
-      // Spikes collision & proximity triggers
-      for (const spk of spikes) {
-        const dist = Math.hypot(p.x - spk.x, p.y - spk.y);
-        if (spk.hidden && dist < spk.triggerDist) {
-          spk.hidden = false; // POP! Sudden spike trap
-        }
-
-        if (!spk.hidden) {
-          if (
-            p.x + p.width > spk.x &&
-            p.x < spk.x + spk.width &&
-            p.y + p.height > spk.y &&
-            p.y < spk.y + spk.height
-          ) {
-            respawn();
-            return;
-          }
-        }
-      }
-
-      // Goal interaction (Trolling check)
-      const distToGoal = Math.hypot(p.x - goal.x, p.y - goal.y);
-      if (goal.isTrolling && distToGoal < 60) {
-        // Goal teleports to another platform!
-        goal.x = 40;
-        goal.y = 190;
-        goal.isTrolling = false;
-        if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-      } else if (distToGoal < 30) {
-        // Goal reached!
-        if (stage < totalStages) {
-          setStage(s => s + 1);
-          setScore(s => s + 250);
-          stateRef.current.combo += 2;
-        } else {
-          handleGameOver(true);
-        }
-        return;
-      }
-
-      // Fall off screen
-      if (p.y > height + 60) {
-        respawn();
-        return;
-      }
-
-      // ---------------- RENDER ----------------
-      ctx.clearRect(0, 0, width, height);
-
-      // Dark hellish background
-      ctx.fillStyle = '#180808';
-      ctx.fillRect(0, 0, width, height);
-
-      // Subtle red spikes background pattern
-      ctx.fillStyle = 'rgba(239, 68, 68, 0.05)';
-      for (let x = 0; x < width; x += 40) {
-        ctx.beginPath();
-        ctx.moveTo(x, height);
-        ctx.lineTo(x + 20, height - 30);
-        ctx.lineTo(x + 40, height);
-        ctx.fill();
-      }
-
-      // Draw Platforms
-      for (const pl of plats) {
-        ctx.fillStyle = pl.isFake ? '#b91c1c' : '#334155';
-        ctx.fillRect(pl.x, pl.y, pl.width, pl.height);
-        ctx.strokeStyle = '#f87171';
-        ctx.lineWidth = 1.5;
-        ctx.strokeRect(pl.x, pl.y, pl.width, pl.height);
-      }
-
-      // Draw Spikes
-      for (const spk of spikes) {
-        if (spk.hidden) continue;
-        ctx.fillStyle = '#ef4444';
-        const spikeCount = Math.floor(spk.width / 12);
-        for (let k = 0; k < spikeCount; k++) {
-          ctx.beginPath();
-          ctx.moveTo(spk.x + k * 12, spk.y + spk.height);
-          ctx.lineTo(spk.x + k * 12 + 6, spk.y);
-          ctx.lineTo(spk.x + (k + 1) * 12, spk.y + spk.height);
-          ctx.fill();
-        }
-      }
-
-      // Draw Goal Door
-      ctx.fillStyle = '#eab308';
-      ctx.fillRect(goal.x, goal.y, goal.width, goal.height);
-      ctx.strokeStyle = '#fef08a';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(goal.x, goal.y, goal.width, goal.height);
-      ctx.fillStyle = '#713f12';
-      ctx.font = 'bold 12px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText('DOOR', goal.x + goal.width / 2, goal.y + goal.height / 2 + 4);
-
-      // Draw Player Hero Sprite
-      drawCardSprite(ctx, playerHeroId, p.x, p.y, p.width, p.height, {
-        circleClip: true,
-        borderWidth: 2,
-        borderColor: '#ef4444',
-        shadowBlur: 8,
-        shadowColor: '#ef4444',
-      });
-
-      animFrameRef.current = requestAnimationFrame(updateAndRender);
+    const addBlock = (x: number, y: number, w: number, h: number, isCrumbling = false) => {
+      const geo = new THREE.BoxGeometry(w, h, 2.0);
+      const mesh = new THREE.Mesh(geo, blockMat);
+      mesh.position.set(x, y, 0);
+      mesh.castShadow = !lowSpecMode;
+      mesh.receiveShadow = !lowSpecMode;
+      scene.add(mesh);
+      s.blocks.push({ mesh, x, y, w, h, isCrumbling, isTriggered: false, fallTimer: 0, fallSpeed: 0 });
     };
 
-    animFrameRef.current = requestAnimationFrame(updateAndRender);
+    const addSpike = (x: number, y: number, triggerX: number, hidden = false) => {
+      const geo = new THREE.ConeGeometry(0.4, 0.8, 4);
+      const mesh = new THREE.Mesh(geo, spikeMat);
+      mesh.position.set(x, hidden ? y - 1.2 : y, 0);
+      mesh.castShadow = !lowSpecMode;
+      scene.add(mesh);
+      s.spikes.push({
+        mesh,
+        x,
+        y,
+        targetY: y,
+        initialY: hidden ? y - 1.2 : y,
+        triggerX,
+        isPopped: !hidden,
+      });
+    };
+
+    // Stage Specific Designs
+    if (stageNum === 1) {
+      // Stage 1: Warmup & The Escaping Door
+      s.stageConfig.inverted = false;
+      setIsControlsInverted(false);
+
+      // Start Island
+      addBlock(-12, 0, 5, 1.2);
+      // Mid Island
+      addBlock(-4, 0.5, 4, 1.2);
+      // Gap with Hidden Spike
+      addSpike(-2, 0.4, -3.5, true); // Pops up when approaching
+      // Pre-Goal Island
+      addBlock(4, 0.5, 5, 1.2);
+      // Goal Island
+      addBlock(12, 0, 5, 1.2);
+    } else if (stageNum === 2) {
+      // Stage 2: Crumbling Floor & Falling Roof
+      s.stageConfig.inverted = false;
+      setIsControlsInverted(false);
+
+      addBlock(-12, 0, 4, 1.2);
+      // Crumbling steps
+      addBlock(-6, 0.5, 2.5, 1.0, true);
+      addBlock(-1, 0.5, 2.5, 1.0, true);
+      addBlock(4, 0.5, 2.5, 1.0, true);
+      // Goal Island
+      addBlock(12, 0, 4, 1.2);
+      // Spikes below the crumble
+      addSpike(-6, -3.0, -99);
+      addSpike(-1, -3.0, -99);
+      addSpike(4, -3.0, -99);
+    } else if (stageNum === 3) {
+      // Stage 3: INVERTED CONTROLS (Left is Right, Right is Left!)
+      s.stageConfig.inverted = true;
+      setIsControlsInverted(true);
+
+      addBlock(-12, 0, 4, 1.2);
+      addBlock(-5, 0, 3, 1.2);
+      addSpike(-1, 0.4, -3.0, true);
+      addBlock(2, 0, 3, 1.2);
+      addBlock(8, 0, 3, 1.2);
+      addBlock(13, 0, 4, 1.2);
+    } else {
+      // Stage 4: THE DEVIL'S GAUNTLET (Full Troll Madness)
+      s.stageConfig.inverted = false;
+      setIsControlsInverted(false);
+
+      addBlock(-12, 0, 4, 1.2);
+      addBlock(-6, 1.0, 2.5, 1.0, true);
+      addSpike(-3.5, 0.4, -5.0, true);
+      addBlock(0, 1.5, 3.0, 1.0);
+      addBlock(6, 2.0, 2.5, 1.0, true);
+      addSpike(8.5, 1.4, 7.0, true);
+      addBlock(12, 0.5, 5, 1.2);
+    }
+  }, [lowSpecMode]);
+
+  // 4. Three.js Scene Initialization
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const initialW = container.clientWidth || window.innerWidth;
+    const initialH = container.clientHeight || window.innerHeight;
+
+    // Scene & Dark Atmospheric Background
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x090d16); // Deep demon slate
+    scene.fog = new THREE.FogExp2(0x090d16, 0.02);
+
+    // Camera: 2.5D/3D Angled Perspective View
+    const camera = new THREE.PerspectiveCamera(48, initialW / initialH, 0.1, 1000);
+    camera.position.set(0, 3.5, 23);
+    camera.lookAt(0, 1.0, 0);
+
+    // Renderer
+    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
+    renderer.setSize(initialW, initialH);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = !lowSpecMode;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    container.innerHTML = '';
+    container.appendChild(renderer.domElement);
+
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0xfff1f2, 1.2);
+    dirLight.position.set(10, 20, 15);
+    dirLight.castShadow = !lowSpecMode;
+    scene.add(dirLight);
+
+    // Player 3D Devil Cubie Group
+    const playerGroup = new THREE.Group();
+    const pBodyMat = new THREE.MeshStandardMaterial({
+      color: 0xfacc15, // Bright Devil Yellow
+      roughness: 0.3,
+      metalness: 0.1,
+    });
+    const playerMesh = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.9, 0.9), pBodyMat);
+    playerMesh.castShadow = !lowSpecMode;
+    playerGroup.add(playerMesh);
+
+    // Devil Eyes & Horns
+    const eyeMat = new THREE.MeshBasicMaterial({ color: 0x0f172a });
+    const eyeL = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.25, 0.1), eyeMat);
+    eyeL.position.set(-0.22, 0.1, 0.46);
+    const eyeR = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.25, 0.1), eyeMat);
+    eyeR.position.set(0.22, 0.1, 0.46);
+    playerGroup.add(eyeL, eyeR);
+
+    // Little Devil Horns
+    const hornMat = new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.3 });
+    const hornGeo = new THREE.ConeGeometry(0.15, 0.35, 4);
+    const hornL = new THREE.Mesh(hornGeo, hornMat);
+    hornL.position.set(-0.3, 0.55, 0);
+    hornL.rotation.z = 0.3;
+    const hornR = new THREE.Mesh(hornGeo, hornMat);
+    hornR.position.set(0.3, 0.55, 0);
+    hornR.rotation.z = -0.3;
+    playerGroup.add(hornL, hornR);
+
+    // Hero No.05 Card Sprite Badge
+    const badgeCanvas = document.createElement('canvas');
+    badgeCanvas.width = 128;
+    badgeCanvas.height = 128;
+    const bCtx = badgeCanvas.getContext('2d');
+    if (bCtx) {
+      bCtx.fillStyle = '#0f172a';
+      bCtx.beginPath();
+      bCtx.arc(64, 64, 60, 0, Math.PI * 2);
+      bCtx.fill();
+      bCtx.lineWidth = 6;
+      bCtx.strokeStyle = '#facc15';
+      bCtx.stroke();
+      drawCardSprite(bCtx, playerHeroId, 16, 16, 96, 96);
+    }
+    const badgeTexture = new THREE.CanvasTexture(badgeCanvas);
+    const badgeSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: badgeTexture }));
+    badgeSprite.position.set(0, 1.4, 0);
+    badgeSprite.scale.set(0.9, 0.9, 0.9);
+    playerGroup.add(badgeSprite);
+
+    scene.add(playerGroup);
+
+    // Exit Door Group
+    const doorGroup = new THREE.Group();
+    // Frame
+    const frameMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.6 });
+    const frame = new THREE.Mesh(new THREE.BoxGeometry(1.6, 2.4, 0.3), frameMat);
+    doorGroup.add(frame);
+    // Door Portal Interior
+    const portalMat = new THREE.MeshBasicMaterial({ color: 0x10b981 });
+    const portal = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 2.0), portalMat);
+    portal.position.z = 0.16;
+    doorGroup.add(portal);
+
+    doorGroup.position.set(12, 1.5, 0);
+    scene.add(doorGroup);
+
+    threeRef.current = {
+      renderer,
+      scene,
+      camera,
+      playerGroup,
+      playerMesh,
+      doorGroup,
+      blocks: [],
+      spikes: [],
+    };
+
+    // Mobile Viewport Synchronization
+    const updateSize = () => {
+      if (!container || !renderer || !camera) return;
+      const w = container.clientWidth || window.innerWidth;
+      const h = container.clientHeight || window.innerHeight;
+      if (w > 0 && h > 0) {
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h, false);
+      }
+    };
+
+    const resizeObserver = new ResizeObserver(() => updateSize());
+    resizeObserver.observe(container);
+    window.addEventListener('resize', updateSize);
+    window.addEventListener('orientationchange', () => setTimeout(updateSize, 100));
+
+    setupStage(1);
 
     return () => {
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', updateSize);
+      if (renderer.domElement.parentNode) {
+        renderer.domElement.parentNode.removeChild(renderer.domElement);
+      }
+      renderer.dispose();
     };
-  }, [isGameOver, isVictory, showTutorial, stage, playerHeroId, handleGameOver]);
+  }, [lowSpecMode, playerHeroId, setupStage]);
 
-  // Touch handlers
-  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    stateRef.current.isTouchActive = true;
-    stateRef.current.player.targetX = e.clientX - rect.left - 18;
-    triggerJump();
+  // 5. Physics & Animation Game Loop
+  useEffect(() => {
+    let lastTime = performance.now();
+
+    const loop = (currentTime: number) => {
+      const dt = Math.min((currentTime - lastTime) / 1000, 0.08);
+      lastTime = currentTime;
+
+      const { renderer, scene, camera, playerGroup, playerMesh, doorGroup } = threeRef.current;
+      const s = stateRef.current;
+
+      if (renderer && scene && camera && playerGroup && !isGameOver && !isVictory) {
+        s.timeAlive += dt;
+
+        // Death & Rapid Respawn Handle
+        if (s.player.isDead) {
+          s.player.deathTimer -= dt;
+          playerGroup.visible = Math.floor(currentTime / 60) % 2 === 0;
+
+          if (s.player.deathTimer <= 0) {
+            // Respawn
+            s.player.isDead = false;
+            s.player.x = -12;
+            s.player.y = 1.8;
+            s.player.vx = 0;
+            s.player.vy = 0;
+            playerGroup.visible = true;
+
+            // Reset crumbling blocks
+            s.blocks.forEach((b) => {
+              b.isTriggered = false;
+              b.fallSpeed = 0;
+              b.mesh.position.y = b.y;
+            });
+            // Reset pop spikes
+            s.spikes.forEach((sp) => {
+              sp.isPopped = false;
+              sp.mesh.position.y = sp.initialY;
+            });
+            // Reset door
+            s.door.x = 12;
+            s.door.y = 1.5;
+            s.door.targetX = 12;
+            s.door.targetY = 1.5;
+            s.door.hasEscaped = false;
+            s.door.escapeCount = 0;
+          }
+        } else {
+          // Controls Input
+          let moveDir = 0;
+          if (s.keys.left) moveDir -= 1;
+          if (s.keys.right) moveDir += 1;
+
+          if (s.touch.active) {
+            const diffX = s.touch.currentX - s.touch.startX;
+            if (Math.abs(diffX) > 10) {
+              moveDir = diffX > 0 ? 1 : -1;
+            }
+          }
+
+          // Inverted Controls Stage Check
+          if (s.stageConfig.inverted) {
+            moveDir = -moveDir;
+          }
+
+          const moveSpeed = 6.2;
+          s.player.vx = THREE.MathUtils.lerp(s.player.vx, moveDir * moveSpeed, 0.2);
+
+          // Gravity
+          const gravity = -30.0;
+          s.player.vy += gravity * dt;
+
+          const nextX = s.player.x + s.player.vx * dt;
+          const nextY = s.player.y + s.player.vy * dt;
+
+          s.player.x = nextX;
+          s.player.isGrounded = false;
+
+          // Block Collisions
+          const pHalfW = 0.45;
+          const pHalfH = 0.45;
+
+          for (const b of s.blocks) {
+            // Crumbling drop
+            if (b.isTriggered) {
+              b.fallSpeed = (b.fallSpeed || 0) + 20 * dt;
+              b.mesh.position.y -= b.fallSpeed * dt;
+            }
+
+            const currentBlockY = b.mesh.position.y;
+            const bMinX = b.x - b.w / 2;
+            const bMaxX = b.x + b.w / 2;
+            const bTop = currentBlockY + b.h / 2;
+
+            if (s.player.x + pHalfW >= bMinX && s.player.x - pHalfW <= bMaxX) {
+              if (s.player.y - pHalfH >= bTop - 0.2 && nextY - pHalfH <= bTop + 0.3 && s.player.vy <= 0) {
+                s.player.y = bTop + pHalfH;
+                s.player.vy = 0;
+                s.player.isGrounded = true;
+
+                if (b.isCrumbling && !b.isTriggered) {
+                  b.isTriggered = true;
+                  playTone(320, 0.15, 'triangle');
+                }
+                break;
+              }
+            }
+          }
+
+          if (!s.player.isGrounded) {
+            s.player.y += s.player.vy * dt;
+          }
+
+          // Trigger Hidden Pop-up Spikes
+          s.spikes.forEach((sp) => {
+            if (!sp.isPopped && Math.abs(s.player.x - sp.triggerX) < 1.8) {
+              sp.isPopped = true;
+              playTone(600, 0.1, 'sawtooth');
+            }
+
+            if (sp.isPopped) {
+              sp.mesh.position.y = THREE.MathUtils.lerp(sp.mesh.position.y, sp.targetY, 0.25);
+            }
+
+            // Spike Collision
+            const dist = Math.hypot(s.player.x - sp.x, s.player.y - sp.mesh.position.y);
+            if (dist < 0.65) {
+              killPlayer();
+            }
+          });
+
+          // Void Fall
+          if (s.player.y < -8) {
+            killPlayer();
+          }
+
+          // The Troll Escaping Door Gimmick!
+          const distToDoor = Math.hypot(s.player.x - s.door.x, s.player.y - s.door.y);
+          if (stage === 1 && distToDoor < 3.2 && !s.door.hasEscaped) {
+            // Door leaps upward!
+            s.door.hasEscaped = true;
+            s.door.targetY = 4.5;
+            playTone(800, 0.2, 'square');
+          } else if (stage === 3 && distToDoor < 3.0 && s.door.escapeCount < 1) {
+            // Door dodges to the left
+            s.door.escapeCount++;
+            s.door.targetX = 2.0;
+            s.door.targetY = 1.5;
+            playTone(850, 0.2, 'square');
+          } else if (stage === 4 && distToDoor < 3.0 && s.door.escapeCount < 2) {
+            s.door.escapeCount++;
+            if (s.door.escapeCount === 1) {
+              s.door.targetX = 0;
+              s.door.targetY = 3.0;
+            } else {
+              s.door.targetX = 12;
+              s.door.targetY = 2.0;
+            }
+            playTone(900, 0.2, 'square');
+          }
+
+          // Smooth Door Movement
+          s.door.x = THREE.MathUtils.lerp(s.door.x, s.door.targetX, 0.12);
+          s.door.y = THREE.MathUtils.lerp(s.door.y, s.door.targetY, 0.12);
+          if (doorGroup) {
+            doorGroup.position.set(s.door.x, s.door.y, 0);
+          }
+
+          // Reach Door -> Stage Clear!
+          if (distToDoor < 1.0) {
+            playTone(990, 0.4, 'sine');
+            if (stage < totalStages) {
+              setStage((st) => st + 1);
+              setScore((sc) => sc + 250);
+              setupStage(stage + 1);
+            } else {
+              // Full Victory!
+              setIsVictory(true);
+              const receipt = calculateAndDepositMissionReward({
+                gameId: 'pokileveldevil',
+                gameTitle: 'Level Devil 3D',
+                durationSeconds: Math.round(s.timeAlive),
+                score: score + 500,
+                maxTargetScore: 1000,
+                isVictory: true,
+                difficulty: 'HARD',
+              });
+              setSettlementReceipt(receipt);
+              onReward(receipt.totalSns);
+            }
+          }
+
+          // Squish and Stretch Animation
+          if (playerMesh) {
+            const stretchY = 1.0 + (s.player.vy > 0 ? 0.2 : s.player.isGrounded ? -0.1 : 0);
+            playerMesh.scale.set(1.0 / Math.sqrt(stretchY), stretchY, 1.0);
+          }
+
+          playerGroup.position.set(s.player.x, s.player.y, 0);
+        }
+
+        // Camera Soft Follow
+        camera.position.x = THREE.MathUtils.lerp(camera.position.x, s.player.x * 0.4, 0.08);
+        camera.position.y = THREE.MathUtils.lerp(camera.position.y, Math.max(2.0, s.player.y * 0.3 + 2.5), 0.08);
+        camera.lookAt(camera.position.x, camera.position.y - 1.0, 0);
+
+        renderer.render(scene, camera);
+      }
+
+      animFrameRef.current = requestAnimationFrame(loop);
+    };
+
+    animFrameRef.current = requestAnimationFrame(loop);
+
+    return () => {
+      cancelAnimationFrame(animFrameRef.current);
+    };
+  }, [isGameOver, isVictory, playTone, killPlayer, stage, totalStages, score, setupStage, onReward]);
+
+  // Keyboard Controls
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const s = stateRef.current;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') s.keys.left = true;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') s.keys.right = true;
+      if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+        e.preventDefault();
+        handleJump();
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      const s = stateRef.current;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') s.keys.left = false;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') s.keys.right = false;
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [handleJump]);
+
+  // Mobile Touch Steer Zone Handlers
+  const handleSteerTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    const s = stateRef.current;
+    s.touch.active = true;
+    s.touch.startX = touch.clientX;
+    s.touch.currentX = touch.clientX;
   };
 
-  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (!stateRef.current.isTouchActive) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    stateRef.current.player.targetX = e.clientX - rect.left - 18;
+  const handleSteerTouchMove = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    const s = stateRef.current;
+    if (s.touch.active) {
+      s.touch.currentX = touch.clientX;
+      const diffX = s.touch.currentX - s.touch.startX;
+      const clamped = Math.max(-50, Math.min(50, diffX));
+      setTouchSteerVal(clamped / 50);
+
+      if (diffX < -10) {
+        s.keys.left = true;
+        s.keys.right = false;
+      } else if (diffX > 10) {
+        s.keys.right = true;
+        s.keys.left = false;
+      } else {
+        s.keys.left = false;
+        s.keys.right = false;
+      }
+    }
   };
 
-  const handlePointerUp = () => {
-    stateRef.current.isTouchActive = false;
+  const handleSteerTouchEnd = () => {
+    const s = stateRef.current;
+    s.touch.active = false;
+    s.keys.left = false;
+    s.keys.right = false;
+    setTouchSteerVal(0);
   };
 
   const tutorialSteps: TutorialStep[] = [
     {
-      title: isKo ? '레벨 데빌 (악마의 플랫포머)' : 'Level Devil',
-      badge: 'MISSION 05',
+      badge: 'TROLL',
+      title: isKo ? '😈 방심은 금물! 트롤 플랫포머' : '😈 Beware the Troll Platformer',
       description: isKo
-        ? '문(DOOR)을 향해 도달하세요! 하지만 방심하지 마세요. 바닥이 꺼지거나 문이 도망치는 얄미운 트랩이 곳곳에 숨겨져 있습니다.'
-        : 'Reach the door to escape! Beware of unexpected trolling traps like falling floors and fake doors.',
+        ? '목표는 단순합니다. 레벨 끝에 있는 출구 문에 도달하세요! 하지만 모든 발판과 가시를 의심해야 합니다.'
+        : 'The goal is simple: Reach the exit door! But trust nothing—floors crumble and spikes pop out!',
       keyPoints: isKo
-        ? ['숨겨진 함정 파악 및 타이밍 점프', '목표 포털 문 도달 시 클리어', '낚시 트랩 패턴 기억하기']
-        : ['Anticipate surprise traps', 'Reach door to clear stage', 'Memorize troll patterns'],
+        ? ['무너지는 발판 빠르게 통과', '기습 솟구치는 붉은 가시 조심']
+        : ['Cross crumbling blocks quickly', 'Watch for sudden popping spikes'],
     },
     {
-      title: isKo ? '원터치 점프 & 이동' : 'Touch Jump & Move',
-      badge: 'TOUCH CONTROLS',
+      badge: 'INVERT',
+      title: isKo ? '🔄 반전 조작 & 도망치는 문' : '🔄 Inverted Controls & Escaping Door',
       description: isKo
-        ? '화면을 탭하면 즉시 점프하며, 좌우로 드래그하여 정확하게 착지할 수 있습니다.'
-        : 'Tap anywhere to jump, and drag left/right to steer your character.',
+        ? '문 앞에 도착하면 문이 위나 옆으로 도망칠 수 있습니다! 스테이지 3에서는 좌우 조작이 반대로 뒤바뀝니다.'
+        : 'The door may jump away when approached! Stage 3 inverts your left/right controls!',
       keyPoints: isKo
-        ? ['원터치 탭: 신속 도약 점프', '좌우 드래그: 섬세한 공중 방향 제어', '한 손으로 100% 플레이 가능']
-        : ['Tap: Quick jump', 'Drag: Airborne movement', '100% one-hand friendly'],
-    }
+        ? ['문이 도망치면 끈질기게 추적', '반전 조작 시 침착하게 반대로 이동']
+        : ['Chase down the fleeing door', 'Adapt to inverted steering'],
+    },
+    {
+      badge: 'RESPAWN',
+      title: isKo ? '⚡ 0초 즉시 부활 시스템' : '⚡ Instant Respawn',
+      description: isKo
+        ? '함정에 걸려 죽어도 0.5초 만에 즉각 부활합니다! 함정의 위치를 학습하며 끝까지 탈출하세요.'
+        : 'Death respawns you in 0.5s! Learn the trap triggers and conquer all 4 stages!',
+      keyPoints: isKo
+        ? ['죽음을 두려워 말고 도전', '4개 스테이지 클리어 시 승리']
+        : ['No penalty for deaths', 'Clear all 4 stages to win'],
+    },
   ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col items-center select-none overflow-hidden font-mono">
+    <div className="fixed inset-0 w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none touch-none">
+      {/* 3D WebGL Canvas */}
+      <div ref={containerRef} className="absolute inset-0 w-full h-full" />
+
+      {/* Minimalist Mission HUD */}
       <MinimalistMissionHUD
-        title={isKo ? 'No.05 레벨 데빌' : 'No.05 Level Devil'}
-        currentScore={score}
+        gameTitle="LEVEL DEVIL 3D"
+        score={score}
         targetScore={1000}
-        timeLeft={timeLeft}
-        stageInfo={`STAGE ${stage}/${totalStages} (데스: ${deaths})`}
-        combo={stateRef.current.combo}
-        onExit={onExit}
+        language={language}
+        onExit={() => {
+          const s = stateRef.current;
+          const currentProgress = (stage - 1) * 250 + Math.max(0, 100 - deaths * 10);
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'pokileveldevil',
+            gameTitle: 'Level Devil 3D',
+            durationSeconds: Math.round(s.timeAlive),
+            score: currentProgress,
+            maxTargetScore: 1000,
+            isVictory: false,
+            difficulty: 'HARD',
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
+          onExit();
+        }}
       />
 
-      <div className="relative flex-1 w-full max-w-md flex items-center justify-center p-2">
-        <canvas
-          ref={canvasRef}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onPointerCancel={handlePointerUp}
-          className="w-full h-full rounded-sm border border-slate-800 touch-none shadow-inner"
-        />
+      {/* Top Status Panel: Stage, Deaths, Inverted Indicator */}
+      <div className="absolute top-16 left-4 right-4 flex items-center justify-between text-xs sm:text-sm text-slate-200 pointer-events-none z-10">
+        <div className="flex items-center gap-2 bg-slate-900/85 px-3 py-1.5 rounded-sm border border-slate-700/80 backdrop-blur-md shadow-md">
+          <span className="text-amber-400 font-bold">LEVEL {stage}/{totalStages}</span>
+          <span className="text-slate-400">|</span>
+          <span className="text-rose-400 font-bold">💀 {deaths} DEATHS</span>
+        </div>
 
-        {/* Action Guide */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none text-center bg-slate-900/80 px-4 py-1.5 rounded-full border border-slate-700/60 backdrop-blur-sm">
-          <p className="text-xs text-rose-400 font-bold tracking-wider animate-pulse">
-            {isKo ? '👆 탭: 점프 | ↔️ 드래그: 이동 | ⚠️ 악마 트랩 주의' : '👆 TAP: JUMP | ↔️ DRAG: MOVE | ⚠️ BEWARE TRAPS'}
-          </p>
+        {isControlsInverted && (
+          <div className="flex items-center gap-1.5 bg-rose-950/90 border border-rose-500/80 px-3 py-1.5 rounded-sm text-rose-300 font-bold text-xs animate-pulse shadow-md">
+            <span>⚠️</span>
+            <span>{isKo ? '조작 반전! [LEFT ↔ RIGHT]' : 'CONTROLS INVERTED!'}</span>
+          </div>
+        )}
+      </div>
+
+      {/* 100% Mobile Touch Controls */}
+      <div className="absolute inset-0 pointer-events-none z-20 flex">
+        {/* Left 50% Touch Steer Pad */}
+        <div
+          className="w-1/2 h-full pointer-events-auto flex items-end p-6"
+          onTouchStart={handleSteerTouchStart}
+          onTouchMove={handleSteerTouchMove}
+          onTouchEnd={handleSteerTouchEnd}
+        >
+          <div className="bg-slate-900/85 backdrop-blur-md border border-slate-700/80 rounded-sm p-3 flex flex-col items-center gap-2 shadow-xl">
+            <div className="text-[10px] text-slate-400 font-bold tracking-wider">
+              {isKo ? '◀ 좌우 슬라이드 이동 ▶' : '◀ SLIDE TO MOVE ▶'}
+            </div>
+            <div className="w-28 h-3 bg-slate-800 rounded-full overflow-hidden relative border border-slate-700">
+              <div
+                className="absolute top-0 bottom-0 w-6 bg-amber-400 rounded-full transition-all duration-75"
+                style={{
+                  left: `${50 + touchSteerVal * 40}%`,
+                  transform: 'translateX(-50%)',
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Right 50% Giant Jump Action Button */}
+        <div className="w-1/2 h-full pointer-events-none flex flex-col justify-end items-end p-6">
+          <button
+            type="button"
+            onClick={handleJump}
+            onTouchStart={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleJump();
+            }}
+            className="pointer-events-auto w-24 h-24 rounded-sm bg-amber-500 active:bg-amber-600 text-slate-950 font-black border-2 border-amber-300 shadow-2xl flex flex-col items-center justify-center active:scale-90 transition-transform cursor-pointer"
+          >
+            <span className="text-3xl">🦘</span>
+            <span className="text-xs tracking-wider mt-1 font-mono">JUMP</span>
+          </button>
         </div>
       </div>
 
       {/* Victory Reward Modal */}
       {settlementReceipt && (
         <VictoryRewardModal
-          isOpen={isGameOver}
-          isVictory={isVictory}
-          score={score}
+          isOpen={isVictory}
           receipt={settlementReceipt}
-          onConfirm={onExit}
-          onRestart={() => {
-            setIsGameOver(false);
-            setIsVictory(false);
-            setSettlementReceipt(null);
-            setScore(0);
-            setStage(1);
-            setDeaths(0);
-            setTimeLeft(45);
-            initStage(1);
-          }}
           language={language}
+          onConfirm={() => {
+            setIsVictory(false);
+            onExit();
+          }}
         />
       )}
 
       {/* Universal Tutorial Modal */}
-      {showTutorial && (
-        <UniversalTutorialModal
-          isOpen={showTutorial}
-          gameTitle={isKo ? 'No.05 레벨 데빌' : 'No.05 Level Devil'}
-          steps={tutorialSteps}
-          onComplete={() => {
-            setShowTutorial(false);
-            try {
-              localStorage.setItem('hero_tutorial_leveldevil', 'true');
-            } catch {}
-          }}
-          language={language}
-        />
-      )}
+      <UniversalTutorialModal
+        isOpen={showTutorial}
+        steps={tutorialSteps}
+        language={language}
+        onClose={() => {
+          setShowTutorial(false);
+          try {
+            localStorage.setItem('hero_tutorial_leveldevil_v2', 'true');
+          } catch {
+            // ignore
+          }
+        }}
+      />
     </div>
   );
 };

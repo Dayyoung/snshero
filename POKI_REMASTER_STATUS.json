@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 5,
-  "completed_count": 4,
-  "last_updated": "2026-09-07T15:32:00+09:00",
+  "current_game_index": 6,
+  "completed_count": 5,
+  "last_updated": "2026-09-07T15:42:00+09:00",
   "history": [
     {
       "id": 1,
@@ -49,6 +49,17 @@
       "component": "src/components/poki/PokiPaperIoGame.tsx",
       "completed_at": "2026-09-07T15:32:00+09:00",
       "details": "Three.js 기반 3D 영토 쟁탈전 IO 구현, 90x90 동적 캔버스 텍스처 영토 매핑, 다각형 루프(Polygon Loop) 안전지대 귀환 시 자동 영토 점령(Conquer), 3D 페이퍼 큐비 아바타 & No.04 영웅 배지, 적 꼬리 자르기(Tail Cut) 킬 시스템, 실시간 리더보드 & 점유율 20% 승리, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 5,
+      "name": "Level Devil",
+      "poki_url": "https://poki.com/kr/g/level-devil",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No005_LevelDevil_Prompt.md",
+      "component": "src/components/poki/PokiLevelDevilGame.tsx",
+      "completed_at": "2026-09-07T15:42:00+09:00",
+      "details": "Three.js 기반 3D 트롤 플랫포머 구현, 4개 기상천외한 트롤 스테이지(기습 솟구치는 가시, 밟으면 무너지는 블록, 위/옆으로 껑충 도망치는 출구 문, 좌우 반전 조작), 3D 데빌 큐비 아바타 & No.05 영웅 배지, 0.5초 즉각 부활, 모바일 좌측 슬라이드 패드 & 우측 84px 즉각 점프 버튼, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
