@@ -4,6 +4,35 @@
 
 ---
 
+## [2026-09-07 21:10 KST] [Poki 110선 리마스터 19/110] No.019 Backrooms Recovery Three.js 3D 백룸 미로 생존 탈출 어드벤처 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/backrooms-recovery`) 분석 및 프롬프트(`src/components/poki/prompts/No019_BackroomsRecovery_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 28x28m 노란 복도 미로 & 베이지 카펫 바닥 & 천장 타일 & 6대 형광등 조명, 안전 시작 구역(시작 급사 원천 차단), 플레이어 손전등 스포트라이트 & 배터리 시스템, 3개 마그네틱 키카드 & 2개 배터리 팩 수거, 2마리 그림자 엔티티(순찰/7m 추격 AI & 붉은 눈빛), 비상구 철제 게이트 개방 탈출, 화면 기준 360도 이동 100% 일치 및 80px 스프린트 + 68px 손전등 퓨어 터치 조작계 전면 재개발.
+  - AGENTS.md 카메라 기준 조작 방향(좌우/상하) 100% 일치 절대 원칙 준수 (화면 기준 오른쪽=우측, 왼쪽=좌측).
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(다이나믹 조이스틱 + 80px 대형 스프린트 + 68px 손전등 토글 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 인기 3D 생존 공포 탈출 어드벤처 게임. 기묘한 형광등 불빛과 끝없는 노란 벽지의 백룸 미로(Level 0)에서 흩어진 3개의 마그네틱 키카드와 배터리를 수거하고, 어둠 속에서 추격해오는 섬뜩한 엔티티를 피해 비상구 문으로 탈출하는 스릴 넘치는 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiBackroomsRecoveryGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 3인칭 백뷰 트래킹 카메라, 28x28m 노란 벽지 복도 미로 & 천장 타일 패널 & 6개 형광등 조명.
+     - 안전 시작 구역 (X: -10m, Z: -10m): 게임 시작 직후 엔티티 없는 안전한 스타트 구역 확보.
+     - 실시간 손전등 스포트라이트(SpotLight) & 배터리 잔량 시스템 (자연 소모 및 배터리 팩 충전).
+     - 자원 수집 & 탈출 시스템:
+       - 3개 마그네틱 보안 키카드 (+350점 수집 시 비상구 해금).
+       - 2개 배터리 팩 (+40% 손전등 충전).
+       - 비상구 철제 게이트 & 초록 EXIT 유도등: 3개 키카드 획득 후 도달 시 승리.
+     - 엔티티 AI (The Smiler 2마리): 미로 순찰 중 플레이어가 7.5m 이내 접근 시 붉은 안광과 함께 고속 추격 모드 가동, 피격 시 정신력(Sanity) 감소 및 공포 피격 연출.
+     - 모바일 퓨어 터치: 화면 좌측 다이나믹 플로팅 조이스틱(360° 이동) + 우측 80px 대형 스프린트 달리기(스태미나 가속) + 68px 손전등 온/오프 버튼 + 햅틱 진동.
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 확인 팝업 및 키카드 수집/생존 실적 비례 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No019_BackroomsRecovery_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 무결점 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 19개 완료 (No.020 Stickman Hook 대기).
+
+---
+
 ## [2026-09-07 21:00 KST] [Poki 110선 리마스터 18/110] No.018 Plonky Three.js 3D 물리 플랫포머 & 로프 스윙 어드벤처 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/plonky`) 분석 및 프롬프트(`src/components/poki/prompts/No018_Plonky_Prompt.md`) 작성.
