@@ -669,6 +669,22 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       setGameState('story');
     }
   }, [initialMode]);
+
+  // Ensure browser back button returns to mission list (modeSelect) instead of home
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleGlobalPopState = () => {
+      if (gameState !== 'modeSelect') {
+        setGameState('modeSelect');
+      }
+    };
+
+    window.addEventListener('popstate', handleGlobalPopState);
+    return () => {
+      window.removeEventListener('popstate', handleGlobalPopState);
+    };
+  }, [gameState]);
   const [showConstructionModal, setShowConstructionModal] = useState(false);
   const [selectedConstructionMode, setSelectedConstructionMode] = useState<string>('');
   const [guideMode, setGuideMode] = useState<any>(null);
