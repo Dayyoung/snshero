@@ -4,6 +4,36 @@
 
 ---
 
+## [2026-09-08 01:41 KST] [Poki 110선 리마스터 81/110] No.081 Penalty Shooters 2 Three.js 3D 국가대항 승부차기 토너먼트 & 슈퍼 세이브 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/penalty-shooters-2`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No081_PenaltyShooters2_Prompt.md`) 작성.
+  - Three.js 3D 기반 3D 축구 피치(잔디 투톤 스트라이프/페널티 라인/11m 페널티 스팟 중앙 No.081 공식 카드 영웅 배지 엠블럼/백색 규격 골대 및 반투명 골망).
+  - 키커 턴 & 골키퍼 턴 듀얼 롤 플레이(키커 턴 3.5D 후방 쿼터뷰 vs 키퍼 턴 골문 1인칭 뷰).
+  - 골대 구석 9구역 정밀 조준 타깃팅 + 76px SHOOT 90km/h 강슛 + 64px CURVE 감아차기 탄도학 + 골망 흔들림 & GOAL 세레모니.
+  - 키퍼 턴 드래그 글러브 조작 & 76px DIVE 슈퍼 세이브, 5라운드 승부차기 전광판(⚽/❌ 실시간 인디케이터).
+  - 모바일 퓨어 터치 조작계 및 MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 스포츠/축구 부문 수억 회 플레이 1위 메가 히트작 Penalty Shooters 2. 국가대표팀을 이끌고 승부차기 토너먼트에 출전하여 스트라이커 키커와 수문장 골키퍼 역할을 번갈아 수행하며 짜릿한 우승 트로피를 노리는 3D 축구 승부차기 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiPenaltyShooters2Game.tsx`)**:
+     - 3D 축구 피치 경기장 (잔디 투톤 스트라이프, 페널티 박스 라인, 11m 페널티 스팟 중앙 No.081 공식 영웅 배지 엠블럼).
+     - 규격 골대 모델링: 7.3m 폭 백색 골포스트 2개, 크로스바 1개, 반투명 와이어프레임 골망(Net).
+     - 키커 턴 & 키퍼 턴 듀얼 카메라 & 시스템:
+       - [키커 턴]: 키커 후방 쿼터뷰 카메라. 골대 앞 평면에서 터치 드래그로 9구역 정밀 타깃팅. 76px [SHOOT] 90km/h 직사 슛 및 64px [CURVE] 바나나 감아차기 탄도학. 골인 시 GOAL 세레모니 & 골망 흔들림.
+       - [키퍼 턴]: 골문 앞 1인칭 시점. 상대 AI 키커의 슛 궤적을 예측하여 화면 터치 슬라이드로 골든 글러브를 조향하고 76px [DIVE]로 슈퍼 세이브(SUPER SAVE) 펀칭.
+       - 5라운드 승부차기 전광판: KOR(YOU) vs AI RIVAL 실시간 점수 및 ⚽/❌ 인디케이터.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 키커 턴: 골대 터치 드래그 조준 + 76px [SHOOT] + 64px [CURVE] + 햅틱.
+       - 키퍼 턴: 화면 터치 슬라이드 조향 + 76px [DIVE] + 햅틱.
+       - MinimalistMissionHUD (KOR vs AI 스코어보드, 라운드 번호, 중도 포기 확인 모달, 승부차기 득점/선방 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (81/110 완료, current_game_index: 82) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 81/110] No.081 Penalty Shooters 2 Three.js 3D 국가대항 승부차기 토너먼트 & 슈퍼 세이브 전면 고도화`)
+
 ## [2026-09-08 01:38 KST] [Poki 110선 리마스터 80/110] No.080 Scary Teacher 3D Three.js 3D 미스 티 대저택 잠입 & 기상천외 장난 탈출 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/scary-teacher-3d`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No080_ScaryTeacher3D_Prompt.md`) 작성.

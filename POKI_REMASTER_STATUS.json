@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 81,
-  "completed_count": 80,
-  "last_updated": "2026-09-08T01:38:00+09:00",
+  "current_game_index": 82,
+  "completed_count": 81,
+  "last_updated": "2026-09-08T01:41:00+09:00",
   "history": [
     {
       "id": 1,
@@ -885,6 +885,17 @@
       "component": "src/components/poki/PokiScaryTeacher3DGame.tsx",
       "completed_at": "2026-09-08T01:38:00+09:00",
       "details": "Three.js 기반 3D 미스 티 대저택 잠입 & 기상천외 장난 탈출 어드벤처 구현, 30m x 24m 호화 대저택(로비/주방/거실/서재/현관 게이트/중앙 No.080 공식 영웅 배지 카펫), 장난꾸러기 닉(블루 후드티/등 뒤 No.080 공식 영웅 배지 백팩), 거대한 미스 티 AI(핑크 드레스/롤러 헤어/돋보기 안경/8m 70° 부채꼴 시야각 Vision Cone/경보 시 붉은색 전환 및 고속 추격), 3종 기상천외 장난 미션(주방 칠리 시리얼 + 거실 소파 방귀쿠션 + 서재 TV 페인트 낙서) + 은신용 옷장 HIDE(완전 은신) + SNEAK/RUN 소음 관리 시스템, 100% 모바일 퓨어 터치 조작계(화면 좌측 360° 플로팅 조이스틱 + 76px PRANK! 대형 장난 실행 버튼 + 64px HIDE/SNEAK 버튼 군 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 81,
+      "name": "Penalty Shooters 2",
+      "poki_url": "https://poki.com/kr/g/penalty-shooters-2",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No081_PenaltyShooters2_Prompt.md",
+      "component": "src/components/poki/PokiPenaltyShooters2Game.tsx",
+      "completed_at": "2026-09-08T01:41:00+09:00",
+      "details": "Three.js 기반 3D 국가대항 승부차기 토너먼트 & 슈퍼 세이브 시뮬레이션 구현, 3D 축구 피치(잔디 투톤 스트라이프/페널티 라인/11m 페널티 스팟 중앙 No.081 공식 카드 영웅 배지 엠블럼/백색 규격 골대 및 반투명 골망), 키커 턴 & 골키퍼 턴 듀얼 롤 플레이(키커 턴 3.5D 후방 쿼터뷰 vs 키퍼 턴 골문 1인칭 뷰), 골대 구석 9구역 정밀 조준 타깃팅 + 76px SHOOT 90km/h 강슛 + 64px CURVE 감아차기 탄도학 + 골망 흔들림 & GOAL 세레모니, 키퍼 턴 드래그 글러브 조작 & 76px DIVE 슈퍼 세이브, 5라운드 승부차기 전광판(⚽/❌ 실시간 인디케이터), 모바일 퓨어 터치 조작계 및 MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
