@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 98,
-  "completed_count": 97,
-  "last_updated": "2026-09-08T02:09:00+09:00",
+  "current_game_index": 99,
+  "completed_count": 98,
+  "last_updated": "2026-09-08T02:10:00+09:00",
   "history": [
     {
       "id": 1,
@@ -1072,6 +1072,17 @@
       "component": "src/components/poki/PokiEvoWorldIoGame.tsx",
       "completed_at": "2026-09-08T02:09:00+09:00",
       "details": "Three.js 기반 3D 비행 생태계 진화 IO 서바이벌 구현, 28m x 24m 오픈 스카이 생태 챔버 필드(하단 호수 수면/중앙 부유섬 No.097 공식 영웅 배지 기념탑/하늘 구름), 5단계 생물 진화(플라이➔버터플라이➔모기➔매➔피닉스), 날개 진동 애니메이션 및 No.097 영웅 배지 엠블럼, 30여개 3D 먹이(이슬/베리/꽃) 섭취 & 수분(Water %) 호수 잠수 리필 메커니즘, 상위 포식자 AI 회피, 1000 EXP 피닉스 진화 승리, 모바일 퓨어 터치 조작계(360도 플로팅 가상 조이스틱 3D 비행 + 76px FLY BOOST 대형 가속 버튼 + 64px DIVE 급강하 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 98,
+      "name": "Bullet Bros",
+      "poki_url": "https://poki.com/kr/g/bullet-bros",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No098_BulletBros_Prompt.md",
+      "component": "src/components/poki/PokiBulletBrosGame.tsx",
+      "completed_at": "2026-09-08T02:10:00+09:00",
+      "details": "Three.js 기반 3D 도탄 물리 불릿타임 슈팅 액션 구현, 18m x 10m 네온 루프탑 아레나(강철 벽면 도탄 반사/장애물 기둥/중앙 상단 No.098 공식 영웅 배지 홀로그램 간판), 3D 브로 히어로 피규어(블랙 트렌치코트/선글라스/가슴 No.098 영웅 배지 데칼/듀얼 매그넘), 황금 도탄 탄환 물리(벽면 법선 반사/스파크 파티클/적 래그돌 넉백), 3개 스테이지 웨이브 소탕 승리, 모바일 퓨어 터치 조작계(화면 드래그 레이저 조준 사격 + 76px SHOOT NOW 대형 버튼 + 64px SLOW-MO 불릿타임 감속 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

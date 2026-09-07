@@ -1,401 +1,761 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import * as THREE from 'three';
 import { MinimalistMissionHUD } from '../MinimalistMissionHUD';
 import { VictoryRewardModal } from '../VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../../lib/standardizedRewardGateway';
 import { drawCardSprite } from '../../lib/canvasCardRenderer';
 
 interface PokiBulletBrosGameProps {
-  onBack: () => void;
+  onBack?: () => void;
+  onClose?: () => void;
+  cardId?: number;
 }
 
-interface Enemy {
+interface EnemyData {
+  mesh: THREE.Group;
   x: number;
   y: number;
   alive: boolean;
+  vx: number;
+  vy: number;
+  rotZ: number;
 }
 
-interface Bullet {
+interface BulletData {
+  mesh: THREE.Mesh;
   x: number;
   y: number;
   vx: number;
   vy: number;
   bounces: number;
+  active: boolean;
 }
 
-interface Obstacle {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
+interface ObstacleData {
+  mesh: THREE.Mesh;
+  box: THREE.Box3;
 }
 
-const STAGES: Array<{
-  enemies: Enemy[];
-  obstacles: Obstacle[];
-}> = [
+const STAGE_CONFIGS = [
   // Stage 1
   {
     enemies: [
-      { x: 320, y: 220, alive: true },
-      { x: 320, y: 380, alive: true },
+      { x: 4.5, y: -1.5 },
+      { x: 5.5, y: 2.2 },
     ],
     obstacles: [
-      { x: 220, y: 150, w: 20, h: 120 },
-      { x: 220, y: 320, w: 20, h: 120 },
+      { x: 1.0, y: 0.0, w: 0.8, h: 4.0 },
     ],
   },
   // Stage 2
   {
     enemies: [
-      { x: 200, y: 150, alive: true },
-      { x: 330, y: 280, alive: true },
-      { x: 120, y: 380, alive: true },
+      { x: 3.5, y: -2.0 },
+      { x: 6.0, y: 0.5 },
+      { x: 4.0, y: 2.8 },
     ],
     obstacles: [
-      { x: 160, y: 220, w: 140, h: 20 },
-      { x: 240, y: 330, w: 120, h: 20 },
+      { x: 0.5, y: 1.5, w: 4.0, h: 0.8 },
+      { x: 2.5, y: -1.0, w: 0.8, h: 3.0 },
     ],
   },
   // Stage 3
   {
     enemies: [
-      { x: 330, y: 140, alive: true },
-      { x: 330, y: 440, alive: true },
-      { x: 200, y: 280, alive: true },
+      { x: 3.0, y: -2.2 },
+      { x: 5.5, y: -0.5 },
+      { x: 3.5, y: 1.8 },
+      { x: 6.5, y: 2.8 },
     ],
     obstacles: [
-      { x: 140, y: 180, w: 120, h: 20 },
-      { x: 220, y: 360, w: 120, h: 20 },
-      { x: 260, y: 220, w: 20, h: 80 },
+      { x: 0.0, y: -0.5, w: 3.0, h: 0.8 },
+      { x: 4.5, y: 1.0, w: 3.5, h: 0.8 },
+      { x: 1.5, y: 2.2, w: 0.8, h: 2.5 },
     ],
   },
 ];
 
-export const PokiBulletBrosGame: React.FC<PokiBulletBrosGameProps> = ({ onBack }) => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+export default function PokiBulletBrosGame({
+  onBack,
+  onClose,
+  cardId = 98,
+}: PokiBulletBrosGameProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const handleExit = onBack || onClose || (() => {});
 
-  const [currentStageIdx, setCurrentStageIdx] = useState(0);
-  const [bulletsLeft, setBulletsLeft] = useState(5);
-  const [enemiesEliminated, setEnemiesEliminated] = useState(0);
+  // Game States
+  const [stageIdx, setStageIdx] = useState<number>(0);
+  const [bulletsLeft, setBulletsLeft] = useState<number>(5);
+  const [totalKills, setTotalKills] = useState<number>(0);
+  const [isBulletTime, setIsBulletTime] = useState<boolean>(false);
+  const [aimAngle, setAimAngle] = useState<number>(0);
+  const [gameWon, setGameWon] = useState<boolean>(false);
   const [rewardReceipt, setRewardReceipt] = useState<RewardReceipt | null>(null);
-  const [gameWon, setGameWon] = useState(false);
-  const [startTime] = useState<number>(() => Date.now());
 
-  const stateRef = useRef<{
-    stageIdx: number;
-    playerX: number;
-    playerY: number;
-    aimStart: { x: number; y: number } | null;
-    aimCurrent: { x: number; y: number } | null;
-    bullets: Bullet[];
-    bulletsLeft: number;
-    enemies: Enemy[];
-    obstacles: Obstacle[];
-    totalEliminated: number;
-    gameWon: boolean;
-    particles: Array<{ x: number; y: number; vx: number; vy: number; color: string; life: number }>;
-  }>({
-    stageIdx: 0,
-    playerX: 60,
-    playerY: 280,
-    aimStart: null,
-    aimCurrent: null,
-    bullets: [],
-    bulletsLeft: 5,
-    enemies: JSON.parse(JSON.stringify(STAGES[0].enemies)),
-    obstacles: STAGES[0].obstacles,
-    totalEliminated: 0,
-    gameWon: false,
-    particles: [],
-  });
+  // Runtime Refs
+  const startTimeRef = useRef<number>(Date.now());
+  const matchActiveRef = useRef<boolean>(true);
+  const isAimingRef = useRef<boolean>(false);
 
-  const loadStage = (idx: number) => {
-    const st = stateRef.current;
-    if (idx >= STAGES.length) {
-      if (!st.gameWon) {
-        st.gameWon = true;
-        setGameWon(true);
-        const duration = Math.max(1, Math.floor((Date.now() - startTime) / 1000));
-        const receipt = calculateAndDepositMissionReward({
-          gameId: 'bullet-bros',
-          gameTitle: 'Bullet Bros',
-          score: st.totalEliminated * 100,
-          durationSeconds: duration,
-        });
-        setRewardReceipt(receipt);
+  // Three.js Scene References
+  const threeRef = useRef<{
+    scene: THREE.Scene;
+    camera: THREE.PerspectiveCamera;
+    renderer: THREE.WebGLRenderer;
+    playerGroup: THREE.Group;
+    aimLine: THREE.Line;
+    bullets: BulletData[];
+    enemies: EnemyData[];
+    obstacles: ObstacleData[];
+    particlesGroup: THREE.Group;
+    stageGroup: THREE.Group;
+    aimAngle: number;
+    timeScale: number;
+  } | null>(null);
+
+  const triggerHaptic = (duration = 20) => {
+    try {
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        navigator.vibrate(duration);
       }
-      return;
+    } catch {
+      // Ignore
     }
-    st.stageIdx = idx;
-    setCurrentStageIdx(idx);
-    st.bulletsLeft = 5;
-    setBulletsLeft(5);
-    st.bullets = [];
-    st.enemies = JSON.parse(JSON.stringify(STAGES[idx].enemies));
-    st.obstacles = STAGES[idx].obstacles;
   };
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+  // Sparkles & Ricochet Spikes Emitter
+  const spawnHitParticles = useCallback((pos: THREE.Vector3, colorHex: number, count = 18) => {
+    if (!threeRef.current) return;
+    const { particlesGroup } = threeRef.current;
+    const geom = new THREE.BufferGeometry();
+    const positions = new Float32Array(count * 3);
+    const velocities: THREE.Vector3[] = [];
 
-    let animId: number;
+    for (let i = 0; i < count; i++) {
+      positions[i * 3] = pos.x;
+      positions[i * 3 + 1] = pos.y;
+      positions[i * 3 + 2] = pos.z;
+      velocities.push(
+        new THREE.Vector3(
+          (Math.random() - 0.5) * 6,
+          (Math.random() - 0.5) * 6,
+          (Math.random() - 0.5) * 3
+        )
+      );
+    }
+    geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const mat = new THREE.PointsMaterial({
+      color: colorHex,
+      size: 0.18,
+      transparent: true,
+      opacity: 1,
+    });
+    const pSystem = new THREE.Points(geom, mat);
+    particlesGroup.add(pSystem);
 
-    const render = () => {
-      const w = canvas.width;
-      const h = canvas.height;
-      const st = stateRef.current;
-
-      // Dark Warehouse Background
-      ctx.fillStyle = '#1e293b';
-      ctx.fillRect(0, 0, w, h);
-
-      // Top Banner
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(16, 12, w - 32, 60);
-      drawCardSprite(ctx, 98, 24, 18, 48, 48);
-
-      ctx.font = 'bold 14px monospace';
-      ctx.fillStyle = '#ffffff';
-      ctx.fillText(`BULLET BROS // 스테이지 ${st.stageIdx + 1}/3`, 84, 38);
-      ctx.font = '11px monospace';
-      ctx.fillStyle = '#f59e0b';
-      const aliveCount = st.enemies.filter((e) => e.alive).length;
-      ctx.fillText(`남은 총탄: ${st.bulletsLeft}발 | 생존 적: ${aliveCount}명`, 84, 56);
-
-      // Draw Obstacles (Walls)
-      ctx.fillStyle = '#475569';
-      ctx.strokeStyle = '#94a3b8';
-      ctx.lineWidth = 2;
-      st.obstacles.forEach((obs) => {
-        ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
-        ctx.strokeRect(obs.x, obs.y, obs.w, obs.h);
-      });
-
-      // Draw Aim Trajectory
-      if (st.aimStart && st.aimCurrent) {
-        ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)';
-        ctx.lineWidth = 2;
-        ctx.setLineDash([6, 6]);
-        const dx = st.aimCurrent.x - st.aimStart.x;
-        const dy = st.aimCurrent.y - st.aimStart.y;
-        ctx.beginPath();
-        ctx.moveTo(st.playerX, st.playerY);
-        ctx.lineTo(st.playerX + dx * 2, st.playerY + dy * 2);
-        ctx.stroke();
-        ctx.setLineDash([]);
+    let life = 0;
+    const interval = setInterval(() => {
+      life += 0.06;
+      const posAttr = geom.getAttribute('position') as THREE.BufferAttribute;
+      for (let i = 0; i < count; i++) {
+        posAttr.setXYZ(
+          i,
+          posAttr.getX(i) + velocities[i].x * 0.02,
+          posAttr.getY(i) + velocities[i].y * 0.02,
+          posAttr.getZ(i) + velocities[i].z * 0.02
+        );
       }
+      posAttr.needsUpdate = true;
+      mat.opacity = 1 - life;
 
-      // Draw Player Bro
-      ctx.save();
-      ctx.translate(st.playerX, st.playerY);
-      ctx.fillStyle = '#3b82f6';
-      ctx.fillRect(-12, -18, 24, 36);
-      ctx.fillStyle = '#fde047'; // Bandana
-      ctx.fillRect(-12, -18, 24, 8);
-      // Gun
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(10, -4, 14, 6);
-      ctx.restore();
-
-      // Draw Enemies
-      st.enemies.forEach((enemy) => {
-        if (enemy.alive) {
-          ctx.save();
-          ctx.translate(enemy.x, enemy.y);
-          ctx.fillStyle = '#dc2626';
-          ctx.fillRect(-12, -18, 24, 36);
-          ctx.fillStyle = '#1e293b'; // Sunglasses
-          ctx.fillRect(-10, -12, 10, 5);
-          ctx.fillRect(2, -12, 10, 5);
-          ctx.restore();
-        }
-      });
-
-      // Update & Draw Bullets
-      for (let i = st.bullets.length - 1; i >= 0; i--) {
-        const b = st.bullets[i];
-        b.x += b.vx;
-        b.y += b.vy;
-
-        // Bounce on Screen boundaries
-        if (b.x < 15 || b.x > w - 15) {
-          b.vx *= -1;
-          b.bounces += 1;
-        }
-        if (b.y < 90 || b.y > h - 40) {
-          b.vy *= -1;
-          b.bounces += 1;
-        }
-
-        // Bounce on Obstacles
-        st.obstacles.forEach((obs) => {
-          if (b.x >= obs.x && b.x <= obs.x + obs.w && b.y >= obs.y && b.y <= obs.y + obs.h) {
-            b.vx *= -1;
-            b.vy *= -1;
-            b.bounces += 1;
-          }
-        });
-
-        // Hit Enemies
-        st.enemies.forEach((enemy) => {
-          if (enemy.alive) {
-            if (Math.abs(b.x - enemy.x) < 18 && Math.abs(b.y - enemy.y) < 22) {
-              enemy.alive = false;
-              st.totalEliminated += 1;
-              setEnemiesEliminated(st.totalEliminated);
-
-              // Elimination blood/spark particles
-              for (let p = 0; p < 18; p++) {
-                st.particles.push({
-                  x: enemy.x,
-                  y: enemy.y,
-                  vx: (Math.random() - 0.5) * 8,
-                  vy: (Math.random() - 0.5) * 8,
-                  color: '#ef4444',
-                  life: 1.0,
-                });
-              }
-            }
-          }
-        });
-
-        // Bullet expiry after 5 bounces
-        if (b.bounces >= 5) {
-          st.bullets.splice(i, 1);
-          continue;
-        }
-
-        // Draw Bullet (Glowing yellow spark)
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, 4, 0, Math.PI * 2);
-        ctx.fillStyle = '#fde047';
-        ctx.fill();
-        ctx.strokeStyle = '#f59e0b';
-        ctx.stroke();
+      if (life >= 1) {
+        clearInterval(interval);
+        particlesGroup.remove(pSystem);
+        geom.dispose();
+        mat.dispose();
       }
-
-      // Check Stage Completion
-      const allDead = st.enemies.every((e) => !e.alive);
-      if (allDead && st.bullets.length === 0) {
-        loadStage(st.stageIdx + 1);
-      } else if (st.bulletsLeft <= 0 && st.bullets.length === 0 && !allDead) {
-        // Reset stage if ran out of bullets
-        loadStage(st.stageIdx);
-      }
-
-      // Draw Particles
-      for (let i = st.particles.length - 1; i >= 0; i--) {
-        const p = st.particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life -= 0.04;
-        if (p.life <= 0) {
-          st.particles.splice(i, 1);
-          continue;
-        }
-        ctx.globalAlpha = p.life;
-        ctx.fillStyle = p.color;
-        ctx.fillRect(p.x, p.y, 4, 4);
-        ctx.globalAlpha = 1.0;
-      }
-
-      // Bottom Instructions
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = '12px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText('[ 화면을 드래그하여 조준선을 맞추고 손을 떼어 발사하세요 ]', w / 2, h - 15);
-      ctx.textAlign = 'left';
-
-      animId = requestAnimationFrame(render);
-    };
-
-    animId = requestAnimationFrame(render);
-    return () => cancelAnimationFrame(animId);
+    }, 30);
   }, []);
 
-  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const x = (e.clientX - rect.left) * scaleX;
-    const y = (e.clientY - rect.top) * scaleY;
+  // Victory Trigger
+  const handleVictory = useCallback(() => {
+    if (gameWon) return;
+    setGameWon(true);
+    matchActiveRef.current = false;
+    triggerHaptic(80);
 
-    stateRef.current.aimStart = { x, y };
-    stateRef.current.aimCurrent = { x, y };
+    const durationSeconds = Math.max(15, Math.floor((Date.now() - startTimeRef.current) / 1000));
+    const receipt = calculateAndDepositMissionReward({
+      gameId: 'pokibulletbros',
+      gameTitle: 'Bullet Bros 3D',
+      isVictory: true,
+      score: 500,
+      maxTargetScore: 500,
+      durationSeconds,
+    });
+    setRewardReceipt(receipt);
+  }, [gameWon]);
+
+  // Player Figure Builder
+  const createPlayerMesh = (badgeTexture: THREE.CanvasTexture | null): THREE.Group => {
+    const group = new THREE.Group();
+
+    // Body (Black Coat)
+    const bodyGeom = new THREE.CylinderGeometry(0.35, 0.45, 1.2, 16);
+    const bodyMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.4 });
+    const body = new THREE.Mesh(bodyGeom, bodyMat);
+    body.position.y = 0.6;
+    group.add(body);
+
+    // Head with Sunglasses
+    const headGeom = new THREE.SphereGeometry(0.3, 16, 16);
+    const headMat = new THREE.MeshStandardMaterial({ color: 0xffdbac, roughness: 0.5 });
+    const head = new THREE.Mesh(headGeom, headMat);
+    head.position.y = 1.35;
+    group.add(head);
+
+    const glassGeom = new THREE.BoxGeometry(0.4, 0.12, 0.1);
+    const glassMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    const glasses = new THREE.Mesh(glassGeom, glassMat);
+    glasses.position.set(0.12, 1.38, 0.22);
+    group.add(glasses);
+
+    // Dual Pistols
+    const gunGeom = new THREE.BoxGeometry(0.6, 0.2, 0.12);
+    const gunMat = new THREE.MeshStandardMaterial({ color: 0x52525b, metalness: 0.8, roughness: 0.2 });
+    const gun = new THREE.Mesh(gunGeom, gunMat);
+    gun.position.set(0.5, 0.7, 0.25);
+    group.add(gun);
+
+    // Hero Badge on Chest
+    if (badgeTexture) {
+      const badgeGeom = new THREE.PlaneGeometry(0.45, 0.45);
+      const badgeMat = new THREE.MeshBasicMaterial({ map: badgeTexture, transparent: true });
+      const badgeMesh = new THREE.Mesh(badgeGeom, badgeMat);
+      badgeMesh.position.set(0, 0.65, 0.4);
+      group.add(badgeMesh);
+    }
+
+    return group;
   };
 
-  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (!stateRef.current.aimStart) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    stateRef.current.aimCurrent = {
-      x: (e.clientX - rect.left) * scaleX,
-      y: (e.clientY - rect.top) * scaleY,
+  // Enemy Figure Builder
+  const createEnemyMesh = (): THREE.Group => {
+    const group = new THREE.Group();
+
+    // Body (Red Suit)
+    const bodyGeom = new THREE.CylinderGeometry(0.35, 0.4, 1.1, 16);
+    const bodyMat = new THREE.MeshStandardMaterial({ color: 0xb91c1c, roughness: 0.5 });
+    const body = new THREE.Mesh(bodyGeom, bodyMat);
+    body.position.y = 0.55;
+    group.add(body);
+
+    // Head
+    const headGeom = new THREE.SphereGeometry(0.28, 16, 16);
+    const headMat = new THREE.MeshStandardMaterial({ color: 0xffdbac });
+    const head = new THREE.Mesh(headGeom, headMat);
+    head.position.y = 1.25;
+    group.add(head);
+
+    // Sunglasses
+    const glassGeom = new THREE.BoxGeometry(0.38, 0.1, 0.08);
+    const glassMat = new THREE.MeshBasicMaterial({ color: 0x1e1b4b });
+    const glasses = new THREE.Mesh(glassGeom, glassMat);
+    glasses.position.set(-0.1, 1.28, 0.22);
+    group.add(glasses);
+
+    return group;
+  };
+
+  // Load Stage
+  const loadStage = useCallback((sIdx: number) => {
+    if (!threeRef.current) return;
+    const { scene, stageGroup, obstacles, enemies } = threeRef.current;
+
+    // Clear old stage objects
+    obstacles.forEach((o) => stageGroup.remove(o.mesh));
+    obstacles.length = 0;
+    enemies.forEach((e) => stageGroup.remove(e.mesh));
+    enemies.length = 0;
+
+    const config = STAGE_CONFIGS[sIdx];
+
+    // Build Obstacles
+    config.obstacles.forEach((obs) => {
+      const obsGeom = new THREE.BoxGeometry(obs.w, obs.h, 1.5);
+      const obsMat = new THREE.MeshStandardMaterial({
+        color: 0x334155,
+        metalness: 0.6,
+        roughness: 0.3,
+      });
+      const obsMesh = new THREE.Mesh(obsGeom, obsMat);
+      obsMesh.position.set(obs.x, obs.y, 0);
+      stageGroup.add(obsMesh);
+
+      const box = new THREE.Box3().setFromObject(obsMesh);
+      obstacles.push({ mesh: obsMesh, box });
+    });
+
+    // Build Enemies
+    config.enemies.forEach((eCfg) => {
+      const eMesh = createEnemyMesh();
+      eMesh.position.set(eCfg.x, eCfg.y, 0);
+      stageGroup.add(eMesh);
+      enemies.push({
+        mesh: eMesh,
+        x: eCfg.x,
+        y: eCfg.y,
+        alive: true,
+        vx: 0,
+        vy: 0,
+        rotZ: 0,
+      });
+    });
+
+    setBulletsLeft(5);
+  }, []);
+
+  // Shoot Bullet
+  const fireBullet = useCallback(() => {
+    if (!threeRef.current || bulletsLeft <= 0 || !matchActiveRef.current) return;
+    triggerHaptic(40);
+
+    const { playerGroup, bullets, scene, aimAngle } = threeRef.current;
+    const pPos = playerGroup.position;
+
+    // Create Golden Ricochet Bullet Mesh
+    const bGeom = new THREE.SphereGeometry(0.18, 16, 16);
+    const bMat = new THREE.MeshStandardMaterial({
+      color: 0xfacc15,
+      emissive: 0xf59e0b,
+      emissiveIntensity: 0.8,
+      roughness: 0.1,
+    });
+    const bMesh = new THREE.Mesh(bGeom, bMat);
+    const startX = pPos.x + 0.6;
+    const startY = pPos.y + 0.7;
+    bMesh.position.set(startX, startY, 0);
+    scene.add(bMesh);
+
+    const speed = 26.0;
+    const vx = Math.cos(aimAngle) * speed;
+    const vy = Math.sin(aimAngle) * speed;
+
+    bullets.push({
+      mesh: bMesh,
+      x: startX,
+      y: startY,
+      vx,
+      vy,
+      bounces: 0,
+      active: true,
+    });
+
+    setBulletsLeft((prev) => prev - 1);
+    spawnHitParticles(new THREE.Vector3(startX, startY, 0), 0xfacc15, 8);
+  }, [bulletsLeft, spawnHitParticles]);
+
+  // Main Three.js Lifecycle
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
+
+    // 1. Scene
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0a0a14);
+
+    // 2. Camera (Side Ortho-Perspective View)
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+    camera.position.set(0, 0, 16);
+    camera.lookAt(0, 0, 0);
+
+    // 3. Renderer
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(width, height, false);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.25;
+    container.appendChild(renderer.domElement);
+
+    // 4. Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
+    scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0xfff7ed, 1.4);
+    dirLight.position.set(5, 10, 12);
+    scene.add(dirLight);
+
+    const magentaLight = new THREE.PointLight(0xd946ef, 1.8, 25);
+    magentaLight.position.set(-6, -4, 4);
+    scene.add(magentaLight);
+
+    const cyanLight = new THREE.PointLight(0x06b6d4, 1.8, 25);
+    cyanLight.position.set(6, 4, 4);
+    scene.add(cyanLight);
+
+    // 5. Stage Bounds (Outer Walls for Ricochet)
+    const wallMat = new THREE.MeshStandardMaterial({ color: 0x1e1b4b, metalness: 0.7, roughness: 0.2 });
+
+    // Top Wall
+    const topW = new THREE.Mesh(new THREE.BoxGeometry(20, 0.8, 2), wallMat);
+    topW.position.set(0, 5.0, 0);
+    scene.add(topW);
+
+    // Bottom Floor
+    const botW = new THREE.Mesh(new THREE.BoxGeometry(20, 0.8, 2), wallMat);
+    botW.position.set(0, -5.0, 0);
+    scene.add(botW);
+
+    // Left Wall
+    const leftW = new THREE.Mesh(new THREE.BoxGeometry(0.8, 10.8, 2), wallMat);
+    leftW.position.set(-9.5, 0, 0);
+    scene.add(leftW);
+
+    // Right Wall
+    const rightW = new THREE.Mesh(new THREE.BoxGeometry(0.8, 10.8, 2), wallMat);
+    rightW.position.set(9.5, 0, 0);
+    scene.add(rightW);
+
+    // 6. Hero Badge Billboard
+    const heroBadgeCanvas = document.createElement('canvas');
+    heroBadgeCanvas.width = 128;
+    heroBadgeCanvas.height = 128;
+    const badgeCtx = heroBadgeCanvas.getContext('2d')!;
+    drawCardSprite(badgeCtx, cardId, 0, 0, 128, 128, { circleClip: true });
+    const heroBadgeTexture = new THREE.CanvasTexture(heroBadgeCanvas);
+
+    const badgePlaneGeom = new THREE.PlaneGeometry(1.5, 1.5);
+    const badgePlaneMat = new THREE.MeshBasicMaterial({ map: heroBadgeTexture, transparent: true });
+    const badgePlane = new THREE.Mesh(badgePlaneGeom, badgePlaneMat);
+    badgePlane.position.set(0, 4.4, 0.45);
+    scene.add(badgePlane);
+
+    // 7. Player Group (Standing on left side)
+    const playerGroup = createPlayerMesh(heroBadgeTexture);
+    playerGroup.position.set(-6.5, -3.2, 0);
+    scene.add(playerGroup);
+
+    // 8. Laser Aiming Guide Line
+    const aimLineGeom = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(5, 0, 0),
+    ]);
+    const aimLineMat = new THREE.LineDashedMaterial({
+      color: 0xef4444,
+      dashSize: 0.3,
+      gapSize: 0.15,
+      linewidth: 2,
+    });
+    const aimLine = new THREE.Line(aimLineGeom, aimLineMat);
+    aimLine.computeLineDistances();
+    aimLine.position.set(-5.9, -2.5, 0.1);
+    scene.add(aimLine);
+
+    // 9. Stage Objects & Particles
+    const stageGroup = new THREE.Group();
+    scene.add(stageGroup);
+
+    const particlesGroup = new THREE.Group();
+    scene.add(particlesGroup);
+
+    threeRef.current = {
+      scene,
+      camera,
+      renderer,
+      playerGroup,
+      aimLine,
+      bullets: [],
+      enemies: [],
+      obstacles: [],
+      particlesGroup,
+      stageGroup,
+      aimAngle: 0,
+      timeScale: 1.0,
     };
+
+    // Load Initial Stage 0
+    loadStage(0);
+
+    // 10. Animation & Physics Loop
+    let animFrameId: number;
+    const clock = new THREE.Clock();
+
+    const gameLoop = () => {
+      animFrameId = requestAnimationFrame(gameLoop);
+      const deltaRaw = Math.min(clock.getDelta(), 0.05);
+
+      if (threeRef.current && matchActiveRef.current) {
+        const { bullets, enemies, obstacles, scene, playerGroup, aimLine } = threeRef.current;
+        const delta = deltaRaw * threeRef.current.timeScale;
+
+        // Update Aiming Laser Direction
+        aimLine.rotation.z = threeRef.current.aimAngle;
+        playerGroup.rotation.z = threeRef.current.aimAngle * 0.15;
+
+        // Bullets Physics & Ricochet Collision
+        for (let bIdx = bullets.length - 1; bIdx >= 0; bIdx--) {
+          const b = bullets[bIdx];
+          if (!b.active) continue;
+
+          b.x += b.vx * delta;
+          b.y += b.vy * delta;
+          b.mesh.position.set(b.x, b.y, 0);
+
+          // Outer Bounds Bounce (Top, Bottom, Left, Right)
+          if (b.y >= 4.4 && b.vy > 0) {
+            b.vy = -b.vy;
+            b.bounces += 1;
+            spawnHitParticles(b.mesh.position, 0xfacc15, 6);
+          }
+          if (b.y <= -4.4 && b.vy < 0) {
+            b.vy = -b.vy;
+            b.bounces += 1;
+            spawnHitParticles(b.mesh.position, 0xfacc15, 6);
+          }
+          if (b.x >= 8.9 && b.vx > 0) {
+            b.vx = -b.vx;
+            b.bounces += 1;
+            spawnHitParticles(b.mesh.position, 0xfacc15, 6);
+          }
+          if (b.x <= -8.9 && b.vx < 0) {
+            b.vx = -b.vx;
+            b.bounces += 1;
+            spawnHitParticles(b.mesh.position, 0xfacc15, 6);
+          }
+
+          // Obstacles Bounce Collision
+          for (const obs of obstacles) {
+            const minX = obs.mesh.position.x - (obs.mesh.geometry as THREE.BoxGeometry).parameters.width / 2;
+            const maxX = obs.mesh.position.x + (obs.mesh.geometry as THREE.BoxGeometry).parameters.width / 2;
+            const minY = obs.mesh.position.y - (obs.mesh.geometry as THREE.BoxGeometry).parameters.height / 2;
+            const maxY = obs.mesh.position.y + (obs.mesh.geometry as THREE.BoxGeometry).parameters.height / 2;
+
+            if (b.x >= minX && b.x <= maxX && b.y >= minY && b.y <= maxY) {
+              // Determine collision side
+              const distLeft = Math.abs(b.x - minX);
+              const distRight = Math.abs(b.x - maxX);
+              const distBot = Math.abs(b.y - minY);
+              const distTop = Math.abs(b.y - maxY);
+              const minDist = Math.min(distLeft, distRight, distBot, distTop);
+
+              if (minDist === distLeft || minDist === distRight) b.vx = -b.vx;
+              else b.vy = -b.vy;
+
+              b.bounces += 1;
+              spawnHitParticles(b.mesh.position, 0x38bdf8, 8);
+              break;
+            }
+          }
+
+          // Enemy Hit Collision
+          for (const en of enemies) {
+            if (!en.alive) continue;
+            const dist = Math.hypot(b.x - en.x, b.y - en.y);
+            if (dist < 0.85) {
+              // Enemy Eliminated!
+              en.alive = false;
+              en.vx = b.vx * 0.2;
+              en.vy = Math.abs(b.vy * 0.2) + 3.0;
+              triggerHaptic(60);
+              spawnHitParticles(en.mesh.position, 0xef4444, 25);
+
+              setTotalKills((prev) => prev + 1);
+
+              // Check if all enemies in stage cleared
+              const allDead = enemies.every((e) => !e.alive);
+              if (allDead) {
+                setTimeout(() => {
+                  setStageIdx((curStage) => {
+                    if (curStage < STAGE_CONFIGS.length - 1) {
+                      loadStage(curStage + 1);
+                      return curStage + 1;
+                    } else {
+                      handleVictory();
+                      return curStage;
+                    }
+                  });
+                }, 800);
+              }
+              break;
+            }
+          }
+
+          // Bullet Expiry after 4 bounces
+          if (b.bounces >= 4) {
+            b.active = false;
+            scene.remove(b.mesh);
+            bullets.splice(bIdx, 1);
+          }
+        }
+
+        // Enemies Ragdoll Physics (When eliminated)
+        enemies.forEach((en) => {
+          if (!en.alive) {
+            en.x += en.vx * delta;
+            en.y += en.vy * delta;
+            en.vy -= 12 * delta; // Gravity
+            en.rotZ += delta * 4;
+            en.mesh.position.set(en.x, en.y, 0);
+            en.mesh.rotation.z = en.rotZ;
+          }
+        });
+
+        threeRef.current.renderer.render(threeRef.current.scene, threeRef.current.camera);
+      }
+    };
+    gameLoop();
+
+    // Resize Observer
+    const handleResize = () => {
+      if (!container || !threeRef.current) return;
+      const w = container.clientWidth || window.innerWidth;
+      const h = container.clientHeight || window.innerHeight;
+      threeRef.current.camera.aspect = w / h;
+      threeRef.current.camera.updateProjectionMatrix();
+      threeRef.current.renderer.setSize(w, h, false);
+    };
+
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(container);
+    window.addEventListener('orientationchange', handleResize);
+
+    return () => {
+      cancelAnimationFrame(animFrameId);
+      resizeObserver.disconnect();
+      window.removeEventListener('orientationchange', handleResize);
+      if (renderer.domElement.parentElement === container) {
+        container.removeChild(renderer.domElement);
+      }
+      renderer.dispose();
+      heroBadgeTexture.dispose();
+    };
+  }, [cardId, handleVictory, loadStage, spawnHitParticles]);
+
+  // Touch Aiming & Firing
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (gameWon) return;
+    isAimingRef.current = true;
+    updateAimFromPointer(e.clientX, e.clientY);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isAimingRef.current || gameWon) return;
+    updateAimFromPointer(e.clientX, e.clientY);
   };
 
   const handlePointerUp = () => {
-    const st = stateRef.current;
-    if (st.aimStart && st.aimCurrent && st.bulletsLeft > 0) {
-      const dx = st.aimCurrent.x - st.aimStart.x;
-      const dy = st.aimCurrent.y - st.aimStart.y;
-      const angle = Math.atan2(dy, dx);
-      const speed = 8.5;
+    if (!isAimingRef.current || gameWon) return;
+    isAimingRef.current = false;
+    fireBullet();
+  };
 
-      st.bullets.push({
-        x: st.playerX + 15,
-        y: st.playerY - 2,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        bounces: 0,
-      });
+  const updateAimFromPointer = (clientX: number, clientY: number) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect || !threeRef.current) return;
 
-      st.bulletsLeft -= 1;
-      setBulletsLeft(st.bulletsLeft);
-    }
-    st.aimStart = null;
-    st.aimCurrent = null;
+    // Player position on screen is roughly at X = 15%, Y = 70%
+    const originX = rect.left + rect.width * 0.15;
+    const originY = rect.top + rect.height * 0.70;
+
+    const dx = clientX - originX;
+    const dy = -(clientY - originY);
+    const angle = Math.atan2(dy, dx);
+
+    threeRef.current.aimAngle = angle;
+    setAimAngle(angle);
+  };
+
+  // Toggle Bullet Time (Slow Motion)
+  const toggleBulletTime = () => {
+    triggerHaptic(30);
+    setIsBulletTime((prev) => {
+      const next = !prev;
+      if (threeRef.current) {
+        threeRef.current.timeScale = next ? 0.25 : 1.0;
+      }
+      return next;
+    });
   };
 
   return (
-    <div className="relative w-full h-[100dvh] bg-[#fdfcfc] flex flex-col font-mono select-none overflow-hidden">
+    <div
+      ref={containerRef}
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#0a0a14] font-mono"
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+    >
+      {/* Three.js Canvas mounts here */}
+
+      {/* Top Minimalist HUD */}
       <MinimalistMissionHUD
-        gameTitle="Bullet Bros"
-        score={enemiesEliminated}
-        targetScore={7}
-        onBack={onBack}
+        gameTitle="BULLET BROS 3D"
+        progress={Math.min(100, ((stageIdx + 1) / STAGE_CONFIGS.length) * 100)}
+        score={totalKills * 100}
+        maxScore={500}
+        onQuit={handleExit}
       />
 
-      <div className="flex-1 relative flex items-center justify-center p-2">
-        <canvas
-          ref={canvasRef}
-          width={400}
-          height={550}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          className="max-w-full max-h-full border border-black/10 bg-[#fdfcfc] touch-none shadow-sm cursor-crosshair"
-        />
+      {/* Stage Status & Ammo Banner */}
+      <div className="absolute top-16 left-1/2 -translate-x-1/2 z-20 pointer-events-none flex flex-col items-center">
+        <div className="px-5 py-2 rounded-2xl bg-slate-950/90 border border-purple-500/40 shadow-2xl backdrop-blur-md flex items-center gap-4">
+          <div className="text-xs sm:text-sm font-black text-purple-300 uppercase">
+            STAGE {stageIdx + 1}/{STAGE_CONFIGS.length}
+          </div>
+          <span className="text-slate-600">|</span>
+          <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-amber-400">
+            <span>🔫 BULLETS:</span>
+            <span>{bulletsLeft}발</span>
+          </div>
+          <span className="text-slate-600">|</span>
+          <div className="text-xs sm:text-sm font-bold text-rose-400">
+            KILLS: {totalKills}
+          </div>
+        </div>
+        <p className="mt-1 text-[10px] text-slate-400 font-bold tracking-tight">
+          화면을 드래그해 레이저를 조준하고 손을 떼어 도탄 사격하세요!
+        </p>
       </div>
 
-      {rewardReceipt && (
+      {/* Action Controls */}
+      <div className="absolute bottom-6 right-6 z-20 pointer-events-none flex items-center gap-3">
+        {/* Bullet Time (Slow-Mo) Button */}
+        <button
+          type="button"
+          onClick={toggleBulletTime}
+          className={`pointer-events-auto w-16 h-16 rounded-2xl border font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all flex flex-col items-center justify-center backdrop-blur-md cursor-pointer ${
+            isBulletTime
+              ? 'bg-amber-500/90 border-amber-300 text-slate-950 animate-pulse'
+              : 'bg-slate-900/90 border-purple-500/40 text-purple-300 hover:bg-slate-800'
+          }`}
+        >
+          <span className="text-xl">⏱️</span>
+          <span className="text-[9px]">SLOW-MO</span>
+        </button>
+
+        {/* 76px Big Shoot Button */}
+        <button
+          type="button"
+          onClick={fireBullet}
+          className="pointer-events-auto h-[76px] px-8 rounded-2xl bg-gradient-to-r from-rose-600 to-amber-500 hover:from-rose-500 hover:to-amber-400 text-white font-black text-base uppercase tracking-wider shadow-2xl shadow-rose-600/40 active:scale-95 transition-all flex items-center gap-3 border border-amber-300/50 cursor-pointer"
+        >
+          <span className="text-2xl animate-spin">💥</span>
+          <span>SHOOT NOW!</span>
+        </button>
+      </div>
+
+      {/* Victory Reward Modal */}
+      {gameWon && (
         <VictoryRewardModal
-          isOpen={gameWon}
-          receipt={rewardReceipt}
-          onConfirm={onBack}
+          isOpen={true}
+          rewardReceipt={rewardReceipt}
+          onBack={handleExit}
         />
       )}
     </div>
   );
-};
-
-export default PokiBulletBrosGame;
-
+}
