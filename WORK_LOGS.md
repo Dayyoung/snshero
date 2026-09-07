@@ -4,6 +4,37 @@
 
 ---
 
+## [2026-09-07 16:45 KST] [Poki 110선 리마스터 11/110] No.011 Rainbow Obby Three.js 3D 거대 무지개 오비 파쿠르 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/rainbow-obby`) 분석 및 프롬프트(`src/components/poki/prompts/No011_RainbowObby_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 18mx14m 광폭 안전 시작 플랫폼(시작 낙하 방지), 140m 공중 7색 무지개 트랙(원형 디스크 징검다리, 회전 레이저 바, 사라지는 블록, 수퍼 점프 패드, 체크포인트 깃발 2개), 3D 노옵 아바타 & No.11 영웅 배지 전면 재개발.
+  - AGENTS.md 카메라 기준 조작 방향(좌우/상하) 100% 일치 절대 원칙 준수 (화면 기준 오른쪽=우측, 왼쪽=좌측).
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(다이나믹 플로팅 조이스틱 + 80px 대형 점프 버튼 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 인기 로블록스풍 3D 거대 무지개 오비(Obby) 장애물 코스 파쿠르. 7색 무지개 테마 트랙에서 점프, 회전 장애물 회피, 체크포인트를 통과하여 정상의 승리 포털에 도달하는 모험.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiRainbowObbyGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 3인칭 백뷰/쿼터뷰 팔로잉 카메라, 푸른 하늘 배경 및 16개 부유 3D 구름 덩어리.
+     - 18mx14m 안전 스타트 플랫폼: 시작 지점에서 발판 사이로 낙하하는 일 없이 안정적인 출발 보장.
+     - 140m 7색 무지개 코스 (Zone 1~5):
+       - Zone 1: 무지개 원형 디스크 징검다리 (좌우 지그재그 높낮이 발판) 및 골드 스타 10여 개.
+       - Checkpoint 1 & 2: 8mx8m 안전 쉼터 및 통과 시 빨간색에서 녹색으로 변하는 체크포인트 깃발.
+       - Zone 2: 4개의 회전 무지개 레이저 바 (수평 고속 회전 장애물 점프 회피).
+       - Zone 3: 밟으면 0.8초 후 깜빡이며 사라지는 블록들 (2.5초 후 자동 리스폰).
+       - Zone 4: 초록색 고탄성 점프 패드 (밟으면 `vy = 22.5` 수퍼 점프로 단숨에 고지대 이동).
+       - Zone 5: 정상의 12mx12m 골드 승리 플랫폼, 거대한 회전 무지개 토러스 링 포털 & 황금 트로피.
+     - 3D 로블록스풍 노옵 아바타: 노란 블록 머리, 카툰 눈/스마일 표정, No.11 카드 영웅 배지 가슴팍 텍스처, 보행 및 점프 팔다리 애니메이션.
+     - 모바일 퓨어 터치: 좌측 영역 다이나믹 플로팅 조이스틱 (터치 위치에 링과 놉 시각화) + 우측 80px 대형 점프 버튼 + 햅틱 진동 피드백.
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 확인 팝업 및 완주 진행도/별 수집 비례 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No011_RainbowObby_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 무결점 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 11개 완료 (No.012 My Perfect Hotel 대기).
+
+---
+
 ## [2026-09-07 16:23 KST] [Poki 110선 리마스터 10/110] No.010 Ragdoll Chaos Three.js 3D 물리 래그돌 샌드박스 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/ragdoll-chaos`) 분석 및 프롬프트(`src/components/poki/prompts/No010_RagdollChaos_Prompt.md`) 작성.
