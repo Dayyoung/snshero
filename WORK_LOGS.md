@@ -4,6 +4,40 @@
 
 ---
 
+## [2026-09-08 01:46 KST] [Poki 110선 리마스터 85/110] No.085 Vortella's Dress Up Three.js 3D 고딕 마녀 스타일링 & 룬 마법 의식 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/vortellas-dress-up`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No085_VortellasDressUp_Prompt.md`) 작성.
+  - Three.js 3D 기반 고딕 제단 성소(석조 바닥/원형 퍼플 룬 마법진 링/촛대 4기/중앙 No.085 공식 카드 영웅 배지 엠블럼), 3D 보르텔라 마녀 아바타(고딕 모자 4종/주술 로브 4종/부유 마법 오브 4종/마법 스태프 4종 실시간 3D 착용 및 스파클 파티클).
+  - 76px CAST RITUAL 마법 의식 시전(공중 부유 및 룬 마법 폭발 세레모니), 64px AURA BOOST.
+  - 모바일 퓨어 터치 조작계(화면 드래그 360° 궤도 회전 + 4개 카테고리 탭 & 아이템 캐러셀 + 햅틱), MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 고딕/드레스업 인기작 Vortella's Dress Up. 신비롭고 어두운 매력의 고딕 마녀 보르텔라(Vortella)를 스타일링하고 마법 의식을 완성하는 3D 고딕 패션 시뮬레이션 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiVortellasDressUpGame.tsx`)**:
+     - 3D 고딕 마법 성소 생츄어리 (체커드 다크 스톤 바닥, 회전하는 보라색 룬 마법진 링, 불타는 촛대 4기, 중앙 바닥 No.085 공식 카드 영웅 배지 엠블럼).
+     - 3D 보르텔라 마녀 아바타 및 고딕 드레스업 시스템:
+       - 마녀 바디, 얼굴, 눈, 입술, 마녀 귀, 관절.
+       - 고딕 모자 4종 (클래식 뾰족 위치햇, 장미 베일 티아라, 혼 크라운, 다크 미스티 후드).
+       - 마법 로브 4종 (벨벳 벨트 드레스, 미드나잇 코르셋 가운, 섀도우 케이프 수트, 문라이트 고딕 레이스).
+       - 마법 오브 4종 (퍼플 아케인 구체, 에메랄드 스피릿, 블러드 루비, 프로즌 크리스털).
+       - 마법 지팡이 4종 (스컬 스태프, 문 크레센트 완드, 네크로맨서 셉터, 아케인 룬 블레이드).
+       - 파츠 교체 즉시 실시간 3D 렌더링 및 보랏빛 스파클 파티클 방출.
+     - 룬 마법 의식 & 세레모니:
+       - 76px [CAST RITUAL] 버튼 ➔ 보르텔라 공중 부유, 마법진 고속 회전, 자수정 룬 폭발 파티클 방출, 신비로운 룬 차징 햅틱 피드백.
+       - 64px [AURA BOOST] 아우라 증폭 이펙트.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 터치 드래그 360° 궤도 회전 (Screen-relative 완벽 일치).
+       - 4개 카테고리 탭 + 4개 아이템 캐러셀.
+       - 76px [CAST RITUAL] 대형 의식 버튼 + 64px [AURA BOOST] 버튼 + 햅틱.
+       - MinimalistMissionHUD (마법 의식 완성도 100/100, 현재 의식 상태, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (85/110 완료, current_game_index: 86) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 85/110] No.085 Vortella's Dress Up Three.js 3D 고딕 마녀 스타일링 & 룬 마법 의식 전면 고도화`)
+
 ## [2026-09-08 01:44 KST] [Poki 110선 리마스터 84/110] No.084 Fashion Legends Three.js 3D 캣워크 런웨이 러너 & 오뜨 꾸뛰르 심사 배틀 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/fashion-legends`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No084_FashionLegends_Prompt.md`) 작성.
