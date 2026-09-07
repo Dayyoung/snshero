@@ -4,6 +4,38 @@
 
 ---
 
+## [2026-09-08 01:13 KST] [Poki 110선 리마스터 73/110] No.073 Nails DIY: Manicure Master Three.js 3D 네일 아트 & 매니큐어 살롱 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/nails-diy-manicure-master`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No073_NailsDIY_Prompt.md`) 작성.
+  - Three.js 3D 기반 핑크 대리석 네일 테이블, 3D 손 모델(손바닥/5개 손가락/5개 입체 손톱 메쉬) & No.073 공식 카드 영웅 배지 스탠드 장착.
+  - 4단계 인터랙티브 네일 케어 코스(버핑 광택, 4색 젤 컬러 도포, 3D 보석 참 부착, 황금 다이아몬드 반지 착용).
+  - 모바일 퓨어 터치 조작계(손톱 직접 터치 + 76px PAINT 칠하기 액션 + 64px NEXT STAGE 전환 + 4색 팔레트 + 햅틱) 및 MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 뷰티/네일 아트 인기작 Nails DIY: Manicure Master. 손톱을 매끄럽게 다듬고, 화려한 젤 컬러를 바르며, 3D 보석 참과 반지를 착용해 최고의 인생샷을 완성하는 3D 매니큐어 시뮬레이션 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiNailsDIYGame.tsx`)**:
+     - 핑크 대리석 테이블(광택 리플렉션), 스튜디오 엠블럼 스탠드 & 카드 No.073 공식 영웅 배지 부착.
+     - 3D 리얼리스틱 손 모델링:
+       - 손바닥, 손목, 5개 손가락 관절 및 5개의 개별 입체 손톱 메쉬.
+       - 화면 좌우 버튼으로 손 모델을 부드럽게 틸트 회전하여 입체적인 광택 감상.
+     - 4단계 풀코스 네일 아트 시스템:
+       - 1단계 쉐이핑 & 버핑: 표면을 다듬고 화이트 스파크 광택 부여.
+       - 2단계 젤 컬러 코팅: 4색(로즈 핑크, 파스텔 민트, 라벤더, 샤이니 골드) 젤 폴리시 도포.
+       - 3단계 3D 보석 참: 손톱 위에 입체 3D 보석 참(다이아몬드, 하트, 별) 부착.
+       - 4단계 다이아몬드 링 착용: 약지 손가락에 골든 다이아몬드 반지 착용 완성.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 손톱 직접 터치 또는 76px [PAINT 칠하기] 버튼으로 연속 도포.
+       - 64px [NEXT STAGE 다음 단계] 전환 버튼.
+       - 4색 젤 컬러 실시간 선택 팔레트.
+       - MinimalistMissionHUD (단계별 가이드, 진행도 %, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (73/110 완료, current_game_index: 74) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 73/110] No.073 Nails DIY: Manicure Master Three.js 3D 네일 아트 & 매니큐어 살롱 전면 고도화`)
+
 ## [2026-09-08 01:12 KST] [Poki 110선 리마스터 72/110] No.072 Supercar Legends Three.js 3D 슈퍼카 고속 레이싱 & 배수 게이트 액션 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/supercar-legends`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No072_SupercarLegends_Prompt.md`) 작성.

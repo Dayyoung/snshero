@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 73,
-  "completed_count": 72,
-  "last_updated": "2026-09-08T01:12:00+09:00",
+  "current_game_index": 74,
+  "completed_count": 73,
+  "last_updated": "2026-09-08T01:13:00+09:00",
   "history": [
     {
       "id": 1,
@@ -797,6 +797,17 @@
       "component": "src/components/poki/PokiSupercarLegendsGame.tsx",
       "completed_at": "2026-09-08T01:12:00+09:00",
       "details": "Three.js 기반 3D 슈퍼카 고속 레이싱 & 배수 게이트 액션 구현, 4차선 아스팔트 서킷(체커 피니시 아치/레드&화이트 연석) & 15m 안전 광폭 스타트 존, 레드&카본 에어로 하이퍼카 & No.072 공식 카드 영웅 배지, 3대의 AI 라이벌 슈퍼카(블루 썬더/골드 바이퍼/그린 팬텀) 실시간 순위 경쟁, 트랙 위 3D 배수 게이트(그린 x2 SPEED / +50 km/h vs 레드 SLOW), 3랩 토너먼트 레이스, 모바일 퓨어 터치 조작계(화면 터치 슬라이드 좌우 조향 + 76px NITRO 부스트 대형 버튼 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 73,
+      "name": "Nails DIY: Manicure Master",
+      "poki_url": "https://poki.com/kr/g/nails-diy-manicure-master",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No073_NailsDIY_Prompt.md",
+      "component": "src/components/poki/PokiNailsDIYGame.tsx",
+      "completed_at": "2026-09-08T01:13:00+09:00",
+      "details": "Three.js 기반 3D 네일 아트 & 매니큐어 살롱 시뮬레이션 구현, 핑크 대리석 네일 테이블, 3D 손 모델(손바닥/5개 손가락 관절/5개 입체 손톱 메쉬) & No.073 공식 카드 영웅 배지 스튜디오 엠블럼, 4단계 인터랙티브 네일 아트 코스(1단계 손톱 버핑 광택 다듬기 ➔ 2단계 4색 젤 컬러 폴리시 도포 ➔ 3단계 3D 보석 참 부착 ➔ 4단계 황금 다이아몬드 반지 착용), 3D 손 틸트 회전, 모바일 퓨어 터치 조작계(손톱 직접 터치 + 76px PAINT 칠하기 액션 + 64px NEXT STAGE 전환 + 4색 팔레트 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
