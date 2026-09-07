@@ -704,7 +704,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
 
       {/* Floating Active Skills UI */}
       {!state.result && (
-        <div className="fixed inset-x-0 bottom-28 max-w-[1024px] mx-auto z-[150] pointer-events-none flex justify-end px-3 sm:px-4">
+        <div className="fixed inset-x-0 bottom-[200px] sm:bottom-[230px] lg:top-1/2 lg:-translate-y-1/2 lg:bottom-auto max-w-[1024px] mx-auto z-[150] pointer-events-none flex justify-end px-3 sm:px-4">
           <div className="pointer-events-auto flex flex-col items-end gap-2">
           {/* 강화 함성 */}
           <div className="relative group">

@@ -14111,7 +14111,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
       {/* Floating Circular Robot Auto-Battle Button, Speed Toggle & Grid Skills */}
       {gameState === 'playing' && !gameOver && (
-        <div className="fixed inset-x-0 bottom-28 max-w-[1024px] mx-auto z-[160] pointer-events-none flex justify-end px-3 sm:px-4">
+        <div className="fixed inset-x-0 bottom-[200px] sm:bottom-[230px] lg:top-1/2 lg:-translate-y-1/2 lg:bottom-auto max-w-[1024px] mx-auto z-[160] pointer-events-none flex justify-end px-3 sm:px-4">
           <div className="pointer-events-auto flex flex-col items-end gap-2.5">
           {/* QTE Skill Timing Button - neatly docked in the battle action stack so it NEVER overlaps with turn indicators, turn timers, or board tiles */}
           <SkillTimingButton

@@ -453,7 +453,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
           )}
 
           {activeEncounter && battleEvent && rpgOpponent && (
-            <div className="fixed inset-0 z-30 bg-black/80 backdrop-blur-xs flex flex-col items-center justify-center overflow-hidden pointer-events-auto">
+            <div className="fixed inset-0 z-[10000] bg-black/80 backdrop-blur-xs flex flex-col items-center justify-center overflow-hidden pointer-events-auto">
               {/* 다른 화면들과 100% 동일한 최대너비(1024px) 중앙 배틀 아레나 (PC 좌우 여백에 날개 광고 배너 완벽 노출) */}
               <div className="w-full max-w-[1024px] h-full flex flex-col min-h-0 relative bg-[#060a14] shadow-2xl border-x border-slate-800 overflow-y-auto overscroll-contain touch-pan-y">
                 {/* 모바일/태블릿 화면용 상단 애드센스 배너 (1024px 이상 PC에서는 숨김: 슬림 배너 높이 제한) */}

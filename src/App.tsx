@@ -6362,7 +6362,7 @@ function AppContent() {
           />
 
         {/* Global Chat Floating Button */}
-        {view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && (
+        {view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && (view !== 'play' || playGameState === 'modeSelect') && (
           <>
           <div className="fixed left-0 right-0 w-full max-w-[1024px] mx-auto z-[10000] pointer-events-none bottom-[calc(env(safe-area-inset-bottom)+5rem)]">
                  {/* Random Play Button — left side */}

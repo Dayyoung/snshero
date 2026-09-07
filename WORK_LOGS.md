@@ -4,6 +4,36 @@
 
 ---
 
+## [2026-09-07 11:50 KST] [스킬창 하단 메뉴(손패/하단바/글로벌챗) 가림 완벽 해소: 수직 위치 상향 및 배틀 중 하단 전역 챗 버튼 간섭 차단]
+- **요청 사항**:
+  - 스킬창(QTE, 배속/자동전투, 그리드 스킬들)이 내 손패 카드(하단 메뉴) 및 하단 UI에 가려지는 현상 완벽 해결 요청.
+- **원인 분석**:
+  1. `PlayGameView.tsx` & `KadanBattleGate.tsx`:
+     - 스킬창의 세로 위치가 `bottom-28` (112px)로 너무 낮게 고정되어 있어, 화면 하단에서 0px~210px 높이를 차지하는 내 손패 카드 5장(`player-hand-container`) 및 라운드 진행도 바와 정확히 겹쳐 아래쪽 스킬 버튼들이 손패 뒤로 가려짐.
+     - PC 화면에서도 하단에 치우쳐 있어 보드판 옆이 아닌 하단 손패 영역을 침범했음.
+  2. `App.tsx` (라인 6365):
+     - 화면 우측 하단(`bottom-[calc(env(safe-area-inset-bottom)+5rem)]`, z-[10000])에 위치한 Global Chat / Dice Floating Button이 `view === 'play'` 배틀 진행 중에도 숨겨지지 않고 그대로 노출되어 스킬창(`z-[160]`) 위를 덮고 있었음.
+  3. `KadanRpgView.tsx` (라인 456):
+     - 카단 RPG 배틀 모달의 z-index가 `z-30`에 불과하여, 하단 전역 네비게이션 바(`Navbar`, `z-[9999]`)가 배틀 모달 하단을 가리고 있었음.
+- **조치 사항**:
+  - `src/views/PlayGameView.tsx` & `src/components/rpg/KadanBattleGate.tsx`:
+    - 스킬창의 세로 위치를 반응형으로 대폭 상향:
+      `fixed inset-x-0 bottom-[200px] sm:bottom-[230px] lg:top-1/2 lg:-translate-y-1/2 lg:bottom-auto max-w-[1024px] mx-auto z-[160] pointer-events-none flex justify-end px-3 sm:px-4`
+    - **모바일/태블릿**: `bottom-[200px] sm:bottom-[230px]`로 손패 카드 영역(0~195px) 바로 위쪽 여백에 딱 올라앉아, 손패 카드 및 하단 메뉴와 1mm도 겹치지 않고 100% 쾌적하게 노출.
+    - **PC 모니터**: `lg:top-1/2 lg:-translate-y-1/2`로 화면 수직 중앙(3x3 보드판 우측 옆)에 시원하게 정렬되어 상단 상대패, 하단 내 손패, 좌우 광고 배너 어느 곳과도 간섭 없이 완벽한 조작성 제공.
+  - `src/App.tsx`:
+    - 배틀 진행 중(`(view !== 'play' || playGameState === 'modeSelect')`)일 때 하단 글로벌 플로팅 챗/주사위 버튼을 숨겨 스킬창과의 z-index 충돌 및 화면 가림 원천 차단 (배틀 중에는 상단 컨트롤 바 전용 챗 버튼 사용).
+  - `src/views/KadanRpgView.tsx`:
+    - 배틀 모달 래퍼 z-index를 `z-30`에서 `z-[10000]`으로 상향하여 하단 네비게이션 바(`z-[9999]`)보다 위에 전면 노출되도록 보장.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과.
+  - `npm run build`: 프로덕션 빌드 성공 (built in 25.77s).
+- **Git 배포 및 보고**:
+  - 커밋 및 GitHub 원격 리포지토리(`origin/main`) 푸시.
+  - 구글 폼 보고서 제출.
+
+---
+
 ## [2026-09-07 11:45 KST] [PC 좌우 광고배너 스킬창 겹침/가림 방지: 1024px 게임 콘텐츠 영역 내 도킹 완료]
 - **요청 사항**:
   - 카드 배틀 화면의 스킬창(QTE 스킬, 배속/자동전투 버튼, 강화/약화/체인지 함성 스킬 아이콘들)이 PC 환경에서 좌우 날개 광고 배너에 가려져 표시되지 않거나 겹치는 현상 완벽 해결 요청.
