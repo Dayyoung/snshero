@@ -1,5 +1,5 @@
 {
-  "scheduler_active": true,
+  "scheduler_active": false,
   "interval_minutes": 10,
   "total_games": 110,
   "current_game_index": 110,
