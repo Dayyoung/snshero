@@ -4,6 +4,30 @@
 
 ---
 
+## [2026-09-07 16:12 KST] [Poki 110선 리마스터 8/110] No.008 Cryzen.io Three.js 3D 택티컬 전술 FPS 아레나 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/cryzen-io`) 분석 및 프롬프트(`src/components/poki/prompts/No008_CryzenIo_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 3D 군사 기지 전장(선적 컨테이너/모래주머니 벙커/엄폐물), 3D 택티컬 솔저 아바타 & 돌격소총(탄창 30발/총구 화염/반동), 5명 적 AI 특수부대 용병 봇 교전 전면 재개발.
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(좌측 플로팅 조이스틱, 우측 스와이프 에임 조준, 우측 80px [🔫 FIRE] 버튼, [▲ JUMP] 버튼, [🔄 RELOAD] 버튼, 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 인기 경쟁 전술 FPS .io 게임. 정교한 에임, 엄폐물 활용, 반동 제어, 탄약 관리 및 적 특수부대 제압 배틀로얄.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiCryzenGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 3인칭 오버숄더 택티컬 카메라, 75x75 슬라브 바닥 & 전술 그리드, 8개 컬러 선적 컨테이너 & 10개 모래주머니 엄폐물 장벽.
+     - 3D 전술 솔저 아바타: 헬멧, 전술 고글, 방탄 조끼, AKM 돌격소총, No.08 카드 영웅 배지.
+     - 사격 및 총기 물리: 30발 탄창, 총구 화염(PointLight + Flash), 레이캐스트 에임 히트스캔, 피격 스파크 및 넉백 파티클, 재장전 쿨다운(1.2초).
+     - 5명 적 AI 용병 봇(섀도우, 고스트, 스펙터, 레이븐, 바이퍼): 엄폐물 기동 및 플레이어 조준 사격, 피격 시 체력 감소 및 처치 시 +250점 킬 피드 알림.
+     - 모바일 퓨어 터치: 화면 분할 조작(좌측: 다이나믹 플로팅 조이스틱 360° 이동, 우측: 스와이프 360° 에임 조준 및 피치 조절) + 우측 80px 대형 `[🔫 FIRE]` 버튼 + `[▲ JUMP]` + `[🔄 RELOAD]` 버튼 및 햅틱 진동 피드백.
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 확인 팝업 및 처치 수/점수 비례 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No008_CryzenIo_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 8개 완료 (No.009 Blocky Blast Puzzle 대기).
+
+---
+
 ## [2026-09-07 16:03 KST] [Poki 110선 리마스터 7/110] No.007 Vectaria.io Three.js 3D 마인크래프트풍 복셀 서바이벌 & 채굴 배틀 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/vectaria-io`) 분석 및 프롬프트(`src/components/poki/prompts/No007_VectariaIo_Prompt.md`) 작성.
