@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 76,
-  "completed_count": 75,
-  "last_updated": "2026-09-08T01:30:00+09:00",
+  "current_game_index": 77,
+  "completed_count": 76,
+  "last_updated": "2026-09-08T01:32:00+09:00",
   "history": [
     {
       "id": 1,
@@ -830,6 +830,17 @@
       "component": "src/components/poki/PokiColorArtistGame.tsx",
       "completed_at": "2026-09-08T01:30:00+09:00",
       "details": "Three.js 기반 3D 입체 복셀 컬러링 & 아트 갤러리 시뮬레이션 구현, 3D 아틀리에 갤러리 룸(원형 페데스탈 받침대/스튜디오 조명) & No.075 공식 카드 영웅 배지 엠블럼, 48개 복셀 블록으로 구성된 입체 마스코트 조각상, 1~6번 넘버별 6색 팔레트 매핑(옐로우/오렌지/스카이블루/바이올렛/그린/화이트), 채색 시 팝업 바운스 스케일 & 스파클 파티클, 100% 완성 시 360도 공중 부유 쇼케이스, 모바일 퓨어 터치 조작계(화면 터치 드래그 3D 궤도 회전 + 76px PAINT 연속 자동 채색 + 64px SPRAY 광역 분사 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 76,
+      "name": "Going Up Rooftop",
+      "poki_url": "https://poki.com/kr/g/going-up-rooftop",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No076_GoingUpRooftop_Prompt.md",
+      "component": "src/components/poki/PokiGoingUpRooftopGame.tsx",
+      "completed_at": "2026-09-08T01:32:00+09:00",
+      "details": "Three.js 기반 3D 마천루 수직 파쿠르 & 루프탑 등반 시뮬레이션 구현, 65m 고층 마천루 빌딩(1층 15m 안전 광폭 지상 존/기둥/철골 크레인/에어컨 실외기/부유 발판/60m 옥상 헬리패드 & 구조 헬리콥터), 스포티 파쿠르 러너 & No.076 공식 카드 영웅 배지 백팩 장착, 3단계 수직 파쿠르 물리(기본 지상 점프 + 빌딩 외벽 밀착 시 벽차기 월 점프 Wall Kick + 공중 순간 가속 대시 DASH), 추락 방지 세이프티 그물망, 모바일 퓨어 터치 조작계(화면 하단 터치 슬라이더 좌우 조향 + 76px JUMP / WALL KICK 파워 점프 + 64px DASH 공중 대시 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

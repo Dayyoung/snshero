@@ -4,6 +4,37 @@
 
 ---
 
+## [2026-09-08 01:32 KST] [Poki 110선 리마스터 76/110] No.076 Going Up Rooftop Three.js 3D 마천루 수직 파쿠르 & 루프탑 등반 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/going-up-rooftop`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No076_GoingUpRooftop_Prompt.md`) 작성.
+  - Three.js 3D 기반 65m 고층 마천루 빌딩(1층 15m 안전 광폭 지상 존/기둥/철골 크레인/에어컨 실외기/부유 발판/60m 옥상 헬리패드 & 구조 헬리콥터), 스포티 파쿠르 러너 & No.076 공식 카드 영웅 배지 백팩 장착.
+  - 3단계 수직 파쿠르 물리(기본 지상 점프 + 빌딩 외벽 밀착 시 벽차기 월 점프 Wall Kick + 공중 순간 가속 대시 DASH), 추락 방지 세이프티 그물망.
+  - 모바일 퓨어 터치 조작계(화면 하단 터치 슬라이더 좌우 조향 + 76px JUMP / WALL KICK 파워 점프 + 64px DASH 공중 대시 + 햅틱) 및 MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 점핑/파쿠르 어드벤처 인기작 Going Up Rooftop. 1층 지상에서 출발해 고층 빌딩의 외벽 구조물, 크레인, 환풍기를 딛고 뛰어올라 최종 루프탑의 구조 헬리콥터에 도달하는 스릴 넘치는 3D 수직 등반 파쿠르 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiGoingUpRooftopGame.tsx`)**:
+     - 65m 높이의 도심 마천루 빌딩 단지(사이버 네온 외벽, 1층 너비 15m 안전 광폭 플랫폼, 25개 절차적 파쿠르 철골 발판, 60m 옥상 헬리패드 및 회전 로터 3D 구조 헬기).
+     - 플레이어 러너 & 카드 배지:
+       - 스포티한 3D 캐릭터(러닝 헤드밴드, 러너 수트, 등 뒤 No.076 공식 카드 영웅 배지 백팩 장착).
+       - 다이나믹 러닝/점핑 애니메이션 및 수직 상승 파티클.
+     - 수직 파쿠르 및 월 킥(Wall Kick) 시스템:
+       - 중력 가속도 및 발판 수직 착지 판정.
+       - 빌딩 외벽(좌측 x=-4.5, 우측 x=4.5) 접촉 시 외벽 밀착 슬라이딩 & 반대 방향 벽차기 점프(Wall Kick) 트리거.
+       - 64px [DASH 대시] 버튼으로 전방/공중 순간 가속 돌파.
+       - 3.5D 스무스 버티컬 팔로우 카메라: 플레이어의 상승 고도에 맞춰 도시 전경을 파노라마로 부드럽게 추적.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 하단 터치 슬라이더로 좌우 조향.
+       - 76px [JUMP / WALL KICK] 대형 파쿠르 점프 버튼 + 64px [DASH] 버튼 + 햅틱.
+       - MinimalistMissionHUD (현재 고도 m, 옥상까지 남은 거리, 중도 포기 확인 모달, 고도 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (76/110 완료, current_game_index: 77) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 76/110] No.076 Going Up Rooftop Three.js 3D 마천루 수직 파쿠르 & 루프탑 등반 전면 고도화`)
+
 ## [2026-09-08 01:30 KST] [Poki 110선 리마스터 75/110] No.075 Color Artist Three.js 3D 입체 복셀 컬러링 & 아트 갤러리 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/color-artist`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No075_ColorArtist_Prompt.md`) 작성.
