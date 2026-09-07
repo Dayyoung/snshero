@@ -4,6 +4,34 @@
 
 ---
 
+## [2026-09-08 02:28 KST] [Poki 110선 리마스터 107/110] No.107 Brain Test Special Three.js 3D 창의적 스페셜 두뇌 퍼즐 & 수수께끼 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/brain-test-special`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No107_BrainTestSpecial_Prompt.md`) 작성.
+  - Three.js 3D 기반 스페셜 입체 인터랙티브 씬 및 상단 No.107 공식 카드 영웅 배지 홀로그램 프레임.
+  - 3대 스페셜 트릭 수수께끼 스테이지:
+    - Stage 1: 공항 활주로 위 짙은 3D 먹구름 덩어리를 손가락으로 드래그해 치우고 비행기 착륙.
+    - Stage 2: 3D 은빛 메탈릭 UFO 투명 돔 덮개를 위로 들어올려 숨어있는 3D 초록 외계인 발견.
+    - Stage 3: 거대 황금 금고 비밀번호 다이얼 휠 회전 및 찰칵 문 개봉 보물 획득.
+  - 레이캐스팅 기반 3D 모바일 퓨어 터치 조작계(화면 터치 드래그 + 76px HINT 대형 버튼 + 64px RETRY/HELP + 햅틱), MinimalistMissionHUD 안전 정산.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 최고 인기 두뇌 퍼즐 Brain Test의 스페셜 에디션. 일상의 상식을 깨는 트릭과 기발한 물리 인터랙션(구름 치우기, UFO 돔 열기, 금고 열기)으로 문제를 해결하는 인터랙티브 퍼즐.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiBrainTestSpecialGame.tsx`)**:
+     - 3D 스페셜 씬 및 상단 No.107 공식 카드 영웅 배지 골든/퍼플 프레임.
+     - 3대 스테이지 정밀 구현:
+       - Stage 1: 아스팔트 활주로(센터라인), 제트 비행기 모델(동체/주날개/꼬리날개), 거대 3D 먹구름 덩어리. 구름을 드래그해 화면 밖으로 치우면 비행기가 스르륵 안전 착륙 애니메이션 진행.
+       - Stage 2: 3D 외계 행성 지면, 은빛 메탈릭 UFO(비행접시 바디, LED 링 라이트, 개폐식 투명 반구 돔), 귀여운 3D 초록 외계인 피규어(안테나/큰 눈). 돔을 위로 들어올리면 외계인이 손을 흔들며 통과.
+       - Stage 3: 3D 황금 금고(골든 큐브 바디, 회전 피벗 도어, 금화 보물 더미), 전면 다이얼 휠. 다이얼 탭/회전 시 금고 문이 90도 스르륵 열리며 황금 보물 개봉 및 최종 우승.
+     - Raycasting 기반 3D 터치 드래그 인터랙션 완벽 연동.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 76px [💡 HINT!] 스마트 힌트/솔브 액션 버튼 + 64px [🔄 RETRY] + 햅틱 피드백.
+       - MinimalistMissionHUD (수수께끼 진행도, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (107/110 완료, current_game_index: 108) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출 완료.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 107/110] No.107 Brain Test Special Three.js 3D 창의적 스페셜 두뇌 퍼즐 & 수수께끼 전면 고도화`)
+
 ## [2026-09-08 02:27 KST] [Poki 110선 리마스터 106/110] No.106 Stickman Climb 3D Three.js 3D 항아리 곡괭이 지렛대 파쿠르 클라이밍 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/stickman-climb-3d`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No106_StickmanClimb3D_Prompt.md`) 작성.

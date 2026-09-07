@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 107,
-  "completed_count": 106,
-  "last_updated": "2026-09-08T02:27:30+09:00",
+  "current_game_index": 108,
+  "completed_count": 107,
+  "last_updated": "2026-09-08T02:28:30+09:00",
   "history": [
     {
       "id": 1,
@@ -1171,6 +1171,17 @@
       "component": "src/components/poki/PokiStickmanClimb3DGame.tsx",
       "completed_at": "2026-09-08T02:27:30+09:00",
       "details": "Three.js 기반 3D 항아리 곡괭이 파쿠르 클라이밍 구현, 설산 암벽 렛지 오비 코스(0m~55m, 16m 시작 광폭 안전 발판 준수), 3D 항아리 탑승 스틱맨 피규어(메탈 팟/상체/No.106 공식 카드 영웅 배지 데칼) 및 긴 3D 강철 곡괭이 지렛대 물리, 정상 55m 서밋 타워 및 승리 깃발, 암벽 타격 스파크 파티클 분출, 76px VAULT JUMP 대형 지렛대 도약 버튼 + 64px REVERT 체크포인트 복귀 + 햅틱, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 107,
+      "name": "Brain Test Special",
+      "poki_url": "https://poki.com/kr/g/brain-test-special",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No107_BrainTestSpecial_Prompt.md",
+      "component": "src/components/poki/PokiBrainTestSpecialGame.tsx",
+      "completed_at": "2026-09-08T02:28:30+09:00",
+      "details": "Three.js 기반 3D 창의적 스페셜 두뇌 퍼즐 & 수수께끼 구현, 상단 No.107 공식 카드 영웅 배지 홀로그램 프레임, 3대 스페셜 트릭 수수께끼(Stage 1: 안개 속 먹구름 드래그 치우기 및 제트 비행기 안전 착륙, Stage 2: UFO 투명 돔 위로 들어올려 숨은 3D 외계인 발견, Stage 3: 황금 금고 비밀번호 다이얼 회전 및 금화 보물 개봉), 레이캐스팅 기반 3D 터치 드래그 인터랙션, 76px HINT 대형 버튼 + 64px RETRY/HELP + 햅틱, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
