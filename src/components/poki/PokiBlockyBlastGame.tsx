@@ -542,3 +542,5 @@ export const PokiBlockyBlastGame: React.FC<PokiBlockyBlastGameProps> = ({
     </div>
   );
 };
+
+export default PokiBlockyBlastGame;

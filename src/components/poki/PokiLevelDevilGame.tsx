@@ -488,3 +488,5 @@ export const PokiLevelDevilGame: React.FC<PokiLevelDevilGameProps> = ({
     </div>
   );
 };
+
+export default PokiLevelDevilGame;

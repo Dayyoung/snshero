@@ -307,3 +307,5 @@ export const PokiCountControlGame: React.FC<PokiCountControlGameProps> = ({ onBa
     </div>
   );
 };
+
+export default PokiCountControlGame;

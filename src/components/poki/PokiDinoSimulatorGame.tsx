@@ -292,3 +292,5 @@ export const PokiDinoSimulatorGame: React.FC<PokiDinoSimulatorGameProps> = ({ on
     </div>
   );
 };
+
+export default PokiDinoSimulatorGame;

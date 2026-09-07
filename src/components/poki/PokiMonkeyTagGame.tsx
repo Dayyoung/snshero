@@ -427,3 +427,5 @@ export const PokiMonkeyTagGame: React.FC<PokiMonkeyTagGameProps> = ({
     </div>
   );
 };
+
+export default PokiMonkeyTagGame;

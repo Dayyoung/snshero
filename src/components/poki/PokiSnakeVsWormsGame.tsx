@@ -509,3 +509,5 @@ export const PokiSnakeVsWormsGame: React.FC<PokiSnakeVsWormsGameProps> = ({
     </div>
   );
 };
+
+export default PokiSnakeVsWormsGame;

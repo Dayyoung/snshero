@@ -450,3 +450,5 @@ export const PokiBlacktopPoliceGame: React.FC<PokiBlacktopPoliceGameProps> = ({ 
     </div>
   );
 };
+
+export default PokiBlacktopPoliceGame;

@@ -302,3 +302,5 @@ export const PokiKickTheBuddyGame: React.FC<PokiKickTheBuddyGameProps> = ({ onBa
     </div>
   );
 };
+
+export default PokiKickTheBuddyGame;

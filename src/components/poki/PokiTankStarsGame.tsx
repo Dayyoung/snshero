@@ -444,3 +444,5 @@ export const PokiTankStarsGame: React.FC<PokiTankStarsGameProps> = ({ onBack, ca
     </div>
   );
 };
+
+export default PokiTankStarsGame;

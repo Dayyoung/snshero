@@ -430,3 +430,5 @@ export const PokiDecorLifeGame: React.FC<PokiDecorLifeGameProps> = ({
     </div>
   );
 };
+
+export default PokiDecorLifeGame;

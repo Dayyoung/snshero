@@ -9,26 +9,35 @@ export interface TutorialStep {
   iconType?: 'GOAL' | 'GESTURES' | 'REWARDS';
 }
 
-interface UniversalTutorialModalProps {
-  gameId: string;
-  gameTitle: string;
-  language: string;
+export interface UniversalTutorialModalProps {
+  gameId?: string;
+  gameTitle?: string;
+  language?: string;
+  isOpen?: boolean;
+  steps?: TutorialStep[];
   customSteps?: TutorialStep[];
-  onStartGame: () => void;
+  onStartGame?: () => void;
+  onComplete?: () => void;
   onClose?: () => void;
 }
 
 export const UniversalTutorialModal: React.FC<UniversalTutorialModalProps> = ({
-  gameId,
-  gameTitle,
-  language,
+  gameId = 'generic_game',
+  gameTitle = 'SNSHERO MISSION',
+  language = 'ko',
+  isOpen,
+  steps: passedSteps,
   customSteps,
   onStartGame,
+  onComplete,
   onClose
 }) => {
+  if (isOpen === false) return null;
+
   const isKo = language === 'ko';
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [dontShowAgain, setDontShowAgain] = useState<boolean>(false);
+  const handleStart = onStartGame || onComplete || onClose || (() => {});
 
   const defaultSteps: TutorialStep[] = [
     {
@@ -92,7 +101,7 @@ export const UniversalTutorialModal: React.FC<UniversalTutorialModalProps> = ({
     }
   ];
 
-  const steps = customSteps || defaultSteps;
+  const steps = passedSteps || customSteps || defaultSteps;
 
   const handleFinish = () => {
     if (dontShowAgain) {
@@ -102,7 +111,7 @@ export const UniversalTutorialModal: React.FC<UniversalTutorialModalProps> = ({
         // ignore
       }
     }
-    onStartGame();
+    handleStart();
   };
 
   const activeStepData = steps[currentStep] || steps[0];

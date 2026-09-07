@@ -513,3 +513,5 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
     </div>
   );
 };
+
+export default PokiMineFunGame;

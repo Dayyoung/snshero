@@ -403,3 +403,5 @@ export const PokiPlonkyGame: React.FC<PokiPlonkyGameProps> = ({
     </div>
   );
 };
+
+export default PokiPlonkyGame;

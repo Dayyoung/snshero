@@ -371,3 +371,5 @@ export const PokiRedBall4Game: React.FC<PokiRedBall4GameProps> = ({ onBack, card
     </div>
   );
 };
+
+export default PokiRedBall4Game;

@@ -279,3 +279,5 @@ export const PokiPlanetDestructionGame: React.FC<PokiPlanetDestructionGameProps>
     </div>
   );
 };
+
+export default PokiPlanetDestructionGame;

@@ -414,3 +414,5 @@ export const PokiTalkingTomGoldRunGame: React.FC<PokiTalkingTomGoldRunGameProps>
     </div>
   );
 };
+
+export default PokiTalkingTomGoldRunGame;

@@ -290,3 +290,5 @@ export const PokiSuperDressGame: React.FC<PokiSuperDressGameProps> = ({ onBack, 
     </div>
   );
 };
+
+export default PokiSuperDressGame;

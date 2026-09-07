@@ -480,3 +480,5 @@ export const PokiFamilyLifeGame: React.FC<PokiFamilyLifeGameProps> = ({ onBack, 
     </div>
   );
 };
+
+export default PokiFamilyLifeGame;

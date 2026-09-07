@@ -438,3 +438,5 @@ export const PokiRagdollChaosGame: React.FC<PokiRagdollChaosGameProps> = ({
     </div>
   );
 };
+
+export default PokiRagdollChaosGame;

@@ -452,3 +452,5 @@ export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
     </div>
   );
 };
+
+export default PokiRainbowObbyGame;

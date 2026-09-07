@@ -414,3 +414,5 @@ export const PokiBubbleStormGame: React.FC<PokiBubbleStormGameProps> = ({ onBack
     </div>
   );
 };
+
+export default PokiBubbleStormGame;

@@ -463,3 +463,5 @@ export const PokiMyHotelGame: React.FC<PokiMyHotelGameProps> = ({
     </div>
   );
 };
+
+export default PokiMyHotelGame;

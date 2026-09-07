@@ -455,3 +455,5 @@ export const PokiStickmanBattleGame: React.FC<PokiStickmanBattleGameProps> = ({
     </div>
   );
 };
+
+export default PokiStickmanBattleGame;

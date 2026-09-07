@@ -323,3 +323,5 @@ export const PokiPetnestGame: React.FC<PokiPetnestGameProps> = ({ onBack, cardId
     </div>
   );
 };
+
+export default PokiPetnestGame;

@@ -355,3 +355,5 @@ export const PokiSatisBoxGame: React.FC<PokiSatisBoxGameProps> = ({ onBack, card
     </div>
   );
 };
+
+export default PokiSatisBoxGame;

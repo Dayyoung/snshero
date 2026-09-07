@@ -318,3 +318,5 @@ export const PokiShenzhenMahjongGame: React.FC<PokiShenzhenMahjongGameProps> = (
     </div>
   );
 };
+
+export default PokiShenzhenMahjongGame;

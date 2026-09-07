@@ -332,3 +332,5 @@ export const PokiYouMonsterGame: React.FC<PokiYouMonsterGameProps> = ({ onBack, 
     </div>
   );
 };
+
+export default PokiYouMonsterGame;

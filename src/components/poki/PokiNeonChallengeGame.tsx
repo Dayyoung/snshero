@@ -432,3 +432,5 @@ export const PokiNeonChallengeGame: React.FC<PokiNeonChallengeGameProps> = ({
     </div>
   );
 };
+
+export default PokiNeonChallengeGame;

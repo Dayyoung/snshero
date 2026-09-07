@@ -415,3 +415,5 @@ export const PokiCryzenGame: React.FC<PokiCryzenGameProps> = ({
     </div>
   );
 };
+
+export default PokiCryzenGame;

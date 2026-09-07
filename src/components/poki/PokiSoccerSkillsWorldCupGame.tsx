@@ -365,3 +365,5 @@ export const PokiSoccerSkillsWorldCupGame: React.FC<PokiSoccerSkillsWorldCupGame
     </div>
   );
 };
+
+export default PokiSoccerSkillsWorldCupGame;

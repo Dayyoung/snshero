@@ -356,3 +356,5 @@ export const PokiCuboyAdventureGame: React.FC<PokiCuboyAdventureGameProps> = ({ 
     </div>
   );
 };
+
+export default PokiCuboyAdventureGame;

@@ -379,3 +379,5 @@ export const PokiTearBlocksDownGame: React.FC<PokiTearBlocksDownGameProps> = ({ 
     </div>
   );
 };
+
+export default PokiTearBlocksDownGame;

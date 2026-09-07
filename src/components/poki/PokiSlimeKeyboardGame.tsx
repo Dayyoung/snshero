@@ -501,3 +501,5 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
     </div>
   );
 };
+
+export default PokiSlimeKeyboardGame;

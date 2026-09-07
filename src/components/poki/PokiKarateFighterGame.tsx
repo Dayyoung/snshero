@@ -306,3 +306,5 @@ export const PokiKarateFighterGame: React.FC<PokiKarateFighterGameProps> = ({ on
     </div>
   );
 };
+
+export default PokiKarateFighterGame;

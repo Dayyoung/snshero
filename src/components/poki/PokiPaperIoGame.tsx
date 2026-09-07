@@ -486,3 +486,5 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
     </div>
   );
 };
+
+export default PokiPaperIoGame;

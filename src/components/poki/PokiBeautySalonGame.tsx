@@ -442,3 +442,5 @@ export const PokiBeautySalonGame: React.FC<PokiBeautySalonGameProps> = ({ onBack
     </div>
   );
 };
+
+export default PokiBeautySalonGame;

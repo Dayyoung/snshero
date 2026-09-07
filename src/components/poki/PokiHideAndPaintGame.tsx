@@ -487,3 +487,5 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
     </div>
   );
 };
+
+export default PokiHideAndPaintGame;

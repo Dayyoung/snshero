@@ -387,3 +387,5 @@ export const PokiRepulsGame: React.FC<PokiRepulsGameProps> = ({ onBack, cardId =
     </div>
   );
 };
+
+export default PokiRepulsGame;

@@ -494,3 +494,5 @@ export const PokiVectariaGame: React.FC<PokiVectariaGameProps> = ({
     </div>
   );
 };
+
+export default PokiVectariaGame;
