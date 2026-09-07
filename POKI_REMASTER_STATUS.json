@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 25,
-  "completed_count": 24,
-  "last_updated": "2026-09-07T22:11:00+09:00",
+  "current_game_index": 26,
+  "completed_count": 25,
+  "last_updated": "2026-09-07T22:21:00+09:00",
   "history": [
     {
       "id": 1,
@@ -269,6 +269,17 @@
       "component": "src/components/poki/PokiRagdollHitGame.tsx",
       "completed_at": "2026-09-07T22:11:00+09:00",
       "details": "Three.js 기반 3D 물리 랙돌 격투 액션 배틀 구현, 22x15m 사이버 옥타곤 링 & 4대 코너 포스트 & 3단 탄성 바운스 로프(시작 8m 안전 간격 안착), 다관절 3D 랙돌 파이터 메쉬 & No.24 영웅 배지, 3라운드 챔피언십 AI(블러드 스틱맨, 아이언 브루저 야구배트, 쉐도우 챔피언 거대 워해머), 연타 펀치 스매시 / 플라잉 점프킥 / 가드 방어, 타격 시 30개 3D 불꽃 스파크 파티클 & 로프 반발 바운스 넉백 물리, 좌측 플로팅 조이스틱 + 우측 80px 스매시/점프킥/가드 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 25,
+      "name": "Soccer REAL",
+      "poki_url": "https://poki.com/kr/g/soccer-real",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No025_SoccerReal_Prompt.md",
+      "component": "src/components/poki/PokiSoccerRealGame.tsx",
+      "completed_at": "2026-09-07T22:21:00+09:00",
+      "details": "Three.js 기반 3D 현실적 프리킥 토너먼트 축구 구현, 36x28m 2톤 그린 스트라이프 잔디 구장 & 7.32x2.44m 정규 골대 & 3D 격자 골네트(시작 페널티 스팟 안전 안착), 3D 텔스타 축구공 포물선 탄도학 & 바나나킥 커브 스핀 & 골포스트 리바운드 물리, 3D 키커(다리 킥 모션 & No.25 영웅 배지), 골키퍼 다이빙 AI & 3인 점프 수비벽, 득점 시 60개 3D 축하 콘페티 파티클 분출, 화면 위로 쓸어올리는 스와이프 슈팅 & 커브 조절 & 프리셋 슈팅 버튼 모바일 퓨어 터치 조작계, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
