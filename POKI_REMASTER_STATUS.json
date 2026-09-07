@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 77,
-  "completed_count": 76,
-  "last_updated": "2026-09-08T01:32:00+09:00",
+  "current_game_index": 78,
+  "completed_count": 77,
+  "last_updated": "2026-09-08T01:35:00+09:00",
   "history": [
     {
       "id": 1,
@@ -841,6 +841,17 @@
       "component": "src/components/poki/PokiGoingUpRooftopGame.tsx",
       "completed_at": "2026-09-08T01:32:00+09:00",
       "details": "Three.js 기반 3D 마천루 수직 파쿠르 & 루프탑 등반 시뮬레이션 구현, 65m 고층 마천루 빌딩(1층 15m 안전 광폭 지상 존/기둥/철골 크레인/에어컨 실외기/부유 발판/60m 옥상 헬리패드 & 구조 헬리콥터), 스포티 파쿠르 러너 & No.076 공식 카드 영웅 배지 백팩 장착, 3단계 수직 파쿠르 물리(기본 지상 점프 + 빌딩 외벽 밀착 시 벽차기 월 점프 Wall Kick + 공중 순간 가속 대시 DASH), 추락 방지 세이프티 그물망, 모바일 퓨어 터치 조작계(화면 하단 터치 슬라이더 좌우 조향 + 76px JUMP / WALL KICK 파워 점프 + 64px DASH 공중 대시 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 77,
+      "name": "Stickman Dragon Fight",
+      "poki_url": "https://poki.com/kr/g/stickman-dragon-fight",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No077_StickmanDragonFight_Prompt.md",
+      "component": "src/components/poki/PokiStickmanDragonFightGame.tsx",
+      "completed_at": "2026-09-08T01:35:00+09:00",
+      "details": "Three.js 기반 3D 애니풍 초능력 무투 격투 배틀 & 드래곤 빔 대결 구현, 30m x 30m 부유 무투 아레나(골드 링 엣지/부유 암석 데코/중앙 No.077 공식 카드 영웅 배지 문양), 스틱맨 골드 드래곤 워리어(도복/스파이키 골드 헤어/가슴 No.077 영웅 배지) vs 3웨이브 섀도우 드래곤 워리어 AI(미니언/나이트/다크 드래곤 로드), 무투 콤보(ATTACK 연타/넉백) + 기 모으기(KI CHARGE 황금 아우라/스파크) + 순간이동(FLASH 적 배후 역습) + 궁극기 필살 에너지파(DRAGON BEAM) & 원거리 기탄 사격, 100% 모바일 퓨어 터치 조작계(화면 좌측 360° 플로팅 조이스틱 + 76px ATTACK 대형 버튼 + 64px KI/FLASH/BEAM 버튼 군 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

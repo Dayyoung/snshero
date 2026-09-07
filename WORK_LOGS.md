@@ -4,6 +4,39 @@
 
 ---
 
+## [2026-09-08 01:35 KST] [Poki 110선 리마스터 77/110] No.077 Stickman Dragon Fight Three.js 3D 애니풍 초능력 무투 배틀 & 드래곤 빔 대결 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/stickman-dragon-fight`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No077_StickmanDragonFight_Prompt.md`) 작성.
+  - Three.js 3D 기반 30m x 30m 부유 무투 아레나(골드 링 엣지/부유 암석 데코/중앙 No.077 공식 카드 영웅 배지 문양), 스틱맨 골드 드래곤 워리어(도복/스파이키 골드 헤어/가슴 No.077 영웅 배지) vs 3웨이브 섀도우 드래곤 워리어 AI(미니언/나이트/다크 드래곤 로드).
+  - 무투 콤보(ATTACK 연타/넉백) + 기 모으기(KI CHARGE 황금 아우라/스파크) + 순간이동(FLASH 적 배후 역습) + 궁극기 필살 에너지파(DRAGON BEAM) & 원거리 기탄 사격.
+  - 모바일 퓨어 터치 조작계(화면 좌측 360° 플로팅 조이스틱 + 76px ATTACK 대형 버튼 + 64px KI/FLASH/BEAM 버튼 군 + 햅틱) 및 MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 액션/격투 인기작 Stickman Dragon Fight. 드래곤볼 애니메이션 특유의 고속 공중 격투, 기 모으기 아우라 연출, 순간이동을 통한 배후 기습, 강력한 에너지파 광선 대결을 스틱맨 액션으로 구현한 인기 격투 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiStickmanDragonFightGame.tsx`)**:
+     - 3D 무투 경기장 (30x30m 원형 부유 무대, 골드 토러스 테두리 링, 중앙 No.077 공식 영웅 배지 문양 바닥, 8기 외곽 부유 암석 데코).
+     - 스틱맨 3D 파이터 모델링:
+       - 플레이어: 오렌지/블루 무투 도복, 황금 스파이키 헤어, 가슴 No.077 공식 카드 영웅 배지, 회전식 기 아우라 메쉬 & 거대 에너지 실린더 빔 메쉬.
+       - 적 라이벌: 다크 퍼플 도복 & 다크 아우라의 섀도우 전사 3종(1웨이브 미니언 ➔ 2웨이브 드래곤 나이트 ➔ 3웨이브 다크 드래곤 로드).
+     - 초능력 격투 액션 시스템:
+       - 연속 무투 타격 콤보(ATTACK): 4연타 콤보 및 타격 시 스파크 파티클 + 넉백 물리.
+       - 기 모으기(KI CHARGE): 버튼 홀드 시 초당 35 KI 급속 충전, 황금 아우라 방출 & 상승 파티클.
+       - 순간이동(FLASH TELEPORT): 적의 배후 2m 지점으로 순식간에 플래시 잔상과 함께 이동하여 카운터 공격 기회 포착.
+       - 필살 드래곤 빔(DRAGON BEAM): KI 40 소모, 18m 사거리의 거대 에너지파 광선 발사 및 적 관통 연쇄 폭발.
+       - 원거리 기탄 사격(BLAST): 8 KI 소모 고속 탄환 발사체.
+       - 적 AI: 거리 조절, 근접 러시 콤보, 원거리 암흑 기탄 사격, 웨이브별 속도/데미지 상승.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 좌측 터치 시 360° 다이나믹 플로팅 가상 조이스틱 (Screen-relative 완벽 일치).
+       - 76px [ATTACK] 대형 타격 버튼 + 64px [KI CHARGE] + 64px [FLASH TELEPORT] + 64px [DRAGON BEAM] + 64px [BLAST] 액션 버튼 군 + 햅틱.
+       - MinimalistMissionHUD (라운드 및 콤보 카운터, 플레이어 HP/KI 바, 적 보스 HP 바, 중도 포기 확인 모달, 대전 성과 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (77/110 완료, current_game_index: 78) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 77/110] No.077 Stickman Dragon Fight Three.js 3D 애니풍 초능력 무투 배틀 & 드래곤 빔 대결 전면 고도화`)
+
 ## [2026-09-08 01:32 KST] [Poki 110선 리마스터 76/110] No.076 Going Up Rooftop Three.js 3D 마천루 수직 파쿠르 & 루프탑 등반 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/going-up-rooftop`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No076_GoingUpRooftop_Prompt.md`) 작성.
