@@ -5827,34 +5827,34 @@ function AppContent() {
         )}
         <Meta view={view} language={language} />
 
-        {/* Desktop Left Skyscraper Ad Banner (1380px+ screens) */}
+        {/* Desktop Left Skyscraper Ad Banner (1300px+ screens) */}
         {!isAdRemoved && view !== 'landing' && (
           <aside 
             aria-label="Google AdSense Left Wing"
-            className="hidden min-[1380px]:flex flex-col items-center fixed right-[calc(50vw+512px+16px)] top-16 w-[160px] z-30 pointer-events-auto"
+            className="hidden min-[1300px]:flex flex-col items-center fixed right-[calc(50vw+512px+12px)] top-16 w-[120px] min-[1400px]:w-[160px] z-30 pointer-events-auto"
           >
             <div className="w-full bg-[#fdfcfc]/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 p-1.5 shadow-xs rounded-none">
               <AdSenseBanner 
                 format="vertical"
                 className="w-full min-h-[600px]"
-                style={{ width: '160px', minHeight: '600px' }}
+                style={{ width: '100%', minHeight: '600px' }}
                 showLabel
               />
             </div>
           </aside>
         )}
 
-        {/* Desktop Right Skyscraper Ad Banner (1380px+ screens) */}
+        {/* Desktop Right Skyscraper Ad Banner (1300px+ screens) */}
         {!isAdRemoved && view !== 'landing' && (
           <aside 
             aria-label="Google AdSense Right Wing"
-            className="hidden min-[1380px]:flex flex-col items-center fixed left-[calc(50vw+512px+16px)] top-16 w-[160px] z-30 pointer-events-auto"
+            className="hidden min-[1300px]:flex flex-col items-center fixed left-[calc(50vw+512px+12px)] top-16 w-[120px] min-[1400px]:w-[160px] z-30 pointer-events-auto"
           >
             <div className="w-full bg-[#fdfcfc]/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 p-1.5 shadow-xs rounded-none">
               <AdSenseBanner 
                 format="vertical"
                 className="w-full min-h-[600px]"
-                style={{ width: '160px', minHeight: '600px' }}
+                style={{ width: '100%', minHeight: '600px' }}
                 showLabel
               />
             </div>
@@ -6282,9 +6282,9 @@ function AppContent() {
 
           {/* Simulation Indicator (Removed) */}
 
-          {/* Mobile/Tablet Content Top Google AdSense Banner (1380px 미만 화면 전용) */}
-          {!isAdRemoved && view !== 'landing' && (
-            <div className="block min-[1380px]:hidden w-full bg-[#fdfcfc]/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 px-2 py-1 shrink-0 select-none z-20">
+          {/* Mobile/Tablet Content Top Google AdSense Banner (1300px 미만 화면 전용, 카드 배틀 플레이 중에는 PlayGameView 내부 전용 배너 사용) */}
+          {!isAdRemoved && view !== 'landing' && !(view === 'play' && playGameState === 'playing') && (
+            <div className="block min-[1300px]:hidden w-full bg-[#fdfcfc]/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 px-2 py-1 shrink-0 select-none z-20">
               <div className="max-w-[728px] mx-auto min-h-[50px] sm:min-h-[90px] flex items-center justify-center">
                 <AdSenseBanner 
                   format="horizontal"
