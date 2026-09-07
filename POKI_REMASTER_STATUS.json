@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 32,
-  "completed_count": 31,
-  "last_updated": "2026-09-07T23:05:00+09:00",
+  "current_game_index": 33,
+  "completed_count": 32,
+  "last_updated": "2026-09-07T23:07:00+09:00",
   "history": [
     {
       "id": 1,
@@ -346,6 +346,17 @@
       "component": "src/components/poki/PokiSliceMasterGame.tsx",
       "completed_at": "2026-09-07T23:05:00+09:00",
       "details": "Three.js 기반 3D 피직스 나이프 플립 & 슬라이스 액션 구현, 95m 롱 트랙 & 네온 사이드 레일(시작 15m 안전 꽂힘 안착), 고광택 스틸 블레이드 & 우드 핸들 3D 나이프 & No.31 영웅 배지, 탭 시 시계방향 공중 회전 플립 & 지면 착 칼끝 꽂힘 물리, 19개 3D 슬라이스 타깃(수박, 오렌지, 버거, 치즈, 식빵 분리 낙하 & 18개 과즙 파티클 분출), 보라색 스파이크 함정 회피, 결승 4단 배율 타워(x2, x3, x5, x10) 적중 보너스, 100% 모바일 퓨어 원터치 탭 + 80px FLIP 버튼 조작계, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 32,
+      "name": "Brain Test: Tricky Puzzles",
+      "poki_url": "https://poki.com/kr/g/brain-test-tricky-puzzles",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No032_BrainTest_Prompt.md",
+      "component": "src/components/poki/PokiBrainTestGame.tsx",
+      "completed_at": "2026-09-07T23:07:00+09:00",
+      "details": "Three.js 기반 3D 인터랙티브 피직스 트릭 퍼즐 구현, 코지한 3D 스튜디오 룸 & 원목 테이블 & No.32 영웅 배지, 4대 트릭 스테이지(구름 드래그로 숨은 초거대 황금 수박 찾기 / 나무 판자 드래그로 절벽 다리 연결 및 고양이 생선 먹기 / 3D 손전등 드래그로 어두운 방 숨은 스위치 비추고 켜기 / 손거울 드래그로 금고 뒤 암호 7-3-9 확인 및 다이얼 오픈), Raycaster 기반 100% 모바일 퓨어 터치 드래그 & 탭, 힌트 툴팁, 40개 콘페티 파티클 분출, MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }

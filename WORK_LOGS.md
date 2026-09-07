@@ -4,6 +4,35 @@
 
 ---
 
+## [2026-09-07 23:07 KST] [Poki 110선 리마스터 32/110] No.032 Brain Test Three.js 3D 인터랙티브 피직스 트릭 퍼즐 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/brain-test-tricky-puzzles`) 분석 및 프롬프트(`src/components/poki/prompts/No032_BrainTest_Prompt.md`) 작성.
+  - Three.js 3D 엔진으로 코지한 3D 스튜디오 룸 & 원목 테이블 & No.32 영웅 배지, 4대 트릭 스테이지(구름 드래그로 숨은 초거대 황금 수박 찾기 / 나무 판자 드래그로 절벽 다리 연결 및 고양이 생선 먹기 / 3D 손전등 드래그로 어두운 방 숨은 스위치 비추고 켜기 / 손거울 드래그로 금고 뒤 암호 7-3-9 확인 및 다이얼 오픈), Raycaster 기반 100% 모바일 퓨어 터치 드래그 & 탭, 힌트 툴팁, 40개 콘페티 파티클 분출, MinimalistMissionHUD 정산 연동 완료 전면 재개발.
+  - AGENTS.md 카메라 기준 조작 방향(좌우/상하) 100% 일치 절대 원칙 준수 (Raycaster 화면 픽셀 좌표와 3D 월드 공간 1:1 완벽 보정).
+  - AGENTS.md 모바일 전체화면 무결점(fixed/ResizeObserver) 및 100% 모바일 퓨어 터치(3D 레이캐스터 터치 드래그 & 탭 + 힌트 버튼 + 햅틱) 표준 필수 적용.
+  - 10분 주기 스케줄러 상태 갱신 및 구글 폼 보고.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 최고 인기 트릭 퍼즐 게임 Brain Test: Tricky Puzzles. 고정관념을 깨부수는 기상천외한 퀴즈를 해결하기 위해 화면 속 사물을 직접 드래그하여 숨겨진 비밀 장치를 찾아내는 두뇌 트릭 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiBrainTestGame.tsx`)**:
+     - `Scene`, `PerspectiveCamera` 쿼터뷰 시네마틱 카메라, 따뜻한 우드 테이블 & 조명 앰비언스.
+     - 4대 기상천외 인터랙티브 트릭 스테이지 구현:
+       - Stage 1: 작은 과일들 사이에 떠 있는 3D 뭉게구름을 손가락으로 드래그해 치우면 뒤에 숨겨져 있던 초거대 황금 수박 획득!
+       - Stage 2: 좌우 절벽 틈새에 아래 테이블의 3D 나무 판자를 드래그하여 다리를 연결해주면, 3D 아기 고양이가 신나게 다리를 건너가 생선을 냠냠 먹고 통과!
+       - Stage 3: 어두운 방에서 3D 손전등을 드래그해 오른쪽 벽면 상단을 비추면 숨겨진 레드 레버 스위치가 드러남 -> 탭하여 방 전체 불 켜기!
+       - Stage 4: 3D 손거울을 드래그해 금고 뒤편을 비추어 반사된 비밀번호 [7 - 3 - 9]를 확인하고, 하단 3자리 다이얼에 입력하여 금고 개방!
+     - 40개 3D 무지개 콘페티 파티클 분출 및 정답 축하 연출.
+     - Raycaster 기반 100% 모바일 퓨어 터치 드래그 & 드롭 시스템.
+     - 하단 [💡 힌트] 및 [🔄 스테이지 초기화] 버튼.
+     - `MinimalistMissionHUD` 연동 (중도 포기/뒤로가기 시 스테이지 완료 비례 20~50 SNS 포인트 안전 정산).
+  3. **프롬프트 생성**: `src/components/poki/prompts/No032_BrainTest_Prompt.md`.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 무결점 통과.
+  - `scripts/audit_110_games.ts`: 110개 전체 Poki 컴포넌트 SSR 렌더링 무결점 통과 (110/110).
+- **스케줄러 상태**:
+  - `POKI_REMASTER_STATUS.json`: 총 110개 중 32개 완료 (No.033 Stunt Bike Extreme 대기).
+
+---
+
 ## [2026-09-07 23:05 KST] [Poki 110선 리마스터 31/110] No.031 Slice Master Three.js 3D 피직스 나이프 플립 & 슬라이스 액션 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/slice-master`) 분석 및 프롬프트(`src/components/poki/prompts/No031_SliceMaster_Prompt.md`) 작성.
