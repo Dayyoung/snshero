@@ -4,6 +4,39 @@
 
 ---
 
+## [2026-09-08 01:42 KST] [Poki 110선 리마스터 82/110] No.082 Boomy World Three.js 3D 봄버 아레나 & 십자 화염 연쇄 폭발 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/boomy-world`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No082_BoomyWorld_Prompt.md`) 작성.
+  - Three.js 3D 기반 11x11 블록 미로 필드(외벽/석조 기둥/파괴가능 나무 상자/중앙 No.082 공식 카드 영웅 배지 엠블럼), 3D 봄버 히어로(블루 수트/헬멧/등 뒤 No.082 영웅 배지 백팩).
+  - 3D 구형 폭탄 설치 & 십자 4방향 화염 전파(Cross Fire Stream), 상자 파괴 및 연쇄 기폭(Chain Reaction), 5마리 젤리 몬스터 AI 배회 및 소탕 시스템.
+  - 모바일 퓨어 터치 조작계(화면 좌측 360° 플로팅 조이스틱 + 76px BOMB 대형 폭탄 설치 버튼 + 64px DETONATE 즉시 기폭 + 햅틱) 및 MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 봄버/아케이드 액션 인기작 Boomy World. 전략적으로 폭탄을 배치하고 십자 방향으로 터져나가는 화염과 연쇄 반응으로 미로 속 장애물을 파괴하며 배회하는 몬스터들을 소탕하는 3D 봄버맨 스타일의 퍼즐 액션 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiBoomyWorldGame.tsx`)**:
+     - 11x11 타일 그리드 필드 (석조 외벽, 체커보드형 파괴불가 기둥, 18개 파괴가능 나무 상자, 중앙 No.082 공식 영웅 배지 바닥 엠블럼).
+     - 봄버맨 3D 캐릭터 모델링: 블루 점프수트, 옐로우 헬멧, 등 뒤 No.082 공식 카드 영웅 배지 백팩.
+     - 폭탄 및 연쇄 폭발 시스템:
+       - 3D 구형 폭탄 설치(도화선 불꽃 스파크 & 2.2초 카운트다운 펄스).
+       - 십자 4방향 화염 전파(Cross Fire Stream) 및 나무 상자 파괴 파티클.
+       - 화염이 닿은 다른 폭탄 연쇄 기폭(Chain Reaction).
+       - 64px [DETONATE] 버튼으로 원격 즉시 기폭 기능 지원.
+     - 몬스터 AI & 소탕 미션:
+       - 5마리 퍼플 젤리 몬스터 (3D 도데카헤드론 메쉬, 붉은 눈, 바운스 방황 AI).
+       - 화염 접촉 시 소멸 파티클 및 몬스터 카운터 갱신.
+       - 5마리 전원 소탕 시 최종 승리.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 좌측 360° 다이나믹 플로팅 조이스틱 (Screen-relative 완벽 일치).
+       - 76px [BOMB!] 대형 폭탄 설치 버튼 + 64px [DETONATE] 즉시 기폭 버튼 + 햅틱.
+       - MinimalistMissionHUD (몬스터 소탕 수 0/5, 남은 폭탄 수 0/3, 중도 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (82/110 완료, current_game_index: 83) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 82/110] No.082 Boomy World Three.js 3D 봄버 아레나 & 십자 화염 연쇄 폭발 전면 고도화`)
+
 ## [2026-09-08 01:41 KST] [Poki 110선 리마스터 81/110] No.081 Penalty Shooters 2 Three.js 3D 국가대항 승부차기 토너먼트 & 슈퍼 세이브 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/penalty-shooters-2`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No081_PenaltyShooters2_Prompt.md`) 작성.
