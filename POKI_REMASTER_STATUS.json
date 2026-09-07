@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 70,
-  "completed_count": 69,
-  "last_updated": "2026-09-08T01:07:00+09:00",
+  "current_game_index": 71,
+  "completed_count": 70,
+  "last_updated": "2026-09-08T01:09:00+09:00",
   "history": [
     {
       "id": 1,
@@ -764,6 +764,17 @@
       "component": "src/components/poki/PokiCarnadoStuntGame.tsx",
       "completed_at": "2026-09-08T01:07:00+09:00",
       "details": "Three.js 기반 3D 익스트림 스턴트 레이싱 & 공중 플립 액션 구현, 160m 아스팔트 트랙 & 메가 도약 램프 2기 & 불의 고리(Ring of Fire) & -15m 안전 스타트 존, 옐로우&블랙 Carnado GT 머슬카 & No.069 공식 카드 영웅 배지, 공중 체공(Airtime) 물리 및 360도 공중제비(AIR FLIP) 회전 트릭, 링 오브 파이어 관통(+500점) & 클린 착지(+200점) vs 전복 충돌 판정, 모바일 퓨어 터치 조작계(76px GAS 가속 + 64px BRAKE 제동 + 64px NITRO 부스트 + 64px AIR FLIP 회전 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 70,
+      "name": "Diva Hair Salon",
+      "poki_url": "https://poki.com/kr/g/diva-hair-salon",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No070_DivaHairSalon_Prompt.md",
+      "component": "src/components/poki/PokiDivaHairSalonGame.tsx",
+      "completed_at": "2026-09-08T01:09:00+09:00",
+      "details": "Three.js 기반 3D 헤어 스타일링 & 뷰티 살롱 시뮬레이션 구현, 럭셔리 살롱 룸(골든 거울/체어/조명), 3D 디바 캐릭터 모델 & No.070 공식 카드 영웅 배지 엠블럼, 4단계 인터랙티브 스타일링 코스(1단계 샴푸 거품 버블 세정 ➔ 2단계 블로우 드라이 볼륨 건조 ➔ 3단계 가위 컷팅 및 파편 낙하 ➔ 4단계 4색 컬러 염색 & 황금 티아라 왕관 착용), 360도 체어 턴테이블 회전, 모바일 퓨어 터치 조작계(머리 직접 터치 스와이프 + 76px STYLE 액션 버튼 + 64px NEXT STAGE 전환 + 4색 팔레트 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
