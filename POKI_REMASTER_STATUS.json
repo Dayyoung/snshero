@@ -3,8 +3,8 @@
   "interval_minutes": 10,
   "total_games": 110,
   "current_game_index": 110,
-  "completed_count": 109,
-  "last_updated": "2026-09-08T02:30:00+09:00",
+  "completed_count": 110,
+  "last_updated": "2026-09-08T02:31:00+09:00",
   "history": [
     {
       "id": 1,
@@ -1204,6 +1204,18 @@
       "component": "src/components/poki/PokiBlumgiSlimeGame.tsx",
       "completed_at": "2026-09-08T02:30:00+09:00",
       "details": "Three.js 기반 3D 쫀득 슬라임 탄성 차지 도약 & 림 덩크 챌린지 구현, 네온 젤리 월드 코스(16m 시작 광폭 안전 플랫폼 보장), 3D 카와이 에메랄드 슬라임 피규어(반투명 젤리 돔 바디/눈망울/No.109 공식 카드 영웅 배지 데칼), 스쿼시 & 스트레치 탄성 충전 점프 물리, 결승 50m 네온 림(Torus) 덩크 골인 및 컨페티 축하 파티클 폭죽, 76px SLIME JUMP 대형 차지 버튼 + 64px REVERT 안전 발판 복귀 + 햅틱, MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 110,
+      "name": "Obby Roads",
+      "poki_url": "https://poki.com/kr/g/obby-roads",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No110_ObbyRoads_Prompt.md",
+      "component": "src/components/poki/PokiObbyRoadsGame.tsx",
+      "completed_at": "2026-09-08T02:31:00+09:00",
+      "details": "Three.js 기반 3D 고공 장애물 오비 레이싱 & 결승 피니시 돌파 구현 (Poki 110선 전수 완주 피날레!), 천공의 520m 서스펜디드 오비 하이웨이 트랙(20m 시작 광폭 안전 플랫폼 준수), 3D 사이버 스턴트 버기카(롤케이지/4륜 회전 타이어/보닛 No.110 공식 영웅 배지 데칼/니트로 화염 파티클), 3D 가속 점프대(Mega Ramps) 및 회전 롤러 스파이크 장애물, 500m 결승 피니시 아치 게이트 및 골든 배지 모놀리스 돌파 승리, 76px NITRO BOOST 대형 버튼 + 64px BRAKE + RESET + 햅틱, MinimalistMissionHUD 정산 연동 완료"
     }
-  ]
+  ],
+  "all_completed": true
 }
