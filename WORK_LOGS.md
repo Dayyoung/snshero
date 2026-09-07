@@ -4,6 +4,37 @@
 
 ---
 
+## [2026-09-08 02:02 KST] [Poki 110선 리마스터 92/110] No.092 Harvest Simulator Three.js 3D 대형 콤바인 농장 수확 & 사일로 곡물 하역 전면 고도화
+- **요청 사항**:
+  - Poki 원본 게임(`https://poki.com/kr/g/harvest-simulator`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No092_HarvestSimulator_Prompt.md`) 작성.
+  - Three.js 3D 기반 28m x 24m 농장 필드(사일로 타워/하역장/목재 울타리/사일로 No.092 공식 영웅 배지 엠블럼), 3D 대형 콤바인 수확기(전면 고속 회전 커터 릴/도어 No.092 영웅 배지 데칼/4개 빅 타이어).
+  - 70여개 3D 밀·해바라기 작물 수확 & 볏짚 파티클, 사일로 곡물 하역 캐시 머니 정산 시스템.
+  - 모바일 퓨어 터치 조작계(360도 플로팅 조이스틱 + 76px BOOST + 64px UNLOAD + 햅틱), MinimalistMissionHUD 안전 정산.
+  - AGENTS.md 모바일 전체화면 무결점, Screen-relative 조작 방향 100% 일치, 시작 지점 안전 안착 절대 원칙 준수.
+- **분석 및 구현 내용**:
+  1. **원본 분석**: Poki 글로벌 농장 시뮬레이션 인기작 Harvest Simulator. 대형 콤바인 수확기를 운전해 끝없이 펼쳐진 황금 밀밭과 해바라기 밭을 수확하고, 수확한 곡물을 사일로에 하역하여 수익을 올려 농장을 경영하는 3D 농업 시뮬레이션 게임.
+  2. **Three.js 3D 엔진 전면 개발 (`src/components/poki/PokiHarvestSimulatorGame.tsx`)**:
+     - 28m x 24m 농장 필드 (목재 울타리, 흙바닥, 붉은색 사일로 타워 및 언로드 패드, 사일로 벽면 No.092 공식 영웅 배지 엠블럼 각인).
+     - 3D 대형 콤바인 수확기 모델링:
+       - 올리브 그린/옐로우 트랙터 섀시, 글래스 콕핏 캐빈, 4개 대형 타이어, 도어 No.092 영웅 배지 데칼.
+       - 전면 와이드 커터 릴 블레이드 (주행 시 고속 회전 애니메이션).
+     - 밀 & 해바라기 작물 수확 및 사일로 하역 루프:
+       - 70여 개 3D 작물(밀 다발 및 해바라기 줄기) 전면 커터 접촉 시 수확 절단 및 황금 파티클 분출.
+       - 곡물 탱크(0~60kg) 실시간 적재.
+       - 사일로 하역존 접근 시 64px [📦 UNLOAD] 활성화 ➔ 곡물 판매 및 캐시 머니($) 정산.
+       - 목표 수익 $500 달성 시 승리 세레모니 및 콘페티 폭발.
+     - 100% 모바일 퓨어 터치 조작계:
+       - 화면 터치 지점 360° 다이나믹 플로팅 조이스틱 주행 (Screen-relative 완벽 일치).
+       - 76px [🌾 BOOST] 가속 및 터보 수확 버튼 + 64px [📦 UNLOAD] 사일로 하역 버튼 + 햅틱.
+       - MinimalistMissionHUD (목표 수익 $500 진행도, 적재함 %, 포기 확인 모달, 실적 비례 20~50 SNS 안전 정산).
+  3. **검증 및 감사**:
+     - `npm run lint` (tsc --noEmit) 무결점 통과.
+     - `scripts/audit_110_games.ts` 110/110 전원 SSR 렌더링 무결점 통과.
+  4. **형상 관리 및 보고**:
+     - `POKI_REMASTER_STATUS.json` (92/110 완료, current_game_index: 93) 갱신.
+     - Git 커밋 및 푸시, 구글 폼 보고서 제출.
+- **구글 폼 보고**: 완료 (작업명: `[Poki 110선 리마스터 92/110] No.092 Harvest Simulator Three.js 3D 대형 콤바인 농장 수확 & 사일로 곡물 하역 전면 고도화`)
+
 ## [2026-09-08 02:01 KST] [Poki 110선 리마스터 91/110] No.091 Hexellent Three.js 3D 육각 허니컴 블록 매칭 & 클러스터 블래스트 퍼즐 전면 고도화
 - **요청 사항**:
   - Poki 원본 게임(`https://poki.com/kr/g/hexellent`) 분석 및 기획 프롬프트(`src/components/poki/prompts/No091_Hexellent_Prompt.md`) 작성.

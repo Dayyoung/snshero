@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 92,
-  "completed_count": 91,
-  "last_updated": "2026-09-08T02:01:00+09:00",
+  "current_game_index": 93,
+  "completed_count": 92,
+  "last_updated": "2026-09-08T02:02:00+09:00",
   "history": [
     {
       "id": 1,
@@ -1006,6 +1006,17 @@
       "component": "src/components/poki/PokiHexellentGame.tsx",
       "completed_at": "2026-09-08T02:01:00+09:00",
       "details": "Three.js 기반 3D 육각 허니컴 블록 매칭 & 클러스터 블래스트 퍼즐 구현, 37개 육각 슬롯 허니컴 챔버(보드 상단 No.091 공식 영웅 배지 네온 간판 엠블럼), 5종 보석 육각 프리즘 타일(루비/사파이어/에메랄드/앰버/아메시스트), BFS 클러스터 매치 폭발 파티클 & 중력 낙하 리필, 연쇄 콤보 시스템, 모바일 퓨어 터치 조작계(3D 레이캐스팅 다이렉트 탭 + 보드 미세 틸트 드래그 + 76px MEGA BLAST 힌트 버튼 + 64px SHUFFLE + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 92,
+      "name": "Harvest Simulator",
+      "poki_url": "https://poki.com/kr/g/harvest-simulator",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No092_HarvestSimulator_Prompt.md",
+      "component": "src/components/poki/PokiHarvestSimulatorGame.tsx",
+      "completed_at": "2026-09-08T02:02:00+09:00",
+      "details": "Three.js 기반 3D 대형 콤바인 농장 수확 & 사일로 곡물 하역 시뮬레이션 구현, 28m x 24m 농장 필드(사일로 타워/하역장/목재 울타리/사일로 No.092 공식 영웅 배지 엠블럼), 3D 대형 콤바인 수확기(전면 고속 회전 커터 릴/도어 No.092 영웅 배지 데칼/4개 빅 타이어), 70여개 3D 밀·해바라기 작물 수확 & 볏짚 파티클, 사일로 곡물 하역 캐시 머니 정산 시스템, 모바일 퓨어 터치 조작계(360도 플로팅 조이스틱 + 76px BOOST + 64px UNLOAD + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
