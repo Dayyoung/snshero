@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
 import { CardData } from '../../types';
 import { MinimalistMissionHUD } from '../MinimalistMissionHUD';
 import { VictoryRewardModal } from '../VictoryRewardModal';
@@ -15,25 +16,26 @@ interface PokiMineFunGameProps {
   onReward: (amount: number) => void;
 }
 
-interface OreNode {
-  id: number;
-  type: 'wood' | 'stone' | 'iron' | 'gold' | 'diamond';
+interface VoxelBlock {
+  mesh: THREE.Mesh;
+  type: 'grass' | 'stone' | 'wood' | 'lava' | 'slime' | 'moving';
   x: number;
   y: number;
-  hp: number;
-  maxHp: number;
-  color: string;
-  value: number;
+  z: number;
+  w: number;
+  h: number;
+  d: number;
+  moveRange?: number;
+  moveSpeed?: number;
+  initialX?: number;
 }
 
-interface Monster {
-  id: number;
+interface VoxelCoin {
+  mesh: THREE.Mesh;
   x: number;
   y: number;
-  hp: number;
-  maxHp: number;
-  speed: number;
-  monsterId: number;
+  z: number;
+  collected: boolean;
 }
 
 export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
@@ -46,470 +48,789 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
 }) => {
   const isKo = language === 'ko';
   const playerHeroId = deck[0]?.id || 3;
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const animFrameRef = useRef<number>(0);
 
   const [score, setScore] = useState<number>(0);
-  const [timeLeft, setTimeLeft] = useState<number>(45);
-  const [pickaxeLevel, setPickaxeLevel] = useState<number>(1);
+  const [distance, setDistance] = useState<number>(0);
+  const [coinsCollected, setCoinsCollected] = useState<number>(0);
+  const [lives, setLives] = useState<number>(3);
+  const [checkpointZ, setCheckpointZ] = useState<number>(0);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [isVictory, setIsVictory] = useState<boolean>(false);
   const [settlementReceipt, setSettlementReceipt] = useState<RewardReceipt | null>(null);
 
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_tutorial_minefun') !== 'true';
+      return localStorage.getItem('hero_tutorial_minefun_v2') !== 'true';
     } catch {
       return true;
     }
   });
 
-  const stateRef = useRef({
-    player: {
-      x: 180,
-      y: 280,
-      targetX: 180,
-      targetY: 280,
-      width: 40,
-      height: 40,
-      speed: 4.2,
-      power: 1,
-    },
-    ores: [] as OreNode[],
-    monsters: [] as Monster[],
-    combo: 0,
-    isTouchActive: false,
-    particles: [] as { x: number; y: number; vx: number; vy: number; color: string; alpha: number }[],
+  const totalCourseLength = 120;
+
+  // Three.js References
+  const threeRef = useRef<{
+    renderer: THREE.WebGLRenderer | null;
+    scene: THREE.Scene | null;
+    camera: THREE.PerspectiveCamera | null;
+    playerGroup: THREE.Group | null;
+    portalMesh: THREE.Mesh | null;
+    blocks: VoxelBlock[];
+    coins: VoxelCoin[];
+  }>({
+    renderer: null,
+    scene: null,
+    camera: null,
+    playerGroup: null,
+    portalMesh: null,
+    blocks: [],
+    coins: [],
   });
 
-  // Init world
-  const initWorld = useCallback(() => {
-    const ores: OreNode[] = [];
-    const oreTypes: { type: OreNode['type']; color: string; hp: number; val: number }[] = [
-      { type: 'wood', color: '#854d0e', hp: 3, val: 15 },
-      { type: 'stone', color: '#64748b', hp: 5, val: 25 },
-      { type: 'iron', color: '#94a3b8', hp: 8, val: 45 },
-      { type: 'gold', color: '#eab308', hp: 12, val: 80 },
-      { type: 'diamond', color: '#38bdf8', hp: 18, val: 150 },
-    ];
+  // Gameplay State
+  const stateRef = useRef({
+    player: {
+      x: 0,
+      y: 2,
+      z: 0,
+      vx: 0,
+      vy: 0,
+      vz: 0,
+      isGrounded: false,
+      invulnerableTimer: 0,
+      lastCheckpoint: { x: 0, y: 2, z: 0 },
+    },
+    touch: {
+      active: false,
+      startX: 0,
+      startY: 0,
+      currentX: 0,
+      currentY: 0,
+    },
+    keys: {
+      up: false,
+      down: false,
+      left: false,
+      right: false,
+      jump: false,
+    },
+    score: 0,
+    coins: 0,
+    timeAlive: 0,
+  });
 
-    for (let i = 0; i < 16; i++) {
-      const t = oreTypes[Math.floor(Math.random() * oreTypes.length)];
-      ores.push({
-        id: i,
-        type: t.type,
-        x: 40 + Math.random() * 280,
-        y: 80 + Math.random() * 400,
-        hp: t.hp,
-        maxHp: t.hp,
-        color: t.color,
-        value: t.val,
-      });
+  // 1. Jump Action
+  const handleJump = useCallback(() => {
+    const s = stateRef.current;
+    if (s.player.isGrounded && !isGameOver && !isVictory) {
+      s.player.vy = 12.8;
+      s.player.isGrounded = false;
+      playSfx?.('sounds/jump.mp3');
     }
+  }, [isGameOver, isVictory, playSfx]);
 
-    stateRef.current.ores = ores;
-    stateRef.current.monsters = [];
-    stateRef.current.player.power = 1;
-    setPickaxeLevel(1);
-  }, []);
-
+  // 2. Three.js Scene Setup & Voxel Track Generation
   useEffect(() => {
-    initWorld();
-  }, [initWorld]);
+    const container = containerRef.current;
+    if (!container) return;
 
-  // Monster Spawner
-  useEffect(() => {
-    if (isGameOver || isVictory || showTutorial) return;
-    const interval = setInterval(() => {
-      if (stateRef.current.monsters.length < 5) {
-        const monsterIds = [101, 102, 103, 107, 114];
-        stateRef.current.monsters.push({
-          id: Date.now() + Math.random(),
-          x: Math.random() < 0.5 ? -20 : 380,
-          y: Math.random() * 500,
-          hp: 4 + pickaxeLevel * 2,
-          maxHp: 4 + pickaxeLevel * 2,
-          speed: 1.2 + Math.random() * 0.8,
-          monsterId: monsterIds[Math.floor(Math.random() * monsterIds.length)],
-        });
-      }
-    }, 3500);
-    return () => clearInterval(interval);
-  }, [isGameOver, isVictory, showTutorial, pickaxeLevel]);
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
 
-  // Timer loop
-  useEffect(() => {
-    if (isGameOver || isVictory || showTutorial) return;
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev <= 1) {
-          handleGameOver(score >= 600);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [isGameOver, isVictory, showTutorial, score]);
+    // Scene & Sky
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x38bdf8); // Vibrant Voxel Sky Blue
+    scene.fog = new THREE.FogExp2(0x38bdf8, 0.015);
 
-  const handleGameOver = useCallback((victory: boolean) => {
-    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-    setIsGameOver(true);
-    setIsVictory(victory);
+    // Camera
+    const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 1000);
+    camera.position.set(0, 5, -7);
 
-    const receipt = calculateAndDepositMissionReward({
-      gameId: 'poki_minefun',
-      gameTitle: isKo ? '마인펀 샌드박스' : 'MineFun.io',
-      durationSeconds: 45 - timeLeft,
-      score: score + (victory ? 300 : 0),
-      maxTargetScore: 1000,
-      isVictory: victory,
-      difficulty: 'NORMAL',
-      comboCount: stateRef.current.combo,
-      perfectClear: victory && timeLeft > 15,
-    });
+    // Renderer
+    const renderer = new THREE.WebGLRenderer({ antialias: !lowSpecMode, powerPreference: 'high-performance' });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = !lowSpecMode;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    container.innerHTML = '';
+    container.appendChild(renderer.domElement);
 
-    setSettlementReceipt(receipt);
-    onReward(receipt.totalSns);
-    if (playSfx) {
-      playSfx(victory ? 'https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3' : 'https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-    }
-  }, [score, timeLeft, isKo, onReward, playSfx]);
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
+    scene.add(ambientLight);
 
-  // Main Canvas Loop
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const sunLight = new THREE.DirectionalLight(0xfff7ed, 1.3);
+    sunLight.position.set(25, 45, 20);
+    sunLight.castShadow = !lowSpecMode;
+    sunLight.shadow.mapSize.width = 1024;
+    sunLight.shadow.mapSize.height = 1024;
+    scene.add(sunLight);
 
-    let width = canvas.clientWidth;
-    let height = canvas.clientHeight;
-    canvas.width = width;
-    canvas.height = height;
-
-    const updateAndRender = () => {
-      if (isGameOver || isVictory || showTutorial) return;
-
-      const p = stateRef.current.player;
-      const ores = stateRef.current.ores;
-      const monsters = stateRef.current.monsters;
-      const particles = stateRef.current.particles;
-
-      // Player move to target
-      const dx = p.targetX - p.x;
-      const dy = p.targetY - p.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist > 4) {
-        p.x += (dx / dist) * p.speed;
-        p.y += (dy / dist) * p.speed;
-      }
-
-      // Monster seek player
-      for (let i = monsters.length - 1; i >= 0; i--) {
-        const m = monsters[i];
-        const mdx = p.x - m.x;
-        const mdy = p.y - m.y;
-        const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
-
-        if (mdist > 10) {
-          m.x += (mdx / mdist) * m.speed;
-          m.y += (mdy / mdist) * m.speed;
-        }
-
-        // Collision with player
-        if (mdist < 28) {
-          // Player hit!
-          setScore(s => Math.max(0, s - 25));
-          stateRef.current.combo = 0;
-          // knockback monster
-          m.x -= (mdx / mdist) * 40;
-          m.y -= (mdy / mdist) * 40;
-        }
-      }
-
-      // Check win condition
-      if (score >= 1000) {
-        handleGameOver(true);
-        return;
-      }
-
-      // ---------------- RENDER ----------------
-      ctx.clearRect(0, 0, width, height);
-
-      // Grassy dirt Minecraft voxel floor
-      ctx.fillStyle = '#14532d'; // Deep grass green
-      ctx.fillRect(0, 0, width, height);
-
-      // Dirt grid texture
-      ctx.strokeStyle = 'rgba(20, 83, 45, 0.4)';
-      ctx.lineWidth = 1;
-      for (let x = 0; x < width; x += 32) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, height);
-        ctx.stroke();
-      }
-      for (let y = 0; y < height; y += 32) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(width, y);
-        ctx.stroke();
-      }
-
-      // Draw Ores (Voxel Cube style)
-      for (const o of ores) {
-        ctx.fillStyle = o.color;
-        ctx.fillRect(o.x - 14, o.y - 14, 28, 28);
-
-        // Voxel 3D bevel
-        ctx.strokeStyle = 'rgba(255,255,255,0.4)';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(o.x - 14, o.y - 14, 28, 28);
-
-        // Health bar
-        const hpPct = o.hp / o.maxHp;
-        ctx.fillStyle = '#ef4444';
-        ctx.fillRect(o.x - 14, o.y + 18, 28, 4);
-        ctx.fillStyle = '#22c55e';
-        ctx.fillRect(o.x - 14, o.y + 18, 28 * hpPct, 4);
-      }
-
-      // Draw Monsters
-      for (const m of monsters) {
-        drawCardSprite(ctx, m.monsterId, m.x - 16, m.y - 16, 32, 32, {
-          circleClip: true,
-          borderWidth: 2,
-          borderColor: '#ef4444',
-          shadowBlur: 6,
-          shadowColor: '#ef4444',
-        });
-
-        // HP bar
-        const mHpPct = m.hp / m.maxHp;
-        ctx.fillStyle = '#ef4444';
-        ctx.fillRect(m.x - 14, m.y + 18, 28, 3);
-        ctx.fillStyle = '#a855f7';
-        ctx.fillRect(m.x - 14, m.y + 18, 28 * mHpPct, 3);
-      }
-
-      // Draw Particles
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const pt = particles[i];
-        pt.x += pt.vx;
-        pt.y += pt.vy;
-        pt.alpha -= 0.04;
-        if (pt.alpha <= 0) {
-          particles.splice(i, 1);
-          continue;
-        }
-        ctx.fillStyle = pt.color;
-        ctx.globalAlpha = pt.alpha;
-        ctx.fillRect(pt.x, pt.y, 4, 4);
-        ctx.globalAlpha = 1;
-      }
-
-      // Draw Player Hero (SNSHero card sprite)
-      drawCardSprite(ctx, playerHeroId, p.x - 20, p.y - 20, 40, 40, {
-        circleClip: true,
-        borderWidth: 2,
-        borderColor: '#f59e0b',
-        shadowBlur: 8,
-        shadowColor: '#f59e0b',
-      });
-
-      // Mining Aura Ring
-      ctx.strokeStyle = 'rgba(245, 158, 11, 0.4)';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 36, 0, Math.PI * 2);
-      ctx.stroke();
-
-      animFrameRef.current = requestAnimationFrame(updateAndRender);
+    // Materials Palette
+    const mats = {
+      grass: new THREE.MeshStandardMaterial({ color: 0x4ade80, roughness: 0.8 }), // Light grass
+      dirt: new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.9 }), // Dirt
+      stone: new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.7 }), // Stone
+      wood: new THREE.MeshStandardMaterial({ color: 0xb45309, roughness: 0.8 }), // Wood Planks
+      lava: new THREE.MeshBasicMaterial({ color: 0xef4444 }), // Glowing Lava
+      slime: new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.2, metalness: 0.4 }), // Bouncy Slime
+      goldCoin: new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.3, metalness: 0.8 }),
+      portal: new THREE.MeshStandardMaterial({ color: 0x06b6d4, roughness: 0.1, metalness: 0.9, wireframe: false }),
     };
 
-    animFrameRef.current = requestAnimationFrame(updateAndRender);
+    const blocks: VoxelBlock[] = [];
+    const coins: VoxelCoin[] = [];
+
+    // Helper: Add Voxel Block Platform
+    const addBlock = (
+      type: 'grass' | 'stone' | 'wood' | 'lava' | 'slime' | 'moving',
+      x: number,
+      y: number,
+      z: number,
+      w = 2,
+      h = 1,
+      d = 2,
+      moveRange = 0,
+      moveSpeed = 0
+    ) => {
+      const geo = new THREE.BoxGeometry(w, h, d);
+      const mesh = new THREE.Mesh(geo, mats[type]);
+      mesh.position.set(x, y - h / 2, z);
+      mesh.castShadow = !lowSpecMode;
+      mesh.receiveShadow = !lowSpecMode;
+      scene.add(mesh);
+
+      // If grass block, add dirt underside for authentic voxel style
+      if (type === 'grass' && h >= 1) {
+        const dirtGeo = new THREE.BoxGeometry(w, h * 0.7, d);
+        const dirtMesh = new THREE.Mesh(dirtGeo, mats.dirt);
+        dirtMesh.position.set(0, -h * 0.5, 0);
+        mesh.add(dirtMesh);
+      }
+
+      blocks.push({ mesh, type, x, y, z, w, h, d, moveRange, moveSpeed, initialX: x });
+    };
+
+    // Helper: Add Coin
+    const addCoin = (x: number, y: number, z: number) => {
+      const coinGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.15, 12);
+      const mesh = new THREE.Mesh(coinGeo, mats.goldCoin);
+      mesh.rotation.x = Math.PI / 2;
+      mesh.position.set(x, y + 0.6, z);
+      mesh.castShadow = !lowSpecMode;
+      scene.add(mesh);
+      coins.push({ mesh, x, y: y + 0.6, z, collected: false });
+    };
+
+    // --- Build Course Obby Track ---
+    // Start Area (z: -4 ~ 4)
+    addBlock('grass', 0, 0, 0, 6, 2, 8);
+
+    // Section 1: Stepping Grass Blocks (z: 8 ~ 24)
+    addBlock('grass', -1.5, 0.5, 8, 2, 1, 2);
+    addCoin(-1.5, 0.5, 8);
+    addBlock('grass', 1.5, 1.0, 13, 2, 1, 2);
+    addCoin(1.5, 1.0, 13);
+    addBlock('wood', -1.0, 1.5, 18, 2, 1, 2);
+    addBlock('grass', 0, 2.0, 24, 3, 1, 3);
+    addCoin(0, 2.0, 24);
+
+    // Checkpoint 1 (z = 30)
+    addBlock('stone', 0, 2.0, 30, 4, 1, 4);
+
+    // Section 2: Moving Platform over the Void (z: 36 ~ 46)
+    addBlock('moving', 0, 2.0, 37, 2.5, 0.8, 2.5, 4.0, 2.0);
+    addCoin(0, 2.0, 37);
+    addBlock('moving', 0, 2.5, 45, 2.5, 0.8, 2.5, 4.0, -2.5);
+
+    // Section 3: Slime Super Jumper Pad over Lava Gap (z: 52 ~ 68)
+    addBlock('stone', 0, 3.0, 52, 3, 1, 3);
+    // Slime Pad
+    addBlock('slime', 0, 3.2, 56, 2.5, 0.5, 2.5);
+    // Lava Pit Far Below
+    addBlock('lava', 0, -2.0, 64, 14, 1, 14);
+    // Landing Platform
+    addBlock('grass', 0, 4.0, 72, 4, 1, 4);
+    addCoin(0, 4.0, 72);
+
+    // Checkpoint 2 (z = 78)
+    addBlock('stone', 0, 4.5, 78, 4, 1, 4);
+
+    // Section 4: Stairway to Heaven (z: 84 ~ 105)
+    addBlock('wood', -2, 5.5, 84, 2, 1, 2);
+    addCoin(-2, 5.5, 84);
+    addBlock('wood', 2, 6.8, 90, 2, 1, 2);
+    addCoin(2, 6.8, 90);
+    addBlock('stone', 0, 8.0, 96, 2, 1, 2);
+    addBlock('slime', 0, 8.2, 102, 2.5, 0.5, 2.5);
+
+    // Goal Platform & Portal (z: 114 ~ 122)
+    addBlock('grass', 0, 10.0, 116, 8, 2, 8);
+
+    // 3D Goal Portal Ring
+    const portalGeo = new THREE.TorusGeometry(2.5, 0.4, 16, 32);
+    const portalMesh = new THREE.Mesh(portalGeo, mats.portal);
+    portalMesh.position.set(0, 13.0, 118);
+    scene.add(portalMesh);
+
+    // Player 3D Voxel Mesh (Steve-like Voxel Avatar)
+    const playerGroup = new THREE.Group();
+
+    // Body
+    const pBodyMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.5 }); // Cyan shirt
+    const pBody = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.0, 0.5), pBodyMat);
+    pBody.position.y = 1.0;
+    pBody.castShadow = !lowSpecMode;
+    playerGroup.add(pBody);
+
+    // Legs
+    const pLegMat = new THREE.MeshStandardMaterial({ color: 0x1e3a8a, roughness: 0.6 }); // Dark blue pants
+    const pLegL = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.8, 0.45), pLegMat);
+    pLegL.position.set(-0.2, 0.4, 0);
+    pLegL.castShadow = !lowSpecMode;
+    playerGroup.add(pLegL);
+
+    const pLegR = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.8, 0.45), pLegMat);
+    pLegR.position.set(0.2, 0.4, 0);
+    pLegR.castShadow = !lowSpecMode;
+    playerGroup.add(pLegR);
+
+    // Head
+    const pHeadMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.4 }); // Skin
+    const pHead = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.65, 0.65), pHeadMat);
+    pHead.position.y = 1.75;
+    pHead.castShadow = !lowSpecMode;
+    playerGroup.add(pHead);
+
+    // Card Hero No.03 Badge
+    const badgeCanvas = document.createElement('canvas');
+    badgeCanvas.width = 128;
+    badgeCanvas.height = 128;
+    const bCtx = badgeCanvas.getContext('2d');
+    if (bCtx) {
+      bCtx.fillStyle = '#0f172a';
+      bCtx.beginPath();
+      bCtx.arc(64, 64, 60, 0, Math.PI * 2);
+      bCtx.fill();
+      bCtx.lineWidth = 6;
+      bCtx.strokeStyle = '#f59e0b';
+      bCtx.stroke();
+      drawCardSprite(bCtx, playerHeroId, 16, 16, 96, 96);
+    }
+    const badgeTexture = new THREE.CanvasTexture(badgeCanvas);
+    const badgeSpriteMat = new THREE.SpriteMaterial({ map: badgeTexture });
+    const badgeSprite = new THREE.Sprite(badgeSpriteMat);
+    badgeSprite.position.set(0, 2.6, 0);
+    badgeSprite.scale.set(1.2, 1.2, 1.2);
+    playerGroup.add(badgeSprite);
+
+    scene.add(playerGroup);
+
+    threeRef.current = {
+      renderer,
+      scene,
+      camera,
+      playerGroup,
+      portalMesh,
+      blocks,
+      coins,
+    };
+
+    // Resize Handler
+    const handleResize = () => {
+      if (!containerRef.current || !renderer || !camera) return;
+      const w = containerRef.current.clientWidth;
+      const h = containerRef.current.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    };
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      window.removeEventListener('resize', handleResize);
+      if (renderer.domElement.parentNode) {
+        renderer.domElement.parentNode.removeChild(renderer.domElement);
+      }
+      renderer.dispose();
     };
-  }, [isGameOver, isVictory, showTutorial, score, playerHeroId, handleGameOver]);
+  }, [lowSpecMode, playerHeroId]);
 
-  // Touch / Tap Action: Move & Mine & Attack
-  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const touchX = e.clientX - rect.left;
-    const touchY = e.clientY - rect.top;
+  // 3. Physics & Animation Game Loop
+  useEffect(() => {
+    let lastTime = performance.now();
 
-    stateRef.current.isTouchActive = true;
-    stateRef.current.player.targetX = touchX;
-    stateRef.current.player.targetY = touchY;
+    const loop = (currentTime: number) => {
+      const dt = Math.min((currentTime - lastTime) / 1000, 0.08);
+      lastTime = currentTime;
 
-    // Check hit on ore
-    const ores = stateRef.current.ores;
-    for (let i = ores.length - 1; i >= 0; i--) {
-      const o = ores[i];
-      const dist = Math.hypot(touchX - o.x, touchY - o.y);
-      if (dist < 32) {
-        o.hp -= stateRef.current.player.power;
-        if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+      const { renderer, scene, camera, playerGroup, portalMesh, blocks, coins } = threeRef.current;
+      const s = stateRef.current;
 
-        // Spark particles
-        for (let k = 0; k < 5; k++) {
-          stateRef.current.particles.push({
-            x: o.x,
-            y: o.y,
-            vx: (Math.random() - 0.5) * 6,
-            vy: (Math.random() - 0.5) * 6,
-            color: o.color,
-            alpha: 1,
+      if (renderer && scene && camera && playerGroup && !isGameOver && !isVictory) {
+        s.timeAlive += dt;
+
+        // Rotate Portal & Coins
+        if (portalMesh) portalMesh.rotation.z += 0.03;
+        coins.forEach((c) => {
+          if (!c.collected) {
+            c.mesh.rotation.z += 0.05;
+          }
+        });
+
+        // Update Moving Platforms
+        blocks.forEach((b) => {
+          if (b.type === 'moving' && b.moveRange && b.moveSpeed && b.initialX !== undefined) {
+            b.x = b.initialX + Math.sin(s.timeAlive * b.moveSpeed) * b.moveRange;
+            b.mesh.position.x = b.x;
+          }
+        });
+
+        // Player Controls Input
+        let moveX = 0;
+        let moveZ = 0;
+
+        if (s.keys.up) moveZ += 1;
+        if (s.keys.down) moveZ -= 1;
+        if (s.keys.left) moveX -= 1;
+        if (s.keys.right) moveX += 1;
+
+        if (s.touch.active) {
+          const dx = s.touch.currentX - s.touch.startX;
+          const dy = s.touch.currentY - s.touch.startY;
+          const dist = Math.hypot(dx, dy);
+          if (dist > 10) {
+            moveX = dx / Math.max(dist, 50);
+            moveZ = -dy / Math.max(dist, 50);
+          }
+        }
+
+        const moveSpeed = 6.8;
+        s.player.vx = THREE.MathUtils.lerp(s.player.vx, moveX * moveSpeed, 0.2);
+        s.player.vz = THREE.MathUtils.lerp(s.player.vz, moveZ * moveSpeed, 0.2);
+
+        // Apply Gravity
+        const gravity = -28.0;
+        s.player.vy += gravity * dt;
+
+        // Proposed Next Positions
+        const nextX = s.player.x + s.player.vx * dt;
+        const nextY = s.player.y + s.player.vy * dt;
+        const nextZ = s.player.z + s.player.vz * dt;
+
+        s.player.x = nextX;
+        s.player.z = nextZ;
+
+        // Collision Check with Voxel Platforms
+        s.player.isGrounded = false;
+        const playerRadius = 0.4;
+        const playerBottom = nextY;
+
+        for (const b of blocks) {
+          const minX = b.x - b.w / 2 - playerRadius;
+          const maxX = b.x + b.w / 2 + playerRadius;
+          const minZ = b.z - b.d / 2 - playerRadius;
+          const maxZ = b.z + b.d / 2 + playerRadius;
+
+          if (s.player.x >= minX && s.player.x <= maxX && s.player.z >= minZ && s.player.z <= maxZ) {
+            const blockTop = b.y;
+
+            // Landing on top
+            if (s.player.y >= blockTop - 0.2 && playerBottom <= blockTop + 0.3 && s.player.vy <= 0) {
+              s.player.y = blockTop;
+              s.player.vy = 0;
+              s.player.isGrounded = true;
+
+              // Slime Pad Super Jump
+              if (b.type === 'slime') {
+                s.player.vy = 22.0;
+                s.player.isGrounded = false;
+                playSfx?.('sounds/boost.mp3');
+              }
+
+              // Lava Hazard
+              if (b.type === 'lava' && s.player.invulnerableTimer <= 0) {
+                s.player.invulnerableTimer = 1.5;
+                s.player.vy = 8.0;
+                playSfx?.('sounds/hit.mp3');
+                setLives((prev) => {
+                  const next = prev - 1;
+                  if (next <= 0) {
+                    setIsGameOver(true);
+                    const receipt = calculateAndDepositMissionReward({
+                      gameId: 'pokiminefun',
+                      gameTitle: 'MineFun.io 3D Obby',
+                      durationSeconds: Math.round(s.timeAlive),
+                      score: s.score,
+                      maxTargetScore: 1000,
+                      isVictory: false,
+                      difficulty: 'NORMAL',
+                    });
+                    setSettlementReceipt(receipt);
+                    onReward(receipt.totalSns);
+                  }
+                  return Math.max(0, next);
+                });
+              }
+
+              // Moving Platform Carry
+              if (b.type === 'moving' && b.moveSpeed && b.moveRange) {
+                s.player.x += Math.cos(s.timeAlive * b.moveSpeed) * b.moveRange * b.moveSpeed * dt;
+              }
+              break;
+            }
+          }
+        }
+
+        if (!s.player.isGrounded) {
+          s.player.y += s.player.vy * dt;
+        }
+
+        // Collect Coins
+        coins.forEach((c) => {
+          if (!c.collected) {
+            const dist = Math.hypot(s.player.x - c.x, s.player.y - c.y, s.player.z - c.z);
+            if (dist < 1.2) {
+              c.collected = true;
+              c.mesh.visible = false;
+              s.coins += 1;
+              s.score += 50;
+              setCoinsCollected(s.coins);
+              setScore(s.score);
+              playSfx?.('sounds/coin.mp3');
+            }
+          }
+        });
+
+        // Checkpoint Trigger
+        if (s.player.z >= 30 && s.player.lastCheckpoint.z < 30) {
+          s.player.lastCheckpoint = { x: 0, y: 3.5, z: 30 };
+          setCheckpointZ(30);
+          playSfx?.('sounds/powerup.mp3');
+        }
+        if (s.player.z >= 78 && s.player.lastCheckpoint.z < 78) {
+          s.player.lastCheckpoint = { x: 0, y: 5.5, z: 78 };
+          setCheckpointZ(78);
+          playSfx?.('sounds/powerup.mp3');
+        }
+
+        // Void Fall Hazard
+        if (s.player.y < -12) {
+          playSfx?.('sounds/hit.mp3');
+          setLives((prev) => {
+            const next = prev - 1;
+            if (next <= 0) {
+              setIsGameOver(true);
+              const receipt = calculateAndDepositMissionReward({
+                gameId: 'pokiminefun',
+                gameTitle: 'MineFun.io 3D Obby',
+                durationSeconds: Math.round(s.timeAlive),
+                score: s.score + Math.round(s.player.z * 5),
+                maxTargetScore: 1000,
+                isVictory: false,
+                difficulty: 'NORMAL',
+              });
+              setSettlementReceipt(receipt);
+              onReward(receipt.totalSns);
+            } else {
+              // Respawn at Checkpoint
+              s.player.x = s.player.lastCheckpoint.x;
+              s.player.y = s.player.lastCheckpoint.y;
+              s.player.z = s.player.lastCheckpoint.z;
+              s.player.vx = 0;
+              s.player.vy = 0;
+              s.player.vz = 0;
+            }
+            return Math.max(0, next);
           });
         }
 
-        if (o.hp <= 0) {
-          setScore(s => s + o.value);
-          stateRef.current.combo++;
-
-          // Upgrade pickaxe check
-          if (score > 200 && pickaxeLevel === 1) {
-            setPickaxeLevel(2);
-            stateRef.current.player.power = 2;
-          } else if (score > 500 && pickaxeLevel === 2) {
-            setPickaxeLevel(3);
-            stateRef.current.player.power = 3;
-          }
-
-          // Respawn ore elsewhere
-          o.x = 40 + Math.random() * (canvas.clientWidth - 80);
-          o.y = 80 + Math.random() * (canvas.clientHeight - 120);
-          o.hp = o.maxHp;
+        // Goal Portal Victory Trigger
+        if (s.player.z >= 116 && s.player.y >= 9.5) {
+          setIsVictory(true);
+          playSfx?.('sounds/victory.mp3');
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'pokiminefun',
+            gameTitle: 'MineFun.io 3D Obby',
+            durationSeconds: Math.round(s.timeAlive),
+            score: s.score + 500,
+            maxTargetScore: 1000,
+            isVictory: true,
+            difficulty: 'NORMAL',
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
+          return;
         }
-        return;
-      }
-    }
 
-    // Check hit on monster
-    const monsters = stateRef.current.monsters;
-    for (let i = monsters.length - 1; i >= 0; i--) {
-      const m = monsters[i];
-      const dist = Math.hypot(touchX - m.x, touchY - m.y);
-      if (dist < 32) {
-        m.hp -= stateRef.current.player.power * 2;
-        if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        // Update Mesh & Tracking
+        playerGroup.position.set(s.player.x, s.player.y, s.player.z);
 
-        if (m.hp <= 0) {
-          monsters.splice(i, 1);
-          setScore(s => s + 60);
-          stateRef.current.combo++;
+        if (Math.hypot(moveX, moveZ) > 0.1) {
+          const targetHeading = Math.atan2(moveX, moveZ);
+          playerGroup.rotation.y = THREE.MathUtils.lerp(playerGroup.rotation.y, targetHeading, 0.2);
         }
-        return;
+
+        // Invulnerable Flash
+        if (s.player.invulnerableTimer > 0) {
+          s.player.invulnerableTimer -= dt;
+          playerGroup.visible = Math.floor(currentTime / 80) % 2 === 0;
+        } else {
+          playerGroup.visible = true;
+        }
+
+        // Camera Smooth Follow
+        const camTargetX = s.player.x * 0.6;
+        const camTargetY = s.player.y + 4.2;
+        const camTargetZ = s.player.z - 7.5;
+        camera.position.x = THREE.MathUtils.lerp(camera.position.x, camTargetX, 0.15);
+        camera.position.y = THREE.MathUtils.lerp(camera.position.y, camTargetY, 0.15);
+        camera.position.z = THREE.MathUtils.lerp(camera.position.z, camTargetZ, 0.15);
+        camera.lookAt(s.player.x, s.player.y + 1.2, s.player.z + 4.0);
+
+        setDistance(Math.min(totalCourseLength, Math.max(0, Math.round(s.player.z))));
+        renderer.render(scene, camera);
       }
+
+      animFrameRef.current = requestAnimationFrame(loop);
+    };
+
+    animFrameRef.current = requestAnimationFrame(loop);
+
+    return () => {
+      cancelAnimationFrame(animFrameRef.current);
+    };
+  }, [isGameOver, isVictory, playSfx, onReward]);
+
+  // 4. Keyboard Controls
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const s = stateRef.current;
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') s.keys.up = true;
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') s.keys.down = true;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') s.keys.left = true;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') s.keys.right = true;
+      if (e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        handleJump();
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      const s = stateRef.current;
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') s.keys.up = false;
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') s.keys.down = false;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') s.keys.left = false;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') s.keys.right = false;
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [handleJump]);
+
+  // Touch Handlers for Mobile Pure Gestures
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    const s = stateRef.current;
+    s.touch.active = true;
+    s.touch.startX = touch.clientX;
+    s.touch.startY = touch.clientY;
+    s.touch.currentX = touch.clientX;
+    s.touch.currentY = touch.clientY;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    const s = stateRef.current;
+    if (s.touch.active) {
+      s.touch.currentX = touch.clientX;
+      s.touch.currentY = touch.clientY;
     }
   };
 
-  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (!stateRef.current.isTouchActive) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    stateRef.current.player.targetX = e.clientX - rect.left;
-    stateRef.current.player.targetY = e.clientY - rect.top;
-  };
-
-  const handlePointerUp = () => {
-    stateRef.current.isTouchActive = false;
+  const handleTouchEnd = () => {
+    const s = stateRef.current;
+    s.touch.active = false;
   };
 
   const tutorialSteps: TutorialStep[] = [
     {
-      title: isKo ? '마인펀 샌드박스' : 'MineFun.io',
-      badge: 'MISSION 03',
+      badge: 'OBBY',
+      title: isKo ? '🧱 3D 복셀 파쿠르 오비' : '🧱 3D Voxel Parkour Obby',
       description: isKo
-        ? '광석 블록을 직접 터치하여 채굴하고 자원을 모아 곡괭이를 업그레이드하세요!'
-        : 'Tap directly on ore blocks to mine valuable minerals and upgrade your pickaxe!',
+        ? '마인크래프트 스타일의 3D 복셀 블록 위를 정밀하게 점프하며 고공 오비 코스를 정복하세요!'
+        : 'Jump across 3D floating voxel blocks in a Minecraft-style parkour obby challenge!',
       keyPoints: isKo
-        ? ['광석 블록을 탭하여 채굴', '자원 수집으로 곡괭이 업그레이드', '다양한 광물 수집 시 추가 점수']
-        : ['Tap blocks to mine ores', 'Upgrade pickaxe with minerals', 'Collect rare ores for bonus pts'],
+        ? ['발판 사이의 간격을 조절하며 점프', '낙사하지 않도록 주의']
+        : ['Control jump timing between blocks', 'Watch out for the void'],
     },
     {
-      title: isKo ? '몬스터 퇴치 & 생존' : 'Combat & Survival',
-      badge: 'MONSTER HUNT',
+      badge: 'ACTION',
+      title: isKo ? '🚀 슬라임 패드 & 특수 블록' : '🚀 Slime Pads & Hazards',
       description: isKo
-        ? '다가오는 야간 몬스터를 탭하여 칼로 물리치세요. 스코어 1,000점을 달성하면 승리합니다.'
-        : 'Tap approaching night monsters to slash them down. Reach 1,000 points to win!',
+        ? '연두색 슬라임 패드를 밟으면 초고공 슈퍼점프가 발동됩니다. 붉은 용암 블록은 밟으면 피해를 입으니 피하세요!'
+        : 'Step on green slime pads for a massive super jump. Avoid red lava hazard blocks!',
       keyPoints: isKo
-        ? ['몬스터를 터치하여 근접 타격', '체력 보존 및 야간 서바이벌', '1,000점 달성 시 미션 성공']
-        : ['Tap monsters to slash', 'Survive night waves', 'Reach 1,000 score to win'],
-    }
+        ? ['슬라임 패드로 넓은 협곡 도약', '황금 복셀 코인 수집']
+        : ['Use slime pads to clear gaps', 'Collect golden voxel coins'],
+    },
+    {
+      badge: 'GOAL',
+      title: isKo ? '🌀 체크포인트 & 결승 포털' : '🌀 Checkpoints & Portal',
+      description: isKo
+        ? '중간 체크포인트를 통과하면 낙사 시 해당 위치에서 부활합니다. 결승 다이아몬드 포털에 도달하여 승리하세요!'
+        : 'Pass checkpoints to save your progress. Reach the final diamond portal to clear!',
+      keyPoints: isKo
+        ? ['체크포인트 깃발 활성화', '결승 포털 도착 시 대량 SNS 보상']
+        : ['Activate save checkpoints', 'Reach final portal for rewards'],
+    },
   ];
 
   return (
-    <div className="relative w-full h-[100dvh] bg-slate-950 flex flex-col items-center select-none overflow-hidden font-mono">
+    <div
+      className="relative w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* 3D WebGL Canvas */}
+      <div ref={containerRef} className="absolute inset-0 w-full h-full" />
+
+      {/* Minimalist Mission HUD */}
       <MinimalistMissionHUD
-        title={isKo ? 'No.03 마인펀 샌드박스' : 'No.03 MineFun.io'}
-        currentScore={score}
+        gameTitle="MINEFUN.IO 3D OBBY"
+        score={score}
         targetScore={1000}
-        timeLeft={timeLeft}
-        stageInfo={`PICKAXE Lv.${pickaxeLevel}`}
-        combo={stateRef.current.combo}
-        onExit={onExit}
+        language={language}
+        onExit={() => {
+          const s = stateRef.current;
+          const currentProgress = s.score + Math.round(s.player.z * 4);
+          const receipt = calculateAndDepositMissionReward({
+            gameId: 'pokiminefun',
+            gameTitle: 'MineFun.io 3D Obby',
+            durationSeconds: Math.round(s.timeAlive),
+            score: currentProgress,
+            maxTargetScore: 1000,
+            isVictory: false,
+            difficulty: 'NORMAL',
+          });
+          setSettlementReceipt(receipt);
+          onReward(receipt.totalSns);
+          onExit();
+        }}
       />
 
-      <div className="relative flex-1 w-full max-w-md flex items-center justify-center p-2">
-        <canvas
-          ref={canvasRef}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onPointerCancel={handlePointerUp}
-          className="w-full h-full rounded-sm border border-slate-800 touch-none shadow-inner"
-        />
-
-        {/* Action Guide */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none text-center bg-slate-900/80 px-4 py-1.5 rounded-full border border-slate-700/60 backdrop-blur-sm">
-          <p className="text-xs text-amber-400 font-bold tracking-wider animate-pulse">
-            {isKo ? '⛏️ 광석/몬스터 터치: 채광 & 공격 | 👆 드래그: 이동' : '⛏️ TAP: MINE & ATTACK | 👆 DRAG: MOVE'}
-          </p>
+      {/* Top Status HUD */}
+      <div className="absolute top-16 left-4 right-4 flex items-center justify-between text-xs sm:text-sm text-slate-200 pointer-events-none z-10">
+        <div className="flex items-center gap-2 bg-slate-900/80 px-3 py-1.5 rounded-sm border border-slate-700/80 backdrop-blur-sm">
+          <span className="text-emerald-400 font-bold">{distance}m / {totalCourseLength}m</span>
+          <span className="text-slate-400">|</span>
+          <span className="text-amber-400 font-bold">🪙 {coinsCollected}</span>
+          {checkpointZ > 0 && (
+            <>
+              <span className="text-slate-400">|</span>
+              <span className="text-cyan-400 font-bold">🚩 {checkpointZ}m</span>
+            </>
+          )}
         </div>
+
+        <div className="flex items-center gap-1.5 bg-slate-900/80 px-3 py-1.5 rounded-sm border border-slate-700/80 backdrop-blur-sm">
+          <span className="text-slate-400 text-xs">HP</span>
+          <div className="flex gap-1">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className={`w-3.5 h-3.5 rounded-sm ${i < lives ? 'bg-rose-500' : 'bg-slate-700'}`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Pure Gesture Guide & Jump Touch Control */}
+      <div className="absolute bottom-6 left-4 right-4 flex items-end justify-between pointer-events-none z-20">
+        {/* Left: Drag Joystick Hint */}
+        <div className="bg-slate-900/80 px-3 py-2 rounded-sm border border-slate-700/80 text-[11px] text-slate-300 backdrop-blur-sm">
+          <div className="text-slate-400 font-bold mb-0.5">{isKo ? '🕹️ 이동 제스처' : '🕹️ MOVE'}</div>
+          <div>{isKo ? '화면을 터치 & 드래그하세요' : 'Drag screen to steer'}</div>
+        </div>
+
+        {/* Right: Big Jump Action Button */}
+        <button
+          type="button"
+          onClick={handleJump}
+          className="pointer-events-auto flex flex-col items-center justify-center w-20 h-20 rounded-sm bg-emerald-500 active:bg-emerald-600 text-slate-950 font-black border-2 border-emerald-300 shadow-2xl active:scale-95 transition-transform"
+        >
+          <span className="text-2xl">🚀</span>
+          <span className="text-xs tracking-wider mt-0.5">JUMP</span>
+        </button>
       </div>
 
       {/* Victory Reward Modal */}
       {settlementReceipt && (
         <VictoryRewardModal
-          isOpen={isGameOver}
-          isVictory={isVictory}
-          score={score}
+          isOpen={isVictory}
           receipt={settlementReceipt}
-          onConfirm={onExit}
-          onRestart={() => {
-            setIsGameOver(false);
-            setIsVictory(false);
-            setSettlementReceipt(null);
-            setScore(0);
-            setTimeLeft(45);
-            initWorld();
-          }}
           language={language}
+          onConfirm={() => {
+            setIsVictory(false);
+            onExit();
+          }}
         />
       )}
 
-      {/* Universal Tutorial Modal */}
-      {showTutorial && (
-        <UniversalTutorialModal
-          isOpen={showTutorial}
-          gameTitle={isKo ? 'No.03 마인펀 샌드박스' : 'No.03 MineFun.io'}
-          steps={tutorialSteps}
-          onComplete={() => {
-            setShowTutorial(false);
-            try {
-              localStorage.setItem('hero_tutorial_minefun', 'true');
-            } catch {}
-          }}
-          language={language}
-        />
+      {/* Game Over Modal */}
+      {isGameOver && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-700 p-6 max-w-sm w-full rounded-sm text-center">
+            <div className="text-3xl mb-2">💥</div>
+            <h2 className="text-xl font-bold text-rose-500 mb-2">
+              {isKo ? '오비에서 낙사했습니다!' : 'Fallen off the Obby!'}
+            </h2>
+            <p className="text-sm text-slate-400 mb-4">
+              {isKo
+                ? `도달 거리: ${distance}m / ${totalCourseLength}m`
+                : `Reached: ${distance}m / ${totalCourseLength}m`}
+            </p>
+            {settlementReceipt && (
+              <div className="bg-slate-800/80 p-3 rounded-sm border border-slate-700 mb-4 text-xs text-slate-300">
+                <div className="text-slate-400 mb-1">{isKo ? '파쿠르 진행 보상' : 'Parkour Reward'}</div>
+                <div className="text-base font-bold text-amber-400">
+                  +{settlementReceipt.totalSns} SNS
+                </div>
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={onExit}
+              className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-sm border border-slate-600 text-sm"
+            >
+              {isKo ? '미션 목록으로' : 'Back to Missions'}
+            </button>
+          </div>
+        </div>
       )}
+
+      {/* Universal Tutorial Modal */}
+      <UniversalTutorialModal
+        isOpen={showTutorial}
+        steps={tutorialSteps}
+        language={language}
+        onClose={() => {
+          setShowTutorial(false);
+          try {
+            localStorage.setItem('hero_tutorial_minefun_v2', 'true');
+          } catch {
+            // ignore
+          }
+        }}
+      />
     </div>
   );
 };
