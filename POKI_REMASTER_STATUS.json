@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 53,
-  "completed_count": 52,
-  "last_updated": "2026-09-08T00:42:00+09:00",
+  "current_game_index": 54,
+  "completed_count": 53,
+  "last_updated": "2026-09-08T00:43:00+09:00",
   "history": [
     {
       "id": 1,
@@ -577,6 +577,17 @@
       "component": "src/components/poki/PokiKarateFighterGame.tsx",
       "completed_at": "2026-09-08T00:42:00+09:00",
       "details": "Three.js 기반 3D 정통 무도관 가라테 대전 격투 구현, 16x16m 다다미 경기장 바닥 & 쇼지 미닫이벽 & 4기 붉은 제등 램프 조명, 횡스크롤 3D 대전 카메라(두 파이터 거리 기준 자동 센터링/줌), 3D 가라테 무술가 파이터(백색 도복 플레이어 & No.52 영웅 배지 vs 흑색 도복 라이벌), 정권 찌르기(-14)/돌려차기(-26)/가드 방어 및 패링 카운터 스턴 시스템, 기(Ki) 게이지 100% 충전 시 승룡 기합파(-50) 필살기, 모바일 퓨어 터치 조작계(좌측 대시 + 우측 대형 펀치/킥/방어/필살기 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 53,
+      "name": "Planet Destruction",
+      "poki_url": "https://poki.com/kr/g/planet-destruction",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No053_PlanetDestruction_Prompt.md",
+      "component": "src/components/poki/PokiPlanetDestructionGame.tsx",
+      "completed_at": "2026-09-08T00:43:00+09:00",
+      "details": "Three.js 기반 3D 코스믹 행성 파괴 시뮬레이터 구현, 심우주 800개 별빛 필드 & 대기권 발광 아우라 & 3D 지구형 행성(대양/대륙/구름층/내부 마그마 코어), Raycaster 기반 4대 파괴 무기(운석 폭격/궤도 레이저/핵미사일/블랙홀) 지표면 다이렉트 탭 폭격 & 실시간 자전 크레이터 분화구 데칼, 파괴율 100% 도달 시 내부 핵 팽창 및 40개 암석 파편 산산조각 슈퍼노바 대폭발 피날레, 모바일 퓨어 터치 조작계(드래그 360도 행성 회전 + 탭 폭격 + 하단 무기 바), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
