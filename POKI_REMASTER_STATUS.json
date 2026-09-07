@@ -2,9 +2,9 @@
   "scheduler_active": true,
   "interval_minutes": 10,
   "total_games": 110,
-  "current_game_index": 99,
-  "completed_count": 98,
-  "last_updated": "2026-09-08T02:10:00+09:00",
+  "current_game_index": 100,
+  "completed_count": 99,
+  "last_updated": "2026-09-08T02:11:00+09:00",
   "history": [
     {
       "id": 1,
@@ -1083,6 +1083,17 @@
       "component": "src/components/poki/PokiBulletBrosGame.tsx",
       "completed_at": "2026-09-08T02:10:00+09:00",
       "details": "Three.js 기반 3D 도탄 물리 불릿타임 슈팅 액션 구현, 18m x 10m 네온 루프탑 아레나(강철 벽면 도탄 반사/장애물 기둥/중앙 상단 No.098 공식 영웅 배지 홀로그램 간판), 3D 브로 히어로 피규어(블랙 트렌치코트/선글라스/가슴 No.098 영웅 배지 데칼/듀얼 매그넘), 황금 도탄 탄환 물리(벽면 법선 반사/스파크 파티클/적 래그돌 넉백), 3개 스테이지 웨이브 소탕 승리, 모바일 퓨어 터치 조작계(화면 드래그 레이저 조준 사격 + 76px SHOOT NOW 대형 버튼 + 64px SLOW-MO 불릿타임 감속 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
+    },
+    {
+      "id": 99,
+      "name": "Perfect Landing, Plane Pilot",
+      "poki_url": "https://poki.com/kr/g/perfect-landing-plane-pilot",
+      "is_3d": true,
+      "engine": "Three.js",
+      "prompt_file": "src/components/poki/prompts/No099_PerfectLanding_Prompt.md",
+      "component": "src/components/poki/PokiPerfectLandingGame.tsx",
+      "completed_at": "2026-09-08T02:11:00+09:00",
+      "details": "Three.js 기반 3D 항공기 조종 & 정밀 활주로 착륙 시뮬레이터 구현, 해상 공항 75m 아스팔트 활주로(센터라인/터치다운 마킹 존/관제탑 No.099 공식 영웅 배지 엠블럼/해상 회전 풍력 터빈 3기), 3D 제트 여객기(화이트 동체/듀얼 터빈 엔진/주익 윙렛/날개 No.099 영웅 배지 데칼/제트 배기 파티클), 정밀 활공각(Glide Slope) & 하강속도 제어 및 터치다운 판정, 3회 성공 착륙 승리, 모바일 퓨어 터치 조작계(360도 플로팅 비행 요크 조이스틱 + 76px FLAPS/LAND 대형 착륙 감속 버튼 + 64px THRUST 엔진 가속 + 햅틱), MinimalistMissionHUD 정산 연동 완료"
     }
   ]
 }
