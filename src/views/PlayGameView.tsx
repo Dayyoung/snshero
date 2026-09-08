@@ -46,6 +46,7 @@ import { useStoryProgress } from '../hooks/useStoryProgress';
 import { useCardSkins } from '../hooks/useCardSkins';
 import { StoryBattleBanner } from '../components/StoryBattleBanner';
 import { StoryBattleResult } from '../components/StoryBattleResult';
+import { CardAcquisitionModal } from '../components/CardAcquisitionModal';
 import { ShareTemplateCard } from '../components/ShareTemplateCard';
 import { StoryStageSelectModal } from '../components/StoryStageSelectModal';
 import { CardLongPressPreviewModal } from '../components/CardLongPressPreviewModal';
@@ -2558,6 +2559,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       setWinner(null);
       if (battleType === 'pvp_attack') {
         onBack();
+      } else if (activeMissionCardIdRef.current !== null || activeMissionCardId !== null) {
+        setActiveMissionCardId(null);
+        activeMissionCardIdRef.current = null;
+        setIsDirectAiBattle(false);
+        setGameState('modeSelect');
       } else if (isDirectAiBattle) {
         setIsDirectAiBattle(false);
         setGameState('modeSelect');
@@ -2579,7 +2585,18 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [isRecordingResult, setIsRecordingResult] = useState(false);
   const [selectedOpponent, setSelectedOpponent] = useState<Character | null>(null);
   const activeMissionCardIdRef = useRef<number | null>(null);
-  const [missionBattleFeedback, setMissionBattleFeedback] = useState<string | null>(null);
+  const [activeMissionCardId, setActiveMissionCardId] = useState<number | null>(null);
+  const [showCardAcquisitionModal, setShowCardAcquisitionModal] = useState(false);
+  const [acquiredMissionCard, setAcquiredMissionCard] = useState<CardData | null>(null);
+  const [cardAcquisitionMode, setCardAcquisitionMode] = useState<'obtain' | 'enhance'>('obtain');
+  const [cardEnhancementLevel, setCardEnhancementLevel] = useState<number>(2);
+  const [missionBattleFeedback, setMissionBattleFeedback] = useState<{
+    success: boolean;
+    type: 'obtain' | 'enhance' | 'defeat';
+    cardName: string;
+    cardId: number;
+    message: string;
+  } | null>(null);
   const [showRules, setShowRules] = useState(false);
   const [isHoveringOpponent, setIsHoveringOpponent] = useState(false);
   const [opponentDeck, setOpponentDeck] = useState<CardData[]>([]);
@@ -2958,8 +2975,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     return () => clearTimeout(timer);
   }, [pvpExitCountdown, onBack]);
 
-  // Override auto-battle for tutorial or active auto-battle setting
-  const isAutoBattle = (isTutorialMode && tutorialStep > 0 && tutorialStep < 3) || !!propIsAutoBattle;
+  // Override auto-battle for tutorial, active auto-battle setting, or mission card battle
+  const isAutoBattle = (isTutorialMode && tutorialStep > 0 && tutorialStep < 3) || !!propIsAutoBattle || activeMissionCardId !== null || activeMissionCardIdRef.current !== null;
   const isAutoBattleRef = useRef(isAutoBattle);
   useEffect(() => {
     isAutoBattleRef.current = isAutoBattle;
@@ -4213,6 +4230,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   useEffect(() => {
     if (isAutoBattle && battleType !== 'pvp_attack' && gameOver && (!isTutorialMode || (tutorialStep !== 6 && tutorialStep !== 7)) && !isBossActive && !isStoryActive && !isDungeonActive && !isTournamentActive) {
       const isMatgo = battleType === 'matgo';
+      const isMissionBattle = activeMissionCardIdRef.current !== null || activeMissionCardId !== null;
+
+      if (isMissionBattle) {
+        // If card acquisition modal is currently open, let player interact with it until they click confirm
+        if (showCardAcquisitionModal) {
+          return;
+        }
+        // If modal not shown (e.g. failed drop rate, reinforcement, or defeat), automatically return to mission list
+        const timer = setTimeout(() => {
+          handleExitMatch(false);
+        }, 2500);
+        return () => clearTimeout(timer);
+      }
+
       const timer = setTimeout(() => {
         if (isMatgo) {
           handleRematch();
@@ -4238,7 +4269,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [isAutoBattle, gameOver, isBossActive, isStoryActive, isDungeonActive, isTournamentActive, isTutorialMode, battleType, tutorialStep]);
+  }, [isAutoBattle, gameOver, isBossActive, isStoryActive, isDungeonActive, isTournamentActive, isTutorialMode, battleType, tutorialStep, activeMissionCardId, showCardAcquisitionModal]);
 
   // removed duplicate auto-battle player turn effect
 
@@ -4866,6 +4897,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const startMissionCardBattle = (targetCardIndex: number) => {
     const dbCard = CARD_DATABASE[targetCardIndex] || CARD_DATABASE[1];
     activeMissionCardIdRef.current = targetCardIndex;
+    setActiveMissionCardId(targetCardIndex);
+    setShowCardAcquisitionModal(false);
+    setAcquiredMissionCard(null);
+    if (setIsAutoBattle) setIsAutoBattle(true);
     setMissionBattleFeedback(null);
     setGameOver(false);
     setWinner(null);
@@ -6938,6 +6973,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           stored[targetCardId] = newLvl;
                           localStorage.setItem(encKey, JSON.stringify(stored));
                         } catch {}
+                        setAcquiredMissionCard(dbCard);
+                        setCardAcquisitionMode('enhance');
+                        setCardEnhancementLevel(newLvl);
+                        setShowCardAcquisitionModal(true);
+                        playSfx('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
                         setMissionBattleFeedback({
                           success: true,
                           type: 'enhance',
@@ -6948,6 +6988,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             : `[Enhancement Succeeded!] ${dbCard.title_en} upgraded to Lv.${newLvl} (+1 card)!`
                         });
                       } else {
+                        setShowCardAcquisitionModal(false);
+                        setAcquiredMissionCard(null);
                         setMissionBattleFeedback({
                           success: false,
                           type: 'enhance',
@@ -6971,6 +7013,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       const isObtainSuccess = Math.random() < dropProb;
                       if (isObtainSuccess) {
                         addCard?.(dbCard.rarity, targetCardId, false);
+                        setAcquiredMissionCard(dbCard);
+                        setCardAcquisitionMode('obtain');
+                        setShowCardAcquisitionModal(true);
+                        playSfx('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
                         setMissionBattleFeedback({
                           success: true,
                           type: 'obtain',
@@ -6981,6 +7027,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             : `[Acquisition Succeeded!] No.${String(targetCardId).padStart(2, '0')} ${dbCard.title_en} added to your deck!`
                         });
                       } else {
+                        setShowCardAcquisitionModal(false);
+                        setAcquiredMissionCard(null);
                         setMissionBattleFeedback({
                           success: false,
                           type: 'obtain',
@@ -7020,6 +7068,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   if (activeMissionCardIdRef.current !== null) {
                     const targetCardId = activeMissionCardIdRef.current;
                     const dbCard = CARD_DATABASE[targetCardId] || CARD_DATABASE[1];
+                    setShowCardAcquisitionModal(false);
+                    setAcquiredMissionCard(null);
                     setMissionBattleFeedback({
                       success: false,
                       type: 'defeat',
@@ -17407,7 +17457,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               )}
 
               {/* Story Battle Result — 승리/패배 시 스토리 진행 및 보상 안내 */}
-              {!isPlayground && (
+              {!isPlayground && activeMissionCardId === null && activeMissionCardIdRef.current === null && (
                 <StoryBattleResult
                   result={winner === 'player' ? 'win' : winner === 'ai' ? 'loss' : 'draw'}
                   language={language}
@@ -17536,7 +17586,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
               <div className="flex flex-col gap-2.5 pt-2">
                 {/* Item 42: 전투 승리 화면 내 '다음 스테이지 바로 진행 (Next Stage)' 연속 플레이 버튼 */}
-                {winner === 'player' && (
+                {winner === 'player' && activeMissionCardId === null && activeMissionCardIdRef.current === null && (
                   <button 
                     onClick={() => {
                       setShowBattleShareTemplate(false);
@@ -17548,6 +17598,22 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   >
                     <Play size={18} fill="currentColor" />
                     {language === 'ko' ? '▶ 다음 스테이지 바로 진행 (Next Stage)' : '▶ Proceed to Next Stage'}
+                  </button>
+                )}
+
+                {/* Mission Battle Victory: Back to Mission List */}
+                {winner === 'player' && (activeMissionCardId !== null || activeMissionCardIdRef.current !== null) && (
+                  <button 
+                    onClick={() => {
+                      setShowBattleShareTemplate(false);
+                      setShowOverwhelmingEffect(false);
+                      setShowStreakEffect(false);
+                      handleExitMatch(false);
+                    }}
+                    className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black uppercase tracking-wider active:scale-95 transition-all rounded-2xl shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 cursor-pointer border border-emerald-400/30"
+                  >
+                    <Check size={18} />
+                    {language === 'ko' ? '미션 목록으로 돌아가기' : 'Back to Mission List'}
                   </button>
                 )}
 
@@ -17575,17 +17641,23 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     ? (language === 'ko'
                         ? (isStoryActive || isBossActive || isDungeonActive || isTournamentActive
                             ? `돌아가기 (${defeatExitCountdown}초)`
-                            : `로비로 돌아가기 (${defeatExitCountdown}초)`)
+                            : (activeMissionCardId !== null || activeMissionCardIdRef.current !== null
+                                ? `미션 목록으로 (${defeatExitCountdown}초)`
+                                : `로비로 돌아가기 (${defeatExitCountdown}초)`))
                         : (isStoryActive || isBossActive || isDungeonActive || isTournamentActive
                             ? `Back (${defeatExitCountdown}s)`
-                            : `Back to Lobby (${defeatExitCountdown}s)`))
-                    : (battleType === 'pvp_attack' 
-                        ? (pvpExitCountdown !== null 
-                            ? `${t('exit_battle', language)} (${pvpExitCountdown}s)` 
-                            : t('exit_battle', language)) 
-                        : t('back_to_lobby', language))}
+                            : (activeMissionCardId !== null || activeMissionCardIdRef.current !== null
+                                ? `Back to Missions (${defeatExitCountdown}s)`
+                                : `Back to Lobby (${defeatExitCountdown}s)`)))
+                    : (activeMissionCardId !== null || activeMissionCardIdRef.current !== null
+                        ? (language === 'ko' ? '미션 목록으로 돌아가기' : 'Back to Mission List')
+                        : (battleType === 'pvp_attack' 
+                            ? (pvpExitCountdown !== null 
+                                ? `${t('exit_battle', language)} (${pvpExitCountdown}s)` 
+                                : t('exit_battle', language)) 
+                            : t('back_to_lobby', language)))}
                 </button>
-                {!isBossActive && !isStoryActive && !isDungeonActive && !isTournamentActive && winner !== 'player' && (
+                {!isBossActive && !isStoryActive && !isDungeonActive && !isTournamentActive && activeMissionCardId === null && activeMissionCardIdRef.current === null && winner !== 'player' && (
                   <>
                     <button 
                        onClick={() => {
@@ -17949,6 +18021,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         isMuted={isOpponentMuted}
         onToggleMute={handleToggleOpponentMute}
         playSfx={playSfx}
+      />
+
+      {/* Mission Battle Card Acquisition / Enhancement Modal */}
+      <CardAcquisitionModal
+        isOpen={showCardAcquisitionModal}
+        card={acquiredMissionCard}
+        language={language}
+        playSfx={playSfx}
+        mode={cardAcquisitionMode}
+        enhancementLevel={cardEnhancementLevel}
+        onClose={() => {
+          setShowCardAcquisitionModal(false);
+          setAcquiredMissionCard(null);
+          handleExitMatch(false);
+        }}
       />
     </div>
   );
