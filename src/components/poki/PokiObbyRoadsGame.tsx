@@ -39,6 +39,13 @@ export const PokiObbyRoadsGame: React.FC<PokiObbyRoadsGameProps> = ({ onBack }) 
   const [rewardReceipt, setRewardReceipt] = useState<RewardReceipt | null>(null);
   const [toastText, setToastText] = useState('');
 
+  const isNitroRef = useRef(false);
+  isNitroRef.current = isNitro;
+  const isBrakingRef = useRef(false);
+  isBrakingRef.current = isBraking;
+  const gameWonRef = useRef(false);
+  gameWonRef.current = gameWon;
+
   const startTimeRef = useRef<number>(Date.now());
   const sceneRef = useRef<THREE.Scene | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -494,7 +501,7 @@ export const PokiObbyRoadsGame: React.FC<PokiObbyRoadsGameProps> = ({ onBack }) 
       });
 
       // 니트로 화염 분출
-      if (isNitro) {
+      if (isNitroRef.current) {
         spawnBoostFlame(phys.pos);
       }
 
@@ -503,7 +510,8 @@ export const PokiObbyRoadsGame: React.FC<PokiObbyRoadsGameProps> = ({ onBack }) 
       setCurrentDist(dist);
 
       // 결승 피니시 돌파 승리!
-      if (dist >= FINISH_DISTANCE && !gameWon) {
+      if (dist >= FINISH_DISTANCE && !gameWonRef.current) {
+        gameWonRef.current = true;
         setGameWon(true);
         triggerHaptic(180);
         spawnConfetti(phys.pos);
@@ -576,7 +584,7 @@ export const PokiObbyRoadsGame: React.FC<PokiObbyRoadsGameProps> = ({ onBack }) 
       }
       renderer.dispose();
     };
-  }, [isNitro, isBraking, gameWon]);
+  }, []);
 
   // 터치 스와이프 조향
   const handleTouchStart = (e: React.TouchEvent | React.MouseEvent) => {

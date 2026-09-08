@@ -829,7 +829,7 @@ export const PokiRepulsGame: React.FC<PokiRepulsGameProps> = ({ onBack, cardId =
       }
       renderer.dispose();
     };
-  }, [gameWon, gameOver]);
+  }, []);
 
   // Touch Controls Event Handlers
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {

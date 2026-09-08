@@ -336,7 +336,7 @@ export const PokiBeautySalonGame: React.FC<PokiBeautySalonGameProps> = ({
       }
       renderer.dispose();
     };
-  }, [gameWon, gameOver]);
+  }, []);
 
   // Helper: Build 3D Hair Mesh
   const buildHairMesh = (styleId: number, colorHex: number) => {

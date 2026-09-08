@@ -167,7 +167,7 @@ export const PokiStickmanClimb3DGame: React.FC<PokiStickmanClimb3DGameProps> = (
       phys.vel.x += Math.cos(phys.axeAngle + Math.PI / 2) * 3.0;
       phys.vel.y += 2.0;
     }
-  }, [gameWon]);
+  }, []);
 
   // 안전 체크포인트 복귀
   const returnToCheckpoint = useCallback(() => {
@@ -506,7 +506,7 @@ export const PokiStickmanClimb3DGame: React.FC<PokiStickmanClimb3DGameProps> = (
       }
       renderer.dispose();
     };
-  }, [performVaultJump, returnToCheckpoint, gameWon]);
+  }, []);
 
   // 터치 제스처로 곡괭이 각도 조향
   const handleTouchStart = (e: React.TouchEvent | React.MouseEvent) => {

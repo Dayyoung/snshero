@@ -94,7 +94,7 @@ export default function PokiCarCircleGame({
       durationSeconds: Math.round(stateRef.current.surviveSeconds),
     });
     setRewardReceipt(receipt);
-  }, [triggerHaptic]);
+  }, [cardId]);
 
   // 체력 소진 게임오버 처리
   const handleGameOver = useCallback(() => {
@@ -111,7 +111,7 @@ export default function PokiCarCircleGame({
       durationSeconds: Math.round(stateRef.current.surviveSeconds),
     });
     setRewardReceipt(receipt);
-  }, [triggerHaptic]);
+  }, [cardId]);
 
   // 스파클 파티클 생성
   const spawnCrashSparksAt = useCallback((x: number, y: number, z: number) => {
@@ -134,7 +134,7 @@ export default function PokiCarCircleGame({
 
     s.isEntering = true;
     triggerHaptic(40);
-  }, [triggerHaptic]);
+  }, [cardId]);
 
   // 슬로우모션 힌트 ([⏱️ SLOW-MO])
   const handleTriggerSlowMo = useCallback(() => {
@@ -176,7 +176,7 @@ export default function PokiCarCircleGame({
     setIsSlowMo(false);
     setRewardReceipt(null);
     triggerHaptic(50);
-  }, [triggerHaptic]);
+  }, [cardId]);
 
   // Three.js 씬 구축
   useEffect(() => {
@@ -572,7 +572,7 @@ export default function PokiCarCircleGame({
         container.removeChild(renderer.domElement);
       }
     };
-  }, [cardId, handleGameOver, handleVictory, spawnCrashSparksAt, triggerHaptic]);
+  }, [cardId]);
 
   return (
     <div

@@ -79,6 +79,9 @@ export const PokiDisasterArenaGame: React.FC<PokiDisasterArenaGameProps> = ({
   // 게임 상태
   const [showTutorial, setShowTutorial] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
+  const isPlayingRef = useRef(false);
+  isPlayingRef.current = isPlaying;
+  const finishGameRef = useRef<(won: boolean, finalScore: number) => void>(() => {});
   const [timeLeft, setTimeLeft] = useState(40);
   const [playerHp, setPlayerHp] = useState(100);
   const [score, setScore] = useState(0);
@@ -169,7 +172,7 @@ export const PokiDisasterArenaGame: React.FC<PokiDisasterArenaGameProps> = ({
       triggerHaptic(20);
       playSfx?.('jump');
     }
-  }, [triggerHaptic, playSfx]);
+  }, [lowSpecMode, cardId]);
 
   // 대시 실행
   const handleDash = useCallback(() => {
@@ -210,7 +213,7 @@ export const PokiDisasterArenaGame: React.FC<PokiDisasterArenaGameProps> = ({
         }
       }
     }
-  }, [triggerHaptic, playSfx]);
+  }, [lowSpecMode, cardId]);
 
   // 게임 종료 및 정산
   const finishGame = useCallback((won: boolean, finalScore: number) => {
@@ -234,7 +237,8 @@ export const PokiDisasterArenaGame: React.FC<PokiDisasterArenaGameProps> = ({
     triggerHaptic(won ? [50, 100, 150] : [200, 100]);
     if (won) playSfx?.('victory');
     else playSfx?.('defeat');
-  }, [triggerHaptic, playSfx]);
+  }, [lowSpecMode, cardId]);
+  finishGameRef.current = finishGame;
 
   // Three.js 초기화 및 리셋
   useEffect(() => {
@@ -741,7 +745,7 @@ export const PokiDisasterArenaGame: React.FC<PokiDisasterArenaGameProps> = ({
 
         // 40초 생존 성공 시 승리
         if (remain <= 0) {
-          finishGame(true, g.score + 500);
+          finishGameRef.current(true, g.score + 500);
           return;
         }
 
@@ -805,7 +809,7 @@ export const PokiDisasterArenaGame: React.FC<PokiDisasterArenaGameProps> = ({
         if (g.playerY < -6.0) {
           g.playerHp = 0;
           setPlayerHp(0);
-          finishGame(false, g.score);
+          finishGameRef.current(false, g.score);
           return;
         }
 
@@ -823,7 +827,7 @@ export const PokiDisasterArenaGame: React.FC<PokiDisasterArenaGameProps> = ({
               setPlayerHp(Math.max(0, Math.ceil(g.playerHp)));
               triggerHaptic(10);
               if (g.playerHp <= 0) {
-                finishGame(false, g.score);
+                finishGameRef.current(false, g.score);
                 return;
               }
             }
@@ -915,7 +919,7 @@ export const PokiDisasterArenaGame: React.FC<PokiDisasterArenaGameProps> = ({
               playSfx?.('hit');
 
               if (g.playerHp <= 0) {
-                finishGame(false, g.score);
+                finishGameRef.current(false, g.score);
                 return;
               }
             }
@@ -1100,7 +1104,7 @@ export const PokiDisasterArenaGame: React.FC<PokiDisasterArenaGameProps> = ({
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, cardId, isPlaying, finishGame, playSfx, triggerHaptic]);
+  }, [lowSpecMode, cardId]);
 
   // 키보드 조작 (PC 백업)
   useEffect(() => {
@@ -1198,7 +1202,7 @@ export const PokiDisasterArenaGame: React.FC<PokiDisasterArenaGameProps> = ({
       <MinimalistMissionHUD
         gameTitle="Disaster Arena 3D"
         score={score}
-        onQuit={() => finishGame(false, score)}
+        onQuit={() => finishGameRef.current(false, score)}
       />
 
       {/* 실시간 재난 & 생존자 상태 오버레이 */}

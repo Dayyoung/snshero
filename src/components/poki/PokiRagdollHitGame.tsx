@@ -358,7 +358,7 @@ export const PokiRagdollHitGame: React.FC<PokiRagdollHitGameProps> = ({
         }, 1400);
       }
     }
-  }, [initRound, spawnHitSparks]);
+  }, [lowSpecMode, playerHeroId]);
 
   // Player Flying Kick Action
   const handleKick = useCallback(() => {
@@ -410,7 +410,7 @@ export const PokiRagdollHitGame: React.FC<PokiRagdollHitGameProps> = ({
         }, 1400);
       }
     }
-  }, [initRound, spawnHitSparks]);
+  }, [lowSpecMode, playerHeroId]);
 
   // Give up / quit handler
   const handleGiveUp = useCallback(() => {
@@ -823,7 +823,7 @@ export const PokiRagdollHitGame: React.FC<PokiRagdollHitGameProps> = ({
         threeRef.current.renderer.dispose();
       }
     };
-  }, [handleGiveUp, initRound, lowSpecMode, playerHeroId, spawnHitSparks, gameOver, gameWon]);
+  }, [lowSpecMode, playerHeroId]);
 
   // Touch Screen Controls (Left Joystick)
   const handleTouchStart = (e: React.TouchEvent) => {

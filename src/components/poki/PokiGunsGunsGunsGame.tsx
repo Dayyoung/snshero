@@ -782,7 +782,7 @@ export const PokiGunsGunsGunsGame: React.FC<PokiGunsGunsGunsGameProps> = ({
         threeRef.current.renderer.dispose();
       }
     };
-  }, [handleGiveUp, lowSpecMode, playerHeroId, triggerFire, gameOver, gameWon]);
+  }, [lowSpecMode, playerHeroId]);
 
   // Touch Screen Joystick Tracking (Left Half)
   const handleTouchStart = (e: React.TouchEvent) => {

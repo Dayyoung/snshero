@@ -54,6 +54,16 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
   const [rewardReceipt, setRewardReceipt] = useState<RewardReceipt | null>(null);
   const [toastText, setToastText] = useState('');
 
+  const speedLevelRef = useRef(1);
+  speedLevelRef.current = speedLevel;
+  const gameWonRef = useRef(false);
+  gameWonRef.current = gameWon;
+  const onRewardRef = useRef(onReward);
+  onRewardRef.current = onReward;
+  const handleExitRef = useRef(handleExit);
+  handleExitRef.current = handleExit;
+  const currentDistRef = useRef(0);
+
   const startTimeRef = useRef<number>(Date.now());
   const sceneRef = useRef<THREE.Scene | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -68,7 +78,7 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
 
   // 슬라임 물리 상태
   const physics = useRef({
-    pos: new THREE.Vector3(0, 1.2, 0),
+    pos: new THREE.Vector3(0, 1.0, 0),
     vel: new THREE.Vector3(0, 0, 0),
     speed: 16, // 전진 기본 속도 (m/s)
     steerAngle: 0,
@@ -423,7 +433,7 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
       const phys = physics.current;
 
       // 1. 속도 제어
-      let targetSpeed = 16 + (speedLevel - 1) * 2.5;
+      let targetSpeed = 16 + (speedLevelRef.current - 1) * 2.5;
       if (phys.inputBoost) targetSpeed *= 1.6;
       phys.speed += (targetSpeed - phys.speed) * 0.1;
 
@@ -444,12 +454,13 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
       const keycapsList = keycapsRef.current;
 
       for (const k of keycapsList) {
-        // 가까운 키캡만 충돌 검사
-        if (Math.abs(phys.pos.z - k.mesh.position.z) > 3.0) continue;
-
         const isBig = k.label === 'SPACE START' || k.label === 'ESC';
-        const halfW = isBig ? 8.0 : 1.4;
-        const halfD = isBig ? 11.0 : 1.4;
+        const halfW = isBig ? 8.5 : 1.4;
+        const halfD = isBig ? 12.0 : 1.4;
+        const checkRange = isBig ? 14.0 : 3.0;
+
+        // 가까운 키캡만 충돌 검사 (대형 플랫폼은 14m 검사 범위 보장)
+        if (Math.abs(phys.pos.z - k.mesh.position.z) > checkRange) continue;
 
         if (
           phys.pos.x >= k.mesh.position.x - halfW &&
@@ -497,13 +508,17 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
         respawnSlime();
       }
 
-      // 거리 및 점수 갱신
+      // 거리 및 점수 갱신 (10프레임마다 쓰로틀링하여 React 리렌더링 부하 원천 제거)
       const dist = Math.min(TOTAL_TRACK_DISTANCE, Math.max(0, Math.floor(-phys.pos.z)));
-      setCurrentDist(dist);
-      setCurrentScore(dist * 10 + (speedLevel - 1) * 50);
+      if (Math.abs(dist - currentDistRef.current) >= 1) {
+        currentDistRef.current = dist;
+        setCurrentDist(dist);
+        setCurrentScore(dist * 10 + (speedLevelRef.current - 1) * 50);
+      }
 
       // 결승 ESC 골인 승리 판정!
-      if (dist >= TOTAL_TRACK_DISTANCE && !gameWon) {
+      if (dist >= TOTAL_TRACK_DISTANCE && !gameWonRef.current) {
+        gameWonRef.current = true;
         setGameWon(true);
         triggerHaptic(180);
         spawnConfetti(phys.pos);
@@ -520,7 +535,7 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
             durationSeconds: dur,
           });
           setRewardReceipt(receipt);
-          if (onReward) onReward(receipt.totalSns);
+          if (onRewardRef.current) onRewardRef.current(receipt.totalSns);
         }, 900);
       }
 
@@ -581,7 +596,7 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
       }
       renderer.dispose();
     };
-  }, [speedLevel, respawnSlime, gameWon, onReward]);
+  }, []);
 
   // 터치 스와이프 조향
   const handleTouchStart = (e: React.TouchEvent | React.MouseEvent) => {
@@ -617,7 +632,7 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
       durationSeconds: dur,
     });
     setRewardReceipt(receipt);
-    if (onReward) onReward(receipt.totalSns);
+    if (onRewardRef.current) onRewardRef.current(receipt.totalSns);
   };
 
   return (

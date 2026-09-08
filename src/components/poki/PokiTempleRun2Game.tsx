@@ -54,6 +54,9 @@ export const PokiTempleRun2Game: React.FC<PokiTempleRun2GameProps> = ({
   // UI 상태
   const [showTutorial, setShowTutorial] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
+  const isPlayingRef = useRef(false);
+  isPlayingRef.current = isPlaying;
+  const finishGameRef = useRef<(won: boolean, finalScore: number) => void>(() => {});
   const [distance, setDistance] = useState(0);
   const [coinCount, setCoinCount] = useState(0);
   const [score, setScore] = useState(0);
@@ -123,7 +126,7 @@ export const PokiTempleRun2Game: React.FC<PokiTempleRun2GameProps> = ({
       triggerHaptic(20);
       playSfx?.('jump');
     }
-  }, [triggerHaptic, playSfx]);
+  }, [lowSpecMode, cardId]);
 
   // 슬라이딩 실행
   const handleSlide = useCallback(() => {
@@ -134,7 +137,7 @@ export const PokiTempleRun2Game: React.FC<PokiTempleRun2GameProps> = ({
       triggerHaptic(18);
       playSfx?.('whoosh');
     }
-  }, [triggerHaptic, playSfx]);
+  }, [lowSpecMode, cardId]);
 
   // 레인 이동
   const handleLaneChange = useCallback((dir: -1 | 1) => {
@@ -147,7 +150,7 @@ export const PokiTempleRun2Game: React.FC<PokiTempleRun2GameProps> = ({
       triggerHaptic(15);
       playSfx?.('pop');
     }
-  }, [triggerHaptic, playSfx, lanePositions]);
+  }, [lowSpecMode, cardId]);
 
   // 게임 종료 및 정산
   const finishGame = useCallback((won: boolean, finalScore: number) => {
@@ -171,7 +174,8 @@ export const PokiTempleRun2Game: React.FC<PokiTempleRun2GameProps> = ({
     triggerHaptic(won ? [50, 100, 150] : [150, 80]);
     if (won) playSfx?.('victory');
     else playSfx?.('defeat');
-  }, [triggerHaptic, playSfx]);
+  }, [lowSpecMode, cardId]);
+  finishGameRef.current = finishGame;
 
   // Three.js 초기화
   useEffect(() => {
@@ -500,7 +504,7 @@ export const PokiTempleRun2Game: React.FC<PokiTempleRun2GameProps> = ({
               // 충돌 실패!
               triggerHaptic([100, 150]);
               playSfx?.('defeat');
-              finishGame(false, g.score);
+              finishGameRef.current(false, g.score);
               return;
             } else {
               obs.cleared = true;
@@ -555,7 +559,7 @@ export const PokiTempleRun2Game: React.FC<PokiTempleRun2GameProps> = ({
 
         // 500m 돌파 시 완주 승리!
         if (g.distanceRun >= 500) {
-          finishGame(true, g.score + 1000);
+          finishGameRef.current(true, g.score + 1000);
           return;
         }
 
@@ -605,7 +609,7 @@ export const PokiTempleRun2Game: React.FC<PokiTempleRun2GameProps> = ({
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, cardId, isPlaying, finishGame, playSfx, triggerHaptic, lanePositions]);
+  }, [lowSpecMode, cardId]);
 
   // 터치 스와이프 인터랙션
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -661,7 +665,7 @@ export const PokiTempleRun2Game: React.FC<PokiTempleRun2GameProps> = ({
       <MinimalistMissionHUD
         gameTitle="Temple Run 2 3D"
         score={score}
-        onQuit={() => finishGame(false, score)}
+        onQuit={() => finishGameRef.current(false, score)}
       />
 
       {/* 실시간 달리기 스탯 오버레이 */}

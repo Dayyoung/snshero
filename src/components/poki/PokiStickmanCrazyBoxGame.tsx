@@ -129,7 +129,7 @@ export default function PokiStickmanCrazyBoxGame({
       durationSeconds: Math.round(stateRef.current.surviveSeconds),
     });
     setRewardReceipt(receipt);
-  }, [triggerHaptic]);
+  }, [cardId]);
 
   // 체력 소진 게임오버 처리
   const handleGameOver = useCallback(() => {
@@ -146,7 +146,7 @@ export default function PokiStickmanCrazyBoxGame({
       durationSeconds: Math.round(stateRef.current.surviveSeconds),
     });
     setRewardReceipt(receipt);
-  }, [triggerHaptic]);
+  }, [cardId]);
 
   // 게임 시작
   const startGame = useCallback(() => {
@@ -185,7 +185,7 @@ export default function PokiStickmanCrazyBoxGame({
     setSurvivalTime(0);
     setRewardReceipt(null);
     triggerHaptic(50);
-  }, [triggerHaptic]);
+  }, [cardId]);
 
   // 점프 액션
   const handleJump = useCallback(() => {
@@ -195,7 +195,7 @@ export default function PokiStickmanCrazyBoxGame({
       stateRef.current.isGrounded = false;
       triggerHaptic(30);
     }
-  }, [triggerHaptic]);
+  }, [cardId]);
 
   // 대시 액션 (순간 가속 및 무적)
   const handleDash = useCallback(() => {
@@ -727,7 +727,7 @@ export default function PokiStickmanCrazyBoxGame({
         container.removeChild(renderer.domElement);
       }
     };
-  }, [cardId, handleGameOver, handleVictory, triggerHaptic]);
+  }, [cardId]);
 
   // 다이나믹 플로팅 조이스틱 터치 핸들러 (Screen-relative 완벽 일치)
   const handleTouchStart = (e: React.TouchEvent) => {

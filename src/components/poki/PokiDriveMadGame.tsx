@@ -51,6 +51,17 @@ export const PokiDriveMadGame: React.FC<PokiDriveMadGameProps> = ({
   const [gas, setGas] = useState(false);
   const [reverse, setReverse] = useState(false);
 
+  const gasRef = useRef(false);
+  gasRef.current = gas;
+  const reverseRef = useRef(false);
+  reverseRef.current = reverse;
+  const isPlayingRef = useRef(false);
+  isPlayingRef.current = isPlaying;
+  const crashesRef = useRef(0);
+  crashesRef.current = crashes;
+  const finishGameRef = useRef<(won: boolean, finalScore: number) => void>(() => {});
+  const triggerHapticRef = useRef<(ms?: number | number[]) => void>(() => {});
+
   // 햅틱 유틸
   const triggerHaptic = useCallback((ms: number | number[] = 15) => {
     if (typeof window !== 'undefined' && 'vibrate' in navigator) {
@@ -59,6 +70,7 @@ export const PokiDriveMadGame: React.FC<PokiDriveMadGameProps> = ({
       } catch {}
     }
   }, []);
+  triggerHapticRef.current = triggerHaptic;
 
   // Three.js 게임 상태 레퍼런스
   const gameRef = useRef({
@@ -152,6 +164,7 @@ export const PokiDriveMadGame: React.FC<PokiDriveMadGameProps> = ({
     if (won) playSfx?.('victory');
     else playSfx?.('defeat');
   }, [triggerHaptic, playSfx]);
+  finishGameRef.current = finishGame;
 
   // Three.js 씬 구축
   useEffect(() => {
@@ -404,7 +417,7 @@ export const PokiDriveMadGame: React.FC<PokiDriveMadGameProps> = ({
           g.angle = THREE.MathUtils.lerp(g.angle, targetSlope, 0.18);
 
           // 가속 & 후진
-          if (gas) {
+          if (gasRef.current) {
             g.vx = Math.min(16.0, g.vx + 14.0 * dt);
             // 앞바퀴 들림 토크 (Wheelie 틸트)
             g.angularVel += 2.8 * dt;
@@ -425,7 +438,7 @@ export const PokiDriveMadGame: React.FC<PokiDriveMadGameProps> = ({
                 maxLife: 0.4,
               });
             }
-          } else if (reverse) {
+          } else if (reverseRef.current) {
             g.vx = Math.max(-8.0, g.vx - 14.0 * dt);
             // 앞으로 숙여지는 토크
             g.angularVel -= 3.2 * dt;
@@ -450,8 +463,8 @@ export const PokiDriveMadGame: React.FC<PokiDriveMadGameProps> = ({
           g.vy -= 24.0 * dt; // 중력
 
           // 공중 틸트 제어 (가속 시 뒤로, 후진 시 앞으로)
-          if (gas) g.angularVel += 4.5 * dt;
-          if (reverse) g.angularVel -= 4.5 * dt;
+          if (gasRef.current) g.angularVel += 4.5 * dt;
+          if (reverseRef.current) g.angularVel -= 4.5 * dt;
           g.angle += g.angularVel * dt;
         }
 
@@ -476,7 +489,7 @@ export const PokiDriveMadGame: React.FC<PokiDriveMadGameProps> = ({
 
         // 골인 판정
         if (g.x >= g.finishX) {
-          finishGame(true, Math.max(500, 1500 - crashes * 150));
+          finishGameRef.current(true, Math.max(500, 1500 - crashes * 150));
           return;
         }
 
@@ -535,7 +548,7 @@ export const PokiDriveMadGame: React.FC<PokiDriveMadGameProps> = ({
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, cardId, isPlaying, finishGame, playSfx, triggerHaptic, gas, reverse, crashes]);
+  }, [lowSpecMode, cardId]);
 
   // 키보드 조작 (PC 백업)
   useEffect(() => {
@@ -564,7 +577,7 @@ export const PokiDriveMadGame: React.FC<PokiDriveMadGameProps> = ({
       <MinimalistMissionHUD
         gameTitle="Drive Mad 3D"
         score={score}
-        onQuit={() => finishGame(false, score)}
+        onQuit={() => finishGameRef.current(false, score)}
       />
 
       {/* 상단 레이스 계기판 오버레이 */}

@@ -515,7 +515,7 @@ export const PokiYouMonsterGame: React.FC<PokiYouMonsterGameProps> = ({
       }
       renderer.dispose();
     };
-  }, [gameWon, gameOver]);
+  }, []);
 
   // Touch Handlers for Dynamic Floating Joystick
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {

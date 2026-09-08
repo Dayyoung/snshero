@@ -57,6 +57,12 @@ export const PokiNeonChallengeGame: React.FC<PokiNeonChallengeGameProps> = ({
 
   // 게임 상태
   const [score, setScore] = useState<number>(0);
+  const onRewardRef = useRef(onReward);
+  onRewardRef.current = onReward;
+  const playSfxRef = useRef(playSfx);
+  playSfxRef.current = playSfx;
+  const scoreRef = useRef(score);
+  scoreRef.current = score;
   const [shield, setShield] = useState<number>(100);
   const [distancePct, setDistancePct] = useState<number>(0);
   const [boostEnergy, setBoostEnergy] = useState<number>(100);
@@ -578,7 +584,7 @@ export const PokiNeonChallengeGame: React.FC<PokiNeonChallengeGameProps> = ({
         isVictory: true,
       });
       setSettlementReceipt(receipt);
-      if (onReward) { onReward(receipt.totalSns); }
+      if (onRewardRef.current) { onRewardRef.current(receipt.totalSns); }
     };
 
     // 게임 오버 처리
@@ -593,7 +599,7 @@ export const PokiNeonChallengeGame: React.FC<PokiNeonChallengeGameProps> = ({
         isVictory: false,
       });
       setSettlementReceipt(receipt);
-      if (onReward) { onReward(receipt.totalSns); }
+      if (onRewardRef.current) { onRewardRef.current(receipt.totalSns); }
     };
 
     (container as any).__executeJump = executeJump;
@@ -610,7 +616,7 @@ export const PokiNeonChallengeGame: React.FC<PokiNeonChallengeGameProps> = ({
         container.removeChild(renderer.domElement);
       }
     };
-  }, [boostEnergy, lowSpecMode, onReward, playSfx, score]);
+  }, [lowSpecMode]);
 
   // 점프/부스트 버튼 핸들러
   const onJumpClick = useCallback(() => {

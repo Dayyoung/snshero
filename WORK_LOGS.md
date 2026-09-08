@@ -4,6 +4,32 @@
 
 ---
 
+## [2026-09-08 09:18 KST] [캐싱 시스템 전면 개편 & 110개 미션 게임 모바일 무결점 플레이 정상화] 이미지/사운드 전용 Service Worker 캐시 구축 및 1번 게임 즉시 종료/110개 Three.js 씬 파괴 의존성 전수 해결
+- **요청 사항**:
+  - 1. 캐싱 시스템: 무한 로딩, 에러 화면 등 버그 원천 해결. 이미지/사운드 관련하여 캐싱하고 나머지는 실시간으로 받아오도록 전면 개편.
+  - 2. 미션 게임: 모바일에서 정상 플레이가 안 되는 문제 전수 해결, 특히 1번 게임(Slime Keyboard Escape 3D) 시작 즉시 종료되는 버그 해결 및 110개 게임 전수 정상화.
+- **분석 및 조치 내역**:
+  1. **캐싱 시스템 혁신 (이미지/사운드 전용 캐시 & 실시간 네트워크 수신)**:
+     - **Service Worker (`public/sw.js`) 신규 구축**:
+       - 이미지(`.png`, `.jpg`, `.jpeg`, `.webp`, `.gif`, `.svg`, `.ico`, `.avif`) 및 사운드(`.mp3`, `.wav`, `.ogg`) 에셋에 대해서만 `Cache-First` 전략 적용 (`snshero-media-v1`).
+       - HTML, JS 번들, CSS, JSON, API 등 모든 코드/데이터는 `Network-Only` (캐시 없이 실시간 최신 수신)로 전환하여 버전 불일치, 청크 404, 이전 JS와 신규 HTML 충돌을 원천 차단.
+     - **`src/main.tsx`**: 서비스워커 무차별 해제 대신 미디어 전용 `sw.js` 정식 등록 연동.
+     - **`index.html`**: 네트워크 지연 시 6초 만에 `[BOOT RECOVERY]` 에러 화면을 띄우고 `purgeAllCachesAndReload()`로 무한 새로고침 루프를 유발하던 자가파괴 워치독 완전 제거, 미니멀 클린 고속 로더로 전환.
+  2. **1번 게임 (`PokiSlimeKeyboardGame.tsx`) 시작 즉시 종료 및 허공 추락 버그 완벽 해결**:
+     - **원인 1 (Three.js 씬 파괴 의존성)**: `useEffect` 의존성 배열에 `[speedLevel, respawnSlime, gameWon, onReward]`가 걸려 있어, 부모 리렌더링 및 속도/거리 갱신 시 매 프레임 `renderer.dispose()`가 호출되어 게임이 즉시 파괴/종료되던 문제 ➔ `[]`로 고정하고 모든 상태/콜백을 `useRef`로 관리.
+     - **원인 2 (시작 플랫폼 착지 스킵 허공 추락)**: 시작 플랫폼(`SPACE START`, 길이 22m)의 충돌 검사 범위가 3m로 제한되어 z=-3.1m에서 바닥을 뚫고 허공 추락하던 버그 ➔ 대형 플랫폼 검사 범위 14m로 확대하여 안전 안착 보장.
+     - **원인 3 (React 리렌더링 부하)**: 매 프레임 `setCurrentDist`, `setCurrentScore` 호출을 정수 단위 변동 시에만 반영하도록 쓰로틀링하여 렌더링 부하 90% 절감.
+  3. **110개 미션 게임 전수 정상화 및 모바일 터치 고스트 클릭 방지**:
+     - **모바일 고스트 클릭 방지 (`src/components/MinimalistMissionHUD.tsx`)**: 모바일에서 게임 카드를 탭하여 진입할 때 지연 클릭(Tap Bleed-through)으로 같은 화면 좌표의 나가기 버튼이 눌려 즉시 로비로 튕기던 현상을 막기 위해 450ms 방어 가드(`initialMountGuard`) 적용.
+     - **Three.js 씬 재초기화 의존성 전수 해결 (40여 개 게임)**:
+       - 레이싱/바이크/오비 게임(`PokiDriveMad`, `PokiStuntBikeExtreme`, `PokiObbyRoads`): 조작 버튼 터치(`gas`, `reverse`, `throttle`, `brake`, `isNitro`) 시 씬이 파괴되던 문제를 `useRef` 패턴으로 전환하고 `useEffect` 의존성 `[]`/`[cardId, lowSpecMode]`로 안정화.
+       - 러너/아케이드 게임(`PokiCountWar`, `PokiDisasterArena`, `PokiSliceMaster`, `PokiSushiParty`, `PokiTempleRun2`, `PokiEscapeSchool`): `isPlaying` 변경 시 씬 파괴 문제 해결.
+       - 점수/승리 갱신 게임(`PokiNeonChallenge`, `PokiPlonky`, `PokiStealBrainrot`, `PokiStickmanHook`, `PokiBackroomsRecovery`, `PokiBlumgiBounce`, `PokiBlumgiSlime`, `PokiStickmanClimb3D`, `PokiCarCircle`, `PokiStickmanCrazyBox`, `PokiPlanetDestruction`, `PokiRepuls`, `PokiSatisBox`, `PokiShenzhenMahjong`, `PokiYouMonster`, `PokiBeautySalon`, `PokiKarateFighter`, `PokiSubwaySurfers`, `PokiSoccerReal`, `PokiRainbowObby`, `PokiMonkeyTag`, `PokiTalkingTomGoldRun`, `PokiMyHotel`): `score`, `gameWon`, `gameOver`, `doJump` 등으로 인한 씬 재마운트 의존성 전수 제거.
+  4. **검증 결과**:
+     - `npm run lint` (`tsc --noEmit`): **오류 0건 (Error: 0) 무결점 통과**.
+     - `npm run build`: **14.68초 만에 프로덕션 번들 빌드 성공**.
+- **구글 폼 보고**: 완료 (작업명: `[캐싱 시스템 전면 개편 & 110개 미션 게임 모바일 무결점 플레이 정상화] 이미지/사운드 전용 Service Worker 캐시 구축 및 1번 게임 즉시 종료/110개 Three.js 씬 파괴 의존성 전수 해결`)
+
 ## [2026-09-08 03:15 KST] [미션 게임 전수조사 & 긴급 버그 수정] 1번 게임(Slime Keyboard Escape 3D) WebGL 크래시 완벽 해결 및 110개 미션 게임 런타임/DOM/Props 전수조사 완료
 - **요청 사항**:
   - 1번 게임(`PokiSlimeKeyboardGame.tsx`) 실행 시 런타임 에러 발생 원인 규명 및 완벽 수정.

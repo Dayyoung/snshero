@@ -422,7 +422,7 @@ export const PokiPlanetDestructionGame: React.FC<PokiPlanetDestructionGameProps>
       }
       renderer.dispose();
     };
-  }, [gameWon, gameOver, selectedWeapon]);
+  }, []);
 
   const hudUniqueId = useId();
 

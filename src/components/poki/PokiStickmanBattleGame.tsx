@@ -125,7 +125,7 @@ export const PokiStickmanBattleGame: React.FC<PokiStickmanBattleGameProps> = ({
     const ctx = heroSpriteCanvasRef.current.getContext('2d');
     if (!ctx) return;
     drawCardSprite(ctx, playerHeroId, 0, 0, 64, 64);
-  }, [playerHeroId]);
+  }, [lowSpecMode, playerHeroId]);
 
   // Three.js 씬 구축 & 게임 루프
   useEffect(() => {
@@ -827,7 +827,7 @@ export const PokiStickmanBattleGame: React.FC<PokiStickmanBattleGameProps> = ({
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, playerHeroId, playSfx]);
+  }, [lowSpecMode, playerHeroId]);
 
   // 공격/대시/스왑 터치 핸들러
   const onAttackClick = useCallback(() => {

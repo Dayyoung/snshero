@@ -669,7 +669,7 @@ export const PokiSoccerRealGame: React.FC<PokiSoccerRealGameProps> = ({
         threeRef.current.renderer.dispose();
       }
     };
-  }, [lowSpecMode, playerHeroId, resetBall, spawnGoalConfetti, gameOver, gameWon]);
+  }, [lowSpecMode, playerHeroId]);
 
   // Touch Swipe Gesture (Swipe upward to shoot)
   const handleTouchStart = (e: React.TouchEvent) => {

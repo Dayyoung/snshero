@@ -56,6 +56,9 @@ export const PokiCountWarGame: React.FC<PokiCountWarGameProps> = ({
   // UI 상태
   const [showTutorial, setShowTutorial] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
+  const isPlayingRef = useRef(false);
+  isPlayingRef.current = isPlaying;
+  const finishGameRef = useRef<(won: boolean, finalScore: number) => void>(() => {});
   const [armyCount, setArmyCount] = useState(5);
   const [bossHp, setBossHp] = useState(120);
   const [score, setScore] = useState(0);
@@ -178,7 +181,8 @@ export const PokiCountWarGame: React.FC<PokiCountWarGameProps> = ({
     triggerHaptic(won ? [50, 100, 150] : [150, 80]);
     if (won) playSfx?.('victory');
     else playSfx?.('defeat');
-  }, [triggerHaptic, playSfx]);
+  }, [lowSpecMode, cardId]);
+  finishGameRef.current = finishGame;
 
   // Three.js 초기화
   useEffect(() => {
@@ -549,14 +553,14 @@ export const PokiCountWarGame: React.FC<PokiCountWarGameProps> = ({
           // 보스 격파 승리!
           if (g.bossHp <= 0) {
             if (g.bossGroup) scene.remove(g.bossGroup);
-            finishGame(true, g.score + 1500);
+            finishGameRef.current(true, g.score + 1500);
             return;
           }
 
           // 아군 병력 소모
           if (g.count <= 1 && g.bossHp > 0) {
             // 패배!
-            finishGame(false, g.score);
+            finishGameRef.current(false, g.score);
             return;
           }
           if (Math.random() < 0.2) {
@@ -615,7 +619,7 @@ export const PokiCountWarGame: React.FC<PokiCountWarGameProps> = ({
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, cardId, isPlaying, finishGame, playSfx, triggerHaptic, updateCrowdMeshes]);
+  }, [lowSpecMode, cardId]);
 
   // 터치 드래그 인터랙션
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -657,7 +661,7 @@ export const PokiCountWarGame: React.FC<PokiCountWarGameProps> = ({
       <MinimalistMissionHUD
         gameTitle="Count War 3D"
         score={score}
-        onQuit={() => finishGame(false, score)}
+        onQuit={() => finishGameRef.current(false, score)}
       />
 
       {/* 상단 군단 병력 & 보스 HP 오버레이 */}

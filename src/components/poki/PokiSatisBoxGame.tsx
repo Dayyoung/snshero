@@ -475,7 +475,7 @@ export const PokiSatisBoxGame: React.FC<PokiSatisBoxGameProps> = ({
       }
       renderer.dispose();
     };
-  }, [gameWon, gameOver, loadStage]);
+  }, []);
 
   const hudUniqueId = useId();
 

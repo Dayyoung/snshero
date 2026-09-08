@@ -202,7 +202,7 @@ export const PokiMyHotelGame: React.FC<PokiMyHotelGameProps> = ({
     gameStateRef.current.boostTimer = 4.0;
     triggerHaptic([20, 20]);
     if (playSfx) playSfx('/sfx/boost.mp3');
-  }, [playSfx, triggerHaptic]);
+  }, [lowSpecMode, playerHeroId]);
 
   // Main Three.js Engine Setup
   useEffect(() => {
@@ -866,7 +866,7 @@ export const PokiMyHotelGame: React.FC<PokiMyHotelGameProps> = ({
       renderer.dispose();
       sceneRef.current = null;
     };
-  }, [handleGameOver, handleRushBoost, lowSpecMode, playerHeroId, playSfx, triggerHaptic]);
+  }, [lowSpecMode, playerHeroId]);
 
   // Touch Screen Dynamic Joystick Event Handlers
   const handleTouchStart = (e: React.TouchEvent) => {

@@ -192,7 +192,7 @@ export const PokiMonkeyTagGame: React.FC<PokiMonkeyTagGameProps> = ({
     playerControlRef.current.jumpRequested = true;
     triggerHaptic(20);
     if (playSfx) playSfx('/sfx/jump.mp3');
-  }, [playSfx, triggerHaptic]);
+  }, [lowSpecMode, playerHeroId]);
 
   // Tag / Swipe Action
   const doTagSwipe = useCallback(() => {
@@ -234,7 +234,7 @@ export const PokiMonkeyTagGame: React.FC<PokiMonkeyTagGameProps> = ({
       triggerHaptic([40, 30, 60]);
       if (playSfx) playSfx('/sfx/hit.mp3');
     }
-  }, [playSfx, triggerHaptic]);
+  }, [lowSpecMode, playerHeroId]);
 
   // Main Three.js Engine Setup
   useEffect(() => {
@@ -829,7 +829,7 @@ export const PokiMonkeyTagGame: React.FC<PokiMonkeyTagGameProps> = ({
       renderer.dispose();
       sceneRef.current = null;
     };
-  }, [doJump, lowSpecMode, playerHeroId, playSfx, triggerHaptic]);
+  }, [lowSpecMode, playerHeroId]);
 
   // Touch Screen Dynamic Joystick Event Handlers
   const handleTouchStart = (e: React.TouchEvent) => {

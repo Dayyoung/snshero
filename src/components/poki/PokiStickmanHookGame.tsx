@@ -58,6 +58,12 @@ export const PokiStickmanHookGame: React.FC<PokiStickmanHookGameProps> = ({
 
   // 게임 상태
   const [score, setScore] = useState<number>(0);
+  const onRewardRef = useRef(onReward);
+  onRewardRef.current = onReward;
+  const playSfxRef = useRef(playSfx);
+  playSfxRef.current = playSfx;
+  const scoreRef = useRef(score);
+  scoreRef.current = score;
   const [progressPct, setProgressPct] = useState<number>(0);
   const [isHooked, setIsHooked] = useState<boolean>(false);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
@@ -550,7 +556,7 @@ export const PokiStickmanHookGame: React.FC<PokiStickmanHookGameProps> = ({
         isVictory: true,
       });
       setSettlementReceipt(receipt);
-      if (onReward) onReward(receipt.totalSns);
+      if (onRewardRef.current) onRewardRef.current(receipt.totalSns);
     };
 
     (container as any).__startHook = startHookAction;
@@ -567,7 +573,7 @@ export const PokiStickmanHookGame: React.FC<PokiStickmanHookGameProps> = ({
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, playSfx, score]);
+  }, [lowSpecMode]);
 
   // 터치 핸들러
   const handleTouchStart = useCallback(() => {

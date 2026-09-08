@@ -234,7 +234,7 @@ export const PokiRagdollChaosGame: React.FC<PokiRagdollChaosGameProps> = ({
       sc.flashLight.position.copy(rag.pos);
       sc.flashLight.intensity = 8;
     }
-  }, [lowSpecMode, playSfx, triggerHaptic]);
+  }, [lowSpecMode, playerHeroId]);
 
   const triggerSuperSlap = useCallback(() => {
     const rag = ragdollRef.current;
@@ -255,7 +255,7 @@ export const PokiRagdollChaosGame: React.FC<PokiRagdollChaosGameProps> = ({
 
     triggerHaptic(35);
     if (playSfx) playSfx('/sfx/hit.mp3');
-  }, [playSfx, triggerHaptic]);
+  }, [lowSpecMode, playerHeroId]);
 
   const resetRagdollPos = useCallback(() => {
     const rag = ragdollRef.current;
@@ -264,7 +264,7 @@ export const PokiRagdollChaosGame: React.FC<PokiRagdollChaosGameProps> = ({
     rag.rot.set(0, 0, 0);
     rag.angVel.set(0, 0, 0);
     triggerHaptic(20);
-  }, [triggerHaptic]);
+  }, [lowSpecMode, playerHeroId]);
 
   // Main Three.js Setup & Animation Loop
   useEffect(() => {
@@ -897,7 +897,7 @@ export const PokiRagdollChaosGame: React.FC<PokiRagdollChaosGameProps> = ({
       renderer.dispose();
       sceneRef.current = null;
     };
-  }, [handleGameOver, lowSpecMode, playerHeroId, playSfx, triggerHaptic]);
+  }, [lowSpecMode, playerHeroId]);
 
   // Touch & Drag Slingshot Handlers
   const handleTouchStart = (e: React.TouchEvent | React.MouseEvent) => {

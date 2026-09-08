@@ -75,6 +75,12 @@ export const PokiPlonkyGame: React.FC<PokiPlonkyGameProps> = ({
 
   // 게임 상태
   const [score, setScore] = useState<number>(0);
+  const onRewardRef = useRef(onReward);
+  onRewardRef.current = onReward;
+  const playSfxRef = useRef(playSfx);
+  playSfxRef.current = playSfx;
+  const scoreRef = useRef(score);
+  scoreRef.current = score;
   const [hearts, setHearts] = useState<number>(3);
   const [progressPct, setProgressPct] = useState<number>(0);
   const [isRoping, setIsRoping] = useState<boolean>(false);
@@ -650,7 +656,7 @@ export const PokiPlonkyGame: React.FC<PokiPlonkyGameProps> = ({
           isVictory: false,
         });
         setSettlementReceipt(receipt);
-        if (onReward) { onReward(receipt.totalSns); }
+        if (onRewardRef.current) { onRewardRef.current(receipt.totalSns); }
       } else {
         // 안전 부활 위치로 복귀 (직전 안전 발판)
         pState.pos.set(Math.max(2, pState.pos.x - 12), 4.0, 0);
@@ -672,7 +678,7 @@ export const PokiPlonkyGame: React.FC<PokiPlonkyGameProps> = ({
         isVictory: true,
       });
       setSettlementReceipt(receipt);
-      if (onReward) { onReward(receipt.totalSns); }
+      if (onRewardRef.current) { onRewardRef.current(receipt.totalSns); }
     };
 
     (container as any).__executeJump = executeJump;
@@ -689,7 +695,7 @@ export const PokiPlonkyGame: React.FC<PokiPlonkyGameProps> = ({
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, playSfx, score]);
+  }, [lowSpecMode]);
 
   // 점프/로프 터치 핸들러
   const onJumpClick = useCallback(() => {

@@ -495,175 +495,19 @@
       </style>
       <div id="hero-fast-loader">
         <script>
-          // SNSHERO Self-Healing Engine Loader & Watchdog
-          // 404 Not Found, 429 Too Many Requests, 네트워크 지연 시 30초 무한 로딩 및 무한 새로고침 루프를 원천 차단합니다.
+          // SNSHERO Clean Fast Loader
           (function() {
-            var isLoaded = false;
-            var maxWaitMs = 6000; // 30초 ➔ 6초로 대폭 단축하여 빠른 응답성 확보
-            var retryKey = 'hero_boot_retries';
-            var retryCount = 0;
-            try {
-              retryCount = parseInt(sessionStorage.getItem(retryKey) || '0', 10);
-            } catch (e) {}
-
-            // 1. 비상 복구 컨트롤 UI 표시 함수
-            function showRecoveryUI(reason) {
-              if (isLoaded) return;
-              var stepEl = document.getElementById('hero-loader-step');
-              var badgeEl = document.getElementById('hero-loader-badge');
-              var descEl = document.getElementById('hero-loader-desc');
-              var barEl = document.getElementById('hero-loader-bar');
-              var recoveryEl = document.getElementById('hero-recovery-actions');
-              var hintEl = document.getElementById('hero-error-hint');
-              var modeEl = document.getElementById('hero-loader-mode');
-
-              if (badgeEl) {
-                badgeEl.textContent = '[BOOT RECOVERY]';
-                badgeEl.style.color = '#dc2626';
-              }
-              if (descEl) {
-                descEl.textContent = '엔진 모듈 로드 중 오류가 발생했거나 네트워크 연결이 원활하지 않습니다.';
-              }
-              if (barEl) barEl.style.display = 'none';
-              if (stepEl) {
-                stepEl.textContent = '⚠️ ' + (reason || '모듈 로드 실패 (404/Network)');
-                stepEl.style.color = '#b91c1c';
-                stepEl.style.fontWeight = 'bold';
-              }
-              if (modeEl) modeEl.textContent = 'FALLBACK READY';
-              if (recoveryEl) recoveryEl.style.display = 'flex';
-              if (hintEl && reason) hintEl.textContent = '상세: ' + reason;
-
-              // 복구 버튼 이벤트 연결
-              var btnRetry = document.getElementById('hero-btn-retry');
-              if (btnRetry) {
-                btnRetry.onclick = function() {
-                  purgeAllCachesAndReload();
-                };
-              }
-              var btnHome = document.getElementById('hero-btn-home');
-              if (btnHome) {
-                btnHome.onclick = function() {
-                  try { sessionStorage.removeItem(retryKey); } catch(e) {}
-                  window.location.href = '/home';
-                };
-              }
-              var btnSafe = document.getElementById('hero-btn-safe');
-              if (btnSafe) {
-                btnSafe.onclick = function() {
-                  try {
-                    sessionStorage.setItem('hero_safe_mode', 'true');
-                    sessionStorage.removeItem(retryKey);
-                  } catch(e) {}
-                  window.location.href = '/?safe=true&t=' + Date.now();
-                };
-              }
-            }
-
-            // 2. 전체 브라우저 캐시 및 서비스워커 소거 후 1회 새로고침
-            function purgeAllCachesAndReload() {
-              try {
-                sessionStorage.removeItem(retryKey);
-                for (var i = localStorage.length - 1; i >= 0; i--) {
-                  var k = localStorage.key(i);
-                  if (k && (k.indexOf('_cache') !== -1 || k.indexOf('hero_build') !== -1 || k.indexOf('hero_app') !== -1 || k.indexOf('hero_boot') !== -1)) {
-                    localStorage.removeItem(k);
-                  }
-                }
-                if ('caches' in window) {
-                  caches.keys().then(function(names) {
-                    names.forEach(function(name) { caches.delete(name); });
-                  });
-                }
-                if ('serviceWorker' in navigator) {
-                  navigator.serviceWorker.getRegistrations().then(function(regs) {
-                    regs.forEach(function(r) { r.unregister(); });
-                  });
-                }
-              } catch (e) {}
-              window.location.href = window.location.pathname + '?_fresh=' + Date.now();
-            }
-
-            // 3. 빌드된 번들(/version.json)을 통한 자동 복구 탐색 시도
-            var isRecovering = false;
-            function tryAutoRecoverBundle(errorDetail) {
-              if (isRecovering || isLoaded) return;
-              isRecovering = true;
-              console.warn('[SelfHealing] /src/main.tsx 로드 실패 감지. 빌드된 엔트리 스크립트 탐색 시도 중...', errorDetail);
-
-              fetch('/version.json?t=' + Date.now())
-                .then(function(res) {
-                  if (!res.ok) throw new Error('version.json 404');
-                  return res.json();
-                })
-                .then(function(data) {
-                  if (data && data.entryScript && !isLoaded) {
-                    console.log('[SelfHealing] 빌드된 최신 번들 발견:', data.entryScript);
-                    var s = document.createElement('script');
-                    s.type = 'module';
-                    s.crossOrigin = 'anonymous';
-                    s.src = data.entryScript;
-                    s.onerror = function() {
-                      showRecoveryUI(errorDetail || '빌드 번들 실행 실패');
-                    };
-                    document.head.appendChild(s);
-                  } else {
-                    // 빌드 번들이 없으면 재시도 횟수에 따라 1회만 자동 재시도하거나 복구 UI 노출
-                    if (retryCount < 1) {
-                      try { sessionStorage.setItem(retryKey, '1'); } catch(e) {}
-                      purgeAllCachesAndReload();
-                    } else {
-                      showRecoveryUI(errorDetail || '배포 파일 탐색 실패 (404)');
-                    }
-                  }
-                })
-                .catch(function(err) {
-                  console.warn('[SelfHealing] version.json 탐색 실패:', err);
-                  if (retryCount < 1) {
-                    try { sessionStorage.setItem(retryKey, '1'); } catch(e) {}
-                    purgeAllCachesAndReload();
-                  } else {
-                    showRecoveryUI(errorDetail || '스크립트 404 에러 (재시도 중단)');
-                  }
-                });
-            }
-
-            // 4. 스크립트 로드 실패(404, 네트워크 실패 등) 실시간 즉시 캡처 (30초 대기 없이 즉각 대응!)
-            window.addEventListener('error', function(event) {
-              var target = event.target;
-              if (target && target.tagName === 'SCRIPT') {
-                var src = target.src || '';
-                // 외부 광고/트래커/서드파티 실패(403, 429 등)는 메인 엔진 오류로 취급하지 않음
-                if (src.indexOf('googleads') !== -1 || src.indexOf('doubleclick') !== -1 || src.indexOf('googletagmanager') !== -1) {
-                  return;
-                }
-                if (src.indexOf('/src/main.tsx') !== -1 || src.indexOf('/assets/index') !== -1) {
-                  tryAutoRecoverBundle('스크립트 로드 실패 (404 Not Found): ' + (src.split('/').pop() || src));
-                }
-              }
-            }, true);
-
-            // 5. 6초 안전 워치독 (기존 30초 무한 대기 차단)
-            var watchdogTimer = setTimeout(function() {
-              if (!window.__SNSHERO_LOADED__) {
-                console.warn('[Watchdog] 6초 엔진 초기화 지연 감지.');
-                tryAutoRecoverBundle('6초 엔진 초기화 지연 (404/429/네트워크)');
-              }
-            }, maxWaitMs);
-
-            // 6. 정상 로드 완료 시 워치독 해제
             window.__SNSHERO_CLEAR_WATCHDOG__ = function() {
-              clearTimeout(watchdogTimer);
-              isLoaded = true;
               window.__SNSHERO_LOADED__ = true;
-              try { sessionStorage.removeItem(retryKey); } catch(e) {}
               var loader = document.getElementById('hero-fast-loader');
               if (loader) {
                 loader.style.opacity = '0';
-                loader.style.transition = 'opacity 0.2s ease-out';
+                loader.style.transition = 'opacity 0.25s ease-out';
                 setTimeout(function() {
-                  if (loader.parentNode) loader.parentNode.removeChild(loader);
-                }, 200);
+                  if (loader && loader.parentNode) {
+                    loader.parentNode.removeChild(loader);
+                  }
+                }, 250);
               }
             };
           })();
@@ -671,28 +515,13 @@
         <div class="loader-card" id="hero-loader-card">
           <div class="loader-badge" id="hero-loader-badge">[SYSTEM STARTUP]</div>
           <h1 id="hero-loader-title">SNSHERO REVOLUTION</h1>
-          <p id="hero-loader-desc">원클릭 AI 카드 게임 모듈 준비 중...</p>
+          <p id="hero-loader-desc">원클릭 AI 카드 게임 로딩 중...</p>
           <div class="bar-container" id="hero-loader-bar">
             <div class="bar-fill"></div>
           </div>
           <div class="status-row" id="hero-loader-status">
-            <span class="status-step" id="hero-loader-step">[LOADING RES] 엔진 초기화...</span>
-            <span id="hero-loader-mode">FAST LOAD</span>
-          </div>
-          <!-- 비상 복구 컨트롤 UI (로드 실패 시 무한로딩 없이 즉각 노출) -->
-          <div id="hero-recovery-actions" style="display: none; margin-top: 14px; flex-direction: column; gap: 8px;">
-            <button id="hero-btn-retry" type="button" style="width: 100%; padding: 10px 14px; background: #201d1d; color: #fdfcfc; font-family: monospace; font-size: 11px; font-weight: 800; border: 1px solid #201d1d; border-radius: 4px; cursor: pointer;">
-              🔄 캐시 완전 초기화 후 다시 시작
-            </button>
-            <div style="display: flex; gap: 6px; width: 100%;">
-              <button id="hero-btn-home" type="button" style="flex: 1; padding: 8px 10px; background: #ffffff; color: #201d1d; font-family: monospace; font-size: 10px; font-weight: 700; border: 1px solid rgba(15,0,0,0.2); border-radius: 4px; cursor: pointer;">
-                🏠 메인 홈 이동
-              </button>
-              <button id="hero-btn-safe" type="button" style="flex: 1; padding: 8px 10px; background: #ffffff; color: #201d1d; font-family: monospace; font-size: 10px; font-weight: 700; border: 1px solid rgba(15,0,0,0.2); border-radius: 4px; cursor: pointer;">
-                ⚡ 안전 모드 실행
-              </button>
-            </div>
-            <p id="hero-error-hint" style="font-size: 10px; color: #b91c1c; margin: 4px 0 0 0; line-height: 1.3; font-family: monospace; word-break: break-all;"></p>
+            <span class="status-step" id="hero-loader-step">[LOADING] 실시간 모듈 준비...</span>
+            <span id="hero-loader-mode">LIVE</span>
           </div>
         </div>
       </div>

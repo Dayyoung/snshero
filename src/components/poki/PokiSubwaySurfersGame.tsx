@@ -122,7 +122,7 @@ export const PokiSubwaySurfersGame: React.FC<PokiSubwaySurfersGameProps> = ({
       s.lane = nextLane;
       if (navigator.vibrate) navigator.vibrate(15);
     }
-  }, [gameOver, gameWon]);
+  }, []);
 
   // Action: Jump
   const handleJump = useCallback(() => {
@@ -134,7 +134,7 @@ export const PokiSubwaySurfersGame: React.FC<PokiSubwaySurfersGameProps> = ({
     s.isRolling = false;
     s.rollTimer = 0;
     if (navigator.vibrate) navigator.vibrate(25);
-  }, [gameOver, gameWon]);
+  }, []);
 
   // Action: Slide / Roll
   const handleRoll = useCallback(() => {
@@ -148,7 +148,7 @@ export const PokiSubwaySurfersGame: React.FC<PokiSubwaySurfersGameProps> = ({
       s.vy = -18;
     }
     if (navigator.vibrate) navigator.vibrate(20);
-  }, [gameOver, gameWon]);
+  }, []);
 
   // Finish Game / Give Up
   const finishGame = useCallback((isVictory: boolean) => {
@@ -607,7 +607,7 @@ export const PokiSubwaySurfersGame: React.FC<PokiSubwaySurfersGameProps> = ({
         threeRef.current.renderer.dispose();
       }
     };
-  }, [finishGame, lowSpecMode, playerHeroId, gameOver, gameWon]);
+  }, [lowSpecMode, playerHeroId]);
 
   // Touch Swipe Handlers (4-way pure touch gestures)
   const handleTouchStart = (e: React.TouchEvent) => {

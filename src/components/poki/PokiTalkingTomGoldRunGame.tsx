@@ -195,7 +195,7 @@ export const PokiTalkingTomGoldRunGame: React.FC<PokiTalkingTomGoldRunGameProps>
       triggerHaptic(15);
       if (playSfx) playSfx('/sfx/whoosh.mp3');
     }
-  }, [playSfx, triggerHaptic]);
+  }, [lowSpecMode, playerHeroId]);
 
   const moveRight = useCallback(() => {
     const pl = playerRef.current;
@@ -205,7 +205,7 @@ export const PokiTalkingTomGoldRunGame: React.FC<PokiTalkingTomGoldRunGameProps>
       triggerHaptic(15);
       if (playSfx) playSfx('/sfx/whoosh.mp3');
     }
-  }, [playSfx, triggerHaptic]);
+  }, [lowSpecMode, playerHeroId]);
 
   const doJump = useCallback(() => {
     const pl = playerRef.current;
@@ -216,7 +216,7 @@ export const PokiTalkingTomGoldRunGame: React.FC<PokiTalkingTomGoldRunGameProps>
       triggerHaptic(20);
       if (playSfx) playSfx('/sfx/jump.mp3');
     }
-  }, [playSfx, triggerHaptic]);
+  }, [lowSpecMode, playerHeroId]);
 
   const doSlide = useCallback(() => {
     const pl = playerRef.current;
@@ -228,7 +228,7 @@ export const PokiTalkingTomGoldRunGame: React.FC<PokiTalkingTomGoldRunGameProps>
     pl.slideTimer = 0.85;
     triggerHaptic(15);
     if (playSfx) playSfx('/sfx/slide.mp3');
-  }, [playSfx, triggerHaptic]);
+  }, [lowSpecMode, playerHeroId]);
 
   // Main Three.js Scene Setup
   useEffect(() => {
@@ -789,7 +789,7 @@ export const PokiTalkingTomGoldRunGame: React.FC<PokiTalkingTomGoldRunGameProps>
       renderer.dispose();
       sceneRef.current = null;
     };
-  }, [doJump, doSlide, handleGameOver, lowSpecMode, moveLeft, moveRight, playerHeroId, playSfx, triggerHaptic]);
+  }, [lowSpecMode, playerHeroId]);
 
   // Touch Swipe Gesture Handlers
   const handleTouchStart = (e: React.TouchEvent) => {

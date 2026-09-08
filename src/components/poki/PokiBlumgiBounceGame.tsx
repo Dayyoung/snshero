@@ -167,7 +167,7 @@ export const PokiBlumgiBounceGame: React.FC<PokiBlumgiBounceGameProps> = ({ onBa
     triggerHaptic(50);
     setIsAiming(false);
     setAimPower(0);
-  }, [gameWon]);
+  }, []);
 
   // 컨페티 생성
   const spawnConfetti = (pos: THREE.Vector3) => {
@@ -726,7 +726,7 @@ export const PokiBlumgiBounceGame: React.FC<PokiBlumgiBounceGameProps> = ({ onBa
       }
       renderer.dispose();
     };
-  }, [resetCharacterPos, gameWon, isAiming]);
+  }, []);
 
   // 터치 드래그 이벤트 핸들러
   const handleTouchStart = (e: React.TouchEvent | React.MouseEvent) => {

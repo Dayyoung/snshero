@@ -63,6 +63,12 @@ export const PokiBackroomsRecoveryGame: React.FC<PokiBackroomsRecoveryGameProps>
 
   // 게임 상태
   const [score, setScore] = useState<number>(0);
+  const onRewardRef = useRef(onReward);
+  onRewardRef.current = onReward;
+  const playSfxRef = useRef(playSfx);
+  playSfxRef.current = playSfx;
+  const scoreRef = useRef(score);
+  scoreRef.current = score;
   const [sanity, setSanity] = useState<number>(100);
   const [stamina, setStamina] = useState<number>(100);
   const [flashlightBattery, setFlashlightBattery] = useState<number>(100);
@@ -679,7 +685,7 @@ export const PokiBackroomsRecoveryGame: React.FC<PokiBackroomsRecoveryGameProps>
           isVictory: false,
         });
         setSettlementReceipt(receipt);
-        if (onReward) onReward(receipt.totalSns);
+        if (onRewardRef.current) onRewardRef.current(receipt.totalSns);
       }
     };
 
@@ -697,7 +703,7 @@ export const PokiBackroomsRecoveryGame: React.FC<PokiBackroomsRecoveryGameProps>
         isVictory: true,
       });
       setSettlementReceipt(receipt);
-      if (onReward) onReward(receipt.totalSns);
+      if (onRewardRef.current) onRewardRef.current(receipt.totalSns);
     };
 
     (container as any).__toggleSprint = toggleSprint;
@@ -714,7 +720,7 @@ export const PokiBackroomsRecoveryGame: React.FC<PokiBackroomsRecoveryGameProps>
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, onReward, playSfx, score]);
+  }, [lowSpecMode]);
 
   // 터치 조이스틱 핸들러
   const handleTouchStart = useCallback((e: React.TouchEvent) => {

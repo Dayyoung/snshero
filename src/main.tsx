@@ -84,18 +84,16 @@ if (typeof window !== 'undefined') {
     handleChunkError(event.reason);
   });
 
-  // 강제 오프라인 캐시 및 기존 서비스 워커 제거 (유저 요청: 변경 사항 즉시 반영)
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then((registrations) => {
-      for (const registration of registrations) {
-        registration.unregister().then((unregistered) => {
-          if (unregistered) {
-            console.log('[ServiceWorker] Successfully unregistered stale worker:', registration);
-          }
+  // 이미지/사운드 전용 Service Worker 등록 (HTML/JS/CSS/API는 실시간 네트워크 수신)
+  if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js', { scope: '/' })
+        .then((registration) => {
+          console.log('[ServiceWorker] Media cache worker registered successfully:', registration.scope);
+        })
+        .catch((err) => {
+          console.warn('[ServiceWorker] Media worker registration skipped:', err);
         });
-      }
-    }).catch((err) => {
-      console.warn('[ServiceWorker] Unregister failed:', err);
     });
   }
 }

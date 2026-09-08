@@ -63,6 +63,9 @@ export const PokiEscapeSchoolGame: React.FC<PokiEscapeSchoolGameProps> = ({
   // UI 상태
   const [showTutorial, setShowTutorial] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
+  const isPlayingRef = useRef(false);
+  isPlayingRef.current = isPlaying;
+  const finishGameRef = useRef<(won: boolean, finalScore: number) => void>(() => {});
   const [keysCount, setKeysCount] = useState(0);
   const [alertStatus, setAlertStatus] = useState<'SAFE' | 'CAUTION' | 'CHASE'>('SAFE');
   const [score, setScore] = useState(0);
@@ -138,7 +141,8 @@ export const PokiEscapeSchoolGame: React.FC<PokiEscapeSchoolGameProps> = ({
     triggerHaptic(won ? [50, 100, 150] : [150, 80]);
     if (won) playSfx?.('victory');
     else playSfx?.('defeat');
-  }, [triggerHaptic, playSfx]);
+  }, [lowSpecMode, cardId]);
+  finishGameRef.current = finishGame;
 
   // Three.js 초기화
   useEffect(() => {
@@ -505,7 +509,7 @@ export const PokiEscapeSchoolGame: React.FC<PokiEscapeSchoolGameProps> = ({
         // 교문 탈출 완료 검사
         // ------------------------------------
         if (g.gateUnlocked && Math.abs(g.playerX) < 2.0 && g.playerZ <= -9.5) {
-          finishGame(true, g.score + 600);
+          finishGameRef.current(true, g.score + 600);
           return;
         }
 
@@ -550,7 +554,7 @@ export const PokiEscapeSchoolGame: React.FC<PokiEscapeSchoolGameProps> = ({
               // 체포 실패!
               triggerHaptic([150, 100]);
               playSfx?.('defeat');
-              finishGame(false, g.score);
+              finishGameRef.current(false, g.score);
               return;
             }
 
@@ -616,7 +620,7 @@ export const PokiEscapeSchoolGame: React.FC<PokiEscapeSchoolGameProps> = ({
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, cardId, isPlaying, finishGame, playSfx, triggerHaptic]);
+  }, [lowSpecMode, cardId]);
 
   // 플로팅 가상 조이스틱 터치 핸들러
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -724,7 +728,7 @@ export const PokiEscapeSchoolGame: React.FC<PokiEscapeSchoolGameProps> = ({
       <MinimalistMissionHUD
         gameTitle="Escape School 3D"
         score={score}
-        onQuit={() => finishGame(false, score)}
+        onQuit={() => finishGameRef.current(false, score)}
       />
 
       {/* 상단 탈출 진행 & 경보 오버레이 */}

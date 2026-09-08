@@ -121,7 +121,7 @@ export const PokiShenzhenMahjongGame: React.FC<PokiShenzhenMahjongGameProps> = (
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [gameWon, gameOver, showTutorial]);
+  }, []);
 
   // Texture Generator for Mahjong Face
   const createTileFaceTexture = (def: TileDefinition): THREE.CanvasTexture => {
@@ -628,7 +628,7 @@ export const PokiShenzhenMahjongGame: React.FC<PokiShenzhenMahjongGameProps> = (
       }
       renderer.dispose();
     };
-  }, [gameWon, gameOver]);
+  }, []);
 
   // Hint Feature: Find a pair of free tiles and pulse them
   const handleUseHint = () => {

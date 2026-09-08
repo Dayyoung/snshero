@@ -566,7 +566,7 @@ export const PokiKarateFighterGame: React.FC<PokiKarateFighterGameProps> = ({
       }
       renderer.dispose();
     };
-  }, [gameWon, gameOver]);
+  }, []);
 
   // Action Button Handlers
   const handlePunch = () => {

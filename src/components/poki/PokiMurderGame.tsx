@@ -577,7 +577,7 @@ export const PokiMurderGame: React.FC<PokiMurderGameProps> = ({
         threeRef.current.renderer.dispose();
       }
     };
-  }, [finishGame, lowSpecMode, playerHeroId, transitionToKing, gameOver, gameWon]);
+  }, [lowSpecMode, playerHeroId]);
 
   // Touch Hold Interactions
   const handlePointerDown = () => {

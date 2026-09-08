@@ -64,6 +64,9 @@ export const PokiSushiPartyGame: React.FC<PokiSushiPartyGameProps> = ({
   // UI 상태
   const [showTutorial, setShowTutorial] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
+  const isPlayingRef = useRef(false);
+  isPlayingRef.current = isPlaying;
+  const finishGameRef = useRef<(won: boolean, finalScore: number) => void>(() => {});
   const [snakeLength, setSnakeLength] = useState(20);
   const [rank, setRank] = useState(1);
   const [kills, setKills] = useState(0);
@@ -142,7 +145,8 @@ export const PokiSushiPartyGame: React.FC<PokiSushiPartyGameProps> = ({
     triggerHaptic(won ? [50, 100, 150] : [150, 80]);
     if (won) playSfx?.('victory');
     else playSfx?.('defeat');
-  }, [triggerHaptic, playSfx]);
+  }, [lowSpecMode, cardId]);
+  finishGameRef.current = finishGame;
 
   // 스시 3D 메쉬 생성 헬퍼
   const createSushiMesh = (type: SushiData['type']): THREE.Group => {
@@ -629,7 +633,7 @@ export const PokiSushiPartyGame: React.FC<PokiSushiPartyGameProps> = ({
               if (dist < 0.95) {
                 // 플레이어 사망!
                 g.alive = false;
-                finishGame(false, g.score);
+                finishGameRef.current(false, g.score);
                 return;
               }
             }
@@ -645,7 +649,7 @@ export const PokiSushiPartyGame: React.FC<PokiSushiPartyGameProps> = ({
 
         // 목표 길이(50 이상) 달성 시 1위 챔피언 승리!
         if (g.length >= 50) {
-          finishGame(true, g.score + 1000);
+          finishGameRef.current(true, g.score + 1000);
           return;
         }
 
@@ -701,7 +705,7 @@ export const PokiSushiPartyGame: React.FC<PokiSushiPartyGameProps> = ({
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, cardId, isPlaying, finishGame, playSfx, triggerHaptic]);
+  }, [lowSpecMode, cardId]);
 
   // 플로팅 조이스틱 터치 인터랙션
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -805,7 +809,7 @@ export const PokiSushiPartyGame: React.FC<PokiSushiPartyGameProps> = ({
       <MinimalistMissionHUD
         gameTitle="Sushi Party 3D"
         score={score}
-        onQuit={() => finishGame(false, score)}
+        onQuit={() => finishGameRef.current(false, score)}
       />
 
       {/* 실시간 게임 스탯 오버레이 */}

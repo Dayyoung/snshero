@@ -328,7 +328,7 @@ export const PokiSuperDressGame: React.FC<PokiSuperDressGameProps> = ({
       }
       renderer.dispose();
     };
-  }, [gameWon, gameOver]);
+  }, []);
 
   // 3D Item Builders
   const buildHair = (index: number) => {

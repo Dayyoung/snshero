@@ -54,6 +54,18 @@ export const PokiStuntBikeExtremeGame: React.FC<PokiStuntBikeExtremeGameProps> =
   const [leanBack, setLeanBack] = useState(false);
   const [leanFwd, setLeanFwd] = useState(false);
 
+  const throttleRef = useRef(false);
+  throttleRef.current = throttle;
+  const brakeRef = useRef(false);
+  brakeRef.current = brake;
+  const leanBackRef = useRef(false);
+  leanBackRef.current = leanBack;
+  const leanFwdRef = useRef(false);
+  leanFwdRef.current = leanFwd;
+  const isPlayingRef = useRef(false);
+  isPlayingRef.current = isPlaying;
+  const finishGameRef = useRef<(won: boolean, finalScore: number) => void>(() => {});
+
   // 햅틱 유틸
   const triggerHaptic = useCallback((ms: number | number[] = 15) => {
     if (typeof window !== 'undefined' && 'vibrate' in navigator) {
@@ -156,6 +168,7 @@ export const PokiStuntBikeExtremeGame: React.FC<PokiStuntBikeExtremeGameProps> =
     if (won) playSfx?.('victory');
     else playSfx?.('defeat');
   }, [triggerHaptic, playSfx]);
+  finishGameRef.current = finishGame;
 
   // Three.js 씬 구축
   useEffect(() => {
@@ -452,7 +465,7 @@ export const PokiStuntBikeExtremeGame: React.FC<PokiStuntBikeExtremeGameProps> =
           g.totalAirRotation = 0;
 
           // 스로틀 가속
-          if (throttle) {
+          if (throttleRef.current) {
             g.vx = Math.min(22.0, g.vx + 16.0 * dt);
             triggerHaptic(12);
 
@@ -471,7 +484,7 @@ export const PokiStuntBikeExtremeGame: React.FC<PokiStuntBikeExtremeGameProps> =
                 maxLife: 0.4,
               });
             }
-          } else if (brake) {
+          } else if (brakeRef.current) {
             g.vx = Math.max(0, g.vx - 22.0 * dt);
             triggerHaptic(18);
           } else {
@@ -480,8 +493,8 @@ export const PokiStuntBikeExtremeGame: React.FC<PokiStuntBikeExtremeGameProps> =
           }
 
           // 지면 위 틸트 (앞바퀴 들림 윌리 / 뒷바퀴 들림)
-          if (leanBack) g.angle += 1.8 * dt;
-          if (leanFwd) g.angle -= 1.8 * dt;
+          if (leanBackRef.current) g.angle += 1.8 * dt;
+          if (leanFwdRef.current) g.angle -= 1.8 * dt;
 
           // 전복(크래시) 판정
           const angleDiff = Math.abs(g.angle - groundSlopeAngle);
@@ -499,8 +512,8 @@ export const PokiStuntBikeExtremeGame: React.FC<PokiStuntBikeExtremeGameProps> =
           g.vy -= 24.0 * dt; // 중력
 
           // 공중 틸트 회전 조작 (플립 묘기)
-          if (leanBack) g.angularVel += 5.5 * dt;
-          if (leanFwd) g.angularVel -= 5.5 * dt;
+          if (leanBackRef.current) g.angularVel += 5.5 * dt;
+          if (leanFwdRef.current) g.angularVel -= 5.5 * dt;
           g.angle += g.angularVel * dt;
 
           // 공중 360° 플립 누적 계산
@@ -544,7 +557,7 @@ export const PokiStuntBikeExtremeGame: React.FC<PokiStuntBikeExtremeGameProps> =
 
         // 결승선 골인 판정
         if (g.x >= g.finishX) {
-          finishGame(true, g.score + 1000);
+          finishGameRef.current(true, g.score + 1000);
           return;
         }
 
@@ -603,7 +616,7 @@ export const PokiStuntBikeExtremeGame: React.FC<PokiStuntBikeExtremeGameProps> =
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, cardId, isPlaying, finishGame, playSfx, triggerHaptic, throttle, brake, leanBack, leanFwd]);
+  }, [lowSpecMode, cardId]);
 
   // 키보드 조작 (PC 백업)
   useEffect(() => {
@@ -636,7 +649,7 @@ export const PokiStuntBikeExtremeGame: React.FC<PokiStuntBikeExtremeGameProps> =
       <MinimalistMissionHUD
         gameTitle="Stunt Bike Extreme 3D"
         score={score}
-        onQuit={() => finishGame(false, score)}
+        onQuit={() => finishGameRef.current(false, score)}
       />
 
       {/* 상단 레이스 계기판 오버레이 */}

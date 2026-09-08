@@ -198,7 +198,7 @@ export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
       triggerHaptic(20);
       if (playSfx) playSfx('/sfx/jump.mp3');
     }
-  }, [playSfx, triggerHaptic]);
+  }, [lowSpecMode, playerHeroId]);
 
   // Three.js Scene Setup & Main Loop
   useEffect(() => {
@@ -816,7 +816,7 @@ export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
       renderer.dispose();
       sceneRef.current = null;
     };
-  }, [handleGameOver, handleJump, lowSpecMode, playerHeroId, playSfx, triggerHaptic]);
+  }, [lowSpecMode, playerHeroId]);
 
   // Touch Screen Dynamic Joystick Event Handlers
   const handleTouchStart = (e: React.TouchEvent) => {

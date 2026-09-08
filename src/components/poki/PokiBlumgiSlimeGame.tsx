@@ -118,7 +118,7 @@ export const PokiBlumgiSlimeGame: React.FC<PokiBlumgiSlimeGameProps> = ({ onBack
     physics.current.isCharging = true;
     setIsCharging(true);
     triggerHaptic(25);
-  }, [gameWon]);
+  }, []);
 
   // 점프 발사
   const releaseJump = useCallback(() => {
@@ -139,7 +139,7 @@ export const PokiBlumgiSlimeGame: React.FC<PokiBlumgiSlimeGameProps> = ({ onBack
     showToast(`🟢 SLIME JUMP! (${Math.round(charge * 100)}% POWER)`);
     phys.charge = 0;
     setChargePct(0);
-  }, [gameWon]);
+  }, []);
 
   // 안전 체크포인트 복귀
   const returnToSafePos = useCallback(() => {
@@ -491,7 +491,7 @@ export const PokiBlumgiSlimeGame: React.FC<PokiBlumgiSlimeGameProps> = ({ onBack
       }
       renderer.dispose();
     };
-  }, [returnToSafePos, gameWon]);
+  }, []);
 
   // 포기 시 보상 정산
   const handleForfeit = () => {

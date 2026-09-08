@@ -53,6 +53,9 @@ export const PokiSliceMasterGame: React.FC<PokiSliceMasterGameProps> = ({
   // UI 상태
   const [showTutorial, setShowTutorial] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
+  const isPlayingRef = useRef(false);
+  isPlayingRef.current = isPlaying;
+  const finishGameRef = useRef<(won: boolean, finalScore: number) => void>(() => {});
   const [score, setScore] = useState(0);
   const [combo, setCombo] = useState(0);
   const [slicedCount, setSlicedCount] = useState(0);
@@ -111,7 +114,7 @@ export const PokiSliceMasterGame: React.FC<PokiSliceMasterGameProps> = ({
 
     triggerHaptic(20);
     playSfx?.('whoosh');
-  }, [triggerHaptic, playSfx]);
+  }, [lowSpecMode, cardId]);
 
   // 게임 종료 및 정산
   const finishGame = useCallback((won: boolean, finalScore: number) => {
@@ -134,7 +137,8 @@ export const PokiSliceMasterGame: React.FC<PokiSliceMasterGameProps> = ({
     triggerHaptic(won ? [50, 100, 150] : [150, 80]);
     if (won) playSfx?.('victory');
     else playSfx?.('defeat');
-  }, [triggerHaptic, playSfx]);
+  }, [lowSpecMode, cardId]);
+  finishGameRef.current = finishGame;
 
   // Three.js 초기화
   useEffect(() => {
@@ -435,7 +439,7 @@ export const PokiSliceMasterGame: React.FC<PokiSliceMasterGameProps> = ({
 
           // 트랙 아래로 추락 판정 (Y < -2.0)
           if (g.y < -2.0) {
-            finishGame(false, g.score);
+            finishGameRef.current(false, g.score);
             return;
           }
 
@@ -451,7 +455,7 @@ export const PokiSliceMasterGame: React.FC<PokiSliceMasterGameProps> = ({
                 // 스파이크 접촉 실패!
                 triggerHaptic([100, 150]);
                 playSfx?.('defeat');
-                finishGame(false, g.score);
+                finishGameRef.current(false, g.score);
                 return;
               }
 
@@ -503,7 +507,7 @@ export const PokiSliceMasterGame: React.FC<PokiSliceMasterGameProps> = ({
             const finalScore = g.score * mult;
             setScore(finalScore);
             g.stuck = true;
-            finishGame(true, finalScore);
+            finishGameRef.current(true, finalScore);
             return;
           }
         }
@@ -576,7 +580,7 @@ export const PokiSliceMasterGame: React.FC<PokiSliceMasterGameProps> = ({
         container.removeChild(renderer.domElement);
       }
     };
-  }, [lowSpecMode, cardId, isPlaying, finishGame, playSfx, triggerHaptic]);
+  }, [lowSpecMode, cardId]);
 
   // 키보드 조작 (Space / Click)
   useEffect(() => {
@@ -591,7 +595,7 @@ export const PokiSliceMasterGame: React.FC<PokiSliceMasterGameProps> = ({
 
   // 화면 터치 탭 플립
   const handleScreenTap = () => {
-    if (isPlaying) {
+    if (isPlayingRef.current) {
       handleFlip();
     }
   };
@@ -608,7 +612,7 @@ export const PokiSliceMasterGame: React.FC<PokiSliceMasterGameProps> = ({
       <MinimalistMissionHUD
         gameTitle="Slice Master 3D"
         score={score}
-        onQuit={() => finishGame(false, score)}
+        onQuit={() => finishGameRef.current(false, score)}
       />
 
       {/* 상단 통계 & 콤보 오버레이 */}

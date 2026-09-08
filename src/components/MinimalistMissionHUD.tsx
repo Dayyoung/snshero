@@ -105,6 +105,7 @@ export const MinimalistMissionHUD: React.FC<MinimalistMissionHUDProps> = ({
     window.history.pushState({ missionInGame: true }, '');
 
     const handlePopState = () => {
+      if (Date.now() - startTimeRef.current < 450) return;
       // Open exit confirmation modal instead of popping back to home
       setShowExitConfirm(true);
       // Re-push so future back presses remain trapped inside game
@@ -114,6 +115,7 @@ export const MinimalistMissionHUD: React.FC<MinimalistMissionHUDProps> = ({
     const handleGlobalBack = (e: Event) => {
       // Prevent App.tsx from executing onBackFromGame (which exits to home)
       e.preventDefault();
+      if (Date.now() - startTimeRef.current < 450) return;
       setShowExitConfirm(true);
     };
 
@@ -125,8 +127,11 @@ export const MinimalistMissionHUD: React.FC<MinimalistMissionHUDProps> = ({
     };
   }, []);
 
-  // Exit trigger handler
+  // Exit trigger handler (450ms ghost click protection on mobile)
   const handleExitClick = () => {
+    if (Date.now() - startTimeRef.current < 450) {
+      return;
+    }
     setShowExitConfirm(true);
   };
 
