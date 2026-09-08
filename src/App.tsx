@@ -5809,7 +5809,7 @@ function AppContent() {
         {!isAdRemoved && view !== 'landing' && (
           <aside 
             aria-label="Google AdSense Left Wing"
-            className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-16 mr-2 xl:mr-3 z-[10002] pointer-events-auto"
+            className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-16 mr-2 xl:mr-3 z-30 pointer-events-auto"
           >
             <div className="w-full bg-[#fdfcfc]/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 p-1.5 shadow-xs rounded-none">
               <AdSenseBanner 
@@ -5925,7 +5925,7 @@ function AppContent() {
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                     setIsMenuOpen(false);
                   }}
-                  className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[10000] cursor-pointer"
+                  className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[50000] cursor-pointer"
                 />
                 {/* Menu content panel */}
                 <motion.div
@@ -5933,7 +5933,7 @@ function AppContent() {
                   animate={{ x: 0 }}
                   exit={{ x: '100%' }}
                   transition={{ type: 'spring', damping: 28, stiffness: 220 }}
-                  className="fixed top-0 right-0 h-full w-[280px] sm:w-[320px] bg-white/96 backdrop-blur-xl border-l border-slate-200/80 z-[10001] flex flex-col shadow-[-10px_0_30px_rgba(0,0,0,0.08)] font-sans text-slate-800 p-5 select-none overflow-y-auto"
+                  className="fixed top-0 right-0 h-full w-[280px] sm:w-[320px] bg-white/96 backdrop-blur-xl border-l border-slate-200/80 z-[50001] flex flex-col shadow-[-10px_0_30px_rgba(0,0,0,0.08)] font-sans text-slate-800 p-5 select-none overflow-y-auto"
                 >
                   {/* Header */}
                   <div className="flex items-center justify-between border-b border-slate-100 pb-4 shrink-0 mb-6">
@@ -7614,7 +7614,7 @@ function AppContent() {
         {!isAdRemoved && view !== 'landing' && (
           <aside 
             aria-label="Google AdSense Right Wing"
-            className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-16 ml-2 xl:ml-3 z-[10002] pointer-events-auto"
+            className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-16 ml-2 xl:ml-3 z-30 pointer-events-auto"
           >
             <div className="w-full bg-[#fdfcfc]/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 p-1.5 shadow-xs rounded-none">
               <AdSenseBanner 
