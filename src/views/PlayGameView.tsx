@@ -13424,7 +13424,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       const charEnMatches = charCard?.title_en ? charCard.title_en.toLowerCase().includes(query) : false;
       const charElemMatches = charCard?.element ? charCard.element.toLowerCase().includes(query) : false;
       const numberMatches = query === String(cardIndex) || query === `no.${cardIndex}` || query === `no.${String(cardIndex).padStart(2, '0')}` || query === `#${cardIndex}`;
-      return titleMatches || guideMatches || charKoMatches || charEnMatches || charElemMatches || numberMatches;
+      const battleTitleKo = `${charCard?.title || ''} 와 대결`.toLowerCase();
+      const battleTitleEn = `Battle vs ${charCard?.title_en || ''}`.toLowerCase();
+      const battleMatches = battleTitleKo.includes(query) || battleTitleEn.includes(query) || query === '대결' || query === 'battle';
+      return titleMatches || guideMatches || charKoMatches || charEnMatches || charElemMatches || numberMatches || battleMatches;
     });
 
 
@@ -13659,6 +13662,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 // Card Ownership & Quantity
                 const ownedCount = (inventory && inventory[cardIndex]?.quantity) || (typeof window !== 'undefined' ? (JSON.parse(localStorage.getItem('hero_inventory') || '{}')[cardIndex]?.quantity || 0) : 0);
                 const isOwned = ownedCount > 0;
+                const battleTitle = language === 'ko' ? `${charName} 와 대결` : `Battle vs ${charName}`;
 
                 return (
                   <motion.div
@@ -13685,29 +13689,44 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         }
                       }}
                       className={cn(
-                        "w-full min-h-[180px] sm:min-h-[220px] bg-[#14121e] rounded-sm transition-all flex flex-col overflow-hidden group cursor-pointer text-left relative",
+                        "w-full min-h-[185px] sm:min-h-[225px] rounded-sm transition-all flex flex-col overflow-hidden group cursor-pointer text-left relative",
                         isOwned 
-                          ? "border-2 border-emerald-500 shadow-[0_0_14px_rgba(16,185,129,0.35)]" 
-                          : "border border-slate-800 hover:border-amber-400/80 hover:shadow-md"
+                          ? "bg-gradient-to-b from-[#0a261c] via-[#111923] to-[#0d1620] border-2 border-emerald-400 shadow-[0_0_24px_rgba(16,185,129,0.5),inset_0_0_12px_rgba(16,185,129,0.2)] ring-2 ring-emerald-400/60 scale-[1.01]" 
+                          : "bg-[#12101b] border border-slate-800/80 opacity-75 hover:opacity-100 hover:border-amber-400/80 hover:shadow-md transition-opacity grayscale-[20%] hover:grayscale-0"
                       )}
-                      aria-label={`${m.title} - No.${cardNumFormatted} ${charName} (${isOwned ? `보유 ${ownedCount}장` : '미보유'})`}
+                      aria-label={`${battleTitle} - No.${cardNumFormatted} ${charName} (${isOwned ? `보유 ${ownedCount}장` : '미보유'})`}
                     >
+                      {/* Prominent Floating Ribbon Badge for Owned Cards */}
+                      {isOwned && (
+                        <div className="absolute top-0 right-0 z-30 bg-gradient-to-l from-emerald-500 to-teal-500 text-slate-950 font-black text-[8px] sm:text-[9px] px-2 py-0.5 rounded-bl-sm shadow-md flex items-center gap-1 tracking-tight border-b border-l border-emerald-300">
+                          <Sparkles size={10} className="fill-current text-slate-950 animate-pulse" />
+                          <span>{language === 'ko' ? `보유 ${ownedCount}장` : `Own: ${ownedCount}`}</span>
+                        </div>
+                      )}
+
                       {/* TCG Card Header Bar */}
-                      <div className="px-1.5 sm:px-2.5 py-1 sm:py-1.5 bg-slate-950/90 border-b border-slate-800/90 flex items-center justify-between gap-1 text-[9px] sm:text-[10px] text-white">
+                      <div className={cn(
+                        "px-1.5 sm:px-2.5 py-1 sm:py-1.5 border-b flex items-center justify-between gap-1 text-[9px] sm:text-[10px] text-white",
+                        isOwned ? "bg-emerald-950/90 border-emerald-500/50" : "bg-slate-950/90 border-slate-800/90"
+                      )}>
                         <div className="flex items-center gap-1 sm:gap-1.5 truncate">
-                          <span className="font-black text-amber-400 bg-amber-400/10 border border-amber-400/25 px-1 py-0.2 rounded-xs tracking-tight shrink-0 text-[8px] sm:text-[9px]">
+                          <span className={cn(
+                            "font-black px-1 py-0.2 rounded-xs tracking-tight shrink-0 text-[8px] sm:text-[9px]",
+                            isOwned 
+                              ? "text-emerald-300 bg-emerald-400/20 border border-emerald-400/40" 
+                              : "text-amber-400 bg-amber-400/10 border border-amber-400/25"
+                          )}>
                             No.{cardNumFormatted}
                           </span>
-                          <span className="text-[8px] sm:text-[9px] text-slate-400 font-semibold truncate">
+                          <span className={cn(
+                            "text-[8px] sm:text-[9px] truncate",
+                            isOwned ? "text-emerald-100 font-bold" : "text-slate-400 font-semibold"
+                          )}>
                             {charName}
                           </span>
                         </div>
-                        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
-                          {isOwned ? (
-                            <span className="text-[8px] sm:text-[9px] font-black text-emerald-400 bg-emerald-950/90 border border-emerald-500/70 px-1 py-0.2 rounded-xs flex items-center gap-0.5">
-                              {language === 'ko' ? `보유: ${ownedCount}장` : `Own: ${ownedCount}`}
-                            </span>
-                          ) : (
+                        <div className={cn("flex items-center gap-0.5 sm:gap-1 shrink-0", isOwned ? "mr-16 sm:mr-20" : "")}>
+                          {!isOwned && (
                             <span className="text-[7px] sm:text-[8px] font-bold text-amber-300 bg-amber-950/80 border border-amber-500/50 px-1 py-0.2 rounded-xs">
                               {language === 'ko' ? '도전 목표' : 'Target'}
                             </span>
@@ -13725,9 +13744,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       </div>
 
                       {/* Character Card Portrait Box */}
-                      <div className="flex-1 flex items-center justify-center p-1.5 sm:p-3 relative overflow-hidden h-32 sm:h-44 md:h-48 min-h-[120px] sm:min-h-[160px] bg-gradient-to-b from-slate-900 via-[#131024] to-[#0a0814]">
-                        {/* Background Subtle Ink Grid */}
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(99,102,241,0.18),transparent_70%)] pointer-events-none" />
+                      <div className={cn(
+                        "flex-1 flex items-center justify-center p-1.5 sm:p-3 relative overflow-hidden h-32 sm:h-44 md:h-48 min-h-[120px] sm:min-h-[160px]",
+                        isOwned 
+                          ? "bg-gradient-to-b from-[#0a261c] via-[#0d1e22] to-[#071318]" 
+                          : "bg-gradient-to-b from-slate-900 via-[#131024] to-[#0a0814]"
+                      )}>
+                        {/* Background Subtle Ink Grid & Glow */}
+                        <div className={cn(
+                          "absolute inset-0 pointer-events-none",
+                          isOwned 
+                            ? "bg-[radial-gradient(circle_at_50%_40%,rgba(16,185,129,0.35),transparent_70%)]" 
+                            : "bg-[radial-gradient(circle_at_50%_40%,rgba(99,102,241,0.18),transparent_70%)]"
+                        )} />
                         
                         {charCard ? (
                           <MissionCharacterPortrait cardId={charCard.id} name={charName} language={language} className="w-full h-full" />
@@ -13737,11 +13766,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
                         {/* Bottom Overlay Label inside Card Art */}
                         <div className="absolute bottom-1 left-1 right-1 flex items-center justify-between pointer-events-none z-30 gap-1">
-                          <div className="bg-black/85 backdrop-blur-xs border border-white/15 px-1 py-0.5 rounded-xs text-[8px] sm:text-[9px] text-white font-bold truncate max-w-[70%] shadow-sm">
+                          <div className={cn(
+                            "backdrop-blur-xs border px-1 py-0.5 rounded-xs text-[8px] sm:text-[9px] font-bold truncate max-w-[70%] shadow-sm",
+                            isOwned 
+                              ? "bg-black/90 border-emerald-500/50 text-emerald-200" 
+                              : "bg-black/85 border-white/15 text-white"
+                          )}>
                             #{cardNumFormatted} {charName}
                           </div>
                           {isOwned ? (
-                            <div className="bg-emerald-500 text-slate-950 font-black px-1.5 py-0.5 rounded-xs text-[7px] sm:text-[8px] uppercase tracking-wider shadow-sm shrink-0 flex items-center gap-0.5">
+                            <div className="bg-emerald-400 text-slate-950 font-black px-1.5 py-0.5 rounded-xs text-[7px] sm:text-[8px] uppercase tracking-wider shadow-sm shrink-0 flex items-center gap-0.5">
                               ✓ {language === 'ko' ? `보유 ${ownedCount}장` : `Owned (${ownedCount})`}
                             </div>
                           ) : m.badgeText ? (
@@ -13753,10 +13787,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       </div>
 
                       {/* Game Title & Mission Info Bar */}
-                      <div className="p-1.5 sm:p-2.5 bg-slate-950 border-t border-slate-800 flex flex-col gap-1 sm:gap-1.5">
+                      <div className={cn(
+                        "p-1.5 sm:p-2.5 border-t flex flex-col gap-1 sm:gap-1.5",
+                        isOwned ? "bg-[#0b241c] border-emerald-500/40" : "bg-slate-950 border-slate-800"
+                      )}>
                         <div className="flex items-center justify-between gap-1">
-                          <span className="flex-1 text-left font-black text-[10px] sm:text-xs text-white truncate drop-shadow-xs">
-                            {m.title}
+                          <span className={cn(
+                            "flex-1 text-left font-black text-[10px] sm:text-xs truncate drop-shadow-xs",
+                            isOwned ? "text-emerald-200 font-extrabold" : "text-white"
+                          )}>
+                            {battleTitle}
                           </span>
                           <button
                             onClick={(e) => {
@@ -13764,19 +13804,30 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                               playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                               setGuideMode(m);
                             }}
-                            className="w-5 h-5 sm:w-6 sm:h-6 rounded-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition-all flex items-center justify-center cursor-pointer text-[9px] sm:text-[10px] font-black shrink-0"
+                            className={cn(
+                              "w-5 h-5 sm:w-6 sm:h-6 rounded-xs border transition-all flex items-center justify-center cursor-pointer text-[9px] sm:text-[10px] font-black shrink-0",
+                              isOwned 
+                                ? "bg-emerald-950 hover:bg-emerald-900 border-emerald-600/60 text-emerald-200" 
+                                : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300 hover:text-white"
+                            )}
                             aria-label={language === 'ko' ? '설명 보기' : 'Show Description'}
                           >
                             ?
                           </button>
                         </div>
-                        <div className="flex items-center justify-between text-[9px] sm:text-[10px] text-slate-400">
+                        <div className="flex items-center justify-between text-[9px] sm:text-[10px]">
                           <span className="truncate text-slate-400 text-[8px] sm:text-[9px]">
-                            ✦ <strong className="text-slate-200 font-bold">{charName}</strong>
+                            ✦ <strong className={isOwned ? "text-emerald-300 font-bold" : "text-slate-200 font-bold"}>{charName}</strong>
                           </span>
-                          <span className="text-emerald-400 font-bold shrink-0 text-[8px] sm:text-[9px] flex items-center gap-0.5">
-                            {language === 'ko' ? '카드 대결' : 'Card Battle'} <ChevronRight size={10} className="inline text-slate-500 group-hover:translate-x-0.5 transition-transform" />
-                          </span>
+                          {isOwned ? (
+                            <span className="text-emerald-300 font-black shrink-0 text-[8px] sm:text-[9px] flex items-center gap-0.5 bg-emerald-950/90 border border-emerald-500/60 px-1.5 py-0.5 rounded-xs shadow-xs">
+                              {language === 'ko' ? '잠재력 강화' : 'Enhance'} <ChevronRight size={10} className="inline text-emerald-400 group-hover:translate-x-0.5 transition-transform" />
+                            </span>
+                          ) : (
+                            <span className="text-amber-300 font-bold shrink-0 text-[8px] sm:text-[9px] flex items-center gap-0.5 bg-amber-950/80 border border-amber-500/50 px-1 py-0.2 rounded-xs">
+                              {language === 'ko' ? '카드 획득' : 'Obtain'} <ChevronRight size={10} className="inline text-amber-400 group-hover:translate-x-0.5 transition-transform" />
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
