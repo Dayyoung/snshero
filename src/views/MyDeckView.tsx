@@ -23,7 +23,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { CardItem } from '../components/CardItem';
 import { ArDeckViewer } from '../components/ArDeckViewer';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ChevronLeft, ChevronRight, HelpCircle, Trophy, Info, Zap, Package, Shield, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Gift, Star as StarIcon, Edit2, Plus, Gem, Footprints, Sparkles, Share2, Camera, BookOpen, Users, PawPrint, Trash2, Layers, Lock, Search, Flame } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, HelpCircle, Trophy, Info, Zap, Package, Shield, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Gift, Star as StarIcon, Edit2, Plus, Gem, Footprints, Sparkles, Share2, Camera, BookOpen, Users, PawPrint, Trash2, Layers, Lock, Search, Flame, Swords } from 'lucide-react';
 import { CardDisassembleModal } from '../components/CardDisassembleModal';
 import { ElementAdvantageModal } from '../components/ElementAdvantageModal';
 import { useCardLock } from '../hooks/useCardLock';
@@ -282,6 +282,28 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [helpStep, setHelpStep] = useState(0);
   const { isLocked } = useCardLock();
+
+  const kadanCard = CARD_DATABASE[41];
+  const kadanName = kadanCard ? (language === 'ko' ? kadanCard.title : kadanCard.title_en) : 'Kadan';
+  const kadanCardData: CardData = useMemo(() => {
+    const dbCard = CARD_DATABASE[41];
+    return {
+      id: '41',
+      title: dbCard?.title || '카단',
+      title_en: dbCard?.title_en || 'Kadan',
+      title_dis: dbCard?.title_dis,
+      stats: dbCard?.stats || [2, 3, 1, 5],
+      power: dbCard?.power || 11,
+      rarity: dbCard?.rarity || 'bronze',
+      element: dbCard?.element || 'human',
+      race: dbCard?.race,
+      imageIndex: 41,
+      imageUrl: dbCard?.imageUrl,
+      level: 1,
+      skills: [],
+      owner: null,
+    };
+  }, []);
 
   const season = currentSeason || 'season1';
 
@@ -1242,6 +1264,48 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           sns={sns}
         />
       )}
+
+      {/* 랭킹대전 배너 버튼 */}
+      <button
+        onClick={() => {
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+          onNavigate('ranking');
+        }}
+        className="relative w-full overflow-hidden rounded-lg border border-slate-200 bg-slate-950 text-left shadow-sm transition-all hover:border-indigo-300 hover:shadow-md cursor-pointer"
+        aria-label={t('mission_ranking_banner_cta', language)}
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.24),transparent_32%),linear-gradient(135deg,rgba(15,23,42,0.96),rgba(67,56,202,0.92),rgba(14,165,233,0.70))]" />
+        <div className="relative flex min-h-[132px] items-stretch gap-3 p-3 sm:min-h-[150px] sm:p-4">
+          <div className="w-[112px] shrink-0 overflow-hidden rounded-lg border border-white/20 bg-white/10 sm:w-[140px] flex items-center justify-center p-1">
+            <div className="relative flex h-full w-full items-center justify-center p-0" title={kadanName}>
+              <CardItem
+                card={kadanCardData}
+                className="w-24 h-34 sm:w-28 sm:h-38 rounded-lg shadow-lg pointer-events-none transform group-hover:scale-105 transition-transform duration-300"
+                language={language}
+                hideStats={false}
+              />
+            </div>
+          </div>
+          <div className="flex min-w-0 flex-1 flex-col justify-center gap-2 py-1 text-white">
+            <div className="inline-flex w-fit items-center gap-1.5 rounded-md border border-white/15 bg-white/10 px-2 py-1 text-[10px] font-black uppercase tracking-wider text-cyan-100">
+              <Swords size={12} />
+              {t('ranking_battle', language)}
+            </div>
+            <div>
+              <h2 className="text-lg font-black leading-tight sm:text-2xl">
+                {t('mission_ranking_banner_title', language)}
+              </h2>
+              <p className="mt-1 line-clamp-2 text-xs font-semibold leading-relaxed text-slate-100/85 sm:text-sm">
+                {t('mission_ranking_banner_desc', language)}
+              </p>
+            </div>
+            <div className="inline-flex min-h-[36px] w-fit items-center gap-2 rounded-md bg-white px-3 py-2 text-xs font-black text-slate-950 shadow-sm">
+              {t('mission_ranking_banner_cta', language)}
+              <ChevronRight size={14} />
+            </div>
+          </div>
+        </div>
+      </button>
 
       <div className="ollama-panel space-y-4 sm:space-y-6">
         <h3 className="font-bold flex items-center gap-2 tracking-normal text-xs sm:text-sm underline decoration-2">
