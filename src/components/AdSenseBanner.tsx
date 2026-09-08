@@ -12,6 +12,7 @@ interface AdSenseBannerProps {
   className?: string;
   style?: React.CSSProperties;
   showLabel?: boolean;
+  isAdRemoved?: boolean;
 }
 
 export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
@@ -21,7 +22,13 @@ export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
   className = '',
   style = {},
   showLabel = false,
+  isAdRemoved = false,
 }) => {
+  const isActuallyAdRemoved = isAdRemoved || (typeof window !== 'undefined' && localStorage.getItem('hero_ad_removed') === 'true');
+  if (isActuallyAdRemoved) {
+    return null;
+  }
+
   const insRef = useRef<HTMLModElement>(null);
   const isLoadedRef = useRef(false);
 

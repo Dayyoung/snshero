@@ -272,6 +272,7 @@ const PayPalButtonWrapper = ({ item, updateSns, playSfx, setSuccessVisible, setS
                 if (setCountryModalOpen) setCountryModalOpen(false);
                 if (onSuccess) onSuccess();
               } else if (item.isAdRemoval && setIsAdRemoved) {
+                localStorage.setItem('hero_ad_removed', 'true');
                 setIsAdRemoved(true);
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
                 setSuccessVisible({ isAdRemoval: true });
@@ -1469,6 +1470,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
       }
 
       if (successAmount === 'ad_removal') {
+        localStorage.setItem('hero_ad_removed', 'true');
         if (setIsAdRemoved) setIsAdRemoved(true);
         playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
         setSuccessVisible({ isAdRemoval: true });
@@ -1567,6 +1569,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
       console.log('[Native In-App Purchase Success]:', sku);
       
       if (sku === 'ad_removal') {
+        localStorage.setItem('hero_ad_removed', 'true');
         if (setIsAdRemoved) setIsAdRemoved(true);
         setSuccessVisible({ isAdRemoval: true });
       } else if (sku.startsWith('snshero_points_')) {
@@ -3612,9 +3615,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   id="shop-pack-remove-ads-btn"
                   disabled={isAdRemoved}
                   onClick={() => {
+                    if (isAdRemoved) return;
                     if (sns >= adRemovalCost) {
                       updateSns(-adRemovalCost, 'ad_removal_purchase');
                       if (setIsAdRemoved) setIsAdRemoved(true);
+                      try {
+                        localStorage.setItem('hero_ad_removed', 'true');
+                      } catch {}
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
                       setSuccessVisible({ isAdRemoval: true });
                     } else {
@@ -3623,18 +3630,18 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     }
                   }}
                   className={cn(
-                    'min-h-[44px] h-auto w-full rounded-xl border px-3 py-2.5 text-left shadow-sm transition-all touch-target flex items-center justify-between gap-1 overflow-hidden cursor-pointer',
+                    'min-h-[44px] h-auto w-full rounded-xl border px-3 py-2.5 text-left shadow-sm transition-all touch-target flex items-center justify-between gap-1 overflow-hidden',
                     isAdRemoved
-                      ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400'
-                      : 'border-blue-600 bg-blue-600 text-white hover:border-blue-500 hover:bg-blue-500 active:scale-95'
+                      ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400 opacity-80 pointer-events-none'
+                      : 'border-blue-600 bg-blue-600 text-white hover:border-blue-500 hover:bg-blue-500 active:scale-95 cursor-pointer'
                   )}
                 >
                   <span className="min-w-0 leading-tight flex-1">
-                    <span className="block text-[10px] uppercase tracking-[0.05em] text-white/80 truncate">
-                      {isAdRemoved ? (language === 'ko' ? '구매 완료' : 'Owned') : (language === 'ko' ? '광고 제거 구매' : 'Buy Ad-Free')}
+                    <span className="block text-[10px] uppercase tracking-[0.05em] text-white/80 truncate font-mono">
+                      {isAdRemoved ? (language === 'ko' ? '구매 완료 (광고 제거 적용 중)' : 'Owned (Ad-Free Active)') : (language === 'ko' ? '광고 제거 구매' : 'Buy Ad-Free')}
                     </span>
-                    <span className="text-sm font-black truncate block">
-                      {isAdRemoved ? '✓' : `${adRemovalCost.toLocaleString()} SNS`}
+                    <span className="text-sm font-black truncate block font-mono">
+                      {isAdRemoved ? '✓ ACTIVATED' : `${adRemovalCost.toLocaleString()} SNS`}
                     </span>
                   </span>
                   {!isAdRemoved && <ArrowRight size={16} className="shrink-0 opacity-80 ml-1" />}
@@ -3796,46 +3803,64 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 { amount: 10000, price: "10.00", krwPrice: "14000", label: "10,000 P (SNS)", sku: "snshero_points_10000" },
                 { amount: 50000, price: "100.00", krwPrice: "140000", label: "50,000 P (SNS)", sku: "snshero_points_50000" },
                 { amount: 0, price: "2.99", krwPrice: "4000", label: language === 'ko' ? "광고 제거 패키지" : "Ad Removal Package", isAdRemoval: true, sku: "ad_removal" },
-              ].map((item: any) => (
-                <div key={item.label} className="bg-white p-5 sm:p-6 md:p-8 flex flex-col justify-between gap-5 sm:gap-6 md:gap-8 border border-slate-100 hover:border-slate-200 transition-all shadow-sm hover:shadow-md rounded-2xl h-full">
-                  <div className="flex flex-col gap-4">
-                    <div className="flex justify-between items-start">
-                      <Zap size={20} className="sm:w-6 sm:h-6 text-yellow-500 animate-pulse" />
-                      <div className="text-right">
-                        <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-1">
-                          {t('unit_price', language)}
+              ].map((item: any) => {
+                const isOwnedAdRemoval = Boolean(item.isAdRemoval && isAdRemoved);
+                return (
+                  <div
+                    key={item.label}
+                    className={cn(
+                      "p-5 sm:p-6 md:p-8 flex flex-col justify-between gap-5 sm:gap-6 md:gap-8 border transition-all shadow-sm rounded-2xl h-full",
+                      isOwnedAdRemoval ? "bg-slate-50 border-slate-200" : "bg-white border-slate-100 hover:border-slate-200 hover:shadow-md"
+                    )}
+                  >
+                    <div className="flex flex-col gap-4">
+                      <div className="flex justify-between items-start">
+                        <Zap size={20} className={cn("sm:w-6 sm:h-6", isOwnedAdRemoval ? "text-slate-400" : "text-yellow-500 animate-pulse")} />
+                        <div className="text-right">
+                          <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-1">
+                            {t('unit_price', language)}
+                          </p>
+                          <p className="text-xl sm:text-2xl font-bold tracking-tighter text-slate-800 font-mono">${item.price} USD</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <h4 className="font-bold text-base sm:text-lg tracking-tight text-slate-800">{item.label}</h4>
+                        <p className="text-[9px] sm:text-[10px] text-slate-500 font-semibold tracking-widest uppercase whitespace-pre-line leading-relaxed font-mono">
+                          {item.isAdRemoval 
+                            ? (isOwnedAdRemoval
+                                ? (language === 'ko' ? '광고 영구 제거 적용 완료 (재구매 불가)' : 'PERMANENT AD REMOVAL (OWNED)')
+                                : (language === 'ko' ? '광고 영구 제거 패키지' : 'PERMANENT AD REMOVAL'))
+                            : `${item.amount.toLocaleString()} ${t('sns_unit_recharge', language)} ${item.bonus ? `(+${item.bonus}%)` : ""}`}
                         </p>
-                        <p className="text-xl sm:text-2xl font-bold tracking-tighter text-slate-800">${item.price} USD</p>
                       </div>
                     </div>
 
-                    <div className="space-y-1">
-                      <h4 className="font-bold text-base sm:text-lg tracking-tight text-slate-800">{item.label}</h4>
-                      <p className="text-[9px] sm:text-[10px] text-slate-500 font-semibold tracking-widest uppercase whitespace-pre-line leading-relaxed">
-                        {item.isAdRemoval 
-                          ? (language === 'ko' ? '광고 영구 제거 패키지' : 'PERMANENT AD REMOVAL')
-                          : `${item.amount.toLocaleString()} ${t('sns_unit_recharge', language)} ${item.bonus ? `(+${item.bonus}%)` : ""}`}
-                      </p>
+                    <div className="relative z-10 w-full flex flex-col gap-2 mt-auto pt-2">
+                      <button
+                        disabled={isOwnedAdRemoval}
+                        onClick={() => {
+                          if (isOwnedAdRemoval) return;
+                          setSelectedPackage(item);
+                          setSelectedCountry(null);
+                          setCountryModalOpen(true);
+                          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                        }}
+                        className={cn(
+                          "w-full font-bold uppercase tracking-wider text-sm transition-all font-sans min-h-[52px] sm:min-h-[56px] h-auto py-3 rounded-xl flex items-center justify-center shadow-xs touch-target",
+                          isOwnedAdRemoval
+                            ? "bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed pointer-events-none opacity-80"
+                            : "bg-slate-900 text-white hover:bg-slate-800 cursor-pointer active:scale-95"
+                        )}
+                      >
+                        {isOwnedAdRemoval
+                          ? (language === 'ko' ? '구매 완료 (적용 중)' : 'OWNED (ACTIVE)')
+                          : t('buy', language)}
+                      </button>
                     </div>
                   </div>
-
-                  <div className="relative z-10 w-full flex flex-col gap-2 mt-auto pt-2">
-                    <button
-                      onClick={() => {
-                        setSelectedPackage(item);
-                        setSelectedCountry(null);
-                        setCountryModalOpen(true);
-                        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                      }}
-                      className={cn(
-                        "w-full bg-slate-900 text-white font-bold uppercase tracking-wider text-sm hover:bg-slate-800 transition-all font-sans min-h-[52px] sm:min-h-[56px] h-auto py-3 rounded-xl flex items-center justify-center cursor-pointer shadow-xs active:scale-95 touch-target"
-                      )}
-                    >
-                      {t('buy', language)}
-                    </button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 

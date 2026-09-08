@@ -84,7 +84,7 @@ import {
 } from 'lucide-react';
 
 import { Meta } from './components/Meta';
-import { useAdSenseAutoAds } from './hooks/useAdSenseAutoAds';
+import { useAdSenseAutoAds, removeAllAdSenseElements } from './hooks/useAdSenseAutoAds';
 import { AdSenseBanner } from './components/AdSenseBanner';
 import { CortanaCommandButton } from './components/CortanaCommandButton';
 import { TutorialCoachMark } from './components/TutorialCoachMark';
@@ -670,10 +670,13 @@ function AppContent() {
 
   useEffect(() => {
     localStorage.setItem('hero_ad_removed', String(isAdRemoved));
+    if (isAdRemoved) {
+      removeAllAdSenseElements();
+    }
   }, [isAdRemoved]);
 
-  // 구글 애드센스 자동광고(Auto Ads) SPA 화면 전환 재스캔 훅
-  useAdSenseAutoAds(view);
+  // 구글 애드센스 자동광고(Auto Ads) SPA 화면 전환 재스캔 훅 (광고 제거 유저 완전 차단)
+  useAdSenseAutoAds(view, isAdRemoved);
 
   const [user, setUser] = useState<any | null>(() => getStoredGuestProfile());
   const [authInitialized, setAuthInitialized] = useState(false);

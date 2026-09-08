@@ -4,6 +4,38 @@
 
 ---
 
+## [2026-09-08 09:46 KST] [상점 광고 제거 패키지 2대 구매방식 비활성화 & 구글 광고 전면 제거] SNS 포인트/현금 결제 버튼 잠금 및 전역 애드센스 100% 완전 소거
+- **요청 사항**:
+  - 상점에서 광고 제거 패키지를 구매하면 두 가지 구매방식 버튼을 비활성화해 주고, 해당 사용자는 구글 광고를 완전히 제거할 것.
+- **분석 및 원인 규명**:
+  1. **상점 내 두 가지 구매 방식 분리**:
+     - 방식 1: SNS 포인트 차감 패키지 섹션 내 광고 제거 버튼 (`#shop-pack-remove-ads-btn`)
+     - 방식 2: 달러/KRW 현금 충전 (PayPal / In-App / PayApp) 리스트 내 광고 제거 패키지 (`sku: "ad_removal"`, `$2.99 USD / 4,000 KRW`)
+     - 이전 상태: 구매 후에도 현금 충전 섹션의 구매 버튼이 비활성화되지 않거나, SNS 포인트 버튼의 비활성화 처리가 불완전할 수 있었음.
+  2. **구글 광고 잔존 원인**:
+     - `useAdSenseAutoAds` 훅이 SPA 라우트 이동 시마다 `isAdRemoved` 여부와 무관하게 `window.adsbygoogle.push({})`를 호출하여 자동 광고(Auto Ads)를 주입함.
+     - `AdSenseBanner` 컴포넌트 내부 자체에 `isAdRemoved` 가드가 없어 개별 뷰(예: `KadanRpgView` 등) 또는 동적 렌더링 시 배너 컨테이너가 생성될 가능성이 존재함.
+     - 구매 시점 또는 페이지 전환 시 이미 DOM에 삽입된 광고 노드(`.google-auto-placed`, `ins.adsbygoogle`, 애드센스 iframe 등)를 강제 소거하는 로직이 부재함.
+- **조치 내역**:
+  1. **상점 2대 구매 방식 비활성화 구현 (`src/views/ShopView.tsx`)**:
+     - **방식 1 (SNS 포인트)**: `isAdRemoved`일 때 `disabled`, `pointer-events-none`, `[구매 완료 (광고 제거 적용 중)]`, `✓ ACTIVATED` 텍스트로 전환하고 클릭 차단.
+     - **방식 2 (현금/페이팔/인앱)**: `isOwnedAdRemoval`(`item.isAdRemoval && isAdRemoved`) 계산을 도입하여 카드 컨테이너 스타일(`bg-slate-50 border-slate-200`), 설명 라벨(`광고 영구 제거 적용 완료 (재구매 불가)`), 구매 버튼 비활성화(`disabled`, `pointer-events-none`, `[구매 완료 (적용 중)] / OWNED (ACTIVE)`) 적용.
+     - **로컬스토리지 영구 동기화**: 결제 성공 콜백(PayPal `onApprove`, PayApp 리턴 `payapp_success=ad_removal`, 네이티브 인앱 `sku: 'ad_removal'`) 전부에 `localStorage.setItem('hero_ad_removed', 'true')` 즉시 기록 연동.
+  2. **구글 애드센스 자동광고 전면 차단 및 DOM 소거 (`src/hooks/useAdSenseAutoAds.ts`)**:
+     - `removeAllAdSenseElements()` 함수 신설: `.adsbygoogle`, `ins.adsbygoogle`, `.adsense-container`, `.google-auto-placed`, `iframe[id*="google_ads"]`, `iframe[id*="aswift"]` 등 모든 구글 광고 노드를 즉각 DOM에서 `remove()` 또는 숨김 처리.
+     - `useAdSenseAutoAds(currentView, isAdRemoved)`로 확장하여, `isAdRemoved` 또는 로컬스토리지에 `hero_ad_removed === 'true'`일 경우 자동 광고 push 차단 및 `removeAllAdSenseElements()` 실행.
+  3. **`AdSenseBanner` 컴포넌트 자체 차단 가드 (`src/components/AdSenseBanner.tsx`)**:
+     - `isAdRemoved` prop 및 로컬스토리지 상태 검사 가드 도입: 광고 제거 유저일 경우 0ms 즉시 `return null;` 처리하여 일체의 광고 태그 및 컨테이너 렌더링 차단.
+  4. **전역 상태 및 라우트 연동 (`src/App.tsx`)**:
+     - `useAdSenseAutoAds(view, isAdRemoved)` 연결.
+     - `useEffect` 내 `isAdRemoved` 변경 감지 시 `removeAllAdSenseElements()`를 즉시 실행하여 상점에서 구매를 완료하는 순간 화면에 남아있던 배너/광고 노드까지 실시간 전면 소거.
+- **검증 결과**:
+  - `npm run lint` (`tsc --noEmit`): 오류 0건 (Error: 0) 무결점 통과.
+  - `npm run build`: 프로덕션 빌드 성공 완료 (12.74s).
+- **구글 폼 보고**: 완료 (작업명: `[상점 광고 제거 패키지 2대 구매방식 비활성화 & 구글 광고 전면 제거] SNS 포인트/현금 결제 버튼 잠금 및 전역 애드센스 100% 완전 소거`)
+
+---
+
 ## [2026-09-08 09:43 KST] [110개 미션 게임 전수 정산 후 나가기 즉시 이동 개편] 추가 확인팝업 일체 차단 및 0ms 미션리스트 직행 전수 연동 완료
 - **요청 사항**:
   - 미션 게임에서 정산 후 나가기 누르면 추가 확인팝업을 표시하지 말고, 정산해주고 바로 미션리스트 화면으로 이동할 것 (110개 전체 적용).
