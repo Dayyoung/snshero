@@ -157,8 +157,8 @@ export const PokiEscapeSchoolGame: React.FC<PokiEscapeSchoolGameProps> = ({
 
     // Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x181824); // 학교 야간 분위기
-    scene.fog = new THREE.FogExp2(0x181824, 0.016);
+    scene.background = new THREE.Color(0xfbf3d5); // 학교 야간 분위기
+    scene.fog = new THREE.FogExp2(0xfbf3d5, 0.016);
 
     // Camera (탑다운 쿼터뷰 추종)
     const camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 100);
@@ -174,7 +174,7 @@ export const PokiEscapeSchoolGame: React.FC<PokiEscapeSchoolGameProps> = ({
     container.appendChild(renderer.domElement);
 
     // 조명
-    const ambientLight = new THREE.AmbientLight(0xfff1f2, 0.65);
+    const ambientLight = new THREE.AmbientLight(0xfff1f2, 0.95);
     scene.add(ambientLight);
 
     const dirLight = new THREE.DirectionalLight(0xffe4e6, 1.2);
@@ -718,7 +718,7 @@ export const PokiEscapeSchoolGame: React.FC<PokiEscapeSchoolGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-black text-white font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fbf3d5] text-white font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

@@ -575,8 +575,8 @@ export const PokiMasterChessGame: React.FC<PokiMasterChessGameProps> = ({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1e293b); // Slate Luxury Dark Room
-    scene.fog = new THREE.FogExp2(0x1e293b, 0.015);
+    scene.background = new THREE.Color(0xfbf3d5); // Slate Luxury Dark Room
+    scene.fog = new THREE.FogExp2(0xfbf3d5, 0.015);
 
     // 2. Camera (Isometric Top-Down 3D Perspective)
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
@@ -779,7 +779,7 @@ export const PokiMasterChessGame: React.FC<PokiMasterChessGameProps> = ({
     <div
       ref={containerRef}
       onPointerDown={handlePointerDown}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fbf3d5] font-mono text-white"
     >
       {/* 3D WebGL Canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />

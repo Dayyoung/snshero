@@ -409,8 +409,8 @@ export default function PokiPenaltyShooters2Game({
     if (!container) return;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0284c7); // 청명한 축구장 하늘
-    scene.fog = new THREE.FogExp2(0x0284c7, 0.015);
+    scene.background = new THREE.Color(0xc7f2d6); // 청명한 축구장 하늘
+    scene.fog = new THREE.FogExp2(0xc7f2d6, 0.015);
     stateRef.current.scene = scene;
 
     const w = container.clientWidth || window.innerWidth;
@@ -649,7 +649,7 @@ export default function PokiPenaltyShooters2Game({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c7f2d6] font-mono"
       onTouchMove={handleTouchMove}
     >
       {/* 상단 HUD */}

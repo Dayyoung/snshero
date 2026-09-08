@@ -197,8 +197,8 @@ export const PokiCountWarGame: React.FC<PokiCountWarGameProps> = ({
 
     // Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a); // 딥 사이버 블루
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.014);
+    scene.background = new THREE.Color(0xc5e8eb); // 딥 사이버 블루
+    scene.fog = new THREE.FogExp2(0xc5e8eb, 0.014);
 
     // Camera (후방 쿼터뷰 군중 추종)
     const camera = new THREE.PerspectiveCamera(52, width / height, 0.1, 150);
@@ -652,7 +652,7 @@ export const PokiCountWarGame: React.FC<PokiCountWarGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-black text-white font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c5e8eb] text-white font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

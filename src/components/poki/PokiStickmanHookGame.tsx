@@ -123,8 +123,8 @@ export const PokiStickmanHookGame: React.FC<PokiStickmanHookGameProps> = ({
 
     // 씬, 카메라, 렌더러
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0c1a);
-    scene.fog = new THREE.FogExp2(0x0a0c1a, 0.012);
+    scene.background = new THREE.Color(0xe3dbfc);
+    scene.fog = new THREE.FogExp2(0xe3dbfc, 0.012);
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 150);
     camera.position.set(0, 6.5, 20);
@@ -620,7 +620,7 @@ export const PokiStickmanHookGame: React.FC<PokiStickmanHookGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e3dbfc] font-mono"
       onMouseDown={handleTouchStart}
       onMouseUp={handleTouchEnd}
       onTouchStart={(e) => { e.preventDefault(); handleTouchStart(); }}

@@ -368,7 +368,7 @@ export default function PokiBulletBrosGame({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0a14);
+    scene.background = new THREE.Color(0xe2e8f0);
 
     // 2. Camera (Side Ortho-Perspective View)
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
@@ -686,7 +686,7 @@ export default function PokiBulletBrosGame({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#0a0a14] font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e2e8f0] font-mono"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

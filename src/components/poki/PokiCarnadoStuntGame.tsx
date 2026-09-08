@@ -157,8 +157,8 @@ export default function PokiCarnadoStuntGame({
 
     // 씬 및 렌더러
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1a237e); // 사이버 미드나잇 블루
-    scene.fog = new THREE.FogExp2(0x283593, 0.006);
+    scene.background = new THREE.Color(0xf5e1ce); // 사이버 미드나잇 블루
+    scene.fog = new THREE.FogExp2(0xf5e1ce, 0.006);
 
     const camera = new THREE.PerspectiveCamera(48, container.clientWidth / container.clientHeight, 0.5, 350);
 
@@ -540,7 +540,7 @@ export default function PokiCarnadoStuntGame({
   };
 
   return (
-    <div className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-900 font-mono">
+    <div className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#f5e1ce] font-mono">
       {/* 3D WebGL 캔버스 */}
       <div ref={containerRef} className="absolute inset-0 w-full h-full" />
 

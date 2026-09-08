@@ -219,8 +219,8 @@ export const PokiPetnestGame: React.FC<PokiPetnestGameProps> = ({
 
     // 1. Scene & Camera
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0e1c15);
-    scene.fog = new THREE.FogExp2(0x0e1c15, 0.02);
+    scene.background = new THREE.Color(0xc7f2d6);
+    scene.fog = new THREE.FogExp2(0xc7f2d6, 0.02);
     gameLoopRef.current.scene = scene;
 
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 120);
@@ -710,7 +710,7 @@ export const PokiPetnestGame: React.FC<PokiPetnestGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-emerald-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c7f2d6] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

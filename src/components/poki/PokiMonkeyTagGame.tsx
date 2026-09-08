@@ -249,8 +249,8 @@ export const PokiMonkeyTagGame: React.FC<PokiMonkeyTagGameProps> = ({
 
     // 1. Scene & Atmosphere
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x064e3b);
-    scene.fog = new THREE.FogExp2(0x064e3b, 0.015);
+    scene.background = new THREE.Color(0xc7f2d6);
+    scene.fog = new THREE.FogExp2(0xc7f2d6, 0.015);
 
     // 2. Camera: 3rd Person High Angle Quarter View
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 150);
@@ -943,7 +943,7 @@ export const PokiMonkeyTagGame: React.FC<PokiMonkeyTagGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-emerald-950 flex flex-col items-center justify-center"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c7f2d6] flex flex-col items-center justify-center"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

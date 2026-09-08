@@ -154,8 +154,8 @@ export const PokiPlonkyGame: React.FC<PokiPlonkyGameProps> = ({
 
     // 씬, 카메라, 렌더러
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a);
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.015);
+    scene.background = new THREE.Color(0xc5e8eb);
+    scene.fog = new THREE.FogExp2(0xc5e8eb, 0.015);
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 150);
     camera.position.set(0, 7, 20);
@@ -781,7 +781,7 @@ export const PokiPlonkyGame: React.FC<PokiPlonkyGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c5e8eb] font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

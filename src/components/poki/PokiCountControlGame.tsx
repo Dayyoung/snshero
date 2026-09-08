@@ -194,8 +194,8 @@ export const PokiCountControlGame: React.FC<PokiCountControlGameProps> = ({
 
     // 1. Scene & Camera
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a);
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.016);
+    scene.background = new THREE.Color(0xc5e8eb);
+    scene.fog = new THREE.FogExp2(0xc5e8eb, 0.016);
     gameLoopRef.current.scene = scene;
 
     const camera = new THREE.PerspectiveCamera(54, width / height, 0.1, 200);
@@ -618,7 +618,7 @@ export const PokiCountControlGame: React.FC<PokiCountControlGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c5e8eb] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

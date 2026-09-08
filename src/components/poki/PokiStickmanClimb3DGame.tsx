@@ -197,8 +197,8 @@ export const PokiStickmanClimb3DGame: React.FC<PokiStickmanClimb3DGameProps> = (
 
     // 씬 & 카메라
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a);
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.015);
+    scene.background = new THREE.Color(0xe3dbfc);
+    scene.fog = new THREE.FogExp2(0xe3dbfc, 0.015);
     sceneRef.current = scene;
 
     const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 150);
@@ -557,7 +557,7 @@ export const PokiStickmanClimb3DGame: React.FC<PokiStickmanClimb3DGameProps> = (
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#0f172a]"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e3dbfc]"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

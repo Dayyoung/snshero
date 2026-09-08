@@ -169,8 +169,8 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
 
     // 씬 & 카메라
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0f1d);
-    scene.fog = new THREE.FogExp2(0x0a0f1d, 0.012);
+    scene.background = new THREE.Color(0xc7f2d6);
+    scene.fog = new THREE.FogExp2(0xc7f2d6, 0.012);
     sceneRef.current = scene;
 
     const camera = new THREE.PerspectiveCamera(54, width / height, 0.1, 250);
@@ -641,7 +641,7 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#0a0f1d]"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c7f2d6]"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

@@ -463,8 +463,8 @@ export const PokiVectariaGame: React.FC<PokiVectariaGameProps> = ({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x7dd3fc); // Sky Blue
-    scene.fog = new THREE.FogExp2(0x7dd3fc, 0.015);
+    scene.background = new THREE.Color(0xbfe3f7); // Sky Blue
+    scene.fog = new THREE.FogExp2(0xbfe3f7, 0.015);
 
     // 2. Camera (Third-Person Follow)
     const camera = new THREE.PerspectiveCamera(56, width / height, 0.5, 300);
@@ -938,7 +938,7 @@ export const PokiVectariaGame: React.FC<PokiVectariaGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-sky-300 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#bfe3f7] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

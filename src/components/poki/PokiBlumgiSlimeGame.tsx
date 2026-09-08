@@ -173,8 +173,8 @@ export const PokiBlumgiSlimeGame: React.FC<PokiBlumgiSlimeGameProps> = ({
 
     // 씬 & 카메라
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x061e14);
-    scene.fog = new THREE.FogExp2(0x061e14, 0.018);
+    scene.background = new THREE.Color(0xc7f2d6);
+    scene.fog = new THREE.FogExp2(0xc7f2d6, 0.018);
     sceneRef.current = scene;
 
     const camera = new THREE.PerspectiveCamera(52, width / height, 0.1, 150);
@@ -520,7 +520,7 @@ export const PokiBlumgiSlimeGame: React.FC<PokiBlumgiSlimeGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#061e14]"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c7f2d6]"
       onTouchStart={startCharging}
       onTouchEnd={releaseJump}
       onMouseDown={startCharging}

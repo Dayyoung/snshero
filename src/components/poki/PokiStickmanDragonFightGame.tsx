@@ -398,8 +398,8 @@ export default function PokiStickmanDragonFightGame({
 
     // 씬 생성
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a);
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.025);
+    scene.background = new THREE.Color(0xe3dbfc);
+    scene.fog = new THREE.FogExp2(0xe3dbfc, 0.025);
     stateRef.current.scene = scene;
 
     // 카메라
@@ -906,7 +906,7 @@ export default function PokiStickmanDragonFightGame({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e3dbfc] font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

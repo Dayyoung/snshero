@@ -151,8 +151,8 @@ export const PokiPartyTimeGame: React.FC<PokiPartyTimeGameProps> = ({
 
     // 1. Scene & Camera
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0c0d1c);
-    scene.fog = new THREE.FogExp2(0x0c0d1c, 0.022);
+    scene.background = new THREE.Color(0xe3dbfc);
+    scene.fog = new THREE.FogExp2(0xe3dbfc, 0.022);
     gameLoopRef.current.scene = scene;
 
     const camera = new THREE.PerspectiveCamera(52, width / height, 0.1, 150);
@@ -822,7 +822,7 @@ export const PokiPartyTimeGame: React.FC<PokiPartyTimeGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e3dbfc] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

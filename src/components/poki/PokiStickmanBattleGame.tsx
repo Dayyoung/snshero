@@ -139,8 +139,8 @@ export const PokiStickmanBattleGame: React.FC<PokiStickmanBattleGameProps> = ({
 
     // 씬, 카메라, 렌더러
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0c16);
-    scene.fog = new THREE.FogExp2(0x0a0c16, 0.022);
+    scene.background = new THREE.Color(0xe3dbfc);
+    scene.fog = new THREE.FogExp2(0xe3dbfc, 0.022);
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
     camera.position.set(0, 20, 24);
@@ -923,7 +923,7 @@ export const PokiStickmanBattleGame: React.FC<PokiStickmanBattleGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e3dbfc] font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

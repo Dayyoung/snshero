@@ -190,8 +190,8 @@ export const PokiTempleRun2Game: React.FC<PokiTempleRun2GameProps> = ({
 
     // Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1a120c); // 신전 일몰 황혼
-    scene.fog = new THREE.FogExp2(0x1a120c, 0.016);
+    scene.background = new THREE.Color(0xf5e1ce); // 신전 일몰 황혼
+    scene.fog = new THREE.FogExp2(0xf5e1ce, 0.016);
 
     // Camera (후방 3인칭 추종)
     const camera = new THREE.PerspectiveCamera(54, width / height, 0.1, 100);
@@ -207,7 +207,7 @@ export const PokiTempleRun2Game: React.FC<PokiTempleRun2GameProps> = ({
     container.appendChild(renderer.domElement);
 
     // 조명
-    const ambientLight = new THREE.AmbientLight(0xffedd5, 0.7);
+    const ambientLight = new THREE.AmbientLight(0xffedd5, 0.95);
     scene.add(ambientLight);
 
     const torchLight = new THREE.PointLight(0xf97316, 1.8, 25);
@@ -657,7 +657,7 @@ export const PokiTempleRun2Game: React.FC<PokiTempleRun2GameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-black text-white font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#f5e1ce] text-white font-mono"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >

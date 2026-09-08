@@ -143,8 +143,8 @@ export const PokiBackroomsRecoveryGame: React.FC<PokiBackroomsRecoveryGameProps>
 
     // 씬, 카메라, 렌더러
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x050402);
-    scene.fog = new THREE.FogExp2(0x0a0804, 0.05);
+    scene.background = new THREE.Color(0xfbf3d5);
+    scene.fog = new THREE.FogExp2(0xfbf3d5, 0.05);
 
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
     camera.position.set(-10, 3.2, -6);
@@ -158,7 +158,7 @@ export const PokiBackroomsRecoveryGame: React.FC<PokiBackroomsRecoveryGameProps>
     container.appendChild(renderer.domElement);
 
     // 미약한 노란 앰비언트 라이트 (백룸 특유의 침침한 분위기)
-    const ambientLight = new THREE.AmbientLight(0xd4b483, 0.45);
+    const ambientLight = new THREE.AmbientLight(0xd4b483, 0.95);
     scene.add(ambientLight);
 
     // 1. 바닥 (28m x 28m 베이지 카펫) & 천장 (흰색 타일)
@@ -797,7 +797,7 @@ export const PokiBackroomsRecoveryGame: React.FC<PokiBackroomsRecoveryGameProps>
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fbf3d5] font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

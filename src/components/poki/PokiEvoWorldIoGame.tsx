@@ -182,8 +182,8 @@ export default function PokiEvoWorldIoGame({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0c2340);
-    scene.fog = new THREE.Fog(0x0c2340, 30, 80);
+    scene.background = new THREE.Color(0xc7f2d6);
+    scene.fog = new THREE.Fog(0xc7f2d6, 30, 80);
 
     // 2. Camera
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 150);
@@ -589,7 +589,7 @@ export default function PokiEvoWorldIoGame({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#0c2340] font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c7f2d6] font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

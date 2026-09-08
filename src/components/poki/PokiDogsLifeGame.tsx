@@ -301,8 +301,8 @@ export default function PokiDogsLifeGame({
 
     // 씬
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xa7f3d0); // 따뜻한 연녹색 정원 하늘
-    scene.fog = new THREE.FogExp2(0xa7f3d0, 0.02);
+    scene.background = new THREE.Color(0xc7f2d6); // 따뜻한 연녹색 정원 하늘
+    scene.fog = new THREE.FogExp2(0xc7f2d6, 0.02);
     stateRef.current.scene = scene;
 
     // 카메라
@@ -695,7 +695,7 @@ export default function PokiDogsLifeGame({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-900 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c7f2d6] font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

@@ -220,8 +220,8 @@ export const PokiShenzhenMahjongGame: React.FC<PokiShenzhenMahjongGameProps> = (
     // 1. Scene & Camera
     const scene = new THREE.Scene();
     game.scene = scene;
-    scene.background = new THREE.Color(0x14100c);
-    scene.fog = new THREE.FogExp2(0x14100c, 0.02);
+    scene.background = new THREE.Color(0xfbf3d5);
+    scene.fog = new THREE.FogExp2(0xfbf3d5, 0.02);
 
     const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
     game.camera = camera;
@@ -729,7 +729,7 @@ export const PokiShenzhenMahjongGame: React.FC<PokiShenzhenMahjongGameProps> = (
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#14100c] font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fbf3d5] font-mono text-white"
     >
       {/* Minimalist Top HUD */}
       <MinimalistMissionHUD

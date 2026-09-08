@@ -273,8 +273,8 @@ export default function PokiSprintLeagueGame({
 
     // Scene & Camera
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a192f); // Stadium night sky
-    scene.fog = new THREE.FogExp2(0x0a192f, 0.012);
+    scene.background = new THREE.Color(0xbfe3f7); // Stadium night sky
+    scene.fog = new THREE.FogExp2(0xbfe3f7, 0.012);
 
     const camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 140);
     camera.position.set(0, 3.5, -4.5);
@@ -670,7 +670,7 @@ export default function PokiSprintLeagueGame({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#bfe3f7] font-mono text-white"
     >
       {/* Top Standard HUD */}
       <MinimalistMissionHUD

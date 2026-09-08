@@ -153,8 +153,8 @@ export const PokiSliceMasterGame: React.FC<PokiSliceMasterGameProps> = ({
 
     // Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x181824);
-    scene.fog = new THREE.FogExp2(0x181824, 0.015);
+    scene.background = new THREE.Color(0xfcdad7);
+    scene.fog = new THREE.FogExp2(0xfcdad7, 0.015);
 
     // Camera (사이드 쿼터 뷰)
     const camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 100);
@@ -605,7 +605,7 @@ export const PokiSliceMasterGame: React.FC<PokiSliceMasterGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-black text-white font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fcdad7] text-white font-mono"
       onClick={handleScreenTap}
     >
       {/* Three.js 3D 뷰포트 컨테이너 */}

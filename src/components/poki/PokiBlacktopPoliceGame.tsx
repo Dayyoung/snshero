@@ -244,8 +244,8 @@ export const PokiBlacktopPoliceGame: React.FC<PokiBlacktopPoliceGameProps> = ({
 
     // 1. Scene & Camera
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x070913);
-    scene.fog = new THREE.FogExp2(0x070913, 0.015);
+    scene.background = new THREE.Color(0xe2e8f0);
+    scene.fog = new THREE.FogExp2(0xe2e8f0, 0.015);
     gameLoopRef.current.scene = scene;
 
     const camera = new THREE.PerspectiveCamera(56, width / height, 0.1, 200);
@@ -784,7 +784,7 @@ export const PokiBlacktopPoliceGame: React.FC<PokiBlacktopPoliceGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e2e8f0] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

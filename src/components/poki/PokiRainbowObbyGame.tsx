@@ -213,8 +213,8 @@ export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
 
     // 1. Scene & Sky
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x38bdf8);
-    scene.fog = new THREE.FogExp2(0x38bdf8, 0.012);
+    scene.background = new THREE.Color(0xbfe3f7);
+    scene.fog = new THREE.FogExp2(0xbfe3f7, 0.012);
 
     // 2. Camera (3rd Person following camera)
     const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 300);
@@ -936,7 +936,7 @@ export const PokiRainbowObbyGame: React.FC<PokiRainbowObbyGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-sky-400 flex flex-col items-center justify-center"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#bfe3f7] flex flex-col items-center justify-center"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

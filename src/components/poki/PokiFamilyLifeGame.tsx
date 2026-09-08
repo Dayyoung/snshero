@@ -137,8 +137,8 @@ export const PokiFamilyLifeGame: React.FC<PokiFamilyLifeGameProps> = ({
 
     // 1. Scene & Camera
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1a130f);
-    scene.fog = new THREE.FogExp2(0x1a130f, 0.022);
+    scene.background = new THREE.Color(0xfbf3d5);
+    scene.fog = new THREE.FogExp2(0xfbf3d5, 0.022);
     gameLoopRef.current.scene = scene;
 
     const camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 100);
@@ -609,7 +609,7 @@ export const PokiFamilyLifeGame: React.FC<PokiFamilyLifeGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-amber-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fbf3d5] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

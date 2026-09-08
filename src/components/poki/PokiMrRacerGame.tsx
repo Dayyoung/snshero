@@ -195,8 +195,8 @@ export default function PokiMrRacerGame({
 
     // Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a); // 딥 미드나잇 사이버 스카이
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.007);
+    scene.background = new THREE.Color(0xf5e1ce); // 딥 미드나잇 사이버 스카이
+    scene.fog = new THREE.FogExp2(0xf5e1ce, 0.007);
 
     // Camera (기본 체이스 뷰)
     const camera = new THREE.PerspectiveCamera(65, width / height, 0.1, 800);
@@ -871,7 +871,7 @@ export default function PokiMrRacerGame({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 text-white font-mono flex flex-col"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#f5e1ce] text-white font-mono flex flex-col"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

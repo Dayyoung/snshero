@@ -260,7 +260,7 @@ export default function PokiSnapStyleDressUpGame({
     if (!container) return;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x3b0764); // 럭셔리 퍼플 런웨이 스튜디오
+    scene.background = new THREE.Color(0xfcdad7); // 럭셔리 퍼플 런웨이 스튜디오
     stateRef.current.scene = scene;
 
     const w = container.clientWidth || window.innerWidth;
@@ -475,7 +475,7 @@ export default function PokiSnapStyleDressUpGame({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fcdad7] font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

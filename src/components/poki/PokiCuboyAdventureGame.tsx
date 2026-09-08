@@ -162,8 +162,8 @@ export const PokiCuboyAdventureGame: React.FC<PokiCuboyAdventureGameProps> = ({
 
     // 1. Scene & Camera
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a1424);
-    scene.fog = new THREE.FogExp2(0x0a1424, 0.018);
+    scene.background = new THREE.Color(0xbfe3f7);
+    scene.fog = new THREE.FogExp2(0xbfe3f7, 0.018);
     gameLoopRef.current.scene = scene;
 
     const camera = new THREE.PerspectiveCamera(54, width / height, 0.1, 150);
@@ -745,7 +745,7 @@ export const PokiCuboyAdventureGame: React.FC<PokiCuboyAdventureGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-sky-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#bfe3f7] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

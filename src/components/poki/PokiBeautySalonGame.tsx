@@ -113,8 +113,8 @@ export const PokiBeautySalonGame: React.FC<PokiBeautySalonGameProps> = ({
     // 1. Scene & Camera
     const scene = new THREE.Scene();
     game.scene = scene;
-    scene.background = new THREE.Color(0x1a0f18);
-    scene.fog = new THREE.FogExp2(0x1a0f18, 0.03);
+    scene.background = new THREE.Color(0xfcdad7);
+    scene.fog = new THREE.FogExp2(0xfcdad7, 0.03);
 
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.set(0, 1.4, 4.2);
@@ -565,7 +565,7 @@ export const PokiBeautySalonGame: React.FC<PokiBeautySalonGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#1a0f18] font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fcdad7] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

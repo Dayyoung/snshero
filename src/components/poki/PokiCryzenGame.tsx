@@ -428,8 +428,8 @@ export const PokiCryzenGame: React.FC<PokiCryzenGameProps> = ({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a); // Dark Tactical Navy
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.015);
+    scene.background = new THREE.Color(0xe2e8f0); // Dark Tactical Navy
+    scene.fog = new THREE.FogExp2(0xe2e8f0, 0.015);
 
     // 2. Camera (Third-Person Tactical Shoulder View)
     const camera = new THREE.PerspectiveCamera(60, width / height, 0.4, 250);
@@ -443,7 +443,7 @@ export const PokiCryzenGame: React.FC<PokiCryzenGameProps> = ({
     container.appendChild(renderer.domElement);
 
     // 4. Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
     scene.add(ambientLight);
 
     const dirLight = new THREE.DirectionalLight(0x38bdf8, 1.2);
@@ -797,7 +797,7 @@ export const PokiCryzenGame: React.FC<PokiCryzenGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e2e8f0] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

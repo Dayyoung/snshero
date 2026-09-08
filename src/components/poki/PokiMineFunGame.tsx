@@ -165,8 +165,8 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
 
     // Scene & Sky
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x38bdf8);
-    scene.fog = new THREE.FogExp2(0x38bdf8, 0.015);
+    scene.background = new THREE.Color(0xbfe3f7);
+    scene.fog = new THREE.FogExp2(0xbfe3f7, 0.015);
 
     // Camera
     const camera = new THREE.PerspectiveCamera(55, initialW / initialH, 0.1, 1000);
@@ -718,7 +718,7 @@ export const PokiMineFunGame: React.FC<PokiMineFunGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none touch-none"
+      className="fixed inset-0 w-full h-[100dvh] bg-[#bfe3f7] overflow-hidden font-mono select-none touch-none"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

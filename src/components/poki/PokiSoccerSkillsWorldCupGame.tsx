@@ -358,8 +358,8 @@ export const PokiSoccerSkillsWorldCupGame: React.FC<PokiSoccerSkillsWorldCupGame
 
     // Scene & Camera
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a192f); // Deep night stadium sky
-    scene.fog = new THREE.FogExp2(0x0a192f, 0.015);
+    scene.background = new THREE.Color(0xc7f2d6); // Deep night stadium sky
+    scene.fog = new THREE.FogExp2(0xc7f2d6, 0.015);
 
     const camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 100);
     camera.position.set(0, 2.2, 12.2);
@@ -1023,7 +1023,7 @@ export const PokiSoccerSkillsWorldCupGame: React.FC<PokiSoccerSkillsWorldCupGame
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c7f2d6] font-mono text-white"
       onMouseDown={handleTouchStart}
       onMouseMove={handleTouchMove}
       onMouseUp={handleTouchEnd}

@@ -294,8 +294,8 @@ export default function PokiScaryTeacher3DGame({
     if (!container) return;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a);
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.02);
+    scene.background = new THREE.Color(0xfbf3d5);
+    scene.fog = new THREE.FogExp2(0xfbf3d5, 0.02);
     stateRef.current.scene = scene;
 
     const w = container.clientWidth || window.innerWidth;
@@ -698,7 +698,7 @@ export default function PokiScaryTeacher3DGame({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fbf3d5] font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

@@ -311,8 +311,8 @@ export const PokiLevelDevilGame: React.FC<PokiLevelDevilGameProps> = ({
 
     // Scene & Dark Atmospheric Background
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x090d16); // Deep demon slate
-    scene.fog = new THREE.FogExp2(0x090d16, 0.02);
+    scene.background = new THREE.Color(0xe3dbfc); // Deep demon slate
+    scene.fog = new THREE.FogExp2(0xe3dbfc, 0.02);
 
     // Camera: 2.5D/3D Angled Perspective View
     const camera = new THREE.PerspectiveCamera(48, initialW / initialH, 0.1, 1000);
@@ -763,7 +763,7 @@ export const PokiLevelDevilGame: React.FC<PokiLevelDevilGameProps> = ({
   ];
 
   return (
-    <div className="fixed inset-0 w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none touch-none">
+    <div className="fixed inset-0 w-full h-[100dvh] bg-[#e3dbfc] overflow-hidden font-mono select-none touch-none">
       {/* 3D WebGL Canvas */}
       <div ref={containerRef} className="absolute inset-0 w-full h-full" />
 

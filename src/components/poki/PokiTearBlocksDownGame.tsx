@@ -522,8 +522,8 @@ export const PokiTearBlocksDownGame: React.FC<PokiTearBlocksDownGameProps> = ({
 
     // Scene & Camera
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a); // Slate dark night testing range
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.015);
+    scene.background = new THREE.Color(0xe2e8f0); // Slate dark night testing range
+    scene.fog = new THREE.FogExp2(0xe2e8f0, 0.015);
 
     const camera = new THREE.PerspectiveCamera(46, width / height, 0.1, 100);
     camera.position.set(0, 4.5, 20.0);
@@ -535,7 +535,7 @@ export const PokiTearBlocksDownGame: React.FC<PokiTearBlocksDownGameProps> = ({
     container.appendChild(renderer.domElement);
 
     // Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
     scene.add(ambientLight);
 
     const sunLight = new THREE.DirectionalLight(0x38bdf8, 1.2);
@@ -892,7 +892,7 @@ export const PokiTearBlocksDownGame: React.FC<PokiTearBlocksDownGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e2e8f0] font-mono text-white"
       onMouseDown={handleTouchStart}
       onMouseMove={handleTouchMove}
       onMouseUp={handleTouchEnd}

@@ -131,7 +131,7 @@ export default function PokiHexellentGame({
     const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a); // 세련된 사이버 딥 블루 스페이스
+    scene.background = new THREE.Color(0xc5e8eb); // 세련된 사이버 딥 블루 스페이스
 
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
     camera.position.set(0, 10.5, 7.5);
@@ -579,7 +579,7 @@ export default function PokiHexellentGame({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 text-white font-mono flex flex-col"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c5e8eb] text-white font-mono flex flex-col"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

@@ -305,7 +305,7 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
     const initialH = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a);
+    scene.background = new THREE.Color(0xc5e8eb);
 
     const camera = new THREE.PerspectiveCamera(50, initialW / initialH, 0.1, 1000);
     camera.position.set(0, 24, 16);
@@ -812,7 +812,7 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none touch-none"
+      className="fixed inset-0 w-full h-[100dvh] bg-[#c5e8eb] overflow-hidden font-mono select-none touch-none"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

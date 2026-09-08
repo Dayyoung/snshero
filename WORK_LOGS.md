@@ -4,6 +4,35 @@
 
 ---
 
+## [2026-09-08 15:37 KST] [110개 미션 게임 전수 파스텔톤 전면 개편] 3D 씬 배경·안개·컨테이너 파스텔톤 전환 및 오브젝트 시인성 극대화
+- **요청 사항**:
+  - 110개 게임 검수 결과, 너무 어두운 배경으로 인해 3D 오브젝트와 캐릭터, 텍스트가 잘 보이지 않는 문제를 해결하기 위해 전체 110개 게임을 화사한 파스텔톤으로 구성할 것.
+- **분석 및 원인 규명**:
+  1. 110개 Poki 미션 게임의 대부분이 `0x0f172a`, `0x0a0f1d`, `0x0a0c16`, `0x050402`, `0x1e293b` 등 짙은 검정/어두운 네이비 계열의 배경색(`scene.background`)과 짙은 안개(`scene.fog`)를 채택하고 있었음.
+  2. 최상위 뷰포트 컨테이너 래퍼 역시 `bg-slate-950`, `bg-black` 등으로 설정되어 있어 3D 오브젝트, 카드 캐릭터 스프라이트, 플랫폼 등의 명도 대비가 낮아 가시성이 극도로 저하됨.
+- **조치 내역**:
+  1. **8대 테마별 맞춤형 파스텔톤(Pastel Tone) 디자인 시스템 수립 및 전수 매핑**:
+     - **파스텔 피치/로즈 (`0xfcdad7`, `bg-[#fcdad7]`)**: 뷰티/패션/과일/음식/아트 계열 (Anycolor, BeautySalon, SuperDress, SliceMaster, SushiParty 등 14종)
+     - **파스텔 스카이 (`0xbfe3f7`, `bg-[#bfe3f7]`)**: 러너/점프/비행/오비/하늘 계열 (SubwaySurfers, RainbowObby, MineFun, TalkingTomGoldRun, Vectaria 등 16종)
+     - **파스텔 민트/세이지 (`0xc7f2d6`, `bg-[#c7f2d6]`)**: 자연/동물/축구/수확/스포츠 계열 (SlimeKeyboard, SoccerSkillsWorldCup, MonkeyMart, DogsLife, HillsOfSteel 등 17종)
+     - **파스텔 라벤더 (`0xe3dbfc`, `bg-[#e3dbfc]`)**: 배틀/스틱맨/판타지/마법 계열 (PunchyGuy, StickmanBattle, StickmanHook, SwordMasters, YouMonster 등 19종)
+     - **파스텔 웜크림/버터 (`0xfbf3d5`, `bg-[#fbf3d5]`)**: 퍼즐/두뇌/보드/시뮬레이션/힐링 계열 (BrainTest, BackroomsRecovery, MasterChess, ShenzhenMahjong, GoodsMaster 등 20종)
+     - **파스텔 아쿠아 (`0xc5e8eb`, `bg-[#c5e8eb]`)**: 아케이드/물리/캐주얼 계열 (BlastBuddies, BlumgiBounce, CountControl, PaperIo, PingPongGo 등 9종)
+     - **파스텔 웜샌드 (`0xf5e1ce`, `bg-[#f5e1ce]`)**: 레이싱/차량/사막/스턴트 계열 (DriveMad, MrRacer, RealCityBikes, SupercarLegends, TempleRun2 등 8종)
+     - **파스텔 소프트그레이 (`0xe2e8f0`, `bg-[#e2e8f0]`)**: 슈팅/FPS/택티컬 계열 (Cryzen, Repuls, GunsGunsGuns, TankStars, BulletBros 등 7종)
+  2. **110개 전체 게임 3D 씬 및 DOM 래퍼 전수 일괄 전환**:
+     - `scene.background = new THREE.Color(hex)`로 파스텔톤 적용.
+     - `scene.fog`(FogExp2 및 Linear Fog)의 색상을 해당 파스텔톤으로 100% 동기화하여 시커먼 원거리 안개 제거 및 맑고 포근한 파스텔 안개 구현.
+     - 렌더러 `renderer.setClearColor(hex)` 파스텔톤 동기화.
+     - 최상위 컨테이너 `div`의 어두운 배경 클래스를 해당 파스텔 톤 Tailwind 클래스로 일체 정규화 (결과/패배 모달 백드롭 딤 `bg-black/80`은 안전하게 100% 보존).
+     - 어두운 환경(intensity < 0.75)의 `AmbientLight`를 0.95로 보정하여 파스텔 배경 위에서 3D 캐릭터 및 오브젝트가 화사하고 또렷하게 부각되도록 처리.
+- **검증 결과**:
+  - `npm run lint` (`tsc --noEmit`): 110개 게임 전수 오류 0건 (Error: 0) 무결점 통과.
+  - `npm run build`: 프로덕션 번들 빌드 정상 완료 (16.89s).
+- **구글 폼 보고**: 완료 (작업명: `[110개 미션 게임 전수 파스텔톤 전면 개편] 3D 씬 배경·안개·컨테이너 파스텔톤 전환 및 오브젝트 시인성 극대화`)
+
+---
+
 ## [2026-09-08 09:48 KST] [햄버거 메뉴 PC 우측 광고 겹침 차단] 드로어 패널 및 백드롭 z-index 격상(z-[50001]) & 우측 광고 사이드바 z-index 정상화(z-30)
 - **요청 사항**:
   - 햄버거 메뉴를 우측에서 표시할 때 PC에서 우측 광고에 가리지 않게 개선.

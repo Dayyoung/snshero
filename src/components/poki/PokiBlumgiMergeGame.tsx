@@ -324,7 +324,7 @@ export const PokiBlumgiMergeGame: React.FC<PokiBlumgiMergeGameProps> = ({
 
     // 씬 & 카메라
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0c16);
+    scene.background = new THREE.Color(0xc7f2d6);
     sceneRef.current = scene;
 
     const camera = new THREE.PerspectiveCamera(52, width / height, 0.1, 100);
@@ -705,7 +705,7 @@ export const PokiBlumgiMergeGame: React.FC<PokiBlumgiMergeGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#0a0c16]"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c7f2d6]"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

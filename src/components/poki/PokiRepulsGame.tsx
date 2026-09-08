@@ -175,8 +175,8 @@ export const PokiRepulsGame: React.FC<PokiRepulsGameProps> = ({
     // 1. Scene & Renderer
     const scene = new THREE.Scene();
     game.scene = scene;
-    scene.background = new THREE.Color(0x060913);
-    scene.fog = new THREE.FogExp2(0x060913, 0.015);
+    scene.background = new THREE.Color(0xe2e8f0);
+    scene.fog = new THREE.FogExp2(0xe2e8f0, 0.015);
 
     const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 300);
     game.camera = camera;
@@ -190,7 +190,7 @@ export const PokiRepulsGame: React.FC<PokiRepulsGameProps> = ({
     game.renderer = renderer;
 
     // 2. Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
     scene.add(ambientLight);
 
     const dirLight = new THREE.DirectionalLight(0x00f0ff, 1.5);
@@ -948,7 +948,7 @@ export const PokiRepulsGame: React.FC<PokiRepulsGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-black font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e2e8f0] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

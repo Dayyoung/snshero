@@ -286,8 +286,8 @@ export const PokiRedBall4Game: React.FC<PokiRedBall4GameProps> = ({
 
     // Scene & Camera
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x7dd3fc); // Sunny blue sky
-    scene.fog = new THREE.FogExp2(0x7dd3fc, 0.01);
+    scene.background = new THREE.Color(0xbfe3f7); // Sunny blue sky
+    scene.fog = new THREE.FogExp2(0xbfe3f7, 0.01);
 
     const camera = new THREE.PerspectiveCamera(46, width / height, 0.1, 150);
     camera.position.set(0, 5, 14);
@@ -795,7 +795,7 @@ export const PokiRedBall4Game: React.FC<PokiRedBall4GameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-sky-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#bfe3f7] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

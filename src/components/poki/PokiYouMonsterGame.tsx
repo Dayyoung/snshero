@@ -118,8 +118,8 @@ export const PokiYouMonsterGame: React.FC<PokiYouMonsterGameProps> = ({
     // 1. Scene & Camera
     const scene = new THREE.Scene();
     game.scene = scene;
-    scene.background = new THREE.Color(0x12151e);
-    scene.fog = new THREE.FogExp2(0x12151e, 0.018);
+    scene.background = new THREE.Color(0xe3dbfc);
+    scene.fog = new THREE.FogExp2(0xe3dbfc, 0.018);
 
     const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 150);
     camera.position.set(0, 14, 34);
@@ -136,7 +136,7 @@ export const PokiYouMonsterGame: React.FC<PokiYouMonsterGameProps> = ({
     game.renderer = renderer;
 
     // 3. Lighting (Moonlight & City Lights)
-    const ambientLight = new THREE.AmbientLight(0xffe0cc, 0.65);
+    const ambientLight = new THREE.AmbientLight(0xffe0cc, 0.95);
     scene.add(ambientLight);
 
     const moonLight = new THREE.DirectionalLight(0x7099ff, 1.4);
@@ -668,7 +668,7 @@ export const PokiYouMonsterGame: React.FC<PokiYouMonsterGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#12151e] font-mono text-white ${
+      className={`fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e3dbfc] font-mono text-white ${
         smashEffect ? 'translate-y-1' : ''
       }`}
       onTouchStart={handleTouchStart}

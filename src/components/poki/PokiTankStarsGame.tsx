@@ -341,8 +341,8 @@ export const PokiTankStarsGame: React.FC<PokiTankStarsGameProps> = ({
 
     // Scene & Camera
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x090d16); // Deep space dark cyber blue
-    scene.fog = new THREE.FogExp2(0x090d16, 0.015);
+    scene.background = new THREE.Color(0xe2e8f0); // Deep space dark cyber blue
+    scene.fog = new THREE.FogExp2(0xe2e8f0, 0.015);
 
     const camera = new THREE.PerspectiveCamera(46, width / height, 0.1, 120);
     camera.position.set(0, 8.5, 26.0);
@@ -354,7 +354,7 @@ export const PokiTankStarsGame: React.FC<PokiTankStarsGameProps> = ({
     container.appendChild(renderer.domElement);
 
     // Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
     scene.add(ambientLight);
 
     const sunLight = new THREE.DirectionalLight(0x38bdf8, 1.2);
@@ -692,7 +692,7 @@ export const PokiTankStarsGame: React.FC<PokiTankStarsGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e2e8f0] font-mono text-white"
     >
       {/* Top Standard HUD */}
       <MinimalistMissionHUD

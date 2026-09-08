@@ -217,8 +217,8 @@ export const PokiMurderGame: React.FC<PokiMurderGameProps> = ({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1a0d24); // Royal Dark Wine/Purple
-    scene.fog = new THREE.FogExp2(0x1a0d24, 0.02);
+    scene.background = new THREE.Color(0xe3dbfc); // Royal Dark Wine/Purple
+    scene.fog = new THREE.FogExp2(0xe3dbfc, 0.02);
 
     // 2. Camera (Side/Quarter Tracking View)
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
@@ -619,7 +619,7 @@ export const PokiMurderGame: React.FC<PokiMurderGameProps> = ({
       ref={containerRef}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e3dbfc] font-mono text-white"
     >
       {/* 3D WebGL Canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />

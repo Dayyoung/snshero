@@ -181,8 +181,8 @@ export const PokiSubwaySurfersGame: React.FC<PokiSubwaySurfersGameProps> = ({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x38bdf8); // Sunny Sky Blue
-    scene.fog = new THREE.Fog(0x38bdf8, 30, 95);
+    scene.background = new THREE.Color(0xbfe3f7); // Sunny Sky Blue
+    scene.fog = new THREE.Fog(0xbfe3f7, 30, 95);
 
     // 2. Camera (Chase-cam behind surfer)
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 120);
@@ -662,7 +662,7 @@ export const PokiSubwaySurfersGame: React.FC<PokiSubwaySurfersGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-sky-400 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#bfe3f7] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >

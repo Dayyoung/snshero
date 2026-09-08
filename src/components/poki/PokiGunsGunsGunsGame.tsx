@@ -270,8 +270,8 @@ export const PokiGunsGunsGunsGame: React.FC<PokiGunsGunsGunsGameProps> = ({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1e293b); // Dark military tactical atmosphere
-    scene.fog = new THREE.FogExp2(0x1e293b, 0.018);
+    scene.background = new THREE.Color(0xe2e8f0); // Dark military tactical atmosphere
+    scene.fog = new THREE.FogExp2(0xe2e8f0, 0.018);
 
     // 2. Camera (Quarter-view tracking)
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
@@ -292,7 +292,7 @@ export const PokiGunsGunsGunsGame: React.FC<PokiGunsGunsGunsGameProps> = ({
     }
 
     // 4. Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
     scene.add(ambientLight);
 
     const dirLight = new THREE.DirectionalLight(0xffedd5, 1.3);
@@ -897,7 +897,7 @@ export const PokiGunsGunsGunsGame: React.FC<PokiGunsGunsGunsGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-900 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e2e8f0] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

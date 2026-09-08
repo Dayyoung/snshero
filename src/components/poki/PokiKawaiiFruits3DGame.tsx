@@ -278,7 +278,7 @@ export default function PokiKawaiiFruits3DGame({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x180e14);
+    scene.background = new THREE.Color(0xfcdad7);
 
     // 2. Camera
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
@@ -600,7 +600,7 @@ export default function PokiKawaiiFruits3DGame({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#180e14] font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fcdad7] font-mono"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
     >

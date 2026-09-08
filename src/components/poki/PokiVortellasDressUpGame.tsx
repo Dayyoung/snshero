@@ -236,8 +236,8 @@ export default function PokiVortellasDressUpGame({
     if (!container) return;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x09090b); // 심연의 블랙 & 퍼플
-    scene.fog = new THREE.FogExp2(0x09090b, 0.02);
+    scene.background = new THREE.Color(0xfcdad7); // 심연의 블랙 & 퍼플
+    scene.fog = new THREE.FogExp2(0xfcdad7, 0.02);
     stateRef.current.scene = scene;
 
     const w = container.clientWidth || window.innerWidth;
@@ -255,7 +255,7 @@ export default function PokiVortellasDressUpGame({
     stateRef.current.renderer = renderer;
 
     // 조명
-    const ambLight = new THREE.AmbientLight(0xffffff, 0.7);
+    const ambLight = new THREE.AmbientLight(0xffffff, 0.95);
     scene.add(ambLight);
 
     const purpleLight = new THREE.PointLight(0xa855f7, 2.0, 15);
@@ -460,7 +460,7 @@ export default function PokiVortellasDressUpGame({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fcdad7] font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

@@ -186,8 +186,8 @@ export default function PokiHarvestSimulatorGame({
     const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x7dd3fc); // 맑고 화창한 농장 하늘
-    scene.fog = new THREE.FogExp2(0x7dd3fc, 0.008);
+    scene.background = new THREE.Color(0xc7f2d6); // 맑고 화창한 농장 하늘
+    scene.fog = new THREE.FogExp2(0xc7f2d6, 0.008);
 
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 200);
     camera.position.set(0, 15, 16);
@@ -624,7 +624,7 @@ export default function PokiHarvestSimulatorGame({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 text-white font-mono flex flex-col"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c7f2d6] text-white font-mono flex flex-col"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

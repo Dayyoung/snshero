@@ -217,8 +217,8 @@ export const PokiMyHotelGame: React.FC<PokiMyHotelGameProps> = ({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x181412);
-    scene.fog = new THREE.FogExp2(0x181412, 0.015);
+    scene.background = new THREE.Color(0xfbf3d5);
+    scene.fog = new THREE.FogExp2(0xfbf3d5, 0.015);
 
     // 2. Camera: Isometric 3D Quarter View
     const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 150);
@@ -979,7 +979,7 @@ export const PokiMyHotelGame: React.FC<PokiMyHotelGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-stone-900 flex flex-col items-center justify-center"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fbf3d5] flex flex-col items-center justify-center"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

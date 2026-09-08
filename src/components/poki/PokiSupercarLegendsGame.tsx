@@ -165,8 +165,8 @@ export default function PokiSupercarLegendsGame({
 
     // 씬 및 렌더러
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x81d4fa); // 시원한 레이싱 서킷 스카이
-    scene.fog = new THREE.FogExp2(0xb3e5fc, 0.005);
+    scene.background = new THREE.Color(0xf5e1ce); // 시원한 레이싱 서킷 스카이
+    scene.fog = new THREE.FogExp2(0xf5e1ce, 0.005);
 
     const camera = new THREE.PerspectiveCamera(52, container.clientWidth / container.clientHeight, 0.5, 300);
 
@@ -586,7 +586,7 @@ export default function PokiSupercarLegendsGame({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-900 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#f5e1ce] font-mono"
       onTouchMove={handleTouchMove}
       onMouseMove={handleMouseMove}
     >

@@ -202,8 +202,8 @@ export default function PokiHillsOfSteelGame({
 
     // 씬 및 렌더러 초기화
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x87ceeb); // 맑은 하늘색
-    scene.fog = new THREE.FogExp2(0xb0e0e6, 0.007);
+    scene.background = new THREE.Color(0xc7f2d6); // 맑은 하늘색
+    scene.fog = new THREE.FogExp2(0xc7f2d6, 0.007);
 
     const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.5, 300);
     camera.position.set(-20, 10, 26);
@@ -216,7 +216,7 @@ export default function PokiHillsOfSteelGame({
     container.appendChild(renderer.domElement);
 
     // 조명
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
     scene.add(ambientLight);
 
     const sunLight = new THREE.DirectionalLight(0xfffaed, 1.2);
@@ -947,7 +947,7 @@ export default function PokiHillsOfSteelGame({
   };
 
   return (
-    <div className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-900 font-mono">
+    <div className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c7f2d6] font-mono">
       {/* 3D WebGL 캔버스 컨테이너 */}
       <div ref={containerRef} className="absolute inset-0 w-full h-full" />
 

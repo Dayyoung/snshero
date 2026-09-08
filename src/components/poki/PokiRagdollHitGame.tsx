@@ -441,8 +441,8 @@ export const PokiRagdollHitGame: React.FC<PokiRagdollHitGameProps> = ({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a); // Slate Dark Arena
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.02);
+    scene.background = new THREE.Color(0xe3dbfc); // Slate Dark Arena
+    scene.fog = new THREE.FogExp2(0xe3dbfc, 0.02);
 
     // 2. Camera
     const camera = new THREE.PerspectiveCamera(44, width / height, 0.1, 100);
@@ -926,7 +926,7 @@ export const PokiRagdollHitGame: React.FC<PokiRagdollHitGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e3dbfc] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

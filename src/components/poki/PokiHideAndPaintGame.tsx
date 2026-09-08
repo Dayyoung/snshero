@@ -200,8 +200,8 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
 
     // Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a); // Deep slate
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.025);
+    scene.background = new THREE.Color(0xfcdad7); // Deep slate
+    scene.fog = new THREE.FogExp2(0xfcdad7, 0.025);
 
     // Camera
     const camera = new THREE.PerspectiveCamera(50, initialW / initialH, 0.1, 100);
@@ -861,7 +861,7 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] bg-slate-950 overflow-hidden font-mono select-none touch-none"
+      className="fixed inset-0 w-full h-[100dvh] bg-[#fcdad7] overflow-hidden font-mono select-none touch-none"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

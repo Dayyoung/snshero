@@ -364,8 +364,8 @@ export const PokiPerfectShapeGame: React.FC<PokiPerfectShapeGameProps> = ({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x090d16); // Deep Cyber Atelier Night
-    scene.fog = new THREE.FogExp2(0x090d16, 0.02);
+    scene.background = new THREE.Color(0xfbf3d5); // Deep Cyber Atelier Night
+    scene.fog = new THREE.FogExp2(0xfbf3d5, 0.02);
 
     // 2. Camera (Top-down Isometric View)
     const camera = new THREE.PerspectiveCamera(46, width / height, 0.1, 100);
@@ -617,7 +617,7 @@ export const PokiPerfectShapeGame: React.FC<PokiPerfectShapeGameProps> = ({
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fbf3d5] font-mono text-white"
     >
       {/* 3D WebGL Canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />

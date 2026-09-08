@@ -305,8 +305,8 @@ export default function PokiMagicBattlegroundGame({
 
     // Scene & Camera
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f0b29); // Cosmic mystic purple
-    scene.fog = new THREE.FogExp2(0x0f0b29, 0.018);
+    scene.background = new THREE.Color(0xe3dbfc); // Cosmic mystic purple
+    scene.fog = new THREE.FogExp2(0xe3dbfc, 0.018);
 
     const camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 100);
     camera.position.set(0, 16, 20);
@@ -319,7 +319,7 @@ export default function PokiMagicBattlegroundGame({
     container.appendChild(renderer.domElement);
 
     // Mystic Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
     scene.add(ambientLight);
 
     const magicSun = new THREE.DirectionalLight(0xc084fc, 1.4);
@@ -786,7 +786,7 @@ export default function PokiMagicBattlegroundGame({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e3dbfc] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

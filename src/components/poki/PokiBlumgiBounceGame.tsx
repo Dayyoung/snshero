@@ -218,8 +218,8 @@ export const PokiBlumgiBounceGame: React.FC<PokiBlumgiBounceGameProps> = ({
 
     // 씬 & 카메라
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0c0f1d);
-    scene.fog = new THREE.FogExp2(0x0c0f1d, 0.025);
+    scene.background = new THREE.Color(0xc5e8eb);
+    scene.fog = new THREE.FogExp2(0xc5e8eb, 0.025);
     sceneRef.current = scene;
 
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
@@ -793,7 +793,7 @@ export const PokiBlumgiBounceGame: React.FC<PokiBlumgiBounceGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#0a0a14]"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c5e8eb]"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

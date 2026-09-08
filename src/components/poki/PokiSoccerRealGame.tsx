@@ -228,8 +228,8 @@ export const PokiSoccerRealGame: React.FC<PokiSoccerRealGameProps> = ({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a); // Stadium Night Sky
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.015);
+    scene.background = new THREE.Color(0xc7f2d6); // Stadium Night Sky
+    scene.fog = new THREE.FogExp2(0xc7f2d6, 0.015);
 
     // 2. Camera (Behind Kicker Shoulder View)
     const camera = new THREE.PerspectiveCamera(44, width / height, 0.1, 100);
@@ -250,7 +250,7 @@ export const PokiSoccerRealGame: React.FC<PokiSoccerRealGameProps> = ({
     }
 
     // 4. Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
     scene.add(ambientLight);
 
     const stadiumLight1 = new THREE.DirectionalLight(0xfff7ed, 1.3);
@@ -710,7 +710,7 @@ export const PokiSoccerRealGame: React.FC<PokiSoccerRealGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-900 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c7f2d6] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >

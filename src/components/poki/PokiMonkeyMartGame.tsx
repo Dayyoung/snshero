@@ -185,7 +185,7 @@ export default function PokiMonkeyMartGame({
 
     // 씬 및 렌더러
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf0fdf4); // 싱그러운 민트 베이지
+    scene.background = new THREE.Color(0xc7f2d6); // 싱그러운 민트 베이지
 
     const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.5, 200);
     camera.position.set(0, 24, 22);
@@ -881,7 +881,7 @@ export default function PokiMonkeyMartGame({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-900 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c7f2d6] font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

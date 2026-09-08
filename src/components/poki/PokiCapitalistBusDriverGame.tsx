@@ -249,8 +249,8 @@ export default function PokiCapitalistBusDriverGame({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0284c7); // Coastal sky blue
-    scene.fog = new THREE.Fog(0x0284c7, 40, 120);
+    scene.background = new THREE.Color(0xbfe3f7); // Coastal sky blue
+    scene.fog = new THREE.Fog(0xbfe3f7, 40, 120);
 
     // 2. Camera (Chase View)
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 200);
@@ -720,7 +720,7 @@ export default function PokiCapitalistBusDriverGame({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#0a1520] font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#bfe3f7] font-mono"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >

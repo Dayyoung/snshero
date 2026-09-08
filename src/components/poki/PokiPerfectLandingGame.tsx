@@ -264,8 +264,8 @@ export default function PokiPerfectLandingGame({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x38bdf8); // Sky blue
-    scene.fog = new THREE.Fog(0x38bdf8, 80, 240);
+    scene.background = new THREE.Color(0xbfe3f7); // Sky blue
+    scene.fog = new THREE.Fog(0xbfe3f7, 80, 240);
 
     // 2. Camera (Chase View)
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 300);
@@ -601,7 +601,7 @@ export default function PokiPerfectLandingGame({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#0369a1] font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#bfe3f7] font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

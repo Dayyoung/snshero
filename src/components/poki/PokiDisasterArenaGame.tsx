@@ -253,8 +253,8 @@ export const PokiDisasterArenaGame: React.FC<PokiDisasterArenaGameProps> = ({
 
     // Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x130a1c);
-    scene.fog = new THREE.FogExp2(0x130a1c, 0.022);
+    scene.background = new THREE.Color(0xe3dbfc);
+    scene.fog = new THREE.FogExp2(0xe3dbfc, 0.022);
 
     // Camera
     const camera = new THREE.PerspectiveCamera(52, width / height, 0.1, 120);
@@ -270,7 +270,7 @@ export const PokiDisasterArenaGame: React.FC<PokiDisasterArenaGameProps> = ({
     container.appendChild(renderer.domElement);
 
     // 조명
-    const ambientLight = new THREE.AmbientLight(0xfff0e8, 0.7);
+    const ambientLight = new THREE.AmbientLight(0xfff0e8, 0.95);
     scene.add(ambientLight);
 
     const dirLight = new THREE.DirectionalLight(0xffddaa, 1.2);
@@ -1192,7 +1192,7 @@ export const PokiDisasterArenaGame: React.FC<PokiDisasterArenaGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-black text-white font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e3dbfc] text-white font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

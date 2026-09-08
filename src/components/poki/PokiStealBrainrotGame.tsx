@@ -141,8 +141,8 @@ export const PokiStealBrainrotGame: React.FC<PokiStealBrainrotGameProps> = ({
 
     // 씬, 카메라, 렌더러
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x060914);
-    scene.fog = new THREE.FogExp2(0x060914, 0.02);
+    scene.background = new THREE.Color(0xe3dbfc);
+    scene.fog = new THREE.FogExp2(0xe3dbfc, 0.02);
 
     const camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 100);
     camera.position.set(-12, 16, 15);
@@ -156,7 +156,7 @@ export const PokiStealBrainrotGame: React.FC<PokiStealBrainrotGameProps> = ({
     container.appendChild(renderer.domElement);
 
     // 조명
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
     scene.add(ambientLight);
 
     const dirLight = new THREE.DirectionalLight(0x38bdf8, 1.2);
@@ -762,7 +762,7 @@ export const PokiStealBrainrotGame: React.FC<PokiStealBrainrotGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e3dbfc] font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

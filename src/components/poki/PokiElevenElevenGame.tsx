@@ -313,7 +313,7 @@ export const PokiElevenElevenGame: React.FC<PokiElevenElevenGameProps> = ({
 
     // 씬 & 카메라
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0c0d18);
+    scene.background = new THREE.Color(0xfbf3d5);
     sceneRef.current = scene;
 
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
@@ -484,7 +484,7 @@ export const PokiElevenElevenGame: React.FC<PokiElevenElevenGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#0c0d18]"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fbf3d5]"
       onPointerDown={handlePointerDown}
     >
       {/* 3D 뷰포트 마운트 */}

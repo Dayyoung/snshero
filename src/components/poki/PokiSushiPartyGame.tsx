@@ -206,8 +206,8 @@ export const PokiSushiPartyGame: React.FC<PokiSushiPartyGameProps> = ({
 
     // Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1a0f1d);
-    scene.fog = new THREE.FogExp2(0x1a0f1d, 0.015);
+    scene.background = new THREE.Color(0xfcdad7);
+    scene.fog = new THREE.FogExp2(0xfcdad7, 0.015);
 
     // Camera (탑다운 쿼터뷰)
     const camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 120);
@@ -799,7 +799,7 @@ export const PokiSushiPartyGame: React.FC<PokiSushiPartyGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-black text-white font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fcdad7] text-white font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

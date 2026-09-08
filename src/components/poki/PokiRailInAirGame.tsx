@@ -188,8 +188,8 @@ export default function PokiRailInAirGame({
 
     // 씬 및 렌더러
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x70b5ff);
-    scene.fog = new THREE.FogExp2(0xcce2ff, 0.003);
+    scene.background = new THREE.Color(0xbfe3f7);
+    scene.fog = new THREE.FogExp2(0xbfe3f7, 0.003);
 
     const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.5, 600);
 
@@ -603,7 +603,7 @@ export default function PokiRailInAirGame({
   };
 
   return (
-    <div className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-900 font-mono">
+    <div className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#bfe3f7] font-mono">
       {/* 3D WebGL 캔버스 */}
       <div ref={containerRef} className="absolute inset-0 w-full h-full" />
 

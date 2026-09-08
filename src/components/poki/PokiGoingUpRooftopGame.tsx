@@ -144,8 +144,8 @@ export default function PokiGoingUpRooftopGame({
 
     // 씬 및 렌더러
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a192f); // 사이버 미드나잇 블루
-    scene.fog = new THREE.FogExp2(0x0a192f, 0.012);
+    scene.background = new THREE.Color(0xbfe3f7); // 사이버 미드나잇 블루
+    scene.fog = new THREE.FogExp2(0xbfe3f7, 0.012);
 
     const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.5, 200);
     camera.position.set(0, 4, 14);
@@ -591,7 +591,7 @@ export default function PokiGoingUpRooftopGame({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-900 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#bfe3f7] font-mono"
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >

@@ -420,7 +420,7 @@ export const PokiBrainTest5Game: React.FC<PokiBrainTest5GameProps> = ({
 
     // 씬 & 카메라
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1a162b);
+    scene.background = new THREE.Color(0xfbf3d5);
     sceneRef.current = scene;
 
     const camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 100);
@@ -724,7 +724,7 @@ export const PokiBrainTest5Game: React.FC<PokiBrainTest5GameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#1a162b]"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fbf3d5]"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

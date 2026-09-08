@@ -222,8 +222,8 @@ export default function PokiStickmanCrazyBoxGame({
     const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x090d16); // 딥 사이버 아레나
-    scene.fog = new THREE.FogExp2(0x090d16, 0.01);
+    scene.background = new THREE.Color(0xe3dbfc); // 딥 사이버 아레나
+    scene.fog = new THREE.FogExp2(0xe3dbfc, 0.01);
 
     // Camera (탑다운 쿼터뷰)
     const camera = new THREE.PerspectiveCamera(54, width / height, 0.1, 200);
@@ -782,7 +782,7 @@ export default function PokiStickmanCrazyBoxGame({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 text-white font-mono flex flex-col"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e3dbfc] text-white font-mono flex flex-col"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

@@ -406,7 +406,7 @@ export const PokiDecorLifeGame: React.FC<PokiDecorLifeGameProps> = ({
     const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a); // 코지 나이트/모던 슬레이트
+    scene.background = new THREE.Color(0xfbf3d5); // 코지 나이트/모던 슬레이트
     threeRef.current.scene = scene;
 
     const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
@@ -706,7 +706,7 @@ export const PokiDecorLifeGame: React.FC<PokiDecorLifeGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fbf3d5] font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

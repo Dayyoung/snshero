@@ -210,8 +210,8 @@ export default function PokiHillClimbRacingLiteGame({
     const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x7dd3fc); // 화창한 스카이 블루
-    scene.fog = new THREE.FogExp2(0x7dd3fc, 0.006);
+    scene.background = new THREE.Color(0xbfe3f7); // 화창한 스카이 블루
+    scene.fog = new THREE.FogExp2(0xbfe3f7, 0.006);
 
     // Camera (측면 2.5D 팔로우 뷰)
     const camera = new THREE.PerspectiveCamera(52, width / height, 0.1, 400);
@@ -651,7 +651,7 @@ export default function PokiHillClimbRacingLiteGame({
   };
 
   return (
-    <div className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-sky-300 text-slate-900 font-mono flex flex-col">
+    <div className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#bfe3f7] text-slate-900 font-mono flex flex-col">
       {/* Three.js 3D 뷰포트 */}
       <div ref={mountRef} className="absolute inset-0 w-full h-full pointer-events-none" />
 

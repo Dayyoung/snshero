@@ -135,7 +135,7 @@ export default function PokiNailsDIYGame({
 
     // 씬 및 렌더러
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xfce4ec); // 로맨틱 핑크
+    scene.background = new THREE.Color(0xfcdad7); // 로맨틱 핑크
 
     const camera = new THREE.PerspectiveCamera(42, container.clientWidth / container.clientHeight, 0.5, 100);
     camera.position.set(0, 5.5, 6.5);
@@ -456,7 +456,7 @@ export default function PokiNailsDIYGame({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-900 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fcdad7] font-mono"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onMouseDown={handleTouchStart}

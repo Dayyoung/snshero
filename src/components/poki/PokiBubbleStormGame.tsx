@@ -170,8 +170,8 @@ export const PokiBubbleStormGame: React.FC<PokiBubbleStormGameProps> = ({
 
     // 1. Scene & Camera
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0d1a);
-    scene.fog = new THREE.FogExp2(0x0a0d1a, 0.02);
+    scene.background = new THREE.Color(0xbfe3f7);
+    scene.fog = new THREE.FogExp2(0xbfe3f7, 0.02);
     gameLoopRef.current.scene = scene;
 
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
@@ -721,7 +721,7 @@ export const PokiBubbleStormGame: React.FC<PokiBubbleStormGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#bfe3f7] font-mono text-white"
       onTouchMove={handleTouchMove}
       onTouchEnd={handleFire}
     >

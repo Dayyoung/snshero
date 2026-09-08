@@ -218,8 +218,8 @@ export default function PokiFashionLegendsGame({
     if (!container) return;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1e1b4b); // 딥 인디고 패션쇼 스타디움
-    scene.fog = new THREE.FogExp2(0x1e1b4b, 0.015);
+    scene.background = new THREE.Color(0xfcdad7); // 딥 인디고 패션쇼 스타디움
+    scene.fog = new THREE.FogExp2(0xfcdad7, 0.015);
     stateRef.current.scene = scene;
 
     const w = container.clientWidth || window.innerWidth;
@@ -537,7 +537,7 @@ export default function PokiFashionLegendsGame({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fcdad7] font-mono"
       onTouchMove={handleTouchMove}
     >
       {/* 상단 HUD */}

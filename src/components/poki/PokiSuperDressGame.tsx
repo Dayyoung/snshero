@@ -117,8 +117,8 @@ export const PokiSuperDressGame: React.FC<PokiSuperDressGameProps> = ({
     // 1. Scene & Camera
     const scene = new THREE.Scene();
     game.scene = scene;
-    scene.background = new THREE.Color(0x0a0812);
-    scene.fog = new THREE.FogExp2(0x0a0812, 0.03);
+    scene.background = new THREE.Color(0xfcdad7);
+    scene.fog = new THREE.FogExp2(0xfcdad7, 0.03);
 
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.set(0, 1.3, 4.4);
@@ -578,7 +578,7 @@ export const PokiSuperDressGame: React.FC<PokiSuperDressGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#0a0812] font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fcdad7] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

@@ -421,8 +421,8 @@ export default function PokiBlastBuddiesGame({
 
     // Scene & Camera
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0c1222); // Cyber dark blue
-    scene.fog = new THREE.FogExp2(0x0c1222, 0.015);
+    scene.background = new THREE.Color(0xc5e8eb); // Cyber dark blue
+    scene.fog = new THREE.FogExp2(0xc5e8eb, 0.015);
 
     const camera = new THREE.PerspectiveCamera(46, width / height, 0.1, 100);
     camera.position.set(0, 21, 14);
@@ -831,7 +831,7 @@ export default function PokiBlastBuddiesGame({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c5e8eb] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

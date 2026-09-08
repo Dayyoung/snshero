@@ -294,8 +294,8 @@ export default function PokiRealCityBikesGame({
 
     // Scene & Camera
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x060913); // Midnight metropolis sky
-    scene.fog = new THREE.FogExp2(0x060913, 0.01);
+    scene.background = new THREE.Color(0xf5e1ce); // Midnight metropolis sky
+    scene.fog = new THREE.FogExp2(0xf5e1ce, 0.01);
 
     const camera = new THREE.PerspectiveCamera(54, width / height, 0.1, 180);
     camera.position.set(0, 2.8, -5.5);
@@ -307,7 +307,7 @@ export default function PokiRealCityBikesGame({
     container.appendChild(renderer.domElement);
 
     // City Highway Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
     scene.add(ambientLight);
 
     const sunLight = new THREE.DirectionalLight(0x38bdf8, 1.2);
@@ -707,7 +707,7 @@ export default function PokiRealCityBikesGame({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#f5e1ce] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

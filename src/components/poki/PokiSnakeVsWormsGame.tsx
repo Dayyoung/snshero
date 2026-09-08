@@ -329,8 +329,8 @@ export const PokiSnakeVsWormsGame: React.FC<PokiSnakeVsWormsGameProps> = ({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0f1d);
-    scene.fog = new THREE.FogExp2(0x0a0f1d, 0.012);
+    scene.background = new THREE.Color(0xc7f2d6);
+    scene.fog = new THREE.FogExp2(0xc7f2d6, 0.012);
 
     // 2. Camera (Perspective top-down angled follow)
     const camera = new THREE.PerspectiveCamera(54, width / height, 0.5, 300);
@@ -1075,7 +1075,7 @@ export const PokiSnakeVsWormsGame: React.FC<PokiSnakeVsWormsGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c7f2d6] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

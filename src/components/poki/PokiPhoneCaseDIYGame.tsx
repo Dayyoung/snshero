@@ -394,7 +394,7 @@ export default function PokiPhoneCaseDIYGame({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0e0c14);
+    scene.background = new THREE.Color(0xfcdad7);
 
     // 2. Camera
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
@@ -816,7 +816,7 @@ export default function PokiPhoneCaseDIYGame({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#0e0c14] font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fcdad7] font-mono"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

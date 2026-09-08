@@ -237,7 +237,7 @@ export const PokiSatisBoxGame: React.FC<PokiSatisBoxGameProps> = ({
     // 1. Scene & Camera
     const scene = new THREE.Scene();
     game.scene = scene;
-    scene.background = new THREE.Color(0xf6ede2);
+    scene.background = new THREE.Color(0xfbf3d5);
 
     const camera = new THREE.PerspectiveCamera(46, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.set(0, 11, 4.2);
@@ -488,7 +488,7 @@ export const PokiSatisBoxGame: React.FC<PokiSatisBoxGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#f6ede2] font-mono text-zinc-900"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fbf3d5] font-mono text-zinc-900"
     >
       {/* Minimalist Top HUD */}
       <MinimalistMissionHUD

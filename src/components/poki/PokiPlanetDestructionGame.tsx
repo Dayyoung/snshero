@@ -96,7 +96,7 @@ export const PokiPlanetDestructionGame: React.FC<PokiPlanetDestructionGameProps>
     // 1. Scene & Camera
     const scene = new THREE.Scene();
     game.scene = scene;
-    scene.background = new THREE.Color(0x04060d);
+    scene.background = new THREE.Color(0xe3dbfc);
 
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.set(0, 0, 8.5);
@@ -110,7 +110,7 @@ export const PokiPlanetDestructionGame: React.FC<PokiPlanetDestructionGameProps>
     game.renderer = renderer;
 
     // 3. Lighting (Sun Light & Nebula Glow)
-    const ambientLight = new THREE.AmbientLight(0x223355, 0.6);
+    const ambientLight = new THREE.AmbientLight(0x223355, 0.95);
     scene.add(ambientLight);
 
     const sunLight = new THREE.DirectionalLight(0xfffaed, 2.2);
@@ -435,7 +435,7 @@ export const PokiPlanetDestructionGame: React.FC<PokiPlanetDestructionGameProps>
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#04060d] font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e3dbfc] font-mono text-white"
     >
       {/* Minimalist Top HUD */}
       <MinimalistMissionHUD

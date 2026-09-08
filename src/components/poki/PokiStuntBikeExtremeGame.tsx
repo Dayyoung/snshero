@@ -183,8 +183,8 @@ export const PokiStuntBikeExtremeGame: React.FC<PokiStuntBikeExtremeGameProps> =
 
     // Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x2a1714); // 사막 일몰 협곡 테마
-    scene.fog = new THREE.FogExp2(0x2a1714, 0.014);
+    scene.background = new THREE.Color(0xf5e1ce); // 사막 일몰 협곡 테마
+    scene.fog = new THREE.FogExp2(0xf5e1ce, 0.014);
 
     // Camera (사이드 추종 뷰)
     const camera = new THREE.PerspectiveCamera(46, width / height, 0.1, 120);
@@ -644,7 +644,7 @@ export const PokiStuntBikeExtremeGame: React.FC<PokiStuntBikeExtremeGameProps> =
   }, []);
 
   return (
-    <div className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-black text-white font-mono">
+    <div className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#f5e1ce] text-white font-mono">
       {/* Three.js 3D 뷰포트 컨테이너 */}
       <div ref={containerRef} className="absolute inset-0 w-full h-full" />
 

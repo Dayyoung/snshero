@@ -485,8 +485,8 @@ export default function PokiSwordMastersGame({
 
     // Scene & Camera
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a); // Slate fantasy dusk
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.015);
+    scene.background = new THREE.Color(0xe3dbfc); // Slate fantasy dusk
+    scene.fog = new THREE.FogExp2(0xe3dbfc, 0.015);
 
     const camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 120);
     camera.position.set(0, 8.5, 22);
@@ -498,7 +498,7 @@ export default function PokiSwordMastersGame({
     container.appendChild(renderer.domElement);
 
     // Warm Fantasy Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
     scene.add(ambientLight);
 
     const sunLight = new THREE.DirectionalLight(0xfef08a, 1.25);
@@ -828,7 +828,7 @@ export default function PokiSwordMastersGame({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e3dbfc] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

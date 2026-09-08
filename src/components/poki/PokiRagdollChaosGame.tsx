@@ -284,8 +284,8 @@ export const PokiRagdollChaosGame: React.FC<PokiRagdollChaosGameProps> = ({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0f1d);
-    scene.fog = new THREE.FogExp2(0x0a0f1d, 0.022);
+    scene.background = new THREE.Color(0xe3dbfc);
+    scene.fog = new THREE.FogExp2(0xe3dbfc, 0.022);
 
     // 2. Camera: Isometric 3/4 quarter view
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
@@ -1045,7 +1045,7 @@ export const PokiRagdollChaosGame: React.FC<PokiRagdollChaosGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 flex flex-col items-center justify-center"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e3dbfc] flex flex-col items-center justify-center"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

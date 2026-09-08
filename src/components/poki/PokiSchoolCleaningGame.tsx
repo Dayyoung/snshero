@@ -133,7 +133,7 @@ export default function PokiSchoolCleaningGame({
     const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf1f5f9); // 따뜻하고 밝은 교실 낮 햇살
+    scene.background = new THREE.Color(0xfbf3d5); // 따뜻하고 밝은 교실 낮 햇살
 
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
     camera.position.set(10, 8, 10);
@@ -818,7 +818,7 @@ export default function PokiSchoolCleaningGame({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-900 text-slate-100 font-mono flex flex-col"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fbf3d5] text-slate-100 font-mono flex flex-col"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

@@ -89,8 +89,8 @@ export const PokiKarateFighterGame: React.FC<PokiKarateFighterGameProps> = ({
     // 1. Scene & Camera
     const scene = new THREE.Scene();
     game.scene = scene;
-    scene.background = new THREE.Color(0x1a120b);
-    scene.fog = new THREE.FogExp2(0x1a120b, 0.025);
+    scene.background = new THREE.Color(0xe3dbfc);
+    scene.fog = new THREE.FogExp2(0xe3dbfc, 0.025);
 
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.set(0, 1.9, 7.5);
@@ -629,7 +629,7 @@ export const PokiKarateFighterGame: React.FC<PokiKarateFighterGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#1a120b] font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e3dbfc] font-mono text-white"
     >
       {/* Minimalist Top HUD */}
       <MinimalistMissionHUD

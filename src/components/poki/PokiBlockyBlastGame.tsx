@@ -506,7 +506,7 @@ export const PokiBlockyBlastGame: React.FC<PokiBlockyBlastGameProps> = ({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0f1d);
+    scene.background = new THREE.Color(0xbfe3f7);
     stateRef.current.boardScene = scene;
 
     // 2. Camera (Angled Top-down 3D View)
@@ -674,7 +674,7 @@ export const PokiBlockyBlastGame: React.FC<PokiBlockyBlastGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#bfe3f7] font-mono text-white"
       onTouchMove={handleTouchMove}
       onTouchEnd={handleDropPiece}
       onMouseMove={handleMouseMove}

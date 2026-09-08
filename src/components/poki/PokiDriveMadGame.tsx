@@ -179,8 +179,8 @@ export const PokiDriveMadGame: React.FC<PokiDriveMadGameProps> = ({
 
     // Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1e293b); // 산뜻한 딥 슬레이트 룸
-    scene.fog = new THREE.FogExp2(0x1e293b, 0.015);
+    scene.background = new THREE.Color(0xf5e1ce); // 산뜻한 딥 슬레이트 룸
+    scene.fog = new THREE.FogExp2(0xf5e1ce, 0.015);
 
     // Camera (사이드 쿼터뷰 추종)
     const camera = new THREE.PerspectiveCamera(46, width / height, 0.1, 120);
@@ -572,7 +572,7 @@ export const PokiDriveMadGame: React.FC<PokiDriveMadGameProps> = ({
   }, []);
 
   return (
-    <div className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-black text-white font-mono">
+    <div className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#f5e1ce] text-white font-mono">
       {/* Three.js 3D 뷰포트 컨테이너 */}
       <div ref={containerRef} className="absolute inset-0 w-full h-full" />
 

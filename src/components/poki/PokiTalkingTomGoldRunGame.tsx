@@ -243,8 +243,8 @@ export const PokiTalkingTomGoldRunGame: React.FC<PokiTalkingTomGoldRunGameProps>
 
     // 1. Scene & Atmosphere
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a);
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.014);
+    scene.background = new THREE.Color(0xbfe3f7);
+    scene.fog = new THREE.FogExp2(0xbfe3f7, 0.014);
 
     // 2. Camera: 3rd Person Behind-the-Back Runner View
     const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 160);
@@ -881,7 +881,7 @@ export const PokiTalkingTomGoldRunGame: React.FC<PokiTalkingTomGoldRunGameProps>
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 flex flex-col items-center justify-center"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#bfe3f7] flex flex-col items-center justify-center"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >

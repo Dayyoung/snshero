@@ -160,7 +160,7 @@ export default function PokiPingPongGoGame({
 
     // 씬 및 렌더러
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0d47a1); // 스포츠 스타디움 딥블루
+    scene.background = new THREE.Color(0xc5e8eb); // 스포츠 스타디움 딥블루
 
     const camera = new THREE.PerspectiveCamera(46, container.clientWidth / container.clientHeight, 0.5, 120);
     camera.position.set(0, 7.8, -12.5);
@@ -562,7 +562,7 @@ export default function PokiPingPongGoGame({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-900 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c5e8eb] font-mono"
       onTouchMove={handleTouchMove}
       onMouseMove={handleMouseMove}
     >

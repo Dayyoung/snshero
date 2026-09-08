@@ -141,7 +141,7 @@ export default function PokiGoodsMasterGame({
     const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x111827); // 세련된 다크 마켓 톤
+    scene.background = new THREE.Color(0xfbf3d5); // 세련된 다크 마켓 톤
 
     const camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 100);
     camera.position.set(0, 4.2, 9.8);
@@ -630,7 +630,7 @@ export default function PokiGoodsMasterGame({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 text-white font-mono flex flex-col"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fbf3d5] text-white font-mono flex flex-col"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

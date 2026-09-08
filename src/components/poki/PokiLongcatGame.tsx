@@ -584,7 +584,7 @@ export const PokiLongcatGame: React.FC<PokiLongcatGameProps> = ({
 
     // 1. Scene setup
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xfbf9f5); // Warm cream aesthetic
+    scene.background = new THREE.Color(0xfbf3d5); // Warm cream aesthetic
 
     // 2. Camera setup
     const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
@@ -797,7 +797,7 @@ export const PokiLongcatGame: React.FC<PokiLongcatGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fbf9f5] font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fbf3d5] font-mono"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >

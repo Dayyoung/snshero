@@ -190,7 +190,7 @@ export default function PokiCarCircleGame({
     const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a); // 세련된 사이버 시티 나이트
+    scene.background = new THREE.Color(0xf5e1ce); // 세련된 사이버 시티 나이트
 
     const camera = new THREE.PerspectiveCamera(46, width / height, 0.1, 100);
     camera.position.set(0, 16.5, 14.5);
@@ -580,7 +580,7 @@ export default function PokiCarCircleGame({
   return (
     <div
       onClick={handleLaunchCar}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 text-white font-mono flex flex-col cursor-pointer"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#f5e1ce] text-white font-mono flex flex-col cursor-pointer"
     >
       {/* Three.js 3D 뷰포트 */}
       <div ref={mountRef} className="absolute inset-0 w-full h-full pointer-events-none" />

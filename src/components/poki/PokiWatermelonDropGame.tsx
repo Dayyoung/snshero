@@ -254,7 +254,7 @@ export default function PokiWatermelonDropGame({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a120e);
+    scene.background = new THREE.Color(0xc7f2d6);
 
     // 2. Camera
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
@@ -570,7 +570,7 @@ export default function PokiWatermelonDropGame({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#0a120e] font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c7f2d6] font-mono"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
     >

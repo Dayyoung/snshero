@@ -169,8 +169,8 @@ export default function PokiScaryTeacherHideSeekGame({
 
     // 씬 및 렌더러
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1a1a24); // 서스펜스 다크 하우스
-    scene.fog = new THREE.FogExp2(0x1a1a24, 0.015);
+    scene.background = new THREE.Color(0xfbf3d5); // 서스펜스 다크 하우스
+    scene.fog = new THREE.FogExp2(0xfbf3d5, 0.015);
 
     const camera = new THREE.PerspectiveCamera(46, container.clientWidth / container.clientHeight, 0.5, 120);
     camera.position.set(-10, 18, 22);
@@ -183,7 +183,7 @@ export default function PokiScaryTeacherHideSeekGame({
     container.appendChild(renderer.domElement);
 
     // 조명 (어두운 저택 분위기 + 앤틱 벽등)
-    const ambientLight = new THREE.AmbientLight(0xffeedd, 0.5);
+    const ambientLight = new THREE.AmbientLight(0xffeedd, 0.95);
     scene.add(ambientLight);
 
     const mainLight = new THREE.DirectionalLight(0xffe0b2, 0.7);
@@ -713,7 +713,7 @@ export default function PokiScaryTeacherHideSeekGame({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-900 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fbf3d5] font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

@@ -309,8 +309,8 @@ export default function PokiUndeadSlayerGame({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0508);
-    scene.fog = new THREE.Fog(0x0a0508, 20, 50);
+    scene.background = new THREE.Color(0xe3dbfc);
+    scene.fog = new THREE.Fog(0xe3dbfc, 20, 50);
 
     // 2. Camera (Quarter-view Dynamic Camera)
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
@@ -327,7 +327,7 @@ export default function PokiUndeadSlayerGame({
     container.appendChild(renderer.domElement);
 
     // 4. Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
     scene.add(ambientLight);
 
     const moonLight = new THREE.DirectionalLight(0xa5b4fc, 1.2);
@@ -670,7 +670,7 @@ export default function PokiUndeadSlayerGame({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#0a0508] font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#e3dbfc] font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

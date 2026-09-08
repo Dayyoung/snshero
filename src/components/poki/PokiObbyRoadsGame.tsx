@@ -175,8 +175,8 @@ export const PokiObbyRoadsGame: React.FC<PokiObbyRoadsGameProps> = ({
 
     // 씬 & 카메라
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0284c7);
-    scene.fog = new THREE.FogExp2(0x0284c7, 0.012);
+    scene.background = new THREE.Color(0xbfe3f7);
+    scene.fog = new THREE.FogExp2(0xbfe3f7, 0.012);
     sceneRef.current = scene;
 
     const camera = new THREE.PerspectiveCamera(56, width / height, 0.1, 300);
@@ -635,7 +635,7 @@ export const PokiObbyRoadsGame: React.FC<PokiObbyRoadsGameProps> = ({
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#0284c7]"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#bfe3f7]"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

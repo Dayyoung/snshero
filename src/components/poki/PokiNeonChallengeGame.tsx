@@ -128,8 +128,8 @@ export const PokiNeonChallengeGame: React.FC<PokiNeonChallengeGameProps> = ({
 
     // 씬, 카메라, 렌더러
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x050512);
-    scene.fog = new THREE.FogExp2(0x050512, 0.016);
+    scene.background = new THREE.Color(0xc5e8eb);
+    scene.fog = new THREE.FogExp2(0xc5e8eb, 0.016);
 
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 150);
     camera.position.set(0, 4.5, 8);
@@ -696,7 +696,7 @@ export const PokiNeonChallengeGame: React.FC<PokiNeonChallengeGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c5e8eb] font-mono"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

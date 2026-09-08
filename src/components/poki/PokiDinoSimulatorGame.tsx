@@ -353,8 +353,8 @@ export const PokiDinoSimulatorGame: React.FC<PokiDinoSimulatorGameProps> = ({
 
     // Scene & Prehistoric Sunset Fog
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x2d1b0e); // Dark primordial sunset
-    scene.fog = new THREE.FogExp2(0x2d1b0e, 0.018);
+    scene.background = new THREE.Color(0xc7f2d6); // Dark primordial sunset
+    scene.fog = new THREE.FogExp2(0xc7f2d6, 0.018);
 
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 120);
     camera.position.set(0, 5.5, 12);
@@ -366,7 +366,7 @@ export const PokiDinoSimulatorGame: React.FC<PokiDinoSimulatorGameProps> = ({
     container.appendChild(renderer.domElement);
 
     // Primordial Lighting
-    const ambientLight = new THREE.AmbientLight(0xfed7aa, 0.65);
+    const ambientLight = new THREE.AmbientLight(0xfed7aa, 0.95);
     scene.add(ambientLight);
 
     const sunLight = new THREE.DirectionalLight(0xf97316, 1.4);
@@ -940,7 +940,7 @@ export const PokiDinoSimulatorGame: React.FC<PokiDinoSimulatorGameProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-stone-950 font-mono text-white"
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#c7f2d6] font-mono text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
