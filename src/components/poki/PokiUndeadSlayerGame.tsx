@@ -99,12 +99,10 @@ export const PokiUndeadSlayerGame: React.FC<PokiUndeadSlayerGameProps> = ({
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, w, h);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.14, 50, 50);
 
       const s = gameState.current;
 
-      // Render Slashes
       s.slashMarks.forEach((sm, idx) => {
         ctx.strokeStyle = `rgba(239, 68, 68, ${sm.alpha})`;
         ctx.lineWidth = 4;
@@ -115,7 +113,6 @@ export const PokiUndeadSlayerGame: React.FC<PokiUndeadSlayerGameProps> = ({
         if (sm.alpha <= 0) s.slashMarks.splice(idx, 1);
       });
 
-      // Render Undead
       s.undead.forEach((un) => {
         if (un.alive) {
           const ang = Math.atan2(s.playerY - un.y, s.playerX - un.x);
@@ -132,7 +129,6 @@ export const PokiUndeadSlayerGame: React.FC<PokiUndeadSlayerGameProps> = ({
         }
       });
 
-      // Player Slayer
       ctx.fillStyle = '#8b5cf6';
       ctx.beginPath();
       ctx.arc(s.playerX, s.playerY, 22, 0, Math.PI * 2);
@@ -141,11 +137,10 @@ export const PokiUndeadSlayerGame: React.FC<PokiUndeadSlayerGameProps> = ({
       ctx.lineWidth = 3;
       ctx.stroke();
 
-      // Guide
       ctx.fillStyle = '#c4b5fd';
       ctx.font = '14px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(isKo ? '화면을 탭/스와이프하여 접근하는 언데드를 베어 넘기세요!' : 'Tap/swipe to slash approaching undead!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '마우스 클릭/드래그 또는 터치로 언데드를 베어 넘기세요!' : 'Click, drag mouse or touch to slash undead!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -157,13 +152,12 @@ export const PokiUndeadSlayerGame: React.FC<PokiUndeadSlayerGameProps> = ({
     };
   }, [effectiveCardId, initUndead, isKo]);
 
-  const handleTouch = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handlePointer = (clientX: number, clientY: number) => {
     if (gameWon) return;
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const touch = e.touches[0];
-    const tx = touch.clientX - rect.left;
-    const ty = touch.clientY - rect.top;
+    const tx = clientX - rect.left;
+    const ty = clientY - rect.top;
 
     gameState.current.slashMarks.push({ x: tx, y: ty, alpha: 1.0 });
 
@@ -193,16 +187,25 @@ export const PokiUndeadSlayerGame: React.FC<PokiUndeadSlayerGameProps> = ({
         subtitle="UNDEAD SWORD SLASH ACTION"
         score={score}
         targetScore={targetScore}
-        guideText={isKo ? '언데드를 터치해 베어내세요!' : 'Slash undead!'}
+        guideText={isKo ? '마우스/터치로 베어내세요!' : 'Slash undead!'}
         onClose={handleExit}
       />
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchStart={handleTouch}
-        onTouchMove={handleTouch}
-        onMouseDown={handleTouch as any}
+        className="block w-full h-full cursor-crosshair"
+        onTouchStart={(e) => {
+          const t = e.touches[0];
+          if (t) handlePointer(t.clientX, t.clientY);
+        }}
+        onTouchMove={(e) => {
+          const t = e.touches[0];
+          if (t) handlePointer(t.clientX, t.clientY);
+        }}
+        onMouseDown={(e) => handlePointer(e.clientX, e.clientY)}
+        onMouseMove={(e) => {
+          if (e.buttons > 0) handlePointer(e.clientX, e.clientY);
+        }}
       />
 
       {gameWon && rewardReceipt && (

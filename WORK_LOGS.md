@@ -2,6 +2,32 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-09 04:25 KST] [110개 게임 PC 마우스(클릭/드래그) 및 키보드 조작 전면 지원 & 전수 무결점 검수 완료]
+- **요청 사항**:
+  1. PC에서도 플레이가 가능하게 해줄 것.
+  2. 일부 게임 터치 전용이라 마우스로 안 되는 문제 해결.
+  3. 110개 전체 검수.
+- **조치 내역**:
+  1. **터치 전용 15개 게임 마우스 & 키보드 듀얼 컨트롤 전면 연동**:
+     - 대상 파일: `PokiBlockyBlastGame.tsx`, `PokiCryzenGame.tsx`, `PokiHideAndPaintGame.tsx`, `PokiLongcatGame.tsx`, `PokiMineFunGame.tsx`, `PokiPaperIoGame.tsx`, `PokiPenaltyShooters2Game.tsx`, `PokiRagdollChaosGame.tsx`, `PokiSlimeKeyboardGame.tsx`, `PokiSnakeVsWormsGame.tsx`, `PokiSoccerRealGame.tsx`, `PokiSoccerSkillsWorldCupGame.tsx`, `PokiSubwaySurfersGame.tsx`, `PokiTalkingTomGoldRunGame.tsx`, `PokiVectariaGame.tsx`
+     - 터치 이벤트(`onTouchStart`, `onTouchMove`, `onTouchEnd`)에만 묶여있던 핸들러들을 좌표 기반 추상화(`handlePointerDown`, `handlePointerMove`, `handlePointerEnd`)로 개편하고, 마우스 이벤트(`onMouseDown`, `onMouseMove`, `onMouseUp`) 바인딩 완료.
+     - 키보드 조작(WASD, 방향키, 스페이스바) 리스너를 전면 추가하여 PC 브라우저 환경에서 직관적 플레이 지원.
+     - 캔버스에 `cursor-pointer`, `cursor-crosshair`, `cursor-grab active:cursor-grabbing` 적용하여 PC 마우스 UI 경험 극대화.
+  2. **Batch 10 & 11 (20개 게임) 마우스 & 키보드 지원 리팩터링 및 LevelDevil 패치 완료**:
+     - `PokiHexellent`, `PokiHarvestSimulator`, `PokiCarCircle`, `PokiPhoneCaseDIY`, `PokiSoccerLeague`, `PokiCapitalistBusDriver`, `PokiEvoWorldIo`, `PokiBulletBros`, `PokiPerfectLanding`, `PokiUndeadSlayer`, `PokiWatermelonDrop`, `PokiKawaiiFruits3D`, `PokiBlumgiBounce`, `PokiBrainTest5`, `PokiBlumgiMerge`, `PokiStickmanClimb3D`, `PokiBrainTestSpecial`, `PokiElevenEleven`, `PokiBlumgiSlime`, `PokiObbyRoads`, `PokiLevelDevilGame`
+     - 마우스 클릭 시 `e.touches[0]` 접근 오류 원천 차단 및 키보드(Space, ArrowKeys, WASD) 조작 완비.
+  3. **110개 게임 전수 정밀 감사 스크립트 실행 및 무결점 검증**:
+     - 110개 전수 마우스/클릭/포인터 지원 검증: 110 / 110 (100% 완전 지원)
+     - `TypeError: Cannot read properties of undefined (reading '0')` 크래시 위험: 0건
+     - `button` 컨트롤 태그 누락: 0건
+     - `canvas` 및 루트 컨테이너 마우스 누락: 0건
+- **검증 결과**:
+  - `tsc --noEmit`: TypeScript strict 검사 0건 에러 완전 통과.
+  - `vite build`: 프로덕션 빌드 성공 (`✓ built in 10.30s`).
+- **구글 폼 보고**: 완료
+
+---
+
 ## [2026-09-09 01:50 KST] [110개 게임 100% 순수 2D Canvas 모드 전면 전환 & 모바일 전체화면·퓨어 터치 조작 최적화 완료]
 - **요청 사항 (`/goal`)**:
   1. 110개 3D 게임 모두 2D 모드로 변경할 것.

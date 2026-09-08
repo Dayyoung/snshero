@@ -37,7 +37,7 @@ export const PokiCapitalistBusDriverGame: React.FC<PokiCapitalistBusDriverGamePr
   const [rewardReceipt, setRewardReceipt] = useState<RewardReceipt | null>(null);
 
   const gameState = useRef({
-    lane: 1, // 0, 1, 2
+    lane: 1,
     busX: 200,
     busY: 520,
     passengers: [] as { x: number; y: number; collected: boolean; isPassenger: boolean }[]
@@ -93,13 +93,24 @@ export const PokiCapitalistBusDriverGame: React.FC<PokiCapitalistBusDriverGamePr
     resize();
     window.addEventListener('resize', resize);
 
+    // Keyboard support: ArrowLeft / ArrowRight / A / D
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        gameState.current.lane = Math.max(0, gameState.current.lane - 1);
+        if (navigator.vibrate) navigator.vibrate(20);
+      } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        gameState.current.lane = Math.min(2, gameState.current.lane + 1);
+        if (navigator.vibrate) navigator.vibrate(20);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, w, h);
 
-      // Road Lanes
       const laneW = w / 3;
       ctx.fillStyle = '#1e293b';
       ctx.fillRect(0, h * 0.15, w, h * 0.72);
@@ -115,14 +126,12 @@ export const PokiCapitalistBusDriverGame: React.FC<PokiCapitalistBusDriverGamePr
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.1, 50, 50);
 
       const s = gameState.current;
       const targetX = s.lane * laneW + laneW / 2;
       s.busX += (targetX - s.busX) * 0.2;
 
-      // Render Spawns
       s.passengers.forEach((p) => {
         p.y += 4;
         if (!p.collected) {
@@ -144,7 +153,6 @@ export const PokiCapitalistBusDriverGame: React.FC<PokiCapitalistBusDriverGamePr
             ctx.fillText('⚠️', p.x, p.y + 4);
           }
 
-          // Hit Bus
           if (Math.hypot(p.x - s.busX, p.y - s.busY) < 38) {
             p.collected = true;
             if (p.isPassenger) {
@@ -166,17 +174,15 @@ export const PokiCapitalistBusDriverGame: React.FC<PokiCapitalistBusDriverGamePr
         }
       });
 
-      // Render Bus
       ctx.fillStyle = '#f59e0b';
       ctx.fillRect(s.busX - 24, s.busY - 42, 48, 84);
       ctx.fillStyle = '#38bdf8';
       ctx.fillRect(s.busX - 18, s.busY - 34, 36, 20);
 
-      // Guide
       ctx.fillStyle = '#fde047';
       ctx.font = '14px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(isKo ? '화면 좌/우 터치로 차선을 변경해 승객을 태우세요!' : 'Tap left/right to change lanes and pick up passengers!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '마우스 클릭 / 방향키 / 터치: 차선 변경해 승객 탑승!' : 'Click, Arrow keys, or Touch to change lanes!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -185,15 +191,15 @@ export const PokiCapitalistBusDriverGame: React.FC<PokiCapitalistBusDriverGamePr
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [effectiveCardId, handleVictory, initSpawns, isKo]);
 
-  const handleTouch = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handlePointer = (clientX: number) => {
     if (gameWon) return;
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const touch = e.touches[0];
-    const tx = touch.clientX - rect.left;
+    const tx = clientX - rect.left;
     const laneW = rect.width / 3;
 
     if (tx < laneW) gameState.current.lane = 0;
@@ -210,15 +216,18 @@ export const PokiCapitalistBusDriverGame: React.FC<PokiCapitalistBusDriverGamePr
         subtitle="CITY BUS PASSENGER TYCOON"
         score={score}
         targetScore={targetScore}
-        guideText={isKo ? '차선을 터치해 승객을 태우세요!' : 'Pick up passengers!'}
+        guideText={isKo ? '차선을 클릭/터치해 승객을 태우세요!' : 'Pick up passengers!'}
         onClose={handleExit}
       />
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchStart={handleTouch}
-        onMouseDown={handleTouch as any}
+        className="block w-full h-full cursor-pointer"
+        onTouchStart={(e) => {
+          const t = e.touches[0];
+          if (t) handlePointer(t.clientX);
+        }}
+        onMouseDown={(e) => handlePointer(e.clientX)}
       />
 
       {gameWon && rewardReceipt && (

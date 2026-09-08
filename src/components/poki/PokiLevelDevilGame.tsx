@@ -226,11 +226,25 @@ export const PokiLevelDevilGame: React.FC<PokiLevelDevilGameProps> = ({
     };
 
     animId = requestAnimationFrame(loop);
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') gameStateRef.current.leftPressed = true;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') gameStateRef.current.rightPressed = true;
+      if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') jump();
+    };
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') gameStateRef.current.leftPressed = false;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') gameStateRef.current.rightPressed = false;
+    };
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
+
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('keyup', onKeyUp);
     };
-  }, [effectiveCardId, isKo, onReward, playSfx]);
+  }, [effectiveCardId, isKo, jump, onReward, playSfx]);
 
   return (
     <div className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono">
@@ -245,12 +259,14 @@ export const PokiLevelDevilGame: React.FC<PokiLevelDevilGameProps> = ({
         unit="pt"
       />
 
-      {/* On-screen Touch Controls (Left, Right, Jump) */}
+      {/* On-screen Controls (Left, Right, Jump) - Supports Touch & Mouse */}
       <div className="absolute bottom-6 left-6 right-6 flex justify-between items-center z-20 pointer-events-auto">
         <div className="flex gap-4">
           <button
             onTouchStart={() => { gameStateRef.current.leftPressed = true; }}
             onTouchEnd={() => { gameStateRef.current.leftPressed = false; }}
+            onMouseDown={() => { gameStateRef.current.leftPressed = true; }}
+            onMouseUp={() => { gameStateRef.current.leftPressed = false; }}
             className="w-16 h-16 rounded-full bg-slate-900/90 border-2 border-slate-700 text-white font-black text-2xl active:bg-indigo-600 active:scale-95 shadow-lg flex items-center justify-center cursor-pointer"
           >
             ◀
@@ -258,6 +274,8 @@ export const PokiLevelDevilGame: React.FC<PokiLevelDevilGameProps> = ({
           <button
             onTouchStart={() => { gameStateRef.current.rightPressed = true; }}
             onTouchEnd={() => { gameStateRef.current.rightPressed = false; }}
+            onMouseDown={() => { gameStateRef.current.rightPressed = true; }}
+            onMouseUp={() => { gameStateRef.current.rightPressed = false; }}
             className="w-16 h-16 rounded-full bg-slate-900/90 border-2 border-slate-700 text-white font-black text-2xl active:bg-indigo-600 active:scale-95 shadow-lg flex items-center justify-center cursor-pointer"
           >
             ▶
@@ -265,6 +283,8 @@ export const PokiLevelDevilGame: React.FC<PokiLevelDevilGameProps> = ({
         </div>
         <button
           onTouchStart={jump}
+          onMouseDown={jump}
+          onClick={jump}
           className="w-20 h-20 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-black text-lg active:scale-95 shadow-lg shadow-amber-500/30 flex items-center justify-center cursor-pointer border-2 border-amber-300"
         >
           JUMP

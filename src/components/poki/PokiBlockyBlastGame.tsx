@@ -50,13 +50,12 @@ export const PokiBlockyBlastGame: React.FC<PokiBlockyBlastGameProps> = ({
     }
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
+  const handlePointerDown = (clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    const t = e.touches[0];
-    const tx = t.clientX - rect.left;
-    const ty = t.clientY - rect.top;
+    const tx = clientX - rect.left;
+    const ty = clientY - rect.top;
     const gs = gameStateRef.current;
 
     const size = Math.min(canvas.width * 0.85, canvas.height * 0.55);
@@ -198,9 +197,13 @@ export const PokiBlockyBlastGame: React.FC<PokiBlockyBlastGameProps> = ({
   return (
     <div
       className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
-      onTouchStart={handleTouchStart}
+      onTouchStart={(e) => {
+        const t = e.touches[0];
+        if (t) handlePointerDown(t.clientX, t.clientY);
+      }}
+      onMouseDown={(e) => handlePointerDown(e.clientX, e.clientY)}
     >
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block cursor-pointer" />
 
       <MinimalistMissionHUD
         title={isKo ? '블로키 블래스트' : 'Blocky Blast'}

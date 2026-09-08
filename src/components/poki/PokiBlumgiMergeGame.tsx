@@ -79,7 +79,6 @@ export const PokiBlumgiMergeGame: React.FC<PokiBlumgiMergeGameProps> = ({
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, w, h);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.12, 50, 50);
 
       const s = gameState.current;
@@ -115,11 +114,10 @@ export const PokiBlumgiMergeGame: React.FC<PokiBlumgiMergeGameProps> = ({
         }
       }
 
-      // Guide
       ctx.fillStyle = '#fde047';
       ctx.font = '14px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(isKo ? '같은 레벨의 블룸기를 터치 드래그로 합체시키세요!' : 'Tap matching level blumgis to merge them!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '같은 레벨의 블룸기를 마우스 클릭 / 터치로 합체시키세요!' : 'Click or tap matching level blumgis to merge them!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -131,13 +129,12 @@ export const PokiBlumgiMergeGame: React.FC<PokiBlumgiMergeGameProps> = ({
     };
   }, [effectiveCardId, isKo]);
 
-  const handleTouch = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handlePointer = (clientX: number, clientY: number) => {
     if (gameWon) return;
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const touch = e.touches[0];
-    const tx = touch.clientX - rect.left;
-    const ty = touch.clientY - rect.top;
+    const tx = clientX - rect.left;
+    const ty = clientY - rect.top;
 
     const s = gameState.current;
     const size = 80;
@@ -179,15 +176,18 @@ export const PokiBlumgiMergeGame: React.FC<PokiBlumgiMergeGameProps> = ({
         subtitle="CUTE MONSTER MERGE"
         score={score}
         targetScore={targetScore}
-        guideText={isKo ? '같은 블룸기를 합체하세요!' : 'Merge blumgis!'}
+        guideText={isKo ? '같은 블룸기를 클릭/터치해 합체하세요!' : 'Merge blumgis!'}
         onClose={handleExit}
       />
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchStart={handleTouch}
-        onMouseDown={handleTouch as any}
+        className="block w-full h-full cursor-pointer"
+        onTouchStart={(e) => {
+          const t = e.touches[0];
+          if (t) handlePointer(t.clientX, t.clientY);
+        }}
+        onMouseDown={(e) => handlePointer(e.clientX, e.clientY)}
       />
 
       {gameWon && rewardReceipt && (

@@ -105,17 +105,14 @@ export const PokiHarvestSimulatorGame: React.FC<PokiHarvestSimulatorGameProps> =
       ctx.fillStyle = '#1c1917';
       ctx.fillRect(0, 0, w, h);
 
-      // Farm field zone
       ctx.fillStyle = '#292524';
       ctx.fillRect(w * 0.08, h * 0.22, w * 0.84, h * 0.58);
       ctx.strokeStyle = '#ca8a04';
       ctx.lineWidth = 2;
       ctx.strokeRect(w * 0.08, h * 0.22, w * 0.84, h * 0.58);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.14, 54, 54);
 
-      // Render Crops
       gameState.current.crops.forEach((crop) => {
         if (!crop.harvested) {
           ctx.fillStyle = crop.type === 'wheat' ? '#eab308' : '#f97316';
@@ -128,7 +125,6 @@ export const PokiHarvestSimulatorGame: React.FC<PokiHarvestSimulatorGameProps> =
         }
       });
 
-      // Harvester
       const s = gameState.current;
       ctx.save();
       ctx.translate(s.harvesterX, s.harvesterY);
@@ -138,11 +134,10 @@ export const PokiHarvestSimulatorGame: React.FC<PokiHarvestSimulatorGameProps> =
       ctx.fillRect(-26, -34, 52, 12);
       ctx.restore();
 
-      // Guide
       ctx.fillStyle = '#fde047';
       ctx.font = '14px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(isKo ? '터치 드래그하여 수확기를 몰아 황금빛 밀밭을 수확하세요!' : 'Drag harvester to harvest golden wheat crops!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '마우스/터치 드래그로 수확기를 몰아 밀밭을 수확하세요!' : 'Drag mouse or touch to harvest golden wheat crops!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -154,13 +149,12 @@ export const PokiHarvestSimulatorGame: React.FC<PokiHarvestSimulatorGameProps> =
     };
   }, [effectiveCardId, initCrops, isKo]);
 
-  const handleTouch = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handlePointer = (clientX: number, clientY: number) => {
     if (gameWon) return;
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const touch = e.touches[0];
-    const tx = touch.clientX - rect.left;
-    const ty = touch.clientY - rect.top;
+    const tx = clientX - rect.left;
+    const ty = clientY - rect.top;
 
     gameState.current.harvesterX = tx;
     gameState.current.harvesterY = ty;
@@ -185,16 +179,25 @@ export const PokiHarvestSimulatorGame: React.FC<PokiHarvestSimulatorGameProps> =
         subtitle="FARM CROPS HARVESTER"
         score={score}
         targetScore={targetScore}
-        guideText={isKo ? '터치 드래그로 작물을 수확하세요!' : 'Harvest crops!'}
+        guideText={isKo ? '마우스/터치 드래그로 작물을 수확하세요!' : 'Harvest crops!'}
         onClose={handleExit}
       />
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchMove={handleTouch}
-        onTouchStart={handleTouch}
-        onMouseMove={handleTouch as any}
+        className="block w-full h-full cursor-crosshair"
+        onTouchMove={(e) => {
+          const t = e.touches[0];
+          if (t) handlePointer(t.clientX, t.clientY);
+        }}
+        onTouchStart={(e) => {
+          const t = e.touches[0];
+          if (t) handlePointer(t.clientX, t.clientY);
+        }}
+        onMouseMove={(e) => {
+          if (e.buttons > 0) handlePointer(e.clientX, e.clientY);
+        }}
+        onMouseDown={(e) => handlePointer(e.clientX, e.clientY)}
       />
 
       {gameWon && rewardReceipt && (

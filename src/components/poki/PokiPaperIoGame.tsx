@@ -56,13 +56,12 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
     }
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handlePointerMove = (clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    const t = e.touches[0];
-    const tx = t.clientX - rect.left;
-    const ty = t.clientY - rect.top;
+    const tx = clientX - rect.left;
+    const ty = clientY - rect.top;
     gameStateRef.current.angle = Math.atan2(ty - gameStateRef.current.playerY, tx - gameStateRef.current.playerX);
   };
 
@@ -168,19 +167,40 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
       animId = requestAnimationFrame(loop);
     };
 
+    const onKeyDown = (e: KeyboardEvent) => {
+      const gs = gameStateRef.current;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') gs.angle = Math.PI;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') gs.angle = 0;
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') gs.angle = -Math.PI / 2;
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') gs.angle = Math.PI / 2;
+    };
+    window.addEventListener('keydown', onKeyDown);
+
     animId = requestAnimationFrame(loop);
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('keydown', onKeyDown);
     };
   }, [effectiveCardId, isKo, onReward, playSfx, territoryPct]);
 
   return (
     <div
       className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
-      onTouchMove={handleTouchMove}
+      onTouchStart={(e) => {
+        const t = e.touches[0];
+        if (t) handlePointerMove(t.clientX, t.clientY);
+      }}
+      onTouchMove={(e) => {
+        const t = e.touches[0];
+        if (t) handlePointerMove(t.clientX, t.clientY);
+      }}
+      onMouseDown={(e) => handlePointerMove(e.clientX, e.clientY)}
+      onMouseMove={(e) => {
+        handlePointerMove(e.clientX, e.clientY);
+      }}
     >
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block cursor-crosshair" />
 
       <MinimalistMissionHUD
         title={isKo ? '페이퍼 io 2' : 'Paper.io 2'}

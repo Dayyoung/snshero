@@ -37,7 +37,7 @@ export const PokiObbyRoadsGame: React.FC<PokiObbyRoadsGameProps> = ({
   const [rewardReceipt, setRewardReceipt] = useState<RewardReceipt | null>(null);
 
   const gameState = useRef({
-    lane: 1, // 0, 1, 2
+    lane: 1,
     playerY: 520,
     obstacles: [] as { lane: number; y: number; cleared: boolean }[]
   });
@@ -88,19 +88,29 @@ export const PokiObbyRoadsGame: React.FC<PokiObbyRoadsGameProps> = ({
     resize();
     window.addEventListener('resize', resize);
 
+    // Keyboard support: ArrowLeft / ArrowRight / A / D
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        gameState.current.lane = Math.max(0, gameState.current.lane - 1);
+        if (navigator.vibrate) navigator.vibrate(20);
+      } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        gameState.current.lane = Math.min(2, gameState.current.lane + 1);
+        if (navigator.vibrate) navigator.vibrate(20);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, w, h);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.12, 50, 50);
 
       const s = gameState.current;
       const laneW = w / 3;
 
-      // Road Lanes
       ctx.fillStyle = '#1e293b';
       ctx.fillRect(0, h * 0.18, w, h * 0.68);
 
@@ -115,7 +125,6 @@ export const PokiObbyRoadsGame: React.FC<PokiObbyRoadsGameProps> = ({
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Obstacles
       s.obstacles.forEach((ob) => {
         ob.y += 4;
         const ox = ob.lane * laneW + laneW / 2;
@@ -126,7 +135,6 @@ export const PokiObbyRoadsGame: React.FC<PokiObbyRoadsGameProps> = ({
         ctx.lineWidth = 2;
         ctx.strokeRect(ox - 24, ob.y - 12, 48, 24);
 
-        // Clear check
         if (!ob.cleared && ob.y > s.playerY) {
           ob.cleared = true;
           if (navigator.vibrate) navigator.vibrate(15);
@@ -144,7 +152,6 @@ export const PokiObbyRoadsGame: React.FC<PokiObbyRoadsGameProps> = ({
         }
       });
 
-      // Player
       const px = s.lane * laneW + laneW / 2;
       ctx.fillStyle = '#22c55e';
       ctx.beginPath();
@@ -154,11 +161,10 @@ export const PokiObbyRoadsGame: React.FC<PokiObbyRoadsGameProps> = ({
       ctx.lineWidth = 3;
       ctx.stroke();
 
-      // Guide
       ctx.fillStyle = '#86efac';
       ctx.font = '14px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(isKo ? '화면 좌/우를 터치하여 장애물을 피하며 달아나세요!' : 'Tap left/right lanes to dodge obby obstacles!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '마우스 클릭 / 방향키 / 터치로 장애물을 피하세요!' : 'Click, Arrow keys, or Touch to dodge obstacles!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -167,15 +173,15 @@ export const PokiObbyRoadsGame: React.FC<PokiObbyRoadsGameProps> = ({
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [effectiveCardId, handleVictory, initObstacles, isKo]);
 
-  const handleTouch = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handlePointer = (clientX: number) => {
     if (gameWon) return;
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const touch = e.touches[0];
-    const tx = touch.clientX - rect.left;
+    const tx = clientX - rect.left;
     const laneW = rect.width / 3;
 
     if (tx < laneW) gameState.current.lane = 0;
@@ -192,15 +198,18 @@ export const PokiObbyRoadsGame: React.FC<PokiObbyRoadsGameProps> = ({
         subtitle="OBBY ROAD DODGE RUNNER"
         score={score}
         targetScore={targetScore}
-        guideText={isKo ? '차선을 터치해 장애물을 피하세요!' : 'Dodge obstacles!'}
+        guideText={isKo ? '차선을 클릭/터치해 장애물을 피하세요!' : 'Dodge obstacles!'}
         onClose={handleExit}
       />
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchStart={handleTouch}
-        onMouseDown={handleTouch as any}
+        className="block w-full h-full cursor-pointer"
+        onTouchStart={(e) => {
+          const t = e.touches[0];
+          if (t) handlePointer(t.clientX);
+        }}
+        onMouseDown={(e) => handlePointer(e.clientX)}
       />
 
       {gameWon && rewardReceipt && (

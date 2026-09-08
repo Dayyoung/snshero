@@ -78,20 +78,32 @@ export const PokiCarCircleGame: React.FC<PokiCarCircleGameProps> = ({
     resize();
     window.addEventListener('resize', resize);
 
+    // Keyboard support: Space / ArrowUp for PC
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space' || e.code === 'ArrowUp') {
+        gameState.current.speed = 0.055;
+      }
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.code === 'Space' || e.code === 'ArrowUp') {
+        gameState.current.speed = 0.025;
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, w, h);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.15, 54, 54);
 
       const cx = w / 2;
       const cy = h * 0.52;
       const radius = Math.min(w, h) * 0.32;
 
-      // Circular Track
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, Math.PI * 2);
       ctx.strokeStyle = '#334155';
@@ -119,7 +131,6 @@ export const PokiCarCircleGame: React.FC<PokiCarCircleGameProps> = ({
         if (navigator.vibrate) navigator.vibrate(20);
       }
 
-      // Player Car
       const px = cx + Math.cos(s.angle) * radius;
       const py = cy + Math.sin(s.angle) * radius;
       ctx.save();
@@ -131,7 +142,6 @@ export const PokiCarCircleGame: React.FC<PokiCarCircleGameProps> = ({
       ctx.fillRect(-8, -12, 16, 12);
       ctx.restore();
 
-      // Enemy Cars
       s.otherCars.forEach((oc) => {
         oc.angle += oc.speed;
         const ox = cx + Math.cos(oc.angle) * radius;
@@ -144,11 +154,10 @@ export const PokiCarCircleGame: React.FC<PokiCarCircleGameProps> = ({
         ctx.restore();
       });
 
-      // Guide
       ctx.fillStyle = '#94a3b8';
       ctx.font = '14px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(isKo ? '화면 터치: 순간 부스트 가속으로 충돌을 피하세요!' : 'Tap screen: boost speed to avoid collisions!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '마우스 클릭 / 스페이스바 / 터치: 부스트 가속!' : 'Mouse Click / Space / Touch: boost speed!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -157,15 +166,17 @@ export const PokiCarCircleGame: React.FC<PokiCarCircleGameProps> = ({
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
     };
   }, [effectiveCardId, handleVictory, isKo]);
 
-  const handleTouchStart = () => {
+  const handleStart = () => {
     gameState.current.speed = 0.055;
     if (navigator.vibrate) navigator.vibrate(30);
   };
 
-  const handleTouchEnd = () => {
+  const handleEnd = () => {
     gameState.current.speed = 0.025;
   };
 
@@ -176,17 +187,17 @@ export const PokiCarCircleGame: React.FC<PokiCarCircleGameProps> = ({
         subtitle="ROUNDABOUT TIMING RUSH"
         score={score}
         targetScore={targetScore}
-        guideText={isKo ? '원형 트랙을 돌며 완주하세요!' : 'Complete laps!'}
+        guideText={isKo ? '클릭 또는 터치로 가속하세요!' : 'Click or touch to boost!'}
         onClose={handleExit}
       />
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        onMouseDown={handleTouchStart}
-        onMouseUp={handleTouchEnd}
+        className="block w-full h-full cursor-pointer"
+        onTouchStart={handleStart}
+        onTouchEnd={handleEnd}
+        onMouseDown={handleStart}
+        onMouseUp={handleEnd}
       />
 
       {gameWon && rewardReceipt && (

@@ -87,12 +87,10 @@ export const PokiSoccerLeagueGame: React.FC<PokiSoccerLeagueGameProps> = ({
       ctx.fillStyle = '#14532d';
       ctx.fillRect(0, 0, w, h);
 
-      // Pitch borders
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 3;
       ctx.strokeRect(w * 0.08, h * 0.18, w * 0.84, h * 0.65);
 
-      // Center Line & Circle
       ctx.beginPath();
       ctx.moveTo(w * 0.08, h * 0.5);
       ctx.lineTo(w * 0.92, h * 0.5);
@@ -101,17 +99,14 @@ export const PokiSoccerLeagueGame: React.FC<PokiSoccerLeagueGameProps> = ({
       ctx.arc(w / 2, h * 0.5, 36, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Goal (top)
       ctx.strokeStyle = '#facc15';
       ctx.lineWidth = 6;
       ctx.strokeRect(w * 0.35, h * 0.17, w * 0.3, 10);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.1, 50, 50);
 
       const s = gameState.current;
 
-      // Ball Physics
       s.ball.x += s.ball.vx;
       s.ball.y += s.ball.vy;
       s.ball.vx *= 0.96;
@@ -119,7 +114,6 @@ export const PokiSoccerLeagueGame: React.FC<PokiSoccerLeagueGameProps> = ({
 
       if (s.ball.x < w * 0.1 || s.ball.x > w * 0.9) s.ball.vx *= -1;
       if (s.ball.y < h * 0.19) {
-        // Goal Check
         if (s.ball.x > w * 0.35 && s.ball.x < w * 0.65) {
           s.ball.x = w / 2;
           s.ball.y = h * 0.48;
@@ -137,7 +131,6 @@ export const PokiSoccerLeagueGame: React.FC<PokiSoccerLeagueGameProps> = ({
       }
       if (s.ball.y > h * 0.82) s.ball.vy *= -1;
 
-      // Player Ball Hit
       const dist = Math.hypot(s.ball.x - s.player.x, s.ball.y - s.player.y);
       if (dist < 34) {
         const ang = Math.atan2(s.ball.y - s.player.y, s.ball.x - s.player.x);
@@ -145,7 +138,6 @@ export const PokiSoccerLeagueGame: React.FC<PokiSoccerLeagueGameProps> = ({
         s.ball.vy = Math.sin(ang) * 11;
       }
 
-      // Render Player Piece
       ctx.fillStyle = '#10b981';
       ctx.beginPath();
       ctx.arc(s.player.x, s.player.y, 20, 0, Math.PI * 2);
@@ -154,7 +146,6 @@ export const PokiSoccerLeagueGame: React.FC<PokiSoccerLeagueGameProps> = ({
       ctx.lineWidth = 3;
       ctx.stroke();
 
-      // Render Ball
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
       ctx.arc(s.ball.x, s.ball.y, 11, 0, Math.PI * 2);
@@ -163,7 +154,6 @@ export const PokiSoccerLeagueGame: React.FC<PokiSoccerLeagueGameProps> = ({
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      // Drag Aim Line
       if (s.isDragging) {
         ctx.beginPath();
         ctx.moveTo(s.player.x, s.player.y);
@@ -173,11 +163,10 @@ export const PokiSoccerLeagueGame: React.FC<PokiSoccerLeagueGameProps> = ({
         ctx.stroke();
       }
 
-      // Guide
       ctx.fillStyle = '#fde047';
       ctx.font = '14px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(isKo ? '선수를 당겨 조준하고 손을 떼 골을 넣으세요!' : 'Drag player to aim and release to shoot a goal!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '마우스/터치로 선수를 당겨 조준하고 놓아 골을 넣으세요!' : 'Drag player with mouse or touch, release to shoot a goal!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -189,29 +178,27 @@ export const PokiSoccerLeagueGame: React.FC<PokiSoccerLeagueGameProps> = ({
     };
   }, [effectiveCardId, handleVictory, initPitch, isKo]);
 
-  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handleStart = (clientX: number, clientY: number) => {
     if (gameWon) return;
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const touch = e.touches[0];
-    const tx = touch.clientX - rect.left;
-    const ty = touch.clientY - rect.top;
+    const tx = clientX - rect.left;
+    const ty = clientY - rect.top;
 
-    if (Math.hypot(tx - gameState.current.player.x, ty - gameState.current.player.y) < 40) {
+    if (Math.hypot(tx - gameState.current.player.x, ty - gameState.current.player.y) < 50) {
       gameState.current.isDragging = true;
       gameState.current.dragStart = { x: tx, y: ty };
     }
   };
 
-  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handleMove = (clientX: number, clientY: number) => {
     if (!gameState.current.isDragging) return;
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const touch = e.touches[0];
-    gameState.current.dragStart = { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+    gameState.current.dragStart = { x: clientX - rect.left, y: clientY - rect.top };
   };
 
-  const handleTouchEnd = () => {
+  const handleEnd = () => {
     const s = gameState.current;
     if (s.isDragging) {
       const dx = s.player.x - s.dragStart.x;
@@ -230,19 +217,25 @@ export const PokiSoccerLeagueGame: React.FC<PokiSoccerLeagueGameProps> = ({
         subtitle="FINGER SOCCER SHOOTOUT"
         score={score}
         targetScore={targetScore}
-        guideText={isKo ? '선수를 당겨 골을 넣으세요!' : 'Aim and shoot!'}
+        guideText={isKo ? '마우스/터치로 당겨서 골을 넣으세요!' : 'Aim and shoot!'}
         onClose={handleExit}
       />
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onMouseDown={handleTouchStart as any}
-        onMouseMove={handleTouchMove as any}
-        onMouseUp={handleTouchEnd}
+        className="block w-full h-full cursor-grab active:cursor-grabbing"
+        onTouchStart={(e) => {
+          const t = e.touches[0];
+          if (t) handleStart(t.clientX, t.clientY);
+        }}
+        onTouchMove={(e) => {
+          const t = e.touches[0];
+          if (t) handleMove(t.clientX, t.clientY);
+        }}
+        onTouchEnd={handleEnd}
+        onMouseDown={(e) => handleStart(e.clientX, e.clientY)}
+        onMouseMove={(e) => handleMove(e.clientX, e.clientY)}
+        onMouseUp={handleEnd}
       />
 
       {gameWon && rewardReceipt && (

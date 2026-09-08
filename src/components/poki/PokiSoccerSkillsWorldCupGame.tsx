@@ -173,22 +173,32 @@ export const PokiSoccerSkillsWorldCupGame: React.FC<PokiSoccerSkillsWorldCupGame
 
     animId = requestAnimationFrame(loop);
 
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+        shoot(0, -60);
+      } else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        shoot(-40, -55);
+      } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        shoot(40, -55);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('keydown', onKeyDown);
     };
   }, [effectiveCardId, gameWon, handleVictory, playSfx]);
 
-  const onTouchStart = (e: React.TouchEvent) => {
-    const t = e.touches[0];
-    gameState.current.touchStartX = t.clientX;
-    gameState.current.touchStartY = t.clientY;
+  const handleStart = (clientX: number, clientY: number) => {
+    gameState.current.touchStartX = clientX;
+    gameState.current.touchStartY = clientY;
   };
 
-  const onTouchEnd = (e: React.TouchEvent) => {
-    const t = e.changedTouches[0];
-    const dx = t.clientX - gameState.current.touchStartX;
-    const dy = t.clientY - gameState.current.touchStartY;
+  const handleEnd = (clientX: number, clientY: number) => {
+    const dx = clientX - gameState.current.touchStartX;
+    const dy = clientY - gameState.current.touchStartY;
     if (dy < -20) {
       shoot(dx, dy);
     }
@@ -196,9 +206,17 @@ export const PokiSoccerSkillsWorldCupGame: React.FC<PokiSoccerSkillsWorldCupGame
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono cursor-grab active:cursor-grabbing"
+      onTouchStart={(e) => {
+        const t = e.touches[0];
+        if (t) handleStart(t.clientX, t.clientY);
+      }}
+      onTouchEnd={(e) => {
+        const t = e.changedTouches[0];
+        if (t) handleEnd(t.clientX, t.clientY);
+      }}
+      onMouseDown={(e) => handleStart(e.clientX, e.clientY)}
+      onMouseUp={(e) => handleEnd(e.clientX, e.clientY)}
     >
       <MinimalistMissionHUD
         gameTitle={isKo ? '사커 스킬스 월드컵' : 'Soccer World Cup'}

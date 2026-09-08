@@ -96,16 +96,14 @@ export const PokiKawaiiFruits3DGame: React.FC<PokiKawaiiFruits3DGameProps> = ({
       ctx.fillStyle = '#18181b';
       ctx.fillRect(0, 0, w, h);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.12, 50, 50);
 
       const s = gameState.current;
 
-      // Update and Draw Fruits
       s.fruits.forEach((f) => {
         f.x += f.vx;
         f.y += f.vy;
-        f.vy += 0.22; // gravity
+        f.vy += 0.22;
 
         if (!f.sliced) {
           ctx.font = '34px sans-serif';
@@ -121,7 +119,6 @@ export const PokiKawaiiFruits3DGame: React.FC<PokiKawaiiFruits3DGameProps> = ({
         }
       });
 
-      // Slice Trail
       if (s.sliceTrail.length > 1) {
         ctx.beginPath();
         ctx.moveTo(s.sliceTrail[0].x, s.sliceTrail[0].y);
@@ -133,11 +130,10 @@ export const PokiKawaiiFruits3DGame: React.FC<PokiKawaiiFruits3DGameProps> = ({
         ctx.stroke();
       }
 
-      // Guide
       ctx.fillStyle = '#fca5a5';
       ctx.font = '14px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(isKo ? '화면을 스와이프하여 통통 튀어오르는 과일을 슬라이스하세요!' : 'Swipe screen to slice kawaii jumping fruits!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '마우스 이동 / 스와이프로 튀어오르는 과일을 슬라이스하세요!' : 'Move mouse or swipe to slice kawaii jumping fruits!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -149,13 +145,12 @@ export const PokiKawaiiFruits3DGame: React.FC<PokiKawaiiFruits3DGameProps> = ({
     };
   }, [effectiveCardId, initFruits, isKo]);
 
-  const handleTouch = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handlePointer = (clientX: number, clientY: number) => {
     if (gameWon) return;
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const touch = e.touches[0];
-    const tx = touch.clientX - rect.left;
-    const ty = touch.clientY - rect.top;
+    const tx = clientX - rect.left;
+    const ty = clientY - rect.top;
 
     const s = gameState.current;
     s.sliceTrail.push({ x: tx, y: ty });
@@ -181,16 +176,23 @@ export const PokiKawaiiFruits3DGame: React.FC<PokiKawaiiFruits3DGameProps> = ({
         subtitle="KAWAII FRUIT SLICE POP"
         score={score}
         targetScore={targetScore}
-        guideText={isKo ? '과일을 스와이프해 베어내세요!' : 'Swipe to slice fruits!'}
+        guideText={isKo ? '과일을 마우스/터치로 베어내세요!' : 'Slice fruits!'}
         onClose={handleExit}
       />
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchMove={handleTouch}
-        onTouchStart={handleTouch}
-        onMouseMove={handleTouch as any}
+        className="block w-full h-full cursor-crosshair"
+        onTouchMove={(e) => {
+          const t = e.touches[0];
+          if (t) handlePointer(t.clientX, t.clientY);
+        }}
+        onTouchStart={(e) => {
+          const t = e.touches[0];
+          if (t) handlePointer(t.clientX, t.clientY);
+        }}
+        onMouseMove={(e) => handlePointer(e.clientX, e.clientY)}
+        onMouseDown={(e) => handlePointer(e.clientX, e.clientY)}
       />
 
       {gameWon && rewardReceipt && (

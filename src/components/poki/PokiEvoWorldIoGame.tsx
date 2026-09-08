@@ -97,19 +97,16 @@ export const PokiEvoWorldIoGame: React.FC<PokiEvoWorldIoGameProps> = ({
       ctx.fillStyle = '#0a1128';
       ctx.fillRect(0, 0, w, h);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.12, 50, 50);
 
       const s = gameState.current;
 
-      // Render Foods
       s.foods.forEach((f) => {
         ctx.fillStyle = f.color;
         ctx.beginPath();
         ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
         ctx.fill();
 
-        // Hit player
         if (Math.hypot(f.x - s.playerX, f.y - s.playerY) < f.r + 20) {
           f.x = Math.random() * (w - 60) + 30;
           f.y = Math.random() * (h * 0.65) + h * 0.18;
@@ -122,7 +119,6 @@ export const PokiEvoWorldIoGame: React.FC<PokiEvoWorldIoGameProps> = ({
         }
       });
 
-      // Player Creature
       ctx.fillStyle = '#10b981';
       ctx.beginPath();
       ctx.arc(s.playerX, s.playerY, 20, 0, Math.PI * 2);
@@ -136,11 +132,10 @@ export const PokiEvoWorldIoGame: React.FC<PokiEvoWorldIoGameProps> = ({
       ctx.textAlign = 'center';
       ctx.fillText('EVO', s.playerX, s.playerY - 26);
 
-      // Guide
       ctx.fillStyle = '#86efac';
       ctx.font = '14px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(isKo ? '터치 드래그로 날아다니며 영양분을 먹고 진화하세요!' : 'Drag to fly, eat nutrients and evolve!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '마우스 이동 / 터치 드래그로 영양분을 섭취해 진화하세요!' : 'Move mouse or drag touch to eat nutrients and evolve!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -152,13 +147,12 @@ export const PokiEvoWorldIoGame: React.FC<PokiEvoWorldIoGameProps> = ({
     };
   }, [effectiveCardId, handleVictory, initFoods, isKo]);
 
-  const handleTouch = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handlePointer = (clientX: number, clientY: number) => {
     if (gameWon) return;
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const touch = e.touches[0];
-    const tx = touch.clientX - rect.left;
-    const ty = touch.clientY - rect.top;
+    const tx = clientX - rect.left;
+    const ty = clientY - rect.top;
 
     gameState.current.playerX += (tx - gameState.current.playerX) * 0.25;
     gameState.current.playerY += (ty - gameState.current.playerY) * 0.25;
@@ -171,16 +165,23 @@ export const PokiEvoWorldIoGame: React.FC<PokiEvoWorldIoGameProps> = ({
         subtitle="CREATURE EVOLUTION IO"
         score={score}
         targetScore={targetScore}
-        guideText={isKo ? '터치 드래그로 먹이를 섭취하세요!' : 'Eat nutrients!'}
+        guideText={isKo ? '마우스/터치로 이동해 먹이를 섭취하세요!' : 'Eat nutrients!'}
         onClose={handleExit}
       />
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchMove={handleTouch}
-        onTouchStart={handleTouch}
-        onMouseMove={handleTouch as any}
+        className="block w-full h-full cursor-crosshair"
+        onTouchMove={(e) => {
+          const t = e.touches[0];
+          if (t) handlePointer(t.clientX, t.clientY);
+        }}
+        onTouchStart={(e) => {
+          const t = e.touches[0];
+          if (t) handlePointer(t.clientX, t.clientY);
+        }}
+        onMouseMove={(e) => handlePointer(e.clientX, e.clientY)}
+        onMouseDown={(e) => handlePointer(e.clientX, e.clientY)}
       />
 
       {gameWon && rewardReceipt && (

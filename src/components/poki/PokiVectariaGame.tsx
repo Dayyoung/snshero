@@ -55,16 +55,15 @@ export const PokiVectariaGame: React.FC<PokiVectariaGameProps> = ({
     }
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
+  const handlePointerDown = (clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    const t = e.touches[0];
-    const tx = t.clientX - rect.left;
-    const ty = t.clientY - rect.top;
+    const tx = clientX - rect.left;
+    const ty = clientY - rect.top;
     const gs = gameStateRef.current;
 
-    // Move player toward touch
+    // Move player toward touch/click
     gs.px = tx;
     gs.py = ty;
 
@@ -219,17 +218,35 @@ export const PokiVectariaGame: React.FC<PokiVectariaGameProps> = ({
       animId = requestAnimationFrame(loop);
     };
 
+    const onKeyDown = (e: KeyboardEvent) => {
+      const gs = gameStateRef.current;
+      const step = 30;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') gs.px = Math.max(30, gs.px - step);
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') gs.px = Math.min(canvas.width - 30, gs.px + step);
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') gs.py = Math.max(80, gs.py - step);
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') gs.py = Math.min(canvas.height - 80, gs.py + step);
+      if (e.key === ' ' || e.key === 'Spacebar') {
+        handlePointerDown(gs.px, gs.py);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+
     animId = requestAnimationFrame(loop);
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('keydown', onKeyDown);
     };
   }, [effectiveCardId, isKo, onReward, playSfx]);
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
-      onTouchStart={handleTouchStart}
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono cursor-pointer"
+      onTouchStart={(e) => {
+        const t = e.touches[0];
+        if (t) handlePointerDown(t.clientX, t.clientY);
+      }}
+      onMouseDown={(e) => handlePointerDown(e.clientX, e.clientY)}
     >
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
 

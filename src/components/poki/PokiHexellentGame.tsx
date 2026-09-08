@@ -64,7 +64,6 @@ export const PokiHexellentGame: React.FC<PokiHexellentGameProps> = ({
     const size = Math.min(w, h) * 0.14;
     const cx = w / 2;
     const cy = h * 0.52;
-    // Hex ring of 7 tiles (center + 6 neighbors)
     tiles.push({ x: cx, y: cy, r: size, rot: Math.floor(Math.random() * 6), targetRot: 0, active: false });
     for (let i = 0; i < 6; i++) {
       const ang = (i * Math.PI) / 3;
@@ -102,10 +101,8 @@ export const PokiHexellentGame: React.FC<PokiHexellentGameProps> = ({
       ctx.fillStyle = '#090d16';
       ctx.fillRect(0, 0, w, h);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.18, 54, 54);
 
-      // Render Hex Tiles
       gameState.current.tiles.forEach((t) => {
         ctx.save();
         ctx.translate(t.x, t.y);
@@ -126,7 +123,6 @@ export const PokiHexellentGame: React.FC<PokiHexellentGameProps> = ({
         ctx.lineWidth = 3;
         ctx.stroke();
 
-        // Hex lines
         ctx.beginPath();
         ctx.moveTo(0, 0);
         ctx.lineTo(t.r * 0.85, 0);
@@ -140,11 +136,10 @@ export const PokiHexellentGame: React.FC<PokiHexellentGameProps> = ({
         ctx.restore();
       });
 
-      // Guide
       ctx.fillStyle = '#94a3b8';
       ctx.font = '14px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(isKo ? '육각형 타일을 터치해 회전하여 네온 라인을 연결하세요!' : 'Tap hex tiles to rotate and align neon lines!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '마우스 클릭 또는 터치로 회전시켜 라인을 연결하세요!' : 'Click or tap to rotate & align neon lines!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -156,20 +151,18 @@ export const PokiHexellentGame: React.FC<PokiHexellentGameProps> = ({
     };
   }, [effectiveCardId, initTiles, isKo]);
 
-  const handleTouch = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handlePointer = (clientX: number, clientY: number) => {
     if (gameWon) return;
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const touch = e.touches[0];
-    const tx = touch.clientX - rect.left;
-    const ty = touch.clientY - rect.top;
+    const tx = clientX - rect.left;
+    const ty = clientY - rect.top;
 
     gameState.current.tiles.forEach((t) => {
       if (Math.hypot(tx - t.x, ty - t.y) < t.r) {
         t.rot = (t.rot + 1) % 6;
         if (navigator.vibrate) navigator.vibrate(30);
 
-        // Check align
         const allAligned = gameState.current.tiles.every((tile) => tile.rot % 6 === 0);
         if (allAligned || t.rot % 6 === 0) {
           setScore((prev) => {
@@ -189,15 +182,18 @@ export const PokiHexellentGame: React.FC<PokiHexellentGameProps> = ({
         subtitle="HEXAGON ROTATE PUZZLE"
         score={score}
         targetScore={targetScore}
-        guideText={isKo ? '육각형 타일을 터치해 회전시켜 연결하세요!' : 'Tap tiles to rotate!'}
+        guideText={isKo ? '클릭/터치로 타일을 회전시키세요!' : 'Click or tap to rotate!'}
         onClose={handleExit}
       />
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchStart={handleTouch}
-        onMouseDown={handleTouch as any}
+        className="block w-full h-full cursor-pointer"
+        onTouchStart={(e) => {
+          const t = e.touches[0];
+          if (t) handlePointer(t.clientX, t.clientY);
+        }}
+        onMouseDown={(e) => handlePointer(e.clientX, e.clientY)}
       />
 
       {gameWon && rewardReceipt && (

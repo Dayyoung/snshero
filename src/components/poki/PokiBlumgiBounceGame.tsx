@@ -87,19 +87,16 @@ export const PokiBlumgiBounceGame: React.FC<PokiBlumgiBounceGameProps> = ({
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, w, h);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.12, 50, 50);
 
       const s = gameState.current;
 
-      // Hoop
       ctx.fillStyle = '#f97316';
       ctx.fillRect(s.hoop.x - 24, s.hoop.y, 48, 8);
       ctx.strokeStyle = '#fff';
       ctx.lineWidth = 2;
       ctx.strokeRect(s.hoop.x - 20, s.hoop.y + 8, 40, 28);
 
-      // Ball Physics
       if (!s.ball.grounded) {
         s.ball.vy += 0.28;
         s.ball.x += s.ball.vx;
@@ -112,7 +109,6 @@ export const PokiBlumgiBounceGame: React.FC<PokiBlumgiBounceGameProps> = ({
           s.ball.vy = 0;
         }
 
-        // Hoop hit
         if (Math.hypot(s.ball.x - s.hoop.x, s.ball.y - s.hoop.y) < 30) {
           s.ball.grounded = true;
           s.ball.x = w * 0.25;
@@ -126,7 +122,6 @@ export const PokiBlumgiBounceGame: React.FC<PokiBlumgiBounceGameProps> = ({
         }
       }
 
-      // Ball
       ctx.fillStyle = '#a855f7';
       ctx.beginPath();
       ctx.arc(s.ball.x, s.ball.y, s.ball.r, 0, Math.PI * 2);
@@ -135,7 +130,6 @@ export const PokiBlumgiBounceGame: React.FC<PokiBlumgiBounceGameProps> = ({
       ctx.lineWidth = 3;
       ctx.stroke();
 
-      // Drag Aim Line
       if (s.dragging && s.ball.grounded) {
         ctx.beginPath();
         ctx.moveTo(s.ball.x, s.ball.y);
@@ -145,11 +139,10 @@ export const PokiBlumgiBounceGame: React.FC<PokiBlumgiBounceGameProps> = ({
         ctx.stroke();
       }
 
-      // Guide
       ctx.fillStyle = '#d8b4fe';
       ctx.font = '14px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(isKo ? '캐릭터를 당겨 각도를 맞추고 손을 떼 골대에 슛을 꽂으세요!' : 'Drag character to aim and release to dunk into the hoop!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '마우스/터치로 당겨 각도를 맞추고 손을 떼 골대에 슛을 꽂으세요!' : 'Drag with mouse/touch to aim and release to dunk!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -161,24 +154,22 @@ export const PokiBlumgiBounceGame: React.FC<PokiBlumgiBounceGameProps> = ({
     };
   }, [effectiveCardId, handleVictory, initBall, isKo]);
 
-  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handleStart = (clientX: number, clientY: number) => {
     if (gameWon) return;
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const touch = e.touches[0];
     gameState.current.dragging = true;
-    gameState.current.dragStart = { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+    gameState.current.dragStart = { x: clientX - rect.left, y: clientY - rect.top };
   };
 
-  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handleMove = (clientX: number, clientY: number) => {
     if (!gameState.current.dragging) return;
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const touch = e.touches[0];
-    gameState.current.dragStart = { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+    gameState.current.dragStart = { x: clientX - rect.left, y: clientY - rect.top };
   };
 
-  const handleTouchEnd = () => {
+  const handleEnd = () => {
     const s = gameState.current;
     if (s.dragging && s.ball.grounded) {
       const dx = s.ball.x - s.dragStart.x;
@@ -198,19 +189,25 @@ export const PokiBlumgiBounceGame: React.FC<PokiBlumgiBounceGameProps> = ({
         subtitle="ELASTIC BOUNCE SLINGSHOT"
         score={score}
         targetScore={targetScore}
-        guideText={isKo ? '당겨서 골대에 넣으세요!' : 'Aim and bounce!'}
+        guideText={isKo ? '마우스/터치로 당겨서 골대에 넣으세요!' : 'Aim and bounce!'}
         onClose={handleExit}
       />
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onMouseDown={handleTouchStart as any}
-        onMouseMove={handleTouchMove as any}
-        onMouseUp={handleTouchEnd}
+        className="block w-full h-full cursor-grab active:cursor-grabbing"
+        onTouchStart={(e) => {
+          const t = e.touches[0];
+          if (t) handleStart(t.clientX, t.clientY);
+        }}
+        onTouchMove={(e) => {
+          const t = e.touches[0];
+          if (t) handleMove(t.clientX, t.clientY);
+        }}
+        onTouchEnd={handleEnd}
+        onMouseDown={(e) => handleStart(e.clientX, e.clientY)}
+        onMouseMove={(e) => handleMove(e.clientX, e.clientY)}
+        onMouseUp={handleEnd}
       />
 
       {gameWon && rewardReceipt && (

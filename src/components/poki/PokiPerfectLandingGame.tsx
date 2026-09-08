@@ -76,18 +76,30 @@ export const PokiPerfectLandingGame: React.FC<PokiPerfectLandingGameProps> = ({
     resize();
     window.addEventListener('resize', resize);
 
+    // Keyboard support: Space / ArrowDown
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space' || e.code === 'ArrowDown') {
+        gameState.current.pressing = true;
+      }
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.code === 'Space' || e.code === 'ArrowDown') {
+        gameState.current.pressing = false;
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, w, h);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.12, 50, 50);
 
       const s = gameState.current;
 
-      // Runway
       const runwayY = h * 0.68;
       ctx.fillStyle = '#334155';
       ctx.fillRect(0, runwayY, w, 44);
@@ -100,7 +112,6 @@ export const PokiPerfectLandingGame: React.FC<PokiPerfectLandingGameProps> = ({
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Flight Physics
       s.planeX += s.planeSpeed;
       if (s.pressing) {
         s.altitude += 2.8;
@@ -109,7 +120,6 @@ export const PokiPerfectLandingGame: React.FC<PokiPerfectLandingGameProps> = ({
       }
       if (s.altitude < h * 0.2) s.altitude = h * 0.2;
 
-      // Wrap around & touchdown check
       if (s.planeX > w + 40) {
         s.planeX = -40;
         if (s.altitude >= runwayY - 30 && s.altitude <= runwayY + 10) {
@@ -122,7 +132,6 @@ export const PokiPerfectLandingGame: React.FC<PokiPerfectLandingGameProps> = ({
         }
       }
 
-      // Draw Airplane
       ctx.save();
       ctx.translate(s.planeX, s.altitude);
       ctx.fillStyle = '#38bdf8';
@@ -135,11 +144,10 @@ export const PokiPerfectLandingGame: React.FC<PokiPerfectLandingGameProps> = ({
       ctx.fill();
       ctx.restore();
 
-      // Guide
       ctx.fillStyle = '#93c5fd';
       ctx.font = '14px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(isKo ? '화면을 길게 터치하여 하강하고 활주로에 완벽 착륙하세요!' : 'Touch & hold to descend and land on runway!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '마우스 클릭 / 스페이스바 / 터치: 하강하여 활주로에 완벽 착륙!' : 'Click, Space, or Touch to descend and land on runway!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -148,15 +156,17 @@ export const PokiPerfectLandingGame: React.FC<PokiPerfectLandingGameProps> = ({
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
     };
   }, [effectiveCardId, handleVictory, isKo]);
 
-  const handleTouchStart = () => {
+  const handleStart = () => {
     gameState.current.pressing = true;
     if (navigator.vibrate) navigator.vibrate(20);
   };
 
-  const handleTouchEnd = () => {
+  const handleEnd = () => {
     gameState.current.pressing = false;
   };
 
@@ -167,17 +177,17 @@ export const PokiPerfectLandingGame: React.FC<PokiPerfectLandingGameProps> = ({
         subtitle="AIRPLANE RUNWAY TOUCHDOWN"
         score={score}
         targetScore={targetScore}
-        guideText={isKo ? '터치로 고도를 조절해 착륙하세요!' : 'Adjust altitude to land!'}
+        guideText={isKo ? '클릭 또는 터치로 고도를 조절해 착륙하세요!' : 'Adjust altitude to land!'}
         onClose={handleExit}
       />
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        onMouseDown={handleTouchStart}
-        onMouseUp={handleTouchEnd}
+        className="block w-full h-full cursor-pointer"
+        onTouchStart={handleStart}
+        onTouchEnd={handleEnd}
+        onMouseDown={handleStart}
+        onMouseUp={handleEnd}
       />
 
       {gameWon && rewardReceipt && (

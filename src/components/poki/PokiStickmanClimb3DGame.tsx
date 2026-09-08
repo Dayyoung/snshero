@@ -60,6 +60,22 @@ export const PokiStickmanClimb3DGame: React.FC<PokiStickmanClimb3DGameProps> = (
     if (onReward) onReward(receipt.totalSns);
   }, [gameWon, isKo, onReward, playSfx]);
 
+  const doClimb = useCallback(() => {
+    if (gameWon) return;
+    gameState.current.playerY -= 18;
+    if (navigator.vibrate) navigator.vibrate(30);
+
+    setScore((prev) => {
+      const next = prev + 1;
+      if (next >= targetScore) handleVictory();
+      return next;
+    });
+
+    if (gameState.current.playerY < window.innerHeight * 0.25) {
+      gameState.current.playerY = window.innerHeight * 0.72;
+    }
+  }, [gameWon, handleVictory, targetScore]);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -75,18 +91,23 @@ export const PokiStickmanClimb3DGame: React.FC<PokiStickmanClimb3DGameProps> = (
     resize();
     window.addEventListener('resize', resize);
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space' || e.code === 'ArrowUp') {
+        doClimb();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, w, h);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.12, 50, 50);
 
       const s = gameState.current;
 
-      // Cliff wall
       ctx.fillStyle = '#334155';
       ctx.fillRect(w * 0.3, h * 0.2, w * 0.4, h * 0.65);
       ctx.strokeStyle = '#64748b';
@@ -95,23 +116,19 @@ export const PokiStickmanClimb3DGame: React.FC<PokiStickmanClimb3DGameProps> = (
         ctx.strokeRect(w * 0.32, y, w * 0.36, 20);
       }
 
-      // Stickman in Pot
       const px = w / 2;
       const py = s.playerY;
 
-      // Pot
       ctx.fillStyle = '#475569';
       ctx.beginPath();
       ctx.arc(px, py + 15, 22, 0, Math.PI);
       ctx.fill();
 
-      // Stickman Head & Body
       ctx.fillStyle = '#f8fafc';
       ctx.beginPath();
       ctx.arc(px, py - 16, 12, 0, Math.PI * 2);
       ctx.fill();
 
-      // Axe
       s.axeAngle += 0.04;
       const axeLen = 42;
       const ax = px + Math.cos(s.axeAngle) * axeLen;
@@ -123,15 +140,13 @@ export const PokiStickmanClimb3DGame: React.FC<PokiStickmanClimb3DGameProps> = (
       ctx.lineTo(ax, ay);
       ctx.stroke();
 
-      // Axe blade
       ctx.fillStyle = '#94a3b8';
       ctx.fillRect(ax - 6, ay - 6, 12, 12);
 
-      // Guide
       ctx.fillStyle = '#94a3b8';
       ctx.font = '14px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(isKo ? '화면을 터치해 곡괭이를 암벽에 박고 위로 등반하세요!' : 'Tap screen to hook axe and climb up the cliff!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '마우스 클릭 / 스페이스바 / 터치로 암벽을 등반하세요!' : 'Click, Space, or Touch to hook axe & climb up!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -140,24 +155,9 @@ export const PokiStickmanClimb3DGame: React.FC<PokiStickmanClimb3DGameProps> = (
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [effectiveCardId, isKo]);
-
-  const handleTouch = () => {
-    if (gameWon) return;
-    gameState.current.playerY -= 18;
-    if (navigator.vibrate) navigator.vibrate(30);
-
-    setScore((prev) => {
-      const next = prev + 1;
-      if (next >= targetScore) handleVictory();
-      return next;
-    });
-
-    if (gameState.current.playerY < window.innerHeight * 0.25) {
-      gameState.current.playerY = window.innerHeight * 0.72;
-    }
-  };
+  }, [doClimb, effectiveCardId, isKo]);
 
   return (
     <div className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono">
@@ -166,15 +166,15 @@ export const PokiStickmanClimb3DGame: React.FC<PokiStickmanClimb3DGameProps> = (
         subtitle="CLIFF AXE CLIMBER"
         score={score}
         targetScore={targetScore}
-        guideText={isKo ? '터치하여 암벽을 오르세요!' : 'Tap to climb cliff!'}
+        guideText={isKo ? '클릭 또는 터치로 암벽을 오르세요!' : 'Click or touch to climb!'}
         onClose={handleExit}
       />
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchStart={handleTouch}
-        onMouseDown={handleTouch}
+        className="block w-full h-full cursor-pointer"
+        onTouchStart={doClimb}
+        onMouseDown={doClimb}
       />
 
       {gameWon && rewardReceipt && (

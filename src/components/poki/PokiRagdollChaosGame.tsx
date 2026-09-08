@@ -59,31 +59,29 @@ export const PokiRagdollChaosGame: React.FC<PokiRagdollChaosGameProps> = ({
     }
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
+  const handlePointerStart = (clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    const t = e.touches[0];
-    const tx = t.clientX - rect.left;
-    const ty = t.clientY - rect.top;
+    const tx = clientX - rect.left;
+    const ty = clientY - rect.top;
     const gs = gameStateRef.current;
 
-    if (Math.hypot(tx - gs.rx, ty - gs.ry) < 60) {
+    if (Math.hypot(tx - gs.rx, ty - gs.ry) < 80) {
       gs.isDragging = true;
       gs.vx = 0;
       gs.vy = 0;
     }
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handlePointerMove = (clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    const t = e.touches[0];
     const gs = gameStateRef.current;
     if (gs.isDragging) {
-      const tx = t.clientX - rect.left;
-      const ty = t.clientY - rect.top;
+      const tx = clientX - rect.left;
+      const ty = clientY - rect.top;
       gs.vx = (tx - gs.rx) * 0.8;
       gs.vy = (ty - gs.ry) * 0.8;
       gs.rx = tx;
@@ -91,7 +89,7 @@ export const PokiRagdollChaosGame: React.FC<PokiRagdollChaosGameProps> = ({
     }
   };
 
-  const handleTouchEnd = () => {
+  const handlePointerEnd = () => {
     const gs = gameStateRef.current;
     if (gs.isDragging) {
       gs.isDragging = false;
@@ -215,19 +213,38 @@ export const PokiRagdollChaosGame: React.FC<PokiRagdollChaosGameProps> = ({
       animId = requestAnimationFrame(loop);
     };
 
+    const onKeyDown = (e: KeyboardEvent) => {
+      const gs = gameStateRef.current;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { gs.vx -= 15; triggerHaptic(15); }
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { gs.vx += 15; triggerHaptic(15); }
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W' || e.key === ' ') { gs.vy -= 22; triggerHaptic(20); }
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') { gs.vy += 15; triggerHaptic(15); }
+    };
+    window.addEventListener('keydown', onKeyDown);
+
     animId = requestAnimationFrame(loop);
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('keydown', onKeyDown);
     };
   }, [effectiveCardId, isKo]);
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono cursor-grab active:cursor-grabbing"
+      onTouchStart={(e) => {
+        const t = e.touches[0];
+        if (t) handlePointerStart(t.clientX, t.clientY);
+      }}
+      onTouchMove={(e) => {
+        const t = e.touches[0];
+        if (t) handlePointerMove(t.clientX, t.clientY);
+      }}
+      onTouchEnd={handlePointerEnd}
+      onMouseDown={(e) => handlePointerStart(e.clientX, e.clientY)}
+      onMouseMove={(e) => handlePointerMove(e.clientX, e.clientY)}
+      onMouseUp={handlePointerEnd}
     >
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
 

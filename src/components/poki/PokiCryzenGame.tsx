@@ -56,16 +56,15 @@ export const PokiCryzenGame: React.FC<PokiCryzenGameProps> = ({
     }
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
+  const handlePointerDown = (clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    const t = e.touches[0];
-    const tx = t.clientX - rect.left;
-    const ty = t.clientY - rect.top;
+    const tx = clientX - rect.left;
+    const ty = clientY - rect.top;
     const gs = gameStateRef.current;
 
-    // Fire bullet toward tap
+    // Fire bullet toward tap/click
     const angle = Math.atan2(ty - gs.py, tx - gs.px);
     gs.bullets.push({
       x: gs.px,
@@ -77,13 +76,12 @@ export const PokiCryzenGame: React.FC<PokiCryzenGameProps> = ({
     playSfx?.('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handlePointerMove = (clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    const t = e.touches[0];
-    gameStateRef.current.targetX = t.clientX - rect.left;
-    gameStateRef.current.targetY = t.clientY - rect.top;
+    gameStateRef.current.targetX = clientX - rect.left;
+    gameStateRef.current.targetY = clientY - rect.top;
   };
 
   useEffect(() => {
@@ -210,20 +208,42 @@ export const PokiCryzenGame: React.FC<PokiCryzenGameProps> = ({
       animId = requestAnimationFrame(loop);
     };
 
+    const onKeyDown = (e: KeyboardEvent) => {
+      const gs = gameStateRef.current;
+      const step = 30;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') gs.targetX = Math.max(30, gs.targetX - step);
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') gs.targetX = Math.min(canvas.width - 30, gs.targetX + step);
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') gs.targetY = Math.max(80, gs.targetY - step);
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') gs.targetY = Math.min(canvas.height - 80, gs.targetY + step);
+      if (e.key === ' ' || e.key === 'Spacebar') {
+        handlePointerDown(gs.targetX, gs.targetY - 100);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+
     animId = requestAnimationFrame(loop);
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('keydown', onKeyDown);
     };
   }, [effectiveCardId, isKo, onReward, playSfx]);
 
   return (
     <div
       className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
+      onTouchStart={(e) => {
+        const t = e.touches[0];
+        if (t) handlePointerDown(t.clientX, t.clientY);
+      }}
+      onTouchMove={(e) => {
+        const t = e.touches[0];
+        if (t) handlePointerMove(t.clientX, t.clientY);
+      }}
+      onMouseDown={(e) => handlePointerDown(e.clientX, e.clientY)}
+      onMouseMove={(e) => handlePointerMove(e.clientX, e.clientY)}
     >
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block cursor-crosshair" />
 
       <MinimalistMissionHUD
         title={isKo ? '크라이젠 io' : 'Cryzen.io'}

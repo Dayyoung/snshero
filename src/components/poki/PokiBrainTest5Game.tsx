@@ -91,18 +91,15 @@ export const PokiBrainTest5Game: React.FC<PokiBrainTest5GameProps> = ({
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, w, h);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.12, 50, 50);
 
       const s = gameState.current;
 
-      // Sun
       ctx.fillStyle = '#facc15';
       ctx.beginPath();
       ctx.arc(s.sunX, s.sunY, 40, 0, Math.PI * 2);
       ctx.fill();
 
-      // Flower
       const fx = w / 2;
       const fy = h * 0.68;
       ctx.fillStyle = '#16a34a';
@@ -113,7 +110,6 @@ export const PokiBrainTest5Game: React.FC<PokiBrainTest5GameProps> = ({
       ctx.arc(fx, fy, s.bloomed ? 32 : 16, 0, Math.PI * 2);
       ctx.fill();
 
-      // Cloud
       ctx.fillStyle = '#94a3b8';
       ctx.beginPath();
       ctx.arc(s.cloudX, s.cloudY, 45, 0, Math.PI * 2);
@@ -121,11 +117,10 @@ export const PokiBrainTest5Game: React.FC<PokiBrainTest5GameProps> = ({
       ctx.arc(s.cloudX + 55, s.cloudY, 36, 0, Math.PI * 2);
       ctx.fill();
 
-      // Guide
       ctx.fillStyle = '#7dd3fc';
       ctx.font = '14px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(isKo ? '먹구름을 터치 드래그로 치워 햇빛을 꽃에 비춰주세요!' : 'Drag cloud away to shine sunlight on flower!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '먹구름을 마우스/터치 드래그로 치워 햇빛을 꽃에 비춰주세요!' : 'Drag cloud away with mouse/touch to bloom flower!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -137,13 +132,12 @@ export const PokiBrainTest5Game: React.FC<PokiBrainTest5GameProps> = ({
     };
   }, [effectiveCardId, initScene, isKo]);
 
-  const handleTouch = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handlePointer = (clientX: number, clientY: number) => {
     if (gameWon) return;
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const touch = e.touches[0];
-    const tx = touch.clientX - rect.left;
-    const ty = touch.clientY - rect.top;
+    const tx = clientX - rect.left;
+    const ty = clientY - rect.top;
 
     const s = gameState.current;
     if (Math.hypot(tx - s.cloudX, ty - s.cloudY) < 70) {
@@ -175,10 +169,19 @@ export const PokiBrainTest5Game: React.FC<PokiBrainTest5GameProps> = ({
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchMove={handleTouch}
-        onTouchStart={handleTouch}
-        onMouseMove={handleTouch as any}
+        className="block w-full h-full cursor-grab active:cursor-grabbing"
+        onTouchMove={(e) => {
+          const t = e.touches[0];
+          if (t) handlePointer(t.clientX, t.clientY);
+        }}
+        onTouchStart={(e) => {
+          const t = e.touches[0];
+          if (t) handlePointer(t.clientX, t.clientY);
+        }}
+        onMouseMove={(e) => {
+          if (e.buttons > 0) handlePointer(e.clientX, e.clientY);
+        }}
+        onMouseDown={(e) => handlePointer(e.clientX, e.clientY)}
       />
 
       {gameWon && rewardReceipt && (

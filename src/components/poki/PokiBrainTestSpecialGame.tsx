@@ -60,6 +60,23 @@ export const PokiBrainTestSpecialGame: React.FC<PokiBrainTestSpecialGameProps> =
     if (onReward) onReward(receipt.totalSns);
   }, [gameWon, isKo, onReward, playSfx]);
 
+  const handleDial = useCallback(() => {
+    if (gameWon) return;
+    const s = gameState.current;
+    s.currentNum = (s.currentNum + 1) % 10;
+    if (navigator.vibrate) navigator.vibrate(20);
+
+    if (s.currentNum === s.safeCode[s.unlocked]) {
+      s.unlocked += 1;
+      if (navigator.vibrate) navigator.vibrate([40, 40]);
+      setScore((prev) => {
+        const next = prev + 1;
+        if (next >= targetScore) handleVictory();
+        return next;
+      });
+    }
+  }, [gameWon, handleVictory, targetScore]);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -74,18 +91,23 @@ export const PokiBrainTestSpecialGame: React.FC<PokiBrainTestSpecialGameProps> =
     resize();
     window.addEventListener('resize', resize);
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space' || e.code === 'Enter') {
+        handleDial();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, w, h);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.12, 50, 50);
 
       const s = gameState.current;
 
-      // Safe Box
       const sw = Math.min(w * 0.7, 260);
       const sh = sw;
       const sx = (w - sw) / 2;
@@ -97,7 +119,6 @@ export const PokiBrainTestSpecialGame: React.FC<PokiBrainTestSpecialGameProps> =
       ctx.lineWidth = 6;
       ctx.strokeRect(sx, sy, sw, sh);
 
-      // Safe Dial
       const cx = sx + sw / 2;
       const cy = sy + sh / 2;
       ctx.fillStyle = '#1e293b';
@@ -113,15 +134,13 @@ export const PokiBrainTestSpecialGame: React.FC<PokiBrainTestSpecialGameProps> =
       ctx.textAlign = 'center';
       ctx.fillText(String(s.currentNum), cx, cy + 12);
 
-      // Target Hint
       ctx.fillStyle = '#facc15';
       ctx.font = 'bold 16px monospace';
       ctx.fillText(`TARGET: [ ${s.safeCode[s.unlocked] ?? 'OK'} ]`, cx, sy - 20);
 
-      // Guide
       ctx.fillStyle = '#94a3b8';
       ctx.font = '14px monospace';
-      ctx.fillText(isKo ? '다이얼을 터치해 번호를 맞춰 금고를 여세요!' : 'Tap dial to match target code & open safe!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '다이얼을 마우스 클릭 / 터치로 맞춰 금고를 여세요!' : 'Click or tap dial to match code & open safe!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -130,25 +149,9 @@ export const PokiBrainTestSpecialGame: React.FC<PokiBrainTestSpecialGameProps> =
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [effectiveCardId, isKo]);
-
-  const handleTouch = () => {
-    if (gameWon) return;
-    const s = gameState.current;
-    s.currentNum = (s.currentNum + 1) % 10;
-    if (navigator.vibrate) navigator.vibrate(20);
-
-    if (s.currentNum === s.safeCode[s.unlocked]) {
-      s.unlocked += 1;
-      if (navigator.vibrate) navigator.vibrate([40, 40]);
-      setScore((prev) => {
-        const next = prev + 1;
-        if (next >= targetScore) handleVictory();
-        return next;
-      });
-    }
-  };
+  }, [effectiveCardId, handleDial, isKo]);
 
   return (
     <div className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono">
@@ -157,15 +160,15 @@ export const PokiBrainTestSpecialGame: React.FC<PokiBrainTestSpecialGameProps> =
         subtitle="SAFE DIAL RIDDLE"
         score={score}
         targetScore={targetScore}
-        guideText={isKo ? '다이얼을 터치해 금고를 여세요!' : 'Match code!'}
+        guideText={isKo ? '다이얼을 클릭/터치해 금고를 여세요!' : 'Match code!'}
         onClose={handleExit}
       />
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchStart={handleTouch}
-        onMouseDown={handleTouch}
+        className="block w-full h-full cursor-pointer"
+        onTouchStart={handleDial}
+        onMouseDown={handleDial}
       />
 
       {gameWon && rewardReceipt && (

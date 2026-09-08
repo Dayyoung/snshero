@@ -262,16 +262,14 @@ export const PokiTalkingTomGoldRunGame: React.FC<PokiTalkingTomGoldRunGameProps>
     };
   }, [changeLane, effectiveCardId, gameWon, handleVictory, jump, playSfx]);
 
-  const onTouchStart = (e: React.TouchEvent) => {
-    const t = e.touches[0];
-    gameState.current.touchStartX = t.clientX;
-    gameState.current.touchStartY = t.clientY;
+  const handleStart = (clientX: number, clientY: number) => {
+    gameState.current.touchStartX = clientX;
+    gameState.current.touchStartY = clientY;
   };
 
-  const onTouchEnd = (e: React.TouchEvent) => {
-    const t = e.changedTouches[0];
-    const dx = t.clientX - gameState.current.touchStartX;
-    const dy = t.clientY - gameState.current.touchStartY;
+  const handleEnd = (clientX: number, clientY: number) => {
+    const dx = clientX - gameState.current.touchStartX;
+    const dy = clientY - gameState.current.touchStartY;
 
     if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 30) {
       if (dx > 0) changeLane(1);
@@ -283,9 +281,17 @@ export const PokiTalkingTomGoldRunGame: React.FC<PokiTalkingTomGoldRunGameProps>
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono cursor-grab active:cursor-grabbing"
+      onTouchStart={(e) => {
+        const t = e.touches[0];
+        if (t) handleStart(t.clientX, t.clientY);
+      }}
+      onTouchEnd={(e) => {
+        const t = e.changedTouches[0];
+        if (t) handleEnd(t.clientX, t.clientY);
+      }}
+      onMouseDown={(e) => handleStart(e.clientX, e.clientY)}
+      onMouseUp={(e) => handleEnd(e.clientX, e.clientY)}
     >
       <MinimalistMissionHUD
         gameTitle={isKo ? 'Talking Tom Gold Run (골드 런)' : 'Gold Run'}

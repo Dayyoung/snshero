@@ -79,10 +79,8 @@ export const PokiPhoneCaseDIYGame: React.FC<PokiPhoneCaseDIYGameProps> = ({
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, w, h);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.14, 54, 54);
 
-      // Phone Case Outline
       const pw = Math.min(w * 0.65, 240);
       const ph = pw * 1.85;
       const px = (w - pw) / 2;
@@ -96,13 +94,11 @@ export const PokiPhoneCaseDIYGame: React.FC<PokiPhoneCaseDIYGameProps> = ({
       ctx.lineWidth = 4;
       ctx.stroke();
 
-      // Camera Bump
       ctx.fillStyle = '#0f172a';
       ctx.beginPath();
       ctx.roundRect(px + 16, py + 16, 50, 50, 12);
       ctx.fill();
 
-      // Spray drops
       gameState.current.drops.forEach((d) => {
         ctx.fillStyle = d.color;
         ctx.beginPath();
@@ -110,18 +106,16 @@ export const PokiPhoneCaseDIYGame: React.FC<PokiPhoneCaseDIYGameProps> = ({
         ctx.fill();
       });
 
-      // Stickers
       gameState.current.stickers.forEach((st) => {
         ctx.font = '28px sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(st.emoji, st.x, st.y);
       });
 
-      // Guide
       ctx.fillStyle = '#cbd5e1';
       ctx.font = '14px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(isKo ? '터치 드래그로 스프레이 분사 & 탭하여 스티커 부착!' : 'Drag to spray color & tap to stick stickers!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '마우스/터치 드래그로 스프레이 분사 & 클릭하여 스티커 부착!' : 'Drag mouse/touch to spray color & click to stick stickers!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -133,13 +127,12 @@ export const PokiPhoneCaseDIYGame: React.FC<PokiPhoneCaseDIYGameProps> = ({
     };
   }, [effectiveCardId, isKo]);
 
-  const handleTouch = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handlePointer = (clientX: number, clientY: number) => {
     if (gameWon) return;
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const touch = e.touches[0];
-    const tx = touch.clientX - rect.left;
-    const ty = touch.clientY - rect.top;
+    const tx = clientX - rect.left;
+    const ty = clientY - rect.top;
 
     const colors = ['#ec4899', '#38bdf8', '#a855f7', '#facc15', '#4ade80'];
     const col = colors[Math.floor(Math.random() * colors.length)];
@@ -165,16 +158,25 @@ export const PokiPhoneCaseDIYGame: React.FC<PokiPhoneCaseDIYGameProps> = ({
         subtitle="CREATIVE PHONE DECORATION"
         score={score}
         targetScore={targetScore}
-        guideText={isKo ? '터치하여 케이스를 예쁘게 꾸미세요!' : 'Decorate your phone case!'}
+        guideText={isKo ? '마우스 클릭/드래그로 꾸미세요!' : 'Decorate your phone case!'}
         onClose={handleExit}
       />
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchMove={handleTouch}
-        onTouchStart={handleTouch}
-        onMouseMove={handleTouch as any}
+        className="block w-full h-full cursor-crosshair"
+        onTouchMove={(e) => {
+          const t = e.touches[0];
+          if (t) handlePointer(t.clientX, t.clientY);
+        }}
+        onTouchStart={(e) => {
+          const t = e.touches[0];
+          if (t) handlePointer(t.clientX, t.clientY);
+        }}
+        onMouseMove={(e) => {
+          if (e.buttons > 0) handlePointer(e.clientX, e.clientY);
+        }}
+        onMouseDown={(e) => handlePointer(e.clientX, e.clientY)}
       />
 
       {gameWon && rewardReceipt && (

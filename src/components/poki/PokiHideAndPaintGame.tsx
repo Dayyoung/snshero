@@ -64,17 +64,16 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
     }
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handlePointerMove = (clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    const t = e.touches[0];
-    gameStateRef.current.targetX = t.clientX - rect.left;
-    gameStateRef.current.targetY = t.clientY - rect.top;
+    gameStateRef.current.targetX = clientX - rect.left;
+    gameStateRef.current.targetY = clientY - rect.top;
     gameStateRef.current.isMoving = true;
   };
 
-  const handleTouchEnd = () => {
+  const handlePointerEnd = () => {
     gameStateRef.current.isMoving = false;
   };
 
@@ -229,20 +228,49 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
       animId = requestAnimationFrame(loop);
     };
 
+    const onKeyDown = (e: KeyboardEvent) => {
+      const gs = gameStateRef.current;
+      const step = 25;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') gs.targetX = Math.max(20, gs.targetX - step);
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') gs.targetX = Math.min(canvas.width - 20, gs.targetX + step);
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') gs.targetY = Math.max(60, gs.targetY - step);
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') gs.targetY = Math.min(canvas.height - 60, gs.targetY + step);
+      gs.isMoving = true;
+    };
+    const onKeyUp = () => {
+      gameStateRef.current.isMoving = false;
+    };
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
+
     animId = requestAnimationFrame(loop);
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('keyup', onKeyUp);
     };
   }, [effectiveCardId, isCamouflaged, isKo, onReward, playSfx]);
 
   return (
     <div
       className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      onTouchStart={(e) => {
+        const t = e.touches[0];
+        if (t) handlePointerMove(t.clientX, t.clientY);
+      }}
+      onTouchMove={(e) => {
+        const t = e.touches[0];
+        if (t) handlePointerMove(t.clientX, t.clientY);
+      }}
+      onTouchEnd={handlePointerEnd}
+      onMouseDown={(e) => handlePointerMove(e.clientX, e.clientY)}
+      onMouseMove={(e) => {
+        if (e.buttons > 0) handlePointerMove(e.clientX, e.clientY);
+      }}
+      onMouseUp={handlePointerEnd}
     >
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block cursor-pointer" />
 
       <MinimalistMissionHUD
         title={isKo ? '하이드 앤 페인트' : 'Hide and Paint'}

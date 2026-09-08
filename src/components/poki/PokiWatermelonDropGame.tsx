@@ -81,10 +81,8 @@ export const PokiWatermelonDropGame: React.FC<PokiWatermelonDropGameProps> = ({
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, w, h);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.12, 50, 50);
 
-      // Box Container
       const bx = w * 0.12;
       const by = h * 0.24;
       const bw = w * 0.76;
@@ -95,7 +93,6 @@ export const PokiWatermelonDropGame: React.FC<PokiWatermelonDropGameProps> = ({
 
       const s = gameState.current;
 
-      // Update & Draw Fruits
       s.fruits.forEach((f) => {
         f.y += f.vy;
         if (f.y + f.r > by + bh) {
@@ -112,17 +109,15 @@ export const PokiWatermelonDropGame: React.FC<PokiWatermelonDropGameProps> = ({
         ctx.stroke();
       });
 
-      // Preview active fruit
       ctx.fillStyle = '#22c55e';
       ctx.beginPath();
       ctx.arc(s.dropX, by - 20, 16, 0, Math.PI * 2);
       ctx.fill();
 
-      // Guide
       ctx.fillStyle = '#86efac';
       ctx.font = '14px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(isKo ? '화면을 터치해 과일을 떨어뜨리고 수박으로 머지하세요!' : 'Tap to drop fruit and merge into a watermelon!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '마우스 클릭 또는 터치로 과일을 떨어뜨려 머지하세요!' : 'Click or tap to drop fruit and merge into a watermelon!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -134,12 +129,11 @@ export const PokiWatermelonDropGame: React.FC<PokiWatermelonDropGameProps> = ({
     };
   }, [effectiveCardId, isKo]);
 
-  const handleTouch = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handlePointer = (clientX: number) => {
     if (gameWon) return;
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const touch = e.touches[0];
-    const tx = touch.clientX - rect.left;
+    const tx = clientX - rect.left;
     const colors = ['#f43f5e', '#fb923c', '#facc15', '#4ade80', '#22c55e'];
     const s = gameState.current;
     s.dropX = tx;
@@ -162,6 +156,12 @@ export const PokiWatermelonDropGame: React.FC<PokiWatermelonDropGameProps> = ({
     });
   };
 
+  const handlePointerMove = (clientX: number) => {
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    gameState.current.dropX = clientX - rect.left;
+  };
+
   return (
     <div className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono">
       <MinimalistMissionHUD
@@ -169,15 +169,23 @@ export const PokiWatermelonDropGame: React.FC<PokiWatermelonDropGameProps> = ({
         subtitle="WATERMELON MERGE DROP"
         score={score}
         targetScore={targetScore}
-        guideText={isKo ? '터치하여 과일을 떨어뜨리세요!' : 'Tap to drop!'}
+        guideText={isKo ? '클릭/터치로 과일을 떨어뜨리세요!' : 'Tap to drop!'}
         onClose={handleExit}
       />
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchStart={handleTouch}
-        onMouseDown={handleTouch as any}
+        className="block w-full h-full cursor-pointer"
+        onTouchStart={(e) => {
+          const t = e.touches[0];
+          if (t) handlePointer(t.clientX);
+        }}
+        onTouchMove={(e) => {
+          const t = e.touches[0];
+          if (t) handlePointerMove(t.clientX);
+        }}
+        onMouseMove={(e) => handlePointerMove(e.clientX)}
+        onMouseDown={(e) => handlePointer(e.clientX)}
       />
 
       {gameWon && rewardReceipt && (

@@ -111,16 +111,14 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
     }
   }, [playSfx]);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    const t = e.touches[0];
-    gameStateRef.current.touchStartX = t.clientX;
-    gameStateRef.current.touchStartY = t.clientY;
+  const handleStart = (clientX: number, clientY: number) => {
+    gameStateRef.current.touchStartX = clientX;
+    gameStateRef.current.touchStartY = clientY;
   };
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const t = e.changedTouches[0];
-    const dx = t.clientX - gameStateRef.current.touchStartX;
-    const dy = t.clientY - gameStateRef.current.touchStartY;
+  const handleEnd = (clientX: number, clientY: number) => {
+    const dx = clientX - gameStateRef.current.touchStartX;
+    const dy = clientY - gameStateRef.current.touchStartY;
     const gs = gameStateRef.current;
 
     if (Math.abs(dx) > 30 && Math.abs(dx) > Math.abs(dy)) {
@@ -327,17 +325,44 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
 
     animId = requestAnimationFrame(loop);
 
+    const onKeyDown = (e: KeyboardEvent) => {
+      const gs = gameStateRef.current;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        if (gs.targetLane > 0) {
+          gs.targetLane--;
+          triggerHaptic(10);
+        }
+      } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        if (gs.targetLane < 2) {
+          gs.targetLane++;
+          triggerHaptic(10);
+        }
+      } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W' || e.key === ' ') {
+        jump();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('keydown', onKeyDown);
     };
-  }, [effectiveCardId, isKo, onReward, playSfx]);
+  }, [effectiveCardId, isKo, onReward, playSfx, jump]);
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
+      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono cursor-pointer"
+      onTouchStart={(e) => {
+        const t = e.touches[0];
+        if (t) handleStart(t.clientX, t.clientY);
+      }}
+      onTouchEnd={(e) => {
+        const t = e.changedTouches[0];
+        if (t) handleEnd(t.clientX, t.clientY);
+      }}
+      onMouseDown={(e) => handleStart(e.clientX, e.clientY)}
+      onMouseUp={(e) => handleEnd(e.clientX, e.clientY)}
     >
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
 

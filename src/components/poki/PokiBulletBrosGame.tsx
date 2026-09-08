@@ -99,12 +99,10 @@ export const PokiBulletBrosGame: React.FC<PokiBulletBrosGameProps> = ({
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, w, h);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.12, 50, 50);
 
       const s = gameState.current;
 
-      // Player Physics
       s.playerVy += 0.25;
       s.playerX += s.playerVx;
       s.playerY += s.playerVy;
@@ -117,7 +115,6 @@ export const PokiBulletBrosGame: React.FC<PokiBulletBrosGameProps> = ({
       if (s.playerX < 30) s.playerX = 30;
       if (s.playerX > w - 30) s.playerX = w - 30;
 
-      // Enemies
       s.enemies.forEach((en) => {
         if (en.alive) {
           ctx.fillStyle = '#ef4444';
@@ -129,13 +126,11 @@ export const PokiBulletBrosGame: React.FC<PokiBulletBrosGameProps> = ({
         }
       });
 
-      // Player
       ctx.fillStyle = '#38bdf8';
       ctx.fillRect(s.playerX - 14, s.playerY - 20, 28, 40);
       ctx.fillStyle = '#facc15';
       ctx.fillRect(s.playerX - 10, s.playerY - 14, 20, 10);
 
-      // Aim line
       if (s.aiming) {
         ctx.beginPath();
         ctx.moveTo(s.playerX, s.playerY);
@@ -147,11 +142,10 @@ export const PokiBulletBrosGame: React.FC<PokiBulletBrosGameProps> = ({
         ctx.setLineDash([]);
       }
 
-      // Guide
       ctx.fillStyle = '#94a3b8';
       ctx.font = '14px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(isKo ? '터치 조준 & 손을 떼 반동 점프로 적을 저격하세요!' : 'Aim with touch and release to recoil-shoot enemies!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '마우스/터치로 조준 후 손을 떼 반동 점프로 적을 저격하세요!' : 'Aim with mouse/touch and release to shoot enemies!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -163,24 +157,22 @@ export const PokiBulletBrosGame: React.FC<PokiBulletBrosGameProps> = ({
     };
   }, [effectiveCardId, initEnemies, isKo]);
 
-  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handleStart = (clientX: number, clientY: number) => {
     if (gameWon) return;
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const touch = e.touches[0];
     gameState.current.aiming = true;
-    gameState.current.dragStart = { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+    gameState.current.dragStart = { x: clientX - rect.left, y: clientY - rect.top };
   };
 
-  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handleMove = (clientX: number, clientY: number) => {
     if (!gameState.current.aiming) return;
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const touch = e.touches[0];
-    gameState.current.dragStart = { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+    gameState.current.dragStart = { x: clientX - rect.left, y: clientY - rect.top };
   };
 
-  const handleTouchEnd = () => {
+  const handleEnd = () => {
     const s = gameState.current;
     if (s.aiming) {
       const dx = s.playerX - s.dragStart.x;
@@ -189,7 +181,6 @@ export const PokiBulletBrosGame: React.FC<PokiBulletBrosGameProps> = ({
       s.playerVy = dy * 0.12;
       s.aiming = false;
 
-      // Kill enemy near crosshair
       s.enemies.forEach((en) => {
         if (en.alive && Math.hypot(en.x - s.dragStart.x, en.y - s.dragStart.y) < 65) {
           en.alive = false;
@@ -217,13 +208,19 @@ export const PokiBulletBrosGame: React.FC<PokiBulletBrosGameProps> = ({
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onMouseDown={handleTouchStart as any}
-        onMouseMove={handleTouchMove as any}
-        onMouseUp={handleTouchEnd}
+        className="block w-full h-full cursor-crosshair"
+        onTouchStart={(e) => {
+          const t = e.touches[0];
+          if (t) handleStart(t.clientX, t.clientY);
+        }}
+        onTouchMove={(e) => {
+          const t = e.touches[0];
+          if (t) handleMove(t.clientX, t.clientY);
+        }}
+        onTouchEnd={handleEnd}
+        onMouseDown={(e) => handleStart(e.clientX, e.clientY)}
+        onMouseMove={(e) => handleMove(e.clientX, e.clientY)}
+        onMouseUp={handleEnd}
       />
 
       {gameWon && rewardReceipt && (

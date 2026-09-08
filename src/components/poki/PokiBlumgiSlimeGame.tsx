@@ -78,29 +78,47 @@ export const PokiBlumgiSlimeGame: React.FC<PokiBlumgiSlimeGameProps> = ({
     resize();
     window.addEventListener('resize', resize);
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space' || e.code === 'ArrowUp') {
+        if (!gameState.current.charging) {
+          gameState.current.charging = true;
+          gameState.current.charge = 0;
+        }
+      }
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.code === 'Space' || e.code === 'ArrowUp') {
+        const s = gameState.current;
+        if (s.charging) {
+          s.slimeVy = -s.charge;
+          s.charging = false;
+          s.charge = 0;
+          if (navigator.vibrate) navigator.vibrate(30);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, w, h);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.12, 50, 50);
 
       const s = gameState.current;
 
-      // Moving Platform
       s.platformX += s.platformVx;
       if (s.platformX < 40 || s.platformX > w - 100) s.platformVx *= -1;
 
       ctx.fillStyle = '#38bdf8';
       ctx.fillRect(s.platformX, h * 0.45, 80, 14);
 
-      // Ground
       ctx.fillStyle = '#334155';
       ctx.fillRect(0, h * 0.75, w, 20);
 
-      // Slime Physics
       if (s.charging) {
         s.charge = Math.min(s.charge + 0.4, 18);
       }
@@ -112,7 +130,6 @@ export const PokiBlumgiSlimeGame: React.FC<PokiBlumgiSlimeGameProps> = ({
         s.slimeVy = 0;
       }
 
-      // Check land on platform
       if (s.slimeY >= h * 0.42 && s.slimeY <= h * 0.46 && s.slimeVy > 0) {
         const sx = w / 2;
         if (sx >= s.platformX - 20 && sx <= s.platformX + 100) {
@@ -126,7 +143,6 @@ export const PokiBlumgiSlimeGame: React.FC<PokiBlumgiSlimeGameProps> = ({
         }
       }
 
-      // Render Slime
       ctx.fillStyle = '#ec4899';
       ctx.beginPath();
       const squish = s.charging ? s.charge * 0.6 : 0;
@@ -136,11 +152,10 @@ export const PokiBlumgiSlimeGame: React.FC<PokiBlumgiSlimeGameProps> = ({
       ctx.lineWidth = 3;
       ctx.stroke();
 
-      // Guide
       ctx.fillStyle = '#f472b6';
       ctx.font = '14px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(isKo ? '화면을 길게 눌러 힘을 모으고 손을 떼 점프하세요!' : 'Hold to charge squish and release to jump!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '마우스 누름 / 스페이스바 / 터치로 힘을 모아 점프하세요!' : 'Click/Hold, Space, or Touch to charge & jump!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -149,16 +164,18 @@ export const PokiBlumgiSlimeGame: React.FC<PokiBlumgiSlimeGameProps> = ({
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
     };
   }, [effectiveCardId, isKo]);
 
-  const handleTouchStart = () => {
+  const handleStart = () => {
     if (gameWon) return;
     gameState.current.charging = true;
     gameState.current.charge = 0;
   };
 
-  const handleTouchEnd = () => {
+  const handleEnd = () => {
     if (gameWon) return;
     const s = gameState.current;
     if (s.charging) {
@@ -176,17 +193,17 @@ export const PokiBlumgiSlimeGame: React.FC<PokiBlumgiSlimeGameProps> = ({
         subtitle="SLIME SQUISH JUMPER"
         score={score}
         targetScore={targetScore}
-        guideText={isKo ? '충전 후 점프하세요!' : 'Charge and jump!'}
+        guideText={isKo ? '클릭/터치로 충전 후 점프하세요!' : 'Charge and jump!'}
         onClose={handleExit}
       />
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        onMouseDown={handleTouchStart}
-        onMouseUp={handleTouchEnd}
+        className="block w-full h-full cursor-pointer"
+        onTouchStart={handleStart}
+        onTouchEnd={handleEnd}
+        onMouseDown={handleStart}
+        onMouseUp={handleEnd}
       />
 
       {gameWon && rewardReceipt && (

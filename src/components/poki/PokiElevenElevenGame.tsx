@@ -37,7 +37,7 @@ export const PokiElevenElevenGame: React.FC<PokiElevenElevenGameProps> = ({
   const [rewardReceipt, setRewardReceipt] = useState<RewardReceipt | null>(null);
 
   const gameState = useRef({
-    board: Array(36).fill(false) // 6x6 grid
+    board: Array(36).fill(false)
   });
 
   const handleVictory = useCallback(() => {
@@ -78,7 +78,6 @@ export const PokiElevenElevenGame: React.FC<PokiElevenElevenGameProps> = ({
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, w, h);
 
-      // Card Avatar
       drawCardSprite(ctx, effectiveCardId, w / 2, h * 0.12, 50, 50);
 
       const s = gameState.current;
@@ -100,11 +99,10 @@ export const PokiElevenElevenGame: React.FC<PokiElevenElevenGameProps> = ({
         }
       }
 
-      // Guide
       ctx.fillStyle = '#38bdf8';
       ctx.font = '14px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(isKo ? '그리드 타일을 터치해 채우고 라인을 클리어하세요!' : 'Tap grid tiles to fill and clear lines!', w / 2, h * 0.88);
+      ctx.fillText(isKo ? '그리드 타일을 마우스 클릭 / 터치로 채워 라인을 클리어하세요!' : 'Click or tap grid tiles to fill and clear lines!', w / 2, h * 0.88);
 
       animId = requestAnimationFrame(render);
     };
@@ -116,13 +114,12 @@ export const PokiElevenElevenGame: React.FC<PokiElevenElevenGameProps> = ({
     };
   }, [effectiveCardId, isKo]);
 
-  const handleTouch = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handlePointer = (clientX: number, clientY: number) => {
     if (gameWon) return;
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const touch = e.touches[0];
-    const tx = touch.clientX - rect.left;
-    const ty = touch.clientY - rect.top;
+    const tx = clientX - rect.left;
+    const ty = clientY - rect.top;
 
     const size = Math.min(rect.width * 0.13, 44);
     const startX = (rect.width - size * 6) / 2;
@@ -156,15 +153,18 @@ export const PokiElevenElevenGame: React.FC<PokiElevenElevenGameProps> = ({
         subtitle="GRID BLOCK PUZZLE"
         score={score}
         targetScore={targetScore}
-        guideText={isKo ? '타일을 터치해 채우세요!' : 'Fill tiles!'}
+        guideText={isKo ? '타일을 클릭/터치해 채우세요!' : 'Fill tiles!'}
         onClose={handleExit}
       />
 
       <canvas
         ref={canvasRef}
-        className="block w-full h-full"
-        onTouchStart={handleTouch}
-        onMouseDown={handleTouch as any}
+        className="block w-full h-full cursor-pointer"
+        onTouchStart={(e) => {
+          const t = e.touches[0];
+          if (t) handlePointer(t.clientX, t.clientY);
+        }}
+        onMouseDown={(e) => handlePointer(e.clientX, e.clientY)}
       />
 
       {gameWon && rewardReceipt && (

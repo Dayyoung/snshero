@@ -60,13 +60,12 @@ export const PokiSnakeVsWormsGame: React.FC<PokiSnakeVsWormsGameProps> = ({
     }
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handlePointerMove = (clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    const t = e.touches[0];
-    const tx = t.clientX - rect.left;
-    const ty = t.clientY - rect.top;
+    const tx = clientX - rect.left;
+    const ty = clientY - rect.top;
     const gs = gameStateRef.current;
     gs.angle = Math.atan2(ty - gs.headY, tx - gs.headX);
   };
@@ -214,21 +213,47 @@ export const PokiSnakeVsWormsGame: React.FC<PokiSnakeVsWormsGameProps> = ({
       animId = requestAnimationFrame(loop);
     };
 
+    const onKeyDown = (e: KeyboardEvent) => {
+      const gs = gameStateRef.current;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') gs.angle = Math.PI;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') gs.angle = 0;
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') gs.angle = -Math.PI / 2;
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') gs.angle = Math.PI / 2;
+      if (e.key === ' ' || e.key === 'Spacebar') {
+        gs.isBoosting = true;
+      }
+    };
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (e.key === ' ' || e.key === 'Spacebar') {
+        gameStateRef.current.isBoosting = false;
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
+
     animId = requestAnimationFrame(loop);
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('keyup', onKeyUp);
     };
   }, [effectiveCardId, isKo, onReward, playSfx]);
 
   return (
     <div
       className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-slate-950 font-mono"
-      onTouchMove={handleTouchMove}
       onTouchStart={() => { gameStateRef.current.isBoosting = true; }}
       onTouchEnd={() => { gameStateRef.current.isBoosting = false; }}
+      onTouchMove={(e) => {
+        const t = e.touches[0];
+        if (t) handlePointerMove(t.clientX, t.clientY);
+      }}
+      onMouseDown={() => { gameStateRef.current.isBoosting = true; }}
+      onMouseUp={() => { gameStateRef.current.isBoosting = false; }}
+      onMouseMove={(e) => handlePointerMove(e.clientX, e.clientY)}
     >
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block cursor-crosshair" />
 
       <MinimalistMissionHUD
         title={isKo ? '스네이크 vs 웜스' : 'Snake vs Worms'}
