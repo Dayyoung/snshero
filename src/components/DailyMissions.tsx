@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Gift, CheckCircle2, Circle, Sparkles, Clock, History, Award, Coins, Zap, Trash2, X, Download } from 'lucide-react';
+import { Gift, CheckCircle2, Circle, Sparkles, Clock, History, Award, Coins, Zap, Trash2, X, Download, ChevronDown, ChevronUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
@@ -35,6 +35,7 @@ export const DailyMissions: React.FC = () => {
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [historyList, setHistoryList] = useState<DailyMissionHistoryEntry[]>(loadDailyMissionHistory);
   const [historyStats, setHistoryStats] = useState(getMissionHistoryStats);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   const triggerFloatingReward = (sns: number, xp: number) => {
     setFloatingReward({ id: Date.now(), sns, xp });
@@ -185,6 +186,11 @@ export const DailyMissions: React.FC = () => {
   const claimableRewardTotal = getClaimableRewardTotal();
   const totalReward = getDailyMissionRewardTotal();
   const allClaimed = Object.values(missionData.missions).every((s: MissionState) => s.claimed);
+  const totalMissionsCount = DAILY_MISSIONS.length;
+  const completedMissionsCount = DAILY_MISSIONS.filter((m) => {
+    const s = missionData.missions[m.id];
+    return s && (s.completed || s.claimed || s.progress >= m.target);
+  }).length;
 
   const renderHistoryView = () => (
     <div className="space-y-3 font-mono text-[#201d1d]">
@@ -323,200 +329,298 @@ export const DailyMissions: React.FC = () => {
       {/* History 탭 활성화 상태 */}
       {activeTab === 'history' ? (
         renderHistoryView()
-      ) : allClaimed ? (
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
-            <h3 className="text-xs sm:text-sm font-bold uppercase tracking-tight text-[#201d1d]">
-              {t('daily_missions_title', language)}
-            </h3>
-            <span className="text-[10px] font-bold text-emerald-600 ml-auto bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-sm">
-              {t('daily_missions_all_done', language)}
-            </span>
-          </div>
-          <p className="text-[11px] text-[#646262]">
-            {t('daily_missions_tomorrow', language)}
-          </p>
-        </div>
       ) : (
         <div>
-          {/* 헤더 */}
-          <div className="flex items-center gap-2 mb-3 flex-wrap">
-            <div className="relative flex items-center gap-1.5">
-              <Gift size={16} className="text-[#201d1d] shrink-0" />
-              {claimableCount > 0 && (
-                <span className="w-2 h-2 bg-rose-600 rounded-full animate-pulse" />
-              )}
-              <h3 className="text-xs sm:text-sm font-black uppercase tracking-tight text-[#201d1d]">
+          {/* 접이식 요약 바 (기본 접힘, 클릭 시 펼치기/접기 토글) */}
+          <div
+            onClick={() => setIsExpanded(prev => !prev)}
+            className="w-full flex items-center justify-between gap-2 p-2.5 bg-[#f8f7f7] hover:bg-[#f0eeee] border border-[rgba(15,0,0,0.12)] rounded-sm cursor-pointer select-none transition-colors"
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setIsExpanded(prev => !prev);
+              }
+            }}
+            aria-expanded={isExpanded}
+            title={isExpanded ? (language === 'ko' ? '미션 목록 접기' : 'Collapse Missions') : (language === 'ko' ? '미션 목록 펼치기' : 'Expand Missions')}
+          >
+            <div className="flex items-center gap-2 flex-wrap min-w-0">
+              <div className="relative flex items-center gap-1.5 shrink-0">
+                <Gift size={16} className="text-[#201d1d]" />
+                {claimableCount > 0 && (
+                  <span className="w-2 h-2 bg-rose-600 rounded-full animate-pulse" />
+                )}
+              </div>
+              <h3 className="text-xs sm:text-sm font-black uppercase tracking-tight text-[#201d1d] shrink-0">
                 {t('daily_missions_title', language)}
               </h3>
-            </div>
-          </div>
 
-          {/* Consolidated Compact Header Pill (ID 246) */}
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2 p-2 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm text-[10px] font-bold">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="inline-flex items-center gap-1 text-[#201d1d]">
+              {/* 진행도 요약 뱃지 */}
+              <span className={cn(
+                "text-[10px] font-bold px-2 py-0.5 rounded-sm border font-mono shrink-0",
+                allClaimed
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-300"
+                  : completedMissionsCount > 0
+                    ? "bg-indigo-50 text-indigo-700 border-indigo-200"
+                    : "bg-[#e2e0e0] text-[#646262] border-[rgba(15,0,0,0.08)]"
+              )}>
+                [{completedMissionsCount}/{totalMissionsCount} {allClaimed ? (language === 'ko' ? '모두 완료' : 'All Done') : (language === 'ko' ? '완료' : 'Done')}]
+              </span>
+
+              {/* 수령 대기 알림 (요약 바에서도 눈에 띄게 표시) */}
+              {claimableCount > 0 && (
+                <span className="text-[10px] font-black text-rose-700 bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded-xs animate-pulse shrink-0 flex items-center gap-1">
+                  <span>🎁</span>
+                  <span>+{claimableRewardTotal.toLocaleString()} SNS ({claimableCount})</span>
+                </span>
+              )}
+
+              {/* 리셋 시간 타이머 요약 */}
+              <span className="inline-flex items-center gap-1 text-[10px] text-[#646262] font-mono shrink-0 hidden sm:inline-flex">
                 <Clock size={11} className="text-amber-600" />
                 <span>[{language === 'ko' ? `초기화: ${timeLeft}` : `Resets: ${timeLeft}`}]</span>
               </span>
-              <span className="text-[#646262]">|</span>
-              <span className="text-[#201d1d]">
-                {t('daily_missions_reward_total', language, { amount: totalReward.toLocaleString() })}
-              </span>
-              {claimableRewardTotal > 0 && (
-                <span className="text-indigo-800 bg-indigo-50 border border-indigo-200 px-1.5 py-0.5 rounded-xs">
-                  🎁 {t('daily_missions_reward_claimable', language, { amount: claimableRewardTotal.toLocaleString() })}
-                </span>
-              )}
             </div>
 
-            {claimableCount > 0 && (
-              <button
-                onClick={handleClaimAll}
-                disabled={claimingId !== null}
-                className={cn(
-                  "text-[10px] font-bold bg-[#201d1d] text-[#fdfcfc] hover:bg-[#333030] px-2.5 py-0.5 rounded-sm cursor-pointer transition-all active:scale-95 border border-[rgba(15,0,0,0.12)] flex items-center gap-1",
-                  claimingId === 'all' && "opacity-70 cursor-wait"
+            {/* 우측 액션: 빠른 일괄 수령 버튼 & 접기/펼치기 버튼 */}
+            <div className="flex items-center gap-1.5 shrink-0">
+              {claimableCount > 0 && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleClaimAll();
+                  }}
+                  disabled={claimingId !== null}
+                  className="text-[10px] font-bold bg-[#201d1d] text-[#fdfcfc] hover:bg-[#333030] px-2 py-0.5 rounded-sm cursor-pointer transition-all active:scale-95 border border-[rgba(15,0,0,0.12)] flex items-center gap-1"
+                  title={language === 'ko' ? '완료된 미션 보상 일괄 수령' : 'Claim all completed rewards'}
+                >
+                  <Gift size={10} className="text-amber-300" />
+                  <span>{language === 'ko' ? `수령 (${claimableCount})` : `Claim (${claimableCount})`}</span>
+                </button>
+              )}
+
+              <div className="text-[10px] font-bold text-[#201d1d] bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] px-2 py-0.5 rounded-sm flex items-center gap-1">
+                {isExpanded ? (
+                  <>
+                    <span>{language === 'ko' ? '접기' : 'Collapse'}</span>
+                    <ChevronUp size={12} />
+                  </>
+                ) : (
+                  <>
+                    <span>{language === 'ko' ? '펼치기' : 'Expand'}</span>
+                    <ChevronDown size={12} />
+                  </>
                 )}
-              >
-                <Gift size={10} className="text-amber-300" />
-                <span>{language === 'ko' ? `일괄 수령 (${claimableCount})` : `Claim All (${claimableCount})`}</span>
-              </button>
-            )}
+              </div>
+            </div>
           </div>
 
-          <p className="mb-3 text-[10px] font-medium text-[#646262]">
-            {t('daily_missions_reset_hint', language)}
-          </p>
+          {/* 슬림 프로그레스 바 (접혀있든 펼쳐져있든 진행 상황 시각화) */}
+          <div className="w-full h-1 bg-[#e2e0e0] rounded-none overflow-hidden mb-3 border-x border-b border-[rgba(15,0,0,0.08)]">
+            <div
+              className={cn(
+                "h-full transition-all duration-300",
+                allClaimed ? "bg-emerald-600" : "bg-[#201d1d]"
+              )}
+              style={{ width: `${Math.round((completedMissionsCount / totalMissionsCount) * 100)}%` }}
+            />
+          </div>
 
-          {/* 완료/수령 알림 배너 */}
+          {/* 펼쳐진 세부 미션 리스트 */}
           <AnimatePresence>
-            {notificationMsg && (
+            {isExpanded && (
               <motion.div
-                initial={{ opacity: 0, y: -6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                className="mb-3 p-2.5 bg-indigo-50 border border-indigo-300 rounded-sm flex items-center justify-between text-xs font-bold text-indigo-950 font-mono"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden space-y-3"
               >
-                <div className="flex items-center gap-2">
-                  <Sparkles size={16} className="text-indigo-600 shrink-0 animate-pulse" />
-                  <span>{notificationMsg}</span>
-                </div>
-                <button
-                  onClick={() => setNotificationMsg(null)}
-                  className="text-indigo-700 hover:text-indigo-900 font-bold ml-2 cursor-pointer text-xs"
-                >
-                  [✕]
-                </button>
+                {allClaimed ? (
+                  <div className="p-3 bg-emerald-50/60 border border-emerald-200 rounded-sm">
+                    <div className="flex items-center gap-2 mb-1">
+                      <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-tight text-emerald-900">
+                        {t('daily_missions_all_done', language)}
+                      </h4>
+                    </div>
+                    <p className="text-[11px] text-[#646262]">
+                      {t('daily_missions_tomorrow', language)}
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    {/* Consolidated Compact Header Pill (ID 246) */}
+                    <div className="mb-3 flex flex-wrap items-center justify-between gap-2 p-2 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm text-[10px] font-bold">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="inline-flex items-center gap-1 text-[#201d1d]">
+                          <Clock size={11} className="text-amber-600" />
+                          <span>[{language === 'ko' ? `초기화: ${timeLeft}` : `Resets: ${timeLeft}`}]</span>
+                        </span>
+                        <span className="text-[#646262]">|</span>
+                        <span className="text-[#201d1d]">
+                          {t('daily_missions_reward_total', language, { amount: totalReward.toLocaleString() })}
+                        </span>
+                        {claimableRewardTotal > 0 && (
+                          <span className="text-indigo-800 bg-indigo-50 border border-indigo-200 px-1.5 py-0.5 rounded-xs">
+                            🎁 {t('daily_missions_reward_claimable', language, { amount: claimableRewardTotal.toLocaleString() })}
+                          </span>
+                        )}
+                      </div>
+
+                      {claimableCount > 0 && (
+                        <button
+                          onClick={handleClaimAll}
+                          disabled={claimingId !== null}
+                          className={cn(
+                            "text-[10px] font-bold bg-[#201d1d] text-[#fdfcfc] hover:bg-[#333030] px-2.5 py-0.5 rounded-sm cursor-pointer transition-all active:scale-95 border border-[rgba(15,0,0,0.12)] flex items-center gap-1",
+                            claimingId === 'all' && "opacity-70 cursor-wait"
+                          )}
+                        >
+                          <Gift size={10} className="text-amber-300" />
+                          <span>{language === 'ko' ? `일괄 수령 (${claimableCount})` : `Claim All (${claimableCount})`}</span>
+                        </button>
+                      )}
+                    </div>
+
+                    <p className="mb-3 text-[10px] font-medium text-[#646262]">
+                      {t('daily_missions_reset_hint', language)}
+                    </p>
+
+                    {/* 완료/수령 알림 배너 */}
+                    <AnimatePresence>
+                      {notificationMsg && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -6 }}
+                          className="mb-3 p-2.5 bg-indigo-50 border border-indigo-300 rounded-sm flex items-center justify-between text-xs font-bold text-indigo-950 font-mono"
+                        >
+                          <div className="flex items-center gap-2">
+                            <Sparkles size={16} className="text-indigo-600 shrink-0 animate-pulse" />
+                            <span>{notificationMsg}</span>
+                          </div>
+                          <button
+                            onClick={() => setNotificationMsg(null)}
+                            className="text-indigo-700 hover:text-indigo-900 font-bold ml-2 cursor-pointer text-xs"
+                          >
+                            [✕]
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    {/* 미션 목록 */}
+                    <div className="space-y-2">
+                      {DAILY_MISSIONS.map((mission) => {
+                        const state = missionData.missions[mission.id];
+                        if (!state) return null;
+
+                        const progress = state.progress;
+                        const target = mission.target;
+                        const completed = state.completed || progress >= target;
+                        const claimed = state.claimed;
+                        const title = language === 'ko' ? mission.title_ko : mission.title_en;
+                        const pct = Math.min(100, Math.round((progress / target) * 100));
+
+                        return (
+                          <motion.div
+                            key={mission.id}
+                            layout
+                            className={cn(
+                              'flex items-center gap-2.5 p-2.5 rounded-sm border transition-colors',
+                              claimed
+                                ? 'bg-[#f8f7f7] border-[rgba(15,0,0,0.08)] opacity-75'
+                                : completed
+                                  ? 'bg-indigo-50/80 border-indigo-300'
+                                  : 'bg-[#fdfcfc] border-[rgba(15,0,0,0.12)]'
+                            )}
+                          >
+                            {/* 상태 아이콘 */}
+                            <div className="shrink-0">
+                              {claimed ? (
+                                <CheckCircle2 size={16} className="text-emerald-600" />
+                              ) : completed ? (
+                                <Sparkles size={16} className="text-indigo-600 animate-pulse" />
+                              ) : (
+                                <Circle size={16} className="text-[#646262]" />
+                              )}
+                            </div>
+
+                            {/* 미션 정보 */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-1">
+                                <span
+                                  className={cn(
+                                    'text-[11px] sm:text-xs font-bold truncate',
+                                    claimed
+                                      ? 'text-[#646262] line-through'
+                                      : completed
+                                        ? 'text-indigo-900 font-extrabold'
+                                        : 'text-[#201d1d]'
+                                  )}
+                                >
+                                  {title}
+                                </span>
+                                {/* 보상 표시 (Compact Quest Reward Pill Badge - ID 295) */}
+                                <span className="text-[10px] font-black text-amber-800 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded-sm shrink-0 flex items-center gap-1 shadow-2xs">
+                                  <span>🎁</span>
+                                  <span>+{mission.reward_sns} SNS</span>
+                                </span>
+                              </div>
+
+                              {/* 진행 바 */}
+                              {!claimed && (
+                                <div className="mt-1.5 flex items-center gap-2">
+                                  <div className="flex-1 h-2 bg-[#e2e0e0] rounded-sm overflow-hidden border border-[rgba(15,0,0,0.08)]">
+                                    <motion.div
+                                      className="h-full bg-[#201d1d]"
+                                      initial={{ width: 0 }}
+                                      animate={{ width: `${pct}%` }}
+                                      transition={{ duration: 0.3 }}
+                                    />
+                                  </div>
+                                  <span className="text-[10px] font-bold text-[#646262] shrink-0 font-mono">
+                                    [{progress}/{target}]
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* 수령 버튼 */}
+                            {completed && !claimed && (
+                              <motion.button
+                                initial={{ scale: 0.9, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                onClick={() => handleClaim(mission.id)}
+                                disabled={claimingId === mission.id}
+                                className={cn(
+                                  'shrink-0 px-3 py-1 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm border border-[rgba(15,0,0,0.12)]',
+                                  'hover:bg-[#333030] active:scale-95 transition-all cursor-pointer touch-target',
+                                  claimingId === mission.id && 'opacity-50'
+                                )}
+                              >
+                                {t('daily_missions_claim', language)}
+                              </motion.button>
+                            )}
+
+                            {/* 수령 완료 표시 */}
+                            {claimed && (
+                              <span className="text-[10px] font-bold text-emerald-600 shrink-0">
+                                [{t('daily_missions_done', language)}]
+                              </span>
+                            )}
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
-
-          {/* 미션 목록 */}
-          <div className="space-y-2">
-            {DAILY_MISSIONS.map((mission) => {
-              const state = missionData.missions[mission.id];
-              if (!state) return null;
-
-              const progress = state.progress;
-              const target = mission.target;
-              const completed = state.completed || progress >= target;
-              const claimed = state.claimed;
-              const title = language === 'ko' ? mission.title_ko : mission.title_en;
-              const pct = Math.min(100, Math.round((progress / target) * 100));
-
-              return (
-                <motion.div
-                  key={mission.id}
-                  layout
-                  className={cn(
-                    'flex items-center gap-2.5 p-2.5 rounded-sm border transition-colors',
-                    claimed
-                      ? 'bg-[#f8f7f7] border-[rgba(15,0,0,0.08)] opacity-75'
-                      : completed
-                        ? 'bg-indigo-50/80 border-indigo-300'
-                        : 'bg-[#fdfcfc] border-[rgba(15,0,0,0.12)]'
-                  )}
-                >
-                  {/* 상태 아이콘 */}
-                  <div className="shrink-0">
-                    {claimed ? (
-                      <CheckCircle2 size={16} className="text-emerald-600" />
-                    ) : completed ? (
-                      <Sparkles size={16} className="text-indigo-600 animate-pulse" />
-                    ) : (
-                      <Circle size={16} className="text-[#646262]" />
-                    )}
-                  </div>
-
-                  {/* 미션 정보 */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-1">
-                      <span
-                        className={cn(
-                          'text-[11px] sm:text-xs font-bold truncate',
-                          claimed
-                            ? 'text-[#646262] line-through'
-                            : completed
-                              ? 'text-indigo-900 font-extrabold'
-                              : 'text-[#201d1d]'
-                        )}
-                      >
-                        {title}
-                      </span>
-                      {/* 보상 표시 (Compact Quest Reward Pill Badge - ID 295) */}
-                      <span className="text-[10px] font-black text-amber-800 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded-sm shrink-0 flex items-center gap-1 shadow-2xs">
-                        <span>🎁</span>
-                        <span>+{mission.reward_sns} SNS</span>
-                      </span>
-                    </div>
-
-                    {/* 진행 바 */}
-                    {!claimed && (
-                      <div className="mt-1.5 flex items-center gap-2">
-                        <div className="flex-1 h-2 bg-[#e2e0e0] rounded-sm overflow-hidden border border-[rgba(15,0,0,0.08)]">
-                          <motion.div
-                            className="h-full bg-[#201d1d]"
-                            initial={{ width: 0 }}
-                            animate={{ width: `${pct}%` }}
-                            transition={{ duration: 0.3 }}
-                          />
-                        </div>
-                        <span className="text-[10px] font-bold text-[#646262] shrink-0 font-mono">
-                          [{progress}/{target}]
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* 수령 버튼 */}
-                  {completed && !claimed && (
-                    <motion.button
-                      initial={{ scale: 0.9, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      onClick={() => handleClaim(mission.id)}
-                      disabled={claimingId === mission.id}
-                      className={cn(
-                        'shrink-0 px-3 py-1 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm border border-[rgba(15,0,0,0.12)]',
-                        'hover:bg-[#333030] active:scale-95 transition-all cursor-pointer touch-target',
-                        claimingId === mission.id && 'opacity-50'
-                      )}
-                    >
-                      {t('daily_missions_claim', language)}
-                    </motion.button>
-                  )}
-
-                  {/* 수령 완료 표시 */}
-                  {claimed && (
-                    <span className="text-[10px] font-bold text-emerald-600 shrink-0">
-                      [{t('daily_missions_done', language)}]
-                    </span>
-                  )}
-                </motion.div>
-              );
-            })}
-          </div>
         </div>
       )}
 
