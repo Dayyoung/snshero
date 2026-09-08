@@ -14,6 +14,9 @@ interface PokiLevelDevilGameProps {
   playSfx?: (url: string) => void;
   onExit: () => void;
   onReward: (amount: number) => void;
+
+  onBack?: () => void;
+  onClose?: () => void;
 }
 
 interface BlockData {
@@ -45,7 +48,10 @@ export const PokiLevelDevilGame: React.FC<PokiLevelDevilGameProps> = ({
   playSfx,
   onExit,
   onReward,
+  onBack,
+  onClose
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const isKo = language === 'ko';
   const playerHeroId = deck[0]?.id || 5;
   const containerRef = useRef<HTMLDivElement>(null);

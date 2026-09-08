@@ -10,6 +10,8 @@ interface PokiSprintLeagueGameProps {
   onClose?: () => void;
   onBack?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface RunnerEntity {
@@ -39,6 +41,7 @@ export default function PokiSprintLeagueGame({
   onClose,
   onBack,
   cardId = 64,
+  onExit
 }: PokiSprintLeagueGameProps) {
   const handleExit = onBack || onClose || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);

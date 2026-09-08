@@ -17,6 +17,8 @@ interface PokiDecorLifeGameProps {
   onClose?: () => void;
   cardId?: number | string;
   onReward?: (amount: number) => void;
+
+  onExit?: () => void;
 }
 
 interface FurnitureItem {
@@ -41,7 +43,7 @@ export const PokiDecorLifeGame: React.FC<PokiDecorLifeGameProps> = ({
   onBack,
   onClose,
   cardId,
-  onReward,
+  onReward
 }) => {
   const handleExit = onBack || onExit || onClose || (() => {});
   const isKo = language === 'ko';
@@ -712,6 +714,7 @@ export const PokiDecorLifeGame: React.FC<PokiDecorLifeGameProps> = ({
     >
       {/* 상단 미션 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="Decor Life 3D"
         score={score}
         targetScore={1500}

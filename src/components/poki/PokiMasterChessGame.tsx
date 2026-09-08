@@ -15,6 +15,8 @@ interface PokiMasterChessGameProps {
   language?: string;
   lowSpecMode?: boolean;
   playSfx?: (name: string) => void;
+
+  onClose?: () => void;
 }
 
 type PieceType = 'P' | 'R' | 'N' | 'B' | 'Q' | 'K';
@@ -39,6 +41,7 @@ export const PokiMasterChessGame: React.FC<PokiMasterChessGameProps> = ({
   cardId = 27,
   deck,
   lowSpecMode = false,
+  onClose
 }) => {
   const handleExit = onExit || onBack || (() => {});
   const playerHeroId = deck?.[0]?.id || cardId || 27;
@@ -783,6 +786,7 @@ export const PokiMasterChessGame: React.FC<PokiMasterChessGameProps> = ({
 
       {/* Top HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="No.027 Master Chess 3D"
         score={captured * 180}
         scoreLabel="포획 점수"

@@ -10,6 +10,8 @@ interface PokiGoingUpRooftopGameProps {
   onClose?: () => void;
   onBack?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface Platform {
@@ -22,7 +24,12 @@ interface Platform {
   mesh: THREE.Mesh;
 }
 
-export default function PokiGoingUpRooftopGame({ onClose, onBack, cardId = 76 }: PokiGoingUpRooftopGameProps) {
+export default function PokiGoingUpRooftopGame({
+  onClose,
+  onBack,
+  cardId = 76,
+  onExit
+}: PokiGoingUpRooftopGameProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const handleExit = onClose || onBack || (() => {});
 
@@ -593,6 +600,7 @@ export default function PokiGoingUpRooftopGame({ onClose, onBack, cardId = 76 }:
 
       {/* 미션 표준 상단 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="GOING UP ROOFTOP 3D"
         onQuit={handleExit}
         rightContent={

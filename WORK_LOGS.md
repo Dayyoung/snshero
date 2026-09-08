@@ -4,6 +4,34 @@
 
 ---
 
+## [2026-09-08 09:43 KST] [110개 미션 게임 전수 정산 후 나가기 즉시 이동 개편] 추가 확인팝업 일체 차단 및 0ms 미션리스트 직행 전수 연동 완료
+- **요청 사항**:
+  - 미션 게임에서 정산 후 나가기 누르면 추가 확인팝업을 표시하지 말고, 정산해주고 바로 미션리스트 화면으로 이동할 것 (110개 전체 적용).
+- **분석 및 원인 규명**:
+  1. `MinimalistMissionHUD`: '정산 후 나가기' 클릭 시 보상 정산 후 600ms 동안 영수증 팝업을 표시하고 있었으며, `rawExitHandler`에 전달되는 prop 이름 불일치로 일부 게임에서 퇴장 실패.
+  2. 9개 게임(`PokiBlockyBlastGame` 등): `confirmExitAndSettle`에서 `setSettlementReceipt(receipt)`를 호출하여 '정산받고 나가기' 클릭 시 전체화면 `VictoryRewardModal`이 추가 팝업으로 노출되는 버그 존재.
+  3. 9개 게임(`PokiPunchyGuyGame` 등): `showConfirmQuit` 내에서 `handleClaimReward`를 호출하면서 `setRewardResult`가 발동되어 `VictoryRewardModal`이 중복 노출됨.
+  4. 9개 게임(`PokiSlimeKeyboardGame` 등): `handleForfeit` 내에서 `setRewardReceipt(receipt)`를 호출하고 퇴장 핸들러를 호출하지 않아 `VictoryRewardModal`이 팝업됨.
+  5. 60개 이상 게임: `MinimalistMissionHUD`에 `onQuit` 등 비호환 prop을 넘기거나 exit 핸들러가 누락되어 상단 HUD 퇴장이 no-op 처리됨.
+- **조치 내역**:
+  1. **`MinimalistMissionHUD.tsx` 즉시 정산 및 0ms 퇴장 처리**:
+     - `handleConfirmExit` 클릭 시 지연 딜레이(600ms) 및 영수증 팝업 표시를 완전히 제거.
+     - `calculateAndDepositMissionReward`로 지갑 즉시 입금(정산) 완료 후, `pureExitHandler()` 호출 및 `hero-return-to-missions` 전역 이벤트를 즉시 디스패치하여 0ms 직행 이동 구현.
+     - `onExit`, `onBack`, `onClose`, `onQuit`, `onForfeit`, `onQuitClick`, `onExitClick` 모든 prop 인터페이스 호환 지원.
+  2. **`PlayGameView.tsx` 이중 안전장치 연동**:
+     - `hero-return-to-missions` 전역 이벤트 리스너를 마운트하여 110개 미션 게임 어디서든 즉시 `setGameState('modeSelect')`로 미션리스트 복귀 보장.
+  3. **110개 전체 Poki 게임 전수 수정 및 정규화**:
+     - 9개 `confirmExitAndSettle` 게임: `setSettlementReceipt` 제거, 정산 후 즉시 `handleExit()` 및 미션리스트 복귀 처리.
+     - 9개 `showConfirmQuit` 게임: `setRewardResult` 제거, 직접 보상 지급 후 즉시 `handleExit()` 호출.
+     - 9개 `handleForfeit` 게임: `setRewardReceipt` 제거, 직접 정산 후 즉시 `handleExit()` 호출.
+     - 110개 전체 게임: Props 인터페이스에 `onBack`, `onExit`, `onClose` 정규화 및 `MinimalistMissionHUD`에 `onBack={handleExit}` 100% 전수 연동 완료.
+- **검증 결과**:
+  - `npm run lint` (`tsc --noEmit`): 오류 0건 (Error: 0) 무결점 통과.
+  - `npm run build`: 프로덕션 빌드 정상 완료 (11.80s).
+- **구글 폼 보고**: 완료 (작업명: `[110개 미션 게임 전수 정산 후 나가기 즉시 이동 개편] 추가 확인팝업 일체 차단 및 0ms 미션리스트 직행 전수 연동 완료`)
+
+---
+
 ## [2026-09-08 09:35 KST] [화면 전환 캐싱 로딩화면 완전 제거 & 설정 내 캐싱 초기화 버튼 신설] 0ms 즉시 화면 전환 및 설정 화면 로그아웃 직하단 캐시 초기화/피드백 기능 완비
 - **요청 사항**:
   - 화면 이동 시 로딩 화면에 나타나는 "캐싱 로딩화면([HOME], 프로그레스 바, 캐시 초기화 버튼 등)" 완전 제거.

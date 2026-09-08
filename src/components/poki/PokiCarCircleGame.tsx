@@ -9,6 +9,8 @@ interface PokiCarCircleGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface TrafficCar3D {
@@ -26,6 +28,7 @@ export default function PokiCarCircleGame({
   onBack,
   onClose,
   cardId = 93,
+  onExit
 }: PokiCarCircleGameProps) {
   const mountRef = useRef<HTMLDivElement | null>(null);
   const handleExit = onBack || onClose || (() => {});
@@ -584,6 +587,7 @@ export default function PokiCarCircleGame({
 
       {/* 상단 미니멀 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="CAR CIRCLE 3D"
         onQuit={handleExit}
         progressPercent={Math.min(100, Math.round((mergedCount / TARGET_MERGED_CARS) * 100))}

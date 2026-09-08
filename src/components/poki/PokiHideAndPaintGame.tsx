@@ -14,6 +14,9 @@ interface PokiHideAndPaintGameProps {
   playSfx?: (url: string) => void;
   onExit: () => void;
   onReward: (amount: number) => void;
+
+  onBack?: () => void;
+  onClose?: () => void;
 }
 
 interface ZoneColor {
@@ -39,7 +42,10 @@ export const PokiHideAndPaintGame: React.FC<PokiHideAndPaintGameProps> = ({
   playSfx,
   onExit,
   onReward,
+  onBack,
+  onClose
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const isKo = language === 'ko';
   const playerHeroId = deck[0]?.id || 2;
   const containerRef = useRef<HTMLDivElement>(null);

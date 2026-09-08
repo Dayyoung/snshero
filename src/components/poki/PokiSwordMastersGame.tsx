@@ -10,6 +10,8 @@ interface PokiSwordMastersGameProps {
   onClose?: () => void;
   onBack?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface MobEntity {
@@ -28,6 +30,7 @@ export default function PokiSwordMastersGame({
   onClose,
   onBack,
   cardId = 63,
+  onExit
 }: PokiSwordMastersGameProps) {
   const handleExit = onBack || onClose || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);

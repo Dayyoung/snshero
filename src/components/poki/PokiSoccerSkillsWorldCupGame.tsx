@@ -9,6 +9,9 @@ import { Trophy, Award, ShieldAlert, Sparkles, Flame, RefreshCw } from 'lucide-r
 interface PokiSoccerSkillsWorldCupGameProps {
   onBack: () => void;
   cardId?: number;
+
+  onExit?: () => void;
+  onClose?: () => void;
 }
 
 interface MatchConfig {
@@ -62,7 +65,10 @@ const TOURNAMENT_ROUNDS: MatchConfig[] = [
 export const PokiSoccerSkillsWorldCupGame: React.FC<PokiSoccerSkillsWorldCupGameProps> = ({
   onBack,
   cardId = 56,
+  onExit,
+  onClose
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Tournament progress state

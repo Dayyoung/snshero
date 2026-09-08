@@ -10,6 +10,8 @@ interface PokiScaryTeacherHideSeekGameProps {
   onClose?: () => void;
   onBack?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface PrankItem {
@@ -29,7 +31,12 @@ interface HideSpot {
   mesh: THREE.Mesh;
 }
 
-export default function PokiScaryTeacherHideSeekGame({ onClose, onBack, cardId = 71 }: PokiScaryTeacherHideSeekGameProps) {
+export default function PokiScaryTeacherHideSeekGame({
+  onClose,
+  onBack,
+  cardId = 71,
+  onExit
+}: PokiScaryTeacherHideSeekGameProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const handleExit = onClose || onBack || (() => {});
 
@@ -716,6 +723,7 @@ export default function PokiScaryTeacherHideSeekGame({ onClose, onBack, cardId =
 
       {/* 미션 표준 상단 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="SCARY TEACHER 3D"
         onQuit={handleExit}
         rightContent={

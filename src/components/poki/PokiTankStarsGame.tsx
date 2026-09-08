@@ -9,6 +9,9 @@ import { Flame, ShieldAlert, Sparkles, Crosshair, RefreshCw, Zap, Award } from '
 interface PokiTankStarsGameProps {
   onBack: () => void;
   cardId?: number;
+
+  onExit?: () => void;
+  onClose?: () => void;
 }
 
 type WeaponType = 'standard' | 'cluster' | 'nuke';
@@ -66,7 +69,10 @@ interface Shell {
 export const PokiTankStarsGame: React.FC<PokiTankStarsGameProps> = ({
   onBack,
   cardId = 60,
+  onExit,
+  onClose
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Gameplay state

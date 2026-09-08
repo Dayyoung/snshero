@@ -9,6 +9,8 @@ interface PokiStickmanDragonFightGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface Particle {
@@ -33,6 +35,7 @@ export default function PokiStickmanDragonFightGame({
   onBack,
   onClose,
   cardId = 77,
+  onExit
 }: PokiStickmanDragonFightGameProps) {
   const handleExit = onClose || onBack || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -910,6 +913,7 @@ export default function PokiStickmanDragonFightGame({
     >
       {/* 상단 통합 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="STICKMAN DRAGON FIGHT 3D"
         scoreDisplay={`ROUND ${round}/3 | COMBO: ${comboCount}`}
         onExitClick={() => setShowExitModal(true)}

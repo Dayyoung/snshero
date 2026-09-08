@@ -14,6 +14,9 @@ interface PokiRagdollChaosGameProps {
   playSfx?: (url: string) => void;
   onExit: () => void;
   onReward: (amount: number) => void;
+
+  onBack?: () => void;
+  onClose?: () => void;
 }
 
 interface Particle {
@@ -44,7 +47,10 @@ export const PokiRagdollChaosGame: React.FC<PokiRagdollChaosGameProps> = ({
   playSfx,
   onExit,
   onReward,
+  onBack,
+  onClose
 }) => {
+  const handleExit = onExit || onBack || onClose || (() => {});
   const isKo = language === 'ko';
   const playerHeroId = deck[0]?.id || 10;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -181,10 +187,12 @@ export const PokiRagdollChaosGame: React.FC<PokiRagdollChaosGameProps> = ({
       isVictory: false,
       difficulty: 'NORMAL',
     });
-    setSettlementReceipt(receipt);
+    
     onReward(receipt.totalSns);
     onExit();
-  }, [isKo, onExit, onReward, timeLeft]);
+  
+    if (typeof handleExit === "function") handleExit();
+    if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("hero-return-to-missions"));}, [isKo, onExit, onReward, timeLeft]);
 
   const cancelExit = useCallback(() => {
     setShowExitConfirm(false);

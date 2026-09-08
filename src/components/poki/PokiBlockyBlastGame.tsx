@@ -14,6 +14,9 @@ interface PokiBlockyBlastGameProps {
   playSfx?: (url: string) => void;
   onExit: () => void;
   onReward: (amount: number) => void;
+
+  onBack?: () => void;
+  onClose?: () => void;
 }
 
 interface PieceTemplate {
@@ -44,7 +47,10 @@ export const PokiBlockyBlastGame: React.FC<PokiBlockyBlastGameProps> = ({
   playSfx,
   onExit,
   onReward,
+  onBack,
+  onClose
 }) => {
+  const handleExit = onExit || onBack || onClose || (() => {});
   const isKo = language === 'ko';
   const playerHeroId = deck[0]?.id || 9;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -143,9 +149,11 @@ export const PokiBlockyBlastGame: React.FC<PokiBlockyBlastGameProps> = ({
       isVictory: false,
       difficulty: 'NORMAL',
     });
-    setSettlementReceipt(receipt);
+    
     onReward(receipt.totalSns);
-  }, [isKo, onReward, timeLeft]);
+  
+    if (typeof handleExit === "function") handleExit();
+    if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("hero-return-to-missions"));}, [isKo, onReward, timeLeft]);
 
   const cancelExit = useCallback(() => {
     setShowExitConfirm(false);

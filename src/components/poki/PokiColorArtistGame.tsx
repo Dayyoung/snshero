@@ -10,6 +10,8 @@ interface PokiColorArtistGameProps {
   onClose?: () => void;
   onBack?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface VoxelBlock {
@@ -32,7 +34,12 @@ const PALETTE = [
   { num: 6, color: 0xffffff, name: '펄 화이트', label: '#ffffff' },
 ];
 
-export default function PokiColorArtistGame({ onClose, onBack, cardId = 75 }: PokiColorArtistGameProps) {
+export default function PokiColorArtistGame({
+  onClose,
+  onBack,
+  cardId = 75,
+  onExit
+}: PokiColorArtistGameProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const handleExit = onClose || onBack || (() => {});
 
@@ -427,6 +434,7 @@ export default function PokiColorArtistGame({ onClose, onBack, cardId = 75 }: Po
 
       {/* 미션 표준 상단 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="COLOR ARTIST 3D"
         onQuit={handleExit}
         rightContent={

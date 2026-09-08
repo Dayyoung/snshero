@@ -9,6 +9,8 @@ interface PokiKawaiiFruits3DGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 const TARGET_MERGES = 10;
@@ -49,6 +51,7 @@ export default function PokiKawaiiFruits3DGame({
   onBack,
   onClose,
   cardId = 102,
+  onExit
 }: PokiKawaiiFruits3DGameProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleExit = onBack || onClose || (() => {});
@@ -605,6 +608,7 @@ export default function PokiKawaiiFruits3DGame({
 
       {/* Top Minimalist HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="KAWAII FRUITS 3D"
         progress={Math.min(100, (merges / TARGET_MERGES) * 100)}
         score={score}

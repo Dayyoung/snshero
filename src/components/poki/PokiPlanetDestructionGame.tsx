@@ -8,6 +8,9 @@ import { drawCardSprite } from '../../lib/canvasCardRenderer';
 interface PokiPlanetDestructionGameProps {
   onBack: () => void;
   cardId?: number;
+
+  onExit?: () => void;
+  onClose?: () => void;
 }
 
 type WeaponType = 'meteor' | 'laser' | 'nuke' | 'blackhole';
@@ -31,7 +34,10 @@ const WEAPONS: WeaponConfig[] = [
 export const PokiPlanetDestructionGame: React.FC<PokiPlanetDestructionGameProps> = ({
   onBack,
   cardId = 53,
+  onExit,
+  onClose
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
   const heroBadgeCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -433,6 +439,7 @@ export const PokiPlanetDestructionGame: React.FC<PokiPlanetDestructionGameProps>
     >
       {/* Minimalist Top HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         key={hudUniqueId}
         title="PLANET DESTRUCTION 3D"
         progress={`파괴율: ${destructionPct}% / 100%`}

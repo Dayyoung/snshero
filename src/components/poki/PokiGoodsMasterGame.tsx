@@ -9,6 +9,8 @@ interface PokiGoodsMasterGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 type GoodType = 'soda' | 'chips' | 'milk' | 'donut' | 'energy' | 'juice';
@@ -34,6 +36,7 @@ export default function PokiGoodsMasterGame({
   onBack,
   onClose,
   cardId = 90,
+  onExit
 }: PokiGoodsMasterGameProps) {
   const mountRef = useRef<HTMLDivElement | null>(null);
   const handleExit = onBack || onClose || (() => {});
@@ -638,6 +641,7 @@ export default function PokiGoodsMasterGame({
 
       {/* 상단 미니멀 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="GOODS MASTER 3D"
         onQuit={handleExit}
         progressPercent={Math.min(100, Math.round((matchedSets / TOTAL_SETS) * 100))}

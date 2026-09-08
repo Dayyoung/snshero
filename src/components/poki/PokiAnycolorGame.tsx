@@ -9,6 +9,8 @@ interface PokiAnycolorGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface PartData {
@@ -42,6 +44,7 @@ export default function PokiAnycolorGame({
   onBack,
   onClose,
   cardId = 79,
+  onExit
 }: PokiAnycolorGameProps) {
   const handleExit = onClose || onBack || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -485,6 +488,7 @@ export default function PokiAnycolorGame({
     >
       {/* 상단 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="ANYCOLOR 3D STUDIO"
         scoreDisplay={`PROGRESS: ${Math.floor((coloredCount / totalParts) * 100)}% | ${coloredCount}/${totalParts}`}
         onExitClick={() => setShowExitModal(true)}

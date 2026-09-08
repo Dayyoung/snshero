@@ -14,6 +14,8 @@ interface PokiCuboyAdventureGameProps {
   language?: string;
   lowSpecMode?: boolean;
   playSfx?: (type: string) => void;
+
+  onClose?: () => void;
 }
 
 interface Platform3D {
@@ -36,8 +38,10 @@ export const PokiCuboyAdventureGame: React.FC<PokiCuboyAdventureGameProps> = ({
   onExit,
   cardId = 44,
   lowSpecMode = false,
-  playSfx
+  playSfx,
+  onClose
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const mountRef = useRef<HTMLDivElement | null>(null);
   const heroCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -111,7 +115,6 @@ export const PokiCuboyAdventureGame: React.FC<PokiCuboyAdventureGameProps> = ({
     particles: [] as { mesh: THREE.Mesh; vel: THREE.Vector3; life: number }[],
   });
 
-  const handleExit = onExit || onBack;
 
   // 영웅 카드 배지 렌더링
   useEffect(() => {
@@ -756,7 +759,7 @@ export const PokiCuboyAdventureGame: React.FC<PokiCuboyAdventureGameProps> = ({
         gameTitle="Cuboy Adventure 3D"
         score={score}
         targetScore={100}
-        onQuitClick={() => setShowConfirmQuit(true)}
+        onBack={handleExit} onQuitClick={() => setShowConfirmQuit(true)}
       />
 
       {/* 상단 미션 대시보드 */}
@@ -860,8 +863,18 @@ export const PokiCuboyAdventureGame: React.FC<PokiCuboyAdventureGameProps> = ({
               <button
                 onClick={() => {
                   setShowConfirmQuit(false);
-                  handleClaimReward(false, score);
+                  try {
+                    calculateAndDepositMissionReward({
+                      gameId: 'poki_cuboy_adventure',
+                      gameTitle: 'Cuboy Adventure 3D',
+                      isVictory: false,
+                      score: score || 0,
+                      maxTargetScore: 100,
+                      durationSeconds: 30,
+                    });
+                  } catch (e) {}
                   handleExit();
+                  if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('hero-return-to-missions'));
                 }}
                 className="flex-1 py-2.5 bg-red-600 hover:bg-red-500 text-white text-sm font-bold rounded-sm"
               >

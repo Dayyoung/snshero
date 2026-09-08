@@ -9,6 +9,8 @@ interface PokiPhoneCaseDIYGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 type DIYStage = 'clean' | 'paint' | 'dry' | 'decorate';
@@ -54,6 +56,7 @@ export default function PokiPhoneCaseDIYGame({
   onBack,
   onClose,
   cardId = 94,
+  onExit
 }: PokiPhoneCaseDIYGameProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleExit = onBack || onClose || (() => {});
@@ -823,6 +826,7 @@ export default function PokiPhoneCaseDIYGame({
 
       {/* Top Minimalist HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="PHONE CASE DIY 3D"
         progress={currentProgressPct}
         score={scoreRef.current}

@@ -8,6 +8,9 @@ import { drawCardSprite } from '../../lib/canvasCardRenderer';
 interface PokiSatisBoxGameProps {
   onBack: () => void;
   cardId?: number;
+
+  onExit?: () => void;
+  onClose?: () => void;
 }
 
 interface SatisItem3D {
@@ -65,7 +68,10 @@ const STAGES: StageTheme[] = [
 export const PokiSatisBoxGame: React.FC<PokiSatisBoxGameProps> = ({
   onBack,
   cardId = 55,
+  onExit,
+  onClose
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
   const heroBadgeCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -486,6 +492,7 @@ export const PokiSatisBoxGame: React.FC<PokiSatisBoxGameProps> = ({
     >
       {/* Minimalist Top HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         key={hudUniqueId}
         title="SATISBOX 3D"
         progress={`${STAGES[currentStageIdx]?.title} (${placedInStage}/5)`}

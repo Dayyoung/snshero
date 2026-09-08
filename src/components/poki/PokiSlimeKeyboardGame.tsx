@@ -14,6 +14,7 @@ interface PokiSlimeKeyboardGameProps {
   lowSpecMode?: boolean;
   playSfx?: (url: string) => void;
   onReward?: (amount: number) => void;
+
 }
 
 const TOTAL_TRACK_DISTANCE = 300;
@@ -40,7 +41,7 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
   onClose,
   deck = [],
   language = 'ko',
-  onReward,
+  onReward
 }) => {
   const mountRef = useRef<HTMLDivElement | null>(null);
   const handleExit = onBack || onExit || onClose || (() => {});
@@ -631,7 +632,10 @@ export const PokiSlimeKeyboardGame: React.FC<PokiSlimeKeyboardGameProps> = ({
       maxTargetScore: 500,
       durationSeconds: dur,
     });
-    setRewardReceipt(receipt);
+    // 정산 후 추가 팝업 없이 즉시 미션리스트로 이동
+    const exitFn = (typeof handleExit === "function" ? handleExit : (onBack || onExit || onClose || (() => {})));
+    exitFn();
+    if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("hero-return-to-missions"));
     if (onRewardRef.current) onRewardRef.current(receipt.totalSns);
   };
 

@@ -9,6 +9,8 @@ interface PokiHillClimbRacingLiteGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface Coin3D {
@@ -31,6 +33,7 @@ export default function PokiHillClimbRacingLiteGame({
   onBack,
   onClose,
   cardId = 88,
+  onExit
 }: PokiHillClimbRacingLiteGameProps) {
   const mountRef = useRef<HTMLDivElement | null>(null);
   const handleExit = onBack || onClose || (() => {});
@@ -654,6 +657,7 @@ export default function PokiHillClimbRacingLiteGame({
 
       {/* 상단 미니멀 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="HILL CLIMB 3D"
         onQuit={handleExit}
         progressPercent={Math.min(100, Math.round((distanceMeters / TARGET_DISTANCE) * 100))}

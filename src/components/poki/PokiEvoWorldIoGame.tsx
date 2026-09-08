@@ -9,6 +9,8 @@ interface PokiEvoWorldIoGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface EvolutionTier {
@@ -40,6 +42,7 @@ export default function PokiEvoWorldIoGame({
   onBack,
   onClose,
   cardId = 97,
+  onExit
 }: PokiEvoWorldIoGameProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleExit = onBack || onClose || (() => {});
@@ -596,6 +599,7 @@ export default function PokiEvoWorldIoGame({
 
       {/* Top Minimalist HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="EVOWORLD IO 3D"
         progress={Math.min(100, (exp / 1000) * 100)}
         score={exp}

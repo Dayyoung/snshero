@@ -16,6 +16,8 @@ interface PokiBackroomsRecoveryGameProps {
   playSfx?: (url: string) => void;
   onExit?: () => void;
   onReward?: (amount: number) => void;
+
+  onClose?: () => void;
 }
 
 interface Wall {
@@ -53,6 +55,7 @@ export const PokiBackroomsRecoveryGame: React.FC<PokiBackroomsRecoveryGameProps>
   playSfx,
   onExit,
   onReward,
+  onClose
 }) => {
   const isKo = language === 'ko';
   const playerHeroId = deck[0]?.id || cardId || 19;
@@ -802,6 +805,7 @@ export const PokiBackroomsRecoveryGame: React.FC<PokiBackroomsRecoveryGameProps>
     >
       {/* 상단 미션 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="Backrooms Recovery 3D"
         score={score}
         targetScore={1500}

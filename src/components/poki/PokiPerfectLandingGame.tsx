@@ -9,6 +9,8 @@ interface PokiPerfectLandingGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 const TARGET_LANDINGS = 3;
@@ -24,6 +26,7 @@ export default function PokiPerfectLandingGame({
   onBack,
   onClose,
   cardId = 99,
+  onExit
 }: PokiPerfectLandingGameProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleExit = onBack || onClose || (() => {});
@@ -608,6 +611,7 @@ export default function PokiPerfectLandingGame({
 
       {/* Top Minimalist HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="PERFECT LANDING 3D"
         progress={Math.min(100, (landings / TARGET_LANDINGS) * 100)}
         score={landings * 150}

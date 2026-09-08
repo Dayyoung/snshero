@@ -7,6 +7,9 @@ import { drawCardSprite } from '../../lib/canvasCardRenderer';
 
 interface PokiBlumgiSlimeGameProps {
   onBack: () => void;
+
+  onExit?: () => void;
+  onClose?: () => void;
 }
 
 const TARGET_DISTANCE = 50;
@@ -38,7 +41,12 @@ const PLATFORMS: SlimePlatform[] = [
   { x: 50.0, y: 0.5, w: 10.0, h: 1.2 }, // 결승 골인 플랫폼
 ];
 
-export const PokiBlumgiSlimeGame: React.FC<PokiBlumgiSlimeGameProps> = ({ onBack }) => {
+export const PokiBlumgiSlimeGame: React.FC<PokiBlumgiSlimeGameProps> = ({
+  onBack,
+  onExit,
+  onClose
+}) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const mountRef = useRef<HTMLDivElement | null>(null);
 
   // 게임 진행 상태
@@ -504,7 +512,10 @@ export const PokiBlumgiSlimeGame: React.FC<PokiBlumgiSlimeGameProps> = ({ onBack
       maxTargetScore: 500,
       durationSeconds: dur,
     });
-    setRewardReceipt(receipt);
+    // 정산 후 추가 팝업 없이 즉시 미션리스트로 이동
+    const exitFn = (typeof handleExit === "function" ? handleExit : (onBack || onExit || onClose || (() => {})));
+    exitFn();
+    if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("hero-return-to-missions"));
   };
 
   return (

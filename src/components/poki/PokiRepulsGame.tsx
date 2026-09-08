@@ -8,6 +8,9 @@ import { drawCardSprite } from '../../lib/canvasCardRenderer';
 interface PokiRepulsGameProps {
   onBack: () => void;
   cardId?: number;
+
+  onExit?: () => void;
+  onClose?: () => void;
 }
 
 type WeaponType = 'RIFLE' | 'SHOTGUN' | 'RAILGUN';
@@ -76,7 +79,13 @@ interface Bot {
   hpBarMesh: THREE.Sprite;
 }
 
-export const PokiRepulsGame: React.FC<PokiRepulsGameProps> = ({ onBack, cardId = 48 }) => {
+export const PokiRepulsGame: React.FC<PokiRepulsGameProps> = ({
+  onBack,
+  cardId = 48,
+  onExit,
+  onClose
+}) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
   const heroBadgeCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -947,6 +956,7 @@ export const PokiRepulsGame: React.FC<PokiRepulsGameProps> = ({ onBack, cardId =
     >
       {/* Minimalist Top HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         key={hudUniqueId}
         title="REPULS.IO 3D"
         progress={`${frags} / ${targetFrags} FRAGS`}

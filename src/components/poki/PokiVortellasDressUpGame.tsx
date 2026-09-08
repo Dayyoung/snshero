@@ -9,6 +9,8 @@ interface PokiVortellasDressUpGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface Particle {
@@ -67,6 +69,7 @@ export default function PokiVortellasDressUpGame({
   onBack,
   onClose,
   cardId = 85,
+  onExit
 }: PokiVortellasDressUpGameProps) {
   const handleExit = onClose || onBack || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -464,6 +467,7 @@ export default function PokiVortellasDressUpGame({
     >
       {/* 상단 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="VORTELLA'S DRESS UP 3D"
         scoreDisplay="MANA: 100% | RITUAL READY"
         onExitClick={() => setShowExitModal(true)}

@@ -17,6 +17,8 @@ interface PokiStickmanBattleGameProps {
   onClose?: () => void;
   cardId?: number | string;
   onReward?: (amount: number) => void;
+
+  onExit?: () => void;
 }
 
 type WeaponType = 'blade' | 'axe' | 'blaster';
@@ -60,7 +62,7 @@ export const PokiStickmanBattleGame: React.FC<PokiStickmanBattleGameProps> = ({
   onBack,
   onClose,
   cardId,
-  onReward,
+  onReward
 }) => {
   const handleExit = onBack || onExit || onClose || (() => {});
   const isKo = language === 'ko';
@@ -929,6 +931,7 @@ export const PokiStickmanBattleGame: React.FC<PokiStickmanBattleGameProps> = ({
     >
       {/* 상단 미션 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="Stickman Battle 3D"
         score={score}
         targetScore={2000}

@@ -9,6 +9,8 @@ interface PokiHexellentGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface HexTile3D {
@@ -38,6 +40,7 @@ export default function PokiHexellentGame({
   onBack,
   onClose,
   cardId = 91,
+  onExit
 }: PokiHexellentGameProps) {
   const mountRef = useRef<HTMLDivElement | null>(null);
   const handleExit = onBack || onClose || (() => {});
@@ -587,6 +590,7 @@ export default function PokiHexellentGame({
 
       {/* 상단 미니멀 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="HEXELLENT 3D"
         onQuit={handleExit}
         progressPercent={Math.min(100, Math.round((score / TARGET_SCORE) * 100))}

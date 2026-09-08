@@ -9,6 +9,8 @@ interface PokiCapitalistBusDriverGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 const LANES = [-3.2, 0, 3.2];
@@ -33,6 +35,7 @@ export default function PokiCapitalistBusDriverGame({
   onBack,
   onClose,
   cardId = 96,
+  onExit
 }: PokiCapitalistBusDriverGameProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleExit = onBack || onClose || (() => {});
@@ -725,6 +728,7 @@ export default function PokiCapitalistBusDriverGame({
 
       {/* Top Minimalist HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="CAPITALIST BUS DRIVER 3D"
         progress={Math.min(100, (passengers / TARGET_PASSENGERS) * 100)}
         score={revenue}

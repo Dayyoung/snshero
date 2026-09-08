@@ -14,6 +14,8 @@ interface PokiPartyTimeGameProps {
   language?: string;
   lowSpecMode?: boolean;
   playSfx?: (type: string) => void;
+
+  onClose?: () => void;
 }
 
 interface Rival {
@@ -44,8 +46,10 @@ export const PokiPartyTimeGame: React.FC<PokiPartyTimeGameProps> = ({
   onExit,
   cardId = 39,
   lowSpecMode = false,
-  playSfx
+  playSfx,
+  onClose
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const mountRef = useRef<HTMLDivElement | null>(null);
   const heroCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -100,7 +104,6 @@ export const PokiPartyTimeGame: React.FC<PokiPartyTimeGameProps> = ({
     arenaRadius: 14.5,
   });
 
-  const handleExit = onExit || onBack;
 
   // 영웅 카드 배지 렌더링
   useEffect(() => {
@@ -833,7 +836,7 @@ export const PokiPartyTimeGame: React.FC<PokiPartyTimeGameProps> = ({
         gameTitle="Party Time 3D"
         score={score}
         targetScore={100}
-        onQuitClick={() => setShowConfirmQuit(true)}
+        onBack={handleExit} onQuitClick={() => setShowConfirmQuit(true)}
       />
 
       {/* 상태 표시 오버레이 */}
@@ -926,8 +929,18 @@ export const PokiPartyTimeGame: React.FC<PokiPartyTimeGameProps> = ({
               <button
                 onClick={() => {
                   setShowConfirmQuit(false);
-                  handleClaimReward(false, score);
+                  try {
+                    calculateAndDepositMissionReward({
+                      gameId: 'poki_party_time',
+                      gameTitle: 'Party Time 3D',
+                      isVictory: false,
+                      score: score || 0,
+                      maxTargetScore: 100,
+                      durationSeconds: 30,
+                    });
+                  } catch (e) {}
                   handleExit();
+                  if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('hero-return-to-missions'));
                 }}
                 className="flex-1 py-2.5 bg-red-600 hover:bg-red-500 text-white text-sm font-bold rounded-sm"
               >

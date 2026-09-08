@@ -9,6 +9,8 @@ interface PokiBulletBrosGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface EnemyData {
@@ -79,6 +81,7 @@ export default function PokiBulletBrosGame({
   onBack,
   onClose,
   cardId = 98,
+  onExit
 }: PokiBulletBrosGameProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleExit = onBack || onClose || (() => {});
@@ -693,6 +696,7 @@ export default function PokiBulletBrosGame({
 
       {/* Top Minimalist HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="BULLET BROS 3D"
         progress={Math.min(100, ((stageIdx + 1) / STAGE_CONFIGS.length) * 100)}
         score={totalKills * 100}

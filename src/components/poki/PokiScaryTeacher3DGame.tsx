@@ -9,6 +9,8 @@ interface PokiScaryTeacher3DGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface PrankObject {
@@ -34,6 +36,7 @@ export default function PokiScaryTeacher3DGame({
   onBack,
   onClose,
   cardId = 80,
+  onExit
 }: PokiScaryTeacher3DGameProps) {
   const handleExit = onClose || onBack || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -702,6 +705,7 @@ export default function PokiScaryTeacher3DGame({
     >
       {/* 상단 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="SCARY TEACHER 3D"
         scoreDisplay={`PRANKS: ${pranksCompleted}/3 | ALERT: ${alertLevel}%`}
         onExitClick={() => setShowExitModal(true)}

@@ -10,6 +10,8 @@ interface PokiMagicBattlegroundGameProps {
   onClose?: () => void;
   onBack?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 type SpellType = 'fire' | 'ice' | 'lightning';
@@ -42,6 +44,7 @@ export default function PokiMagicBattlegroundGame({
   onClose,
   onBack,
   cardId = 61,
+  onExit
 }: PokiMagicBattlegroundGameProps) {
   const handleExit = onBack || onClose || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);

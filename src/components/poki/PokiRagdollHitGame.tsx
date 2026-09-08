@@ -15,6 +15,8 @@ interface PokiRagdollHitGameProps {
   language?: string;
   lowSpecMode?: boolean;
   playSfx?: (name: string) => void;
+
+  onClose?: () => void;
 }
 
 interface FighterState {
@@ -79,6 +81,7 @@ export const PokiRagdollHitGame: React.FC<PokiRagdollHitGameProps> = ({
   cardId = 24,
   deck,
   lowSpecMode = false,
+  onClose
 }) => {
   const handleExit = onExit || onBack || (() => {});
   const playerHeroId = deck?.[0]?.id || cardId || 24;
@@ -933,6 +936,7 @@ export const PokiRagdollHitGame: React.FC<PokiRagdollHitGameProps> = ({
 
       {/* Top HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="No.024 Ragdoll Hit 3D"
         score={score}
         scoreLabel="격투 점수"

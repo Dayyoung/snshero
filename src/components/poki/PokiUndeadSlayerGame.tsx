@@ -9,6 +9,8 @@ interface PokiUndeadSlayerGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 const TARGET_KILLS = 25;
@@ -29,6 +31,7 @@ export default function PokiUndeadSlayerGame({
   onBack,
   onClose,
   cardId = 100,
+  onExit
 }: PokiUndeadSlayerGameProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleExit = onBack || onClose || (() => {});
@@ -677,6 +680,7 @@ export default function PokiUndeadSlayerGame({
 
       {/* Top Minimalist HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="UNDEAD SLAYER 3D"
         progress={Math.min(100, (kills / TARGET_KILLS) * 100)}
         score={kills * 20}

@@ -9,6 +9,9 @@ import { Bomb, Flame, ShieldAlert, Sparkles, RefreshCw, Crosshair, Award } from 
 interface PokiTearBlocksDownGameProps {
   onBack: () => void;
   cardId?: number;
+
+  onExit?: () => void;
+  onClose?: () => void;
 }
 
 interface BlockPhysics {
@@ -60,7 +63,10 @@ const STAGE_CONFIGS = [
 export const PokiTearBlocksDownGame: React.FC<PokiTearBlocksDownGameProps> = ({
   onBack,
   cardId = 58,
+  onExit,
+  onClose
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Gameplay UI states

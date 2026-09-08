@@ -17,6 +17,8 @@ interface PokiNeonChallengeGameProps {
   onClose?: () => void;
   cardId?: number | string;
   onReward?: (amount: number) => void;
+
+  onExit?: () => void;
 }
 
 interface Obstacle {
@@ -47,7 +49,7 @@ export const PokiNeonChallengeGame: React.FC<PokiNeonChallengeGameProps> = ({
   onBack,
   onClose,
   cardId,
-  onReward,
+  onReward
 }) => {
   const handleExit = onBack || onExit || onClose || (() => {});
   const isKo = language === 'ko';
@@ -702,6 +704,7 @@ export const PokiNeonChallengeGame: React.FC<PokiNeonChallengeGameProps> = ({
     >
       {/* 상단 미션 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="Neon Challenge Legends 3D"
         score={score}
         targetScore={1500}

@@ -16,6 +16,8 @@ interface PokiStealBrainrotGameProps {
   playSfx?: (url: string) => void;
   onExit?: () => void;
   onReward?: (amount: number) => void;
+
+  onClose?: () => void;
 }
 
 interface Wall {
@@ -47,6 +49,7 @@ export const PokiStealBrainrotGame: React.FC<PokiStealBrainrotGameProps> = ({
   playSfx,
   onExit,
   onReward,
+  onClose
 }) => {
   const isKo = language === 'ko';
   const playerHeroId = deck[0]?.id || cardId || 21;
@@ -767,6 +770,7 @@ export const PokiStealBrainrotGame: React.FC<PokiStealBrainrotGameProps> = ({
     >
       {/* 상단 미션 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="Steal a Brainrot 3D"
         score={score}
         targetScore={1600}

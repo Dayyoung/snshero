@@ -8,6 +8,9 @@ import { drawCardSprite } from '../../lib/canvasCardRenderer';
 interface PokiBeautySalonGameProps {
   onBack: () => void;
   cardId?: number;
+
+  onExit?: () => void;
+  onClose?: () => void;
 }
 
 type StepType = 'cleanse' | 'hair' | 'makeup' | 'dress';
@@ -46,7 +49,10 @@ const DRESS_OPTIONS = [
 export const PokiBeautySalonGame: React.FC<PokiBeautySalonGameProps> = ({
   onBack,
   cardId = 50,
+  onExit,
+  onClose
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
   const heroBadgeCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -566,6 +572,7 @@ export const PokiBeautySalonGame: React.FC<PokiBeautySalonGameProps> = ({
     >
       {/* Minimalist Top HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         key={hudUniqueId}
         title="BEAUTY SALON 3D"
         progress={`${stepProgress.name} (${stepProgress.index}/4)`}

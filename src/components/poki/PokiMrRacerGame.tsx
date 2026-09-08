@@ -9,6 +9,8 @@ interface PokiMrRacerGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface TrafficVehicle {
@@ -30,6 +32,7 @@ export default function PokiMrRacerGame({
   onBack,
   onClose,
   cardId = 86,
+  onExit
 }: PokiMrRacerGameProps) {
   const mountRef = useRef<HTMLDivElement | null>(null);
   const handleExit = onBack || onClose || (() => {});
@@ -878,6 +881,7 @@ export default function PokiMrRacerGame({
 
       {/* 상단 미니멀 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="MR RACER 3D"
         onQuit={handleExit}
         progressPercent={Math.min(100, Math.round((distanceMeters / TARGET_DISTANCE) * 100))}

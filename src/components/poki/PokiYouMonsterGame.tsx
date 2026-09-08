@@ -8,6 +8,9 @@ import { drawCardSprite } from '../../lib/canvasCardRenderer';
 interface PokiYouMonsterGameProps {
   onBack: () => void;
   cardId?: number;
+
+  onExit?: () => void;
+  onClose?: () => void;
 }
 
 interface Building {
@@ -30,7 +33,10 @@ interface ArmyUnit {
 export const PokiYouMonsterGame: React.FC<PokiYouMonsterGameProps> = ({
   onBack,
   cardId = 54,
+  onExit,
+  onClose
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
   const heroBadgeCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -672,6 +678,7 @@ export const PokiYouMonsterGame: React.FC<PokiYouMonsterGameProps> = ({
     >
       {/* Minimalist Top HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         key={hudUniqueId}
         title="YOU MONSTER! 3D"
         progress={`${rampageScore} / ${targetScore} PTS`}

@@ -10,6 +10,8 @@ interface PokiRailInAirGameProps {
   onClose?: () => void;
   onBack?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface StationInfo {
@@ -59,7 +61,12 @@ function getCurveIntensity(dist: number): number {
   return 0.1;
 }
 
-export default function PokiRailInAirGame({ onClose, onBack, cardId = 67 }: PokiRailInAirGameProps) {
+export default function PokiRailInAirGame({
+  onClose,
+  onBack,
+  cardId = 67,
+  onExit
+}: PokiRailInAirGameProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const handleExit = onClose || onBack || (() => {});
 
@@ -602,6 +609,7 @@ export default function PokiRailInAirGame({ onClose, onBack, cardId = 67 }: Poki
 
       {/* 상단 미션 표준 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="RAIL IN THE AIR 3D"
         onQuit={handleExit}
         rightContent={

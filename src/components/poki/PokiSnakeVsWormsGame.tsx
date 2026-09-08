@@ -14,6 +14,9 @@ interface PokiSnakeVsWormsGameProps {
   playSfx?: (url: string) => void;
   onExit: () => void;
   onReward: (amount: number) => void;
+
+  onBack?: () => void;
+  onClose?: () => void;
 }
 
 interface Point3D {
@@ -56,7 +59,10 @@ export const PokiSnakeVsWormsGame: React.FC<PokiSnakeVsWormsGameProps> = ({
   playSfx,
   onExit,
   onReward,
+  onBack,
+  onClose
 }) => {
+  const handleExit = onExit || onBack || onClose || (() => {});
   const isKo = language === 'ko';
   const playerHeroId = deck[0]?.id || 6;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -189,9 +195,11 @@ export const PokiSnakeVsWormsGame: React.FC<PokiSnakeVsWormsGameProps> = ({
       isVictory: false,
       difficulty: 'NORMAL',
     });
-    setSettlementReceipt(receipt);
+    
     onReward(receipt.totalSns);
-  }, [isKo, onReward, timeLeft]);
+  
+    if (typeof handleExit === "function") handleExit();
+    if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("hero-return-to-missions"));}, [isKo, onReward, timeLeft]);
 
   const cancelExit = useCallback(() => {
     setShowExitConfirm(false);

@@ -8,6 +8,9 @@ import { drawCardSprite } from '../../lib/canvasCardRenderer';
 interface PokiShenzhenMahjongGameProps {
   onBack: () => void;
   cardId?: number;
+
+  onExit?: () => void;
+  onClose?: () => void;
 }
 
 interface TileDefinition {
@@ -48,7 +51,10 @@ interface TileInstance {
 export const PokiShenzhenMahjongGame: React.FC<PokiShenzhenMahjongGameProps> = ({
   onBack,
   cardId = 49,
+  onExit,
+  onClose
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
   const heroBadgeCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -727,6 +733,7 @@ export const PokiShenzhenMahjongGame: React.FC<PokiShenzhenMahjongGameProps> = (
     >
       {/* Minimalist Top HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         key={hudUniqueId}
         title="SHENZHEN MAHJONG 3D"
         progress={`${pairsCleared} / ${totalPairs} PAIRS`}

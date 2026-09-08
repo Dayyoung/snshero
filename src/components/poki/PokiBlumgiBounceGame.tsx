@@ -7,6 +7,9 @@ import { drawCardSprite } from '../../lib/canvasCardRenderer';
 
 interface PokiBlumgiBounceGameProps {
   onBack: () => void;
+
+  onExit?: () => void;
+  onClose?: () => void;
 }
 
 const TARGET_GOALS = 5;
@@ -21,7 +24,12 @@ interface ConfettiParticle {
   maxLife: number;
 }
 
-export const PokiBlumgiBounceGame: React.FC<PokiBlumgiBounceGameProps> = ({ onBack }) => {
+export const PokiBlumgiBounceGame: React.FC<PokiBlumgiBounceGameProps> = ({
+  onBack,
+  onExit,
+  onClose
+}) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const mountRef = useRef<HTMLDivElement | null>(null);
 
   // 게임 상태
@@ -777,7 +785,10 @@ export const PokiBlumgiBounceGame: React.FC<PokiBlumgiBounceGameProps> = ({ onBa
       maxTargetScore: 500,
       durationSeconds: dur,
     });
-    setRewardReceipt(receipt);
+    // 정산 후 추가 팝업 없이 즉시 미션리스트로 이동
+    const exitFn = (typeof handleExit === "function" ? handleExit : (onBack || onExit || onClose || (() => {})));
+    exitFn();
+    if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("hero-return-to-missions"));
   };
 
   return (

@@ -15,6 +15,8 @@ interface PokiSoccerRealGameProps {
   language?: string;
   lowSpecMode?: boolean;
   playSfx?: (name: string) => void;
+
+  onClose?: () => void;
 }
 
 export const PokiSoccerRealGame: React.FC<PokiSoccerRealGameProps> = ({
@@ -23,6 +25,7 @@ export const PokiSoccerRealGame: React.FC<PokiSoccerRealGameProps> = ({
   cardId = 25,
   deck,
   lowSpecMode = false,
+  onClose
 }) => {
   const handleExit = onExit || onBack || (() => {});
   const playerHeroId = deck?.[0]?.id || cardId || 25;
@@ -716,6 +719,7 @@ export const PokiSoccerRealGame: React.FC<PokiSoccerRealGameProps> = ({
 
       {/* Top HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="No.025 Soccer REAL 3D"
         score={score * 200}
         scoreLabel="득점 점수"

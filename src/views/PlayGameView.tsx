@@ -670,9 +670,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     }
   }, [initialMode]);
 
-  // Ensure browser back button returns to mission list (modeSelect) instead of home
+  // Ensure browser back button & HUD exit returns to mission list (modeSelect) instead of home
   useEffect(() => {
     if (typeof window === 'undefined') return;
+
+    const handleReturnToMissions = () => {
+      setGameState('modeSelect');
+    };
 
     const handleGlobalPopState = () => {
       if (gameState !== 'modeSelect') {
@@ -681,8 +685,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     };
 
     window.addEventListener('popstate', handleGlobalPopState);
+    window.addEventListener('hero-return-to-missions', handleReturnToMissions);
     return () => {
       window.removeEventListener('popstate', handleGlobalPopState);
+      window.removeEventListener('hero-return-to-missions', handleReturnToMissions);
     };
   }, [gameState]);
   const [showConstructionModal, setShowConstructionModal] = useState(false);

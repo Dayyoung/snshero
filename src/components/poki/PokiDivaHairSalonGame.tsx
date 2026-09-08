@@ -10,6 +10,8 @@ interface PokiDivaHairSalonGameProps {
   onClose?: () => void;
   onBack?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 type SalonStage = 'shampoo' | 'dry' | 'cut' | 'color';
@@ -21,7 +23,12 @@ const HAIR_COLORS = [
   { name: '로열 바이올렛', hex: 0xaa00ff, label: '#aa00ff' },
 ];
 
-export default function PokiDivaHairSalonGame({ onClose, onBack, cardId = 70 }: PokiDivaHairSalonGameProps) {
+export default function PokiDivaHairSalonGame({
+  onClose,
+  onBack,
+  cardId = 70,
+  onExit
+}: PokiDivaHairSalonGameProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const handleExit = onClose || onBack || (() => {});
 
@@ -550,6 +557,7 @@ export default function PokiDivaHairSalonGame({ onClose, onBack, cardId = 70 }: 
 
       {/* 미션 표준 상단 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="DIVA HAIR SALON 3D"
         onQuit={handleExit}
         rightContent={

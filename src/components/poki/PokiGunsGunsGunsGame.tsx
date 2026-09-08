@@ -15,6 +15,8 @@ interface PokiGunsGunsGunsGameProps {
   language?: string;
   lowSpecMode?: boolean;
   playSfx?: (name: string) => void;
+
+  onClose?: () => void;
 }
 
 type WeaponType = 'RIFLE' | 'SHOTGUN';
@@ -55,6 +57,7 @@ export const PokiGunsGunsGunsGame: React.FC<PokiGunsGunsGunsGameProps> = ({
   cardId = 23,
   deck,
   lowSpecMode = false,
+  onClose
 }) => {
   const handleExit = onExit || onBack || (() => {});
   const playerHeroId = deck?.[0]?.id || cardId || 23;
@@ -904,6 +907,7 @@ export const PokiGunsGunsGunsGame: React.FC<PokiGunsGunsGunsGameProps> = ({
 
       {/* Top HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="No.023 Guns Guns Guns 3D"
         score={kills * 200}
         scoreLabel="처치 점수"

@@ -15,6 +15,8 @@ interface PokiMurderGameProps {
   language?: string;
   lowSpecMode?: boolean;
   playSfx?: (name: string) => void;
+
+  onClose?: () => void;
 }
 
 type GamePhase = 'ASSASSIN' | 'KING';
@@ -25,6 +27,7 @@ export const PokiMurderGame: React.FC<PokiMurderGameProps> = ({
   cardId = 29,
   deck,
   lowSpecMode = false,
+  onClose
 }) => {
   const handleExit = onExit || onBack || (() => {});
   const playerHeroId = deck?.[0]?.id || cardId || 29;
@@ -623,6 +626,7 @@ export const PokiMurderGame: React.FC<PokiMurderGameProps> = ({
 
       {/* Top HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="No.029 Murder 3D"
         score={phase === 'KING' ? 500 + defendedCount * 160 : Math.floor(chargePct * 4)}
         scoreLabel="권력 점수"

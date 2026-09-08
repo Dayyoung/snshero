@@ -14,6 +14,8 @@ interface PokiTempleRun2GameProps {
   language?: string;
   lowSpecMode?: boolean;
   playSfx?: (name: string) => void;
+
+  onClose?: () => void;
 }
 
 interface Obstacle3D {
@@ -47,6 +49,7 @@ export const PokiTempleRun2Game: React.FC<PokiTempleRun2GameProps> = ({
   language = 'ko',
   lowSpecMode = false,
   playSfx,
+  onClose
 }) => {
   const handleExit = onExit || onBack || (() => window.history.back());
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -663,6 +666,7 @@ export const PokiTempleRun2Game: React.FC<PokiTempleRun2GameProps> = ({
 
       {/* 미니멀 HUD 헤더 */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="Temple Run 2 3D"
         score={score}
         onQuit={() => finishGameRef.current(false, score)}

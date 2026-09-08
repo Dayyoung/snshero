@@ -10,6 +10,8 @@ interface PokiBlastBuddiesGameProps {
   onClose?: () => void;
   onBack?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface BuddyEntity {
@@ -55,6 +57,7 @@ export default function PokiBlastBuddiesGame({
   onClose,
   onBack,
   cardId = 62,
+  onExit
 }: PokiBlastBuddiesGameProps) {
   const handleExit = onBack || onClose || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);

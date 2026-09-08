@@ -10,6 +10,8 @@ interface PokiRealCityBikesGameProps {
   onClose?: () => void;
   onBack?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface TrafficVehicle {
@@ -35,6 +37,7 @@ export default function PokiRealCityBikesGame({
   onClose,
   onBack,
   cardId = 65,
+  onExit
 }: PokiRealCityBikesGameProps) {
   const handleExit = onBack || onClose || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);

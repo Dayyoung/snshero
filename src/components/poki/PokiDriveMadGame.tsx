@@ -14,6 +14,8 @@ interface PokiDriveMadGameProps {
   language?: string;
   lowSpecMode?: boolean;
   playSfx?: (name: string) => void;
+
+  onClose?: () => void;
 }
 
 interface Particle {
@@ -32,6 +34,7 @@ export const PokiDriveMadGame: React.FC<PokiDriveMadGameProps> = ({
   language = 'ko',
   lowSpecMode = false,
   playSfx,
+  onClose
 }) => {
   const handleExit = onExit || onBack || (() => window.history.back());
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -575,6 +578,7 @@ export const PokiDriveMadGame: React.FC<PokiDriveMadGameProps> = ({
 
       {/* 미니멀 HUD 헤더 */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="Drive Mad 3D"
         score={score}
         onQuit={() => finishGameRef.current(false, score)}

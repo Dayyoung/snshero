@@ -9,6 +9,8 @@ interface PokiSnapStyleDressUpGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface Particle {
@@ -67,6 +69,7 @@ export default function PokiSnapStyleDressUpGame({
   onBack,
   onClose,
   cardId = 83,
+  onExit
 }: PokiSnapStyleDressUpGameProps) {
   const handleExit = onClose || onBack || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -484,6 +487,7 @@ export default function PokiSnapStyleDressUpGame({
 
       {/* 상단 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="SNAPSTYLE DRESS UP 3D"
         scoreDisplay={`STYLE: 100/100 | POSE: ${currentPose}`}
         onExitClick={() => setShowExitModal(true)}

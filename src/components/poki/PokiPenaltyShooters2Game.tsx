@@ -9,6 +9,8 @@ interface PokiPenaltyShooters2GameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 type TurnMode = 'shoot' | 'save';
@@ -26,6 +28,7 @@ export default function PokiPenaltyShooters2Game({
   onBack,
   onClose,
   cardId = 81,
+  onExit
 }: PokiPenaltyShooters2GameProps) {
   const handleExit = onClose || onBack || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -651,6 +654,7 @@ export default function PokiPenaltyShooters2Game({
     >
       {/* 상단 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="PENALTY SHOOTERS 2 3D"
         scoreDisplay={`ROUND ${round}/5 | ${turn === 'shoot' ? 'KICKER TURN' : 'KEEPER TURN'}`}
         onExitClick={() => setShowExitModal(true)}

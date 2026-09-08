@@ -9,6 +9,8 @@ interface PokiSchoolCleaningGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface Trash3D {
@@ -41,6 +43,7 @@ export default function PokiSchoolCleaningGame({
   onBack,
   onClose,
   cardId = 87,
+  onExit
 }: PokiSchoolCleaningGameProps) {
   const mountRef = useRef<HTMLDivElement | null>(null);
   const handleExit = onBack || onClose || (() => {});
@@ -826,6 +829,7 @@ export default function PokiSchoolCleaningGame({
 
       {/* 상단 미니멀 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="SCHOOL CLEANING 3D"
         onQuit={handleExit}
         progressPercent={cleanProgress}

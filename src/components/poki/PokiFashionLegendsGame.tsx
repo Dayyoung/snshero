@@ -9,6 +9,8 @@ interface PokiFashionLegendsGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface FashionGate {
@@ -32,6 +34,7 @@ export default function PokiFashionLegendsGame({
   onBack,
   onClose,
   cardId = 84,
+  onExit
 }: PokiFashionLegendsGameProps) {
   const handleExit = onClose || onBack || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -539,6 +542,7 @@ export default function PokiFashionLegendsGame({
     >
       {/* 상단 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="FASHION LEGENDS 3D"
         scoreDisplay={`SCORE: ${fashionScore}/100 | RUNWAY: ${runwayProgress}%`}
         onExitClick={() => setShowExitModal(true)}

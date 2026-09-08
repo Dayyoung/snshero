@@ -9,6 +9,8 @@ interface PokiDogsLifeGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface BoneSpot {
@@ -32,6 +34,7 @@ export default function PokiDogsLifeGame({
   onBack,
   onClose,
   cardId = 78,
+  onExit
 }: PokiDogsLifeGameProps) {
   const handleExit = onClose || onBack || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -699,6 +702,7 @@ export default function PokiDogsLifeGame({
     >
       {/* 상단 통합 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="DOG'S LIFE 3D"
         scoreDisplay={`BONES: ${bonesDug}/5 | JOY: ${happinessScore}`}
         onExitClick={() => setShowExitModal(true)}

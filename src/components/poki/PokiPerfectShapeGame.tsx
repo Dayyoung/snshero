@@ -15,6 +15,8 @@ interface PokiPerfectShapeGameProps {
   language?: string;
   lowSpecMode?: boolean;
   playSfx?: (name: string) => void;
+
+  onClose?: () => void;
 }
 
 type ShapeType = 'CIRCLE' | 'TRIANGLE' | 'SQUARE' | 'STAR';
@@ -38,6 +40,7 @@ export const PokiPerfectShapeGame: React.FC<PokiPerfectShapeGameProps> = ({
   cardId = 28,
   deck,
   lowSpecMode = false,
+  onClose
 }) => {
   const handleExit = onExit || onBack || (() => {});
   const playerHeroId = deck?.[0]?.id || cardId || 28;
@@ -621,6 +624,7 @@ export const PokiPerfectShapeGame: React.FC<PokiPerfectShapeGameProps> = ({
 
       {/* Top HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="No.028 Perfect Shape 3D"
         score={avgScore * 10}
         scoreLabel="정확도 점수"

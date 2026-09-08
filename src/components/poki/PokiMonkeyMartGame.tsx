@@ -10,6 +10,8 @@ interface PokiMonkeyMartGameProps {
   onClose?: () => void;
   onBack?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface Customer {
@@ -38,7 +40,12 @@ interface ItemBox {
   type: 'banana' | 'corn';
 }
 
-export default function PokiMonkeyMartGame({ onClose, onBack, cardId = 68 }: PokiMonkeyMartGameProps) {
+export default function PokiMonkeyMartGame({
+  onClose,
+  onBack,
+  cardId = 68,
+  onExit
+}: PokiMonkeyMartGameProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const handleExit = onClose || onBack || (() => {});
 
@@ -884,6 +891,7 @@ export default function PokiMonkeyMartGame({ onClose, onBack, cardId = 68 }: Pok
 
       {/* 미션 표준 상단 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="MONKEY MART 3D"
         onQuit={handleExit}
         rightContent={

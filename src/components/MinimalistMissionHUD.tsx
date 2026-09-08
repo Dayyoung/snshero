@@ -40,6 +40,10 @@ export interface MinimalistMissionHUDProps {
   onExit?: () => void;
   onBack?: () => void;
   onClose?: () => void;
+  onQuit?: () => void;
+  onForfeit?: () => void;
+  onQuitClick?: () => void;
+  onExitClick?: () => void;
 
   // Optional Controls
   onHelp?: () => void;
@@ -70,16 +74,23 @@ export const MinimalistMissionHUD: React.FC<MinimalistMissionHUDProps> = ({
   onExit,
   onBack,
   onClose,
+  onQuit,
+  onForfeit,
+  onQuitClick,
+  onExitClick,
   onHelp,
   onPauseToggle,
   isPaused = false
 }) => {
   const isKo = language === 'ko';
   const displayTitle = title || gameTitle || 'SNSHERO MISSION';
-  const rawExitHandler = onExit || onBack || onClose || (() => {});
+  // 진짜 미션 화면을 빠져나가는 순수 exit 핸들러 우선 탐색
+  const pureExitHandler = onExit || onBack || onClose || onQuit;
+  const rawExitHandler = pureExitHandler || onQuitClick || onExitClick || onForfeit || (() => {});
 
   // Game start timestamp for progress settlement calculation
   const startTimeRef = useRef<number>(Date.now());
+  const isExitingRef = useRef<boolean>(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [settledReceipt, setSettledReceipt] = useState<RewardReceipt | null>(null);
 
@@ -105,6 +116,7 @@ export const MinimalistMissionHUD: React.FC<MinimalistMissionHUDProps> = ({
     window.history.pushState({ missionInGame: true }, '');
 
     const handlePopState = () => {
+      if (isExitingRef.current) return;
       if (Date.now() - startTimeRef.current < 450) return;
       // Open exit confirmation modal instead of popping back to home
       setShowExitConfirm(true);
@@ -113,6 +125,7 @@ export const MinimalistMissionHUD: React.FC<MinimalistMissionHUDProps> = ({
     };
 
     const handleGlobalBack = (e: Event) => {
+      if (isExitingRef.current) return;
       // Prevent App.tsx from executing onBackFromGame (which exits to home)
       e.preventDefault();
       if (Date.now() - startTimeRef.current < 450) return;
@@ -129,33 +142,44 @@ export const MinimalistMissionHUD: React.FC<MinimalistMissionHUDProps> = ({
 
   // Exit trigger handler (450ms ghost click protection on mobile)
   const handleExitClick = () => {
+    if (isExitingRef.current) return;
     if (Date.now() - startTimeRef.current < 450) {
       return;
     }
     setShowExitConfirm(true);
   };
 
-  // Confirm exit with settled reward
+  // Confirm exit with settled reward (정산 후 추가 확인팝업 없이 즉시 미션리스트로 이동)
   const handleConfirmExit = () => {
+    if (isExitingRef.current) return;
+    isExitingRef.current = true;
+
     const elapsedSeconds = Math.max(10, Math.floor((Date.now() - startTimeRef.current) / 1000));
     const isWinRatio = tgtVal > 0 && curVal >= Math.round(tgtVal * 0.5);
 
-    const receipt = calculateAndDepositMissionReward({
-      gameId: 'poki_mission',
-      gameTitle: displayTitle,
-      durationSeconds: elapsedSeconds,
-      score: curVal,
-      maxTargetScore: tgtVal,
-      isVictory: isWinRatio,
-    });
+    try {
+      calculateAndDepositMissionReward({
+        gameId: 'poki_mission',
+        gameTitle: displayTitle,
+        durationSeconds: elapsedSeconds,
+        score: curVal,
+        maxTargetScore: tgtVal,
+        isVictory: isWinRatio,
+      });
+    } catch (err) {
+      console.warn('[MinimalistMissionHUD] Reward deposit error:', err);
+    }
 
-    setSettledReceipt(receipt);
-
-    // After brief acknowledgement, transition back to mission list
-    setTimeout(() => {
-      setShowExitConfirm(false);
+    setShowExitConfirm(false);
+    // 추가 확인팝업 없이 즉시 미션리스트로 복귀
+    if (pureExitHandler) {
+      pureExitHandler();
+    } else {
       rawExitHandler();
-    }, 600);
+    }
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('hero-return-to-missions'));
+    }
   };
 
   // Build fallback telemetries if none provided

@@ -8,6 +8,9 @@ import { drawCardSprite } from '../../lib/canvasCardRenderer';
 interface PokiSuperDressGameProps {
   onBack: () => void;
   cardId?: number;
+
+  onExit?: () => void;
+  onClose?: () => void;
 }
 
 type CategoryType = 'hair' | 'gown' | 'acc' | 'shoes';
@@ -46,7 +49,10 @@ const FASHION_ITEMS: Record<CategoryType, ItemConfig[]> = {
 export const PokiSuperDressGame: React.FC<PokiSuperDressGameProps> = ({
   onBack,
   cardId = 51,
+  onExit,
+  onClose
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
   const heroBadgeCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -579,6 +585,7 @@ export const PokiSuperDressGame: React.FC<PokiSuperDressGameProps> = ({
     >
       {/* Minimalist Top HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         key={hudUniqueId}
         title="SUPER DRESS 3D"
         progress={`FASHION SCORE: ${fashionScore}/100`}

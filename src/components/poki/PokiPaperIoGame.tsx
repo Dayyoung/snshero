@@ -14,6 +14,9 @@ interface PokiPaperIoGameProps {
   playSfx?: (url: string) => void;
   onExit: () => void;
   onReward: (amount: number) => void;
+
+  onBack?: () => void;
+  onClose?: () => void;
 }
 
 interface Point {
@@ -46,7 +49,10 @@ export const PokiPaperIoGame: React.FC<PokiPaperIoGameProps> = ({
   playSfx,
   onExit,
   onReward,
+  onBack,
+  onClose
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const isKo = language === 'ko';
   const playerHeroId = deck[0]?.id || 4;
   const containerRef = useRef<HTMLDivElement>(null);

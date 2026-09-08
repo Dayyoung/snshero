@@ -15,6 +15,8 @@ interface PokiLongcatGameProps {
   language?: string;
   lowSpecMode?: boolean;
   playSfx?: (name: string) => void;
+
+  onClose?: () => void;
 }
 
 interface Pos {
@@ -60,6 +62,7 @@ export const PokiLongcatGame: React.FC<PokiLongcatGameProps> = ({
   cardId = 22,
   deck,
   lowSpecMode = false,
+  onClose
 }) => {
   const handleExit = onExit || onBack || (() => {});
   const playerHeroId = deck?.[0]?.id || cardId || 22;
@@ -803,6 +806,7 @@ export const PokiLongcatGame: React.FC<PokiLongcatGameProps> = ({
 
       {/* Top HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="No.022 Longcat 3D"
         score={score}
         scoreLabel="점수"

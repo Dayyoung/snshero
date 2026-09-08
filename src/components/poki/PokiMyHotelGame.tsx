@@ -17,6 +17,8 @@ interface PokiMyHotelGameProps {
   onClose?: () => void;
   cardId?: number | string;
   onReward?: (amount: number) => void;
+
+  onExit?: () => void;
 }
 
 interface RoomData {
@@ -64,7 +66,7 @@ export const PokiMyHotelGame: React.FC<PokiMyHotelGameProps> = ({
   onBack,
   onClose,
   cardId,
-  onReward,
+  onReward
 }) => {
   const handleExit = onBack || onExit || onClose || (() => {});
   const isKo = language === 'ko';
@@ -188,10 +190,11 @@ export const PokiMyHotelGame: React.FC<PokiMyHotelGameProps> = ({
       isVictory: false,
       difficulty: 'NORMAL',
     });
-    setSettlementReceipt(receipt);
+    
     if (onReward) { onReward(receipt.totalSns); }
     handleExit();
-  }, [isKo, handleExit, onReward, timeLeft]);
+  
+    if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("hero-return-to-missions"));}, [isKo, handleExit, onReward, timeLeft]);
 
   const cancelExit = useCallback(() => {
     setShowExitConfirm(false);

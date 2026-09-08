@@ -14,6 +14,8 @@ interface PokiSushiPartyGameProps {
   language?: string;
   lowSpecMode?: boolean;
   playSfx?: (name: string) => void;
+
+  onClose?: () => void;
 }
 
 interface SushiData {
@@ -57,6 +59,7 @@ export const PokiSushiPartyGame: React.FC<PokiSushiPartyGameProps> = ({
   language = 'ko',
   lowSpecMode = false,
   playSfx,
+  onClose
 }) => {
   const handleExit = onExit || onBack || (() => window.history.back());
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -807,6 +810,7 @@ export const PokiSushiPartyGame: React.FC<PokiSushiPartyGameProps> = ({
 
       {/* 미니멀 HUD 헤더 */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="Sushi Party 3D"
         score={score}
         onQuit={() => finishGameRef.current(false, score)}

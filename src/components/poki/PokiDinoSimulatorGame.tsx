@@ -9,6 +9,9 @@ import { Flame, ShieldAlert, Sparkles, Zap, Heart, RotateCcw } from 'lucide-reac
 interface PokiDinoSimulatorGameProps {
   onBack: () => void;
   cardId?: number;
+
+  onExit?: () => void;
+  onClose?: () => void;
 }
 
 interface PreyEntity {
@@ -31,7 +34,10 @@ interface MeatDrop {
 export const PokiDinoSimulatorGame: React.FC<PokiDinoSimulatorGameProps> = ({
   onBack,
   cardId = 57,
+  onExit,
+  onClose
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // UI States

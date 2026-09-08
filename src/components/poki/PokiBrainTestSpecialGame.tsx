@@ -7,11 +7,19 @@ import { drawCardSprite } from '../../lib/canvasCardRenderer';
 
 interface PokiBrainTestSpecialGameProps {
   onBack: () => void;
+
+  onExit?: () => void;
+  onClose?: () => void;
 }
 
 const TOTAL_STAGES = 3;
 
-export const PokiBrainTestSpecialGame: React.FC<PokiBrainTestSpecialGameProps> = ({ onBack }) => {
+export const PokiBrainTestSpecialGame: React.FC<PokiBrainTestSpecialGameProps> = ({
+  onBack,
+  onExit,
+  onClose
+}) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const mountRef = useRef<HTMLDivElement | null>(null);
 
   // 게임 진행 상태
@@ -572,7 +580,10 @@ export const PokiBrainTestSpecialGame: React.FC<PokiBrainTestSpecialGameProps> =
       maxTargetScore: 300,
       durationSeconds: dur,
     });
-    setRewardReceipt(receipt);
+    // 정산 후 추가 팝업 없이 즉시 미션리스트로 이동
+    const exitFn = (typeof handleExit === "function" ? handleExit : (onBack || onExit || onClose || (() => {})));
+    exitFn();
+    if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("hero-return-to-missions"));
   };
 
   return (

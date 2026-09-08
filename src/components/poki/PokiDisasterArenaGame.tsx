@@ -14,6 +14,8 @@ interface PokiDisasterArenaGameProps {
   language?: string;
   lowSpecMode?: boolean;
   playSfx?: (name: string) => void;
+
+  onClose?: () => void;
 }
 
 interface Particle {
@@ -72,6 +74,7 @@ export const PokiDisasterArenaGame: React.FC<PokiDisasterArenaGameProps> = ({
   language = 'ko',
   lowSpecMode = false,
   playSfx,
+  onClose
 }) => {
   const handleExit = onExit || onBack || (() => window.history.back());
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -1200,6 +1203,7 @@ export const PokiDisasterArenaGame: React.FC<PokiDisasterArenaGameProps> = ({
 
       {/* 미니멀 HUD 헤더 */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="Disaster Arena 3D"
         score={score}
         onQuit={() => finishGameRef.current(false, score)}

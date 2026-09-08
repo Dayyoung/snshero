@@ -10,6 +10,8 @@ interface PokiSupercarLegendsGameProps {
   onClose?: () => void;
   onBack?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface RivalCar {
@@ -33,7 +35,12 @@ interface Gate {
   passed: boolean;
 }
 
-export default function PokiSupercarLegendsGame({ onClose, onBack, cardId = 72 }: PokiSupercarLegendsGameProps) {
+export default function PokiSupercarLegendsGame({
+  onClose,
+  onBack,
+  cardId = 72,
+  onExit
+}: PokiSupercarLegendsGameProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const handleExit = onClose || onBack || (() => {});
 
@@ -588,6 +595,7 @@ export default function PokiSupercarLegendsGame({ onClose, onBack, cardId = 72 }
 
       {/* 미션 표준 상단 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="SUPERCAR LEGENDS 3D"
         onQuit={handleExit}
         rightContent={

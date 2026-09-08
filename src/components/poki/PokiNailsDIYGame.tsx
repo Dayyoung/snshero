@@ -10,6 +10,8 @@ interface PokiNailsDIYGameProps {
   onClose?: () => void;
   onBack?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 type NailStage = 'buff' | 'color' | 'charm' | 'ring';
@@ -21,7 +23,12 @@ const NAIL_COLORS = [
   { name: '샤이니 골드', hex: 0xffd54f, label: '#ffd54f' },
 ];
 
-export default function PokiNailsDIYGame({ onClose, onBack, cardId = 73 }: PokiNailsDIYGameProps) {
+export default function PokiNailsDIYGame({
+  onClose,
+  onBack,
+  cardId = 73,
+  onExit
+}: PokiNailsDIYGameProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const handleExit = onClose || onBack || (() => {});
 
@@ -460,6 +467,7 @@ export default function PokiNailsDIYGame({ onClose, onBack, cardId = 73 }: PokiN
 
       {/* 미션 표준 상단 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="NAILS DIY 3D"
         onQuit={handleExit}
         rightContent={

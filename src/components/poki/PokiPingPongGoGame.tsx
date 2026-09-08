@@ -10,9 +10,16 @@ interface PokiPingPongGoGameProps {
   onClose?: () => void;
   onBack?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
-export default function PokiPingPongGoGame({ onClose, onBack, cardId = 74 }: PokiPingPongGoGameProps) {
+export default function PokiPingPongGoGame({
+  onClose,
+  onBack,
+  cardId = 74,
+  onExit
+}: PokiPingPongGoGameProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const handleExit = onClose || onBack || (() => {});
 
@@ -564,6 +571,7 @@ export default function PokiPingPongGoGame({ onClose, onBack, cardId = 74 }: Pok
 
       {/* 미션 표준 상단 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="PING PONG GO 3D"
         onQuit={handleExit}
         rightContent={

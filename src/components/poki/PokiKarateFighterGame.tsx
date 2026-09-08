@@ -8,6 +8,9 @@ import { drawCardSprite } from '../../lib/canvasCardRenderer';
 interface PokiKarateFighterGameProps {
   onBack: () => void;
   cardId?: number;
+
+  onExit?: () => void;
+  onClose?: () => void;
 }
 
 type ActionState = 'idle' | 'punch' | 'kick' | 'block' | 'hit' | 'special';
@@ -31,7 +34,10 @@ interface Fighter {
 export const PokiKarateFighterGame: React.FC<PokiKarateFighterGameProps> = ({
   onBack,
   cardId = 52,
+  onExit,
+  onClose
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
   const heroBadgeCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -627,6 +633,7 @@ export const PokiKarateFighterGame: React.FC<PokiKarateFighterGameProps> = ({
     >
       {/* Minimalist Top HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         key={hudUniqueId}
         title="KARATE FIGHTER 3D"
         progress={`ROUND ${round} / 2`}

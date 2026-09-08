@@ -9,6 +9,8 @@ interface PokiStickmanCrazyBoxGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface CrazyBox3D {
@@ -41,6 +43,7 @@ export default function PokiStickmanCrazyBoxGame({
   onBack,
   onClose,
   cardId = 89,
+  onExit
 }: PokiStickmanCrazyBoxGameProps) {
   const mountRef = useRef<HTMLDivElement | null>(null);
   const handleExit = onBack || onClose || (() => {});
@@ -790,6 +793,7 @@ export default function PokiStickmanCrazyBoxGame({
 
       {/* 상단 미니멀 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="STICKMAN CRAZY BOX 3D"
         onQuit={handleExit}
         progressPercent={Math.min(100, Math.round((starsCount / TARGET_STARS) * 100))}

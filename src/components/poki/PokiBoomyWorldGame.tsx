@@ -9,6 +9,8 @@ interface PokiBoomyWorldGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface Bomb {
@@ -45,6 +47,7 @@ export default function PokiBoomyWorldGame({
   onBack,
   onClose,
   cardId = 82,
+  onExit
 }: PokiBoomyWorldGameProps) {
   const handleExit = onClose || onBack || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -700,6 +703,7 @@ export default function PokiBoomyWorldGame({
     >
       {/* 상단 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="BOOMY WORLD 3D"
         scoreDisplay={`MONSTERS: ${monstersDefeated}/${totalMonstersCount} | BOMBS: ${activeBombsCount}/3`}
         onExitClick={() => setShowExitModal(true)}

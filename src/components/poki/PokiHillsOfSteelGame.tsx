@@ -10,6 +10,8 @@ interface PokiHillsOfSteelGameProps {
   onClose?: () => void;
   onBack?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 interface EnemyUnit {
@@ -67,7 +69,12 @@ function getHillSlope(x: number): number {
   return Math.atan2(y2 - y1, dx * 2);
 }
 
-export default function PokiHillsOfSteelGame({ onClose, onBack, cardId = 66 }: PokiHillsOfSteelGameProps) {
+export default function PokiHillsOfSteelGame({
+  onClose,
+  onBack,
+  cardId = 66,
+  onExit
+}: PokiHillsOfSteelGameProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const handleExit = onClose || onBack || (() => {});
 
@@ -946,6 +953,7 @@ export default function PokiHillsOfSteelGame({ onClose, onBack, cardId = 66 }: P
 
       {/* 미션 표준 상단 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="HILLS OF STEEL 3D"
         onQuit={handleExit}
         rightContent={

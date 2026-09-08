@@ -15,6 +15,8 @@ interface PokiSubwaySurfersGameProps {
   language?: string;
   lowSpecMode?: boolean;
   playSfx?: (name: string) => void;
+
+  onClose?: () => void;
 }
 
 type ObstacleType = 'TRAIN' | 'LOW_BARRIER' | 'HIGH_BARRIER';
@@ -42,6 +44,7 @@ export const PokiSubwaySurfersGame: React.FC<PokiSubwaySurfersGameProps> = ({
   cardId = 26,
   deck,
   lowSpecMode = false,
+  onClose
 }) => {
   const handleExit = onExit || onBack || (() => {});
   const playerHeroId = deck?.[0]?.id || cardId || 26;
@@ -668,6 +671,7 @@ export const PokiSubwaySurfersGame: React.FC<PokiSubwaySurfersGameProps> = ({
 
       {/* Top HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="No.026 Subway Surfers 3D"
         score={Math.floor(distance * 1.5 + coinCount * 20)}
         scoreLabel="질주 점수"

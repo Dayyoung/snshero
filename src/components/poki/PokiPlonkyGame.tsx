@@ -17,6 +17,8 @@ interface PokiPlonkyGameProps {
   onClose?: () => void;
   cardId?: number | string;
   onReward?: (amount: number) => void;
+
+  onExit?: () => void;
 }
 
 interface Platform {
@@ -65,7 +67,7 @@ export const PokiPlonkyGame: React.FC<PokiPlonkyGameProps> = ({
   onBack,
   onClose,
   cardId,
-  onReward,
+  onReward
 }) => {
   const handleExit = onBack || onExit || onClose || (() => {});
   const isKo = language === 'ko';
@@ -787,6 +789,7 @@ export const PokiPlonkyGame: React.FC<PokiPlonkyGameProps> = ({
     >
       {/* 상단 미션 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="Plonky 3D Platformer"
         score={score}
         targetScore={1500}

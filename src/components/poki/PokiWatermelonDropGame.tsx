@@ -9,6 +9,8 @@ interface PokiWatermelonDropGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 const TARGET_SCORE = 800;
@@ -49,6 +51,7 @@ export default function PokiWatermelonDropGame({
   onBack,
   onClose,
   cardId = 101,
+  onExit
 }: PokiWatermelonDropGameProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleExit = onBack || onClose || (() => {});
@@ -575,6 +578,7 @@ export default function PokiWatermelonDropGame({
 
       {/* Top Minimalist HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="WATERMELON DROP 3D"
         progress={Math.min(100, (score / TARGET_SCORE) * 100)}
         score={score}

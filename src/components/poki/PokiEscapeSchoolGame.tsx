@@ -14,6 +14,8 @@ interface PokiEscapeSchoolGameProps {
   language?: string;
   lowSpecMode?: boolean;
   playSfx?: (name: string) => void;
+
+  onClose?: () => void;
 }
 
 interface GoldenKey {
@@ -56,6 +58,7 @@ export const PokiEscapeSchoolGame: React.FC<PokiEscapeSchoolGameProps> = ({
   language = 'ko',
   lowSpecMode = false,
   playSfx,
+  onClose
 }) => {
   const handleExit = onExit || onBack || (() => window.history.back());
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -726,6 +729,7 @@ export const PokiEscapeSchoolGame: React.FC<PokiEscapeSchoolGameProps> = ({
 
       {/* 미니멀 HUD 헤더 */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="Escape School 3D"
         score={score}
         onQuit={() => finishGameRef.current(false, score)}

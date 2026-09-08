@@ -9,6 +9,9 @@ import { Star, Heart, ArrowUp, ShieldAlert, Sparkles, RefreshCw, Flag } from 'lu
 interface PokiRedBall4GameProps {
   onBack: () => void;
   cardId?: number;
+
+  onExit?: () => void;
+  onClose?: () => void;
 }
 
 interface CollectibleStar {
@@ -30,7 +33,10 @@ interface SquareMinion {
 export const PokiRedBall4Game: React.FC<PokiRedBall4GameProps> = ({
   onBack,
   cardId = 59,
+  onExit,
+  onClose
 }) => {
+  const handleExit = onBack || onExit || onClose || (() => {});
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // UI state

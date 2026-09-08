@@ -14,6 +14,8 @@ interface PokiSliceMasterGameProps {
   language?: string;
   lowSpecMode?: boolean;
   playSfx?: (name: string) => void;
+
+  onClose?: () => void;
 }
 
 interface SliceItem {
@@ -46,6 +48,7 @@ export const PokiSliceMasterGame: React.FC<PokiSliceMasterGameProps> = ({
   language = 'ko',
   lowSpecMode = false,
   playSfx,
+  onClose
 }) => {
   const handleExit = onExit || onBack || (() => window.history.back());
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -610,6 +613,7 @@ export const PokiSliceMasterGame: React.FC<PokiSliceMasterGameProps> = ({
 
       {/* 미니멀 HUD 헤더 */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="Slice Master 3D"
         score={score}
         onQuit={() => finishGameRef.current(false, score)}

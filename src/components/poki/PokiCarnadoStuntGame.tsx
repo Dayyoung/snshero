@@ -10,9 +10,16 @@ interface PokiCarnadoStuntGameProps {
   onClose?: () => void;
   onBack?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
-export default function PokiCarnadoStuntGame({ onClose, onBack, cardId = 69 }: PokiCarnadoStuntGameProps) {
+export default function PokiCarnadoStuntGame({
+  onClose,
+  onBack,
+  cardId = 69,
+  onExit
+}: PokiCarnadoStuntGameProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const handleExit = onClose || onBack || (() => {});
 
@@ -539,6 +546,7 @@ export default function PokiCarnadoStuntGame({ onClose, onBack, cardId = 69 }: P
 
       {/* 미션 표준 상단 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         title="CARNADO STUNT 3D"
         onQuit={handleExit}
         rightContent={

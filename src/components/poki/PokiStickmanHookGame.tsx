@@ -16,6 +16,8 @@ interface PokiStickmanHookGameProps {
   playSfx?: (url: string) => void;
   onExit?: () => void;
   onReward?: (amount: number) => void;
+
+  onClose?: () => void;
 }
 
 interface HookAnchor {
@@ -48,6 +50,7 @@ export const PokiStickmanHookGame: React.FC<PokiStickmanHookGameProps> = ({
   playSfx,
   onExit,
   onReward,
+  onClose
 }) => {
   const isKo = language === 'ko';
   const playerHeroId = deck[0]?.id || cardId || 20;
@@ -625,6 +628,7 @@ export const PokiStickmanHookGame: React.FC<PokiStickmanHookGameProps> = ({
     >
       {/* 상단 미션 HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="Stickman Hook 3D"
         score={score}
         targetScore={1500}

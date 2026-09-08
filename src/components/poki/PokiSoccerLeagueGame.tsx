@@ -9,6 +9,8 @@ interface PokiSoccerLeagueGameProps {
   onBack?: () => void;
   onClose?: () => void;
   cardId?: number;
+
+  onExit?: () => void;
 }
 
 const TARGET_GOALS = 3;
@@ -31,6 +33,7 @@ export default function PokiSoccerLeagueGame({
   onBack,
   onClose,
   cardId = 95,
+  onExit
 }: PokiSoccerLeagueGameProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleExit = onBack || onClose || (() => {});
@@ -796,6 +799,7 @@ export default function PokiSoccerLeagueGame({
 
       {/* Top Minimalist HUD */}
       <MinimalistMissionHUD
+        onBack={handleExit}
         gameTitle="SOCCER LEAGUE 3D"
         progress={Math.min(100, (blueScore / TARGET_GOALS) * 100)}
         score={blueScore * 100}
