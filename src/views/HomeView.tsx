@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX, Zap, Clock, Pause, PanelLeftClose, PanelLeftOpen, Layers, Image, Film, Github, Youtube } from "lucide-react";
+import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX, Zap, Clock, Pause, PanelLeftClose, PanelLeftOpen, Layers, Image, Film, Github, Youtube, Dices } from "lucide-react";
 import { NotificationCenterModal } from "../components/NotificationCenterModal";
 import { getUnreadCount } from "../lib/notificationHelper";
 import { motion, AnimatePresence } from "motion/react";
@@ -51,6 +51,7 @@ interface HomeViewProps {
   onStartTutorial?: () => void;
   isTutorialCompleted?: boolean;
   onStartPlayNow?: () => void;
+  onRollDice?: () => void;
   isTutorialMode?: boolean;
   tutorialStep?: number;
 }
@@ -65,6 +66,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   handleLogin,
   handleLogout,
   onStartPlayNow,
+  onRollDice,
   isTutorialMode,
   tutorialStep,
 }) => {
@@ -533,8 +535,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </div>
               </div>
 
-              {/* ── Core Feature Main Buttons directly under logo (Play Now / Novel / Cartoon / Anime / Movie) ── */}
-              <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 mt-1 mb-1">
+              {/* ── Core Feature Main Buttons directly under logo (Play Now / Random Play / Novel / Cartoon / Anime / Movie) ── */}
+              <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 mt-1 mb-1">
                 {/* 지금 플레이 */}
                 <motion.button
                   {...buttonMotionProps}
@@ -550,6 +552,24 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 >
                   <Play size={18} className="shrink-0 fill-current" />
                   <span>{t("home_play_now", language)}</span>
+                </motion.button>
+
+                {/* 랜덤 플레이 */}
+                <motion.button
+                  {...buttonMotionProps}
+                  onClick={() => {
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    if (onRollDice) {
+                      onRollDice();
+                    } else {
+                      onNavigate("play");
+                    }
+                  }}
+                  className="w-full h-12 sm:h-14 px-3 sm:px-4 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white font-extrabold text-xs sm:text-base rounded-md hover:from-amber-600 hover:to-orange-600 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 touch-target shadow-sm group border border-amber-400/30"
+                  aria-label={language === 'ko' ? "랜덤 플레이" : "Random Play"}
+                >
+                  <Dices size={18} className="shrink-0 text-amber-100 group-hover:rotate-12 transition-transform" />
+                  <span>{language === 'ko' ? "랜덤 플레이" : "Random Play"}</span>
                 </motion.button>
 
                 {/* 소설 읽기 */}

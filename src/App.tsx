@@ -21,6 +21,7 @@ import {
 } from './constants';
 import { ITEM_DATABASE } from './constants/itemDatabase';
 import { CARD_DATABASE } from './cardDatabase';
+import { POKI_110_GAMES } from './lib/pokiGameList';
 import { ALL_ACHIEVEMENTS } from './constants/achievements';
 import { auth, googleProvider, db, analytics, logEvent, setUserId, setUserProperties, currentDbMode } from './lib/firebase';
 import { signInWithPopup, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, addDoc, onSnapshot, query, orderBy, limit, where, writeBatch, getDocs } from './lib/firebaseMock';
@@ -4887,6 +4888,26 @@ function AppContent() {
     return Math.ceil(basePowerWithBonus * (1 + buff.powerPercent / 100));
   }, [inventory, currentDeck, userGuild]);
 
+  const handleStartDiceRoll = useCallback(() => {
+    if (diceState !== 'idle') return;
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    setDiceState('rolling');
+    setDiceGameTitle('');
+    diceTimeoutRef.current = window.setTimeout(() => {
+      const picked = POKI_110_GAMES[Math.floor(Math.random() * POKI_110_GAMES.length)];
+      const title = language === 'ko' ? picked.titleKo : picked.titleEn;
+      setDiceState('reveal');
+      setDiceGameTitle(title);
+      setPreselectedGameId(picked.id);
+      playSfx('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
+      diceTimeoutRef.current = window.setTimeout(() => {
+        setDiceState('idle');
+        setView('play');
+        setTimeout(() => setPreselectedGameId(null), 500);
+      }, 1500);
+    }, 2000);
+  }, [diceState, language, playSfx, setView]);
+
   const renderView = () => {
     switch (view) {
       case 'home':
@@ -4917,6 +4938,7 @@ function AppContent() {
               setSeasonItem('hero_kadan_rpg_auto_mode', currentSeason, 'true');
               setView('main');
             }}
+            onRollDice={handleStartDiceRoll}
           />
         );
       case 'main':
@@ -5333,6 +5355,8 @@ function AppContent() {
             randomPlayTrigger={randomPlayTrigger}
             preselectedGameId={preselectedGameId}
             currentSeason={currentSeason}
+            inventory={inventory}
+            addCard={addCard}
           />
         );
       case 'playground':
@@ -5705,6 +5729,7 @@ function AppContent() {
               setSeasonItem('hero_kadan_rpg_auto_mode', currentSeason, 'true');
               setView('main');
             }}
+            onRollDice={handleStartDiceRoll}
           />
         );
     }
@@ -6334,39 +6359,7 @@ function AppContent() {
                  {/* Random Play Button — left side */}
                  <div className="absolute left-4 bottom-0 pointer-events-auto">
                    <button
-                     onClick={() => {
-                       if (diceState !== 'idle') return;
-                       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                       setDiceState('rolling');
-                       setDiceGameTitle('');
-                       // Roll for 2 seconds then reveal
-                       diceTimeoutRef.current = window.setTimeout(() => {
-                         const games: { id: string; title: string }[] = [
-                           { id: 'tictactoe', title: '틱택토' },
-                           { id: 'gomoku', title: '오목' },
-                           { id: 'slide2048', title: '2048 퍼즐' },
-                           { id: 'minesweeper', title: '지뢰찾기' },
-                           { id: 'pacman', title: '팩맨' },
-                           { id: 'breakout', title: '벽돌깨기' },
-                           { id: 'snake', title: '스네이크대전' },
-                           { id: 'shooting', title: '슈팅대전' },
-                           { id: 'trex', title: '티렉스러너' },
-                           { id: 'memorymatch', title: '메모리매치' },
-                         ];
-                         const picked = games[Math.floor(Math.random() * games.length)];
-                         setDiceState('reveal');
-                         setDiceGameTitle(picked.title);
-                         setPreselectedGameId(picked.id);
-                         playSfx('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-                         // Navigate after 1.5s reveal
-                         diceTimeoutRef.current = window.setTimeout(() => {
-                           setDiceState('idle');
-                           setView('play');
-                           // Reset after navigation
-                           setTimeout(() => setPreselectedGameId(null), 500);
-                         }, 1500);
-                       }, 2000);
-                     }}
+                     onClick={handleStartDiceRoll}
                      className="w-13 h-13 sm:w-14 sm:h-14 border-2 border-amber-400/70 rounded-2xl flex items-center justify-center transition-all bg-[#141212] active:scale-95 relative shadow-[0_8px_28px_rgba(0,0,0,0.65),0_0_16px_rgba(245,158,11,0.3)] hover:scale-105 hover:border-amber-300 hover:text-white text-amber-300 cursor-pointer touch-target"
                      title={language === 'ko' ? '랜덤 미니게임 플레이' : 'Random Game Play'}
                      aria-label={language === 'ko' ? '랜덤 미니게임 플레이' : 'Random Game Play'}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { CardData, AiStrategy, AiDifficulty, Language, PlayerPatterns, Item, Skill, UserStats, UserInfo } from '../types';
+import { CardData, AiStrategy, AiDifficulty, Language, PlayerPatterns, Item, Skill, UserStats, UserInfo, InventoryRecord, CardRarity } from '../types';
 import { CardItem } from '../components/CardItem';
 import { cn, getFormattedCardName, getAssetUrl, getCardSpriteAsset, getCardSpriteCoords, getCardSpriteStyle } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
@@ -323,6 +323,8 @@ interface PlayGameViewProps {
   currentSeason?: string;
   initialMode?: string;
   isAdRemoved?: boolean;
+  inventory?: Record<number, InventoryRecord>;
+  addCard?: (rarity: CardRarity, indexOverride?: number, isSilent?: boolean) => void;
 }
 
 interface QteMatchSummary {
@@ -643,7 +645,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   preselectedGameId = null,
   currentSeason,
   initialMode,
-  isAdRemoved = false
+  isAdRemoved = false,
+  inventory,
+  addCard
 }) => {
   const { language, lowSpecMode, targetFps, batterySaver } = useGameSettings();
   const isIOSDevice = useMemo(() => {
@@ -2574,6 +2578,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
   const [isRecordingResult, setIsRecordingResult] = useState(false);
   const [selectedOpponent, setSelectedOpponent] = useState<Character | null>(null);
+  const activeMissionCardIdRef = useRef<number | null>(null);
+  const [missionBattleFeedback, setMissionBattleFeedback] = useState<string | null>(null);
   const [showRules, setShowRules] = useState(false);
   const [isHoveringOpponent, setIsHoveringOpponent] = useState(false);
   const [opponentDeck, setOpponentDeck] = useState<CardData[]>([]);
@@ -4857,6 +4863,73 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     }, 800 * speedMultiplier);
   };
 
+  const startMissionCardBattle = (targetCardIndex: number) => {
+    const dbCard = CARD_DATABASE[targetCardIndex] || CARD_DATABASE[1];
+    activeMissionCardIdRef.current = targetCardIndex;
+    setMissionBattleFeedback(null);
+    setGameOver(false);
+    setWinner(null);
+    setCheckingIdx(-1);
+    setIsEvaluating(false);
+
+    // 상대 덱: 해당 카드 5개로 설정 (No.01~110 고유 카드가 5장 배치)
+    const missionAiDeck: CardData[] = Array(5).fill(null).map((_, i) => ({
+      id: `mission-opp-${dbCard.id}-${Date.now()}-${i}`,
+      title: dbCard.title,
+      title_dis: dbCard.title_dis,
+      title_en: dbCard.title_en,
+      stats: [...dbCard.stats],
+      rarity: dbCard.rarity,
+      owner: 'ai' as const,
+      level: 1,
+      power: dbCard.power || 10,
+      imageIndex: dbCard.id,
+      element: dbCard.element,
+      skills: [...INITIAL_SKILLS.map(s => ({ ...s }))]
+    }));
+
+    const oppName = language === 'ko' ? `${dbCard.title} 수호자` : `${dbCard.title_en} Guardian`;
+    const oppChar: Character = {
+      id: `mission-bot-${targetCardIndex}`,
+      name: oppName,
+      avatarUrl: dbCard.imageUrl || `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Mission-${targetCardIndex}&backgroundColor=b6e3f4`,
+      type: 'robot',
+      totalPower: (dbCard.power || 10) * 5,
+      deck: missionAiDeck,
+      x: 50,
+      y: 50,
+      targetX: 50,
+      targetY: 50
+    };
+
+    setSelectedOpponent(oppChar);
+    setLastOpponent(oppChar);
+    setPreviewDeck(missionAiDeck);
+    setOpponentDeck(missionAiDeck);
+    setOpponentHand(missionAiDeck);
+    setLastAiDeck(missionAiDeck);
+    setBattleType('robot');
+
+    // 코인 플립 후 대전 시작
+    setIsCoinFlipping(true);
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    setTimeout(() => {
+      const firstTurn = Math.random() > 0.5 ? 'player' : 'ai';
+      setCoinWinner(firstTurn);
+      setFirstTurn(firstTurn);
+
+      const delay = Math.max(800, 1200 * speedMultiplier);
+      setTimeout(() => {
+        setIsCoinFlipping(false);
+        setCoinWinner(null);
+        startGame(oppChar, firstTurn, false);
+        setOpponentDeck(missionAiDeck);
+        setOpponentHand(missionAiDeck);
+        setGameState('playing');
+      }, delay);
+    }, 800 * speedMultiplier);
+  };
+
   const startMatgoGame = () => {
     const firstTurn: 'player' | 'ai' = Math.random() < 0.5 ? 'player' : 'ai';
     startGame(undefined, firstTurn, true);
@@ -4892,7 +4965,24 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         setOpponentStrategy(botAiStrategy);
       }
       
-      if (effectiveOpponent?.type === 'user' && (effectiveOpponent as any).deck) {
+      if (activeMissionCardIdRef.current) {
+        const dbCard = CARD_DATABASE[activeMissionCardIdRef.current] || CARD_DATABASE[1];
+        oppDeck = Array(5).fill(null).map((_, i) => ({
+          id: `mission-opp-${dbCard.id}-${Date.now()}-${i}`,
+          title: dbCard.title,
+          title_dis: dbCard.title_dis,
+          title_en: dbCard.title_en,
+          stats: [...dbCard.stats],
+          rarity: dbCard.rarity,
+          owner: 'ai' as const,
+          level: 1,
+          power: dbCard.power || 10,
+          imageIndex: dbCard.id,
+          element: dbCard.element,
+          skills: [...INITIAL_SKILLS.map(s => ({ ...s }))]
+        }));
+        setLastAiDeck(oppDeck);
+      } else if (effectiveOpponent?.type === 'user' && (effectiveOpponent as any).deck) {
          let baseOppDeck = (effectiveOpponent as any).deck;
          oppDeck = ensureUniqueDeck(baseOppDeck, 5).map((c: any) => syncCardWithDatabase({ ...c, owner: 'ai' }));
       } else if (!opponent && lastAiDeck) {
@@ -4913,8 +5003,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
          setLastAiDeck(oppDeck);
       }
 
-      // Ensure oppDeck is 100% strictly 5 unique cards (no duplicate card IDs/imageIndex)
-      oppDeck = ensureUniqueDeck(oppDeck, 5).map((c, i) => ({ ...c, owner: 'ai' as const, id: `ai-${Date.now()}-${i}-${c.imageIndex ?? i}` }));
+      // Ensure oppDeck is 100% strictly 5 unique cards unless it is a mission battle
+      if (!activeMissionCardIdRef.current) {
+        oppDeck = ensureUniqueDeck(oppDeck, 5).map((c, i) => ({ ...c, owner: 'ai' as const, id: `ai-${Date.now()}-${i}-${c.imageIndex ?? i}` }));
+      }
 
       if (effectiveOpponent) setLastOpponent(effectiveOpponent);
       
@@ -6819,6 +6911,89 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   
                   handleZeroSumAndRecord(finalResult);
 
+                  // Mission Card Battle: Card Drop & Enhancement Logic
+                  if (activeMissionCardIdRef.current !== null) {
+                    const targetCardId = activeMissionCardIdRef.current;
+                    const dbCard = CARD_DATABASE[targetCardId] || CARD_DATABASE[1];
+                    let currentQty = 0;
+                    if (inventory && inventory[targetCardId]?.quantity) {
+                      currentQty = inventory[targetCardId].quantity;
+                    } else if (typeof window !== 'undefined') {
+                      try {
+                        const rawInv = JSON.parse(localStorage.getItem('hero_inventory') || '{}');
+                        currentQty = rawInv[targetCardId]?.quantity || 0;
+                      } catch {}
+                    }
+
+                    if (currentQty > 0) {
+                      // Already Owned: Chance to Enhance
+                      const isEnhanceSuccess = Math.random() < 0.45;
+                      if (isEnhanceSuccess) {
+                        addCard?.(dbCard.rarity, targetCardId, true);
+                        let newLvl = 2;
+                        try {
+                          const encKey = 'hero_card_enhancements';
+                          const stored = JSON.parse(localStorage.getItem(encKey) || '{}');
+                          newLvl = (stored[targetCardId] || 1) + 1;
+                          stored[targetCardId] = newLvl;
+                          localStorage.setItem(encKey, JSON.stringify(stored));
+                        } catch {}
+                        setMissionBattleFeedback({
+                          success: true,
+                          type: 'enhance',
+                          cardName: dbCard.title,
+                          cardId: targetCardId,
+                          message: language === 'ko'
+                            ? `[강화 성공!] ${dbCard.title} 카드가 강화되었습니다! (Lv.${newLvl} 달성 & 추가 카드 획득)`
+                            : `[Enhancement Succeeded!] ${dbCard.title_en} upgraded to Lv.${newLvl} (+1 card)!`
+                        });
+                      } else {
+                        setMissionBattleFeedback({
+                          success: false,
+                          type: 'enhance',
+                          cardName: dbCard.title,
+                          cardId: targetCardId,
+                          message: language === 'ko'
+                            ? `아쉽게도 ${dbCard.title} 카드 강화에 실패했습니다. 다시 도전해보세요!`
+                            : `Enhancement failed for ${dbCard.title_en}. Challenge again!`
+                        });
+                      }
+                    } else {
+                      // Not Owned: Shop Drop Probability to Obtain
+                      const dropRates: Record<string, number> = {
+                        diamond: 0.12,
+                        platinum: 0.25,
+                        gold: 0.40,
+                        silver: 0.55,
+                        bronze: 0.70
+                      };
+                      const dropProb = dropRates[dbCard.rarity?.toLowerCase() || 'bronze'] || 0.50;
+                      const isObtainSuccess = Math.random() < dropProb;
+                      if (isObtainSuccess) {
+                        addCard?.(dbCard.rarity, targetCardId, false);
+                        setMissionBattleFeedback({
+                          success: true,
+                          type: 'obtain',
+                          cardName: dbCard.title,
+                          cardId: targetCardId,
+                          message: language === 'ko'
+                            ? `[획득 성공!] No.${String(targetCardId).padStart(2, '0')} ${dbCard.title} 카드를 새로 획득했습니다!`
+                            : `[Acquisition Succeeded!] No.${String(targetCardId).padStart(2, '0')} ${dbCard.title_en} added to your deck!`
+                        });
+                      } else {
+                        setMissionBattleFeedback({
+                          success: false,
+                          type: 'obtain',
+                          cardName: dbCard.title,
+                          cardId: targetCardId,
+                          message: language === 'ko'
+                            ? `아쉽게도 ${dbCard.title} 카드 획득에 실패했습니다. (확률 ${Math.round(dropProb * 100)}%) 다시 도전해보세요!`
+                            : `Failed to acquire ${dbCard.title_en} (${Math.round(dropProb * 100)}% chance). Challenge again!`
+                        });
+                      }
+                    }
+                  }
+
                   // Analytics: Track Game End
                   if (analytics) {
                     logEvent(analytics, 'game_end', {
@@ -6841,6 +7016,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   const aScore = finalBoard.filter(c => c?.owner === 'ai').length;
 
                   handleZeroSumAndRecord(finalResult);
+
+                  if (activeMissionCardIdRef.current !== null) {
+                    const targetCardId = activeMissionCardIdRef.current;
+                    const dbCard = CARD_DATABASE[targetCardId] || CARD_DATABASE[1];
+                    setMissionBattleFeedback({
+                      success: false,
+                      type: 'defeat',
+                      cardName: dbCard.title,
+                      cardId: targetCardId,
+                      message: language === 'ko'
+                        ? `수호자와의 대결에서 패배했습니다. 덱을 정비하고 다시 도전해보세요!`
+                        : `Defeated by the guardian! Strengthen your deck and challenge again!`
+                    });
+                  }
 
                   // Analytics: Track Game End
                   if (analytics) {
@@ -13301,6 +13490,43 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           {/* Daily Missions Component */}
           <DailyMissionsComponent />
 
+          {/* Mission Feedback Banner (if available) */}
+          {missionBattleFeedback && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={cn(
+                "w-full rounded-sm border p-3 sm:p-4 text-white font-mono flex items-center justify-between gap-3 shadow-md",
+                missionBattleFeedback.success
+                  ? "bg-emerald-950/90 border-emerald-500/80 text-emerald-100"
+                  : "bg-amber-950/90 border-amber-500/80 text-amber-100"
+              )}
+            >
+              <div className="flex items-center gap-2.5">
+                <span className="text-xl">
+                  {missionBattleFeedback.success ? "🎉" : "⚔️"}
+                </span>
+                <div>
+                  <div className="text-[10px] font-black uppercase tracking-wider text-white/80">
+                    {missionBattleFeedback.success
+                      ? (missionBattleFeedback.type === 'obtain' ? (language === 'ko' ? '[ 카드 획득 성공 ]' : '[ CARD ACQUIRED ]') : (language === 'ko' ? '[ 카드 강화 성공 ]' : '[ CARD ENHANCED ]'))
+                      : (language === 'ko' ? '[ 미션 대결 알림 ]' : '[ MISSION NOTIFICATION ]')}
+                  </div>
+                  <div className="text-xs sm:text-sm font-bold text-white mt-0.5">
+                    {missionBattleFeedback.message}
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => setMissionBattleFeedback(null)}
+                className="p-1 text-white/70 hover:text-white rounded-xs hover:bg-white/10 cursor-pointer"
+                aria-label="Close"
+              >
+                <X size={16} />
+              </button>
+            </motion.div>
+          )}
+
           {/* Hero Card Mission Matching Overview Banner */}
           <div className="w-full rounded-sm border border-slate-800 bg-slate-950 p-3 sm:p-4 text-white shadow-xs font-mono">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -13314,13 +13540,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       HERO MISSION SYSTEM
                     </span>
                     <span className="text-[11px] text-slate-400">
-                      [ 1:1 HERO MATCHING ]
+                      [ 1:1 AI CARD BATTLE ]
                     </span>
                   </div>
                   <h3 className="text-xs sm:text-sm font-black text-white mt-0.5">
                     {language === 'ko' 
-                      ? `총 ${modes.length}종의 미션 게임 × No.01~${String(modes.length).padStart(2, '0')} 히어로 카드 전담 매칭` 
-                      : `Total ${modes.length} Mission Games × No.01~${String(modes.length).padStart(2, '0')} Hero Card System`}
+                      ? `총 ${modes.length}종의 히어로 카드 전담 AI 카드플레이 대결` 
+                      : `Total ${modes.length} Hero Cards 1:1 AI Card Battle Matches`}
                   </h3>
                 </div>
               </div>
@@ -13329,11 +13555,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <span className="text-xs font-black text-emerald-400 font-mono">100% ({modes.length}/{modes.length})</span>
               </div>
             </div>
-            <p className="text-[11px] text-slate-400 mt-2.5 leading-relaxed border-t border-slate-800/80 pt-2">
-              {language === 'ko'
-                ? `모든 미션 게임은 1번 카드(No.01 ${CARD_DATABASE[1]?.title || '아쿠아리스'})부터 순서대로 고유 히어로 캐릭터 카드가 담당 수호자로 배속되어 있습니다.`
-                : `Every mission game is assigned a unique Hero Card starting from No.01 (${CARD_DATABASE[1]?.title_en || 'Aquaris'}) as guardian.`}
-            </p>
+            <div className="text-[11px] text-slate-300 mt-2.5 leading-relaxed border-t border-slate-800/80 pt-2 flex flex-col gap-1">
+              <p className="font-bold text-amber-300">
+                {language === 'ko' ? '• 해당 카드와 카드플레이를 진행합니다.' : '• Play 1:1 card matches against this card.'}
+              </p>
+              <p className="text-slate-200">
+                {language === 'ko' 
+                  ? '• 해당 카드와 대결에서 승리하면 상점 획득 확률로 해당 카드를 획득할 수 있습니다.' 
+                  : '• Winning the match allows you to acquire the card at the shop drop rate.'}
+              </p>
+              <p className="text-slate-200">
+                {language === 'ko' 
+                  ? '• 승리했을때 해당 카드를 이미 보유 중이라면 해당 카드를 일정확률로 강화 할 수 있습니다.' 
+                  : '• If you already own the card upon winning, you can enhance it with a certain chance.'}
+              </p>
+            </div>
           </div>
 
           {/* Mode Search & Category Filter Tabs */}
@@ -13420,6 +13656,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   elem === 'dragon' || elem === 'holy' ? '✦' :
                   elem === 'undead' || elem === 'monster' ? '💀' : '⚔️';
 
+                // Card Ownership & Quantity
+                const ownedCount = (inventory && inventory[cardIndex]?.quantity) || (typeof window !== 'undefined' ? (JSON.parse(localStorage.getItem('hero_inventory') || '{}')[cardIndex]?.quantity || 0) : 0);
+                const isOwned = ownedCount > 0;
+
                 return (
                   <motion.div
                     key={m.id}
@@ -13434,18 +13674,23 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       onClick={() => {
                         playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                         recordModePlay(m.id);
-                        m.action();
+                        startMissionCardBattle(cardIndex);
                       }}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
                           playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                           recordModePlay(m.id);
-                          m.action();
+                          startMissionCardBattle(cardIndex);
                         }
                       }}
-                      className="w-full min-h-[180px] sm:min-h-[220px] bg-[#14121e] border border-slate-800 rounded-sm hover:border-amber-400/80 hover:shadow-md transition-all flex flex-col overflow-hidden group cursor-pointer text-left"
-                      aria-label={`${m.title} - No.${cardNumFormatted} ${charName}`}
+                      className={cn(
+                        "w-full min-h-[180px] sm:min-h-[220px] bg-[#14121e] rounded-sm transition-all flex flex-col overflow-hidden group cursor-pointer text-left relative",
+                        isOwned 
+                          ? "border-2 border-emerald-500 shadow-[0_0_14px_rgba(16,185,129,0.35)]" 
+                          : "border border-slate-800 hover:border-amber-400/80 hover:shadow-md"
+                      )}
+                      aria-label={`${m.title} - No.${cardNumFormatted} ${charName} (${isOwned ? `보유 ${ownedCount}장` : '미보유'})`}
                     >
                       {/* TCG Card Header Bar */}
                       <div className="px-1.5 sm:px-2.5 py-1 sm:py-1.5 bg-slate-950/90 border-b border-slate-800/90 flex items-center justify-between gap-1 text-[9px] sm:text-[10px] text-white">
@@ -13458,6 +13703,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           </span>
                         </div>
                         <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
+                          {isOwned ? (
+                            <span className="text-[8px] sm:text-[9px] font-black text-emerald-400 bg-emerald-950/90 border border-emerald-500/70 px-1 py-0.2 rounded-xs flex items-center gap-0.5">
+                              {language === 'ko' ? `보유: ${ownedCount}장` : `Own: ${ownedCount}`}
+                            </span>
+                          ) : (
+                            <span className="text-[7px] sm:text-[8px] font-bold text-amber-300 bg-amber-950/80 border border-amber-500/50 px-1 py-0.2 rounded-xs">
+                              {language === 'ko' ? '도전 목표' : 'Target'}
+                            </span>
+                          )}
                           <span className={cn("text-[8px] sm:text-[9px] px-1 py-0.2 rounded-xs border font-black flex items-center gap-0.5", elemBadgeStyle)}>
                             <span>{elemIcon}</span>
                             <span className="uppercase text-[7px] sm:text-[8px] hidden min-[400px]:inline">{elem}</span>
@@ -13486,11 +13740,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           <div className="bg-black/85 backdrop-blur-xs border border-white/15 px-1 py-0.5 rounded-xs text-[8px] sm:text-[9px] text-white font-bold truncate max-w-[70%] shadow-sm">
                             #{cardNumFormatted} {charName}
                           </div>
-                          {m.badgeText && (
+                          {isOwned ? (
+                            <div className="bg-emerald-500 text-slate-950 font-black px-1.5 py-0.5 rounded-xs text-[7px] sm:text-[8px] uppercase tracking-wider shadow-sm shrink-0 flex items-center gap-0.5">
+                              ✓ {language === 'ko' ? `보유 ${ownedCount}장` : `Owned (${ownedCount})`}
+                            </div>
+                          ) : m.badgeText ? (
                             <div className="bg-amber-400 text-slate-950 font-black px-1 py-0.5 rounded-xs text-[7px] sm:text-[8px] uppercase tracking-wider shadow-sm shrink-0">
                               {m.badgeText}
                             </div>
-                          )}
+                          ) : null}
                         </div>
                       </div>
 
@@ -13517,7 +13775,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             ✦ <strong className="text-slate-200 font-bold">{charName}</strong>
                           </span>
                           <span className="text-emerald-400 font-bold shrink-0 text-[8px] sm:text-[9px] flex items-center gap-0.5">
-                            +SNS <ChevronRight size={10} className="inline text-slate-500 group-hover:translate-x-0.5 transition-transform" />
+                            {language === 'ko' ? '카드 대결' : 'Card Battle'} <ChevronRight size={10} className="inline text-slate-500 group-hover:translate-x-0.5 transition-transform" />
                           </span>
                         </div>
                       </div>
