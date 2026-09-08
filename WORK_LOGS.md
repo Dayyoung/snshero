@@ -4,6 +4,34 @@
 
 ---
 
+## [2026-09-08 09:35 KST] [화면 전환 캐싱 로딩화면 완전 제거 & 설정 내 캐싱 초기화 버튼 신설] 0ms 즉시 화면 전환 및 설정 화면 로그아웃 직하단 캐시 초기화/피드백 기능 완비
+- **요청 사항**:
+  - 화면 이동 시 로딩 화면에 나타나는 "캐싱 로딩화면([HOME], 프로그레스 바, 캐시 초기화 버튼 등)" 완전 제거.
+  - 설정 화면의 로그아웃 버튼 바로 아래에 "캐싱 초기화" 버튼 추가.
+- **분석 및 조치 내역**:
+  1. **화면 전환 시 캐싱 로딩화면 완전 제거 (`src/components/ViewLoadingFallback.tsx`, `src/App.tsx`)**:
+     - **`ViewLoadingFallback.tsx` 경량화**:
+       - 2초 인위적 딜레이(`targetDurationMs`), 0%->100% 게이지 채움 애니메이션, 거대 ASCII 진행 바, `[↺ 캐시 초기화 & 새로고침]` 버튼, 8초 워치독 자동 새로고침 루프를 완전히 제거.
+       - React Suspense fallback으로서 0ms 즉시 렌더링 준비를 지원하는 초경량 미니멀 인디케이터로 전면 리팩토링.
+     - **`App.tsx` 전환 딜레이 및 로딩 게이트 완전 제거**:
+       - `AppLoadingGate` 컴포넌트 import 및 `{showInitialGate && <AppLoadingGate ... />}` 렌더링 제거.
+       - `{isInitialLoading ? <ViewLoadingFallback ... /> : renderView()}` 조건문 및 600ms 지연 타이머를 제거하여 화면 전환 및 뷰 렌더링이 0ms 지연 없이 즉각적으로 표시되도록 구현.
+       - `Suspense`의 `fallback` 인위적 지연 prop(`targetDurationMs`) 제거.
+  2. **설정 화면 내 로그아웃 바로 아래 캐싱 초기화 버튼 신설 (`src/views/SettingView.tsx`)**:
+     - **위치**: `auth_management` 섹션의 로그아웃(`onLogout`) 버튼 바로 아래에 모노스페이스 스타일의 `[RESET] 캐싱 초기화 (CLEAR CACHE)` 전용 버튼 배치.
+     - **기능 및 데이터 안전 보존**:
+       - 버튼 클릭 시 `triggerHaptic('medium')` 햅틱 피드백 제공.
+       - `resetAllCaches()` 호출로 임시 캐시 키 일괄 삭제.
+       - 브라우저 Cache Storage(`window.caches.keys()`) 전면 비동기 소거 및 `sessionStorage.clear()`.
+       - 게임 데이터(카드 인벤토리, SNS 재화, 덱, 스탯 등 로컬스토리지 영구 데이터)는 100% 안전 보존됨을 보장하는 안내 문구 명시.
+       - 처리 중 스피너(`animate-spin`) 및 완료 시 `CheckCircle2` 아이콘/피드백 메시지 제공.
+  3. **빌드 및 린트 검증**:
+     - `npm run lint` (`tsc --noEmit`): 오류 0건 (Error: 0) 무결점 통과.
+     - `npm run build`: 프로덕션 번들 빌드 정상 완료 (13.01s).
+- **구글 폼 보고**: 완료 (작업명: `[화면 전환 캐싱 로딩화면 완전 제거 & 설정 내 캐싱 초기화 버튼 신설] 0ms 즉시 화면 전환 및 설정 화면 로그아웃 직하단 캐시 초기화/피드백 기능 완비`)
+
+---
+
 ## [2026-09-08 09:18 KST] [캐싱 시스템 전면 개편 & 110개 미션 게임 모바일 무결점 플레이 정상화] 이미지/사운드 전용 Service Worker 캐시 구축 및 1번 게임 즉시 종료/110개 Three.js 씬 파괴 의존성 전수 해결
 - **요청 사항**:
   - 1. 캐싱 시스템: 무한 로딩, 에러 화면 등 버그 원천 해결. 이미지/사운드 관련하여 캐싱하고 나머지는 실시간으로 받아오도록 전면 개편.

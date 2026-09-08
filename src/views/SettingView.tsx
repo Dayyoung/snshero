@@ -151,13 +151,41 @@ export const SettingView: React.FC<SettingViewProps> = ({
     }
   };
 
-  const handlePurgeAllCaches = () => {
-    const res = resetAllCaches();
-    setVersionCheckMsg(
-      language === 'ko'
-        ? `[초기화 완료] 브라우저 및 로컬 캐시 ${res.clearedCount}개 삭제 완료.`
-        : `[PURGED] Successfully cleared ${res.clearedCount} cached entries.`
-    );
+  const [isPurgingCache, setIsPurgingCache] = useState(false);
+  const [cachePurgeSuccess, setCachePurgeSuccess] = useState(false);
+
+  const handlePurgeAllCaches = async () => {
+    if (isPurgingCache) return;
+    setIsPurgingCache(true);
+    triggerHaptic('medium');
+    try {
+      const res = resetAllCaches();
+      if (typeof window !== 'undefined' && 'caches' in window) {
+        try {
+          const keys = await caches.keys();
+          await Promise.all(keys.map((k) => caches.delete(k)));
+        } catch (err) {
+          console.warn('Cache Storage delete error:', err);
+        }
+      }
+      try {
+        sessionStorage.clear();
+      } catch {}
+
+      setCachePurgeSuccess(true);
+      setVersionCheckMsg(
+        language === 'ko'
+          ? `[초기화 완료] 브라우저 리소스 캐시 정리 완료 (${res.clearedCount}개 삭제됨).`
+          : `[PURGED] Successfully cleared resource cache (${res.clearedCount} items).`
+      );
+      setTimeout(() => {
+        setCachePurgeSuccess(false);
+        setIsPurgingCache(false);
+      }, 2500);
+    } catch (e) {
+      console.error('Cache purge failed:', e);
+      setIsPurgingCache(false);
+    }
   };
   // Dispatch global popup events so bottom nav hides while help is open
   useEffect(() => {
@@ -1176,7 +1204,40 @@ export const SettingView: React.FC<SettingViewProps> = ({
             </div>
           )}
 
-          </section>
+          {/* ─── 캐싱 초기화 (로그아웃 바로 아래 배치) ─── */}
+          <div className="pt-2 space-y-2">
+            <button
+              type="button"
+              onClick={handlePurgeAllCaches}
+              disabled={isPurgingCache}
+              className="w-full border border-slate-200 rounded-2xl bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-800 py-3.5 px-6 font-mono font-bold text-xs tracking-wider uppercase transition-all flex items-center justify-between group active:scale-[0.98] shadow-sm cursor-pointer disabled:opacity-60"
+              title={language === 'ko' ? '브라우저 캐시 및 임시 리소스를 초기화합니다' : 'Purges asset cache and resets temporary resources'}
+            >
+              <div className="flex items-center gap-3">
+                <RefreshCw size={16} className={cn("text-slate-600 transition-transform", isPurgingCache && "animate-spin text-amber-600")} />
+                <span className="text-left font-mono">
+                  {isPurgingCache
+                    ? (language === 'ko' ? '캐싱 초기화 진행 중...' : 'PURGING CACHES...')
+                    : cachePurgeSuccess
+                    ? (language === 'ko' ? '캐싱 초기화 완료!' : 'CACHE PURGED!')
+                    : (language === 'ko' ? '캐싱 초기화 (CLEAR CACHE)' : 'CLEAR CACHE (RESET ASSETS)')}
+                </span>
+              </div>
+              {cachePurgeSuccess ? (
+                <CheckCircle2 size={16} className="text-emerald-600 animate-bounce" />
+              ) : (
+                <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest border border-slate-200 px-2 py-0.5 rounded-sm">
+                  [RESET]
+                </span>
+              )}
+            </button>
+            <p className="text-[10px] font-mono text-slate-400 px-2 leading-relaxed">
+              {language === 'ko'
+                ? '* 게임 데이터(카드/재화/덱/스탯)는 로컬에 100% 안전 보존되며, 이미지/사운드 등 임시 리소스 캐시만 초기화됩니다.'
+                : '* Saved game data (cards, SNS, decks) is 100% preserved. Only temporary asset caches are refreshed.'}
+            </p>
+          </div>
+        </section>
 
 
 

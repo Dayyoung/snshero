@@ -88,7 +88,6 @@ import { useAdSenseAutoAds } from './hooks/useAdSenseAutoAds';
 import { AdSenseBanner } from './components/AdSenseBanner';
 import { CortanaCommandButton } from './components/CortanaCommandButton';
 import { TutorialCoachMark } from './components/TutorialCoachMark';
-import { AppLoadingGate } from './components/AppLoadingGate';
 import { ViewLoadingFallback } from './components/ViewLoadingFallback';
 import { ImageLazyLoader } from './lib/ImageLazyLoader';
 import { checkAndSyncAppVersion } from './lib/versionManager';
@@ -423,39 +422,12 @@ function getViewFromPathAndUrl(): ViewType {
 }
 
 function AppContent() {
-  const [showInitialGate, setShowInitialGate] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        // 이미 앱 버전이 캐시되어 있거나 이전에 부팅 게이트를 본 경우 바로 스킵 (새로고침 시 0ms 즉시 진입)
-        if (
-          sessionStorage.getItem('hero_boot_gate_shown') === 'true' || 
-          localStorage.getItem('hero_boot_gate_shown') === 'true' ||
-          localStorage.getItem('hero_app_version')
-        ) {
-          sessionStorage.setItem('hero_boot_gate_shown', 'true');
-          return false;
-        }
-        const initialView = getViewFromPathAndUrl();
-        // If directly landing on specific feature subpages, bypass full-screen blocking gate
-        if (initialView && initialView !== 'home' && initialView !== 'main') {
-          sessionStorage.setItem('hero_boot_gate_shown', 'true');
-          return false;
-        }
-        return sessionStorage.getItem('hero_boot_gate_shown') !== 'true';
-      } catch {
-        return false;
-      }
-    }
-    return false;
-  });
-
   const [currentSeason, setCurrentSeason] = useState<string>(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('hero_current_season') || 'season1';
     }
     return 'season1';
-  });
-  const [isGlobalLoading, setIsGlobalLoading] = useState(false);
+  });  const [isGlobalLoading, setIsGlobalLoading] = useState(false);
   const [globalLoadingMessage, setGlobalLoadingMessage] = useState('');
   const [randomPlayTrigger, setRandomPlayTrigger] = useState(0);
   const [diceState, setDiceState] = useState<'idle' | 'rolling' | 'reveal'>('idle');
@@ -468,33 +440,7 @@ function AppContent() {
   const [fromBackToRanking, setFromBackToRanking] = useState(false);
   const [view, setView] = useState<ViewType>(() => getViewFromPathAndUrl());
 
-  // 이미 캐시 버전이 있는 경우 새로고침 시 0ms 즉시 진입 (로딩화면 완전 스킵)
-  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const hasCachedVersion = localStorage.getItem('hero_app_version') || sessionStorage.getItem('hero_cached_ready');
-        if (hasCachedVersion) {
-          return false;
-        }
-      } catch {
-        return false;
-      }
-    }
-    return true;
-  });
 
-  // 순수 최초 1회 접속 시에만 짧은 리소스 초기화 (이후에는 기존 캐싱으로 즉시 플레이)
-  useEffect(() => {
-    if (!isInitialLoading) return;
-    const timer = window.setTimeout(() => {
-      setIsInitialLoading(false);
-      try {
-        sessionStorage.setItem('hero_cached_ready', 'true');
-      } catch {}
-    }, 600);
-
-    return () => clearTimeout(timer);
-  }, [isInitialLoading]);
 
   // 최초 접속 및 새로고침 시 백그라운드에서 조용히 서버 버전 비교 (화면 블로킹 없이 기존 캐시 사용)
   // 최신이 아닌 경우에만 백그라운드 캐시 업데이트
@@ -6333,20 +6279,11 @@ function AppContent() {
                     <ViewLoadingFallback
                       view={view}
                       language={language}
-                      targetDurationMs={800}
                     />
                   }
                 >
                   <SnsProvider sns={sns} updateSns={updateSns} setCurrentDeck={setCurrentDeck} selectedCompanionIndex={selectedCompanionIndex}>
-                    {isInitialLoading ? (
-                      <ViewLoadingFallback
-                        view={view}
-                        language={language}
-                        targetDurationMs={3000}
-                      />
-                    ) : (
-                      renderView()
-                    )}
+                    {renderView()}
                   </SnsProvider>
                 </Suspense>
               </motion.div>
@@ -7667,13 +7604,7 @@ function AppContent() {
         `}</style>
       )}
 
-      {showInitialGate && (
-        <AppLoadingGate
-          language={language}
-          currentView={view}
-          onComplete={() => setShowInitialGate(false)}
-        />
-      )}
+
       </div>
 
         {/* Desktop Right Skyscraper Ad Banner (lg: 1024px+ PC screens: 1066px 포함 완벽 지원) */}
