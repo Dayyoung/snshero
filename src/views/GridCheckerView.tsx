@@ -14,7 +14,8 @@ import {
   MousePointer, 
   AlertTriangle,
   Scissors,
-  CheckCircle2
+  CheckCircle2,
+  Wand2
 } from 'lucide-react';
 import { ViewType, Language } from '../types';
 import { cn } from '../lib/utils';
@@ -24,14 +25,18 @@ interface GridCheckerViewProps {
   onNavigate: (view: ViewType) => void;
 }
 
+type SliceMode = 'smart-transparency' | 'grid';
+
 interface CellSlot {
   index: number;   // 0 ~ 99
   row: number;     // 0 ~ 9
   col: number;     // 0 ~ 9
-  dataUrl: string; // 쪼개진 개별 이미지 조각
+  dataUrl: string; // 잘라낸 개별 캐릭터 이미지 (온전한 무손실 이미지)
   scale: number;   // 개별 확대/축소 배율 (기본 1.0)
   offsetX: number; // 개별 X 오프셋 (px)
   offsetY: number; // 개별 Y 오프셋 (px)
+  originalCropW: number; // 감지된 캐릭터 원본 폭
+  originalCropH: number; // 감지된 캐릭터 원본 높이
 }
 
 interface DrawGridOptions {
@@ -118,6 +123,12 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
   const [cellSlots, setCellSlots] = useState<CellSlot[]>([]);
   const [selectedCellIndex, setSelectedCellIndex] = useState<number | null>(0);
 
+  // 분할 모드: 'smart-transparency' (배경 투명도 기준 스마트 분할) vs 'grid' (단순 바둑판)
+  const [sliceMode, setSliceMode] = useState<SliceMode>('smart-transparency');
+
+  // 캐시된 원본 이미지 요소 (모드 전환 시 재분할용)
+  const originalImageRef = useRef<HTMLImageElement | null>(null);
+
   // 이미지 메타데이터
   const [imageFileName, setImageFileName] = useState<string>('');
   const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number }>({ width: 1000, height: 1000 });
@@ -151,33 +162,146 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
   const cellW = useMemo(() => imageDimensions.width / gridCols, [imageDimensions.width, gridCols]);
   const cellH = useMemo(() => imageDimensions.height / gridRows, [imageDimensions.height, gridRows]);
 
-  // ── 원본 이미지를 100개 셀로 자동 분할(Slice)하는 함수 ──
-  const processAndSliceImage = useCallback((img: HTMLImageElement, fileName: string) => {
+  // ── 배경 투명도(Alpha) 기반 무손실 스마트 분할 알고리즘 ──
+  const sliceImageWithEngine = useCallback((img: HTMLImageElement, mode: SliceMode) => {
     const totalW = img.naturalWidth || 1000;
     const totalH = img.naturalHeight || 1000;
     const cW = totalW / gridCols;
     const cH = totalH / gridRows;
 
-    setImageDimensions({ width: totalW, height: totalH });
-    setImageFileName(fileName);
+    // 1. 오프스크린 캔버스에 원본 이미지 그리기 및 픽셀 데이터 추출
+    const masterCanvas = document.createElement('canvas');
+    masterCanvas.width = totalW;
+    masterCanvas.height = totalH;
+    const masterCtx = masterCanvas.getContext('2d', { willReadFrequently: true });
+    if (!masterCtx) return [];
 
-    const offscreen = document.createElement('canvas');
-    offscreen.width = cW;
-    offscreen.height = cH;
-    const offCtx = offscreen.getContext('2d');
+    masterCtx.drawImage(img, 0, 0);
+    const imgData = masterCtx.getImageData(0, 0, totalW, totalH);
+    const pixels = imgData.data;
+
+    // 2. 투명 픽셀 존재 여부 판별 (투명 배경 vs 단색 배경)
+    let hasTransparency = false;
+    for (let i = 3; i < Math.min(pixels.length, 200000); i += 16) {
+      if (pixels[i] < 30) {
+        hasTransparency = true;
+        break;
+      }
+    }
+
+    // 단색 배경일 경우 코너 픽셀 색상 기준 비교
+    const bgR = pixels[0];
+    const bgG = pixels[1];
+    const bgB = pixels[2];
+
+    const isPixelTransparent = (x: number, y: number): boolean => {
+      if (x < 0 || x >= totalW || y < 0 || y >= totalH) return true;
+      const idx = (y * totalW + x) * 4;
+      if (hasTransparency) {
+        return pixels[idx + 3] < 25; // Alpha가 25 미만이면 투명 배경
+      } else {
+        // 배경색과의 차이가 35 미만이면 배경으로 간주
+        const diff = Math.abs(pixels[idx] - bgR) + Math.abs(pixels[idx + 1] - bgG) + Math.abs(pixels[idx + 2] - bgB);
+        return diff < 35;
+      }
+    };
 
     const newSlots: CellSlot[] = [];
+    const cellCanvas = document.createElement('canvas');
+    cellCanvas.width = cW;
+    cellCanvas.height = cH;
+    const cellCtx = cellCanvas.getContext('2d');
+
     for (let r = 0; r < gridRows; r++) {
       for (let c = 0; c < gridCols; c++) {
         const idx = r * gridCols + c;
-        const srcX = c * cW;
-        const srcY = r * cH;
+        const theoreticalLeft = c * cW;
+        const theoreticalTop = r * cH;
+        const cx = theoreticalLeft + cW / 2;
+        const cy = theoreticalTop + cH / 2;
 
-        if (offCtx) {
-          offCtx.clearRect(0, 0, cW, cH);
-          offCtx.drawImage(
+        if (mode === 'smart-transparency') {
+          // ── 스마트 투명도 감지: 바둑판 경계선 너머 20% 마진까지 확장 검색하여 캐릭터 전체 바운딩 박스 포착 ──
+          const marginX = cW * 0.20;
+          const marginY = cH * 0.20;
+          const searchXMin = Math.max(0, Math.floor(theoreticalLeft - marginX));
+          const searchXMax = Math.min(totalW - 1, Math.ceil(theoreticalLeft + cW + marginX));
+          const searchYMin = Math.max(0, Math.floor(theoreticalTop - marginY));
+          const searchYMax = Math.min(totalH - 1, Math.ceil(theoreticalTop + cH + marginY));
+
+          let minX = searchXMax;
+          let maxX = searchXMin;
+          let minY = searchYMax;
+          let maxY = searchYMin;
+          let opaquePixelCount = 0;
+
+          // 인접 셀 중심보다 현재 셀 중심에 더 가까운 비투명(캐릭터) 픽셀 탐색
+          const maxDistSq = Math.pow(cW * 0.68, 2) + Math.pow(cH * 0.68, 2);
+
+          for (let py = searchYMin; py <= searchYMax; py += 2) {
+            for (let px = searchXMin; px <= searchXMax; px += 2) {
+              if (!isPixelTransparent(px, py)) {
+                const distSq = Math.pow(px - cx, 2) + Math.pow(py - cy, 2);
+                if (distSq <= maxDistSq) {
+                  opaquePixelCount++;
+                  if (px < minX) minX = px;
+                  if (px > maxX) maxX = px;
+                  if (py < minY) minY = py;
+                  if (py > maxY) maxY = py;
+                }
+              }
+            }
+          }
+
+          // 캐릭터 픽셀이 발견된 경우 캐릭터 바운딩 박스를 통째로 크롭 (잘림 0%)
+          if (opaquePixelCount > 8 && maxX > minX && maxY > minY) {
+            const pad = 3;
+            const cropX = Math.max(0, minX - pad);
+            const cropY = Math.max(0, minY - pad);
+            const cropW = Math.min(totalW - cropX, (maxX - minX) + pad * 2);
+            const cropH = Math.min(totalH - cropY, (maxY - minY) + pad * 2);
+
+            // 잘라낸 캐릭터 이미지를 위한 오프스크린 캔버스
+            const charCanvas = document.createElement('canvas');
+            charCanvas.width = cropW;
+            charCanvas.height = cropH;
+            const charCtx = charCanvas.getContext('2d');
+            if (charCtx) {
+              charCtx.drawImage(
+                img,
+                cropX, cropY, cropW, cropH,
+                0, 0, cropW, cropH
+              );
+            }
+
+            // 캐릭터가 셀보다 크면 기본 축소 스케일 자동 계산 (칸 안에 안전하게 쏙 들어감)
+            const autoFitScale = Math.min(
+              1.0,
+              (cW * 0.95) / Math.max(1, cropW),
+              (cH * 0.95) / Math.max(1, cropH)
+            );
+
+            newSlots.push({
+              index: idx,
+              row: r,
+              col: c,
+              dataUrl: charCanvas.toDataURL('image/png'),
+              scale: Number(autoFitScale.toFixed(2)),
+              offsetX: 0,
+              offsetY: 0,
+              originalCropW: cropW,
+              originalCropH: cropH
+            });
+            continue;
+          }
+        }
+
+        // 스마트 감지에서 캐릭터가 없거나 단순 바둑판 모드인 경우 기본 분할
+        if (cellCtx) {
+          cellCtx.clearRect(0, 0, cW, cH);
+          cellCtx.drawImage(
             img,
-            srcX, srcY, cW, cH,
+            theoreticalLeft, theoreticalTop, cW, cH,
             0, 0, cW, cH
           );
         }
@@ -186,19 +310,47 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
           index: idx,
           row: r,
           col: c,
-          dataUrl: offscreen.toDataURL('image/png'),
+          dataUrl: cellCanvas.toDataURL('image/png'),
           scale: 1.0,
           offsetX: 0,
-          offsetY: 0
+          offsetY: 0,
+          originalCropW: cW,
+          originalCropH: cH
         });
       }
     }
 
+    return newSlots;
+  }, [gridCols, gridRows]);
+
+  // ── 이미지 로드 및 슬라이스 실행 ──
+  const processAndSliceImage = useCallback((img: HTMLImageElement, fileName: string, mode: SliceMode = sliceMode) => {
+    const totalW = img.naturalWidth || 1000;
+    const totalH = img.naturalHeight || 1000;
+
+    originalImageRef.current = img;
+    setImageDimensions({ width: totalW, height: totalH });
+    setImageFileName(fileName);
+
+    const newSlots = sliceImageWithEngine(img, mode);
     setCellSlots(newSlots);
     setSelectedCellIndex(0);
     setImageError(null);
     setImageLoading(false);
-  }, [gridCols, gridRows]);
+  }, [sliceMode, sliceImageWithEngine]);
+
+  // 분할 모드 전환 핸들러
+  const handleToggleSliceMode = (newMode: SliceMode) => {
+    setSliceMode(newMode);
+    if (originalImageRef.current) {
+      setImageLoading(true);
+      setTimeout(() => {
+        if (originalImageRef.current) {
+          processAndSliceImage(originalImageRef.current, imageFileName, newMode);
+        }
+      }, 50);
+    }
+  };
 
   // 10x10 기본 번호 패턴 데모 생성 함수
   const generate10x10TestPattern = useCallback(() => {
@@ -213,33 +365,33 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     const cW = size / 10;
     const cH = size / 10;
 
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(0, 0, size, size);
-
+    // 투명 배경 위에 각 셀 사각형과 번호 그리기
     for (let r = 0; r < 10; r++) {
       for (let c = 0; c < 10; c++) {
         const idx = r * 10 + c + 1;
-        const x = c * cW;
-        const y = r * cH;
+        const x = c * cW + 6;
+        const y = r * cH + 6;
+        const w = cW - 12;
+        const h = cH - 12;
 
         ctx.fillStyle = (r + c) % 2 === 0 ? '#1e293b' : '#334155';
-        ctx.fillRect(x + 1, y + 1, cW - 2, cH - 2);
+        ctx.fillRect(x, y, w, h);
+
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, w, h);
 
         ctx.fillStyle = '#f8fafc';
         ctx.font = 'bold 22px monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(`#${idx}`, x + cW / 2, y + cH / 2 - 8);
-
-        ctx.fillStyle = '#94a3b8';
-        ctx.font = '11px monospace';
-        ctx.fillText(`R${r + 1}:C${c + 1}`, x + cW / 2, y + cH / 2 + 14);
+        ctx.fillText(`#${idx}`, x + w / 2, y + h / 2);
       }
     }
 
     const img = new Image();
     img.onload = () => {
-      processAndSliceImage(img, '10x10_Standard_Test_Pattern.png');
+      processAndSliceImage(img, '10x10_Standard_Pattern.png');
     };
     img.src = canvas.toDataURL('image/png');
   }, [processAndSliceImage]);
@@ -397,7 +549,6 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     if (!container) return;
 
     const handleNativeWheel = (e: WheelEvent) => {
-      // 마우스가 위치한 셀 또는 현재 선택된 셀을 대상으로 확대/축소
       const targetIdx = hoveredCellIndex !== null ? hoveredCellIndex : selectedCellIndex;
       if (targetIdx === null) return;
 
@@ -492,16 +643,16 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
         const img = new Image();
         img.onload = () => {
           ctx.save();
-          // 개별 셀 경계 클리핑 (인접 셀 침범 방지)
+          // 개별 셀 경계 클리핑
           const cellLeft = slot.col * cellW;
           const cellTop = slot.row * cellH;
           ctx.beginPath();
           ctx.rect(cellLeft, cellTop, cellW, cellH);
           ctx.clip();
 
-          // 조정된 크기 및 위치로 셀 이미지 렌더링
-          const drawnW = cellW * slot.scale;
-          const drawnH = cellH * slot.scale;
+          // 캐릭터 원본 비율에 맞추어 조정된 크기 및 위치로 렌더링
+          const drawnW = slot.originalCropW * slot.scale;
+          const drawnH = slot.originalCropH * slot.scale;
           const drawnX = cellLeft + (cellW - drawnW) / 2 + slot.offsetX;
           const drawnY = cellTop + (cellH - drawnH) / 2 + slot.offsetY;
 
@@ -554,7 +705,7 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     <div className="min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono flex flex-col selection:bg-amber-100">
       {/* ── Top Header & Action Toolbar ── */}
       <header className="sticky top-0 z-30 bg-[#fdfcfc]/95 backdrop-blur-md border-b border-[rgba(15,0,0,0.12)] px-4 py-2.5">
-        <div className="max-w-[1700px] mx-auto flex flex-wrap items-center justify-between gap-3">
+        <div className="max-w-[1750px] mx-auto flex flex-wrap items-center justify-between gap-3">
           
           {/* Left: Brand & Title */}
           <div className="flex items-center gap-3">
@@ -568,12 +719,23 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
             <div className="flex items-center gap-2">
               <span className="text-sm font-black uppercase tracking-tight flex items-center gap-1.5">
                 <Grid3X3 size={16} className="text-emerald-700" />
-                <span>{isKo ? '100개 개별 그리드 검수기' : '100 Slots Grid Inspector'}</span>
+                <span>{isKo ? '그리드 검수기' : 'Grid Inspector'}</span>
               </span>
-              <span className="text-[10px] px-1.5 py-0.5 bg-emerald-50 text-emerald-900 border border-emerald-300 font-bold rounded-xs flex items-center gap-1">
-                <Scissors size={10} className="text-emerald-700" />
-                <span>100분할 독립 조작</span>
-              </span>
+              
+              {/* 분할 모드 배지 버튼 */}
+              <button
+                onClick={() => handleToggleSliceMode(sliceMode === 'smart-transparency' ? 'grid' : 'smart-transparency')}
+                className={cn(
+                  "text-[10px] px-2 py-0.5 border font-bold rounded-xs flex items-center gap-1 cursor-pointer transition-all",
+                  sliceMode === 'smart-transparency'
+                    ? "bg-cyan-50 text-cyan-950 border-cyan-400 shadow-2xs"
+                    : "bg-slate-100 text-slate-700 border-slate-300"
+                )}
+                title={isKo ? '클릭하여 분할 모드 전환' : 'Toggle Slice Mode'}
+              >
+                <Wand2 size={11} className={sliceMode === 'smart-transparency' ? "text-cyan-700" : "text-slate-500"} />
+                <span>{sliceMode === 'smart-transparency' ? (isKo ? '투명도 기준 자동분할 (ON)' : 'Auto Transparency') : (isKo ? '단순 바둑판 분할' : 'Grid Slice')}</span>
+              </button>
             </div>
           </div>
 
@@ -604,8 +766,8 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
                 value={urlInput}
                 onChange={(e) => setUrlInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleLoadUrl()}
-                placeholder={isKo ? '이미지 URL 입력...' : 'Image URL...'}
-                className="w-36 sm:w-44 py-1 pr-2 text-xs bg-transparent focus:outline-none"
+                placeholder={isKo ? '이미지 URL...' : 'Image URL...'}
+                className="w-32 sm:w-40 py-1 pr-2 text-xs bg-transparent focus:outline-none"
               />
               <button
                 onClick={() => handleLoadUrl()}
@@ -618,10 +780,10 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
             <button
               onClick={generate10x10TestPattern}
               className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-sm border border-slate-300 transition-colors cursor-pointer flex items-center gap-1"
-              title={isKo ? '10x10 기본 테스트 번호 패턴 로드' : 'Load 10x10 Test Pattern'}
+              title={isKo ? '10x10 기본 테스트 패턴 로드' : 'Load 10x10 Test Pattern'}
             >
               <Sparkles size={12} className="text-amber-600" />
-              <span>{isKo ? '10x10 패턴' : '10x10 Pattern'}</span>
+              <span>{isKo ? '10x10 패턴' : '10x10'}</span>
             </button>
 
             {/* Reset Buttons */}
@@ -697,7 +859,7 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
 
         {/* Alert Notification */}
         {imageError && (
-          <div className="max-w-[1700px] mx-auto mt-2 p-2 bg-amber-50 border border-amber-300 text-amber-900 text-xs flex items-center justify-between">
+          <div className="max-w-[1750px] mx-auto mt-2 p-2 bg-amber-50 border border-amber-300 text-amber-900 text-xs flex items-center justify-between">
             <div className="flex items-center gap-2">
               <AlertTriangle size={14} className="text-amber-700 shrink-0" />
               <span>{imageError}</span>
@@ -719,18 +881,18 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
               <div className="flex items-center gap-2 px-3 py-1 bg-cyan-950/80 text-cyan-300 border border-cyan-500/60 rounded-xs text-[11px] font-bold shadow-xs">
                 <MousePointer size={12} className="animate-pulse text-cyan-400" />
                 <span className="text-cyan-200">
-                  {isKo ? `[#${selectedSlot.index + 1}번 셀 선택됨]` : `[Cell #${selectedSlot.index + 1} Selected]`}
+                  {isKo ? `[#${selectedSlot.index + 1}번 셀]` : `[Cell #${selectedSlot.index + 1}]`}
                 </span>
                 <span className="text-cyan-400 font-mono">
-                  배율:{Math.round(selectedSlot.scale * 100)}% · 위치(X:{selectedSlot.offsetX}px, Y:{selectedSlot.offsetY}px)
+                  배율:{Math.round(selectedSlot.scale * 100)}% · X:{selectedSlot.offsetX}px, Y:{selectedSlot.offsetY}px
                 </span>
                 <span className="text-[10px] text-cyan-400/70 border-l border-cyan-700/60 pl-2 hidden sm:inline">
-                  {isKo ? '마우스 드래그: 이동 · 휠: 확대/축소 · 방향키: 1px' : 'Drag: Pan · Wheel: Zoom · Arrows: 1px'}
+                  {isKo ? '드래그: 이동 · 휠: 확대축소 · 방향키: 1px 이동' : 'Drag: Move · Wheel: Zoom'}
                 </span>
               </div>
             ) : (
               <div className="px-3 py-1 bg-slate-800/80 text-slate-300 border border-slate-600 rounded-xs text-[11px]">
-                {isKo ? '칸을 클릭하여 개별 이미지를 선택하세요' : 'Click any slot to select and manipulate'}
+                {isKo ? '칸을 클릭하여 개별 캐릭터를 선택하세요' : 'Click any cell to select'}
               </div>
             )}
           </div>
@@ -806,8 +968,8 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
               >
                 {cellSlots.map(slot => {
                   const isSelected = selectedCellIndex === slot.index;
-                  const drawnW = cellW * slot.scale;
-                  const drawnH = cellH * slot.scale;
+                  const drawnW = slot.originalCropW * slot.scale;
+                  const drawnH = slot.originalCropH * slot.scale;
                   const drawnX = (cellW - drawnW) / 2 + slot.offsetX;
                   const drawnY = (cellH - drawnH) / 2 + slot.offsetY;
 
@@ -833,7 +995,7 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
                         height: `${cellH}px`
                       }}
                     >
-                      {/* 개별 쪼개진 이미지 */}
+                      {/* 개별 온전한 캐릭터 이미지 (무손실 투명도 크롭) */}
                       <img
                         src={slot.dataUrl}
                         alt={`Cell ${slot.index + 1}`}
@@ -888,12 +1050,14 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
 
         {/* Footer info */}
         <div className="flex items-center justify-between text-[11px] text-slate-400 mt-2 px-2">
-          <span>
-            {imageFileName ? `${imageFileName} (${imageDimensions.width}×${imageDimensions.height}px)` : '100개 슬롯 분할'}
-            {selectedSlot && ` · 현재 선택: #${selectedSlot.index + 1} (배율: ${Math.round(selectedSlot.scale * 100)}%, X:${selectedSlot.offsetX}px, Y:${selectedSlot.offsetY}px)`}
+          <span className="flex items-center gap-2">
+            <span className="text-cyan-400 font-bold">
+              {sliceMode === 'smart-transparency' ? '⚡ 투명도 감지 무손실 모드' : '격자 기준 단순 분할'}
+            </span>
+            <span>{imageFileName ? `(${imageDimensions.width}×${imageDimensions.height}px)` : ''}</span>
           </span>
           <span className="text-emerald-400 font-bold">
-            {isKo ? '각 칸의 이미지를 클릭/드래그하여 개별 위치 및 크기를 조절한 뒤 저장하세요.' : 'Adjust each slot independently and save.'}
+            {isKo ? '투명 배경을 기준으로 캐릭터가 잘리지 않고 온전하게 100개 슬롯에 분할됩니다.' : 'Characters are cleanly sliced based on transparency.'}
           </span>
         </div>
       </main>
