@@ -25,7 +25,13 @@ import {
   ShieldCheck, 
   Sparkles, 
   Info,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Move,
+  Hand,
+  ChevronUp,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { ViewType, Language } from '../types';
 import { CARD_DATABASE } from '../cardDatabase';
@@ -141,6 +147,14 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
   const [selectedCellIndex, setSelectedCellIndex] = useState<number | null>(0); // 0-indexed (0..99)
   const [copiedNotification, setCopiedNotification] = useState<string | null>(null);
 
+  // ── 원본 이미지 변환 상태 (확대/축소 및 상하좌우 이동) ──
+  const [imageScale, setImageScale] = useState<number>(1.0); // 1.0 = 100% (0.1 ~ 5.0)
+  const [imageOffsetX, setImageOffsetX] = useState<number>(0); // px
+  const [imageOffsetY, setImageOffsetY] = useState<number>(0); // px
+  const [isPanningImage, setIsPanningImage] = useState<boolean>(false);
+  const [dragMovedDistance, setDragMovedDistance] = useState<number>(0);
+  const dragStartRef = useRef<{ x: number; y: number; startOffsetX: number; startOffsetY: number } | null>(null);
+
   // 캔버스 및 파일 인풋 ref
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -197,6 +211,9 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     setLoadedImageSrc(dataUrl);
     setImageFileName('10x10_Standard_Test_Pattern.png');
     setImageNaturalSize({ width: size, height: size });
+    setImageScale(1.0);
+    setImageOffsetX(0);
+    setImageOffsetY(0);
     setImageError(null);
   };
 
@@ -245,6 +262,9 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
       img.onload = () => {
         setLoadedImageSrc(result);
         setImageNaturalSize({ width: img.naturalWidth, height: img.naturalHeight });
+        setImageScale(1.0);
+        setImageOffsetX(0);
+        setImageOffsetY(0);
         setImageLoading(false);
       };
       img.onerror = () => {
@@ -269,12 +289,18 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
       setLoadedImageSrc(url);
       setImageFileName(url.split('/').pop() || 'remote-image.png');
       setImageNaturalSize({ width: img.naturalWidth, height: img.naturalHeight });
+      setImageScale(1.0);
+      setImageOffsetX(0);
+      setImageOffsetY(0);
       setImageLoading(false);
     };
     img.onerror = () => {
       setLoadedImageSrc(url);
       setImageFileName(url.split('/').pop() || 'remote-image.png');
       setImageNaturalSize({ width: 800, height: 800 });
+      setImageScale(1.0);
+      setImageOffsetX(0);
+      setImageOffsetY(0);
       setImageLoading(false);
       setImageError(isKo 
         ? '외부 이미지 로드 완료 (CORS 보호 도메인의 경우 슬라이스 저장이 제한될 수 있습니다).' 
@@ -318,6 +344,25 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     };
   }, [imageNaturalSize, gridCols, gridRows, colGap, rowGap]);
 
+  // 원본 이미지 렌더링 위치 및 크기 계산 (화면 뷰어 DOM과 저장 캔버스의 좌표 완벽 일치)
+  const imageDrawParams = useMemo(() => {
+    const totalW = cellCalculations.totalW;
+    const totalH = cellCalculations.totalH;
+    const drawnW = totalW * imageScale;
+    const drawnH = totalH * imageScale;
+    const drawnX = (totalW - drawnW) / 2 + imageOffsetX;
+    const drawnY = (totalH - drawnH) / 2 + imageOffsetY;
+
+    return {
+      totalW,
+      totalH,
+      drawnW: Math.round(drawnW),
+      drawnH: Math.round(drawnH),
+      drawnX: Math.round(drawnX),
+      drawnY: Math.round(drawnY)
+    };
+  }, [cellCalculations.totalW, cellCalculations.totalH, imageScale, imageOffsetX, imageOffsetY]);
+
   // 선택된 셀의 정밀 좌표 계산
   const selectedCellCoords = useMemo(() => {
     if (selectedCellIndex === null || selectedCellIndex < 0 || selectedCellIndex >= cellCalculations.totalCells) {
@@ -339,7 +384,7 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     };
   }, [selectedCellIndex, gridCols, cellCalculations, offsetX, offsetY, colGap, rowGap]);
 
-  // 선택된 셀 크롭 캔버스 렌더링
+  // 선택된 셀 크롭 캔버스 렌더링 (사용자가 변환한 이미지 크기 및 위치 반영)
   useEffect(() => {
     if (!selectedCellCoords || !loadedImageSrc || !cropCanvasRef.current) return;
     const canvas = cropCanvasRef.current;
@@ -352,20 +397,36 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
       canvas.width = Math.max(1, selectedCellCoords.w);
       canvas.height = Math.max(1, selectedCellCoords.h);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(
-        img,
-        selectedCellCoords.x,
-        selectedCellCoords.y,
-        selectedCellCoords.w,
-        selectedCellCoords.h,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
+
+      // 1. 오프스크린 캔버스에 조정된 전체 이미지 렌더링
+      const offscreen = document.createElement('canvas');
+      offscreen.width = cellCalculations.totalW;
+      offscreen.height = cellCalculations.totalH;
+      const offCtx = offscreen.getContext('2d');
+      if (offCtx) {
+        offCtx.drawImage(
+          img,
+          imageDrawParams.drawnX,
+          imageDrawParams.drawnY,
+          imageDrawParams.drawnW,
+          imageDrawParams.drawnH
+        );
+        // 2. 오프스크린 캔버스에서 선택된 셀의 좌표를 크롭
+        ctx.drawImage(
+          offscreen,
+          selectedCellCoords.x,
+          selectedCellCoords.y,
+          selectedCellCoords.w,
+          selectedCellCoords.h,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+      }
     };
     img.src = loadedImageSrc;
-  }, [selectedCellCoords, loadedImageSrc]);
+  }, [selectedCellCoords, loadedImageSrc, imageDrawParams, cellCalculations]);
 
   // 슬라이스 이미지 단독 다운로드
   const handleDownloadSlice = () => {
@@ -381,22 +442,32 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     }
   };
 
-  // 격자선이 합성된 전체 검수 이미지 다운로드
-  const handleDownloadFullInspectedImage = () => {
+  // 격자선 포함 검수본 또는 격자선 없는 최적화 신규 이미지 저장 공통 함수
+  const handleDownloadImage = (includeGrid: boolean) => {
     if (!loadedImageSrc || !imageNaturalSize) return;
     const canvas = document.createElement('canvas');
-    canvas.width = imageNaturalSize.width;
-    canvas.height = imageNaturalSize.height;
+    canvas.width = cellCalculations.totalW;
+    canvas.height = cellCalculations.totalH;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
-      ctx.drawImage(img, 0, 0);
+      // 1. 캔버스 투명 클리어
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // 격자선 그리기
-      if (showGridOverlay) {
+      // 2. 사용자가 조정한 크기 및 오프셋으로 신규 이미지 렌더링
+      ctx.drawImage(
+        img,
+        imageDrawParams.drawnX,
+        imageDrawParams.drawnY,
+        imageDrawParams.drawnW,
+        imageDrawParams.drawnH
+      );
+
+      // 3. 검수본 저장(includeGrid === true)인 경우 10x10 격자선 및 인덱스 번호 합성
+      if (includeGrid && showGridOverlay) {
         ctx.strokeStyle = gridColor;
         ctx.lineWidth = gridLineWidth;
         ctx.globalAlpha = gridOpacity / 100;
@@ -424,13 +495,73 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
         const dataUrl = canvas.toDataURL('image/png');
         const a = document.createElement('a');
         a.href = dataUrl;
-        a.download = `grid_checked_${gridCols}x${gridRows}_${imageFileName || 'image'}.png`;
+        const baseName = imageFileName ? imageFileName.replace(/\.[^/.]+$/, '') : 'sheet';
+        a.download = includeGrid
+          ? `grid_checked_${gridCols}x${gridRows}_${baseName}.png`
+          : `optimized_${gridCols}x${gridRows}_${baseName}.png`;
         a.click();
       } catch (err) {
         setImageError(isKo ? 'CORS 제약으로 인해 다운로드가 차단되었습니다. 로컬 파일 업로드를 이용해 주세요.' : 'Download blocked due to CORS.');
       }
     };
     img.src = loadedImageSrc;
+  };
+
+  // 격자선이 합성된 검수본 저장 핸들러
+  const handleDownloadFullInspectedImage = () => handleDownloadImage(true);
+
+  // 격자선이 제외된 깨끗한 최적화 신규 이미지 저장 핸들러
+  const handleDownloadCleanOptimizedImage = () => handleDownloadImage(false);
+
+  // ── 마우스 / 터치 포인터 드래그 핸들러 ──
+  const handlePointerDown = (e: React.PointerEvent) => {
+    if (e.button !== 0 && e.pointerType === 'mouse') return;
+    setIsPanningImage(true);
+    setDragMovedDistance(0);
+    dragStartRef.current = {
+      x: e.clientX,
+      y: e.clientY,
+      startOffsetX: imageOffsetX,
+      startOffsetY: imageOffsetY
+    };
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch (_) {}
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isPanningImage || !dragStartRef.current) return;
+    const dx = e.clientX - dragStartRef.current.x;
+    const dy = e.clientY - dragStartRef.current.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    setDragMovedDistance(dist);
+
+    // 뷰어의 줌 배율을 감안하여 마우스와 이미지의 1:1 동기화
+    const scaleFactor = zoomLevel / 100;
+    const realDx = dx / scaleFactor;
+    const realDy = dy / scaleFactor;
+
+    setImageOffsetX(Math.round(dragStartRef.current.startOffsetX + realDx));
+    setImageOffsetY(Math.round(dragStartRef.current.startOffsetY + realDy));
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (isPanningImage) {
+      setIsPanningImage(false);
+      dragStartRef.current = null;
+      try {
+        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+      } catch (_) {}
+    }
+  };
+
+  // 휠 스크롤로 이미지 확대/축소 (Alt 또는 Shift 또는 Ctrl 키)
+  const handleWheelZoom = (e: React.WheelEvent) => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) {
+      e.preventDefault();
+      const step = e.deltaY < 0 ? 0.05 : -0.05;
+      setImageScale(prev => Math.min(5.0, Math.max(0.1, Number((prev + step).toFixed(2)))));
+    }
   };
 
   const copyNotification = (text: string, msg: string) => {
@@ -763,12 +894,207 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
                   </div>
                 </div>
 
-                {/* 2. Grid Overlay Styling */}
+                {/* 2. Original Image Transform (Scale & Position Offset) */}
+                <div className="p-4 bg-white border-2 border-emerald-500/40 bg-emerald-50/10 space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-[rgba(15,0,0,0.1)]">
+                    <span className="text-xs font-black uppercase flex items-center gap-1.5 text-emerald-900">
+                      <Move size={14} className="text-emerald-700" />
+                      <span>{isKo ? '2. 원본 이미지 크기 & 위치 최적화' : '2. Image Scale & Position'}</span>
+                    </span>
+                    {(imageScale !== 1.0 || imageOffsetX !== 0 || imageOffsetY !== 0) && (
+                      <button
+                        onClick={() => {
+                          setImageScale(1.0);
+                          setImageOffsetX(0);
+                          setImageOffsetY(0);
+                        }}
+                        className="text-[10px] text-rose-600 hover:underline cursor-pointer font-bold"
+                      >
+                        {isKo ? '변환 리셋' : 'Reset'}
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Image Scale Slider & Step Buttons */}
+                  <div>
+                    <div className="flex justify-between text-[10px] font-bold text-[#201d1d]/80 mb-1">
+                      <span>{isKo ? '이미지 확대/축소 (Scale):' : 'Image Scale:'}</span>
+                      <span className="font-mono text-emerald-800 font-black">{Math.round(imageScale * 100)}%</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={0.1}
+                      max={3.0}
+                      step={0.01}
+                      value={imageScale}
+                      onChange={(e) => setImageScale(parseFloat(e.target.value))}
+                      className="w-full cursor-pointer accent-emerald-700"
+                    />
+                    <div className="flex items-center gap-1 mt-1">
+                      <button
+                        onClick={() => setImageScale(prev => Math.max(0.1, Number((prev - 0.1).toFixed(2))))}
+                        className="flex-1 py-1 text-[10px] font-bold border border-slate-200 bg-white hover:bg-slate-50 rounded-xs cursor-pointer"
+                        title={isKo ? '10% 축소' : '-10%'}
+                      >
+                        -10%
+                      </button>
+                      <button
+                        onClick={() => setImageScale(prev => Math.max(0.1, Number((prev - 0.01).toFixed(2))))}
+                        className="flex-1 py-1 text-[10px] font-bold border border-slate-200 bg-white hover:bg-slate-50 rounded-xs cursor-pointer"
+                        title={isKo ? '1% 미세 축소' : '-1%'}
+                      >
+                        -1%
+                      </button>
+                      <button
+                        onClick={() => setImageScale(1.0)}
+                        className="px-2 py-1 text-[10px] font-bold border border-emerald-400 bg-emerald-50 text-emerald-900 rounded-xs cursor-pointer"
+                        title={isKo ? '100% 원본 배율' : '100%'}
+                      >
+                        100%
+                      </button>
+                      <button
+                        onClick={() => setImageScale(prev => Math.min(5.0, Number((prev + 0.01).toFixed(2))))}
+                        className="flex-1 py-1 text-[10px] font-bold border border-slate-200 bg-white hover:bg-slate-50 rounded-xs cursor-pointer"
+                        title={isKo ? '1% 미세 확대' : '+1%'}
+                      >
+                        +1%
+                      </button>
+                      <button
+                        onClick={() => setImageScale(prev => Math.min(5.0, Number((prev + 0.1).toFixed(2))))}
+                        className="flex-1 py-1 text-[10px] font-bold border border-slate-200 bg-white hover:bg-slate-50 rounded-xs cursor-pointer"
+                        title={isKo ? '10% 확대' : '+10%'}
+                      >
+                        +10%
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Offset X & Y Inputs */}
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <label className="text-[10px] font-bold text-[#201d1d]/70 block mb-0.5">
+                        {isKo ? 'X 위치 (좌우 px):' : 'Image Offset X:'}
+                      </label>
+                      <input
+                        type="number"
+                        value={imageOffsetX}
+                        onChange={(e) => setImageOffsetX(parseInt(e.target.value) || 0)}
+                        className="w-full p-1.5 border border-[rgba(15,0,0,0.15)] text-center font-bold bg-[#fdfcfc]"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold text-[#201d1d]/70 block mb-0.5">
+                        {isKo ? 'Y 위치 (상하 px):' : 'Image Offset Y:'}
+                      </label>
+                      <input
+                        type="number"
+                        value={imageOffsetY}
+                        onChange={(e) => setImageOffsetY(parseInt(e.target.value) || 0)}
+                        className="w-full p-1.5 border border-[rgba(15,0,0,0.15)] text-center font-bold bg-[#fdfcfc]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Directional Pad Controls */}
+                  <div>
+                    <span className="text-[10px] font-bold text-[#201d1d]/70 block mb-1">
+                      {isKo ? '상하좌우 미세 이동 패드:' : 'Directional Nudge Pad:'}
+                    </span>
+                    <div className="flex flex-col items-center gap-1 bg-slate-50 p-2 border border-slate-200 rounded-sm">
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => setImageOffsetY(prev => prev - 10)}
+                          className="px-2 py-0.5 text-[9px] font-bold border border-slate-300 bg-white hover:bg-slate-100 rounded-xs cursor-pointer"
+                          title="-10px"
+                        >
+                          -10
+                        </button>
+                        <button
+                          onClick={() => setImageOffsetY(prev => prev - 1)}
+                          className="w-7 h-7 flex items-center justify-center border border-slate-300 bg-white hover:bg-slate-100 rounded-xs cursor-pointer"
+                          title="-1px"
+                        >
+                          <ChevronUp size={14} />
+                        </button>
+                        <button
+                          onClick={() => setImageOffsetY(prev => prev + 10)}
+                          className="px-2 py-0.5 text-[9px] font-bold border border-slate-300 bg-white hover:bg-slate-100 rounded-xs cursor-pointer"
+                          title="+10px"
+                        >
+                          +10
+                        </button>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => setImageOffsetX(prev => prev - 10)}
+                          className="px-2 py-0.5 text-[9px] font-bold border border-slate-300 bg-white hover:bg-slate-100 rounded-xs cursor-pointer"
+                          title="-10px"
+                        >
+                          -10
+                        </button>
+                        <button
+                          onClick={() => setImageOffsetX(prev => prev - 1)}
+                          className="w-7 h-7 flex items-center justify-center border border-slate-300 bg-white hover:bg-slate-100 rounded-xs cursor-pointer"
+                          title="-1px"
+                        >
+                          <ChevronLeft size={14} />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setImageOffsetX(0);
+                            setImageOffsetY(0);
+                          }}
+                          className="px-2 h-7 text-[9px] font-bold border border-slate-300 bg-white hover:bg-slate-100 rounded-xs cursor-pointer"
+                          title={isKo ? '위치 중앙 정렬' : 'Center Position'}
+                        >
+                          0,0
+                        </button>
+                        <button
+                          onClick={() => setImageOffsetX(prev => prev + 1)}
+                          className="w-7 h-7 flex items-center justify-center border border-slate-300 bg-white hover:bg-slate-100 rounded-xs cursor-pointer"
+                          title="+1px"
+                        >
+                          <ChevronRight size={14} />
+                        </button>
+                        <button
+                          onClick={() => setImageOffsetX(prev => prev + 10)}
+                          className="px-2 py-0.5 text-[9px] font-bold border border-slate-300 bg-white hover:bg-slate-100 rounded-xs cursor-pointer"
+                          title="+10px"
+                        >
+                          +10
+                        </button>
+                      </div>
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => setImageOffsetY(prev => prev + 1)}
+                          className="w-7 h-7 flex items-center justify-center border border-slate-300 bg-white hover:bg-slate-100 rounded-xs cursor-pointer"
+                          title="+1px"
+                        >
+                          <ChevronDown size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Real-time Dims */}
+                  <div className="p-2 bg-emerald-50/50 border border-emerald-200 text-[10px] space-y-0.5 text-emerald-950 font-mono">
+                    <div className="flex justify-between">
+                      <span>{isKo ? '적용 크기:' : 'Render Size:'}</span>
+                      <span className="font-bold">{imageDrawParams.drawnW} × {imageDrawParams.drawnH} px</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>{isKo ? '적용 위치:' : 'Render Pos:'}</span>
+                      <span className="font-bold">X:{imageDrawParams.drawnX}px, Y:{imageDrawParams.drawnY}px</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Grid Overlay Styling */}
                 <div className="p-4 bg-white border border-[rgba(15,0,0,0.12)] space-y-3">
                   <div className="flex items-center justify-between pb-2 border-b border-[rgba(15,0,0,0.1)]">
                     <span className="text-xs font-black uppercase flex items-center gap-1.5 text-slate-800">
                       <Sliders size={14} className="text-amber-700" />
-                      <span>{isKo ? '2. 격자선 오버레이 스타일' : '2. Overlay Styling'}</span>
+                      <span>{isKo ? '3. 격자선 오버레이 스타일' : '3. Overlay Styling'}</span>
                     </span>
                     <button
                       onClick={() => setShowGridOverlay(!showGridOverlay)}
@@ -894,12 +1220,12 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
                   </div>
                 </div>
 
-                {/* 3. Offset & Gap Fine-Tuning */}
+                {/* 4. Grid Offset & Gap Fine-Tuning */}
                 <div className="p-4 bg-white border border-[rgba(15,0,0,0.12)] space-y-3">
                   <div className="flex items-center justify-between pb-2 border-b border-[rgba(15,0,0,0.1)]">
                     <span className="text-xs font-black uppercase flex items-center gap-1.5 text-slate-800">
                       <Sliders size={14} className="text-blue-700" />
-                      <span>{isKo ? '3. 위치 오프셋 & 간격 보정' : '3. Offset & Spacing'}</span>
+                      <span>{isKo ? '4. 격자선 위치 오프셋 & 간격 보정' : '4. Grid Offset & Spacing'}</span>
                     </span>
                     {(offsetX !== 0 || offsetY !== 0 || colGap !== 0 || rowGap !== 0) && (
                       <button
@@ -986,17 +1312,21 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
                     <div className="flex items-center gap-2">
                       <Eye size={15} className="text-emerald-700" />
                       <span className="text-xs font-black uppercase">
-                        {isKo ? '그리드 뷰어 캔버스 (클릭 시 셀 상세 검수)' : 'Grid Canvas (Click Cell to Inspect)'}
+                        {isKo ? '그리드 뷰어 캔버스' : 'Grid Canvas'}
                       </span>
                       {imageFileName && (
-                        <span className="text-[10px] font-bold text-[#201d1d]/60 bg-slate-100 px-2 py-0.5 truncate max-w-[200px]">
+                        <span className="text-[10px] font-bold text-[#201d1d]/60 bg-slate-100 px-2 py-0.5 truncate max-w-[150px]">
                           {imageFileName}
                         </span>
                       )}
+                      <span className="text-[9px] text-emerald-800 bg-emerald-50 px-2 py-0.5 border border-emerald-300 font-bold hidden sm:flex items-center gap-1">
+                        <Hand size={11} />
+                        <span>{isKo ? '드래그: 이미지 이동 · 휠: 확대/축소' : 'Drag: Pan Image · Wheel: Zoom'}</span>
+                      </span>
                     </div>
 
                     {/* Zoom & Action Controls */}
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 flex-wrap">
                       <button
                         onClick={() => setZoomLevel(prev => Math.max(25, prev - 25))}
                         className="p-1.5 border border-slate-300 hover:bg-slate-100 rounded-sm cursor-pointer"
@@ -1020,10 +1350,22 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
                       >
                         100%
                       </button>
+
+                      {/* Clean Optimized Image Save (No Grid) */}
+                      <button
+                        onClick={handleDownloadCleanOptimizedImage}
+                        className="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-800 text-white text-[10px] font-bold rounded-sm cursor-pointer flex items-center gap-1 shadow-xs"
+                        title={isKo ? '격자선 없는 100칸 최적화 신규 이미지 저장' : 'Save Clean Optimized Image (No Grid)'}
+                      >
+                        <Sparkles size={12} />
+                        <span>{isKo ? '최적화 신규이미지 저장' : 'Save Clean Image'}</span>
+                      </button>
+
+                      {/* Inspected Image Save (With Grid) */}
                       <button
                         onClick={handleDownloadFullInspectedImage}
-                        className="px-2.5 py-1 bg-[#201d1d] text-white hover:bg-black text-[10px] font-bold rounded-sm cursor-pointer flex items-center gap-1"
-                        title={isKo ? '격자선 합성 검수 이미지 다운로드' : 'Download Inspected Image'}
+                        className="px-2.5 py-1 bg-[#201d1d] text-white hover:bg-black text-[10px] font-bold rounded-sm cursor-pointer flex items-center gap-1 shadow-xs"
+                        title={isKo ? '격자선 합성 검수본 이미지 다운로드' : 'Download Inspected Image with Grid'}
                       >
                         <Download size={12} />
                         <span>{isKo ? '검수본 저장' : 'Save Image'}</span>
@@ -1034,7 +1376,15 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
                   {/* Canvas Container with Scroll / Zoom */}
                   <div 
                     ref={containerRef}
-                    className="w-full bg-[#1e293b] border border-dashed border-slate-700 p-4 min-h-[420px] max-h-[640px] overflow-auto flex items-center justify-center relative select-none rounded-none"
+                    onPointerDown={handlePointerDown}
+                    onPointerMove={handlePointerMove}
+                    onPointerUp={handlePointerUp}
+                    onPointerCancel={handlePointerUp}
+                    onWheel={handleWheelZoom}
+                    className={cn(
+                      "w-full bg-[#1e293b] border border-dashed border-slate-700 p-4 min-h-[420px] max-h-[640px] overflow-auto flex items-center justify-center relative select-none rounded-none touch-none",
+                      isPanningImage ? "cursor-grabbing" : "cursor-grab"
+                    )}
                   >
                     {isDraggingFile && (
                       <div className="absolute inset-0 bg-emerald-950/80 border-4 border-dashed border-emerald-400 z-50 flex flex-col items-center justify-center text-white">
@@ -1045,29 +1395,32 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
 
                     {loadedImageSrc ? (
                       <div 
-                        className="relative transition-transform origin-center"
+                        className="relative transition-transform origin-center overflow-hidden border border-slate-600 bg-slate-950/80 shadow-2xl shrink-0"
                         style={{
                           transform: `scale(${zoomLevel / 100})`,
                           width: cellCalculations.totalW,
                           height: cellCalculations.totalH
                         }}
                       >
-                        {/* Background Base Image */}
+                        {/* Background Base Image (조정된 크기 및 오프셋으로 렌더링) */}
                         <img
                           ref={imageElementRef}
                           src={loadedImageSrc}
                           alt="Loaded Sprite Sheet"
-                          className="w-full h-full object-contain pointer-events-none block"
+                          draggable={false}
+                          className="absolute pointer-events-none select-none max-w-none transition-none"
                           style={{
-                            width: cellCalculations.totalW,
-                            height: cellCalculations.totalH
+                            width: `${imageDrawParams.drawnW}px`,
+                            height: `${imageDrawParams.drawnH}px`,
+                            left: `${imageDrawParams.drawnX}px`,
+                            top: `${imageDrawParams.drawnY}px`,
                           }}
                         />
 
                         {/* Interactive Grid Overlay */}
                         {showGridOverlay && (
                           <div 
-                            className="absolute inset-0 grid"
+                            className="absolute inset-0 grid pointer-events-auto"
                             style={{
                               gridTemplateColumns: `repeat(${gridCols}, ${cellCalculations.cellW}px)`,
                               gridTemplateRows: `repeat(${gridRows}, ${cellCalculations.cellH}px)`,
@@ -1084,7 +1437,11 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
                               return (
                                 <div
                                   key={idx}
-                                  onClick={() => setSelectedCellIndex(idx)}
+                                  onClick={() => {
+                                    if (dragMovedDistance < 5) {
+                                      setSelectedCellIndex(idx);
+                                    }
+                                  }}
                                   style={{
                                     borderColor: isSelected ? '#f59e0b' : gridColor,
                                     borderWidth: isSelected ? Math.max(2, gridLineWidth + 1) : gridLineWidth,
@@ -1093,7 +1450,7 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
                                     opacity: isSelected ? 1 : opacityVal
                                   }}
                                   className={cn(
-                                    "relative transition-all cursor-pointer flex flex-col justify-between p-1 overflow-hidden group hover:opacity-100",
+                                    "relative transition-all cursor-pointer flex flex-col justify-between p-1 overflow-hidden group hover:opacity-100 select-none",
                                     isSelected && "z-20 ring-2 ring-amber-400"
                                   )}
                                 >
