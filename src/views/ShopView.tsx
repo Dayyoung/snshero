@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { ShoppingBag, ArrowRight, Zap, Terminal, Sparkles, AlertCircle, X, Package, Activity, ShieldAlert, History, Clock, Lock, HelpCircle, ChevronLeft, ChevronRight, BookOpen, Film, Download, Play } from 'lucide-react';
+import { ShoppingBag, ArrowRight, Zap, Terminal, Sparkles, AlertCircle, X, Package, Activity, ShieldAlert, History, Clock, Lock, HelpCircle, ChevronLeft, ChevronRight, BookOpen, Film, Download, Play, Layers } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { PayPalScriptProvider, PayPalButtons, usePayPalScriptReducer, FUNDING } from "@paypal/react-paypal-js";
 import { QRCodeSVG } from 'qrcode.react';
@@ -1990,6 +1990,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
     }
   };
 
+  const handleGoToMyDeck = () => {
+    handleCloseGacha();
+    if (onNavigate) {
+      onNavigate('mydeck');
+    }
+  };
+
   useEffect(() => {
     const handleGlobalBack = (e: Event) => {
       if (!gachaState.isActive) return;
@@ -2475,6 +2482,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     setProbabilityModalOpen(true);
                   }}
                   onShareBestCard={(cardId) => setGachaShareCardId(cardId)}
+                  onGoToDeck={handleGoToMyDeck}
                 />
               ) : (
               <motion.div
@@ -2808,6 +2816,16 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       <Package size={16} />
                       <span>{t('draw_again', language)} ({(cardPacks.find(p => p.rarity === gachaState.packType)?.cost || 0)} SNS)</span>
                     </button>
+
+                    {onNavigate && (
+                      <button
+                        onClick={handleGoToMyDeck}
+                        className="min-h-[44px] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-5 py-2.5 rounded-full font-black uppercase tracking-wider text-xs transition-all border border-blue-400 active:scale-95 cursor-pointer touch-target shadow-lg flex items-center justify-center gap-1.5"
+                      >
+                        <Layers size={15} />
+                        <span>{language === 'ko' ? '마이덱' : 'MY DECK'}</span>
+                      </button>
+                    )}
 
                     <button
                       onClick={() => {

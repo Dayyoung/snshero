@@ -23,7 +23,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { CardItem } from '../components/CardItem';
 import { ArDeckViewer } from '../components/ArDeckViewer';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ChevronLeft, ChevronRight, HelpCircle, Trophy, Info, Zap, Package, Shield, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Gift, Star as StarIcon, Edit2, Plus, Gem, Footprints, Sparkles, Share2, Camera, BookOpen, Users, PawPrint, Trash2, Layers, Lock, Search, Flame, Swords } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, HelpCircle, Trophy, Info, Zap, Package, Shield, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Gift, Star as StarIcon, Edit2, Plus, Gem, Footprints, Sparkles, Share2, Camera, BookOpen, Users, PawPrint, Trash2, Layers, Lock, Search, Flame, Swords, Maximize2 } from 'lucide-react';
 import { CardDisassembleModal } from '../components/CardDisassembleModal';
 import { ElementAdvantageModal } from '../components/ElementAdvantageModal';
 import { useCardLock } from '../hooks/useCardLock';
@@ -670,6 +670,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
         setIsPopupOpen(false);
         setSelectingIndex(null);
+        setSelectionContext('replace');
       }
     };
     window.addEventListener('global-back', handleGlobalBack);
@@ -811,8 +812,19 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       targetIndex = emptyIdx !== -1 ? emptyIdx : 0;
     }
 
-    const alreadyInDeck = currentDeck.some((c, idx) => idx !== targetIndex && c.imageIndex === imgIdx);
-    if (alreadyInDeck) {
+    const existingIndex = currentDeck.findIndex(c => c && (c.imageIndex === imgIdx || Number(c.imageIndex) === imgIdx));
+    if (existingIndex !== -1) {
+      if (existingIndex !== targetIndex) {
+        // Swap slots
+        const newDeck = [...currentDeck];
+        const temp = newDeck[targetIndex];
+        newDeck[targetIndex] = newDeck[existingIndex];
+        newDeck[existingIndex] = temp;
+        updateDeck(newDeck);
+      }
+      setIsPopupOpen(false);
+      setSelectingIndex(null);
+      setSelectionContext('replace');
       return;
     }
 
@@ -837,13 +849,52 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     updateDeck(newDeck);
     setIsPopupOpen(false);
     setSelectingIndex(null);
+    setSelectionContext('replace');
   };
 
   const [sortBy, setSortBy] = useState<'index' | 'level' | 'power' | 'name' | 'rarity' | 'stats_total' | 'recent'>('recent');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [showOwnedOnly, setShowOwnedOnly] = useState(true);
   const [cardSearchQuery, setCardSearchQuery] = useState('');
   const [selectedElementFilter, setSelectedElementFilter] = useState<'ALL' | 'WATER' | 'FIRE' | 'EARTH' | 'WIND' | 'HOLY' | 'DARK'>('ALL');
+
+  // Memoized pool of owned cards specifically for the on-page Card Vault
+  const vaultCards = React.useMemo(() => {
+    const baseIds = Array.from({ length: 110 }, (_, i) => i + 1);
+    return baseIds
+      .map(idx => {
+        const dbCard = CARD_DATABASE[idx];
+        if (!dbCard) return null;
+        const isOwned = (inventory[idx]?.quantity || 0) > 0 || 
+                        (inventory[String(idx) as any]?.quantity || 0) > 0 || 
+                        ownedCards.some(c => c && (c.imageIndex === idx || Number(c.imageIndex) === idx));
+        if (!isOwned) return null;
+
+        const card = syncCardWithDatabase({
+          id: `vault-${idx}`,
+          imageIndex: idx,
+          stats: dbCard.stats || [1, 1, 1, 1],
+          rarity: dbCard.rarity || 'bronze',
+          level: inventory[idx]?.level || 1,
+        } as CardData, inventory);
+
+        const isInDeck = currentDeck.some(c => c && (c.imageIndex === idx || Number(c.imageIndex) === idx));
+        const quantity = inventory[idx]?.quantity || (isOwned ? 1 : 0);
+        const acquiredAt = inventory[idx]?.acquiredAt || idx;
+
+        return {
+          idx,
+          card,
+          power: getCardPower(card),
+          isInDeck,
+          quantity,
+          acquiredAt,
+          element: String((card as any).element || dbCard?.element || 'WATER').toUpperCase()
+        };
+      })
+      .filter((item): item is NonNullable<typeof item> => item !== null)
+      .sort((a, b) => (b.acquiredAt || 0) - (a.acquiredAt || 0));
+  }, [inventory, ownedCards, currentDeck]);
 
   const processedCards = React.useMemo(() => {
     // For Upgrade/Equipment, show the actual cards in the deck
@@ -877,7 +928,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
        
        const isOwned = (inventory[idx]?.quantity || 0) > 0 || 
                        (inventory[String(idx) as any]?.quantity || 0) > 0 || 
-                       ownedCards.some(c => c.imageIndex === idx || Number(c.imageIndex) === idx);
+                       ownedCards.some(c => c && (c.imageIndex === idx || Number(c.imageIndex) === idx));
 
        return {
          idx,
@@ -928,15 +979,26 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         return true;
       })
       .sort((a, b) => {
+        // Prioritize owned cards over unowned cards when browsing all
+        if (a.isOwned !== b.isOwned) {
+          return a.isOwned ? -1 : 1;
+        }
+
         let comparison = 0;
         const cardA = a.card;
         const cardB = b.card;
         
         switch (sortBy) {
-          case 'recent':
-            // Higher index or inventory acquired timestamp
-            comparison = b.idx - a.idx;
+          case 'recent': {
+            const timeA = inventory[a.idx]?.acquiredAt || (a.isOwned ? a.idx : 0);
+            const timeB = inventory[b.idx]?.acquiredAt || (b.isOwned ? b.idx : 0);
+            if (timeA !== timeB) {
+              comparison = timeA - timeB;
+            } else {
+              comparison = a.idx - b.idx;
+            }
             break;
+          }
           case 'level':
             comparison = cardA.level - cardB.level;
             break;
@@ -1080,7 +1142,21 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
       <div className="flex flex-wrap items-center justify-end gap-3 mt-3 sm:mt-4 mb-2 pb-3 sm:pb-4 border-b border-slate-200/60 font-sans">
         
-        <div className="grid grid-cols-3 gap-1.5 sm:flex sm:flex-wrap sm:items-center sm:justify-end sm:gap-3 w-full md:w-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:flex sm:flex-wrap sm:items-center sm:justify-end sm:gap-2.5 w-full md:w-auto font-mono">
+          <button
+            onClick={() => {
+              setSelectionContext('replace');
+              setSelectingIndex(null);
+              setIsPopupOpen(true);
+              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            }}
+            id="inventory-btn"
+            className="px-2.5 sm:px-4 py-2.5 rounded-sm text-[10px] sm:text-xs font-bold uppercase tracking-tight transition-all flex items-center justify-center gap-1.5 border border-blue-600 bg-blue-600 hover:bg-blue-500 text-white touch-target active:scale-[0.98] shadow-sm cursor-pointer"
+            title={language === 'ko' ? '보유한 모든 카드 목록 확인 및 덱 교체' : 'View all owned cards and replace deck'}
+          >
+            <Layers size={14} className="shrink-0 sm:w-4 sm:h-4" />
+            <span className="whitespace-nowrap">{language === 'ko' ? '카드 인벤토리' : 'Card Vault'}</span>
+          </button>
           <button
             onClick={() => {
               if (selectionContext === 'upgrade') {
@@ -1093,9 +1169,9 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             }}
             id="hero-nurture-btn"
             className={cn(
-              "px-2 sm:px-6 py-2.5 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 sm:gap-2 border touch-target active:scale-[0.98] shadow-sm cursor-pointer",
+              "px-2 sm:px-4 py-2.5 rounded-sm text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 sm:gap-1.5 border touch-target active:scale-[0.98] shadow-sm cursor-pointer",
               selectionContext === 'upgrade' 
-                ? "bg-white text-purple-600 border-purple-200" 
+                ? "bg-white text-purple-600 border-purple-300" 
                 : "bg-purple-600 text-white hover:bg-purple-500 border-purple-500 shadow-purple-500/10"
             )}
           >
@@ -1112,23 +1188,23 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               }
               playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
             }}
-            id="inventory-btn"
+            id="equipment-btn"
             className={cn(
-              "px-2 sm:px-4 py-2.5 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-tight transition-all flex items-center justify-center gap-1 sm:gap-2 border touch-target active:scale-[0.98] shadow-sm cursor-pointer shrink-0",
+              "px-2 sm:px-4 py-2.5 rounded-sm text-[10px] sm:text-xs font-bold uppercase tracking-tight transition-all flex items-center justify-center gap-1 sm:gap-1.5 border touch-target active:scale-[0.98] shadow-sm cursor-pointer shrink-0",
               selectionContext === 'equipment' 
-                ? "bg-white text-blue-600 border-blue-200" 
+                ? "bg-white text-slate-900 border-slate-400" 
                 : "bg-slate-900 text-white hover:bg-slate-800 border-slate-900 shadow-slate-900/10"
             )}
           >
             <Package size={14} className="shrink-0 sm:w-4 sm:h-4" />
-            <span className="whitespace-nowrap">{t('inventory', language)}</span>
+            <span className="whitespace-nowrap">{language === 'ko' ? '장비 관리' : 'Equipment'}</span>
           </button>
           <button 
             onClick={() => {
               setIsAchievementsModalOpen(true);
               playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
             }}
-            className="bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-900 px-2 sm:px-6 py-2.5 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-all flex items-center justify-center gap-1 sm:gap-2 border border-amber-300 touch-target active:scale-[0.98] shadow-sm shadow-amber-400/10 cursor-pointer"
+            className="bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-900 px-2 sm:px-4 py-2.5 rounded-sm text-[10px] sm:text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-all flex items-center justify-center gap-1 sm:gap-1.5 border border-amber-300 touch-target active:scale-[0.98] shadow-sm shadow-amber-400/10 cursor-pointer"
           >
             <Trophy size={14} className="shrink-0 sm:w-4 sm:h-4" />
             <span className="hidden sm:inline">{t('my_achievements', language)}</span>
@@ -1239,6 +1315,119 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             <Sparkles size={14} className="sm:w-4 sm:h-4 text-yellow-300 animate-pulse" />
             <span>{t('card_combine', language)}</span>
           </button>
+        </div>
+      </div>
+
+      {/* ── 보유 카드 보관함 (Card Vault Section) ── */}
+      <div className="w-full bg-white border border-slate-200/80 rounded-sm p-3.5 sm:p-5 shadow-xs space-y-3 font-mono">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-slate-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-sm bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center shrink-0">
+              <Layers size={18} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="text-xs sm:text-sm font-bold text-slate-900 tracking-tight">
+                  {language === 'ko' ? '보유 카드 보관함' : 'Owned Card Vault'}
+                </h3>
+                <span className="px-2 py-0.5 rounded-sm bg-blue-50 border border-blue-200 text-blue-700 text-[10px] font-bold">
+                  {vaultCards.length}/110{language === 'ko' ? '종 보유' : ' Owned'}
+                </span>
+              </div>
+              <p className="text-[10px] sm:text-[11px] text-slate-500 font-sans mt-0.5">
+                {language === 'ko' 
+                  ? '상점 뽑기 및 미션 보상으로 획득한 카드입니다. 카드를 탭하여 상세 정보 확인 및 덱 교체가 가능합니다.' 
+                  : 'Cards obtained from shop draws and missions. Tap a card to inspect and swap into deck.'}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              setSelectionContext('replace');
+              setSelectingIndex(null);
+              setIsPopupOpen(true);
+              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            }}
+            className="self-end sm:self-center px-3 py-2 rounded-sm bg-slate-900 text-white hover:bg-slate-800 text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer touch-target shrink-0"
+          >
+            <Maximize2 size={13} />
+            <span>{language === 'ko' ? '전체 인벤토리 검색' : 'Open Full Vault'}</span>
+          </button>
+        </div>
+
+        {/* Quick Horizontal Cards Slider */}
+        <div className="w-full overflow-x-auto pb-2 pt-1 scrollbar-thin scrollbar-thumb-slate-300">
+          <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-max px-0.5">
+            {vaultCards.slice(0, 30).map((item) => {
+              const { idx, card, isInDeck, quantity } = item;
+              return (
+                <div
+                  key={`vault-card-${idx}`}
+                  onClick={() => {
+                    const invData = inventory[idx];
+                    const detailCard: CardData = {
+                      id: `detail-${idx}`,
+                      title_dis: CARD_DATABASE[idx]?.title_dis || `Unit_${idx}`,
+                      stats: [...(CARD_DATABASE[idx]?.stats || [1, 1, 1, 1])],
+                      rarity: CARD_DATABASE[idx]?.rarity || 'bronze',
+                      level: invData?.level || 1,
+                      imageIndex: idx,
+                      owner: null,
+                      power: CARD_DATABASE[idx]?.power || 0,
+                      growth: invData?.growth || 0,
+                      skills: invData?.skills,
+                      equipment: invData?.equipment || {}
+                    };
+                    setSelectedCardForDetail(detailCard);
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                  }}
+                  className="relative flex flex-col items-center group cursor-pointer active:scale-95 transition-transform"
+                >
+                  <div className="relative">
+                    <CardItem
+                      card={card}
+                      className={cn(
+                        "w-20 h-28 sm:w-24 sm:h-32 transition-all hover:ring-2 hover:ring-blue-500",
+                        isInDeck && "ring-2 ring-blue-500 ring-offset-1"
+                      )}
+                      customImage={customCardImage}
+                      lowSpecMode={true}
+                    />
+                    {isInDeck && (
+                      <div className="absolute inset-0 bg-blue-600/20 border-2 border-blue-600 rounded-sm flex items-center justify-center pointer-events-none z-10">
+                        <span className="bg-blue-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-sm shadow-xs">
+                          IN DECK
+                        </span>
+                      </div>
+                    )}
+                    {quantity > 1 && (
+                      <div className="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] font-bold px-1.5 min-w-[18px] h-[18px] flex items-center justify-center border-2 border-white rounded-full z-20 shadow-xs">
+                        x{quantity}
+                      </div>
+                    )}
+                  </div>
+                  <span className="text-[10px] sm:text-xs font-bold text-slate-800 truncate w-20 text-center mt-1">
+                    {CARD_DATABASE[idx]?.title_dis || `UNIT_${idx}`}
+                  </span>
+                </div>
+              );
+            })}
+            {vaultCards.length > 30 && (
+              <button
+                onClick={() => {
+                  setSelectionContext('replace');
+                  setSelectingIndex(null);
+                  setIsPopupOpen(true);
+                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                }}
+                className="w-20 h-28 sm:w-24 sm:h-32 rounded-sm border-2 border-dashed border-slate-300 hover:border-blue-500 bg-slate-50 hover:bg-blue-50/50 flex flex-col items-center justify-center gap-1 text-slate-600 hover:text-blue-600 transition-all cursor-pointer shrink-0 touch-target"
+              >
+                <Plus size={20} />
+                <span className="text-[10px] font-bold">+{vaultCards.length - 30}</span>
+                <span className="text-[9px] text-slate-400">{language === 'ko' ? '더보기' : 'More'}</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -1696,30 +1885,51 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-white/95 backdrop-blur-sm z-[200] flex items-center justify-center p-4 sm:p-8"
+            className="fixed inset-0 bg-white/95 backdrop-blur-sm z-[200] flex items-center justify-center p-4 sm:p-8 cursor-pointer"
+            onClick={() => {
+              setIsPopupOpen(false);
+              setSelectingIndex(null);
+              setSelectionContext('replace');
+            }}
           >
             <motion.div
               initial={{ scale: 0.95, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              className="bg-white w-full max-w-5xl h-[90vh] rounded-3xl border border-slate-100 flex flex-col overflow-hidden shadow-2xl font-sans"
+              onClick={e => e.stopPropagation()}
+              className="bg-white w-full max-w-5xl h-[90vh] rounded-3xl border border-slate-100 flex flex-col overflow-hidden shadow-2xl font-sans relative cursor-default"
             >
+              {/* Top-Right X Close Button */}
+              <button
+                onClick={() => {
+                  setIsPopupOpen(false);
+                  setSelectingIndex(null);
+                  setSelectionContext('replace');
+                }}
+                className="absolute top-4 right-4 sm:top-5 sm:right-5 p-2 rounded-full text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors z-50 cursor-pointer touch-target"
+                aria-label="Close"
+              >
+                <X size={22} />
+              </button>
+
               <div className="p-4 sm:p-6 border-b border-slate-200 flex flex-col sm:flex-row gap-4 items-start bg-white relative">
-
-
-                <div className="space-y-1">
-                  <h3 className="text-2xl font-bold tracking-tight leading-none">
+                <div className="space-y-1 pr-8">
+                  <h3 className="text-xl sm:text-2xl font-bold tracking-tight leading-none">
                     {selectionContext === 'upgrade' 
                       ? (t('hero_nurture', language) || '업그레이드할 카드를 선택하세요') 
                       : selectionContext === 'equipment' 
                         ? (language === 'ko' ? '아이템을 장착할 카드를 선택하세요' : 'Select Card for Equipment') 
                         : selectionContext === 'customize'
                           ? (language === 'ko' ? '덱 구성하기 (최대 5장)' : 'Customize Deck (Max 5)')
-                          : t('select_card', language)}
+                          : selectingIndex !== null
+                            ? (language === 'ko' ? `슬롯 ${selectingIndex + 1}에 장착할 카드 선택` : `Select Card for Slot ${selectingIndex + 1}`)
+                            : (language === 'ko' ? '보유 카드 인벤토리' : 'Card Inventory')}
                   </h3>
-                  <p className="text-sm font-bold opacity-40 tracking-normal italic">
+                  <p className="text-xs sm:text-sm font-bold opacity-40 tracking-normal italic">
                     {selectionContext === 'customize' 
                       ? (language === 'ko' ? '카드를 클릭하여 덱에 추가하거나 제거하세요.' : 'Click cards to add or remove from your battle deck.')
-                      : t('deck_select_guide', language)}
+                      : selectionContext === 'replace'
+                        ? (language === 'ko' ? '카드를 클릭하여 상세 확인 및 덱 슬롯에 장착하세요.' : 'Click a card to view details and equip to deck.')
+                        : t('deck_select_guide', language)}
                   </p>
                 </div>
 
@@ -2556,8 +2766,44 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                     )}
                  </div>
 
+                  {/* Quick Slot Equip Controls */}
+                  <div className="mt-4 pt-3 border-t border-slate-100 space-y-2">
+                    <div className="flex items-center justify-between text-xs font-bold text-slate-500">
+                      <span>{language === 'ko' ? '덱 슬롯에 장착하기' : 'Equip to Deck Slot'}</span>
+                      {currentDeck.some(c => c && c.imageIndex === selectedCardForDetail.imageIndex) && (
+                        <span className="text-blue-600 font-bold flex items-center gap-1">
+                          ✓ {language === 'ko' ? `슬롯 ${currentDeck.findIndex(c => c && c.imageIndex === selectedCardForDetail.imageIndex) + 1} 장착 중` : 'Currently Equipped'}
+                        </span>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-5 gap-1.5">
+                      {[0, 1, 2, 3, 4].map(slotIdx => {
+                        const isThisSlot = currentDeck[slotIdx]?.imageIndex === selectedCardForDetail.imageIndex;
+                        return (
+                          <button
+                            key={slotIdx}
+                            onClick={() => {
+                              selectMasterCard(selectedCardForDetail.imageIndex!, slotIdx);
+                              setSelectedCardForDetail(null);
+                              setIsPopupOpen(false);
+                            }}
+                            className={cn(
+                              "py-2 px-1 text-center rounded-lg text-xs font-black transition-all cursor-pointer active:scale-95 border",
+                              isThisSlot
+                                ? "bg-blue-600 text-white border-blue-600 shadow-sm"
+                                : "bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200"
+                            )}
+                          >
+                            <div className="text-[10px] text-slate-400 font-mono">SLOT</div>
+                            <div>{slotIdx + 1}</div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
                  {/* Bottom Action Buttons */}
-                 <div className="mt-6 grid grid-cols-2 gap-3 shrink-0 pt-2 border-t border-slate-100">
+                 <div className="mt-4 grid grid-cols-2 gap-3 shrink-0 pt-2 border-t border-slate-100">
                     <button 
                       onClick={() => {
                         const deckIdx = currentDeck.findIndex(c => c.imageIndex === selectedCardForDetail.imageIndex);

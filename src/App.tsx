@@ -4440,10 +4440,14 @@ function AppContent() {
       const current = prev[cardIndex] || { cardIndex, quantity: 0, rarity };
       const next = {
         ...prev,
-        [cardIndex]: { ...current, quantity: (current.quantity || 0) + 1 }
+        [cardIndex]: {
+          ...current,
+          quantity: (current.quantity || 0) + 1,
+          acquiredAt: Date.now()
+        }
       };
       if (typeof window !== 'undefined') {
-        const season = localStorage.getItem('hero_current_season') || 'season1';
+        const season = currentSeason || localStorage.getItem('hero_current_season') || 'season1';
         setSeasonItem('hero_inventory', season, JSON.stringify(next));
         setSeasonItem('hero_inventory_guest', season, JSON.stringify(next));
         localStorage.setItem('hero_inventory', JSON.stringify(next));
@@ -4453,7 +4457,7 @@ function AppContent() {
     setTotalPower(prev => {
       const nextPower = prev + (dbCard.power || 0);
       if (typeof window !== 'undefined') {
-        const season = localStorage.getItem('hero_current_season') || 'season1';
+        const season = currentSeason || localStorage.getItem('hero_current_season') || 'season1';
         setSeasonItem('hero_totalPower', season, nextPower.toString());
         setSeasonItem('hero_totalPower_guest', season, nextPower.toString());
         localStorage.setItem('hero_totalPower', nextPower.toString());
@@ -4463,7 +4467,7 @@ function AppContent() {
 
     // Recommend upgrade if the card is better
     checkAndRecommendDeckUpgrade([cardIndex], isSilent);
-  }, [checkAndRecommendDeckUpgrade]);
+  }, [checkAndRecommendDeckUpgrade, currentSeason]);
 
   const handleClawPlay = useCallback(() => {
     setSns(prev => Math.max(0, prev - 5));
@@ -4504,10 +4508,14 @@ function AppContent() {
           const current = prev[cardIndex] || { cardIndex, quantity: 0, rarity: newCard.rarity };
           const next = {
             ...prev,
-            [cardIndex]: { ...current, quantity: (current.quantity || 0) + 1 }
+            [cardIndex]: {
+              ...current,
+              quantity: (current.quantity || 0) + 1,
+              acquiredAt: Date.now()
+            }
           };
           if (typeof window !== 'undefined') {
-            const season = localStorage.getItem('hero_current_season') || 'season1';
+            const season = currentSeason || localStorage.getItem('hero_current_season') || 'season1';
             setSeasonItem('hero_inventory', season, JSON.stringify(next));
             setSeasonItem('hero_inventory_guest', season, JSON.stringify(next));
             localStorage.setItem('hero_inventory', JSON.stringify(next));
@@ -4518,7 +4526,7 @@ function AppContent() {
         setTotalPower(prev => {
           const nextPower = prev + (dbCard.power || 0);
           if (typeof window !== 'undefined') {
-            const season = localStorage.getItem('hero_current_season') || 'season1';
+            const season = currentSeason || localStorage.getItem('hero_current_season') || 'season1';
             setSeasonItem('hero_totalPower', season, nextPower.toString());
             setSeasonItem('hero_totalPower_guest', season, nextPower.toString());
             localStorage.setItem('hero_totalPower', nextPower.toString());
@@ -4534,7 +4542,7 @@ function AppContent() {
         checkAndRecommendDeckUpgrade([cardIndex], isSilent);
       }
     }
-  }, [testMode, checkAndRecommendDeckUpgrade]);
+  }, [testMode, checkAndRecommendDeckUpgrade, currentSeason]);
 
   const [isGlobalPopupOpen, setIsGlobalPopupOpen] = useState(false);
 

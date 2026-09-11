@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Gift, Info, Package2, Share2, SkipForward, Sparkles, Star, Trophy, X, Zap } from 'lucide-react';
+import { Gift, Info, Package2, Share2, SkipForward, Sparkles, Star, Trophy, X, Zap, Layers } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardItem } from './CardItem';
 import { PityGauge } from './PityGauge';
@@ -41,6 +41,7 @@ interface GachaRevealSequenceProps {
   onDrawAgain: () => void;
   onOpenProbability: () => void;
   onShareBestCard: (cardId: number) => void;
+  onGoToDeck?: () => void;
 }
 
 type RevealPhase = 'intro' | 'sealed-pack' | 'tearing' | 'spread' | 'summary';
@@ -124,6 +125,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
   onDrawAgain,
   onOpenProbability,
   onShareBestCard,
+  onGoToDeck,
 }) => {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [phase, setPhase] = useState<RevealPhase>('intro');
@@ -857,6 +859,17 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                         </button>
                       )}
                     </div>
+
+                    {onGoToDeck && (
+                      <button
+                        type="button"
+                        onClick={onGoToDeck}
+                        className="flex items-center justify-center gap-1.5 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full border border-sky-400/50 bg-sky-600 hover:bg-sky-500 text-white text-xs sm:text-sm font-black uppercase tracking-wider transition active:scale-95 cursor-pointer shadow-lg shrink-0 touch-target"
+                      >
+                        <Layers size={15} />
+                        <span>{language === 'ko' ? '마이덱' : 'MY DECK'}</span>
+                      </button>
+                    )}
 
                     <button
                       type="button"

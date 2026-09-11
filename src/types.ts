@@ -359,6 +359,7 @@ export interface InventoryRecord {
   cardIndex: number;
   quantity: number;
   rarity: string;
+  acquiredAt?: number;
   growth?: number;
   hunger?: number;
   happiness?: number;
