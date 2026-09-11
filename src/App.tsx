@@ -5048,12 +5048,7 @@ function AppContent() {
           />
         );
       case 'pacpik':
-        return (
-          <PacpikView
-            language={language}
-            onNavigate={setView}
-          />
-        );
+        return <PacpikView />;
       case 'web3-landing':
         return (
           <Web3LandingView

@@ -123,17 +123,11 @@ if (typeof window !== 'undefined') {
     };
     document.title = "SNSHero API - Health";
     document.body.innerHTML = `<pre style="font-family: monospace; font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-all; padding: 24px; margin: 0; background: #fdfcfc; color: #201d1d;">${JSON.stringify(healthData, null, 2)}</pre>`;
-  } else if (path === '/pacpik' || path === '/pacpik.html') {
+  } else if (path === '/pacpik' || path === '/pacpik.html' || path === '/pacpik.txt') {
     isApiRoute = true;
-    document.title = "Pacpik Games Verification | SNSHero";
-    let meta = document.querySelector('meta[name="pacpik-games-verification"]');
-    if (!meta) {
-      meta = document.createElement('meta');
-      meta.setAttribute('name', 'pacpik-games-verification');
-      meta.setAttribute('content', 'f197d6f47d819f97660046da45174f0d5a9ff1abf90c5e38');
-      document.head.appendChild(meta);
-    }
-    document.body.innerHTML = `<div style="font-family: 'JetBrains Mono', Menlo, monospace; background: #fdfcfc; color: #201d1d; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 24px; box-sizing: border-box;"><div style="width: 100%; max-width: 640px; border: 1px solid rgba(15,0,0,0.12); background: #ffffff; padding: 32px 24px;"><div style="display: inline-block; font-size: 11px; padding: 4px 8px; border: 1px solid rgba(5,150,105,0.3); color: #059669; background: rgba(5,150,105,0.05); margin-bottom: 16px;">[STATUS: ACTIVE VERIFICATION]</div><h1 style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">Pacpik Games Domain Verification</h1><p style="font-size: 13px; color: rgba(32,29,29,0.6); margin-bottom: 24px;">Domain ownership verification string for SNSHero (https://snshero.com).</p><div id="rawToken" style="padding: 12px 16px; background: #faf9f7; border: 1px dashed rgba(15,0,0,0.12); font-size: 12px; margin-bottom: 24px; word-break: break-all; color: #333;">pacpik-games-verification=f197d6f47d819f97660046da45174f0d5a9ff1abf90c5e38</div><div style="background: #f5f4f2; border: 1px solid rgba(15,0,0,0.12); padding: 16px; margin-bottom: 20px; word-break: break-all;"><span style="font-size: 11px; text-transform: uppercase; color: rgba(32,29,29,0.6); display: block; margin-bottom: 6px;">Verification Token</span><div style="font-size: 13px; font-weight: 600;">f197d6f47d819f97660046da45174f0d5a9ff1abf90c5e38</div></div><div style="display: flex; gap: 12px; align-items: center;"><button onclick="navigator.clipboard.writeText('pacpik-games-verification=f197d6f47d819f97660046da45174f0d5a9ff1abf90c5e38'); this.innerText='[✓] Copied!';" style="font-family: inherit; background: #201d1d; color: #ffffff; border: 1px solid #201d1d; padding: 10px 16px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 4px;">[+] Copy Verification String</button><a href="/" style="font-family: inherit; color: #201d1d; text-decoration: none; border: 1px solid rgba(15,0,0,0.12); padding: 10px 16px; font-size: 13px; border-radius: 4px;">&larr; Return to SNSHero</a></div><div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(15,0,0,0.12); font-size: 11px; color: rgba(32,29,29,0.6); display: flex; justify-content: space-between;"><span>Service: SNSHero Revolution</span><span>Host: snshero.com</span></div></div></div>`;
+    const verificationText = 'pacpik-games-verification=f197d6f47d819f97660046da45174f0d5a9ff1abf90c5e38';
+    document.title = verificationText;
+    document.body.innerHTML = verificationText;
   }
 }
 

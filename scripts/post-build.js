@@ -34,6 +34,10 @@ try {
     if (fs.existsSync(publicPacpikRoot)) {
       fs.copyFileSync(publicPacpikRoot, path.join(distDir, 'pacpik.html'));
     }
+    const publicPacpikTxt = path.join(process.cwd(), 'public', 'pacpik.txt');
+    if (fs.existsSync(publicPacpikTxt)) {
+      fs.copyFileSync(publicPacpikTxt, path.join(distDir, 'pacpik.txt'));
+    }
   }
 
   // 메인 엔트리 스크립트 파일(assets/index-*.js) 자동 탐색

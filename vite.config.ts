@@ -90,22 +90,14 @@ export default defineConfig(({mode}) => {
                 }
               }
 
-              // Support /pacpik, /pacpik/, and /pacpik.html direct serving for Pacpik games verification
-              if (/^\/pacpik(\/|\.html|\?|$)/i.test(decodedUrl) || /^\/pacpik(\/|\.html|\?|$)/i.test(rawUrl)) {
-                let targetPath = path.join(publicDir, 'pacpik', 'index.html');
-                if (!fs.existsSync(targetPath)) {
-                  targetPath = path.join(publicDir, 'pacpik.html');
-                }
-                if (fs.existsSync(targetPath)) {
-                  const stat = fs.statSync(targetPath);
-                  res.statusCode = 200;
-                  res.setHeader('Content-Type', 'text/html; charset=utf-8');
-                  res.setHeader('Content-Length', stat.size);
-                  res.setHeader('Cache-Control', 'no-cache');
-                  res.setHeader('Access-Control-Allow-Origin', '*');
-                  fs.createReadStream(targetPath).pipe(res);
-                  return;
-                }
+              // Support /pacpik, /pacpik/, /pacpik.html, and /pacpik.txt direct plain text serving for Pacpik games verification
+              if (/^\/pacpik(\/|\.html|\.txt|\?|$)/i.test(decodedUrl) || /^\/pacpik(\/|\.html|\.txt|\?|$)/i.test(rawUrl)) {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+                res.setHeader('Cache-Control', 'no-cache');
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.end('pacpik-games-verification=f197d6f47d819f97660046da45174f0d5a9ff1abf90c5e38\n');
+                return;
               }
 
               // Support /mall and /mall/* direct static serving
