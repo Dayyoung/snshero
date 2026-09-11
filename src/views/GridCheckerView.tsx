@@ -1,110 +1,28 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { 
   ArrowLeft, 
-  CheckCircle2, 
-  AlertTriangle, 
-  Search, 
-  RotateCcw, 
-  Eye, 
-  EyeOff, 
-  Sliders, 
-  FileCode, 
-  Layers, 
-  Grid3X3, 
   Upload, 
   Link as LinkIcon, 
   Download, 
+  RotateCcw, 
+  Sparkles, 
   ZoomIn, 
   ZoomOut, 
-  Maximize2, 
-  Copy, 
-  Check, 
-  Scissors, 
-  Crosshair, 
-  RefreshCw, 
-  ShieldCheck, 
-  Sparkles, 
-  Info,
-  Image as ImageIcon,
-  Move,
-  Hand,
-  ChevronUp,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight
+  Eye, 
+  EyeOff, 
+  Grid3X3, 
+  Hand, 
+  MousePointer, 
+  CheckCircle2, 
+  AlertTriangle
 } from 'lucide-react';
 import { ViewType, Language } from '../types';
-import { CARD_DATABASE } from '../cardDatabase';
-import { CardSilhouettePreview } from '../components/CardSilhouettePreview';
-import { validateCharacterArtPrompts, getCharacterArtPrompt } from '../content/characterArtPrompts';
 import { cn } from '../lib/utils';
 
 interface GridCheckerViewProps {
   language?: Language;
   onNavigate: (view: ViewType) => void;
 }
-
-type TabType = 'image-inspector' | 'cards' | 'css-validator';
-
-const GRID_LINE_COLORS = [
-  { name: 'Emerald', value: '#10b981', label: '에메랄드' },
-  { name: 'Amber', value: '#f59e0b', label: '앰버' },
-  { name: 'Cyan', value: '#06b6d4', label: '시안' },
-  { name: 'Rose', value: '#f43f5e', label: '로즈' },
-  { name: 'Purple', value: '#8b5cf6', label: '퍼플' },
-  { name: 'White', value: '#ffffff', label: '화이트' },
-  { name: 'Dark', value: '#201d1d', label: '잉크블랙' },
-];
-
-const PRESET_CSS_TEMPLATES = [
-  {
-    name: '10x10 Standard Grid (100 Slots)',
-    cols: 'repeat(10, 1fr)',
-    rows: 'repeat(10, 1fr)',
-    gap: '4px',
-    areas: ''
-  },
-  {
-    name: '10x10 Card Sheet (100 Cards)',
-    cols: 'repeat(10, 1fr)',
-    rows: 'repeat(10, 1fr)',
-    gap: '4px',
-    areas: ''
-  },
-  {
-    name: 'Game Battle HUD (3x3)',
-    cols: '240px 1fr 280px',
-    rows: '64px 1fr 120px',
-    gap: '8px',
-    areas: `"header header header"\n"sidebar main rightbar"\n"footer footer footer"`
-  },
-  {
-    name: 'Holy Grail Web Layout',
-    cols: '200px 1fr 180px',
-    rows: '60px 1fr 50px',
-    gap: '12px',
-    areas: `"header header header"\n"nav content aside"\n"footer footer footer"`
-  }
-];
-
-const getElementEmoji = (element?: string): string => {
-  switch (element) {
-    case 'fire': return '🔥';
-    case 'water': return '💧';
-    case 'air':
-    case 'wind': return '⚡';
-    case 'earth':
-    case 'land': return '🌿';
-    case 'human': return '👤';
-    case 'undead': return '💀';
-    case 'elf': return '🧝';
-    case 'dwarf': return '⛏️';
-    case 'monster': return '👾';
-    case 'robot': return '🤖';
-    case 'dragon': return '🐉';
-    default: return '✨';
-  }
-};
 
 interface DrawGridOptions {
   totalW: number;
@@ -113,17 +31,9 @@ interface DrawGridOptions {
   gridRows: number;
   cellW: number;
   cellH: number;
-  offsetX: number;
-  offsetY: number;
-  colGap: number;
-  rowGap: number;
   gridColor: string;
   gridLineWidth: number;
-  gridLineStyle: 'solid' | 'dashed' | 'dotted';
-  gridOpacity: number;
   showCellNumbers: boolean;
-  showCrosshairs: boolean;
-  showDiagonals: boolean;
 }
 
 /**
@@ -135,73 +45,28 @@ const drawInspectionGridOnCanvas = (ctx: CanvasRenderingContext2D, opts: DrawGri
     gridRows,
     cellW,
     cellH,
-    offsetX,
-    offsetY,
-    colGap,
-    rowGap,
     gridColor,
     gridLineWidth,
-    gridLineStyle,
-    gridOpacity,
-    showCellNumbers,
-    showCrosshairs,
-    showDiagonals
+    showCellNumbers
   } = opts;
 
   ctx.save();
   ctx.strokeStyle = gridColor;
   ctx.lineWidth = gridLineWidth;
-  ctx.globalAlpha = gridOpacity / 100;
-
-  // 선 스타일에 따른 라인 대시 설정
-  if (gridLineStyle === 'dashed') {
-    ctx.setLineDash([Math.max(6, gridLineWidth * 5), Math.max(3, gridLineWidth * 3)]);
-  } else if (gridLineStyle === 'dotted') {
-    ctx.setLineDash([Math.max(2, gridLineWidth), Math.max(2, gridLineWidth * 2)]);
-  } else {
-    ctx.setLineDash([]);
-  }
 
   for (let r = 0; r < gridRows; r++) {
     for (let c = 0; c < gridCols; c++) {
       const idx = r * gridCols + c;
-      const x = offsetX + c * (cellW + colGap);
-      const y = offsetY + r * (cellH + rowGap);
+      const x = c * cellW;
+      const y = r * cellH;
 
       // 1. 격자 셀 테두리 스트로크
       ctx.strokeRect(x, y, cellW, cellH);
 
-      // 2. 셀 중심 십자선 가이드
-      if (showCrosshairs) {
-        ctx.save();
-        ctx.globalAlpha = (gridOpacity / 100) * 0.45;
-        ctx.beginPath();
-        ctx.moveTo(x, y + cellH / 2);
-        ctx.lineTo(x + cellW, y + cellH / 2);
-        ctx.moveTo(x + cellW / 2, y);
-        ctx.lineTo(x + cellW / 2, y + cellH);
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      // 3. 셀 대각선 X 가이드
-      if (showDiagonals) {
-        ctx.save();
-        ctx.globalAlpha = (gridOpacity / 100) * 0.35;
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x + cellW, y + cellH);
-        ctx.moveTo(x + cellW, y);
-        ctx.lineTo(x, y + cellH);
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      // 4. 셀 인덱스 번호 (#1 ~ #N) 렌더링
+      // 2. 셀 인덱스 번호 (#1 ~ #N) 렌더링
       if (showCellNumbers) {
         ctx.save();
-        ctx.setLineDash([]); // 번호 텍스트는 항상 실선 테두리
-        const fontSize = Math.max(10, Math.min(28, Math.round(Math.min(cellW, cellH) * 0.16)));
+        const fontSize = Math.max(10, Math.min(26, Math.round(Math.min(cellW, cellH) * 0.16)));
         ctx.font = `bold ${fontSize}px monospace`;
         ctx.textAlign = 'left';
         ctx.textBaseline = 'top';
@@ -233,13 +98,12 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
   onNavigate
 }) => {
   const isKo = language === 'ko';
-  const [activeTab, setActiveTab] = useState<TabType>('image-inspector');
 
-  // ══════════════════════════════════════════════════════════════════════════════
-  // TAB 1: 10x10 기본 이미지 그리드 검수기 상태 (기본값: 10 * 10)
-  // ══════════════════════════════════════════════════════════════════════════════
+  // 그리드 규격 (기본 10x10)
   const [gridCols, setGridCols] = useState<number>(10);
   const [gridRows, setGridRows] = useState<number>(10);
+
+  // 이미지 상태
   const [loadedImageSrc, setLoadedImageSrc] = useState<string | null>(null);
   const [imageFileName, setImageFileName] = useState<string>('');
   const [imageNaturalSize, setImageNaturalSize] = useState<{ width: number; height: number } | null>(null);
@@ -248,43 +112,31 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
   const [imageLoading, setImageLoading] = useState<boolean>(false);
   const [imageError, setImageError] = useState<string | null>(null);
 
-  // 그리드 오버레이 커스텀
-  const [showGridOverlay, setShowGridOverlay] = useState<boolean>(true);
-  const [showCellNumbers, setShowCellNumbers] = useState<boolean>(true);
-  const [showCrosshairs, setShowCrosshairs] = useState<boolean>(false);
-  const [showDiagonals, setShowDiagonals] = useState<boolean>(false);
-  const [gridColor, setGridColor] = useState<string>('#10b981');
-  const [gridLineWidth, setGridLineWidth] = useState<number>(1);
-  const [gridLineStyle, setGridLineStyle] = useState<'solid' | 'dashed' | 'dotted'>('solid');
-  const [gridOpacity, setGridOpacity] = useState<number>(85); // 0~100%
-
-  // 오프셋 & 간격 미세 조정
-  const [offsetX, setOffsetX] = useState<number>(0);
-  const [offsetY, setOffsetY] = useState<number>(0);
-  const [colGap, setColGap] = useState<number>(0);
-  const [rowGap, setRowGap] = useState<number>(0);
-
-  // 줌 & 뷰 컨트롤
-  const [zoomLevel, setZoomLevel] = useState<number>(100); // %
-  const [selectedCellIndex, setSelectedCellIndex] = useState<number | null>(0); // 0-indexed (0..99)
-  const [copiedNotification, setCopiedNotification] = useState<string | null>(null);
+  // 뷰어 줌 레벨 (캔버스 뷰 확대/축소)
+  const [zoomLevel, setZoomLevel] = useState<number>(100);
 
   // ── 원본 이미지 변환 상태 (확대/축소 및 상하좌우 이동) ──
-  const [imageScale, setImageScale] = useState<number>(1.0); // 1.0 = 100% (0.1 ~ 5.0)
+  const [imageScale, setImageScale] = useState<number>(1.0); // 1.0 = 100%
   const [imageOffsetX, setImageOffsetX] = useState<number>(0); // px
   const [imageOffsetY, setImageOffsetY] = useState<number>(0); // px
+  
+  // ── 원본 이미지 선택 상태 (선택 시에만 이동/확대축소 조작 가능) ──
+  const [isImageSelected, setIsImageSelected] = useState<boolean>(true);
   const [isPanningImage, setIsPanningImage] = useState<boolean>(false);
-  const [dragMovedDistance, setDragMovedDistance] = useState<number>(0);
   const dragStartRef = useRef<{ x: number; y: number; startOffsetX: number; startOffsetY: number } | null>(null);
 
-  // 캔버스 및 파일 인풋 ref
+  // 그리드 옵션
+  const [showGridOverlay, setShowGridOverlay] = useState<boolean>(true);
+  const [showCellNumbers, setShowCellNumbers] = useState<boolean>(true);
+  const gridColor = '#10b981'; // 선명한 에메랄드 그린
+  const gridLineWidth = 1;
+
+  // Ref
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const imageElementRef = useRef<HTMLImageElement | null>(null);
-  const cropCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const previewGridCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  // 10x10 기본 번호 패턴 캔버스 생성 함수 (초기 로드용 데모)
+  // 10x10 기본 번호 패턴 캔버스 생성 함수 (초기 로드 데모)
   const generate10x10TestPattern = () => {
     const canvas = document.createElement('canvas');
     const size = 1000;
@@ -306,15 +158,9 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
         const x = c * cellW;
         const y = r * cellH;
 
-        // 셀 배경
-        const isEven = (r + c) % 2 === 0;
-        ctx.fillStyle = isEven ? '#1e293b' : '#334155';
+        // 셀 배경 교차 색상
+        ctx.fillStyle = (r + c) % 2 === 0 ? '#1e293b' : '#334155';
         ctx.fillRect(x + 1, y + 1, cellW - 2, cellH - 2);
-
-        // 셀 내부 장식
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(x + 3, y + 3, cellW - 6, cellH - 6);
 
         // 셀 번호 텍스트
         ctx.fillStyle = '#f8fafc';
@@ -337,6 +183,7 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     setImageScale(1.0);
     setImageOffsetX(0);
     setImageOffsetY(0);
+    setIsImageSelected(true);
     setImageError(null);
   };
 
@@ -345,10 +192,9 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     generate10x10TestPattern();
   }, []);
 
-  // 클립보드 붙여넣기 (Ctrl+V / Cmd+V) 핸들러
+  // 클립보드 붙여넣기 (Ctrl+V / Cmd+V)
   useEffect(() => {
     const handlePaste = (e: ClipboardEvent) => {
-      if (activeTab !== 'image-inspector') return;
       const items = e.clipboardData?.items;
       if (!items) return;
 
@@ -365,7 +211,7 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
 
     window.addEventListener('paste', handlePaste);
     return () => window.removeEventListener('paste', handlePaste);
-  }, [activeTab]);
+  }, []);
 
   // 로컬 파일 로드 핸들러
   const loadFile = (file: File) => {
@@ -388,6 +234,7 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
         setImageScale(1.0);
         setImageOffsetX(0);
         setImageOffsetY(0);
+        setIsImageSelected(true);
         setImageLoading(false);
       };
       img.onerror = () => {
@@ -415,24 +262,24 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
       setImageScale(1.0);
       setImageOffsetX(0);
       setImageOffsetY(0);
+      setIsImageSelected(true);
       setImageLoading(false);
     };
     img.onerror = () => {
       setLoadedImageSrc(url);
       setImageFileName(url.split('/').pop() || 'remote-image.png');
-      setImageNaturalSize({ width: 800, height: 800 });
+      setImageNaturalSize({ width: 1000, height: 1000 });
       setImageScale(1.0);
       setImageOffsetX(0);
       setImageOffsetY(0);
+      setIsImageSelected(true);
       setImageLoading(false);
-      setImageError(isKo 
-        ? '외부 이미지 로드 완료 (CORS 보호 도메인의 경우 슬라이스 저장이 제한될 수 있습니다).' 
-        : 'External image loaded (CORS restricted domains may disable canvas slicing).');
+      setImageError(isKo ? '외부 이미지 로드 완료 (CORS 도메인 제한 가능성 있음).' : 'External image loaded.');
     };
     img.src = url;
   };
 
-  // 드래그 앤 드롭 핸들러
+  // 드래그 앤 드롭 파일 로드
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDraggingFile(true);
@@ -448,26 +295,23 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     }
   };
 
-  // 계산된 셀 크기 (단위: 픽셀)
+  // 그리드 및 셀 크기 계산
   const cellCalculations = useMemo(() => {
     const totalW = imageNaturalSize?.width || 1000;
     const totalH = imageNaturalSize?.height || 1000;
-    const usableW = totalW - (gridCols - 1) * colGap;
-    const usableH = totalH - (gridRows - 1) * rowGap;
-    const cellW = Math.max(1, usableW / gridCols);
-    const cellH = Math.max(1, usableH / gridRows);
+    const cellW = Math.max(1, totalW / gridCols);
+    const cellH = Math.max(1, totalH / gridRows);
 
     return {
       totalW,
       totalH,
       cellW: Number(cellW.toFixed(2)),
       cellH: Number(cellH.toFixed(2)),
-      totalCells: gridCols * gridRows,
-      aspectRatio: (cellW / cellH).toFixed(3)
+      totalCells: gridCols * gridRows
     };
-  }, [imageNaturalSize, gridCols, gridRows, colGap, rowGap]);
+  }, [imageNaturalSize, gridCols, gridRows]);
 
-  // 원본 이미지 렌더링 위치 및 크기 계산 (화면 뷰어 DOM과 저장 캔버스의 좌표 완벽 일치)
+  // 원본 이미지 렌더링 좌표 및 크기 계산
   const imageDrawParams = useMemo(() => {
     const totalW = cellCalculations.totalW;
     const totalH = cellCalculations.totalH;
@@ -486,86 +330,33 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     };
   }, [cellCalculations.totalW, cellCalculations.totalH, imageScale, imageOffsetX, imageOffsetY]);
 
-  // 선택된 셀의 정밀 좌표 계산
-  const selectedCellCoords = useMemo(() => {
-    if (selectedCellIndex === null || selectedCellIndex < 0 || selectedCellIndex >= cellCalculations.totalCells) {
-      return null;
-    }
-    const r = Math.floor(selectedCellIndex / gridCols);
-    const c = selectedCellIndex % gridCols;
-    const x = offsetX + c * (cellCalculations.cellW + colGap);
-    const y = offsetY + r * (cellCalculations.cellH + rowGap);
-
-    return {
-      index: selectedCellIndex + 1,
-      row: r + 1,
-      col: c + 1,
-      x: Math.round(x),
-      y: Math.round(y),
-      w: Math.round(cellCalculations.cellW),
-      h: Math.round(cellCalculations.cellH)
-    };
-  }, [selectedCellIndex, gridCols, cellCalculations, offsetX, offsetY, colGap, rowGap]);
-
-  // 선택된 셀 크롭 캔버스 렌더링 (사용자가 변환한 이미지 크기 및 위치 반영)
+  // ── 프리뷰 그리드 캔버스 실시간 렌더링 ──
   useEffect(() => {
-    if (!selectedCellCoords || !loadedImageSrc || !cropCanvasRef.current) return;
-    const canvas = cropCanvasRef.current;
+    const canvas = previewGridCanvasRef.current;
+    if (!canvas) return;
+    canvas.width = cellCalculations.totalW;
+    canvas.height = cellCalculations.totalH;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      canvas.width = Math.max(1, selectedCellCoords.w);
-      canvas.height = Math.max(1, selectedCellCoords.h);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // 1. 오프스크린 캔버스에 조정된 전체 이미지 렌더링
-      const offscreen = document.createElement('canvas');
-      offscreen.width = cellCalculations.totalW;
-      offscreen.height = cellCalculations.totalH;
-      const offCtx = offscreen.getContext('2d');
-      if (offCtx) {
-        offCtx.drawImage(
-          img,
-          imageDrawParams.drawnX,
-          imageDrawParams.drawnY,
-          imageDrawParams.drawnW,
-          imageDrawParams.drawnH
-        );
-        // 2. 오프스크린 캔버스에서 선택된 셀의 좌표를 크롭
-        ctx.drawImage(
-          offscreen,
-          selectedCellCoords.x,
-          selectedCellCoords.y,
-          selectedCellCoords.w,
-          selectedCellCoords.h,
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
-      }
-    };
-    img.src = loadedImageSrc;
-  }, [selectedCellCoords, loadedImageSrc, imageDrawParams, cellCalculations]);
-
-  // 슬라이스 이미지 단독 다운로드
-  const handleDownloadSlice = () => {
-    if (!cropCanvasRef.current || !selectedCellCoords) return;
-    try {
-      const dataUrl = cropCanvasRef.current.toDataURL('image/png');
-      const a = document.createElement('a');
-      a.href = dataUrl;
-      a.download = `slice_${gridCols}x${gridRows}_cell_${String(selectedCellCoords.index).padStart(3, '0')}.png`;
-      a.click();
-    } catch (err) {
-      setImageError(isKo ? 'CORS 보안으로 인해 외부 URL 이미지의 직접 저장이 차단되었습니다.' : 'CORS restriction blocked direct slice export.');
+    if (showGridOverlay) {
+      drawInspectionGridOnCanvas(ctx, {
+        totalW: cellCalculations.totalW,
+        totalH: cellCalculations.totalH,
+        gridCols,
+        gridRows,
+        cellW: cellCalculations.cellW,
+        cellH: cellCalculations.cellH,
+        gridColor,
+        gridLineWidth,
+        showCellNumbers
+      });
     }
-  };
+  }, [cellCalculations, gridCols, gridRows, showGridOverlay, showCellNumbers]);
 
-  // 격자선 포함 검수본 또는 격자선 없는 최적화 신규 이미지 저장 공통 함수
+  // ── 이미지 저장 핸들러 (검수본 또는 순수 최적화 이미지) ──
   const handleDownloadImage = (includeGrid: boolean) => {
     if (!loadedImageSrc || !imageNaturalSize) return;
     const canvas = document.createElement('canvas');
@@ -577,10 +368,10 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
-      // 1. 캔버스 투명 클리어
+      // 1. 투명 클리어
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // 2. 사용자가 조정한 크기 및 오프셋으로 신규 이미지 렌더링
+      // 2. 조정된 크기 및 오프셋으로 원본 이미지 렌더링
       ctx.drawImage(
         img,
         imageDrawParams.drawnX,
@@ -589,7 +380,7 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
         imageDrawParams.drawnH
       );
 
-      // 3. 검수본 저장(includeGrid === true)인 경우 공통 캔버스 함수로 프리뷰와 100% 동일하게 그리드 합성
+      // 3. 검수본 저장 시 프리뷰와 100% 동일한 함수로 그리드 합성
       if (includeGrid && showGridOverlay) {
         drawInspectionGridOnCanvas(ctx, {
           totalW: cellCalculations.totalW,
@@ -598,17 +389,9 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
           gridRows,
           cellW: cellCalculations.cellW,
           cellH: cellCalculations.cellH,
-          offsetX,
-          offsetY,
-          colGap,
-          rowGap,
           gridColor,
           gridLineWidth,
-          gridLineStyle,
-          gridOpacity,
-          showCellNumbers,
-          showCrosshairs,
-          showDiagonals
+          showCellNumbers
         });
       }
 
@@ -628,67 +411,16 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     img.src = loadedImageSrc;
   };
 
-  // 격자선이 합성된 검수본 저장 핸들러
   const handleDownloadFullInspectedImage = () => handleDownloadImage(true);
-
-  // 격자선이 제외된 깨끗한 최적화 신규 이미지 저장 핸들러
   const handleDownloadCleanOptimizedImage = () => handleDownloadImage(false);
 
-  // ── 프리뷰 그리드 캔버스 실시간 렌더링 동기화 (검수본 저장 결과와 100% 일치) ──
-  useEffect(() => {
-    const canvas = previewGridCanvasRef.current;
-    if (!canvas) return;
-    canvas.width = cellCalculations.totalW;
-    canvas.height = cellCalculations.totalH;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    if (showGridOverlay) {
-      drawInspectionGridOnCanvas(ctx, {
-        totalW: cellCalculations.totalW,
-        totalH: cellCalculations.totalH,
-        gridCols,
-        gridRows,
-        cellW: cellCalculations.cellW,
-        cellH: cellCalculations.cellH,
-        offsetX,
-        offsetY,
-        colGap,
-        rowGap,
-        gridColor,
-        gridLineWidth,
-        gridLineStyle,
-        gridOpacity,
-        showCellNumbers,
-        showCrosshairs,
-        showDiagonals
-      });
-    }
-  }, [
-    cellCalculations,
-    gridCols,
-    gridRows,
-    offsetX,
-    offsetY,
-    colGap,
-    rowGap,
-    gridColor,
-    gridLineWidth,
-    gridLineStyle,
-    gridOpacity,
-    showGridOverlay,
-    showCellNumbers,
-    showCrosshairs,
-    showDiagonals
-  ]);
-
-  // ── 마우스 / 터치 포인터 드래그 핸들러 (원본 이미지 상하좌우 이동) ──
+  // ── 원본 이미지 드래그 이동 핸들러 (선택 시에만 이동 가능) ──
   const handlePointerDown = (e: React.PointerEvent) => {
     if (e.button !== 0 && e.pointerType === 'mouse') return;
+    
+    // 원본 이미지 선택 활성화 및 드래그 시작
+    setIsImageSelected(true);
     setIsPanningImage(true);
-    setDragMovedDistance(0);
     dragStartRef.current = {
       x: e.clientX,
       y: e.clientY,
@@ -701,13 +433,10 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isPanningImage || !dragStartRef.current) return;
+    if (!isPanningImage || !dragStartRef.current || !isImageSelected) return;
     const dx = e.clientX - dragStartRef.current.x;
     const dy = e.clientY - dragStartRef.current.y;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    setDragMovedDistance(dist);
 
-    // 뷰어의 줌 배율을 감안하여 마우스와 이미지의 1:1 완벽 동기화
     const scaleFactor = Math.max(0.1, zoomLevel / 100);
     const realDx = dx / scaleFactor;
     const realDy = dy / scaleFactor;
@@ -726,16 +455,18 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     }
   };
 
-  // ── 프리뷰 위 마우스 휠 스크롤 시 원본 이미지 즉시 확대/축소 ({ passive: false }) ──
+  // ── 마우스 휠 스크롤 시 원본 이미지 확대/축소 (선택된 상태일 때만 동작) ──
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const handleNativeWheel = (e: WheelEvent) => {
+      // 이미지가 선택되어 있을 때만 원본 이미지 스케일 조절
+      if (!isImageSelected) return;
+
       e.preventDefault();
       e.stopPropagation();
 
-      // 마우스 상향(deltaY < 0): 확대, 하향(deltaY > 0): 축소
       const step = e.deltaY < 0 ? 0.05 : -0.05;
       setImageScale(prev => {
         const next = Number((prev + step).toFixed(2));
@@ -745,12 +476,11 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
 
     container.addEventListener('wheel', handleNativeWheel, { passive: false });
     return () => container.removeEventListener('wheel', handleNativeWheel);
-  }, []);
+  }, [isImageSelected]);
 
-  // ── 키보드 방향키(↑, ↓, ←, →)로 원본 이미지 상하좌우 정밀 이동 (Shift 누를 시 10px, 기본 1px) ──
+  // ── 키보드 방향키(↑, ↓, ←, →)로 선택된 원본 이미지 정밀 이동 (선택 시에만) ──
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // 텍스트 인풋 포커스 중에는 조작 스킵
       if (
         document.activeElement?.tagName === 'INPUT' ||
         document.activeElement?.tagName === 'TEXTAREA' ||
@@ -758,7 +488,7 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
       ) {
         return;
       }
-      if (activeTab !== 'image-inspector') return;
+      if (!isImageSelected) return;
 
       const step = e.shiftKey ? 10 : 1;
       if (e.key === 'ArrowUp') {
@@ -778,103 +508,15 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeTab]);
-
-  const copyNotification = (text: string, msg: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedNotification(msg);
-    setTimeout(() => setCopiedNotification(null), 2000);
-  };
-
-  // ══════════════════════════════════════════════════════════════════════════════
-  // TAB 2: 100종 카드 10x10 썸네일 검수 상태
-  // ══════════════════════════════════════════════════════════════════════════════
-  const [searchQuery, setSearchQuery] = useState('');
-  const [thumbnailSize, setThumbnailSize] = useState<64 | 96 | 128>(96);
-  const [showSilhouette, setShowSilhouette] = useState(false);
-  const [filterRarity, setFilterRarity] = useState<string>('all');
-  const [filterElement, setFilterElement] = useState<string>('all');
-  const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
-
-  const promptValidation = useMemo(() => validateCharacterArtPrompts(), []);
-
-  const filteredCardIds = useMemo(() => {
-    const allIds = Array.from({ length: 100 }, (_, i) => i + 1);
-    return allIds.filter((id) => {
-      const card = CARD_DATABASE[id];
-      if (!card) return false;
-      
-      if (filterRarity !== 'all' && String(card.rarity) !== filterRarity) {
-        return false;
-      }
-      if (filterElement !== 'all' && String(card.element).toLowerCase() !== filterElement.toLowerCase()) {
-        return false;
-      }
-
-      if (!searchQuery.trim()) return true;
-      const query = searchQuery.toLowerCase();
-      const name = (card.title_dis ?? '').toLowerCase();
-      const nameEn = (card.title_en ?? '').toLowerCase();
-      const nameKo = (card.title ?? '').toLowerCase();
-      const numStr = String(id);
-      return name.includes(query) || nameEn.includes(query) || nameKo.includes(query) || numStr === query;
-    });
-  }, [searchQuery, filterRarity, filterElement]);
-
-  // ══════════════════════════════════════════════════════════════════════════════
-  // TAB 3: CSS 그리드 검수기 상태
-  // ══════════════════════════════════════════════════════════════════════════════
-  const [gridColsInput, setGridColsInput] = useState('repeat(10, 1fr)');
-  const [gridRowsInput, setGridRowsInput] = useState('repeat(10, 1fr)');
-  const [gridGapInput, setGridGapInput] = useState('4px');
-  const [gridAreasInput, setGridAreasInput] = useState('');
-
-  // CSS 그리드 파싱 및 유효성 검사
-  const gridAnalysis = useMemo(() => {
-    const errors: string[] = [];
-    const warnings: string[] = [];
-
-    const areaLines = gridAreasInput
-      .split('\n')
-      .map(line => line.trim().replace(/^["']|["']$/g, ''))
-      .filter(line => line.length > 0);
-
-    const parsedMatrix: string[][] = areaLines.map(line => line.split(/\s+/).filter(Boolean));
-
-    if (parsedMatrix.length > 0) {
-      const colCounts = parsedMatrix.map(row => row.length);
-      const firstColCount = colCounts[0];
-      const isUniformCols = colCounts.every(c => c === firstColCount);
-
-      if (!isUniformCols) {
-        errors.push(isKo 
-          ? '그리드 영역(Areas)의 행마다 컬럼 수가 일치하지 않습니다.' 
-          : 'Inconsistent column count across grid-template-areas rows.');
-      }
-    }
-
-    if (!gridColsInput.trim()) {
-      warnings.push(isKo ? 'grid-template-columns 값이 비어 있습니다.' : 'grid-template-columns is empty.');
-    }
-    if (!gridRowsInput.trim()) {
-      warnings.push(isKo ? 'grid-template-rows 값이 비어 있습니다.' : 'grid-template-rows is empty.');
-    }
-
-    return {
-      isValid: errors.length === 0,
-      errors,
-      warnings,
-      parsedMatrix,
-      rowCount: parsedMatrix.length || 10,
-      colCount: parsedMatrix[0]?.length || 10
-    };
-  }, [gridAreasInput, gridColsInput, gridRowsInput, isKo]);
+  }, [isImageSelected]);
 
   return (
     <div className="min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono flex flex-col selection:bg-amber-100">
-      {/* ── Top Header ── */}
-      <header className="sticky top-0 z-30 bg-[#fdfcfc]/95 backdrop-blur-md border-b border-[rgba(15,0,0,0.12)] px-3 sm:px-6 py-3">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      {/* ── Top Header & Slim Action Toolbar ── */}
+      <header className="sticky top-0 z-30 bg-[#fdfcfc]/95 backdrop-blur-md border-b border-[rgba(15,0,0,0.12)] px-4 py-2.5">
+        <div className="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-3">
+          
+          {/* Left: Brand & Navigation */}
           <div className="flex items-center gap-3">
             <button
               onClick={() => onNavigate('home')}
@@ -883,1337 +525,302 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
               <ArrowLeft size={14} />
               <span>{isKo ? '[← 홈으로]' : '[← HOME]'}</span>
             </button>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <span className="text-xs sm:text-sm font-black tracking-tight uppercase">
-                  {isKo ? '그리드 검수기 (10x10 기본)' : 'Grid Inspector (10x10 Default)'}
-                </span>
-                <span className="text-[9px] px-1.5 py-0.5 bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold rounded-xs">
-                  /tool/checkgrid
-                </span>
-              </div>
-              <span className="text-[10px] text-[#201d1d]/60">
-                {isKo ? '10x10 이미지 격자 정밀 검수 · 오버레이 & 슬라이스 크롭 인스펙터' : '10x10 Image Grid Inspector & Precision Overlay Slicer'}
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-black uppercase tracking-tight flex items-center gap-1.5">
+                <Grid3X3 size={16} className="text-emerald-700" />
+                <span>{isKo ? '그리드 검수기' : 'Grid Checker'}</span>
+              </span>
+              <span className="text-[10px] px-1.5 py-0.5 bg-emerald-50 text-emerald-900 border border-emerald-300 font-bold rounded-xs">
+                {gridCols}×{gridRows}
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* Center: Image Load Controls */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={(e) => e.target.files?.[0] && loadFile(e.target.files[0])}
+              className="hidden"
+            />
             <button
-              onClick={() => onNavigate('tool-makegrid')}
-              className="px-3 py-1.5 bg-[#201d1d] text-white text-xs font-bold rounded-sm hover:opacity-90 transition-opacity cursor-pointer flex items-center gap-1.5"
+              onClick={() => fileInputRef.current?.click()}
+              className="px-3 py-1.5 bg-white hover:bg-slate-50 border border-[rgba(15,0,0,0.2)] text-xs font-bold rounded-sm transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs"
             >
-              <Grid3X3 size={13} />
-              <span>{isKo ? '[+] 그리드 생성기 (/tool/makegrid)' : '[+] Grid Generator'}</span>
+              <Upload size={13} className="text-emerald-700" />
+              <span>{isKo ? '파일 열기' : 'Open File'}</span>
+            </button>
+
+            {/* URL Load Input */}
+            <div className="flex items-center border border-[rgba(15,0,0,0.2)] rounded-sm overflow-hidden bg-white">
+              <div className="pl-2 pr-1 text-slate-400">
+                <LinkIcon size={12} />
+              </div>
+              <input
+                type="text"
+                value={urlInput}
+                onChange={(e) => setUrlInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleLoadUrl()}
+                placeholder={isKo ? '이미지 URL 주소...' : 'Image URL...'}
+                className="w-36 sm:w-48 py-1 pr-2 text-xs bg-transparent focus:outline-none"
+              />
+              <button
+                onClick={() => handleLoadUrl()}
+                className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-[11px] font-bold border-l border-[rgba(15,0,0,0.15)] cursor-pointer"
+              >
+                {isKo ? '로드' : 'Load'}
+              </button>
+            </div>
+
+            <button
+              onClick={generate10x10TestPattern}
+              className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-sm border border-slate-300 transition-colors cursor-pointer flex items-center gap-1"
+              title={isKo ? '10x10 기본 테스트 번호 패턴 로드' : 'Load 10x10 Test Pattern'}
+            >
+              <Sparkles size={12} className="text-amber-600" />
+              <span>{isKo ? '10x10 패턴' : '10x10 Pattern'}</span>
+            </button>
+
+            {/* Reset Transform */}
+            {(imageScale !== 1.0 || imageOffsetX !== 0 || imageOffsetY !== 0) && (
+              <button
+                onClick={() => {
+                  setImageScale(1.0);
+                  setImageOffsetX(0);
+                  setImageOffsetY(0);
+                }}
+                className="px-2 py-1.5 text-xs text-rose-700 bg-rose-50 border border-rose-300 hover:bg-rose-100 rounded-sm font-bold cursor-pointer flex items-center gap-1"
+                title={isKo ? '원본 이미지 크기 및 위치 초기화' : 'Reset Transform'}
+              >
+                <RotateCcw size={12} />
+                <span>{isKo ? '위치 리셋' : 'Reset'}</span>
+              </button>
+            )}
+          </div>
+
+          {/* Right: Grid Toggles & Save Buttons */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Grid Toggle */}
+            <button
+              onClick={() => setShowGridOverlay(!showGridOverlay)}
+              className={cn(
+                "px-2.5 py-1.5 text-xs font-bold rounded-sm border cursor-pointer flex items-center gap-1 transition-colors",
+                showGridOverlay ? "bg-emerald-50 text-emerald-900 border-emerald-400" : "bg-white text-slate-500 border-slate-300"
+              )}
+              title={isKo ? '그리드 오버레이 켜기/끄기' : 'Toggle Grid'}
+            >
+              {showGridOverlay ? <Eye size={12} /> : <EyeOff size={12} />}
+              <span>{showGridOverlay ? (isKo ? '격자 ON' : 'Grid ON') : (isKo ? '격자 OFF' : 'Grid OFF')}</span>
+            </button>
+
+            {/* Number Toggle */}
+            <button
+              onClick={() => setShowCellNumbers(!showCellNumbers)}
+              className={cn(
+                "px-2 py-1.5 text-xs font-bold rounded-sm border cursor-pointer transition-colors",
+                showCellNumbers ? "bg-slate-100 text-slate-800 border-slate-300" : "bg-white text-slate-400 border-slate-200"
+              )}
+              title={isKo ? '셀 번호 (#1~#100) 표시 토글' : 'Toggle Cell Numbers'}
+            >
+              #1~#100
+            </button>
+
+            <div className="h-5 w-[1px] bg-slate-200 mx-0.5 hidden sm:block" />
+
+            {/* Clean Optimized Image Save */}
+            <button
+              onClick={handleDownloadCleanOptimizedImage}
+              className="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-sm cursor-pointer flex items-center gap-1 shadow-xs"
+              title={isKo ? '격자선 없는 100칸 최적화 신규 이미지 저장' : 'Save Clean Optimized Image (No Grid)'}
+            >
+              <Sparkles size={13} />
+              <span>{isKo ? '최적화 이미지 저장' : 'Save Image'}</span>
+            </button>
+
+            {/* Full Inspected Image Save */}
+            <button
+              onClick={handleDownloadFullInspectedImage}
+              className="px-3 py-1.5 bg-[#201d1d] text-white hover:bg-black text-xs font-bold rounded-sm cursor-pointer flex items-center gap-1 shadow-xs"
+              title={isKo ? '격자선 합성 검수본 이미지 다운로드' : 'Download Inspected Image with Grid'}
+            >
+              <Download size={13} />
+              <span>{isKo ? '검수본 저장' : 'Save with Grid'}</span>
+            </button>
+          </div>
+
+        </div>
+
+        {/* Error Alert */}
+        {imageError && (
+          <div className="max-w-[1600px] mx-auto mt-2 p-2 bg-amber-50 border border-amber-300 text-amber-900 text-xs flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <AlertTriangle size={14} className="text-amber-700 shrink-0" />
+              <span>{imageError}</span>
+            </div>
+            <button onClick={() => setImageError(null)} className="text-slate-500 hover:text-black font-bold">×</button>
+          </div>
+        )}
+      </header>
+
+      {/* ── Main Canvas Workspace (오직 그리드와 원본이미지 전용) ── */}
+      <main className="flex-1 flex flex-col p-2 sm:p-4 bg-[#0f172a] relative overflow-hidden select-none">
+        
+        {/* Floating Instruction & Zoom Bar */}
+        <div className="flex items-center justify-between gap-3 mb-2 px-2 text-xs">
+          
+          {/* Status Badge: Image Selection Status */}
+          <div className="flex items-center gap-2">
+            {isImageSelected ? (
+              <div className="flex items-center gap-1.5 px-2.5 py-1 bg-cyan-950/80 text-cyan-300 border border-cyan-500/60 rounded-xs text-[11px] font-bold shadow-xs">
+                <MousePointer size={12} className="animate-pulse text-cyan-400" />
+                <span>{isKo ? '원본 이미지 선택됨 · 드래그: 이동 · 휠: 확대/축소' : 'Image Selected · Drag: Move · Wheel: Zoom'}</span>
+                <span className="text-[10px] text-cyan-400/80 font-mono ml-1">
+                  ({Math.round(imageScale * 100)}% · X:{imageOffsetX} Y:{imageOffsetY})
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-800/80 text-slate-300 border border-slate-600 rounded-xs text-[11px]">
+                <Hand size={12} />
+                <span>{isKo ? '원본 이미지를 클릭/드래그하여 선택하세요' : 'Click/drag original image to select and move'}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Viewer Zoom Level */}
+          <div className="flex items-center gap-1 bg-slate-900/90 border border-slate-700 px-2 py-0.5 rounded-sm text-slate-200">
+            <button
+              onClick={() => setZoomLevel(prev => Math.max(25, prev - 25))}
+              className="p-1 hover:text-white hover:bg-slate-800 rounded-xs cursor-pointer"
+              title={isKo ? '뷰 축소' : 'Zoom Out'}
+            >
+              <ZoomOut size={13} />
+            </button>
+            <span className="text-[11px] font-mono font-bold w-12 text-center text-emerald-400">
+              {zoomLevel}%
+            </span>
+            <button
+              onClick={() => setZoomLevel(prev => Math.min(400, prev + 25))}
+              className="p-1 hover:text-white hover:bg-slate-800 rounded-xs cursor-pointer"
+              title={isKo ? '뷰 확대' : 'Zoom In'}
+            >
+              <ZoomIn size={13} />
+            </button>
+            <button
+              onClick={() => setZoomLevel(100)}
+              className="px-1.5 py-0.5 text-[10px] font-bold bg-slate-800 hover:bg-slate-700 rounded-xs cursor-pointer ml-1"
+            >
+              100%
             </button>
           </div>
         </div>
 
-        {/* ── Tab Selector ── */}
-        <div className="max-w-7xl mx-auto flex border-b border-[rgba(15,0,0,0.12)] mt-3 overflow-x-auto">
-          <button
-            onClick={() => setActiveTab('image-inspector')}
-            className={`px-4 py-2 text-xs font-bold border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
-              activeTab === 'image-inspector'
-                ? 'border-[#201d1d] text-[#201d1d] bg-[#201d1d]/5'
-                : 'border-transparent text-[#201d1d]/50 hover:text-[#201d1d]'
-            }`}
-          >
-            <Crosshair size={14} className="text-emerald-700" />
-            <span>{isKo ? '[1] 10x10 이미지 그리드 검수기 (기본)' : '[1] 10x10 Image Grid Inspector'}</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('cards')}
-            className={`px-4 py-2 text-xs font-bold border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
-              activeTab === 'cards'
-                ? 'border-[#201d1d] text-[#201d1d] bg-[#201d1d]/5'
-                : 'border-transparent text-[#201d1d]/50 hover:text-[#201d1d]'
-            }`}
-          >
-            <Layers size={14} />
-            <span>{isKo ? '[2] 100종 카드 10x10 DB 검수' : '[2] 100 Cards 10x10 DB'}</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('css-validator')}
-            className={`px-4 py-2 text-xs font-bold border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
-              activeTab === 'css-validator'
-                ? 'border-[#201d1d] text-[#201d1d] bg-[#201d1d]/5'
-                : 'border-transparent text-[#201d1d]/50 hover:text-[#201d1d]'
-            }`}
-          >
-            <FileCode size={14} />
-            <span>{isKo ? '[3] CSS 그리드 문법 & 영역 검수기' : '[3] CSS Grid Syntax Validator'}</span>
-          </button>
-        </div>
-      </header>
-
-      {/* ── Main Content Area ── */}
-      <main className="max-w-7xl mx-auto w-full p-3 sm:p-6 flex-1 flex flex-col gap-4">
-        {/* ══════════════════════════════════════════════════════════════════════════════
-            TAB 1: 10x10 이미지 그리드 검수기 (Image Grid Inspector)
-        ══════════════════════════════════════════════════════════════════════════════ */}
-        {activeTab === 'image-inspector' && (
-          <div className="space-y-4">
-            
-            {/* Top Control Bar: Image Loading & Presets */}
-            <div className="p-4 bg-white border border-[rgba(15,0,0,0.12)] space-y-3">
-              <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[rgba(15,0,0,0.1)]">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-black uppercase flex items-center gap-1.5 text-emerald-800">
-                    <Upload size={14} />
-                    <span>{isKo ? '이미지 로드 (파일 업로드 / URL 입력)' : 'Load Image (File / URL)'}</span>
-                  </span>
-                  <span className="text-[10px] text-[#201d1d]/60 bg-[#fdfcfc] px-2 py-0.5 border border-[rgba(15,0,0,0.1)]">
-                    {isKo ? 'Ctrl+V 붙여넣기 또는 드래그 앤 드롭 지원' : 'Paste Ctrl+V or Drag & Drop supported'}
-                  </span>
-                </div>
-
-                {/* 10x10 Quick Reset Button */}
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => {
-                      setGridCols(10);
-                      setGridRows(10);
-                      setOffsetX(0);
-                      setOffsetY(0);
-                      setColGap(0);
-                      setRowGap(0);
-                    }}
-                    className="px-3 py-1 bg-amber-500/10 text-amber-900 border border-amber-500/40 hover:bg-amber-500 hover:text-white text-xs font-bold rounded-sm transition-colors cursor-pointer flex items-center gap-1"
-                  >
-                    <RotateCcw size={12} />
-                    <span>{isKo ? '[10x10 기본 규격으로 리셋]' : '[Reset to 10x10]'}</span>
-                  </button>
-                  <button
-                    onClick={generate10x10TestPattern}
-                    className="px-2.5 py-1 bg-[#201d1d]/5 hover:bg-[#201d1d] hover:text-white border border-[rgba(15,0,0,0.15)] text-xs font-bold rounded-sm transition-colors cursor-pointer flex items-center gap-1"
-                  >
-                    <Sparkles size={12} />
-                    <span>{isKo ? '10x10 테스트 패턴' : '10x10 Test Pattern'}</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Two Load Modes: File Upload & URL Input */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
-                {/* 1. File Upload Button & Drag Zone (5 Cols) */}
-                <div className="lg:col-span-5 flex items-center gap-2">
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => e.target.files?.[0] && loadFile(e.target.files[0])}
-                    className="hidden"
-                  />
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-full py-2.5 px-4 bg-white hover:bg-slate-50 border-2 border-dashed border-[rgba(15,0,0,0.25)] hover:border-[#201d1d] text-xs font-bold rounded-sm transition-all cursor-pointer flex items-center justify-center gap-2"
-                  >
-                    <Upload size={15} className="text-emerald-700" />
-                    <span>{isKo ? '내 컴퓨터에서 이미지 파일 선택...' : 'Browse Local Image File...'}</span>
-                  </button>
-                </div>
-
-                {/* 2. URL Input & Load Button (7 Cols) */}
-                <div className="lg:col-span-7 flex items-center gap-1.5">
-                  <div className="relative flex-1">
-                    <LinkIcon size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#201d1d]/40" />
-                    <input
-                      type="text"
-                      value={urlInput}
-                      onChange={(e) => setUrlInput(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && handleLoadUrl()}
-                      placeholder={isKo ? 'https://... 웹 이미지 URL 주소 입력 후 Enter' : 'Enter image URL and press Enter...'}
-                      className="w-full pl-8 pr-3 py-2 text-xs border border-[rgba(15,0,0,0.15)] bg-[#fdfcfc] focus:outline-none focus:border-[#201d1d]"
-                    />
-                  </div>
-                  <button
-                    onClick={() => handleLoadUrl()}
-                    className="px-4 py-2 bg-[#201d1d] text-white text-xs font-bold rounded-sm hover:opacity-90 transition-opacity cursor-pointer whitespace-nowrap"
-                  >
-                    {isKo ? 'URL 로드' : 'Load URL'}
-                  </button>
-                </div>
-              </div>
-
-              {/* Status Message or Warning */}
-              {imageError && (
-                <div className="p-2.5 bg-amber-50 border border-amber-300 text-amber-900 text-xs flex items-center gap-2">
-                  <AlertTriangle size={14} className="text-amber-700 shrink-0" />
-                  <span>{imageError}</span>
-                </div>
-              )}
+        {/* ── Central Viewer Box ── */}
+        <div 
+          ref={containerRef}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onClick={(e) => {
+            // 배경 빈 곳 클릭 시 선택 해제
+            if (e.target === e.currentTarget) {
+              setIsImageSelected(false);
+            }
+          }}
+          className={cn(
+            "flex-1 w-full border border-dashed border-slate-700 p-4 min-h-[500px] overflow-auto flex items-center justify-center relative select-none rounded-none touch-none",
+            isDraggingFile ? "bg-emerald-950/30 border-emerald-500" : "bg-[#131b2e]"
+          )}
+        >
+          {isDraggingFile && (
+            <div className="absolute inset-0 bg-emerald-950/80 border-4 border-dashed border-emerald-400 z-50 flex flex-col items-center justify-center text-white">
+              <Upload size={48} className="animate-bounce mb-3 text-emerald-400" />
+              <span className="text-base font-bold">{isKo ? '여기에 이미지 파일을 드롭하세요' : 'Drop Image File Here'}</span>
             </div>
+          )}
 
-            {/* Main Workbench: Config Left (4 Cols) + Canvas Center/Right (8 Cols) */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-              
-              {/* ── Left Sidebar Controls (4 Cols) ── */}
-              <div className="lg:col-span-4 flex flex-col gap-4">
-                
-                {/* 1. Grid Sizing & Resolution Specs */}
-                <div className="p-4 bg-white border border-[rgba(15,0,0,0.12)] space-y-3">
-                  <div className="flex items-center justify-between pb-2 border-b border-[rgba(15,0,0,0.1)]">
-                    <span className="text-xs font-black uppercase flex items-center gap-1.5 text-slate-800">
-                      <Grid3X3 size={14} className="text-emerald-700" />
-                      <span>{isKo ? '1. 그리드 분할 규격' : '1. Grid Dimensions'}</span>
-                    </span>
-                    <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 border border-emerald-200">
-                      {gridCols} × {gridRows} ({cellCalculations.totalCells} Slots)
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-[10px] font-bold text-[#201d1d]/70 block mb-1">
-                        {isKo ? '가로 열 (Cols):' : 'Columns (Cols):'}
-                      </label>
-                      <input
-                        type="number"
-                        min={1}
-                        max={50}
-                        value={gridCols}
-                        onChange={(e) => setGridCols(Math.max(1, parseInt(e.target.value) || 1))}
-                        className="w-full text-xs p-2 border border-[rgba(15,0,0,0.15)] font-bold text-center bg-[#fdfcfc]"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-[10px] font-bold text-[#201d1d]/70 block mb-1">
-                        {isKo ? '세로 행 (Rows):' : 'Rows (Rows):'}
-                      </label>
-                      <input
-                        type="number"
-                        min={1}
-                        max={50}
-                        value={gridRows}
-                        onChange={(e) => setGridRows(Math.max(1, parseInt(e.target.value) || 1))}
-                        className="w-full text-xs p-2 border border-[rgba(15,0,0,0.15)] font-bold text-center bg-[#fdfcfc]"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Dimension Diagnostics */}
-                  <div className="p-2.5 bg-slate-50 border border-slate-200 text-[11px] space-y-1">
-                    <div className="flex justify-between text-[#201d1d]/80">
-                      <span>{isKo ? '원본 해상도:' : 'Natural Size:'}</span>
-                      <span className="font-bold">{cellCalculations.totalW} × {cellCalculations.totalH} px</span>
-                    </div>
-                    <div className="flex justify-between text-[#201d1d]/80">
-                      <span>{isKo ? '셀당 계산 규격:' : 'Calculated Cell:'}</span>
-                      <span className="font-bold text-emerald-700">{cellCalculations.cellW} × {cellCalculations.cellH} px</span>
-                    </div>
-                    <div className="flex justify-between text-[#201d1d]/80">
-                      <span>{isKo ? '셀 가로세로 비율:' : 'Cell Ratio:'}</span>
-                      <span className="font-bold">{cellCalculations.aspectRatio}:1</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 2. Original Image Transform (Scale & Position Offset) */}
-                <div className="p-4 bg-white border-2 border-emerald-500/40 bg-emerald-50/10 space-y-3">
-                  <div className="flex items-center justify-between pb-2 border-b border-[rgba(15,0,0,0.1)]">
-                    <span className="text-xs font-black uppercase flex items-center gap-1.5 text-emerald-900">
-                      <Move size={14} className="text-emerald-700" />
-                      <span>{isKo ? '2. 원본 이미지 크기 & 위치 최적화' : '2. Image Scale & Position'}</span>
-                    </span>
-                    {(imageScale !== 1.0 || imageOffsetX !== 0 || imageOffsetY !== 0) && (
-                      <button
-                        onClick={() => {
-                          setImageScale(1.0);
-                          setImageOffsetX(0);
-                          setImageOffsetY(0);
-                        }}
-                        className="text-[10px] text-rose-600 hover:underline cursor-pointer font-bold"
-                      >
-                        {isKo ? '변환 리셋' : 'Reset'}
-                      </button>
-                    )}
-                  </div>
-
-                  {/* Image Scale Slider & Step Buttons */}
-                  <div>
-                    <div className="flex justify-between text-[10px] font-bold text-[#201d1d]/80 mb-1">
-                      <span>{isKo ? '이미지 확대/축소 (Scale):' : 'Image Scale:'}</span>
-                      <span className="font-mono text-emerald-800 font-black">{Math.round(imageScale * 100)}%</span>
-                    </div>
-                    <input
-                      type="range"
-                      min={0.1}
-                      max={3.0}
-                      step={0.01}
-                      value={imageScale}
-                      onChange={(e) => setImageScale(parseFloat(e.target.value))}
-                      className="w-full cursor-pointer accent-emerald-700"
-                    />
-                    <div className="flex items-center gap-1 mt-1">
-                      <button
-                        onClick={() => setImageScale(prev => Math.max(0.1, Number((prev - 0.1).toFixed(2))))}
-                        className="flex-1 py-1 text-[10px] font-bold border border-slate-200 bg-white hover:bg-slate-50 rounded-xs cursor-pointer"
-                        title={isKo ? '10% 축소' : '-10%'}
-                      >
-                        -10%
-                      </button>
-                      <button
-                        onClick={() => setImageScale(prev => Math.max(0.1, Number((prev - 0.01).toFixed(2))))}
-                        className="flex-1 py-1 text-[10px] font-bold border border-slate-200 bg-white hover:bg-slate-50 rounded-xs cursor-pointer"
-                        title={isKo ? '1% 미세 축소' : '-1%'}
-                      >
-                        -1%
-                      </button>
-                      <button
-                        onClick={() => setImageScale(1.0)}
-                        className="px-2 py-1 text-[10px] font-bold border border-emerald-400 bg-emerald-50 text-emerald-900 rounded-xs cursor-pointer"
-                        title={isKo ? '100% 원본 배율' : '100%'}
-                      >
-                        100%
-                      </button>
-                      <button
-                        onClick={() => setImageScale(prev => Math.min(5.0, Number((prev + 0.01).toFixed(2))))}
-                        className="flex-1 py-1 text-[10px] font-bold border border-slate-200 bg-white hover:bg-slate-50 rounded-xs cursor-pointer"
-                        title={isKo ? '1% 미세 확대' : '+1%'}
-                      >
-                        +1%
-                      </button>
-                      <button
-                        onClick={() => setImageScale(prev => Math.min(5.0, Number((prev + 0.1).toFixed(2))))}
-                        className="flex-1 py-1 text-[10px] font-bold border border-slate-200 bg-white hover:bg-slate-50 rounded-xs cursor-pointer"
-                        title={isKo ? '10% 확대' : '+10%'}
-                      >
-                        +10%
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Offset X & Y Inputs */}
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div>
-                      <label className="text-[10px] font-bold text-[#201d1d]/70 block mb-0.5">
-                        {isKo ? 'X 위치 (좌우 px):' : 'Image Offset X:'}
-                      </label>
-                      <input
-                        type="number"
-                        value={imageOffsetX}
-                        onChange={(e) => setImageOffsetX(parseInt(e.target.value) || 0)}
-                        className="w-full p-1.5 border border-[rgba(15,0,0,0.15)] text-center font-bold bg-[#fdfcfc]"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-bold text-[#201d1d]/70 block mb-0.5">
-                        {isKo ? 'Y 위치 (상하 px):' : 'Image Offset Y:'}
-                      </label>
-                      <input
-                        type="number"
-                        value={imageOffsetY}
-                        onChange={(e) => setImageOffsetY(parseInt(e.target.value) || 0)}
-                        className="w-full p-1.5 border border-[rgba(15,0,0,0.15)] text-center font-bold bg-[#fdfcfc]"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Directional Pad Controls */}
-                  <div>
-                    <span className="text-[10px] font-bold text-[#201d1d]/70 block mb-1">
-                      {isKo ? '상하좌우 미세 이동 패드:' : 'Directional Nudge Pad:'}
-                    </span>
-                    <div className="flex flex-col items-center gap-1 bg-slate-50 p-2 border border-slate-200 rounded-sm">
-                      <div className="flex gap-1">
-                        <button
-                          onClick={() => setImageOffsetY(prev => prev - 10)}
-                          className="px-2 py-0.5 text-[9px] font-bold border border-slate-300 bg-white hover:bg-slate-100 rounded-xs cursor-pointer"
-                          title="-10px"
-                        >
-                          -10
-                        </button>
-                        <button
-                          onClick={() => setImageOffsetY(prev => prev - 1)}
-                          className="w-7 h-7 flex items-center justify-center border border-slate-300 bg-white hover:bg-slate-100 rounded-xs cursor-pointer"
-                          title="-1px"
-                        >
-                          <ChevronUp size={14} />
-                        </button>
-                        <button
-                          onClick={() => setImageOffsetY(prev => prev + 10)}
-                          className="px-2 py-0.5 text-[9px] font-bold border border-slate-300 bg-white hover:bg-slate-100 rounded-xs cursor-pointer"
-                          title="+10px"
-                        >
-                          +10
-                        </button>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <button
-                          onClick={() => setImageOffsetX(prev => prev - 10)}
-                          className="px-2 py-0.5 text-[9px] font-bold border border-slate-300 bg-white hover:bg-slate-100 rounded-xs cursor-pointer"
-                          title="-10px"
-                        >
-                          -10
-                        </button>
-                        <button
-                          onClick={() => setImageOffsetX(prev => prev - 1)}
-                          className="w-7 h-7 flex items-center justify-center border border-slate-300 bg-white hover:bg-slate-100 rounded-xs cursor-pointer"
-                          title="-1px"
-                        >
-                          <ChevronLeft size={14} />
-                        </button>
-                        <button
-                          onClick={() => {
-                            setImageOffsetX(0);
-                            setImageOffsetY(0);
-                          }}
-                          className="px-2 h-7 text-[9px] font-bold border border-slate-300 bg-white hover:bg-slate-100 rounded-xs cursor-pointer"
-                          title={isKo ? '위치 중앙 정렬' : 'Center Position'}
-                        >
-                          0,0
-                        </button>
-                        <button
-                          onClick={() => setImageOffsetX(prev => prev + 1)}
-                          className="w-7 h-7 flex items-center justify-center border border-slate-300 bg-white hover:bg-slate-100 rounded-xs cursor-pointer"
-                          title="+1px"
-                        >
-                          <ChevronRight size={14} />
-                        </button>
-                        <button
-                          onClick={() => setImageOffsetX(prev => prev + 10)}
-                          className="px-2 py-0.5 text-[9px] font-bold border border-slate-300 bg-white hover:bg-slate-100 rounded-xs cursor-pointer"
-                          title="+10px"
-                        >
-                          +10
-                        </button>
-                      </div>
-                      <div className="flex gap-1">
-                        <button
-                          onClick={() => setImageOffsetY(prev => prev + 1)}
-                          className="w-7 h-7 flex items-center justify-center border border-slate-300 bg-white hover:bg-slate-100 rounded-xs cursor-pointer"
-                          title="+1px"
-                        >
-                          <ChevronDown size={14} />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Real-time Dims */}
-                  <div className="p-2 bg-emerald-50/50 border border-emerald-200 text-[10px] space-y-0.5 text-emerald-950 font-mono">
-                    <div className="flex justify-between">
-                      <span>{isKo ? '적용 크기:' : 'Render Size:'}</span>
-                      <span className="font-bold">{imageDrawParams.drawnW} × {imageDrawParams.drawnH} px</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>{isKo ? '적용 위치:' : 'Render Pos:'}</span>
-                      <span className="font-bold">X:{imageDrawParams.drawnX}px, Y:{imageDrawParams.drawnY}px</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 3. Grid Overlay Styling */}
-                <div className="p-4 bg-white border border-[rgba(15,0,0,0.12)] space-y-3">
-                  <div className="flex items-center justify-between pb-2 border-b border-[rgba(15,0,0,0.1)]">
-                    <span className="text-xs font-black uppercase flex items-center gap-1.5 text-slate-800">
-                      <Sliders size={14} className="text-amber-700" />
-                      <span>{isKo ? '3. 격자선 오버레이 스타일' : '3. Overlay Styling'}</span>
-                    </span>
-                    <button
-                      onClick={() => setShowGridOverlay(!showGridOverlay)}
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-xs border cursor-pointer ${
-                        showGridOverlay 
-                          ? 'bg-emerald-700 text-white border-emerald-800' 
-                          : 'bg-slate-100 text-slate-600 border-slate-300'
-                      }`}
-                    >
-                      {showGridOverlay ? (isKo ? '격자 ON' : 'GRID ON') : (isKo ? '격자 OFF' : 'GRID OFF')}
-                    </button>
-                  </div>
-
-                  {/* Line Color Selector */}
-                  <div>
-                    <label className="text-[10px] font-bold text-[#201d1d]/70 block mb-1">
-                      {isKo ? '격자선 색상 (Line Color):' : 'Line Color:'}
-                    </label>
-                    <div className="flex flex-wrap gap-1.5">
-                      {GRID_LINE_COLORS.map((c) => (
-                        <button
-                          key={c.name}
-                          onClick={() => setGridColor(c.value)}
-                          className={cn(
-                            "px-2 py-1 text-[10px] font-bold rounded-xs border transition-all flex items-center gap-1 cursor-pointer",
-                            gridColor === c.value 
-                              ? "ring-2 ring-[#201d1d] bg-[#201d1d] text-white" 
-                              : "border-[rgba(15,0,0,0.15)] bg-white text-[#201d1d] hover:bg-slate-50"
-                          )}
-                        >
-                          <span className="w-2.5 h-2.5 rounded-full border border-black/20" style={{ backgroundColor: c.value }} />
-                          <span>{isKo ? c.label : c.name}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Width & Style */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-[10px] font-bold text-[#201d1d]/70 block mb-1">
-                        {isKo ? '선 두께 (Width):' : 'Width:'}
-                      </label>
-                      <div className="flex gap-1">
-                        {([1, 2, 3] as const).map((w) => (
-                          <button
-                            key={w}
-                            onClick={() => setGridLineWidth(w)}
-                            className={cn(
-                              "flex-1 py-1 text-xs font-bold border rounded-xs cursor-pointer",
-                              gridLineWidth === w ? "bg-[#201d1d] text-white" : "border-slate-200 hover:bg-slate-100"
-                            )}
-                          >
-                            {w}px
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="text-[10px] font-bold text-[#201d1d]/70 block mb-1">
-                        {isKo ? '선 스타일 (Style):' : 'Style:'}
-                      </label>
-                      <select
-                        value={gridLineStyle}
-                        onChange={(e) => setGridLineStyle(e.target.value as any)}
-                        className="w-full text-xs p-1.5 border border-[rgba(15,0,0,0.15)] bg-white cursor-pointer"
-                      >
-                        <option value="solid">Solid (실선)</option>
-                        <option value="dashed">Dashed (파선)</option>
-                        <option value="dotted">Dotted (점선)</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Opacity Slider */}
-                  <div>
-                    <div className="flex justify-between text-[10px] font-bold text-[#201d1d]/70 mb-1">
-                      <span>{isKo ? '격자선 투명도 (Opacity):' : 'Opacity:'}</span>
-                      <span>{gridOpacity}%</span>
-                    </div>
-                    <input
-                      type="range"
-                      min={10}
-                      max={100}
-                      value={gridOpacity}
-                      onChange={(e) => setGridOpacity(Number(e.target.value))}
-                      className="w-full cursor-pointer accent-[#201d1d]"
-                    />
-                  </div>
-
-                  {/* Toggles */}
-                  <div className="pt-2 border-t border-[rgba(15,0,0,0.1)] flex flex-col gap-1.5 text-xs">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={showCellNumbers}
-                        onChange={(e) => setShowCellNumbers(e.target.checked)}
-                        className="rounded border-slate-300 text-emerald-600 focus:ring-0"
-                      />
-                      <span className="text-[11px] font-bold">{isKo ? '셀 번호 인덱스 (#1 ~ #100) 표시' : 'Show Cell Index Numbers'}</span>
-                    </label>
-
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={showCrosshairs}
-                        onChange={(e) => setShowCrosshairs(e.target.checked)}
-                        className="rounded border-slate-300 text-emerald-600 focus:ring-0"
-                      />
-                      <span className="text-[11px]">{isKo ? '셀 중앙 십자 가이드선 표시' : 'Show Center Crosshairs'}</span>
-                    </label>
-
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={showDiagonals}
-                        onChange={(e) => setShowDiagonals(e.target.checked)}
-                        className="rounded border-slate-300 text-emerald-600 focus:ring-0"
-                      />
-                      <span className="text-[11px]">{isKo ? '셀 대각선 (X 패턴) 가이드선 표시' : 'Show Diagonal X Guides'}</span>
-                    </label>
-                  </div>
-                </div>
-
-                {/* 4. Grid Offset & Gap Fine-Tuning */}
-                <div className="p-4 bg-white border border-[rgba(15,0,0,0.12)] space-y-3">
-                  <div className="flex items-center justify-between pb-2 border-b border-[rgba(15,0,0,0.1)]">
-                    <span className="text-xs font-black uppercase flex items-center gap-1.5 text-slate-800">
-                      <Sliders size={14} className="text-blue-700" />
-                      <span>{isKo ? '4. 격자선 위치 오프셋 & 간격 보정' : '4. Grid Offset & Spacing'}</span>
-                    </span>
-                    {(offsetX !== 0 || offsetY !== 0 || colGap !== 0 || rowGap !== 0) && (
-                      <button
-                        onClick={() => {
-                          setOffsetX(0);
-                          setOffsetY(0);
-                          setColGap(0);
-                          setRowGap(0);
-                        }}
-                        className="text-[10px] text-rose-600 hover:underline cursor-pointer"
-                      >
-                        {isKo ? '오프셋 리셋' : 'Reset Offset'}
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div>
-                      <label className="text-[10px] font-bold text-[#201d1d]/70 block mb-0.5">
-                        Offset X (px):
-                      </label>
-                      <input
-                        type="number"
-                        value={offsetX}
-                        onChange={(e) => setOffsetX(parseInt(e.target.value) || 0)}
-                        className="w-full p-1.5 border border-[rgba(15,0,0,0.15)] text-center font-bold bg-[#fdfcfc]"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-bold text-[#201d1d]/70 block mb-0.5">
-                        Offset Y (px):
-                      </label>
-                      <input
-                        type="number"
-                        value={offsetY}
-                        onChange={(e) => setOffsetY(parseInt(e.target.value) || 0)}
-                        className="w-full p-1.5 border border-[rgba(15,0,0,0.15)] text-center font-bold bg-[#fdfcfc]"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-bold text-[#201d1d]/70 block mb-0.5">
-                        Col Gap (px):
-                      </label>
-                      <input
-                        type="number"
-                        min={0}
-                        value={colGap}
-                        onChange={(e) => setColGap(Math.max(0, parseInt(e.target.value) || 0))}
-                        className="w-full p-1.5 border border-[rgba(15,0,0,0.15)] text-center font-bold bg-[#fdfcfc]"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-bold text-[#201d1d]/70 block mb-0.5">
-                        Row Gap (px):
-                      </label>
-                      <input
-                        type="number"
-                        min={0}
-                        value={rowGap}
-                        onChange={(e) => setRowGap(Math.max(0, parseInt(e.target.value) || 0))}
-                        className="w-full p-1.5 border border-[rgba(15,0,0,0.15)] text-center font-bold bg-[#fdfcfc]"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
-              {/* ── Center & Right: Interactive Grid Canvas & Cell Inspector (8 Cols) ── */}
-              <div className="lg:col-span-8 flex flex-col gap-4">
-                
-                {/* Visual Canvas Viewer */}
-                <div 
-                  className={cn(
-                    "border-2 bg-white p-4 flex flex-col transition-all relative",
-                    isDraggingFile ? "border-emerald-600 bg-emerald-50/20" : "border-[rgba(15,0,0,0.15)]"
-                  )}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                >
-                  {/* Canvas Top Bar: Controls */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-[rgba(15,0,0,0.1)]">
-                    <div className="flex items-center gap-2">
-                      <Eye size={15} className="text-emerald-700" />
-                      <span className="text-xs font-black uppercase">
-                        {isKo ? '그리드 뷰어 캔버스' : 'Grid Canvas'}
-                      </span>
-                      {imageFileName && (
-                        <span className="text-[10px] font-bold text-[#201d1d]/60 bg-slate-100 px-2 py-0.5 truncate max-w-[150px]">
-                          {imageFileName}
-                        </span>
-                      )}
-                      <span className="text-[9px] text-emerald-800 bg-emerald-50 px-2 py-0.5 border border-emerald-300 font-bold hidden sm:flex items-center gap-1">
-                        <Hand size={11} />
-                        <span>{isKo ? '드래그: 원본 이미지 이동 · 휠: 확대/축소 · 방향키: 정밀 이동' : 'Drag: Pan Image · Wheel: Zoom · Arrow Keys: Nudge'}</span>
-                      </span>
-                    </div>
-
-                    {/* Zoom & Action Controls */}
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <button
-                        onClick={() => setZoomLevel(prev => Math.max(25, prev - 25))}
-                        className="p-1.5 border border-slate-300 hover:bg-slate-100 rounded-sm cursor-pointer"
-                        title={isKo ? '축소' : 'Zoom Out'}
-                      >
-                        <ZoomOut size={13} />
-                      </button>
-                      <span className="text-[11px] font-bold w-12 text-center font-mono">
-                        {zoomLevel}%
-                      </span>
-                      <button
-                        onClick={() => setZoomLevel(prev => Math.min(400, prev + 25))}
-                        className="p-1.5 border border-slate-300 hover:bg-slate-100 rounded-sm cursor-pointer"
-                        title={isKo ? '확대' : 'Zoom In'}
-                      >
-                        <ZoomIn size={13} />
-                      </button>
-                      <button
-                        onClick={() => setZoomLevel(100)}
-                        className="px-2 py-1 text-[10px] font-bold border border-slate-300 hover:bg-slate-100 rounded-sm cursor-pointer"
-                      >
-                        100%
-                      </button>
-
-                      {/* Clean Optimized Image Save (No Grid) */}
-                      <button
-                        onClick={handleDownloadCleanOptimizedImage}
-                        className="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-800 text-white text-[10px] font-bold rounded-sm cursor-pointer flex items-center gap-1 shadow-xs"
-                        title={isKo ? '격자선 없는 100칸 최적화 신규 이미지 저장' : 'Save Clean Optimized Image (No Grid)'}
-                      >
-                        <Sparkles size={12} />
-                        <span>{isKo ? '최적화 신규이미지 저장' : 'Save Clean Image'}</span>
-                      </button>
-
-                      {/* Inspected Image Save (With Grid) */}
-                      <button
-                        onClick={handleDownloadFullInspectedImage}
-                        className="px-2.5 py-1 bg-[#201d1d] text-white hover:bg-black text-[10px] font-bold rounded-sm cursor-pointer flex items-center gap-1 shadow-xs"
-                        title={isKo ? '격자선 합성 검수본 이미지 다운로드' : 'Download Inspected Image with Grid'}
-                      >
-                        <Download size={12} />
-                        <span>{isKo ? '검수본 저장' : 'Save Image'}</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Canvas Container with Scroll / Zoom */}
-                  <div 
-                    ref={containerRef}
-                    onPointerDown={handlePointerDown}
-                    onPointerMove={handlePointerMove}
-                    onPointerUp={handlePointerUp}
-                    onPointerCancel={handlePointerUp}
-                    className={cn(
-                      "w-full bg-[#1e293b] border border-dashed border-slate-700 p-4 min-h-[420px] max-h-[640px] overflow-auto flex items-center justify-center relative select-none rounded-none touch-none",
-                      isPanningImage ? "cursor-grabbing" : "cursor-grab"
-                    )}
-                  >
-                    {isDraggingFile && (
-                      <div className="absolute inset-0 bg-emerald-950/80 border-4 border-dashed border-emerald-400 z-50 flex flex-col items-center justify-center text-white">
-                        <Upload size={40} className="animate-bounce mb-2" />
-                        <span className="text-sm font-bold">{isKo ? '여기에 이미지 파일을 드롭하세요' : 'Drop Image File Here'}</span>
-                      </div>
-                    )}
-
-                    {loadedImageSrc ? (
-                      <div 
-                        className="relative transition-transform origin-center overflow-hidden border border-slate-600 bg-slate-950/80 shadow-2xl shrink-0"
-                        style={{
-                          transform: `scale(${zoomLevel / 100})`,
-                          width: cellCalculations.totalW,
-                          height: cellCalculations.totalH
-                        }}
-                      >
-                        {/* Background Base Image (조정된 크기 및 오프셋으로 렌더링) */}
-                        <img
-                          ref={imageElementRef}
-                          src={loadedImageSrc}
-                          alt="Loaded Sprite Sheet"
-                          draggable={false}
-                          className="absolute pointer-events-none select-none max-w-none transition-none"
-                          style={{
-                            width: `${imageDrawParams.drawnW}px`,
-                            height: `${imageDrawParams.drawnH}px`,
-                            left: `${imageDrawParams.drawnX}px`,
-                            top: `${imageDrawParams.drawnY}px`,
-                          }}
-                        />
-
-                        {/* Canvas Grid Overlay (검수본 저장 결과와 100% 동일한 캔버스 렌더링) */}
-                        {showGridOverlay && (
-                          <canvas
-                            ref={previewGridCanvasRef}
-                            className="absolute inset-0 pointer-events-none select-none z-10"
-                            style={{
-                              width: `${cellCalculations.totalW}px`,
-                              height: `${cellCalculations.totalH}px`,
-                            }}
-                          />
-                        )}
-
-                        {/* Selected Cell Highlight Box */}
-                        {selectedCellCoords && (
-                          <div
-                            className="absolute pointer-events-none border-2 border-amber-400 bg-amber-400/20 z-20 transition-all select-none"
-                            style={{
-                              left: `${selectedCellCoords.x}px`,
-                              top: `${selectedCellCoords.y}px`,
-                              width: `${selectedCellCoords.w}px`,
-                              height: `${selectedCellCoords.h}px`,
-                            }}
-                          >
-                            <span className="absolute left-1 top-1 text-[9px] font-mono font-black text-amber-300 bg-black/80 px-1 py-0.2 rounded-xs shadow-xs">
-                              #{selectedCellCoords.index}
-                            </span>
-                          </div>
-                        )}
-
-                        {/* Cell Click Interaction Overlay */}
-                        <div
-                          className="absolute inset-0 z-15 cursor-grab active:cursor-grabbing"
-                          onClick={(e) => {
-                            if (dragMovedDistance >= 5) return;
-                            const rect = e.currentTarget.getBoundingClientRect();
-                            const clickX = (e.clientX - rect.left) / (zoomLevel / 100);
-                            const clickY = (e.clientY - rect.top) / (zoomLevel / 100);
-
-                            const cellW = cellCalculations.cellW;
-                            const cellH = cellCalculations.cellH;
-                            const relX = clickX - offsetX;
-                            const relY = clickY - offsetY;
-
-                            if (relX >= 0 && relY >= 0) {
-                              const c = Math.floor(relX / (cellW + colGap));
-                              const r = Math.floor(relY / (cellH + rowGap));
-                              if (c >= 0 && c < gridCols && r >= 0 && r < gridRows) {
-                                const inCellX = relX - c * (cellW + colGap);
-                                const inCellY = relY - r * (cellH + rowGap);
-                                if (inCellX <= cellW && inCellY <= cellH) {
-                                  setSelectedCellIndex(r * gridCols + c);
-                                }
-                              }
-                            }
-                          }}
-                        />
-                      </div>
-                    ) : (
-                      <div className="p-8 text-center text-slate-400 text-xs flex flex-col items-center">
-                        <ImageIcon size={36} className="mb-2 opacity-50" />
-                        <span>{isKo ? '상단에서 이미지 파일을 업로드하거나 URL을 입력하세요' : 'Upload an image file or enter URL above'}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* ── Selected Cell Precision Inspector Panel ── */}
-                {selectedCellCoords && (
-                  <div className="p-4 bg-amber-50/70 border-2 border-amber-300 space-y-3">
-                    <div className="flex items-center justify-between border-b border-amber-200 pb-2">
-                      <div className="flex items-center gap-2">
-                        <Scissors size={15} className="text-amber-800" />
-                        <span className="text-xs font-black uppercase text-amber-950">
-                          {isKo ? `셀 #${selectedCellCoords.index} 정밀 크롭 & 좌표 인스펙터` : `Cell #${selectedCellCoords.index} Inspector & Slicer`}
-                        </span>
-                        <span className="text-[10px] px-1.5 py-0.5 bg-amber-200 text-amber-900 font-bold">
-                          Row {selectedCellCoords.row} · Col {selectedCellCoords.col}
-                        </span>
-                      </div>
-
-                      {copiedNotification && (
-                        <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 border border-emerald-300">
-                          ✓ {copiedNotification}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                      {/* Left: Cropped Slice Canvas Preview (4 Cols) */}
-                      <div className="md:col-span-4 flex flex-col items-center justify-center p-2 bg-slate-900 border border-slate-700 rounded-sm">
-                        <div className="w-full flex items-center justify-between text-[10px] text-slate-400 font-mono mb-1.5 px-1">
-                          <span>SLICE CROP</span>
-                          <span>{selectedCellCoords.w} × {selectedCellCoords.h} px</span>
-                        </div>
-                        <div className="max-h-36 max-w-full overflow-hidden flex items-center justify-center border border-amber-400/50 bg-black/40">
-                          <canvas ref={cropCanvasRef} className="max-h-32 max-w-full object-contain" />
-                        </div>
-                        <button
-                          onClick={handleDownloadSlice}
-                          className="mt-2 w-full py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black rounded-xs transition-colors cursor-pointer flex items-center justify-center gap-1"
-                        >
-                          <Download size={13} />
-                          <span>{isKo ? '이 셀만 PNG 다운로드' : 'Download Cell Slice'}</span>
-                        </button>
-                      </div>
-
-                      {/* Right: Coordinates, CSS Sprite Code & JSON Export (8 Cols) */}
-                      <div className="md:col-span-8 flex flex-col justify-between gap-2">
-                        {/* 4 Coordinate Boxes */}
-                        <div className="grid grid-cols-4 gap-2 text-center font-mono">
-                          <div className="p-2 bg-white border border-amber-200">
-                            <span className="text-[9px] text-slate-500 block">X (Left)</span>
-                            <span className="text-xs font-black">{selectedCellCoords.x}px</span>
-                          </div>
-                          <div className="p-2 bg-white border border-amber-200">
-                            <span className="text-[9px] text-slate-500 block">Y (Top)</span>
-                            <span className="text-xs font-black">{selectedCellCoords.y}px</span>
-                          </div>
-                          <div className="p-2 bg-white border border-amber-200">
-                            <span className="text-[9px] text-slate-500 block">Width</span>
-                            <span className="text-xs font-black text-emerald-700">{selectedCellCoords.w}px</span>
-                          </div>
-                          <div className="p-2 bg-white border border-amber-200">
-                            <span className="text-[9px] text-slate-500 block">Height</span>
-                            <span className="text-xs font-black text-emerald-700">{selectedCellCoords.h}px</span>
-                          </div>
-                        </div>
-
-                        {/* Quick Code Snippet Copy Buttons */}
-                        <div className="space-y-1.5">
-                          <div className="flex items-center justify-between text-[10px] font-bold text-slate-600">
-                            <span>CSS Background Position:</span>
-                            <button
-                              onClick={() => {
-                                const css = `background-position: -${selectedCellCoords.x}px -${selectedCellCoords.y}px; width: ${selectedCellCoords.w}px; height: ${selectedCellCoords.h}px;`;
-                                copyNotification(css, isKo ? 'CSS 복사됨' : 'CSS Copied');
-                              }}
-                              className="text-amber-900 hover:underline flex items-center gap-1 cursor-pointer"
-                            >
-                              <Copy size={11} />
-                              <span>{isKo ? 'CSS 복사' : 'Copy CSS'}</span>
-                            </button>
-                          </div>
-                          <div className="p-2 bg-slate-900 text-slate-100 font-mono text-[11px] overflow-x-auto select-all">
-                            background-position: -{selectedCellCoords.x}px -{selectedCellCoords.y}px; width: {selectedCellCoords.w}px; height: {selectedCellCoords.h}px;
-                          </div>
-
-                          <div className="flex items-center justify-between text-[10px] font-bold text-slate-600">
-                            <span>JSON Sprite Coordinate:</span>
-                            <button
-                              onClick={() => {
-                                const json = JSON.stringify({
-                                  index: selectedCellCoords.index,
-                                  row: selectedCellCoords.row,
-                                  col: selectedCellCoords.col,
-                                  x: selectedCellCoords.x,
-                                  y: selectedCellCoords.y,
-                                  width: selectedCellCoords.w,
-                                  height: selectedCellCoords.h
-                                }, null, 2);
-                                copyNotification(json, isKo ? 'JSON 복사됨' : 'JSON Copied');
-                              }}
-                              className="text-amber-900 hover:underline flex items-center gap-1 cursor-pointer"
-                            >
-                              <Copy size={11} />
-                              <span>{isKo ? 'JSON 복사' : 'Copy JSON'}</span>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+          {loadedImageSrc ? (
+            /* 10x10 격자 기준 프레임 (그리드 프레임 박스) */
+            <div 
+              className="relative transition-transform origin-center overflow-hidden border border-slate-600 bg-slate-950 shadow-2xl shrink-0"
+              style={{
+                transform: `scale(${zoomLevel / 100})`,
+                width: `${cellCalculations.totalW}px`,
+                height: `${cellCalculations.totalH}px`
+              }}
+            >
+              {/* ── 원본 이미지 레이어 (선택 시 드래그 이동 및 휠 확대축소) ── */}
+              <div
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                onPointerCancel={handlePointerUp}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsImageSelected(true);
+                }}
+                className={cn(
+                  "absolute transition-none select-none",
+                  isPanningImage ? "cursor-grabbing" : "cursor-grab"
                 )}
-
-              </div>
-            </div>
-
-          </div>
-        )}
-
-        {/* ══════════════════════════════════════════════════════════════════════════════
-            TAB 2: 100 CARDS 10x10 THUMBNAIL & SILHOUETTE INSPECTION
-        ══════════════════════════════════════════════════════════════════════════════ */}
-        {activeTab === 'cards' && (
-          <div className="space-y-4">
-            {/* Quick Diagnostic Summary Banner */}
-            <div className="p-3 sm:p-4 bg-white border border-[rgba(15,0,0,0.12)] rounded-none flex flex-wrap items-center justify-between gap-3 shadow-xs">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-emerald-100 border border-emerald-300 text-emerald-800 flex items-center justify-center font-bold">
-                  <ShieldCheck size={20} />
-                </div>
-                <div>
-                  <div className="text-xs font-bold flex items-center gap-2">
-                    <span>{isKo ? '100종 카드 10x10 그리드 무결성 상태:' : '100 Cards 10x10 Grid Status:'}</span>
-                    <span className="text-emerald-700 font-black">
-                      {promptValidation.valid ? '100% VALID' : 'ACTION REQUIRED'}
-                    </span>
-                  </div>
-                  <div className="text-[11px] text-[#201d1d]/70">
-                    {isKo 
-                      ? `총 100개 카드 중 ${filteredCardIds.length}개 표시 중 (누락 0건, 규격 10x10)` 
-                      : `Displaying ${filteredCardIds.length} of 100 cards (0 missing, 10x10 format)`}
-                  </div>
-                </div>
-              </div>
-
-              {/* Size & Silhouette Toggles */}
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="flex items-center gap-1 border border-[rgba(15,0,0,0.15)] bg-[#fdfcfc] p-1 rounded-sm">
-                  <span className="text-[10px] font-bold text-[#201d1d]/60 px-1">{isKo ? '크기:' : 'Size:'}</span>
-                  {([64, 96, 128] as const).map((sz) => (
-                    <button
-                      key={sz}
-                      onClick={() => setThumbnailSize(sz)}
-                      className={`px-2 py-0.5 text-[10px] font-bold rounded-xs transition-colors cursor-pointer ${
-                        thumbnailSize === sz
-                          ? 'bg-[#201d1d] text-white'
-                          : 'text-[#201d1d]/70 hover:bg-[#201d1d]/10'
-                      }`}
-                    >
-                      {sz}px
-                    </button>
-                  ))}
-                </div>
-
-                <button
-                  onClick={() => setShowSilhouette(!showSilhouette)}
-                  className={`px-3 py-1.5 border text-xs font-bold rounded-sm transition-colors cursor-pointer flex items-center gap-1.5 ${
-                    showSilhouette
-                      ? 'bg-purple-900 text-white border-purple-950'
-                      : 'border-[rgba(15,0,0,0.15)] bg-white text-[#201d1d] hover:bg-[#201d1d]/5'
-                  }`}
-                >
-                  {showSilhouette ? <EyeOff size={13} /> : <Eye size={13} />}
-                  <span>{isKo ? (showSilhouette ? '실루엣 해제' : '실루엣 모드') : (showSilhouette ? 'Silhouette Off' : 'Silhouette Mode')}</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Filter & Search Bar */}
-            <div className="p-3 bg-white border border-[rgba(15,0,0,0.12)] flex flex-wrap items-center gap-3">
-              <div className="relative flex-1 min-w-[200px]">
-                <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#201d1d]/40" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={isKo ? '카드 번호, 이름, 키워드 검색 (예: 1, 드래곤, 아케인)' : 'Search card No, name, keyword...'}
-                  className="w-full pl-8 pr-3 py-1.5 text-xs border border-[rgba(15,0,0,0.15)] bg-[#fdfcfc] focus:outline-none focus:border-[#201d1d]"
-                />
-              </div>
-
-              {/* Rarity Filter */}
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold text-[#201d1d]/60">{isKo ? '희귀도:' : 'Rarity:'}</span>
-                <select
-                  value={filterRarity}
-                  onChange={(e) => setFilterRarity(e.target.value)}
-                  className="text-xs p-1.5 border border-[rgba(15,0,0,0.15)] bg-white cursor-pointer"
-                >
-                  <option value="all">{isKo ? '전체 (All)' : 'All'}</option>
-                  <option value="1">1★ (Common)</option>
-                  <option value="2">2★ (Uncommon)</option>
-                  <option value="3">3★ (Rare)</option>
-                  <option value="4">4★ (Epic)</option>
-                  <option value="5">5★ (Legendary)</option>
-                </select>
-              </div>
-
-              {/* Element Filter */}
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold text-[#201d1d]/60">{isKo ? '속성:' : 'Element:'}</span>
-                <select
-                  value={filterElement}
-                  onChange={(e) => setFilterElement(e.target.value)}
-                  className="text-xs p-1.5 border border-[rgba(15,0,0,0.15)] bg-white cursor-pointer"
-                >
-                  <option value="all">{isKo ? '전체 (All)' : 'All'}</option>
-                  <option value="water">💧 WATER (물)</option>
-                  <option value="fire">🔥 FIRE (불)</option>
-                  <option value="air">⚡ AIR (바람/번개)</option>
-                  <option value="earth">🌿 EARTH (땅/대지)</option>
-                  <option value="light">✨ LIGHT (빛)</option>
-                  <option value="dark">🌑 DARK (어둠)</option>
-                </select>
-              </div>
-
-              {(searchQuery || filterRarity !== 'all' || filterElement !== 'all') && (
-                <button
-                  onClick={() => {
-                    setSearchQuery('');
-                    setFilterRarity('all');
-                    setFilterElement('all');
-                  }}
-                  className="text-[11px] text-rose-600 hover:underline flex items-center gap-1 cursor-pointer"
-                >
-                  <RotateCcw size={12} />
-                  <span>{isKo ? '필터 리셋' : 'Reset'}</span>
-                </button>
-              )}
-            </div>
-
-            {/* 10x10 Grid Matrix View */}
-            <div className="p-4 bg-white border border-[rgba(15,0,0,0.12)]">
-              <div 
-                className="grid gap-2 justify-center"
                 style={{
-                  gridTemplateColumns: `repeat(auto-fill, minmax(${thumbnailSize}px, 1fr))`
+                  width: `${imageDrawParams.drawnW}px`,
+                  height: `${imageDrawParams.drawnH}px`,
+                  left: `${imageDrawParams.drawnX}px`,
+                  top: `${imageDrawParams.drawnY}px`,
                 }}
               >
-                {filteredCardIds.map((cardId) => {
-                  const card = CARD_DATABASE[cardId];
-                  if (!card) return null;
-                  const isSelected = selectedCardId === cardId;
+                {/* 실제 원본 이미지 */}
+                <img
+                  src={loadedImageSrc}
+                  alt="Original Loaded Sheet"
+                  draggable={false}
+                  className="w-full h-full object-fill pointer-events-none select-none"
+                />
 
-                  return (
-                    <div
-                      key={cardId}
-                      onClick={() => setSelectedCardId(isSelected ? null : cardId)}
-                      className={cn(
-                        'border transition-all flex flex-col items-center justify-between p-1.5 cursor-pointer relative group',
-                        isSelected 
-                          ? 'border-[#201d1d] ring-2 ring-[#201d1d] bg-[#201d1d]/5 shadow-sm'
-                          : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:border-[#201d1d]/40'
-                      )}
-                      style={{ minHeight: thumbnailSize + 40 }}
-                    >
-                      <div className="w-full flex items-center justify-between text-[9px] font-bold text-[#201d1d]/70 mb-1">
-                        <span className="font-mono">#{cardId}</span>
-                        <span className="text-amber-700">★{card.rarity}</span>
-                      </div>
-
-                      <div className="w-full aspect-square flex items-center justify-center overflow-hidden bg-slate-900 border border-slate-700">
-                        {showSilhouette ? (
-                          <CardSilhouettePreview
-                            cardId={cardId}
-                            size={thumbnailSize - 16}
-                            language={language}
-                          />
-                        ) : (
-                          <div className="relative w-full h-full flex flex-col items-center justify-center p-1 text-center">
-                            <span className="text-[18px] mb-0.5">
-                              {getElementEmoji(card.element)}
-                            </span>
-                            <span className="text-[10px] font-black text-white line-clamp-1">
-                              {card.title_dis || card.title}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="w-full text-center mt-1">
-                        <div className="text-[10px] font-bold text-[#201d1d] truncate">
-                          {card.title_dis || card.title}
-                        </div>
-                        <div className="text-[8px] text-[#201d1d]/50 uppercase">
-                          {String(card.element || '')}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                {/* ── 선택 시 나타나는 직관적인 바운딩 박스 & 모서리 핸들 ── */}
+                {isImageSelected && (
+                  <div className="absolute inset-0 border-2 border-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.4)] pointer-events-none">
+                    {/* 4개 모서리 핸들 박스 */}
+                    <div className="absolute -top-1.5 -left-1.5 w-3 h-3 bg-white border-2 border-cyan-500" />
+                    <div className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-white border-2 border-cyan-500" />
+                    <div className="absolute -bottom-1.5 -left-1.5 w-3 h-3 bg-white border-2 border-cyan-500" />
+                    <div className="absolute -bottom-1.5 -right-1.5 w-3 h-3 bg-white border-2 border-cyan-500" />
+                  </div>
+                )}
               </div>
-            </div>
 
-            {/* Selected Card Prompt & Metadata Inspector */}
-            {selectedCardId && CARD_DATABASE[selectedCardId] && (
-              <div className="p-4 bg-amber-50/60 border-2 border-amber-300 text-[#201d1d] space-y-3 animate-in fade-in">
-                <div className="flex items-center justify-between border-b border-amber-200 pb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-black">
-                      #{selectedCardId} {CARD_DATABASE[selectedCardId].title_dis || CARD_DATABASE[selectedCardId].title}
-                    </span>
-                    <span className="text-[10px] px-1.5 py-0.5 bg-amber-200 text-amber-900 font-bold">
-                      {String(CARD_DATABASE[selectedCardId].element || '').toUpperCase()} / ★{CARD_DATABASE[selectedCardId].rarity}
-                    </span>
-                  </div>
-                  <button
-                    onClick={() => setSelectedCardId(null)}
-                    className="text-xs font-bold text-amber-900 hover:underline cursor-pointer"
-                  >
-                    [X 닫기]
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                  <div className="space-y-1">
-                    <span className="font-bold text-[10px] text-[#201d1d]/60 uppercase">시그니처 실루엣 형태 (Signature Shape):</span>
-                    <p className="p-2 bg-white border border-amber-200 text-[11px]">
-                      {getCharacterArtPrompt(selectedCardId)?.signatureShape || '기본 표준 규격 실루엣'}
-                    </p>
-                  </div>
-                  <div className="space-y-1">
-                    <span className="font-bold text-[10px] text-[#201d1d]/60 uppercase">시각적 핵심 키워드 (Visual Keywords):</span>
-                    <p className="p-2 bg-white border border-amber-200 text-[11px]">
-                      {getCharacterArtPrompt(selectedCardId)?.visualKeywords.join(', ') || 'N/A'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <span className="font-bold text-[10px] text-[#201d1d]/60 uppercase">정밀 썸네일 아트 프롬프트 (Thumbnail Prompt):</span>
-                  <p className="p-2 bg-white border border-amber-200 text-[11px] font-mono leading-relaxed select-all">
-                    {getCharacterArtPrompt(selectedCardId)?.thumbnailPrompt || 'N/A'}
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ══════════════════════════════════════════════════════════════════════════════
-            TAB 3: CSS GRID SYNTAX & AREA OVERLAP VALIDATOR
-        ══════════════════════════════════════════════════════════════════════════════ */}
-        {activeTab === 'css-validator' && (
-          <div className="space-y-4">
-            {/* Template Presets Bar */}
-            <div className="p-3 bg-white border border-[rgba(15,0,0,0.12)] flex flex-wrap items-center gap-2">
-              <span className="text-xs font-bold text-[#201d1d]/70 mr-1">{isKo ? '검수 템플릿 로드:' : 'Load Template:'}</span>
-              {PRESET_CSS_TEMPLATES.map((tmpl) => (
-                <button
-                  key={tmpl.name}
-                  onClick={() => {
-                    setGridColsInput(tmpl.cols);
-                    setGridRowsInput(tmpl.rows);
-                    setGridGapInput(tmpl.gap);
-                    setGridAreasInput(tmpl.areas);
+              {/* ── 고정된 고정밀 그리드 오버레이 (검수본 저장과 100% 동일한 캔버스) ── */}
+              {showGridOverlay && (
+                <canvas
+                  ref={previewGridCanvasRef}
+                  width={cellCalculations.totalW}
+                  height={cellCalculations.totalH}
+                  className="absolute inset-0 pointer-events-none select-none z-10"
+                  style={{
+                    width: `${cellCalculations.totalW}px`,
+                    height: `${cellCalculations.totalH}px`,
                   }}
-                  className="px-2.5 py-1 text-xs border border-[rgba(15,0,0,0.15)] bg-[#fdfcfc] hover:bg-[#201d1d] hover:text-white rounded-xs transition-colors cursor-pointer"
-                >
-                  {tmpl.name}
-                </button>
-              ))}
+                />
+              )}
             </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {/* Left Column: Code Inputs */}
-              <div className="space-y-3 p-4 bg-white border border-[rgba(15,0,0,0.12)]">
-                <h3 className="text-xs font-black uppercase tracking-tight flex items-center gap-2 border-b border-[rgba(15,0,0,0.12)] pb-2">
-                  <FileCode size={15} />
-                  <span>{isKo ? 'CSS 그리드 속성 입력 & 문법 검사' : 'CSS Grid Code Inputs'}</span>
-                </h3>
-
-                <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-[#201d1d]">
-                    grid-template-columns:
-                  </label>
-                  <input
-                    type="text"
-                    value={gridColsInput}
-                    onChange={(e) => setGridColsInput(e.target.value)}
-                    className="w-full text-xs p-2 border border-[rgba(15,0,0,0.15)] font-mono bg-[#fdfcfc]"
-                    placeholder="repeat(10, 1fr)"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-[#201d1d]">
-                    grid-template-rows:
-                  </label>
-                  <input
-                    type="text"
-                    value={gridRowsInput}
-                    onChange={(e) => setGridRowsInput(e.target.value)}
-                    className="w-full text-xs p-2 border border-[rgba(15,0,0,0.15)] font-mono bg-[#fdfcfc]"
-                    placeholder="repeat(10, 1fr)"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-[#201d1d]">
-                    gap (간격):
-                  </label>
-                  <input
-                    type="text"
-                    value={gridGapInput}
-                    onChange={(e) => setGridGapInput(e.target.value)}
-                    className="w-full text-xs p-2 border border-[rgba(15,0,0,0.15)] font-mono bg-[#fdfcfc]"
-                    placeholder="4px or 12px"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-[#201d1d]">
-                    grid-template-areas (선택):
-                  </label>
-                  <textarea
-                    value={gridAreasInput}
-                    onChange={(e) => setGridAreasInput(e.target.value)}
-                    rows={4}
-                    className="w-full text-xs p-2 border border-[rgba(15,0,0,0.15)] font-mono bg-[#fdfcfc]"
-                    placeholder={'"header header"\n"main sidebar"'}
-                  />
-                </div>
-
-                {/* Validation Status Box */}
-                <div className={cn(
-                  'p-3 border text-xs space-y-1',
-                  gridAnalysis.isValid 
-                    ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
-                    : 'bg-rose-50 border-rose-300 text-rose-900'
-                )}>
-                  <div className="font-bold flex items-center gap-1.5">
-                    {gridAnalysis.isValid ? <CheckCircle2 size={14} /> : <AlertTriangle size={14} />}
-                    <span>
-                      {gridAnalysis.isValid 
-                        ? (isKo ? '✓ 문법 및 영역 검수 통과 (정상 규격)' : '✓ CSS Grid Validated Successfully')
-                        : (isKo ? '⚠ 문법 오류 또는 직사각형 영역 불일치 감지' : '⚠ Validation Errors Detected')}
-                    </span>
-                  </div>
-                  {gridAnalysis.errors.map((err, i) => (
-                    <p key={i} className="text-[11px] pl-5">• {err}</p>
-                  ))}
-                  {gridAnalysis.warnings.map((warn, i) => (
-                    <p key={i} className="text-[11px] pl-5 text-amber-700">• [주의] {warn}</p>
-                  ))}
-                </div>
-              </div>
-
-              {/* Right Column: Live Visual Grid Rendering */}
-              <div className="space-y-3 p-4 bg-white border border-[rgba(15,0,0,0.12)] flex flex-col">
-                <h3 className="text-xs font-black uppercase tracking-tight flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] pb-2">
-                  <span className="flex items-center gap-2">
-                    <Eye size={15} />
-                    <span>{isKo ? '실시간 CSS 그리드 렌더링 미리보기' : 'Live Visual Grid Preview'}</span>
-                  </span>
-                  <button
-                    onClick={() => {
-                      const cssCode = `display: grid;\ngrid-template-columns: ${gridColsInput};\ngrid-template-rows: ${gridRowsInput};\ngap: ${gridGapInput};\n${gridAreasInput ? `grid-template-areas:\n${gridAreasInput};` : ''}`;
-                      navigator.clipboard.writeText(cssCode);
-                      copyNotification(cssCode, isKo ? 'CSS 복사됨' : 'CSS Copied');
-                    }}
-                    className="px-2 py-1 text-[10px] font-bold border border-[rgba(15,0,0,0.15)] bg-white hover:bg-[#201d1d] hover:text-white rounded-xs transition-colors cursor-pointer flex items-center gap-1"
-                  >
-                    <Copy size={12} />
-                    <span>{isKo ? 'CSS 복사' : 'Copy CSS'}</span>
-                  </button>
-                </h3>
-
-                {/* Render container */}
-                <div className="flex-1 min-h-[300px] border border-dashed border-[rgba(15,0,0,0.2)] p-4 bg-[#fdfcfc] flex items-center justify-center overflow-auto">
-                  <div 
-                    className="w-full h-full min-h-[260px] grid"
-                    style={{
-                      gridTemplateColumns: gridColsInput,
-                      gridTemplateRows: gridRowsInput,
-                      gap: gridGapInput,
-                      gridTemplateAreas: gridAreasInput || undefined
-                    }}
-                  >
-                    {Array.from({ length: 16 }).map((_, idx) => (
-                      <div
-                        key={idx}
-                        className="border border-slate-300 bg-slate-100/60 p-2 flex items-center justify-center font-bold text-xs text-slate-700"
-                      >
-                        #{idx + 1}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+          ) : (
+            <div className="p-8 text-center text-slate-400 text-xs flex flex-col items-center">
+              <Upload size={36} className="mb-2 opacity-50" />
+              <span>{isKo ? '상단에서 이미지 파일을 열거나 드롭하세요' : 'Open or drop image file above'}</span>
             </div>
-          </div>
-        )}
+          )}
+        </div>
+
+        {/* Bottom Footer Info */}
+        <div className="flex items-center justify-between text-[11px] text-slate-400 mt-2 px-2">
+          <span>{imageFileName ? `이미지: ${imageFileName} (${imageNaturalSize?.width}×${imageNaturalSize?.height}px)` : '10x10 기본 그리드'}</span>
+          <span className="text-emerald-400 font-bold">
+            {isKo ? '검수본 저장 시 화면의 그리드와 원본 이미지가 100% 동일하게 저장됩니다.' : 'What you see is 100% what is saved.'}
+          </span>
+        </div>
       </main>
-
-      {/* ── Footer ── */}
-      <footer className="mt-auto border-t border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-4 py-3 text-center text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between max-w-7xl w-full mx-auto">
-        <div className="flex items-center gap-2">
-          <span>SNSHero Revolution Grid Tools</span>
-          <span>·</span>
-          <span className="text-emerald-700 font-bold">/tool/checkgrid</span>
-        </div>
-        <div className="flex items-center gap-3 mt-2 sm:mt-0">
-          <button 
-            onClick={() => onNavigate('home')} 
-            className="hover:underline cursor-pointer"
-          >
-            {isKo ? '게임 로비로 돌아가기' : 'Return to Lobby'}
-          </button>
-        </div>
-      </footer>
     </div>
   );
 };
