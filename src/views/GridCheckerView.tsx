@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { 
   ArrowLeft, 
   Upload, 
@@ -11,10 +11,10 @@ import {
   Eye, 
   EyeOff, 
   Grid3X3, 
-  Hand, 
   MousePointer, 
-  CheckCircle2, 
-  AlertTriangle
+  AlertTriangle,
+  Scissors,
+  CheckCircle2
 } from 'lucide-react';
 import { ViewType, Language } from '../types';
 import { cn } from '../lib/utils';
@@ -22,6 +22,16 @@ import { cn } from '../lib/utils';
 interface GridCheckerViewProps {
   language?: Language;
   onNavigate: (view: ViewType) => void;
+}
+
+interface CellSlot {
+  index: number;   // 0 ~ 99
+  row: number;     // 0 ~ 9
+  col: number;     // 0 ~ 9
+  dataUrl: string; // 쪼개진 개별 이미지 조각
+  scale: number;   // 개별 확대/축소 배율 (기본 1.0)
+  offsetX: number; // 개별 X 오프셋 (px)
+  offsetY: number; // 개별 Y 오프셋 (px)
 }
 
 interface DrawGridOptions {
@@ -75,7 +85,7 @@ const drawInspectionGridOnCanvas = (ctx: CanvasRenderingContext2D, opts: DrawGri
         const textY = y + Math.max(4, cellH * 0.04);
         const textStr = `#${idx + 1}`;
 
-        // 어떤 이미지 배경에서도 뚜렷하게 식별되도록 검은색 그림자 외곽선 스트로크
+        // 검은색 그림자 외곽선
         ctx.globalAlpha = 0.85;
         ctx.strokeStyle = '#000000';
         ctx.lineWidth = Math.max(2, fontSize * 0.22);
@@ -99,36 +109,37 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
 }) => {
   const isKo = language === 'ko';
 
-  // 그리드 규격 (기본 10x10)
-  const [gridCols, setGridCols] = useState<number>(10);
-  const [gridRows, setGridRows] = useState<number>(10);
+  // 기본 10x10 규격
+  const gridCols = 10;
+  const gridRows = 10;
+  const totalCells = 100;
 
-  // 이미지 상태
-  const [loadedImageSrc, setLoadedImageSrc] = useState<string | null>(null);
+  // 100개 개별 슬롯 배열 상태
+  const [cellSlots, setCellSlots] = useState<CellSlot[]>([]);
+  const [selectedCellIndex, setSelectedCellIndex] = useState<number | null>(0);
+
+  // 이미지 메타데이터
   const [imageFileName, setImageFileName] = useState<string>('');
-  const [imageNaturalSize, setImageNaturalSize] = useState<{ width: number; height: number } | null>(null);
+  const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number }>({ width: 1000, height: 1000 });
   const [urlInput, setUrlInput] = useState<string>('');
   const [isDraggingFile, setIsDraggingFile] = useState<boolean>(false);
   const [imageLoading, setImageLoading] = useState<boolean>(false);
   const [imageError, setImageError] = useState<string | null>(null);
 
-  // 뷰어 줌 레벨 (캔버스 뷰 확대/축소)
+  // 뷰어 줌 레벨 (%)
   const [zoomLevel, setZoomLevel] = useState<number>(100);
 
-  // ── 원본 이미지 변환 상태 (확대/축소 및 상하좌우 이동) ──
-  const [imageScale, setImageScale] = useState<number>(1.0); // 1.0 = 100%
-  const [imageOffsetX, setImageOffsetX] = useState<number>(0); // px
-  const [imageOffsetY, setImageOffsetY] = useState<number>(0); // px
-  
-  // ── 원본 이미지 선택 상태 (선택 시에만 이동/확대축소 조작 가능) ──
-  const [isImageSelected, setIsImageSelected] = useState<boolean>(true);
-  const [isPanningImage, setIsPanningImage] = useState<boolean>(false);
-  const dragStartRef = useRef<{ x: number; y: number; startOffsetX: number; startOffsetY: number } | null>(null);
+  // 드래그 조작 상태
+  const [isPanning, setIsPanning] = useState<boolean>(false);
+  const dragStartRef = useRef<{ x: number; y: number; startOffsetX: number; startOffsetY: number; index: number } | null>(null);
 
-  // 그리드 옵션
+  // 마우스 호버 셀
+  const [hoveredCellIndex, setHoveredCellIndex] = useState<number | null>(null);
+
+  // 그리드 및 번호 토글
   const [showGridOverlay, setShowGridOverlay] = useState<boolean>(true);
   const [showCellNumbers, setShowCellNumbers] = useState<boolean>(true);
-  const gridColor = '#10b981'; // 선명한 에메랄드 그린
+  const gridColor = '#10b981';
   const gridLineWidth = 1;
 
   // Ref
@@ -136,8 +147,62 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const previewGridCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  // 10x10 기본 번호 패턴 캔버스 생성 함수 (초기 로드 데모)
-  const generate10x10TestPattern = () => {
+  // 계산된 셀 규격
+  const cellW = useMemo(() => imageDimensions.width / gridCols, [imageDimensions.width, gridCols]);
+  const cellH = useMemo(() => imageDimensions.height / gridRows, [imageDimensions.height, gridRows]);
+
+  // ── 원본 이미지를 100개 셀로 자동 분할(Slice)하는 함수 ──
+  const processAndSliceImage = useCallback((img: HTMLImageElement, fileName: string) => {
+    const totalW = img.naturalWidth || 1000;
+    const totalH = img.naturalHeight || 1000;
+    const cW = totalW / gridCols;
+    const cH = totalH / gridRows;
+
+    setImageDimensions({ width: totalW, height: totalH });
+    setImageFileName(fileName);
+
+    const offscreen = document.createElement('canvas');
+    offscreen.width = cW;
+    offscreen.height = cH;
+    const offCtx = offscreen.getContext('2d');
+
+    const newSlots: CellSlot[] = [];
+    for (let r = 0; r < gridRows; r++) {
+      for (let c = 0; c < gridCols; c++) {
+        const idx = r * gridCols + c;
+        const srcX = c * cW;
+        const srcY = r * cH;
+
+        if (offCtx) {
+          offCtx.clearRect(0, 0, cW, cH);
+          offCtx.drawImage(
+            img,
+            srcX, srcY, cW, cH,
+            0, 0, cW, cH
+          );
+        }
+
+        newSlots.push({
+          index: idx,
+          row: r,
+          col: c,
+          dataUrl: offscreen.toDataURL('image/png'),
+          scale: 1.0,
+          offsetX: 0,
+          offsetY: 0
+        });
+      }
+    }
+
+    setCellSlots(newSlots);
+    setSelectedCellIndex(0);
+    setImageError(null);
+    setImageLoading(false);
+  }, [gridCols, gridRows]);
+
+  // 10x10 기본 번호 패턴 데모 생성 함수
+  const generate10x10TestPattern = useCallback(() => {
+    setImageLoading(true);
     const canvas = document.createElement('canvas');
     const size = 1000;
     canvas.width = size;
@@ -145,75 +210,46 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const cellW = size / 10;
-    const cellH = size / 10;
+    const cW = size / 10;
+    const cH = size / 10;
 
-    // 배경
     ctx.fillStyle = '#0f172a';
     ctx.fillRect(0, 0, size, size);
 
     for (let r = 0; r < 10; r++) {
       for (let c = 0; c < 10; c++) {
         const idx = r * 10 + c + 1;
-        const x = c * cellW;
-        const y = r * cellH;
+        const x = c * cW;
+        const y = r * cH;
 
-        // 셀 배경 교차 색상
         ctx.fillStyle = (r + c) % 2 === 0 ? '#1e293b' : '#334155';
-        ctx.fillRect(x + 1, y + 1, cellW - 2, cellH - 2);
+        ctx.fillRect(x + 1, y + 1, cW - 2, cH - 2);
 
-        // 셀 번호 텍스트
         ctx.fillStyle = '#f8fafc';
         ctx.font = 'bold 22px monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(`#${idx}`, x + cellW / 2, y + cellH / 2 - 8);
+        ctx.fillText(`#${idx}`, x + cW / 2, y + cH / 2 - 8);
 
-        // 좌표 정보
         ctx.fillStyle = '#94a3b8';
         ctx.font = '11px monospace';
-        ctx.fillText(`R${r + 1}:C${c + 1}`, x + cellW / 2, y + cellH / 2 + 14);
+        ctx.fillText(`R${r + 1}:C${c + 1}`, x + cW / 2, y + cH / 2 + 14);
       }
     }
 
-    const dataUrl = canvas.toDataURL('image/png');
-    setLoadedImageSrc(dataUrl);
-    setImageFileName('10x10_Standard_Test_Pattern.png');
-    setImageNaturalSize({ width: size, height: size });
-    setImageScale(1.0);
-    setImageOffsetX(0);
-    setImageOffsetY(0);
-    setIsImageSelected(true);
-    setImageError(null);
-  };
+    const img = new Image();
+    img.onload = () => {
+      processAndSliceImage(img, '10x10_Standard_Test_Pattern.png');
+    };
+    img.src = canvas.toDataURL('image/png');
+  }, [processAndSliceImage]);
 
-  // 초기 마운트 시 10x10 기본 데모 패턴 로드
+  // 초기 마운트 시 10x10 기본 패턴 로드
   useEffect(() => {
     generate10x10TestPattern();
-  }, []);
+  }, [generate10x10TestPattern]);
 
-  // 클립보드 붙여넣기 (Ctrl+V / Cmd+V)
-  useEffect(() => {
-    const handlePaste = (e: ClipboardEvent) => {
-      const items = e.clipboardData?.items;
-      if (!items) return;
-
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].type.startsWith('image/')) {
-          const file = items[i].getAsFile();
-          if (file) {
-            loadFile(file);
-            break;
-          }
-        }
-      }
-    };
-
-    window.addEventListener('paste', handlePaste);
-    return () => window.removeEventListener('paste', handlePaste);
-  }, []);
-
-  // 로컬 파일 로드 핸들러
+  // 파일 로드 핸들러
   const loadFile = (file: File) => {
     if (!file.type.startsWith('image/')) {
       setImageError(isKo ? '이미지 파일만 업로드할 수 있습니다.' : 'Only image files are supported.');
@@ -222,20 +258,13 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
 
     setImageLoading(true);
     setImageError(null);
-    setImageFileName(file.name);
 
     const reader = new FileReader();
     reader.onload = (e) => {
       const result = e.target?.result as string;
       const img = new Image();
       img.onload = () => {
-        setLoadedImageSrc(result);
-        setImageNaturalSize({ width: img.naturalWidth, height: img.naturalHeight });
-        setImageScale(1.0);
-        setImageOffsetX(0);
-        setImageOffsetY(0);
-        setIsImageSelected(true);
-        setImageLoading(false);
+        processAndSliceImage(img, file.name);
       };
       img.onerror = () => {
         setImageError(isKo ? '이미지 로드에 실패했습니다.' : 'Failed to load image.');
@@ -246,7 +275,7 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     reader.readAsDataURL(file);
   };
 
-  // URL 이미지 로드 핸들러
+  // URL 이미지 로드
   const handleLoadUrl = (targetUrl?: string) => {
     const url = (targetUrl || urlInput).trim();
     if (!url) return;
@@ -256,25 +285,11 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
-      setLoadedImageSrc(url);
-      setImageFileName(url.split('/').pop() || 'remote-image.png');
-      setImageNaturalSize({ width: img.naturalWidth, height: img.naturalHeight });
-      setImageScale(1.0);
-      setImageOffsetX(0);
-      setImageOffsetY(0);
-      setIsImageSelected(true);
-      setImageLoading(false);
+      processAndSliceImage(img, url.split('/').pop() || 'remote-image.png');
     };
     img.onerror = () => {
-      setLoadedImageSrc(url);
-      setImageFileName(url.split('/').pop() || 'remote-image.png');
-      setImageNaturalSize({ width: 1000, height: 1000 });
-      setImageScale(1.0);
-      setImageOffsetX(0);
-      setImageOffsetY(0);
-      setIsImageSelected(true);
+      setImageError(isKo ? 'CORS 제약 또는 잘못된 주소로 이미지를 불러오지 못했습니다.' : 'Failed to load image from URL.');
       setImageLoading(false);
-      setImageError(isKo ? '외부 이미지 로드 완료 (CORS 도메인 제한 가능성 있음).' : 'External image loaded.');
     };
     img.src = url;
   };
@@ -295,47 +310,12 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     }
   };
 
-  // 그리드 및 셀 크기 계산
-  const cellCalculations = useMemo(() => {
-    const totalW = imageNaturalSize?.width || 1000;
-    const totalH = imageNaturalSize?.height || 1000;
-    const cellW = Math.max(1, totalW / gridCols);
-    const cellH = Math.max(1, totalH / gridRows);
-
-    return {
-      totalW,
-      totalH,
-      cellW: Number(cellW.toFixed(2)),
-      cellH: Number(cellH.toFixed(2)),
-      totalCells: gridCols * gridRows
-    };
-  }, [imageNaturalSize, gridCols, gridRows]);
-
-  // 원본 이미지 렌더링 좌표 및 크기 계산
-  const imageDrawParams = useMemo(() => {
-    const totalW = cellCalculations.totalW;
-    const totalH = cellCalculations.totalH;
-    const drawnW = totalW * imageScale;
-    const drawnH = totalH * imageScale;
-    const drawnX = (totalW - drawnW) / 2 + imageOffsetX;
-    const drawnY = (totalH - drawnH) / 2 + imageOffsetY;
-
-    return {
-      totalW,
-      totalH,
-      drawnW: Math.round(drawnW),
-      drawnH: Math.round(drawnH),
-      drawnX: Math.round(drawnX),
-      drawnY: Math.round(drawnY)
-    };
-  }, [cellCalculations.totalW, cellCalculations.totalH, imageScale, imageOffsetX, imageOffsetY]);
-
-  // ── 프리뷰 그리드 캔버스 실시간 렌더링 ──
+  // ── 프리뷰 그리드 캔버스 렌더링 ──
   useEffect(() => {
     const canvas = previewGridCanvasRef.current;
     if (!canvas) return;
-    canvas.width = cellCalculations.totalW;
-    canvas.height = cellCalculations.totalH;
+    canvas.width = imageDimensions.width;
+    canvas.height = imageDimensions.height;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -343,97 +323,45 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
 
     if (showGridOverlay) {
       drawInspectionGridOnCanvas(ctx, {
-        totalW: cellCalculations.totalW,
-        totalH: cellCalculations.totalH,
+        totalW: imageDimensions.width,
+        totalH: imageDimensions.height,
         gridCols,
         gridRows,
-        cellW: cellCalculations.cellW,
-        cellH: cellCalculations.cellH,
+        cellW,
+        cellH,
         gridColor,
         gridLineWidth,
         showCellNumbers
       });
     }
-  }, [cellCalculations, gridCols, gridRows, showGridOverlay, showCellNumbers]);
+  }, [imageDimensions, gridCols, gridRows, cellW, cellH, showGridOverlay, showCellNumbers]);
 
-  // ── 이미지 저장 핸들러 (검수본 또는 순수 최적화 이미지) ──
-  const handleDownloadImage = (includeGrid: boolean) => {
-    if (!loadedImageSrc || !imageNaturalSize) return;
-    const canvas = document.createElement('canvas');
-    canvas.width = cellCalculations.totalW;
-    canvas.height = cellCalculations.totalH;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      // 1. 투명 클리어
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // 2. 조정된 크기 및 오프셋으로 원본 이미지 렌더링
-      ctx.drawImage(
-        img,
-        imageDrawParams.drawnX,
-        imageDrawParams.drawnY,
-        imageDrawParams.drawnW,
-        imageDrawParams.drawnH
-      );
-
-      // 3. 검수본 저장 시 프리뷰와 100% 동일한 함수로 그리드 합성
-      if (includeGrid && showGridOverlay) {
-        drawInspectionGridOnCanvas(ctx, {
-          totalW: cellCalculations.totalW,
-          totalH: cellCalculations.totalH,
-          gridCols,
-          gridRows,
-          cellW: cellCalculations.cellW,
-          cellH: cellCalculations.cellH,
-          gridColor,
-          gridLineWidth,
-          showCellNumbers
-        });
-      }
-
-      try {
-        const dataUrl = canvas.toDataURL('image/png');
-        const a = document.createElement('a');
-        a.href = dataUrl;
-        const baseName = imageFileName ? imageFileName.replace(/\.[^/.]+$/, '') : 'sheet';
-        a.download = includeGrid
-          ? `grid_checked_${gridCols}x${gridRows}_${baseName}.png`
-          : `optimized_${gridCols}x${gridRows}_${baseName}.png`;
-        a.click();
-      } catch (err) {
-        setImageError(isKo ? 'CORS 제약으로 인해 다운로드가 차단되었습니다. 로컬 파일 업로드를 이용해 주세요.' : 'Download blocked due to CORS.');
-      }
-    };
-    img.src = loadedImageSrc;
-  };
-
-  const handleDownloadFullInspectedImage = () => handleDownloadImage(true);
-  const handleDownloadCleanOptimizedImage = () => handleDownloadImage(false);
-
-  // ── 원본 이미지 드래그 이동 핸들러 (선택 시에만 이동 가능) ──
-  const handlePointerDown = (e: React.PointerEvent) => {
+  // ── 개별 셀 드래그 이동 핸들러 ──
+  const handleCellPointerDown = (index: number, e: React.PointerEvent) => {
     if (e.button !== 0 && e.pointerType === 'mouse') return;
-    
-    // 원본 이미지 선택 활성화 및 드래그 시작
-    setIsImageSelected(true);
-    setIsPanningImage(true);
-    dragStartRef.current = {
-      x: e.clientX,
-      y: e.clientY,
-      startOffsetX: imageOffsetX,
-      startOffsetY: imageOffsetY
-    };
+    e.stopPropagation();
+
+    setSelectedCellIndex(index);
+    setIsPanning(true);
+
+    const targetSlot = cellSlots.find(s => s.index === index);
+    if (targetSlot) {
+      dragStartRef.current = {
+        x: e.clientX,
+        y: e.clientY,
+        startOffsetX: targetSlot.offsetX,
+        startOffsetY: targetSlot.offsetY,
+        index
+      };
+    }
+
     try {
       (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     } catch (_) {}
   };
 
-  const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isPanningImage || !dragStartRef.current || !isImageSelected) return;
+  const handleCellPointerMove = (e: React.PointerEvent) => {
+    if (!isPanning || !dragStartRef.current) return;
     const dx = e.clientX - dragStartRef.current.x;
     const dy = e.clientY - dragStartRef.current.y;
 
@@ -441,13 +369,21 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     const realDx = dx / scaleFactor;
     const realDy = dy / scaleFactor;
 
-    setImageOffsetX(Math.round(dragStartRef.current.startOffsetX + realDx));
-    setImageOffsetY(Math.round(dragStartRef.current.startOffsetY + realDy));
+    const targetIndex = dragStartRef.current.index;
+    const newOffsetX = Math.round(dragStartRef.current.startOffsetX + realDx);
+    const newOffsetY = Math.round(dragStartRef.current.startOffsetY + realDy);
+
+    setCellSlots(prev => prev.map(s => {
+      if (s.index === targetIndex) {
+        return { ...s, offsetX: newOffsetX, offsetY: newOffsetY };
+      }
+      return s;
+    }));
   };
 
-  const handlePointerUp = (e: React.PointerEvent) => {
-    if (isPanningImage) {
-      setIsPanningImage(false);
+  const handleCellPointerUp = (e: React.PointerEvent) => {
+    if (isPanning) {
+      setIsPanning(false);
       dragStartRef.current = null;
       try {
         (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
@@ -455,32 +391,37 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     }
   };
 
-  // ── 마우스 휠 스크롤 시 원본 이미지 확대/축소 (선택된 상태일 때만 동작) ──
+  // ── 마우스 휠 스크롤로 개별 셀 이미지 확대/축소 ──
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const handleNativeWheel = (e: WheelEvent) => {
-      // 이미지가 선택되어 있을 때만 원본 이미지 스케일 조절
-      if (!isImageSelected) return;
+      // 마우스가 위치한 셀 또는 현재 선택된 셀을 대상으로 확대/축소
+      const targetIdx = hoveredCellIndex !== null ? hoveredCellIndex : selectedCellIndex;
+      if (targetIdx === null) return;
 
       e.preventDefault();
       e.stopPropagation();
 
       const step = e.deltaY < 0 ? 0.05 : -0.05;
-      setImageScale(prev => {
-        const next = Number((prev + step).toFixed(2));
-        return Math.min(5.0, Math.max(0.1, next));
-      });
+      setCellSlots(prev => prev.map(s => {
+        if (s.index === targetIdx) {
+          const nextScale = Math.min(4.0, Math.max(0.1, Number((s.scale + step).toFixed(2))));
+          return { ...s, scale: nextScale };
+        }
+        return s;
+      }));
     };
 
     container.addEventListener('wheel', handleNativeWheel, { passive: false });
     return () => container.removeEventListener('wheel', handleNativeWheel);
-  }, [isImageSelected]);
+  }, [hoveredCellIndex, selectedCellIndex]);
 
-  // ── 키보드 방향키(↑, ↓, ←, →)로 선택된 원본 이미지 정밀 이동 (선택 시에만) ──
+  // ── 키보드 방향키로 선택된 셀 정밀 이동 (1px / Shift 10px) ──
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedCellIndex === null) return;
       if (
         document.activeElement?.tagName === 'INPUT' ||
         document.activeElement?.tagName === 'TEXTAREA' ||
@@ -488,35 +429,134 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
       ) {
         return;
       }
-      if (!isImageSelected) return;
 
       const step = e.shiftKey ? 10 : 1;
-      if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        setImageOffsetY(prev => prev - step);
-      } else if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        setImageOffsetY(prev => prev + step);
-      } else if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        setImageOffsetX(prev => prev - step);
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        setImageOffsetX(prev => prev + step);
-      }
+      let dx = 0;
+      let dy = 0;
+
+      if (e.key === 'ArrowUp') dy = -step;
+      else if (e.key === 'ArrowDown') dy = step;
+      else if (e.key === 'ArrowLeft') dx = -step;
+      else if (e.key === 'ArrowRight') dx = step;
+      else return;
+
+      e.preventDefault();
+      setCellSlots(prev => prev.map(s => {
+        if (s.index === selectedCellIndex) {
+          return { ...s, offsetX: s.offsetX + dx, offsetY: s.offsetY + dy };
+        }
+        return s;
+      }));
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isImageSelected]);
+  }, [selectedCellIndex]);
+
+  // ── 선택된 셀 리셋 ──
+  const handleResetSelectedCell = () => {
+    if (selectedCellIndex === null) return;
+    setCellSlots(prev => prev.map(s => {
+      if (s.index === selectedCellIndex) {
+        return { ...s, scale: 1.0, offsetX: 0, offsetY: 0 };
+      }
+      return s;
+    }));
+  };
+
+  // ── 100개 전체 셀 일괄 리셋 ──
+  const handleResetAllCells = () => {
+    setCellSlots(prev => prev.map(s => ({
+      ...s,
+      scale: 1.0,
+      offsetX: 0,
+      offsetY: 0
+    })));
+  };
+
+  // ── 100개 셀 합성 이미지 저장 (검수본 또는 최적화 이미지) ──
+  const handleDownloadImage = async (includeGrid: boolean) => {
+    if (cellSlots.length === 0) return;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = imageDimensions.width;
+    canvas.height = imageDimensions.height;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 100개 이미지 비동기 로드 및 캔버스 합성
+    const drawPromises = cellSlots.map(slot => {
+      return new Promise<void>((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          ctx.save();
+          // 개별 셀 경계 클리핑 (인접 셀 침범 방지)
+          const cellLeft = slot.col * cellW;
+          const cellTop = slot.row * cellH;
+          ctx.beginPath();
+          ctx.rect(cellLeft, cellTop, cellW, cellH);
+          ctx.clip();
+
+          // 조정된 크기 및 위치로 셀 이미지 렌더링
+          const drawnW = cellW * slot.scale;
+          const drawnH = cellH * slot.scale;
+          const drawnX = cellLeft + (cellW - drawnW) / 2 + slot.offsetX;
+          const drawnY = cellTop + (cellH - drawnH) / 2 + slot.offsetY;
+
+          ctx.drawImage(img, drawnX, drawnY, drawnW, drawnH);
+          ctx.restore();
+          resolve();
+        };
+        img.onerror = () => resolve();
+        img.src = slot.dataUrl;
+      });
+    });
+
+    await Promise.all(drawPromises);
+
+    // 검수본 저장 시 공통 그리드 및 번호 합성
+    if (includeGrid && showGridOverlay) {
+      drawInspectionGridOnCanvas(ctx, {
+        totalW: imageDimensions.width,
+        totalH: imageDimensions.height,
+        gridCols,
+        gridRows,
+        cellW,
+        cellH,
+        gridColor,
+        gridLineWidth,
+        showCellNumbers
+      });
+    }
+
+    try {
+      const dataUrl = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      const baseName = imageFileName ? imageFileName.replace(/\.[^/.]+$/, '') : 'sheet';
+      a.download = includeGrid
+        ? `grid_checked_10x10_${baseName}.png`
+        : `optimized_10x10_${baseName}.png`;
+      a.click();
+    } catch (err) {
+      setImageError(isKo ? '이미지 저장 중 오류가 발생했습니다.' : 'Failed to export image.');
+    }
+  };
+
+  const selectedSlot = useMemo(() => {
+    if (selectedCellIndex === null) return null;
+    return cellSlots.find(s => s.index === selectedCellIndex) || null;
+  }, [cellSlots, selectedCellIndex]);
 
   return (
     <div className="min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono flex flex-col selection:bg-amber-100">
-      {/* ── Top Header & Slim Action Toolbar ── */}
+      {/* ── Top Header & Action Toolbar ── */}
       <header className="sticky top-0 z-30 bg-[#fdfcfc]/95 backdrop-blur-md border-b border-[rgba(15,0,0,0.12)] px-4 py-2.5">
-        <div className="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-3">
+        <div className="max-w-[1700px] mx-auto flex flex-wrap items-center justify-between gap-3">
           
-          {/* Left: Brand & Navigation */}
+          {/* Left: Brand & Title */}
           <div className="flex items-center gap-3">
             <button
               onClick={() => onNavigate('home')}
@@ -528,10 +568,11 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
             <div className="flex items-center gap-2">
               <span className="text-sm font-black uppercase tracking-tight flex items-center gap-1.5">
                 <Grid3X3 size={16} className="text-emerald-700" />
-                <span>{isKo ? '그리드 검수기' : 'Grid Checker'}</span>
+                <span>{isKo ? '100개 개별 그리드 검수기' : '100 Slots Grid Inspector'}</span>
               </span>
-              <span className="text-[10px] px-1.5 py-0.5 bg-emerald-50 text-emerald-900 border border-emerald-300 font-bold rounded-xs">
-                {gridCols}×{gridRows}
+              <span className="text-[10px] px-1.5 py-0.5 bg-emerald-50 text-emerald-900 border border-emerald-300 font-bold rounded-xs flex items-center gap-1">
+                <Scissors size={10} className="text-emerald-700" />
+                <span>100분할 독립 조작</span>
               </span>
             </div>
           </div>
@@ -553,7 +594,7 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
               <span>{isKo ? '파일 열기' : 'Open File'}</span>
             </button>
 
-            {/* URL Load Input */}
+            {/* URL Input */}
             <div className="flex items-center border border-[rgba(15,0,0,0.2)] rounded-sm overflow-hidden bg-white">
               <div className="pl-2 pr-1 text-slate-400">
                 <LinkIcon size={12} />
@@ -563,8 +604,8 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
                 value={urlInput}
                 onChange={(e) => setUrlInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleLoadUrl()}
-                placeholder={isKo ? '이미지 URL 주소...' : 'Image URL...'}
-                className="w-36 sm:w-48 py-1 pr-2 text-xs bg-transparent focus:outline-none"
+                placeholder={isKo ? '이미지 URL 입력...' : 'Image URL...'}
+                className="w-36 sm:w-44 py-1 pr-2 text-xs bg-transparent focus:outline-none"
               />
               <button
                 onClick={() => handleLoadUrl()}
@@ -583,24 +624,28 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
               <span>{isKo ? '10x10 패턴' : '10x10 Pattern'}</span>
             </button>
 
-            {/* Reset Transform */}
-            {(imageScale !== 1.0 || imageOffsetX !== 0 || imageOffsetY !== 0) && (
+            {/* Reset Buttons */}
+            {selectedSlot && (selectedSlot.scale !== 1.0 || selectedSlot.offsetX !== 0 || selectedSlot.offsetY !== 0) && (
               <button
-                onClick={() => {
-                  setImageScale(1.0);
-                  setImageOffsetX(0);
-                  setImageOffsetY(0);
-                }}
-                className="px-2 py-1.5 text-xs text-rose-700 bg-rose-50 border border-rose-300 hover:bg-rose-100 rounded-sm font-bold cursor-pointer flex items-center gap-1"
-                title={isKo ? '원본 이미지 크기 및 위치 초기화' : 'Reset Transform'}
+                onClick={handleResetSelectedCell}
+                className="px-2 py-1.5 text-xs text-amber-800 bg-amber-50 border border-amber-300 hover:bg-amber-100 rounded-sm font-bold cursor-pointer flex items-center gap-1"
+                title={isKo ? '선택된 셀 크기/위치 초기화' : 'Reset Selected Cell'}
               >
                 <RotateCcw size={12} />
-                <span>{isKo ? '위치 리셋' : 'Reset'}</span>
+                <span>{isKo ? `#${selectedSlot.index + 1} 셀 리셋` : 'Reset Cell'}</span>
               </button>
             )}
+
+            <button
+              onClick={handleResetAllCells}
+              className="px-2 py-1.5 text-xs text-rose-700 bg-rose-50 border border-rose-300 hover:bg-rose-100 rounded-sm font-bold cursor-pointer flex items-center gap-1"
+              title={isKo ? '100개 전체 셀 위치 및 배율 초기화' : 'Reset All 100 Cells'}
+            >
+              <span>{isKo ? '전체 리셋' : 'Reset All'}</span>
+            </button>
           </div>
 
-          {/* Right: Grid Toggles & Save Buttons */}
+          {/* Right: Toggles & Save Buttons */}
           <div className="flex items-center gap-2 flex-wrap">
             {/* Grid Toggle */}
             <button
@@ -609,41 +654,39 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
                 "px-2.5 py-1.5 text-xs font-bold rounded-sm border cursor-pointer flex items-center gap-1 transition-colors",
                 showGridOverlay ? "bg-emerald-50 text-emerald-900 border-emerald-400" : "bg-white text-slate-500 border-slate-300"
               )}
-              title={isKo ? '그리드 오버레이 켜기/끄기' : 'Toggle Grid'}
             >
               {showGridOverlay ? <Eye size={12} /> : <EyeOff size={12} />}
               <span>{showGridOverlay ? (isKo ? '격자 ON' : 'Grid ON') : (isKo ? '격자 OFF' : 'Grid OFF')}</span>
             </button>
 
-            {/* Number Toggle */}
+            {/* Numbers Toggle */}
             <button
               onClick={() => setShowCellNumbers(!showCellNumbers)}
               className={cn(
                 "px-2 py-1.5 text-xs font-bold rounded-sm border cursor-pointer transition-colors",
                 showCellNumbers ? "bg-slate-100 text-slate-800 border-slate-300" : "bg-white text-slate-400 border-slate-200"
               )}
-              title={isKo ? '셀 번호 (#1~#100) 표시 토글' : 'Toggle Cell Numbers'}
             >
               #1~#100
             </button>
 
             <div className="h-5 w-[1px] bg-slate-200 mx-0.5 hidden sm:block" />
 
-            {/* Clean Optimized Image Save */}
+            {/* Clean Export */}
             <button
-              onClick={handleDownloadCleanOptimizedImage}
+              onClick={() => handleDownloadImage(false)}
               className="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-sm cursor-pointer flex items-center gap-1 shadow-xs"
-              title={isKo ? '격자선 없는 100칸 최적화 신규 이미지 저장' : 'Save Clean Optimized Image (No Grid)'}
+              title={isKo ? '격자선 없는 100칸 최적화 신규 이미지 저장' : 'Save Clean Optimized Image'}
             >
               <Sparkles size={13} />
               <span>{isKo ? '최적화 이미지 저장' : 'Save Image'}</span>
             </button>
 
-            {/* Full Inspected Image Save */}
+            {/* Inspected Export */}
             <button
-              onClick={handleDownloadFullInspectedImage}
+              onClick={() => handleDownloadImage(true)}
               className="px-3 py-1.5 bg-[#201d1d] text-white hover:bg-black text-xs font-bold rounded-sm cursor-pointer flex items-center gap-1 shadow-xs"
-              title={isKo ? '격자선 합성 검수본 이미지 다운로드' : 'Download Inspected Image with Grid'}
+              title={isKo ? '격자선과 번호가 합성된 검수본 이미지 다운로드' : 'Download Inspected Image with Grid'}
             >
               <Download size={13} />
               <span>{isKo ? '검수본 저장' : 'Save with Grid'}</span>
@@ -652,9 +695,9 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
 
         </div>
 
-        {/* Error Alert */}
+        {/* Alert Notification */}
         {imageError && (
-          <div className="max-w-[1600px] mx-auto mt-2 p-2 bg-amber-50 border border-amber-300 text-amber-900 text-xs flex items-center justify-between">
+          <div className="max-w-[1700px] mx-auto mt-2 p-2 bg-amber-50 border border-amber-300 text-amber-900 text-xs flex items-center justify-between">
             <div className="flex items-center gap-2">
               <AlertTriangle size={14} className="text-amber-700 shrink-0" />
               <span>{imageError}</span>
@@ -664,31 +707,35 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
         )}
       </header>
 
-      {/* ── Main Canvas Workspace (오직 그리드와 원본이미지 전용) ── */}
+      {/* ── Main Canvas Workspace ── */}
       <main className="flex-1 flex flex-col p-2 sm:p-4 bg-[#0f172a] relative overflow-hidden select-none">
         
-        {/* Floating Instruction & Zoom Bar */}
+        {/* Floating Instruction & Zoom Control */}
         <div className="flex items-center justify-between gap-3 mb-2 px-2 text-xs">
           
-          {/* Status Badge: Image Selection Status */}
+          {/* Active Cell Info Badge */}
           <div className="flex items-center gap-2">
-            {isImageSelected ? (
-              <div className="flex items-center gap-1.5 px-2.5 py-1 bg-cyan-950/80 text-cyan-300 border border-cyan-500/60 rounded-xs text-[11px] font-bold shadow-xs">
+            {selectedSlot ? (
+              <div className="flex items-center gap-2 px-3 py-1 bg-cyan-950/80 text-cyan-300 border border-cyan-500/60 rounded-xs text-[11px] font-bold shadow-xs">
                 <MousePointer size={12} className="animate-pulse text-cyan-400" />
-                <span>{isKo ? '원본 이미지 선택됨 · 드래그: 이동 · 휠: 확대/축소' : 'Image Selected · Drag: Move · Wheel: Zoom'}</span>
-                <span className="text-[10px] text-cyan-400/80 font-mono ml-1">
-                  ({Math.round(imageScale * 100)}% · X:{imageOffsetX} Y:{imageOffsetY})
+                <span className="text-cyan-200">
+                  {isKo ? `[#${selectedSlot.index + 1}번 셀 선택됨]` : `[Cell #${selectedSlot.index + 1} Selected]`}
+                </span>
+                <span className="text-cyan-400 font-mono">
+                  배율:{Math.round(selectedSlot.scale * 100)}% · 위치(X:{selectedSlot.offsetX}px, Y:{selectedSlot.offsetY}px)
+                </span>
+                <span className="text-[10px] text-cyan-400/70 border-l border-cyan-700/60 pl-2 hidden sm:inline">
+                  {isKo ? '마우스 드래그: 이동 · 휠: 확대/축소 · 방향키: 1px' : 'Drag: Pan · Wheel: Zoom · Arrows: 1px'}
                 </span>
               </div>
             ) : (
-              <div className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-800/80 text-slate-300 border border-slate-600 rounded-xs text-[11px]">
-                <Hand size={12} />
-                <span>{isKo ? '원본 이미지를 클릭/드래그하여 선택하세요' : 'Click/drag original image to select and move'}</span>
+              <div className="px-3 py-1 bg-slate-800/80 text-slate-300 border border-slate-600 rounded-xs text-[11px]">
+                {isKo ? '칸을 클릭하여 개별 이미지를 선택하세요' : 'Click any slot to select and manipulate'}
               </div>
             )}
           </div>
 
-          {/* Viewer Zoom Level */}
+          {/* Canvas View Zoom */}
           <div className="flex items-center gap-1 bg-slate-900/90 border border-slate-700 px-2 py-0.5 rounded-sm text-slate-200">
             <button
               onClick={() => setZoomLevel(prev => Math.max(25, prev - 25))}
@@ -716,16 +763,15 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
           </div>
         </div>
 
-        {/* ── Central Viewer Box ── */}
+        {/* ── 100개 개별 슬롯 그리드 캔버스 컨테이너 ── */}
         <div 
           ref={containerRef}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           onClick={(e) => {
-            // 배경 빈 곳 클릭 시 선택 해제
             if (e.target === e.currentTarget) {
-              setIsImageSelected(false);
+              setSelectedCellIndex(null);
             }
           }}
           className={cn(
@@ -740,67 +786,94 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
             </div>
           )}
 
-          {loadedImageSrc ? (
-            /* 10x10 격자 기준 프레임 (그리드 프레임 박스) */
+          {cellSlots.length > 0 ? (
+            /* 10x10 전체 그리드 뷰포트 */
             <div 
               className="relative transition-transform origin-center overflow-hidden border border-slate-600 bg-slate-950 shadow-2xl shrink-0"
               style={{
                 transform: `scale(${zoomLevel / 100})`,
-                width: `${cellCalculations.totalW}px`,
-                height: `${cellCalculations.totalH}px`
+                width: `${imageDimensions.width}px`,
+                height: `${imageDimensions.height}px`
               }}
             >
-              {/* ── 원본 이미지 레이어 (선택 시 드래그 이동 및 휠 확대축소) ── */}
-              <div
-                onPointerDown={handlePointerDown}
-                onPointerMove={handlePointerMove}
-                onPointerUp={handlePointerUp}
-                onPointerCancel={handlePointerUp}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsImageSelected(true);
-                }}
-                className={cn(
-                  "absolute transition-none select-none",
-                  isPanningImage ? "cursor-grabbing" : "cursor-grab"
-                )}
+              {/* ── 100개 개별 슬롯 렌더링 (각 슬롯별 독립 드래그 이동 및 휠 확대축소) ── */}
+              <div 
+                className="absolute inset-0 grid"
                 style={{
-                  width: `${imageDrawParams.drawnW}px`,
-                  height: `${imageDrawParams.drawnH}px`,
-                  left: `${imageDrawParams.drawnX}px`,
-                  top: `${imageDrawParams.drawnY}px`,
+                  gridTemplateColumns: `repeat(${gridCols}, ${cellW}px)`,
+                  gridTemplateRows: `repeat(${gridRows}, ${cellH}px)`,
                 }}
               >
-                {/* 실제 원본 이미지 */}
-                <img
-                  src={loadedImageSrc}
-                  alt="Original Loaded Sheet"
-                  draggable={false}
-                  className="w-full h-full object-fill pointer-events-none select-none"
-                />
+                {cellSlots.map(slot => {
+                  const isSelected = selectedCellIndex === slot.index;
+                  const drawnW = cellW * slot.scale;
+                  const drawnH = cellH * slot.scale;
+                  const drawnX = (cellW - drawnW) / 2 + slot.offsetX;
+                  const drawnY = (cellH - drawnH) / 2 + slot.offsetY;
 
-                {/* ── 선택 시 나타나는 직관적인 바운딩 박스 & 모서리 핸들 ── */}
-                {isImageSelected && (
-                  <div className="absolute inset-0 border-2 border-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.4)] pointer-events-none">
-                    {/* 4개 모서리 핸들 박스 */}
-                    <div className="absolute -top-1.5 -left-1.5 w-3 h-3 bg-white border-2 border-cyan-500" />
-                    <div className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-white border-2 border-cyan-500" />
-                    <div className="absolute -bottom-1.5 -left-1.5 w-3 h-3 bg-white border-2 border-cyan-500" />
-                    <div className="absolute -bottom-1.5 -right-1.5 w-3 h-3 bg-white border-2 border-cyan-500" />
-                  </div>
-                )}
+                  return (
+                    <div
+                      key={slot.index}
+                      onPointerDown={(e) => handleCellPointerDown(slot.index, e)}
+                      onPointerMove={handleCellPointerMove}
+                      onPointerUp={handleCellPointerUp}
+                      onPointerCancel={handleCellPointerUp}
+                      onMouseEnter={() => setHoveredCellIndex(slot.index)}
+                      onMouseLeave={() => setHoveredCellIndex(null)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedCellIndex(slot.index);
+                      }}
+                      className={cn(
+                        "relative overflow-hidden transition-none select-none",
+                        isSelected ? "z-20 cursor-grabbing" : "cursor-grab hover:bg-white/5"
+                      )}
+                      style={{
+                        width: `${cellW}px`,
+                        height: `${cellH}px`
+                      }}
+                    >
+                      {/* 개별 쪼개진 이미지 */}
+                      <img
+                        src={slot.dataUrl}
+                        alt={`Cell ${slot.index + 1}`}
+                        draggable={false}
+                        className="absolute max-w-none pointer-events-none select-none"
+                        style={{
+                          width: `${drawnW}px`,
+                          height: `${drawnH}px`,
+                          left: `${drawnX}px`,
+                          top: `${drawnY}px`
+                        }}
+                      />
+
+                      {/* ── 선택된 셀 활성화 테두리 & 모서리 핸들 ── */}
+                      {isSelected && (
+                        <div className="absolute inset-0 border-2 border-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.7)] pointer-events-none">
+                          <div className="absolute -top-1 -left-1 w-2.5 h-2.5 bg-white border-2 border-cyan-500" />
+                          <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-white border-2 border-cyan-500" />
+                          <div className="absolute -bottom-1 -left-1 w-2.5 h-2.5 bg-white border-2 border-cyan-500" />
+                          <div className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-white border-2 border-cyan-500" />
+                          <span className="absolute top-1 left-1 px-1 bg-black/80 text-cyan-300 font-mono font-black text-[9px] rounded-2xs">
+                            #{slot.index + 1}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
 
-              {/* ── 고정된 고정밀 그리드 오버레이 (검수본 저장과 100% 동일한 캔버스) ── */}
+              {/* ── 고정밀 10x10 격자선 및 번호 오버레이 (검수본 저장과 100% 동일) ── */}
               {showGridOverlay && (
                 <canvas
                   ref={previewGridCanvasRef}
-                  width={cellCalculations.totalW}
-                  height={cellCalculations.totalH}
+                  width={imageDimensions.width}
+                  height={imageDimensions.height}
                   className="absolute inset-0 pointer-events-none select-none z-10"
                   style={{
-                    width: `${cellCalculations.totalW}px`,
-                    height: `${cellCalculations.totalH}px`,
+                    width: `${imageDimensions.width}px`,
+                    height: `${imageDimensions.height}px`,
                   }}
                 />
               )}
@@ -813,11 +886,14 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
           )}
         </div>
 
-        {/* Bottom Footer Info */}
+        {/* Footer info */}
         <div className="flex items-center justify-between text-[11px] text-slate-400 mt-2 px-2">
-          <span>{imageFileName ? `이미지: ${imageFileName} (${imageNaturalSize?.width}×${imageNaturalSize?.height}px)` : '10x10 기본 그리드'}</span>
+          <span>
+            {imageFileName ? `${imageFileName} (${imageDimensions.width}×${imageDimensions.height}px)` : '100개 슬롯 분할'}
+            {selectedSlot && ` · 현재 선택: #${selectedSlot.index + 1} (배율: ${Math.round(selectedSlot.scale * 100)}%, X:${selectedSlot.offsetX}px, Y:${selectedSlot.offsetY}px)`}
+          </span>
           <span className="text-emerald-400 font-bold">
-            {isKo ? '검수본 저장 시 화면의 그리드와 원본 이미지가 100% 동일하게 저장됩니다.' : 'What you see is 100% what is saved.'}
+            {isKo ? '각 칸의 이미지를 클릭/드래그하여 개별 위치 및 크기를 조절한 뒤 저장하세요.' : 'Adjust each slot independently and save.'}
           </span>
         </div>
       </main>
