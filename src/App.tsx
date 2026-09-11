@@ -145,6 +145,7 @@ const ModooView = lazy(() => import('./views/ModooView').then(m => ({ default: m
 const GridToolView = lazy(() => import('./views/GridToolView').then(m => ({ default: m.GridToolView })));
 const GridCheckerView = lazy(() => import('./views/GridCheckerView').then(m => ({ default: m.GridCheckerView })));
 const MallView = lazy(() => import('./views/MallView').then(m => ({ default: m.MallView })));
+const PacpikView = lazy(() => import('./views/PacpikView').then(m => ({ default: m.PacpikView })));
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -370,10 +371,12 @@ function getViewFromPathAndUrl(): ViewType {
   if (queryView === 'movie') return 'movie';
   if (queryView === 'modoo') return 'modoo';
   if (queryView === 'mall') return 'mall';
+  if (queryView === 'pacpik') return 'pacpik';
   if (queryView === 'grid' || queryView === 'tool-grid' || queryView === 'tool/grid' || queryView === 'too/grid' || queryView === 'makegrid' || queryView === 'tool/makegrid' || queryView === 'tool-makegrid') return 'tool-makegrid';
   if (queryView === 'checkgrid' || queryView === 'tool-checkgrid' || queryView === 'tool/checkgrid' || queryView === 'gridcheck') return 'tool-checkgrid';
 
   const path = window.location.pathname.replace(/\/$/, '').toLowerCase() || '/';
+  if (path === '/pacpik' || path === '/pacpik.html') return 'pacpik';
   if (path === '/mall' || path.startsWith('/mall')) return 'mall';
   if (path === '/tool/checkgrid' || path === '/tool/check-grid' || path === '/checkgrid' || path.startsWith('/tool/checkgrid')) return 'tool-checkgrid';
   if (path === '/tool/makegrid' || path === '/tool/make-grid' || path === '/makegrid' || path === '/tool/grid' || path === '/too/grid' || path === '/grid' || path.startsWith('/tool/makegrid') || path.startsWith('/tool/grid') || path.startsWith('/too/grid')) return 'tool-makegrid';
@@ -1492,6 +1495,8 @@ function AppContent() {
         setView('boost');
       } else if (path === '/policy-center') {
         setView('policy-center');
+      } else if (path === '/pacpik' || path === '/pacpik.html') {
+        setView('pacpik');
       } else if (path === '/tool/checkgrid' || path === '/tool/check-grid' || path === '/checkgrid' || path.startsWith('/tool/checkgrid')) {
         setView('tool-checkgrid');
       } else if (path === '/tool/makegrid' || path === '/tool/make-grid' || path === '/makegrid' || path === '/tool/grid' || path === '/too/grid' || path === '/grid' || path.startsWith('/tool/makegrid') || path.startsWith('/tool/grid') || path.startsWith('/too/grid')) {
@@ -1655,6 +1660,10 @@ function AppContent() {
       targetPath = '/policy-center';
       title = t('policy_center_title', language) || 'Trust Center - SNSHero';
       description = t('policy_disclaimer_body', language) || 'SNSHero의 정책, 확률, 환불, 개인정보 처리 기준을 한 곳에서 확인하세요.';
+    } else if (view === 'pacpik') {
+      targetPath = '/pacpik';
+      title = 'Pacpik Games Verification | SNSHero';
+      description = 'pacpik-games-verification=f197d6f47d819f97660046da45174f0d5a9ff1abf90c5e38';
     } else if (view === 'web3-landing') {
       targetPath = '/web3';
       title = t('web3_landing_hero_title', language) || 'SNSHero — Play Instantly, No Install, No Wallet';
@@ -5036,6 +5045,13 @@ function AppContent() {
             language={language}
             onNavigate={setView}
             lowSpecMode={lowSpecMode}
+          />
+        );
+      case 'pacpik':
+        return (
+          <PacpikView
+            language={language}
+            onNavigate={setView}
           />
         );
       case 'web3-landing':

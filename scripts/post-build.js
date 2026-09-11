@@ -19,6 +19,21 @@ try {
       }
       fs.copyFileSync(indexHtml, path.join(routeDir, 'index.html'));
     });
+
+    // Pacpik verification 정적 파일 보장
+    const publicPacpik = path.join(process.cwd(), 'public', 'pacpik', 'index.html');
+    const distPacpikDir = path.join(distDir, 'pacpik');
+    const distPacpikHtml = path.join(distPacpikDir, 'index.html');
+    if (fs.existsSync(publicPacpik)) {
+      if (!fs.existsSync(distPacpikDir)) {
+        fs.mkdirSync(distPacpikDir, { recursive: true });
+      }
+      fs.copyFileSync(publicPacpik, distPacpikHtml);
+    }
+    const publicPacpikRoot = path.join(process.cwd(), 'public', 'pacpik.html');
+    if (fs.existsSync(publicPacpikRoot)) {
+      fs.copyFileSync(publicPacpikRoot, path.join(distDir, 'pacpik.html'));
+    }
   }
 
   // 메인 엔트리 스크립트 파일(assets/index-*.js) 자동 탐색
