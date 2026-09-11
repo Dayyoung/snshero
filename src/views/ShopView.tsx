@@ -1976,16 +1976,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
     stopAutoDraw();
     setGachaState(prev => ({ ...prev, isActive: false }));
     if (tutorialStep === 10) {
-      let hasUpgradePrompt = false;
-      if (triggerDeckUpgradeCheck && gachaState.cards && gachaState.cards.length > 0) {
-        const cardImageIndexes = gachaState.cards.map(c => c.imageIndex);
-        hasUpgradePrompt = triggerDeckUpgradeCheck(cardImageIndexes) === true;
-      }
-      if (!hasUpgradePrompt) {
-        if (setTutorialStep && onNavigate) {
-          setTutorialStep(11);
-          onNavigate('mydeck');
-        }
+      if (setTutorialStep && onNavigate) {
+        setTutorialStep(11);
+        onNavigate('mydeck');
       }
     }
   };
@@ -2018,28 +2011,18 @@ export const ShopView: React.FC<ShopViewProps> = ({
       gachaState.cards.length === 5 &&
       gachaState.cards.every(c => c.isRevealed)
     ) {
-      const timer = setTimeout(() => {
-        let hasUpgradePrompt = false;
-        if (triggerDeckUpgradeCheck) {
-          const cardImageIndexes = gachaState.cards.map(c => c.imageIndex);
-          hasUpgradePrompt = triggerDeckUpgradeCheck(cardImageIndexes) === true;
-        }
-
-        if (tutorialStep === 10) {
-          if (!hasUpgradePrompt) {
-            if (setTutorialStep && onNavigate) {
-              setGachaState(prev => ({ ...prev, isActive: false }));
-              setTutorialStep(11);
-              onNavigate('mydeck');
-            }
-          } else {
+      if (tutorialStep === 10) {
+        const timer = setTimeout(() => {
+          if (setTutorialStep && onNavigate) {
             setGachaState(prev => ({ ...prev, isActive: false }));
+            setTutorialStep(11);
+            onNavigate('mydeck');
           }
-        }
-      }, 800);
-      return () => clearTimeout(timer);
+        }, 1200);
+        return () => clearTimeout(timer);
+      }
     }
-  }, [gachaState.isActive, gachaState.packType, gachaState.cards, tutorialStep, triggerDeckUpgradeCheck, setTutorialStep, onNavigate]);
+  }, [gachaState.isActive, gachaState.packType, gachaState.cards, tutorialStep, setTutorialStep, onNavigate]);
 
   // Removed legacy single card sequence logic
 

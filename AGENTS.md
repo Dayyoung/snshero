@@ -216,3 +216,4 @@
 - `hero_token_reward_pool_v1`: 마켓 거래 수수료 50% 환급 캐시백 금고 및 일일 활동 통합 SNS 마일리지 풀 상태 저장
 - `hero_token_economy_state_v1`: 마켓 거래 수수료 50% 환원 풀 및 실시간 AP 자연 회복 상태 저장
 - `hero_stamina_pacing_v1`: 전 플랫폼 AP 페이싱 상태 및 친구 하트 선물 일일 충전 기록 저장
+- `hero_deck_upgrade_dismissed_{season}`: 마이덱 덱 최적화 추천 팝업 '카드 변경 시까지 다시 보지 않기' 상태 핑거프린트 저장

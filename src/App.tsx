@@ -50,7 +50,7 @@ import { WEBTOON_SEASONS, getWebtoonSeasonById, getWebtoonEpisodesForSeason } fr
 import { saveWebtoonProgress, type WebtoonProgressState } from './lib/webtoonProgress';
 import { BGM_TRACKS, DEFAULT_BGM_TRACK_ID } from './lib/audioConstants';
 import { getSeasonItem, setSeasonItem, removeSeasonItem } from './lib/seasonStorage';
-import { getDeckUpgradeRecommendation } from './lib/deckUpgrade';
+import { getDeckUpgradeRecommendation, getCardStateFingerprint } from './lib/deckUpgrade';
 import { incrementMissionProgress } from './lib/dailyMissions';
 import { 
   Menu, 
@@ -3483,50 +3483,64 @@ function AppContent() {
           lastSync: Date.now()
         });
       }
+
+      const season = currentSeason || localStorage.getItem('hero_current_season') || 'season1';
+      const newFingerprint = getCardStateFingerprint(newDeck, inventory);
+      setSeasonItem('hero_deck_upgrade_dismissed', season, newFingerprint);
+
       return newDeck;
     });
     setUpgradeDeckPrompt(null);
-  }, [inventory, effectiveUser, syncUserData, playSfx]);
+  }, [inventory, effectiveUser, syncUserData, playSfx, currentSeason]);
+
+  // 마이덱 진입 시 덱 최적화 추천 팝업 (카드 변경 시까지 다시 보지 않음 지원)
+  useEffect(() => {
+    if (view !== 'mydeck') {
+      if (upgradeDeckPrompt) {
+        setUpgradeDeckPrompt(null);
+      }
+      return;
+    }
+
+    if (!recommendMode) return;
+    if (!currentDeck || currentDeck.length === 0) return;
+
+    const season = currentSeason || localStorage.getItem('hero_current_season') || 'season1';
+    const currentFingerprint = getCardStateFingerprint(currentDeck, inventory);
+    const dismissedFingerprint = getSeasonItem('hero_deck_upgrade_dismissed', season);
+
+    // "다시 보지 않음은 카드 변경 시까지": 핑거프린트가 동일하면 팝업 생략
+    if (dismissedFingerprint && dismissedFingerprint === currentFingerprint) {
+      return;
+    }
+
+    // 보유한 모든 카드 목록 수집
+    const ownedImageIndexes = Array.from({ length: 110 }, (_, i) => i + 1).filter(idx => {
+      return (inventory[idx]?.quantity || 0) > 0 ||
+             (inventory[String(idx)]?.quantity || 0) > 0 ||
+             ownedCards.some(c => c && (c.imageIndex === idx || Number(c.imageIndex) === idx));
+    });
+
+    const upgradedCardsToApply = getDeckUpgradeRecommendation(currentDeck, ownedImageIndexes, inventory);
+    if (upgradedCardsToApply.length > 0) {
+      const timer = setTimeout(() => {
+        setUpgradeDeckPrompt({ upgradedCardsToApply });
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+  }, [view, currentDeck, inventory, ownedCards, currentSeason, recommendMode]);
 
   const upgradePromptTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const checkAndRecommendDeckUpgrade = useCallback((newCardImageIndexes: number[], isSilent = false) => {
     if (!recommendMode) return [];
     if (!newCardImageIndexes || newCardImageIndexes.length === 0) return [];
-
-    const upgradedCardsToApply = getDeckUpgradeRecommendation(currentDeck, newCardImageIndexes);
-
-    if (upgradedCardsToApply.length > 0) {
-      if (isSilent) {
-        return upgradedCardsToApply;
-      }
-      
-      // 1.5초 딜레이를 주어 팩 개봉 이펙트를 충분히 표시한 후 추천 팝업 표시
-      if (upgradePromptTimerRef.current) {
-        clearTimeout(upgradePromptTimerRef.current);
-      }
-      upgradePromptTimerRef.current = setTimeout(() => {
-        setUpgradeDeckPrompt({ upgradedCardsToApply });
-      }, 1500);
-    }
     return [];
-  }, [recommendMode, currentDeck, inventory, effectiveUser, syncUserData, playSfx]);
+  }, [recommendMode]);
 
   const triggerDeckUpgradeCheck = useCallback((newCardImageIndexes: number[]) => {
-    if (!recommendMode) return false;
-    const upgradedCardsToApply = getDeckUpgradeRecommendation(currentDeck, newCardImageIndexes);
-    if (upgradedCardsToApply.length > 0) {
-      // 1.5초 딜레이를 주어 팩 개봉 이펙트를 충분히 표시한 후 추천 팝업 표시
-      if (upgradePromptTimerRef.current) {
-        clearTimeout(upgradePromptTimerRef.current);
-      }
-      upgradePromptTimerRef.current = setTimeout(() => {
-        setUpgradeDeckPrompt({ upgradedCardsToApply });
-      }, 1500);
-      return true;
-    }
     return false;
-  }, [recommendMode, currentDeck]);
+  }, []);
 
 
 
@@ -4464,10 +4478,7 @@ function AppContent() {
       }
       return nextPower;
     });
-
-    // Recommend upgrade if the card is better
-    checkAndRecommendDeckUpgrade([cardIndex], isSilent);
-  }, [checkAndRecommendDeckUpgrade, currentSeason]);
+  }, [currentSeason]);
 
   const handleClawPlay = useCallback(() => {
     setSns(prev => Math.max(0, prev - 5));
@@ -4537,12 +4548,9 @@ function AppContent() {
         if (testMode) {
           console.log(`%c [DEBUG] Card Added to Inventory: #${cardIndex} (${dbCard.title}) `, 'color: #10b981;');
         }
-
-        // Recommend upgrade if the card is better
-        checkAndRecommendDeckUpgrade([cardIndex], isSilent);
       }
     }
-  }, [testMode, checkAndRecommendDeckUpgrade, currentSeason]);
+  }, [testMode, currentSeason]);
 
   const [isGlobalPopupOpen, setIsGlobalPopupOpen] = useState(false);
 
@@ -7346,6 +7354,9 @@ function AppContent() {
           <DeckUpgradeModal
             isOpen={upgradeDeckPrompt !== null}
             onClose={() => {
+              const season = currentSeason || localStorage.getItem('hero_current_season') || 'season1';
+              const currentFingerprint = getCardStateFingerprint(currentDeck, inventory);
+              setSeasonItem('hero_deck_upgrade_dismissed', season, currentFingerprint);
               setUpgradeDeckPrompt(null);
               if (isTutorialMode && tutorialStep === 10) {
                 setTutorialStep(11);
@@ -7356,6 +7367,10 @@ function AppContent() {
               if (upgradeDeckPrompt) {
                 applyDeckUpgrade(upgradeDeckPrompt.upgradedCardsToApply);
               }
+              const season = currentSeason || localStorage.getItem('hero_current_season') || 'season1';
+              const newFingerprint = getCardStateFingerprint(currentDeck, inventory);
+              setSeasonItem('hero_deck_upgrade_dismissed', season, newFingerprint);
+              setUpgradeDeckPrompt(null);
               if (isTutorialMode && tutorialStep === 10) {
                 setTutorialStep(11);
                 setView('mydeck');

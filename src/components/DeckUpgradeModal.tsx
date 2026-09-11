@@ -130,14 +130,18 @@ export const DeckUpgradeModal: React.FC<DeckUpgradeModalProps> = ({
             onClick={onClose}
             className="flex-1 py-2 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7] font-bold text-xs cursor-pointer transition-colors active:scale-95"
           >
-            [{t('no', language)}]
+            [{language === 'ko' ? '나중에 (닫기)' : t('no', language)}]
           </button>
           <button
             onClick={onConfirm}
             className="flex-1 py-2 rounded-sm border border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] hover:bg-[#333030] font-bold text-xs cursor-pointer transition-colors active:scale-95"
           >
-            [{t('yes', language)}]
+            [{language === 'ko' ? '지금 적용' : t('yes', language)}]
           </button>
+        </div>
+
+        <div className="text-[10px] text-center text-[#646262] opacity-75">
+          * {language === 'ko' ? '닫을 시 새로운 카드 획득 또는 덱 변경 전까지 다시 표시되지 않습니다.' : 'Will not be shown again until new cards are acquired or deck changes.'}
         </div>
       </div>
     </div>

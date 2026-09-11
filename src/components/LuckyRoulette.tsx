@@ -195,9 +195,6 @@ export const LuckyRoulette: React.FC<LuckyRouletteProps> = ({
   };
 
   const closeReward = () => {
-    if (rewardCardIdx !== null && triggerDeckUpgradeCheck) {
-      triggerDeckUpgradeCheck([rewardCardIdx]);
-    }
     setShowReward(false);
     setPrize(null);
     setRewardCardIdx(null);

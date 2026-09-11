@@ -20,7 +20,8 @@ const getCardPower = (card: any): number => {
  */
 export const getDeckUpgradeRecommendation = (
   currentDeck: (any | null)[],
-  newCardImageIndexes: number[]
+  newCardImageIndexes: number[],
+  inventory?: Record<number, any>
 ): UpgradeMapping[] => {
   if (!newCardImageIndexes || newCardImageIndexes.length === 0) return [];
 
@@ -41,7 +42,13 @@ export const getDeckUpgradeRecommendation = (
   // 후보 카드들을 기본 파워 내림차순 정렬
   const candidatesWithPower = candidateImageIndexes.map(imgIdx => {
     const dbCard = CARD_DATABASE[imgIdx];
-    const power = dbCard ? dbCard.power : 0;
+    let power = dbCard ? dbCard.power : 0;
+    if (inventory && (inventory[imgIdx] || inventory[String(imgIdx)])) {
+      const invRecord = inventory[imgIdx] || inventory[String(imgIdx)];
+      const level = invRecord.level || 1;
+      const levelBonus = (level - 1) * 2;
+      power = (dbCard ? dbCard.power : 0) + levelBonus;
+    }
     return { imgIdx, power };
   }).sort((a, b) => b.power - a.power);
 
@@ -66,4 +73,36 @@ export const getDeckUpgradeRecommendation = (
   }
 
   return upgradedCardsToApply;
+};
+
+/**
+ * 현재 덱 구성과 인벤토리 상태의 고유 핑거프린트(지문)를 생성합니다.
+ * 카드 획득/소모/덱 변경 시 핑거프린트가 변경되어 "카드 변경 시까지 다시 보지 않기"를 감지합니다.
+ */
+export const getCardStateFingerprint = (
+  currentDeck: (any | null)[],
+  inventory: Record<number, any> = {}
+): string => {
+  // 1. 덱 구성 서명 (0~4번 슬롯의 카드 ID 및 레벨)
+  const deckPart = (currentDeck || [])
+    .map((c, idx) => `${idx}:${c?.imageIndex || 0}:${c?.level || 1}`)
+    .join(',');
+
+  // 2. 인벤토리 상태 서명 (총 보유 수량, 고유 카드 수, 최신 획득 타임스탬프)
+  let totalQty = 0;
+  let uniqueCount = 0;
+  let latestAcquiredAt = 0;
+
+  for (const key of Object.keys(inventory)) {
+    const rec = inventory[Number(key)] || inventory[key];
+    if (rec && (rec.quantity || 0) > 0) {
+      uniqueCount++;
+      totalQty += rec.quantity || 0;
+      if (rec.acquiredAt && rec.acquiredAt > latestAcquiredAt) {
+        latestAcquiredAt = rec.acquiredAt;
+      }
+    }
+  }
+
+  return `deck:[${deckPart}]_inv:[${uniqueCount}-${totalQty}-${latestAcquiredAt}]`;
 };
