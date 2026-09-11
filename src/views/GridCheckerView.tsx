@@ -106,6 +106,128 @@ const getElementEmoji = (element?: string): string => {
   }
 };
 
+interface DrawGridOptions {
+  totalW: number;
+  totalH: number;
+  gridCols: number;
+  gridRows: number;
+  cellW: number;
+  cellH: number;
+  offsetX: number;
+  offsetY: number;
+  colGap: number;
+  rowGap: number;
+  gridColor: string;
+  gridLineWidth: number;
+  gridLineStyle: 'solid' | 'dashed' | 'dotted';
+  gridOpacity: number;
+  showCellNumbers: boolean;
+  showCrosshairs: boolean;
+  showDiagonals: boolean;
+}
+
+/**
+ * 프리뷰 캔버스와 검수본 저장 이미지 모두에서 100% 동일하게 호출되는 공통 고정밀 그리드 렌더링 함수
+ */
+const drawInspectionGridOnCanvas = (ctx: CanvasRenderingContext2D, opts: DrawGridOptions) => {
+  const {
+    gridCols,
+    gridRows,
+    cellW,
+    cellH,
+    offsetX,
+    offsetY,
+    colGap,
+    rowGap,
+    gridColor,
+    gridLineWidth,
+    gridLineStyle,
+    gridOpacity,
+    showCellNumbers,
+    showCrosshairs,
+    showDiagonals
+  } = opts;
+
+  ctx.save();
+  ctx.strokeStyle = gridColor;
+  ctx.lineWidth = gridLineWidth;
+  ctx.globalAlpha = gridOpacity / 100;
+
+  // 선 스타일에 따른 라인 대시 설정
+  if (gridLineStyle === 'dashed') {
+    ctx.setLineDash([Math.max(6, gridLineWidth * 5), Math.max(3, gridLineWidth * 3)]);
+  } else if (gridLineStyle === 'dotted') {
+    ctx.setLineDash([Math.max(2, gridLineWidth), Math.max(2, gridLineWidth * 2)]);
+  } else {
+    ctx.setLineDash([]);
+  }
+
+  for (let r = 0; r < gridRows; r++) {
+    for (let c = 0; c < gridCols; c++) {
+      const idx = r * gridCols + c;
+      const x = offsetX + c * (cellW + colGap);
+      const y = offsetY + r * (cellH + rowGap);
+
+      // 1. 격자 셀 테두리 스트로크
+      ctx.strokeRect(x, y, cellW, cellH);
+
+      // 2. 셀 중심 십자선 가이드
+      if (showCrosshairs) {
+        ctx.save();
+        ctx.globalAlpha = (gridOpacity / 100) * 0.45;
+        ctx.beginPath();
+        ctx.moveTo(x, y + cellH / 2);
+        ctx.lineTo(x + cellW, y + cellH / 2);
+        ctx.moveTo(x + cellW / 2, y);
+        ctx.lineTo(x + cellW / 2, y + cellH);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 3. 셀 대각선 X 가이드
+      if (showDiagonals) {
+        ctx.save();
+        ctx.globalAlpha = (gridOpacity / 100) * 0.35;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + cellW, y + cellH);
+        ctx.moveTo(x + cellW, y);
+        ctx.lineTo(x, y + cellH);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 4. 셀 인덱스 번호 (#1 ~ #N) 렌더링
+      if (showCellNumbers) {
+        ctx.save();
+        ctx.setLineDash([]); // 번호 텍스트는 항상 실선 테두리
+        const fontSize = Math.max(10, Math.min(28, Math.round(Math.min(cellW, cellH) * 0.16)));
+        ctx.font = `bold ${fontSize}px monospace`;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+
+        const textX = x + Math.max(4, cellW * 0.04);
+        const textY = y + Math.max(4, cellH * 0.04);
+        const textStr = `#${idx + 1}`;
+
+        // 어떤 이미지 배경에서도 뚜렷하게 식별되도록 검은색 그림자 외곽선 스트로크
+        ctx.globalAlpha = 0.85;
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = Math.max(2, fontSize * 0.22);
+        ctx.strokeText(textStr, textX, textY);
+
+        // 본문 텍스트 채우기
+        ctx.globalAlpha = 1.0;
+        ctx.fillStyle = gridColor;
+        ctx.fillText(textStr, textX, textY);
+        ctx.restore();
+      }
+    }
+  }
+
+  ctx.restore();
+};
+
 export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
   language = 'ko',
   onNavigate
@@ -160,6 +282,7 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const imageElementRef = useRef<HTMLImageElement | null>(null);
   const cropCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const previewGridCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // 10x10 기본 번호 패턴 캔버스 생성 함수 (초기 로드용 데모)
   const generate10x10TestPattern = () => {
@@ -466,29 +589,27 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
         imageDrawParams.drawnH
       );
 
-      // 3. 검수본 저장(includeGrid === true)인 경우 10x10 격자선 및 인덱스 번호 합성
+      // 3. 검수본 저장(includeGrid === true)인 경우 공통 캔버스 함수로 프리뷰와 100% 동일하게 그리드 합성
       if (includeGrid && showGridOverlay) {
-        ctx.strokeStyle = gridColor;
-        ctx.lineWidth = gridLineWidth;
-        ctx.globalAlpha = gridOpacity / 100;
-
-        const cellW = cellCalculations.cellW;
-        const cellH = cellCalculations.cellH;
-
-        for (let r = 0; r < gridRows; r++) {
-          for (let c = 0; c < gridCols; c++) {
-            const x = offsetX + c * (cellW + colGap);
-            const y = offsetY + r * (cellH + rowGap);
-            ctx.strokeRect(x, y, cellW, cellH);
-
-            if (showCellNumbers) {
-              const num = r * gridCols + c + 1;
-              ctx.fillStyle = gridColor;
-              ctx.font = 'bold 12px monospace';
-              ctx.fillText(`#${num}`, x + 4, y + 14);
-            }
-          }
-        }
+        drawInspectionGridOnCanvas(ctx, {
+          totalW: cellCalculations.totalW,
+          totalH: cellCalculations.totalH,
+          gridCols,
+          gridRows,
+          cellW: cellCalculations.cellW,
+          cellH: cellCalculations.cellH,
+          offsetX,
+          offsetY,
+          colGap,
+          rowGap,
+          gridColor,
+          gridLineWidth,
+          gridLineStyle,
+          gridOpacity,
+          showCellNumbers,
+          showCrosshairs,
+          showDiagonals
+        });
       }
 
       try {
@@ -513,7 +634,57 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
   // 격자선이 제외된 깨끗한 최적화 신규 이미지 저장 핸들러
   const handleDownloadCleanOptimizedImage = () => handleDownloadImage(false);
 
-  // ── 마우스 / 터치 포인터 드래그 핸들러 ──
+  // ── 프리뷰 그리드 캔버스 실시간 렌더링 동기화 (검수본 저장 결과와 100% 일치) ──
+  useEffect(() => {
+    const canvas = previewGridCanvasRef.current;
+    if (!canvas) return;
+    canvas.width = cellCalculations.totalW;
+    canvas.height = cellCalculations.totalH;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (showGridOverlay) {
+      drawInspectionGridOnCanvas(ctx, {
+        totalW: cellCalculations.totalW,
+        totalH: cellCalculations.totalH,
+        gridCols,
+        gridRows,
+        cellW: cellCalculations.cellW,
+        cellH: cellCalculations.cellH,
+        offsetX,
+        offsetY,
+        colGap,
+        rowGap,
+        gridColor,
+        gridLineWidth,
+        gridLineStyle,
+        gridOpacity,
+        showCellNumbers,
+        showCrosshairs,
+        showDiagonals
+      });
+    }
+  }, [
+    cellCalculations,
+    gridCols,
+    gridRows,
+    offsetX,
+    offsetY,
+    colGap,
+    rowGap,
+    gridColor,
+    gridLineWidth,
+    gridLineStyle,
+    gridOpacity,
+    showGridOverlay,
+    showCellNumbers,
+    showCrosshairs,
+    showDiagonals
+  ]);
+
+  // ── 마우스 / 터치 포인터 드래그 핸들러 (원본 이미지 상하좌우 이동) ──
   const handlePointerDown = (e: React.PointerEvent) => {
     if (e.button !== 0 && e.pointerType === 'mouse') return;
     setIsPanningImage(true);
@@ -536,8 +707,8 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     const dist = Math.sqrt(dx * dx + dy * dy);
     setDragMovedDistance(dist);
 
-    // 뷰어의 줌 배율을 감안하여 마우스와 이미지의 1:1 동기화
-    const scaleFactor = zoomLevel / 100;
+    // 뷰어의 줌 배율을 감안하여 마우스와 이미지의 1:1 완벽 동기화
+    const scaleFactor = Math.max(0.1, zoomLevel / 100);
     const realDx = dx / scaleFactor;
     const realDy = dy / scaleFactor;
 
@@ -555,14 +726,59 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
     }
   };
 
-  // 휠 스크롤로 이미지 확대/축소 (Alt 또는 Shift 또는 Ctrl 키)
-  const handleWheelZoom = (e: React.WheelEvent) => {
-    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) {
+  // ── 프리뷰 위 마우스 휠 스크롤 시 원본 이미지 즉시 확대/축소 ({ passive: false }) ──
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleNativeWheel = (e: WheelEvent) => {
       e.preventDefault();
+      e.stopPropagation();
+
+      // 마우스 상향(deltaY < 0): 확대, 하향(deltaY > 0): 축소
       const step = e.deltaY < 0 ? 0.05 : -0.05;
-      setImageScale(prev => Math.min(5.0, Math.max(0.1, Number((prev + step).toFixed(2)))));
-    }
-  };
+      setImageScale(prev => {
+        const next = Number((prev + step).toFixed(2));
+        return Math.min(5.0, Math.max(0.1, next));
+      });
+    };
+
+    container.addEventListener('wheel', handleNativeWheel, { passive: false });
+    return () => container.removeEventListener('wheel', handleNativeWheel);
+  }, []);
+
+  // ── 키보드 방향키(↑, ↓, ←, →)로 원본 이미지 상하좌우 정밀 이동 (Shift 누를 시 10px, 기본 1px) ──
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // 텍스트 인풋 포커스 중에는 조작 스킵
+      if (
+        document.activeElement?.tagName === 'INPUT' ||
+        document.activeElement?.tagName === 'TEXTAREA' ||
+        document.activeElement?.tagName === 'SELECT'
+      ) {
+        return;
+      }
+      if (activeTab !== 'image-inspector') return;
+
+      const step = e.shiftKey ? 10 : 1;
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setImageOffsetY(prev => prev - step);
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setImageOffsetY(prev => prev + step);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        setImageOffsetX(prev => prev - step);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        setImageOffsetX(prev => prev + step);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeTab]);
 
   const copyNotification = (text: string, msg: string) => {
     navigator.clipboard.writeText(text);
@@ -1321,7 +1537,7 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
                       )}
                       <span className="text-[9px] text-emerald-800 bg-emerald-50 px-2 py-0.5 border border-emerald-300 font-bold hidden sm:flex items-center gap-1">
                         <Hand size={11} />
-                        <span>{isKo ? '드래그: 이미지 이동 · 휠: 확대/축소' : 'Drag: Pan Image · Wheel: Zoom'}</span>
+                        <span>{isKo ? '드래그: 원본 이미지 이동 · 휠: 확대/축소 · 방향키: 정밀 이동' : 'Drag: Pan Image · Wheel: Zoom · Arrow Keys: Nudge'}</span>
                       </span>
                     </div>
 
@@ -1380,7 +1596,6 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
                     onPointerMove={handlePointerMove}
                     onPointerUp={handlePointerUp}
                     onPointerCancel={handlePointerUp}
-                    onWheel={handleWheelZoom}
                     className={cn(
                       "w-full bg-[#1e293b] border border-dashed border-slate-700 p-4 min-h-[420px] max-h-[640px] overflow-auto flex items-center justify-center relative select-none rounded-none touch-none",
                       isPanningImage ? "cursor-grabbing" : "cursor-grab"
@@ -1417,80 +1632,62 @@ export const GridCheckerView: React.FC<GridCheckerViewProps> = ({
                           }}
                         />
 
-                        {/* Interactive Grid Overlay */}
+                        {/* Canvas Grid Overlay (검수본 저장 결과와 100% 동일한 캔버스 렌더링) */}
                         {showGridOverlay && (
-                          <div 
-                            className="absolute inset-0 grid pointer-events-auto"
+                          <canvas
+                            ref={previewGridCanvasRef}
+                            className="absolute inset-0 pointer-events-none select-none z-10"
                             style={{
-                              gridTemplateColumns: `repeat(${gridCols}, ${cellCalculations.cellW}px)`,
-                              gridTemplateRows: `repeat(${gridRows}, ${cellCalculations.cellH}px)`,
-                              columnGap: `${colGap}px`,
-                              rowGap: `${rowGap}px`,
-                              transform: `translate(${offsetX}px, ${offsetY}px)`
+                              width: `${cellCalculations.totalW}px`,
+                              height: `${cellCalculations.totalH}px`,
+                            }}
+                          />
+                        )}
+
+                        {/* Selected Cell Highlight Box */}
+                        {selectedCellCoords && (
+                          <div
+                            className="absolute pointer-events-none border-2 border-amber-400 bg-amber-400/20 z-20 transition-all select-none"
+                            style={{
+                              left: `${selectedCellCoords.x}px`,
+                              top: `${selectedCellCoords.y}px`,
+                              width: `${selectedCellCoords.w}px`,
+                              height: `${selectedCellCoords.h}px`,
                             }}
                           >
-                            {Array.from({ length: cellCalculations.totalCells }).map((_, idx) => {
-                              const isSelected = selectedCellIndex === idx;
-                              const borderStyle = gridLineStyle;
-                              const opacityVal = gridOpacity / 100;
-
-                              return (
-                                <div
-                                  key={idx}
-                                  onClick={() => {
-                                    if (dragMovedDistance < 5) {
-                                      setSelectedCellIndex(idx);
-                                    }
-                                  }}
-                                  style={{
-                                    borderColor: isSelected ? '#f59e0b' : gridColor,
-                                    borderWidth: isSelected ? Math.max(2, gridLineWidth + 1) : gridLineWidth,
-                                    borderStyle: borderStyle,
-                                    backgroundColor: isSelected ? 'rgba(245, 158, 11, 0.25)' : 'transparent',
-                                    opacity: isSelected ? 1 : opacityVal
-                                  }}
-                                  className={cn(
-                                    "relative transition-all cursor-pointer flex flex-col justify-between p-1 overflow-hidden group hover:opacity-100 select-none",
-                                    isSelected && "z-20 ring-2 ring-amber-400"
-                                  )}
-                                >
-                                  {/* Cell Index Badge */}
-                                  {showCellNumbers && (
-                                    <span 
-                                      style={{ color: isSelected ? '#fbbf24' : gridColor }}
-                                      className="text-[9px] font-mono font-black select-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
-                                    >
-                                      #{idx + 1}
-                                    </span>
-                                  )}
-
-                                  {/* Center Crosshair Option */}
-                                  {showCrosshairs && (
-                                    <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-40">
-                                      <div className="w-full h-[1px] bg-white/60" />
-                                      <div className="h-full w-[1px] bg-white/60 absolute" />
-                                    </div>
-                                  )}
-
-                                  {/* Diagonal X Option */}
-                                  {showDiagonals && (
-                                    <div className="absolute inset-0 pointer-events-none opacity-30">
-                                      <svg className="w-full h-full">
-                                        <line x1="0" y1="0" x2="100%" y2="100%" stroke={gridColor} strokeWidth="1" strokeDasharray="2 2" />
-                                        <line x1="100%" y1="0" x2="0" y2="100%" stroke={gridColor} strokeWidth="1" strokeDasharray="2 2" />
-                                      </svg>
-                                    </div>
-                                  )}
-
-                                  {/* Hover Highlight indicator */}
-                                  <div className="opacity-0 group-hover:opacity-100 text-[8px] font-mono text-white/80 self-end">
-                                    {Math.floor(idx / gridCols) + 1},{idx % gridCols + 1}
-                                  </div>
-                                </div>
-                              );
-                            })}
+                            <span className="absolute left-1 top-1 text-[9px] font-mono font-black text-amber-300 bg-black/80 px-1 py-0.2 rounded-xs shadow-xs">
+                              #{selectedCellCoords.index}
+                            </span>
                           </div>
                         )}
+
+                        {/* Cell Click Interaction Overlay */}
+                        <div
+                          className="absolute inset-0 z-15 cursor-grab active:cursor-grabbing"
+                          onClick={(e) => {
+                            if (dragMovedDistance >= 5) return;
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            const clickX = (e.clientX - rect.left) / (zoomLevel / 100);
+                            const clickY = (e.clientY - rect.top) / (zoomLevel / 100);
+
+                            const cellW = cellCalculations.cellW;
+                            const cellH = cellCalculations.cellH;
+                            const relX = clickX - offsetX;
+                            const relY = clickY - offsetY;
+
+                            if (relX >= 0 && relY >= 0) {
+                              const c = Math.floor(relX / (cellW + colGap));
+                              const r = Math.floor(relY / (cellH + rowGap));
+                              if (c >= 0 && c < gridCols && r >= 0 && r < gridRows) {
+                                const inCellX = relX - c * (cellW + colGap);
+                                const inCellY = relY - r * (cellH + rowGap);
+                                if (inCellX <= cellW && inCellY <= cellH) {
+                                  setSelectedCellIndex(r * gridCols + c);
+                                }
+                              }
+                            }
+                          }}
+                        />
                       </div>
                     ) : (
                       <div className="p-8 text-center text-slate-400 text-xs flex flex-col items-center">
