@@ -125,7 +125,7 @@ if (typeof window !== 'undefined') {
     document.body.innerHTML = `<pre style="font-family: monospace; font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-all; padding: 24px; margin: 0; background: #fdfcfc; color: #201d1d;">${JSON.stringify(healthData, null, 2)}</pre>`;
   } else if (path === '/pacpik' || path === '/pacpik.html' || path === '/pacpik.txt') {
     isApiRoute = true;
-    const verificationText = 'pacpik-games-verification=f197d6f47d819f97660046da45174f0d5a9ff1abf90c5e38';
+    const verificationText = 'pacpik-games-verification=1a69b39b20f76c21ab6e49dc8dc6c9c42d5f83d54c2dc5b6';
     document.title = verificationText;
     document.body.innerHTML = verificationText;
   }

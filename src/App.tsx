@@ -1663,7 +1663,7 @@ function AppContent() {
     } else if (view === 'pacpik') {
       targetPath = '/pacpik';
       title = 'Pacpik Games Verification | SNSHero';
-      description = 'pacpik-games-verification=f197d6f47d819f97660046da45174f0d5a9ff1abf90c5e38';
+      description = 'pacpik-games-verification=1a69b39b20f76c21ab6e49dc8dc6c9c42d5f83d54c2dc5b6';
     } else if (view === 'web3-landing') {
       targetPath = '/web3';
       title = t('web3_landing_hero_title', language) || 'SNSHero — Play Instantly, No Install, No Wallet';

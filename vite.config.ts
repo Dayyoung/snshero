@@ -96,7 +96,7 @@ export default defineConfig(({mode}) => {
                 res.setHeader('Content-Type', 'text/plain; charset=utf-8');
                 res.setHeader('Cache-Control', 'no-cache');
                 res.setHeader('Access-Control-Allow-Origin', '*');
-                res.end('pacpik-games-verification=f197d6f47d819f97660046da45174f0d5a9ff1abf90c5e38\n');
+                res.end('pacpik-games-verification=1a69b39b20f76c21ab6e49dc8dc6c9c42d5f83d54c2dc5b6\n');
                 return;
               }
 
