@@ -88,15 +88,15 @@ export const TacticianMasteryModal: React.FC<TacticianMasteryModalProps> = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs font-mono">
+      <div className="fixed inset-0 z-[300] flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-xs font-mono">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          className="relative w-full max-w-sm bg-[#201d1d] border border-[rgba(255,255,255,0.2)] rounded-none p-4 text-[#fdfcfc] shadow-2xl"
+          className="relative w-full max-w-sm max-h-[90dvh] flex flex-col overflow-hidden bg-[#201d1d] border border-[rgba(255,255,255,0.2)] rounded-none p-4 text-[#fdfcfc] shadow-2xl"
         >
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.12)] pb-2 mb-3">
+          <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.12)] pb-2 mb-3 shrink-0">
             <div className="flex items-center gap-1.5">
               <Palette size={16} className="text-indigo-400" />
               <span className="text-xs font-bold uppercase tracking-wider text-indigo-300">
@@ -105,82 +105,87 @@ export const TacticianMasteryModal: React.FC<TacticianMasteryModalProps> = ({
             </div>
             <button
               onClick={onClose}
-              className="text-white/60 hover:text-white p-1 rounded-sm border border-transparent hover:border-white/20"
+              aria-label="닫기"
+              className="text-white/60 hover:text-white p-1.5 rounded-sm border border-transparent hover:border-white/20 flex items-center justify-center"
             >
-              <X size={14} />
+              <X size={16} />
             </button>
           </div>
 
-          {/* Level Progress */}
-          <div className="bg-[#141212] border border-white/15 p-3 rounded-none mb-3">
-            <div className="flex justify-between items-center text-xs mb-1.5 font-bold">
-              <span className="text-amber-300">
-                {language === 'ko' ? `전술가 등급: Lv.${currentLevel}` : `Tactician Rank: Lv.${currentLevel}`}
-              </span>
-              <span className="text-white/60 text-[10px]">
-                {currentExp} / {maxExp} EXP
-              </span>
-            </div>
-            <div className="w-full bg-white/10 h-1.5 rounded-none overflow-hidden">
-              <div
-                className="bg-indigo-400 h-full transition-all duration-300"
-                style={{ width: `${(currentExp / maxExp) * 100}%` }}
-              />
-            </div>
-          </div>
-
-          <p className="text-[10px] text-white/80 mb-3 leading-relaxed">
-            {language === 'ko'
-              ? '미션 및 전술 업적으로 숙련도를 올려 3x3 전장 외곽선 오라 스킨을 해금하고 장착하세요.'
-              : 'Level up tactician mastery through battle feats to unlock custom 3x3 battlefield aura skins.'}
-          </p>
-
-          {/* Skins Grid */}
-          <div className="space-y-2 mb-4">
-            {skins.map(skin => (
-              <div
-                key={skin.id}
-                onClick={() => handleSelectSkin(skin.id, skin.isUnlocked)}
-                className={`p-2.5 rounded-none border flex items-center justify-between transition-all cursor-pointer ${
-                  activeSkinId === skin.id
-                    ? 'bg-indigo-950/60 border-indigo-400 text-indigo-300'
-                    : skin.isUnlocked
-                    ? 'bg-[#141212] border-white/20 hover:border-indigo-500/60 text-white'
-                    : 'bg-[#141212]/50 border-white/10 opacity-50 cursor-not-allowed text-white/40'
-                }`}
-              >
-                <div>
-                  <div className="text-xs font-bold flex items-center gap-1.5">
-                    <span className={`w-3 h-3 border ${skin.borderClass} ${skin.glowClass} inline-block`} />
-                    <span>{language === 'ko' ? skin.nameKo : skin.nameEn}</span>
-                  </div>
-                  <div className="text-[9px] text-white/50 font-mono mt-0.5">
-                    {language === 'ko' ? `해금 조건: 전술가 Lv.${skin.requiredLevel}` : `Requires Tactician Lv.${skin.requiredLevel}`}
-                  </div>
-                </div>
-
-                <div className="text-right text-[9px] font-bold">
-                  {activeSkinId === skin.id ? (
-                    <span className="text-indigo-400 flex items-center gap-0.5">
-                      <Check size={12} /> [적용 중]
-                    </span>
-                  ) : skin.isUnlocked ? (
-                    <span className="text-white/60 hover:text-white">[적용하기]</span>
-                  ) : (
-                    <span className="text-rose-400">[잠김]</span>
-                  )}
-                </div>
+          <div className="flex-1 min-h-0 overflow-y-auto pr-0.5 space-y-3">
+            {/* Level Progress */}
+            <div className="bg-[#141212] border border-white/15 p-3 rounded-none">
+              <div className="flex justify-between items-center text-xs mb-1.5 font-bold">
+                <span className="text-amber-300">
+                  {language === 'ko' ? `전술가 등급: Lv.${currentLevel}` : `Tactician Rank: Lv.${currentLevel}`}
+                </span>
+                <span className="text-white/60 text-[10px]">
+                  {currentExp} / {maxExp} EXP
+                </span>
               </div>
-            ))}
+              <div className="w-full bg-white/10 h-1.5 rounded-none overflow-hidden">
+                <div
+                  className="bg-indigo-400 h-full transition-all duration-300"
+                  style={{ width: `${(currentExp / maxExp) * 100}%` }}
+                />
+              </div>
+            </div>
+
+            <p className="text-[10px] text-white/80 leading-relaxed">
+              {language === 'ko'
+                ? '미션 및 전술 업적으로 숙련도를 올려 3x3 전장 외곽선 오라 스킨을 해금하고 장착하세요.'
+                : 'Level up tactician mastery through battle feats to unlock custom 3x3 battlefield aura skins.'}
+            </p>
+
+            {/* Skins Grid */}
+            <div className="space-y-2">
+              {skins.map(skin => (
+                <div
+                  key={skin.id}
+                  onClick={() => handleSelectSkin(skin.id, skin.isUnlocked)}
+                  className={`p-2.5 rounded-none border flex items-center justify-between transition-all cursor-pointer ${
+                    activeSkinId === skin.id
+                      ? 'bg-indigo-950/60 border-indigo-400 text-indigo-300'
+                      : skin.isUnlocked
+                      ? 'bg-[#141212] border-white/20 hover:border-indigo-500/60 text-white'
+                      : 'bg-[#141212]/50 border-white/10 opacity-50 cursor-not-allowed text-white/40'
+                  }`}
+                >
+                  <div>
+                    <div className="text-xs font-bold flex items-center gap-1.5">
+                      <span className={`w-3 h-3 border ${skin.borderClass} ${skin.glowClass} inline-block`} />
+                      <span>{language === 'ko' ? skin.nameKo : skin.nameEn}</span>
+                    </div>
+                    <div className="text-[9px] text-white/50 font-mono mt-0.5">
+                      {language === 'ko' ? `해금 조건: 전술가 Lv.${skin.requiredLevel}` : `Requires Tactician Lv.${skin.requiredLevel}`}
+                    </div>
+                  </div>
+
+                  <div className="text-right text-[9px] font-bold">
+                    {activeSkinId === skin.id ? (
+                      <span className="text-indigo-400 flex items-center gap-0.5">
+                        <Check size={12} /> [적용 중]
+                      </span>
+                    ) : skin.isUnlocked ? (
+                      <span className="text-white/60 hover:text-white">[적용하기]</span>
+                    ) : (
+                      <span className="text-rose-400">[잠김]</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <button
-            onClick={onClose}
-            className="w-full py-2 bg-[#fdfcfc] text-[#201d1d] hover:bg-indigo-300 transition-colors text-xs font-bold uppercase rounded-sm flex items-center justify-center gap-1.5"
-          >
-            <Sparkles size={13} />
-            <span>{language === 'ko' ? '[ 오라 설정 완료 ]' : '[ Close ]'}</span>
-          </button>
+          <div className="shrink-0 pt-3">
+            <button
+              onClick={onClose}
+              className="w-full py-2 bg-[#fdfcfc] text-[#201d1d] hover:bg-indigo-300 transition-colors text-xs font-bold uppercase rounded-sm flex items-center justify-center gap-1.5"
+            >
+              <Sparkles size={13} />
+              <span>{language === 'ko' ? '[ 오라 설정 완료 ]' : '[ Close ]'}</span>
+            </button>
+          </div>
         </motion.div>
       </div>
     </AnimatePresence>

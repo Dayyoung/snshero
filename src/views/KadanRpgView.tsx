@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, Bot, Compass, Pause, Play, RotateCcw, Sparkles, Swords } from 'lucide-react';
+import { ArrowLeft, Bot, Compass, Pause, Play, RotateCcw, Sparkles, Swords, X } from 'lucide-react';
 import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
 import type { CardData, CardRarity, ItemRarity, Language, ViewType } from '../types';
@@ -167,6 +167,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
     };
   }, [activeEncounter, battleEvent, language, progress.rebirthLevel]);
   const isComplete = !nextEvent;
+  const [isEndingDismissed, setIsEndingDismissed] = useState(false);
   const isAtTarget = sameTile(heroTile, nextEvent?.tile ?? null);
   const hasDialog = Boolean(activeEvent && !battleEvent && !rewardEvent);
   const hasBattle = Boolean(activeEvent && !battleEvent && !rewardEvent);
@@ -356,6 +357,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
   }, [setAutoMode]);
 
   const handleReincarnate = useCallback(() => {
+    setIsEndingDismissed(false);
     setActiveEvent(null);
     setBattleEvent(null);
     setRewardEvent(null);
@@ -420,6 +422,24 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
       </header>
 
       <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-4 overflow-y-auto p-3 sm:p-4 md:p-6 pb-[calc(env(safe-area-inset-bottom)+5rem)]">
+        {isComplete && isEndingDismissed && (
+          <div className="flex items-center justify-between rounded-lg border border-violet-300 bg-gradient-to-r from-violet-600 to-indigo-700 p-3 text-white shadow-lg animate-in fade-in duration-200">
+            <div className="flex items-center gap-2">
+              <Sparkles size={18} className="text-amber-300 animate-spin" />
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-wider text-violet-200">{t('kadan_rpg_ending_popup_badge', language)}</p>
+                <p className="text-xs font-black">{t('kadan_rpg_ending_popup_title', language)}</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsEndingDismissed(false)}
+              className="flex min-h-[38px] items-center gap-1.5 rounded-md bg-white px-3 py-1.5 text-xs font-black text-violet-900 shadow-sm transition-all hover:bg-violet-50 active:scale-95 cursor-pointer"
+            >
+              <span>{language === 'ko' ? '엔딩/환생 보기' : 'View Ending'}</span>
+            </button>
+          </div>
+        )}
         <div className="relative">
           <KadanWorldMap
             region={currentRegion}
@@ -554,23 +574,34 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
         </section>
       </main>
 
-      {isComplete && (
-        <div className="fixed inset-0 z-[10000] flex items-end justify-center bg-slate-950/75 p-3 backdrop-blur-xs md:items-center">
-          <div className="w-full max-w-2xl overflow-hidden rounded-lg border border-violet-200 bg-white shadow-2xl">
-            <div className="border-b border-slate-100 bg-gradient-to-r from-violet-700 via-indigo-700 to-slate-950 p-5 text-white">
+      {isComplete && !isEndingDismissed && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-950/75 p-2 sm:p-4 backdrop-blur-xs">
+          <div className="w-full max-w-2xl max-h-[90dvh] flex flex-col overflow-hidden rounded-lg border border-violet-200 bg-white shadow-2xl">
+            {/* Header */}
+            <div className="shrink-0 border-b border-slate-100 bg-gradient-to-r from-violet-700 via-indigo-700 to-slate-950 p-4 sm:p-5 text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/15">
-                  <Sparkles size={24} />
+                <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-white/15 shrink-0">
+                  <Sparkles size={22} />
                 </div>
                 <div>
                   <p className="text-xs font-black uppercase tracking-normal text-violet-100">{t('kadan_rpg_ending_popup_badge', language)}</p>
-                  <h2 className="text-xl font-black">{t('kadan_rpg_ending_popup_title', language)}</h2>
+                  <h2 className="text-lg sm:text-xl font-black">{t('kadan_rpg_ending_popup_title', language)}</h2>
                 </div>
               </div>
+              <button
+                type="button"
+                onClick={() => setIsEndingDismissed(true)}
+                className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer border border-white/20 shrink-0"
+                aria-label={t('close', language)}
+              >
+                <X size={18} />
+              </button>
             </div>
-            <div className="max-h-[58vh] space-y-3 overflow-y-auto p-5">
+
+            {/* Content body */}
+            <div className="flex-1 min-h-0 space-y-3 overflow-y-auto p-4 sm:p-5">
               <p className="text-sm font-bold leading-6 text-slate-700">{t('kadan_rpg_ending_popup_desc', language)}</p>
-              <div className="space-y-3 rounded-lg bg-slate-50 p-4">
+              <div className="space-y-3 rounded-lg bg-slate-50 p-3 sm:p-4">
                 <p className="text-xs font-black uppercase tracking-normal text-violet-600">{t('kadan_rpg_ending_epilogue_title', language)}</p>
                 {epilogueLines.map((line, index) => (
                   <div key={`${line.name}-${index}`} className="rounded-lg bg-white p-3 shadow-sm">
@@ -580,17 +611,28 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
                 ))}
               </div>
             </div>
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 p-4">
+
+            {/* Footer */}
+            <div className="shrink-0 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 border-t border-slate-100 p-3 sm:p-4 bg-slate-50/80">
               <div className="rounded-lg bg-violet-50 px-3 py-2 text-xs font-black text-violet-700">
                 {t('kadan_rpg_rebirth_level', language)} {progress.rebirthLevel}
               </div>
-              <button
-                type="button"
-                onClick={handleReincarnate}
-                className="min-h-11 rounded-lg bg-violet-600 px-5 py-2 text-sm font-black text-white shadow-md shadow-violet-600/10 transition-all active:scale-95"
-              >
-                {t('kadan_rpg_reincarnate', language)}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsEndingDismissed(true)}
+                  className="min-h-11 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition-all hover:bg-slate-50 active:scale-95 cursor-pointer shadow-xs"
+                >
+                  {language === 'ko' ? '닫기 (나중에 하기)' : t('close', language)}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleReincarnate}
+                  className="min-h-11 rounded-lg bg-violet-600 hover:bg-violet-700 px-5 py-2 text-sm font-black text-white shadow-md shadow-violet-600/20 transition-all active:scale-95 cursor-pointer"
+                >
+                  {t('kadan_rpg_reincarnate', language)}
+                </button>
+              </div>
             </div>
           </div>
         </div>

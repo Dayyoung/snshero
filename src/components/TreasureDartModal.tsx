@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { X } from 'lucide-react';
 import { useSns } from '../contexts/SnsContext';
 
 interface TreasureDartModalProps {
@@ -97,10 +98,10 @@ export const TreasureDartModal: React.FC<TreasureDartModalProps> = ({
   if (!isOpen || !mounted || typeof document === 'undefined') return null;
 
   const content = (
-    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md font-mono select-none pointer-events-auto">
-      <div className="w-full max-w-md bg-[#fdfcfc] border-2 border-amber-500 rounded-none p-5 shadow-2xl space-y-4 pointer-events-auto">
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md font-mono select-none pointer-events-auto">
+      <div className="w-full max-w-md max-h-[90dvh] flex flex-col bg-[#fdfcfc] border-2 border-amber-500 rounded-none p-4 sm:p-5 shadow-2xl space-y-3 sm:space-y-4 pointer-events-auto overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-black/10 pb-3">
+        <div className="flex items-center justify-between border-b border-black/10 pb-3 shrink-0">
           <div className="flex items-center gap-2">
             <span className="text-2xl animate-bounce">🎯</span>
             <div>
@@ -112,6 +113,14 @@ export const TreasureDartModal: React.FC<TreasureDartModalProps> = ({
               </p>
             </div>
           </div>
+          <button
+            type="button"
+            onClick={handleResetOrClose}
+            className="w-8 h-8 rounded-full bg-black/5 hover:bg-black/10 flex items-center justify-center text-slate-700 transition-colors cursor-pointer shrink-0 ml-2"
+            aria-label="닫기"
+          >
+            <X size={16} />
+          </button>
         </div>
 
         {/* Dartboard Target Track */}

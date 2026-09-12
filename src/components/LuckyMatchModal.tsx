@@ -102,15 +102,15 @@ export const LuckyMatchModal: React.FC<LuckyMatchModalProps> = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs font-mono">
+      <div className="fixed inset-0 z-[300] flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-xs font-mono">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          className="relative w-full max-w-sm bg-[#201d1d] border border-[rgba(255,255,255,0.2)] rounded-none p-4 text-[#fdfcfc] shadow-2xl"
+          className="relative w-full max-w-sm max-h-[90dvh] flex flex-col overflow-hidden bg-[#201d1d] border border-[rgba(255,255,255,0.2)] rounded-none p-4 text-[#fdfcfc] shadow-2xl"
         >
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.12)] pb-2 mb-3">
+          <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.12)] pb-2 mb-3 shrink-0">
             <div className="flex items-center gap-1.5">
               <Trophy size={16} className="text-amber-400" />
               <span className="text-xs font-bold uppercase tracking-wider text-amber-300">
@@ -119,69 +119,74 @@ export const LuckyMatchModal: React.FC<LuckyMatchModalProps> = ({
             </div>
             <button
               onClick={onClose}
-              className="text-white/60 hover:text-white p-1 rounded-sm border border-transparent hover:border-white/20"
+              aria-label="닫기"
+              className="text-white/60 hover:text-white p-1.5 rounded-sm border border-transparent hover:border-white/20 flex items-center justify-center"
             >
-              <X size={14} />
+              <X size={16} />
             </button>
           </div>
 
-          <p className="text-[10px] text-white/80 mb-3 leading-relaxed">
-            {language === 'ko'
-              ? '수동 5연승 달성 보너스 룸! 6장의 카드를 뒤집어 3쌍의 보물 짝을 맞추고 추가 보상을 획득하세요.'
-              : '5-Win Streak Bonus Room! Match all 3 pairs from the 6 mystery cards to unlock +50 SNS bounty!'}
-          </p>
+          <div className="flex-1 min-h-0 overflow-y-auto pr-0.5 space-y-3">
+            <p className="text-[10px] text-white/80 leading-relaxed">
+              {language === 'ko'
+                ? '수동 5연승 달성 보너스 룸! 6장의 카드를 뒤집어 3쌍의 보물 짝을 맞추고 추가 보상을 획득하세요.'
+                : '5-Win Streak Bonus Room! Match all 3 pairs from the 6 mystery cards to unlock +50 SNS bounty!'}
+            </p>
 
-          {/* 6 Cards Grid (2x3) */}
-          <div className="grid grid-cols-3 gap-2 mb-4">
-            {cards.map(card => (
-              <button
-                key={card.id}
-                onClick={() => handleCardClick(card.id)}
-                disabled={card.isMatched || card.isFlipped}
-                className={`h-20 rounded-sm border flex flex-col items-center justify-center transition-all ${
-                  card.isMatched
-                    ? 'bg-emerald-950/60 border-emerald-500/80 text-emerald-300'
-                    : card.isFlipped
-                    ? 'bg-amber-950/70 border-amber-400 text-amber-300'
-                    : 'bg-[#141212] border-white/20 hover:border-amber-400/60 text-white/40'
-                }`}
-              >
-                {card.isFlipped || card.isMatched ? (
-                  <div className="flex flex-col items-center gap-1">
-                    <span className="text-xl">{card.icon}</span>
-                    <span className="text-[8px] font-bold">{card.label}</span>
-                  </div>
-                ) : (
-                  <span className="text-xs font-bold text-white/30">[?]</span>
-                )}
-              </button>
-            ))}
+            {/* 6 Cards Grid (2x3) */}
+            <div className="grid grid-cols-3 gap-2">
+              {cards.map(card => (
+                <button
+                  key={card.id}
+                  onClick={() => handleCardClick(card.id)}
+                  disabled={card.isMatched || card.isFlipped}
+                  className={`h-20 rounded-sm border flex flex-col items-center justify-center transition-all ${
+                    card.isMatched
+                      ? 'bg-emerald-950/60 border-emerald-500/80 text-emerald-300'
+                      : card.isFlipped
+                      ? 'bg-amber-950/70 border-amber-400 text-amber-300'
+                      : 'bg-[#141212] border-white/20 hover:border-amber-400/60 text-white/40'
+                  }`}
+                >
+                  {card.isFlipped || card.isMatched ? (
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-xl">{card.icon}</span>
+                      <span className="text-[8px] font-bold">{card.label}</span>
+                    </div>
+                  ) : (
+                    <span className="text-xs font-bold text-white/30">[?]</span>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {/* Status / Claim Banner */}
+            {isCompleted ? (
+              <div className="bg-emerald-950/70 border border-emerald-400/80 p-2.5 rounded-sm flex flex-col items-center text-center gap-1">
+                <CheckCircle2 size={18} className="text-emerald-400" />
+                <span className="text-xs font-bold text-emerald-300">
+                  {language === 'ko' ? '🎉 전체 짝맞추기 완료!' : '🎉 All Pairs Matched!'}
+                </span>
+                <span className="text-[10px] text-amber-300 font-bold">
+                  +{bonusEarned} SNS & [에픽 룬 비전서] 획득!
+                </span>
+              </div>
+            ) : (
+              <div className="text-[10px] text-center text-white/60">
+                {language === 'ko' ? `완료된 짝: ${matchedPairs} / 3` : `Pairs Matched: ${matchedPairs} / 3`}
+              </div>
+            )}
           </div>
 
-          {/* Status / Claim Banner */}
-          {isCompleted ? (
-            <div className="bg-emerald-950/70 border border-emerald-400/80 p-2.5 rounded-sm flex flex-col items-center text-center gap-1 mb-3">
-              <CheckCircle2 size={18} className="text-emerald-400" />
-              <span className="text-xs font-bold text-emerald-300">
-                {language === 'ko' ? '🎉 전체 짝맞추기 완료!' : '🎉 All Pairs Matched!'}
-              </span>
-              <span className="text-[10px] text-amber-300 font-bold">
-                +{bonusEarned} SNS & [에픽 룬 비전서] 획득!
-              </span>
-            </div>
-          ) : (
-            <div className="text-[10px] text-center text-white/60 mb-3">
-              {language === 'ko' ? `완료된 짝: ${matchedPairs} / 3` : `Pairs Matched: ${matchedPairs} / 3`}
-            </div>
-          )}
-
-          <button
-            onClick={onClose}
-            className="w-full py-2 bg-[#fdfcfc] text-[#201d1d] hover:bg-amber-300 transition-colors text-xs font-bold uppercase rounded-sm flex items-center justify-center gap-1.5"
-          >
-            <Sparkles size={13} />
-            <span>{isCompleted ? (language === 'ko' ? '[ 보상 확인 및 닫기 ]' : '[ Claim & Close ]') : (language === 'ko' ? '[ 포기하고 나가기 ]' : '[ Exit ]')}</span>
-          </button>
+          <div className="shrink-0 pt-3">
+            <button
+              onClick={onClose}
+              className="w-full py-2 bg-[#fdfcfc] text-[#201d1d] hover:bg-amber-300 transition-colors text-xs font-bold uppercase rounded-sm flex items-center justify-center gap-1.5"
+            >
+              <Sparkles size={13} />
+              <span>{isCompleted ? (language === 'ko' ? '[ 보상 확인 및 닫기 ]' : '[ Claim & Close ]') : (language === 'ko' ? '[ 포기하고 나가기 ]' : '[ Exit ]')}</span>
+            </button>
+          </div>
         </motion.div>
       </div>
     </AnimatePresence>

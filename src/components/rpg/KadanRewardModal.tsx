@@ -1,5 +1,5 @@
 import React from 'react';
-import { Gift, Sparkles } from 'lucide-react';
+import { Gift, Sparkles, X } from 'lucide-react';
 import { t } from '../../lib/i18n';
 import { CARD_DATABASE } from '../../cardDatabase';
 import type { Language } from '../../types';
@@ -18,10 +18,20 @@ export const KadanRewardModal: React.FC<KadanRewardModalProps> = ({
   onClaim,
   onClose,
 }) => (
-  <div className="absolute inset-0 z-40 flex items-end justify-center bg-slate-950/55 p-3 backdrop-blur-xs md:items-center">
-    <div className="w-full max-w-md rounded-lg border border-slate-100 bg-white p-5 shadow-2xl">
-      <div className="mb-4 flex items-center gap-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
+  <div className="fixed inset-0 z-40 flex items-center justify-center bg-slate-950/55 p-3 backdrop-blur-xs">
+    <div className="relative flex max-h-[90dvh] w-full max-w-md flex-col overflow-hidden rounded-lg border border-slate-100 bg-white p-4 sm:p-5 shadow-2xl">
+      {/* Top right close button */}
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label={t('kadan_rpg_close', language)}
+        className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-800"
+      >
+        <X size={16} />
+      </button>
+
+      <div className="mb-3 flex shrink-0 items-center gap-3 pr-8">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
           <Gift size={24} />
         </div>
         <div>
@@ -29,9 +39,10 @@ export const KadanRewardModal: React.FC<KadanRewardModalProps> = ({
           <h3 className="text-lg font-extrabold text-slate-900">{t(reward.titleKey, language)}</h3>
         </div>
       </div>
-      <div className="space-y-2 rounded-lg bg-slate-50 p-3 text-sm font-semibold text-slate-700">
+
+      <div className="flex-1 min-h-0 overflow-y-auto space-y-2 rounded-lg bg-slate-50 p-3 text-sm font-semibold text-slate-700 pr-2">
         <p className="flex items-center gap-2">
-          <Sparkles size={16} className="text-indigo-500" />
+          <Sparkles size={16} className="text-indigo-500 shrink-0" />
           {t('kadan_rpg_reward_sns', language, { amount: reward.sns })}
         </p>
         {reward.itemRarity && (
@@ -51,7 +62,8 @@ export const KadanRewardModal: React.FC<KadanRewardModalProps> = ({
           </p>
         )}
       </div>
-      <div className="mt-5 flex justify-end gap-2">
+
+      <div className="mt-4 flex shrink-0 justify-end gap-2 pt-1">
         <button
           type="button"
           onClick={onClose}
@@ -70,3 +82,4 @@ export const KadanRewardModal: React.FC<KadanRewardModalProps> = ({
     </div>
   </div>
 );
+

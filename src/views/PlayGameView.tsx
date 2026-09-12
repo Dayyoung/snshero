@@ -10901,15 +10901,28 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   initial={{ scale: 0.9, y: 20 }}
                   animate={{ scale: 1, y: 0 }}
                   exit={{ scale: 0.9, y: 20 }}
-                  className="bg-slate-900 text-white w-full max-w-md rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-slate-800 relative flex flex-col z-[1001]"
+                  className="bg-slate-900 text-white w-full max-w-md max-h-[90dvh] rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-slate-800 relative flex flex-col z-[1001]"
                 >
-                  <div className="p-5 bg-gradient-to-r from-blue-600 to-indigo-600 border-b border-slate-800 text-white flex items-center gap-2">
-                    <Sparkles size={24} className="text-yellow-300 animate-spin" />
-                    <h2 className="text-lg font-black italic uppercase tracking-tight">{t('story_reward_earned', language)}</h2>
+                  <div className="p-4 sm:p-5 bg-gradient-to-r from-blue-600 to-indigo-600 border-b border-slate-800 text-white flex items-center justify-between shrink-0">
+                    <div className="flex items-center gap-2">
+                      <Sparkles size={22} className="text-yellow-300 animate-spin" />
+                      <h2 className="text-base sm:text-lg font-black italic uppercase tracking-tight">{t('story_reward_earned', language)}</h2>
+                    </div>
+                    <button
+                      onClick={() => {
+                        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                        claimStoryBattleReward(`story-reward-${storyAct}`);
+                        setShowStoryResultModal(false);
+                      }}
+                      className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                      aria-label={t('close', language)}
+                    >
+                      <X size={18} />
+                    </button>
                   </div>
 
-                  <div className="p-6 space-y-4 text-center flex flex-col">
-                    <h3 className="text-2xl font-black italic leading-tight pt-2 px-2 text-white">
+                  <div className="p-5 sm:p-6 space-y-4 text-center flex flex-col flex-1 min-h-0 overflow-y-auto">
+                    <h3 className="text-xl sm:text-2xl font-black italic leading-tight pt-1 px-2 text-white">
                       {t('story_act_prefix', language).replace('{act}', String(storyAct + 1))} {language === 'ko' ? "클리어!" : "Cleared!"}
                     </h3>
 
@@ -10932,17 +10945,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
-                      <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl shadow-inner text-center flex flex-col justify-center items-center">
+                      <div className="p-3 sm:p-4 bg-slate-950 border border-slate-800 rounded-2xl shadow-inner text-center flex flex-col justify-center items-center">
                         <span className="text-[9px] font-bold uppercase opacity-60 block mb-0.5 text-slate-400">{t('reward', language)}</span>
-                        <span className="text-lg font-black text-indigo-400">+{storyReward} SNS</span>
+                        <span className="text-base sm:text-lg font-black text-indigo-400">+{storyReward} SNS</span>
                       </div>
 
-                      <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl shadow-inner text-center flex flex-col justify-center items-center">
+                      <div className="p-3 sm:p-4 bg-slate-950 border border-slate-800 rounded-2xl shadow-inner text-center flex flex-col justify-center items-center">
                         <span className="text-[9px] font-bold uppercase opacity-60 block mb-0.5 text-slate-400">
                           {storyAct === 0 || storyAct === 1 ? (language === 'ko' ? "추가 보상" : "BONUS") : (language === 'ko' ? "획득 아이템" : "ITEM")}
                         </span>
                         {storyAct === 0 || storyAct === 1 ? (
-                          <span className="text-sm font-black italic text-purple-400">
+                          <span className="text-xs sm:text-sm font-black italic text-purple-400">
                             +1 {language === 'ko' ? "스킬포인트" : "Skill Point"}
                           </span>
                         ) : (
@@ -10959,14 +10972,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     </div>
                   </div>
 
-                  <div className="p-5 border-t border-slate-800 bg-slate-950 flex justify-center">
+                  <div className="p-4 sm:p-5 border-t border-slate-800 bg-slate-950 flex justify-center shrink-0">
                     <button
                       onClick={() => {
                         playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                         claimStoryBattleReward(`story-reward-${storyAct}`);
                         setShowStoryResultModal(false);
                       }}
-                      className="w-full py-4 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-450 hover:to-yellow-450 text-slate-900 font-bold uppercase rounded-2xl shadow-lg shadow-yellow-500/10 active:scale-98 transition-all cursor-pointer text-center"
+                      className="w-full py-3.5 sm:py-4 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-450 hover:to-yellow-450 text-slate-900 font-bold uppercase rounded-2xl shadow-lg shadow-yellow-500/10 active:scale-98 transition-all cursor-pointer text-center text-xs sm:text-sm"
                     >
                       {t('tournament_confirm_btn', language)}
                     </button>
@@ -10989,34 +11002,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <motion.div
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
-                className="bg-slate-900 text-white w-full max-w-md rounded-[2rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-slate-800 relative flex flex-col z-[1001]"
+                className="bg-slate-900 text-white w-full max-w-md max-h-[90dvh] rounded-[2rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-slate-800 relative flex flex-col z-[1001]"
               >
-                <div className="p-6 bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 border-b border-slate-800 text-slate-950 flex items-center gap-2">
-                  <Trophy size={28} className="animate-bounce text-slate-950" />
-                  <h2 className="text-xl font-black italic uppercase tracking-tight text-slate-950">THE END</h2>
-                </div>
-
-                <div className="p-8 space-y-6 text-center bg-slate-900">
-                  <div className="w-24 h-24 bg-yellow-100/10 rounded-full border border-slate-800 flex items-center justify-center mx-auto shadow-lg text-yellow-400 animate-spin animate-duration-3000">
-                    <Trophy size={48} />
+                <div className="p-4 sm:p-6 bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 border-b border-slate-800 text-slate-950 flex items-center justify-between shrink-0">
+                  <div className="flex items-center gap-2">
+                    <Trophy size={26} className="animate-bounce text-slate-950" />
+                    <h2 className="text-lg sm:text-xl font-black italic uppercase tracking-tight text-slate-950">THE END</h2>
                   </div>
-
-                  <div className="space-y-2">
-                    <h3 className="text-3xl font-black italic uppercase tracking-tighter text-white">웅장한 서사의 마무리</h3>
-                    <p className="text-xs font-bold text-slate-350 leading-relaxed font-sans px-2 pt-2">
-                      {language === 'ko' 
-                        ? '천상계와의 위대한 결전 끝에 인류와 모든 피조물들은 마침내 평화를 맞이했습니다. 이제 그들을 초월한 새로운 시대가 시작됩니다. 영웅이여, 수고하셨습니다!'
-                        : 'After the final battle, humanity and all creatures have achieved eternal peace. A new era transcending the cosmos has begun. Thank you, Hero!'}
-                    </p>
-                  </div>
-
-                  <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl shadow-inner inline-block">
-                    <span className="text-[10px] font-black uppercase opacity-60 block mb-1 text-slate-400">TOTAL CLEAR PRIZE</span>
-                    <span className="text-3xl font-black italic text-yellow-400">+300 SNS</span>
-                  </div>
-                </div>
-
-                <div className="p-6 border-t border-slate-800 bg-slate-950 flex justify-center">
                   <button
                     onClick={() => {
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
@@ -11028,7 +11020,46 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       setIsStoryActive(false);
                       setGameState('modeSelect');
                     }}
-                    className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-450 hover:to-yellow-450 text-slate-955 font-black uppercase italic tracking-widest rounded-2xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+                    className="p-1.5 rounded-full bg-slate-950/20 hover:bg-slate-950/30 text-slate-950 transition-colors cursor-pointer"
+                    aria-label={t('close', language)}
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+
+                <div className="p-5 sm:p-8 space-y-4 sm:space-y-6 text-center bg-slate-900 flex-1 min-h-0 overflow-y-auto">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 bg-yellow-100/10 rounded-full border border-slate-800 flex items-center justify-center mx-auto shadow-lg text-yellow-400 animate-spin animate-duration-3000 shrink-0">
+                    <Trophy size={42} />
+                  </div>
+
+                  <div className="space-y-2">
+                    <h3 className="text-2xl sm:text-3xl font-black italic uppercase tracking-tighter text-white">웅장한 서사의 마무리</h3>
+                    <p className="text-xs font-bold text-slate-350 leading-relaxed font-sans px-2 pt-1">
+                      {language === 'ko' 
+                        ? '천상계와의 위대한 결전 끝에 인류와 모든 피조물들은 마침내 평화를 맞이했습니다. 이제 그들을 초월한 새로운 시대가 시작됩니다. 영웅이여, 수고하셨습니다!'
+                        : 'After the final battle, humanity and all creatures have achieved eternal peace. A new era transcending the cosmos has begun. Thank you, Hero!'}
+                    </p>
+                  </div>
+
+                  <div className="p-3 sm:p-4 bg-slate-950 border border-slate-800 rounded-2xl shadow-inner inline-block">
+                    <span className="text-[10px] font-black uppercase opacity-60 block mb-1 text-slate-400">TOTAL CLEAR PRIZE</span>
+                    <span className="text-2xl sm:text-3xl font-black italic text-yellow-400">+300 SNS</span>
+                  </div>
+                </div>
+
+                <div className="p-4 sm:p-6 border-t border-slate-800 bg-slate-950 flex justify-center shrink-0">
+                  <button
+                    onClick={() => {
+                      playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                      recordMatchResult('win', 300, undefined, 'robot');
+                      saveStoryProgress(0, 0, false);
+                      setStoryAct(0);
+                      setStoryStep(0);
+                      setIsStoryFinished(false);
+                      setIsStoryActive(false);
+                      setGameState('modeSelect');
+                    }}
+                    className="w-full py-4 sm:py-5 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-450 hover:to-yellow-450 text-slate-955 font-black uppercase italic tracking-widest rounded-2xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer text-xs sm:text-sm"
                   >
                     {t('story_btn_finish', language)}
                   </button>
@@ -11266,29 +11297,44 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
-                className="bg-slate-900 text-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl border border-slate-800 relative flex flex-col z-[1001]"
+                className="bg-slate-900 text-white w-full max-w-md max-h-[90dvh] rounded-3xl overflow-hidden shadow-2xl border border-slate-800 relative flex flex-col z-[1001]"
               >
                 <div className={cn(
-                  "p-5 border-b border-slate-800 text-white flex items-center gap-2 justify-between",
+                  "p-4 sm:p-5 border-b border-slate-800 text-white flex items-center gap-2 justify-between shrink-0",
                   isPlayerWinner ? "bg-gradient-to-r from-yellow-450 to-amber-500 text-amber-955" : "bg-gradient-to-r from-rose-600 to-red-650 text-white"
                 )}>
                   <div className="flex items-center gap-2">
                     {isPlayerWinner ? <Trophy size={24} className="text-amber-955" /> : <ShieldAlert size={24} className="text-white" />}
-                    <h2 className={cn("text-lg font-extrabold tracking-tight uppercase", isPlayerWinner ? "text-amber-955" : "text-white")}>
+                    <h2 className={cn("text-base sm:text-lg font-extrabold tracking-tight uppercase", isPlayerWinner ? "text-amber-955" : "text-white")}>
                       {t('tournament_over_title', language)}
                     </h2>
                   </div>
+                  <button
+                    onClick={() => {
+                      playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                      setShowTournamentResultModal(false);
+                      setIsTournamentActive(false);
+                      setGameState('modeSelect');
+                    }}
+                    className={cn(
+                      "p-1.5 rounded-full transition-colors cursor-pointer",
+                      isPlayerWinner ? "bg-amber-950/20 hover:bg-amber-950/30 text-amber-955" : "bg-white/10 hover:bg-white/20 text-white"
+                    )}
+                    aria-label={t('close', language)}
+                  >
+                    <X size={18} />
+                  </button>
                 </div>
 
-                <div className="p-6 space-y-4 text-center">
+                <div className="p-5 sm:p-6 space-y-4 text-center flex-1 min-h-0 overflow-y-auto">
                   <div className={cn(
-                    "w-20 h-20 rounded-full border border-slate-800 flex items-center justify-center mx-auto shadow-inner",
+                    "w-16 h-16 sm:w-20 sm:h-20 rounded-full border border-slate-800 flex items-center justify-center mx-auto shadow-inner shrink-0",
                     isPlayerWinner ? "bg-amber-100 text-yellow-600 animate-bounce shadow-[0_0_15px_rgba(234,179,8,0.3)]" : "bg-rose-100 text-rose-600"
                   )}>
-                    {isPlayerWinner ? <Trophy size={36} /> : <Activity size={36} />}
+                    {isPlayerWinner ? <Trophy size={32} /> : <Activity size={32} />}
                   </div>
 
-                  <h3 className="text-2xl font-black italic leading-tight pt-2 px-2">
+                  <h3 className="text-xl sm:text-2xl font-black italic leading-tight pt-1 px-2">
                     {isPlayerWinner 
                       ? t('tournament_summary_win', language)
                       : t('tournament_summary_lose', language).replace(
@@ -11301,13 +11347,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     }
                   </h3>
 
-                  <div className="p-4.5 bg-slate-950 border border-slate-800 rounded-3xl shadow-inner inline-block">
+                  <div className="p-3 sm:p-4.5 bg-slate-950 border border-slate-800 rounded-3xl shadow-inner inline-block">
                     <span className="text-xs font-black uppercase opacity-60 block mb-1 text-slate-400">{t('tournament_prize', language)}</span>
-                    <span className="text-2xl font-black italic text-yellow-400">+{tournamentPrize} SNS</span>
+                    <span className="text-xl sm:text-2xl font-black italic text-yellow-400">+{tournamentPrize} SNS</span>
                   </div>
                 </div>
 
-                <div className="p-5 border-t-2 border-slate-800 bg-slate-950 flex justify-center">
+                <div className="p-4 sm:p-5 border-t-2 border-slate-800 bg-slate-950 flex justify-center shrink-0">
                   <button
                     onClick={() => {
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
@@ -11315,7 +11361,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       setIsTournamentActive(false);
                       setGameState('modeSelect');
                     }}
-                    className="w-full py-4 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-450 hover:to-yellow-450 text-slate-900 font-bold uppercase rounded-2xl shadow-lg active:scale-98 transition-all cursor-pointer text-center"
+                    className="w-full py-3.5 sm:py-4 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-450 hover:to-yellow-450 text-slate-900 font-bold uppercase rounded-2xl shadow-lg active:scale-98 transition-all cursor-pointer text-center text-xs sm:text-sm"
                   >
                     {t('tournament_confirm_btn', language)}
                   </button>
@@ -13958,12 +14004,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
-                className="bg-slate-950/95 text-slate-100 w-full max-w-md rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(245,158,11,0.15)] border border-slate-800 relative flex flex-col z-[1001] font-sans"
+                className="bg-slate-950/95 text-slate-100 w-full max-w-md max-h-[90dvh] rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(245,158,11,0.15)] border border-slate-800 relative flex flex-col z-[1001] font-sans"
               >
-                <div className="p-5 bg-gradient-to-r from-amber-500 to-yellow-600 text-slate-950 flex items-center justify-between border-b border-amber-700/20">
+                <div className="p-4 sm:p-5 bg-gradient-to-r from-amber-500 to-yellow-600 text-slate-950 flex items-center justify-between border-b border-amber-700/20 shrink-0">
                   <div className="flex items-center gap-2">
                     <ShieldAlert size={24} className="text-slate-950 animate-pulse" />
-                    <h2 className="text-lg font-black uppercase tracking-tight leading-none">{t('under_construction_title', language)}</h2>
+                    <h2 className="text-base sm:text-lg font-black uppercase tracking-tight leading-none">{t('under_construction_title', language)}</h2>
                   </div>
                   <button 
                     onClick={() => {
@@ -13971,30 +14017,31 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       setShowConstructionModal(false);
                     }} 
                     className="bg-slate-950/20 hover:bg-slate-950/30 text-slate-950 p-1.5 transition-all flex items-center justify-center rounded-full cursor-pointer"
+                    aria-label={t('close', language)}
                   >
                     <X size={16} className="text-slate-955" />
                   </button>
                 </div>
  
-                <div className="p-6 space-y-4 text-center">
-                  <div className="w-16 h-16 rounded-full bg-amber-950/40 border border-amber-550 flex items-center justify-center mx-auto shadow-[0_0_15px_rgba(245,158,11,0.2)] animate-bounce">
-                    <Activity size={28} className="text-amber-400" />
+                <div className="p-5 sm:p-6 space-y-4 text-center flex-1 min-h-0 overflow-y-auto">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-amber-950/40 border border-amber-550 flex items-center justify-center mx-auto shadow-[0_0_15px_rgba(245,158,11,0.2)] animate-bounce shrink-0">
+                    <Activity size={26} className="text-amber-400" />
                   </div>
-                  <h3 className="text-lg font-black italic text-amber-400 bg-amber-950/30 px-4 py-1.5 rounded-xl border border-amber-900/50 inline-block">
+                  <h3 className="text-base sm:text-lg font-black italic text-amber-400 bg-amber-950/30 px-4 py-1.5 rounded-xl border border-amber-900/50 inline-block">
                     {selectedConstructionMode}
                   </h3>
-                  <p className="text-sm font-semibold text-slate-400 leading-relaxed pt-2">
+                  <p className="text-xs sm:text-sm font-semibold text-slate-400 leading-relaxed pt-1">
                      {t('under_construction_desc', language)}
                   </p>
                 </div>
  
-                <div className="p-5 border-t border-slate-900 bg-slate-950/60 flex justify-center">
+                <div className="p-4 sm:p-5 border-t border-slate-900 bg-slate-950/60 flex justify-center shrink-0">
                   <button
                     onClick={() => {
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                       setShowConstructionModal(false);
                     }}
-                    className="w-full py-3.5 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-slate-200 font-bold uppercase tracking-wider rounded-xl shadow-md active:scale-95 transition-all cursor-pointer"
+                    className="w-full py-3 sm:py-3.5 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-slate-200 font-bold uppercase tracking-wider rounded-xl shadow-md active:scale-95 transition-all cursor-pointer text-xs sm:text-sm"
                   >
                     {t('under_construction_close', language)}
                   </button>
@@ -14017,34 +14064,35 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
-                className="bg-white text-slate-800 w-full max-w-md rounded-3xl overflow-hidden shadow-[8px_8px_0px_rgba(0,0,0,0.3)] border-2 border-slate-300 relative flex flex-col z-[1001] font-sans"
+                className="bg-white text-slate-800 w-full max-w-md max-h-[90dvh] rounded-3xl overflow-hidden shadow-[8px_8px_0px_rgba(0,0,0,0.3)] border-2 border-slate-300 relative flex flex-col z-[1001] font-sans"
               >
                 <div className={cn(
-                  "p-5 border-b-2 border-slate-200 text-white flex items-center justify-between bg-gradient-to-br",
+                  "p-4 sm:p-5 border-b-2 border-slate-200 text-white flex items-center justify-between shrink-0 bg-gradient-to-br",
                   guideMode.color
                 )}>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-                      <guideMode.icon size={22} className="text-white" />
+                  <div className="flex items-center gap-2.5 sm:gap-3">
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                      <guideMode.icon size={20} className="text-white" />
                     </div>
-                    <h2 className="text-lg font-black uppercase tracking-tight">{guideMode.title}</h2>
+                    <h2 className="text-base sm:text-lg font-black uppercase tracking-tight">{guideMode.title}</h2>
                   </div>
                   <button 
                     onClick={() => setGuideMode(null)}
-                    className="p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-colors"
+                    className="p-1.5 sm:p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-colors shrink-0"
+                    aria-label={t('close', language)}
                   >
                     <X size={18} className="text-white" />
                   </button>
                 </div>
-                <div className="p-6">
-                  <p className="text-sm font-semibold text-slate-700 leading-relaxed whitespace-pre-line">
+                <div className="p-5 sm:p-6 flex-1 min-h-0 overflow-y-auto">
+                  <p className="text-xs sm:text-sm font-semibold text-slate-700 leading-relaxed whitespace-pre-line">
                     {guideMode.guide}
                   </p>
                 </div>
-                <div className="p-4 border-t border-slate-200 bg-slate-50 flex justify-end">
+                <div className="p-3.5 sm:p-4 border-t border-slate-200 bg-slate-50 flex justify-end shrink-0">
                   <button
                     onClick={() => setGuideMode(null)}
-                    className="px-6 py-2.5 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-colors text-sm"
+                    className="px-5 sm:px-6 py-2 sm:py-2.5 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-colors text-xs sm:text-sm"
                   >
                     {language === 'ko' ? '확인' : 'OK'}
                   </button>
@@ -14071,26 +14119,35 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.85, y: 30 }}
                 transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-                className="bg-slate-950/95 text-slate-100 w-full max-w-sm rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(244,63,94,0.15)] border border-slate-800 relative z-[10000] font-sans"
+                className="bg-slate-950/95 text-slate-100 w-full max-w-sm max-h-[90dvh] rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(244,63,94,0.15)] border border-slate-800 relative flex flex-col z-[10000] font-sans"
               >
                 {/* Header */}
-                <div className="p-5 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-b border-orange-600/10 flex items-center gap-3">
-                  <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
-                    <ShieldAlert size={20} className="text-white" />
+                <div className="p-4 sm:p-5 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-b border-orange-600/10 flex items-center justify-between shrink-0">
+                  <div className="flex items-center gap-2.5 sm:gap-3">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
+                      <ShieldAlert size={18} className="text-white" />
+                    </div>
+                    <h2 className="text-sm sm:text-base font-bold uppercase tracking-tight leading-tight">{confirmModal.title}</h2>
                   </div>
-                  <h2 className="text-base font-bold uppercase tracking-tight leading-tight">{confirmModal.title}</h2>
+                  <button
+                    onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+                    className="p-1 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                    aria-label={t('close', language)}
+                  >
+                    <X size={16} />
+                  </button>
                 </div>
  
                 {/* Body */}
-                <div className="p-6">
-                  <p className="text-sm font-semibold text-slate-350 leading-relaxed whitespace-pre-line">{confirmModal.message}</p>
+                <div className="p-5 sm:p-6 flex-1 min-h-0 overflow-y-auto">
+                  <p className="text-xs sm:text-sm font-semibold text-slate-350 leading-relaxed whitespace-pre-line">{confirmModal.message}</p>
                 </div>
  
                 {/* Actions */}
-                <div className="px-6 pb-6 flex gap-3">
+                <div className="px-5 sm:px-6 pb-5 sm:pb-6 flex gap-2.5 sm:gap-3 shrink-0">
                   <button
                     onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
-                    className="flex-1 py-3 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-slate-300 font-semibold text-sm rounded-xl transition-colors duration-200"
+                    className="flex-1 py-2.5 sm:py-3 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-slate-300 font-semibold text-xs sm:text-sm rounded-xl transition-colors duration-200 cursor-pointer"
                   >
                     {language === 'ko' ? '취소' : 'Cancel'}
                   </button>
@@ -14099,7 +14156,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       confirmModal.onConfirm();
                       setConfirmModal(prev => ({ ...prev, isOpen: false }));
                     }}
-                    className="flex-1 py-3 bg-indigo-600 text-white font-semibold text-sm rounded-xl hover:bg-indigo-500 transition-colors duration-200 shadow-lg shadow-indigo-600/25 active:scale-95"
+                    className="flex-1 py-2.5 sm:py-3 bg-indigo-600 text-white font-semibold text-xs sm:text-sm rounded-xl hover:bg-indigo-500 transition-colors duration-200 shadow-lg shadow-indigo-600/25 active:scale-95 cursor-pointer"
                   >
                     {language === 'ko' ? '확인' : 'Confirm'}
                   </button>

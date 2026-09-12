@@ -117,10 +117,10 @@ export const UniversalTutorialModal: React.FC<UniversalTutorialModalProps> = ({
   const activeStepData = steps[currentStep] || steps[0];
 
   return (
-    <div className="fixed inset-0 z-[99999] bg-[#201d1d]/80 flex items-center justify-center p-4 font-mono select-none backdrop-blur-xs">
-      <div className="bg-[#fdfcfc] text-[#201d1d] border-2 border-[#201d1d] w-full max-w-md p-5 flex flex-col justify-between shadow-2xl relative">
+    <div className="fixed inset-0 z-[99999] bg-[#201d1d]/80 flex items-center justify-center p-2 sm:p-4 font-mono select-none backdrop-blur-xs">
+      <div className="bg-[#fdfcfc] text-[#201d1d] border-2 border-[#201d1d] w-full max-w-md max-h-[90dvh] p-4 sm:p-5 flex flex-col shadow-2xl relative overflow-hidden">
         {/* Top Header */}
-        <div className="flex items-center justify-between border-b border-[#201d1d]/20 pb-3">
+        <div className="shrink-0 flex items-center justify-between border-b border-[#201d1d]/20 pb-2.5">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 bg-[#201d1d] inline-block animate-pulse" />
             <span className="text-xs font-bold tracking-tight uppercase">
@@ -130,8 +130,9 @@ export const UniversalTutorialModal: React.FC<UniversalTutorialModalProps> = ({
           {onClose && (
             <button
               onClick={onClose}
-              className="p-1 hover:bg-[#201d1d]/10 text-[#201d1d] rounded-sm cursor-pointer transition-colors"
+              className="w-8 h-8 flex items-center justify-center hover:bg-[#201d1d]/10 text-[#201d1d] rounded-sm cursor-pointer transition-colors"
               title="Close"
+              aria-label="닫기"
             >
               <X size={16} />
             </button>
@@ -139,7 +140,7 @@ export const UniversalTutorialModal: React.FC<UniversalTutorialModalProps> = ({
         </div>
 
         {/* Step Progress Dots */}
-        <div className="flex items-center gap-1.5 pt-3">
+        <div className="shrink-0 flex items-center gap-1.5 pt-2.5 pb-1">
           {steps.map((_, idx) => (
             <div
               key={idx}
@@ -155,7 +156,7 @@ export const UniversalTutorialModal: React.FC<UniversalTutorialModalProps> = ({
         </div>
 
         {/* Main Step Content */}
-        <div className="py-4 space-y-4">
+        <div className="flex-1 min-h-0 overflow-y-auto py-3 space-y-3 pr-1">
           <div className="flex items-center gap-2.5">
             <div className="p-2 border border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] shrink-0">
               {activeStepData.iconType === 'GESTURES' ? (
@@ -237,7 +238,7 @@ export const UniversalTutorialModal: React.FC<UniversalTutorialModalProps> = ({
         </div>
 
         {/* Footer & Controls */}
-        <div className="border-t border-[#201d1d]/20 pt-3 flex flex-col gap-2.5">
+        <div className="shrink-0 border-t border-[#201d1d]/20 pt-3 flex flex-col gap-2.5">
           {/* Don't show again toggle */}
           <label className="flex items-center gap-2 cursor-pointer text-[11px] text-[#201d1d]/80 select-none">
             <input

@@ -54,7 +54,7 @@ export const NoticeModal: React.FC<NoticeModalProps> = ({ language, onNavigate, 
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          className="relative w-full max-w-md rounded-2xl border-2 border-amber-500/30 bg-slate-900 p-5 text-white shadow-2xl overflow-hidden"
+          className="relative w-full max-w-md max-h-[90dvh] rounded-2xl border-2 border-amber-500/30 bg-slate-900 p-4 sm:p-5 text-white shadow-2xl overflow-hidden flex flex-col"
           role="dialog"
           aria-modal="true"
           aria-label={t('season_notice_title', language) || 'Notice'}
@@ -63,7 +63,7 @@ export const NoticeModal: React.FC<NoticeModalProps> = ({ language, onNavigate, 
           <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500" />
 
           {/* Header */}
-          <div className="flex items-center justify-between pt-1 pb-3 border-b border-slate-800">
+          <div className="shrink-0 flex items-center justify-between pt-1 pb-3 border-b border-slate-800">
             <div className="flex items-center gap-2.5">
               <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
                 <Megaphone size={18} className="animate-bounce" />
@@ -86,7 +86,7 @@ export const NoticeModal: React.FC<NoticeModalProps> = ({ language, onNavigate, 
           </div>
 
           {/* Content */}
-          <div className="py-4 space-y-3 font-mono text-xs text-slate-300 leading-relaxed">
+          <div className="flex-1 min-h-0 overflow-y-auto py-3 space-y-3 font-mono text-xs text-slate-300 leading-relaxed pr-1">
             <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
               <div className="flex items-center gap-2 font-bold text-amber-300">
                 <Sparkles size={14} />
@@ -112,7 +112,7 @@ export const NoticeModal: React.FC<NoticeModalProps> = ({ language, onNavigate, 
           </div>
 
           {/* Footer Controls */}
-          <div className="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+          <div className="shrink-0 pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
             <label className="flex items-center gap-2 cursor-pointer select-none">
               <input
                 type="checkbox"

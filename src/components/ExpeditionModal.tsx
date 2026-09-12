@@ -94,16 +94,16 @@ export const ExpeditionModal: React.FC<ExpeditionModalProps> = ({
   if (!isOpen || !mounted || typeof document === 'undefined') return null;
 
   const content = (
-    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md font-mono select-none pointer-events-auto">
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md font-mono select-none pointer-events-auto">
       <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
         transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-        className="relative w-full max-w-sm bg-[#201d1d] border border-[rgba(255,255,255,0.2)] rounded-none p-4 sm:p-5 text-[#fdfcfc] shadow-2xl pointer-events-auto"
+        className="relative w-full max-w-sm max-h-[90dvh] flex flex-col overflow-hidden bg-[#201d1d] border border-[rgba(255,255,255,0.2)] rounded-none p-4 sm:p-5 text-[#fdfcfc] shadow-2xl pointer-events-auto"
       >
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.12)] pb-2 mb-3">
+          <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.12)] pb-2 mb-3 shrink-0">
             <div className="flex items-center gap-1.5">
               <Compass size={16} className="text-cyan-400 animate-spin-slow" />
               <span className="text-xs font-bold uppercase tracking-wider text-cyan-300">
@@ -112,72 +112,77 @@ export const ExpeditionModal: React.FC<ExpeditionModalProps> = ({
             </div>
             <button
               onClick={onClose}
-              className="text-white/60 hover:text-white p-1 rounded-sm border border-transparent hover:border-white/20"
+              aria-label="닫기"
+              className="text-white/60 hover:text-white p-1.5 rounded-sm border border-transparent hover:border-white/20 flex items-center justify-center"
             >
-              <X size={14} />
+              <X size={16} />
             </button>
           </div>
 
-          <p className="text-[10px] text-white/80 mb-3 leading-relaxed">
-            {language === 'ko'
-              ? '5인 히어로 원정대를 파견하여 최대 8시간 동안 오프라인 상태에서도 30분마다 자동 소탕 보상을 누적합니다.'
-              : 'Dispatch a 5-hero squad to patrol cleared stages for up to 8 hours of background offline farming.'}
-          </p>
+          <div className="flex-1 min-h-0 overflow-y-auto pr-0.5 space-y-3">
+            <p className="text-[10px] text-white/80 leading-relaxed">
+              {language === 'ko'
+                ? '5인 히어로 원정대를 파견하여 최대 8시간 동안 오프라인 상태에서도 30분마다 자동 소탕 보상을 누적합니다.'
+                : 'Dispatch a 5-hero squad to patrol cleared stages for up to 8 hours of background offline farming.'}
+            </p>
 
-          {/* Patrol Status Box */}
-          <div className="bg-[#141212] border border-white/15 p-3 rounded-none mb-3">
-            <div className="flex items-center justify-between text-xs mb-2">
-              <span className="text-white/60">{language === 'ko' ? '상태:' : 'Status:'}</span>
-              <span className={`font-bold ${expedition.isDispatched ? 'text-emerald-400' : 'text-amber-400'}`}>
-                {expedition.isDispatched
-                  ? (language === 'ko' ? '[순찰 진행 중]' : '[PATROL IN PROGRESS]')
-                  : (language === 'ko' ? '[대기 중]' : '[IDLE / READY]')}
-              </span>
+            {/* Patrol Status Box */}
+            <div className="bg-[#141212] border border-white/15 p-3 rounded-none">
+              <div className="flex items-center justify-between text-xs mb-2">
+                <span className="text-white/60">{language === 'ko' ? '상태:' : 'Status:'}</span>
+                <span className={`font-bold ${expedition.isDispatched ? 'text-emerald-400' : 'text-amber-400'}`}>
+                  {expedition.isDispatched
+                    ? (language === 'ko' ? '[순찰 진행 중]' : '[PATROL IN PROGRESS]')
+                    : (language === 'ko' ? '[대기 중]' : '[IDLE / READY]')}
+                </span>
+              </div>
+
+              {expedition.isDispatched && (
+                <>
+                  <div className="flex items-center justify-between text-[11px] mb-1.5">
+                    <span className="text-white/60 flex items-center gap-1">
+                      <Clock size={12} className="text-cyan-300" />
+                      {language === 'ko' ? '누적 순찰 시간:' : 'Patrol Duration:'}
+                    </span>
+                    <span className="font-bold text-white">
+                      {Math.floor(elapsedMinutes / 60)}h {elapsedMinutes % 60}m / 8h
+                    </span>
+                  </div>
+                  <div className="w-full bg-white/10 h-1.5 rounded-none overflow-hidden mb-2">
+                    <div
+                      className="bg-cyan-400 h-full transition-all duration-300"
+                      style={{ width: `${Math.min(100, (elapsedMinutes / 480) * 100)}%` }}
+                    />
+                  </div>
+                  <div className="text-[10px] text-amber-300 font-bold border-t border-white/10 pt-1.5 flex justify-between">
+                    <span>{language === 'ko' ? `누적 소탕: ${clearsCount}회` : `Sweeps: ${clearsCount}`}</span>
+                    <span>+{calculatedSns} SNS / +{calculatedExp} EXP</span>
+                  </div>
+                </>
+              )}
             </div>
-
-            {expedition.isDispatched && (
-              <>
-                <div className="flex items-center justify-between text-[11px] mb-1.5">
-                  <span className="text-white/60 flex items-center gap-1">
-                    <Clock size={12} className="text-cyan-300" />
-                    {language === 'ko' ? '누적 순찰 시간:' : 'Patrol Duration:'}
-                  </span>
-                  <span className="font-bold text-white">
-                    {Math.floor(elapsedMinutes / 60)}h {elapsedMinutes % 60}m / 8h
-                  </span>
-                </div>
-                <div className="w-full bg-white/10 h-1.5 rounded-none overflow-hidden mb-2">
-                  <div
-                    className="bg-cyan-400 h-full transition-all duration-300"
-                    style={{ width: `${Math.min(100, (elapsedMinutes / 480) * 100)}%` }}
-                  />
-                </div>
-                <div className="text-[10px] text-amber-300 font-bold border-t border-white/10 pt-1.5 flex justify-between">
-                  <span>{language === 'ko' ? `누적 소탕: ${clearsCount}회` : `Sweeps: ${clearsCount}`}</span>
-                  <span>+{calculatedSns} SNS / +{calculatedExp} EXP</span>
-                </div>
-              </>
-            )}
           </div>
 
           {/* Action Buttons */}
-          {expedition.isDispatched ? (
-            <button
-              onClick={handleClaim}
-              className="w-full py-2 bg-[#fdfcfc] text-[#201d1d] hover:bg-emerald-300 transition-colors text-xs font-bold uppercase rounded-sm flex items-center justify-center gap-1.5"
-            >
-              <Award size={13} />
-              <span>{language === 'ko' ? `[ 원정 복귀 및 +${calculatedSns} SNS 수령 ]` : `[ Recall Squad & Claim +${calculatedSns} SNS ]`}</span>
-            </button>
-          ) : (
-            <button
-              onClick={handleDispatch}
-              className="w-full py-2 bg-[#fdfcfc] text-[#201d1d] hover:bg-cyan-300 transition-colors text-xs font-bold uppercase rounded-sm flex items-center justify-center gap-1.5"
-            >
-              <Shield size={13} />
-              <span>{language === 'ko' ? '[ 5인 원정대 8시간 파견 시작 ]' : '[ Dispatch 5-Hero Squad (8h) ]'}</span>
-            </button>
-          )}
+          <div className="shrink-0 pt-3">
+            {expedition.isDispatched ? (
+              <button
+                onClick={handleClaim}
+                className="w-full py-2 bg-[#fdfcfc] text-[#201d1d] hover:bg-emerald-300 transition-colors text-xs font-bold uppercase rounded-sm flex items-center justify-center gap-1.5"
+              >
+                <Award size={13} />
+                <span>{language === 'ko' ? `[ 원정 복귀 및 +${calculatedSns} SNS 수령 ]` : `[ Recall Squad & Claim +${calculatedSns} SNS ]`}</span>
+              </button>
+            ) : (
+              <button
+                onClick={handleDispatch}
+                className="w-full py-2 bg-[#fdfcfc] text-[#201d1d] hover:bg-cyan-300 transition-colors text-xs font-bold uppercase rounded-sm flex items-center justify-center gap-1.5"
+              >
+                <Shield size={13} />
+                <span>{language === 'ko' ? '[ 5인 원정대 8시간 파견 시작 ]' : '[ Dispatch 5-Hero Squad (8h) ]'}</span>
+              </button>
+            )}
+          </div>
         </motion.div>
     </div>
   );

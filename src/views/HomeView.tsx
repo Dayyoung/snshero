@@ -867,6 +867,18 @@ export const HomeView: React.FC<HomeViewProps> = ({
               className="w-full h-full border-none"
             />
             
+            {/* 우측 상단 닫기 버튼 */}
+            <button
+              onClick={() => {
+                playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                setShowPdf(false);
+              }}
+              aria-label={language === 'ko' ? "닫기" : "Close"}
+              className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white flex items-center justify-center border border-slate-700 shadow-lg cursor-pointer transition-all active:scale-95 backdrop-blur-sm"
+            >
+              <X size={18} />
+            </button>
+
             {/* 우측 하단 닫기 버튼 */}
             <div className="absolute bottom-6 right-6 z-10">
               <button
@@ -890,27 +902,30 @@ export const HomeView: React.FC<HomeViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[209] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-[209] flex items-center justify-center bg-black/50 p-3 sm:p-4 backdrop-blur-sm"
             onClick={() => setHelpOpen(false)}
           >
             <motion.div
               initial={{ opacity: 0, y: 12, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 12, scale: 0.98 }}
-              className="relative w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-5 shadow-2xl"
+              className="relative w-full max-w-lg max-h-[90dvh] flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xl"
               onClick={e => e.stopPropagation()}
             >
               <button
                 onClick={() => setHelpOpen(false)}
+                aria-label="닫기"
                 className="absolute top-4 right-4 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 hover:text-slate-700 hover:border-slate-300 transition shrink-0"
               >
                 <X size={18} />
               </button>
-              <div className="flex items-start gap-3 mb-4">
+              <div className="flex items-start gap-3 mb-3 pr-8 shrink-0">
                 <h3 className="text-lg font-black text-slate-900">{helpSlides[helpStep].title}</h3>
               </div>
-              <p className="text-sm text-slate-600 leading-relaxed mb-4 whitespace-pre-line">{helpSlides[helpStep].body}</p>
-              <div className="flex items-center justify-between">
+              <div className="flex-1 min-h-0 overflow-y-auto mb-4 pr-1">
+                <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">{helpSlides[helpStep].body}</p>
+              </div>
+              <div className="flex items-center justify-between shrink-0 pt-2 border-t border-slate-100">
                 <span className="text-xs text-slate-400">{helpStep + 1}/{helpSlides.length}</span>
                 <div className="flex gap-2">
                   <button
