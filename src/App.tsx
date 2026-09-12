@@ -5829,7 +5829,7 @@ function AppContent() {
   }
 
     const showNavbar = (view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie') && !isGlobalPopupOpen;
-    const isPlayingBattle = view === 'play' && playGameState === 'playing';
+    const isPlayingBattle = view === 'play' && (playGameState === 'playing' || playGameState === 'searching' || playGameState === 'preMatch');
     
     return (
       <div className={cn(
@@ -5883,10 +5883,10 @@ function AppContent() {
                 : "bg-slate-50/30 border-slate-200/80"),
           isPlayingBattle ? "min-h-screen overflow-y-auto" : "min-h-screen"
         )}>
-          {/* Top AdSense Banner (Mobile/Tablet 1024px 미만 전용: 높이 확대 및 버튼과 겹침 없는 1행 배치) */}
+          {/* Top AdSense Banner (높이 확대 및 버튼과 겹침 없는 1행 배치: 모바일 및 PC 전 화면 일관 표시) */}
           {!isAdRemoved && view !== 'landing' && (
             <div className={cn(
-              "block lg:hidden w-full px-2 py-1 shrink-0 select-none z-20 overflow-hidden",
+              "block w-full px-2 py-1 shrink-0 select-none z-20 overflow-hidden",
               isPlayingBattle
                 ? "bg-[#060a14]/95 border-b border-slate-800"
                 : "bg-[#fdfcfc]/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800"
@@ -5911,7 +5911,7 @@ function AppContent() {
                 id="hud-audio-toggle"
                 className={cn(
                   "fixed right-[3.75rem] min-[1024px]:right-[calc(50vw-444px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center touch-target",
-                  (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px] lg:top-[12px]" : "top-[10px] lg:top-[12px]",
+                  (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px]" : "top-[10px]",
                   isAudioMuted
                     ? "bg-rose-500/10 border border-rose-500/50 text-rose-500 hover:bg-rose-500/20"
                     : (theme === 'dark' || theme === 'metal')
@@ -5928,32 +5928,34 @@ function AppContent() {
                 )}
               </button>
 
-              {/* HUD Main Hamburger Menu Button (광고 다음 줄에 배치) */}
-              <button
-                onClick={() => {
-                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                  setIsMenuOpen(true);
-                }}
-                className={cn(
-                  "fixed right-4 min-[1024px]:right-[calc(50vw-496px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center touch-target",
-                  (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px] lg:top-[12px]" : "top-[10px] lg:top-[12px]",
-                  (theme === 'dark' || theme === 'metal')
-                    ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
-                    : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
-                )}
-                title={t('menu_title', language)}
-              >
-                <Menu size={20} />
-              </button>
+              {/* HUD Main Hamburger Menu Button (광고 다음 줄에 배치 - 인게임 플레이 중에는 인게임 자체 메뉴 사용) */}
+              {(!isPlayingBattle || playGameState !== 'playing') && (
+                <button
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    setIsMenuOpen(true);
+                  }}
+                  className={cn(
+                    "fixed right-4 min-[1024px]:right-[calc(50vw-496px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center touch-target",
+                    (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px]" : "top-[10px]",
+                    (theme === 'dark' || theme === 'metal')
+                      ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
+                      : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
+                  )}
+                  title={t('menu_title', language)}
+                >
+                  <Menu size={20} />
+                </button>
+              )}
             </>
           )}
 
-          {view !== 'landing' && view !== 'home' && (
+          {view !== 'landing' && view !== 'home' && (!isPlayingBattle || playGameState !== 'playing') && (
             <button
               onClick={handleGlobalBack}
               className={cn(
                 "fixed left-4 min-[1024px]:left-[calc(50vw-496px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md flex items-center justify-center active:scale-95 transition-all cursor-pointer touch-target",
-                (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px] lg:top-[12px]" : "top-[10px] lg:top-[12px]",
+                (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px]" : "top-[10px]",
                 (theme === 'dark' || theme === 'metal')
                   ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
                   : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
