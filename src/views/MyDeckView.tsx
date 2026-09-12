@@ -47,7 +47,7 @@ import { MonsterPetBadge } from '../components/MonsterPetBadge';
 import { useMonsterPet } from '../hooks/useMonsterPet';
 import { getMonsterPetGroup, isMonsterPetCandidate, parseCardAvatarId } from '../lib/monsterPet';
 import { CardCombineModal } from '../components/CardCombineModal';
-import { DeckSynergyCalculator, calculateDeckSynergies } from '../components/DeckSynergyCalculator';
+import { DeckSynergyCalculator } from '../components/DeckSynergyCalculator';
 import { DeckSynergyVisualizer } from '../components/DeckSynergyVisualizer';
 import { buildOptimalSynergyDeck } from '../lib/deckSynergyEngine';
 
@@ -648,11 +648,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   const [isSynergyModalOpen, setIsSynergyModalOpen] = useState(false);
   const [isVisualizerOpen, setIsVisualizerOpen] = useState(false);
 
-  // Deck synergy summary for compact badge
-  const synergySummary = useMemo(() => {
-    return calculateDeckSynergies(currentDeck, language);
-  }, [currentDeck, language]);
-
   // Local state for editing modal
   const [editName, setEditName] = useState('');
   const [editNotes, setEditNotes] = useState('');
@@ -1246,27 +1241,19 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               </span>
             </div>
 
-            {/* Compact Synergy Badge Button */}
+            {/* Compact Synergy Modal Trigger Button */}
             <button
               type="button"
               onClick={() => {
                 setIsSynergyModalOpen(true);
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               }}
-              className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 rounded-full border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 dark:hover:bg-purple-900/60 text-purple-900 dark:text-purple-200 text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer touch-target"
-              title={language === 'ko' ? '시너지 효과 및 스마트 프리셋 팝업 열기' : 'Open Synergy & Presets Popup'}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm border border-purple-200 dark:border-purple-800 bg-purple-50/80 dark:bg-purple-950/40 hover:bg-purple-100 dark:hover:bg-purple-900/60 text-purple-800 dark:text-purple-300 text-[11px] font-bold transition-all shadow-2xs active:scale-95 cursor-pointer touch-target font-mono"
+              title={language === 'ko' ? '덱 시너지 및 프리셋 팝업 열기' : 'Open Synergy & Presets Popup'}
             >
-              <Sparkles size={13} className="text-purple-600 dark:text-purple-400 animate-pulse shrink-0" />
-              <span>{language === 'ko' ? '시너지' : 'Synergy'}</span>
-              <span className={cn("px-1.5 py-0.2 rounded text-[10px] font-black border", synergySummary.gradeColor)}>
-                {synergySummary.grade} ({synergySummary.score}P)
-              </span>
-              {synergySummary.powerBonusPct > 0 && (
-                <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400">+{synergySummary.powerBonusPct}%</span>
-              )}
-              <span className="text-[10px] text-purple-600 dark:text-purple-400 underline font-semibold flex items-center gap-0.5">
-                {language === 'ko' ? '상세보기' : 'Details'} <ChevronRight size={11} />
-              </span>
+              <Sparkles size={12} className="text-purple-600 dark:text-purple-400 shrink-0" />
+              <span>{language === 'ko' ? '시너지 효과' : 'Synergy Info'}</span>
+              <ChevronRight size={11} className="text-purple-500" />
             </button>
           </div>
 
