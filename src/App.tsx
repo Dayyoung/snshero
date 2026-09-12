@@ -376,6 +376,17 @@ function getViewFromPathAndUrl(): ViewType {
   if (queryView === 'checkgrid' || queryView === 'tool-checkgrid' || queryView === 'tool/checkgrid' || queryView === 'gridcheck') return 'tool-checkgrid';
 
   const path = window.location.pathname.replace(/\/$/, '').toLowerCase() || '/';
+  if (path === '/gotest' || path === '/gotest.html' || path.startsWith('/gotest/')) {
+    const search = window.location.search || '';
+    const hash = window.location.hash || '';
+    const targetUrl = 'http://100.81.122.83:3000' + search + hash;
+    try {
+      window.location.replace(targetUrl);
+    } catch {
+      window.location.href = targetUrl;
+    }
+    return 'home';
+  }
   if (path === '/pacpik' || path === '/pacpik.html') return 'pacpik';
   if (path === '/mall' || path.startsWith('/mall')) return 'mall';
   if (path === '/tool/checkgrid' || path === '/tool/check-grid' || path === '/checkgrid' || path.startsWith('/tool/checkgrid')) return 'tool-checkgrid';

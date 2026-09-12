@@ -38,6 +38,21 @@ try {
     if (fs.existsSync(publicPacpikTxt)) {
       fs.copyFileSync(publicPacpikTxt, path.join(distDir, 'pacpik.txt'));
     }
+
+    // Gotest Tailscale IP 리다이렉트 정적 파일 보장
+    const publicGotest = path.join(process.cwd(), 'public', 'gotest', 'index.html');
+    const distGotestDir = path.join(distDir, 'gotest');
+    const distGotestHtml = path.join(distGotestDir, 'index.html');
+    if (fs.existsSync(publicGotest)) {
+      if (!fs.existsSync(distGotestDir)) {
+        fs.mkdirSync(distGotestDir, { recursive: true });
+      }
+      fs.copyFileSync(publicGotest, distGotestHtml);
+    }
+    const publicGotestRoot = path.join(process.cwd(), 'public', 'gotest.html');
+    if (fs.existsSync(publicGotestRoot)) {
+      fs.copyFileSync(publicGotestRoot, path.join(distDir, 'gotest.html'));
+    }
   }
 
   // 메인 엔트리 스크립트 파일(assets/index-*.js) 자동 탐색

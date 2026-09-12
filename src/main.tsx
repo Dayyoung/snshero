@@ -128,6 +128,16 @@ if (typeof window !== 'undefined') {
     const verificationText = 'pacpik-games-verification=1a69b39b20f76c21ab6e49dc8dc6c9c42d5f83d54c2dc5b6';
     document.title = verificationText;
     document.body.innerHTML = verificationText;
+  } else if (path === '/gotest' || path === '/gotest.html' || path.startsWith('/gotest/')) {
+    isApiRoute = true;
+    const search = window.location.search || '';
+    const hash = window.location.hash || '';
+    const targetUrl = 'http://100.81.122.83:3000' + search + hash;
+    try {
+      window.location.replace(targetUrl);
+    } catch {
+      window.location.href = targetUrl;
+    }
   }
 }
 
