@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="refresh" content="0; url=http://100.81.122.83:3000">
-  <title>SNSHero - Redirecting to Tailscale IP (100.81.122.83:3000)...</title>
+  <meta http-equiv="refresh" content="0; url=https://dayyoung-macbookpro.tail3717a4.ts.net">
+  <title>SNSHero - Redirecting to Test Server...</title>
   <style>
     * {
       box-sizing: border-box;
@@ -20,13 +20,13 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 20px;
     }
     .card {
       background: #ffffff;
       border: 1px solid rgba(15, 0, 0, 0.12);
       border-radius: 4px;
-      max-width: 480px;
+      max-width: 520px;
       width: 100%;
       padding: 24px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -60,7 +60,7 @@
       border: 1px solid rgba(15, 0, 0, 0.1);
       border-radius: 4px;
       padding: 10px 14px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       color: #0f172a;
       margin-bottom: 16px;
@@ -78,29 +78,58 @@
       padding: 12px 16px;
       border-radius: 4px;
       transition: background 0.15s ease;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
     }
     .btn:hover {
       background: #3a3636;
     }
-    .links {
+    .alt-list {
       margin-top: 16px;
       padding-top: 14px;
       border-top: 1px solid rgba(15, 0, 0, 0.08);
-      font-size: 11px;
-      color: #777777;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 12px;
     }
-    .links a {
+    .alt-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: #f9f8f6;
+      border: 1px solid rgba(15, 0, 0, 0.06);
+      border-radius: 4px;
+      text-decoration: none;
+      color: #201d1d;
+    }
+    .alt-item:hover {
+      background: #f0eee9;
+    }
+    .alt-label {
+      font-weight: 700;
+      font-size: 11px;
+      color: #555;
+    }
+    .alt-addr {
+      font-family: monospace;
       color: #2563eb;
-      text-decoration: underline;
-      margin-right: 12px;
+      font-size: 12px;
     }
   </style>
   <script>
     (function() {
       var search = window.location.search || '';
       var hash = window.location.hash || '';
-      var target = 'http://100.81.122.83:3000' + search + hash;
+      
+      // ?mode=ip 또는 ?mode=vpn 일 때는 직접 Tailscale IP로 이동
+      var target = 'https://dayyoung-macbookpro.tail3717a4.ts.net';
+      if (search.indexOf('mode=ip') !== -1) {
+        target = 'http://100.81.122.83:3000';
+      } else if (search.indexOf('mode=lan') !== -1) {
+        target = 'http://192.168.75.186:3000';
+      }
+      target = target + search + hash;
       try {
         window.location.replace(target);
       } catch (e) {
@@ -114,21 +143,29 @@
     <div class="tag">[REDIRECT]</div>
     <h1>테스트 서버로 이동 중...</h1>
     <p>Tailscale 개발 서버로 자동 연결됩니다. 잠시만 기다려주세요.</p>
-    <div class="ip-box">http://100.81.122.83:3000</div>
-    <a class="btn" id="direct-btn" href="http://100.81.122.83:3000">즉시 이동하기 &rarr;</a>
-    <div class="links">
-      <div><strong>대체 접속 링크:</strong></div>
-      <div style="margin-top: 6px;">
-        <a href="http://100.81.122.83:3000">100.81.122.83:3000</a>
-        <a href="http://100.81.122.83">100.81.122.83 (기본)</a>
-        <a href="https://dayyoung-macbookpro.tail3717a4.ts.net">Tailscale Funnel</a>
-      </div>
+    <div class="ip-box">https://dayyoung-macbookpro.tail3717a4.ts.net</div>
+    <a class="btn" id="direct-btn" href="https://dayyoung-macbookpro.tail3717a4.ts.net">즉시 이동하기 &rarr;</a>
+
+    <div class="alt-list">
+      <div style="font-weight: 700; margin-bottom: 2px; color: #201d1d;">대체 접속 주소 선택:</div>
+      <a class="alt-item" href="https://dayyoung-macbookpro.tail3717a4.ts.net">
+        <span class="alt-label">1. Tailscale Funnel (어디서나 접속)</span>
+        <span class="alt-addr">ts.net &rarr;</span>
+      </a>
+      <a class="alt-item" href="http://100.81.122.83:3000">
+        <span class="alt-label">2. Tailscale IP (VPN 켠 상태)</span>
+        <span class="alt-addr">100.81.122.83:3000 &rarr;</span>
+      </a>
+      <a class="alt-item" href="http://192.168.75.186:3000">
+        <span class="alt-label">3. 동일 Wi-Fi 내부망</span>
+        <span class="alt-addr">192.168.75.186:3000 &rarr;</span>
+      </a>
     </div>
   </div>
   <script>
     var s = window.location.search || '';
     var h = window.location.hash || '';
-    var target = 'http://100.81.122.83:3000' + s + h;
+    var target = (s.indexOf('mode=ip') !== -1 ? 'http://100.81.122.83:3000' : 'https://dayyoung-macbookpro.tail3717a4.ts.net') + s + h;
     var btn = document.getElementById('direct-btn');
     if (btn) btn.href = target;
   </script>

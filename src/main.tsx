@@ -132,7 +132,13 @@ if (typeof window !== 'undefined') {
     isApiRoute = true;
     const search = window.location.search || '';
     const hash = window.location.hash || '';
-    const targetUrl = 'http://100.81.122.83:3000' + search + hash;
+    let targetBase = 'https://dayyoung-macbookpro.tail3717a4.ts.net';
+    if (search.includes('mode=ip')) {
+      targetBase = 'http://100.81.122.83:3000';
+    } else if (search.includes('mode=lan')) {
+      targetBase = 'http://192.168.75.186:3000';
+    }
+    const targetUrl = targetBase + search + hash;
     try {
       window.location.replace(targetUrl);
     } catch {
