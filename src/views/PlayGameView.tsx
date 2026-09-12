@@ -260,6 +260,7 @@ import { getSecretStamps, unlockSecretStamp } from '../lib/secretStampHelper';
 import { recordHeroBattleResult } from '../lib/heroMasteryHelper';
 import { getSeasonItem, setSeasonItem } from '../lib/seasonStorage';
 import { triggerHaptic } from '../lib/haptic';
+import { MissionEncounterModal } from '../components/MissionEncounterModal';
 
 interface PlayGameViewProps {
   effectiveUser?: UserInfo;
@@ -2586,6 +2587,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [selectedOpponent, setSelectedOpponent] = useState<Character | null>(null);
   const activeMissionCardIdRef = useRef<number | null>(null);
   const [activeMissionCardId, setActiveMissionCardId] = useState<number | null>(null);
+  const [encounterOpponentCardId, setEncounterOpponentCardId] = useState<number | null>(null);
+
+  const openMissionEncounter = (cardIndex: number) => {
+    setEncounterOpponentCardId(cardIndex);
+  };
   const [showCardAcquisitionModal, setShowCardAcquisitionModal] = useState(false);
   const [acquiredMissionCard, setAcquiredMissionCard] = useState<CardData | null>(null);
   const [cardAcquisitionMode, setCardAcquisitionMode] = useState<'obtain' | 'enhance'>('obtain');
@@ -3541,9 +3547,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
   useEffect(() => {
     if (setGlobalPopupOpen) {
-      setGlobalPopupOpen(showDeckPreview || showRules);
+      setGlobalPopupOpen(showDeckPreview || showRules || encounterOpponentCardId !== null);
     }
-  }, [showDeckPreview, showRules, setGlobalPopupOpen]);
+  }, [showDeckPreview, showRules, encounterOpponentCardId, setGlobalPopupOpen]);
 
   const addLog = (text: string, type: 'info' | 'capture' | 'system' | 'victory' | 'defeat' = 'info') => {
     setGameLogs(prev => [{ id: Math.random().toString(36).substring(2, 9), timestamp: Date.now(), text, type }, ...prev].slice(0, 30));
@@ -9130,9 +9136,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       if (modes.length === 0) return;
       const randomMode = modes[Math.floor(Math.random() * modes.length)];
       if (randomMode) {
-        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
         recordModePlay(randomMode.id);
-        randomMode.action();
+        openMissionEncounter(randomMode.characterId || 1);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -9143,9 +9148,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     if (!preselectedGameId) return;
     const mode = modes.find(m => m.id === preselectedGameId);
     if (mode) {
-      playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
       recordModePlay(mode.id);
-      mode.action();
+      openMissionEncounter(mode.characterId || 1);
     }
   }, [preselectedGameId]);
 
@@ -9154,6 +9158,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   // =========================================================================
   useEffect(() => {
     const handleGlobalBackEvent = (e: Event) => {
+      // 0. 미션 대결 조우 모달
+      if (encounterOpponentCardId !== null) {
+        e.preventDefault();
+        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        setEncounterOpponentCardId(null);
+        return;
+      }
+
       // 1. 스네이크/슈팅 모드
       if (['snake', 'shooting'].includes(gameState)) {
         e.preventDefault();
@@ -13734,16 +13746,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       role="button"
                       tabIndex={0}
                       onClick={() => {
-                        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                         recordModePlay(m.id);
-                        startMissionCardBattle(cardIndex);
+                        openMissionEncounter(cardIndex);
                       }}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
-                          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                           recordModePlay(m.id);
-                          startMissionCardBattle(cardIndex);
+                          openMissionEncounter(cardIndex);
                         }
                       }}
                       className={cn(
@@ -18054,6 +18064,23 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           setShowCardAcquisitionModal(false);
           setAcquiredMissionCard(null);
           handleExitMatch(false);
+        }}
+      />
+
+      {/* Novel Character Dialogue Mission Encounter Modal */}
+      <MissionEncounterModal
+        isOpen={encounterOpponentCardId !== null}
+        cardId={encounterOpponentCardId}
+        language={language}
+        playSfx={playSfx}
+        lowSpecMode={lowSpecMode}
+        onClose={() => setEncounterOpponentCardId(null)}
+        onStartBattle={() => {
+          const targetCard = encounterOpponentCardId;
+          setEncounterOpponentCardId(null);
+          if (targetCard) {
+            startMissionCardBattle(targetCard);
+          }
         }}
       />
     </div>
