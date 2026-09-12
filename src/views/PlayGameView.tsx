@@ -13513,6 +13513,23 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Novel Character Dialogue Mission Encounter Modal */}
+        <MissionEncounterModal
+          isOpen={encounterOpponentCardId !== null}
+          cardId={encounterOpponentCardId}
+          language={language}
+          playSfx={playSfx}
+          lowSpecMode={lowSpecMode}
+          onClose={() => setEncounterOpponentCardId(null)}
+          onStartBattle={() => {
+            const targetCard = encounterOpponentCardId;
+            setEncounterOpponentCardId(null);
+            if (targetCard) {
+              startMissionCardBattle(targetCard);
+            }
+          }}
+        />
       </>
     );
   };
@@ -18113,23 +18130,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           setShowCardAcquisitionModal(false);
           setAcquiredMissionCard(null);
           handleExitMatch(false);
-        }}
-      />
-
-      {/* Novel Character Dialogue Mission Encounter Modal */}
-      <MissionEncounterModal
-        isOpen={encounterOpponentCardId !== null}
-        cardId={encounterOpponentCardId}
-        language={language}
-        playSfx={playSfx}
-        lowSpecMode={lowSpecMode}
-        onClose={() => setEncounterOpponentCardId(null)}
-        onStartBattle={() => {
-          const targetCard = encounterOpponentCardId;
-          setEncounterOpponentCardId(null);
-          if (targetCard) {
-            startMissionCardBattle(targetCard);
-          }
         }}
       />
     </div>

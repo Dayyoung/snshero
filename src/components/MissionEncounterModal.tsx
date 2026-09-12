@@ -50,7 +50,7 @@ export const MissionEncounterModal: React.FC<MissionEncounterModalProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onStartBattle, onClose, playSfx]);
 
-  if (!isOpen || !cardId) return null;
+  if (!isOpen || cardId === null || cardId === undefined) return null;
 
   const safeCardId = CARD_DATABASE[cardId] ? cardId : 1;
   const dbCard = CARD_DATABASE[safeCardId];
