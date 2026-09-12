@@ -130,7 +130,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-600 border border-white"></span>
                 </span>
               )}
-              {item.id === 'play' && (
+              {item.id === 'main' && (
                 <span
                   className={cn(
                     "absolute -top-1.5 -right-3.5 z-20 px-1 py-0.2 rounded text-[7px] sm:text-[8px] font-black font-mono tracking-tighter leading-none border shadow-xs select-none pointer-events-none",
@@ -145,9 +145,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
               )}
             </div>
             <span className="max-w-full truncate px-0.5 text-[10px] sm:text-[11px] font-black tracking-wide uppercase relative z-10 font-mono leading-none">
-              {item.id === 'play'
-                ? (language === 'ko' ? `플레이·${rebirthLevel}환` : `Play·R${rebirthLevel}`)
-                : item.label}
+              {item.label}
             </span>
           </button>
         );
