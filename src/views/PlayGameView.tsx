@@ -261,6 +261,7 @@ import { recordHeroBattleResult } from '../lib/heroMasteryHelper';
 import { getSeasonItem, setSeasonItem } from '../lib/seasonStorage';
 import { triggerHaptic } from '../lib/haptic';
 import { MissionEncounterModal } from '../components/MissionEncounterModal';
+import { getRebirthLevel } from '../hooks/useKadanRpgProgress';
 
 interface PlayGameViewProps {
   effectiveUser?: UserInfo;
@@ -930,6 +931,22 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   // Skin system
   const season = currentSeason || 'season1';
   const cardSkins = useCardSkins(season);
+
+  // Reincarnation progressive difficulty tracking
+  const [rebirthLevel, setRebirthLevel] = useState<number>(() => getRebirthLevel(season));
+
+  useEffect(() => {
+    const handleRebirthUpdate = () => {
+      setRebirthLevel(getRebirthLevel(season));
+    };
+    handleRebirthUpdate();
+    window.addEventListener('hero_reincarnation_updated', handleRebirthUpdate);
+    window.addEventListener('storage', handleRebirthUpdate);
+    return () => {
+      window.removeEventListener('hero_reincarnation_updated', handleRebirthUpdate);
+      window.removeEventListener('storage', handleRebirthUpdate);
+    };
+  }, [season]);
 
   const weeklyStoryCharacterNames = useMemo(() => {
     if (!weeklyWebtoon) return [] as string[];
@@ -3743,6 +3760,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         const diffMultiplier = aiDifficulty === 'hard' ? 1.5 : (aiDifficulty === 'medium' ? 1.2 : 1.0);
         base = Math.ceil(base * diffMultiplier);
       }
+
+      if (rebirthLevel > 0) {
+        const rebirthMultiplier = 1 + (rebirthLevel * 0.2);
+        base = Math.ceil(base * rebirthMultiplier);
+      }
       
       const playerDeckPower = playerDeck.reduce((acc, c) => acc + (c.power || 0), 0) || 10;
       const effOpponentPower = lastOpponent?.type === 'user' 
@@ -3758,7 +3780,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       }
     }
     return base;
-  }, [battleType, aiDifficulty, playerDeck, lastOpponent, aiSimulatedTotalPower]);
+  }, [battleType, aiDifficulty, playerDeck, lastOpponent, aiSimulatedTotalPower, rebirthLevel]);
 
   const calculateReward = useCallback((result: 'win' | 'loss' | 'draw') => {
     const orig = getOriginalBaseReward(result);
@@ -4719,20 +4741,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     const deck: CardData[] = [];
     const selectedIndices = new Set<number>();
     
-    // Scale target power based on difficulty with RANDOM VARIANCE
-    let minRange = 0.9;
-    let maxRange = 1.1;
+    // Scale target power based on difficulty with RANDOM VARIANCE and REINCARNATION LEVEL
+    const rebirthPowerFactor = 1 + (rebirthLevel * 0.18);
+    let minRange = 0.9 * rebirthPowerFactor;
+    let maxRange = 1.1 * rebirthPowerFactor;
 
     if (aiDifficulty === 'easy') {
-      minRange = 0.75;
-      maxRange = 0.95;
+      minRange = 0.75 * rebirthPowerFactor;
+      maxRange = 0.95 * rebirthPowerFactor;
     } else if (aiDifficulty === 'hard') {
-      minRange = 1.1;
-      maxRange = 1.4;
+      minRange = 1.1 * rebirthPowerFactor;
+      maxRange = 1.4 * rebirthPowerFactor;
     } else {
       // Medium
-      minRange = 0.95;
-      maxRange = 1.15;
+      minRange = 0.95 * rebirthPowerFactor;
+      maxRange = 1.15 * rebirthPowerFactor;
     }
     
     // Apply random variance within the difficulty range
@@ -4773,25 +4796,25 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         
         const cardInfo = CARD_DATABASE[selectedIdx];
         
-        // --- REALISTIC POWER SCALING ---
-        // Create an AI card with base stats
+        // --- REALISTIC POWER SCALING (환생 시 스탯 & 파워 강화) ---
+        const statBonus = Math.min(5, Math.floor(rebirthLevel * 1.0));
         const aiCard: CardData = {
             id: `ai-card-${i}-${Date.now()}-${selectedIdx}`,
             imageIndex: selectedIdx,
             title: cardInfo.title,
             title_dis: cardInfo.title_dis,
             title_en: cardInfo.title_en,
-            power: cardInfo.power,
+            power: Math.round((cardInfo.power || 10) * rebirthPowerFactor),
             rarity: cardInfo.rarity || 'bronze',
             owner: 'ai',
-            stats: [...cardInfo.stats],
+            stats: cardInfo.stats.map(s => Math.min(10, s + statBonus)) as [number, number, number, number],
             ability: cardInfo.ability,
             element: cardInfo.element,
-            skills: INITIAL_SKILLS.map(s => ({ ...s, level: 0 })),
+            skills: INITIAL_SKILLS.map(s => ({ ...s, level: Math.min(10, Math.floor(rebirthLevel * 1.2)) })),
             equipment: {},
             bonusPower: 0,
             exp: 0,
-            level: 1
+            level: Math.min(10, 1 + rebirthLevel)
         };
 
         // 1. Apply Skills first (Simulation of level up)
@@ -4913,29 +4936,42 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     setCheckingIdx(-1);
     setIsEvaluating(false);
 
-    // 상대 덱: 해당 카드 5개로 설정 (No.01~110 고유 카드가 5장 배치)
+    // 환생 레벨(rebirthLevel)에 따른 점진적 난이도 강화 (스탯, 파워, 레벨, 스킬)
+    const currentRebirth = rebirthLevel;
+    const scaledLevel = Math.min(10, 1 + currentRebirth);
+    const statBonus = Math.min(6, Math.floor(currentRebirth * 1.2));
+    const powerMultiplier = 1 + (currentRebirth * 0.25);
+    const scaledPower = Math.round((dbCard.power || 10) * powerMultiplier);
+    const scaledRarity: CardRarity = currentRebirth >= 3 
+      ? 'legendary' 
+      : (currentRebirth >= 2 ? 'diamond' : (currentRebirth >= 1 ? 'platinum' : (dbCard.rarity as CardRarity || 'bronze')));
+
+    // 상대 덱: 해당 카드 5개로 설정 (환생 시 레벨, 파워, 스탯, 등급 점진 강화)
     const missionAiDeck: CardData[] = Array(5).fill(null).map((_, i) => ({
       id: `mission-opp-${dbCard.id}-${Date.now()}-${i}`,
       title: dbCard.title,
       title_dis: dbCard.title_dis,
       title_en: dbCard.title_en,
-      stats: [...dbCard.stats],
-      rarity: dbCard.rarity,
+      stats: dbCard.stats.map(s => Math.min(10, s + statBonus)) as [number, number, number, number],
+      rarity: scaledRarity,
       owner: 'ai' as const,
-      level: 1,
-      power: dbCard.power || 10,
+      level: scaledLevel,
+      power: scaledPower,
       imageIndex: dbCard.id,
       element: dbCard.element,
-      skills: [...INITIAL_SKILLS.map(s => ({ ...s }))]
+      skills: [...INITIAL_SKILLS.map(s => ({ ...s, level: Math.min(10, 1 + currentRebirth) }))]
     }));
 
-    const oppName = language === 'ko' ? `${dbCard.title} 수호자` : `${dbCard.title_en} Guardian`;
+    const rebirthSuffix = currentRebirth > 0 
+      ? (language === 'ko' ? ` [${currentRebirth}환 수호자]` : ` [R${currentRebirth} Guardian]`) 
+      : (language === 'ko' ? ' 수호자' : ' Guardian');
+    const oppName = `${dbCard.title}${rebirthSuffix}`;
     const oppChar: Character = {
       id: `mission-bot-${targetCardIndex}`,
       name: oppName,
       avatarUrl: dbCard.imageUrl || `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Mission-${targetCardIndex}&backgroundColor=b6e3f4`,
       type: 'robot',
-      totalPower: (dbCard.power || 10) * 5,
+      totalPower: scaledPower * 5,
       deck: missionAiDeck,
       x: 50,
       y: 50,
@@ -7248,7 +7284,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       }
 
       const multiplier = isPlayerAuto ? (pendingQteMultiplier ?? 1) : 1;
-      const effectiveDifficulty = lowSpecMode ? 'easy' : ((aiDifficulty as AiDifficulty) || 'medium');
+      const effectiveDifficulty = lowSpecMode 
+        ? 'easy' 
+        : (!isPlayerAuto && rebirthLevel >= 1 
+            ? 'hard' 
+            : ((aiDifficulty as AiDifficulty) || 'medium'));
       let effectiveHand = [...hand];
       if (isPlayerAuto && strategyToUse === 'aggressive') {
         effectiveHand = hand.map(c => ({
@@ -15856,6 +15896,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           <span className="truncate max-w-[80px] sm:max-w-[120px] text-white">{lastOpponent?.name || 'ENEMY'}</span>
           <span className="text-slate-500">·</span>
           <span>TP {((lastOpponent?.type === 'user' ? (lastOpponent as any).totalPower : undefined) || opponentTotalPower || aiSimulatedTotalPower || 1200).toLocaleString()}</span>
+          {rebirthLevel > 0 && (
+            <>
+              <span className="text-slate-500">·</span>
+              <span className="bg-amber-500/20 text-amber-300 px-1 rounded-xs border border-amber-500/40 font-black">
+                {rebirthLevel}환 강화
+              </span>
+            </>
+          )}
           {lastOpponent?.sns !== undefined && lastOpponent.sns > 0 && (
             <>
               <span className="text-slate-500">·</span>

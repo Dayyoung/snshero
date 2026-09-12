@@ -6,6 +6,7 @@ import { t } from '../lib/i18n';
 import { motion } from 'framer-motion';
 import { useGameSettings } from '../contexts/GameSettingsContext';
 import { getClaimableCount, getTodayStr, hasUnfinishedMissions } from '../lib/dailyMissions';
+import { getRebirthLevel } from '../hooks/useKadanRpgProgress';
 import { prefetchPlayGameView } from '../App';
 
 interface NavbarProps {
@@ -21,6 +22,20 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
   const { theme } = useGameSettings();
   const [hasMissionNotice, setHasMissionNotice] = useState<boolean>(false);
   const [hasShopReward, setHasShopReward] = useState<boolean>(false);
+  const [rebirthLevel, setRebirthLevel] = useState<number>(() => getRebirthLevel());
+
+  useEffect(() => {
+    const updateRebirth = () => {
+      setRebirthLevel(getRebirthLevel());
+    };
+    updateRebirth();
+    window.addEventListener('hero_reincarnation_updated', updateRebirth);
+    window.addEventListener('storage', updateRebirth);
+    return () => {
+      window.removeEventListener('hero_reincarnation_updated', updateRebirth);
+      window.removeEventListener('storage', updateRebirth);
+    };
+  }, []);
 
   useEffect(() => {
     const checkRedDots = () => {
@@ -115,9 +130,24 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-600 border border-white"></span>
                 </span>
               )}
+              {item.id === 'play' && (
+                <span
+                  className={cn(
+                    "absolute -top-1.5 -right-3.5 z-20 px-1 py-0.2 rounded text-[7px] sm:text-[8px] font-black font-mono tracking-tighter leading-none border shadow-xs select-none pointer-events-none",
+                    rebirthLevel > 0
+                      ? "bg-amber-400 text-black border-amber-200 shadow-[0_0_8px_rgba(251,191,36,0.6)] animate-pulse"
+                      : (isActive ? "bg-white text-black border-slate-300" : "bg-slate-700 text-slate-200 border-slate-600")
+                  )}
+                  title={language === 'ko' ? `환생 횟수: ${rebirthLevel}회` : `Reincarnation Lv.${rebirthLevel}`}
+                >
+                  {rebirthLevel}환
+                </span>
+              )}
             </div>
             <span className="max-w-full truncate px-0.5 text-[10px] sm:text-[11px] font-black tracking-wide uppercase relative z-10 font-mono leading-none">
-              {item.label}
+              {item.id === 'play'
+                ? (language === 'ko' ? `플레이·${rebirthLevel}환` : `Play·R${rebirthLevel}`)
+                : item.label}
             </span>
           </button>
         );

@@ -126,6 +126,17 @@ export const saveKadanRpgProgress = (season: string, progress: KadanRpgProgress)
   return normalized;
 };
 
+export const getRebirthLevel = (season?: string): number => {
+  try {
+    if (typeof window === 'undefined') return 0;
+    const currentSeason = season || localStorage.getItem('hero_current_season') || 'season1';
+    const progress = loadKadanRpgProgress(currentSeason);
+    return progress?.rebirthLevel ?? 0;
+  } catch {
+    return 0;
+  }
+};
+
 export const getNextKadanRpgEvent = (progress: KadanRpgProgress) => (
   KADAN_RPG_EVENTS.find((event) => !progress.completedChapterIds.includes(event.id)) ?? null
 );
@@ -217,6 +228,11 @@ export const useKadanRpgProgress = (season: string) => {
         rebirthLevel: previous.rebirthLevel + 1,
         autoMode: previous.autoMode,
       });
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('hero_reincarnation_updated', {
+          detail: { rebirthLevel: next.rebirthLevel }
+        }));
+      }
       return next;
     });
   }, [season]);

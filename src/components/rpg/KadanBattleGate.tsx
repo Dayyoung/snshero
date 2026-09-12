@@ -164,13 +164,13 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
   useEffect(() => {
     if (state.result || state.turn !== 'ai') return;
     const timer = window.setTimeout(() => {
-      const move = chooseKadanAutoMove(state, 'ai', encounter.difficulty);
+      const move = chooseKadanAutoMove(state, 'ai', encounter.difficulty, rebirthLevel);
       if (move) {
         setState((previous) => placeKadanBattleCard(previous, 'ai', move.cardIndex, move.boardIndex, language));
       }
     }, lowSpecMode ? 350 : 500);
     return () => window.clearTimeout(timer);
-  }, [encounter.difficulty, language, lowSpecMode, state]);
+  }, [encounter.difficulty, language, lowSpecMode, rebirthLevel, state]);
 
   useEffect(() => {
     if (!autoBattle || state.result || state.turn !== 'player') return;
@@ -285,7 +285,14 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
             </button>
 
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-rose-400">{t('kadan_rpg_card_battle', language)}</p>
+              <div className="flex items-center gap-1.5">
+                <p className="text-[10px] font-black uppercase tracking-widest text-rose-400">{t('kadan_rpg_card_battle', language)}</p>
+                {rebirthLevel > 0 && (
+                  <span className="text-[9px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 px-1 py-0.2 rounded-xs">
+                    {rebirthLevel}환 강화
+                  </span>
+                )}
+              </div>
               <h3 className="text-sm font-black text-white md:text-base">{t(encounter.opponentNameKey, language)}</h3>
             </div>
           </div>

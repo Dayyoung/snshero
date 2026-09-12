@@ -96,7 +96,8 @@ export const buildOpponentRpgHand = (
     boss: 2,
   };
   const rebirthBonus = Math.max(0, Math.floor(rebirthLevel));
-  const statBonus = bonusByDifficulty[difficulty] + Math.min(2, rebirthBonus);
+  const statBonus = bonusByDifficulty[difficulty] + Math.min(6, Math.floor(rebirthBonus * 1.2));
+  const powerScale = 1 + rebirthBonus * 0.2;
 
   return cardIds
     .map(cardFromDatabase)
@@ -108,7 +109,7 @@ export const buildOpponentRpgHand = (
         ...card,
         id: `kadan-opp-${card.id}-${idx}`,
         stats: baseStats.map((stat) => Math.max(1, Math.min(10, (Number(stat) || 1) + statBonus))) as [number, number, number, number],
-        power: (card.power || 0) + statBonus * 4,
+        power: Math.round(((card.power || 0) + statBonus * 4) * powerScale),
       };
     });
 };
@@ -227,16 +228,24 @@ export const chooseKadanAutoMove = (
   state: KadanBattleState,
   side: KadanBattleSide,
   difficulty: KadanRpgDifficulty,
+  rebirthLevel = 0,
 ): { cardIndex: number; boardIndex: number } | null => {
   const hand = side === 'player' ? state.playerHand : state.aiHand;
   if (!hand || hand.length === 0) return null;
 
   try {
-    const aiDifficulty = difficulty === 'easy' ? 'easy' : difficulty === 'normal' ? 'medium' : 'hard';
+    let aiDifficulty: 'easy' | 'medium' | 'hard' = difficulty === 'easy' ? 'easy' : difficulty === 'normal' ? 'medium' : 'hard';
+    if (side === 'ai' && rebirthLevel >= 1) {
+      aiDifficulty = 'hard';
+    }
+    const strategy = side === 'player'
+      ? 'balanced'
+      : (rebirthLevel >= 2 || difficulty === 'boss' ? 'aggressive' : 'balanced');
+
     const move = findBestMove(
       state.board,
       hand,
-      side === 'player' ? 'balanced' : difficulty === 'boss' ? 'aggressive' : 'balanced',
+      strategy,
       side,
       1,
       [],
