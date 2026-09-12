@@ -941,6 +941,21 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => {
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                if (selectedCategory !== 'select') {
+                  setUploadCategory(selectedCategory);
+                }
+                setShowUploadModal(true);
+              }}
+              className="inline-flex min-h-9 items-center gap-1.5 px-3 py-1.5 rounded-full border border-indigo-200 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all active:scale-95 shadow-sm cursor-pointer"
+              title={language === 'ko' ? '새 글 작성' : 'Write post'}
+              aria-label="Write post"
+            >
+              <Plus size={14} />
+              <span>{language === 'ko' ? '글쓰기' : 'Write'}</span>
+            </button>
+            <button
+              onClick={() => {
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
                 loadPosts();
               }}
@@ -1998,7 +2013,18 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
         // 3C. 미리보기 요약 리스트
         <div className="flex flex-col gap-6">
           {/* 카테고리 정보 및 되돌아가기 헤더 */}
-          <div className="flex items-center justify-end px-1">
+          <div className="flex items-center justify-between gap-2 px-1">
+            <button
+              onClick={() => {
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                setUploadCategory(selectedCategory);
+                setShowUploadModal(true);
+              }}
+              className="inline-flex items-center gap-1.5 text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 rounded-xl shadow-sm transition-all active:scale-95 cursor-pointer"
+            >
+              <Plus size={14} />
+              <span>{language === 'ko' ? '이 게시판에 글쓰기' : 'Write in this board'}</span>
+            </button>
             <span className="text-xs font-bold tracking-tight bg-indigo-50/50 text-indigo-650 px-3.5 py-2 rounded-xl border border-indigo-100 shadow-xs">
               🎯 {t(`community_cat_${selectedCategory}` as any, language)}
             </span>
@@ -2346,15 +2372,15 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
       {/* 4. Upload Dialog Modal */}
       <AnimatePresence>
         {showUploadModal && (
-          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 pb-[calc(env(safe-area-inset-bottom)+1.5rem)] z-[20000]">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-md bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-2xl relative flex flex-col text-slate-800 font-sans"
+              className="w-full max-w-md max-h-[85dvh] sm:max-h-[88dvh] bg-white border border-slate-100 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl relative flex flex-col text-slate-800 font-sans"
             >
               {/* Modal Header */}
-              <div className="p-4.5 bg-slate-50/50 border-b border-slate-150/70 flex justify-between items-center">
+              <div className="shrink-0 p-4 sm:p-4.5 bg-slate-50/50 border-b border-slate-150/70 flex justify-between items-center">
                 <h3 className="font-bold text-base uppercase tracking-tight flex items-center gap-2 text-slate-800">
                   ✍️ {t('community_new_post', language)}
                 </h3>
@@ -2373,124 +2399,128 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
               </div>
 
               {/* Modal Content */}
-              <form onSubmit={handleCreatePost} className="p-6 flex flex-col gap-4 max-h-[80vh] overflow-y-auto custom-scrollbar">
-                {/* Category Select */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                    {t('category', language)}
-                  </label>
-                  <select
-                    value={uploadCategory}
-                    onChange={(e) => setUploadCategory(e.target.value as CommunityWritableCategory)}
-                    className="w-full p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl font-semibold text-sm focus:outline-none focus:border-indigo-500 focus:bg-white transition-all text-slate-700"
-                  >
-                    <option value="free">{t('community_cat_free', language)}</option>
-                    <option value="qa">{t('community_cat_qa', language)}</option>
-                    <option value="tip">{t('community_cat_tip', language)}</option>
-                    <option value="boast">{t('community_cat_boast', language)}</option>
-                    <option value="running">{t('community_cat_running', language)}</option>
-                    <option value="guild">{t('community_cat_guild', language)}</option>
-                    <option value="pvp">{t('community_cat_pvp', language)}</option>
-                    <option value="fanart">{t('community_cat_fanart', language)}</option>
-                    <option value="vote">{t('community_cat_vote', language)}</option>
-                    <option value="webtoon">{t('community_cat_webtoon', language)}</option>
-                    <option value="season">{t('community_cat_season', language)}</option>
-                  </select>
-                </div>
-
-                {/* Doc 62: Flair Select */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                    🏷️ Flair
-                  </label>
-                  <select
-                    value={uploadFlair}
-                    onChange={(e) => setUploadFlair(e.target.value as PostFlair | '')}
-                    className="w-full p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl font-semibold text-sm focus:outline-none focus:border-indigo-500 focus:bg-white transition-all text-slate-700"
-                  >
-                    <option value="">{t('community_no_flair', language) || 'No flair'}</option>
-                    {getFlairsForCategory(uploadCategory).map((flair) => (
-                      <option key={flair} value={flair}>
-                        {FLAIR_META[flair].icon} {FLAIR_META[flair].label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Content Area */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                    {t('community_post_content', language)}
-                  </label>
-                  <textarea
-                    rows={4}
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    placeholder={t('community_post_placeholder', language)}
-                    className="w-full p-4 bg-slate-50 border border-slate-200/80 rounded-xl font-semibold text-sm focus:outline-none focus:border-indigo-500 focus:bg-white resize-none transition-all text-slate-700"
-                    maxLength={300}
-                    required
-                  />
-                </div>
-
-                {/* 다중 파일 업로드 버튼 */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                    🏞️ {t('community_add_images', language)}
-                  </label>
-                  
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-full p-4 bg-slate-50 hover:bg-slate-100/80 border border-dashed border-slate-200 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all text-slate-500"
-                  >
-                    <ImageIcon size={16} />
-                    <span>{t('choose_images_label', language)}</span>
-                  </button>
-
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleImageChange}
-                    accept="image/*"
-                    multiple
-                    className="hidden"
-                  />
-                </div>
-
-                {/* 선택한 이미지 미리보기 썸네일 그리드 */}
-                {imagePreviews.length > 0 && (
-                  <div className="grid grid-cols-5 gap-2 mt-1">
-                    {imagePreviews.map((previewUrl, index) => (
-                      <div key={index} className="aspect-square border border-slate-150 rounded-xl overflow-hidden relative bg-slate-950 flex items-center justify-center">
-                        <img
-                          src={previewUrl}
-                          alt={`preview-${index}`}
-                          className="w-full h-full object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveImage(index)}
-                          className="absolute -top-1 -right-1 bg-rose-600 p-0.5 rounded-full text-white cursor-pointer hover:bg-rose-500 scale-90 border-none flex items-center justify-center"
-                        >
-                          <X size={10} />
-                        </button>
-                      </div>
-                    ))}
+              <form onSubmit={handleCreatePost} className="flex-1 min-h-0 flex flex-col overflow-hidden">
+                <div className="flex-1 min-h-0 p-4 sm:p-6 flex flex-col gap-4 overflow-y-auto custom-scrollbar">
+                  {/* Category Select */}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      {t('category', language)}
+                    </label>
+                    <select
+                      value={uploadCategory}
+                      onChange={(e) => setUploadCategory(e.target.value as CommunityWritableCategory)}
+                      className="w-full p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl font-semibold text-sm focus:outline-none focus:border-indigo-500 focus:bg-white transition-all text-slate-700"
+                    >
+                      <option value="free">{t('community_cat_free', language)}</option>
+                      <option value="qa">{t('community_cat_qa', language)}</option>
+                      <option value="tip">{t('community_cat_tip', language)}</option>
+                      <option value="boast">{t('community_cat_boast', language)}</option>
+                      <option value="running">{t('community_cat_running', language)}</option>
+                      <option value="guild">{t('community_cat_guild', language)}</option>
+                      <option value="pvp">{t('community_cat_pvp', language)}</option>
+                      <option value="fanart">{t('community_cat_fanart', language)}</option>
+                      <option value="vote">{t('community_cat_vote', language)}</option>
+                      <option value="webtoon">{t('community_cat_webtoon', language)}</option>
+                      <option value="season">{t('community_cat_season', language)}</option>
+                    </select>
                   </div>
-                )}
 
-                {/* Submit Action */}
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={cn(
-                    "w-full py-4 bg-slate-900 text-white font-bold tracking-wider rounded-xl transition-all shadow-md hover:bg-slate-800 disabled:opacity-50 mt-2 cursor-pointer active:scale-98 text-xs uppercase",
-                    isSubmitting && "animate-pulse"
+                  {/* Doc 62: Flair Select */}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      🏷️ Flair
+                    </label>
+                    <select
+                      value={uploadFlair}
+                      onChange={(e) => setUploadFlair(e.target.value as PostFlair | '')}
+                      className="w-full p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl font-semibold text-sm focus:outline-none focus:border-indigo-500 focus:bg-white transition-all text-slate-700"
+                    >
+                      <option value="">{t('community_no_flair', language) || 'No flair'}</option>
+                      {getFlairsForCategory(uploadCategory).map((flair) => (
+                        <option key={flair} value={flair}>
+                          {FLAIR_META[flair].icon} {FLAIR_META[flair].label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Content Area */}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      {t('community_post_content', language)}
+                    </label>
+                    <textarea
+                      rows={4}
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      placeholder={t('community_post_placeholder', language)}
+                      className="w-full p-4 bg-slate-50 border border-slate-200/80 rounded-xl font-semibold text-sm focus:outline-none focus:border-indigo-500 focus:bg-white resize-none transition-all text-slate-700"
+                      maxLength={300}
+                      required
+                    />
+                  </div>
+
+                  {/* 다중 파일 업로드 버튼 */}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      🏞️ {t('community_add_images', language)}
+                    </label>
+                    
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-full p-4 bg-slate-50 hover:bg-slate-100/80 border border-dashed border-slate-200 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all text-slate-500"
+                    >
+                      <ImageIcon size={16} />
+                      <span>{t('choose_images_label', language)}</span>
+                    </button>
+
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleImageChange}
+                      accept="image/*"
+                      multiple
+                      className="hidden"
+                    />
+                  </div>
+
+                  {/* 선택한 이미지 미리보기 썸네일 그리드 */}
+                  {imagePreviews.length > 0 && (
+                    <div className="grid grid-cols-5 gap-2 mt-1">
+                      {imagePreviews.map((previewUrl, index) => (
+                        <div key={index} className="aspect-square border border-slate-150 rounded-xl overflow-hidden relative bg-slate-950 flex items-center justify-center">
+                          <img
+                            src={previewUrl}
+                            alt={`preview-${index}`}
+                            className="w-full h-full object-cover"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveImage(index)}
+                            className="absolute -top-1 -right-1 bg-rose-600 p-0.5 rounded-full text-white cursor-pointer hover:bg-rose-500 scale-90 border-none flex items-center justify-center"
+                          >
+                            <X size={10} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   )}
-                >
-                  {isSubmitting ? t('community_uploading_images', language) : t('community_upload', language)}
-                </button>
+                </div>
+
+                {/* Pinned Submit Action Footer */}
+                <div className="shrink-0 p-4 border-t border-slate-150 bg-slate-50/90">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={cn(
+                      "w-full py-3.5 sm:py-4 bg-slate-900 text-white font-bold tracking-wider rounded-xl transition-all shadow-md hover:bg-slate-800 disabled:opacity-50 cursor-pointer active:scale-98 text-xs uppercase",
+                      isSubmitting && "animate-pulse"
+                    )}
+                  >
+                    {isSubmitting ? t('community_uploading_images', language) : t('community_upload', language)}
+                  </button>
+                </div>
               </form>
             </motion.div>
           </div>
@@ -2500,7 +2530,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
       {/* Custom Dialog Modal */}
       <AnimatePresence>
         {customModal && customModal.isOpen && (
-          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 z-[60]">
+          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 z-[20050]">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -2580,7 +2610,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
       {/* Doc 62: Report Modal */}
       <AnimatePresence>
         {reportModal && reportModal.isOpen && (
-          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 z-[65]">
+          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 z-[20050]">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -2637,9 +2667,11 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
           }
           setShowUploadModal(true);
         }}
-        className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 p-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg shadow-lg shadow-indigo-200/50 hover:shadow-indigo-300/40 active:scale-95 transition-all cursor-pointer border-none flex items-center justify-center"
+        className="fixed bottom-[calc(env(safe-area-inset-bottom)+5.25rem)] right-4 sm:right-6 z-[10010] px-4 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-full shadow-2xl shadow-indigo-500/40 hover:shadow-indigo-400/50 active:scale-95 transition-all cursor-pointer border border-indigo-400/30 flex items-center gap-2"
+        aria-label={t('community_new_post', language)}
       >
-        <Plus size={24} />
+        <Plus size={20} className="shrink-0" />
+        <span className="text-xs font-bold tracking-wider">{language === 'ko' ? '글쓰기' : 'Write'}</span>
       </button>
 
       {/* Help Popup */}
@@ -2649,7 +2681,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[209] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-[20050] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
             onClick={() => setShowHelp(false)}
           >
             <motion.div

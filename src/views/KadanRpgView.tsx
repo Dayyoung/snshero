@@ -397,6 +397,17 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
             </div>
             <h1 className="truncate text-base font-extrabold tracking-normal text-slate-900 md:text-lg">{t('kadan_rpg_title', language)}</h1>
           </div>
+          {isComplete && (
+            <button
+              type="button"
+              onClick={() => setIsEndingDismissed(false)}
+              className="flex min-h-10 sm:min-h-11 items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-3 py-2 text-xs font-black text-white shadow-md shadow-violet-500/30 transition-all hover:brightness-110 active:scale-95 cursor-pointer animate-pulse shrink-0"
+              title={language === 'ko' ? '엔딩 및 환생 팝업 보기' : 'View Ending & Rebirth'}
+            >
+              <Sparkles size={16} className="text-amber-300" />
+              <span>{language === 'ko' ? '엔딩/환생' : 'Ending'}</span>
+            </button>
+          )}
           <div className={cn(
             "relative inline-flex items-center justify-center overflow-hidden rounded-lg transition-all",
             progress.autoMode ? "p-[2px] shadow-[0_0_12px_rgba(59,130,246,0.6)]" : ""
@@ -422,7 +433,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
       </header>
 
       <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-4 overflow-y-auto p-3 sm:p-4 md:p-6 pb-[calc(env(safe-area-inset-bottom)+5rem)]">
-        {isComplete && isEndingDismissed && (
+        {isComplete && (
           <div className="flex items-center justify-between rounded-lg border border-violet-300 bg-gradient-to-r from-violet-600 to-indigo-700 p-3 text-white shadow-lg animate-in fade-in duration-200">
             <div className="flex items-center gap-2">
               <Sparkles size={18} className="text-amber-300 animate-spin" />
@@ -575,8 +586,8 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
       </main>
 
       {isComplete && !isEndingDismissed && (
-        <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-950/75 p-2 sm:p-4 backdrop-blur-xs">
-          <div className="w-full max-w-2xl max-h-[90dvh] flex flex-col overflow-hidden rounded-lg border border-violet-200 bg-white shadow-2xl">
+        <div className="fixed inset-0 z-[20000] flex items-center justify-center bg-slate-950/85 p-3 sm:p-4 pb-[calc(env(safe-area-inset-bottom)+1.5rem)] backdrop-blur-sm">
+          <div className="w-full max-w-2xl max-h-[85dvh] sm:max-h-[88dvh] flex flex-col overflow-hidden rounded-xl border border-violet-200 bg-white shadow-2xl">
             {/* Header */}
             <div className="shrink-0 border-b border-slate-100 bg-gradient-to-r from-violet-700 via-indigo-700 to-slate-950 p-4 sm:p-5 text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -599,7 +610,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
             </div>
 
             {/* Content body */}
-            <div className="flex-1 min-h-0 space-y-3 overflow-y-auto p-4 sm:p-5">
+            <div className="flex-1 min-h-0 space-y-3 overflow-y-auto p-4 sm:p-5 custom-scrollbar">
               <p className="text-sm font-bold leading-6 text-slate-700">{t('kadan_rpg_ending_popup_desc', language)}</p>
               <div className="space-y-3 rounded-lg bg-slate-50 p-3 sm:p-4">
                 <p className="text-xs font-black uppercase tracking-normal text-violet-600">{t('kadan_rpg_ending_epilogue_title', language)}</p>
@@ -613,7 +624,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
             </div>
 
             {/* Footer */}
-            <div className="shrink-0 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 border-t border-slate-100 p-3 sm:p-4 bg-slate-50/80">
+            <div className="shrink-0 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 border-t border-slate-100 p-3 sm:p-4 bg-slate-50/90">
               <div className="rounded-lg bg-violet-50 px-3 py-2 text-xs font-black text-violet-700">
                 {t('kadan_rpg_rebirth_level', language)} {progress.rebirthLevel}
               </div>

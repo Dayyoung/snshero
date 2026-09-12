@@ -18,7 +18,7 @@ export const KadanRewardModal: React.FC<KadanRewardModalProps> = ({
   onClaim,
   onClose,
 }) => (
-  <div className="fixed inset-0 z-40 flex items-center justify-center bg-slate-950/55 p-3 backdrop-blur-xs">
+  <div className="fixed inset-0 z-[20000] flex items-center justify-center bg-slate-950/70 p-3 pb-[calc(env(safe-area-inset-bottom)+1rem)] backdrop-blur-xs">
     <div className="relative flex max-h-[90dvh] w-full max-w-md flex-col overflow-hidden rounded-lg border border-slate-100 bg-white p-4 sm:p-5 shadow-2xl">
       {/* Top right close button */}
       <button
