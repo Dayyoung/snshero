@@ -49,7 +49,7 @@ export const DeckSynergyVisualizer: React.FC<DeckSynergyVisualizerProps> = ({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/65 backdrop-blur-xs font-mono select-none">
+    <div className="fixed inset-0 z-[20010] flex items-center justify-center p-3 bg-black/65 backdrop-blur-xs font-mono select-none">
       <div className="w-full max-w-md bg-[#fdfcfc] dark:bg-[#181616] border border-[#201d1d] dark:border-white rounded-none p-4 text-[#201d1d] dark:text-[#fdfcfc] flex flex-col gap-3 max-h-[90vh] overflow-y-auto">
         {/* 헤더 */}
         <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] dark:border-[rgba(255,255,255,0.12)] pb-2">

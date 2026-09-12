@@ -47,7 +47,7 @@ import { MonsterPetBadge } from '../components/MonsterPetBadge';
 import { useMonsterPet } from '../hooks/useMonsterPet';
 import { getMonsterPetGroup, isMonsterPetCandidate, parseCardAvatarId } from '../lib/monsterPet';
 import { CardCombineModal } from '../components/CardCombineModal';
-import { DeckSynergyCalculator } from '../components/DeckSynergyCalculator';
+import { DeckSynergyCalculator, calculateDeckSynergies } from '../components/DeckSynergyCalculator';
 import { DeckSynergyVisualizer } from '../components/DeckSynergyVisualizer';
 import { buildOptimalSynergyDeck } from '../lib/deckSynergyEngine';
 
@@ -645,6 +645,13 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   const [showDeckPowerDetails, setShowDeckPowerDetails] = useState(false);
   const [showTotalPowerDetails, setShowTotalPowerDetails] = useState(false);
   const [showOptimizeSuccessModal, setShowOptimizeSuccessModal] = useState(false);
+  const [isSynergyModalOpen, setIsSynergyModalOpen] = useState(false);
+  const [isVisualizerOpen, setIsVisualizerOpen] = useState(false);
+
+  // Deck synergy summary for compact badge
+  const synergySummary = useMemo(() => {
+    return calculateDeckSynergies(currentDeck, language);
+  }, [currentDeck, language]);
 
   // Local state for editing modal
   const [editName, setEditName] = useState('');
@@ -655,16 +662,28 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
   // Sync popup state to App.tsx
   React.useEffect(() => {
-    const isAnyOpen = !!selectedCardForDetail || isPopupOpen || isItemModalOpen || editingCardIndex !== null || selectingIndex !== null || itemManageIndex !== null || isEncyclopediaOpen || showDeckPowerDetails || showTotalPowerDetails || isAchievementsModalOpen || showOptimizeSuccessModal || isCombineModalOpen;
+    const isAnyOpen = !!selectedCardForDetail || isPopupOpen || isItemModalOpen || editingCardIndex !== null || selectingIndex !== null || itemManageIndex !== null || isEncyclopediaOpen || showDeckPowerDetails || showTotalPowerDetails || isAchievementsModalOpen || showOptimizeSuccessModal || isCombineModalOpen || isSynergyModalOpen || isVisualizerOpen;
     setGlobalPopupOpen(isAnyOpen);
     
     // Explicit return to reset when unmounting
     return () => setGlobalPopupOpen(false);
-  }, [selectedCardForDetail, isPopupOpen, isItemModalOpen, editingCardIndex, selectingIndex, itemManageIndex, isEncyclopediaOpen, showDeckPowerDetails, showTotalPowerDetails, isAchievementsModalOpen, showOptimizeSuccessModal, isCombineModalOpen, setGlobalPopupOpen]);
+  }, [selectedCardForDetail, isPopupOpen, isItemModalOpen, editingCardIndex, selectingIndex, itemManageIndex, isEncyclopediaOpen, showDeckPowerDetails, showTotalPowerDetails, isAchievementsModalOpen, showOptimizeSuccessModal, isCombineModalOpen, isSynergyModalOpen, isVisualizerOpen, setGlobalPopupOpen]);
 
   // 최상단 공용 뒤로가기 버튼 이벤트 수신 처리
   React.useEffect(() => {
     const handleGlobalBack = (e: Event) => {
+      if (isVisualizerOpen) {
+        e.preventDefault();
+        playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+        setIsVisualizerOpen(false);
+        return;
+      }
+      if (isSynergyModalOpen) {
+        e.preventDefault();
+        playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+        setIsSynergyModalOpen(false);
+        return;
+      }
       if (isPopupOpen) {
         e.preventDefault();
         playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
@@ -675,7 +694,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     };
     window.addEventListener('global-back', handleGlobalBack);
     return () => window.removeEventListener('global-back', handleGlobalBack);
-  }, [isPopupOpen, playSfx]);
+  }, [isPopupOpen, isSynergyModalOpen, isVisualizerOpen, playSfx]);
 
   // Calculate true total power based on inventory and unit power
   const calculatedTotalPower = Object.entries(inventory).reduce((acc, [idx, record]) => {
@@ -1216,21 +1235,39 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
       <div className="flex flex-col gap-4 md:gap-6">
         <div className="flex flex-col items-center gap-3 sm:gap-4 w-full">
-          {/* Real-time Deck Synergy Score & Smart Presets (Row 655 / ID 552 & Row 748 / ID 585) */}
-          <div className="w-full max-w-4xl space-y-3">
-            <DeckSynergyCalculator
-              currentDeck={currentDeck}
-              ownedCards={ownedCards}
-              inventory={inventory}
-              language={language}
-              updateDeck={updateDeck}
-              playSfx={playSfx}
-            />
-            <DeckSynergyVisualizer
-              deck={currentDeck as any}
-              language={language}
-              onAutoFillOptimalSynergy={handleAutoFillOptimalSynergy}
-            />
+          {/* Active Deck Header Bar with Compact Synergy Button */}
+          <div className="flex items-center justify-between flex-wrap gap-2 w-full max-w-4xl px-1 sm:px-2 pt-1 pb-1 font-mono">
+            <div className="flex items-center gap-2">
+              <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-700 dark:text-slate-200">
+                {language === 'ko' ? '출전 덱 (5장)' : 'Active Deck (5 Cards)'}
+              </span>
+              <span className="text-[10px] text-slate-400 hidden xs:inline">
+                {language === 'ko' ? '· 드래그하여 순서 변경' : '· Drag to reorder'}
+              </span>
+            </div>
+
+            {/* Compact Synergy Badge Button */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsSynergyModalOpen(true);
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              }}
+              className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 rounded-full border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 dark:hover:bg-purple-900/60 text-purple-900 dark:text-purple-200 text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer touch-target"
+              title={language === 'ko' ? '시너지 효과 및 스마트 프리셋 팝업 열기' : 'Open Synergy & Presets Popup'}
+            >
+              <Sparkles size={13} className="text-purple-600 dark:text-purple-400 animate-pulse shrink-0" />
+              <span>{language === 'ko' ? '시너지' : 'Synergy'}</span>
+              <span className={cn("px-1.5 py-0.2 rounded text-[10px] font-black border", synergySummary.gradeColor)}>
+                {synergySummary.grade} ({synergySummary.score}P)
+              </span>
+              {synergySummary.powerBonusPct > 0 && (
+                <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400">+{synergySummary.powerBonusPct}%</span>
+              )}
+              <span className="text-[10px] text-purple-600 dark:text-purple-400 underline font-semibold flex items-center gap-0.5">
+                {language === 'ko' ? '상세보기' : 'Details'} <ChevronRight size={11} />
+              </span>
+            </button>
           </div>
 
           <div id="deck-list" className="mx-auto flex w-full max-w-full flex-nowrap sm:flex-wrap justify-center items-center gap-1 xs:gap-2 sm:gap-4 md:gap-6 px-0.5 sm:px-1">
@@ -3133,6 +3170,108 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           );
         }}
         playSfx={playSfx}
+      />
+
+      {/* ── Deck Synergy & Smart Presets Modal ── */}
+      <AnimatePresence>
+        {isSynergyModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[20000] flex items-center justify-center p-2.5 sm:p-4 bg-black/65 backdrop-blur-xs font-mono select-none"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setIsSynergyModalOpen(false);
+              }
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 15 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 15 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="bg-white dark:bg-[#181616] border border-slate-300 dark:border-white/20 shadow-2xl rounded-sm w-full max-w-2xl max-h-[85dvh] flex flex-col overflow-hidden text-slate-800 dark:text-slate-100"
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between px-3.5 py-2.5 sm:px-4 sm:py-3 border-b border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#201d1d] shrink-0">
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 rounded-sm bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 shrink-0">
+                    <Sparkles size={16} />
+                  </div>
+                  <div>
+                    <h3 className="text-xs sm:text-sm font-black tracking-tight">
+                      {language === 'ko' ? '덱 시너지 & 스마트 프리셋' : 'Deck Synergy & Smart Presets'}
+                    </h3>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                      {language === 'ko'
+                        ? '원소/종족 공명 점수 및 1-TAP 추천 덱 자동 완성'
+                        : 'Elemental & Faction Resonance & 1-Tap Auto-Fill'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsVisualizerOpen(true);
+                      playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    }}
+                    className="px-2 sm:px-2.5 py-1 rounded-sm border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 text-[10px] sm:text-[11px] font-bold hover:bg-purple-100 dark:hover:bg-purple-900/60 transition-colors flex items-center gap-1 cursor-pointer"
+                  >
+                    <Sparkles size={12} />
+                    <span>{language === 'ko' ? '하모니 차트' : 'Harmony Chart'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsSynergyModalOpen(false)}
+                    className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors cursor-pointer rounded-sm hover:bg-slate-200/50 dark:hover:bg-white/10"
+                    aria-label="Close"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Modal Body: Scrollable */}
+              <div className="p-3 sm:p-4 overflow-y-auto flex-1 overscroll-contain">
+                <DeckSynergyCalculator
+                  currentDeck={currentDeck}
+                  ownedCards={ownedCards}
+                  inventory={inventory}
+                  language={language}
+                  updateDeck={updateDeck}
+                  playSfx={playSfx}
+                />
+              </div>
+
+              {/* Modal Footer */}
+              <div className="px-3.5 py-2 sm:px-4 sm:py-2.5 bg-slate-50 dark:bg-[#201d1d] border-t border-slate-200 dark:border-white/10 flex items-center justify-between text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 shrink-0">
+                <span className="truncate pr-2">
+                  {language === 'ko'
+                    ? '💡 프리셋 선택 시 보유 카드 중 최적 조합으로 즉시 교체됩니다.'
+                    : '💡 Tapping a preset instantly applies the best owned cards.'}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIsSynergyModalOpen(false)}
+                  className="px-3 py-1.5 bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-900 font-bold rounded-sm hover:opacity-90 active:scale-95 transition-all text-xs cursor-pointer shrink-0"
+                >
+                  {language === 'ko' ? '닫기' : 'Close'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Deck Synergy Visualizer Modal */}
+      <DeckSynergyVisualizer
+        deck={currentDeck as any}
+        isOpen={isVisualizerOpen}
+        onClose={() => setIsVisualizerOpen(false)}
+        language={language}
       />
 
       {/* Element Advantage Guide Modal (Row 18) */}
