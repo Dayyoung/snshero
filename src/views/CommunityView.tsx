@@ -191,7 +191,27 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
     isLoading: boolean;
   }>>({});
 
-  const isGuest = !user || user.uid === 'guest-id';
+  // 안정적인 로컬 플레이어 UID 및 프로필 획득
+  const activeUser = React.useMemo<UserInfo & { isAdmin?: boolean }>(() => {
+    if (user && user.uid && user.uid !== 'guest-id') {
+      return user;
+    }
+    const localName = (typeof window !== 'undefined' ? localStorage.getItem('hero_user_name') : '') || 'Hunter';
+    const localAvatar = (typeof window !== 'undefined' ? localStorage.getItem('hero_user_avatar') : '') || 'preset:0';
+    let localUid = typeof window !== 'undefined' ? localStorage.getItem('hero_player_uid') : null;
+    if (!localUid && typeof window !== 'undefined') {
+      localUid = `player_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
+      localStorage.setItem('hero_player_uid', localUid);
+    }
+    const isAdmin = typeof window !== 'undefined' ? localStorage.getItem('hero_admin_authenticated') === 'true' : false;
+    return {
+      uid: localUid || 'player_local',
+      displayName: localName,
+      photoURL: localAvatar,
+      isAdmin,
+    };
+  }, [user]);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // ── Fan Events ─────────────────────────────────────────
@@ -204,7 +224,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
   const { getPetIdForRepresentativeCard } = useMonsterPet({ season: currentSeason });
 
   const getLocalMonsterPetId = (authorId: string, avatar: string): number | null => {
-    if (!user || authorId !== user.uid) {
+    if (!activeUser || authorId !== activeUser.uid) {
       return null;
     }
     const representativeCardId = parseCardAvatarId(avatar);
@@ -222,9 +242,9 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
   const showChannelFeedback = (message: string) => {
     setCustomModal({
       isOpen: true,
-      title: t('official_channels_title', language),
+      title: t('community_notice', language),
       message,
-      type: 'alert'
+      type: 'info',
     });
   };
 
@@ -249,7 +269,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
 
   // 부지런의 나무 보상 지급 판정
   const checkAndGrantDiligenceReward = () => {
-    if (!user || user.uid === 'guest-id' || !updateSns) return;
+    if (!activeUser || !updateSns) return;
     
     const now = Date.now();
     const stored = localStorage.getItem('hero_last_diligence_time');
@@ -453,12 +473,12 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
   useEffect(() => {
     const checkPendingResult = async () => {
       const resultStr = localStorage.getItem('hero_pvp_battle_result');
-      if (!resultStr || !user || user.uid === 'guest-id') return;
+      if (!resultStr || !activeUser) return;
       try {
         const result = JSON.parse(resultStr);
         const comment = language === 'ko'
-          ? `⚔️ ${user.displayName || 'You'} vs ${result.opponentName} — ${result.result} (${result.score})`
-          : `⚔️ ${user.displayName || 'You'} vs ${result.opponentName} — ${result.result} (${result.score})`;
+          ? `⚔️ ${activeUser.displayName || 'You'} vs ${result.opponentName} — ${result.result} (${result.score})`
+          : `⚔️ ${activeUser.displayName || 'You'} vs ${result.opponentName} — ${result.result} (${result.score})`;
         localStorage.removeItem('hero_pvp_battle_result');
         setCommentInput(comment);
         setTimeout(() => {
@@ -550,15 +570,6 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
   // 글 작성 API 연동
   const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isGuest) {
-      setCustomModal({
-        isOpen: true,
-        title: t('community_error', language),
-        message: t('community_login_required', language),
-        type: 'error'
-      });
-      return;
-    }
 
     if (!content.trim()) {
       setCustomModal({
@@ -583,7 +594,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
       const newPost = await createCommunityPost(
         content.trim(),
         compressedBase64Images[0] || undefined,
-        user,
+        activeUser,
         uploadCategory,
         compressedBase64Images.length > 0 ? compressedBase64Images : undefined,
         undefined, // deckData
@@ -611,6 +622,9 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
       setTimeout(() => {
         loadPosts();
       }, 1500);
+      setTimeout(() => {
+        loadPosts();
+      }, 4000);
     } catch (error) {
       console.error(error);
       setCustomModal({
@@ -626,27 +640,16 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
 
   // 좋아요 처리
   const handleLikeToggle = async (postId: string) => {
-    if (isGuest) {
-      playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-      setCustomModal({
-        isOpen: true,
-        title: t('community_error', language),
-        message: t('community_login_required', language),
-        type: 'error'
-      });
-      return;
-    }
-
     playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
 
     // Optimistic UI Update
     setPosts((prev) =>
       prev.map((post) => {
         if (post.id === postId) {
-          const hasLiked = post.likes.includes(user.uid);
+          const hasLiked = post.likes.includes(activeUser.uid);
           const nextLikes = hasLiked
-            ? post.likes.filter((id) => id !== user.uid)
-            : [...post.likes, user.uid];
+            ? post.likes.filter((id) => id !== activeUser.uid)
+            : [...post.likes, activeUser.uid];
           
           const updated = { ...post, likes: nextLikes };
           if (selectedPost && selectedPost.id === postId) {
@@ -659,7 +662,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
     );
 
     try {
-      await toggleLikePost(postId, user.uid);
+      await toggleLikePost(postId, activeUser.uid);
     } catch (error) {
       console.error('Failed to toggle like:', error);
       loadPosts();
@@ -668,17 +671,6 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
 
   // 댓글 작성
   const handleAddComment = async (postId: string) => {
-    if (isGuest) {
-      playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-      setCustomModal({
-        isOpen: true,
-        title: t('community_error', language),
-        message: t('community_login_required', language),
-        type: 'error'
-      });
-      return;
-    }
-
     if (!commentInput.trim()) return;
 
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
@@ -686,7 +678,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
     setCommentInput('');
 
     try {
-      const updatedPost = await addCommentToPost(postId, textToSend, user);
+      const updatedPost = await addCommentToPost(postId, textToSend, activeUser);
       setPosts((prev) =>
         prev.map((post) => (post.id === postId ? updatedPost : post))
       );
@@ -705,17 +697,6 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
 
   // 대댓글 작성
   const handleAddReply = async (postId: string, commentId: string) => {
-    if (isGuest) {
-      playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-      setCustomModal({
-        isOpen: true,
-        title: t('community_error', language),
-        message: t('community_login_required', language),
-        type: 'error'
-      });
-      return;
-    }
-
     const replyText = replyInputs[commentId] || '';
     if (!replyText.trim()) return;
 
@@ -726,7 +707,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
     setActiveReplyBox(null);
 
     try {
-      const updatedPost = await addReplyToComment(postId, commentId, replyText.trim(), user);
+      const updatedPost = await addReplyToComment(postId, commentId, replyText.trim(), activeUser);
       setPosts((prev) =>
         prev.map((post) => (post.id === postId ? updatedPost : post))
       );
@@ -748,18 +729,8 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
 
   // 글 삭제
   const handleDeletePost = async (postId: string) => {
-    if (isGuest) {
-      playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-      setCustomModal({
-        isOpen: true,
-        title: t('community_error', language),
-        message: t('community_login_required', language),
-        type: 'error'
-      });
-      return;
-    }
     try {
-      await deleteCommunityPost(postId, user.uid);
+      await deleteCommunityPost(postId, activeUser.uid);
       setPosts((prev) => prev.filter((p) => p.id !== postId));
       setSelectedPost(null);
       // 삭제 후 목록으로 복원
@@ -785,11 +756,10 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
   // ── Doc 62: Hide / Report / Pin handlers ──────────────────────────
   const handleHidePost = async (postId: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    if (isGuest) return;
     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
     setPostMenuOpen(null);
     try {
-      const updatedPost = await toggleHidePost(postId, user.uid);
+      const updatedPost = await toggleHidePost(postId, activeUser.uid);
       setPosts((prev) => prev.map((p) => (p.id === postId ? updatedPost : p)));
       if (selectedPost && selectedPost.id === postId) {
         setSelectedPost(updatedPost);
@@ -801,10 +771,9 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
   };
 
   const handleReportPost = async (postId: string, reason: 'spam' | 'harassment' | 'inappropriate' | 'other') => {
-    if (isGuest) return;
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
     try {
-      const updatedPost = await reportPost(postId, user.uid, reason);
+      const updatedPost = await reportPost(postId, activeUser.uid, reason);
       setPosts((prev) => prev.map((p) => (p.id === postId ? updatedPost : p)));
       setReportModal(null);
       setPostMenuOpen(null);
@@ -821,7 +790,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
 
   const handlePinPost = async (postId: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    if (isGuest || !user?.isAdmin) return;
+    if (!activeUser.isAdmin) return;
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
     setPostMenuOpen(null);
     try {
@@ -829,7 +798,6 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
       setPosts((prev) => prev.map((p) => (p.id === postId ? updatedPost : p)));
     } catch (error) {
       console.error('Failed to toggle pin:', error);
-      loadPosts();
     }
   };
 
@@ -918,11 +886,11 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
     let result = posts.filter(
       (post) => selectedCategory === 'select' 
         ? post.category !== 'news'
-        : post.category === selectedCategory
+        : (post.category || 'free') === selectedCategory
     );
     // Filter hidden posts unless showing them
-    if (!showHiddenPosts && user) {
-      result = result.filter((post) => !post.hiddenBy?.includes(user.uid));
+    if (!showHiddenPosts && activeUser) {
+      result = result.filter((post) => !post.hiddenBy?.includes(activeUser.uid));
     }
     // Sort by selected mode
     return sortPostsByMode(result, sortMode);
@@ -1194,7 +1162,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
             ))}
           </div>
           <div className="flex items-center gap-2">
-            {user && filteredPosts.some(p => p.hiddenBy?.includes(user.uid)) && (
+            {activeUser && filteredPosts.some(p => p.hiddenBy?.includes(activeUser.uid)) && (
               <button
                 onClick={() => {
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
@@ -1211,18 +1179,6 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                 {showHiddenPosts ? 'Hidden' : 'Show Hidden'}
               </button>
             )}
-          </div>
-        </div>
-      )}
-
-      {/* Guest Mode Warning Banner */}
-      {isGuest && (
-        <div className="bg-rose-50/50 border border-rose-100 p-4 rounded-2xl shadow-xs flex items-start gap-3">
-          <AlertCircle className="text-rose-500 shrink-0 mt-0.5" size={20} />
-          <div>
-            <p className="text-xs font-semibold text-rose-700 leading-relaxed">
-              {t('community_login_required', language)}
-            </p>
           </div>
         </div>
       )}
@@ -1328,17 +1284,17 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                 </button>
                 {postMenuOpen === selectedPost.id && (
                   <div className="absolute right-0 top-full mt-1 w-40 bg-white border border-slate-200 rounded-xl shadow-lg z-30 py-1 text-[11px] font-semibold">
-                    {user && !isGuest && (
+                    {activeUser && (
                       <>
                         <button
                           onClick={(e) => {
-                            const isHidden = selectedPost.hiddenBy?.includes(user.uid);
+                            const isHidden = selectedPost.hiddenBy?.includes(activeUser.uid);
                             handleHidePost(selectedPost.id, e);
                           }}
                           className="w-full text-left px-3 py-2 hover:bg-slate-50 cursor-pointer flex items-center gap-2 text-slate-700 border-none bg-transparent"
                         >
                           <EyeOff size={13} />
-                          {selectedPost.hiddenBy?.includes(user.uid) ? 'Unhide' : 'Hide'}
+                          {selectedPost.hiddenBy?.includes(activeUser.uid) ? 'Unhide' : 'Hide'}
                         </button>
                         <button
                           onClick={(e) => {
@@ -1357,7 +1313,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                         </button>
                       </>
                     )}
-                    {user?.isAdmin && (
+                    {activeUser?.isAdmin && (
                       <button
                         onClick={(e) => handlePinPost(selectedPost.id, e)}
                         className="w-full text-left px-3 py-2 hover:bg-amber-50 cursor-pointer flex items-center gap-2 text-amber-700 border-none bg-transparent"
@@ -1371,7 +1327,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
               </div>
 
               {/* Delete Button (If author or admin) */}
-              {user && (selectedPost.userId === user.uid || user.isAdmin === true) && (
+              {activeUser && (selectedPost.userId === activeUser.uid || activeUser.isAdmin === true) && (
                 <button
                   onClick={() => {
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
@@ -1548,10 +1504,10 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                 onClick={() => handleLikeToggle(selectedPost.id)}
                 className={cn(
                   "flex items-center gap-1.5 px-3 py-1.5 border border-slate-200/80 rounded-lg font-bold text-xs transition-all cursor-pointer shadow-xs active:scale-98",
-                  user && selectedPost.likes.includes(user.uid) ? "bg-rose-600 hover:bg-rose-700 text-white border-none shadow-md shadow-rose-200/30" : "bg-white hover:bg-slate-50 text-slate-700"
+                  activeUser && selectedPost.likes.includes(activeUser.uid) ? "bg-rose-600 hover:bg-rose-700 text-white border-none shadow-md shadow-rose-200/30" : "bg-white hover:bg-slate-50 text-slate-700"
                 )}
               >
-                <Heart size={15} fill={user && selectedPost.likes.includes(user.uid) ? "currentColor" : "none"} />
+                <Heart size={15} fill={activeUser && selectedPost.likes.includes(activeUser.uid) ? "currentColor" : "none"} />
                 <span>{selectedPost.likes.length}</span>
               </button>
 
@@ -1584,7 +1540,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
             </div>
 
             {/* 대결하기 버튼 (본인 글 제외 및 PVP 대전 카테고리 한정) */}
-            {user && selectedPost.userId !== user.uid && selectedPost.category === 'pvp' && (
+            {activeUser && selectedPost.userId !== activeUser.uid && selectedPost.category === 'pvp' && (
               <div className="pt-3 border-t border-slate-100 flex">
                 <button
                   onClick={() => {
@@ -1786,12 +1742,12 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
             <div className="p-3 bg-white flex items-center gap-2 border-t border-slate-100">
               <div className="relative shrink-0">
                 <img
-                  src={user ? formatAvatarUrl(user.photoURL || '', user.uid) : 'https://api.dicebear.com/7.x/bottts/svg?seed=guest'}
+                  src={formatAvatarUrl(activeUser.photoURL || '', activeUser.uid)}
                   alt="Me"
                   className="w-8 h-8 border border-slate-100 rounded-full object-cover shrink-0 bg-white"
                 />
-                {user ? (() => {
-                  const petCardId = getLocalMonsterPetId(user.uid, user.photoURL || '');
+                {activeUser ? (() => {
+                  const petCardId = getLocalMonsterPetId(activeUser.uid, activeUser.photoURL || '');
                   return petCardId ? (
                     <MonsterPetBadge
                       cardId={petCardId}
@@ -1989,12 +1945,22 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                           )}>
                             <IconComp size={18} className="text-white sm:w-[22px] sm:h-[22px]" />
                           </div>
-                          <span className={cn(
-                            'text-[8px] md:text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-xs',
-                            cat.badgeColor
-                          )}>
-                            {cat.badge}
-                          </span>
+                          <div className="flex items-center gap-1.5">
+                            <span className={cn(
+                              'text-[8px] md:text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-xs',
+                              cat.badgeColor
+                            )}>
+                              {cat.badge}
+                            </span>
+                            {(() => {
+                              const postCount = posts.filter(p => (p.category || 'free') === cat.id).length;
+                              return postCount > 0 ? (
+                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                                  {postCount}
+                                </span>
+                              ) : null;
+                            })()}
+                          </div>
                         </div>
 
                         {/* Text */}
@@ -2053,7 +2019,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {filteredPosts.map((post) => {
                 const imgUrls = post.imageUrls || (post.imageUrl ? [post.imageUrl] : []);
-                const hasLiked = user && post.likes.includes(user.uid);
+                const hasLiked = activeUser && post.likes.includes(activeUser.uid);
                 
                 return (
                   <div
@@ -2214,7 +2180,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                           </span>
                         </div>
 
-                        {post.category === 'pvp' && user && post.userId !== user.uid && (
+                        {post.category === 'pvp' && activeUser && post.userId !== activeUser.uid && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -2250,17 +2216,17 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                           </button>
                           {postMenuOpen === post.id && (
                             <div className="absolute right-0 bottom-full mb-1 w-36 bg-white border border-slate-200 rounded-xl shadow-lg z-30 py-1 text-[10px] font-semibold">
-                              {user && !isGuest && (
+                              {activeUser && (
                                 <>
                                   <button
                                     onClick={(e) => {
-                                      const isHidden = post.hiddenBy?.includes(user.uid);
+                                      const isHidden = post.hiddenBy?.includes(activeUser.uid);
                                       handleHidePost(post.id, e);
                                     }}
                                     className="w-full text-left px-3 py-1.5 hover:bg-slate-50 cursor-pointer flex items-center gap-2 text-slate-700 border-none bg-transparent"
                                   >
                                     <EyeOff size={12} />
-                                    {post.hiddenBy?.includes(user.uid) ? 'Unhide' : 'Hide'}
+                                    {post.hiddenBy?.includes(activeUser.uid) ? 'Unhide' : 'Hide'}
                                   </button>
                                   <button
                                     onClick={(e) => {
@@ -2279,7 +2245,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                                   </button>
                                 </>
                               )}
-                              {user?.isAdmin && (
+                              {activeUser?.isAdmin && (
                                 <button
                                   onClick={(e) => handlePinPost(post.id, e)}
                                   className="w-full text-left px-3 py-1.5 hover:bg-amber-50 cursor-pointer flex items-center gap-2 text-amber-700 border-none bg-transparent"
@@ -2665,16 +2631,6 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
       {/* Floating Write Post Button */}
       <button
         onClick={() => {
-          if (isGuest) {
-            playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-            setCustomModal({
-              isOpen: true,
-              title: t('community_error', language),
-              message: t('community_login_required', language),
-              type: 'error'
-            });
-            return;
-          }
           playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
           if (selectedCategory !== 'select') {
             setUploadCategory(selectedCategory);
