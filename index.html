@@ -495,10 +495,15 @@
       </style>
       <div id="hero-fast-loader">
         <script>
-          // SNSHERO Clean Fast Loader
+          // SNSHERO Clean Fast Loader with Emergency Auto-Dismiss Watchdog
           (function() {
+            var timeoutId = null;
+            var emergencyTimer = null;
+
             window.__SNSHERO_CLEAR_WATCHDOG__ = function() {
               window.__SNSHERO_LOADED__ = true;
+              if (timeoutId) clearTimeout(timeoutId);
+              if (emergencyTimer) clearTimeout(emergencyTimer);
               var loader = document.getElementById('hero-fast-loader');
               if (loader) {
                 loader.style.opacity = '0';
@@ -510,6 +515,81 @@
                 }, 250);
               }
             };
+
+            // 3.5초 이상 지연 시 복구 UI 노출
+            timeoutId = setTimeout(function() {
+              if (window.__SNSHERO_LOADED__) return;
+              var step = document.getElementById('hero-loader-step');
+              var desc = document.getElementById('hero-loader-desc');
+              if (step) step.innerHTML = '[INFO] 네트워크 최적화 동기화 중...';
+              if (desc) desc.innerHTML = '최신 데이터 동기화가 지연되고 있습니다.';
+
+              var card = document.getElementById('hero-loader-card');
+              if (card && !document.getElementById('hero-loader-fallback-actions')) {
+                var actionDiv = document.createElement('div');
+                actionDiv.id = 'hero-loader-fallback-actions';
+                actionDiv.style.marginTop = '14px';
+                actionDiv.style.display = 'flex';
+                actionDiv.style.gap = '8px';
+                actionDiv.style.flexDirection = 'column';
+
+                var skipBtn = document.createElement('button');
+                skipBtn.type = 'button';
+                skipBtn.innerText = '[ 즉시 게임 화면으로 진입 ]';
+                skipBtn.style.padding = '8px 12px';
+                skipBtn.style.background = '#201d1d';
+                skipBtn.style.color = '#fdfcfc';
+                skipBtn.style.border = 'none';
+                skipBtn.style.borderRadius = '4px';
+                skipBtn.style.fontSize = '12px';
+                skipBtn.style.fontWeight = 'bold';
+                skipBtn.style.fontFamily = 'monospace';
+                skipBtn.style.cursor = 'pointer';
+                skipBtn.onclick = function() {
+                  window.__SNSHERO_CLEAR_WATCHDOG__();
+                };
+
+                var resetBtn = document.createElement('button');
+                resetBtn.type = 'button';
+                resetBtn.innerText = '[ 캐시 초기화 및 새로고침 ]';
+                resetBtn.style.padding = '6px 10px';
+                resetBtn.style.background = '#f0eded';
+                resetBtn.style.color = '#201d1d';
+                resetBtn.style.border = '1px solid rgba(15,0,0,0.2)';
+                resetBtn.style.borderRadius = '4px';
+                resetBtn.style.fontSize = '11px';
+                resetBtn.style.fontFamily = 'monospace';
+                resetBtn.style.cursor = 'pointer';
+                resetBtn.onclick = function() {
+                  try {
+                    if ('caches' in window) {
+                      caches.keys().then(function(names) {
+                        names.forEach(function(n) { caches.delete(n); });
+                      });
+                    }
+                    if ('serviceWorker' in navigator) {
+                      navigator.serviceWorker.getRegistrations().then(function(regs) {
+                        regs.forEach(function(r) { r.unregister(); });
+                      });
+                    }
+                    localStorage.removeItem('hero_build_version');
+                  } catch(e) {}
+                  window.location.reload();
+                };
+
+                actionDiv.appendChild(skipBtn);
+                actionDiv.appendChild(resetBtn);
+                card.appendChild(actionDiv);
+              }
+            }, 3500);
+
+            // 6초 경과 시 강제 자동 진입 (무한 로딩 100% 원천 차단)
+            emergencyTimer = setTimeout(function() {
+              if (!window.__SNSHERO_LOADED__) {
+                console.warn('[FastLoader] Watchdog timeout reached (6s). Auto-dismissing inline loader.');
+                window.__SNSHERO_CLEAR_WATCHDOG__();
+              }
+            }, 6000);
           })();
         </script>
         <div class="loader-card" id="hero-loader-card">

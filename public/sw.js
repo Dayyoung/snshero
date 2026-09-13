@@ -63,13 +63,8 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 2. 그 외 모든 리소스 (HTML, JS, CSS, JSON, API 등): Network-Only (실시간 수신)
-  // 캐시하지 않고 항상 네트워크에서 직접 실시간 최신 버전을 수신합니다.
-  event.respondWith(
-    fetch(request, {
-      cache: 'no-store'
-    }).catch(() => {
-      return new Response('Network offline', { status: 503, statusText: 'Service Unavailable' });
-    })
-  );
+  // 2. 그 외 모든 리소스 (HTML, JS, CSS, JSON, API, WebSocket 등):
+  // 서비스 워커가 인터셉트하지 않고 브라우저 표준 네트워크 스택으로 즉시 전달 (Pass-through)
+  // fetch(request, { cache: 'no-store' })로 인한 navigation TypeError 및 503 반환 원천 차단
+  return;
 });

@@ -213,7 +213,7 @@ export default defineConfig(({mode}) => {
         }
       }
     ],
-    base: process.env.VITE_BASE_PATH || './',
+    base: process.env.VITE_BASE_PATH || '/',
     build: {
       outDir: 'dist',
       assetsDir: 'assets',
@@ -278,11 +278,10 @@ export default defineConfig(({mode}) => {
       ],
     },
     server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modify—file watching is disabled to prevent flickering during agent edits.
+      // HMR uses the same port (3000) so Tailscale Serve/Funnel proxies both HTTP & WS without connection failure
       host: '0.0.0.0',
       port: 3000,
-      hmr: process.env.DISABLE_HMR !== 'true' ? { port: 24680 } : false,
+      hmr: process.env.DISABLE_HMR !== 'true' ? true : false,
       allowedHosts: true,
       fs: {
         allow: ['.', 'public'],
