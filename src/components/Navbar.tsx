@@ -133,14 +133,22 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
               {item.id === 'main' && (
                 <span
                   className={cn(
-                    "absolute -top-1.5 -right-3.5 z-20 px-1 py-0.2 rounded text-[7px] sm:text-[8px] font-black font-mono tracking-tighter leading-none border shadow-xs select-none pointer-events-none",
+                    "absolute -top-2 -right-4 z-20 px-1.5 py-0.5 rounded text-[8px] sm:text-[9px] font-black font-mono tracking-tight leading-none border shadow-xs select-none pointer-events-none",
                     rebirthLevel > 0
                       ? "bg-amber-400 text-black border-amber-200 shadow-[0_0_8px_rgba(251,191,36,0.6)] animate-pulse"
                       : (isActive ? "bg-white text-black border-slate-300" : "bg-slate-700 text-slate-200 border-slate-600")
                   )}
                   title={language === 'ko' ? `환생 횟수: ${rebirthLevel}회` : `Reincarnation Lv.${rebirthLevel}`}
                 >
-                  {rebirthLevel}환
+                  {rebirthLevel > 0 ? (
+                    <span className="flex items-center gap-0.5">
+                      <span className="text-[7px]">👑</span>
+                      <span className="text-[9px] sm:text-[10px] font-black">{rebirthLevel}</span>
+                      <span>환</span>
+                    </span>
+                  ) : (
+                    `${rebirthLevel}환`
+                  )}
                 </span>
               )}
             </div>
