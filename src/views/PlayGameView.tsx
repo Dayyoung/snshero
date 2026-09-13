@@ -727,6 +727,25 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     });
   }, [gameState]);
 
+  // 배틀 진행 중 브라우저 상하 바운스 스크롤 원천 차단 및 화면 고정
+  useEffect(() => {
+    if (gameState === 'playing') {
+      const originalOverflow = document.body.style.overflow;
+      const originalTouchAction = document.body.style.touchAction;
+      const originalOverscroll = document.body.style.overscrollBehavior;
+
+      document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+      document.body.style.overscrollBehavior = 'none';
+
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        document.body.style.touchAction = originalTouchAction;
+        document.body.style.overscrollBehavior = originalOverscroll;
+      };
+    }
+  }, [gameState]);
+
   // =========================================================================
   // CUSTOM CONFIRM MODAL (replaces window.confirm)
   // =========================================================================
@@ -15159,9 +15178,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     <div 
       id="game-board" 
       className={cn(
-        "flex-1 flex flex-col w-full max-w-[1024px] mx-auto bg-[#060a14] text-slate-100 min-h-0 justify-between relative overflow-y-auto overscroll-contain touch-pan-y",
+        "flex-1 flex flex-col w-full max-w-[1024px] mx-auto bg-[#060a14] text-slate-100 min-h-0 justify-between relative overflow-hidden select-none touch-none overscroll-none h-full max-h-[100dvh]",
         !isAdRemoved ? "pt-[116px] sm:pt-[148px]" : "pt-12 sm:pt-14",
-        "pb-28 sm:pb-32 md:pb-36"
+        "pb-1 sm:pb-2"
       )}
     >
       {/* Battle Roar Wave Ripple Effect Overlay */}
@@ -15182,7 +15201,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
       {/* Floating Circular Robot Auto-Battle Button, Speed Toggle & Grid Skills */}
       {gameState === 'playing' && !gameOver && (
-        <div className="fixed inset-x-0 bottom-[200px] sm:bottom-[230px] lg:top-1/2 lg:-translate-y-1/2 lg:bottom-auto max-w-[1024px] mx-auto z-[160] pointer-events-none flex justify-end px-3 sm:px-4">
+        <div className="fixed inset-x-0 bottom-[130px] sm:bottom-[160px] lg:top-1/2 lg:-translate-y-1/2 lg:bottom-auto max-w-[1024px] mx-auto z-[160] pointer-events-none flex justify-end px-2 sm:px-4">
           <div className="pointer-events-auto flex flex-col items-end gap-2.5">
           {/* QTE Skill Timing Button - neatly docked in the battle action stack so it NEVER overlaps with turn indicators, turn timers, or board tiles */}
           <SkillTimingButton
@@ -15681,6 +15700,22 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   </span>
                 </button>
 
+                {/* Cortana AI Tactical Operator HUD Button */}
+                <button
+                  onClick={() => {
+                    setShowInGameMenu(false);
+                    setShowCortanaHud(true);
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                  }}
+                  className="w-full py-2.5 px-4 bg-indigo-950/40 border border-indigo-500/40 hover:bg-indigo-900/60 text-indigo-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <Cpu size={16} className="text-indigo-400" />
+                    <span>{language === 'ko' ? '코타나 AI 전술 분석 HUD' : 'Cortana AI Tactical HUD'}</span>
+                  </div>
+                  <span className="text-[10px] text-indigo-400 font-mono">[HUD]</span>
+                </button>
+
                 {onToggleAutoBattle && (
                   <button
                     onClick={() => {
@@ -15970,7 +16005,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       </div>
 
       {/* Primary Battle Arena Container: Dedicated Viewport Area for Opponent Hand, Center Board, Player Hand */}
-      <div id="primary-battle-arena" className="w-full flex-1 flex flex-col justify-between items-center max-w-5xl mx-auto min-h-0 relative z-10 shrink-0 gap-1 sm:gap-1.5">
+      <div id="primary-battle-arena" className="w-full flex-1 flex flex-col justify-between items-center max-w-5xl mx-auto min-h-0 relative z-10 gap-1 sm:gap-1.5 overflow-hidden">
         {/* 1. 상대 덱/패 영역 (카드 높이에 맞춰 컴팩트 조정) */}
         <div id="opponent-hand-container" className={cn(
         "h-auto py-0.5 sm:py-1 md:py-1.5 relative flex items-center justify-center px-1 overflow-visible w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm shrink-0",
@@ -16057,7 +16092,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       </div>
 
       {/* 2. 가운데 카드판 영역 (유연하게 공간 확장) */}
-      <div className="flex-1 flex flex-col items-center justify-center p-0.5 sm:p-1 md:p-1.5 bg-[#060a14] relative overflow-visible py-1.5 sm:py-2 md:py-2.5 shadow-[inset_0_0_120px_rgba(0,0,0,0.9)] border border-slate-800 rounded-2xl md:rounded-3xl mx-1 md:mx-2 my-0.5 shrink-0">
+      <div className="flex-1 flex flex-col items-center justify-center p-0.5 sm:p-1 md:p-1.5 bg-[#060a14] relative overflow-visible py-1.5 sm:py-2 md:py-2.5 shadow-[inset_0_0_120px_rgba(0,0,0,0.9)] border border-slate-800 rounded-2xl md:rounded-3xl mx-1 md:mx-2 my-0.5 min-h-0">
         {/* Background layers */}
         <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/topography.png')] opacity-[0.06]" />
@@ -16111,7 +16146,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         <div className="relative flex flex-col items-center justify-center w-full max-w-6xl md:px-2 min-h-0 gap-1 md:gap-2 mt-0.5">
           
 
-          <div className="relative flex items-center justify-center w-full min-h-[280px] sm:min-h-[320px] md:min-h-[350px] gap-2 md:gap-4 lg:gap-6 xl:gap-8">
+          <div className="relative flex items-center justify-center w-full min-h-0 gap-2 md:gap-4 lg:gap-6 xl:gap-8">
             {/* DESKTOP LEFT SIDEBAR: VERTICAL TURN INDICATOR (lg:flex ONLY) */}
             {!gameOver && gameState === 'playing' && (
               <div className="hidden lg:flex flex-col items-center justify-center shrink-0 z-20 pointer-events-none select-none">
@@ -17117,190 +17152,206 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   );
                 })}
               </div>
+
+              {/* Cortana HUD Mini Trigger */}
+              {isAutoBattle && !gameOver && (
+                <button
+                  type="button"
+                  onClick={() => setShowCortanaHud(true)}
+                  className="ml-2 px-1.5 py-0.2 rounded-xs bg-indigo-950/90 hover:bg-indigo-900 border border-indigo-500/50 text-indigo-300 text-[8px] sm:text-[9px] font-mono font-bold uppercase transition-all cursor-pointer flex items-center gap-1 active:scale-95 shadow-2xs"
+                  title={language === 'ko' ? '코타나 AI 전술 HUD 열기' : 'Open Cortana AI HUD'}
+                >
+                  <Cpu size={10} className="text-indigo-400 animate-pulse shrink-0" />
+                  <span>CORTANA</span>
+                </button>
+              )}
             </div>
           </div>
         )}
       </div>
       </div>
 
-      {/* Cortana AI Bottom Scroll Section (화면 최하단에 스크롤하여 확인) */}
-      {isAutoBattle && !gameOver && (
-        <div id="cortana-ai-bottom-section" className="w-full max-w-5xl mx-auto mt-6 pt-4 border-t border-slate-800/80 px-3 sm:px-4 pb-12 flex flex-col items-center shrink-0">
-          <button
-            type="button"
-            onClick={() => setShowCortanaHud(prev => !prev)}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm bg-slate-900/90 hover:bg-slate-800 border border-indigo-500/30 text-[10px] font-mono font-bold text-indigo-300 tracking-wider uppercase shadow-xs transition-all active:scale-95 cursor-pointer"
-            title={language === 'ko' ? '코타나 AI 전술 HUD 열기/접기' : 'Toggle Cortana AI HUD'}
+      {/* Cortana AI Tactical Operator Modal / Overlay (스크롤 없이 모달 팝업으로 고정 표시) */}
+      <AnimatePresence>
+        {showCortanaHud && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[350] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 pointer-events-auto font-mono"
           >
-            <Cpu size={13} className="text-indigo-400" />
-            <span>
-              {showCortanaHud
-                ? (language === 'ko' ? '[ ▲ 코타나 AI 전술 HUD 접기 ]' : '[ ▲ COLLAPSE CORTANA AI HUD ]')
-                : (language === 'ko' ? '[ ▼ 코타나 AI 전술 분석창 (스크롤하여 확인) ]' : '[ ▼ CORTANA AI TACTICAL HUD (SCROLL DOWN) ]')}
-            </span>
-          </button>
+            <motion.div
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              className="bg-slate-900/95 border border-indigo-500/40 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.8)] max-w-3xl w-full p-4 sm:p-5 flex flex-col text-white"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-indigo-500/20 pb-3 mb-3">
+                <div className="flex items-center gap-2 text-indigo-300 font-bold text-xs uppercase">
+                  <Cpu size={16} className="text-indigo-400 animate-spin-slow" />
+                  <span>{language === 'ko' ? 'CORTANA AI 전술 분석 HUD' : 'CORTANA AI TACTICAL HUD'}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowCortanaHud(false)}
+                  className="p-1.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-400 hover:text-white transition-colors cursor-pointer"
+                >
+                  <X size={16} />
+                </button>
+              </div>
 
-          <AnimatePresence>
-            {showCortanaHud && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.2 }}
-                className="w-full mt-3 overflow-hidden"
-              >
-                {/* AI Tactical Cortana Operator HUD */}
-                <div className="bg-slate-950/90 border border-indigo-500/40 rounded-3xl p-4 shadow-[0_0_30px_rgba(99,102,241,0.2)] backdrop-blur-md relative overflow-hidden flex flex-col md:flex-row gap-4">
-                  
-                  {/* Hologram Grid Overlay */}
-                  <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)+50%,rgba(0,0,0,0.2)+50%),linear-gradient(90deg,rgba(99,102,241,0.04),rgba(0,0,0,0),rgba(244,63,94,0.04))] bg-[size:100%_4px,6px_100%] z-10 opacity-40 animate-pulse" />
-                  
-                  {/* Left: CORTANA ACTIVE HOLOGRAM AVATAR */}
-                  <div className="flex items-center gap-3 border-b md:border-b-0 md:border-r border-indigo-500/10 pb-3 md:pb-0 md:pr-4 shrink-0 justify-center">
-                    <div className="relative w-16 h-16 rounded-full flex items-center justify-center bg-indigo-950/40 border border-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.3)]">
-                      {/* Rotating External Ring */}
-                      <motion.div 
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                        className="absolute inset-0 border-t-2 border-b-2 border-indigo-400/40 rounded-full scale-110"
-                      />
-                      <motion.div 
-                        animate={{ rotate: -360 }}
-                        transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-                        className="absolute inset-1 border-r-2 border-l-2 border-indigo-300/30 rounded-full border-dashed scale-105"
-                      />
-                      {/* Core Avatar Pulsing */}
-                      <motion.div 
-                        animate={{ 
-                          scale: [1, 1.12, 1],
-                          boxShadow: ["0 0 10px rgba(99,102,241,0.4)", "0 0 25px rgba(99,102,241,0.7)", "0 0 10px rgba(99,102,241,0.4)"] 
-                        }}
-                        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                        className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-600 via-indigo-400 to-indigo-900 flex items-center justify-center relative overflow-hidden"
-                      >
-                        <Cpu size={20} className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] animate-pulse" />
-                      </motion.div>
-                      {/* AI Voice Activity Waveforms */}
-                      <div className="absolute -bottom-1 flex gap-0.5 items-end justify-center w-full">
-                        <motion.span animate={{ height: [4, 12, 4] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.1 }} className="w-1 bg-indigo-400 rounded-full" />
-                        <motion.span animate={{ height: [6, 16, 6] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.3 }} className="w-1 bg-indigo-300 rounded-full" />
-                        <motion.span animate={{ height: [4, 14, 4] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.2 }} className="w-1 bg-indigo-400 rounded-full" />
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="text-[11px] font-black text-indigo-400 tracking-wider">CORTANA.AI</h4>
-                      <p className="text-[7px] text-slate-500 font-bold tracking-widest uppercase">TACTICAL_SYS_ACTIVE</p>
+              {/* AI Tactical Cortana Operator HUD */}
+              <div className="bg-slate-950/90 border border-indigo-500/40 rounded-2xl p-3 sm:p-4 shadow-[0_0_30px_rgba(99,102,241,0.2)] relative overflow-hidden flex flex-col md:flex-row gap-4">
+                
+                {/* Hologram Grid Overlay */}
+                <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)+50%,rgba(0,0,0,0.2)+50%),linear-gradient(90deg,rgba(99,102,241,0.04),rgba(0,0,0,0),rgba(244,63,94,0.04))] bg-[size:100%_4px,6px_100%] z-10 opacity-40 animate-pulse" />
+                
+                {/* Left: CORTANA ACTIVE HOLOGRAM AVATAR */}
+                <div className="flex items-center gap-3 border-b md:border-b-0 md:border-r border-indigo-500/10 pb-3 md:pb-0 md:pr-4 shrink-0 justify-center">
+                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center bg-indigo-950/40 border border-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.3)]">
+                    {/* Rotating External Ring */}
+                    <motion.div 
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                      className="absolute inset-0 border-t-2 border-b-2 border-indigo-400/40 rounded-full scale-110"
+                    />
+                    <motion.div 
+                      animate={{ rotate: -360 }}
+                      transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                      className="absolute inset-1 border-r-2 border-l-2 border-indigo-300/30 rounded-full border-dashed scale-105"
+                    />
+                    {/* Core Avatar Pulsing */}
+                    <motion.div 
+                      animate={{ 
+                        scale: [1, 1.12, 1],
+                        boxShadow: ["0 0 10px rgba(99,102,241,0.4)", "0 0 25px rgba(99,102,241,0.7)", "0 0 10px rgba(99,102,241,0.4)"] 
+                      }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-indigo-600 via-indigo-400 to-indigo-900 flex items-center justify-center relative overflow-hidden"
+                    >
+                      <Cpu size={18} className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] animate-pulse" />
+                    </motion.div>
+                    {/* AI Voice Activity Waveforms */}
+                    <div className="absolute -bottom-1 flex gap-0.5 items-end justify-center w-full">
+                      <motion.span animate={{ height: [4, 12, 4] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.1 }} className="w-1 bg-indigo-400 rounded-full" />
+                      <motion.span animate={{ height: [6, 16, 6] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.3 }} className="w-1 bg-indigo-300 rounded-full" />
+                      <motion.span animate={{ height: [4, 14, 4] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.2 }} className="w-1 bg-indigo-400 rounded-full" />
                     </div>
                   </div>
-
-                  {/* Middle Left: WIN PROBABILITY */}
-                  <div className="flex-1 min-w-[170px] flex flex-col justify-between border-b md:border-b-0 md:border-r border-indigo-500/10 pb-3 md:pb-0 md:pr-4">
-                    <div className="flex justify-between items-center text-[9px] font-black text-indigo-300 uppercase tracking-widest mb-1.5">
-                      <span className="flex items-center gap-1.5">
-                        <Activity size={10} className="text-indigo-400 animate-pulse" />
-                        {t('operator_hud_win_rate', language)}
-                      </span>
-                      <span className="font-mono text-indigo-200 bg-indigo-500/10 px-1.5 py-0.5 rounded shadow-sm">{winProbability}%</span>
-                    </div>
-                    <div className="w-full bg-slate-900 rounded-full h-3 border border-indigo-500/20 overflow-hidden p-[2px] shadow-inner">
-                      <motion.div 
-                        initial={{ width: '50%' }}
-                        animate={{ width: `${winProbability}%` }}
-                        className="h-full bg-gradient-to-r from-indigo-500 via-indigo-400 to-indigo-700 rounded-full"
-                        transition={{ type: 'spring', stiffness: 85, damping: 15 }}
-                      />
-                    </div>
-                    <p className="text-[8px] text-slate-500 leading-relaxed font-semibold">
-                      {language === 'ko' ? "* 코타나가 콤보 및 배치 데이터를 실시간 검정 중." : "* Cortana checking board placements & combos."}
-                    </p>
+                  <div>
+                    <h4 className="text-[11px] font-black text-indigo-400 tracking-wider">CORTANA.AI</h4>
+                    <p className="text-[7px] text-slate-500 font-bold tracking-widest uppercase">TACTICAL_SYS_ACTIVE</p>
                   </div>
+                </div>
 
-                  {/* Middle Right: THREAT DETECTOR */}
-                  <div className="flex-1 min-w-[200px] flex flex-col justify-between border-b md:border-b-0 md:border-r border-indigo-500/10 pb-3 md:pb-0 md:pr-4">
-                    <div className="text-[9px] font-black text-rose-400 uppercase tracking-widest flex items-center gap-1.5 mb-1.5">
-                      <TargetIcon size={10} className="animate-spin-slow text-rose-400" />
-                      {t('operator_hud_threat', language)}
-                    </div>
-                    {threatTarget ? (
-                      <div className="flex items-center gap-2.5 bg-rose-950/20 border border-rose-500/20 rounded-xl p-1.5">
-                        <div className="w-7 h-7 rounded bg-slate-900 flex items-center justify-center font-black text-[10px] text-rose-400 border border-rose-500/20">
-                          {threatTarget.power}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-[9px] font-black text-slate-300 truncate">{getFormattedCardName(threatTarget, language)}</div>
-                          <div className="text-[7px] text-slate-500 truncate">
-                            {threatTarget.ability 
-                              ? (typeof threatTarget.ability === 'object' 
-                                  ? `Ability: ${language === 'ko' ? (threatTarget.ability.description_ko || threatTarget.ability.type) : (threatTarget.ability.description_en || threatTarget.ability.type)}`
-                                  : `Ability: ${threatTarget.ability}`)
-                              : 'Standard Threat Class'}
-                          </div>
-                        </div>
-                        <span className="text-[7px] font-black text-rose-400 animate-pulse bg-rose-950/50 px-1.5 py-0.5 rounded border border-rose-500/30">LOCKED</span>
+                {/* Middle Left: WIN PROBABILITY */}
+                <div className="flex-1 min-w-[150px] flex flex-col justify-between border-b md:border-b-0 md:border-r border-indigo-500/10 pb-3 md:pb-0 md:pr-4">
+                  <div className="flex justify-between items-center text-[9px] font-black text-indigo-300 uppercase tracking-widest mb-1.5">
+                    <span className="flex items-center gap-1.5">
+                      <Activity size={10} className="text-indigo-400 animate-pulse" />
+                      {t('operator_hud_win_rate', language)}
+                    </span>
+                    <span className="font-mono text-indigo-200 bg-indigo-500/10 px-1.5 py-0.5 rounded shadow-sm">{winProbability}%</span>
+                  </div>
+                  <div className="w-full bg-slate-900 rounded-full h-3 border border-indigo-500/20 overflow-hidden p-[2px] shadow-inner">
+                    <motion.div 
+                      initial={{ width: '50%' }}
+                      animate={{ width: `${winProbability}%` }}
+                      className="h-full bg-gradient-to-r from-indigo-500 via-indigo-400 to-indigo-700 rounded-full"
+                      transition={{ type: 'spring', stiffness: 85, damping: 15 }}
+                    />
+                  </div>
+                  <p className="text-[8px] text-slate-500 leading-relaxed font-semibold">
+                    {language === 'ko' ? "* 코타나가 콤보 및 배치 데이터를 실시간 검정 중." : "* Cortana checking board placements & combos."}
+                  </p>
+                </div>
+
+                {/* Middle Right: THREAT DETECTOR */}
+                <div className="flex-1 min-w-[170px] flex flex-col justify-between border-b md:border-b-0 md:border-r border-indigo-500/10 pb-3 md:pb-0 md:pr-4">
+                  <div className="text-[9px] font-black text-rose-400 uppercase tracking-widest flex items-center gap-1.5 mb-1.5">
+                    <TargetIcon size={10} className="animate-spin-slow text-rose-400" />
+                    {t('operator_hud_threat', language)}
+                  </div>
+                  {threatTarget ? (
+                    <div className="flex items-center gap-2.5 bg-rose-950/20 border border-rose-500/20 rounded-xl p-1.5">
+                      <div className="w-7 h-7 rounded bg-slate-900 flex items-center justify-center font-black text-[10px] text-rose-400 border border-rose-500/20">
+                        {threatTarget.power}
                       </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[9px] font-black text-slate-300 truncate">{getFormattedCardName(threatTarget, language)}</div>
+                        <div className="text-[7px] text-slate-500 truncate">
+                          {threatTarget.ability 
+                            ? (typeof threatTarget.ability === 'object' 
+                                ? `Ability: ${language === 'ko' ? (threatTarget.ability.description_ko || threatTarget.ability.type) : (threatTarget.ability.description_en || threatTarget.ability.type)}`
+                                : `Ability: ${threatTarget.ability}`)
+                            : 'Standard Threat Class'}
+                        </div>
+                      </div>
+                      <span className="text-[7px] font-black text-rose-400 animate-pulse bg-rose-950/50 px-1.5 py-0.5 rounded border border-rose-500/30">LOCKED</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-10 border border-dashed border-slate-800 rounded-xl text-[8px] text-slate-600">
+                      {language === 'ko' ? "위협 감지 대기 중..." : "Waiting for threats..."}
+                    </div>
+                  )}
+                </div>
+
+                {/* Right: LOGS & INTERACTIVE PROMPT POPUPS */}
+                <div className="flex-[1.3] min-w-[200px] flex flex-col justify-between relative">
+                  <div className="text-[9px] font-black text-indigo-300 uppercase tracking-widest flex items-center justify-between mb-1.5">
+                    <span className="flex items-center gap-1.5">
+                      <Terminal size={10} className="text-indigo-400" />
+                      {t('operator_hud_log', language)}
+                    </span>
+                    <span className="text-[7px] opacity-40">STANCE: {adaptiveStrategy.toUpperCase()}</span>
+                  </div>
+                  <div className="bg-slate-950 p-2 rounded-xl border border-indigo-500/10 min-h-[48px] max-h-[60px] overflow-y-auto space-y-0.5 scrollbar-hide">
+                    {operatorLogs.length > 0 ? (
+                      operatorLogs.slice(0, 3).map((log, idx) => (
+                        <div key={idx} className={cn("text-[8.5px] font-semibold leading-normal flex items-start gap-1", idx === 0 ? "text-indigo-300" : "text-slate-600")}>
+                          <span className="text-indigo-500 font-black">{">"}</span>
+                          <span className="break-all">{log}</span>
+                        </div>
+                      ))
                     ) : (
-                      <div className="flex items-center justify-center h-10 border border-dashed border-slate-800 rounded-xl text-[8px] text-slate-600">
-                        {language === 'ko' ? "위협 감지 대기 중..." : "Waiting for threats..."}
-                      </div>
+                      <div className="text-[8px] text-slate-600 italic">No activity logs.</div>
                     )}
                   </div>
 
-                  {/* Right: LOGS & INTERACTIVE PROMPT POPUPS */}
-                  <div className="flex-[1.3] min-w-[240px] flex flex-col justify-between relative">
-                    <div className="text-[9px] font-black text-indigo-300 uppercase tracking-widest flex items-center justify-between mb-1.5">
-                      <span className="flex items-center gap-1.5">
-                        <Terminal size={10} className="text-indigo-400" />
-                        {t('operator_hud_log', language)}
-                      </span>
-                      <span className="text-[7px] opacity-40">STANCE: {adaptiveStrategy.toUpperCase()}</span>
-                    </div>
-                    <div className="bg-slate-950 p-2 rounded-xl border border-indigo-500/10 min-h-[48px] max-h-[60px] overflow-y-auto space-y-0.5 scrollbar-hide">
-                      {operatorLogs.length > 0 ? (
-                        operatorLogs.slice(0, 3).map((log, idx) => (
-                          <div key={idx} className={cn("text-[8.5px] font-semibold leading-normal flex items-start gap-1", idx === 0 ? "text-indigo-300" : "text-slate-600")}>
-                            <span className="text-indigo-500 font-black">{">"}</span>
-                            <span className="break-all">{log}</span>
-                          </div>
-                        ))
-                      ) : (
-                        <div className="text-[8px] text-slate-600 italic">No activity logs.</div>
-                      )}
-                    </div>
-
-                    {/* Cortana Voice Question Prompt Container */}
-                    <AnimatePresence>
-                      {operatorPrompt && (
-                        <motion.div 
-                          initial={{ opacity: 0, scale: 0.96, y: 8 }}
-                          animate={{ opacity: 1, scale: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.96, y: 8 }}
-                          className="absolute inset-0 bg-slate-950/95 border border-indigo-400/80 rounded-xl p-2 pr-14 md:pr-2 flex flex-col justify-between z-30 shadow-2xl shadow-indigo-500/30"
-                        >
-                          <div className="text-[8.5px] font-black text-indigo-200 animate-pulse flex items-center gap-1.5">
-                            <Terminal size={9} className="text-indigo-400" />
-                            {operatorPrompt.question}
-                          </div>
-                          <div className="flex gap-1.5 mt-1.5">
-                            {operatorPrompt.options.map((opt, oIdx) => (
-                              <button
-                                key={oIdx}
-                                onClick={() => handleSelectOperatorTactic(opt.strategy || 'balanced')}
-                                className="flex-1 bg-indigo-950 hover:bg-indigo-900 border border-indigo-500/30 hover:border-indigo-400 text-[8px] font-black py-1 px-0.5 rounded-lg text-indigo-300 transition-all text-center tracking-tighter"
-                              >
-                                {opt.label}
-                              </button>
-                            ))}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
+                  {/* Cortana Voice Question Prompt Container */}
+                  <AnimatePresence>
+                    {operatorPrompt && (
+                      <motion.div 
+                        initial={{ opacity: 0, scale: 0.96, y: 8 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.96, y: 8 }}
+                        className="absolute inset-0 bg-slate-950/95 border border-indigo-400/80 rounded-xl p-2 pr-14 md:pr-2 flex flex-col justify-between z-30 shadow-2xl shadow-indigo-500/30"
+                      >
+                        <div className="text-[8.5px] font-black text-indigo-200 animate-pulse flex items-center gap-1.5">
+                          <Terminal size={9} className="text-indigo-400" />
+                          {operatorPrompt.question}
+                        </div>
+                        <div className="flex gap-1.5 mt-1.5">
+                          {operatorPrompt.options.map((opt, oIdx) => (
+                            <button
+                              key={oIdx}
+                              onClick={() => handleSelectOperatorTactic(opt.strategy || 'balanced')}
+                              className="flex-1 bg-indigo-950 hover:bg-indigo-900 border border-indigo-500/30 hover:border-indigo-400 text-[8px] font-black py-1 px-0.5 rounded-lg text-indigo-300 transition-all text-center tracking-tighter cursor-pointer"
+                            >
+                              {opt.label}
+                            </button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {gameOver && (

@@ -5850,9 +5850,8 @@ function AppContent() {
     
     return (
       <div className={cn(
-        "w-full app-bg text-slate-800 font-sans selection:bg-indigo-500 selection:text-white flex flex-col lg:flex-row justify-center items-start min-h-screen",
-        isPlayingBattle ? "bg-[#060a14] text-slate-100" : "bg-slate-50/30",
-        isPlayingBattle ? "min-h-screen overflow-y-auto" : "min-h-screen",
+        "w-full app-bg text-slate-800 font-sans selection:bg-indigo-500 selection:text-white flex flex-col lg:flex-row justify-center items-start",
+        isPlayingBattle ? "bg-[#060a14] text-slate-100 h-[100dvh] max-h-[100dvh] overflow-hidden select-none touch-none overscroll-none" : "bg-slate-50/30 min-h-screen",
         simulationUser ? "pt-[36px]" : "",
         theme === 'dark' ? "theme-dark" : "",
         theme === 'metal' ? "theme-metal" : ""
@@ -5894,11 +5893,10 @@ function AppContent() {
         <div className={cn(
           "flex-1 w-full max-w-[1024px] mx-auto relative flex flex-col shadow-2xl border-x transition-colors duration-200",
           isPlayingBattle
-            ? "bg-[#060a14] border-slate-800/80"
+            ? "bg-[#060a14] border-slate-800/80 h-[100dvh] max-h-[100dvh] overflow-hidden select-none touch-none overscroll-none"
             : (theme === 'dark' || theme === 'metal'
-                ? "bg-slate-900 border-slate-800/80"
-                : "bg-slate-50/30 border-slate-200/80"),
-          isPlayingBattle ? "min-h-screen overflow-y-auto" : "min-h-screen"
+                ? "bg-slate-900 border-slate-800/80 min-h-screen"
+                : "bg-slate-50/30 border-slate-200/80 min-h-screen")
         )}>
           {/* Top AdSense Banner (높이 확대 및 버튼과 겹침 없는 1행 배치: 모바일 및 PC 전 화면 일관 표시) */}
           {!isAdRemoved && view !== 'landing' && (
@@ -6335,7 +6333,7 @@ function AppContent() {
 
           <div className={cn(
             "flex-1 flex flex-col min-h-0",
-            isPlayingBattle ? "h-full overflow-y-auto overscroll-contain touch-pan-y" : "overflow-x-hidden",
+            isPlayingBattle ? "h-full overflow-hidden select-none touch-none overscroll-none" : "overflow-x-hidden",
             (view !== 'play' && view !== 'home') && ((!isAdRemoved && view !== 'landing') ? "pt-12 sm:pt-14 lg:pt-4" : "pt-4"),
             showNavbar ? "pb-20" : "pb-0"
           )}>
@@ -6346,7 +6344,10 @@ function AppContent() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.1 }}
-                className="flex-1 flex flex-col min-h-0 h-full"
+                className={cn(
+                  "flex-1 flex flex-col min-h-0 h-full",
+                  isPlayingBattle && "overflow-hidden select-none touch-none"
+                )}
               >
                 <Suspense
                   fallback={
