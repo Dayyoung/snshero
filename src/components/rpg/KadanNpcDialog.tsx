@@ -179,16 +179,22 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
             </span>
             {/* Reincarnation Badge */}
             <span className={cn(
-              "inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-extrabold font-mono tracking-tight border select-none",
+              "inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs sm:text-sm font-black font-mono tracking-tight border select-none",
               rebirthLevel > 0
-                ? "bg-amber-950/90 text-amber-300 border-amber-500/70 shadow-[0_0_8px_rgba(245,158,11,0.25)] animate-pulse"
+                ? "bg-amber-950/90 text-amber-300 border-amber-500/80 shadow-[0_0_12px_rgba(245,158,11,0.35)] animate-pulse"
                 : "bg-slate-800/90 text-emerald-300 border-slate-700"
             )}>
-              <span>{rebirthLevel > 0 ? '👑' : '🌱'}</span>
-              <span>
-                {rebirthLevel > 0
-                  ? t('kadan_rpg_reincarnation_badge', language, { count: rebirthLevel })
-                  : t('kadan_rpg_first_journey_badge', language)}
+              <span className="text-sm sm:text-base">{rebirthLevel > 0 ? '👑' : '🌱'}</span>
+              <span className="text-xs sm:text-sm font-black">
+                {rebirthLevel > 0 ? (
+                  <>
+                    <span>{language === 'ko' ? '환생 ' : 'Rebirth Lv.'}</span>
+                    <span className="text-sm sm:text-base font-black text-amber-100">{rebirthLevel}</span>
+                    <span>{language === 'ko' ? '회차' : ''}</span>
+                  </>
+                ) : (
+                  t('kadan_rpg_first_journey_badge', language)
+                )}
               </span>
             </span>
             {isCompleted && (
