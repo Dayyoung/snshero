@@ -49,6 +49,7 @@ import { getMonsterPetGroup, isMonsterPetCandidate, parseCardAvatarId } from '..
 import { CardCombineModal } from '../components/CardCombineModal';
 import { DeckSynergyCalculator } from '../components/DeckSynergyCalculator';
 import { DeckSynergyVisualizer } from '../components/DeckSynergyVisualizer';
+import { DeckBondSynergyEngine } from '../lib/DeckBondSynergyEngine';
 import { buildOptimalSynergyDeck } from '../lib/deckSynergyEngine';
 
 interface MyDeckViewProps {
@@ -647,6 +648,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   const [showOptimizeSuccessModal, setShowOptimizeSuccessModal] = useState(false);
   const [isSynergyModalOpen, setIsSynergyModalOpen] = useState(false);
   const [isVisualizerOpen, setIsVisualizerOpen] = useState(false);
+  const activeBonds = useMemo(() => DeckBondSynergyEngine.getInstance().evaluateDeckBonds(currentDeck), [currentDeck]);
 
   // Local state for editing modal
   const [editName, setEditName] = useState('');
@@ -1219,6 +1221,25 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               <ChevronRight size={11} className="text-purple-500" />
             </button>
           </div>
+
+          {/* Active Hero Bond Synergies Bar (Row 1045 / ID 553) */}
+          {activeBonds.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5 px-2 py-1 mb-2 bg-gradient-to-r from-purple-500/10 via-amber-500/10 to-transparent border border-purple-500/20 rounded-xs">
+              <span className="text-[10px] font-black text-purple-700 dark:text-purple-300 flex items-center gap-1">
+                <span>🔗</span>
+                <span>{language === 'ko' ? '영웅 인연(Bond):' : 'Hero Bonds:'}</span>
+              </span>
+              {activeBonds.map((b) => (
+                <span
+                  key={b.bond.id}
+                  className="px-2 py-0.5 rounded-none text-[9px] font-bold border border-purple-400/40 bg-purple-950/20 text-purple-800 dark:text-purple-200"
+                  title={language === 'ko' ? b.bond.descKo : b.bond.descEn}
+                >
+                  {language === 'ko' ? b.bond.titleKo : b.bond.titleEn} ({b.bond.badge})
+                </span>
+              ))}
+            </div>
+          )}
 
           <div id="deck-list" className="mx-auto flex w-full max-w-full flex-nowrap sm:flex-wrap justify-center items-center gap-1 xs:gap-2 sm:gap-4 md:gap-6 px-0.5 sm:px-1">
           <DndContext 

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { HelpCircle, X, ChevronLeft, ChevronRight, TrendingUp, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { getMarketplaceFeePolicy, calculateMarketplaceSettlement } from '../content/marketplaceFees';
+import { MarketplacePriceBand } from '../lib/MarketplacePriceBand';
 import { PageHeader } from '../components/PageHeader';
 import { MarketplaceCardTradeModal } from '../components/MarketplaceCardTradeModal';
 import { t } from '../lib/i18n';
@@ -150,6 +151,7 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
   const [listingPriceInput, setListingPriceInput] = useState('2500');
   const [feedbackKey, setFeedbackKey] = useState<string | null>(null);
+  const [feedbackText, setFeedbackText] = useState<string | null>(null);
   const [helpOpen, setHelpOpen] = useState(false);
   // Dispatch global popup events so bottom nav hides while help is open
   useEffect(() => {
@@ -259,12 +261,14 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
 
   const pushAuditLog = (logs: TradeAuditLog[], log: TradeAuditLog) => [log, ...logs].slice(0, 12);
 
-  const updateFeedback = (key: string) => {
+  const updateFeedback = (key: string, customMsg?: string) => {
     setFeedbackKey(key);
+    setFeedbackText(customMsg || null);
     if (typeof window !== 'undefined') {
       window.setTimeout(() => {
         setFeedbackKey((current) => (current === key ? null : current));
-      }, 2500);
+        setFeedbackText(null);
+      }, 3000);
     }
   };
 
@@ -287,6 +291,17 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
       updateFeedback('marketplace_feedback_invalid_price');
       return;
     }
+
+    // 동적 가격 밴드(±30%) 덤핑 및 마켓 교란 방지 검증 (Row 1046 / ID 554)
+    const bandResult = MarketplacePriceBand.getInstance().evaluatePriceBand(selectedCardId, price);
+    if (!bandResult.isValidPrice) {
+      const reasonText = bandResult.violationReason === 'BELOW_MIN_DUMPING'
+        ? (language === 'ko' ? `최근 평균 시세 대비 30% 이하 덤핑 등록은 불가합니다. (최소 ${bandResult.minAllowedPrice.toLocaleString()} SNS)` : `Dumping below 30% moving avg is prohibited. (Min: ${bandResult.minAllowedPrice} SNS)`)
+        : (language === 'ko' ? `최근 평균 시세 대비 30% 초과 폭리 등록은 불가합니다. (최대 ${bandResult.maxAllowedPrice.toLocaleString()} SNS)` : `Gouging above 30% moving avg is prohibited. (Max: ${bandResult.maxAllowedPrice} SNS)`);
+      updateFeedback('marketplace_feedback_price_band_violation', reasonText);
+      return;
+    }
+
     if (activeOwnedListingCardIds.has(selectedCardId)) {
       updateFeedback('marketplace_feedback_duplicate_listing');
       return;
@@ -656,6 +671,12 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
           <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-4 space-y-3">
             <h2 className="text-base font-black text-slate-900">{t('marketplace_create_title', language)}</h2>
 
+            {feedbackKey && (
+              <div className="p-2.5 text-xs font-bold bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200 rounded-lg">
+                {feedbackText || (t(feedbackKey as any, language) !== feedbackKey ? t(feedbackKey as any, language) : feedbackKey)}
+              </div>
+            )}
+
             <select
               value={selectedCardId ?? ''}
               onChange={(event) => setSelectedCardId(Number(event.target.value))}
@@ -683,6 +704,15 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
               placeholder={t('marketplace_ask_price', language)}
               className="w-full min-h-9 rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs text-slate-900 outline-none focus:border-indigo-400"
             />
+
+            {selectedCardId && (
+              <div className="text-[10px] text-slate-500 flex items-center justify-between px-1">
+                <span>{language === 'ko' ? '공정 가격 밴드 (±30%):' : 'Fair Price Band (±30%):'}</span>
+                <span className="font-bold text-indigo-600">
+                  {MarketplacePriceBand.getInstance().evaluatePriceBand(selectedCardId, 0).minAllowedPrice.toLocaleString()} ~ {MarketplacePriceBand.getInstance().evaluatePriceBand(selectedCardId, 0).maxAllowedPrice.toLocaleString()} SNS
+                </span>
+              </div>
+            )}
 
             <button
               type="button"
