@@ -4303,19 +4303,25 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
   // removed duplicate auto-battle player turn effect
 
-  // 전투 패배 (winner === 'ai') 5초 카운트다운 후 자동 닫힘 (로비로 퇴장)
+  // 전투 패배 및 재전투 카운트다운 타이머 제어
   useEffect(() => {
     if (gameOver) {
-      if (winner === 'ai') {
+      if (battleType === 'pvp_attack') {
+        // 랭킹대전: 승패(승리/패배/무승부)에 상관없이 계속 무한 반복 전투 진행
+        if (hasExhausted) {
+          setDefeatExitCountdown(null);
+          setRematchCountdown(null);
+          setShowInsufficientPopup(true);
+        } else {
+          setDefeatExitCountdown(null);
+          setRematchCountdown(2);
+        }
+      } else if (winner === 'ai') {
         setDefeatExitCountdown(5);
         setRematchCountdown(null);
       } else if (isBossActive || isStoryActive || isDungeonActive || isTournamentActive) {
         setDefeatExitCountdown(null);
         setRematchCountdown(null);
-      } else if (battleType === 'pvp_attack' && hasExhausted) {
-        setDefeatExitCountdown(null);
-        setRematchCountdown(null);
-        setShowInsufficientPopup(true);
       } else if (isAutoBattle && battleType !== 'pvp_attack') {
         setDefeatExitCountdown(null);
         setRematchCountdown(null);
@@ -17331,6 +17337,22 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   </div>
                 )}
                 
+                {/* 랭킹대전 무한 반복 전투 안내 뱃지 */}
+                {battleType === 'pvp_attack' && !hasExhausted && (
+                  <motion.div
+                    initial={{ scale: 0.95, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="mt-2 py-1.5 px-4 bg-indigo-950/90 border-2 border-indigo-500/80 rounded-xl text-indigo-200 text-xs font-black uppercase tracking-wider animate-pulse flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20 font-mono"
+                  >
+                    <RotateCcw size={14} className="text-indigo-400 animate-spin shrink-0" />
+                    <span>
+                      {language === 'ko'
+                        ? `[ ⚡ 랭킹대전 무한 반복 전투 ] ${rematchCountdown !== null ? `${rematchCountdown}초 후 재전투 시작...` : '재전투 준비 중...'}`
+                        : `[ ⚡ RANKING AUTO-LOOP ] Rematch starting in ${rematchCountdown ?? 2}s...`}
+                    </span>
+                  </motion.div>
+                )}
+
                 {/* 전투 패배 버거운 상대 만났을 때 5초 자동 닫힘 안내 뱃지 */}
                 {winner === 'ai' && defeatExitCountdown !== null && (
                   <motion.div
@@ -17830,7 +17852,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                 : t('exit_battle', language)) 
                             : t('back_to_lobby', language)))}
                 </button>
-                {!isBossActive && !isStoryActive && !isDungeonActive && !isTournamentActive && activeMissionCardId === null && activeMissionCardIdRef.current === null && winner !== 'player' && (
+                {!isBossActive && !isStoryActive && !isDungeonActive && !isTournamentActive && activeMissionCardId === null && activeMissionCardIdRef.current === null && (winner !== 'player' || battleType === 'pvp_attack') && (
                   <>
                     <button 
                        onClick={() => {
@@ -17842,13 +17864,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       <RotateCcw size={15} />
                       <span>
                         {rematchCountdown !== null
-                          ? t('rematch_countdown', language)
-                              .replace('{seconds}', String(rematchCountdown))
-                              .replace('{text}', t('rematch', language))
-                          : t('rematch', language)}
+                          ? (battleType === 'pvp_attack'
+                              ? (language === 'ko' ? `⚡ 반복 재전투 (${rematchCountdown}초)` : `⚡ Rematch (${rematchCountdown}s)`)
+                              : t('rematch_countdown', language)
+                                  .replace('{seconds}', String(rematchCountdown))
+                                  .replace('{text}', t('rematch', language)))
+                          : (battleType === 'pvp_attack'
+                              ? (language === 'ko' ? '⚡ 즉시 재전투' : '⚡ Instant Rematch')
+                              : t('rematch', language))}
                       </span>
                     </button>
-                    {setView && (
+                    {setView && winner !== 'player' && (
                       <button
                         type="button"
                         onClick={() => {
