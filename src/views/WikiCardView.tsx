@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, HelpCircle, X, ChevronLeft, ChevronRight, Trophy } from "lucide-react";
+import { Search, HelpCircle, X, ChevronLeft, ChevronRight, Trophy, Watch } from "lucide-react";
 import { getFormattedCardName } from "../lib/utils";
 import { Language, CardData, InventoryRecord, DatabaseCard, ViewType } from "../types";
 import { CARD_DATABASE } from "../cardDatabase";
@@ -12,6 +12,7 @@ import { ArCardViewer } from "../components/ArCardViewer";
 import { toPng } from "html-to-image";
 import { useGameSettings } from "../contexts/GameSettingsContext";
 import { WikiCardDetailModal } from "../components/WikiCardDetailModal";
+import { WatchFaceModal } from "../components/WatchFaceModal";
 import { getCharacterIpProfile, getFactionDef, getAllFactions } from "../content/characterIpUtils";
 import { ShareTemplateCard } from "../components/ShareTemplateCard";
 import type { CharacterFaction, CharacterRarityTier } from "../types";
@@ -47,6 +48,13 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
   const printableCardRef = useRef<HTMLDivElement>(null);
   const [shareTemplateCardId, setShareTemplateCardId] = useState<number | null>(null);
   const [showHelp, setShowHelp] = useState(false);
+  const [isWatchFaceOpen, setIsWatchFaceOpen] = useState(false);
+  const [watchFaceInitialCard, setWatchFaceInitialCard] = useState<DatabaseCard | null>(null);
+
+  const handleOpenWatchFace = (card?: DatabaseCard | null) => {
+    setWatchFaceInitialCard(card || selectedCard || CARD_DATABASE[1] || null);
+    setIsWatchFaceOpen(true);
+  };
 
   // Scroll to top on mount
   useEffect(() => {
@@ -459,9 +467,19 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
               <Trophy size={16} className="text-amber-500" />
               {language === 'ko' ? '도감 수집 진행률' : 'Codex Collection Progress'}
             </span>
-            <span className="text-indigo-600 font-extrabold text-sm">
-              {ownedCount} / {totalDatabaseCards} ({collectionPercent}%)
-            </span>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <button
+                type="button"
+                onClick={() => handleOpenWatchFace(null)}
+                className="inline-flex items-center gap-1 px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 rounded-lg text-[11px] font-bold transition-all active:scale-95 cursor-pointer shadow-2xs"
+              >
+                <Watch size={13} className="text-indigo-600" />
+                <span>{language === 'ko' ? '와치페이스' : 'Watch Face'}</span>
+              </button>
+              <span className="text-indigo-600 font-extrabold text-sm">
+                {ownedCount} / {totalDatabaseCards} ({collectionPercent}%)
+              </span>
+            </div>
           </div>
 
           {/* Progress Bar */}
@@ -495,7 +513,7 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
           </div>
         </div>
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 mt-6">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
             <h1 className="text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-slate-900">
               {t('wiki_card_index', language)}
             </h1>
@@ -505,6 +523,14 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
               aria-label="Help"
             >
               <HelpCircle size={16} className="text-slate-500" />
+            </button>
+            <button
+              type="button"
+              onClick={() => handleOpenWatchFace(null)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-mono font-bold uppercase tracking-wider transition-all active:scale-95 shadow-sm cursor-pointer"
+            >
+              <Watch size={14} />
+              <span>{language === 'ko' ? '와치페이스' : 'Watch Face'}</span>
             </button>
           </div>
           <div className="flex items-center gap-3">
@@ -676,6 +702,7 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
           onPrintCard={handlePrintCard}
           onDownloadCard={handleDownloadCard}
           onOpenShareTemplate={selectedCard ? () => setShareTemplateCardId(selectedCard.id) : undefined}
+          onOpenWatchFace={() => handleOpenWatchFace(selectedCard)}
           season={currentSeason}
           availableSkins={getSkinsForCard(selectedCard.id, currentSeason)}
           isSkinUnlocked={cardSkins.isSkinUnlocked}
@@ -795,6 +822,14 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Watch Face Generator Modal */}
+      <WatchFaceModal
+        isOpen={isWatchFaceOpen}
+        onClose={() => setIsWatchFaceOpen(false)}
+        initialCard={watchFaceInitialCard}
+        language={language}
+      />
     </div>
   );
 };

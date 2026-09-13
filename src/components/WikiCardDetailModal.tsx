@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
-import { Camera, BookOpen, ChevronDown, ChevronUp, Copy, Download, Image as ImageIcon, Info, Palette, Printer, QrCode, Quote, Share2, Shirt, ShoppingBag, Sparkles, Users, X, Swords, Lock, Unlock, MapPin, ExternalLink } from 'lucide-react';
+import { Camera, BookOpen, ChevronDown, ChevronUp, Copy, Download, Image as ImageIcon, Info, Palette, Printer, QrCode, Quote, Share2, Shirt, ShoppingBag, Sparkles, Users, X, Swords, Lock, Unlock, MapPin, ExternalLink, Watch } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { useCardLock } from '../hooks/useCardLock';
@@ -29,6 +29,7 @@ interface WikiCardDetailModalProps {
   onPrintCard: () => void;
   onDownloadCard: (mode: 'ally' | 'enemy') => void;
   onOpenShareTemplate?: () => void;
+  onOpenWatchFace?: () => void;
   /** 스킨 관련 */
   season: string;
   availableSkins: CardSkin[];
@@ -103,6 +104,7 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
   onPrintCard,
   onDownloadCard,
   onOpenShareTemplate,
+  onOpenWatchFace,
   season,
   availableSkins,
   isSkinUnlocked,
@@ -354,14 +356,26 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
                             lowSpecMode={lowSpecMode}
                           />
                         </div>
-                        <button
-                          type="button"
-                          onClick={onOpenViewer}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full text-[10px] font-black uppercase tracking-wider transition-all active:scale-95 cursor-pointer shadow-sm mt-1"
-                        >
-                          <Camera size={12} />
-                          {t('wiki_card_detail_3d_view', language)}
-                        </button>
+                        <div className="flex flex-wrap items-center justify-center gap-1.5 mt-1">
+                          <button
+                            type="button"
+                            onClick={onOpenViewer}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full text-[10px] font-black uppercase tracking-wider transition-all active:scale-95 cursor-pointer shadow-sm"
+                          >
+                            <Camera size={12} />
+                            {t('wiki_card_detail_3d_view', language)}
+                          </button>
+                          {onOpenWatchFace && (
+                            <button
+                              type="button"
+                              onClick={onOpenWatchFace}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full text-[10px] font-black uppercase tracking-wider transition-all active:scale-95 cursor-pointer shadow-sm"
+                            >
+                              <Watch size={12} />
+                              {language === 'ko' ? '와치페이스' : 'Watch Face'}
+                            </button>
+                          )}
+                        </div>
                       </div>
 
                       <div className="flex-1 min-w-0 space-y-4 w-full">
@@ -668,19 +682,25 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
                   </div>
 
                   <div className="mt-4 grid gap-2 sm:grid-cols-3">
-                    <button type="button" onClick={onOpenViewer} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-emerald-500 px-3 py-2 text-xs font-black uppercase tracking-[0.22em] text-white transition-all hover:bg-emerald-400 active:scale-95">
+                    <button type="button" onClick={onOpenViewer} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-emerald-500 px-3 py-2 text-xs font-black uppercase tracking-[0.22em] text-white transition-all hover:bg-emerald-400 active:scale-95 cursor-pointer">
                       <Camera size={14} />
                       {t('wiki_card_detail_3d_view', language)}
                     </button>
-                    <button type="button" onClick={onPrintCard} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-white px-3 py-2 text-xs font-black uppercase tracking-[0.22em] text-slate-900 transition-all hover:bg-slate-100 active:scale-95">
+                    <button type="button" onClick={onPrintCard} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-white px-3 py-2 text-xs font-black uppercase tracking-[0.22em] text-slate-900 transition-all hover:bg-slate-100 active:scale-95 cursor-pointer">
                       <Printer size={14} />
                       {t('wiki_print_card_button', language)}
                     </button>
-                    <button type="button" onClick={() => onDownloadCard('ally')} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-blue-600 px-3 py-2 text-xs font-black uppercase tracking-[0.22em] text-white transition-all hover:bg-blue-500 active:scale-95">
+                    {onOpenWatchFace && (
+                      <button type="button" onClick={onOpenWatchFace} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black uppercase tracking-[0.22em] text-white transition-all hover:bg-indigo-500 active:scale-95 cursor-pointer shadow-md shadow-indigo-950/40">
+                        <Watch size={14} />
+                        {language === 'ko' ? '와치페이스' : 'Watch Face'}
+                      </button>
+                    )}
+                    <button type="button" onClick={() => onDownloadCard('ally')} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-blue-600 px-3 py-2 text-xs font-black uppercase tracking-[0.22em] text-white transition-all hover:bg-blue-500 active:scale-95 cursor-pointer">
                       <Download size={14} />
                       {t('wiki_download_ally_card', language)}
                     </button>
-                    <button type="button" onClick={() => onDownloadCard('enemy')} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-red-600 px-3 py-2 text-xs font-black uppercase tracking-[0.22em] text-white transition-all hover:bg-red-500 active:scale-95 sm:col-span-2">
+                    <button type="button" onClick={() => onDownloadCard('enemy')} className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-red-600 px-3 py-2 text-xs font-black uppercase tracking-[0.22em] text-white transition-all hover:bg-red-500 active:scale-95 cursor-pointer ${onOpenWatchFace ? 'sm:col-span-2' : 'sm:col-span-2'}`}>
                       <Download size={14} />
                       {t('wiki_download_enemy_card', language)}
                     </button>
