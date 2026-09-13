@@ -382,16 +382,22 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
               <p className="truncate text-xs font-black uppercase tracking-normal text-indigo-600">{t('kadan_rpg_title_badge', language)}</p>
               {/* Reincarnation Badge in Top Header */}
               <span className={cn(
-                "inline-flex items-center gap-1 px-2 py-0.2 rounded-full text-[10px] font-mono font-bold tracking-tight border select-none",
+                "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-mono font-bold tracking-tight border select-none",
                 progress.rebirthLevel > 0
-                  ? "bg-amber-950/90 text-amber-300 border-amber-500/70 shadow-[0_0_8px_rgba(245,158,11,0.25)] animate-pulse"
+                  ? "bg-amber-950/90 text-amber-300 border-amber-500/80 shadow-[0_0_12px_rgba(245,158,11,0.35)] animate-pulse"
                   : "bg-slate-100 text-slate-700 border-slate-300"
               )}>
-                <span>{progress.rebirthLevel > 0 ? '👑' : '🌱'}</span>
-                <span>
-                  {progress.rebirthLevel > 0
-                    ? t('kadan_rpg_reincarnation_badge', language, { count: progress.rebirthLevel })
-                    : t('kadan_rpg_first_journey_badge', language)}
+                <span className="text-sm sm:text-base">{progress.rebirthLevel > 0 ? '👑' : '🌱'}</span>
+                <span className="text-xs sm:text-sm font-black">
+                  {progress.rebirthLevel > 0 ? (
+                    <>
+                      <span>{language === 'ko' ? '환생 ' : 'Rebirth Lv.'}</span>
+                      <span className="text-sm sm:text-base font-black text-amber-100">{progress.rebirthLevel}</span>
+                      <span>{language === 'ko' ? '회차' : ''}</span>
+                    </>
+                  ) : (
+                    t('kadan_rpg_first_journey_badge', language)
+                  )}
                 </span>
               </span>
             </div>
@@ -625,8 +631,10 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
 
             {/* Footer */}
             <div className="shrink-0 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 border-t border-slate-100 p-3 sm:p-4 bg-slate-50/90">
-              <div className="rounded-lg bg-violet-50 px-3 py-2 text-xs font-black text-violet-700">
-                {t('kadan_rpg_rebirth_level', language)} {progress.rebirthLevel}
+              <div className="rounded-lg bg-violet-100 border border-violet-300 px-3.5 py-2 text-sm font-black text-violet-900 flex items-center gap-1.5">
+                <span>👑</span>
+                <span>{t('kadan_rpg_rebirth_level', language)}</span>
+                <span className="text-base sm:text-lg font-black text-violet-950 font-mono">{progress.rebirthLevel}</span>
               </div>
               <div className="flex items-center gap-2">
                 <button
