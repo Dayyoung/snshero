@@ -3760,11 +3760,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         const diffMultiplier = aiDifficulty === 'hard' ? 1.5 : (aiDifficulty === 'medium' ? 1.2 : 1.0);
         base = Math.ceil(base * diffMultiplier);
       }
-
-      if (rebirthLevel > 0) {
-        const rebirthMultiplier = 1 + (rebirthLevel * 0.2);
-        base = Math.ceil(base * rebirthMultiplier);
-      }
       
       const playerDeckPower = playerDeck.reduce((acc, c) => acc + (c.power || 0), 0) || 10;
       const effOpponentPower = lastOpponent?.type === 'user' 
@@ -3779,6 +3774,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         }
       }
     }
+
+    // 환생 레벨(rebirthLevel)에 따른 승리 보상 점진적 증대 (+20% per Rebirth Level)
+    if (rebirthLevel > 0) {
+      const rebirthMultiplier = 1 + (rebirthLevel * 0.2);
+      base = Math.ceil(base * rebirthMultiplier);
+    }
+
     return base;
   }, [battleType, aiDifficulty, playerDeck, lastOpponent, aiSimulatedTotalPower, rebirthLevel]);
 
@@ -6410,6 +6412,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
               const baseReward = calculateReward(resultType);
               let myFinalReward = baseReward;
+
+              // Rebirth Difficulty Bonus Notification
+              if (rebirthLevel > 0 && resultType === 'win') {
+                const rebirthPct = Math.round(rebirthLevel * 20);
+                addLog(language === 'ko'
+                  ? `👑 [환생 난이도 보너스] ${rebirthLevel}환 난이도 강화 승리로 +${rebirthPct}% SNS 보상 추가 적용!`
+                  : `👑 [REBIRTH BONUS] +${rebirthPct}% SNS bonus applied for conquering Lv.${rebirthLevel} Rebirth!`,
+                  'victory'
+                );
+              }
               
               if (isAutoBattle && resultType === 'win') {
                 const orig = getOriginalBaseReward('win');
@@ -7004,8 +7016,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     }
 
                     if (currentQty > 0) {
-                      // Already Owned: Chance to Enhance
-                      const isEnhanceSuccess = Math.random() < 0.45;
+                      // Already Owned: Chance to Enhance (환생 1회당 성공률 +5%p 상승, 최대 85%)
+                      const enhanceBonus = Math.min(0.40, rebirthLevel * 0.05);
+                      const enhanceRate = Math.min(0.85, 0.45 + enhanceBonus);
+                      const isEnhanceSuccess = Math.random() < enhanceRate;
                       if (isEnhanceSuccess) {
                         addCard?.(dbCard.rarity, targetCardId, true);
                         let newLvl = 2;
@@ -7027,8 +7041,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           cardName: dbCard.title,
                           cardId: targetCardId,
                           message: language === 'ko'
-                            ? `[강화 성공!] ${dbCard.title} 카드가 강화되었습니다! (Lv.${newLvl} 달성 & 추가 카드 획득)`
-                            : `[Enhancement Succeeded!] ${dbCard.title_en} upgraded to Lv.${newLvl} (+1 card)!`
+                            ? `[강화 성공!] ${dbCard.title} 카드가 강화되었습니다! (Lv.${newLvl} 달성 & 추가 카드 획득${rebirthLevel > 0 ? ` · ${rebirthLevel}환 보너스 +${Math.round(enhanceBonus * 100)}%p 적용` : ''})`
+                            : `[Enhancement Succeeded!] ${dbCard.title_en} upgraded to Lv.${newLvl} (+1 card${rebirthLevel > 0 ? ` · R${rebirthLevel} +${Math.round(enhanceBonus * 100)}%p` : ''})!`
                         });
                       } else {
                         setShowCardAcquisitionModal(false);
@@ -7039,12 +7053,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           cardName: dbCard.title,
                           cardId: targetCardId,
                           message: language === 'ko'
-                            ? `아쉽게도 ${dbCard.title} 카드 강화에 실패했습니다. 다시 도전해보세요!`
-                            : `Enhancement failed for ${dbCard.title_en}. Challenge again!`
+                            ? `아쉽게도 ${dbCard.title} 카드 강화에 실패했습니다. (확률 ${Math.round(enhanceRate * 100)}%${rebirthLevel > 0 ? `, ${rebirthLevel}환 보정` : ''}) 다시 도전해보세요!`
+                            : `Enhancement failed for ${dbCard.title_en} (${Math.round(enhanceRate * 100)}% chance). Challenge again!`
                         });
                       }
                     } else {
-                      // Not Owned: Shop Drop Probability to Obtain
+                      // Not Owned: Shop Drop Probability to Obtain (환생 1회당 드랍률 +5%p 상승, 최대 95%)
                       const dropRates: Record<string, number> = {
                         diamond: 0.12,
                         platinum: 0.25,
@@ -7052,8 +7066,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         silver: 0.55,
                         bronze: 0.70
                       };
-                      const dropProb = dropRates[dbCard.rarity?.toLowerCase() || 'bronze'] || 0.50;
-                      const isObtainSuccess = Math.random() < dropProb;
+                      const rebirthDropBonus = Math.min(0.35, rebirthLevel * 0.05);
+                      const baseDropProb = dropRates[dbCard.rarity?.toLowerCase() || 'bronze'] || 0.50;
+                      const finalDropProb = Math.min(0.95, baseDropProb + rebirthDropBonus);
+                      const isObtainSuccess = Math.random() < finalDropProb;
                       if (isObtainSuccess) {
                         addCard?.(dbCard.rarity, targetCardId, false);
                         setAcquiredMissionCard(dbCard);
@@ -7066,8 +7082,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           cardName: dbCard.title,
                           cardId: targetCardId,
                           message: language === 'ko'
-                            ? `[획득 성공!] No.${String(targetCardId).padStart(2, '0')} ${dbCard.title} 카드를 새로 획득했습니다!`
-                            : `[Acquisition Succeeded!] No.${String(targetCardId).padStart(2, '0')} ${dbCard.title_en} added to your deck!`
+                            ? `[획득 성공!] No.${String(targetCardId).padStart(2, '0')} ${dbCard.title} 카드를 새로 획득했습니다!${rebirthLevel > 0 ? ` (환생 ${rebirthLevel}환 획득률 +${Math.round(rebirthDropBonus * 100)}%p)` : ''}`
+                            : `[Acquisition Succeeded!] No.${String(targetCardId).padStart(2, '0')} ${dbCard.title_en} added to your deck!${rebirthLevel > 0 ? ` (R${rebirthLevel} +${Math.round(rebirthDropBonus * 100)}%p)` : ''}`
                         });
                       } else {
                         setShowCardAcquisitionModal(false);
@@ -7078,8 +7094,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           cardName: dbCard.title,
                           cardId: targetCardId,
                           message: language === 'ko'
-                            ? `아쉽게도 ${dbCard.title} 카드 획득에 실패했습니다. (확률 ${Math.round(dropProb * 100)}%) 다시 도전해보세요!`
-                            : `Failed to acquire ${dbCard.title_en} (${Math.round(dropProb * 100)}% chance). Challenge again!`
+                            ? `아쉽게도 ${dbCard.title} 카드 획득에 실패했습니다. (확률 ${Math.round(finalDropProb * 100)}%${rebirthLevel > 0 ? `, ${rebirthLevel}환 보정` : ''}) 다시 도전해보세요!`
+                            : `Failed to acquire ${dbCard.title_en} (${Math.round(finalDropProb * 100)}% chance). Challenge again!`
                         });
                       }
                     }
@@ -14326,7 +14342,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   {language === 'ko' ? '예상 획득 보상' : 'Est. Reward'}
                 </span>
                 <span className="text-base sm:text-lg font-black text-amber-300">
-                  🪙 +{Math.max(10, Math.floor((selectedOpponent.sns || 50) * 0.4)).toLocaleString()} SNS
+                  🪙 +{Math.max(10, Math.floor((selectedOpponent.sns || 50) * 0.4 * (1 + (rebirthLevel * 0.2)))).toLocaleString()} SNS
+                  {rebirthLevel > 0 && (
+                    <span className="text-xs text-amber-400 font-bold ml-1 font-mono">(+{rebirthLevel * 20}%)</span>
+                  )}
                 </span>
               </div>
             </div>
