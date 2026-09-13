@@ -14260,9 +14260,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           </button>
 
           <div className="flex flex-col items-center gap-0.5">
-            <div className="inline-flex items-center gap-1.5 text-xs font-black text-amber-400 uppercase tracking-widest">
+            <div className="inline-flex items-center gap-1.5 text-xs font-black text-amber-400 uppercase tracking-widest flex-wrap justify-center">
               <Swords size={14} className="animate-pulse" />
               <span>{language === 'ko' ? '[ 대전 도전자 발견 ]' : '[ CHALLENGER FOUND ]'}</span>
+              {rebirthLevel > 0 && (
+                <span className="inline-flex items-center gap-1 ml-1 px-2 py-0.5 rounded-md bg-amber-500/25 border border-amber-400 text-amber-300 text-xs sm:text-sm font-black shadow-[0_0_10px_rgba(245,158,11,0.4)] animate-pulse">
+                  <span>👑</span>
+                  <span className="text-sm sm:text-base font-black text-amber-100 font-mono">{rebirthLevel}</span>
+                  <span>{language === 'ko' ? '환 난이도' : 'R'}</span>
+                </span>
+              )}
             </div>
             <p className="text-[10px] text-slate-400 tracking-wider">
               {language === 'ko' ? '배틀 전력 분석 및 매칭 준비' : 'Pre-Battle Intel & Match Prep'}
@@ -14292,8 +14299,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <span className="text-[10px] font-mono text-rose-400 uppercase tracking-widest font-black">
                 {CARD_DATABASE[opponentAvatarCardId] ? `No.${String(opponentAvatarCardId).padStart(2, '0')} ${language === 'ko' ? CARD_DATABASE[opponentAvatarCardId].title : CARD_DATABASE[opponentAvatarCardId].title_en}` : 'Hero Challenger'}
               </span>
-              <h3 className="text-xl sm:text-2xl font-black text-white italic tracking-wide">
-                {selectedOpponent.name}
+              <h3 className="text-xl sm:text-2xl font-black text-white italic tracking-wide flex items-center justify-center gap-2 flex-wrap">
+                <span>{selectedOpponent.name}</span>
+                {rebirthLevel > 0 && (
+                  <span className="inline-flex items-center gap-1 text-sm sm:text-base font-black text-amber-300 bg-amber-950/80 border border-amber-500/60 px-2.5 py-0.5 rounded-lg shadow-sm font-mono">
+                    <span>👑</span>
+                    <span className="text-base sm:text-lg font-black text-amber-100">{rebirthLevel}</span>
+                    <span>{language === 'ko' ? '환' : 'R'}</span>
+                  </span>
+                )}
               </h3>
             </div>
 
@@ -15474,6 +15488,25 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             </button>
           </div>
 
+          {/* Center: Bold Reincarnation Level Badge */}
+          {rebirthLevel > 0 && (
+            <div 
+              className="flex items-center gap-1.5 px-3 py-1 bg-amber-950/85 border border-amber-500/70 rounded-xl shadow-[0_0_12px_rgba(245,158,11,0.4)] text-amber-300 backdrop-blur-md shrink-0 select-none animate-pulse"
+              title={language === 'ko' ? `현재 환생 차수: ${rebirthLevel}환` : `Current Rebirth: Lv.${rebirthLevel}`}
+            >
+              <span className="text-base sm:text-lg">👑</span>
+              <span className="text-[10px] sm:text-xs font-black text-amber-400">
+                {language === 'ko' ? '환생' : 'REBIRTH'}
+              </span>
+              <span className="text-base sm:text-lg font-black text-amber-100 font-mono">
+                {rebirthLevel}
+              </span>
+              <span className="text-xs sm:text-sm font-bold text-amber-300">
+                {language === 'ko' ? '환' : 'R'}
+              </span>
+            </div>
+          )}
+
           {/* Right side: AI Model & Tactics Button, Chat Toggle, Ping, Rules */}
           <div className="flex items-center gap-1.5 sm:gap-2">
             {/* Top AI Model & Tactics Button (Opens AI Model/Tactics Modal & Shows Current Stance) */}
@@ -15916,8 +15949,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           {rebirthLevel > 0 && (
             <>
               <span className="text-slate-500">·</span>
-              <span className="bg-amber-500/20 text-amber-300 px-1 rounded-xs border border-amber-500/40 font-black">
-                {rebirthLevel}환 강화
+              <span className="inline-flex items-center gap-1 bg-amber-500/25 text-amber-300 px-1.5 py-0.5 rounded-xs border border-amber-500/60 font-black text-[10px] sm:text-xs shadow-[0_0_8px_rgba(245,158,11,0.3)] animate-pulse">
+                <span className="text-amber-400">👑</span>
+                <span className="text-xs sm:text-sm font-black text-amber-100 font-mono">{rebirthLevel}</span>
+                <span>{language === 'ko' ? '환 강화' : 'R Boost'}</span>
               </span>
             </>
           )}
@@ -16910,6 +16945,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             <span className="truncate max-w-[70px] sm:max-w-[120px] text-white">{effectiveUser?.displayName || effectiveUser?.name || 'YOU'}</span>
             <span className="text-slate-500">·</span>
             <span>TP {(calculatedTotalPower || 1000).toLocaleString()}</span>
+            {rebirthLevel > 0 && (
+              <>
+                <span className="text-slate-500">·</span>
+                <span className="inline-flex items-center gap-1 bg-amber-500/25 text-amber-300 px-1.5 py-0.5 rounded-xs border border-amber-500/60 font-black text-[10px] sm:text-xs shadow-[0_0_8px_rgba(245,158,11,0.3)]">
+                  <span className="text-amber-400">👑</span>
+                  <span className="text-xs sm:text-sm font-black text-amber-100 font-mono">{rebirthLevel}</span>
+                  <span>{language === 'ko' ? '환' : 'R'}</span>
+                </span>
+              </>
+            )}
             {sns !== undefined && sns > 0 && (
               <>
                 <span className="text-slate-500">·</span>
@@ -17252,6 +17297,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   </h2>
                 </motion.div>
                 <p className="text-[9px] font-bold opacity-30 tracking-[0.3em] uppercase">Combat_Session_Terminal</p>
+                {rebirthLevel > 0 && (
+                  <div className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-amber-950/85 border-2 border-amber-500/70 rounded-xl text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.35)] animate-pulse">
+                    <span className="text-base sm:text-lg">👑</span>
+                    <span className="text-xs sm:text-sm font-black text-amber-400 uppercase">
+                      {language === 'ko' ? '환생' : 'REBIRTH'}
+                    </span>
+                    <span className="text-lg sm:text-xl font-black text-amber-100 font-mono">
+                      {rebirthLevel}
+                    </span>
+                    <span className="text-xs sm:text-sm font-black text-amber-300">
+                      {language === 'ko' ? '환' : 'R'}
+                    </span>
+                  </div>
+                )}
                 
                 {/* 전투 패배 버거운 상대 만났을 때 5초 자동 닫힘 안내 뱃지 */}
                 {winner === 'ai' && defeatExitCountdown !== null && (
