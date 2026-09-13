@@ -262,7 +262,12 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
     }
 
     if (reward.sns > 0) {
-      await updateSns(reward.sns, t('kadan_rpg_reward_reason', language), 'earned');
+      const rebirthMultiplier = 1 + (progress.rebirthLevel * 0.25);
+      const totalSns = Math.ceil(reward.sns * rebirthMultiplier);
+      const reason = progress.rebirthLevel > 0 
+        ? `${t('kadan_rpg_reward_reason', language)} (${progress.rebirthLevel}환 +${progress.rebirthLevel * 25}%)`
+        : t('kadan_rpg_reward_reason', language);
+      await updateSns(totalSns, reason, 'earned');
     }
     reward.cardIds.forEach((cardId) => {
       addCard(getKadanRewardRarity(cardId), cardId, progress.autoMode);
