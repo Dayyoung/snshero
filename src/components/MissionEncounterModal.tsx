@@ -26,6 +26,30 @@ export const MissionEncounterModal: React.FC<MissionEncounterModalProps> = ({
   playSfx,
   lowSpecMode = false
 }) => {
+  const [countdown, setCountdown] = React.useState<number>(3);
+
+  // 3초 후 자동 배틀 시작 카운트다운 타이머
+  useEffect(() => {
+    if (!isOpen) {
+      setCountdown(3);
+      return;
+    }
+
+    setCountdown(3);
+    const interval = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          onStartBattle();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isOpen, onStartBattle]);
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -128,6 +152,9 @@ export const MissionEncounterModal: React.FC<MissionEncounterModalProps> = ({
               <span>{isKo ? '라이벌 도전자 조우' : 'CHALLENGER ENCOUNTER'}</span>
               <span className="text-[10px] text-amber-400/70 font-normal">
                 [No.{String(safeCardId).padStart(2, '0')}]
+              </span>
+              <span className="ml-1 px-1.5 py-0.5 text-[9px] bg-amber-400 text-slate-950 font-black rounded-xs animate-pulse">
+                {isKo ? `⚡ ${countdown}초 후 자동 시작` : `⚡ Auto in ${countdown}s`}
               </span>
             </div>
             <button
@@ -239,7 +266,7 @@ export const MissionEncounterModal: React.FC<MissionEncounterModalProps> = ({
               className="flex-[2] py-2.5 sm:py-3 px-4 rounded-sm bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 hover:from-amber-400 hover:to-yellow-400 text-slate-950 text-xs sm:text-sm font-black transition-all active:scale-95 shadow-lg shadow-amber-500/20 cursor-pointer touch-target flex items-center justify-center gap-1.5 animate-pulse"
             >
               <Swords size={16} className="shrink-0" />
-              <span>{isKo ? '카드 배틀 시작!' : 'Start Card Battle!'}</span>
+              <span>{isKo ? `⚡ 카드 배틀 시작! (${countdown}초)` : `⚡ Start Card Battle! (${countdown}s)`}</span>
             </button>
           </div>
         </motion.div>

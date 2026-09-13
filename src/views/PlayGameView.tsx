@@ -4263,15 +4263,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       const isMissionBattle = activeMissionCardIdRef.current !== null || activeMissionCardId !== null;
 
       if (isMissionBattle) {
-        // If card acquisition modal is currently open, let player interact with it until they click confirm
-        if (showCardAcquisitionModal) {
-          return;
-        }
-        // If modal not shown (e.g. failed drop rate, reinforcement, or defeat), automatically return to mission list
-        const timer = setTimeout(() => {
-          handleExitMatch(false);
-        }, 2500);
-        return () => clearTimeout(timer);
+        // 미션 카드게임: 종료하기 전까지 rematchCountdown 타이머를 통해 계속 무한 반복 수행 (강제 퇴장 방지)
+        return;
       }
 
       const timer = setTimeout(() => {
@@ -4306,6 +4299,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   // 전투 패배 및 재전투 카운트다운 타이머 제어
   useEffect(() => {
     if (gameOver) {
+      const isMissionBattle = activeMissionCardIdRef.current !== null || activeMissionCardId !== null;
+
       if (battleType === 'pvp_attack') {
         // 랭킹대전: 승패(승리/패배/무승부)에 상관없이 계속 무한 반복 전투 진행
         if (hasExhausted) {
@@ -4314,6 +4309,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           setShowInsufficientPopup(true);
         } else {
           setDefeatExitCountdown(null);
+          setRematchCountdown(2);
+        }
+      } else if (isMissionBattle) {
+        // 미션 카드게임: 승패(승리/패배/무승부)에 상관없이 종료하기 전까지 계속 무한 반복 수행
+        setDefeatExitCountdown(null);
+        if (showCardAcquisitionModal) {
+          setRematchCountdown(null);
+        } else {
           setRematchCountdown(2);
         }
       } else if (winner === 'ai') {
@@ -4333,7 +4336,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       setDefeatExitCountdown(null);
       setRematchCountdown(null);
     }
-  }, [gameOver, winner, hasExhausted, battleType, isBossActive, isStoryActive, isDungeonActive, isTournamentActive, isAutoBattle]);
+  }, [gameOver, winner, hasExhausted, battleType, isBossActive, isStoryActive, isDungeonActive, isTournamentActive, isAutoBattle, activeMissionCardId, showCardAcquisitionModal]);
 
   // 패배 팝업 5초 자동 닫힘 타이머
   useEffect(() => {
@@ -4898,6 +4901,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [opponentStrategy, setOpponentStrategy] = useState<AiStrategy>('balanced');
 
   const handleRematch = () => {
+    if (activeMissionCardIdRef.current !== null || activeMissionCardId !== null) {
+      const missionCardIdx = activeMissionCardIdRef.current ?? activeMissionCardId ?? 1;
+      setRematchCountdown(null);
+      setShowCardAcquisitionModal(false);
+      setAcquiredMissionCard(null);
+      startMissionCardBattle(missionCardIdx);
+      return;
+    }
+
     if (battleType === 'pvp_attack' && hasExhausted) {
       setRematchCountdown(null);
       setShowInsufficientPopup(true);
@@ -17353,6 +17365,22 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   </motion.div>
                 )}
 
+                {/* 미션 카드게임 무한 반복 전투 안내 뱃지 */}
+                {(activeMissionCardId !== null || activeMissionCardIdRef.current !== null) && (
+                  <motion.div
+                    initial={{ scale: 0.95, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="mt-2 py-1.5 px-4 bg-emerald-950/90 border-2 border-emerald-500/80 rounded-xl text-emerald-200 text-xs font-black uppercase tracking-wider animate-pulse flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 font-mono"
+                  >
+                    <RotateCcw size={14} className="text-emerald-400 animate-spin shrink-0" />
+                    <span>
+                      {language === 'ko'
+                        ? `[ ⚡ 미션 카드게임 반복 전투 ] ${rematchCountdown !== null ? `${rematchCountdown}초 후 다음 대결 시작...` : '재대결 준비 중...'}`
+                        : `[ ⚡ MISSION AUTO-LOOP ] Rematch starting in ${rematchCountdown ?? 2}s...`}
+                    </span>
+                  </motion.div>
+                )}
+
                 {/* 전투 패배 버거운 상대 만났을 때 5초 자동 닫힘 안내 뱃지 */}
                 {winner === 'ai' && defeatExitCountdown !== null && (
                   <motion.div
@@ -17845,36 +17873,41 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                 ? `Back to Missions (${defeatExitCountdown}s)`
                                 : `Back to Lobby (${defeatExitCountdown}s)`)))
                     : (activeMissionCardId !== null || activeMissionCardIdRef.current !== null
-                        ? (language === 'ko' ? '미션 목록으로 돌아가기' : 'Back to Mission List')
+                        ? (language === 'ko' ? '미션 종료 (목록으로)' : 'Exit Mission (To List)')
                         : (battleType === 'pvp_attack' 
                             ? (pvpExitCountdown !== null 
                                 ? `${t('exit_battle', language)} (${pvpExitCountdown}s)` 
                                 : t('exit_battle', language)) 
                             : t('back_to_lobby', language)))}
                 </button>
-                {!isBossActive && !isStoryActive && !isDungeonActive && !isTournamentActive && activeMissionCardId === null && activeMissionCardIdRef.current === null && (winner !== 'player' || battleType === 'pvp_attack') && (
+                {!isBossActive && !isStoryActive && !isDungeonActive && !isTournamentActive && (winner !== 'player' || battleType === 'pvp_attack' || activeMissionCardId !== null || activeMissionCardIdRef.current !== null) && (
                   <>
                     <button 
                        onClick={() => {
                          setShowBattleShareTemplate(false);
                          handleRematch();
                        }}
-                       className="w-full bg-indigo-600 text-white py-3 font-bold uppercase tracking-wider hover:bg-indigo-700 active:scale-95 transition-all rounded-2xl shadow-lg shadow-indigo-600/20 text-xs flex items-center justify-center gap-2 cursor-pointer"
+                       className={cn(
+                         "w-full py-3 font-bold uppercase tracking-wider active:scale-95 transition-all rounded-2xl shadow-lg text-xs flex items-center justify-center gap-2 cursor-pointer",
+                         (activeMissionCardId !== null || activeMissionCardIdRef.current !== null)
+                           ? "bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-600/20"
+                           : "bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-600/20"
+                       )}
                     >
                       <RotateCcw size={15} />
                       <span>
                         {rematchCountdown !== null
-                          ? (battleType === 'pvp_attack'
+                          ? (battleType === 'pvp_attack' || activeMissionCardId !== null || activeMissionCardIdRef.current !== null
                               ? (language === 'ko' ? `⚡ 반복 재전투 (${rematchCountdown}초)` : `⚡ Rematch (${rematchCountdown}s)`)
                               : t('rematch_countdown', language)
                                   .replace('{seconds}', String(rematchCountdown))
                                   .replace('{text}', t('rematch', language)))
-                          : (battleType === 'pvp_attack'
+                          : (battleType === 'pvp_attack' || activeMissionCardId !== null || activeMissionCardIdRef.current !== null
                               ? (language === 'ko' ? '⚡ 즉시 재전투' : '⚡ Instant Rematch')
                               : t('rematch', language))}
                       </span>
                     </button>
-                    {setView && winner !== 'player' && (
+                    {setView && winner !== 'player' && activeMissionCardId === null && activeMissionCardIdRef.current === null && (
                       <button
                         type="button"
                         onClick={() => {
@@ -18233,7 +18266,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         onClose={() => {
           setShowCardAcquisitionModal(false);
           setAcquiredMissionCard(null);
-          handleExitMatch(false);
+          if (activeMissionCardIdRef.current !== null || activeMissionCardId !== null) {
+            handleRematch();
+          } else {
+            handleExitMatch(false);
+          }
         }}
       />
     </div>

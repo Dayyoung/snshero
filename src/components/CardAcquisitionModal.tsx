@@ -24,6 +24,29 @@ export const CardAcquisitionModal: React.FC<CardAcquisitionModalProps> = ({
   mode = 'obtain',
   enhancementLevel = 2
 }) => {
+  const [countdown, setCountdown] = React.useState<number>(3);
+
+  React.useEffect(() => {
+    if (!isOpen || !card) {
+      setCountdown(3);
+      return;
+    }
+
+    setCountdown(3);
+    const interval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          onClose();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isOpen, card, onClose]);
+
   if (!isOpen || !card) return null;
 
   const cardId = card.imageIndex || card.id || 1;
@@ -170,7 +193,7 @@ export const CardAcquisitionModal: React.FC<CardAcquisitionModalProps> = ({
               className="w-full py-3 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-600 hover:to-yellow-500 text-slate-950 font-black rounded-xs uppercase tracking-wider text-xs sm:text-sm shadow-lg shadow-amber-500/25 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all border border-amber-300"
             >
               <Check size={16} className="stroke-[3]" />
-              <span>{language === "ko" ? "확인 (미션 목록으로)" : "Confirm (Back to Missions)"}</span>
+              <span>{language === "ko" ? `확인 & 다음 배틀 진행 (${countdown}초)` : `Next Battle (${countdown}s)`}</span>
             </button>
           </div>
         </motion.div>
