@@ -731,3 +731,71 @@
   border-color: rgba(15, 0, 0, 0.12) !important;
 }
 
+/* ID 341: 턴 임박 긴박한 붉은 펄스 전장 테두리 */
+@keyframes pulse-danger-vignette {
+  0%, 100% {
+    box-shadow: inset 0 0 15px rgba(225, 29, 72, 0.3), 0 0 10px rgba(225, 29, 72, 0.4);
+    border-color: rgba(244, 63, 94, 0.7);
+  }
+  50% {
+    box-shadow: inset 0 0 35px rgba(225, 29, 72, 0.7), 0 0 25px rgba(225, 29, 72, 0.9);
+    border-color: rgba(225, 29, 72, 1);
+  }
+}
+
+.border-pulse-danger {
+  animation: pulse-danger-vignette 0.8s ease-in-out infinite !important;
+}
+
+/* ID 366: 직전 턴 상대 착수 슬롯 골든 펄스 링 */
+@keyframes pulse-gold-ring {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.6);
+    border-color: rgba(234, 179, 8, 0.8);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.2);
+    border-color: rgba(250, 204, 21, 1);
+  }
+}
+
+.border-pulse-accent {
+  animation: pulse-gold-ring 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+}
+
+/* ID 414: 화면 좌우 16px 에지 스와이프 뒤로가기 방지 영역 */
+.battle-edge-swipe-guard-left {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 16px;
+  touch-action: none;
+  z-index: 99;
+  pointer-events: auto;
+}
+
+.battle-edge-swipe-guard-right {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 16px;
+  touch-action: none;
+  z-index: 99;
+  pointer-events: auto;
+}
+
+/* ID 416: 콤보 플로팅 텍스트 애니메이션 */
+@keyframes combo-float-pop {
+  0% { transform: scale(0.5) translateY(10px); opacity: 0; }
+  25% { transform: scale(1.15) translateY(-5px); opacity: 1; }
+  75% { transform: scale(1.0) translateY(-10px); opacity: 1; }
+  100% { transform: scale(0.9) translateY(-20px); opacity: 0; }
+}
+
+.animate-combo-float {
+  animation: combo-float-pop 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+

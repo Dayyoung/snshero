@@ -40,6 +40,42 @@ export const InBattleEmoteModal: React.FC<InBattleEmoteModalProps> = ({
   onToggleMute,
   playSfx,
 }) => {
+  const [cooldownRemaining, setCooldownRemaining] = useState<number>(0);
+  const [lockedRemaining, setLockedRemaining] = useState<number>(0);
+  const [recentTimestamps, setRecentTimestamps] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (cooldownRemaining <= 0) return;
+    const timer = setTimeout(() => setCooldownRemaining((prev) => Math.max(0, prev - 1)), 1000);
+    return () => clearTimeout(timer);
+  }, [cooldownRemaining]);
+
+  useEffect(() => {
+    if (lockedRemaining <= 0) return;
+    const timer = setTimeout(() => setLockedRemaining((prev) => Math.max(0, prev - 1)), 1000);
+    return () => clearTimeout(timer);
+  }, [lockedRemaining]);
+
+  const handleTriggerEmote = (emote: EmoteItem) => {
+    if (cooldownRemaining > 0 || lockedRemaining > 0) return;
+
+    const now = Date.now();
+    const updated = [...recentTimestamps.filter((t) => now - t < 10000), now];
+    setRecentTimestamps(updated);
+
+    if (updated.length >= 4) {
+      // 10초 내 4회 이상 트리거 시 30초 잠금
+      setLockedRemaining(30);
+      setCooldownRemaining(30);
+    } else {
+      setCooldownRemaining(4);
+    }
+
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    onSendEmote(emote);
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -67,17 +103,35 @@ export const InBattleEmoteModal: React.FC<InBattleEmoteModalProps> = ({
             </button>
           </div>
 
+          {/* 쿨다운 및 잠금 경고 배너 */}
+          {lockedRemaining > 0 && (
+            <div className="p-2 bg-rose-50 border border-rose-200 rounded-xl text-center">
+              <span className="text-[11px] font-bold text-rose-600">
+                ⚠️ {language === 'ko' ? `과도한 감정표현으로 ${lockedRemaining}초간 잠김` : `Rate limited for ${lockedRemaining}s`}
+              </span>
+            </div>
+          )}
+          {cooldownRemaining > 0 && lockedRemaining <= 0 && (
+            <div className="p-1.5 bg-amber-50 border border-amber-200 rounded-lg text-center">
+              <span className="text-[10px] font-mono text-amber-700">
+                ⏳ {language === 'ko' ? `재사용 대기: ${cooldownRemaining}초` : `Cooldown: ${cooldownRemaining}s`}
+              </span>
+            </div>
+          )}
+
           {/* Emotes Grid */}
           <div className="grid grid-cols-3 gap-2.5">
             {BATTLE_EMOTES.map(emote => (
               <button
                 key={emote.id}
-                onClick={() => {
-                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                  onSendEmote(emote);
-                  onClose();
-                }}
-                className="p-3 bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 rounded-2xl flex flex-col items-center gap-1 active:scale-95 transition-all cursor-pointer group"
+                disabled={cooldownRemaining > 0 || lockedRemaining > 0}
+                onClick={() => handleTriggerEmote(emote)}
+                className={cn(
+                  "p-3 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col items-center gap-1 transition-all cursor-pointer group",
+                  cooldownRemaining > 0 || lockedRemaining > 0
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-indigo-50 hover:border-indigo-300 active:scale-95"
+                )}
               >
                 <span className="text-2xl group-hover:scale-110 transition-transform">
                   {emote.emoji}

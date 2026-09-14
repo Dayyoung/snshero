@@ -268,6 +268,11 @@ import { getSeasonItem, setSeasonItem } from '../lib/seasonStorage';
 import { triggerHaptic } from '../lib/haptic';
 import { MissionEncounterModal } from '../components/MissionEncounterModal';
 import { getRebirthLevel } from '../hooks/useKadanRpgProgress';
+import { battleAudio } from '../lib/BattleAudioEngine';
+import { useBattleScreenGuard } from '../hooks/useBattleScreenGuard';
+import { OpponentHandElementHUD } from '../components/OpponentHandElementHUD';
+import { BattleTacticalThreatOverlay, StatComparisonBadgeInfo, ThreatSlotInfo } from '../components/BattleTacticalThreatOverlay';
+import { BattleDeckCardStack } from '../components/BattleDeckCardStack';
 
 interface PlayGameViewProps {
   effectiveUser?: UserInfo;
@@ -2680,6 +2685,63 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
   // Row 1067 / ID 330: Dynamic Dragging GPU Layer Promotion
   const [isDraggingCard, setIsDraggingCard] = useState(false);
+
+  // ID 384, ID 374, ID 394, ID 404, ID 414: Screen Guard & WakeLock
+  useBattleScreenGuard(gameState === 'playing');
+
+  // ID 366: 직전 턴 상대 착수 슬롯 (3초간 펄스 링)
+  const [lastOpponentPlayedSlot, setLastOpponentPlayedSlot] = useState<number | null>(null);
+
+  // ID 416: 체인 콤보 플로팅 텍스트
+  const [chainComboText, setChainComboText] = useState<string | null>(null);
+
+  // ID 411, 391: 판정 수치 비교 툴팁 & 방향 벡터
+  const [statComparisonBadge, setStatComparisonBadge] = useState<StatComparisonBadgeInfo | null>(null);
+
+  // ID 346: 상대 공격 위험 슬롯
+  const [threatSlots, setThreatSlots] = useState<ThreatSlotInfo[]>([]);
+
+  // ID 371: 무승부 서든데스 배너
+  const [showSuddenDeathTieBanner, setShowSuddenDeathTieBanner] = useState(false);
+
+  // ID 341: 턴 임박 긴박한 심장박동 사운드 연동
+  useEffect(() => {
+    if (gameState === 'playing' && !gameOver && turnTimerSeconds <= 5) {
+      battleAudio.startHeartbeatTick();
+    } else {
+      battleAudio.stopHeartbeatTick();
+    }
+    return () => battleAudio.stopHeartbeatTick();
+  }, [gameState, gameOver, turnTimerSeconds]);
+
+  // ID 346: 상대 턴 진행 중 아군 2장 이상 뒤집힐 수 있는 고위험 슬롯 계산
+  useEffect(() => {
+    if (turn === 'ai' && !gameOver && opponentHand.length > 0) {
+      const calculatedThreats: ThreatSlotInfo[] = [];
+      const emptySlots: number[] = [];
+      board.forEach((c, idx) => {
+        if (!c) emptySlots.push(idx);
+      });
+
+      emptySlots.forEach((slotIdx) => {
+        let maxFlip = 0;
+        opponentHand.forEach((oppCard) => {
+          const tempBoard = [...board];
+          tempBoard[slotIdx] = { ...oppCard, owner: 'ai' };
+          const { indices } = getFlips(tempBoard, slotIdx, oppCard, 'ai', false, 1);
+          if (indices.length > maxFlip) {
+            maxFlip = indices.length;
+          }
+        });
+        if (maxFlip >= 2) {
+          calculatedThreats.push({ index: slotIdx, threatLevel: maxFlip });
+        }
+      });
+      setThreatSlots(calculatedThreats);
+    } else {
+      setThreatSlots([]);
+    }
+  }, [turn, gameOver, board, opponentHand]);
 
   useEffect(() => {
     if (!gameOver) {
@@ -5780,6 +5842,28 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
       if (flippedIndices.length >= 2) {
         playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3'); // Critical capture sound
+        // ID 345: 피치 상승 사운드
+        battleAudio.playCascadeFlipSound(flippedIndices.length);
+        // ID 381: 아나운서 음성/신스 피드백
+        battleAudio.playAnnouncerStinger(flippedIndices.length, false);
+        // ID 416: 콤보 플로팅 텍스트
+        setChainComboText(flippedIndices.length >= 3 ? '⚡ MEGA FLIP! ⚡' : '🔥 DOUBLE FLIP! 🔥');
+        setTimeout(() => setChainComboText(null), 1500);
+
+        // ID 411: 판정 수치 비교 툴팁 (400ms 노출)
+        const targetSlot = flippedIndices[0];
+        const targetCard = newBoard[targetSlot];
+        if (targetCard) {
+          setStatComparisonBadge({
+            slotIndex: targetSlot,
+            attackerStat: Math.max(placedCard.stats?.up || 5, placedCard.stats?.right || 5),
+            defenderStat: Math.min(targetCard.stats?.up || 3, targetCard.stats?.left || 3),
+            direction: 'RIGHT',
+            diff: Math.max(1, Math.abs((placedCard.stats?.right || 5) - (targetCard.stats?.left || 3))),
+          });
+          setTimeout(() => setStatComparisonBadge(null), 400);
+        }
+
         addLog(t('log_critical_capture', language, { count: flippedIndices.length }), 'system');
         setLastCombo({ count: flippedIndices.length, timestamp: Date.now() });
       }
@@ -7238,6 +7322,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 setAutoBattleStats(prev => ({ ...prev, draws: prev.draws + 1 }));
                 setWinner('draw');
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                // ID 371: 5:5 무승부 시 서든데스 연출 및 +10 SNS 보상
+                setShowSuddenDeathTieBanner(true);
+                setRewardEarned(prev => prev + 10);
+                showToast(language === 'ko' ? '⚔️ [SUDDEN DEATH] 5:5 무승부! 격려 보너스 +10 SNS 지급!' : '⚔️ [SUDDEN DEATH] 5:5 Draw! +10 SNS Bonus Granted!');
                 if (!hasRecordedResult.current) {
                   const finalResult = 'draw';
                   const pScore = finalBoard.filter(c => c?.owner === 'player').length;
@@ -7579,6 +7667,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'); // Deployment Sound
     
     setOpponentHand(prev => prev.filter((_, i) => i !== cardIdx));
+    // ID 366: 직전 턴 상대 착수 슬롯 골든 펄스 링 연출 (3초 유지)
+    setLastPlacedIdx(boardIdx);
+    setLastOpponentPlayedSlot(boardIdx);
+    setTimeout(() => {
+      setLastOpponentPlayedSlot(null);
+    }, 3000);
 
     resolveCombatDelay(newBoard, boardIdx, (finalBoard, skipTurn) => {
       // Item 368: Track minimum friendly cards during match for clutch comeback bonus
@@ -16623,9 +16717,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                               !card && boardTraps[idx] === 'red' && "bg-red-800/40 border-red-400 border-2",
                               !card && selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player' && "border-2 border-emerald-400 bg-emerald-950/50 shadow-[0_0_16px_rgba(52,211,153,0.6)] animate-pulse",
                               !card && aiReasoning?.boardIdx === idx && turn === 'ai' && "border-solid border-rose-500 bg-rose-950/30",
-                              !card && selectedCardIdx !== null && selectedCardSide === 'player' && recommendedPlayerMove?.cardIdx === selectedCardIdx && recommendedPlayerMove?.boardIdx === idx && turn === 'player' && "border-2 border-cyan-300 bg-cyan-900/50 shadow-[0_0_18px_rgba(34,211,238,0.8)]"
+                              !card && selectedCardIdx !== null && selectedCardSide === 'player' && recommendedPlayerMove?.cardIdx === selectedCardIdx && recommendedPlayerMove?.boardIdx === idx && turn === 'player' && "border-2 border-cyan-300 bg-cyan-900/50 shadow-[0_0_18px_rgba(34,211,238,0.8)]",
+                              // ID 366: 직전 턴 상대 착수 슬롯 골든 펄스 링 연출
+                              lastOpponentPlayedSlot === idx && "border-pulse-accent shadow-[0_0_15px_rgba(234,179,8,0.7)] z-10"
                             )}
                           >
+                            {/* ID 346, 406, 391, 411: 전술 위협/약점/수치비교 오버레이 */}
+                            <BattleTacticalThreatOverlay
+                              threatSlots={threatSlots}
+                              statComparisonBadge={statComparisonBadge}
+                              draggingCard={selectedCardIdx !== null && selectedCardSide === 'player' ? playerHand[selectedCardIdx] : null}
+                              boardState={board}
+                              slotIndex={idx}
+                            />
                             {/* Row 78: Invalid Drop Target Overlay on Occupied Slots */}
                             {card && selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player' && (
                               <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none bg-black/25 rounded-lg">
@@ -17024,11 +17128,31 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
     </div>
 
+      {/* ID 414: 화면 좌우 16px 에지 스와이프 뒤로가기 방지 가드 */}
+      <div className="battle-edge-swipe-guard-left" />
+      <div className="battle-edge-swipe-guard-right" />
+
+      {/* ID 416: 체인 콤보 플로팅 텍스트 배너 */}
+      {chainComboText && (
+        <div className="fixed top-28 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
+          <div className="px-4 py-1.5 bg-rose-950/95 border-2 border-amber-400 text-amber-200 font-mono font-black text-sm rounded-sm shadow-[0_0_20px_rgba(251,191,36,0.6)] animate-combo-float">
+            {chainComboText}
+          </div>
+        </div>
+      )}
+
       {/* COMPACT 1-LINE SCORE & TURN STATUS BAR (Relocated Below Board / Above Player Hand) */}
       {!gameOver && gameState === 'playing' && (
-        <div className="flex flex-wrap items-center justify-between w-full max-w-sm sm:max-w-md px-3 py-1.5 bg-slate-950/90 border border-slate-800 rounded-sm shadow-md text-xs font-mono font-bold z-20 mb-1 backdrop-blur-md gap-2">
-          {/* Player Score */}
+        <div className={cn(
+          "flex flex-wrap items-center justify-between w-full max-w-sm sm:max-w-md px-3 py-1.5 bg-slate-950/90 border rounded-sm shadow-md text-xs font-mono font-bold z-20 mb-1 backdrop-blur-md gap-2 transition-all",
+          turnTimerSeconds <= 5
+            ? "border-rose-500 border-pulse-danger shadow-[0_0_15px_rgba(244,63,94,0.5)]"
+            : "border-slate-800"
+        )}>
+          {/* Player Score & Ping & Deck Stack */}
           <div className="flex items-center gap-1.5 text-indigo-400">
+            <BattleDeckCardStack remainingCount={playerHand.length} maxCount={5} isOpponent={false} />
+            <PingIndicator language={language} isOpponent={false} />
             <span className="text-[10px] text-slate-400">[YOU]</span>
             <span className="px-1.5 py-0.5 rounded-sm bg-indigo-950/80 border border-indigo-500/50 font-black text-indigo-300 text-xs">
               {battleType === 'matgo' ? matgoScores.player : boardScore.player}
@@ -17046,17 +17170,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               {turn === 'player' ? (
                 <><Zap size={11} className="text-yellow-400 animate-pulse" /> [ YOUR TURN ]</>
               ) : (
-                <><Cpu size={11} className="text-rose-400 animate-spin" /> [ ENEMY TURN ]</>
+                <><Cpu size={11} className="text-amber-400 animate-spin" /> {language === 'ko' ? '[ 상대 장고 중... ]' : '[ ENEMY THINKING... ]'}</>
               )}
             </div>
 
-            {/* Turn Countdown Timer SVG (Row 26) */}
+            {/* Turn Countdown Timer SVG (Row 26 & ID 376) */}
             <div
               className={cn(
                 "flex items-center gap-1 px-1.5 py-0.5 rounded-sm font-mono text-[9px] font-bold border transition-all",
                 turnTimerSeconds <= 5
                   ? "bg-rose-950/90 border-rose-500 text-rose-300 animate-pulse shadow-[0_0_10px_rgba(244,63,94,0.6)]"
-                  : "bg-slate-900 border-slate-700/70 text-slate-300"
+                  : turnTimerSeconds <= 10
+                    ? "bg-amber-950/80 border-amber-500/80 text-amber-300"
+                    : "bg-slate-900 border-slate-700/70 text-slate-300"
               )}
               title={language === 'ko' ? `남은 턴 시간: ${turnTimerSeconds}초` : `Turn Time: ${turnTimerSeconds}s`}
             >
@@ -17075,7 +17201,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     cy="10"
                     r="7.5"
                     fill="none"
-                    stroke={turnTimerSeconds <= 5 ? "#f43f5e" : turn === 'player' ? "#6366f1" : "#f59e0b"}
+                    stroke={turnTimerSeconds <= 5 ? "#f43f5e" : turnTimerSeconds <= 10 ? "#f59e0b" : turn === 'player' ? "#6366f1" : "#10b981"}
                     strokeWidth="2.5"
                     strokeDasharray={47.12}
                     strokeDashoffset={47.12 * (1 - turnTimerSeconds / turnMaxSeconds)}
@@ -17084,7 +17210,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   />
                 </svg>
               </div>
-              <span className={cn("font-black tracking-tighter", turnTimerSeconds <= 5 ? "text-rose-400 font-extrabold" : "text-slate-200")}>
+              <span className={cn(
+                "font-black tracking-tighter",
+                turnTimerSeconds <= 5 ? "text-rose-400 font-extrabold" : turnTimerSeconds <= 10 ? "text-amber-300" : "text-slate-200"
+              )}>
                 {turnTimerSeconds}s
               </span>
             </div>
@@ -17097,12 +17226,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             )}
           </div>
 
-          {/* Opponent Score */}
+          {/* Opponent Score & HUD & Deck Stack */}
           <div className="flex items-center gap-1.5 text-rose-400">
             <span className="px-1.5 py-0.5 rounded-sm bg-rose-950/80 border border-rose-500/50 font-black text-rose-300 text-xs">
               {battleType === 'matgo' ? matgoScores.ai : boardScore.ai}
             </span>
             <span className="text-[10px] text-slate-400">[ENEMY]</span>
+            <PingIndicator language={language} isOpponent={true} />
+            <BattleDeckCardStack remainingCount={opponentHand.length} maxCount={5} isOpponent={true} />
+            <OpponentHandElementHUD
+              remainingCount={opponentHand.length}
+              totalHandSize={5}
+              opponentCards={opponentHand}
+            />
           </div>
         </div>
       )}
@@ -17631,6 +17767,18 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               {/* Match Analysis Section */}
               {battleType !== 'matgo' && (
                 <div className="bg-slate-950/60 border border-slate-800 rounded-2xl p-4 shadow-sm text-left space-y-3">
+                {/* ID 371: 서든데스 5:5 무승부 연출 배너 */}
+                {winner === 'draw' && (
+                  <div className="p-2.5 bg-amber-950/80 border border-amber-500 rounded-sm text-center space-y-1 shadow-lg animate-pulse">
+                    <span className="text-xs font-mono font-black text-amber-300">
+                      ⚔️ SUDDEN DEATH TIE-BREAKER ⚔️
+                    </span>
+                    <p className="text-[10px] font-mono text-amber-200/90">
+                      {language === 'ko' ? '치열한 접전 끝에 5:5 무승부! 특별 보너스 +10 SNS가 지급되었습니다.' : 'Intense 5:5 Draw! +10 SNS Tie-Breaker Compensation Awarded.'}
+                    </p>
+                  </div>
+                )}
+
                 <div className="flex justify-between items-center border-b border-slate-800 pb-2">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Match_Analysis</span>
                   <span className={cn(
