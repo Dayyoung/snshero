@@ -30,6 +30,7 @@ def submit_report(dept: str, task: str, status: str = "작업완료", details: s
         dept = "개발"
 
     payload = {
+        "emailAddress": "developer@snshero.com",
         ENTRY_MAP["dept"]: dept,
         ENTRY_MAP["task"]: task,
         ENTRY_MAP["status"]: status,
