@@ -5853,7 +5853,7 @@ function AppContent() {
     return (
       <div className={cn(
         "w-full app-bg text-slate-800 font-sans selection:bg-indigo-500 selection:text-white flex flex-col lg:flex-row justify-center items-start",
-        isPlayingBattle ? "bg-[#060a14] text-slate-100 h-[100dvh] max-h-[100dvh] overflow-hidden select-none touch-none overscroll-none" : "bg-slate-50/30 min-h-screen",
+        isPlayingBattle ? "bg-[#060a14] text-slate-100 h-[100dvh] max-h-[100dvh] overflow-hidden select-none touch-none overscroll-none" : "bg-slate-50/30 min-h-screen min-h-[100dvh]",
         simulationUser ? "pt-[36px]" : "",
         theme === 'dark' ? "theme-dark" : "",
         theme === 'metal' ? "theme-metal" : ""
@@ -5897,8 +5897,8 @@ function AppContent() {
           isPlayingBattle
             ? "bg-[#060a14] border-slate-800/80 h-[100dvh] max-h-[100dvh] overflow-hidden select-none touch-none overscroll-none"
             : (theme === 'dark' || theme === 'metal'
-                ? "bg-slate-900 border-slate-800/80 min-h-screen"
-                : "bg-slate-50/30 border-slate-200/80 min-h-screen")
+                ? "bg-slate-900 border-slate-800/80 min-h-screen min-h-[100dvh]"
+                : "bg-slate-50/30 border-slate-200/80 min-h-screen min-h-[100dvh]")
         )}>
           {/* Top AdSense Banner (높이 확대 및 버튼과 겹침 없는 1행 배치: 모바일 및 PC 전 화면 일관 표시) */}
           {!isAdRemoved && view !== 'landing' && (

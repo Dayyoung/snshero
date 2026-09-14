@@ -23,7 +23,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { CardItem } from '../components/CardItem';
 import { ArDeckViewer } from '../components/ArDeckViewer';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ChevronLeft, ChevronRight, HelpCircle, Trophy, Info, Zap, Package, Shield, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Gift, Star as StarIcon, Edit2, Plus, Gem, Footprints, Sparkles, Share2, Camera, BookOpen, Users, PawPrint, Trash2, Layers, Lock, Search, Flame, Swords, Maximize2 } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, HelpCircle, Trophy, Info, Zap, Package, Shield, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Gift, Star as StarIcon, Edit2, Plus, Gem, Footprints, Sparkles, Share2, Camera, BookOpen, Users, PawPrint, Trash2, Layers, Lock, Search, Flame, Swords, Maximize2 } from 'lucide-react';
 import { CardDisassembleModal } from '../components/CardDisassembleModal';
 import { ElementAdvantageModal } from '../components/ElementAdvantageModal';
 import { useCardLock } from '../hooks/useCardLock';
@@ -1013,6 +1013,16 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       });
   }, [showOwnedOnly, ownedCards, inventory, sortBy, sortOrder, language, selectionContext, currentDeck, selectedElementFilter, cardSearchQuery]);
 
+  // Row 1064 / ID 327: Count cards that have 2 or more duplicate copies for upgrade
+  const upgradeableCount = useMemo(() => {
+    return processedCards.filter(item => {
+      const q = inventory[item.idx]?.quantity || 
+                ownedCards.filter(c => c && (c.imageIndex === item.idx || Number(c.imageIndex) === item.idx)).length || 
+                0;
+      return q >= 2;
+    }).length;
+  }, [processedCards, inventory, ownedCards]);
+
   const iconMap: Record<string, any> = {
     Zap,
     ArrowUp,
@@ -1931,6 +1941,31 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                 </div>
               </div>
 
+              {/* Row 1064 / ID 327: Auto-Optimization Recommendation Banner */}
+              {upgradeableCount > 0 && selectionContext !== 'upgrade' && (
+                <div className="mx-4 sm:mx-6 mt-3 mb-1 bg-gradient-to-r from-purple-950/80 via-indigo-950/70 to-purple-950/80 border border-purple-500/40 rounded-xl p-2.5 sm:p-3 flex items-center justify-between gap-2 shadow-sm font-mono">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <Sparkles size={16} className="text-amber-400 shrink-0 animate-pulse" />
+                    <div className="text-xs font-bold text-purple-200 truncate">
+                      {language === 'ko'
+                        ? `[자동 최적화 추천] 승급 가능한 중복 카드가 ${upgradeableCount}종 있습니다!`
+                        : `[Auto-Optimization] ${upgradeableCount} card type(s) ready for fusion upgrade!`}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsPopupOpen(false);
+                      onNavigate('skill');
+                    }}
+                    className="px-2.5 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-[10px] font-black uppercase tracking-wider shrink-0 transition-all cursor-pointer shadow-md active:scale-95 flex items-center gap-1"
+                  >
+                    <span>{language === 'ko' ? '승급 플로우 바로가기' : 'Upgrade Flow'}</span>
+                    <ArrowUpRight size={12} />
+                  </button>
+                </div>
+              )}
+
               <div className="flex-1 overflow-y-auto p-4 sm:p-6 scrollbar-thin scrollbar-thumb-black">
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-4 justify-items-center">
                   {processedCards.slice(0, visibleCardLimit).map((item) => {
@@ -2025,12 +2060,33 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                             )}
                           </div>
 
-                          {/* Top Right: Quantity */}
-                          {isOwned && inventory[idx] && (
-                            <div className="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] sm:text-xs font-black px-1.5 min-w-[18px] h-[18px] flex items-center justify-center border-2 border-white rounded-full z-30 shadow-xl">
-                              {inventory[idx].quantity}
-                            </div>
-                          )}
+                          {/* Top Right: Quantity & Upgradeable Badges (Row 1064 / ID 327) */}
+                          {isOwned && (() => {
+                            const duplicateCount = inventory[idx]?.quantity || (ownedCards.filter(c => c && (c.imageIndex === idx || Number(c.imageIndex) === idx)).length) || 1;
+                            const isUpgradeable = duplicateCount >= 2;
+                            return (
+                              <div className="absolute -top-1.5 -right-1.5 flex flex-col items-end gap-0.5 z-30 pointer-events-auto">
+                                <div className="bg-blue-600 text-white text-[9px] sm:text-[10px] font-black px-1.5 min-w-[18px] h-[18px] flex items-center justify-center border-2 border-white rounded-full shadow-lg font-mono">
+                                  x{duplicateCount}
+                                </div>
+                                {isUpgradeable && (
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setIsPopupOpen(false);
+                                      onNavigate('skill');
+                                    }}
+                                    className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full border border-purple-300 shadow-md animate-pulse cursor-pointer tracking-tighter whitespace-nowrap active:scale-95 flex items-center gap-0.5"
+                                    title={language === 'ko' ? '동일 카드 2장 이상 보유! 클릭하여 승급하기' : '2+ copies owned! Click to upgrade'}
+                                  >
+                                    <Sparkles size={8} className="text-amber-300 animate-spin-slow" />
+                                    <span>{language === 'ko' ? '승급' : 'UP'}</span>
+                                  </button>
+                                )}
+                              </div>
+                            );
+                          })()}
                         </div>
                         <span className="text-xs sm:text-sm font-black text-black/80 truncate w-20 text-center tracking-tighter uppercase italic mt-1">
                           {CARD_DATABASE[idx]?.title_dis || `UNIT_${idx}`}

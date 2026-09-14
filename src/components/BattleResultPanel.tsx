@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Trophy, Zap, Sparkles, ArrowUpRight, Coins, ChevronDown, ChevronUp, Share2, Check, Layers, Shield, ShieldAlert, Flame, BarChart3, UserPlus, UserCheck, Eye, User, X } from 'lucide-react';
+import { Trophy, Zap, Sparkles, ArrowUpRight, Coins, ChevronDown, ChevronUp, Share2, Check, Layers, Shield, ShieldAlert, Flame, BarChart3, UserPlus, UserCheck, Eye, User, X, Film, Play } from 'lucide-react';
 import { CardData } from '../types';
 import { getCardSpriteStyle } from '../lib/utils';
+import { BattleReplayData, copyReplayToClipboard } from '../lib/replayManager';
+import { BattleReplayModal } from './BattleReplayModal';
 
 export interface LeveledUpCardInfo {
   card: CardData;
@@ -37,6 +39,7 @@ export interface BattleResultPanelProps {
   opponentLevel?: number;
   opponentWinRate?: string;
   opponentMainCardTitle?: string;
+  battleReplayData?: BattleReplayData | null;
   onShareToCommunity?: () => void;
   onOpenDetailedSummary?: () => void;
   onAddFriend?: (uid: string, name: string) => void;
@@ -64,6 +67,7 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
   opponentLevel = 15,
   opponentWinRate = '68.4%',
   opponentMainCardTitle,
+  battleReplayData,
   onShareToCommunity,
   onOpenDetailedSummary,
   onAddFriend
@@ -71,6 +75,8 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
   const isKo = language === 'ko';
   const [showRewardsDetail, setShowRewardsDetail] = useState(false);
   const [shared, setShared] = useState(false);
+  const [replayCopied, setReplayCopied] = useState(false);
+  const [showReplayModal, setShowReplayModal] = useState(false);
   const [friendRequested, setFriendRequested] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
 
@@ -106,6 +112,15 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
   const totalExchange = Math.max(1, totalDamageDealt + totalDamageReceived);
   const playerDmgPercent = Math.round((totalDamageDealt / totalExchange) * 100);
   const aiDmgPercent = 100 - playerDmgPercent;
+
+  const handleCopyReplay = async () => {
+    if (!battleReplayData) return;
+    const ok = await copyReplayToClipboard(battleReplayData, language);
+    if (ok) {
+      setReplayCopied(true);
+      setTimeout(() => setReplayCopied(false), 3000);
+    }
+  };
 
   const handleShareClick = () => {
     if (onShareToCommunity) {
@@ -383,6 +398,41 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
           </button>
         )}
 
+        {battleReplayData && (
+          <div className="grid grid-cols-2 gap-2 pt-0.5">
+            <button
+              type="button"
+              onClick={handleCopyReplay}
+              className={`w-full py-2 px-3 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer border shadow-sm active:scale-95 ${
+                replayCopied
+                  ? 'bg-emerald-900/60 border-emerald-500/50 text-emerald-300'
+                  : 'bg-amber-950/40 hover:bg-amber-900/50 border-amber-500/40 text-amber-200'
+              }`}
+            >
+              {replayCopied ? (
+                <>
+                  <Check size={14} className="text-emerald-400" />
+                  <span>{isKo ? '✓ 링크 복사됨!' : '✓ Link Copied!'}</span>
+                </>
+              ) : (
+                <>
+                  <Film size={14} className="text-amber-400" />
+                  <span>{isKo ? '🎬 리플레이 공유' : 'Share Replay'}</span>
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowReplayModal(true)}
+              className="w-full py-2 px-3 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer border shadow-sm active:scale-95 bg-slate-900 hover:bg-slate-800 border-slate-700 text-slate-200"
+            >
+              <Play size={14} className="text-indigo-400" />
+              <span>{isKo ? '▶️ 리플레이 감상' : 'Watch Replay'}</span>
+            </button>
+          </div>
+        )}
+
         <button
           type="button"
           onClick={handleShareClick}
@@ -625,6 +675,14 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Battle Replay Modal (ID 326) */}
+      <BattleReplayModal
+        isOpen={showReplayModal}
+        onClose={() => setShowReplayModal(false)}
+        replayData={battleReplayData || null}
+        language={language}
+      />
     </motion.div>
   );
 };

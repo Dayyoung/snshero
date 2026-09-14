@@ -1,17 +1,19 @@
 /**
  * DailyLuckyRoulette.tsx
- * 로비/컬렉션 일일 럭키 출석 룰렛 & 7일 스트릭 보너스 팝업 모달
- * (구글 스프레드시트 Row 704 / ID 553 요구사항 구현)
+ * 로비/컬렉션 일일 럭키 출석 룰렛, 7일 스트릭 배수 보너스 & 월간 스트릭 복구권 (Streak Saver)
+ * (구글 스프레드시트 Row 704 / ID 553 & Row 1065 / ID 328 구현)
  */
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Trophy, X, RotateCw, CheckCircle, Gift, Zap } from 'lucide-react';
+import { Sparkles, Trophy, X, RotateCw, CheckCircle, Gift, Zap, ShieldCheck } from 'lucide-react';
 import {
   ROULETTE_ITEMS,
   RouletteRewardItem,
   getAttendanceState,
   claimDailyReward,
+  restoreInterruptedStreak,
+  STREAK_MULTIPLIERS,
   AttendanceState
 } from '../lib/attendanceService';
 
@@ -34,8 +36,19 @@ export const DailyLuckyRoulette: React.FC<DailyLuckyRouletteProps> = ({
   const [rotationDegrees, setRotationDegrees] = useState<number>(0);
   const [wonReward, setWonReward] = useState<RouletteRewardItem | null>(null);
   const [streakBonusGranted, setStreakBonusGranted] = useState<number>(0);
+  const [multiplierGranted, setMultiplierGranted] = useState<number>(1.0);
+  const [saverFeedback, setSaverFeedback] = useState<string | null>(null);
 
   if (!isOpen) return null;
+
+  const handleRestoreStreak = () => {
+    const res = restoreInterruptedStreak();
+    if (res.success) {
+      setAttendanceState(getAttendanceState());
+      setSaverFeedback(isKo ? res.message_ko : res.message_en);
+      setTimeout(() => setSaverFeedback(null), 3000);
+    }
+  };
 
   const handleSpin = () => {
     if (isSpinning) return;
@@ -55,10 +68,11 @@ export const DailyLuckyRoulette: React.FC<DailyLuckyRouletteProps> = ({
 
     setTimeout(() => {
       setIsSpinning(false);
-      const { newState, streakBonus } = claimDailyReward(winningItem);
+      const { newState, streakBonus, multiplier } = claimDailyReward(winningItem);
       setAttendanceState(newState);
       setWonReward(winningItem);
       setStreakBonusGranted(streakBonus);
+      setMultiplierGranted(multiplier);
 
       if (onRewardClaimed) {
         const total = (winningItem.rewardType === 'sns' ? winningItem.amount : 0) + streakBonus;
@@ -69,7 +83,7 @@ export const DailyLuckyRoulette: React.FC<DailyLuckyRouletteProps> = ({
 
   return (
     <div className="fixed inset-0 z-[9999] bg-black/80 flex items-center justify-center p-4 font-mono select-none backdrop-blur-xs animate-fade-in">
-      <div className="bg-[#201d1d] text-white border-2 border-amber-500/50 w-full max-w-sm p-5 flex flex-col items-center gap-4 rounded-none shadow-2xl relative">
+      <div className="bg-[#201d1d] text-white border-2 border-amber-500/50 w-full max-w-sm p-5 flex flex-col items-center gap-3.5 rounded-none shadow-2xl relative max-h-[95dvh] overflow-y-auto">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -89,23 +103,59 @@ export const DailyLuckyRoulette: React.FC<DailyLuckyRouletteProps> = ({
             {isKo ? '매일 1회 무료 행운의 룰렛' : 'Daily Free Lucky Wheel'}
           </h3>
           <p className="text-[10px] text-slate-400">
-            {isKo ? '7일 연속 출석 시 신화 소환권 & 황금 뱃지 증정!' : '7-Day Streak unlocks Mythic Ticket & Gold Badge!'}
+            {isKo ? '7일 연속 출석 시 신화 소환권 & 3.0배 토큰 대박!' : '7-Day Streak unlocks 3.0x Multiplier & Mythic Ticket!'}
           </p>
         </div>
 
-        {/* 7-Day Streak Tracker */}
+        {/* Row 1065 / ID 328: Streak Saver Restore Banner */}
+        {attendanceState.interruptedStreak > 0 && attendanceState.streakSaverTokens > 0 && (
+          <div className="w-full bg-indigo-950/80 border border-indigo-500/50 p-2 rounded flex items-center justify-between gap-2 text-[10px]">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <ShieldCheck size={16} className="text-indigo-400 shrink-0 animate-pulse" />
+              <div className="flex flex-col text-left">
+                <span className="font-bold text-indigo-200">
+                  {isKo ? '스트릭 복구권 보유 (월 1회)' : 'Streak Saver Available'}
+                </span>
+                <span className="text-[8px] text-indigo-300/80">
+                  {isKo ? `끊긴 ${attendanceState.interruptedStreak}일차 스트릭 복구 가능` : `Restore broken Day ${attendanceState.interruptedStreak} streak`}
+                </span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={handleRestoreStreak}
+              className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-[9px] font-black shrink-0 transition-all cursor-pointer active:scale-95 shadow-sm"
+            >
+              {isKo ? '복구하기' : 'Restore'}
+            </button>
+          </div>
+        )}
+
+        {/* Saver Feedback Alert */}
+        {saverFeedback && (
+          <div className="w-full p-2 bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 text-[10px] text-center font-bold rounded animate-fade-in">
+            {saverFeedback}
+          </div>
+        )}
+
+        {/* 7-Day Consecutive Login Streak Tracker with Escalating Multipliers (Row 1065 / ID 328) */}
         <div className="w-full bg-slate-900/80 border border-slate-800 p-2 flex flex-col gap-1.5">
           <div className="flex justify-between text-[10px] font-bold">
             <span className="text-amber-300 flex items-center gap-1">
               <Trophy size={12} />
               {isKo ? `출석 스트릭: ${attendanceState.currentStreak}일차` : `Streak: Day ${attendanceState.currentStreak}`}
             </span>
-            <span className="text-slate-400">7-DAY GOAL</span>
+            <span className="text-amber-400 text-[9px] font-mono">
+              {attendanceState.currentStreak > 0
+                ? `${STREAK_MULTIPLIERS[Math.min(attendanceState.currentStreak - 1, STREAK_MULTIPLIERS.length - 1)]}x BOOST`
+                : '1.0x BASE'}
+            </span>
           </div>
           <div className="grid grid-cols-7 gap-1">
             {[1, 2, 3, 4, 5, 6, 7].map((day) => {
               const isPassed = day <= attendanceState.currentStreak;
               const isToday = day === attendanceState.currentStreak;
+              const multiplier = STREAK_MULTIPLIERS[day - 1];
               return (
                 <div
                   key={day}
@@ -117,6 +167,9 @@ export const DailyLuckyRoulette: React.FC<DailyLuckyRouletteProps> = ({
                 >
                   <span>D{day}</span>
                   <span>{day === 7 ? '👑' : isPassed ? '✓' : '•'}</span>
+                  <span className="text-[7px] text-amber-400/90 font-mono scale-90 mt-0.5">
+                    {multiplier}x
+                  </span>
                 </div>
               );
             })}
@@ -124,7 +177,7 @@ export const DailyLuckyRoulette: React.FC<DailyLuckyRouletteProps> = ({
         </div>
 
         {/* 3D Wheel Container */}
-        <div className="relative w-56 h-56 flex items-center justify-center my-1">
+        <div className="relative w-52 h-52 flex items-center justify-center my-0.5">
           {/* Wheel Pointer Pin */}
           <div className="absolute -top-3 z-30 flex flex-col items-center">
             <div className="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[14px] border-t-amber-400 drop-shadow-md" />
@@ -176,7 +229,9 @@ export const DailyLuckyRoulette: React.FC<DailyLuckyRouletteProps> = ({
                 <span>{isKo ? wonReward.label_ko : wonReward.label_en} 획득!</span>
               </div>
               <div className="text-[10px] text-amber-200/80">
-                {isKo ? `스트릭 보너스 +${streakBonusGranted} SNS 추가 입금 완료` : `Streak Bonus +${streakBonusGranted} SNS Deposited`}
+                {isKo 
+                  ? `스트릭 보너스 (${multiplierGranted}x 배수 적용) +${streakBonusGranted} SNS 추가 입금 완료` 
+                  : `Streak Bonus (${multiplierGranted}x Multiplier) +${streakBonusGranted} SNS Deposited`}
               </div>
             </motion.div>
           )}

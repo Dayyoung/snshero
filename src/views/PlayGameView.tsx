@@ -47,6 +47,8 @@ import { getEquipmentSetBonus, calculateBattleSynergy, FACTION_ADVANTAGE_COLORS,
 import { incrementMissionProgress } from '../lib/dailyMissions';
 import { DailyMissions as DailyMissionsComponent } from '../components/DailyMissions';
 import { BattleResultPanel, LeveledUpCardInfo } from '../components/BattleResultPanel';
+import { BattleReplayData, ReplayMove, decodeReplayData } from '../lib/replayManager';
+import { BattleReplayModal } from '../components/BattleReplayModal';
 import { useStoryProgress } from '../hooks/useStoryProgress';
 import { useCardSkins } from '../hooks/useCardSkins';
 import { StoryBattleBanner } from '../components/StoryBattleBanner';
@@ -3598,6 +3600,26 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [showDeckPreview, setShowDeckPreview] = useState(false);
   const [showMobileLogs, setShowMobileLogs] = useState(false);
   const [showCortanaHud, setShowCortanaHud] = useState(false);
+  const [battleMoves, setBattleMoves] = useState<ReplayMove[]>([]);
+  const [urlReplayData, setUrlReplayData] = useState<BattleReplayData | null>(null);
+  const [showUrlReplayModal, setShowUrlReplayModal] = useState<boolean>(false);
+
+  // Detect ?replay= in URL parameter to view shared battle replay
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const replayParam = params.get('replay');
+      if (replayParam) {
+        const decoded = decodeReplayData(replayParam);
+        if (decoded) {
+          setUrlReplayData(decoded);
+          setShowUrlReplayModal(true);
+        }
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, []);
 
   // Sync gameLogs to localStorage with Debounce to eliminate main-thread I/O jank
   useEffect(() => {
@@ -6149,6 +6171,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       totalMovesTracked: prev.totalMovesTracked + 1
     }));
 
+    // Record Battle Move for Replay (Row 1063 / ID 326)
+    const pCardIdNum = Number(cardToPlace.id) || (cardIdx + 1);
+    const pCardTitleStr = language === 'ko' ? (cardToPlace.title || cardToPlace.title_en || '카드') : (cardToPlace.title_en || cardToPlace.title || 'Card');
+    setBattleMoves(prev => [
+      ...prev,
+      {
+        turn: prev.length + 1,
+        by: 'player',
+        cardId: pCardIdNum,
+        cardTitle: pCardTitleStr,
+        boardIdx,
+        capturedIndices: flippedIndicesPreview || []
+      }
+    ]);
+
     addLog(t('log_deployed', language, { 
       owner: t('you', language), 
       unit: language === 'ko' ? (cardToPlace.title || cardToPlace.title_en) : (cardToPlace.title_en || cardToPlace.title), 
@@ -7538,6 +7575,22 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     const newBoard = [...board];
     const aiCard = { ...opponentHand[cardIdx] };
     newBoard[boardIdx] = aiCard;
+
+    // Record Battle Move for Replay (Row 1063 / ID 326)
+    const aiCardIdNum = Number(aiCard.id) || (cardIdx + 1);
+    const aiCardTitleStr = language === 'ko' ? (aiCard.title || aiCard.title_en || 'AI 카드') : (aiCard.title_en || aiCard.title || 'AI Card');
+    const { indices: aiFlippedPreview } = getFlips(newBoard, boardIdx, aiCard, 'ai', true);
+    setBattleMoves(prev => [
+      ...prev,
+      {
+        turn: prev.length + 1,
+        by: 'ai',
+        cardId: aiCardIdNum,
+        cardTitle: aiCardTitleStr,
+        boardIdx,
+        capturedIndices: aiFlippedPreview || []
+      }
+    ]);
     
     addLog(t('log_deployed', language, { 
       owner: t('system_ai', language), 
@@ -16537,7 +16590,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             onMouseEnter={() => handleMouseEnterCell(idx)}
                             onMouseLeave={handleMouseLeaveCell}
                             className={cn(
-                              "grid-cell group w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] flex items-center justify-center relative transition-all overflow-visible rounded-lg font-mono shadow-none [transform:translate3d(0,0,0)] [will-change:transform,opacity] battle-touch-target battle-grid-slot touch-none",
+                              "grid-cell group w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] flex items-center justify-center relative transition-all overflow-visible rounded-lg font-mono shadow-none [transform:translate3d(0,0,0)] battle-touch-target battle-grid-slot touch-none",
+                              /* Row 1067 / ID 330: Dynamic Layer Promotion strictly during active hover or targeting */
+                              (hoveredCellIdx === idx || (selectedCardIdx !== null && !card)) && "[will-change:transform,opacity]",
                               card ? (
                                 selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player'
                                   ? "border border-rose-500/40 opacity-75 saturate-75 cursor-not-allowed"
@@ -17124,8 +17179,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 }}
                 whileTap={{ scale: 0.95 }}
                 className={cn(
-                  "w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg [will-change:transform,opacity] battle-touch-target touch-none",
-                  isSelected && "z-50"
+                  "w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg battle-touch-target touch-none",
+                  /* Row 1067 / ID 330: Dynamic Layer Promotion strictly when card is actively selected */
+                  isSelected && "[will-change:transform,opacity] z-50"
                 )}
               >
                 {isRecommended && (
@@ -17554,6 +17610,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 opponentAvatar={lastOpponent?.avatar}
                 opponentLevel={lastOpponent?.level || 15}
                 opponentMainCardTitle={opponentDeck[0]?.title || (language === 'ko' ? '카단 (SSR)' : 'Kadan (SSR)')}
+                battleReplayData={{
+                  id: `replay_${Date.now()}`,
+                  version: 1,
+                  timestamp: Date.now(),
+                  result: winner === 'player' ? 'win' : winner === 'ai' ? 'loss' : 'draw',
+                  playerName: localStorage.getItem('hero_user_name') || (language === 'ko' ? '사령관' : 'Commander'),
+                  opponentName: lastOpponent?.name || (battleType === 'robot' ? 'AI 로봇' : language === 'ko' ? '라이벌 사령관' : 'Rival Commander'),
+                  playerScore: battleType === 'matgo' ? matgoScores.player : boardScore.player,
+                  opponentScore: battleType === 'matgo' ? matgoScores.ai : boardScore.ai,
+                  totalDamageDealt: totalDamageDealt > 0 ? totalDamageDealt : (boardScore.player * 85 + (winner === 'player' ? 320 : 120)),
+                  moves: battleMoves,
+                  playerDeckTitles: playerDeck.map(c => c.title || 'Card'),
+                  opponentDeckTitles: opponentDeck.map(c => c.title || 'Card')
+                }}
                 onShareToCommunity={() => setShowBattleShareTemplate(true)}
                 onOpenDetailedSummary={() => setShowPostBattleSummaryModal(true)}
               />
@@ -18382,6 +18452,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           setGameOver(true);
         }}
         isOpponentDisconnected={isOpponentDisconnected}
+        language={language}
+      />
+
+      {/* Row 1063 / ID 326: Shared URL Battle Replay Modal */}
+      <BattleReplayModal
+        isOpen={showUrlReplayModal}
+        onClose={() => setShowUrlReplayModal(false)}
+        replayData={urlReplayData}
         language={language}
       />
     </div>
