@@ -50,6 +50,7 @@ import { CardCombineModal } from '../components/CardCombineModal';
 import { DeckSynergyCalculator } from '../components/DeckSynergyCalculator';
 import { DeckSynergyVisualizer } from '../components/DeckSynergyVisualizer';
 import { DeckBondSynergyEngine } from '../lib/DeckBondSynergyEngine';
+import { DeckChemistryMeter } from '../components/DeckChemistryMeter';
 import { buildOptimalSynergyDeck } from '../lib/deckSynergyEngine';
 
 interface MyDeckViewProps {
@@ -1220,6 +1221,11 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               <span>{language === 'ko' ? '시너지 효과' : 'Synergy Info'}</span>
               <ChevronRight size={11} className="text-purple-500" />
             </button>
+          </div>
+
+          {/* Deck Chemistry Meter Widget (Row 1059 / ID 322) */}
+          <div className="mb-2.5">
+            <DeckChemistryMeter deck={currentDeck} language={language} />
           </div>
 
           {/* Active Hero Bond Synergies Bar (Row 1045 / ID 553) */}

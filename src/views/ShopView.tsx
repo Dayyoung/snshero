@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { ShoppingBag, ArrowRight, Zap, Terminal, Sparkles, AlertCircle, X, Package, Activity, ShieldAlert, History, Clock, Lock, HelpCircle, ChevronLeft, ChevronRight, BookOpen, Film, Download, Play, Layers } from 'lucide-react';
+import { ShoppingBag, ArrowRight, Zap, Terminal, Sparkles, AlertCircle, X, Package, Activity, ShieldAlert, History, Clock, Lock, HelpCircle, ChevronLeft, ChevronRight, BookOpen, Film, Download, Play, Layers, ArrowDownUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { PayPalScriptProvider, PayPalButtons, usePayPalScriptReducer, FUNDING } from "@paypal/react-paypal-js";
 import { QRCodeSVG } from 'qrcode.react';
 import axios from 'axios';
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardItem } from '../components/CardItem';
+import { TokenExchangeModal } from '../components/TokenExchangeModal';
 import { cn, getFormattedCardName, getUserCollectionName, getAssetUrl } from '../lib/utils';
 import { Language, CardData, Item, GoodsOrder, GoodsPaymentMethod, GoodsType, RefundRequestReason, CardRarity } from '../types';
 import { ITEM_DATABASE } from '../constants/itemDatabase';
@@ -337,6 +338,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
   ownedCards = []
 }) => {
   const [showHistory, setShowHistory] = useState(false);
+  const [isTokenExchangeOpen, setIsTokenExchangeOpen] = useState(false);
   const [historyList, setHistoryList] = useState<any[]>([]);
   const [goodsOrders, setGoodsOrders] = useState<GoodsOrder[]>(() => loadStoredGoodsOrders());
   const { requestMap: refundRequestMap, submitRequest: submitRefundRequest } = useRefundRequests();
@@ -2304,6 +2306,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
           <div className="flex items-center justify-between px-4 sm:px-6 md:px-8 pt-4 pb-2">
             <div className="flex items-center gap-2">
               <PageHeader title={t('shop', language)} />
+              <button
+                type="button"
+                onClick={() => setIsTokenExchangeOpen(true)}
+                className="inline-flex min-h-[36px] items-center justify-center gap-1.5 px-3 rounded-xl border border-indigo-200 bg-indigo-50 text-indigo-700 font-mono font-bold text-xs shadow-2xs transition hover:bg-indigo-100 active:scale-95 cursor-pointer ml-1"
+              >
+                <ArrowDownUp size={14} className="text-indigo-600" />
+                <span>{language === 'ko' ? '토큰 환전소' : 'Token Swap'}</span>
+              </button>
               <button
                 type="button"
                 onClick={() => setHelpPopupState({ step: 0 })}
@@ -5008,6 +5018,21 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </AnimatePresence>
 
           {renderHistoryModal()}
+
+          {/* Row 1050 / ID 313: Token Exchange / Swap Modal with Slippage Control */}
+          <TokenExchangeModal
+            isOpen={isTokenExchangeOpen}
+            onClose={() => setIsTokenExchangeOpen(false)}
+            language={language}
+            currentSnsBalance={sns}
+            onSwapSuccess={(fromAmount, toAmount, tokenType) => {
+              if (tokenType === 'SUI') {
+                updateSns(-fromAmount, 'swap_to_sui');
+              } else {
+                updateSns(toAmount, 'swap_from_sui', 'earned');
+              }
+            }}
+          />
           </div>
         </div>
 

@@ -24,6 +24,31 @@
   to { transform: translateX(100%); }
 }
 
+/* Row 1053 / ID 316: Micro Screen Shake FX (80ms, 3px) */
+@keyframes micro-shake {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3px, 2px); }
+  40% { transform: translate(3px, -2px); }
+  60% { transform: translate(-2px, -1px); }
+  80% { transform: translate(2px, 1px); }
+  100% { transform: translate(0, 0); }
+}
+
+.animate-micro-shake {
+  animation: micro-shake 80ms ease-in-out;
+}
+
+/* Row 1061 / ID 324: Disable Native Touch Callout & Selection */
+.battle-touch-target,
+.battle-card-tile,
+.battle-grid-slot,
+.game-canvas-wrapper {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  touch-action: none;
+}
+
 @layer base {
   html, body {
     -webkit-font-smoothing: antialiased;

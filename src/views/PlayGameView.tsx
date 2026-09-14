@@ -38,6 +38,11 @@ import { PacmanGame } from '../components/PacmanGame';
 import { TictactoeGame } from '../components/TictactoeGame';
 import { TrexRunnerGame } from '../components/TrexRunnerGame';
 import SkillTimingButton from '../components/SkillTimingButton';
+import { BattleReconnectModal } from '../components/BattleReconnectModal';
+import { BattleFXEngine } from '../lib/BattleFXEngine';
+import { SceneCleanupManager } from '../lib/SceneCleanupManager';
+import { TurnOrderDeciderModal } from '../components/TurnOrderDeciderModal';
+import { ApRecoveryWidget } from '../components/ApRecoveryWidget';
 import { getEquipmentSetBonus, calculateBattleSynergy, FACTION_ADVANTAGE_COLORS, FACTION_ADVANTAGE_ICONS, EQUIPMENT_SET_ICONS, generateCounterDeck, calculateElementalComboBonus } from '../lib/battleSynergy';
 import { incrementMissionProgress } from '../lib/dailyMissions';
 import { DailyMissions as DailyMissionsComponent } from '../components/DailyMissions';
@@ -2655,6 +2660,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [gameOver, setGameOver] = useState(false);
   const [winner, setWinner] = useState<'player' | 'ai' | 'draw' | null>(null);
   const [showBattleShareTemplate, setShowBattleShareTemplate] = useState(false);
+
+  // Row 1058 & 1048 & 1052: Battle States & Cleanup
+  const [showTurnOrderDecider, setShowTurnOrderDecider] = useState<boolean>(false);
+  const [isReconnectModalOpen, setIsReconnectModalOpen] = useState<boolean>(false);
+  const [isOpponentDisconnected, setIsOpponentDisconnected] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (gameState === 'playing' && !gameOver) {
+      setShowTurnOrderDecider(true);
+    } else if (gameState === 'lobby' || gameState === 'modeSelect') {
+      SceneCleanupManager.cleanupScene();
+    }
+  }, [gameState, gameOver]);
 
   useEffect(() => {
     if (!gameOver) {
@@ -5698,6 +5716,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     }
 
     if (flippedIndices.length > 0) {
+      // Row 1053 / ID 316: Micro Screen Shake & Hit-Stop Impact FX on Card Capture
+      BattleFXEngine.triggerCardCaptureImpact();
+
       flippedIndices.forEach(ni => triggerCellDamage(ni));
       setTimeout(() => {
         playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3'); // Capture/Flip Sound
@@ -14620,6 +14641,28 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             {/* Map Container */}
             <div ref={mapContainerRef} className="w-full h-full z-10" />
 
+            {/* Row 1055 / ID 318: Energy / AP Recovery Widget with Countdown & Gold Rest */}
+            <div className="absolute top-24 left-4 z-50 pointer-events-auto max-w-sm w-[270px]">
+              <ApRecoveryWidget
+                currentAp={userStats?.sp ?? 12}
+                maxAp={20}
+                goldBalance={userStats?.gold ?? 1500}
+                onApRestored={(addedAp, costGold) => {
+                  if (userStats) {
+                    userStats.sp = Math.min(20, (userStats.sp || 0) + addedAp);
+                    userStats.gold = Math.max(0, (userStats.gold || 0) - costGold);
+                  }
+                  addLog(
+                    language === 'ko'
+                      ? `⚡ [골드로 휴식] 500 골드를 사용하여 5 AP를 회복했습니다! (현재 AP: ${userStats?.sp ?? 17})`
+                      : `⚡ [GOLD REST] Spent 500G to restore 5 AP!`,
+                    'system'
+                  );
+                }}
+                language={language}
+              />
+            </div>
+
             {/* Premium Workout Floating Dashboard Card */}
             <div className="absolute top-24 right-4 z-50 pointer-events-auto max-w-sm w-[260px] animate-fade-in">
               <div className="bg-slate-900/90 backdrop-blur-xl border border-cyan-500/30 p-4 rounded-2xl shadow-[0_4px_24px_rgba(6,182,212,0.15)] text-white space-y-4 font-sans">
@@ -16319,7 +16362,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               isClutchSlowMo && "scale-[1.02] filter contrast-125 transition-transform duration-300"
             )}>
                     <div className={cn(
-                      "grid grid-cols-3 gap-1 md:gap-2 w-fit relative p-1.5 rounded-sm transition-all",
+                      "grid grid-cols-3 gap-1 md:gap-2 w-fit relative p-1.5 rounded-sm transition-all battle-board-root game-canvas-wrapper touch-none",
                       isSuddenDeathOverclock && "border border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.25)] bg-amber-950/10"
                     )}>
                       {/* Item 394 & Item 402: Battle Combo Announcer & Critical Shatter Overlay */}
@@ -16502,7 +16545,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             onMouseEnter={() => handleMouseEnterCell(idx)}
                             onMouseLeave={handleMouseLeaveCell}
                             className={cn(
-                              "grid-cell group w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] flex items-center justify-center relative transition-all overflow-visible rounded-lg font-mono shadow-none [transform:translate3d(0,0,0)] [will-change:transform,opacity]",
+                              "grid-cell group w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] flex items-center justify-center relative transition-all overflow-visible rounded-lg font-mono shadow-none [transform:translate3d(0,0,0)] [will-change:transform,opacity] battle-touch-target battle-grid-slot touch-none",
                               card ? (
                                 selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player'
                                   ? "border border-rose-500/40 opacity-75 saturate-75 cursor-not-allowed"
@@ -17078,18 +17121,18 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 initial={{ opacity: 0, scale: 0.9, y: 0 }}
                 animate={{ 
                   opacity: 1,
-                  y: isSelected ? -20 : 0,
+                  y: isSelected ? -40 : 0, // Row 1051 / ID 314: Elevated -40px touch anchor offset
                   scale: isSelected ? 1.08 : (isRecommended ? 1.03 : 1)
                 }}
                 exit={{ opacity: 0, scale: 0.8, y: -10, transition: { duration: 0.15 } }}
                 transition={{ duration: 0.15 }}
                 whileHover={{ 
-                  y: isSelected ? -28 : -10,
+                  y: isSelected ? -44 : -10,
                   scale: isSelected ? 1.1 : 1.05
                 }}
                 whileTap={{ scale: 0.95 }}
                 className={cn(
-                  "w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg [will-change:transform,opacity]",
+                  "w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg [will-change:transform,opacity] battle-touch-target touch-none",
                   isSelected && "z-50"
                 )}
               >
@@ -18323,6 +18366,31 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             handleExitMatch(false);
           }
         }}
+      />
+
+      {/* Row 1058 / ID 321: Turn Order Decider Modal */}
+      <TurnOrderDeciderModal
+        isOpen={showTurnOrderDecider}
+        isPlayerFirst={turn === 'player' || firstTurn === 'player'}
+        onComplete={() => setShowTurnOrderDecider(false)}
+        language={language}
+      />
+
+      {/* Row 1048 / ID 311: Battle Reconnect Modal */}
+      <BattleReconnectModal
+        isOpen={isReconnectModalOpen}
+        onClose={() => setIsReconnectModalOpen(false)}
+        onRetry={() => {
+          setIsReconnectModalOpen(false);
+          addLog(language === 'ko' ? '✅ 대전 서버에 재연결되었습니다.' : '✅ Reconnected to match server.', 'system');
+        }}
+        onForfeitWin={() => {
+          setIsReconnectModalOpen(false);
+          setWinner('player');
+          setGameOver(true);
+        }}
+        isOpponentDisconnected={isOpponentDisconnected}
+        language={language}
       />
     </div>
   );

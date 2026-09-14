@@ -52,6 +52,7 @@ import { BGM_TRACKS, DEFAULT_BGM_TRACK_ID } from './lib/audioConstants';
 import { getSeasonItem, setSeasonItem, removeSeasonItem } from './lib/seasonStorage';
 import { getDeckUpgradeRecommendation, getCardStateFingerprint } from './lib/deckUpgrade';
 import { incrementMissionProgress } from './lib/dailyMissions';
+import { ViewportKeyboardHandler } from './lib/viewportKeyboardHandler';
 import { 
   Menu, 
   ChevronLeft, 
@@ -466,6 +467,7 @@ function AppContent() {
   // 최초 접속 및 새로고침 시 백그라운드에서 조용히 서버 버전 비교 (화면 블로킹 없이 기존 캐시 사용)
   // 최신이 아닌 경우에만 백그라운드 캐시 업데이트
   useEffect(() => {
+    ViewportKeyboardHandler.init();
     const syncVersionInBackground = async () => {
       try {
         const result = await checkAndSyncAppVersion();

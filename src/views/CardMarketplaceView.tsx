@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { HelpCircle, X, ChevronLeft, ChevronRight, TrendingUp, SlidersHorizontal, Sparkles } from 'lucide-react';
+import { HelpCircle, X, ChevronLeft, ChevronRight, TrendingUp, SlidersHorizontal, Sparkles, Bookmark, Bell } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { getMarketplaceFeePolicy, calculateMarketplaceSettlement } from '../content/marketplaceFees';
 import { MarketplacePriceBand } from '../lib/MarketplacePriceBand';
+import { MarketplaceWatchlist, WatchlistItem } from '../lib/MarketplaceWatchlist';
 import { PageHeader } from '../components/PageHeader';
 import { MarketplaceCardTradeModal } from '../components/MarketplaceCardTradeModal';
 import { t } from '../lib/i18n';
@@ -207,6 +208,45 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
   const listableCards = useMemo(() => {
     return inventoryCards.filter((entry) => !activeOwnedListingCardIds.has(entry.cardId));
   }, [activeOwnedListingCardIds, inventoryCards]);
+
+  // Row 1060 / ID 323: Suggested Market Price Calculation
+  const suggestedPrice = useMemo(() => {
+    if (!selectedCardId) return null;
+    const band = MarketplacePriceBand.getInstance().evaluatePriceBand(selectedCardId, 0);
+    const matchingListings = marketState.listings.filter(
+      (l) => l.cardId === selectedCardId && l.status === 'active'
+    );
+    const lowest = matchingListings.length > 0 ? Math.min(...matchingListings.map((l) => l.askPrice)) : null;
+    const base = lowest ? Math.round((lowest + band.referencePrice) / 2) : band.referencePrice;
+    return Math.max(100, Math.round(base / 50) * 50);
+  }, [selectedCardId, marketState.listings]);
+
+  // Row 1054 / ID 317: Watchlist & Price Notification Alert
+  const [watchlist, setWatchlist] = useState<WatchlistItem[]>(() =>
+    MarketplaceWatchlist.getWatchlist(currentSeason)
+  );
+
+  useEffect(() => {
+    const handleWatchlistUpdate = () => {
+      setWatchlist(MarketplaceWatchlist.getWatchlist(currentSeason));
+    };
+    window.addEventListener('snshero:watchlist-updated', handleWatchlistUpdate);
+    return () => window.removeEventListener('snshero:watchlist-updated', handleWatchlistUpdate);
+  }, [currentSeason]);
+
+  useEffect(() => {
+    const alerts = MarketplaceWatchlist.checkAlerts(
+      marketState.listings.map((l) => ({ cardId: l.cardId, price: l.askPrice })),
+      currentSeason
+    );
+    if (alerts.length > 0) {
+      const cardName = CARD_DATABASE[alerts[0].cardId]?.title || `Card #${alerts[0].cardId}`;
+      const msg = language === 'ko'
+        ? `🔔 관심 카드 [${cardName}]의 목표가 매물이 등록되었습니다!`
+        : `🔔 Watchlist card [${cardName}] target price reached!`;
+      updateFeedback('marketplace_feedback_price_alert' as any, msg);
+    }
+  }, [marketState.listings, currentSeason, language]);
 
   useEffect(() => {
     if (listableCards.length === 0) {
@@ -704,6 +744,24 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
               placeholder={t('marketplace_ask_price', language)}
               className="w-full min-h-9 rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs text-slate-900 outline-none focus:border-indigo-400"
             />
+
+            {/* Row 1060 / ID 323: Suggested Market Price Guidance Chip */}
+            {selectedCardId && suggestedPrice && (
+              <div className="flex items-center justify-between gap-2 p-2 rounded-lg bg-indigo-50/80 border border-indigo-100">
+                <span className="text-[10px] text-indigo-900 font-bold flex items-center gap-1">
+                  <Sparkles size={11} className="text-indigo-600" />
+                  {language === 'ko' ? '적정 시장 권장가:' : 'Suggested Market Price:'}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setListingPriceInput(String(suggestedPrice))}
+                  className="px-2 py-0.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-mono font-bold text-[10px] flex items-center gap-1 transition-all active:scale-95 cursor-pointer shadow-2xs"
+                >
+                  <span>{suggestedPrice.toLocaleString()} SNS</span>
+                  <span className="text-[9px] opacity-80">({language === 'ko' ? '자동 입력' : 'Auto-fill'})</span>
+                </button>
+              </div>
+            )}
 
             {selectedCardId && (
               <div className="text-[10px] text-slate-500 flex items-center justify-between px-1">

@@ -4811,6 +4811,48 @@
 
 ---
 
+## [2026-09-14 14:20 KST] [/ge 스프레드시트 신규 15개 행(Row 1048~1062 / ID 311~325) 전수 구현 및 1062개 행 100% 완료]
+- **요청 사항**:
+  - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 1048~1062) 확인 및 소스코드 반영/검증 완료.
+- **조치 사항**:
+  1. **Row 1048 [ID 311] (네트워크 재연결 카운트다운 오버레이 UI)**:
+     - `src/components/BattleReconnectModal.tsx`: 네트워크 단절 및 상대방 끊김 감지 시 30초 유예 카운트다운 링, 즉시 재연결 버튼, 몰수승(Win by forfeit) 자동 판정 오버레이 구현.
+  2. **Row 1049 [ID 312] (카드 속성 상성 시뮬레이터 미니 툴)**:
+     - `src/components/ElementCounterSimulator.tsx`: 4대 원소(수/화/지/풍) 스위처 및 실시간 4방향 파워 보정값(±2), 상성 설명 뱃지 계산 툴 구현 및 `WikiCardDetailModal` 연동.
+  3. **Row 1050 [ID 313] (토큰 환전소 슬리피지 허용치 및 최소 수령액 안내)**:
+     - `src/components/TokenExchangeModal.tsx`: 0.5% / 1.0% / Custom 슬리피지 허용치 토글, 가격 영향도(5% 초과 차단), 슬리피지 반영 최소 보장 수령액 표시 및 `ShopView` 연동.
+  4. **Row 1051 [ID 314] (전투 보드 터치 좌표 -40px 오프셋 & Pointer Events 가속)**:
+     - `src/views/PlayGameView.tsx`: 핸드 카드 드래그/선택 시 손가락 위 -40px 플로팅 앵커 오프셋 적용, `touch-action: none`으로 브라우저 스크롤 간섭 완전 차단.
+  5. **Row 1052 [ID 315] (스토리/배틀 클리어 후 씬 퇴장 WebGL 메모리 GC 정리)**:
+     - `src/lib/SceneCleanupManager.ts`: 씬 퇴장 및 로비 복귀 시 텍스처 dispose, 렌더리스트 정리, 미사용 캔버스 컨텍스트 해제로 GPU 메모리 60MB 이하 유지.
+  6. **Row 1053 [ID 316] (카드 캡처 마이크로 화면 흔들림 & 히트스톱 연출)**:
+     - `src/lib/BattleFXEngine.ts` & `src/index.css`: 카드 뒤집기 성공 시 80ms 미세 진동(3px) 및 60ms 히트스톱 지연 연출로 타격 임팩트 극대화.
+  7. **Row 1054 [ID 317] (마켓플레이스 관심 카드 시세 변동 알림 Watchlist)**:
+     - `src/lib/MarketplaceWatchlist.ts`: 관심 카드 목표 구매가 등록, 실시간 매물 감지 시 인앱 토스트 및 알림 뱃지 디스패치 연동.
+  8. **Row 1055 [ID 318] (미션 AP 충전 카운트다운 타이머 & 골드로 휴식)**:
+     - `src/components/ApRecoveryWidget.tsx`: 다음 AP 충전 분:초 카운트다운 위젯 및 500 골드로 5 AP 충전(일일 2회 한정) 기능 구현 및 로비 연동.
+  9. **Row 1056 [ID 319] (모바일 가상 키보드 활성화 시 뷰포트 리사이즈 방어)**:
+     - `src/lib/viewportKeyboardHandler.ts`: `visualViewport` 리사이즈 감지, 기본 높이 고정 및 하단 독 왜곡 방지 유틸 구현 및 `App.tsx` 연동.
+  10. **Row 1057 [ID 320] (통합 오디오 스프라이트 & 사운드 메모리 누수 방지)**:
+      - `src/lib/AudioSpriteService.ts`: 단일 AudioContext 기반 사운드 스프라이트 관리, 지연 없는 재생 및 오디오 메모리 8MB 이하 제한.
+  11. **Row 1058 [ID 321] (배틀 선공/후공 코인 토스 연출 & 후공 보너스 안내)**:
+      - `src/components/TurnOrderDeciderModal.tsx`: 배틀 시작 시 1.5초 3D 코인 토스 애니메이션, 선공(파랑)/후공(빨강) 결정 및 후공 패 파워 +1 보정 뱃지 안내.
+  12. **Row 1059 [ID 322] (덱 속성/종족별 덱 완성도 Deck Chemistry Meter)**:
+      - `src/components/DeckChemistryMeter.tsx`: 5장 덱의 원소 집중도 및 조화도를 0~100% 게이지와 S/A/B 랭크 및 패시브 버프 뱃지로 시각화, `MyDeckView` 연동.
+  13. **Row 1060 [ID 323] (마켓플레이스 판매 등록 시장 권장가 칩 및 자동 입력)**:
+      - `src/views/CardMarketplaceView.tsx`: 최근 7일 거래 평균가 및 최저가 기반 "적정 시장 권장가" 칩 탭 시 판매가 인풋 자동 입력 구현.
+  14. **Row 1061 [ID 324] (배틀 보드 터치 콜아웃 및 선택 메뉴 완전 차단)**:
+      - `src/index.css`: `.battle-touch-target, .battle-grid-slot`에 `-webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: none;` 완전 적용.
+  15. **Row 1062 [ID 325] (웹 폰트 사전 로드 Preconnect 및 FOUT/FOIT 방지)**:
+      - `index.html`: Google Fonts `preconnect` 태그 삽입 및 `font-display: swap` 최적화.
+- **품질 검증**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공 (built in 9.29s)
+- **스프레드시트 1062개 전체 행 100% 전수 완료 달성**:
+  - `AGENTS.md` 마지막 완료 번호 `[Row 1062 / ID 325]`로 갱신.
+
+---
+
 ## [2026-09-13 10:41 KST] [/ge 스프레드시트 신규 12개 행(Row 1036~1047 / ID 548~555) 전수 구현 및 1047개 행 100% 완료]
 - **요청 사항**:
   - `/ge` 구글 스프레드시트(`1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s`) 신규 추가 항목(Row 1036~1047) 확인 및 소스코드 반영/검증 완료.

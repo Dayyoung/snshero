@@ -14,6 +14,7 @@ import { SkinSelector } from './SkinSelector';
 import { resolveCardImage } from '../content/cardImageVariants';
 import { useGameSettings } from '../contexts/GameSettingsContext';
 import { CardItem } from './CardItem';
+import { ElementCounterSimulator } from './ElementCounterSimulator';
 import type { CardSkin } from '../content/cardSkins';
 import type { DatabaseCard, Language, ViewType, CardData } from '../types';
 
@@ -395,6 +396,13 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
                           <StatChip label="S" value={selectedCard.stats[2]} />
                           <StatChip label="W" value={selectedCard.stats[3]} />
                         </div>
+
+                        {/* Row 1049 / ID 312: Interactive Element Counter Preview Tool */}
+                        <ElementCounterSimulator
+                          cardElement={selectedCard.element}
+                          baseStats={selectedCard.stats}
+                          language={language}
+                        />
 
                         <div className="space-y-2">
                           <DetailRow label={t('wiki_card_detail_faction', language)} value={factionLabel} badgeClass={profile ? factionBadgeClass(profile.faction) : undefined} />
