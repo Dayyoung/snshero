@@ -798,4 +798,48 @@
   animation: combo-float-pop 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
+/* ID 343 & ID 369: 모바일 바운스 스크롤 방지 및 뷰포트 안정화 */
+html, body {
+  overscroll-behavior-y: contain;
+}
+
+.safe-viewport-lock {
+  height: 100dvh;
+  min-height: -webkit-fill-available;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ID 354: 모바일 롱프레스 및 선택 완벽 차단 */
+.prevent-touch-callout {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* ID 400: 저사양 모드 가드 (low-spec-mode) 성능 최적화 오버라이드 */
+html.low-spec-mode *,
+html.low-spec-mode *::before,
+html.low-spec-mode *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+html.low-spec-mode .animate-spin-slow,
+html.low-spec-mode .animate-pulse-slow,
+html.low-spec-mode .animate-shimmer {
+  animation: none !important;
+}
+
+/* ID 409: 다국어 번역 텍스트 말줄임 및 줄바꿈 안정화 */
+.text-overflow-safe {
+  overflow-wrap: break-word;
+  word-break: keep-all;
+  hyphens: auto;
+}
+
+
 

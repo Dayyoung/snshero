@@ -24,8 +24,9 @@ import { GoogleSheetsSyncModal } from '../components/GoogleSheetsSyncModal';
 import { BgmJukeboxModal } from '../components/BgmJukeboxModal';
 import { triggerHaptic } from '../lib/haptic';
 import { checkAndSyncAppVersion, getLocalAppVersion, forcePurgeAndReload } from '../lib/versionManager';
-import { resetAllCaches, getCacheVersionTimestamp } from '../lib/cacheManager';
-import { Smartphone, Music, RefreshCw, CheckCircle, ShieldCheck } from 'lucide-react';
+import { Smartphone, Music, RefreshCw, CheckCircle, ShieldCheck, SlidersHorizontal } from 'lucide-react';
+import { HapticVibrationSettingsModal } from '../components/HapticVibrationSettingsModal';
+
 
 interface SettingViewProps {
   bgmEnabled: boolean;
@@ -117,9 +118,9 @@ export const SettingView: React.FC<SettingViewProps> = ({
   const [showHelp, setShowHelp] = useState(false);
   const [backupRestoreMode, setBackupRestoreMode] = useState<'backup' | 'restore' | null>(null);
   const [isGoogleSheetsModalOpen, setIsGoogleSheetsModalOpen] = useState(false);
-  const [isCheckingVersion, setIsCheckingVersion] = useState(false);
-  const [versionCheckMsg, setVersionCheckMsg] = useState<string | null>(null);
   const [appCurrentVersion, setAppCurrentVersion] = useState<string>(() => getLocalAppVersion() || '2.1.0');
+  const [isHapticModalOpen, setIsHapticModalOpen] = useState(false);
+
 
   const handleCheckVersion = async () => {
     setIsCheckingVersion(true);
@@ -597,22 +598,32 @@ export const SettingView: React.FC<SettingViewProps> = ({
                   </p>
                 </div>
               </div>
-              <button 
-                onClick={() => {
-                  const next = !hapticEnabled;
-                  setHapticEnabled(next);
-                  if (next) triggerHaptic('medium');
-                }}
-                className={cn(
-                  "min-w-[44px] min-h-[44px] w-12 h-6 rounded-full transition-all relative flex items-center p-0.5",
-                  hapticEnabled ? 'bg-indigo-600' : 'bg-slate-200'
-                )}
-              >
-                <div className={cn(
-                  "w-5 h-5 rounded-full transition-all transform bg-white shadow-sm",
-                  hapticEnabled ? 'translate-x-6' : 'translate-x-0'
-                )} />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsHapticModalOpen(true)}
+                  className="px-2.5 py-1 text-[11px] font-bold border border-slate-300 dark:border-slate-600 rounded-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 active:scale-95 transition-all"
+                >
+                  [강도 조절]
+                </button>
+                <button 
+                  onClick={() => {
+                    const next = !hapticEnabled;
+                    setHapticEnabled(next);
+                    if (next) triggerHaptic('medium');
+                  }}
+                  className={cn(
+                    "min-w-[44px] min-h-[44px] w-12 h-6 rounded-full transition-all relative flex items-center p-0.5",
+                    hapticEnabled ? 'bg-indigo-600' : 'bg-slate-200'
+                  )}
+                >
+                  <div className={cn(
+                    "w-5 h-5 rounded-full transition-all transform bg-white shadow-sm",
+                    hapticEnabled ? 'translate-x-6' : 'translate-x-0'
+                  )} />
+                </button>
+              </div>
+
             </div>
 
             <div className="bg-white p-6 flex items-center justify-between">
@@ -1721,6 +1732,12 @@ export const SettingView: React.FC<SettingViewProps> = ({
         }}
         language={language}
       />
+
+      <HapticVibrationSettingsModal
+        isOpen={isHapticModalOpen}
+        onClose={() => setIsHapticModalOpen(false)}
+      />
     </div>
   );
 };
+

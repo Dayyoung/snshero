@@ -139,6 +139,42 @@ export class StreakRewardBooster {
     };
   }
 
+  /**
+   * ID 364: 스트릭 세이버 보유 수량 확인
+   */
+  public getStreakSaverCount(): number {
+    try {
+      return parseInt(localStorage.getItem('hero_streak_saver_count') || '1', 10);
+    } catch {
+      return 1;
+    }
+  }
+
+  /**
+   * ID 364: 스트릭 세이버 아이템을 사용하여 끊어진 연속 출석 복구
+   */
+  public useStreakSaver(): boolean {
+    const count = this.getStreakSaverCount();
+    if (count <= 0) return false;
+
+    const state = this.getState();
+    // 스트릭 +1 복구 및 어제 기준 연속성 갱신
+    state.dailyStreakDays = Math.max(state.dailyStreakDays, 1) + 1;
+    if (state.dailyStreakDays >= 7) {
+      state.isWeeklyStreakActive = true;
+      state.activeMultiplier = 1.5;
+    }
+    this.saveState(state);
+
+    try {
+      localStorage.setItem('hero_streak_saver_count', (count - 1).toString());
+      window.dispatchEvent(new Event('snshero_streak_saver_used'));
+    } catch {
+      // ignore
+    }
+    return true;
+  }
+
   private saveState(state: StreakBoosterState): void {
     try {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(state));
@@ -147,3 +183,4 @@ export class StreakRewardBooster {
     }
   }
 }
+

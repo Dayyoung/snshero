@@ -51,9 +51,13 @@ import { saveWebtoonProgress, type WebtoonProgressState } from './lib/webtoonPro
 import { BGM_TRACKS, DEFAULT_BGM_TRACK_ID } from './lib/audioConstants';
 import { getSeasonItem, setSeasonItem, removeSeasonItem } from './lib/seasonStorage';
 import { getDeckUpgradeRecommendation, getCardStateFingerprint } from './lib/deckUpgrade';
-import { incrementMissionProgress } from './lib/dailyMissions';
 import { VIEW_ROUTES, getViewPath, getViewFromPath, getRouteMeta } from './routes';
 import { useVisualViewportLock } from './hooks/useVisualViewportLock';
+import { useLowSpecGuard } from './hooks/useLowSpecGuard';
+import { useStorageQuotaGuard } from './hooks/useStorageQuotaGuard';
+import { useAudioLifecycleGuard } from './hooks/useAudioLifecycleGuard';
+import { usePwaInstallGuard } from './hooks/usePwaInstallGuard';
+
 import { 
   Menu, 
   ChevronLeft, 
@@ -409,6 +413,13 @@ function AppContent() {
 
   // Row 1056 / ID 319: Mobile Visual Viewport Lock for virtual keyboard stabilization
   useVisualViewportLock();
+
+  // Phase 4: System Guards (ID 339, 340, 344, 370, 395, 400, 419, 420)
+  useLowSpecGuard();
+  const { quota } = useStorageQuotaGuard();
+  useAudioLifecycleGuard();
+  const { isInstallable, isOffline, promptInstall } = usePwaInstallGuard();
+
 
 
 
