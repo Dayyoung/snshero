@@ -52,6 +52,10 @@ import { DeckSynergyVisualizer } from '../components/DeckSynergyVisualizer';
 import { DeckBondSynergyEngine } from '../lib/DeckBondSynergyEngine';
 import { DeckChemistryMeter } from '../components/DeckChemistryMeter';
 import { buildOptimalSynergyDeck } from '../lib/deckSynergyEngine';
+import { DeckPresetCodeModal } from '../components/DeckPresetCodeModal';
+import { DeckBalanceRadarChart } from '../components/DeckBalanceRadarChart';
+import { CardCompareModal } from '../components/CardCompareModal';
+import { MaterialDeficitModal } from '../components/MaterialDeficitModal';
 
 interface MyDeckViewProps {
   currentDeck: CardData[];
@@ -869,11 +873,44 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     setSelectionContext('replace');
   };
 
-  const [sortBy, setSortBy] = useState<'index' | 'level' | 'power' | 'name' | 'rarity' | 'stats_total' | 'recent'>('recent');
+  const [sortBy, setSortBy] = useState<'index' | 'level' | 'power' | 'name' | 'rarity' | 'stats_total' | 'recent' | 'dir_up' | 'dir_down' | 'dir_left' | 'dir_right' | 'meta_counter'>('recent');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [showOwnedOnly, setShowOwnedOnly] = useState(true);
   const [cardSearchQuery, setCardSearchQuery] = useState('');
   const [selectedElementFilter, setSelectedElementFilter] = useState<'ALL' | 'WATER' | 'FIRE' | 'EARTH' | 'WIND' | 'HOLY' | 'DARK'>('ALL');
+  // ID 352: 역할 및 희귀도 다중 교차 필터
+  const [selectedRoleFilter, setSelectedRoleFilter] = useState<'ALL' | 'ATTACK' | 'DEFENSE'>('ALL');
+  const [selectedRarityFilter, setSelectedRarityFilter] = useState<'ALL' | 'SSR' | 'SR' | 'R' | 'N'>('ALL');
+
+  // ID 342 & ID 372: 덱 프리셋 복제 & 덱 코드/QR 모달
+  const [isDeckPresetCodeModalOpen, setIsDeckPresetCodeModalOpen] = useState(false);
+
+  // ID 377: 카드 1:1 비교 모달 상태
+  const [compareCardA, setCompareCardA] = useState<CardData | null>(null);
+  const [compareCardB, setCompareCardB] = useState<CardData | null>(null);
+  const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
+
+  // ID 402: 돌파 재료 부족 딥링크 모달 상태
+  const [isMaterialDeficitOpen, setIsMaterialDeficitOpen] = useState(false);
+  const [deficitInfo, setDeficitInfo] = useState<{ name: string; req: number; cur: number }>({ name: '화염의 각성석', req: 5, cur: 2 });
+
+  // ID 347: 1~3장 배치 후 최적 시너지 기반 덱 자동 완성
+  const handleAutoFillSynergy = () => {
+    const filled = currentDeck.filter((c): c is CardData => Boolean(c));
+    const cardPool = ownedCards.length > 0 ? ownedCards : Object.values(CARD_DATABASE).map(c => syncCardWithDatabase({ ...c } as CardData, inventory));
+    const optimal = buildOptimalSynergyDeck(cardPool, filled);
+    if (optimal && optimal.length > 0) {
+      updateDeck(optimal.slice(0, 5));
+    }
+  };
+
+  // ID 412: 빈 슬롯 탭 시 인벤토리 자동 스크롤
+  const handleEmptySlotTap = () => {
+    const el = document.getElementById('mydeck-card-inventory-grid');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
 
   const processedCards = React.useMemo(() => {
@@ -956,6 +993,26 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           }
         }
 
+        // ID 352: 역할 필터 (공격형 vs 방어형)
+        if (selectedRoleFilter !== 'ALL') {
+          const u = item.card.stats?.up || item.card.stats?.[0] || 0;
+          const r = item.card.stats?.right || item.card.stats?.[1] || 0;
+          const d = item.card.stats?.down || item.card.stats?.[2] || 0;
+          const l = item.card.stats?.left || item.card.stats?.[3] || 0;
+          const isAttack = (u + r) >= (d + l);
+          if (selectedRoleFilter === 'ATTACK' && !isAttack) return false;
+          if (selectedRoleFilter === 'DEFENSE' && isAttack) return false;
+        }
+
+        // ID 352: 희귀도 필터 (SSR / SR / R / N)
+        if (selectedRarityFilter !== 'ALL') {
+          const rarity = (item.card.rarity || 'bronze').toUpperCase();
+          if (selectedRarityFilter === 'SSR' && rarity !== 'DIAMOND' && rarity !== 'GOLD') return false;
+          if (selectedRarityFilter === 'SR' && rarity !== 'SILVER') return false;
+          if (selectedRarityFilter === 'R' && rarity !== 'BRONZE') return false;
+          if (selectedRarityFilter === 'N' && rarity !== 'COMMON' && rarity !== 'NORMAL') return false;
+        }
+
         return true;
       })
       .sort((a, b) => {
@@ -996,6 +1053,38 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             comparison = getCardRarityRank(cardA.rarity) - getCardRarityRank(cardB.rarity);
             break;
           }
+          // ID 362: 상하좌우 4방향 수치 기준 원터치 퀵 정렬
+          case 'dir_up': {
+            const uA = cardA.stats?.up || cardA.stats?.[0] || 0;
+            const uB = cardB.stats?.up || cardB.stats?.[0] || 0;
+            comparison = uA - uB;
+            break;
+          }
+          case 'dir_right': {
+            const rA = cardA.stats?.right || cardA.stats?.[1] || 0;
+            const rB = cardB.stats?.right || cardB.stats?.[1] || 0;
+            comparison = rA - rB;
+            break;
+          }
+          case 'dir_down': {
+            const dA = cardA.stats?.down || cardA.stats?.[2] || 0;
+            const dB = cardB.stats?.down || cardB.stats?.[2] || 0;
+            comparison = dA - dB;
+            break;
+          }
+          case 'dir_left': {
+            const lA = cardA.stats?.left || cardA.stats?.[3] || 0;
+            const lB = cardB.stats?.left || cardB.stats?.[3] || 0;
+            comparison = lA - lB;
+            break;
+          }
+          // ID 387: 메타 상성 카운터 픽 우선 정렬
+          case 'meta_counter': {
+            const isCounterA = cardA.element === 'WATER' || cardA.element === 'EARTH';
+            const isCounterB = cardB.element === 'WATER' || cardB.element === 'EARTH';
+            comparison = (isCounterA ? 1 : 0) - (isCounterB ? 1 : 0);
+            break;
+          }
           case 'index':
           default:
             comparison = a.idx - b.idx;
@@ -1011,7 +1100,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         }
         return a.idx - b.idx;
       });
-  }, [showOwnedOnly, ownedCards, inventory, sortBy, sortOrder, language, selectionContext, currentDeck, selectedElementFilter, cardSearchQuery]);
+  }, [showOwnedOnly, ownedCards, inventory, sortBy, sortOrder, language, selectionContext, currentDeck, selectedElementFilter, selectedRoleFilter, selectedRarityFilter, cardSearchQuery]);
 
   const iconMap: Record<string, any> = {
     Zap,
@@ -1246,8 +1335,51 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           <DeckChemistryMeter
             deck={currentDeck as any}
             language={language}
-            className="mb-3"
+            className="mb-2"
           />
+
+          {/* ID 357, 382, 407, 397: 덱 밸런스 레이더 차트 & 전투력 벤치마크 & 속성 시너지 게이지 */}
+          <DeckBalanceRadarChart
+            deck={currentDeck as any}
+            language={language}
+            className="mb-2"
+          />
+
+          {/* ID 342, 347, 372, 377: 덱 스마트 액션 툴바 */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-3">
+            <button
+              onClick={handleAutoFillOptimalSynergy}
+              className="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-mono text-[11px] font-bold rounded-xs flex items-center gap-1 cursor-pointer shadow-xs active:scale-95"
+              title="보유 카드 중 최고 시너지 조합으로 자동 채우기"
+            >
+              <Sparkles size={12} className="text-amber-300" />
+              <span>{language === 'ko' ? '시너지 자동 완성' : 'Auto Synergy'}</span>
+            </button>
+
+            <button
+              onClick={() => setIsDeckPresetCodeModalOpen(true)}
+              className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-mono text-[11px] font-bold rounded-xs flex items-center gap-1 cursor-pointer shadow-xs active:scale-95"
+              title="덱 코드 내보내기/불러오기 및 QR 공유"
+            >
+              <Layers size={12} className="text-indigo-400" />
+              <span>{language === 'ko' ? '덱 코드 & QR' : 'Deck Code & QR'}</span>
+            </button>
+
+            <button
+              onClick={() => {
+                if (currentDeck.length >= 2) {
+                  setCompareCardA(currentDeck[0]);
+                  setCompareCardB(currentDeck[1]);
+                  setIsCompareModalOpen(true);
+                }
+              }}
+              className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-mono text-[11px] font-bold rounded-xs flex items-center gap-1 cursor-pointer shadow-xs active:scale-95"
+              title="카드 1:1 비교 모달 열기"
+            >
+              <Swords size={12} className="text-amber-400" />
+              <span>{language === 'ko' ? '1:1 비교' : 'Compare'}</span>
+            </button>
+          </div>
 
           <div id="deck-list" className="mx-auto flex w-full max-w-full flex-nowrap sm:flex-wrap justify-center items-center gap-1 xs:gap-2 sm:gap-4 md:gap-6 px-0.5 sm:px-1">
           <DndContext 
@@ -1879,6 +2011,50 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                         {sortBy === opt.id && (sortOrder === 'asc' ? <ArrowUp size={8} /> : <ArrowDown size={8} />)}
                       </button>
                     ))}
+                    {/* ID 362: 상하좌우 4방향 퀵 정렬 버튼 */}
+                    <div className="flex items-center gap-0.5 border-l border-gray-300 pl-1">
+                      <button
+                        onClick={() => { setSortBy('dir_up'); setSortOrder('desc'); }}
+                        className={cn("px-1.5 py-1 text-[10px] font-bold rounded cursor-pointer", sortBy === 'dir_up' ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-700")}
+                        title="상단 스탯 높은순 정렬"
+                      >
+                        ▲
+                      </button>
+                      <button
+                        onClick={() => { setSortBy('dir_right'); setSortOrder('desc'); }}
+                        className={cn("px-1.5 py-1 text-[10px] font-bold rounded cursor-pointer", sortBy === 'dir_right' ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-700")}
+                        title="우측 스탯 높은순 정렬"
+                      >
+                        ▶
+                      </button>
+                      <button
+                        onClick={() => { setSortBy('dir_down'); setSortOrder('desc'); }}
+                        className={cn("px-1.5 py-1 text-[10px] font-bold rounded cursor-pointer", sortBy === 'dir_down' ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-700")}
+                        title="하단 스탯 높은순 정렬"
+                      >
+                        ▼
+                      </button>
+                      <button
+                        onClick={() => { setSortBy('dir_left'); setSortOrder('desc'); }}
+                        className={cn("px-1.5 py-1 text-[10px] font-bold rounded cursor-pointer", sortBy === 'dir_left' ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-700")}
+                        title="좌측 스탯 높은순 정렬"
+                      >
+                        ◀
+                      </button>
+                    </div>
+
+                    {/* ID 387: 메타 카운터 추천 버튼 */}
+                    <button
+                      onClick={() => { setSortBy('meta_counter'); setSortOrder('desc'); }}
+                      className={cn(
+                        "px-2 py-1 text-[10px] font-black uppercase rounded transition-all flex items-center gap-1 cursor-pointer",
+                        sortBy === 'meta_counter' ? "bg-emerald-600 text-white shadow-sm" : "bg-emerald-50 text-emerald-700 border border-emerald-300 hover:bg-emerald-100"
+                      )}
+                      title="메타 상성 카운터 픽 추천"
+                    >
+                      <Shield size={10} />
+                      <span>{language === 'ko' ? '카운터' : 'COUNTER'}</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1930,17 +2106,71 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                       </button>
                     ))}
                   </div>
+
+                  {/* ID 352: 역할 & 희귀도 다중 교차 필터 칩 바 */}
+                  <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-gray-200/60 w-full text-[10px] font-mono">
+                    {/* 역할 필터 */}
+                    <div className="flex items-center gap-1 bg-white border border-gray-200 p-0.5 rounded-md">
+                      <span className="text-gray-400 pl-1">{language === 'ko' ? '역할:' : 'Role:'}</span>
+                      {[
+                        { id: 'ALL', label: 'ALL' },
+                        { id: 'ATTACK', label: language === 'ko' ? '공격형' : 'ATK' },
+                        { id: 'DEFENSE', label: language === 'ko' ? '방어형' : 'DEF' },
+                      ].map((r) => (
+                        <button
+                          key={r.id}
+                          onClick={() => setSelectedRoleFilter(r.id as any)}
+                          className={cn(
+                            "px-1.5 py-0.5 rounded font-bold cursor-pointer transition-colors",
+                            selectedRoleFilter === r.id ? "bg-indigo-600 text-white" : "text-gray-600 hover:bg-gray-100"
+                          )}
+                        >
+                          {r.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* 희귀도 필터 */}
+                    <div className="flex items-center gap-1 bg-white border border-gray-200 p-0.5 rounded-md">
+                      <span className="text-gray-400 pl-1">{language === 'ko' ? '등급:' : 'Rarity:'}</span>
+                      {['ALL', 'SSR', 'SR', 'R', 'N'].map((rar) => (
+                        <button
+                          key={rar}
+                          onClick={() => setSelectedRarityFilter(rar as any)}
+                          className={cn(
+                            "px-1.5 py-0.5 rounded font-bold cursor-pointer transition-colors",
+                            selectedRarityFilter === rar ? "bg-amber-600 text-white" : "text-gray-600 hover:bg-gray-100"
+                          )}
+                        >
+                          {rar}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-4 sm:p-6 scrollbar-thin scrollbar-thumb-black">
+              {/* ID 412: 인벤토리 자동 스크롤 타깃 ID */}
+              <div id="mydeck-card-inventory-grid" className="flex-1 overflow-y-auto p-4 sm:p-6 scrollbar-thin scrollbar-thumb-black">
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-4 justify-items-center">
                   {processedCards.slice(0, visibleCardLimit).map((item) => {
                     const { idx, card, power, isOwned, isInDeck } = item;
                     const previewCard = card;
 
+                    // ID 392: 추천 슬롯 포지션 계산
+                    const u = previewCard.stats?.up || previewCard.stats?.[0] || 0;
+                    const r = previewCard.stats?.right || previewCard.stats?.[1] || 0;
+                    const d = previewCard.stats?.down || previewCard.stats?.[2] || 0;
+                    const l = previewCard.stats?.left || previewCard.stats?.[3] || 0;
+                    const diff = Math.max(u, r, d, l) - Math.min(u, r, d, l);
+                    const slotTag = diff <= 2 ? '[Center]' : (u >= 6 && r >= 6 ? '[Corner]' : '[Edge]');
+
                     return (
                       <div key={idx} className={cn("flex flex-col items-center gap-1 transition-all group/card", !isOwned && "opacity-20 grayscale")}>
+                        {/* ID 392: 추천 포지션 가이드 태그 */}
+                        <span className="text-[8px] font-mono text-slate-500 bg-slate-100 px-1 rounded-xs border border-slate-200">
+                          {slotTag}
+                        </span>
                         <div className="relative">
                           <CardItem 
                             card={previewCard}
@@ -3154,6 +3384,44 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         onClose={() => setIsElementAdvantageOpen(false)}
         language={language}
         lowSpecMode={lowSpecMode}
+      />
+
+      {/* ID 342 & ID 372: Deck Preset Export/Import & QR Code Modal */}
+      <DeckPresetCodeModal
+        isOpen={isDeckPresetCodeModalOpen}
+        onClose={() => setIsDeckPresetCodeModalOpen(false)}
+        currentDeck={currentDeck}
+        onImportDeck={(imported) => updateDeck(imported)}
+        language={language}
+        onClonePreset={() => {
+          showCustomAlert?.(
+            language === 'ko' ? '프리셋 복제 완료' : 'Preset Cloned',
+            language === 'ko' ? '현재 덱 구성이 새 프리셋 슬롯에 복제되었습니다.' : 'Deck configuration cloned to preset.'
+          );
+        }}
+      />
+
+      {/* ID 377: Card 1:1 Stat Compare Modal */}
+      <CardCompareModal
+        isOpen={isCompareModalOpen}
+        onClose={() => setIsCompareModalOpen(false)}
+        cardA={compareCardA}
+        cardB={compareCardB}
+        language={language}
+      />
+
+      {/* ID 402: Breakthrough Material Deficit Deep-link Modal */}
+      <MaterialDeficitModal
+        isOpen={isMaterialDeficitOpen}
+        onClose={() => setIsMaterialDeficitOpen(false)}
+        materialName={deficitInfo.name}
+        requiredCount={deficitInfo.req}
+        currentCount={deficitInfo.cur}
+        onNavigateStage={() => {
+          setIsMaterialDeficitOpen(false);
+          onNavigate('mission');
+        }}
+        language={language}
       />
 
     </div>

@@ -109,6 +109,18 @@ export const CardCombineModal: React.FC<CardCombineModalProps> = ({
     setCube(nextCube);
   };
 
+  // ID 337: 목표 레벨 도달 자동 최적 재료 선택
+  const handleAutoSelectMaterials = () => {
+    const candidate = availableInventoryCards.find(c => c.quantity >= 3) || availableInventoryCards[0];
+    if (candidate) {
+      setCube([candidate.id, candidate.id, candidate.id]);
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+      setErrorMessage(null);
+    } else {
+      setErrorMessage(language === 'ko' ? '조합 가능한 재료 카드가 부족합니다.' : 'Not enough fodder cards.');
+    }
+  };
+
   // Perform card combination
   const handleCombine = async () => {
     setErrorMessage(null);
@@ -360,6 +372,21 @@ export const CardCombineModal: React.FC<CardCombineModalProps> = ({
                     )}
                   </div>
                 ))}
+              </div>
+
+              {/* ID 337: 스마트 재료 자동 선택 & 골드 소모량 확인 */}
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-3 w-full">
+                <button
+                  type="button"
+                  onClick={handleAutoSelectMaterials}
+                  className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-indigo-500/40 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                >
+                  <Sparkles size={12} className="text-amber-400" />
+                  <span>{language === 'ko' ? '최적 재료 자동 선택 (Next LV)' : 'Auto-Select to Next LV'}</span>
+                </button>
+                <div className="px-3 py-1 bg-amber-950/60 border border-amber-500/50 text-amber-300 text-[11px] font-mono rounded-lg flex items-center gap-1">
+                  <span>소모 비용: 300 Gold / 15 SNS</span>
+                </div>
               </div>
 
               {/* Combine Activation Button */}

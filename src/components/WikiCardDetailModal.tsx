@@ -149,6 +149,43 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
     [season, selectedCard.id],
   );
 
+  // ID 367: 장착 중인 덱(덱1/덱2/덱3) 감지 및 분해 방지
+  const equippedDeckPresets = useMemo(() => {
+    const presets: number[] = [];
+    const cardNumId = Number(selectedCard.id);
+    for (const presetId of [1, 2, 3]) {
+      try {
+        const raw = localStorage.getItem(`hero_deck_preset_${presetId}_${season}`);
+        if (raw) {
+          const ids: number[] = JSON.parse(raw);
+          if (Array.isArray(ids) && ids.includes(cardNumId)) {
+            presets.push(presetId);
+          }
+        }
+      } catch {
+        // ignore
+      }
+    }
+    try {
+      const activeRaw = localStorage.getItem(`hero_deck_${season}`) || localStorage.getItem('hero_deck');
+      if (activeRaw) {
+        const activeIds: any[] = JSON.parse(activeRaw);
+        if (Array.isArray(activeIds)) {
+          const hasInActive = activeIds.some((item) => {
+            const id = typeof item === 'object' ? (item.imageIndex ?? item.id) : item;
+            return Number(id) === cardNumId;
+          });
+          if (hasInActive && !presets.includes(1)) {
+            presets.push(1);
+          }
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return presets;
+  }, [selectedCard.id, season]);
+
   useEffect(() => {
     setActiveTab(initialTab);
     setStoryExpanded(false);
@@ -242,6 +279,25 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
               {factionDef && (
                 <span className={cn('rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.28em]', factionBadgeClass(profile?.faction ?? 'human'))}>
                   {factionLabel}
+                </span>
+              )}
+
+              {/* ID 367: 장착 중인 덱 뱃지 및 분해 방지 락 인디케이터 */}
+              {equippedDeckPresets.map((p) => (
+                <span
+                  key={p}
+                  className="rounded-full border border-emerald-400 bg-emerald-500/20 px-2.5 py-0.5 text-[10px] font-black text-emerald-300"
+                >
+                  {language === 'ko' ? `[덱 ${p} 장착]` : `[Deck ${p}]`}
+                </span>
+              ))}
+              {equippedDeckPresets.length > 0 && (
+                <span
+                  className="rounded-full border border-amber-400/60 bg-amber-500/20 px-2.5 py-0.5 text-[10px] font-bold text-amber-200 flex items-center gap-1"
+                  title={language === 'ko' ? '덱에 편성된 카드는 실수로 분해되지 않도록 안전 보호됩니다.' : 'Cards equipped in decks are protected from disassembly.'}
+                >
+                  <Lock size={10} className="text-amber-300" />
+                  {language === 'ko' ? '덱 편성 중 (분해 불가)' : 'In Deck (Protected)'}
                 </span>
               )}
             </div>
@@ -675,8 +731,16 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
 
                     {/* 일러스트 원본 이미지 뷰 */}
                     <div className="flex-1 min-w-0 flex flex-col items-center justify-center w-full max-w-xs">
-                      <div className="text-[10px] font-black uppercase tracking-[0.2em] text-white/50 mb-2">
-                        {language === 'ko' ? '일러스트 원본 아트' : 'Full Illustration Art'}
+                      <div className="w-full flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-white/50 mb-2 px-1">
+                        <span>{language === 'ko' ? '일러스트 원본 아트' : 'Full Illustration Art'}</span>
+                        <button
+                          type="button"
+                          onClick={() => setActiveTab('skins')}
+                          className="text-[9px] font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 border border-indigo-500/30 bg-indigo-950/60 px-2 py-0.5 rounded-full cursor-pointer transition-colors"
+                        >
+                          <Shirt size={10} />
+                          <span>{language === 'ko' ? '스킨 변경' : 'Skins'}</span>
+                        </button>
                       </div>
                       <div className="w-full aspect-square rounded-xl bg-slate-950/80 border border-white/10 overflow-hidden flex items-center justify-center p-2">
                         {resolvedImg.source && !isSpriteSheet(resolvedImg.source) ? (
