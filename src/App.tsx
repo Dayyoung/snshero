@@ -52,6 +52,7 @@ import { BGM_TRACKS, DEFAULT_BGM_TRACK_ID } from './lib/audioConstants';
 import { getSeasonItem, setSeasonItem, removeSeasonItem } from './lib/seasonStorage';
 import { getDeckUpgradeRecommendation, getCardStateFingerprint } from './lib/deckUpgrade';
 import { incrementMissionProgress } from './lib/dailyMissions';
+import { VIEW_ROUTES, getViewPath, getViewFromPath, getRouteMeta } from './routes';
 import { 
   Menu, 
   ChevronLeft, 
@@ -363,17 +364,6 @@ interface ChatMessage {
 
 function getViewFromPathAndUrl(): ViewType {
   if (typeof window === 'undefined') return 'home';
-  const params = new URLSearchParams(window.location.search);
-  const queryView = params.get('view');
-  if (queryView === 'community') return 'community';
-  if (queryView === 'webtoon') return 'novel';
-  if (queryView === 'anime') return 'anime';
-  if (queryView === 'movie') return 'movie';
-  if (queryView === 'modoo') return 'modoo';
-  if (queryView === 'mall') return 'mall';
-  if (queryView === 'pacpik') return 'pacpik';
-  if (queryView === 'grid' || queryView === 'tool-grid' || queryView === 'tool/grid' || queryView === 'too/grid' || queryView === 'makegrid' || queryView === 'tool/makegrid' || queryView === 'tool-makegrid') return 'tool-makegrid';
-  if (queryView === 'checkgrid' || queryView === 'tool-checkgrid' || queryView === 'tool/checkgrid' || queryView === 'gridcheck') return 'tool-checkgrid';
 
   const path = window.location.pathname.replace(/\/$/, '').toLowerCase() || '/';
   if (path === '/gotest' || path === '/gotest.html' || path.startsWith('/gotest/')) {
@@ -393,53 +383,8 @@ function getViewFromPathAndUrl(): ViewType {
     }
     return 'home';
   }
-  if (path === '/pacpik' || path === '/pacpik.html') return 'pacpik';
-  if (path === '/mall' || path.startsWith('/mall')) return 'mall';
-  if (path === '/tool/checkgrid' || path === '/tool/check-grid' || path === '/checkgrid' || path.startsWith('/tool/checkgrid')) return 'tool-checkgrid';
-  if (path === '/tool/makegrid' || path === '/tool/make-grid' || path === '/makegrid' || path === '/tool/grid' || path === '/too/grid' || path === '/grid' || path.startsWith('/tool/makegrid') || path.startsWith('/tool/grid') || path.startsWith('/too/grid')) return 'tool-makegrid';
-  if (path === '/book' || path === '/novel' || path.startsWith('/novel/s1-')) return 'novel';
-  if (path === '/admin') return 'admin';
-  if (path === '/status') return 'status';
-  if (path === '/wiki') return 'wiki';
-  if (path === '/world-codex') return 'world-codex';
-  if (path === '/wiki/howtoplay') return 'wiki-howtoplay';
-  if (path === '/wiki/tip') return 'wiki-tip';
-  if (path === '/wiki/card') return 'wiki-card';
-  if (path === '/wiki/item') return 'wiki-item';
-  if (path === '/wiki/skill') return 'wiki-skill';
-  if (path === '/webtoon' || path === '/cartoonbook') return 'novel';
-  if (path === '/home') return 'home';
-  if (path === '/main') return 'main';
-  if (path === '/deck') return 'mydeck';
-  if (path === '/play') return 'play';
-  if (path === '/shop') return 'shop';
-  if (path === '/event') return 'event';
-  if (path === '/setting') return 'setting';
-  if (path === '/ranking') return 'ranking';
-  if (path === '/companion') return 'companion';
-  if (path === '/profile') return 'profile';
-  if (path === '/skill') return 'skill';
-  if (path === '/guild-list') return 'guild-list';
-  if (path === '/playground') return 'playground';
-  if (path === '/stock-market') return 'stock-market';
-  if (path === '/marketplace') return 'card-marketplace';
-  if (path === '/prediction-market') return 'prediction-market';
-  if (path === '/reward' || path === '/reward-qr') return 'reward-qr';
-  if (path === '/reward-ar') return 'reward-ar';
-  if (path === '/share') return 'share';
-  if (path === '/boost') return 'boost';
-  if (path === '/season-hub' || path === '/mission' || path === '/missions') return 'season-hub';
-  if (path === '/policy-center') return 'policy-center';
-  if (path === '/web3') return 'web3-landing';
-  if (path === '/referral') return 'referral';
-  if (path === '/anime') return 'anime';
-  if (path === '/movie') return 'movie';
-  if (path === '/modoo') return 'modoo';
-  if (path.startsWith('/creator/')) return 'creator';
-  if (path === '/') return 'home';
 
-  const saved = localStorage.getItem('hero_current_view') as ViewType;
-  return saved || 'home';
+  return getViewFromPath(window.location.pathname, window.location.search);
 }
 
 function AppContent() {
@@ -1427,27 +1372,7 @@ function AppContent() {
   useEffect(() => {
     const handleUrlRouting = async () => {
       const path = window.location.pathname;
-      if (path === '/book' || path === '/novel' || path.startsWith('/novel/s1-')) {
-        setView('novel');
-      } else if (path === '/admin') {
-        setView('admin');
-      } else if (path === '/wiki') {
-        setView('wiki');
-      } else if (path === '/world-codex') {
-        setView('world-codex');
-      } else if (path === '/wiki/howtoplay') {
-        setView('wiki-howtoplay');
-      } else if (path === '/wiki/tip') {
-        setView('wiki-tip');
-      } else if (path === '/wiki/card') {
-        setView('wiki-card');
-      } else if (path === '/wiki/item') {
-        setView('wiki-item');
-      } else if (path === '/wiki/skill') {
-        setView('wiki-skill');
-      } else if (path === '/webtoon') {
-        setView('webtoon');
-      } else if (path === '/logout') {
+      if (path === '/logout') {
         try {
           await signOut(auth);
         } catch (err) {
@@ -1457,81 +1382,29 @@ function AppContent() {
         setUser(null);
         setView('home');
         window.history.replaceState({}, '', '/home');
-      } else if (path === '/home') {
-        setView('home');
-      } else if (path === '/main') {
-        setView('main');
-      } else if (path === '/deck') {
-        setView('mydeck');
-      } else if (path === '/play') {
-        const savedView = localStorage.getItem('hero_current_view');
-        if (!savedView) {
-          setView('home');
-        } else {
-          setView('play');
-          const autoSetting = localStorage.getItem('hero_auto_battle_setting');
-          const autoEnabled = autoSetting === null ? true : JSON.parse(autoSetting) === true;
-          if (autoEnabled) {
-            setIsAutoBattle(true);
-            localStorage.setItem('hero_auto_battle', 'true');
-          }
-        }
-      } else if (path === '/shop') {
-        setView('shop');
-      } else if (path === '/event') {
-        setView('event');
-      } else if (path === '/setting') {
-        setView('setting');
-      } else if (path === '/ranking') {
-        setView('ranking');
-      } else if (path === '/companion') {
-        setView('companion');
-      } else if (path === '/profile') {
-        setView('profile');
-      } else if (path === '/skill') {
-        setView('skill');
-      } else if (path === '/guild-list') {
-        setView('guild-list');
-      } else if (path === '/playground') {
-        setView('playground');
-      } else if (path === '/stock-market') {
-        setView('stock-market');
-      } else if (path === '/marketplace') {
-        setView('card-marketplace');
-      } else if (path === '/prediction-market') {
-        setView('prediction-market');
-      } else if (path === '/share') {
-        setView('share');
-      } else if (path === '/season-hub') {
-        setView('season-hub');
-      } else if (path === '/web3') {
-        setView('web3-landing');
-      } else if (path === '/referral') {
-        setView('referral');
-      } else if (path === '/boost') {
-        setView('boost');
-      } else if (path === '/policy-center') {
-        setView('policy-center');
-      } else if (path === '/pacpik' || path === '/pacpik.html') {
-        setView('pacpik');
-      } else if (path === '/tool/checkgrid' || path === '/tool/check-grid' || path === '/checkgrid' || path.startsWith('/tool/checkgrid')) {
-        setView('tool-checkgrid');
-      } else if (path === '/tool/makegrid' || path === '/tool/make-grid' || path === '/makegrid' || path === '/tool/grid' || path === '/too/grid' || path === '/grid' || path.startsWith('/tool/makegrid') || path.startsWith('/tool/grid') || path.startsWith('/too/grid')) {
-        setView('tool-makegrid');
-      } else if (path.startsWith('/creator/')) {
+        return;
+      }
+
+      if (path === '/gotest' || path === '/gotest.html' || path.startsWith('/gotest/')) {
+        return;
+      }
+
+      const targetView = getViewFromPath(window.location.pathname, window.location.search);
+      if (targetView === 'creator') {
         const code = path.split('/creator/')[1]?.split('/')[0] || '';
         setCreatorCode(code);
-        setView('creator');
-      } else {
-        const params = new URLSearchParams(window.location.search);
-        const queryView = params.get('view');
-        
-        if (queryView === 'community') {
-          setView('community');
-        } else {
-          setView('home');
+      }
+
+      if (targetView === 'play') {
+        const autoSetting = localStorage.getItem('hero_auto_battle_setting');
+        const autoEnabled = autoSetting === null ? true : JSON.parse(autoSetting) === true;
+        if (autoEnabled) {
+          setIsAutoBattle(true);
+          localStorage.setItem('hero_auto_battle', 'true');
         }
       }
+
+      setView(targetView);
     };
     
     handleUrlRouting();
@@ -1549,200 +1422,41 @@ function AppContent() {
   // Sync state view to URL and update SEO title/meta-description
   useEffect(() => {
     const currentPath = window.location.pathname;
-    let targetPath = '/';
-    let title = 'SNS히어로 (SNSHero) - 원클릭 AI 웹 카드 게임';
-    let description = "복잡한 클라이언트 설치나 가입 절차 없이 클릭 한 번으로 즐기는 인공지능(AI) 웹 카드 게임 'SNS히어로'를 만나보세요! 구글 계정 연동만으로 즉시 로비에 접속하고, 1,000 SNS 포인트 지급 및 최대 100회 무료 뽑기 혜택을 통해 110여 종의 귀여운 카드를 편안히 수집해 보세요. BTC, ETH, USDC 결제도 지원합니다!";
-
-    if (view === 'home') {
-      targetPath = '/home';
-      title = 'SNS히어로 (SNSHero) - 원클릭 AI 웹 카드 게임';
-      description = '복잡한 가입 없이 클릭 한 번으로 시작하는 AI 웹 카드 게임 SNS히어로 로비입니다. 1,000 SNS 무료 포인트 혜택을 받고 110여 종의 일러스트 카드를 수집해 보세요.';
-    } else if (view === 'main') {
-      targetPath = '/main';
-      title = t('kadan_rpg_title', language) || 'Kadan & Arcane Echoes - SNSHero Main RPG';
-      description = '카단이 소설 속 지도를 자동으로 이동하며 대화, 카드 전투, 보상 획득, 엔딩 스토리까지 진행하는 SNSHero 메인 RPG 모드입니다.';
-    } else if (view === 'mydeck') {
-      targetPath = '/deck';
-      title = '마이덱 (My Deck) - SNS히어로 카드 컬렉션';
-      description = '수집한 영웅 카드 덱을 구성하고 강력한 장비를 장착하여 나만의 최강 시너지 조합을 설계해 보세요. SNS히어로 마이덱 관리 화면입니다.';
-    } else if (view === 'play') {
-      targetPath = '/play';
-      title = '배틀 대전 (Play Battle) - SNS히어로 실시간 카드 배틀';
-      description = '인공지능(AI) 라이벌과 대적하여 실시간 자동 전투를 벌이고 랭킹 포인트와 명예를 획득해 보세요. SNS히어로 배틀 로비입니다.';
-    } else if (view === 'shop') {
-      targetPath = '/shop';
-      title = '카드 상점 (Shop) - SNS히어로 카드 및 스킨 뽑기';
-      description = 'SNS 포인트를 사용하여 등급별 강력한 카드를 뽑고 수집을 완성해 보세요. BTC, ETH, USDC 암호화폐 결제도 안전하게 지원합니다.';
-    } else if (view === 'event') {
-      targetPath = '/event';
-      title = t('seo_title_event', language) || '특별 이벤트 홀 (Event) - SNS히어로';
-      description = t('seo_desc_event', language) || '시간의 나무 무료 충전과 럭키 룰렛, 크레인 인형뽑기 등 SNS히어로의 특별 이벤트를 즐기고 풍성한 보상을 획득하세요!';
-    } else if (view === 'setting') {
-      targetPath = '/setting';
-      title = '설정 (Settings) - SNS히어로 게임 환경설정';
-      description = '배경음악, 효과음 볼륨 조절 및 게스트 데이터 영구 연동, 다국어 설정을 손쉽게 변경할 수 있는 SNS히어로 설정 화면입니다.';
-    } else if (view === 'ranking') {
-      targetPath = '/ranking';
-      title = '랭킹대전 (Ranking) - SNS히어로';
-      description = 'SNS히어로 랭킹 경쟁에서 다른 헌터의 덱과 전투력을 비교하고 도전하세요.';
-    } else if (view === 'companion') {
-      targetPath = '/companion';
-      title = '히어로 육성 (Companion) - SNS히어로';
-      description = '동료 히어로를 성장시키고 장비를 관리하여 덱 전투력을 강화하세요.';
-    } else if (view === 'profile') {
-      targetPath = '/profile';
-      title = '프로필 (Profile) - SNS히어로';
-      description = '닉네임과 아바타를 설정하고 나만의 헌터 프로필을 관리하세요.';
-    } else if (view === 'skill') {
-      targetPath = '/skill';
-      title = '스킬 강화 (Skills) - SNS히어로';
-      description = '스킬 포인트를 투자해 카드 능력을 강화하고 전술 효율을 높이세요.';
-    } else if (view === 'guild-list') {
-      targetPath = '/guild-list';
-      title = '길드 (Guild) - SNS히어로';
-      description = '길드를 만들거나 가입해 보상을 공유하고 길드 전투를 준비하세요.';
-    } else if (view === 'playground') {
-      targetPath = '/playground';
-      title = '플레이그라운드 (Playground) - SNS히어로';
-      description = '카드 조합과 전술을 자유롭게 시험할 수 있는 실험 공간입니다.';
-    } else if (view === 'stock-market') {
-      targetPath = '/stock-market';
-      title = '카드 거래소 (Market) - SNS히어로';
-      description = '카드와 SNS 경제 흐름을 확인하고 컬렉션 가치를 비교하세요.';
-    } else if (view === 'card-marketplace') {
-      targetPath = '/marketplace';
-      title = '카드 P2P 거래소 (Marketplace) - SNS히어로';
-      description = '안전한 목록·구매 요청·에스크로 상태 중심으로 카드 P2P 거래를 검토하는 SNSHero 마켓플레이스입니다.';
-    } else if (view === 'prediction-market') {
-      targetPath = '/prediction-market' + window.location.search;
-      title = '예측시장 (Prediction Market) - SNS히어로';
-      description = '스포츠 경기와 이벤트 결과를 예측하고 SNS 보상을 노려보세요.';
-    } else if (view === 'admin') {
-      targetPath = '/admin';
-      title = '관리자 도구 (Admin Console) - SNS히어로';
-      description = 'SNS히어로 시스템 모니터링 및 게임 밸런스 조정 콘솔입니다.';
-    } else if (view === 'status') {
-      targetPath = '/status';
-      title = '관리자 통계 (Status Dashboard) - SNS히어로';
-      description = 'SNS히어로의 실시간 사용자 통계, 게임 승률, 인기 카드 및 언어 분포를 확인할 수 있는 관리자 전용 대시보드입니다.';
-    } else if (view === 'wiki') {
-      targetPath = '/wiki';
-      title = '게임 가이드 (Wiki) - SNS히어로 백과사전';
-      description = 'SNS히어로의 기본 플레이 규칙, 카드 육성 팁, 110여 종의 전체 카드 데이터베이스 및 장비 도감을 망라한 통합 백과사전입니다.';
-    } else if (view === 'world-codex') {
-      targetPath = '/world-codex';
-      title = '세계관 도감 (World Codex) - SNS히어로';
-      description = 'SNSHero 세계의 세력, 갈등, 관계망, 추천 캐릭터와 웹툰 진입점을 한눈에 살펴보는 세계관 허브입니다.';
-    } else if (view === 'season-hub') {
-      targetPath = '/season-hub';
-      title = t('seo_title_season_hub', language) || '시즌 허브 (Season Hub) - SNS히어로';
-      description = t('seo_desc_season_hub', language) || 'SNSHero 시즌별 스토리, 이벤트 미션, 보상 트랙, 웹툰 및 커뮤니티 콘텐츠를 한 곳에서 확인하는 라이브 운영 대시보드입니다.';
-    } else if (view === 'wiki-howtoplay') {
-      targetPath = '/wiki/howtoplay';
-      title = '플레이 방법 (How to Play) - SNS히어로 가이드';
-      description = '기본 카드 배틀 흐름, 속성 상성, 스킬 효과 조작법 등 초보자를 위한 상세 플레이 가이드입니다.';
-    } else if (view === 'wiki-tip') {
-      targetPath = '/wiki/tip';
-      title = '공략 팁 (Strategy & Tips) - SNS히어로 가이드';
-      description = '효율적인 카드 레벨업, 장비 획득 순서, 고등급 카드 덱 조합 등 랭킹 상승을 위한 팁을 수록했습니다.';
-    } else if (view === 'wiki-card') {
-      targetPath = '/wiki/card';
-      title = '카드 도감 (Hero Library) - SNS히어로 가이드';
-      description = '110여 종에 달하는 SNS히어로 전체 영웅 카드의 속성, 베이스 능력치, 전용 스킬을 상세히 조회할 수 있는 카드 백과사전입니다.';
-    } else if (view === 'wiki-item') {
-      targetPath = '/wiki/item';
-      title = '장비 도감 (Equipment Library) - SNS히어로 가이드';
-      description = '반지, 목걸이, 부츠 등 히어로의 능력을 극한으로 끌어올리는 장비 아이템 등급과 세부 옵션을 조회합니다.';
-    } else if (view === 'wiki-skill') {
-      targetPath = '/wiki/skill';
-      title = '스킬 도감 (Skill Library) - SNS히어로 가이드';
-      description = '히어로 카드가 사용할 수 있는 각종 공격, 방어, 유틸 스킬 효과와 쿨타임 가이드입니다.';
-    } else if (view === 'webtoon') {
-      targetPath = '/webtoon' + window.location.search;
-      title = `${t('webtoon_reader_title', language)} - SNS히어로`;
-      description = t('webtoon_hub_subtitle', language);
-    } else if (view === 'god') {
-      targetPath = currentPath;
-      title = '디버그 센터 (God Mode) - SNS히어로';
-      description = '개발자 테스트를 위한 전용 샌드박스 화면입니다.';
-    } else if (view === 'share') {
-      targetPath = '/share' + window.location.search;
-      title = '덱 공유 (Share Deck) - SNS히어로';
-      description = '다른 사용자가 공유한 카드 덱을 확인하고 AI 대전을 진행해보세요!';
-    } else if (view === 'boost') {
-      targetPath = '/boost';
-      title = t('boost_seo_title', language) || '소셜 부스팅 (Social Boost) - SNS히어로';
-      description = t('boost_seo_desc', language) || '안전하고 합법적인 방식으로 당신의 채널을 성장시키세요. 전 세계 120만 명의 인플루언서가 이미 SNSHero와 함께하고 있습니다.';
-    } else if (view === 'policy-center') {
-      targetPath = '/policy-center';
-      title = t('policy_center_title', language) || 'Trust Center - SNSHero';
-      description = t('policy_disclaimer_body', language) || 'SNSHero의 정책, 확률, 환불, 개인정보 처리 기준을 한 곳에서 확인하세요.';
-    } else if (view === 'pacpik') {
-      targetPath = '/pacpik';
-      title = 'Pacpik Games Verification | SNSHero';
-      description = 'pacpik-games-verification=1a69b39b20f76c21ab6e49dc8dc6c9c42d5f83d54c2dc5b6';
-    } else if (view === 'web3-landing') {
-      targetPath = '/web3';
-      title = t('web3_landing_hero_title', language) || 'SNSHero — Play Instantly, No Install, No Wallet';
-      description = t('web3_landing_hero_subtitle', language) || '브라우저에서 바로 즐기는 카드 배틀 게임. 지갑 없이 시작하고 BTC, ETH, USDC 결제를 선택할 수 있습니다.';
-    } else if (view === 'referral') {
-      targetPath = '/referral';
-      title = t('referral_seo_title', language) || '친구 초대 프로그램 (Referral) - SNS히어로';
-      description = t('referral_seo_desc', language) || '친구를 초대하고 SNS 포인트와 특별 카드를 받으세요!';
-    } else if (view === 'creator') {
-      targetPath = '/creator/' + (creatorCode || '');
-      title = t('creator_seo_title', language) || 'SNSHero — Play Now, No Install!';
-      description = t('creator_seo_desc', language) || 'Jump into the AI card battle instantly. Use your creator code for exclusive rewards!';
-    } else if (view === 'anime') {
-      targetPath = '/anime';
-      title = `${t('anime_title', language)} - SNS히어로`;
-      description = t('anime_subtitle', language);
-    } else if (view === 'movie') {
-      targetPath = '/movie';
-      title = `${t('movie_title', language)} - SNS히어로`;
-      description = t('movie_subtitle', language);
-    } else if (view === 'mall') {
-      targetPath = '/mall';
-      title = language === 'ko' ? 'SNSHero 공식 굿즈 몰' : 'SNSHero Official Goods Mall';
-      description = language === 'ko' ? 'SNS히어로 공식 머천다이즈 및 굿즈 컬렉션' : 'Official SNSHero Merch and Goods Collection';
-    } else if (view === 'novel' || view === 'book') {
+    let targetPath = getViewPath(view);
+    if (view === 'creator' && creatorCode) {
+      targetPath = `/creator/${creatorCode}`;
+    } else if (view === 'novel') {
       targetPath = '/book';
-      title = '눈히어로 40부작 웹소설 - 카단과 아케인의 메아리 (/public/book)';
-      description = '40부작 공식 웹소설. 주인공 카단과 11개 종족의 거대한 서사시.';
-    } else if (view === 'cartoonBook') {
-      targetPath = '/cartoonbook';
-      title = 'SNS히어로 카툰북 (CartoonBook) - SNSHero';
-      description = 'AI로 그려낸 판타지 RPG 웹툰. SNS히어로의 매력적인 캐릭터들과 세계관을 아름다운 웹툰으로 감상하세요.';
-    } else if (view === 'tool-checkgrid') {
-      targetPath = '/tool/checkgrid';
-      title = '그리드 검수기 (Grid Checker 10x10) - SNS히어로';
-      description = '10x10 기본 그리드 이미지 로드 & 정밀 검수 도구. 파일 업로드 또는 이미지 URL을 입력하여 격자선 오버레이 정합성, 셀 슬라이스 좌표를 검수하세요.';
-    } else if (view === 'tool-makegrid' || view === 'tool-grid') {
-      targetPath = '/tool/makegrid';
-      title = 'CSS 그리드 생성기 (Grid Generator) - SNS히어로';
-      description = 'CSS Grid 레이아웃을 시각적으로 설계하고 코드를 실시간 추출하는 도구입니다.';
+    }
+
+    // Preserve search params for specific views if present
+    if ((view === 'prediction-market' || view === 'webtoon' || view === 'share') && window.location.search) {
+      targetPath += window.location.search;
     }
 
     if (currentPath !== targetPath) {
-      window.history.pushState({}, '', targetPath);
+      window.history.pushState({ view }, '', targetPath);
     }
 
-    // Update browser title
+    // Persist current view to localStorage
+    localStorage.setItem('hero_current_view', view);
+
+    // Update SEO title and descriptions
+    const { title, description, url } = getRouteMeta(view, language);
     document.title = title;
 
-    // Update meta description
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {
       metaDesc.setAttribute('content', description);
     }
 
-    // Update Open Graph tags for better social snippet previews
+    // Update Open Graph tags for social snippet previews
     const ogTitle = document.querySelector('meta[property="og:title"]');
     if (ogTitle) ogTitle.setAttribute('content', title);
     const ogDesc = document.querySelector('meta[property="og:description"]');
     if (ogDesc) ogDesc.setAttribute('content', description);
     const ogUrl = document.querySelector('meta[property="og:url"]');
-    if (ogUrl) ogUrl.setAttribute('content', `https://snshero.com${targetPath}`);
+    if (ogUrl) ogUrl.setAttribute('content', url);
 
     // Update og:image tag
     let ogImage = document.querySelector('meta[property="og:image"]');
@@ -1761,7 +1475,7 @@ function AppContent() {
       document.head.appendChild(twitterImage);
     }
     twitterImage.setAttribute('content', 'https://snshero.com/logo.jpg');
-  }, [view]);
+  }, [view, language, creatorCode]);
 
   // Security & Routing: Redirect to home if not logged in and trying to access protected views
   useEffect(() => {
