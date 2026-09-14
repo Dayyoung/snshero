@@ -23,18 +23,39 @@ ENTRY_MAP = {
     "details": "entry.1982035501",  # 작업 상세 내용 및 특이사항
 }
 
-def submit_report(dept: str, task: str, status: str = "작업완료", details: str = "", dry_run: bool = False) -> bool:
+def get_form_fbzx() -> str:
+    """Fetch fbzx token from form page."""
+    try:
+        view_url = FORM_URL.replace("/formResponse", "/viewform")
+        req = urllib.request.Request(view_url, headers={"User-Agent": "Mozilla/5.0 (compatible; SNSHeroReportAgent/1.0)"})
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            html = resp.read().decode("utf-8")
+            import re
+            m = re.search(r'name="fbzx"\s+value="([^"]+)"', html)
+            if m:
+                return m.group(1)
+    except Exception:
+        pass
+    return ""
+
+def submit_report(dept: str, task: str, status: str = "작업완료", details: str = "", email: str = "dryudryu@gmail.com", dry_run: bool = False) -> bool:
     """Submit a single report entry to the Google Form."""
     # Normalize dept
     if dept not in ["기획", "디자인", "개발"]:
         dept = "개발"
 
+    fbzx = get_form_fbzx()
     payload = {
+        "emailAddress": email,
         ENTRY_MAP["dept"]: dept,
         ENTRY_MAP["task"]: task,
         ENTRY_MAP["status"]: status,
         ENTRY_MAP["details"]: details or "수정 완료 및 모바일 390x844 검증",
+        "fvv": "1",
+        "pageHistory": "0",
     }
+    if fbzx:
+        payload["fbzx"] = fbzx
 
     if dry_run:
         print(f"[DRY RUN] Would submit: {dept} | {task[:60]} | {status} | {details[:60]}")
