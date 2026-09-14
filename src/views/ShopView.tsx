@@ -33,6 +33,7 @@ import { ShareTemplateCard } from '../components/ShareTemplateCard';
 import { getGoodsSnsCost, getSpendShortfall, SNS_ECONOMY_COSTS } from '../content/snsEconomy';
 import { useRefundRequests } from '../hooks/useRefundRequests';
 import { TokenExchangeModal } from '../components/TokenExchangeModal';
+import { ShortfallGuideModal } from '../components/ShortfallGuideModal';
 import { ArrowDownUp } from 'lucide-react';
 
 interface ShopViewProps {
@@ -348,6 +349,60 @@ export const ShopView: React.FC<ShopViewProps> = ({
   
   // Row 1050 / ID 313: Token Swap & Slippage Exchange Modal
   const [isTokenExchangeOpen, setIsTokenExchangeOpen] = useState(false);
+
+  // ID 393: 재화 부족 무료 파밍 안내 숏컷 모달 상태
+  const [isShortfallModalOpen, setIsShortfallModalOpen] = useState(false);
+  const [shortfallInfo, setShortfallInfo] = useState<{ req: number; cur: number }>({ req: 100, cur: 0 });
+
+  // ID 398: 카드 팩 구매 수량 스텝퍼 상태 (기본 1)
+  const [packQuantities, setPackQuantities] = useState<Record<string, number>>({});
+
+  // ID 413: 월간 누적 사용액 및 한도 설정 상태
+  const [monthlyLimitSns, setMonthlyLimitSns] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('hero_monthly_sns_limit');
+      return saved ? Number(saved) : 100000;
+    } catch {
+      return 100000;
+    }
+  });
+  const [monthlySpentSns, setMonthlySpentSns] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('hero_monthly_sns_spent');
+      return saved ? Number(saved) : 12400;
+    } catch {
+      return 12400;
+    }
+  });
+
+  // ID 358: SSR/SR 획득 시 전투 덱에 즉시 교체/장착 핸들러
+  const handleEquipCardToDeck = (cardId: number) => {
+    try {
+      const season = currentSeason || 'season1';
+      const rawDeck = localStorage.getItem(`hero_deck_${season}`) || localStorage.getItem('hero_deck');
+      let deckCards: any[] = rawDeck ? JSON.parse(rawDeck) : [];
+      const dbCard = CARD_DATABASE[cardId];
+      if (!dbCard) return;
+
+      const newDeckCard = { ...dbCard, id: `card-${cardId}-${Date.now()}` };
+      if (deckCards.length < 5) {
+        deckCards.push(newDeckCard);
+      } else {
+        deckCards[0] = newDeckCard;
+      }
+      localStorage.setItem(`hero_deck_${season}`, JSON.stringify(deckCards));
+      localStorage.setItem('hero_deck', JSON.stringify(deckCards));
+      localStorage.setItem(`hero_deck_guest_${season}`, JSON.stringify(deckCards));
+      window.dispatchEvent(new Event('snshero_deck_updated'));
+      setCustomAlert({
+        isOpen: true,
+        title: language === 'ko' ? '덱 즉시 장착 완료' : 'Equipped to Deck',
+        message: language === 'ko' 
+          ? `[${dbCard.title_dis || dbCard.title}] 카드를 전투 덱 1번 슬롯에 즉시 장착했습니다!`
+          : `Equipped [${dbCard.title_dis || dbCard.title}] to your active battle deck!`
+      });
+    } catch {}
+  };
 
   // Goods Shop States
   const [mugCardId, setMugCardId] = useState<number>(1);
@@ -1872,6 +1927,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
       playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
       setErrorVisible(true);
       setTimeout(() => setErrorVisible(false), 5000);
+      // ID 393: 재화 부족 무료 파밍 숏컷 모달 노출
+      setShortfallInfo({ req: finalCost, cur: sns });
+      setIsShortfallModalOpen(true);
     }
   };
 
@@ -1911,6 +1969,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
       playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
       setErrorVisible(true);
       setTimeout(() => setErrorVisible(false), 5000);
+      setShortfallInfo({ req: finalCost, cur: sns });
+      setIsShortfallModalOpen(true);
     }
   };
 
@@ -2498,6 +2558,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   }}
                   onShareBestCard={(cardId) => setGachaShareCardId(cardId)}
                   onGoToDeck={handleGoToMyDeck}
+                  ownedCards={ownedCards}
+                  onEquipCardToDeck={handleEquipCardToDeck}
                 />
               ) : (
               <motion.div
@@ -3439,6 +3501,26 @@ export const ShopView: React.FC<ShopViewProps> = ({
             </motion.div>
           )}
 
+          {/* ID 413: 월간 과금 한도 및 누적 사용액 게이지 배너 */}
+          <div className="p-3 bg-white border border-slate-200 rounded-xl shadow-xs font-mono text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+            <div className="flex items-center gap-2">
+              <ShieldAlert size={16} className={monthlySpentSns >= monthlyLimitSns * 0.8 ? "text-rose-500 animate-pulse" : "text-slate-400"} />
+              <div>
+                <span className="font-bold text-slate-800">
+                  {language === 'ko' ? '월간 게임 재화 과금/사용 한도 (청소년 보호 및 건전 과금)' : 'Monthly Spending Limit & Protection'}
+                </span>
+                <div className="text-[10px] text-slate-500">
+                  {language === 'ko' ? '이번 달 사용액:' : 'Current Spent:'} <span className="font-bold text-slate-900">{monthlySpentSns.toLocaleString()} SNS</span> / {monthlyLimitSns.toLocaleString()} SNS ({((monthlySpentSns / monthlyLimitSns) * 100).toFixed(1)}%)
+                </div>
+              </div>
+            </div>
+            {monthlySpentSns >= monthlyLimitSns * 0.8 && (
+              <span className="px-2 py-0.5 rounded-xs bg-rose-100 text-rose-800 border border-rose-300 text-[10px] font-bold shrink-0">
+                ⚠️ {language === 'ko' ? '월간 사용 한도 80% 도달 주의' : '80% Limit Warning'}
+              </span>
+            )}
+          </div>
+
           {/* SNS 코인 상점 섹션 헤더 */}
           <div className="mb-1 mt-2 flex items-center gap-3">
             <div className="h-[1px] flex-1 bg-slate-200" />
@@ -3521,18 +3603,66 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   </div>
                 </div>
 
-                <div className="relative z-10 mt-auto pt-2 w-full flex flex-col gap-2">
+                <div className="relative z-10 mt-auto pt-2 w-full flex flex-col gap-1.5">
+                  {/* ID 398: 팩 수량 스텝퍼 (1x / 5x / 10x / MAX) */}
+                  <div className="flex items-center justify-between gap-1 py-1 border-t border-slate-100 text-[10px] font-mono">
+                    <span className="text-slate-400 font-bold">{language === 'ko' ? '수량 선택:' : 'Select Qty:'}</span>
+                    <div className="flex items-center gap-1">
+                      {[1, 5, 10].map((qty) => (
+                        <button
+                          key={qty}
+                          type="button"
+                          onClick={() => setPackQuantities(prev => ({ ...prev, [pack.rarity]: qty }))}
+                          className={cn(
+                            "px-1.5 py-0.5 rounded-xs border text-[10px] font-bold cursor-pointer transition-colors",
+                            (packQuantities[pack.rarity] || 1) === qty
+                              ? "bg-slate-900 text-white border-slate-900"
+                              : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                          )}
+                        >
+                          {qty}x
+                        </button>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const maxQ = Math.max(1, Math.min(20, Math.floor(sns / pack.cost)));
+                          setPackQuantities(prev => ({ ...prev, [pack.rarity]: maxQ }));
+                        }}
+                        className={cn(
+                          "px-1.5 py-0.5 rounded-xs border text-[9px] font-black cursor-pointer transition-colors",
+                          (packQuantities[pack.rarity] || 1) > 10
+                            ? "bg-indigo-600 text-white border-indigo-700"
+                            : "bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100"
+                        )}
+                      >
+                        MAX
+                      </button>
+                    </div>
+                  </div>
+
                   <button
                     id={`shop-pack-${pack.rarity}-btn`}
-                    onClick={() => buyPack(pack.cost, pack.rarity)}
+                    onClick={() => {
+                      const qty = packQuantities[pack.rarity] || 1;
+                      if (qty >= 10) {
+                        buy10xPack(pack.cost, pack.rarity);
+                      } else {
+                        buyPack(pack.cost * qty, pack.rarity);
+                      }
+                    }}
                     className={cn(
                       'min-h-[44px] h-auto w-full rounded-xl border px-3 py-2.5 text-left text-white shadow-sm transition-all active:scale-95 touch-target flex items-center justify-between gap-1 overflow-hidden cursor-pointer',
                       packTheme.primaryButton,
                     )}
                   >
                     <span className="min-w-0 leading-tight flex-1">
-                      <span className="block text-[10px] uppercase tracking-[0.05em] text-white/80 truncate">{language === 'ko' ? '카드팩 개봉' : 'Open Pack'}</span>
-                      <span className="text-sm font-black truncate block">{pack.cost} SNS</span>
+                      <span className="block text-[10px] uppercase tracking-[0.05em] text-white/80 truncate">
+                        {language === 'ko' ? `카드팩 ${(packQuantities[pack.rarity] || 1)}개 개봉` : `Open ${(packQuantities[pack.rarity] || 1)}x Pack`}
+                      </span>
+                      <span className="text-sm font-black truncate block">
+                        {(pack.cost * (packQuantities[pack.rarity] || 1)).toLocaleString()} SNS
+                      </span>
                     </span>
                     <ArrowRight size={16} className="shrink-0 opacity-80 ml-1" />
                   </button>
@@ -5040,6 +5170,19 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </AnimatePresence>
 
           {renderHistoryModal()}
+
+          {/* ID 393: 재화 부족 무료 파밍 숏컷 모달 */}
+          <ShortfallGuideModal
+            isOpen={isShortfallModalOpen}
+            onClose={() => setIsShortfallModalOpen(false)}
+            requiredSns={shortfallInfo.req}
+            currentSns={shortfallInfo.cur}
+            onNavigate={(view) => {
+              setIsShortfallModalOpen(false);
+              onNavigate?.(view);
+            }}
+            language={language}
+          />
           </div>
         </div>
 

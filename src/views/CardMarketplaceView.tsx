@@ -6,6 +6,8 @@ import { getMarketplaceFeePolicy, calculateMarketplaceSettlement } from '../cont
 import { MarketplacePriceBand } from '../lib/MarketplacePriceBand';
 import { PageHeader } from '../components/PageHeader';
 import { MarketplaceCardTradeModal } from '../components/MarketplaceCardTradeModal';
+import { MarketEscrowModal } from '../components/MarketEscrowModal';
+import { MarketSparkline } from '../components/MarketSparkline';
 import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
 import type { DatabaseCard, InventoryRecord, Language, Listing, Offer, TradeAuditLog, TradeStatus, ViewType } from '../types';
@@ -167,6 +169,17 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
   const [tradeTypeFilter, setTradeTypeFilter] = useState<'all' | 'instant' | 'auction'>('all');
   const [elementFilter, setElementFilter] = useState<'all' | 'FIRE' | 'WATER' | 'EARTH' | 'WIND'>('all');
 
+  // ID 338: 3단계 안전 에스크로 확인 모달 상태
+  const [escrowListing, setEscrowListing] = useState<Listing | null>(null);
+  const [isEscrowModalOpen, setIsEscrowModalOpen] = useState(false);
+
+  // ID 383: 상하좌우 4방향 스탯 수치 슬라이더 필터 상태 (0~10)
+  const [minStatUp, setMinStatUp] = useState<number>(0);
+  const [minStatRight, setMinStatRight] = useState<number>(0);
+  const [minStatDown, setMinStatDown] = useState<number>(0);
+  const [minStatLeft, setMinStatLeft] = useState<number>(0);
+  const [showDirectionSliders, setShowDirectionSliders] = useState<boolean>(false);
+
   // Row 1054 / ID 317: Watchlist & Price Notification
   const [watchlist, setWatchlist] = useState<Record<number, number>>(() => {
     try {
@@ -283,8 +296,84 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
         if (buildFocusFilter === 'all') return true;
         return getCardBuildFocus(CARD_DATABASE[listing.cardId]) === buildFocusFilter;
       })
+      // ID 383: 4방향 스탯 슬라이더 필터
+      .filter((listing) => {
+        const card = CARD_DATABASE[listing.cardId];
+        if (!card) return false;
+        const u = card.stats?.[0] ?? (card.stats as any)?.up ?? 0;
+        const r = card.stats?.[1] ?? (card.stats as any)?.right ?? 0;
+        const d = card.stats?.[2] ?? (card.stats as any)?.down ?? 0;
+        const l = card.stats?.[3] ?? (card.stats as any)?.left ?? 0;
+        if (minStatUp > 0 && u < minStatUp) return false;
+        if (minStatRight > 0 && r < minStatRight) return false;
+        if (minStatDown > 0 && d < minStatDown) return false;
+        if (minStatLeft > 0 && l < minStatLeft) return false;
+        return true;
+      })
       .sort((a, b) => b.askPrice - a.askPrice);
-  }, [buildFocusFilter, elementFilter, marketState.listings, rarityFilter, tradeTypeFilter]);
+  }, [buildFocusFilter, elementFilter, marketState.listings, minStatDown, minStatLeft, minStatRight, minStatUp, rarityFilter, tradeTypeFilter]);
+
+  // ID 353: 판매 완료 매물 정산 및 Claim All 핸들러
+  const completedListings = useMemo(() => {
+    return marketState.listings.filter(
+      (listing) => listing.sellerId === userId && listing.status === 'completed'
+    );
+  }, [marketState.listings, userId]);
+
+  const totalClaimableSns = useMemo(() => {
+    return completedListings.reduce((sum, l) => {
+      const s = calculateMarketplaceSettlement(l.askPrice, currentSeason);
+      return sum + s.sellerReceives;
+    }, 0);
+  }, [completedListings, currentSeason]);
+
+  const handleClaimAllSettlements = () => {
+    if (totalClaimableSns <= 0) return;
+    try {
+      const currentRaw = localStorage.getItem('hero_sns') || '0';
+      const newSns = Number(currentRaw) + totalClaimableSns;
+      localStorage.setItem('hero_sns', String(newSns));
+      window.dispatchEvent(new Event('snshero_currency_updated'));
+    } catch {}
+
+    const now = getNowIso();
+    setMarketState((prev) => ({
+      ...prev,
+      listings: prev.listings.map((l) =>
+        l.sellerId === userId && l.status === 'completed'
+          ? { ...l, status: 'settled' as any, updatedAt: now }
+          : l
+      ),
+    }));
+    updateFeedback(
+      'marketplace_feedback_claim_all_success',
+      language === 'ko'
+        ? `미정산 판매 대금 +${totalClaimableSns.toLocaleString()} SNS를 1-클릭으로 일괄 수령했습니다!`
+        : `Claimed +${totalClaimableSns.toLocaleString()} SNS from completed sales!`
+    );
+  };
+
+  // ID 403: 만료 임박 매물 1-클릭 일괄 재등록
+  const handleRelistExpiringListings = () => {
+    const now = getNowIso();
+    let relistedCount = 0;
+    setMarketState((prev) => ({
+      ...prev,
+      listings: prev.listings.map((l) => {
+        if (l.sellerId === userId && l.status === 'active') {
+          relistedCount++;
+          return { ...l, updatedAt: now };
+        }
+        return l;
+      }),
+    }));
+    updateFeedback(
+      'marketplace_feedback_relist_success',
+      language === 'ko'
+        ? `${relistedCount}건의 등록 매물 유효기간을 최신으로 일괄 갱신/재등록했습니다.`
+        : `Re-listed ${relistedCount} items to refresh listing expiration.`
+    );
+  };
 
   const myListings = useMemo(() => {
     return marketState.listings
@@ -417,6 +506,12 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
       return;
     }
 
+    // ID 338: 3단계 안전 에스크로 확인 모달 팝업 오픈!
+    setEscrowListing(listing);
+    setIsEscrowModalOpen(true);
+  };
+
+  const handleExecutePurchase = (listing: Listing) => {
     const settlement = calculateMarketplaceSettlement(listing.askPrice, currentSeason);
     const now = getNowIso();
 
@@ -658,6 +753,51 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
               </div>
             </div>
 
+            {/* ID 383: 4방향 스탯 슬라이더 필터 토글 바 */}
+            <div className="flex items-center justify-between pt-1 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setShowDirectionSliders((prev) => !prev)}
+                className="text-[10px] font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1 cursor-pointer"
+              >
+                <SlidersHorizontal size={11} className="text-indigo-600" />
+                <span>{language === 'ko' ? '방향별 최소 스탯 필터 (0~10)' : 'Min Directional Stats (0-10)'}</span>
+                {(minStatUp > 0 || minStatRight > 0 || minStatDown > 0 || minStatLeft > 0) && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-pulse" />
+                )}
+              </button>
+              {(minStatUp > 0 || minStatRight > 0 || minStatDown > 0 || minStatLeft > 0) && (
+                <button
+                  type="button"
+                  onClick={() => { setMinStatUp(0); setMinStatRight(0); setMinStatDown(0); setMinStatLeft(0); }}
+                  className="text-[9px] text-rose-500 font-bold hover:underline cursor-pointer"
+                >
+                  {language === 'ko' ? '필터 리셋' : 'Reset'}
+                </button>
+              )}
+            </div>
+
+            {showDirectionSliders && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-2 bg-slate-50 rounded-lg border border-slate-200 text-[10px] font-mono animate-fade-in">
+                <div>
+                  <div className="flex justify-between text-slate-500"><span>▲ 상단</span><span className="font-bold text-indigo-600">≥ {minStatUp}</span></div>
+                  <input type="range" min={0} max={10} value={minStatUp} onChange={(e) => setMinStatUp(Number(e.target.value))} className="w-full accent-indigo-600 cursor-pointer" />
+                </div>
+                <div>
+                  <div className="flex justify-between text-slate-500"><span>▶ 우측</span><span className="font-bold text-indigo-600">≥ {minStatRight}</span></div>
+                  <input type="range" min={0} max={10} value={minStatRight} onChange={(e) => setMinStatRight(Number(e.target.value))} className="w-full accent-indigo-600 cursor-pointer" />
+                </div>
+                <div>
+                  <div className="flex justify-between text-slate-500"><span>▼ 하단</span><span className="font-bold text-indigo-600">≥ {minStatDown}</span></div>
+                  <input type="range" min={0} max={10} value={minStatDown} onChange={(e) => setMinStatDown(Number(e.target.value))} className="w-full accent-indigo-600 cursor-pointer" />
+                </div>
+                <div>
+                  <div className="flex justify-between text-slate-500"><span>◀ 좌측</span><span className="font-bold text-indigo-600">≥ {minStatLeft}</span></div>
+                  <input type="range" min={0} max={10} value={minStatLeft} onChange={(e) => setMinStatLeft(Number(e.target.value))} className="w-full accent-indigo-600 cursor-pointer" />
+                </div>
+              </div>
+            )}
+
             <div className="space-y-2">
               {filteredListings.length === 0 ? (
                 <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-xs text-slate-400">
@@ -686,8 +826,18 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                             {String(CARD_DATABASE[listing.cardId]?.element || '').toLowerCase() === 'fire' ? '🔥' : String(CARD_DATABASE[listing.cardId]?.element || '').toLowerCase() === 'water' ? '💧' : String(CARD_DATABASE[listing.cardId]?.element || '').toLowerCase() === 'earth' ? '🌿' : '⚡'}
                           </div>
                           <div className="min-w-0">
-                            <h3 className="text-sm font-black text-slate-900 truncate">{getCardTitle(listing.cardId)}</h3>
-                            <div className="text-xs font-black text-indigo-700 mt-0.5">{listing.askPrice.toLocaleString()} SNS</div>
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <h3 className="text-sm font-black text-slate-900 truncate">{getCardTitle(listing.cardId)}</h3>
+                              {/* ID 373: 수수료 및 가스비 배지 */}
+                              <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-xs bg-cyan-50 border border-cyan-200 text-cyan-800">
+                                {language === 'ko' ? '수수료 5% · L2 가스 0' : 'Fee 5% · Gas Free'}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-3 mt-0.5">
+                              <span className="text-xs font-black text-indigo-700">{listing.askPrice.toLocaleString()} SNS</span>
+                              {/* ID 408: 7일 시세 변동 스파크라인 HUD */}
+                              <MarketSparkline cardId={listing.cardId} currentPrice={listing.askPrice} width={50} height={18} />
+                            </div>
                           </div>
                         </div>
                         <div className="flex items-center gap-1.5 shrink-0" onClick={(e) => e.stopPropagation()}>
@@ -808,7 +958,33 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
         <section className="grid lg:grid-cols-2 gap-5">
           {/* My Listings */}
           <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-4 space-y-2">
-            <h2 className="text-base font-black text-slate-900">{t('marketplace_my_listings', language)}</h2>
+            <div className="flex items-center justify-between gap-2 flex-wrap pb-1 border-b border-slate-100">
+              <h2 className="text-base font-black text-slate-900">{t('marketplace_my_listings', language)}</h2>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {/* ID 353: 1-클릭 판매 대금 일괄 수령 (Claim All) 버튼 */}
+                {totalClaimableSns > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleClaimAllSettlements}
+                    className="px-2.5 py-1 rounded-sm bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[11px] flex items-center gap-1 shadow-sm cursor-pointer transition-all animate-bounce"
+                  >
+                    <Sparkles size={12} />
+                    <span>{language === 'ko' ? `판매 대금 일괄 수령 (+${totalClaimableSns.toLocaleString()} SNS)` : `Claim All (+${totalClaimableSns.toLocaleString()} SNS)`}</span>
+                  </button>
+                )}
+                {/* ID 403: 만료 임박 매물 1-클릭 일괄 재등록 버튼 */}
+                {myListings.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleRelistExpiringListings}
+                    className="px-2.5 py-1 rounded-sm border border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center gap-1 cursor-pointer transition-colors"
+                    title={language === 'ko' ? '등록 유효기간 갱신 및 상단 재노출' : 'Refresh listing expiration'}
+                  >
+                    <span>{language === 'ko' ? '만료 임박 일괄 재등록' : 'Re-list All'}</span>
+                  </button>
+                )}
+              </div>
+            </div>
             {myListings.length === 0 ? (
               <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-xs text-slate-400">
                 {t('marketplace_empty_my_listings', language)}
@@ -818,7 +994,15 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                 <div key={listing.id} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
-                      <div className="font-black text-sm text-slate-900 truncate">{getCardTitle(listing.cardId)}</div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-black text-sm text-slate-900 truncate">{getCardTitle(listing.cardId)}</span>
+                        {/* ID 403: 만료 임박 뱃지 */}
+                        {listing.status === 'active' && (
+                          <span className="text-[8px] font-bold px-1 py-0.2 rounded-xs bg-amber-100 text-amber-900 border border-amber-300">
+                            {language === 'ko' ? '만료 임박' : 'Expiring'}
+                          </span>
+                        )}
+                      </div>
                       <div className="text-xs text-slate-500">{listing.askPrice.toLocaleString()} SNS</div>
                     </div>
                     <div className="flex gap-1.5 shrink-0">
@@ -1007,6 +1191,19 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
         onRequestPurchase={(listing) => {
           handleRequestPurchase(listing);
         }}
+      />
+
+      {/* ID 338: 3단계 안전 에스크로 확인 모달 */}
+      <MarketEscrowModal
+        isOpen={isEscrowModalOpen}
+        onClose={() => {
+          setIsEscrowModalOpen(false);
+          setEscrowListing(null);
+        }}
+        listing={escrowListing}
+        currentSeason={currentSeason}
+        language={language}
+        onConfirmPurchase={(approved) => handleExecutePurchase(approved)}
       />
     </div>
   );

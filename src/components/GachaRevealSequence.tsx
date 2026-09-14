@@ -36,6 +36,8 @@ interface GachaRevealSequenceProps {
     current: number;
     total: number;
   } | null;
+  ownedCards?: Array<{ id?: string; imageIndex?: number }>;
+  onEquipCardToDeck?: (cardId: number) => void;
   onSkip: () => void;
   onClose: () => void;
   onDrawAgain: () => void;
@@ -120,6 +122,8 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
   processedCardImages,
   pityView,
   autoDrawProgress,
+  ownedCards = [],
+  onEquipCardToDeck,
   onSkip,
   onClose,
   onDrawAgain,
@@ -663,7 +667,24 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                       style={{ backgroundColor: getRarityGlowColor(highestRarity) }}
                     />
 
-                    <div className="relative flex flex-col items-center justify-between w-48 sm:w-56 h-72 sm:h-80 rounded-[28px] sm:rounded-[32px] border-2 border-amber-300/40 bg-gradient-to-b from-slate-900 via-slate-950 to-amber-950/40 p-5 sm:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center overflow-hidden">
+                    {/* ID 388: 10연차 중 최고 등급(SSR) 포함 시 골든 팩 림(Golden Rim) 연출 */}
+                    <div
+                      className={cn(
+                        "relative flex flex-col items-center justify-between w-48 sm:w-56 h-72 sm:h-80 rounded-[28px] sm:rounded-[32px] p-5 sm:p-6 text-center overflow-hidden transition-all",
+                        (EXTENDED_RARITY_RANK[highestRarity.toLowerCase()] ?? 0) >= EXTENDED_RARITY_RANK['gold']
+                          ? "border-4 border-amber-300 ring-4 ring-yellow-400 shadow-[0_0_60px_rgba(251,191,36,0.95)] animate-pulse bg-gradient-to-b from-amber-950/70 via-slate-950 to-amber-900/60"
+                          : "border-2 border-amber-300/40 bg-gradient-to-b from-slate-900 via-slate-950 to-amber-950/40 shadow-[0_20px_60px_rgba(0,0,0,0.8)]"
+                      )}
+                    >
+                      {/* 골든 림 예고 엠블럼 */}
+                      {(EXTENDED_RARITY_RANK[highestRarity.toLowerCase()] ?? 0) >= EXTENDED_RARITY_RANK['gold'] && (
+                        <div className="absolute top-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-amber-950 text-[8px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1 animate-bounce z-20">
+                          <Sparkles size={10} />
+                          <span>GOLDEN RIM: SSR DETECTED!</span>
+                          <Sparkles size={10} />
+                        </div>
+                      )}
+
                       {/* 카드팩 리본 / 엠블럼 */}
                       <div className="w-full flex items-center justify-between border-b border-white/15 pb-2.5 sm:pb-3">
                         <Sparkles size={16} className="text-yellow-300 animate-spin" />
@@ -730,6 +751,9 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                       const isRevealed = revealedIds.has(index) || card.isRevealed;
                       const isBest = bestCard && bestCard.imageIndex === card.imageIndex && isRevealed && phase === 'summary';
                       const isCardGoldCondition = (EXTENDED_RARITY_RANK[card.rarity.toLowerCase()] ?? 0) >= EXTENDED_RARITY_RANK['gold'];
+                      const isOwnedBefore = ownedCards.some(
+                        (oc) => oc.imageIndex === card.imageIndex || (oc.id && String(oc.id) === String(card.imageIndex))
+                      );
 
                       return (
                         <div key={card.id ?? `${card.imageIndex}-${index}`} className="flex flex-col items-center gap-1 sm:gap-2">
@@ -748,11 +772,34 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                               </div>
                             )}
 
+                            {/* ID 418: 신규 획득(NEW) vs 기존 보유(OWNED) 구별 태그 강조 */}
+                            {isRevealed && (
+                              <div className="absolute top-1 left-1 z-30">
+                                {!isOwnedBefore ? (
+                                  <span className="px-1.5 py-0.2 rounded-xs bg-rose-600 text-white text-[8px] font-black uppercase tracking-wider animate-pulse shadow-md border border-rose-400">
+                                    NEW!
+                                  </span>
+                                ) : (
+                                  <span className="px-1.5 py-0.2 rounded-xs bg-slate-800/90 text-slate-300 text-[8px] font-bold border border-slate-600">
+                                    OWNED
+                                  </span>
+                                )}
+                              </div>
+                            )}
+
                             {/* 골드 조건 만족 시 금빛 배지 */}
                             {isRevealed && isCardGoldCondition && !isBest && (
                               <div className="absolute -top-2 right-1 z-30 flex items-center gap-0.5 px-1.5 py-0.2 rounded-full bg-gradient-to-r from-yellow-300 via-amber-400 to-amber-500 text-amber-950 text-[8px] font-black uppercase tracking-wider shadow-md border border-yellow-200 animate-pulse">
                                 <Sparkles size={9} />
                                 <span>GOLD+</span>
+                              </div>
+                            )}
+
+                            {/* ID 348: 중복 획득 시 조각 변환(+10) 및 승급 알림 배지 */}
+                            {isRevealed && isOwnedBefore && (
+                              <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 z-30 px-2 py-0.5 rounded-full bg-indigo-950/95 border border-indigo-400 text-indigo-200 text-[8px] font-black flex items-center gap-0.5 shadow-lg whitespace-nowrap animate-bounce">
+                                <Sparkles size={8} className="text-indigo-400 animate-spin" />
+                                <span>+10 {language === 'ko' ? '파편 변환' : 'Shards'}</span>
                               </div>
                             )}
 
@@ -830,6 +877,22 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                               </div>
                             </motion.div>
                           </motion.div>
+
+                          {/* ID 358: SSR/SR 획득 시 현재 덱에 즉시 교체/장착 원클릭 버튼 */}
+                          {isRevealed && isCardGoldCondition && onEquipCardToDeck && (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onEquipCardToDeck(card.imageIndex);
+                              }}
+                              className="px-2 py-0.5 rounded-sm bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 text-[8px] font-black uppercase flex items-center gap-1 shadow-md hover:brightness-110 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+                              title={language === 'ko' ? '전투 덱 1번 슬롯에 즉시 장착' : 'Equip card directly to battle deck'}
+                            >
+                              <Layers size={9} />
+                              <span>{language === 'ko' ? '덱 즉시 장착' : 'Equip Deck'}</span>
+                            </button>
+                          )}
                         </div>
                       );
                     })}

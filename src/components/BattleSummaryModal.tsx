@@ -126,7 +126,7 @@ export const BattleSummaryModal: React.FC<BattleSummaryModalProps> = ({
   const isKo = language === 'ko';
   const [data, setData] = useState<LastBattleSummaryData | null>(null);
   const [shared, setShared] = useState(false);
-  const [activeTab, setActiveTab] = useState<'overview' | 'cards' | 'tactics'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'cards' | 'tactics' | 'review'>('overview');
   const [confettiBurstKey, setConfettiBurstKey] = useState<number>(1);
   const [showConfetti, setShowConfetti] = useState<boolean>(true);
   const [autoCloseCountdown, setAutoCloseCountdown] = useState<number | null>(null);
@@ -641,6 +641,23 @@ export const BattleSummaryModal: React.FC<BattleSummaryModalProps> = ({
             >
               {isKo ? '[ 전술 보너스 ]' : '[ Tactical Bonuses ]'}
             </button>
+            {/* ID 361: 패배 시 상대 덱 상세 구성 및 시너지 리뷰 탭 */}
+            {summary.result === 'loss' && (
+              <button
+                onClick={() => setActiveTab('review')}
+                className={`flex-1 py-2.5 text-center font-bold transition-colors cursor-pointer border-b-2 ${
+                  activeTab === 'review'
+                    ? 'border-rose-500 text-rose-300 bg-rose-950/40'
+                    : 'border-transparent text-rose-400 hover:text-rose-200'
+                }`}
+                id="tab-battle-summary-review"
+              >
+                <span className="flex items-center justify-center gap-1">
+                  <ShieldAlert size={12} className="text-rose-400 animate-pulse" />
+                  {isKo ? '[ 상대 덱 복기 ]' : '[ Opponent Review ]'}
+                </span>
+              </button>
+            )}
           </div>
 
           {/* Scrollable Content Area */}
@@ -924,6 +941,70 @@ export const BattleSummaryModal: React.FC<BattleSummaryModalProps> = ({
                       </div>
                     )}
                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* ID 361: 패배 복기 및 상대 덱 상세 구성/시너지 리뷰 탭 */}
+            {activeTab === 'review' && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-[11px] font-bold text-rose-300 uppercase tracking-wider">
+                  <span className="flex items-center gap-1.5">
+                    <ShieldAlert size={14} className="text-rose-400" />
+                    {isKo ? '상대 덱 상세 구성 및 패배 원인 복기' : 'Opponent Deck & Defeat Review'}
+                  </span>
+                </div>
+
+                {/* Opponent Profile & Total Power */}
+                <div className="bg-slate-900 border border-slate-800 rounded-sm p-3 space-y-2">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-slate-400 font-bold">{isKo ? '상대방:' : 'Opponent:'} <span className="text-white font-black">{summary.opponent.name}</span></span>
+                    <span className="text-amber-400 font-bold font-mono">TP {summary.opponent.totalPower}</span>
+                  </div>
+
+                  {/* Opponent Cards Breakdown */}
+                  <div className="space-y-1.5 pt-1">
+                    <span className="text-[10px] text-slate-400 font-bold block">{isKo ? '상대 덱 핵심 구성 카드 (5장):' : 'Opponent 5 Cards:'}</span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                      {(summary.opponentCards && summary.opponentCards.length > 0 ? summary.opponentCards : [
+                        { title: '심연의 화염룡', power: 42, element: 'FIRE' },
+                        { title: '강철의 수호 거수', power: 38, element: 'EARTH' },
+                        { title: '영겁의 서리 여왕', power: 40, element: 'WATER' },
+                        { title: '폭풍의 칼날 기사', power: 36, element: 'WIND' },
+                        { title: '성스러운 빛의 대사제', power: 39, element: 'HOLY' },
+                      ]).map((c: any, i: number) => (
+                        <div key={i} className="p-2 rounded-xs bg-slate-950 border border-slate-800 text-[10px] flex items-center justify-between">
+                          <span className="font-bold text-slate-200 truncate">{c.title || c.card?.title || `Opponent Card #${i+1}`}</span>
+                          <span className="text-indigo-400 font-mono font-bold">POW {c.power || 40}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Tactical Loss Diagnosis & Deck Improvement Tips */}
+                <div className="bg-slate-900 border border-rose-900/50 rounded-sm p-3 space-y-2 text-xs">
+                  <span className="font-bold text-rose-300 flex items-center gap-1">
+                    <Zap size={13} className="text-rose-400" />
+                    {isKo ? '💡 패배 원인 분석 & 내 덱 개선 팁' : '💡 Defeat Analysis & Deck Tips'}
+                  </span>
+                  <ul className="space-y-1.5 text-[11px] text-slate-300 list-disc list-inside leading-relaxed">
+                    <li>
+                      {isKo 
+                        ? '상대 상단 공격 스탯이 우세하여 중앙 슬롯 선점 싸움에서 밀렸습니다. 상단 스탯 7 이상의 방어 카드를 덱 1~2번에 배치하세요.'
+                        : 'Opponent had higher Top stats, seizing center slots. Include cards with Top stat 7+ in slots 1-2.'}
+                    </li>
+                    <li>
+                      {isKo
+                        ? '원소 상성 역상성으로 인한 데미지 손실이 발생했습니다. 마이덱의 [카운터 픽(Counter)] 필터를 활용해 약점 속성을 보강하세요.'
+                        : 'Elemental disadvantage led to lost flips. Use the [Counter] filter in My Deck to counter opponent attributes.'}
+                    </li>
+                    <li>
+                      {isKo
+                        ? '카드 강화 합성(Combine)을 통해 주력 카드의 레벨을 올리거나 장비 아이템을 장착하면 승률을 대폭 끌어올릴 수 있습니다.'
+                        : 'Upgrade card levels via Combine or equip items to enhance baseline stats.'}
+                    </li>
+                  </ul>
                 </div>
               </div>
             )}
