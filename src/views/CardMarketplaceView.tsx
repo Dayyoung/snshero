@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { HelpCircle, X, ChevronLeft, ChevronRight, TrendingUp, SlidersHorizontal, Sparkles } from 'lucide-react';
+import { HelpCircle, X, ChevronLeft, ChevronRight, TrendingUp, SlidersHorizontal, Sparkles, Bell, Bookmark } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { getMarketplaceFeePolicy, calculateMarketplaceSettlement } from '../content/marketplaceFees';
 import { MarketplacePriceBand } from '../lib/MarketplacePriceBand';
@@ -166,6 +166,50 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
   const [tradeModalListing, setTradeModalListing] = useState<Listing | null>(null);
   const [tradeTypeFilter, setTradeTypeFilter] = useState<'all' | 'instant' | 'auction'>('all');
   const [elementFilter, setElementFilter] = useState<'all' | 'FIRE' | 'WATER' | 'EARTH' | 'WIND'>('all');
+
+  // Row 1054 / ID 317: Watchlist & Price Notification
+  const [watchlist, setWatchlist] = useState<Record<number, number>>(() => {
+    try {
+      const saved = localStorage.getItem('hero_market_watchlist_v1');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return {};
+  });
+  const [priceAlertToast, setPriceAlertToast] = useState<string | null>(null);
+
+  const toggleWatchlist = (cardId: number, targetPrice: number) => {
+    setWatchlist((prev) => {
+      const next = { ...prev };
+      if (next[cardId]) {
+        delete next[cardId];
+      } else {
+        next[cardId] = targetPrice;
+      }
+      try {
+        localStorage.setItem('hero_market_watchlist_v1', JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  };
+
+  // Check matching deals on watchlist
+  useEffect(() => {
+    const matched: string[] = [];
+    marketState.listings.forEach((item) => {
+      const target = watchlist[item.cardId];
+      if (target && item.askPrice <= target && item.status === 'active') {
+        const cardName = CARD_DATABASE[item.cardId]?.title_dis || `Card #${item.cardId}`;
+        matched.push(
+          language === 'ko'
+            ? `🔔 관심 카드 [${cardName}] 매물이 목표가(${target.toLocaleString()} SNS) 이하인 ${item.askPrice.toLocaleString()} SNS에 등록되었습니다!`
+            : `🔔 Watchlist Deal: [${cardName}] listed for ${item.askPrice.toLocaleString()} SNS (Target: ${target.toLocaleString()} SNS)!`
+        );
+      }
+    });
+    if (matched.length > 0 && !priceAlertToast) {
+      setPriceAlertToast(matched[0]);
+    }
+  }, [marketState.listings, watchlist, language]);
 
   const userId = user?.uid || 'guest-id';
   const userName = user?.displayName?.trim() || (language === 'ko' ? '플레이어' : 'Player');
@@ -558,6 +602,21 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
       />
 
       <div className="max-w-5xl mx-auto px-4 py-5 space-y-5">
+        {/* Row 1054 / ID 317: Watchlist Price Alert Toast Banner */}
+        {priceAlertToast && (
+          <div className="p-3 bg-amber-50 border-2 border-amber-400 text-amber-950 font-mono text-xs flex items-center justify-between shadow-sm animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-center gap-2">
+              <Bell size={16} className="text-amber-600 shrink-0 animate-bounce" />
+              <span className="font-bold">{priceAlertToast}</span>
+            </div>
+            <button
+              onClick={() => setPriceAlertToast(null)}
+              className="text-amber-800 hover:text-black font-black text-xs px-1.5 py-0.5"
+            >
+              ✕
+            </button>
+          </div>
+        )}
 
         {/* Browse + Create */}
         <section className="grid lg:grid-cols-[1.1fr_0.9fr] gap-5">
@@ -713,6 +772,23 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                 </span>
               </div>
             )}
+
+            {/* Row 1060 / ID 323: Suggested Market Price Guidance Chip */}
+            {selectedCardId && (() => {
+              const band = MarketplacePriceBand.getInstance().evaluatePriceBand(selectedCardId, 0);
+              const suggested = band.recommendedPrice;
+              return (
+                <button
+                  type="button"
+                  onClick={() => setListingPriceInput(String(suggested))}
+                  className="w-full py-1.5 px-2 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-950 rounded-lg text-[11px] font-mono font-bold flex items-center justify-between transition-colors"
+                  title={language === 'ko' ? '클릭 시 권장가로 자동 입력' : 'Click to auto-fill suggested price'}
+                >
+                  <span>💡 {language === 'ko' ? '적정 시장 권장가:' : 'Suggested Price:'}</span>
+                  <span className="underline font-black">{suggested.toLocaleString()} SNS (자동입력)</span>
+                </button>
+              );
+            })()}
 
             <button
               type="button"

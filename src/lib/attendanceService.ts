@@ -8,6 +8,7 @@ export interface AttendanceState {
   lastClaimDate: string; // YYYY-MM-DD
   currentStreak: number; // 1~7
   totalClaims: number;
+  streakSaverUsedThisMonth?: boolean; // Row 1065 / ID 328: 월 1회 스트릭 세이버
   claimedRewardHistory: {
     date: string;
     day: number;
@@ -121,3 +122,37 @@ export function claimDailyReward(selectedItem: RouletteRewardItem): { newState: 
     isSeventhDay
   };
 }
+
+/**
+ * 월 1회 스트릭 복구권 (Streak Saver) 실행
+ * (구글 스프레드시트 Row 1065 / ID 328 구현)
+ */
+export function restoreStreakWithSaver(): { success: boolean; newState: AttendanceState; messageKo: string; messageEn: string } {
+  const state = getAttendanceState();
+  if (state.streakSaverUsedThisMonth) {
+    return {
+      success: false,
+      newState: state,
+      messageKo: '이번 달의 스트릭 복구권을 이미 사용했습니다.',
+      messageEn: 'Streak Saver already used this month.',
+    };
+  }
+
+  const updatedState: AttendanceState = {
+    ...state,
+    currentStreak: Math.min(7, Math.max(1, state.currentStreak + 1)),
+    streakSaverUsedThisMonth: true,
+  };
+
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedState));
+  } catch {}
+
+  return {
+    success: true,
+    newState: updatedState,
+    messageKo: `스트릭 복구 완료! 현재 ${updatedState.currentStreak}일차 스트릭으로 복원되었습니다.`,
+    messageEn: `Streak restored to Day ${updatedState.currentStreak}!`,
+  };
+}
+

@@ -32,6 +32,8 @@ import { GachaRevealSequence } from '../components/GachaRevealSequence';
 import { ShareTemplateCard } from '../components/ShareTemplateCard';
 import { getGoodsSnsCost, getSpendShortfall, SNS_ECONOMY_COSTS } from '../content/snsEconomy';
 import { useRefundRequests } from '../hooks/useRefundRequests';
+import { TokenExchangeModal } from '../components/TokenExchangeModal';
+import { ArrowDownUp } from 'lucide-react';
 
 interface ShopViewProps {
   sns: number;
@@ -344,6 +346,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const [refundReason, setRefundReason] = useState<RefundRequestReason>('accidental_purchase');
   const [refundDetails, setRefundDetails] = useState('');
   
+  // Row 1050 / ID 313: Token Swap & Slippage Exchange Modal
+  const [isTokenExchangeOpen, setIsTokenExchangeOpen] = useState(false);
+
   // Goods Shop States
   const [mugCardId, setMugCardId] = useState<number>(1);
   const [tshirtCardId, setTshirtCardId] = useState<number>(1);
@@ -2324,21 +2329,48 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <span>{t('sns_history', language)}</span>
                   </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                    setShowHistory(true);
-                  }}
-                  className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 transition-all active:scale-95 hover:border-slate-400 hover:bg-slate-100 cursor-pointer touch-target sm:w-auto"
-                  title={t('sns_history', language)}
-                  aria-label={t('sns_history', language)}
-                >
-                  <span>{t('sns_history', language)}</span>
-                  <ArrowRight size={14} className="shrink-0 opacity-70" />
-                </button>
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* Row 1050 / ID 313: Token Swap Button */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                      setIsTokenExchangeOpen(true);
+                    }}
+                    className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-xl border border-amber-300 bg-amber-50 px-3.5 py-2.5 text-xs font-bold text-amber-950 transition-all hover:bg-amber-100 active:scale-95 cursor-pointer"
+                  >
+                    <ArrowDownUp size={14} className="text-amber-700" />
+                    <span>{language === 'ko' ? '토큰 환전 (Swap)' : 'Token Swap'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                      setShowHistory(true);
+                    }}
+                    className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 transition-all active:scale-95 hover:border-slate-400 hover:bg-slate-100 cursor-pointer touch-target sm:w-auto"
+                    title={t('sns_history', language)}
+                    aria-label={t('sns_history', language)}
+                  >
+                    <span>{t('sns_history', language)}</span>
+                    <ArrowRight size={14} className="shrink-0 opacity-70" />
+                  </button>
+                </div>
               </div>
             </div>
+
+            {/* Row 1050 / ID 313: In-Game Token Swap Modal */}
+            <TokenExchangeModal
+              isOpen={isTokenExchangeOpen}
+              onClose={() => setIsTokenExchangeOpen(false)}
+              userSnsBalance={sns}
+              userGoldBalance={userStats?.gold || 15000}
+              onSwapSuccess={(snsDelta) => {
+                updateSns(snsDelta, '토큰 환전 (Swap)');
+              }}
+              language={language}
+            />
           {/* Toast Notification */}
           <AnimatePresence>
             {toastMessage && (

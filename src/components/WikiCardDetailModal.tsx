@@ -14,6 +14,7 @@ import { SkinSelector } from './SkinSelector';
 import { resolveCardImage } from '../content/cardImageVariants';
 import { useGameSettings } from '../contexts/GameSettingsContext';
 import { CardItem } from './CardItem';
+import { ElementCounterSimulator } from './ElementCounterSimulator';
 import type { CardSkin } from '../content/cardSkins';
 import type { DatabaseCard, Language, ViewType, CardData } from '../types';
 
@@ -415,6 +416,20 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
                         </div>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Row 1049 / ID 312: Interactive Element Counter Preview Tool */}
+                  <div className="px-4 pb-4 sm:px-5 sm:pb-5">
+                    <ElementCounterSimulator
+                      cardElement={selectedCard.element || 'WATER'}
+                      baseStats={{
+                        top: selectedCard.stats[0] || 1,
+                        right: selectedCard.stats[1] || 1,
+                        bottom: selectedCard.stats[2] || 1,
+                        left: selectedCard.stats[3] || 1,
+                      }}
+                      language={language}
+                    />
                   </div>
                 </div>
               </div>

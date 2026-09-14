@@ -66,6 +66,12 @@ import { BattleComboAnnouncer } from '../components/BattleComboAnnouncer';
 import { SecretStampBookModal } from '../components/SecretStampBookModal';
 import { BattleSummaryModal, LastBattleSummaryData } from '../components/BattleSummaryModal';
 import { ElementAdvantageModal } from '../components/ElementAdvantageModal';
+import { BattleReconnectModal } from '../components/BattleReconnectModal';
+import { TurnOrderDeciderModal } from '../components/TurnOrderDeciderModal';
+import { BattleReplayShareButton } from '../components/BattleReplayShareButton';
+import { SceneExitOptimizer } from '../lib/SceneExitOptimizer';
+import { playBattleSfx } from '../lib/AudioSpriteService';
+import { StaminaPacingManager } from '../lib/staminaPacingManager';
 import { TreasureDartModal } from '../components/TreasureDartModal';
 import { GoldenPirateRouletteModal } from '../components/GoldenPirateRouletteModal';
 import { GoldenArcheryModal } from '../components/GoldenArcheryModal';
@@ -2561,6 +2567,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     setCheckingIdx(-1);
     setIsEvaluating(false);
 
+    // Row 1052 / ID 315: Trigger WebGL & Texture GC on match exit
+    SceneExitOptimizer.triggerSceneExitCleanup();
+
     if (isStoryActive) {
       const didPlayerWin = !isForfeit && winner === 'player';
       setWinner(null);
@@ -2655,6 +2664,22 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [gameOver, setGameOver] = useState(false);
   const [winner, setWinner] = useState<'player' | 'ai' | 'draw' | null>(null);
   const [showBattleShareTemplate, setShowBattleShareTemplate] = useState(false);
+
+  // Row 1058 / ID 321: Coin Toss Turn Order Decider Modal
+  const [isTurnOrderDeciderOpen, setIsTurnOrderDeciderOpen] = useState(false);
+
+  // Row 1053 / ID 316: 80ms Screen Shake on Card Capture
+  const [isScreenShaking, setIsScreenShaking] = useState(false);
+
+  // Row 1048 / ID 311: Network Reconnect Modal & Disconnect Recovery
+  const [isReconnectModalOpen, setIsReconnectModalOpen] = useState(false);
+  const [isOpponentDisconnected, setIsOpponentDisconnected] = useState(false);
+
+  // Row 1063 / ID 326: Match Replay Move History
+  const [matchMoves, setMatchMoves] = useState<any[]>([]);
+
+  // Row 1067 / ID 330: Dynamic Dragging GPU Layer Promotion
+  const [isDraggingCard, setIsDraggingCard] = useState(false);
 
   useEffect(() => {
     if (!gameOver) {
@@ -5731,6 +5756,26 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             }), 'capture');
           }
         });
+      }
+
+      if (flippedIndices.length > 0) {
+        // Row 1053 / ID 316: 80ms Micro Screen Shake on Card Capture
+        playBattleSfx('card_capture');
+        setIsScreenShaking(true);
+        setTimeout(() => setIsScreenShaking(false), 80);
+
+        // Row 1063 / ID 326: Record Move History for Battle Replay
+        setMatchMoves(prev => [
+          ...prev,
+          {
+            turn: prev.length + 1,
+            player: placedCard.owner === 'player' ? 'user' : 'opponent',
+            cardId: String(placedCard.id),
+            cardName: placedCard.title,
+            gridIndex: index,
+            capturedIndices: [...flippedIndices],
+          }
+        ]);
       }
 
       if (flippedIndices.length >= 2) {
@@ -13756,6 +13801,59 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             </div>
           </div>
 
+          {/* Row 1055 / ID 318: Energy / AP Recovery Widget & Gold Rest */}
+          {(() => {
+            const staminaMgr = StaminaPacingManager.getInstance();
+            const state = staminaMgr.getState();
+            const countdown = staminaMgr.getNextApCountdownSeconds();
+            const minutes = String(Math.floor(countdown / 60)).padStart(2, '0');
+            const seconds = String(countdown % 60).padStart(2, '0');
+            const remainingGoldRests = 2 - (state.dailyGoldRestsClaimed || 0);
+
+            return (
+              <div className="w-full bg-[#111827] border border-slate-800 p-3 rounded-sm font-mono flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <div className="p-2 bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 rounded-sm">
+                    <Zap size={16} />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-white">
+                        AP {state.currentAp} / {state.maxAp}
+                      </span>
+                      <span className="text-[10px] text-stone-400 bg-slate-800 px-1.5 py-0.5 rounded-xs">
+                        {language === 'ko' ? `다음 AP까지 ${minutes}:${seconds}` : `Next AP in ${minutes}:${seconds}`}
+                      </span>
+                    </div>
+                    <div className="w-36 h-1.5 bg-slate-800 rounded-full overflow-hidden mt-1">
+                      <div
+                        className="h-full bg-emerald-500 transition-all"
+                        style={{ width: `${(state.currentAp / state.maxAp) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const res = staminaMgr.restoreApWithGold(userStats?.gold || 15000);
+                      playBattleSfx(res.success ? 'badge_pop' : 'defeat');
+                      triggerAlert(language === 'ko' ? res.messageKo : res.messageEn, language === 'ko' ? '골드로 휴식' : 'Gold Rest');
+                    }}
+                    disabled={remainingGoldRests <= 0}
+                    className="py-1.5 px-3 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 rounded-sm font-bold text-[11px] transition-all disabled:opacity-40 flex items-center gap-1.5"
+                    title="500 골드로 5 AP 회복 (일일 2회)"
+                  >
+                    <Coins size={12} className="text-amber-400" />
+                    <span>{language === 'ko' ? `골드로 휴식 (+5 AP, 잔여: ${remainingGoldRests}회)` : `Gold Rest (+5 AP, Left: ${remainingGoldRests})`}</span>
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Mode Search & Category Filter Tabs */}
           <div className="flex flex-col gap-2.5 w-full pt-1">
             <div className="flex items-center justify-between gap-2">
@@ -16323,8 +16421,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               isClutchSlowMo && "scale-[1.02] filter contrast-125 transition-transform duration-300"
             )}>
                     <div className={cn(
-                      "grid grid-cols-3 gap-1 md:gap-2 w-fit relative p-1.5 rounded-sm transition-all",
-                      isSuddenDeathOverclock && "border border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.25)] bg-amber-950/10"
+                      "grid grid-cols-3 gap-1 md:gap-2 w-fit relative p-1.5 rounded-sm transition-all battle-touch-safe",
+                      isSuddenDeathOverclock && "border border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.25)] bg-amber-950/10",
+                      isScreenShaking && "animate-screen-shake"
                     )}>
                       {/* Item 394 & Item 402: Battle Combo Announcer & Critical Shatter Overlay */}
                       {comboAnnounceData && (
@@ -16503,10 +16602,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           <div
                             key={idx}
                             onClick={() => handleCellClick(idx)}
+                            onContextMenu={(e) => e.preventDefault()}
                             onMouseEnter={() => handleMouseEnterCell(idx)}
                             onMouseLeave={handleMouseLeaveCell}
                             className={cn(
-                              "grid-cell group w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] flex items-center justify-center relative transition-all overflow-visible rounded-lg font-mono shadow-none [transform:translate3d(0,0,0)] [will-change:transform,opacity]",
+                              "grid-cell group w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] flex items-center justify-center relative transition-all overflow-visible rounded-lg font-mono shadow-none [transform:translate3d(0,0,0)] battle-touch-safe select-none",
+                              isDraggingCard && "gpu-layer-dragging",
                               card ? (
                                 selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player'
                                   ? "border border-rose-500/40 opacity-75 saturate-75 cursor-not-allowed"
@@ -17895,6 +17996,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   </button>
                 )}
 
+                {/* Row 1063 / ID 326: Battle Replay Share Link Button */}
+                <BattleReplayShareButton
+                  replayData={{
+                    matchId: `match-${Date.now()}`,
+                    timestamp: Date.now(),
+                    userWon: winner === 'player',
+                    userScore: battleType === 'matgo' ? matgoScores.player : boardScore.player,
+                    opponentScore: battleType === 'matgo' ? matgoScores.ai : boardScore.ai,
+                    opponentName: lastOpponent?.name || 'AI Opponent',
+                    moves: matchMoves,
+                  }}
+                  className="w-full py-3 bg-slate-900 text-white border-slate-750"
+                />
+
                 <button
                   type="button"
                   onClick={() => setShowBattleShareTemplate(true)}
@@ -18327,6 +18442,28 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             handleExitMatch(false);
           }
         }}
+      />
+
+      {/* Row 1058 / ID 321: Coin Toss Turn Order Decider Modal */}
+      <TurnOrderDeciderModal
+        isOpen={isTurnOrderDeciderOpen}
+        isPlayerFirst={firstTurn === 'player'}
+        onComplete={() => setIsTurnOrderDeciderOpen(false)}
+      />
+
+      {/* Row 1048 / ID 311: Battle Network Reconnection Modal */}
+      <BattleReconnectModal
+        isOpen={isReconnectModalOpen}
+        isOpponentDisconnected={isOpponentDisconnected}
+        onRetry={() => {
+          setIsReconnectModalOpen(false);
+        }}
+        onForfeitWin={() => {
+          setIsReconnectModalOpen(false);
+          setWinner('player');
+          setGameOver(true);
+        }}
+        onClose={() => setIsReconnectModalOpen(false)}
       />
     </div>
   );

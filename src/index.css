@@ -24,6 +24,49 @@
   to { transform: translateX(100%); }
 }
 
+/* Row 1053 / ID 316: 80ms Micro Screen Shake FX for Card Capture */
+@keyframes screen-shake {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3px, 2px); }
+  40% { transform: translate(3px, -2px); }
+  60% { transform: translate(-2px, 1px); }
+  80% { transform: translate(2px, -1px); }
+  100% { transform: translate(0, 0); }
+}
+
+.animate-screen-shake {
+  animation: screen-shake 80ms ease-in-out;
+}
+
+/* Row 1061 / ID 324: Prevent default context callout & long press on mobile battle elements */
+.battle-touch-safe,
+.battle-board-slot,
+.card-tile-touch {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-user-drag: none !important;
+}
+
+/* Row 1066 / ID 329: Modern Dynamic Viewport CSS Units (100dvh) with fallback */
+.h-screen-dynamic {
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
+}
+
+.min-h-screen-dynamic {
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+}
+
+/* Row 1067 / ID 330: Dynamic Layer Promotion - strictly on active drag, reducing idle VRAM */
+.gpu-layer-dragging {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
 @layer base {
   html, body {
     -webkit-font-smoothing: antialiased;

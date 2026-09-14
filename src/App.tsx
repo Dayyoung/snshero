@@ -53,6 +53,7 @@ import { getSeasonItem, setSeasonItem, removeSeasonItem } from './lib/seasonStor
 import { getDeckUpgradeRecommendation, getCardStateFingerprint } from './lib/deckUpgrade';
 import { incrementMissionProgress } from './lib/dailyMissions';
 import { VIEW_ROUTES, getViewPath, getViewFromPath, getRouteMeta } from './routes';
+import { useVisualViewportLock } from './hooks/useVisualViewportLock';
 import { 
   Menu, 
   ChevronLeft, 
@@ -405,6 +406,9 @@ function AppContent() {
   const [autoStartPvp, setAutoStartPvp] = useState(false);
   const [fromBackToRanking, setFromBackToRanking] = useState(false);
   const [view, setView] = useState<ViewType>(() => getViewFromPathAndUrl());
+
+  // Row 1056 / ID 319: Mobile Visual Viewport Lock for virtual keyboard stabilization
+  useVisualViewportLock();
 
 
 

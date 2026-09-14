@@ -8,6 +8,7 @@ export interface StaminaPacingState {
   currentAp: number;
   maxAp: number;
   dailyFriendGiftsClaimed: number; // 오늘 수령한 친구 하트 AP 선물 수 (최대 3회 = 30 AP)
+  dailyGoldRestsClaimed: number;   // 오늘 골드로 휴식 수령 횟수 (최대 2회 = 10 AP)
   lastGiftDate: string;
   totalPlayMinutes: number;
 }
@@ -17,6 +18,9 @@ const MAX_AP = 100;
 const AP_PER_MINUTE = 5; // 분당 5 AP 소모 표준
 const FRIEND_GIFT_AP = 10; // 선물 1회당 10 AP
 const MAX_DAILY_GIFTS = 3; // 1일 최대 3회 = 30 AP
+const GOLD_REST_AP = 5;    // 골드로 휴식 1회당 5 AP
+const GOLD_REST_COST = 500; // 골드로 휴식 500골드 소모
+const MAX_GOLD_RESTS = 2;  // 1일 최대 2회
 
 export class StaminaPacingManager {
   private static instance: StaminaPacingManager;
@@ -44,6 +48,7 @@ export class StaminaPacingManager {
         currentAp: 100,
         maxAp: MAX_AP,
         dailyFriendGiftsClaimed: 0,
+        dailyGoldRestsClaimed: 0,
         lastGiftDate: this.getTodayStr(),
         totalPlayMinutes: 0,
       };
@@ -58,6 +63,7 @@ export class StaminaPacingManager {
         currentAp: 100,
         maxAp: MAX_AP,
         dailyFriendGiftsClaimed: 0,
+        dailyGoldRestsClaimed: 0,
         lastGiftDate: today,
         totalPlayMinutes: 0,
       };
@@ -67,11 +73,15 @@ export class StaminaPacingManager {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed: StaminaPacingState = JSON.parse(raw);
-        // 날짜 변경 시 친구 선물 카운터 리셋
+        // 날짜 변경 시 친구 선물 및 골드 휴식 카운터 리셋
         if (parsed.lastGiftDate !== today) {
           parsed.dailyFriendGiftsClaimed = 0;
+          parsed.dailyGoldRestsClaimed = 0;
           parsed.lastGiftDate = today;
           this.saveState(parsed);
+        }
+        if (parsed.dailyGoldRestsClaimed === undefined) {
+          parsed.dailyGoldRestsClaimed = 0;
         }
         return parsed;
       }
@@ -83,6 +93,7 @@ export class StaminaPacingManager {
       currentAp: 100,
       maxAp: MAX_AP,
       dailyFriendGiftsClaimed: 0,
+      dailyGoldRestsClaimed: 0,
       lastGiftDate: today,
       totalPlayMinutes: 0,
     };
@@ -196,4 +207,67 @@ export class StaminaPacingManager {
       messageEn: `+${FRIEND_GIFT_AP} AP claimed from friend heart! (${remaining} left today)`,
     };
   }
+
+  /**
+   * 골드로 휴식 (Gold Rest) - 500골드 소모하여 5 AP 즉시 충전 (일일 최대 2회)
+   * (구글 스프레드시트 Row 1055 / ID 318 구현)
+   */
+  public restoreApWithGold(userGold: number): {
+    success: boolean;
+    cost: number;
+    restoredAp: number;
+    remainingRestsToday: number;
+    messageKo: string;
+    messageEn: string;
+  } {
+    const state = this.getState();
+    const currentRests = state.dailyGoldRestsClaimed || 0;
+
+    if (currentRests >= MAX_GOLD_RESTS) {
+      return {
+        success: false,
+        cost: 0,
+        restoredAp: 0,
+        remainingRestsToday: 0,
+        messageKo: '오늘의 골드 휴식 충전(일일 2회)을 모두 사용했습니다.',
+        messageEn: 'Daily Gold Rest limit (2/2) reached.',
+      };
+    }
+
+    if (userGold < GOLD_REST_COST) {
+      return {
+        success: false,
+        cost: 0,
+        restoredAp: 0,
+        remainingRestsToday: MAX_GOLD_RESTS - currentRests,
+        messageKo: `골드가 부족합니다. (필요: ${GOLD_REST_COST} Gold, 보유: ${userGold} Gold)`,
+        messageEn: `Insufficient gold. (Need: ${GOLD_REST_COST} Gold, Have: ${userGold} Gold)`,
+      };
+    }
+
+    state.dailyGoldRestsClaimed = currentRests + 1;
+    state.currentAp = Math.min(state.maxAp, state.currentAp + GOLD_REST_AP);
+    this.saveState(state);
+
+    const remaining = MAX_GOLD_RESTS - state.dailyGoldRestsClaimed;
+    return {
+      success: true,
+      cost: GOLD_REST_COST,
+      restoredAp: GOLD_REST_AP,
+      remainingRestsToday: remaining,
+      messageKo: `골드로 휴식 완료! 500 골드를 소모하여 +${GOLD_REST_AP} AP를 회복했습니다. (오늘 잔여: ${remaining}회)`,
+      messageEn: `Gold Rest complete! Restored +${GOLD_REST_AP} AP for ${GOLD_REST_COST} Gold. (${remaining} left today)`,
+    };
+  }
+
+  /**
+   * 다음 1 AP 자연 충전까지 남은 시간(초) 계산 (5분 = 300초 주기)
+   */
+  public getNextApCountdownSeconds(): number {
+    const now = Math.floor(Date.now() / 1000);
+    const cycle = 300; // 5분
+    const elapsed = now % cycle;
+    return cycle - elapsed;
+  }
 }
+

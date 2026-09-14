@@ -50,6 +50,7 @@ import { CardCombineModal } from '../components/CardCombineModal';
 import { DeckSynergyCalculator } from '../components/DeckSynergyCalculator';
 import { DeckSynergyVisualizer } from '../components/DeckSynergyVisualizer';
 import { DeckBondSynergyEngine } from '../lib/DeckBondSynergyEngine';
+import { DeckChemistryMeter } from '../components/DeckChemistryMeter';
 import { buildOptimalSynergyDeck } from '../lib/deckSynergyEngine';
 
 interface MyDeckViewProps {
@@ -1241,6 +1242,13 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             </div>
           )}
 
+          {/* Deck Chemistry Meter Widget (Row 1059 / ID 322) */}
+          <DeckChemistryMeter
+            deck={currentDeck as any}
+            language={language}
+            className="mb-3"
+          />
+
           <div id="deck-list" className="mx-auto flex w-full max-w-full flex-nowrap sm:flex-wrap justify-center items-center gap-1 xs:gap-2 sm:gap-4 md:gap-6 px-0.5 sm:px-1">
           <DndContext 
             sensors={sensors}
@@ -2019,10 +2027,17 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                             )}
                           </div>
 
-                          {/* Top Right: Quantity */}
+                          {/* Top Right: Quantity & Upgradeable Badges (Row 1064 / ID 327) */}
                           {isOwned && inventory[idx] && (
-                            <div className="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] sm:text-xs font-black px-1.5 min-w-[18px] h-[18px] flex items-center justify-center border-2 border-white rounded-full z-30 shadow-xl">
-                              {inventory[idx].quantity}
+                            <div className="absolute -top-1 -right-1 flex flex-col items-end gap-0.5 z-30 pointer-events-none">
+                              <div className="bg-[#201d1d] text-[#fdfcfc] text-[10px] font-black px-1.5 min-w-[20px] h-[18px] flex items-center justify-center border border-white/80 rounded-full shadow-md">
+                                x{inventory[idx].quantity}
+                              </div>
+                              {inventory[idx].quantity >= 2 && (
+                                <span className="px-1 py-0.2 text-[8px] font-bold bg-amber-400 text-amber-950 border border-amber-500 rounded-xs shadow-xs animate-pulse">
+                                  {language === 'ko' ? '승급가능' : 'Upgrade'}
+                                </span>
+                              )}
                             </div>
                           )}
                         </div>
