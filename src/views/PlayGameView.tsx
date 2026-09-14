@@ -15179,7 +15179,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       id="game-board" 
       className={cn(
         "flex-1 flex flex-col w-full max-w-[1024px] mx-auto bg-[#060a14] text-slate-100 min-h-0 justify-between relative overflow-hidden select-none touch-none overscroll-none h-full max-h-[100dvh]",
-        !isAdRemoved ? "pt-[116px] sm:pt-[148px]" : "pt-12 sm:pt-14",
+        !isAdRemoved ? "pt-10 sm:pt-12" : "pt-11 sm:pt-12",
         "pb-1 sm:pb-2"
       )}
     >
@@ -15201,8 +15201,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
       {/* Floating Circular Robot Auto-Battle Button, Speed Toggle & Grid Skills */}
       {gameState === 'playing' && !gameOver && (
-        <div className="fixed inset-x-0 bottom-[130px] sm:bottom-[160px] lg:top-1/2 lg:-translate-y-1/2 lg:bottom-auto max-w-[1024px] mx-auto z-[160] pointer-events-none flex justify-end px-2 sm:px-4">
-          <div className="pointer-events-auto flex flex-col items-end gap-2.5">
+        <div className="fixed inset-x-0 bottom-[100px] sm:bottom-[120px] md:top-1/2 md:-translate-y-1/2 md:bottom-auto max-w-[1024px] mx-auto z-[160] pointer-events-none flex justify-end px-2 sm:px-4">
+          <div className="pointer-events-auto flex flex-col items-end gap-1.5 sm:gap-2 max-h-[72vh] overflow-y-auto overflow-x-hidden p-1 custom-scrollbar">
           {/* QTE Skill Timing Button - neatly docked in the battle action stack so it NEVER overlaps with turn indicators, turn timers, or board tiles */}
           <SkillTimingButton
             chargeTime={1500}
@@ -15305,97 +15305,101 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             )}
           </div>
 
-          {/* 2. Grid Skills (Rendered directly under the Robot button) */}
+          {/* 2. Grid Skills (Rendered in a 2-column compact grid to prevent board overlap on PC) */}
           {(() => {
             const availableSkills = getAvailableSkills();
             if (availableSkills.length === 0) return null;
 
-            return availableSkills.map(skillId => {
-              let skillNameKo = '';
-              let skillNameEn = '';
-              let Icon = Flame;
-              let colorClass = '';
+            return (
+              <div className="grid grid-cols-2 gap-1.5 justify-items-end mt-0.5">
+                {availableSkills.map(skillId => {
+                  let skillNameKo = '';
+                  let skillNameEn = '';
+                  let Icon = Flame;
+                  let colorClass = '';
 
-              switch (skillId) {
-                case 1:
-                  skillNameKo = '강화 함성';
-                  skillNameEn = 'Rallying Roar';
-                  Icon = Flame;
-                  colorClass = 'border-red-500/50 text-red-400 hover:bg-red-600 hover:text-white';
-                  break;
-                case 2:
-                  skillNameKo = '약화 저주';
-                  skillNameEn = 'Weaken Curse';
-                  Icon = Droplets;
-                  colorClass = 'border-blue-500/50 text-blue-400 hover:bg-blue-600 hover:text-white';
-                  break;
-                case 3:
-                  skillNameKo = '변화 함성';
-                  skillNameEn = 'Shift Roar';
-                  Icon = Sparkles;
-                  colorClass = 'border-yellow-500/50 text-yellow-400 hover:bg-yellow-600 hover:text-white';
-                  break;
-                case 4:
-                  skillNameKo = '변화 저주';
-                  skillNameEn = 'Shift Curse';
-                  Icon = ShieldAlert;
-                  colorClass = 'border-purple-500/50 text-purple-400 hover:bg-purple-600 hover:text-white';
-                  break;
-                case 5:
-                  skillNameKo = '약화 함정';
-                  skillNameEn = 'Weaken Trap';
-                  Icon = TargetIcon;
-                  colorClass = 'border-purple-500/50 text-purple-400 hover:bg-purple-600 hover:text-white';
-                  break;
-                case 6:
-                  skillNameKo = '강화 함정';
-                  skillNameEn = 'Rally Trap';
-                  Icon = TargetIcon;
-                  colorClass = 'border-red-500/50 text-red-400 hover:bg-red-600 hover:text-white';
-                  break;
-                case 7:
-                  skillNameKo = '체인지 상대카드';
-                  skillNameEn = 'Swap Enemy';
-                  Icon = RotateCcw;
-                  colorClass = 'border-orange-500/50 text-orange-400 hover:bg-orange-600 hover:text-white';
-                  break;
-                case 8:
-                  skillNameKo = '체인지 내카드';
-                  skillNameEn = 'Swap Self';
-                  Icon = RotateCcw;
-                  colorClass = 'border-green-500/50 text-green-400 hover:bg-green-600 hover:text-white';
-                  break;
-              }
+                  switch (skillId) {
+                    case 1:
+                      skillNameKo = '강화 함성';
+                      skillNameEn = 'Rallying Roar';
+                      Icon = Flame;
+                      colorClass = 'border-red-500/50 text-red-400 hover:bg-red-600 hover:text-white';
+                      break;
+                    case 2:
+                      skillNameKo = '약화 저주';
+                      skillNameEn = 'Weaken Curse';
+                      Icon = Droplets;
+                      colorClass = 'border-blue-500/50 text-blue-400 hover:bg-blue-600 hover:text-white';
+                      break;
+                    case 3:
+                      skillNameKo = '변화 함성';
+                      skillNameEn = 'Shift Roar';
+                      Icon = Sparkles;
+                      colorClass = 'border-yellow-500/50 text-yellow-400 hover:bg-yellow-600 hover:text-white';
+                      break;
+                    case 4:
+                      skillNameKo = '변화 저주';
+                      skillNameEn = 'Shift Curse';
+                      Icon = ShieldAlert;
+                      colorClass = 'border-purple-500/50 text-purple-400 hover:bg-purple-600 hover:text-white';
+                      break;
+                    case 5:
+                      skillNameKo = '약화 함정';
+                      skillNameEn = 'Weaken Trap';
+                      Icon = TargetIcon;
+                      colorClass = 'border-purple-500/50 text-purple-400 hover:bg-purple-600 hover:text-white';
+                      break;
+                    case 6:
+                      skillNameKo = '강화 함정';
+                      skillNameEn = 'Rally Trap';
+                      Icon = TargetIcon;
+                      colorClass = 'border-red-500/50 text-red-400 hover:bg-red-600 hover:text-white';
+                      break;
+                    case 7:
+                      skillNameKo = '체인지 상대카드';
+                      skillNameEn = 'Swap Enemy';
+                      Icon = RotateCcw;
+                      colorClass = 'border-orange-500/50 text-orange-400 hover:bg-orange-600 hover:text-white';
+                      break;
+                    case 8:
+                      skillNameKo = '체인지 내카드';
+                      skillNameEn = 'Swap Self';
+                      Icon = RotateCcw;
+                      colorClass = 'border-green-500/50 text-green-400 hover:bg-green-600 hover:text-white';
+                      break;
+                  }
 
-              const displayName = language === 'ko' ? skillNameKo : skillNameEn;
+                  const displayName = language === 'ko' ? skillNameKo : skillNameEn;
 
-              return (
-                <div key={skillId} className="relative group flex items-center justify-center">
-                  {(skillCooldowns[skillId] || 0) > 0 ? (
-                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 border-gray-600 bg-gray-800 text-gray-400 flex items-center justify-center font-black text-xs shadow-lg">
-                      <span>{skillCooldowns[skillId]}s</span>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => handleExecuteSkill(skillId)}
-                      disabled={isRoarActive}
-                      className={cn(
-                        "w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 shadow-lg flex items-center justify-center transition-all active:scale-95 cursor-pointer bg-black/90",
-                        !isRoarActive
-                          ? colorClass
-                          : "bg-gray-800 border-gray-700 text-gray-500 cursor-not-allowed"
+                  return (
+                    <div key={skillId} className="relative group flex items-center justify-center">
+                      {(skillCooldowns[skillId] || 0) > 0 ? (
+                        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full border-2 border-gray-600 bg-gray-800 text-gray-400 flex items-center justify-center font-black text-xs shadow-lg">
+                          <span>{skillCooldowns[skillId]}s</span>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => handleExecuteSkill(skillId)}
+                          disabled={isRoarActive}
+                          className={cn(
+                            "w-10 h-10 sm:w-11 sm:h-11 rounded-full border-2 shadow-lg flex items-center justify-center transition-all active:scale-95 cursor-pointer bg-black/90",
+                            !isRoarActive
+                              ? colorClass
+                              : "bg-gray-800 border-gray-700 text-gray-500 cursor-not-allowed"
+                          )}
+                          title={displayName}
+                        >
+                          <Icon size={16} className={cn(!isRoarActive && skillId === 1 && "animate-pulse")} />
+                        </button>
                       )}
-                      title={displayName}
-                    >
-                      <Icon size={18} className={cn(!isRoarActive && skillId === 1 && "animate-pulse")} />
-                    </button>
-                  )}
-                  <div className="absolute right-full mr-2.5 top-1/2 -translate-y-1/2 bg-black/95 backdrop-blur-md text-white px-2.5 py-1 text-[10px] font-black italic opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-md uppercase tracking-wider z-[200] shadow-xl">
-                    {displayName}
-                  </div>
-                </div>
-              );
-            });
+                      <div className="absolute right-full mr-2.5 top-1/2 -translate-y-1/2 bg-black/95 backdrop-blur-md text-white px-2.5 py-1 text-[10px] font-black italic opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-md uppercase tracking-wider z-[200] shadow-xl">
+                        {displayName}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
           })()}
           </div>
         </div>
