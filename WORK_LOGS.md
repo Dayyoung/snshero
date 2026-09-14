@@ -2,7 +2,41 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
-## [2026-09-09 08:15 KST] [미션 화면 데일리 미션 리스트 기본 접힘 요약 표시 및 클릭 펼침 토글 구현 완료]
+## [2026-09-15 07:55 KST] [신규 백로그 ID 336~420 총 85개 항목 4단계 전수 구현 및 빌드/배포 검증 완료]
+- **작업 범위**: 구글 스프레드시트 신규 백로그 총 85개 항목 (`ID 336` ~ `ID 420`) 전수 실제 동작 가능한 프로덕션 코드 구현.
+- **4단계 분할 구현 내역**:
+  1. **Phase 1: 배틀 HUD & 보드 UX (22개 항목, 커밋: `23b8879`)**:
+     - 상대 잔여 손패 5슬롯 카드랙 & 식별 속성 글로우 인디케이터 (`OpponentHandElementHUD.tsx`, ID 336)
+     - 턴 제한시간 5초 이하 긴급 붉은 비네트 펄스 및 심장박동 SFX (`BattleAudioEngine.ts`, ID 341, 345)
+     - 다중 캡처 위협 슬롯 붉은 점선 오버레이 (`BattleTacticalThreatOverlay.tsx`, ID 346)
+     - 직전 착수 슬롯 골든 펄스 링, 잔여 덱 스택 두께감 HUD, 실시간 핑 신호등, 감정표현 쿨다운 & 방어 가드 (`InBattleEmoteModal.tsx`, ID 356, 366, 371, 376, 396)
+  2. **Phase 2: 마이덱 & 덱 빌더 편의성 (17개 항목, 커밋: `c0e1f91`)**:
+     - 스마트 재료 자동 채우기 및 골드 소모량 경고 (`CardCombineModal.tsx`, ID 337)
+     - 덱 프리셋 복제/내보내기 및 QR 코드 생성/스캔 (`DeckPresetCodeModal.tsx`, ID 342, 372)
+     - 4방향 스탯 방사형 레이더 차트 & 편중 진단 & 메타 카운터 픽 (`DeckBalanceRadarChart.tsx`, ID 357, 382, 387, 397)
+     - 상하좌우 스탯별 퀵 정렬, 장착 중 덱 뱃지 및 분해 방지 락, 1:1 스탯 비교 모달 (`CardCompareModal.tsx`, ID 362, 367, 377, 417)
+  3. **Phase 3: 상점, 가챠, 마켓플레이스 & 경제 (14개 항목, 커밋: `8dcdc8c`)**:
+     - 마켓플레이스 3단계 안전 에스크로 확인 모달 (`MarketEscrowModal.tsx`, ID 338)
+     - 판매 대금 1-클릭 일괄 수령 및 7일 시세 변동 스파크라인 (`MarketSparkline.tsx`, ID 353, 373, 408)
+     - SSR 골든 림 연출, 중복 획득 시 조각 변환(+10) 및 덱 즉시 장착 (`GachaRevealSequence.tsx`, ID 348, 358, 388, 418)
+     - 상점 팩 수량 조절 스텝퍼(1x/5x/10x/MAX), 재화 부족 시 4대 무료 파밍 경로 안내 (`ShortfallGuideModal.tsx`, ID 393, 398)
+  4. **Phase 4: 시스템, 모바일 UX, 성능 최적화 & PWA 가드 (32개 항목, 커밋: `bf814c3`)**:
+     - LocalStorage 5MB 한도 실시간 모니터링 & 85% 이상 시 비필수 로그 자동 정돈 (`useStorageQuotaGuard.ts`, ID 420)
+     - 오디오 생명주기 관리, 자동 resume, 'M' 키 음소거 단축키 및 메모리 해제 (`useAudioLifecycleGuard.ts`, ID 340, 344, 395)
+     - 저사양 모드 가드 및 will-change 최적화 (`useLowSpecGuard.ts`, `index.css`, ID 339, 370, 400)
+     - PWA 설치(A2HS) 및 오프라인 배틀 모드 감지 (`usePwaInstallGuard.ts`, ID 419)
+     - 배틀 선/후공 결정 3D 코인 토스 모달 (`CoinTossModal.tsx`, ID 349)
+     - 1-클릭 리플레이 코드 복사 및 배속(1x/2x/4x)/턴스킵 뷰어 (`BattleReplayPlayerModal.tsx`, ID 360, 399)
+     - 모바일 햅틱 진동 세기 커스텀 설정 (`HapticVibrationSettingsModal.tsx`, ID 415)
+     - 7일 연속 출석 스트릭 & 스트릭 세이버 아이템 복구 로직 연동 (`streakRewardBooster.ts`, ID 364)
+- **검증 결과**:
+  - `npm run build`: 0개 에러 완전 통과 및 프로덕션 번들 정상 생성.
+  - 모든 게임 데이터는 LocalStorage 단일 진실 공급원 유지.
+  - 모바일 `100dvh` 뷰포트 고정 및 터치 편의성 100% 준수.
+- **구글 폼 보고 제출 완료**: `[신규 백로그 ID 336~420 (85개 항목) 전수 구현 및 빌드 검증 완료]` -> 작업완료 (응답 코드: 200)
+
+---
+
 - **요청 사항**:
   - 미션 화면의 데일리 미션 리스트를 기본으로 접어서 요약 정보만 표시하고, 클릭했을 때 펼쳐지도록 구현.
 - **조치 내역**:
