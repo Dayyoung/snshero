@@ -2,6 +2,31 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-14 14:35 KST] [선공/후공 코인 토스 연출 동기화 및 게임 루프 겹침 버그 수정 완료]
+- **요청 사항**:
+  - 선공/후공 코인 토스 연출 & 후공 보너스 안내가 화면에 표시되는 동안, 동시에 이미 선공이 결정되어 카드가 놓이고 게임이 시작되어 버리는 문제 해결 요청.
+- **원인 분석**:
+  1. `PlayGameView.tsx`에서 대전 진입(`gameState === 'playing'`) 시 `TurnOrderDeciderModal`이 화면에 팝업되나, 백그라운드에서는 이미 `turn`이 결정되어 AI Turn Logic 및 Player Auto-Battle 로직이 450ms~800ms 내에 첫 카드를 내려놓아 버림.
+  2. Searching 단계의 구형 `isCoinFlipping` 연출로 인해 이미 선공이 결정된 상태에서 대전 보드로 넘어가 또 코인 토스 모달이 뜨는 이중 코인토스 구조였음.
+  3. 코인 토스 모달이 열려 있는 도중에도 유저의 보드 슬롯/핸드 카드 터치가 차단되지 않았음.
+- **조치 내역**:
+  1. **코인 토스 중 게임 루프 완전 일시 정지(Pause)**:
+     - `AI Turn Logic` 및 `Player Auto-Battle Logic`에 `!showTurnOrderDecider` 방어 조건 추가하여 코인 토스 모달이 완전히 끝날 때까지 0% 동작 차단.
+     - `Turn Countdown Timer`(`turnTimerSeconds`), `handleCardClick`, `handleCellClick`, `recommendedPlayerMove`에 `showTurnOrderDecider` 가드 추가하여 모달 뒤에서의 클릭 및 타이머 소진 원천 차단.
+  2. **중복된 구형 `isCoinFlipping` 제거 및 일원화**:
+     - `startRobotMatch`, `handleQuickMatch`, `startMissionCardBattle`에서 불필요한 구형 플립 딜레이를 제거하고, 배틀 보드 진입 직후 `TurnOrderDeciderModal`이 중앙에서 선공/후공 결정 및 후공 보너스 안내를 단독으로 전담하도록 일원화.
+  3. **`TurnOrderDeciderModal.tsx` 인터랙션 및 시작 버튼 강화**:
+     - 1.0초 코인 회전 ➔ 결과(선공/후공 및 후공 보너스 배지) 노출 후, 사용자가 기다리지 않고 바로 게임을 시작할 수 있는 대형 **`[배틀 시작하기 (START)]`** 버튼 추가.
+     - 버튼 미클릭 시에도 2.8초 후 부드럽게 자동 완료되어 첫 턴이 시작되도록 개선.
+  4. **완료 시점의 첫 턴 공식 개시**:
+     - `handleTurnOrderComplete` 콜백을 통해 모달이 닫히는 순간 시스템 로그에 선공 개시 안내 및 사운드가 재생되고 첫 턴이 활성화되도록 동기화 완료.
+- **검증 결과**:
+  - `npm run lint` (`tsc --noEmit`): 0 오류 통과
+  - `npm run build`: 프로덕션 빌드 성공 (`✓ built in 21.45s`)
+- **Git 커밋/푸시**: 완료
+
+---
+
 ## [2026-09-09 08:15 KST] [미션 화면 데일리 미션 리스트 기본 접힘 요약 표시 및 클릭 펼침 토글 구현 완료]
 - **요청 사항**:
   - 미션 화면의 데일리 미션 리스트를 기본으로 접어서 요약 정보만 표시하고, 클릭했을 때 펼쳐지도록 구현.

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, Swords, Shield, Coins } from 'lucide-react';
+import { Sparkles, Swords, Shield, Coins, Play } from 'lucide-react';
 import { Language } from '../types';
 import { AudioSpriteService } from '../lib/AudioSpriteService';
 
@@ -18,38 +18,50 @@ export const TurnOrderDeciderModal: React.FC<TurnOrderDeciderModalProps> = ({
   language,
 }) => {
   const [stage, setStage] = useState<'flipping' | 'resolved'>('flipping');
+  const completedRef = useRef(false);
+
+  const handleFinish = () => {
+    if (completedRef.current) return;
+    completedRef.current = true;
+    AudioSpriteService.play('button_click');
+    onComplete();
+  };
 
   useEffect(() => {
     if (!isOpen) {
       setStage('flipping');
+      completedRef.current = false;
       return;
     }
 
-    // 재생 효과음
+    completedRef.current = false;
+    setStage('flipping');
+
+    // 코인 회전 사운드
     AudioSpriteService.play('coin_toss');
 
-    // 1.2초 동안 코인 회전 후 결과 표시
+    // 1초 동안 코인 회전 후 결과 표시
     const flipTimer = setTimeout(() => {
       setStage('resolved');
       AudioSpriteService.play('button_click');
-    }, 1200);
+    }, 1000);
 
-    // 2.2초 후 자동 완료 콜백
+    // 결과 표시 후 1.8초(총 2.8초) 뒤 자동 완료
     const completeTimer = setTimeout(() => {
-      onComplete();
-    }, 2400);
+      handleFinish();
+    }, 2800);
 
     return () => {
       clearTimeout(flipTimer);
       clearTimeout(completeTimer);
     };
-  }, [isOpen, onComplete]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md select-none font-mono">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md select-none font-mono">
         <motion.div
           initial={{ opacity: 0, scale: 0.85 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -63,10 +75,10 @@ export const TurnOrderDeciderModal: React.FC<TurnOrderDeciderModalProps> = ({
           </div>
 
           {/* 3D Spinning Coin Container */}
-          <div className="flex justify-center py-3">
+          <div className="flex justify-center py-2">
             <motion.div
-              animate={stage === 'flipping' ? { rotateY: 1800, scale: [1, 1.25, 1] } : { rotateY: 0, scale: 1.1 }}
-              transition={{ duration: 1.2, ease: 'easeOut' }}
+              animate={stage === 'flipping' ? { rotateY: 1440, scale: [1, 1.25, 1] } : { rotateY: 0, scale: 1.1 }}
+              transition={{ duration: 1.0, ease: 'easeOut' }}
               className={`w-24 h-24 rounded-full border-4 flex items-center justify-center shadow-xl ${
                 stage === 'flipping'
                   ? 'bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-600 border-yellow-300 text-zinc-950'
@@ -86,7 +98,7 @@ export const TurnOrderDeciderModal: React.FC<TurnOrderDeciderModalProps> = ({
           </div>
 
           {/* Decision Outcome */}
-          <div className="space-y-2">
+          <div className="space-y-3">
             {stage === 'flipping' ? (
               <p className="text-xs text-zinc-400 font-bold animate-pulse">
                 {language === 'ko' ? '운명의 코인이 회전하고 있습니다...' : 'Flipping turn order coin...'}
@@ -95,7 +107,7 @@ export const TurnOrderDeciderModal: React.FC<TurnOrderDeciderModalProps> = ({
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="space-y-2"
+                className="space-y-3"
               >
                 <div className={`text-base font-black tracking-tight ${isPlayerFirst ? 'text-cyan-300' : 'text-rose-400'}`}>
                   {isPlayerFirst
@@ -114,6 +126,15 @@ export const TurnOrderDeciderModal: React.FC<TurnOrderDeciderModalProps> = ({
                     </span>
                   </div>
                 )}
+
+                {/* Start Battle Button */}
+                <button
+                  onClick={handleFinish}
+                  className="w-full py-3 px-4 rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 active:scale-95 text-white shadow-lg transition-all"
+                >
+                  <Play size={14} className="fill-current" />
+                  <span>{language === 'ko' ? '배틀 시작하기 (START)' : 'START BATTLE'}</span>
+                </button>
               </motion.div>
             )}
           </div>

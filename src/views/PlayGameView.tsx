@@ -2666,10 +2666,24 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [isReconnectModalOpen, setIsReconnectModalOpen] = useState<boolean>(false);
   const [isOpponentDisconnected, setIsOpponentDisconnected] = useState<boolean>(false);
 
+  const handleTurnOrderComplete = useCallback(() => {
+    setShowTurnOrderDecider(false);
+    addLog(
+      language === 'ko'
+        ? `⚡ [배틀 개시] ${firstTurn === 'player' ? '플레이어' : '상대(AI)'} 선공으로 첫 번째 턴을 시작합니다!`
+        : `⚡ [BATTLE START] ${firstTurn === 'player' ? 'Player' : 'Opponent'} takes the first turn!`,
+      'system'
+    );
+    try {
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    } catch {}
+  }, [language, firstTurn, playSfx]);
+
   useEffect(() => {
     if (gameState === 'playing' && !gameOver) {
       setShowTurnOrderDecider(true);
     } else if (gameState === 'lobby' || gameState === 'modeSelect') {
+      setShowTurnOrderDecider(false);
       SceneCleanupManager.cleanupScene();
     }
   }, [gameState, gameOver]);
@@ -3756,7 +3770,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
   // Turn Countdown Timer (Row 26)
   useEffect(() => {
-    if (gameState !== 'playing' || gameOver || isEvaluating) {
+    if (gameState !== 'playing' || gameOver || isEvaluating || showTurnOrderDecider) {
       setTurnTimerSeconds(15);
       return;
     }
@@ -3779,7 +3793,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [turn, gameState, gameOver, isEvaluating, isAutoBattle, playSfx]);
+  }, [turn, gameState, gameOver, isEvaluating, isAutoBattle, playSfx, showTurnOrderDecider]);
 
   const resetQteState = useCallback(() => {
     setPendingQteMultiplier(null);
@@ -4767,21 +4781,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     const isMatgo = char.id === 'matgo-ai' || battleType === 'matgo';
     setBattleType(isMatgo ? 'matgo' : (char.id.startsWith('ranking-') ? 'pvp_attack' : 'robot'));
     setGameState('searching');
-    setIsCoinFlipping(true);
+    setIsCoinFlipping(false);
     
     setTimeout(() => {
       const first = Math.random() > 0.5 ? 'player' : 'ai';
-      setCoinWinner(first);
       setFirstTurn(first);
-      
-      const delay = Math.max(800, 1200 * speedMultiplier);
-      setTimeout(() => {
-        setIsCoinFlipping(false);
-        setCoinWinner(null);
-        startGame(char, first, isMatgo);
-        setGameState('playing');
-      }, delay);
-    }, 1000 * speedMultiplier);
+      startGame(char, first, isMatgo);
+      setGameState('playing');
+    }, 400);
   };
 
   const generateAIOpponentDeck = (targetPower: number): CardData[] => {
@@ -4962,22 +4969,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     setShowStreakEffect(false);
     setCurrentWinStreakDisplay(0);
     
-    setIsCoinFlipping(true);
-    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    setIsCoinFlipping(false);
     setTimeout(() => {
       const firstTurn = Math.random() > 0.5 ? 'player' : 'ai';
-      setCoinWinner(firstTurn);
       setFirstTurn(firstTurn);
-      
-      const delay = Math.max(800, 1200 * speedMultiplier);
       const isMatgo = battleType === 'matgo';
-      setTimeout(() => {
-        setIsCoinFlipping(false);
-        setCoinWinner(null);
-        startGame(undefined, firstTurn, isMatgo);
-        setGameState('playing');
-      }, delay);
-    }, 800 * speedMultiplier);
+      startGame(undefined, firstTurn, isMatgo);
+      setGameState('playing');
+    }, 400);
   };
 
   const startMissionCardBattle = (targetCardIndex: number) => {
@@ -5044,25 +5043,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     setLastAiDeck(missionAiDeck);
     setBattleType('robot');
 
-    // 코인 플립 후 대전 시작
+    // 대전 시작: 매칭 후 배틀 보드로 진입하여 공식 TurnOrderDeciderModal에서 코인 토스 진행
     setGameState('searching');
-    setIsCoinFlipping(true);
-    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    setIsCoinFlipping(false);
     setTimeout(() => {
       const firstTurn = Math.random() > 0.5 ? 'player' : 'ai';
-      setCoinWinner(firstTurn);
       setFirstTurn(firstTurn);
-
-      const delay = Math.max(800, 1200 * speedMultiplier);
-      setTimeout(() => {
-        setIsCoinFlipping(false);
-        setCoinWinner(null);
-        startGame(oppChar, firstTurn, false);
-        setOpponentDeck(missionAiDeck);
-        setOpponentHand(missionAiDeck);
-        setGameState('playing');
-      }, delay);
-    }, 800 * speedMultiplier);
+      startGame(oppChar, firstTurn, false);
+      setOpponentDeck(missionAiDeck);
+      setOpponentHand(missionAiDeck);
+      setGameState('playing');
+    }, 400);
   };
 
   const startMatgoGame = () => {
@@ -5288,7 +5279,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         setRewardEarned(0);
         hasRecordedResult.current = false;
         setTurn(firstTurn);
-        addLog(language === 'ko' ? `${firstTurn === 'player' ? '사용자' : 'AI'} 선공으로 배틀 시작` : `Battle started with ${firstTurn} turn`, 'system');
+        addLog(language === 'ko' ? `코인 토스로 선공/후공을 결정합니다...` : `Deciding turn order via coin toss...`, 'system');
       }
     // Analytics: Track Game Start
     if (analytics) {
@@ -5908,13 +5899,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   };
 
   const recommendedPlayerMove = useMemo(() => {
-    if (gameState !== 'playing' || gameOver || turn !== 'player' || isAutoBattle || playerHand.length === 0 || isEvaluating || isLowPerformance) return null;
+    if (gameState !== 'playing' || gameOver || turn !== 'player' || isAutoBattle || playerHand.length === 0 || isEvaluating || isLowPerformance || showTurnOrderDecider) return null;
     const multiplier = pendingQteMultiplier ?? 1;
     return findBestMove(board, playerHand, aiStrategy as AiStrategy, 'player', multiplier, elementalBoard as any, undefined, gambitConfig, gambitConfig.activeStance);
-  }, [gameState, gameOver, turn, isAutoBattle, playerHand, board, aiStrategy, isEvaluating, elementalBoard, pendingQteMultiplier, isLowPerformance, gambitConfig]);
+  }, [gameState, gameOver, turn, isAutoBattle, playerHand, board, aiStrategy, isEvaluating, elementalBoard, pendingQteMultiplier, isLowPerformance, gambitConfig, showTurnOrderDecider]);
 
   const handleCardClick = (idx: number, side: 'player' | 'ai' = 'player') => {
-    if (gameOver) return;
+    if (gameOver || showTurnOrderDecider) return;
     
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'); // Selection sound
     
@@ -6284,6 +6275,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   };
 
   const handleCellClick = async (droppedIdx: number) => {
+    if (gameOver || showTurnOrderDecider) return;
     setCapturePreview([]);
 
     if (activeTrapMode) {
@@ -7425,7 +7417,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
   // AI Turn Logic (Cards 1-8)
   useEffect(() => {
-    if (gameState === 'playing' && turn === 'ai' && !gameOver && !isEvaluating && !activeTrapMode) {
+    if (gameState === 'playing' && turn === 'ai' && !gameOver && !isEvaluating && !activeTrapMode && !showTurnOrderDecider) {
       const isMatgo = battleType === 'matgo';
       const filledCount = board.filter(c => c !== null).length;
       const canPlay = isMatgo ? (opponentHand.length > 0) : (filledCount < 9);
@@ -7437,7 +7429,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         return () => clearTimeout(timer);
       }
     }
-  }, [gameState, turn, board, gameOver, isEvaluating, battleType, isShadowMatch, opponentHand, activeTrapMode, lowSpecMode, speedMultiplier]);
+  }, [gameState, turn, board, gameOver, isEvaluating, battleType, isShadowMatch, opponentHand, activeTrapMode, lowSpecMode, speedMultiplier, showTurnOrderDecider]);
 
   // Game Over Safety Net: Monitor board fullness
   useEffect(() => {
@@ -7458,7 +7450,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
   // Player Auto-Battle Logic & Auto-Skip
   useEffect(() => {
-    if (gameState === 'playing' && turn === 'player' && !gameOver && !isEvaluating && !activeTrapMode) {
+    if (gameState === 'playing' && turn === 'player' && !gameOver && !isEvaluating && !activeTrapMode && !showTurnOrderDecider) {
       const isMatgo = battleType === 'matgo';
       if (playerHand.length === 0) {
         // Auto skip if player has no cards
@@ -7479,7 +7471,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         }
       }
     }
-  }, [gameState, turn, board, gameOver, isEvaluating, isAutoBattle, playerHand, activeTrapMode, battleType, speedMultiplier, lowSpecMode]);
+  }, [gameState, turn, board, gameOver, isEvaluating, isAutoBattle, playerHand, activeTrapMode, battleType, speedMultiplier, lowSpecMode, showTurnOrderDecider]);
 
   // Matgo deadlock/full board handler
   useEffect(() => {
@@ -18371,8 +18363,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       {/* Row 1058 / ID 321: Turn Order Decider Modal */}
       <TurnOrderDeciderModal
         isOpen={showTurnOrderDecider}
-        isPlayerFirst={turn === 'player' || firstTurn === 'player'}
-        onComplete={() => setShowTurnOrderDecider(false)}
+        isPlayerFirst={firstTurn === 'player'}
+        onComplete={handleTurnOrderComplete}
         language={language}
       />
 
