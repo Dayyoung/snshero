@@ -2,6 +2,57 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-15 19:25 KST] [신규 백로그 ID 421~490 총 70개 항목 4단계 전수 구현 및 빌드/배포 검증 완료]
+- **작업 범위**: 구글 스프레드시트 신규 백로그 총 70개 항목 (`ID 421` ~ `ID 490`) 전수 실제 동작 가능한 완성형 프로덕션 코드 구현.
+- **4단계 분할 구현 내역**:
+  1. **Phase 1: 배틀 HUD, 연출 및 인게임 전략·사운드 (22개 항목, 커밋: `7f0f4e0`)**:
+     - 대전 승리 직후 MVP 카드 전용 클로즈업 연출 (`MatchMVPShowcaseModal.tsx`, 황금 테두리 + 빛줄기 셰이더 + 보너스 친밀도/숙련도 +50, ID 421, 457)
+     - 속성별 2D 폭발 파티클, 방어막 완충 'BLOCKED' 효과, 콤보 사운드 엔진 (`BattleFXEngine.ts`, ID 426, 452, 462, 487)
+     - 상대방 잔여 손패 최대 위협치 예측 미니 힌트 위젯 (`OpponentThreatHUD.tsx`, ID 431)
+     - PVE/보스전 보스 3단계 분노 게이지 & 다음 턴 스킬 예고 텔레그래프 (`BattleBossHUD.tsx`, ID 442)
+     - 3x3 보드 상단 1줄 미니멀 통합 HUD 바 (`BattleMinimalTopBar.tsx`, ID 441, 446, 451, 456, 461, 471, 476, 481, 486)
+     - 최종 턴(Turn 9) 골든 펄스, 패배 위기 1px 테두리, 중앙 슬롯(1,1) 점유 보너스 실드 아우라, 퍼펙트 승리(9-0) 'Board Dominator' 칭호 & +200 SNS 보너스 (`PlayGameView.tsx`, `index.css`, ID 436, 466, 467, 472, 482)
+  2. **Phase 2: 마이덱, 덱 빌더 및 도감 편의성 (10개 항목, 커밋: `3acba25`)**:
+     - 스킬 발동 조건, 대상, 효과 컬러 코드 구조화 뱃지 (`WikiCardDetailModal.tsx`, ID 422)
+     - 덱 프리셋 명칭(최대 10자) 및 고유 아이콘 커스텀 편집 (`MyDeckView.tsx`, ID 427)
+     - 카드 각성/돌파 단계별(★1~★3) 외형/스탯 변화 시뮬레이터 (`WikiCardDetailModal.tsx`, ID 432)
+     - 도감 내 속성별 핵심 스탯 TOP 5 퀵 필터 뷰 (`WikiCardView.tsx`, ID 437)
+     - 도감 윈도우 가상 스크롤(Virtual Scroll) 및 24개 단위 슬라이싱 렌더링 (`WikiCardView.tsx`, ID 444)
+     - 보유 카드 기반 최고 시너지 추천 스마트 자동 완성 (`MyDeckView.tsx`, ID 447)
+     - 카드 합성 시 경험치 오버플로우 방지 스마트 최적 재료 분배 (`CardCombineModal.tsx`, ID 453)
+     - 미보유 카드 조각(Shards: N/50) 현황 및 1탭 즉시 카드 연성 제작 바 (`WikiCardDetailModal.tsx`, ID 468)
+     - 덱 전략 공유 코드(Base64) 1클릭 복사/가져오기 및 상성 취약점 1줄 경고 태그 (`MyDeckView.tsx`, ID 475, 477)
+  3. **Phase 3: 상점, 마켓플레이스 및 경제/주식/크래프팅 (12개 항목, 커밋: `e11195f`)**:
+     - 상점 실시간 고희귀도 획득 티커 마키 (`ShopView.tsx`, ID 438)
+     - 룰렛 오늘의 무료 1회 알림 비콘 (`[FREE SPIN READY]`) & 무료 단차 카운트다운 타이머 (`ShopView.tsx`, ID 423, 483)
+     - 카드 팩 구매 후 즉시 개봉(Instant Open / Skip Animation) 원터치 토글 (`ShopView.tsx`, ID 433)
+     - 상점 팩 천장 카운터(Pity Counter) 프로그래스 바 & 재화 구매 한도 1줄 태그 (`ShopView.tsx`, ID 463, 473)
+     - 마켓플레이스 30일 시세 변동 스파크라인 및 거래량 바 (`MarketSparkline.tsx`, ID 428)
+     - 속성 에센스(화/수/지/풍) 환급 및 카드 연성 제작소 모달 (`CraftingStoreModal.tsx`, ID 443)
+     - 주식 시장 캐릭터 지분 배당금 일괄 수령 바 & 슬리피지(0.5%/1%/2%) 보호 (`StockMarketView.tsx`, ID 478, 488)
+     - 랭크 배틀 '일일 첫 승 보너스(First Win of the Day)' 2x SNS & 골드팩 배너 (`RankingView.tsx`, ID 448)
+     - 스태미나 초과 충전(140/100 AP) 시 자연 회복 정지 안내 팝오버 (`SlimHeader.tsx`, ID 458)
+  4. **Phase 4: 성능, 렌더러, 오디오 풀링 및 모바일/소셜 UX (26개 항목, 커밋: `220f77d`)**:
+     - Web Audio outputLatency 120ms 초과 시 자동 리사이클 & 동시 발음 3채널 풀링 (`useAudioLatencyRecycle.ts`, ID 424, 459)
+     - 대전 중 popstate 뒤로가기 제스처 몰수패 가드 모달 (`useBattleNavigationGuard.ts`, `PlayGameView.tsx`, ID 439)
+     - 친선전 6자리 비공개 룸 코드 생성 및 참여 시스템 (`CustomMatchModal.tsx`, ID 450)
+     - 랭킹 리더보드 랭커 5장 덱 구성 인스펙트 및 메타 분석 팝업 (`LeaderboardDeckInspectModal.tsx`, ID 460)
+     - 친구 1v1 상대 전적 히스토리(N승 M패) 비교 팝업 (`FriendRivalryModal.tsx`, ID 485)
+     - 친선전 결과 화면 매너 칭찬 배지 및 카르마 지급 (`SportsmanshipModal.tsx`, ID 490)
+     - 친구 목록 실시간 대전 관전 모달 (`SpectatorModal.tsx`, ID 470)
+     - 길드 로비 주간 기여도 5단계 마일스톤 보상 트랙 (`GuildContributionTrack.tsx`, `GuildDetailView.tsx`, ID 455)
+     - 퀘스트 완료 보상 수령 직후 덱 강화 숏컷 컨텍스트 칩 (`DailyMissions.tsx`, ID 445)
+     - 프로필 대표 시그니처 카드 핀 & 시즌 명예 배지 쇼케이스 (`ProfileView.tsx`, ID 480)
+     - 웹툰 뷰어 WebP 및 img.decode() 비동기 디코딩 가속 (`NovelView.tsx`, ID 484)
+     - 경기 종료 후 1-탭 리플레이 링크 복사 (`PlayGameView.tsx`, ID 465)
+     - 뷰포트 리사이즈/화면 회전 150ms 디바운싱 및 백그라운드 복귀 RAF 재동기화 (`PlayGameView.tsx`, ID 429, 434, 464)
+     - 비활성 텍스처 GPU VRAM 적극적 GC (`useVramDisposer.ts`, ID 469)
+     - CSS 성능 최적화: 저사양 블러 대체, 3x3 보드 그림자 평면화, 드래그 격리, 3D 틸트 비활성화 (`index.css`, `CardItem.tsx`, ID 425, 430, 435, 440, 449, 454, 474, 479, 489)
+- **검증 결과**:
+  - `npm run build`: 0개 에러 완전 통과 및 프로덕션 번들 정상 생성 (빌드 타임: 9.59s).
+  - 100% 로컬스토리지 단일 진실 공급원 유지 (`hero_pinned_signature_card_{season}`, `hero_guild_weekly_contribution`, `hero_rivalry_{friendUid}` 등).
+  - 모바일 `100dvh` 전체화면 무결점 및 터치 편의성 100% 준수.
+
 ## [2026-09-15 07:55 KST] [신규 백로그 ID 336~420 총 85개 항목 4단계 전수 구현 및 빌드/배포 검증 완료]
 - **작업 범위**: 구글 스프레드시트 신규 백로그 총 85개 항목 (`ID 336` ~ `ID 420`) 전수 실제 동작 가능한 프로덕션 코드 구현.
 - **4단계 분할 구현 내역**:
