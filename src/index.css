@@ -918,6 +918,158 @@ html.low-spec-mode .animate-shimmer {
   transform-style: flat !important;
 }
 
+/* Phase 1 (ID 497, 502, 522, 527, 547, 552, 557, 567, 572, 577, 582, 592) 배틀 FX 애니메이션 */
+@keyframes last-stand-pulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(234, 179, 8, 0.4); border-color: rgba(234, 179, 8, 0.8); }
+  50% { box-shadow: 0 0 35px rgba(234, 179, 8, 0.9); border-color: #facc15; }
+}
+.last-stand-glow {
+  animation: last-stand-pulse 0.9s ease-in-out infinite !important;
+}
+
+.triple-flip-shockwave {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 4px solid rgba(244, 63, 94, 0.8);
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.9);
+  pointer-events: none;
+  z-index: 9999;
+  animation: triple-shockwave-expand 0.65s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+}
+@keyframes triple-shockwave-expand {
+  to {
+    width: 320px;
+    height: 320px;
+    opacity: 0;
+    border-width: 1px;
+  }
+}
+
+.barricade-linked {
+  position: relative;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.7) !important;
+  border-color: #38bdf8 !important;
+}
+
+.riposte-flash {
+  animation: riposte-camera-flash 0.45s ease-out;
+}
+@keyframes riposte-camera-flash {
+  0% { filter: brightness(2.5) contrast(1.5); }
+  100% { filter: none; }
+}
+
+.cross-slash-burst {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  width: 140px;
+  height: 140px;
+  pointer-events: none;
+  z-index: 9999;
+  background: radial-gradient(circle, rgba(239,68,68,0.8) 0%, rgba(239,68,68,0) 70%);
+  animation: cross-slash-fade 0.55s ease-out forwards;
+}
+@keyframes cross-slash-fade {
+  0% { transform: translate(-50%, -50%) scale(0.3) rotate(0deg); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.6) rotate(45deg); opacity: 0; }
+}
+
+.elemental-weather-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  transition: opacity 0.5s ease;
+}
+.weather-fire { background: radial-gradient(circle, rgba(239, 68, 68, 0.08) 0%, transparent 80%); }
+.weather-water { background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 80%); }
+.weather-earth { background: radial-gradient(circle, rgba(234, 179, 8, 0.08) 0%, transparent 80%); }
+.weather-wind { background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 80%); }
+
+.pinch-reversal-spark {
+  animation: pinch-spark-shake 0.5s ease-in-out;
+}
+@keyframes pinch-spark-shake {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-4px, 2px) scale(1.02); filter: drop-shadow(0 0 8px #f59e0b); }
+  75% { transform: translate(4px, -2px) scale(1.02); filter: drop-shadow(0 0 12px #ef4444); }
+}
+
+.clutch-victory-banner {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10050;
+  padding: 12px 28px;
+  background: #201d1d;
+  color: #facc15;
+  border: 2px solid #facc15;
+  font-family: monospace;
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: 2px;
+  box-shadow: 0 0 40px rgba(250, 204, 21, 0.6);
+  animation: clutch-banner-pop 1.8s ease-out forwards;
+}
+@keyframes clutch-banner-pop {
+  0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0; }
+  20% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+  80% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -60%) scale(0.9); opacity: 0; }
+}
+
+.overwhelming-shatter {
+  animation: shatter-shake 0.7s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+@keyframes shatter-shake {
+  10%, 90% { transform: translate3d(-2px, 0, 0); }
+  20%, 80% { transform: translate3d(3px, 0, 0); filter: contrast(150%); }
+  30%, 50%, 70% { transform: translate3d(-5px, 0, 0); }
+  40%, 60% { transform: translate3d(5px, 0, 0); }
+}
+
+.cascade-counter-ring {
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.8), inset 0 0 10px rgba(6, 182, 212, 0.6) !important;
+  border-color: #06b6d4 !important;
+}
+
+.dominator-climax-text {
+  position: fixed;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10050;
+  padding: 10px 24px;
+  background: rgba(18, 16, 16, 0.95);
+  color: #facc15;
+  border: 2px solid #facc15;
+  font-family: monospace;
+  font-weight: 900;
+  font-size: 16px;
+  box-shadow: 0 0 30px rgba(250, 204, 21, 0.7);
+  animation: dominator-pop 2s ease-out forwards;
+}
+@keyframes dominator-pop {
+  0% { transform: translate(-50%, -50%) scale(0.7); opacity: 0; }
+  15% { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.05); opacity: 0; }
+}
+
+.domino-reversal-lightning {
+  box-shadow: 0 0 25px #38bdf8 !important;
+  animation: lightning-flicker 0.6s ease-out;
+}
+@keyframes lightning-flicker {
+  0%, 100% { filter: none; }
+  25%, 75% { filter: brightness(2) drop-shadow(0 0 10px #38bdf8); }
+  50% { filter: brightness(0.7); }
+}
+
 
 
 

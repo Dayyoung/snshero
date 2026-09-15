@@ -16662,7 +16662,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               </div>
             )}
 
-            {/* ID 441, 446, 451, 456, 461, 471, 476, 481, 486: 1-Line Minimal Unified Top Bar */}
+            {/* ID 441~486 및 신규 496, 501, 506, 511, 516, 521, 526, 531, 536, 541, 556, 561: 1-Line Minimal Unified Top Bar */}
             <div className="w-full max-w-sm mx-auto mb-1">
               <BattleMinimalTopBar
                 playerHandCount={playerHand.length}
@@ -16676,6 +16676,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 recentActionLog={recentActionLog}
                 onSurrender={handleExitToModeSelect}
                 language={language}
+                playerScore={boardScore.player}
+                opponentScore={boardScore.ai}
+                currentRound={board.filter(c => c !== null).length + 1}
+                maxRounds={9}
+                aiDifficulty={aiDifficulty === 'hard' ? 'hard' : (aiDifficulty === 'easy' ? 'easy' : 'normal')}
+                winMomentum={{
+                  bluePct: Math.round((boardScore.player / Math.max(1, boardScore.player + boardScore.ai)) * 100),
+                  redPct: Math.round((boardScore.ai / Math.max(1, boardScore.player + boardScore.ai)) * 100)
+                }}
+                deckElementSummary={{
+                  water: playerDeck.filter(c => c.element === 'water').length,
+                  fire: playerDeck.filter(c => c.element === 'fire').length,
+                  earth: playerDeck.filter(c => c.element === 'earth').length,
+                  wind: playerDeck.filter(c => c.element === 'wind').length
+                }}
               />
             </div>
 

@@ -123,14 +123,167 @@ export class BattleFXEngine {
   }
 
   /**
-   * ID 487: 인접 아군 속성 융합(Fusion Resonance) 빙결 방어막 버프
+   * ID 497: 'Last Stand Breakthrough' (5번째 패 + 1점차 열세 시 슬로우모션 쇼크웨이브 & 심장박동 & 골든 스탯 글로우)
    */
-  public triggerFusionResonance(slotEl: HTMLElement) {
-    slotEl.classList.add('fusion-shield-active');
-    setTimeout(() => {
-      slotEl.classList.remove('fusion-shield-active');
-    }, 1200);
-    playSfx('levelUp');
+  public triggerLastStandBreakthrough(boardEl?: HTMLElement) {
+    if (boardEl) {
+      boardEl.classList.add('last-stand-glow');
+      setTimeout(() => boardEl.classList.remove('last-stand-glow'), 1800);
+    }
+    playSfx('bossEncounter');
+    triggerHaptic('special');
+  }
+
+  /**
+   * ID 502: 'Triple Flip Burst' (동시 3방향 캡처 120ms 슬로우모션 & 원형 프리즘 쇼크웨이브 & 오케스트라 사운드)
+   */
+  public triggerTripleFlipBurst(centerEl: HTMLElement) {
+    const rect = centerEl.getBoundingClientRect();
+    const wave = document.createElement('div');
+    wave.className = 'triple-flip-shockwave';
+    wave.style.left = `${rect.left + rect.width / 2}px`;
+    wave.style.top = `${rect.top + rect.height / 2}px`;
+    document.body.appendChild(wave);
+    setTimeout(() => wave.remove(), 700);
+
+    playSfx('victory');
     triggerHaptic('victory');
+  }
+
+  /**
+   * ID 512: 카메라 줌 펀치 타격감 연출 (scale 1.03 120ms 마이크로 펀치)
+   */
+  public triggerCameraZoomPunch(gridEl: HTMLElement) {
+    gridEl.style.transition = 'transform 0.12s cubic-bezier(0.2, 0.9, 0.2, 1)';
+    gridEl.style.transform = 'scale(1.03)';
+    setTimeout(() => {
+      gridEl.style.transform = 'scale(1)';
+    }, 120);
+    triggerHaptic('heavy');
+  }
+
+  /**
+   * ID 522: 'Elemental Barricade Link' (동일 속성 인접 아군 보호 에너지 테더 및 +1 방어 실드)
+   */
+  public triggerBarricadeLink(el1: HTMLElement, el2: HTMLElement) {
+    el1.classList.add('barricade-linked');
+    el2.classList.add('barricade-linked');
+    setTimeout(() => {
+      el1.classList.remove('barricade-linked');
+      el2.classList.remove('barricade-linked');
+    }, 1500);
+    playSfx('cardSlide');
+  }
+
+  /**
+   * ID 527: 'Riposte Counterattack' 슬로우 플래시 (100ms 플래시 & 역방향 슬래시)
+   */
+  public triggerRiposteCounter(targetEl: HTMLElement) {
+    targetEl.classList.add('riposte-flash');
+    setTimeout(() => targetEl.classList.remove('riposte-flash'), 500);
+    playSfx('specialAttack');
+    triggerHaptic('heavy');
+  }
+
+  /**
+   * ID 547: 더블 캡처 크로스 임팩트 레이저 슬래시 FX
+   */
+  public triggerDoubleFlipCross(centerEl: HTMLElement) {
+    const rect = centerEl.getBoundingClientRect();
+    const slash = document.createElement('div');
+    slash.className = 'cross-slash-burst';
+    slash.style.left = `${rect.left + rect.width / 2}px`;
+    slash.style.top = `${rect.top + rect.height / 2}px`;
+    document.body.appendChild(slash);
+    setTimeout(() => slash.remove(), 600);
+    playSfx('cardCapture');
+  }
+
+  /**
+   * ID 552: 'Elemental Overload' 속성 과부하 전장 앰비언트 날씨 틴트
+   */
+  public triggerElementalWeather(element: ElementType) {
+    const overlay = document.createElement('div');
+    overlay.className = `elemental-weather-overlay weather-${element.toLowerCase()}`;
+    document.body.appendChild(overlay);
+    setTimeout(() => overlay.remove(), 2500);
+  }
+
+  /**
+   * ID 557: 'Pinch Flip Reversal' 핀치 역전 스파크 충돌 & 100ms 마이크로 프리즈
+   */
+  public triggerPinchReversal(slotEl: HTMLElement) {
+    slotEl.classList.add('pinch-reversal-spark');
+    setTimeout(() => slotEl.classList.remove('pinch-reversal-spark'), 600);
+    playSfx('critical');
+    triggerHaptic('special');
+  }
+
+  /**
+   * ID 567: 'Clutch Reversal' 9턴 클러치 역전승 피니셔 연출
+   */
+  public triggerClutchVictoryFinisher() {
+    const banner = document.createElement('div');
+    banner.className = 'clutch-victory-banner';
+    banner.innerText = '⚡ CLUTCH VICTORY! ⚡';
+    document.body.appendChild(banner);
+    setTimeout(() => banner.remove(), 2000);
+    playSfx('victory');
+    triggerHaptic('victory');
+  }
+
+  /**
+   * ID 572: 'Overwhelming Impact' +3 이상 스탯차 3D 파쇄 균열 데칼
+   */
+  public triggerOverwhelmingImpact(slotEl: HTMLElement) {
+    slotEl.classList.add('overwhelming-shatter');
+    setTimeout(() => slotEl.classList.remove('overwhelming-shatter'), 800);
+    playSfx('specialAttack');
+    triggerHaptic('heavy');
+  }
+
+  /**
+   * ID 577: 'Cascade Counter Shockwave' 반격 청록색 일렉트릭 링 충격파
+   */
+  public triggerCascadeCounterShockwave(slotEl: HTMLElement) {
+    slotEl.classList.add('cascade-counter-ring');
+    setTimeout(() => slotEl.classList.remove('cascade-counter-ring'), 700);
+    playSfx('magicAttack');
+    triggerHaptic('medium');
+  }
+
+  /**
+   * ID 582: 'Dominator Climax' 7칸 이상 장악 골든 레터링 & 팡파레
+   */
+  public triggerDominatorClimax() {
+    const lettering = document.createElement('div');
+    lettering.className = 'dominator-climax-text';
+    lettering.innerText = '⚔️ DOMINATION! ⚔️';
+    document.body.appendChild(lettering);
+    setTimeout(() => lettering.remove(), 2200);
+    playSfx('victory');
+    triggerHaptic('victory');
+  }
+
+  /**
+   * ID 587: 연쇄 플립 3D 카메라 틸트 & 햅틱
+   */
+  public triggerDominoCameraTilt(boardEl: HTMLElement) {
+    boardEl.style.transition = 'transform 0.15s ease-out';
+    boardEl.style.transform = 'perspective(600px) rotateX(2deg) scale(1.02)';
+    triggerHaptic('heavy');
+    setTimeout(() => {
+      boardEl.style.transform = 'none';
+    }, 150);
+  }
+
+  /**
+   * ID 592: 'Domino Reversal' 120ms 프리즈 & 초점 줌인 & 시안 라이트닝
+   */
+  public triggerDominoReversal(slotEl: HTMLElement) {
+    slotEl.classList.add('domino-reversal-lightning');
+    setTimeout(() => slotEl.classList.remove('domino-reversal-lightning'), 800);
+    playSfx('critical');
+    triggerHaptic('special');
   }
 }
