@@ -17,7 +17,23 @@ export interface ParticleEffect {
 export class BattleFXEngine {
   private static instance: BattleFXEngine;
 
-  private constructor() {}
+  private particlePool: HTMLDivElement[] = [];
+  private readonly maxPoolSize = 60;
+
+  private constructor() {
+    // ID 554: 가비지 컬렉션(GC) 렉 방지를 위한 60개 파티클 오브젝트 풀 사전 생성
+    if (typeof document !== 'undefined') {
+      for (let i = 0; i < this.maxPoolSize; i++) {
+        const p = document.createElement('div');
+        p.style.position = 'fixed';
+        p.style.pointerEvents = 'none';
+        p.style.zIndex = '9999';
+        p.style.display = 'none';
+        document.body.appendChild(p);
+        this.particlePool.push(p);
+      }
+    }
+  }
 
   public static getInstance(): BattleFXEngine {
     if (!BattleFXEngine.instance) {
@@ -27,7 +43,18 @@ export class BattleFXEngine {
   }
 
   /**
-   * ID 426: 속성 상성 플립 캡처 시 원소별 고유 파티클 폭발
+   * ID 514: will-change: transform 동적 할당 및 애니메이션 종료 시 즉시 해제
+   */
+  public applyWillChangeTemporarily(el: HTMLElement, durationMs = 500): void {
+    if (!el) return;
+    el.style.willChange = 'transform, opacity';
+    setTimeout(() => {
+      el.style.willChange = 'auto';
+    }, durationMs);
+  }
+
+  /**
+   * ID 426 / ID 554: 속성 상성 플립 캡처 시 원소별 고유 파티클 폭발 (오브젝트 풀 재사용)
    */
   public triggerElementBurst(containerEl: HTMLElement, element: ElementType = 'FIRE') {
     const rect = containerEl.getBoundingClientRect();
@@ -45,7 +72,8 @@ export class BattleFXEngine {
 
     const count = 12;
     for (let i = 0; i < count; i++) {
-      const particle = document.createElement('div');
+      // ID 554: 풀에서 유휴 파티클을 꺼내서 재활용
+      const particle = this.particlePool.pop() || document.createElement('div');
       const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
       const speed = 40 + Math.random() * 60;
       const size = 6 + Math.random() * 6;
@@ -59,10 +87,15 @@ export class BattleFXEngine {
       particle.style.borderRadius = element === 'WIND' || element === 'WATER' ? '50%' : '0px';
       particle.style.pointerEvents = 'none';
       particle.style.zIndex = '9999';
+      particle.style.display = 'block';
+      particle.style.opacity = '1';
+      particle.style.transform = 'translate(0px, 0px) scale(1)';
       particle.style.transition = 'transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.45s ease-out';
       particle.style.boxShadow = `0 0 8px ${colors[element]}`;
 
-      document.body.appendChild(particle);
+      if (!particle.parentNode && typeof document !== 'undefined') {
+        document.body.appendChild(particle);
+      }
 
       requestAnimationFrame(() => {
         const tx = Math.cos(angle) * speed;
@@ -72,7 +105,13 @@ export class BattleFXEngine {
       });
 
       setTimeout(() => {
-        particle.remove();
+        particle.style.display = 'none';
+        particle.style.transition = 'none';
+        if (this.particlePool.length < this.maxPoolSize) {
+          this.particlePool.push(particle);
+        } else {
+          particle.remove();
+        }
       }, 500);
     }
 

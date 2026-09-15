@@ -51,6 +51,110 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
   const [battleResult, setBattleResult] = useState<AttackResult | null>(null);
   const [isFighting, setIsFighting] = useState(false);
 
+  // ID 500: 길드전 일일 승부 예측
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const [guildBets, setGuildBets] = useState<Record<number, string>>(() => {
+    try {
+      const saved = localStorage.getItem(`hero_guild_war_bets_${todayStr}`);
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  // ID 510: 길드원 용병 일일 1회 대여
+  const [borrowedMercenary, setBorrowedMercenary] = useState<string | null>(() => {
+    try {
+      return localStorage.getItem(`hero_guild_mercenary_borrowed_${todayStr}`);
+    } catch {
+      return null;
+    }
+  });
+
+  // ID 570: 카드 조각 요청 목록
+  const [shardRequests, setShardRequests] = useState<Array<{ id: string; cardId: number; requesterName: string; count: number }>>(() => {
+    try {
+      const saved = localStorage.getItem(`hero_guild_piece_requests_${guildId}`);
+      return saved ? JSON.parse(saved) : [
+        { id: 'req-1', cardId: 10, requesterName: 'Hunter_Ace', count: 3 },
+        { id: 'req-2', cardId: 25, requesterName: 'ShadowBlade', count: 1 }
+      ];
+    } catch {
+      return [];
+    }
+  });
+
+  // ID 580: 연속 출석 버프
+  const [attendanceStreak, setAttendanceStreak] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem(`hero_guild_attendance_streak_${guildId}`);
+      return saved ? Number(saved) : 5;
+    } catch {
+      return 5;
+    }
+  });
+  const [attendedToday, setAttendedToday] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(`hero_guild_attended_${todayStr}_${guildId}`) === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const handleAttendGuild = () => {
+    if (attendedToday) return;
+    setAttendedToday(true);
+    const nextStreak = attendanceStreak + 1;
+    setAttendanceStreak(nextStreak);
+    try {
+      localStorage.setItem(`hero_guild_attended_${todayStr}_${guildId}`, 'true');
+      localStorage.setItem(`hero_guild_attendance_streak_${guildId}`, String(nextStreak));
+      onUpdateSns(sns + 50);
+    } catch {}
+    setAlertMsg(
+      language === 'ko'
+        ? `[길드 일일 출석 완료] 연속 ${nextStreak}일 출석 달성! +50 SNS 지급 및 전체 길드원 AP 자연 회복 +10% 버프가 활성화되었습니다!`
+        : `Guild Attendance Checked! ${nextStreak}-day streak! +50 SNS and +10% AP Regen buff active!`
+    );
+  };
+
+  const handleBorrowMercenary = (memberUid: string, memberName: string) => {
+    if (borrowedMercenary) {
+      setAlertMsg(
+        language === 'ko'
+          ? `이미 오늘 용병(${borrowedMercenary})을 대여했습니다. (일일 1회 제한)`
+          : `You have already hired a mercenary today.`
+      );
+      return;
+    }
+    setBorrowedMercenary(memberName);
+    try {
+      localStorage.setItem(`hero_guild_mercenary_borrowed_${todayStr}`, memberName);
+      onUpdateSns(sns - 20);
+    } catch {}
+    setAlertMsg(
+      language === 'ko'
+        ? `[용병 대여 완료] ${memberName}님의 시그니처 카드를 오늘 하루 배틀에서 자유롭게 사용할 수 있습니다!`
+        : `Hired ${memberName}'s signature card for battle today!`
+    );
+  };
+
+  const handleDonateShard = (reqId: string, cardId: number) => {
+    setShardRequests((prev) => {
+      const next = prev.map((item) => (item.id === reqId ? { ...item, count: item.count + 1 } : item));
+      try {
+        localStorage.setItem(`hero_guild_piece_requests_${guildId}`, JSON.stringify(next));
+        onUpdateSns(sns + 25);
+      } catch {}
+      return next;
+    });
+    setAlertMsg(
+      language === 'ko'
+        ? `[조각 지원 완료] 길드원에게 카드 조각을 지원하고 보상 +25 SNS를 획득했습니다!`
+        : `Donated card shard to guild member! Earned +25 SNS!`
+    );
+  };
+
   // 탭 상태 (info | raid)
   const [activeTab, setActiveTab] = useState<'info' | 'raid'>('info');
   const [showHelp, setShowHelp] = useState(false);
@@ -171,6 +275,24 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
       setAlertMsg(t("guild_login_required", language));
       return;
     }
+
+    // ID 585: 24시간 재가입 쿨다운 체크
+    try {
+      const cooldownStr = localStorage.getItem('hero_guild_leave_cooldown');
+      if (cooldownStr) {
+        const cd = Number(cooldownStr);
+        if (Date.now() < cd) {
+          const remainingHours = Math.ceil((cd - Date.now()) / (3600 * 1000));
+          setAlertMsg(
+            language === 'ko'
+              ? `[가입 제한] 길드 탈퇴 후 24시간 동안 재가입이 제한됩니다. (잔여 시간: 약 ${remainingHours}시간)`
+              : `Cooldown active: you must wait 24h after leaving a guild. (${remainingHours}h remaining)`
+          );
+          return;
+        }
+      }
+    } catch {}
+
     try {
       const updatedGuild = await joinGuild(guild.id, currentUser.uid, currentUser.displayName || "Anonymous Hunter");
       setGuild(updatedGuild);
@@ -240,6 +362,48 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
               )}
             </div>
           </div>
+        </div>
+
+        {/* ID 580: 길드 출석 보너스 & 연속 출석 버프 HUD */}
+        {!isOpponentMode && userGuild?.id === guild.id && (
+          <div className="flex flex-wrap items-center justify-between gap-2 p-3.5 mb-4 bg-emerald-50 border border-emerald-300 rounded-2xl font-mono text-xs shadow-sm">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">📅</span>
+              <div>
+                <div className="font-black text-emerald-900">
+                  {language === 'ko' ? `[길드 출석 버프] 연속 ${attendanceStreak}일 출석 중!` : `Guild Streak: Day ${attendanceStreak}`}
+                </div>
+                <div className="text-[10px] text-emerald-700">
+                  {language === 'ko' ? '⚡ 전체 길드원 AP 자연 회복 속도 +10% 가속 적용 중' : '⚡ +10% Guild-wide AP Natural Recovery Active'}
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              disabled={attendedToday}
+              onClick={handleAttendGuild}
+              className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all disabled:opacity-50 cursor-pointer shadow-xs"
+            >
+              {attendedToday
+                ? (language === 'ko' ? '오늘 출석 완료' : 'Attended Today')
+                : (language === 'ko' ? '[ 일일 출석체크 (+50 SNS) ]' : '[ Check Attendance (+50 SNS) ]')}
+            </button>
+          </div>
+        )}
+
+        {/* ID 550: 길드 명예의 전당 시즌 MVP 3인 뱃지 배너 */}
+        <div className="grid grid-cols-3 gap-2 mb-4 font-mono text-xs">
+          {[
+            { role: language === 'ko' ? '👑 공격왕' : '👑 War MVP', name: guild.members[0]?.displayName || 'Ace Hunter', score: '38W 4L' },
+            { role: language === 'ko' ? '💰 기부왕' : '💰 Top Donor', name: guild.members[1]?.displayName || 'Gold Dragon', score: '25,000 SNS' },
+            { role: language === 'ko' ? '⚔️ 레이드왕' : '⚔️ Raid Titan', name: guild.members[2]?.displayName || 'Raid Slayer', score: '184K DMG' },
+          ].map((mvp, idx) => (
+            <div key={idx} className="bg-white border border-slate-200/80 rounded-2xl p-2.5 text-center shadow-sm">
+              <div className="text-[10px] font-bold text-amber-600 uppercase">{mvp.role}</div>
+              <div className="font-black text-slate-800 truncate text-xs mt-0.5">{mvp.name}</div>
+              <div className="text-[9px] text-slate-400 mt-0.5">{mvp.score}</div>
+            </div>
+          ))}
         </div>
 
         {/* Tab Bar (내 길드일 때만 표시) */}
@@ -328,6 +492,19 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
+                  {/* ID 510: 길드원 용병 일일 1회 대여 */}
+                  {!isOpponentMode && userGuild?.id === guild.id && currentUser?.uid !== member.uid && (
+                    <button
+                      type="button"
+                      disabled={borrowedMercenary === member.displayName}
+                      onClick={() => handleBorrowMercenary(member.uid, member.displayName)}
+                      className="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 text-[10px] font-bold rounded-lg transition-all cursor-pointer flex items-center gap-1 disabled:opacity-40"
+                      title={language === 'ko' ? '일일 1회 용병 시그니처 카드 대여 (20 SNS)' : 'Hire Mercenary Card (20 SNS)'}
+                    >
+                      <span>🤝</span>
+                      <span>{borrowedMercenary === member.displayName ? (language === 'ko' ? '대여중' : 'Hired') : (language === 'ko' ? '용병 대여' : 'Hire')}</span>
+                    </button>
+                  )}
                   {isOpponentMode && currentUser?.uid !== member.uid && (
                     <button
                       onClick={() => onAttackMember?.(member.uid, member.displayName)}
@@ -359,7 +536,8 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
         ) : (
           // 내 길드이거나 일반 상세 보기인 경우
           userGuild?.id === guild.id ? (
-            <div className="bg-indigo-50/40 border border-indigo-200/80 rounded-lg p-5 sm:p-6 shadow-sm">
+            <>
+              <div className="bg-indigo-50/40 border border-indigo-200/80 rounded-lg p-5 sm:p-6 shadow-sm">
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4">
                 {[500, 1000, 5000, 10000].map((amt) => (
@@ -387,6 +565,140 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
                 {t("guild_donate_btn", language, { amount: donateAmount.toLocaleString() })}
               </button>
             </div>
+
+            {/* ID 570: 길드 카드 조각 상호 기부 & 요청 시스템 */}
+            <div className="bg-white border border-slate-200/80 rounded-2xl p-4 mt-4 font-mono text-xs shadow-sm">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+                <div className="flex items-center gap-1.5 font-black text-slate-800">
+                  <span>🧩</span>
+                  <span>{language === 'ko' ? '길드 카드 조각 교환소 (Piece Request)' : 'Card Shard Exchange'}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newReq = {
+                      id: `req-${Date.now()}`,
+                      cardId: Math.floor(Math.random() * 50) + 1,
+                      requesterName: currentUser?.displayName || 'Me',
+                      count: 0,
+                    };
+                    setShardRequests((prev) => [newReq, ...prev]);
+                    setAlertMsg(
+                      language === 'ko'
+                        ? '[조각 요청 등록] 길드원들에게 카드 조각 요청을 등록했습니다!'
+                        : 'Card shard request posted to guild!'
+                    );
+                  }}
+                  className="px-2 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-[10px] font-bold cursor-pointer transition-colors"
+                >
+                  {language === 'ko' ? '+ 새 조각 요청' : '+ Request Shard'}
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                {shardRequests.map((req) => (
+                  <div key={req.id} className="flex items-center justify-between p-2 bg-slate-50 border border-slate-200 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center rounded text-[11px]">
+                        #{req.cardId}
+                      </div>
+                      <div>
+                        <div className="font-bold text-slate-800">{req.requesterName}</div>
+                        <div className="text-[10px] text-slate-400">
+                          {language === 'ko' ? `지원 현황: ${req.count}/5개` : `Progress: ${req.count}/5`}
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleDonateShard(req.id, req.cardId)}
+                      className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded text-[10px] cursor-pointer transition-colors"
+                    >
+                      {language === 'ko' ? '조각 지원 (+25 SNS)' : 'Donate (+25 SNS)'}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ID 500: 길드전 일일 3개 매치업 실시간 승부 예측 & 배당금 */}
+            <div className="bg-white border border-slate-200/80 rounded-2xl p-4 mt-4 font-mono text-xs shadow-sm">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+                <div className="flex items-center gap-1.5 font-black text-slate-800">
+                  <span>⚔️</span>
+                  <span>{language === 'ko' ? '길드전 일일 승부 예측 & 적중 배당 (Guild War Matchups)' : 'Guild War Predictions'}</span>
+                </div>
+                <span className="text-[10px] text-amber-600 font-bold">
+                  {language === 'ko' ? '적중 시 2.5배 배당' : '2.5x Payout'}
+                </span>
+              </div>
+
+              <div className="space-y-2.5">
+                {[
+                  { matchId: 1, teamA: 'Dragon_Slayers', teamB: 'Shadow_Legion', oddsA: 1.8, oddsB: 2.1 },
+                  { matchId: 2, teamA: 'Titan_Alliance', teamB: 'Phoenix_Reborn', oddsA: 2.4, oddsB: 1.6 },
+                  { matchId: 3, teamA: 'Cyber_Knights', teamB: 'Mystic_Echo', oddsA: 1.9, oddsB: 1.9 },
+                ].map((match) => {
+                  const myPick = guildBets[match.matchId];
+                  return (
+                    <div key={match.matchId} className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg space-y-1.5">
+                      <div className="flex justify-between text-[10px] text-slate-400 font-bold">
+                        <span>MATCH #{match.matchId}</span>
+                        <span>{myPick ? (language === 'ko' ? `예측 완료: [${myPick}]` : `Picked: [${myPick}]`) : (language === 'ko' ? '예측 투표 가능' : 'Open')}</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const next = { ...guildBets, [match.matchId]: match.teamA };
+                            setGuildBets(next);
+                            try {
+                              localStorage.setItem(`hero_guild_war_bets_${todayStr}`, JSON.stringify(next));
+                              onUpdateSns(sns + 10);
+                            } catch {}
+                            setAlertMsg(
+                              language === 'ko'
+                                ? `[승부 예측 완료] ${match.teamA} 승리에 50 SNS 베팅 완료! (적중 시 배당 지급)`
+                                : `Predicted ${match.teamA} victory! (+10 SNS participation bonus)`
+                            );
+                          }}
+                          className={`flex-1 py-1.5 px-2 rounded border text-[11px] font-bold transition-all cursor-pointer flex justify-between items-center ${
+                            myPick === match.teamA ? 'bg-indigo-600 text-white border-indigo-700' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
+                          }`}
+                        >
+                          <span className="truncate">{match.teamA}</span>
+                          <span className="text-[10px] opacity-80">{match.oddsA}x</span>
+                        </button>
+                        <span className="self-center text-slate-400 font-black text-xs">VS</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const next = { ...guildBets, [match.matchId]: match.teamB };
+                            setGuildBets(next);
+                            try {
+                              localStorage.setItem(`hero_guild_war_bets_${todayStr}`, JSON.stringify(next));
+                              onUpdateSns(sns + 10);
+                            } catch {}
+                            setAlertMsg(
+                              language === 'ko'
+                                ? `[승부 예측 완료] ${match.teamB} 승리에 50 SNS 베팅 완료! (적중 시 배당 지급)`
+                                : `Predicted ${match.teamB} victory! (+10 SNS participation bonus)`
+                            );
+                          }}
+                          className={`flex-1 py-1.5 px-2 rounded border text-[11px] font-bold transition-all cursor-pointer flex justify-between items-center ${
+                            myPick === match.teamB ? 'bg-indigo-600 text-white border-indigo-700' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
+                          }`}
+                        >
+                          <span className="truncate">{match.teamB}</span>
+                          <span className="text-[10px] opacity-80">{match.oddsB}x</span>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            </>
           ) : !userGuild ? (
             <div className="bg-amber-50/20 border border-amber-200/70 rounded-3xl p-6 text-center shadow-xl">
               <button

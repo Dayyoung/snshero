@@ -16,7 +16,21 @@ class BattleAudioEngine {
   private heartbeatInterval: ReturnType<typeof setInterval> | null = null;
 
   private constructor() {
-    // Lazy init audio context on first user gesture
+    // ID 519: 브라우저 탭 백그라운드 전환 시 Web Audio 자동 suspend 및 메모리 누수 방지
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (!this.audioCtx) return;
+        if (document.hidden) {
+          if (this.audioCtx.state === 'running') {
+            this.audioCtx.suspend().catch(() => {});
+          }
+        } else {
+          if (this.audioCtx.state === 'suspended') {
+            this.audioCtx.resume().catch(() => {});
+          }
+        }
+      });
+    }
   }
 
   public static getInstance(): BattleAudioEngine {
@@ -34,7 +48,7 @@ class BattleAudioEngine {
         this.audioCtx = new AudioContextClass();
       }
     }
-    if (this.audioCtx && this.audioCtx.state === 'suspended') {
+    if (this.audioCtx && this.audioCtx.state === 'suspended' && typeof document !== 'undefined' && !document.hidden) {
       this.audioCtx.resume().catch(() => {});
     }
     return this.audioCtx;
