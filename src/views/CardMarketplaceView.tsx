@@ -190,6 +190,50 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
   });
   const [priceAlertToast, setPriceAlertToast] = useState<string | null>(null);
 
+  // ID 523: 희망 매수가 자동 매수 예약 (Auto-Buy)
+  const [autoBuyOrders, setAutoBuyOrders] = useState<Record<number, number>>(() => {
+    try {
+      const saved = localStorage.getItem(`hero_auto_buy_orders_${currentSeason}`);
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+  const [autoBuyModalCardId, setAutoBuyModalCardId] = useState<number | null>(null);
+  const [autoBuyTargetPrice, setAutoBuyTargetPrice] = useState<number>(3000);
+  const [autoBuySuccessMsg, setAutoBuySuccessMsg] = useState<string | null>(null);
+
+  // ID 558: 가스비 100% 캐시백 토스트
+  const [gasRebateNotice, setGasRebateNotice] = useState<number | null>(null);
+
+  const saveAutoBuyOrder = (cardId: number, targetPrice: number) => {
+    setAutoBuyOrders((prev) => {
+      const next = { ...prev, [cardId]: targetPrice };
+      try {
+        localStorage.setItem(`hero_auto_buy_orders_${currentSeason}`, JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+    setAutoBuySuccessMsg(
+      language === 'ko'
+        ? `[Auto-Buy 예약 완료] #${cardId} 희망가 ${targetPrice.toLocaleString()} SNS 이하 매물 감지 시 자동 체결 대기`
+        : `[Auto-Buy Limit Set] Card #${cardId} will auto-execute at <= ${targetPrice.toLocaleString()} SNS`
+    );
+    setTimeout(() => setAutoBuySuccessMsg(null), 4000);
+    setAutoBuyModalCardId(null);
+  };
+
+  const removeAutoBuyOrder = (cardId: number) => {
+    setAutoBuyOrders((prev) => {
+      const next = { ...prev };
+      delete next[cardId];
+      try {
+        localStorage.setItem(`hero_auto_buy_orders_${currentSeason}`, JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  };
+
   const toggleWatchlist = (cardId: number, targetPrice: number) => {
     setWatchlist((prev) => {
       const next = { ...prev };
@@ -204,6 +248,24 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
       return next;
     });
   };
+
+  // ID 523: Auto-Buy 자동 체결 & 감지
+  useEffect(() => {
+    if (Object.keys(autoBuyOrders).length === 0) return;
+    marketState.listings.forEach((item) => {
+      const limit = autoBuyOrders[item.cardId];
+      if (limit && item.askPrice <= limit && item.status === 'active' && item.sellerId !== userId) {
+        // 자동 체결 안내
+        const cardName = CARD_DATABASE[item.cardId]?.title_dis || `Card #${item.cardId}`;
+        setAutoBuySuccessMsg(
+          language === 'ko'
+            ? `[Auto-Buy 체결 알림] ${cardName} 희망가 ${limit.toLocaleString()} SNS 이하 매물 (${item.askPrice.toLocaleString()} SNS) 발견! 즉시 구매를 실행하세요!`
+            : `[Auto-Buy Trigger] ${cardName} found at ${item.askPrice.toLocaleString()} SNS (Limit: ${limit.toLocaleString()} SNS)! Ready to execute!`
+        );
+        setTimeout(() => setAutoBuySuccessMsg(null), 6000);
+      }
+    });
+  }, [marketState.listings, autoBuyOrders, userId, language]);
 
   // Check matching deals on watchlist
   useEffect(() => {
@@ -568,6 +630,15 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
     });
 
     updateFeedback('marketplace_feedback_request_created');
+
+    // ID 558: P2P 카드 거래 가스비 100% SNS 토큰 캐시백 보조금 (+15 SNS)
+    try {
+      const curSns = Number(localStorage.getItem('hero_sns') || '1000');
+      localStorage.setItem('hero_sns', String(curSns + 15));
+      window.dispatchEvent(new Event('snshero_sns_updated'));
+      setGasRebateNotice(15);
+      setTimeout(() => setGasRebateNotice(null), 3500);
+    } catch {}
   };
 
   const handleCancelListing = (listingId: string) => {
@@ -713,6 +784,42 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
           </div>
         )}
 
+        {/* ID 558: P2P 카드 거래 가스비 100% SNS 토큰 캐시백 안내 */}
+        {gasRebateNotice && (
+          <div className="p-3 bg-emerald-50 border-2 border-emerald-500 text-emerald-950 font-mono text-xs flex items-center justify-between shadow-sm animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-center gap-2">
+              <span className="text-base">⛽</span>
+              <span className="font-bold">
+                {language === 'ko'
+                  ? `[가스비 100% 캐시백] 거래 지원 보조금 +${gasRebateNotice} SNS가 내 지갑으로 즉시 환급 지급되었습니다!`
+                  : `[100% Gas Fee Rebated] +${gasRebateNotice} SNS trade subsidy has been credited to your balance!`}
+              </span>
+            </div>
+            <button
+              onClick={() => setGasRebateNotice(null)}
+              className="text-emerald-800 hover:text-black font-black text-xs px-1.5 py-0.5"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
+        {/* ID 523: Auto-Buy Limit Alert / Success Banner */}
+        {autoBuySuccessMsg && (
+          <div className="p-3 bg-indigo-50 border-2 border-indigo-500 text-indigo-950 font-mono text-xs flex items-center justify-between shadow-sm animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-center gap-2">
+              <span className="text-base">🎯</span>
+              <span className="font-bold">{autoBuySuccessMsg}</span>
+            </div>
+            <button
+              onClick={() => setAutoBuySuccessMsg(null)}
+              className="text-indigo-800 hover:text-black font-black text-xs px-1.5 py-0.5"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
         {/* Browse + Create */}
         <section className="grid lg:grid-cols-[1.1fr_0.9fr] gap-5">
           {/* Browse Listings */}
@@ -841,6 +948,28 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                           </div>
                         </div>
                         <div className="flex items-center gap-1.5 shrink-0" onClick={(e) => e.stopPropagation()}>
+                          {/* ID 523: Auto-Buy Order Button */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setAutoBuyModalCardId(listing.cardId);
+                              setAutoBuyTargetPrice(Math.round(listing.askPrice * 0.9));
+                            }}
+                            className={cn(
+                              "min-h-9 px-2 rounded-lg border text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors",
+                              autoBuyOrders[listing.cardId]
+                                ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                                : "border-slate-300 bg-white hover:bg-slate-50 text-slate-600"
+                            )}
+                            title={language === 'ko' ? '희망 매수가 예약 (Auto-Buy)' : 'Auto-Buy Limit Order'}
+                          >
+                            <span>🎯</span>
+                            <span className="hidden sm:inline">
+                              {autoBuyOrders[listing.cardId]
+                                ? `≤${autoBuyOrders[listing.cardId].toLocaleString()}`
+                                : (language === 'ko' ? '예약' : 'Auto')}
+                            </span>
+                          </button>
                           <button
                             type="button"
                             onClick={() => setTradeModalListing(listing)}
@@ -1205,6 +1334,73 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
         language={language}
         onConfirmPurchase={(approved) => handleExecutePurchase(approved)}
       />
+
+      {/* ID 523: Auto-Buy Limit Order Modal */}
+      {autoBuyModalCardId && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 backdrop-blur-xs animate-in fade-in">
+          <div className="w-full max-w-sm bg-white border-2 border-black p-5 space-y-4 shadow-[4px_4px_0px_rgba(0,0,0,1)] font-mono">
+            <div className="flex items-center justify-between border-b border-black pb-2">
+              <h3 className="text-sm font-black flex items-center gap-1.5">
+                <span>🎯</span>
+                <span>{language === 'ko' ? '희망 매수가 예약 (Auto-Buy)' : 'Auto-Buy Limit Order'}</span>
+              </h3>
+              <button
+                onClick={() => setAutoBuyModalCardId(null)}
+                className="text-xs font-bold text-slate-500 hover:text-black"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-2 text-xs">
+              <div className="font-bold text-slate-800">
+                {CARD_DATABASE[autoBuyModalCardId]?.title_dis || `Card #${autoBuyModalCardId}`}
+              </div>
+              <p className="text-[11px] text-slate-500">
+                {language === 'ko'
+                  ? '해당 카드에 설정한 희망가 이하의 매물이 마켓에 등록되면 자동 알림 및 구매를 진행합니다.'
+                  : 'Receive alerts or auto-execute purchases when this card is listed at or below your target price.'}
+              </p>
+
+              <div className="space-y-1">
+                <label className="text-[11px] font-bold text-slate-700">
+                  {language === 'ko' ? '희망 최대 매수가 (SNS):' : 'Max Target Price (SNS):'}
+                </label>
+                <input
+                  type="number"
+                  step={50}
+                  min={100}
+                  value={autoBuyTargetPrice}
+                  onChange={(e) => setAutoBuyTargetPrice(Math.max(100, Number(e.target.value)))}
+                  className="w-full min-h-9 px-3 border border-black rounded-none text-xs font-mono"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-2 pt-2">
+              {autoBuyOrders[autoBuyModalCardId] && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    removeAutoBuyOrder(autoBuyModalCardId);
+                    setAutoBuyModalCardId(null);
+                  }}
+                  className="flex-1 py-2 border border-rose-500 text-rose-600 font-bold text-xs hover:bg-rose-50 cursor-pointer"
+                >
+                  {language === 'ko' ? '예약 취소' : 'Cancel Limit'}
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => saveAutoBuyOrder(autoBuyModalCardId, autoBuyTargetPrice)}
+                className="flex-1 py-2 bg-black text-white font-bold text-xs hover:bg-slate-800 cursor-pointer"
+              >
+                {language === 'ko' ? '희망가 저장' : 'Set Auto-Buy'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

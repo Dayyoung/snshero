@@ -110,6 +110,74 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
   // ID 488: Slippage Tolerance State (0.5%, 1%, 2%)
   const [slippage, setSlippage] = useState<0.5 | 1 | 2>(1);
 
+  // ID 568: 일일 거래량 마일스톤 & 15% 수수료 페이백 금고
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const [dailyVolume, setDailyVolume] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem(`hero_stock_daily_volume_${todayStr}`);
+      return saved ? Number(saved) : 0;
+    } catch {
+      return 0;
+    }
+  });
+  const [claimedVolumeMilestones, setClaimedVolumeMilestones] = useState<number[]>(() => {
+    try {
+      const saved = localStorage.getItem(`hero_stock_volume_claimed_${todayStr}`);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [accumulatedFees, setAccumulatedFees] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem(`hero_stock_daily_fees_${todayStr}`);
+      return saved ? Number(saved) : 0;
+    } catch {
+      return 0;
+    }
+  });
+  const [rebateClaimed, setRebateClaimed] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(`hero_stock_rebate_claimed_${todayStr}`) === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const handleClaimVolumeMilestone = (milestone: number, reward: number) => {
+    if (dailyVolume < milestone || claimedVolumeMilestones.includes(milestone)) return;
+    const nextClaimed = [...claimedVolumeMilestones, milestone];
+    setClaimedVolumeMilestones(nextClaimed);
+    try {
+      localStorage.setItem(`hero_stock_volume_claimed_${todayStr}`, JSON.stringify(nextClaimed));
+    } catch {}
+    updateSns(reward, `일일 주식 거래량 ${milestone.toLocaleString()} SNS 달성 보너스`);
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2020/2020-preview.mp3');
+    setAlertMsg({
+      type: 'success',
+      text: language === 'ko'
+        ? `🎉 [거래량 마일스톤] ${milestone.toLocaleString()} SNS 돌파 보너스 +${reward} SNS를 수령했습니다!`
+        : `🎉 [Volume Milestone] Achieved ${milestone.toLocaleString()} SNS turnover! Bonus +${reward} SNS claimed!`,
+    });
+  };
+
+  const handleClaimFeeRebate = () => {
+    const rebateAmount = Math.max(1, Math.round(accumulatedFees * 0.15));
+    if (rebateClaimed || rebateAmount <= 0) return;
+    setRebateClaimed(true);
+    try {
+      localStorage.setItem(`hero_stock_rebate_claimed_${todayStr}`, 'true');
+    } catch {}
+    updateSns(rebateAmount, '일일 주식 거래 수수료 15% 페이백 환급');
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2020/2020-preview.mp3');
+    setAlertMsg({
+      type: 'success',
+      text: language === 'ko'
+        ? `🏦 [수수료 15% 페이백] 당일 거래 수수료 환급금 +${rebateAmount} SNS가 지갑에 지급되었습니다!`
+        : `🏦 [Fee 15% Rebate] +${rebateAmount} SNS trading fee rebate deposited to wallet!`,
+    });
+  };
+
   const handleClaimDividends = () => {
     if (dividendAvailable <= 0) return;
     updateSns(dividendAvailable, '주식 시장 캐릭터 지분 배당금 정산');
@@ -364,6 +432,16 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
       setAlertMsg({ type: 'success', text: t('transaction_success', language) });
     }
 
+    // ID 568: 일일 거래량 및 수수료 누적
+    const nextVol = dailyVolume + subtotalSns;
+    setDailyVolume(nextVol);
+    const nextFees = accumulatedFees + tradingFeeSns;
+    setAccumulatedFees(nextFees);
+    try {
+      localStorage.setItem(`hero_stock_daily_volume_${todayStr}`, String(nextVol));
+      localStorage.setItem(`hero_stock_daily_fees_${todayStr}`, String(nextFees));
+    } catch {}
+
     setTradeAmount(1);
     setSelectedCardId(null);
   };
@@ -440,6 +518,74 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                 {slip}%
               </button>
             ))}
+          </div>
+        </div>
+
+        {/* ID 568: 일일 거래량 마일스톤 & 15% 수수료 페이백 금고 HUD */}
+        <div className="flex flex-col gap-2 p-3 bg-indigo-50/60 dark:bg-indigo-950/20 border border-indigo-300 dark:border-indigo-800 text-xs font-mono">
+          <div className="flex items-center justify-between flex-wrap gap-1">
+            <div className="flex items-center gap-1.5">
+              <span className="font-black text-indigo-700 dark:text-indigo-400">
+                [ 📈 {language === 'ko' ? '일일 거래량' : 'Daily Turnover'}: {dailyVolume.toLocaleString()} / 10,000 SNS ]
+              </span>
+              <span className="text-[10px] text-slate-500">
+                ({language === 'ko' ? '지불 수수료' : 'Fees Paid'}: {accumulatedFees.toLocaleString()} SNS)
+              </span>
+            </div>
+            {/* 15% 수수료 페이백 금고 */}
+            <button
+              type="button"
+              disabled={rebateClaimed || accumulatedFees <= 0}
+              onClick={handleClaimFeeRebate}
+              className="px-2 py-0.5 bg-indigo-700 text-white text-[10px] font-bold rounded-sm hover:bg-indigo-800 disabled:opacity-40 transition-all cursor-pointer"
+            >
+              {rebateClaimed
+                ? (language === 'ko' ? '[ 15% 페이백 완료 ]' : '[ 15% Rebated ]')
+                : (language === 'ko' ? `[ 🏦 15% 페이백 (+${Math.max(1, Math.round(accumulatedFees * 0.15))} SNS) ]` : `[ 🏦 15% Rebate (+${Math.max(1, Math.round(accumulatedFees * 0.15))} SNS) ]`)}
+            </button>
+          </div>
+
+          {/* 3단계 마일스톤 트랙 */}
+          <div className="grid grid-cols-3 gap-1.5 pt-1">
+            {[
+              { milestone: 1000, reward: 50, label: '1K' },
+              { milestone: 5000, reward: 200, label: '5K' },
+              { milestone: 10000, reward: 500, label: '10K' },
+            ].map((step) => {
+              const achieved = dailyVolume >= step.milestone;
+              const claimed = claimedVolumeMilestones.includes(step.milestone);
+              return (
+                <div
+                  key={step.milestone}
+                  className={`flex flex-col items-center justify-between p-1.5 border text-center text-[10px] ${
+                    claimed
+                      ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
+                      : achieved
+                      ? 'border-indigo-500 bg-white font-bold'
+                      : 'border-slate-200 bg-slate-50/50 text-slate-400'
+                  }`}
+                >
+                  <div className="flex items-center gap-1 font-bold">
+                    <span>{step.label} SNS</span>
+                    <span className="text-amber-600">+{step.reward} SNS</span>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={!achieved || claimed}
+                    onClick={() => handleClaimVolumeMilestone(step.milestone, step.reward)}
+                    className={`mt-1 px-1.5 py-0.5 text-[9px] w-full rounded-xs transition-colors ${
+                      claimed
+                        ? 'bg-emerald-600 text-white cursor-default'
+                        : achieved
+                        ? 'bg-black text-white hover:bg-indigo-600 cursor-pointer animate-pulse'
+                        : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                    }`}
+                  >
+                    {claimed ? (language === 'ko' ? '수령 완료' : 'Claimed') : achieved ? (language === 'ko' ? '보너스 수령' : 'Claim') : (language === 'ko' ? '미달성' : 'Locked')}
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </div>
 

@@ -375,6 +375,113 @@ export const ShopView: React.FC<ShopViewProps> = ({
     }
   });
 
+  // ID 518: 일일 할인 50 AP 물약 번들 상태 (일일 2회 제한, 25 SNS)
+  const todayDateKey = new Date().toISOString().slice(0, 10);
+  const [todayApPotionsBought, setTodayApPotionsBought] = useState<number>(() => {
+    return Number(localStorage.getItem(`hero_daily_ap_potions_${todayDateKey}`) || '0');
+  });
+
+  // ID 533: 중복 소환 마일리지 로테이션 샵 상태
+  const [isDupeMileageShopOpen, setIsDupeMileageShopOpen] = useState(false);
+  const [dupeMileage, setDupeMileage] = useState<number>(() => {
+    return Number(localStorage.getItem('hero_dupe_mileage') || '120');
+  });
+
+  // ID 538: 7일 무료 소환 출석 스탬프 트랙
+  const [gachaStampTrack, setGachaStampTrack] = useState<{
+    streak: number;
+    claimedDays: number[];
+    lastDate: string;
+  }>(() => {
+    try {
+      return JSON.parse(localStorage.getItem('hero_gacha_stamp_track_v1') || '{"streak": 1, "claimedDays": [], "lastDate": ""}');
+    } catch {
+      return { streak: 1, claimedDays: [], lastDate: '' };
+    }
+  });
+
+  // ID 548: 10연차 모의 뽑기 시뮬레이터 (Mock Pull) 상태
+  const [isMockPullModalOpen, setIsMockPullModalOpen] = useState(false);
+  const [mockPullCards, setMockPullCards] = useState<GachaCard[]>([]);
+
+  // ID 583: 월간 누적 50/100/200회 소환 마일리지 리워드 트랙
+  const currentMonthKey = new Date().toISOString().slice(0, 7);
+  const [monthlyPullCount, setMonthlyPullCount] = useState<number>(() => {
+    return Number(localStorage.getItem(`hero_monthly_pull_count_${currentMonthKey}`) || '18');
+  });
+  const [claimedMonthlyPulls, setClaimedMonthlyPulls] = useState<number[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem(`hero_claimed_monthly_pulls_${currentMonthKey}`) || '[]');
+    } catch {
+      return [];
+    }
+  });
+
+  // ID 513: 신규 미보유 카드 획득 알림 모달/토스트
+  const [newCardBonusNotice, setNewCardBonusNotice] = useState<{ cardName: string; bonusSns: number } | null>(null);
+
+  // 핸들러: ID 518 AP 물약 구매
+  const handleBuyApPotion = () => {
+    if (todayApPotionsBought >= 2) return;
+    const cost = 25; // 50% discount from 50 SNS
+    if (sns < cost) {
+      setErrorVisible(true);
+      return;
+    }
+    updateSns(-cost, 'ap_potion_purchase', '일일 할인 50 AP 물약');
+    const nextBought = todayApPotionsBought + 1;
+    setTodayApPotionsBought(nextBought);
+    localStorage.setItem(`hero_daily_ap_potions_${todayDateKey}`, String(nextBought));
+
+    // AP 충전 (기존 AP + 50)
+    const curAp = Number(localStorage.getItem('hero_player_stamina') || '80');
+    localStorage.setItem('hero_player_stamina', String(curAp + 50));
+    window.dispatchEvent(new Event('hero_stamina_updated'));
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+  };
+
+  // 핸들러: ID 548 10연차 모의 뽑기 (Mock Pull)
+  const handleMockPull = () => {
+    const mockCards: GachaCard[] = Array.from({ length: 10 }).map((_, idx) => {
+      const rarities: GachaPackRarity[] = ['bronze', 'bronze', 'silver', 'bronze', 'silver', 'silver', 'gold', 'bronze', 'silver', 'gold'];
+      const r = rarities[idx];
+      const possible = cardRarityPools[r] || [1, 2, 3, 4, 5];
+      const imgIdx = possible[Math.floor(Math.random() * possible.length)];
+      return {
+        id: `mock-${idx}-${Date.now()}`,
+        imageIndex: imgIdx,
+        rarity: r,
+        isRevealed: true,
+      };
+    });
+    setMockPullCards(mockCards);
+    setIsMockPullModalOpen(true);
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2012/2012-preview.mp3');
+  };
+
+  // 핸들러: ID 533 중복 마일리지 상점 교환
+  const handleBuyDupeShopItem = (itemCost: number, itemName: string) => {
+    if (dupeMileage < itemCost) return;
+    const nextMileage = dupeMileage - itemCost;
+    setDupeMileage(nextMileage);
+    localStorage.setItem('hero_dupe_mileage', String(nextMileage));
+
+    // SSR 선택권 또는 슬리브 지급
+    updateSns(200, 'dupe_shop_bonus', itemName);
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+  };
+
+  // 핸들러: ID 583 월간 소환 마일스톤 보상 수령
+  const handleClaimMonthlyPullMilestone = (milestone: number, rewardSns: number) => {
+    if (claimedMonthlyPulls.includes(milestone) || monthlyPullCount < milestone) return;
+    const next = [...claimedMonthlyPulls, milestone];
+    setClaimedMonthlyPulls(next);
+    localStorage.setItem(`hero_claimed_monthly_pulls_${currentMonthKey}`, JSON.stringify(next));
+
+    updateSns(rewardSns, 'monthly_pull_milestone', `월간 소환 ${milestone}회 달성 보너스`);
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+  };
+
   // ID 358: SSR/SR 획득 시 전투 덱에 즉시 교체/장착 핸들러
   const handleEquipCardToDeck = (cardId: number) => {
     try {
@@ -1841,10 +1948,34 @@ export const ShopView: React.FC<ShopViewProps> = ({
   };
 
   const createPackCards = (packRarity: GachaPackRarity): GachaCard[] => {
+    let currentInventory: Record<number, any> = {};
+    try {
+      currentInventory = JSON.parse(localStorage.getItem('hero_inventory') || '{}');
+    } catch {}
+
     return Array.from({ length: 5 }).map(() => {
       const rarity = determineRarity(packRarity);
       const possible = cardRarityPools[rarity];
       const imageIndex = possible[Math.floor(Math.random() * possible.length)];
+
+      const isOwned = Boolean(currentInventory[imageIndex] && currentInventory[imageIndex].quantity > 0);
+
+      // ID 513: 미보유 신규 카드 획득 시 +50 도감 마일리지 보너스
+      if (!isOwned) {
+        updateSns(50, 'new_card_bonus', '신규 도감 등록 보너스');
+        const cardObj = CARD_DATABASE[imageIndex];
+        if (cardObj) {
+          setNewCardBonusNotice({ cardName: cardObj.title, bonusSns: 50 });
+          setTimeout(() => setNewCardBonusNotice(null), 3500);
+        }
+      } else {
+        // ID 533: 중복 카드 획득 시 중복 마일리지 +10 적립
+        setDupeMileage(prev => {
+          const next = prev + 10;
+          localStorage.setItem('hero_dupe_mileage', String(next));
+          return next;
+        });
+      }
 
       // SNS 소모 즉시 인벤토리에 추가
       addCard(rarity, imageIndex, true);
@@ -1898,6 +2029,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
       const newCards = createPackCards(packRarity);
       recordGachaPity(packRarity, newCards.map(card => card.rarity));
+
+      // ID 583: 월간 누적 소환 횟수 1 증가
+      setMonthlyPullCount(prev => {
+        const next = prev + 1;
+        localStorage.setItem(`hero_monthly_pull_count_${currentMonthKey}`, String(next));
+        return next;
+      });
 
       // Analytics: Track Card Pack Purchase
       if (analytics) {
@@ -1955,6 +2093,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
       }
 
       recordGachaPity(packRarity, combined.map(card => card.rarity));
+
+      // ID 583: 월간 누적 소환 횟수 10 증가
+      setMonthlyPullCount(prev => {
+        const next = prev + 10;
+        localStorage.setItem(`hero_monthly_pull_count_${currentMonthKey}`, String(next));
+        return next;
+      });
 
       setGachaState({
         isActive: true,
@@ -3587,6 +3732,87 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 ⚠️ {language === 'ko' ? '월간 사용 한도 80% 도달 주의' : '80% Limit Warning'}
               </span>
             )}
+          </div>
+
+          {/* Phase 3 상점 편의 기능 액션 바 (ID 518, ID 533, ID 548, ID 583) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mb-4 font-mono text-xs">
+            {/* ID 518: 일일 할인 50 AP 물약 */}
+            <div className="p-2.5 bg-cyan-950/40 border border-cyan-500/40 rounded-xl flex items-center justify-between text-cyan-200">
+              <div className="min-w-0">
+                <div className="font-bold text-[11px] truncate">🧪 50 AP 물약 (50% 할인)</div>
+                <div className="text-[10px] text-cyan-400">오늘 구매: {todayApPotionsBought}/2회</div>
+              </div>
+              <button
+                type="button"
+                disabled={todayApPotionsBought >= 2}
+                onClick={handleBuyApPotion}
+                className="px-2 py-1 bg-cyan-600 hover:bg-cyan-500 disabled:bg-slate-800 disabled:text-slate-600 text-white font-black text-[10px] rounded-lg active:scale-95 transition-all cursor-pointer shadow-xs shrink-0"
+              >
+                {todayApPotionsBought >= 2 ? '[매진]' : '[25 SNS]'}
+              </button>
+            </div>
+
+            {/* ID 548: 10연차 모의 뽑기 (Mock Pull) */}
+            <div className="p-2.5 bg-purple-950/40 border border-purple-500/40 rounded-xl flex items-center justify-between text-purple-200">
+              <div className="min-w-0">
+                <div className="font-bold text-[11px] truncate">🎲 10연차 모의 뽑기</div>
+                <div className="text-[10px] text-purple-400">재화 소모 0 (확률 체험)</div>
+              </div>
+              <button
+                type="button"
+                onClick={handleMockPull}
+                className="px-2 py-1 bg-purple-600 hover:bg-purple-500 text-white font-black text-[10px] rounded-lg active:scale-95 transition-all cursor-pointer shadow-xs shrink-0"
+              >
+                [모의 실행]
+              </button>
+            </div>
+
+            {/* ID 533: 중복 마일리지 로테이션 샵 */}
+            <div className="p-2.5 bg-amber-950/40 border border-amber-500/40 rounded-xl flex items-center justify-between text-amber-200">
+              <div className="min-w-0">
+                <div className="font-bold text-[11px] truncate">🔄 중복 마일리지 상점</div>
+                <div className="text-[10px] text-amber-400">보유: {dupeMileage} P</div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsDupeMileageShopOpen(true)}
+                className="px-2 py-1 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-[10px] rounded-lg active:scale-95 transition-all cursor-pointer shadow-xs shrink-0"
+              >
+                [교환소]
+              </button>
+            </div>
+
+            {/* ID 583: 월간 누적 소환 마일리지 리워드 */}
+            <div className="p-2.5 bg-emerald-950/40 border border-emerald-500/40 rounded-xl flex items-center justify-between text-emerald-200">
+              <div className="min-w-0">
+                <div className="font-bold text-[11px] truncate">📈 월간 소환 {monthlyPullCount}/200회</div>
+                <div className="text-[10px] text-emerald-400">50/100/200회 마일스톤</div>
+              </div>
+              <div className="flex gap-1 shrink-0">
+                {[50, 100, 200].map(m => {
+                  const isClaimed = claimedMonthlyPulls.includes(m);
+                  const canClaim = monthlyPullCount >= m && !isClaimed;
+                  const reward = m === 50 ? 300 : m === 100 ? 500 : 1000;
+                  return (
+                    <button
+                      key={m}
+                      type="button"
+                      disabled={!canClaim && !isClaimed}
+                      onClick={() => handleClaimMonthlyPullMilestone(m, reward)}
+                      className={`px-1 py-0.5 text-[8px] font-black rounded-xs ${
+                        isClaimed
+                          ? 'bg-slate-800 text-slate-500'
+                          : canClaim
+                            ? 'bg-emerald-400 text-stone-950 animate-bounce'
+                            : 'bg-emerald-900/40 text-emerald-500'
+                      }`}
+                    >
+                      {isClaimed ? '✓' : `${m}`}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
           {/* SNS 코인 상점 섹션 헤더 */}
@@ -5251,6 +5477,126 @@ export const ShopView: React.FC<ShopViewProps> = ({
             }}
             language={language}
           />
+
+          {/* ID 548: 10연차 모의 뽑기 결과 모달 */}
+          {isMockPullModalOpen && (
+            <div className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm font-mono select-none">
+              <div className="bg-[#1a1717] border border-purple-500 rounded-2xl p-5 max-w-lg w-full text-white space-y-4 shadow-2xl animate-fadeIn">
+                <div className="flex items-center justify-between border-b border-purple-900/60 pb-2.5">
+                  <div className="flex items-center gap-2 font-bold text-xs text-purple-300">
+                    <span>🎲</span>
+                    <span>{language === 'ko' ? '[10연차 모의 소환 체험 결과 (SNS 미소모)]' : '[10x Mock Pull Simulation (0 SNS)]'}</span>
+                  </div>
+                  <button onClick={() => setIsMockPullModalOpen(false)} className="text-slate-400 hover:text-white px-1 text-xs">
+                    ✕
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-5 gap-2">
+                  {mockPullCards.map((c, i) => {
+                    const dbC = CARD_DATABASE[c.imageIndex];
+                    return (
+                      <div key={i} className="bg-black/60 border border-slate-700 p-1.5 rounded-lg flex flex-col items-center gap-1 text-[9px] text-center">
+                        <span className={`px-1 rounded-xs font-bold uppercase ${
+                          c.rarity === 'gold' ? 'bg-amber-500 text-black' : c.rarity === 'silver' ? 'bg-slate-300 text-black' : 'bg-amber-900 text-amber-200'
+                        }`}>
+                          {c.rarity}
+                        </span>
+                        <div className="w-12 h-16 bg-slate-800 border border-slate-700 rounded flex items-center justify-center font-bold text-slate-300">
+                          #{c.imageIndex}
+                        </div>
+                        <span className="truncate max-w-full text-slate-300 font-medium">
+                          {dbC ? (language === 'ko' ? dbC.title : dbC.title_en) : `Card #${c.imageIndex}`}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="flex justify-between items-center pt-2 border-t border-slate-800">
+                  <span className="text-[10px] text-slate-400">
+                    {language === 'ko' ? '* 모의 소환은 인벤토리에 저장되지 않습니다.' : '* Mock pulls are not saved to inventory.'}
+                  </span>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={handleMockPull}
+                      className="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-lg active:scale-95"
+                    >
+                      {language === 'ko' ? '다시 모의 뽑기' : 'Re-roll Mock'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsMockPullModalOpen(false)}
+                      className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-lg"
+                    >
+                      {language === 'ko' ? '닫기' : 'Close'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ID 533: 중복 소환 마일리지 로테이션 샵 모달 */}
+          {isDupeMileageShopOpen && (
+            <div className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm font-mono select-none">
+              <div className="bg-[#1a1717] border border-amber-500 rounded-2xl p-5 max-w-md w-full text-white space-y-4 shadow-2xl animate-fadeIn">
+                <div className="flex items-center justify-between border-b border-amber-900/60 pb-2.5">
+                  <div className="flex items-center gap-2 font-bold text-xs text-amber-300">
+                    <span>🔄</span>
+                    <span>{language === 'ko' ? '[중복 소환 마일리지 교환소]' : '[Duplicate Mileage Exchange]'}</span>
+                  </div>
+                  <button onClick={() => setIsDupeMileageShopOpen(false)} className="text-slate-400 hover:text-white px-1 text-xs">
+                    ✕
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between bg-black/40 border border-amber-500/30 p-2.5 rounded-lg text-xs">
+                  <span className="text-slate-300 font-medium">{language === 'ko' ? '보유 마일리지:' : 'Current Mileage:'}</span>
+                  <span className="text-amber-400 font-black text-sm">{dupeMileage} P</span>
+                </div>
+
+                <div className="space-y-2">
+                  {[
+                    { id: 'ssr_select', name: language === 'ko' ? '🌟 SSR 확정 영웅 선택권' : '🌟 SSR Hero Selector', cost: 1000 },
+                    { id: 'epic_sleeve', name: language === 'ko' ? '🎨 황금 홀로그램 카드 슬리브' : '🎨 Gold Holo Sleeve', cost: 500 },
+                    { id: 'ap_pack', name: language === 'ko' ? '🧪 대용량 200 AP 물약 번들' : '🧪 200 AP Potion Bundle', cost: 200 },
+                  ].map(item => (
+                    <div key={item.id} className="flex items-center justify-between p-2.5 bg-slate-900 border border-slate-800 rounded-lg text-xs">
+                      <span className="font-bold text-slate-200">{item.name}</span>
+                      <button
+                        type="button"
+                        disabled={dupeMileage < item.cost}
+                        onClick={() => handleBuyDupeShopItem(item.cost, item.name)}
+                        className="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 disabled:bg-slate-800 disabled:text-slate-600 text-stone-950 font-black text-[10px] rounded active:scale-95 transition-all"
+                      >
+                        {item.cost} P 교환
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsDupeMileageShopOpen(false)}
+                    className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-lg"
+                  >
+                    {language === 'ko' ? '닫기' : 'Close'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ID 513: 신규 미보유 카드 획득 알림 토스트 배너 */}
+          {newCardBonusNotice && (
+            <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[300] bg-amber-500 border border-amber-600 text-stone-950 px-4 py-2 text-xs font-black shadow-2xl animate-bounce rounded-lg font-mono flex items-center gap-2">
+              <span>✨ [NEW!]</span>
+              <span>{newCardBonusNotice.cardName} 신규 도감 등록! (+{newCardBonusNotice.bonusSns} SNS 보너스)</span>
+            </div>
+          )}
           </div>
         </div>
 
