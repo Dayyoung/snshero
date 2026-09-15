@@ -29,6 +29,8 @@ export const DailyMissions: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState('');
   const [notificationMsg, setNotificationMsg] = useState<string | null>(null);
   const [floatingReward, setFloatingReward] = useState<{ id: number; sns: number; xp: number } | null>(null);
+  // ID 445: 퀘스트 완료 보상 수령 직후 덱 강화 추천 컨텍스트 액션 칩
+  const [showUpgradeChip, setShowUpgradeChip] = useState(false);
 
   // Tab & History Modal State
   const [activeTab, setActiveTab] = useState<'active' | 'history'>('active');
@@ -123,6 +125,7 @@ export const DailyMissions: React.FC = () => {
         ? `🎁 [${title}] 보상이 지급되었습니다! (+${result.sns} SNS, +${result.xp} XP)`
         : `🎁 [${title}] Reward claimed! (+${result.sns} SNS, +${result.xp} XP)`;
       setNotificationMsg(msg);
+      setShowUpgradeChip(true);
     }
     setTimeout(() => setClaimingId(null), 500);
   }, [claimingId, addSns, addCompanionXp, language, refreshHistory]);
@@ -142,6 +145,7 @@ export const DailyMissions: React.FC = () => {
         ? `🎉 완료된 ${result.count}개 미션 일괄 수령 완료! (+${result.totalSns} SNS, +${result.totalXp} XP)`
         : `🎉 Claimed all ${result.count} missions! (+${result.totalSns} SNS, +${result.totalXp} XP)`;
       setNotificationMsg(msg);
+      setShowUpgradeChip(true);
     }
     setTimeout(() => setClaimingId(null), 500);
   }, [claimingId, addSns, addCompanionXp, language, refreshHistory]);
@@ -508,6 +512,41 @@ export const DailyMissions: React.FC = () => {
                           >
                             [✕]
                           </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    {/* ID 445: 덱 강화 숏컷 컨텍스트 칩 */}
+                    <AnimatePresence>
+                      {showUpgradeChip && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          className="mb-3 p-2 bg-amber-500/10 border border-amber-500/40 rounded-none flex items-center justify-between gap-2 font-mono text-xs select-none"
+                        >
+                          <div className="flex items-center gap-1.5 text-amber-900 dark:text-amber-300 font-bold">
+                            <Zap size={14} className="text-amber-500 fill-amber-500 shrink-0" />
+                            <span className="text-[11px] truncate">{language === 'ko' ? '새로 획득한 재화로 덱을 강화해보세요!' : 'Power up your deck with rewards!'}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <button
+                              onClick={() => {
+                                sessionStorage.setItem('hero_highlight_upgradeable', 'true');
+                                window.dispatchEvent(new CustomEvent('snshero_navigate_view', { detail: 'mydeck' }));
+                                setShowUpgradeChip(false);
+                              }}
+                              className="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-[11px] cursor-pointer active:scale-95 transition-all shadow-xs"
+                            >
+                              <span>{language === 'ko' ? '[⚡ 지금 덱 강화 →]' : '[⚡ Upgrade Deck Now →]'}</span>
+                            </button>
+                            <button
+                              onClick={() => setShowUpgradeChip(false)}
+                              className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 px-1 text-xs"
+                            >
+                              [x]
+                            </button>
+                          </div>
                         </motion.div>
                       )}
                     </AnimatePresence>

@@ -134,6 +134,19 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
   const [helpStep, setHelpStep] = useState(0);
 
+  // ID 480: 시그니처 카드 핀 & 시즌 명예 배지 쇼케이스
+  const [pinnedSignatureCardId, setPinnedSignatureCardId] = useState<number>(() => {
+    return Number(localStorage.getItem(`hero_pinned_signature_card_${currentSeason}`)) || firstOwnedCardId;
+  });
+  const [pinnedHonorBadges, setPinnedHonorBadges] = useState<string[]>(() => {
+    try {
+      const raw = localStorage.getItem(`hero_pinned_honor_badges_${currentSeason}`);
+      return raw ? JSON.parse(raw) : [DEFAULT_PROFILE_BADGE_KEY];
+    } catch {
+      return [DEFAULT_PROFILE_BADGE_KEY];
+    }
+  });
+
   const selectedEmoticon = getProfileEmoticonByKey(selectedEmoticonKey);
   const selectedBadge = getProfileBadgeByKey(selectedBadgeKey);
   const selectedTitle = getProfileTitleByKey(selectedTitleKey);
@@ -167,6 +180,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       localStorage.setItem(PROFILE_EMOTICON_STORAGE_KEY, selectedEmoticonKey);
       localStorage.setItem(PROFILE_BADGE_STORAGE_KEY, selectedBadgeKey);
       localStorage.setItem(PROFILE_TITLE_STORAGE_KEY, selectedTitleKey);
+      localStorage.setItem(`hero_pinned_signature_card_${currentSeason}`, String(pinnedSignatureCardId));
+      localStorage.setItem(`hero_pinned_honor_badges_${currentSeason}`, JSON.stringify(pinnedHonorBadges));
 
       onUpdateUser(trimmedNickname, selectedAvatar, selectedEmoticonKey, selectedBadgeKey, selectedTitleKey);
 
@@ -237,6 +252,54 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   {nickname.trim() || user?.displayName || 'GUEST'}
                 </h4>
                 <span className="text-xl">{selectedEmoticon.symbol}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* ID 480: 시그니처 카드 핀 & 시즌 명예 배지 쇼케이스 */}
+          <div className="border-t border-indigo-100/80 pt-3.5 mt-2 font-mono text-xs">
+            <div className="flex items-center justify-between mb-2">
+              <span className="font-bold text-[11px] uppercase tracking-wider text-slate-700">
+                {language === 'ko' ? '📌 대표 시그니처 카드 & 시즌 명예 배지' : '📌 Signature Card Pin & Honor Badges'}
+              </span>
+              <span className="text-[10px] text-indigo-600 font-semibold">
+                {language === 'ko' ? '방문자에게 공개' : 'Public to Visitors'}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
+              {/* 시그니처 카드 핀 */}
+              <div className="p-2.5 bg-white border border-slate-200 rounded-lg flex items-center gap-2.5 sm:col-span-2 shadow-2xs">
+                <div className="w-12 h-12 shrink-0 overflow-hidden border border-amber-400 bg-amber-50 rounded-md relative flex items-center justify-center">
+                  <div className="w-full h-full scale-[1.3]" style={getCardAvatarStyle(pinnedSignatureCardId)} />
+                  <span className="absolute top-0 right-0 bg-amber-500 text-stone-950 font-black text-[8px] px-0.5">PIN</span>
+                </div>
+                <div className="min-w-0">
+                  <div className="text-[9px] uppercase font-bold text-amber-600">Signature Card</div>
+                  <div className="font-bold text-xs truncate text-slate-800">
+                    {CARD_DATABASE[pinnedSignatureCardId]?.name || `Hero #${pinnedSignatureCardId}`}
+                  </div>
+                  <div className="text-[10px] text-slate-400">
+                    ATK: {CARD_DATABASE[pinnedSignatureCardId]?.power || 8} ★3 Awakened
+                  </div>
+                </div>
+              </div>
+
+              {/* 시즌 명예 배지 3슬롯 */}
+              <div className="p-2.5 bg-white border border-slate-200 rounded-lg flex items-center justify-around sm:col-span-2 shadow-2xs">
+                {pinnedHonorBadges.slice(0, 3).map((badgeKey, idx) => {
+                  const badge = getProfileBadgeByKey(badgeKey);
+                  return (
+                    <div key={idx} className="text-center group relative">
+                      <div className="w-9 h-9 mx-auto rounded-full bg-indigo-50 border border-indigo-200 flex items-center justify-center text-sm shadow-xs">
+                        {badge?.symbol || '🎖️'}
+                      </div>
+                      <div className="text-[9px] font-bold text-slate-600 truncate max-w-[60px] mt-1">
+                        {badge?.name || `Badge #${idx + 1}`}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>

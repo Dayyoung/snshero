@@ -16,6 +16,7 @@ import { useGameSettings } from '../contexts/GameSettingsContext';
 import { joinMatchmaking, leaveMatchmaking, type MatchmakingState } from '../lib/pvpMatchmaking';
 import { getProfileBadgeByKey, getProfileEmoticonByKey, getProfileTitleByKey } from '../content/profileEmoticons';
 import { MatchmakingQueueModal } from '../components/MatchmakingQueueModal';
+import { LeaderboardDeckInspectModal } from '../components/LeaderboardDeckInspectModal';
 
 interface RankingUser {
   id: string;
@@ -161,6 +162,16 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
   const [showLoginRequiredModal, setShowLoginRequiredModal] = useState(false);
   const [myIp, setMyIp] = useState<string>('');
   
+  // ID 460: 랭커 덱 인스펙트 상태
+  const [inspectedRanker, setInspectedRanker] = useState<{
+    id: string;
+    name: string;
+    rank: number;
+    totalPower: number;
+    winRate: number;
+    deck?: any[];
+  } | null>(null);
+
   // Battle history state
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [localHistory, setLocalHistory] = useState<any[]>([]);
@@ -1221,8 +1232,19 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: idx * 0.05 }}
                 key={rankUser.id}
+                onClick={() => {
+                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                  setInspectedRanker({
+                    id: rankUser.id,
+                    name: rankUser.name,
+                    rank: idx + 1,
+                    totalPower: rankUser.totalPower,
+                    winRate: rankUser.winRate,
+                    deck: rankUser.deck,
+                  });
+                }}
                 className={cn(
-                  "flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 transition-all p-3.5 rounded-lg border font-sans",
+                  "flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 transition-all p-3.5 rounded-lg border font-sans cursor-pointer active:scale-[0.99]",
                   isMe 
                     ? (theme === 'dark' || theme === 'metal'
                         ? "bg-blue-950/70 border-blue-500/80 ring-1 ring-blue-400/30 text-white" 
@@ -2073,6 +2095,20 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
         onClose={() => setShowHistoryModal(false)}
         language={language}
       />
+
+      {/* ID 460: Leaderboard Ranker Deck Inspect Modal */}
+      {inspectedRanker && (
+        <LeaderboardDeckInspectModal
+          isOpen={!!inspectedRanker}
+          onClose={() => setInspectedRanker(null)}
+          rankerName={inspectedRanker.name}
+          rank={inspectedRanker.rank}
+          totalPower={inspectedRanker.totalPower}
+          winRate={inspectedRanker.winRate}
+          deck={inspectedRanker.deck}
+          language={language}
+        />
+      )}
 
     </div>
   );

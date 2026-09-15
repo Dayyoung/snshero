@@ -884,6 +884,40 @@ html.low-spec-mode .animate-shimmer {
   backface-visibility: visible !important;
 }
 
+/* ID 430: 저사양 기기 backdrop-filter 블러 대신 플랫 불투명 다크 배경 대체 */
+.low-spec-backdrop {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background-color: rgba(18, 16, 16, 0.95) !important;
+}
+
+/* ID 435: 저사양 기기 3x3 보드 동적 그림자 제거 및 정적 평면화 */
+.low-spec-no-shadow {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+/* ID 449, 489: 대전 카드 드래그 레이아웃 격리 및 Reflow 방지 */
+.battle-drag-containment {
+  contain: layout paint style !important;
+  content-visibility: auto;
+}
+
+/* ID 454: 로비/상점 앰비언트 그라디언트 하드웨어 가속 CSS 고정 레이어 */
+.ambient-gradient-fixed {
+  will-change: transform;
+  transform: translateZ(0);
+  pointer-events: none;
+}
+
+/* ID 479: 카드 3D 틸트 및 시차 효과 저사양 기기 비활성화 */
+.no-3d-tilt {
+  transform: none !important;
+  perspective: none !important;
+  transform-style: flat !important;
+}
+
 
 
 

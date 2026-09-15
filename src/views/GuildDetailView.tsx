@@ -7,6 +7,7 @@ import { getGuild, donateToGuild, getGuildBuff, getRequiredExpForNextLevel, join
 import { AttackResult } from "../lib/guildHelper";
 import { GuildRaidPanel } from "../components/GuildRaidPanel";
 import { FriendBattlePanel } from "../components/FriendBattlePanel";
+import { GuildContributionTrack } from "../components/GuildContributionTrack";
 import { motion, AnimatePresence } from "motion/react";
 
 interface GuildDetailViewProps {
@@ -287,6 +288,18 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
           />
         ) : (
           <>
+        {/* ID 455: 주간 길드 기여도 마일스톤 트랙 */}
+        {!isOpponentMode && userGuild?.id === guild.id && (
+          <div className="mb-6">
+            <GuildContributionTrack
+              language={language}
+              onClaimReward={(_tier, type, amt) => {
+                if (type === 'sns') onUpdateSns(sns + amt);
+              }}
+            />
+          </div>
+        )}
+
         {/* Battle Effects Card */}
         <div className="bg-white border border-slate-200/80 rounded-3xl p-5 mb-6 shadow-xl">
           <div className="flex items-center justify-between">

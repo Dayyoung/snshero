@@ -278,6 +278,13 @@ import { BattleMinimalTopBar } from '../components/BattleMinimalTopBar';
 import { OpponentThreatHUD } from '../components/OpponentThreatHUD';
 import { BattleBossHUD } from '../components/BattleBossHUD';
 import { BattleFXEngine } from '../lib/BattleFXEngine';
+import { useAudioLatencyRecycle } from '../hooks/useAudioLatencyRecycle';
+import { useBattleNavigationGuard } from '../hooks/useBattleNavigationGuard';
+import { useVramDisposer } from '../hooks/useVramDisposer';
+import { CustomMatchModal } from '../components/CustomMatchModal';
+import { SportsmanshipModal } from '../components/SportsmanshipModal';
+import { FriendRivalryModal } from '../components/FriendRivalryModal';
+import { SpectatorModal } from '../components/SpectatorModal';
 
 
 
@@ -733,6 +740,97 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       window.dispatchEvent(new Event('snshero-help-popup-close'));
     }
   }, [showHelpPopup]);
+
+  // ID 424, 459: 오디오 지연 누적 감지/리사이클 & 3채널 풀링
+  useAudioLatencyRecycle();
+
+  // ID 469: 씬 전환 VRAM 명시적 GC
+  useVramDisposer();
+
+  // ID 450, 470, 485, 490 모달 상태
+  const [showCustomMatchModal, setShowCustomMatchModal] = useState(false);
+  const [showFriendRivalryModal, setShowFriendRivalryModal] = useState(false);
+  const [showSpectatorModal, setShowSpectatorModal] = useState(false);
+  const [showSportsmanshipModal, setShowSportsmanshipModal] = useState(false);
+  const [rivalryFriendInfo, setRivalryFriendInfo] = useState<{ uid: string; name: string }>({ uid: 'bot-rival', name: 'Friend_Hero' });
+
+  // ID 429, 464: 화면 회전 및 리사이즈 150ms 디바운싱
+  useEffect(() => {
+    let resizeTimer: NodeJS.Timeout | null = null;
+    const handleResizeDebounced = () => {
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        window.dispatchEvent(new Event('snshero_viewport_debounced_resize'));
+      }, 150);
+    };
+
+    window.addEventListener('resize', handleResizeDebounced, { passive: true });
+    window.addEventListener('orientationchange', handleResizeDebounced, { passive: true });
+    return () => {
+      if (resizeTimer) clearTimeout(resizeTimer);
+      window.removeEventListener('resize', handleResizeDebounced);
+      window.removeEventListener('orientationchange', handleResizeDebounced);
+    };
+  }, []);
+
+  // ID 434: 백그라운드 복귀 시 RAF 루프 재동기화
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        window.dispatchEvent(new Event('snshero_resync_render_loop'));
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []);
+
+  // 전역 모달 오픈 리스너
+  useEffect(() => {
+    const handleOpenCustomMatch = () => setShowCustomMatchModal(true);
+    const handleOpenFriendRivalry = (e: Event) => {
+      const cust = e as CustomEvent<{ uid: string; name: string }>;
+      if (cust.detail) setRivalryFriendInfo(cust.detail);
+      setShowFriendRivalryModal(true);
+    };
+    const handleOpenSpectator = () => setShowSpectatorModal(true);
+
+    window.addEventListener('snshero_open_custom_match', handleOpenCustomMatch);
+    window.addEventListener('snshero_open_friend_rivalry', handleOpenFriendRivalry);
+    window.addEventListener('snshero_open_spectator', handleOpenSpectator);
+
+    return () => {
+      window.removeEventListener('snshero_open_custom_match', handleOpenCustomMatch);
+      window.removeEventListener('snshero_open_friend_rivalry', handleOpenFriendRivalry);
+      window.removeEventListener('snshero_open_spectator', handleOpenSpectator);
+    };
+  }, []);
+
+  // ID 465: 경기 종료 후 1-탭 리플레이 링크 복사
+  const [replayCopied, setReplayCopied] = useState(false);
+  const handleCopyReplayLink = useCallback(() => {
+    const replayId = `rep_${Date.now().toString(36)}`;
+    const url = typeof window !== 'undefined' ? `${window.location.origin}/#replay=${replayId}` : '';
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(url);
+      setReplayCopied(true);
+      setTimeout(() => setReplayCopied(false), 2000);
+    }
+  }, []);
+
+  // ID 439: 대전 진행 중 뒤로가기 제스처 시 몰수패 경고 모달 가드
+  useEffect(() => {
+    if (gameState !== 'playing') return;
+
+    window.history.pushState({ inBattle: true }, '');
+
+    const handleBattlePopState = () => {
+      window.history.pushState({ inBattle: true }, '');
+      setShowForfeitConfirm(true);
+    };
+
+    window.addEventListener('popstate', handleBattlePopState);
+    return () => window.removeEventListener('popstate', handleBattlePopState);
+  }, [gameState]);
 
   const [helpSlideIndex, setHelpSlideIndex] = useState(0);
 
@@ -17845,6 +17943,24 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 onOpenDetailedSummary={() => setShowPostBattleSummaryModal(true)}
               />
 
+              {/* ID 465 & ID 490: 1-탭 리플레이 링크 복사 및 상대방 매너 칭찬 액션 바 */}
+              <div className="flex gap-2 font-mono text-xs select-none">
+                <button
+                  onClick={handleCopyReplayLink}
+                  className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 rounded-xl font-bold flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-xs"
+                >
+                  <Share2 size={13} className="text-amber-400" />
+                  <span>{replayCopied ? (language === 'ko' ? '[✓ 리플레이 링크 복사됨]' : '[✓ Replay Copied]') : (language === 'ko' ? '[📋 리플레이 링크 복사]' : '[📋 Copy Replay Link]')}</span>
+                </button>
+                <button
+                  onClick={() => setShowSportsmanshipModal(true)}
+                  className="flex-1 py-2.5 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-400 rounded-xl font-bold flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-xs"
+                >
+                  <Smile size={14} className="text-amber-400" />
+                  <span>{language === 'ko' ? '[👍 상대방 매너 칭찬]' : '[👍 Kudos to Rival]'}</span>
+                </button>
+              </div>
+
               {/* Match Analysis Section */}
               {battleType !== 'matgo' && (
                 <div className="bg-slate-950/60 border border-slate-800 rounded-2xl p-4 shadow-sm text-left space-y-3">
@@ -18702,6 +18818,53 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         capturedCount={mvpCapturedCount}
         language={language}
         onClose={() => setIsMvpModalOpen(false)}
+      />
+
+      {/* ID 450: Custom Match Room Modal */}
+      <CustomMatchModal
+        isOpen={showCustomMatchModal}
+        language={language}
+        onClose={() => setShowCustomMatchModal(false)}
+        onStartCustomMatch={(roomCode) => {
+          setShowCustomMatchModal(false);
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        }}
+      />
+
+      {/* ID 490: Sportsmanship Kudos Modal */}
+      <SportsmanshipModal
+        isOpen={showSportsmanshipModal}
+        language={language}
+        opponentName={lastOpponent?.name || (language === 'ko' ? '상대 사령관' : 'Opponent Commander')}
+        onAwardKarma={() => {
+          updateSns?.(10);
+        }}
+        onClose={() => setShowSportsmanshipModal(false)}
+      />
+
+      {/* ID 485: Friend Rivalry Record Modal */}
+      <FriendRivalryModal
+        isOpen={showFriendRivalryModal}
+        language={language}
+        friendName={rivalryFriendInfo.name}
+        friendUid={rivalryFriendInfo.uid}
+        onChallenge={() => {
+          setShowFriendRivalryModal(false);
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        }}
+        onClose={() => setShowFriendRivalryModal(false)}
+      />
+
+      {/* ID 470: Live Spectator Modal */}
+      <SpectatorModal
+        isOpen={showSpectatorModal}
+        language={language}
+        friendName={rivalryFriendInfo.name}
+        onEnterSpectator={() => {
+          setShowSpectatorModal(false);
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        }}
+        onClose={() => setShowSpectatorModal(false)}
       />
     </div>
   );

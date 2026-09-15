@@ -104,6 +104,22 @@ const TOTAL_EPISODES = 40;
 const pad2 = (n: number) => String(n).padStart(2, '0');
 const pad3 = (n: number) => String(n).padStart(3, '0');
 
+// ID 484: WebP 및 img.decode() 비동기 디코딩 가속 캐시
+const decodedImageCache = new Set<string>();
+export const preDecodeImage = async (url: string): Promise<void> => {
+  if (typeof window === 'undefined' || !url || decodedImageCache.has(url)) return;
+  try {
+    const img = new Image();
+    img.src = url;
+    if (typeof img.decode === 'function') {
+      await img.decode();
+      decodedImageCache.add(url);
+    }
+  } catch {
+    // decode fallback
+  }
+};
+
 /**
  * Shortens a scene narration into a crisp single sentence that can be read within 8 seconds (~35-45 Korean chars / ~14-16 English words).
  */
@@ -1475,6 +1491,12 @@ export const NovelView: React.FC<NovelViewProps> = ({
                               loading="lazy"
                               decoding="async"
                               referrerPolicy="no-referrer"
+                              onLoad={(e) => {
+                                const target = e.currentTarget;
+                                if (typeof target.decode === 'function') {
+                                  target.decode().catch(() => {});
+                                }
+                              }}
                               onError={() => {
                                 setSceneImgAttempts(prev => ({
                                   ...prev,
