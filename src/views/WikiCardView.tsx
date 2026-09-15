@@ -56,6 +56,57 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
   const [isWatchFaceOpen, setIsWatchFaceOpen] = useState(false);
   const [watchFaceInitialCard, setWatchFaceInitialCard] = useState<DatabaseCard | null>(null);
 
+  // ID 528: 카드 수집 도감 테마 세트 완성 트랙
+  const [claimedSets, setClaimedSets] = useState<string[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem('hero_claimed_theme_sets_v1') || '[]');
+    } catch {
+      return [];
+    }
+  });
+
+  const themeSets = React.useMemo(() => {
+    const sets = [
+      { id: 'water', nameKo: '수류 수호자', nameEn: 'Water Guardians', range: [1, 10], reward: 500, icon: '💧' },
+      { id: 'fire', nameKo: '화염 파괴자', nameEn: 'Fire Destroyers', range: [11, 20], reward: 500, icon: '🔥' },
+      { id: 'wind', nameKo: '질풍 추적자', nameEn: 'Wind Trackers', range: [21, 30], reward: 500, icon: '💨' },
+      { id: 'earth', nameKo: '대지 방패병', nameEn: 'Earth Wardens', range: [31, 40], reward: 500, icon: '🌿' },
+      { id: 'human', nameKo: '인류 연합', nameEn: 'Human Alliance', range: [41, 50], reward: 500, icon: '⚔️' },
+      { id: 'undead', nameKo: '언데드 군단', nameEn: 'Undead Legion', range: [51, 60], reward: 500, icon: '💀' },
+      { id: 'elf', nameKo: '엘프 엘더', nameEn: 'Elf Elders', range: [61, 70], reward: 500, icon: '🏹' },
+      { id: 'dwarf', nameKo: '드워프 장인', nameEn: 'Dwarf Craftsmen', range: [71, 80], reward: 500, icon: '🔨' },
+      { id: 'monster', nameKo: '마수 포식자', nameEn: 'Monster Beasts', range: [81, 90], reward: 500, icon: '🐾' },
+      { id: 'robot', nameKo: '메카닉 군세', nameEn: 'Mechanic Forces', range: [91, 100], reward: 500, icon: '🤖' },
+      { id: 'dragon', nameKo: '드래곤 로드', nameEn: 'Dragon Lords', range: [101, 110], reward: 500, icon: '🐉' },
+    ];
+
+    return sets.map(s => {
+      let count = 0;
+      for (let i = s.range[0]; i <= s.range[1]; i++) {
+        if (inventory[i] && inventory[i].quantity > 0) {
+          count++;
+        }
+      }
+      return {
+        ...s,
+        collected: count,
+        total: s.range[1] - s.range[0] + 1,
+        isCompleted: count >= (s.range[1] - s.range[0] + 1),
+      };
+    });
+  }, [inventory]);
+
+  const handleClaimThemeSet = (setId: string, reward: number) => {
+    if (claimedSets.includes(setId)) return;
+    const next = [...claimedSets, setId];
+    setClaimedSets(next);
+    localStorage.setItem('hero_claimed_theme_sets_v1', JSON.stringify(next));
+
+    const currentSns = parseInt(localStorage.getItem('hero_sns') || '0', 10);
+    localStorage.setItem('hero_sns', String(currentSns + reward));
+    window.dispatchEvent(new Event('snshero_sns_updated'));
+  };
+
   const handleOpenWatchFace = (card?: DatabaseCard | null) => {
     setWatchFaceInitialCard(card || selectedCard || CARD_DATABASE[1] || null);
     setIsWatchFaceOpen(true);
@@ -529,6 +580,67 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
             </div>
             <div className="p-1.5 rounded-lg bg-slate-100 border border-slate-300 text-slate-800 text-center">
               🌑 {language === 'ko' ? '암' : 'Dark'}: {elementStats.DARK}
+            </div>
+          </div>
+
+          {/* ID 528: 카드 수집 도감 테마 세트 완성 트랙 */}
+          <div className="border-t border-slate-200 pt-3 font-mono space-y-2">
+            <div className="flex items-center justify-between text-xs font-bold text-slate-800">
+              <span className="flex items-center gap-1.5">
+                <span>🏆</span>
+                <span>{language === 'ko' ? '테마 세트 수집 보상 트랙 (세트당 500 SNS)' : 'Theme Set Completion Track (500 SNS/Set)'}</span>
+              </span>
+              <span className="text-[10px] text-slate-500">
+                {claimedSets.length} / {themeSets.length} {language === 'ko' ? '수령 완료' : 'Claimed'}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 text-[10px]">
+              {themeSets.map(set => {
+                const isClaimed = claimedSets.includes(set.id);
+                const canClaim = set.isCompleted && !isClaimed;
+                return (
+                  <div
+                    key={set.id}
+                    className={cn(
+                      "p-2 border flex flex-col justify-between transition-all",
+                      isClaimed
+                        ? "bg-slate-50 border-slate-200 opacity-70"
+                        : canClaim
+                          ? "bg-amber-50/90 border-amber-400 shadow-xs"
+                          : "bg-white border-slate-200"
+                    )}
+                  >
+                    <div className="flex items-center justify-between font-bold mb-1">
+                      <span className="truncate">{set.icon} {language === 'ko' ? set.nameKo : set.nameEn}</span>
+                      <span className={cn(
+                        "text-[9px] px-1",
+                        set.isCompleted ? "text-emerald-600 font-black" : "text-slate-500"
+                      )}>
+                        [{set.collected}/{set.total}]
+                      </span>
+                    </div>
+
+                    {isClaimed ? (
+                      <span className="text-[9px] text-emerald-600 font-bold text-center">
+                        ✅ {language === 'ko' ? '수령 완료' : 'Claimed'}
+                      </span>
+                    ) : canClaim ? (
+                      <button
+                        type="button"
+                        onClick={() => handleClaimThemeSet(set.id, set.reward)}
+                        className="w-full py-0.5 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-[9px] rounded-xs cursor-pointer active:scale-95 animate-pulse"
+                      >
+                        [🎁 500 SNS 수령]
+                      </button>
+                    ) : (
+                      <span className="text-[9px] text-slate-400 text-center">
+                        {set.total - set.collected}{language === 'ko' ? '장 부족' : ' more'}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

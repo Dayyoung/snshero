@@ -51,6 +51,39 @@ export const CardCombineModal: React.FC<CardCombineModalProps> = ({
   const [successCardId, setSuccessCardId] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // ID 508: 만렙 달성 스킬/카드 초과 재료 범용 강화 가루 1:1.5 자동 변환 토글
+  const [autoConvertDust, setAutoConvertDust] = useState<boolean>(() => {
+    return localStorage.getItem('hero_auto_convert_max_dust') === 'true';
+  });
+
+  // ID 498: SSR 또는 Lv 10+ 카드 분해/합성 시 2단계 안전 가드
+  const [guardModal, setGuardModal] = useState<{
+    isOpen: boolean;
+    cardId: number | null;
+    inputWord: string;
+    checked: boolean;
+  }>({
+    isOpen: false,
+    cardId: null,
+    inputWord: '',
+    checked: false,
+  });
+
+  // ID 593: 요일별 속성 정수 분해/합성 +25% 부스트 이벤트 배너
+  const todayElementBoost = useMemo(() => {
+    const day = new Date().getDay();
+    const boosts = [
+      { element: '신성/빛', icon: '✨', nameEn: 'Holy', boost: 25 },
+      { element: '암흑', icon: '🌑', nameEn: 'Dark', boost: 25 },
+      { element: '화염', icon: '🔥', nameEn: 'Fire', boost: 25 },
+      { element: '수류', icon: '💧', nameEn: 'Water', boost: 25 },
+      { element: '바람', icon: '💨', nameEn: 'Wind', boost: 25 },
+      { element: '대지', icon: '🌿', nameEn: 'Earth', boost: 25 },
+      { element: '만능', icon: '⭐', nameEn: 'All Elements', boost: 25 },
+    ];
+    return boosts[day];
+  }, []);
+
   // Available user cards list based on inventory quantities (excluding cards already inside the cube)
   const availableInventoryCards = useMemo(() => {
     // Count occurrences of card IDs currently placed inside the cube
@@ -160,6 +193,18 @@ export const CardCombineModal: React.FC<CardCombineModalProps> = ({
 
     const sourceCard = CARD_DATABASE[cardId1];
     if (!sourceCard) return;
+
+    // ID 498: SSR 또는 Lv 8+ 고가치 카드 소비 시 'DISASSEMBLE' 2단계 안전 가드
+    const isHighValue = (sourceCard.level && sourceCard.level >= 8) || (sourceCard.power && sourceCard.power >= 2800);
+    if (isHighValue && (!guardModal.checked || guardModal.inputWord.trim().toUpperCase() !== 'DISASSEMBLE')) {
+      setGuardModal({
+        isOpen: true,
+        cardId: cardId1,
+        inputWord: '',
+        checked: false,
+      });
+      return;
+    }
 
     // Find upper card: same element/race (category/type), but higher level/index or power.
     // In CARD_DATABASE:
@@ -278,7 +323,39 @@ export const CardCombineModal: React.FC<CardCombineModalProps> = ({
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          <div className="flex-1 overflow-y-auto p-6 space-y-4">
+            {/* ID 593: 요일별 속성 정수 분해/합성 +25% 부스트 이벤트 배너 */}
+            <div className="bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 flex items-center justify-between font-mono text-[11px] text-amber-800">
+              <span className="font-bold">
+                [{todayElementBoost.icon} {todayElementBoost.element} (+{todayElementBoost.boost}%) {language === 'ko' ? '오늘의 속성 합성 부스트!' : 'Daily Element Boost Active!'}]
+              </span>
+              <span className="text-[10px] text-amber-700 bg-amber-200/50 px-1 border border-amber-400">
+                +25% EXP
+              </span>
+            </div>
+
+            {/* ID 508: 만렙 달성 스킬/카드 초과 재료 범용 강화 가루 1:1.5 자동 변환 토글 */}
+            <div className="flex items-center justify-between bg-slate-50 border border-slate-200 px-3 py-1.5 font-mono text-xs">
+              <span className="text-slate-700 font-bold">
+                ⚙️ {language === 'ko' ? '만렙 초과 재료 가루 자동 변환 (1:1.5)' : 'Auto-Convert Max Material to Dust (1:1.5)'}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  const nextVal = !autoConvertDust;
+                  setAutoConvertDust(nextVal);
+                  localStorage.setItem('hero_auto_convert_max_dust', String(nextVal));
+                }}
+                className={`px-2 py-0.5 text-[10px] font-black border cursor-pointer ${
+                  autoConvertDust
+                    ? 'bg-emerald-600 border-emerald-700 text-white'
+                    : 'bg-slate-200 border-slate-300 text-slate-600'
+                }`}
+              >
+                {autoConvertDust ? '[ON]' : '[OFF]'}
+              </button>
+            </div>
+
             {/* Top Description */}
             <div className="bg-indigo-50/50 border border-indigo-100 p-4 rounded-2xl flex items-start gap-3">
               <AlertCircle className="text-indigo-600 shrink-0 mt-0.5" size={16} />
@@ -462,6 +539,67 @@ export const CardCombineModal: React.FC<CardCombineModalProps> = ({
             </button>
           </div>
         </motion.div>
+
+        {/* ID 498: SSR / Lv 8+ 고가치 카드 분해/합성 2단계 안전 가드 팝업 */}
+        {guardModal.isOpen && (
+          <div className="fixed inset-0 z-[10005] flex items-center justify-center bg-black/75 p-4">
+            <div className="bg-[#1a1717] border border-rose-500 text-white p-5 max-w-sm w-full font-mono space-y-4 shadow-2xl">
+              <div className="text-rose-400 font-bold text-xs uppercase flex items-center gap-1.5 border-b border-rose-900/60 pb-2">
+                ⚠️ [HIGH-VALUE CARD SAFEGUARD]
+              </div>
+              <p className="text-[11px] text-slate-300 leading-relaxed">
+                {language === 'ko'
+                  ? '이 카드는 고가치(SSR급 또는 고강화) 카드입니다. 재료로 소모되면 복구할 수 없습니다. 계속하려면 아래 체크박스를 누르고 "DISASSEMBLE"을 입력하세요.'
+                  : 'This is a high-value card. Consuming it as material is irreversible. To proceed, check the box and type "DISASSEMBLE" below.'}
+              </p>
+
+              <label className="flex items-center gap-2 text-xs text-amber-300 font-bold cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={guardModal.checked}
+                  onChange={(e) => setGuardModal(prev => ({ ...prev, checked: e.target.checked }))}
+                  className="rounded-none accent-rose-500"
+                />
+                <span>{language === 'ko' ? '영구 소모 및 손실에 동의합니다' : 'I acknowledge irreversible loss'}</span>
+              </label>
+
+              <div className="space-y-1">
+                <div className="text-[10px] text-slate-400">
+                  {language === 'ko' ? '확인 문구 입력: "DISASSEMBLE"' : 'Type "DISASSEMBLE" to confirm:'}
+                </div>
+                <input
+                  type="text"
+                  value={guardModal.inputWord}
+                  onChange={(e) => setGuardModal(prev => ({ ...prev, inputWord: e.target.value }))}
+                  placeholder="DISASSEMBLE"
+                  className="w-full bg-black border border-slate-700 px-3 py-1.5 text-xs text-white focus:border-rose-500 outline-none uppercase font-bold"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setGuardModal({ isOpen: false, cardId: null, inputWord: '', checked: false })}
+                  className="py-1.5 border border-slate-700 text-slate-400 text-xs font-bold hover:bg-white/5"
+                >
+                  [{language === 'ko' ? '취소' : 'Cancel'}]
+                </button>
+                <button
+                  type="button"
+                  disabled={!guardModal.checked || guardModal.inputWord.trim().toUpperCase() !== 'DISASSEMBLE'}
+                  onClick={() => {
+                    setGuardModal(prev => ({ ...prev, isOpen: false }));
+                    // 가드 승인 후 다시 진행
+                    handleCombine();
+                  }}
+                  className="py-1.5 bg-rose-600 disabled:bg-slate-800 disabled:text-slate-600 text-white text-xs font-black hover:bg-rose-500 cursor-pointer"
+                >
+                  [{language === 'ko' ? '소비 확정' : 'Confirm'}]
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </AnimatePresence>
   );

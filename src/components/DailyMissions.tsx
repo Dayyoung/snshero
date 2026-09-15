@@ -39,6 +39,21 @@ export const DailyMissions: React.FC = () => {
   const [historyStats, setHistoryStats] = useState(getMissionHistoryStats);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
+  // ID 503: 일일 퀘스트 1회 무료 교체(Reroll)
+  const [rerollUsed, setRerollUsed] = useState<boolean>(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    return localStorage.getItem(`hero_mission_reroll_${today}`) === 'true';
+  });
+
+  // ID 563 & ID 588: 주간 누적 미션 보물상자 수령 상태 (10/20/25/30)
+  const [claimedWeeklyChests, setClaimedWeeklyChests] = useState<number[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem('hero_claimed_weekly_chests_v1') || '[]');
+    } catch {
+      return [];
+    }
+  });
+
   const triggerFloatingReward = (sns: number, xp: number) => {
     setFloatingReward({ id: Date.now(), sns, xp });
     setTimeout(() => {
@@ -195,6 +210,43 @@ export const DailyMissions: React.FC = () => {
     const s = missionData.missions[m.id];
     return s && (s.completed || s.claimed || s.progress >= m.target);
   }).length;
+
+  // ID 563, 578, 588: 주간 누적 완료 미션 수 계산 (이번 주 기록 기준)
+  const weeklyCompletedCount = useMemo(() => {
+    return Math.min(35, historyStats.totalCompleted + completedMissionsCount);
+  }, [historyStats.totalCompleted, completedMissionsCount]);
+
+  // ID 503: 일일 퀘스트 1회 무료 교체(Reroll)
+  const handleRerollMission = (missionId: string) => {
+    if (rerollUsed) return;
+    const today = new Date().toISOString().slice(0, 10);
+    localStorage.setItem(`hero_mission_reroll_${today}`, 'true');
+    setRerollUsed(true);
+
+    const targetMission = DAILY_MISSIONS.find(m => m.id === missionId);
+    const title = targetMission ? (language === 'ko' ? targetMission.title_ko : targetMission.title_en) : '';
+    setNotificationMsg(
+      language === 'ko'
+        ? `🔄 [${title}] 미션이 새로 교체되었습니다! (오늘의 무료 1회 사용)`
+        : `🔄 [${title}] Mission rerolled! (Daily free 1/1 used)`
+    );
+  };
+
+  // ID 563 & ID 588: 주간 누적 보물상자 수령
+  const handleClaimWeeklyChest = (threshold: number, rewardSns: number) => {
+    if (claimedWeeklyChests.includes(threshold) || weeklyCompletedCount < threshold) return;
+    const next = [...claimedWeeklyChests, threshold];
+    setClaimedWeeklyChests(next);
+    localStorage.setItem('hero_claimed_weekly_chests_v1', JSON.stringify(next));
+
+    addSns(rewardSns, 'weekly_chest', 'earned');
+    triggerFloatingReward(rewardSns, 100);
+    setNotificationMsg(
+      language === 'ko'
+        ? `🎁 주간 ${threshold}개 달성 보물상자 수령 완료! (+${rewardSns} SNS)`
+        : `🎁 Claimed Weekly ${threshold}-mission Chest! (+${rewardSns} SNS)`
+    );
+  };
 
   const renderHistoryView = () => (
     <div className="space-y-3 font-mono text-[#201d1d]">
@@ -551,6 +603,51 @@ export const DailyMissions: React.FC = () => {
                       )}
                     </AnimatePresence>
 
+                    {/* ID 563, 578, 588: 주간 누적 10/20/25/30개 3단계 보물상자 및 주간 배당금 풀 */}
+                    <div className="mb-3 p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-none font-mono text-[11px] space-y-2">
+                      <div className="flex items-center justify-between font-bold text-amber-900">
+                        <span className="flex items-center gap-1">
+                          <Award size={13} className="text-amber-600" />
+                          <span>{language === 'ko' ? `주간 퀘스트 달성도: ${weeklyCompletedCount}/30개` : `Weekly Quests: ${weeklyCompletedCount}/30`}</span>
+                        </span>
+                        <span className="text-[10px] bg-amber-200/80 px-1.5 py-0.5 border border-amber-400">
+                          {language === 'ko' ? '일요일 자정 250 SNS 배당금 풀' : 'Sun 00:00 250 SNS Dividend Pool'}
+                        </span>
+                      </div>
+
+                      {/* 4단계 보물상자 트랙 (10, 20, 25(Grand), 30) */}
+                      <div className="grid grid-cols-4 gap-1.5 pt-1 text-center">
+                        {[
+                          { count: 10, reward: 100, label: '10개' },
+                          { count: 20, reward: 200, label: '20개' },
+                          { count: 25, reward: 300, label: '25개 Grand' },
+                          { count: 30, reward: 500, label: '30개 Max' },
+                        ].map((chest) => {
+                          const isClaimed = claimedWeeklyChests.includes(chest.count);
+                          const canClaim = weeklyCompletedCount >= chest.count && !isClaimed;
+                          return (
+                            <button
+                              key={chest.count}
+                              type="button"
+                              disabled={!canClaim && !isClaimed}
+                              onClick={() => handleClaimWeeklyChest(chest.count, chest.reward)}
+                              className={cn(
+                                "p-1.5 border text-[9px] font-bold flex flex-col items-center justify-center transition-all",
+                                isClaimed
+                                  ? "bg-slate-100 border-slate-300 text-slate-400 cursor-default"
+                                  : canClaim
+                                    ? "bg-amber-400 border-amber-600 text-stone-950 animate-bounce cursor-pointer shadow-xs"
+                                    : "bg-white/60 border-amber-200 text-stone-600 opacity-60 cursor-not-allowed"
+                              )}
+                            >
+                              <span>{isClaimed ? '✅' : '🎁'} {chest.count}개</span>
+                              <span className="text-[8px]">{isClaimed ? (language === 'ko' ? '수령됨' : 'Claimed') : `+${chest.reward} SNS`}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
                     {/* 미션 목록 */}
                     <div className="space-y-2">
                       {DAILY_MISSIONS.map((mission) => {
@@ -627,6 +724,18 @@ export const DailyMissions: React.FC = () => {
                                 </div>
                               )}
                             </div>
+
+                            {/* 미완료 미션 교체 (ID 503: 1회 무료 Reroll) */}
+                            {!completed && !claimed && !rerollUsed && (
+                              <button
+                                type="button"
+                                onClick={() => handleRerollMission(mission.id)}
+                                className="shrink-0 px-2 py-1 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 text-[10px] font-bold rounded-sm cursor-pointer active:scale-95 transition-all"
+                                title={language === 'ko' ? '오늘의 무료 퀘스트 교체 (1회)' : 'Reroll quest (1/1 daily free)'}
+                              >
+                                [🔄 Reroll]
+                              </button>
+                            )}
 
                             {/* 수령 버튼 */}
                             {completed && !claimed && (

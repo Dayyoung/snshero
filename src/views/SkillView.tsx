@@ -206,6 +206,14 @@ export const SkillView: React.FC<SkillViewProps> = ({
   const isAdmin = isImpersonating;
   const cost = isAdmin ? 0 : getSkillResetCost();
 
+  // ID 553: 월 1회 스킬 트리 무료 초기화권 (100% 환급)
+  const currentMonth = new Date().toISOString().slice(0, 7); // 'YYYY-MM'
+  const isFreeResetAvailable = useMemo(() => {
+    return localStorage.getItem('hero_skill_free_reset_month') !== currentMonth;
+  }, [currentMonth]);
+
+  const effectiveCost = isFreeResetAvailable || isAdmin ? 0 : cost;
+
   // Total skills level summary
   const totalSkillLevels = skills.reduce((acc, s) => acc + (s.level || 0), 0);
   const currentTier = getSkillTier(totalSkillLevels);
@@ -213,6 +221,9 @@ export const SkillView: React.FC<SkillViewProps> = ({
   const handleBack = onBack || (() => onNavigate('mydeck'));
 
   const handleResetConfirm = () => {
+    if (isFreeResetAvailable && !isAdmin) {
+      localStorage.setItem('hero_skill_free_reset_month', currentMonth);
+    }
     onResetSkills();
     setShowResetConfirm(false);
   };
@@ -383,6 +394,11 @@ export const SkillView: React.FC<SkillViewProps> = ({
             >
               <RotateCcw size={14} />
               <span>{language === 'ko' ? '스킬 초기화' : 'RESET'}</span>
+              {isFreeResetAvailable && (
+                <span className="bg-emerald-500 text-stone-950 px-1 py-0.2 rounded text-[9px] font-black">
+                  FREE
+                </span>
+              )}
             </button>
           </div>
         </div>
@@ -624,8 +640,8 @@ export const SkillView: React.FC<SkillViewProps> = ({
 
               <p className="text-sm font-medium leading-relaxed text-slate-600 whitespace-pre-line">
                 {language === 'ko'
-                  ? `정말로 모든 스킬을 초기화하시겠습니까?\n비용: ${cost} SNS\n(투자된 모든 스킬 포인트가 반환됩니다)`
-                  : `Are you sure you want to reset ALL skills?\nCost: ${cost} SNS\n(All invested points will be returned)`}
+                  ? `정말로 모든 스킬을 초기화하시겠습니까?\n${isFreeResetAvailable ? '🎟️ [월간 무료 초기화권 적용: 비용 0 SNS]' : `비용: ${effectiveCost} SNS`}\n\n[100% 스킬 포인트 환급 내역]\n• 반환 스킬 포인트: ${totalSkillLevels} SP (100% 전액 즉시 복구)\n• 초기화 후 원하는 스킬에 자유롭게 다시 재투자할 수 있습니다.`
+                  : `Are you sure you want to reset ALL skills?\n${isFreeResetAvailable ? '🎟️ [Monthly Free Reset Pass: Cost 0 SNS]' : `Cost: ${effectiveCost} SNS`}\n\n[100% Refund Breakdown]\n• Returned Skill Points: ${totalSkillLevels} SP (100% restored)\n• Points can be reallocated freely.`}
               </p>
 
               <div className="flex gap-4 pt-4">

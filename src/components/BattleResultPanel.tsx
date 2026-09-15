@@ -37,6 +37,7 @@ export interface BattleResultPanelProps {
   opponentLevel?: number;
   opponentWinRate?: string;
   opponentMainCardTitle?: string;
+  opponentCards?: CardData[];
   onShareToCommunity?: () => void;
   onOpenDetailedSummary?: () => void;
   onAddFriend?: (uid: string, name: string) => void;
@@ -64,6 +65,7 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
   opponentLevel = 15,
   opponentWinRate = '68.4%',
   opponentMainCardTitle,
+  opponentCards = [],
   onShareToCommunity,
   onOpenDetailedSummary,
   onAddFriend
@@ -73,6 +75,9 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
   const [shared, setShared] = useState(false);
   const [friendRequested, setFriendRequested] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  // ID 595: 상대 덱 복사 확인 팝업 상태
+  const [showCopyDeckModal, setShowCopyDeckModal] = useState(false);
+  const [copySuccessToast, setCopySuccessToast] = useState(false);
 
   const displayOpponentName = opponentName || (isKo ? '라이벌 사령관' : 'Rival Commander');
   const displayOpponentUid = opponentUid || 'rival_' + Math.floor(1000 + Math.random() * 9000);
@@ -101,6 +106,41 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
       onAddFriend(displayOpponentUid, displayOpponentName);
     }
     setFriendRequested(true);
+  };
+
+  // ID 595: 상대 덱 복사 검증 및 분석
+  const userInventory = React.useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem('hero_inventory') || '{}');
+    } catch {
+      return {};
+    }
+  }, []);
+
+  const deckCopyAnalysis = React.useMemo(() => {
+    if (!opponentCards || opponentCards.length === 0) return [];
+    return opponentCards.slice(0, 5).map(c => {
+      const imgIdx = c.imageIndex !== undefined ? c.imageIndex : (Number(c.id) || 1);
+      const isOwned = Boolean(userInventory[imgIdx] && userInventory[imgIdx].quantity > 0);
+      return { card: c, isOwned };
+    });
+  }, [opponentCards, userInventory]);
+
+  const handleConfirmCopyDeck = () => {
+    if (!opponentCards || opponentCards.length === 0) return;
+    try {
+      const newDeck = opponentCards.slice(0, 5).map(c => ({
+        ...c,
+        id: `deck-${c.id}-${Date.now()}`
+      }));
+      localStorage.setItem('hero_deck_player_v1', JSON.stringify(newDeck));
+      window.dispatchEvent(new Event('snshero_deck_updated'));
+      setCopySuccessToast(true);
+      setTimeout(() => setCopySuccessToast(false), 2500);
+    } catch (e) {
+      console.error(e);
+    }
+    setShowCopyDeckModal(false);
   };
 
   const totalExchange = Math.max(1, totalDamageDealt + totalDamageReceived);
@@ -213,6 +253,19 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
             <Eye size={12} className="text-amber-400" />
             <span>{isKo ? '프로필' : 'Inspect'}</span>
           </button>
+
+          {/* ID 595: 상대 덱 복사 버튼 */}
+          {opponentCards.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setShowCopyDeckModal(true)}
+              className="px-2 py-1 rounded-lg text-[10px] font-bold bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/50 text-indigo-300 flex items-center gap-1 transition-all cursor-pointer active:scale-95"
+              title="상대 덱 복사 검증"
+            >
+              <Layers size={12} className="text-indigo-400" />
+              <span>{isKo ? '덱 복사' : 'Copy'}</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -625,6 +678,84 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ID 595: 상대 덱 복사 1클릭 검증 모달 */}
+      <AnimatePresence>
+        {showCopyDeckModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 10 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 10 }}
+              className="bg-[#1a1717] border border-indigo-500 rounded-2xl p-5 max-w-sm w-full font-mono text-white space-y-4 shadow-2xl"
+            >
+              <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                <div className="flex items-center gap-2 font-bold text-xs text-indigo-300">
+                  <Layers size={16} className="text-indigo-400" />
+                  <span>{isKo ? '[상대 덱 복사 검증]' : '[Copy Opponent Deck Verification]'}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowCopyDeckModal(false)}
+                  className="text-slate-400 hover:text-white px-1 text-xs"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-[11px] text-slate-300">
+                  {isKo
+                    ? '상대 사령관이 사용한 5장의 덱 구성을 분석했습니다. 보유 현황을 확인 후 내 활성 덱으로 복사하시겠습니까?'
+                    : 'Analyzed opponent’s 5-card deck composition. Copy to your active deck?'}
+                </p>
+
+                <div className="space-y-1 bg-black/40 p-2.5 border border-slate-800 rounded-lg">
+                  {deckCopyAnalysis.map((item, idx) => (
+                    <div key={idx} className="flex items-center justify-between text-[10px]">
+                      <span className="text-slate-200 truncate max-w-[180px]">
+                        #{idx + 1} {isKo ? item.card.title : (item.card.title_en || item.card.title)}
+                      </span>
+                      <span className={item.isOwned ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}>
+                        {item.isOwned ? (isKo ? '✅ 보유 중' : '✅ Owned') : (isKo ? '⚠️ 미보유(대체)' : '⚠️ Missing')}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setShowCopyDeckModal(false)}
+                  className="py-2 border border-slate-700 hover:bg-slate-800 text-slate-300 text-xs font-bold rounded-lg"
+                >
+                  {isKo ? '취소' : 'Cancel'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmCopyDeck}
+                  className="py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black rounded-lg active:scale-95 transition-all shadow-md"
+                >
+                  {isKo ? '덱 복사 확정' : 'Confirm Copy'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 복사 성공 토스트 */}
+      {copySuccessToast && (
+        <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-[300] bg-indigo-900 border border-indigo-400 text-indigo-100 px-4 py-2 text-xs font-bold shadow-2xl animate-fadeIn rounded-lg">
+          {isKo ? '🎉 상대 덱이 내 활성 덱으로 복사되었습니다!' : '🎉 Opponent deck copied to your active deck!'}
+        </div>
+      )}
     </motion.div>
   );
 };
