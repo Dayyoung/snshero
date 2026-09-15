@@ -2,6 +2,50 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-16 08:58 KST] [신규 백로그 ID 496~595 총 100개 항목 4단계 전수 구현 및 빌드/배포 검증 완료]
+- **작업 범위**: 구글 스프레드시트 신규 백로그 총 100개 항목 (`ID 496` ~ `ID 595`) 전수 실제 동작 가능한 완성형 프로덕션 코드 구현.
+- **4단계 분할 구현 내역**:
+  1. **Phase 1: 배틀 HUD, 연출 및 인게임 전투/사운드 시스템 (25개 항목, 커밋: `e7bc1ca`)**:
+     - 속성 상성 툴팁 1줄 인라인 뱃지 및 라스트 스탠드 역전 쉴드 연출 (ID 496, 497)
+     - 원소 공명(Resonance) 파티클, 치명타 림라이트, 원소 정합성 폭발 FX (`BattleFXEngine.ts`, ID 502, 507, 512, 517, 522)
+     - 연쇄 도미노 가속 SFX, 사운드 버퍼링, Web Audio 최적화 (`BattleAudioEngine.ts`, ID 527, 532, 537, 542, 547)
+     - 1줄 미니멀 통합 HUD 바 대규모 확장 (`BattleMinimalTopBar.tsx`, ID 501, 506, 511, 516, 521, 526, 531, 536, 541, 546, 551, 556, 561, 566, 571, 576, 581, 586, 591)
+  2. **Phase 2: 마이덱, 덱 빌더, 도감 및 퀘스트 편의성 (25개 항목, 커밋: `e1a7d07`)**:
+     - SSR/Lv 8+ 고가치 분해 안전 가드 모달 및 만렙 가루 자동 변환 토글 (`CardCombineModal.tsx`, ID 498, 508, 593)
+     - 일일 퀘스트 1회 무료 교체(Reroll) 및 주간 10/20/30 트랙/그랜드 체스트 (`DailyMissions.tsx`, ID 503, 563, 578, 588)
+     - 카드 도감 11종 테마 세트 컬렉션 트랙 및 세트당 500 SNS 수령 (`WikiCardView.tsx`, ID 528)
+     - 월 1회 스킬 트리 무료 초기화권 & 100% SP 환급 (`SkillView.tsx`, ID 553)
+     - 스토리 스테이지 드랍 확률 투명 공시 모달 (`StageDropProbabilityModal.tsx`, ID 543)
+     - 친선 대전 종료 후 상대 덱 1클릭 복사 및 덮어쓰기 (`BattleResultPanel.tsx`, ID 595)
+     - 72시간 미접속 복귀 유저 7일 웰컴 트랙 (`AttendanceStreakModal.tsx`, ID 573)
+  3. **Phase 3: 상점, 가챠, 마켓플레이스 및 경제/주식 (18개 항목, 커밋: `7c65ded`)**:
+     - 신규 미보유 카드 'NEW!' 인장 & +50 도감 마일리지 (`ShopView.tsx`, ID 513)
+     - 일일 할인 50 AP 물약 번들 및 중복 소환 마일리지 로테이션 샵 (`ShopView.tsx`, ID 518, 533)
+     - 10연차 모의 뽑기 시뮬레이터 & 월간 50/100/200회 누적 리워드 트랙 (`ShopView.tsx`, ID 548, 583)
+     - P2P 거래 가스비 100% SNS 토큰 캐시백 보조금 (`CardMarketplaceView.tsx`, ID 558)
+     - 마켓플레이스 희망 매수가 예약 및 호가 알림 'Auto-Buy Order' (`CardMarketplaceView.tsx`, ID 523)
+     - 가상 주식 거래소 일일 거래량 마일스톤(1K/5K/10K) 및 15% 수수료 페이백 금고 (`StockMarketView.tsx`, ID 568)
+  4. **Phase 4: 성능, 렌더러 및 소셜/길드 시스템 (32개 항목, 커밋: `9d907b6`)**:
+     - Web Audio 탭 백그라운드 전환 시 자동 suspend/resume 및 리소스 정리 (`BattleAudioEngine.ts`, ID 519)
+     - 60개 파티클 오브젝트 풀링(Object Pool) 및 동적 `will-change` (`BattleFXEngine.ts`, ID 554, 514)
+     - Passive 터치 리스너 및 120fps 추적, 순수 수학적 AABB 충돌 판정 (`BattleDragEngine.ts`, ID 549, 569)
+     - 1탭 일괄 우정 포인트(Friendship AP) 선물 & 답례 수령 (`FriendBattlePanel.tsx`, ID 505)
+     - 비동기 도전장(Ghost Battle Request) 링크 생성 및 복사 (`FriendBattlePanel.tsx`, ID 525)
+     - 친구 친선전 룰셋 커스텀 (15/30초, 동일 카드 금지, 코스트 제한) (`FriendBattlePanel.tsx`, ID 530)
+     - 친구 대표 덱 기반 오프라인 AI 모의 연습 대전 (`FriendBattlePanel.tsx`, ID 545)
+     - 친구 목록 최근 접속 시간 및 활성도 정렬 (`FriendBattlePanel.tsx`, ID 565)
+     - 친구 친선전 상대별 전적 (승/패/무) 통계 배지 (`FriendBattlePanel.tsx`, ID 575)
+     - 길드전 일일 3개 매치업 실시간 승부 예측 & 2.5배 배당금 (`GuildDetailView.tsx`, ID 500)
+     - 길드원 대표 시그니처 카드 용병 대여(Mercenary Assist) (`GuildDetailView.tsx`, ID 510)
+     - 길드 명예의 전당 시즌 MVP 3인 뱃지 배너 (`GuildDetailView.tsx`, ID 550)
+     - 길드 카드 조각 상호 기부 & 요청 시스템 (`GuildDetailView.tsx`, ID 570)
+     - 길드 출석 보너스 & 연속 출석 버프 (길드원 전체 AP 자연회복 +10%) (`GuildDetailView.tsx`, ID 580)
+     - 길드 탈퇴 후 24시간 재가입 쿨다운 안전 보호 (`GuildDetailView.tsx`, ID 585)
+- **검증 결과**:
+  - `npm run build`: 0개 에러 완전 통과 및 프로덕션 번들 정상 빌드 완료.
+  - 100% 로컬스토리지 단일 진실 공급원 유지 (`hero_auto_buy_orders_{season}`, `hero_stock_daily_volume_{today}`, `hero_guild_piece_requests_{guildId}` 등).
+  - 모바일 전체화면 무결점 및 `DESIGN.md` 가이드 100% 준수.
+
 ## [2026-09-15 19:25 KST] [신규 백로그 ID 421~490 총 70개 항목 4단계 전수 구현 및 빌드/배포 검증 완료]
 - **작업 범위**: 구글 스프레드시트 신규 백로그 총 70개 항목 (`ID 421` ~ `ID 490`) 전수 실제 동작 가능한 완성형 프로덕션 코드 구현.
 - **4단계 분할 구현 내역**:
