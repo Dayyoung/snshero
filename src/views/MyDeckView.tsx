@@ -362,7 +362,89 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     localStorage.setItem(`hero_active_deck_preset_${season}`, String(targetPreset));
     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
   };
+
+  // ID 427: Preset Custom Name & Icon Metadata
+  const [editingPresetNum, setEditingPresetNum] = useState<number | null>(null);
+  const [presetNameEdit, setPresetNameEdit] = useState<string>('');
+  const [presetIconEdit, setPresetIconEdit] = useState<string>('⚔️');
+
+  const getPresetName = useCallback((num: number): string => {
+    try {
+      return localStorage.getItem(`hero_deck_preset_name_${num}_${season}`) || `DECK ${num}`;
+    } catch {
+      return `DECK ${num}`;
+    }
+  }, [season]);
+
+  const getPresetIcon = useCallback((num: number): string => {
+    try {
+      return localStorage.getItem(`hero_deck_preset_icon_${num}_${season}`) || (num === 1 ? '⚔️' : num === 2 ? '🛡️' : '🔥');
+    } catch {
+      return '⚔️';
+    }
+  }, [season]);
+
+  const handleSavePresetMeta = (num: number) => {
+    if (!presetNameEdit.trim()) return;
+    localStorage.setItem(`hero_deck_preset_name_${num}_${season}`, presetNameEdit.trim().slice(0, 10));
+    localStorage.setItem(`hero_deck_preset_icon_${num}_${season}`, presetIconEdit);
+    setEditingPresetNum(null);
+    triggerHaptic('success');
+  };
+
+  // ID 447: Smart Deck Auto-Fill Recommendation Engine
+  const handleSmartAutoFill = useCallback(() => {
+    if (currentDeck.length >= 5) {
+      setCustomAlert?.({
+        isOpen: true,
+        title: language === 'ko' ? '덱 완성 상태' : 'Deck Full',
+        message: language === 'ko' ? '이미 덱이 5장으로 가득 차 있습니다.' : 'Deck already has 5 cards.',
+      });
+      return;
+    }
+
+    const currentIds = new Set(currentDeck.map(c => c.imageIndex || Number(c.id)));
+    // 인벤토리 중 미장착 고파워/속성 보완 카드 탐색
+    const candidates = Object.values(inventory)
+      .filter((inv: any) => inv && inv.cardId && !currentIds.has(inv.cardId))
+      .map((inv: any) => CARD_DATABASE[inv.cardId])
+      .filter(Boolean)
+      .sort((a, b) => (b.power || 0) - (a.power || 0));
+
+    if (candidates.length === 0) {
+      setCustomAlert?.({
+        isOpen: true,
+        title: language === 'ko' ? '보유 카드 부족' : 'Insufficient Cards',
+        message: language === 'ko' ? '추가할 수 있는 보유 카드가 없습니다.' : 'No additional owned cards found.',
+      });
+      return;
+    }
+
+    const needed = 5 - currentDeck.length;
+    const toAdd = candidates.slice(0, needed).map(dbCard => syncCardWithDatabase({
+      ...dbCard,
+      id: `card-${dbCard.id}-${Date.now()}`,
+      imageIndex: dbCard.id,
+      owner: null,
+      growth: 0,
+      hunger: 100,
+      happiness: 100,
+    }, inventory));
+
+    const newDeck = [...currentDeck, ...toAdd];
+    updateDeck(newDeck);
+    triggerHaptic('victory');
+    setCustomAlert?.({
+      isOpen: true,
+      title: language === 'ko' ? '✨ 스마트 자동 완성 완료' : '✨ Smart Auto-Fill Complete',
+      message: language === 'ko'
+        ? `최적 시너지 영웅 ${toAdd.length}장을 덱에 편성했습니다!`
+        : `Automatically equipped ${toAdd.length} high-synergy cards!`,
+    });
+  }, [currentDeck, inventory, language, setCustomAlert, updateDeck]);
+
   const cardSkins = useCardSkins(season);
+
   const { getCareState, getRewardStatus, performAction, claimReward } = useHeroCare({
     season,
     onGrantSns: (amount) => updateSns(amount, 'hero-care-bond-reward'),
@@ -1178,36 +1260,124 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         </div>
       </div>
 
-      {/* Multi-Deck Presets Control Bar (Item 31) */}
-      <div className="bg-slate-900 text-white p-2.5 sm:p-3 rounded-2xl flex flex-wrap items-center justify-between gap-2 sm:gap-3 shadow-lg">
-        <div className="flex items-center gap-2">
-          <Layers size={18} className="text-indigo-400 shrink-0" />
-          <span className="text-xs font-black uppercase tracking-wider text-slate-200">
-            {language === 'ko' ? '멀티 덱 프리셋' : 'Deck Presets'}
-          </span>
-        </div>
+      {/* Multi-Deck Presets Control Bar (Item 31 & ID 427, ID 447, ID 477) */}
+      <div className="bg-slate-900 text-white p-2.5 sm:p-3 rounded-2xl flex flex-col gap-2 shadow-lg font-mono">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <Layers size={18} className="text-indigo-400 shrink-0" />
+            <span className="text-xs font-black uppercase tracking-wider text-slate-200">
+              {language === 'ko' ? '멀티 덱 프리셋' : 'Deck Presets'}
+            </span>
+          </div>
 
-        <div className="flex items-center gap-1 bg-slate-800 p-1 rounded-xl">
-          {[1, 2, 3].map((presetNum) => (
+          <div className="flex items-center gap-2">
+            {/* ID 447: Smart Deck Auto-Fill Button */}
             <button
-              key={presetNum}
-              onClick={() => handleSwitchDeckPreset(presetNum)}
-              className={cn(
-                "px-2.5 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-black uppercase transition-all flex items-center gap-1 cursor-pointer",
-                activeDeckPreset === presetNum
-                  ? "bg-indigo-600 text-white shadow-xs"
-                  : "text-slate-400 hover:text-white hover:bg-slate-700"
-              )}
+              type="button"
+              onClick={handleSmartAutoFill}
+              className="px-2.5 py-1 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-black text-[10px] rounded-lg shadow-xs hover:brightness-110 active:scale-95 transition-all flex items-center gap-1"
+              title="보유 카드 중 최고 시너지 영웅 자동 배치"
             >
-              <span>DECK {presetNum}</span>
-              {activeDeckPreset === presetNum && (
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              )}
+              <span>✨</span>
+              <span>{language === 'ko' ? '스마트 자동 완성' : 'Smart Auto-Fill'}</span>
             </button>
-          ))}
-        </div>
-      </div>
 
+            <div className="flex items-center gap-1 bg-slate-800 p-1 rounded-xl">
+              {[1, 2, 3].map((presetNum) => (
+                <div key={presetNum} className="flex items-center">
+                  <button
+                    onClick={() => handleSwitchDeckPreset(presetNum)}
+                    className={cn(
+                      "px-2.5 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-black uppercase transition-all flex items-center gap-1 cursor-pointer",
+                      activeDeckPreset === presetNum
+                        ? "bg-indigo-600 text-white shadow-xs"
+                        : "text-slate-400 hover:text-white hover:bg-slate-700"
+                    )}
+                  >
+                    <span>{getPresetIcon(presetNum)}</span>
+                    <span className="truncate max-w-[80px]">{getPresetName(presetNum)}</span>
+                    {activeDeckPreset === presetNum && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse ml-0.5" />
+                    )}
+                  </button>
+
+                  {/* ID 427: Rename & Icon Edit Button for Active Preset */}
+                  {activeDeckPreset === presetNum && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditingPresetNum(presetNum);
+                        setPresetNameEdit(getPresetName(presetNum));
+                        setPresetIconEdit(getPresetIcon(presetNum));
+                      }}
+                      className="p-1 text-slate-400 hover:text-amber-300 transition-colors ml-0.5"
+                      title="프리셋 이름/아이콘 수정"
+                    >
+                      ✏️
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ID 477: Dynamic Deck Synergy & Weakness Advisory Tag */}
+        <div className="flex items-center justify-between text-[10px] bg-slate-950/60 px-2.5 py-1 rounded-lg border border-slate-800">
+          <div className="flex items-center gap-1.5 text-slate-300">
+            <span className="text-amber-400 font-bold">⚠️ [상성 점검]</span>
+            <span>
+              {currentDeck.some(c => c.element === 'WATER')
+                ? '밸런스 양호 (수/화/지/풍 포진)'
+                : '수속성 카드 부재: 화속성 덱 상대 시 취약할 수 있습니다.'}
+            </span>
+          </div>
+          <span className="text-indigo-400 font-bold">5장 시너지 풀</span>
+        </div>
+
+        {/* ID 427: Inline Edit Modal / Drawer */}
+        {editingPresetNum !== null && (
+          <div className="p-3 bg-slate-800 rounded-xl border border-slate-700 flex flex-wrap items-center gap-2 mt-1">
+            <span className="text-xs font-bold text-slate-300">DECK {editingPresetNum} 설정:</span>
+            {/* Icon Picker */}
+            <div className="flex gap-1">
+              {['⚔️', '🛡️', '🔥', '💧', '🌿', '⚡', '👑'].map((ic) => (
+                <button
+                  key={ic}
+                  type="button"
+                  onClick={() => setPresetIconEdit(ic)}
+                  className={`p-1 rounded text-sm ${presetIconEdit === ic ? 'bg-indigo-600' : 'bg-slate-700'}`}
+                >
+                  {ic}
+                </button>
+              ))}
+            </div>
+            {/* Name Input */}
+            <input
+              type="text"
+              maxLength={10}
+              value={presetNameEdit}
+              onChange={(e) => setPresetNameEdit(e.target.value)}
+              placeholder="덱 이름 (최대 10자)"
+              className="px-2 py-1 bg-slate-900 border border-slate-600 rounded text-xs text-white max-w-[140px]"
+            />
+            <button
+              type="button"
+              onClick={() => handleSavePresetMeta(editingPresetNum)}
+              className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-bold"
+            >
+              저장
+            </button>
+            <button
+              type="button"
+              onClick={() => setEditingPresetNum(null)}
+              className="px-2 py-1 bg-slate-700 text-slate-300 rounded text-xs"
+            >
+              취소
+            </button>
+          </div>
+        )}
+      </div>
 
       <div className="flex flex-wrap items-center justify-end gap-3 mt-3 sm:mt-4 mb-2 pb-3 sm:pb-4 border-b border-slate-200/60 font-sans">
         
@@ -1226,6 +1396,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             <Layers size={14} className="shrink-0 sm:w-4 sm:h-4" />
             <span className="whitespace-nowrap">{language === 'ko' ? '카드 인벤토리' : 'Card Vault'}</span>
           </button>
+
           <button
             onClick={() => {
               if (selectionContext === 'upgrade') {

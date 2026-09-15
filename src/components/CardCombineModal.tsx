@@ -109,17 +109,24 @@ export const CardCombineModal: React.FC<CardCombineModalProps> = ({
     setCube(nextCube);
   };
 
-  // ID 337: 목표 레벨 도달 자동 최적 재료 선택
+  // ID 337 & ID 453: 목표 레벨 도달 자동 최적 재료 분배 (경험치 오버플로우 방지)
   const handleAutoSelectMaterials = () => {
-    const candidate = availableInventoryCards.find(c => c.quantity >= 3) || availableInventoryCards[0];
+    // 3장 이상 보유한 가장 낮은 등급/파워의 재료 카드를 우선 탐색하여 낭비 차단
+    const candidate = availableInventoryCards
+      .filter(c => c.quantity >= 3 && (c.dbCard.power || 1000) <= 2500)
+      .sort((a, b) => (a.dbCard.power || 1000) - (b.dbCard.power || 1000))[0] 
+      || availableInventoryCards.find(c => c.quantity >= 3)
+      || availableInventoryCards[0];
+
     if (candidate) {
       setCube([candidate.id, candidate.id, candidate.id]);
       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
       setErrorMessage(null);
     } else {
-      setErrorMessage(language === 'ko' ? '조합 가능한 재료 카드가 부족합니다.' : 'Not enough fodder cards.');
+      setErrorMessage(language === 'ko' ? '조합 가능한 재료 카드가 부족합니다 (동일 카드 3장 필요).' : 'Not enough identical fodder cards (3 required).');
     }
   };
+
 
   // Perform card combination
   const handleCombine = async () => {

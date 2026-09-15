@@ -144,6 +144,20 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
   const { isLocked, toggleLock } = useCardLock();
   const locked = isLocked(selectedCard.id);
 
+  // ID 432: Awakening Stage Preview State (1~3)
+  const [awakeningStage, setAwakeningStage] = useState<1 | 2 | 3>(1);
+
+  // ID 468: Card Shard Crafting State
+  const [shards, setShards] = useState<number>(() => {
+    try {
+      const val = localStorage.getItem(`hero_card_shards_${selectedCard.id}`);
+      return val ? parseInt(val, 10) : 35; // Default 35/50
+    } catch {
+      return 35;
+    }
+  });
+
+
   const merchRecommendations = useMemo(
     () => getRecommendedIpMerchProducts(selectedCard.id, season).slice(0, 3),
     [season, selectedCard.id],
@@ -458,17 +472,97 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
                           <DetailRow label={t('wiki_card_detail_personality', language)} value={profile?.personality ?? '—'} />
                           <DetailRow label={t('wiki_card_detail_role', language)} value={profile?.archetype ?? '—'} />
                           <DetailRow label={t('wiki_card_detail_element', language)} value={formatElementLabel(selectedCard)} />
-                          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.24em] text-slate-500">
-                              <Sparkles size={12} />
-                              <span>{t('ability_types', language)}</span>
+                          {/* ID 422: Structured Skill Trigger & Effect Badges */}
+                          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 space-y-2">
+                            <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-wider text-slate-500">
+                              <span className="flex items-center gap-1.5">
+                                <Sparkles size={12} className="text-amber-500" />
+                                <span>{t('ability_types', language)}</span>
+                              </span>
+                              <span className="text-indigo-600 font-bold">{selectedCard.ability?.name || 'PASSIVE'}</span>
                             </div>
-                            <p className="mt-1.5 text-xs font-semibold leading-relaxed text-slate-700">
+                            
+                            {/* Color-Coded Structured Badges */}
+                            <div className="flex flex-wrap gap-1.5 font-mono text-[9px] font-bold">
+                              <span className="px-2 py-0.5 rounded-sm bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-700">
+                                {language === 'ko' ? '[발동: 필드 배치 시]' : '[Trigger: On Placement]'}
+                              </span>
+                              <span className="px-2 py-0.5 rounded-sm bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-300 border border-purple-300 dark:border-purple-700">
+                                {language === 'ko' ? '[대상: 인접 4방향 적]' : '[Target: Adjacent Opponents]'}
+                              </span>
+                              <span className="px-2 py-0.5 rounded-sm bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-700">
+                                {language === 'ko' ? '[효과: 방어력 -2 관통]' : '[Effect: -2 DEF Armor Break]'}
+                              </span>
+                            </div>
+
+                            <p className="text-[11px] font-medium leading-relaxed text-slate-700 dark:text-slate-300">
                               {selectedCard.ability
                                 ? (language === 'ko' ? selectedCard.ability.description_ko : selectedCard.ability.description_en)
                                 : '—'}
                             </p>
                           </div>
+
+                          {/* ID 432: Awakening Stage Preview (★1 -> ★2 -> ★3) */}
+                          <div className="rounded-2xl border border-amber-200 bg-amber-50/50 p-3 space-y-1.5">
+                            <div className="flex items-center justify-between text-[10px] font-black uppercase text-amber-900 font-mono">
+                              <span>★ {language === 'ko' ? '각성/돌파 스탯 시뮬레이터' : 'Awakening Stage Preview'}</span>
+                              <div className="flex gap-1">
+                                {([1, 2, 3] as const).map(st => (
+                                  <button
+                                    key={st}
+                                    type="button"
+                                    onClick={() => setAwakeningStage(st)}
+                                    className={`px-2 py-0.5 rounded-xs text-[9px] font-bold transition-all ${
+                                      awakeningStage === st
+                                        ? 'bg-amber-600 text-white shadow-xs'
+                                        : 'bg-white border border-amber-300 text-amber-800'
+                                    }`}
+                                  >
+                                    ★{st}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="text-[10px] text-amber-800 font-mono flex items-center justify-between">
+                              <span>예상 전력 보너스: +{awakeningStage * 250} PWR</span>
+                              <span className="font-bold text-emerald-700">전방위 스탯 +{awakeningStage - 1}</span>
+                            </div>
+                          </div>
+
+                          {/* ID 468: Card Shard Crafting Bar */}
+                          <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-2.5 flex items-center justify-between font-mono text-[10px]">
+                            <div className="flex items-center gap-1.5 text-emerald-900 font-bold">
+                              <span>🧩 {language === 'ko' ? '카드 조각' : 'Shards'}:</span>
+                              <span className="text-emerald-700 font-black">{shards}/50</span>
+                              <div className="w-16 h-1.5 bg-emerald-200 rounded-full overflow-hidden ml-1">
+                                <div className="h-full bg-emerald-600" style={{ width: `${Math.min(100, (shards / 50) * 100)}%` }} />
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (shards >= 50) {
+                                  setToastMessage(language === 'ko' ? '축하합니다! 카드 1장 합성 제작 완료!' : 'Card successfully crafted!');
+                                  setShards(prev => prev - 50);
+                                  localStorage.setItem(`hero_card_shards_${selectedCard.id}`, (shards - 50).toString());
+                                } else {
+                                  // 조각 15개 즉시 충전 (테스트/체험)
+                                  const next = Math.min(50, shards + 15);
+                                  setShards(next);
+                                  localStorage.setItem(`hero_card_shards_${selectedCard.id}`, next.toString());
+                                  setToastMessage(language === 'ko' ? `조각 +15개 획득! (${next}/50)` : `+15 Shards gathered! (${next}/50)`);
+                                }
+                              }}
+                              className={`px-2.5 py-1 text-[9px] font-bold rounded-sm uppercase tracking-wider transition-all active:scale-95 ${
+                                shards >= 50
+                                  ? 'bg-emerald-600 text-white animate-pulse shadow-sm'
+                                  : 'bg-white border border-emerald-400 text-emerald-800'
+                              }`}
+                            >
+                              {shards >= 50 ? '[+ 카드 즉시 제작]' : '[+ 조각 탐색]'}
+                            </button>
+                          </div>
+
                         </div>
                       </div>
                     </div>

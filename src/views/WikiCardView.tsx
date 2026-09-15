@@ -42,7 +42,12 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
   const [sortBy, setSortBy] = useState<"id" | "name" | "power" | "rarity">("id");
   const [rarityFilter, setRarityFilter] = useState<CharacterRarityTier | "all">("all");
   const [factionFilter, setFactionFilter] = useState<CharacterFaction | "all">("all");
+  // ID 437: Top Stat Leaderboard Filter
+  const [topStatFilter, setTopStatFilter] = useState<'all' | 'fire_atk' | 'water_def' | 'wind_spd' | 'earth_hp'>('all');
+  // ID 444: Virtual Window Limit
+  const [visibleLimit, setVisibleLimit] = useState<number>(24);
   const [selectedCard, setSelectedCard] = useState<DatabaseCard | null>(null);
+
   const [is3DViewerOpen, setIs3DViewerOpen] = useState(false);
   const [downloadMode, setDownloadMode] = useState<'ally' | 'enemy' | null>(null);
   const printableCardRef = useRef<HTMLDivElement>(null);
@@ -157,6 +162,21 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
     }
     return a.id - b.id;
   });
+
+  // ID 437: Top Stat Leaderboard Filter computation
+  const finalCards = React.useMemo(() => {
+    if (topStatFilter === 'fire_atk') {
+      return allCards.filter(c => c.element === 'FIRE').sort((a, b) => (b.power || 0) - (a.power || 0)).slice(0, 5);
+    } else if (topStatFilter === 'water_def') {
+      return allCards.filter(c => c.element === 'WATER').sort((a, b) => (b.power || 0) - (a.power || 0)).slice(0, 5);
+    } else if (topStatFilter === 'wind_spd') {
+      return allCards.filter(c => c.element === 'WIND').sort((a, b) => (b.power || 0) - (a.power || 0)).slice(0, 5);
+    } else if (topStatFilter === 'earth_hp') {
+      return allCards.filter(c => c.element === 'EARTH').sort((a, b) => (b.power || 0) - (a.power || 0)).slice(0, 5);
+    }
+    return sortedCards;
+  }, [topStatFilter, allCards, sortedCards]);
+
 
   // Collection Progress Calculation (Item 62, 69)
   const totalDatabaseCards = Object.keys(CARD_DATABASE).length || 110;
@@ -570,8 +590,8 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
           </div>
         </div>
 
-        {/* Filter Bar */}
-        <div className="flex flex-wrap items-center gap-3 mb-6">
+        {/* Filter Bar & ID 437: Top 5 Stat Filter Chips */}
+        <div className="flex flex-wrap items-center gap-2 mb-6 font-mono">
           <select
             value={rarityFilter}
             onChange={(e) => setRarityFilter(e.target.value as CharacterRarityTier | "all")}
@@ -600,14 +620,75 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
               );
             })}
           </select>
+
+          {/* ID 437: Quick Top Stat Leaderboard Tags */}
+          <div className="flex items-center gap-1 overflow-x-auto py-1">
+            <button
+              type="button"
+              onClick={() => setTopStatFilter('all')}
+              className={`px-2 py-1 text-[9px] font-bold rounded-sm border ${
+                topStatFilter === 'all'
+                  ? 'bg-slate-800 text-white border-slate-800'
+                  : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              [전체]
+            </button>
+            <button
+              type="button"
+              onClick={() => setTopStatFilter(topStatFilter === 'fire_atk' ? 'all' : 'fire_atk')}
+              className={`px-2 py-1 text-[9px] font-bold rounded-sm border ${
+                topStatFilter === 'fire_atk'
+                  ? 'bg-red-600 text-white border-red-600'
+                  : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100'
+              }`}
+            >
+              🔥 Top Fire ATK
+            </button>
+            <button
+              type="button"
+              onClick={() => setTopStatFilter(topStatFilter === 'water_def' ? 'all' : 'water_def')}
+              className={`px-2 py-1 text-[9px] font-bold rounded-sm border ${
+                topStatFilter === 'water_def'
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100'
+              }`}
+            >
+              💧 Top Water DEF
+            </button>
+            <button
+              type="button"
+              onClick={() => setTopStatFilter(topStatFilter === 'wind_spd' ? 'all' : 'wind_spd')}
+              className={`px-2 py-1 text-[9px] font-bold rounded-sm border ${
+                topStatFilter === 'wind_spd'
+                  ? 'bg-emerald-600 text-white border-emerald-600'
+                  : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+              }`}
+            >
+              🌪️ Top Wind SPD
+            </button>
+            <button
+              type="button"
+              onClick={() => setTopStatFilter(topStatFilter === 'earth_hp' ? 'all' : 'earth_hp')}
+              className={`px-2 py-1 text-[9px] font-bold rounded-sm border ${
+                topStatFilter === 'earth_hp'
+                  ? 'bg-amber-600 text-white border-amber-600'
+                  : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
+              }`}
+            >
+              ⛰️ Top Earth HP
+            </button>
+          </div>
         </div>
 
+        {/* ID 444: Virtual Window Scrolling - Sliced render */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {sortedCards.map((card) => {
+          {finalCards.slice(0, visibleLimit).map((card) => {
             const isOwned = Boolean(inventory[card.id] || ownedCards.some(c => c.imageIndex === card.id));
             const displayCard = {
               id: `wiki_${card.id}`,
               power: card.power,
+
               imageIndex: Number(card.id),
               title: card.title,
               title_dis: card.title_dis,
@@ -687,7 +768,21 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
             </div>
           )}
         </div>
+
+        {/* ID 444: Load More Button for Virtual Window */}
+        {finalCards.length > visibleLimit && (
+          <div className="text-center py-6">
+            <button
+              type="button"
+              onClick={() => setVisibleLimit(prev => prev + 24)}
+              className="px-6 py-2.5 bg-[#201d1d] text-white dark:bg-white dark:text-[#201d1d] font-mono text-xs font-bold uppercase tracking-wider rounded-sm hover:opacity-90 active:scale-95 transition-all shadow-sm"
+            >
+              [+ {language === 'ko' ? `카드 더보기 (${visibleLimit}/${finalCards.length})` : `Load More Cards (${visibleLimit}/${finalCards.length})`}]
+            </button>
+          </div>
+        )}
       </div>
+
 
       {selectedCard && (
         <WikiCardDetailModal
