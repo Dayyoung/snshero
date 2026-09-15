@@ -1,38 +1,45 @@
 /**
  * MarketSparkline.tsx
- * ID 408: 마켓플레이스 시세 변동 추이 7일 미니 스파크라인 차트 HUD
+ * ID 408 & ID 428: 마켓플레이스 7일 및 30일 시세 변동 스파크라인 차트 & 거래량 바 HUD
  */
 
 import React, { useMemo } from 'react';
-import { TrendingUp, TrendingDown } from 'lucide-react';
 
 interface MarketSparklineProps {
   cardId: number;
   currentPrice: number;
+  days?: 7 | 30;
   width?: number;
   height?: number;
+  showVolume?: boolean;
   className?: string;
 }
 
 export const MarketSparkline: React.FC<MarketSparklineProps> = ({
   cardId,
   currentPrice,
-  width = 64,
+  days = 7,
+  width = 72,
   height = 24,
+  showVolume = false,
   className = '',
 }) => {
-  // 카드 ID 기반 고유한 7일 가격 추이 생성
-  const { points, pctChange, isUp } = useMemo(() => {
+  // 카드 ID 기반 고유한 시세 추이 생성
+  const { points, pctChange, isUp, volumes } = useMemo(() => {
     const seed = (cardId * 9301 + 49297) % 233280;
     const history: number[] = [];
+    const vols: number[] = [];
     let p = currentPrice * (0.85 + (seed % 30) / 100);
 
-    for (let i = 0; i < 6; i++) {
+    const steps = days === 30 ? 15 : 6;
+    for (let i = 0; i < steps; i++) {
       history.push(Math.round(p));
-      const deltaFactor = 0.94 + (((seed * (i + 1)) % 13) / 100);
+      vols.push(10 + (((seed * (i + 3)) % 40)));
+      const deltaFactor = 0.95 + (((seed * (i + 1)) % 11) / 100);
       p = p * deltaFactor;
     }
     history.push(currentPrice);
+    vols.push(30);
 
     const min = Math.min(...history);
     const max = Math.max(...history);
@@ -49,12 +56,27 @@ export const MarketSparkline: React.FC<MarketSparklineProps> = ({
     const pct = (((last - first) / first) * 100).toFixed(1);
     const up = last >= first;
 
-    return { points: coords, pctChange: pct, isUp: up };
-  }, [cardId, currentPrice, width, height]);
+    return { points: coords, pctChange: pct, isUp: up, volumes: vols };
+  }, [cardId, currentPrice, days, width, height]);
 
   return (
-    <div className={`inline-flex items-center gap-1 font-mono text-[9px] ${className}`} title={`7일 시세 변동: ${pctChange}%`}>
+    <div className={`inline-flex items-center gap-1 font-mono text-[9px] ${className}`} title={`${days}일 시세 변동: ${pctChange}%`}>
       <svg width={width} height={height} className="overflow-visible">
+        {showVolume && volumes.map((v, i) => {
+          const barW = Math.max(2, (width / volumes.length) - 1.5);
+          const barX = (i / (volumes.length - 1)) * (width - barW);
+          const barH = (v / 50) * (height / 3);
+          return (
+            <rect
+              key={i}
+              x={barX}
+              y={height - barH}
+              width={barW}
+              height={barH}
+              fill="rgba(148, 163, 184, 0.3)"
+            />
+          );
+        })}
         <polyline
           fill="none"
           stroke={isUp ? '#10b981' : '#f43f5e'}

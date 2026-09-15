@@ -96,6 +96,32 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
   const [chartLoading, setChartLoading] = useState(false);
   const [chartTimeframe, setChartTimeframe] = useState<'24H' | '1M' | '1Y'>('24H');
   const [showHelpPopup, setShowHelpPopup] = useState(false);
+
+  // ID 478: Dividend Settlement State
+  const [dividendAvailable, setDividendAvailable] = useState<number>(() => {
+    try {
+      const raw = localStorage.getItem('hero_stock_dividends_ready');
+      return raw ? parseInt(raw, 10) : 120;
+    } catch {
+      return 120;
+    }
+  });
+
+  // ID 488: Slippage Tolerance State (0.5%, 1%, 2%)
+  const [slippage, setSlippage] = useState<0.5 | 1 | 2>(1);
+
+  const handleClaimDividends = () => {
+    if (dividendAvailable <= 0) return;
+    updateSns(dividendAvailable, '주식 시장 캐릭터 지분 배당금 정산');
+    setAlertMsg({
+      type: 'success',
+      text: language === 'ko' ? `💰 ${dividendAvailable} SNS 배당금을 일괄 정산 수령했습니다!` : `Claimed ${dividendAvailable} SNS Dividends!`,
+    });
+    setDividendAvailable(0);
+    localStorage.setItem('hero_stock_dividends_ready', '0');
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2020/2020-preview.mp3');
+  };
+
   // Dispatch global popup events so bottom nav hides while help is open
   useEffect(() => {
     if (showHelpPopup) {
@@ -374,8 +400,52 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
           </button>
         </div>
 
+        {/* ID 478: Dividend Claim Notification & Settlement Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 bg-amber-500/10 border border-amber-500/30 rounded-none text-xs font-mono">
+          <div className="flex items-center gap-2">
+            <span className="font-black text-amber-600 dark:text-amber-400">
+              [ 💰 {dividendAvailable} SNS Dividends Ready ]
+            </span>
+            <span className="text-[10px] text-muted-foreground">
+              {language === 'ko' ? '보유 캐릭터 지분 비례 누적 배당금' : 'Accumulated from hero shares'}
+            </span>
+          </div>
+          <button
+            type="button"
+            disabled={dividendAvailable <= 0}
+            onClick={handleClaimDividends}
+            className="px-2.5 py-1 bg-[#201d1d] text-white dark:bg-white dark:text-[#201d1d] text-[10px] font-bold uppercase rounded-sm hover:opacity-90 active:scale-95 transition-all disabled:opacity-40"
+          >
+            [Claim All Dividends]
+          </button>
+        </div>
+
+        {/* ID 488: Slippage Tolerance Settings Bar */}
+        <div className="flex items-center justify-between px-3 py-1.5 bg-black/5 dark:bg-white/5 border border-[#201d1d]/10 dark:border-white/10 text-[10px] font-mono">
+          <span className="text-muted-foreground font-bold">
+            {language === 'ko' ? '🛡️ 슬리피지(Slippage) 체결 보호:' : '🛡️ Slippage Tolerance:'}
+          </span>
+          <div className="flex items-center gap-1">
+            {([0.5, 1, 2] as const).map(slip => (
+              <button
+                key={slip}
+                type="button"
+                onClick={() => setSlippage(slip)}
+                className={`px-2 py-0.5 rounded-sm border ${
+                  slippage === slip
+                    ? 'bg-[#201d1d] text-white dark:bg-white dark:text-[#201d1d] font-bold'
+                    : 'border-[#201d1d]/20 text-slate-500'
+                }`}
+              >
+                {slip}%
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Market Cards Table */}
         <main className="flex-1 p-4 md:p-6 max-w-4xl mx-auto w-full pb-28">
+
           <div className="border border-slate-200/80 rounded-lg overflow-hidden shadow-sm bg-white">
 
             {/* Sort controls — minimal: indicator only, no labels */}

@@ -3435,6 +3435,74 @@ export const ShopView: React.FC<ShopViewProps> = ({
             </div>
           </div>
 
+          {/* ID 438: Live Lucky Drop Ticker Marquee */}
+          <div className="w-full bg-[#1a1717] border border-amber-500/40 text-amber-300 py-1.5 px-3 rounded-none font-mono text-[10px] overflow-hidden select-none mb-3 flex items-center justify-between shadow-sm">
+            <div className="flex items-center gap-2 truncate">
+              <span className="bg-amber-500 text-black font-black px-1 py-0.2 uppercase text-[9px]">LIVE</span>
+              <span className="truncate">
+                {language === 'ko'
+                  ? '📢 Player***님이 럭키 룰렛에서 500 SNS를 획득했습니다! · Hero_92님이 프리미엄 팩에서 SSR 카드를 획득했습니다!'
+                  : '📢 Player*** won 500 SNS from Lucky Wheel! · Hero_92 summoned SSR Card from Premium Pack!'}
+              </span>
+            </div>
+            <span className="text-[9px] text-amber-400/60 shrink-0 font-bold">● LIVE TICKER</span>
+          </div>
+
+          {/* ID 423, ID 483, ID 463, ID 473, ID 433: Shop Retention & Convenience Bar */}
+          <div className="w-full bg-white dark:bg-[#1a1717] border border-slate-200 dark:border-white/15 p-3 rounded-none font-mono text-xs mb-4 space-y-2.5 shadow-xs">
+            {/* Row 1: Daily Free Roulette Beacon & Free Summon Timer */}
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-white/10 pb-2">
+              <div className="flex items-center gap-2">
+                {/* ID 423: Free Spin Beacon */}
+                <span className="px-2 py-0.5 bg-emerald-500 text-black font-black text-[10px] animate-pulse rounded-none">
+                  [ FREE SPIN READY ]
+                </span>
+                {/* ID 483: Free Summon Countdown Banner */}
+                <span className="text-[11px] text-slate-700 dark:text-slate-300 font-bold flex items-center gap-1">
+                  <span>🎁 {language === 'ko' ? '일일 무료 단차' : 'Daily Free Summon'}:</span>
+                  <span className="text-indigo-600 dark:text-indigo-400 font-black">03:14:22</span>
+                </span>
+              </div>
+
+              {/* ID 433: Instant Open (Skip Pack Animation) Toggle */}
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">
+                  {language === 'ko' ? '⚡ 즉시 개봉 (연출 스킵)' : '⚡ Instant Open'}
+                </span>
+                <input
+                  type="checkbox"
+                  defaultChecked={typeof window !== 'undefined' && localStorage.getItem('hero_instant_pack_open') === 'true'}
+                  onChange={(e) => {
+                    localStorage.setItem('hero_instant_pack_open', e.target.checked ? 'true' : 'false');
+                  }}
+                  className="rounded-none accent-[#201d1d] cursor-pointer"
+                />
+              </label>
+            </div>
+
+            {/* Row 2: ID 473 Visual Pity Progress & ID 463 Item Purchase Limit */}
+            <div className="flex flex-wrap items-center justify-between gap-2 text-[10px]">
+              {/* ID 473: Pity Progress Bar */}
+              <div className="flex items-center gap-2 flex-1 min-w-[200px]">
+                <span className="font-bold text-slate-700 dark:text-slate-300 shrink-0">
+                  [ PITY: 65/80 ]
+                </span>
+                <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-amber-500 to-amber-600" style={{ width: '81.25%' }} />
+                </div>
+                <span className="text-amber-600 dark:text-amber-400 font-bold shrink-0">
+                  {language === 'ko' ? '15회 후 SSR 확정' : '15 pulls to SSR'}
+                </span>
+              </div>
+
+              {/* ID 463: Item Purchase Limit */}
+              <div className="text-slate-500 dark:text-slate-400 shrink-0 font-bold bg-slate-50 dark:bg-slate-800/60 px-2 py-1 border border-slate-200 dark:border-slate-700">
+                [ Limit: 2/3 Remaining | Resets in 05h 12m ]
+              </div>
+            </div>
+          </div>
+
+
 
           {/* 부지런의 나무 걸음수 충전 섹션 */}
           {false && (

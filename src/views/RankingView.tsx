@@ -134,6 +134,20 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
   const [pvpError, setPvpError] = useState('');
   const pvpCleanupRef = useRef<(() => void) | null>(null);
 
+  // ID 448: 일일 첫 승 보너스(First Win of the Day) 상태 확인
+  const todayDateStr = new Date().toISOString().slice(0, 10);
+  const [firstWinClaimed, setFirstWinClaimed] = useState<boolean>(() => {
+    return localStorage.getItem(`hero_first_win_claimed_${todayDateStr}`) === 'true';
+  });
+
+  useEffect(() => {
+    const handleFirstWinUpdate = () => {
+      setFirstWinClaimed(localStorage.getItem(`hero_first_win_claimed_${todayDateStr}`) === 'true');
+    };
+    window.addEventListener('hero_first_win_updated', handleFirstWinUpdate);
+    return () => window.removeEventListener('hero_first_win_updated', handleFirstWinUpdate);
+  }, [todayDateStr]);
+
   const [autoBattleCountdown, setAutoBattleCountdown] = useState<number | null>(null);
   const [selectedLangFilter, setSelectedLangFilter] = useState<Language | null>(() => {
     const saved = localStorage.getItem('hero_ranking_lang_filter');
@@ -988,6 +1002,47 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
           <Crown size={15} />
           <span>{language === 'ko' ? '시즌 보상 안내' : 'Rank Rewards'}</span>
         </button>
+      </div>
+
+      {/* ID 448: 일일 첫 승 보너스 (First Win of the Day) 배너 */}
+      <div className={cn(
+        "mb-4 p-3 rounded-none border font-mono flex items-center justify-between gap-3 text-xs transition-colors",
+        firstWinClaimed
+          ? "bg-[#201d1d]/5 border-[#201d1d]/20 text-[#201d1d]/60"
+          : "bg-amber-500/10 border-amber-500/40 text-amber-900 dark:text-amber-300"
+      )}>
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className={cn(
+            "w-8 h-8 rounded-none border flex items-center justify-center shrink-0 text-sm font-bold",
+            firstWinClaimed ? "border-[#201d1d]/30 bg-stone-200/50" : "border-amber-500/50 bg-amber-500/20 text-amber-500"
+          )}>
+            {firstWinClaimed ? '✓' : '🎁'}
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="font-bold uppercase tracking-wider text-[11px]">
+                {language === 'ko' ? '일일 첫 승 보너스' : 'FIRST WIN OF THE DAY'}
+              </span>
+              <span className={cn(
+                "px-1.5 py-0.2 text-[9px] font-bold uppercase",
+                firstWinClaimed ? "bg-stone-300 text-stone-700" : "bg-amber-500 text-stone-950 animate-pulse"
+              )}>
+                {firstWinClaimed ? (language === 'ko' ? '[획득 완료]' : '[CLAIMED]') : (language === 'ko' ? '[보너스 대기중]' : '[ACTIVE]')}
+              </span>
+            </div>
+            <p className="text-[10px] opacity-80 truncate mt-0.5">
+              {firstWinClaimed
+                ? (language === 'ko' ? '오늘의 첫 승 보상(2x SNS + 골드팩)을 획득했습니다. 내일 00:00에 초기화됩니다.' : "Today's 2x SNS & Gold Pack claimed. Resets at 00:00 UTC.")
+                : (language === 'ko' ? '오늘 첫 랭크 대전 승리 시 SNS 2배 + 골드 카드팩 1개 지급!' : 'Win 1 Rank Match today to earn 2x SNS Points + 1 Gold Card Pack!')
+              }
+            </p>
+          </div>
+        </div>
+        {!firstWinClaimed && (
+          <div className="shrink-0 font-mono font-bold text-[10px] text-amber-600 dark:text-amber-400 border border-amber-500/30 px-2 py-1 bg-amber-500/10">
+            2x SNS + PACK
+          </div>
+        )}
       </div>
 
       {/* Matching Controls */}
