@@ -273,6 +273,13 @@ import { useBattleScreenGuard } from '../hooks/useBattleScreenGuard';
 import { OpponentHandElementHUD } from '../components/OpponentHandElementHUD';
 import { BattleTacticalThreatOverlay, StatComparisonBadgeInfo, ThreatSlotInfo } from '../components/BattleTacticalThreatOverlay';
 import { BattleDeckCardStack } from '../components/BattleDeckCardStack';
+import { MatchMVPShowcaseModal } from '../components/MatchMVPShowcaseModal';
+import { BattleMinimalTopBar } from '../components/BattleMinimalTopBar';
+import { OpponentThreatHUD } from '../components/OpponentThreatHUD';
+import { BattleBossHUD } from '../components/BattleBossHUD';
+import { BattleFXEngine } from '../lib/BattleFXEngine';
+
+
 
 interface PlayGameViewProps {
   effectiveUser?: UserInfo;
@@ -2866,10 +2873,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [fireGlowCells, setFireGlowCells] = useState<Set<number>>(new Set());
   const [waterGlowCells, setWaterGlowCells] = useState<Set<number>>(new Set());
   
-  // Trap states per board cell
-  const [boardTraps, setBoardTraps] = useState<Record<number, 'purple' | 'red'>>({});
   // Hand card long press / zoom preview (Item 51)
   const [previewHandCard, setPreviewHandCard] = useState<CardData | null>(null);
+
+  // Phase 1 New States (ID 421, 457, 481, 482)
+  const [isMvpModalOpen, setIsMvpModalOpen] = useState<boolean>(false);
+  const [matchMvpCard, setMatchMvpCard] = useState<CardData | null>(null);
+  const [mvpCapturedCount, setMvpCapturedCount] = useState<number>(0);
+  const [battleSpeed, setBattleSpeed] = useState<1 | 1.5 | 2>(1);
+  const [recentActionLog, setRecentActionLog] = useState<string>('');
+
 
   // Battle Result Summary Metrics
   const [totalDamageDealt, setTotalDamageDealt] = useState<number>(0);
@@ -7160,12 +7173,42 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 setAutoBattleStats(prev => ({ ...prev, wins: prev.wins + 1 }));
                 setWinner('player');
                 playSfx('https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3'); // Victory
+
+                // ID 421, 457: Match MVP Showcase & ID 482: Perfect Domination (9-0)
+                try {
+                  const playerCardsOnBoard = finalBoard.filter(c => c && c.owner === 'player');
+                  const mvp = playerCardsOnBoard.length > 0 
+                    ? playerCardsOnBoard.reduce((prev, curr) => ((curr?.power || 0) > (prev?.power || 0) ? curr : prev), playerCardsOnBoard[0])
+                    : playerDeck[0] || null;
+
+                  if (mvp) {
+                    setMatchMvpCard(mvp);
+                    setMvpCapturedCount(Math.max(1, playerCardsOnBoard.length - 2));
+                    // 600ms 뒤 축하 연출 팝업
+                    setTimeout(() => setIsMvpModalOpen(true), 600);
+                  }
+
+                  // ID 482: 9-0 Perfect Domination Bonus (+200 SNS & Title)
+                  if (playerCardsOnBoard.length === 9) {
+                    const bonusKey = 'hero_perfect_domination_count';
+                    const prevCount = parseInt(localStorage.getItem(bonusKey) || '0', 10);
+                    localStorage.setItem(bonusKey, (prevCount + 1).toString());
+                    // 200 SNS 즉시 지급
+                    const currentSns = parseInt(localStorage.getItem('hero_user_sns') || '0', 10);
+                    localStorage.setItem('hero_user_sns', (currentSns + 200).toString());
+                    window.dispatchEvent(new Event('snshero_sns_updated'));
+                  }
+                } catch {
+                  // ignore
+                }
+
                 if (!hasRecordedResult.current) {
                   const finalResult = 'win';
                   const pScore = finalBoard.filter(c => c?.owner === 'player').length;
                   const aScore = finalBoard.filter(c => c?.owner === 'ai').length;
                   
                   handleZeroSumAndRecord(finalResult);
+
 
                   // Mission Card Battle: Card Drop & Enhancement Logic
                   if (activeMissionCardIdRef.current !== null) {
@@ -16510,6 +16553,34 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               )}
             </AnimatePresence>
 
+            {/* ID 442: Boss HUD if in boss fight */}
+            {selectedMode === 'boss' && (
+              <div className="w-full max-w-sm mx-auto mb-1">
+                <BattleBossHUD
+                  bossName="지옥의 군주"
+                  turnCount={board.filter(c => c !== null).length}
+                  language={language}
+                />
+              </div>
+            )}
+
+            {/* ID 441, 446, 451, 456, 461, 471, 476, 481, 486: 1-Line Minimal Unified Top Bar */}
+            <div className="w-full max-w-sm mx-auto mb-1">
+              <BattleMinimalTopBar
+                playerHandCount={playerHand.length}
+                playerDeckRemaining={Math.max(0, 5 - (9 - board.filter(c => c !== null).length - opponentHand.length))}
+                opponentHandCount={opponentHand.length}
+                turn={turn}
+                turnSecondsRemaining={turnTimerSeconds}
+                maxTurnSeconds={turnMaxSeconds}
+                battleSpeed={battleSpeed}
+                onChangeSpeed={setBattleSpeed}
+                recentActionLog={recentActionLog}
+                onSurrender={handleExitToModeSelect}
+                language={language}
+              />
+            </div>
+
             <div className={cn(
               "flex flex-col-reverse md:flex-row-reverse items-center justify-center gap-4 md:gap-12 relative animate-in fade-in duration-700",
               isClutchSlowMo && "scale-[1.02] filter contrast-125 transition-transform duration-300"
@@ -16517,8 +16588,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     <div className={cn(
                       "grid grid-cols-3 gap-1 md:gap-2 w-fit relative p-1.5 rounded-sm transition-all battle-touch-safe",
                       isSuddenDeathOverclock && "border border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.25)] bg-amber-950/10",
-                      isScreenShaking && "animate-screen-shake"
+                      isScreenShaking && "animate-screen-shake",
+                      board.filter(c => c !== null).length === 8 && "final-move-pulse",
+                      (boardScore.ai > boardScore.player + 2) && "board-critical-danger-border"
                     )}>
+
                       {/* Item 394 & Item 402: Battle Combo Announcer & Critical Shatter Overlay */}
                       {comboAnnounceData && (
                         <BattleComboAnnouncer
@@ -17239,9 +17313,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               totalHandSize={5}
               opponentCards={opponentHand}
             />
+            {/* ID 431: Opponent Threat Estimation HUD */}
+            <OpponentThreatHUD
+              remainingCards={opponentHand}
+              playedCardsCount={9 - board.filter(c => c !== null).length}
+              language={language}
+            />
           </div>
         </div>
       )}
+
 
       {/* 3. 내 덱/패 영역 (카드 높이에 맞춰 컴팩트 조정) */}
       <div 
@@ -18613,6 +18694,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         }}
         onClose={() => setIsReconnectModalOpen(false)}
       />
+
+      {/* ID 421, 457: Match MVP Showcase Modal */}
+      <MatchMVPShowcaseModal
+        isOpen={isMvpModalOpen}
+        mvpCard={matchMvpCard}
+        capturedCount={mvpCapturedCount}
+        language={language}
+        onClose={() => setIsMvpModalOpen(false)}
+      />
     </div>
   );
+
 };

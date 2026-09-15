@@ -841,5 +841,49 @@ html.low-spec-mode .animate-shimmer {
   hyphens: auto;
 }
 
+/* ID 436: 최종 턴(Turn 9 / Final Move) 골든 보드 펄스 */
+@keyframes final-move-glow {
+  0%, 100% { border-color: rgba(245, 158, 11, 0.6); box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+  50% { border-color: rgba(245, 158, 11, 1); box-shadow: 0 0 20px rgba(245, 158, 11, 0.7); }
+}
+
+.final-move-pulse {
+  animation: final-move-glow 1.5s ease-in-out infinite !important;
+}
+
+/* ID 466: 패배 위기 상태 3x3 보드 외곽 테두리 1px 경고 */
+.board-critical-danger-border {
+  border-color: rgba(239, 68, 68, 0.8) !important;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.5) !important;
+}
+
+/* ID 467: 3x3 그리드 중앙 슬롯(1,1) 전장 지배 보너스 실드 아우라 */
+.center-domain-aura {
+  position: relative;
+}
+.center-domain-aura::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border: 1px solid rgba(245, 158, 11, 0.6);
+  pointer-events: none;
+  border-radius: inherit;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ID 487: 속성 융합 빙결 방어막 */
+.fusion-shield-active {
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.8) !important;
+  border-color: #38bdf8 !important;
+}
+
+/* ID 425: 정적 비애니메이션 UI 요소 GPU 강제 가속 해제 */
+.static-ui-no-gpu {
+  transform: none !important;
+  will-change: auto !important;
+  backface-visibility: visible !important;
+}
+
+
 
 
