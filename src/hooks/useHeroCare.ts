@@ -374,12 +374,34 @@ export const useHeroCare = ({ season, onGrantSns }: UseHeroCareOptions): UseHero
     return grantedReward;
   }, [onGrantSns, upsertRecord]);
 
+  const feedPremium = useCallback((card: CardData | null | undefined): HeroCareRecord | null => {
+    if (!card) return null;
+    return upsertRecord(card, (record) => ({
+      ...record,
+      hunger: Math.min(MAX_STAT, record.hunger + 40),
+      mood: Math.min(MAX_STAT, record.mood + 40),
+      energy: Math.min(MAX_STAT, record.energy + 20),
+      affinity: record.affinity + 10,
+      lastAction: 'feed',
+      lastInteractionAt: Date.now(),
+      actionCounts: {
+        ...record.actionCounts,
+        feed: record.actionCounts.feed + 1,
+      },
+      memoryEntries: [
+        { action: 'feed', createdAt: Date.now() },
+        ...record.memoryEntries,
+      ].slice(0, 10),
+    }));
+  }, [upsertRecord]);
+
   return useMemo(() => ({
     getCareState,
     getRewardStatus,
     performAction,
     claimReward,
-  }), [claimReward, getCareState, getRewardStatus, performAction]);
+    feedPremium,
+  }), [claimReward, feedPremium, getCareState, getRewardStatus, performAction]);
 };
 
 export type { HeroCareAction, HeroCareMilestoneReward };

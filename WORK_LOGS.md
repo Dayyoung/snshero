@@ -2,6 +2,22 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-16 18:10 KST] [/rsi] [SCR-03 마이덱 & 카드 성장 (다마고치) 기획/디자인/개발 전면 개선 완료]
+- **순환 화면**: SCR-03 (마이덱 & 히어로 케어 / `mydeck`)
+- **생성 문서**: `docs/screen_audits/SCR-03_MYDECK.md`
+- **문제 원인 및 개선 내역**:
+  1. **사용자 유치 & 온보딩 (FTUE)**: 신규 유저가 상점에서 카드를 뽑은 후 최적 조합을 직관적으로 맞출 수 있도록 덱 슬롯 상단에 `⚡ [최강 덱 자동 편성 (Auto Best Deck)]` 원클릭 버튼 배치 및 축하 SFX + 햅틱 연동.
+  2. **모바일 퓨어 터치 UX & 금지사항 퇴출**: 모바일 드래그 제스처 간섭을 해소하기 위해 슬롯 탭 시 [교체 / 장비 / 돌봄 / 상세] 원터치 퀵 액션 드로어 툴바를 제공하고, 금지된 브라우저 `alert()` 2건을 커스텀 팝업(`showCustomAlert`)으로 100% 교체.
+  3. **과금 전환율 & 재화 순환**: 다마고치 돌봄(HeroCarePanel)에 `[특식 만복 영양제 1탭 풀충전 (30 SNS)]` 버튼을 추가하여 포만감/기분 +40, 친밀도 +10 즉시 회복 및 SNS 토큰 소모 연동.
+  4. **게임의 재미 & 도파민**: 3장 이상 동일 속성 또는 영웅 인연 활성 시 덱 슬롯 컨테이너 전체에 **골든 시너지 아우라 링(`ring-2 ring-amber-400/80 shadow-[0_0_24px_rgba(251,191,36,0.35)]`)** 및 펄스 FX 발동.
+- **검증 결과**:
+  - `npm run build`: 오류 0건 통과 (`✓ built in 8.90s`).
+  - Playwright 헤드리스 브라우저 실측:
+    - 390x844 모바일 뷰포트에서 `⚡ Auto Best Deck` 버튼 정상 렌더링 확인.
+    - 슬롯 카드 탭 시 모바일 퀵 액션 툴바 (`Quick Toolbar [Swap] button found: true`) 정상 마운트 확인.
+    - 콘솔 런타임 오류 0건.
+- **Git & 배포**: GitHub `origin/main` 푸시 완료.
+
 ## [2026-09-16 17:40 KST] [상점 카드팩 뽑기 화면 이동 및 GachaRevealSequence 전체 시퀀스 보장 & ReferenceError 픽스]
 - **문제 원인**:
   1. `App.tsx`에서 `dailyMissions`의 `incrementMissionProgress`를 import하지 않은 상태로 `addCard` (라인 4244)에서 호출하여, 상점에서 카드팩 구매 시 `ReferenceError: incrementMissionProgress is not defined`가 발생해 뽑기 화면 진입 전 자바스크립트 실행이 중단되는 치명적 버그 발생.

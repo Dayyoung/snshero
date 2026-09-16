@@ -13,6 +13,8 @@ interface HeroCarePanelProps {
   lowSpecMode?: boolean;
   onAction: (action: HeroCareAction) => void;
   onClaimReward: () => void;
+  snsBalance?: number;
+  onQuickFeedPremium?: () => void;
 }
 
 const ACTIONS: Array<{ action: HeroCareAction; icon: React.ComponentType<{ size?: number; className?: string }>; titleKey: string; descKey: string; }> = [
@@ -197,6 +199,32 @@ export const HeroCarePanel: React.FC<HeroCarePanelProps> = ({
           </button>
         ))}
       </div>
+      {onQuickFeedPremium && (
+        <div className="flex items-center justify-between p-3 rounded-2xl border border-amber-300 bg-amber-50 shadow-xs">
+          <div className="flex items-center gap-2 min-w-0 pr-2">
+            <div className="rounded-xl bg-amber-200/80 p-2 text-amber-800 shrink-0">
+              <Utensils size={16} className={cn(!lowSpecMode && 'animate-bounce')} />
+            </div>
+            <div className="min-w-0">
+              <div className="text-[11px] font-black text-slate-900 uppercase tracking-wider flex items-center gap-1.5 truncate">
+                <span>{language === 'ko' ? '특식 만복 영양제 풀충전' : 'Full Care Premium Treat'}</span>
+                <span className="text-[9px] bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded-full font-mono font-black shrink-0">+40</span>
+              </div>
+              <p className="text-[10px] text-slate-500 font-semibold truncate">
+                {language === 'ko' ? '포만감·기분 +40, 친밀도 +10 즉시 회복 (30 SNS)' : 'Hunger & Mood +40, Affinity +10 (30 SNS)'}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onQuickFeedPremium}
+            className="px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-xs font-black tracking-wide shadow-xs transition-all cursor-pointer touch-target shrink-0 flex items-center gap-1"
+          >
+            <span>30 SNS</span>
+            <Sparkles size={12} className={cn(!lowSpecMode && 'animate-pulse')} />
+          </button>
+        </div>
+      )}
 
       <div className="grid gap-3 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <div className="rounded-2xl border border-amber-200 bg-amber-50/80 p-3">

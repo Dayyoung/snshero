@@ -111,6 +111,12 @@ interface SortableCardItemProps {
   className?: string;
   representativeCardId?: number | null;
   representativePetCardId?: number | null;
+  activeQuickSlot?: number | null;
+  setActiveQuickSlot?: React.Dispatch<React.SetStateAction<number | null>>;
+  setSelectingIndex?: React.Dispatch<React.SetStateAction<number | null>>;
+  setIsPopupOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedCardForDetail?: React.Dispatch<React.SetStateAction<CardData | null>>;
+  setCardDetailTab?: React.Dispatch<React.SetStateAction<'stats' | 'skills' | 'lore'>>;
 }
 
 const SortableCardItem: React.FC<SortableCardItemProps> = ({
@@ -129,6 +135,12 @@ const SortableCardItem: React.FC<SortableCardItemProps> = ({
   className,
   representativeCardId,
   representativePetCardId,
+  activeQuickSlot,
+  setActiveQuickSlot,
+  setSelectingIndex,
+  setIsPopupOpen,
+  setSelectedCardForDetail,
+  setCardDetailTab,
 }) => {
   const {
     attributes,
@@ -235,6 +247,68 @@ const SortableCardItem: React.FC<SortableCardItemProps> = ({
           );
         })}
       </div>
+
+      {/* Mobile One-Touch Quick Action Toolbar (SCR-03) */}
+      {activeQuickSlot === idx && (
+        <div 
+          onClick={(e) => e.stopPropagation()}
+          className="flex items-center justify-center gap-1 mt-1 p-1 bg-slate-900 border border-amber-400/60 rounded-xl shadow-xl z-30 animate-in fade-in zoom-in duration-150"
+        >
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectingIndex?.(idx);
+              setIsPopupOpen?.(true);
+              setActiveQuickSlot?.(null);
+            }}
+            className="px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-[9px] font-black cursor-pointer shadow-xs active:scale-95 touch-target flex items-center gap-0.5"
+            title="카드 교체"
+          >
+            <span>🔄</span>
+            <span className="hidden xs:inline">{language === 'ko' ? '교체' : 'Swap'}</span>
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setItemManageIndex(idx);
+              setIsItemModalOpen(true);
+              setActiveQuickSlot?.(null);
+            }}
+            className="px-2 py-1 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-[9px] font-black cursor-pointer shadow-xs active:scale-95 touch-target flex items-center gap-0.5"
+            title="장비 관리"
+          >
+            <span>🛡️</span>
+            <span className="hidden xs:inline">{language === 'ko' ? '장비' : 'Gear'}</span>
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedCardForDetail?.(card);
+              setCardDetailTab?.('stats');
+              setActiveQuickSlot?.(null);
+            }}
+            className="px-2 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[9px] font-black cursor-pointer shadow-xs active:scale-95 touch-target flex items-center gap-0.5"
+            title="돌봄 & 상세"
+          >
+            <span>💖</span>
+            <span className="hidden xs:inline">{language === 'ko' ? '돌봄' : 'Care'}</span>
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setActiveQuickSlot?.(null);
+            }}
+            className="p-1 text-slate-400 hover:text-white rounded text-[9px] cursor-pointer"
+            title="닫기"
+          >
+            <X size={12} />
+          </button>
+        </div>
+      )}
     </div>
   );
 };
@@ -279,6 +353,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   const [editingCardIndex, setEditingCardIndex] = useState<number | null>(null);
   const [selectingIndex, setSelectingIndex] = useState<number | null>(null);
   const [itemManageIndex, setItemManageIndex] = useState<number | null>(null);
+  const [activeQuickSlot, setActiveQuickSlot] = useState<number | null>(null);
   const [itemSlotTab, setItemSlotTab] = useState<EquipmentSlot>('necklace');
   const [isEncyclopediaOpen, setIsEncyclopediaOpen] = useState(false);
   const [isAchievementsModalOpen, setIsAchievementsModalOpen] = useState(false);
@@ -449,7 +524,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
   const cardSkins = useCardSkins(season);
 
-  const { getCareState, getRewardStatus, performAction, claimReward } = useHeroCare({
+  const { getCareState, getRewardStatus, performAction, claimReward, feedPremium } = useHeroCare({
     season,
     onGrantSns: (amount) => updateSns(amount, 'hero-care-bond-reward'),
   });
@@ -686,6 +761,32 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     );
   };
 
+  const handleHeroCarePremiumFeed = useCallback(() => {
+    if (!selectedCardForDetail) return;
+    const currentSns = sns ?? stats?.sns ?? 0;
+    if (currentSns < 30) {
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+      showCustomAlert?.(
+        language === 'ko' ? 'SNS 포인트 부족' : 'Insufficient SNS',
+        language === 'ko'
+          ? '특식 만복 영양제를 먹이려면 30 SNS 포인트가 필요합니다. 상점이나 퀘스트에서 획득하세요!'
+          : 'You need 30 SNS to feed a Premium Treat. Earn more in the shop or quests!'
+      );
+      return;
+    }
+
+    updateSns(-30, '다마고치 특식 만복 영양제 충전');
+    feedPremium(selectedCardForDetail);
+    triggerHaptic('success');
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+    showCustomAlert?.(
+      language === 'ko' ? '특식 충전 완료' : 'Premium Treat Given',
+      language === 'ko'
+        ? '특식 만복 영양제를 먹여 포만감과 기분이 +40, 친밀도가 +10 상승했습니다!'
+        : 'Fed premium treat! Hunger & Mood +40, Affinity +10 boosted!'
+    );
+  }, [feedPremium, language, playSfx, selectedCardForDetail, showCustomAlert, sns, stats?.sns, updateSns]);
+
   const handleOptimizeDeck = () => {
     const sortedOwned = [...ownedCards]
       .map(card => ({
@@ -695,7 +796,10 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       .sort((a, b) => b.power - a.power);
 
     if (sortedOwned.length === 0) {
-      alert(language === 'ko' ? '보유한 카드가 없습니다.' : 'No cards owned.');
+      showCustomAlert?.(
+        language === 'ko' ? '카드 보유 부족' : 'No Cards Owned',
+        language === 'ko' ? '보유한 카드가 없습니다.' : 'No cards owned.'
+      );
       return;
     }
 
@@ -718,7 +822,8 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     });
 
     updateDeck(bestCards);
-    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    triggerHaptic('success');
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
     setShowOptimizeSuccessModal(true);
   };
 
@@ -740,6 +845,13 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   const [isSynergyModalOpen, setIsSynergyModalOpen] = useState(false);
   const [isVisualizerOpen, setIsVisualizerOpen] = useState(false);
   const activeBonds = useMemo(() => DeckBondSynergyEngine.getInstance().evaluateDeckBonds(currentDeck), [currentDeck]);
+  const deckElementSynergyActive = useMemo(() => {
+    if (activeBonds.length > 0) return true;
+    const elements = currentDeck.map(c => String((c as any)?.element || CARD_DATABASE[c?.imageIndex || 0]?.element || 'WATER').toUpperCase());
+    const counts: Record<string, number> = {};
+    elements.forEach(el => counts[el] = (counts[el] || 0) + 1);
+    return Math.max(0, ...Object.values(counts)) >= 3;
+  }, [activeBonds.length, currentDeck]);
 
   // Local state for editing modal
   const [editName, setEditName] = useState('');
@@ -905,9 +1017,10 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       return;
     }
 
-    setSelectingIndex(index);
-    setIsPopupOpen(true);
+    // Row 1045 / SCR-03: 원터치 퀵 액션 바 토글
+    setActiveQuickSlot(prev => (prev === index ? null : index));
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    triggerHaptic('light');
   };
 
   const selectMasterCard = (imgIdx: number, overrideTargetIndex?: number) => {
@@ -1510,9 +1623,19 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
           {/* ID 342, 347, 372, 377: 덱 스마트 액션 툴바 */}
           <div className="flex flex-wrap items-center justify-center gap-2 mb-3">
+            {/* FTUE / SCR-03: 원클릭 추천 최강 덱 버튼 */}
+            <button
+              onClick={handleOptimizeDeck}
+              className="px-3 py-1.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-600 hover:to-yellow-500 text-slate-950 font-mono text-[11px] font-black rounded-xs flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95 border border-amber-300 touch-target"
+              title="보유 카드 중 전투력 최강 조합으로 원클릭 자동 편성"
+            >
+              <Zap size={13} className="text-slate-950 fill-current" />
+              <span>{language === 'ko' ? '⚡ 최강 덱 자동 편성' : '⚡ Auto Best Deck'}</span>
+            </button>
+
             <button
               onClick={handleAutoFillOptimalSynergy}
-              className="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-mono text-[11px] font-bold rounded-xs flex items-center gap-1 cursor-pointer shadow-xs active:scale-95"
+              className="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-mono text-[11px] font-bold rounded-xs flex items-center gap-1 cursor-pointer shadow-xs active:scale-95 touch-target"
               title="보유 카드 중 최고 시너지 조합으로 자동 채우기"
             >
               <Sparkles size={12} className="text-amber-300" />
@@ -1521,7 +1644,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
             <button
               onClick={() => setIsDeckPresetCodeModalOpen(true)}
-              className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-mono text-[11px] font-bold rounded-xs flex items-center gap-1 cursor-pointer shadow-xs active:scale-95"
+              className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-mono text-[11px] font-bold rounded-xs flex items-center gap-1 cursor-pointer shadow-xs active:scale-95 touch-target"
               title="덱 코드 내보내기/불러오기 및 QR 공유"
             >
               <Layers size={12} className="text-indigo-400" />
@@ -1536,7 +1659,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                   setIsCompareModalOpen(true);
                 }
               }}
-              className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-mono text-[11px] font-bold rounded-xs flex items-center gap-1 cursor-pointer shadow-xs active:scale-95"
+              className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-mono text-[11px] font-bold rounded-xs flex items-center gap-1 cursor-pointer shadow-xs active:scale-95 touch-target"
               title="카드 1:1 비교 모달 열기"
             >
               <Swords size={12} className="text-amber-400" />
@@ -1544,7 +1667,16 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             </button>
           </div>
 
-          <div id="deck-list" className="mx-auto flex w-full max-w-full flex-nowrap sm:flex-wrap justify-center items-center gap-1 xs:gap-2 sm:gap-4 md:gap-6 px-0.5 sm:px-1">
+          {/* SCR-03: 골든 시너지 아우라 & 덱 슬롯 컨테이너 */}
+          <div 
+            id="deck-list" 
+            className={cn(
+              "mx-auto flex w-full max-w-full flex-nowrap sm:flex-wrap justify-center items-center gap-1 xs:gap-2 sm:gap-4 md:gap-6 px-1 py-2 transition-all duration-300 rounded-2xl",
+              deckElementSynergyActive && !lowSpecMode
+                ? "ring-2 ring-amber-400/80 shadow-[0_0_24px_rgba(251,191,36,0.35)] bg-gradient-to-r from-amber-500/5 via-purple-500/5 to-amber-500/5"
+                : "bg-slate-50/50 border border-slate-200/80"
+            )}
+          >
           <DndContext 
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -1572,6 +1704,12 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                   unequipItem={unequipItem}
                   representativeCardId={representativeCardId}
                   representativePetCardId={representativePetCardId}
+                  activeQuickSlot={activeQuickSlot}
+                  setActiveQuickSlot={setActiveQuickSlot}
+                  setSelectingIndex={setSelectingIndex}
+                  setIsPopupOpen={setIsPopupOpen}
+                  setSelectedCardForDetail={setSelectedCardForDetail}
+                  setCardDetailTab={setCardDetailTab}
                 />
               ))}
             </SortableContext>
@@ -2361,7 +2499,10 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                                   setIsPopupOpen(false);
                                 } else {
                                   if (selectionContext === 'upgrade') {
-                                    alert(language === 'ko' ? '덱에 있는 카드만 선택 가능합니다.' : 'Only cards in the deck can be selected.');
+                                    showCustomAlert?.(
+                                      language === 'ko' ? '선택 불가' : 'Unavailable',
+                                      language === 'ko' ? '덱에 편성된 카드만 선택 가능합니다.' : 'Only cards in the deck can be selected.'
+                                    );
                                     return;
                                   }
                                   setSelectionContext('replace');
@@ -3001,8 +3142,10 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                             rewardStatus={selectedHeroCareRewardStatus}
                             language={language}
                             lowSpecMode={lowSpecMode}
+                            snsBalance={sns}
                             onAction={handleHeroCareAction}
                             onClaimReward={handleHeroCareRewardClaim}
+                            onQuickFeedPremium={handleHeroCarePremiumFeed}
                           />
                         )}
                       </div>
