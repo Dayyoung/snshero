@@ -57,6 +57,7 @@ import { DeckPresetCodeModal } from '../components/DeckPresetCodeModal';
 import { DeckBalanceRadarChart } from '../components/DeckBalanceRadarChart';
 import { CardCompareModal } from '../components/CardCompareModal';
 import { MaterialDeficitModal } from '../components/MaterialDeficitModal';
+import { DeckCommandHub } from '../components/DeckCommandHub';
 
 interface MyDeckViewProps {
   currentDeck: CardData[];
@@ -1353,56 +1354,12 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             <HelpCircle size={16} className="text-slate-500" />
           </button>
         </div>
-        <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
-          <button
-            onClick={() => {
-              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-              const cardIndices = currentDeck.map(c => c.imageIndex || 0);
-              const nickname = user?.displayName || 'SNSMaster';
-              window.history.pushState({}, '', `/share?id=${encodeURIComponent(nickname)}&card1=${cardIndices[0]||0}&card2=${cardIndices[1]||0}&card3=${cardIndices[2]||0}&card4=${cardIndices[3]||0}&card5=${cardIndices[4]||0}`);
-              onNavigate('share');
-            }}
-            className="min-h-10 sm:min-h-11 px-2.5 sm:px-3 py-2 sm:py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg active:scale-95 transition-all cursor-pointer shadow-sm flex items-center gap-1.5 touch-target"
-            title={t('share', language)}
-          >
-            <Share2 size={14} className="shrink-0" />
-            <span className="text-[10px] font-bold uppercase">{t('share', language)}</span>
-          </button>
-          <button
-            onClick={() => {
-              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-              setIsElementAdvantageOpen(true);
-            }}
-            className="min-h-10 sm:min-h-11 px-2.5 sm:px-3 py-2 sm:py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg active:scale-95 transition-all cursor-pointer shadow-md flex items-center gap-1.5 touch-target"
-            title={language === 'ko' ? '속성 상성 가이드' : 'Element Advantage'}
-          >
-            <Flame size={14} className="shrink-0 text-amber-300" />
-            <span className="text-[10px] font-bold uppercase">{language === 'ko' ? '상성표' : 'AFFINITY'}</span>
-          </button>
-
-          <button
-            onClick={() => {
-              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-              setIs3DDeckViewerOpen(true);
-            }}
-            className="min-h-10 sm:min-h-11 px-2.5 sm:px-3 py-2 sm:py-2.5 bg-teal-500 hover:bg-teal-600 text-white rounded-lg active:scale-95 transition-all cursor-pointer shadow-md flex items-center gap-1.5 touch-target"
-            title={language === 'ko' ? '덱 3D 감상' : '3D DECK VIEW'}
-          >
-            <Camera size={14} className="shrink-0" />
-            <span className="text-[10px] font-bold uppercase">{language === 'ko' ? '3D' : '3D'}</span>
-          </button>
-
-          <button
-            onClick={() => {
-              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-              setIsDisassembleModalOpen(true);
-            }}
-            className="min-h-10 sm:min-h-11 px-2.5 sm:px-3 py-2 sm:py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg active:scale-95 transition-all cursor-pointer shadow-md flex items-center gap-1.5 touch-target"
-            title={language === 'ko' ? '카드 분해/환급' : 'Card Disassemble'}
-          >
-            <Trash2 size={14} className="shrink-0" />
-            <span className="text-[10px] font-bold uppercase">{language === 'ko' ? '분해' : 'SCRAP'}</span>
-          </button>
+        <div className="flex items-center justify-end gap-2">
+          <div className="px-3 py-1.5 bg-stone-900 text-amber-300 font-mono text-xs font-black rounded-sm border border-stone-800 flex items-center gap-1.5 shadow-xs">
+            <Zap size={13} className="fill-amber-400 text-amber-400" />
+            <span>{language === 'ko' ? '총 전투력' : 'TOTAL PWR'}:</span>
+            <span className="text-amber-200">{globalTotalPower.toLocaleString()}</span>
+          </div>
         </div>
       </div>
 
@@ -1417,16 +1374,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
-            {/* ID 447: Smart Deck Auto-Fill Button */}
-            <button
-              type="button"
-              onClick={handleSmartAutoFill}
-              className="px-2.5 py-1 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-black text-[10px] rounded-lg shadow-xs hover:brightness-110 active:scale-95 transition-all flex items-center gap-1"
-              title="보유 카드 중 최고 시너지 영웅 자동 배치"
-            >
-              <span>✨</span>
-              <span>{language === 'ko' ? '스마트 자동 완성' : 'Smart Auto-Fill'}</span>
-            </button>
 
             <div className="flex items-center gap-1 bg-slate-800 p-1 rounded-xl">
               {[1, 2, 3].map((presetNum) => (
@@ -1525,81 +1472,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         )}
       </div>
 
-      <div className="flex flex-wrap items-center justify-end gap-3 mt-3 sm:mt-4 mb-2 pb-3 sm:pb-4 border-b border-slate-200/60 font-sans">
-        
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:flex sm:flex-wrap sm:items-center sm:justify-end sm:gap-2.5 w-full md:w-auto font-mono">
-          <button
-            onClick={() => {
-              setSelectionContext('replace');
-              setSelectingIndex(null);
-              setIsPopupOpen(true);
-              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-            }}
-            id="inventory-btn"
-            className="px-2.5 sm:px-4 py-2.5 rounded-sm text-[10px] sm:text-xs font-bold uppercase tracking-tight transition-all flex items-center justify-center gap-1.5 border border-blue-600 bg-blue-600 hover:bg-blue-500 text-white touch-target active:scale-[0.98] shadow-sm cursor-pointer"
-            title={language === 'ko' ? '보유한 모든 카드 목록 확인 및 덱 교체' : 'View all owned cards and replace deck'}
-          >
-            <Layers size={14} className="shrink-0 sm:w-4 sm:h-4" />
-            <span className="whitespace-nowrap">{language === 'ko' ? '카드 인벤토리' : 'Card Vault'}</span>
-          </button>
-
-          <button
-            onClick={() => {
-              if (selectionContext === 'upgrade') {
-                setSelectionContext('replace');
-              } else {
-                setSelectionContext('upgrade');
-                setIsPopupOpen(true);
-              }
-              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-            }}
-            id="hero-nurture-btn"
-            className={cn(
-              "px-2 sm:px-4 py-2.5 rounded-sm text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 sm:gap-1.5 border touch-target active:scale-[0.98] shadow-sm cursor-pointer",
-              selectionContext === 'upgrade' 
-                ? "bg-white text-purple-600 border-purple-300" 
-                : "bg-purple-600 text-white hover:bg-purple-500 border-purple-500 shadow-purple-500/10"
-            )}
-          >
-            <StarIcon size={14} className="shrink-0 sm:w-4 sm:h-4" />
-            <span className="truncate">{t('hero_nurture', language)}</span>
-          </button>
-          <button 
-            onClick={() => {
-              if (selectionContext === 'equipment') {
-                setSelectionContext('replace');
-              } else {
-                setSelectionContext('equipment');
-                setIsPopupOpen(true);
-              }
-              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-            }}
-            id="equipment-btn"
-            className={cn(
-              "px-2 sm:px-4 py-2.5 rounded-sm text-[10px] sm:text-xs font-bold uppercase tracking-tight transition-all flex items-center justify-center gap-1 sm:gap-1.5 border touch-target active:scale-[0.98] shadow-sm cursor-pointer shrink-0",
-              selectionContext === 'equipment' 
-                ? "bg-white text-slate-900 border-slate-400" 
-                : "bg-slate-900 text-white hover:bg-slate-800 border-slate-900 shadow-slate-900/10"
-            )}
-          >
-            <Package size={14} className="shrink-0 sm:w-4 sm:h-4" />
-            <span className="whitespace-nowrap">{language === 'ko' ? '장비 관리' : 'Equipment'}</span>
-          </button>
-          <button 
-            onClick={() => {
-              setIsAchievementsModalOpen(true);
-              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-            }}
-            className="bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-900 px-2 sm:px-4 py-2.5 rounded-sm text-[10px] sm:text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-all flex items-center justify-center gap-1 sm:gap-1.5 border border-amber-300 touch-target active:scale-[0.98] shadow-sm shadow-amber-400/10 cursor-pointer"
-          >
-            <Trophy size={14} className="shrink-0 sm:w-4 sm:h-4" />
-            <span className="hidden sm:inline">{t('my_achievements', language)}</span>
-            <span className="sm:hidden">{Math.round((unlockedAchievements.length / ALL_ACHIEVEMENTS.length) * 100)}%</span>
-            <span className="hidden sm:inline">({Math.round((unlockedAchievements.length / ALL_ACHIEVEMENTS.length) * 100)}%)</span>
-          </button>
-        </div>
-      </div>
-
       <div className="flex flex-col gap-4 md:gap-6">
         <div className="flex flex-col items-center gap-3 sm:gap-4 w-full">
           {/* Active Deck Header Bar with Compact Synergy Button */}
@@ -1660,52 +1532,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               </span>
             </div>
           )}
-
-          {/* ID 342, 347, 372, 377: 덱 스마트 액션 툴바 */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-3">
-            {/* FTUE / SCR-03: 원클릭 추천 최강 덱 버튼 */}
-            <button
-              onClick={handleOptimizeDeck}
-              className="px-3 py-1.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-600 hover:to-yellow-500 text-slate-950 font-mono text-[11px] font-black rounded-xs flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95 border border-amber-300 touch-target"
-              title="보유 카드 중 전투력 최강 조합으로 원클릭 자동 편성"
-            >
-              <Zap size={13} className="text-slate-950 fill-current" />
-              <span>{language === 'ko' ? '⚡ 최강 덱 자동 편성' : '⚡ Auto Best Deck'}</span>
-            </button>
-
-            <button
-              onClick={handleAutoFillOptimalSynergy}
-              className="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-mono text-[11px] font-bold rounded-xs flex items-center gap-1 cursor-pointer shadow-xs active:scale-95 touch-target"
-              title="보유 카드 중 최고 시너지 조합으로 자동 채우기"
-            >
-              <Sparkles size={12} className="text-amber-300" />
-              <span>{language === 'ko' ? '시너지 자동 완성' : 'Auto Synergy'}</span>
-            </button>
-
-            <button
-              onClick={() => setIsDeckPresetCodeModalOpen(true)}
-              className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-mono text-[11px] font-bold rounded-xs flex items-center gap-1 cursor-pointer shadow-xs active:scale-95 touch-target"
-              title="덱 코드 내보내기/불러오기 및 QR 공유"
-            >
-              <Layers size={12} className="text-indigo-400" />
-              <span>{language === 'ko' ? '덱 코드 & QR' : 'Deck Code & QR'}</span>
-            </button>
-
-            <button
-              onClick={() => {
-                if (currentDeck.length >= 2) {
-                  setCompareCardA(currentDeck[0]);
-                  setCompareCardB(currentDeck[1]);
-                  setIsCompareModalOpen(true);
-                }
-              }}
-              className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-mono text-[11px] font-bold rounded-xs flex items-center gap-1 cursor-pointer shadow-xs active:scale-95 touch-target"
-              title="카드 1:1 비교 모달 열기"
-            >
-              <Swords size={12} className="text-amber-400" />
-              <span>{language === 'ko' ? '1:1 비교' : 'Compare'}</span>
-            </button>
-          </div>
 
           {/* SCR-03: 골든 시너지 아우라 & 덱 슬롯 컨테이너 */}
           <div 
@@ -1784,29 +1610,71 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
         </div>
         
-        {/* 카드 최적화 버튼 (중앙 정렬) */}
-        <div className="flex justify-center items-center flex-wrap gap-3 w-full my-1 sm:my-2">
-          <button
-            onClick={handleOptimizeDeck}
-            className="px-5 sm:px-6 py-2.5 bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-900 text-xs sm:text-sm font-bold uppercase rounded-xl shadow-md border border-amber-300 hover:opacity-95 active:scale-[0.98] transition-all flex items-center gap-2 touch-target cursor-pointer shadow-amber-400/10"
-            title={language === 'ko' ? '스킬/아이템이 적용된 최종 카드파워 기준 자동 최적화' : 'Auto-optimize based on final power including skills/items'}
-          >
-            <Zap size={14} className="sm:w-4 sm:h-4 fill-current animate-pulse text-slate-900" />
-            <span>{t('card_optimize', language)}</span>
-          </button>
-          
-          <button
-            onClick={() => {
-              setIsCombineModalOpen(true);
-              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-            }}
-            className="px-5 sm:px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs sm:text-sm font-bold uppercase rounded-xl shadow-md border border-purple-500 hover:opacity-95 active:scale-[0.98] transition-all flex items-center gap-2 touch-target cursor-pointer shadow-purple-500/10"
-            title={language === 'ko' ? '동일한 카드 3장을 상위 등급 카드로 합성' : 'Combine 3 identical cards into a higher tier'}
-          >
-            <Sparkles size={14} className="sm:w-4 sm:h-4 text-yellow-300 animate-pulse" />
-            <span>{t('card_combine', language)}</span>
-          </button>
-        </div>
+        {/* SCR-03: 통합 덱 커맨드 허브 (AI 편성, 인벤토리·육성, 프리셋·도구, 도감·상성) */}
+        <DeckCommandHub
+          language={language}
+          onOptimizeDeck={handleOptimizeDeck}
+          onAutoFillOptimalSynergy={handleAutoFillOptimalSynergy}
+          onCompareCards={() => {
+            if (currentDeck.length >= 2) {
+              setCompareCardA(currentDeck[0]);
+              setCompareCardB(currentDeck[1]);
+              setIsCompareModalOpen(true);
+            }
+          }}
+          onOpenSynergyModal={() => {
+            setIsSynergyModalOpen(true);
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+          }}
+          onOpenInventory={() => {
+            setSelectionContext('replace');
+            setSelectingIndex(null);
+            setIsPopupOpen(true);
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+          }}
+          onOpenEquipment={() => {
+            setSelectionContext('equipment');
+            setIsPopupOpen(true);
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+          }}
+          onOpenCombine={() => {
+            setIsCombineModalOpen(true);
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+          }}
+          onOpenHeroNurture={() => {
+            setSelectionContext('upgrade');
+            setIsPopupOpen(true);
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+          }}
+          activeDeckPreset={activeDeckPreset}
+          onSwitchDeckPreset={handleSwitchDeckPreset}
+          onOpenPresetCode={() => setIsDeckPresetCodeModalOpen(true)}
+          onShareDeck={() => {
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            const cardIndices = currentDeck.map(c => c.imageIndex || 0);
+            const nickname = user?.displayName || 'SNSMaster';
+            window.history.pushState({}, '', `/share?id=${encodeURIComponent(nickname)}&card1=${cardIndices[0]||0}&card2=${cardIndices[1]||0}&card3=${cardIndices[2]||0}&card4=${cardIndices[3]||0}&card5=${cardIndices[4]||0}`);
+            onNavigate('share');
+          }}
+          onOpen3DViewer={() => {
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            setIs3DDeckViewerOpen(true);
+          }}
+          onOpenDisassemble={() => {
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            setIsDisassembleModalOpen(true);
+          }}
+          onOpenElementAdvantage={() => {
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            setIsElementAdvantageOpen(true);
+          }}
+          onOpenAchievements={() => {
+            setIsAchievementsModalOpen(true);
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+          }}
+          achievementProgressPercent={Math.round((unlockedAchievements.length / ALL_ACHIEVEMENTS.length) * 100)}
+          inventoryCount={inventory.length}
+        />
       </div>
 
 
