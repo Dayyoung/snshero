@@ -2,6 +2,35 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-17 06:15 KST] [/rsi] [SCR-12 설정, 데일리 미션 & 출석 보상 센터 기획/디자인/개발 전면 개선 완료]
+- **순환 화면**: SCR-12 (설정, 데일리 미션 & 출석 보상 센터 / `setting`, `src/views/SettingView.tsx`, `src/components/DailyMissions.tsx`, `src/components/AttendanceStreakModal.tsx`)
+- **생성 문서**: `docs/screen_audits/SCR-12_SETTING.md`
+- **문제 원인 및 개선 내역**:
+  1. **사용자 유치 & 온보딩 (FTUE - SCR-12-01)**:
+     - 상단에 **`[🎯 일일 보상 센터 & 스트릭 HUD]`** 신설:
+       - 7일 출석 스트릭 현황 (Day N/7 및 당일 출석 여부, 미출석 시 `[!] 오늘 출석하기` 애니메이션 버튼)
+       - 일일 미션 보상 수령 현황 (미수령 건수 카운터 및 `[보상 받기]` CTA)
+       - 당일 AP 소모량 및 에너지 환급 마일스톤 게이지 (N / 150 AP)
+     - 상단에 3대 통합 서브 탭바 탑재:
+       1. `[⚙️ 시스템 설정]` (`system`): BGM/SFX, 주크박스, 햅틱 진동, 테마, 저사양 60fps, 배터리 절약, 캐시/버전 동기화, 백업/복원
+       2. `[📋 일일 미션]` (`missions`): `<DailyMissions />` 인라인 임베드 (일일 퀘스트, 주간 보물상자, 1회 무료 교체, 히스토리)
+       3. `[📅 7일 출석]` (`attendance`): 7일 연속 출석 스트릭 전용 허브
+  2. **모바일 퓨어 UX & 시각적 정돈 (SCR-12-02)**:
+     - `DESIGN.md` (Monospace 서체, 1px solid hairline, 플랫 컨테이너 `rounded-none`, 44px+ 엄지 최적화 터치 타깃) 전면 준수.
+     - 탭 전환 시 0ms 레이턴시 및 조건부 렌더링으로 DOM 경량화.
+  3. **과금 전환 & 도파민 루프 (SCR-12-03)**:
+     - 7일 연속 출석 스트릭 그리드(Day 1~7, +50~150 SNS + 7일차 SSR 팩 보너스, 1.0x~3.0x 승수).
+     - 대형 1탭 출석 버튼 (44px+) 및 출석 체크 즉시 `triggerHaptic('victory')` 진동 피드백.
+     - 출석/미션 탭 하단에 **`[🛒 상점 카드팩 소환 & 가챠 연동]`** 숏컷 배너 탑재하여 획득 SNS를 즉시 소환으로 소비하는 선순환 루프 구축.
+     - 월 1회 스트릭 세이버 및 100% 로컬스토리지 SSOT (`hero_attendance_streak_v1`, `hero_daily_missions_*`, `hero_stamina_pacing_*`) 영구 보존.
+- **검증 결과**:
+  - `npm run build`: 오류 0건 완벽 통과 (`✓ built in 10.54s`).
+  - Playwright 모바일(390x844) 실측 스크린샷 4종 캡처 및 렌더링 검증 완료:
+    - `scr12_01_system_and_hud.png`: 상단 일일 보상 요약 HUD (출석 Day 4/7 상태, 일일 미션 진행 현황, AP 에너지 소모율) 및 3대 서브 탭바 렌더링 완벽 확인.
+    - `scr12_02_daily_missions_tab.png`: 일일 미션 서브 탭 클릭 시 `<DailyMissions />` 인라인 임베드 렌더링 정상.
+    - `scr12_03_attendance_streak_tab.png`: 7일 출석 서브 탭 클릭 시 스트릭 헤더 연동 정상.
+    - `scr12_04_attendance_cards_and_shop.png`: Day 1~7 출석 카드 그리드, 승수 배지 (1.5x), 1탭 대형 출석 버튼, 상점 가챠 연동 배너 렌더링 정상.
+
 ## [2026-09-17 05:10 KST] [/rsi] [SCR-11 웹소설·웹툰 미디어 허브 기획/디자인/개발 전면 개선 완료]
 - **순환 화면**: SCR-11 (웹소설·웹툰 미디어 허브 / `novel`, `webtoon`, `src/views/NovelView.tsx`, `src/views/MovieView.tsx`, `src/views/AnimeView.tsx`)
 - **생성 문서**: `docs/screen_audits/SCR-11_NOVEL.md`

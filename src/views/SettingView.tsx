@@ -25,8 +25,11 @@ import { BgmJukeboxModal } from '../components/BgmJukeboxModal';
 import { triggerHaptic } from '../lib/haptic';
 import { checkAndSyncAppVersion, getLocalAppVersion, forcePurgeAndReload } from '../lib/versionManager';
 import { resetAllCaches } from '../lib/cacheManager';
-import { Smartphone, Music, RefreshCw, CheckCircle, ShieldCheck, SlidersHorizontal } from 'lucide-react';
+import { Smartphone, Music, RefreshCw, CheckCircle, ShieldCheck, SlidersHorizontal, CalendarCheck, Flame, Gift, ShoppingCart, Award, Sparkles } from 'lucide-react';
 import { HapticVibrationSettingsModal } from '../components/HapticVibrationSettingsModal';
+import { DailyMissions } from '../components/DailyMissions';
+import { loadDailyMissions, getClaimableCount } from '../lib/dailyMissions';
+import { StaminaPacingManager } from '../lib/staminaPacingManager';
 
 
 interface SettingViewProps {
@@ -123,6 +126,70 @@ export const SettingView: React.FC<SettingViewProps> = ({
   const [isHapticModalOpen, setIsHapticModalOpen] = useState(false);
   const [isCheckingVersion, setIsCheckingVersion] = useState(false);
   const [versionCheckMsg, setVersionCheckMsg] = useState<string | null>(null);
+
+  // SCR-12-01: 3대 통합 서브 탭 ('system' | 'missions' | 'attendance')
+  const [activeSubTab, setActiveSubTab] = useState<'system' | 'missions' | 'attendance'>('system');
+
+  // SCR-12-01: 일일 미션 데이터 상태
+  const [dailyMissionsData, setDailyMissionsData] = useState(() => loadDailyMissions());
+  const claimableMissionCount = getClaimableCount();
+
+  // SCR-12-03: 7일 출석 스트릭 상태 관리
+  const ATTENDANCE_STORAGE_KEY = 'hero_attendance_streak_v1';
+  const todayDateStr = new Date().toISOString().split('T')[0];
+  const [attendanceData, setAttendanceData] = useState<{
+    lastCheckDate: string;
+    currentStreak: number;
+    streakSaverUsedThisMonth: boolean;
+  }>(() => {
+    try {
+      const saved = localStorage.getItem(ATTENDANCE_STORAGE_KEY);
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return {
+      lastCheckDate: '',
+      currentStreak: 1,
+      streakSaverUsedThisMonth: false,
+    };
+  });
+
+  const isCheckedAttendanceToday = attendanceData.lastCheckDate === todayDateStr;
+
+  const handleClaimDailyAttendance = () => {
+    if (isCheckedAttendanceToday) return;
+    triggerHaptic('victory');
+    const nextStreak = attendanceData.currentStreak >= 7 ? 1 : attendanceData.currentStreak + 1;
+    const streakPoints = [50, 60, 70, 80, 90, 100, 150];
+    const rewardSns = streakPoints[Math.min(6, (attendanceData.currentStreak - 1) % 7)] || 50;
+
+    const nextState = {
+      ...attendanceData,
+      lastCheckDate: todayDateStr,
+      currentStreak: nextStreak,
+    };
+    setAttendanceData(nextState);
+    localStorage.setItem(ATTENDANCE_STORAGE_KEY, JSON.stringify(nextState));
+
+    // SNS 포인트 지급
+    const curSns = parseInt(localStorage.getItem('hero_sns') || '500', 10);
+    localStorage.setItem('hero_sns', String(curSns + rewardSns));
+    window.dispatchEvent(new Event('hero_sns_updated'));
+
+    setSystemNotice(
+      language === 'ko'
+        ? `🎉 [7일 출석 체크 완료] 연속 ${attendanceData.currentStreak}일차 보상 +${rewardSns} SNS가 지급되었습니다!`
+        : `🎉 [Attendance Checked] Day ${attendanceData.currentStreak} Streak! Claimed +${rewardSns} SNS!`
+    );
+  };
+
+  // AP 에너지 소모량 상태
+  const [burnedAp, setBurnedAp] = useState(() => {
+    try {
+      return StaminaPacingManager.getInstance().getState().dailyApBurned || 0;
+    } catch {
+      return 0;
+    }
+  });
 
 
   const handleCheckVersion = async () => {
@@ -442,7 +509,156 @@ export const SettingView: React.FC<SettingViewProps> = ({
         )}
       </AnimatePresence>
 
-      <div className="space-y-8">
+      {/* SCR-12-01: 상단 일일 보상 요약 HUD */}
+      <section className="border border-[#201d1d]/12 bg-white p-4 font-mono">
+        <div className="flex items-center justify-between border-b border-[#201d1d]/10 pb-2 mb-3">
+          <div className="flex items-center gap-2">
+            <Flame size={16} className="text-amber-500" />
+            <span className="text-xs font-bold text-[#201d1d] uppercase tracking-wider">
+              {language === 'ko' ? '[일일 보상 센터 & 스트릭 HUD]' : '[DAILY REWARD & STREAK HUD]'}
+            </span>
+          </div>
+          <span className="text-[10px] text-[#201d1d]/60 font-bold">
+            {language === 'ko' ? '매일 00:00 KST 초기화' : 'RESETS DAILY AT 00:00'}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          {/* 1. 출석 스트릭 */}
+          <div className="border border-[#201d1d]/10 p-2.5 bg-[#fdfcfc] flex items-center justify-between">
+            <div className="space-y-0.5">
+              <p className="text-[10px] text-[#201d1d]/60 font-bold flex items-center gap-1">
+                <CalendarCheck size={12} className="text-indigo-600" />
+                {language === 'ko' ? '7일 출석 스트릭' : '7-Day Streak'}
+              </p>
+              <p className="text-xs font-bold text-[#201d1d]">
+                Day {attendanceData.currentStreak} / 7
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => { setActiveSubTab('attendance'); triggerHaptic('light'); }}
+              className={cn(
+                "px-2 py-1 text-[10px] font-bold border transition-all cursor-pointer",
+                isCheckedAttendanceToday
+                  ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                  : "border-amber-500 bg-amber-50 text-amber-900 animate-pulse"
+              )}
+            >
+              {isCheckedAttendanceToday
+                ? (language === 'ko' ? '[✓ 출석 완료]' : '[✓ CHECKED]')
+                : (language === 'ko' ? '[!] 오늘 출석하기' : '[!] CHECK-IN')}
+            </button>
+          </div>
+
+          {/* 2. 일일 미션 수령 현황 */}
+          <div className="border border-[#201d1d]/10 p-2.5 bg-[#fdfcfc] flex items-center justify-between">
+            <div className="space-y-0.5">
+              <p className="text-[10px] text-[#201d1d]/60 font-bold flex items-center gap-1">
+                <Gift size={12} className="text-emerald-600" />
+                {language === 'ko' ? '일일 미션 보상' : 'Daily Missions'}
+              </p>
+              <p className="text-xs font-bold text-[#201d1d]">
+                {claimableMissionCount > 0
+                  ? (language === 'ko' ? `${claimableMissionCount}건 수령 대기!` : `${claimableMissionCount} CLAIMABLE!`)
+                  : (language === 'ko' ? '미션 진행 중' : 'IN PROGRESS')}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => { setActiveSubTab('missions'); triggerHaptic('light'); }}
+              className={cn(
+                "px-2 py-1 text-[10px] font-bold border transition-all cursor-pointer",
+                claimableMissionCount > 0
+                  ? "border-rose-500 bg-rose-50 text-rose-700 animate-bounce"
+                  : "border-[#201d1d]/20 bg-white text-[#201d1d]/70 hover:border-[#201d1d]"
+              )}
+            >
+              {claimableMissionCount > 0
+                ? (language === 'ko' ? '[보상 받기]' : '[CLAIM]')
+                : (language === 'ko' ? '[미션 보기]' : '[VIEW]')}
+            </button>
+          </div>
+
+          {/* 3. 당일 AP 소모 캐시백 */}
+          <div className="border border-[#201d1d]/10 p-2.5 bg-[#fdfcfc] flex items-center justify-between">
+            <div className="space-y-0.5">
+              <p className="text-[10px] text-[#201d1d]/60 font-bold flex items-center gap-1">
+                <Zap size={12} className="text-amber-500" />
+                {language === 'ko' ? '당일 AP 에너지' : 'Daily AP Burn'}
+              </p>
+              <p className="text-xs font-bold text-[#201d1d]">
+                {burnedAp} / 150 AP
+              </p>
+            </div>
+            <span className={cn(
+              "px-2 py-1 text-[10px] font-bold border",
+              burnedAp >= 150
+                ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                : "border-[#201d1d]/20 bg-white text-[#201d1d]/60"
+            )}>
+              {burnedAp >= 150
+                ? (language === 'ko' ? '[MAX 환급]' : '[MAX REBATE]')
+                : `[${Math.min(100, Math.round((burnedAp / 150) * 100))}%]`}
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* SCR-12-01: 3대 통합 서브 탭바 */}
+      <nav aria-label="Settings sub tabs" className="grid grid-cols-3 gap-1.5 border-b border-[#201d1d]/12 pb-3 font-mono">
+        <button
+          type="button"
+          onClick={() => { setActiveSubTab('system'); triggerHaptic('light'); }}
+          className={cn(
+            "min-h-[44px] py-2 px-2 text-xs font-bold border transition-all flex items-center justify-center gap-1.5 cursor-pointer select-none",
+            activeSubTab === 'system'
+              ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+              : "bg-white text-[#201d1d] border-[#201d1d]/20 hover:border-[#201d1d] hover:bg-slate-50"
+          )}
+        >
+          <Sliders size={14} />
+          <span>{language === 'ko' ? '시스템 설정' : 'SYSTEM'}</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => { setActiveSubTab('missions'); triggerHaptic('light'); }}
+          className={cn(
+            "min-h-[44px] py-2 px-2 text-xs font-bold border transition-all flex items-center justify-center gap-1.5 cursor-pointer relative select-none",
+            activeSubTab === 'missions'
+              ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+              : "bg-white text-[#201d1d] border-[#201d1d]/20 hover:border-[#201d1d] hover:bg-slate-50"
+          )}
+        >
+          <Gift size={14} />
+          <span>{language === 'ko' ? '일일 미션' : 'MISSIONS'}</span>
+          {claimableMissionCount > 0 && (
+            <span className="ml-0.5 px-1.5 py-0.2 bg-rose-600 text-white text-[10px] font-bold rounded-full">
+              {claimableMissionCount}
+            </span>
+          )}
+        </button>
+        <button
+          type="button"
+          onClick={() => { setActiveSubTab('attendance'); triggerHaptic('light'); }}
+          className={cn(
+            "min-h-[44px] py-2 px-2 text-xs font-bold border transition-all flex items-center justify-center gap-1.5 cursor-pointer relative select-none",
+            activeSubTab === 'attendance'
+              ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+              : "bg-white text-[#201d1d] border-[#201d1d]/20 hover:border-[#201d1d] hover:bg-slate-50"
+          )}
+        >
+          <CalendarCheck size={14} />
+          <span>{language === 'ko' ? '7일 출석' : 'STREAK'}</span>
+          {!isCheckedAttendanceToday && (
+            <span className="ml-0.5 w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+          )}
+        </button>
+      </nav>
+
+      {/* TAB 1: 기존 시스템 설정 */}
+      {activeSubTab === 'system' && (
+        <div className="space-y-8">
 
         <section className="space-y-6">
           <div className="flex items-center gap-4">
@@ -1467,8 +1683,189 @@ export const SettingView: React.FC<SettingViewProps> = ({
             </button>
           </div>
         </section>
+      </div>
+    )}
 
+      {/* TAB 2: 일일 미션 센터 */}
+      {activeSubTab === 'missions' && (
+        <div className="space-y-6">
+          <DailyMissions />
+        </div>
+      )}
+
+      {/* TAB 3: 7일 출석 스트릭 & 보상 센터 */}
+      {activeSubTab === 'attendance' && (
+        <div className="space-y-6 font-mono">
+          {/* 헤더 배너 */}
+          <div className="border border-[#201d1d]/12 bg-white p-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#201d1d]/10 pb-4 mb-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <CalendarCheck className="text-indigo-600" size={20} />
+                  <h3 className="text-sm font-bold text-[#201d1d] uppercase tracking-wider">
+                    {language === 'ko' ? '7일 연속 출석 스트릭 (Attendance Streak)' : '7-DAY ATTENDANCE STREAK'}
+                  </h3>
+                </div>
+                <p className="text-xs text-[#201d1d]/70 mt-1">
+                  {language === 'ko'
+                    ? '매일 출석하여 SNS 보상을 획득하고, 7일 완주 시 최고 등급 SSR 히어로 카드팩 소환 혜택을 획득하세요!'
+                    : 'Check in daily to claim SNS rewards, and unlock SSR Hero Pack benefits upon 7-day completion!'}
+                </p>
+              </div>
+
+              {/* 연속 출석 배지 */}
+              <div className="flex items-center gap-2">
+                <div className="border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-center">
+                  <p className="text-[10px] text-indigo-700 font-bold uppercase">
+                    {language === 'ko' ? '현재 스트릭' : 'CURRENT STREAK'}
+                  </p>
+                  <p className="text-base font-black text-indigo-900">
+                    Day {attendanceData.currentStreak}
+                  </p>
+                </div>
+                <div className="border border-amber-200 bg-amber-50 px-3 py-1.5 text-center">
+                  <p className="text-[10px] text-amber-700 font-bold uppercase">
+                    {language === 'ko' ? '보너스 승수' : 'MULTIPLIER'}
+                  </p>
+                  <p className="text-base font-black text-amber-900">
+                    {attendanceData.currentStreak >= 7 ? '3.0x' : attendanceData.currentStreak >= 5 ? '2.0x' : attendanceData.currentStreak >= 3 ? '1.5x' : '1.0x'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 7일 출석 카드 그리드 */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2.5 mb-5">
+              {[
+                { day: 1, sns: 50, special: null },
+                { day: 2, sns: 60, special: null },
+                { day: 3, sns: 70, special: null },
+                { day: 4, sns: 80, special: null },
+                { day: 5, sns: 90, special: null },
+                { day: 6, sns: 100, special: null },
+                { day: 7, sns: 150, special: 'SSR_PACK' },
+              ].map((item) => {
+                const isPast = item.day < attendanceData.currentStreak;
+                const isCurrent = item.day === attendanceData.currentStreak;
+                const isFuture = item.day > attendanceData.currentStreak;
+
+                return (
+                  <div
+                    key={item.day}
+                    className={cn(
+                      "p-3 border flex flex-col items-center justify-between min-h-[110px] text-center transition-all relative",
+                      isPast && "border-emerald-500 bg-emerald-50/70 text-emerald-900",
+                      isCurrent && !isCheckedAttendanceToday && "border-amber-500 bg-amber-50 text-amber-950 ring-2 ring-amber-400",
+                      isCurrent && isCheckedAttendanceToday && "border-emerald-500 bg-emerald-50/70 text-emerald-900",
+                      isFuture && "border-[#201d1d]/15 bg-slate-50 text-[#201d1d]/40"
+                    )}
+                  >
+                    <span className="text-[10px] font-bold tracking-wider uppercase">
+                      DAY 0{item.day}
+                    </span>
+
+                    <div className="my-1.5 flex flex-col items-center">
+                      {item.special ? (
+                        <div className="p-1.5 bg-amber-100 border border-amber-300 text-amber-700 rounded-none mb-1">
+                          <Award size={18} />
+                        </div>
+                      ) : (
+                        <Gift size={18} className={isPast || isCurrent ? "text-indigo-600" : "text-slate-400"} />
+                      )}
+                      <span className="text-xs font-bold mt-0.5">
+                        +{item.sns} SNS
+                      </span>
+                      {item.special && (
+                        <span className="text-[9px] font-black text-amber-800 bg-amber-200 px-1 mt-0.5">
+                          +SSR 팩!
+                        </span>
+                      )}
+                    </div>
+
+                    <span className={cn(
+                      "text-[9px] font-bold px-1.5 py-0.5 border w-full",
+                      (isPast || (isCurrent && isCheckedAttendanceToday))
+                        ? "border-emerald-600 bg-emerald-100 text-emerald-800"
+                        : isCurrent
+                          ? "border-amber-600 bg-amber-100 text-amber-900 animate-pulse"
+                          : "border-[#201d1d]/10 bg-white text-[#201d1d]/40"
+                    )}>
+                      {isPast || (isCurrent && isCheckedAttendanceToday)
+                        ? (language === 'ko' ? '[✓ 완]' : '[✓ DONE]')
+                        : isCurrent
+                          ? (language === 'ko' ? '[오늘]' : '[TODAY]')
+                          : (language === 'ko' ? '[대기]' : '[LOCK]')}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* 1탭 출석 버튼 (44px+ 터치 타깃) */}
+            <div className="pt-1">
+              {!isCheckedAttendanceToday ? (
+                <button
+                  type="button"
+                  onClick={handleClaimDailyAttendance}
+                  className="w-full min-h-[48px] py-3.5 px-4 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold border border-[#201d1d] hover:bg-[#201d1d]/90 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm rounded-none"
+                >
+                  <Sparkles size={16} className="text-amber-300 animate-spin" />
+                  <span>
+                    {language === 'ko'
+                      ? `[+] 오늘 ${attendanceData.currentStreak}일차 출석 체크하고 +${[50, 60, 70, 80, 90, 100, 150][Math.min(6, attendanceData.currentStreak - 1)]} SNS 받기`
+                      : `[+] Check-in Day ${attendanceData.currentStreak} & Claim +${[50, 60, 70, 80, 90, 100, 150][Math.min(6, attendanceData.currentStreak - 1)]} SNS`}
+                  </span>
+                </button>
+              ) : (
+                <div className="w-full min-h-[48px] py-3 px-4 bg-emerald-50 border border-emerald-500 text-emerald-900 text-xs font-bold flex items-center justify-center gap-2 rounded-none">
+                  <CheckCircle2 size={18} className="text-emerald-600" />
+                  <span>
+                    {language === 'ko'
+                      ? `[✓ 오늘 출석 완료] 내일 00:00 KST에 Day ${attendanceData.currentStreak >= 7 ? 1 : attendanceData.currentStreak} 보상이 열립니다!`
+                      : `[✓ Today's Check-in Complete] Next Day unlocked tomorrow at 00:00 KST!`}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
+
+          {/* 상점 카드팩 가챠 바로가기 배너 */}
+          <div className="border border-[#201d1d]/12 bg-[#201d1d]/5 p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="space-y-1 text-center sm:text-left">
+              <h4 className="font-bold text-xs text-[#201d1d] flex items-center justify-center sm:justify-start gap-1.5">
+                <ShoppingCart size={15} className="text-indigo-600" />
+                {language === 'ko' ? '[상점 카드팩 소환 & 가챠 연동]' : '[SHOP CARD PACK SUMMON & GACHA]'}
+              </h4>
+              <p className="text-[11px] text-[#201d1d]/70 leading-relaxed">
+                {language === 'ko'
+                  ? '출석 및 일일 미션으로 모은 SNS를 상점에서 즉시 강력한 SSR 영웅 카드팩 소환에 사용하세요!'
+                  : 'Use claimed SNS from attendance and daily missions to summon powerful SSR hero packs in the shop!'}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => { triggerHaptic('light'); onNavigate('shop'); }}
+              className="min-h-[44px] px-4 py-2.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold border border-[#201d1d] hover:bg-[#201d1d]/90 active:scale-95 transition-all flex items-center gap-1.5 shrink-0 rounded-none cursor-pointer"
+            >
+              <Sparkles size={14} className="text-amber-300" />
+              <span>{language === 'ko' ? '상점 뽑기 바로가기 →' : 'Go to Shop Gacha →'}</span>
+            </button>
+          </div>
+
+          {/* 스트릭 규칙 & 안심 보호 안내 */}
+          <div className="border border-[#201d1d]/12 bg-white p-4 text-xs space-y-2">
+            <h5 className="font-bold text-[#201d1d] flex items-center gap-1.5 text-[11px]">
+              <ShieldCheck size={14} className="text-emerald-600" />
+              {language === 'ko' ? '[스트릭 규칙 및 100% 로컬 영구 보존 안내]' : '[STREAK RULES & 100% LOCAL SSOT]'}
+            </h5>
+            <ul className="text-[10px] text-[#201d1d]/70 space-y-1 list-disc list-inside leading-relaxed">
+              <li>{language === 'ko' ? '출석 기록과 획득 SNS는 100% 로컬스토리지(LocalStorage)에 영구 저장됩니다.' : 'Attendance progress and claimed SNS are 100% permanently stored in LocalStorage.'}</li>
+              <li>{language === 'ko' ? '7일차 보상 수령 시 8일차부터는 Day 1부터 새로운 7일 사이클이 시작됩니다.' : 'Upon claiming Day 7, a fresh 7-day cycle begins from Day 1 on Day 8.'}</li>
+              <li>{language === 'ko' ? '하루를 놓쳐도 매월 1회 스트릭 세이버가 자동 발동되어 연속 출석이 유지됩니다.' : 'Missing one day automatically triggers the monthly Streak Saver to preserve your streak.'}</li>
+            </ul>
+          </div>
+        </div>
+      )}
 
           <footer className="pt-20 text-center">
         <p className="text-sm font-bold tracking-[0.6em] opacity-10">{t('system_version', language)} SNS_HERO_KERNAL v{appCurrentVersion}.Build</p>
