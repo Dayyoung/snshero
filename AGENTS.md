@@ -2,8 +2,8 @@
 
 ## 스프레드시트 개선 작업 진행 상태
 - **현재 연동 스프레드시트 (공개 CSV)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vRF82ZJBHIhPsTzzjGm8DFutzw6PtAwqT_iyEB3MG5yKvZrEs354rKHy7YIFIO2zgqKSuRbo62uNyX_/pub?gid=0&single=true&output=csv`
-- **마지막 수정 완료 항목 ID**: `[SCR-03 마이덱 & 카드 성장 (다마고치) 완료] 덱 완성 골든 시너지 아우라 & 속성 펄스 FX, 슬롯 1탭 퀵 액션 드로어(교체/장비/돌봄/상세) & 브라우저 alert() 완전 퇴출, 원클릭 추천 최강 덱(Auto-Build) FTUE 온보딩 & 다마고치 특식 만복 영양제(30 SNS) 충전 전수 구현 및 빌드 검증 완료! (다음 순환 대기: SCR-04 상점 & 카드팩 가챠)`
-- **최종 업데이트 일시**: 2026-09-16 18:10 (KST)
+- **마지막 수정 완료 항목 ID**: `[SCR-04 상점 & 카드팩 가챠 완료] 일일 1회 무료 브론즈 팩 소환(FTUE 온보딩), 1인 1회 한정 파격 핫딜 초심자 성장 스타터 번들(+250 SNS 순수익/150 AP/SR+ 확정 골드팩 5연), 실시간 30회 골드팩 천장 동적 트래커 HUD, 모바일 원터치 카테고리 퀵 점프 탭바 전수 구현 및 빌드 검증 완료! (다음 순환 대기: SCR-05 AI 미션 & PVE 던전)`
+- **최종 업데이트 일시**: 2026-09-16 19:10 (KST)
 
 - **신규 항목 직행 원칙**: `/gemini-ex` 실행 시 이미 완료된 이전 항목(Row 1 ~ 마지막 완료 Row)은 **처음부터 다시 점검하지 않고 즉시 스킵**하며, 마지막 완료 항목 바로 다음의 **신규 미작업 항목**부터 즉시 착수합니다.
 - **무작업 시 침묵 원칙 (Silent if No-op)**: 크론 작업 실행 시 신규로 개선할 미작업 항목이 없으면 사용자에게 별도의 알림 메시지를 보내지 않고 조용히 대기합니다.
@@ -176,6 +176,8 @@
 - `hero_refund_requests`: 달러 결제 굿즈 환불 신청 접수 상태 저장
 - `hero_card_marketplace_state_{season}`: 카드 P2P 거래소 로컬 MVP 상태 저장 (판매 목록, 구매 요청, 에스크로/취소 로그, 카운터)
 - `hero_gacha_pity_{season}`: 카드팩 천장 진행도 저장 (시즌/팩별 현재 횟수, 마지막 보장 시각)
+- `hero_daily_free_summon_{todayDateKey}`: 당일 상점 1회 무료 브론즈 팩 소환 수령 여부 저장
+- `hero_starter_pack_purchased_{season}`: 초심자 1회 한정 스타터 번들 팩 구매 여부 저장
 - `hero_hero_growth_{season}`: 마이덱 다마고치형 히어로 돌봄 상태 저장 (카드별 포만감, 기분, 훈련, 휴식력, 친밀도, 마지막 상호작용, 유대 보상/기념 배지 상태)
 - `hero_monster_pet_{season}`: 대표 카드별 몬스터 애완동료 설정 저장 (대표 카드 ID별 연결된 몬스터/드래곤 카드 ID 매핑)
 - `hero_simulation_index`: 시뮬레이션 테스트 인덱스

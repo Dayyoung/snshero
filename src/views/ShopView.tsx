@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { ShoppingBag, ArrowRight, Zap, Terminal, Sparkles, AlertCircle, X, Package, Activity, ShieldAlert, History, Clock, Lock, HelpCircle, ChevronLeft, ChevronRight, BookOpen, Film, Download, Play, Layers } from 'lucide-react';
+import { ShoppingBag, ArrowRight, Zap, Terminal, Sparkles, AlertCircle, X, Package, Activity, ShieldAlert, History, Clock, Lock, HelpCircle, ChevronLeft, ChevronRight, BookOpen, Film, Download, Play, Layers, CheckCircle2 } from 'lucide-react';
+import { triggerHaptic } from '../lib/haptic';
 import { motion, AnimatePresence } from 'motion/react';
 import { PayPalScriptProvider, PayPalButtons, usePayPalScriptReducer, FUNDING } from "@paypal/react-paypal-js";
 import { QRCodeSVG } from 'qrcode.react';
@@ -419,6 +420,82 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
   // ID 513: 신규 미보유 카드 획득 알림 모달/토스트
   const [newCardBonusNotice, setNewCardBonusNotice] = useState<{ cardName: string; bonusSns: number } | null>(null);
+
+  // SCR-04: 일일 1회 무료 소환 (Daily Free Pull) 상태
+  const [dailyFreeSummonClaimed, setDailyFreeSummonClaimed] = useState<boolean>(() => {
+    return typeof window !== 'undefined'
+      ? localStorage.getItem(`hero_daily_free_summon_${todayDateKey}`) === 'true'
+      : false;
+  });
+
+  // SCR-04: 초심자 1회 한정 스타터팩 번들 (Starter Pack) 구매 상태
+  const [isStarterPackPurchased, setIsStarterPackPurchased] = useState<boolean>(() => {
+    return typeof window !== 'undefined'
+      ? localStorage.getItem(`hero_starter_pack_purchased_${currentSeason}`) === 'true'
+      : false;
+  });
+
+  // SCR-04: 일일 무료 소환 핸들러
+  const handleDailyFreeSummon = () => {
+    if (dailyFreeSummonClaimed) return;
+    localStorage.setItem(`hero_daily_free_summon_${todayDateKey}`, 'true');
+    setDailyFreeSummonClaimed(true);
+
+    const newCards = createPackCards('bronze');
+    recordGachaPity('bronze', newCards.map(c => c.rarity));
+
+    setGachaState({
+      isActive: true,
+      step: 0,
+      packType: 'bronze',
+      isRevealed: false,
+      cards: newCards,
+    });
+
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2012/2012-preview.mp3');
+    triggerHaptic('victory');
+  };
+
+  // SCR-04: 초심자 스타터팩 번들 구매 핸들러
+  const buyStarterPack = () => {
+    if (isStarterPackPurchased) return;
+    const cost = 50;
+    if (sns < cost) {
+      setErrorVisible(true);
+      setTimeout(() => setErrorVisible(false), 4000);
+      setShortfallInfo({ req: cost, cur: sns });
+      setIsShortfallModalOpen(true);
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+      return;
+    }
+
+    // 50 SNS 차감 후 300 SNS 캐시백 보너스 (순이익 +250 SNS)
+    updateSns(-cost, 'starter_pack_purchase', '초심자 한정 스타터팩 구매');
+    updateSns(300, 'starter_pack_bonus', '스타터팩 300 SNS 캐시백');
+
+    // AP +150 충전
+    const curAp = Number(localStorage.getItem('hero_player_stamina') || '80');
+    localStorage.setItem('hero_player_stamina', String(curAp + 150));
+    window.dispatchEvent(new Event('hero_stamina_updated'));
+
+    // SR+ 확정 골드 팩 소환 5장
+    const newCards = createPackCards('gold');
+    recordGachaPity('gold', newCards.map(c => c.rarity));
+
+    localStorage.setItem(`hero_starter_pack_purchased_${currentSeason}`, 'true');
+    setIsStarterPackPurchased(true);
+
+    setGachaState({
+      isActive: true,
+      step: 0,
+      packType: 'gold',
+      isRevealed: false,
+      cards: newCards,
+    });
+
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+    triggerHaptic('heavy');
+  };
 
   // 핸들러: ID 518 AP 물약 구매
   const handleBuyApPotion = () => {
@@ -3607,58 +3684,75 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </div>
 
           {/* ID 423, ID 483, ID 463, ID 473, ID 433: Shop Retention & Convenience Bar */}
-          <div className="w-full bg-white dark:bg-[#1a1717] border border-slate-200 dark:border-white/15 p-3 rounded-none font-mono text-xs mb-4 space-y-2.5 shadow-xs">
-            {/* Row 1: Daily Free Roulette Beacon & Free Summon Timer */}
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-white/10 pb-2">
-              <div className="flex items-center gap-2">
-                {/* ID 423: Free Spin Beacon */}
-                <span className="px-2 py-0.5 bg-emerald-500 text-black font-black text-[10px] animate-pulse rounded-none">
-                  [ FREE SPIN READY ]
-                </span>
-                {/* ID 483: Free Summon Countdown Banner */}
-                <span className="text-[11px] text-slate-700 dark:text-slate-300 font-bold flex items-center gap-1">
-                  <span>🎁 {language === 'ko' ? '일일 무료 단차' : 'Daily Free Summon'}:</span>
-                  <span className="text-indigo-600 dark:text-indigo-400 font-black">03:14:22</span>
-                </span>
-              </div>
+          {(() => {
+            const goldPity = getGachaPityView(gachaPityState, 'gold');
+            const goldPityPct = Math.min(100, Math.max(0, Math.round((goldPity.current / goldPity.threshold) * 100)));
+            return (
+              <div className="w-full bg-white dark:bg-[#1a1717] border border-slate-200 dark:border-white/15 p-3 rounded-none font-mono text-xs mb-4 space-y-2.5 shadow-xs">
+                {/* Row 1: Daily Free Roulette Beacon & Free Summon Action */}
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-white/10 pb-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {/* ID 423: Free Spin Beacon */}
+                    <span className="px-2 py-0.5 bg-amber-400 text-black font-black text-[10px] rounded-none">
+                      [ FREE SPIN READY ]
+                    </span>
+                    {/* ID 483: Daily Free Summon Action (SCR-04 FTUE) */}
+                    {!dailyFreeSummonClaimed ? (
+                      <button
+                        type="button"
+                        onClick={handleDailyFreeSummon}
+                        className="px-2.5 py-1 bg-emerald-500 hover:bg-emerald-400 text-black font-black text-[10px] rounded-sm transition-transform active:scale-95 flex items-center gap-1 animate-pulse cursor-pointer shadow-xs"
+                      >
+                        <Sparkles size={11} className="shrink-0" />
+                        <span>{language === 'ko' ? '🎁 일일 무료 소환 [READY]' : '🎁 Daily Free Summon [READY]'}</span>
+                      </button>
+                    ) : (
+                      <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold text-[10px] rounded-sm flex items-center gap-1 border border-slate-200 dark:border-slate-700">
+                        <CheckCircle2 size={11} className="text-emerald-500" />
+                        <span>{language === 'ko' ? '오늘 무료 소환 완료 (자정 리셋)' : 'Daily Free Claimed'}</span>
+                      </span>
+                    )}
+                  </div>
 
-              {/* ID 433: Instant Open (Skip Pack Animation) Toggle */}
-              <label className="flex items-center gap-2 cursor-pointer select-none">
-                <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">
-                  {language === 'ko' ? '⚡ 즉시 개봉 (연출 스킵)' : '⚡ Instant Open'}
-                </span>
-                <input
-                  type="checkbox"
-                  defaultChecked={typeof window !== 'undefined' && localStorage.getItem('hero_instant_pack_open') === 'true'}
-                  onChange={(e) => {
-                    localStorage.setItem('hero_instant_pack_open', e.target.checked ? 'true' : 'false');
-                  }}
-                  className="rounded-none accent-[#201d1d] cursor-pointer"
-                />
-              </label>
-            </div>
-
-            {/* Row 2: ID 473 Visual Pity Progress & ID 463 Item Purchase Limit */}
-            <div className="flex flex-wrap items-center justify-between gap-2 text-[10px]">
-              {/* ID 473: Pity Progress Bar */}
-              <div className="flex items-center gap-2 flex-1 min-w-[200px]">
-                <span className="font-bold text-slate-700 dark:text-slate-300 shrink-0">
-                  [ PITY: 65/80 ]
-                </span>
-                <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-amber-500 to-amber-600" style={{ width: '81.25%' }} />
+                  {/* ID 433: Instant Open (Skip Pack Animation) Toggle */}
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">
+                      {language === 'ko' ? '⚡ 즉시 개봉 (연출 스킵)' : '⚡ Instant Open'}
+                    </span>
+                    <input
+                      type="checkbox"
+                      defaultChecked={typeof window !== 'undefined' && localStorage.getItem('hero_instant_pack_open') === 'true'}
+                      onChange={(e) => {
+                        localStorage.setItem('hero_instant_pack_open', e.target.checked ? 'true' : 'false');
+                      }}
+                      className="rounded-none accent-[#201d1d] cursor-pointer"
+                    />
+                  </label>
                 </div>
-                <span className="text-amber-600 dark:text-amber-400 font-bold shrink-0">
-                  {language === 'ko' ? '15회 후 SSR 확정' : '15 pulls to SSR'}
-                </span>
-              </div>
 
-              {/* ID 463: Item Purchase Limit */}
-              <div className="text-slate-500 dark:text-slate-400 shrink-0 font-bold bg-slate-50 dark:bg-slate-800/60 px-2 py-1 border border-slate-200 dark:border-slate-700">
-                [ Limit: 2/3 Remaining | Resets in 05h 12m ]
+                {/* Row 2: ID 473 Real-time Dynamic Pity Progress & ID 463 Item Purchase Limit */}
+                <div className="flex flex-wrap items-center justify-between gap-2 text-[10px]">
+                  {/* ID 473: Pity Progress Bar (실시간 골드팩 30회 천장 동적 연동) */}
+                  <div className="flex items-center gap-2 flex-1 min-w-[220px]">
+                    <span className="font-bold text-slate-700 dark:text-slate-300 shrink-0">
+                      [ PITY: {goldPity.current}/{goldPity.threshold} ]
+                    </span>
+                    <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-amber-500 to-amber-600 transition-all duration-300" style={{ width: `${goldPityPct}%` }} />
+                    </div>
+                    <span className="text-amber-600 dark:text-amber-400 font-bold shrink-0">
+                      {language === 'ko' ? `${goldPity.remaining}회 후 ${goldPity.guaranteeRarity} 확정` : `${goldPity.remaining} pulls to ${goldPity.guaranteeRarity}`}
+                    </span>
+                  </div>
+
+                  {/* ID 463: Item Purchase Limit */}
+                  <div className="text-slate-500 dark:text-slate-400 shrink-0 font-bold bg-slate-50 dark:bg-slate-800/60 px-2 py-1 border border-slate-200 dark:border-slate-700">
+                    [ AP 물약: {2 - todayApPotionsBought}/2회 잔여 ]
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            );
+          })()}
 
 
 
@@ -3748,7 +3842,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </div>
 
           {/* Phase 3 상점 편의 기능 액션 바 (ID 518, ID 533, ID 548, ID 583) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mb-4 font-mono text-xs">
+          <div id="shop-convenience-bar" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mb-4 font-mono text-xs">
             {/* ID 518: 일일 할인 50 AP 물약 */}
             <div className="p-2.5 bg-cyan-950/40 border border-cyan-500/40 rounded-xl flex items-center justify-between text-cyan-200">
               <div className="min-w-0">
@@ -3827,6 +3921,86 @@ export const ShopView: React.FC<ShopViewProps> = ({
               </div>
             </div>
           </div>
+
+          {/* SCR-04 UX: 모바일 카테고리 퀵 점프 탭바 */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 mb-3 scrollbar-none font-mono text-[11px]">
+            <a
+              href="#shop-grid"
+              className="px-2.5 py-1 bg-white dark:bg-[#1a1717] border border-slate-200 dark:border-white/15 text-slate-700 dark:text-slate-300 hover:border-slate-400 rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+            >
+              <span>🃏 {language === 'ko' ? '카드팩 가챠' : 'Card Packs'}</span>
+            </a>
+            {!isStarterPackPurchased && (
+              <a
+                href="#shop-starter-bundle"
+                className="px-2.5 py-1 bg-amber-500 text-black font-black border border-amber-600 rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer animate-pulse"
+              >
+                <span>⚡ {language === 'ko' ? '초심자 핫딜' : 'Starter Deal'}</span>
+              </a>
+            )}
+            <a
+              href="#shop-convenience-bar"
+              className="px-2.5 py-1 bg-white dark:bg-[#1a1717] border border-slate-200 dark:border-white/15 text-slate-700 dark:text-slate-300 hover:border-slate-400 rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+            >
+              <span>🧪 {language === 'ko' ? '아이템·AP' : 'Items & AP'}</span>
+            </a>
+            <a
+              href="#sns-charge-section"
+              className="px-2.5 py-1 bg-white dark:bg-[#1a1717] border border-slate-200 dark:border-white/15 text-slate-700 dark:text-slate-300 hover:border-slate-400 rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+            >
+              <span>💎 {language === 'ko' ? 'SNS 충전' : 'SNS Currency'}</span>
+            </a>
+          </div>
+
+          {/* SCR-04 Monetization: 1인 1회 한정 파격 핫딜 '초심자 성장 스타터 번들' */}
+          {!isStarterPackPurchased && (
+            <motion.div
+              id="shop-starter-bundle"
+              initial={lowSpecMode ? undefined : { opacity: 0, y: 10 }}
+              animate={lowSpecMode ? undefined : { opacity: 1, y: 0 }}
+              className="relative overflow-hidden border-2 border-amber-500 bg-gradient-to-r from-amber-500/10 via-yellow-500/15 to-amber-600/10 p-4 sm:p-5 rounded-none mb-4 font-mono shadow-sm"
+            >
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="px-2 py-0.5 bg-amber-500 text-black font-black text-[10px] uppercase rounded-none animate-pulse">
+                      HOT DEAL · 1회 한정
+                    </span>
+                    <span className="text-[10px] text-amber-600 dark:text-amber-400 font-bold">
+                      [ 88% 파격 혜택 ]
+                    </span>
+                  </div>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+                    ⚡ {language === 'ko' ? '초심자 성장 스타터 번들' : 'Beginner Growth Starter Bundle'}
+                  </h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    {language === 'ko'
+                      ? '단 50 SNS로 구매 시 즉시 300 SNS 환급 (순이익 +250 SNS) + 모험 AP +150 물약 + SR+ 확정 골드팩 5장 즉시 소환!'
+                      : 'Purchase for 50 SNS and instantly receive 300 SNS cashback (+250 SNS net profit) + 150 AP + 5 Gold Pack cards with SR+ guarantee!'}
+                  </p>
+                  <div className="flex flex-wrap gap-2 text-[10px] text-slate-500 dark:text-slate-400 pt-1">
+                    <span className="px-1.5 py-0.5 bg-black/5 dark:bg-white/10 rounded-none font-bold">✓ 300 SNS 캐시백</span>
+                    <span className="px-1.5 py-0.5 bg-black/5 dark:bg-white/10 rounded-none font-bold">✓ 모험 AP +150</span>
+                    <span className="px-1.5 py-0.5 bg-black/5 dark:bg-white/10 rounded-none font-bold">✓ 골드팩 5연 소환 (SR+ 보장)</span>
+                  </div>
+                </div>
+
+                <div className="w-full md:w-auto shrink-0 flex flex-col items-end gap-1">
+                  <button
+                    type="button"
+                    onClick={buyStarterPack}
+                    className="w-full md:w-auto px-5 py-3 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs uppercase tracking-wider rounded-sm shadow-md transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <Sparkles size={14} />
+                    <span>{language === 'ko' ? '[ 50 SNS로 스타터팩 구매 ]' : '[ BUY FOR 50 SNS ]'}</span>
+                  </button>
+                  <span className="text-[9px] text-amber-600 dark:text-amber-400 font-bold self-center md:self-end">
+                    {language === 'ko' ? '※ 계정당 1회 한정 상품' : '※ Limited to 1 purchase per account'}
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          )}
 
           {/* SNS 코인 상점 섹션 헤더 */}
           <div className="mb-1 mt-2 flex items-center gap-3">
@@ -4257,7 +4431,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
           </div>
           {/* 현금 충전 구분선 */}
-          <div className="space-y-6 sm:space-y-8 pt-4 sm:pt-6 md:pt-8 border-t border-slate-200 mt-4 sm:mt-6 md:mt-8">
+          <div id="sns-charge-section" className="space-y-6 sm:space-y-8 pt-4 sm:pt-6 md:pt-8 border-t border-slate-200 mt-4 sm:mt-6 md:mt-8">
             <div className="flex items-center gap-4 sm:gap-6">
               <div className="bg-slate-200 text-slate-600 px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-widest flex items-center gap-1.5">
                 <ShoppingBag size={12} className="shrink-0" />
