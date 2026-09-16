@@ -1,15 +1,15 @@
 ---
 name: ge
-description: /gemini-ex의 단축어(축약어). 구글 스프레드시트(1DnOk21_VE-_YzbEbHhlXCtRDeUqHh5ZnFGtR_rVGoSc)의 미작업 항목을 확인하고 소스코드에 반영 및 완료하는 스킬
+description: /gemini-ex의 단축어(축약어). 공개 구글 스프레드시트 CSV 웹게시 링크 기반 미작업 항목을 확인하고 소스코드에 반영 및 완료하는 스킬
 ---
 
 # /ge (/gemini-ex 축약어) 스킬 지침서
 
 ## 개요
-`/ge`는 `/gemini-ex`의 단축 명령어로, 지정된 구글 스프레드시트에서 작업되지 않은 항목들을 확인하고 순차적으로 작업 및 검증을 완료합니다.
+`/ge`는 `/gemini-ex`의 단축 명령어로, 지정된 구글 스프레드시트(공개 CSV 웹게시 링크)에서 작업되지 않은 항목들을 확인하고 순차적으로 작업 및 검증을 완료합니다.
 
 ## 대상 스프레드시트
-- **스프레드시트 URL**: https://docs.google.com/spreadsheets/d/1DnOk21_VE-_YzbEbHhlXCtRDeUqHh5ZnFGtR_rVGoSc/edit?usp=sharing
+- **공개 CSV URL**: https://docs.google.com/spreadsheets/d/e/2PACX-1vRF82ZJBHIhPsTzzjGm8DFutzw6PtAwqT_iyEB3MG5yKvZrEs354rKHy7YIFIO2zgqKSuRbo62uNyX_/pub?gid=0&single=true&output=csv
 
 ## 수행 절차
 1. **진행 상태 확인 및 완료 항목 건너뛰기 (Skip Completed Rows)**:

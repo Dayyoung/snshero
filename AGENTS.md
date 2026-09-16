@@ -1,9 +1,9 @@
 # SNS히어로 에이전트 지침서 (AGENTS.md)
 
 ## 스프레드시트 개선 작업 진행 상태
-- **현재 연동 스프레드시트 ID**: `1DnOk21_VE-_YzbEbHhlXCtRDeUqHh5ZnFGtR_rVGoSc`
+- **현재 연동 스프레드시트 (공개 CSV)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vRF82ZJBHIhPsTzzjGm8DFutzw6PtAwqT_iyEB3MG5yKvZrEs354rKHy7YIFIO2zgqKSuRbo62uNyX_/pub?gid=0&single=true&output=csv`
 - **마지막 수정 완료 항목 ID**: `[SCR-01 홈&로비 완료 (SCR-01-01, SCR-01-02, SCR-01-03)] Thumb Zone 3초 즉시 배틀 FAB & 모달 직렬화 순차 큐(SCR-01-01), 1,000원 스타터 패키지 배너 & 1-Tap 다이렉트 결제 모달(SCR-01-02), 로비 카드 3D 틸트 반사광 & 홀로그램 포일 & 팩션 SFX 인터랙션(SCR-01-03) 100% 전수 구현 및 빌드 검증 완료! (다음 착수 대기: SCR-02-01 배틀 아레나)`
-- **최종 업데이트 일시**: 2026-09-16 14:50 (KST)
+- **최종 업데이트 일시**: 2026-09-16 16:10 (KST)
 
 - **신규 항목 직행 원칙**: `/gemini-ex` 실행 시 이미 완료된 이전 항목(Row 1 ~ 마지막 완료 Row)은 **처음부터 다시 점검하지 않고 즉시 스킵**하며, 마지막 완료 항목 바로 다음의 **신규 미작업 항목**부터 즉시 착수합니다.
 - **무작업 시 침묵 원칙 (Silent if No-op)**: 크론 작업 실행 시 신규로 개선할 미작업 항목이 없으면 사용자에게 별도의 알림 메시지를 보내지 않고 조용히 대기합니다.
@@ -20,7 +20,7 @@
 - **즉시 동기화**: 상점 뽑기(단일팩, 10연차, 연속뽑기 등), 보상 수령, 덱 편집, 레벨업 등의 이벤트 발생 즉시 로컬스토리지에 동기적으로 기록합니다.
 
 ## 등록된 커스텀 스킬 및 명령어
-- **`/gemini-ex` (단축어: `/ge`)**: 구글 스프레드시트 (`1DnOk21_VE-_YzbEbHhlXCtRDeUqHh5ZnFGtR_rVGoSc`)의 미작업 항목을 확인하고 소스코드에 반영 및 완료하는 스킬
+- **`/gemini-ex` (단축어: `/ge`)**: 공개 구글 스프레드시트 CSV(`2PACX-1vRF82ZJBHIhPsTzzjGm8DFutzw6PtAwqT_iyEB3MG5yKvZrEs354rKHy7YIFIO2zgqKSuRbo62uNyX_`)의 미작업 항목을 확인하고 소스코드에 반영 및 완료하는 스킬
 - **`/ge`**: `/gemini-ex`의 축약어/단축 명령어로 동일한 작업 수행
 - **`/report-ex`**: 구글 스프레드시트 (`1nX6BFBJR4fTrv3PMqG8UamwSbqY2tJt_VvJoGAPItu8`)의 작업대기 항목들을 작업하고 완료 시 구글폼으로 제출 보고하는 스킬
 - **`/imp-mission`**: 3D 복셀 미션 게임들을 엄격한 기준으로 심사하여 모바일 적합도/재미/보상이 미달되는 게임을 즉시 폐기하고, 배틀/아케이드/퍼즐/캐주얼 등 다양한 장르의 고품질 신규 게임으로 새로 개발·대체하여 구글 폼으로 보고하는 스킬 (매 10분 주기 수행)

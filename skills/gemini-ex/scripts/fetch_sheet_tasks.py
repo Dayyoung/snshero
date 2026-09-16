@@ -1,19 +1,25 @@
 #!/usr/bin/env python3
-import urllib.request
 import csv
 import io
 import sys
+import subprocess
 
-SHEET_ID = "1DnOk21_VE-_YzbEbHhlXCtRDeUqHh5ZnFGtR_rVGoSc"
-CSV_URL = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv"
+# Published Google Sheet CSV URL (Public Web Export)
+CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF82ZJBHIhPsTzzjGm8DFutzw6PtAwqT_iyEB3MG5yKvZrEs354rKHy7YIFIO2zgqKSuRbo62uNyX_/pub?gid=0&single=true&output=csv"
+SHEET_KEY = "2PACX-1vRF82ZJBHIhPsTzzjGm8DFutzw6PtAwqT_iyEB3MG5yKvZrEs354rKHy7YIFIO2zgqKSuRbo62uNyX_"
 
 def fetch_tasks(pending_only=True):
-    req = urllib.request.Request(CSV_URL, headers={'User-Agent': 'Mozilla/5.0'})
     try:
-        with urllib.request.urlopen(req, timeout=10) as response:
-            content = response.read().decode('utf-8')
+        res = subprocess.run(
+            ["curl", "-sL", CSV_URL],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=True
+        )
+        content = res.stdout
     except Exception as e:
-        print(f"Error fetching sheet: {e}", file=sys.stderr)
+        print(f"Error fetching sheet with curl: {e}", file=sys.stderr)
         return []
 
     reader = csv.reader(io.StringIO(content))
@@ -44,7 +50,7 @@ def fetch_tasks(pending_only=True):
 
 if __name__ == "__main__":
     tasks = fetch_tasks(pending_only=False)
-    print(f"Fetched {len(tasks)} tasks from Google Sheet ({SHEET_ID}):\n")
+    print(f"Fetched {len(tasks)} tasks from Google Sheet (Published CSV: {SHEET_KEY[:25]}...):\n")
     for t in tasks:
         print(f"[{t['id']}] ({t['screen']} | {t['dept']} | {t['category']}) Status: {t['status']}")
         print(f"  - 개선안: {t['improvement'][:80]}...")
