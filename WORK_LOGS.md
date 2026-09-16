@@ -2,6 +2,26 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-16 17:40 KST] [상점 카드팩 뽑기 화면 이동 및 GachaRevealSequence 전체 시퀀스 보장 & ReferenceError 픽스]
+- **문제 원인**:
+  1. `App.tsx`에서 `dailyMissions`의 `incrementMissionProgress`를 import하지 않은 상태로 `addCard` (라인 4244)에서 호출하여, 상점에서 카드팩 구매 시 `ReferenceError: incrementMissionProgress is not defined`가 발생해 뽑기 화면 진입 전 자바스크립트 실행이 중단되는 치명적 버그 발생.
+  2. `ShopView.tsx`에서 `gachaState.cards`가 있음에도 불구하고 특정 조건 누락 시 간소화된 팝업(`shop-gacha-popup`)으로 빠질 수 있던 구조적 한계.
+  3. `App.tsx` 라인 418에서 `useLowSpecGuard()`가 필수 인자 없이 조기 호출되어 TypeScript 오류 발생.
+- **수정 내역**:
+  1. `App.tsx`:
+     - 상단에 `import { incrementMissionProgress } from './lib/dailyMissions';` 추가하여 미션 카운트 및 카드 획득 로직 완전 복구.
+     - 라인 418의 조기 `useLowSpecGuard();` 호출 제거 및 `useGameSettings` 선언 직후 `useLowSpecGuard(lowSpecMode);`로 정위치 이동.
+  2. `ShopView.tsx`:
+     - 카드 뽑기 진행 시 간소화된 팝업 대신 무조건 풀스크린 가차 연출 시퀀스 화면인 `GachaRevealSequence`로 이동하도록 조건문 보강 (`(gachaState.cards && gachaState.cards.length > 0)` 최우선 마운트 및 팩 레어도/천장 상태 안전 fallback 탑재).
+     - `buyPack`에 `packCount` 인자를 추가하여 멀티 팩 구매(스텝퍼 수량) 시 해당 수량만큼 팩 카드를 온전히 생성하여 전달하도록 개선.
+- **검증 결과**:
+  - `npm run build`: 오류 0건 통과 (`✓ built in 8.88s`).
+  - Playwright 헤드리스 브라우저 테스트:
+     - 상점 진입 -> 브론즈 카드팩 구매 클릭 시 콘솔 에러 0건.
+     - 풀스크린 카드 뽑기 화면 (`GachaRevealSequence`) 정상 마운트 확인 (`foundModal: true`).
+     - 3D 팩 봉인 해제 (`TAP PACK TO BREAK SEAL!`), 카드 뒤집기 폭발 컷씬, 5장 카드 결과 요약(도감 마일리지 배지, 다시 뽑기 버튼, 마이덱 이동 버튼 등) 완벽 동작 스크린샷 검증 완료.
+- **Git & 배포**: GitHub `origin/main` 푸시 완료.
+
 ## [2026-09-16 17:28 KST] [카드 배틀 화면 낮은 높이 뷰포트 대응: 카드판 최소높이 보장 및 상하 스크롤 지원]
 - **문제 원인**: 소형 모바일 기기 또는 브라우저 주소창/상단 광고 배너가 있는 환경에서 화면 높이가 낮을 경우 `overflow-hidden` 및 `touch-none`으로 인해 상대/내 핸드 사이에 끼인 가운데 3x3 보드가 찌그러지거나 잘리는 현상 발생.
 - **수정 내역**:

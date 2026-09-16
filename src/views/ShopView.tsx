@@ -2019,7 +2019,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
     playSfx('https://assets.mixkit.co/active_storage/sfx/2012/2012-preview.mp3');
   };
 
-  const buyPack = (cost: number, packRarity: GachaPackRarity) => {
+  const buyPack = (cost: number, packRarity: GachaPackRarity, packCount: number = 1) => {
     const finalCost = (tutorialStep === 9) ? 0 : cost;
     if (sns >= finalCost) {
       stopAutoDraw();
@@ -2027,12 +2027,16 @@ export const ShopView: React.FC<ShopViewProps> = ({
         updateSns(-finalCost, 'pack_purchase', getPackPurchaseLabel(packRarity));
       }
 
-      const newCards = createPackCards(packRarity);
+      const count = Math.max(1, packCount);
+      let newCards: GachaCard[] = [];
+      for (let i = 0; i < count; i++) {
+        newCards = newCards.concat(createPackCards(packRarity));
+      }
       recordGachaPity(packRarity, newCards.map(card => card.rarity));
 
-      // ID 583: 월간 누적 소환 횟수 1 증가
+      // ID 583: 월간 누적 소환 횟수 count 증가
       setMonthlyPullCount(prev => {
-        const next = prev + 1;
+        const next = prev + count;
         localStorage.setItem(`hero_monthly_pull_count_${currentMonthKey}`, String(next));
         return next;
       });
@@ -2042,10 +2046,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
         logEvent(analytics, 'buy_card_pack', {
           rarity: packRarity,
           cost: finalCost,
+          count,
           is_test: testMode || isImpersonating
         });
       }
-      trackAnalytics({ event: AnalyticsEvent.CARDPACK_PURCHASE_ATTEMPT, payload: { packId: packRarity, packName: getPackPurchaseLabel(packRarity), priceSns: finalCost } });
+      trackAnalytics({ event: AnalyticsEvent.CARDPACK_PURCHASE_ATTEMPT, payload: { packId: packRarity, packName: getPackPurchaseLabel(packRarity), priceSns: finalCost, count } });
       trackAnalytics({ event: AnalyticsEvent.CARDPACK_VIEW, payload: { packId: packRarity, packName: getPackPurchaseLabel(packRarity) } });
 
       setGachaState({
@@ -2671,17 +2676,23 @@ export const ShopView: React.FC<ShopViewProps> = ({
             )}
 
             {gachaState.isActive && (
-              activeGachaPackType && activeGachaPityView ? (
+              (gachaState.cards && gachaState.cards.length > 0) ? (
                 <GachaRevealSequence
                   language={language}
-                  packRarity={activeGachaPackType}
-                  packCost={cardPacks.find((pack) => pack.rarity === activeGachaPackType)?.cost ?? 0}
+                  packRarity={activeGachaPackType || (['bronze', 'silver', 'gold'].includes(gachaState.packType) ? (gachaState.packType as GachaPackRarity) : 'bronze')}
+                  packCost={cardPacks.find((pack) => pack.rarity === (activeGachaPackType || gachaState.packType))?.cost ?? 0}
                   cards={gachaState.cards}
                   currentSeason={currentSeason}
                   lowSpecMode={lowSpecMode}
                   customCardImage={customCardImage}
                   processedCardImages={processedCardImages}
-                  pityView={activeGachaPityView}
+                  pityView={activeGachaPityView || getGachaPityView(gachaPityState, (activeGachaPackType || 'bronze')) || {
+                    current: 0,
+                    remaining: 10,
+                    threshold: 10,
+                    guaranteeRarity: 'silver',
+                    lastUpdatedAt: Date.now()
+                  }}
                   autoDrawProgress={autoDrawState ? { current: autoDrawState.completed, total: autoDrawState.total } : null}
                   onSkip={() => {
                     setGachaState((prev) => ({
@@ -2692,13 +2703,15 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   }}
                   onClose={handleCloseGacha}
                   onDrawAgain={() => {
-                    const pack = cardPacks.find((entry) => entry.rarity === activeGachaPackType);
+                    const currentRarity = activeGachaPackType || (['bronze', 'silver', 'gold'].includes(gachaState.packType) ? (gachaState.packType as GachaPackRarity) : 'bronze');
+                    const pack = cardPacks.find((entry) => entry.rarity === currentRarity);
                     if (pack) {
                       buyPack(pack.cost, pack.rarity);
                     }
                   }}
                   onOpenProbability={() => {
-                    setSelectedProbabilityPack(activeGachaPackType);
+                    const currentRarity = activeGachaPackType || (['bronze', 'silver', 'gold'].includes(gachaState.packType) ? (gachaState.packType as GachaPackRarity) : 'bronze');
+                    setSelectedProbabilityPack(currentRarity);
                     setProbabilityModalOpen(true);
                   }}
                   onShareBestCard={(cardId) => setGachaShareCardId(cardId)}
@@ -3942,7 +3955,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       if (qty >= 10) {
                         buy10xPack(pack.cost, pack.rarity);
                       } else {
-                        buyPack(pack.cost * qty, pack.rarity);
+                        buyPack(pack.cost * qty, pack.rarity, qty);
                       }
                     }}
                     className={cn(

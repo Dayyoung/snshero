@@ -57,6 +57,7 @@ import { useLowSpecGuard } from './hooks/useLowSpecGuard';
 import { useStorageQuotaGuard } from './hooks/useStorageQuotaGuard';
 import { useAudioLifecycleGuard } from './hooks/useAudioLifecycleGuard';
 import { usePwaInstallGuard } from './hooks/usePwaInstallGuard';
+import { incrementMissionProgress } from './lib/dailyMissions';
 
 import { 
   Menu, 
@@ -415,7 +416,6 @@ function AppContent() {
   useVisualViewportLock();
 
   // Phase 4: System Guards (ID 339, 340, 344, 370, 395, 400, 419, 420)
-  useLowSpecGuard();
   const { quota } = useStorageQuotaGuard();
   useAudioLifecycleGuard();
   const { isInstallable, isOffline, promptInstall } = usePwaInstallGuard();
@@ -556,6 +556,7 @@ function AppContent() {
   }, [view]);
 
   const { language, setLanguage, lowSpecMode, setLowSpecMode, theme, setTheme } = useGameSettings();
+  useLowSpecGuard(lowSpecMode);
   const [recommendMode, setRecommendMode] = useState(() => {
     return typeof window !== 'undefined' ? localStorage.getItem('hero_recommend_mode') !== 'false' : true;
   });
