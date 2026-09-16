@@ -2,6 +2,22 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-17 08:41 KST] [Refactor & Cleanup] [홈 화면 랜덤 플레이 버튼 및 Poki 관련 소스 110종 전면 제거 (프로젝트 경량화)]
+- **요청 사항**: 
+  - AI Studio 빌드 시 발생한 `Failed to resolve import "./lib/pokiGameList"` 원천 해결
+  - 홈 화면 "랜덤 플레이" 버튼 제거 및 Poki 110종 소스 전면 제거로 프로젝트 소스 크기 대폭 경량화
+- **삭제 파일 및 디렉토리**:
+  - `src/lib/pokiGameList.ts` (삭제)
+  - `poki_popular_games_110.csv` (삭제)
+  - `src/components/poki/` (110개 Poki 게임 및 프롬프트 md 파일 일체 삭제, 약 1.2MB 경량화)
+- **수정 파일**:
+  - `src/views/HomeView.tsx`: `Dices` 아이콘, `onRollDice` prop 및 `[🎲 랜덤 플레이]` 버튼 블록 삭제.
+  - `src/App.tsx`: `pokiGameList` import 제거, `diceState`/`diceGameTitle`/`diceTimeoutRef`/`preselectedGameId` 상태 및 `handleStartDiceRoll` 핸들러, 주사위 모달 3D 오버레이 JSX/애니메이션 스타일 전면 삭제.
+  - `src/views/PlayGameView.tsx`: 110개 Poki 컴포넌트 import 및 `if (gameState === 'poki...')` 렌더링 블록 삭제, `preselectedGameId` 불필요 prop/useEffect 정리.
+- **검증 결과**:
+  - `npm run build`: 에러 0건 성공 (`✓ built in 15.55s`).
+  - Git 커밋 및 GitHub 원격(`origin/main`) 푸시 완료.
+
 ## [2026-09-17 08:06 KST] [/rsi] [SCR-02 배틀 아레나 Round 2 속성 크리티컬 플립, 1-Tap 스마트 착수, 승리 보상 2배 더블업]
 - **대상 화면**: 배틀 아레나 (3x3 보드 대전) (Round 2)
 - **대상 파일**:
