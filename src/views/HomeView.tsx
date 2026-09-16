@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX, Zap, Clock, Pause, PanelLeftClose, PanelLeftOpen, Layers, Image, Film, Github, Youtube, Dices, Gift } from "lucide-react";
+import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX, Zap, Clock, Pause, PanelLeftClose, PanelLeftOpen, Layers, Image, Film, Github, Youtube, Gift } from "lucide-react";
 import { NotificationCenterModal } from "../components/NotificationCenterModal";
 import { getUnreadCount } from "../lib/notificationHelper";
 import { motion, AnimatePresence } from "motion/react";
@@ -59,7 +59,6 @@ interface HomeViewProps {
   onStartTutorial?: () => void;
   isTutorialCompleted?: boolean;
   onStartPlayNow?: () => void;
-  onRollDice?: () => void;
   isTutorialMode?: boolean;
   tutorialStep?: number;
 }
@@ -74,7 +73,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
   handleLogin,
   handleLogout,
   onStartPlayNow,
-  onRollDice,
   isTutorialMode,
   tutorialStep,
 }) => {
@@ -653,25 +651,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 >
                   <Play size={16} className="shrink-0 fill-current text-amber-300" />
                   <span>{language === 'ko' ? '[⚔️ 지금 플레이]' : '[⚔️ Play Now]'}</span>
-                </motion.button>
-
-                {/* 랜덤 플레이 */}
-                <motion.button
-                  {...buttonMotionProps}
-                  onClick={() => {
-                    triggerHaptic('light');
-                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                    if (onRollDice) {
-                      onRollDice();
-                    } else {
-                      onNavigate("play");
-                    }
-                  }}
-                  className="w-full min-h-[48px] px-3 py-2.5 bg-white text-[#201d1d] font-bold text-xs sm:text-sm border border-[#201d1d]/20 hover:border-[#201d1d] hover:bg-slate-50 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 rounded-none group"
-                  aria-label={language === 'ko' ? "랜덤 플레이" : "Random Play"}
-                >
-                  <Dices size={16} className="shrink-0 text-amber-600 group-hover:rotate-12 transition-transform" />
-                  <span>{language === 'ko' ? '[🎲 랜덤 플레이]' : '[🎲 Random]'}</span>
                 </motion.button>
 
                 {/* 소설 읽기 */}

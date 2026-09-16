@@ -21,7 +21,6 @@ import {
 } from './constants';
 import { ITEM_DATABASE } from './constants/itemDatabase';
 import { CARD_DATABASE } from './cardDatabase';
-import { POKI_110_GAMES } from './lib/pokiGameList';
 import { ALL_ACHIEVEMENTS } from './constants/achievements';
 import { auth, googleProvider, db, analytics, logEvent, setUserId, setUserProperties, currentDbMode } from './lib/firebase';
 import { signInWithPopup, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, addDoc, onSnapshot, query, orderBy, limit, where, writeBatch, getDocs } from './lib/firebaseMock';
@@ -402,10 +401,6 @@ function AppContent() {
   });  const [isGlobalLoading, setIsGlobalLoading] = useState(false);
   const [globalLoadingMessage, setGlobalLoadingMessage] = useState('');
   const [randomPlayTrigger, setRandomPlayTrigger] = useState(0);
-  const [diceState, setDiceState] = useState<'idle' | 'rolling' | 'reveal'>('idle');
-  const [diceGameTitle, setDiceGameTitle] = useState('');
-  const [preselectedGameId, setPreselectedGameId] = useState<string | null>(null);
-  const diceTimeoutRef = useRef<number | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUtilityOpen, setIsUtilityOpen] = useState(false);
   const [autoStartPvp, setAutoStartPvp] = useState(false);
@@ -4660,26 +4655,6 @@ function AppContent() {
     return Math.ceil(basePowerWithBonus * (1 + buff.powerPercent / 100));
   }, [inventory, currentDeck, userGuild]);
 
-  const handleStartDiceRoll = useCallback(() => {
-    if (diceState !== 'idle') return;
-    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-    setDiceState('rolling');
-    setDiceGameTitle('');
-    diceTimeoutRef.current = window.setTimeout(() => {
-      const picked = POKI_110_GAMES[Math.floor(Math.random() * POKI_110_GAMES.length)];
-      const title = language === 'ko' ? picked.titleKo : picked.titleEn;
-      setDiceState('reveal');
-      setDiceGameTitle(title);
-      setPreselectedGameId(picked.id);
-      playSfx('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-      diceTimeoutRef.current = window.setTimeout(() => {
-        setDiceState('idle');
-        setView('play');
-        setTimeout(() => setPreselectedGameId(null), 500);
-      }, 1500);
-    }, 2000);
-  }, [diceState, language, playSfx, setView]);
-
   const renderView = () => {
     switch (view) {
       case 'home':
@@ -4710,7 +4685,6 @@ function AppContent() {
               setSeasonItem('hero_kadan_rpg_auto_mode', currentSeason, 'true');
               setView('main');
             }}
-            onRollDice={handleStartDiceRoll}
           />
         );
       case 'main':
@@ -5127,7 +5101,6 @@ function AppContent() {
             showDefenseTestConsole={showDefenseTestConsole}
             setShowDefenseTestConsole={setShowDefenseTestConsole}
             randomPlayTrigger={randomPlayTrigger}
-            preselectedGameId={preselectedGameId}
             currentSeason={currentSeason}
             inventory={inventory}
             addCard={addCard}
@@ -5503,7 +5476,6 @@ function AppContent() {
               setSeasonItem('hero_kadan_rpg_auto_mode', currentSeason, 'true');
               setView('main');
             }}
-            onRollDice={handleStartDiceRoll}
           />
         );
     }
@@ -7279,111 +7251,6 @@ function AppContent() {
           </div>
         </div>
       )}
-
-      {/* ── Dice Animation Overlay ── */}
-      {diceState !== 'idle' && (
-        <div className="fixed inset-0 z-[11000] flex flex-col items-center justify-center p-4 bg-slate-950/90 backdrop-blur-lg pointer-events-auto animate-fade-in">
-          {/* Cancel Button */}
-          <button
-            onClick={() => {
-              if (diceTimeoutRef.current) { clearTimeout(diceTimeoutRef.current); diceTimeoutRef.current = null; }
-              setDiceState('idle');
-              setDiceGameTitle('');
-              setPreselectedGameId(null);
-            }}
-            className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 active:scale-90 transition-all cursor-pointer z-10"
-            aria-label="취소"
-          >
-            <X size={20} />
-          </button>
-
-          <div className="flex flex-col items-center gap-8">
-            {/* 3D Dice Cube */}
-            <div className="relative w-24 h-24 perspective-[600px]">
-              <div className={cn(
-                "w-full h-full relative preserve-3d",
-                diceState === 'rolling' && "animate-dice-roll",
-                diceState === 'reveal' && "animate-dice-stop"
-              )}>
-                {/* Face 1 */}
-                <div className="absolute inset-0 bg-white rounded-2xl border-2 border-slate-200 shadow-2xl flex items-center justify-center text-3xl font-black text-indigo-600 backface-hidden"
-                  style={{ transform: 'rotateY(0deg) translateZ(48px)' }}>?</div>
-                {/* Face 2 */}
-                <div className="absolute inset-0 bg-white rounded-2xl border-2 border-slate-200 shadow-2xl flex items-center justify-center text-3xl font-black text-indigo-600 backface-hidden"
-                  style={{ transform: 'rotateY(90deg) translateZ(48px)' }}>?</div>
-                {/* Face 3 */}
-                <div className="absolute inset-0 bg-white rounded-2xl border-2 border-slate-200 shadow-2xl flex items-center justify-center text-3xl font-black text-indigo-600 backface-hidden"
-                  style={{ transform: 'rotateY(180deg) translateZ(48px)' }}>?</div>
-                {/* Face 4 */}
-                <div className="absolute inset-0 bg-white rounded-2xl border-2 border-slate-200 shadow-2xl flex items-center justify-center text-3xl font-black text-indigo-600 backface-hidden"
-                  style={{ transform: 'rotateY(270deg) translateZ(48px)' }}>?</div>
-                {/* Face 5 - top */}
-                <div className="absolute inset-0 bg-white rounded-2xl border-2 border-slate-200 shadow-2xl flex items-center justify-center text-3xl font-black text-indigo-600 backface-hidden"
-                  style={{ transform: 'rotateX(90deg) translateZ(48px)' }}>?</div>
-                {/* Face 6 - bottom */}
-                <div className="absolute inset-0 bg-white rounded-2xl border-2 border-slate-200 shadow-2xl flex items-center justify-center text-3xl font-black text-indigo-600 backface-hidden"
-                  style={{ transform: 'rotateX(-90deg) translateZ(48px)' }}>?</div>
-              </div>
-            </div>
-
-            {/* Status text */}
-            <p className="text-white/80 text-lg font-bold animate-pulse">
-              {diceState === 'rolling' 
-                ? (language === 'ko' ? '🎲 게임을 고르는 중...' : '🎲 Picking a game...')
-                : ''}
-            </p>
-
-            {/* Reveal result */}
-            {diceState === 'reveal' && diceGameTitle && (
-              <motion.div
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-                className="bg-indigo-600 text-white px-6 py-3 rounded-2xl shadow-2xl shadow-indigo-600/40 text-center"
-              >
-                <p className="text-xs font-bold uppercase tracking-wider text-indigo-200 mb-1">
-                  {language === 'ko' ? '선택된 게임' : 'SELECTED'}
-                </p>
-                <p className="text-2xl font-black">{diceGameTitle}</p>
-              </motion.div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* ── Dice CSS Keyframes ── */}
-      {diceState !== 'idle' && (
-        <style>{`
-          .perspective-\\[600px\\] { perspective: 600px; }
-          .preserve-3d { transform-style: preserve-3d; }
-          .backface-hidden { backface-visibility: hidden; }
-          @keyframes dice-roll {
-            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
-            25% { transform: rotateX(180deg) rotateY(90deg) rotateZ(45deg); }
-            50% { transform: rotateX(360deg) rotateY(270deg) rotateZ(135deg); }
-            75% { transform: rotateX(540deg) rotateY(450deg) rotateZ(225deg); }
-            100% { transform: rotateX(720deg) rotateY(630deg) rotateZ(315deg); }
-          }
-          .animate-dice-roll {
-            animation: dice-roll 0.8s linear infinite;
-          }
-          @keyframes dice-stop {
-            0% { transform: rotateX(720deg) rotateY(630deg) rotateZ(315deg); }
-            100% { transform: rotateX(720deg) rotateY(720deg) rotateZ(360deg); }
-          }
-          .animate-dice-stop {
-            animation: dice-stop 0.6s ease-out forwards;
-          }
-          @keyframes fade-in {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-          .animate-fade-in {
-            animation: fade-in 0.3s ease-out;
-          }
-        `}</style>
-      )}
-
 
       </div>
 
