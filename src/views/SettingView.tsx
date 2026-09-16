@@ -24,6 +24,7 @@ import { GoogleSheetsSyncModal } from '../components/GoogleSheetsSyncModal';
 import { BgmJukeboxModal } from '../components/BgmJukeboxModal';
 import { triggerHaptic } from '../lib/haptic';
 import { checkAndSyncAppVersion, getLocalAppVersion, forcePurgeAndReload } from '../lib/versionManager';
+import { resetAllCaches } from '../lib/cacheManager';
 import { Smartphone, Music, RefreshCw, CheckCircle, ShieldCheck, SlidersHorizontal } from 'lucide-react';
 import { HapticVibrationSettingsModal } from '../components/HapticVibrationSettingsModal';
 
@@ -120,6 +121,8 @@ export const SettingView: React.FC<SettingViewProps> = ({
   const [isGoogleSheetsModalOpen, setIsGoogleSheetsModalOpen] = useState(false);
   const [appCurrentVersion, setAppCurrentVersion] = useState<string>(() => getLocalAppVersion() || '2.1.0');
   const [isHapticModalOpen, setIsHapticModalOpen] = useState(false);
+  const [isCheckingVersion, setIsCheckingVersion] = useState(false);
+  const [versionCheckMsg, setVersionCheckMsg] = useState<string | null>(null);
 
 
   const handleCheckVersion = async () => {

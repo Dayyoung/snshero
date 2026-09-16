@@ -2,6 +2,17 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-16 17:12 KST] [/main InBattleEmoteModal useEffect 미정의 런타임 에러 픽스]
+- **문제 원인**: `InBattleEmoteModal.tsx`에서 `useEffect` 훅을 사용하고 있으나 React import 목록에서 누락되어 `PlayGameView.tsx:19057`에서 모달 렌더링 시 `ReferenceError: useEffect is not defined` 발생.
+- **수정 내역**:
+  1. `InBattleEmoteModal.tsx`: `import React, { useState, useEffect } from 'react';`로 import 보강.
+  2. `SettingView.tsx`: `resetAllCaches` import 및 `isCheckingVersion`, `versionCheckMsg` state 선언 누락 보강.
+  3. `WikiCardView.tsx`: `cn` utility import 추가.
+- **검증 결과**:
+  - `npm run build`: 오류 0건 통과 (`✓ built in 12.84s`).
+  - 카드 배틀 인게임 모달 및 이모트 시스템 정상 마운트 검증 완료.
+- **Git & 배포**: GitHub `origin/main` 푸시 완료.
+
 ## [2026-09-16 17:11 KST] [/main 카단 RPG PlayGameView snsBalance ReferenceError 런타임 에러 픽스]
 - **문제 원인**: `PlayGameView.tsx` 내부 `handleActivateRevenge` (라인 5238) 및 `RevengeChanceModal` (라인 18947)에서 정의되지 않은 `snsBalance`, `setSnsBalance`, `showCustomAlert` 참조로 인해 배틀 진입 시 `ReferenceError: snsBalance is not defined` 크래시 발생.
 - **수정 내역**:

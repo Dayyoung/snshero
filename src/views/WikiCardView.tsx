@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Search, HelpCircle, X, ChevronLeft, ChevronRight, Trophy, Watch } from "lucide-react";
-import { getFormattedCardName } from "../lib/utils";
+import { getFormattedCardName, cn } from "../lib/utils";
 import { Language, CardData, InventoryRecord, DatabaseCard, ViewType } from "../types";
 import { CARD_DATABASE } from "../cardDatabase";
 import { CardItem } from "../components/CardItem";
