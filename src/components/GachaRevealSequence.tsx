@@ -7,6 +7,7 @@ import { PityGauge } from './PityGauge';
 import { GACHA_PACK_CONFIG, formatProbabilityRate, type GachaPackRarity } from '../content/gachaRates';
 import { t } from '../lib/i18n';
 import { cn, getFormattedCardName } from '../lib/utils';
+import { triggerHaptic } from '../lib/haptic';
 import type { Language } from '../types';
 
 export interface GachaRevealCard {
@@ -243,41 +244,43 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
     }
   }, [instantMode, phase]);
 
-  // 팩 개봉 클릭/진입 -> 즉시 모든 카드를 공개 상태로 전환
-  const handleOpenPack = () => {
+  // 0ms 레이턴시 원터치 '전체 즉시 스킵(Fast Skip)' 핸들러
+  const handleFastSkip = () => {
     onSkip();
     const allSet = new Set<number>();
     cards.forEach((_, idx) => allSet.add(idx));
     setRevealedIds(allSet);
+    setCutInInfo(null);
+    setPhase('summary');
+    triggerHaptic('light');
+  };
 
-    if (instantMode) {
-      setPhase('summary');
+  // 팩 스와이프/탭 개봉 인터랙션 + 등급별(SR 보라, SSR 무지개) 빛 예고 + 햅틱
+  const handleOpenPack = () => {
+    const isInstantOpenPref = typeof window !== 'undefined' && localStorage.getItem('hero_instant_pack_open') === 'true';
+
+    // 등급별 햅틱 진동 및 빛 번쩍임 예고
+    const rRank = EXTENDED_RARITY_RANK[highestRarity.toLowerCase()] ?? 0;
+    if (rRank >= EXTENDED_RARITY_RANK['diamond']) {
+      triggerHaptic('victory'); // SSR 무지개 등급
+    } else if (rRank >= EXTENDED_RARITY_RANK['gold']) {
+      triggerHaptic('heavy'); // SR 보라/골드 등급
+    } else {
+      triggerHaptic('light');
+    }
+
+    if (instantMode || isInstantOpenPref) {
+      handleFastSkip();
       return;
     }
 
+    // 팩 찢어지는 연출 진입
     setPhase('tearing');
 
-    // 팩 찢어지는 연출 후 바로 전체 공개 화면(summary)으로 전환 (최상위 카드 컷인 연출 포함)
+    // 팩 개봉 후 카드가 덮인 spread 단계로 진입하여 1장씩 스와이프/탭 오픈(Flip to Reveal) 손맛 제공
     window.setTimeout(() => {
-      if (bestCard) {
-        const r = bestCard.rarity.toLowerCase();
-        const isGoldCondition = (EXTENDED_RARITY_RANK[r] ?? 0) >= EXTENDED_RARITY_RANK['gold'];
-        const dbCard = CARD_DATABASE[bestCard.imageIndex];
-        setCutInInfo({
-          rarity: bestCard.rarity,
-          name: topCardName ?? '',
-          isGoldSpecial: isGoldCondition,
-          imageIndex: bestCard.imageIndex,
-          power: dbCard?.power,
-        });
-        window.setTimeout(() => {
-          setCutInInfo(null);
-          setPhase('summary');
-        }, isGoldCondition ? 1400 : 900);
-      } else {
-        setPhase('summary');
-      }
-    }, 800);
+      setPhase('spread');
+    }, 700);
   };
 
   // 다시 뽑기 핸들러 (특수 소환 마법진 & 버스트 연출)
@@ -298,9 +301,11 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
     }, instantMode ? 300 : 800);
   };
 
-  // 개별 카드 뒤집기
+  // 개별 카드 뒤집기 (Flip to Reveal + 햅틱)
   const handleFlipCardIndex = (index: number) => {
     if (revealedIds.has(index)) return;
+
+    triggerHaptic('light');
 
     const card = cards[index];
     const newSet = new Set(revealedIds);
@@ -324,43 +329,21 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
       });
       window.setTimeout(() => {
         setCutInInfo(null);
-      }, isGoldCondition ? 1500 : 1000);
+      }, isGoldCondition ? 1300 : 800);
     }
 
+    // 모든 카드가 뒤집히면 완료 상태(summary)로 자동 전환
     if (newSet.size === cards.length) {
       window.setTimeout(() => {
         onSkip();
         setPhase('summary');
-      }, isGoldCondition ? 1200 : 800);
+      }, isGoldCondition ? 1000 : 600);
     }
   };
 
-  // 전체 한 번에 공개
+  // 전체 한 번에 공개 (스킵)
   const handleRevealAll = () => {
-    onSkip();
-    const allSet = new Set<number>();
-    cards.forEach((_, idx) => allSet.add(idx));
-    setRevealedIds(allSet);
-
-    // 카드 종류에 상관없이 최상위 카드로 매번 컷인 연출 발동!
-    if (bestCard && !instantMode) {
-      const r = bestCard.rarity.toLowerCase();
-      const isGoldCondition = (EXTENDED_RARITY_RANK[r] ?? 0) >= EXTENDED_RARITY_RANK['gold'];
-      const dbCard = CARD_DATABASE[bestCard.imageIndex];
-      setCutInInfo({
-        rarity: bestCard.rarity,
-        name: topCardName ?? '',
-        isGoldSpecial: isGoldCondition,
-        imageIndex: bestCard.imageIndex,
-        power: dbCard?.power,
-      });
-      window.setTimeout(() => {
-        setCutInInfo(null);
-        setPhase('summary');
-      }, isGoldCondition ? 1600 : 1100);
-    } else {
-      setPhase('summary');
-    }
+    handleFastSkip();
   };
 
   return (
@@ -369,7 +352,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[200] w-full h-[100dvh] min-h-[100dvh] overflow-y-auto bg-slate-950/98 px-2 py-2.5 sm:px-4 sm:py-4 text-white backdrop-blur-2xl select-none flex flex-col justify-between"
+      className="fixed inset-0 z-[500] w-full h-[100dvh] min-h-[100dvh] overflow-y-auto bg-slate-950/98 px-2 py-2.5 sm:px-4 sm:py-4 text-white backdrop-blur-2xl select-none flex flex-col justify-between"
     >
       {/* 백그라운드 빛 빔 & 파티클 오라 */}
       <GachaAuraRays highestRarity={highestRarity} lowSpecMode={lowSpecMode} />
@@ -585,6 +568,16 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-2">
+            {/* 0ms 레이턴시 원터치 '전체 즉시 스킵(Fast Skip)' 버튼 */}
+            <button
+              type="button"
+              onClick={handleFastSkip}
+              className="flex min-h-9 sm:min-h-10 items-center gap-1 sm:gap-1.5 rounded-full border border-amber-400/80 bg-amber-400/20 px-3 py-1 sm:px-4 sm:py-1.5 text-[9px] sm:text-[11px] font-mono font-black uppercase tracking-wider text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.5)] transition hover:bg-amber-400/30 hover:brightness-125 active:scale-95 cursor-pointer animate-pulse"
+              title={language === 'ko' ? '0ms 레이턴시 전체 즉시 스킵' : '0ms Fast Skip All'}
+            >
+              <Zap size={13} className="text-yellow-300 fill-yellow-300" />
+              <span>{language === 'ko' ? '⚡ 전체 즉시 스킵' : '⚡ FAST SKIP'}</span>
+            </button>
             <button
               type="button"
               onClick={onOpenProbability}
@@ -653,37 +646,60 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                     </motion.div>
                   )}
 
-                  {/* 3D 팩 패키지 카드 */}
+                  {/* 3D 팩 패키지 카드 - 탭 또는 상하 스와이프로 개봉 */}
                   <motion.div
                     whileHover={{ scale: 1.05, rotateY: 5 }}
                     animate={instantMode ? undefined : { y: [0, -10, 0] }}
                     transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                    drag="y"
+                    dragConstraints={{ top: 0, bottom: 0 }}
+                    dragElastic={0.4}
+                    onDragEnd={(_, info) => {
+                      if (Math.abs(info.offset.y) > 35 || Math.abs(info.velocity.y) > 80) {
+                        handleOpenPack();
+                      }
+                    }}
                     onClick={handleOpenPack}
-                    className="relative cursor-pointer group"
+                    className="relative cursor-pointer group select-none touch-pan-y"
                   >
                     {/* 팩 후광 스파클 링 */}
                     <div
-                      className="absolute -inset-4 rounded-[40px] blur-2xl opacity-75 group-hover:opacity-100 transition-opacity"
+                      className={cn(
+                        "absolute -inset-4 rounded-[40px] blur-2xl opacity-75 group-hover:opacity-100 transition-opacity",
+                        (EXTENDED_RARITY_RANK[highestRarity.toLowerCase()] ?? 0) >= EXTENDED_RARITY_RANK['diamond']
+                          ? "bg-gradient-to-r from-amber-400 via-rose-500 to-purple-600 animate-pulse shadow-[0_0_50px_rgba(236,72,153,0.8)]"
+                          : (EXTENDED_RARITY_RANK[highestRarity.toLowerCase()] ?? 0) >= EXTENDED_RARITY_RANK['gold']
+                          ? "bg-gradient-to-r from-purple-500 via-amber-400 to-amber-600 animate-pulse shadow-[0_0_40px_rgba(245,158,11,0.8)]"
+                          : ""
+                      )}
                       style={{ backgroundColor: getRarityGlowColor(highestRarity) }}
                     />
 
-                    {/* ID 388: 10연차 중 최고 등급(SSR) 포함 시 골든 팩 림(Golden Rim) 연출 */}
+                    {/* 등급별(SR 보라, SSR 무지개) 팩 림 & 빛 번쩍임 예고 연출 */}
                     <div
                       className={cn(
                         "relative flex flex-col items-center justify-between w-48 sm:w-56 h-72 sm:h-80 rounded-[28px] sm:rounded-[32px] p-5 sm:p-6 text-center overflow-hidden transition-all",
-                        (EXTENDED_RARITY_RANK[highestRarity.toLowerCase()] ?? 0) >= EXTENDED_RARITY_RANK['gold']
-                          ? "border-4 border-amber-300 ring-4 ring-yellow-400 shadow-[0_0_60px_rgba(251,191,36,0.95)] animate-pulse bg-gradient-to-b from-amber-950/70 via-slate-950 to-amber-900/60"
+                        (EXTENDED_RARITY_RANK[highestRarity.toLowerCase()] ?? 0) >= EXTENDED_RARITY_RANK['diamond']
+                          ? "border-4 border-rose-400 ring-4 ring-purple-500 shadow-[0_0_70px_rgba(236,72,153,0.95)] animate-pulse bg-gradient-to-b from-purple-950/80 via-slate-950 to-rose-950/70"
+                          : (EXTENDED_RARITY_RANK[highestRarity.toLowerCase()] ?? 0) >= EXTENDED_RARITY_RANK['gold']
+                          ? "border-4 border-amber-300 ring-4 ring-yellow-400 shadow-[0_0_60px_rgba(251,191,36,0.95)] animate-pulse bg-gradient-to-b from-purple-950/70 via-slate-950 to-amber-900/60"
                           : "border-2 border-amber-300/40 bg-gradient-to-b from-slate-900 via-slate-950 to-amber-950/40 shadow-[0_20px_60px_rgba(0,0,0,0.8)]"
                       )}
                     >
-                      {/* 골든 림 예고 엠블럼 */}
-                      {(EXTENDED_RARITY_RANK[highestRarity.toLowerCase()] ?? 0) >= EXTENDED_RARITY_RANK['gold'] && (
-                        <div className="absolute top-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-amber-950 text-[8px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1 animate-bounce z-20">
+                      {/* SSR 무지개 / SR 보라 등급 예고 엠블럼 */}
+                      {(EXTENDED_RARITY_RANK[highestRarity.toLowerCase()] ?? 0) >= EXTENDED_RARITY_RANK['diamond'] ? (
+                        <div className="absolute top-1 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 via-rose-500 to-purple-600 text-white text-[8px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1 animate-bounce z-20 whitespace-nowrap">
+                          <Sparkles size={10} className="animate-spin" />
+                          <span>🌈 SSR 무지개빛 대박 예고!</span>
+                          <Sparkles size={10} className="animate-spin" />
+                        </div>
+                      ) : (EXTENDED_RARITY_RANK[highestRarity.toLowerCase()] ?? 0) >= EXTENDED_RARITY_RANK['gold'] ? (
+                        <div className="absolute top-1 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-purple-500 via-amber-400 to-yellow-400 text-slate-950 text-[8px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1 animate-bounce z-20 whitespace-nowrap">
                           <Sparkles size={10} />
-                          <span>GOLDEN RIM: SSR DETECTED!</span>
+                          <span>💜 SR 보라빛 출현 예고!</span>
                           <Sparkles size={10} />
                         </div>
-                      )}
+                      ) : null}
 
                       {/* 카드팩 리본 / 엠블럼 */}
                       <div className="w-full flex items-center justify-between border-b border-white/15 pb-2.5 sm:pb-3">
@@ -702,13 +718,16 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                           {t(`rarity_${packRarity}` as const, language)} PACK
                         </h4>
                         <p className="text-[11px] sm:text-xs text-amber-200/80 font-bold">5 CARDS INSIDE</p>
+                        <p className="text-[9px] text-white/50 font-mono tracking-wider animate-pulse">
+                          {language === 'ko' ? '탭 또는 위로 스와이프하여 개봉' : 'Tap or Swipe Up to Open'}
+                        </p>
                       </div>
 
                       {/* 하단 개봉 유도 버튼 */}
                       <button
                         type="button"
                         onClick={handleOpenPack}
-                        className="w-full py-2.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 text-xs font-black uppercase tracking-wider shadow-md hover:brightness-110 active:scale-95 transition-all cursor-pointer"
+                        className="w-full py-2.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 text-xs font-black uppercase tracking-wider shadow-md hover:brightness-110 active:scale-95 transition-all cursor-pointer font-mono"
                       >
                         {t('shop_gacha_tap_pack_to_open', language)}
                       </button>
@@ -743,6 +762,27 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
               {/* PHASE 3 & 4: spread & summary (카드 5장 펼쳐짐 및 리빌) */}
               {(phase === 'spread' || phase === 'summary') && (
                 <motion.div key="gacha-spread-stage" {...stageMotion} className="flex-1 min-h-0 flex flex-col justify-between z-10 py-1 sm:py-2">
+                  {/* Flip to Reveal 안내 바 (spread 단계) */}
+                  {phase === 'spread' && (
+                    <div className="flex items-center justify-between gap-2 px-2.5 py-1 mb-1.5 rounded-lg bg-amber-500/15 border border-amber-400/40 text-amber-200 text-[10px] sm:text-xs font-mono shrink-0 shadow-xs">
+                      <div className="flex items-center gap-1.5 truncate">
+                        <Sparkles size={13} className="text-yellow-300 animate-spin shrink-0" />
+                        <span className="truncate">
+                          {language === 'ko'
+                            ? `👆 카드를 탭하여 뒤집으세요! (${revealedIds.size}/${cards.length} 공개)`
+                            : `👆 Tap cards to reveal! (${revealedIds.size}/${cards.length})`}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleFastSkip}
+                        className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-[9px] uppercase hover:bg-amber-300 active:scale-95 cursor-pointer shadow-xs whitespace-nowrap shrink-0"
+                      >
+                        {language === 'ko' ? '전체 공개' : 'Reveal All'}
+                      </button>
+                    </div>
+                  )}
+
                   {/* 카드 5장 그리드 (모바일 3장+2장 또는 5열 컴팩트 레이아웃) */}
                   <div className="flex-1 min-h-0 overflow-y-auto py-1 sm:py-2 scrollbar-thin">
                     <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5 sm:gap-3 xl:gap-4 items-center justify-center max-w-full">

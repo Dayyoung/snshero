@@ -2592,7 +2592,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
       components: "buttons"
     }}>
       <>
-        <div className="pb-32 max-w-4xl mx-auto min-h-screen bg-transparent text-slate-900 font-sans selection:bg-indigo-500 selection:text-white">
+        <div className="pb-44 max-w-4xl mx-auto min-h-screen bg-transparent text-slate-900 font-sans selection:bg-indigo-500 selection:text-white">
           <div className="flex items-center justify-between px-4 sm:px-6 md:px-8 pt-4 pb-2">
             <div className="flex items-center gap-2">
               <PageHeader title={t('shop', language)} />
@@ -3922,34 +3922,50 @@ export const ShopView: React.FC<ShopViewProps> = ({
             </div>
           </div>
 
-          {/* SCR-04 UX: 모바일 카테고리 퀵 점프 탭바 */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 mb-3 scrollbar-none font-mono text-[11px]">
+          {/* SCR-04-03: 상단 스와이프형 카테고리 칩 탭바 (100dvh 뷰포트 밀착 정돈) */}
+          <div className="sticky top-0 z-20 -mx-4 sm:-mx-6 md:-mx-8 px-4 sm:px-6 md:px-8 py-2.5 bg-[#fdfcfc]/95 dark:bg-[#111]/95 backdrop-blur-md border-b border-black/10 dark:border-white/10 flex items-center gap-2 overflow-x-auto scrollbar-none font-mono text-[11px] select-none mb-3">
             <a
               href="#shop-grid"
-              className="px-2.5 py-1 bg-white dark:bg-[#1a1717] border border-slate-200 dark:border-white/15 text-slate-700 dark:text-slate-300 hover:border-slate-400 rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+              className="px-3 py-1.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-black rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all shadow-xs cursor-pointer"
             >
               <span>🃏 {language === 'ko' ? '카드팩 가챠' : 'Card Packs'}</span>
+            </a>
+            <a
+              href="#shop-pity-banner"
+              className="px-3 py-1.5 bg-amber-50 text-amber-950 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 font-bold rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+            >
+              <span>👑 {language === 'ko' ? 'SSR 천장' : 'SSR Pity'}</span>
             </a>
             {!isStarterPackPurchased && (
               <a
                 href="#shop-starter-bundle"
-                className="px-2.5 py-1 bg-amber-500 text-black font-black border border-amber-600 rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer animate-pulse"
+                className="px-3 py-1.5 bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 font-black border border-amber-500 rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer animate-pulse shadow-xs"
               >
                 <span>⚡ {language === 'ko' ? '초심자 핫딜' : 'Starter Deal'}</span>
               </a>
             )}
             <a
               href="#shop-convenience-bar"
-              className="px-2.5 py-1 bg-white dark:bg-[#1a1717] border border-slate-200 dark:border-white/15 text-slate-700 dark:text-slate-300 hover:border-slate-400 rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+              className="px-3 py-1.5 bg-white dark:bg-[#1a1717] border border-slate-200 dark:border-white/15 text-slate-700 dark:text-slate-300 hover:border-slate-400 rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
             >
               <span>🧪 {language === 'ko' ? '아이템·AP' : 'Items & AP'}</span>
             </a>
             <a
               href="#sns-charge-section"
-              className="px-2.5 py-1 bg-white dark:bg-[#1a1717] border border-slate-200 dark:border-white/15 text-slate-700 dark:text-slate-300 hover:border-slate-400 rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+              className="px-3 py-1.5 bg-white dark:bg-[#1a1717] border border-slate-200 dark:border-white/15 text-slate-700 dark:text-slate-300 hover:border-slate-400 rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
             >
               <span>💎 {language === 'ko' ? 'SNS 충전' : 'SNS Currency'}</span>
             </a>
+            <button
+              type="button"
+              onClick={() => {
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                setIsTokenExchangeOpen(true);
+              }}
+              className="px-3 py-1.5 bg-white dark:bg-[#1a1717] border border-slate-200 dark:border-white/15 text-slate-700 dark:text-slate-300 hover:border-slate-400 rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+            >
+              <span>🔄 {language === 'ko' ? '토큰 환전' : 'Token Swap'}</span>
+            </button>
           </div>
 
           {/* SCR-04 Monetization: 1인 1회 한정 파격 핫딜 '초심자 성장 스타터 번들' */}
@@ -4001,6 +4017,57 @@ export const ShopView: React.FC<ShopViewProps> = ({
               </div>
             </motion.div>
           )}
+
+          {/* SCR-04-02: SSR 확정 천장 카운트다운 프로그레스 바 (30회 내 확정 - 남은 횟수 실시간 표시) */}
+          {(() => {
+            const goldPity = getGachaPityView(gachaPityState, 'gold');
+            const goldPityPct = Math.min(100, Math.max(0, Math.round((goldPity.current / goldPity.threshold) * 100)));
+            return (
+              <div id="shop-pity-banner" className="w-full bg-gradient-to-r from-amber-500/15 via-yellow-400/20 to-amber-500/15 border-2 border-amber-400 p-3.5 sm:p-4 rounded-xl font-mono mb-4 shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-amber-400 text-slate-950 flex items-center justify-center font-black shrink-0 shadow-xs text-sm">
+                      👑
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-black text-xs sm:text-sm text-slate-900 dark:text-white">
+                          {language === 'ko' ? 'SSR 확정 천장 카운트다운' : 'SSR Guarantee Pity Countdown'}
+                        </span>
+                        <span className="px-1.5 py-0.2 bg-amber-400 text-slate-950 font-black text-[9px] rounded-xs uppercase animate-pulse">
+                          30회 확정
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                        {language === 'ko'
+                          ? '골드/프리미엄 소환 시 누적되며 30회 내 최고 등급 SSR 카드가 100% 확정 등장합니다.'
+                          : 'Summon to advance. Guarantees top-tier SSR card within 30 pulls.'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="text-xs font-black text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-950/80 px-2.5 py-1 rounded-sm border border-amber-300 shadow-xs">
+                      {language === 'ko' ? `앞으로 ${goldPity.remaining}회 내 100% 확정!` : `${goldPity.remaining} pulls left to SSR!`}
+                    </span>
+                  </div>
+                </div>
+
+                {/* 프로그레스 바 게이지 */}
+                <div className="space-y-1">
+                  <div className="flex justify-between text-[10px] font-bold text-slate-600 dark:text-slate-300">
+                    <span>{language === 'ko' ? '진행도' : 'Progress'}: {goldPity.current} / {goldPity.threshold} 회</span>
+                    <span className="text-amber-600 dark:text-amber-400 font-black">{goldPityPct}%</span>
+                  </div>
+                  <div className="w-full h-3 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden border border-slate-300 dark:border-slate-700">
+                    <div
+                      className="h-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 rounded-full transition-all duration-500 shadow-sm"
+                      style={{ width: `${goldPityPct}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
 
           {/* SNS 코인 상점 섹션 헤더 */}
           <div className="mb-1 mt-2 flex items-center gap-3">
@@ -4095,13 +4162,18 @@ export const ShopView: React.FC<ShopViewProps> = ({
                           type="button"
                           onClick={() => setPackQuantities(prev => ({ ...prev, [pack.rarity]: qty }))}
                           className={cn(
-                            "px-1.5 py-0.5 rounded-xs border text-[10px] font-bold cursor-pointer transition-colors",
+                            "px-1.5 py-0.5 rounded-xs border text-[10px] font-bold cursor-pointer transition-colors relative",
                             (packQuantities[pack.rarity] || 1) === qty
                               ? "bg-slate-900 text-white border-slate-900"
                               : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
                           )}
                         >
                           {qty}x
+                          {qty === 10 && (
+                            <span className="absolute -top-2 -right-1 px-1 py-0.1 bg-amber-400 text-slate-950 text-[7px] font-black rounded-xs shadow-xs animate-pulse">
+                              SR+
+                            </span>
+                          )}
                         </button>
                       ))}
                       <button
@@ -4121,6 +4193,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       </button>
                     </div>
                   </div>
+
+                  {/* SCR-04-02: 10연차 시 '1장 SR 이상 확정' 혜택 가시화 */}
+                  {(packQuantities[pack.rarity] || 1) >= 10 && (
+                    <div className="flex items-center justify-center gap-1 py-0.5 px-2 bg-gradient-to-r from-amber-400/20 via-yellow-400/30 to-amber-400/20 border border-amber-300 rounded-sm text-[9px] font-black text-amber-800 dark:text-amber-300 animate-pulse">
+                      <Sparkles size={10} className="text-yellow-500 shrink-0" />
+                      <span>{language === 'ko' ? '✨ 10연차 혜택: 1장 SR+ 100% 확정!' : '✨ 10x Pull: 1x SR+ Guaranteed!'}</span>
+                    </div>
+                  )}
 
                   <button
                     id={`shop-pack-${pack.rarity}-btn`}
@@ -4440,6 +4520,28 @@ export const ShopView: React.FC<ShopViewProps> = ({
               <div className="h-[1px] flex-1 bg-black/10" />
             </div>
 
+            {/* SCR-04-02: 첫 충전 상품 '첫 결제 시 코인 2배 + 스타터 SSR 교환권' 강조 배너 */}
+            <div className="w-full bg-gradient-to-r from-rose-500/15 via-amber-500/20 to-orange-500/15 border-2 border-rose-400 p-3.5 sm:p-4 rounded-xl font-mono text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="px-2 py-0.5 bg-rose-500 text-white font-black text-[10px] rounded-xs animate-pulse">
+                    FIRST PURCHASE 2X
+                  </span>
+                  <span className="text-xs font-black text-rose-600 dark:text-rose-400">
+                    🔥 {language === 'ko' ? '첫 결제 시 코인 2배 + 스타터 SSR 교환권 증정!' : '2x Coins on First Purchase + Starter SSR Ticket!'}
+                  </span>
+                </div>
+                <p className="text-[10px] text-slate-600 dark:text-slate-300">
+                  {language === 'ko'
+                    ? '첫 충전 시 결제한 SNS 코인을 2배(100% 보너스)로 즉시 지급하며 최고 등급 스타터 SSR 선택권이 인벤토리에 동봉됩니다.'
+                    : 'Get 2x SNS Coins on your very first recharge plus an instant Starter SSR Selection Ticket.'}
+                </p>
+              </div>
+              <span className="px-2.5 py-1 bg-amber-400 text-slate-950 font-black text-[10px] rounded-sm shrink-0 whitespace-nowrap border border-amber-500 shadow-xs">
+                [ 2X BONUS ACTIVE ]
+              </span>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
               {[
                 { amount: 1000, price: "1.00", krwPrice: "1500", label: "1,000 P (SNS)", sku: "snshero_points_1000" },
@@ -4453,10 +4555,16 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   <div
                     key={item.label}
                     className={cn(
-                      "p-5 sm:p-6 md:p-8 flex flex-col justify-between gap-5 sm:gap-6 md:gap-8 border transition-all shadow-sm rounded-2xl h-full",
+                      "p-5 sm:p-6 md:p-8 flex flex-col justify-between gap-5 sm:gap-6 md:gap-8 border transition-all shadow-sm rounded-2xl h-full relative",
                       isOwnedAdRemoval ? "bg-slate-50 border-slate-200" : "bg-white border-slate-100 hover:border-slate-200 hover:shadow-md"
                     )}
                   >
+                    {/* 첫 결제 2배 리본 */}
+                    {!item.isAdRemoval && (
+                      <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-rose-600 text-white text-[8px] font-black rounded-xs shadow-xs uppercase tracking-wider animate-pulse">
+                        {language === 'ko' ? '첫 결제 2배' : 'First: 2X'}
+                      </div>
+                    )}
                     <div className="flex flex-col gap-4">
                       <div className="flex justify-between items-start">
                         <Zap size={20} className={cn("sm:w-6 sm:h-6", isOwnedAdRemoval ? "text-slate-400" : "text-yellow-500 animate-pulse")} />
@@ -5784,6 +5892,53 @@ export const ShopView: React.FC<ShopViewProps> = ({
               <span>{newCardBonusNotice.cardName} 신규 도감 등록! (+{newCardBonusNotice.bonusSns} SNS 보너스)</span>
             </div>
           )}
+          </div>
+        </div>
+
+        {/* SCR-04-03: 하단 Thumb Zone 48px 규격 고정 듀얼 소환 CTA 바 (100dvh 뷰포트 밀착) */}
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#fdfcfc]/95 dark:bg-[#111]/95 backdrop-blur-md border-t border-slate-200 dark:border-white/15 p-2 sm:p-2.5 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] select-none">
+          <div className="max-w-md mx-auto grid grid-cols-2 gap-2 font-mono">
+            {/* 1회 소환 버튼 (48px 규격, 무료/할인 표기) */}
+            <button
+              type="button"
+              onClick={() => {
+                if (!dailyFreeSummonClaimed) {
+                  handleDailyFreeSummon();
+                } else {
+                  buyPack(10, 'bronze', 1);
+                }
+              }}
+              className={cn(
+                "min-h-[48px] h-12 rounded-sm border px-3 flex flex-col items-center justify-center text-center transition-transform active:scale-95 cursor-pointer shadow-xs",
+                !dailyFreeSummonClaimed
+                  ? "bg-emerald-500 hover:bg-emerald-400 border-emerald-600 text-black font-black animate-pulse"
+                  : "bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 font-bold"
+              )}
+            >
+              <span className="text-[9px] uppercase tracking-wider opacity-80 leading-none">
+                {!dailyFreeSummonClaimed ? '🎁 DAILY FREE' : '1X PULL'}
+              </span>
+              <span className="text-xs font-black truncate leading-tight mt-0.5">
+                {!dailyFreeSummonClaimed ? (language === 'ko' ? '1회 무료 소환' : 'Free Summon') : '10 SNS'}
+              </span>
+            </button>
+
+            {/* 10회 소환 버튼 (48px 규격, SR+ 확정 보너스 표기) */}
+            <button
+              type="button"
+              onClick={() => buy10xPack(10, 'bronze')}
+              className="min-h-[48px] h-12 rounded-sm border border-amber-500 bg-gradient-to-r from-amber-400 to-yellow-300 hover:brightness-110 text-slate-950 font-black px-3 flex flex-col items-center justify-center text-center transition-transform active:scale-95 cursor-pointer shadow-md relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-1 px-1.5 py-0.2 bg-slate-950 text-amber-300 text-[7px] font-black rounded-b-xs tracking-wider uppercase">
+                SR+ GUARANTEE
+              </div>
+              <span className="text-[9px] uppercase tracking-wider text-slate-800 leading-none">
+                10X MULTI PULL
+              </span>
+              <span className="text-xs font-black truncate leading-tight mt-0.5">
+                100 SNS {language === 'ko' ? '(SR+ 확정)' : '(SR+ Guaranteed)'}
+              </span>
+            </button>
           </div>
         </div>
 

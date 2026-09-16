@@ -2,6 +2,32 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-17 01:28 KST] [/gemini-ex] [SCR-04 상점 & 가챠 3대 혁신 과제 (SCR-04-01, 02, 03) 구현 완료]
+- **대상 파일**: `src/components/GachaRevealSequence.tsx`, `src/views/ShopView.tsx`
+- **구글 스프레드시트 과제 내역**:
+  1. **Row 11 (`SCR-04-01` | 개발/재미/도파민)**:
+     - 팩 스와이프/탭 개봉 인터랙션 지원 (`drag="y"`, `onDragEnd`, `onClick`)
+     - 등급별(SR 보라, SSR 무지개) 팩 림 & 빛 번쩍임 예고 연출 (`🌈 SSR 무지개빛 대박 예고!`, `💜 SR 보라빛 출현 예고!`)
+     - Web Vibration 햅틱 (`triggerHaptic('victory')`, `triggerHaptic('heavy')`, `triggerHaptic('light')`)
+     - 카드 1장씩 스와이프/탭 오픈(Flip to Reveal) 안내 바 및 3D 플립 애니메이션 구현
+     - 0ms 레이턴시 원터치 '전체 즉시 스킵(Fast Skip)' 버튼 구현 (`handleFastSkip`, 상단 헤더 상시 노출)
+  2. **Row 12 (`SCR-04-02` | 기획/과금전환)**:
+     - 뽑기 배너 상단에 'SSR 확정 천장 카운트다운 프로그레스 바(30회 내 확정 - 남은 횟수 실시간 표시)' 노출
+     - 첫 충전 상품 '첫 결제 시 코인 2배 + 스타터 SSR 교환권' 강조 배지 및 배너 적용
+     - 카드팩 10연차 수량 선택 및 버튼에 '✨ 1장 SR+ 이상 100% 확정!' 혜택 가시화 배지 부착
+  3. **Row 13 (`SCR-04-03` | 디자인/사용성)**:
+     - 하단 Thumb Zone에 '1회 소환(무료/할인 표기)'과 '10회 소환(보너스 표기)' 듀얼 CTA 버튼을 48px 규격으로 고정 배치 (`min-h-[48px]`)
+     - 상단 스와이프형 카테고리 칩 탭바 (`[🃏 카드팩 가챠]`, `[👑 SSR 천장]`, `[⚡ 초심자 핫딜]`, `[🧪 아이템·AP]`, `[💎 SNS 충전]`, `[🔄 토큰 환전]`)로 100dvh 뷰포트에 밀착 정돈
+- **검증 결과**:
+  - `npm run build`: 오류 0건 완벽 통과 (`✓ built in 9.32s`).
+  - Playwright 모바일(390x844) 실측 스크린샷 캡처 및 렌더링 검증:
+    - `shop_scr04_01_main.png`: 상단 스와이프 카테고리 칩 탭바 및 하단 48px 듀얼 소환 CTA 바 노출 확인.
+    - `shop_scr04_02_pity_and_packs.png`: SSR 확정 천장 카운트다운 프로그레스 바(30회 확정) 및 10연차 SR+ 배지 확인.
+    - `shop_scr04_03_first_charge_clean.png`: 첫 결제 2배 코인 + 스타터 SSR 교환권 배너 및 배지 확인.
+    - `shop_scr04_04_gacha_sealed.png`: 팩 봉인 화면에서 등급별 빛 예고, 스와이프 개봉 안내, 0ms 전체 즉시 스킵 버튼 확인.
+    - `shop_scr04_05_gacha_spread.png`: 카드 5장이 덮인 상태로 1장씩 Flip to Reveal 안내 바 노출 확인.
+    - `shop_scr04_06_fast_skip_summary.png`: Fast Skip 원터치 클릭 시 0ms 즉시 모든 카드 전체 공개 및 요약 화면 전환 확인.
+
 ## [2026-09-17 00:43 KST] [/rsi] [SCR-08 시련의 탑 & 보스 레이드 기획/디자인/개발 전면 개선 완료]
 - **순환 화면**: SCR-08 (시련의 탑 & 보스 레이드 / `tower`, `TowerOfTrialsModal.tsx`, `BattleBossHUD.tsx`, `PlayGameView.tsx`)
 - **생성 문서**: `docs/screen_audits/SCR-08_TOWER.md`
