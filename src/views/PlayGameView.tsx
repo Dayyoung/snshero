@@ -9762,11 +9762,42 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   // =========================================================================
   useEffect(() => {
     const handleGlobalBackEvent = (e: Event) => {
-      // 0. 미션 대결 조우 모달
+      // 0. 미션 대결 조우 모달 및 열린 팝업 우선 닫기
       if (encounterOpponentCardId !== null) {
         e.preventDefault();
         playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
         setEncounterOpponentCardId(null);
+        return;
+      }
+      if (isTowerTrialsOpen) {
+        e.preventDefault();
+        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        setIsTowerTrialsOpen(false);
+        return;
+      }
+      if (showInGameMenu) {
+        e.preventDefault();
+        setShowInGameMenu(false);
+        return;
+      }
+      if (showHelpPopup) {
+        e.preventDefault();
+        setShowHelpPopup(false);
+        return;
+      }
+      if (showMobileLogs) {
+        e.preventDefault();
+        setShowMobileLogs(false);
+        return;
+      }
+      if (showForfeitConfirm) {
+        e.preventDefault();
+        setShowForfeitConfirm(false);
+        return;
+      }
+      if (isStoryStageModalOpen) {
+        e.preventDefault();
+        setIsStoryStageModalOpen(false);
         return;
       }
 
@@ -13302,12 +13333,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
 
     return (
-      <div className="w-full px-4 py-4 sm:py-6 md:py-8 pb-20 flex flex-col gap-6 md:gap-10 min-h-screen bg-slate-50/50 font-sans text-slate-800 overflow-y-auto relative">
+      <div className="w-full px-4 py-4 sm:py-6 md:py-8 pb-32 flex flex-col gap-6 md:gap-10 min-h-screen bg-slate-50/50 font-sans text-slate-800 overflow-y-auto relative">
         <div className="max-w-4xl mx-auto w-full flex flex-col gap-6 md:gap-10">
           {/* Title with ? help button */}
           <div className="flex items-center justify-between gap-3">
             <div className="flex-1">
-              <PageHeader title={t('mode_select_title', language)} />
+              <PageHeader 
+                title={t('mode_select_title', language)} 
+              />
             </div>
             <button
               onClick={() => {
@@ -15479,11 +15512,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 }
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               }}
-              className="h-8 w-8 bg-slate-900/90 border border-slate-800 hover:border-red-500/50 text-slate-200 hover:text-white rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0"
-              title={language === 'ko' ? '나가기' : 'Exit'}
-              aria-label={language === 'ko' ? '나가기' : 'Exit'}
+              className="min-h-11 min-w-11 h-11 px-3 bg-[#141212] border-2 border-amber-400 hover:border-amber-300 text-amber-300 hover:text-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.7)] cursor-pointer flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 shrink-0 font-bold"
+              title={language === 'ko' ? '뒤로 / 나가기' : 'Back / Exit'}
+              aria-label={language === 'ko' ? '뒤로 / 나가기' : 'Back / Exit'}
             >
-              <ArrowLeft size={15} className="text-red-400" />
+              <ArrowLeft size={20} strokeWidth={2.8} className="text-amber-300 shrink-0" />
+              <span className="text-xs font-black tracking-wider uppercase">{language === 'ko' ? '뒤로' : 'BACK'}</span>
             </button>
 
             <button

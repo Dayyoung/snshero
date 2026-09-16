@@ -68,6 +68,7 @@ import {
   User, 
   ArrowRight, 
   LogOut, 
+  ArrowLeft,
   Camera, 
   Shield, 
   Gift, 
@@ -5547,7 +5548,7 @@ function AppContent() {
     );
   }
 
-    const showNavbar = (view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie') && !isGlobalPopupOpen;
+    const showNavbar = (view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie' && view !== 'play') && !isGlobalPopupOpen;
     const isPlayingBattle = view === 'play' && (playGameState === 'playing' || playGameState === 'searching' || playGameState === 'preMatch');
     
     return (
@@ -5670,16 +5671,17 @@ function AppContent() {
           {view !== 'landing' && view !== 'home' && (!isPlayingBattle || playGameState !== 'playing') && (
             <button
               onClick={handleGlobalBack}
+              id="global-header-back-btn"
               className={cn(
-                "fixed left-4 min-[1024px]:left-[calc(50vw-496px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md flex items-center justify-center active:scale-95 transition-all cursor-pointer touch-target",
+                "fixed left-3 sm:left-4 min-[1024px]:left-[calc(50vw-496px)] z-[9999] min-h-12 min-w-12 h-12 px-3.5 rounded-xl shadow-2xl flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer font-mono font-black select-none border-2",
                 (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px] lg:top-[10px]" : "top-[10px]",
-                (theme === 'dark' || theme === 'metal')
-                  ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
-                  : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
+                "bg-[#141212] text-amber-300 border-amber-400 hover:bg-[#201d1d] hover:border-amber-300 hover:text-white shadow-[0_4px_20px_rgba(0,0,0,0.7)]"
               )}
               title={language === 'ko' ? '뒤로가기' : 'Back'}
+              aria-label={language === 'ko' ? '뒤로가기' : 'Back'}
             >
-              <ChevronLeft size={20} />
+              <ArrowLeft size={22} strokeWidth={2.8} className="text-amber-300 shrink-0" />
+              <span className="text-xs font-black tracking-wider uppercase">{language === 'ko' ? '뒤로' : 'BACK'}</span>
             </button>
           )}
 
@@ -6104,24 +6106,12 @@ function AppContent() {
         {/* Global Chat Floating Button */}
         {view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && (view !== 'play' || playGameState === 'modeSelect') && (
           <>
-          <div className="fixed left-0 right-0 w-full max-w-[1024px] mx-auto z-[10000] pointer-events-none bottom-[calc(env(safe-area-inset-bottom)+5rem)]">
-                 {/* Random Play Button — left side */}
-                 <div className="absolute left-4 bottom-0 pointer-events-auto">
-                   <button
-                     onClick={handleStartDiceRoll}
-                     className="w-13 h-13 sm:w-14 sm:h-14 border-2 border-amber-400/70 rounded-2xl flex items-center justify-center transition-all bg-[#141212] active:scale-95 relative shadow-[0_8px_28px_rgba(0,0,0,0.65),0_0_16px_rgba(245,158,11,0.3)] hover:scale-105 hover:border-amber-300 hover:text-white text-amber-300 cursor-pointer touch-target"
-                     title={language === 'ko' ? '랜덤 미니게임 플레이' : 'Random Game Play'}
-                     aria-label={language === 'ko' ? '랜덤 미니게임 플레이' : 'Random Game Play'}
-                   >
-                     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" className="text-amber-300 drop-shadow-[0_2px_8px_rgba(245,158,11,0.5)]">
-                       <rect x="3" y="3" width="18" height="18" rx="3" />
-                       <circle cx="8" cy="8" r="1.5" fill="currentColor" />
-                       <circle cx="16" cy="8" r="1.5" fill="currentColor" />
-                       <circle cx="8" cy="16" r="1.5" fill="currentColor" />
-                       <circle cx="16" cy="16" r="1.5" fill="currentColor" />
-                     </svg>
-                   </button>
-                 </div>
+          <div className={cn(
+            "fixed left-0 right-0 w-full max-w-[1024px] mx-auto z-[10000] pointer-events-none transition-all",
+            view === 'play'
+              ? "bottom-[calc(env(safe-area-inset-bottom)+0.75rem)]"
+              : "bottom-[calc(env(safe-area-inset-bottom)+5rem)]"
+          )}>
                  {/* Chat + Auto Battle Buttons — right side */}
                  <div className="absolute right-4 bottom-0 flex flex-col items-center pointer-events-auto gap-2">
                    {/* Chat Toggle */}
@@ -6180,7 +6170,7 @@ function AppContent() {
                 transition={{ duration: 0.2, ease: "easeOut" }}
                 className={cn(
                   view === 'play'
-                    ? "fixed right-2 sm:right-4 md:right-6 lg:right-8 top-12 sm:top-14 bottom-24 sm:bottom-28 md:bottom-20 w-[92vw] sm:w-[320px] md:w-[340px] lg:w-[380px] max-h-[calc(100dvh-120px)] md:max-h-[560px] bg-[#090d16]/95 backdrop-blur-md text-white z-[10000] flex flex-col overflow-hidden rounded-xl border border-slate-700/80 shadow-[0_10px_35px_rgba(0,0,0,0.8)] font-mono"
+                    ? "fixed right-2 sm:right-4 md:right-6 lg:right-8 top-12 sm:top-14 bottom-14 sm:bottom-16 md:bottom-16 w-[92vw] sm:w-[320px] md:w-[340px] lg:w-[380px] max-h-[calc(100dvh-80px)] md:max-h-[560px] bg-[#090d16]/95 backdrop-blur-md text-white z-[10000] flex flex-col overflow-hidden rounded-xl border border-slate-700/80 shadow-[0_10px_35px_rgba(0,0,0,0.8)] font-mono"
                     : "fixed inset-0 w-full h-full max-h-none border-0 rounded-none shadow-none md:inset-auto md:bottom-36 md:right-4 md:left-auto md:w-[360px] md:h-auto md:max-h-[500px] bg-white z-[10000] flex flex-col overflow-hidden md:rounded-3xl md:border md:border-slate-200/80 md:shadow-2xl"
                 )}
               >

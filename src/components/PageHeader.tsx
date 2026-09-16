@@ -28,21 +28,21 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
         className
       )}
     >
-      <div className="shrink-0 min-w-10 flex items-center justify-start">
+      <div className="shrink-0 flex items-center justify-start">
         {onBack && (
           <button
             onClick={onBack}
             className={cn(
-              "h-8 px-2.5 rounded-sm border flex items-center gap-1 text-xs font-mono font-bold uppercase transition-colors cursor-pointer select-none active:translate-y-[1px]",
+              "min-h-11 min-w-11 h-11 px-3 rounded-xl border-2 flex items-center gap-1.5 text-xs font-mono font-black uppercase transition-all cursor-pointer select-none active:scale-95 shadow-md",
               dark
-                ? "border-stone-700 text-[#fdfcfc] hover:bg-[#fdfcfc] hover:text-[#201d1d]"
-                : "border-[#201d1d]/20 text-[#201d1d] hover:bg-[#201d1d] hover:text-[#fdfcfc]"
+                ? "border-amber-400 bg-[#141212] text-amber-300 hover:bg-[#201d1d] hover:border-amber-300"
+                : "border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] hover:bg-black"
             )}
             aria-label="Back"
             type="button"
           >
-            <ArrowLeft size={16} strokeWidth={2.5} />
-            <span className="hidden sm:inline-block">BACK</span>
+            <ArrowLeft size={20} strokeWidth={2.8} className="shrink-0" />
+            <span className="inline-block font-black tracking-wider">BACK</span>
           </button>
         )}
       </div>
