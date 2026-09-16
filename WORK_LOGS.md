@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-16 17:28 KST] [카드 배틀 화면 낮은 높이 뷰포트 대응: 카드판 최소높이 보장 및 상하 스크롤 지원]
+- **문제 원인**: 소형 모바일 기기 또는 브라우저 주소창/상단 광고 배너가 있는 환경에서 화면 높이가 낮을 경우 `overflow-hidden` 및 `touch-none`으로 인해 상대/내 핸드 사이에 끼인 가운데 3x3 보드가 찌그러지거나 잘리는 현상 발생.
+- **수정 내역**:
+  1. `PlayGameView.tsx`:
+     - `#game-board`: `overflow-hidden select-none touch-none` ➔ `overflow-y-auto select-none touch-pan-y overscroll-contain min-h-full`로 변경하여 상하 스크롤 및 터치 패닝 허용.
+     - `#primary-battle-arena`: `min-h-[580px] sm:min-h-[640px]`, `overflow-visible`, `justify-start sm:justify-between` 적용.
+     - 가운데 3x3 카드판: `min-h-[300px] sm:min-h-[340px] shrink-0` 적용하여 높이 축소 시에도 카드판이 찌그러지지 않고 원본 비율 유지.
+     - `#opponent-hand-container` 및 `#player-hand-container`: 각각 `min-h-[76px]`, `min-h-[82px]`, `shrink-0` 및 하단 안전 패딩(`mb-3 sm:mb-4`, `pb-6 sm:pb-8`) 적용.
+  2. `KadanRpgView.tsx`:
+     - 배틀 오버레이 컨테이너: `overflow-y-auto touch-pan-y overscroll-contain min-h-full` 적용.
+- **검증 결과**:
+  - `npm run build`: 오류 0건 통과 (`✓ built in 11.02s`).
+  - Playwright 헤드리스 브라우저를 통한 초소형 뷰포트(390x520) 실측 검증:
+    - 3x3 중앙 카드판 높이 264px 온전 보존 확인.
+    - 전체 스크롤 높이 734px vs 뷰포트 520px에서 상하 스크롤 150px 다운 이동 및 터치 패닝 완벽 동작 검증 완료.
+- **Git & 배포**: GitHub `origin/main` 푸시 완료.
+
 ## [2026-09-16 17:12 KST] [/main InBattleEmoteModal useEffect 미정의 런타임 에러 픽스]
 - **문제 원인**: `InBattleEmoteModal.tsx`에서 `useEffect` 훅을 사용하고 있으나 React import 목록에서 누락되어 `PlayGameView.tsx:19057`에서 모달 렌더링 시 `ReferenceError: useEffect is not defined` 발생.
 - **수정 내역**:
