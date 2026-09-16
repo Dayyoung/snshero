@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import { triggerHaptic } from '../lib/haptic';
 import { UserStats, CardData, InventoryRecord, Language, ViewType, EquipmentSlot, AiStrategy } from '../types';
 import { 
   DndContext, 
@@ -389,17 +390,18 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     localStorage.setItem(`hero_deck_preset_name_${num}_${season}`, presetNameEdit.trim().slice(0, 10));
     localStorage.setItem(`hero_deck_preset_icon_${num}_${season}`, presetIconEdit);
     setEditingPresetNum(null);
-    triggerHaptic('success');
+    triggerHaptic('heavy');
   };
 
   // ID 447: Smart Deck Auto-Fill Recommendation Engine
   const handleSmartAutoFill = useCallback(() => {
     if (currentDeck.length >= 5) {
-      setCustomAlert?.({
-        isOpen: true,
-        title: language === 'ko' ? '덱 완성 상태' : 'Deck Full',
-        message: language === 'ko' ? '이미 덱이 5장으로 가득 차 있습니다.' : 'Deck already has 5 cards.',
-      });
+      if (showCustomAlert) {
+        showCustomAlert(
+          language === 'ko' ? '덱 완성 상태' : 'Deck Full',
+          language === 'ko' ? '이미 덱이 5장으로 가득 차 있습니다.' : 'Deck already has 5 cards.'
+        );
+      }
       return;
     }
 
@@ -412,11 +414,12 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       .sort((a, b) => (b.power || 0) - (a.power || 0));
 
     if (candidates.length === 0) {
-      setCustomAlert?.({
-        isOpen: true,
-        title: language === 'ko' ? '보유 카드 부족' : 'Insufficient Cards',
-        message: language === 'ko' ? '추가할 수 있는 보유 카드가 없습니다.' : 'No additional owned cards found.',
-      });
+      if (showCustomAlert) {
+        showCustomAlert(
+          language === 'ko' ? '보유 카드 부족' : 'Insufficient Cards',
+          language === 'ko' ? '추가할 수 있는 보유 카드가 없습니다.' : 'No additional owned cards found.'
+        );
+      }
       return;
     }
 
@@ -433,15 +436,16 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
     const newDeck = [...currentDeck, ...toAdd];
     updateDeck(newDeck);
-    triggerHaptic('victory');
-    setCustomAlert?.({
-      isOpen: true,
-      title: language === 'ko' ? '✨ 스마트 자동 완성 완료' : '✨ Smart Auto-Fill Complete',
-      message: language === 'ko'
-        ? `최적 시너지 영웅 ${toAdd.length}장을 덱에 편성했습니다!`
-        : `Automatically equipped ${toAdd.length} high-synergy cards!`,
-    });
-  }, [currentDeck, inventory, language, setCustomAlert, updateDeck]);
+    triggerHaptic('heavy');
+    if (showCustomAlert) {
+      showCustomAlert(
+        language === 'ko' ? '✨ 스마트 자동 완성 완료' : '✨ Smart Auto-Fill Complete',
+        language === 'ko'
+          ? `최적 시너지 영웅 ${toAdd.length}장을 덱에 편성했습니다!`
+          : `Automatically equipped ${toAdd.length} high-synergy cards!`
+      );
+    }
+  }, [currentDeck, inventory, language, showCustomAlert, updateDeck]);
 
   const cardSkins = useCardSkins(season);
 
@@ -979,7 +983,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   // ID 347: 1~3장 배치 후 최적 시너지 기반 덱 자동 완성
   const handleAutoFillSynergy = () => {
     const filled = currentDeck.filter((c): c is CardData => Boolean(c));
-    const cardPool = ownedCards.length > 0 ? ownedCards : Object.values(CARD_DATABASE).map(c => syncCardWithDatabase({ ...c } as CardData, inventory));
+    const cardPool = ownedCards.length > 0 ? ownedCards : Object.values(CARD_DATABASE).map(c => syncCardWithDatabase({ ...c } as unknown as CardData, inventory));
     const optimal = buildOptimalSynergyDeck(cardPool, filled);
     if (optimal && optimal.length > 0) {
       updateDeck(optimal.slice(0, 5));
@@ -1077,10 +1081,10 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
         // ID 352: 역할 필터 (공격형 vs 방어형)
         if (selectedRoleFilter !== 'ALL') {
-          const u = item.card.stats?.up || item.card.stats?.[0] || 0;
-          const r = item.card.stats?.right || item.card.stats?.[1] || 0;
-          const d = item.card.stats?.down || item.card.stats?.[2] || 0;
-          const l = item.card.stats?.left || item.card.stats?.[3] || 0;
+          const u = (item.card.stats as any)?.up ?? item.card.stats?.[0] ?? 0;
+          const r = (item.card.stats as any)?.right ?? item.card.stats?.[1] ?? 0;
+          const d = (item.card.stats as any)?.down ?? item.card.stats?.[2] ?? 0;
+          const l = (item.card.stats as any)?.left ?? item.card.stats?.[3] ?? 0;
           const isAttack = (u + r) >= (d + l);
           if (selectedRoleFilter === 'ATTACK' && !isAttack) return false;
           if (selectedRoleFilter === 'DEFENSE' && isAttack) return false;
@@ -1137,33 +1141,35 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           }
           // ID 362: 상하좌우 4방향 수치 기준 원터치 퀵 정렬
           case 'dir_up': {
-            const uA = cardA.stats?.up || cardA.stats?.[0] || 0;
-            const uB = cardB.stats?.up || cardB.stats?.[0] || 0;
+            const uA = (cardA.stats as any)?.up ?? cardA.stats?.[0] ?? 0;
+            const uB = (cardB.stats as any)?.up ?? cardB.stats?.[0] ?? 0;
             comparison = uA - uB;
             break;
           }
           case 'dir_right': {
-            const rA = cardA.stats?.right || cardA.stats?.[1] || 0;
-            const rB = cardB.stats?.right || cardB.stats?.[1] || 0;
+            const rA = (cardA.stats as any)?.right ?? cardA.stats?.[1] ?? 0;
+            const rB = (cardB.stats as any)?.right ?? cardB.stats?.[1] ?? 0;
             comparison = rA - rB;
             break;
           }
           case 'dir_down': {
-            const dA = cardA.stats?.down || cardA.stats?.[2] || 0;
-            const dB = cardB.stats?.down || cardB.stats?.[2] || 0;
+            const dA = (cardA.stats as any)?.down ?? cardA.stats?.[2] ?? 0;
+            const dB = (cardB.stats as any)?.down ?? cardB.stats?.[2] ?? 0;
             comparison = dA - dB;
             break;
           }
           case 'dir_left': {
-            const lA = cardA.stats?.left || cardA.stats?.[3] || 0;
-            const lB = cardB.stats?.left || cardB.stats?.[3] || 0;
+            const lA = (cardA.stats as any)?.left ?? cardA.stats?.[3] ?? 0;
+            const lB = (cardB.stats as any)?.left ?? cardB.stats?.[3] ?? 0;
             comparison = lA - lB;
             break;
           }
           // ID 387: 메타 상성 카운터 픽 우선 정렬
           case 'meta_counter': {
-            const isCounterA = cardA.element === 'WATER' || cardA.element === 'EARTH';
-            const isCounterB = cardB.element === 'WATER' || cardB.element === 'EARTH';
+            const elemA = String(cardA.element || '').toLowerCase();
+            const elemB = String(cardB.element || '').toLowerCase();
+            const isCounterA = elemA === 'water' || elemA === 'earth';
+            const isCounterB = elemB === 'water' || elemB === 'earth';
             comparison = (isCounterA ? 1 : 0) - (isCounterB ? 1 : 0);
             break;
           }

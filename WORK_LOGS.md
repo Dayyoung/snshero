@@ -2,6 +2,21 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-16 16:14 KST] [/deck 마이덱 화면 런타임 및 TypeScript 에러 전면 수정 및 검증 완료]
+- **문제 원인**: `http://localhost:3000/deck` 진입 시 `MyDeckView.tsx` 내부에서 누락된 `useCallback`, `triggerHaptic` import, `setCustomAlert` 정의 누락 및 튜플 stats / element 타입 불일치로 인한 크래시 발생.
+- **수정 내역**:
+  1. `MyDeckView.tsx` 상단에 `useCallback`, `triggerHaptic` import 추가.
+  2. `handleSmartAutoFill` 내의 `setCustomAlert` 호출을 전달받은 `showCustomAlert`로 교체 및 haptic 파라미터 안정화 (`heavy`).
+  3. 4방향 스탯 정렬 및 공격/방어 필터 접근 시 safe null-coalescing(`(item.card.stats as any)?.up ?? item.card.stats?.[0] ?? 0`) 적용.
+  4. 메타 상성 정렬 시 `String(card.element).toLowerCase() === 'water'` 소문자 정규화 비교 적용.
+  5. `handleAutoFillSynergy` 내 `cardPool` 캐스팅 타입 안전성 보장 (`as unknown as CardData`).
+- **검증 결과**:
+  - `tsc --noEmit`: `MyDeckView.tsx` 에러 0건 (완전 무결점 해결).
+  - `npm run build`: 오류 0건 정상 빌드 (`✓ built in 13.17s`).
+  - 로컬 서버 `http://localhost:3000/deck` HTTP 200 정상 반환 및 모듈 트랜스파일 확인.
+- **구글 폼 제출**:
+  - 부서: 개발 | 작업명: [/deck 마이덱 화면 런타임 에러 전면 픽스] | 상태: 작업완료
+
 ## [2026-09-16 14:50 KST] [/ge 신규 구글시트 연동 및 SCR-01 홈&로비 3대 혁신 과제 구현 완료]
 - **스프레드시트**: `1DnOk21_VE-_YzbEbHhlXCtRDeUqHh5ZnFGtR_rVGoSc`
 - **작업 범위**: [SCR-01-01, SCR-01-02, SCR-01-03] 홈 & 로비 (HomeView) 기획/디자인/개발 3대 과제 전수 구현
