@@ -31,7 +31,7 @@ export const GoogleSheetsSyncModal: React.FC<GoogleSheetsSyncModalProps> = ({
   const [confirmExportOpen, setConfirmExportOpen] = useState<boolean>(false);
 
   // Status Sync fields
-  const [statusSheetId, setStatusSheetId] = useState<string>('1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s');
+  const [statusSheetId, setStatusSheetId] = useState<string>('1DnOk21_VE-_YzbEbHhlXCtRDeUqHh5ZnFGtR_rVGoSc');
   const [syncingStatus, setSyncingStatus] = useState<boolean>(false);
   const [statusResultMsg, setStatusResultMsg] = useState<string | null>(null);
   const [statusResultUrl, setStatusResultUrl] = useState<string | null>(null);

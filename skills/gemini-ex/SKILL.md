@@ -1,6 +1,6 @@
 ---
 name: gemini-ex
-description: 구글 스프레드시트(1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s)의 미작업 항목을 확인하고 소스코드에 반영 및 완료하는 스킬
+description: 구글 스프레드시트(1DnOk21_VE-_YzbEbHhlXCtRDeUqHh5ZnFGtR_rVGoSc)의 미작업 항목을 확인하고 소스코드에 반영 및 완료하는 스킬
 ---
 
 # /gemini-ex 스킬 지침서
@@ -9,7 +9,7 @@ description: 구글 스프레드시트(1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjx
 지정된 구글 스프레드시트에서 작업되지 않은 항목들을 확인하고 순차적으로 작업 및 검증을 완료합니다.
 
 ## 대상 스프레드시트
-- **스프레드시트 URL**: https://docs.google.com/spreadsheets/d/1gk9U2sMDRvlOCsbquqSMqrnLrRJWpoijz6uGdKjxk-s/edit?gid=0#gid=0
+- **스프레드시트 URL**: https://docs.google.com/spreadsheets/d/1DnOk21_VE-_YzbEbHhlXCtRDeUqHh5ZnFGtR_rVGoSc/edit?usp=sharing
 
 ## 수행 절차
 1. **진행 상태 확인 및 완료 항목 건너뛰기 (Skip Completed Rows)**:
