@@ -725,6 +725,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   }, [gameState]);
   const [showConstructionModal, setShowConstructionModal] = useState(false);
   const [selectedConstructionMode, setSelectedConstructionMode] = useState<string>('');
+  const [boardTraps, setBoardTraps] = useState<Record<number, 'purple' | 'red'>>({});
   const [guideMode, setGuideMode] = useState<any>(null);
   const [sortBy, setSortBy] = useState<'default' | 'popular' | 'recent'>('default');
   const [searchQuery, setSearchQuery] = useState('');
@@ -5985,12 +5986,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         const targetSlot = flippedIndices[0];
         const targetCard = newBoard[targetSlot];
         if (targetCard) {
+          const aUp = (placedCard.stats as any)?.up ?? placedCard.stats?.[0] ?? 5;
+          const aRight = (placedCard.stats as any)?.right ?? placedCard.stats?.[1] ?? 5;
+          const dUp = (targetCard.stats as any)?.up ?? targetCard.stats?.[0] ?? 3;
+          const dLeft = (targetCard.stats as any)?.left ?? targetCard.stats?.[3] ?? 3;
           setStatComparisonBadge({
             slotIndex: targetSlot,
-            attackerStat: Math.max(placedCard.stats?.up || 5, placedCard.stats?.right || 5),
-            defenderStat: Math.min(targetCard.stats?.up || 3, targetCard.stats?.left || 3),
+            attackerStat: Math.max(aUp, aRight),
+            defenderStat: Math.min(dUp, dLeft),
             direction: 'RIGHT',
-            diff: Math.max(1, Math.abs((placedCard.stats?.right || 5) - (targetCard.stats?.left || 3))),
+            diff: Math.max(1, Math.abs(aRight - dLeft)),
           });
           setTimeout(() => setStatComparisonBadge(null), 400);
         }
@@ -16672,7 +16677,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             </AnimatePresence>
 
             {/* ID 442: Boss HUD if in boss fight */}
-            {selectedMode === 'boss' && (
+            {battleType === 'boss' && (
               <div className="w-full max-w-sm mx-auto mb-1">
                 <BattleBossHUD
                   bossName="지옥의 군주"
@@ -16694,7 +16699,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 battleSpeed={battleSpeed}
                 onChangeSpeed={setBattleSpeed}
                 recentActionLog={recentActionLog}
-                onSurrender={handleExitToModeSelect}
+                onSurrender={() => handleExitMatch(true)}
                 language={language}
                 playerScore={boardScore.player}
                 opponentScore={boardScore.ai}

@@ -2,6 +2,20 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-16 16:19 KST] [/main 카단 RPG 메인화면 PlayGameView selectedMode 런타임 에러 전면 해결]
+- **문제 원인**: `http://localhost:3000/main`에서 RPG 배틀 조우 시 마운트되는 `PlayGameView.tsx` 내부 16675 라인에서 정의되지 않은 `selectedMode` 및 16697 라인에서 `handleExitToModeSelect` 참조로 `ReferenceError: selectedMode is not defined` 크래시 발생.
+- **수정 내역**:
+  1. `PlayGameView.tsx` 16675 라인의 미정의 `selectedMode === 'boss'`를 `battleType === 'boss'`로 교체.
+  2. 16697 라인의 미정의 `handleExitToModeSelect` 항복 콜백을 `() => handleExitMatch(true)`로 올바르게 연결.
+  3. 누락되었던 `boardTraps` state 선언 추가 (`const [boardTraps, setBoardTraps] = useState<Record<number, 'purple' | 'red'>>({});`).
+  4. 5990 라인 `setStatComparisonBadge` 내 stats 프로퍼티 접근을 배열 인덱싱 및 fallback 처리로 안전하게 보정.
+- **검증 결과**:
+  - `tsc --noEmit`: `PlayGameView.tsx` 타입 에러 0건 (완전 해결).
+  - `npm run build`: 오류 0건 정상 빌드 통과 (`✓ built in 11.34s`).
+  - `http://localhost:3000/main` HTTP 200 OK 응답 및 Vite 모듈 번들링 정상 완료.
+- **구글 폼 제출**:
+  - 부서: 개발 | 작업명: [/main 메인화면 PlayGameView selectedMode 런타임 에러 해결] | 상태: 작업완료
+
 ## [2026-09-16 16:16 KST] [마이덱 덱 케미스트리 & 밸런스 레이더 차트 레이아웃 시너지 효과 팝업 모달 내부 이전 완료]
 - **요청 사항**: 마이덱 메인 화면의 덱 케미스트리(Deck Chemistry) 및 덱 전투력 밸런스 레이더 차트(DeckBalanceRadarChart) 레이아웃을 메인 본문에서 제외하고 '시너지 효과' 버튼 클릭 시 나타나는 팝업 모달 내부로 이동하여 표시.
 - **수정 내역**:
