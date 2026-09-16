@@ -47,3 +47,112 @@ export const playSfx = (type: keyof typeof SFX_URLS | string) => {
     // Audio context safely caught
   }
 };
+
+// SCR-01-03: Zero-latency Web Audio API Faction SFX Engine
+let sharedAudioCtx: AudioContext | null = null;
+const getAudioContext = (): AudioContext | null => {
+  if (typeof window === 'undefined') return null;
+  if (!sharedAudioCtx) {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (AudioCtx) sharedAudioCtx = new AudioCtx();
+  }
+  if (sharedAudioCtx && sharedAudioCtx.state === 'suspended') {
+    sharedAudioCtx.resume().catch(() => {});
+  }
+  return sharedAudioCtx;
+};
+
+export const playFactionSfx = (factionOrElement: string = 'fire') => {
+  try {
+    if (typeof document !== 'undefined' && document.hidden) return;
+    const isMuted = localStorage.getItem('hero_sfx_muted') === 'true';
+    if (isMuted) return;
+
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    const key = factionOrElement.toLowerCase();
+
+    if (key.includes('fire') || key.includes('불') || key.includes('red')) {
+      // Fire / Flame Burst: Low thump into rising sizzling flare
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(140, now);
+      osc.frequency.exponentialRampToValueAtTime(420, now + 0.18);
+      osc.frequency.exponentialRampToValueAtTime(70, now + 0.35);
+
+      gain.gain.setValueAtTime(0.25, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.35);
+    } else if (key.includes('water') || key.includes('물') || key.includes('blue')) {
+      // Water / Ocean Drop: Smooth sine frequency drop & ripple
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(600, now);
+      osc.frequency.exponentialRampToValueAtTime(180, now + 0.25);
+
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.28);
+    } else if (key.includes('wind') || key.includes('바람') || key.includes('green')) {
+      // Wind / Gale: Airy pitch sweep
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.linearRampToValueAtTime(780, now + 0.15);
+      osc.frequency.exponentialRampToValueAtTime(220, now + 0.32);
+
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.32);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.32);
+    } else if (key.includes('light') || key.includes('빛') || key.includes('elec') || key.includes('전기')) {
+      // Electric / Lightning: Bright resonant chime
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(880, now);
+      osc.frequency.exponentialRampToValueAtTime(1760, now + 0.08);
+      osc.frequency.exponentialRampToValueAtTime(440, now + 0.22);
+
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.22);
+    } else {
+      // Earth / Mecha / Default: Heavy impact thump
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(220, now);
+      osc.frequency.exponentialRampToValueAtTime(55, now + 0.25);
+
+      gain.gain.setValueAtTime(0.35, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.26);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.26);
+    }
+  } catch {}
+};
+

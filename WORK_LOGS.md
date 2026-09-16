@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-16 14:50 KST] [/ge 신규 구글시트 연동 및 SCR-01 홈&로비 3대 혁신 과제 구현 완료]
+- **스프레드시트**: `1DnOk21_VE-_YzbEbHhlXCtRDeUqHh5ZnFGtR_rVGoSc`
+- **작업 범위**: [SCR-01-01, SCR-01-02, SCR-01-03] 홈 & 로비 (HomeView) 기획/디자인/개발 3대 과제 전수 구현
+- **상세 구현 내역**:
+  1. **SCR-01-01 (디자인/사용성 - 플로팅 3초 즉시 배틀 FAB & 모달 순차 큐)**:
+     - 모바일 Thumb Zone(화면 우하단 56px 대형 타깃)에 펄스 링과 글로우를 탑재한 플로팅 '3초 즉시 배틀(Play Now)' 원터치 액션 버튼(FAB) 신설 (`HomeView.tsx`).
+     - 첫 진입 시 공지(`NoticeModal`) ➔ 마일스톤(`Milestone600CelebrationModal`) ➔ 방치보상(`AfkPatrolModal`)으로 이어지는 직렬화 순차 큐(Sequential Modal Queue) 구축으로 모달 레이어 겹침 현상 원천 차단.
+  2. **SCR-01-02 (기획/과금전환 - 1,000원 스타터 패키지 배너 & 1-Tap 결제 모달)**:
+     - 홈 화면 상단에 93% 한정 특가 '1,000원 스타터 패키지' 프리미엄 배너 배치 및 전용 `StarterPackModal.tsx` 컴포넌트 신설.
+     - 원터치 구매 시 SSR 최고 등급 정예 카드 + 3,000 SNS 코인 즉시 충전 + AP 물약 5개 + 대군략가 골든 슬리브 혜택 지급 및 `hero_starter_pack_purchased` 로컬스토리지 영구 보존.
+  3. **SCR-01-03 (개발/재미/도파민 - 3D 틸트 반사광 & 홀로그램 포일 & 팩션 SFX)**:
+     - 로비 중앙 대표 팩션 카드 5장을 `LobbyInteractiveCard.tsx`로 교체하여 상호작용성 전면 해금.
+     - 커서/터치 좌표 추적 RAF 기반 3D 원근 틸트(`rotateX`, `rotateY`, `scale`), 각도에 따라 빛나는 홀로그램 포일 쉬머(Holographic Foil Glare) 이펙트 적용.
+     - Web Audio API 기반 지연 시간 0ms의 팩션 고유 SFX 엔진(`playFactionSfx`: 화염 폭발, 심해 물결, 질풍 스윕, 번개 아르페지오, 메카 펀치) 및 햅틱 진동 연동.
+- **검증 결과**:
+  - `npm run build`: 오류 0건 정상 빌드 완료 (`✓ built in 9.95s`).
+- **구글 폼 제출**:
+  - 부서: 개발 | 작업명: [SCR-01-01, SCR-01-02, SCR-01-03] 홈 & 로비 (HomeView) 3대 핵심 혁신 구현 | 상태: 작업완료
+
 ## [2026-09-16 12:21 KST] [/rsi 스킬 신설 및 1회차 SCR-01 홈&메인 로비 전면 개선 완료]
 - **작업 범위**: 
   1. 안티그래비티 신규 커스텀 스킬 `/rsi` (Rolling Screen Innovation: 순환 화면 전면 혁신) 엔진 구축.

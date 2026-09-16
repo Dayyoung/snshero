@@ -17,6 +17,8 @@ import { BeginnerRoadmap } from "../components/BeginnerRoadmap";
 import { NoticeModal } from "../components/NoticeModal";
 import { AfkPatrolModal } from "../components/AfkPatrolModal";
 import { Milestone600CelebrationModal } from "../components/Milestone600CelebrationModal";
+import { StarterPackModal } from "../components/StarterPackModal";
+import { LobbyInteractiveCard } from "../components/LobbyInteractiveCard";
 import { PingIndicator } from "../components/PingIndicator";
 import { triggerHaptic } from "../lib/haptic";
 import { useSns } from "../contexts/SnsContext";
@@ -83,7 +85,22 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [isNoticeClosed, setIsNoticeClosed] = useState(false);
   // ID 600: Grand Strategist Milestone 600 Celebration
   const [isMilestone600Open, setIsMilestone600Open] = useState(() => localStorage.getItem('hero_milestone_600_claimed') !== 'true');
+  // SCR-01-02: Starter Pack state
+  const [isStarterPackOpen, setIsStarterPackOpen] = useState(false);
+  const [isStarterPackPurchased, setIsStarterPackPurchased] = useState(() => localStorage.getItem('hero_starter_pack_purchased') === 'true');
   const [dailyMissionProgress, setDailyMissionProgress] = useState<DailyMissionProgress>(() => loadDailyMissions());
+
+  useEffect(() => {
+    const handleStarterPackUpdate = () => {
+      setIsStarterPackPurchased(localStorage.getItem('hero_starter_pack_purchased') === 'true');
+    };
+    window.addEventListener('hero_starter_pack_purchased_event', handleStarterPackUpdate);
+    window.addEventListener('storage', handleStarterPackUpdate);
+    return () => {
+      window.removeEventListener('hero_starter_pack_purchased_event', handleStarterPackUpdate);
+      window.removeEventListener('storage', handleStarterPackUpdate);
+    };
+  }, []);
 
   useEffect(() => {
     const updateUnread = () => {
@@ -261,91 +278,80 @@ export const HomeView: React.FC<HomeViewProps> = ({
     <div className="flex flex-col gap-4 sm:gap-5 p-4 sm:p-6 md:p-8 pb-32 max-w-6xl mx-auto min-h-screen app-bg justify-start text-slate-800 font-sans">
       {/* ── Header: Card Display + Title ── */}
       <header className="grid grid-cols-1 gap-4 sm:gap-6 items-stretch w-full pt-2">
+        {/* SCR-01-02: Top First Purchase Limited Deal Banner */}
+        <div className="w-full">
+          {!isStarterPackPurchased ? (
+            <div
+              onClick={() => {
+                triggerHaptic('heavy');
+                playSfx('click');
+                setIsStarterPackOpen(true);
+              }}
+              className="relative overflow-hidden cursor-pointer group rounded-none border border-amber-300 bg-gradient-to-r from-amber-500 via-rose-500 to-indigo-600 text-white p-2.5 sm:p-3 shadow-md hover:brightness-105 active:scale-98 transition-all select-none"
+            >
+              <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative flex items-center justify-between gap-2 font-mono">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="px-1.5 py-0.5 bg-black/40 text-amber-300 text-[10px] font-black tracking-wider uppercase shrink-0">
+                    {language === 'ko' ? '[첫 충전 한정 93% OFF]' : '[1ST BUY 93% OFF]'}
+                  </span>
+                  <span className="text-xs sm:text-sm font-black truncate">
+                    {language === 'ko'
+                      ? '⚡ 1,000원 스타터팩: SSR 확정팩 + 3,000 SNS + AP 완충 물약 5개!'
+                      : '⚡ ₩1,000 Starter Pack: Guaranteed SSR + 3,000 SNS + AP Potions!'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 shrink-0 bg-black/30 px-2 py-1 rounded-sm text-[11px] font-black text-amber-200">
+                  <span>₩1,000</span>
+                  <ArrowRight size={12} />
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between px-3 py-1.5 bg-slate-100 border border-slate-200 text-slate-600 text-[11px] font-mono select-none">
+              <span className="font-bold flex items-center gap-1">
+                <span className="text-amber-500">👑</span>
+                {language === 'ko' ? '[첫 구매 혜택 완료] SSR 영웅 & 3,000 SNS 적용됨' : '[First Purchase Active] SSR Hero & 3,000 SNS Applied'}
+              </span>
+              <span className="text-[10px] text-slate-400 font-mono">ACCOUNT_TIER: PRO</span>
+            </div>
+          )}
+        </div>
+
         <div className="relative min-h-[310px] sm:min-h-[360px] overflow-hidden rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]">
           <div className="absolute inset-x-0 top-0 h-1 bg-[#201d1d]" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(15,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(15,0,0,0.02)_1px,transparent_1px)] bg-[size:28px_28px]" />
           <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 py-8 sm:p-8">
-            <div className="relative h-36 sm:h-52 md:h-60 w-full flex items-center justify-center overflow-visible pointer-events-none select-none">
+            {/* SCR-01-03: Interactive 3D Faction Cards Display */}
+            <div className="relative h-36 sm:h-52 md:h-60 w-full flex items-center justify-center overflow-visible select-none">
               {deckPreview.map((item, index) => {
-              const isDatabaseId = typeof item === 'number';
-              const id = isDatabaseId ? item : (item as CardData).imageIndex;
-              const cardData = isDatabaseId ? CARD_DATABASE[id] : item;
-              const rotation = (index - 2) * 5;
-              const xOffset = (index - 2) * (typeof window !== 'undefined' && window.innerWidth < 640 ? 24 : 35);
-              const yOffset = Math.abs(index - 2) * (typeof window !== 'undefined' && window.innerWidth < 640 ? 5 : 8);
+                const isDatabaseId = typeof item === 'number';
+                const id = isDatabaseId ? item : (item as CardData).imageIndex;
+                const cardData = isDatabaseId ? CARD_DATABASE[id] : item;
+                if (!cardData) return null;
 
-              if (!cardData) return null;
+                const displayCard: CardData = isDatabaseId ? {
+                  id: `home-card-${id}`,
+                  title_dis: (cardData as any).title_dis,
+                  stats: (cardData as any).stats,
+                  imageIndex: id,
+                  rarity: (cardData as any).rarity,
+                  level: (cardData as any).level,
+                  owner: null,
+                } : item as CardData;
 
-              const displayCard = isDatabaseId ? {
-                id: `home-card-${id}`,
-                title_dis: (cardData as any).title_dis,
-                stats: (cardData as any).stats,
-                imageIndex: id,
-                rarity: (cardData as any).rarity,
-                level: (cardData as any).level,
-                owner: null,
-              } : item;
-
-              return (
-                <motion.div
-                  key={isDatabaseId ? id : (item as CardData).id}
-                  className="absolute flex flex-col items-center gap-1 transform-gpu"
-                  style={{
-                    transform: `translateX(${xOffset}px) translateY(${yOffset}px) rotate(${rotation}deg)`,
-                    zIndex: index + 10,
-                  }}
-                >
-                  <div className="relative overflow-hidden rounded-lg">
-                    <CardItem
-                      card={displayCard as CardData}
-                      className="w-20 h-28 sm:w-28 sm:h-40 md:w-32 md:h-44 shadow-2xl rounded-lg"
-                    />
-                    
-                    {/* Stats Summary Overlay */}
-                    <div className="absolute inset-x-0 bottom-0 bg-white/95 backdrop-blur-sm p-1 rounded-b-lg border-t border-slate-200 opacity-100">
-                      <div className="grid grid-cols-4 gap-0.5">
-                        {(['N', 'E', 'S', 'W'] as const).map((dir, statIdx) => (
-                          <div key={dir} className="flex flex-col items-center rounded bg-slate-50 px-0.5 py-0.5 ring-1 ring-slate-200">
-                            <span className="text-[5px] font-black text-slate-500 leading-none">{dir}</span>
-                            <span className="text-[8px] font-black text-slate-950 leading-none mt-0.5">{(displayCard as CardData).stats[statIdx]}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Indicators */}
-                  <div className="flex flex-col items-center gap-0.5 mt-1 transition-opacity translate-y-0 text-center">
-                    <div className="flex gap-0.5">
-                      {['necklace', 'ring1', 'ring2', 'boots'].map(slot => (
-                        <div 
-                          key={slot}
-                          className={cn(
-                            "w-1 h-1 rounded-full",
-                            (displayCard as CardData).equipment?.[slot as EquipmentSlot]
-                              ? cn("bg-yellow-400", lowSpecMode ? "" : "animate-pulse")
-                              : "bg-slate-200"
-                          )}
-                        />
-                      ))}
-                    </div>
-                    <div className="flex flex-wrap justify-center gap-0.5 max-w-[40px]">
-                      {INITIAL_SKILLS.filter(baseSkill => {
-                         const skill = (displayCard as CardData).skills?.find(s => s.id === baseSkill.id);
-                         return (skill?.level || 0) > 0;
-                      }).map(baseSkill => (
-                        <div
-                          key={baseSkill.id}
-                          className={cn(
-                            "w-1 h-1 rounded-full bg-cyan-400 shadow-[0_0_2px_rgba(34,211,238,0.5)]",
-                            lowSpecMode ? "" : "animate-pulse"
-                          )}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              );
+                return (
+                  <LobbyInteractiveCard
+                    key={displayCard.id}
+                    card={displayCard}
+                    index={index}
+                    totalCards={deckPreview.length}
+                    lowSpecMode={lowSpecMode}
+                    onCardClick={() => {
+                      onNavigate('mydeck');
+                    }}
+                  />
+                );
               })}
             </div>
 
@@ -1014,10 +1020,17 @@ export const HomeView: React.FC<HomeViewProps> = ({
         onClose={() => setIsNoticeClosed(true)}
       />
 
-      {/* AFK Patrol Rewards Modal (Item 64) */}
+      {/* Milestone 600 Celebration Modal (Item 600) - Sequenced after Notice */}
+      <Milestone600CelebrationModal
+        isOpen={isNoticeClosed && isMilestone600Open}
+        onClose={() => setIsMilestone600Open(false)}
+        language={language}
+      />
+
+      {/* AFK Patrol Rewards Modal (Item 64) - Sequenced after Milestone */}
       <AfkPatrolModal
         language={language}
-        canShow={isNoticeClosed}
+        canShow={isNoticeClosed && !isMilestone600Open}
         onClaim={(gold, sns) => {
           if (sns > 0) {
             addSns(sns, 'afk_patrol_reward', 'earned');
@@ -1032,12 +1045,44 @@ export const HomeView: React.FC<HomeViewProps> = ({
         language={language}
       />
 
-      {/* Milestone 600 Celebration Modal (Item 600) */}
-      <Milestone600CelebrationModal
-        isOpen={isMilestone600Open}
-        onClose={() => setIsMilestone600Open(false)}
+      {/* SCR-01-02: Starter Pack Modal */}
+      <StarterPackModal
+        isOpen={isStarterPackOpen}
+        onClose={() => setIsStarterPackOpen(false)}
         language={language}
+        onPurchased={() => {
+          setIsStarterPackPurchased(true);
+        }}
       />
+
+      {/* SCR-01-01: Mobile Thumb-Zone Floating '3-Second Instant Battle' FAB */}
+      <div className="fixed bottom-6 right-4 sm:bottom-8 sm:right-8 z-40 select-none">
+        <button
+          onClick={() => {
+            triggerHaptic('heavy');
+            playSfx('click');
+            if (onStartPlayNow) {
+              onStartPlayNow();
+            } else {
+              onNavigate('game');
+            }
+          }}
+          className="relative group flex items-center gap-2 px-4 py-3 sm:px-5 sm:py-3.5 bg-[#201d1d] hover:bg-slate-800 text-white font-mono font-black text-xs sm:text-sm rounded-full shadow-2xl border-2 border-indigo-500 active:scale-95 transition-all cursor-pointer"
+          title={language === 'ko' ? '3초 즉시 배틀 시작' : 'Play Now (3s Instant Match)'}
+        >
+          {/* Animated Glow / Ping Wave */}
+          <span className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-amber-500 opacity-60 blur-xs group-hover:opacity-100 transition-opacity animate-pulse pointer-events-none" />
+          
+          <span className="relative flex items-center gap-2">
+            <span className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-tr from-amber-400 to-rose-500 flex items-center justify-center text-white shadow-xs">
+              <Zap size={15} className="fill-white" />
+            </span>
+            <span className="tracking-tight">
+              {language === 'ko' ? '[ 3초 즉시 배틀 ]' : '[ PLAY NOW ]'}
+            </span>
+          </span>
+        </button>
+      </div>
     </div>
   );
 };
