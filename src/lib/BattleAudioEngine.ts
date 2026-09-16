@@ -69,15 +69,15 @@ class BattleAudioEngine {
   }
 
   /**
-   * ID 345: 연쇄 뒤집기 발생 시 피치 상승 사운드 (+100 cents per cascade, max +400 cents)
+   * ID 345 / SCR-02-01: 연쇄 뒤집기 발생 시 피치 상승 사운드 (+100 cents per cascade, max +800 cents)
    */
   public playCascadeFlipSound(chainIndex: number = 0): void {
     const ctx = this.getAudioContext();
     if (!ctx) return;
 
-    this.comboStep = Math.min(chainIndex, 4);
+    this.comboStep = Math.min(Math.max(0, chainIndex), 8);
     const baseFreq = 440; // A4
-    // 100 cents = 2^(1/12)
+    // 100 cents = 1 semitone = 2^(1/12)
     const pitchMultiplier = Math.pow(2, (this.comboStep * 100) / 1200);
     const freq = baseFreq * pitchMultiplier;
 
@@ -86,17 +86,69 @@ class BattleAudioEngine {
 
     osc.type = 'triangle';
     osc.frequency.setValueAtTime(freq, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(freq * 1.5, ctx.currentTime + 0.15);
+    osc.frequency.exponentialRampToValueAtTime(freq * 1.45, ctx.currentTime + 0.14);
 
-    gain.gain.setValueAtTime(0.2, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+    gain.gain.setValueAtTime(0.24, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
 
     osc.connect(gain);
     gain.connect(ctx.destination);
 
     this.trackSource(osc);
     osc.start();
-    osc.stop(ctx.currentTime + 0.22);
+    osc.stop(ctx.currentTime + 0.24);
+  }
+
+  /**
+   * SCR-02-01: 9번째 턴 역전 승리 'COMEBACK FINISHER' 전용 Web Audio 사운드 FX
+   * 서브 베이스 드롭 + C5-E5-G5-C6 골든 아르페지오 팡파레
+   */
+  public playComebackFinisherSfx(): void {
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+
+    // 1. Deep Sub-Bass Boom (Impact Drop)
+    try {
+      const bassOsc = ctx.createOscillator();
+      const bassGain = ctx.createGain();
+      bassOsc.type = 'sine';
+      bassOsc.frequency.setValueAtTime(130, now);
+      bassOsc.frequency.exponentialRampToValueAtTime(36, now + 0.55);
+
+      bassGain.gain.setValueAtTime(0.38, now);
+      bassGain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
+
+      bassOsc.connect(bassGain);
+      bassGain.connect(ctx.destination);
+      this.trackSource(bassOsc);
+      bassOsc.start(now);
+      bassOsc.stop(now + 0.7);
+    } catch {}
+
+    // 2. High Shimmer Golden Fanfare (C5, E5, G5, C6)
+    const fanfareNotes = [523.25, 659.25, 783.99, 1046.5];
+    fanfareNotes.forEach((freq, idx) => {
+      try {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const st = now + 0.08 + idx * 0.07;
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, st);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.08, st + 0.28);
+
+        gain.gain.setValueAtTime(0.2, st);
+        gain.gain.exponentialRampToValueAtTime(0.001, st + 0.35);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        this.trackSource(osc);
+        osc.start(st);
+        osc.stop(st + 0.4);
+      } catch {}
+    });
   }
 
   /**

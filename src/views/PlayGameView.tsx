@@ -285,6 +285,7 @@ import { CustomMatchModal } from '../components/CustomMatchModal';
 import { SportsmanshipModal } from '../components/SportsmanshipModal';
 import { FriendRivalryModal } from '../components/FriendRivalryModal';
 import { SpectatorModal } from '../components/SpectatorModal';
+import { RevengeChanceModal } from '../components/RevengeChanceModal';
 
 
 
@@ -823,6 +824,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleTileTouchStart = useCallback((idx: number) => {
+    setHoveredCellIdx(idx);
     if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
     longPressTimerRef.current = setTimeout(() => {
       setInspectedTileIndex(idx);
@@ -3332,6 +3334,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [isExpeditionOpen, setIsExpeditionOpen] = useState<boolean>(false);
   const [isTowerTrialsOpen, setIsTowerTrialsOpen] = useState<boolean>(false);
 
+  // SCR-02-01: 9th Turn Comeback Finisher Cinematic State
+  const [isComebackFinisherActive, setIsComebackFinisherActive] = useState<boolean>(false);
+
+  // SCR-02-03: 1-Point Margin Defeat Revenge Chance Modal & Active Buff
+  const [showRevengeChanceModal, setShowRevengeChanceModal] = useState<boolean>(false);
+  const [isRevengeBuffActive, setIsRevengeBuffActive] = useState<boolean>(false);
+
   // Row 51: Hand Card Long-Press Zoom Preview Modal
   const [longPressPreviewCard, setLongPressPreviewCard] = useState<CardData | null>(null);
   const handLongPressTimerRef = useRef<number | null>(null);
@@ -5181,6 +5190,25 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     }, 800 * speedMultiplier);
   };
 
+  // SCR-02-03: 리벤지 찬스 결제 및 즉시 재대결 핸들러
+  const handleActivateRevenge = (method: 'cash' | 'sns') => {
+    setShowRevengeChanceModal(false);
+    if (method === 'sns') {
+      if (snsBalance < 50) {
+        showCustomAlert(language === 'ko' ? 'SNS 포인트가 부족합니다.' : 'Not enough SNS points.');
+        return;
+      }
+      setSnsBalance(prev => Math.max(0, prev - 50));
+      addLog(language === 'ko' ? '🪙 [리벤지 찬스] 50 SNS를 지불하고 복수전 분노 버프를 획득했습니다.' : '🪙 [REVENGE CHANCE] 50 SNS paid for Revenge Rage Buff.', 'system');
+    } else {
+      addLog(language === 'ko' ? '⚡ [리벤지 찬스] 500원 다이렉트 결제로 복수전 특가 버프를 장착했습니다.' : '⚡ [REVENGE CHANCE] $0.49 Direct Pay applied for Revenge Rage Buff.', 'victory');
+    }
+    try {
+      localStorage.setItem('hero_revenge_buff_active', 'true');
+    } catch {}
+    handleRematch();
+  };
+
   const startMissionCardBattle = (targetCardIndex: number) => {
     const dbCard = CARD_DATABASE[targetCardIndex] || CARD_DATABASE[1];
     activeMissionCardIdRef.current = targetCardIndex;
@@ -5460,9 +5488,35 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           }
         }
         
+        const hasRevengeBuff = typeof window !== 'undefined' && localStorage.getItem('hero_revenge_buff_active') === 'true';
+        if (hasRevengeBuff) {
+          localStorage.removeItem('hero_revenge_buff_active');
+          setIsRevengeBuffActive(true);
+        }
+
         const pHand = baseDeck
           .slice(0, 5)
-          .map((c, i) => syncCardWithDatabase({ ...c, owner: 'player' as const, id: `player-${Date.now()}-${i}` }));
+          .map((c, i) => {
+            const synced = syncCardWithDatabase({ ...c, owner: 'player' as const, id: `player-${Date.now()}-${i}` });
+            if (hasRevengeBuff) {
+              const currentStats = Array.isArray(synced.stats) ? [...synced.stats] : [5, 5, 5, 5];
+              const buffedStats = currentStats.map(s => Number(s) + 2);
+              return {
+                ...synced,
+                stats: buffedStats,
+                power: (synced.power || 10) + 10,
+              };
+            }
+            return synced;
+          });
+
+        if (hasRevengeBuff) {
+          addLog(language === 'ko'
+            ? '🔥 [리벤지 분노 버프 발동] 복수전 특수 공격력 +2 및 파워 +10 강화가 전원 적용되었습니다!'
+            : '🔥 [REVENGE RAGE BUFF] All card directional stats +2 and PWR +10 active for rematch!',
+            'victory'
+          );
+        }
         
         const playerDeckPower = pHand.reduce((acc, c) => {
           return acc + (c.power || 0);
@@ -5908,6 +5962,31 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       if (board.filter(c => c !== null).length === 8 && flippedIndices.length >= 3) {
         isClutchAceBreaker.current = true;
       }
+
+      // SCR-02-01: 9th turn Comeback Finisher detection (Reversal from behind/tie to victory)
+      if (board.filter(c => c !== null).length === 8) {
+        const priorPlayerCards = board.filter(c => c?.owner === 'player').length;
+        const priorAiCards = board.filter(c => c?.owner === 'ai').length;
+        const finalPlayerCards = priorPlayerCards + 1 + flippedIndices.length;
+        const finalAiCards = priorAiCards - flippedIndices.length;
+
+        if (priorPlayerCards <= priorAiCards && finalPlayerCards > finalAiCards) {
+          setIsComebackFinisherActive(true);
+          setIsScreenShaking(true);
+          setIsClutchSlowMo(true);
+          battleAudio.playComebackFinisherSfx();
+          battleAudio.playAnnouncerStinger(flippedIndices.length, true);
+          triggerHaptic('victory');
+          setTimeout(() => setIsScreenShaking(false), 600);
+          setTimeout(() => setIsClutchSlowMo(false), 900);
+          setTimeout(() => setIsComebackFinisherActive(false), 2400);
+          addLog(language === 'ko'
+            ? '⚡ [컴백 피니셔 (Comeback Finisher)] 9번째 턴 마지막 한 수로 극적인 전세 대역전 승리!'
+            : '⚡ [COMEBACK FINISHER] 9th turn clutch reversal! The entire battlefield has been overturned!',
+            'victory'
+          );
+        }
+      }
     }
     
     if (highlights && Object.keys(highlights).length > 0) {
@@ -5972,10 +6051,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         ]);
       }
 
+      // SCR-02-01: Sequential cascade flip SFX & haptics with rising semitone pitch
+      flippedIndices.forEach((_, step) => {
+        setTimeout(() => {
+          battleAudio.playCascadeFlipSound(step);
+          triggerHaptic(step === 0 ? 'light' : step >= 2 ? 'heavy' : 'medium');
+        }, step * 120);
+      });
+
       if (flippedIndices.length >= 2) {
         playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3'); // Critical capture sound
-        // ID 345: 피치 상승 사운드
-        battleAudio.playCascadeFlipSound(flippedIndices.length);
         // ID 381: 아나운서 음성/신스 피드백
         battleAudio.playAnnouncerStinger(flippedIndices.length, false);
         // ID 416: 콤보 플로팅 텍스트
@@ -6506,6 +6591,30 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     isProcessingRef.current = false;
   };
 
+  // SCR-02-02: 핸드 카드 선택 시 3x3 보드 빈칸별 실시간 뒤집기 예측 (+N FLIP)
+  const predictedFlipsMap = useMemo<Record<number, number[]>>(() => {
+    if (selectedCardIdx === null || selectedCardSide !== 'player' || turn !== 'player' || battleType === 'matgo' || gameOver) {
+      return {};
+    }
+    const card = playerHand[selectedCardIdx];
+    if (!card) return {};
+
+    const map: Record<number, number[]> = {};
+    board.forEach((cell, idx) => {
+      if (!cell) {
+        try {
+          const tempBoard = [...board];
+          tempBoard[idx] = { ...card, owner: 'player' };
+          const { indices } = getFlips(tempBoard, idx, card, 'player', true, pendingQteMultiplier ?? activeQteMultiplier ?? 1);
+          map[idx] = indices || [];
+        } catch {
+          map[idx] = [];
+        }
+      }
+    });
+    return map;
+  }, [selectedCardIdx, selectedCardSide, turn, battleType, gameOver, playerHand, board, pendingQteMultiplier, activeQteMultiplier]);
+
   const handleMouseEnterCell = (idx: number) => {
     setHoveredCellIdx(idx);
     if (turn !== 'player' || gameOver || board[idx] || selectedCardIdx === null) {
@@ -6680,6 +6789,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           setGameOver(true);
           setGameState('gameOver');
           setIsEvaluating(false);
+
+          // SCR-02-03: 1장 차이(4:5 또는 1점차) 아쉬운 패배 시 '리벤지 찬스' 모달 즉시 노출
+          if (finalWinner === 'ai' && ((pScore === 4 && aScore === 5) || (pScore + 1 === aScore) || Math.abs(pScore - aScore) === 1)) {
+            setShowRevengeChanceModal(true);
+          }
           // Keep auto-battle setting active on game over so that rematch or auto-lobby-restart works seamlessly
 
           if (battleType === 'pvp_attack') {
@@ -16554,6 +16668,29 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 : (isLowPerformance ? "border-red-500" : "border-red-500/50 shadow-[0_0_60px_rgba(239,68,68,0.25)] scale-[1.01]")
             ) : (!isFeverMode && "border-slate-700 shadow-2xl")
           )}>
+            {/* SCR-02-01: Comeback Finisher (9th turn clutch reversal) Slow-mo Zoom & Golden Arcs */}
+            <AnimatePresence>
+              {isComebackFinisherActive && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1.05 }}
+                  exit={{ opacity: 0, scale: 1.25 }}
+                  transition={{ duration: 0.35, ease: "easeOut" }}
+                  className="absolute inset-0 z-[270] flex flex-col items-center justify-center bg-amber-950/70 backdrop-blur-xs pointer-events-none rounded-3xl"
+                >
+                  <div className="bg-black/90 border-2 border-amber-400 px-6 py-4 rounded-sm text-center shadow-[0_0_50px_rgba(245,158,11,0.8)] relative overflow-hidden">
+                    <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent,rgba(245,158,11,0.2),transparent)] animate-pulse" />
+                    <span className="text-2xl md:text-4xl font-black text-amber-300 font-mono tracking-wider block drop-shadow-[0_0_12px_rgba(245,158,11,1)]">
+                      ⚡ COMEBACK FINISHER! ⚡
+                    </span>
+                    <span className="text-xs md:text-sm text-amber-100 font-mono font-bold mt-1 block">
+                      {language === 'ko' ? '9번째 턴 극적인 전세 대역전 승리!' : '9th Turn Clutch Reversal Victory!'}
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {/* Item 386: Cross Domination 4-Way Capture Shockwave Overlay */}
             <AnimatePresence>
               {isCrossDominationActive && (
@@ -16930,7 +17067,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                               ),
                               !card && boardTraps[idx] === 'purple' && "bg-purple-800/40 border-purple-400 border-2",
                               !card && boardTraps[idx] === 'red' && "bg-red-800/40 border-red-400 border-2",
-                              !card && selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player' && "border-2 border-emerald-400 bg-emerald-950/50 shadow-[0_0_16px_rgba(52,211,153,0.6)] animate-pulse",
+                              !card && selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player' && (
+                                predictedFlipsMap[idx] && predictedFlipsMap[idx].length > 0
+                                  ? "border-2 border-amber-400 bg-amber-950/60 shadow-[0_0_18px_rgba(245,158,11,0.8)] animate-pulse"
+                                  : "border-2 border-emerald-400 bg-emerald-950/50 shadow-[0_0_16px_rgba(52,211,153,0.6)] animate-pulse"
+                              ),
                               !card && aiReasoning?.boardIdx === idx && turn === 'ai' && "border-solid border-rose-500 bg-rose-950/30",
                               !card && selectedCardIdx !== null && selectedCardSide === 'player' && recommendedPlayerMove?.cardIdx === selectedCardIdx && recommendedPlayerMove?.boardIdx === idx && turn === 'player' && "border-2 border-cyan-300 bg-cyan-900/50 shadow-[0_0_18px_rgba(34,211,238,0.8)]",
                               // ID 366: 직전 턴 상대 착수 슬롯 골든 펄스 링 연출
@@ -16955,6 +17096,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                               boardState={board}
                               slotIndex={idx}
                             />
+
+                            {/* SCR-02-02: Target Flip Pulse on Enemy Card */}
+                            {card && card.owner === 'ai' && (
+                              (hoveredCellIdx !== null && predictedFlipsMap[hoveredCellIdx]?.includes(idx)) ||
+                              capturePreview.includes(idx)
+                            ) && (
+                              <div className="absolute inset-0 z-20 pointer-events-none border-2 border-rose-500 bg-rose-950/40 rounded-lg flex items-center justify-center animate-pulse shadow-[0_0_12px_rgba(244,63,94,0.8)]">
+                                <span className="text-[8px] font-mono font-black text-rose-200 bg-black/90 px-1.5 py-0.5 rounded-xs border border-rose-500 shadow-sm">
+                                  🎯 FLIP
+                                </span>
+                              </div>
+                            )}
+
                             {/* Row 78: Invalid Drop Target Overlay on Occupied Slots */}
                             {card && selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player' && (
                               <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none bg-black/25 rounded-lg">
@@ -16964,13 +17118,24 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                               </div>
                             )}
 
-                            {/* Row 62: Valid Drop Target Indicator when player card selected */}
+                            {/* Row 62 / SCR-02-02: Valid Drop Target Indicator when player card selected */}
                             {!card && selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player' && (
                               <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-1 pointer-events-none">
-                                <div className="w-5 h-5 rounded-full border-2 border-emerald-400 bg-emerald-500/20 flex items-center justify-center animate-ping" />
-                                <span className="text-[7px] font-mono font-black text-emerald-300 bg-black/85 px-1 py-0.2 rounded-xs border border-emerald-400/60 mt-1 uppercase whitespace-nowrap shadow-sm">
-                                  {language === 'ko' ? '[배치]' : '[PLACE]'}
-                                </span>
+                                {predictedFlipsMap[idx] && predictedFlipsMap[idx].length > 0 ? (
+                                  <>
+                                    <div className="w-5 h-5 rounded-full border-2 border-amber-400 bg-amber-500/30 flex items-center justify-center animate-ping" />
+                                    <span className="text-[7px] sm:text-[8px] font-mono font-black text-amber-300 bg-black/90 px-1.5 py-0.5 rounded-sm border border-amber-400/80 mt-1 uppercase whitespace-nowrap shadow-[0_0_8px_rgba(245,158,11,0.7)] animate-pulse">
+                                      ⚡ +{predictedFlipsMap[idx].length} FLIP
+                                    </span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div className="w-4 h-4 rounded-full border border-emerald-400/80 bg-emerald-500/20 flex items-center justify-center" />
+                                    <span className="text-[7px] font-mono font-black text-emerald-300 bg-black/85 px-1 py-0.2 rounded-xs border border-emerald-400/60 mt-1 uppercase whitespace-nowrap shadow-sm">
+                                      {language === 'ko' ? '[배치]' : '[PLACE]'}
+                                    </span>
+                                  </>
+                                )}
                               </div>
                             )}
                             {/* Item 347: Goblin Spawn Badge in Grid Cell */}
@@ -18362,6 +18527,18 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               </div>
 
               <div className="flex flex-col gap-2.5 pt-2">
+                {/* SCR-02-03: 1장 차이 패배 시 리벤지 찬스 인라인 배너 & 버튼 */}
+                {winner === 'ai' && ((boardScore.player === 4 && boardScore.ai === 5) || Math.abs(boardScore.player - boardScore.ai) === 1) && (
+                  <button
+                    type="button"
+                    onClick={() => setShowRevengeChanceModal(true)}
+                    className="w-full py-3.5 px-4 bg-gradient-to-r from-rose-600 via-rose-500 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white font-black uppercase tracking-wider active:scale-95 transition-all rounded-2xl shadow-xl shadow-rose-500/30 flex items-center justify-center gap-2 cursor-pointer border border-rose-400 animate-pulse font-mono"
+                  >
+                    <Flame size={18} className="text-yellow-300 animate-bounce" />
+                    <span>{language === 'ko' ? '⚡ 1장 차이 석패! [리벤지 찬스 +2 버프 받기]' : '⚡ REVENGE CHANCE (+2 Buff & Rematch)'}</span>
+                  </button>
+                )}
+
                 {/* Item 42: 전투 승리 화면 내 '다음 스테이지 바로 진행 (Next Stage)' 연속 플레이 버튼 */}
                 {winner === 'player' && activeMissionCardId === null && activeMissionCardIdRef.current === null && (
                   <button 
@@ -18762,6 +18939,18 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           <span className="text-white font-black text-sm uppercase tracking-widest">SHARING_POST...</span>
         </div>
       )}
+      {/* SCR-02-03: Revenge Chance Modal */}
+      <RevengeChanceModal
+        isOpen={showRevengeChanceModal}
+        playerScore={battleType === 'matgo' ? matgoScores.player : boardScore.player}
+        opponentScore={battleType === 'matgo' ? matgoScores.ai : boardScore.ai}
+        snsBalance={snsBalance}
+        language={language}
+        opponentName={lastOpponent?.name}
+        onClose={() => setShowRevengeChanceModal(false)}
+        onActivateRevenge={handleActivateRevenge}
+      />
+
       {renderCustomAlertModal()}
 
       {/* Skill Activation Overlay Banner (Item 54) */}

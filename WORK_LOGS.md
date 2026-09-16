@@ -2,6 +2,29 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-16 16:52 KST] [/rsi] [SCR-02 배틀 아레나 (3x3 보드)] 연쇄 플립 가속 SFX, 착수 예측 오버레이(+N FLIP) 및 리벤지 찬스 100% 구현 완료
+- **작업 범위**: `docs/screen_audits/SCR-02_PLAY.md` 작성 및 배틀 아레나 3대 핵심 과제(SCR-02-01, SCR-02-02, SCR-02-03) 프로덕션 코드 구현.
+- **주요 파일**: `src/lib/BattleAudioEngine.ts`, `src/components/RevengeChanceModal.tsx`, `src/views/PlayGameView.tsx`, `docs/screen_audits/SCR-02_PLAY.md`
+- **구현 내역**:
+  1. **SCR-02-01: 연쇄 뒤집기 반음 가속 SFX & 9번째 턴 COMEBACK FINISHER**:
+     - `BattleAudioEngine.ts`: 최대 8단계까지 연쇄 플립마다 +100 cents(반음)씩 상승하는 Web Audio 무지연 신디사이저 `playCascadeFlipSound(chainIndex)` 및 9턴 역전 전용 사운드 `playComebackFinisherSfx()`(서브 베이스 드롭 + C5-E5-G5-C6 골든 아르페지오) 구현.
+     - `PlayGameView.tsx`: 다중 카드 뒤집기 시 120ms 간격으로 반음 상승 사운드 및 햅틱(`triggerHaptic`) 순차 재생.
+     - 9번째 턴에서 열세/동점 상태를 뒤집는 역전 승리 시 '⚡ COMEBACK FINISHER! ⚡' 골든 라이트닝 슬로우 줌인 및 600ms 화면 흔들림(Screen Shake) 발동.
+  2. **SCR-02-02: 44px 보드 펄스 & `+N FLIP` 착수 예측 오버레이**:
+     - 핸드 카드 선택 시 3x3 보드 빈칸별 예상 뒤집기 수량을 사전 계산하는 `predictedFlipsMap` memoization 구현.
+     - 빈칸 타일에 `⚡ +N FLIP` 고대비 앰버/에메랄드 뱃지 및 펄스 테두리 표시.
+     - 뒤집힐 대상 상대 카드 위에 `🎯 FLIP` 타깃팅 링 및 레드 펄스 오버레이 실시간 연동.
+     - 모바일 터치 시 `handleTileTouchStart`와 연동하여 44px+ 퓨어 원터치 편의성 보장.
+  3. **SCR-02-03: 1장 차이(4:5) 석패 시 '리벤지 찬스' 500원 버프팩 & 즉시 재대결**:
+     - `RevengeChanceModal.tsx`: 1장 차이(4:5 또는 1점차) 아쉬운 패배 직후 출현하는 전용 모달 개발.
+     - 500원 1-Tap 결제 또는 50 SNS 지불로 복수전 분노 버프(`hero_revenge_buff_active`) 획득 후 즉시 재대결 시작.
+     - 경기 시작 시 버프를 자동 감지하여 모든 아군 카드의 전방위 스탯 +2 및 파워 +10 강화 적용 및 전투 안내 로그 출력.
+- **검증 결과**:
+  - `npm run build`: 오류 0건 완전 통과 (`✓ built in 45.71s`).
+  - 로컬스토리지 영구 보존 무결점 유지 (`hero_revenge_buff_active`).
+  - `docs/screen_audits/SCR-02_PLAY.md` 5대 지표 분석 보고서 영구 보존.
+  - `screen_rotator.py --status`: SCR-02 완료, 다음 순환 SCR-03(마이덱) 정상 갱신.
+
 ## [2026-09-16 16:19 KST] [/main 카단 RPG 메인화면 PlayGameView selectedMode 런타임 에러 전면 해결]
 - **문제 원인**: `http://localhost:3000/main`에서 RPG 배틀 조우 시 마운트되는 `PlayGameView.tsx` 내부 16675 라인에서 정의되지 않은 `selectedMode` 및 16697 라인에서 `handleExitToModeSelect` 참조로 `ReferenceError: selectedMode is not defined` 크래시 발생.
 - **수정 내역**:
