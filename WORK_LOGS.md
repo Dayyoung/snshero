@@ -2,6 +2,28 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-17 07:48 KST] [UI/UX Bugfix] [상점화면 모바일 뷰포트 너비 초과 및 가로 잘림 현상 완벽 수정]
+- **작업 내용**: https://snshero.com/shop 모바일 접속 시 화면 우측이 잘리고 가로 스크롤/넘침이 발생하는 문제 해결
+- **대상 파일**: `src/views/ShopView.tsx`, `src/App.tsx`
+- **원인 분석**:
+  1. `ShopView.tsx` 루트 컨테이너에 `w-full` 및 `overflow-x-hidden`이 누락되어, flex 부모 내에서 자식들의 intrinsic 콘텐츠 너비(672px)만큼 무제한 확장됨.
+  2. `LIVE TICKER` 마퀴 flex 아이템에 `min-w-0`이 없어 긴 텍스트(500px+)로 인해 컨테이너 전체를 가로로 밀어냄.
+  3. PITY 프로그레스 바가 모바일(390px 이하)에서 고정 폭(`min-w-[220px]`)과 AP 잔여 배지가 한 줄에 묶여 가로로 넘침.
+  4. 상단 카테고리 탭바의 음수 마진(`-mx-4`)이 부모 컨테이너 바깥으로 삐져나감.
+  5. 하단 고정 듀얼 소환 CTA 바가 `bottom-0`으로 네비게이션 바와 겹쳐 UI 가림 발생.
+- **수정 상세 내역**:
+  1. `ShopView.tsx` 루트 컨테이너 및 패딩 컨테이너에 `w-full max-w-4xl mx-auto overflow-x-hidden` 및 `w-full max-w-full` 적용.
+  2. `App.tsx`의 뷰 전환 `motion.div`에 `w-full max-w-full overflow-x-hidden` 적용하여 전역 뷰포트 너비 누수 방지.
+  3. `LIVE TICKER` 마퀴에 `min-w-0 flex-1 truncate` 적용.
+  4. PITY 프로그레스 바 및 AP 물약 잔여 수량 배지를 `flex-col sm:flex-row sm:items-center`, `min-w-0 w-full`로 모바일 최적화.
+  5. 카테고리 탭바의 음수 마진을 제거하고 부모 패딩 내 안전한 `w-full overflow-x-auto`로 정돈.
+  6. 하단 듀얼 소환 CTA 바의 위치를 하단 내비게이션 바 위(`bottom-16 sm:bottom-[72px]`)로 조정하여 터치 충돌 및 겹침 해결.
+- **검증 결과**:
+  - `npm run build`: 오류 0건 완벽 빌드 (`✓ built in 9.68s`).
+  - Playwright 모바일(390x844) 실측 검증:
+    - `hasHorizontalOverflow`: `false` (문서 스크롤 너비 390px = 윈도우 너비 390px, 가로 넘침 0px).
+    - `shop_mobile_top.png`, `shop_mobile_mid.png`, `shop_mobile_bottom.png` 전수 확인 완료 (우측 잘림 100% 해소, 모든 UI 요소 정상 렌더링).
+
 ## [2026-09-17 07:38 KST] [/gemini-ex] [SCR-01-04~06 홈 & 메인 로비 24H 순찰 수확, 스마트 퀵 허브 & 제로 오버헤드 엔진 완료]
 - **작업 ID**: SCR-01-04, SCR-01-05, SCR-01-06 (구글 스프레드시트 Row 38, 39, 40)
 - **대상 파일**:

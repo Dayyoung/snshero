@@ -6075,7 +6075,7 @@ function AppContent() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.1 }}
                 className={cn(
-                  "flex-1 flex flex-col min-h-0 h-full",
+                  "flex-1 flex flex-col min-h-0 h-full w-full max-w-full overflow-x-hidden",
                   isPlayingBattle && "overflow-hidden select-none touch-none"
                 )}
               >

@@ -2592,7 +2592,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
       components: "buttons"
     }}>
       <>
-        <div className="pb-44 max-w-4xl mx-auto min-h-screen bg-transparent text-slate-900 font-sans selection:bg-indigo-500 selection:text-white">
+        <div className="pb-44 w-full max-w-4xl mx-auto min-h-screen bg-transparent text-slate-900 font-sans selection:bg-indigo-500 selection:text-white overflow-x-hidden">
           <div className="flex items-center justify-between px-4 sm:px-6 md:px-8 pt-4 pb-2">
             <div className="flex items-center gap-2">
               <PageHeader title={t('shop', language)} />
@@ -2606,7 +2606,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
               </button>
             </div>
           </div>
-          <div className="p-4 sm:p-6 md:p-8 pt-0 sm:pt-0 md:pt-0 flex flex-col gap-6 sm:gap-8 md:gap-10">
+          <div className="p-4 sm:p-6 md:p-8 pt-0 sm:pt-0 md:pt-0 flex flex-col gap-6 sm:gap-8 md:gap-10 w-full max-w-full overflow-x-hidden">
 
             <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -3671,10 +3671,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </div>
 
           {/* ID 438: Live Lucky Drop Ticker Marquee */}
-          <div className="w-full bg-[#1a1717] border border-amber-500/40 text-amber-300 py-1.5 px-3 rounded-none font-mono text-[10px] overflow-hidden select-none mb-3 flex items-center justify-between shadow-sm">
-            <div className="flex items-center gap-2 truncate">
-              <span className="bg-amber-500 text-black font-black px-1 py-0.2 uppercase text-[9px]">LIVE</span>
-              <span className="truncate">
+          <div className="w-full bg-[#1a1717] border border-amber-500/40 text-amber-300 py-1.5 px-3 rounded-none font-mono text-[10px] overflow-hidden select-none mb-3 flex items-center justify-between gap-2 shadow-sm">
+            <div className="flex items-center gap-2 truncate min-w-0 flex-1">
+              <span className="bg-amber-500 text-black font-black px-1 py-0.2 uppercase text-[9px] shrink-0">LIVE</span>
+              <span className="truncate min-w-0">
                 {language === 'ko'
                   ? '📢 Player***님이 럭키 룰렛에서 500 SNS를 획득했습니다! · Hero_92님이 프리미엄 팩에서 SSR 카드를 획득했습니다!'
                   : '📢 Player*** won 500 SNS from Lucky Wheel! · Hero_92 summoned SSR Card from Premium Pack!'}
@@ -3731,22 +3731,22 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 </div>
 
                 {/* Row 2: ID 473 Real-time Dynamic Pity Progress & ID 463 Item Purchase Limit */}
-                <div className="flex flex-wrap items-center justify-between gap-2 text-[10px]">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[10px] w-full min-w-0">
                   {/* ID 473: Pity Progress Bar (실시간 골드팩 30회 천장 동적 연동) */}
-                  <div className="flex items-center gap-2 flex-1 min-w-[220px]">
+                  <div className="flex items-center gap-2 flex-1 min-w-0 w-full">
                     <span className="font-bold text-slate-700 dark:text-slate-300 shrink-0">
                       [ PITY: {goldPity.current}/{goldPity.threshold} ]
                     </span>
-                    <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <div className="flex-1 min-w-[50px] h-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden">
                       <div className="h-full bg-gradient-to-r from-amber-500 to-amber-600 transition-all duration-300" style={{ width: `${goldPityPct}%` }} />
                     </div>
-                    <span className="text-amber-600 dark:text-amber-400 font-bold shrink-0">
+                    <span className="text-amber-600 dark:text-amber-400 font-bold shrink-0 truncate">
                       {language === 'ko' ? `${goldPity.remaining}회 후 ${goldPity.guaranteeRarity} 확정` : `${goldPity.remaining} pulls to ${goldPity.guaranteeRarity}`}
                     </span>
                   </div>
 
                   {/* ID 463: Item Purchase Limit */}
-                  <div className="text-slate-500 dark:text-slate-400 shrink-0 font-bold bg-slate-50 dark:bg-slate-800/60 px-2 py-1 border border-slate-200 dark:border-slate-700">
+                  <div className="text-slate-500 dark:text-slate-400 shrink-0 font-bold bg-slate-50 dark:bg-slate-800/60 px-2 py-1 border border-slate-200 dark:border-slate-700 self-start sm:self-auto">
                     [ AP 물약: {2 - todayApPotionsBought}/2회 잔여 ]
                   </div>
                 </div>
@@ -3923,7 +3923,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </div>
 
           {/* SCR-04-03: 상단 스와이프형 카테고리 칩 탭바 (100dvh 뷰포트 밀착 정돈) */}
-          <div className="sticky top-0 z-20 -mx-4 sm:-mx-6 md:-mx-8 px-4 sm:px-6 md:px-8 py-2.5 bg-[#fdfcfc]/95 dark:bg-[#111]/95 backdrop-blur-md border-b border-black/10 dark:border-white/10 flex items-center gap-2 overflow-x-auto scrollbar-none font-mono text-[11px] select-none mb-3">
+          <div className="sticky top-0 z-20 w-full py-2 bg-[#fdfcfc]/95 dark:bg-[#111]/95 backdrop-blur-md border-b border-black/10 dark:border-white/10 flex items-center gap-1.5 overflow-x-auto scrollbar-none font-mono text-[11px] select-none mb-3">
             <a
               href="#shop-grid"
               className="px-3 py-1.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-black rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all shadow-xs cursor-pointer"
@@ -5895,8 +5895,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </div>
         </div>
 
-        {/* SCR-04-03: 하단 Thumb Zone 48px 규격 고정 듀얼 소환 CTA 바 (100dvh 뷰포트 밀착) */}
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#fdfcfc]/95 dark:bg-[#111]/95 backdrop-blur-md border-t border-slate-200 dark:border-white/15 p-2 sm:p-2.5 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] select-none">
+        {/* SCR-04-03: 하단 Thumb Zone 48px 규격 고정 듀얼 소환 CTA 바 (하단 내비게이션 바 위 안전 배치) */}
+        <div className="fixed bottom-16 sm:bottom-[72px] left-0 right-0 z-40 max-w-[1024px] mx-auto bg-[#fdfcfc]/95 dark:bg-[#111]/95 backdrop-blur-md border-t border-slate-200 dark:border-white/15 p-2 sm:p-2.5 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] select-none">
           <div className="max-w-md mx-auto grid grid-cols-2 gap-2 font-mono">
             {/* 1회 소환 버튼 (48px 규격, 무료/할인 표기) */}
             <button
