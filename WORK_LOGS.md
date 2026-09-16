@@ -2,6 +2,43 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-16 10:35 KST] [플랫폼 핵심 개선 항목 ID 596~605 총 10개 전수 구현 및 빌드/배포 검증 완료]
+- **작업 범위**: SNS Hero 플랫폼 핵심 개선 10개 항목 (`Item 596` ~ `Item 605`) 전수 프로덕션 코드 구현.
+- **상세 구현 내역**:
+  1. **Item 596: Battle HUD Win Threshold Momentum Bar (`src/components/BattleMinimalTopBar.tsx`)**:
+     - 기존 분산된 점수 텍스트를 3x3 보드 상단 중앙 2색 세그먼트 모멘텀 트랙(`[ 🔵 5 / 6 needed ──|── 4 🔴 ]`)으로 통합.
+     - 승리 조건 6장 달성 임계점에 은은한 골든 마커 티크(`golden-win-marker`) 배치.
+  2. **Item 597: Domino Comeback Cinematic Finisher (`src/lib/BattleFXEngine.ts`, `src/index.css`)**:
+     - Turn 9 연쇄 뒤집기로 역전 승리 시 200ms 프리즈, 앰비언트 라이팅 딤(`ambient-dim-overlay`), 타일 스윕 골든 라이트닝 블레이드(`golden-lightning-blade`) 연출 후 팡파레 전환.
+  3. **Item 598: Daily Stamina Burn & Rebate Milestones (`src/lib/staminaPacingManager.ts`, `src/components/DailyMissions.tsx`)**:
+     - 일일 AP 소모량 추적(`dailyApBurned`) 및 50 / 100 / 150 AP 소모 마일스톤 게이지 바 렌더링.
+     - 각 단계 도달 시 +20 AP 보너스 환급 및 +30 SNS 지급, 시각적 펄스/글로우 및 알림 토스트 연동.
+  4. **Item 599: RAF-Throttled Pointer Move Handling (`src/lib/BattleDragEngine.ts`)**:
+     - 120Hz/240Hz 고주사율 터치 이벤트 스트림과 보드 슬롯 호버 판정을 분리.
+     - 60fps RAF 단일 프레임 스케줄러(`requestAnimationFrame`)로 호버 연산을 격리하여 지연 시간 단축 및 프레임 드랍 원천 방지.
+  5. **Item 600: Grand Strategist Milestone 600 Event (`src/content/cardSkins.ts`, `src/content/profileEmoticons.ts`, `src/components/Milestone600CelebrationModal.tsx`, `src/views/HomeView.tsx`)**:
+     - 600번째 기능 개선 달성을 축하하는 로그인 기념 모달(`Milestone600CelebrationModal.tsx`) 연동.
+     - 한정판 `Titan Core 600` 카드 슬리브 스킨 및 `Grand Strategist` 골든 칭호 영구 지급.
+  6. **Item 601: Tile Detail Inspection Long-Press Chip (`src/views/PlayGameView.tsx`, `src/index.css`)**:
+     - 3x3 보드 배치 카드 350ms 롱프레스 제스처 시 타일 상단 1줄 앵커드 HUD 칩(`.tile-inspect-chip`) 노출.
+     - 카드명, 기본 파워, 획득 보너스 표시 및 손가락을 뗄 시 즉각 페이드아웃 디스미스.
+  7. **Item 602: Cascade Comeback Dynamic Slow-Mo Zoom (`src/lib/BattleFXEngine.ts`, `src/index.css`)**:
+     - 연쇄 플립으로 리드가 역전되는 순간 200ms 동안 5% 다이나믹 슬로우모 줌(`.slow-mo-camera-zoom`) 및 골든 일렉트릭 아크(`.golden-electrical-arc`) 스파크 효과 연출.
+  8. **Item 603: 1-Tap Reinvest Dividends Option (`src/views/StockMarketView.tsx`)**:
+     - 주식 시장 배당금 수령 패널에 1탭 `[ 🔄 Reinvest 100% into Shares ]` 액션 추가.
+     - 수수료 0%로 최고 수익률 보유 주식(24h 변동률 우선)에 스팟 가격으로 즉시 전액 복리 재투자 매수.
+  9. **Item 604: Page Visibility Audio Lifecycle Management (`src/lib/sound.ts`, `src/lib/AudioSpriteService.ts`)**:
+     - 브라우저 탭 백그라운드 전환(`document.hidden`) 시 Web Audio context `suspend()` 및 활성 SFX 일괄 정지, 포커스 복귀 시 `resume()`을 통한 배터리 및 오디오 버퍼 절약.
+  10. **Item 605: Timestamped Replay Notes (`src/components/BattleReplayPlayerModal.tsx`)**:
+     - 9턴 리플레이 타임라인에 턴별 타임스탬프 주석 핀 등록 및 관리 기능 구현.
+     - 인터랙티브 북마크 칩(`📌 Turn N: Note`) 클릭 시 해당 턴으로 1탭 즉각 점프.
+- **검증 결과**:
+  - `npm run build`: 0개 에러 완전 통과 및 프로덕션 번들 정상 빌드 완료.
+  - 100% 로컬스토리지 단일 진실 공급원 유지 (`hero_milestone_600_claimed`, `hero_user_title`, `hero_stamina_pacing_v1`, `hero_replay_notes_*`).
+  - `DESIGN.md` 가이드 (Monospace 글꼴, 1px Hairline 보더, 웜크림/잉크 팔레트, 4px 반경) 100% 준수.
+- **구글 폼 제출**:
+  - 부서: 개발 | 작업명: [플랫폼 개선] Items 596~605 10개 개선 항목 전수 구현 및 빌드 검증 완료 | 상태: 작업완료
+
 ## [2026-09-16 08:58 KST] [신규 백로그 ID 496~595 총 100개 항목 4단계 전수 구현 및 빌드/배포 검증 완료]
 - **작업 범위**: 구글 스프레드시트 신규 백로그 총 100개 항목 (`ID 496` ~ `ID 595`) 전수 실제 동작 가능한 완성형 프로덕션 코드 구현.
 - **4단계 분할 구현 내역**:
