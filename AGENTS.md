@@ -2,8 +2,8 @@
 
 ## 스프레드시트 개선 작업 진행 상태
 - **현재 연동 스프레드시트 (공개 CSV)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vRF82ZJBHIhPsTzzjGm8DFutzw6PtAwqT_iyEB3MG5yKvZrEs354rKHy7YIFIO2zgqKSuRbo62uNyX_/pub?gid=0&single=true&output=csv`
-- **마지막 수정 완료 항목 ID**: `[SCR-01 홈 & 메인 로비 Round 2 완료] SCR-01-04(로비 24H 오프라인 순찰 수확 상자 AfkHarvestBox & winStreak 불꽃 뱃지), SCR-01-05(스마트 퀵 허브 HomeQuickHub 드롭다운 통합 및 퀵 툴바 정돈), SCR-01-06(LifecycleEngine Zero Background Overhead 비활성 탭 틱 정지 및 메모리 정리) 전수 구현 및 빌드/실측 검증 완료!`
-- **최종 업데이트 일시**: 2026-09-17 07:38 (KST)
+- **마지막 수정 완료 항목 ID**: `[SCR-02 배틀 아레나 Round 2 완료] SCR-02-04(속성 상성 카운터 크리티컬 플립 Web Audio 신스음 playCriticalElementalFlip 및 네온 배너/헤비 햅틱), SCR-02-05(모바일 원핸드 1-Tap 스마트 최적 착수 HUD 버튼), SCR-02-06(승리 화면 20 SNS 소비 기반 보상 2배 더블업 찬스 Double-Up Victory Chest) 전수 구현 및 빌드/배포 완료!`
+- **최종 업데이트 일시**: 2026-09-17 08:06 (KST)
 
 - **신규 항목 직행 원칙**: `/gemini-ex` 실행 시 이미 완료된 이전 항목(Row 1 ~ 마지막 완료 Row)은 **처음부터 다시 점검하지 않고 즉시 스킵**하며, 마지막 완료 항목 바로 다음의 **신규 미작업 항목**부터 즉시 착수합니다.
 - **무작업 시 침묵 원칙 (Silent if No-op)**: 크론 작업 실행 시 신규로 개선할 미작업 항목이 없으면 사용자에게 별도의 알림 메시지를 보내지 않고 조용히 대기합니다.
