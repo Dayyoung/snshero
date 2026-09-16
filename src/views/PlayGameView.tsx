@@ -945,6 +945,49 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   }, [customAlertModal.isOpen, customAlertModal.countdown]);
 
   // =========================================================================
+  // SNS BALANCE STATE (Props `sns`, `effectiveUser?.sns`, localStorage `hero_sns`)
+  // =========================================================================
+  const getInitialSnsBalance = (): number => {
+    if (typeof sns === 'number' && !isNaN(sns)) return sns;
+    if (typeof effectiveUser?.sns === 'number' && !isNaN(effectiveUser.sns)) return effectiveUser.sns;
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('hero_sns');
+      if (saved) {
+        const parsed = Number(saved);
+        if (!isNaN(parsed)) return parsed;
+      }
+    }
+    return 0;
+  };
+
+  const [snsBalance, setSnsBalance] = useState<number>(getInitialSnsBalance);
+
+  useEffect(() => {
+    if (typeof sns === 'number' && !isNaN(sns)) {
+      setSnsBalance(sns);
+    } else if (typeof effectiveUser?.sns === 'number' && !isNaN(effectiveUser.sns)) {
+      setSnsBalance(effectiveUser.sns);
+    }
+  }, [sns, effectiveUser?.sns]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleSnsSync = () => {
+      const saved = localStorage.getItem('hero_sns');
+      if (saved) {
+        const parsed = Number(saved);
+        if (!isNaN(parsed)) setSnsBalance(parsed);
+      }
+    };
+    window.addEventListener('snshero_sns_updated', handleSnsSync);
+    window.addEventListener('storage', handleSnsSync);
+    return () => {
+      window.removeEventListener('snshero_sns_updated', handleSnsSync);
+      window.removeEventListener('storage', handleSnsSync);
+    };
+  }, []);
+
+  // =========================================================================
   // BATTLE GAMBIT & TACTICAL STANCE & SECRET STAMPS (Items 393-405)
   // =========================================================================
   const [gambitConfig, setGambitConfig] = useState<GambitConfig>(() => {
@@ -5195,10 +5238,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     setShowRevengeChanceModal(false);
     if (method === 'sns') {
       if (snsBalance < 50) {
-        showCustomAlert(language === 'ko' ? 'SNS 포인트가 부족합니다.' : 'Not enough SNS points.');
+        triggerAlert(language === 'ko' ? 'SNS 포인트가 부족합니다.' : 'Not enough SNS points.');
         return;
       }
       setSnsBalance(prev => Math.max(0, prev - 50));
+      if (updateSns) {
+        updateSns(-50, 'revenge_chance', 'spent');
+      } else {
+        try {
+          const nextSns = Math.max(0, snsBalance - 50);
+          localStorage.setItem('hero_sns', String(nextSns));
+          window.dispatchEvent(new Event('snshero_sns_updated'));
+        } catch {}
+      }
       addLog(language === 'ko' ? '🪙 [리벤지 찬스] 50 SNS를 지불하고 복수전 분노 버프를 획득했습니다.' : '🪙 [REVENGE CHANCE] 50 SNS paid for Revenge Rage Buff.', 'system');
     } else {
       addLog(language === 'ko' ? '⚡ [리벤지 찬스] 500원 다이렉트 결제로 복수전 특가 버프를 장착했습니다.' : '⚡ [REVENGE CHANCE] $0.49 Direct Pay applied for Revenge Rage Buff.', 'victory');

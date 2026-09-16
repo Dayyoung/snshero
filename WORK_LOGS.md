@@ -2,6 +2,17 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-16 17:11 KST] [/main 카단 RPG PlayGameView snsBalance ReferenceError 런타임 에러 픽스]
+- **문제 원인**: `PlayGameView.tsx` 내부 `handleActivateRevenge` (라인 5238) 및 `RevengeChanceModal` (라인 18947)에서 정의되지 않은 `snsBalance`, `setSnsBalance`, `showCustomAlert` 참조로 인해 배틀 진입 시 `ReferenceError: snsBalance is not defined` 크래시 발생.
+- **수정 내역**:
+  1. `PlayGameView.tsx`에 `snsBalance` state 및 `useEffect` 동기화 훅 선언: props `sns`, `effectiveUser?.sns`, `localStorage.getItem('hero_sns')`를 단일 진실 공급원으로 바인딩하고 `snshero_sns_updated` 및 `storage` 이벤트 리스너를 통해 실시간 동기화.
+  2. `handleActivateRevenge`: 미정의 `showCustomAlert` 대신 내부 표준 알림 함수인 `triggerAlert`로 교체, `updateSns` 함수 호출 및 `hero_sns` 로컬스토리지 영구 보존 로직 추가.
+  3. `KadanRpgView.tsx` 519 라인의 `<PlayGameView>`에 `sns={sns}` 및 `updateSns={updateSns}` 속성 확실한 연결 검증.
+- **검증 결과**:
+  - `npm run build`: 오류 0건 완전 통과 (`✓ built in 15.91s`).
+  - `/main` 카단 RPG 및 카드 배틀 모달 렌더링 정상화 완료.
+- **Git & 배포**: GitHub `origin/main` 푸시 완료.
+
 ## [2026-09-16 17:06 KST] [/main 카단 RPG PlayGameView activeQteMultiplier 런타임 에러 픽스]
 - **문제 원인**: `PlayGameView.tsx` 내부 `predictedFlipsMap` memoization 선언부에서 정의되지 않은 `activeQteMultiplier` 참조로 `ReferenceError: activeQteMultiplier is not defined` 크래시 발생.
 - **수정 내역**: `predictedFlipsMap` 및 dependency array에서 미정의된 `activeQteMultiplier`를 제거하고 유효 상태인 `pendingQteMultiplier ?? 1`로 안전하게 수정.
