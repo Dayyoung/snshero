@@ -24,6 +24,10 @@ import { triggerHaptic } from "../lib/haptic";
 import { useSns } from "../contexts/SnsContext";
 import { DailyMissions } from "../components/DailyMissions";
 import { DAILY_MISSIONS, loadDailyMissions, getClaimableCount, DailyMissionProgress } from "../lib/dailyMissions";
+import { HomeQuickHub } from "../components/HomeQuickHub";
+import { AfkHarvestBox } from "../components/AfkHarvestBox";
+import { LifecycleEngine } from "../lib/LifecycleEngine";
+import { Flame } from "lucide-react";
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -124,6 +128,44 @@ export const HomeView: React.FC<HomeViewProps> = ({
       window.removeEventListener('hero_daily_missions_updated', updateDailyMissions);
       window.removeEventListener('storage', updateDailyMissions);
     };
+  }, []);
+
+  // SCR-01-04: N연승 불꽃 뱃지 상태 (최근 전적 연계)
+  const [winStreak, setWinStreak] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('hero_win_streak');
+      if (saved) return parseInt(saved, 10) || 0;
+      const historyStr = localStorage.getItem('hero_match_history');
+      if (historyStr) {
+        const history = JSON.parse(historyStr);
+        let streak = 0;
+        for (const match of history) {
+          if (match.result === 'win' || match.isWin) {
+            streak++;
+          } else {
+            break;
+          }
+        }
+        return streak;
+      }
+    } catch {}
+    return 3; // 기본값 3연승
+  });
+
+  // SCR-01-06: Zero Background Overhead via LifecycleEngine
+  useEffect(() => {
+    const unsubscribe = LifecycleEngine.subscribe((isVisible, hiddenDurationMs) => {
+      if (!isVisible) {
+        // 비활성 탭 진입 시 즉각 백그라운드 타이머 정지 (배터리/메모리 절감)
+        setIsAutoStartPaused(true);
+      } else {
+        // 포그라운드 복귀 시 장시간 경과된 경우 타이머 리셋
+        if (hiddenDurationMs > 3000) {
+          setAutoStartCountdown(30);
+        }
+      }
+    });
+    return () => unsubscribe();
   }, []);
 
   const { lowSpecMode } = useGameSettings();
@@ -327,23 +369,34 @@ export const HomeView: React.FC<HomeViewProps> = ({
           <div className="absolute inset-x-0 top-0 h-1 bg-[#201d1d]" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(15,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(15,0,0,0.02)_1px,transparent_1px)] bg-[size:28px_28px]" />
           <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 py-6 sm:p-8">
-            {/* SCR-01: 대표 덱 종합 전투력(CP) 및 모험가 배지 HUD */}
+            {/* SCR-01: 대표 덱 종합 전투력(CP) 및 연승 불꽃 뱃지 HUD */}
             <div className="w-full max-w-md flex items-center justify-between border-b border-[#201d1d]/10 pb-2 mb-3 font-mono text-xs select-none">
-              <button
-                type="button"
-                onClick={() => {
-                  triggerHaptic('light');
-                  onNavigate('mydeck');
-                }}
-                className="font-bold text-[#201d1d] flex items-center gap-1.5 hover:underline cursor-pointer"
-                title={language === 'ko' ? '마이덱 편집 바로가기' : 'Edit My Deck'}
-              >
-                <span className="text-rose-600 font-black">⚔️</span>
-                <span>{language === 'ko' ? '덱 전투력' : 'DECK CP'}:</span>
-                <span className="text-sm font-black text-indigo-700 bg-indigo-50 px-1.5 py-0.5 border border-indigo-200">
-                  {totalPower > 0 ? totalPower : 1420} CP
-                </span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    onNavigate('mydeck');
+                  }}
+                  className="font-bold text-[#201d1d] flex items-center gap-1.5 hover:underline cursor-pointer"
+                  title={language === 'ko' ? '마이덱 편집 바로가기' : 'Edit My Deck'}
+                >
+                  <span className="text-rose-600 font-black">⚔️</span>
+                  <span>{language === 'ko' ? '덱 전투력' : 'DECK CP'}:</span>
+                  <span className="text-sm font-black text-indigo-700 bg-indigo-50 px-1.5 py-0.5 border border-indigo-200">
+                    {totalPower > 0 ? totalPower : 1420} CP
+                  </span>
+                </button>
+                {winStreak > 0 && (
+                  <div 
+                    className="inline-flex items-center gap-1 bg-amber-500/10 border border-amber-500/30 px-1.5 py-0.5 text-amber-900 font-bold text-[10px] animate-pulse"
+                    title={language === 'ko' ? `현재 ${winStreak}연승 질주 중!` : `${winStreak} Winning Streak!`}
+                  >
+                    <Flame size={12} className="text-amber-600 fill-amber-500" />
+                    <span>{winStreak}{language === 'ko' ? '연승' : ' WINS'}</span>
+                  </div>
+                )}
+              </div>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-bold text-[#201d1d]/60 border border-[#201d1d]/15 px-1.5 py-0.5 bg-white">
                   {language === 'ko' ? '티어: BRONZE I' : 'TIER: BRONZE I'}
@@ -403,8 +456,27 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 <span className="text-slate-900 text-base sm:text-xl not-italic">.com</span>
               </h1>
 
-              {/* Quick Action Toolbar Below Logo */}
-              <div className="flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap bg-white border border-[#201d1d]/15 p-1.5 font-mono text-xs select-none">
+              {/* SCR-01-05: Streamlined Quick Action Toolbar with HomeQuickHub */}
+              <div className="flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap bg-white border border-[#201d1d]/15 p-1.5 font-mono text-xs select-none relative z-30">
+                {/* SCR-01-05: Smart Quick Hub Trigger & Dropdown */}
+                <HomeQuickHub
+                  language={language}
+                  unreadMailCount={unreadMailCount}
+                  unreadNotifCount={unreadNotifCount}
+                  isAudioMuted={isAudioMuted}
+                  deckCount={deckPreview.length}
+                  isLobbyDrawerOpen={isLobbyDrawerOpen}
+                  onOpenMailbox={() => setIsMailboxOpen(true)}
+                  onOpenNotifModal={() => setIsNotifModalOpen(true)}
+                  onToggleAudioMute={toggleQuickMute}
+                  onNavigateDeck={() => onNavigate('mydeck')}
+                  onToggleDrawer={() => setIsLobbyDrawerOpen(!isLobbyDrawerOpen)}
+                  onOpenHelp={() => { setHelpOpen(true); setHelpStep(0); }}
+                  onNavigateShop={() => onNavigate('shop')}
+                  playSfx={playSfx}
+                  triggerHaptic={triggerHaptic}
+                />
+
                 {/* ID SCR-01: Hot Deal / Free Pack Starter Badge */}
                 <button
                   type="button"
@@ -420,47 +492,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   <span className="text-[11px] font-black tracking-tight">{language === 'ko' ? '[🎁 무료팩/특가]' : '[🎁 Free/Deals]'}</span>
                 </button>
 
-                {/* Mailbox */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                    setIsMailboxOpen(true);
-                  }}
-                  className="inline-flex items-center gap-1.5 px-2 py-1.5 border border-[#201d1d]/20 bg-white text-[#201d1d] hover:border-[#201d1d] hover:bg-slate-50 transition text-xs font-bold cursor-pointer"
-                  aria-label={language === 'ko' ? '우편함' : 'Mailbox'}
-                  title={language === 'ko' ? '시스템 우편함' : 'Mailbox'}
-                >
-                  <Mail size={13} />
-                  <span className="text-[11px]">{language === 'ko' ? '우편' : 'Mail'}</span>
-                  {unreadMailCount > 0 && (
-                    <span className="px-1 py-0.2 bg-rose-600 text-white text-[9px] font-bold">
-                      {unreadMailCount}
-                    </span>
-                  )}
-                </button>
+                {/* Ping Indicator */}
+                <PingIndicator language={language} className="shrink-0" />
 
-                {/* Notification Center */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                    setIsNotifModalOpen(true);
-                  }}
-                  className="inline-flex items-center gap-1.5 px-2 py-1.5 border border-[#201d1d]/20 bg-white text-[#201d1d] hover:border-[#201d1d] hover:bg-slate-50 transition text-xs font-bold cursor-pointer"
-                  aria-label={language === 'ko' ? '알림 센터' : 'Notification Center'}
-                  title={language === 'ko' ? '통합 시스템 알림 센터' : 'Notification Center'}
-                >
-                  <Bell size={13} />
-                  <span className="text-[11px]">{language === 'ko' ? '알림' : 'Notif'}</span>
-                  {unreadNotifCount > 0 && (
-                    <span className="px-1 py-0.2 bg-amber-500 text-white text-[9px] font-bold">
-                      {unreadNotifCount}
-                    </span>
-                  )}
-                </button>
-
-                {/* Audio Mute Toggle */}
+                {/* Audio Mute Quick Toggle */}
                 <button
                   type="button"
                   onClick={toggleQuickMute}
@@ -470,23 +505,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 >
                   {isAudioMuted ? <VolumeX size={13} className="text-rose-600" /> : <Volume2 size={13} className="text-emerald-600" />}
                   <span className="text-[11px]">{isAudioMuted ? 'MUTE' : 'SFX'}</span>
-                </button>
-
-                {/* Ping Indicator */}
-                <PingIndicator language={language} className="shrink-0" />
-
-                {/* ID 83: Live Inventory Capacity Indicator Widget */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                    onNavigate('mydeck');
-                  }}
-                  className="inline-flex items-center gap-1 px-2 py-1.5 border border-indigo-200 bg-indigo-50/60 text-indigo-900 hover:bg-indigo-100 transition text-xs font-bold cursor-pointer"
-                  title={language === 'ko' ? '카드 인벤토리 실시간 용량' : 'Live Inventory Capacity'}
-                >
-                  <span className="text-[11px]">🃏</span>
-                  <span className="text-[11px] font-mono">{deckPreview.length + 37}/200</span>
                 </button>
 
                 {/* ID 86: Collapsible Sub-Widgets Drawer Toggle Button */}
@@ -506,18 +524,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 >
                   <Layers size={13} className={isLobbyDrawerOpen ? "text-amber-300" : "text-[#201d1d]/60"} />
                   <span className="text-[11px]">{language === 'ko' ? '서랍' : 'Drawer'}</span>
-                </button>
-
-                {/* Help Button */}
-                <button
-                  type="button"
-                  onClick={() => { setHelpOpen(true); setHelpStep(0); }}
-                  className="inline-flex items-center gap-1 px-2 py-1.5 border border-[#201d1d]/20 bg-white text-[#201d1d]/70 hover:text-[#201d1d] hover:border-[#201d1d] transition text-xs font-bold shrink-0 cursor-pointer"
-                  aria-label={language === 'ko' ? '도움말' : 'Help'}
-                  title={language === 'ko' ? '게임 도움말' : 'Help'}
-                >
-                  <HelpCircle size={13} />
-                  <span className="text-[11px]">{language === 'ko' ? '가이드' : 'Help'}</span>
                 </button>
               </div>
 
@@ -567,6 +573,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   </div>
                 );
               })()}
+
+              {/* SCR-01-04: 24시간 오프라인 방치 순찰 수확 상자 (Zero Background Overhead & Instant Claim) */}
+              <AfkHarvestBox
+                language={language}
+                onClaimSns={(amount) => {
+                  addSns(amount, 'afk_patrol_harvest', 'earned');
+                }}
+                playSfx={playSfx}
+              />
 
               {/* ── Auto-Start Ranking Battle Countdown Bar ── */}
               <div className={cn(

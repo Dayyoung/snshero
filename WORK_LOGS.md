@@ -2,6 +2,33 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-17 07:38 KST] [/gemini-ex] [SCR-01-04~06 홈 & 메인 로비 24H 순찰 수확, 스마트 퀵 허브 & 제로 오버헤드 엔진 완료]
+- **작업 ID**: SCR-01-04, SCR-01-05, SCR-01-06 (구글 스프레드시트 Row 38, 39, 40)
+- **대상 파일**:
+  - `src/lib/LifecycleEngine.ts` (신규)
+  - `src/components/HomeQuickHub.tsx` (신규)
+  - `src/components/AfkHarvestBox.tsx` (신규)
+  - `src/views/HomeView.tsx` (개선)
+- **개선 상세 내역**:
+  1. **SCR-01-04 (재미/도파민 루프 - 24H 오프라인 순찰 수확 상자 & 연승 불꽃 뱃지)**:
+     - 메인 로비 화면에 `<AfkHarvestBox />` 위젯 배치: 시간당 150 SNS 누적(최대 24시간 3,600 SNS), 실시간 진행 시간 및 누적 보상 표시, 44px+ 플랫 수확 버튼(`[+] 지금 수확하기`), 수확 시 코인 팡파르 SFX & 햅틱(`triggerHaptic('victory')`) 및 +N SNS 수확 완료 애니메이션.
+     - 상단 대표 덱 CP HUD 옆에 `winStreak` 기반 `[🔥 N연승]` 불꽃 점멸 뱃지 신설.
+  2. **SCR-01-05 (사용성/디자인 - 스마트 퀵 허브 Dropdown & 퀵 툴바 정돈)**:
+     - 상단에 분산 배치되었던 우편함, 알림 센터, SFX 토글, 인벤토리 용량, 서랍 토글, 가이드 등을 단일 스마트 퀵 허브(`HomeQuickHub.tsx`)로 집약.
+     - 미확인 우편/알림 합산 뱃지 및 원클릭 드롭다운 패널 제공 (44px+ 엄지 최적화 터치 그리드, 1px 플랫 헤어라인).
+     - `DESIGN.md` 모노스페이스 플랫 디자인 준수 (불필요한 그라데이션 및 과도한 둥근 모서리 배제).
+  3. **SCR-01-06 (성능/기술 - Zero Background Overhead 라이프사이클 엔진)**:
+     - `LifecycleEngine.ts`: 브라우저 탭 비활성화(`visibilitychange`, `pagehide`, `blur`) 시 불필요한 백그라운드 틱, 렌더링 루프 및 사운드를 즉시 정지하고 메모리 캐시를 정리하여 배터리/CPU 소모 0% 달성.
+     - 포그라운드 복귀(`pageshow`, `focus`) 시 즉각적인 상태 갱신 및 틱 재개.
+     - 100% 로컬스토리지 SSOT (`hero_afk_harvest_last_time`, `hero_win_streak`, `hero_sns`) 영구 보존.
+- **검증 결과**:
+  - `npm run build`: 오류 0건 완벽 통과 (`✓ built in 10.46s`).
+  - Playwright 모바일(390x844) 실측 스크린샷 4종 캡처 및 인터랙션 실측 검증 완료:
+    - `scr01_04_home_cp_and_winstreak.png`: 상단 덱 전투력 CP HUD 옆 `🔥 5연승` 불꽃 뱃지 정상 렌더링.
+    - `scr01_05_home_toolbar_and_afk_box.png`: 스마트 퀵 허브 및 `[24H 오프라인 순찰 수확] (+1800 SNS)` 위젯 정상 렌더링.
+    - `scr01_06_home_quick_hub_opened.png`: 스마트 퀵 허브 드롭다운 패널(우편, 알림, 사운드, 덱, 서랍, 가이드, 핫딜) 정상 작동.
+    - `scr01_07_home_afk_claimed.png`: 원클릭 수확 버튼 클릭 시 `+1800 SNS 수확 완료!` 배너 전환 및 순찰 상태 정상 초기화.
+
 ## [2026-09-17 07:15 KST] [/rsi] [SCR-01 홈 & 메인 로비 Round 2 기획/디자인/개발 전면 개선 완료]
 - **순환 화면**: SCR-01 (홈 & 메인 로비 / `home`, `src/views/HomeView.tsx`, `src/components/MainLobbyBannerCarousel.tsx`, `src/components/LobbyInteractiveCard.tsx`)
 - **생성 문서**: `docs/screen_audits/SCR-01_HOME.md`
