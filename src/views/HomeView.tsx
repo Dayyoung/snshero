@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX, Zap, Clock, Pause, PanelLeftClose, PanelLeftOpen, Layers, Image, Film, Github, Youtube, Dices } from "lucide-react";
+import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX, Zap, Clock, Pause, PanelLeftClose, PanelLeftOpen, Layers, Image, Film, Github, Youtube, Dices, Gift } from "lucide-react";
 import { NotificationCenterModal } from "../components/NotificationCenterModal";
 import { getUnreadCount } from "../lib/notificationHelper";
 import { motion, AnimatePresence } from "motion/react";
@@ -18,6 +18,7 @@ import { NoticeModal } from "../components/NoticeModal";
 import { AfkPatrolModal } from "../components/AfkPatrolModal";
 import { Milestone600CelebrationModal } from "../components/Milestone600CelebrationModal";
 import { PingIndicator } from "../components/PingIndicator";
+import { triggerHaptic } from "../lib/haptic";
 import { useSns } from "../contexts/SnsContext";
 import { DailyMissions } from "../components/DailyMissions";
 import { DAILY_MISSIONS, loadDailyMissions, getClaimableCount, DailyMissionProgress } from "../lib/dailyMissions";
@@ -264,7 +265,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           <div className="absolute inset-x-0 top-0 h-1 bg-[#201d1d]" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(15,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(15,0,0,0.02)_1px,transparent_1px)] bg-[size:28px_28px]" />
           <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 py-8 sm:p-8">
-            <div className="relative h-44 sm:h-56 md:h-64 w-full flex items-center justify-center overflow-visible pointer-events-none select-none">
+            <div className="relative h-36 sm:h-52 md:h-60 w-full flex items-center justify-center overflow-visible pointer-events-none select-none">
               {deckPreview.map((item, index) => {
               const isDatabaseId = typeof item === 'number';
               const id = isDatabaseId ? item : (item as CardData).imageIndex;
@@ -288,7 +289,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               return (
                 <motion.div
                   key={isDatabaseId ? id : (item as CardData).id}
-                  className="absolute flex flex-col items-center gap-1"
+                  className="absolute flex flex-col items-center gap-1 transform-gpu"
                   style={{
                     transform: `translateX(${xOffset}px) translateY(${yOffset}px) rotate(${rotation}deg)`,
                     zIndex: index + 10,
@@ -359,6 +360,20 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
               {/* Quick Action Toolbar Below Logo */}
               <div className="flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap bg-slate-50/90 backdrop-blur-sm border border-slate-200/90 rounded-full px-3 py-1.5 shadow-sm">
+                {/* ID SCR-01: Hot Deal / Free Pack Starter Badge */}
+                <button
+                  onClick={() => {
+                    triggerHaptic('selection');
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    onNavigate('shop');
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 via-rose-500 to-indigo-600 text-white font-black text-xs cursor-pointer shadow-xs hover:brightness-110 active:scale-95 transition-all animate-pulse"
+                  title={language === 'ko' ? '일일 무료 카드팩 & 80% 할인 스타터팩' : 'Daily Free Pack & 80% Off Starter Pack'}
+                >
+                  <Gift size={13} className="text-amber-200 shrink-0" />
+                  <span className="text-[11px] font-black tracking-tight">{language === 'ko' ? '무료팩/특가' : 'Free/HotDeal'}</span>
+                </button>
+
                 {/* Mailbox */}
                 <button
                   onClick={() => {
@@ -502,15 +517,25 @@ export const HomeView: React.FC<HomeViewProps> = ({
               })()}
 
               {/* ── Auto-Start Ranking Battle Countdown Bar ── */}
-              <div className="w-full flex items-center justify-between bg-gradient-to-r from-amber-500/10 via-indigo-500/10 to-purple-500/10 border border-amber-500/20 rounded-lg px-3 py-1.5 text-xs font-mono shadow-2xs">
+              <div className={cn(
+                "w-full flex items-center justify-between border rounded-lg px-3 py-1.5 text-xs font-mono shadow-2xs transition-all duration-300",
+                autoStartCountdown <= 5 && !isAutoStartPaused
+                  ? "bg-rose-500/15 border-rose-500/40 ring-1 ring-rose-500/30"
+                  : "bg-gradient-to-r from-amber-500/10 via-indigo-500/10 to-purple-500/10 border-amber-500/20"
+              )}>
                 <div className="flex items-center gap-1.5 text-slate-800 font-semibold text-[11px] sm:text-xs">
-                  <Zap size={14} className="text-amber-500 animate-pulse shrink-0" />
+                  <Zap size={14} className={cn("shrink-0", autoStartCountdown <= 5 && !isAutoStartPaused ? "text-rose-600 animate-bounce" : "text-amber-500 animate-pulse")} />
                   <span>
                     {language === 'ko'
                       ? '30초 대기 시 랭킹대전 자동 시작:'
                       : 'Auto Rank Battle in:'}
                   </span>
-                  <span className="bg-amber-500 text-white font-extrabold px-1.5 py-0.5 rounded text-[11px] leading-none min-w-[24px] text-center">
+                  <span className={cn(
+                    "text-white font-extrabold px-1.5 py-0.5 rounded text-[11px] leading-none min-w-[24px] text-center transition-all",
+                    autoStartCountdown <= 5 && !isAutoStartPaused
+                      ? "bg-rose-600 animate-pulse scale-110 shadow-xs"
+                      : "bg-amber-500"
+                  )}>
                     {autoStartCountdown}s
                   </span>
                 </div>
@@ -518,6 +543,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   <button
                     onClick={() => {
                       setIsAutoStartPaused(!isAutoStartPaused);
+                      triggerHaptic('light');
                       playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     }}
                     className="px-2 py-0.5 bg-white border border-slate-200 hover:border-slate-300 rounded text-[10px] sm:text-[11px] font-bold text-slate-700 cursor-pointer transition active:scale-95 shadow-2xs"
@@ -528,12 +554,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   </button>
                   <button
                     onClick={() => {
+                      triggerHaptic('battle_start');
                       playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                       onNavigate('ranking');
                     }}
-                    className="px-2 py-0.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-[10px] sm:text-[11px] font-bold cursor-pointer transition active:scale-95 shadow-2xs"
+                    className="px-2.5 py-0.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-rose-600 hover:brightness-110 text-white rounded text-[10px] sm:text-[11px] font-black cursor-pointer transition active:scale-95 shadow-xs flex items-center gap-1"
                   >
-                    {language === 'ko' ? '즉시 대전' : 'Start Now'}
+                    <span>⚡</span>
+                    <span>{language === 'ko' ? '즉시 대전' : 'Start Now'}</span>
                   </button>
                 </div>
               </div>
