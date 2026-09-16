@@ -2,6 +2,11 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-16 17:06 KST] [/main 카단 RPG PlayGameView activeQteMultiplier 런타임 에러 픽스]
+- **문제 원인**: `PlayGameView.tsx` 내부 `predictedFlipsMap` memoization 선언부에서 정의되지 않은 `activeQteMultiplier` 참조로 `ReferenceError: activeQteMultiplier is not defined` 크래시 발생.
+- **수정 내역**: `predictedFlipsMap` 및 dependency array에서 미정의된 `activeQteMultiplier`를 제거하고 유효 상태인 `pendingQteMultiplier ?? 1`로 안전하게 수정.
+- **검증 결과**: `npm run build` 오류 0건 통과 (`✓ built in 9.53s`), GitHub origin/main 푸시 완료.
+
 ## [2026-09-16 16:52 KST] [/rsi] [SCR-02 배틀 아레나 (3x3 보드)] 연쇄 플립 가속 SFX, 착수 예측 오버레이(+N FLIP) 및 리벤지 찬스 100% 구현 완료
 - **작업 범위**: `docs/screen_audits/SCR-02_PLAY.md` 작성 및 배틀 아레나 3대 핵심 과제(SCR-02-01, SCR-02-02, SCR-02-03) 프로덕션 코드 구현.
 - **주요 파일**: `src/lib/BattleAudioEngine.ts`, `src/components/RevengeChanceModal.tsx`, `src/views/PlayGameView.tsx`, `docs/screen_audits/SCR-02_PLAY.md`

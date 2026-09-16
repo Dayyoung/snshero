@@ -6605,7 +6605,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         try {
           const tempBoard = [...board];
           tempBoard[idx] = { ...card, owner: 'player' };
-          const { indices } = getFlips(tempBoard, idx, card, 'player', true, pendingQteMultiplier ?? activeQteMultiplier ?? 1);
+          const { indices } = getFlips(tempBoard, idx, card, 'player', true, pendingQteMultiplier ?? 1);
           map[idx] = indices || [];
         } catch {
           map[idx] = [];
@@ -6613,7 +6613,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       }
     });
     return map;
-  }, [selectedCardIdx, selectedCardSide, turn, battleType, gameOver, playerHand, board, pendingQteMultiplier, activeQteMultiplier]);
+  }, [selectedCardIdx, selectedCardSide, turn, battleType, gameOver, playerHand, board, pendingQteMultiplier]);
 
   const handleMouseEnterCell = (idx: number) => {
     setHoveredCellIdx(idx);
