@@ -117,6 +117,8 @@ interface SortableCardItemProps {
   setIsPopupOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedCardForDetail?: React.Dispatch<React.SetStateAction<CardData | null>>;
   setCardDetailTab?: React.Dispatch<React.SetStateAction<'stats' | 'skills' | 'lore'>>;
+  isSynergyActive?: boolean;
+  synergyElement?: string;
 }
 
 const SortableCardItem: React.FC<SortableCardItemProps> = ({
@@ -141,6 +143,8 @@ const SortableCardItem: React.FC<SortableCardItemProps> = ({
   setIsPopupOpen,
   setSelectedCardForDetail,
   setCardDetailTab,
+  isSynergyActive,
+  synergyElement,
 }) => {
   const {
     attributes,
@@ -172,7 +176,15 @@ const SortableCardItem: React.FC<SortableCardItemProps> = ({
           `SLOT_${idx + 1}`
         )}
       </div>
-      <div className="relative overflow-hidden rounded-xl group/card" {...attributes} {...listeners}>
+      <div className={cn(
+        "relative overflow-hidden rounded-xl group/card transition-all",
+        isSynergyActive ? "ring-4 ring-amber-400 shadow-[0_0_16px_rgba(251,191,36,0.85)] scale-[1.02]" : ""
+      )} {...attributes} {...listeners}>
+        {isSynergyActive && (
+          <div className="absolute top-1 left-1 z-20 px-1 py-0.2 bg-amber-500 text-stone-950 font-black text-[8px] rounded-xs shadow-md border border-amber-300 animate-pulse uppercase leading-none">
+            ✨AURA
+          </div>
+        )}
         <CardItem 
           card={card} 
           onClick={() => handleCardClick(idx)} 
@@ -852,6 +864,21 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     elements.forEach(el => counts[el] = (counts[el] || 0) + 1);
     return Math.max(0, ...Object.values(counts)) >= 3;
   }, [activeBonds.length, currentDeck]);
+
+  // SCR-03: 동일 속성 3장 이상 장착 시 발동되는 팩션 시너지 오라 (Faction Synergy Aura)
+  const factionSynergy = useMemo(() => {
+    const counts: Record<string, number> = {};
+    currentDeck.forEach(c => {
+      const elem = String((c as any)?.element || CARD_DATABASE[c?.imageIndex || 0]?.element || 'WATER').toUpperCase();
+      counts[elem] = (counts[elem] || 0) + 1;
+    });
+    for (const [elem, count] of Object.entries(counts)) {
+      if (count >= 3) {
+        return { element: elem, count, boostPercent: 15 };
+      }
+    }
+    return null;
+  }, [currentDeck]);
 
   // Local state for editing modal
   const [editName, setEditName] = useState('');
@@ -1621,6 +1648,19 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             </div>
           )}
 
+          {/* SCR-03-02: 팩션 시너지 오라 발동 배너 */}
+          {factionSynergy && (
+            <div className="mx-auto w-full max-w-md mb-2 px-3 py-1.5 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-yellow-500/20 border border-amber-400/60 rounded-xs flex items-center justify-between font-mono text-xs text-amber-900 dark:text-amber-300 shadow-sm animate-pulse">
+              <div className="flex items-center gap-1.5 font-black">
+                <Flame size={14} className="text-orange-500 fill-current" />
+                <span>{language === 'ko' ? `[✨ ${factionSynergy.element} 3세트 팩션 시너지 오라 활성화!]` : `[✨ ${factionSynergy.element} Faction Synergy Aura Active!]`}</span>
+              </div>
+              <span className="text-[10px] font-black bg-amber-500 text-stone-950 px-1.5 py-0.5 rounded-xs shadow-xs">
+                {language === 'ko' ? '전투력 +15% BUFF' : '+15% POWER BUFF'}
+              </span>
+            </div>
+          )}
+
           {/* ID 342, 347, 372, 377: 덱 스마트 액션 툴바 */}
           <div className="flex flex-wrap items-center justify-center gap-2 mb-3">
             {/* FTUE / SCR-03: 원클릭 추천 최강 덱 버튼 */}
@@ -1672,7 +1712,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             id="deck-list" 
             className={cn(
               "mx-auto flex w-full max-w-full flex-nowrap sm:flex-wrap justify-center items-center gap-1 xs:gap-2 sm:gap-4 md:gap-6 px-1 py-2 transition-all duration-300 rounded-2xl",
-              deckElementSynergyActive && !lowSpecMode
+              (deckElementSynergyActive || factionSynergy) && !lowSpecMode
                 ? "ring-2 ring-amber-400/80 shadow-[0_0_24px_rgba(251,191,36,0.35)] bg-gradient-to-r from-amber-500/5 via-purple-500/5 to-amber-500/5"
                 : "bg-slate-50/50 border border-slate-200/80"
             )}
@@ -1710,6 +1750,8 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                   setIsPopupOpen={setIsPopupOpen}
                   setSelectedCardForDetail={setSelectedCardForDetail}
                   setCardDetailTab={setCardDetailTab}
+                  isSynergyActive={Boolean(factionSynergy && String((card as any)?.element || CARD_DATABASE[card?.imageIndex || 0]?.element || 'WATER').toUpperCase() === factionSynergy.element)}
+                  synergyElement={factionSynergy?.element}
                 />
               ))}
             </SortableContext>

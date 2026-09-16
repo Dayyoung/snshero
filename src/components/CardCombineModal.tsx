@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Sparkles, AlertCircle } from 'lucide-react';
+import { X, Sparkles, AlertCircle, Zap, Award, TrendingUp, CheckCircle2 } from 'lucide-react';
+import { triggerHaptic } from '../lib/haptic';
 import { Language, CardData, InventoryRecord } from '../types';
 import { CardItem } from './CardItem';
 import { CARD_DATABASE } from '../cardDatabase';
@@ -50,6 +51,11 @@ export const CardCombineModal: React.FC<CardCombineModalProps> = ({
   const [cube, setCube] = useState<(number | null)[]>([null, null, null]);
   const [successCardId, setSuccessCardId] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // SCR-03-02: Rolling power counter state
+  const [lastPowerGained, setLastPowerGained] = useState<{ oldPower: number; newPower: number } | null>(null);
+  // SCR-03-03: Material purchase feedback
+  const [materialPurchaseSuccess, setMaterialPurchaseSuccess] = useState<string | null>(null);
 
   // ID 508: 만렙 달성 스킬/카드 초과 재료 범용 강화 가루 1:1.5 자동 변환 토글
   const [autoConvertDust, setAutoConvertDust] = useState<boolean>(() => {
@@ -271,11 +277,15 @@ export const CardCombineModal: React.FC<CardCombineModalProps> = ({
     const netPowerChange = powerEarned - powerConsumed;
     const nextTotalPower = totalPower + netPowerChange;
 
+    // SCR-03-02: Level-up fanfare SFX, victory haptic, and power change recording
+    triggerHaptic('victory');
+    setLastPowerGained({ oldPower: sourceCard.power, newPower: targetCard.power });
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2020/2020-preview.mp3'); // Level-up fanfare SFX
+
     // Apply state
     setInventory(nextInventory);
     setCube([null, null, null]);
     setSuccessCardId(targetCardId);
-    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'); // Synthesis success SFX
 
     // Sync to Firestore if online
     if (user && user.uid !== 'guest-id' && syncUserData) {
@@ -292,6 +302,51 @@ export const CardCombineModal: React.FC<CardCombineModalProps> = ({
         lastSync: Date.now(),
       });
     }
+  };
+
+  // SCR-03-03: 재료 부족 시 '부족한 재료 즉시 보충 팩 (30 SNS)' 1-Tap 다이렉트 결제/수령
+  const handleBuyMaterialPack = () => {
+    const targetCardId = cube[0] || cube[1] || cube[2] || (availableInventoryCards[0]?.id ?? 1);
+    const targetCard = CARD_DATABASE[targetCardId];
+    if (!targetCard) return;
+
+    if (sns < 30) {
+      setErrorMessage(
+        language === 'ko'
+          ? '보유 SNS가 부족합니다 (30 SNS 필요). 상점에서 충전 후 이용해 주세요.'
+          : 'Insufficient SNS balance (30 SNS required). Please top up in Shop.'
+      );
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+      return;
+    }
+
+    // 30 SNS 차감
+    updateSns(-30, `카드 합성 재료 [${targetCard.title}] 3장 즉시 보충 패키지`);
+
+    // 인벤토리에 3장 추가
+    const nextInv = { ...inventory };
+    const curRecord = nextInv[targetCardId] || {
+      cardIndex: targetCardId,
+      quantity: 0,
+      rarity: targetCard.rarity,
+    };
+    nextInv[targetCardId] = {
+      ...curRecord,
+      quantity: curRecord.quantity + 3,
+    };
+    setInventory(nextInv);
+
+    // 큐브 슬롯에 3장 자동 세팅
+    setCube([targetCardId, targetCardId, targetCardId]);
+    setErrorMessage(null);
+    setMaterialPurchaseSuccess(
+      language === 'ko'
+        ? `🎉 [재료 보충 완료] [${targetCard.title}] 3장이 즉시 충전되어 큐브에 장착되었습니다!`
+        : `🎉 [Material Pack Ready] 3x [${targetCard.title_en || targetCard.title}] loaded into cube!`
+    );
+
+    triggerHaptic('success');
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
   };
 
   if (!isOpen) return null;
@@ -364,6 +419,18 @@ export const CardCombineModal: React.FC<CardCombineModalProps> = ({
               </p>
             </div>
 
+            {/* Material Purchase Success Toast */}
+            {materialPurchaseSuccess && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-2xl text-center text-xs font-bold flex items-center justify-center gap-2"
+              >
+                <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                <span>{materialPurchaseSuccess}</span>
+              </motion.div>
+            )}
+
             {/* Error Message Box */}
             {errorMessage && (
               <motion.div
@@ -375,18 +442,64 @@ export const CardCombineModal: React.FC<CardCombineModalProps> = ({
               </motion.div>
             )}
 
+            {/* SCR-03-03: 재료 부족 시 '부족한 재료 즉시 보충 팩 (30 SNS)' 1-Tap 다이렉트 트리거 */}
+            <div className="p-3 bg-gradient-to-r from-amber-500/15 to-yellow-500/15 border border-amber-500/40 rounded-2xl flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/20 flex items-center justify-center text-amber-500 shrink-0">
+                  <Zap size={16} />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                    <span>{language === 'ko' ? '합성 재료 부족? 즉시 보충 팩' : 'Need Material? Instant Pack'}</span>
+                    <span className="text-[10px] bg-amber-500 text-stone-950 font-black px-1.5 py-0.2 rounded-xs">30 SNS</span>
+                  </div>
+                  <div className="text-[10px] text-slate-500 truncate">
+                    {language === 'ko' ? '동일 재료 카드 3장을 즉시 충전하여 큐브에 장착합니다.' : 'Instantly add 3 identical fodder cards to cube.'}
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handleBuyMaterialPack}
+                className="px-3 py-2 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-600 hover:to-yellow-500 text-stone-950 font-bold text-xs rounded-xl shrink-0 active:scale-95 transition-all shadow-md flex items-center gap-1 cursor-pointer border border-amber-300"
+              >
+                <Zap size={12} className="fill-current" />
+                <span>{language === 'ko' ? '1탭 즉시 보충' : 'Quick Fill'}</span>
+              </button>
+            </div>
+
             {/* Synthesis Core / Cube slots */}
-            <div className="bg-slate-900/90 backdrop-blur-md p-6 rounded-3xl border border-slate-800 flex flex-col items-center justify-center relative min-h-[220px] shadow-inner">
-              {/* Success Presentation */}
+            <div className="bg-slate-900/90 backdrop-blur-md p-6 rounded-3xl border border-slate-800 flex flex-col items-center justify-center relative min-h-[220px] shadow-inner overflow-hidden">
+              {/* SCR-03-02: Success Presentation with Gold Particle Burst & Rolling Power Counter */}
               {successCardId !== null && (
                 <motion.div
                   initial={{ scale: 0.5, opacity: 0 }}
-                  animate={{ scale: 1.1, opacity: 1 }}
-                  className="absolute inset-0 z-50 bg-slate-950/95 flex flex-col items-center justify-center gap-3 p-4 rounded-3xl"
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="absolute inset-0 z-50 bg-slate-950/95 flex flex-col items-center justify-center gap-2.5 p-4 rounded-3xl overflow-hidden"
                 >
-                  <span className="text-amber-400 font-bold tracking-wider text-xs animate-bounce flex items-center gap-1">
-                    <Sparkles size={12} className="text-amber-400" /> COMBINE SUCCESS <Sparkles size={12} className="text-amber-400" />
+                  {/* Gold Particle Burst Elements */}
+                  {[...Array(12)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ scale: 0, x: 0, y: 0, opacity: 1 }}
+                      animate={{
+                        scale: [0, 1.2, 0],
+                        x: (Math.cos((i * 30 * Math.PI) / 180) * 110),
+                        y: (Math.sin((i * 30 * Math.PI) / 180) * 110),
+                        opacity: [1, 0.9, 0],
+                        rotate: i * 30,
+                      }}
+                      transition={{ duration: 1.2, ease: "easeOut" }}
+                      className="absolute w-3 h-3 bg-amber-400 rounded-full shadow-[0_0_10px_rgba(251,191,36,0.8)] pointer-events-none"
+                    />
+                  ))}
+
+                  <span className="text-amber-400 font-black tracking-wider text-xs animate-bounce flex items-center gap-1.5 uppercase">
+                    <Sparkles size={14} className="text-amber-300" />
+                    [👑 LEVEL UP & SYNTHESIS COMPLETE!]
+                    <Sparkles size={14} className="text-amber-300" />
                   </span>
+
                   <CardItem
                     card={
                       syncCardWithDatabase(
@@ -400,19 +513,36 @@ export const CardCombineModal: React.FC<CardCombineModalProps> = ({
                         inventory
                       )
                     }
-                    className="w-24 h-32 md:w-28 md:h-38 shadow-[0_0_20px_rgba(251,191,36,0.4)]"
+                    className="w-24 h-32 md:w-28 md:h-38 shadow-[0_0_25px_rgba(251,191,36,0.6)]"
                     customImage={customCardImage}
                   />
-                  <span className="text-white text-xs font-semibold mt-2">
+
+                  <span className="text-white text-xs font-bold mt-1">
                     {language === 'ko'
-                      ? `[${CARD_DATABASE[successCardId]?.title_dis}] 획득!`
+                      ? `[${CARD_DATABASE[successCardId]?.title_dis || CARD_DATABASE[successCardId]?.title}] 획득!`
                       : `Obtained [${CARD_DATABASE[successCardId]?.title_en || CARD_DATABASE[successCardId]?.title_dis}]!`}
                   </span>
+
+                  {/* SCR-03-02: Rolling Power Counter */}
+                  {lastPowerGained && (
+                    <div className="flex items-center gap-2 px-3 py-1 bg-amber-500/20 border border-amber-400/50 rounded-xl text-xs font-mono">
+                      <TrendingUp size={13} className="text-amber-400" />
+                      <span className="text-slate-300">{language === 'ko' ? '전투력' : 'Power'}:</span>
+                      <span className="line-through text-slate-400">{lastPowerGained.oldPower}</span>
+                      <span className="text-amber-300 font-black text-sm animate-pulse">➔ {lastPowerGained.newPower}</span>
+                      <span className="text-emerald-400 font-bold">(+{lastPowerGained.newPower - lastPowerGained.oldPower})</span>
+                    </div>
+                  )}
+
                   <button
-                    onClick={() => setSuccessCardId(null)}
-                    className="mt-3 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold uppercase text-[10px] rounded-xl shadow-lg shadow-orange-500/20 active:scale-95 hover:from-amber-600 hover:to-orange-600 transition-all border-0 cursor-pointer"
+                    onClick={() => {
+                      triggerHaptic('selection');
+                      setSuccessCardId(null);
+                      setLastPowerGained(null);
+                    }}
+                    className="mt-2 px-5 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black uppercase text-xs rounded-xl shadow-lg shadow-orange-500/20 active:scale-95 hover:from-amber-400 hover:to-orange-400 transition-all border border-amber-300 cursor-pointer"
                   >
-                    확인
+                    [{language === 'ko' ? '확인' : 'Confirm'}]
                   </button>
                 </motion.div>
               )}
