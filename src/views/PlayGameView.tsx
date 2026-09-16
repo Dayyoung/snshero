@@ -2779,6 +2779,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       setGameState('tournament');
     } else {
       setWinner(null);
+      setActiveTowerFloor(null);
       if (battleType === 'pvp_attack') {
         onBack();
       } else if (activeMissionCardIdRef.current !== null || activeMissionCardId !== null) {
@@ -3372,10 +3373,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   // Item 390: Micro Screen Shake on 3+ Cascade Flips
   const [isMicroShaking, setIsMicroShaking] = useState<boolean>(false);
 
-  // Item 383 & 385 & 392: Modals
+  // Item 383 & 385 & 392 & SCR-08: Modals & Tower Trials State
   const [isBeastariumOpen, setIsBeastariumOpen] = useState<boolean>(false);
   const [isExpeditionOpen, setIsExpeditionOpen] = useState<boolean>(false);
   const [isTowerTrialsOpen, setIsTowerTrialsOpen] = useState<boolean>(false);
+  const [activeTowerFloor, setActiveTowerFloor] = useState<number | null>(null);
+  const [towerBossClearModal, setTowerBossClearModal] = useState<{
+    floor: number;
+    title?: string;
+    costume?: string;
+    diamonds: number;
+    snsReward: number;
+    isWelcomeFirstBoss?: boolean;
+  } | null>(null);
 
   // SCR-02-01: 9th Turn Comeback Finisher Cinematic State
   const [isComebackFinisherActive, setIsComebackFinisherActive] = useState<boolean>(false);
@@ -7498,8 +7508,86 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   
                   handleZeroSumAndRecord(finalResult);
 
+                  // SCR-08: Tower of Trials Floor Victory & Boss Milestone Rewards
+                  if (activeTowerFloor !== null) {
+                    try {
+                      const prevFloor = parseInt(localStorage.getItem('hero_tower_trials_floor_v1') || '0', 10);
+                      if (activeTowerFloor > prevFloor) {
+                        localStorage.setItem('hero_tower_trials_floor_v1', activeTowerFloor.toString());
+                      }
 
-                  // Mission Card Battle: Card Drop & Enhancement Logic
+                      const isBoss = activeTowerFloor % 5 === 0;
+                      let rewardDiamonds = isBoss ? (activeTowerFloor === 50 ? 500 : 50 + activeTowerFloor * 2) : 15;
+                      let rewardSns = isBoss ? 100 + activeTowerFloor * 5 : 30;
+
+                      // 첫 5층 보스 격파 웰컴 보너스 (+50 SNS, +20 Gems)
+                      let isWelcomeFirstBoss = false;
+                      if (isBoss && activeTowerFloor >= 5) {
+                        const welcomeKey = 'hero_tower_first_boss_reward';
+                        if (!localStorage.getItem(welcomeKey)) {
+                          localStorage.setItem(welcomeKey, 'true');
+                          rewardSns += 50;
+                          rewardDiamonds += 20;
+                          isWelcomeFirstBoss = true;
+                        }
+                      }
+
+                      // 칭호 & 코스튬 해금 매핑
+                      const MILESTONE_TITLES: Record<number, { titleKo: string; titleEn: string; costumeKo?: string; costumeEn?: string }> = {
+                        5: { titleKo: '탑의 도전자', titleEn: 'Tower Challenger' },
+                        10: { titleKo: '철벽의 수호파괴자', titleEn: 'Shieldbreaker', costumeKo: '타워 크림슨 아우라', costumeEn: 'Tower Crimson Aura' },
+                        20: { titleKo: '심연의 지배자', titleEn: 'Abyssal Ruler', costumeKo: '심연의 보이드 아우라', costumeEn: 'Abyssal Void Aura' },
+                        30: { titleKo: '절대 전술사령관', titleEn: 'Grand Tactician', costumeKo: '황금 불꽃 절대 아우라', costumeEn: 'Golden Flame Absolute Aura' },
+                        50: { titleKo: '시련의 탑 절대 패왕', titleEn: 'Overlord of the Tower', costumeKo: '성운의 패왕 풀세트', costumeEn: 'Nebula Overlord Full Set' },
+                      };
+
+                      const milestone = MILESTONE_TITLES[activeTowerFloor];
+                      let unlockedTitleName: string | undefined;
+                      let unlockedCostumeName: string | undefined;
+
+                      if (milestone) {
+                        const titleToSave = language === 'ko' ? milestone.titleKo : milestone.titleEn;
+                        unlockedTitleName = titleToSave;
+                        const currentTitles: string[] = JSON.parse(localStorage.getItem('hero_tower_titles_v1') || '[]');
+                        if (!currentTitles.includes(titleToSave)) {
+                          currentTitles.push(titleToSave);
+                          localStorage.setItem('hero_tower_titles_v1', JSON.stringify(currentTitles));
+                        }
+
+                        if (milestone.costumeKo) {
+                          const costumeToSave = language === 'ko' ? milestone.costumeKo : milestone.costumeEn!;
+                          unlockedCostumeName = costumeToSave;
+                          const currentCostumes: string[] = JSON.parse(localStorage.getItem('hero_tower_costumes_v1') || '[]');
+                          if (!currentCostumes.includes(costumeToSave)) {
+                            currentCostumes.push(costumeToSave);
+                            localStorage.setItem('hero_tower_costumes_v1', JSON.stringify(currentCostumes));
+                          }
+                        }
+                      }
+
+                      // 보상 지급 (SNS 지갑 반영)
+                      const curSns = parseInt(localStorage.getItem('hero_user_sns') || '0', 10);
+                      localStorage.setItem('hero_user_sns', (curSns + rewardSns).toString());
+                      window.dispatchEvent(new Event('snshero_sns_updated'));
+
+                      // 보스층 클리어 시 도파민 모달 팝업
+                      if (isBoss) {
+                        triggerHaptic('victory');
+                        setTimeout(() => {
+                          setTowerBossClearModal({
+                            floor: activeTowerFloor,
+                            title: unlockedTitleName,
+                            costume: unlockedCostumeName,
+                            diamonds: rewardDiamonds,
+                            snsReward: rewardSns,
+                            isWelcomeFirstBoss,
+                          });
+                        }, 700);
+                      }
+                    } catch {
+                      // ignore
+                    }
+                  }
                   if (activeMissionCardIdRef.current !== null) {
                     const targetCardId = activeMissionCardIdRef.current;
                     const dbCard = CARD_DATABASE[targetCardId] || CARD_DATABASE[1];
@@ -13826,6 +13914,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             setIsTowerTrialsOpen(false);
             setIsStoryActive(false);
             setIsDirectAiBattle(false);
+            setActiveTowerFloor(floor);
             playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
 
             const isBossFloor = floor % 5 === 0;
@@ -13836,7 +13925,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
             const towerBoss: Character = {
               id: `tower-boss-floor-${floor}`,
-              type: 'robot',
+              type: isBossFloor ? 'boss' : 'robot',
               name: bossName,
               avatarUrl: `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=TowerBoss-${floor}&backgroundColor=dc2626`,
               totalPower: bossPower,
@@ -13851,7 +13940,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             };
 
             setSelectedOpponent(towerBoss);
-            setBattleType('robot');
+            setBattleType(isBossFloor ? 'boss' : 'robot');
 
             if (floor > 30) {
               if (setIsAutoBattle) setIsAutoBattle(false);
@@ -13859,8 +13948,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
             addLog(
               language === 'ko'
-                ? `🗼 [시련의 탑 ${floor}층] 도전 시작! (보스 전투력: ${bossPower})`
-                : `🗼 [TOWER OF TRIALS FLOOR ${floor}] Battle commenced! (Boss Power: ${bossPower})`,
+                ? `🗼 [시련의 탑 ${floor}층] 도전 시작! (보스 전투력: ${bossPower}${isBossFloor ? ' · 👑 보스전 광폭화 주의' : ''})`
+                : `🗼 [TOWER OF TRIALS FLOOR ${floor}] Battle commenced! (Boss Power: ${bossPower}${isBossFloor ? ' · 👑 Boss Enrage Warning' : ''})`,
               'system'
             );
 
@@ -13875,6 +13964,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             setIsTowerTrialsOpen(false);
             setIsStoryActive(false);
             setIsDirectAiBattle(false);
+            setActiveTowerFloor(floor);
             playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
 
             const isBossFloor = floor % 5 === 0;
@@ -13885,7 +13975,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
             const towerBoss: Character = {
               id: `tower-boss-floor-${floor}`,
-              type: 'robot',
+              type: isBossFloor ? 'boss' : 'robot',
               name: bossName,
               avatarUrl: `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=TowerBoss-${floor}&backgroundColor=dc2626`,
               totalPower: bossPower,
@@ -13900,7 +13990,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             };
 
             setSelectedOpponent(towerBoss);
-            setBattleType('robot');
+            setBattleType(isBossFloor ? 'boss' : 'robot');
 
             if (floor > 30) {
               if (setIsAutoBattle) setIsAutoBattle(false);
@@ -13908,8 +13998,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
             addLog(
               language === 'ko'
-                ? `🗼 [시련의 탑 ${floor}층] 도전 시작! (보스 전투력: ${bossPower})`
-                : `🗼 [TOWER OF TRIALS FLOOR ${floor}] Battle commenced! (Boss Power: ${bossPower})`,
+                ? `🗼 [시련의 탑 ${floor}층] 도전 시작! (보스 전투력: ${bossPower}${isBossFloor ? ' · 👑 보스전 광폭화 주의' : ''})`
+                : `🗼 [TOWER OF TRIALS FLOOR ${floor}] Battle commenced! (Boss Power: ${bossPower}${isBossFloor ? ' · 👑 Boss Enrage Warning' : ''})`,
               'system'
             );
 
@@ -13921,6 +14011,87 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             setGameState('playing');
           }}
         />
+
+        {/* SCR-08: Tower Boss Clear Dopamine Celebration Modal */}
+        <AnimatePresence>
+          {towerBossClearModal && (
+            <div className="fixed inset-0 z-[9999999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md font-mono select-none pointer-events-auto">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.85, y: 30 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.85, y: 30 }}
+                transition={{ type: 'spring', damping: 22, stiffness: 320 }}
+                className="relative w-full max-w-sm bg-[#1a1414] border-2 border-amber-400 p-4 text-[#fdfcfc] shadow-2xl flex flex-col items-center text-center"
+              >
+                {/* Golden Badge Emblem */}
+                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 flex items-center justify-center text-3xl shadow-lg mb-2 animate-bounce ring-4 ring-amber-400/30">
+                  👑
+                </div>
+
+                <div className="text-[11px] font-bold text-amber-400 tracking-wider uppercase mb-0.5">
+                  [ TOWER OF TRIALS BOSS SLAIN ]
+                </div>
+                <h3 className="text-base font-black text-white mb-2">
+                  {language === 'ko'
+                    ? `시련의 탑 ${towerBossClearModal.floor}층 보스 격파!`
+                    : `Floor ${towerBossClearModal.floor} Boss Defeated!`}
+                </h3>
+
+                {towerBossClearModal.isWelcomeFirstBoss && (
+                  <div className="w-full py-1 px-2 bg-rose-950/70 border border-rose-500/70 text-rose-200 text-[10px] font-bold mb-2">
+                    {language === 'ko'
+                      ? '🎁 [첫 보스 돌파 웰컴 보너스] +50 SNS & +20 다이아 추가!'
+                      : '🎁 [First Boss Welcome Bonus] +50 SNS & +20 Gems added!'}
+                  </div>
+                )}
+
+                {/* Rewards Box */}
+                <div className="w-full bg-[#120e0e] border border-white/10 p-2.5 space-y-1.5 mb-3 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-white/70">💎 {language === 'ko' ? '다이아 잭팟' : 'Diamond Bounty'}</span>
+                    <span className="font-bold text-cyan-300">+{towerBossClearModal.diamonds} Gems</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-white/70">🪙 {language === 'ko' ? 'SNS 포인트' : 'SNS Points'}</span>
+                    <span className="font-bold text-amber-300">+{towerBossClearModal.snsReward} SNS</span>
+                  </div>
+                  {towerBossClearModal.title && (
+                    <div className="flex items-center justify-between border-t border-white/10 pt-1.5">
+                      <span className="text-white/70">👑 {language === 'ko' ? '한정 칭호 해금' : 'Title Unlocked'}</span>
+                      <span className="font-bold text-amber-400">[{towerBossClearModal.title}]</span>
+                    </div>
+                  )}
+                  {towerBossClearModal.costume && (
+                    <div className="flex items-center justify-between border-t border-white/10 pt-1.5">
+                      <span className="text-white/70">👗 {language === 'ko' ? '전술 코스튬' : 'Costume Unlocked'}</span>
+                      <span className="font-bold text-indigo-300">[{towerBossClearModal.costume}]</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 w-full">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTowerBossClearModal(null);
+                      setIsTowerTrialsOpen(true);
+                    }}
+                    className="min-h-[44px] py-2 px-3 bg-[#2a2222] hover:bg-[#382d2d] text-amber-200 border border-amber-500/50 text-xs font-bold transition-all cursor-pointer active:scale-95"
+                  >
+                    {language === 'ko' ? '칭호 도감 보기' : 'View Titles'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTowerBossClearModal(null)}
+                    className="min-h-[44px] py-2 px-3 bg-amber-400 hover:bg-amber-300 text-[#181515] text-xs font-black transition-all cursor-pointer active:scale-95 shadow-md"
+                  >
+                    {language === 'ko' ? '보상 수령 완료' : 'Claim Rewards'}
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
 
         {/* Item 393 & Item 405: Battle Gambit & Smart Filter Modal */}
         <BattleGambitModal
@@ -14181,6 +14352,40 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               </button>
             </motion.div>
           )}
+
+          {/* SCR-08: Tower of Trials Quick Access Banner */}
+          <div className="w-full rounded-none border border-amber-500/50 bg-gradient-to-r from-amber-950/70 via-[#181515] to-amber-950/70 p-3 text-white font-mono flex items-center justify-between gap-3 shadow-md">
+            <div className="flex items-center gap-2.5">
+              <div className="w-10 h-10 bg-amber-500/20 border border-amber-400 text-amber-400 flex items-center justify-center text-xl shrink-0 font-bold">
+                🗼
+              </div>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[9px] font-black uppercase text-amber-300 bg-amber-900/60 border border-amber-500/40 px-1 py-0.2">
+                    50F CHALLENGE
+                  </span>
+                  <span className="text-[11px] text-amber-200 font-bold">
+                    {language === 'ko' ? '시련의 탑 & 보스 레이드' : 'Tower of Trials & Boss Raid'}
+                  </span>
+                </div>
+                <p className="text-[10px] text-white/70 mt-0.5">
+                  {language === 'ko'
+                    ? '매 5층 보스 격파 시 한정 칭호 & 다이아 잭팟!'
+                    : 'Defeat 5F bosses for exclusive titles & gems!'}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                setIsTowerTrialsOpen(true);
+              }}
+              className="min-h-[44px] px-3 py-2 bg-amber-400 hover:bg-amber-300 text-[#181515] font-black text-xs uppercase flex items-center gap-1 transition-all cursor-pointer active:scale-95 shrink-0 shadow-md"
+            >
+              <span>{language === 'ko' ? '[탑 등반 도전]' : '[Enter Tower]'}</span>
+            </button>
+          </div>
 
           {/* Hero Card Mission Matching Overview Banner */}
           <div className="w-full rounded-sm border border-slate-800 bg-slate-950 p-3 sm:p-4 text-white shadow-xs font-mono">
@@ -16865,11 +17070,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               )}
             </AnimatePresence>
 
-            {/* ID 442: Boss HUD if in boss fight */}
-            {battleType === 'boss' && (
+            {/* ID 442 & SCR-08: Boss HUD if in boss fight or Tower Boss Floor */}
+            {(battleType === 'boss' || (activeTowerFloor !== null && activeTowerFloor % 5 === 0)) && (
               <div className="w-full max-w-sm mx-auto mb-1">
                 <BattleBossHUD
-                  bossName="지옥의 군주"
+                  bossName={
+                    activeTowerFloor
+                      ? (activeTowerFloor % 5 === 0 
+                          ? (language === 'ko' ? `${activeTowerFloor}층 아케인 로드` : `F${activeTowerFloor} Arcane Lord`)
+                          : (language === 'ko' ? `${activeTowerFloor}층 수호자` : `F${activeTowerFloor} Guardian`))
+                      : (selectedOpponent?.name || "지옥의 군주")
+                  }
+                  bossFloor={activeTowerFloor ?? undefined}
+                  bossPower={selectedOpponent?.totalPower || (activeTowerFloor ? 120 + activeTowerFloor * 15 : undefined)}
+                  bossElement={activeTowerFloor ? (activeTowerFloor % 3 === 0 ? 'fire' : activeTowerFloor % 3 === 1 ? 'dark' : 'earth') : 'fire'}
+                  weaknessElement={activeTowerFloor ? (activeTowerFloor % 3 === 0 ? 'water' : activeTowerFloor % 3 === 1 ? 'light' : 'wind') : 'water'}
                   turnCount={board.filter(c => c !== null).length}
                   language={language}
                 />
