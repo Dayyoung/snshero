@@ -2,6 +2,19 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-16 16:16 KST] [마이덱 덱 케미스트리 & 밸런스 레이더 차트 레이아웃 시너지 효과 팝업 모달 내부 이전 완료]
+- **요청 사항**: 마이덱 메인 화면의 덱 케미스트리(Deck Chemistry) 및 덱 전투력 밸런스 레이더 차트(DeckBalanceRadarChart) 레이아웃을 메인 본문에서 제외하고 '시너지 효과' 버튼 클릭 시 나타나는 팝업 모달 내부로 이동하여 표시.
+- **수정 내역**:
+  1. `MyDeckView.tsx` 메인 덱 인벤토리 상단에 상시 노출되던 `DeckChemistryMeter` 및 `DeckBalanceRadarChart` 인라인 위젯을 제거하여 모바일 100dvh 세로 스크롤 길이 최적화.
+  2. `isSynergyModalOpen` 팝업 모달 바디 상단에 `DeckChemistryMeter`(케미스트리 게이지 및 인연 보너스)와 `DeckBalanceRadarChart`(4방향 커버리지 레이더, 덱 전투력 벤치마크, 속성 3장 시너지)를 순서대로 배치.
+  3. '시너지 효과' 버튼 클릭 시 팝업 모달 내에서 케미스트리 게이지, 레이더 차트, 프리셋 시너지 계산기를 원스톱으로 확인 가능하도록 UX 정돈.
+- **검증 결과**:
+  - `tsc --noEmit`: 에러 0건 통과.
+  - `npm run build`: 오류 0건 정상 빌드 완료 (`✓ built in 10.57s`).
+  - `http://localhost:3000/deck` 런타임 정상 렌더링 확인.
+- **구글 폼 제출**:
+  - 부서: 디자인/개발 | 작업명: [마이덱] 시너지 효과 팝업 내부로 덱 케미스트리 및 레이더 차트 레이아웃 이전 | 상태: 작업완료
+
 ## [2026-09-16 16:14 KST] [/deck 마이덱 화면 런타임 및 TypeScript 에러 전면 수정 및 검증 완료]
 - **문제 원인**: `http://localhost:3000/deck` 진입 시 `MyDeckView.tsx` 내부에서 누락된 `useCallback`, `triggerHaptic` import, `setCustomAlert` 정의 누락 및 튜플 stats / element 타입 불일치로 인한 크래시 발생.
 - **수정 내역**:

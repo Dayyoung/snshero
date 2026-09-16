@@ -1508,20 +1508,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             </div>
           )}
 
-          {/* Deck Chemistry Meter Widget (Row 1059 / ID 322) */}
-          <DeckChemistryMeter
-            deck={currentDeck as any}
-            language={language}
-            className="mb-2"
-          />
-
-          {/* ID 357, 382, 407, 397: 덱 밸런스 레이더 차트 & 전투력 벤치마크 & 속성 시너지 게이지 */}
-          <DeckBalanceRadarChart
-            deck={currentDeck as any}
-            language={language}
-            className="mb-2"
-          />
-
           {/* ID 342, 347, 372, 377: 덱 스마트 액션 툴바 */}
           <div className="flex flex-wrap items-center justify-center gap-2 mb-3">
             <button
@@ -3516,7 +3502,20 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               </div>
 
               {/* Modal Body: Scrollable */}
-              <div className="p-3 sm:p-4 overflow-y-auto flex-1 overscroll-contain">
+              <div className="p-3 sm:p-4 overflow-y-auto flex-1 overscroll-contain space-y-3">
+                {/* 1. Deck Chemistry Meter Widget */}
+                <DeckChemistryMeter
+                  deck={currentDeck as any}
+                  language={language}
+                />
+
+                {/* 2. 덱 밸런스 레이더 차트 & 전투력 벤치마크 & 속성 시너지 게이지 */}
+                <DeckBalanceRadarChart
+                  deck={currentDeck as any}
+                  language={language}
+                />
+
+                {/* 3. 덱 원소/종족 공명 점수 및 프리셋 계산기 */}
                 <DeckSynergyCalculator
                   currentDeck={currentDeck}
                   ownedCards={ownedCards}
