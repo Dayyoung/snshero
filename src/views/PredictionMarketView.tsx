@@ -2,13 +2,15 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Coins, RefreshCw, X, HelpCircle, AlertCircle, 
-  CheckCircle2, Gift, History, Calendar, Play, Check, Trophy, ChevronLeft, ChevronRight
+  CheckCircle2, Gift, History, Calendar, Play, Check, Trophy, ChevronLeft, ChevronRight,
+  Sparkles, Zap, Flame, TrendingUp, Award, ArrowUpRight, ArrowRight, Target as TargetIcon
 } from 'lucide-react';
 import { Language, ViewType } from '../types';
 import { t } from '../lib/i18n';
 import { cn, getAssetUrl } from '../lib/utils';
 import { PageHeader } from '../components/PageHeader';
 import { usePredictionMarkets, Market, PredictionBet } from '../hooks/usePredictionMarkets';
+import { triggerHaptic } from '../lib/haptic';
 
 interface PredictionMarketViewProps {
   language: Language;
@@ -20,6 +22,7 @@ interface PredictionMarketViewProps {
   user: any;
   syncUserData?: (data: any) => Promise<void>;
   currentSeason: string;
+  lowSpecMode?: boolean;
 }
 
 type LiveMatchTab = 'overview' | 'stats' | 'plays';
@@ -42,7 +45,8 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
   showCustomAlert,
   user,
   syncUserData,
-  currentSeason
+  currentSeason,
+  lowSpecMode = false
 }) => {
   const {
     markets,
@@ -54,6 +58,11 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
     resolveBet,
     claimReward
   } = usePredictionMarkets(currentSeason, language);
+
+  // First Bet Reward status from localStorage
+  const [hasClaimedFirstBetBonus, setHasClaimedFirstBetBonus] = useState<boolean>(() => {
+    return typeof window !== 'undefined' && localStorage.getItem('hero_prediction_first_bet_reward') === 'true';
+  });
 
   const formatProbabilityPercent = useCallback((price: number): string => {
     const percent = price * 100;
@@ -70,7 +79,23 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
   const [betOutcome, setBetOutcome] = useState<'Yes' | 'No'>('Yes');
   const [betAmount, setBetAmount] = useState<number>(50);
   const [localAlert, setLocalAlert] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [activeTab, setActiveTab] = useState<'markets' | 'bets'>('markets');
+  const [activeTab, setActiveTab] = useState<'markets' | 'bets' | 'stats'>('markets');
+  
+  // Dopamine Celebratory Modals
+  const [betSuccessModal, setBetSuccessModal] = useState<{
+    isOpen: boolean;
+    question: string;
+    outcome: string;
+    amount: number;
+    potentialWin: number;
+    isFirstBetBonus?: boolean;
+  } | null>(null);
+
+  const [claimSuccessModal, setClaimSuccessModal] = useState<{
+    isOpen: boolean;
+    amount: number;
+  } | null>(null);
+
   const [selectedSportsCategory, setSelectedSportsCategory] = useState<string>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -102,6 +127,23 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
   });
 
   const activeBets = useMemo(() => bets.filter(b => b.status !== 'claimed'), [bets]);
+
+  // SCR-07: 내 예측 베팅 포트폴리오 요약 통계 HUD
+  const predictionStats = useMemo(() => {
+    const totalBetAmount = bets.reduce((sum, b) => sum + (b.amount || 0), 0);
+    const activeCount = activeBets.length;
+    const potentialWinning = activeBets.reduce((sum, b) => {
+      const odds = b.betPrice > 0 ? (1 / b.betPrice) : 2.0;
+      return sum + Math.round(b.amount * odds);
+    }, 0);
+    const claimedRewards = bets.filter(b => b.status === 'claimed').reduce((sum, b) => sum + (b.amount * 2), 0);
+    return { totalBetAmount, activeCount, potentialWinning, claimedRewards };
+  }, [bets, activeBets]);
+
+  // SCR-07: 오늘의 하이라이트 핫픽 매치 (Hot Match Pick)
+  const hotMatch = useMemo(() => {
+    return markets.find(m => m.subCategory === 'Soccer' || m.subCategory === 'FIFA' || m.category === 'FIFA') || markets[0] || null;
+  }, [markets]);
 
   const formatLocalMatchTime = useCallback((iso?: string) => {
     if (!iso) return '';
@@ -213,14 +255,33 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
     // Place bet in local hook/storage
     placeBet(selectedMarket.id, selectedMarket.question, betOutcome, betAmount, betPrice);
 
+    triggerHaptic('victory');
     playSfx('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
-    triggerAlert('success', t('bet_success', language));
+
+    // SCR-07 FTUE: 첫 예측 배팅 시 +30 SNS 웰컴 캐시백 즉시 지급
+    let isFirstBonus = false;
+    if (!hasClaimedFirstBetBonus) {
+      localStorage.setItem('hero_prediction_first_bet_reward', 'true');
+      setHasClaimedFirstBetBonus(true);
+      updateSns(30, language === 'ko' ? '첫 승부 예측 베팅 웰컴 캐시백' : 'First Prediction Bet Welcome Cashback', 'earned');
+      isFirstBonus = true;
+    }
+
+    const potentialWin = Math.round(betAmount / (betPrice > 0 ? betPrice : 0.5));
+    setBetSuccessModal({
+      isOpen: true,
+      question: selectedMarket.question,
+      outcome: betOutcome,
+      amount: betAmount,
+      potentialWin,
+      isFirstBetBonus: isFirstBonus
+    });
 
     // Sync to Cloud Firestore if user is not guest
     if (user && user.uid !== 'guest-id' && syncUserData) {
       try {
         await syncUserData({
-          sns: sns - betAmount
+          sns: sns - betAmount + (isFirstBonus ? 30 : 0)
         });
       } catch (err) {
         console.error('Failed to sync user data after placing bet:', err);
@@ -264,10 +325,12 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
       if (result.error) {
         triggerAlert('error', result.error);
       } else if (result.status === 'win') {
+        triggerHaptic('victory');
         playSfx('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'); // win fanfare
         const rewardAmount = result.rewardAmount || 0;
         if (rewardAmount > 0) {
           updateSns(rewardAmount, `Prediction Reward auto claim`);
+          setClaimSuccessModal({ isOpen: true, amount: rewardAmount });
           const successMsg = t('bet_claim_success', language).replace('{amount}', String(rewardAmount));
           triggerAlert('success', successMsg);
 
@@ -295,11 +358,13 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
   };
 
   const handleClaimReward = async (betId: string) => {
-    playSfx('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
+    triggerHaptic('victory');
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2020/2020-preview.mp3');
     
     const rewardAmount = claimReward(betId);
     if (rewardAmount > 0) {
       updateSns(rewardAmount, `Prediction Reward claim`);
+      setClaimSuccessModal({ isOpen: true, amount: rewardAmount });
       
       const successMsg = t('bet_claim_success', language).replace('{amount}', String(rewardAmount));
       triggerAlert('success', successMsg);
@@ -361,55 +426,186 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
 
   return (
     <div className="flex-1 flex flex-col w-full bg-slate-50/50 text-slate-800 font-sans overflow-y-auto pb-32">
-      <div className="max-w-4xl mx-auto w-full px-4 flex flex-col gap-6">
-        <div className="flex items-center gap-2">
-          <PageHeader title={t('prediction_market', language)} />
+      <div className="max-w-4xl mx-auto w-full px-4 flex flex-col gap-4 pt-2">
+        {/* Top Header Bar with Balance HUD */}
+        <div className="flex items-center justify-between gap-2 border-b border-slate-200/80 pb-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <PageHeader title={t('prediction_market', language)} />
+            <button
+              onClick={() => { setShowHelp(true); setHelpStep(0); }}
+              className="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center hover:bg-slate-100 transition-colors cursor-pointer shrink-0"
+              title="Help"
+            >
+              <HelpCircle size={16} className="text-slate-500" />
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            {/* Realtime SNS Balance HUD */}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 border border-amber-400/40 rounded-sm font-mono text-xs text-amber-900 font-bold shadow-2xs">
+              <Coins size={14} className="text-amber-500 fill-amber-400" />
+              <span>{sns.toLocaleString()} SNS</span>
+            </div>
+
+            {/* Shop Shortcut */}
+            <button
+              onClick={() => setView('shop')}
+              className="px-2.5 py-1.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-600 hover:to-yellow-500 text-stone-950 font-mono text-xs font-black rounded-sm flex items-center gap-1 cursor-pointer shadow-xs active:scale-95 border border-amber-300"
+              title="상점으로 이동하여 SNS 코인 충전"
+            >
+              <Zap size={13} className="fill-current" />
+              <span className="hidden xs:inline">{language === 'ko' ? '충전' : 'Shop'}</span>
+              <ArrowUpRight size={13} />
+            </button>
+
+            {/* Refresh Markets */}
+            <button 
+              onClick={fetchMarkets}
+              className="w-9 h-9 bg-slate-900 hover:bg-slate-800 text-white rounded-sm active:scale-95 transition-all cursor-pointer shadow-xs flex items-center justify-center"
+              title={t('refresh', language)}
+              aria-label={t('refresh', language)}
+            >
+              <RefreshCw size={13} className={loading ? "animate-spin" : ""} />
+            </button>
+          </div>
+        </div>
+
+        {/* SCR-07 FTUE: 내 예측 베팅 포트폴리오 요약 HUD */}
+        <div className="bg-white border border-slate-200/80 rounded-sm p-3.5 shadow-xs font-mono">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-2.5">
+            <div className="flex items-center gap-1.5 font-black text-xs text-slate-800">
+              <TargetIcon className="text-indigo-600" size={15} />
+              <span>{language === 'ko' ? '[🎯 내 예측 베팅 포트폴리오 HUD]' : '[🎯 PREDICTION PORTFOLIO HUD]'}</span>
+            </div>
+            {!hasClaimedFirstBetBonus && (
+              <span className="text-[10px] font-bold bg-amber-500/20 text-amber-800 border border-amber-400/50 px-2 py-0.5 rounded-sm animate-pulse flex items-center gap-1">
+                <Gift size={11} className="text-amber-600" />
+                <span>{language === 'ko' ? '첫 베팅 시 +30 SNS 캐시백' : '+30 SNS First Bet Cashback'}</span>
+              </span>
+            )}
+          </div>
+
+          <div className="grid grid-cols-3 gap-2 text-center">
+            <div className="bg-slate-50 border border-slate-150 p-2 rounded-sm">
+              <p className="text-[9px] text-slate-400 uppercase">{language === 'ko' ? '누적 베팅액' : 'Total Bet'}</p>
+              <p className="text-xs sm:text-sm font-black text-slate-900 mt-0.5 truncate">
+                {predictionStats.totalBetAmount.toLocaleString()} <span className="text-[9px] font-normal text-slate-500">SNS</span>
+              </p>
+            </div>
+            <div className="bg-indigo-50/50 border border-indigo-150 p-2 rounded-sm">
+              <p className="text-[9px] text-indigo-500 uppercase">{language === 'ko' ? '진행 중 베팅' : 'Active Bets'}</p>
+              <p className="text-xs sm:text-sm font-black text-indigo-700 mt-0.5">
+                {predictionStats.activeCount} <span className="text-[9px] font-normal text-indigo-400">{language === 'ko' ? '건' : 'bets'}</span>
+              </p>
+            </div>
+            <div className="bg-emerald-50/50 border border-emerald-150 p-2 rounded-sm">
+              <p className="text-[9px] text-emerald-600 uppercase">{language === 'ko' ? '최대 예상 당첨금' : 'Est. Max Win'}</p>
+              <p className="text-xs sm:text-sm font-black text-emerald-700 mt-0.5 truncate">
+                +{predictionStats.potentialWinning.toLocaleString()} <span className="text-[9px] font-normal text-emerald-500">SNS</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* SCR-07 모바일 원터치 서브 탭바 */}
+        <div className="bg-slate-200/60 p-1 rounded-sm flex items-center gap-1 font-mono text-xs select-none">
           <button
-            onClick={() => { setShowHelp(true); setHelpStep(0); }}
-            className="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center hover:bg-slate-100 transition-colors cursor-pointer shrink-0"
+            onClick={() => {
+              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              setActiveTab('markets');
+            }}
+            className={cn(
+              "flex-1 min-h-[44px] py-2 px-2 text-center font-black rounded-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer touch-target",
+              activeTab === 'markets' 
+                ? "bg-white text-slate-950 shadow-xs border border-slate-300/80" 
+                : "text-slate-600 hover:text-slate-900"
+            )}
           >
-            <HelpCircle size={16} className="text-slate-500" />
+            <Flame size={14} className={activeTab === 'markets' ? "text-orange-500 fill-orange-500" : "text-slate-400"} />
+            <span>{language === 'ko' ? '실시간 경기 예측' : 'Live Matches'}</span>
+          </button>
+
+          <button
+            onClick={() => {
+              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              setActiveTab('bets');
+            }}
+            className={cn(
+              "flex-1 min-h-[44px] py-2 px-2 text-center font-black rounded-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer touch-target",
+              activeTab === 'bets' 
+                ? "bg-white text-slate-950 shadow-xs border border-slate-300/80" 
+                : "text-slate-600 hover:text-slate-900"
+            )}
+          >
+            <History size={14} className={activeTab === 'bets' ? "text-indigo-600" : "text-slate-400"} />
+            <span>{language === 'ko' ? '내 베팅 목록' : 'My Bets'}</span>
+            <span className="text-[10px] bg-slate-900 text-white px-1.5 py-0.2 rounded-xs font-mono">
+              {activeBets.length}
+            </span>
+          </button>
+
+          <button
+            onClick={() => {
+              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              setActiveTab('stats');
+            }}
+            className={cn(
+              "flex-1 min-h-[44px] py-2 px-2 text-center font-black rounded-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer touch-target",
+              activeTab === 'stats' 
+                ? "bg-white text-slate-950 shadow-xs border border-slate-300/80" 
+                : "text-slate-600 hover:text-slate-900"
+            )}
+          >
+            <Trophy size={14} className={activeTab === 'stats' ? "text-amber-500" : "text-slate-400"} />
+            <span>{language === 'ko' ? '베팅 전적 & 정산' : 'History & Stats'}</span>
           </button>
         </div>
 
-        <div className="flex justify-end">
-          <button 
-            onClick={fetchMarkets}
-            className="min-h-11 min-w-11 bg-slate-900 hover:bg-slate-800 text-white rounded-lg active:scale-95 transition-all cursor-pointer shadow-sm flex items-center justify-center touch-target"
-            title={t('refresh', language)}
-            aria-label={t('refresh', language)}
-          >
-            <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
-          </button>
-        </div>
+        {/* SCR-07: 오늘의 하이라이트 핫픽 추천 매치 배너 (Hot Match Pick) */}
+        {activeTab === 'markets' && hotMatch && (
+          <div className="bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-indigo-500/10 border border-orange-400/40 rounded-sm p-3.5 shadow-xs font-mono">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-1.5 text-xs font-black text-orange-950 dark:text-orange-300">
+                <Flame size={15} className="text-orange-500 fill-orange-500 animate-pulse" />
+                <span>{language === 'ko' ? '[🔥 오늘의 추천 핫픽 승부처]' : '[🔥 TODAY HOT MATCH PICK]'}</span>
+              </div>
+              <span className="text-[10px] font-black bg-orange-500 text-white px-1.5 py-0.5 rounded-xs">
+                HOT ODDS
+              </span>
+            </div>
+            
+            <p className="text-xs sm:text-sm font-bold text-slate-800 line-clamp-2 mb-3">
+              {hotMatch.question}
+            </p>
 
-      {/* Main Tabs (Mobile toggle) */}
-      <div className="bg-white border border-slate-100 rounded-lg p-1.5 shadow-sm max-w-md mx-auto mt-4 w-[calc(100%-2rem)] flex select-none shrink-0 lg:hidden">
-        <button 
-          onClick={() => {
-            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-            setActiveTab('markets');
-          }}
-          className={cn(
-            "flex-1 min-h-11 px-2 py-2 text-xs font-bold uppercase tracking-wider text-center rounded-md active:scale-[0.98] transition-all touch-target",
-            activeTab === 'markets' ? "bg-slate-900 text-white shadow-xs" : "bg-transparent text-slate-400 hover:text-slate-655"
-          )}
-        >
-          {t('popular_sports_matches', language)}
-        </button>
-        <button 
-          onClick={() => {
-            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-            setActiveTab('bets');
-          }}
-          className={cn(
-            "flex-1 min-h-11 px-2 py-2 text-xs font-bold uppercase tracking-wider text-center rounded-md active:scale-[0.98] transition-all touch-target",
-            activeTab === 'bets' ? "bg-slate-900 text-white shadow-xs" : "bg-transparent text-slate-400 hover:text-slate-655"
-          )}
-        >
-          {t('my_bets', language)} ({activeBets.length})
-        </button>
-      </div>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleOpenBetModal(hotMatch, 'Yes')}
+                  className="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black rounded-sm flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 touch-target"
+                >
+                  <span>YES {formatProbabilityPercent(hotMatch.outcomePrices[0])}</span>
+                </button>
+                <button
+                  onClick={() => handleOpenBetModal(hotMatch, 'No')}
+                  className="px-3 py-2 bg-rose-600 hover:bg-rose-500 text-white text-xs font-black rounded-sm flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 touch-target"
+                >
+                  <span>NO {formatProbabilityPercent(hotMatch.outcomePrices[1])}</span>
+                </button>
+              </div>
+
+              {hotMatch.liveUrl && (
+                <button
+                  onClick={() => handleOpenLiveMatch(hotMatch)}
+                  className="px-2.5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-bold rounded-sm flex items-center gap-1 cursor-pointer active:scale-95 touch-target shrink-0"
+                >
+                  <Play size={11} className="fill-current" />
+                  <span>LIVE</span>
+                </button>
+              )}
+            </div>
+          </div>
+        )}
 
       {/* Main Content Area */}
       <div className="flex-1 p-4 md:p-6 w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -417,7 +613,7 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
         {/* Left/Main Column: Sports Matches */}
         <div className={cn(
           "lg:col-span-2 space-y-4",
-          activeTab === 'bets' ? 'hidden lg:block' : 'block'
+          activeTab !== 'markets' ? 'hidden lg:block' : 'block'
         )}>
           {/* Subcategory filter tab list */}
           <div className="flex gap-2 overflow-x-auto pb-2.5 scrollbar-none select-none border-b border-slate-100 mb-2">
@@ -520,7 +716,7 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
         {/* Right/Secondary Column: My Bets Log */}
         <div className={cn(
           "lg:col-span-1 space-y-4",
-          activeTab === 'markets' ? 'hidden lg:block' : 'block'
+          activeTab !== 'bets' ? 'hidden lg:block' : 'block'
         )}>
           <div className="flex items-center justify-end pb-2 border-b border-slate-100 mb-2">
             <button
@@ -646,6 +842,65 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
           </div>
         </div>
 
+        {/* SCR-07: Stats & Settlement Panel */}
+        {activeTab === 'stats' && (
+          <div className="lg:col-span-3 space-y-4 font-mono">
+            <div className="bg-white border border-slate-200/80 rounded-sm p-4 shadow-xs">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+                <div className="flex items-center gap-2 font-black text-sm text-slate-900">
+                  <Trophy className="text-amber-500" size={16} />
+                  <span>{language === 'ko' ? '[🏆 내 예측 전적 & 승률 리포트]' : '[🏆 PREDICTION RECORD & WIN RATE]'}</span>
+                </div>
+                <button
+                  onClick={() => setShowHistoryModal(true)}
+                  className="text-xs font-bold text-indigo-600 hover:text-indigo-800 underline cursor-pointer"
+                >
+                  {language === 'ko' ? '전체 히스토리 보기 ↗' : 'View Full History ↗'}
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center mb-4">
+                <div className="p-3 bg-slate-50 border border-slate-150 rounded-sm">
+                  <p className="text-[10px] text-slate-500 uppercase">{language === 'ko' ? '총 베팅' : 'Total Bets'}</p>
+                  <p className="text-base font-black text-slate-900 mt-1">{bets.length}건</p>
+                </div>
+                <div className="p-3 bg-emerald-50/60 border border-emerald-200/80 rounded-sm">
+                  <p className="text-[10px] text-emerald-700 uppercase">{language === 'ko' ? '적중 (당첨)' : 'Wins'}</p>
+                  <p className="text-base font-black text-emerald-800 mt-1">
+                    {bets.filter(b => b.status === 'win' || b.status === 'claimed').length}건
+                  </p>
+                </div>
+                <div className="p-3 bg-rose-50/60 border border-rose-200/80 rounded-sm">
+                  <p className="text-[10px] text-rose-700 uppercase">{language === 'ko' ? '미적중 (패배)' : 'Losses'}</p>
+                  <p className="text-base font-black text-rose-800 mt-1">
+                    {bets.filter(b => b.status === 'loss').length}건
+                  </p>
+                </div>
+                <div className="p-3 bg-amber-50/60 border border-amber-200/80 rounded-sm">
+                  <p className="text-[10px] text-amber-700 uppercase">{language === 'ko' ? '적중 승률' : 'Win Rate'}</p>
+                  <p className="text-base font-black text-amber-900 mt-1">
+                    {(() => {
+                      const wins = bets.filter(b => b.status === 'win' || b.status === 'claimed').length;
+                      const losses = bets.filter(b => b.status === 'loss').length;
+                      const total = wins + losses;
+                      return total > 0 ? Math.round((wins / total) * 100) : 0;
+                    })()}%
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded-sm space-y-1.5 text-xs text-slate-600 leading-relaxed">
+                <p className="font-bold text-slate-800 flex items-center gap-1">
+                  <Sparkles size={13} className="text-indigo-600" />
+                  <span>{language === 'ko' ? '승부 예측 및 2.5배 배당 팁' : 'Prediction & Odds Tips'}</span>
+                </p>
+                <p>• {language === 'ko' ? '배당률(Odds)이 낮은 Topdog 선택 시 안정적인 당첨, Underdog 역배당 선택 시 최대 5배+의 고수익 배당을 획득합니다.' : 'Bet on Topdog for higher chance, or Underdog for massive 5x+ payout.'}</p>
+                <p>• {language === 'ko' ? '경기 종료 후 [결과 확인] 버튼을 누르면 실시간 경기 결과 판정 후 즉시 정산됩니다.' : 'Tap [Check Result] after match ends to settle rewards instantly.'}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
       </div>
 
@@ -760,30 +1015,56 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
                     </button>
                   </div>
 
-                  {/* Quick select keys */}
-                  <div className="grid grid-cols-4 gap-1.5 pt-1">
-                    {[50, 100, 500].map(val => (
+                  {/* Quick select keys: 44px+ mobile touch targets */}
+                  <div className="grid grid-cols-4 gap-1.5 pt-1 font-mono">
+                    {[10, 50, 100].map(val => (
                       <button
                         key={val}
+                        type="button"
                         onClick={() => {
                           playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                          setBetAmount(Math.min(sns, val));
+                          setBetAmount(val);
                         }}
-                        className="py-1.5 border border-slate-205 bg-slate-50 hover:bg-slate-100 text-[10px] font-bold rounded-xl text-center cursor-pointer shadow-xs transition-colors text-slate-550"
+                        className={cn(
+                          "min-h-[44px] py-2 border rounded-xl text-xs font-bold text-center cursor-pointer shadow-xs transition-colors touch-target",
+                          betAmount === val 
+                            ? "bg-indigo-600 border-indigo-700 text-white" 
+                            : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+                        )}
                       >
                         +{val}
                       </button>
                     ))}
                     <button
+                      type="button"
                       onClick={() => {
                         playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                         setBetAmount(sns);
                       }}
-                      className="py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-[10px] font-bold rounded-xl text-center cursor-pointer shadow-xs transition-colors"
+                      className="min-h-[44px] py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-black rounded-xl text-center cursor-pointer shadow-xs transition-colors touch-target"
                     >
                       MAX
                     </button>
                   </div>
+
+                  {/* Insufficient balance top-up prompt */}
+                  {sns < betAmount && (
+                    <div className="p-2 bg-rose-50 border border-rose-200 rounded-xl flex items-center justify-between text-xs font-mono">
+                      <span className="text-rose-700 text-[11px] font-bold">
+                        {language === 'ko' ? '잔액 부족' : 'Low balance'}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedMarket(null);
+                          setView('shop');
+                        }}
+                        className="text-indigo-600 hover:text-indigo-800 text-[11px] font-black underline cursor-pointer flex items-center gap-0.5"
+                      >
+                        <span>{language === 'ko' ? '상점에서 SNS 충전 ↗' : 'Top up in Shop ↗'}</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Estimate output summary */}
@@ -1180,6 +1461,113 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
                   <ChevronRight size={18} className="text-slate-600" />
                 </button>
               </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* SCR-07: Bet Placement Success Dopamine Modal */}
+      <AnimatePresence>
+        {betSuccessModal?.isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[10005] flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-xs font-mono select-none"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-[#1a1717] border border-amber-500/80 text-white p-6 max-w-sm w-full space-y-4 shadow-2xl relative rounded-xs"
+            >
+              <div className="text-center space-y-1">
+                <div className="inline-flex p-3 rounded-full bg-amber-500/20 text-amber-400 border border-amber-400/50 mb-1 animate-bounce">
+                  <Flame size={28} />
+                </div>
+                <h3 className="text-base font-black text-amber-300">
+                  {language === 'ko' ? '🎉 승부 예측 베팅 접수 완료!' : '🎉 PREDICTION BET PLACED!'}
+                </h3>
+                <p className="text-xs text-slate-300 font-bold line-clamp-2">
+                  {betSuccessModal.question}
+                </p>
+              </div>
+
+              <div className="bg-black/50 border border-slate-800 p-3.5 space-y-2 text-xs">
+                <div className="flex justify-between items-center text-slate-400">
+                  <span>{language === 'ko' ? '선택 결과' : 'Selection'}:</span>
+                  <span className={cn(
+                    "font-black px-2 py-0.5 rounded-xs",
+                    betSuccessModal.outcome === 'Yes' ? "bg-emerald-500/20 text-emerald-300" : "bg-rose-500/20 text-rose-300"
+                  )}>
+                    {betSuccessModal.outcome}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-slate-400">
+                  <span>{language === 'ko' ? '베팅 금액' : 'Bet Amount'}:</span>
+                  <span className="font-bold text-slate-200">{betSuccessModal.amount.toLocaleString()} SNS</span>
+                </div>
+                <div className="flex justify-between items-center border-t border-slate-800 pt-2 font-black">
+                  <span className="text-amber-400">{language === 'ko' ? '적중 시 예상 당첨금' : 'Est. Win Payout'}:</span>
+                  <span className="text-emerald-400 text-sm animate-pulse">+{betSuccessModal.potentialWin.toLocaleString()} SNS</span>
+                </div>
+              </div>
+
+              {betSuccessModal.isFirstBetBonus && (
+                <div className="bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-yellow-500/20 border border-amber-400/60 p-2.5 rounded-xs flex items-center gap-2 text-xs text-amber-300">
+                  <Gift size={16} className="text-amber-400 shrink-0 animate-bounce" />
+                  <span className="font-black">
+                    {language === 'ko' 
+                      ? '🎁 [첫 베팅 웰컴 캐시백] +30 SNS가 즉시 지급되었습니다!'
+                      : '🎁 [First Bet Bonus] +30 SNS instant cashback awarded!'}
+                  </span>
+                </div>
+              )}
+
+              <button
+                onClick={() => setBetSuccessModal(null)}
+                className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-600 hover:to-yellow-500 text-stone-950 font-black text-xs uppercase tracking-wider rounded-xs cursor-pointer shadow-lg active:scale-95 transition-all border border-amber-300 touch-target"
+              >
+                [{language === 'ko' ? '확인 (경기 결과 기다리기)' : 'CONFIRM'}]
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* SCR-07: Reward Claim Success Dopamine Modal */}
+      <AnimatePresence>
+        {claimSuccessModal?.isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[10005] flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-xs font-mono select-none"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-[#1a1717] border border-emerald-500/80 text-white p-6 max-w-sm w-full space-y-4 shadow-2xl relative rounded-xs text-center"
+            >
+              <div className="inline-flex p-3 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-400/50 mb-1 animate-bounce">
+                <Trophy size={32} />
+              </div>
+              <h3 className="text-base font-black text-emerald-300">
+                {language === 'ko' ? '👑 적중 배당금 수령 완료!' : '👑 REWARD CLAIMED SUCCESSFULLY!'}
+              </h3>
+              <p className="text-2xl font-black text-amber-400 animate-pulse">
+                +{claimSuccessModal.amount.toLocaleString()} SNS
+              </p>
+              <p className="text-xs text-slate-300">
+                {language === 'ko' ? '예측 성공 배당금이 보유 잔액으로 즉시 정산되었습니다.' : 'Winnings have been credited to your balance.'}
+              </p>
+              <button
+                onClick={() => setClaimSuccessModal(null)}
+                className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-wider rounded-xs cursor-pointer shadow-lg active:scale-95 transition-all border border-emerald-400 touch-target"
+              >
+                [{language === 'ko' ? '확인' : 'OK'}]
+              </button>
             </motion.div>
           </motion.div>
         )}
