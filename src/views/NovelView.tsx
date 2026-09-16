@@ -3,11 +3,12 @@ import {
   BookOpen, Play, Pause, Square, Volume2, Copy, Sparkles, ChevronLeft, ChevronRight,
   Check, Settings, Moon, Sun, Gift, ArrowLeft, Bookmark, List, ExternalLink, Award, User, Image,
   Maximize2, X, Eye, Film, Layers, RefreshCw, ChevronDown, Search, ListOrdered, CheckCircle2, Clock,
-  ArrowUp, ArrowRight, BookmarkCheck, RotateCcw, MapPin
+  ArrowUp, ArrowRight, BookmarkCheck, RotateCcw, MapPin, ShoppingCart, Tv
 } from 'lucide-react';
 import { Language, ViewType } from '../types';
 import { t } from '../lib/i18n';
 import { cn, getAssetUrl, getCardSpriteAsset, getCardSpriteStyle } from '../lib/utils';
+import { triggerHaptic } from '../lib/haptic';
 import { CARD_DATABASE } from '../cardDatabase';
 import {
   getSeasonItem,
@@ -266,6 +267,10 @@ export const NovelView: React.FC<NovelViewProps> = ({
     }
   });
 
+  // SCR-11-01: 완독 진행도 통계
+  const claimedCount = Object.keys(claimedRewards).filter(k => claimedRewards[Number(k)]).length;
+  const claimedPct = Math.round((claimedCount / TOTAL_EPISODES) * 100);
+
   // Save progress on episode change
   useEffect(() => {
     setSeasonItem('hero_novel_progress', currentEpisodeNum.toString(), currentSeason);
@@ -347,6 +352,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
   const goToPrevEpisode = () => {
     if (currentEpisodeNum > 1) {
+      triggerHaptic('tap');
       setCurrentEpisodeNum(prev => prev - 1);
       setActiveSlideIndex(1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -356,6 +362,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
   const goToNextEpisode = () => {
     if (currentEpisodeNum < TOTAL_EPISODES) {
+      triggerHaptic('tap');
       setCurrentEpisodeNum(prev => prev + 1);
       setActiveSlideIndex(1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -679,6 +686,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
     setSeasonItem('hero_novel_claimed_episodes', JSON.stringify(nextClaimed), currentSeason);
 
     if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+    triggerHaptic('victory');
     if (showCustomAlert) {
       showCustomAlert(
         language === 'ko' ? '완독 보상 수령!' : 'Chapter Complete Reward!',
@@ -805,18 +813,88 @@ export const NovelView: React.FC<NovelViewProps> = ({
         </div>
       )}
 
-      {/* Primary Reader View Mode Tabs (Novel Reader / Cartoon Viewer / Prompt Mode) */}
+      {/* SCR-11-01: 상단 완독 진행도 HUD & 최근 읽던 위치/추천 회차 1탭 배너 */}
+      <div className="w-full bg-[#fdfcfc] border-b border-stone-300 p-3 sm:px-6 font-mono space-y-2.5">
+        {/* 1. 완독 진행도 실시간 게이지 HUD */}
+        <div className="w-full bg-white border border-stone-300 p-3 rounded-none shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+          <div className="flex-1 w-full">
+            <div className="flex items-center justify-between text-xs mb-1.5">
+              <div className="flex items-center gap-2">
+                <span className="font-black text-amber-900 flex items-center gap-1.5">
+                  <BookOpen size={14} className="text-amber-700" />
+                  <span>{language === 'ko' ? '📚 공식 웹소설 완독 HUD' : '📚 Web Novel Completion HUD'}</span>
+                </span>
+                <span className="text-[11px] font-bold text-stone-600">
+                  {claimedCount} / {TOTAL_EPISODES} {language === 'ko' ? '완독' : 'Completed'} ({claimedPct}%)
+                </span>
+              </div>
+              <span className="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 border border-amber-300/60 rounded-xs">
+                {language === 'ko' ? `누적 보너스: +${claimedCount * 100} SNS` : `Total Earned: +${claimedCount * 100} SNS`}
+              </span>
+            </div>
+            {/* Realtime progress gauge */}
+            <div className="w-full h-2.5 bg-stone-100 rounded-none overflow-hidden border border-stone-300">
+              <div
+                className="h-full bg-gradient-to-r from-amber-500 via-amber-400 to-emerald-500 transition-all duration-300"
+                style={{ width: `${claimedPct}%` }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* 2. 최근 읽던 회차 이어보기 & 오늘의 추천 회차 1탭 배너 */}
+        <div className="w-full bg-gradient-to-r from-stone-900 via-stone-800 to-amber-950 text-white p-3 rounded-none border border-stone-700 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-amber-500/20 border border-amber-400/50 text-amber-400 flex items-center justify-center text-lg shrink-0">
+              <Sparkles size={18} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[9px] font-black uppercase text-amber-300 bg-amber-900/70 border border-amber-500/50 px-1 py-0.2">
+                  CONTINUE READING
+                </span>
+                <span className="text-xs text-white font-black">
+                  {savedScrollState && savedScrollState.progressPct > 0
+                    ? (language === 'ko' ? `제 ${currentEpisodeNum}화 읽던 위치 (${savedScrollState.progressPct}%) 이어보기` : `Resume Ep ${currentEpisodeNum} (${savedScrollState.progressPct}%)`)
+                    : (language === 'ko' ? `제 ${currentEpisodeNum}화 지금 바로 모험 시작하기` : `Start Episode ${currentEpisodeNum} Now`)}
+                </span>
+              </div>
+              <p className="text-[11px] text-stone-300 mt-0.5">
+                {language === 'ko' ? '40부작 에픽 스토리라인과 연계된 카드 캐릭터들의 숨겨진 비하인드' : 'Epic 40-episode storyline uncovering the secret origins of SNS Hero cards'}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('tap');
+              if (savedScrollState && savedScrollState.scrollY > 200) {
+                handleResumeLastScroll();
+              } else {
+                window.scrollTo({ top: 400, behavior: 'smooth' });
+              }
+            }}
+            className="w-full sm:w-auto min-h-[44px] px-4 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs uppercase flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shrink-0 rounded-none shadow-xs"
+          >
+            <span>📖</span>
+            <span>{language === 'ko' ? '[1탭 즉시 읽기]' : '[Read Now]'}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Primary Reader View Mode Tabs (Novel Reader / Cartoon Viewer / Movie Hub / Prompt Mode) */}
       <div className="w-full bg-[#fdfcfc] border-b border-stone-300 py-2.5 px-4 flex items-center justify-center gap-2 font-mono flex-wrap">
         <button
           onClick={() => {
+            triggerHaptic('tap');
             setReaderTab('novel');
             setIsPromptMode(false);
             if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
           }}
           className={cn(
-            "px-3.5 py-1.5 border rounded-sm font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-all",
+            "min-h-[44px] px-3.5 py-1.5 border rounded-none font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-all",
             readerTab === 'novel' && !isPromptMode
-              ? "bg-[#201d1d] text-white border-[#201d1d] shadow-xs"
+              ? "bg-[#201d1d] text-white border-[#201d1d] shadow-xs font-black"
               : "bg-white text-stone-700 border-stone-300 hover:bg-stone-100"
           )}
         >
@@ -826,14 +904,15 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
         <button
           onClick={() => {
+            triggerHaptic('tap');
             setReaderTab('cartoon');
             setIsPromptMode(false);
             if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
           }}
           className={cn(
-            "px-3.5 py-1.5 border rounded-sm font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-all",
+            "min-h-[44px] px-3.5 py-1.5 border rounded-none font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-all",
             readerTab === 'cartoon' && !isPromptMode
-              ? "bg-amber-600 text-white border-amber-700 shadow-xs"
+              ? "bg-amber-600 text-white border-amber-700 shadow-xs font-black"
               : "bg-amber-50 text-amber-950 border-amber-300 hover:bg-amber-100"
           )}
         >
@@ -844,16 +923,34 @@ export const NovelView: React.FC<NovelViewProps> = ({
           </span>
         </button>
 
+        {/* SCR-11-01: 영화 & 애니메이션 뷰어 통합 숏컷 탭 */}
         <button
           onClick={() => {
+            triggerHaptic('tap');
+            if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            onNavigate('movie');
+          }}
+          className="min-h-[44px] px-3.5 py-1.5 border border-purple-300 bg-purple-50 hover:bg-purple-100 text-purple-900 rounded-none font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-all"
+          title={language === 'ko' ? '공식 유튜브 영화/애니메이션 감상' : 'Watch Official Movie & Anime'}
+        >
+          <Film size={15} className="text-purple-600" />
+          <span>{language === 'ko' ? '🎬 영화·애니' : '🎬 Movie/Anime'}</span>
+          <span className="text-[10px] bg-purple-800 text-purple-100 px-1 py-0.2 rounded-xs font-mono ml-0.5">
+            YOUTUBE
+          </span>
+        </button>
+
+        <button
+          onClick={() => {
+            triggerHaptic('tap');
             setReaderTab('prompt');
             if (!isPromptMode) handleTogglePromptMode();
             if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
           }}
           className={cn(
-            "px-3.5 py-1.5 border rounded-sm font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-all",
+            "min-h-[44px] px-3.5 py-1.5 border rounded-none font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-all",
             isPromptMode || readerTab === 'prompt'
-              ? "bg-purple-700 text-white border-purple-800 shadow-xs"
+              ? "bg-purple-700 text-white border-purple-800 shadow-xs font-black"
               : "bg-white text-stone-700 border-stone-300 hover:bg-stone-100"
           )}
         >
@@ -1267,6 +1364,17 @@ export const NovelView: React.FC<NovelViewProps> = ({
                             >
                               <ExternalLink size={10} />
                               <span>{language === 'ko' ? '위키' : 'Wiki'}</span>
+                            </button>
+                            <button
+                              onClick={() => {
+                                triggerHaptic('tap');
+                                onNavigate('shop');
+                              }}
+                              className="px-2 py-0.5 text-[10px] font-bold border border-indigo-300 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-sm cursor-pointer flex items-center gap-1"
+                              title={language === 'ko' ? '상점에서 카드 뽑기' : 'Summon Card in Shop'}
+                            >
+                              <ShoppingCart size={10} />
+                              <span>{language === 'ko' ? '카드 뽑기' : 'Summon'}</span>
                             </button>
                             <button
                               onClick={() => {
@@ -1690,20 +1798,33 @@ export const NovelView: React.FC<NovelViewProps> = ({
             </div>
           )}
 
-          {/* Episode Complete Reward Button */}
+          {/* SCR-11-03: Episode Complete Reward & Shop Shortcut */}
           <div className="mt-12 pt-6 border-t border-stone-300/60 flex flex-col items-center gap-3">
             {!claimedRewards[currentEpisodeNum] ? (
               <button
                 onClick={() => handleClaimEpisodeReward(currentEpisodeNum)}
-                className="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs uppercase tracking-wider rounded-sm shadow-md active:scale-95 transition-all cursor-pointer flex items-center gap-2 border border-amber-600"
+                className="min-h-[48px] px-6 py-3 bg-amber-500 hover:bg-amber-600 text-stone-950 font-black text-xs uppercase tracking-wider rounded-none shadow-md active:scale-95 transition-all cursor-pointer flex items-center gap-2 border border-amber-600 animate-pulse"
               >
-                <Gift size={16} />
-                <span>{language === 'ko' ? `제 ${currentEpisodeNum}화 완독 보상 (100 SNS) 받기` : `Claim Episode ${currentEpisodeNum} Reward (100 SNS)`}</span>
+                <Gift size={18} />
+                <span>{language === 'ko' ? `제 ${currentEpisodeNum}화 완독 보상 (+100 SNS) 즉시 받기` : `Claim Episode ${currentEpisodeNum} Reward (+100 SNS)`}</span>
               </button>
             ) : (
-              <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 bg-emerald-50 px-4 py-2 border border-emerald-300 rounded-sm">
-                <Award size={16} />
-                <span>{t('novel_reward_already_claimed', language)}</span>
+              <div className="flex flex-col sm:flex-row items-center gap-3 w-full justify-center">
+                <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 bg-emerald-50 px-4 py-2.5 border border-emerald-300 rounded-none">
+                  <Award size={16} />
+                  <span>{t('novel_reward_already_claimed', language)} (+100 SNS 획득 완료)</span>
+                </div>
+                {/* SCR-11-03: 상점 카드팩 소환 바로가기 숏컷 */}
+                <button
+                  onClick={() => {
+                    triggerHaptic('tap');
+                    onNavigate('shop');
+                  }}
+                  className="min-h-[44px] px-4 py-2.5 bg-[#201d1d] hover:bg-stone-800 text-amber-300 border border-stone-700 font-black text-xs uppercase flex items-center gap-2 rounded-none cursor-pointer shadow-xs active:scale-95 transition-all"
+                >
+                  <ShoppingCart size={15} />
+                  <span>{language === 'ko' ? '🛒 100 SNS로 카드팩 뽑으러 가기' : '🛒 Summon Card Pack in Shop'}</span>
+                </button>
               </div>
             )}
           </div>
@@ -2103,36 +2224,37 @@ export const NovelView: React.FC<NovelViewProps> = ({
         </div>
       )}
 
-      {/* Sticky Bottom Floating Episode Navigation Dock */}
-      <div className="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 bg-[#201d1d]/95 backdrop-blur-xs text-stone-100 px-3 py-2 rounded-sm border border-stone-700 shadow-xl flex items-center gap-2 font-mono text-xs max-w-[95vw]">
+      {/* SCR-11-02: Sticky Bottom Floating Episode Navigation Dock (DESIGN.md 준수, 44px+ 터치 타깃) */}
+      <aside aria-label="Episode Navigation Dock" className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 bg-[#201d1d]/95 backdrop-blur-xs text-stone-100 p-1.5 rounded-none border border-stone-700 shadow-xl flex items-center gap-1.5 font-mono text-xs max-w-[95vw]">
         {/* Previous Episode Button */}
         <button
           onClick={goToPrevEpisode}
           disabled={currentEpisodeNum <= 1}
           className={cn(
-            "px-2.5 py-1.5 border rounded-xs font-bold flex items-center gap-1 transition-all cursor-pointer text-xs",
+            "min-h-[44px] px-3 py-2 border rounded-none font-bold flex items-center gap-1 transition-all text-xs",
             currentEpisodeNum <= 1
               ? "opacity-30 cursor-not-allowed border-stone-800 bg-stone-900 text-stone-500"
-              : "border-stone-600 bg-stone-800 hover:bg-stone-700 text-white active:scale-95"
+              : "border-stone-600 bg-stone-800 hover:bg-stone-700 text-white cursor-pointer active:scale-95"
           )}
           title={t('webtoon_nav_prev_ep', language)}
         >
-          <ChevronLeft size={14} />
-          <span className="hidden xs:inline">{t('webtoon_nav_prev_ep', language)}</span>
+          <ChevronLeft size={16} />
+          <span className="hidden xs:inline">{language === 'ko' ? '이전화' : 'Prev'}</span>
         </button>
 
         {/* Episode Selector & Progress Display */}
         <button
           onClick={() => {
+            triggerHaptic('tap');
             setShowEpisodeModal(true);
             if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
           }}
-          className="px-3 py-1.5 bg-stone-900 hover:bg-stone-800 border border-stone-700 hover:border-amber-400/60 rounded-xs font-bold text-amber-300 flex items-center gap-2 cursor-pointer transition-all active:scale-95"
+          className="min-h-[44px] px-3.5 py-2 bg-stone-900 hover:bg-stone-800 border border-stone-700 hover:border-amber-400/60 rounded-none font-bold text-amber-300 flex items-center gap-2 cursor-pointer transition-all active:scale-95"
           title={t('novel_select_episode_hint', language)}
         >
-          <BookOpen size={13} className="text-amber-400" />
-          <span>{currentEpisodeNum} / {TOTAL_EPISODES}</span>
-          <span className="text-[10px] px-1 py-0.2 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-xs font-mono">
+          <BookOpen size={14} className="text-amber-400" />
+          <span className="font-mono font-black">{currentEpisodeNum} / {TOTAL_EPISODES}</span>
+          <span className="text-[10px] px-1.5 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-none font-mono font-bold">
             {scrollProgressPct}%
           </span>
         </button>
@@ -2142,30 +2264,34 @@ export const NovelView: React.FC<NovelViewProps> = ({
           onClick={goToNextEpisode}
           disabled={currentEpisodeNum >= TOTAL_EPISODES}
           className={cn(
-            "px-2.5 py-1.5 border rounded-xs font-bold flex items-center gap-1 transition-all cursor-pointer text-xs",
+            "min-h-[44px] px-3 py-2 border rounded-none font-bold flex items-center gap-1 transition-all text-xs",
             currentEpisodeNum >= TOTAL_EPISODES
               ? "opacity-30 cursor-not-allowed border-stone-800 bg-stone-900 text-stone-500"
               : scrollProgressPct >= 80
-              ? "border-amber-500 bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-xs active:scale-95 animate-pulse"
-              : "border-stone-600 bg-stone-800 hover:bg-stone-700 text-white active:scale-95"
+              ? "border-amber-500 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black shadow-xs cursor-pointer active:scale-95 animate-pulse"
+              : "border-stone-600 bg-stone-800 hover:bg-stone-700 text-white cursor-pointer active:scale-95"
           )}
           title={t('webtoon_nav_next_ep', language)}
         >
-          <span className="hidden xs:inline">{t('webtoon_nav_next_ep', language)}</span>
-          <ChevronRight size={14} />
+          <span className="hidden xs:inline">{language === 'ko' ? '다음화' : 'Next'}</span>
+          <ChevronRight size={16} />
         </button>
 
-        <div className="h-4 w-[1px] bg-stone-700 mx-0.5 hidden sm:block" />
+        <div className="h-6 w-[1px] bg-stone-700 mx-0.5 hidden sm:block" />
 
         {/* Scroll to Top Button */}
         <button
-          onClick={scrollToTop}
-          className="p-1.5 border border-stone-700 bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white rounded-xs transition-all cursor-pointer active:scale-95"
+          onClick={() => {
+            triggerHaptic('tap');
+            scrollToTop();
+          }}
+          className="min-h-[44px] min-w-[44px] flex flex-col items-center justify-center border border-stone-700 bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white rounded-none transition-all cursor-pointer active:scale-95"
           title={t('webtoon_nav_scroll_to_top', language)}
         >
-          <ArrowUp size={14} />
+          <ArrowUp size={16} />
+          <span className="text-[8px] font-bold">TOP</span>
         </button>
-      </div>
+      </aside>
     </div>
   );
 };

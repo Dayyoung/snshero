@@ -2,6 +2,32 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-17 05:10 KST] [/rsi] [SCR-11 웹소설·웹툰 미디어 허브 기획/디자인/개발 전면 개선 완료]
+- **순환 화면**: SCR-11 (웹소설·웹툰 미디어 허브 / `novel`, `webtoon`, `src/views/NovelView.tsx`, `src/views/MovieView.tsx`, `src/views/AnimeView.tsx`)
+- **생성 문서**: `docs/screen_audits/SCR-11_NOVEL.md`
+- **문제 원인 및 개선 내역**:
+  1. **사용자 유치 & 온보딩 (FTUE - SCR-11-01)**:
+     - 상단에 **`[📚 공식 웹소설 완독 HUD: {claimedCount}/40 ({pct}%)]`** 실시간 프로그레스 게이지 및 누적 획득 보너스 카운터 신설.
+     - 상단에 **`[✨ 최근 읽던 회차 이어보기 & 오늘의 추천 회차]`** 1탭 배너 탑재: 최근 읽던 위치(250px+ 기록)가 있을 때 즉시 이어보기, 미기록 시 제 1화 시작 44px+ CTA 연동.
+     - 미디어 허브 4대 탭바 통합: `[📖 소설 읽기]`, `[🎨 카툰 보기 WEBTOON]`, `[🎬 영화·애니 YOUTUBE]` (`onNavigate('movie')`), `[✨ 프롬프트 모드]`.
+  2. **모바일 퓨어 UX & 탐색 편의성 (SCR-11-02)**:
+     - 하단 플로팅 독 네비게이터를 `DESIGN.md` 가이드에 맞춰 전면 개편:
+       - `rounded-none`, 1px solid hairline (`border-stone-700`), 44px+ 터치 타깃 완벽 확보.
+       - `[◀ 이전화]`, `[회차 선택 & 실시간 스크롤 {progressPct}% 인디케이터]`, `[다음화 ▶]`, `[▲ TOP]` 부드러운 스크롤 버튼 탑재.
+       - 회차 이동 및 맨 위로 이동 시 `triggerHaptic('tap')` 적용.
+  3. **과금 전환 & 도파민 루프 (SCR-11-03)**:
+     - 에피소드 완독 보상(100 SNS) 수령 시 `triggerHaptic('victory')` 진동 피드백 적용.
+     - 완독 보상 획득 완료 후 **`[🛒 100 SNS로 카드팩 뽑으러 가기]`** 상점 가챠 숏컷 즉시 노출.
+     - 등장 캐릭터 프로필 섹션 내 **`[🃏 카드 뽑기]`** (`onNavigate('shop')`) 원터치 소환 숏컷 연동.
+     - 100% 로컬스토리지 SSOT (`hero_novel_progress_{season}`, `hero_novel_claimed_episodes_{season}`, `hero_webtoon_scroll_*`) 영구 보존.
+- **검증 결과**:
+  - `npm run build`: 오류 0건 완벽 통과 (`✓ built in 9.63s`).
+  - Playwright 모바일(390x844) 실측 스크린샷 4종 캡처 및 렌더링 검증 완료:
+    - `scr11_01_novel_hud_and_banner.png`: 공식 웹소설 완독 HUD(2/40 완독, 5% 게이지, 누적 보너스 +200 SNS), 이어보기 배너, 4대 미디어 탭바 렌더링 정상.
+    - `scr11_02_webtoon_viewer.png`: 카툰 보기(WEBTOON) 탭 전환 및 웹툰 씬 렌더링 정상.
+    - `scr11_03_floating_dock_and_reward.png`: 스크롤 시 실시간 92% 진행도 반영, `[🎁 완독 보상 +100 SNS]` 배너, 하단 플로팅 독 네비게이터 강조 연출 정상.
+    - `scr11_04_episode_selector_modal.png`: 회차 선택 모달(1~40화 필터 및 검색, #01/#02 100 SNS 완독 뱃지, #03 읽는 중 하이라이트) 정상.
+
 ## [2026-09-17 04:00 KST] [/rsi] [SCR-10 소셜, 친구 친선전 & 길드 기획/디자인/개발 전면 개선 완료]
 - **순환 화면**: SCR-10 (소셜, 친구 친선전 & 길드 / `guild`, `src/views/GuildDetailView.tsx`, `src/components/FriendBattlePanel.tsx`, `src/lib/guildHelper.ts`)
 - **생성 문서**: `docs/screen_audits/SCR-10_GUILD.md`
