@@ -2,6 +2,29 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-17 07:15 KST] [/rsi] [SCR-01 홈 & 메인 로비 Round 2 기획/디자인/개발 전면 개선 완료]
+- **순환 화면**: SCR-01 (홈 & 메인 로비 / `home`, `src/views/HomeView.tsx`, `src/components/MainLobbyBannerCarousel.tsx`, `src/components/LobbyInteractiveCard.tsx`)
+- **생성 문서**: `docs/screen_audits/SCR-01_HOME.md`
+- **문제 원인 및 개선 내역**:
+  1. **사용자 유치 & 온보딩 (FTUE - SCR-01-01)**:
+     - 덱 프리뷰 바로 위에 **`[ ⚔️ 대표 덱 종합 전투력: {totalPower} CP | 티어: BRONZE I | [덱 편집] ]`** 실시간 전투력 HUD 신설.
+     - 30초 대기 랭킹 대전 타이머 바와 **`[ ⚔️ 1초 즉시 대전 시작 (QUICK BATTLE) ]`** 고대비 원터치 버튼을 일체화하여 첫 세션 플레이 진입을 극대화.
+  2. **모바일 퓨어 UX & 디자인 정돈 (SCR-01-02)**:
+     - `DESIGN.md` (Monospace 서체, 1px solid hairline, 플랫 잉크 테마, 컨테이너 `rounded-none`, 44px+ 엄지 최적화 터치 타깃) 전면 준수:
+       - 6대 코어 기능 버튼 (`[⚔️ 지금 플레이]`, `[🎲 랜덤 플레이]`, `[📖 소설 읽기]`, `[🎨 카툰 보기]`, `[🎬 애니메이션]`, `[🎥 영화 보기]`): 레거시 무지개 그라데이션 및 rounded-md 제거 -> 모노스페이스 플랫 헤어라인 버튼으로 전면 리팩토링.
+       - 퀵 액션 툴바: `rounded-full` 제거 -> 플랫 1px hairline 바 및 모노스페이스 배지(`[ 🎁 무료팩/특가 ]`, `[ ✉️ 우편 ]`, `[ 🔔 알림 ]`, `[ 🔊 SFX ]`, `[ 🃏 42/200 ]`, `[ ≡ 서랍 ]`, `[ ? 가이드 ]`).
+  3. **과금 전환 & 도파민 루프 (SCR-01-03)**:
+     - 1,000원 스타터팩 배너를 플랫 잉크 & 골드 모노스페이스 스타일로 정돈 (`[첫 충전 93% OFF] ⚡ 1,000원 스타터팩: SSR 확정팩 + 3,000 SNS + AP 물약 5개`).
+     - 구매 완료 시 `[✓ PRO 계정] SSR 영웅 & 3,000 SNS 적용됨 | [상점 가기 →]` 표시로 전환.
+     - 버튼 터치 시 무지연 햅틱 피드백(`triggerHaptic('light')` 및 `triggerHaptic('battle_start')`) 전면 적용.
+     - 100% 로컬스토리지 SSOT (`hero_starter_pack_purchased`, `hero_daily_missions_*`, `hero_attendance_streak_v1`) 영구 보존.
+- **검증 결과**:
+  - `npm run build`: 오류 0건 완벽 통과 (`✓ built in 10.01s`).
+  - Playwright 모바일(390x844) 실측 스크린샷 3종 캡처 및 렌더링 검증 완료:
+    - `scr01_01_home_top_and_deck_cp.png`: 상단 1,000원 스타터팩 배너, 덱 전투력 CP HUD, 덱 프리뷰 카드 5장, 퀵 툴바 및 30초 대기 바 렌더링 정상.
+    - `scr01_02_home_toolbar_and_timer.png`: 퀵 툴바, 30초 카운트다운 타이머, 1초 퀵 배틀 CTA 및 6대 코어 기능 버튼 2열 그리드 렌더링 정상.
+    - `scr01_03_home_flat_buttons.png`: 6대 코어 기능 버튼 플랫 헤어라인 스타일, 44px+ 터치 타깃, 하단 구글 로그인 및 프로필 배너 정상.
+
 ## [2026-09-17 06:15 KST] [/rsi] [SCR-12 설정, 데일리 미션 & 출석 보상 센터 기획/디자인/개발 전면 개선 완료]
 - **순환 화면**: SCR-12 (설정, 데일리 미션 & 출석 보상 센터 / `setting`, `src/views/SettingView.tsx`, `src/components/DailyMissions.tsx`, `src/components/AttendanceStreakModal.tsx`)
 - **생성 문서**: `docs/screen_audits/SCR-12_SETTING.md`

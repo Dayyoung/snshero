@@ -287,33 +287,38 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 playSfx('click');
                 setIsStarterPackOpen(true);
               }}
-              className="relative overflow-hidden cursor-pointer group rounded-none border border-amber-300 bg-gradient-to-r from-amber-500 via-rose-500 to-indigo-600 text-white p-2.5 sm:p-3 shadow-md hover:brightness-105 active:scale-98 transition-all select-none"
+              className="relative overflow-hidden cursor-pointer group rounded-none border border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] p-2.5 sm:p-3 hover:bg-[#201d1d]/90 active:scale-[0.99] transition-all select-none font-mono"
             >
-              <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="relative flex items-center justify-between gap-2 font-mono">
+              <div className="relative flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 min-w-0">
-                  <span className="px-1.5 py-0.5 bg-black/40 text-amber-300 text-[10px] font-black tracking-wider uppercase shrink-0">
-                    {language === 'ko' ? '[첫 충전 한정 93% OFF]' : '[1ST BUY 93% OFF]'}
+                  <span className="px-1.5 py-0.5 bg-amber-400 text-[#201d1d] text-[10px] font-black tracking-wider uppercase shrink-0 rounded-none">
+                    {language === 'ko' ? '[첫 충전 93% OFF]' : '[1ST BUY 93% OFF]'}
                   </span>
-                  <span className="text-xs sm:text-sm font-black truncate">
+                  <span className="text-xs sm:text-sm font-bold truncate">
                     {language === 'ko'
-                      ? '⚡ 1,000원 스타터팩: SSR 확정팩 + 3,000 SNS + AP 완충 물약 5개!'
+                      ? '⚡ 1,000원 스타터팩: SSR 확정팩 + 3,000 SNS + AP 물약 5개!'
                       : '⚡ ₩1,000 Starter Pack: Guaranteed SSR + 3,000 SNS + AP Potions!'}
                   </span>
                 </div>
-                <div className="flex items-center gap-1 shrink-0 bg-black/30 px-2 py-1 rounded-sm text-[11px] font-black text-amber-200">
+                <div className="flex items-center gap-1 shrink-0 bg-white/10 px-2.5 py-1 text-[11px] font-bold text-amber-300 border border-white/20 rounded-none">
                   <span>₩1,000</span>
                   <ArrowRight size={12} />
                 </div>
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-between px-3 py-1.5 bg-slate-100 border border-slate-200 text-slate-600 text-[11px] font-mono select-none">
-              <span className="font-bold flex items-center gap-1">
+            <div className="flex items-center justify-between px-3 py-2 bg-white border border-[#201d1d]/15 text-[#201d1d] text-[11px] font-mono select-none rounded-none">
+              <span className="font-bold flex items-center gap-1.5">
                 <span className="text-amber-500">👑</span>
                 {language === 'ko' ? '[첫 구매 혜택 완료] SSR 영웅 & 3,000 SNS 적용됨' : '[First Purchase Active] SSR Hero & 3,000 SNS Applied'}
               </span>
-              <span className="text-[10px] text-slate-400 font-mono">ACCOUNT_TIER: PRO</span>
+              <button
+                type="button"
+                onClick={() => onNavigate('shop')}
+                className="text-[10px] font-bold text-[#201d1d] border border-[#201d1d]/20 px-2 py-0.5 hover:bg-[#201d1d] hover:text-white transition-all cursor-pointer rounded-none"
+              >
+                {language === 'ko' ? '[상점 가기 →]' : '[GO TO SHOP →]'}
+              </button>
             </div>
           )}
         </div>
@@ -321,7 +326,41 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <div className="relative min-h-[310px] sm:min-h-[360px] overflow-hidden rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]">
           <div className="absolute inset-x-0 top-0 h-1 bg-[#201d1d]" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(15,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(15,0,0,0.02)_1px,transparent_1px)] bg-[size:28px_28px]" />
-          <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 py-8 sm:p-8">
+          <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 py-6 sm:p-8">
+            {/* SCR-01: 대표 덱 종합 전투력(CP) 및 모험가 배지 HUD */}
+            <div className="w-full max-w-md flex items-center justify-between border-b border-[#201d1d]/10 pb-2 mb-3 font-mono text-xs select-none">
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic('light');
+                  onNavigate('mydeck');
+                }}
+                className="font-bold text-[#201d1d] flex items-center gap-1.5 hover:underline cursor-pointer"
+                title={language === 'ko' ? '마이덱 편집 바로가기' : 'Edit My Deck'}
+              >
+                <span className="text-rose-600 font-black">⚔️</span>
+                <span>{language === 'ko' ? '덱 전투력' : 'DECK CP'}:</span>
+                <span className="text-sm font-black text-indigo-700 bg-indigo-50 px-1.5 py-0.5 border border-indigo-200">
+                  {totalPower > 0 ? totalPower : 1420} CP
+                </span>
+              </button>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold text-[#201d1d]/60 border border-[#201d1d]/15 px-1.5 py-0.5 bg-white">
+                  {language === 'ko' ? '티어: BRONZE I' : 'TIER: BRONZE I'}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    onNavigate('mydeck');
+                  }}
+                  className="text-[10px] font-bold text-indigo-600 border border-indigo-200 bg-indigo-50/70 px-1.5 py-0.5 hover:bg-indigo-600 hover:text-white transition-all cursor-pointer"
+                >
+                  {language === 'ko' ? '[덱 편집]' : '[EDIT]'}
+                </button>
+              </div>
+            </div>
+
             {/* SCR-01-03: Interactive 3D Faction Cards Display */}
             <div className="relative h-36 sm:h-52 md:h-60 w-full flex items-center justify-center overflow-visible select-none">
               {deckPreview.map((item, index) => {
@@ -365,35 +404,37 @@ export const HomeView: React.FC<HomeViewProps> = ({
               </h1>
 
               {/* Quick Action Toolbar Below Logo */}
-              <div className="flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap bg-slate-50/90 backdrop-blur-sm border border-slate-200/90 rounded-full px-3 py-1.5 shadow-sm">
+              <div className="flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap bg-white border border-[#201d1d]/15 p-1.5 font-mono text-xs select-none">
                 {/* ID SCR-01: Hot Deal / Free Pack Starter Badge */}
                 <button
+                  type="button"
                   onClick={() => {
                     triggerHaptic('selection');
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     onNavigate('shop');
                   }}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 via-rose-500 to-indigo-600 text-white font-black text-xs cursor-pointer shadow-xs hover:brightness-110 active:scale-95 transition-all animate-pulse"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-amber-400 border border-amber-600 text-[#201d1d] font-bold text-xs cursor-pointer hover:bg-amber-300 active:scale-95 transition-all"
                   title={language === 'ko' ? '일일 무료 카드팩 & 80% 할인 스타터팩' : 'Daily Free Pack & 80% Off Starter Pack'}
                 >
-                  <Gift size={13} className="text-amber-200 shrink-0" />
-                  <span className="text-[11px] font-black tracking-tight">{language === 'ko' ? '무료팩/특가' : 'Free/HotDeal'}</span>
+                  <Gift size={13} className="text-[#201d1d] shrink-0" />
+                  <span className="text-[11px] font-black tracking-tight">{language === 'ko' ? '[🎁 무료팩/특가]' : '[🎁 Free/Deals]'}</span>
                 </button>
 
                 {/* Mailbox */}
                 <button
+                  type="button"
                   onClick={() => {
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     setIsMailboxOpen(true);
                   }}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-200 bg-white text-indigo-600 hover:text-indigo-800 hover:border-indigo-300 transition text-xs font-bold relative cursor-pointer shadow-2xs"
+                  className="inline-flex items-center gap-1.5 px-2 py-1.5 border border-[#201d1d]/20 bg-white text-[#201d1d] hover:border-[#201d1d] hover:bg-slate-50 transition text-xs font-bold cursor-pointer"
                   aria-label={language === 'ko' ? '우편함' : 'Mailbox'}
                   title={language === 'ko' ? '시스템 우편함' : 'Mailbox'}
                 >
-                  <Mail size={14} />
-                  <span className="text-[11px] font-semibold">{language === 'ko' ? '우편함' : 'Mail'}</span>
+                  <Mail size={13} />
+                  <span className="text-[11px]">{language === 'ko' ? '우편' : 'Mail'}</span>
                   {unreadMailCount > 0 && (
-                    <span className="w-4 h-4 bg-rose-600 text-white rounded-full text-[9px] font-black flex items-center justify-center animate-pulse">
+                    <span className="px-1 py-0.2 bg-rose-600 text-white text-[9px] font-bold">
                       {unreadMailCount}
                     </span>
                   )}
@@ -401,18 +442,19 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
                 {/* Notification Center */}
                 <button
+                  type="button"
                   onClick={() => {
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     setIsNotifModalOpen(true);
                   }}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-200 bg-white text-indigo-600 hover:text-indigo-800 hover:border-indigo-300 transition text-xs font-bold relative cursor-pointer shadow-2xs"
+                  className="inline-flex items-center gap-1.5 px-2 py-1.5 border border-[#201d1d]/20 bg-white text-[#201d1d] hover:border-[#201d1d] hover:bg-slate-50 transition text-xs font-bold cursor-pointer"
                   aria-label={language === 'ko' ? '알림 센터' : 'Notification Center'}
                   title={language === 'ko' ? '통합 시스템 알림 센터' : 'Notification Center'}
                 >
-                  <Bell size={14} />
-                  <span className="text-[11px] font-semibold">{language === 'ko' ? '알림' : 'Notif'}</span>
+                  <Bell size={13} />
+                  <span className="text-[11px]">{language === 'ko' ? '알림' : 'Notif'}</span>
                   {unreadNotifCount > 0 && (
-                    <span className="w-4 h-4 bg-amber-500 text-white rounded-full text-[9px] font-black flex items-center justify-center animate-pulse">
+                    <span className="px-1 py-0.2 bg-amber-500 text-white text-[9px] font-bold">
                       {unreadNotifCount}
                     </span>
                   )}
@@ -420,13 +462,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
                 {/* Audio Mute Toggle */}
                 <button
+                  type="button"
                   onClick={toggleQuickMute}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-200 bg-white text-slate-700 hover:text-slate-900 hover:border-slate-300 transition text-xs font-bold cursor-pointer shadow-2xs"
+                  className="inline-flex items-center gap-1 px-2 py-1.5 border border-[#201d1d]/20 bg-white text-[#201d1d] hover:border-[#201d1d] hover:bg-slate-50 transition text-xs font-bold cursor-pointer"
                   title={isAudioMuted ? (language === 'ko' ? '음소거 해제' : 'Unmute Audio') : (language === 'ko' ? '퀵 음소거' : 'Mute Audio')}
                   aria-label="Quick Mute"
                 >
-                  {isAudioMuted ? <VolumeX size={14} className="text-rose-600" /> : <Volume2 size={14} className="text-emerald-600" />}
-                  <span className="text-[11px] font-semibold">{isAudioMuted ? (language === 'ko' ? '음소거' : 'Muted') : (language === 'ko' ? '소리 ON' : 'Sound ON')}</span>
+                  {isAudioMuted ? <VolumeX size={13} className="text-rose-600" /> : <Volume2 size={13} className="text-emerald-600" />}
+                  <span className="text-[11px]">{isAudioMuted ? 'MUTE' : 'SFX'}</span>
                 </button>
 
                 {/* Ping Indicator */}
@@ -434,44 +477,47 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
                 {/* ID 83: Live Inventory Capacity Indicator Widget */}
                 <button
+                  type="button"
                   onClick={() => {
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     onNavigate('mydeck');
                   }}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition text-xs font-bold cursor-pointer shadow-2xs"
+                  className="inline-flex items-center gap-1 px-2 py-1.5 border border-indigo-200 bg-indigo-50/60 text-indigo-900 hover:bg-indigo-100 transition text-xs font-bold cursor-pointer"
                   title={language === 'ko' ? '카드 인벤토리 실시간 용량' : 'Live Inventory Capacity'}
                 >
                   <span className="text-[11px]">🃏</span>
-                  <span className="text-[11px] font-mono font-black">{deckPreview.length + 37}/200</span>
+                  <span className="text-[11px] font-mono">{deckPreview.length + 37}/200</span>
                 </button>
 
                 {/* ID 86: Collapsible Sub-Widgets Drawer Toggle Button */}
                 <button
+                  type="button"
                   onClick={() => {
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     setIsLobbyDrawerOpen(!isLobbyDrawerOpen);
                   }}
                   className={cn(
-                    "inline-flex items-center gap-1 px-2.5 py-1 rounded-full border transition text-xs font-bold cursor-pointer shadow-2xs",
+                    "inline-flex items-center gap-1 px-2 py-1.5 border transition text-xs font-bold cursor-pointer",
                     isLobbyDrawerOpen 
-                      ? "bg-slate-900 border-slate-700 text-amber-300"
-                      : "bg-white border-slate-200 text-slate-700 hover:border-slate-300"
+                      ? "bg-[#201d1d] border-[#201d1d] text-amber-300"
+                      : "bg-white border-[#201d1d]/20 text-[#201d1d] hover:border-[#201d1d]"
                   )}
                   title={language === 'ko' ? '서브 위젯 접기/펴기' : 'Toggle Sub-Widgets Drawer'}
                 >
-                  <Layers size={13} className={isLobbyDrawerOpen ? "text-amber-400" : "text-slate-500"} />
-                  <span className="text-[11px] font-semibold">{language === 'ko' ? '서브 서랍' : 'Drawer'}</span>
+                  <Layers size={13} className={isLobbyDrawerOpen ? "text-amber-300" : "text-[#201d1d]/60"} />
+                  <span className="text-[11px]">{language === 'ko' ? '서랍' : 'Drawer'}</span>
                 </button>
 
                 {/* Help Button */}
                 <button
+                  type="button"
                   onClick={() => { setHelpOpen(true); setHelpStep(0); }}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-slate-200 bg-white text-slate-500 hover:text-slate-800 hover:border-slate-300 transition text-xs font-bold shrink-0 cursor-pointer shadow-2xs"
+                  className="inline-flex items-center gap-1 px-2 py-1.5 border border-[#201d1d]/20 bg-white text-[#201d1d]/70 hover:text-[#201d1d] hover:border-[#201d1d] transition text-xs font-bold shrink-0 cursor-pointer"
                   aria-label={language === 'ko' ? '도움말' : 'Help'}
                   title={language === 'ko' ? '게임 도움말' : 'Help'}
                 >
-                  <HelpCircle size={14} />
-                  <span className="text-[11px] font-semibold">{language === 'ko' ? '도움말' : 'Help'}</span>
+                  <HelpCircle size={13} />
+                  <span className="text-[11px]">{language === 'ko' ? '가이드' : 'Help'}</span>
                 </button>
               </div>
 
@@ -524,60 +570,63 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
               {/* ── Auto-Start Ranking Battle Countdown Bar ── */}
               <div className={cn(
-                "w-full flex items-center justify-between border rounded-lg px-3 py-1.5 text-xs font-mono shadow-2xs transition-all duration-300",
+                "w-full flex flex-col sm:flex-row items-center justify-between border px-3 py-2 text-xs font-mono transition-all duration-300 gap-2 rounded-none",
                 autoStartCountdown <= 5 && !isAutoStartPaused
-                  ? "bg-rose-500/15 border-rose-500/40 ring-1 ring-rose-500/30"
-                  : "bg-gradient-to-r from-amber-500/10 via-indigo-500/10 to-purple-500/10 border-amber-500/20"
+                  ? "bg-rose-50 border-rose-500 text-rose-950"
+                  : "bg-white border-[#201d1d]/15 text-[#201d1d]"
               )}>
-                <div className="flex items-center gap-1.5 text-slate-800 font-semibold text-[11px] sm:text-xs">
-                  <Zap size={14} className={cn("shrink-0", autoStartCountdown <= 5 && !isAutoStartPaused ? "text-rose-600 animate-bounce" : "text-amber-500 animate-pulse")} />
+                <div className="flex items-center gap-2 font-bold text-xs">
+                  <Zap size={15} className={cn("shrink-0", autoStartCountdown <= 5 && !isAutoStartPaused ? "text-rose-600 animate-bounce" : "text-amber-500 animate-pulse")} />
                   <span>
                     {language === 'ko'
-                      ? '30초 대기 시 랭킹대전 자동 시작:'
-                      : 'Auto Rank Battle in:'}
+                      ? '[⚡ 30초 대기 랭킹대전 자동 시작]:'
+                      : '[⚡ Auto Rank Battle in]:'}
                   </span>
                   <span className={cn(
-                    "text-white font-extrabold px-1.5 py-0.5 rounded text-[11px] leading-none min-w-[24px] text-center transition-all",
+                    "font-mono font-black px-2 py-0.5 text-xs text-white",
                     autoStartCountdown <= 5 && !isAutoStartPaused
-                      ? "bg-rose-600 animate-pulse scale-110 shadow-xs"
-                      : "bg-amber-500"
+                      ? "bg-rose-600 animate-pulse"
+                      : "bg-[#201d1d]"
                   )}>
                     {autoStartCountdown}s
                   </span>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
                   <button
+                    type="button"
                     onClick={() => {
                       setIsAutoStartPaused(!isAutoStartPaused);
                       triggerHaptic('light');
                       playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     }}
-                    className="px-2 py-0.5 bg-white border border-slate-200 hover:border-slate-300 rounded text-[10px] sm:text-[11px] font-bold text-slate-700 cursor-pointer transition active:scale-95 shadow-2xs"
+                    className="min-h-[40px] px-3 py-1 bg-white border border-[#201d1d]/20 hover:border-[#201d1d] text-xs font-bold text-[#201d1d] cursor-pointer transition active:scale-95 rounded-none"
                   >
                     {isAutoStartPaused
-                      ? (language === 'ko' ? '▶ 다시시작' : '▶ Resume')
-                      : (language === 'ko' ? '⏸️ 일시정지' : '⏸️ Pause')}
+                      ? (language === 'ko' ? '[▶ 재개]' : '[▶ Resume]')
+                      : (language === 'ko' ? '[⏸️ 일시정지]' : '[⏸️ Pause]')}
                   </button>
                   <button
+                    type="button"
                     onClick={() => {
                       triggerHaptic('battle_start');
                       playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                       onNavigate('ranking');
                     }}
-                    className="px-2.5 py-0.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-rose-600 hover:brightness-110 text-white rounded text-[10px] sm:text-[11px] font-black cursor-pointer transition active:scale-95 shadow-xs flex items-center gap-1"
+                    className="min-h-[40px] px-4 py-1.5 bg-[#201d1d] hover:bg-[#201d1d]/90 text-[#fdfcfc] text-xs font-black cursor-pointer transition active:scale-95 flex items-center gap-1.5 border border-[#201d1d] rounded-none"
                   >
-                    <span>⚡</span>
-                    <span>{language === 'ko' ? '즉시 대전' : 'Start Now'}</span>
+                    <span className="text-amber-300">⚔️</span>
+                    <span>{language === 'ko' ? '[ 1초 즉시 대전 시작 ]' : '[ QUICK BATTLE ]'}</span>
                   </button>
                 </div>
               </div>
 
-              {/* ── Core Feature Main Buttons directly under logo (Play Now / Random Play / Novel / Cartoon / Anime / Movie) ── */}
-              <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 mt-1 mb-1">
+              {/* ── Core Feature Main Buttons (Play Now / Random Play / Novel / Cartoon / Anime / Movie) ── */}
+              <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mt-1 mb-1 font-mono">
                 {/* 지금 플레이 */}
                 <motion.button
                   {...buttonMotionProps}
                   onClick={() => {
+                    triggerHaptic('light');
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     if (onStartPlayNow) {
                       onStartPlayNow();
@@ -585,16 +634,17 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       onNavigate("main");
                     }
                   }}
-                  className="w-full h-12 sm:h-14 px-3 sm:px-4 bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-white font-extrabold text-xs sm:text-base rounded-md hover:from-indigo-700 hover:to-fuchsia-700 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 touch-target shadow-sm group"
+                  className="w-full min-h-[48px] px-3 py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs sm:text-sm border border-[#201d1d] hover:bg-[#201d1d]/90 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 rounded-none group"
                 >
-                  <Play size={18} className="shrink-0 fill-current" />
-                  <span>{t("home_play_now", language)}</span>
+                  <Play size={16} className="shrink-0 fill-current text-amber-300" />
+                  <span>{language === 'ko' ? '[⚔️ 지금 플레이]' : '[⚔️ Play Now]'}</span>
                 </motion.button>
 
                 {/* 랜덤 플레이 */}
                 <motion.button
                   {...buttonMotionProps}
                   onClick={() => {
+                    triggerHaptic('light');
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     if (onRollDice) {
                       onRollDice();
@@ -602,63 +652,67 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       onNavigate("play");
                     }
                   }}
-                  className="w-full h-12 sm:h-14 px-3 sm:px-4 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white font-extrabold text-xs sm:text-base rounded-md hover:from-amber-600 hover:to-orange-600 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 touch-target shadow-sm group border border-amber-400/30"
+                  className="w-full min-h-[48px] px-3 py-2.5 bg-white text-[#201d1d] font-bold text-xs sm:text-sm border border-[#201d1d]/20 hover:border-[#201d1d] hover:bg-slate-50 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 rounded-none group"
                   aria-label={language === 'ko' ? "랜덤 플레이" : "Random Play"}
                 >
-                  <Dices size={18} className="shrink-0 text-amber-100 group-hover:rotate-12 transition-transform" />
-                  <span>{language === 'ko' ? "랜덤 플레이" : "Random Play"}</span>
+                  <Dices size={16} className="shrink-0 text-amber-600 group-hover:rotate-12 transition-transform" />
+                  <span>{language === 'ko' ? '[🎲 랜덤 플레이]' : '[🎲 Random]'}</span>
                 </motion.button>
 
                 {/* 소설 읽기 */}
                 <motion.button
                   {...buttonMotionProps}
                   onClick={() => {
+                    triggerHaptic('light');
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     onNavigate("novel");
                   }}
-                  className="w-full h-12 sm:h-14 px-3 sm:px-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-extrabold text-xs sm:text-base rounded-md hover:from-blue-700 hover:to-indigo-700 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 touch-target shadow-sm group"
+                  className="w-full min-h-[48px] px-3 py-2.5 bg-white text-[#201d1d] font-bold text-xs sm:text-sm border border-[#201d1d]/20 hover:border-[#201d1d] hover:bg-slate-50 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 rounded-none group"
                 >
-                  <BookOpen size={18} className="shrink-0" />
-                  <span>{language === 'ko' ? "소설 읽기" : "Read Novel"}</span>
+                  <BookOpen size={16} className="shrink-0 text-indigo-600" />
+                  <span>{language === 'ko' ? '[📖 소설 읽기]' : '[📖 Novel]'}</span>
                 </motion.button>
 
                 {/* 카툰 보기 */}
                 <motion.button
                   {...buttonMotionProps}
                   onClick={() => {
+                    triggerHaptic('light');
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     onNavigate("webtoon");
                   }}
-                  className="w-full h-12 sm:h-14 px-3 sm:px-4 bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 text-white font-extrabold text-xs sm:text-base rounded-md hover:from-amber-700 hover:to-orange-700 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 touch-target shadow-sm group"
+                  className="w-full min-h-[48px] px-3 py-2.5 bg-white text-[#201d1d] font-bold text-xs sm:text-sm border border-[#201d1d]/20 hover:border-[#201d1d] hover:bg-slate-50 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 rounded-none group"
                 >
-                  <Image size={18} className="shrink-0" />
-                  <span>{language === 'ko' ? "카툰 보기" : "View Cartoon"}</span>
+                  <Image size={16} className="shrink-0 text-emerald-600" />
+                  <span>{language === 'ko' ? '[🎨 카툰 보기]' : '[🎨 Toon]'}</span>
                 </motion.button>
 
                 {/* 애니메이션 보기 */}
                 <motion.button
                   {...buttonMotionProps}
                   onClick={() => {
+                    triggerHaptic('light');
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     onNavigate("anime");
                   }}
-                  className="w-full h-12 sm:h-14 px-3 sm:px-4 bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 text-white font-extrabold text-xs sm:text-base rounded-md hover:from-purple-700 hover:to-pink-700 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 touch-target shadow-sm group"
+                  className="w-full min-h-[48px] px-3 py-2.5 bg-white text-[#201d1d] font-bold text-xs sm:text-sm border border-[#201d1d]/20 hover:border-[#201d1d] hover:bg-slate-50 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 rounded-none group"
                 >
-                  <Tv size={18} className="shrink-0 animate-pulse" />
-                  <span>{language === 'ko' ? "애니메이션 보기" : "Watch Anime"}</span>
+                  <Tv size={16} className="shrink-0 text-purple-600" />
+                  <span>{language === 'ko' ? '[🎬 애니메이션]' : '[🎬 Anime]'}</span>
                 </motion.button>
 
                 {/* 영화 보기 */}
                 <motion.button
                   {...buttonMotionProps}
                   onClick={() => {
+                    triggerHaptic('light');
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     onNavigate("movie");
                   }}
-                  className="w-full h-12 sm:h-14 px-3 sm:px-4 bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 text-white font-extrabold text-xs sm:text-base rounded-md hover:from-red-700 hover:to-amber-700 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 touch-target shadow-sm group"
+                  className="w-full min-h-[48px] px-3 py-2.5 bg-white text-[#201d1d] font-bold text-xs sm:text-sm border border-[#201d1d]/20 hover:border-[#201d1d] hover:bg-slate-50 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 rounded-none group"
                 >
-                  <Film size={18} className="shrink-0 animate-pulse" />
-                  <span>{language === 'ko' ? "영화 보기" : "Watch Movie"}</span>
+                  <Film size={16} className="shrink-0 text-rose-600" />
+                  <span>{language === 'ko' ? '[🎥 영화 보기]' : '[🎥 Movie]'}</span>
                 </motion.button>
               </div>
             </div>
