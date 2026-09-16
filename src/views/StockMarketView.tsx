@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   TrendingUp, TrendingDown, RefreshCw, ShoppingCart,
-  HelpCircle, ChevronRight, ChevronLeft, X
+  HelpCircle, ChevronRight, ChevronLeft, X,
+  Flame, Award, Wallet, ArrowUpRight, CheckCircle2, PieChart, Sparkles
 } from 'lucide-react';
+import { triggerHaptic } from '../lib/haptic';
 import { Language, ViewType, CardData, InventoryRecord, CardRarity } from '../types';
 import { CARD_DATABASE } from '../cardDatabase';
 import { t } from '../lib/i18n';
@@ -97,6 +99,27 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
   const [chartTimeframe, setChartTimeframe] = useState<'24H' | '1M' | '1Y'>('24H');
   const [showHelpPopup, setShowHelpPopup] = useState(false);
 
+  // SCR-06: Mobile sub tab navigation ('market' | 'portfolio' | 'dividends' | 'volume')
+  const [activeSubTab, setActiveSubTab] = useState<'market' | 'portfolio' | 'dividends' | 'volume'>('market');
+
+  // SCR-06: First trade welcome bonus (+30 SNS)
+  const [hasClaimedFirstTradeBonus, setHasClaimedFirstTradeBonus] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_stock_first_trade_reward') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  // SCR-06: Trade dopamine success modal
+  const [tradeSuccessModalInfo, setTradeSuccessModalInfo] = useState<{
+    mode: 'buy' | 'sell' | 'reinvest';
+    cardTitle: string;
+    amount: number;
+    totalSns: number;
+    firstTradeBonus?: boolean;
+  } | null>(null);
+
   // ID 478: Dividend Settlement State
   const [dividendAvailable, setDividendAvailable] = useState<number>(() => {
     try {
@@ -152,6 +175,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
       localStorage.setItem(`hero_stock_volume_claimed_${todayStr}`, JSON.stringify(nextClaimed));
     } catch {}
     updateSns(reward, `일일 주식 거래량 ${milestone.toLocaleString()} SNS 달성 보너스`);
+    triggerHaptic('success');
     playSfx('https://assets.mixkit.co/active_storage/sfx/2020/2020-preview.mp3');
     setAlertMsg({
       type: 'success',
@@ -169,6 +193,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
       localStorage.setItem(`hero_stock_rebate_claimed_${todayStr}`, 'true');
     } catch {}
     updateSns(rebateAmount, '일일 주식 거래 수수료 15% 페이백 환급');
+    triggerHaptic('success');
     playSfx('https://assets.mixkit.co/active_storage/sfx/2020/2020-preview.mp3');
     setAlertMsg({
       type: 'success',
@@ -181,6 +206,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
   const handleClaimDividends = () => {
     if (dividendAvailable <= 0) return;
     updateSns(dividendAvailable, '주식 시장 캐릭터 지분 배당금 정산');
+    triggerHaptic('success');
     setAlertMsg({
       type: 'success',
       text: language === 'ko' ? `💰 ${dividendAvailable} SNS 배당금을 일괄 정산 수령했습니다!` : `Claimed ${dividendAvailable} SNS Dividends!`,
@@ -281,6 +307,14 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
       updateSns(remainingChange, `배당금 재투자 잔돈 환급 (+${remainingChange} SNS)`);
     }
 
+    triggerHaptic('victory');
+    setTradeSuccessModalInfo({
+      mode: 'reinvest',
+      cardTitle: language === 'ko' ? chosenCard.title : chosenCard.title_en,
+      amount: buyQty,
+      totalSns: totalCost,
+    });
+
     setAlertMsg({
       type: 'success',
       text: language === 'ko'
@@ -292,6 +326,46 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
     localStorage.setItem('hero_stock_dividends_ready', '0');
     playSfx('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
   };
+
+  // SCR-06: Portfolio summary calculation
+  const portfolioStats = React.useMemo(() => {
+    let totalStockAssetSns = 0;
+    let heldStocksCount = 0;
+    let totalSharesCount = 0;
+    let estimatedDailyDividends = 0;
+
+    Object.values(CARD_DATABASE).forEach((card) => {
+      const qty = inventory[card.id]?.quantity || 0;
+      if (qty > 0) {
+        const price = getCardSnsPrice(card.id);
+        totalStockAssetSns += qty * price;
+        heldStocksCount += 1;
+        totalSharesCount += qty;
+        estimatedDailyDividends += Math.round(qty * (card.power || 10) * 0.1);
+      }
+    });
+
+    return {
+      totalStockAssetSns,
+      heldStocksCount,
+      totalSharesCount,
+      estimatedDailyDividends: Math.max(0, estimatedDailyDividends),
+    };
+  }, [inventory, prices]);
+
+  // SCR-06: Today's High Yield Pick
+  const highYieldPick = React.useMemo(() => {
+    const list = Object.values(CARD_DATABASE);
+    const sortedByGain = [...list].sort((a, b) => {
+      const symA = getCardCoinPair(a.id).symbol;
+      const symB = getCardCoinPair(b.id).symbol;
+      const gainA = prices[symA]?.change24h || 0;
+      const gainB = prices[symB]?.change24h || 0;
+      return gainB - gainA;
+    });
+    const candidate = sortedByGain.find(c => getCardSnsPrice(c.id) <= 50000) || sortedByGain[0];
+    return candidate || list[0];
+  }, [prices]);
 
   // Card list sorted dynamically based on sort state
   const sortedCards = React.useMemo(() => {
@@ -492,6 +566,26 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
       localStorage.setItem(`hero_stock_daily_fees_${todayStr}`, String(nextFees));
     } catch {}
 
+    triggerHaptic('victory');
+
+    let isFirstTrade = false;
+    if (tradeMode === 'buy' && !hasClaimedFirstTradeBonus) {
+      isFirstTrade = true;
+      try {
+        localStorage.setItem('hero_stock_first_trade_reward', 'true');
+      } catch {}
+      setHasClaimedFirstTradeBonus(true);
+      updateSns(30, '주식 첫 거래 웰컴 캐시백 보너스');
+    }
+
+    setTradeSuccessModalInfo({
+      mode: tradeMode,
+      cardTitle: language === 'ko' ? card.title : card.title_en,
+      amount: tradeAmount,
+      totalSns: finalTotalSns,
+      firstTradeBonus: isFirstTrade,
+    });
+
     setTradeAmount(1);
     setSelectedCardId(null);
   };
@@ -501,13 +595,23 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
   return (
     <div className="flex-1 flex flex-col w-full bg-[#fdfcfc] text-[#201d1d] font-mono overflow-y-auto pb-32">
       <div className="max-w-4xl mx-auto w-full px-4 flex flex-col gap-4 mt-3">
-        {/* Minimal header: title + balance + help button */}
+        {/* Top Header: Title + Balance HUD + Shop Shortcut + Refresh + Help */}
         <div className="flex items-center gap-2">
-          <div className="flex-1 flex items-center justify-between">
+          <div className="flex-1 flex items-center justify-between flex-wrap gap-1.5">
             <PageHeader title={t('stock_market', language)} />
-            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm text-[#201d1d] text-xs font-bold">
-              <span className="text-[10px] text-[#646262] uppercase">{language === 'ko' ? '포인트' : 'Balance'}:</span>
-              <span>[{sns.toLocaleString()} SNS]</span>
+            <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1 px-2.5 py-1 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm text-[#201d1d] text-xs font-bold">
+                <span className="text-[10px] text-[#646262] uppercase">{language === 'ko' ? '포인트' : 'Balance'}:</span>
+                <span>[{sns.toLocaleString()} SNS]</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setView('shop')}
+                className="px-2 py-1 bg-amber-500 hover:bg-amber-400 text-stone-950 text-[10px] font-black uppercase rounded-sm active:scale-95 transition-all flex items-center gap-0.5 cursor-pointer shadow-xs"
+                title={language === 'ko' ? 'SNS 상점 바로가기' : 'Go to SNS Shop'}
+              >
+                <span>{language === 'ko' ? '💎 충전 ↗' : '💎 Top-up'}</span>
+              </button>
             </div>
           </div>
           <button
@@ -528,211 +632,508 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
           </button>
         </div>
 
-        {/* ID 478 & ID 603: Dividend Claim Notification & Settlement Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 bg-amber-500/10 border border-amber-500/30 rounded-none text-xs font-mono">
-          <div className="flex items-center gap-2">
-            <span className="font-black text-amber-600 dark:text-amber-400">
-              [ 💰 {dividendAvailable} SNS Dividends Ready ]
-            </span>
-            <span className="text-[10px] text-muted-foreground">
-              {language === 'ko' ? '보유 캐릭터 지분 비례 누적 배당금' : 'Accumulated from hero shares'}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            {/* ID 603: 1-Tap Reinvest Dividends Option */}
-            <button
-              type="button"
-              disabled={dividendAvailable <= 0}
-              onClick={handleReinvestDividends}
-              className="px-2.5 py-1 bg-amber-500 text-stone-950 hover:bg-amber-400 text-[10px] font-black uppercase rounded-sm active:scale-95 transition-all disabled:opacity-40 cursor-pointer shadow-xs"
-              title={language === 'ko' ? '수수료 0%로 최고 수익률 주식에 배당금 100% 자동 재투자' : 'Reinvest 100% into shares at 0% fee'}
-            >
-              [ 🔄 Reinvest 100% into Shares ]
-            </button>
-            <button
-              type="button"
-              disabled={dividendAvailable <= 0}
-              onClick={handleClaimDividends}
-              className="px-2.5 py-1 bg-[#201d1d] text-white dark:bg-white dark:text-[#201d1d] text-[10px] font-bold uppercase rounded-sm hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 cursor-pointer"
-            >
-              [Claim All Dividends]
-            </button>
-          </div>
+        {/* SCR-06: Mobile 4-Segment Sub Tab Navigation (44px+ Pure Touch) */}
+        <div className="grid grid-cols-4 gap-1 p-1 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm select-none">
+          <button
+            type="button"
+            onClick={() => { triggerHaptic('selection'); setActiveSubTab('market'); }}
+            className={cn(
+              "flex flex-col items-center justify-center py-2 px-1 rounded-sm text-[11px] font-bold transition-all min-h-[44px] cursor-pointer",
+              activeSubTab === 'market'
+                ? "bg-[#201d1d] text-[#fdfcfc] shadow-xs"
+                : "text-[#646262] hover:bg-[#eae8e8]"
+            )}
+          >
+            <div className="flex items-center gap-1">
+              <TrendingUp size={13} />
+              <span>{language === 'ko' ? '실시간 시세' : 'Market'}</span>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { triggerHaptic('selection'); setActiveSubTab('portfolio'); }}
+            className={cn(
+              "flex flex-col items-center justify-center py-2 px-1 rounded-sm text-[11px] font-bold transition-all min-h-[44px] cursor-pointer relative",
+              activeSubTab === 'portfolio'
+                ? "bg-[#201d1d] text-[#fdfcfc] shadow-xs"
+                : "text-[#646262] hover:bg-[#eae8e8]"
+            )}
+          >
+            <div className="flex items-center gap-1">
+              <PieChart size={13} />
+              <span>{language === 'ko' ? '내 포트폴리오' : 'Portfolio'}</span>
+            </div>
+            {portfolioStats.heldStocksCount > 0 && (
+              <span className="text-[9px] opacity-80 font-bold">({portfolioStats.heldStocksCount})</span>
+            )}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { triggerHaptic('selection'); setActiveSubTab('dividends'); }}
+            className={cn(
+              "flex flex-col items-center justify-center py-2 px-1 rounded-sm text-[11px] font-bold transition-all min-h-[44px] cursor-pointer",
+              activeSubTab === 'dividends'
+                ? "bg-[#201d1d] text-[#fdfcfc] shadow-xs"
+                : "text-[#646262] hover:bg-[#eae8e8]"
+            )}
+          >
+            <div className="flex items-center gap-1">
+              <Wallet size={13} />
+              <span>{language === 'ko' ? '배당·페이백' : 'Dividends'}</span>
+            </div>
+            {dividendAvailable > 0 && (
+              <span className="text-[9px] text-amber-500 font-black">({dividendAvailable})</span>
+            )}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { triggerHaptic('selection'); setActiveSubTab('volume'); }}
+            className={cn(
+              "flex flex-col items-center justify-center py-2 px-1 rounded-sm text-[11px] font-bold transition-all min-h-[44px] cursor-pointer",
+              activeSubTab === 'volume'
+                ? "bg-[#201d1d] text-[#fdfcfc] shadow-xs"
+                : "text-[#646262] hover:bg-[#eae8e8]"
+            )}
+          >
+            <div className="flex items-center gap-1">
+              <Award size={13} />
+              <span>{language === 'ko' ? '거래량 미션' : 'Milestone'}</span>
+            </div>
+            <span className="text-[9px] opacity-80 font-bold">{dailyVolume >= 1000 ? 'HOT' : `${Math.round(dailyVolume/1000)}k`}</span>
+          </button>
         </div>
 
-        {/* ID 488: Slippage Tolerance Settings Bar */}
-        <div className="flex items-center justify-between px-3 py-1.5 bg-black/5 dark:bg-white/5 border border-[#201d1d]/10 dark:border-white/10 text-[10px] font-mono">
-          <span className="text-muted-foreground font-bold">
-            {language === 'ko' ? '🛡️ 슬리피지(Slippage) 체결 보호:' : '🛡️ Slippage Tolerance:'}
-          </span>
-          <div className="flex items-center gap-1">
-            {([0.5, 1, 2] as const).map(slip => (
+        {/* Sub-Tab 1: Real-Time Market Table View */}
+        {activeSubTab === 'market' && (
+          <div className="flex flex-col gap-3">
+            {/* SCR-06: Today's High Yield Pick (1-Tap Quick Buy) */}
+            <div className="p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-sm flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-8 h-8 rounded-sm bg-amber-500/20 flex items-center justify-center text-amber-600 shrink-0">
+                  <Flame size={16} />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[9px] bg-amber-500 text-stone-950 font-black px-1 py-0.5 rounded-xs uppercase">
+                      {language === 'ko' ? '오늘의 추천주' : 'High Yield Pick'}
+                    </span>
+                    <span className="text-xs font-black text-[#201d1d] truncate">
+                      {language === 'ko' ? highYieldPick.title : highYieldPick.title_en}
+                    </span>
+                    <span className="text-[10px] text-emerald-600 font-bold">
+                      +{prices[getCardCoinPair(highYieldPick.id).symbol]?.change24h || 0}%
+                    </span>
+                  </div>
+                  <div className="text-[10px] text-[#646262]">
+                    {language === 'ko' ? '단가' : 'Price'}: {getCardSnsPrice(highYieldPick.id).toLocaleString()} SNS · {language === 'ko' ? '고배당 우량 종목' : 'High Yield Potential'}
+                  </div>
+                </div>
+              </div>
               <button
-                key={slip}
                 type="button"
-                onClick={() => setSlippage(slip)}
-                className={`px-2 py-0.5 rounded-sm border ${
-                  slippage === slip
-                    ? 'bg-[#201d1d] text-white dark:bg-white dark:text-[#201d1d] font-bold'
-                    : 'border-[#201d1d]/20 text-slate-500'
-                }`}
+                onClick={() => {
+                  triggerHaptic('selection');
+                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                  setSelectedCardId(highYieldPick.id);
+                  setTradeMode('buy');
+                  setTradeAmount(1);
+                  setAlertMsg(null);
+                  fetchChart(highYieldPick.id);
+                }}
+                className="px-2.5 py-1.5 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#333030] text-[10px] font-bold rounded-sm shrink-0 active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
               >
-                {slip}%
+                <span>{language === 'ko' ? '1탭 퀵매수' : 'Quick Buy'}</span>
+                <ArrowUpRight size={12} />
               </button>
-            ))}
-          </div>
-        </div>
+            </div>
 
-        {/* ID 568: 일일 거래량 마일스톤 & 15% 수수료 페이백 금고 HUD */}
-        <div className="flex flex-col gap-2 p-3 bg-indigo-50/60 dark:bg-indigo-950/20 border border-indigo-300 dark:border-indigo-800 text-xs font-mono">
-          <div className="flex items-center justify-between flex-wrap gap-1">
-            <div className="flex items-center gap-1.5">
-              <span className="font-black text-indigo-700 dark:text-indigo-400">
-                [ 📈 {language === 'ko' ? '일일 거래량' : 'Daily Turnover'}: {dailyVolume.toLocaleString()} / 10,000 SNS ]
+            {/* SCR-06: First trade welcome cashback bonus banner (if not claimed) */}
+            {!hasClaimedFirstTradeBonus && (
+              <div className="p-2 bg-emerald-500/10 border border-emerald-500/30 rounded-sm flex items-center justify-between text-xs">
+                <div className="flex items-center gap-1.5 text-emerald-800 dark:text-emerald-300 font-bold">
+                  <Sparkles size={14} className="text-emerald-600 shrink-0" />
+                  <span>{language === 'ko' ? '첫 주식 매수 시 +30 SNS 웰컴 캐시백 즉시 지급!' : 'Get +30 SNS Welcome Cashback on your first trade!'}</span>
+                </div>
+                <span className="text-[10px] bg-emerald-600 text-white px-1.5 py-0.5 rounded-xs font-black shrink-0">
+                  +30 SNS
+                </span>
+              </div>
+            )}
+
+            {/* ID 488: Slippage Tolerance Settings Bar */}
+            <div className="flex items-center justify-between px-3 py-1.5 bg-black/5 dark:bg-white/5 border border-[#201d1d]/10 text-[10px] font-mono">
+              <span className="text-[#646262] font-bold">
+                {language === 'ko' ? '🛡️ 슬리피지(Slippage) 체결 보호:' : '🛡️ Slippage Tolerance:'}
               </span>
-              <span className="text-[10px] text-slate-500">
+              <div className="flex items-center gap-1">
+                {([0.5, 1, 2] as const).map(slip => (
+                  <button
+                    key={slip}
+                    type="button"
+                    onClick={() => { triggerHaptic('selection'); setSlippage(slip); }}
+                    className={cn(
+                      "px-2 py-0.5 rounded-sm border text-[9px] font-bold cursor-pointer transition-colors",
+                      slippage === slip
+                        ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                        : "border-[rgba(15,0,0,0.12)] text-[#646262] hover:bg-[#eae8e8]"
+                    )}
+                  >
+                    {slip}%
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Stock List Table */}
+            <div className="border border-[rgba(15,0,0,0.12)] rounded-none overflow-hidden bg-[#fdfcfc]">
+              {/* Table Column Headers with Intuitive Labels */}
+              <div className="grid grid-cols-4 border-b border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] px-2 py-2 select-none text-[10px] font-bold text-[#646262]">
+                <div onClick={() => handleSort('id')} className="cursor-pointer flex items-center justify-start gap-1 hover:text-[#201d1d] transition-colors">
+                  <span>{language === 'ko' ? '종목명' : 'Stock'}</span>
+                  <span className="text-[9px]">{sortField === 'id' ? (sortAsc ? '▲' : '▼') : '↕'}</span>
+                </div>
+                <div onClick={() => handleSort('price')} className="cursor-pointer flex items-center justify-center gap-1 hover:text-[#201d1d] transition-colors">
+                  <span>{language === 'ko' ? '현재가' : 'Price'}</span>
+                  <span className="text-[9px]">{sortField === 'price' ? (sortAsc ? '▲' : '▼') : '↕'}</span>
+                </div>
+                <div onClick={() => handleSort('change')} className="cursor-pointer flex items-center justify-center gap-1 hover:text-[#201d1d] transition-colors">
+                  <span>{language === 'ko' ? '24h변동' : '24h'}</span>
+                  <span className="text-[9px]">{sortField === 'change' ? (sortAsc ? '▲' : '▼') : '↕'}</span>
+                </div>
+                <div onClick={() => handleSort('qty')} className="cursor-pointer flex items-center justify-end gap-1 hover:text-[#201d1d] transition-colors pr-1">
+                  <span>{language === 'ko' ? '보유' : 'Hold'}</span>
+                  <span className="text-[9px]">{sortField === 'qty' ? (sortAsc ? '▲' : '▼') : '↕'}</span>
+                </div>
+              </div>
+
+              {/* Cards Rows */}
+              <div className="divide-y divide-[rgba(15,0,0,0.06)] max-h-[60vh] overflow-y-auto">
+                {sortedCards.map((card) => {
+                  const { symbol } = getCardCoinPair(card.id);
+                  const market = prices[symbol];
+                  const priceSns = getCardSnsPrice(card.id);
+                  const change = market?.change24h || 0.0;
+                  const isUp = change >= 0;
+                  const qty = inventory[card.id]?.quantity || 0;
+
+                  return (
+                    <div
+                      key={card.id}
+                      onClick={() => {
+                        triggerHaptic('selection');
+                        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                        setSelectedCardId(card.id);
+                        setTradeAmount(1);
+                        setAlertMsg(null);
+                        setChartData([]);
+                        fetchChart(card.id);
+                      }}
+                      className="grid grid-cols-4 items-center px-2 py-2 text-center text-[11px] font-semibold hover:bg-[#f8f7f7] text-[#201d1d] cursor-pointer transition-colors active:bg-[#eae8e8]"
+                    >
+                      {/* Card Title */}
+                      <div className="flex items-center gap-1.5 text-left justify-start min-w-0">
+                        <span className="truncate font-bold text-[#201d1d] text-[11px] leading-tight">
+                          {language === 'ko' ? card.title : card.title_en}
+                        </span>
+                      </div>
+
+                      {/* Price */}
+                      <div className="font-bold text-[#201d1d] text-[11px] text-center">
+                        {priceSns.toLocaleString()}
+                      </div>
+
+                      {/* 24h Change */}
+                      <div className={cn(
+                        "flex items-center justify-center gap-0.5 font-bold text-[11px]",
+                        isUp ? "text-emerald-600" : "text-rose-600"
+                      )}>
+                        {isUp ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+                        {isUp ? '+' : ''}{change}%
+                      </div>
+
+                      {/* Owned quantity */}
+                      <div className="flex justify-end pr-1">
+                        {qty > 0 ? (
+                          <span className="bg-indigo-50 text-indigo-700 border border-indigo-200 px-1.5 py-0.5 rounded-xs text-[10px] font-black">
+                            {qty}주
+                          </span>
+                        ) : (
+                          <span className="text-[#646262]/40 text-[10px]">-</span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Sub-Tab 2: My Stock Portfolio View */}
+        {activeSubTab === 'portfolio' && (
+          <div className="flex flex-col gap-3">
+            {/* Portfolio Summary HUD */}
+            <div className="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none flex flex-col gap-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold uppercase text-[#201d1d] flex items-center gap-1.5">
+                  <PieChart size={14} className="text-indigo-600" />
+                  <span>[📊 {language === 'ko' ? '내 캐릭터 주식 포트폴리오' : 'My Stock Portfolio'}]</span>
+                </span>
+                <span className={cn(
+                  "text-[9px] font-bold px-1.5 py-0.5 rounded-xs",
+                  hasClaimedFirstTradeBonus ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"
+                )}>
+                  {hasClaimedFirstTradeBonus
+                    ? (language === 'ko' ? '첫 거래 캐시백 수령완료' : 'Bonus Claimed')
+                    : (language === 'ko' ? '첫 매수 +30 SNS 대기' : '+30 SNS Waiting')}
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="p-2 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm">
+                  <div className="text-[10px] text-[#646262]">{language === 'ko' ? '총 주식 자산' : 'Stock Value'}</div>
+                  <div className="text-xs font-black text-[#201d1d] truncate mt-0.5">{portfolioStats.totalStockAssetSns.toLocaleString()} SNS</div>
+                </div>
+                <div className="p-2 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm">
+                  <div className="text-[10px] text-[#646262]">{language === 'ko' ? '보유 종목/수량' : 'Holdings'}</div>
+                  <div className="text-xs font-black text-[#201d1d] truncate mt-0.5">{portfolioStats.heldStocksCount}종목 / {portfolioStats.totalSharesCount}주</div>
+                </div>
+                <div className="p-2 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm">
+                  <div className="text-[10px] text-[#646262]">{language === 'ko' ? '일일 예상 배당' : 'Est. Dividends'}</div>
+                  <div className="text-xs font-black text-amber-600 truncate mt-0.5">+{portfolioStats.estimatedDailyDividends.toLocaleString()} SNS/일</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Held Stocks List */}
+            <div className="border border-[rgba(15,0,0,0.12)] rounded-none overflow-hidden bg-[#fdfcfc]">
+              <div className="px-3 py-2 bg-[#f8f7f7] border-b border-[rgba(15,0,0,0.12)] text-xs font-bold text-[#646262] flex justify-between items-center">
+                <span>{language === 'ko' ? '보유 종목 명세' : 'Holding Details'}</span>
+                <span>{portfolioStats.heldStocksCount} {language === 'ko' ? '종목 보유중' : 'stocks held'}</span>
+              </div>
+
+              {portfolioStats.heldStocksCount === 0 ? (
+                <div className="p-8 text-center text-xs text-[#646262] flex flex-col items-center gap-3">
+                  <PieChart size={32} className="text-slate-300" />
+                  <p>{language === 'ko' ? '아직 보유한 주식이 없습니다. 실시간 시세에서 추천주를 매수해 첫 배당금을 확보해 보세요!' : 'No shares held yet. Buy recommendations from the Market tab to start earning dividends!'}</p>
+                  <button
+                    type="button"
+                    onClick={() => { triggerHaptic('selection'); setActiveSubTab('market'); }}
+                    className="px-3 py-1.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-[11px] rounded-sm uppercase hover:bg-[#333030] cursor-pointer"
+                  >
+                    [{language === 'ko' ? '실시간 시세 보러가기' : 'Explore Market'}]
+                  </button>
+                </div>
+              ) : (
+                <div className="divide-y divide-[rgba(15,0,0,0.06)]">
+                  {Object.values(CARD_DATABASE)
+                    .filter(c => (inventory[c.id]?.quantity || 0) > 0)
+                    .map(card => {
+                      const qty = inventory[card.id]?.quantity || 0;
+                      const unitPrice = getCardSnsPrice(card.id);
+                      const totalValue = qty * unitPrice;
+                      const estDiv = Math.round(qty * (card.power || 10) * 0.1);
+
+                      return (
+                        <div
+                          key={card.id}
+                          className="p-2.5 flex items-center justify-between gap-2 hover:bg-[#f8f7f7] transition-colors"
+                        >
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <span className="font-bold text-xs text-[#201d1d] truncate">
+                                {language === 'ko' ? card.title : card.title_en}
+                              </span>
+                              <span className="text-[10px] bg-indigo-50 text-indigo-700 px-1 font-bold rounded-xs">
+                                {qty}주
+                              </span>
+                            </div>
+                            <div className="text-[10px] text-[#646262] mt-0.5">
+                              {language === 'ko' ? '평가액' : 'Value'}: {totalValue.toLocaleString()} SNS · {language === 'ko' ? '일일 배당' : 'Daily Div'}: +{estDiv} SNS
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                triggerHaptic('selection');
+                                setSelectedCardId(card.id);
+                                setTradeMode('sell');
+                                setTradeAmount(1);
+                                setAlertMsg(null);
+                                fetchChart(card.id);
+                              }}
+                              className="px-2 py-1 bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-bold rounded-sm hover:bg-rose-100 cursor-pointer"
+                            >
+                              {language === 'ko' ? '매도' : 'Sell'}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                triggerHaptic('selection');
+                                setSelectedCardId(card.id);
+                                setTradeMode('buy');
+                                setTradeAmount(1);
+                                setAlertMsg(null);
+                                fetchChart(card.id);
+                              }}
+                              className="px-2 py-1 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm hover:bg-[#333030] cursor-pointer"
+                            >
+                              {language === 'ko' ? '추가매수' : 'Buy More'}
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Sub-Tab 3: Dividends & Fee Rebate View */}
+        {activeSubTab === 'dividends' && (
+          <div className="flex flex-col gap-3">
+            {/* ID 478 & ID 603: Dividend Settlement Card */}
+            <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-none flex flex-col gap-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
+                  <Wallet size={14} />
+                  <span>[ 💰 {dividendAvailable.toLocaleString()} SNS {language === 'ko' ? '누적 배당금' : 'Dividends Ready'} ]</span>
+                </span>
+                <span className="text-[10px] text-[#646262]">
+                  {language === 'ko' ? '보유 주식 지분 비례 누적' : 'Accumulated from shares'}
+                </span>
+              </div>
+              <p className="text-[11px] text-[#646262] leading-relaxed">
+                {language === 'ko'
+                  ? '보유 캐릭터 카드의 공격력과 지분에 비례하여 실시간 배당금이 정산됩니다. 배당금은 0% 수수료로 즉시 최고 수익률 주식에 재투자하거나 지갑으로 전액 수령할 수 있습니다.'
+                  : 'Dividends accumulate based on your card power and share volume. Reinvest 100% into top-performing shares at 0% fee or claim directly to your wallet.'}
+              </p>
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <button
+                  type="button"
+                  disabled={dividendAvailable <= 0}
+                  onClick={handleReinvestDividends}
+                  className="py-2 bg-amber-500 text-stone-950 hover:bg-amber-400 text-xs font-black uppercase rounded-sm active:scale-95 transition-all disabled:opacity-40 cursor-pointer shadow-xs flex items-center justify-center gap-1"
+                >
+                  <RefreshCw size={12} />
+                  <span>[ 🔄 {language === 'ko' ? '100% 복리 재투자 (수수료 0%)' : 'Reinvest 100% (0% Fee)'} ]</span>
+                </button>
+                <button
+                  type="button"
+                  disabled={dividendAvailable <= 0}
+                  onClick={handleClaimDividends}
+                  className="py-2 bg-[#201d1d] text-white text-xs font-bold uppercase rounded-sm hover:bg-[#333030] active:scale-95 transition-all disabled:opacity-40 cursor-pointer flex items-center justify-center gap-1"
+                >
+                  <CheckCircle2 size={12} />
+                  <span>[ {language === 'ko' ? '배당금 일괄 수령' : 'Claim All Dividends'} ]</span>
+                </button>
+              </div>
+            </div>
+
+            {/* ID 568: 15% Trading Fee Rebate Vault */}
+            <div className="p-3 bg-indigo-50/60 dark:bg-indigo-950/20 border border-indigo-300 dark:border-indigo-800 rounded-none flex flex-col gap-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black text-indigo-700 dark:text-indigo-400 flex items-center gap-1.5">
+                  <Award size={14} />
+                  <span>[ 🏦 {language === 'ko' ? '당일 거래 수수료 15% 페이백 금고' : '15% Fee Rebate Vault'} ]</span>
+                </span>
+                <span className="text-[10px] text-[#646262]">
+                  {language === 'ko' ? '지불 수수료' : 'Fees Paid'}: {accumulatedFees.toLocaleString()} SNS
+                </span>
+              </div>
+              <p className="text-[11px] text-[#646262]">
+                {language === 'ko'
+                  ? '오늘 주식 매매 시 지불한 가스/거래 수수료의 15%를 즉시 지갑으로 페이백 환급받을 수 있습니다.'
+                  : 'Rebate 15% of all trading gas fees paid today directly into your wallet.'}
+              </p>
+              <div className="flex items-center justify-between pt-1">
+                <div className="text-xs font-bold text-indigo-900">
+                  {language === 'ko' ? '환급 가능액' : 'Rebate Available'}: <span className="text-amber-600 font-black">+{Math.max(1, Math.round(accumulatedFees * 0.15))} SNS</span>
+                </div>
+                <button
+                  type="button"
+                  disabled={rebateClaimed || accumulatedFees <= 0}
+                  onClick={handleClaimFeeRebate}
+                  className="px-3 py-1.5 bg-indigo-700 text-white text-xs font-bold rounded-sm hover:bg-indigo-800 disabled:opacity-40 transition-all cursor-pointer"
+                >
+                  {rebateClaimed
+                    ? (language === 'ko' ? '[ 15% 페이백 환급완료 ]' : '[ 15% Rebated ]')
+                    : (language === 'ko' ? `[ 🏦 15% 페이백 수령 ]` : `[ 🏦 Claim 15% Rebate ]`)}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Sub-Tab 4: Volume Milestone Track View */}
+        {activeSubTab === 'volume' && (
+          <div className="p-3 bg-indigo-50/60 dark:bg-indigo-950/20 border border-indigo-300 dark:border-indigo-800 rounded-none flex flex-col gap-3">
+            <div className="flex items-center justify-between flex-wrap gap-1">
+              <span className="text-xs font-black text-indigo-700 dark:text-indigo-400 flex items-center gap-1.5">
+                <Award size={14} />
+                <span>[ 📈 {language === 'ko' ? '일일 거래량 마일스톤' : 'Daily Turnover Milestone'}: {dailyVolume.toLocaleString()} / 10,000 SNS ]</span>
+              </span>
+              <span className="text-[10px] text-slate-500 font-bold">
                 ({language === 'ko' ? '지불 수수료' : 'Fees Paid'}: {accumulatedFees.toLocaleString()} SNS)
               </span>
             </div>
-            {/* 15% 수수료 페이백 금고 */}
-            <button
-              type="button"
-              disabled={rebateClaimed || accumulatedFees <= 0}
-              onClick={handleClaimFeeRebate}
-              className="px-2 py-0.5 bg-indigo-700 text-white text-[10px] font-bold rounded-sm hover:bg-indigo-800 disabled:opacity-40 transition-all cursor-pointer"
-            >
-              {rebateClaimed
-                ? (language === 'ko' ? '[ 15% 페이백 완료 ]' : '[ 15% Rebated ]')
-                : (language === 'ko' ? `[ 🏦 15% 페이백 (+${Math.max(1, Math.round(accumulatedFees * 0.15))} SNS) ]` : `[ 🏦 15% Rebate (+${Math.max(1, Math.round(accumulatedFees * 0.15))} SNS) ]`)}
-            </button>
-          </div>
 
-          {/* 3단계 마일스톤 트랙 */}
-          <div className="grid grid-cols-3 gap-1.5 pt-1">
-            {[
-              { milestone: 1000, reward: 50, label: '1K' },
-              { milestone: 5000, reward: 200, label: '5K' },
-              { milestone: 10000, reward: 500, label: '10K' },
-            ].map((step) => {
-              const achieved = dailyVolume >= step.milestone;
-              const claimed = claimedVolumeMilestones.includes(step.milestone);
-              return (
-                <div
-                  key={step.milestone}
-                  className={`flex flex-col items-center justify-between p-1.5 border text-center text-[10px] ${
-                    claimed
-                      ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
-                      : achieved
-                      ? 'border-indigo-500 bg-white font-bold'
-                      : 'border-slate-200 bg-slate-50/50 text-slate-400'
-                  }`}
-                >
-                  <div className="flex items-center gap-1 font-bold">
-                    <span>{step.label} SNS</span>
-                    <span className="text-amber-600">+{step.reward} SNS</span>
-                  </div>
-                  <button
-                    type="button"
-                    disabled={!achieved || claimed}
-                    onClick={() => handleClaimVolumeMilestone(step.milestone, step.reward)}
-                    className={`mt-1 px-1.5 py-0.5 text-[9px] w-full rounded-xs transition-colors ${
-                      claimed
-                        ? 'bg-emerald-600 text-white cursor-default'
-                        : achieved
-                        ? 'bg-black text-white hover:bg-indigo-600 cursor-pointer animate-pulse'
-                        : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                    }`}
-                  >
-                    {claimed ? (language === 'ko' ? '수령 완료' : 'Claimed') : achieved ? (language === 'ko' ? '보너스 수령' : 'Claim') : (language === 'ko' ? '미달성' : 'Locked')}
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Market Cards Table */}
-        <main className="flex-1 p-4 md:p-6 max-w-4xl mx-auto w-full pb-28">
-
-          <div className="border border-slate-200/80 rounded-lg overflow-hidden shadow-sm bg-white">
-
-            {/* Sort controls — minimal: indicator only, no labels */}
-            <div className="grid grid-cols-4 border-b border-slate-100 px-2 py-1 select-none">
-              <div onClick={() => handleSort('id')} className="cursor-pointer flex items-center justify-center text-[9px] text-slate-300 hover:text-indigo-500 transition-colors">
-                {sortField === 'id' ? (sortAsc ? '↑' : '↓') : '↕'}
-              </div>
-              <div onClick={() => handleSort('price')} className="cursor-pointer flex items-center justify-center text-[9px] text-slate-300 hover:text-indigo-500 transition-colors">
-                {sortField === 'price' ? (sortAsc ? '↑' : '↓') : '↕'}
-              </div>
-              <div onClick={() => handleSort('change')} className="cursor-pointer flex items-center justify-center text-[9px] text-slate-300 hover:text-indigo-500 transition-colors">
-                {sortField === 'change' ? (sortAsc ? '↑' : '↓') : '↕'}
-              </div>
-              <div onClick={() => handleSort('qty')} className="cursor-pointer flex items-center justify-center text-[9px] text-slate-300 hover:text-indigo-500 transition-colors">
-                {sortField === 'qty' ? (sortAsc ? '↑' : '↓') : '↕'}
-              </div>
+            {/* Progress Bar */}
+            <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+              <div
+                className="bg-indigo-600 h-full transition-all duration-300"
+                style={{ width: `${Math.min(100, (dailyVolume / 10000) * 100)}%` }}
+              />
             </div>
 
-            {/* Cards List */}
-            <div className="divide-y divide-slate-100 max-h-[60vh] overflow-y-auto pb-28">
-              {sortedCards.map((card) => {
-                const { symbol } = getCardCoinPair(card.id);
-                const market = prices[symbol];
-                const priceSns = getCardSnsPrice(card.id);
-                const change = market?.change24h || 0.0;
-                const isUp = change >= 0;
-                const qty = inventory[card.id]?.quantity || 0;
-
+            {/* 3 Milestone Steps Track */}
+            <div className="grid grid-cols-3 gap-2 pt-1">
+              {[
+                { milestone: 1000, reward: 50, label: '1K SNS' },
+                { milestone: 5000, reward: 200, label: '5K SNS' },
+                { milestone: 10000, reward: 500, label: '10K SNS' },
+              ].map((step) => {
+                const achieved = dailyVolume >= step.milestone;
+                const claimed = claimedVolumeMilestones.includes(step.milestone);
                 return (
                   <div
-                    key={card.id}
-                    onClick={() => {
-                      playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                      setSelectedCardId(card.id);
-                      setTradeAmount(1);
-                      setAlertMsg(null);
-                      setChartData([]);
-                      fetchChart(card.id);
-                    }}
-                    className="grid grid-cols-4 items-center px-2 py-1.5 text-center text-[11px] font-semibold hover:bg-slate-50/70 text-slate-700 cursor-pointer transition-colors active:bg-slate-100/50"
+                    key={step.milestone}
+                    className={cn(
+                      "flex flex-col items-center justify-between p-2 border text-center text-xs",
+                      claimed
+                        ? "border-emerald-500 bg-emerald-50 text-emerald-800"
+                        : achieved
+                        ? "border-indigo-500 bg-white font-bold"
+                        : "border-slate-200 bg-slate-50/50 text-slate-400"
+                    )}
                   >
-                    {/* Card Identity */}
-                    <div className="flex items-center gap-1.5 text-left justify-start min-w-0">
-                      <span className="truncate font-bold text-slate-800 text-[11px] leading-tight">
-                        {language === 'ko' ? card.title : card.title_en}
-                      </span>
-                    </div>
-
-                    {/* Price */}
-                    <div className="font-bold text-slate-800 text-[11px] text-center">
-                      {priceSns.toLocaleString()}
-                    </div>
-
-                    {/* 24h Change */}
-                    <div className={cn(
-                      "flex items-center justify-center gap-0.5 font-bold text-[11px]",
-                      isUp ? "text-emerald-600" : "text-rose-600"
-                    )}>
-                      {isUp ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
-                      {isUp ? '+' : ''}{change}%
-                    </div>
-
-                    {/* Owned quantity */}
-                    <div className="flex justify-center">
-                      {qty > 0 ? (
-                        <span className="bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded-md text-[10px] font-bold">
-                          {qty}
-                        </span>
-                      ) : (
-                        <span className="text-slate-300 text-[10px]">-</span>
+                    <div className="font-bold text-[11px]">{step.label}</div>
+                    <div className="text-[10px] text-amber-600 font-black mt-0.5">+{step.reward} SNS</div>
+                    <button
+                      type="button"
+                      disabled={!achieved || claimed}
+                      onClick={() => handleClaimVolumeMilestone(step.milestone, step.reward)}
+                      className={cn(
+                        "mt-2 px-2 py-1 text-[10px] w-full rounded-xs font-bold transition-all",
+                        claimed
+                          ? "bg-emerald-600 text-white cursor-default"
+                          : achieved
+                          ? "bg-[#201d1d] text-white hover:bg-indigo-700 cursor-pointer animate-pulse"
+                          : "bg-slate-200 text-slate-400 cursor-not-allowed"
                       )}
-                    </div>
+                    >
+                      {claimed ? (language === 'ko' ? '수령완료' : 'Claimed') : achieved ? (language === 'ko' ? '보너스 수령' : 'Claim') : (language === 'ko' ? '미달성' : 'Locked')}
+                    </button>
                   </div>
                 );
               })}
             </div>
-
           </div>
-        </main>
+        )}
       </div>
 
       {/* Trading Modal Overlay */}
@@ -936,7 +1337,16 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                     "p-2 rounded-sm border text-xs font-bold text-center",
                     alertMsg.type === 'success' ? "bg-emerald-50 border-emerald-300 text-emerald-800" : "bg-rose-50 border-rose-300 text-rose-800"
                   )}>
-                    {alertMsg.text}
+                    <div>{alertMsg.text}</div>
+                    {alertMsg.type === 'error' && alertMsg.text === t('insufficient_sns', language) && (
+                      <button
+                        type="button"
+                        onClick={() => { setSelectedCardId(null); setView('shop'); }}
+                        className="mt-1 px-2 py-0.5 bg-amber-500 hover:bg-amber-400 text-stone-950 text-[10px] font-black rounded-xs inline-flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>[💎 {language === 'ko' ? 'SNS 상점 충전 바로가기 ↗' : 'Top up SNS at Shop ↗'}]</span>
+                      </button>
+                    )}
                   </div>
                 )}
 
@@ -949,6 +1359,76 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                 </button>
 
               </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* SCR-06: Trade Dopamine Success Modal */}
+      <AnimatePresence>
+        {tradeSuccessModalInfo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[11000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs font-mono"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 15 }}
+              className="bg-[#fdfcfc] border-2 border-[#201d1d] w-full max-w-sm p-5 rounded-none shadow-2xl space-y-4"
+            >
+              <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] pb-2.5">
+                <div className="flex items-center gap-1.5 text-[#201d1d] font-black text-sm uppercase">
+                  <CheckCircle2 size={18} className="text-emerald-600 shrink-0" />
+                  <span>
+                    {tradeSuccessModalInfo.mode === 'reinvest'
+                      ? (language === 'ko' ? '복리 재투자 체결 완료' : 'Reinvestment Complete')
+                      : tradeSuccessModalInfo.mode === 'buy'
+                      ? (language === 'ko' ? '주식 매수 체결 성공!' : 'Share Purchase Success!')
+                      : (language === 'ko' ? '주식 매도 체결 성공!' : 'Share Sale Success!')}
+                  </span>
+                </div>
+                <button
+                  onClick={() => setTradeSuccessModalInfo(null)}
+                  className="text-[#646262] hover:text-[#201d1d] cursor-pointer"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] space-y-2 text-xs">
+                <div className="flex justify-between items-center text-[#646262]">
+                  <span>{language === 'ko' ? '체결 종목' : 'Stock'}:</span>
+                  <span className="font-bold text-[#201d1d]">{tradeSuccessModalInfo.cardTitle}</span>
+                </div>
+                <div className="flex justify-between items-center text-[#646262]">
+                  <span>{language === 'ko' ? '체결 수량' : 'Shares'}:</span>
+                  <span className="font-bold text-[#201d1d]">{tradeSuccessModalInfo.amount} EA</span>
+                </div>
+                <div className="flex justify-between items-center text-[#646262]">
+                  <span>{tradeSuccessModalInfo.mode === 'sell' ? (language === 'ko' ? '정산 입금액' : 'Payout') : (language === 'ko' ? '총 결제액' : 'Total Cost')}:</span>
+                  <span className="font-black text-amber-600">{tradeSuccessModalInfo.totalSns.toLocaleString()} SNS</span>
+                </div>
+              </div>
+
+              {tradeSuccessModalInfo.firstTradeBonus && (
+                <div className="p-2.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 text-xs font-bold flex items-center gap-2">
+                  <Sparkles size={16} className="text-emerald-600 shrink-0" />
+                  <span>{language === 'ko' ? '🎉 첫 주식 거래 축하! 웰컴 캐시백 +30 SNS가 지갑에 즉시 지급되었습니다!' : '🎉 First Trade Welcome! +30 SNS bonus credited to wallet!'}</span>
+                </div>
+              )}
+
+              <button
+                onClick={() => {
+                  triggerHaptic('selection');
+                  setTradeSuccessModalInfo(null);
+                }}
+                className="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs uppercase hover:bg-[#333030] cursor-pointer active:scale-98 transition-all"
+              >
+                [{language === 'ko' ? '체결 확인' : 'Confirm'}]
+              </button>
             </motion.div>
           </motion.div>
         )}
