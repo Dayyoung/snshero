@@ -730,7 +730,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [guideMode, setGuideMode] = useState<any>(null);
   const [sortBy, setSortBy] = useState<'default' | 'popular' | 'recent'>('default');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<'all' | 'battle' | 'arcade' | 'puzzle' | 'casual'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<'all' | '3d' | 'battle' | 'arcade' | 'puzzle' | 'casual'>('all');
+  const [selectedElementFilter, setSelectedElementFilter] = useState<'all' | 'fire' | 'water' | 'wind' | 'earth' | 'dragon' | 'undead'>('all');
+  const [showUnownedOnly, setShowUnownedOnly] = useState(false);
   const [showDailyMissions, setShowDailyMissions] = useState(false);
   const [modePlayData, setModePlayData] = useState<Record<string, { count: number; lastPlayed: number }>>({});
   const [showHelpPopup, setShowHelpPopup] = useState(false);
@@ -14272,15 +14274,58 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     };
     const dailyMissionIds = getDailyMissionIds();
 
+    const rawInv = typeof window !== 'undefined' ? (JSON.parse(localStorage.getItem('hero_inventory') || '{}')) : {};
+    const ownedTotalCount = modes.reduce((acc, m, idx) => {
+      const cId = m.characterId || (idx + 1);
+      const count = (inventory && inventory[cId]?.quantity) || (rawInv[cId]?.quantity || 0);
+      return acc + (count > 0 ? 1 : 0);
+    }, 0);
+    const unownedTotalCount = Math.max(0, modes.length - ownedTotalCount);
+    const collectionProgressPct = Math.min(100, Math.round((ownedTotalCount / modes.length) * 100));
+
+    // 오늘의 추천 공략 타깃 (미보유 카드 중 데일리 시드로 1종 추천 선별)
+    const recommendedTargetMode = (() => {
+      const unownedModes = modes.filter((m, idx) => {
+        const cId = m.characterId || (idx + 1);
+        const count = (inventory && inventory[cId]?.quantity) || (rawInv[cId]?.quantity || 0);
+        return count <= 0;
+      });
+      if (unownedModes.length === 0) return modes[0];
+      const todaySeed = new Date().getDate();
+      return unownedModes[todaySeed % unownedModes.length];
+    })();
+    const recCardIndex = recommendedTargetMode?.characterId || 1;
+    const recCharCard = CARD_DATABASE[recCardIndex] || CARD_DATABASE[1];
+    const recCharName = recCharCard ? (language === 'ko' ? recCharCard.title : recCharCard.title_en) : '';
+
     const filteredModes = modes.filter((m, idx) => {
       if (showDailyMissions && !dailyMissionIds.includes(m.id)) return false;
       if (selectedCategory !== 'all' && m.category !== selectedCategory) return false;
+
+      const cardIndex = m.characterId || (idx + 1);
+      const charCard = CARD_DATABASE[cardIndex] || CARD_DATABASE[((cardIndex - 1) % 110) + 1];
+
+      // 속성 필터 (🔥/💧/🌪️/⛰️/✦/💀)
+      if (selectedElementFilter !== 'all') {
+        const elem = (charCard?.element || 'neutral').toLowerCase();
+        if (selectedElementFilter === 'fire' && elem !== 'fire') return false;
+        if (selectedElementFilter === 'water' && elem !== 'water') return false;
+        if (selectedElementFilter === 'wind' && elem !== 'air' && elem !== 'wind') return false;
+        if (selectedElementFilter === 'earth' && elem !== 'earth' && elem !== 'land') return false;
+        if (selectedElementFilter === 'dragon' && elem !== 'dragon' && elem !== 'holy') return false;
+        if (selectedElementFilter === 'undead' && elem !== 'undead' && elem !== 'monster') return false;
+      }
+
+      // 미보유 전용 필터
+      if (showUnownedOnly) {
+        const ownedCount = (inventory && inventory[cardIndex]?.quantity) || (rawInv[cardIndex]?.quantity || 0);
+        if (ownedCount > 0) return false;
+      }
+
       const query = searchQuery.trim().toLowerCase();
       if (!query) return true;
       const titleMatches = m.title.toLowerCase().includes(query);
       const guideMatches = m.guide ? m.guide.toLowerCase().includes(query) : false;
-      const cardIndex = m.characterId || (idx + 1);
-      const charCard = CARD_DATABASE[cardIndex] || CARD_DATABASE[((cardIndex - 1) % 110) + 1];
       const charKoMatches = charCard?.title ? charCard.title.toLowerCase().includes(query) : false;
       const charEnMatches = charCard?.title_en ? charCard.title_en.toLowerCase().includes(query) : false;
       const charElemMatches = charCard?.element ? charCard.element.toLowerCase().includes(query) : false;
@@ -14432,7 +14477,137 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             </div>
           </div>
 
-          {/* Row 1055 / ID 318: Energy / AP Recovery Widget & Gold Rest */}
+          {/* SCR-09-01: Today's Recommended Target (Hot Challenge) & 110 Card Collection Progress HUD */}
+          {(() => {
+            const recOwnedCount = (inventory && inventory[recCardIndex]?.quantity) || (rawInv[recCardIndex]?.quantity || 0);
+            const isRecOwned = recOwnedCount > 0;
+            const recElem = (recCharCard?.element || 'neutral').toLowerCase();
+            const recElemBadgeStyle = 
+              recElem === 'water' ? 'bg-cyan-950/80 text-cyan-300 border-cyan-700/60' :
+              recElem === 'fire' ? 'bg-rose-950/80 text-rose-300 border-rose-700/60' :
+              recElem === 'air' || recElem === 'wind' ? 'bg-sky-950/80 text-sky-300 border-sky-700/60' :
+              recElem === 'earth' || recElem === 'land' ? 'bg-amber-950/80 text-amber-300 border-amber-700/60' :
+              recElem === 'dragon' || recElem === 'holy' ? 'bg-yellow-950/80 text-yellow-300 border-yellow-600/60' :
+              recElem === 'undead' || recElem === 'monster' ? 'bg-purple-950/80 text-purple-300 border-purple-700/60' :
+              'bg-slate-900 text-slate-300 border-slate-700';
+            const recElemIcon = 
+              recElem === 'water' ? '💧' :
+              recElem === 'fire' ? '🔥' :
+              recElem === 'air' || recElem === 'wind' ? '🌪️' :
+              recElem === 'earth' || recElem === 'land' ? '⛰️' :
+              recElem === 'dragon' || recElem === 'holy' ? '✦' :
+              recElem === 'undead' || recElem === 'monster' ? '💀' : '⚔️';
+
+            return (
+              <div className="w-full flex flex-col gap-3 font-mono">
+                {/* 1. 오늘의 추천 공략 타깃 (Hot Challenge Target) 1탭 배너 */}
+                <div className="w-full rounded-none border-2 border-amber-500/70 bg-gradient-to-r from-stone-950 via-[#1a1412] to-amber-950/60 p-3.5 sm:p-4 text-white shadow-lg relative overflow-hidden">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 relative z-10">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-12 h-14 sm:w-14 sm:h-16 bg-stone-900 border-2 border-amber-400/80 rounded-xs flex flex-col items-center justify-center relative shrink-0 shadow-md">
+                        <span className="text-xl sm:text-2xl">{recElemIcon}</span>
+                        <span className="text-[9px] font-black text-amber-400 mt-0.5">#{String(recCardIndex).padStart(2, '0')}</span>
+                        {isRecOwned ? (
+                          <span className="absolute -top-1.5 -right-1.5 bg-emerald-500 text-stone-950 text-[8px] font-black px-1 py-0.2 rounded-xs border border-emerald-300">
+                            Lv+
+                          </span>
+                        ) : (
+                          <span className="absolute -top-1.5 -right-1.5 bg-rose-600 text-white text-[8px] font-black px-1 py-0.2 rounded-xs border border-rose-400">
+                            NEW
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex flex-col">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-[9px] font-black uppercase tracking-wider text-amber-400 bg-amber-500/20 border border-amber-400/40 px-1.5 py-0.5">
+                            🎯 {language === 'ko' ? '오늘의 추천 공략 타깃' : 'HOT CHALLENGE TARGET'}
+                          </span>
+                          <span className={cn("text-[9px] font-black uppercase px-1.5 py-0.5 border", recElemBadgeStyle)}>
+                            {recElemIcon} {recElem.toUpperCase()}
+                          </span>
+                          <span className="text-[10px] text-amber-300/80 font-bold">
+                            ⚔️ {recCharCard?.power || 150} POWER
+                          </span>
+                        </div>
+                        <h4 className="text-sm sm:text-base font-black text-white mt-1 flex items-center gap-2">
+                          <span>{recCharName}</span>
+                          <span className="text-xs text-stone-400 font-normal">
+                            {isRecOwned 
+                              ? (language === 'ko' ? `[보유 ${recOwnedCount}장 · 승리 시 잠재력 강화!]` : `[Owned ${recOwnedCount} · Enhance on Win!]`) 
+                              : (language === 'ko' ? '[미보유 목표 · 승리 시 획득 기회!]' : '[Unowned Target · Drop Chance!]')}
+                          </span>
+                        </h4>
+                        <p className="text-[11px] text-stone-300 mt-0.5 line-clamp-1">
+                          {recommendedTargetMode?.guide || (language === 'ko' ? '1:1 AI 카드 배틀로 상점 확률 카드 획득 또는 잠재력 강화 도전!' : 'Challenge 1:1 AI card battle to obtain or enhance card!')}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* 1탭 즉시 대결 CTA */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playBattleSfx('button_tap');
+                        triggerHaptic('tap');
+                        if (recommendedTargetMode) {
+                          recordModePlay(recommendedTargetMode.id);
+                          openMissionEncounter(recCardIndex);
+                        }
+                      }}
+                      className="w-full sm:w-auto min-h-[44px] px-4 py-2.5 bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs uppercase flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 shrink-0 shadow-md rounded-xs"
+                    >
+                      <span className="text-base">🔥</span>
+                      <span>{language === 'ko' ? '[1탭 즉시 대결 도전]' : '[1-Tap Battle Challenge]'}</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* 2. 도감 수집율 HUD & 🎲 랜덤 1:1 대결 원터치 스타터 */}
+                <div className="w-full rounded-none border border-stone-800 bg-stone-900/90 p-3 text-white flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+                  <div className="flex flex-col gap-1.5 w-full sm:w-auto flex-1">
+                    <div className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2">
+                        <span className="font-black text-amber-400">📖 {language === 'ko' ? '도감 수집율 HUD' : 'Card Collection HUD'}</span>
+                        <span className="text-[11px] text-stone-400">
+                          {ownedTotalCount} / {modes.length} ({collectionProgressPct}%)
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-emerald-400 font-bold">
+                        {language === 'ko' ? `미보유 잔여: ${unownedTotalCount}장` : `Unowned: ${unownedTotalCount}`}
+                      </span>
+                    </div>
+                    {/* Progress Bar */}
+                    <div className="w-full h-2 bg-stone-800 rounded-none overflow-hidden border border-stone-700/50">
+                      <div
+                        className="h-full bg-gradient-to-r from-amber-500 to-emerald-400 transition-all duration-300"
+                        style={{ width: `${collectionProgressPct}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* 랜덤 1:1 대결 스타터 */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playBattleSfx('button_tap');
+                      triggerHaptic('tap');
+                      const randMode = modes[Math.floor(Math.random() * modes.length)];
+                      const randCardIndex = randMode.characterId || 1;
+                      recordModePlay(randMode.id);
+                      openMissionEncounter(randCardIndex);
+                    }}
+                    className="w-full sm:w-auto min-h-[44px] px-3.5 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 hover:text-white border border-stone-600 rounded-none font-black text-xs uppercase flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shrink-0"
+                  >
+                    <span>🎲</span>
+                    <span>{language === 'ko' ? '[랜덤 1:1 대결]' : '[Random 1:1 Pick]'}</span>
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Row 1055 / ID 318: Energy / AP Recovery Widget & Gold Rest & AP Potion Shortcut */}
           {(() => {
             const staminaMgr = StaminaPacingManager.getInstance();
             const state = staminaMgr.getState();
@@ -14441,10 +14616,33 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             const seconds = String(countdown % 60).padStart(2, '0');
             const remainingGoldRests = 2 - (state.dailyGoldRestsClaimed || 0);
 
+            const handleBuyApPotion = () => {
+              playBattleSfx('button_tap');
+              triggerHaptic('tap');
+              const currentSns = sns !== undefined ? sns : (userStats?.sns || 0);
+              if (currentSns < 25) {
+                triggerAlert(
+                  language === 'ko' ? 'SNS 포인트가 부족합니다. 상점으로 이동합니다.' : 'Not enough SNS points. Moving to shop.',
+                  language === 'ko' ? 'AP 물약 충전' : 'AP Potion'
+                );
+                setView?.('shop');
+                return;
+              }
+              // 25 SNS 차감 및 50 AP 회복
+              updateSns?.(-25, 'AP 물약 충전 (미션 아레나)', 'spent');
+              staminaMgr.gainAp(50);
+              playBattleSfx('badge_pop');
+              triggerHaptic('victory');
+              triggerAlert(
+                language === 'ko' ? '🧪 AP 물약을 사용하여 50 AP가 즉시 충전되었습니다! (-25 SNS)' : '🧪 Used AP Potion! Restored 50 AP! (-25 SNS)',
+                language === 'ko' ? 'AP 충전 완료' : 'AP Restored'
+              );
+            };
+
             return (
-              <div className="w-full bg-[#111827] border border-slate-800 p-3 rounded-sm font-mono flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-                <div className="flex items-center gap-3 w-full sm:w-auto">
-                  <div className="p-2 bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 rounded-sm">
+              <div className="w-full bg-[#111827] border border-slate-800 p-3 rounded-none font-mono flex flex-col md:flex-row items-center justify-between gap-3 text-xs shadow-sm">
+                <div className="flex items-center gap-3 w-full md:w-auto">
+                  <div className="p-2 bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 rounded-none">
                     <Zap size={16} />
                   </div>
                   <div>
@@ -14452,11 +14650,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       <span className="font-bold text-white">
                         AP {state.currentAp} / {state.maxAp}
                       </span>
-                      <span className="text-[10px] text-stone-400 bg-slate-800 px-1.5 py-0.5 rounded-xs">
+                      <span className="text-[10px] text-stone-400 bg-slate-800 px-1.5 py-0.5 rounded-none">
                         {language === 'ko' ? `다음 AP까지 ${minutes}:${seconds}` : `Next AP in ${minutes}:${seconds}`}
                       </span>
                     </div>
-                    <div className="w-36 h-1.5 bg-slate-800 rounded-full overflow-hidden mt-1">
+                    <div className="w-36 sm:w-44 h-1.5 bg-slate-800 rounded-none overflow-hidden mt-1">
                       <div
                         className="h-full bg-emerald-500 transition-all"
                         style={{ width: `${(state.currentAp / state.maxAp) * 100}%` }}
@@ -14465,7 +14663,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <div className="flex items-center gap-2 w-full md:w-auto justify-end flex-wrap">
+                  {/* SCR-09-03: AP 물약 25 SNS 특가 충전 숏컷 */}
+                  <button
+                    type="button"
+                    onClick={handleBuyApPotion}
+                    className="min-h-[44px] py-1.5 px-3 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-400/50 rounded-none font-bold text-[11px] transition-all cursor-pointer flex items-center gap-1.5 active:scale-95"
+                    title="25 SNS로 50 AP 즉시 회복"
+                  >
+                    <span className="text-sm">🧪</span>
+                    <span>{language === 'ko' ? 'AP 물약 (25 SNS, +50 AP)' : 'AP Potion (25 SNS, +50 AP)'}</span>
+                  </button>
+
+                  {/* 골드로 휴식 */}
                   <button
                     type="button"
                     onClick={() => {
@@ -14474,21 +14684,38 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       triggerAlert(language === 'ko' ? res.messageKo : res.messageEn, language === 'ko' ? '골드로 휴식' : 'Gold Rest');
                     }}
                     disabled={remainingGoldRests <= 0}
-                    className="py-1.5 px-3 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 rounded-sm font-bold text-[11px] transition-all disabled:opacity-40 flex items-center gap-1.5"
+                    className="min-h-[44px] py-1.5 px-3 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 rounded-none font-bold text-[11px] transition-all disabled:opacity-40 flex items-center gap-1.5 cursor-pointer active:scale-95"
                     title="500 골드로 5 AP 회복 (일일 2회)"
                   >
                     <Coins size={12} className="text-amber-400" />
                     <span>{language === 'ko' ? `골드로 휴식 (+5 AP, 잔여: ${remainingGoldRests}회)` : `Gold Rest (+5 AP, Left: ${remainingGoldRests})`}</span>
                   </button>
+
+                  {/* 상점 숏컷 */}
+                  {setView && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playBattleSfx('button_tap');
+                        triggerHaptic('tap');
+                        setView('shop');
+                      }}
+                      className="min-h-[44px] px-2.5 py-1.5 bg-stone-800 hover:bg-stone-700 text-stone-300 border border-stone-700 rounded-none text-[11px] font-bold transition-all cursor-pointer"
+                      title="상점으로 이동"
+                    >
+                      <span>🛒 {language === 'ko' ? '상점' : 'Shop'}</span>
+                    </button>
+                  )}
                 </div>
               </div>
             );
           })()}
 
-          {/* Mode Search & Category Filter Tabs */}
-          <div className="flex flex-col gap-2.5 w-full pt-1">
+          {/* Mode Search & Category Filter Tabs & SCR-09-02: Element Filter & Unowned Filter */}
+          <div className="flex flex-col gap-2.5 w-full pt-1 font-mono">
+            {/* 1. 카테고리 탭 */}
             <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs font-mono flex-1">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs flex-1">
                 {[
                   { id: 'all', labelKo: `전체 (${modes.length})`, labelEn: `All (${modes.length})` },
                   { id: '3d', labelKo: `3D 복셀 (${modes.filter(m => m.category === '3d').length})`, labelEn: `3D Voxel (${modes.filter(m => m.category === '3d').length})` },
@@ -14506,7 +14733,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         setSelectedCategory(cat.id as any);
                       }}
                       className={cn(
-                        "px-3 py-1.5 rounded-sm whitespace-nowrap font-bold transition-all cursor-pointer border text-xs min-h-[36px] flex items-center justify-center",
+                        "px-3 py-1.5 rounded-none whitespace-nowrap font-bold transition-all cursor-pointer border text-xs min-h-[36px] flex items-center justify-center",
                         active
                           ? "bg-slate-900 text-white border-slate-900 shadow-xs"
                           : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100"
@@ -14519,6 +14746,59 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               </div>
             </div>
 
+            {/* 2. SCR-09-02: 6대 속성 필터 칩 & 미보유 목표 전용 토글 칩 */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
+              {[
+                { id: 'all', icon: '✦', labelKo: '전체 속성', labelEn: 'All Elements' },
+                { id: 'fire', icon: '🔥', labelKo: '불', labelEn: 'Fire' },
+                { id: 'water', icon: '💧', labelKo: '물', labelEn: 'Water' },
+                { id: 'wind', icon: '🌪️', labelKo: '바람', labelEn: 'Wind' },
+                { id: 'earth', icon: '⛰️', labelKo: '대지', labelEn: 'Earth' },
+                { id: 'dragon', icon: '✦', labelKo: '드래곤', labelEn: 'Dragon' },
+                { id: 'undead', icon: '💀', labelKo: '언데드', labelEn: 'Undead' },
+              ].map(elemItem => {
+                const active = selectedElementFilter === elemItem.id;
+                return (
+                  <button
+                    key={elemItem.id}
+                    onClick={() => {
+                      playBattleSfx('button_tap');
+                      triggerHaptic('tap');
+                      setSelectedElementFilter(elemItem.id);
+                    }}
+                    className={cn(
+                      "px-2.5 py-1.5 rounded-none whitespace-nowrap font-bold transition-all cursor-pointer border text-xs min-h-[36px] flex items-center gap-1 shrink-0",
+                      active
+                        ? "bg-amber-400 text-stone-950 border-amber-400 font-black shadow-xs"
+                        : "bg-stone-900 text-stone-300 border-stone-800 hover:border-stone-600 hover:text-white"
+                    )}
+                  >
+                    <span>{elemItem.icon}</span>
+                    <span>{language === 'ko' ? elemItem.labelKo : elemItem.labelEn}</span>
+                  </button>
+                );
+              })}
+
+              {/* 미보유 목표만 토글 칩 */}
+              <button
+                type="button"
+                onClick={() => {
+                  playBattleSfx('button_tap');
+                  triggerHaptic('tap');
+                  setShowUnownedOnly(prev => !prev);
+                }}
+                className={cn(
+                  "px-3 py-1.5 rounded-none whitespace-nowrap font-black transition-all cursor-pointer border text-xs min-h-[36px] flex items-center gap-1.5 ml-auto shrink-0",
+                  showUnownedOnly
+                    ? "bg-emerald-500 text-stone-950 border-emerald-400 shadow-sm"
+                    : "bg-stone-900 text-emerald-400 border-emerald-500/50 hover:bg-emerald-950/40"
+                )}
+              >
+                <span>🎯</span>
+                <span>{language === 'ko' ? `미보유만 (${unownedTotalCount})` : `Unowned (${unownedTotalCount})`}</span>
+              </button>
+            </div>
+
             {/* Quick search */}
             <div className="relative w-full">
               <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -14527,7 +14807,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={language === 'ko' ? '게임 모드 또는 히어로 이름 검색...' : 'Search game modes or hero names...'}
-                className="w-full pl-8 pr-8 py-2 bg-white border border-slate-200 rounded-sm text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 font-mono"
+                className="w-full pl-8 pr-8 py-2 bg-white border border-slate-200 rounded-none text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 font-mono"
               />
               {searchQuery && (
                 <button
