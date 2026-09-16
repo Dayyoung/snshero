@@ -5606,7 +5606,7 @@ function AppContent() {
         {!isAdRemoved && view !== 'landing' && (
           <aside 
             aria-label="Google AdSense Left Wing"
-            className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-16 mr-2 xl:mr-3 z-30 pointer-events-auto"
+            className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-6 mr-2 xl:mr-3 z-30 pointer-events-auto"
           >
             <div className="w-full bg-[#fdfcfc]/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 p-1.5 shadow-xs rounded-none">
               <AdSenseBanner 
@@ -5627,10 +5627,10 @@ function AppContent() {
                 ? "bg-slate-900 border-slate-800/80 min-h-screen"
                 : "bg-slate-50/30 border-slate-200/80 min-h-screen")
         )}>
-          {/* Top AdSense Banner (높이 확대 및 버튼과 겹침 없는 1행 배치: 모바일 및 PC 전 화면 일관 표시) */}
+          {/* Top AdSense Banner (모바일에서는 상단 배너 표시, PC에서는 상단 배너 제거 후 좌우 배너로 표시) */}
           {!isAdRemoved && view !== 'landing' && (
             <div className={cn(
-              "block w-full px-2 py-1 shrink-0 select-none z-20 overflow-hidden",
+              "block lg:hidden w-full px-2 py-1 shrink-0 select-none z-20 overflow-hidden",
               isPlayingBattle
                 ? "bg-[#060a14]/95 border-b border-slate-800"
                 : "bg-[#fdfcfc]/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800"
@@ -5655,7 +5655,7 @@ function AppContent() {
                 id="hud-audio-toggle"
                 className={cn(
                   "fixed right-[3.75rem] min-[1024px]:right-[calc(50vw-444px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center touch-target",
-                  (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px]" : "top-[10px]",
+                  (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px] lg:top-[10px]" : "top-[10px]",
                   isAudioMuted
                     ? "bg-rose-500/10 border border-rose-500/50 text-rose-500 hover:bg-rose-500/20"
                     : (theme === 'dark' || theme === 'metal')
@@ -5681,7 +5681,7 @@ function AppContent() {
                   }}
                   className={cn(
                     "fixed right-4 min-[1024px]:right-[calc(50vw-496px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center touch-target",
-                    (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px]" : "top-[10px]",
+                    (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px] lg:top-[10px]" : "top-[10px]",
                     (theme === 'dark' || theme === 'metal')
                       ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
                       : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
@@ -5699,7 +5699,7 @@ function AppContent() {
               onClick={handleGlobalBack}
               className={cn(
                 "fixed left-4 min-[1024px]:left-[calc(50vw-496px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md flex items-center justify-center active:scale-95 transition-all cursor-pointer touch-target",
-                (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px]" : "top-[10px]",
+                (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px] lg:top-[10px]" : "top-[10px]",
                 (theme === 'dark' || theme === 'metal')
                   ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
                   : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
@@ -7390,7 +7390,7 @@ function AppContent() {
         {!isAdRemoved && view !== 'landing' && (
           <aside 
             aria-label="Google AdSense Right Wing"
-            className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-16 ml-2 xl:ml-3 z-30 pointer-events-auto"
+            className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-6 ml-2 xl:ml-3 z-30 pointer-events-auto"
           >
             <div className="w-full bg-[#fdfcfc]/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 p-1.5 shadow-xs rounded-none">
               <AdSenseBanner 

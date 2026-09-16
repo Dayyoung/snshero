@@ -502,9 +502,9 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
             <div className="fixed inset-0 z-[10000] w-full h-[100dvh] max-h-[100dvh] bg-[#060a14] flex flex-col items-center justify-center overflow-hidden pointer-events-auto select-none touch-none overscroll-none">
               {/* 다른 화면들과 100% 동일한 최대너비(1024px) 중앙 배틀 아레나 (100dvh 전체화면) */}
               <div className="w-full max-w-[1024px] h-full flex flex-col min-h-0 relative bg-[#060a14] shadow-2xl border-x border-slate-800 pointer-events-auto overflow-hidden">
-                {/* 화면용 상단 애드센스 배너 (높이 확대 적용) */}
+                {/* 화면용 상단 애드센스 배너 (모바일에서만 상단 표시, PC에서는 제거) */}
                 {!isAdRemoved && (
-                  <div className="block w-full px-2 py-1 shrink-0 select-none z-20 bg-[#060a14]/95 border-b border-slate-800 overflow-hidden">
+                  <div className="block lg:hidden w-full px-2 py-1 shrink-0 select-none z-20 bg-[#060a14]/95 border-b border-slate-800 overflow-hidden">
                     <div className="max-w-[728px] mx-auto h-[70px] max-h-[76px] sm:h-[96px] sm:max-h-[102px] flex items-center justify-center overflow-hidden">
                       <AdSenseBanner 
                         format="horizontal"
