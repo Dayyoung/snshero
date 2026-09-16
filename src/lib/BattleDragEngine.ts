@@ -80,4 +80,37 @@ export class BattleDragEngine {
   public getPassiveTouchOptions(): AddEventListenerOptions {
     return { passive: true, capture: false };
   }
+
+  // ID 599 (Item 4): RAF-Throttled Pointer Move Handling
+  // 고주파수(120Hz/240Hz) 터치/포인터 이벤트를 DOM 계산과 분리하고, 60fps RAF 루프에서만 슬롯 호버 평가
+  private rafId: number | null = null;
+  private pendingCoords: { x: number; y: number } | null = null;
+  private onHoverSlotCallback: ((slotIndex: number | null) => void) | null = null;
+
+  public scheduleHoverDetection(
+    clientX: number,
+    clientY: number,
+    onHover: (slotIndex: number | null) => void
+  ): void {
+    this.pendingCoords = { x: clientX, y: clientY };
+    this.onHoverSlotCallback = onHover;
+
+    if (this.rafId === null) {
+      this.rafId = requestAnimationFrame(() => {
+        this.rafId = null;
+        if (this.pendingCoords && this.onHoverSlotCallback) {
+          const hovered = this.detectHoveredSlot(this.pendingCoords.x, this.pendingCoords.y);
+          this.onHoverSlotCallback(hovered);
+        }
+      });
+    }
+  }
+
+  public cancelHoverDetection(): void {
+    if (this.rafId !== null) {
+      cancelAnimationFrame(this.rafId);
+      this.rafId = null;
+    }
+    this.pendingCoords = null;
+  }
 }

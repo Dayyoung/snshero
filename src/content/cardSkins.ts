@@ -237,6 +237,21 @@ export const SEASON1_CARD_SKINS: CardSkin[] = [
     fallbackAccentColor: '#1e1b4b',
     fallbackEmoji: '🐉',
   },
+  // 11. Milestone 600 기념 한정 스킨 / 슬리브
+  {
+    skinKey: 'skin_titan_core_600',
+    cardId: 101,
+    season: 'season1',
+    nameKey: 'skin_titan_core_600_name',
+    descKey: 'skin_titan_core_600_desc',
+    unlockConditionKey: 'skin_titan_core_600_unlock',
+    unlockType: 'event',
+    rarityTier: 'legendary',
+    previewPrompt: 'Titan Core 600 commemorative sleeve: cybernetic golden core, intricate runic circuitry, shining 600th milestone insignia, obsidian metallic texture',
+    fallbackPrimaryColor: '#eab308',
+    fallbackAccentColor: '#0f172a',
+    fallbackEmoji: '🛡️',
+  },
 ];
 
 /** 시즌별 전체 스킨 맵 */

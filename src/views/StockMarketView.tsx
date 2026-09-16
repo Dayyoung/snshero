@@ -243,6 +243,56 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
     return priceWithFluctuation;
   };
 
+  // ID 603: 1-Tap Reinvest Dividends Option (배당금 100% 최고 수익률 보유주식 자동 재투자 - 0% 수수료)
+  const handleReinvestDividends = () => {
+    if (dividendAvailable <= 0) return;
+
+    // 1. 보유 주식 중 최고 수익률(24h 변동률) 우선 탐색
+    const heldCards = Object.values(CARD_DATABASE).filter(c => (inventory[c.id]?.quantity || 0) > 0);
+    let candidatePool = heldCards.length > 0 ? heldCards : Object.values(CARD_DATABASE);
+
+    candidatePool.sort((a, b) => {
+      const symA = getCardCoinPair(a.id).symbol;
+      const symB = getCardCoinPair(b.id).symbol;
+      const chgA = prices[symA]?.change24h || 0;
+      const chgB = prices[symB]?.change24h || 0;
+      return chgB - chgA; // 최고 변동/수익률 우선
+    });
+
+    // 배당금으로 살 수 있는 카드 선택 (스팟 단가가 배당금 이하인 것 중 최고 수익률, 없으면 가장 저렴한 카드)
+    let chosenCard = candidatePool.find(c => getCardSnsPrice(c.id) <= dividendAvailable);
+    if (!chosenCard) {
+      chosenCard = [...candidatePool].sort((a, b) => getCardSnsPrice(a.id) - getCardSnsPrice(b.id))[0];
+    }
+    if (!chosenCard) return;
+
+    const unitPrice = getCardSnsPrice(chosenCard.id);
+    const buyQty = Math.max(1, Math.floor(dividendAvailable / unitPrice));
+    const totalCost = buyQty * unitPrice;
+    const remainingChange = Math.max(0, dividendAvailable - totalCost);
+
+    // 0% 수수료로 즉시 주식(카드) 추가
+    for (let i = 0; i < buyQty; i++) {
+      addCard(chosenCard.rarity as any, chosenCard.id, true);
+    }
+
+    // 잔돈 발생 시 지갑 환급
+    if (remainingChange > 0) {
+      updateSns(remainingChange, `배당금 재투자 잔돈 환급 (+${remainingChange} SNS)`);
+    }
+
+    setAlertMsg({
+      type: 'success',
+      text: language === 'ko'
+        ? `🔄 [1탭 복리 재투자 완료] ${dividendAvailable} SNS 배당금으로 [${chosenCard.title}] ${buyQty}주를 수수료 0%로 즉시 매수했습니다! (단가: ${unitPrice} SNS${remainingChange > 0 ? `, 잔돈 +${remainingChange} SNS 환급` : ''})`
+        : `🔄 [1-Tap Reinvest Complete] Converted ${dividendAvailable} SNS into ${buyQty} shares of [${chosenCard.title}] at 0% fee!`,
+    });
+
+    setDividendAvailable(0);
+    localStorage.setItem('hero_stock_dividends_ready', '0');
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
+  };
+
   // Card list sorted dynamically based on sort state
   const sortedCards = React.useMemo(() => {
     const list = Object.values(CARD_DATABASE);
@@ -478,7 +528,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
           </button>
         </div>
 
-        {/* ID 478: Dividend Claim Notification & Settlement Bar */}
+        {/* ID 478 & ID 603: Dividend Claim Notification & Settlement Bar */}
         <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 bg-amber-500/10 border border-amber-500/30 rounded-none text-xs font-mono">
           <div className="flex items-center gap-2">
             <span className="font-black text-amber-600 dark:text-amber-400">
@@ -488,14 +538,26 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
               {language === 'ko' ? '보유 캐릭터 지분 비례 누적 배당금' : 'Accumulated from hero shares'}
             </span>
           </div>
-          <button
-            type="button"
-            disabled={dividendAvailable <= 0}
-            onClick={handleClaimDividends}
-            className="px-2.5 py-1 bg-[#201d1d] text-white dark:bg-white dark:text-[#201d1d] text-[10px] font-bold uppercase rounded-sm hover:opacity-90 active:scale-95 transition-all disabled:opacity-40"
-          >
-            [Claim All Dividends]
-          </button>
+          <div className="flex items-center gap-2">
+            {/* ID 603: 1-Tap Reinvest Dividends Option */}
+            <button
+              type="button"
+              disabled={dividendAvailable <= 0}
+              onClick={handleReinvestDividends}
+              className="px-2.5 py-1 bg-amber-500 text-stone-950 hover:bg-amber-400 text-[10px] font-black uppercase rounded-sm active:scale-95 transition-all disabled:opacity-40 cursor-pointer shadow-xs"
+              title={language === 'ko' ? '수수료 0%로 최고 수익률 주식에 배당금 100% 자동 재투자' : 'Reinvest 100% into shares at 0% fee'}
+            >
+              [ 🔄 Reinvest 100% into Shares ]
+            </button>
+            <button
+              type="button"
+              disabled={dividendAvailable <= 0}
+              onClick={handleClaimDividends}
+              className="px-2.5 py-1 bg-[#201d1d] text-white dark:bg-white dark:text-[#201d1d] text-[10px] font-bold uppercase rounded-sm hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 cursor-pointer"
+            >
+              [Claim All Dividends]
+            </button>
+          </div>
         </div>
 
         {/* ID 488: Slippage Tolerance Settings Bar */}

@@ -48,6 +48,22 @@ class AudioSpriteService {
     } catch {
       this.isMuted = false;
     }
+
+    // ID 604 (Item 9): Page Visibility Audio Lifecycle Management
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (!this.audioCtx) return;
+        if (document.hidden) {
+          if (this.audioCtx.state === 'running') {
+            this.audioCtx.suspend().catch(() => {});
+          }
+        } else {
+          if (this.audioCtx.state === 'suspended') {
+            this.audioCtx.resume().catch(() => {});
+          }
+        }
+      });
+    }
   }
 
   public static getInstance(): AudioSpriteService {

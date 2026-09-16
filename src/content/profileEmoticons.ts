@@ -137,6 +137,12 @@ export const PROFILE_TITLES: ProfileTitleOption[] = [
     descriptionKey: 'profile_title_season_signal_desc',
     unlock: { type: 'season', value: 'season3' },
   },
+  {
+    key: 'grand_strategist',
+    labelKey: 'profile_title_grand_strategist_label',
+    descriptionKey: 'profile_title_grand_strategist_desc',
+    unlock: { type: 'default' },
+  },
 ];
 
 export const getProfileEmoticonByKey = (key?: string | null) =>

@@ -817,6 +817,26 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     }
   }, []);
 
+  // ID 601 (Item 6): Tile Detail Inspection Long-Press Chip (350ms touch hold)
+  const [inspectedTileIndex, setInspectedTileIndex] = useState<number | null>(null);
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleTileTouchStart = useCallback((idx: number) => {
+    if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
+    longPressTimerRef.current = setTimeout(() => {
+      setInspectedTileIndex(idx);
+      triggerHaptic('light');
+    }, 350);
+  }, []);
+
+  const handleTileTouchEnd = useCallback(() => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+    setInspectedTileIndex(null);
+  }, []);
+
   // ID 439: 대전 진행 중 뒤로가기 제스처 시 몰수패 경고 모달 가드
   useEffect(() => {
     if (gameState !== 'playing') return;
@@ -16883,6 +16903,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           <div
                             key={idx}
                             onClick={() => handleCellClick(idx)}
+                            onTouchStart={() => handleTileTouchStart(idx)}
+                            onTouchEnd={handleTileTouchEnd}
+                            onTouchCancel={handleTileTouchEnd}
                             onContextMenu={(e) => e.preventDefault()}
                             onMouseEnter={() => handleMouseEnterCell(idx)}
                             onMouseLeave={handleMouseLeaveCell}
@@ -16909,6 +16932,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                               lastOpponentPlayedSlot === idx && "border-pulse-accent shadow-[0_0_15px_rgba(234,179,8,0.7)] z-10"
                             )}
                           >
+                            {/* ID 601 (Item 6): Tile Detail Inspection Long-Press Chip */}
+                            {inspectedTileIndex === idx && (
+                              <div className="tile-inspect-chip">
+                                <span>
+                                  {elementalBoard[idx] ? `🏔️ ${elementalBoard[idx].toUpperCase()}: DEF +2 | ` : ''}
+                                  {card ? `${language === 'ko' ? (card.title || 'Card') : (card.title_en || card.title || 'Card')} (${card.element || 'Normal'}) [P:${card.power || 10}]` : `Slot #${idx + 1} Empty`}
+                                </span>
+                              </div>
+                            )}
+
                             {/* ID 346, 406, 391, 411: 전술 위협/약점/수치비교 오버레이 */}
                             <BattleTacticalThreatOverlay
                               threatSlots={threatSlots}

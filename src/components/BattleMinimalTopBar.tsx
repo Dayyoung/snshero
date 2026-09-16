@@ -99,14 +99,35 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
           <span className="text-rose-400">OPP {opponentHandCount}/5</span>
         </div>
 
-        {/* Center: Turn, Round & 1-Line Scoreboard (ID 526, ID 561) */}
+        {/* Center: ID 596 (Item 1) Win Threshold Momentum Bar & Turn/Round (design.md) */}
         <div className="flex items-center gap-1.5 font-bold">
-          <span className="text-amber-300 bg-amber-950/60 px-1 border border-amber-800 text-[9px]">
+          <span className="text-amber-300 bg-amber-950/60 px-1 border border-amber-800 text-[9px] shrink-0">
             ⚔️ T{currentRound}/{maxRounds}
           </span>
-          <span className="text-cyan-300">🔵 {playerScore}</span>
-          <span className="text-slate-600">:</span>
-          <span className="text-rose-400">{opponentScore} 🔴</span>
+          <div className="flex items-center gap-1 bg-black/60 border border-slate-700/80 px-1.5 py-0.5 text-[9px]">
+            <span className="text-cyan-400">🔵 {playerScore}</span>
+            <span className="text-slate-400 text-[8px]">
+              / {Math.max(0, 6 - playerScore) === 0 ? 'WIN' : `${Math.max(0, 6 - playerScore)} needed`}
+            </span>
+            {/* Integrated 2-color segmented momentum track with golden threshold marker */}
+            <div className="relative w-14 sm:w-16 h-2 bg-slate-900 border border-slate-700 overflow-hidden flex items-center mx-0.5">
+              <div
+                style={{ width: `${Math.min(100, (playerScore / 9) * 100)}%` }}
+                className="h-full bg-cyan-400 transition-all duration-300"
+              />
+              <div
+                style={{ width: `${Math.min(100, (opponentScore / 9) * 100)}%` }}
+                className="h-full bg-rose-500 ml-auto transition-all duration-300"
+              />
+              {/* Golden victory condition threshold tick (6/9 = 66.7%) */}
+              <div
+                className="absolute top-0 bottom-0 w-0.5 bg-amber-400 shadow-[0_0_4px_#f59e0b] pointer-events-none z-10"
+                style={{ left: '66.7%' }}
+                title="6개 점유 시 승리 확정 임계점"
+              />
+            </div>
+            <span className="text-rose-400">{opponentScore} 🔴</span>
+          </div>
           {scoreDelta && (
             <span className="text-emerald-400 text-[9px] animate-pulse">
               [{scoreDelta}]

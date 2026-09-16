@@ -1070,6 +1070,89 @@ html.low-spec-mode .animate-shimmer {
   50% { filter: brightness(0.7); }
 }
 
+/* ID 597 (Item 2): Domino Comeback Cinematic Finisher & Ambient Dim */
+.ambient-dim-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 8, 8, 0.75);
+  backdrop-filter: blur(2px);
+  z-index: 9998;
+  pointer-events: none;
+  animation: ambient-dim-fade 1.2s ease-out forwards;
+}
+@keyframes ambient-dim-fade {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.golden-lightning-blade {
+  position: fixed;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, #fbbf24, #ffffff, #f59e0b, transparent);
+  box-shadow: 0 0 20px #fbbf24, 0 0 40px #f59e0b;
+  z-index: 10000;
+  pointer-events: none;
+  transform-origin: left center;
+  animation: lightning-blade-sweep 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+}
+@keyframes lightning-blade-sweep {
+  0% { transform: scaleX(0); opacity: 0.3; }
+  50% { transform: scaleX(1); opacity: 1; filter: brightness(2); }
+  100% { transform: scaleX(1.1); opacity: 0; }
+}
+
+/* ID 602 (Item 7): Cascade Comeback Dynamic Slow-Mo Zoom & Electrical Arcs */
+.slow-mo-camera-zoom {
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform: scale(1.05) !important;
+}
+
+.golden-electrical-arc {
+  position: relative;
+}
+.golden-electrical-arc::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px dashed #f59e0b;
+  border-radius: 4px;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.8);
+  animation: arc-spark 0.35s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 50;
+}
+@keyframes arc-spark {
+  0% { transform: scale(0.98); opacity: 0.6; filter: hue-rotate(0deg); }
+  100% { transform: scale(1.03); opacity: 1; filter: hue-rotate(20deg); }
+}
+
+/* ID 601 (Item 6): Tile Detail Inspection Long-Press Chip */
+.tile-inspect-chip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: rgba(18, 16, 16, 0.95);
+  color: #f8fafc;
+  border: 1px solid #f59e0b;
+  padding: 3px 8px;
+  border-radius: 2px;
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.8), 0 0 10px rgba(245, 158, 11, 0.4);
+  z-index: 10020;
+  pointer-events: none;
+  animation: chip-anchor-pop 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes chip-anchor-pop {
+  0% { opacity: 0; transform: translate(-50%, 4px) scale(0.92); }
+  100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
 
 
 

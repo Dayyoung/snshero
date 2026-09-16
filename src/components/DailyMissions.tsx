@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Gift, CheckCircle2, Circle, Sparkles, Clock, History, Award, Coins, Zap, Trash2, X, Download, ChevronDown, ChevronUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
 import { useSns } from '../contexts/SnsContext';
 import { useGameSettings } from '../contexts/GameSettingsContext';
+import { StaminaPacingManager } from '../lib/staminaPacingManager';
 import {
   DailyMissionProgress,
   MissionState,
@@ -53,6 +54,46 @@ export const DailyMissions: React.FC = () => {
       return [];
     }
   });
+
+  // ID 598: Daily Stamina Burn & Rebate Milestones (50 / 100 / 150 AP)
+  const [energyBurnState, setEnergyBurnState] = useState(() => {
+    const mgr = StaminaPacingManager.getInstance();
+    const st = mgr.getState();
+    return {
+      burned: st.dailyApBurned || 0,
+      milestones: mgr.getEnergyBurnMilestones(),
+    };
+  });
+
+  const refreshEnergyBurn = useCallback(() => {
+    const mgr = StaminaPacingManager.getInstance();
+    const st = mgr.getState();
+    setEnergyBurnState({
+      burned: st.dailyApBurned || 0,
+      milestones: mgr.getEnergyBurnMilestones(),
+    });
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('hero_stamina_pacing_updated', refreshEnergyBurn);
+    window.addEventListener('storage', refreshEnergyBurn);
+    return () => {
+      window.removeEventListener('hero_stamina_pacing_updated', refreshEnergyBurn);
+      window.removeEventListener('storage', refreshEnergyBurn);
+    };
+  }, [refreshEnergyBurn]);
+
+  const handleClaimEnergyBurn = (tier: number) => {
+    const mgr = StaminaPacingManager.getInstance();
+    const res = mgr.claimBurnRebate(tier);
+    if (res.success) {
+      addSns(res.rewardSns, 'stamina_rebate', 'earned');
+      triggerFloatingReward(res.rewardSns, 20);
+      const msg = language === 'ko' ? res.messageKo : res.messageEn;
+      setNotificationMsg(msg);
+      refreshEnergyBurn();
+    }
+  };
 
   const triggerFloatingReward = (sns: number, xp: number) => {
     setFloatingReward({ id: Date.now(), sns, xp });
@@ -602,6 +643,61 @@ export const DailyMissions: React.FC = () => {
                         </motion.div>
                       )}
                     </AnimatePresence>
+
+                    {/* ID 598: Daily Energy Burn & Rebate Milestones (50 / 100 / 150 AP) */}
+                    <div className="mb-3 p-2.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none font-mono text-[11px] space-y-2">
+                      <div className="flex items-center justify-between font-bold text-[#201d1d] flex-wrap gap-1">
+                        <span className="flex items-center gap-1.5">
+                          <Zap size={13} className="text-amber-600 fill-amber-500 shrink-0" />
+                          <span>{language === 'ko' ? `일일 에너지 소비: ${energyBurnState.burned}/150 AP` : `Daily Energy Burn: ${energyBurnState.burned}/150 AP`}</span>
+                        </span>
+                        <span className="text-[10px] bg-amber-100 text-amber-900 px-1.5 py-0.5 border border-amber-300 font-bold">
+                          {language === 'ko' ? '단계별 +20 AP & +30 SNS 환급' : '+20 AP & +30 SNS Rebate'}
+                        </span>
+                      </div>
+
+                      {/* 세그먼트 게이지 바 */}
+                      <div className="w-full h-1.5 bg-[#e2e0e0] rounded-none overflow-hidden relative border border-[rgba(15,0,0,0.08)]">
+                        <div
+                          className="h-full bg-gradient-to-r from-amber-500 to-amber-600 transition-all duration-300"
+                          style={{ width: `${Math.min(100, Math.round((energyBurnState.burned / 150) * 100))}%` }}
+                        />
+                      </div>
+
+                      {/* 3단계 마일스톤 (50, 100, 150 AP) 버튼 트랙 */}
+                      <div className="grid grid-cols-3 gap-2 pt-0.5 text-center">
+                        {energyBurnState.milestones.map((ms) => {
+                          return (
+                            <button
+                              key={ms.tier}
+                              type="button"
+                              disabled={!ms.isReached || ms.isClaimed}
+                              onClick={() => handleClaimEnergyBurn(ms.tier)}
+                              className={cn(
+                                "p-1.5 border text-[10px] font-bold flex flex-col items-center justify-center transition-all rounded-sm",
+                                ms.isClaimed
+                                  ? "bg-[#e2e0e0] border-[rgba(15,0,0,0.12)] text-[#646262] cursor-default"
+                                  : ms.isReached
+                                    ? "bg-amber-400 border-amber-600 text-[#201d1d] animate-pulse cursor-pointer shadow-xs hover:bg-amber-300"
+                                    : "bg-[#fdfcfc] border-[rgba(15,0,0,0.12)] text-[#646262] opacity-70 cursor-not-allowed"
+                              )}
+                            >
+                              <div className="flex items-center gap-1 font-black">
+                                <span>{ms.isClaimed ? '✅' : ms.isReached ? '⚡' : '🔒'}</span>
+                                <span>{ms.tier} AP</span>
+                              </div>
+                              <span className="text-[9px] text-amber-900 font-bold mt-0.5">
+                                {ms.isClaimed
+                                  ? (language === 'ko' ? '환급 완료' : 'Claimed')
+                                  : ms.isReached
+                                    ? (language === 'ko' ? '[환급 수령!]' : '[Claim Rebate!]')
+                                    : `+${ms.rewardAp} AP / +${ms.rewardSns} SNS`}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
 
                     {/* ID 563, 578, 588: 주간 누적 10/20/25/30개 3단계 보물상자 및 주간 배당금 풀 */}
                     <div className="mb-3 p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-none font-mono text-[11px] space-y-2">

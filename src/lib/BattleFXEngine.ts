@@ -325,4 +325,54 @@ export class BattleFXEngine {
     playSfx('critical');
     triggerHaptic('special');
   }
+
+  /**
+   * ID 597 (Item 2): Domino Comeback Cinematic Finisher
+   * 9턴 연쇄 뒤집기로 역전 승리 시 200ms 프리즈, 앰비언트 딤, 골든 라이트닝 블레이드 연출 후 팡파레
+   */
+  public triggerDominoComebackFinisher(boardEl: HTMLElement, onComplete?: () => void): void {
+    triggerHaptic('special');
+
+    // 1. 앰비언트 라이팅 딤
+    const dim = document.createElement('div');
+    dim.className = 'ambient-dim-overlay';
+    document.body.appendChild(dim);
+
+    // 2. 골든 라이트닝 블레이드 궤적
+    const rect = boardEl.getBoundingClientRect();
+    const blade = document.createElement('div');
+    blade.className = 'golden-lightning-blade';
+    blade.style.top = `${rect.top + rect.height / 2}px`;
+    blade.style.left = `${rect.left - 20}px`;
+    blade.style.width = `${rect.width + 40}px`;
+    document.body.appendChild(blade);
+
+    playSfx('critical');
+
+    setTimeout(() => {
+      blade.remove();
+      playSfx('win');
+      triggerHaptic('victory');
+      setTimeout(() => {
+        dim.remove();
+        onComplete?.();
+      }, 500);
+    }, 450);
+  }
+
+  /**
+   * ID 602 (Item 7): Cascade Comeback Dynamic Slow-Mo Zoom & Golden Electrical Arcs
+   * 멀티 카드 체인 플립으로 전세 역전 시 200ms 동안 5% 줌 및 골든 일렉트리컬 아크
+   */
+  public triggerCascadeSlowMoZoom(boardEl: HTMLElement, flippedSlotElements: HTMLElement[] = []): void {
+    boardEl.classList.add('slow-mo-camera-zoom');
+    flippedSlotElements.forEach((el) => el?.classList?.add('golden-electrical-arc'));
+    triggerHaptic('heavy');
+    playSfx('magicAttack');
+
+    setTimeout(() => {
+      boardEl.classList.remove('slow-mo-camera-zoom');
+      flippedSlotElements.forEach((el) => el?.classList?.remove('golden-electrical-arc'));
+    }, 200);
+  }
 }

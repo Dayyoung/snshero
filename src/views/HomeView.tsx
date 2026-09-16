@@ -16,6 +16,7 @@ import { MailboxModal, getMailboxItems } from "../components/MailboxModal";
 import { BeginnerRoadmap } from "../components/BeginnerRoadmap";
 import { NoticeModal } from "../components/NoticeModal";
 import { AfkPatrolModal } from "../components/AfkPatrolModal";
+import { Milestone600CelebrationModal } from "../components/Milestone600CelebrationModal";
 import { PingIndicator } from "../components/PingIndicator";
 import { useSns } from "../contexts/SnsContext";
 import { DailyMissions } from "../components/DailyMissions";
@@ -79,6 +80,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
   const [isLobbyDrawerOpen, setIsLobbyDrawerOpen] = useState(false);
   const [isNoticeClosed, setIsNoticeClosed] = useState(false);
+  // ID 600: Grand Strategist Milestone 600 Celebration
+  const [isMilestone600Open, setIsMilestone600Open] = useState(() => localStorage.getItem('hero_milestone_600_claimed') !== 'true');
   const [dailyMissionProgress, setDailyMissionProgress] = useState<DailyMissionProgress>(() => loadDailyMissions());
 
   useEffect(() => {
@@ -164,7 +167,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
   // Interval timer for 30s countdown
   useEffect(() => {
-    if (isAutoStartPaused || helpOpen || isMailboxOpen || isNotifModalOpen || isLoggingIn) {
+    if (isAutoStartPaused || helpOpen || isMailboxOpen || isNotifModalOpen || isLoggingIn || isMilestone600Open) {
       return;
     }
 
@@ -179,14 +182,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [isAutoStartPaused, helpOpen, isMailboxOpen, isNotifModalOpen, isLoggingIn]);
+  }, [isAutoStartPaused, helpOpen, isMailboxOpen, isNotifModalOpen, isLoggingIn, isMilestone600Open]);
 
   useEffect(() => {
-    if (autoStartCountdown === 0 && !isAutoStartPaused && !helpOpen && !isMailboxOpen && !isNotifModalOpen && !isLoggingIn) {
+    if (autoStartCountdown === 0 && !isAutoStartPaused && !helpOpen && !isMailboxOpen && !isNotifModalOpen && !isLoggingIn && !isMilestone600Open) {
       playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
       onNavigate('ranking');
     }
-  }, [autoStartCountdown, isAutoStartPaused, helpOpen, isMailboxOpen, isNotifModalOpen, isLoggingIn, onNavigate, playSfx]);
+  }, [autoStartCountdown, isAutoStartPaused, helpOpen, isMailboxOpen, isNotifModalOpen, isLoggingIn, isMilestone600Open, onNavigate, playSfx]);
 
   const helpSlides = React.useMemo(() => [
     {
@@ -998,6 +1001,13 @@ export const HomeView: React.FC<HomeViewProps> = ({
       <NotificationCenterModal
         isOpen={isNotifModalOpen}
         onClose={() => setIsNotifModalOpen(false)}
+        language={language}
+      />
+
+      {/* Milestone 600 Celebration Modal (Item 600) */}
+      <Milestone600CelebrationModal
+        isOpen={isMilestone600Open}
+        onClose={() => setIsMilestone600Open(false)}
         language={language}
       />
     </div>

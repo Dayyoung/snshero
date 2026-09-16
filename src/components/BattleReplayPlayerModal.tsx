@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { triggerHaptic } from '../lib/haptic';
-
+import { Bookmark, Plus, Trash2, Pin } from 'lucide-react';
 
 export interface ReplayTurnStep {
   turn: number;
@@ -9,6 +9,12 @@ export interface ReplayTurnStep {
   position: number; // 0~8
   capturedCount: number;
   boardStateSnapshot: string[];
+}
+
+export interface ReplayNotePin {
+  turn: number; // 1~9
+  note: string;
+  createdAt: number;
 }
 
 export interface BattleReplayData {
@@ -27,7 +33,7 @@ interface BattleReplayPlayerModalProps {
 }
 
 /**
- * ID 360, 399: 배틀 리플레이 뷰어 모달 (1x/2x/4x 배속, 턴 스킵, 공유 코드 복사)
+ * ID 360, 399, 605: 배틀 리플레이 뷰어 모달 (타임스탬프 주석 핀, 1x/2x/4x 배속, 턴 스킵, 공유 코드 복사)
  */
 export const BattleReplayPlayerModal: React.FC<BattleReplayPlayerModalProps> = ({
   isOpen,
@@ -38,6 +44,22 @@ export const BattleReplayPlayerModal: React.FC<BattleReplayPlayerModalProps> = (
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState<1 | 2 | 4>(1);
   const [copyFeedback, setCopyFeedback] = useState(false);
+
+  // ID 605: Timestamped Replay Notes State
+  const storageKey = `hero_replay_notes_${replayData?.matchId || 'demo'}`;
+  const [replayNotes, setReplayNotes] = useState<ReplayNotePin[]>(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return [
+      { turn: 1, note: 'Opening corner play', createdAt: Date.now() - 30000 },
+      { turn: 3, note: 'Comeback setup', createdAt: Date.now() - 20000 },
+      { turn: 5, note: 'Combo cascade flip', createdAt: Date.now() - 10000 },
+    ];
+  });
+  const [newNoteText, setNewNoteText] = useState('');
+  const [showNoteInput, setShowNoteInput] = useState(false);
 
   // mock fallback if not provided
   const dummySteps: ReplayTurnStep[] = [
@@ -92,13 +114,53 @@ export const BattleReplayPlayerModal: React.FC<BattleReplayPlayerModalProps> = (
   const handlePrev = () => {
     setIsPlaying(false);
     setCurrentStepIndex(prev => Math.max(0, prev - 1));
-    triggerHapticFeedback('light');
+    triggerHaptic('light');
   };
 
   const handleNext = () => {
     setIsPlaying(false);
     setCurrentStepIndex(prev => Math.min(steps.length - 1, prev + 1));
-    triggerHapticFeedback('light');
+    triggerHaptic('light');
+  };
+
+  // ID 605: 1-Tap Jump to Turn via Bookmark Chip
+  const handleJumpToTurn = (turnNum: number) => {
+    setIsPlaying(false);
+    const targetIdx = steps.findIndex(s => s.turn === turnNum);
+    if (targetIdx >= 0) {
+      setCurrentStepIndex(targetIdx);
+    } else {
+      setCurrentStepIndex(Math.min(steps.length - 1, Math.max(0, turnNum - 1)));
+    }
+    triggerHaptic('selection');
+  };
+
+  const handleAddNote = () => {
+    if (!newNoteText.trim()) return;
+    const curTurn = currentStep.turn;
+    const newPin: ReplayNotePin = {
+      turn: curTurn,
+      note: newNoteText.trim(),
+      createdAt: Date.now(),
+    };
+    const updated = [...replayNotes.filter(n => n.turn !== curTurn), newPin].sort((a, b) => a.turn - b.turn);
+    setReplayNotes(updated);
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(updated));
+    } catch {}
+    setNewNoteText('');
+    setShowNoteInput(false);
+    triggerHaptic('badge_pop');
+  };
+
+  const handleDeleteNote = (turnNum: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const updated = replayNotes.filter(n => n.turn !== turnNum);
+    setReplayNotes(updated);
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(updated));
+    } catch {}
+    triggerHaptic('light');
   };
 
   return (
@@ -168,6 +230,77 @@ export const BattleReplayPlayerModal: React.FC<BattleReplayPlayerModalProps> = (
               </div>
             );
           })}
+        </div>
+
+        {/* ID 605: Timestamped Replay Notes & Interactive Bookmark Chips */}
+        <div className="bg-black/5 dark:bg-white/5 p-2.5 rounded-none border border-[#201d1d]/10 dark:border-white/10 space-y-2 text-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold text-[#646262] uppercase flex items-center gap-1">
+              <Pin size={11} className="text-amber-600" />
+              <span>[REPLAY NOTES &amp; TIMESTAMPS]</span>
+            </span>
+            <button
+              onClick={() => setShowNoteInput(!showNoteInput)}
+              className="text-[10px] font-bold px-1.5 py-0.5 border border-[rgba(15,0,0,0.12)] hover:bg-black/5 rounded-xs flex items-center gap-1 cursor-pointer"
+            >
+              <Plus size={10} />
+              <span>{showNoteInput ? '[취소]' : `[+ Turn ${currentStep.turn} 핀]`}</span>
+            </button>
+          </div>
+
+          {/* New Note Input Form */}
+          {showNoteInput && (
+            <div className="flex items-center gap-1.5 pt-1">
+              <input
+                type="text"
+                value={newNoteText}
+                onChange={(e) => setNewNoteText(e.target.value)}
+                placeholder={`Turn ${currentStep.turn} 주석 입력 (예: Comeback setup)`}
+                className="flex-1 px-2 py-1 bg-white dark:bg-black border border-[#201d1d]/20 text-[11px] rounded-xs font-mono outline-hidden"
+                onKeyDown={(e) => e.key === 'Enter' && handleAddNote()}
+              />
+              <button
+                onClick={handleAddNote}
+                disabled={!newNoteText.trim()}
+                className="px-2 py-1 bg-[#201d1d] text-white text-[10px] font-bold rounded-xs disabled:opacity-40 cursor-pointer"
+              >
+                [등록]
+              </button>
+            </div>
+          )}
+
+          {/* Interactive Bookmark Chips */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full scrollbar-none">
+            {replayNotes.length === 0 ? (
+              <div className="text-[10px] text-[#646262] py-0.5">등록된 턴 주석이 없습니다.</div>
+            ) : (
+              replayNotes.map((pin) => {
+                const isActive = currentStep.turn === pin.turn;
+                return (
+                  <div
+                    key={`${pin.turn}-${pin.createdAt}`}
+                    onClick={() => handleJumpToTurn(pin.turn)}
+                    className={`inline-flex items-center gap-1 px-2 py-1 rounded-xs border text-[10px] cursor-pointer shrink-0 transition-all active:scale-95 ${
+                      isActive
+                        ? 'bg-amber-400 text-stone-950 border-amber-600 font-black shadow-2xs'
+                        : 'bg-white/60 dark:bg-black/40 border-[#201d1d]/15 text-[#201d1d] dark:text-white hover:bg-amber-100/50'
+                    }`}
+                    title={`클릭 시 Turn ${pin.turn}으로 즉시 점프`}
+                  >
+                    <span>📌 Turn {pin.turn}:</span>
+                    <span className="font-bold truncate max-w-[110px]">{pin.note}</span>
+                    <button
+                      type="button"
+                      onClick={(e) => handleDeleteNote(pin.turn, e)}
+                      className="ml-0.5 text-stone-500 hover:text-rose-600 text-[9px] px-0.5"
+                    >
+                      ×
+                    </button>
+                  </div>
+                );
+              })
+            )}
+          </div>
         </div>
 
         {/* Playback Controls (ID 399) */}

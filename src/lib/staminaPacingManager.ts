@@ -11,6 +11,9 @@ export interface StaminaPacingState {
   dailyGoldRestsClaimed: number;   // 오늘 골드로 휴식 수령 횟수 (최대 2회 = 10 AP)
   lastGiftDate: string;
   totalPlayMinutes: number;
+  // ID 598: Daily Stamina Burn & Rebate Milestones (50 / 100 / 150 AP consumed)
+  dailyApBurned: number;
+  claimedBurnRebates: number[];
 }
 
 const STORAGE_KEY = 'hero_stamina_pacing_v1';
@@ -51,6 +54,8 @@ export class StaminaPacingManager {
         dailyGoldRestsClaimed: 0,
         lastGiftDate: this.getTodayStr(),
         totalPlayMinutes: 0,
+        dailyApBurned: 0,
+        claimedBurnRebates: [],
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
     }
@@ -66,6 +71,8 @@ export class StaminaPacingManager {
         dailyGoldRestsClaimed: 0,
         lastGiftDate: today,
         totalPlayMinutes: 0,
+        dailyApBurned: 0,
+        claimedBurnRebates: [],
       };
     }
 
@@ -73,15 +80,23 @@ export class StaminaPacingManager {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed: StaminaPacingState = JSON.parse(raw);
-        // 날짜 변경 시 친구 선물 및 골드 휴식 카운터 리셋
+        // 날짜 변경 시 친구 선물, 골드 휴식, AP 소모 마일스톤 카운터 리셋
         if (parsed.lastGiftDate !== today) {
           parsed.dailyFriendGiftsClaimed = 0;
           parsed.dailyGoldRestsClaimed = 0;
+          parsed.dailyApBurned = 0;
+          parsed.claimedBurnRebates = [];
           parsed.lastGiftDate = today;
           this.saveState(parsed);
         }
         if (parsed.dailyGoldRestsClaimed === undefined) {
           parsed.dailyGoldRestsClaimed = 0;
+        }
+        if (parsed.dailyApBurned === undefined) {
+          parsed.dailyApBurned = 0;
+        }
+        if (!Array.isArray(parsed.claimedBurnRebates)) {
+          parsed.claimedBurnRebates = [];
         }
         return parsed;
       }
@@ -125,6 +140,7 @@ export class StaminaPacingManager {
     if (state.currentAp >= requiredAp) {
       state.currentAp -= requiredAp;
       state.totalPlayMinutes += durationMinutes;
+      state.dailyApBurned = (state.dailyApBurned || 0) + requiredAp;
       this.saveState(state);
       return {
         consumed: requiredAp,
@@ -137,6 +153,9 @@ export class StaminaPacingManager {
       const actualConsumed = state.currentAp;
       state.currentAp = 0;
       state.totalPlayMinutes += durationMinutes;
+      if (actualConsumed > 0) {
+        state.dailyApBurned = (state.dailyApBurned || 0) + actualConsumed;
+      }
       this.saveState(state);
       return {
         consumed: actualConsumed,
@@ -268,6 +287,118 @@ export class StaminaPacingManager {
     const cycle = 300; // 5분
     const elapsed = now % cycle;
     return cycle - elapsed;
+  }
+
+  /**
+   * 직접 AP를 소모하거나 다른 콘텐츠에서 AP 사용을 기록할 때 호출
+   */
+  public recordApBurn(amount: number): number {
+    const state = this.getState();
+    const actualBurn = Math.min(state.currentAp, Math.max(0, amount));
+    state.currentAp = Math.max(0, state.currentAp - actualBurn);
+    state.dailyApBurned = (state.dailyApBurned || 0) + (actualBurn > 0 ? actualBurn : amount);
+    this.saveState(state);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('hero_stamina_pacing_updated'));
+    }
+    return state.dailyApBurned;
+  }
+
+  /**
+   * 외부에서 보너스 AP를 직접 추가할 때 호출
+   */
+  public addAp(amount: number): number {
+    const state = this.getState();
+    state.currentAp = Math.min(state.maxAp, state.currentAp + amount);
+    this.saveState(state);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('hero_stamina_pacing_updated'));
+    }
+    return state.currentAp;
+  }
+
+  /**
+   * ID 598: Daily Stamina Burn & Rebate Milestones 목록
+   * 50 / 100 / 150 AP 소비 트랙 -> 달성 시 +20 AP & +30 SNS 지급
+   */
+  public getEnergyBurnMilestones(): Array<{
+    tier: number;
+    rewardAp: number;
+    rewardSns: number;
+    isReached: boolean;
+    isClaimed: boolean;
+  }> {
+    const state = this.getState();
+    const burned = state.dailyApBurned || 0;
+    const claimed = state.claimedBurnRebates || [];
+
+    const tiers = [
+      { tier: 50, rewardAp: 20, rewardSns: 30 },
+      { tier: 100, rewardAp: 20, rewardSns: 30 },
+      { tier: 150, rewardAp: 20, rewardSns: 30 },
+    ];
+
+    return tiers.map(t => ({
+      tier: t.tier,
+      rewardAp: t.rewardAp,
+      rewardSns: t.rewardSns,
+      isReached: burned >= t.tier,
+      isClaimed: claimed.includes(t.tier),
+    }));
+  }
+
+  /**
+   * 특정 마일스톤 환급 보상 수령 (단일 수령)
+   */
+  public claimBurnRebate(tier: number): {
+    success: boolean;
+    rewardAp: number;
+    rewardSns: number;
+    messageKo: string;
+    messageEn: string;
+  } {
+    const state = this.getState();
+    const burned = state.dailyApBurned || 0;
+    if (!state.claimedBurnRebates) {
+      state.claimedBurnRebates = [];
+    }
+
+    if (burned < tier) {
+      return {
+        success: false,
+        rewardAp: 0,
+        rewardSns: 0,
+        messageKo: `아직 ${tier} AP를 소모하지 않았습니다. (현재: ${burned}/${tier} AP)`,
+        messageEn: `Not reached yet (${burned}/${tier} AP consumed).`,
+      };
+    }
+
+    if (state.claimedBurnRebates.includes(tier)) {
+      return {
+        success: false,
+        rewardAp: 0,
+        rewardSns: 0,
+        messageKo: `이미 수령한 ${tier} AP 소모 마일스톤 보너스입니다.`,
+        messageEn: `Milestone ${tier} AP already claimed.`,
+      };
+    }
+
+    // 마일스톤 수령 처리: +20 AP 환급
+    state.claimedBurnRebates.push(tier);
+    state.currentAp = Math.min(state.maxAp, state.currentAp + 20);
+    this.saveState(state);
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('hero_stamina_pacing_updated'));
+    }
+
+    return {
+      success: true,
+      rewardAp: 20,
+      rewardSns: 30,
+      messageKo: `⚡ [Daily Energy Burn] ${tier} AP 소모 달성! 보너스 +20 AP 환급 & +30 SNS 지급!`,
+      messageEn: `⚡ [Daily Energy Burn] ${tier} AP Burn Reached! Rebated +20 AP & +30 SNS!`,
+    };
   }
 }
 

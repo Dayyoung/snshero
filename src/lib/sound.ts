@@ -10,14 +10,36 @@ const SFX_URLS: Record<string, string> = {
   error: 'https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3'
 };
 
+// ID 604 (Item 9): Page Visibility Audio Lifecycle Management
+const activeAudioList: HTMLAudioElement[] = [];
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      activeAudioList.forEach((audio) => {
+        try {
+          audio.pause();
+        } catch {}
+      });
+      activeAudioList.length = 0;
+    }
+  });
+}
+
 export const playSfx = (type: keyof typeof SFX_URLS | string) => {
   try {
+    if (typeof document !== 'undefined' && document.hidden) return;
     const isMuted = localStorage.getItem('hero_sfx_muted') === 'true';
     if (isMuted) return;
 
     const url = SFX_URLS[type] || type;
     const audio = new Audio(url);
     audio.volume = 0.45;
+    activeAudioList.push(audio);
+    audio.onended = () => {
+      const idx = activeAudioList.indexOf(audio);
+      if (idx !== -1) activeAudioList.splice(idx, 1);
+    };
     audio.play().catch(() => {
       // Ignored for autoplay policy
     });
