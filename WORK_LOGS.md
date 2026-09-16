@@ -2,6 +2,35 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-17 04:00 KST] [/rsi] [SCR-10 소셜, 친구 친선전 & 길드 기획/디자인/개발 전면 개선 완료]
+- **순환 화면**: SCR-10 (소셜, 친구 친선전 & 길드 / `guild`, `src/views/GuildDetailView.tsx`, `src/components/FriendBattlePanel.tsx`, `src/lib/guildHelper.ts`)
+- **생성 문서**: `docs/screen_audits/SCR-10_GUILD.md`
+- **문제 원인 및 개선 내역**:
+  1. **사용자 유치 & 온보딩 (FTUE - SCR-10-01)**:
+     - 상단에 **`[🔗 비동기 친선 대전 링크 복사 & 친구 초대]`** 1탭 배너 신설: 1탭 시 클립보드 복사 및 `triggerHaptic('success')` 진동 피드백.
+     - 상단에 **`[📋 일일 길드 미션 HUD: {completed}/3 완료]`** 실시간 프로그레스 게이지 탑재 (출석체크, 조각지원, 친선전 3종 달성 시 `[🏆 올클리어 보너스 +50 SNS]` 수령).
+  2. **모바일 퓨어 UX & 탐색 피로도 해소 (SCR-10-02)**:
+     - 세로 3000px 스크롤을 해소하는 모바일 4대 서브 탭바 분리 구축:
+       1. `[🛡️ 길드 정보]` (`info`): 출석 버프, MVP 3인 배너, 길드 기부, 길드원 목록 및 용병 대여
+       2. `[⚔️ 길드 레이드]` (`raid`): 실시간 보스 레이드 협동전
+       3. `[🧩 조각·승부]` (`exchange`): 길드 특가 보급소, 카드 조각 교환소, 길드전 2.5배 승부 예측
+       4. `[👥 친구 친선전]` (`friends`): 친구 목록, 1탭 우정하트 일괄 선물, 친선 배틀 패널
+     - `DESIGN.md` 가이드 100% 준수: Monospace 서체, 플랫 디자인, 컨테이너 `rounded-none`, 1px solid hairline 보더, 44px+ 엄지 최적화 터치 타깃.
+  3. **과금 전환 & 도파민 (SCR-10-03)**:
+     - 조각·승부 탭 내 **`[🏆 길드 특가 보급소 (Guild Supply Depot)]`** 신설: 50% 특가 AP 물약 (25 SNS, +50 AP 회복) 원터치 구매 연동.
+     - 길드 기부 섹션 내 `[🛒 상점 충전]` 바로가기 버튼 배치로 과금 단절 해소.
+     - 용병 대여, 조각 기부, 승부 예측 투표 완료 시 `triggerHaptic('victory')` 및 `triggerHaptic('success')` 진동 피드백 적용.
+  4. **데이터 무결성 & 로컬스토리지 SSOT**:
+     - `guildHelper.ts`의 `getGuilds()` 및 `getGuild()`를 로컬스토리지 SSOT 최우선으로 수정하여 가상 데이터 초기화 버그 원천 차단.
+     - `hero_guild_attended_*`, `hero_guild_mercenary_borrowed_*`, `hero_guild_piece_requests_*`, `hero_guild_war_bets_*`, `hero_guild_daily_mission_claimed_*`, `snshero_guilds` 100% 로컬스토리지 영구 보존.
+- **검증 결과**:
+  - `npm run build`: 오류 0건 완벽 통과 (`✓ built in 9.09s`).
+  - Playwright 모바일(390x844) 실측 스크린샷 4종 캡처 및 렌더링 검증:
+    - `scr10_01_guild_info_and_hud.png`: 길드 정보, 비동기 친선 대전 링크 복사 배너, 일일 길드 미션 HUD, 4대 서브 탭 렌더링 정상.
+    - `scr10_02_exchange_and_depot.png`: 조각·승부 탭, 길드 특가 보급소(25 SNS로 50 AP 충전) 및 카드 조각 교환소 렌더링 정상.
+    - `scr10_03_friend_battle_panel.png`: 친구 친선전 탭, 일괄 우정 선물(+5 AP) 및 친구 목록 패널 렌더링 정상.
+    - `scr10_04_guild_raid_tab.png`: 길드 레이드 탭, 실시간 보스 레이드 협동전 패널 렌더링 정상.
+
 ## [2026-09-17 02:25 KST] [/rsi] [SCR-09 미션 게임 캔버스 아레나 기획/디자인/개발 전면 개선 완료]
 - **순환 화면**: SCR-09 (미션 게임 캔버스 아레나 - Poki 110선 / `mission_games`, `modeSelect`, `src/views/PlayGameView.tsx`)
 - **생성 문서**: `docs/screen_audits/SCR-09_MISSION_GAMES.md`

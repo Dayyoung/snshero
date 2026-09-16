@@ -179,9 +179,15 @@ export const getGuildBuff = (level: number): GuildBuff => {
   return buffs[level] || { powerPercent: 0, statBonus: 0 };
 };
 
-// Firestore & LocalStorage Hybrid CRUD
+// Firestore & LocalStorage Hybrid CRUD (LocalStorage SSOT)
 export async function getGuilds(): Promise<Guild[]> {
   const currentSeason = (typeof window !== 'undefined' ? localStorage.getItem('hero_current_season') : null) || 'season1';
+  // 1. LocalStorage 단일 진실 공급원 (SSOT) 우선 확인
+  const localGuilds = getLocalGuilds();
+  if (localGuilds && localGuilds.length > 0) {
+    return localGuilds;
+  }
+
   try {
     const querySnapshot = await getDocs(collection(db, 'guilds'));
     let guilds: Guild[] = [];
@@ -227,6 +233,10 @@ export async function getGuilds(): Promise<Guild[]> {
 }
 
 export async function getGuild(guildId: string): Promise<Guild | null> {
+  const locals = getLocalGuilds();
+  const localMatch = locals.find((g) => g.id === guildId);
+  if (localMatch) return localMatch;
+
   try {
     const docRef = doc(db, 'guilds', guildId);
     const docSnap = await getDoc(docRef);
@@ -236,8 +246,7 @@ export async function getGuild(guildId: string): Promise<Guild | null> {
   } catch (error) {
     console.warn(`[Firestore] Failed to fetch guild ${guildId}, falling back to LocalStorage:`, error);
   }
-  const locals = getLocalGuilds();
-  return locals.find((g) => g.id === guildId) || null;
+  return null;
 }
 
 export async function createGuild(

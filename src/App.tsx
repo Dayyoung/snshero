@@ -5301,7 +5301,7 @@ function AppContent() {
             onNavigate={setView}
             language={language}
             currentUser={effectiveUser ? { uid: effectiveUser.uid, displayName: effectiveUser.displayName } : null}
-            guildId={selectedGuildId || ''}
+            guildId={selectedGuildId || userGuild?.id || 'guild_alpha'}
             isOpponentMode={isOpponentGuildMode}
             userGuild={userGuild}
             sns={sns}
