@@ -2,8 +2,8 @@
 
 ## 스프레드시트 개선 작업 진행 상태
 - **현재 연동 스프레드시트 (공개 CSV)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vRF82ZJBHIhPsTzzjGm8DFutzw6PtAwqT_iyEB3MG5yKvZrEs354rKHy7YIFIO2zgqKSuRbo62uNyX_/pub?gid=0&single=true&output=csv`
-- **마지막 수정 완료 항목 ID**: `[SCR-04 상점 & 카드팩 가챠 완료] 일일 1회 무료 브론즈 팩 소환(FTUE 온보딩), 1인 1회 한정 파격 핫딜 초심자 성장 스타터 번들(+250 SNS 순수익/150 AP/SR+ 확정 골드팩 5연), 실시간 30회 골드팩 천장 동적 트래커 HUD, 모바일 원터치 카테고리 퀵 점프 탭바 전수 구현 및 빌드 검증 완료! (다음 순환 대기: SCR-05 AI 미션 & PVE 던전)`
-- **최종 업데이트 일시**: 2026-09-16 19:10 (KST)
+- **마지막 수정 완료 항목 ID**: `[SCR-05 카드 P2P 마켓플레이스 완료] 상단 실시간 급매물(Hot Bargain) 추천 배너 & 첫 거래 웰컴 캐시백(+50 SNS), 모바일 원터치 서브 탭바(매물탐색/매물등록/내매물/자동매수) 1탭 화면전환, 상단 실시간 SNS 잔액 HUD & 즉시 충전 숏컷, P2P 체결 도파민 축하 모달 & victory 햅틱/SFX 전수 구현 및 빌드 검증 완료! (다음 순환 대기: SCR-06 가상 주식 거래소)`
+- **최종 업데이트 일시**: 2026-09-16 20:10 (KST)
 
 - **신규 항목 직행 원칙**: `/gemini-ex` 실행 시 이미 완료된 이전 항목(Row 1 ~ 마지막 완료 Row)은 **처음부터 다시 점검하지 않고 즉시 스킵**하며, 마지막 완료 항목 바로 다음의 **신규 미작업 항목**부터 즉시 착수합니다.
 - **무작업 시 침묵 원칙 (Silent if No-op)**: 크론 작업 실행 시 신규로 개선할 미작업 항목이 없으면 사용자에게 별도의 알림 메시지를 보내지 않고 조용히 대기합니다.
@@ -175,6 +175,7 @@
 - `hero_goods_orders`: 굿즈 주문 내역
 - `hero_refund_requests`: 달러 결제 굿즈 환불 신청 접수 상태 저장
 - `hero_card_marketplace_state_{season}`: 카드 P2P 거래소 로컬 MVP 상태 저장 (판매 목록, 구매 요청, 에스크로/취소 로그, 카운터)
+- `hero_market_first_trade_reward`: 첫 P2P 거래 웰컴 보너스 (+50 SNS) 수령 여부 저장
 - `hero_gacha_pity_{season}`: 카드팩 천장 진행도 저장 (시즌/팩별 현재 횟수, 마지막 보장 시각)
 - `hero_daily_free_summon_{todayDateKey}`: 당일 상점 1회 무료 브론즈 팩 소환 수령 여부 저장
 - `hero_starter_pack_purchased_{season}`: 초심자 1회 한정 스타터 번들 팩 구매 여부 저장

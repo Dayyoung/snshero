@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { HelpCircle, X, ChevronLeft, ChevronRight, TrendingUp, SlidersHorizontal, Sparkles, Bell, Bookmark } from 'lucide-react';
+import { HelpCircle, X, ChevronLeft, ChevronRight, TrendingUp, SlidersHorizontal, Sparkles, Bell, Bookmark, Zap, Gift, CheckCircle2, Flame, ArrowUpRight } from 'lucide-react';
+import { triggerHaptic } from '../lib/haptic';
 import { CARD_DATABASE } from '../cardDatabase';
 import { getMarketplaceFeePolicy, calculateMarketplaceSettlement } from '../content/marketplaceFees';
 import { MarketplacePriceBand } from '../lib/MarketplacePriceBand';
@@ -147,6 +148,11 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
   currentSeason,
   lowSpecMode = false,
 }) => {
+  const userId = user?.uid || 'guest-id';
+  const userName = user?.displayName?.trim() || (language === 'ko' ? '플레이어' : 'Player');
+  const isGuest = userId === 'guest-id';
+  const isOfflineMode = typeof window !== 'undefined' && window.localStorage.getItem('hero_offline_mode') === 'true';
+
   const [marketState, setMarketState] = useState<MarketplaceState>(() => loadMarketplaceState(currentSeason));
   const [rarityFilter, setRarityFilter] = useState<RarityFilter>('all');
   const [buildFocusFilter, setBuildFocusFilter] = useState<BuildFocusFilter>('all');
@@ -205,6 +211,37 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
 
   // ID 558: 가스비 100% 캐시백 토스트
   const [gasRebateNotice, setGasRebateNotice] = useState<number | null>(null);
+
+  // SCR-05 UX: 모바일 서브 탭바 상태 ('browse' | 'create' | 'my_listings' | 'auto_buy')
+  const [activeSubTab, setActiveSubTab] = useState<'browse' | 'create' | 'my_listings' | 'auto_buy'>('browse');
+
+  // SCR-05 Monetization: 유저 보유 실시간 SNS 잔액 연동
+  const [userSns, setUserSns] = useState<number>(() => {
+    if (typeof window === 'undefined') return 0;
+    return Number(localStorage.getItem('hero_sns') || localStorage.getItem('hero_sns_points') || '0');
+  });
+
+  useEffect(() => {
+    const handleSyncSns = () => {
+      setUserSns(Number(localStorage.getItem('hero_sns') || localStorage.getItem('hero_sns_points') || '0'));
+    };
+    window.addEventListener('snshero_currency_updated', handleSyncSns);
+    window.addEventListener('snshero_sns_updated', handleSyncSns);
+    window.addEventListener('storage', handleSyncSns);
+    return () => {
+      window.removeEventListener('snshero_currency_updated', handleSyncSns);
+      window.removeEventListener('snshero_sns_updated', handleSyncSns);
+      window.removeEventListener('storage', handleSyncSns);
+    };
+  }, []);
+
+  // SCR-05 FTUE: 첫 거래 웰컴 보조금 (+50 SNS) 상태
+  const [firstTradeRewardClaimed, setFirstTradeRewardClaimed] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('hero_market_first_trade_reward') === 'true';
+  });
+  const [firstTradeBonusToast, setFirstTradeBonusToast] = useState<boolean>(false);
+  const [tradeSuccessModalListing, setTradeSuccessModalListing] = useState<Listing | null>(null);
 
   const saveAutoBuyOrder = (cardId: number, targetPrice: number) => {
     setAutoBuyOrders((prev) => {
@@ -286,10 +323,6 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
     }
   }, [marketState.listings, watchlist, language]);
 
-  const userId = user?.uid || 'guest-id';
-  const userName = user?.displayName?.trim() || (language === 'ko' ? '플레이어' : 'Player');
-  const isGuest = userId === 'guest-id';
-  const isOfflineMode = typeof window !== 'undefined' && window.localStorage.getItem('hero_offline_mode') === 'true';
   const feePolicy = useMemo(() => getMarketplaceFeePolicy(currentSeason), [currentSeason]);
 
   useEffect(() => {
@@ -374,6 +407,29 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
       })
       .sort((a, b) => b.askPrice - a.askPrice);
   }, [buildFocusFilter, elementFilter, marketState.listings, minStatDown, minStatLeft, minStatRight, minStatUp, rarityFilter, tradeTypeFilter]);
+
+  // SCR-05 FTUE: 실시간 시세 대비 10% 이상 저렴한 급매물 (Hot Bargain) 상위 1건 자동 추출
+  const hotBargainListing = useMemo(() => {
+    const activeItems = marketState.listings.filter(
+      (l) => l.status === 'active' && l.sellerId !== userId
+    );
+    if (activeItems.length === 0) return null;
+
+    let bestBargain: { listing: Listing; discountPct: number; recPrice: number } | null = null;
+
+    activeItems.forEach((l) => {
+      const band = MarketplacePriceBand.getInstance().evaluatePriceBand(l.cardId, 0);
+      const recPrice = band.recommendedPrice;
+      if (recPrice > 0 && l.askPrice < recPrice) {
+        const discountPct = Math.round(((recPrice - l.askPrice) / recPrice) * 100);
+        if (discountPct >= 8 && (!bestBargain || discountPct > bestBargain.discountPct)) {
+          bestBargain = { listing: l, discountPct, recPrice };
+        }
+      }
+    });
+
+    return bestBargain;
+  }, [marketState.listings, userId]);
 
   // ID 353: 판매 완료 매물 정산 및 Claim All 핸들러
   const completedListings = useMemo(() => {
@@ -631,6 +687,14 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
 
     updateFeedback('marketplace_feedback_request_created');
 
+    // SCR-05 Dopamine: 거래 체결 성공 햅틱 및 축하 사운드 FX
+    triggerHaptic('victory');
+    try {
+      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2012/2012-preview.mp3');
+      audio.volume = 0.5;
+      audio.play().catch(() => {});
+    } catch {}
+
     // ID 558: P2P 카드 거래 가스비 100% SNS 토큰 캐시백 보조금 (+15 SNS)
     try {
       const curSns = Number(localStorage.getItem('hero_sns') || '1000');
@@ -639,6 +703,21 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
       setGasRebateNotice(15);
       setTimeout(() => setGasRebateNotice(null), 3500);
     } catch {}
+
+    // SCR-05 FTUE: 첫 거래 웰컴 캐시백 보조금 (+50 SNS) 지급
+    if (!firstTradeRewardClaimed) {
+      localStorage.setItem('hero_market_first_trade_reward', 'true');
+      setFirstTradeRewardClaimed(true);
+      try {
+        const curSns = Number(localStorage.getItem('hero_sns') || '1000');
+        localStorage.setItem('hero_sns', String(curSns + 50));
+        window.dispatchEvent(new Event('snshero_sns_updated'));
+        setFirstTradeBonusToast(true);
+        setTimeout(() => setFirstTradeBonusToast(false), 5000);
+      } catch {}
+    }
+
+    setTradeSuccessModalListing(listing);
   };
 
   const handleCancelListing = (listingId: string) => {
@@ -820,10 +899,175 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
           </div>
         )}
 
+        {/* SCR-05 FTUE: 첫 거래 웰컴 캐시백 토스트 */}
+        {firstTradeBonusToast && (
+          <div className="p-3 bg-amber-50 border-2 border-amber-500 text-amber-950 font-mono text-xs flex items-center justify-between shadow-sm animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-center gap-2">
+              <span className="text-base">🎉</span>
+              <span className="font-bold">
+                {language === 'ko'
+                  ? `[첫 거래 웰컴 보너스] 첫 P2P 거래 체결 축하 보조금 +50 SNS가 즉시 지급되었습니다!`
+                  : `[First Trade Welcome] +50 SNS bonus has been credited for your first P2P trade!`}
+              </span>
+            </div>
+            <button onClick={() => setFirstTradeBonusToast(false)} className="text-amber-800 hover:text-black font-black text-xs px-1.5 py-0.5">✕</button>
+          </div>
+        )}
+
+        {/* SCR-05 Monetization & FTUE: 상단 잔액 HUD 및 첫 거래 보너스 가이드 */}
+        <div className="w-full bg-white border border-slate-200 p-3 rounded-none font-mono text-xs flex flex-wrap items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-1.5">
+              <Zap size={14} className="text-amber-500" />
+              <span className="text-slate-500 text-[11px]">{language === 'ko' ? '보유 잔액:' : 'Balance:'}</span>
+              <span className="font-black text-slate-900 text-sm">{userSns.toLocaleString()} SNS</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setView('shop')}
+              className="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-black font-black text-[10px] rounded-xs active:scale-95 transition-all cursor-pointer flex items-center gap-1 shadow-xs"
+            >
+              <span>💎 {language === 'ko' ? 'SNS 충전' : 'Get SNS'}</span>
+              <ArrowUpRight size={11} />
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap text-[10px]">
+            {!firstTradeRewardClaimed ? (
+              <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold flex items-center gap-1 animate-pulse">
+                <Gift size={11} />
+                <span>{language === 'ko' ? '첫 P2P 거래 시 +50 SNS 환급 보너스!' : 'First Trade +50 SNS Bonus!'}</span>
+              </span>
+            ) : (
+              <span className="px-2 py-0.5 bg-slate-100 text-slate-600 border border-slate-200 font-bold flex items-center gap-1">
+                <CheckCircle2 size={11} className="text-emerald-500" />
+                <span>{language === 'ko' ? '첫 거래 웰컴 보너스 완료' : 'First Trade Claimed'}</span>
+              </span>
+            )}
+            <span className="text-slate-300">|</span>
+            <span className="text-slate-600 font-bold">
+              {language === 'ko' ? '수수료 5% · 가스비 100% 무료' : 'Fee 5% · Gas Free'}
+            </span>
+          </div>
+        </div>
+
+        {/* SCR-05 FTUE: 실시간 급매물 (Hot Bargain) 하이라이트 배너 */}
+        {hotBargainListing && (
+          <div className="p-3.5 bg-gradient-to-r from-amber-50 via-yellow-50 to-orange-50 border-2 border-amber-400 text-slate-900 font-mono text-xs rounded-none shadow-sm relative overflow-hidden">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="px-2 py-0.5 bg-amber-500 text-black font-black text-[10px] flex items-center gap-1 animate-pulse">
+                    <Flame size={12} />
+                    <span>HOT BARGAIN</span>
+                  </span>
+                  <span className="font-black text-rose-600 text-xs">
+                    [ {hotBargainListing.discountPct}% OFF 특가 ]
+                  </span>
+                  <span className="text-[10px] text-slate-500">
+                    권장 시세 {hotBargainListing.recPrice.toLocaleString()} SNS 대비
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <h4 className="font-black text-sm text-slate-900">
+                    {getCardTitle(hotBargainListing.listing.cardId)}
+                  </h4>
+                  <span className="text-xs font-black text-indigo-700">
+                    {hotBargainListing.listing.askPrice.toLocaleString()} SNS
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleRequestPurchase(hotBargainListing.listing)}
+                className="w-full sm:w-auto px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-sm active:scale-95 transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 shrink-0"
+              >
+                <span>{language === 'ko' ? '⚡ 급매물 즉시 구매' : '⚡ Buy Bargain'}</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* SCR-05 UX: 모바일 원터치 서브 탭바 (스크롤 피로도 해소) */}
+        <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none font-mono text-xs">
+          <button
+            type="button"
+            onClick={() => setActiveSubTab('browse')}
+            className={cn(
+              "px-3 py-2 rounded-sm font-bold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer min-h-[44px]",
+              activeSubTab === 'browse'
+                ? "bg-slate-900 text-white shadow-xs"
+                : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"
+            )}
+          >
+            <span>🛒</span>
+            <span>{language === 'ko' ? '매물 탐색' : 'Browse'}</span>
+            <span className="px-1 py-0.2 text-[9px] bg-slate-800 text-slate-200 rounded-none">
+              {filteredListings.length}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveSubTab('create')}
+            className={cn(
+              "px-3 py-2 rounded-sm font-bold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer min-h-[44px]",
+              activeSubTab === 'create'
+                ? "bg-slate-900 text-white shadow-xs"
+                : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"
+            )}
+          >
+            <span>➕</span>
+            <span>{language === 'ko' ? '매물 등록' : 'List Card'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveSubTab('my_listings')}
+            className={cn(
+              "px-3 py-2 rounded-sm font-bold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer min-h-[44px]",
+              activeSubTab === 'my_listings'
+                ? "bg-slate-900 text-white shadow-xs"
+                : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"
+            )}
+          >
+            <span>📦</span>
+            <span>{language === 'ko' ? '내 매물 / 체결' : 'My Listings'}</span>
+            {totalClaimableSns > 0 && (
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+            )}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveSubTab('auto_buy')}
+            className={cn(
+              "px-3 py-2 rounded-sm font-bold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer min-h-[44px]",
+              activeSubTab === 'auto_buy'
+                ? "bg-slate-900 text-white shadow-xs"
+                : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"
+            )}
+          >
+            <span>🎯</span>
+            <span>{language === 'ko' ? '자동 매수 예약' : 'Auto-Buy'}</span>
+            {Object.keys(autoBuyOrders).length > 0 && (
+              <span className="px-1 py-0.2 text-[9px] bg-indigo-600 text-white rounded-none">
+                {Object.keys(autoBuyOrders).length}
+              </span>
+            )}
+          </button>
+        </div>
+
         {/* Browse + Create */}
-        <section className="grid lg:grid-cols-[1.1fr_0.9fr] gap-5">
+        <section className={cn(
+          "grid lg:grid-cols-[1.1fr_0.9fr] gap-5",
+          (activeSubTab === 'my_listings' || activeSubTab === 'auto_buy') && "hidden lg:grid"
+        )}>
           {/* Browse Listings */}
-          <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-4 space-y-3">
+          <div className={cn(
+            "rounded-2xl border border-slate-200 bg-white shadow-sm p-4 space-y-3",
+            activeSubTab === 'create' && "hidden lg:block"
+          )}>
             <div className="flex items-center justify-between gap-2 flex-wrap">
               <h2 className="text-base font-black text-slate-900">{t('marketplace_browse_title', language)}</h2>
               <div className="flex flex-wrap gap-1">
@@ -1006,7 +1250,10 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
           </div>
 
           {/* Create Listing */}
-          <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-4 space-y-3">
+          <div className={cn(
+            "rounded-2xl border border-slate-200 bg-white shadow-sm p-4 space-y-3",
+            activeSubTab === 'browse' && "hidden lg:block"
+          )}>
             <h2 className="text-base font-black text-slate-900">{t('marketplace_create_title', language)}</h2>
 
             {feedbackKey && (
@@ -1083,8 +1330,65 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
           </div>
         </section>
 
+        {/* SCR-05 UX: Auto-Buy 자동 매수 예약 관리 패널 */}
+        {activeSubTab === 'auto_buy' && (
+          <div className="rounded-2xl border border-indigo-200 bg-white shadow-sm p-4 space-y-4 font-mono">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100 flex-wrap gap-2">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">🎯</span>
+                <h2 className="text-base font-black text-slate-900">
+                  {language === 'ko' ? '희망 매수가 자동 매수 예약 목록' : 'Auto-Buy Limit Orders'}
+                </h2>
+              </div>
+              <span className="text-xs text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded-sm">
+                {Object.keys(autoBuyOrders).length} {language === 'ko' ? '건 활성 대기' : 'Active Orders'}
+              </span>
+            </div>
+
+            {Object.keys(autoBuyOrders).length === 0 ? (
+              <div className="p-8 text-center text-slate-400 text-xs border border-dashed border-slate-200 rounded-xl space-y-2">
+                <div className="text-2xl">🎯</div>
+                <div className="font-bold text-slate-600">
+                  {language === 'ko' ? '등록된 자동 매수 주문이 없습니다.' : 'No active Auto-Buy limit orders.'}
+                </div>
+                <div className="text-[11px] text-slate-500 max-w-sm mx-auto">
+                  {language === 'ko'
+                    ? '매물 탐색(Browse) 탭에서 원하는 카드의 [🎯 예약] 버튼을 누르면 목표 매수가 이하 등록 시 즉시 알림 및 자동 체결을 준비합니다.'
+                    : 'Click the [🎯 Auto] button on any card in the Browse tab to set your target maximum price.'}
+                </div>
+              </div>
+            ) : (
+              <div className="grid sm:grid-cols-2 gap-3">
+                {Object.entries(autoBuyOrders).map(([cardIdStr, limitPrice]) => {
+                  const cId = Number(cardIdStr);
+                  return (
+                    <div key={cId} className="p-3 bg-indigo-50/60 border border-indigo-200 rounded-xl flex items-center justify-between gap-2 shadow-2xs">
+                      <div className="min-w-0">
+                        <div className="font-black text-sm text-slate-900 truncate">{getCardTitle(cId)}</div>
+                        <div className="text-xs text-indigo-700 font-bold mt-0.5">
+                          {language === 'ko' ? `희망 목표가: ≤ ${limitPrice.toLocaleString()} SNS` : `Limit: ≤ ${limitPrice.toLocaleString()} SNS`}
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeAutoBuyOrder(cId)}
+                        className="px-2.5 py-1 text-xs bg-white border border-rose-200 hover:bg-rose-50 text-rose-600 font-bold rounded-lg cursor-pointer shrink-0 transition-colors"
+                      >
+                        {language === 'ko' ? '주문 취소' : 'Cancel'}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* My Listings + My Requests */}
-        <section className="grid lg:grid-cols-2 gap-5">
+        <section className={cn(
+          "grid lg:grid-cols-2 gap-5",
+          activeSubTab !== 'my_listings' && "hidden lg:grid"
+        )}>
           {/* My Listings */}
           <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-4 space-y-2">
             <div className="flex items-center justify-between gap-2 flex-wrap pb-1 border-b border-slate-100">
@@ -1398,6 +1702,41 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                 {language === 'ko' ? '희망가 저장' : 'Set Auto-Buy'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* SCR-05 Dopamine: P2P 거래 체결 성공 축하 팝업 모달 */}
+      {tradeSuccessModalListing && (
+        <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4 backdrop-blur-xs animate-in fade-in">
+          <div className="w-full max-w-sm bg-white border-2 border-amber-400 p-6 space-y-4 shadow-[4px_4px_0px_rgba(251,191,36,1)] font-mono text-center">
+            <div className="text-4xl animate-bounce">🎉</div>
+            <h3 className="text-base font-black text-slate-900">
+              {language === 'ko' ? 'P2P 거래 체결 완료!' : 'P2P Deal Executed!'}
+            </h3>
+            <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-slate-700 space-y-1">
+              <div className="font-bold text-slate-900">
+                [{getCardTitle(tradeSuccessModalListing.cardId)}]
+              </div>
+              <div className="text-indigo-700 font-black">
+                {tradeSuccessModalListing.askPrice.toLocaleString()} SNS
+              </div>
+              <div className="text-[10px] text-emerald-700 font-bold pt-1">
+                ✓ {language === 'ko' ? '가스비 100% 무료 환급 완료 (+15 SNS)' : 'Gas Fee 100% Rebated (+15 SNS)'}
+              </div>
+            </div>
+            <p className="text-[11px] text-slate-500">
+              {language === 'ko'
+                ? '구매 요청이 안전하게 등록되었습니다. 에스크로 확인 후 인벤토리로 카드가 지급됩니다.'
+                : 'Purchase request safely recorded. Card will be delivered upon escrow confirmation.'}
+            </p>
+            <button
+              type="button"
+              onClick={() => setTradeSuccessModalListing(null)}
+              className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs cursor-pointer active:scale-95 transition-all shadow-xs"
+            >
+              {language === 'ko' ? '확인 완료' : 'Confirm'}
+            </button>
           </div>
         </div>
       )}
