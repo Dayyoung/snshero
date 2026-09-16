@@ -531,6 +531,34 @@ class BattleAudioEngine {
     osc.start();
     osc.stop(ctx.currentTime + 0.22);
   }
+
+  /**
+   * SCR-02-04: 속성 상성 카운터 크리티컬 플립 SFX
+   * - 화/수/지/풍 속성별 맞춤형 크런치 & 에너지 레조넌스 오디오 합성
+   */
+  public playCriticalElementalFlip(element?: string): void {
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    const norm = (element || '').toUpperCase();
+    const baseFreq = (norm === 'FIRE') ? 440 : (norm === 'WATER') ? 523.25 : (norm === 'EARTH' || norm === 'LAND') ? 330 : 659.25;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(baseFreq, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(baseFreq * 2.2, ctx.currentTime + 0.12);
+
+    gain.gain.setValueAtTime(0.35, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.28);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    this.trackSource(osc);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.3);
+  }
 }
 
 export const battleAudio = BattleAudioEngine.getInstance();

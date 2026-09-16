@@ -2869,6 +2869,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   // ID 416: 체인 콤보 플로팅 텍스트
   const [chainComboText, setChainComboText] = useState<string | null>(null);
 
+  // SCR-02-04: 속성 상성 카운터 크리티컬 플립 텍스트
+  const [elementalCriticalText, setElementalCriticalText] = useState<string | null>(null);
+
+  // SCR-02-06: 승리 보상 더블업 수령 완료 여부
+  const [hasDoubledReward, setHasDoubledReward] = useState<boolean>(false);
+
   // ID 411, 391: 판정 수치 비교 툴팁 & 방향 벡터
   const [statComparisonBadge, setStatComparisonBadge] = useState<StatComparisonBadgeInfo | null>(null);
 
@@ -6123,6 +6129,31 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         }, step * 120);
       });
 
+      // SCR-02-04: 속성 상성 카운터 크리티컬 플립 체크 (FIRE > WIND > EARTH > WATER > FIRE)
+      if (flipDetails && flipDetails.length > 0) {
+        const checkElementalAdv = (attElem?: string, defElem?: string) => {
+          const a = (attElem || '').toUpperCase();
+          const d = (defElem || '').toUpperCase();
+          return (a === 'FIRE' && (d === 'WIND' || d === 'AIR')) ||
+                 ((a === 'WIND' || a === 'AIR') && (d === 'EARTH' || d === 'LAND')) ||
+                 ((a === 'EARTH' || a === 'LAND') && d === 'WATER') ||
+                 (a === 'WATER' && d === 'FIRE');
+        };
+
+        const hasElementalCrit = flipDetails.some(d => checkElementalAdv(d.attacker.element, d.victim.element));
+        if (hasElementalCrit) {
+          battleAudio.playCriticalElementalFlip(placedCard.element);
+          setElementalCriticalText(language === 'ko' ? '⚡ 속성 크리티컬! ⚡' : '⚡ ELEMENTAL CRITICAL! ⚡');
+          triggerHaptic('heavy');
+          setTimeout(() => setElementalCriticalText(null), 1800);
+          addLog(language === 'ko'
+            ? '⚡ [속성 크리티컬 (Elemental Critical)] 상성 우위로 상대 카드를 강력하게 뒤집었습니다!'
+            : '⚡ [ELEMENTAL CRITICAL] Overwhelmed opposing unit via elemental affinity!',
+            'victory'
+          );
+        }
+      }
+
       if (flippedIndices.length >= 2) {
         playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3'); // Critical capture sound
         // ID 381: 아나운서 음성/신스 피드백
@@ -6305,6 +6336,46 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     const multiplier = pendingQteMultiplier ?? 1;
     return findBestMove(board, playerHand, aiStrategy as AiStrategy, 'player', multiplier, elementalBoard as any, undefined, gambitConfig, gambitConfig.activeStance);
   }, [gameState, gameOver, turn, isAutoBattle, playerHand, board, aiStrategy, isEvaluating, elementalBoard, pendingQteMultiplier, isLowPerformance, gambitConfig]);
+
+  // SCR-02-05: 모바일 퓨어 터치 1-Tap 스마트 최적 착수 핸들러
+  const handleSmartOneTapMove = async () => {
+    if (turn !== 'player' || isEvaluating || gameOver || playerHand.length === 0) return;
+    const bestMove = recommendedPlayerMove || (() => {
+      const emptyIdx = board.findIndex(c => c === null);
+      if (emptyIdx !== -1 && playerHand.length > 0) return { cardIdx: 0, boardIdx: emptyIdx };
+      return null;
+    })();
+    if (!bestMove) return;
+
+    triggerHaptic('light');
+    setSelectedCardIdx(bestMove.cardIdx);
+    setSelectedCardSide('player');
+    await applyPlayerMove(bestMove.cardIdx, bestMove.boardIdx);
+  };
+
+  // SCR-02-06: 승리 보상 2배 더블업 핸들러
+  const handleDoubleUpReward = () => {
+    if (hasDoubledReward || rewardEarned <= 0) return;
+    if (sns < 20) {
+      triggerAlert(
+        language === 'ko' ? 'SNS 토큰이 부족합니다. (필요: 20 SNS)' : 'Insufficient SNS tokens. (Required: 20 SNS)',
+        language === 'ko' ? '잔액 부족' : 'Insufficient Balance'
+      );
+      return;
+    }
+    const bonusToAdd = rewardEarned;
+    updateSns(bonusToAdd - 20);
+    setRewardEarned(prev => prev * 2);
+    setHasDoubledReward(true);
+    battleAudio.playComebackFinisherSfx();
+    triggerHaptic('victory');
+    triggerAlert(
+      language === 'ko'
+        ? `🎉 [보상 2배 더블업!] 승리 보상이 2배로 증가하여 총 +${rewardEarned * 2} SNS를 획득했습니다!`
+        : `🎉 [DOUBLE-UP SUCCESS!] Victory rewards doubled to +${rewardEarned * 2} SNS!`,
+      language === 'ko' ? '더블업 성공' : 'Double-Up Success'
+    );
+  };
 
   const handleCardClick = (idx: number, side: 'player' | 'ai' = 'player') => {
     if (gameOver) return;
@@ -18078,6 +18149,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         </div>
       )}
 
+      {/* SCR-02-04: 속성 상성 카운터 크리티컬 플립 플로팅 배너 */}
+      {elementalCriticalText && (
+        <div className="fixed top-36 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
+          <div className="px-4 py-2 bg-gradient-to-r from-amber-600/95 via-rose-600/95 to-orange-600/95 border-2 border-yellow-300 text-yellow-100 font-mono font-black text-xs sm:text-sm rounded-sm shadow-[0_0_24px_rgba(234,179,8,0.85)] animate-bounce tracking-tight flex items-center gap-1.5">
+            <span>🔥</span>
+            <span>{elementalCriticalText}</span>
+            <span>⚡</span>
+          </div>
+        </div>
+      )}
+
       {/* COMPACT 1-LINE SCORE & TURN STATUS BAR (Relocated Below Board / Above Player Hand) */}
       {!gameOver && gameState === 'playing' && (
         <div className={cn(
@@ -18230,14 +18312,29 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           </div>
 
           {/* Row 66: Player Hand Cards & Deck Stack Remaining Counter Badge */}
-          <div className="flex items-center gap-1 bg-slate-900/90 text-slate-300 text-[8px] sm:text-[9px] font-mono font-bold px-2 py-0.5 rounded-sm border border-slate-700/60 shadow-xs backdrop-blur-xs pointer-events-auto">
-            <span className="text-cyan-400 font-black">
-              {language === 'ko' ? `손패 ${playerHand.length}장` : `Hand: ${playerHand.length}`}
-            </span>
-            <span className="text-slate-500">/</span>
-            <span className="text-amber-400 font-black">
-              {language === 'ko' ? `잔여 ${Math.max(0, 5 - (9 - board.filter(c => c !== null).length - opponentHand.length))}장` : `Deck: ${Math.max(0, 5 - (9 - board.filter(c => c !== null).length - opponentHand.length))}`}
-            </span>
+          <div className="flex items-center gap-1.5 pointer-events-auto">
+            {/* SCR-02-05: 모바일 퓨어 터치 1-Tap 스마트 최적 착수 버튼 */}
+            {turn === 'player' && !isEvaluating && !gameOver && playerHand.length > 0 && (
+              <button
+                type="button"
+                onClick={handleSmartOneTapMove}
+                className="px-2.5 py-1 rounded-sm bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-mono text-[10px] sm:text-xs font-black uppercase tracking-tight flex items-center gap-1 shadow-md active:scale-95 transition-all cursor-pointer border border-amber-300 animate-pulse"
+                title={language === 'ko' ? 'AI 추천 최적 카드와 위치로 원클릭 즉시 착수' : 'One-Tap Smart Play'}
+              >
+                <Zap size={13} className="text-slate-950 fill-current" />
+                <span>{language === 'ko' ? '⚡ 스마트 착수' : '⚡ Smart Play'}</span>
+              </button>
+            )}
+
+            <div className="flex items-center gap-1 bg-slate-900/90 text-slate-300 text-[8px] sm:text-[9px] font-mono font-bold px-2 py-0.5 rounded-sm border border-slate-700/60 shadow-xs backdrop-blur-xs">
+              <span className="text-cyan-400 font-black">
+                {language === 'ko' ? `손패 ${playerHand.length}장` : `Hand: ${playerHand.length}`}
+              </span>
+              <span className="text-slate-500">/</span>
+              <span className="text-amber-400 font-black">
+                {language === 'ko' ? `잔여 ${Math.max(0, 5 - (9 - board.filter(c => c !== null).length - opponentHand.length))}장` : `Deck: ${Math.max(0, 5 - (9 - board.filter(c => c !== null).length - opponentHand.length))}`}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -19084,6 +19181,31 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     <Flame size={18} className="text-yellow-300 animate-bounce" />
                     <span>{language === 'ko' ? '⚡ 1장 차이 석패! [리벤지 찬스 +2 버프 받기]' : '⚡ REVENGE CHANCE (+2 Buff & Rematch)'}</span>
                   </button>
+                )}
+
+                {/* SCR-02-06: 승리 보상 더블업 2배 수령 찬스 (Double-Up Victory Chest) */}
+                {winner === 'player' && rewardEarned > 0 && (
+                  <div className="w-full my-1">
+                    {!hasDoubledReward ? (
+                      <button
+                        type="button"
+                        onClick={handleDoubleUpReward}
+                        className="w-full py-3.5 px-4 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:brightness-110 text-slate-950 font-mono font-black text-xs sm:text-sm rounded-2xl border-2 border-yellow-300 shadow-[0_0_20px_rgba(251,191,36,0.6)] flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all animate-pulse"
+                      >
+                        <Sparkles size={16} className="text-slate-950 fill-current" />
+                        <span>
+                          {language === 'ko' 
+                            ? `[ 💎 20 SNS로 승리 보상 2배 수령 (현재 +${rewardEarned} → +${rewardEarned * 2} SNS!) ]`
+                            : `[ 💎 Double-Up Reward (+${rewardEarned * 2} SNS for 20 SNS) ]`}
+                        </span>
+                      </button>
+                    ) : (
+                      <div className="w-full py-2.5 px-3 bg-amber-950/80 border border-amber-500/60 rounded-xl text-amber-300 font-mono text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm">
+                        <CheckCircle2 size={14} className="text-amber-400" />
+                        <span>{language === 'ko' ? '✓ 승리 보상 2배 더블업 적용 완료!' : '✓ 2x Double-Up Reward Applied!'}</span>
+                      </div>
+                    )}
+                  </div>
                 )}
 
                 {/* Item 42: 전투 승리 화면 내 '다음 스테이지 바로 진행 (Next Stage)' 연속 플레이 버튼 */}
