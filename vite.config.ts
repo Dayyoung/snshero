@@ -90,16 +90,6 @@ export default defineConfig(({mode}) => {
                 }
               }
 
-              // Support /pacpik, /pacpik/, /pacpik.html, and /pacpik.txt direct plain text serving for Pacpik games verification
-              if (/^\/pacpik(\/|\.html|\.txt|\?|$)/i.test(decodedUrl) || /^\/pacpik(\/|\.html|\.txt|\?|$)/i.test(rawUrl)) {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-                res.setHeader('Cache-Control', 'no-cache');
-                res.setHeader('Access-Control-Allow-Origin', '*');
-                res.end('pacpik-games-verification=1a69b39b20f76c21ab6e49dc8dc6c9c42d5f83d54c2dc5b6\n');
-                return;
-              }
-
               // Support /mall and /mall/* direct static serving
               if (/^\/mall(\/|$)/i.test(decodedUrl) || /^\/mall(\/|$)/i.test(rawUrl)) {
                 let mallRelPath = decodedUrl.replace(/^\/mall(\/)?/i, '');
@@ -213,7 +203,7 @@ export default defineConfig(({mode}) => {
         }
       }
     ],
-    base: process.env.VITE_BASE_PATH || '/',
+    base: process.env.VITE_BASE_PATH || './',
     build: {
       outDir: 'dist',
       assetsDir: 'assets',
@@ -278,10 +268,11 @@ export default defineConfig(({mode}) => {
       ],
     },
     server: {
-      // HMR uses the same port (3000) so Tailscale Serve/Funnel proxies both HTTP & WS without connection failure
+      // HMR is disabled in AI Studio via DISABLE_HMR env var.
+      // Do not modify—file watching is disabled to prevent flickering during agent edits.
       host: '0.0.0.0',
       port: 3000,
-      hmr: process.env.DISABLE_HMR !== 'true' ? true : false,
+      hmr: process.env.DISABLE_HMR !== 'true' ? { port: 24680 } : false,
       allowedHosts: true,
       fs: {
         allow: ['.', 'public'],
@@ -293,11 +284,6 @@ export default defineConfig(({mode}) => {
           rewrite: (p) => p.replace(/^\/api-mlx/, ''),
         }
       }
-    },
-    preview: {
-      host: '0.0.0.0',
-      port: 5173,
-      allowedHosts: true,
     },
   };
 });
