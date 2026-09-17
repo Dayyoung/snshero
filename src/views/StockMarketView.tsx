@@ -103,8 +103,15 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
   // SCR-06: Mobile sub tab navigation ('market' | 'portfolio' | 'dividends' | 'volume')
   const [activeSubTab, setActiveSubTab] = useState<'market' | 'portfolio' | 'dividends' | 'volume'>('market');
 
-  // SCR-06-06: VIP Trader Pass Modal State
+  // SCR-06-06: VIP Trader Pass State
   const [isVipModalOpen, setIsVipModalOpen] = useState(false);
+  const [isVipTraderActive, setIsVipTraderActive] = useState<boolean>(() => {
+    try {
+      return typeof window !== 'undefined' && localStorage.getItem('hero_vip_trader_pass_active') === 'true';
+    } catch {
+      return false;
+    }
+  });
 
   // SCR-06: First trade welcome bonus (+30 SNS)
   const [hasClaimedFirstTradeBonus, setHasClaimedFirstTradeBonus] = useState<boolean>(() => {
@@ -510,7 +517,8 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
 
     const unitPriceSns = getCardSnsPrice(selectedCardId);
     const subtotalSns = unitPriceSns * tradeAmount;
-    const tradingFeeSns = Math.max(1, Math.round(subtotalSns * 0.015)); // 1.5% gas/trading fee
+    const feeRate = isVipTraderActive ? 0.0075 : 0.015; // VIP 50% 할인 (1.5% -> 0.75%)
+    const tradingFeeSns = Math.max(1, Math.round(subtotalSns * feeRate));
     const finalTotalSns = tradeMode === 'buy' ? (subtotalSns + tradingFeeSns) : Math.max(1, subtotalSns - tradingFeeSns);
     const currentQty = inventory[selectedCardId]?.quantity || 0;
 
@@ -1295,7 +1303,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                 </div>
 
                 {/* SCR-06-05: 1-Tap 25% / 50% / 75% / 100% 퀵 프리셋 버튼 */}
-                <div className="grid grid-cols-4 gap-1.5 pt-1">
+                <div className="grid grid-cols-4 gap-1.5 pt-1 font-mono">
                   {[25, 50, 75, 100].map((pct) => {
                     return (
                       <button
@@ -1314,37 +1322,50 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                             setTradeAmount(amt);
                           }
                         }}
-                        className="py-1.5 bg-[#f8f7f7] hover:bg-amber-100 border border-[rgba(15,0,0,0.12)] hover:border-amber-400 text-[10px] font-black rounded-sm text-[#201d1d] active:scale-95 transition-all cursor-pointer text-center"
+                        className="min-h-[40px] py-1.5 bg-[#f8f7f7] hover:bg-amber-100 border border-[rgba(15,0,0,0.12)] hover:border-amber-400 text-xs font-black rounded-sm text-[#201d1d] active:scale-95 transition-all cursor-pointer text-center flex items-center justify-center shadow-xs"
                       >
-                        {pct === 100 ? (language === 'ko' ? '풀매수' : 'MAX') : `${pct}%`}
+                        {pct === 100 
+                          ? (tradeMode === 'buy' ? (language === 'ko' ? '풀매수' : 'MAX') : (language === 'ko' ? '전량매도' : 'ALL')) 
+                          : `${pct}%`}
                       </button>
                     );
                   })}
                 </div>
 
                 {/* SCR-06-06: VIP Pass & Stop Loss Insurance CTA */}
-                <div className="pt-1">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsVipModalOpen(true);
-                      triggerHaptic('light');
-                    }}
-                    className="w-full py-2 px-2.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-900 rounded-sm text-[10px] font-bold flex items-center justify-between transition-colors cursor-pointer"
-                  >
-                    <div className="flex items-center gap-1.5">
-                      <Sparkles size={12} className="text-indigo-600" />
-                      <span>{language === 'ko' ? 'VIP 트레이더 패스 (수수료 50% 할인 + 스탑로스)' : 'VIP Pass (50% Fee Cut)'}</span>
+                <div className="pt-1 font-mono">
+                  {isVipTraderActive ? (
+                    <div className="w-full min-h-[44px] py-2 px-3 bg-emerald-500/10 border border-emerald-500/40 text-emerald-700 dark:text-emerald-300 rounded-sm text-xs font-bold flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <Sparkles size={14} className="text-emerald-500" />
+                        <span>{language === 'ko' ? '👑 VIP 트레이더 패스 활성화 (수수료 50% 감면)' : '👑 VIP Trader Active (50% Fee Cut)'}</span>
+                      </div>
+                      <span className="text-[10px] bg-emerald-500 text-black font-black px-1.5 py-0.5 rounded-xs">ACTIVE</span>
                     </div>
-                    <span className="font-black text-indigo-700">₩1,500</span>
-                  </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsVipModalOpen(true);
+                        triggerHaptic('light');
+                      }}
+                      className="w-full min-h-[44px] py-2 px-3 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-900 rounded-sm text-xs font-bold flex items-center justify-between transition-colors cursor-pointer active:scale-98 shadow-xs"
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <Sparkles size={14} className="text-indigo-600" />
+                        <span>{language === 'ko' ? 'VIP 트레이더 패스 (수수료 50% 할인 + 스탑로스)' : 'VIP Pass (50% Fee Cut)'}</span>
+                      </div>
+                      <span className="font-black text-indigo-700">₩1,500</span>
+                    </button>
+                  )}
                 </div>
 
                 {/* Itemized Transaction Breakdown (Row 13) */}
                 {(() => {
                   const unitPrice = getCardSnsPrice(selectedCardId);
                   const subtotal = unitPrice * tradeAmount;
-                  const fee = Math.max(1, Math.round(subtotal * 0.015));
+                  const feeRate = isVipTraderActive ? 0.0075 : 0.015;
+                  const fee = Math.max(1, Math.round(subtotal * feeRate));
                   const netTotal = tradeMode === 'buy' ? (subtotal + fee) : Math.max(1, subtotal - fee);
 
                   return (
@@ -1579,6 +1600,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
           onSubscribe={() => {
             try {
               localStorage.setItem('hero_vip_trader_pass_active', 'true');
+              setIsVipTraderActive(true);
             } catch {}
           }}
           onClose={() => setIsVipModalOpen(false)}
