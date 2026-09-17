@@ -11,6 +11,7 @@ import { cn, getAssetUrl } from '../lib/utils';
 import { PageHeader } from '../components/PageHeader';
 import { usePredictionMarkets, Market, PredictionBet } from '../hooks/usePredictionMarkets';
 import { triggerHaptic } from '../lib/haptic';
+import { PredictionBoosterModal } from '../components/PredictionBoosterModal';
 
 interface PredictionMarketViewProps {
   language: Language;
@@ -81,6 +82,9 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
   const [localAlert, setLocalAlert] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [activeTab, setActiveTab] = useState<'markets' | 'bets' | 'stats'>('markets');
   
+  // SCR-07-06: Prediction Booster Modal State & Active Booster
+  const [isBoosterModalOpen, setIsBoosterModalOpen] = useState(false);
+  const [activeBooster, setActiveBooster] = useState<'multiplier' | 'insurance' | null>(null);
   // Dopamine Celebratory Modals
   const [betSuccessModal, setBetSuccessModal] = useState<{
     isOpen: boolean;
@@ -1067,6 +1071,43 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
                   )}
                 </div>
 
+                {/* SCR-07-06: Prediction Booster Selector */}
+                <div className="p-2.5 bg-indigo-950/30 border border-indigo-500/30 rounded-xl space-y-1.5 font-mono">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-indigo-300 font-bold flex items-center gap-1">
+                      <Zap size={13} className="text-amber-400" />
+                      {language === 'ko' ? '베팅 부스터' : 'Bet Booster'}
+                    </span>
+                    {activeBooster ? (
+                      <button
+                        type="button"
+                        onClick={() => setActiveBooster(null)}
+                        className="text-[10px] text-rose-400 hover:underline cursor-pointer"
+                      >
+                        [{language === 'ko' ? '해제' : 'Remove'}]
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setIsBoosterModalOpen(true)}
+                        className="text-[11px] font-bold text-amber-400 hover:text-amber-300 underline cursor-pointer"
+                      >
+                        [{language === 'ko' ? '+ 부스터 선택' : '+ Select Booster'}]
+                      </button>
+                    )}
+                  </div>
+                  {activeBooster === 'multiplier' && (
+                    <div className="text-[11px] text-amber-300 font-bold bg-amber-500/10 px-2 py-1 rounded border border-amber-500/30">
+                      ⚡ {language === 'ko' ? '1.5배 슈퍼 배당률 부스터 활성화!' : '1.5x Super Multiplier Booster Active!'}
+                    </div>
+                  )}
+                  {activeBooster === 'insurance' && (
+                    <div className="text-[11px] text-sky-300 font-bold bg-sky-500/10 px-2 py-1 rounded border border-sky-500/30">
+                      🛡️ {language === 'ko' ? '50% 원금 페이백 보험 활성화!' : '50% Principal Payback Insurance Active!'}
+                    </div>
+                  )}
+                </div>
+
                 {/* Estimate output summary */}
                 <div className="space-y-1.5 text-xs font-semibold text-slate-700 border-t border-slate-150 pt-4">
                   <div className="flex justify-between">
@@ -1078,7 +1119,8 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
                   <div className="flex justify-between font-bold text-sm text-slate-850 border-t border-slate-100 pt-2">
                     <span>{language === 'ko' ? '예상 보상 금액' : 'Est. Reward'}:</span>
                     <span className="text-indigo-650 font-bold">
-                      +{Math.round(betAmount / (betOutcome === 'Yes' ? selectedMarket.outcomePrices[0] : selectedMarket.outcomePrices[1])).toLocaleString()} SNS
+                      +{Math.round((betAmount / (betOutcome === 'Yes' ? selectedMarket.outcomePrices[0] : selectedMarket.outcomePrices[1])) * (activeBooster === 'multiplier' ? 1.5 : 1)).toLocaleString()} SNS
+                      {activeBooster === 'multiplier' && <span className="text-[10px] text-amber-500 ml-1">(+50% 부스트)</span>}
                     </span>
                   </div>
                 </div>
@@ -1572,6 +1614,16 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
+      {/* SCR-07-06: Prediction Booster Modal */}
+      <PredictionBoosterModal
+        isOpen={isBoosterModalOpen}
+        onClose={() => setIsBoosterModalOpen(false)}
+        language={language}
+        onSelectBooster={(booster) => {
+          setActiveBooster(booster);
+          setIsBoosterModalOpen(false);
+        }}
+      />
     </div>
   );
 };

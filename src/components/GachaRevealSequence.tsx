@@ -349,12 +349,27 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
     handleFastSkip();
   };
 
+  const lastTapRef = useRef<number>(0);
+  const handleContainerTap = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    // Don't trigger if clicking interactive buttons
+    if (target.closest('button') || target.closest('a') || target.closest('input')) return;
+    const now = Date.now();
+    if (now - lastTapRef.current < 350) {
+      handleFastSkip();
+      triggerHaptic('heavy');
+    }
+    lastTapRef.current = now;
+  };
+
   return (
     <motion.div
       key="shop-gacha-reveal-sequence"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      onClick={handleContainerTap}
+      onDoubleClick={handleFastSkip}
       className="fixed inset-0 z-[500] w-full h-[100dvh] min-h-[100dvh] overflow-y-auto bg-slate-950/98 px-2 py-2.5 sm:px-4 sm:py-4 text-white backdrop-blur-2xl select-none flex flex-col justify-between"
     >
       {/* 백그라운드 빛 빔 & 파티클 오라 */}

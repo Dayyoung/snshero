@@ -176,6 +176,7 @@ import { SportsmanshipModal } from '../components/SportsmanshipModal';
 import { FriendRivalryModal } from '../components/FriendRivalryModal';
 import { SpectatorModal } from '../components/SpectatorModal';
 import { RevengeChanceModal } from '../components/RevengeChanceModal';
+import { MiniGameChampionshipTicker } from '../components/MiniGameChampionshipTicker';
 
 
 
@@ -13734,9 +13735,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             );
           })()}
 
+          {/* SCR-09-06: Weekly Championship Ticker */}
+          <MiniGameChampionshipTicker language={language} />
+
           {/* Mode Search & Category Filter Tabs & SCR-09-02: Element Filter & Unowned Filter */}
           <div className="flex flex-col gap-2.5 w-full pt-1 font-mono">
-            {/* 1. 카테고리 탭 */}
+            {/* 1. 카테고리 탭 & SCR-09-05: 셔플 즉시 시작 원터치 버튼 */}
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs flex-1">
                 {[
@@ -13767,6 +13771,26 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   );
                 })}
               </div>
+
+              {/* SCR-09-05: 48px+ 원터치 셔플 랜덤 시작 버튼 */}
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic('heavy');
+                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                  const pool = filteredModes.length > 0 ? filteredModes : modes;
+                  const randomMode = pool[Math.floor(Math.random() * pool.length)];
+                  if (randomMode && randomMode.onClick) {
+                    randomMode.onClick();
+                  }
+                }}
+                className="min-h-[48px] px-3.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-black font-black text-xs uppercase tracking-wider rounded-none flex items-center gap-1.5 shrink-0 cursor-pointer shadow-md active:scale-95 border border-amber-400"
+                title="랜덤 모드 즉시 플레이"
+              >
+                <span className="text-base">🎲</span>
+                <span className="hidden sm:inline">{language === 'ko' ? '랜덤 즉시 시작' : 'Shuffle Play'}</span>
+                <span className="sm:hidden">{language === 'ko' ? '셔플' : 'Shuffle'}</span>
+              </button>
             </div>
 
             {/* 2. SCR-09-02: 6대 속성 필터 칩 & 미보유 목표 전용 토글 칩 */}

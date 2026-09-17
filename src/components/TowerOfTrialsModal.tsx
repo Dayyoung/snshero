@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Trophy, Sparkles, X, Shield, Swords, Gem, Award, Lock, Play, Flame, CheckCircle, Shirt, Crown } from 'lucide-react';
 import { playSfx } from '../lib/sound';
 import { triggerHaptic } from '../lib/haptic';
+import { TowerSweepBottomSheet } from './TowerSweepBottomSheet';
+import { TowerBuffRerollModal } from './TowerBuffRerollModal';
 
 interface TowerOfTrialsModalProps {
   isOpen: boolean;
@@ -125,6 +127,9 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
       return [];
     }
   });
+
+  const [isSweepOpen, setIsSweepOpen] = useState(false);
+  const [isRuneModalOpen, setIsRuneModalOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -263,6 +268,33 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
               <span className="font-bold text-amber-300">[{activeTitle}]</span>
             </div>
           )}
+        </div>
+
+        {/* SCR-08-05 & SCR-08-06 Quick Action Bar (44px+ touch targets) */}
+        <div className="grid grid-cols-2 gap-1.5 mb-2.5">
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('light');
+              setIsSweepOpen(true);
+            }}
+            disabled={clearedFloor <= 0}
+            className="min-h-[44px] py-1.5 px-2 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/50 text-amber-300 text-xs font-bold rounded-none flex items-center justify-center gap-1 cursor-pointer active:scale-98 disabled:opacity-40"
+          >
+            <Zap size={14} className="text-amber-400" />
+            <span>{isKo ? '⚡ 원터치 쾌속 소탕' : '⚡ Quick Sweep'}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('light');
+              setIsRuneModalOpen(true);
+            }}
+            className="min-h-[44px] py-1.5 px-2 bg-yellow-500/15 hover:bg-yellow-500/25 border border-yellow-500/50 text-yellow-300 text-xs font-bold rounded-none flex items-center justify-center gap-1 cursor-pointer active:scale-98"
+          >
+            <Crown size={14} className="text-yellow-400" />
+            <span>{isKo ? '👑 정복자 황금 룬' : '👑 Golden Rune'}</span>
+          </button>
         </div>
 
         {/* Sub Navigation Tab Bar (44px+ 터치 타깃) */}
@@ -460,6 +492,24 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
           <span>{isKo ? '[ 닫기 ]' : '[ Close ]'}</span>
         </button>
       </motion.div>
+
+      {/* SCR-08-05: Tower Instant Sweep Bottom Sheet */}
+      <TowerSweepBottomSheet
+        isOpen={isSweepOpen}
+        onClose={() => setIsSweepOpen(false)}
+        maxClearedFloor={clearedFloor}
+        language={language}
+        onSweepComplete={(floor, count, rewards) => {
+          // Update bounty / floor rewards
+        }}
+      />
+
+      {/* SCR-08-06: Golden Rune Conqueror Pack Modal */}
+      <TowerBuffRerollModal
+        isOpen={isRuneModalOpen}
+        onClose={() => setIsRuneModalOpen(false)}
+        language={language}
+      />
     </div>
   );
 

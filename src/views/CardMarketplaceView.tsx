@@ -10,6 +10,8 @@ import { PageHeader } from '../components/PageHeader';
 import { MarketplaceCardTradeModal } from '../components/MarketplaceCardTradeModal';
 import { MarketEscrowModal } from '../components/MarketEscrowModal';
 import { MarketSparkline } from '../components/MarketSparkline';
+import { MarketplaceSortBottomSheet, MarketSortOption } from '../components/MarketplaceSortBottomSheet';
+import { GoldenDealPassModal } from '../components/GoldenDealPassModal';
 import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
 import type { DatabaseCard, InventoryRecord, Language, Listing, Offer, TradeAuditLog, TradeStatus, ViewType } from '../types';
@@ -175,6 +177,13 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
   const [tradeModalListing, setTradeModalListing] = useState<Listing | null>(null);
   const [tradeTypeFilter, setTradeTypeFilter] = useState<'all' | 'instant' | 'auction'>('all');
   const [elementFilter, setElementFilter] = useState<'all' | 'FIRE' | 'WATER' | 'EARTH' | 'WIND'>('all');
+
+  // SCR-05-05: Market Sort Option State & Bottom Sheet
+  const [marketSortOption, setMarketSortOption] = useState<MarketSortOption>('latest');
+  const [isSortBottomSheetOpen, setIsSortBottomSheetOpen] = useState(false);
+
+  // SCR-05-06: Golden Deal Alert Pass Modal
+  const [isGoldenDealModalOpen, setIsGoldenDealModalOpen] = useState(false);
 
   // ID 338: 3단계 안전 에스크로 확인 모달 상태
   const [escrowListing, setEscrowListing] = useState<Listing | null>(null);
@@ -406,8 +415,17 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
         if (minStatLeft > 0 && l < minStatLeft) return false;
         return true;
       })
-      .sort((a, b) => b.askPrice - a.askPrice);
-  }, [buildFocusFilter, elementFilter, marketState.listings, minStatDown, minStatLeft, minStatRight, minStatUp, rarityFilter, tradeTypeFilter]);
+      .sort((a, b) => {
+        if (marketSortOption === 'price_asc') return a.askPrice - b.askPrice;
+        if (marketSortOption === 'price_desc') return b.askPrice - a.askPrice;
+        if (marketSortOption === 'power_desc') {
+          const cardA = CARD_DATABASE[a.cardId];
+          const cardB = CARD_DATABASE[b.cardId];
+          return (cardB?.power || 0) - (cardA?.power || 0);
+        }
+        return b.updatedAt.localeCompare(a.updatedAt);
+      });
+  }, [buildFocusFilter, elementFilter, marketSortOption, marketState.listings, minStatDown, minStatLeft, minStatRight, minStatUp, rarityFilter, tradeTypeFilter]);
 
   // SCR-05 FTUE: 실시간 시세 대비 10% 이상 저렴한 급매물 (Hot Bargain) 상위 1건 자동 추출
   const hotBargainListing = useMemo(() => {
@@ -1058,6 +1076,41 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                 {Object.keys(autoBuyOrders).length}
               </span>
             )}
+          </button>
+        </div>
+
+        {/* SCR-05-05 & SCR-05-06: 1-Tap Quick Sort & Golden Deal Pass Action Bar */}
+        <div className="flex items-center justify-between gap-2 bg-slate-900 text-white p-2.5 rounded-xl font-mono text-xs shadow-sm">
+          <div className="flex items-center gap-1.5">
+            <span className="text-amber-400 font-bold text-[10px] uppercase">SORT:</span>
+            <button
+              type="button"
+              onClick={() => {
+                setIsSortBottomSheetOpen(true);
+                triggerHaptic('light');
+              }}
+              className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white rounded-lg border border-white/10 flex items-center gap-1 cursor-pointer"
+            >
+              <SlidersHorizontal size={12} className="text-amber-400" />
+              <span>
+                {marketSortOption === 'price_asc' ? (language === 'ko' ? '최저가순' : 'Lowest') :
+                 marketSortOption === 'price_desc' ? (language === 'ko' ? '최고가순' : 'Highest') :
+                 marketSortOption === 'power_desc' ? (language === 'ko' ? '전투력순' : 'Power') :
+                 (language === 'ko' ? '최신순' : 'Latest')}
+              </span>
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              setIsGoldenDealModalOpen(true);
+              triggerHaptic('medium');
+            }}
+            className="px-2.5 py-1 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-[11px] rounded-lg flex items-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer"
+          >
+            <Bell size={12} className="text-black fill-black" />
+            <span>{language === 'ko' ? '황금 특가 알림 패스' : 'Golden Deal Pass'}</span>
           </button>
         </div>
 
@@ -1742,6 +1795,29 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
             </button>
           </div>
         </div>
+      )}
+
+      {/* SCR-05-05: Marketplace Sort Bottom Sheet */}
+      {isSortBottomSheetOpen && (
+        <MarketplaceSortBottomSheet
+          currentSort={marketSortOption}
+          onSelectSort={setMarketSortOption}
+          language={language}
+          onClose={() => setIsSortBottomSheetOpen(false)}
+        />
+      )}
+
+      {/* SCR-05-06: Golden Deal Alert Pass Modal */}
+      {isGoldenDealModalOpen && (
+        <GoldenDealPassModal
+          language={language}
+          onSubscribe={() => {
+            try {
+              localStorage.setItem('hero_golden_deal_pass_active', 'true');
+            } catch {}
+          }}
+          onClose={() => setIsGoldenDealModalOpen(false)}
+        />
       )}
     </div>
   );

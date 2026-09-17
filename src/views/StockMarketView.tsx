@@ -11,6 +11,7 @@ import { CARD_DATABASE } from '../cardDatabase';
 import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
 import { PageHeader } from '../components/PageHeader';
+import { VipTraderPassModal } from '../components/VipTraderPassModal';
 
 interface StockMarketViewProps {
   language: Language;
@@ -101,6 +102,9 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
 
   // SCR-06: Mobile sub tab navigation ('market' | 'portfolio' | 'dividends' | 'volume')
   const [activeSubTab, setActiveSubTab] = useState<'market' | 'portfolio' | 'dividends' | 'volume'>('market');
+
+  // SCR-06-06: VIP Trader Pass Modal State
+  const [isVipModalOpen, setIsVipModalOpen] = useState(false);
 
   // SCR-06: First trade welcome bonus (+30 SNS)
   const [hasClaimedFirstTradeBonus, setHasClaimedFirstTradeBonus] = useState<boolean>(() => {
@@ -1290,6 +1294,52 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                   </button>
                 </div>
 
+                {/* SCR-06-05: 1-Tap 25% / 50% / 75% / 100% 퀵 프리셋 버튼 */}
+                <div className="grid grid-cols-4 gap-1.5 pt-1">
+                  {[25, 50, 75, 100].map((pct) => {
+                    return (
+                      <button
+                        key={pct}
+                        type="button"
+                        onClick={() => {
+                          triggerHaptic('light');
+                          const unitPrice = getCardSnsPrice(selectedCardId);
+                          if (tradeMode === 'buy') {
+                            const maxBuy = Math.max(1, Math.floor(sns / Math.max(1, unitPrice)));
+                            const amt = Math.max(1, Math.floor(maxBuy * (pct / 100)));
+                            setTradeAmount(amt);
+                          } else {
+                            const currentQty = inventory[selectedCardId]?.quantity || 0;
+                            const amt = Math.max(1, Math.floor(currentQty * (pct / 100)));
+                            setTradeAmount(amt);
+                          }
+                        }}
+                        className="py-1.5 bg-[#f8f7f7] hover:bg-amber-100 border border-[rgba(15,0,0,0.12)] hover:border-amber-400 text-[10px] font-black rounded-sm text-[#201d1d] active:scale-95 transition-all cursor-pointer text-center"
+                      >
+                        {pct === 100 ? (language === 'ko' ? '풀매수' : 'MAX') : `${pct}%`}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* SCR-06-06: VIP Pass & Stop Loss Insurance CTA */}
+                <div className="pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsVipModalOpen(true);
+                      triggerHaptic('light');
+                    }}
+                    className="w-full py-2 px-2.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-900 rounded-sm text-[10px] font-bold flex items-center justify-between transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <Sparkles size={12} className="text-indigo-600" />
+                      <span>{language === 'ko' ? 'VIP 트레이더 패스 (수수료 50% 할인 + 스탑로스)' : 'VIP Pass (50% Fee Cut)'}</span>
+                    </div>
+                    <span className="font-black text-indigo-700">₩1,500</span>
+                  </button>
+                </div>
+
                 {/* Itemized Transaction Breakdown (Row 13) */}
                 {(() => {
                   const unitPrice = getCardSnsPrice(selectedCardId);
@@ -1521,6 +1571,19 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* SCR-06-06: VIP Trader Pass Modal */}
+      {isVipModalOpen && (
+        <VipTraderPassModal
+          language={language}
+          onSubscribe={() => {
+            try {
+              localStorage.setItem('hero_vip_trader_pass_active', 'true');
+            } catch {}
+          }}
+          onClose={() => setIsVipModalOpen(false)}
+        />
+      )}
 
     </div>
   );

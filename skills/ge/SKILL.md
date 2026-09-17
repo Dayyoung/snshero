@@ -12,10 +12,10 @@ description: /gemini-ex의 단축어(축약어). 공개 구글 스프레드시�
 - **공개 CSV URL**: https://docs.google.com/spreadsheets/d/e/2PACX-1vRF82ZJBHIhPsTzzjGm8DFutzw6PtAwqT_iyEB3MG5yKvZrEs354rKHy7YIFIO2zgqKSuRbo62uNyX_/pub?gid=0&single=true&output=csv
 
 ## 수행 절차
-1. **진행 상태 확인 및 완료 항목 건너뛰기 (Skip Completed Rows)**:
-   - `AGENTS.md`의 **"마지막 수정 완료 항목 ID"**를 가장 먼저 확인합니다.
-   - 이전 실행에서 이미 완료된 이전 번호의 항목(Row 1 ~ 마지막 완료 Row)은 **처음부터 다시 점검하지 않고 즉시 제외(Skip)**합니다.
-   - 마지막 완료 Row 번호 바로 다음의 **신규 미작업 항목**만 추출하여 즉시 작업을 시작합니다.
+1. **진행 상태 확인 및 전수 완료 원칙 (Complete All Remaining Tasks)**:
+   - `AGENTS.md`의 **"마지막 수정 완료 항목 ID"**를 확인하고, 이전 완료된 항목(Row 1 ~ 마지막 완료 Row)은 즉시 스킵합니다.
+   - 마지막 완료 항목 바로 다음의 **신규 미작업 항목부터 스프레드시트의 마지막 항목까지 중간에 멈추지 않고 전수 완료**합니다.
+   - 모든 항목이 완료된 이후 스프레드시트에 새롭게 신규 항목이 추가되면, 그 신규 항목부터 순차적으로 이어서 착수합니다.
 2. **신규 미작업 항목 유무 판별 및 무작업 시 침묵 (Silent if No-op)**:
    - 신규로 개선/구현할 미작업 항목이 없는 경우(모든 항목이 이미 완료된 경우), 사용자에게 불필요한 반복 알림 메시지를 보내지 않고 조용히 작업을 종료합니다.
 3. **코드 분석 및 구현**:

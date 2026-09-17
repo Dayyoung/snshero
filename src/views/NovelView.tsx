@@ -24,6 +24,8 @@ import { useCardSkins } from '../hooks/useCardSkins';
 import { getCharacterArtPrompt } from '../content/characterArtPrompts';
 import { ENGLISH_NOVEL_MAP } from '../content/englishNovelMapping';
 import WEBTOON_MANIFEST from '../content/webtoonEpisodeManifest.json';
+import { OneHandReadingController } from '../components/OneHandReadingController';
+import { FastPassModal } from '../components/FastPassModal';
 
 interface WebtoonManifestImage {
   index: number;
@@ -194,6 +196,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
   // Cartoon layout mode: 'scroll' (vertical webtoon strip) or 'slides' (page-by-page carousel)
   const [cartoonDisplayMode, setCartoonDisplayMode] = useState<'scroll' | 'slides'>('scroll');
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(1);
+  const [isFastPassModalOpen, setIsFastPassModalOpen] = useState<boolean>(false);
 
   // Get cartoon image info for a specific episode and scene index (0..20)
   const getCartoonImageInfo = (epNum: number, sceneIdx: number): WebtoonManifestImage | undefined => {
@@ -1856,13 +1859,25 @@ export const NovelView: React.FC<NovelViewProps> = ({
                 </p>
               </div>
 
-              <button
-                onClick={goToNextEpisode}
-                className="px-5 py-2.5 bg-[#201d1d] hover:bg-stone-800 text-white font-bold text-xs rounded-sm shrink-0 flex items-center gap-2 cursor-pointer shadow-xs active:scale-95 transition-all group"
-              >
-                <span>{t('webtoon_next_ep_btn', language)}</span>
-                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
-              </button>
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    setIsFastPassModalOpen(true);
+                  }}
+                  className="min-h-[44px] px-3.5 py-2 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-black font-black text-xs uppercase tracking-wider rounded-sm cursor-pointer shadow-xs active:scale-95 transition-all"
+                >
+                  <span>{language === 'ko' ? '⚡ 얼리액세스' : '⚡ FastPass'}</span>
+                </button>
+                <button
+                  onClick={goToNextEpisode}
+                  className="min-h-[44px] px-5 py-2.5 bg-[#201d1d] hover:bg-stone-800 text-white font-bold text-xs rounded-sm shrink-0 flex items-center gap-2 cursor-pointer shadow-xs active:scale-95 transition-all group"
+                >
+                  <span>{t('webtoon_next_ep_btn', language)}</span>
+                  <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                </button>
+              </div>
             </div>
           ) : (
             <div className="mt-8 p-4 border border-emerald-300 bg-emerald-50 text-emerald-900 rounded-sm text-center text-xs font-bold font-mono">
@@ -2292,6 +2307,20 @@ export const NovelView: React.FC<NovelViewProps> = ({
           <span className="text-[8px] font-bold">TOP</span>
         </button>
       </aside>
+
+      {/* SCR-11-05: One-hand Floating Auto Scroll Controller */}
+      <OneHandReadingController language={language} />
+
+      {/* SCR-11-06: FastPass & Early Access Modal */}
+      <FastPassModal
+        isOpen={isFastPassModalOpen}
+        onClose={() => setIsFastPassModalOpen(false)}
+        nextEpisodeNum={currentEpisodeNum + 1}
+        language={language}
+        onSuccessUnlock={() => {
+          goToNextEpisode();
+        }}
+      />
     </div>
   );
 };
