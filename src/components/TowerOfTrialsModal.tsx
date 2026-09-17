@@ -130,6 +130,8 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
 
   const [isSweepOpen, setIsSweepOpen] = useState(false);
   const [isRuneModalOpen, setIsRuneModalOpen] = useState(false);
+  const [isHudExpanded, setIsHudExpanded] = useState<boolean>(false);
+  const [isActionHubOpen, setIsActionHubOpen] = useState<boolean>(false);
 
   useEffect(() => {
     setMounted(true);
@@ -152,6 +154,46 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
       }
     }
   }, [isOpen]);
+
+  const nextPlayableFloor = Math.min(50, clearedFloor + 1);
+  const currentSectorIndex = Math.min(9, Math.floor((Math.max(1, nextPlayableFloor) - 1) / 5));
+
+  // 10개 섹터 (5층 단위) 아코디언 상태 관리 - 현재 도전 구역만 기본 펼침
+  const [expandedSectors, setExpandedSectors] = useState<Record<number, boolean>>(() => ({
+    [currentSectorIndex]: true
+  }));
+
+  // 모달이 열릴 때 현재 도전 구역 자동 펼침 동기화
+  useEffect(() => {
+    if (isOpen) {
+      setExpandedSectors(prev => ({
+        ...prev,
+        [currentSectorIndex]: true
+      }));
+    }
+  }, [isOpen, currentSectorIndex]);
+
+  const toggleSector = (secIdx: number) => {
+    triggerHaptic('light');
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    setExpandedSectors(prev => ({
+      ...prev,
+      [secIdx]: !prev[secIdx]
+    }));
+  };
+
+  const SECTOR_NAMES = [
+    { ko: '1구역: 입문 수호자 구역', en: 'Sector 1: Novice Guardians', boss: '5F 아케인 로드' },
+    { ko: '2구역: 철벽 방어선 구역', en: 'Sector 2: Iron Rampart', boss: '10F 수호파괴자' },
+    { ko: '3구역: 폭풍 전초기지 구역', en: 'Sector 3: Tempest Outpost', boss: '15F 폭풍 인도자' },
+    { ko: '4구역: 심연의 회랑 구역', en: 'Sector 4: Abyssal Corridor', boss: '20F 심연 지배자' },
+    { ko: '5구역: 홍련 용암로 구역', en: 'Sector 5: Crimson Crucible', boss: '25F 용암 수호령' },
+    { ko: '6구역: 절대 전술사령 구역', en: 'Sector 6: Grand Command', boss: '30F 전술사령관' },
+    { ko: '7구역: 천상 극천도 구역', en: 'Sector 7: Celestial Zenith', boss: '35F 천상 지배자' },
+    { ko: '8구역: 공허 차원단층 구역', en: 'Sector 8: Void Fault', boss: '40F 보이드 파괴자' },
+    { ko: '9구역: 태초 신전성 구역', en: 'Sector 9: Primordial Sanctum', boss: '45F 태초 심판관' },
+    { ko: '10구역: 패왕 정상 성역', en: 'Sector 10: Overlord Apex', boss: '50F 시련의 패왕' },
+  ];
 
   const floors: FloorData[] = Array.from({ length: 50 }, (_, i) => {
     const fl = i + 1;
@@ -182,8 +224,6 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
     };
   });
 
-  const nextPlayableFloor = Math.min(50, clearedFloor + 1);
-
   const handleSelectFloor = (floor: number, isUnlocked: boolean) => {
     if (!isUnlocked) return;
     triggerHaptic('medium');
@@ -201,7 +241,6 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
     triggerHaptic('light');
     playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
     if (activeTitle === title) {
-      // 해제
       localStorage.removeItem(TOWER_ACTIVE_TITLE_KEY);
       setActiveTitle('');
     } else {
@@ -213,99 +252,128 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
   if (!isOpen || !mounted || typeof document === 'undefined') return null;
 
   const content = (
-    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md font-mono select-none pointer-events-auto">
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-xs font-mono select-none pointer-events-auto">
       <motion.div
-        initial={{ opacity: 0, scale: 0.94, y: 16 }}
+        initial={{ opacity: 0, scale: 0.95, y: 16 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.94, y: 16 }}
-        transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-        className="relative w-full max-w-md bg-[#181515] border border-[rgba(255,255,255,0.2)] rounded-none p-3.5 sm:p-4 text-[#fdfcfc] shadow-2xl max-h-[90vh] flex flex-col pointer-events-auto"
+        exit={{ opacity: 0, scale: 0.95, y: 16 }}
+        transition={{ duration: 0.2 }}
+        className="relative w-full max-w-md bg-[#fdfcfc] border border-[#201d1d]/20 rounded-none p-3.5 sm:p-4 text-[#201d1d] shadow-2xl max-h-[90vh] flex flex-col pointer-events-auto overflow-hidden"
       >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.12)] pb-2 mb-2.5">
-          <div className="flex items-center gap-1.5">
-            <Trophy size={16} className="text-amber-400" />
-            <span className="text-xs font-bold uppercase tracking-wider text-amber-300">
-              [ TOWER OF TRIALS (50 FLOORS) ]
+        {/* Header Bar */}
+        <div className="flex items-center justify-between border-b border-[#201d1d]/15 pb-2.5 mb-2.5 bg-stone-100/70 -mx-3.5 -mt-3.5 px-3.5 pt-3">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <Trophy size={16} className="text-amber-600 shrink-0" />
+            <span className="text-xs sm:text-sm font-black tracking-wider text-[#201d1d] truncate">
+              {isKo ? '[🗼 시련의 탑 50F 아레나]' : '[🗼 TOWER OF TRIALS 50F]'}
             </span>
           </div>
-          <button
-            onClick={onClose}
-            aria-label="닫기"
-            className="text-white/60 hover:text-white p-1 rounded-sm border border-transparent hover:border-white/20 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer active:scale-95"
-          >
-            <X size={16} />
-          </button>
+          
+          <div className="flex items-center gap-1.5 shrink-0">
+            {/* Quick Action Hub Button */}
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('light');
+                setIsActionHubOpen(true);
+              }}
+              className="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-black rounded-sm flex items-center gap-1 cursor-pointer transition active:scale-95"
+              title="소탕 및 황금 룬 허브"
+            >
+              <Zap size={11} className="text-amber-600" />
+              <span>{isKo ? '[특수 기능 ▾]' : '[Features ▾]'}</span>
+            </button>
+
+            <button
+              onClick={onClose}
+              aria-label="닫기"
+              className="px-2 py-1 text-xs font-bold border border-[#201d1d]/20 hover:bg-[#201d1d] hover:text-white rounded-sm cursor-pointer transition"
+            >
+              [x]
+            </button>
+          </div>
         </div>
 
-        {/* Top Progress & Reward Summary HUD */}
-        <div className="bg-[#120f0f] border border-white/10 p-2.5 rounded-none mb-2.5 space-y-2">
-          <div className="flex items-center justify-between text-xs font-bold">
-            <span className="text-amber-300 flex items-center gap-1.5">
-              <Crown size={14} className="text-amber-400" />
-              {isKo ? `최고 정복: ${clearedFloor}층 / 50층` : `Record: Floor ${clearedFloor} / 50`}
-            </span>
-            <span className="text-cyan-300 flex items-center gap-1 text-[11px]">
-              <Gem size={12} />
-              {isKo ? `누적 획득: ${clearedFloor * 15} 다이아` : `Bounty: ${clearedFloor * 15} Gems`}
-            </span>
-          </div>
-
-          {/* Progress Bar */}
-          <div className="w-full bg-black/60 h-2 border border-white/15 overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-amber-500 to-yellow-400 transition-all duration-300"
-              style={{ width: `${Math.min(100, (clearedFloor / 50) * 100)}%` }}
-            />
-          </div>
-
-          {/* Active Equipped Title */}
-          {activeTitle && (
-            <div className="flex items-center justify-between text-[10px] bg-amber-950/40 border border-amber-500/40 px-2 py-1">
-              <span className="text-amber-200">
-                {isKo ? '👑 현재 장착 대표 칭호:' : '👑 Active Title:'}
+        {/* Minimal First View: 타워 등반 현황 아코디언 HUD */}
+        <div className="bg-white border border-[#201d1d]/15 rounded-sm p-2.5 mb-2.5 shadow-2xs">
+          <div
+            onClick={() => {
+              triggerHaptic('light');
+              setIsHudExpanded(!isHudExpanded);
+            }}
+            className="flex items-center justify-between cursor-pointer hover:opacity-85 transition-opacity gap-2"
+          >
+            <div className="flex items-center gap-1.5 text-xs font-black text-[#201d1d] min-w-0">
+              <Crown size={14} className="text-amber-600 shrink-0" />
+              <span className="truncate">
+                {isKo ? `[🎯 등반 현황]: ${clearedFloor}층 / 50층` : `[🎯 RECORD]: Floor ${clearedFloor} / 50`}
               </span>
-              <span className="font-bold text-amber-300">[{activeTitle}]</span>
+              {!isHudExpanded && (
+                <span className="hidden xs:inline text-[10px] font-bold text-slate-500 truncate">
+                  (+{clearedFloor * 15} 다이아)
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-1.5 shrink-0">
+              {activeTitle && !isHudExpanded && (
+                <span className="text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.5 rounded-xs hidden sm:inline truncate max-w-[100px]">
+                  [{activeTitle}]
+                </span>
+              )}
+              <span className="text-[10px] font-bold text-[#646262] bg-[#201d1d]/5 px-2 py-0.5 rounded-xs">
+                {isHudExpanded ? (isKo ? '[접기 ▲]' : '[Hide ▲]') : (isKo ? '[상세 ▾]' : '[Details ▾]')}
+              </span>
+            </div>
+          </div>
+
+          {/* HUD 아코디언 펼침 상세 영역 */}
+          {isHudExpanded && (
+            <div className="pt-2 mt-2 border-t border-[#201d1d]/10 space-y-2 animate-in fade-in duration-150">
+              <div className="flex items-center justify-between text-[11px] font-bold">
+                <span className="text-slate-600 flex items-center gap-1">
+                  <Gem size={12} className="text-cyan-600" />
+                  {isKo ? `누적 획득: ${clearedFloor * 15} 다이아` : `Bounty: ${clearedFloor * 15} Gems`}
+                </span>
+                <span className="text-amber-700 font-mono">
+                  {Math.round((clearedFloor / 50) * 100)}% {isKo ? '정복' : 'Cleared'}
+                </span>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="w-full bg-stone-100 h-2 border border-[#201d1d]/15 overflow-hidden rounded-xs">
+                <div
+                  className="h-full bg-gradient-to-r from-amber-500 to-yellow-400 transition-all duration-300"
+                  style={{ width: `${Math.min(100, (clearedFloor / 50) * 100)}%` }}
+                />
+              </div>
+
+              {/* Active Equipped Title */}
+              {activeTitle && (
+                <div className="flex items-center justify-between text-[10px] bg-amber-50 border border-amber-300 px-2 py-1 rounded-xs">
+                  <span className="text-amber-900 font-bold">
+                    {isKo ? '👑 현재 장착 대표 칭호:' : '👑 Active Title:'}
+                  </span>
+                  <span className="font-black text-amber-800">[{activeTitle}]</span>
+                </div>
+              )}
             </div>
           )}
         </div>
 
-        {/* SCR-08-05 & SCR-08-06 Quick Action Bar (44px+ touch targets) */}
+        {/* 2대 메인 서브 탭 (44px+ 터치 타깃) */}
         <div className="grid grid-cols-2 gap-1.5 mb-2.5">
           <button
             type="button"
             onClick={() => {
               triggerHaptic('light');
-              setIsSweepOpen(true);
+              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              setActiveTab('floors');
             }}
-            disabled={clearedFloor <= 0}
-            className="min-h-[44px] py-1.5 px-2 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/50 text-amber-300 text-xs font-bold rounded-none flex items-center justify-center gap-1 cursor-pointer active:scale-98 disabled:opacity-40"
-          >
-            <Zap size={14} className="text-amber-400" />
-            <span>{isKo ? '⚡ 원터치 쾌속 소탕' : '⚡ Quick Sweep'}</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic('light');
-              setIsRuneModalOpen(true);
-            }}
-            className="min-h-[44px] py-1.5 px-2 bg-yellow-500/15 hover:bg-yellow-500/25 border border-yellow-500/50 text-yellow-300 text-xs font-bold rounded-none flex items-center justify-center gap-1 cursor-pointer active:scale-98"
-          >
-            <Crown size={14} className="text-yellow-400" />
-            <span>{isKo ? '👑 정복자 황금 룬' : '👑 Golden Rune'}</span>
-          </button>
-        </div>
-
-        {/* Sub Navigation Tab Bar (44px+ 터치 타깃) */}
-        <div className="grid grid-cols-2 gap-1.5 mb-2.5">
-          <button
-            type="button"
-            onClick={() => setActiveTab('floors')}
-            className={`min-h-[44px] py-2 px-3 text-xs font-bold transition-all flex items-center justify-center gap-1.5 border cursor-pointer ${
+            className={`min-h-[44px] py-2 px-3 text-xs font-black transition-all flex items-center justify-center gap-1.5 rounded-sm border cursor-pointer ${
               activeTab === 'floors'
-                ? 'bg-amber-400 text-[#181515] border-amber-300 shadow-xs'
-                : 'bg-[#221e1e] text-white/70 border-white/10 hover:bg-[#2c2626]'
+                ? 'bg-[#201d1d] text-amber-300 border-[#201d1d] shadow-xs'
+                : 'bg-white text-stone-700 border-[#201d1d]/15 hover:bg-stone-50'
             }`}
           >
             <Swords size={14} />
@@ -313,23 +381,27 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab('rewards')}
-            className={`min-h-[44px] py-2 px-3 text-xs font-bold transition-all flex items-center justify-center gap-1.5 border cursor-pointer ${
+            onClick={() => {
+              triggerHaptic('light');
+              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              setActiveTab('rewards');
+            }}
+            className={`min-h-[44px] py-2 px-3 text-xs font-black transition-all flex items-center justify-center gap-1.5 rounded-sm border cursor-pointer ${
               activeTab === 'rewards'
-                ? 'bg-amber-400 text-[#181515] border-amber-300 shadow-xs'
-                : 'bg-[#221e1e] text-white/70 border-white/10 hover:bg-[#2c2626]'
+                ? 'bg-[#201d1d] text-amber-300 border-[#201d1d] shadow-xs'
+                : 'bg-white text-stone-700 border-[#201d1d]/15 hover:bg-stone-50'
             }`}
           >
             <Award size={14} />
             <span>
               {isKo 
-                ? `한정 칭호/코스튬 (${unlockedTitles.length}/${MILESTONES.length})` 
+                ? `칭호/보상 (${unlockedTitles.length}/${MILESTONES.length})` 
                 : `Rewards (${unlockedTitles.length}/${MILESTONES.length})`}
             </span>
           </button>
         </div>
 
-        {/* Tab 1: Floor Ascent List */}
+        {/* Tab 1: Floor Ascent with Sector Accordion */}
         {activeTab === 'floors' && (
           <div className="flex-1 min-h-0 flex flex-col">
             {/* Quick Ascent 1-Tap CTA Banner */}
@@ -337,84 +409,158 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
               <button
                 type="button"
                 onClick={() => handleSelectFloor(nextPlayableFloor, true)}
-                className="w-full min-h-[44px] py-2.5 px-3 mb-2 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-[#181515] font-black text-xs uppercase flex items-center justify-between border border-amber-300 active:scale-[0.98] transition-all cursor-pointer shadow-md"
+                className="w-full min-h-[44px] py-2 px-3 mb-2 bg-[#201d1d] hover:bg-stone-800 text-amber-300 font-black text-xs uppercase flex items-center justify-between border border-[#201d1d] rounded-sm active:scale-[0.98] transition-all cursor-pointer shadow-xs"
               >
                 <div className="flex items-center gap-1.5">
-                  <Flame size={16} className="text-red-950 animate-bounce" />
+                  <Flame size={15} className="text-orange-500 fill-orange-500 animate-pulse" />
                   <span>
                     {isKo 
-                      ? `[🚀 ${nextPlayableFloor}층 즉시 등반 시작]` 
+                      ? `[🚀 ${nextPlayableFloor}층 즉시 등반 도전]` 
                       : `[🚀 Resume Floor ${nextPlayableFloor}]`}
                   </span>
                 </div>
-                <span className="text-[10px] bg-[#181515] text-amber-300 px-2 py-0.5 font-bold">
+                <span className="text-[10px] bg-amber-400 text-stone-950 px-2 py-0.5 rounded-xs font-bold">
                   {nextPlayableFloor % 5 === 0 ? '👑 BOSS' : 'BATTLE'} ➔
                 </span>
               </button>
             )}
 
-            {/* Scrollable Floor List */}
-            <div className="flex-1 overflow-y-auto space-y-1.5 pr-1 mb-2 scrollbar-thin">
-              {floors.slice(0, Math.min(50, clearedFloor + 6)).map(f => (
-                <div
-                  key={f.floor}
-                  onClick={() => handleSelectFloor(f.floor, f.isUnlocked)}
-                  className={`p-2.5 rounded-none border flex items-center justify-between transition-all min-h-[44px] ${
-                    f.isCleared
-                      ? 'bg-emerald-950/30 border-emerald-500/40 text-emerald-300'
-                      : f.isUnlocked
-                      ? f.isBoss
-                        ? 'bg-amber-950/60 border-amber-400 text-amber-100 cursor-pointer hover:bg-amber-900/60 ring-1 ring-amber-500/40'
-                        : 'bg-[#221e1e] border-amber-400/60 text-amber-200 cursor-pointer hover:bg-amber-950/40'
-                      : 'bg-[#141212]/50 border-white/10 opacity-40 cursor-not-allowed text-white/40'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5">
-                    <div className="text-center w-11">
-                      <span className={`text-xs font-black block ${f.isBoss ? 'text-amber-400' : 'text-white'}`}>
-                        {f.isBoss ? '👑' : ''}F.{f.floor}
-                      </span>
-                      {f.isBoss && (
-                        <span className="text-[8px] bg-rose-950 border border-rose-600 text-rose-300 px-1 py-0.2 block">
-                          BOSS
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <div className="text-[10px] font-bold text-white/90">
-                        {isKo ? f.modifierKo : f.modifierEn}
-                      </div>
-                      <div className="text-[9px] text-white/60 flex items-center gap-2">
-                        <span>PWR {f.bossPower}</span>
-                        <span>|</span>
-                        <span className="text-cyan-300 font-bold">+{f.diamondReward} Gems</span>
-                        {f.milestoneTitleKo && (
-                          <span className="text-amber-300 font-bold">
-                            [{isKo ? f.milestoneTitleKo : f.milestoneTitleEn}]
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+            {/* 5개 층 단위 섹터(Sector) 아코디언 목록 */}
+            <div className="flex-1 overflow-y-auto space-y-2 pr-1 mb-2 scrollbar-thin">
+              {SECTOR_NAMES.map((sec, secIdx) => {
+                const startFl = secIdx * 5 + 1;
+                const endFl = (secIdx + 1) * 5;
+                const sectorFloors = floors.filter(f => f.floor >= startFl && f.floor <= endFl);
+                const isSectorCleared = clearedFloor >= endFl;
+                const isSectorCurrent = nextPlayableFloor >= startFl && nextPlayableFloor <= endFl;
+                const isSectorLocked = nextPlayableFloor < startFl;
+                const isExpanded = !!expandedSectors[secIdx];
 
-                  <div>
-                    {f.isCleared ? (
-                      <span className="text-[10px] text-emerald-400 font-bold flex items-center gap-1">
-                        <CheckCircle size={12} /> [완료]
-                      </span>
-                    ) : f.isUnlocked ? (
-                      <button
-                        type="button"
-                        className="px-2.5 py-1.5 bg-amber-400 hover:bg-amber-300 text-[#181515] text-[10px] font-black rounded-none flex items-center gap-1 min-h-[32px] cursor-pointer active:scale-95"
-                      >
-                        <Play size={10} /> [도전]
-                      </button>
-                    ) : (
-                      <Lock size={14} className="text-white/30" />
+                return (
+                  <div 
+                    key={secIdx}
+                    className={`border rounded-sm overflow-hidden transition-all ${
+                      isSectorCurrent
+                        ? 'border-amber-400/80 bg-amber-50/20'
+                        : isSectorCleared
+                        ? 'border-emerald-500/30 bg-emerald-50/10'
+                        : 'border-[#201d1d]/15 bg-white opacity-85'
+                    }`}
+                  >
+                    {/* Sector Header (Accordion Trigger) */}
+                    <div
+                      onClick={() => toggleSector(secIdx)}
+                      className={`p-2.5 flex items-center justify-between cursor-pointer select-none transition-colors ${
+                        isSectorCurrent
+                          ? 'bg-amber-100/60 hover:bg-amber-100/90'
+                          : isSectorCleared
+                          ? 'bg-emerald-50/60 hover:bg-emerald-100/60'
+                          : 'bg-stone-50 hover:bg-stone-100'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-xs font-black">
+                          {isSectorCleared ? '✅' : isSectorCurrent ? '🔥' : '🔒'}
+                        </span>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-xs font-black text-[#201d1d] truncate">
+                              {isKo ? sec.ko : sec.en}
+                            </span>
+                            <span className="text-[10px] text-stone-500 shrink-0 font-bold">
+                              ({startFl}F~{endFl}F)
+                            </span>
+                          </div>
+                          <p className="text-[10px] text-amber-800/80 font-bold truncate">
+                            👑 보스: {sec.boss}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-xs ${
+                          isSectorCleared
+                            ? 'bg-emerald-200 text-emerald-950'
+                            : isSectorCurrent
+                            ? 'bg-amber-400 text-stone-950 animate-pulse'
+                            : 'bg-stone-200 text-stone-600'
+                        }`}>
+                          {isSectorCleared ? '[완료 ✓]' : isSectorCurrent ? '[도전 중]' : '[잠김]'}
+                        </span>
+                        <span className="text-xs font-bold text-stone-600">
+                          {isExpanded ? '[▲]' : '[▾]'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Sector Expanded Floors */}
+                    {isExpanded && (
+                      <div className="p-2 space-y-1.5 border-t border-[#201d1d]/10 bg-white">
+                        {sectorFloors.map(f => (
+                          <div
+                            key={f.floor}
+                            onClick={() => handleSelectFloor(f.floor, f.isUnlocked)}
+                            className={`p-2 rounded-xs border flex items-center justify-between transition-all min-h-[44px] ${
+                              f.isCleared
+                                ? 'bg-emerald-50/50 border-emerald-300 text-emerald-900'
+                                : f.isUnlocked
+                                ? f.isBoss
+                                  ? 'bg-amber-50 border-amber-400 text-amber-950 cursor-pointer hover:bg-amber-100 ring-1 ring-amber-400'
+                                  : 'bg-stone-50 border-[#201d1d]/20 text-stone-900 cursor-pointer hover:bg-stone-100'
+                                : 'bg-stone-100/50 border-stone-200 opacity-45 cursor-not-allowed text-stone-400'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <div className="text-center w-11 shrink-0">
+                                <span className={`text-xs font-black block ${f.isBoss ? 'text-amber-700' : 'text-stone-900'}`}>
+                                  {f.isBoss ? '👑' : ''}F.{f.floor}
+                                </span>
+                                {f.isBoss && (
+                                  <span className="text-[8px] bg-rose-600 text-white px-1 py-0.2 rounded-2xs font-black block">
+                                    BOSS
+                                  </span>
+                                )}
+                              </div>
+                              <div className="min-w-0">
+                                <div className="text-[10px] font-bold text-stone-900 truncate">
+                                  {isKo ? f.modifierKo : f.modifierEn}
+                                </div>
+                                <div className="text-[9px] text-stone-600 flex items-center gap-1.5 truncate">
+                                  <span>PWR {f.bossPower}</span>
+                                  <span>|</span>
+                                  <span className="text-cyan-700 font-bold">+{f.diamondReward} Gems</span>
+                                  {f.milestoneTitleKo && (
+                                    <span className="text-amber-800 font-bold">
+                                      [{isKo ? f.milestoneTitleKo : f.milestoneTitleEn}]
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="shrink-0">
+                              {f.isCleared ? (
+                                <span className="text-[10px] text-emerald-700 font-black flex items-center gap-1">
+                                  <CheckCircle size={12} /> [완료]
+                                </span>
+                              ) : f.isUnlocked ? (
+                                <button
+                                  type="button"
+                                  className="px-2.5 py-1 bg-[#201d1d] hover:bg-stone-800 text-amber-300 text-[10px] font-black rounded-sm flex items-center gap-1 min-h-[34px] cursor-pointer active:scale-95"
+                                >
+                                  <Play size={10} /> [도전]
+                                </button>
+                              ) : (
+                                <Lock size={13} className="text-stone-400" />
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     )}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
@@ -422,7 +568,7 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
         {/* Tab 2: Milestone Titles & Costumes Catalog */}
         {activeTab === 'rewards' && (
           <div className="flex-1 overflow-y-auto space-y-2 pr-1 mb-2 scrollbar-thin">
-            <p className="text-[10px] text-white/70 leading-relaxed border-b border-white/10 pb-1.5">
+            <p className="text-[10px] text-stone-600 leading-relaxed border-b border-[#201d1d]/10 pb-1.5">
               {isKo
                 ? '5층 단위 보스를 처치할 때마다 영구 칭호와 전술 아우라 코스튬이 해금됩니다. 해금된 칭호는 즉시 대표 칭호로 장착 가능합니다.'
                 : 'Defeating every 5th floor boss unlocks permanent titles and tactical aura costumes.'}
@@ -436,20 +582,20 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
               return (
                 <div
                   key={m.floor}
-                  className={`p-2.5 border transition-all ${
+                  className={`p-2.5 border rounded-sm transition-all ${
                     isUnlocked
-                      ? 'bg-[#221e1e] border-amber-500/60'
-                      : 'bg-[#141212]/60 border-white/10 opacity-50'
+                      ? 'bg-amber-50/40 border-amber-400/60'
+                      : 'bg-stone-50 border-stone-200 opacity-60'
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-black text-amber-400">[{m.floor}F]</span>
-                      <span className="text-xs font-bold text-white">
+                  <div className="flex items-center justify-between mb-1 gap-2">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className="text-xs font-black text-amber-700 shrink-0">[{m.floor}F]</span>
+                      <span className="text-xs font-black text-stone-900 truncate">
                         [{titleName}]
                       </span>
                       {m.costumeKo && (
-                        <span className="text-[9px] bg-indigo-950 border border-indigo-500 text-indigo-300 px-1 py-0.2">
+                        <span className="text-[9px] bg-indigo-100 border border-indigo-300 text-indigo-900 px-1 py-0.2 rounded-2xs shrink-0 font-bold">
                           👗 {isKo ? m.costumeKo : m.costumeEn}
                         </span>
                       )}
@@ -459,22 +605,22 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
                       <button
                         type="button"
                         onClick={() => handleEquipTitle(titleName)}
-                        className={`px-2.5 py-1 text-[10px] font-bold min-h-[32px] cursor-pointer transition-all ${
+                        className={`px-2.5 py-1 text-[10px] font-bold rounded-sm min-h-[32px] cursor-pointer transition-all shrink-0 ${
                           isEquipped
-                            ? 'bg-amber-400 text-[#181515] border border-amber-300'
-                            : 'bg-black/50 text-white/80 border border-white/20 hover:bg-white/10'
+                            ? 'bg-amber-400 text-stone-950 border border-amber-500 font-black'
+                            : 'bg-stone-100 text-stone-800 border border-stone-300 hover:bg-stone-200'
                         }`}
                       >
                         {isEquipped ? (isKo ? '✓ [장착 중]' : '✓ [Active]') : (isKo ? '[장착하기]' : '[Equip]')}
                       </button>
                     ) : (
-                      <span className="text-[10px] text-white/40 flex items-center gap-1">
-                        <Lock size={11} /> {isKo ? `${m.floor}층 클리어 필요` : `Reach Floor ${m.floor}`}
+                      <span className="text-[10px] text-stone-500 flex items-center gap-1 shrink-0">
+                        <Lock size={11} /> {isKo ? `${m.floor}층 클리어` : `F${m.floor}`}
                       </span>
                     )}
                   </div>
 
-                  <p className="text-[10px] text-white/70 leading-normal">
+                  <p className="text-[10px] text-stone-600 leading-normal">
                     {isKo ? m.descriptionKo : m.descriptionEn}
                   </p>
                 </div>
@@ -483,15 +629,88 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
           </div>
         )}
 
-        {/* Close Button (44px+) */}
-        <button
-          onClick={onClose}
-          className="w-full min-h-[44px] py-2.5 bg-[#fdfcfc] text-[#181515] hover:bg-amber-300 transition-colors text-xs font-black uppercase rounded-none flex items-center justify-center gap-1.5 cursor-pointer active:scale-98 shadow-md"
-        >
-          <Sparkles size={14} />
-          <span>{isKo ? '[ 닫기 ]' : '[ Close ]'}</span>
-        </button>
+        {/* Footer Action Bar */}
+        <div className="pt-2 border-t border-[#201d1d]/15 flex items-center justify-between gap-2">
+          <span className="text-[10px] text-stone-500 font-bold">
+            {isKo ? `다음 목표: ${nextPlayableFloor}층 보스 돌파` : `Next Target: Floor ${nextPlayableFloor}`}
+          </span>
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-[#201d1d] hover:bg-stone-800 text-white text-xs font-black uppercase rounded-sm cursor-pointer active:scale-95 transition-all touch-target"
+          >
+            {isKo ? '[ 닫기 ]' : '[ Close ]'}
+          </button>
+        </div>
       </motion.div>
+
+      {/* 특수 기능 팝업 허브 (Quick Action Hub Modal) */}
+      <AnimatePresence>
+        {isActionHubOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[1000005] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs font-mono select-none"
+            onClick={() => setIsActionHubOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 15 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-[#fdfcfc] border border-[#201d1d]/20 text-[#201d1d] rounded-none max-w-xs w-full shadow-2xl p-3.5 space-y-2.5"
+            >
+              <div className="flex items-center justify-between border-b border-[#201d1d]/15 pb-2">
+                <span className="text-xs font-black text-[#201d1d]">
+                  {isKo ? '[⚡ 타워 특수 기능 허브]' : '[⚡ TOWER FEATURES]'}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIsActionHubOpen(false)}
+                  className="px-1.5 py-0.5 text-xs font-bold border border-[#201d1d]/20 hover:bg-[#201d1d] hover:text-white rounded-sm"
+                >
+                  [x]
+                </button>
+              </div>
+
+              <div className="space-y-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsActionHubOpen(false);
+                    triggerHaptic('light');
+                    setIsSweepOpen(true);
+                  }}
+                  disabled={clearedFloor <= 0}
+                  className="w-full min-h-[44px] py-2 px-3 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 text-xs font-bold rounded-sm flex items-center justify-between cursor-pointer active:scale-98 disabled:opacity-40"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <Zap size={14} className="text-amber-600" />
+                    <span>{isKo ? '원터치 쾌속 소탕' : 'Quick Sweep'}</span>
+                  </div>
+                  <span className="text-[10px] text-amber-700 font-mono">SWEEP ➔</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsActionHubOpen(false);
+                    triggerHaptic('light');
+                    setIsRuneModalOpen(true);
+                  }}
+                  className="w-full min-h-[44px] py-2 px-3 bg-yellow-50 hover:bg-yellow-100 border border-yellow-300 text-yellow-900 text-xs font-bold rounded-sm flex items-center justify-between cursor-pointer active:scale-98"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <Crown size={14} className="text-yellow-600" />
+                    <span>{isKo ? '정복자 황금 룬 패스' : 'Golden Rune'}</span>
+                  </div>
+                  <span className="text-[10px] text-yellow-700 font-mono">BUFF ➔</span>
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* SCR-08-05: Tower Instant Sweep Bottom Sheet */}
       <TowerSweepBottomSheet
@@ -515,4 +734,5 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
 
   return createPortal(content, document.body);
 };
+
 

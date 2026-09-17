@@ -13447,21 +13447,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           )}
 
           {/* SCR-08: Tower of Trials Quick Access Banner */}
-          <div className="w-full rounded-none border border-amber-500/50 bg-gradient-to-r from-amber-950/70 via-[#181515] to-amber-950/70 p-3 text-white font-mono flex items-center justify-between gap-3 shadow-md">
-            <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 bg-amber-500/20 border border-amber-400 text-amber-400 flex items-center justify-center text-xl shrink-0 font-bold">
+          <div className="w-full rounded-none border border-amber-500/40 bg-stone-900 p-3 text-white font-mono flex items-center justify-between gap-3 shadow-2xs">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-10 h-10 bg-amber-500/20 border border-amber-400 text-amber-400 flex items-center justify-center text-xl shrink-0 font-bold rounded-none">
                 🗼
               </div>
-              <div>
+              <div className="min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[9px] font-black uppercase text-amber-300 bg-amber-900/60 border border-amber-500/40 px-1 py-0.2">
+                  <span className="text-[9px] font-black uppercase text-amber-300 bg-amber-950 border border-amber-500/40 px-1 py-0.2 rounded-2xs">
                     50F CHALLENGE
                   </span>
-                  <span className="text-[11px] text-amber-200 font-bold">
+                  <span className="text-[11px] text-amber-200 font-bold truncate">
                     {language === 'ko' ? '시련의 탑 & 보스 레이드' : 'Tower of Trials & Boss Raid'}
                   </span>
                 </div>
-                <p className="text-[10px] text-white/70 mt-0.5">
+                <p className="text-[10px] text-stone-300 mt-0.5 truncate">
                   {language === 'ko'
                     ? '매 5층 보스 격파 시 한정 칭호 & 다이아 잭팟!'
                     : 'Defeat 5F bosses for exclusive titles & gems!'}
@@ -13474,7 +13474,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                 setIsTowerTrialsOpen(true);
               }}
-              className="min-h-[44px] px-3 py-2 bg-amber-400 hover:bg-amber-300 text-[#181515] font-black text-xs uppercase flex items-center gap-1 transition-all cursor-pointer active:scale-95 shrink-0 shadow-md"
+              className="min-h-[44px] px-3 py-2 bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs uppercase flex items-center gap-1 transition-all cursor-pointer active:scale-95 shrink-0 rounded-sm shadow-xs"
             >
               <span>{language === 'ko' ? '[탑 등반 도전]' : '[Enter Tower]'}</span>
             </button>
