@@ -1079,20 +1079,20 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
           </button>
         </div>
 
-        {/* SCR-05-05 & SCR-05-06: 1-Tap Quick Sort & Golden Deal Pass Action Bar */}
-        <div className="flex items-center justify-between gap-2 bg-slate-900 text-white p-2.5 rounded-xl font-mono text-xs shadow-sm">
+        {/* SCR-05-05: One-hand Quick Sort & Golden Deal Pass Action Bar (44px+ touch targets) */}
+        <div className="flex items-center justify-between gap-2 p-2 bg-slate-900 border border-slate-800 rounded-none text-xs font-mono">
           <div className="flex items-center gap-1.5">
-            <span className="text-amber-400 font-bold text-[10px] uppercase">SORT:</span>
+            <span className="text-amber-400 font-bold text-[10px] uppercase tracking-wider">SORT:</span>
             <button
               type="button"
               onClick={() => {
                 setIsSortBottomSheetOpen(true);
                 triggerHaptic('light');
               }}
-              className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white rounded-lg border border-white/10 flex items-center gap-1 cursor-pointer"
+              className="min-h-[44px] px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white rounded-sm border border-white/15 flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-xs"
             >
-              <SlidersHorizontal size={12} className="text-amber-400" />
-              <span>
+              <SlidersHorizontal size={14} className="text-amber-400" />
+              <span className="font-bold text-xs">
                 {marketSortOption === 'price_asc' ? (language === 'ko' ? '최저가순' : 'Lowest') :
                  marketSortOption === 'price_desc' ? (language === 'ko' ? '최고가순' : 'Highest') :
                  marketSortOption === 'power_desc' ? (language === 'ko' ? '전투력순' : 'Power') :
@@ -1107,9 +1107,9 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
               setIsGoldenDealModalOpen(true);
               triggerHaptic('medium');
             }}
-            className="px-2.5 py-1 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-[11px] rounded-lg flex items-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer"
+            className="min-h-[44px] px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-black font-black text-xs uppercase tracking-wider rounded-sm flex items-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer border border-amber-400"
           >
-            <Bell size={12} className="text-black fill-black" />
+            <Bell size={13} className="text-black fill-black" />
             <span>{language === 'ko' ? '황금 특가 알림 패스' : 'Golden Deal Pass'}</span>
           </button>
         </div>
