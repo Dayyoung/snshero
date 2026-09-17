@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { isSfxMutedGlobal, setGlobalSfxMuted } from '../lib/sound';
 
 /**
  * ID 340, 344, 395: 오디오 생명주기 관리, 자동 resume, 'M' 키 음소거 단축키 및 메모리 안전 해제 훅
@@ -6,7 +7,7 @@ import { useState, useEffect, useCallback } from 'react';
 export function useAudioLifecycleGuard() {
   const [isMuted, setIsMuted] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('hero_sfx_muted') === 'true';
+      return isSfxMutedGlobal();
     } catch {
       return false;
     }
@@ -26,7 +27,7 @@ export function useAudioLifecycleGuard() {
     setIsMuted(prev => {
       const next = !prev;
       try {
-        localStorage.setItem('hero_sfx_muted', next ? 'true' : 'false');
+        setGlobalSfxMuted(next);
         window.dispatchEvent(new CustomEvent('snshero_audio_settings_changed', {
           detail: { isMuted: next, masterVolume }
         }));

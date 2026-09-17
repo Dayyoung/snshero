@@ -7,6 +7,8 @@
  * - ID 395: 오디오 인스턴스 최대 동시 4개 풀링 제한
  */
 
+import { isSfxMutedGlobal } from './sound';
+
 class BattleAudioEngine {
   private static instance: BattleAudioEngine;
   private audioCtx: AudioContext | null = null;
@@ -25,8 +27,20 @@ class BattleAudioEngine {
             this.audioCtx.suspend().catch(() => {});
           }
         } else {
-          if (this.audioCtx.state === 'suspended') {
+          if (this.audioCtx.state === 'suspended' && !isSfxMutedGlobal()) {
             this.audioCtx.resume().catch(() => {});
+          }
+        }
+      });
+    }
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('snshero_audio_settings_changed', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail?.isMuted || isSfxMutedGlobal()) {
+          this.stopHeartbeatTick();
+          if (this.audioCtx && this.audioCtx.state === 'running') {
+            this.audioCtx.suspend().catch(() => {});
           }
         }
       });
@@ -42,6 +56,7 @@ class BattleAudioEngine {
 
   private getAudioContext(): AudioContext | null {
     if (typeof window === 'undefined') return null;
+    if (isSfxMutedGlobal()) return null;
     if (!this.audioCtx) {
       const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (AudioContextClass) {
@@ -210,6 +225,10 @@ class BattleAudioEngine {
    * ID 341: 턴 제한시간 임박 (<=5초) 긴박한 심장박동 사운드 시작
    */
   public startHeartbeatTick(): void {
+    if (isSfxMutedGlobal()) {
+      this.stopHeartbeatTick();
+      return;
+    }
     if (this.heartbeatInterval) return;
 
     const tick = () => {

@@ -55,6 +55,7 @@ import { useVisualViewportLock } from './hooks/useVisualViewportLock';
 import { useLowSpecGuard } from './hooks/useLowSpecGuard';
 import { useStorageQuotaGuard } from './hooks/useStorageQuotaGuard';
 import { useAudioLifecycleGuard } from './hooks/useAudioLifecycleGuard';
+import { isSfxMutedGlobal, setGlobalSfxMuted } from './lib/sound';
 import { usePwaInstallGuard } from './hooks/usePwaInstallGuard';
 import { incrementMissionProgress } from './lib/dailyMissions';
 
@@ -3071,7 +3072,7 @@ function AppContent() {
   }, [audioStarted, bgmEnabled, bgmAudio]);
 
   const playSfx = useCallback((url: string) => {
-    if (!sfxEnabled || !url) return;
+    if (!sfxEnabled || sfxVolume === 0 || !url || isSfxMutedGlobal()) return;
     
     try {
       const audio = new Audio();
@@ -3094,7 +3095,7 @@ function AppContent() {
         console.warn("[SFX] Initialization failed:", err);
       }
     }
-  }, [sfxEnabled, testMode]);
+  }, [sfxEnabled, sfxVolume, testMode]);
 
   const updateSns = useCallback(async (amount: number, reason?: string, typeOrTarget?: 'earned' | 'purchased' | string, targetName?: string) => {
     let nextPurchased = purchasedSns;
@@ -4353,10 +4354,13 @@ function AppContent() {
   }, [audioStarted, startAudio]);
 
   useEffect(() => {
+    const sfxMuted = !sfxEnabled || sfxVolume === 0;
     localStorage.setItem('hero_bgm', bgmEnabled.toString());
     localStorage.setItem('hero_sfx', sfxEnabled.toString());
     localStorage.setItem('hero_bgm_volume', bgmVolume.toString());
     localStorage.setItem('hero_sfx_volume', sfxVolume.toString());
+    localStorage.setItem('hero_sfx_muted', sfxMuted ? 'true' : 'false');
+    localStorage.setItem('hero_sound_muted', sfxMuted ? 'true' : 'false');
     try {
       localStorage.setItem('snshero_audio_settings', JSON.stringify({
         bgmEnabled,
@@ -4365,6 +4369,9 @@ function AppContent() {
         sfxVolume,
         bgmTrackId,
         updatedAt: Date.now(),
+      }));
+      window.dispatchEvent(new CustomEvent('snshero_audio_settings_changed', {
+        detail: { isMuted: sfxMuted, masterVolume: sfxVolume }
       }));
     } catch (_) {}
   }, [bgmEnabled, sfxEnabled, bgmVolume, sfxVolume, bgmTrackId]);
@@ -4375,6 +4382,7 @@ function AppContent() {
     const nextMuteState = !isAudioMuted;
     setBgmEnabled(!nextMuteState);
     setSfxEnabled(!nextMuteState);
+    setGlobalSfxMuted(nextMuteState);
     if (!nextMuteState) {
       if (!audioStarted) {
         startAudio();

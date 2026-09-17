@@ -4,6 +4,8 @@
  * (구글 스프레드시트 Row 740 / ID 577 요구사항 구현)
  */
 
+import { isSfxMutedGlobal } from './sound';
+
 class BattleImpactEngine {
   private audioCtx: AudioContext | null = null;
   private isMuted: boolean = false;
@@ -13,6 +15,7 @@ class BattleImpactEngine {
   }
 
   private initAudio() {
+    if (isSfxMutedGlobal()) return;
     if (!this.audioCtx && typeof window !== 'undefined') {
       const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (AudioContextClass) {
@@ -32,7 +35,7 @@ class BattleImpactEngine {
    * 카드 배치 시 묵직한 타격음 (Bass Kick + Sub-thump)
    */
   public playCardImpact(power: number = 5) {
-    if (this.isMuted) return;
+    if (this.isMuted || isSfxMutedGlobal()) return;
     try {
       this.initAudio();
       if (!this.audioCtx) return;
@@ -63,7 +66,7 @@ class BattleImpactEngine {
    * 카드 캡처 뒤집기 시 스냅 효과음 (High Snap + Harmonic Whoosh)
    */
   public playCardFlip(isCapture: boolean = true) {
-    if (this.isMuted) return;
+    if (this.isMuted || isSfxMutedGlobal()) return;
     try {
       this.initAudio();
       if (!this.audioCtx) return;
@@ -93,7 +96,7 @@ class BattleImpactEngine {
    * 연쇄 콤보 팡파레 (Double Flip! Multi Domination!)
    */
   public playComboFanfare(comboCount: number = 2) {
-    if (this.isMuted) return;
+    if (this.isMuted || isSfxMutedGlobal()) return;
     try {
       this.initAudio();
       if (!this.audioCtx) return;

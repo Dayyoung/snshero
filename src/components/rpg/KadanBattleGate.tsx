@@ -3,6 +3,7 @@ import { CheckCircle2, ScrollText, Swords, X, XCircle, ChevronLeft, ArrowRight, 
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../../lib/utils';
 import { t } from '../../lib/i18n';
+import { isSfxMutedGlobal } from '../../lib/sound';
 import type { CardData, Language } from '../../types';
 import { CardItem } from '../CardItem';
 import type { KadanRpgEncounter } from '../../content/kadanRpgStory';
@@ -226,6 +227,7 @@ export const KadanBattleGate: React.FC<KadanBattleGateProps> = ({
 
   const audioCache = React.useRef<Map<string, HTMLAudioElement>>(new Map());
   const playSfx = (url: string) => {
+    if (isSfxMutedGlobal()) return;
     try {
       let audio = audioCache.current.get(url);
       if (!audio) {

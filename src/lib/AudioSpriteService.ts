@@ -4,6 +4,8 @@
  * (구글 스프레드시트 Row 1057 / ID 320 요구사항 구현)
  */
 
+import { isSfxMutedGlobal } from './sound';
+
 export type AudioSfxName = 
   | 'card_drop'
   | 'card_flip'
@@ -44,9 +46,18 @@ class AudioSpriteService {
   private constructor() {
     // 묵음 여부 체크
     try {
-      this.isMuted = localStorage.getItem('hero_sound_muted') === 'true';
+      this.isMuted = isSfxMutedGlobal();
     } catch {
       this.isMuted = false;
+    }
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('snshero_audio_settings_changed', () => {
+        this.isMuted = isSfxMutedGlobal();
+        if (this.isMuted && this.audioCtx && this.audioCtx.state === 'running') {
+          this.audioCtx.suspend().catch(() => {});
+        }
+      });
     }
 
     // ID 604 (Item 9): Page Visibility Audio Lifecycle Management
@@ -74,7 +85,9 @@ class AudioSpriteService {
   }
 
   private initAudioContext(): AudioContext | null {
-    if (!this.audioCtx && typeof window !== 'undefined') {
+    if (typeof window === 'undefined') return null;
+    if (isSfxMutedGlobal()) return null;
+    if (!this.audioCtx) {
       const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (AudioContextClass) {
         this.audioCtx = new AudioContextClass();
@@ -114,7 +127,7 @@ class AudioSpriteService {
    * 정밀 Web Audio API 합성 사운드 재생 (0ms 지연)
    */
   public play(name: AudioSfxName): void {
-    if (this.isMuted) return;
+    if (this.isMuted || isSfxMutedGlobal()) return;
 
     try {
       const ctx = this.initAudioContext();
@@ -278,11 +291,12 @@ class AudioSpriteService {
     this.isMuted = muted;
     try {
       localStorage.setItem('hero_sound_muted', muted ? 'true' : 'false');
+      localStorage.setItem('hero_sfx_muted', muted ? 'true' : 'false');
     } catch {}
   }
 
   public getMuted(): boolean {
-    return this.isMuted;
+    return this.isMuted || isSfxMutedGlobal();
   }
 }
 

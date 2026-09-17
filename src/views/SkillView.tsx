@@ -28,6 +28,7 @@ import {
 import { cn, getCardSpriteStyle } from '../lib/utils';
 import { Skill, Language, ViewType, CardData } from '../types';
 import { t } from '../lib/i18n';
+import { isSfxMutedGlobal } from '../lib/sound';
 import { INITIAL_SKILLS, getSkillTier, getRequiredLevelForSkill } from '../constants';
 import { PageHeader } from '../components/PageHeader';
 import { getSkillResetCost, getSkillUpgradeCost } from '../content/snsEconomy';
@@ -171,9 +172,11 @@ export const SkillView: React.FC<SkillViewProps> = ({
         onUpgradeSkill(plan.skillId);
       }
     });
-    try {
-      new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3').play().catch(() => {});
-    } catch {}
+    if (!isSfxMutedGlobal()) {
+      try {
+        new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3').play().catch(() => {});
+      } catch {}
+    }
   };
 
   // Target card context (from props or URL query ?cardId=)
@@ -570,9 +573,11 @@ export const SkillView: React.FC<SkillViewProps> = ({
                     onClick={() => {
                       onUpgradeSkill(skill.id);
                       setUpgradingSkillId(skill.id);
-                      try {
-                        new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3').play().catch(() => {});
-                      } catch {}
+                      if (!isSfxMutedGlobal()) {
+                        try {
+                          new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3').play().catch(() => {});
+                        } catch {}
+                      }
                       setTimeout(() => setUpgradingSkillId(null), 1000);
                     }}
                     id={`skill-upgrade-${skill.id}`}

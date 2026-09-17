@@ -2,6 +2,41 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-17 09:20 KST] [Audio Engine Optimization] [음소거 활성화 시 효과음 누출 원천 차단 및 전역 오디오 엔진 단일 진실 공급원 통합]
+- **요청 사항**: 음소거를 활성화했는데도 일부 상황(배틀, 콤보, 단일 컴포넌트 등)에서 효과음이 출력되는 현상 원천 방지
+- **원인 분석**:
+  1. `BattleAudioEngine.ts`: 배틀 아레나 Web Audio 사운드(연쇄 플립 피치, 역전 피니셔, 심장박동 타이머, 콤보 스팅어 등)에 음소거 체크가 누락되어 항상 재생됨.
+  2. `combatDopamineEngine.ts`: 콤보 어나운서 배너 출력 시 `playDopamineChime()`에 음소거 체크가 없어 무조건 재생됨.
+  3. `AudioSpriteService.ts`: `hero_sound_muted` 키만 체크하여, 일반 설정/토글(`hero_sfx: 'false'`)과 키 불일치로 음소거 무시됨.
+  4. `sound.ts`: `hero_sfx_muted`만 체크하고 `hero_sfx: 'false'`나 볼륨 0을 체크하지 않음.
+  5. 컴포넌트 6곳(`CardMarketplaceView`, `SkillView`, `KadanRpgView`, `BackupRestoreModal`, `GachaRevealSequence`, `KadanBattleGate`): 음소거 확인 없이 `new Audio().play()`를 직접 호출.
+- **수정 파일 및 구현 내용**:
+  - `src/lib/sound.ts`:
+    - `isSfxMutedGlobal()` 단일 진실 공급원 전역 판별 헬퍼 신설: `hero_sfx_muted`, `hero_sound_muted`, `hero_sfx === 'false'`, `hero_sfx_volume === 0`, `snshero_audio_settings` 객체를 일괄 검사하여 100% 빈틈없는 음소거 판별.
+    - `setGlobalSfxMuted()` 헬퍼 신설: 관련 로컬스토리지 키 일체 동기화 및 `snshero_audio_settings_changed` 이벤트 디스패치.
+    - `playSfx` 및 `playFactionSfx`에 `isSfxMutedGlobal()` 가드 적용.
+  - `src/lib/BattleAudioEngine.ts`:
+    - `getAudioContext()`에서 음소거 시 `null` 반환하여 전체 Web Audio 사운드 일괄 차단.
+    - `startHeartbeatTick()` 시작 시 음소거 가드 및 `snshero_audio_settings_changed` 수신 시 실행 중인 심장박동 타이머 즉시 정지.
+  - `src/lib/combatDopamineEngine.ts`:
+    - `getAudioContext()` 및 `playDopamineChime()` 진입부에 `isSfxMutedGlobal()` 가드 적용.
+  - `src/lib/AudioSpriteService.ts`:
+    - 생성자, `initAudioContext()`, `play()`, `setMuted()`, `getMuted()`에 `isSfxMutedGlobal()` 동기화 및 가드 적용.
+  - `src/lib/battleImpactEngine.ts`:
+    - `initAudio()`, `playCardImpact()`, `playCardFlip()`, `playComboFanfare()`에 `isSfxMutedGlobal()` 가드 적용.
+  - `src/hooks/useAudioLatencyRecycle.ts`:
+    - `playPooledSfx()` 진입부에 `isSfxMutedGlobal()` 가드 적용.
+  - `src/hooks/useAudioLifecycleGuard.ts`:
+    - 초기 상태 및 M 키 토글 시 `isSfxMutedGlobal()`, `setGlobalSfxMuted()` 연동.
+  - `src/App.tsx`:
+    - `playSfx`: `!sfxEnabled || sfxVolume === 0 || isSfxMutedGlobal()` 일 때 즉시 차단.
+    - 오디오 설정 저장 `useEffect` 및 `toggleAudioMute`: `setGlobalSfxMuted` 및 로컬스토리지 키 일괄 동기화.
+  - 컴포넌트 6곳(`CardMarketplaceView.tsx`, `SkillView.tsx`, `KadanRpgView.tsx`, `BackupRestoreModal.tsx`, `GachaRevealSequence.tsx`, `KadanBattleGate.tsx`):
+    - 직접 오디오를 재생하던 모든 위치에 `if (!isSfxMutedGlobal())` 또는 `if (isSfxMutedGlobal()) return;` 가드 전수 적용.
+- **검증 결과**:
+  - `npm run build`: 오류 0건 통과 (`✓ built in 11.63s`).
+  - 로컬 Git 커밋만 수행 완료 (원격 푸시 일체 미실행 준수).
+
 ## [2026-09-17 09:12 KST] [UX & Policy] [홈/마이덱/플레이/미션/상점 하단 메뉴 복원 및 상단 뒤로 버튼 제거, 카드배틀 중 하단메뉴 숨김, Git 자동 푸시 금지 전면 적용]
 - **요청 사항**:
   1. 홈/마이덱/플레이/미션/상점 메인 탭 화면에서 하단 메뉴(Navbar) 정상 표시

@@ -5,6 +5,7 @@
  */
 
 import { useEffect, useRef, useCallback } from 'react';
+import { isSfxMutedGlobal } from '../lib/sound';
 
 const MAX_POLYPHONY_CHANNELS = 3;
 const MAX_ALLOWED_LATENCY_SEC = 0.12; // 120ms
@@ -80,6 +81,7 @@ class PooledAudioManager {
    * ID 459: 최대 3채널 라운드로빈 오디오 풀 재생
    */
   public playPooledSfx(url: string, volume: number = 0.6) {
+    if (isSfxMutedGlobal()) return;
     this.checkLatencyAndRecycle();
 
     if (this.audioPool.length === 0) {

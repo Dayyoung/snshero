@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, Bot, Compass, Pause, Play, RotateCcw, Sparkles, Swords, X } from 'lucide-react';
 import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
+import { isSfxMutedGlobal } from '../lib/sound';
 import type { CardData, CardRarity, ItemRarity, Language, ViewType } from '../types';
 import {
   KADAN_RPG_EVENTS,
@@ -533,6 +534,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
                       handleBattleComplete(result);
                     }}
                     playSfx={(url) => {
+                      if (isSfxMutedGlobal()) return;
                       try {
                         const audio = new Audio(url);
                         audio.volume = 0.5;

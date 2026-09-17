@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { HelpCircle, X, ChevronLeft, ChevronRight, TrendingUp, SlidersHorizontal, Sparkles, Bell, Bookmark, Zap, Gift, CheckCircle2, Flame, ArrowUpRight } from 'lucide-react';
 import { triggerHaptic } from '../lib/haptic';
+import { isSfxMutedGlobal } from '../lib/sound';
 import { CARD_DATABASE } from '../cardDatabase';
 import { getMarketplaceFeePolicy, calculateMarketplaceSettlement } from '../content/marketplaceFees';
 import { MarketplacePriceBand } from '../lib/MarketplacePriceBand';
@@ -689,11 +690,13 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
 
     // SCR-05 Dopamine: 거래 체결 성공 햅틱 및 축하 사운드 FX
     triggerHaptic('victory');
-    try {
-      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2012/2012-preview.mp3');
-      audio.volume = 0.5;
-      audio.play().catch(() => {});
-    } catch {}
+    if (!isSfxMutedGlobal()) {
+      try {
+        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2012/2012-preview.mp3');
+        audio.volume = 0.5;
+        audio.play().catch(() => {});
+      } catch {}
+    }
 
     // ID 558: P2P 카드 거래 가스비 100% SNS 토큰 캐시백 보조금 (+15 SNS)
     try {

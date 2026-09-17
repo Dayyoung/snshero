@@ -8,6 +8,7 @@ import { GACHA_PACK_CONFIG, formatProbabilityRate, type GachaPackRarity } from '
 import { t } from '../lib/i18n';
 import { cn, getFormattedCardName } from '../lib/utils';
 import { triggerHaptic } from '../lib/haptic';
+import { isSfxMutedGlobal } from '../lib/sound';
 import type { Language } from '../types';
 
 export interface GachaRevealCard {
@@ -289,11 +290,13 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
     setIsReSummoning(true);
     setReDrawCount((prev) => prev + 1);
 
-    try {
-      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2012/2012-preview.mp3');
-      audio.volume = 0.6;
-      audio.play().catch(() => {});
-    } catch {}
+    if (!isSfxMutedGlobal()) {
+      try {
+        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2012/2012-preview.mp3');
+        audio.volume = 0.6;
+        audio.play().catch(() => {});
+      } catch {}
+    }
 
     window.setTimeout(() => {
       onDrawAgain();

@@ -5,6 +5,7 @@ import LZString from 'lz-string';
 import { Play, Pause, ChevronLeft, ChevronRight, Copy, Check, Download, Upload, FileText, Camera, ShieldCheck, RefreshCw, AlertCircle, Zap } from 'lucide-react';
 import { Language } from '../types';
 import { t } from '../lib/i18n';
+import { isSfxMutedGlobal } from '../lib/sound';
 
 interface BackupRestoreModalProps {
   mode: 'backup' | 'restore' | null;
@@ -67,6 +68,7 @@ export const BackupRestoreModal: React.FC<BackupRestoreModalProps> = ({ mode, on
 
   // 사운드 효과
   const playSfx = (url: string) => {
+    if (isSfxMutedGlobal()) return;
     try {
       const audio = new Audio(url);
       audio.volume = 0.4;

@@ -26,11 +26,51 @@ if (typeof document !== 'undefined') {
   });
 }
 
+export const isSfxMutedGlobal = (): boolean => {
+  try {
+    if (typeof window === 'undefined') return true;
+
+    // 1. hero_sfx_muted 체크
+    if (localStorage.getItem('hero_sfx_muted') === 'true') return true;
+
+    // 2. hero_sound_muted 체크
+    if (localStorage.getItem('hero_sound_muted') === 'true') return true;
+
+    // 3. hero_sfx 체크 ('false'이면 음소거)
+    if (localStorage.getItem('hero_sfx') === 'false') return true;
+
+    // 4. hero_sfx_volume 체크 (0이면 음소거)
+    const sfxVol = localStorage.getItem('hero_sfx_volume');
+    if (sfxVol !== null && parseFloat(sfxVol) === 0) return true;
+
+    // 5. snshero_audio_settings 종합 객체 체크
+    const combined = localStorage.getItem('snshero_audio_settings');
+    if (combined) {
+      const parsed = JSON.parse(combined);
+      if (parsed.sfxEnabled === false || parsed.sfxVolume === 0) return true;
+    }
+
+    return false;
+  } catch {
+    return false;
+  }
+};
+
+export const setGlobalSfxMuted = (muted: boolean) => {
+  try {
+    localStorage.setItem('hero_sfx_muted', muted ? 'true' : 'false');
+    localStorage.setItem('hero_sound_muted', muted ? 'true' : 'false');
+    localStorage.setItem('hero_sfx', muted ? 'false' : 'true');
+    window.dispatchEvent(new CustomEvent('snshero_audio_settings_changed', {
+      detail: { isMuted: muted }
+    }));
+  } catch {}
+};
+
 export const playSfx = (type: keyof typeof SFX_URLS | string) => {
   try {
     if (typeof document !== 'undefined' && document.hidden) return;
-    const isMuted = localStorage.getItem('hero_sfx_muted') === 'true';
-    if (isMuted) return;
+    if (isSfxMutedGlobal()) return;
 
     const url = SFX_URLS[type] || type;
     const audio = new Audio(url);
@@ -65,8 +105,7 @@ const getAudioContext = (): AudioContext | null => {
 export const playFactionSfx = (factionOrElement: string = 'fire') => {
   try {
     if (typeof document !== 'undefined' && document.hidden) return;
-    const isMuted = localStorage.getItem('hero_sfx_muted') === 'true';
-    if (isMuted) return;
+    if (isSfxMutedGlobal()) return;
 
     const ctx = getAudioContext();
     if (!ctx) return;

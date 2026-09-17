@@ -15,11 +15,14 @@ export interface DopamineEvent {
   screenShakeClass: string;
 }
 
+import { isSfxMutedGlobal } from './sound';
+
 // Audio Context Singleton for Ascending Pitch Chime
 let audioCtx: AudioContext | null = null;
 
 function getAudioContext(): AudioContext | null {
   if (typeof window === 'undefined') return null;
+  if (isSfxMutedGlobal()) return null;
   if (!audioCtx) {
     const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     if (AudioContextClass) {
@@ -40,6 +43,7 @@ const COMBO_FREQUENCIES: number[] = [261.63, 329.63, 392.0, 523.25, 659.25, 783.
  */
 export function playDopamineChime(comboCount: number, isCritical = false) {
   try {
+    if (isSfxMutedGlobal()) return;
     const ctx = getAudioContext();
     if (!ctx) return;
 
