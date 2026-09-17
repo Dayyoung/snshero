@@ -5604,7 +5604,33 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
             // Apply QTE boost only to the player's active placement
             if (owner === 'player') myStat *= activeQteMultiplier;
-            if (myStat > oppStat) {
+
+            // SCR-03-04: Check Companion Affection Max Passive [Flip Defense +5%]
+            let isAffectionDefended = false;
+            if (neighbor.owner === 'player' && owner === 'ai' && !isDryRun) {
+              try {
+                const rawAff = localStorage.getItem(`hero_card_affection_${season || 'season1'}`);
+                if (rawAff) {
+                  const parsedAff = JSON.parse(rawAff);
+                  const neighborId = neighbor.id || neighbor.imageIndex;
+                  const cardAff = parsedAff[neighborId] || (neighbor.imageIndex !== undefined ? parsedAff[neighbor.imageIndex] : null);
+                  if (cardAff && cardAff.maxUnlocked) {
+                    // 5% chance to completely deflect flip
+                    if (Math.random() < 0.05) {
+                      isAffectionDefended = true;
+                      addLog(
+                        language === 'ko'
+                          ? `💖 [유대 방어] ${neighbor.name}의 친밀도 MAX 패시브 발동! 상대 플립 공격을 완벽히 방어했습니다!`
+                          : `💖 [Bond Defense] ${neighbor.name}'s Max Affection deflected the flip!`,
+                        'system'
+                      );
+                    }
+                  }
+                }
+              } catch {}
+            }
+
+            if (myStat > oppStat && !isAffectionDefended) {
               flippedIndices.push(ni);
               flipDetails.push({ index: ni, attacker: placedCard, victim: neighbor, myStat, oppStat, damageDiff: myStat - oppStat });
               myHighlights.push(dir.m);

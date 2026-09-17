@@ -2,8 +2,8 @@
 
 ## 스프레드시트 개선 작업 진행 상태
 - **현재 연동 스프레드시트 (공개 CSV)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vRF82ZJBHIhPsTzzjGm8DFutzw6PtAwqT_iyEB3MG5yKvZrEs354rKHy7YIFIO2zgqKSuRbo62uNyX_/pub?gid=0&single=true&output=csv`
-- **마지막 수정 완료 항목 ID**: `[SCR-02 배틀 아레나 Round 2 완료] SCR-02-04(속성 상성 카운터 크리티컬 플립 Web Audio 신스음 playCriticalElementalFlip 및 네온 배너/헤비 햅틱), SCR-02-05(모바일 원핸드 1-Tap 스마트 최적 착수 HUD 버튼), SCR-02-06(승리 화면 20 SNS 소비 기반 보상 2배 더블업 찬스 Double-Up Victory Chest) 전수 구현 및 빌드/배포 완료!`
-- **최종 업데이트 일시**: 2026-09-17 08:06 (KST)
+- **마지막 수정 완료 항목 ID**: `[SCR-03 마이덱 & 카드 관리 Round 2 완료] SCR-03-04(다마고치 애정도 돌봄/간식 & 친밀도 MAX 플립 방어 +5% 패시브), SCR-03-05(3구 프리셋 원터치 스위처 Bar & 덱 복사/이름편집), SCR-03-06(빈 장비 슬롯 탭 시 SSR 확정 스타터 팩 1-Tap 다이렉트 인앱 팝업) 전수 구현 및 빌드/배포 완료!`
+- **최종 업데이트 일시**: 2026-09-17 11:40 (KST)
 
 - **신규 항목 직행 원칙**: `/gemini-ex` 실행 시 이미 완료된 이전 항목(Row 1 ~ 마지막 완료 Row)은 **처음부터 다시 점검하지 않고 즉시 스킵**하며, 마지막 완료 항목 바로 다음의 **신규 미작업 항목**부터 즉시 착수합니다.
 - **무작업 시 침묵 원칙 (Silent if No-op)**: 크론 작업 실행 시 신규로 개선할 미작업 항목이 없으면 사용자에게 별도의 알림 메시지를 보내지 않고 조용히 대기합니다.
@@ -234,3 +234,6 @@
 - `hero_element_essences`: 카드 분해 시 환급되는 4원소(화/수/지/풍) 에센스 보유량 저장
 - `hero_afk_harvest_last_time`: 로비 24시간 오프라인 순찰 수확 상자 마지막 수령 타임스탬프 (ms)
 - `hero_win_streak`: 랭킹/AI 전투 연속 승리 횟수 (연승 질주 불꽃 뱃지 연동)
+- `hero_card_affection_{season}`: 카드별 다마고치 애정도, 일일 쓰다듬기 횟수 및 친밀도 MAX 플립 방어(+5%) 해금 상태 저장
+- `hero_deck_preset_name_{num}_{season}`: 덱 프리셋 커스텀 명칭 (1, 2, 3)
+- `hero_deck_preset_icon_{num}_{season}`: 덱 프리셋 커스텀 아이콘 (1, 2, 3)

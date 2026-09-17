@@ -2,6 +2,37 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-09-17 11:40 KST] [SCR-03 마이덱 & 카드 관리 Round 2 전수 구현 완료] [SCR-03-04 다마고치 애정도/플립방어, SCR-03-05 3구 덱 프리셋 원터치 스위처, SCR-03-06 빈 슬롯 SSR 스타터팩]
+- **요청 사항 (스프레드시트 Round 2 대상 항목)**:
+  1. `SCR-03-04` (기획/재미/도파민): 카드 상세 뷰에 '애정도(Affection) & 간식 주기' 다마고치 인터랙션 추가, 터치 시 애정도 하트 파티클 + Web Audio 전용 사운드 출력 및 친밀도 Max 달성 시 히든 전투 패시브(플립 방어 +5%) 해금 연동.
+  2. `SCR-03-05` (디자인/사용성): 상단 덱 영역에 '덱 1(PVP 공격) / 덱 2(방어) / 덱 3(타워 보스용)' 3구 프리셋 원터치 스위처 바 구축 및 덱 복사/이름 편집 기능 제공.
+  3. `SCR-03-06` (기획/과금전환): 빈 장비 슬롯 탭 시 해당 슬롯 전용 'SSR 매직 링/아뮬렛 확정 스타터 팩 (1,200원 / 120 SNS)' 1-Tap 다이렉트 장비 인앱 결제 팝업 연결.
+- **수정 및 신규 파일**:
+  - `src/components/DeckPresetSwitcher.tsx`:
+    - 3구 덱 프리셋 바 (덱 1: PVP 공격 ⚔️ / 덱 2: PVP 방어 🛡️ / 덱 3: 타워 보스용 🏰) 원터치 탭 스위칭.
+    - 활성 덱을 다른 프리셋 슬롯으로 한 번에 복사하는 덱 복사(Copy Deck) 모달 탑재.
+    - 슬롯별 명칭(최대 10자) 및 대표 이모지 아이콘(⚔️/🛡️/🏰/🔥/💧/🌿/⚡/👑/💀/🎯) 인라인 편집 모달 연동 및 `localStorage` 영구 보존.
+  - `src/components/CompanionCareModal.tsx`:
+    - 다마고치식 영웅 돌봄 및 카드 터치 쓰다듬기(일일 5회, 하트 파티클 및 Web Audio 차임 사운드).
+    - 매일 1회 무료 별사탕 간식 급여(+15) 및 10 SNS 에너지 젤리 간식 급여(+20) 시스템.
+    - 친밀도 100(MAX) 달성 시 팡파르 연출과 함께 히든 전투 패시브 [플립 방어 +5%] 자동 해금 및 영구 보존.
+  - `src/components/GearStarterPackModal.tsx`:
+    - 빈 장비 슬롯(아뮬렛, 링, 부츠) 전용 SSR 확정 장비 스타터 팩 다이렉트 팝업.
+    - 1,200원 원클릭 간편결제 또는 120 SNS 교환을 통한 1-Tap 즉시 인벤토리 지급 및 해당 카드 슬롯 자동 장착.
+  - `src/lib/sound.ts`:
+    - `playAffectionHeartChime()`: C6/E6/G6 고음 영롱한 벨 차임 Web Audio 합성음 (음소거 가드 `isSfxMutedGlobal` 100% 준수).
+    - `playAffectionMaxSfx()`: 친밀도 MAX 달성 축하 트라이앵글 팡파르 하모니.
+  - `src/views/MyDeckView.tsx`:
+    - 상단 기존 인라인 프리셋 바를 고도화된 `DeckPresetSwitcher`로 전면 교체 및 `handleCopyDeckPreset` 연동.
+    - 카드 상세 뷰에 '다마고치 애정도 & 간식 주기' 원터치 CTA 버튼 연동.
+    - 장비 슬롯 영역 및 장비 관리 모달 내 빈 슬롯 탭 시 `GearStarterPackModal` 연결 및 자동 장착(`handleGrantAndEquipItem`) 연동.
+  - `src/views/PlayGameView.tsx`:
+    - 배틀 아레나 플립 판정 엔진(`getFlips`)에서 플레이어 카드 공격 피격 시 친밀도 MAX(`maxUnlocked`) 여부를 검사하여 5% 확률로 상대 플립 공격을 완벽히 튕겨내는 [유대 방어] 패시브 및 전용 전투 로그 연동.
+- **검증 결과**:
+  - `npm run build`: 오류 0건 무결점 통과 (`✓ built in 18.55s`).
+  - 구글 폼 제출 완료: `https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse` 정상 보고 완료.
+  - Git 커밋 및 푸시 원칙: 로컬 커밋(`git commit`)만 수행, 원격 푸시 미실행.
+
 ## [2026-09-17 09:20 KST] [Audio Engine Optimization] [음소거 활성화 시 효과음 누출 원천 차단 및 전역 오디오 엔진 단일 진실 공급원 통합]
 - **요청 사항**: 음소거를 활성화했는데도 일부 상황(배틀, 콤보, 단일 컴포넌트 등)에서 효과음이 출력되는 현상 원천 방지
 - **원인 분석**:
