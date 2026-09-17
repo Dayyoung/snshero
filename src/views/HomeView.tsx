@@ -29,6 +29,9 @@ import { AfkHarvestBox } from "../components/AfkHarvestBox";
 import { LifecycleEngine } from "../lib/LifecycleEngine";
 import { Flame, Settings } from "lucide-react";
 import { HomeCategoryHubModal, HubCategoryType } from "../components/HomeCategoryHubModal";
+import { ResourcePriorityPreloader } from "../lib/ResourcePreloader";
+import { LobbyParticleCanvas } from "../components/LobbyParticleCanvas";
+import { GrowthPassWidget } from "../components/GrowthPassWidget";
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -95,6 +98,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [dailyMissionProgress, setDailyMissionProgress] = useState<DailyMissionProgress>(() => loadDailyMissions());
 
   useEffect(() => {
+    // SCR-01-07: 우선순위 기반 리소스 청크 프리로드
+    ResourcePriorityPreloader.preloadCriticalAssets();
+
     const handleStarterPackUpdate = () => {
       setIsStarterPackPurchased(localStorage.getItem('hero_starter_pack_purchased') === 'true');
     };
@@ -365,9 +371,20 @@ export const HomeView: React.FC<HomeViewProps> = ({
           )}
         </div>
 
+        {/* SCR-01-09: 7일 신규 영웅 성장 배틀패스 위젯 */}
+        <div className="w-full mb-3">
+          <GrowthPassWidget
+            language={language}
+            onNavigateShop={() => onNavigate('shop')}
+            playSfx={playSfx}
+          />
+        </div>
+
         <div className="relative min-h-[310px] sm:min-h-[360px] overflow-hidden rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]">
           <div className="absolute inset-x-0 top-0 h-1 bg-[#201d1d]" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(15,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(15,0,0,0.02)_1px,transparent_1px)] bg-[size:28px_28px]" />
+          {/* SCR-01-07: 로비 배경 지연 파티클 캔버스 */}
+          <LobbyParticleCanvas lowSpecMode={lowSpecMode} />
           <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 py-6 sm:p-8">
             {/* SCR-01: 대표 덱 종합 전투력(CP) 및 연승 불꽃 뱃지 HUD */}
             <div className="w-full max-w-md flex items-center justify-between border-b border-[#201d1d]/10 pb-2 mb-3 font-mono text-xs select-none">

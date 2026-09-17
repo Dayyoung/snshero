@@ -58,6 +58,7 @@ import { ExpeditionModal } from '../components/ExpeditionModal';
 import { MonsterBeastariumModal } from '../components/MonsterBeastariumModal';
 import { TacticianMasteryModal } from '../components/TacticianMasteryModal';
 import { TowerOfTrialsModal } from '../components/TowerOfTrialsModal';
+import { WinStreakJackpotModal } from '../components/WinStreakJackpotModal';
 import { BattleGambitModal } from '../components/BattleGambitModal';
 import { VoxelMiningDefenseGame } from '../components/VoxelMiningDefenseGame';
 import { VoxelPixelStrikeArenaGame } from '../components/VoxelPixelStrikeArenaGame';
@@ -895,6 +896,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     };
   });
   const [isGambitModalOpen, setIsGambitModalOpen] = useState<boolean>(false);
+  // SCR-02-09: 연승 잭팟 룰렛 및 쉴드 구제 모달 상태
+  const [isJackpotModalOpen, setIsJackpotModalOpen] = useState<boolean>(false);
+  const [jackpotModalMode, setJackpotModalMode] = useState<'jackpot' | 'shield_rescue'>('jackpot');
+  const [jackpotStreakCount, setJackpotStreakCount] = useState<number>(3);
   const [isSecretStampModalOpen, setIsSecretStampModalOpen] = useState<boolean>(false);
   const [isTreasureDartOpen, setIsTreasureDartOpen] = useState<boolean>(false);
   const [isPirateRouletteOpen, setIsPirateRouletteOpen] = useState<boolean>(false);
@@ -13126,6 +13131,25 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           language={language}
           isAutoBattle={isAutoBattle}
           onToggleAutoBattle={onToggleAutoBattle}
+        />
+
+        {/* SCR-02-09: Win Streak Jackpot & Shield Modal */}
+        <WinStreakJackpotModal
+          isOpen={isJackpotModalOpen}
+          onClose={() => setIsJackpotModalOpen(false)}
+          language={language}
+          streakCount={jackpotStreakCount}
+          mode={jackpotModalMode}
+          onSpinJackpot={(reward) => {
+            const curSns = parseInt(localStorage.getItem('hero_sns') || '500', 10);
+            localStorage.setItem('hero_sns', String(curSns + 500));
+            window.dispatchEvent(new Event('hero_sns_updated'));
+          }}
+          onBuyShield={() => {
+            const shields = parseInt(localStorage.getItem('hero_win_streak_shield_count') || '0', 10);
+            localStorage.setItem('hero_win_streak_shield_count', String(shields + 1));
+          }}
+          playSfx={playSfx}
         />
 
         {/* Item 397: Secret Stamp Book Modal */}

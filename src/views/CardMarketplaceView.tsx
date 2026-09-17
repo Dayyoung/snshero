@@ -12,6 +12,9 @@ import { MarketEscrowModal } from '../components/MarketEscrowModal';
 import { MarketSparkline } from '../components/MarketSparkline';
 import { MarketplaceSortBottomSheet, MarketSortOption } from '../components/MarketplaceSortBottomSheet';
 import { GoldenDealPassModal } from '../components/GoldenDealPassModal';
+import { OrderBookCanvas } from '../components/OrderBookCanvas';
+import { QuickBuyBottomSheet } from '../components/QuickBuyBottomSheet';
+import { LiveAuctionModal } from '../components/LiveAuctionModal';
 import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
 import type { DatabaseCard, InventoryRecord, Language, Listing, Offer, TradeAuditLog, TradeStatus, ViewType } from '../types';
@@ -230,6 +233,12 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
     if (typeof window === 'undefined') return 0;
     return Number(localStorage.getItem('hero_sns') || localStorage.getItem('hero_sns_points') || '0');
   });
+
+  // SCR-05-07 ~ SCR-05-09: 호가창, 퀵바이, 라이브 옥션 상태
+  const [showOrderBook, setShowOrderBook] = useState<boolean>(true);
+  const [orderBookCardId, setOrderBookCardId] = useState<number>(110);
+  const [quickBuyListing, setQuickBuyListing] = useState<Listing | null>(null);
+  const [isAuctionModalOpen, setIsAuctionModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const handleSyncSns = () => {
@@ -1009,6 +1018,81 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
           </div>
         )}
 
+        {/* SCR-05-09 & SCR-05-07: 24H 라이브 옥션 배너 및 실시간 오더북 호가창 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="p-3 bg-gradient-to-r from-rose-50 via-red-50 to-amber-50 border border-rose-300 font-mono text-xs flex items-center justify-between shadow-xs">
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5">
+                <span className="px-1.5 py-0.5 bg-rose-600 text-white font-black text-[9px] animate-pulse">LIVE</span>
+                <span className="font-black text-rose-950">{language === 'ko' ? '24H 실시간 옥션 경매장' : '24H Live Card Auction'}</span>
+              </div>
+              <p className="text-[10px] text-rose-800">{language === 'ko' ? '전설급 한정판 카드 10초 스릴러 입찰 배틀' : 'Bid on rare cards with 10s snipe countdown'}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('light');
+                setIsAuctionModalOpen(true);
+              }}
+              className="px-3 py-2 bg-rose-600 hover:bg-rose-500 text-white font-black text-xs rounded-sm active:scale-95 transition-all cursor-pointer shadow-xs shrink-0"
+            >
+              {language === 'ko' ? '입찰 참여 >' : 'Join Bid >'}
+            </button>
+          </div>
+
+          <div className="p-3 bg-white border border-slate-200 font-mono text-xs flex items-center justify-between shadow-xs">
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5">
+                <span className="px-1.5 py-0.5 bg-indigo-600 text-white font-black text-[9px]">L2 BOOK</span>
+                <span className="font-black text-slate-900">{language === 'ko' ? '실시간 매수/매도 호가창' : 'Real-time Order Book'}</span>
+              </div>
+              <p className="text-[10px] text-slate-500">{language === 'ko' ? '배치 소켓 기반 60fps 매수·매도 잔량벽' : 'Batch socket 60fps bid/ask depth wall'}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowOrderBook((prev) => !prev)}
+              className="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-sm active:scale-95 transition-all cursor-pointer shadow-xs shrink-0"
+            >
+              {showOrderBook ? (language === 'ko' ? '호가 접기' : 'Hide Book') : (language === 'ko' ? '호가 보기' : 'Show Book')}
+            </button>
+          </div>
+        </div>
+
+        {/* OrderBook Canvas Dropdown */}
+        {showOrderBook && (
+          <div className="p-3 bg-white border border-slate-200 shadow-xs space-y-2">
+            <div className="flex items-center justify-between text-xs font-mono">
+              <span className="font-bold text-slate-700">
+                {language === 'ko' ? '호가 분석 대상:' : 'Order Book Target:'} [{getCardTitle(orderBookCardId)}]
+              </span>
+              <div className="flex items-center gap-1">
+                {[110, 109, 96, 88].map((cid) => (
+                  <button
+                    key={cid}
+                    type="button"
+                    onClick={() => setOrderBookCardId(cid)}
+                    className={cn(
+                      "px-2 py-0.5 text-[10px] font-bold border transition-colors cursor-pointer",
+                      orderBookCardId === cid ? "bg-indigo-600 text-white border-indigo-600" : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                    )}
+                  >
+                    #{cid}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <OrderBookCanvas
+              cardId={orderBookCardId}
+              currentPrice={filteredListings.find(l => l.cardId === orderBookCardId)?.askPrice || 3500}
+              language={language}
+              onSelectPrice={(p) => {
+                setListingPriceInput(String(p));
+                triggerHaptic('light');
+              }}
+            />
+          </div>
+        )}
+
         {/* SCR-05 UX: 모바일 원터치 서브 탭바 (스크롤 피로도 해소) */}
         <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none font-mono text-xs">
           <button
@@ -1279,6 +1363,21 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                             <TrendingUp size={13} className="text-indigo-600" />
                             <span className="hidden sm:inline">{language === 'ko' ? '시세' : 'Chart'}</span>
                           </button>
+                          {/* SCR-05-08: 1-Tap Quick Buy Button */}
+                          {!isMine && !hasOpenOffer && listing.status === 'active' && !isGuest && !isOfflineMode && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                triggerHaptic('light');
+                                setQuickBuyListing(listing);
+                              }}
+                              className="min-h-9 px-2.5 rounded-lg border border-amber-400 bg-amber-50 hover:bg-amber-100 text-amber-900 font-black text-xs flex items-center gap-1 cursor-pointer transition-colors shadow-2xs"
+                              title={language === 'ko' ? '1-탭 원스톱 구매 시트' : '1-Tap Quick Buy'}
+                            >
+                              <span>⚡</span>
+                              <span>{language === 'ko' ? '1-탭' : 'Quick'}</span>
+                            </button>
+                          )}
                           <button
                             type="button"
                             onClick={() => handleRequestPurchase(listing)}
@@ -1817,6 +1916,38 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
             } catch {}
           }}
           onClose={() => setIsGoldenDealModalOpen(false)}
+        />
+      )}
+
+      {/* SCR-05-08: 1-Tap Quick Buy Bottom Sheet */}
+      {quickBuyListing && (
+        <QuickBuyBottomSheet
+          listing={quickBuyListing}
+          cardTitle={getCardTitle(quickBuyListing.cardId)}
+          userSns={userSns}
+          language={language}
+          onExecuteBuy={(listing) => {
+            handleExecutePurchase(listing);
+            setQuickBuyListing(null);
+          }}
+          onClose={() => setQuickBuyListing(null)}
+        />
+      )}
+
+      {/* SCR-05-09: 24H Live Auction Modal */}
+      {isAuctionModalOpen && (
+        <LiveAuctionModal
+          language={language}
+          userSns={userSns}
+          onClose={() => setIsAuctionModalOpen(false)}
+          onBidPlaced={(_listingId, bidAmount) => {
+            setFeedbackText(
+              language === 'ko'
+                ? `[라이브 옥션] ${bidAmount.toLocaleString()} SNS 최고가 입찰이 완료되었습니다!`
+                : `[Live Auction] Highest bid of ${bidAmount.toLocaleString()} SNS placed!`
+            );
+            triggerHaptic('victory');
+          }}
         />
       )}
     </div>

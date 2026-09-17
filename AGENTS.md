@@ -2,8 +2,8 @@
 
 ## 스프레드시트 개선 작업 진행 상태
 - **현재 연동 스프레드시트 (공개 CSV)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vRF82ZJBHIhPsTzzjGm8DFutzw6PtAwqT_iyEB3MG5yKvZrEs354rKHy7YIFIO2zgqKSuRbo62uNyX_/pub?gid=0&single=true&output=csv`
-- **마지막 수정 완료 항목 ID**: `[스프레드시트 69개 전체 100% 전수 완료] SCR-01 ~ SCR-11 총 69개 개선 과제 전수 구현 및 빌드/배포 검증 완료 (Row 1 ~ Row 69 완수, 신규 추가 항목 발견 시 즉시 다음 번호부터 자동 착수 대기)`
-- **최종 업데이트 일시**: 2026-09-17 11:55 (KST)
+- **마지막 수정 완료 항목 ID**: `[스프레드시트 90개 전체 100% 전수 완료] SCR-01 ~ SCR-12 총 90개 개선 과제 전수 구현 및 빌드/배포 검증 완료 (Row 1 ~ Row 90 전수 완수: SCR-12 오프라인큐/보물상자/복귀보상, SCR-01 60fps파티클/스와이프/성장패스, SCR-02 GPU파티클/엄지부채꼴/연승잭팟, SCR-03 썸네일풀/퀵필터/전투력마일스톤, SCR-04 60fps가챠/마일리지교환/무료소환·플래시세일, SCR-05 배치오더북/1-탭구매/24H라이브옥션, SCR-06 핀치줌캔들스틱/도넛포트폴리오/TP·SL/주주총회·배당2배 부스터)`
+- **최종 업데이트 일시**: 2026-09-17 19:50 (KST)
 
 - **전수 일괄 완료 및 신규 항목 직행 원칙 (Complete All Remaining Tasks)**: `/gemini-ex` 또는 `/ge` 실행 시 현재 스프레드시트에 남아 있는 **모든 미완료 항목을 중간에 멈추지 않고 끝까지 전수 완료**합니다. 모든 항목 완료 후 이후 스프레드시트에 새로 추가되는 신규 항목이 발견되면, 마지막 완료 항목 바로 다음의 **신규 미작업 항목**부터 즉시 이어서 착수합니다.
 - **무작업 시 침묵 원칙 (Silent if No-op)**: 크론 작업 실행 시 신규로 개선할 미작업 항목이 없으면 사용자에게 별도의 알림 메시지를 보내지 않고 조용히 대기합니다.
@@ -242,3 +242,14 @@
 - `hero_card_affection_{season}`: 카드별 다마고치 애정도, 일일 쓰다듬기 횟수 및 친밀도 MAX 플립 방어(+5%) 해금 상태 저장
 - `hero_deck_preset_name_{num}_{season}`: 덱 프리셋 커스텀 명칭 (1, 2, 3)
 - `hero_deck_preset_icon_{num}_{season}`: 덱 프리셋 커스텀 아이콘 (1, 2, 3)
+- `hero_weekly_milestone_chest_{dateKey}`: 주간 마일스톤 골드 미믹 보물상자 개봉 수령 여부 저장
+- `hero_comeback_claimed_{season}`: 3일 이상 미접속 복귀 유저 7일 연속 소급 보상 수령 상태 저장
+- `hero_growth_pass_{season}`: 7일 영웅 성장 배틀패스 일차별 미션 완료 및 보상 수령 상태 저장
+- `hero_winstreak_jackpot_count`: 배틀 아레나 연승 잭팟 룰렛 누적 횟수 저장
+- `hero_winstreak_shield_tickets`: 배틀 아레나 연승 방어 쉴드 티켓 보유량 저장
+- `hero_deck_power_claimed_{season}`: 마이덱 총 전투력 마일스톤 보상 수령 완료 티어 목록 저장
+- `hero_flash_sale_seen_{dateKey}`: 상점 15분 한정 플래시 세일 일일 팝업 노출 여부 저장
+- `hero_golden_deal_pass_active`: 마켓플레이스 골든 딜 알림 패스 활성화 상태 저장
+- `hero_stock_tpsl_orders_{season}`: 가상 주식 거래소 1-Tap 익절/손절(TP/SL) 자동 감시 예약 설정 저장
+- `hero_double_dividend_active`: 주식 거래소 주간 배당 2배 부스터(7일권) 활성화 상태 저장
+- `hero_shareholder_votes_{season}`: 주주총회 안건별 찬반 투표 기록 및 보너스 수령 상태 저장

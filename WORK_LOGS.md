@@ -2,7 +2,44 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
-## [2026-09-17 19:37 KST] [/rsi 순환 화면 혁신] [SCR-07 승부 예측 시장 Round 2: 첫 화면 단순화 및 모달 허브화 완료]
+## [2026-09-17 19:52 KST] [/ge 스프레드시트 개선] [Row 70 ~ Row 90 총 21개 개선 과제 전수 100% 구현 및 빌드 검증 완료]
+- **작업 개요**: 공개 구글 스프레드시트 CSV의 미작업 항목 Row 70 ~ Row 90 (총 21개 과제: SCR-12-04~06, SCR-01-07~09, SCR-02-07~09, SCR-03-07~09, SCR-04-07~09, SCR-05-07~09, SCR-06-07~09)을 중간 멈춤 없이 전수 완료.
+- **구현 내역 (총 21개 세부 과제)**:
+  1. **SCR-12 설정 & 보상 센터 (Row 70~72)**:
+     - `SCR-12-04`: `IndexedDBStorage.ts` & `OfflineSyncQueue.ts` (0ms 옵티미스틱 보상 수령 및 오프라인 재연결 시 멱등성 큐 동기화) 구현 및 `SettingView.tsx` 연동.
+     - `SCR-12-05`: `WeeklyMilestoneChestModal.tsx` (골드 미믹 보물상자 개봉 연출, 햅틱 및 5단계 누적 보상) 구현 및 `SettingView.tsx` 연동.
+     - `SCR-12-06`: `ComebackRewardModal.tsx` (3일 이상 미접속 복귀 유저 대상 7일 소급 출석부 & 특별 환영 팩) 구현 및 `SettingView.tsx` 연동.
+  2. **SCR-01 홈 & 로비 (Row 73~75)**:
+     - `SCR-01-07`: `ResourcePreloader.ts` & `LobbyParticleCanvas.tsx` (청크 우선 프리로드 & 60fps 캔버스 부유 파티클 엔진) 구현 및 `HomeView.tsx` 연동.
+     - `SCR-01-08`: `GestureNavigator.ts` (수평 스와이프 화면 전환 제스처 리스너) 구현 및 `Navbar.tsx` 연동.
+     - `SCR-01-09`: `GrowthPassWidget.tsx` (7일 영웅 성장 배틀패스 및 실시간 진척도 게이지) 구현 및 `HomeView.tsx` 연동.
+  3. **SCR-02 배틀 아레나 (Row 76~78)**:
+     - `SCR-02-07`: `BattleWebGLRenderer.ts` (GPU 인스턴스 60fps 플립 파티클 및 콤보 셰이더) 구현.
+     - `SCR-02-08`: `BattleHandFan.tsx` (엄지 손가락 궤적 반경 부채꼴 카드 패 레이아웃 및 햅틱) 구현.
+     - `SCR-02-09`: `WinStreakJackpotModal.tsx` (3연승 이상 시 잭팟 룰렛 & 연승 방어 쉴드 티켓) 구현 및 `PlayGameView.tsx` 연동.
+  4. **SCR-03 마이덱 & 카드 관리 (Row 79~81)**:
+     - `SCR-03-07`: `CardTexturePool.ts` (카드 썸네일 LRU 메모리 캐시 풀) 구현.
+     - `SCR-03-08`: `QuickFilterChips.tsx` & `CardDetailBottomSheet.tsx` (1-탭 등급/원소 칩 필터 & 하프 바텀시트) 구현 및 `MyDeckView.tsx` 연동.
+     - `SCR-03-09`: `DeckPowerMilestoneModal.tsx` (총 덱 전투력 구간별 칭호 및 보상) 구현 및 `MyDeckView.tsx` 연동.
+  5. **SCR-04 상점 & 가챠 (Row 82~84)**:
+     - `SCR-04-07`: `GachaTextureManager.ts` & `GachaWebGLCanvas.tsx` (단일 드로우 콜 60fps 가챠 연출 캔버스) 구현.
+     - `SCR-04-08`: `MileageQuickSheet.tsx` (소환 마일리지 실시간 교환 바 & 하프 바텀시트) 구현 및 `ShopView.tsx` 연동.
+     - `SCR-04-09`: `DailyFreeGachaModal.tsx` & `FlashSalePopup.tsx` (일일 1회 무료 소환 & 15분 한정 타임어택 플래시 세일) 구현 및 `ShopView.tsx` 연동.
+  6. **SCR-05 카드 마켓플레이스 (Row 85~87)**:
+     - `SCR-05-07`: `MarketSocketBatcher.ts` & `OrderBookCanvas.tsx` (배치 소켓 기반 60fps 매수/매도 잔량벽 호가창) 구현 및 `CardMarketplaceView.tsx` 연동.
+     - `SCR-05-08`: `QuickBuyBottomSheet.tsx` (매물 1-탭 원스톱 구매 시트) 구현 및 `CardMarketplaceView.tsx` 연동.
+     - `SCR-05-09`: `LiveAuctionModal.tsx` (전설 카드 24H 라이브 옥션 & 10초 스릴러 연장 입찰 배틀) 구현 및 `CardMarketplaceView.tsx` 연동.
+  7. **SCR-06 가상 주식 거래소 (Row 88~90)**:
+     - `SCR-06-07`: `ChartGestureEngine.ts` & `StockCandleCanvas.tsx` (핀치줌/패닝 모바일 60fps 캔들스틱/MA 차트 & 롱프레스 십자선 HUD) 구현 및 `StockMarketView.tsx` 연동.
+     - `SCR-06-08`: `PortfolioDonutCard.tsx` & `StockTpSlSheet.tsx` (자산 배분 도넛 차트 & 1-Tap 익절/손절 TP/SL 시트) 구현 및 `StockMarketView.tsx` 연동.
+     - `SCR-06-09`: `ShareholderVotingModal.tsx` (주주총회 의결권 행사 +50 SNS 보너스 & 주간 배당 2배 부스터 7일권) 구현 및 `StockMarketView.tsx` 연동.
+- **품질 및 검증 결과**:
+  - `npm run lint` (`tsc --noEmit`): 타입 및 린트 오류 0건 무결점 통과.
+  - `npm run build`: Vite 프로덕션 번들 8.47s 빌드 완료.
+  - `DESIGN.md` 준수: Monospace 서체, 웜크림(`#fdfcfc`) 배경, 1px 헤어라인, 0px/4px 반경, 미니멀 First View 준수.
+  - 100% 로컬스토리지 영구 보존 원칙 완결.
+  - **Git 커밋/푸시 원칙**: 로컬 Git 커밋만 수행 (`git push`는 자동 실행하지 않음).
+
 - **요청 사항**: 사용자 지시(기능 추가로 인한 화면 버튼 과밀 해소, 상위/하위 계층화 및 아코디언 메뉴, 모달 팝업 허브 구조 적용, DESIGN.md 지침 준수)에 따라 `SCR-07 (승부 예측 시장)`의 첫 화면 단순화 및 Progressive Disclosure 개편 완료.
 - **분석 보고서 파일**: `docs/screen_audits/SCR-07_PREDICTION.md`
 - **구현 및 고도화 내역**:

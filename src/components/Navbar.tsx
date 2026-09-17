@@ -8,6 +8,7 @@ import { useGameSettings } from '../contexts/GameSettingsContext';
 import { getClaimableCount, getTodayStr, hasUnfinishedMissions } from '../lib/dailyMissions';
 import { getRebirthLevel } from '../hooks/useKadanRpgProgress';
 import { prefetchPlayGameView } from '../App';
+import { GestureNavigator } from '../lib/GestureNavigator';
 
 interface NavbarProps {
   currentView: ViewType;
@@ -57,12 +58,34 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
     const interval = setInterval(checkRedDots, 3000);
     window.addEventListener('hero_daily_missions_updated', checkRedDots);
     window.addEventListener('hero_daily_mission_completed', checkRedDots);
+
+    // SCR-01-08: 모바일 수평 스와이프 제스처 네비게이터 연동
+    const mainTabs: ViewType[] = ['home', 'mydeck', 'main', 'play', 'shop'];
+    const gestureNav = new GestureNavigator({
+      onSwipeLeft: () => {
+        const curIdx = mainTabs.indexOf(currentView);
+        if (curIdx >= 0 && curIdx < mainTabs.length - 1) {
+          setView(mainTabs[curIdx + 1]);
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        }
+      },
+      onSwipeRight: () => {
+        const curIdx = mainTabs.indexOf(currentView);
+        if (curIdx > 0) {
+          setView(mainTabs[curIdx - 1]);
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        }
+      },
+    });
+    const detachGesture = gestureNav.attach(window);
+
     return () => {
       clearInterval(interval);
       window.removeEventListener('hero_daily_missions_updated', checkRedDots);
       window.removeEventListener('hero_daily_mission_completed', checkRedDots);
+      detachGesture();
     };
-  }, []);
+  }, [currentView, setView, playSfx]);
 
   const items = [
     { id: 'home', label: t('home', language), icon: Home, hasRedDot: false },

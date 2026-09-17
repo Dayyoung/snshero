@@ -30,6 +30,9 @@ import { HapticVibrationSettingsModal } from '../components/HapticVibrationSetti
 import { DailyMissions } from '../components/DailyMissions';
 import { loadDailyMissions, getClaimableCount } from '../lib/dailyMissions';
 import { StaminaPacingManager } from '../lib/staminaPacingManager';
+import { WeeklyMilestoneChestModal } from '../components/WeeklyMilestoneChestModal';
+import { ComebackRewardModal } from '../components/ComebackRewardModal';
+import { claimRewardOptimistic } from '../lib/IndexedDBStorage';
 
 
 interface SettingViewProps {
@@ -133,6 +136,28 @@ export const SettingView: React.FC<SettingViewProps> = ({
   // SCR-12-01: 일일 미션 데이터 상태
   const [dailyMissionsData, setDailyMissionsData] = useState(() => loadDailyMissions());
   const claimableMissionCount = getClaimableCount();
+
+  // SCR-12-05 & SCR-12-06: 주간 마일스톤 상자 & 복귀 유저 모달 상태
+  const [isWeeklyChestOpen, setIsWeeklyChestOpen] = useState(false);
+  const [isComebackModalOpen, setIsComebackModalOpen] = useState(false);
+
+  // SCR-12-06: 3일 이상 미접속 복귀 유저 자동 감지
+  useEffect(() => {
+    try {
+      const lastActive = localStorage.getItem('hero_last_active_time');
+      const now = Date.now();
+      const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
+      if (lastActive) {
+        const diff = now - parseInt(lastActive, 10);
+        const shownSession = sessionStorage.getItem('hero_comeback_shown');
+        if (diff > threeDaysMs && !shownSession) {
+          setIsComebackModalOpen(true);
+          sessionStorage.setItem('hero_comeback_shown', 'true');
+        }
+      }
+      localStorage.setItem('hero_last_active_time', String(now));
+    } catch {}
+  }, []);
 
   // SCR-12-03: 7일 출석 스트릭 상태 관리
   const ATTENDANCE_STORAGE_KEY = 'hero_attendance_streak_v1';
@@ -1689,6 +1714,39 @@ export const SettingView: React.FC<SettingViewProps> = ({
       {/* TAB 2: 일일 미션 센터 */}
       {activeSubTab === 'missions' && (
         <div className="space-y-6">
+          {/* SCR-12-05 & SCR-12-06: 퀵 액션 배너 */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => setIsWeeklyChestOpen(true)}
+              className="p-3 bg-amber-50 border border-amber-300 hover:bg-amber-100 text-amber-950 rounded-xs flex items-center justify-between font-mono cursor-pointer transition-colors text-left"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-xl">👑</span>
+                <div>
+                  <div className="text-xs font-bold">{language === 'ko' ? '[주간 최종 마일스톤 상자]' : '[Weekly Milestone Chest]'}</div>
+                  <div className="text-[10px] text-amber-800">{language === 'ko' ? '100% 완수자 전용 골드 미믹 개봉' : '100% Completion Reward'}</div>
+                </div>
+              </div>
+              <span className="text-xs font-bold text-amber-900">&gt;</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsComebackModalOpen(true)}
+              className="p-3 bg-purple-50 border border-purple-300 hover:bg-purple-100 text-purple-950 rounded-xs flex items-center justify-between font-mono cursor-pointer transition-colors text-left"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🎁</span>
+                <div>
+                  <div className="text-xs font-bold">{language === 'ko' ? '[컴백 웰컴백 소급 센터]' : '[Comeback Reward Center]'}</div>
+                  <div className="text-[10px] text-purple-800">{language === 'ko' ? '미접속 미수령 보상 전액 복구' : 'Retroactive Reward Claim'}</div>
+                </div>
+              </div>
+              <span className="text-xs font-bold text-purple-900">&gt;</span>
+            </button>
+          </div>
+
           <DailyMissions />
         </div>
       )}
@@ -2136,6 +2194,37 @@ export const SettingView: React.FC<SettingViewProps> = ({
       <HapticVibrationSettingsModal
         isOpen={isHapticModalOpen}
         onClose={() => setIsHapticModalOpen(false)}
+      />
+
+      <WeeklyMilestoneChestModal
+        isOpen={isWeeklyChestOpen}
+        onClose={() => setIsWeeklyChestOpen(false)}
+        language={language}
+        playSfx={playSfx}
+        onClaimRewards={(snsReward) => {
+          claimRewardOptimistic('WEEKLY_MILESTONE', snsReward, () => {
+            const cur = parseInt(localStorage.getItem('hero_sns') || '500', 10);
+            localStorage.setItem('hero_sns', String(cur + snsReward));
+            window.dispatchEvent(new Event('hero_sns_updated'));
+          });
+        }}
+      />
+
+      <ComebackRewardModal
+        isOpen={isComebackModalOpen}
+        onClose={() => setIsComebackModalOpen(false)}
+        language={language}
+        playSfx={playSfx}
+        onClaimFree={(retroCoins) => {
+          claimRewardOptimistic('COMEBACK_RETRO', retroCoins, () => {
+            const cur = parseInt(localStorage.getItem('hero_sns') || '500', 10);
+            localStorage.setItem('hero_sns', String(cur + retroCoins));
+            window.dispatchEvent(new Event('hero_sns_updated'));
+          });
+        }}
+        onBuyPackage={() => {
+          onNavigate('shop');
+        }}
       />
     </div>
   );

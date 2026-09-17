@@ -61,6 +61,9 @@ import { DeckCommandHub } from '../components/DeckCommandHub';
 import { DeckPresetSwitcher } from '../components/DeckPresetSwitcher';
 import { CompanionCareModal } from '../components/CompanionCareModal';
 import { GearStarterPackModal } from '../components/GearStarterPackModal';
+import { QuickFilterChips } from '../components/QuickFilterChips';
+import { CardDetailBottomSheet } from '../components/CardDetailBottomSheet';
+import { DeckPowerMilestoneModal } from '../components/DeckPowerMilestoneModal';
 import { EquipmentItem } from '../types';
 
 interface MyDeckViewProps {
@@ -382,6 +385,14 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   const [isElementAdvantageOpen, setIsElementAdvantageOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [helpStep, setHelpStep] = useState(0);
+
+  // SCR-03-08 & SCR-03-09: 퀵 필터 칩, 하프 바텀시트, 덱 파워 돌파 모달 상태
+  const [filterRarity, setFilterRarity] = useState<string | 'ALL'>('ALL');
+  const [filterElement, setFilterElement] = useState<string | 'ALL'>('ALL');
+  const [previewCardForSheet, setPreviewCardForSheet] = useState<CardData | null>(null);
+  const [isPreviewSheetOpen, setIsPreviewSheetOpen] = useState(false);
+  const [isPowerMilestoneOpen, setIsPowerMilestoneOpen] = useState(false);
+
   const { isLocked } = useCardLock();
 
   const kadanCard = CARD_DATABASE[41];
@@ -1447,6 +1458,14 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           </button>
         </div>
         <div className="flex items-center justify-end gap-2">
+          <button
+            type="button"
+            onClick={() => setIsPowerMilestoneOpen(true)}
+            className="px-2 py-1 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 font-mono text-[11px] font-bold rounded-sm flex items-center gap-1 cursor-pointer transition-colors"
+          >
+            <span>🎖️</span>
+            <span>{language === 'ko' ? '파워 훈장' : 'Medal'}</span>
+          </button>
           <div className="px-3 py-1.5 bg-stone-900 text-amber-300 font-mono text-xs font-black rounded-sm border border-stone-800 flex items-center gap-1.5 shadow-xs">
             <Zap size={13} className="fill-amber-400 text-amber-400" />
             <span>{language === 'ko' ? '총 전투력' : 'TOTAL PWR'}:</span>
@@ -1461,6 +1480,15 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         onSwitchPreset={handleSwitchDeckPreset}
         onCopyPreset={handleCopyDeckPreset}
         season={season}
+        language={language}
+      />
+
+      {/* SCR-03-08: Quick Filter Chips for Rarity & Element */}
+      <QuickFilterChips
+        selectedRarity={filterRarity}
+        onSelectRarity={setFilterRarity}
+        selectedElement={filterElement}
+        onSelectElement={setFilterElement}
         language={language}
       />
 
@@ -3768,6 +3796,36 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           onNavigate('play');
         }}
         language={language}
+      />
+
+      {/* SCR-03-08: Card Spec Half Bottom Sheet */}
+      <CardDetailBottomSheet
+        isOpen={isPreviewSheetOpen}
+        card={previewCardForSheet}
+        onClose={() => {
+          setIsPreviewSheetOpen(false);
+          setPreviewCardForSheet(null);
+        }}
+        language={language}
+        onEquipToDeck={(c) => {
+          if (currentDeck.length > 0) {
+            const nextDeck = [...currentDeck];
+            nextDeck[0] = c;
+            updateDeck(nextDeck);
+          }
+        }}
+      />
+
+      {/* SCR-03-09: Deck Power Milestone Modal */}
+      <DeckPowerMilestoneModal
+        isOpen={isPowerMilestoneOpen}
+        onClose={() => setIsPowerMilestoneOpen(false)}
+        language={language}
+        deckPower={globalTotalPower || 1420}
+        onBuyJumpingPack={() => {
+          onNavigate('shop');
+        }}
+        playSfx={playSfx}
       />
 
     </div>

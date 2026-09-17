@@ -12,6 +12,10 @@ import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
 import { PageHeader } from '../components/PageHeader';
 import { VipTraderPassModal } from '../components/VipTraderPassModal';
+import { StockCandleCanvas } from '../components/StockCandleCanvas';
+import { PortfolioDonutCard, PortfolioHoldingItem } from '../components/PortfolioDonutCard';
+import { StockTpSlSheet, TpSlConfig } from '../components/StockTpSlSheet';
+import { ShareholderVotingModal } from '../components/ShareholderVotingModal';
 
 interface StockMarketViewProps {
   language: Language;
@@ -178,6 +182,36 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
     }
   });
 
+  // SCR-06-07: 캔들스틱 Canvas 차트 대상 종목
+  const [candleTargetStock, setCandleTargetStock] = useState<{
+    cardId: number;
+    symbol: string;
+    cardTitle: string;
+    currentPrice: number;
+    change24h: number;
+  } | null>(null);
+
+  // SCR-06-08: TP/SL 시트 대상 및 설정 맵
+  const [tpSlTargetCardId, setTpSlTargetCardId] = useState<number | null>(null);
+  const [tpslConfigs, setTpslConfigs] = useState<Record<number, TpSlConfig>>(() => {
+    try {
+      const saved = localStorage.getItem(`hero_stock_tpsl_orders_${currentSeason}`);
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  // SCR-06-09: 주주총회 모달 및 배당 2배 부스터
+  const [isShareholderModalOpen, setIsShareholderModalOpen] = useState<boolean>(false);
+  const [isDoubleDividendActive, setIsDoubleDividendActive] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_double_dividend_active') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
   const handleClaimVolumeMilestone = (milestone: number, reward: number) => {
     if (dailyVolume < milestone || claimedVolumeMilestones.includes(milestone)) return;
     const nextClaimed = [...claimedVolumeMilestones, milestone];
@@ -216,11 +250,14 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
 
   const handleClaimDividends = () => {
     if (dividendAvailable <= 0) return;
-    updateSns(dividendAvailable, '주식 시장 캐릭터 지분 배당금 정산');
+    const finalPayout = isDoubleDividendActive ? dividendAvailable * 2 : dividendAvailable;
+    updateSns(finalPayout, isDoubleDividendActive ? '주식 시장 캐릭터 배당금 정산 (⚡ 2배 부스터 적용)' : '주식 시장 캐릭터 지분 배당금 정산');
     triggerHaptic('success');
     setAlertMsg({
       type: 'success',
-      text: language === 'ko' ? `💰 ${dividendAvailable} SNS 배당금을 일괄 정산 수령했습니다!` : `Claimed ${dividendAvailable} SNS Dividends!`,
+      text: language === 'ko'
+        ? `💰 ${finalPayout} SNS 배당금을 일괄 정산 수령했습니다! ${isDoubleDividendActive ? '(⚡ 2배 부스터 적용)' : ''}`
+        : `Claimed ${finalPayout} SNS Dividends! ${isDoubleDividendActive ? '(⚡ 2x Boosted)' : ''}`,
     });
     setDividendAvailable(0);
     localStorage.setItem('hero_stock_dividends_ready', '0');
@@ -283,6 +320,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
   // ID 603: 1-Tap Reinvest Dividends Option (배당금 100% 최고 수익률 보유주식 자동 재투자 - 0% 수수료)
   const handleReinvestDividends = () => {
     if (dividendAvailable <= 0) return;
+    const poolAmount = isDoubleDividendActive ? dividendAvailable * 2 : dividendAvailable;
 
     // 1. 보유 주식 중 최고 수익률(24h 변동률) 우선 탐색
     const heldCards = Object.values(CARD_DATABASE).filter(c => (inventory[c.id]?.quantity || 0) > 0);
@@ -297,16 +335,16 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
     });
 
     // 배당금으로 살 수 있는 카드 선택 (스팟 단가가 배당금 이하인 것 중 최고 수익률, 없으면 가장 저렴한 카드)
-    let chosenCard = candidatePool.find(c => getCardSnsPrice(c.id) <= dividendAvailable);
+    let chosenCard = candidatePool.find(c => getCardSnsPrice(c.id) <= poolAmount);
     if (!chosenCard) {
       chosenCard = [...candidatePool].sort((a, b) => getCardSnsPrice(a.id) - getCardSnsPrice(b.id))[0];
     }
     if (!chosenCard) return;
 
     const unitPrice = getCardSnsPrice(chosenCard.id);
-    const buyQty = Math.max(1, Math.floor(dividendAvailable / unitPrice));
+    const buyQty = Math.max(1, Math.floor(poolAmount / unitPrice));
     const totalCost = buyQty * unitPrice;
-    const remainingChange = Math.max(0, dividendAvailable - totalCost);
+    const remainingChange = Math.max(0, poolAmount - totalCost);
 
     // 0% 수수료로 즉시 주식(카드) 추가
     for (let i = 0; i < buyQty; i++) {
@@ -363,6 +401,30 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
       estimatedDailyDividends: Math.max(0, estimatedDailyDividends),
     };
   }, [inventory, prices]);
+
+  // SCR-06-08: Portfolio holdings for donut chart
+  const portfolioHoldings: PortfolioHoldingItem[] = React.useMemo(() => {
+    const held = Object.values(CARD_DATABASE).filter(c => (inventory[c.id]?.quantity || 0) > 0);
+    const totalAsset = portfolioStats.totalStockAssetSns || 1;
+    return held.map((card, idx) => {
+      const { symbol } = getCardCoinPair(card.id);
+      const qty = inventory[card.id]?.quantity || 0;
+      const unitPrice = getCardSnsPrice(card.id);
+      const totalVal = qty * unitPrice;
+      const chg = prices[symbol]?.change24h || 0;
+      return {
+        cardId: card.id,
+        symbol,
+        cardTitle: language === 'ko' ? card.title : card.title_en,
+        quantity: qty,
+        currentPrice: unitPrice,
+        totalValue: totalVal,
+        change24h: chg,
+        weightPct: (totalVal / totalAsset) * 100,
+        color: ['#f59e0b', '#6366f1', '#10b981', '#ec4899', '#8b5cf6', '#06b6d4'][idx % 6],
+      };
+    });
+  }, [inventory, portfolioStats.totalStockAssetSns, prices, language]);
 
   // SCR-06: Today's High Yield Pick
   const highYieldPick = React.useMemo(() => {
@@ -644,6 +706,38 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
           </button>
         </div>
 
+        {/* SCR-06-09: 주주총회 안건 투표 & 주간 배당 2배 부스터 배너 */}
+        <div className="p-3 bg-gradient-to-r from-amber-50 via-orange-50 to-yellow-50 border border-amber-300 font-mono text-xs flex items-center justify-between shadow-xs">
+          <div className="space-y-0.5">
+            <div className="flex items-center gap-1.5">
+              <span className="px-1.5 py-0.5 bg-amber-500 text-black font-black text-[9px]">VOTE & BOOST</span>
+              <span className="font-black text-slate-900">
+                {language === 'ko' ? '주주총회 의결권 & 배당 2배 부스터' : 'Shareholder Voting & 2x Booster'}
+              </span>
+              {isDoubleDividendActive && (
+                <span className="px-1.5 py-0.2 bg-emerald-600 text-white font-bold text-[9px] animate-pulse">
+                  ⚡ 2X ACTIVE
+                </span>
+              )}
+            </div>
+            <p className="text-[10px] text-slate-600">
+              {language === 'ko'
+                ? '보유 주식 의결권으로 안건 투표(+50 SNS 보너스) & 7일간 배당 2배 혜택'
+                : 'Cast shareholder votes (+50 SNS) & unlock double dividends'}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('light');
+              setIsShareholderModalOpen(true);
+            }}
+            className="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-sm active:scale-95 transition-all cursor-pointer shadow-xs shrink-0"
+          >
+            {language === 'ko' ? '참여하기 >' : 'Open >'}
+          </button>
+        </div>
+
         {/* SCR-06: Mobile 4-Segment Sub Tab Navigation (44px+ Pure Touch) */}
         <div className="grid grid-cols-4 gap-1 p-1 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm select-none">
           <button
@@ -721,6 +815,46 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
         {/* Sub-Tab 1: Real-Time Market Table View */}
         {activeSubTab === 'market' && (
           <div className="flex flex-col gap-3">
+            {/* SCR-06-07: 60fps 캔들스틱 Canvas 차트 (핀치줌 & 롱프레스 십자선) */}
+            {candleTargetStock ? (
+              <StockCandleCanvas
+                symbol={candleTargetStock.symbol}
+                cardTitle={candleTargetStock.cardTitle}
+                currentPrice={candleTargetStock.currentPrice}
+                change24h={candleTargetStock.change24h}
+                language={language}
+                onClose={() => setCandleTargetStock(null)}
+              />
+            ) : (
+              <div className="p-2.5 bg-white border border-[rgba(15,0,0,0.12)] flex items-center justify-between text-xs font-mono shadow-2xs">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sm">📈</span>
+                  <span className="font-bold text-[#201d1d]">
+                    {language === 'ko' ? '60fps 캔들스틱 터치 차트' : '60fps Candle Chart'}
+                  </span>
+                  <span className="text-[10px] text-[#646262]">
+                    ({language === 'ko' ? '종목 터치 시 핀치줌/십자선 캔들 개폐' : 'Tap stock to open'})
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const pickSym = getCardCoinPair(highYieldPick.id).symbol;
+                    setCandleTargetStock({
+                      cardId: highYieldPick.id,
+                      symbol: pickSym,
+                      cardTitle: language === 'ko' ? highYieldPick.title : highYieldPick.title_en,
+                      currentPrice: getCardSnsPrice(highYieldPick.id),
+                      change24h: prices[pickSym]?.change24h || 0,
+                    });
+                  }}
+                  className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-[#201d1d] font-bold text-[10px] rounded-xs cursor-pointer"
+                >
+                  {language === 'ko' ? '추천주 차트 보기' : 'Show Pick Chart'}
+                </button>
+              </div>
+            )}
+
             {/* SCR-06: Today's High Yield Pick (1-Tap Quick Buy) */}
             <div className="p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-sm flex items-center justify-between gap-2">
               <div className="flex items-center gap-2 min-w-0">
@@ -842,6 +976,13 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                         setAlertMsg(null);
                         setChartData([]);
                         fetchChart(card.id);
+                        setCandleTargetStock({
+                          cardId: card.id,
+                          symbol,
+                          cardTitle: language === 'ko' ? card.title : card.title_en,
+                          currentPrice: priceSns,
+                          change24h: change,
+                        });
                       }}
                       className="grid grid-cols-4 items-center px-2 py-2 text-center text-[11px] font-semibold hover:bg-[#f8f7f7] text-[#201d1d] cursor-pointer transition-colors active:bg-[#eae8e8]"
                     >
@@ -887,6 +1028,32 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
         {/* Sub-Tab 2: My Stock Portfolio View */}
         {activeSubTab === 'portfolio' && (
           <div className="flex flex-col gap-3">
+            {/* SCR-06-08: Portfolio Donut & Asset Allocation Chart */}
+            <PortfolioDonutCard
+              holdings={portfolioHoldings}
+              totalValue={portfolioStats.totalStockAssetSns}
+              totalProfitSns={Math.round(portfolioStats.totalStockAssetSns * 0.082)}
+              totalProfitRate={8.2}
+              language={language}
+              onSelectStock={(cid) => {
+                const { symbol } = getCardCoinPair(cid);
+                const c = CARD_DATABASE[cid];
+                if (c) {
+                  setCandleTargetStock({
+                    cardId: cid,
+                    symbol,
+                    cardTitle: language === 'ko' ? c.title : c.title_en,
+                    currentPrice: getCardSnsPrice(cid),
+                    change24h: prices[symbol]?.change24h || 0,
+                  });
+                  setActiveSubTab('market');
+                }
+              }}
+              onOpenTpSl={(cid) => {
+                setTpSlTargetCardId(cid);
+              }}
+            />
+
             {/* Portfolio Summary HUD */}
             <div className="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none flex flex-col gap-2.5">
               <div className="flex items-center justify-between">
@@ -967,6 +1134,23 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                             </div>
                           </div>
                           <div className="flex items-center gap-1.5 shrink-0">
+                            {/* SCR-06-08: 1-Tap TP/SL Button */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                triggerHaptic('light');
+                                setTpSlTargetCardId(card.id);
+                              }}
+                              className={cn(
+                                "px-2 py-1 text-[10px] font-bold rounded-sm border cursor-pointer transition-colors",
+                                tpslConfigs[card.id]?.enabled
+                                  ? "bg-amber-100 text-amber-900 border-amber-400"
+                                  : "bg-white text-slate-700 border-slate-300 hover:bg-slate-50"
+                              )}
+                              title={language === 'ko' ? '1-Tap 익절/손절 감시 설정' : 'TP/SL Watch'}
+                            >
+                              TP/SL{tpslConfigs[card.id]?.enabled ? '✓' : ''}
+                            </button>
                             <button
                               type="button"
                               onClick={() => {
@@ -1604,6 +1788,76 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
             } catch {}
           }}
           onClose={() => setIsVipModalOpen(false)}
+        />
+      )}
+
+      {/* SCR-06-08: 1-Tap TP/SL Sheet */}
+      {tpSlTargetCardId && CARD_DATABASE[tpSlTargetCardId] && (
+        <StockTpSlSheet
+          cardId={tpSlTargetCardId}
+          symbol={getCardCoinPair(tpSlTargetCardId).symbol}
+          cardTitle={
+            language === 'ko'
+              ? CARD_DATABASE[tpSlTargetCardId].title
+              : CARD_DATABASE[tpSlTargetCardId].title_en
+          }
+          currentPrice={getCardSnsPrice(tpSlTargetCardId)}
+          language={language}
+          currentConfig={tpslConfigs[tpSlTargetCardId] || null}
+          onSave={(cfg) => {
+            const next = { ...tpslConfigs, [cfg.cardId]: cfg };
+            setTpslConfigs(next);
+            try {
+              localStorage.setItem(
+                `hero_stock_tpsl_orders_${currentSeason}`,
+                JSON.stringify(next)
+              );
+            } catch {}
+            setAlertMsg({
+              type: 'success',
+              text:
+                language === 'ko'
+                  ? `🎯 [${cfg.symbol}] 익절/손절 감시 설정이 저장되었습니다!`
+                  : `🎯 [${cfg.symbol}] TP/SL Watch orders saved!`,
+            });
+          }}
+          onClose={() => setTpSlTargetCardId(null)}
+        />
+      )}
+
+      {/* SCR-06-09: 주주총회 & 배당 2배 부스터 모달 */}
+      {isShareholderModalOpen && (
+        <ShareholderVotingModal
+          language={language}
+          userSns={sns}
+          totalHeldStocks={portfolioStats.totalSharesCount}
+          currentSeason={currentSeason}
+          isDoubleDividendActive={isDoubleDividendActive}
+          onActivateDoubleDividend={() => {
+            updateSns(-300, '주간 배당 2배 부스터(7일권) 구매');
+            setIsDoubleDividendActive(true);
+            try {
+              localStorage.setItem('hero_double_dividend_active', 'true');
+            } catch {}
+            setAlertMsg({
+              type: 'success',
+              text:
+                language === 'ko'
+                  ? '⚡ [배당 2배 부스터] 7일간 모든 배당금 정산이 2배로 지급됩니다!'
+                  : '⚡ [2x Dividend Booster] Active for 7 days! Double dividends unlocked!',
+            });
+          }}
+          onVoteComplete={(_agendaId, _choice, reward) => {
+            updateSns(reward, '주주총회 안건 투표 참여 보너스');
+            setAlertMsg({
+              type: 'success',
+              text:
+                language === 'ko'
+                  ? `🗳️ [주주총회] 투표 완료! 참여 감사 보너스 +${reward} SNS가 지급되었습니다!`
+                  : `🗳️ [Assembly] Vote recorded! +${reward} SNS bonus received!`,
+            });
+          }}
+          onClose={() => setIsShareholderModalOpen(false)}
         />
       )}
 

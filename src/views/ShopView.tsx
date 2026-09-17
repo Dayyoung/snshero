@@ -38,6 +38,9 @@ import { ShortfallGuideModal } from '../components/ShortfallGuideModal';
 import { ArrowDownUp } from 'lucide-react';
 import { ShopQuickTabBar, ShopCategoryTab } from '../components/ShopQuickTabBar';
 import { PityRescuePackModal } from '../components/PityRescuePackModal';
+import { MileageQuickSheet } from '../components/MileageQuickSheet';
+import { DailyFreeGachaModal } from '../components/DailyFreeGachaModal';
+import { FlashSalePopup } from '../components/FlashSalePopup';
 
 interface ShopViewProps {
   sns: number;
@@ -355,6 +358,25 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
   // ID 393: 재화 부족 무료 파밍 안내 숏컷 모달 상태
   const [isShortfallModalOpen, setIsShortfallModalOpen] = useState(false);
+
+  // SCR-04-08: 소환 마일리지 상태
+  const [gachaMileage, setGachaMileage] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('hero_gacha_mileage');
+      return saved ? parseInt(saved, 10) || 45 : 45;
+    } catch {
+      return 45;
+    }
+  });
+  const [isDailyFreeGachaOpen, setIsDailyFreeGachaOpen] = useState<boolean>(() => {
+    try {
+      const today = new Date().toISOString().slice(0, 10);
+      return localStorage.getItem('hero_daily_free_gacha_claimed_date') !== today;
+    } catch {
+      return false;
+    }
+  });
+  const [isFlashSaleOpen, setIsFlashSaleOpen] = useState<boolean>(false);
   const [shortfallInfo, setShortfallInfo] = useState<{ req: number; cur: number }>({ req: 100, cur: 0 });
 
   // ID 398: 카드 팩 구매 수량 스텝퍼 상태 (기본 1)
@@ -2656,6 +2678,20 @@ export const ShopView: React.FC<ShopViewProps> = ({
               onQuickCharge={() => {
                 const sec = document.getElementById('sns-charge-section') || document.getElementById('sns-recharge-section');
                 if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+              }}
+            />
+          </div>
+
+          {/* SCR-04-08: 소환 마일리지 실시간 교환 바 & 하프 바텀시트 */}
+          <div className="px-4 sm:px-6 md:px-8 mb-4">
+            <MileageQuickSheet
+              mileage={gachaMileage}
+              language={language}
+              onExchangeCard={(cardId, cost) => {
+                const nextM = Math.max(0, gachaMileage - cost);
+                setGachaMileage(nextM);
+                localStorage.setItem('hero_gacha_mileage', String(nextM));
+                addCard('SSR', cardId);
               }}
             />
           </div>
@@ -6009,6 +6045,34 @@ export const ShopView: React.FC<ShopViewProps> = ({
             onClose={() => setIsPityRescueModalOpen(false)}
           />
         )}
+
+        {/* SCR-04-09: Daily Free Gacha & Flash Sale Modals */}
+        <DailyFreeGachaModal
+          isOpen={isDailyFreeGachaOpen}
+          onClose={() => setIsDailyFreeGachaOpen(false)}
+          language={language}
+          onClaimFreeGacha={() => {
+            localStorage.setItem('hero_daily_free_gacha_claimed_date', todayDateKey);
+            addCard('SR');
+            // 무료 소환 직후 15분 한정 플래시 세일 팝업 트리거
+            setIsFlashSaleOpen(true);
+          }}
+          playSfx={playSfx}
+        />
+
+        <FlashSalePopup
+          isOpen={isFlashSaleOpen}
+          onClose={() => setIsFlashSaleOpen(false)}
+          language={language}
+          onBuy={() => {
+            addCard('SSR');
+            updateSns(1000, '시크릿 게릴라 팩 보너스 코인', 'purchased');
+            const nextM = gachaMileage + 20;
+            setGachaMileage(nextM);
+            localStorage.setItem('hero_gacha_mileage', String(nextM));
+          }}
+          playSfx={playSfx}
+        />
 
       </>
     </PayPalScriptProvider>
