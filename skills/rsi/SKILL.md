@@ -81,8 +81,8 @@ description: snshero.com 모바일 게임의 기획/디자인/개발을 전면 �
 ### 4단계: 빌드 검증 (`npm run build`)
 - `npm run build`를 실행하여 컴파일 오류 0건을 확인합니다.
 
-### 5단계: Git 커밋 & 푸시
-- 문서 및 소스코드 변경 사항을 명확한 메시지로 커밋합니다:
+### 5단계: Git 커밋 (원격 푸시 자동 실행 금지)
+- 문서 및 소스코드 변경 사항을 명확한 메시지로 로컬 커밋만 수행합니다 (원격 푸시는 절대 자동 실행하지 않으며, `/git-push` 또는 명시 요청 시에만 실행):
   ```bash
   git add docs/screen_audits/ src/ AGENTS.md WORK_LOGS.md
   git commit -m "feat(rsi): [SCR-XX 화면명] 5대 핵심 지표 개선 및 분석 보고서 작성"

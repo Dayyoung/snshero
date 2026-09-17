@@ -5548,8 +5548,9 @@ function AppContent() {
     );
   }
 
-    const showNavbar = (view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie' && view !== 'play') && !isGlobalPopupOpen;
     const isPlayingBattle = view === 'play' && (playGameState === 'playing' || playGameState === 'searching' || playGameState === 'preMatch');
+    const showNavbar = (view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie' && !isPlayingBattle) && !isGlobalPopupOpen;
+    const isMainTab = view === 'home' || view === 'mydeck' || view === 'shop' || view === 'play' || view === 'main';
     
     return (
       <div className={cn(
@@ -5668,7 +5669,7 @@ function AppContent() {
             </>
           )}
 
-          {view !== 'landing' && view !== 'home' && (!isPlayingBattle || playGameState !== 'playing') && (
+          {view !== 'landing' && !isMainTab && (!isPlayingBattle || playGameState !== 'playing') && (
             <button
               onClick={handleGlobalBack}
               id="global-header-back-btn"
@@ -6108,7 +6109,7 @@ function AppContent() {
           <>
           <div className={cn(
             "fixed left-0 right-0 w-full max-w-[1024px] mx-auto z-[10000] pointer-events-none transition-all",
-            view === 'play'
+            !showNavbar
               ? "bottom-[calc(env(safe-area-inset-bottom)+0.75rem)]"
               : "bottom-[calc(env(safe-area-inset-bottom)+5rem)]"
           )}>

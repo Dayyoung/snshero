@@ -74,12 +74,11 @@ description: 3D 복셀 미션 게임을 엄격한 기준으로 심사하여 모�
 ### 4단계: 빌드 검증 (`tsc --noEmit`)
 - `./node_modules/.bin/tsc --noEmit`을 실행하여 0 오류(PASS)를 확인합니다.
 
-### 5단계: Git 커밋 & 푸시
-- 변경 사항을 명확한 커밋 메시지로 커밋 및 푸시합니다:
+### 5단계: Git 커밋 (원격 푸시 자동 실행 금지)
+- 변경 사항을 명확한 커밋 메시지로 로컬 커밋만 수행합니다 (원격 푸시는 절대 자동 실행하지 않으며, `/git-push` 또는 명시 요청 시에만 실행):
   ```bash
   git add src/components/[게임명].tsx AGENTS.md WORK_LOGS.md skills/imp-mission/
   git commit -m "feat(mission): [imp-mission] decommission voxel game and replace with new [장르] game ([게임명])"
-  git push origin main
   ```
 
 ### 6단계: 영구 로그 기록 및 구글 폼 제출
