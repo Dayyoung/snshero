@@ -2630,13 +2630,31 @@ export const ShopView: React.FC<ShopViewProps> = ({
           <div className="px-4 sm:px-6 md:px-8 mb-3">
             <ShopQuickTabBar
               activeTab={shopCategoryTab}
-              onSelectTab={setShopCategoryTab}
+              onSelectTab={(tab) => {
+                setShopCategoryTab(tab);
+                triggerHaptic('light');
+                if (tab === 'packs') {
+                  const sec = document.getElementById('shop-grid');
+                  if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+                } else if (tab === 'items') {
+                  const sec = document.getElementById('shop-pack-item-btn');
+                  if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+                } else if (tab === 'sns') {
+                  const sec = document.getElementById('sns-charge-section') || document.getElementById('sns-recharge-section');
+                  if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+                } else if (tab === 'special') {
+                  const sec = document.getElementById('shop-starter-bundle') || document.getElementById('shop-pity-banner');
+                  if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+                } else if (tab === 'all') {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
               language={language}
               snsBalance={sns}
               freePullAvailable={!dailyFreeSummonClaimed}
               onQuickFreePull={handleDailyFreeSummon}
               onQuickCharge={() => {
-                const sec = document.getElementById('sns-recharge-section');
+                const sec = document.getElementById('sns-charge-section') || document.getElementById('sns-recharge-section');
                 if (sec) sec.scrollIntoView({ behavior: 'smooth' });
               }}
             />
