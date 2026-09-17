@@ -8,6 +8,7 @@ import React, { useState } from 'react';
 import { Copy, Check, Download, QrCode, X, Layers, AlertCircle } from 'lucide-react';
 import { CardData, Language } from '../types';
 import { CARD_DATABASE } from '../cardDatabase';
+import { syncCardWithDatabase } from '../constants';
 
 interface DeckPresetCodeModalProps {
   isOpen: boolean;
@@ -67,7 +68,7 @@ export const DeckPresetCodeModal: React.FC<DeckPresetCodeModalProps> = ({
         setErrorMsg(language === 'ko' ? `존재하지 않는 카드 ID: ${idStr}` : `Unknown Card ID: ${idStr}`);
         return;
       }
-      importedCards.push({ ...dbCard });
+      importedCards.push(syncCardWithDatabase({ ...dbCard, id: dbCard.id.toString() } as unknown as CardData, {}));
     }
 
     onImportDeck(importedCards);

@@ -105,6 +105,8 @@ export const GearStarterPackModal: React.FC<GearStarterPackModalProps> = ({
       stats: [...gearDef.stats],
       magicChance: gearDef.magicChance,
       imageIndex: gearDef.imageIndex,
+      description_ko: gearDef.desc_ko,
+      description_en: gearDef.desc_en,
       equippedToId: null,
     };
   };

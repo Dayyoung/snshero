@@ -120,10 +120,10 @@ export const MarketEscrowModal: React.FC<MarketEscrowModalProps> = ({
                   {language === 'ko' ? '판매자' : 'Seller'}: <span className="text-indigo-300 font-bold">{listing.sellerName}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-1 text-[10px] text-slate-300 pt-1">
-                  <div>상단: <span className="font-bold text-emerald-400">{card.stats?.[0] || card.stats?.up || 5}</span></div>
-                  <div>우측: <span className="font-bold text-emerald-400">{card.stats?.[1] || card.stats?.right || 5}</span></div>
-                  <div>하단: <span className="font-bold text-emerald-400">{card.stats?.[2] || card.stats?.down || 5}</span></div>
-                  <div>좌측: <span className="font-bold text-emerald-400">{card.stats?.[3] || card.stats?.left || 5}</span></div>
+                  <div>상단: <span className="font-bold text-emerald-400">{card.stats?.[0] ?? 5}</span></div>
+                  <div>우측: <span className="font-bold text-emerald-400">{card.stats?.[1] ?? 5}</span></div>
+                  <div>하단: <span className="font-bold text-emerald-400">{card.stats?.[2] ?? 5}</span></div>
+                  <div>좌측: <span className="font-bold text-emerald-400">{card.stats?.[3] ?? 5}</span></div>
                 </div>
               </div>
             </div>

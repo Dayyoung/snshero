@@ -24,7 +24,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { CardItem } from '../components/CardItem';
 import { ArDeckViewer } from '../components/ArDeckViewer';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ChevronLeft, ChevronRight, HelpCircle, Trophy, Info, Zap, Package, Shield, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Gift, Star as StarIcon, Edit2, Plus, Gem, Footprints, Sparkles, Share2, Camera, BookOpen, Users, PawPrint, Trash2, Layers, Lock, Search, Flame, Swords, Maximize2 } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, HelpCircle, Trophy, Info, Zap, Package, Shield, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Gift, Star as StarIcon, Edit2, Plus, Gem, Footprints, Sparkles, Share2, Camera, BookOpen, Users, PawPrint, Trash2, Layers, Lock, Search, Flame, Swords, Maximize2, Heart } from 'lucide-react';
 import { CardDisassembleModal } from '../components/CardDisassembleModal';
 import { ElementAdvantageModal } from '../components/ElementAdvantageModal';
 import { useCardLock } from '../hooks/useCardLock';
@@ -56,6 +56,7 @@ import { buildOptimalSynergyDeck } from '../lib/deckSynergyEngine';
 import { DeckPresetCodeModal } from '../components/DeckPresetCodeModal';
 import { DeckBalanceRadarChart } from '../components/DeckBalanceRadarChart';
 import { CardCompareModal } from '../components/CardCompareModal';
+import { MaterialDeficitModal } from '../components/MaterialDeficitModal';
 import { DeckCommandHub } from '../components/DeckCommandHub';
 import { DeckPresetSwitcher } from '../components/DeckPresetSwitcher';
 import { CompanionCareModal } from '../components/CompanionCareModal';
@@ -77,6 +78,7 @@ interface MyDeckViewProps {
   equipItem: (itemId: string, deckIndex: number) => void;
   unequipItem: (itemId: string, deckIndex: number) => void;
   itemInventory: Item[];
+  setItemInventory?: React.Dispatch<React.SetStateAction<Item[]>>;
   playSfx: (url: string) => void;
   setGlobalPopupOpen: (open: boolean) => void;
   user?: any | null;
@@ -344,6 +346,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   equipItem,
   unequipItem,
   itemInventory,
+  setItemInventory,
   playSfx,
   setGlobalPopupOpen,
   user,
@@ -499,11 +502,13 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       ...newItem,
       equippedToId: targetIndex.toString()
     };
-    setItemInventory(prev => [...prev, boundItem]);
+    if (setItemInventory) {
+      setItemInventory(prev => [...prev, boundItem]);
+    }
 
     // Equip directly to card in currentDeck
-    setCurrentDeck(prevDeck => {
-      const nextDeck = [...prevDeck];
+    if (updateDeck) {
+      const nextDeck = [...currentDeck];
       if (nextDeck[targetIndex]) {
         const existingEquip = nextDeck[targetIndex].equipment || {};
         nextDeck[targetIndex] = {
@@ -513,15 +518,14 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             [targetSlot]: boundItem
           }
         };
+        updateDeck(nextDeck);
       }
-      return nextDeck;
-    });
+    }
 
     // Update inventory record
     setInventory(prevInv => {
       const targetCard = currentDeck[targetIndex];
-      if (!targetCard || targetCard.imageIndex === undefined) return prevInv;
-      const cardIdx = targetCard.imageIndex;
+      const cardIdx = targetCard ? (targetCard.imageIndex || Number(targetCard.id)) : 1;
       const record = prevInv[cardIdx] || {
         cardIndex: cardIdx,
         quantity: 1,
@@ -538,7 +542,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         }
       };
     });
-  }, [currentDeck, setCurrentDeck, setInventory, setItemInventory]);
+  }, [currentDeck, updateDeck, setInventory, setItemInventory]);
 
   // ID 427: Preset Custom Name & Icon Metadata
   const [editingPresetNum, setEditingPresetNum] = useState<number | null>(null);
@@ -3761,7 +3765,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         currentCount={deficitInfo.cur}
         onNavigateStage={() => {
           setIsMaterialDeficitOpen(false);
-          onNavigate('mission');
+          onNavigate('play');
         }}
         language={language}
       />

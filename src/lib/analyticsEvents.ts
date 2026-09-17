@@ -57,6 +57,7 @@ export interface CardpackPurchaseAttemptPayload {
   packName: string;
   priceSns: number;
   currency?: string;
+  count?: number;
 }
 
 export interface SharePayload {

@@ -109,6 +109,8 @@ export class StaminaPacingManager {
       maxAp: MAX_AP,
       dailyFriendGiftsClaimed: 0,
       dailyGoldRestsClaimed: 0,
+      dailyApBurned: 0,
+      claimedBurnRebates: [],
       lastGiftDate: today,
       totalPlayMinutes: 0,
     };
@@ -225,6 +227,16 @@ export class StaminaPacingManager {
       messageKo: `친구 하트 선물로 +${FRIEND_GIFT_AP} AP가 충전되었습니다! (오늘 잔여: ${remaining}회)`,
       messageEn: `+${FRIEND_GIFT_AP} AP claimed from friend heart! (${remaining} left today)`,
     };
+  }
+
+  /**
+   * 임의 수량의 AP 즉시 충전 (AP 물약 및 이벤트 보상)
+   */
+  public gainAp(amount: number): StaminaPacingState {
+    const state = this.getState();
+    state.currentAp = Math.min(state.maxAp, state.currentAp + Math.max(0, amount));
+    this.saveState(state);
+    return state;
   }
 
   /**

@@ -15,7 +15,8 @@ export type AudioSfxName =
   | 'coin_toss'
   | 'victory'
   | 'defeat'
-  | 'badge_pop';
+  | 'badge_pop'
+  | 'button_tap';
 
 interface SpriteMarker {
   start: number; // seconds
@@ -41,6 +42,7 @@ class AudioSpriteService {
     victory: { start: 2.7, duration: 1.2 },
     defeat: { start: 4.0, duration: 1.0 },
     badge_pop: { start: 5.1, duration: 0.2 },
+    button_tap: { start: 1.2, duration: 0.1 },
   };
 
   private constructor() {

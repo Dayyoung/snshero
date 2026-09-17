@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Trophy, Sparkles, X, Shield, Swords, Gem, Award, Lock, Play, Flame, CheckCircle, Shirt, Crown } from 'lucide-react';
+import { Trophy, Sparkles, X, Shield, Swords, Gem, Award, Lock, Play, Flame, CheckCircle, Shirt, Crown, Zap } from 'lucide-react';
 import { playSfx } from '../lib/sound';
 import { triggerHaptic } from '../lib/haptic';
 import { TowerSweepBottomSheet } from './TowerSweepBottomSheet';

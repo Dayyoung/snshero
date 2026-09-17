@@ -217,13 +217,13 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
   // ID 437: Top Stat Leaderboard Filter computation
   const finalCards = React.useMemo(() => {
     if (topStatFilter === 'fire_atk') {
-      return allCards.filter(c => c.element === 'FIRE').sort((a, b) => (b.power || 0) - (a.power || 0)).slice(0, 5);
+      return allCards.filter(c => c.element === 'fire').sort((a, b) => (b.power || 0) - (a.power || 0)).slice(0, 5);
     } else if (topStatFilter === 'water_def') {
-      return allCards.filter(c => c.element === 'WATER').sort((a, b) => (b.power || 0) - (a.power || 0)).slice(0, 5);
+      return allCards.filter(c => c.element === 'water').sort((a, b) => (b.power || 0) - (a.power || 0)).slice(0, 5);
     } else if (topStatFilter === 'wind_spd') {
-      return allCards.filter(c => c.element === 'WIND').sort((a, b) => (b.power || 0) - (a.power || 0)).slice(0, 5);
+      return allCards.filter(c => c.element === 'wind').sort((a, b) => (b.power || 0) - (a.power || 0)).slice(0, 5);
     } else if (topStatFilter === 'earth_hp') {
-      return allCards.filter(c => c.element === 'EARTH').sort((a, b) => (b.power || 0) - (a.power || 0)).slice(0, 5);
+      return allCards.filter(c => c.element === 'earth').sort((a, b) => (b.power || 0) - (a.power || 0)).slice(0, 5);
     }
     return sortedCards;
   }, [topStatFilter, allCards, sortedCards]);

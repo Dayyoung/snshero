@@ -43,7 +43,7 @@ export const ShortfallGuideModal: React.FC<ShortfallGuideModalProps> = ({
       descKo: '간단한 일일 목표 달성 시 즉시 지급',
       descEn: 'Instant reward on simple daily clears',
       reward: '+50 ~ 200 SNS',
-      view: 'mission',
+      view: 'play',
       icon: <CheckCircle2 size={16} className="text-emerald-400" />,
     },
     {

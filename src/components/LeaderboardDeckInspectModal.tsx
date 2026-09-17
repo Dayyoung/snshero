@@ -40,7 +40,7 @@ export const LeaderboardDeckInspectModal: React.FC<LeaderboardDeckInspectModalPr
        CARD_DATABASE[2] || { id: 2, name: 'Ocean Leviathan', power: 8, element: 'WATER' },
        CARD_DATABASE[3] || { id: 3, name: 'Terra Titan', power: 8, element: 'EARTH' },
        CARD_DATABASE[4] || { id: 4, name: 'Sky Gryphon', power: 7, element: 'WIND' },
-       CARD_DATABASE[5] || { id: 5, name: 'Solar Phoenix', power: 9, element: 'FIRE' }] as CardData[];
+       CARD_DATABASE[5] || { id: 5, name: 'Solar Phoenix', power: 9, element: 'FIRE' }] as unknown as CardData[];
 
   // 메타 전술 분석 (공격형/밸런스형/방어형)
   const avgPower = Math.round(displayDeck.reduce((acc, c) => acc + (c.power || 5), 0) / displayDeck.length);

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Gift, Info, Package2, Share2, SkipForward, Sparkles, Star, Trophy, X, Zap, Layers } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';

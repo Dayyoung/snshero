@@ -54,6 +54,8 @@ export interface Item {
 
 export type CardElement = 'neutral' | 'fire' | 'water' | 'earth' | 'air' | 'wind' | 'land' | 'human' | 'undead' | 'elf' | 'dwarf' | 'monster' | 'robot' | 'dragon';
 
+export type EquipmentItem = Item;
+
 // ─── IP (Intellectual Property) Types ───────────────────────────────
 
 /** 캐릭터 소속 세력 */

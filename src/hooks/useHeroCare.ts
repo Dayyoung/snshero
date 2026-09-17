@@ -64,6 +64,7 @@ interface UseHeroCareResult {
   getRewardStatus: (card: CardData | null | undefined) => HeroCareRewardStatus;
   performAction: (card: CardData | null | undefined, action: HeroCareAction) => HeroCareRecord | null;
   claimReward: (card: CardData | null | undefined) => HeroCareMilestoneReward | null;
+  feedPremium: (card: CardData | null | undefined) => HeroCareRecord | null;
 }
 
 const REWARDS: HeroCareMilestoneReward[] = [

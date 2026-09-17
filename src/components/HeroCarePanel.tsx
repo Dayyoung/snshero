@@ -86,6 +86,8 @@ export const HeroCarePanel: React.FC<HeroCarePanelProps> = ({
   lowSpecMode = false,
   onAction,
   onClaimReward,
+  snsBalance,
+  onQuickFeedPremium,
 }) => {
   const statusKey = getStatusKey(careState);
   const growthFocusKey = getGrowthFocusKey(careState);

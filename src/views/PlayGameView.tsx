@@ -5,7 +5,7 @@ import { CardData, AiStrategy, AiDifficulty, Language, PlayerPatterns, Item, Ski
 import { CardItem } from '../components/CardItem';
 import { cn, getFormattedCardName, getAssetUrl, getCardSpriteAsset, getCardSpriteCoords, getCardSpriteStyle } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2, UserPlus, ShoppingBag, XCircle, Menu, Coins, Pickaxe, Crosshair, Footprints, Castle, Compass, BookOpen, Award, Sliders, Axe, Fish, BarChart3, Clock, Timer, Volume2, VolumeX, Smile } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2, UserPlus, ShoppingBag, XCircle, Menu, Coins, Pickaxe, Crosshair, Footprints, Castle, Compass, BookOpen, Award, Sliders, Axe, Fish, BarChart3, Clock, Timer, Volume2, VolumeX, Smile, CheckCircle2 } from 'lucide-react';
 import { InBattleEmoteModal, BATTLE_EMOTES, EmoteItem } from '../components/InBattleEmoteModal';
 import { generateCard, INITIAL_CARDS, generateUniqueDeck, ensureUniqueDeck, getCardStatWithBonus, generateAiName, syncCardWithDatabase, INITIAL_SKILLS, getCardPower, getNormalizedElement } from '../constants';
 import { CARD_DATABASE } from '../cardDatabase';
@@ -446,7 +446,7 @@ interface TournamentMatch {
 
 interface Character {
   id: string;
-  type: 'robot' | 'user';
+  type: 'robot' | 'user' | 'boss';
   status?: 'online' | 'offline';
   x: number;
   y: number;
@@ -13780,8 +13780,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                   const pool = filteredModes.length > 0 ? filteredModes : modes;
                   const randomMode = pool[Math.floor(Math.random() * pool.length)];
-                  if (randomMode && randomMode.onClick) {
-                    randomMode.onClick();
+                  if (randomMode && typeof randomMode.action === 'function') {
+                    randomMode.action();
                   }
                 }}
                 className="min-h-[48px] px-3.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-black font-black text-xs uppercase tracking-wider rounded-none flex items-center gap-1.5 shrink-0 cursor-pointer shadow-md active:scale-95 border border-amber-400"

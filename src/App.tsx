@@ -4730,6 +4730,7 @@ function AppContent() {
             equipItem={equipItem}
             unequipItem={unequipItem}
             itemInventory={itemInventory}
+            setItemInventory={setItemInventory}
             playSfx={playSfx}
             setGlobalPopupOpen={setIsGlobalPopupOpen}
             user={effectiveUser}
