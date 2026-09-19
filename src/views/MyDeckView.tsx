@@ -24,7 +24,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { CardItem } from '../components/CardItem';
 import { ArDeckViewer } from '../components/ArDeckViewer';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ChevronLeft, ChevronRight, HelpCircle, Trophy, Info, Zap, Package, Shield, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Gift, Star as StarIcon, Edit2, Plus, Gem, Footprints, Sparkles, Share2, Camera, BookOpen, Users, PawPrint, Trash2, Layers, Lock, Search, Flame, Swords, Maximize2, Heart } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, HelpCircle, Trophy, Info, Zap, Package, Shield, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Gift, Star as StarIcon, Edit2, Plus, Gem, Footprints, Sparkles, Share2, Camera, BookOpen, Users, PawPrint, Trash2, Layers, Lock, Search, Flame, Swords, Maximize2 } from 'lucide-react';
 import { CardDisassembleModal } from '../components/CardDisassembleModal';
 import { ElementAdvantageModal } from '../components/ElementAdvantageModal';
 import { useCardLock } from '../hooks/useCardLock';
@@ -58,13 +58,6 @@ import { DeckBalanceRadarChart } from '../components/DeckBalanceRadarChart';
 import { CardCompareModal } from '../components/CardCompareModal';
 import { MaterialDeficitModal } from '../components/MaterialDeficitModal';
 import { DeckCommandHub } from '../components/DeckCommandHub';
-import { DeckPresetSwitcher } from '../components/DeckPresetSwitcher';
-import { CompanionCareModal } from '../components/CompanionCareModal';
-import { GearStarterPackModal } from '../components/GearStarterPackModal';
-import { QuickFilterChips } from '../components/QuickFilterChips';
-import { CardDetailBottomSheet } from '../components/CardDetailBottomSheet';
-import { DeckPowerMilestoneModal } from '../components/DeckPowerMilestoneModal';
-import { EquipmentItem } from '../types';
 
 interface MyDeckViewProps {
   currentDeck: CardData[];
@@ -81,7 +74,6 @@ interface MyDeckViewProps {
   equipItem: (itemId: string, deckIndex: number) => void;
   unequipItem: (itemId: string, deckIndex: number) => void;
   itemInventory: Item[];
-  setItemInventory?: React.Dispatch<React.SetStateAction<Item[]>>;
   playSfx: (url: string) => void;
   setGlobalPopupOpen: (open: boolean) => void;
   user?: any | null;
@@ -349,7 +341,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   equipItem,
   unequipItem,
   itemInventory,
-  setItemInventory,
   playSfx,
   setGlobalPopupOpen,
   user,
@@ -385,14 +376,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   const [isElementAdvantageOpen, setIsElementAdvantageOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [helpStep, setHelpStep] = useState(0);
-
-  // SCR-03-08 & SCR-03-09: 퀵 필터 칩, 하프 바텀시트, 덱 파워 돌파 모달 상태
-  const [filterRarity, setFilterRarity] = useState<string | 'ALL'>('ALL');
-  const [filterElement, setFilterElement] = useState<string | 'ALL'>('ALL');
-  const [previewCardForSheet, setPreviewCardForSheet] = useState<CardData | null>(null);
-  const [isPreviewSheetOpen, setIsPreviewSheetOpen] = useState(false);
-  const [isPowerMilestoneOpen, setIsPowerMilestoneOpen] = useState(false);
-
   const { isLocked } = useCardLock();
 
   const kadanCard = CARD_DATABASE[41];
@@ -468,92 +451,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     localStorage.setItem(`hero_active_deck_preset_${season}`, String(targetPreset));
     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
   };
-
-  // SCR-03-05: Deck Copy Handler
-  const handleCopyDeckPreset = (sourcePreset: number, targetPreset: number) => {
-    try {
-      let sourceIds: number[] = [];
-      if (sourcePreset === activeDeckPreset) {
-        sourceIds = currentDeck.map(c => c.imageIndex || Number(c.id) || 0);
-      } else {
-        const raw = localStorage.getItem(`hero_deck_preset_${sourcePreset}_${season}`);
-        sourceIds = raw ? JSON.parse(raw) : currentDeck.map(c => c.imageIndex || 0);
-      }
-      localStorage.setItem(`hero_deck_preset_${targetPreset}_${season}`, JSON.stringify(sourceIds));
-      triggerHaptic('heavy');
-    } catch {}
-  };
-
-  // SCR-03-04: Companion Care Modal State
-  const [careModalCard, setCareModalCard] = useState<CardData | null>(null);
-
-  // SCR-03-06: Gear Starter Pack Modal State
-  const [starterPackSlot, setStarterPackSlot] = useState<{
-    slot: EquipmentSlot;
-    cardName: string;
-    cardIndex: number;
-  } | null>(null);
-
-  const handleConsumeSns = useCallback((amount: number, reason: string): boolean => {
-    const currentSns = stats?.sns ?? 0;
-    if (currentSns < amount) {
-      showCustomAlert?.({
-        title: language === 'ko' ? 'SNS 포인트 부족' : 'Insufficient SNS',
-        message: language === 'ko' ? `${amount} SNS가 필요합니다.` : `Requires ${amount} SNS.`,
-        type: 'warning'
-      });
-      return false;
-    }
-    updateSns?.(-amount);
-    return true;
-  }, [stats?.sns, showCustomAlert, language, updateSns]);
-
-  const handleGrantAndEquipItem = useCallback((newItem: EquipmentItem, targetIndex: number, targetSlot: EquipmentSlot) => {
-    const boundItem: EquipmentItem = {
-      ...newItem,
-      equippedToId: targetIndex.toString()
-    };
-    if (setItemInventory) {
-      setItemInventory(prev => [...prev, boundItem]);
-    }
-
-    // Equip directly to card in currentDeck
-    if (updateDeck) {
-      const nextDeck = [...currentDeck];
-      if (nextDeck[targetIndex]) {
-        const existingEquip = nextDeck[targetIndex].equipment || {};
-        nextDeck[targetIndex] = {
-          ...nextDeck[targetIndex],
-          equipment: {
-            ...existingEquip,
-            [targetSlot]: boundItem
-          }
-        };
-        updateDeck(nextDeck);
-      }
-    }
-
-    // Update inventory record
-    setInventory(prevInv => {
-      const targetCard = currentDeck[targetIndex];
-      const cardIdx = targetCard ? (targetCard.imageIndex || Number(targetCard.id)) : 1;
-      const record = prevInv[cardIdx] || {
-        cardIndex: cardIdx,
-        quantity: 1,
-        rarity: targetCard.rarity
-      };
-      return {
-        ...prevInv,
-        [cardIdx]: {
-          ...record,
-          equipment: {
-            ...(record.equipment || {}),
-            [targetSlot]: boundItem
-          }
-        }
-      };
-    });
-  }, [currentDeck, updateDeck, setInventory, setItemInventory]);
 
   // ID 427: Preset Custom Name & Icon Metadata
   const [editingPresetNum, setEditingPresetNum] = useState<number | null>(null);
@@ -1458,14 +1355,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           </button>
         </div>
         <div className="flex items-center justify-end gap-2">
-          <button
-            type="button"
-            onClick={() => setIsPowerMilestoneOpen(true)}
-            className="px-2 py-1 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 font-mono text-[11px] font-bold rounded-sm flex items-center gap-1 cursor-pointer transition-colors"
-          >
-            <span>🎖️</span>
-            <span>{language === 'ko' ? '파워 훈장' : 'Medal'}</span>
-          </button>
           <div className="px-3 py-1.5 bg-stone-900 text-amber-300 font-mono text-xs font-black rounded-sm border border-stone-800 flex items-center gap-1.5 shadow-xs">
             <Zap size={13} className="fill-amber-400 text-amber-400" />
             <span>{language === 'ko' ? '총 전투력' : 'TOTAL PWR'}:</span>
@@ -1474,35 +1363,113 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         </div>
       </div>
 
-      {/* Multi-Deck Presets Control Bar (SCR-03-05: 3구 프리셋 원터치 스위처 & 덱 복사 & 이름 편집) */}
-      <DeckPresetSwitcher
-        activePreset={activeDeckPreset}
-        onSwitchPreset={handleSwitchDeckPreset}
-        onCopyPreset={handleCopyDeckPreset}
-        season={season}
-        language={language}
-      />
+      {/* Multi-Deck Presets Control Bar (Item 31 & ID 427, ID 447, ID 477) */}
+      <div className="bg-slate-900 text-white p-2.5 sm:p-3 rounded-2xl flex flex-col gap-2 shadow-lg font-mono">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <Layers size={18} className="text-indigo-400 shrink-0" />
+            <span className="text-xs font-black uppercase tracking-wider text-slate-200">
+              {language === 'ko' ? '멀티 덱 프리셋' : 'Deck Presets'}
+            </span>
+          </div>
 
-      {/* SCR-03-08: Quick Filter Chips for Rarity & Element */}
-      <QuickFilterChips
-        selectedRarity={filterRarity}
-        onSelectRarity={setFilterRarity}
-        selectedElement={filterElement}
-        onSelectElement={setFilterElement}
-        language={language}
-      />
+          <div className="flex items-center gap-2">
 
-      {/* ID 477: Dynamic Deck Synergy & Weakness Advisory Tag */}
-      <div className="flex items-center justify-between text-[10px] bg-slate-950/60 px-2.5 py-1.5 rounded-lg border border-slate-800 font-mono">
-        <div className="flex items-center gap-1.5 text-slate-300">
-          <span className="text-amber-400 font-bold">⚠️ [상성 점검]</span>
-          <span>
-            {currentDeck.some(c => c && c.element === 'WATER')
-              ? (language === 'ko' ? '밸런스 양호 (수/화/지/풍 포진)' : 'Balanced Elements')
-              : (language === 'ko' ? '수속성 카드 부재: 화속성 덱 상대 시 취약할 수 있습니다.' : 'Missing Water card: Weak against Fire deck')}
-          </span>
+            <div className="flex items-center gap-1 bg-slate-800 p-1 rounded-xl">
+              {[1, 2, 3].map((presetNum) => (
+                <div key={presetNum} className="flex items-center">
+                  <button
+                    onClick={() => handleSwitchDeckPreset(presetNum)}
+                    className={cn(
+                      "px-2.5 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-black uppercase transition-all flex items-center gap-1 cursor-pointer",
+                      activeDeckPreset === presetNum
+                        ? "bg-indigo-600 text-white shadow-xs"
+                        : "text-slate-400 hover:text-white hover:bg-slate-700"
+                    )}
+                  >
+                    <span>{getPresetIcon(presetNum)}</span>
+                    <span className="truncate max-w-[80px]">{getPresetName(presetNum)}</span>
+                    {activeDeckPreset === presetNum && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse ml-0.5" />
+                    )}
+                  </button>
+
+                  {/* ID 427: Rename & Icon Edit Button for Active Preset */}
+                  {activeDeckPreset === presetNum && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditingPresetNum(presetNum);
+                        setPresetNameEdit(getPresetName(presetNum));
+                        setPresetIconEdit(getPresetIcon(presetNum));
+                      }}
+                      className="p-1 text-slate-400 hover:text-amber-300 transition-colors ml-0.5"
+                      title="프리셋 이름/아이콘 수정"
+                    >
+                      ✏️
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-        <span className="text-indigo-400 font-bold">5장 시너지 풀</span>
+
+        {/* ID 477: Dynamic Deck Synergy & Weakness Advisory Tag */}
+        <div className="flex items-center justify-between text-[10px] bg-slate-950/60 px-2.5 py-1 rounded-lg border border-slate-800">
+          <div className="flex items-center gap-1.5 text-slate-300">
+            <span className="text-amber-400 font-bold">⚠️ [상성 점검]</span>
+            <span>
+              {currentDeck.some(c => c.element === 'WATER')
+                ? '밸런스 양호 (수/화/지/풍 포진)'
+                : '수속성 카드 부재: 화속성 덱 상대 시 취약할 수 있습니다.'}
+            </span>
+          </div>
+          <span className="text-indigo-400 font-bold">5장 시너지 풀</span>
+        </div>
+
+        {/* ID 427: Inline Edit Modal / Drawer */}
+        {editingPresetNum !== null && (
+          <div className="p-3 bg-slate-800 rounded-xl border border-slate-700 flex flex-wrap items-center gap-2 mt-1">
+            <span className="text-xs font-bold text-slate-300">DECK {editingPresetNum} 설정:</span>
+            {/* Icon Picker */}
+            <div className="flex gap-1">
+              {['⚔️', '🛡️', '🔥', '💧', '🌿', '⚡', '👑'].map((ic) => (
+                <button
+                  key={ic}
+                  type="button"
+                  onClick={() => setPresetIconEdit(ic)}
+                  className={`p-1 rounded text-sm ${presetIconEdit === ic ? 'bg-indigo-600' : 'bg-slate-700'}`}
+                >
+                  {ic}
+                </button>
+              ))}
+            </div>
+            {/* Name Input */}
+            <input
+              type="text"
+              maxLength={10}
+              value={presetNameEdit}
+              onChange={(e) => setPresetNameEdit(e.target.value)}
+              placeholder="덱 이름 (최대 10자)"
+              className="px-2 py-1 bg-slate-900 border border-slate-600 rounded text-xs text-white max-w-[140px]"
+            />
+            <button
+              type="button"
+              onClick={() => handleSavePresetMeta(editingPresetNum)}
+              className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-bold"
+            >
+              저장
+            </button>
+            <button
+              type="button"
+              onClick={() => setEditingPresetNum(null)}
+              className="px-2 py-1 bg-slate-700 text-slate-300 rounded text-xs"
+            >
+              취소
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col gap-4 md:gap-6">
@@ -2084,38 +2051,10 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                                  </button>
                               </div>
                             ) : (
-                              <div className="space-y-2">
-                                <div className="p-3 border border-dashed border-amber-300/60 bg-amber-50/40 rounded-xl text-center text-xs text-amber-800">
-                                  <span>{language === 'ko' ? '현재 장착된 장비가 없습니다.' : 'No equipment in this slot.'}</span>
-                                </div>
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const targetCard = currentDeck[itemManageIndex];
-                                    if (targetCard) {
-                                      setStarterPackSlot({
-                                        slot: itemSlotTab,
-                                        cardName: getFormattedCardName(targetCard, language),
-                                        cardIndex: itemManageIndex,
-                                      });
-                                    }
-                                  }}
-                                  className="w-full py-2.5 px-3 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-black rounded-xl text-xs font-black uppercase flex items-center justify-between shadow-md active:scale-98 transition-all cursor-pointer"
-                                >
-                                  <div className="flex items-center gap-1.5">
-                                    <Sparkles size={14} className="text-black" />
-                                    <span>
-                                      {language === 'ko'
-                                        ? `SSR ${itemSlotTab.toUpperCase()} 스타터 팩 (₩1,200 / 120 SNS)`
-                                        : `Get SSR ${itemSlotTab.toUpperCase()} Pack`}
-                                    </span>
-                                  </div>
-                                  <span className="bg-black text-amber-300 px-2 py-0.5 rounded text-[10px] font-black">
-                                    1-TAP
-                                  </span>
-                                </button>
-                              </div>
-                            )}
+                             <div className="p-4 border border-dashed border-gray-200 rounded-md text-center text-xs text-gray-300 italic">
+                                {t('no_items', language)}
+                             </div>
+                           )}
                         </div>
 
                         {/* Inventory Items */}
@@ -2123,25 +2062,8 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t('available', language)}</div>
                            <div className="space-y-2">
                               {finalItems.length === 0 ? (
-                                <div className="text-center py-5 px-3 text-xs border border-dashed border-gray-200 rounded-xl space-y-2">
-                                   <p className="text-gray-400">{t('no_items', language)}</p>
-                                   <button
-                                     type="button"
-                                     onClick={() => {
-                                       const targetCard = currentDeck[itemManageIndex];
-                                       if (targetCard) {
-                                         setStarterPackSlot({
-                                           slot: itemSlotTab,
-                                           cardName: getFormattedCardName(targetCard, language),
-                                           cardIndex: itemManageIndex,
-                                         });
-                                       }
-                                     }}
-                                     className="px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 rounded-lg text-[11px] font-bold inline-flex items-center gap-1 cursor-pointer transition-colors"
-                                   >
-                                     <Sparkles size={12} className="text-amber-600" />
-                                     <span>{language === 'ko' ? 'SSR 장비 스타터 팩 즉시 획득' : 'Get SSR Starter Pack'}</span>
-                                   </button>
+                                <div className="text-center py-6 text-xs text-gray-300 italic border border-dashed border-gray-100 rounded-md">
+                                   {t('no_items', language)}
                                 </div>
                               ) : (
                                 finalItems.map((group: any) => (
@@ -2971,29 +2893,14 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                         </span>
                         <span className="text-sm font-black italic opacity-40">Lv.{selectedCardForDetail.level}</span>
                      </div>
-                      {isSelectedCardPetEquipped ? (
-                        <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-700">
-                          <MonsterPetBadge cardId={selectedCardPetId} imageClassName="h-5 w-5" className="border-transparent bg-transparent p-0 shadow-none" />
-                          <span>{t('monster_pet_badge', language)}</span>
-                        </div>
-                      ) : null}
-
-                      {/* SCR-03-04: Companion Care & Affection 1-Tap CTA */}
-                      <div className="mt-3 flex justify-center">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setCareModalCard(selectedCardForDetail);
-                            triggerHaptic('medium');
-                          }}
-                          className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white text-xs font-black flex items-center gap-2 shadow-md shadow-pink-500/20 active:scale-95 transition-all cursor-pointer"
-                        >
-                          <Heart size={14} className="fill-white animate-pulse" />
-                          <span>{language === 'ko' ? '다마고치 애정도 & 간식 주기' : 'Companion Care & Snack'}</span>
-                        </button>
-                      </div>
-                    </div>
-                 </div>
+                     {isSelectedCardPetEquipped ? (
+                       <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-700">
+                         <MonsterPetBadge cardId={selectedCardPetId} imageClassName="h-5 w-5" className="border-transparent bg-transparent p-0 shadow-none" />
+                         <span>{t('monster_pet_badge', language)}</span>
+                       </div>
+                     ) : null}
+                   </div>
+                </div>
               </div>
 
               {/* Right Side: Tabified Content (ID 88) */}
@@ -3041,61 +2948,36 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                       <div className="space-y-5">
                         {/* Equipment */}
                         <div className="space-y-3 pb-2">
-                           <div className="flex items-center justify-between border-b border-slate-100 pb-1">
-                             <h4 className="text-xs font-black uppercase tracking-widest opacity-40 flex items-center gap-1">
-                               <Package size={12} /> {t('equipment', language)}
-                             </h4>
-                             <span className="text-[10px] text-amber-600 font-bold">
-                               {language === 'ko' ? '빈 슬롯 탭 시 SSR 스타터 팩' : 'Tap empty slot for SSR'}
-                             </span>
-                           </div>
-                           <div className="grid grid-cols-4 gap-2">
-                              {(['necklace', 'ring1', 'ring2', 'boots'] as const).map(slot => {
-                                const item = selectedCardForDetail.equipment?.[slot];
-                                return (
-                                  <div
-                                    key={slot}
-                                    onClick={() => {
-                                      if (!item) {
-                                        const cardIdx = currentDeck.findIndex(c => c && (c.id === selectedCardForDetail.id || c.imageIndex === selectedCardForDetail.imageIndex));
-                                        setStarterPackSlot({
-                                          slot,
-                                          cardName: getFormattedCardName(selectedCardForDetail, language),
-                                          cardIndex: cardIdx >= 0 ? cardIdx : 0
-                                        });
-                                        triggerHaptic('light');
-                                      }
-                                    }}
-                                    className="flex flex-col items-center gap-1 cursor-pointer group"
-                                  >
-                                     <div className={cn(
-                                       "w-12 h-12 rounded-xl flex items-center justify-center border transition-all",
-                                       item ? (
-                                         item.rarity === 'rare' ? "bg-yellow-50 border-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.2)]" :
-                                         item.rarity === 'magic' ? "bg-blue-50 border-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.2)]" :
-                                         "bg-white border-slate-200 shadow-sm"
-                                       ) : "bg-amber-50/60 border-amber-300 border-dashed border-2 hover:bg-amber-100 hover:border-amber-400"
-                                     )}>
-                                       {item ? (
-                                         slot === 'necklace' ? (
-                                           <Package size={20} className={item.rarity === 'rare' ? 'text-yellow-600' : item.rarity === 'magic' ? 'text-blue-600' : 'text-slate-800'} />
-                                         ) : slot === 'boots' ? (
-                                           <Footprints size={20} className={item.rarity === 'rare' ? 'text-yellow-600' : item.rarity === 'magic' ? 'text-blue-600' : 'text-slate-800'} />
-                                         ) : (
-                                           <Gem size={20} className={item.rarity === 'rare' ? 'text-yellow-600' : item.rarity === 'magic' ? 'text-blue-600' : 'text-slate-800'} />
-                                         )
-                                       ) : (
-                                         <Plus size={18} className="text-amber-600 group-hover:scale-125 transition-transform" />
-                                       )}
-                                     </div>
-                                     <span className="text-[8px] font-bold uppercase text-slate-400">
-                                       {item ? slot : `+ ${slot}`}
-                                     </span>
-                                  </div>
-                                )
-                              })}
-                           </div>
-                         </div>
+                          <h4 className="text-xs font-black uppercase tracking-widest opacity-40 border-b border-slate-100 pb-1 flex items-center gap-1">
+                            <Package size={12} /> {t('equipment', language)}
+                          </h4>
+                          <div className="grid grid-cols-4 gap-2">
+                             {(['necklace', 'ring1', 'ring2', 'boots'] as const).map(slot => {
+                               const item = selectedCardForDetail.equipment?.[slot];
+                               return (
+                                 <div key={slot} className="flex flex-col items-center gap-1">
+                                    <div className={cn(
+                                      "w-12 h-12 rounded-xl flex items-center justify-center border transition-all",
+                                      item ? (
+                                        item.rarity === 'rare' ? "bg-yellow-50 border-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.2)]" :
+                                        item.rarity === 'magic' ? "bg-blue-50 border-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.2)]" :
+                                        "bg-white border-slate-200 shadow-sm"
+                                      ) : "bg-slate-50 border-slate-200 border-dashed border-2"
+                                    )}>
+                                      {slot === 'necklace' ? (
+                                        <Package size={20} className={item ? (item.rarity === 'rare' ? 'text-yellow-600' : item.rarity === 'magic' ? 'text-blue-600' : 'text-slate-800') : 'opacity-10'} />
+                                      ) : slot === 'boots' ? (
+                                        <Footprints size={20} className={item ? (item.rarity === 'rare' ? 'text-yellow-600' : item.rarity === 'magic' ? 'text-blue-600' : 'text-slate-800') : 'opacity-10'} />
+                                      ) : (
+                                        <Gem size={20} className={item ? (item.rarity === 'rare' ? 'text-yellow-600' : item.rarity === 'magic' ? 'text-blue-600' : 'text-slate-800') : 'opacity-10'} />
+                                      )}
+                                    </div>
+                                    <span className="text-[8px] font-bold uppercase text-slate-400">{slot}</span>
+                                 </div>
+                               )
+                             })}
+                          </div>
+                        </div>
 
                         {/* Monster Pet */}
                         <div className="space-y-3 rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4">
@@ -3335,33 +3217,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                  </div>
             </motion.div>
           </motion.div>
-        )}
-
-        {/* SCR-03-04: Companion Care Modal */}
-        {careModalCard && (
-          <CompanionCareModal
-            card={careModalCard}
-            season={season}
-            language={language}
-            snsBalance={stats?.sns ?? 0}
-            onConsumeSns={handleConsumeSns}
-            onClose={() => setCareModalCard(null)}
-          />
-        )}
-
-        {/* SCR-03-06: Gear Starter Pack Modal */}
-        {starterPackSlot && (
-          <GearStarterPackModal
-            slot={starterPackSlot.slot}
-            cardName={starterPackSlot.cardName}
-            cardIndex={starterPackSlot.cardIndex >= 0 ? starterPackSlot.cardIndex : 0}
-            season={season}
-            language={language}
-            snsBalance={stats?.sns ?? 0}
-            onConsumeSns={handleConsumeSns}
-            onGrantAndEquipItem={handleGrantAndEquipItem}
-            onClose={() => setStarterPackSlot(null)}
-          />
         )}
 
         {showOptimizeSuccessModal && (
@@ -3793,39 +3648,9 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         currentCount={deficitInfo.cur}
         onNavigateStage={() => {
           setIsMaterialDeficitOpen(false);
-          onNavigate('play');
+          onNavigate('mission');
         }}
         language={language}
-      />
-
-      {/* SCR-03-08: Card Spec Half Bottom Sheet */}
-      <CardDetailBottomSheet
-        isOpen={isPreviewSheetOpen}
-        card={previewCardForSheet}
-        onClose={() => {
-          setIsPreviewSheetOpen(false);
-          setPreviewCardForSheet(null);
-        }}
-        language={language}
-        onEquipToDeck={(c) => {
-          if (currentDeck.length > 0) {
-            const nextDeck = [...currentDeck];
-            nextDeck[0] = c;
-            updateDeck(nextDeck);
-          }
-        }}
-      />
-
-      {/* SCR-03-09: Deck Power Milestone Modal */}
-      <DeckPowerMilestoneModal
-        isOpen={isPowerMilestoneOpen}
-        onClose={() => setIsPowerMilestoneOpen(false)}
-        language={language}
-        deckPower={globalTotalPower || 1420}
-        onBuyJumpingPack={() => {
-          onNavigate('shop');
-        }}
-        playSfx={playSfx}
       />
 
     </div>

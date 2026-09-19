@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX, Zap, Clock, Pause, PanelLeftClose, PanelLeftOpen, Layers, Image, Film, Github, Youtube, Gift, Swords } from "lucide-react";
+import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX, Zap, Clock, Pause, PanelLeftClose, PanelLeftOpen, Layers, Image, Film, Github, Youtube, Gift } from "lucide-react";
 import { NotificationCenterModal } from "../components/NotificationCenterModal";
 import { getUnreadCount } from "../lib/notificationHelper";
 import { motion, AnimatePresence } from "motion/react";
@@ -27,11 +27,7 @@ import { DAILY_MISSIONS, loadDailyMissions, getClaimableCount, DailyMissionProgr
 import { HomeQuickHub } from "../components/HomeQuickHub";
 import { AfkHarvestBox } from "../components/AfkHarvestBox";
 import { LifecycleEngine } from "../lib/LifecycleEngine";
-import { Flame, Settings } from "lucide-react";
-import { HomeCategoryHubModal, HubCategoryType } from "../components/HomeCategoryHubModal";
-import { ResourcePriorityPreloader } from "../lib/ResourcePreloader";
-import { LobbyParticleCanvas } from "../components/LobbyParticleCanvas";
-import { GrowthPassWidget } from "../components/GrowthPassWidget";
+import { Flame } from "lucide-react";
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -88,7 +84,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
   const [isLobbyDrawerOpen, setIsLobbyDrawerOpen] = useState(false);
-  const [activeHubCategory, setActiveHubCategory] = useState<HubCategoryType | null>(null);
   const [isNoticeClosed, setIsNoticeClosed] = useState(false);
   // ID 600: Grand Strategist Milestone 600 Celebration
   const [isMilestone600Open, setIsMilestone600Open] = useState(() => localStorage.getItem('hero_milestone_600_claimed') !== 'true');
@@ -98,9 +93,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [dailyMissionProgress, setDailyMissionProgress] = useState<DailyMissionProgress>(() => loadDailyMissions());
 
   useEffect(() => {
-    // SCR-01-07: 우선순위 기반 리소스 청크 프리로드
-    ResourcePriorityPreloader.preloadCriticalAssets();
-
     const handleStarterPackUpdate = () => {
       setIsStarterPackPurchased(localStorage.getItem('hero_starter_pack_purchased') === 'true');
     };
@@ -371,20 +363,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
           )}
         </div>
 
-        {/* SCR-01-09: 7일 신규 영웅 성장 배틀패스 위젯 */}
-        <div className="w-full mb-3">
-          <GrowthPassWidget
-            language={language}
-            onNavigateShop={() => onNavigate('shop')}
-            playSfx={playSfx}
-          />
-        </div>
-
         <div className="relative min-h-[310px] sm:min-h-[360px] overflow-hidden rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]">
           <div className="absolute inset-x-0 top-0 h-1 bg-[#201d1d]" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(15,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(15,0,0,0.02)_1px,transparent_1px)] bg-[size:28px_28px]" />
-          {/* SCR-01-07: 로비 배경 지연 파티클 캔버스 */}
-          <LobbyParticleCanvas lowSpecMode={lowSpecMode} />
           <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 py-6 sm:p-8">
             {/* SCR-01: 대표 덱 종합 전투력(CP) 및 연승 불꽃 뱃지 HUD */}
             <div className="w-full max-w-md flex items-center justify-between border-b border-[#201d1d]/10 pb-2 mb-3 font-mono text-xs select-none">
@@ -509,26 +490,39 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   <span className="text-[11px] font-black tracking-tight">{language === 'ko' ? '[🎁 무료팩/특가]' : '[🎁 Free/Deals]'}</span>
                 </button>
 
-                {/* 시스템 더보기 & 설정 팝업 트리거 버튼 */}
+                {/* Ping Indicator */}
+                <PingIndicator language={language} className="shrink-0" />
+
+                {/* Audio Mute Quick Toggle */}
+                <button
+                  type="button"
+                  onClick={toggleQuickMute}
+                  className="inline-flex items-center gap-1 px-2 py-1.5 border border-[#201d1d]/20 bg-white text-[#201d1d] hover:border-[#201d1d] hover:bg-slate-50 transition text-xs font-bold cursor-pointer"
+                  title={isAudioMuted ? (language === 'ko' ? '음소거 해제' : 'Unmute Audio') : (language === 'ko' ? '퀵 음소거' : 'Mute Audio')}
+                  aria-label="Quick Mute"
+                >
+                  {isAudioMuted ? <VolumeX size={13} className="text-rose-600" /> : <Volume2 size={13} className="text-emerald-600" />}
+                  <span className="text-[11px]">{isAudioMuted ? 'MUTE' : 'SFX'}</span>
+                </button>
+
+                {/* ID 86: Collapsible Sub-Widgets Drawer Toggle Button */}
                 <button
                   type="button"
                   onClick={() => {
-                    triggerHaptic('light');
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                    setActiveHubCategory('system');
+                    setIsLobbyDrawerOpen(!isLobbyDrawerOpen);
                   }}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-[#201d1d]/20 text-[#201d1d] hover:border-[#201d1d] hover:bg-stone-50 font-bold text-xs cursor-pointer active:scale-95 transition-all"
-                  title={language === 'ko' ? '시스템 설정, 우편함, 사운드, 튜토리얼' : 'System Settings, Mail, Sound & Guides'}
-                >
-                  <Settings size={13} className="text-[#201d1d] shrink-0" />
-                  <span className="text-[11px] font-bold">{language === 'ko' ? '[⚙️ 더보기]' : '[⚙️ More]'}</span>
-                  {(unreadMailCount > 0 || unreadNotifCount > 0) && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+                  className={cn(
+                    "inline-flex items-center gap-1 px-2 py-1.5 border transition text-xs font-bold cursor-pointer",
+                    isLobbyDrawerOpen 
+                      ? "bg-[#201d1d] border-[#201d1d] text-amber-300"
+                      : "bg-white border-[#201d1d]/20 text-[#201d1d] hover:border-[#201d1d]"
                   )}
+                  title={language === 'ko' ? '서브 위젯 접기/펴기' : 'Toggle Sub-Widgets Drawer'}
+                >
+                  <Layers size={13} className={isLobbyDrawerOpen ? "text-amber-300" : "text-[#201d1d]/60"} />
+                  <span className="text-[11px]">{language === 'ko' ? '서랍' : 'Drawer'}</span>
                 </button>
-
-                {/* Ping Indicator */}
-                <PingIndicator language={language} className="shrink-0" />
               </div>
 
               {/* ID 79: Mini Daily Mission Progress Banner */}
@@ -639,106 +633,81 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </div>
               </div>
 
-              {/* ── 3대 마스터 카테고리 허브 (상위/하위 계층 팝업 모달 허브 구조) ── */}
-              <div className="w-full space-y-2 mt-2 mb-2 font-mono select-none">
-                {/* 1. 게임 & 배틀 아레나 허브 */}
-                <button
-                  type="button"
+              {/* ── Core Feature Main Buttons (Play Now / Random Play / Novel / Cartoon / Anime / Movie) ── */}
+              <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mt-1 mb-1 font-mono">
+                {/* 지금 플레이 */}
+                <motion.button
+                  {...buttonMotionProps}
                   onClick={() => {
                     triggerHaptic('light');
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                    setActiveHubCategory('game');
+                    if (onStartPlayNow) {
+                      onStartPlayNow();
+                    } else {
+                      onNavigate("main");
+                    }
                   }}
-                  className="w-full p-3 bg-white hover:bg-stone-50 border border-[#201d1d]/20 hover:border-[#201d1d] text-left transition-all active:scale-[0.99] flex items-center justify-between cursor-pointer rounded-none group"
+                  className="w-full min-h-[48px] px-3 py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs sm:text-sm border border-[#201d1d] hover:bg-[#201d1d]/90 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 rounded-none group"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-9 h-9 flex items-center justify-center bg-amber-500 text-slate-950 font-black shrink-0 rounded-xs">
-                      <Swords size={18} />
-                    </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs sm:text-sm font-black text-[#201d1d] uppercase tracking-tight">
-                          {language === 'ko' ? '[🎮 게임 & 배틀 아레나]' : '[🎮 Game & Battle Arena]'}
-                        </span>
-                        <span className="text-[9px] bg-amber-400 text-slate-950 px-1.5 py-0.2 font-black rounded-xs">
-                          {language === 'ko' ? '5개 모드' : '5 Modes'}
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-[#646262] truncate mt-0.5">
-                        {language === 'ko' ? '메인 3x3 배틀 • Poki 110선 • 시련의 탑 • 예측시장 • 덱 편성' : '3x3 Battle • Poki 110 Arcade • Tower • Prediction • Decks'}
-                      </p>
-                    </div>
-                  </div>
-                  <span className="text-xs font-bold text-[#646262] group-hover:text-[#201d1d] group-hover:translate-x-0.5 transition-transform shrink-0">
-                    [펼치기 ➔]
-                  </span>
-                </button>
+                  <Play size={16} className="shrink-0 fill-current text-amber-300" />
+                  <span>{language === 'ko' ? '[⚔️ 지금 플레이]' : '[⚔️ Play Now]'}</span>
+                </motion.button>
 
-                {/* 2. IP 미디어 라운지 허브 */}
-                <button
-                  type="button"
+                {/* 소설 읽기 */}
+                <motion.button
+                  {...buttonMotionProps}
                   onClick={() => {
                     triggerHaptic('light');
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                    setActiveHubCategory('media');
+                    onNavigate("novel");
                   }}
-                  className="w-full p-3 bg-white hover:bg-stone-50 border border-[#201d1d]/20 hover:border-[#201d1d] text-left transition-all active:scale-[0.99] flex items-center justify-between cursor-pointer rounded-none group"
+                  className="w-full min-h-[48px] px-3 py-2.5 bg-white text-[#201d1d] font-bold text-xs sm:text-sm border border-[#201d1d]/20 hover:border-[#201d1d] hover:bg-slate-50 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 rounded-none group"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-9 h-9 flex items-center justify-center bg-indigo-600 text-white font-black shrink-0 rounded-xs">
-                      <BookOpen size={18} />
-                    </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs sm:text-sm font-black text-[#201d1d] uppercase tracking-tight">
-                          {language === 'ko' ? '[📚 IP 미디어 라운지]' : '[📚 IP Media Lounge]'}
-                        </span>
-                        <span className="text-[9px] bg-indigo-100 text-indigo-800 px-1.5 py-0.2 font-black rounded-xs">
-                          {language === 'ko' ? '콘텐츠 허브' : 'Media Hub'}
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-[#646262] truncate mt-0.5">
-                        {language === 'ko' ? '오리지널 웹소설 • 풀컬러 웹툰 • 애니메이션 • 영화관 • 세계관 도감' : 'Web Novel • Webtoon • Anime • Full Movie • World Codex'}
-                      </p>
-                    </div>
-                  </div>
-                  <span className="text-xs font-bold text-[#646262] group-hover:text-[#201d1d] group-hover:translate-x-0.5 transition-transform shrink-0">
-                    [펼치기 ➔]
-                  </span>
-                </button>
+                  <BookOpen size={16} className="shrink-0 text-indigo-600" />
+                  <span>{language === 'ko' ? '[📖 소설 읽기]' : '[📖 Novel]'}</span>
+                </motion.button>
 
-                {/* 3. 거래소 & 소셜 길드 허브 */}
-                <button
-                  type="button"
+                {/* 카툰 보기 */}
+                <motion.button
+                  {...buttonMotionProps}
                   onClick={() => {
                     triggerHaptic('light');
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                    setActiveHubCategory('market');
+                    onNavigate("webtoon");
                   }}
-                  className="w-full p-3 bg-white hover:bg-stone-50 border border-[#201d1d]/20 hover:border-[#201d1d] text-left transition-all active:scale-[0.99] flex items-center justify-between cursor-pointer rounded-none group"
+                  className="w-full min-h-[48px] px-3 py-2.5 bg-white text-[#201d1d] font-bold text-xs sm:text-sm border border-[#201d1d]/20 hover:border-[#201d1d] hover:bg-slate-50 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 rounded-none group"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-9 h-9 flex items-center justify-center bg-emerald-600 text-white font-black shrink-0 rounded-xs">
-                      <Gift size={18} />
-                    </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs sm:text-sm font-black text-[#201d1d] uppercase tracking-tight">
-                          {language === 'ko' ? '[💼 거래소 & 소셜 길드]' : '[💼 Market, Stock & Guild]'}
-                        </span>
-                        <span className="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 font-black rounded-xs">
-                          {language === 'ko' ? '경제/소셜' : 'Economy'}
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-[#646262] truncate mt-0.5">
-                        {language === 'ko' ? '상점/가챠 • 카드 P2P 거래소 • 가상 주식 • 길드전 • 커뮤니티' : 'Shop Packs • Card P2P • Stock Exchange • Guilds • Community'}
-                      </p>
-                    </div>
-                  </div>
-                  <span className="text-xs font-bold text-[#646262] group-hover:text-[#201d1d] group-hover:translate-x-0.5 transition-transform shrink-0">
-                    [펼치기 ➔]
-                  </span>
-                </button>
+                  <Image size={16} className="shrink-0 text-emerald-600" />
+                  <span>{language === 'ko' ? '[🎨 카툰 보기]' : '[🎨 Toon]'}</span>
+                </motion.button>
+
+                {/* 애니메이션 보기 */}
+                <motion.button
+                  {...buttonMotionProps}
+                  onClick={() => {
+                    triggerHaptic('light');
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    onNavigate("anime");
+                  }}
+                  className="w-full min-h-[48px] px-3 py-2.5 bg-white text-[#201d1d] font-bold text-xs sm:text-sm border border-[#201d1d]/20 hover:border-[#201d1d] hover:bg-slate-50 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 rounded-none group"
+                >
+                  <Tv size={16} className="shrink-0 text-purple-600" />
+                  <span>{language === 'ko' ? '[🎬 애니메이션]' : '[🎬 Anime]'}</span>
+                </motion.button>
+
+                {/* 영화 보기 */}
+                <motion.button
+                  {...buttonMotionProps}
+                  onClick={() => {
+                    triggerHaptic('light');
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    onNavigate("movie");
+                  }}
+                  className="w-full min-h-[48px] px-3 py-2.5 bg-white text-[#201d1d] font-bold text-xs sm:text-sm border border-[#201d1d]/20 hover:border-[#201d1d] hover:bg-slate-50 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 rounded-none group"
+                >
+                  <Film size={16} className="shrink-0 text-rose-600" />
+                  <span>{language === 'ko' ? '[🎥 영화 보기]' : '[🎥 Movie]'}</span>
+                </motion.button>
               </div>
             </div>
           </div>
@@ -906,6 +875,50 @@ export const HomeView: React.FC<HomeViewProps> = ({
           )}
         </div>
 
+        {/* ── External Link Buttons: Source Code & Dev Playlist ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 pt-1">
+          <a
+            href="https://github.com/Dayyoung/snshero"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
+            className="w-full p-3.5 sm:p-4 bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-sm flex items-center justify-between transition-all group active:scale-[0.98] cursor-pointer"
+          >
+            <div className="flex items-center gap-3 font-mono">
+              <Github size={20} className="text-[#201d1d] group-hover:scale-110 transition-transform shrink-0" />
+              <div className="text-left">
+                <div className="text-xs sm:text-sm font-bold uppercase tracking-tight">
+                  {language === 'ko' ? '소스코드' : 'Source Code'}
+                </div>
+                <div className="text-[10px] text-[#646262] font-mono">GitHub Repository</div>
+              </div>
+            </div>
+            <span className="text-xs font-mono text-[#646262] group-hover:text-[#201d1d] font-bold">
+              [↗]
+            </span>
+          </a>
+
+          <a
+            href="https://www.youtube.com/playlist?list=PLV8H2-pD9vH0"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
+            className="w-full p-3.5 sm:p-4 bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-sm flex items-center justify-between transition-all group active:scale-[0.98] cursor-pointer"
+          >
+            <div className="flex items-center gap-3 font-mono">
+              <Youtube size={20} className="text-rose-600 group-hover:scale-110 transition-transform shrink-0" />
+              <div className="text-left">
+                <div className="text-xs sm:text-sm font-bold uppercase tracking-tight">
+                  {language === 'ko' ? '개발동영상' : 'Dev Videos'}
+                </div>
+                <div className="text-[10px] text-[#646262] font-mono">YouTube Playlist</div>
+              </div>
+            </div>
+            <span className="text-xs font-mono text-[#646262] group-hover:text-[#201d1d] font-bold">
+              [↗]
+            </span>
+          </a>
+        </div>
       </section>
 
       {/* ── Footer: Build Version & Last Build Time & ModooSoft Copyright ── */}
@@ -1071,25 +1084,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
             addSns(sns, 'afk_patrol_reward', 'earned');
           }
         }}
-      />
-
-      {/* Progressive Disclosure: Category Hub Modal (ID: Minimal First View) */}
-      <HomeCategoryHubModal
-        isOpen={activeHubCategory !== null}
-        onClose={() => setActiveHubCategory(null)}
-        category={activeHubCategory}
-        language={language}
-        onNavigate={onNavigate}
-        playSfx={playSfx}
-        isAudioMuted={isAudioMuted}
-        onToggleAudioMute={toggleQuickMute}
-        unreadMailCount={unreadMailCount}
-        unreadNotifCount={unreadNotifCount}
-        onOpenMailbox={() => setIsMailboxOpen(true)}
-        onOpenNotifModal={() => setIsNotifModalOpen(true)}
-        onOpenHelp={() => { setHelpOpen(true); setHelpStep(0); }}
-        onOpenRoadmap={() => setIsLobbyDrawerOpen(true)}
-        onPlayNow={onStartPlayNow}
       />
 
       {/* Notification Center Modal (Item 71) */}

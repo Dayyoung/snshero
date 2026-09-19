@@ -40,6 +40,14 @@ export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
     descriptionKo: '인공지능(AI) 라이벌과 대적하여 실시간 자동 전투를 벌이고 랭킹 포인트와 명예를 획득하세요.',
     descriptionEn: 'Battle AI rivals in real-time card matches and earn ranking points.',
   },
+  'card-play': {
+    path: '/card-play',
+    aliases: ['/card-battle', '/mobile-card-battle'],
+    titleKo: '모바일 카드 플레이 (Mobile Card Play) - SNS히어로',
+    titleEn: 'Mobile Card Play - SNSHero',
+    descriptionKo: '모바일 환경에 최적화된 심플 원화면 카드 대결 화면입니다.',
+    descriptionEn: 'Mobile-dedicated single-screen card battle arena.',
+  },
   shop: {
     path: '/shop',
     titleKo: '카드 상점 (Shop) - SNS히어로 카드 및 스킨 뽑기',

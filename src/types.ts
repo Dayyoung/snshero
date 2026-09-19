@@ -37,6 +37,8 @@ export type EquipmentSlot =
   | 'boots' 
   | 'ring1';
 
+export type EquipmentItem = Item;
+
 export interface Item {
   id: string;
   name_en: string;
@@ -53,8 +55,6 @@ export interface Item {
 }
 
 export type CardElement = 'neutral' | 'fire' | 'water' | 'earth' | 'air' | 'wind' | 'land' | 'human' | 'undead' | 'elf' | 'dwarf' | 'monster' | 'robot' | 'dragon';
-
-export type EquipmentItem = Item;
 
 // ─── IP (Intellectual Property) Types ───────────────────────────────
 
@@ -303,7 +303,7 @@ export interface RefundRequest {
   details?: string;
 }
 
-export type ViewType = 'game' | 'home' | 'main' | 'mydeck' | 'play' | 'shop' | 'event' | 'setting' | 'ranking' | 'admin' | 'status' | 'companion' | 'profile' | 'skill' | 'wiki' | 'world-codex' | 'wiki-card' | 'wiki-item' | 'wiki-skill' | 'wiki-howtoplay' | 'wiki-tip' | 'god' | 'guild-list' | 'guild-detail' | 'community' | 'playground' | 'stock-market' | 'card-marketplace' | 'reward-qr' | 'reward-ar' | 'share' | 'prediction-market' | 'boost' | 'season-hub' | 'policy-center' | 'web3-landing' | 'referral' | 'creator' | 'webtoon' | 'novel' | 'anime' | 'movie' | 'modoo' | 'tool-grid' | 'tool-makegrid' | 'tool-checkgrid' | 'mall' | 'pacpik';
+export type ViewType = 'game' | 'card-play' | 'home' | 'main' | 'mydeck' | 'play' | 'shop' | 'event' | 'setting' | 'ranking' | 'admin' | 'status' | 'companion' | 'profile' | 'skill' | 'wiki' | 'world-codex' | 'wiki-card' | 'wiki-item' | 'wiki-skill' | 'wiki-howtoplay' | 'wiki-tip' | 'god' | 'guild-list' | 'guild-detail' | 'community' | 'playground' | 'stock-market' | 'card-marketplace' | 'reward-qr' | 'reward-ar' | 'share' | 'prediction-market' | 'boost' | 'season-hub' | 'policy-center' | 'web3-landing' | 'referral' | 'creator' | 'webtoon' | 'novel' | 'anime' | 'movie' | 'modoo' | 'tool-grid' | 'tool-makegrid' | 'tool-checkgrid' | 'mall' | 'pacpik';
 
 export interface Skill {
   id: string;

@@ -277,7 +277,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 <div className="min-w-0">
                   <div className="text-[9px] uppercase font-bold text-amber-600">Signature Card</div>
                   <div className="font-bold text-xs truncate text-slate-800">
-                    {CARD_DATABASE[pinnedSignatureCardId]?.title_dis || CARD_DATABASE[pinnedSignatureCardId]?.title || CARD_DATABASE[pinnedSignatureCardId]?.title_en || `Hero #${pinnedSignatureCardId}`}
+                    {CARD_DATABASE[pinnedSignatureCardId]?.title || `Hero #${pinnedSignatureCardId}`}
                   </div>
                   <div className="text-[10px] text-slate-400">
                     ATK: {CARD_DATABASE[pinnedSignatureCardId]?.power || 8} ★3 Awakened
@@ -295,7 +295,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                         {badge?.symbol || '🎖️'}
                       </div>
                       <div className="text-[9px] font-bold text-slate-600 truncate max-w-[60px] mt-1">
-                        {badge ? t(badge.labelKey, language) : `Badge #${idx + 1}`}
+                        {badge?.labelKey ? t(badge.labelKey, language) : `Badge #${idx + 1}`}
                       </div>
                     </div>
                   );

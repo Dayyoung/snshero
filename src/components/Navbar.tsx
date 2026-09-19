@@ -87,6 +87,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
     };
   }, [currentView, setView, playSfx]);
 
+  if (currentView === 'card-play') {
+    return null;
+  }
+
   const items = [
     { id: 'home', label: t('home', language), icon: Home, hasRedDot: false },
     { id: 'mydeck', label: t('mydeck', language), icon: Library, hasRedDot: false },

@@ -109,10 +109,10 @@ export class StaminaPacingManager {
       maxAp: MAX_AP,
       dailyFriendGiftsClaimed: 0,
       dailyGoldRestsClaimed: 0,
-      dailyApBurned: 0,
-      claimedBurnRebates: [],
       lastGiftDate: today,
       totalPlayMinutes: 0,
+      dailyApBurned: 0,
+      claimedBurnRebates: [],
     };
   }
 
@@ -230,16 +230,6 @@ export class StaminaPacingManager {
   }
 
   /**
-   * 임의 수량의 AP 즉시 충전 (AP 물약 및 이벤트 보상)
-   */
-  public gainAp(amount: number): StaminaPacingState {
-    const state = this.getState();
-    state.currentAp = Math.min(state.maxAp, state.currentAp + Math.max(0, amount));
-    this.saveState(state);
-    return state;
-  }
-
-  /**
    * 골드로 휴식 (Gold Rest) - 500골드 소모하여 5 AP 즉시 충전 (일일 최대 2회)
    * (구글 스프레드시트 Row 1055 / ID 318 구현)
    */
@@ -327,6 +317,10 @@ export class StaminaPacingManager {
       window.dispatchEvent(new CustomEvent('hero_stamina_pacing_updated'));
     }
     return state.currentAp;
+  }
+
+  public gainAp(amount: number): number {
+    return this.addAp(amount);
   }
 
   /**

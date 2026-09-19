@@ -24,8 +24,7 @@ import { INITIAL_CARDS, getCardPower } from '../constants';
 import type { KadanBattleResult } from '../lib/kadanRpgBattle';
 import { KADAN_RPG_NOVEL_SCRIPTS } from '../content/kadanRpgNovelScript';
 import { AdSenseBanner } from '../components/AdSenseBanner';
-
-const PlayGameView = React.lazy(() => import('./PlayGameView').then(m => ({ default: m.PlayGameView })));
+import { MobileCardPlayScreen } from './MobileCardPlayScreen';
 
 interface KadanRpgViewProps {
   isAdRemoved?: boolean;
@@ -40,6 +39,7 @@ interface KadanRpgViewProps {
   addCard: (rarity: CardRarity, indexOverride?: number, isSilent?: boolean) => void;
   addItem: (rarity?: ItemRarity, idOverride?: string) => unknown;
   showCustomAlert: (title: string, message: string, autoCloseSeconds?: number) => void;
+  onBattleStateChange?: (inBattle: boolean) => void;
 }
 
 const sameTile = (a: KadanRpgTile | null, b: KadanRpgTile | null): boolean => (
@@ -75,6 +75,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
   addCard,
   addItem,
   showCustomAlert,
+  onBattleStateChange,
 }) => {
   const {
     progress,
@@ -169,6 +170,16 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
       totalPower: oppCards.reduce((acc, c) => acc + (c.power || 0), 0),
     };
   }, [activeEncounter, battleEvent, language, progress.rebirthLevel]);
+
+  const isCurrentlyInBattle = Boolean(activeEncounter && battleEvent && rpgOpponent);
+
+  useEffect(() => {
+    onBattleStateChange?.(isCurrentlyInBattle);
+    return () => {
+      onBattleStateChange?.(false);
+    };
+  }, [isCurrentlyInBattle, onBattleStateChange]);
+
   const isComplete = !nextEvent;
   const [isEndingDismissed, setIsEndingDismissed] = useState(false);
   const isAtTarget = sameTile(heroTile, nextEvent?.tile ?? null);
@@ -500,52 +511,35 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
           )}
 
           {activeEncounter && battleEvent && rpgOpponent && (
-            <div className="fixed inset-0 z-[10000] w-full h-[100dvh] max-h-[100dvh] bg-[#060a14] flex flex-col items-center justify-start overflow-y-auto pointer-events-auto select-none touch-pan-y overscroll-contain">
-              {/* 다른 화면들과 100% 동일한 최대너비(1024px) 중앙 배틀 아레나 (최소높이 유지 및 상하스크롤 지원) */}
-              <div className="w-full max-w-[1024px] min-h-full flex flex-col relative bg-[#060a14] shadow-2xl border-x border-slate-800 pointer-events-auto">
-                {/* 화면용 상단 애드센스 배너 (모바일에서만 상단 표시, PC에서는 제거) */}
-                {!isAdRemoved && (
-                  <div className="block lg:hidden w-full px-2 py-1 shrink-0 select-none z-20 bg-[#060a14]/95 border-b border-slate-800 overflow-hidden">
-                    <div className="max-w-[728px] mx-auto h-[70px] max-h-[76px] sm:h-[96px] sm:max-h-[102px] flex items-center justify-center overflow-hidden">
-                      <AdSenseBanner 
-                        format="horizontal"
-                        responsive={false}
-                        className="w-full h-full overflow-hidden"
-                        style={{ maxHeight: '72px', height: '68px', minHeight: '62px' }}
-                      />
-                    </div>
-                  </div>
-                )}
-                <React.Suspense fallback={<div className="flex h-full w-full items-center justify-center text-white font-mono text-sm">Loading Battle Arena...</div>}>
-                  <PlayGameView
-                    isAdRemoved={isAdRemoved}
-                    playerDeck={currentDeck.filter((c): c is CardData => Boolean(c))}
-                    pvpOpponent={rpgOpponent}
-                    initialMode="card"
-                    language={language}
-                    isAutoBattle={progress.autoMode}
-                    onToggleAutoBattle={() => setAutoMode(!progress.autoMode)}
-                    setIsAutoBattle={(val) => setAutoMode(val)}
-                    onBack={() => {
-                      setBattleEvent(null);
-                      if (progress.autoMode) setAutoMode(false);
-                    }}
-                    recordMatchResult={(result) => {
-                      handleBattleComplete(result);
-                    }}
-                    playSfx={(url) => {
-                      if (isSfxMutedGlobal()) return;
-                      try {
-                        const audio = new Audio(url);
-                        audio.volume = 0.5;
-                        audio.play().catch(() => {});
-                      } catch (e) {}
-                    }}
-                    sns={sns}
-                    updateSns={updateSns}
-                  />
-                </React.Suspense>
-              </div>
+            <div className="fixed inset-0 z-[20000] w-full h-[100dvh] max-h-[100dvh] bg-[#060a14] flex flex-col items-center justify-center overflow-hidden pointer-events-auto select-none touch-none">
+              <MobileCardPlayScreen
+                isAdRemoved={isAdRemoved}
+                playerDeck={currentDeck.filter((c): c is CardData => Boolean(c))}
+                opponentCustomDeck={rpgOpponent.deck}
+                opponentName={rpgOpponent.name}
+                language={language}
+                initialAutoBattle={true}
+                autoCloseOnComplete={progress.autoMode}
+                onToggleAutoBattle={() => setAutoMode(!progress.autoMode)}
+                onBack={() => {
+                  setBattleEvent(null);
+                  if (progress.autoMode) setAutoMode(false);
+                }}
+                recordMatchResult={(result) => {
+                  handleBattleComplete(result);
+                }}
+                playSfx={(url) => {
+                  if (isSfxMutedGlobal()) return;
+                  try {
+                    const audio = new Audio(url);
+                    audio.volume = 0.5;
+                    audio.play().catch(() => {});
+                  } catch (e) {}
+                }}
+                sns={sns}
+                updateSns={updateSns}
+                addCard={addCard}
+              />
             </div>
           )}
 

@@ -100,14 +100,15 @@ import { TutorialCoachMark } from './components/TutorialCoachMark';
 import { ViewLoadingFallback } from './components/ViewLoadingFallback';
 import { ImageLazyLoader } from './lib/ImageLazyLoader';
 import { checkAndSyncAppVersion } from './lib/versionManager';
+import { safeLazy } from './lib/safeLazy';
 
-const HomeView = lazy(() => import('./views/HomeView').then(m => ({ default: m.HomeView })));
-const KadanRpgView = lazy(() => import('./views/KadanRpgView').then(m => ({ default: m.default || m.KadanRpgView })));
-const MyDeckView = lazy(() => import('./views/MyDeckView').then(m => ({ default: m.MyDeckView })));
-const ShareView = lazy(() => import('./views/ShareView').then(m => ({ default: m.ShareView })));
-const ShopView = lazy(() => import('./views/ShopView').then(m => ({ default: m.ShopView })));
-const EventView = lazy(() => import('./views/EventView').then(m => ({ default: m.EventView })));
-const SettingView = lazy(() => import('./views/SettingView').then(m => ({ default: m.SettingView })));
+const HomeView = safeLazy(() => import('./views/HomeView'), 'HomeView');
+const KadanRpgView = safeLazy(() => import('./views/KadanRpgView'));
+const MyDeckView = safeLazy(() => import('./views/MyDeckView'), 'MyDeckView');
+const ShareView = safeLazy(() => import('./views/ShareView'), 'ShareView');
+const ShopView = safeLazy(() => import('./views/ShopView'), 'ShopView');
+const EventView = safeLazy(() => import('./views/EventView'), 'EventView');
+const SettingView = safeLazy(() => import('./views/SettingView'), 'SettingView');
 export const prefetchPlayGameView = () => {
   try {
     import('./views/PlayGameView');
@@ -115,45 +116,46 @@ export const prefetchPlayGameView = () => {
     // Ignore prefetch error
   }
 };
-const PlayGameView = lazy(() => import('./views/PlayGameView').then(m => ({ default: m.PlayGameView })));
-const RankingView = lazy(() => import('./views/RankingView').then(m => ({ default: m.RankingView })));
-const AdminView = lazy(() => import('./views/AdminView').then(m => ({ default: m.AdminView })));
-const StatusView = lazy(() => import('./views/StatusView').then(m => ({ default: m.StatusView })));
-const CompanionView = lazy(() => import('./views/CompanionView').then(m => ({ default: m.CompanionView })));
-const ProfileView = lazy(() => import('./views/ProfileView').then(m => ({ default: m.ProfileView })));
-const SkillView = lazy(() => import('./views/SkillView').then(m => ({ default: m.SkillView })));
-const StockMarketView = lazy(() => import('./views/StockMarketView').then(m => ({ default: m.StockMarketView })));
-const CardMarketplaceView = lazy(() => import('./views/CardMarketplaceView').then(m => ({ default: m.CardMarketplaceView })));
-const PredictionMarketView = lazy(() => import('./views/PredictionMarketView').then(m => ({ default: m.PredictionMarketView })));
-const WikiHomeView = lazy(() => import('./views/WikiHomeView').then(m => ({ default: m.WikiHomeView })));
-const WorldCodexView = lazy(() => import('./views/WorldCodexView').then(m => ({ default: m.WorldCodexView })));
-const WikiHowToPlayView = lazy(() => import('./views/WikiHowToPlayView').then(m => ({ default: m.WikiHowToPlayView })));
-const WikiTipView = lazy(() => import('./views/WikiTipView').then(m => ({ default: m.WikiTipView })));
-const WikiCardView = lazy(() => import('./views/WikiCardView').then(m => ({ default: m.WikiCardView })));
-const WikiItemView = lazy(() => import('./views/WikiItemView').then(m => ({ default: m.WikiItemView })));
-const WikiSkillView = lazy(() => import('./views/WikiSkillView').then(m => ({ default: m.WikiSkillView })));
-const GodView = lazy(() => import('./views/GodView').then(m => ({ default: m.GodView })));
-const GuildListView = lazy(() => import('./views/GuildListView').then(m => ({ default: m.GuildListView })));
-const GuildDetailView = lazy(() => import('./views/GuildDetailView').then(m => ({ default: m.GuildDetailView })));
-const CommunityView = lazy(() => import('./views/CommunityView').then(m => ({ default: m.CommunityView })));
-const PlaygroundView = lazy(() => import('./views/PlaygroundView').then(m => ({ default: m.PlaygroundView })));
-const BoostView = lazy(() => import('./views/BoostView').then(m => ({ default: m.BoostView })));
-const Web3LandingView = lazy(() => import('./views/Web3LandingView').then(m => ({ default: m.Web3LandingView })));
-const SeasonHubView = lazy(() => import('./views/SeasonHubView').then(m => ({ default: m.SeasonHubView })));
-const ReferralView = lazy(() => import('./views/ReferralView').then(m => ({ default: m.ReferralView })));
-const CreatorLandingView = lazy(() => import('./views/CreatorLandingView').then(m => ({ default: m.CreatorLandingView })));
-const DeckUpgradeModal = lazy(() => import('./components/DeckUpgradeModal').then(m => ({ default: m.DeckUpgradeModal })));
-const SimulationOverlay = lazy(() => import('./components/SimulationOverlay').then(m => ({ default: m.SimulationOverlay })));
-const QrReward = lazy(() => import('./components/QrReward').then(m => ({ default: m.QrReward })));
-const PolicyCenterView = lazy(() => import('./views/PolicyCenterView').then(m => ({ default: m.PolicyCenterView })));
-const NovelView = lazy(() => import('./views/NovelView').then(m => ({ default: m.NovelView })));
-const AnimeView = lazy(() => import('./views/AnimeView').then(m => ({ default: m.AnimeView })));
-const MovieView = lazy(() => import('./views/MovieView').then(m => ({ default: m.MovieView })));
-const ModooView = lazy(() => import('./views/ModooView').then(m => ({ default: m.ModooView })));
-const GridToolView = lazy(() => import('./views/GridToolView').then(m => ({ default: m.GridToolView })));
-const GridCheckerView = lazy(() => import('./views/GridCheckerView').then(m => ({ default: m.GridCheckerView })));
-const MallView = lazy(() => import('./views/MallView').then(m => ({ default: m.MallView })));
-const PacpikView = lazy(() => import('./views/PacpikView').then(m => ({ default: m.PacpikView })));
+const PlayGameView = safeLazy(() => import('./views/PlayGameView'), 'PlayGameView');
+const MobileCardPlayScreen = safeLazy(() => import('./views/MobileCardPlayScreen'), 'MobileCardPlayScreen');
+const RankingView = safeLazy(() => import('./views/RankingView'), 'RankingView');
+const AdminView = safeLazy(() => import('./views/AdminView'), 'AdminView');
+const StatusView = safeLazy(() => import('./views/StatusView'), 'StatusView');
+const CompanionView = safeLazy(() => import('./views/CompanionView'), 'CompanionView');
+const ProfileView = safeLazy(() => import('./views/ProfileView'), 'ProfileView');
+const SkillView = safeLazy(() => import('./views/SkillView'), 'SkillView');
+const StockMarketView = safeLazy(() => import('./views/StockMarketView'), 'StockMarketView');
+const CardMarketplaceView = safeLazy(() => import('./views/CardMarketplaceView'), 'CardMarketplaceView');
+const PredictionMarketView = safeLazy(() => import('./views/PredictionMarketView'), 'PredictionMarketView');
+const WikiHomeView = safeLazy(() => import('./views/WikiHomeView'), 'WikiHomeView');
+const WorldCodexView = safeLazy(() => import('./views/WorldCodexView'), 'WorldCodexView');
+const WikiHowToPlayView = safeLazy(() => import('./views/WikiHowToPlayView'), 'WikiHowToPlayView');
+const WikiTipView = safeLazy(() => import('./views/WikiTipView'), 'WikiTipView');
+const WikiCardView = safeLazy(() => import('./views/WikiCardView'), 'WikiCardView');
+const WikiItemView = safeLazy(() => import('./views/WikiItemView'), 'WikiItemView');
+const WikiSkillView = safeLazy(() => import('./views/WikiSkillView'), 'WikiSkillView');
+const GodView = safeLazy(() => import('./views/GodView'), 'GodView');
+const GuildListView = safeLazy(() => import('./views/GuildListView'), 'GuildListView');
+const GuildDetailView = safeLazy(() => import('./views/GuildDetailView'), 'GuildDetailView');
+const CommunityView = safeLazy(() => import('./views/CommunityView'), 'CommunityView');
+const PlaygroundView = safeLazy(() => import('./views/PlaygroundView'), 'PlaygroundView');
+const BoostView = safeLazy(() => import('./views/BoostView'), 'BoostView');
+const Web3LandingView = safeLazy(() => import('./views/Web3LandingView'), 'Web3LandingView');
+const SeasonHubView = safeLazy(() => import('./views/SeasonHubView'), 'SeasonHubView');
+const ReferralView = safeLazy(() => import('./views/ReferralView'), 'ReferralView');
+const CreatorLandingView = safeLazy(() => import('./views/CreatorLandingView'), 'CreatorLandingView');
+const DeckUpgradeModal = safeLazy(() => import('./components/DeckUpgradeModal'), 'DeckUpgradeModal');
+const SimulationOverlay = safeLazy(() => import('./components/SimulationOverlay'), 'SimulationOverlay');
+const QrReward = safeLazy(() => import('./components/QrReward'), 'QrReward');
+const PolicyCenterView = safeLazy(() => import('./views/PolicyCenterView'), 'PolicyCenterView');
+const NovelView = safeLazy(() => import('./views/NovelView'), 'NovelView');
+const AnimeView = safeLazy(() => import('./views/AnimeView'), 'AnimeView');
+const MovieView = safeLazy(() => import('./views/MovieView'), 'MovieView');
+const ModooView = safeLazy(() => import('./views/ModooView'), 'ModooView');
+const GridToolView = safeLazy(() => import('./views/GridToolView'), 'GridToolView');
+const GridCheckerView = safeLazy(() => import('./views/GridCheckerView'), 'GridCheckerView');
+const MallView = safeLazy(() => import('./views/MallView'), 'MallView');
+const PacpikView = safeLazy(() => import('./views/PacpikView'), 'PacpikView');
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -453,8 +455,9 @@ function AppContent() {
   const [isAutoBattle, setIsAutoBattle] = useState(() => {
     const setting = localStorage.getItem('hero_auto_battle_setting');
     if (setting !== null) return JSON.parse(setting) === true;
-    return false; // 기본값: 수동 전투 (유저가 직접 플레이)
+    return true; // 기본값: 시작 시 자동 전투 활성화 (AUTO ON)
   });
+  const [isRpgInBattle, setIsRpgInBattle] = useState(false);
   const [isGpsActive, setIsGpsActive] = useState(false);
   const [gpsCoords, setGpsCoords] = useState<{lat: number, lng: number} | null>(null);
   const [showGpsPermissionModal, setShowGpsPermissionModal] = useState(false);
@@ -1429,6 +1432,9 @@ function AppContent() {
     if (view !== 'play' && playGameState !== 'lobby') {
       setPlayGameState('lobby');
       setPlayInitialMode('modeSelect');
+    }
+    if (view !== 'main') {
+      setIsRpgInBattle(false);
     }
   }, [view, playGameState]);
 
@@ -2925,6 +2931,9 @@ function AppContent() {
   const [activeFriendBattleRequestId, setActiveFriendBattleRequestId] = useState<string | null>(null);
   const [isPvpActive, setIsPvpActive] = useState<boolean>(false);
   const [isPvpBoardAttackActive, setIsPvpBoardAttackActive] = useState<boolean>(false);
+  const [mobileCardTargetId, setMobileCardTargetId] = useState<number | null>(null);
+  const [mobileCardOppDeck, setMobileCardOppDeck] = useState<CardData[] | undefined>(undefined);
+  const [mobileCardOppName, setMobileCardOppName] = useState<string | undefined>(undefined);
 
 
 
@@ -4711,6 +4720,7 @@ function AppContent() {
             addCard={addCard}
             addItem={addItem}
             showCustomAlert={showCustomAlert}
+            onBattleStateChange={setIsRpgInBattle}
           />
         );
       case 'mydeck':
@@ -5045,6 +5055,46 @@ function AppContent() {
             localAiStatus={localAiStatus}
           />
         );
+      case 'card-play':
+        return (
+          <MobileCardPlayScreen
+            playerDeck={isPlaygroundMode ? playgroundDeck : currentDeck}
+            targetCardId={mobileCardTargetId}
+            opponentCustomDeck={mobileCardOppDeck}
+            opponentName={mobileCardOppName}
+            onBack={() => {
+              setMobileCardTargetId(null);
+              setMobileCardOppDeck(undefined);
+              setMobileCardOppName(undefined);
+              setView('play');
+            }}
+            language={language}
+            playSfx={playSfx}
+            userStats={stats}
+            updateStats={(newStats) => setStats(prev => ({ ...prev, ...newStats }))}
+            sns={sns}
+            updateSns={updateSns}
+            inventory={inventory}
+            addCard={addCard}
+            isAdRemoved={isAdRemoved}
+            initialAutoBattle={isAutoBattle}
+            onToggleAutoBattle={() => setIsAutoBattle(prev => !prev)}
+            skills={getAggregatedSkills()}
+            onEarnXp={(amount: number) => {
+              setCurrentDeck(prev => {
+                const newDeck = [...prev];
+                const idx = selectedCompanionIndex;
+                if (newDeck[idx]) {
+                  newDeck[idx] = {
+                    ...newDeck[idx],
+                    xp: (newDeck[idx].xp || 0) + amount
+                  };
+                }
+                return newDeck;
+              });
+            }}
+          />
+        );
       case 'play':
         return (
           <PlayGameView 
@@ -5114,6 +5164,13 @@ function AppContent() {
             currentSeason={currentSeason}
             inventory={inventory}
             addCard={addCard}
+            onStartMobileCardPlay={(targetId?: number, oppDeck?: CardData[], oppName?: string) => {
+              setMobileCardTargetId(targetId ?? null);
+              setMobileCardOppDeck(oppDeck);
+              setMobileCardOppName(oppName);
+              setIsAutoBattle(true);
+              setView('card-play');
+            }}
           />
         );
       case 'playground':
@@ -5557,8 +5614,8 @@ function AppContent() {
     );
   }
 
-    const isPlayingBattle = view === 'play' && (playGameState === 'playing' || playGameState === 'searching' || playGameState === 'preMatch');
-    const showNavbar = (view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie' && !isPlayingBattle) && !isGlobalPopupOpen;
+    const isPlayingBattle = (view === 'play' && (playGameState === 'playing' || playGameState === 'searching' || playGameState === 'preMatch')) || view === 'card-play' || (view === 'main' && isRpgInBattle);
+    const showNavbar = (view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie' && view !== 'card-play' && !isPlayingBattle) && !isGlobalPopupOpen;
     const isMainTab = view === 'home' || view === 'mydeck' || view === 'shop' || view === 'play' || view === 'main';
     
     return (
@@ -5612,7 +5669,7 @@ function AppContent() {
                 : "bg-slate-50/30 border-slate-200/80 min-h-screen")
         )}>
           {/* Top AdSense Banner (모바일에서는 상단 배너 표시, PC에서는 상단 배너 제거 후 좌우 배너로 표시) */}
-          {!isAdRemoved && view !== 'landing' && (
+          {!isAdRemoved && view !== 'landing' && view !== 'card-play' && (
             <div className={cn(
               "block lg:hidden w-full px-2 py-1 shrink-0 select-none z-20 overflow-hidden",
               isPlayingBattle
@@ -5631,7 +5688,7 @@ function AppContent() {
           )}
 
           {/* 광고 다음 줄에 정렬되는 전역 헤더 버튼 (음소거, 메뉴, 뒤로가기) */}
-          {view !== 'landing' && (
+          {view !== 'landing' && view !== 'card-play' && (
             <>
               {/* Dedicated HUD Quick Audio Mute / Unmute Button (광고 다음 줄에 배치) */}
               <button
@@ -5678,7 +5735,7 @@ function AppContent() {
             </>
           )}
 
-          {view !== 'landing' && !isMainTab && (!isPlayingBattle || playGameState !== 'playing') && (
+          {view !== 'landing' && view !== 'card-play' && !isMainTab && (!isPlayingBattle || playGameState !== 'playing') && (
             <button
               onClick={handleGlobalBack}
               id="global-header-back-btn"
@@ -6048,7 +6105,7 @@ function AppContent() {
           <div className={cn(
             "flex-1 flex flex-col min-h-0",
             isPlayingBattle ? "h-full overflow-hidden select-none touch-none overscroll-none" : "overflow-x-hidden",
-            (view !== 'play' && view !== 'home') && ((!isAdRemoved && view !== 'landing') ? "pt-12 sm:pt-14 lg:pt-4" : "pt-4"),
+            (view !== 'play' && view !== 'home' && view !== 'card-play') && ((!isAdRemoved && view !== 'landing') ? "pt-12 sm:pt-14 lg:pt-4" : "pt-4"),
             showNavbar ? "pb-20" : "pb-0"
           )}>
             <AnimatePresence mode="wait">
@@ -6114,7 +6171,7 @@ function AppContent() {
           />
 
         {/* Global Chat Floating Button */}
-        {view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && (view !== 'play' || playGameState === 'modeSelect') && (
+        {view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'card-play' && !isPlayingBattle && (view !== 'play' || playGameState === 'modeSelect') && (
           <>
           <div className={cn(
             "fixed left-0 right-0 w-full max-w-[1024px] mx-auto z-[10000] pointer-events-none transition-all",

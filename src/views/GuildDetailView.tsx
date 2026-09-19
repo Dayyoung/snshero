@@ -12,8 +12,6 @@ import { motion, AnimatePresence } from "motion/react";
 import { triggerHaptic } from "../lib/haptic";
 import { StaminaPacingManager } from "../lib/staminaPacingManager";
 import { cn } from "../lib/utils";
-import { GuildDailyQuickHub } from "../components/GuildDailyQuickHub";
-import { GuildMercenaryModal } from "../components/GuildMercenaryModal";
 
 interface GuildDetailViewProps {
   onNavigate: (view: ViewType) => void;
@@ -114,7 +112,6 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
       return false;
     }
   });
-  const [isMercenaryModalOpen, setIsMercenaryModalOpen] = useState(false);
   const [donatedShardToday, setDonatedShardToday] = useState<boolean>(() => {
     try {
       return localStorage.getItem(`hero_guild_shard_donated_${todayStr}_${guildId}`) === 'true';
@@ -589,44 +586,6 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
         {/* TAB 1: 길드 정보 (info) */}
         {(!userGuild || isOpponentMode || activeTab === 'info') && (
           <div className="space-y-4 font-mono">
-            {/* SCR-10-05: 길드 올인원 원터치 스마트 허브 */}
-            {!isOpponentMode && userGuild?.id === guild.id && (
-              <GuildDailyQuickHub
-                language={language}
-                attendedToday={attendedToday}
-                onAttend={handleAttendGuild}
-                onDonate={handleDonate}
-                snsBalance={sns}
-              />
-            )}
-
-            {/* SCR-10-06: 길드 에이스 카드 용병 대여소 배너 버튼 */}
-            {!isOpponentMode && userGuild?.id === guild.id && (
-              <div className="flex items-center justify-between p-3 bg-amber-500/10 border border-amber-500/40 rounded-none text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">⚔️</span>
-                  <div>
-                    <span className="font-bold text-amber-900 dark:text-amber-300">
-                      {language === 'ko' ? '[길드 에이스 카드 용병 대여소]' : '[Guild Ace Mercenary Post]'}
-                    </span>
-                    <p className="text-[10px] text-slate-500 dark:text-slate-400">
-                      {language === 'ko' ? '길드원 대표 에이스 카드를 대여하여 타워/던전 전투력 +15% 증폭' : 'Rent top guildmate\'s ace card for +15% combat power'}
-                    </p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic('light');
-                    setIsMercenaryModalOpen(true);
-                  }}
-                  className="min-h-[44px] px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-black font-black text-xs uppercase tracking-wider rounded-none cursor-pointer shadow-xs active:scale-95"
-                >
-                  {language === 'ko' ? '[용병 고용하기]' : '[Hire Mercenary]'}
-                </button>
-              </div>
-            )}
-
             {/* ID 580: 길드 출석 보너스 & 연속 출석 버프 HUD */}
             {!isOpponentMode && userGuild?.id === guild.id && (
               <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-emerald-50 border border-emerald-300 rounded-none text-xs shadow-xs">
@@ -1242,21 +1201,6 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* SCR-10-06: Guild Ace Mercenary Modal */}
-      <GuildMercenaryModal
-        isOpen={isMercenaryModalOpen}
-        onClose={() => setIsMercenaryModalOpen(false)}
-        language={language}
-        onRentMercenary={(owner, card) => {
-          setIsMercenaryModalOpen(false);
-          setAlertMsg(
-            language === 'ko'
-              ? `⚔️ ${owner} 길드원의 '${card}' 카드를 용병으로 영입했습니다! (타워/던전 전투력 +15% 버프 적용)`
-              : `⚔️ Hired ${owner}'s '${card}' as a mercenary! (+15% combat boost)`
-          );
-        }}
-      />
       </div>
     </div>
   );

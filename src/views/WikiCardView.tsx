@@ -221,9 +221,9 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
     } else if (topStatFilter === 'water_def') {
       return allCards.filter(c => c.element === 'water').sort((a, b) => (b.power || 0) - (a.power || 0)).slice(0, 5);
     } else if (topStatFilter === 'wind_spd') {
-      return allCards.filter(c => c.element === 'wind').sort((a, b) => (b.power || 0) - (a.power || 0)).slice(0, 5);
+      return allCards.filter(c => c.element === 'wind' || c.element === 'air').sort((a, b) => (b.power || 0) - (a.power || 0)).slice(0, 5);
     } else if (topStatFilter === 'earth_hp') {
-      return allCards.filter(c => c.element === 'earth').sort((a, b) => (b.power || 0) - (a.power || 0)).slice(0, 5);
+      return allCards.filter(c => c.element === 'earth' || c.element === 'land').sort((a, b) => (b.power || 0) - (a.power || 0)).slice(0, 5);
     }
     return sortedCards;
   }, [topStatFilter, allCards, sortedCards]);

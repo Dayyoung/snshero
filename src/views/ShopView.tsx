@@ -36,11 +36,6 @@ import { useRefundRequests } from '../hooks/useRefundRequests';
 import { TokenExchangeModal } from '../components/TokenExchangeModal';
 import { ShortfallGuideModal } from '../components/ShortfallGuideModal';
 import { ArrowDownUp } from 'lucide-react';
-import { ShopQuickTabBar, ShopCategoryTab } from '../components/ShopQuickTabBar';
-import { PityRescuePackModal } from '../components/PityRescuePackModal';
-import { MileageQuickSheet } from '../components/MileageQuickSheet';
-import { DailyFreeGachaModal } from '../components/DailyFreeGachaModal';
-import { FlashSalePopup } from '../components/FlashSalePopup';
 
 interface ShopViewProps {
   sns: number;
@@ -358,25 +353,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
   // ID 393: 재화 부족 무료 파밍 안내 숏컷 모달 상태
   const [isShortfallModalOpen, setIsShortfallModalOpen] = useState(false);
-
-  // SCR-04-08: 소환 마일리지 상태
-  const [gachaMileage, setGachaMileage] = useState<number>(() => {
-    try {
-      const saved = localStorage.getItem('hero_gacha_mileage');
-      return saved ? parseInt(saved, 10) || 45 : 45;
-    } catch {
-      return 45;
-    }
-  });
-  const [isDailyFreeGachaOpen, setIsDailyFreeGachaOpen] = useState<boolean>(() => {
-    try {
-      const today = new Date().toISOString().slice(0, 10);
-      return localStorage.getItem('hero_daily_free_gacha_claimed_date') !== today;
-    } catch {
-      return false;
-    }
-  });
-  const [isFlashSaleOpen, setIsFlashSaleOpen] = useState<boolean>(false);
   const [shortfallInfo, setShortfallInfo] = useState<{ req: number; cur: number }>({ req: 100, cur: 0 });
 
   // ID 398: 카드 팩 구매 수량 스텝퍼 상태 (기본 1)
@@ -666,23 +642,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const [pityBannerOpen, setPityBannerOpen] = useState(false);
   const [gachaPityState, setGachaPityState] = useState<GachaPityState>(() => loadGachaPityState(currentSeason));
   const [gachaShareCardId, setGachaShareCardId] = useState<number | null>(null);
-
-  // SCR-04-05: Shop Category Tab State
-  const [shopCategoryTab, setShopCategoryTab] = useState<ShopCategoryTab>('all');
-
-  // SCR-04-06: Pity Rescue Pack Modal State
-  const [isPityRescueModalOpen, setIsPityRescueModalOpen] = useState(false);
-
-  useEffect(() => {
-    const goldPity = getGachaPityView(gachaPityState, 'gold');
-    if (goldPity.threshold > 0 && (goldPity.current / goldPity.threshold) >= 0.8) {
-      const shownKey = `hero_pity_rescue_shown_${currentSeason || 'season1'}_${goldPity.current}`;
-      if (typeof window !== 'undefined' && !sessionStorage.getItem(shownKey)) {
-        sessionStorage.setItem(shownKey, 'true');
-        setIsPityRescueModalOpen(true);
-      }
-    }
-  }, [gachaPityState, currentSeason]);
   const ipMerchProducts = useMemo(() => getIpMerchProducts(currentSeason), [currentSeason]);
   const [selectedIpProductId, setSelectedIpProductId] = useState<string | null>(null);
   const selectedIpProduct = useMemo(
@@ -2647,55 +2606,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
               </button>
             </div>
           </div>
-
-          {/* SCR-04-05: 1-Tap Sliding Category Tabs & Smart Action Bar */}
-          <div className="px-4 sm:px-6 md:px-8 mb-3">
-            <ShopQuickTabBar
-              activeTab={shopCategoryTab}
-              onSelectTab={(tab) => {
-                setShopCategoryTab(tab);
-                triggerHaptic('light');
-                if (tab === 'packs') {
-                  const sec = document.getElementById('shop-grid');
-                  if (sec) sec.scrollIntoView({ behavior: 'smooth' });
-                } else if (tab === 'items') {
-                  const sec = document.getElementById('shop-pack-item-btn');
-                  if (sec) sec.scrollIntoView({ behavior: 'smooth' });
-                } else if (tab === 'sns') {
-                  const sec = document.getElementById('sns-charge-section') || document.getElementById('sns-recharge-section');
-                  if (sec) sec.scrollIntoView({ behavior: 'smooth' });
-                } else if (tab === 'special') {
-                  const sec = document.getElementById('shop-starter-bundle') || document.getElementById('shop-pity-banner');
-                  if (sec) sec.scrollIntoView({ behavior: 'smooth' });
-                } else if (tab === 'all') {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-              }}
-              language={language}
-              snsBalance={sns}
-              freePullAvailable={!dailyFreeSummonClaimed}
-              onQuickFreePull={handleDailyFreeSummon}
-              onQuickCharge={() => {
-                const sec = document.getElementById('sns-charge-section') || document.getElementById('sns-recharge-section');
-                if (sec) sec.scrollIntoView({ behavior: 'smooth' });
-              }}
-            />
-          </div>
-
-          {/* SCR-04-08: 소환 마일리지 실시간 교환 바 & 하프 바텀시트 */}
-          <div className="px-4 sm:px-6 md:px-8 mb-4">
-            <MileageQuickSheet
-              mileage={gachaMileage}
-              language={language}
-              onExchangeCard={(cardId, cost) => {
-                const nextM = Math.max(0, gachaMileage - cost);
-                setGachaMileage(nextM);
-                localStorage.setItem('hero_gacha_mileage', String(nextM));
-                addCard('SSR', cardId);
-              }}
-            />
-          </div>
-
           <div className="p-4 sm:p-6 md:p-8 pt-0 sm:pt-0 md:pt-0 flex flex-col gap-6 sm:gap-8 md:gap-10 w-full max-w-full overflow-x-hidden">
 
             <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -6031,48 +5941,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
             </button>
           </div>
         </div>
-
-        {/* SCR-04-06: Pity Rescue Pack Modal */}
-        {isPityRescueModalOpen && (
-          <PityRescuePackModal
-            language={language}
-            pityCount={getGachaPityView(gachaPityState, 'gold').current}
-            maxPity={getGachaPityView(gachaPityState, 'gold').threshold || 30}
-            onPurchase={() => {
-              buyPack(0, 'gold', 5);
-              updateSns(500, '천장 구제 패키지 소환석 충전', 'purchased');
-            }}
-            onClose={() => setIsPityRescueModalOpen(false)}
-          />
-        )}
-
-        {/* SCR-04-09: Daily Free Gacha & Flash Sale Modals */}
-        <DailyFreeGachaModal
-          isOpen={isDailyFreeGachaOpen}
-          onClose={() => setIsDailyFreeGachaOpen(false)}
-          language={language}
-          onClaimFreeGacha={() => {
-            localStorage.setItem('hero_daily_free_gacha_claimed_date', todayDateKey);
-            addCard('SR');
-            // 무료 소환 직후 15분 한정 플래시 세일 팝업 트리거
-            setIsFlashSaleOpen(true);
-          }}
-          playSfx={playSfx}
-        />
-
-        <FlashSalePopup
-          isOpen={isFlashSaleOpen}
-          onClose={() => setIsFlashSaleOpen(false)}
-          language={language}
-          onBuy={() => {
-            addCard('SSR');
-            updateSns(1000, '시크릿 게릴라 팩 보너스 코인', 'purchased');
-            const nextM = gachaMileage + 20;
-            setGachaMileage(nextM);
-            localStorage.setItem('hero_gacha_mileage', String(nextM));
-          }}
-          playSfx={playSfx}
-        />
 
       </>
     </PayPalScriptProvider>

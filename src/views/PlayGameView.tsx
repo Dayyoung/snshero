@@ -5,7 +5,7 @@ import { CardData, AiStrategy, AiDifficulty, Language, PlayerPatterns, Item, Ski
 import { CardItem } from '../components/CardItem';
 import { cn, getFormattedCardName, getAssetUrl, getCardSpriteAsset, getCardSpriteCoords, getCardSpriteStyle } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2, UserPlus, ShoppingBag, XCircle, Menu, Coins, Pickaxe, Crosshair, Footprints, Castle, Compass, BookOpen, Award, Sliders, Axe, Fish, BarChart3, Clock, Timer, Volume2, VolumeX, Smile, CheckCircle2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowLeft, Terminal, Activity, Swords, Trophy, Zap, Hash, Bot, User, MessageCircle, ChevronUp, Minimize2, Maximize2, X, Users, Star, Cpu, Check, CheckCircle2, Sparkles, FastForward, Shield, ShieldAlert, Brain, HelpCircle, Info, ShieldCheck, Flame, Droplets, Mountain, Wind, Fence, Target as TargetIcon, Eye, EyeOff, Search, Heart, Play, RotateCcw, Navigation, AlertCircle, ScanLine, Leaf, Waves, Skull, Hammer, Ghost, Dices, Gift, Lightbulb, Move, Gem, Share2, UserPlus, ShoppingBag, XCircle, Menu, Coins, Pickaxe, Crosshair, Footprints, Castle, Compass, BookOpen, Award, Sliders, Axe, Fish, BarChart3, Clock, Timer, Volume2, VolumeX, Smile } from 'lucide-react';
 import { InBattleEmoteModal, BATTLE_EMOTES, EmoteItem } from '../components/InBattleEmoteModal';
 import { generateCard, INITIAL_CARDS, generateUniqueDeck, ensureUniqueDeck, getCardStatWithBonus, generateAiName, syncCardWithDatabase, INITIAL_SKILLS, getCardPower, getNormalizedElement } from '../constants';
 import { CARD_DATABASE } from '../cardDatabase';
@@ -58,7 +58,6 @@ import { ExpeditionModal } from '../components/ExpeditionModal';
 import { MonsterBeastariumModal } from '../components/MonsterBeastariumModal';
 import { TacticianMasteryModal } from '../components/TacticianMasteryModal';
 import { TowerOfTrialsModal } from '../components/TowerOfTrialsModal';
-import { WinStreakJackpotModal } from '../components/WinStreakJackpotModal';
 import { BattleGambitModal } from '../components/BattleGambitModal';
 import { VoxelMiningDefenseGame } from '../components/VoxelMiningDefenseGame';
 import { VoxelPixelStrikeArenaGame } from '../components/VoxelPixelStrikeArenaGame';
@@ -177,11 +176,9 @@ import { SportsmanshipModal } from '../components/SportsmanshipModal';
 import { FriendRivalryModal } from '../components/FriendRivalryModal';
 import { SpectatorModal } from '../components/SpectatorModal';
 import { RevengeChanceModal } from '../components/RevengeChanceModal';
-import { MiniGameChampionshipTicker } from '../components/MiniGameChampionshipTicker';
-
-
 
 interface PlayGameViewProps {
+  onStartMobileCardPlay?: (targetId?: number, oppDeck?: CardData[], oppName?: string) => void;
   effectiveUser?: UserInfo;
   calculatedTotalPower?: number;
   opponentTotalPower?: number;
@@ -566,7 +563,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   initialMode,
   isAdRemoved = false,
   inventory,
-  addCard
+  addCard,
+  onStartMobileCardPlay
 }) => {
   const { language, lowSpecMode, targetFps, batterySaver } = useGameSettings();
   const isIOSDevice = useMemo(() => {
@@ -896,10 +894,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     };
   });
   const [isGambitModalOpen, setIsGambitModalOpen] = useState<boolean>(false);
-  // SCR-02-09: 연승 잭팟 룰렛 및 쉴드 구제 모달 상태
-  const [isJackpotModalOpen, setIsJackpotModalOpen] = useState<boolean>(false);
-  const [jackpotModalMode, setJackpotModalMode] = useState<'jackpot' | 'shield_rescue'>('jackpot');
-  const [jackpotStreakCount, setJackpotStreakCount] = useState<number>(3);
   const [isSecretStampModalOpen, setIsSecretStampModalOpen] = useState<boolean>(false);
   const [isTreasureDartOpen, setIsTreasureDartOpen] = useState<boolean>(false);
   const [isPirateRouletteOpen, setIsPirateRouletteOpen] = useState<boolean>(false);
@@ -4929,6 +4923,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   };
 
   const startRobotMatch = (char: Character) => {
+    if (setIsAutoBattle) {
+      setIsAutoBattle(true);
+    }
+    if (onStartMobileCardPlay) {
+      onStartMobileCardPlay(undefined, char.deck, char.name);
+      return;
+    }
+    if (setView) {
+      setView('card-play');
+      return;
+    }
     const isMatgo = char.id === 'matgo-ai' || battleType === 'matgo';
     setBattleType(isMatgo ? 'matgo' : (char.id.startsWith('ranking-') ? 'pvp_attack' : 'robot'));
     setGameState('searching');
@@ -5174,6 +5179,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   };
 
   const startMissionCardBattle = (targetCardIndex: number) => {
+    if (setIsAutoBattle) setIsAutoBattle(true);
+    if (onStartMobileCardPlay) {
+      onStartMobileCardPlay(targetCardIndex);
+      return;
+    }
+    if (setView) {
+      setView('card-play');
+      return;
+    }
     const dbCard = CARD_DATABASE[targetCardIndex] || CARD_DATABASE[1];
     activeMissionCardIdRef.current = targetCardIndex;
     setActiveMissionCardId(targetCardIndex);
@@ -5610,33 +5624,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
             // Apply QTE boost only to the player's active placement
             if (owner === 'player') myStat *= activeQteMultiplier;
-
-            // SCR-03-04: Check Companion Affection Max Passive [Flip Defense +5%]
-            let isAffectionDefended = false;
-            if (neighbor.owner === 'player' && owner === 'ai' && !isDryRun) {
-              try {
-                const rawAff = localStorage.getItem(`hero_card_affection_${season || 'season1'}`);
-                if (rawAff) {
-                  const parsedAff = JSON.parse(rawAff);
-                  const neighborId = neighbor.id || neighbor.imageIndex;
-                  const cardAff = parsedAff[neighborId] || (neighbor.imageIndex !== undefined ? parsedAff[neighbor.imageIndex] : null);
-                  if (cardAff && cardAff.maxUnlocked) {
-                    // 5% chance to completely deflect flip
-                    if (Math.random() < 0.05) {
-                      isAffectionDefended = true;
-                      addLog(
-                        language === 'ko'
-                          ? `💖 [유대 방어] ${neighbor.name}의 친밀도 MAX 패시브 발동! 상대 플립 공격을 완벽히 방어했습니다!`
-                          : `💖 [Bond Defense] ${neighbor.name}'s Max Affection deflected the flip!`,
-                        'system'
-                      );
-                    }
-                  }
-                }
-              } catch {}
-            }
-
-            if (myStat > oppStat && !isAffectionDefended) {
+            if (myStat > oppStat) {
               flippedIndices.push(ni);
               flipDetails.push({ index: ni, attacker: placedCard, victim: neighbor, myStat, oppStat, damageDiff: myStat - oppStat });
               myHighlights.push(dir.m);
@@ -13133,25 +13121,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           onToggleAutoBattle={onToggleAutoBattle}
         />
 
-        {/* SCR-02-09: Win Streak Jackpot & Shield Modal */}
-        <WinStreakJackpotModal
-          isOpen={isJackpotModalOpen}
-          onClose={() => setIsJackpotModalOpen(false)}
-          language={language}
-          streakCount={jackpotStreakCount}
-          mode={jackpotModalMode}
-          onSpinJackpot={(reward) => {
-            const curSns = parseInt(localStorage.getItem('hero_sns') || '500', 10);
-            localStorage.setItem('hero_sns', String(curSns + 500));
-            window.dispatchEvent(new Event('hero_sns_updated'));
-          }}
-          onBuyShield={() => {
-            const shields = parseInt(localStorage.getItem('hero_win_streak_shield_count') || '0', 10);
-            localStorage.setItem('hero_win_streak_shield_count', String(shields + 1));
-          }}
-          playSfx={playSfx}
-        />
-
         {/* Item 397: Secret Stamp Book Modal */}
         <SecretStampBookModal
           isOpen={isSecretStampModalOpen}
@@ -13447,21 +13416,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           )}
 
           {/* SCR-08: Tower of Trials Quick Access Banner */}
-          <div className="w-full rounded-none border border-amber-500/40 bg-stone-900 p-3 text-white font-mono flex items-center justify-between gap-3 shadow-2xs">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-10 h-10 bg-amber-500/20 border border-amber-400 text-amber-400 flex items-center justify-center text-xl shrink-0 font-bold rounded-none">
+          <div className="w-full rounded-none border border-amber-500/50 bg-gradient-to-r from-amber-950/70 via-[#181515] to-amber-950/70 p-3 text-white font-mono flex items-center justify-between gap-3 shadow-md">
+            <div className="flex items-center gap-2.5">
+              <div className="w-10 h-10 bg-amber-500/20 border border-amber-400 text-amber-400 flex items-center justify-center text-xl shrink-0 font-bold">
                 🗼
               </div>
-              <div className="min-w-0">
+              <div>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[9px] font-black uppercase text-amber-300 bg-amber-950 border border-amber-500/40 px-1 py-0.2 rounded-2xs">
+                  <span className="text-[9px] font-black uppercase text-amber-300 bg-amber-900/60 border border-amber-500/40 px-1 py-0.2">
                     50F CHALLENGE
                   </span>
-                  <span className="text-[11px] text-amber-200 font-bold truncate">
+                  <span className="text-[11px] text-amber-200 font-bold">
                     {language === 'ko' ? '시련의 탑 & 보스 레이드' : 'Tower of Trials & Boss Raid'}
                   </span>
                 </div>
-                <p className="text-[10px] text-stone-300 mt-0.5 truncate">
+                <p className="text-[10px] text-white/70 mt-0.5">
                   {language === 'ko'
                     ? '매 5층 보스 격파 시 한정 칭호 & 다이아 잭팟!'
                     : 'Defeat 5F bosses for exclusive titles & gems!'}
@@ -13474,7 +13443,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                 setIsTowerTrialsOpen(true);
               }}
-              className="min-h-[44px] px-3 py-2 bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs uppercase flex items-center gap-1 transition-all cursor-pointer active:scale-95 shrink-0 rounded-sm shadow-xs"
+              className="min-h-[44px] px-3 py-2 bg-amber-400 hover:bg-amber-300 text-[#181515] font-black text-xs uppercase flex items-center gap-1 transition-all cursor-pointer active:scale-95 shrink-0 shadow-md"
             >
               <span>{language === 'ko' ? '[탑 등반 도전]' : '[Enter Tower]'}</span>
             </button>
@@ -13592,22 +13561,41 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       </div>
                     </div>
 
-                    {/* 1탭 즉시 대결 CTA */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        playBattleSfx('button_tap');
-                        triggerHaptic('tap');
-                        if (recommendedTargetMode) {
-                          recordModePlay(recommendedTargetMode.id);
-                          openMissionEncounter(recCardIndex);
-                        }
-                      }}
-                      className="w-full sm:w-auto min-h-[44px] px-4 py-2.5 bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs uppercase flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 shrink-0 shadow-md rounded-xs"
-                    >
-                      <span className="text-base">🔥</span>
-                      <span>{language === 'ko' ? '[1탭 즉시 대결 도전]' : '[1-Tap Battle Challenge]'}</span>
-                    </button>
+                    {/* 1탭 즉시 대결 CTA & 모바일 전용 카드플레이 버튼 */}
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          playBattleSfx('button_tap');
+                          triggerHaptic('light');
+                          if (onStartMobileCardPlay) {
+                            onStartMobileCardPlay(recCardIndex);
+                          } else if (setView) {
+                            setView('card-play');
+                          }
+                        }}
+                        className="min-h-[44px] px-4 py-2.5 bg-cyan-400 hover:bg-cyan-300 text-stone-950 font-black text-xs uppercase flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 shadow-md rounded-xs"
+                      >
+                        <span className="text-base">📱</span>
+                        <span>{language === 'ko' ? '[모바일 전용 카드플레이]' : '[Mobile Card Play]'}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          playBattleSfx('button_tap');
+                          triggerHaptic('light');
+                          if (recommendedTargetMode) {
+                            recordModePlay(recommendedTargetMode.id);
+                            openMissionEncounter(recCardIndex);
+                          }
+                        }}
+                        className="min-h-[44px] px-4 py-2.5 bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs uppercase flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 shadow-md rounded-xs"
+                      >
+                        <span className="text-base">🔥</span>
+                        <span>{language === 'ko' ? '[1탭 즉시 대결 도전]' : '[1-Tap Battle Challenge]'}</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -13759,12 +13747,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             );
           })()}
 
-          {/* SCR-09-06: Weekly Championship Ticker */}
-          <MiniGameChampionshipTicker language={language} />
-
           {/* Mode Search & Category Filter Tabs & SCR-09-02: Element Filter & Unowned Filter */}
           <div className="flex flex-col gap-2.5 w-full pt-1 font-mono">
-            {/* 1. 카테고리 탭 & SCR-09-05: 셔플 즉시 시작 원터치 버튼 */}
+            {/* 1. 카테고리 탭 */}
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs flex-1">
                 {[
@@ -13795,26 +13780,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   );
                 })}
               </div>
-
-              {/* SCR-09-05: 48px+ 원터치 셔플 랜덤 시작 버튼 */}
-              <button
-                type="button"
-                onClick={() => {
-                  triggerHaptic('heavy');
-                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                  const pool = filteredModes.length > 0 ? filteredModes : modes;
-                  const randomMode = pool[Math.floor(Math.random() * pool.length)];
-                  if (randomMode && typeof randomMode.action === 'function') {
-                    randomMode.action();
-                  }
-                }}
-                className="min-h-[48px] px-3.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-black font-black text-xs uppercase tracking-wider rounded-none flex items-center gap-1.5 shrink-0 cursor-pointer shadow-md active:scale-95 border border-amber-400"
-                title="랜덤 모드 즉시 플레이"
-              >
-                <span className="text-base">🎲</span>
-                <span className="hidden sm:inline">{language === 'ko' ? '랜덤 즉시 시작' : 'Shuffle Play'}</span>
-                <span className="sm:hidden">{language === 'ko' ? '셔플' : 'Shuffle'}</span>
-              </button>
             </div>
 
             {/* 2. SCR-09-02: 6대 속성 필터 칩 & 미보유 목표 전용 토글 칩 */}
@@ -15252,7 +15217,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       </>
     );
   }
-
 
   return (
     <div 

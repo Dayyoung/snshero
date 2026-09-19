@@ -195,65 +195,41 @@ export const playFactionSfx = (factionOrElement: string = 'fire') => {
   } catch {}
 };
 
-// SCR-03-04: Affection Heart Chime & Max Mastery Web Audio SFX
-export const playAffectionHeartChime = () => {
+export const playAffectionHeartChime = (): void => {
   try {
-    if (typeof document !== 'undefined' && document.hidden) return;
-    if (isSfxMutedGlobal()) return;
-
     const ctx = getAudioContext();
     if (!ctx) return;
-
     const now = ctx.currentTime;
-    // Sweet rising 3-tone arpeggio (E6, G#6, B6)
-    const notes = [1318.51, 1661.22, 1975.53];
-    notes.forEach((freq, idx) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const noteTime = now + (idx * 0.07);
-
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, noteTime);
-
-      gain.gain.setValueAtTime(0.18, noteTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, noteTime + 0.25);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.start(noteTime);
-      osc.stop(noteTime + 0.25);
-    });
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(523.25, now);
+    osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.15);
+    gain.gain.setValueAtTime(0.18, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.3);
   } catch {}
 };
 
-export const playAffectionMaxSfx = () => {
+export const playAffectionMaxSfx = (): void => {
   try {
-    if (typeof document !== 'undefined' && document.hidden) return;
-    if (isSfxMutedGlobal()) return;
-
     const ctx = getAudioContext();
     if (!ctx) return;
-
     const now = ctx.currentTime;
-    // Triumphant shimmer chord (C6, E6, G6, C7, E7)
-    const freqs = [1046.50, 1318.51, 1567.98, 2093.00, 2637.02];
-    freqs.forEach((freq, i) => {
+    [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      const t = now + (i * 0.05);
-
       osc.type = 'triangle';
-      osc.frequency.setValueAtTime(freq, t);
-
-      gain.gain.setValueAtTime(0.2, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
-
+      osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+      gain.gain.setValueAtTime(0.15, now + idx * 0.06);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.35);
       osc.connect(gain);
       gain.connect(ctx.destination);
-
-      osc.start(t);
-      osc.stop(t + 0.6);
+      osc.start(now + idx * 0.06);
+      osc.stop(now + idx * 0.06 + 0.35);
     });
   } catch {}
 };

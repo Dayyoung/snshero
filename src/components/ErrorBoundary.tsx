@@ -47,13 +47,16 @@ export default class ErrorBoundary extends React.Component<Props, State> {
         errMsg.includes("reading 'useEffect'") ||
         errMsg.includes("reading 'useRef'") ||
         errMsg.includes("Failed to fetch dynamically imported module") ||
+        errMsg.includes('Importing a module script failed') ||
+        errMsg.includes('Failed to load module script') ||
+        errMsg.includes('error loading dynamically imported module') ||
         errMsg.includes('Loading chunk');
 
       if (isStaleBundleError && typeof window !== 'undefined' && window.sessionStorage) {
         const alreadyReloaded = window.sessionStorage.getItem('hero_auto_reload_for_hook_error');
         if (alreadyReloaded !== 'true') {
           window.sessionStorage.setItem('hero_auto_reload_for_hook_error', 'true');
-          console.warn('[ErrorBoundary] Stale dependency bundle detected. Auto-reloading page for fresh modules...');
+          console.warn('[ErrorBoundary] Stale dependency bundle or module import error detected. Auto-reloading page for fresh modules...');
           window.location.reload();
           return;
         }
