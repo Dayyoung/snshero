@@ -801,7 +801,7 @@ function AppContent() {
     }
 
     // Step 7 Action: Move to Shop after match
-    if (tutorialStep === 7 && view === 'play' && playGameState === 'gameOver') {
+    if (tutorialStep === 7 && (view === 'play' || view === 'card-play') && playGameState === 'gameOver') {
       const timer = setTimeout(() => {
         if (tutorialStep === 7) setView('shop');
       }, 2000);
@@ -5067,6 +5067,15 @@ function AppContent() {
               setMobileCardOppDeck(undefined);
               setMobileCardOppName(undefined);
               setView('play');
+            }}
+            isTutorialMode={isTutorialMode}
+            tutorialStep={tutorialStep}
+            onTutorialToShop={() => {
+              setMobileCardTargetId(null);
+              setMobileCardOppDeck(undefined);
+              setMobileCardOppName(undefined);
+              setView('shop');
+              setTutorialStep(8);
             }}
             language={language}
             playSfx={playSfx}

@@ -4495,6 +4495,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   // 전투 패배 및 재전투 카운트다운 타이머 제어
   useEffect(() => {
     if (gameOver) {
+      // 튜토리얼 모드에서는 재전투 카운터를 실행하지 않고 상점으로 이동
+      if (isTutorialMode || (tutorialStep > 0 && tutorialStep <= 7)) {
+        setDefeatExitCountdown(null);
+        setRematchCountdown(null);
+        return;
+      }
+
       const isMissionBattle = activeMissionCardIdRef.current !== null || activeMissionCardId !== null;
 
       if (battleType === 'pvp_attack') {
@@ -4513,7 +4520,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         if (showCardAcquisitionModal) {
           setRematchCountdown(null);
         } else {
-          setRematchCountdown(2);
+          setRematchCountdown(3);
         }
       } else if (winner === 'ai') {
         setDefeatExitCountdown(5);

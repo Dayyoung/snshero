@@ -40,6 +40,9 @@ export interface MobileCardPlayScreenProps {
   onEarnXp?: (amount: number) => void;
   recordMatchResult?: (result: 'win' | 'loss' | 'draw') => void;
   autoCloseOnComplete?: boolean;
+  isTutorialMode?: boolean;
+  tutorialStep?: number;
+  onTutorialToShop?: () => void;
 }
 
 export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
@@ -61,7 +64,10 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   onToggleAutoBattle,
   onEarnXp,
   recordMatchResult,
-  autoCloseOnComplete = false
+  autoCloseOnComplete = false,
+  isTutorialMode = false,
+  tutorialStep = 0,
+  onTutorialToShop
 }) => {
   // ─── Sound FX Helper ──────────────────────────────────────────────
   const [isMuted, setIsMuted] = useState(false);
@@ -93,6 +99,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   const [flippedSlots, setFlippedSlots] = useState<number[]>([]);
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [matchResultReported, setMatchResultReported] = useState(false);
+  const [rematchCountdown, setRematchCountdown] = useState<number | null>(null);
+  const [tutorialShopCountdown, setTutorialShopCountdown] = useState<number | null>(null);
 
   // Auto Battle & Speed (시작 시 자동전투 시작)
   const [isAutoBattle, setIsAutoBattle] = useState(initialAutoBattle !== false);
@@ -184,6 +192,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     setGameOver(false);
     setWinner(null);
     setMatchResultReported(false);
+    setRematchCountdown(null);
+    setTutorialShopCountdown(null);
     setFlippedSlots([]);
     setIsEvaluating(false);
     setActiveSkill(null);
@@ -515,6 +525,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
   const handleExitGame = useCallback(() => {
     playSound('tap');
+    setRematchCountdown(null);
+    setTutorialShopCountdown(null);
     if (gameOver && winner && recordMatchResult && !matchResultReported) {
       const calculatedResult: 'win' | 'loss' | 'draw' = winner === 'player' ? 'win' : (winner === 'ai' ? 'loss' : 'draw');
       recordMatchResult(calculatedResult);
@@ -532,6 +544,65 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       return () => clearTimeout(timer);
     }
   }, [gameOver, winner, autoCloseOnComplete, handleExitGame]);
+
+  // 미션 및 카드 플레이: 승/패/무승부 처리 (튜토리얼 vs 일반 모드 분기)
+  useEffect(() => {
+    if (!gameOver || !winner) {
+      setRematchCountdown(null);
+      setTutorialShopCountdown(null);
+      return;
+    }
+
+    // 1) 튜토리얼 모드일 때: 재대결하지 않고 상점으로 이동
+    if (isTutorialMode || (tutorialStep > 0 && tutorialStep <= 7)) {
+      setRematchCountdown(null);
+      setTutorialShopCountdown(2); // 2초 후 상점 자동 이동
+      return;
+    }
+
+    // 2) RPG 자동완료 모드인 경우
+    if (autoCloseOnComplete) {
+      setRematchCountdown(null);
+      setTutorialShopCountdown(null);
+      return;
+    }
+
+    // 3) 일반/미션 모드: 승/패/무승부 상관없이 3초 카운터 후 다시 카드 플레이
+    setTutorialShopCountdown(null);
+    setRematchCountdown(3);
+  }, [gameOver, winner, isTutorialMode, tutorialStep, autoCloseOnComplete]);
+
+  // 3초 카운트다운 감소 및 0초 도달 시 자동 재대결
+  useEffect(() => {
+    if (rematchCountdown === null) return;
+    if (rematchCountdown <= 0) {
+      setRematchCountdown(null);
+      initMatchDecks();
+      return;
+    }
+    const timer = setTimeout(() => {
+      setRematchCountdown(prev => (prev !== null ? prev - 1 : null));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [rematchCountdown, initMatchDecks]);
+
+  // 튜토리얼 모드: 카운트다운 후 상점으로 이동
+  useEffect(() => {
+    if (tutorialShopCountdown === null) return;
+    if (tutorialShopCountdown <= 0) {
+      setTutorialShopCountdown(null);
+      if (onTutorialToShop) {
+        onTutorialToShop();
+      } else {
+        handleExitGame();
+      }
+      return;
+    }
+    const timer = setTimeout(() => {
+      setTutorialShopCountdown(prev => (prev !== null ? prev - 1 : null));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [tutorialShopCountdown, onTutorialToShop, handleExitGame]);
 
   return (
     <div 
@@ -994,26 +1065,92 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                 </div>
               )}
 
+              {/* 1) 튜토리얼 모드: 상점으로 자동 이동 알림 */}
+              {(isTutorialMode || (tutorialStep > 0 && tutorialStep <= 7)) && (
+                <div className="w-full my-1.5 p-2 bg-amber-950/80 border border-amber-500/50 rounded-xs flex flex-col items-center justify-center gap-1.5 font-mono shadow-md">
+                  <div className="flex items-center gap-2 text-xs font-black text-amber-300 tracking-wider">
+                    <Sparkles size={14} className="animate-spin text-amber-400 shrink-0" />
+                    <span>
+                      {language === 'ko'
+                        ? `🛒 튜토리얼 완료: ${tutorialShopCountdown ?? 2}초 후 상점으로 이동...`
+                        : `🛒 Tutorial: Moving to Shop in ${tutorialShopCountdown ?? 2}s...`}
+                    </span>
+                  </div>
+                  <div className="w-full bg-stone-900 h-1.5 rounded-full overflow-hidden border border-amber-500/30">
+                    <div 
+                      className="bg-amber-400 h-full transition-all duration-1000 ease-linear"
+                      style={{ width: `${((tutorialShopCountdown ?? 2) / 2) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* 2) 일반/미션 모드: 3초 카운터 후에 다시 카드 플레이 */}
+              {!(isTutorialMode || (tutorialStep > 0 && tutorialStep <= 7)) && rematchCountdown !== null && rematchCountdown > 0 && (
+                <div className="w-full my-1.5 p-2 bg-emerald-950/80 border border-emerald-500/40 rounded-xs flex flex-col items-center justify-center gap-1.5 font-mono shadow-md">
+                  <div className="flex items-center gap-2 text-xs font-black text-emerald-400 tracking-wider">
+                    <RotateCcw size={14} className="animate-spin text-emerald-400 shrink-0" />
+                    <span>
+                      {language === 'ko'
+                        ? `⏱️ [ ${rematchCountdown}초 ] 후 다시 카드 플레이...`
+                        : `⏱️ Restarting in [ ${rematchCountdown}s ]...`}
+                    </span>
+                  </div>
+                  <div className="w-full bg-stone-900 h-1.5 rounded-full overflow-hidden border border-emerald-500/30">
+                    <div 
+                      className="bg-emerald-400 h-full transition-all duration-1000 ease-linear"
+                      style={{ width: `${(rematchCountdown / 3) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
               {/* Actions */}
               <div className="flex items-center gap-2 w-full mt-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    playSound('tap');
-                    initMatchDecks();
-                  }}
-                  className="flex-1 py-2 bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1"
-                >
-                  <RefreshCw size={13} />
-                  <span>{language === 'ko' ? '재대결' : 'Rematch'}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={handleExitGame}
-                  className="flex-1 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 font-bold text-xs uppercase rounded-xs border border-stone-600 transition-transform active:scale-95 cursor-pointer"
-                >
-                  {language === 'ko' ? '나가기' : 'Exit'}
-                </button>
+                {(isTutorialMode || (tutorialStep > 0 && tutorialStep <= 7)) ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playSound('tap');
+                      setTutorialShopCountdown(null);
+                      if (onTutorialToShop) {
+                        onTutorialToShop();
+                      } else {
+                        handleExitGame();
+                      }
+                    }}
+                    className="flex-1 py-2.5 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1 shadow-lg shadow-amber-500/20"
+                  >
+                    <span>🛒</span>
+                    <span>{language === 'ko' ? '상점으로 이동' : 'Go to Shop'}</span>
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playSound('tap');
+                        setRematchCountdown(null);
+                        initMatchDecks();
+                      }}
+                      className="flex-1 py-2 bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1"
+                    >
+                      <RefreshCw size={13} />
+                      <span>
+                        {rematchCountdown !== null
+                          ? (language === 'ko' ? `즉시 시작 (${rematchCountdown}s)` : `Play Now (${rematchCountdown}s)`)
+                          : (language === 'ko' ? '재대결' : 'Rematch')}
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleExitGame}
+                      className="flex-1 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 font-bold text-xs uppercase rounded-xs border border-stone-600 transition-transform active:scale-95 cursor-pointer"
+                    >
+                      {language === 'ko' ? '나가기' : 'Exit'}
+                    </button>
+                  </>
+                )}
               </div>
             </motion.div>
           </motion.div>
