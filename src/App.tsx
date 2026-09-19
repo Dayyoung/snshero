@@ -2934,6 +2934,7 @@ function AppContent() {
   const [mobileCardTargetId, setMobileCardTargetId] = useState<number | null>(null);
   const [mobileCardOppDeck, setMobileCardOppDeck] = useState<CardData[] | undefined>(undefined);
   const [mobileCardOppName, setMobileCardOppName] = useState<string | undefined>(undefined);
+  const [mobileCardTowerFloor, setMobileCardTowerFloor] = useState<number | null>(null);
 
 
 
@@ -4307,15 +4308,22 @@ function AppContent() {
 
   const [isGlobalPopupOpen, setIsGlobalPopupOpen] = useState(false);
 
-  // Listen for help popup events from any view to hide bottom nav
+  // Listen for help popup and RPG battle events from any view to hide bottom nav
   useEffect(() => {
     const handleHelpOpen = () => setIsGlobalPopupOpen(true);
     const handleHelpClose = () => setIsGlobalPopupOpen(false);
+    const handleRpgBattle = (e: Event) => {
+      const customEvent = e as CustomEvent<{ inBattle?: boolean }>;
+      setIsRpgInBattle(Boolean(customEvent.detail?.inBattle));
+    };
+
     window.addEventListener('snshero-help-popup-open', handleHelpOpen);
     window.addEventListener('snshero-help-popup-close', handleHelpClose);
+    window.addEventListener('snshero-rpg-battle-state', handleRpgBattle);
     return () => {
       window.removeEventListener('snshero-help-popup-open', handleHelpOpen);
       window.removeEventListener('snshero-help-popup-close', handleHelpClose);
+      window.removeEventListener('snshero-rpg-battle-state', handleRpgBattle);
     };
   }, []);
 
@@ -4672,6 +4680,67 @@ function AppContent() {
     const buff = getGuildBuff(userGuild?.level || 0);
     return Math.ceil(basePowerWithBonus * (1 + buff.powerPercent / 100));
   }, [inventory, currentDeck, userGuild]);
+
+  const handleStartRankingBattle = useCallback(() => {
+    try {
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        navigator.vibrate([20, 40, 20]);
+      }
+    } catch {
+      // ignore
+    }
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    setIsChatOpen(false);
+
+    // 내 전투력 기반 최적의 대전 상대 선택
+    const myPower = calculatedBattlePower || 1000;
+    const rankingBots = [
+      { name: 'SNS_Hero_Master', basePower: 14800, sns: 25000, wins: 154, losses: 12, draws: 3 },
+      { name: 'CyberBlade99', basePower: 13200, sns: 18400, wins: 138, losses: 21, draws: 2 },
+      { name: 'CardSorcerer_KR', basePower: 11800, sns: 14200, wins: 121, losses: 28, draws: 4 },
+      { name: 'ShadowStriker', basePower: 10200, sns: 11000, wins: 105, losses: 32, draws: 1 },
+      { name: 'PixelHunter', basePower: 9100, sns: 9200, wins: 94, losses: 36, draws: 3 },
+      { name: 'AlphaZero_Bot', basePower: 8400, sns: 8100, wins: 88, losses: 40, draws: 2 },
+      { name: 'ArcaneEchoes', basePower: 7600, sns: 7300, wins: 81, losses: 43, draws: 3 },
+      { name: 'MechaCommander', basePower: 6900, sns: 6200, wins: 73, losses: 46, draws: 1 },
+      { name: 'DragonSlayer77', basePower: 6100, sns: 5400, wins: 66, losses: 48, draws: 2 },
+      { name: 'NeonViper_Global', basePower: 5400, sns: 4600, wins: 59, losses: 51, draws: 0 },
+      { name: 'ZeroKadan', basePower: 4800, sns: 3900, wins: 52, losses: 53, draws: 2 },
+      { name: 'BitConqueror', basePower: 4100, sns: 3100, wins: 45, losses: 55, draws: 1 },
+    ];
+
+    const sortedBots = [...rankingBots].sort((a, b) => 
+      Math.abs(a.basePower - myPower) - Math.abs(b.basePower - myPower)
+    );
+    const selectedBot = sortedBots[0] || rankingBots[0];
+    const oppPower = Math.max(300, Math.ceil(myPower * (0.88 + Math.random() * 0.24)));
+    const oppDeck = generateUniqueDeck(5);
+    oppDeck.forEach(c => {
+      c.owner = 'ai';
+      c.level = Math.min(10, Math.max(1, Math.floor(oppPower / 1200)));
+    });
+
+    const opp = {
+      id: `ranking-${selectedBot.name}-${Date.now()}`,
+      name: `[PvP] ${selectedBot.name}`,
+      deck: oppDeck,
+      totalPower: oppPower,
+      sns: Math.max(100, Math.floor(selectedBot.sns * (0.8 + Math.random() * 0.4))),
+      wins: selectedBot.wins + Math.floor(Math.random() * 5),
+      losses: selectedBot.losses + Math.floor(Math.random() * 3),
+      draws: selectedBot.draws
+    };
+
+    setIsAutoBattle(true);
+    setIsPvpActive(true);
+    setPvpOpponent(opp);
+    setMobileCardTargetId(null);
+    setMobileCardOppDeck(opp.deck);
+    setMobileCardOppName(opp.name);
+    setPlayGameState('lobby');
+    setPlayInitialMode('card');
+    setView('card-play');
+  }, [calculatedBattlePower, playSfx, setIsAutoBattle, setIsPvpActive, setPvpOpponent, setMobileCardTargetId, setMobileCardOppDeck, setMobileCardOppName, setPlayGameState, setPlayInitialMode, setView, setIsChatOpen]);
 
   const renderView = () => {
     switch (view) {
@@ -5062,10 +5131,14 @@ function AppContent() {
             targetCardId={mobileCardTargetId}
             opponentCustomDeck={mobileCardOppDeck}
             opponentName={mobileCardOppName}
+            towerFloor={mobileCardTowerFloor}
             onBack={() => {
               setMobileCardTargetId(null);
               setMobileCardOppDeck(undefined);
               setMobileCardOppName(undefined);
+              setMobileCardTowerFloor(null);
+              setIsPvpActive(false);
+              setPvpOpponent(null);
               setView('play');
             }}
             isTutorialMode={isTutorialMode}
@@ -5074,6 +5147,9 @@ function AppContent() {
               setMobileCardTargetId(null);
               setMobileCardOppDeck(undefined);
               setMobileCardOppName(undefined);
+              setMobileCardTowerFloor(null);
+              setIsPvpActive(false);
+              setPvpOpponent(null);
               setView('shop');
               setTutorialStep(8);
             }}
@@ -5089,6 +5165,15 @@ function AppContent() {
             initialAutoBattle={isAutoBattle}
             onToggleAutoBattle={() => setIsAutoBattle(prev => !prev)}
             skills={getAggregatedSkills()}
+            recordMatchResult={(res) => {
+              recordMatchResult(
+                res,
+                undefined,
+                undefined,
+                isPvpActive ? 'pvp_attack' : 'robot',
+                pvpOpponent || undefined
+              );
+            }}
             onEarnXp={(amount: number) => {
               setCurrentDeck(prev => {
                 const newDeck = [...prev];
@@ -5173,10 +5258,11 @@ function AppContent() {
             currentSeason={currentSeason}
             inventory={inventory}
             addCard={addCard}
-            onStartMobileCardPlay={(targetId?: number, oppDeck?: CardData[], oppName?: string) => {
+            onStartMobileCardPlay={(targetId?: number, oppDeck?: CardData[], oppName?: string, towerFloor?: number) => {
               setMobileCardTargetId(targetId ?? null);
               setMobileCardOppDeck(oppDeck);
               setMobileCardOppName(oppName);
+              setMobileCardTowerFloor(towerFloor ?? null);
               setIsAutoBattle(true);
               setView('card-play');
             }}
@@ -6188,8 +6274,30 @@ function AppContent() {
               ? "bottom-[calc(env(safe-area-inset-bottom)+0.75rem)]"
               : "bottom-[calc(env(safe-area-inset-bottom)+5rem)]"
           )}>
+                 {/* Ranking Battle Floating Button — left side */}
+                 <div className="absolute left-4 bottom-0 flex flex-col items-center pointer-events-auto gap-1">
+                   <button
+                     id="global-ranking-battle-toggle-btn"
+                     onClick={handleStartRankingBattle}
+                     className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all active:scale-95 relative shadow-2xl hover:scale-105 border-2 cursor-pointer touch-target bg-[#141212] border-amber-500/80 text-amber-300 shadow-[0_8px_28px_rgba(0,0,0,0.65),0_0_16px_rgba(245,158,11,0.35)] hover:bg-[#1f1b1b] hover:border-amber-400 hover:text-white hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] group"
+                     aria-label={language === 'ko' ? '랭킹대전 시작 (PvP)' : 'Start Ranking Battle (PvP)'}
+                     title={language === 'ko' ? '랭킹대전 시작 (PvP)' : 'Start Ranking Battle (PvP)'}
+                   >
+                     <div className="relative flex items-center justify-center">
+                       <Swords size={28} strokeWidth={2.4} className="text-amber-400 drop-shadow-[0_2px_8px_rgba(245,158,11,0.7)] group-hover:rotate-12 transition-transform duration-200" />
+                       <span className="absolute -bottom-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-400 ring-2 ring-[#141212] shadow-[0_0_8px_rgba(245,158,11,1)]" />
+                     </div>
+                     <span className="absolute -top-2 -left-1 bg-gradient-to-r from-amber-600 to-red-600 text-amber-100 text-[9px] font-mono font-black px-1.5 py-0.5 rounded-full border border-amber-400/80 shadow-md">
+                       PVP
+                     </span>
+                   </button>
+                   <span className="text-[10px] font-mono font-black tracking-tight text-amber-400 bg-[#141212]/90 border border-amber-500/50 px-1.5 py-0.5 rounded shadow-md pointer-events-none whitespace-nowrap">
+                     {language === 'ko' ? '랭킹대전' : 'RANK PVP'}
+                   </span>
+                 </div>
+
                  {/* Chat + Auto Battle Buttons — right side */}
-                 <div className="absolute right-4 bottom-0 flex flex-col items-center pointer-events-auto gap-2">
+                 <div className="absolute right-4 bottom-0 flex flex-col items-center pointer-events-auto gap-1">
                    {/* Chat Toggle */}
                    <button
                      id="global-chat-toggle-btn"
@@ -6234,6 +6342,16 @@ function AppContent() {
                       <div className="absolute inset-0 rounded-full animate-ping bg-yellow-400 opacity-20 pointer-events-none" />
                     )}
                   </button>
+                  <span className={cn(
+                    "text-[10px] font-mono font-black tracking-tight px-1.5 py-0.5 rounded shadow-md pointer-events-none whitespace-nowrap border",
+                    isChatOpen
+                      ? "text-rose-400 bg-[#2b0e0e]/90 border-rose-500/50"
+                      : "text-cyan-300 bg-[#141212]/90 border-cyan-500/50"
+                  )}>
+                    {isChatOpen
+                      ? (language === 'ko' ? '닫기' : 'CLOSE')
+                      : (language === 'ko' ? '채팅하기' : 'CHAT')}
+                  </span>
                 </div>
              </div>
 

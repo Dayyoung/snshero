@@ -178,7 +178,7 @@ import { SpectatorModal } from '../components/SpectatorModal';
 import { RevengeChanceModal } from '../components/RevengeChanceModal';
 
 interface PlayGameViewProps {
-  onStartMobileCardPlay?: (targetId?: number, oppDeck?: CardData[], oppName?: string) => void;
+  onStartMobileCardPlay?: (targetId?: number, oppDeck?: CardData[], oppName?: string, towerFloor?: number) => void;
   effectiveUser?: UserInfo;
   calculatedTotalPower?: number;
   opponentTotalPower?: number;
@@ -1201,6 +1201,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
     if (setIsAutoBattle) {
       setIsAutoBattle(true);
+    }
+
+    if (onStartMobileCardPlay) {
+      const oppName = language === 'ko' ? bossCard.title : (bossCard.title_dis || bossCard.title_en);
+      onStartMobileCardPlay(undefined, baseDeck, `[보스 레이드] ${oppName}`);
+      return;
     }
 
     setGameState('preMatch');
@@ -2367,6 +2373,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       setIsAutoBattle(true);
     }
 
+    if (onStartMobileCardPlay) {
+      const oppName = language === 'ko' ? bossCard.title : (bossCard.title_dis || bossCard.title_en);
+      onStartMobileCardPlay(undefined, baseDeck, `[스토리] ${oppName}`);
+      return;
+    }
+
     setGameState('preMatch');
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
   };
@@ -2527,6 +2539,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     const opp = playerMatch.p1?.isPlayer ? playerMatch.p2 : playerMatch.p1;
     if (!opp) return;
 
+    const oppDeck = generateUniqueDeck(5);
     setSelectedOpponent({
       id: opp.id,
       name: opp.name,
@@ -2535,11 +2548,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       losses: 0,
       draws: 0,
       sns: 0,
-      deck: generateUniqueDeck(5)
+      deck: oppDeck
     });
 
     if (setIsAutoBattle) {
       setIsAutoBattle(true);
+    }
+
+    if (onStartMobileCardPlay) {
+      onStartMobileCardPlay(undefined, oppDeck, `[토너먼트] ${opp.name}`);
+      return;
     }
 
     setGameState('preMatch');
@@ -4933,8 +4951,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     if (setIsAutoBattle) {
       setIsAutoBattle(true);
     }
+    const targetPower = char.totalPower || calculatedTotalPower || 1000;
+    const oppDeck = char.deck && char.deck.length === 5 
+      ? char.deck 
+      : (previewDeck && previewDeck.length === 5 ? previewDeck : generateAIOpponentDeck(targetPower));
     if (onStartMobileCardPlay) {
-      onStartMobileCardPlay(undefined, char.deck, char.name);
+      onStartMobileCardPlay(undefined, oppDeck, char.name, activeTowerFloor ?? undefined);
       return;
     }
     if (setView) {
@@ -5130,6 +5152,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       return;
     }
 
+    if (onStartMobileCardPlay) {
+      const oppDeck = lastAiDeck && lastAiDeck.length === 5 ? lastAiDeck : undefined;
+      const oppName = lastOpponent?.name;
+      onStartMobileCardPlay(undefined, oppDeck, oppName, activeTowerFloor ?? undefined);
+      return;
+    }
+
     setRematchCountdown(null);
     setGameOver(false);
     setWinner(null);
@@ -5285,6 +5314,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   };
 
   const startGame = (opponent?: Character, firstTurn: 'player' | 'ai' = 'player', isMatgo: boolean = false) => {
+    if (onStartMobileCardPlay) {
+      const finalOpponent = opponent || lastOpponent;
+      const targetPower = finalOpponent?.totalPower || calculatedTotalPower || 1000;
+      const oppDeck = finalOpponent && (finalOpponent as any).deck && (finalOpponent as any).deck.length === 5
+        ? (finalOpponent as any).deck
+        : (previewDeck && previewDeck.length === 5 ? previewDeck : generateAIOpponentDeck(targetPower));
+      const oppName = finalOpponent?.name;
+      onStartMobileCardPlay(undefined, oppDeck, oppName, activeTowerFloor ?? undefined);
+      return;
+    }
+
     setFirstTurn(firstTurn);
     if (isMatgo) {
       setBattleType('matgo');
@@ -12981,6 +13021,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             setLastAiDeck(oppDeck);
             setPreviewDeck(oppDeck);
 
+            if (onStartMobileCardPlay) {
+              onStartMobileCardPlay(undefined, oppDeck, bossName, floor);
+              return;
+            }
+            if (setView) {
+              setView('card-play');
+              return;
+            }
+
             startGame(towerBoss, 'player');
             setGameState('playing');
           }}
@@ -13030,6 +13079,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             const oppDeck = generateAIOpponentDeck(bossPower);
             setLastAiDeck(oppDeck);
             setPreviewDeck(oppDeck);
+
+            if (onStartMobileCardPlay) {
+              onStartMobileCardPlay(undefined, oppDeck, bossName, floor);
+              return;
+            }
+            if (setView) {
+              setView('card-play');
+              return;
+            }
 
             startGame(towerBoss, 'player');
             setGameState('playing');

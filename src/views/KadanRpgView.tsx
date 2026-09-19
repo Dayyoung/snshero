@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { ArrowLeft, Bot, Compass, Pause, Play, RotateCcw, Sparkles, Swords, X } from 'lucide-react';
 import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
@@ -175,8 +176,17 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
 
   useEffect(() => {
     onBattleStateChange?.(isCurrentlyInBattle);
+    if (isCurrentlyInBattle) {
+      window.dispatchEvent(new CustomEvent('snshero-rpg-battle-state', { detail: { inBattle: true } }));
+      window.dispatchEvent(new Event('snshero-help-popup-open'));
+    } else {
+      window.dispatchEvent(new CustomEvent('snshero-rpg-battle-state', { detail: { inBattle: false } }));
+      window.dispatchEvent(new Event('snshero-help-popup-close'));
+    }
     return () => {
       onBattleStateChange?.(false);
+      window.dispatchEvent(new CustomEvent('snshero-rpg-battle-state', { detail: { inBattle: false } }));
+      window.dispatchEvent(new Event('snshero-help-popup-close'));
     };
   }, [isCurrentlyInBattle, onBattleStateChange]);
 
@@ -510,8 +520,8 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
             />
           )}
 
-          {activeEncounter && battleEvent && rpgOpponent && (
-            <div className="fixed inset-0 z-[20000] w-full h-[100dvh] max-h-[100dvh] bg-[#060a14] flex flex-col items-center justify-center overflow-hidden pointer-events-auto select-none touch-none">
+          {activeEncounter && battleEvent && rpgOpponent && createPortal(
+            <div className="fixed inset-0 z-[99999] w-full h-[100dvh] max-h-[100dvh] bg-[#060a14] flex flex-col items-center justify-center overflow-hidden pointer-events-auto select-none touch-none">
               <MobileCardPlayScreen
                 isAdRemoved={isAdRemoved}
                 playerDeck={currentDeck.filter((c): c is CardData => Boolean(c))}
@@ -540,7 +550,8 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
                 updateSns={updateSns}
                 addCard={addCard}
               />
-            </div>
+            </div>,
+            document.body
           )}
 
           {activeReward && rewardEvent && (
