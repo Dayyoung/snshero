@@ -32,6 +32,7 @@ export interface DeckCommandHubProps {
   onOpenEquipment: () => void;
   onOpenCombine: () => void;
   onOpenHeroNurture: () => void;
+  onOpenCardUpgrade?: () => void;
   // Presets & Tools Actions
   activeDeckPreset: number;
   onSwitchDeckPreset: (presetNum: number) => void;
@@ -58,6 +59,7 @@ export const DeckCommandHub: React.FC<DeckCommandHubProps> = ({
   onOpenEquipment,
   onOpenCombine,
   onOpenHeroNurture,
+  onOpenCardUpgrade,
   activeDeckPreset,
   onSwitchDeckPreset,
   onOpenPresetCode,
@@ -194,66 +196,97 @@ export const DeckCommandHub: React.FC<DeckCommandHubProps> = ({
 
         {/* TAB 2: Vault & Growth */}
         {activeTab === 'inventory' && (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <button
-              type="button"
-              onClick={onOpenInventory}
-              className="min-h-[48px] p-2 bg-blue-950/40 hover:bg-blue-900/50 text-blue-200 border border-blue-500/40 rounded-sm flex flex-col justify-center items-start text-left cursor-pointer transition-all active:scale-[0.98]"
-              title={language === 'ko' ? '보유 카드 보관함 열기 및 덱 교체' : 'Card Vault & Replace'}
-            >
-              <div className="flex items-center gap-1.5 font-bold text-xs text-blue-300">
-                <Layers size={14} className="text-blue-400" />
-                <span>{language === 'ko' ? '카드 인벤토리' : 'Card Vault'}</span>
+          <div className="flex flex-col gap-2">
+            {/* 카드 업그레이드 (스킬 & 능력치 강화) 전용 하이라이트 배너 */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 p-2.5 bg-gradient-to-r from-amber-500/20 via-indigo-500/15 to-purple-500/20 border border-amber-400/60 rounded-sm">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 bg-amber-500/25 text-amber-300 rounded-sm border border-amber-400/40 shrink-0">
+                  <Zap size={18} className="text-amber-400 fill-amber-400 animate-pulse" />
+                </div>
+                <div>
+                  <div className="text-xs font-black text-amber-200 flex items-center gap-1.5">
+                    <span>{language === 'ko' ? '⚡ 카드 업그레이드' : '⚡ Card Upgrade'}</span>
+                    <span className="text-[9px] px-1.5 py-0.2 bg-amber-400 text-stone-950 font-black rounded-xs">
+                      {language === 'ko' ? '스킬·스탯 강화' : 'SKILLS & STATS'}
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-stone-300 mt-0.5">
+                    {language === 'ko' ? '출전 카드의 스킬 트리 해금, 레벨업 및 잠재 능력치를 강화합니다.' : 'Unlock skill trees, level up, and enhance battle stats.'}
+                  </p>
+                </div>
               </div>
-              <span className="text-[10px] text-blue-400/70 mt-0.5">
-                {language === 'ko' ? `보유 ${inventoryCount}장 관리` : `${inventoryCount} Cards`}
-              </span>
-            </button>
+              <button
+                type="button"
+                onClick={() => onOpenCardUpgrade?.()}
+                className="px-3.5 py-2 bg-amber-500 hover:bg-amber-400 active:scale-95 text-stone-950 font-black text-xs rounded-sm transition-all cursor-pointer shadow-xs flex items-center justify-center gap-1 shrink-0"
+                title={language === 'ko' ? '카드 업그레이드 화면 열기' : 'Open Card Upgrade Screen'}
+              >
+                <span>{language === 'ko' ? '업그레이드 화면 진입' : 'Open Upgrade'}</span>
+                <ChevronRight size={14} />
+              </button>
+            </div>
 
-            <button
-              type="button"
-              onClick={onOpenEquipment}
-              className="min-h-[48px] p-2 bg-stone-800/80 hover:bg-stone-800 text-stone-200 border border-stone-700 rounded-sm flex flex-col justify-center items-start text-left cursor-pointer transition-all active:scale-[0.98]"
-              title={language === 'ko' ? '영웅별 장비 장착 및 관리' : 'Equipment Management'}
-            >
-              <div className="flex items-center gap-1.5 font-bold text-xs text-stone-200">
-                <Package size={14} className="text-cyan-400" />
-                <span>{language === 'ko' ? '장비 관리' : 'Equipment'}</span>
-              </div>
-              <span className="text-[10px] text-stone-400 mt-0.5">
-                {language === 'ko' ? '무기·방어구 세팅' : 'Equip Items'}
-              </span>
-            </button>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <button
+                type="button"
+                onClick={onOpenInventory}
+                className="min-h-[48px] p-2 bg-blue-950/40 hover:bg-blue-900/50 text-blue-200 border border-blue-500/40 rounded-sm flex flex-col justify-center items-start text-left cursor-pointer transition-all active:scale-[0.98]"
+                title={language === 'ko' ? '보유 카드 보관함 열기 및 덱 교체' : 'Card Vault & Replace'}
+              >
+                <div className="flex items-center gap-1.5 font-bold text-xs text-blue-300">
+                  <Layers size={14} className="text-blue-400" />
+                  <span>{language === 'ko' ? '카드 인벤토리' : 'Card Vault'}</span>
+                </div>
+                <span className="text-[10px] text-blue-400/70 mt-0.5">
+                  {language === 'ko' ? `보유 ${inventoryCount}장 관리` : `${inventoryCount} Cards`}
+                </span>
+              </button>
 
-            <button
-              type="button"
-              onClick={onOpenCombine}
-              className="min-h-[48px] p-2 bg-purple-950/40 hover:bg-purple-900/50 text-purple-200 border border-purple-500/40 rounded-sm flex flex-col justify-center items-start text-left cursor-pointer transition-all active:scale-[0.98]"
-              title={language === 'ko' ? '동일 카드 3장 상위 등급 합성' : 'Card Combine'}
-            >
-              <div className="flex items-center gap-1.5 font-bold text-xs text-purple-300">
-                <Sparkles size={14} className="text-purple-400" />
-                <span>{language === 'ko' ? '카드 합성소' : 'Card Combine'}</span>
-              </div>
-              <span className="text-[10px] text-purple-400/70 mt-0.5">
-                {language === 'ko' ? '상위 티어 승급' : 'Upgrade Tier'}
-              </span>
-            </button>
+              <button
+                type="button"
+                onClick={onOpenEquipment}
+                className="min-h-[48px] p-2 bg-stone-800/80 hover:bg-stone-800 text-stone-200 border border-stone-700 rounded-sm flex flex-col justify-center items-start text-left cursor-pointer transition-all active:scale-[0.98]"
+                title={language === 'ko' ? '영웅별 장비 장착 및 관리' : 'Equipment Management'}
+              >
+                <div className="flex items-center gap-1.5 font-bold text-xs text-stone-200">
+                  <Package size={14} className="text-cyan-400" />
+                  <span>{language === 'ko' ? '장비 관리' : 'Equipment'}</span>
+                </div>
+                <span className="text-[10px] text-stone-400 mt-0.5">
+                  {language === 'ko' ? '무기·방어구 세팅' : 'Equip Items'}
+                </span>
+              </button>
 
-            <button
-              type="button"
-              onClick={onOpenHeroNurture}
-              className="min-h-[48px] p-2 bg-emerald-950/40 hover:bg-emerald-900/50 text-emerald-200 border border-emerald-500/40 rounded-sm flex flex-col justify-center items-start text-left cursor-pointer transition-all active:scale-[0.98]"
-              title={language === 'ko' ? '히어로 돌봄/훈련 및 호감도 강화' : 'Hero Nurture & Growth'}
-            >
-              <div className="flex items-center gap-1.5 font-bold text-xs text-emerald-300">
-                <Star size={14} className="text-emerald-400" />
-                <span>{language === 'ko' ? '영웅 육성' : 'Hero Nurture'}</span>
-              </div>
-              <span className="text-[10px] text-emerald-400/70 mt-0.5">
-                {language === 'ko' ? '호감도 & 돌봄' : 'Bond & Training'}
-              </span>
-            </button>
+              <button
+                type="button"
+                onClick={onOpenCombine}
+                className="min-h-[48px] p-2 bg-purple-950/40 hover:bg-purple-900/50 text-purple-200 border border-purple-500/40 rounded-sm flex flex-col justify-center items-start text-left cursor-pointer transition-all active:scale-[0.98]"
+                title={language === 'ko' ? '동일 카드 3장 상위 등급 합성' : 'Card Combine'}
+              >
+                <div className="flex items-center gap-1.5 font-bold text-xs text-purple-300">
+                  <Sparkles size={14} className="text-purple-400" />
+                  <span>{language === 'ko' ? '카드 합성소' : 'Card Combine'}</span>
+                </div>
+                <span className="text-[10px] text-purple-400/70 mt-0.5">
+                  {language === 'ko' ? '상위 티어 승급' : 'Upgrade Tier'}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={onOpenHeroNurture}
+                className="min-h-[48px] p-2 bg-emerald-950/40 hover:bg-emerald-900/50 text-emerald-200 border border-emerald-500/40 rounded-sm flex flex-col justify-center items-start text-left cursor-pointer transition-all active:scale-[0.98]"
+                title={language === 'ko' ? '히어로 돌봄/훈련 및 호감도 강화' : 'Hero Nurture & Growth'}
+              >
+                <div className="flex items-center gap-1.5 font-bold text-xs text-emerald-300">
+                  <Star size={14} className="text-emerald-400" />
+                  <span>{language === 'ko' ? '영웅 육성' : 'Hero Nurture'}</span>
+                </div>
+                <span className="text-[10px] text-emerald-400/70 mt-0.5">
+                  {language === 'ko' ? '호감도 & 돌봄' : 'Bond & Training'}
+                </span>
+              </button>
+            </div>
           </div>
         )}
 

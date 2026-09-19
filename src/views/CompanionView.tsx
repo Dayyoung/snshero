@@ -95,10 +95,19 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
   }, [itemList, isImpersonating]);
 
   useEffect(() => {
+    const isAnyModalOpen = showInventory || showSkillTree || alertMsg !== null || helpOpen;
     if (setGlobalPopupOpen) {
-      setGlobalPopupOpen(showInventory || showSkillTree || alertMsg !== null);
+      setGlobalPopupOpen(isAnyModalOpen);
     }
-  }, [showInventory, showSkillTree, alertMsg, setGlobalPopupOpen]);
+    if (isAnyModalOpen) {
+      window.dispatchEvent(new Event('snshero-modal-open'));
+    } else {
+      window.dispatchEvent(new Event('snshero-modal-close'));
+    }
+    return () => {
+      window.dispatchEvent(new Event('snshero-modal-close'));
+    };
+  }, [showInventory, showSkillTree, alertMsg, helpOpen, setGlobalPopupOpen]);
   
   const growth = companion?.growth || 0;
   const hunger = companion?.hunger ?? 100;
@@ -225,6 +234,60 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
           </button>
         }
       />
+
+      {/* Nurture View Sub-Tabs: 돌봄 / 카드 업그레이드 / 장비 관리 */}
+      <div className="flex items-center justify-center p-1 bg-stone-900 border border-stone-800 rounded-lg max-w-md mx-auto w-full gap-1 mt-1 font-mono text-xs">
+        <button
+          type="button"
+          onClick={() => {
+            setShowSkillTree(false);
+            setShowInventory(false);
+          }}
+          className={cn(
+            "flex-1 py-1.5 px-2 rounded-md font-bold transition-all text-center flex items-center justify-center gap-1 cursor-pointer",
+            !showSkillTree && !showInventory
+              ? "bg-indigo-600 text-white shadow-sm"
+              : "text-stone-400 hover:text-stone-200"
+          )}
+        >
+          <span>💖</span>
+          <span>{language === 'ko' ? '돌봄 & 육성' : 'Care & Nurture'}</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setShowSkillTree(true);
+            setShowInventory(false);
+          }}
+          className={cn(
+            "flex-1 py-1.5 px-2 rounded-md font-bold transition-all text-center flex items-center justify-center gap-1 cursor-pointer",
+            showSkillTree
+              ? "bg-amber-500 text-stone-950 font-black shadow-sm"
+              : "text-stone-400 hover:text-stone-200"
+          )}
+        >
+          <Zap size={14} className={showSkillTree ? "fill-stone-950" : "text-amber-400"} />
+          <span>{language === 'ko' ? '카드 업그레이드' : 'Card Upgrade'}</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setShowInventory(true);
+            setShowSkillTree(false);
+          }}
+          className={cn(
+            "flex-1 py-1.5 px-2 rounded-md font-bold transition-all text-center flex items-center justify-center gap-1 cursor-pointer",
+            showInventory
+              ? "bg-cyan-600 text-white shadow-sm"
+              : "text-stone-400 hover:text-stone-200"
+          )}
+        >
+          <Package size={14} />
+          <span>{language === 'ko' ? '장비 관리' : 'Equipment'}</span>
+        </button>
+      </div>
 
       {/* Slot Selection */}
       <div className="flex justify-center gap-2.5 mt-1">
@@ -370,10 +433,10 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
             <button 
               onClick={() => setShowSkillTree(true)}
               id="companion-skill-btn"
-              className="flex items-center justify-center gap-2 p-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg active:scale-98 transition-all font-bold text-xs uppercase shadow-md shadow-indigo-600/20 border border-indigo-500/10 cursor-pointer"
+              className="flex items-center justify-center gap-2 p-3.5 bg-amber-500 hover:bg-amber-400 text-stone-950 rounded-lg active:scale-98 transition-all font-black text-xs uppercase shadow-md shadow-amber-500/20 border border-amber-400/40 cursor-pointer"
             >
-              <Zap size={16} />
-              {t('skills', language)}
+              <Zap size={16} className="fill-stone-950" />
+              {language === 'ko' ? '카드 업그레이드' : 'Card Upgrade'}
             </button>
           </div>
         </div>
@@ -386,13 +449,13 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs"
+            className="fixed inset-0 z-[80000] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs"
           >
             <motion.div 
               initial={{ scale: 0.95, y: 15 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 15 }}
-              className="bg-white w-full max-w-2xl h-[80vh] rounded-lg overflow-hidden flex flex-col shadow-2xl border border-slate-100"
+              className="bg-white w-full max-w-2xl h-[80vh] rounded-lg overflow-hidden flex flex-col shadow-2xl border border-slate-100 relative"
             >
               <div className="bg-gradient-to-r from-slate-900 to-slate-950 text-white p-5 flex justify-between items-center border-b border-slate-800">
                 <div className="flex items-center gap-2">
@@ -400,8 +463,10 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
                   <h3 className="font-bold uppercase tracking-wider text-sm">{t('inventory', language)}</h3>
                 </div>
                 <button 
+                  type="button"
                   onClick={() => setShowInventory(false)} 
-                  className="text-slate-400 hover:text-white p-2 hover:bg-white/10 rounded-full transition-colors"
+                  className="text-slate-400 hover:text-white p-2 hover:bg-white/10 rounded-full transition-colors z-[999999] min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
+                  aria-label="Close"
                 >
                   <X size={20} />
                 </button>
@@ -519,7 +584,7 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs"
+            className="fixed inset-0 z-[80000] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs"
           >
             <motion.div
               initial={{ scale: 0.95 }}
@@ -549,7 +614,7 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] flex items-center justify-center p-0 md:p-4 bg-slate-950/60 backdrop-blur-xs"
+            className="fixed inset-0 z-[80000] flex items-center justify-center p-0 md:p-4 bg-slate-950/60 backdrop-blur-xs"
           >
             <motion.div 
               initial={{ scale: 0.98, y: 15 }}
@@ -557,12 +622,15 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
               exit={{ scale: 0.98, y: 15 }}
               className="bg-white w-full md:max-w-5xl h-full md:h-[90vh] md:rounded-3xl flex flex-col shadow-2xl relative border border-slate-100 overflow-hidden"
             >
-              <div className="absolute top-4 right-4 z-[70]">
+              <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-[999999]">
                 <button 
+                  type="button"
                   onClick={() => setShowSkillTree(false)}
-                  className="bg-white hover:bg-slate-50 text-slate-700 p-2 rounded-full border border-slate-200 shadow-xl transition-transform active:scale-95"
+                  className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-[#141212] text-amber-300 hover:text-white hover:bg-[#201d1d] active:scale-95 shadow-2xl border-2 border-amber-400 flex items-center justify-center cursor-pointer touch-target transition-all"
+                  aria-label="Close"
+                  title={language === 'ko' ? '닫기' : 'Close'}
                 >
-                  <X size={20} />
+                  <X size={22} strokeWidth={2.8} />
                 </button>
               </div>
 
@@ -592,7 +660,7 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[209] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-[80000] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
           >
             <motion.div
               initial={{ scale: 0.95, y: 10 }}
@@ -603,9 +671,10 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
               <button
                 type="button"
                 onClick={() => setHelpOpen(false)}
-                className="absolute top-3 right-3 w-7 h-7 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors"
+                className="absolute top-3 right-3 min-w-[36px] min-h-[36px] rounded-full border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors z-[999999] cursor-pointer"
+                aria-label="Close"
               >
-                <X size={14} />
+                <X size={16} />
               </button>
 
               <div className="text-center mb-5">

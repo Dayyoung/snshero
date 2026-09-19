@@ -260,68 +260,6 @@ const SortableCardItem: React.FC<SortableCardItemProps> = ({
           );
         })}
       </div>
-
-      {/* Mobile One-Touch Quick Action Toolbar (SCR-03) */}
-      {activeQuickSlot === idx && (
-        <div 
-          onClick={(e) => e.stopPropagation()}
-          className="flex items-center justify-center gap-1 mt-1 p-1 bg-slate-900 border border-amber-400/60 rounded-xl shadow-xl z-30 animate-in fade-in zoom-in duration-150"
-        >
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectingIndex?.(idx);
-              setIsPopupOpen?.(true);
-              setActiveQuickSlot?.(null);
-            }}
-            className="px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-[9px] font-black cursor-pointer shadow-xs active:scale-95 touch-target flex items-center gap-0.5"
-            title="카드 교체"
-          >
-            <span>🔄</span>
-            <span className="hidden xs:inline">{language === 'ko' ? '교체' : 'Swap'}</span>
-          </button>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setItemManageIndex(idx);
-              setIsItemModalOpen(true);
-              setActiveQuickSlot?.(null);
-            }}
-            className="px-2 py-1 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-[9px] font-black cursor-pointer shadow-xs active:scale-95 touch-target flex items-center gap-0.5"
-            title="장비 관리"
-          >
-            <span>🛡️</span>
-            <span className="hidden xs:inline">{language === 'ko' ? '장비' : 'Gear'}</span>
-          </button>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectedCardForDetail?.(card);
-              setCardDetailTab?.('stats');
-              setActiveQuickSlot?.(null);
-            }}
-            className="px-2 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[9px] font-black cursor-pointer shadow-xs active:scale-95 touch-target flex items-center gap-0.5"
-            title="돌봄 & 상세"
-          >
-            <span>💖</span>
-            <span className="hidden xs:inline">{language === 'ko' ? '돌봄' : 'Care'}</span>
-          </button>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setActiveQuickSlot?.(null);
-            }}
-            className="p-1 text-slate-400 hover:text-white rounded text-[9px] cursor-pointer"
-            title="닫기"
-          >
-            <X size={12} />
-          </button>
-        </div>
-      )}
     </div>
   );
 };
@@ -892,9 +830,17 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   React.useEffect(() => {
     const isAnyOpen = !!selectedCardForDetail || isPopupOpen || isItemModalOpen || editingCardIndex !== null || selectingIndex !== null || itemManageIndex !== null || isEncyclopediaOpen || showDeckPowerDetails || showTotalPowerDetails || isAchievementsModalOpen || showOptimizeSuccessModal || isCombineModalOpen || isSynergyModalOpen || isVisualizerOpen;
     setGlobalPopupOpen(isAnyOpen);
+    if (isAnyOpen) {
+      window.dispatchEvent(new Event('snshero-modal-open'));
+    } else {
+      window.dispatchEvent(new Event('snshero-modal-close'));
+    }
     
     // Explicit return to reset when unmounting
-    return () => setGlobalPopupOpen(false);
+    return () => {
+      setGlobalPopupOpen(false);
+      window.dispatchEvent(new Event('snshero-modal-close'));
+    };
   }, [selectedCardForDetail, isPopupOpen, isItemModalOpen, editingCardIndex, selectingIndex, itemManageIndex, isEncyclopediaOpen, showDeckPowerDetails, showTotalPowerDetails, isAchievementsModalOpen, showOptimizeSuccessModal, isCombineModalOpen, isSynergyModalOpen, isVisualizerOpen, setGlobalPopupOpen]);
 
   // 최상단 공용 뒤로가기 버튼 이벤트 수신 처리
@@ -1045,10 +991,13 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       return;
     }
 
-    // Row 1045 / SCR-03: 원터치 퀵 액션 바 토글
-    setActiveQuickSlot(prev => (prev === index ? null : index));
+    // 출전 덱 클릭 시 선택 팝업 없이 곧바로 첫 번째(또는 해당 슬롯) 카드선택 리스트팝업 표시
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
     triggerHaptic('light');
+    setActiveQuickSlot(null);
+    setSelectingIndex(index ?? 0);
+    setSelectionContext('replace');
+    setIsPopupOpen(true);
   };
 
   const selectMasterCard = (imgIdx: number, overrideTargetIndex?: number) => {
@@ -1476,12 +1425,26 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         <div className="flex flex-col items-center gap-3 sm:gap-4 w-full">
           {/* Active Deck Header Bar with Compact Synergy Button */}
           <div className="flex items-center justify-between flex-wrap gap-2 w-full max-w-4xl px-1 sm:px-2 pt-1 pb-1 font-mono">
-            <div className="flex items-center gap-2">
-              <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-700 dark:text-slate-200">
+            <div 
+              onClick={() => {
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                triggerHaptic('light');
+                setActiveQuickSlot(null);
+                setSelectingIndex(0);
+                setSelectionContext('replace');
+                setIsPopupOpen(true);
+              }}
+              className="flex items-center gap-2 cursor-pointer group select-none hover:opacity-90 active:scale-95 transition-all"
+              title={language === 'ko' ? '출전 덱 첫 번째 카드 선택 리스트 열기' : 'Open Deck Card Selection List'}
+            >
+              <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
                 {language === 'ko' ? '출전 덱 (5장)' : 'Active Deck (5 Cards)'}
               </span>
+              <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-1.5 py-0.5 rounded-xs border border-indigo-200 dark:border-indigo-800">
+                {language === 'ko' ? '[카드 선택]' : '[SELECT]'}
+              </span>
               <span className="text-[10px] text-slate-400 hidden xs:inline">
-                {language === 'ko' ? '· 드래그하여 순서 변경' : '· Drag to reorder'}
+                {language === 'ko' ? '· 클릭하여 카드 선택' : '· Click to select card'}
               </span>
             </div>
 
@@ -1645,6 +1608,11 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             setSelectionContext('upgrade');
             setIsPopupOpen(true);
             playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+          }}
+          onOpenCardUpgrade={() => {
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            setSelectedCompanionIndex(0);
+            onNavigate('skill');
           }}
           activeDeckPreset={activeDeckPreset}
           onSwitchDeckPreset={handleSwitchDeckPreset}
@@ -1912,7 +1880,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-[80000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
             onClick={() => {
               setIsItemModalOpen(false);
               setItemManageIndex(null);
@@ -1922,7 +1890,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               initial={{ scale: 0.95, y: 10 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 10 }}
-              className="bg-white border border-gray-200 rounded-lg w-full max-w-md overflow-hidden flex flex-col max-h-[80vh] shadow-2xl"
+              className="bg-white border border-gray-200 rounded-lg w-full max-w-md overflow-hidden flex flex-col max-h-[80vh] shadow-2xl relative"
               onClick={e => e.stopPropagation()}
             >
               {/* Header */}
@@ -1936,7 +1904,8 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                     setIsItemModalOpen(false);
                     setItemManageIndex(null);
                   }} 
-                  className="hover:bg-gray-100 p-1 rounded-md transition-colors"
+                  className="hover:bg-gray-100 p-2 rounded-full transition-colors z-[999999] min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer text-slate-600 hover:text-slate-900"
+                  aria-label="Close"
                 >
                   <X size={20} />
                 </button>
@@ -2132,7 +2101,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-white/95 backdrop-blur-sm z-[200] flex items-center justify-center p-4 sm:p-8 cursor-pointer"
+            className="fixed inset-0 bg-black/60 backdrop-blur-md z-[80000] flex items-center justify-center p-2 sm:p-6 cursor-pointer"
             onClick={() => {
               setIsPopupOpen(false);
               setSelectingIndex(null);
@@ -2143,22 +2112,25 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               initial={{ scale: 0.95, y: 10 }}
               animate={{ scale: 1, y: 0 }}
               onClick={e => e.stopPropagation()}
-              className="bg-white w-full max-w-5xl h-[90vh] rounded-3xl border border-slate-100 flex flex-col overflow-hidden shadow-2xl font-sans relative cursor-default"
+              className="bg-white dark:bg-[#141212] w-full max-w-5xl h-[92vh] rounded-2xl sm:rounded-3xl border-2 border-slate-200 dark:border-amber-400/40 flex flex-col overflow-hidden shadow-2xl font-sans relative cursor-default"
             >
-              {/* Top-Right X Close Button */}
+              {/* Top-Right High-Visibility Floating Close Button (항상 최상위 표시) */}
               <button
+                type="button"
                 onClick={() => {
+                  playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                   setIsPopupOpen(false);
                   setSelectingIndex(null);
                   setSelectionContext('replace');
                 }}
-                className="absolute top-4 right-4 sm:top-5 sm:right-5 p-2 rounded-full text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors z-50 cursor-pointer touch-target"
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 z-[999999] flex items-center justify-center min-w-[44px] min-h-[44px] w-11 h-11 rounded-full bg-[#141212] text-amber-300 hover:text-white hover:bg-[#201d1d] active:scale-95 shadow-[0_4px_25px_rgba(0,0,0,0.6)] border-2 border-amber-400 cursor-pointer touch-target transition-all"
                 aria-label="Close"
+                title={language === 'ko' ? '닫기' : 'Close'}
               >
-                <X size={22} />
+                <X size={24} strokeWidth={2.8} className="text-amber-300" />
               </button>
 
-              <div className="p-4 sm:p-6 border-b border-slate-200 flex flex-col sm:flex-row gap-4 items-start bg-white relative">
+              <div className="p-4 sm:p-6 border-b border-slate-200 dark:border-white/10 flex flex-col sm:flex-row gap-4 items-start bg-white dark:bg-[#181616] relative pr-16">
                 <div className="space-y-1 pr-8">
                   <h3 className="text-xl sm:text-2xl font-bold tracking-tight leading-none">
                     {selectionContext === 'upgrade' 
@@ -2572,21 +2544,28 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[300] flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[80000] flex items-center justify-center p-4"
           onClick={() => setShowDeckPowerDetails(false)}
         >
           <motion.div
             initial={{ scale: 0.95 }}
             animate={{ scale: 1 }}
             onClick={e => e.stopPropagation()}
-            className="bg-white w-full max-w-sm rounded-lg shadow-2xl p-6 border border-gray-200"
+            className="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 border border-gray-200 relative"
           >
             <div className="flex justify-between items-center mb-3 pb-2 border-b">
               <h3 className="font-bold text-lg flex items-center gap-2">
                 <Trophy size={18} className="text-amber-500" />
                 {t('deck_power', language)} {t('details', language)}
               </h3>
-              <button onClick={() => setShowDeckPowerDetails(false)} className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"><X size={20}/></button>
+              <button 
+                type="button"
+                onClick={() => setShowDeckPowerDetails(false)} 
+                className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full hover:bg-slate-100 active:scale-95 transition-all text-slate-700 hover:text-slate-950 z-[999999] cursor-pointer"
+                aria-label="Close"
+              >
+                <X size={20}/>
+              </button>
             </div>
 
             {(() => {
@@ -2691,18 +2670,25 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[300] flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[80000] flex items-center justify-center p-4"
           onClick={() => setShowTotalPowerDetails(false)}
         >
           <motion.div
             initial={{ scale: 0.95 }}
             animate={{ scale: 1 }}
             onClick={e => e.stopPropagation()}
-            className="bg-white w-full max-w-md rounded-lg shadow-2xl p-6 border border-gray-200"
+            className="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 border border-gray-200 relative"
           >
             <div className="flex justify-between items-center mb-4 pb-2 border-b">
               <h3 className="font-bold text-lg">{t('total_power', language)} Detail</h3>
-              <button onClick={() => setShowTotalPowerDetails(false)} className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"><X size={20}/></button>
+              <button 
+                type="button"
+                onClick={() => setShowTotalPowerDetails(false)} 
+                className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full hover:bg-slate-100 active:scale-95 transition-all text-slate-700 hover:text-slate-950 z-[999999] cursor-pointer"
+                aria-label="Close"
+              >
+                <X size={20}/>
+              </button>
             </div>
             <p className="text-sm text-gray-500 mb-4">* {language === 'ko' ? '총 TP = 소유한 모든 카드의 (파워 × 보유 수량) 총합' : 'Total TP = Sum of all owned cards (Power × Qty)'}</p>
             <div className="space-y-2 mb-4 max-h-[50vh] overflow-y-auto pr-2">
@@ -2759,7 +2745,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[500] flex items-center justify-center bg-slate-900/80 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-[80000] flex items-center justify-center bg-slate-900/80 p-4 backdrop-blur-sm"
           >
             <motion.div 
               initial={{ scale: 0.9, y: 20 }}
@@ -2778,8 +2764,10 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                   </div>
                 </div>
                 <button 
+                  type="button"
                   onClick={() => setEditingCardIndex(null)} 
-                  className="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-red-600 rounded-full transition-all"
+                  className="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-red-600 rounded-full transition-all z-[999999] cursor-pointer text-white"
+                  aria-label="Close"
                 >
                   <X />
                 </button>
@@ -2851,7 +2839,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[600] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md overflow-y-auto"
+            className="fixed inset-0 z-[80000] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md overflow-y-auto"
             onClick={() => setSelectedCardForDetail(null)}
           >
             <motion.div
@@ -2861,12 +2849,15 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               className="bg-white w-[95%] md:w-[90vw] h-[95vh] md:h-[90vh] rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row relative"
               onClick={e => e.stopPropagation()}
             >
-              {/* Close Button Top */}
+              {/* Close Button Top (항상 최상위 표시) */}
               <button 
+                type="button"
                 onClick={() => setSelectedCardForDetail(null)}
-                className="absolute top-4 right-4 z-20 p-2 bg-black/10 hover:bg-black/20 rounded-full transition-all"
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 z-[999999] flex items-center justify-center min-w-[44px] min-h-[44px] w-11 h-11 rounded-full bg-[#141212] text-amber-300 hover:text-white hover:bg-[#201d1d] active:scale-95 shadow-2xl border-2 border-amber-400 cursor-pointer touch-target transition-all"
+                aria-label="Close"
+                title={language === 'ko' ? '닫기' : 'Close'}
               >
-                <X size={24} />
+                <X size={24} strokeWidth={2.8} className="text-amber-300" />
               </button>
 
               {/* Left Side: Card Visual & Stats */}
@@ -3260,14 +3251,14 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm"
+            className="fixed inset-0 z-[80000] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm"
             onClick={() => setIsAchievementsModalOpen(false)}
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="bg-white rounded-3xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] border border-slate-150 shadow-2xl font-sans"
+              className="bg-white rounded-3xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] border border-slate-150 shadow-2xl font-sans relative"
               onClick={e => e.stopPropagation()}
             >
               <div className="p-6 bg-slate-900 text-white flex justify-between items-center shrink-0 border-b border-slate-800">
@@ -3280,7 +3271,12 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                     <p className="text-[10px] uppercase opacity-40 mt-1 tracking-widest">{t('achievements_desc', language)}</p>
                   </div>
                 </div>
-                <button onClick={() => setIsAchievementsModalOpen(false)} className="hover:bg-white/10 p-2 rounded-full transition-colors">
+                <button 
+                  type="button"
+                  onClick={() => setIsAchievementsModalOpen(false)} 
+                  className="hover:bg-white/20 p-2 rounded-full transition-colors z-[999999] min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer text-white active:scale-95"
+                  aria-label="Close"
+                >
                   <X size={20} />
                 </button>
               </div>
@@ -3499,7 +3495,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[20000] flex items-center justify-center p-2.5 sm:p-4 bg-black/65 backdrop-blur-xs font-mono select-none"
+            className="fixed inset-0 z-[80000] flex items-center justify-center p-2.5 sm:p-4 bg-black/65 backdrop-blur-xs font-mono select-none"
             onClick={(e) => {
               if (e.target === e.currentTarget) {
                 setIsSynergyModalOpen(false);
@@ -3511,7 +3507,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 15 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="bg-white dark:bg-[#181616] border border-slate-300 dark:border-white/20 shadow-2xl rounded-sm w-full max-w-2xl max-h-[85dvh] flex flex-col overflow-hidden text-slate-800 dark:text-slate-100"
+              className="bg-white dark:bg-[#181616] border border-slate-300 dark:border-white/20 shadow-2xl rounded-sm w-full max-w-2xl max-h-[85dvh] flex flex-col overflow-hidden text-slate-800 dark:text-slate-100 relative"
             >
               {/* Modal Header */}
               <div className="flex items-center justify-between px-3.5 py-2.5 sm:px-4 sm:py-3 border-b border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#201d1d] shrink-0">
@@ -3546,7 +3542,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                   <button
                     type="button"
                     onClick={() => setIsSynergyModalOpen(false)}
-                    className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors cursor-pointer rounded-sm hover:bg-slate-200/50 dark:hover:bg-white/10"
+                    className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors cursor-pointer rounded-sm hover:bg-slate-200/50 dark:hover:bg-white/10 z-[999999] min-w-[36px] min-h-[36px] flex items-center justify-center"
                     aria-label="Close"
                   >
                     <X size={18} />

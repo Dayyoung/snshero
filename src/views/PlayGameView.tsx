@@ -576,7 +576,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const perf = usePerformanceMode();
   const [gameState, setGameState] = useState<GameState>(() => {
     if (initialMode === 'story') return 'story';
-    if (pvpOpponent || initialMode === 'card') return 'searching';
     return 'modeSelect';
   });
 
@@ -588,6 +587,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     if (initialMode === 'story') {
       setIsStoryActive(true);
       setGameState('story');
+    } else if (initialMode === 'modeSelect') {
+      setGameState('modeSelect');
     }
   }, [initialMode]);
 

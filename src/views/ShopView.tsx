@@ -3129,15 +3129,21 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       <span>{t('draw_again', language)} ({(cardPacks.find(p => p.rarity === gachaState.packType)?.cost || 0)} SNS)</span>
                     </button>
 
-                    {onNavigate && (
-                      <button
-                        onClick={handleGoToMyDeck}
-                        className="min-h-[44px] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-5 py-2.5 rounded-full font-black uppercase tracking-wider text-xs transition-all border border-blue-400 active:scale-95 cursor-pointer touch-target shadow-lg flex items-center justify-center gap-1.5"
-                      >
-                        <Layers size={15} />
-                        <span>{language === 'ko' ? '마이덱' : 'MY DECK'}</span>
-                      </button>
-                    )}
+                    {/* 마이덱 버튼을 전체 공개 버튼으로 교체 */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setGachaState(prev => ({
+                          ...prev,
+                          cards: prev.cards.map(c => ({ ...c, isRevealed: true }))
+                        }));
+                        playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+                      }}
+                      className="min-h-[44px] bg-gradient-to-r from-amber-400 to-yellow-300 hover:brightness-110 text-slate-950 px-5 py-2.5 rounded-full font-black uppercase tracking-wider text-xs transition-all border border-amber-500 active:scale-95 cursor-pointer touch-target shadow-lg flex items-center justify-center gap-1.5"
+                    >
+                      <Sparkles size={15} />
+                      <span>{language === 'ko' ? '전체 공개' : 'REVEAL ALL'}</span>
+                    </button>
 
                     <button
                       onClick={() => {

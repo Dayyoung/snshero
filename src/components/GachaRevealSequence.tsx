@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Gift, Info, Package2, Share2, SkipForward, Sparkles, Star, Trophy, X, Zap, Layers } from 'lucide-react';
+import { Gift, Info, Package2, Share2, SkipForward, Sparkles, Star, Trophy, X, Zap, Layers, Check } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardItem } from './CardItem';
 import { PityGauge } from './PityGauge';
@@ -206,23 +206,24 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
     : t('shop_gacha_summary_title', language);
   const topCardName = bestCard ? getFormattedCardName(CARD_DATABASE[bestCard.imageIndex], language) : null;
   const stageMotion = instantMode ? {} : { initial: { opacity: 0, scale: 0.96 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 1.04 } };
+  const hasUnrevealed = revealedIds.size < cards.length || cards.some((c) => !c.isRevealed);
 
   // 카드 목록 변경(다시 뽑기 포함) 시 리빌 상태 초기화 및 시퀀스 재시작
   useEffect(() => {
     if (prevSignatureRef.current === cardsSignature) return;
     prevSignatureRef.current = cardsSignature;
 
-    const hasUnrevealed = cards.some((c) => !c.isRevealed);
+    const cardsHaveUnrevealed = cards.some((c) => !c.isRevealed);
 
     if (instantMode) {
       const allSet = new Set<number>();
       cards.forEach((_, idx) => allSet.add(idx));
       setRevealedIds(allSet);
-      setPhase(hasUnrevealed ? 'spread' : 'summary');
+      setPhase(cardsHaveUnrevealed ? 'spread' : 'summary');
       return;
     }
 
-    if (hasUnrevealed) {
+    if (cardsHaveUnrevealed) {
       // 새 팩 소환(다시 뽑기 포함) 시 상태를 초기화하고 팩 봉인 상태로 진입
       setRevealedIds(new Set());
       setCutInInfo(null);
@@ -289,6 +290,14 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
     if (isReSummoning) return;
     setIsReSummoning(true);
     setReDrawCount((prev) => prev + 1);
+
+    // 미공개 카드가 남아있는 상태에서 다시 뽑기를 누를 경우에도 확실하게 공개 동기화
+    if (revealedIds.size < cards.length || cards.some((c) => !c.isRevealed)) {
+      onSkip();
+      const allSet = new Set<number>();
+      cards.forEach((_, idx) => allSet.add(idx));
+      setRevealedIds(allSet);
+    }
 
     if (!isSfxMutedGlobal()) {
       try {
@@ -782,10 +791,10 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                 <motion.div key="gacha-spread-stage" {...stageMotion} className="flex-1 min-h-0 flex flex-col justify-between z-10 py-1 sm:py-2">
                   {/* Flip to Reveal 안내 바 (spread 단계) */}
                   {phase === 'spread' && (
-                    <div className="flex items-center justify-between gap-2 px-2.5 py-1 mb-1.5 rounded-lg bg-amber-500/15 border border-amber-400/40 text-amber-200 text-[10px] sm:text-xs font-mono shrink-0 shadow-xs">
-                      <div className="flex items-center gap-1.5 truncate">
-                        <Sparkles size={13} className="text-yellow-300 animate-spin shrink-0" />
-                        <span className="truncate">
+                    <div className="flex items-center justify-between gap-2 px-3 py-1.5 sm:px-4 sm:py-2 mb-2 rounded-xl bg-amber-500/20 border border-amber-400/50 text-amber-200 text-xs sm:text-sm font-mono shrink-0 shadow-md">
+                      <div className="flex items-center gap-1.5 sm:gap-2 truncate">
+                        <Sparkles size={16} className="text-yellow-300 animate-spin shrink-0" />
+                        <span className="truncate font-bold text-[11px] sm:text-xs">
                           {language === 'ko'
                             ? `👆 카드를 탭하여 뒤집으세요! (${revealedIds.size}/${cards.length} 공개)`
                             : `👆 Tap cards to reveal! (${revealedIds.size}/${cards.length})`}
@@ -794,9 +803,10 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                       <button
                         type="button"
                         onClick={handleFastSkip}
-                        className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-[9px] uppercase hover:bg-amber-300 active:scale-95 cursor-pointer shadow-xs whitespace-nowrap shrink-0"
+                        className="px-4 py-1.5 sm:px-5 sm:py-2 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 font-black text-xs sm:text-sm uppercase hover:brightness-110 active:scale-95 cursor-pointer shadow-md whitespace-nowrap shrink-0 min-h-[36px] flex items-center gap-1.5"
                       >
-                        {language === 'ko' ? '전체 공개' : 'Reveal All'}
+                        <Sparkles size={14} className="shrink-0 text-slate-950" />
+                        <span>{language === 'ko' ? '전체 공개' : 'Reveal All'}</span>
                       </button>
                     </div>
                   )}
@@ -981,14 +991,25 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                       )}
                     </div>
 
-                    {onGoToDeck && (
+                    {/* 기존 마이덱 버튼을 제거하고, 시원하고 눈에 띄는 대형 [전체 공개] 버튼으로 교체 */}
+                    {hasUnrevealed ? (
                       <button
                         type="button"
-                        onClick={onGoToDeck}
-                        className="flex items-center justify-center gap-1.5 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full border border-sky-400/50 bg-sky-600 hover:bg-sky-500 text-white text-xs sm:text-sm font-black uppercase tracking-wider transition active:scale-95 cursor-pointer shadow-lg shrink-0 touch-target"
+                        onClick={handleFastSkip}
+                        className="flex items-center justify-center gap-1.5 sm:gap-2 px-5 sm:px-7 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-300 text-slate-950 text-xs sm:text-sm font-black uppercase tracking-wider shadow-[0_0_18px_rgba(251,191,36,0.6)] hover:brightness-110 active:scale-95 transition-all cursor-pointer animate-pulse shrink-0 touch-target border border-amber-300 min-h-[44px]"
+                        title={language === 'ko' ? '모든 카드를 한 번에 공개합니다' : 'Reveal all cards at once'}
                       >
-                        <Layers size={15} />
-                        <span>{language === 'ko' ? '마이덱' : 'MY DECK'}</span>
+                        <Sparkles size={16} className="text-slate-950 animate-spin shrink-0" />
+                        <span className="whitespace-nowrap">{language === 'ko' ? '⚡ 전체 공개' : '⚡ REVEAL ALL'}</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        disabled
+                        className="flex items-center justify-center gap-1.5 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full border border-slate-700 bg-slate-900/80 text-slate-400 text-xs sm:text-sm font-bold uppercase tracking-wider shrink-0 cursor-default opacity-70 min-h-[44px]"
+                      >
+                        <Check size={16} className="text-emerald-400 shrink-0" />
+                        <span className="whitespace-nowrap">{language === 'ko' ? '✓ 전체 공개됨' : '✓ ALL REVEALED'}</span>
                       </button>
                     )}
 

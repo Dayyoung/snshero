@@ -2935,6 +2935,18 @@ function AppContent() {
   const [mobileCardOppDeck, setMobileCardOppDeck] = useState<CardData[] | undefined>(undefined);
   const [mobileCardOppName, setMobileCardOppName] = useState<string | undefined>(undefined);
   const [mobileCardTowerFloor, setMobileCardTowerFloor] = useState<number | null>(null);
+  const [cardPlayPreviousView, setCardPlayPreviousView] = useState<string>('home');
+  const [rankingBattleCountdown, setRankingBattleCountdown] = useState<number | null>(null);
+  const [rankingBattlePendingOpponent, setRankingBattlePendingOpponent] = useState<{
+    id: string;
+    name: string;
+    deck: CardData[];
+    totalPower: number;
+    sns: number;
+    wins: number;
+    losses: number;
+    draws: number;
+  } | null>(null);
 
 
 
@@ -4319,10 +4331,14 @@ function AppContent() {
 
     window.addEventListener('snshero-help-popup-open', handleHelpOpen);
     window.addEventListener('snshero-help-popup-close', handleHelpClose);
+    window.addEventListener('snshero-modal-open', handleHelpOpen);
+    window.addEventListener('snshero-modal-close', handleHelpClose);
     window.addEventListener('snshero-rpg-battle-state', handleRpgBattle);
     return () => {
       window.removeEventListener('snshero-help-popup-open', handleHelpOpen);
       window.removeEventListener('snshero-help-popup-close', handleHelpClose);
+      window.removeEventListener('snshero-modal-open', handleHelpOpen);
+      window.removeEventListener('snshero-modal-close', handleHelpClose);
       window.removeEventListener('snshero-rpg-battle-state', handleRpgBattle);
     };
   }, []);
@@ -4681,6 +4697,40 @@ function AppContent() {
     return Math.ceil(basePowerWithBonus * (1 + buff.powerPercent / 100));
   }, [inventory, currentDeck, userGuild]);
 
+  // 랭킹대전 매칭 취소 핸들러
+  const handleCancelRankingBattle = useCallback(() => {
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    setRankingBattleCountdown(null);
+    setRankingBattlePendingOpponent(null);
+  }, [playSfx]);
+
+  // 랭킹대전 3초 카운터 후 카드 배틀 진입 타이머
+  useEffect(() => {
+    if (rankingBattleCountdown === null) return;
+    if (rankingBattleCountdown <= 1) {
+      const timer = setTimeout(() => {
+        if (rankingBattlePendingOpponent) {
+          setIsAutoBattle(true);
+          setIsPvpActive(true);
+          setPvpOpponent(rankingBattlePendingOpponent);
+          setMobileCardTargetId(null);
+          setMobileCardOppDeck(rankingBattlePendingOpponent.deck);
+          setMobileCardOppName(rankingBattlePendingOpponent.name);
+          setPlayGameState('modeSelect');
+          setPlayInitialMode('modeSelect');
+          setView('card-play');
+        }
+        setRankingBattleCountdown(null);
+        setRankingBattlePendingOpponent(null);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+    const timer = setTimeout(() => {
+      setRankingBattleCountdown(prev => (prev !== null && prev > 1 ? prev - 1 : null));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [rankingBattleCountdown, rankingBattlePendingOpponent, setIsAutoBattle, setIsPvpActive, setPvpOpponent, setMobileCardTargetId, setMobileCardOppDeck, setMobileCardOppName, setPlayGameState, setPlayInitialMode, setView]);
+
   const handleStartRankingBattle = useCallback(() => {
     try {
       if (typeof navigator !== 'undefined' && navigator.vibrate) {
@@ -4691,6 +4741,11 @@ function AppContent() {
     }
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
     setIsChatOpen(false);
+
+    // 이전 뷰 저장 (카드플레이 종료 시 되돌아갈 화면)
+    if (view !== 'card-play') {
+      setCardPlayPreviousView(view);
+    }
 
     // 내 전투력 기반 최적의 대전 상대 선택
     const myPower = calculatedBattlePower || 1000;
@@ -4731,16 +4786,10 @@ function AppContent() {
       draws: selectedBot.draws
     };
 
-    setIsAutoBattle(true);
-    setIsPvpActive(true);
-    setPvpOpponent(opp);
-    setMobileCardTargetId(null);
-    setMobileCardOppDeck(opp.deck);
-    setMobileCardOppName(opp.name);
-    setPlayGameState('lobby');
-    setPlayInitialMode('card');
-    setView('card-play');
-  }, [calculatedBattlePower, playSfx, setIsAutoBattle, setIsPvpActive, setPvpOpponent, setMobileCardTargetId, setMobileCardOppDeck, setMobileCardOppName, setPlayGameState, setPlayInitialMode, setView, setIsChatOpen]);
+    // 3초 카운터 팝업 가동 (즉시 진입하지 않고 3초 카운트다운 후 배틀 시작)
+    setRankingBattlePendingOpponent(opp);
+    setRankingBattleCountdown(3);
+  }, [calculatedBattlePower, playSfx, setIsChatOpen, view]);
 
   const renderView = () => {
     switch (view) {
@@ -5139,7 +5188,10 @@ function AppContent() {
               setMobileCardTowerFloor(null);
               setIsPvpActive(false);
               setPvpOpponent(null);
-              setView('play');
+              setPlayInitialMode('modeSelect');
+              setPlayGameState('modeSelect');
+              const targetBack = (cardPlayPreviousView && cardPlayPreviousView !== 'card-play') ? cardPlayPreviousView : 'home';
+              setView(targetBack);
             }}
             isTutorialMode={isTutorialMode}
             tutorialStep={tutorialStep}
@@ -5150,6 +5202,8 @@ function AppContent() {
               setMobileCardTowerFloor(null);
               setIsPvpActive(false);
               setPvpOpponent(null);
+              setPlayInitialMode('modeSelect');
+              setPlayGameState('modeSelect');
               setView('shop');
               setTutorialStep(8);
             }}
@@ -5259,6 +5313,9 @@ function AppContent() {
             inventory={inventory}
             addCard={addCard}
             onStartMobileCardPlay={(targetId?: number, oppDeck?: CardData[], oppName?: string, towerFloor?: number) => {
+              setCardPlayPreviousView('play');
+              setPlayInitialMode('modeSelect');
+              setPlayGameState('modeSelect');
               setMobileCardTargetId(targetId ?? null);
               setMobileCardOppDeck(oppDeck);
               setMobileCardOppName(oppName);
@@ -5785,31 +5842,33 @@ function AppContent() {
           {/* 광고 다음 줄에 정렬되는 전역 헤더 버튼 (음소거, 메뉴, 뒤로가기) */}
           {view !== 'landing' && view !== 'card-play' && (
             <>
-              {/* Dedicated HUD Quick Audio Mute / Unmute Button (광고 다음 줄에 배치) */}
-              <button
-                onClick={toggleAudioMute}
-                id="hud-audio-toggle"
-                className={cn(
-                  "fixed right-[3.75rem] min-[1024px]:right-[calc(50vw-444px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center touch-target",
-                  (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px] lg:top-[10px]" : "top-[10px]",
-                  isAudioMuted
-                    ? "bg-rose-500/10 border border-rose-500/50 text-rose-500 hover:bg-rose-500/20"
-                    : (theme === 'dark' || theme === 'metal')
-                    ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
-                    : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
-                )}
-                title={isAudioMuted ? t('hud_audio_unmute', language) : t('hud_audio_mute', language)}
-                aria-label={isAudioMuted ? t('hud_audio_unmute', language) : t('hud_audio_mute', language)}
-              >
-                {isAudioMuted ? (
-                  <VolumeX size={20} className="text-rose-500 animate-pulse" />
-                ) : (
-                  <Volume2 size={20} />
-                )}
-              </button>
+              {/* Dedicated HUD Quick Audio Mute / Unmute Button (광고 다음 줄에 배치 - 팝업 열림 시 닫기 버튼 가림 방지 위해 숨김) */}
+              {!isGlobalPopupOpen && (
+                <button
+                  onClick={toggleAudioMute}
+                  id="hud-audio-toggle"
+                  className={cn(
+                    "fixed right-[3.75rem] min-[1024px]:right-[calc(50vw-444px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center touch-target",
+                    (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px] lg:top-[10px]" : "top-[10px]",
+                    isAudioMuted
+                      ? "bg-rose-500/10 border border-rose-500/50 text-rose-500 hover:bg-rose-500/20"
+                      : (theme === 'dark' || theme === 'metal')
+                      ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
+                      : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
+                  )}
+                  title={isAudioMuted ? t('hud_audio_unmute', language) : t('hud_audio_mute', language)}
+                  aria-label={isAudioMuted ? t('hud_audio_unmute', language) : t('hud_audio_mute', language)}
+                >
+                  {isAudioMuted ? (
+                    <VolumeX size={20} className="text-rose-500 animate-pulse" />
+                  ) : (
+                    <Volume2 size={20} />
+                  )}
+                </button>
+              )}
 
-              {/* HUD Main Hamburger Menu Button (광고 다음 줄에 배치 - 인게임 플레이 중에는 인게임 자체 메뉴 사용) */}
-              {(!isPlayingBattle || playGameState !== 'playing') && (
+              {/* HUD Main Hamburger Menu Button (광고 다음 줄에 배치 - 인게임 플레이 중에는 인게임 자체 메뉴 사용, 팝업 열림 시 닫기 버튼 가림 방지 위해 숨김) */}
+              {(!isPlayingBattle || playGameState !== 'playing') && !isGlobalPopupOpen && (
                 <button
                   onClick={() => {
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
@@ -5830,7 +5889,7 @@ function AppContent() {
             </>
           )}
 
-          {view !== 'landing' && view !== 'card-play' && !isMainTab && (!isPlayingBattle || playGameState !== 'playing') && (
+          {view !== 'landing' && view !== 'card-play' && !isMainTab && (!isPlayingBattle || playGameState !== 'playing') && !isGlobalPopupOpen && (
             <button
               onClick={handleGlobalBack}
               id="global-header-back-btn"
@@ -7405,6 +7464,89 @@ function AppContent() {
                   </button>
                 )}
               </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ─── Global Ranking Battle 3-Second Countdown Matching Popup ─── */}
+      <AnimatePresence>
+        {rankingBattleCountdown !== null && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[20000] flex flex-col items-center justify-center p-4 select-none pointer-events-auto">
+            <motion.div
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-[#0b0f19] rounded-3xl p-6 sm:p-8 max-w-sm w-full border border-amber-500/40 shadow-[0_0_50px_rgba(245,158,11,0.25)] text-center space-y-5 font-mono text-white relative"
+            >
+              {/* Badge & Icon */}
+              <div className="relative mx-auto w-16 h-16 flex items-center justify-center">
+                <div className="absolute inset-0 rounded-2xl bg-amber-500/20 border border-amber-500/40 animate-pulse" />
+                <Swords size={32} className="text-amber-400 drop-shadow-[0_0_12px_rgba(245,158,11,0.8)] animate-bounce" />
+              </div>
+
+              {/* Title & Description */}
+              <div className="space-y-1">
+                <div className="inline-block px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[10px] font-black tracking-wider uppercase mb-1">
+                  ⚔️ {language === 'ko' ? '실시간 랭킹대전 (PvP)' : 'RANKING BATTLE (PvP)'}
+                </div>
+                <h3 className="text-lg font-black tracking-tight text-slate-100">
+                  {language === 'ko' ? '최적의 라이벌 매칭 완료!' : 'Optimal Rival Matched!'}
+                </h3>
+                <p className="text-xs text-slate-400">
+                  {language === 'ko' ? '3초 후 대전 화면으로 이동합니다' : 'Entering battle arena in 3s'}
+                </p>
+              </div>
+
+              {/* Opponent Preview Card */}
+              {rankingBattlePendingOpponent && (
+                <div className="p-3 bg-stone-900/90 rounded-xl border border-stone-700/80 flex items-center justify-between text-left">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-9 h-9 rounded-lg bg-stone-800 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold shrink-0 text-base">
+                      🤖
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-xs font-black text-amber-300 truncate">
+                        {rankingBattlePendingOpponent.name}
+                      </div>
+                      <div className="text-[10px] text-stone-400">
+                        CP {rankingBattlePendingOpponent.totalPower.toLocaleString()} · {rankingBattlePendingOpponent.wins}W {rankingBattlePendingOpponent.losses}L
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="text-[10px] text-amber-400 font-bold block">
+                      +{rankingBattlePendingOpponent.sns} SNS
+                    </span>
+                    <span className="text-[9px] text-stone-500">
+                      {language === 'ko' ? '승리 기대' : 'Est. Reward'}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Huge Countdown Number */}
+              <div className="flex flex-col items-center justify-center py-2">
+                <div className="text-6xl font-black text-amber-400 tracking-tighter drop-shadow-[0_0_20px_rgba(245,158,11,0.7)] animate-pulse">
+                  {rankingBattleCountdown}
+                </div>
+                <div className="w-32 bg-stone-800 h-1.5 rounded-full overflow-hidden mt-3 border border-amber-500/20">
+                  <div
+                    className="bg-amber-400 h-full transition-all duration-1000 ease-linear"
+                    style={{ width: `${(rankingBattleCountdown / 3) * 100}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Cancel Button */}
+              <button
+                type="button"
+                onClick={handleCancelRankingBattle}
+                className="w-full py-3 bg-stone-800 hover:bg-stone-700 text-stone-200 hover:text-white rounded-xl text-xs font-black uppercase transition-all shadow-md active:scale-95 cursor-pointer border border-stone-600 flex items-center justify-center gap-1.5"
+              >
+                <X size={14} />
+                <span>{language === 'ko' ? '매칭 취소' : 'Cancel Matching'}</span>
+              </button>
             </motion.div>
           </div>
         )}

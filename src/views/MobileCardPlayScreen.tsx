@@ -634,6 +634,26 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     }
   }, [gameOver, winner, autoCloseOnComplete, handleExitGame]);
 
+  // 브라우저/스마트폰 물리 뒤로가기 버튼/제스처 시 게임 재시작 방지 및 안전한 종료
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    try {
+      window.history.pushState({ screen: 'mobile-card-play' }, '');
+    } catch {
+      // ignore
+    }
+
+    const handlePopState = () => {
+      handleExitGame();
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [handleExitGame]);
+
   // 미션 및 카드 플레이: 승/패/무승부 처리 (튜토리얼 vs 일반 모드 분기)
   useEffect(() => {
     if (!gameOver || !winner) {
